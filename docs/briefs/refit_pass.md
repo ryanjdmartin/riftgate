@@ -83,6 +83,21 @@ reads (`docs/measurements.md`, 9 November) are the records this stands on.
   shouldn't be stackable. The stingray stacks it due to its passive." So half the gauge is far
   too much, the deal cannot be judged under it, the heat prices are as low as the reads said,
   and the Barrier is one stack whoever grants it (built).
+- **His second read, 10 November** (the MODEL deal at a regen of two): "Even with regen 2, I
+  don't find myself feeling like I need to use defensive tools. Kill-to-prevent-damage seems to
+  be back on the table, which is good, but its now the best choice every time. I feel like even
+  with zero regen I would be fine. Enemy fodder damage might just be too low, and player damage
+  a bit high, especially on the locked pieces - a known issue, obviously, and one that I've been
+  discussing in the Chassis Inventory session." Of the goblins: "part of it is the Goblins
+  getting damage from their peers. Kill one goblin, suddenly the whole formation falls apart. I
+  think their role needs to be shifted: A straight attack, and a block of some kind, so they're
+  a true frontliner and not a lame not-really-damage-threat. Probably a good lesson there." So
+  on today's content the model has swung past its mark: killing first is right every round, no
+  block is wanted, and the regen's size is not what decides it. The player's damage is the
+  Chassis Inventory session's; the fodder's is this pass's with the roles (section 4, the
+  goblin's lesson). The same play's map points (every machine one more move, built; the field's
+  depth, the opening and the Fracture's worth of fodder, each a dial on the phone) are the
+  status's and the to-do's.
 - **The refit's direction, before the model was reached**: "Enemy HP is probably too high, or
   player damage is too low. I'd rather lower enemy HP slightly, and boost synergy pieces to
   increase damage instead of just raw numbers. However, I want to judge the new formations
@@ -169,8 +184,9 @@ than they would if they were grouped."
 So, as a direction (the bible's Foe roles row, open until he marks the form):
 
 - **A rank-and-file unit is designed for a battlefield role**, a pusher's, a flanker's or a
-  hunter's, and tuned for the fight that role meets: a pusher's for three machines, its identity
-  sharp in numbers (the goblin's add, a caster behind a wall); a flanker's for one machine, a
+  hunter's, and tuned for the fight that role meets: a pusher's for three machines, a front
+  that holds while its back rank works (a caster behind a wall), its threat never its head count
+  alone (the goblin's lesson, below); a flanker's for one machine, a
   duel; a hunter's for the catch, a sequence a lone machine can play against. A unit crossing
   into another role's pack is deliberate, and its composition says why (beside its question,
   under `design`), so a filler is a thing the author has to defend.
@@ -180,6 +196,23 @@ So, as a direction (the bible's Foe roles row, open until he marks the form):
 - **A flanker is a duel, not a small pusher.** The proposal's patrols rated one are cut-down
   pushers (three goblins, two knives and a screamer, three needlers), which is what his point
   refuses; they go, and each domain's flankers are written round units made for a duel.
+
+**The goblin's lesson** (Ryan, 10 November, his second read of the trial): "part of it is the
+Goblins getting damage from their peers. Kill one goblin, suddenly the whole formation falls
+apart. I think their role needs to be shifted: A straight attack, and a block of some kind, so
+they're a true frontliner and not a lame not-really-damage-threat. Probably a good lesson
+there." A blow that counts its peers puts the whole threat at the front of the fight: four
+goblins deal 20 a round, then 12, 6 and 2 as they fall, so the first kill takes two fifths of
+the formation's damage, killing first is right every round and no block is ever wanted; and
+the same unit is lame wherever it stands in ones and twos (his point of 9 November, above). So
+a pusher's front rank is a straight blow and a block, and a threat that is the pack's head count
+is no identity for a pusher. What the engine has for the block and what a probe says of each
+form is `docs/measurements.md`, 10 November: a block that is an action costs the goblin a
+third of its blows, so at any attack it deals less than a goblin with none, and at three hit
+points no form matters to three machines, who clear the formation in two rounds. The goblin's
+numbers are his (section 7's seventh item). The Revenant's claw counts its peers the same way,
+and the Goblin Guard already carries the knife and the wall together: both follow his call on
+the goblin.
 
 **What the proposal's grids keep and lose under it**: the formations stand (pushers of pusher
 units), less the antlions in the Waste's four (a hunting line in a pusher: the antlion pit, the
@@ -261,10 +294,12 @@ option):
   showing it), so the hull the blocks keep and the rounds they cost are read as its gap from the
   rung, which takes every block worth making.
 - **The trial in the game**: `RIFTGATE_REFIT=<spec>` on the desk, and on the phone a debug
-  build's SETTINGS → REFIT TRIAL (OFF, MODEL, EVERY, RESTS, NONE: the model with its Barrier
-  basic where a Halo stood, on every die, on every die and resting a round, or on none) and
-  REFIT REGEN beside it (0, 1, 2, 3, HALF: what every shield regains a round, two the
+  build's SETTINGS → TRIALS → REFIT TRIAL (OFF, MODEL, EVERY, RESTS, NONE: the model with its
+  Barrier basic where a Halo stood, on every die, on every die and resting a round, or on none)
+  and REFIT REGEN beside it (0, 1, 2, 3, HALF: what every shield regains a round, two the
   placeholder since his first read), read at the next launch and judged on a new battle or run.
+  The same page holds the field's dials of his second read (FIELD DEPTH, OPENING, FODDER: the
+  status and the README), read as the next battle starts.
 - `hotter=N` on the what-if: every weapon makes N more heat, a read for the heat prices.
 - The Barrier is one stack whoever grants it (a status may be single: `Effects.is_single`), so
   the Stingray's Exothermic Suite no longer counts it to two; it only ever took one blow.
@@ -541,7 +576,10 @@ word:
    front and his own try of 9 November ride on it).
 7. The roles (section 4): a role on every rank-and-file unit, the flankers as duels, the units
    each domain lacks. The strike at the wall follows the rating (his word and built, 10
-   November: section 4).
+   November: section 4). The goblin first, on his second read: a straight blow and a block. Its
+   form is put to him in chat with the probe's numbers (which block, since one that is an
+   action softens it; how hard the blow; whether three hit points can be a front at all), then
+   the Goblin Guard and the Revenant on the same call.
 8. The Reinforced Skeleton: parked with destruction, or a new rule now.
 9. The commander layer's shield and vent actions: a note now, a row when that layer is designed.
 

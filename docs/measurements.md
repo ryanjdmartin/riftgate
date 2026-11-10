@@ -6728,3 +6728,123 @@ seed 7, GORGE, flooded channels, narrowest crossing 3, the guarantee opened 2
 , , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
  , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
 ```
+
+## 10 November, after Ryan's second read of the trial: the field's depth and the opening, the Rupture meter's shares, the goblin's knife
+
+Probes behind the field's and the fodder's dials (a debug build's SETTINGS → TRIALS; `Ramp.depth_trial`,
+`Battle.opening_trial`, `Battle.fodder_trial`) and behind the goblin's role put to him in chat.
+The only content that moved is every machine's move, one more, on his word; no probe here
+reads it. His play (the MODEL deal at a regen of two): "I think the map is a bit too shallow
+... If the map is a little deeper, and the seam starts a little farther out, it will feel more
+like I can actually plan a little bit ahead instead of panicking from the very start, which is
+the case now - feels like the correct play is to throw all machines down the middle and grind
+out Fracture as fast as possible that way. If fracture rewards were a little lower for fodder,
+then it becomes a bit more of a quantity game for non-elites and I'll feel more like sending my
+flankers out"; and of the goblins, "Kill one goblin, suddenly the whole formation falls apart
+... A straight attack, and a block of some kind, so they're a true frontliner".
+
+**Every machine one more move.** The campaign runner's 40 runs on the tree with it
+(`docs/campaign_run.md`) read as the 40 before it: battles won 3% against 2%, fallen 88% both,
+team wipes 90% against 88%, the gate's damage a battle 140 against 139, the Rupture reached in
+19% both. The plain player does nothing with the hex, so what the move is worth is his play's
+to say.
+
+**The field's depth and the opening's distance.** The Meadow at tier one, 20 seeds, the wall
+twenty long, nobody fighting (the machines taken off the field, so the clock alone), six enemy
+turns. The opening stands a formation one of its own moves from the apron and a patrol two; the
+trial adds moves to both.
+
+| Depth | Opening | The seam's first row, and its rows from the wall | The first strike, enemy turn | The gate has taken by turn 2 | By turn 4 | By turn 6 | A formation's walk from the rift to the wall, turns |
+|---|---|---|---|---|---|---|---|
+| 12 | +0 | row 4, 5 | 1.1 | 67 | 165 | 200 | 4 |
+| 12 | +1 | row 4, 5 | 2.1 | 26 | 118 | 198 | 4 |
+| 12 | +2 | row 4, 5 | 2.5 | 5 | 72 | 168 | 4 |
+| 14 | +0 | row 4, 7 | 1.0 | 70 | 168 | 200 | 5 |
+| 14 | +1 | row 4, 7 | 2.2 | 23 | 110 | 192 | 5 |
+| 14 | +2 | row 4, 7 | 3.0 | 0 | 71 | 166 | 5 |
+| 16 | +0 | row 5, 8 | 1.2 | 64 | 160 | 200 | 6 |
+| 16 | +1 | row 5, 8 | 2.2 | 24 | 111 | 194 | 6 |
+| 16 | +2 | row 5, 8 | 3.1 | 0 | 65 | 158 | 6 |
+
+Read. Depth alone buys no planning turn: the opening is measured from the wall, so at any depth
+the first formation strikes on the first enemy turn and the gate has taken a third of its bar
+by the second. What buys the turns is the opening's distance, a turn for each move, and depth is
+the room for it: at twelve deep two more moves run out of field (the first strike at 2.5 where
+fourteen and sixteen give 3.0 and 3.1). Depth by itself moves the two things he named beside it:
+the seam's first tears open seven and eight rows from the wall where they open five today, by
+the seam's own rule, and everything the rift sends later walks a turn or two longer, which is
+the time to regroup for an elite. So the pair to try first is fourteen deep with the opening a
+move farther out (the first strike on the second enemy turn, 23 off the gate by then where it
+is 70 today), and sixteen with two for a first strike on the third. Nobody fights in this read,
+so the gate's numbers are the clock's and not a battle's. On the phone's glass with the wall at
+the left, the rift's edge shows at twelve deep and is a scroll away at fourteen and sixteen.
+
+**What a kill is worth on the Rupture meter.** Every domain, 20 seeds, the field at the start
+as the game sets it: the meter's base is the menace placed and the first waves the rift will
+send, the Rupture at two thirds of it.
+
+| Domain, tier one | The meter's base (placed, the first waves) | The first Fracture, the Rupture | The one formation, in the middle | Each of the two patrols, on the flanks | The elites the first Fracture calls |
+|---|---|---|---|---|---|
+| The Meadow | 116 (52, 64) | 17, 78 | 20, 26% of the Rupture | 16, 21% | 22 or 28 |
+| The Waste | 140 (59, 81) | 21, 94 | 28, 30% | 16, 16% | 20 to 61 |
+| The Marsh | 127 (54, 73) | 19, 85 | 24, 28% | 15, 18% | 20 to 42 |
+| The Peak | 236 (107, 129) | 35, 158 | 46, 29% | 30, 19% | 36 or 48 |
+
+Tier two reads the same by its own numbers (four Fractures; the formation 25% to 28% of the
+Rupture, a patrol 16% to 19%, the first Fracture at 16 to 30 against a formation of 29 to 58).
+
+Read. In every domain the one formation in the middle is worth more than the first Fracture,
+so the first fight there earns it and calls the elite at once; the elite's kill counts double
+and is most of the second; and two more packs make the Rupture, about four fights in all (three
+in the Waste, whose elites are worth 59 and 61 of 94). The first waves come down the rift's
+column, so the middle alone supplies every one of them: the formation and the waves are 84 of
+the Meadow's 78 before the elite is counted. That is his read ("throw all machines down the
+middle"). A flank patrol already pays more for the machine sent than the middle does (16 for a
+fight rated for one against 20 for a fight rated for three), so what keeps the flankers home is
+not the patrol's worth but that the middle is enough. Lowering the fodder's worth is the lever
+he names and it works that way: at three quarters the Meadow's first Fracture takes the
+formation and a patrol and the Rupture about five fights; at half, the same two for the first
+and about seven fights for the Rupture, which the middle alone reaches only with its fifth
+wave, so the flanks' patrols and the tears' are the faster road. Its price is the battle's length: every
+fight more is turns on the clock, a wave every third turn and the seam two rows nearer each
+peak. `Battle.fodder_trial` counts a kill at the share when its pack came as no elite, an
+elite's pack whole, and leaves the tally salvage and Anathema read as it was.
+
+**The goblin's knife.** The goblin as content has it: 3 hit points, a knife of 2 and one more
+for every other goblin standing, so four deal 20 a round, then 12, 6 and 2 as they fall.
+Variants laid over the loaded content for the run (nothing in `content/` moved), the Meadow's
+goblin warband (four goblins before two Mandragoras, rated for three), the greedy rung, 30
+seeds a cell, each a direction: won, rounds, hull lost. The block is the Goblin Guard's Shield
+Wall (armour up one until its next action, one action in three), or one point of armour always.
+
+| The goblin | The default three, today's dice | The Stingray and the Prairie Dog, today's dice | The default three, the MODEL at regen 2 | The Stingray and the Prairie Dog, the MODEL at regen 2 |
+|---|---|---|---|---|
+| Today: 2, one more a peer | 100% · 2.4 · 0% | 97% · 6.5 · 30% | 100% · 2.2 · 0% | 100% · 5.5 · 12% |
+| A straight 3 | 100% · 2.4 · 0% | 100% · 6.6 · 20% | 100% · 2.2 · 0% | 100% · 5.3 · 8% |
+| A straight 4 | 100% · 2.4 · 0% | 97% · 6.7 · 37% | 100% · 2.2 · 0% | 100% · 5.4 · 18% |
+| A straight 3 and the wall | 100% · 2.5 · 0% | 100% · 6.7 · 10% | 100% · 2.1 · 0% | 100% · 5.3 · 3% |
+| A straight 4 and the wall | 100% · 2.5 · 0% | 100% · 7.0 · 19% | 100% · 2.0 · 0% | 100% · 5.6 · 5% |
+| A straight 5 and the wall | 100% · 2.3 · 0% | 97% · 7.6 · 28% | 100% · 2.0 · 0% | 100% · 6.0 · 8% |
+| A straight 4, armour 1 always |  |  | 100% · 2.3 · 0% | 100% · 8.4 · 16% |
+| Today's knife at 5 hit points |  |  | 100% · 2.4 · 0% | 83% · 7.7 · 52% |
+| A straight 4 and the wall, 5 hit points |  |  | 100% · 2.4 · 0% | 100% · 7.8 · 24% |
+| A straight 4 and the wall, 6 hit points |  |  | 100% · 2.5 · 0% | 100% · 8.8 · 27% |
+| A straight 5 and the wall, 6 hit points |  |  | 100% · 2.4 · 0% | 100% · 9.5 · 33% |
+
+The treant's grove (a Treant and three goblins before two Mandragoras) moves little with the
+goblin: the default three lose 3% to 5% of their hull on every variant and both dice, and the
+pair's 24% to 37% under the model is the Treant's fight.
+
+Read. Three things. A block that is an action softens the goblin: a goblin raising its wall is
+a goblin not stabbing, so at any attack the walled goblin costs the pair less than the plain one
+(3% against 8% at a straight 3, 5% against 18% at 4), and the wall does not make the line last
+(5.6 rounds against 5.5). Armour that is always there is the form that holds: three rounds
+longer at the same hit points for about the same hull (16% against the plain knife's 18%), and
+it is the form that walls the small blows, which the formation pass's reads found bites the
+lights hardest. And at three hit
+points no form reaches a full squad: the Honey Badger, the Clydesdale and the Kite clear the
+warband in two and a half rounds and lose no hull on any row, six hit points and a knife of 5
+included, so what he is feeling with three machines is how fast the front dies, the
+player's damage against the fodder's hit points, more than the knife's shape. The knife that
+counts its peers is not weak where the goblins live (52% of the pair's hull at 5 hit points, one
+fight in six lost): its fault is the one he names, that the first kill takes two fifths of it.

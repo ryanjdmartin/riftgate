@@ -29,8 +29,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   after each.
 - Tests: 1089 tests, 323,297 checks, green on main (10 November, `ccr-1e6e6571-7x7ayr` with the shapes reworked on Ryan's play, with the Text tab, the side session's work, the
   map session's shapes laid to the rift's row, the passing and the catch at one, and the map
-  playtest list), and 1101 tests, 324,327 checks, green on `ccr-722ca9f0-yj8na3` (10 November, that
-  main with the refit pass's first build, the wall strike by the rating and the trial's regen row); one
+  playtest list), and 1104 tests, 360,621 checks, green on `ccr-722ca9f0-yj8na3` (10 November, that
+  main with the refit pass's first build, the wall strike by the rating, the trial's regen row,
+  every machine one more move and the field's dials; the map suite now paints fourteen and
+  sixteen deep too, which is most of the checks' rise); one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
   either map view on 6 November; about four minutes in a cloud session, twenty on a slow one;
   words after `--` run only the files whose names hold one (`-- loot rig`). A cloud
@@ -122,7 +124,8 @@ brief `docs/briefs/refit_pass.md` and the briefs it sends machines back to; the 
 `--team`, `--tiers`, `--sizes`, `--domains` and `--ids`, its rounds and stalls; the formation
 pass's reads in `docs/measurements.md`, 9 November, taken before it took main; and the refit
 pass's first build and reads, below: the injury rule off in the game, the model as a what-if
-and a trial, the fight bot's aggressor habit; nothing in `content/` moved). It took main at
+and a trial, the fight bot's aggressor habit; in `content/` only every chassis's move, one
+more on his word of 10 November, and the Gate Integrity entry's strike). It took main at
 `2d489f7` on 9 November (Ryan: "merge main in here so that you're working on the latest engine
 and changes"): the bible, the measurements, this file and the to-do the conflicts, both sides'
 words kept (the bible's hunters row this branch's and its boss row main's, the measurements'
@@ -145,7 +148,7 @@ by head count), so the gate they need standing fell. `docs/vocabulary.md` and
 It took main once more at `fda02f9` that evening (the shapes reworked on his play and the
 hangar's Bench tab, so his map points are answered on the latest map code): the bible's version,
 this file's tests line and the measurements' order the conflicts, both sides kept.
-The bible's file is v0.505, main's v0.503 with this branch's rows, its republish on Ryan's word
+The bible's file is v0.506, main's v0.503 with this branch's rows, its republish on Ryan's word
 (Pages below); and `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
@@ -265,7 +268,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   (the brief's section 4, the bible's Foe roles row): a unit is made for a pusher's, a flanker's
   or a hunter's fight and tuned for it, a hunter its line and what keeps up with it, a flanker a
   duel and no small pusher, so the proposal's patrols rated one are to be rewritten and the
-  Meadow and the Waste want a flanker line. The bible at 0.505 carries it.
+  Meadow and the Waste want a flanker line. The bible's Foe roles row carries it.
 - **The refit pass's first build and reads** (9 November, on his "Your leans are good"; the
   brief's section 5; nothing in `content/` moved): the injury rule is off in the game
   (`Skirmish.injuries`; `--injury on` reads it back; the tests that read an injury turn it on);
@@ -313,6 +316,39 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   same); and `hotter=N` for the runners, whose probe says generation is no dial alone (every
   weapon two hotter with the cooling at one stalls the long fights), so no heat row went on
   the phone and the heat prices are the price pass's, the cooling and the gauge with them.
+- **Ryan's second read of the trial, and what was built on it** (10 November, the MODEL deal at
+  a regen of two; the brief's section 2 has his words on the model, the bible's move, grid, three
+  clocks and Foe roles rows the rest). The model on today's content: "Even with regen 2, I don't
+  find myself feeling like I need to use defensive tools. Kill-to-prevent-damage seems to be
+  back on the table, which is good, but its now the best choice every time. I feel like even
+  with zero regen I would be fine", the fodder's damage maybe too low and the player's a bit
+  high, "especially on the locked pieces", which is the Chassis Inventory session's. Built:
+  **every machine one more move** ("Let's set move 3 as the slowest move, for now, and give all
+  machines 1 more move across the board. The enemies feel like they move at the right pace":
+  3 to 6 hexes, the validator's cap; the foes' moves untouched, so a hunter gains a hex less a
+  turn on a machine that runs). On trial, each a dial on a debug build's new SETTINGS → TRIALS
+  page, where the refit's two rows moved too (the settings page had reached the bottom of the
+  phone's glass), nothing moved in the game until he picks: **FIELD DEPTH** (12, 14, 16) and
+  **OPENING** (+0, +1, +2 moves farther from the wall), for "the map is a bit too shallow ... a
+  little deeper, and the seam starts a little farther out"; and **FODDER** (FULL, 3/4, HALF: what
+  a kill fills of the Rupture meter when its pack came as no elite), for "If fracture rewards
+  were a little lower for fodder, then it becomes a bit more of a quantity game for non-elites
+  and I'll feel more like sending my flankers out". On the desk `RIFTGATE_FIELD_DEPTH`,
+  `RIFTGATE_OPENING` and `RIFTGATE_FODDER`. The width stays ("the right amount of 'epic'",
+  perhaps "a tier 2 or 3 width"). What the probes say (`docs/measurements.md`, 10 November):
+  depth alone buys no planning turn, since the opening is measured from the wall, so the
+  opening's distance is the dial for the first turns and depth the room for it, while depth by
+  itself puts the seam's first tears seven or eight rows from the wall where they are five and
+  lengthens every later walk from the rift, the time to regroup for an elite; fourteen with the
+  opening a move out is the pair to try first. At tier one the middle formation alone earns the
+  first Fracture, which calls the elite at once, and about four fights earn the Rupture, every
+  one to be had in the middle, so his "throw all machines down the middle" is the meter's
+  arithmetic; a flank patrol already pays more for the machine sent, and what keeps the flankers
+  home is that the middle is enough. **The goblin** is his next call ("A straight attack, and a
+  block of some kind, so they're a true frontliner and not a lame not-really-damage-threat.
+  Probably a good lesson there"): the probe says a block that is an action softens it, armour
+  that is always there holds, and no form at three hit points reaches three machines, who clear
+  the warband in two and a half rounds; its form is put to him in chat (the brief's section 7).
 - **Ryan's play of Phase 2** (9 November, his read of the long wall as built, on the phone): hard
   to judge; the packs as they were too hard, "but not for any particular one reason"; incoming
   damage high, so the tank tanked every turn while the rest could not take foes down reliably
@@ -789,8 +825,9 @@ Ryan set on 9 November after his play of Phase 2: shields and vents leave the di
 weapon or equipment, the shield innate and regenerating, cooling passive, the hold the heat
 decision, component destruction off to test, two rerolls kept; the formation pass folded into it,
 its proposal's grids re-cut under the new model and read by hull lost), in its brief's order: the
-what-if and its first reads are in (9 November); next his play of the trial (the to-do's Ryan
-list) and his answers to the brief's section 7, then the content (the stock re-deal as a table
+what-if and its first reads are in (9 November) and his two reads of the trial (10 November);
+next his play with the field's dials and his call on the goblin's form (the to-do's Ryan list)
+and his answers to the brief's section 7, then the content (the stock re-deal as a table
 in chat first, the regen and cooling numbers, the heat prices, the pushers each with a rising
 threat, the flankers as duels), the vocabulary, the rules and the rows. Then the long wall's other open item (the bible's section 12: the shell). Beside them, the rest of the skirmish code audit
 (`docs/skirmish_audit.md`; its questions answered and its bugs built 8 November; the Ammit's Tap
@@ -849,11 +886,13 @@ commands are in `README.md`.
   playtest list landed (the boss's picture, the scenery under the painting, the tears row's
   read of 10 November and the hunters' declaration, on the map session's v0.500 and v0.498's
   Text tab rows: the hangar row's tabs and the shown-text row), unpublished, its republish on
-  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.505, main's with the formation and refit
-  session's rows (the hunters row's who-may-hunt, the Foe roles row's direction, the wall row's
-  strike by the rating, the kit, shield, triangle, redirection, injury, command-die, Barrier
-  and Ward, Puffin, Whip Scorpion, Polar Bear, Swallowtail and Musk Ox rows' refit lines,
-  section 12's items), unpublished too. BASE for the next merge is `2d489f7`'s file. The live
+  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.506, main's with the formation and refit
+  session's rows (the hunters row's who-may-hunt, the Foe roles row's direction and the goblin's
+  lesson, the wall row's strike by the rating, the kit, shield, triangle, redirection, injury,
+  command-die, Barrier and Ward, Puffin, Whip Scorpion, Polar Bear, Swallowtail and Musk Ox
+  rows' refit lines, section 12's items, and from his second read the move row's 3 to 6, the
+  grid row's and the three clocks row's lines on the depth and the fodder on trial),
+  unpublished too. BASE for the next merge is `2d489f7`'s file. The live
   page may carry rows ahead of main's code while a branch has not landed (the music session's
   track rows: Hold The Line's settled pair and its trial notes, Night Shift's duelling basses,
   The Far Bank's fretless bass). Before
