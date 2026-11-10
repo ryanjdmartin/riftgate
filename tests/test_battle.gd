@@ -65,6 +65,16 @@ func test_setup_places_team_formation_and_boss() -> void:
 	assert_eq(b.mechs().size(), 3, "three mechs")
 	assert_eq(b.field.packs().size(), 1 + Ramp.formations_at(0) + Ramp.patrols_at(0), "the ramp's formations and patrols at the start, plus the boss")
 	assert_true(b.boss != null and b.field.units.has(b.boss), "boss on the field")
+	# Its hex (Ryan, 10 November: "Put him on the single hex in front of the two new out of play
+	# ones"): touching both of the rift's front hexes, on the rift's middle line.
+	assert_eq(b.boss.pos, Battle.boss_home(b.map), "the boss on its hex")
+	var fronts := 0
+	for r in b.map.rift_hexes:
+		if Hex.axial_to_offset(r).y == 1:
+			fronts += 1
+			assert_eq(Hex.distance(b.boss.pos, r), 1, "beside each of the rift's front hexes")
+	assert_eq(fronts, 2, "the two of them")
+	assert_true(is_equal_approx(Hex.to_pixel(b.boss.pos, 1.0).x, Hex.to_pixel(b.map.rift, 1.0).x), "on the rift's middle line")
 	assert_eq(b.boss.foe_id, "", "boss unpacks by faction, not foe id")
 	for u in b.field.units:
 		assert_true(b.field.can_stand(u, u.pos), "%s stands on legal ground" % u.display_name)

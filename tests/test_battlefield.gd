@@ -355,17 +355,18 @@ func test_packs_pass_through_each_other_but_never_stop_on_one() -> void:
 	assert_eq(still.pos, _o(1, 6), "the pack it passed is where it was")
 
 
-func test_a_boss_patrols_its_zone_outside_the_rift() -> void:
+## The boss holds its hex and never walks (Ryan, 10 November: "I feel like the boss no longer
+## should patrol"): its walk goes nowhere, turn after turn.
+func test_the_boss_never_walks() -> void:
 	var f := _field(7, 14)
-	var rift_o := Hex.axial_to_offset(f.map.rift)
-	var boss := f.add_unit(Unit.boss(1, "colossus", _o(rift_o.x, rift_o.y + 2), "marsh"))
+	var home := Battle.boss_home(f.map)
+	var boss := f.add_unit(Unit.boss(1, "colossus", home, "marsh"))
 	for i in range(6):
 		var w: Battlefield.Walk = f.plan_walks()[boss.id]
-		assert_true(w.path.size() <= 1, "one step at most")
+		assert_true(w.path.is_empty(), "no walk (turn %d)" % i)
 		f.enemy_turn()
 		f.phase += 1
-		assert_true(Hex.distance(boss.pos, f.map.rift) <= Battlefield.BOSS_ZONE, "stays within its zone (turn %d)" % i)
-		assert_false(f.map.rift_hexes.has(boss.pos), "never on the rift itself")
+		assert_eq(boss.pos, home, "it holds its hex (turn %d)" % i)
 
 
 func test_pressure_spawns_pack_at_rift() -> void:

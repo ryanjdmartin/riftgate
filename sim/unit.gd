@@ -10,7 +10,7 @@ enum Side { PLAYER, ENEMY }
 ## number.
 const MECH_MOVE := 3
 const PACK_MOVE := 2
-const BOSS_MOVE := 1   # the boss patrols a hex a turn
+const BOSS_MOVE := 1   # a boss unit's move, which it never walks: it holds its hex in front of the rift (10 November)
 
 var id: int = 0
 var display_name: String = ""

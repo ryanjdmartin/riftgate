@@ -27,7 +27,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1094 tests, 325,125 checks, green (10 November, main with the third map list, the Text tab, the side session's work, the shapes reworked on Ryan's play, the second map list, the
+- Tests: 1094 tests, 325,124 checks, green (10 November, `ccr-c71bc17f-hclj2c` with the boss's hex; main with the third map list, the Text tab, the side session's work, the shapes reworked on Ryan's play, the second map list, the
   map session's shapes laid to the rift's row, the passing and the catch at one, and the map
   playtest list; one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
@@ -119,7 +119,9 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4` (a cloud session may not delete
 one). Each merge commit says how its conflicts were settled.
 
-Still working (10 November; every other branch on GitHub is merged): `ccr-722ca9f0-yj8na3`,
+Still working (10 November; every other branch on GitHub is merged): `ccr-c71bc17f-hclj2c`
+again, with the boss holding its hex (How things stand below), pushed, waiting on Ryan's word to
+land; `ccr-722ca9f0-yj8na3`,
 the formation and refit session, whose own status says where it stands (it meets the side
 session's edits in `tests/run_tests.gd`, `sim/skirmish.gd` and these records when it takes main);
 and `ccr-7effd31a-u5z4gw`, the
@@ -193,6 +195,16 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
+- **The boss holds its hex** (`ccr-c71bc17f-hclj2c` from main at `944cd5e`, not on main; Ryan, 10
+  November). The boss stands on the one hex touching both of the rift's front hexes, on its
+  middle line, and never walks ("Put him on the single hex in front of the two new out of play
+  ones"; `Battle.boss_home`): its patrol of 22 September is gone ("I feel like the boss no longer
+  should patrol"), `_patrol_step` and `BOSS_ZONE` with it. Shown first as a still and set aside: the
+  boss on the rift's front hexes, centred across both or on the one in line with the gate ("it
+  looks silly on wall-left no matter what"). With the wall at the bottom the vortex stands a row
+  lower, over its five hexes ("we can move the gate sprite down now that there's a home for it",
+  read as the rift's vortex, nothing having changed at the gate), its eye kept over the rift's own
+  row so the boss in front never covers it. The battle's save is 22 and the run's 21.
 - **Ryan's third map list of 10 November** (`ccr-c71bc17f-hclj2c`, cut from main at `a3b48c0`,
   on main the same day on his word, "Ok, merge to main"; his words in the commit and the bible's
   rows). The bug first: the block that
@@ -715,7 +727,7 @@ commands are in `README.md`.
   page's Version 502, published from main at `2d489f7` on Ryan's word, "republish the hangar
   page and the bible": main's file whole, since the live v0.496 matched `f048e67`'s byte for byte
   and so needed no merge; it carries the Lammergeier's rework, its row, the Gel's and the
-  reinforcement row's slot-mine lines and the tables). Main's file is v0.505 since the third map list landed (the rift's five hexes on the field row, the undo and marks rows), v0.504 with the second map list's rows (the marks row
+  reinforcement row's slot-mine lines and the tables). `ccr-c71bc17f-hclj2c`'s file is v0.506 (the boss's hex, its patrol retired, the vortex lower with the wall at the bottom); main's is v0.505 since the third map list landed (the rift's five hexes on the field row, the undo and marks rows), v0.504 with the second map list's rows (the marks row
   rewritten, the pack, undo, gesture, Fracture, reconstruction and tears rows, the Badger's and
   the store's) on the shapes' rework's v0.503 and the hangar's Bench tab's v0.502, unpublished; v0.501 since the map
   playtest list landed (the boss's picture, the scenery under the painting, the tears row's

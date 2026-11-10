@@ -1067,9 +1067,10 @@ a stat.
   bottom with the rift at the top, pointy-top, scrolled along the wall. The field and every rule
   are the same in both. With the wall at the bottom the wall and the gate stand on the last row
   and their height covers the row before it; with the wall at the left they stand on that row,
-  against the apron, the last row behind them the city's, and the rift's vortex stands on the
-  lowest of its row's three hexes, half a hex toward the field, over all five, so one row of
-  scenery shows behind it and no more. The far ground softens
+  against the apron, the last row behind them the city's. The rift's vortex stands over its five
+  hexes in either view, a row of scenery behind it and no more: with the wall at the left on the
+  lowest of its row's three, half a hex toward the field; with the wall at the bottom on the
+  middle one, ending at the five's lower edge, its eye over the rift's own row. The far ground softens
   toward the rift and the city softens past the wall in either view: at the screen's top and
   foot with the wall at the bottom, at its right and left with the wall at the left, never its
   top there. A pack or a machine past the screen's edge has a tag at that
@@ -1126,7 +1127,7 @@ a stat.
   a machine, as under a flyer (they slide under each other, from two different dimensional
   counts), and the two sides meet only in a fight. Each move still lands at once, so the next is
   planned from where it ended.
-- **Setup**: up to four machines on the row before the gate; the boss in front of the rift's mouth, on the first row clear of its five hexes,
+- **Setup**: up to four machines on the row before the gate; the boss on its hex, the one touching both of the rift's front hexes, on the rift's middle line (the nearest free hex should a pack hold it),
   sealed (below); and on the field, the siege under way, the compositions the tier and the ramp
   put there: the ramp's count of formations (one; two from Convergence 3; three from 8) spread
   across the width, each a move of its own from the row before the wall, and its count of
@@ -1250,7 +1251,8 @@ a stat.
   a structure, ground it cannot take, another unit) is no move: the drawn route marks the stop
   and that hex (NO ROOM), and letting go there is refused. A caught machine does not ride. An
   undo of the carrier's move takes the riders back with it.
-- **The boss** patrols within two hexes of the rift, a hex a turn whoever commands it. Its seal
+- **The boss** holds its hex in front of the rift for the battle and never walks, whoever
+  commands it. Its seal
   holds until the Rupture (below): while it does, the boss cannot be ordered onto and joins no
   fight, SEALED on its readout. After the Rupture it can be attacked, nothing joining its
   fight and it joining no other (a hero carries no move and no hunt of its own: it only ever

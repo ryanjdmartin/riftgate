@@ -124,7 +124,7 @@ func add_unit(u: Unit) -> Unit:
 func dress_pack(sq: Unit, foe: String = "") -> Unit:
 	var p: Dictionary = foe_profiles.get(foe if not foe.is_empty() else sq.foe_id, {})
 	if p.has("movespeed"):
-		sq.movespeed = int(p["movespeed"])   # the boss's too: its patrol step is content
+		sq.movespeed = int(p["movespeed"])   # the boss's too, which it never walks (it holds its hex)
 	if not sq.is_boss:
 		# A winged foe's pack crosses water and crags as a flyer does and stands there (Ryan,
 		# 28 October, the movement proposal's lever 2); the boss is never winged.
@@ -410,21 +410,6 @@ func catch_of(sq: Unit) -> Unit:
 	return prey if in_ring(sq, prey) else null
 
 
-## A boss patrols its ground outside the rift (Ryan, 22 September): one step to a standable
-## hex within BOSS_ZONE of the rift, picked by the turn so the preview never disagrees with
-## the walk; its own hex when nothing fits.
-const BOSS_ZONE := 2
-
-func _patrol_step(sq: Unit, blocked: Dictionary) -> Vector2i:
-	var options: Array[Vector2i] = []
-	for n in Hex.neighbors(sq.pos):
-		if map.has(n) and Hex.distance(n, map.rift) <= BOSS_ZONE and not map.rift_hexes.has(n) and _walkable(sq, n, blocked) and _landable(sq, n, blocked):
-			options.append(n)
-	if options.is_empty():
-		return sq.pos
-	return options[(phase * 7 + sq.id * 13) % options.size()]
-
-
 ## Every pack's walk for the enemy's turn, against the field as it stands now (bible section
 ## 4, the round row). Packs plan in field order, each walking through the others but never
 ## stopping where the packs before it will end or where the ones after it stand now, so the
@@ -527,7 +512,9 @@ func _distance_from(sq: Unit, at: Vector2i, u: Unit) -> int:
 	return best
 
 
-## One pack's walk. A boss patrols, its escort with it. A hunter heads for the nearest hex it
+## One pack's walk. The boss holds its hex in front of the rift and never walks (Battle.boss_home;
+## its patrol of 22 September, a hex a turn within two of the rift, went on 10 November: Ryan, "I
+## feel like the boss no longer should patrol"). A hunter heads for the nearest hex it
 ## can reach that puts its prey within the engage range, or as near as it gets. A pusher heads
 ## for its wall segment on the gate's apron row. It walks as far as its move goes, through every
 ## other unit (10 November), never ending on another unit's hex. A pusher with no way to the gate
@@ -536,11 +523,6 @@ func _walk(sq: Unit, blocked: Dictionary) -> Walk:
 	var w := Walk.new()
 	w.end = sq.pos
 	if sq.is_boss:
-		var step := _patrol_step(sq, blocked)
-		if step != sq.pos:
-			w.path.append(step)
-			w.route.append(step)
-			w.end = step
 		return w
 	var prey: Unit = pick_prey(sq) if sq.behaviour == "hunt" else null
 	var found := _walk_search(sq, blocked)

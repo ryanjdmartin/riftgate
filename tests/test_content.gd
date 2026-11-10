@@ -382,7 +382,7 @@ func test_a_silence_or_a_purge_rides_no_blow() -> void:
 	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe rites") and e.contains("on_death blow") and e.contains("never a rider")), "a purge in a last act is reported")
 
 
-## A hero only commands the boss unit, which patrols a hex a turn and never hunts (Ryan, 28
+## A hero only commands the boss unit, which holds its hex and never hunts (Ryan, 28
 ## October, of the Thief's move: "it's a boss so it doesn't need it"): the validator refuses a map
 ## move on a hero, and the rank and file keep theirs. A hunt it refuses on every foe (the next test).
 func test_a_hero_carries_no_map_move_or_hunt() -> void:

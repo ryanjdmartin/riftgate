@@ -238,7 +238,7 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 	var boss_id := str(lineup[0]) if not lineup.is_empty() else (firsts[0] if not firsts.is_empty() else "")
 	if with_boss and db.foes.has(boss_id):
 		boss = make_boss_unit(db, faction, tier, boss_id, lineup, escort, ramp)
-		boss.pos = field.nearest_standable(boss, Hex.offset_to_axial(w / 2, BattleMap.RIFT_ROWS))   # in front of the rift's mouth, the first row clear of its five hexes
+		boss.pos = field.nearest_standable(boss, boss_home(map))   # its hex, held for the battle (the nearest free one should a pack hold it)
 		field.add_unit(field.dress_pack(boss, boss_id))
 	# The caches, on the field from the first turn (Ryan, 7 November), round the units placed.
 	field.seed_caches(db, seed_value)
@@ -321,6 +321,14 @@ func _open_row(sq: Unit, col: int, moves: int) -> void:
 
 
 ## Whether the boss's seal holds: it cannot be ordered onto and joins no fight until the Rupture.
+## The boss's hex (Ryan, 10 November: "Put him on the single hex in front of the two new out of
+## play ones"): the one hex touching both of the rift's front hexes, on its middle line, so it
+## stands centred in front of the rift in either view of the map; it holds it for the battle and
+## never walks. Its fight is ordered from a hex beside it, and takes every machine.
+static func boss_home(m: BattleMap) -> Vector2i:
+	return Hex.offset_to_axial(Hex.axial_to_offset(m.rift).x, BattleMap.RIFT_ROWS)
+
+
 func is_sealed() -> bool:
 	return boss != null and boss.sealed
 
