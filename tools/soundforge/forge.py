@@ -3585,6 +3585,21 @@ for _name in [n for n in SOUNDS if n.startswith("music_")]:
     SHIP[_name] = (lambda n=_name: write_level(SOUNDS[n](), n, LEVELS[n]))
 
 
+def _pair_half(module, half):
+    def build():
+        import importlib
+        return importlib.import_module(module).ship(half)
+    return build
+
+
+# A track's pair as Ryan passed it on the pair page: the battle half under the track's own name, the map half beside
+# it. Hold The Line's (10 November: "Full pair for HtL is good to ship"), hold_sketches.py's twenty-seventh round;
+# music_hold_the_line() above stays the recipe the pair is built on. The game plays the battle half where it played
+# the track; the map half waits on the engine's pairs (docs/todo.md).
+SHIP["music_hold_the_line"] = _pair_half("hold_sketches", "battle")
+SHIP["music_hold_the_line_map"] = _pair_half("hold_sketches", "map")
+
+
 def write_level(x, name, level):
     """A recipe's signal at its LEVELS level, as `write` levels it (a loop by its body, an
     effect by its loudest 50 ms)."""

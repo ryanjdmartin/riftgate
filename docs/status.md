@@ -848,8 +848,8 @@ The tasks are the to-do's; this is the index of what waits.
 - Ryan's read of the five Wainwright & Sutler models running (the to-do's lines carry what each
   asks), and his pick of the Giant Petrel's hull (`docs/looks/kestrel_giant3.png`).
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).
-- Every track a pair (the bible's pair row, 28 October): the five new halves sketched; Hold The Line
-  on its twenty-seventh round (10 November), its map half settled on the thirteenth (3 November: "I think
+- Every track a pair (the bible's pair row, 28 October): the five new halves sketched; Hold The Line's
+  pair passed on its twenty-seventh round and both halves built into art/audio by the forge's SHIP (10 November: "Full pair for HtL is good to ship"; the battle half as `music_hold_the_line`, playing where the track played, the map half as `music_hold_the_line_map`, unplayed until the engine's pairs), its map half settled on the thirteenth (3 November: "I think
   that's it for this track"): his map picks, X on the violins, U on the clean guitar, the drone
   moved to R, W low with a roll; the map half minimal, the lifts as they were with the riff on the
   soft sub and the tine piano and the first lift's bell calmer (5 November: "Map lifts should keep
@@ -909,7 +909,7 @@ The tasks are the to-do's; this is the index of what waits.
   full pair"), its W six beats.
   A mixing desk on pre-rendered stems was proposed for picking voices without a round and tabled (5
   November: "Tough if it's not completely flexible. That's ok, let's table it for now").
-  Night Shift on its twenty-eighth (10 November: the bass on four core pairs of his rhythms, a bar each
+  Night Shift on its twenty-ninth (10 November: at the shipped 94; the head and the lead's section closed, "we can close the head and lead section questions with what's there right now"; the off-beat piano back in the battle half, "I think I hear it missing now"; D's riff on the crunch synth 6 dB down; R's lead a tune that grows, "It doesn't need to get busier, just more of a melody as it grows. Keep it minimalist", waiting on his ear; the bass on four core pairs of his rhythms, a bar each
   in turn, 4 and 7 sparingly, four cut; R a lead over the grooves, "no unisons", the stop-time out, the
   fingers walking and the top Omnific's lead fancier each pass; the synths' arpeggios between octaves;
   before it the duel on three basses, none trading, a pusher on the
@@ -1214,8 +1214,8 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
-  twenty-seventh, the new hats in, the fingers bass's eighths under X, L's instruments on M, `hold_sketches.py`; Night Shift's twenty-eighth, his core rhythms and R a lead over the grooves, `night_sketches.py`;
-  The Far Bank's map half's eighth, its lift settled, `far_sketches.py`; the real basses, `real_bass.py`), every pair on the shipped tracks as built in tune on 6 November, at the page's version 75. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
+  twenty-seventh, the new hats in, the fingers bass's eighths under X, L's instruments on M, passed and shipped, `hold_sketches.py`; Night Shift's twenty-ninth, his core rhythms and R a lead over the grooves on a tune that grows, `night_sketches.py`;
+  The Far Bank's map half's eighth, its lift settled, `far_sketches.py`; the real basses, `real_bass.py`), every pair on the shipped tracks as built in tune on 6 November, at the page's version 76. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
   publish's 64 MB goes up in two publishes: the new files first under the live page, then the
   new page with the rest, the old round's files removed.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg

@@ -1813,17 +1813,22 @@ def full_path(half):
     return os.path.join(P.OUT, "hold27_full_%s.wav" % half)
 
 
-def render_full(half):
-    """One full half, in a worker, from the shipped half's seed, at its half's level."""
+def ship(half):
+    """A half of the pair as Ryan passed it (10 November: "Full pair for HtL is good to ship"), from its own seed at
+    its half's level, unlimited: what the forge's SHIP builds into art/audio (music_hold_the_line the battle half,
+    music_hold_the_line_map the map half) and what the page's full pair is cut from."""
     if half == "battle":
         F.seed(NAME)
         call = copied(call_on(FORM_K, METER))
         round27()(call)
-        x = level(F.groove(**call), BATTLE_LEVEL)
-    else:
-        F.seed(NAME + "_map")
-        x = level(map_half(FORM_K, map_settled22), MAP_LEVEL)
-    P.write(os.path.basename(full_path(half))[:-4], x, aac=False)
+        return F.write_level(F.groove(**call), NAME, BATTLE_LEVEL)
+    F.seed(NAME + "_map")
+    return F.write_level(map_half(FORM_K, map_settled22), NAME, MAP_LEVEL)
+
+
+def render_full(half):
+    """One full half, in a worker, from the shipped half's seed, at its half's level."""
+    P.write(os.path.basename(full_path(half))[:-4], F.limit(ship(half)), aac=False)
     return half
 
 
