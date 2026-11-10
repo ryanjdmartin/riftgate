@@ -1142,7 +1142,8 @@ a stat.
   and a small picture of the machine it comes for, as that machine wears a tag with the
   hunter's. Every walk's end hex is lit, tinted under a border of dashes crawling round it,
   tapped or not; where the pack attacks from that hex this turn (a pusher striking the wall, a
-  hunter catching its prey), the warning stands on it, as the plan stands. A tapped pack
+  hunter catching its prey), the warning stands on it, as the plan stands, and no tag says so;
+  a pusher with nowhere beside the wall to land that turn stays where it is under a WAITS tag. A tapped pack
   shows its whole way as the field stands, past this turn's walk to its goal, dashed, each later
   turn's stop numbered, and the thing it comes for under a crawling border with the attack mark
   on it (a sword in the reticle's turning ring, one mark for both): a pusher's piece of the

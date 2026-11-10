@@ -595,11 +595,11 @@ func _draw() -> void:
 				# colour breathes only on the pack that was tapped.
 				_route(sq.pos, w.path, Palette.ENEMY, false, false, whole, true)
 			_walk_end(sq, w, whole)
-			var below := center(w.end) + Vector2(0.0, HEX_SIZE * 1.15)
-			if w.strikes:
-				_plaque(below, "STRIKES THE GATE", Palette.ENEMY, 1.5)
-			elif w.waits:
-				_plaque(below, "WAITS", Palette.MUTED, 1.5)
+			# No tag says a pack strikes the gate: the warning on its landing hex does (Ryan, 10
+			# November: "Remove "strikes the gate""). A pusher with nowhere beside the wall to land
+			# this turn stays where it is, and says so.
+			if w.waits:
+				_plaque(center(w.end) + Vector2(0.0, HEX_SIZE * 1.15), "WAITS", Palette.MUTED, 1.5)
 
 	# A selected machine wears its shield and hull over its hex; an inspected pack its
 	# strength as one segment a foe (Ryan, 29 September: a pack keeps only its count between
