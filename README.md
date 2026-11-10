@@ -179,7 +179,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   and formations as grids with a question each, the hunters as heavy patrols, the bosses' stat
   blocks, waiting on Ryan's marks; its grids as code in `tools/formation_proposal.py`, which writes
   them to a scratch worktree for the curve read, merges the reads into its tables and counts the
-  bands, and retires with it), the refit pass's brief (`briefs/refit_pass.md`: the resource model Ryan set on 9 November, the formation pass folded into it), the bosses' and elites' slate (`bosses_proposal.md`), the heroes'
+  bands, and retires with it), the refit pass's brief (`briefs/refit_pass.md`: the resource model Ryan set on 9 November, the formation pass folded into it), the locked pieces' footing (`locked_pieces_proposal.md`: Ryan's direction of 10 November, glue kept locked and a bought level that lifts the whole machine, waiting on his marks), the bosses' and elites' slate (`bosses_proposal.md`), the heroes'
   pass beyond Final Fantasy (`heroes_proposal.md`), the mechanics audit (`mechanics_audit.md`),
   the skirmish code audit (`skirmish_audit.md`: exceptions, duplicates and dead code, its
   questions and its order of work) and the roster analysis (`roster_analysis.md`, published as a page by

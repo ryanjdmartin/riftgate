@@ -100,7 +100,7 @@ and changes"): the bible, the measurements, this file and the to-do the conflict
 words kept (the bible's hunters row this branch's and its boss row main's, the measurements'
 sections main's four and then this branch's, the to-do's lines each by the side that moved it),
 and the proposal's tool following the one foe id it named that main renamed (`magma_elemental`).
-The bible's file is v0.502, main's v0.497 with this branch's rows, its republish on Ryan's word
+The bible's file is v0.503 (section 12's locked pieces item, 10 November), main's v0.497 with this branch's rows, its republish on Ryan's word
 (Pages below); and `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
@@ -143,6 +143,14 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   unfinished by Ryan's own notes (the Needletail, the Giant Petrel, the Musk Ox) and seventeen
   stand, six of them read again with the pass's content (the refit brief's section 6). The to-do's
   roster is grouped by what each waits on, in the order he took (Next, in order, item 1).
+- The locked pieces' footing (Ryan, 10 November; `docs/locked_pieces_proposal.md`, a proposal
+  until he marks it): a locked piece stays locked only where it glues its chassis's identity,
+  the four a machine only "needs one of to work stock" (the Lance, the Flechette Pod, the Solar
+  Flare Array, the Flakshot Repeater) become ordinary weapons, tier zero free to carry a status;
+  a machine holds a level, bought in the hangar, that lifts its stats and its locked pieces
+  together with a branch, a higher chassis arriving at its level, a wreck keeping it, a locked
+  piece's number even with the kit beside it. Four questions are his (the proposal's section 6);
+  nothing is in content or a Decided row, and every rework in design sorts its pieces on it.
 - Kestrel: ten machines, eight decided, in content and fielded (the bible's Kestrel row; the hub
   `docs/briefs/kestrel_line.md`); the Puffin back in design (`kestrel_puffin.md`). The Magpie (a
   working name, a support engine) and the Snowy Owl (a stealth unit, leaning to Cryo: Ryan,
@@ -650,7 +658,8 @@ engine line), since the matrix on file predates everything since 27 October.
 1. **The design sessions, from the briefs** (above): each decision a bible row, each brief
    retired once its decisions are rows and content. The chassis in this order (Ryan, on the
    inventory of 9 November: "Yes, go ahead"), the to-do's roster grouped to match: the locked
-   pieces' footing first (section 12), since every rework designs locked pieces; the four back in
+   pieces' footing first, since every rework designs locked pieces (his direction of 10 November
+   is `docs/locked_pieces_proposal.md`, four questions his to mark before its rows land); the four back in
    design from the refit pass, the Polar Bear, the Whip Scorpion, the Swallowtail, then the
    Puffin after the heat prices; the built but unfinished (the Needletail, the Giant Petrel, the
    Musk Ox) and the gunship; the tier-one fronts (Minerva's lure tank, an Aphelion tier one);

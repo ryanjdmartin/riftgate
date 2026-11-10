@@ -67,7 +67,10 @@ status's.
 
 Ryan, 4 November: "I want to target 10 per maker, at least for now." The roster is the briefs README's "Ten a maker" as his calls left it, each design in its brief; the moves and merges he has not marked stand as its plan. 24 built, 23 in briefs, three slots open (Aphelion's tenth and the Arsenal's two since the frost figure's cut; the Magpie's slot open to another Kestrel design besides). Grouped by what each waits on since the inventory of 9 November, the groups in the order Ryan took ("Yes, go ahead"); a built machine with no line here stands, and the refit pass's audit lists the seven it reads again (`docs/briefs/refit_pass.md`, section 6).
 
-Ahead of every group, the locked pieces' footing (the bible's section 12; Ryan, 9 November: "Locked pieces need a new approach"): each rework below designs locked pieces, so each stands on its answer.
+Ahead of every group, the locked pieces' footing (Ryan, 9 November: "Locked pieces need a new approach"): each rework below designs locked pieces, so each stands on its answer.
+
+- [ ] Mark the locked pieces proposal (`docs/locked_pieces_proposal.md`; your direction of 10 November: glue stays locked, the rest ordinary weapons, a level bought in the hangar that lifts the whole machine with a branch): its section 6's four questions (where the ladder tops out against tier-three blueprints, the lift scarce or affordable for a squad, what a branch is made of, the tier-zero status pieces and their two twins) and the sort's first cut; then the rows, the rules and the content
+- [ ] The Wild Boar's Breaching Plow and the Dingo's Megataser Harpoon (Ryan, 10 November: they "correspond to big fixed geometry pieces on those models, especially the plow. So maybe the answer is rework if they seem too generic"): each kept locked, a rework proposed in chat toward the thing only its machine does
 
 **Back in design from the refit pass** (9 November: shield and vent entries leave the die; none of the four is dealt once the pass's content lands, until its session hands it back), in this order:
 
