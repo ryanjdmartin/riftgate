@@ -158,30 +158,10 @@
 <h2>Hold The Line: passed</h2>
 <p>You passed the full pair. Both halves are built into the game's files as you heard them here: the battle half plays wherever Hold The Line played, and the map half sits beside it until the game can play a pair (the map choosing the track, a fight flipping to the battle half in place). The full pair on the switch is still <strong>Hold The Line, round twenty-seven</strong>. X's riff stays in <a href="https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV">the Melody Desk</a> as Hold The Line, round twenty-two.</p>
 
-<h2>Round twenty-nine: Night Shift</h2>
-<p>The tempo is 94, the shipped one; the 96 went out with the step back to round twenty-one. The head and the lead's section are closed as they stand. The full pair on the switch is <strong>Night Shift, round twenty-nine</strong>.</p>
-<p><strong>The off-beat piano</strong> is back in the battle half: in the head, in the lead's section, and in R from the fifth bar, where the lead comes in. The map half keeps it as it always had it.</p>
-<p><strong>D's riff</strong> is on the crunch synth, 6 dB down.</p>
-<p><strong>R's lead</strong> no longer gets busier. The first pass is long notes, two to a bar. The second is a tune of three or four notes a bar. The third is the same tune climbing to the lead's highest note and coming home on E. Bars 9 to 24, the chord over each:</p>
-<pre class="score">           1e+a 2e+a 3e+a 4e+a
- 9  Em     B--- --E- --D- B---
-10  C      G--- ---- ---- A-B-
-11  D      A--- --D- --C- A---
-12  Bm     F#-- ---- ---- ....
-13  Em     B--- --E- --D- B---
-14  Am     E--- ---- ---- D-C-
-15  G      B--- --D- --B- G---
-16  D      A--- ---- ---- F#--
-17  Em     B--- --E- --F# G---
-18  C      G--- ---- --E- D---
-19  D      F#-- --D- --A- D---
-20  Bm     D--- --B- ---- F#--
-21  Em     G--- --B- --E- G---
-22  Am     E--- --G- --E- C---
-23  G      D--- --B- --G- B---
-24  D      A--- --F# ---- E---</pre>
-<p>These notes are still written by theory, not by ear. Say the word and they go to the Melody Desk for you to rewrite.</p>
-<p><strong>The sets.</strong> R's lead as the pair has it, or as it was. The battle half with the off-beat piano back, or without it, eight bars each of the head, the lead's section and R.</p>
+<h2>Round thirty: Night Shift</h2>
+<p>The tunes are locked. The off-beat piano is out of the head again and stays in the lead's section and R; nothing else in the pair has changed. The full pair on the switch is <strong>Night Shift, round thirty</strong>, at 94.</p>
+<p><strong>At 96.</strong> Two sets, one for each half, since both would move together: the same bars at 94 and at 96. These rows run at different speeds, so start each from its top instead of switching partway.</p>
+<p><strong>The drums dressed.</strong> The pair's kit is plain: the hat on even eighths, the snare on two and four, the kick on the bass's rhythm. The dressed row keeps the kick and the fills and adds three things. The hat's off-beats are softer than its beats. A loose half-open hat closes every second bar, and two quick sixteenths close every fourth. The snare gets ghost notes, placed differently in odd and even bars, with a small turn every fourth.</p>
 <div class="how"><p>Every row of a set is the same bars from the same seed at one gain. Tap another row partway through and it carries on from the same beat; a row that adds a voice is louder by what it adds. The number by a row is its loudness on a phone's speaker; by a seam, its length.</p>
   <label class="keep"><input type="checkbox" id="keep" checked> keep my place</label></div>
 <div id="sets-night"><p class="setnote">Loading the sets&hellip;</p></div>
@@ -533,12 +513,12 @@
   function none() { return null; }
 
   var RUN_LABELS = {engage: 'ENGAGE', victory: 'victory', field: 'back to the field', contact: 'a hunter catches'};
-  Promise.all([getJSON('manifest.json'), getJSON('hold27.json').catch(none), getJSON('night29.json').catch(none), getJSON('far8.json').catch(none)]).then(function (all) {
+  Promise.all([getJSON('manifest.json'), getJSON('hold27.json').catch(none), getJSON('night30.json').catch(none), getJSON('far8.json').catch(none)]).then(function (all) {
     var m = all[0], hold = all[1], night = all[2], far = all[3];
     man = m;
     // Each later round's pairs after its first-round track.
     if (hold) hold.tracks.forEach(function (t) { t.round = 'twenty-seven'; });
-    if (night) night.tracks.forEach(function (t) { t.round = 'twenty-nine'; });
+    if (night) night.tracks.forEach(function (t) { t.round = 'thirty'; });
     if (far) far.tracks.forEach(function (t) { t.round = 'eight'; });
     var later = [].concat(hold ? hold.tracks : [], night ? night.tracks : [], far ? far.tracks : []);
     var tracks = [];
@@ -558,7 +538,7 @@
       pick.appendChild(b);
     });
     choose(later[0] || tracks[0]);
-    if (night) buildSets(document.getElementById('sets-night'), night.sets.concat(night.seams || []), ['nl', 'np']);
+    if (night) buildSets(document.getElementById('sets-night'), night.sets.concat(night.seams || []), ['nb', 'nq', 'nk']);
     else document.getElementById('sets-night').innerHTML = '';
     var runBox = document.getElementById('run-marks');
     [{at: 0, what: 'map'}].concat(m.run.events).forEach(function (e) {

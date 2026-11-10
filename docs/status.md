@@ -909,7 +909,7 @@ The tasks are the to-do's; this is the index of what waits.
   full pair"), its W six beats.
   A mixing desk on pre-rendered stems was proposed for picking voices without a round and tabled (5
   November: "Tough if it's not completely flexible. That's ok, let's table it for now").
-  Night Shift on its twenty-ninth (10 November: at the shipped 94; the head and the lead's section closed, "we can close the head and lead section questions with what's there right now"; the off-beat piano back in the battle half, "I think I hear it missing now"; D's riff on the crunch synth 6 dB down; R's lead a tune that grows, "It doesn't need to get busier, just more of a melody as it grows. Keep it minimalist", waiting on his ear; the bass on four core pairs of his rhythms, a bar each
+  Night Shift on its thirtieth (10 November: its tunes locked, "Like the new R. I think that locks the tunes for now"; the head and the lead's section closed; the off-beat piano in the battle half's lead's section and R and out of its head, "Remove the piano from A, keep in C and R"; D's riff on the crunch synth 6 dB down; R's lead a tune that grows, not busier; waiting on his ear, both halves at 96 beside the shipped 94 and the kit dressed, "Can I hear the 96? And a version where we dress up the drums a bit?"; the bass on four core pairs of his rhythms, a bar each
   in turn, 4 and 7 sparingly, four cut; R a lead over the grooves, "no unisons", the stop-time out, the
   fingers walking and the top Omnific's lead fancier each pass; the synths' arpeggios between octaves;
   before it the duel on three basses, none trading, a pusher on the
@@ -1214,8 +1214,8 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
-  twenty-seventh, the new hats in, the fingers bass's eighths under X, L's instruments on M, passed and shipped, `hold_sketches.py`; Night Shift's twenty-ninth, his core rhythms and R a lead over the grooves on a tune that grows, `night_sketches.py`;
-  The Far Bank's map half's eighth, its lift settled, `far_sketches.py`; the real basses, `real_bass.py`), every pair on the shipped tracks as built in tune on 6 November, at the page's version 76. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
+  twenty-seventh, the new hats in, the fingers bass's eighths under X, L's instruments on M, passed and shipped, `hold_sketches.py`; Night Shift's thirtieth, the tunes locked, the 96 and the dressed kit to hear, `night_sketches.py`;
+  The Far Bank's map half's eighth, its lift settled, `far_sketches.py`; the real basses, `real_bass.py`), every pair on the shipped tracks as built in tune on 6 November, at the page's version 77. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
   publish's 64 MB goes up in two publishes: the new files first under the live page, then the
   new page with the rest, the old round's files removed.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
