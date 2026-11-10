@@ -1685,35 +1685,68 @@ XQ_PULSE = {"synth": {"inst": "bass", "mode": "riff", "octave": 0, "gain": 0.504
             "fingers": {"inst": "real_bass", "mode": "riff", "octave": -1, "gain": 0.565, "hold": 0.9, "params": {"preset": "finger", "amp": "modern"}}}
 
 
+# The pair's (Ryan, 10 November: "Yeah go back to finger bass for X, and do E, D, C-sharp, C for both halves"): the
+# fingers bass on the eighths, a bar each on E, D, C-sharp and C, through the first four bars as through the rest,
+# an octave over the low Omnific so the line falls from E.
+X_DESCENT = (0, -2, -3, -4)
+
+
 def x_quarters(call, voice, roots=False):
     """A voice on eighths under X's twelve bars, on E or on each bar's chord root where `roots`."""
     chords = call["chords"]["X"]
     pat = ["."] * 168
     for step in range(0, 168, 2):   # eighths (Ryan, 10 November: "I think I meant to say 8ths, not quarters")
-        root = chords[(step // 14) % len(chords)][0] % 12 if roots else 0
+        bar = step // 14
+        root = X_DESCENT[bar % 4] if roots == "descent" else chords[bar % len(chords)][0] % 12 if roots else 0
         pat[step] = P.spell(root)
-    call["voices"].append(dict(XQ_PULSE[voice], params=dict(XQ_PULSE[voice]["params"]), pat={"X": "".join(pat)}))
+    v = dict(XQ_PULSE[voice], params=dict(XQ_PULSE[voice]["params"]), pat={"X": "".join(pat)})
+    if roots == "descent":
+        v["octave"] = 0
+    call["voices"].append(v)
     return call
 
 
-def round27(riff=None, swap=False, quarters=None, roots=False):
+# M with L's instruments (Ryan, 10 November: "And have the instruments from L join the descent in M"): the keys lead
+# and the fingers bass on M's line, C B A G, as they played L's riff, the backing guitar chugging it in eighths, the
+# piano's stab on the one, each at its level in L, over the Omnifics that had the bar alone.
+M_LINE, M_CHUG = "8---7---5---3---", "8.8.7.7.5.5.3.3."
+
+
+def m_join(call):
+    """L's four instruments on M's descent."""
+    for what, test, pat in (
+            ("the keys lead in L", lambda v: v["inst"] == "lead" and v.get("octave") == 2, M_LINE),
+            ("the fingers bass in L", lambda v: v["inst"] == "real_bass" and (v.get("params") or {}).get("preset") == "finger", M_LINE),
+            ("the backing guitar in L", lambda v: v["inst"] == "guitar_real", M_CHUG),
+            ("the piano's stabs in L", lambda v: v["inst"] == "epiano" and v.get("mode") == "stab", "x" + "." * 15)):
+        v = the_one(call, lambda v, test=test: "L" in heard(v) and test(v), what)
+        v["pat"]["M"] = pat
+    return call
+
+
+def round27(riff=None, swap=False, quarters="fingers", roots="descent", m_l=True):
     base = round26(riff=riff, swap=swap, cymbal="hat_half", knock=True, fill="intro_wash_open")
 
     def edit(call):
         base(call)
         if quarters:
             x_quarters(call, quarters, roots)
+        if m_l:
+            m_join(call)
     return edit
 
 
 SETS = [
+    {"id": "hm", "half": "battle", "title": "M with L's instruments", "form": "LLLLLLLL M XXXX",
+     "note": "The second lift, the bar down and the seven's first four bars (Ryan, 10 November: \"have the instruments from L join the descent in M\"). Switch rows anywhere: each carries on from the same beat.", "rows": [
+        ("hm0", "L's instruments on the descent", "The keys lead and the fingers bass on the line, the backing guitar chugging it, the piano on the one, over the Omnifics (the full pair's).", round27()),
+        ("hm1", "As it was", "The Omnifics alone on the bar down.", round27(m_l=False)),
+    ]},
     {"id": "hv", "half": "battle", "title": "X with the eighths driven", "form": FORM_X,
-     "note": "The bar down into the seven and the seven as the pair has it, on the loose half-open hat with the knock (Ryan, 10 November: \"can we get a bass or synth driving the quarters underneath?\", then \"I think I meant to say 8ths, not quarters\"). Seven eighths a bar, straight through. Each voice sits about 3 dB under the low Omnific. Switch rows anywhere: each carries on from the same beat.", "rows": [
-        ("hv0", "As the pair has it", "No voice on the eighths.", round27()),
-        ("hv1", "The crunch synth on E", "K's crunch synth on eighths on E, the riff's pedal.", round27(quarters="synth")),
-        ("hv2", "The fingers bass on E", "The fingers bass on eighths on E, an octave under the synth's.", round27(quarters="fingers")),
-        ("hv3", "The crunch synth on the chords' roots", "The synth on eighths on each bar's chord root: E, E, G, D, then E, D, C-sharp, C under the held line.", round27(quarters="synth", roots=True)),
-        ("hv4", "An Omnific on the chords' roots", "A third dirty Omnific on eighths on each bar's chord root, at the low Omnific's octave.", round27(quarters="omnific", roots=True)),
+     "note": "The bar down into the seven and the seven (Ryan, 10 November: \"go back to finger bass for X, and do E, D, C-sharp, C for both halves\"). Switch rows anywhere: each carries on from the same beat.", "rows": [
+        ("hv0", "The fingers bass on E, D, C-sharp, C", "Eighths, a bar on each, through the first four bars as through the rest (the full pair's).", round27()),
+        ("hv1", "The fingers bass on E", "Eighths on the riff's pedal.", round27(roots=False)),
+        ("hv2", "Nothing on the eighths", "As it was.", round27(quarters=None)),
     ]},
 ]
 PAIR = {"id": "hold_the_line_r27", "title": "Hold The Line, round twenty-seven"}
@@ -1751,7 +1784,8 @@ NAMES_R23 = dict(NAMES_R22,
 NAMES_R26 = dict(NAMES_R23,
                  X="the seven: a riff for 7/8 on the bass with the Omnific's power chords over it, its high C a quarter-tone flat the first time through and as written the second, the kick on every note of the riff, the snare on the backbeat with two ending each second repetition, the hat on the eighths, the drums at W's level, the piano on the long beat, a chime, the lead guitar held through its second half")
 NAMES_R27 = dict(NAMES_R26,
-                 X=NAMES_R26["X"].replace("the hat on the eighths", "the loose half-open hat on the eighths, the knocks"),
+                 X=NAMES_R26["X"].replace("the hat on the eighths", "the loose half-open hat on the eighths, the knocks").replace("the piano on the long beat", "the fingers bass on eighths on E, D, C-sharp and C a bar each, the piano on the long beat"),
+                 M="a bar down into the seven: the second lift's keys lead, fingers bass, backing guitar and piano on the line with the Omnific's power chords",
                  W=NAMES_R23["W"].replace("eighths on the floor tom from the first beat's off-beat", "eighths on the open hat from the first beat's off-beat"))
 
 def level(x, db):
