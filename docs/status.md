@@ -27,9 +27,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1089 tests, 323,782 checks, green on main (10 November, with the Text tab, the side session's work, the
+- Tests: 1089 tests, 323,297 checks, green on main (10 November, `ccr-1e6e6571-7x7ayr` with the shapes reworked on Ryan's play, with the Text tab, the side session's work, the
   map session's shapes laid to the rift's row, the passing and the catch at one, and the map
-  playtest list), and 1101 tests, 324,812 checks, green on `ccr-722ca9f0-yj8na3` (10 November, that
+  playtest list), and 1101 tests, 324,327 checks, green on `ccr-722ca9f0-yj8na3` (10 November, that
   main with the refit pass's first build, the wall strike by the rating and the trial's regen row); one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
   either map view on 6 November; about four minutes in a cloud session, twenty on a slow one;
@@ -69,6 +69,10 @@ Ryan's word ("Merge everything into main and clean up"); it is merged and to del
 `ccr-7d7ed303-tbdkg4`, the hangar's Text tab of 10 November (How things stand below), landed on
 main as a fast-forward on Ryan's word ("Ok merge into main please"); it is merged and to delete
 with the rest.
+`claude/hangar-bench`, the hangar's Bench tab (10 November, cut from main on Ryan's word, "Yes,
+start a fresh branch off main for it", so it landed ahead of the refit's branch), is on main as a
+fast-forward on his word ("Ok merge into main and republish the hangar"); it is merged and to
+delete with the rest.
 `claude/modest-ramanujan-uovd42`, the Polar Bear's kit of 9 November, its id's rename and every id
 following its name (How things stand below), landed on main as fast-forwards on Ryan's word ("merge
 it into main so I can try it"; "clean up and merge into main"); it is merged and to delete with the rest.
@@ -79,8 +83,9 @@ word ("Ok clean up and merge into main"); it is merged and to delete with the re
 the map session of 9 November (the shapes relaid and recast, How things stand below), took main's
 skirmish audit step 3 as it landed and main took it as a fast-forward on Ryan's word ("push this
 into main, so I can try it"), then again on 10 November with the shapes laid to the rift's row,
-the passing and the catch at one ("put this in main so I can try it in context"); it is merged
-and to delete with the rest. The
+the passing and the catch at one ("put this in main so I can try it in context"), and a third
+time that evening with the shapes reworked on his play, the 3D roads and the painted walls ("put
+this in main so I can try it"); it is merged and to delete with the rest. The
 branches that landed on 3 to 9 November, each a session of its own, fully merged and to delete
 from GitHub and the desk machine (the command is in the audit's last chat;
 `git push origin --delete` the merged ones, then `git fetch --prune`):
@@ -137,7 +142,10 @@ one patrol: with the strike by rating and the packs walking straight to the wall
 takes a city gate's whole 200 in the six unopposed phases after a wipe at a quiet start (160
 by head count), so the gate they need standing fell. `docs/vocabulary.md` and
 `docs/campaign_run.md` were made again on the merged tree.
-The bible's file is v0.504, main's v0.501 with this branch's rows, its republish on Ryan's word
+It took main once more at `fda02f9` that evening (the shapes reworked on his play and the
+hangar's Bench tab, so his map points are answered on the latest map code): the bible's version,
+this file's tests line and the measurements' order the conflicts, both sides kept.
+The bible's file is v0.505, main's v0.503 with this branch's rows, its republish on Ryan's word
 (Pages below); and `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
@@ -257,7 +265,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   (the brief's section 4, the bible's Foe roles row): a unit is made for a pusher's, a flanker's
   or a hunter's fight and tuned for it, a hunter its line and what keeps up with it, a flanker a
   duel and no small pusher, so the proposal's patrols rated one are to be rewritten and the
-  Meadow and the Waste want a flanker line. The bible at 0.504 carries it.
+  Meadow and the Waste want a flanker line. The bible at 0.505 carries it.
 - **The refit pass's first build and reads** (9 November, on his "Your leans are good"; the
   brief's section 5; nothing in `content/` moved): the injury rule is off in the game
   (`Skirmish.injuries`; `--injury on` reads it back; the tests that read an injury turn it on);
@@ -537,7 +545,17 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   range everyone shares (`Unit.ENGAGE_RANGE`, 1; `ContentDB.HUNTER_RING` gone), the readout's ring
   line with it, the ring drawn now the hexes beside the walk's end. The bible's passing, crossing,
   ring, fights and hunters rows carry it (v0.500); the campaign runner's 40 runs after it are in
-  `docs/measurements.md` (a direction). The maps' seeding issues are the to-do's.
+  `docs/measurements.md` (a direction). His play of the shapes in context the same evening, built:
+  the 3D map's road UV turned with the view, so the roads meet in both views as the painted ones
+  did; the painted world drawing a wall by what it is (crags the ranges, mesas a stepped block,
+  towers lit blocks, cliffs a ridge edge to edge: `DomainGround.draw_walls`); the river winding
+  through the whole field through its centre with narrows (water fords) and tributaries, no land
+  ford, the roads to the narrows; the fjord flooded, half to two thirds water with lanes carved as
+  the gorge's channels are (`BattleMap._carve_lanes`) and islands; the gorge a trunk for every
+  five hexes of wall with junctions; the badlands in groups of two to five mesas; the steppe with
+  scrub belts, a crag for every seven hexes of wall and grass on the open field in the 3D (the
+  dress's `field` word). The bible's shapes row carries his words (v0.501). The maps' seeding issues
+  are the to-do's.
 - **A hunter's reach** (8 November, `ccr-d26a1321-xg9xge`, from Ryan's bug report: on the first
   enemy walk a goblin warband caught the Polar Bear from three hexes, "No indication of catch
   range, nor why a normal goblin pack is now suddenly a hunter"). The three came from a pack
@@ -831,7 +849,7 @@ commands are in `README.md`.
   playtest list landed (the boss's picture, the scenery under the painting, the tears row's
   read of 10 November and the hunters' declaration, on the map session's v0.500 and v0.498's
   Text tab rows: the hangar row's tabs and the shown-text row), unpublished, its republish on
-  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.504, main's with the formation and refit
+  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.505, main's with the formation and refit
   session's rows (the hunters row's who-may-hunt, the Foe roles row's direction, the wall row's
   strike by the rating, the kit, shield, triangle, redirection, injury, command-die, Barrier
   and Ward, Puffin, Whip Scorpion, Polar Bear, Swallowtail and Musk Ox rows' refit lines,
@@ -851,8 +869,15 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 218 (10 November, main's `5a490e5`): the page with its Text tab,
-  `hangar/text.json` new beside it (332 files) and `designs.json` with its stamp. Version 217 was
+  page's Version 219 (10 November, main's `f49a90f`, on Ryan's word, "Ok merge into main and
+  republish the hangar"): the page with its Bench tab, his working sheet for a machine, the
+  second tab (the roster by where each machine stands, one flat sheet a machine; no file and no
+  collection of its own, every write an edit of the entry in `edits`, his notes, state and
+  upgrade ideas under its `design.bench`), with the three files that had moved since: the
+  vocabulary (the map session's four codex lines), `text.json` for them and `designs.json` for
+  its stamp. The live page matched `5a490e5`'s file byte for byte before it was replaced, and
+  each of the three its last publish. Version 218 (main's `5a490e5`) was the page with its Text
+  tab, `hangar/text.json` new beside it (332 files) and `designs.json` with its stamp. Version 217 was
   the side session's publish of main at `2d489f7` (9 November, on Ryan's word, "republish the
   hangar page and the bible": the three content files the Lammergeier's rework moved and
   `designs.json` from its briefs, the live copies matching `f048e67`'s before they were replaced

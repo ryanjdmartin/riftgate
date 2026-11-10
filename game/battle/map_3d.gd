@@ -1173,6 +1173,11 @@ func _hex_mesh(inset: float) -> ArrayMesh:
 ## that wants per-hex data (the road's links).
 func _column_geo(h: float, sides: Array, colour: Color = Color.WHITE) -> Array:
 	var corners := MapOrient.corners(Vector2.ZERO, hex_px - 0.75)
+	# The UV is the pointy-top hex inscribed in the tile whichever way the view turns (corner i
+	# of the flat-top layout is pointy corner i turned), so a shader that reads the hex's
+	# directions off the UV (road.gdshader's edge midpoints) reads them right in both views
+	# (Ryan, 10 November: the roads lined up in the painted world and not in the 3D).
+	var uv_corners := Hex.corners(Vector2.ZERO, hex_px - 0.75)
 	var top: Array[Vector3] = []
 	for c in corners:
 		top.append(_world(c, h))
@@ -1181,7 +1186,7 @@ func _column_geo(h: float, sides: Array, colour: Color = Color.WHITE) -> Array:
 	for i in range(1, corners.size() - 1):
 		for j in [0, i + 1, i]:
 			tv.append(top[j])
-			tuv.append(corners[j] / (hex_px * 2.0) + Vector2(0.5, 0.5))   # the hex inscribed in the tile
+			tuv.append(uv_corners[j] / (hex_px * 2.0) + Vector2(0.5, 0.5))
 	var tc := PackedColorArray()
 	tc.resize(tv.size())
 	tc.fill(colour)
@@ -1315,6 +1320,8 @@ func _dress(col: Node3D, h: Vector2i, t: int, hgt: float, rng: RandomNumberGener
 				word = str(dress.get("foot", ""))
 			elif scenery:
 				word = str(dress.get("scenery", ""))
+			else:
+				word = str(dress.get("field", ""))   # the open field's own, sparse (the steppe's grass: Ryan, 10 November, "VERY barren")
 			return _strew(col, word, hgt, rng, density)
 	return 0.0
 

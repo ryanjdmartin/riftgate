@@ -7,6 +7,10 @@
    briefs live in the artifact's database (collections "edits", "candidates" and "designs"),
    and his writing on the Text tab (collection "text": 9 November, every text the player reads,
    one row a text, from hangar/text.json, tools/hangar_text.py).
+   The Bench tab (10 November) is Ryan's working sheet for a machine: the roster by state, and
+   one flat sheet a machine for its numbers, its locked pieces, its upgrades, its stock and his
+   notes. It keeps no store of its own: every write is an edit of the entry (collection
+   "edits", as the Content tab's), his notes and upgrade ideas under the entry's design.bench.
    The Designs tab (5 November) reads every brief in docs/briefs/ from hangar/designs.json
    (tools/hangar_designs.py). The Models tab (3 October: the renders and the
    animation viewer merged) runs hangar/motion.js (tools/hangar_motion.js), a port of the
@@ -287,6 +291,47 @@ select{padding:8px;border:1px solid var(--rule-strong);border-radius:4px;backgro
 .add textarea{min-height:60px}
 @media (max-width:520px){.slotrow .end{justify-content:flex-start}.slotrow{grid-template-columns:1fr}}
 
+/* ---- bench (10 November): the roster by state, and one flat sheet a machine. Every control
+   is a plain field that saves as it is left; a changed number shows what the files hold. */
+.bgroup{margin-top:18px}
+.bgroup h3{margin:0 0 4px;font:700 17px/1.1 var(--display);letter-spacing:.06em;text-transform:uppercase;display:flex;gap:8px;align-items:baseline}
+.bgroup h3 .n{font:500 12px/1 var(--mono);color:var(--ink-3)}
+.bgroup .what{font-size:12.5px;color:var(--ink-3);margin:0 0 6px}
+.brow{--mk:var(--other);display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:baseline;width:100%;text-align:left;background:var(--paper);border:1px solid var(--rule);border-left:5px solid var(--mk);border-radius:3px;padding:8px 10px;margin-top:5px;color:var(--ink);font:inherit;cursor:pointer}
+.brow:hover,.brow:focus-visible{border-color:var(--mk)}
+.brow .bname{font-weight:600}
+.brow .bmeta{font-size:12px;color:var(--ink-3);text-align:right;white-space:nowrap}
+.brow .bline{grid-column:1 / -1;font-size:13px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brow.minerva,.bsheet.minerva{--mk:var(--minerva)} .brow.kestrel,.bsheet.kestrel{--mk:var(--kestrel)} .brow.ws,.bsheet.ws{--mk:var(--ws)} .brow.aphelion,.bsheet.aphelion{--mk:var(--aphelion)} .brow.arsenal,.bsheet.arsenal{--mk:var(--arsenal)}
+.bsheet{--mk:var(--other);--acc:var(--mk)}
+.bsheet .bhead{border-left:5px solid var(--mk);padding:2px 0 2px 12px;margin-top:6px}
+.bsheet .bhead h2{font:700 30px/1 var(--display);text-transform:uppercase;letter-spacing:.02em;margin:1px 0 2px;color:var(--mk)}
+.bsheet h3{font:600 13px/1 var(--display);text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);margin:20px 0 6px;padding-top:10px;border-top:1px solid var(--rule)}
+.bsheet .hint{font-size:12.5px;color:var(--ink-3);margin:0 0 8px;max-width:72ch}
+.bsheet input[type="number"],.bsheet input[type="text"],.bsheet select,.bsheet textarea{width:100%;min-width:0;padding:7px 9px;border:1px solid var(--rule-strong);border-radius:4px;background:var(--paper);color:var(--ink);font:inherit;font-size:15px}
+.bsheet textarea{line-height:1.4;resize:vertical;min-height:38px}
+.bsheet input:disabled,.bsheet select:disabled,.bsheet textarea:disabled{opacity:.7}
+.bsheet label,.bsheet .lab{display:block;font:600 11px/1.3 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin:0 0 3px}
+.bsheet .changed{border-color:var(--edited);box-shadow:inset 3px 0 0 var(--edited)}
+.bsheet .was{font:500 11px/1.3 var(--mono);color:var(--edited);margin-top:2px;min-height:14px}
+.bnums{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.bpiece{background:var(--paper);border:1px solid var(--rule);border-radius:3px;padding:10px 12px;margin-top:8px}
+.bpiece .pname{font-weight:600}
+.bpiece .pline{font-size:13px;color:var(--ink-2);margin:1px 0 6px;font-variant-numeric:tabular-nums}
+.bpiece .kws{margin:0 0 8px}
+.bpiece .prow{display:grid;grid-template-columns:minmax(120px,1fr) 2fr;gap:8px;margin-top:8px}
+.bladder{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bdir{background:var(--paper);border:1px solid var(--rule);border-top:4px solid var(--mk);border-radius:3px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.bdir .dname{font:700 15px/1 var(--display);letter-spacing:.08em;text-transform:uppercase}
+.bdir .deep{padding-left:10px;border-left:2px dashed var(--rule-strong)}
+.blift{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.bstock{display:grid;gap:6px}
+.bstock .srow{display:grid;grid-template-columns:118px 1fr;gap:8px;align-items:center}
+.bstock .shp{margin:0}
+.bstock .swarn{grid-column:2;font-size:12px;color:var(--warn)}
+.bsheet .saved{font-size:14px;color:var(--ink);white-space:pre-wrap;margin:0}
+@media (max-width:560px){.bladder,.blift{grid-template-columns:1fr}.bpiece .prow{grid-template-columns:1fr}.bstock .srow{grid-template-columns:1fr;gap:2px}.bstock .swarn{grid-column:1}}
+
 /* ---- models */
 section.model{background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:12px 14px;margin-top:12px;scroll-margin-top:150px}
 section.model h2{font:700 22px/1 var(--display);text-transform:uppercase;letter-spacing:.03em;margin:0}
@@ -442,6 +487,7 @@ const FILES = [
 ];
 const SECTIONS = [
   {id: "codex", label: "Codex"},
+  {id: "bench", label: "Bench"},
   {id: "content", label: "Content"},
   {id: "text", label: "Text"},
   {id: "names", label: "Names"},
@@ -454,13 +500,14 @@ const REACH = {direct: "direct", indirect: "indirect", sweep: "sweep", every_foe
 
 const state = {
   shipped: {}, about: {}, edits: {},
-  section: "codex", sub: {content: "chassis.entries", names: "minerva", designs: "minerva", text: "overview"},
+  section: "codex", sub: {content: "chassis.entries", names: "minerva", designs: "minerva", text: "overview", bench: "all"},
   open: null, returnTo: null, draft: null, invalid: new Set(),
   db: null, user: null, dbState: "loading", canWrite: true,
   candidates: [], candState: "connecting", openCand: null,
   designs: null, dnotes: [], designState: "connecting", dOpen: null, dFromHash: false, dEdit: null, dNote: null, dDir: null, dIdea: null, dAdd: null,
   reserved: null, pins: null, renders: null,
   text: null, tdocs: {}, textState: "connecting", topen: null, tdraft: null, tpins: [], tshown: [], tmore: 0, tkept: {},
+  bopen: null, bdraft: {},
   filters: {},
 };
 try {
@@ -855,7 +902,7 @@ function render() {
   VOCAB = null; CTX = null;
   // A filter control keeps focus (and the caret) across the redraw it causes.
   const act = document.activeElement;
-  const keep = act && act.id && (act.id.startsWith("flt-") || act.id.startsWith("dz-") || act.id.startsWith("tx-")) ? {id: act.id, a: act.selectionStart, b: act.selectionEnd} : null;
+  const keep = act && act.id && (act.id.startsWith("flt-") || act.id.startsWith("dz-") || act.id.startsWith("tx-") || act.id.startsWith("bn-")) ? {id: act.id, a: act.selectionStart, b: act.selectionEnd} : null;
   const app = $("#app");
   const sub = state.sub[state.section];
   app.className = "wrap" + ((state.section === "names" || state.section === "designs") && sub ? " tab-" + sub : "");
@@ -863,6 +910,7 @@ function render() {
   const main = $("#main");
   main.replaceChildren();
   if (state.section === "codex") renderCodex(main);
+  else if (state.section === "bench") renderBench(main);
   else if (state.section === "content") renderContent(main);
   else if (state.section === "text") renderText(main);
   else if (state.section === "names") renderNames(main);
@@ -874,8 +922,8 @@ function render() {
   }
 }
 function leaveBrief() { state.dOpen = null; state.dEdit = null; state.dNote = null; state.dDir = null; state.dIdea = null; if (location.hash.startsWith("#br-")) setHash(""); }
-function setSection(id) { state.section = id; state.open = null; state.returnTo = null; state.topen = null; state.tmore = 0; leaveBrief(); remember(); render(); window.scrollTo(0, 0); }
-function setSub(id) { state.sub[state.section] = id; state.open = null; state.topen = null; state.tmore = 0; leaveBrief(); remember(); render(); }
+function setSection(id) { state.section = id; state.open = null; state.returnTo = null; state.topen = null; state.tmore = 0; state.bopen = null; leaveBrief(); remember(); render(); window.scrollTo(0, 0); }
+function setSub(id) { state.sub[state.section] = id; state.open = null; state.topen = null; state.tmore = 0; state.bopen = null; leaveBrief(); remember(); render(); }
 function renderTabs() {
   const tabs = $("#tabs"); tabs.replaceChildren();
   const pending = pendingCount();
@@ -904,6 +952,12 @@ function renderTabs() {
       const b = el("button", {role: "tab", "aria-selected": String(cur === t.id), onclick: () => setSub(t.id)}, t.label);
       if (t.id === "changes" && state.text) { const n = textPending().length; if (n) b.append(el("span", {class: "count"}, String(n))); }
       subs.append(b);
+    }
+  } else if (state.section === "bench") {
+    const all = benchMachines();
+    for (const t of BENCH_TABS) {
+      const n = all.filter(m => t.id === "all" || MAKER_TAB[m.maker] === t.id).length;
+      subs.append(el("button", {role: "tab", "aria-selected": String(state.sub.bench === t.id), onclick: () => setSub(t.id)}, t.label + (n ? " · " + n : "")));
     }
   } else if (state.section === "names") {
     for (const t of NAME_TABS) {
@@ -2318,6 +2372,323 @@ function renderText(main) {
   if (sub === "all") return renderTextList(main, "");
   if (textKinds().some(k => k.id === sub)) return renderTextList(main, sub);
   renderTextOverview(main);
+}
+
+// ------------------------------------------------------------------ bench
+// Ryan's working sheet for a machine (10 November: "I think I need a streamlined way of entering
+// notes, adjustments, and upgrade ideas that isn't the codex or brief tabs. The codex is a lot of
+// nested clicks, and the design briefs tab is a lot of information that is good for context but
+// I'll never actually edit"). Two views: the roster, every machine built or briefed, grouped by
+// its state, which is the chassis to-do; and one flat sheet a machine: its numbers, its passive,
+// its locked pieces with their numbers and whether each earns its lock, its upgrades in the
+// shape he settled that day (a plain lift a level, and two directions two steps deep: the first
+// upgrade takes either direction's first step, the second the deeper step of the same direction
+// or the first one skipped; a tier two picks once, a tier three never), its stock and his notes.
+// The bench keeps no store of its own. A number, a stock piece, a note, a state or an upgrade
+// idea is an edit of the entry, the same document the Content tab writes (collection "edits",
+// the whole entry), his notes and ideas under the entry's design.bench, internal text the game
+// never shows; a session applies them to content/*.json as it applies any edit. A briefed
+// design's sheet carries the direction box its brief has (collection "designs"). Every field
+// saves as it is left, or a moment after the typing stops.
+const BENCH_TABS = [{id: "all", label: "All"}, ...DESIGN_TABS.filter(t => t.maker).map(t => ({id: t.id, label: t.label}))];
+const BENCH_STATES = [
+  {id: "design", label: "In design", what: "Built, and on the drawing board: a rework is owed before it stands."},
+  {id: "unfinished", label: "Unfinished", what: "Built and playable, its kit or its look not finished."},
+  {id: "game", label: "In game", what: "Built and standing."},
+  {id: "brief", label: "Briefed", what: "Not built: a design in progress, its brief on the Designs tab."},
+  {id: "cut", label: "Cut", what: "Set aside."},
+];
+const BENCH_NUMS = [["tier", "tier"], ["hull", "hull"], ["shield", "shield"], ["shield_regen", "shield regen"], ["armour", "armour"], ["heat_max", "heat max"], ["cooling", "cooling"], ["movespeed", "move"], ["hardpoints", "hardpoints"], ["module_slots", "module slots"]];
+const BENCH_LOCKS = [["", "not sorted"], ["glue", "glue: the passive and the piece need each other"], ["exclusive", "an exclusive: nobody else has it"], ["tweak", "wants a tweak before any cut"], ["pool", "to the pool, an ordinary piece"]];
+const benchOf = (e) => ((e && e.design) || {}).bench || {};
+const benchCan = () => state.dbState === "ready" && state.canWrite;
+const benchKind = (id) => "bn-" + safeId(id);
+function reworkBriefOf(id) { return designDocs().find(d => (d.header || {}).kind === "chassis" && d.header.built === id) || null; }
+// A built machine's state: the one he set, else in design where a brief reworks it, else in game.
+const benchDefault = (e) => (reworkBriefOf(e.id) ? "design" : "game");
+const benchState = (e) => benchOf(e).state || benchDefault(e);
+// The upgrade steps a machine's tier leaves it: four at tier one, two at tier two, none at three.
+const benchSteps = (tier) => (Number(tier) === 1 ? [["a", "s1"], ["a", "s2"], ["b", "s1"], ["b", "s2"]] : Number(tier) === 2 ? [["a", "s1"], ["b", "s1"]] : []);
+function benchMachines() {
+  const out = [];
+  for (const {entry: e, st} of liveEntries("chassis.entries")) out.push({kind: "built", id: e.id, name: e.name || e.id, maker: e.maker, tier: e.tier, state: benchState(e), entry: e, st});
+  for (const d of designDocs()) {
+    const h = d.header || {};
+    if (h.kind !== "chassis" || h.built) continue;
+    out.push({kind: "brief", id: d.id, name: h.name || briefTitle(d), maker: h.maker, tier: h.tier, state: h.status === "cut" ? "cut" : "brief", doc: d});
+  }
+  const mk = (m) => { const i = BENCH_TABS.findIndex(t => t.id === MAKER_TAB[m.maker]); return i < 0 ? 99 : i; };
+  const so = (m) => BENCH_STATES.findIndex(s => s.id === m.state);
+  return out.sort((a, b) => so(a) - so(b) || mk(a) - mk(b) || (Number(a.tier) || 9) - (Number(b.tier) || 9) || String(a.name).localeCompare(String(b.name)));
+}
+const benchShown = () => benchMachines().filter(m => state.sub.bench === "all" || MAKER_TAB[m.maker] === state.sub.bench);
+function openBench(m) { state.bopen = {kind: m.kind, id: m.id}; state.dDir = null; render(); window.scrollTo(0, 0); }
+function closeBench() { state.bopen = null; state.dDir = null; render(); window.scrollTo(0, 0); }
+
+// ---- writing: an edit of the whole entry, dropped again when it matches the files
+function benchPrune(data) {
+  const d = data.design;
+  if (!d || !d.bench || typeof d.bench !== "object") return;
+  const clean = (o) => {
+    for (const k of Object.keys(o)) {
+      const v = o[k];
+      if (v && typeof v === "object") { clean(v); if (!Object.keys(v).length) delete o[k]; }
+      else if (v === "" || v === null || v === undefined) delete o[k];
+    }
+  };
+  clean(d.bench);
+  if (!Object.keys(d.bench).length) delete d.bench;
+}
+async function benchWrite(key, id, mutate) {
+  if (!benchCan()) return;
+  const cur = liveMap(key).get(id);
+  if (!cur) return;
+  const data = JSON.parse(JSON.stringify(cur.entry));
+  mutate(data);
+  benchPrune(data);
+  if (same(data, cur.entry)) return;
+  const s = shippedEntry(key, id), e = editFor(key, id);
+  if (s && same(data, s)) {
+    if (e) { try { await state.db.doc("edits/" + docId(key, id)).delete(); delete state.edits[docId(key, id)]; } catch (ex) { writeFailed(ex); } }
+  } else await saveDoc(key, id, {data, note: e ? e.note : ""});
+  render();
+}
+async function benchRevert(key, id) {
+  if (!editFor(key, id)) return;
+  try { await state.db.doc("edits/" + docId(key, id)).delete(); delete state.edits[docId(key, id)]; toast("Back to the files"); } catch (ex) { writeFailed(ex); }
+  render();
+}
+// A number left blank goes back to what the files hold, or leaves the entry where they hold none.
+function benchSetNum(obj, shippedObj, k, v) {
+  const t = String(v).trim(), n = Number(t);
+  if (t === "" || !Number.isFinite(n)) { if (shippedObj && shippedObj[k] !== undefined) obj[k] = shippedObj[k]; else delete obj[k]; }
+  else obj[k] = n;
+}
+function benchSetText(data, path, v) {
+  data.design = data.design || {};
+  let o = data.design.bench = data.design.bench || {};
+  for (const k of path.slice(0, -1)) o = o[k] = (o[k] && typeof o[k] === "object") ? o[k] : {};
+  o[path[path.length - 1]] = String(v).replace(/\s+$/, "");
+}
+const benchGet = (e, path) => { let o = benchOf(e); for (const k of path) o = (o && typeof o === "object") ? o[k] : undefined; return o === undefined || o === null ? "" : o; };
+
+// ---- fields: what is typed is kept across a redraw, and saved as the field is left or a moment after
+const benchTimers = {};
+function benchSend(id, commit) {
+  clearTimeout(benchTimers[id]); delete benchTimers[id];
+  const v = state.bdraft[id];
+  if (v === undefined) return;
+  delete state.bdraft[id];
+  commit(v);
+}
+function bfield(kind, fid, value, commit, attrs = {}) {
+  const id = benchKind(fid);
+  const node = kind === "area" ? el("textarea", {id, rows: "1", ...attrs}) : el("input", {id, type: kind === "num" ? "number" : "text", ...(kind === "num" ? {step: "any", inputmode: "decimal"} : {}), ...attrs});
+  node.value = state.bdraft[id] !== undefined ? state.bdraft[id] : (value === null || value === undefined ? "" : String(value));
+  node.disabled = !benchCan();
+  node.addEventListener("input", () => {
+    state.bdraft[id] = node.value;
+    if (kind === "area") autosize(node);
+    clearTimeout(benchTimers[id]);
+    benchTimers[id] = setTimeout(() => benchSend(id, commit), 1600);
+  });
+  node.addEventListener("change", () => benchSend(id, commit));
+  if (kind === "area") requestAnimationFrame(() => autosize(node));
+  return node;
+}
+function bselect(fid, value, options, commit) {
+  const node = el("select", {id: benchKind(fid)});
+  for (const [v, label] of options) { const o = el("option", {value: v}, label); if (v === value) o.selected = true; node.append(o); }
+  node.disabled = !benchCan();
+  node.addEventListener("change", () => commit(node.value));
+  return node;
+}
+const blabel = (fid, text) => el("label", {for: benchKind(fid)}, text);
+
+// ---- the roster
+function benchLine(m) {
+  if (m.kind === "brief") {
+    // his direction waiting in the database, else the one a session folded into the brief's head
+    const dir = directionOf(m.doc.id);
+    if (dir && dir.text) return "Direction: " + squash(dir.text);
+    const folded = (m.doc.blocks || []).find(b => b.sec === "s0" && /^\*\*Ryan's direction/.test(b.text || ""));
+    return folded ? squash(folded.text).replace(/\*\*/g, "") : "";
+  }
+  const b = benchOf(m.entry);
+  if (b.notes) return String(b.notes).split("\n").find(l => l.trim()) || "";
+  const steps = benchSteps(m.tier), n = steps.filter(p => benchGet(m.entry, p)).length;
+  return n ? `${n} of ${steps.length} upgrade steps written` : "";
+}
+function renderBenchRoster(main) {
+  main.append(el("p", {class: "lede"}, "Every machine, built or briefed, by where it stands: the chassis to-do. Tap one for its sheet: its numbers, its locked pieces, its upgrades, its stock and your notes on one screen, each saved as you leave the field. What you write here waits with the Content tab's edits for a session to apply."));
+  if (!benchCan()) main.append(el("p", {class: "help"}, state.dbState === "loading" ? "Connecting to the page's database…" : "Read only: the database did not load in this view, so nothing can be saved from here."));
+  const shown = benchShown();
+  if (!state.loaded.designs) main.append(el("p", {class: "help"}, "Loading the briefs…"));
+  for (const st of BENCH_STATES) {
+    const rows = shown.filter(m => m.state === st.id);
+    if (!rows.length) continue;
+    const g = el("section", {class: "bgroup"}, el("h3", {}, st.label, el("span", {class: "n"}, String(rows.length))), el("p", {class: "what"}, st.what));
+    for (const m of rows) {
+      const line = benchLine(m);
+      const meta = el("span", {class: "bmeta"}, [makerShort(m.maker), m.tier ? "T" + m.tier : "tier open", m.kind === "brief" ? (m.doc.header || {}).status : null].filter(Boolean).join(" · "));
+      if (m.st) meta.append(" ", el("span", {class: "tag " + m.st}, m.st));
+      g.append(el("button", {class: "brow " + (MAKER_TAB[m.maker] || ""), onclick: () => openBench(m)},
+        el("span", {class: "bname"}, m.name), meta,
+        line ? el("span", {class: "bline"}, line) : null));
+    }
+    main.append(g);
+  }
+  if (!shown.length) main.append(el("p", {class: "empty"}, "Nothing here yet."));
+}
+
+// ---- one machine's sheet
+function benchBar(m) {
+  const list = benchShown(), i = list.findIndex(x => x.kind === m.kind && x.id === m.id);
+  const prev = i > 0 ? list[i - 1] : null, next = i >= 0 && i < list.length - 1 ? list[i + 1] : null;
+  return el("div", {class: "toolbar"},
+    el("button", {class: "btn", onclick: closeBench}, "‹ Bench"),
+    el("button", {class: "btn", disabled: !prev, title: prev ? prev.name : "", onclick: () => prev && openBench(prev)}, "‹ Prev"),
+    el("button", {class: "btn", disabled: !next, title: next ? next.name : "", onclick: () => next && openBench(next)}, "Next ›"));
+}
+function benchNumCell(fid, label, live, shipped, commit) {
+  const changed = shipped !== undefined && live !== shipped || (shipped === undefined && live !== undefined && live !== null && live !== "");
+  const inp = bfield("num", fid, live, commit);
+  if (changed) inp.classList.add("changed");
+  return el("div", {}, blabel(fid, label), inp, el("div", {class: "was"}, changed ? "files: " + (shipped === undefined ? "none" : shipped) : ""));
+}
+function benchPiece(e, cid, copies) {
+  const c = ctx().comps.get(cid);
+  if (!c) return el("div", {class: "bpiece"}, el("div", {class: "pname"}, "unknown component " + cid));
+  const comp = c.entry, f = comp.face || {}, key = "components.entries", s = shippedEntry(key, cid), sf = (s && s.face) || {};
+  const box = el("div", {class: "bpiece"});
+  const name = el("div", {class: "pname"}, (comp.name || cid) + (copies > 1 ? " ×" + copies : ""));
+  if (c.st) name.append(" ", el("span", {class: "tag " + c.st}, c.st));
+  box.append(name, el("div", {class: "pline"}, faceLine(f)));
+  const kws = el("div", {class: "kws"});
+  for (const k of (f.keywords || [])) kws.append(kwChip(k, "kw", kwNumber(f, k)));
+  if (kws.childElementCount) box.append(kws);
+  const nums = el("div", {class: "bnums"});
+  const keys = [...new Set([...Object.keys(sf), ...Object.keys(f)])].filter(k => typeof f[k] === "number" || typeof sf[k] === "number");
+  for (const k of keys) nums.append(benchNumCell(`${cid}.face.${k}`, plain(k), f[k], sf[k], v => benchWrite(key, cid, d => { d.face = d.face || {}; benchSetNum(d.face, sf, k, v); })));
+  if (keys.length) box.append(nums);
+  const lockId = `${cid}.lock`, noteId = `${cid}.note`;
+  box.append(el("div", {class: "prow"},
+    el("div", {}, blabel(lockId, "its lock"), bselect(lockId, benchGet(comp, ["lock"]), BENCH_LOCKS, v => benchWrite(key, cid, d => benchSetText(d, ["lock"], v)))),
+    el("div", {}, blabel(noteId, "note on the piece"), bfield("area", noteId, benchGet(comp, ["note"]), v => benchWrite(key, cid, d => benchSetText(d, ["note"], v)), {placeholder: "What it should do that nobody else does, a tweak, a cut."}))));
+  if (c.st === "edited") box.append(el("div", {class: "toolbar", style: "margin:8px 0 0"}, el("button", {class: "btn", disabled: !benchCan(), onclick: () => benchRevert(key, cid)}, "Piece back to the files")));
+  return box;
+}
+function benchDirection(e, dir, label, deep) {
+  const key = "chassis.entries", fixed = [...new Set(e.fixed || [])];
+  const on = [["", "choose what it tweaks"], ...fixed.map(cid => [cid, (ctx().comps.get(cid) || {entry: {}}).entry.name || cid]), ["passive", "its passive"], ["chassis", "the chassis"]];
+  const cur = benchGet(e, [dir, "on"]);
+  if (cur && !on.some(o => o[0] === cur)) on.push([cur, plain(cur)]);
+  const set = (path) => (v) => benchWrite(key, e.id, d => benchSetText(d, path, v));
+  const onId = `${e.id}.${dir}.on`, s1 = `${e.id}.${dir}.s1`, s2 = `${e.id}.${dir}.s2`;
+  const box = el("div", {class: "bdir"}, el("div", {class: "dname"}, label),
+    el("div", {}, blabel(onId, "on"), bselect(onId, cur, on, set([dir, "on"]))),
+    el("div", {}, blabel(s1, "first step"), bfield("area", s1, benchGet(e, [dir, "s1"]), set([dir, "s1"]), {placeholder: "One line: what the piece gains or changes."})));
+  if (deep) box.append(el("div", {class: "deep"}, blabel(s2, "deeper step"), bfield("area", s2, benchGet(e, [dir, "s2"]), set([dir, "s2"]), {placeholder: "The same idea taken further."})));
+  return box;
+}
+function benchUpgrades(sheet, e) {
+  const key = "chassis.entries", tier = Number(e.tier), set = (path) => (v) => benchWrite(key, e.id, d => benchSetText(d, path, v));
+  sheet.append(el("h3", {}, "Upgrades"));
+  if (tier >= 3) { sheet.append(el("p", {class: "hint"}, "A tier three arrives at level three: nothing to buy.")); return; }
+  sheet.append(el("p", {class: "hint"}, tier === 1
+    ? "Two upgrades. Each lifts the whole machine, and each takes one pick: the first upgrade either direction's first step; the second the deeper step of the same direction, or the first step it skipped."
+    : "A tier two arrives at level two, so one upgrade: the lift, and a pick of one direction's step."));
+  const lift = el("div", {class: "blift"});
+  const l2 = `${e.id}.lift2`, l3 = `${e.id}.lift3`;
+  if (tier === 1) lift.append(el("div", {}, blabel(l2, "level two, the plain lift"), bfield("area", l2, benchGet(e, ["lift2"]), set(["lift2"]), {placeholder: "Stats, each locked piece's number, a passive's number where it warrants one."})));
+  lift.append(el("div", {}, blabel(l3, "level three, the plain lift"), bfield("area", l3, benchGet(e, ["lift3"]), set(["lift3"]), {placeholder: "Stats, each locked piece's number, a passive's number where it warrants one."})));
+  sheet.append(lift);
+  sheet.append(el("div", {class: "bladder"}, benchDirection(e, "a", "Direction A", tier === 1), benchDirection(e, "b", "Direction B", tier === 1)));
+}
+function benchStock(sheet, e) {
+  const key = "chassis.entries", hp = Number(e.hardpoints || 0), fixedN = (e.fixed || []).length, lo = e.loadout || [];
+  sheet.append(el("h3", {}, `Stock · ${hp} hardpoint${hp === 1 ? "" : "s"}`));
+  if (!hp) { sheet.append(el("p", {class: "hint"}, "No hardpoints.")); return; }
+  const {comps, locked} = ctx();
+  const pool = [...comps.values()].map(x => x.entry).filter(c => !locked.has(c.id) || lo.includes(c.id))
+    .sort((a, b) => (Number(a.tier) || 0) - (Number(b.tier) || 0) || String(a.name || a.id).localeCompare(String(b.name || b.id)));
+  const options = [["", "empty"], ...pool.map(c => [c.id, `T${Number(c.tier) || 0} · ${c.name || c.id}${c.status === "planned" ? " (planned)" : ""}`])];
+  const box = el("div", {class: "bstock"});
+  for (let i = 0; i < hp; i++) {
+    const cid = i < lo.length ? lo[i] : "", fid = `${e.id}.stock.${i}`;
+    const opts = cid && !options.some(o => o[0] === cid) ? [...options, [cid, cid]] : options;
+    const row = el("div", {class: "srow"}, el("label", {class: "shp", for: benchKind(fid)}, roman(fixedN + i + 1) + " · hardpoint"),
+      bselect(fid, cid, opts, v => benchWrite(key, e.id, d => {
+        const l = (d.loadout || []).slice(0, hp);
+        if (v) { if (i < l.length) l[i] = v; else l.push(v); } else if (i < l.length) l.splice(i, 1);
+        d.loadout = l;
+      })));
+    const c = cid ? comps.get(cid) : null;
+    if (c && Number(c.entry.tier || 0) >= Number(e.tier || 0)) row.append(el("div", {class: "swarn"}, `Tier ${Number(c.entry.tier || 0)} on a tier-${e.tier} machine: the validator holds a stock below its chassis's tier until the stock rule is built.`));
+    box.append(row);
+  }
+  sheet.append(box);
+}
+function renderBenchSheet(main, m) {
+  const e = m.entry, key = "chassis.entries", s = shippedEntry(key, e.id) || {}, mk = ctx().makers.get(e.maker || "") || {};
+  const sheet = el("div", {class: "bsheet " + (MAKER_TAB[e.maker] || "")});
+  sheet.append(benchBar(m));
+  const h2 = el("h2", {}, e.name || e.id);
+  if (m.st) h2.append(" ", el("span", {class: "tag " + m.st}, m.st));
+  sheet.append(el("div", {class: "bhead"}, el("p", {class: "desig"}, e.designation || ""), h2, el("p", {class: "sub", style: "margin:0"}, [mk.name, e.size, (e.traits || []).map(plain).join(", ")].filter(Boolean).join(" · "))));
+  if (!benchCan()) sheet.append(el("p", {class: "help"}, state.dbState === "loading" ? "Connecting to the page's database…" : "Read only: the database did not load in this view."));
+  // where it stands, and his notes: the two things the roster shows
+  const stId = `${e.id}.state`, noteId = `${e.id}.notes`, def = benchDefault(e);
+  const brief = reworkBriefOf(e.id);
+  sheet.append(el("div", {class: "prow bpiece", style: "margin-top:12px"},
+    el("div", {}, blabel(stId, "where it stands"), bselect(stId, benchState(e), BENCH_STATES.filter(x => x.id !== "brief").map(x => [x.id, x.label]), v => benchWrite(key, e.id, d => benchSetText(d, ["state"], v === def ? "" : v))),
+      brief ? el("div", {class: "was", style: "color:var(--ink-3)"}, el("button", {class: "linkbtn", onclick: () => { state.section = "designs"; state.sub.designs = designTabOf(brief); state.bopen = null; remember(); openBrief(brief.id); }}, "its brief")) : null),
+    el("div", {}, blabel(noteId, "notes"), bfield("area", noteId, benchGet(e, ["notes"]), v => benchWrite(key, e.id, d => benchSetText(d, ["notes"], v)), {placeholder: "What is owed, what to try, what you felt in play. The first line shows on the roster."}))));
+  sheet.append(el("h3", {}, "Numbers"));
+  const nums = el("div", {class: "bnums"});
+  for (const [k, label] of BENCH_NUMS) nums.append(benchNumCell(`${e.id}.${k}`, label, e[k], s[k], v => benchWrite(key, e.id, d => benchSetNum(d, s, k, v))));
+  sheet.append(nums, el("p", {class: "hint", style: "margin-top:6px"}, "Clear a number to put it back as the files have it. The die is the locked pieces and the hardpoints: d" + ((e.fixed || []).length + Number(e.hardpoints || 0)) + "."));
+  // the passive: its words are the Text tab's, so here it is read, with a note beside it
+  sheet.append(el("h3", {}, "Passive"));
+  const p = e.passive, pId = `${e.id}.passive`;
+  sheet.append(p ? el("div", {class: "passive"}, el("h4", {}, p.name || ""), el("p", {}, p.description || "")) : el("div", {class: "passive none"}, el("h4", {}, "No passive"), el("p", {}, "Unwritten.")));
+  sheet.append(el("div", {}, blabel(pId, "note on the passive"), bfield("area", pId, benchGet(e, ["passive"]), v => benchWrite(key, e.id, d => benchSetText(d, ["passive"], v)), {placeholder: "A number to move, a clause to cut. Its wording is the Text tab's."})));
+  // the locked pieces
+  const fixed = e.fixed || [], uniq = [...new Set(fixed)];
+  sheet.append(el("h3", {}, uniq.length ? `Locked piece${uniq.length === 1 ? "" : "s"}` : "Locked pieces"));
+  if (!uniq.length) sheet.append(el("p", {class: "hint"}, "None: its identity is its passive and its numbers."));
+  for (const cid of uniq) sheet.append(benchPiece(e, cid, fixed.filter(x => x === cid).length));
+  benchUpgrades(sheet, e);
+  benchStock(sheet, e);
+  sheet.append(el("div", {class: "toolbar", style: "margin-top:22px"},
+    el("button", {class: "btn", disabled: !benchCan() || !editFor(key, e.id), onclick: () => benchRevert(key, e.id)}, "Machine back to the files"),
+    el("button", {class: "btn", onclick: () => { state.returnTo = null; state.section = "content"; state.sub.content = key; state.bopen = null; remember(); openEntry(key, e.id); }}, "Open in the editor"),
+    el("button", {class: "btn", onclick: () => { state.section = "codex"; state.bopen = null; remember(); render(); requestAnimationFrame(() => { const t = document.getElementById("cx-" + e.id); if (t) t.scrollIntoView(); }); }}, "On the codex")));
+  sheet.append(benchBar(m));
+  main.append(sheet);
+}
+function renderBenchBrief(main, m) {
+  const d = m.doc, h = d.header || {};
+  const sheet = el("div", {class: "bsheet " + (MAKER_TAB[h.maker] || "")});
+  sheet.append(benchBar(m));
+  const h2 = el("h2", {}, briefTitle(d), " ", el("span", {class: "tag planned"}, h.status || "brief"));
+  sheet.append(el("div", {class: "bhead"}, el("p", {class: "desig"}, "not built · " + d.file), h2, el("p", {class: "sub", style: "margin:0"}, [makerShort(h.maker), TIER_WORD[h.tier] || "tier open", h.slot ? "a roster slot" : null].filter(Boolean).join(" · "))));
+  const lead = (d.blocks || []).filter(b => b.sec === "s0" && b.type === "p").slice(0, 2);
+  for (const b of lead) sheet.append(el("p", {class: "saved", style: "margin-top:10px;max-width:72ch;color:var(--ink-2)"}, ...mdInline(b.text)));
+  sheet.append(directionBox(d));
+  const waiting = briefPending(d.id);
+  sheet.append(el("p", {class: "hint", style: "margin-top:10px"}, "A design in progress has no numbers to set yet: what you want its session to take as given goes in the direction above" + (waiting ? `; ${waiting} of your marks wait on this brief.` : ".")));
+  sheet.append(el("div", {class: "toolbar"}, el("button", {class: "btn", onclick: () => { state.section = "designs"; state.sub.designs = designTabOf(d); state.bopen = null; remember(); openBrief(d.id); }}, "Open the brief")));
+  main.append(sheet);
+}
+function renderBench(main) {
+  want("designs", ensureDesigns);
+  if (state.bopen) {
+    const m = benchMachines().find(x => x.kind === state.bopen.kind && x.id === state.bopen.id);
+    if (m) return m.kind === "built" ? renderBenchSheet(main, m) : renderBenchBrief(main, m);
+    if (state.loaded.designs || state.bopen.kind === "built") state.bopen = null; else return main.append(el("p", {class: "help"}, "Loading the briefs…"));
+  }
+  renderBenchRoster(main);
 }
 
 // ------------------------------------------------------------------ models

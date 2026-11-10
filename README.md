@@ -143,7 +143,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   simulations chose); `soundforge/` builds every sound and the
   six music tracks from written recipes (numpy); `phone.sh` puts a Web build on a phone
   over the LAN, `android.sh` the real debug APK over USB; `hangar.html` is the
-  hangar page, one artifact with six tabs (the codex, the content editor, the text: every text
+  hangar page, one artifact with seven tabs (the codex; the bench: Ryan's working sheet for a machine, the roster by where each stands and one flat sheet for its numbers, its locked pieces, its upgrades, its stock and his notes, every write an edit of the entry in `edits`, his notes and upgrade ideas under its `design.bench`; the content editor; the text: every text
   the player reads, one row a text by kind and by voice, where the game draws it and who wrote
   it, read from `hangar/text.json`, which `hangar_text.py` writes from content, two tables in
   the code and the ledger `docs/hangar/text.json`, and folds his writing back with; the names list, the
