@@ -182,7 +182,7 @@ His calls, in his words:
   which makes a lot of sense - that leaves one open kestrel slot (Magpie, or other), one aphelion
   slot, and one Arsenal slot" (`kestrel_owl.md`).
 
-The roster, 47 named and 3 open (a brief's name in brackets; the rest are built):
+The roster, 24 built and 23 in briefs with 3 open (a brief's name in brackets; the rest are built):
 
 | Maker | Tier one | Tier two | Tier three |
 |---|---|---|---|
@@ -191,20 +191,22 @@ The roster, 47 named and 3 open (a brief's name in brackets; the rest are built)
 | Kestrel's two, tiers open | the Snowy Owl, leaning to Cryo (`kestrel_owl.md`) | the Magpie (`kestrel_magpie.md`) | |
 | Wainwright & Sutler (10) | Prairie Dog, Cassowary, Cottonmouth | Dingo, Clydesdale, funnel-web, the gunship (`ws_gunship.md`), Whip Scorpion | Swallowtail, Musk Ox |
 | Aphelion (9 and one open) | Stingray; the line frame (`aphelion_line_frame.md`); Static (`aphelion_static.md`); the Barrier and Ward support, the defensive tier one (`aphelion_barrier_ward.md`) | Baboon (up, `aphelion_baboon.md`); the jellyfish with the status detonator (`aphelion_jellyfish.md`); the time-shifter (`aphelion_time_shifter.md`); one open, the time area's if it wants it | the Carrier (`aphelion_carrier.md`); the Macross with the aura-shifter (`aphelion_macross.md`) |
-| The Arsenal (9, its tenth waiting) | none | Nemesis; Misharu (`arsenal_misharu.md`); the Onryō (`arsenal_onryo.md`); the Zoids walker (`zoids_walker.md`); the frost figure (`arsenal_frost.md`) | Ammit; Mastema (`arsenal_mastema.md`); Minos (`arsenal_minos.md`); the thunder figure (`arsenal_thunder.md`) |
+| The Arsenal (8, two open, its tenth waiting) | none | Nemesis; Misharu (`arsenal_misharu.md`); the Onryō (`arsenal_onryo.md`); the Zoids walker (`zoids_walker.md`; "could still be Aphelion's 10th", Ryan, 6 November) | Ammit; Mastema (`arsenal_mastema.md`); Minos (`arsenal_minos.md`); the thunder figure (`arsenal_thunder.md`) |
 
 What moved to fit (Claude's, unmarked unless Ryan's word stands above):
 
 - **Moved to the Arsenal**: the Zoids walker (Ryan's sign of 12 October; cats stay out of
-  Aphelion's names; its first verb is now the Kite's Reset, so it opens again) and the Cryo
-  detonator, as the frost figure (consuming a status for a blow is the Backdraft Charge's shape).
+  Aphelion's names; its first verb is now the Kite's Reset, so it opens again), its maker open
+  again on his note of 6 November ("This could still be Aphelion's 10th"). The Cryo detonator
+  moved there too, as the frost figure, until he cut it on 5 November ("Cut. Moved onto
+  Minerva"): the detonation is the Cryo party defence's locked piece by his direction of that
+  day (`minerva_cryo_defence.md`), and the Arsenal is eight named with two slots open.
 - **Merged**: the shock-synergy unit's Aphelion half is Static, its Arsenal half the thunder
   figure; the aura-shifter is the Macross's shifts; the status detonator is the jellyfish's EMP
   (Ryan's word above).
 - **Cut as a unit**: the shield-basher, now the shield bash (Ryan's word above).
-- **The Snowy Owl takes Cryo** for its cold (Ryan's lean, 5 November); the Arsenal's frost figure
-  keeps the blow while it stays, and if the Owl takes the detonator whole the Arsenal has two
-  slots open.
+- **The Snowy Owl takes Cryo** for its cold (Ryan's lean, 5 November); the blow is the Cryo
+  party defence's since the frost figure's cut, the pair to check for room.
 
 ## Budgets (Ryan, 15 October)
 
@@ -257,11 +259,11 @@ fit touches it. `docs/synergy_map.md` is the built content's piece-level view. R
   Scorpion and the lure tank. They part by shape: a locked piece, every weapon, every foe. The
   greedy bot values a lure for allies at nothing, so the runner can read none of them yet (the
   to-do's engine line on the bot's valuations).
-- **Cryo (4, 5 with the Macross's Battroid):** the Polar Bear lays it, the Cryo party defence keeps
-  it, the Snowy Owl cashes it to stay hidden, the frost figure blows it up. The frost figure is the
-  one to check for room.
+- **Cryo (3, 4 with the Macross's Battroid):** the Polar Bear lays it, the Cryo party defence keeps
+  it and blows it up (the frost figure's detonation, merged into it on 5 November), the Snowy Owl
+  cashes it to stay hidden. The detonation is the one to check for room.
 - **Stuns (5):** the Baboon's Paradox, the funnel-web's web, the Swallowtail's charged flare, the
-  frost figure's gated Suppress and the time-shifter's delay. Numbed is the shared brake, and the
+  Cryo party defence's gated Suppress (the frost figure's until its cut) and the time-shifter's delay. Numbed is the shared brake, and the
   time-shifter's stasis freezes Numbed, so it works against the other four.
 - **Kills (5):** the Kite's Reset, the Ammit's talons, the Giant Petrel's Salvo, the Wild Boar's
   spill and Mastema's Bellows; the reason the Zoids walker should not get its old verb back.
@@ -406,25 +408,25 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `ws_prairie_dog.md` | landed 19 October (Flak), retired (`git show f5a085a:docs/briefs/ws_prairie_dog.md`) | Wainwright & Sutler | 1 | nothing: Flak built and measured 21 October (`docs/measurements.md`) |
 | `ws_dingo.md` | landed 19 October (the Combat Translocator), retired (`git show 021f075:docs/briefs/ws_dingo.md`) | Wainwright & Sutler | 2 | its model mount and the bot's further reads (the to-do; its piece built 21 October) |
 | `aphelion_line_frame.md` | direction; Claude's first round, its review and Ryan's first calls in the brief (15 to 20 October) | Aphelion | 1 | Ryan's calls on its open list |
-| `aphelion_jellyfish.md` | direction; first round and review in the brief (15 and 16 October); the status detonator folded in, unrefined (Ryan, 4 November), and what moved on main since | Aphelion | 2 | Ryan's calls (the fold's shape among them); its Disrupt read again on the fresh start's compositions |
+| `aphelion_jellyfish.md` | direction; first round and review in the brief (15 and 16 October); the status detonator folded in, unrefined (Ryan, 4 November); his new direction of 5 November at its head (the status payoff carry, no weapons, its identity in its locked pieces) | Aphelion | 2 | Claude's first round on his direction of 5 November |
 | `aphelion_carrier.md` | proposal, open; first round and review in the brief (15 and 16 October) | Aphelion | 3 | Ryan's calls on its open list |
 | `aphelion_baboon.md` | rework; first round and review in the brief (15 and 16 October) | Aphelion | 2 (now 1) | Ryan's calls (the stock pass left it at tier one) |
-| `zoids_walker.md` | proposal, maker open; the Arsenal's on the ten-a-maker plan (4 November, unmarked), its verb open | the Arsenal (Aphelion or the Arsenal before) | 2 | Ryan's calls on the move and its verb |
-| `arsenal_misharu.md` | proposal; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 2 | Ryan's calls on its open list |
-| `arsenal_onryo.md` | direction; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 2 | Ryan's calls on its open list |
+| `zoids_walker.md` | proposal, maker open; the Arsenal's on the ten-a-maker plan (4 November, unmarked), its verb open; his note of 6 November at its head (something more Sentai or Zoids, the shadow panther, "could still be Aphelion's 10th") | the Arsenal or Aphelion | 2 | Claude's first round on his note of 6 November, its maker with it |
+| `arsenal_misharu.md` | proposal; first round and review in the brief (15 and 16 October), unanswered; his new direction of 6 November at its head (delayed judgement) in the Penance round's place | the Arsenal | 2 | Claude's first round on his direction of 6 November |
+| `arsenal_onryo.md` | direction; first round and review in the brief (15 and 16 October), unanswered; his new direction of 6 November at its head (its own hull as a resource, a ramping carry) | the Arsenal | 2 | Claude's first round on his direction of 6 November |
 | `arsenal_mastema.md` | direction; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 3 | Ryan's calls; the foes' riders on machines are in (the fresh start, 30 October), so its fire has fuel |
-| `arsenal_minos.md` | proposal; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 3 | Ryan's calls; the compositions' back ranks are in (the fresh start, 30 October) |
+| `arsenal_minos.md` | proposal; first round and review in the brief (15 and 16 October); his note of 6 November at its head ("It needs something else": no build stands on the movement alone) | the Arsenal | 3 | the something else, proposed in chat; the compositions' back ranks are in (the fresh start, 30 October) |
 | `aphelion_static.md` | Ryan's idea of 4 November, Claude's first round (Static, and the shock unit's Aphelion half) | Aphelion | 1 | Ryan's calls on its open list |
 | `aphelion_macross.md` | Ryan's idea of 4 November, Claude's first round (the flagship mode changer; the aura-shifter folded in) | Aphelion | 3 | Ryan's calls on its open list |
 | `aphelion_barrier_ward.md` | Ryan's idea of 4 November, Claude's first round (the defensive tier one) | Aphelion | 1 | Ryan's calls on its open list |
 | `aphelion_time_shifter.md` | direction (Ryan, 17 October), kept unrefined (4 November); the bench's notes and Claude's first round | Aphelion | 2 | its session |
 | `minerva_lure_tank.md` | Ryan's idea of 4 November, Claude's first round (the tier-one front) | Minerva | 1 | Ryan's calls on its open list |
-| `minerva_cryo_defence.md` | Ryan's idea of 4 November, Claude's first round (Cryo for the party) | Minerva | 2 | Ryan's calls on its open list (its trigger first) |
+| `minerva_cryo_defence.md` | Ryan's idea of 4 November, Claude's first round (Cryo for the party); his new direction of 5 November at its head (no free Cryo, a stack lowering damage by 1, a locked piece that detonates it), the frost figure merged in | Minerva | 2 | Claude's first round on his direction of 5 November |
 | `minerva_immune.md` | Ryan's idea of 4 November, Claude's first round | Minerva | 2 | Ryan's calls on its open list |
 | `minerva_mole.md` | a shape (Ryan, 4 November), its hook later on his word | Minerva | 1 or 2 | its hook |
 | `minerva_shield_bash.md` | Ryan's piece of 4 November, Claude's notes (a weapon or a module) | Minerva | 3 (a piece) | Ryan's call on its form |
-| `arsenal_frost.md` | Ryan's idea of 4 November, Claude's first round (the Cryo detonator, moved from Aphelion) | the Arsenal | 2 | Ryan's calls on its open list |
-| `arsenal_thunder.md` | Ryan's idea of 4 November, Claude's first round (the shock unit's Arsenal half) | the Arsenal | 3 | Ryan's calls on its open list |
+| `arsenal_frost.md` | cut by Ryan, 5 November ("Cut. Moved onto Minerva"); his idea of 4 November and Claude's first round (the Cryo detonator, moved from Aphelion) kept for the Cryo party defence's round | the Arsenal | — | retires as `minerva_cryo_defence.md` takes its round |
+| `arsenal_thunder.md` | Ryan's idea of 4 November, Claude's first round (the shock unit's Arsenal half); his new direction of 6 November at its head (the soft Archon homage, Empowered ramping through a decay) | the Arsenal | 3 | Claude's first round on his direction of 6 November |
 | `map_shapes.md` | landed 29 October (the six shapes laid by the generator, Mixed Ground and the four other types retired, the walls named by what they are, the decoration and the relief laid by the shape, the survey at 200 seeds a shape), retired the same day (`git show b2762d5:docs/briefs/map_shapes.md`) | the battlefield | none | Ryan's read of the shapes running on the phone; a domain's lean toward a shape (the bible's section 12) |
 | `stock_pass.md` | landed 22 October (the content, the loops' numbers, the bands at 200 seeds), retired 23 October (`git show a550c2e:docs/briefs/stock_pass.md`): the scale's tests and first fills, every piece's tags, tier, number and heat, each chassis's stock and armour by role, the breach's carriers, the engine spec, the method | all | 0 to 3 | nothing here: the name pass and the pricing run are the to-do's |
 | `foes_ladder.md` | landed 28 October (the three enemy verbs, four buffs crossing to the foes, the player's Purge and the Null Field Emitter, twenty-six recolours by tier with the spawn lists, their sprites, the matrix's cells by tier read at 30 seeds), retired the same day (`git show 26c54c7:docs/briefs/foes_ladder.md`) | the foes (every domain) | the rank and file's tiers two and three | nothing here: the 200-seed matrix is the to-do's, the six recolours' move counts section 12's |

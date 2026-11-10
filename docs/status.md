@@ -137,32 +137,45 @@ rerolls row is the long wall's two with the audit's kept rolls.
 
 Each resumes from its brief; `docs/briefs/README.md`'s table says what each waits on.
 
+- The inventory of 9 November (every chassis, built or briefed, with its state): 24 built, 23 in
+  briefs, three slots open. Of the built, four are back in design from the refit pass (the Polar
+  Bear's seal, the Whip Scorpion whole, the Swallowtail, the Puffin; a brief each), three are
+  unfinished by Ryan's own notes (the Needletail, the Giant Petrel, the Musk Ox) and seventeen
+  stand, six of them read again with the pass's content (the refit brief's section 6). The to-do's
+  roster is grouped by what each waits on, in the order he took (Next, in order, item 1).
 - Kestrel: ten machines, eight decided, in content and fielded (the bible's Kestrel row; the hub
-  `docs/briefs/kestrel_line.md`). The Magpie (a working name, a support engine) and the Snowy Owl
-  (a stealth unit, leaning to Cryo: Ryan, 5 November) are Ryan's next session, their briefs'
-  first rounds unanswered. The
+  `docs/briefs/kestrel_line.md`); the Puffin back in design (`kestrel_puffin.md`). The Magpie (a
+  working name, a support engine) and the Snowy Owl (a stealth unit, leaning to Cryo: Ryan,
+  5 November) are Ryan's next session, their briefs' first rounds unanswered. The
   Needletail's two modes and the Giant Petrel's catamaran hull are his to pick (the to-do).
-- Wainwright & Sutler: ten decided, 3-5-2, nine built (the bible's roster row). The Musk Ox, the
-  Whip Scorpion (a rework coming), the Swallowtail and the gunship (very rough; Claude's first
-  round in `docs/briefs/ws_gunship.md`) each need a design session for kit and visual design,
-  which Ryan starts himself (4 November; the Needletail likewise).
+- Wainwright & Sutler: ten decided, 3-5-2, nine built (the bible's roster row). The Whip Scorpion
+  and the Swallowtail are back in design (`ws_whip_scorpion.md`, `ws_swallowtail.md`); they, the
+  Musk Ox and the gunship (very rough; Claude's first round in `docs/briefs/ws_gunship.md`) each
+  need a design session for kit and visual design, which Ryan starts himself (4 November; the
+  Needletail likewise).
 - Minerva: the Honey Badger's rework built 31 October (the Ore Hopper and the Reinforced Skeleton
   module); the echidna left open (Ryan's new shape of 4 November in its brief), the siege battery
   parked on Ryan's charge brief, the battlecruiser never with the Carrier's session. Ryan's ideas
   of 4 November wait on his marks, each in its brief: the lure tank (his tier-one tank, which the
-  Polar Bear's move to tier two lands with), the Cryo party defence, the immune one, the mole
-  (its hook later), and the shield bash (the shield-basher cut as a unit, a tier-three piece).
+  Polar Bear's move to tier two lands with), the immune one, the mole (its hook later), and the
+  shield bash (the shield-basher cut as a unit, a tier-three piece). The Cryo party defence took
+  his new direction of 5 November (no free Cryo, a locked piece that detonates it, the Arsenal's
+  frost figure merged in), a first round on it owed. The Polar Bear's seal is back in design
+  (`minerva_polar_bear.md`), the first of the four.
 - Aphelion: the line frame and the Baboon first (the pair that keeps its tier-one deal varied),
   then the jellyfish; the Carrier on its own. Ryan's ideas of 4 November wait on his marks, each
   in its brief: Static, the Barrier and Ward support (the defensive tier one), the Macross
-  flagship, the time-shifter kept unrefined; the status detonator folded into the jellyfish,
-  unrefined; one slot open.
-- The Arsenal: Misharu, the Onryō, Mastema and Minos, Claude's first round and review in their
-  briefs, unanswered: Misharu's two calls first (Penance's shape, how often it may fire), then
-  the Onryō's kind and trigger. On the ten-a-maker plan the frost and thunder figures (Ryan's
-  homages of 4 November) and the Zoids walker move in, each in its brief; its tenth waits until
-  its unrefined ideas settle (Ryan).
-- The roster's tasks, maker by maker, are the to-do's "The roster: ten a maker".
+  flagship, the time-shifter kept unrefined; the jellyfish took his new direction of 5 November
+  (the status payoff carry, no weapons), a first round on it owed; one slot open, the Zoids
+  walker's if it comes back (his note of 6 November).
+- The Arsenal: eight named and two slots open since Ryan cut the frost figure (5 November: "Cut.
+  Moved onto Minerva"). His notes of 6 November, at each brief's head, replace the rounds that
+  stood unanswered, a first round on each owed: Misharu (delayed judgement, in Penance's place),
+  the Onryō (its own hull as a resource, a ramping carry), the thunder figure (the soft Archon
+  homage), the Zoids walker (its maker open again, Aphelion's tenth or the Arsenal's) and Minos
+  ("It needs something else"). Mastema's first round is unanswered; its tenth waits until its
+  unrefined ideas settle (Ryan).
+- The roster's tasks, group by group, are the to-do's "The roster: ten a maker".
 
 ## How things stand
 
@@ -623,7 +636,13 @@ with the ladder's, the compositions' and the elites' cells on the desk machine (
 engine line), since the matrix on file predates everything since 27 October.
 
 1. **The design sessions, from the briefs** (above): each decision a bible row, each brief
-   retired once its decisions are rows and content.
+   retired once its decisions are rows and content. The chassis in this order (Ryan, on the
+   inventory of 9 November: "Yes, go ahead"), the to-do's roster grouped to match: the locked
+   pieces' footing first (section 12), since every rework designs locked pieces; the four back in
+   design from the refit pass, the Polar Bear, the Whip Scorpion, the Swallowtail, then the
+   Puffin after the heat prices; the built but unfinished (the Needletail, the Giant Petrel, the
+   Musk Ox) and the gunship; the tier-one fronts (Minerva's lure tank, an Aphelion tier one);
+   Claude's first rounds on his directions of 5 and 6 November; the rest as its session comes.
 2. **The stock pass's tail**: Ryan's name pass; the Lammergeier's stock; the pricing pass's next
    reads (the bible's pricing row, section 11): the equipment ramp on the fresh start's tier-two
    and tier-three formations with tier-matched kits and the planner beside the greedy, the
