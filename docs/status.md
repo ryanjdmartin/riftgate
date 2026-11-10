@@ -27,8 +27,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1090 tests, 304,428 checks, green (10 November, `ccr-c71bc17f-hclj2c`: main with the
-  Text tab and the side session's work, and the map playtest list's two tests; one
+- Tests: 1090 tests, 304,428 checks, green (10 November, main with the Text tab, the side
+  session's work and the map playtest list; one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
   either map view on 6 November); about four minutes in a cloud session, twenty on a slow one;
   words after `--` run only the files whose names hold one (`-- loot rig`). A cloud
@@ -51,6 +51,11 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 Everything is on main as of 10 November 2026 but the formation and refit session's branch and
 the music session's, both below.
+`ccr-c71bc17f-hclj2c`, Ryan's map playtest list of 10 November and his answers to it (How things
+stand below), cut from main at `aa40832`, landed on main as a fast-forward on his word ("Ok,
+merge this into main so I can try it"), main not having moved; it is merged and to delete with
+the rest (the formation and refit session meets its edits in `game/battle/battle_map_view.gd`,
+`game/battle/battle_screen.gd`, the bible and these records when it takes main).
 `ccr-df879779-uf9076`, the side session of 9 and 10 November (How things stand below: the test
 runner's crash check, the caches' pictures, the screen's half of the audit's mirrors, the enemy
 art routes parked), took main's Text tab in a merge (this file and the README the conflicts, both
@@ -100,9 +105,7 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4` (a cloud session may not delete
 one). Each merge commit says how its conflicts were settled.
 
-Still working (10 November; every other branch on GitHub is merged): `ccr-c71bc17f-hclj2c`,
-Ryan's map playtest list of 10 November (How things stand below), cut from main at `aa40832`,
-pushed, waiting on his word to land; `ccr-722ca9f0-yj8na3`,
+Still working (10 November; every other branch on GitHub is merged): `ccr-722ca9f0-yj8na3`,
 the formation and refit session, whose own status says where it stands (it meets the side
 session's edits in `tests/run_tests.gd`, `sim/skirmish.gd` and these records when it takes main);
 and `ccr-7effd31a-u5z4gw`, the
@@ -176,8 +179,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
-- **The map playtest list of 10 November** (`ccr-c71bc17f-hclj2c`, not on main; five points from
-  Ryan's phone, then his answers the same day). A tear's ring stands on its hex: it was drawn in
+- **The map playtest list of 10 November** (`ccr-c71bc17f-hclj2c`, on main the same day; five
+  points from Ryan's phone, then his answers). A tear's ring stands on its hex: it was drawn in
   screen space at its map position, so it hung at one place on the glass while the map scrolled
   ("it's just fixed in place as I pan around"), and its plaque left the transform in map space
   for the edge tags and the scan lines after it. A tear has no edge tag ("same way the rift
@@ -628,10 +631,10 @@ commands are in `README.md`.
   page's Version 502, published from main at `2d489f7` on Ryan's word, "republish the hangar
   page and the bible": main's file whole, since the live v0.496 matched `f048e67`'s byte for byte
   and so needed no merge; it carries the Lammergeier's rework, its row, the Gel's and the
-  reinforcement row's slot-mine lines and the tables). Main's file is v0.498 since the Text tab
-  landed (the hangar row's tabs and the shown-text row), unpublished, its republish on Ryan's
-  word; `ccr-c71bc17f-hclj2c`'s is v0.499 (the boss's picture, the scenery under the painting
-  and the tears row's read of 10 November), unpublished too; `ccr-722ca9f0-yj8na3`'s file is ahead of both with the formation and refit session's
+  reinforcement row's slot-mine lines and the tables). Main's file is v0.499 since the map
+  playtest list landed (the boss's picture, the scenery under the painting, the tears row's
+  read of 10 November and the hunters' declaration, on v0.498's Text tab rows: the hangar row's
+  tabs and the shown-text row), unpublished, its republish on Ryan's word; `ccr-722ca9f0-yj8na3`'s file is ahead of both with the formation and refit session's
   rows, unpublished too. BASE for the next merge is `2d489f7`'s file. The live
   page may carry rows ahead of main's code while a branch has not landed (the music session's
   track rows: Hold The Line's settled pair and its trial notes, Night Shift's duelling basses,
