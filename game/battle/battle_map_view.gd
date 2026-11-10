@@ -399,7 +399,12 @@ func offscreen_tags() -> Array:
 	if field == null:
 		return out
 	var edges := {"top": [], "bottom": [], "left": [], "right": []}
-	var things: Array = field.packs() + field.mechs()
+	# An untyped list: the packs' and the machines' are typed arrays of units, and a tear (a
+	# dictionary) appended to their sum was refused with an error a frame, so no tear ever had
+	# its tag.
+	var things: Array = []
+	things.append_array(field.packs())
+	things.append_array(field.mechs())
 	things.append_array(field.tears)
 	var m := HEX_SIZE * 0.3
 	for thing in things:
@@ -447,6 +452,12 @@ static func foe_sprite_id(u: Unit) -> String:
 		var all := ContentDB.load_default().bosses_of(u.faction)
 		return all[0] if not all.is_empty() else ""
 	return u.foe_id
+
+
+## An enemy's picture on the map: a pack's token, the boss's own larger picture.
+static func foe_picture(u: Unit) -> Texture2D:
+	var id := foe_sprite_id(u)
+	return Sprites.map_boss(id) if u.is_boss else Sprites.map_foe(id)
 
 
 # ---------------------------------------------------------------- drawing
@@ -909,18 +920,24 @@ func _solid_at(h: Vector2i) -> float:
 
 
 ## The tears (30 October): each a small vortex ring in the rift's own light on the seam's
-## ground, with its name, so where the next flood comes from is known an interval ahead. A
-## first cut, to be judged running on the phone with the seam's creep.
+## ground, with its name, so where the next flood comes from is known an interval ahead. The
+## ring is sized to its hex and stands on it in map space, its lines one width at every zoom;
+## its name is a plaque on screen at that place. Called from screen space and left there (the
+## ring was once drawn in it too, at its map position, so it hung at one place on the glass
+## while the map scrolled under it: Ryan, 10 November, "it's just fixed in place as I pan
+## around"). A first cut, to be judged running on the phone with the seam's creep.
 func _draw_tears() -> void:
 	for t in field.tears:
+		_map_space()
 		var c := center(t["pos"])
 		var r := HEX_SIZE * 0.55
-		draw_arc(c, r, 0.0, TAU, 24, Color(Palette.ENEMY, 0.9), 3.0)
-		draw_arc(c, r * 0.6, 0.0, TAU, 18, Color(Palette.ENEMY, 0.6), 2.0)
+		draw_arc(c, r, 0.0, TAU, 24, Color(Palette.ENEMY, 0.9), _px(3.0))
+		draw_arc(c, r * 0.6, 0.0, TAU, 18, Color(Palette.ENEMY, 0.6), _px(2.0))
 		for k in range(6):
 			var a := float(k) * TAU / 6.0 + fmod(_ring_t, TAU)
-			draw_line(c + Vector2(cos(a), sin(a)) * r * 0.6, c + Vector2(cos(a + 0.5), sin(a + 0.5)) * r, Color(Palette.ENEMY, 0.8), 2.0)
+			draw_line(c + Vector2(cos(a), sin(a)) * r * 0.6, c + Vector2(cos(a + 0.5), sin(a + 0.5)) * r, Color(Palette.ENEMY, 0.8), _px(2.0))
 		_plaque(c + Vector2(0.0, -r - 12.0), "TEAR", Palette.ENEMY, 1.5)
+	_screen_space()
 
 
 ## The one scan bar crosses the whole screen on the top layer (the battle screen draws it);
@@ -942,6 +959,16 @@ func rift_foot(map: BattleMap) -> Vector2i:
 		if base(r).y > base(foot).y:
 			foot = r
 	return foot
+
+
+## How far below its foot hex's centre the vortex's picture ends, in hexes. With the wall at the
+## bottom its foot hex is pointy-top, a whole radius from centre to its lowest point, and the
+## picture ends a little inside it; with the wall at the left the hex is flat-top, 0.87 of a
+## radius from centre to its lower edge, so the same drop hung the roots past the hex into the
+## one below: there it ends as far inside its hex as the other view's does, a little higher
+## (Ryan, 10 November: "wall-left, rift sprite needs to move up a tiny bit").
+static func rift_drop() -> float:
+	return 0.9 * (sqrt(3.0) * 0.5 if MapOrient.wall_left else 1.0)
 
 
 const RIFT_FRAME_SECONDS := 0.7    # a frame, on the vortex's own clock
@@ -969,7 +996,7 @@ func _draw_rift(map: BattleMap) -> void:
 	var beat := Sound.beat() if RIFT_ON_BEAT else -1.0
 	var k := int(beat / 4.0 * frames if beat >= 0.0 else _ring_t / RIFT_FRAME_SECONDS) % frames
 	var c := center(rift_foot(map))
-	var dest := Rect2((c - Vector2(fw * SPRITE_SCALE * 0.5, fh * SPRITE_SCALE - HEX_SIZE * 0.9)).floor(), Vector2(fw, fh) * SPRITE_SCALE)
+	var dest := Rect2((c - Vector2(fw * SPRITE_SCALE * 0.5, fh * SPRITE_SCALE - HEX_SIZE * rift_drop())).floor(), Vector2(fw, fh) * SPRITE_SCALE)
 	# The vortex is the worst input the display gets: it is drawn in bands, and now and
 	# then one tears sideways and dims, the same tear the compositor gives the ground
 	# around it (Ryan, 23 September; a band in five each tick was far too much). Off with
@@ -1932,7 +1959,7 @@ func _draw_unit(u: Unit) -> void:
 		for h in u.hexes():
 			draw_colored_polygon(MapOrient.corners(center(h), HEX_SIZE - 6.0), Color("4a2e66"))
 	var c := _unit_center(u)
-	var tex: Texture2D = null if u.is_player() else Sprites.map_foe(foe_sprite_id(u))
+	var tex: Texture2D = null if u.is_player() else foe_picture(u)
 	if _map3d != null and u.is_player() and not u.is_static():
 		pass   # a mech is geometry in the 3D viewport; the gauge below stays
 	elif tex != null:
@@ -1968,11 +1995,13 @@ func _draw_unit(u: Unit) -> void:
 
 
 ## How big a foe's picture draws on the map at zoom 1: a pack's a little larger than its pixels,
-## so it holds its own beside a machine; the boss's far larger, BOSS_SPRITE_H tall (Ryan, 9
-## November: "enemy bosses need bigger map sprites. They disappear right now, they should be very
-## big and ominous"), so the thing the battle is about towers over its ground and the rift's.
+## so it holds its own beside a machine; the boss's far larger, its frame BOSS_SPRITE_H tall (Ryan,
+## 9 November: "enemy bosses need bigger map sprites. They disappear right now, they should be very
+## big and ominous"), so the thing the battle is about towers over its ground and the rift's. The
+## boss's picture is drawn for that size (foe_picture: a 48-pixel frame, so a texel of it is about
+## a pack's token's), never its token enlarged.
 const SPRITE_FEET := 22.0      # a picture's feet below its hex's centre
-const BOSS_SPRITE_H := 128.0   # the boss's picture's height: eight texels a texel of the 16-pixel art
+const BOSS_SPRITE_H := 128.0   # the boss's picture's frame on the map: 2.67 pixels a texel of its 48, a pack's token at 2.6
 
 static func sprite_size(u: Unit, tex: Texture2D) -> Vector2:
 	if tex == null:

@@ -1059,7 +1059,11 @@ a stat.
   Rift Pressure toward the next spawn (a box a turn of the beat) and the Rupture meter toward its
   Fractures (a notch a Fracture, those earned lit); the gate and the rift carry no bar on the map
   and are no selection. A gauge that changes flashes. The boss's picture stands far larger than
-  a pack's.
+  a pack's and is drawn for that size: a picture of its own (`art/foes/<id>_boss.png`, cut from
+  its combat sprite), its token serving the small faces (an edge tag, a hunter's plate). The
+  field reads apart from the scenery past it in both worlds: the reconstruction's grid lies on
+  the field alone, and under the painting the field is bright cells and the scenery (the margin
+  past the field's sides and past the rift, the city) one shaded ground with no cells.
 - **Ground**: open (plain or road), rough, ruins, water, and walls, a wall named by what it is
   (crags, mesas, towers or cliffs) with one rule under every name. Six map shapes, one a
   battle, each with its own water, walls, decorative ground and relief, laid to fill the open
@@ -1256,7 +1260,9 @@ a stat.
   escalate in place.
 - **The seam** is the flattening's edge: the row the rift's bleed reaches, the first row past
   the rift's mouth at the start (row 4 at twelve deep, 5 at twenty), total on the rift's row and gone past the seam. It is the
-  clock's picture: no rule reads the flattened hexes.
+  clock's picture: no rule reads the flattened hexes. The painting takes the ground where the
+  bleed is past half, so the edge seen stands at half the seam's distance from the rift, and a
+  tear opens on the seam's row in front of it (the bible's section 12).
 - **Caches** (the field's loot; `content/loot.json`): the field holds its caches from the first
   turn, so many seeded with the map, one in each of as many bands along the wall, in the rows
   from the third past the rift's to the second short of the apron (never that close to the

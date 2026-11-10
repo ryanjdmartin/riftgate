@@ -516,6 +516,19 @@ func _apply_battle_pose() -> void:
 			# with the wall at the left) and the boss's picture at its size beside it (9 November).
 			s._map.scroll_to_top()
 			s._map.queue_redraw()
+		"tear":
+			# A peak of Rift Pressure (RIFTGATE_PEAKS=<n> for more): the seam crept, a tear open on
+			# its row, the map looking at the newest, a little off the middle so the ring is seen
+			# to stand on its hex under its name wherever the map is scrolled (10 November).
+			for i in range(maxi(1, int(OS.get_environment("RIFTGATE_PEAKS")))):
+				b.field.peak()
+			s._refresh()
+			if not b.field.tears.is_empty():
+				var tp: Vector2 = s._map.center(b.field.tears[b.field.tears.size() - 1]["pos"])
+				s._map.scroll_x = s._map.size.x * 0.4 - tp.x * s._map.zoom
+				s._map.scroll_y = s._map.size.y * 0.6 - tp.y * s._map.zoom
+				s._map._clamp_scroll()
+			s._map.queue_redraw()
 		"fracture":
 			# A Fracture announced as a fight's tally earns it (Ryan, 9 November: "Fractures need to
 			# be announced"): the band over the map and the top bar's gauge flashing (the default

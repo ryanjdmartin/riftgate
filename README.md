@@ -168,8 +168,8 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   (`b.pin(..., hidden=True)`, the Cottonmouth's), `counts` and `spin_held` where a model shows a count or a status, `spin_step` and an act's `locks` where an act stops a spinner on a step, `fires` (each fixed weapon's slices of its acts, in turn, and a slice's `blow`), an act's `idle: false` where it only fires, `launches` where a weapon fires a part out (the Lammergeier's drones, `b.launch(...)`); written by lowforge, read by `mech_rig.gd`
   and by `mech_view_3d.gd`, which wears a fitted die against that record), `models/shapes/` the
   silhouette classes in each maker's metal, a burn weapon's fire for each and `muzzles.json`,
-  where each class's muzzle flare blooms (`forge.py shapes` writes all three), `foes/` the combat sprites foeforge cuts from Ryan's picks and the
-  16x16 map tokens the sheet export writes, `loot/` the caches' 16x16 map tokens (`tools/loot_tokens.py`), `fonts/` the HUD faces, `audio/` every sound by name (`game/audio/sound.gd` lists
+  where each class's muzzle flare blooms (`forge.py shapes` writes all three), `foes/` the combat sprites foeforge cuts from Ryan's picks, the
+  16x16 map tokens the sheet export writes and each boss's 48-pixel picture for the map (`forge.py boss`), `loot/` the caches' 16x16 map tokens (`tools/loot_tokens.py`), `fonts/` the HUD faces, `audio/` every sound by name (`game/audio/sound.gd` lists
   them) and `audio/voice/` Jenny's lines with `lines.json` (`game/audio/voice_lines.gd` is
   her system). A missing foe sprite falls back to a placeholder shape; a missing sound is silence.
 - `docs/` — one job each. `rules.md` the rules as they stand; `design-bible.html` the
@@ -444,7 +444,9 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # ended), contact and engage (the handover into a fight), codex, foecodex, menu, settings, tune, and
 # bosscontact (the boss attacked: the reveal; RIFTGATE_REVEAL_T=<seconds> pins its frame), logfull (the battle log full screen), foe (a pack tapped: its whole way,
 # its later turns numbered; select shows the whole way of a hunter coming for the machine in hand), rift (the rift's end of
-# the field: the vortex and the boss at its size) and fracture (a Fracture announced: the band, the top bar's gauge flashing;
+# the field: the vortex and the boss at its size; RIFTGATE_BLEED_DEBUG=1 shows the scenery past the field under the painting),
+# tear (a peak of Rift Pressure: the seam crept and a tear open on its row, the map looking at it; RIFTGATE_PEAKS=<n> for more)
+# and fracture (a Fracture announced: the band, the top bar's gauge flashing;
 # the default frame catches the band at full).
 # RIFTGATE_SHOT_FRAME=<n> picks the capture frame, to catch an animation mid-flight.
 # RIFTGATE_FEED_DEBUG=1 (any run) fires the skirmish feed's analysis events every half
@@ -550,6 +552,7 @@ tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate warrior --chibi
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py prompts                                   # every foe's prompt into tools/foeforge/prompts.md, no model needed (runs anywhere)
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate revenant --n 4
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut tools/foeforge/out/revenant/revenant_3.png revenant
+python3 tools/foeforge/forge.py boss                                                              # the boss's picture on the map (art/foes/<id>_boss.png, 48 pixels) for every domain's bosses and bench, each from its combat sprite; ids after it for some; Pillow and numpy alone, on any machine, then the import (a cut of a boss writes its own; after a placeholder or a rename, run it)
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py rift --n 4                                   # the rift's vortex, the same way
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut-rift tools/foeforge/out/rift/rift_3.png  # three frames into art/terrain/rift.png
 

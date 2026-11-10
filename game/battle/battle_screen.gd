@@ -1367,9 +1367,9 @@ func _play_boss_reveal(sk: Skirmish, group: Array) -> void:
 	reveal.family = str(battle.db.factions.get(battle.faction, {}).get("name", battle.faction))
 	var fid := BattleMapView.foe_sprite_id(boss)
 	reveal.tex = Sprites.combat_foe(fid)
+	var map_tex := BattleMapView.foe_picture(boss)
 	if reveal.tex == null:
-		reveal.tex = Sprites.map_foe(fid)
-	var map_tex := Sprites.map_foe(fid)
+		reveal.tex = map_tex
 	reveal.from = _map.position + _map.to_screen(_map.center(boss.pos)) - reveal.position
 	reveal.from_size = BattleMapView.sprite_size(boss, map_tex) * _map.zoom
 	reveal.finished.connect(func() -> void:

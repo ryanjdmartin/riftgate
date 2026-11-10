@@ -43,6 +43,13 @@ one-pixel outline, and writes `art/foes/<id>_combat.png` and `<id>_map.png` plus
 preview next to the candidates. Nothing touches `art/foes` until you run `cut`, so the
 sketch grids exported by `tools/sheet_export.py` stay until a candidate beats them.
 
+A foe that can stand as the boss on the map (a domain's `boss` or `bench` in
+`content/factions.json`) also has `art/foes/<id>_boss.png`: its picture at the size the map
+draws a boss, 48 pixels, cut from its combat sprite (never enlarged, so a hero's chibi keeps its
+pixels; a placeholder's "?" left off). `cut` writes it for such a foe; `forge.py boss` writes
+every one, or the ids named, from the combat sprites as they stand, with Pillow and numpy alone
+on any machine. The 16-pixel token stays for the small faces.
+
 ## Tuning
 
 - A candidate with a busy or shaded background keys badly. Ask for "solid flat pure white

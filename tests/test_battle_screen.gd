@@ -668,6 +668,62 @@ func test_offscreen_packs_get_edge_tags() -> void:
 	s.free()
 
 
+## A tear past the view's edge has its tag (10 November: the list the tags were built from was
+## the packs' typed array, which refused a tear with an error a frame, so none ever had one).
+func test_a_tear_off_screen_gets_its_edge_tag() -> void:
+	var s := _screen()
+	var f: Battlefield = s.battle.field
+	f.peak()
+	assert_false(f.tears.is_empty(), "a peak opens a tear")
+	var tear: Dictionary = f.tears[0]
+	# Look as far from it as the scroll runs, at whichever end leaves it off the screen.
+	var found := false
+	for end in ["top", "bottom"]:
+		if end == "top":
+			s._map.scroll_to_top()
+		else:
+			s._map.scroll_to_bottom()
+		var at: Vector2 = s._map.to_screen(s._map.center(tear["pos"]))
+		if Rect2(Vector2.ZERO, s._map.size).grow(BattleMapView.HEX_SIZE * 0.3).has_point(at):
+			continue
+		for t in s._map.offscreen_tags():
+			found = found or (t[1] is Dictionary and t[1] == tear)
+		assert_true(found, "the tear off screen has a tag at the edge it lies past")
+		break
+	s.free()
+
+
+## The boss's picture on the map is its own, drawn for its size (10 November: its 16-pixel token
+## blown up to that size was a blob): every foe that can stand as the boss, a domain's bosses and
+## its bench, has one wherever it has a combat sprite to cut it from (tools/foeforge `boss`),
+## larger than its token, and every picture in art/foes names such a foe, so a renamed id or a
+## new boss's art fails here until the cut is run again.
+func test_every_boss_has_its_map_picture() -> void:
+	var db := ContentDB.load_default()
+	var can_lead := {}
+	for fid in db.factions.keys():
+		for id in db.bosses_of(str(fid)) + db.bench_of(str(fid)):
+			can_lead[str(id)] = true
+	assert_false(can_lead.is_empty(), "content names its bosses")
+	for id in can_lead.keys():
+		if not ResourceLoader.exists("res://art/foes/%s_combat.png" % id):
+			continue
+		assert_true(ResourceLoader.exists("res://art/foes/%s_boss.png" % id), "%s has its map picture (tools/foeforge/forge.py boss)" % id)
+		var pic := Sprites.map_boss(str(id))
+		var token := Sprites.map_foe(str(id))
+		if pic != null and token != null:
+			assert_true(pic.get_height() > token.get_height(), "%s's picture is drawn larger than its token" % id)
+	for f in DirAccess.get_files_at("res://art/foes"):
+		if f.ends_with("_boss.png"):
+			assert_true(can_lead.has(f.trim_suffix("_boss.png")), "%s is a boss or a bench hero content names" % f)
+	var s := _screen()
+	var boss: Unit = s.battle.boss
+	var tex := BattleMapView.foe_picture(boss)
+	assert_true(tex != null, "the battle's boss has a picture")
+	assert_eq(BattleMapView.sprite_size(boss, tex).y, BattleMapView.BOSS_SPRITE_H, "and stands at the boss's size")
+	s.free()
+
+
 func test_hold_shows_a_readout() -> void:
 	var s := _screen()
 	var m: Unit = s.battle.mechs()[0]
