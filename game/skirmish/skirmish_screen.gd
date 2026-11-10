@@ -1096,8 +1096,8 @@ func _refresh(save: bool = true) -> void:
 			# targeting a rank"): over a foe, the rank it stands in is the target, lit whole and
 			# bracketed (below), the other rank plain until the finger moves there.
 			if sk.reach_of(dm, f) == Face.Reach.SWEEP and _drag_over is Foe:
-				var swept_rank: int = 0 if (_drag_over as Foe).is_massive() else (_drag_over as Foe).rank
-				targets = targets.filter(func(foe: Foe) -> bool: return (0 if foe.is_massive() else foe.rank) == swept_rank)
+				var swept_rank := sk.sweep_rank_of(_drag_over)
+				targets = targets.filter(func(foe: Foe) -> bool: return sk.sweep_rank_of(foe) == swept_rank)
 		elif f != null and f.on_machines():
 			support = sk.machine_targets_for(dm, Effects.effective_face(dm.unit, f))
 
@@ -1201,12 +1201,12 @@ func _refresh(save: bool = true) -> void:
 		var sm: Skirmish.MechState = sk.mechs[_drag_from]
 		var sf := sk.spend_face(sm)
 		if sf != null and sf.is_attack() and sk.reach_of(sm, sf) == Face.Reach.SWEEP:
-			var swept_rank: int = 0 if (_drag_over as Foe).is_massive() else (_drag_over as Foe).rank
+			var swept_rank := sk.sweep_rank_of(_drag_over)
 			var whole := Rect2()
 			var any := false
 			for v in _view_foe.keys():
 				var foe: Foe = _view_foe[v]
-				if not foe.alive() or (0 if foe.is_massive() else foe.rank) != swept_rank:
+				if not foe.alive() or sk.sweep_rank_of(foe) != swept_rank:
 					continue
 				var uv: UnitView = v
 				uv.highlight = false
@@ -1483,10 +1483,10 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	# threatens nothing.
 	v.intent_kind = "" if (foe.is_suppressed() or foe.target == null or not foe.alive()) else Foe.kind_of(foe.action)
 	# A move still gathering (a countdown) shows the blow it will land; its rounds are a chip.
-	var blow := foe.attacks() or foe.gathering()
-	v.intent_value = sk.foe_blow(foe) if blow else int(foe.action.get("value", 0))
-	v.intent_note = ("×%d" % foe.strikes() if foe.strikes() > 1 else "") if blow else ""
-	v.intent_riders = intent_riders(foe) if blow else []   # the readout's chip is _intent_chip's, the same read
+	var read := _intent_read(foe)   # the readout's chip is _intent_chip's, the same read
+	v.intent_value = read[0]
+	v.intent_note = read[1]
+	v.intent_riders = read[2]
 	v.statuses = []
 	for r in _foe_rows(foe):
 		v.statuses.append([r[0], r[1], r[3], r[4] if r.size() > 4 else "status", r[5] if r.size() > 5 else ""])
@@ -2335,10 +2335,18 @@ func _foe_hold_lines(foe: Foe) -> Array:
 func _intent_chip(foe: Foe) -> Array:
 	if foe.is_suppressed() or foe.target == null or not foe.alive() or foe.action.is_empty():
 		return []
+	var read := _intent_read(foe)
+	var value: int = read[0]
+	return [Glyphs.intent_for(Foe.kind_of(foe.action)), (str(value) + str(read[1])) if value > 0 else "", Palette.ENEMY, "intent", read[2]]
+
+
+## What a foe's intent says, read once for the field's chip and the readout's: [its number (the
+## engine's, Skirmish.intent_value), the mark for more strikes than one, its riders]. A move that
+## strikes, or is still gathering to, carries the mark and the riders; any other shows its number
+## alone.
+func _intent_read(foe: Foe) -> Array:
 	var blow := foe.attacks() or foe.gathering()
-	var value := sk.foe_blow(foe) if blow else int(foe.action.get("value", 0))
-	var note := ("×%d" % foe.strikes() if foe.strikes() > 1 else "") if blow else ""
-	return [Glyphs.intent_for(Foe.kind_of(foe.action)), (str(value) + note) if value > 0 else "", Palette.ENEMY, "intent", intent_riders(foe) if blow else []]
+	return [sk.intent_value(foe), ("×%d" % foe.strikes()) if blow and foe.strikes() > 1 else "", intent_riders(foe) if blow else []]
 
 
 ## A stat in a hold, as the codex has it: its label, its base in ink and the change in a

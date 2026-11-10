@@ -516,7 +516,7 @@ func test_a_hunters_ring_is_drawn_round_where_its_walk_ends() -> void:
 	var ring: Dictionary = rings[0]["hexes"]
 	var wrong: Array = []
 	for h in b.field.map.all_hexes():
-		var inside := Hex.distance(h, w.end) <= ContentDB.HUNTER_RING and not b.field.map.is_structure(h)
+		var inside := Hex.distance(h, w.end) <= Unit.ENGAGE_RANGE and not b.field.map.is_structure(h)
 		if ring.has(h) != inside:
 			wrong.append(h)
 	assert_eq(wrong, [], "every hex its ring holds from the walk's end, and no other")
@@ -582,37 +582,6 @@ func test_a_hunters_catch_is_fought_first() -> void:
 	s.free()
 
 
-## A hunter whose prey is sealed off takes the machine nearest it (Ryan, 29 October: "It's just
-## punishing hiding"): its tag and the board follow the machine it comes for, and its readout
-## says whom it takes and why.
-func test_a_hunter_taking_a_machine_in_its_preys_place_says_so() -> void:
-	var s := _screen()
-	var b := s.battle
-	var hunter: Unit = b.field.packs()[0]
-	for p in b.field.packs():
-		p.behaviour = "push"
-	hunter.behaviour = "hunt"
-	var sealed: Unit = b.mechs()[0]
-	var taken: Unit = b.mechs()[1]
-	hunter.prey = sealed.id
-	var w := Battlefield.Walk.new()
-	w.end = hunter.pos
-	w.prey = taken.id
-	w.catches = taken.id
-	s._map.walks = {hunter.id: w}
-	var text := ""
-	for line in s.pack_lines(hunter):
-		text += str((line as Dictionary).get("text", "")) + " / "
-	assert_true(text.contains("Hunts"), "it still names its prey: %s" % text)
-	assert_true(text.contains("Takes %s in its place: %s is sealed off" % [taken.display_name, sealed.display_name]), "and whom it takes instead: %s" % text)
-	var meets := {}
-	for row in s._board._rows():
-		meets[(row["unit"] as Unit).id] = str(row["meets"])
-	assert_true(str(meets[taken.id]).begins_with("HUNTED BY"), "the board marks the machine it comes for")
-	assert_eq(str(meets[sealed.id]), "", "and not the one sealed off")
-	s.free()
-
-
 ## The boss's fight plays the family's theme when there is one (Ryan, 25 September).
 func test_the_boss_fight_plays_its_theme() -> void:
 	var s := _screen()
@@ -635,8 +604,8 @@ func test_the_boss_fight_plays_its_theme() -> void:
 	s.free()
 
 
-## Every pack, machine and tear past the view's edge gets a tag at the edge it lies past, in
-## either view (the long wall brief 7.1: a wall longer than a screen), inside the view and never
+## Every pack and machine past the view's edge gets a tag at the edge it lies past, in either
+## view (the long wall brief 7.1: a wall longer than a screen), inside the view and never
 ## overlapping another.
 func test_offscreen_packs_get_edge_tags() -> void:
 	var s := _screen()
@@ -645,9 +614,8 @@ func test_offscreen_packs_get_edge_tags() -> void:
 	var m := BattleMapView.HEX_SIZE * 0.3
 	var view: Rect2 = Rect2(Vector2.ZERO, s._map.size).grow(m)
 	var things: Array = s.battle.field.packs() + s.battle.field.mechs()
-	things.append_array(s.battle.field.tears)
 	for thing in things:
-		var c: Vector2 = s._map.to_screen(s._map.center(thing.pos if thing is Unit else thing["pos"]))   # center is map space; tags are judged on screen
+		var c: Vector2 = s._map.to_screen(s._map.center(thing.pos))   # center is map space; tags are judged on screen
 		if not view.has_point(c):
 			hidden += 1
 	assert_true(hidden >= 1, "a long wall leaves packs off screen at the gate's end")
@@ -707,6 +675,130 @@ func test_the_board_says_what_the_gate_takes_next() -> void:
 	s.free()
 
 
+## A tear has no edge tag, as the rift has none (Ryan, 10 November: "Tear doesn't need an edge
+## tag, same way the rift doesn't"): wherever the map looks, every tag is a unit's.
+func test_a_tear_has_no_edge_tag() -> void:
+	var s := _screen()
+	var f: Battlefield = s.battle.field
+	f.peak()
+	assert_false(f.tears.is_empty(), "a peak opens a tear")
+	for end in ["top", "bottom"]:
+		if end == "top":
+			s._map.scroll_to_top()
+		else:
+			s._map.scroll_to_bottom()
+		for t in s._map.offscreen_tags():
+			assert_true(t[1] is Unit, "a tag stands for a unit, never a tear")
+	s.free()
+
+
+## A peak is shown after the packs' walks, never under them (Ryan, 10 November: a tear "needs ...
+## an animation/cutscene when one opens. And an animation/cutscene when the seam moves, too"):
+## the map holds the seam where it stood and the new tear unseen until the cutscene plays, then
+## shows the field as it is and hands on. Headless nothing plays, so it hands on at once.
+func test_a_peak_is_held_until_its_cutscene_plays() -> void:
+	var s := _screen()
+	var f: Battlefield = s.battle.field
+	var seam := f.seam_row
+	var tears := f.tears.size()
+	s._map.hold_peak()
+	f.peak()
+	assert_eq(s._map.seam_shown, float(seam), "the seam drawn where it stood")
+	assert_eq(s._map.tears_shown, tears, "the new tear not drawn yet")
+	var grad_held: Vector2 = Bleed.gradient(f, Vector2.ZERO, 48.0, s._map.seam_shown)
+	var grad_now: Vector2 = Bleed.gradient(f, Vector2.ZERO, 48.0)
+	assert_true(grad_now.x > grad_held.x, "the painting's edge as held stands short of the field's")
+	var handed := [false]
+	s._map.play_peak(func() -> void: handed[0] = true)
+	assert_true(handed[0], "the cutscene hands on")
+	assert_false(s._map.cutscene_playing(), "and is over")
+	assert_eq(s._map.seam_shown, -1.0, "the seam drawn as the field has it")
+	assert_eq(s._map.tears_shown, -1, "and every tear")
+	# A turn with no peak hands on the same way.
+	s._map.hold_peak()
+	handed[0] = false
+	s._map.play_peak(func() -> void: handed[0] = true)
+	assert_true(handed[0], "nothing to show: at once")
+	s.free()
+
+
+## Every hunter that turns on a machine in a turn is declared, each in its turn (Ryan, 10
+## November: "We should pan and zoom to hunters when they acquire as well"; one a turn before,
+## the first lock's): the map hands each pair to the screen's declaration and then hands on.
+## Headless nothing glides, so all of it happens at once and the view is left as it was.
+func test_every_lock_of_a_turn_is_declared() -> void:
+	var s := _screen()
+	var packs: Array = s.battle.field.packs()
+	var m: Unit = s.battle.mechs()[0]
+	var locks := [[packs[0], m], [packs[1], m]]
+	var told: Array = []
+	var handed := [false]
+	var view := Vector3(s._map.scroll_x, s._map.scroll_y, s._map.zoom)
+	s._map.play_locks(locks, func(h: Unit, p: Unit) -> void: told.append([h, p]), func() -> void: handed[0] = true)
+	assert_eq(told.size(), 2, "both locks declared")
+	assert_true(told[0][0] == packs[0] and told[1][0] == packs[1] and told[1][1] == m, "each hunter with its prey, in order")
+	assert_true(handed[0], "then it hands on")
+	assert_false(s._map.cutscene_playing(), "nothing left playing")
+	assert_eq(Vector3(s._map.scroll_x, s._map.scroll_y, s._map.zoom), view, "the view where the player had it")
+	handed[0] = false
+	s._map.play_locks([], func(_h: Unit, _p: Unit) -> void: told.append([]), func() -> void: handed[0] = true)
+	assert_true(handed[0] and told.size() == 2, "no lock: it hands on and declares nothing")
+	s.free()
+
+
+## The painting's edge stands on the seam (Ryan, 10 November: "The point of the seam was to
+## visually represent where the tears can open"): the seam's own row is the painting's, where a
+## tear opens, and the row past it the reconstruction's, at the start and after every creep, in
+## either view.
+func test_the_paintings_edge_stands_on_the_seam() -> void:
+	var s := _screen()
+	var f: Battlefield = s.battle.field
+	var was := Bleed.everywhere
+	Bleed.everywhere = false
+	var none := PackedVector3Array()
+	for step in range(4):
+		var grad := Bleed.gradient(f, Vector2.ZERO, 48.0)
+		var col := Hex.axial_to_offset(f.map.gate).x
+		var on := MapOrient.to_pixel(Hex.offset_to_axial(col, f.seam_row), 48.0)
+		var past := MapOrient.to_pixel(Hex.offset_to_axial(col, f.seam_row + 1), 48.0)
+		assert_eq(Bleed.solid(on, grad, none), 0.0, "the seam's row %d is the painting's" % f.seam_row)
+		assert_eq(Bleed.solid(past, grad, none), 1.0, "the row past it is solid ground")
+		f.peak()
+	Bleed.everywhere = was
+	s.free()
+
+
+## The boss's picture on the map is its own, drawn for its size (10 November: its 16-pixel token
+## blown up to that size was a blob): every foe that can stand as the boss, a domain's bosses and
+## its bench, has one wherever it has a combat sprite to cut it from (tools/foeforge `boss`),
+## larger than its token, and every picture in art/foes names such a foe, so a renamed id or a
+## new boss's art fails here until the cut is run again.
+func test_every_boss_has_its_map_picture() -> void:
+	var db := ContentDB.load_default()
+	var can_lead := {}
+	for fid in db.factions.keys():
+		for id in db.bosses_of(str(fid)) + db.bench_of(str(fid)):
+			can_lead[str(id)] = true
+	assert_false(can_lead.is_empty(), "content names its bosses")
+	for id in can_lead.keys():
+		if not ResourceLoader.exists("res://art/foes/%s_combat.png" % id):
+			continue
+		assert_true(ResourceLoader.exists("res://art/foes/%s_boss.png" % id), "%s has its map picture (tools/foeforge/forge.py boss)" % id)
+		var pic := Sprites.map_boss(str(id))
+		var token := Sprites.map_foe(str(id))
+		if pic != null and token != null:
+			assert_true(pic.get_height() > token.get_height(), "%s's picture is drawn larger than its token" % id)
+	for f in DirAccess.get_files_at("res://art/foes"):
+		if f.ends_with("_boss.png"):
+			assert_true(can_lead.has(f.trim_suffix("_boss.png")), "%s is a boss or a bench hero content names" % f)
+	var s := _screen()
+	var boss: Unit = s.battle.boss
+	var tex := BattleMapView.foe_picture(boss)
+	assert_true(tex != null, "the battle's boss has a picture")
+	assert_eq(BattleMapView.sprite_size(boss, tex).y, BattleMapView.BOSS_SPRITE_H, "and stands at the boss's size")
+	s.free()
+
+
 func test_hold_shows_a_readout() -> void:
 	var s := _screen()
 	var m: Unit = s.battle.mechs()[0]
@@ -727,7 +819,7 @@ func test_hold_shows_a_readout() -> void:
 	var sq: Unit = s.battle.field.packs()[0]
 	s._on_unit_held(sq)
 	assert_true(s._details_entry.text().contains("×%d" % int(sq.member_list()[0][1])), "the pack's members, each at its count")
-	assert_eq(s._details_entry.text().contains("Ring %d" % ContentDB.HUNTER_RING), sq.behaviour == "hunt", "its ring, the pounce, only when it hunts (the long wall brief 7.2)")
+	assert_false(s._details_entry.text().contains("Ring"), "no ring line: a hunter catches at the engage range everyone shares (10 November)")
 	assert_true(s._details_entry.text().contains("Marches") or s._details_entry.text().contains("Hunts"), "and what it is doing")
 	if sq.behaviour != "hunt":
 		assert_true(s._details_entry.text().contains("striking it for %d" % Battlefield.strike_of(sq)), "a pusher's panel says what it strikes the gate for (10 November): %s" % s._details_entry.text())

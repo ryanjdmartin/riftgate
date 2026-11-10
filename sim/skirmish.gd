@@ -783,6 +783,13 @@ func foe_blow(f: Foe) -> int:
 	return f.damage_of(f.action, incoming_rally(f))
 
 
+## The number a foe's intent shows: the blow as it would land (foe_blow) for a move that strikes
+## or is still gathering to, its move's own value for any other (a rally's, a mend's). The one
+## read for the field's chip and the readout's.
+func intent_value(f: Foe) -> int:
+	return foe_blow(f) if f.attacks() or f.gathering() else int(f.action.get("value", 0))
+
+
 ## What the rallies on their way to a foe add to its move (rallies_on), each at its move's value.
 func incoming_rally(x: Foe) -> int:
 	var n := 0

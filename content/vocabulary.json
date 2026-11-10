@@ -1040,17 +1040,18 @@
    "id": "engagement_zone",
    "category": "battlefield",
    "name": "Ring",
-   "codex": "A hunter's ring, two hexes, is how close it must be to catch: it pounces over whatever stands between. Every hunter's is the same, and no other pack has one. The map draws it round where the hunter's walk ends, where the catch is judged, and round the hunter while a catch it made waits. No pack joins a fight; one pack is one fight. A machine's attack range is one hex: it can join a fight on a pack beside it.",
+   "codex": "A hunter catches what stands beside where its walk ends: the engage range, one hex, the same reach every unit has on the map, so a machine joins a fight on a pack beside it and a hunter catches a machine beside it. The map draws the ring of hexes beside the hunter's walk's end, where the catch is judged, and round the hunter while a catch it made waits. No other pack has a ring. No pack joins a fight; one pack is one fight.",
+
    "status": "implemented",
    "design": {
-    "holes": "One number in the engine, the pounce (ContentDB.HUNTER_RING, a placeholder: Ryan, 29 October, \"wolfs pounce\"), serving the catch and the ring drawn; no foe or composition carries a ring since 8 November (Ryan: \"I had also assumed that all range rings were purged from code\"). A machine's attack range is one for every chassis (the long wall's placeholder), an exception only where a role earns it."
+    "holes": "One number in the engine, the engage range (Unit.ENGAGE_RANGE, a placeholder: adjacency), serving the machines' reach onto a pack, the hunters' catch and the ring drawn; the hunters' pounce of two (Ryan, 29 October, \"wolfs pounce\") retired 10 November with the body blocking, so the catch is \"the same melee engage range as everyone else\" (Ryan); no foe or composition carries a ring since 8 November."
    }
   },
   {
    "id": "pack_behaviour",
    "category": "battlefield",
    "name": "Behaviour",
-   "codex": "A pack pushes unless its composition hunts. A pusher walks toward the gate and threatens nothing else. A hunter locks one machine, by its caveat (the nearest, weakest, strongest or slowest), puts its tag on it and walks toward it; when it ends its walk with its prey inside its ring it has caught it, and that fight comes first on your next turn. A caught machine cannot move until the fight, and is caught again while the hunter lives. A prey that keeps its distance is safe; one sealed off behind walls and machines is not: the hunter catches whichever machine it can reach that turn standing nearest it, and its tag moves there.",
+   "codex": "A pack pushes unless its composition hunts. A pusher walks toward the gate and threatens nothing else. A hunter locks one machine, by its caveat (the nearest, weakest, strongest or slowest), puts its tag on it and walks toward it; when it ends its walk beside its prey it has caught it, and that fight comes first on your next turn. A caught machine cannot move until the fight, and is caught again while the hunter lives. A prey that keeps its distance is safe; one sealed off behind walls and machines is not: the hunter catches whichever machine it can reach that turn standing nearest it, and its tag moves there.",
    "status": "implemented",
    "design": {
     "holes": "Push and hunt are the only behaviours; the hunters' caveats are placeholders."
@@ -1130,7 +1131,7 @@
    "id": "tear",
    "category": "battlefield",
    "name": "Tear",
-   "codex": "A mouth beside the rift's. At a peak of Rift Pressure the ramp's count of tears (one; two from Convergence 8) open on the seam, one row past the rift's mouth and creeping toward the wall, as far from the rift and the other tears as the row allows, and every tear open before the peak sends a patrol. A tear opens a peak before it first sends, so where the next flood comes from is known an interval ahead. Tears stay open and never close.",
+   "codex": "A mouth beside the rift's. At a peak of Rift Pressure the ramp's count of tears (one; two from Convergence 8) open on the seam, a few rows past the rift (row 4 at twelve deep) and creeping toward the wall, as far from the rift and the other tears as the row allows, and every tear open before the peak sends a patrol. A tear opens a peak before it first sends, so where the next flood comes from is known an interval ahead. Tears stay open and never close.",
    "status": "implemented",
    "design": {
     "holes": "Drawn as a first cut for the phone; its mark and its opening are to judge running (RIFTGATE_PEAK_DEBUG=1 peaks every enemy turn)."
@@ -1140,7 +1141,7 @@
    "id": "seam",
    "category": "battlefield",
    "name": "Seam",
-   "codex": "The flattening's edge: the row the rift's bleed reaches, the first row past the rift's mouth at the start, creeping two rows toward the gate at every peak, as far as the row before the wall. The tears open on it. It is the clock's picture: no rule reads the ground behind it.",
+   "codex": "The flattening's edge: the row the rift's bleed reaches, a row for every five of the field's depth and one more at the start (row 4 at twelve deep), creeping two rows toward the gate at every peak, as far as the row before the wall. The tears open on it. It is the clock's picture: no rule reads the ground behind it.",
    "status": "implemented",
    "design": {
     "holes": "The creep a peak is a placeholder (the ramp's table, flat at two)."

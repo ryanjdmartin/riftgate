@@ -489,6 +489,18 @@ func _apply_battle_pose() -> void:
 					s._map.zoom_at(s._map.size * 0.5, 2.0)
 					s._map.scroll_to_unit(m)
 					break
+		"caches", "cachesflat":
+			# Zoomed in on the first cache (with RIFTGATE_CACHE_DEBUG=1 the three kinds beside the
+			# team, on solid ground) or the last (the three by the rift, under the painting).
+			var cs: Array = b.field.caches
+			if not cs.is_empty():
+				var on: Vector2i = cs[0 if _pose == "caches" else cs.size() - 1]["pos"]
+				s._map.zoom_at(s._map.size * 0.5, 2.0)
+				var p: Vector2 = s._map.center(on)
+				s._map.scroll_x = s._map.size.x * 0.5 - p.x * s._map.zoom
+				s._map.scroll_y = s._map.size.y * 0.5 - p.y * s._map.zoom
+				s._map._clamp_scroll()
+				s._map.queue_redraw()
 		"zoom", "zoomlast":
 			# Zoomed in twice on the first (or last) mech, panned so it sits mid-screen.
 			s._map.zoom_at(s._map.size * 0.5, 2.4)
@@ -504,6 +516,33 @@ func _apply_battle_pose() -> void:
 			# with the wall at the left) and the boss's picture at its size beside it (9 November).
 			s._map.scroll_to_top()
 			s._map.queue_redraw()
+		"tear":
+			# A peak of Rift Pressure (RIFTGATE_PEAKS=<n> for more): the seam crept, a tear open on
+			# its row, the map looking at the newest, a little off the middle so the ring is seen
+			# to stand on its hex under its name wherever the map is scrolled (10 November).
+			for i in range(maxi(1, int(OS.get_environment("RIFTGATE_PEAKS")))):
+				b.field.peak()
+			s._refresh()
+			if not b.field.tears.is_empty():
+				var tp: Vector2 = s._map.center(b.field.tears[b.field.tears.size() - 1]["pos"])
+				s._map.scroll_x = s._map.size.x * 0.4 - tp.x * s._map.zoom
+				s._map.scroll_y = s._map.size.y * 0.6 - tp.y * s._map.zoom
+				s._map._clamp_scroll()
+			s._map.queue_redraw()
+		"peak":
+			# A peak's cutscene (10 November): the seam's creep under its front, then the tear
+			# bursting open, then the map back where it was; RIFTGATE_SHOT_FRAME picks the moment
+			# (a cloud session draws few frames a second: the sweep near 12, the tear's burst near 26).
+			s._map.hold_peak()
+			b.field.peak()
+			s._refresh()
+			s._map.play_peak(Callable())
+		"hunted":
+			# A hunter turns on a machine (10 November): the map gliding in on it, zoomed, the
+			# HUNTED band over it, then back; RIFTGATE_SHOT_FRAME picks the moment (in a cloud
+			# session the band over the hunter near 9).
+			var lm: Unit = b.mechs()[0]
+			s._map.play_locks([[b.field.packs()[0], lm]], s._show_lock, s._after_locks, maxf(s._map.size.y * 0.5, s.WARN_BAND_Y + s.WARN_BAND_H + 130.0))
 		"fracture":
 			# A Fracture announced as a fight's tally earns it (Ryan, 9 November: "Fractures need to
 			# be announced"): the band over the map and the top bar's gauge flashing (the default

@@ -6,11 +6,11 @@ extends RefCounted
 ##
 ## A turn:
 ##   1. plan_walks()        where every pack will walk on the enemy's turn, against the field as
-##                          it stands: a pusher toward the gate, a hunter toward its prey, round
-##                          the grounded machines, which are ground the horde goes round and
-##                          never a stop, through the other packs and under the flyers
+##                          it stands: a pusher toward the gate, a hunter toward its prey, through
+##                          every other unit (terrain alone blocks a walk since 10 November) and
+##                          never ending on one
 ##   2. the player's turn   (Battle) first every fight a hunter forced (forced_fights: its prey
-##                          in its ring, or the machine it took when its prey is sealed off), then
+##                          beside it, at the engage range), then
 ##                          fights the player picks (attack_roster): one pack is one fight (the
 ##                          long wall brief 3.4), nothing joins it, and the machines committed are
 ##                          those whose attack range covers it
@@ -28,12 +28,12 @@ class Walk:
 	var strikes := false             # it stops on the gate's apron and strikes the gate
 	var waits := false               # no way to its goal: it stays where it is
 	var catches: int = 0             # a hunter whose walk ends with what it comes for inside its ring: that machine's id
-	var prey: int = 0                # what a hunter comes for this turn, by id: its prey, or the machine it takes when its prey is sealed off (catch_of)
+	var prey: int = 0                # what a hunter comes for this turn, by id: its prey (catch_of)
 
 ## What the map knows of each foe type (ContentDB.pack_profiles): its move, its wings, its
 ## shown name. Battle fills it from content, and a pack is dressed from it when it is made or
 ## spawns, so the defaults are the content's and never an id's. Whether a pack hunts is its
-## composition's (pack_of), and a hunter's ring is the pounce alone (ContentDB.HUNTER_RING).
+## composition's (pack_of), and a hunter catches at the engage range alone (Unit.ENGAGE_RANGE).
 var foe_profiles: Dictionary = {}
 
 var map: BattleMap
@@ -63,11 +63,13 @@ var _patrol_index: int = 0
 var seam_row: int = 0   # seam_start(), set as the field takes its map
 
 
-## Where the seam stands at a battle's start (the long wall brief 3.2): the first row past the
-## rift's mouth at any depth (BattleMap.mouth_rows: 4 at twelve deep, 5 at twenty, the old
-## field's number).
+## Where the seam stands at a battle's start (the long wall brief 3.2): a share of the depth, a
+## row for every five of it rounded up (two at least, four at most) and one more: row 4 at twelve
+## deep, 5 at twenty, the old field's number. It was the first row past the rift's mouth while
+## the mouth was rows (to 10 November); the shapes now lay to the rift's row and the seam keeps
+## its own start. A placeholder.
 func seam_start() -> int:
-	return map.mouth_rows() + 1
+	return clampi(ceili(float(map.height) / 5.0), 2, 4) + 1
 
 
 ## The tears (Ryan's name, 30 October): the mouths beside the rift's, each {"pos": Vector2i,
@@ -145,8 +147,9 @@ static func strike_of(sq: Unit) -> int:
 ## Give a pack its foe types' map profile: its move and its wings. `foe` names the entry when
 ## the unit's own foe_id does not (the boss, which unpacks by its faction). No foe says whether
 ## its pack hunts (its composition does, pack_of) or how far it reaches: a hunter catches at the
-## pounce, one number (ContentDB.HUNTER_RING; Ryan, 8 November, the rings purged after a goblin
-## warband caught from three hexes through the Mandragoras' old back-rank ring).
+## engage range everyone shares (Unit.ENGAGE_RANGE; Ryan, 8 November, the rings purged after a
+## goblin warband caught from three hexes through the Mandragoras' old back-rank ring; 10
+## November, the pounce retired with the body blocking).
 func dress_pack(sq: Unit, foe: String = "") -> Unit:
 	var p: Dictionary = foe_profiles.get(foe if not foe.is_empty() else sq.foe_id, {})
 	if p.has("movespeed"):
@@ -210,14 +213,15 @@ func is_free(h: Vector2i) -> bool:
 	return map.has(h) and not map.is_structure(h) and unit_at(h) == null
 
 
-## Whether `mover` may pass the hex `occ` stands on, never stopping there (Ryan, 29 October:
-## "flyers and ground never interact except to fight", and enemies pass through enemies, since
-## "enemy units are flat sprites so it's not like they take up space"): an airborne unit passes
-## and is passed by everything, and a pack passes a pack. A grounded machine and a grounded
-## pack are each other's walls, and two grounded machines each other's (the player sequences
-## them: a move lands at once, so the next is planned from where it ended).
-static func passes(mover: Unit, occ: Unit) -> bool:
-	return mover.airborne() or occ.airborne() or (mover.is_enemy() and occ.is_enemy())
+## Whether `mover` may pass the hex `occ` stands on, never stopping there: always, since 10
+## November (Ryan, after his play of the long wall: "the body blocking just adds a layer of
+## complexity and pathing issues we just don't need anymore. The challenge now is in covering
+## the whole map from multitudes"; the units "slide under each other, as theoretically they're
+## from two different dimensional counts"). Terrain alone blocks a walk; nobody ends on another
+## unit's hex (can_stand, _landable). Until then a grounded machine and a grounded pack were each
+## other's walls, and two grounded machines each other's (29 October).
+static func passes(_mover: Unit, _occ: Unit) -> bool:
+	return true
 
 
 ## Whether `u` could stand with its anchor at `at`: every footprint hex in the map, passable,
@@ -423,91 +427,16 @@ func _taste(sq: Unit, m: Unit, at: Vector2i) -> int:
 
 
 ## Who a hunter standing where it stands has caught (bible section 4, the fights-picked row):
-## its prey inside its ring; or, when its prey is sealed off (`reaches`), the machine inside its
-## ring that stands nearest its prey (Ryan, 29 October: "my target if I can reach him,
-## otherwise the closest machine to my target that I can reach this turn, otherwise chase my
-## target"; "It's just punishing hiding"). Null when it has caught nobody.
+## its prey, when it stands within the engage range (in_ring). Null when it has caught nobody.
+## Until 10 November a prey sealed off by walls and machines cost the machine nearest it (the
+## stand-in, Ryan, 29 October: "It's just punishing hiding"); with every unit passing every
+## other nothing seals a prey off but the hexes beside it being taken, which is a screen the
+## player paid for with those machines' places, so the hunter closes on its prey and waits.
 func catch_of(sq: Unit) -> Unit:
 	var prey := pick_prey(sq)
 	if prey == null:
 		return null
-	if in_ring(sq, prey):
-		return prey
-	return null if reaches(sq, prey) else _stand_in(sq, sq.pos, prey)
-
-
-## Whether some hex a hunter can walk to puts `prey` inside its ring, by any route and over
-## any number of turns, with the machines where they stand now: the ground it crosses, round
-## the grounded machines, through the packs (they move) and under the flyers, onto a hex no
-## machine holds. False only when walls and machines seal the prey off, which is hiding: a
-## prey that keeps its distance is reached, and only its speed saves it.
-func reaches(sq: Unit, prey: Unit) -> bool:
-	var seen := {sq.pos: true}
-	var queue: Array[Vector2i] = [sq.pos]
-	while not queue.is_empty():
-		var h: Vector2i = queue.pop_front()
-		if _distance_from(sq, h, prey) <= ContentDB.HUNTER_RING and _landable(sq, h, {}):
-			return true
-		for n in Hex.neighbors(h):
-			if not seen.has(n) and _walkable(sq, n, {}):
-				seen[n] = true
-				queue.append(n)
-	return false
-
-
-## The machine a hunter at `at` takes when its prey is sealed off: of the machines inside its
-## ring from there, the one standing nearest its prey, its caveat deciding a tie and then the
-## field's order. Never the prey, and never a machine whose passive says never_hunted (the
-## Prairie Dog's, which is never hunted). Null when its ring holds none.
-func _stand_in(sq: Unit, at: Vector2i, prey: Unit) -> Unit:
-	var best: Unit = null
-	var best_key := Vector2i.ZERO
-	for m in mechs():
-		if m == prey or Effects.never_hunted(m) or _distance_from(sq, at, m) > ContentDB.HUNTER_RING:
-			continue
-		var key := Vector2i(unit_distance(m, prey), _taste(sq, m, at))
-		if best == null or key.x < best_key.x or (key.x == best_key.x and key.y < best_key.y):
-			best = m
-			best_key = key
-	return best
-
-
-## A hunter's walk when its prey is sealed off: to the hex this turn's move reaches whose
-## stand-in (`_stand_in`) stands nearest its prey, the stand-in's caveat, the field's order and
-## then the shorter walk deciding, so the machine it ends beside is the one `catch_of` reads.
-## Null when no hex its move reaches puts a machine inside its ring: it closes on its prey.
-func _stand_in_walk(sq: Unit, blocked: Dictionary, prey: Unit) -> Walk:
-	var found := _walk_search(sq, blocked, sq.movespeed)
-	var dist: Dictionary = found[0]
-	var prev: Dictionary = found[1]
-	var order := mechs()
-	var goal := sq.pos
-	var taken: Unit = null
-	var best_key: Array = []
-	for h in dist.keys():
-		var hx: Vector2i = h
-		if not _landable(sq, hx, blocked):
-			continue
-		var m := _stand_in(sq, hx, prey)
-		if m == null:
-			continue
-		var key: Array = [unit_distance(m, prey), _taste(sq, m, hx), order.find(m), int(dist[hx])]
-		if taken == null or key < best_key:
-			taken = m
-			best_key = key
-			goal = hx
-	if taken == null:
-		return null
-	var w := Walk.new()
-	var c := goal
-	while c != sq.pos:
-		w.path.push_front(c)
-		c = prev[c]
-	w.route = w.path.duplicate()   # it reaches the machine it takes this turn
-	w.end = goal
-	w.prey = taken.id
-	w.catches = taken.id
-	return w
+	return prey if in_ring(sq, prey) else null
 
 
 ## A boss patrols its ground outside the rift (Ryan, 22 September): one step to a standable
@@ -557,9 +486,8 @@ func _held_by_others(sq: Unit, ends: Dictionary) -> Dictionary:
 
 
 ## Whether a pack may walk with its anchor at `at`: every footprint hex in the map, ground the
-## horde can cross, no structure, and no machine it does not pass (`passes`): it walks through
-## the other packs and under a flyer, and a winged pack over everything. A grounded machine is
-## ground the horde goes round, never a stop. `blocked` is for stopping (`_landable`).
+## horde can cross, no structure, and no unit it does not pass (`passes`: every unit, since 10
+## November). `blocked` is for stopping (`_landable`).
 func _walkable(sq: Unit, at: Vector2i, _blocked: Dictionary) -> bool:
 	for o in sq.footprint:
 		var h: Vector2i = at + o
@@ -614,9 +542,9 @@ func apron_row() -> int:
 	return map.height - BattleMap.GATE_ROWS - 1
 
 
-## Whether a hunter anchored at `at` holds `u` inside its ring: the catch's own reach.
+## Whether a hunter anchored at `at` holds `u` inside its ring: the catch's own reach, the engage range.
 func catches_at(sq: Unit, at: Vector2i, u: Unit) -> bool:
-	return u != null and _distance_from(sq, at, u) <= ContentDB.HUNTER_RING
+	return u != null and _distance_from(sq, at, u) <= Unit.ENGAGE_RANGE
 
 
 ## The shortest distance from a pack anchored at `at` to a unit.
@@ -628,12 +556,11 @@ func _distance_from(sq: Unit, at: Vector2i, u: Unit) -> int:
 	return best
 
 
-## One pack's walk. A boss patrols, its escort with it. A hunter heads for the nearest hex it can reach that puts
-## its prey inside its ring, or as near as it gets; with its prey sealed off it takes the
-## machine nearest it that this turn's move can put inside its ring (`_stand_in_walk`). A
-## pusher heads for the nearest hex of the gate's apron. It walks as far as its move goes,
-## round the grounded machines, through the other packs and under the flyers, never ending on
-## another unit's hex. A pusher with no way to the gate waits, and the map says so.
+## One pack's walk. A boss patrols, its escort with it. A hunter heads for the nearest hex it
+## can reach that puts its prey within the engage range, or as near as it gets. A pusher heads
+## for its wall segment on the gate's apron row. It walks as far as its move goes, through every
+## other unit (10 November), never ending on another unit's hex. A pusher with no way to the gate
+## waits, and the map says so.
 func _walk(sq: Unit, blocked: Dictionary) -> Walk:
 	var w := Walk.new()
 	w.end = sq.pos
@@ -645,22 +572,18 @@ func _walk(sq: Unit, blocked: Dictionary) -> Walk:
 			w.end = step
 		return w
 	var prey: Unit = pick_prey(sq) if sq.behaviour == "hunt" else null
-	if prey != null and not reaches(sq, prey):
-		var taken := _stand_in_walk(sq, blocked, prey)
-		if taken != null:
-			return taken
 	var found := _walk_search(sq, blocked)
 	var dist: Dictionary = found[0]
 	var prev: Dictionary = found[1]
 	var goal := sq.pos
 	if prey != null:
 		w.prey = prey.id
-		var best_key := Vector2i(maxi(_distance_from(sq, sq.pos, prey) - ContentDB.HUNTER_RING, 0), 0)
+		var best_key := Vector2i(maxi(_distance_from(sq, sq.pos, prey) - Unit.ENGAGE_RANGE, 0), 0)
 		for h in dist.keys():
 			var hx: Vector2i = h
 			if not _landable(sq, hx, blocked):
 				continue
-			var key := Vector2i(maxi(_distance_from(sq, hx, prey) - ContentDB.HUNTER_RING, 0), int(dist[hx]))
+			var key := Vector2i(maxi(_distance_from(sq, hx, prey) - Unit.ENGAGE_RANGE, 0), int(dist[hx]))
 			if key.x < best_key.x or (key.x == best_key.x and key.y < best_key.y):
 				best_key = key
 				goal = hx
@@ -710,7 +633,7 @@ func _walk(sq: Unit, blocked: Dictionary) -> Walk:
 	w.route = route   # the whole way, of which the path is the first turn's
 	w.end = walked[walked.size() - 1] if not walked.is_empty() else sq.pos
 	w.strikes = prey == null and on_apron(sq, w.end)
-	if prey != null and _distance_from(sq, w.end, prey) <= ContentDB.HUNTER_RING:
+	if prey != null and _distance_from(sq, w.end, prey) <= Unit.ENGAGE_RANGE:
 		w.catches = prey.id
 	return w
 
@@ -796,16 +719,12 @@ func enemy_turn() -> Dictionary:
 		elif w.catches != 0:
 			var prey := unit_by_id(w.catches)
 			if prey != null:
-				if w.catches == sq.prey:
-					log.append("%s catches %s" % [sq.display_name, prey.display_name])
-				else:
-					var sealed := unit_by_id(sq.prey)
-					log.append("%s catches %s in %s's place" % [sq.display_name, prey.display_name, sealed.display_name if sealed != null else "its prey"])
+				log.append("%s catches %s" % [sq.display_name, prey.display_name])
 	return walks
 
 
 ## The fights a hunter forces (bible section 5): every hunter that has caught a machine
-## (`catch_of`: its prey inside its ring, or the machine it took when its prey is sealed off),
+## (`catch_of`: its prey beside it, within the engage range),
 ## and those fights come first on the player's turn. One pack is one fight (the long wall brief
 ## 3.4), a catch included (Ryan, 7 November, of two hunters on one machine: "Wouldn't it be two
 ## fights, since we're no longer merging fights?"): a fight per hunter, the prey in each, a prey's
@@ -860,10 +779,10 @@ func _direction_index(from: Vector2i, to: Vector2i) -> int:
 	return 0
 
 
-## Whether `u` stands inside a hunter's ring: within its pounce of it (ContentDB.HUNTER_RING, one
-## number for every hunter since the rings were purged, 8 November), a hunter's catch the one reader.
+## Whether `u` stands inside a hunter's ring: within the engage range of it (Unit.ENGAGE_RANGE, one
+## number for everyone; the hunters' pounce of two retired 10 November), a hunter's catch the one reader.
 static func in_ring(sq: Unit, u: Unit) -> bool:
-	return unit_distance(sq, u) <= ContentDB.HUNTER_RING
+	return unit_distance(sq, u) <= Unit.ENGAGE_RANGE
 
 
 ## The shortest hex distance between any hex of `a` and any hex of `b`.
@@ -1139,8 +1058,8 @@ func machine_adjacent(h: Vector2i) -> bool:
 ## Where a pack emerging at a mouth lands: the nearest hex it can stand on with no machine
 ## adjacent, by ring search; the nearest it can stand on at all when none is clear. With a
 ## `floor_row` the search never enters a row nearer the rift than it (the opening's packs stay
-## out of the rift's mouth, Battle._open_row: a shape may lay water or a wall on the first row
-## past the mouth, and the pack goes along it rather than back into the mouth).
+## off the rift's row, Battle._open_row: a shape may lay water or a wall on the floor row, and
+## the pack goes along it rather than back onto the rift's).
 func landing(sq: Unit, mouth: Vector2i, floor_row: int = -1) -> Vector2i:
 	var seen := {mouth: true}
 	var queue: Array[Vector2i] = [mouth]

@@ -214,10 +214,10 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 		# its pace known (_open_rows, below).
 		if not forms.is_empty():
 			for k in range(nf):
-				placed.append([forms[k % forms.size()], Hex.offset_to_axial((w_cols * (k + 1)) / (nf + 1), map.mouth_rows()), 1])
+				placed.append([forms[k % forms.size()], Hex.offset_to_axial((w_cols * (k + 1)) / (nf + 1), OPENING_FLOOR_ROW), 1])
 		if not patrols.is_empty():
 			for k in range(np):
-				placed.append([patrols[k % patrols.size()], Hex.offset_to_axial(0 if k % 2 == 0 else w_cols - 1, map.mouth_rows()), 2])
+				placed.append([patrols[k % patrols.size()], Hex.offset_to_axial(0 if k % 2 == 0 else w_cols - 1, OPENING_FLOOR_ROW), 2])
 	var gate_o := Hex.axial_to_offset(map.gate)
 	var i := 0
 	var face_rng := RandomNumberGenerator.new()
@@ -307,15 +307,17 @@ static func make_boss_unit(content: ContentDB, faction_id: String, t: int, boss_
 ## until it has caught nobody, so no battle opens on a forced fight (Ryan, 6 November: "I
 ## probably would shy away from hitting the first battle with a fight in the first turn, that's
 ## for sure. That's just mean"); its first walk is the enemy's first turn, after the player's.
-## A hunter's ring is the pounce, 2 (ContentDB.HUNTER_RING), and the machines open four rows or
-## more below the mouth (BattleMap.mouth_rows: three rows at twelve deep), so the mouth's edge
-## always clears.
+## A hunter catches at the engage range, 1 (Unit.ENGAGE_RANGE), and the machines open eight rows or
+## more below the floor, so a hunter always finds a row clear of them.
+const OPENING_FLOOR_ROW := 1   # the row nearest the rift a pack opens on: the rift's own row is the spawns' (10 November, the mouth no longer rows)
+
+
 func _open_row(sq: Unit, col: int, moves: int) -> void:
-	var row := maxi(map.mouth_rows(), field.apron_row() - moves * sq.movespeed)   # placeholder (the long wall brief)
-	sq.pos = field.landing(sq, Hex.offset_to_axial(col, row), map.mouth_rows())
-	while sq.behaviour == "hunt" and row > map.mouth_rows() and field.catch_of(sq) != null:
+	var row := maxi(OPENING_FLOOR_ROW, field.apron_row() - moves * sq.movespeed)   # placeholder (the long wall brief)
+	sq.pos = field.landing(sq, Hex.offset_to_axial(col, row), OPENING_FLOOR_ROW)
+	while sq.behaviour == "hunt" and row > OPENING_FLOOR_ROW and field.catch_of(sq) != null:
 		row -= 1
-		sq.pos = field.landing(sq, Hex.offset_to_axial(col, row), map.mouth_rows())
+		sq.pos = field.landing(sq, Hex.offset_to_axial(col, row), OPENING_FLOOR_ROW)
 
 
 ## Whether the boss's seal holds: it cannot be ordered onto and joins no fight until the Rupture.

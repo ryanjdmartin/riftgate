@@ -10,7 +10,9 @@ corner, so nobody mistakes it for a pick. A render picked through tools/foeforge
     python3 tools/placeholder_art.py king_gel   # just these, overwriting
     python3 tools/placeholder_art.py --force    # every foe below, overwriting
 
-Then run Godot's import (README) so the new PNGs load.
+Then run Godot's import (README) so the new PNGs load. A foe that can stand as the boss on the
+map (a domain's boss) has a larger picture cut from its combat sprite, the stamp left off:
+`python3 tools/foeforge/forge.py boss <id>` after drawing one (a test fails until it is there).
 """
 import math
 import os
