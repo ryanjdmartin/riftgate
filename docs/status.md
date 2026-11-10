@@ -27,7 +27,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1085 tests, 304,330 checks, green (10 November, main with the Text tab and the side
+- Tests: 1085 tests, 323,678 checks, green (10 November, `ccr-1e6e6571-7x7ayr` with the shapes laid to the rift's row, on main with the Text tab and the side
   session's work: the runner's crash check, the caches' pictures, the audit's structure 13; one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
   either map view on 6 November); about four minutes in a cloud session, twenty on a slow one;
