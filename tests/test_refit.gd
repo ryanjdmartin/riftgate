@@ -22,7 +22,9 @@ func test_a_spec_parses_its_parts_and_all_is_the_model_as_leaned() -> void:
 	var some := Refit.parse("regen=3, cooling=-1")
 	assert_false(bool(some["die"]), "a part not named is off")
 	assert_eq([str(some["regen"]), int(some["cooling"])], ["3", -1], "a flat regen and an offset as written")
-	assert_eq(Refit.parse(""), {"die": false, "regen": "", "cooling": 0, "heat1": false, "barrier": "", "vents": ""}, "nothing asked, nothing set")
+	assert_eq(Refit.parse(""), {"die": false, "regen": "", "cooling": 0, "heat1": false, "hotter": 0, "barrier": "", "vents": ""}, "nothing asked, nothing set")
+	assert_eq(int(Refit.parse("all,hotter=2")["hotter"]), 2, "and how much hotter the weapons run")
+	assert_eq(str(Refit.parse("all,vents=guns,regen=2")["regen"]), "2", "a part named later takes the place of all's own: a flat regen over half the gauge")
 	assert_eq(str(Refit.parse("die,barrier=off")["barrier"]), "off", "the Barrier basic's rule as written")
 	assert_eq(str(Refit.parse("all,vents=guns")["vents"]), "guns", "and what a vent's slot takes")
 
@@ -100,6 +102,29 @@ func test_the_regen_the_cooling_and_the_basics_heat_are_each_their_own_part() ->
 		elif face is Dictionary:
 			assert_eq(int(face.get("heat", 0)), int(before.components[cid].get("face", {}).get("heat", 0)), "%s is no basic gun: its heat is left" % cid)
 	assert_true(basics > 0, "content has basic guns")
+	# Hotter weapons: every weapon makes that much more, fixed pieces too, after the basics' one;
+	# equipment, shields and vents are left; a regen of nought and a flat one over "all" hold.
+	var hot := _own()
+	Refit.apply(hot, Refit.parse("heat1,hotter=2"))
+	var guns := 0
+	for cid in hot.components.keys():
+		var face = hot.components[cid].get("face", null)
+		if not (face is Dictionary):
+			continue
+		var was := int(warm.components[cid].get("face", {}).get("heat", 0))
+		if str(face.get("kind", "")) == "attack" and int(face.get("power", 0)) > 0:
+			guns += 1
+			assert_eq(int(face.get("heat", 0)), was + 2, "%s, a weapon, makes two more than under heat1 alone" % cid)
+		else:
+			assert_eq(int(face.get("heat", 0)), was, "%s is no weapon: its heat is left" % cid)
+	assert_true(guns > basics, "the tier-zero guns and every other weapon")
+	var none := _own()
+	Refit.apply(none, Refit.parse("all,vents=guns,regen=0"))
+	var two := _own()
+	Refit.apply(two, Refit.parse("all,vents=guns,regen=2"))
+	for id in none.chassis.keys():
+		assert_eq(int(none.chassis[id].get("shield_regen", 0)), 0, "%s: a regen of nought over all's half" % id)
+		assert_eq(int(two.chassis[id].get("shield_regen", 0)), 2, "%s: a flat two over all's half" % id)
 
 
 ## The model as leaned plays: a team of the first chassis it fields fights a pack to its end on

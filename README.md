@@ -299,7 +299,8 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # --refit SPEC lays the refit pass's what-if over the run's content (sim/refit.gd; the brief
 # docs/briefs/refit_pass.md): "die" (every stock shield and vent swapped for a defensive basic, the
 # machines back in design unfielded), "regen=half" or "regen=N", "cooling=N", "heat1" (the basics
-# at heat one), or "all" for the first three as leaned; with the die, "barrier=off" (no Barrier
+# at heat one), "hotter=N" (every weapon N heat more, a read for the heat prices), or "all" for
+# the die, half the gauge and heat one (a part named after it takes its place: all,regen=2); with the die, "barrier=off" (no Barrier
 # among the basics: Armoured or a gun in its place), "barrier=cooldown" (it goes dark the round
 # after it is spent), "barrier=heatN" (it costs N heat) or "barrier=ward" (a Ward in its place),
 # and "vents=guns" (a vent's slot takes a gun, so a die holds a defensive basic only where a
@@ -505,8 +506,10 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # and all,barrier=ward puts a Ward in its place (a breach lands on the shield the regen refills).
 # On the phone a debug build's SETTINGS has REFIT TRIAL (OFF, MODEL, EVERY, RESTS, NONE: the
 # model with its Barrier basic where a Halo stood, on every die, on every die and resting, or on
-# none): pick one, close the app, open it, and start a new battle or run, since a saved one keeps
-# the dice it was saved with.
+# none) and REFIT REGEN under it (0, 1, 2, 3, HALF: what every shield regains a round while a
+# trial is on, two the placeholder since Ryan's first read of 10 November; on the desk name it
+# after the spec, RIFTGATE_REFIT=all,vents=guns,regen=2): pick, close the app, open it, and start
+# a new battle or run, since a saved one keeps the dice it was saved with.
 # RIFTGATE_HALO=off|all (any run) draws no halo round the lit parts, or one round every lit part, to compare
 # with the vetted set (31 October).
 # RIFTGATE_PLUME=off (any run) draws a booster's ring in place of its plume (the Stingray's, on
