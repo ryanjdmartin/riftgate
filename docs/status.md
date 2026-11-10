@@ -183,7 +183,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   so on the tab: entries' own names, the lines the code composes from numbers, the screens'
   furniture and Jenny's lines. Checked on a local copy of the page with a stand-in database
   (signing, writing, the next row, a live sync under a half-typed text, a fold into
-  `chassis.json` and the hand-laid `foes.json`, both flags, a phone's width).
+  `chassis.json` and the hand-laid `foes.json`, both flags, a phone's width), then published
+  (Pages, below). The branch waits on his word to land on main.
 - **The Lammergeier's rework** (9 November, `ccr-a0b35006-od22d2`; the bible's Lammergeier row):
   Ryan sent it back for more than a fix ("A chassis based around opening an empty spot isn't a
   good design"), the slot form waiting on arrivals the long wall cut. His shape, built: "the
@@ -560,8 +561,8 @@ commands are in `README.md`.
   merge; it carries the hunt the composition's and the rings purged, the map session's shapes and
   field rows, the playtest list of 9 November, the Polar Bear's kit and name and every id
   following its name). Main's file is v0.497 since the Lammergeier's rework landed (its row, the
-  Gel's and the reinforcement row's slot-mine lines, the tables), unpublished, its republish on
-  Ryan's word. BASE for the next merge is `f048e67`'s file. The live
+  Gel's and the reinforcement row's slot-mine lines, the tables), and this branch's v0.498 with the
+  hangar row's tabs and the shown-text row, both unpublished, the republish on Ryan's word. BASE for the next merge is `f048e67`'s file. The live
   page may carry rows ahead of main's code while a branch has not landed (the music session's
   track rows: Hold The Line's settled pair and its trial notes, Night Shift's duelling basses,
   The Far Bank's fretless bass). Before
@@ -576,18 +577,15 @@ commands are in `README.md`.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
-  the last publish's before it is replaced, and `edits` and `designs` read first. At the page's
-  version 216 (9 November, main at `f048e67`, every id following its name on Ryan's word: "Yes,
-  rename them all"): the files changed since version 215 (main at `a95e0a1`, which the page
-  matched file for file, the Polar Bear's id and the hunts work of 8 November) and the old ids'
-  27 paths removed; the Kite's and the Buzzard's cards, models and renders and the renamed foes'
-  sprites checked on a local copy of the page. Behind main since the Lammergeier's rework landed
-  (`content/chassis.json`, `components.json` and `vocabulary.json`, and `designs.json` from its
-  briefs; the page and every other file as main's): the publish was refused by the permission
-  check as unrequested, so it waits on Ryan's word. `edits` empty, `designs` the two folded ideas (the Giant
-  Petrel and the Needletail, briefed), and one name candidate of Ryan's, the Tesla Gauntlets of
-  28 September, still saying "the Armadillo's status" (his words of then, kept). Behind main since the Lammergeier's rework landed (9 November) by `content/chassis.json`,
-  `content/components.json` and `content/vocabulary.json` (the Mines), its republish on Ryan's word.
+  the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
+  page's Version 218 (10 November, this branch at `5a490e5`): the page with its Text tab,
+  `hangar/text.json` new beside it (332 files) and `designs.json` with its stamp. The version
+  before it was a whole publish of main at `2d489f7` that no record names (the live page and its
+  content matched that commit byte for byte, the Lammergeier's rework on it), so the page was not
+  behind main as the last handoff said; version 216 was main at `f048e67`. `edits` empty, `text`
+  empty, `designs` the two folded ideas (the Giant Petrel and the Needletail, briefed), and one
+  name candidate of Ryan's, the Tesla Gauntlets of 28 September, still saying "the Armadillo's
+  status" (his words of then, kept). The Text tab's ledger is empty until he signs.
   `build/hangar/designs.json` is one
   878 KB line, so a session that must read it whole before publishing writes it indented first.
   Its lit parts show as the phone's renderer shows
