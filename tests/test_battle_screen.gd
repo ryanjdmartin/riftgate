@@ -703,7 +703,7 @@ func test_a_peak_is_held_until_its_cutscene_plays() -> void:
 	var handed := [false]
 	s._map.play_peak(func() -> void: handed[0] = true)
 	assert_true(handed[0], "the cutscene hands on")
-	assert_false(s._map.peak_playing(), "and is over")
+	assert_false(s._map.cutscene_playing(), "and is over")
 	assert_eq(s._map.seam_shown, -1.0, "the seam drawn as the field has it")
 	assert_eq(s._map.tears_shown, -1, "and every tear")
 	# A turn with no peak hands on the same way.
@@ -711,6 +711,30 @@ func test_a_peak_is_held_until_its_cutscene_plays() -> void:
 	handed[0] = false
 	s._map.play_peak(func() -> void: handed[0] = true)
 	assert_true(handed[0], "nothing to show: at once")
+	s.free()
+
+
+## Every hunter that turns on a machine in a turn is declared, each in its turn (Ryan, 10
+## November: "We should pan and zoom to hunters when they acquire as well"; one a turn before,
+## the first lock's): the map hands each pair to the screen's declaration and then hands on.
+## Headless nothing glides, so all of it happens at once and the view is left as it was.
+func test_every_lock_of_a_turn_is_declared() -> void:
+	var s := _screen()
+	var packs: Array = s.battle.field.packs()
+	var m: Unit = s.battle.mechs()[0]
+	var locks := [[packs[0], m], [packs[1], m]]
+	var told: Array = []
+	var handed := [false]
+	var view := Vector3(s._map.scroll_x, s._map.scroll_y, s._map.zoom)
+	s._map.play_locks(locks, func(h: Unit, p: Unit) -> void: told.append([h, p]), func() -> void: handed[0] = true)
+	assert_eq(told.size(), 2, "both locks declared")
+	assert_true(told[0][0] == packs[0] and told[1][0] == packs[1] and told[1][1] == m, "each hunter with its prey, in order")
+	assert_true(handed[0], "then it hands on")
+	assert_false(s._map.cutscene_playing(), "nothing left playing")
+	assert_eq(Vector3(s._map.scroll_x, s._map.scroll_y, s._map.zoom), view, "the view where the player had it")
+	handed[0] = false
+	s._map.play_locks([], func(_h: Unit, _p: Unit) -> void: told.append([]), func() -> void: handed[0] = true)
+	assert_true(handed[0] and told.size() == 2, "no lock: it hands on and declares nothing")
 	s.free()
 
 

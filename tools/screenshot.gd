@@ -537,6 +537,12 @@ func _apply_battle_pose() -> void:
 			b.field.peak()
 			s._refresh()
 			s._map.play_peak(Callable())
+		"hunted":
+			# A hunter turns on a machine (10 November): the map gliding in on it, zoomed, the
+			# HUNTED band over it, then back; RIFTGATE_SHOT_FRAME picks the moment (in a cloud
+			# session the band over the hunter near 9).
+			var lm: Unit = b.mechs()[0]
+			s._map.play_locks([[b.field.packs()[0], lm]], s._show_lock, s._after_locks, maxf(s._map.size.y * 0.5, s.WARN_BAND_Y + s.WARN_BAND_H + 130.0))
 		"fracture":
 			# A Fracture announced as a fight's tally earns it (Ryan, 9 November: "Fractures need to
 			# be announced"): the band over the map and the top bar's gauge flashing (the default

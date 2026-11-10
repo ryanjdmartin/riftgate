@@ -102,7 +102,7 @@ func _init() -> void:
 
 func set_field(f: Battlefield) -> void:
 	field = f
-	_end_peak()
+	_end_cutscene()
 	_layout()
 	scroll_to_bottom()
 	# The battlefield is geometry with the other world bleeding in (decided 19 September):
@@ -978,26 +978,34 @@ func _tear_opening(h: Vector2i, c: Vector2, age: float) -> float:
 	return 1.0 + 2.2 * g * g * g + 1.2 * g * g
 
 
-# ---------------------------------------------------------------- a peak's cutscene
+# ---------------------------------------------------------------- the cutscenes
 
-## A peak of Rift Pressure shown as it happens (Ryan, 10 November: a tear "needs ... an
-## animation/cutscene when one opens. And an animation/cutscene when the seam moves, too"). The
-## field has already peaked when the enemy's turn is taken, so the screen calls hold_peak before
-## it (the map keeps the seam where it stood and the new tears unseen while the packs walk) and
-## play_peak after the walks: the map glides to the seam, the painting's edge sweeps to its new
-## row under a hot violet front with its name on it, then the map glides to each new tear as it
-## bursts open, and back to where the player was looking; then `done`. A press on the map skips
-## to the end. Headless, or with nothing to show, `done` runs at once. First cuts, judged running
-## (RIFTGATE_PEAK_DEBUG=1 peaks every enemy turn).
+## The map shows a thing as it happens (Ryan, 10 November: a tear "needs ... an
+## animation/cutscene when one opens. And an animation/cutscene when the seam moves, too"; "We
+## should pan and zoom to hunters when they acquire as well"): it glides to the thing, zooming in
+## on what stands on one hex (a tear, a hunter), shows it, and glides back to where the player
+## was looking, at the zoom they had. One plays at a time; a press on the map skips to its end;
+## headless, or with nothing to show, it hands on at once. First cuts, judged running.
+##
+## A peak of Rift Pressure: the field has already peaked when the enemy's turn is taken, so the
+## screen calls hold_peak before it (the map keeps the seam where it stood and the new tears
+## unseen while the packs walk) and play_peak after the walks: the map glides to the seam, the
+## painting's edge sweeps to its new row under a hot violet front with its name on it, then the
+## map glides in on each new tear as it bursts open (RIFTGATE_PEAK_DEBUG=1 peaks every enemy
+## turn). A hunter's lock: play_locks glides in on each hunter that turned on a machine, in
+## turn, and the screen declares it there.
 signal peak_beat(what: String)   # "seam" as the creep starts, "tear" as each opens: the screen's sounds
 
-const PEAK_GLIDE := 0.45         # the map's glide to the seam, to a tear and back
+const CUT_GLIDE := 0.45          # the map's glide to a thing and back
+const CUT_ZOOM := 1.6            # the zoom on what stands on one hex, a tear or a hunter; a player zoomed further in keeps their own
 const SEAM_SWEEP := 1.2          # the edge's sweep to its new row
 const SEAM_FADE := 0.6           # the front's fade once it stands
+const LOCK_HOLD := 2.0           # the map held on a hunter while its declaration shows
 
-var _peak_tween: Tween = null
-var _peak_done := Callable()
-var _peak_home := Vector2.ZERO   # the scroll the cutscene started from
+var _cut_tween: Tween = null
+var _cut_done := Callable()
+var _cut_home := Vector3.ZERO    # the scroll (x, y) and the zoom (z) the cutscene started from
+var _cut_cam := Vector3.ZERO     # the map point at mid-screen (x, y) and the zoom (z) the last glide ends on
 var _tear_born: Dictionary = {}  # a tear's index -> the clock (_ring_t) its opening began at
 var _seam_front := -1.0          # the clock the seam's sweep began at; under 0, no front is drawn
 var _seam_to := 0.0              # the row the sweep ends on
@@ -1011,87 +1019,130 @@ func hold_peak() -> void:
 	tears_shown = field.tears.size()
 
 
-## Whether a peak's cutscene is playing.
-func peak_playing() -> bool:
-	return _peak_tween != null
+## Whether a cutscene is playing.
+func cutscene_playing() -> bool:
+	return _cut_tween != null
 
 
 ## Play what the field did since hold_peak (the seam's creep, the tears opened), then `done`.
 func play_peak(done: Callable) -> void:
 	var crept: bool = field != null and seam_shown >= 0.0 and float(field.seam_row) > seam_shown
 	var opened: int = (field.tears.size() - tears_shown) if field != null and tears_shown >= 0 else 0
-	if DisplayServer.get_name() == "headless" or not is_inside_tree() or (not crept and opened <= 0):
-		_end_peak()
+	if not _can_play() or (not crept and opened <= 0):
+		_end_cutscene()
 		if done.is_valid():
 			done.call()
 		return
-	_peak_done = done
-	_peak_home = Vector2(scroll_x, scroll_y)
-	var tw := create_tween()
-	_peak_tween = tw
-	var from := _peak_home
+	var tw := _begin_cutscene(done)
 	if crept:
 		# The seam, where the player is looking along the wall: its old edge and its new both in
-		# view, the middle of the creep at the middle of the screen across the field.
+		# view, the middle of the creep at the middle of the screen across the field, at the
+		# player's own zoom (the seam is the whole field's, nothing to close in on).
 		_seam_to = float(field.seam_row)
 		var mid := (Bleed.seam_edge(field, _origin, HEX_SIZE, seam_shown) + Bleed.seam_edge(field, _origin, HEX_SIZE, _seam_to)) * 0.5
 		var axis := Bleed.axis()
 		var here := to_map(size * 0.5)
-		var at := here + axis * (mid - here.dot(axis))
-		var to := _scroll_onto(at)
-		tw.tween_method(_glide.bind(from, to), 0.0, 1.0, PEAK_GLIDE).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-		from = to
+		_glide_to(tw, here + axis * (mid - here.dot(axis)), zoom)
 		tw.tween_callback(func() -> void:
 			_seam_front = _ring_t
 			peak_beat.emit("seam"))
 		tw.tween_property(self, "seam_shown", _seam_to, SEAM_SWEEP).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 		tw.tween_interval(0.35)
 	for i in range(maxi(0, tears_shown), field.tears.size()):
-		var to := _scroll_onto(center(field.tears[i]["pos"]))
-		tw.tween_method(_glide.bind(from, to), 0.0, 1.0, PEAK_GLIDE).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-		from = to
+		_glide_to(tw, center(field.tears[i]["pos"]), maxf(zoom, CUT_ZOOM))
 		tw.tween_callback(func() -> void:
 			tears_shown = i + 1
 			_tear_born[i] = _ring_t
 			peak_beat.emit("tear"))
 		tw.tween_interval(TEAR_OPEN_SECONDS + 0.2)
-	tw.tween_method(_glide.bind(from, _peak_home), 0.0, 1.0, PEAK_GLIDE).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	tw.tween_callback(_finish_peak)
+	_glide_home(tw)
 
 
-## The scroll that puts a map point at the middle of the view, kept on the painted content: the
-## cutscene may look past the scroll's own range into the scenery, so a tear at the field's end
-## stands mid-screen and not under the frame at the view's edge.
-func _scroll_onto(at: Vector2) -> Vector2:
-	return Vector2(
-		_clamp_axis(size.x * 0.5 - at.x * zoom, 0.0, _map_size.x, size.x),
-		_clamp_axis(size.y * 0.5 - at.y * zoom, 0.0, _map_size.y, size.y))
+## The hunters that turned on a machine, shown one after another ([[hunter, prey], ...]): the
+## map glides in on each hunter, `each` is called with the pair as it arrives (the screen's
+## declaration) and the map holds there while it shows; then home, then `done`. The hunter
+## stands `at_y` down the view (under the screen's band; the middle when not given). With
+## nothing to play `each` is still called for every pair, at once.
+func play_locks(locks: Array, each: Callable, done: Callable, at_y: float = -1.0) -> void:
+	if not _can_play() or locks.is_empty():
+		for pair in locks:
+			each.call(pair[0], pair[1])
+		if done.is_valid():
+			done.call()
+		return
+	var tw := _begin_cutscene(done)
+	for pair in locks:
+		var hunter: Unit = pair[0]
+		var z := maxf(zoom, CUT_ZOOM)
+		var drop := (at_y - size.y * 0.5) if at_y >= 0.0 else 0.0
+		_glide_to(tw, center(shown_hex(hunter)) - Vector2(0.0, drop / z), z)
+		tw.tween_callback(each.bind(hunter, pair[1]))
+		tw.tween_interval(LOCK_HOLD)
+	_glide_home(tw)
 
 
-func _glide(u: float, from: Vector2, to: Vector2) -> void:
-	scroll_x = lerpf(from.x, to.x, u)
-	scroll_y = lerpf(from.y, to.y, u)
+## Whether a cutscene can play here: on a screen, in the tree.
+func _can_play() -> bool:
+	return DisplayServer.get_name() != "headless" and is_inside_tree() and field != null
+
+
+## Start a cutscene: its tween, the view it began on to come home to, and what follows it.
+func _begin_cutscene(done: Callable) -> Tween:
+	if _cut_tween != null:
+		_finish_cutscene()   # one at a time: the one playing ends where it would have
+	_cut_done = done
+	_cut_home = Vector3(scroll_x, scroll_y, zoom)
+	var mid := to_map(size * 0.5)
+	_cut_cam = Vector3(mid.x, mid.y, zoom)
+	_cut_tween = create_tween()
+	return _cut_tween
+
+
+## A glide from where the last one ended to the map point `at` at mid-screen, at zoom `z`.
+func _glide_to(tw: Tween, at: Vector2, z: float) -> void:
+	var to := Vector3(at.x, at.y, z)
+	tw.tween_method(_glide.bind(_cut_cam, to), 0.0, 1.0, CUT_GLIDE).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_cut_cam = to
+
+
+## The last glide, back to the view the cutscene began on, and its end.
+func _glide_home(tw: Tween) -> void:
+	var mid := (size * 0.5 - Vector2(_cut_home.x, _cut_home.y)) / _cut_home.z
+	_glide_to(tw, mid, _cut_home.z)
+	tw.tween_callback(_finish_cutscene)
+
+
+## The view `u` of the way from one camera to another (a map point at mid-screen and a zoom),
+## kept on the painted content: a cutscene may look past the scroll's own range into the
+## scenery, so a tear at the field's end stands mid-screen and not under the frame at the edge.
+func _glide(u: float, from: Vector3, to: Vector3) -> void:
+	var cam := from.lerp(to, u)
+	zoom = cam.z
+	scroll_x = _clamp_axis(size.x * 0.5 - cam.x * zoom, 0.0, _map_size.x, size.x)
+	scroll_y = _clamp_axis(size.y * 0.5 - cam.y * zoom, 0.0, _map_size.y, size.y)
 	queue_redraw()
 
 
 ## The cutscene over, played out or skipped: the field as it stands, the view where it was.
-func _finish_peak() -> void:
-	if _peak_tween == null:
+func _finish_cutscene() -> void:
+	if _cut_tween == null:
 		return
-	scroll_x = _peak_home.x
-	scroll_y = _peak_home.y
-	var done := _peak_done
-	_end_peak()
+	scroll_x = _cut_home.x
+	scroll_y = _cut_home.y
+	zoom = _cut_home.z
+	var done := _cut_done
+	_end_cutscene()
 	if done.is_valid():
 		done.call()
 
 
-## Let the peak's hold go: the seam and the tears drawn as the field has them.
-func _end_peak() -> void:
-	if _peak_tween != null:
-		_peak_tween.kill()
-		_peak_tween = null
-	_peak_done = Callable()
+## Let a cutscene go, and a peak's hold with it: the seam and the tears drawn as the field has
+## them.
+func _end_cutscene() -> void:
+	if _cut_tween != null:
+		_cut_tween.kill()
+		_cut_tween = null
+	_cut_done = Callable()
 	seam_shown = -1.0
 	tears_shown = -1
 	_tear_born = {}
@@ -1977,7 +2028,7 @@ static func _piece_units(p: Dictionary) -> Dictionary:
 
 
 func is_playing() -> bool:
-	return not _anim.is_empty() or not _anim_queue.is_empty() or _peak_tween != null
+	return not _anim.is_empty() or not _anim_queue.is_empty() or _cut_tween != null
 
 
 ## Play the phase's moves: the mechs along their routes, then the packs along their
@@ -2221,10 +2272,10 @@ func _threat_pips(badge_at: Vector2, n: int, border: Color) -> void:
 # ---------------------------------------------------------------- gestures
 
 func _gui_input(event: InputEvent) -> void:
-	if _peak_tween != null:
-		# A press skips the peak's cutscene; nothing else is taken while it plays.
+	if _cut_tween != null:
+		# A press skips the cutscene; nothing else is taken while it plays.
 		if (event is InputEventMouseButton and event.pressed) or (event is InputEventScreenTouch and event.pressed):
-			_finish_peak()
+			_finish_cutscene()
 		accept_event()
 		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:

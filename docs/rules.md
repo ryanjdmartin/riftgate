@@ -1264,9 +1264,12 @@ a stat.
   the painting's front row and the row past it solid ground. No rule reads the flattened hexes.
 - **A peak is shown** once the packs have walked: the map keeps the seam where it stood and the
   new tears unseen through the walks, then glides to the seam, whose edge sweeps to its new row
-  under a bright front with its name on it, then to each new tear as it bursts open, and back to
-  where the player was looking; a press on the map skips it. The turn's declarations (a
-  hunter's lock, a catch) follow it.
+  under a bright front with its name on it, then in on each new tear, zoomed, as it bursts open,
+  and back to where the player was looking at the zoom they had; a press on the map skips it.
+- **A hunter's lock is shown** after it: for every hunter that turned on a machine this turn,
+  in turn, the map glides in on the hunter, zoomed, and the band says HUNTED and who turns on
+  whom; then back to the player's view. A press on the map skips the rest. A catch's band
+  follows.
 - **Caches** (the field's loot; `content/loot.json`): the field holds its caches from the first
   turn, so many seeded with the map, one in each of as many bands along the wall, in the rows
   from the third past the rift's to the second short of the apron (never that close to the

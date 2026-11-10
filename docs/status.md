@@ -27,7 +27,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1089 tests, 304,422 checks, green (10 November, `ccr-c71bc17f-hclj2c`: main with the
+- Tests: 1090 tests, 304,428 checks, green (10 November, `ccr-c71bc17f-hclj2c`: main with the
   Text tab and the side session's work, and the map playtest list's two tests; one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
   either map view on 6 November); about four minutes in a cloud session, twenty on a slow one;
@@ -196,8 +196,12 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   A peak is shown as it happens ("an animation/cutscene when one opens. And ... when the seam
   moves, too"; `BattleMapView.hold_peak` and `play_peak`, the rules' "A peak is shown"): held
   through the packs' walks, then the seam's sweep under its front and each tear bursting open,
-  a press skipping it; its two sounds are borrowed (`contact`, `reveal`). The `tear` and `peak`
-  poses are new. His notes for a later session are in the bible's tears row (the seam starts too
+  a press skipping it; its two sounds are borrowed (`contact`, `reveal`). A hunter's lock is
+  shown the same way ("We should pan and zoom to hunters when they acquire as well";
+  `play_locks`): the map glides in on each hunter that turned on a machine, zoomed to 1.6 as it
+  is on a tear, the HUNTED band over it, every lock of the turn in its turn where the first
+  alone was declared, then back to the player's view. The `tear`, `peak` and `hunted` poses are
+  new. His notes for a later session are in the bible's tears row (the seam starts too
   far up and could be curved; crossing the map is the issue more than the tears' distance). All
   first cuts (the to-do's judge line).
 - **The side session of 9 November** (`ccr-df879779-uf9076`, beside the formation and refit pass,
