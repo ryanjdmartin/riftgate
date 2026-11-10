@@ -5681,3 +5681,32 @@ The same day the Mine's riders became the spend's whole result on its target (ev
 stacks as its machine laid them, Ryan's word, `ccr-a0b35006-od22d2` after `31a87f2`). The read
 stands: no piece the Lammergeier fields here strikes more than once, and nothing on it deepens or
 doubles a stack, so every Mine it lays carries what it carried when the read ran.
+
+## 10 November: the passing and the catch at one, on the campaign runner
+
+`tools/campaign_run.gd -- --runs 40 --shape steppe` (115 s) on `ccr-1e6e6571-7x7ayr` after the body
+blocking went (every unit passes every other, nobody ends on another's hex) and the hunter's catch
+became the engage range everyone shares (1, the pounce of two gone): the greedy rung, the draft's
+three machines, the defence rule as the floor (the long wall brief, section 5). A direction, read
+against the record of 9 November (`docs/campaign_run.md`, each battle's shape by its seed), which it
+is not a cell match for, since that run drew every shape.
+
+| Measure | 9 November, every shape | 10 November, the steppe, passing, catch at one |
+|---|---|---|
+| Runs won | 0 of 40 | 0 of 40 |
+| Battles | 184: won 3%, held after a wipe 9%, fell 86% | 186: won 6%, held after a wipe 7%, fell 86% |
+| Fights | 524 | 519 |
+| Machines wrecked a battle | 1.66 | 1.63 |
+| Phases a battle | 5.96 | 5.81 |
+| Gate damage a battle | 135 | 134 |
+| The pressure ratio, a run's mean | 1.70 | 1.48 |
+| Turns above 1.0 | 40% | 34% |
+
+Read: nothing moved that the defence rule can show. The bot never held a line, so it never lost
+one: the runs, the battles, the fights, the wrecks and the gate's damage all land where they were,
+and the ratio eases a little because the packs now walk straight to the wall and the bot meets
+them where they end. The catch at one did not empty the hunters' fights (519 fights against 524).
+What this cannot read is the thing Ryan changed it for, his own play: whether a pusher's straight
+walk and a machine's slide through its allies feel right, and whether a hunter caught beside its
+prey reads without a ring. Nothing here is a decision.
+
