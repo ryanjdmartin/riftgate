@@ -1259,7 +1259,7 @@ def arp_bars(pat, keep):
 def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=BASS_DB, bass=BASS, guitar=GUITAR,
                 d_bass=D_BASS, pluck_db=PLUCK_DB, lead=LEAD, duel_b2=DUEL_UPPER, duel_backing=DUEL_BACKING,
                 duel_break=True, duel_chords=False, duel_octaves=False, dark_notes=DARK_NOTES, dark_colours=DARK_COLOURS,
-                written=WRITTEN_ON, cut=(), drive=DRIVE_ON, duel=DUEL_WAY, duel_riffer=None, duel_pusher="synth", d_riff=D_RIFF, d_fill=True, dress=None, fills=True, i_kick=None, kick=None):
+                written=WRITTEN_ON, cut=(), drive=DRIVE_ON, duel=DUEL_WAY, duel_riffer=None, duel_pusher="synth", d_riff=D_RIFF, d_fill=True, dress=None, fills=True, i_kick=None, kick=None, pulse=True):
     """Night Shift's battle half: see the module's notes. `hold` is what the guitar and the bass play
     under the hook and the arpeggio together; `split` the guitar's interval over the bass in the
     later spot (SPLITS); `d` D's turn; `bass_db` the bass's level, wherever it plays; `bass` its
@@ -1440,7 +1440,7 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
             r_pulse = r_pulse[:16 * DUEL_HITS] + THREE_THREE_TWO.replace("r", root) + r_pulse[16 * DUEL_HITS + 16:]
         fingers = duel == "three" and duel_pusher == "fingers"
         voices.append(dict(DRIVE_PULSE, params=dict(DRIVE_PULSE["params"]),
-                           pat=dict({"A": e8, "C": e8}, **({} if fingers else {"R": r_pulse}))))
+                           pat=dict({"A": e8, "C": e8}, **({} if fingers else {"R": r_pulse})) if pulse else {}))   # `pulse` off: the synth's eighths out everywhere, the voice kept in its place
         bvp = BASS_VOICES[bass]
         voices.append({"inst": bvp["inst"], "params": dict(bvp["params"]), "mode": "riff", "hold": 0.8, "octave": -1,
                        "gain": 0.27 * 10.0 ** (bass_db / 20.0) * bvp["level"] * PUSHER_FINGERS, "pat": {"R": r_pulse} if fingers else {}})
@@ -1561,10 +1561,11 @@ def drive_set(sid, title, form, note):
 
 
 SETS = [
-    {"id": "nx", "half": "battle", "title": "The kick", "form": FORM10, "seed": NAME + "_battle",
-     "note": "The whole battle half (Ryan, 10 November: \"redo the kicks in the whole track so they are more natural for the flow ... Don't overdo the kick for this track, since its already bass-driven\"). Switch rows anywhere: each carries on from the same beat.",
-     "rows": [("nx0", "For the flow", "Two or three kicks a bar, never on the snare's beats: one, with three or with the bass's own push (the full pair's).", {}),
-              ("nx1", "As it was", "A kick wherever a run of the bass's rhythm starts.", {"kick": "runs"})]},
+    {"id": "nv", "half": "battle", "title": "Without the synth's eighths", "form": FORM10, "seed": NAME + "_battle",
+     "note": "The whole battle half (Ryan, 10 November: \"Drop the 8th note drive from the synth in the background, everywhere. The same, but also back up to 98\"). The first two rows switch anywhere, each carrying on from the same beat; the third runs faster, so start it from its top.",
+     "rows": [("nv0", "As the pair has it", "The crunch synth on straight eighths under the head, the lead's section and R, at 96.", {}),
+              ("nv1", "Without the synth's eighths", "The crunch synth's eighths out everywhere, at 96.", {"pulse": False}),
+              ("nv2", "Without them, at 98", "The same, two beats a minute faster.", {"pulse": False, "bpm": 98})]},
 ]
 PAIR = {"id": "night_shift_r33", "title": "Night Shift, round thirty-three"}
 INTRO = "intro: the kick on every beat and the hats, the pad fading in through the fourth bar and swelling from 0:10, the sub from the fifth"
@@ -1712,6 +1713,7 @@ def main(argv):
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         manifest["sets"] = [e for e in manifest["sets"] if e["id"] != s["id"]] + [{"id": s["id"], "half": s["half"], "title": s["title"], "note": s["note"], "rows": rows}]
         print("%-2s %s" % (s["id"], "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))
+    manifest["sets"] = [e for e in manifest["sets"] if e["id"] in [s["id"] for s in SETS]]   # a retired set leaves the manifest
     manifest["sets"].sort(key=lambda e: [s["id"] for s in SETS].index(e["id"]))
     manifest["seams"] = []
     if "full" in wanted:
