@@ -1,4 +1,6 @@
-"""Hold The Line's twenty-sixth round (Ryan, 9 November): the pair's X with its kick on the riff, its drums at
+"""Hold The Line's twenty-seventh round (Ryan, 10 November): the pair's X on the loose half-open hat with its
+knocks, W's first eighths on the new open hat, louder (round27), and a voice on quarters under X in a set (hv).
+Before it, the twenty-sixth (9 November): the pair's X with its kick on the riff, its drums at
 W's level and the knocks out (round26), the hats rebuilt as sizzle (pair_sketches' hat_wash) in sets hp and ho.
 Before it, the twenty-fifth: two sets on the twenty-third's pair, X's kick on the riff (x_punch, its drums pushed, X_PUSH and X_PUSH_HARD; set hp) and W's first beats on the
 open hat, louder (set ho). Before them, the twenty-fourth's: X on a rock beat and W's first beats on a half-open hat.
@@ -83,7 +85,7 @@ minimalist"), its lifts' riff on the soft sub and the tine piano.
 The full pair on the switch takes every pick. The set's rows are the same bars from the same seed
 through one master at one gain.
 
-    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py          # the sets and the pair, then hold26.json beside the pairs (about four minutes on four cores; `hp ho` the sets alone)
+    tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py          # the sets and the pair, then hold27.json beside the pairs (about four minutes on four cores; `hv` the set alone)
     tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py hx       # the named sets only (hx, hk, hw, and full for the pair)
 """
 import json
@@ -1670,23 +1672,48 @@ FORM_TOP = FORM_K[:FORM_K.index("M") + 1]   # the half's top: the riff, both lif
 FORM_X = "M XXXXXXXXXXXX"          # the bar down into the seven and the seven
 FORM_KEYS = "Y KKKKKKKK V"         # the breath, the keys section, the second breath
 FORM_W = "FFFF W SSSSSSSS"         # the keys' tune's first bars, the turn, the climax's first set
+# Round twenty-seven (Ryan, 10 November: "both those new hat voices are so much better. For X, keep the knock, use the
+# new loose half hat, and can we get a bass or synth driving the quarters underneath? For W, use the 'new open hat,
+# louder' version, thats great"): the pair's X on the loose half-open hat with its knocks back, its W's first eighths
+# on the new open hat, louder. Under X a voice on quarters, counted straight through the riff's two bars (seven
+# quarters to the fourteen eighths): the crunch synth or the fingers bass on E, the riff's own pedal, or the synth
+# on each bar's chord root; each 3 dB under the low Omnific, met halfway.
+XQ_PULSE = {"synth": {"inst": "bass", "mode": "riff", "octave": 0, "gain": 0.504, "hold": 0.9, "params": {"drive": 3.5, "cutoff": 800.0}},
+            "fingers": {"inst": "real_bass", "mode": "riff", "octave": -1, "gain": 0.565, "hold": 0.9, "params": {"preset": "finger", "amp": "modern"}}}
+
+
+def x_quarters(call, voice, roots=False):
+    """A voice on quarters under X's twelve bars, on E or on each bar's chord root where `roots`."""
+    chords = call["chords"]["X"]
+    pat = ["."] * 168
+    for step in range(0, 168, 4):
+        root = chords[(step // 14) % len(chords)][0] % 12 if roots else 0
+        pat[step] = P.spell(root)
+        pat[step + 1] = "-"
+    call["voices"].append(dict(XQ_PULSE[voice], params=dict(XQ_PULSE[voice]["params"]), pat={"X": "".join(pat)}))
+    return call
+
+
+def round27(riff=None, swap=False, quarters=None, roots=False):
+    base = round26(riff=riff, swap=swap, cymbal="hat_half", knock=True, fill="intro_wash_open")
+
+    def edit(call):
+        base(call)
+        if quarters:
+            x_quarters(call, quarters, roots)
+    return edit
+
+
 SETS = [
-    {"id": "hp", "half": "battle", "title": "X's drums: the knock and the hat", "form": FORM_X,
-     "note": "The bar down into the seven and the seven, the triplet bend into A with the guitar and the keys traded, the kick on the riff and the drums at W's level (Ryan, 9 November: \"do the W level drums, kick the riff, maybe cut the knock. The half hat could be much looser sounding, but the open hat sounds like a ride though, it's very bell sounding\"). Switch rows anywhere: each carries on from the same beat.", "rows": [
-        ("hp0", "With the knock", "As round twenty-five's third row had it.", round26(riff=X_RIFF_T, swap=True, knock=True)),
-        ("hp1", "The knock cut", "The industry's knocks out of the seven (the full pair's drums).", round26(riff=X_RIFF_T, swap=True)),
-        ("hp2", "The knock cut, on the loose half-open hat", "The half-open hat rebuilt: mostly sizzle, a heavy rattle.", round26(riff=X_RIFF_T, swap=True, cymbal="hat_half")),
-        ("hp3", "The knock cut, on the new open hat", "An open hat without the bell: a long wash, the ringing partials only a tick at the stroke.", round26(riff=X_RIFF_T, swap=True, cymbal="hat_open")),
-    ]},
-    {"id": "ho", "half": "battle", "title": "W's first beats on the new hats", "form": FORM_W,
-     "note": "The keys' tune's first bars, W and the climax's first set, the three eighths from the first beat's off-beat (Ryan, 9 November, of the open hat: \"Same complaint on W\"). The forge's open hat rings five fixed tones, which is the bell; the new one is sizzle. Switch rows anywhere: each carries on from the same beat.", "rows": [
-        ("ho0", "On the floor tom", "As the pair has them.", round26()),
-        ("ho1", "On the new open hat, louder", "The sizzle open hat, about 5 dB over the floor tom's velocities.", round26(fill="intro_wash_open")),
-        ("ho2", "On the loose half-open hat, louder", "The same on the looser half-open hat.", round26(fill="intro_wash_half")),
-        ("ho3", "On the old open hat, louder", "The bell-like one, for the comparison.", round26(fill="intro_open_loud")),
+    {"id": "hv", "half": "battle", "title": "X with the quarters driven", "form": FORM_X,
+     "note": "The bar down into the seven and the seven as the pair has it now, on the loose half-open hat with the knock (Ryan, 10 November: \"can we get a bass or synth driving the quarters underneath?\"). The quarters run straight through the riff's two bars, seven to the fourteen eighths, so they cross the bar line as your 4-4-4-2 count does. Each voice sits 3 dB under the low Omnific. Switch rows anywhere: each carries on from the same beat.", "rows": [
+        ("hv0", "As the pair has it", "No voice on the quarters.", round27()),
+        ("hv1", "The crunch synth on E", "K's crunch synth on quarters on E, the riff's pedal.", round27(quarters="synth")),
+        ("hv2", "The fingers bass on E", "The fingers bass on quarters on E, an octave under the synth's.", round27(quarters="fingers")),
+        ("hv3", "The crunch synth on the chords' roots", "The synth on quarters on each bar's chord root: E, E, G, D, then E, D, C-sharp, C under the held line.", round27(quarters="synth", roots=True)),
     ]},
 ]
-PAIR = {"id": "hold_the_line_r26", "title": "Hold The Line, round twenty-six"}
+PAIR = {"id": "hold_the_line_r27", "title": "Hold The Line, round twenty-seven"}
 # The battle half's sections as round twenty plays them, where they differ from the shipped track's:
 # the Omnific, wherever it plays, on the dirtier drive.
 NAMES_R20 = {
@@ -1720,6 +1747,9 @@ NAMES_R23 = dict(NAMES_R22,
                  W="the keys' turn, six beats: two of the tune's note held on the keys lead, the lead guitar and the basses, fading; eighths on the floor tom from the first beat's off-beat, then the build to Bonham's triplets: eighth-note triplets on the snare, sixteenths down the toms, the triplets on the tom and the snare into the climax")
 NAMES_R26 = dict(NAMES_R23,
                  X="the seven: a riff for 7/8 on the bass with the Omnific's power chords over it, its high C a quarter-tone flat the first time through and as written the second, the kick on every note of the riff, the snare on the backbeat with two ending each second repetition, the hat on the eighths, the drums at W's level, the piano on the long beat, a chime, the lead guitar held through its second half")
+NAMES_R27 = dict(NAMES_R26,
+                 X=NAMES_R26["X"].replace("the hat on the eighths", "the loose half-open hat on the eighths, the knocks"),
+                 W=NAMES_R23["W"].replace("eighths on the floor tom from the first beat's off-beat", "eighths on the open hat from the first beat's off-beat"))
 
 def level(x, db):
     return F.limit(F.write_level(x, NAME, db))
@@ -1728,7 +1758,7 @@ def level(x, db):
 def render_row(job):
     """One row of a set, in a worker, from its set's seed; read as the track reads its sections."""
     si, ri = job
-    F.seed("hold26_" + SETS[si]["id"])
+    F.seed("hold27_" + SETS[si]["id"])
     row = SETS[si]["rows"][ri]
     edit, form = row[3], row[4] if len(row) > 4 else SETS[si]["form"]   # a row may cut its own bars (K's lengths)
     with P.Patched(_steps=run_steps):
@@ -1740,7 +1770,7 @@ def render_row(job):
 
 
 def full_path(half):
-    return os.path.join(P.OUT, "hold26_full_%s.wav" % half)
+    return os.path.join(P.OUT, "hold27_full_%s.wav" % half)
 
 
 def render_full(half):
@@ -1748,7 +1778,7 @@ def render_full(half):
     if half == "battle":
         F.seed(NAME)
         call = copied(call_on(FORM_K, METER))
-        round26()(call)
+        round27()(call)
         x = level(F.groove(**call), BATTLE_LEVEL)
     else:
         F.seed(NAME + "_map")
@@ -1785,7 +1815,7 @@ def main(argv):
         raw = {(si, ri): x for si, ri, x in pool.map(render_row, jobs)}
         for f in full_runs:
             f.result()
-    manifest_path = os.path.join(P.OUT, "hold26.json")
+    manifest_path = os.path.join(P.OUT, "hold27.json")
     manifest = json.load(open(manifest_path)) if os.path.exists(manifest_path) else {"sets": [], "tracks": [], "seams": []}
     for si, s in enumerate(SETS):
         if s["id"] not in wanted:
@@ -1797,7 +1827,7 @@ def main(argv):
         rows = []
         for ri, (rid, title, note, *_edit) in enumerate(s["rows"]):
             x = F.limit(mastered[ri] * gain)
-            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("hold26_" + rid, x)),
+            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("hold27_" + rid, x)),
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         manifest["sets"] = [e for e in manifest["sets"] if e["id"] != s["id"]] + [{"id": s["id"], "half": s["half"], "title": s["title"], "note": s["note"], "rows": rows}]
         print("%-2s %s" % (s["id"], "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))
@@ -1810,7 +1840,7 @@ def main(argv):
         if len(m) != len(b):
             raise ValueError("the halves are %d and %d samples" % (len(m), len(b)))
         P.write(PAIR["id"] + "_pair", [m, b], kbps=384)
-        secs, total, at = sections_of(FORM_K, METER, bpm, NAMES_R26)
+        secs, total, at = sections_of(FORM_K, METER, bpm, NAMES_R27)
         levels = [P.measure("map", m), P.measure("battle", b)]
         manifest["tracks"] = [{"id": PAIR["id"], "title": PAIR["title"], "new": "both", "bpm": bpm, "length": round(total, 3),
                                "loop_from_bar": 9, "bar_at": [round(float(t), 4) for t in at[:-1]], "sections": secs, "levels": levels}]

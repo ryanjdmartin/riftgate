@@ -849,7 +849,7 @@ The tasks are the to-do's; this is the index of what waits.
   asks), and his pick of the Giant Petrel's hull (`docs/looks/kestrel_giant3.png`).
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).
 - Every track a pair (the bible's pair row, 28 October): the five new halves sketched; Hold The Line
-  on its twenty-sixth round (9 November), its map half settled on the thirteenth (3 November: "I think
+  on its twenty-seventh round (10 November), its map half settled on the thirteenth (3 November: "I think
   that's it for this track"): his map picks, X on the violins, U on the clean guitar, the drone
   moved to R, W low with a roll; the map half minimal, the lifts as they were with the riff on the
   soft sub and the tine piano and the first lift's bell calmer (5 November: "Map lifts should keep
@@ -896,8 +896,9 @@ The tasks are the to-do's; this is the index of what waits.
   first eighth and the snare on its third: "If each riff repetition is taken as bars of 4-4-4-2"; "Yeah,
   that's exactly right"), the kick on the riff with two snares ending each repetition without a bend,
   X's drums at W's level and its knocks out ("do the W level drums, kick the riff, maybe cut the knock"),
-  the half-open and open hats rebuilt as sizzle on trial (pair_sketches' hat_wash: the forge's open hat
-  rings five fixed tones, "very bell sounding") ("Make the kick punch the
+  the half-open and open hats rebuilt as sizzle and taken, X on the loose half-open hat with its knocks,
+  W's first eighths on the new open hat louder (pair_sketches' hat_wash: "both those new hat voices are
+  so much better"), a bass or synth on quarters under X on trial ("Make the kick punch the
   riff ... take back the dressing"; a dressing in three tiers was heard and taken back), W's first eighths on a
   half-open hat (pair_sketches' hat_half, new) or the china from the crash ("so there's no pause
   between the crash and when the drums continue"), then on the open hat louder ("try open hat,
@@ -1075,7 +1076,7 @@ into this file in the same commit as its first publish; the procedures are in `R
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
   `docs/design-bible.html` after every change. This file is v0.470 (the track table's rows on Night Shift's
-  nineteenth to twenty-third rounds, Hold The Line's seventeenth to twenty-sixth, the fills' lean and The Far Bank's pick of the lift),
+  nineteenth to twenty-third rounds, Hold The Line's seventeenth to twenty-seventh, the fills' lean and The Far Bank's pick of the lift),
   not yet published: a permission check blocked the publish on 6 November as unrequested, so it
   waits on Ryan's go; the live page had not moved. The live page is v0.469 (the
   page's version 482, published 6 November from `ccr-7effd31a-u5z4gw` by a subagent that read the
@@ -1209,8 +1210,8 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
-  twenty-sixth, X's kick on the riff in the pair and the hats rebuilt as sizzle, `hold_sketches.py`; Night Shift's twenty-sixth, the drive and the duel on three basses, `night_sketches.py`;
-  The Far Bank's map half's eighth, its lift settled, `far_sketches.py`; the real basses, `real_bass.py`), every pair on the shipped tracks as built in tune on 6 November, at the page's version 66. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
+  twenty-seventh, the new hats in X and W and X's quarters on trial, `hold_sketches.py`; Night Shift's twenty-sixth, the drive and the duel on three basses, `night_sketches.py`;
+  The Far Bank's map half's eighth, its lift settled, `far_sketches.py`; the real basses, `real_bass.py`), every pair on the shipped tracks as built in tune on 6 November, at the page's version 67. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
   publish's 64 MB goes up in two publishes: the new files first under the live page, then the
   new page with the rest, the old round's files removed.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
