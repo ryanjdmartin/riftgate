@@ -27,11 +27,11 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1081 tests, 304,222 checks, green (9 November, main with the shapes relaid and recast,
-  the skirmish audit's step 3, the playtest list of 9 November, the Polar Bear's kit and name, the renamed ids and
-  the Lammergeier's rework; Godot 4.8-beta2; either map view on 6 November), and 1085 tests, 304,330 checks, green on
-  `ccr-df879779-uf9076` (9 November, main with the side session's work, one of them the runner's own deliberate SCRIPT ERROR in the log); about four minutes in a cloud session, twenty on a slow one;
-  `-- <word>` after the command runs only the files whose names hold it. A cloud
+- Tests: 1085 tests, 304,330 checks, green (10 November, main with the Text tab and the side
+  session's work: the runner's crash check, the caches' pictures, the audit's structure 13; one
+  SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
+  either map view on 6 November); about four minutes in a cloud session, twenty on a slow one;
+  words after `--` run only the files whose names hold one (`-- loot rig`). A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
 - A cloud session gets Godot and the first import from the repository's session-start hook
@@ -49,7 +49,17 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 ## Branches
 
-Everything is on main as of 9 November 2026 but the music session's branch below.
+Everything is on main as of 10 November 2026 but the formation and refit session's branch and
+the music session's, both below.
+`ccr-df879779-uf9076`, the side session of 9 and 10 November (How things stand below: the test
+runner's crash check, the caches' pictures, the screen's half of the audit's mirrors, the enemy
+art routes parked), took main's Text tab in a merge (this file and the README the conflicts, both
+sides' words kept: the two sessions' entries, the bible's line with the live v0.497 and main's
+v0.498, the hangar's with versions 217 and 218 each named) and main took it as a fast-forward on
+Ryan's word ("Merge everything into main and clean up"); it is merged and to delete with the rest.
+`ccr-7d7ed303-tbdkg4`, the hangar's Text tab of 10 November (How things stand below), landed on
+main as a fast-forward on Ryan's word ("Ok merge into main please"); it is merged and to delete
+with the rest.
 `claude/modest-ramanujan-uovd42`, the Polar Bear's kit of 9 November, its id's rename and every id
 following its name (How things stand below), landed on main as fast-forwards on Ryan's word ("merge
 it into main so I can try it"; "clean up and merge into main"); it is merged and to delete with the rest.
@@ -90,11 +100,10 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4` (a cloud session may not delete
 one). Each merge commit says how its conflicts were settled.
 
-Still working (9 November; every other branch on GitHub is merged): `ccr-df879779-uf9076`, the
-side session beside the formation and refit pass (How things stand, first: the test runner's
-crash check, the caches' models and tokens, the screen's half of the audit's mirrors; it started
-from main at `2d489f7` and has not landed, main taking it on Ryan's word); `ccr-722ca9f0-yj8na3`,
-the formation and refit session, whose own status says where it stands; and `ccr-7effd31a-u5z4gw`, the
+Still working (10 November; every other branch on GitHub is merged): `ccr-722ca9f0-yj8na3`,
+the formation and refit session, whose own status says where it stands (it meets the side
+session's edits in `tests/run_tests.gd`, `sim/skirmish.gd` and these records when it takes main);
+and `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
 9 November: `ccr-a0b35006-od22d2`, the Lammergeier's rework (How things stand), on Ryan's word
@@ -166,7 +175,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
 - **The side session of 9 November** (`ccr-df879779-uf9076`, beside the formation and refit pass,
-  on Ryan's "go"; not on main yet). The test runner hears a crash: it reads the engine's log for
+  on Ryan's "go"; on main since 10 November). The test runner hears a crash: it reads the engine's log for
   script errors while each test runs (a Logger) and fails the test for each, in the test or under
   it, where a test that crashed after its first check had read as passed; `tests/test_runner.gd`
   raises one on purpose so the suite fails if the runner ever stops hearing them (that one SCRIPT
@@ -187,6 +196,34 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   function and plays as it did, so no behaviour trace was run. Both pages were republished on
   his word (Pages). His question on enemy art from a cloud session was researched and parked
   (10 November, the to-do's Art line); nothing is built for it.
+- **The hangar's Text tab** (10 November, `ccr-7d7ed303-tbdkg4`; the bible's shown-text row): Ryan,
+  9 November, wants to work on "all in-game text that the player sees" and to get "a strong
+  foothold on content I've written myself, so that you can do a better job of mimicking my
+  intended writing style", the hangar being "hard to find what is visible in-game, what needs
+  editing, what's outdated, and compare between entries". Claude's first cut, built on that
+  statement, his to judge in use (the to-do's Ryan list). `tools/hangar_text.py` is the one
+  inventory of shown text: 1,326 texts in seventeen kinds (a term's entry, a codex, a flavour,
+  a passive, a module's rule, a foe's move, a title; and read-only, two tables the code holds:
+  a status's line in `sim/effects.gd` and a foe's aim and condition words in `sim/foe.gd`),
+  each with where the game draws it, the engine's facts under it and its maker's voice. 1,064
+  are drawn by a screen today (943 drafts, 121 empty) and 262 by none: every component's
+  flavour, every module's codex and flavour, the four domains' flavour, the planned moves and
+  rules, 88 terms the keywords list leaves out (the rules' reference only), and the 43 status
+  lines, which since 2 November show only in a codex's KEPT FOR THE BATTLE row (a chip's
+  meaning is its term's entry). The tab is one row a text by kind, grouped by voice, filtered
+  by state, edited in place; he signs a text his own (Mine, or by saving what he typed), passes
+  a session's draft (Pass), pins texts to keep beside what he writes, and leaves a note for the
+  session. His work waits in the page's `text` collection until `--fold` writes it: his words
+  into content where they stand (the hand-laid files keep their layout), his marks into the
+  ledger `docs/hangar/text.json`, his own texts into `docs/voice.md`, the corpus a session
+  reads before drafting shown text (`CLAUDE.md`'s rule). A signed text a session rewords reads
+  Changed since, one whose mechanics moved reads Stale. The ledger is empty: nothing is signed
+  until he signs it, his four chassis codexes and three flavours included. Left out, and said
+  so on the tab: entries' own names, the lines the code composes from numbers, the screens'
+  furniture and Jenny's lines. Checked on a local copy of the page with a stand-in database
+  (signing, writing, the next row, a live sync under a half-typed text, a fold into
+  `chassis.json` and the hand-laid `foes.json`, both flags, a phone's width), then published
+  (Pages, below).
 - **The Lammergeier's rework** (9 November, `ccr-a0b35006-od22d2`; the bible's Lammergeier row):
   Ryan sent it back for more than a fix ("A chassis based around opening an empty spot isn't a
   good design"), the slot form waiting on arrivals the long wall cut. His shape, built: "the
@@ -561,9 +598,10 @@ commands are in `README.md`.
   page's Version 502, published from main at `2d489f7` on Ryan's word, "republish the hangar
   page and the bible": main's file whole, since the live v0.496 matched `f048e67`'s byte for byte
   and so needed no merge; it carries the Lammergeier's rework, its row, the Gel's and the
-  reinforcement row's slot-mine lines and the tables). `ccr-722ca9f0-yj8na3`'s file is ahead of
-  it with the formation and refit session's rows, unpublished, its republish on Ryan's word.
-  BASE for the next merge is `2d489f7`'s file. The live
+  reinforcement row's slot-mine lines and the tables). Main's file is v0.498 since the Text tab
+  landed (the hangar row's tabs and the shown-text row), unpublished, its republish on Ryan's
+  word; `ccr-722ca9f0-yj8na3`'s file is ahead of both with the formation and refit session's
+  rows, unpublished too. BASE for the next merge is `2d489f7`'s file. The live
   page may carry rows ahead of main's code while a branch has not landed (the music session's
   track rows: Hold The Line's settled pair and its trial notes, Night Shift's duelling basses,
   The Far Bank's fretless bass). Before
@@ -578,15 +616,18 @@ commands are in `README.md`.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
-  the last publish's before it is replaced, and `edits` and `designs` read first. At the page's
-  version 217 (9 November, main at `2d489f7`, on Ryan's word, "republish the hangar page and the
-  bible"): the three content files the Lammergeier's rework moved (`content/chassis.json`,
-  `components.json` and `vocabulary.json`) and `designs.json` from its briefs, the live copies
-  matching `f048e67`'s before they were replaced and main's after; nothing removed, the other 326
-  files as they were. `edits` empty, `designs` the two folded ideas (the Giant Petrel and the
-  Needletail, briefed), and one name candidate of Ryan's, the Tesla Gauntlets of 28 September,
-  still saying "the Armadillo's status" (his words of then, kept). The page does not show the
-  caches' models (they are no chassis).
+  the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
+  page's Version 218 (10 November, main's `5a490e5`): the page with its Text tab,
+  `hangar/text.json` new beside it (332 files) and `designs.json` with its stamp. Version 217 was
+  the side session's publish of main at `2d489f7` (9 November, on Ryan's word, "republish the
+  hangar page and the bible": the three content files the Lammergeier's rework moved and
+  `designs.json` from its briefs, the live copies matching `f048e67`'s before they were replaced
+  and main's after), recorded on its branch and so unknown to the Text tab's session until the
+  two met here; version 216 was main at `f048e67`. `edits` empty, `text`
+  empty, `designs` the two folded ideas (the Giant Petrel and the Needletail, briefed), and one
+  name candidate of Ryan's, the Tesla Gauntlets of 28 September, still saying "the Armadillo's
+  status" (his words of then, kept). The Text tab's ledger is empty until he signs. The page
+  does not show the caches' models (they are no chassis).
   `build/hangar/designs.json` is one
   795 KB line, so a session that must read it whole before publishing writes it indented first.
   Its lit parts show as the phone's renderer shows

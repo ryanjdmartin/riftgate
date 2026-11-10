@@ -25,6 +25,7 @@ or render change, then publish tools/hangar.html with the printed map to the pag
 import base64, json, os, re, struct, sys
 
 import hangar_designs
+import hangar_text
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONTENT = ["chassis", "components", "modules", "foes", "factions", "vocabulary", "reserved_names"]
@@ -83,6 +84,13 @@ def main():
         print("\n".join(problems), file=sys.stderr)
         sys.exit(1)
     files["hangar/designs.json"] = hangar_designs.OUT
+    # The Text tab's inventory (9 November): every shown text as tools/hangar_text.py lists it,
+    # with who wrote each from docs/hangar/text.json, into build/hangar/text.json.
+    _slots, _groups, problems = hangar_text.build(check_only)
+    if problems:
+        print("\n".join(problems), file=sys.stderr)
+        sys.exit(1)
+    files["hangar/text.json"] = hangar_text.OUT
     # The foes' combat sprites (4 November, Ryan: the sprites in the hangar's foe list, compared
     # and inventoried): every foe with art, and a manifest saying which sprite is a rough
     # placeholder (tools/placeholder_art.py's table, read as text so no PIL is needed here).
