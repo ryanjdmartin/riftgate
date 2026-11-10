@@ -703,6 +703,123 @@ func undo() -> Unit:
 	return field.unit_by_id(int(snap.get("who", 0)))
 
 
+# ---------------------------------------------------------------- an order given again
+
+## Whether a machine has a move planned and not yet played, or an order waiting.
+func has_plan(u: Unit) -> bool:
+	if u == null:
+		return false
+	if orders.has(u.id):
+		return true
+	for p in planned:
+		if int(p["unit"]) == u.id:
+			return true
+	return false
+
+
+## Where everyone it moved stands once a machine's plan is taken back on its own, unit id ->
+## [hex, facing]: the machine where its move started and whoever it carried where each rode from;
+## empty for a machine with no move planned. `blocked` is set when it cannot be taken back out of
+## order: it rides in another machine's planned carry, one it carried has since been given a move
+## or an order of its own, or another machine now stands where one of them would go back to.
+func _retaken(u: Unit) -> Dictionary:
+	var back := {}
+	var blocked := false
+	for p in planned:
+		for r in p.get("riders", []):
+			if int(r[0]) == u.id:
+				blocked = true
+		if int(p["unit"]) != u.id:
+			continue
+		back[u.id] = [Vector2i(int(p["from"][0]), int(p["from"][1])), int(p["facing"])]
+		for r in p.get("riders", []):
+			back[int(r[0])] = [Vector2i(int(r[1]), int(r[2])), int(r[3])]
+	for id in back.keys():
+		if int(id) != u.id:
+			var rider := field.unit_by_id(int(id))
+			blocked = blocked or orders.has(int(id))
+			for p in planned:
+				blocked = blocked or (rider != null and int(p["unit"]) == rider.id)
+		var there := field.unit_at(back[id][0])
+		if there != null and not back.has(there.id):
+			blocked = true
+	return {"back": back, "blocked": blocked}
+
+
+## Whether a machine's plan (its planned move, its order) can be taken back on its own, whatever
+## was planned after it (Ryan, 10 November: "If I order a unit to move or engage, I should be able
+## to re-order them by tapping on them again").
+func can_retake(u: Unit) -> bool:
+	return state == State.PLAN and has_plan(u) and not bool(_retaken(u)["blocked"])
+
+
+## Take a machine's plan back with no undo step of its own: it and whoever it carried stand where
+## they stood, its move is its to give again, its order is gone.
+func _retake(u: Unit) -> void:
+	var back: Dictionary = _retaken(u)["back"]
+	for id in back.keys():
+		var m := field.unit_by_id(int(id))
+		if m != null:
+			m.pos = back[id][0]
+			m.facing = int(back[id][1])
+	var kept: Array = []
+	for p in planned:
+		if int(p["unit"]) == u.id:
+			var n := (p["path"] as Array).size()
+			sponsorship["hexes_moved"] = maxi(0, int(sponsorship["hexes_moved"]) - n)
+			action_hexes[u.id] = maxi(0, int(action_hexes.get(u.id, 0)) - n)
+		else:
+			kept.append(p)
+	if kept.size() != planned.size():
+		moved.erase(u.id)
+	planned = kept
+	orders.erase(u.id)
+	last_carry = []
+	_prune_orders()
+
+
+## Take a machine's plan back (a tap on it while it is in hand: Ryan, 10 November, "Tapping on
+## them when they are selected should cancel the order"), as one step the undo puts back. False
+## when it has none, or it cannot be taken back out of order (can_retake).
+func retake(u: Unit) -> bool:
+	if not can_retake(u):
+		return false
+	_push(u)
+	_retake(u)
+	return true
+
+
+## What a machine could do with its plan taken back, for the map to show while it is in hand:
+## [destinations, threat], read on the turn as it would stand and the turn put back as it was.
+func reach_if_retaken(u: Unit) -> Array:
+	if not can_retake(u):
+		return [destinations_for(u), threat_for(u)]
+	var snap := _snapshot(u)
+	_retake(u)
+	var out := [destinations_for(u), threat_for(u)]
+	_restore(snap)
+	return out
+
+
+## A move for a machine that may already have one planned: its plan taken back first, then the
+## move, one step and one undo. The route walked; empty when refused, the turn as it was.
+func move_again(u: Unit, to: Vector2i) -> Array[Vector2i]:
+	if not can_retake(u):
+		return move_to(u, to)
+	var none: Array[Vector2i] = []
+	var snap := _snapshot(u)
+	_batch += 1
+	_retake(u)
+	var route := move_to(u, to)
+	_batch -= 1
+	_batch_dirty = false
+	if route.is_empty():
+		_restore(snap)
+		return none
+	history.append(snap)
+	return route
+
+
 ## The plan as the map draws it: each piece with hexes, in the order made.
 func plan_pieces() -> Array:
 	var out: Array = []
@@ -984,6 +1101,17 @@ func order_onto(m: Unit, target: Unit, draft: Array = []) -> String:
 	_batch += 1
 	_batch_dirty = false
 	var out := _order_onto(m, target, draft)
+	if out == "out_of_reach" and draft.is_empty() and can_retake(m):
+		# Out of reach from where its plan leaves it: the order given again from where it
+		# started, its planned move taken back for the one that reaches (10 November).
+		_retake(m)
+		out = _order_onto(m, target, draft)
+		if out != "ordered":
+			_restore(snap)
+			_batch_dirty = false
+			out = "out_of_reach"
+		else:
+			_batch_dirty = true
 	_batch -= 1
 	if _batch_dirty:
 		history.append(snap)

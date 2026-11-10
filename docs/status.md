@@ -27,9 +27,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1089 tests, 323,297 checks, green on main (10 November, `ccr-1e6e6571-7x7ayr` with the shapes reworked on Ryan's play, with the Text tab, the side session's work, the
+- Tests: 1094 tests, 323,337 checks, green on main (10 November, with the Text tab, the side session's work, the shapes reworked on Ryan's play, the second map list, the
   map session's shapes laid to the rift's row, the passing and the catch at one, and the map
-  playtest list), and 1104 tests, 360,623 checks, green on `ccr-722ca9f0-yj8na3` (10 November, that
+  playtest list), and 1109 tests, 360,663 checks, green on `ccr-722ca9f0-yj8na3` (10 November, that
   main with the refit pass's first build, the wall strike by the rating, the trial's regen row,
   every machine one more move, the field's dials and the goblin's line on its straight knife and wall; the
   map suite now paints fourteen and sixteen deep too, which is most of the checks' rise); one
@@ -150,7 +150,12 @@ by head count), so the gate they need standing fell. `docs/vocabulary.md` and
 It took main once more at `fda02f9` that evening (the shapes reworked on his play and the
 hangar's Bench tab, so his map points are answered on the latest map code): the bible's version,
 this file's tests line and the measurements' order the conflicts, both sides kept.
-The bible's file is v0.508, main's v0.503 with this branch's rows, its republish on Ryan's word
+And again at `a3b48c0` before the re-deal and the formation pass began (Ryan: "Make sure main is
+in here first before you begin": his second map list of 10 November, the stores' cells, the
+BLOCKED tag): the bible (its version above both, v0.509; the three clocks row this branch's,
+the names row main's, the Armoured table row rewritten from content by its tool), this file and
+the to-do the conflicts, both sides kept; `docs/vocabulary.md` made again.
+The bible's file is v0.509, main's v0.504 with this branch's rows, its republish on Ryan's word
 (Pages below); and `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
@@ -235,6 +240,34 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
+- **Ryan's second map list of 10 November** (`ccr-c71bc17f-hclj2c`, cut from main at `ccd71d9`,
+  on main the same day on his word, "yeah, merge into main", after taking the shapes' rework in
+  a merge, this file the one conflict and the bible's version main's plus one, v0.504; his words
+  in the commits' messages and the bible's rows). The map: no
+  hunter's ring (its code gone), a hunter's chip with its prey's small render and the hunted
+  machine's tag, both with the attack mark (a sword in the reticle's ring); the threat pips under
+  the pack and no count; every walk's end under a crawling border, the warning on it where the
+  pack attacks from there this turn, CATCHES gone; a tapped pack's target the thing it attacks
+  (`BattleMapView.target_hex`: the wall segment, the machine), and no whole way for a selected
+  machine's hunters; a machine's reach under one border; an order given again
+  (`Battle.retake`, `move_again`, `reach_if_retaken`: a tap on the machine in hand takes its
+  order back, a new move or order replaces the old, each one undo; refused out of order where it
+  would break another machine's plan); the map's tap on a unit waiting out the die's double-tap
+  window; the caches' chests in place of name and pips; the tilt-shift along the rift's axis
+  (`far_axis`: right and left with the wall at the left), the vortex shifted right there, the
+  3D scenery a step darker; nothing takes a touch during a cutscene and nothing skips one; an
+  elite introduced as it arrives after a Fracture (`hold_spawn`, `play_spawn`); no STRIKES THE
+  GATE tag, and the rare pusher with nowhere beside the wall to land tagged BLOCKED (WAITS before). The skirmish,
+  built by a worker in a worktree and cherry-picked: Jenny's heat warning latched a machine
+  (once over three quarters until seen back under, the overheat every time); the hopper's worth
+  the game's Armoured, granted as each round opens and following the loads between, a Purge
+  stripping it until then, `ore_plate` retired everywhere; a resource that comes in whole units a row of
+  separate cells under the heat, bordered, a pixel of ground between ("split them into different
+  bars with borders and whitespace, in the same row": the hopper's four, the rage's five, the
+  Musk Ox's ammo; `UnitView._draw_cells`), the Muster a meter still, the Cassowary's
+  count cells too with its sixth marked (a heavier border, a diamond). Poses new: `hunter`, `elite`, `stores`. A route drawn by hand from a machine that
+  already has an order is still refused (the tap gives it again). All first cuts (the to-do's
+  judge line).
 - **The refit pass's direction** (9 November, from the chat after his play and the formation
   pass's reads; `docs/briefs/refit_pass.md`): the block-everything loop is structural (hull
   permanent across eight to ten fights, an injury destroying a component for good, a rolled
@@ -800,7 +833,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   rockets, shell and casing; shot trails tabled behind SHOT TRAILS. All first cuts for Ryan's
   judge lines; the render margin (a piece fired out cut at the view's edge) is his to judge running.
 - **The Honey Badger's hopper** (31 October): a load a foe its weapons damage, four at most,
-  every two loads a point of Ore Plate, the first buff a store grants; "never destroyed" is the
+  every two loads a stack of Armoured, granted as each round opens (10 November; the Ore Plate before it), the first buff a store grants; "never destroyed" is the
   Reinforced Skeleton module. Read at 30 seeds, Ryan's second fallback landed.
 - **The Petrels** (30 October): the Storm Petrel's shield pays its weapons' heat and zaps the
   target for what it paid; the Giant Petrel banks rerolls and buys an ally's action. Both
@@ -929,7 +962,9 @@ commands are in `README.md`.
   page's Version 502, published from main at `2d489f7` on Ryan's word, "republish the hangar
   page and the bible": main's file whole, since the live v0.496 matched `f048e67`'s byte for byte
   and so needed no merge; it carries the Lammergeier's rework, its row, the Gel's and the
-  reinforcement row's slot-mine lines and the tables). Main's file is v0.501 since the map
+  reinforcement row's slot-mine lines and the tables). Main's file is v0.504 with the second map list's rows (the marks row
+  rewritten, the pack, undo, gesture, Fracture, reconstruction and tears rows, the Badger's and
+  the store's) on the shapes' rework's v0.503 and the hangar's Bench tab's v0.502, unpublished; v0.501 since the map
   playtest list landed (the boss's picture, the scenery under the painting, the tears row's
   read of 10 November and the hunters' declaration, on the map session's v0.500 and v0.498's
   Text tab rows: the hangar row's tabs and the shown-text row), unpublished, its republish on

@@ -246,15 +246,10 @@ const STATUS := {
 	# The Honey Badger's hopper (Ryan, 11 October; its Ore Hopper since 31 October): loads every
 	# foe its weapons damage puts in, which the Bullion Fragmenter fires a few a shot. A store on
 	# the machine with no effect of its own (the weapon that fires it reads it, and what the loads
-	# are worth stands as the Ore Plate); it lasts the skirmish, never decays, and nothing
-	# cleanses it.
+	# are worth is granted as Armoured, plate_round); it lasts the skirmish, never decays, and
+	# nothing cleanses it.
 	"hopper": {"id": "hopper", "name": "Hopper", "description": "Loads in the hopper, for a weapon that fires it.", "decay": "none",
 		"tags": ["store"], "effects": []},
-	# What the hopper's loads are worth (Ryan, 21 October: "Each one grants armour, displayed as a
-	# buff"; 31 October, a point a load): its stacks kept at the loads' worth (sync_plate); the
-	# hopper's own, an ability since 8 November, so no purge touches it, as none touches the loads.
-	"ore_plate": {"id": "ore_plate", "name": "Ore Plate", "description": "Armour +1 a stack: what the loads in its hopper are worth, while it holds them.", "decay": "none",
-		"tags": ["ability"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]},
 	# The Polar Bear's seal (Ryan's go, 20 October; the form-changing tank of his 15 October
 	# framework): a shield it spends on itself seals it, a vent or a weapon opens it.
 	# One chip while sealed, carrying the armour its Lockdown grants (sealed_status builds it
@@ -1597,36 +1592,86 @@ static func hopper_plate(u, loads: int = -1) -> int:
 	return n
 
 
-## Loads into the hopper, never past its cap, and the Ore Plate brought up to what they are
-## worth. Returns how many went in.
+## Loads into the hopper, never past its cap, and the hopper's Armoured moved by what the
+## change is worth (_plate). Returns how many went in.
 static func add_loads(u, n: int) -> int:
 	var cap := store_cap(u, "hopper")
 	if cap > 0:
 		n = mini(n, cap - banked(u, "hopper"))
 	if n <= 0:
 		return 0
+	var worth := hopper_plate(u)
 	stack(u, STATUS["hopper"], SKIRMISH, "mech", n, DECAY_NONE)
-	sync_plate(u)
+	_plate(u, hopper_plate(u) - worth)
 	return n
 
 
-## Loads fired out of the hopper, and the Ore Plate brought down with them. Returns how many.
+## Loads fired out of the hopper, and the hopper's Armoured brought down by what they were
+## worth. Returns how many.
 static func spend_loads(u, n: int) -> int:
+	var worth := hopper_plate(u)
 	var spent := spend_stacks(u, "hopper", n)
-	sync_plate(u)
+	_plate(u, hopper_plate(u) - worth)
 	return spent
 
 
-## The Ore Plate stands at what the loads held are worth: the hopper's own, an ability, so no
-## purge touches it, as none touches the loads (Ryan's row on stores, 21 October; abilities, 8
-## November).
-static func sync_plate(u) -> void:
-	var want := hopper_plate(u)
-	var have := banked(u, "ore_plate")
-	if want > have:
-		stack(u, STATUS["ore_plate"], SKIRMISH, "store:hopper", want - have, DECAY_NONE)
-	elif want < have:
-		spend_stacks(u, "ore_plate", have - want)
+## What the hopper's loads are worth is the game's Armoured, granted by the hopper (Ryan, 10
+## November: "The funnel fill is tracked by the resource bar. The buff he gets from it is
+## Armoured, not an ability. Its purgeable, but returns at the start of his turn since its
+## granted by the funnel bar"; an ability of its own, the Ore Plate, from 8 November until then).
+## A buff like any Armoured: a Purge strips it, and it goes whole at the round's end as every
+## machine's Armoured does. The hopper grants it again as each round opens, to what the loads
+## held are worth (plate_round), and between rounds it follows the loads by the change in their
+## worth alone (_plate), so a load gained after a Purge brings back only its own point and the
+## rest waits for the machine's next turn. The loads are the store's, on the resource bar, and
+## no Purge touches them.
+const HOPPER_PLATE := "store:hopper"   # the source its grant of Armoured carries
+
+
+## The stacks of Armoured the hopper's own grant holds now.
+static func plated(u) -> int:
+	var n := 0
+	for m in u.modifiers:
+		if m.id == "braced" and m.source == HOPPER_PLATE:
+			n += m.stacks
+	return n
+
+
+## The round opens: the hopper grants its Armoured afresh, up to what its loads are worth.
+## Returns the stacks it granted.
+static func plate_round(u) -> int:
+	var short := hopper_plate(u) - plated(u)
+	if short > 0:
+		_plate(u, short)
+	return maxi(0, short)
+
+
+## The hopper's grant of Armoured moved by `change` stacks: more as a stack of its own, gone at
+## the round's end like any Armoured on a machine; fewer off its own grant alone, as far as that
+## still stands (a Purge may have taken it already), never off another source's Armoured.
+static func _plate(u, change: int) -> void:
+	if change > 0:
+		var def: Dictionary = STATUS["braced"]
+		# A grant of its own, never merged into another source's Armoured, so loads fired take
+		# back only what the hopper gave.
+		for m in u.modifiers:
+			if m.id == "braced" and m.source == HOPPER_PLATE:
+				m.stacks += change
+				_record(u, m, change)
+				return
+		var m := make(def, SKIRMISH, HOPPER_PLATE)
+		if m != null:
+			m.stacks = change
+			m.decay = status_decay(def)
+			grant(u, m)
+	elif change < 0:
+		var left := -change
+		for m in u.modifiers:
+			if m.id == "braced" and m.source == HOPPER_PLATE and left > 0:
+				var take := mini(m.stacks, left)
+				m.stacks -= take
+				left -= take
+		u.modifiers = u.modifiers.filter(func(m) -> bool: return not (m.id == "braced" and m.source == HOPPER_PLATE and m.stacks <= 0))
 
 
 ## Free rerolls of this machine's own die each round, on top of the team's (free_reroll,
@@ -1786,7 +1831,7 @@ static func purgeable(m) -> bool:
 
 ## Is this status an ability (Ryan, 8 November): a unit's own mechanic, shown as its chip on a
 ## solid tile, never a buff or a debuff, so nothing that strips buffs or marks reaches it (the
-## Polar Bear's seal, the Ore Plate, a core's guard, a golden rage, Hot Streak).
+## Polar Bear's seal, a core's guard, a golden rage, Hot Streak).
 static func is_ability(status_id: String) -> bool:
 	return (STATUS.get(status_id, {}).get("tags", []) as Array).has("ability")
 
@@ -2177,7 +2222,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"fill_hopper": body = "every foe its weapons damage puts %s in its hopper, up to %d" % ["a load" if vs == "1" else vs + " loads", int(eff.get("cap", 0))]
 		"hopper_plate":
 			var per := int(eff.get("per", 1))
-			body = ("each load held is %s armour" if per <= 1 else "every %d loads held are %%s armour" % per) % ("a point of" if vs == "1" else vs)
+			body = ("each load held grants %s of Armoured as each round opens" if per <= 1 else "every %d loads held grant %%s of Armoured as each round opens" % per) % ("a stack" if vs == "1" else vs + " stacks")
 		"add_damage": body = "damage %s" % signed
 		"min_damage": body = "damage at least %s" % vs
 		"multiply_heat": body = "heat ×%s" % vs

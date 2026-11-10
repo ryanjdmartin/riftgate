@@ -37,7 +37,7 @@ FACE_FIELDS = {"braces": "braced", "devours": "overcharged", "fills_hopper": "ho
 FACE_FIELDS_ON_FOES = {}   # the Syrinx Drone's status went with the slot mines (9 November); the Contractor's Expose is its keyword
 PASSIVE_EFFECTS = {"shock_on_hull_strike": ("shocked", "foe"), "shock_on_block": ("shocked", "foe"), "seal_form": ("sealed", "machine"),
                    "paradox": ("paradox", "foe"), "muster": ("muster", "machine"),
-                   "fill_hopper": ("hopper", "machine"), "hopper_plate": ("ore_plate", "machine"),
+                   "fill_hopper": ("hopper", "machine"), "hopper_plate": ("braced", "machine"),
                    "mine_on_spend": ("mine", "foe")}   # stack_status names its own, on the machine; the Reverberant Payload's Mine (9 November)
 FOE_KEYWORDS = {"scorch": "scorched", "burn": "burning", "disable": "disabled", "corrupt": "corrupted", "crush": "crushed", "steal": "disabled"}   # a silence is a special since 28 October, never a rider
 FOE_EFFECTS_ON_MACHINES = {"burn": "burning", "scorch_all": "scorched", "corrupt_all": "corrupted",

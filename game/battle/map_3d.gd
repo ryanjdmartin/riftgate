@@ -288,7 +288,20 @@ func _lit(color: Color) -> StandardMaterial3D:
 
 ## A terrain tile as a lit material sampled by world position, or by the hex's UVs for a
 ## tile that covers one hex exactly (terrain.gdshader).
-func _terrain_material(tile: String, ripple: float = 0.0, by_uv: bool = false) -> ShaderMaterial:
+## The scenery's ground in shade (Ryan, 10 November, of the painting's shaded scenery: "should do
+## something equivalent to the 3D map as well, can be more subtle since the hex highlight does
+## some of the work"): the ground past the field a step darker than the field's, by its material's
+## own brightness, the city and the wall's rows as they were. Lightness, never a hue.
+const SCENERY_SHADE := 0.62
+
+func _terrain_material(tile: String, ripple: float = 0.0, by_uv: bool = false, shade: float = 1.0) -> ShaderMaterial:
+	if shade != 1.0:
+		var key := "%s/shade" % tile
+		if not _materials.has(key):
+			var dark: ShaderMaterial = _terrain_material(tile, ripple, by_uv).duplicate()
+			dark.set_shader_parameter("lift", 1.35 * shade)
+			_materials[key] = dark
+		return _materials[key]
 	if _materials.has(tile):
 		return _materials[tile]
 	var m := ShaderMaterial.new()
@@ -317,8 +330,14 @@ func _road_links(h: Vector2i) -> int:
 
 
 var _road_mat: ShaderMaterial = null
+var _road_mat_shade: ShaderMaterial = null
 
-func _road_material() -> ShaderMaterial:
+func _road_material(shaded: bool = false) -> ShaderMaterial:
+	if shaded:
+		if _road_mat_shade == null:
+			_road_mat_shade = _road_material().duplicate()
+			_road_mat_shade.set_shader_parameter("lift", 1.35 * SCENERY_SHADE)
+		return _road_mat_shade
 	if _road_mat == null:
 		_road_mat = ShaderMaterial.new()
 		_road_mat.shader = load("res://game/battle/road.gdshader")
@@ -1219,6 +1238,9 @@ func _build_ground() -> void:
 	var corners := MapOrient.corners(Vector2.ZERO, hex_px)
 	var hexes: Array = map.all_hexes().duplicate()
 	hexes.append_array(map.margin.keys())
+	var scenery := {}
+	for h in map._scenery():
+		scenery[h] = true
 	for h in hexes:
 		var t: int = map.terrain_of(h)
 		var in_field: bool = map.has(h)
@@ -1249,17 +1271,18 @@ func _build_ground() -> void:
 		# flavour of the tile shows through under the rock).
 		var ground_t: int = map.crag_base.get(h, t) if t == BattleMap.Terrain.MOUNTAIN else t
 		var at_xf := Transform3D(Basis.IDENTITY, at)
+		var shaded: bool = scenery.has(h)   # past the field: in shade (SCENERY_SHADE)
 		var column: Array
 		if ground_t == BattleMap.Terrain.ROAD:
 			# The road's links and its seed ride in the vertex colour (road.gdshader), so
 			# road hexes bake like any other and need nothing per instance.
 			var seed_f := fmod(float(h.x * 131 + h.y * 7919) * 0.0137, 1.0)
 			column = _column_geo(hgt, sides, Color(float(_road_links(h)) / 255.0, absf(seed_f), 0.0, 1.0))
-			_bake(column[0], at_xf, _road_material(), band, true)
+			_bake(column[0], at_xf, _road_material(shaded), band, true)
 		else:
 			column = _column_geo(hgt, sides)
-			_bake(column[0], at_xf, _terrain_material(TILE[ground_t], 1.0 if ground_t == BattleMap.Terrain.WATER else 0.0), band, true)
-		_bake(column[1], at_xf, rock, band, true)
+			_bake(column[0], at_xf, _terrain_material(TILE[ground_t], 1.0 if ground_t == BattleMap.Terrain.WATER else 0.0, false, SCENERY_SHADE if shaded else 1.0), band, true)
+		_bake(column[1], at_xf, _terrain_material("rock", 0.0, false, SCENERY_SHADE) if shaded else rock, band, true)
 		if in_field and not (map.gate_hexes.has(h) or map.wall_hexes.has(h)):
 			# The grid is the display's own light, drawn on the ground in the scene so a
 			# raised hex hides the lines behind it; the wall and the machines hide it the

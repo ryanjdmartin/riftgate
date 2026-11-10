@@ -431,12 +431,21 @@ static func _modifier_from(d: Dictionary) -> Effects.Modifier:
 
 ## A unit's or a foe's modifiers as saved. A save from before 8 November may hold a buff a purge
 ## put to sleep, whole or in part: it loads awake and whole, since a purge no longer sleeps
-## anything (Ryan: "A stack is a stack").
+## anything (Ryan: "A stack is a stack"). One from before 10 November may hold the Honey Badger's
+## Ore Plate, the ability the hopper's worth stood as: it loads as the hopper's grant of Armoured,
+## stack for stack, gone at the round's end and granted again as the next opens.
 static func _modifiers_from(list: Array) -> Array:
 	var out: Array = []
 	for md in list:
 		var m := _modifier_from(md)
 		m.stacks += int((md as Dictionary).get("slept_stacks", 0))
+		if m.id == "ore_plate":
+			var def: Dictionary = Effects.STATUS["braced"]
+			var plate := Effects.make(def, Effects.SKIRMISH, Effects.HOPPER_PLATE)
+			plate.stacks = m.stacks
+			plate.decay = Effects.status_decay(def)
+			plate.seq = m.seq
+			m = plate
 		out.append(m)
 	return out
 

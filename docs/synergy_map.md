@@ -25,7 +25,7 @@ or briefs; the pricing run of 27 and 28 October read the first set (the bible's 
 | A foe's move changed (Disrupt) | on a foe | Differentiation Probe (tier 2) | the foe takes its next open move |
 | A foe's place changed (Swap) | on a foe | Combat Translocator (locked, Dingo) | the two trade places: reach, the acting order, area |
 | Empowered | on a machine | Soulcutter Talons (locked, Ammit); Overcharge Coil (tier 1), stocked; Reheat Uplink (locked, Giant Petrel); Grievance Reliquary (module, tier 2) | every blow +1 a stack: most on strikes; halves each round; Chainsaw Claw (locked, Honey Badger): strikes; Pinion Driver (locked, Kite): strikes; Maxigun (tier 1), stocked: strikes; Unrestricted Expenditure (locked, Musk Ox): strikes; Flechette Pod (locked, Skua): strikes; Cyclic Cannon (tier 2): strikes; Ammit's Quintessence Tap: keeps it |
-| Armoured | on a machine | Breaching Plow (locked, Wild Boar); Shoring Jack (tier 1); Heliographic Siphon (locked, Whip Scorpion); Polar Bear's Lockdown; Phase Conjugator (module, tier 2) | armour +1 a stack until the round's end |
+| Armoured | on a machine | Breaching Plow (locked, Wild Boar); Shoring Jack (tier 1); Heliographic Siphon (locked, Whip Scorpion); Honey Badger's Ore Hopper; Polar Bear's Lockdown; Phase Conjugator (module, tier 2) | armour +1 a stack until the round's end |
 | Primed | on a machine | Aurora Lattice (tier 2) | every blow lays a Burning stack a stack: most on strikes; Chainsaw Claw (locked, Honey Badger): strikes; Pinion Driver (locked, Kite): strikes; Maxigun (tier 1), stocked: strikes; Unrestricted Expenditure (locked, Musk Ox): strikes; Flechette Pod (locked, Skua): strikes; Cyclic Cannon (tier 2): strikes |
 | Retaliate | on a machine | Retribution Thurible (tier 1), stocked | a foe striking bare hull is Shocked, so every reader of Shocked |
 | Barrier | on a machine | Blast Door (tier 1) | the next blow deals nothing |
@@ -35,7 +35,6 @@ or briefs; the pricing run of 27 and 28 October read the first set (the bible's 
 | Phased | on a machine | Mooring Screens (locked, Swallowtail): charged | untouchable until the round's end |
 | Sealed | on a machine | Polar Bear's Lockdown | armour +3, cooling stopped, 3 heat a turn |
 | Regenerating | on a machine | St. Elmo's Regenerator (locked, Storm Petrel) | 2 shield a round for three rounds |
-| Ore Plate | on a machine | Honey Badger's Ore Hopper | nothing |
 | Burning | on a machine | Stoker (tier 2); Drake's Stoke (foe); Wyvern's Stoke (foe); The Bane's Flame Whip (foe); Rotbloom's Bad Breath (foe); The Fiend of Fire's Flame Lash (foe) | +1 heat a stack at the turn's end; Corona Shield (tier 2); Phased Sublimator (tier 1) |
 | Scorched | on a machine | Bomb's Flare Up (foe); Grenade's Flare Up (foe); Balloon's Flare Up (foe); Balloon's Self-Destruct (foe); Salamander's Bite (foe); Fire Lizard's Bite (foe); Magma Lizard's Bite (foe); Drake's Breath (foe); Wyvern's Breath (foe); Red Dragon's Breath (foe); Red Dragon's Flame Breath (foe); Magma Elemental's Eruption (foe); Basalt Elemental's Eruption (foe); Sulphur Elemental's Eruption (foe); The Goblin Nob's Skull Bash (foe); The Bane's Shadow and Flame (foe); The Firelord's The Hammer (foe); Rotbloom's Bad Breath (foe); The Gargantuan King's Flame (foe); Cinder Tortoise's Earthquake (foe); The Fiend of Fire's Fire (foe); The Obsidian Tyrant's Firestorm (foe); The Black Mage's Fire (foe); The Black Mage's Fira (foe); The Summoner's Pyroclasm (foe) | every weapon fired runs 1 hotter a stack this turn; Corona Shield (tier 2); Phased Sublimator (tier 1) |
 | Disabled | on a machine | Alraune's Shriek (foe); Cockatrice's Stone (foe); Basilisk's Stone (foe); Gorgon's Stone (foe); Leshy's Root Snare (foe); The Thunder Ape's Lightning Beam (foe); The Rust Monster's Antennae (foe); Rider of the Wild Hunt's Frost (foe); Rotbloom's Bad Breath (foe); Prising Eye's Gaze (foe); The Emperor Scorpion's Paralytail (foe); Storm Orb's Spark Plasma (foe) | the entry comes up blank; Corona Shield (tier 2); Phased Sublimator (tier 1) |
@@ -72,7 +71,7 @@ Tags, by the slottable pieces that wear them (locked in brackets); nothing but t
 
 What the map computes (what it means is the section after the map):
 
-- Unique to a chassis (set by locked pieces and passives alone, so a build reaches it only by fielding that machine): Exposed, Cryo, Webbed, Vitriol, Paradox, A foe's place changed (Swap), Spun Up, Rallied, Phased, Sealed, Regenerating, Ore Plate, Mine, A foe's buffs (Armoured, Empowered, Getting Back Up; Primed, Barrier, Ward and Regenerating once the ladder lands).
+- Unique to a chassis (set by locked pieces and passives alone, so a build reaches it only by fielding that machine): Exposed, Cryo, Webbed, Vitriol, Paradox, A foe's place changed (Swap), Spun Up, Rallied, Phased, Sealed, Regenerating, Mine, A foe's buffs (Armoured, Empowered, Getting Back Up; Primed, Barrier, Ward and Regenerating once the ladder lands).
 - **A foe's turn drawn (Lure)** has one slottable setter, Proximity Klaxon (tier 1).
 - **A foe's move changed (Disrupt)** has one slottable setter, Differentiation Probe (tier 2).
 - **Empowered** has one slottable setter, Overcharge Coil (tier 1), stocked.
@@ -81,7 +80,6 @@ What the map computes (what it means is the section after the map):
 - **Retaliate** has one slottable setter, Retribution Thurible (tier 1), stocked.
 - **Barrier** has one slottable setter, Blast Door (tier 1).
 - **Ward** has one slottable setter, Decoherence Veil (tier 1).
-- **Ore Plate** is read by nothing but its own effect.
 
 Unmapped by this script (add the word to its tables): Arc Fault Cannon: face field chain; Muzzle Velocity Booster: effect add_ceiling; Null Field Emitter: face field dispel; Polar Bear's Lockdown: condition sealed; Tactical Databank: effect add_floor
 <!-- synergy-map:end -->

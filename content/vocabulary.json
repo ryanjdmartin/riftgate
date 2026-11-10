@@ -665,22 +665,6 @@
    }
   },
   {
-   "id": "ore_plate",
-   "category": "status",
-   "name": "Ore Plate",
-   "codex": "Ability, the Honey Badger's: armour +1 a stack, what the loads in its hopper are worth (a point for every two), standing while it holds them and going as they are fired. The hopper's own, so no Purge touches it, as none touches the loads.",
-   "status": "implemented",
-   "design": {
-    "holes": "A working name (31 October), as is the Ore Hopper's.",
-    "table": {
-     "kind": "ability",
-     "on": "machine",
-     "stacks": "Yes: an armour point for every two loads held",
-     "lasts": "While the loads are held"
-    }
-   }
-  },
-  {
    "id": "primed",
    "category": "status",
    "name": "Primed",
@@ -1791,7 +1775,7 @@
    "id": "hopper_property",
    "category": "component_property",
    "name": "The hopper",
-   "codex": "A rule printed on a weapon, for a machine with a hopper. One fills it: the loads it prints for each foe its blows damage, after the blow, in place of what the machine's own passive puts in. The other fires it: each load it takes adds its bonus to the blow, up to its most a shot, and the loads it takes are spent, with the armour they stood for. The hopper shows under the heat; the die shows what a shot would fire.",
+   "codex": "A rule printed on a weapon, for a machine with a hopper. One fills it: the loads it prints for each foe its blows damage, after the blow, in place of what the machine's own passive puts in. The other fires it: each load it takes adds its bonus to the blow, up to its most a shot, and the loads it takes are spent, with the Armoured they stood for. The hopper shows under the heat; the die shows what a shot would fire.",
    "status": "implemented",
    "design": {
     "holes": "The numbers are placeholders at the stock pass's scale."
@@ -1867,10 +1851,10 @@
    "id": "hopper",
    "category": "resource",
    "name": "Hopper",
-   "codex": "Machine store, the Honey Badger's: every foe its weapons damage puts a load in it (its Chainsaw Claw digs two), up to four, and every two loads held are a point of armour, shown as the Ore Plate. Its Bullion Fragmenter fires two a shot. Lasts the skirmish; never decays, and no cleanse, Silence or Purge touches the loads.",
+   "codex": "Machine store, the Honey Badger's: every foe its weapons damage puts a load in it (its Chainsaw Claw digs two), up to four, and every two loads held are a stack of Armoured, granted as each round opens and following the loads as they come and go. Its Bullion Fragmenter fires two a shot. Lasts the skirmish; never decays, and no cleanse, Silence or Purge touches the loads: a Purge strips the Armoured they granted, until the machine's next turn.",
    "status": "implemented",
    "design": {
-    "holes": "Its numbers since 31 October (Ryan's go, then his second fallback on the runner's read the same day): a cap of four, a point of armour for every two loads.",
+    "holes": "Its numbers since 31 October (Ryan's go, then his second fallback on the runner's read the same day): a cap of four, a point of armour for every two loads. What the loads are worth is Armoured, a buff a Purge strips, since 10 November (Ryan: \"The buff he gets from it is Armoured, not an ability. Its purgeable, but returns at the start of his turn since its granted by the funnel bar\"); the Ore Plate, an ability of its own, before.",
     "table": {
      "kind": "store",
      "on": "machine",
@@ -2011,7 +1995,7 @@
    "id": "ability",
    "category": "status",
    "name": "Ability",
-   "codex": "A unit's own mechanic, the rule it plays by: never a buff or a debuff, so no Purge, Silence or Cleanse touches it. Its chip shows its mark cut out of a solid tile: the Goblin Nob's Enrage, a core's guard, a Gel's split, a last act, the Thunder Ape's golden rage; the Polar Bear's seal, the Honey Badger's Ore Plate, the Kite's Hot Streak.",
+   "codex": "A unit's own mechanic, the rule it plays by: never a buff or a debuff, so no Purge, Silence or Cleanse touches it. Its chip shows its mark cut out of a solid tile: the Goblin Nob's Enrage, a core's guard, a Gel's split, a last act, the Thunder Ape's golden rage; the Polar Bear's seal, the Kite's Hot Streak.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 8 November, of the Nob's rage: \"Nob, and any other enemies with a passive ability, should have an unpurgable passive chip that points out what's going on. Plus, that's how slay the Spire works, where he comes from. It's not a Buff, it's not a Debuff, it's labelled as an Ability, so it doesn't get purged. Can use this for player units as well, like the armadillo's form. Golden rage should be an ability chip too.\" The tile is a placeholder look, to judge on the phone (RIFTGATE_ABILITY_DEBUG=1)."

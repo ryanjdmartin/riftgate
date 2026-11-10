@@ -250,6 +250,7 @@ func _build() -> void:
 	_map.route_drag_to.connect(_on_route_drag_to)
 	_map.route_drag_ended.connect(_on_route_drag_ended)
 	_map.peak_beat.connect(_on_peak_beat)
+	_map.cutscene_changed.connect(_on_cutscene)
 	_apply_display()
 	_map.hold_released.connect(_on_hold_released)
 
@@ -563,14 +564,20 @@ func _toggle_log_full() -> void:
 func _select(u: Unit) -> void:
 	_queue_pulse = false   # the player is doing something else: the queue waits quietly
 	_map.selected = u
-	_map.destinations = battle.destinations_for(u) if u != null else {}
-	_map.threat = battle.threat_for(u) if u != null else {}
+	# A machine with a move planned or an order given shows what it could do instead (Ryan, 10
+	# November: "I should be able to re-order them by tapping on them again"): its reach from
+	# where it started, as if its plan were taken back; a move or an order given there replaces it.
+	var reach: Array = battle.reach_if_retaken(u) if u != null else [{}, {}]
+	_map.destinations = reach[0]
+	_map.threat = reach[1]
 
 
 # ---------------------------------------------------------------- gestures
 
 ## Tap a machine to select it; tap a lit hex and it moves there, staying in hand while it can
-## still act; tap it again to let it go. With a machine in hand, a tap on a pack orders it onto
+## still act; tap it again to take its order back (a planned move, an order onto a pack), and
+## again to let it go; a machine with an order shows its reach from where it started, and a new
+## move or order there replaces the old one. With a machine in hand, a tap on a pack orders it onto
 ## that fight, moving it into range first (and a second tap on the pack it is ordered onto
 ## takes the order back). With nothing in hand, a tap on a pack shows its fight.
 func _on_hex_tapped(h: Vector2i) -> void:
@@ -595,10 +602,19 @@ func _on_hex_tapped(h: Vector2i) -> void:
 		_refresh()
 		return
 	if sel != null and u == null and _map.destinations.has(h):
-		if not battle.move_to(sel, h).is_empty():
+		if not battle.move_again(sel, h).is_empty():   # a machine with a plan gives it up for this one
 			_planned(sel)
 			return
 	elif u != null and u.is_player() and not u.is_static():
+		if sel == u and battle.retake(u):
+			# A tap on the machine in hand takes its order back (Ryan, 10 November: "Tapping on them
+			# when they are selected should cancel the order"); it stays in hand, free to be given
+			# another, and a tap on it with nothing to take back lets it go.
+			_select(u)
+			Sound.play("ui_back")
+			_refresh()
+			_autosave()
+			return
 		if sel == u:
 			_select(null)
 			Sound.play("ui_back")
@@ -1086,6 +1102,23 @@ func _after_step() -> void:
 		_refresh()   # the buttons grey while it plays
 
 
+## While the map plays a cutscene nothing on the screen takes a touch (Ryan, 10 November: "I feel
+## like I glitched one out by tapping, we should remove interactions while they run"): a clear
+## sheet over everything swallows them, the menu too, for the few seconds it runs.
+var _cut_block: Control = null
+
+func _on_cutscene(playing: bool) -> void:
+	if _cut_block == null:
+		_cut_block = Control.new()
+		_cut_block.mouse_filter = Control.MOUSE_FILTER_STOP
+		_cut_block.position = Vector2.ZERO
+		_cut_block.size = Vector2(W, H)
+		add_child(_cut_block)
+	_cut_block.visible = playing
+	if playing:
+		_cut_block.move_to_front()
+
+
 ## A beat of the peak's cutscene, heard: the seam's creep starting, a tear opening. Borrowed
 ## sounds until each has its own (the audio to-do).
 func _on_peak_beat(what: String) -> void:
@@ -1532,7 +1565,7 @@ func _on_skirmish_back() -> void:
 
 ## A Fracture earned, announced (Ryan, 9 November: "Fractures need to be announced"): the warning
 ## band over the map, FRACTURE with its count and what it brings, an elite out of the rift (the
-## map scrolls to it) or nothing more; the last, THE RUPTURE, the seal broken and the boss open to
+## map glides in on it as it arrives and the band names it) or nothing more; the last, THE RUPTURE, the seal broken and the boss open to
 ## a fight; and the top bar's gauge flashes. Several earned by one fight are one band, its count the
 ## last. The stall guard's Rupture (no pack but the boss's left) says so.
 func _show_fracture(elite: bool) -> void:
@@ -1546,11 +1579,17 @@ func _show_fracture(elite: bool) -> void:
 		return
 	var said := "FRACTURE %d OF %d" % [battle.fractures, n]
 	if elite:
+		# The elite is introduced as it arrives (Ryan, 10 November: "After fracture, we should zoom
+		# and introduce the elite as it spawns"): unseen until the map has glided in on its hex,
+		# zoomed, then it bursts out of the ground under the band, which names it.
 		var sq := _newest_elite()
-		if sq != null:
-			_map.scroll_to_unit(sq)
-		_warn_band("FRACTURE", said + " // AN ELITE EMERGES AT THE RIFT", false)
-		Sound.play_after(0.35, Sound.family("spawn", battle.faction))
+		var named := (" // " + sq.display_name.to_upper()) if sq != null else ""
+		_map.hold_spawn(sq)
+		_map.play_spawn(sq, func() -> void:
+			_warn_band("FRACTURE", said + " // AN ELITE EMERGES" + named, false)
+			Sound.play_after(0.35, Sound.family("spawn", battle.faction)), _refresh, maxf(_map.size.y * 0.5, WARN_BAND_Y + WARN_BAND_H + 130.0))
+		if _map.cutscene_playing():
+			_refresh()   # the buttons grey while it plays
 	else:
 		_warn_band("FRACTURE", said + " // %d MORE TO THE RUPTURE" % (n - battle.fractures), false)
 

@@ -440,7 +440,8 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # first term its passive names opened, as a tap opens it), pair and pair_spread (a Gel's halves in its slot, and a
 # Spread held over them; RIFTGATE_FOES=gel:2,goblin:3), hold (the second die read, its readout; RIFTGATE_HOLD_ENTRY=<place>
 # picks the entry showing, with RIFTGATE_TEAM to choose the machine), mechhold and foehold (the first machine's
-# and the first foe's: gauges, chips, a foe's intent), confirm, lock, touch (the first die lit as its tap waits out the double-tap window), swaphome (a waiting Swap sent home by a tap on nothing; RIFTGATE_SHOT_FRAME=6 catches it in flight), repick (a foe whose machine falls first, a
+# and the first foe's: gauges, chips, a foe's intent), stores (every machine's own resource row part filled, under its heat bar:
+# RIFTGATE_TEAM=badger,nemesis,cassowary,swallowtail, then musk_ox, to judge the hopper's and the rage's segmented bars beside the Muster, the magazine and the shot count's pips), confirm, lock, touch (the first die lit as its tap waits out the double-tap window), swaphome (a waiting Swap sent home by a tap on nothing; RIFTGATE_SHOT_FRAME=6 catches it in flight), repick (a foe whose machine falls first, a
 # second arrow dashed to the machine it will strike; RIFTGATE_FOES=wolf:3), strike,
 # enemyturn (RIFTGATE_SHOT_FRAME=8 catches the acting foe lit), chips (every unit crowded with chips, the rows wrapping:
 # seven statuses on each machine, five on each foe), plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), foeheat (Burning, Flak and Shocked on the first three front foes, heat's red-orange beside each violet intent), blast and siphon (the Whip Scorpion's vent dragged over itself, every foe ringed with its blast; its Siphon dragged over a foe, the turned foes' arrows dashed; `RIFTGATE_TEAM=whip_scorpion,...`), rounds, logfull, killed, acquire, menu, settings, quit, keywords (the keywords list, as the menu's KEYWORDS opens it), colours and colourpick (a debug build's COLOURS page, and with the red's picker open), and the feed's
@@ -470,7 +471,9 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # the field: the vortex and the boss at its size; RIFTGATE_BLEED_DEBUG=1 shows the scenery past the field under the painting),
 # tear (a peak of Rift Pressure: the seam crept and a tear open on its row, the map looking at it; RIFTGATE_PEAKS=<n> for more),
 # peak (a peak's cutscene playing: RIFTGATE_SHOT_FRAME picks the moment, in a cloud session the seam's sweep near 12 and the tear's burst near 26),
-# hunted (a hunter's lock declared: the map zoomed in on it under the HUNTED band, near frame 9)
+# hunted (a hunter's lock declared: the map zoomed in on it under the HUNTED band, near frame 9),
+# hunter (a hunter a few hexes off the first machine: its chip with the machine's small picture, the machine's tag with its own),
+# elite (a Fracture's elite introduced as it arrives: the burst near frame 10, the band naming it near 14)
 # and fracture (a Fracture announced: the band, the top bar's gauge flashing;
 # the default frame catches the band at full).
 # RIFTGATE_SHOT_FRAME=<n> picks the capture frame, to catch an animation mid-flight.
