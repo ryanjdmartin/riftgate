@@ -253,7 +253,7 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 	var boss_id := str(lineup[0]) if not lineup.is_empty() else (firsts[0] if not firsts.is_empty() else "")
 	if with_boss and db.foes.has(boss_id):
 		boss = make_boss_unit(db, faction, tier, boss_id, lineup, escort, ramp)
-		boss.pos = field.nearest_standable(boss, Hex.offset_to_axial(w / 2 - 1, 1))
+		boss.pos = field.nearest_standable(boss, Hex.offset_to_axial(w / 2, BattleMap.RIFT_ROWS))   # in front of the rift's mouth, the first row clear of its five hexes
 		field.add_unit(field.dress_pack(boss, boss_id))
 	# The caches, on the field from the first turn (Ryan, 7 November), round the units placed.
 	field.seed_caches(db, seed_value)
@@ -785,15 +785,80 @@ func _retake(u: Unit) -> void:
 	_prune_orders()
 
 
+## Whether a snapshot holds any of a machine's plan: a piece of its move not yet played, or its
+## order.
+static func _snap_has_plan(snap: Dictionary, uid: int) -> bool:
+	if (snap.get("orders", {}) as Dictionary).has(str(uid)):
+		return true
+	for p in snap.get("planned", []):
+		if int(p["unit"]) == uid:
+			return true
+	return false
+
+
 ## Take a machine's plan back (a tap on it while it is in hand: Ryan, 10 November, "Tapping on
-## them when they are selected should cancel the order"), as one step the undo puts back. False
-## when it has none, or it cannot be taken back out of order (can_retake).
+## them when they are selected should cancel the order"). It is the order's own undo, so the
+## undo's stack shrinks by the steps that made the plan and never grows by one (his play the
+## same day: "The undo grows infinitely when I take back a move"): the steps that gave the plan
+## come off the stack wherever they lie in it, and every step taken after them forgets the plan,
+## so an UNDO past them never puts it back. False when it has none, or it cannot be taken back
+## out of order (can_retake).
 func retake(u: Unit) -> bool:
 	if not can_retake(u):
 		return false
-	_push(u)
+	# The step that began its plan: the newest snapshot that holds none of it. Every one after
+	# holds the plan, a later step of its own (an order after its move) or somebody else's.
+	var first := history.size() - 1
+	while first >= 0 and _snap_has_plan(history[first], u.id):
+		first -= 1
+	if first < 0 or int((history[first] as Dictionary).get("who", 0)) != u.id:
+		# Its plan began outside what the stack holds (it should not): the plan goes, as a step.
+		_push(u)
+		_retake(u)
+		return true
+	var before: Dictionary = history[first]
+	var back: Dictionary = _retaken(u)["back"]
+	var kept: Array = history.slice(0, first)
+	for j in range(first + 1, history.size()):
+		var snap: Dictionary = history[j]
+		if int(snap.get("who", 0)) == u.id:
+			continue   # a later step of its own plan: gone with it
+		_forget_plan(snap, u, before, back)
+		kept.append(snap)
+	history = kept
 	_retake(u)
 	return true
+
+
+## A later step's snapshot as it would have been had a machine's plan never been given: the
+## machine and whoever it carried where they stood, its pieces and its order gone, its move its
+## to give, the hexes it walked uncounted.
+func _forget_plan(snap: Dictionary, u: Unit, before: Dictionary, back: Dictionary) -> void:
+	var units: Dictionary = snap.get("units", {})
+	for id in back.keys():
+		var at: Vector2i = back[id][0]
+		units[str(id)] = [at.x, at.y, int(back[id][1])]
+	var walked := 0
+	var pieces: Array = []
+	for p in snap.get("planned", []):
+		if int(p["unit"]) == u.id:
+			walked += (p["path"] as Array).size()
+		else:
+			pieces.append(p)
+	snap["planned"] = pieces
+	(snap.get("orders", {}) as Dictionary).erase(str(u.id))
+	if walked > 0:
+		snap["hexes_moved"] = maxi(0, int(snap.get("hexes_moved", 0)) - walked)
+		var hexes: Dictionary = snap.get("action_hexes", {})
+		var was := int((before.get("action_hexes", {}) as Dictionary).get(str(u.id), 0))
+		if was > 0:
+			hexes[str(u.id)] = was
+		else:
+			hexes.erase(str(u.id))
+		if not (before.get("moved", []) as Array).has(u.id):
+			var who_moved: Array = snap.get("moved", [])
+			who_moved.erase(u.id)
+			who_moved.erase(float(u.id))   # a snapshot read back from a save holds floats
 
 
 ## What a machine could do with its plan taken back, for the map to show while it is in hand:
@@ -808,23 +873,17 @@ func reach_if_retaken(u: Unit) -> Array:
 	return out
 
 
-## A move for a machine that may already have one planned: its plan taken back first, then the
-## move, one step and one undo. The route walked; empty when refused, the turn as it was.
+## A move for a machine that may already have one planned: its plan taken back first (its steps
+## off the undo), then the move, one step. The route walked; empty when refused, the turn as it
+## was.
 func move_again(u: Unit, to: Vector2i) -> Array[Vector2i]:
 	if not can_retake(u):
 		return move_to(u, to)
 	var none: Array[Vector2i] = []
-	var snap := _snapshot(u)
-	_batch += 1
-	_retake(u)
-	var route := move_to(u, to)
-	_batch -= 1
-	_batch_dirty = false
-	if route.is_empty():
-		_restore(snap)
+	if not (reach_if_retaken(u)[0] as Dictionary).has(to):
 		return none
-	history.append(snap)
-	return route
+	retake(u)
+	return move_to(u, to)
 
 
 ## The plan as the map draws it: each piece with hexes, in the order made.
@@ -1108,18 +1167,22 @@ func order_onto(m: Unit, target: Unit, draft: Array = []) -> String:
 	_batch += 1
 	_batch_dirty = false
 	var out := _order_onto(m, target, draft)
-	if out == "out_of_reach" and draft.is_empty() and can_retake(m):
-		# Out of reach from where its plan leaves it: the order given again from where it
-		# started, its planned move taken back for the one that reaches (10 November).
-		_retake(m)
-		out = _order_onto(m, target, draft)
-		if out != "ordered":
-			_restore(snap)
-			_batch_dirty = false
-			out = "out_of_reach"
-		else:
-			_batch_dirty = true
 	_batch -= 1
+	if out == "out_of_reach" and draft.is_empty() and can_retake(m):
+		# Out of reach from where its plan leaves it: the order given again from where it started
+		# (10 November). Tried first on the turn as it would stand; where it reaches, the old plan
+		# comes off the undo and the new order goes on it as its one step.
+		var dirty := _batch_dirty
+		_batch += 1
+		_retake(m)
+		var again := _order_onto(m, target, draft)
+		_batch -= 1
+		_restore(snap)
+		_batch_dirty = false
+		if again == "ordered":
+			retake(m)
+			return order_onto(m, target, draft)
+		_batch_dirty = dirty
 	if _batch_dirty:
 		history.append(snap)
 	return out

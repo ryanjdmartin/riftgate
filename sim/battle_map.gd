@@ -76,6 +76,7 @@ const STRUCTURE_HALF_WIDTH := 1   # gate and rift span centre plus this many hex
 ## above is their apron, so the wall never hides a unit behind it from the map camera
 ## (Ryan, 20 September). A pack strikes the gate from the row above the apron.
 const GATE_ROWS := 2
+const RIFT_ROWS := 2   # the rows the rift's five hexes lie on: its own, and the next, where two of them stand in front of its middle
 ## A shape lays its water and walls from the rift's row to the last row short of the team's two
 ## rows above the gate's apron (_hi); the rows between are its open rows (_open_rows), which every
 ## shape is laid to fill at any size the ramp deals (9 November, the shapes relaid for the shallow
@@ -88,6 +89,14 @@ const FIRST_ROW := 0   # the first row a shape lays on: the rift's own
 
 ## A map of nothing but plain ground. Used by tests and as a fallback.
 static func flat(w: int, h: int) -> BattleMap:
+	var m := _bare(w, h)
+	m._widen_rift()
+	return m
+
+
+## The field before its rift takes its two front hexes: what a shape is laid on (generate,
+## _widen_rift).
+static func _bare(w: int, h: int) -> BattleMap:
 	var m := BattleMap.new()
 	m.width = w
 	m.height = h
@@ -138,7 +147,7 @@ static func kind_for_seed(seed_value: int) -> String:
 
 ## A seeded map of one shape, or of the shape its seed draws when `map_kind` names none.
 static func generate(w: int, h: int, seed_value: int, map_kind: String = "") -> BattleMap:
-	var m := flat(w, h)
+	var m := _bare(w, h)
 	m.map_seed = seed_value
 	m.kind = map_kind if KINDS.has(map_kind) else kind_for_seed(seed_value)
 	var rng := RandomNumberGenerator.new()
@@ -157,6 +166,7 @@ static func generate(w: int, h: int, seed_value: int, map_kind: String = "") -> 
 			m._lay_gorge(rng)
 		_:
 			m._lay_steppe(rng)
+	m._widen_rift()   # the rift's two front hexes, once the shape is laid and before its mouth is bared
 	m._clear_ends()
 	m._ensure_ground_path(rng)
 	m._prune_narrows()
@@ -164,6 +174,22 @@ static func generate(w: int, h: int, seed_value: int, map_kind: String = "") -> 
 	m._lay_roads(rng)
 	m._lay_relief(rng)
 	return m
+
+
+## The rift is five hexes, a half circle open to the field (Ryan, 10 November: "make the rift
+## have the two hexes in front of it also out of play (so it's a 5 hex semicircle)"): its row's
+## three and the two of the next row that touch its middle. A shape is laid on the rift's row
+## alone, as it was, so no seed's water and walls move for them; the two are taken as soon as it
+## is laid, and everything after reads all five: the mouth bared round them (_clear_ends), the
+## horde's guarantee, the shores, the roads and the relief.
+func _widen_rift() -> void:
+	for n in Hex.neighbors(rift):
+		if has(n) and Hex.axial_to_offset(n).y == 1 and not rift_hexes.has(n):
+			rift_hexes.append(n)
+			terrain[n] = Terrain.PLAIN
+			crag_base.erase(n)
+			wall_look.erase(n)
+			elevation[n] = 0
 
 
 ## Where a shape's laying starts: the rift's row (FIRST_ROW). Kept as a function so the sim reads
@@ -1410,8 +1436,11 @@ func find_path(from: Vector2i, to: Vector2i, traits: Array, blocked: Dictionary 
 	var prev := {}
 	var frontier: Array = [[0, from]]
 	# A path that starts inside the gate may cross the rest of the gate (its apron) to get
-	# out; that is how the gate-to-rift guarantee is checked. Nothing else crosses a structure.
+	# out, and one that ends inside the rift the rest of the rift to get in (its middle lies
+	# behind the two hexes in front of it); that is how the gate-to-rift guarantee is checked.
+	# Nothing else crosses a structure.
 	var own_gate := gate_hexes.has(from)
+	var own_rift := rift_hexes.has(to)
 	while not frontier.is_empty():
 		var best := 0
 		for i in range(1, frontier.size()):
@@ -1427,7 +1456,7 @@ func find_path(from: Vector2i, to: Vector2i, traits: Array, blocked: Dictionary 
 		for n in Hex.neighbors(h):
 			if not has(n):
 				continue
-			if n != to and (blocked.has(n) or (is_structure(n) and not (own_gate and gate_hexes.has(n)))):
+			if n != to and (blocked.has(n) or (is_structure(n) and not (own_gate and gate_hexes.has(n)) and not (own_rift and rift_hexes.has(n)))):
 				continue
 			var t: int = terrain[n]
 			if not passable(t, traits):

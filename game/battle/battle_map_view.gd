@@ -25,8 +25,8 @@ signal route_drag_ended(commit: bool)
 ## once the window has passed with no second touch, so a double-tap opens the codex and never
 ## shows a tap's work first (it selected the unit and let it go again); the unit's hex is
 ## bracketed from the touch until the tap lands. A tap on bare ground has no entry to wait for and
-## lands at once.
-const DOUBLE_TAP_SECONDS := DieFaceView.DOUBLE_TAP_SECONDS
+## lands at once. The map's window is shorter than the die's.
+const DOUBLE_TAP_SECONDS := 0.1   # the die's is 0.15, which read as lag on a tap that selects (Ryan, 10 November: "The double-tap buffer is too long")
 
 const HEX_SIZE := 48.0   # up from 44 (Ryan, 23 September: the map must not get smaller)
 const FOCUS_VIEW_H := 898.0   # the map view's height on the 1280 design: the tilt-shift's focus band is laid out for it, whatever the glass adds
@@ -237,7 +237,10 @@ func _scroll_rect() -> Rect2:
 	var r := _hex_bounds(field.map.all_hexes())
 	r.position += _origin
 	var t := MapOrient.toward_rift()
-	r = r.expand(base(field.map.rift) + t * HEX_SIZE * 3.6)
+	# Past the rift: the vortex's height with the wall at the bottom, where it stands tall over its
+	# row; with the wall at the left it stands across its hexes, and its far side and one row of
+	# scenery are all the scroll shows behind it.
+	r = r.expand(base(field.map.rift) + t * HEX_SIZE * (2.3 if MapOrient.wall_left else 3.6))
 	r = r.expand(base(field.map.gate) - t * HEX_SIZE * 2.6)
 	return r
 
@@ -548,7 +551,7 @@ func _draw() -> void:
 		var reach := destinations.duplicate()
 		if selected != null:
 			reach[shown_hex(selected)] = true
-		_region_outline(reach, Color(hud, 0.95), 3.0)
+		_region_outline(reach, hud, 3.0)
 
 	# A pack the selected machine could be ordered onto, from where its move can take it or where
 	# it stands, bracketed in the violet's bright (the long wall brief 7.2: the band past the move
@@ -562,6 +565,23 @@ func _draw() -> void:
 				if hit:
 					var bc := center(sq.pos)
 					Hud.brackets(self, Rect2(bc - Vector2(HEX_SIZE, HEX_SIZE) * 0.9, Vector2(HEX_SIZE, HEX_SIZE) * 1.8), _px(12.0), ENEMY_HOT, _px(3.0))
+
+	# The moves planned and not yet played (Ryan, 25 October: "highlight and display the planned
+	# move like we used to"): each machine's route in the display's light from where it stands,
+	# its lock on the hex its plan ends on, and a carrier's riders' landings outlined. They play
+	# on ENGAGE or END TURN. (Cut by mistake with the hunters' rings on 10 November, so a move
+	# was planned and nothing showed it: Ryan, "I can, but the UI doesnt register it".)
+	if _anim.is_empty() and fight_group.is_empty():
+		var last_piece := {}
+		for k in range(plans.size()):
+			last_piece[int(plans[k]["unit"])] = k
+		for k in range(plans.size()):
+			var pc: Dictionary = plans[k]
+			if (pc["path"] as Array).is_empty():
+				continue
+			_route(pc["from"], pc["path"], hud, last_piece[int(pc["unit"])] == k)
+			for rd in pc["riders"]:
+				Hud.stroke_poly(self, MapOrient.corners(center(rd[3]), HEX_SIZE - _px(6.0)), Color(hud, 0.8), _px(2.5))
 
 	# Where every pack walks on the enemy's turn (bible section 4), from where the machines
 	# stand now, and who hunts whom, for the chips drawn over the units; nothing while a move
@@ -861,7 +881,7 @@ var inspected := Vector2i(-9999, -9999)
 ## the chest alone, larger. Under the units: a machine standing on one draws over its dimmed
 ## mark, and claims it as the turn ends. First cuts, judged on the phone.
 const CACHE_TOKEN := 3.0   # a cache's token, in screen pixels a texel at zoom 1: a little over a foe's (2.6), hot for the phone
-const CHEST := 36.0        # the chest's plate on screen, held at every zoom: hot, for the phone
+const CHEST := 26.0        # the chest's plate on screen, held at every zoom (36 at first; Ryan, 10 November: "Loot chest icons can be smaller")
 
 func _draw_caches() -> void:
 	if field == null or field.caches.is_empty():
@@ -1274,8 +1294,9 @@ func rift_foot(map: BattleMap) -> Vector2i:
 	if not MapOrient.wall_left:
 		return map.rift
 	var foot: Vector2i = map.rift
+	var row := Hex.axial_to_offset(map.rift).y   # its own row's three: the two in front of them are its floor, never its foot
 	for r in map.rift_hexes:
-		if base(r).y > base(foot).y:
+		if Hex.axial_to_offset(r).y == row and base(r).y > base(foot).y:
 			foot = r
 	return foot
 
@@ -1287,14 +1308,18 @@ func rift_foot(map: BattleMap) -> Vector2i:
 ## one below: there it ends as far inside its hex as the other view's does, a little higher
 ## (Ryan, 10 November: "wall-left, rift sprite needs to move up a tiny bit").
 static func rift_drop() -> float:
-	return 0.9 * (sqrt(3.0) * 0.5 if MapOrient.wall_left else 1.0)
+	return 0.62 if MapOrient.wall_left else 0.9   # the left view's 0.78 at first, then up again (Ryan, 10 November: "Rift sprite can come up a bit more")
 
 
 ## How far the vortex's picture stands off its foot hex's middle, in map pixels: with the wall at
-## the left, a little to the right, away from the field and into the scenery behind it (Ryan,
-## 10 November: "we should shift the rift to the right a bit in wall-left view").
+## the left, half a hex toward the field, over the rift's five hexes (its row's three and the two
+## in front of them), so its far side ends within the one row of scenery behind it. It stood a
+## third of a hex the other way for a day (Ryan, 10 November: "shift the rift to the right a
+## bit"), which with the scroll's allowance past it showed two rows of scenery ("There's too much
+## scenery behind the rift ... slide it back just enough so that it doesn't cause two rows
+## behind").
 static func rift_shift() -> float:
-	return HEX_SIZE * 0.3 if MapOrient.wall_left else 0.0
+	return -HEX_SIZE * 0.5 if MapOrient.wall_left else 0.0
 
 
 const RIFT_FRAME_SECONDS := 0.7    # a frame, on the vortex's own clock
@@ -1302,7 +1327,7 @@ const RIFT_ON_BEAT := false        # true: one turn of the strip is a bar of the
 const RIFT_TEAR_ROWS := 16         # the bands the vortex is drawn in, for its tear
 
 ## The rift (Ryan, 23 September): a vortex tearing a hole in reality, in the foes' own
-## register, standing over its three hexes and reaching up into the scenery, its spiral
+## register, standing over its five hexes and reaching up into the scenery, its spiral
 ## turning a little and back. The hexes under it are the hole's floor. Without the art,
 ## the old outline.
 func _draw_rift(map: BattleMap) -> void:
@@ -1721,13 +1746,26 @@ func _walk_end(sq: Unit, w: Battlefield.Walk, lit: bool) -> void:
 	var c := center(w.end)
 	if not stays:
 		_fill(w.end, Color(Palette.ENEMY, 0.62 if lit else 0.45))
-		_crawl_poly(MapOrient.corners(c, HEX_SIZE - _px(4.0)), ENEMY_HOT if lit else Palette.ENEMY, HEX_SIZE * 0.2, fmod(_ring_t * 1.5, 2.0), ENEMY_EDGE)
+		_enemy_border(c, lit)
 	if attacks:
 		var at := c + (MapOrient.turn(Vector2(-0.5, -0.55)) * HEX_SIZE if stays else Vector2.ZERO)
 		var blink := 0.55 + 0.45 * sin(_ring_t * 3.0)
 		var r := _px(HEX_SIZE * (0.30 if stays else 0.40 + 0.06 * blink))
 		draw_circle(at + Vector2(0.0, r * 0.12), r * 0.78, Color(ENEMY_EDGE, 0.85))   # its own dark ground, so it reads on any tile
 		Glyphs.draw(self, "warning", at, r, Color(ENEMY_HOT, 0.6 + 0.4 * blink), _px(3.0))
+
+
+## The enemy's border round a hex: the two-colour one (Ryan, 10 November: "The animated borders
+## for enemies aren't the two-colour ones they used to be"), a deep-violet line all the way round
+## with the light violet's dashes crawling along it, so the border is whole and two violets move
+## on it; `lit` swings both with the tapped pack's pulse (the intent pair), as its route does.
+func _enemy_border(c: Vector2, lit: bool) -> void:
+	_set_intent_pair(lit)
+	var pts := MapOrient.corners(c, HEX_SIZE - _px(4.5))
+	Hud.stroke_poly(self, pts, Color(ENEMY_EDGE, 0.95), _px(6.0))
+	Hud.stroke_poly(self, pts, _field_deep, _px(3.0))
+	_crawl_poly(pts, _field_hot, HEX_SIZE * 0.2, fmod(_ring_t * 1.5, 2.0))
+	_set_intent_pair(false)
 
 
 ## What a pack comes for, as a hex (Ryan, 10 November: "The "target" hexes for pushers and
@@ -1792,7 +1830,7 @@ func _way_on(sq: Unit, w: Battlefield.Walk) -> void:
 	var tgt := target_hex(sq, w)
 	if tgt != NO_TARGET:
 		var tc := center(tgt)
-		_crawl_poly(MapOrient.corners(tc, HEX_SIZE - _px(5.5)), ENEMY_HOT, HEX_SIZE * 0.2, fmod(_ring_t * 1.2, 2.0), ENEMY_EDGE)
+		_enemy_border(tc, true)
 		# On a machine the mark stands at its hex's corner, clear of the machine; on the wall, in
 		# the hex's middle.
 		var on_unit := field.unit_by_id(w.prey) != null if w.prey != 0 else false
@@ -1982,9 +2020,13 @@ func _pack_segments(p: Unit) -> void:
 
 
 ## The edge of a region of hexes over the map (a machine's reach): each edge whose far side is
-## outside the region, the line on a dark track so it reads on any ground. Corner i to i+1 faces
-## DIRECTIONS[(6 - i) % 6] in either view (the flat-top corners are the pointy ones turned).
+## outside the region, on a dark track so it reads on any ground, drawn as the machine's own
+## target lock is: dashes in the display's light and the light at half, crawling along it (Ryan,
+## 10 November: "Unit moverange border should be the animated one, not static"). Corner i to i+1
+## faces DIRECTIONS[(6 - i) % 6] in either view (the flat-top corners are the pointy ones turned).
 func _region_outline(region: Dictionary, col: Color, width: float) -> void:
+	var bright := col.lerp(Color.WHITE, 0.25 + 0.25 * sin(_ring_t * 1.6))
+	var crawl := fmod(_ring_t * 1.5, 2.0)
 	for pass_i in range(2):
 		for h in region.keys():
 			var nb := Hex.neighbors(h)
@@ -1992,10 +2034,13 @@ func _region_outline(region: Dictionary, col: Color, width: float) -> void:
 			for i in range(6):
 				if region.has(nb[(6 - i) % 6]):
 					continue
+				var a := pts[i]
+				var b := pts[(i + 1) % 6]
 				if pass_i == 0:
-					draw_line(pts[i], pts[(i + 1) % 6], Color(Palette.BG, 0.7), _px(width + 3.0))
+					draw_line(a, b, Color(Palette.BG, 0.7), _px(width + 3.0))
 				else:
-					draw_line(pts[i], pts[(i + 1) % 6], col, _px(width))
+					draw_line(a, b, Color(bright, 0.5), _px(width))
+					_dashed_line(a, b, bright, HEX_SIZE * 0.2, crawl, 0.0, width)
 
 
 func _dotted_poly(pts: PackedVector2Array, col: Color, dash: float) -> void:

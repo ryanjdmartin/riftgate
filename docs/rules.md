@@ -1076,7 +1076,7 @@ a stat.
 ## The battlefield
 
 - **Field**: hexes in rows from the rift to the wall, the wall's length and the depth both the
-  ramp's (20 and 12 at every Convergence). The rift is three hexes mid its first row; the gate
+  ramp's (20 and 12 at every Convergence). The rift is five hexes, a half circle open to the field: three mid its first row and the two of the next row that touch its middle; the gate
   is the last two rows' centre (3 and 4 hexes), wall across the rest. One unit to a hex, the boss
   too. The map is a view the player turns (MAP VIEW in the settings): the wall at the left with
   the rift at the right, flat-top hexes, scrolled down the wall (the default); or the wall at the
@@ -1084,7 +1084,8 @@ a stat.
   are the same in both. With the wall at the bottom the wall and the gate stand on the last row
   and their height covers the row before it; with the wall at the left they stand on that row,
   against the apron, the last row behind them the city's, and the rift's vortex stands on the
-  lowest of its three hexes, a little toward the scenery behind it. The far ground softens
+  lowest of its row's three hexes, half a hex toward the field, over all five, so one row of
+  scenery shows behind it and no more. The far ground softens
   toward the rift and the city softens past the wall in either view: at the screen's top and
   foot with the wall at the bottom, at its right and left with the wall at the left, never its
   top there. A pack or a machine past the screen's edge has a tag at that
@@ -1141,7 +1142,7 @@ a stat.
   a machine, as under a flyer (they slide under each other, from two different dimensional
   counts), and the two sides meet only in a fight. Each move still lands at once, so the next is
   planned from where it ended.
-- **Setup**: up to four machines on the row before the gate; the boss one row below the rift,
+- **Setup**: up to four machines on the row before the gate; the boss in front of the rift's mouth, on the first row clear of its five hexes,
   sealed (below); and on the field, the siege under way, the compositions the tier and the ramp
   put there: the ramp's count of formations (one; two from Convergence 3; three from 8) spread
   across the width, each a move of its own from the row before the wall, and its count of
@@ -1158,8 +1159,8 @@ a stat.
   and every pack's threat rating under the pack, four pips with one filled a machine it is
   intended for, and no count; no ring is drawn round a hunter: it wears a chip, the attack mark
   and a small picture of the machine it comes for, as that machine wears a tag with the
-  hunter's. Every walk's end hex is lit, tinted under a border of dashes crawling round it,
-  tapped or not; where the pack attacks from that hex this turn (a pusher striking the wall, a
+  hunter's. Every walk's end hex is lit, tinted under the enemy's two-colour border, a deep violet line
+  with the light violet's dashes crawling round it, tapped or not; where the pack attacks from that hex this turn (a pusher striking the wall, a
   hunter catching its prey), the warning stands on it, as the plan stands, and no tag says so;
   a pusher with nowhere beside the wall to land that turn stays where it is under a BLOCKED tag. A tapped pack
   shows its whole way as the field stands, past this turn's walk to its goal, dashed, each later
@@ -1169,12 +1170,13 @@ a stat.
   included. Each machine has one action (the Dingo two): one move,
   in one go, then it may fight; a fight ends the action however it ends, and the board under the
   map says what each can still do. A selected machine lights the hexes its move reaches, one
-  border round the whole reach, and brackets the packs it could be ordered onto. A move is
+  border round the whole reach, its dashes crawling as its target's do, and brackets the packs it could be ordered onto. A move is
   planned: its route shows from where the machine stands, and the next move or order reads from
   the route's end. An order can be given again: a machine with a move planned or an order
   waiting shows, in hand, its reach from where it started, and a new move or order there
-  replaces the old one; a tap on it in hand takes its order back, and a tap on it with none lets
-  it go. A machine it carried that has since been given an order of its own, or one whose
+  replaces the old one, its step on the undo taking the old one's place; a tap on it in hand
+  takes its order back and lets it go, and its steps come off the undo (the count drops, and an
+  UNDO never puts the order back); a tap on it with none lets it go. A machine it carried that has since been given an order of its own, or one whose
   starting hex another now plans to stand on, is taken back by UNDO alone. The one button reads
   ENGAGE while a fight is ready (a catch, or a machine ordered onto a pack), ENGAGE 1 OF N while
   N fights wait, each numbered on the map in the order ENGAGE opens them (a catch first, then
@@ -1191,7 +1193,7 @@ a stat.
   stands, the button pulses, whichever it reads.
 - **A tap and a double-tap** on the map work as a die's do in a fight: a double-tap on a
   machine or a pack opens its codex, and a tap on one lands only once the double-tap window
-  (0.15 s, from the tap's release to a second touch) has passed with no second touch, its hex
+  (0.1 s on the map, from the tap's release to a second touch; a die's is 0.15) has passed with no second touch, its hex
   bracketed from the touch until it does, so a double-tap never selects first; a tap on bare
   ground lands at once.
 - **The readout**: holding or tapping a machine, a pack, the boss or the ground shows

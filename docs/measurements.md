@@ -7477,7 +7477,7 @@ Read.
 
 The campaign runner's 40 runs (`tools/campaign_run.gd -- --runs 40`, the plain player, the
 greedy rung, three tier-one machines of its tender) before and after the guess, both on the
-landed formations; `docs/campaign_run.md` is the run after. A direction.
+landed formations. A direction (`docs/campaign_run.md` is the run made again after the branch took main's third map list, the rift's five hexes under it, so its numbers sit a little off the column here).
 
 | Measure | The formation pass landed | The guess |
 |---|---|---|
