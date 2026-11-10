@@ -11,14 +11,14 @@ Every number the campaign uses is a placeholder (`sim/campaign.gd`); this measur
 | Measure | Mean | Range |
 |---|---|---|
 | Runs won | 0 of 40 | |
-| Runs that reached the finale | 1 of 40 | |
-| Turns a run | 6.17 | 5 to 8 |
+| Runs that reached the finale | 4 of 40 | |
+| Turns a run | 6.75 | 5 to 8 |
 | Cities fallen a run | 4.00 | 4 to 4 |
-| The turn the first city fell | 0.57 | 0 to 2 |
+| The turn the first city fell | 1.00 | 0 to 3 |
 | The capital's gate at the end, of 300 | 0.00 | 0 to 0 |
 | Hardpoints still filled at the end, percent | 100 | 100 to 100 |
-| Turns passed with nobody ready | 51 in all | |
-| Wrecks rushed | 28 in all | |
+| Turns passed with nobody ready | 60 in all | |
+| Wrecks rushed | 24 in all | |
 | Battles the bot could not finish (run abandoned) | 0 | |
 
 Who started the runs (the draft's pick here is random, so this is coverage, not a preference):
@@ -49,18 +49,18 @@ The party: each hero, the runs it was dealt in, the finals fought against it and
 
 ## The battles
 
-197 battles. Won 10%, held after a wipe 8%, fell 81%; 76% of battles ended in a team wipe.
+214 battles. Won 19%, held after a wipe 3%, fell 76%; 69% of battles ended in a team wipe.
 
 | Measure | Mean | Range |
 |---|---|---|
 | Components destroyed per won battle (gone for good; the inflow has to beat this) | 0.00 | 0 to 0 |
 | Components destroyed per battle, any outcome | 0.00 | 0 to 0 |
-| Machines wrecked per battle | 1.54 | 0 to 3 |
-| Salvage banked per won battle (the kills' and the loot's) | 333 | 244 to 495 |
-| Caches banked per battle (a fall loses what was claimed) | 0.15 | 0 to 3 |
-| Salvage the loot banked per battle | 3.44 | 0 to 63 |
-| Favour paid per won battle, after the gate's docking, of 100 | 78 | 60 to 100 |
-| Phases a battle | 6.12 | 1 to 11 |
+| Machines wrecked per battle | 1.42 | 0 to 3 |
+| Salvage banked per won battle (the kills' and the loot's) | 300 | 237 to 435 |
+| Caches banked per battle (a fall loses what was claimed) | 0.18 | 0 to 3 |
+| Salvage the loot banked per battle | 4.17 | 0 to 98 |
+| Favour paid per won battle, after the gate's docking, of 100 | 57 | 20 to 100 |
+| Phases a battle | 4.83 | 1 to 10 |
 
 ## The Rupture meter and the mouths
 
@@ -68,18 +68,18 @@ The meter fills by the menace of the kills against the tier's Fractures (three, 
 
 | Measure | Mean | Range |
 |---|---|---|
-| Fractures reached a battle | 1.60 | 0 to 3 |
-| Fractures a battle holds | 3.07 | 3 to 5 |
-| Battles reaching the Rupture | 37% of 197 | |
+| Fractures reached a battle | 1.50 | 0 to 4 |
+| Fractures a battle holds | 3.15 | 3 to 5 |
+| Battles reaching the Rupture | 34% of 214 | |
 | Of those, by the stall guard | 0% | |
-| The turn the seal broke, where it did | 3.38 | 1 to 5 |
-| Peaks of Rift Pressure a battle | 1.92 | 0 to 8 |
-| Compositions the rift sent a battle | 1.92 | 0 to 8 |
-| Patrols the tears sent a battle | 3.11 | 0 to 28 |
-| Tears open at the battle's end | 1.92 | 0 to 8 |
-| Elites spawned a battle | 0.69 | 0 to 2 |
-| Menace killed a battle | 83 | 0 to 341 |
-| Gate damage a battle | 125 | 0 to 200 |
+| The turn the seal broke, where it did | 2.70 | 1 to 7 |
+| Peaks of Rift Pressure a battle | 1.43 | 0 to 8 |
+| Compositions the rift sent a battle | 1.43 | 0 to 8 |
+| Patrols the tears sent a battle | 1.64 | 0 to 28 |
+| Tears open at the battle's end | 1.43 | 0 to 8 |
+| Elites spawned a battle | 0.67 | 0 to 2 |
+| Menace killed a battle | 72 | 0 to 252 |
+| Gate damage a battle | 117 | 0 to 200 |
 
 ## The pressure ratio
 
@@ -87,48 +87,50 @@ As each player's turn opens: the threat ratings of the packs on the apron and of
 
 | Measure | Mean | Range |
 |---|---|---|
-| The ratio, a run's mean over its turns | 1.45 | 0.39 to 2.86 |
-| Turns above 1.0, percent of a run's | 34 | 12 to 57 |
-| A battle's highest, a run's mean | 2.96 | 0.67 to 6.38 |
+| The ratio, a run's mean over its turns | 1.87 | 0.82 to 3.08 |
+| Turns above 1.0, percent of a run's | 49 | 15 to 76 |
+| A battle's highest, a run's mean | 3.16 | 1.30 to 6.25 |
 
 ## By kind, tier of the Convergence, lead faction, squad size and guest
 
 | | Battles | Won | Fell | Wiped | Destroyed per battle |
 |---|---|---|---|---|---|
-| a battle | 196 | 10% | 81% | 76% | 0.00 |
-| the finale | 1 | 0% | 100% | 100% | 0.00 |
-| tier 0 | 159 | 12% | 77% | 72% | 0.00 |
-| tier 1 | 37 | 0% | 100% | 89% | 0.00 |
-| tier 2 | 1 | 0% | 100% | 100% | 0.00 |
-| The Marsh | 58 | 8% | 82% | 86% | 0.00 |
-| The Meadow | 48 | 18% | 75% | 43% | 0.00 |
-| The Peak | 50 | 6% | 92% | 88% | 0.00 |
-| The Waste | 41 | 7% | 75% | 85% | 0.00 |
-| 1 machines | 73 | 1% | 94% | 93% | 0.00 |
-| 2 machines | 62 | 8% | 82% | 79% | 0.00 |
-| 3 machines | 62 | 22% | 66% | 53% | 0.00 |
-| 1 machines, lead alone | 66 | 1% | 93% | 92% | 0.00 |
-| 1 machines, with a guest | 7 | 0% | 100% | 100% | 0.00 |
-| 2 machines, lead alone | 57 | 8% | 80% | 78% | 0.00 |
-| 2 machines, with a guest | 5 | 0% | 100% | 80% | 0.00 |
-| 3 machines, lead alone | 61 | 22% | 65% | 52% | 0.00 |
-| 3 machines, with a guest | 1 | 0% | 100% | 100% | 0.00 |
+| a battle | 210 | 20% | 76% | 69% | 0.00 |
+| the finale | 4 | 0% | 100% | 75% | 0.00 |
+| tier 0 | 160 | 26% | 68% | 61% | 0.00 |
+| tier 1 | 50 | 0% | 100% | 94% | 0.00 |
+| tier 2 | 4 | 0% | 100% | 75% | 0.00 |
+| The Marsh | 60 | 31% | 68% | 56% | 0.00 |
+| The Meadow | 49 | 38% | 61% | 42% | 0.00 |
+| The Peak | 62 | 3% | 85% | 91% | 0.00 |
+| The Waste | 43 | 4% | 93% | 86% | 0.00 |
+| 1 machines | 72 | 0% | 100% | 98% | 0.00 |
+| 2 machines | 57 | 14% | 78% | 75% | 0.00 |
+| 3 machines | 85 | 40% | 55% | 41% | 0.00 |
+| 1 machines, lead alone | 59 | 0% | 100% | 98% | 0.00 |
+| 1 machines, with a guest | 13 | 0% | 100% | 100% | 0.00 |
+| 2 machines, lead alone | 50 | 16% | 76% | 72% | 0.00 |
+| 2 machines, with a guest | 7 | 0% | 100% | 100% | 0.00 |
+| 3 machines, lead alone | 77 | 44% | 50% | 36% | 0.00 |
+| 3 machines, with a guest | 8 | 0% | 100% | 87% | 0.00 |
 
 ## The fights
 
-849 fights. One pack is one fight, with the machines the defence rule sent at it; each row a pack's threat rating (the machines it is intended for, the largest of a catch's hunters') and the machines in the fight, with the fight's win rate. Stalemates, ten rounds running with no foe's HP, no machine's hull or shield changed, 0; fights stalled past the fight bot's cap of 60 rounds, 2.
+733 fights. One pack is one fight, with the machines the defence rule sent at it; each row a pack's threat rating (the machines it is intended for, the largest of a catch's hunters') and the machines in the fight, with the fight's win rate. Stalemates, ten rounds running with no foe's HP, no machine's hull or shield changed, 0; fights stalled past the fight bot's cap of 60 rounds, 2.
 
 | A fight for | Machines in it | Fights | Won |
 |---|---|---|---|
-| 1 | 1 | 204 | 70% |
-| 1 | 2 | 96 | 92% |
+| 1 | 1 | 94 | 98% |
+| 1 | 2 | 35 | 100% |
 | 1 | 3 | 15 | 100% |
-| 3 | 1 | 225 | 31% |
-| 3 | 2 | 99 | 85% |
-| 3 | 3 | 65 | 98% |
-| 4 | 1 | 80 | 55% |
-| 4 | 2 | 44 | 90% |
-| 4 | 3 | 21 | 100% |
+| 2 | 1 | 15 | 66% |
+| 2 | 2 | 6 | 100% |
+| 3 | 1 | 219 | 17% |
+| 3 | 2 | 107 | 69% |
+| 3 | 3 | 80 | 100% |
+| 4 | 1 | 72 | 51% |
+| 4 | 2 | 46 | 91% |
+| 4 | 3 | 44 | 97% |
 
 ## The placeholders measured
 

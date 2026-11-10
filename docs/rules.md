@@ -1147,9 +1147,11 @@ a stat.
   whose opening hex the shape took goes along its row, never back toward the rift), each the
   tier's compositions in turn, the lead's and the guest's in turn with the lead's first, each
   as content writes it (the ramp scales no pack: it scales the field). Rift Pressure opens a
-  turn short of its peak. No battle opens on a forced fight:
-  a pack that hunts opens a row further back at a time, never onto the rift's row, until no machine
-  stands inside its catch, so its first walk comes on the enemy's first turn.
+  turn short of its peak. No hunter stands on the field at turn one: the opening's patrols
+  are the tier's that push, in their order, and the packs that hunt come with the tide and the
+  tears (a tier whose patrols all hunt opens with them, each a row further back at a time,
+  never onto the rift's row, until no machine stands inside its catch). So no battle opens on a
+  forced fight.
 - **A turn**: the map shows every pack's coming walk, read from where the machines' plans end,
   and every pack's threat rating under the pack, four pips with one filled a machine it is
   intended for, and no count; no ring is drawn round a hunter: it wears a chip, the attack mark
@@ -1214,8 +1216,13 @@ a stat.
 - **Packs**: a pack is a composition on one hex: its members, each a foe type times a
   strength, in content order, the lead first, whose sprite the pack wears; a hold lists them. It
   hunts when its composition says so (its caveat, Content conventions), never by its foes; else it
-  pushes. A composition is a patrol (a few foes, one machine's fight), a formation (the
-  body's), an elite (an elite leading its own) or a boss's escort. Every member unpacks into
+  pushes. A composition is a patrol (a flanker alone, a duel for one machine; a pair of them,
+  or a hunting pack, a fight for two), a formation (the body's, a fight for three, which
+  pushes), an elite (an elite leading its own) or a boss's escort. A rank-and-file unit is
+  made for one role, a pusher's unless its entry says a hunter's or a flanker's: a formation
+  fields pushers, a patrol that pushes fields flankers, and a pack that hunts is led by a
+  hunter and holds only what keeps its pace and flies if it does; a unit standing outside its
+  role is a crossing its composition gives a reason for. Every member unpacks into
   the fight, and the survivors come back by member. A composition may name its lead, which then
   stands first; its grid is where each stands (Content conventions). Each pack carries its threat rating, the machines it is intended
   for: its composition's own, else a patrol 1, a formation 3, an elite and an escort 4, a pack
@@ -1505,7 +1512,11 @@ and nothing scales a pack.
   Fractures' elites deal only the compositions whose gate holds their ramp, and where a domain's
   compositions of a size at a tier (an escort's, of its boss) carry any, together they hold
   every Convergence that tier is fought at, from its first (0, 4 and 8 for tiers one to three)
-  to 12, which the Convergence never passes (a turn cannot be passed once the finale is due). No
+  to 12, which the Convergence never passes (a turn cannot be passed once the finale is due).
+  Every patrol and formation writes down the question it poses, `design.question`, internal
+  like everything under `design`; and a foe's `role` (pusher, hunter or flanker; absent: a
+  pusher's) is what the validator holds a patrol's and a formation's members to, a crossing
+  saying why under `design.crossing`. No
   composition in content writes `ramp` yet.
 
 ## Known gaps between these rules and the code

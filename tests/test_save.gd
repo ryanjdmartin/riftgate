@@ -188,10 +188,13 @@ func test_a_resumed_battle_dresses_its_spawns_and_its_fight_calls_content_up() -
 		if comp.has("hunts"):
 			assert_eq(spawned.hunts, str(comp["hunts"]), "%s: by its caveat" % spawned.composition)
 	var m: Unit = b.mechs()[0]
+	# A pack that fields a Gel, sent by the rift: whichever of the tier's formations holds one
+	# (the Meadow's stand in its formations since the pass of 10 November).
 	var sq: Unit = null
-	for p in b.field.packs():
-		if p.foe_id == "gel":
-			sq = p
+	for c in b.db.compositions("meadow", 1, "formation"):
+		if sq == null and (c["members"] as Array).any(func(e) -> bool: return str(e[0]) == "gel"):
+			sq = b.field.emerge(c, b.map.rift)
+	assert_true(sq != null, "the Meadow fields a Gel in a formation")
 	_engage(b, sq, m)
 	var sk := b.attack(sq, [m])
 	sk.begin()

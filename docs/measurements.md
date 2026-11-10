@@ -6944,3 +6944,254 @@ two thirds farther (menace killed 83 where it was 50, the Rupture twice as often
 times the battles it did and still falls in four of five. The gain is where the reads put it,
 short-handed: a machine alone against a formation rated for three wins one fight in three
 where it won one in eight. At its rating nothing moved, since nothing was at stake there.
+
+## 10 November, the duelists: a lone machine against one, and against a pair
+
+The four flanker lines built with the formation pass (the Whisker Cat, the Roc, the Dullahan and
+Cerberus, each with two recolours; Ryan: "Duelists are as you see fit, might as well jam them in
+here as well as part of the pass"), each read as the duel it is made for: one stock machine of
+the tier against one duelist of the tier, a skirmish with no field, the greedy rung, 30 seeds,
+the landed model's dice and each chassis's own regen. A probe (a scratch script over `Skirmish`
+and `Policy`, content loaded fresh for every variant: `ContentDB.reset_cache()`). Each cell:
+won, mean rounds, mean hull lost. The decision they inform: the lines' placeholder numbers and
+the pair's rating. Each a direction.
+
+Tier one, as built: the Whisker Cat (10 hit points; a claw of 5, or a lash of 3 that switches
+off the entry the die shows), the Roc (10; talons of 4, or a climb and a breaching stoop of 6 a
+round on), the Dullahan (8; a blade of 5, and a rise it readies once it is hurt, once a fight),
+Cerberus (10; three bites of 2, or a maul of 5 that scorches 2).
+
+| Machine | Whisker Cat | Roc | Dullahan | Cerberus |
+|---|---|---|---|---|
+| Honey Badger | 100% · 2.2 · 0% | 100% · 2.2 · 1% | 100% · 2.3 · 0% | 100% · 2.2 · 0% |
+| Baboon | 100% · 3.4 · 0% | 100% · 3.4 · 6% | 100% · 3.8 · 0% | 100% · 3.3 · 4% |
+| Prairie Dog | 100% · 6.0 · 4% | 100% · 6.0 · 10% | 100% · 9.1 · 7% | 100% · 6.8 · 35% |
+| Stingray | 100% · 2.9 · 0% | 100% · 3.2 · 1% | 100% · 2.7 · 0% | 100% · 2.9 · 1% |
+| Cassowary | 100% · 3.7 · 1% | 100% · 3.8 · 3% | 100% · 4.1 · 0% | 100% · 3.6 · 5% |
+| Cottonmouth | 100% · 3.0 · 0% | 100% · 3.2 · 1% | 100% · 2.0 · 0% | 100% · 3.0 · 3% |
+| Skua | 100% · 5.2 · 2% | 100% · 5.0 · 27% | 100% · 7.7 · 5% | 100% · 8.4 · 31% |
+| Storm Petrel | 100% · 3.9 · 0% | 100% · 3.9 · 9% | 100% · 3.3 · 0% | 100% · 3.8 · 0% |
+
+Tier two, the tier's own machines: the Sabre Cat (13; 6 and a lash of 3), the Night Roc (14; 5
+and a stoop of 8), the Grave Dullahan (10; 6), the Basalt Cerberus (14; bites of 2, a maul of
+6).
+
+| Machine | Sabre Cat | Night Roc | Grave Dullahan | Basalt Cerberus |
+|---|---|---|---|---|
+| Clydesdale | 100% · 3.5 · 1% | 100% · 3.6 · 7% | 100% · 3.5 · 1% | 100% · 3.5 · 4% |
+| Kite | 100% · 2.0 · 0% | 100% · 2.0 · 0% | 100% · 1.1 · 0% | 100% · 2.0 · 0% |
+| Wild Boar | 100% · 4.0 · 1% | 100% · 4.0 · 11% | 100% · 5.1 · 0% | 100% · 4.0 · 2% |
+| Dingo | 100% · 6.1 · 30% | 100% · 5.7 · 47% | 100% · 7.7 · 44% | 100% · 5.8 · 66% |
+| Buzzard | 100% · 2.7 · 0% | 100% · 3.1 · 9% | 100% · 3.0 · 2% | 100% · 3.2 · 3% |
+| Nemesis | 100% · 3.2 · 4% | 100% · 3.3 · 5% | 100% · 2.7 · 2% | 100% · 3.1 · 5% |
+| Funnel-web | 100% · 4.2 · 1% | 100% · 4.3 · 13% | 100% · 4.0 · 1% | 100% · 4.3 · 4% |
+| Needletail | 100% · 3.9 · 6% | 100% · 3.5 · 19% | 100% · 3.3 · 3% | 100% · 3.4 · 13% |
+
+Tier three: the Storm Cat (16; 7 and a lash of 4), the Great Roc (18; 6 and a stoop of 9), the
+Charnel Dullahan (12; 7), the Sulphur Cerberus (18; bites of 2, a maul of 7).
+
+| Machine | Storm Cat | Great Roc | Charnel Dullahan | Sulphur Cerberus |
+|---|---|---|---|---|
+| Ammit | 100% · 4.8 · 11% | 100% · 5.5 · 19% | 100% · 6.6 · 12% | 100% · 5.4 · 17% |
+| Musk Ox | 100% · 6.5 · 19% | 100% · 7.2 · 33% | 100% · 8.4 · 26% | 100% · 7.4 · 24% |
+| Lammergeier | 100% · 4.1 · 5% | 100% · 4.5 · 23% | 100% · 4.5 · 7% | 100% · 4.5 · 15% |
+| Giant Petrel | 100% · 3.9 · 4% | 100% · 3.9 · 11% | 100% · 3.2 · 4% | 100% · 4.0 · 9% |
+
+A pair of the same duelist at tier one, the same lone machine:
+
+| Machine | Whisker Cat | Roc | Dullahan | Cerberus |
+|---|---|---|---|---|
+| Honey Badger | 100% · 4.9 · 4% | 100% · 4.5 · 14% | 100% · 4.9 · 4% | 100% · 4.6 · 5% |
+| Baboon | 100% · 7.7 · 52% | 100% · 7.1 · 38% | 80% · 9.3 · 65% | 60% · 6.0 · 82% |
+| Prairie Dog | 0% · 6.9 · 100% | 43% · 12.4 · 92% | 0% · 8.3 · 100% | 0% · 4.6 · 100% |
+| Stingray | 97% · 6.9 · 36% | 100% · 6.4 · 26% | 87% · 6.4 · 34% | 53% · 7.4 · 85% |
+| Cassowary | 100% · 7.5 · 35% | 100% · 7.0 · 32% | 100% · 7.4 · 46% | 73% · 6.4 · 83% |
+| Cottonmouth | 100% · 4.4 · 39% | 100% · 4.3 · 31% | 100% · 4.0 · 15% | 63% · 4.8 · 88% |
+| Skua | 0% · 6.2 · 100% | 60% · 8.0 · 90% | 0% · 7.2 · 100% | 0% · 6.3 · 100% |
+| Storm Petrel | 100% · 9.9 · 33% | 100% · 6.9 · 39% | 83% · 8.8 · 42% | 97% · 10.4 · 31% |
+
+Read. One duelist is the fight for one machine the role asks for: every machine of its tier wins
+every seed, in two to nine rounds, and what it pays is the line's own question, the Roc's stoop
+through the shield (the Skua a quarter of its hull, the lights a tenth) and Cerberus's bites
+against a thin gauge (the Prairie Dog and the Skua a third), where the Cat and the Dullahan cost
+almost nothing to a machine that kills them in time. So the lone duelist is rated one, and it
+sits above the hull budget's thirtieth only for the two slow lights. The Dingo is tier two's
+outlier on every column (30% to 66%), its own die's doing and its session's, no duelist's. A
+pair is no duel: it is a wall for the slow lights alone and costs every other machine but the
+Badger a third or more, so a pair is rated two and waits for the ramp's later steps.
+
+What the forms tried along the way say, tier one, the same probe:
+
+- The Dullahan's rise at weight three with no limit stalled the slow lights (the Prairie Dog won
+  43% with 17 fights of 30 run to the bot's sixty rounds, the Skua 37%): it readied its rise
+  again after rising. The engine's `once` on the action is the fix, no new rule: it rises once a
+  fight, and both lights win every seed at 7% and 5%.
+- Cerberus as first written (12 hit points; three bites of 2, each scorching; a maul of 6) cost
+  the Prairie Dog 56% and the Skua 77% with one loss in ten. Taking the scorch off the bites
+  changed no cell, and a machine's armour does nothing while its shield stands (the shield is
+  not armoured, so a Shoring Jack blunts no bite until the gauge is gone): the cost is three
+  blows a round against a gauge of three or four. At 10 hit points and an attack of 5 it is 35%
+  and 31%; with bites of 1 it is nothing to anyone (0% on every row), so the bites stay at 2,
+  plain, the scorch on the maul alone, and the hound is the dear duel for a thin shield.
+
+## 10 November, the formation pass landed: the set by the curve read, and the campaign runner
+
+The patrols and formations as content has them since the pass (the re-cut set: the pruned
+formations, one hunting pack a domain and tier where the rank and file hunt, a lone duelist the
+patrol rated one and a pair rated two on the ramp's later steps), read by the curve read
+(`tools/balance.gd --packs curve --tiers N --seeds 20`, with `--team` at tiers two and three) on
+the landed model's dice: each composition against its tier's four cut to every size, a heavy
+first, the cell at its rating and the cell one machine short (the band, greedy's mean hull lost
+and rounds; a stall named). The decision they inform: none yet. The pass moved no standing
+foe's number, and these are the cells his play and the refit's numbers start from. Each a
+direction at 20 seeds. The same reads' elite cells are kept for the elites' own read.
+
+The counts at the rating:
+
+| Tier | Size, rating | Cells | Free | Decision | Wall | Hull lost |
+|---|---|---|---|---|---|---|
+| 1 | patrol, 1 | 4 | 4 | 0 | 0 | 0% |
+| 1 | patrol, 2 | 6 | 6 | 0 | 0 | 1% |
+| 1 | formation, 3 | 10 | 10 | 0 | 0 | 13% |
+| 2 | patrol, 1 | 4 | 4 | 0 | 0 | 3% |
+| 2 | patrol, 2 | 6 | 6 | 0 | 0 | 3% |
+| 2 | formation, 3 | 14 | 13 | 1 | 0 | 14% |
+| 3 | patrol, 1 | 4 | 4 | 0 | 0 | 25% |
+| 3 | patrol, 2 | 6 | 6 | 0 | 0 | 12% |
+| 3 | formation, 3 | 16 | 11 | 4 | 1 | 30% |
+
+Tier one, the default four (the Honey Badger, the Clydesdale, the Kite, the Baboon):
+
+| Domain | Size | Composition | Members | Ramp | Rated | At its rating | One short |
+|---|---|---|---|---|---|---|---|
+| The Meadow | patrol | `lone_whisker_cat` | Whisker Cat ×1 | any | 1 | free · 0% · 2.2 r |  |
+| The Meadow | patrol | `whisker_cat_pair` | Whisker Cat ×2 | C3 to 12 | 2 | free · 0% · 2.9 r | free · 5% · 4.8 r |
+| The Meadow | patrol | `wolf_pack` | Dire Wolf ×4 | any | 2 | free · 0% · 2.5 r | free · 1% · 4.7 r |
+| The Meadow | formation | `goblin_horde` | Goblin ×4, Mandragora ×4 | C0 to 7 | 3 | free · 2% · 3.0 r | free · 2% · 4.8 r |
+| The Meadow | formation | `treant_grove` | Treant ×1, Goblin ×3, Mandragora ×3 | any | 3 | free · 7% · 4.9 r | free · 14% · 8.6 r |
+| The Meadow | formation | `gel_wall` | Gel ×4, Mandragora ×3 | C0 to 7 | 3 | free · 3% · 4.9 r | free · 9% · 7.2 r |
+| The Waste | patrol | `lone_roc` | Roc ×1 | any | 1 | free · 2% · 2.2 r |  |
+| The Waste | patrol | `roc_pair` | Roc ×2 | C3 to 12 | 2 | free · 2% · 2.8 r | free · 14% · 4.4 r |
+| The Waste | patrol | `antlion_trio` | Antlion ×3 | any | 2 | free · 2% · 2.6 r | free · 21% · 3.7 r |
+| The Waste | formation | `needler_thicket` | Needler ×4, Cockatrice ×4 | C0 to 7 | 3 | free · 8% · 2.9 r | free · 13% · 4.8 r |
+| The Waste | formation | `sandworm_ambush` | Sandworm ×1, Needler ×3, Cockatrice ×2 | any | 3 | free · 40% · 5.8 r | decision · 76% · 8.9 r |
+| The Marsh | patrol | `lone_dullahan` | Dullahan ×1 | any | 1 | free · 0% · 2.3 r |  |
+| The Marsh | patrol | `dullahan_pair` | Dullahan ×2 | C3 to 12 | 2 | free · 0% · 2.4 r | free · 4% · 4.9 r |
+| The Marsh | formation | `grave_throng` | Revenant ×4, Ghost ×4 | C0 to 7 | 3 | free · 3% · 3.1 r | free · 7% · 6.0 r |
+| The Marsh | formation | `barrow_mound` | Barrow Giant ×1, Revenant ×3, Ghost ×2 | C0 to 7 | 3 | free · 5% · 4.2 r | free · 10% · 8.8 r |
+| The Marsh | formation | `knights_vigil` | Zombie Knight ×2, Revenant ×2, Ghost ×2 | any | 3 | free · 15% · 3.4 r | decision · 51% · 5.6 r |
+| The Peak | patrol | `lone_cerberus` | Cerberus ×1 | any | 1 | free · 0% · 2.2 r |  |
+| The Peak | patrol | `cerberus_pair` | Cerberus ×2 | C3 to 12 | 2 | free · 1% · 2.8 r | free · 5% · 4.6 r |
+| The Peak | formation | `ember_pyre` | Salamander ×2, Bomb ×2, Drake ×4 | C0 to 7 | 3 | free · 7% · 3.4 r | decision · 42% · 5.5 r |
+| The Peak | formation | `magma_vent` | Magma Elemental ×1, Salamander ×2, Bomb ×1, Drake ×1 | any | 3 | free · 40% · 5.6 r | decision · 74% · 8.5 r |
+
+Tier two, the tier-two four (the Wild Boar, the Clydesdale, the Buzzard, the Dingo):
+
+| Domain | Size | Composition | Members | Ramp | Rated | At its rating | One short |
+|---|---|---|---|---|---|---|---|
+| The Meadow | patrol | `lone_sabre_cat` | Sabre Cat ×1 | any | 1 | free · 1% · 4.0 r |  |
+| The Meadow | patrol | `sabre_cat_pair` | Sabre Cat ×2 | C8 to 12 | 2 | free · 1% · 3.7 r | free · 18% · 7.2 r |
+| The Meadow | patrol | `warg_pack` | Warg ×4 | any | 2 | free · 0% · 2.1 r | free · 2% · 4.0 r |
+| The Meadow | formation | `guard_horde` | Goblin Guard ×4, Mandrake ×4 | C4 to 7 | 3 | free · 1% · 3.2 r | free · 5% · 4.3 r |
+| The Meadow | formation | `treant_march` | Dusk Treant ×1, Goblin Guard ×3, Mandrake ×3 | C4 to 7 | 3 | free · 6% · 6.9 r | free · 18% · 11.4 r |
+| The Meadow | formation | `rotblooms_bed` | Rotbloom ×1, Goblin Guard ×2, Mandrake ×1 | any | 3 | free · 0% · 4.6 r | free · 5% · 7.0 r |
+| The Meadow | formation | `gel_drift` | Bubble Gel ×2, Gel ×2, Mandrake ×2 | C4 to 7 | 3 | free · 1% · 4.8 r | free · 8% · 7.8 r |
+| The Meadow | formation | `grove_and_bloom` | Dusk Treant ×1, Rotbloom ×1, Goblin Guard ×2, Mandrake ×2 | any | 3 | free · 25% · 9.8 r | decision · 79% · 17.8 r |
+| The Waste | patrol | `lone_night_roc` | Night Roc ×1 | any | 1 | free · 11% · 4.0 r |  |
+| The Waste | patrol | `night_roc_pair` | Night Roc ×2 | C8 to 12 | 2 | free · 5% · 3.7 r | free · 48% · 7.3 r |
+| The Waste | patrol | `pit_pair` | Pit Antlion ×2 | any | 2 | free · 12% · 2.1 r | decision · 77% · 4.0 r |
+| The Waste | formation | `barbed_swarm` | Barbed Needler ×2, Needler ×2, Basilisk ×2, The Djinn ×1 | C4 to 7 | 3 | free · 4% · 3.0 r | free · 13% · 4.0 r |
+| The Waste | formation | `sandworm_pit` | Night Sandworm ×1, Barbed Needler ×3, Basilisk ×2 | any | 3 | free · 42% · 7.1 r | wall · 98% · 10.8 r |
+| The Waste | formation | `djinns_mirage` | Barbed Needler ×2, Needler ×2, The Djinn ×2, Basilisk ×1 | any | 3 | free · 4% · 2.9 r | free · 13% · 4.2 r |
+| The Marsh | patrol | `lone_grave_dullahan` | Grave Dullahan ×1 | any | 1 | free · 0% · 5.0 r |  |
+| The Marsh | patrol | `grave_dullahan_pair` | Grave Dullahan ×2 | C8 to 12 | 2 | free · 0% · 3.2 r | free · 26% · 10.1 r |
+| The Marsh | formation | `wight_host` | Wight ×4, Spectre ×3 | C4 to 7 | 3 | free · 2% · 3.6 r | free · 12% · 6.0 r |
+| The Marsh | formation | `grave_field` | Grave Giant ×1, Wight ×3, Spectre ×2 | any | 3 | free · 11% · 11.6 r | decision · 43% · 42.5 r · 9 stalled |
+| The Marsh | formation | `death_knights_retinue` | Death Knight ×2, Wight ×2, Spectre ×2 | any | 3 | free · 34% · 6.3 r | wall · 99% · 10.8 r |
+| The Peak | patrol | `lone_basalt_cerberus` | Basalt Cerberus ×1 | any | 1 | free · 1% · 4.0 r |  |
+| The Peak | patrol | `basalt_cerberus_pair` | Basalt Cerberus ×2 | C8 to 12 | 2 | free · 1% · 3.8 r | free · 12% · 7.5 r |
+| The Peak | formation | `wyvern_roost` | Fire Lizard ×2, Bomb ×1, Grenade ×1, Wyvern ×2 | C4 to 7 | 3 | free · 10% · 3.2 r | free · 36% · 4.8 r |
+| The Peak | formation | `grenade_volley` | Grenade ×2, Bomb ×1, Fire Lizard ×1, Wyvern ×2 | C4 to 7 | 3 | free · 9% · 3.0 r | free · 22% · 4.5 r |
+| The Peak | formation | `magma_forge` | Basalt Elemental ×1, Fire Lizard ×2, Grenade ×1, Wyvern ×1 | any | 3 | decision · 47% · 7.4 r | wall · 100% · 9.2 r |
+
+Tier three, a tier-three four (the Musk Ox, the Ammit, the Giant Petrel, the Lammergeier; the Swallowtail is undealt):
+
+| Domain | Size | Composition | Members | Ramp | Rated | At its rating | One short |
+|---|---|---|---|---|---|---|---|
+| The Meadow | patrol | `lone_storm_cat` | Storm Cat ×1 | any | 1 | free · 17% · 6.2 r |  |
+| The Meadow | patrol | `storm_cat_pair` | Storm Cat ×2 | C11 to 12 | 2 | free · 6% · 5.2 r | wall · 91% · 8.8 r |
+| The Meadow | patrol | `alpha_pack` | Alpha Warg ×3 | any | 2 | free · 1% · 2.7 r | free · 16% · 5.0 r |
+| The Meadow | formation | `rotblooms_bed` | Rotbloom ×1, Goblin Guard ×2, Mandrake ×1 | any | 3 | free · 2% · 5.2 r | free · 11% · 8.9 r |
+| The Meadow | formation | `captains_warband` | Goblin Captain ×2, Goblin Guard ×2, Alraune ×2 | any | 3 | free · 0% · 2.9 r | free · 5% · 4.1 r |
+| The Meadow | formation | `metal_drift` | Metal Gel ×2, Bubble Gel ×1, Goblin Captain ×1, Mandrake ×2, Alraune ×1 | any | 3 | free · 6% · 4.6 r | free · 43% · 7.0 r |
+| The Meadow | formation | `treant_wilds` | Frost Treant ×1, Goblin Guard ×3, Alraune ×2 | any | 3 | free · 11% · 9.0 r | free · 40% · 14.2 r |
+| The Meadow | formation | `frost_and_bloom` | Frost Treant ×1, Rotbloom ×1, Goblin Guard ×1, Goblin Captain ×1, Alraune ×1 | any | 3 | decision · 42% · 12.1 r | wall · 98% · 15.4 r |
+| The Waste | patrol | `lone_great_roc` | Great Roc ×1 | any | 1 | free · 32% · 7.1 r |  |
+| The Waste | patrol | `great_roc_pair` | Great Roc ×2 | C11 to 12 | 2 | free · 14% · 5.8 r | wall · 91% · 8.9 r |
+| The Waste | patrol | `queens_hunt` | Antlion Queen ×1, Pit Antlion ×2 | any | 2 | free · 38% · 4.1 r | wall · 95% · 4.0 r |
+| The Waste | formation | `great_swarm` | Great Needler ×2, Barbed Needler ×2, Gorgon ×2, Basilisk ×2 | any | 3 | free · 12% · 3.5 r | free · 38% · 5.0 r |
+| The Waste | formation | `mirage_court` | Gorgon ×2, Great Needler ×1, Barbed Needler ×3, The Djinn ×2 | any | 3 | free · 10% · 3.5 r | free · 41% · 4.9 r |
+| The Waste | formation | `sandworm_flats` | Salt Sandworm ×1, Great Needler ×3, Gorgon ×2 | any | 3 | free · 45% · 10.8 r | wall · 100% · 11.9 r |
+| The Marsh | patrol | `lone_charnel_dullahan` | Charnel Dullahan ×1 | any | 1 | free · 30% · 9.2 r |  |
+| The Marsh | patrol | `charnel_dullahan_pair` | Charnel Dullahan ×2 | C11 to 12 | 2 | free · 6% · 5.9 r | wall · 97% · 9.3 r |
+| The Marsh | formation | `lichs_court` | Lich ×1, Draugr ×2, Dread Knight ×2, Spectre ×2, Wraith ×1 | C11 to 12 | 3 | wall · 95% · 11.5 r | wall · 100% · 4.3 r |
+| The Marsh | formation | `charnel_pit` | Charnel Giant ×1, Draugr ×3, Wraith ×2 | any | 3 | decision · 56% · 32.0 r · 6 stalled | wall · 100% · 10.6 r |
+| The Marsh | formation | `wraith_choir` | Wraith ×2, Draugr ×2, Death Knight ×2, Spectre ×2 | any | 3 | decision · 62% · 9.6 r | wall · 100% · 5.1 r |
+| The Marsh | formation | `draugr_host` | Draugr ×4, Lich ×1, Wraith ×2 | any | 3 | free · 17% · 5.0 r | decision · 75% · 7.8 r |
+| The Peak | patrol | `lone_sulphur_cerberus` | Sulphur Cerberus ×1 | any | 1 | free · 22% · 7.0 r |  |
+| The Peak | patrol | `sulphur_cerberus_pair` | Sulphur Cerberus ×2 | C11 to 12 | 2 | free · 9% · 6.5 r | decision · 86% · 10.7 r |
+| The Peak | formation | `dragons_roost` | Red Dragon ×2, Magma Lizard ×1, Fire Lizard ×1, Balloon ×1, Grenade ×1, Wyvern ×2 | any | 3 | free · 39% · 5.2 r | wall · 100% · 5.2 r |
+| The Peak | formation | `magma_pit` | Magma Lizard ×2, Fire Lizard ×1, Grenade ×1, Red Dragon ×2 | any | 3 | free · 9% · 4.1 r | decision · 70% · 7.2 r |
+| The Peak | formation | `balloon_storm` | Balloon ×2, Grenade ×1, Magma Lizard ×1, Wyvern ×2, Red Dragon ×1 | any | 3 | free · 15% · 4.6 r | decision · 74% · 7.9 r |
+| The Peak | formation | `magma_caldera` | Sulphur Elemental ×1, Magma Lizard ×2, Balloon ×1, Wyvern ×1 | any | 3 | decision · 63% · 12.4 r | wall · 100% · 9.4 r |
+
+Read, against the hull budget he accepted (a pusher's fight a twentieth of the squad's hull at
+its rating, a flanker's a thirtieth, a hunter's a tenth):
+
+- Every patrol is free at its rating at every tier, the lone duelist the fight for one it was
+  written as. At tier three the lone duelist costs the Musk Ox a sixth to a third of its hull:
+  the slowest machine of the tier reads them dearest, and a pair is a wall or near one for it
+  alone, which is the pair's rating saying what it should.
+- Tier one's formations sit on the budget (2% to 8% for three) but where a breach stands: the
+  sandworm ambush and the magma vent at two fifths, the knights' vigil at a seventh. Breach
+  under the regen is parked on his word; these are the cells it is parked with.
+- Tier two is the same shape a step up: the fodder formations 0% to 11%, the anchored ones a
+  quarter to a half (the grove and bloom, the sandworm pit, the death knights' retinue, the
+  magma forge, the one decision). The grave field stalls nine fights in twenty one machine
+  short: the giants' line has no escalation, the rising threat's defect, set aside.
+- Tier three spreads widest, and the Marsh is its dearest domain: the Lich's court is a wall
+  for the tier's three (greedy loses, 95% of the hull gone) and the charnel pit and the wraith
+  choir cost over half, the pit stalling six fights in twenty. The draugr host, four Draugr
+  before the Lich and two Wraiths, costs a sixth, so the new rung is not the cause: it is the
+  knights' breach and the giant, with the Lich's raising behind them. The Lich's court holds
+  the ramp's last step alone (Convergences 11 and 12), and the read is stock machines with no
+  module or upgrade, so it is flagged for his play, not moved.
+
+The campaign runner's 40 runs (`tools/campaign_run.gd -- --runs 40`, the plain player, the
+greedy rung, three tier-one machines of its tender) before and after the set landed, both on
+the landed model; `docs/campaign_run.md` is the run after. A direction.
+
+| Measure | The model, the old set | The pass landed |
+|---|---|---|
+| Battles won, fallen | 10%, 81% | 19%, 76% |
+| Battles ended in a team wipe | 76% | 69% |
+| Battles reaching the Rupture | 37% | 34% |
+| Fractures a battle | 1.60 | 1.50 |
+| Menace killed a battle | 83 | 72 |
+| Gate damage a battle | 125 | 117 |
+| Machines wrecked a battle | 1.54 | 1.42 |
+| Fights a run of 40 | 849 | 733 |
+| A fight for one, one machine in it: won | 70% of 204 | 98% of 94 |
+| A fight for two, one in it | none dealt | 66% of 15 |
+| A fight for three, one in it | 31% of 225 | 17% of 219 |
+| A fight for three, two in it | 85% of 99 | 69% of 107 |
+| A fight for three, three in it | 98% of 65 | 100% of 80 |
+| A fight for four, one in it | 55% of 80 | 51% of 72 |
+
+Read. The ratings mean more than they did: a fight for one is won alone 98 times in 100 where
+it was 70 (the old patrols were cut-down pushers that read as twos), and a formation costs a
+machine alone or a pair more than it did (17% and 69% won, from 31% and 85%), since the pruned
+set kept the anchored formations and dropped the ones that read free at eight foes. The plain
+player wins twice the battles it did and still falls in three of four: it spreads its three
+machines one to a pack, which is the play the ratings now punish, and no bot here reads a
+rating before it commits.

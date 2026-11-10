@@ -223,9 +223,16 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 		if not forms.is_empty():
 			for k in range(nf):
 				placed.append([forms[k % forms.size()], Hex.offset_to_axial((w_cols * (k + 1)) / (nf + 1), OPENING_FLOOR_ROW), 1])
-		if not patrols.is_empty():
+		# No hunter stands on the field at turn one (Ryan, 8 November: "no hunters should be on the
+		# field turn one, but that was a formation pass issue, I think"): the opening's patrols are
+		# the tier's that push, in their order, and the hunting packs come with the tide and the
+		# tears. A tier whose patrols all hunt opens with them all the same.
+		var openers: Array = patrols.filter(func(c: Dictionary) -> bool: return str(c.get("hunts", "")).is_empty())
+		if openers.is_empty():
+			openers = patrols
+		if not openers.is_empty():
 			for k in range(np):
-				placed.append([patrols[k % patrols.size()], Hex.offset_to_axial(0 if k % 2 == 0 else w_cols - 1, OPENING_FLOOR_ROW), 2])
+				placed.append([openers[k % openers.size()], Hex.offset_to_axial(0 if k % 2 == 0 else w_cols - 1, OPENING_FLOOR_ROW), 2])
 	var gate_o := Hex.axial_to_offset(map.gate)
 	var i := 0
 	var face_rng := RandomNumberGenerator.new()

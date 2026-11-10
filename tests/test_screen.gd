@@ -887,7 +887,7 @@ func test_double_tap_opens_and_closes_the_codex() -> void:
 	assert_eq(s._codex._sub.text, "THE MARSH", "the domain's name as the subtitle")
 	assert_true(not s._codex._body.text().is_empty(), "foe codex text present")
 	assert_true(s._codex._moves.visible and s._codex._moves.text().contains("CLAW"), "implemented moves listed")
-	assert_true(s._codex._moves.text().contains("a kin standing"), "the swarm is said too")
+	assert_true(s._codex._moves.text().contains("Attack %d" % foe.attack), "its blow at its own number")
 	assert_true(s._codex._flavour.text.begins_with("“"), "flavour shown as a quote")
 	assert_true(s._codex._flavour.text.contains("tired"), "the foe's own line, not the faction's")
 	assert_false(s._codex._faces.visible, "no face list for a foe")

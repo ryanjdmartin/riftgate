@@ -155,29 +155,52 @@ func test_the_fields_trial_deepens_the_field_and_stands_the_opening_farther_out(
 
 
 ## No battle opens on a forced fight (Ryan, 6 November: "I probably would shy away from hitting
-## the first battle with a fight in the first turn ... That's just mean"): in every domain, at
-## the foot of the ramp and at its top, at every tier, a pack that hunts opens out of its catch,
-## while the formations still open close to the wall.
-func test_no_battle_opens_on_a_forced_fight() -> void:
+## the first battle with a fight in the first turn ... That's just mean"), and no hunter stands
+## on the field at turn one (8 November: "no hunters should be on the field turn one, but that
+## was a formation pass issue, I think"; built with the pass, 10 November): in every domain, at
+## the foot of the ramp and at its top, at every tier, with a guest and without, the opening's
+## packs all push, while the tier's hunting packs wait in the rift's cycle and the tears'.
+func test_no_battle_opens_on_a_forced_fight_and_no_hunter_stands_at_turn_one() -> void:
 	var db := ContentDB.load_default()
-	var hunters := 0
-	for fid in db.factions.keys():
-		for ramp in [0, 12]:
-			for tier in [0, 1, 2]:
-				for s in range(1, 9):
-					var b := Battle.new(s)
-					b.ramp = ramp
-					b.tier = tier
-					b.setup(_team(), str(fid))
-					assert_true(b.forced.is_empty(), "%s, ramp %d, tier %d, seed %d: no fight forced as the battle opens" % [fid, ramp, tier, s])
-					for sq in b.field.packs():
-						if sq.is_boss:
-							continue
-						assert_true(Hex.axial_to_offset(sq.pos).y >= Battle.OPENING_FLOOR_ROW, "%s opens off the rift's row" % sq.display_name)
-						if sq.behaviour == "hunt":
-							hunters += 1
-							assert_true(b.field.catch_of(sq) == null, "%s, a hunter, has caught nobody as the battle opens" % sq.display_name)
-	assert_true(hunters > 0, "the content opens hunters somewhere, so the rule is read")
+	var hunting_cycles := 0
+	var fids: Array = db.factions.keys()
+	for fid in fids:
+		for guest in ["", str(fids[(fids.find(fid) + 1) % fids.size()])]:
+			for ramp in [0, 12]:
+				for tier in [0, 1, 2]:
+					for s in range(1, 5):
+						var b := Battle.new(s)
+						b.ramp = ramp
+						b.tier = tier
+						b.guest = guest
+						b.setup(_team(), str(fid))
+						assert_true(b.forced.is_empty(), "%s, guest '%s', ramp %d, tier %d, seed %d: no fight forced as the battle opens" % [fid, guest, ramp, tier, s])
+						for sq in b.field.packs():
+							if sq.is_boss:
+								continue
+							assert_true(Hex.axial_to_offset(sq.pos).y >= Battle.OPENING_FLOOR_ROW, "%s opens off the rift's row" % sq.display_name)
+							assert_true(sq.behaviour != "hunt", "%s, guest '%s', ramp %d, tier %d: %s hunts and stands on the field at turn one" % [fid, guest, ramp, tier, sq.display_name])
+						for c in b.field.patrol_cycle:
+							if not str(c.get("hunts", "")).is_empty():
+								hunting_cycles += 1
+	assert_true(hunting_cycles > 0, "the content's hunters still come with the tide and the tears, so the rule is read")
+	# A tier whose patrols all hunt opens with them all the same: the rule drops no pack it cannot replace.
+	var own := ContentDB.new()
+	own.load_dir(ContentDB.DIR)
+	var fid0 := str(own.factions.keys()[0])
+	var kept: Array = []
+	for c in own.factions[fid0]["compositions"]:
+		if str(c.get("size", "")) != "patrol" or c.has("hunts"):
+			kept.append(c)
+	own.factions[fid0]["compositions"] = kept
+	var hb := Battle.new(1)
+	hb.db = own
+	hb.setup(_team(), fid0)
+	var opened := 0
+	for sq in hb.field.packs():
+		if not sq.is_boss and sq.behaviour == "hunt":
+			opened += 1
+	assert_true(opened > 0, "with no patrol that pushes, the hunters open")
 
 
 ## The field's size is the ramp's (the long wall brief 3.1): a battle that names none takes
@@ -969,6 +992,7 @@ func test_survivors_shrink_the_pack() -> void:
 ## Gels alone, and the split is no kill (Ryan, 8 November).
 func test_a_wipe_never_grows_a_pack_by_its_halves() -> void:
 	var b := Battle.new(3)
+	b.formation = [["gel", 4]]   # a Gel pack of its own: the Meadow's stand in its formations since the pass (10 November)
 	b.setup(_team(), "meadow")
 	quiet_start(b)   # no catch from the opening comes first
 	var m: Unit = b.mechs()[0]

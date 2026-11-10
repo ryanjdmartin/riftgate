@@ -321,7 +321,8 @@ func test_a_massive_foe_may_stand_in_a_composition() -> void:
 	big["id"] = "massive_rank_and_file"
 	big["name"] = "Massive Rank and File"
 	db.foes["massive_rank_and_file"] = big
-	db.factions[fid]["compositions"].append({"id": "giants", "size": "patrol", "tiers": [1], "front": ["massive_rank_and_file", "massive_rank_and_file", null, null], "back": [null, null, null, null]})
+	db.factions[fid]["compositions"].append({"id": "giants", "size": "patrol", "tiers": [1], "front": ["massive_rank_and_file", "massive_rank_and_file", null, null], "back": [null, null, null, null],
+		"design": {"question": "Two giants on a flank.", "crossing": "A test's pushers in a patrol."}})
 	assert_true(db.validate().is_empty(), "a massive foe in a composition validates: %s" % str(db.validate()))
 	assert_true(db.spawn_table(fid, 1).any(func(e) -> bool: return str(e[0]) == "massive_rank_and_file"), "and the derived list carries it")
 	var foes := db.foes_for(Unit.pack(5, "giants", Vector2i.ZERO, fid, 1, 2, "massive_rank_and_file"))
@@ -968,7 +969,7 @@ func test_every_foe_has_an_action_roster_and_player_text() -> void:
 	var atk := int(db.foes["revenant"]["attack"])
 	var said := _moves_text(db, entry)
 	assert_true(said.contains("CLAW\nAttack %d" % atk), "codex lists the implemented move, its name then its blow at its own number: %s" % said)
-	assert_true(said.contains("for %d:" % atk), "and fills {damage} into the text")
+	assert_true(said.contains("for %d." % atk), "and fills {damage} into the text")
 	var caster := db.codex_for_foe(db.make_foe("ghost"))
 	assert_true(_moves_text(db, caster).contains("RAISE\nBuff"), "and lists a buff, live since 30 September: %s" % _moves_text(db, caster))
 	var planned: Dictionary = db.foes["revenant"].duplicate(true)
@@ -1149,10 +1150,103 @@ func test_a_compositions_ramp_gate_deals_it_and_its_tier_is_covered() -> void:
 	assert_false(bare.compositions("meadow", 2, "formation").is_empty(), "tier two's stay its own")
 
 
+## The battlefield roles (Ryan, 9 November: a unit is made for a pusher's, a flanker's or a
+## hunter's fight and tuned for it, a crossing deliberate; the formation pass, 10 November): a
+## foe's role is a pusher's unless it says a hunter's or a flanker's; a formation that pushes
+## fields pushers and a patrol that pushes fields flankers, or says why under design.crossing; a
+## pack that hunts is led by a hunter and holds only what keeps up with it; every patrol and
+## formation writes its question down; elites and escorts are written by other rules.
+func test_a_patrol_or_a_formation_is_held_to_its_members_roles_and_poses_a_question() -> void:
+	var db := _fresh()
+	assert_true(db.validate().is_empty(), "content validates: %s" % str(db.validate().slice(0, 3)))
+	var fid := str(db.factions.keys()[0])
+	var q := {"question": "What the player must answer."}
+	# Units of the test's own, by role and by pace.
+	var base: Dictionary = {}
+	for id in db.foes.keys():
+		var f: Dictionary = db.foes[id]
+		if str(f.get("rank", "front")) != "back" and int(f.get("size", 1)) == 1 and not bool(f.get("elite", false)) and not db.is_boss(str(id)) and not f.has("parts") and not bool(f.get("hero", false)) and not f.has("role"):
+			base = f.duplicate(true)
+			break
+	assert_false(base.is_empty(), "content has a plain front-rank pusher to copy")
+	for spec in [["probe_pusher", "", 2, false], ["probe_flanker", "flanker", 3, false], ["probe_hunter", "hunter", 4, false], ["probe_slow", "pusher", 2, false], ["probe_keeper", "pusher", 4, false], ["probe_flyer", "hunter", 4, true]]:
+		var f := base.duplicate(true)
+		f["id"] = spec[0]
+		f["name"] = str(spec[0]).capitalize()
+		if not str(spec[1]).is_empty():
+			f["role"] = spec[1]
+		else:
+			f.erase("role")
+		f["movespeed"] = spec[2]
+		if bool(spec[3]):
+			f["winged"] = true
+		db.foes[spec[0]] = f
+	assert_eq(db.role_of("probe_pusher"), "pusher", "a foe that names no role is a pusher")
+	assert_eq(db.role_of("probe_hunter"), "hunter", "one that names it is what it says")
+	var none := [null, null, null, null]
+	var elite_id := ""
+	for id in db.foes.keys():
+		var e: Dictionary = db.foes[id]
+		if elite_id.is_empty() and bool(e.get("elite", false)) and str(e.get("rank", "front")) != "back" and int(e.get("size", 1)) == 1 and not e.has("parts"):
+			elite_id = str(id)
+	assert_false(elite_id.is_empty(), "content has a front-rank elite to lead the test's elite")
+	var cases := {
+		"formation of pushers": [{"size": "formation", "front": ["probe_pusher", "probe_pusher", null, null], "design": q}, ""],
+		"patrol of flankers": [{"size": "patrol", "front": ["probe_flanker", null, null, null], "design": q}, ""],
+		"hunters hunting": [{"size": "patrol", "hunts": "slowest", "front": ["probe_hunter", "probe_hunter", null, null], "design": q}, ""],
+		"a pusher that keeps up with the hunt": [{"size": "patrol", "hunts": "slowest", "front": ["probe_hunter", "probe_keeper", null, null], "design": q}, ""],
+		"a pusher that lags the hunt": [{"size": "patrol", "hunts": "slowest", "front": ["probe_hunter", "probe_slow", null, null], "design": q}, "does not keep up with its lead"],
+		"a walker behind a flying lead": [{"size": "patrol", "hunts": "slowest", "front": ["probe_flyer", "probe_hunter", null, null], "design": q}, "cannot follow its lead"],
+		"a hunt led by a pusher": [{"size": "patrol", "hunts": "slowest", "front": ["probe_keeper", "probe_hunter", null, null], "design": q}, "a pack that hunts is led by a hunter"],
+		"pushers in a patrol": [{"size": "patrol", "front": ["probe_pusher", "probe_pusher", null, null], "design": q}, "is a pusher in a flanker's patrol"],
+		"a flanker in a formation": [{"size": "formation", "front": ["probe_pusher", "probe_flanker", null, null], "design": q}, "is a flanker in a pusher's formation"],
+		"a hunter in a formation": [{"size": "formation", "front": ["probe_pusher", "probe_hunter", null, null], "design": q}, "is a hunter in a pusher's formation"],
+		"a crossing that says why": [{"size": "formation", "front": ["probe_pusher", "probe_hunter", null, null], "design": {"question": "Q.", "crossing": "The hunter is ridden."}}, ""],
+		"no question": [{"size": "formation", "front": ["probe_pusher", null, null, null]}, "design.question says what the player must answer"],
+		"an empty question": [{"size": "patrol", "front": ["probe_flanker", null, null, null], "design": {"question": "  "}}, "design.question says what the player must answer"],
+		"an elite of anyone": [{"size": "elite", "front": [elite_id, "probe_pusher", "probe_hunter", "probe_flanker"]}, ""],
+	}
+	for tag in cases.keys():
+		var c: Dictionary = (cases[tag][0] as Dictionary).duplicate(true)
+		c["id"] = "probe_" + str(tag).replace(" ", "_")
+		c["tiers"] = [1]
+		if not c.has("back"):
+			c["back"] = none.duplicate()
+		var own := _fresh()
+		for id in db.foes.keys():
+			if str(id).begins_with("probe_"):
+				own.foes[id] = db.foes[id]
+		own.factions[fid]["compositions"].append(c)
+		var errs := own.validate().filter(func(e: String) -> bool: return e.contains("composition %s:" % c["id"]))
+		var want := str(cases[tag][1])
+		if want.is_empty():
+			assert_true(errs.is_empty(), "%s validates clean: %s" % [tag, str(errs)])
+		else:
+			assert_true(errs.any(func(e: String) -> bool: return e.contains(want)), "%s is refused for '%s': %s" % [tag, want, str(errs)])
+	var odd := _fresh()
+	odd.foes[str(odd.foes.keys()[0])]["role"] = "wanderer"
+	assert_true(odd.validate().any(func(e: String) -> bool: return e.contains("role is one of")), "a role content does not know is refused")
+	# Content as it stands: every patrol that pushes is a duel, and no formation hunts.
+	var real := ContentDB.load_default()
+	for f2 in real.factions.keys():
+		for t in [1, 2, 3]:
+			var lone := 0
+			for c in real.compositions(str(f2), t, "patrol"):
+				if not c.has("hunts"):
+					for m in c["members"]:
+						assert_eq(real.role_of(str(m[0])), "flanker", "%s tier %d: %s's %s is a flanker" % [f2, t, c["id"], m[0]])
+					if (c["members"] as Array).size() == 1 and int(c["members"][0][1]) == 1:
+						lone += 1
+			assert_true(lone >= 1, "%s tier %d fields a duel for one machine on its flanks" % [f2, t])
+			for c in real.compositions(str(f2), t, "formation"):
+				assert_false(c.has("hunts"), "%s tier %d: %s is a formation and pushes" % [f2, t, c["id"]])
+
+
 func test_the_validator_holds_a_compositions_grid_squad_and_lead() -> void:
 	var db := _fresh()
 	var none := [null, null, null, null]
-	var base := {"id": "probe", "size": "formation", "tiers": [1], "front": ["treant", "goblin", "goblin", "goblin"], "back": [null, "mandragora", null, null]}
+	var base := {"id": "probe", "size": "formation", "tiers": [1], "front": ["treant", "goblin", "goblin", "goblin"], "back": [null, "mandragora", null, null],
+		"design": {"question": "A tree and three knives before a screamer."}}
 	var good := base.duplicate(true)
 	good["squad"] = 2
 	good["lead"] = "mandragora"
@@ -1766,14 +1860,29 @@ func test_the_playtest_set_obeys_the_targeting_rules() -> void:
 			# A tier-two or tier-three recolour carries up to three, the twist the third (Ryan,
 			# 28 October: the ladder's move counts, section 5's one rule set row).
 			assert_true(f.actions.size() >= 1 and f.actions.size() <= 3, "%s, of tier two or three, has one to three moves" % id)
-	var g := db.make_foe("revenant")
-	assert_eq(g.actions.size(), 1, "the ghoul has one move")
+	# A blow that counts its kin (the engine's swarm) is no content's since the formation pass
+	# (10 November: the goblin's and the revenant's lines hit flat, "Kill one goblin, suddenly the
+	# whole formation falls apart"), so the rule is read on a foe of the test's own.
+	var own := ContentDB.new()
+	own.load_dir(ContentDB.DIR)
+	var swarmer: Dictionary = own.foes["revenant"].duplicate(true)
+	swarmer["id"] = "probe_swarmer"
+	swarmer["actions"][0]["swarm"] = 1
+	own.foes["probe_swarmer"] = swarmer
+	var g := own.make_foe("probe_swarmer")
+	assert_eq(g.actions.size(), 1, "the swarmer has one move")
 	var swarm := int(g.actions[0].get("swarm", 0))
 	assert_true(swarm > 0, "and it swarms")
 	g.kin = 3
-	assert_eq(g.damage(), int(db.foes["revenant"]["attack"]) + 3 * swarm, "four on the field hit for the blow and three kin's swarm each")
-	var entry := db.codex_for_foe(g)
-	assert_true(_moves_text(db, entry).contains("Attack %d (+%d a kin standing)" % [int(db.foes["revenant"]["attack"]), swarm]), "the codex says the swarm, at its own number with no kin: %s" % _moves_text(db, entry))
+	assert_eq(g.damage(), int(swarmer["attack"]) + 3 * swarm, "four on the field hit for the blow and three kin's swarm each")
+	var entry := own.codex_for_foe(g)
+	assert_true(_moves_text(own, entry).contains("Attack %d (+%d a kin standing)" % [int(swarmer["attack"]), swarm]), "the codex says the swarm, at its own number with no kin: %s" % _moves_text(own, entry))
+	for fid in db.factions.keys():
+		for t in [1, 2, 3]:
+			for c in db.compositions(str(fid), t, "formation"):
+				for m in c["members"]:
+					for a in db.foes[str(m[0])].get("actions", []):
+						assert_false(a.has("swarm"), "%s in %s: a formation's unit hits flat; a threat that is its pack's head count is no identity for a pusher" % [m[0], c["id"]])
 	# A move's condition and a foe's armour show in its codex, read off whichever armoured foe
 	# carries a condition (by structure, never an entry by id: the stand-ins moved to the ranks, 30 October).
 	var held_id := ""

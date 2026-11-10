@@ -439,7 +439,7 @@ func test_a_guests_spawns_join_the_rifts_cycle() -> void:
 	for c in b.field.cycle:
 		if str(c["faction"]) == str(facs[1]):
 			guest_comps += 1
-	assert_eq(guest_comps, db.compositions(str(facs[1]), 1, "formation").size() + db.compositions(str(facs[1]), 1, "patrol").size(), "every guest formation and patrol is in the cycle")
+	assert_eq(guest_comps, db.compositions(str(facs[1]), 1, "formation", b.ramp).size() + db.compositions(str(facs[1]), 1, "patrol", b.ramp).size(), "every guest formation and patrol the ramp's gate holds is in the cycle")
 	var on_field := 0
 	var guests_on_field := 0
 	for u in b.field.packs():
@@ -1117,8 +1117,8 @@ func test_a_battle_fields_the_compositions_of_its_tier() -> void:
 		b.setup([db.make_mech(str(db.default_team()[0]))], str(facs[0]))
 		var cycle: Array = b.field.cycle.map(func(c) -> String: return str(c["id"]))
 		for fid in [facs[0], facs[1]]:
-			for c in db.compositions(str(fid), t + 1, "formation") + db.compositions(str(fid), t + 1, "patrol"):
-				assert_true(cycle.has(str(c["id"])), "tier %d's %s in the rift's cycle" % [t + 1, str(c["id"])])
+			for c in db.compositions(str(fid), t + 1, "formation", b.ramp) + db.compositions(str(fid), t + 1, "patrol", b.ramp):
+				assert_true(cycle.has(str(c["id"])), "tier %d's %s, which the ramp's gate holds, in the rift's cycle" % [t + 1, str(c["id"])])
 		var ids: Array = []
 		for fid in [facs[0], facs[1]]:
 			ids.append_array((db.compositions(str(fid), t + 1, "formation") + db.compositions(str(fid), t + 1, "patrol")).map(func(c) -> String: return str(c["id"])))

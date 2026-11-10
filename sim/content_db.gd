@@ -2323,10 +2323,71 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 		errs.append("%s: needs at least one implemented attack action" % where)
 
 
+## A rank-and-file unit's battlefield role (Ryan, 9 November: a unit is made for a pusher's, a
+## flanker's or a hunter's fight and tuned for it, so a goblin tuned for three machines is not
+## the same goblin in a pack sent at one): a pusher's unless its entry says otherwise. A pusher
+## stands in the formations that march on the wall, a flanker is a duel for one machine in a
+## patrol, a hunter is a hunting pack's line. Internal: nothing shows it, the validator holds
+## the compositions to it (_validate_roles). Elites, bosses and their escorts carry none.
+const FOE_ROLES := ["pusher", "hunter", "flanker"]
+const ROLE_DEFAULT := "pusher"
+
+
+func role_of(foe_id: String) -> String:
+	return str(foes.get(foe_id, {}).get("role", ROLE_DEFAULT))
+
+
+## A patrol or a formation is held to its members' roles (the formation pass, 10 November). A
+## pack that hunts is its lead's line and what keeps up with it (Ryan: "A pack of wolves and
+## things that keep up with the wolves makes sense"): a hunter leads it, and every member moves
+## at its lead's pace or faster and flies if it does. A formation that pushes fields pushers, a
+## patrol that pushes fields flankers ("One spooky flanker revenant or whatever is a more
+## interesting duel for a Skua or Kite than the Skua or Kite just mowing down less goblins").
+## A crossing is deliberate, and the composition says why under design.crossing ("I'm not saying
+## we can't cross lines between battlefield roles, just that I don't want it to come across as
+## lazy"). Elites and escorts are written by other rules.
+func _validate_roles(cw: String, c: Dictionary, size: String, errs: Array[String]) -> void:
+	var cells: Array = []
+	for r in ["front", "back"]:
+		var row = c.get(r, [])
+		if row is Array:
+			for x in row:
+				if x is String and foes.has(x):
+					cells.append(str(x))
+	if cells.is_empty():
+		return
+	var d = c.get("design", null)
+	var crossing := str(d.get("crossing", "")).strip_edges() if d is Dictionary else ""
+	if c.has("hunts"):
+		var lead := str(c.get("lead", cells[0]))
+		if not foes.has(lead):
+			return
+		if role_of(lead) != "hunter" and crossing.is_empty():
+			errs.append("%s: a pack that hunts is led by a hunter; %s is a %s (say why under design.crossing)" % [cw, lead, role_of(lead)])
+		var pace := int(foes[lead].get("movespeed", Unit.PACK_MOVE))
+		var flies := bool(foes[lead].get("winged", false))
+		for x in cells:
+			if int(foes[x].get("movespeed", Unit.PACK_MOVE)) < pace:
+				errs.append("%s: %s does not keep up with its lead (%s moves %d): a hunter is its line and what keeps up with it" % [cw, x, lead, pace])
+			elif flies and not bool(foes[x].get("winged", false)):
+				errs.append("%s: %s cannot follow its lead %s over walls and water" % [cw, x, lead])
+		return
+	var want := "pusher" if size == "formation" else "flanker"
+	if not crossing.is_empty():
+		return
+	var said := {}
+	for x in cells:
+		if role_of(x) != want and not said.has(x):
+			said[x] = true
+			errs.append("%s: %s is a %s in a %s's %s (a crossing says why under design.crossing)" % [cw, x, role_of(x), want, size])
+
+
 func _validate_foes(errs: Array[String]) -> void:
 	for id in foes.keys():
 		var f: Dictionary = foes[id]
 		var where := "foe %s" % id
+		if f.has("role") and not FOE_ROLES.has(str(f["role"])):
+			errs.append("%s: role is one of %s (absent: a pusher's)" % [where, ", ".join(FOE_ROLES)])
 		for key in ["name", "codex", "flavour", "actions", "hp", "attack", "rank"]:
 			if not f.has(key):
 				errs.append("%s: missing %s" % [where, key])
@@ -2506,6 +2567,15 @@ func _validate_factions(errs: Array[String]) -> void:
 			if c.has("members") or c.has("layout"):
 				errs.append("%s: members and layout are gone (8 November); the grid, front and back, is the whole declaration" % cw)
 			_validate_grid(cw, c, size, errs)
+			# The formation pass's fields (10 November): what the player must answer, written down on
+			# every patrol and formation (internal, under design, never shown), and the roles.
+			if c.has("design") and not (c["design"] is Dictionary):
+				errs.append("%s: design is an object (question, crossing, note)" % cw)
+			elif size == "patrol" or size == "formation":
+				var cd = c.get("design", null)
+				if not (cd is Dictionary) or str(cd.get("question", "")).strip_edges().is_empty():
+					errs.append("%s: design.question says what the player must answer (every patrol and formation poses one)" % cw)
+				_validate_roles(cw, c, size, errs)
 			# The long wall brief's fields (section 6): the squad it is intended for and the ramp gate.
 			if c.has("squad"):
 				var sv = c["squad"]

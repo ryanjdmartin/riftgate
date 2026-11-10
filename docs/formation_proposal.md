@@ -15,6 +15,20 @@ What this pass does not touch: a foe's numbers (the refit is held until he plays
 bible's section 12), the elites' compositions and ratings (his: "don't downgrade them"), and the
 escorts as they stand (the bosses' item, section 6 below, writes them with the bosses' entries).
 
+**Landed 10 November** (Ryan: "Duelists are as you see fit, might as well jam them in here as
+well as part of the pass"): the grids are content's now (`content/factions.json`), re-cut to his
+calls since: the pruned formations, a hunting pack a domain and tier where its rank and file
+hunt, the antlions out of the Waste's pushers (the antlion pit, the pit ambush, the pit wall and
+the queen's court are gone and the djinns' mirage stays in their place), the Marsh's tier three
+on the Draugr with the Lich behind it (the draugr host in the wraith host's place), and a
+flanker line a domain in every patrol that pushed (section 13: alone rated one, a pair rated
+two on the ramp's later steps). A question stands on every patrol and formation, the validator
+holds each to its members' roles, and the opening places no hunter. The tool that held the
+grids as code is retired (`git show 3e44fe1:tools/formation_proposal.py`). What is still live
+here: section 6, the bosses as fixed entries, a session of their own; section 13's holes and
+bench. Sections 3, 5 and 12 are the first cut and its reads, kept as the record of how the
+grids were placed and pruned.
+
 ## 0. Since the proposal (9 November, the same day)
 
 Three things have moved since the grids and the reads below were written; the grids are a first
@@ -938,9 +952,17 @@ Honey Badger; a heavy sent at it wins slowly, so a mismatch costs time and never
 | The Marsh | The Dullahan | It gets back up once: burst it before it readies the rise, purge the rise, or keep the big die for the second life? | A blade, and a rise it readies as an action (the Zombie Knight's), with none of the Knight's armour |
 | The Peak | Cerberus | Three heads bite in one action and each bite scorches: Armoured turns a point off every head where a Barrier stops one, and what lands runs the next shots hotter. | Three strikes in a blow (the Thunder Ape's rampage), a scorch on each (the Salamander's bite) |
 
-Each stands alone as a patrol rated one, about a dozen hit points (the Dullahan six, twice),
-and as a pair for the ramp's later bands if the pair still reads as a one. Tiers two and three
-follow his recolour rule: a bigger number, and a twist where he marks one.
+Built 10 November as he said ("as you see fit"), each alone as a patrol rated one, about ten
+hit points (the Dullahan eight, twice), and as a pair rated two on the ramp's later steps: a
+pair read as a fight for two, a wall for the slow lights alone (`docs/measurements.md`). Tiers
+two and three follow his recolour rule, a bigger number and no twist: the Sabre Cat and the
+Storm Cat, the Night Roc and the Great Roc, the Grave and the Charnel Dullahan, the Basalt and
+the Sulphur Cerberus, working names for his name pass, their sprites rough placeholders. Two
+things moved in the building. The Dullahan's rise is once a fight (the engine's `once`), since
+a rise it could ready again made a duel the slow lights could not end. And Cerberus's three
+bites are plain, the maul the one that scorches: armour comes off blows on bare hull alone, so
+it turns nothing while a shield stands, and three scorching bites a round left the slow lights
+no way to fire.
 
 **Holes, each with what settles it**:
 

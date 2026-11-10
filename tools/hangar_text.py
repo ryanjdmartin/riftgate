@@ -111,7 +111,7 @@ OTHER_KEYS = {
     "chassis.makers": {"id", "name", "style", "voice", "sponsorship"},
     "components.entries": {"id", "name", "maker", "shape", "sound", "status"},
     "modules.entries": {"id", "name", "maker"},
-    "foes.entries": {"id", "name", "faction", "rank", "aim", "promotes", "guard"},
+    "foes.entries": {"id", "name", "faction", "rank", "aim", "promotes", "guard", "role"},   # role: a pusher's, a hunter's or a flanker's (10 November), read by the validator and never shown
     "factions.entries": {"id", "name", "bleed", "reward_bias"},
     "loot.entries": {"id", "name"},
 }
