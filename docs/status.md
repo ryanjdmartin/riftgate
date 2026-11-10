@@ -666,6 +666,10 @@ commands are in `README.md`.
   copy is read, so a subagent reads it and publishes the merge. After main merges in, check the
   tables script's run against the file's tables before keeping it: a row it reverts belongs to a
   branch not yet landed.
+- The hangar's Bench tab (10 November, `claude/hangar-bench`, off main on Ryan's word: "Yes, start a
+  fresh branch off main for it"): his working sheet for a machine, built and checked in a browser
+  against a stand-in database at the desk's and the phone's widths, not yet on main and not
+  published; both wait on his word. It adds no file to the page's map and no collection.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
