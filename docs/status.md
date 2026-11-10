@@ -25,7 +25,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1081 tests, 304,222 checks, green (9 November, main with the shapes relaid and recast,
+- Tests: 1081 tests, 304,222 checks, green (10 November on the Text tab's branch, which changes no engine or content file; 9 November, main with the shapes relaid and recast,
   the skirmish audit's step 3, the playtest list of 9 November, the Polar Bear's kit and name, the renamed ids and
   the Lammergeier's rework; Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
@@ -157,6 +157,33 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
+- **The hangar's Text tab** (10 November, `ccr-7d7ed303-tbdkg4`; the bible's shown-text row): Ryan,
+  9 November, wants to work on "all in-game text that the player sees" and to get "a strong
+  foothold on content I've written myself, so that you can do a better job of mimicking my
+  intended writing style", the hangar being "hard to find what is visible in-game, what needs
+  editing, what's outdated, and compare between entries". Claude's first cut, built on that
+  statement, his to judge in use (the to-do's Ryan list). `tools/hangar_text.py` is the one
+  inventory of shown text: 1,326 texts in seventeen kinds (a term's entry, a codex, a flavour,
+  a passive, a module's rule, a foe's move, a title; and read-only, two tables the code holds:
+  a status's line in `sim/effects.gd` and a foe's aim and condition words in `sim/foe.gd`),
+  each with where the game draws it, the engine's facts under it and its maker's voice. 1,064
+  are drawn by a screen today (943 drafts, 121 empty) and 262 by none: every component's
+  flavour, every module's codex and flavour, the four domains' flavour, the planned moves and
+  rules, 88 terms the keywords list leaves out (the rules' reference only), and the 43 status
+  lines, which since 2 November show only in a codex's KEPT FOR THE BATTLE row (a chip's
+  meaning is its term's entry). The tab is one row a text by kind, grouped by voice, filtered
+  by state, edited in place; he signs a text his own (Mine, or by saving what he typed), passes
+  a session's draft (Pass), pins texts to keep beside what he writes, and leaves a note for the
+  session. His work waits in the page's `text` collection until `--fold` writes it: his words
+  into content where they stand (the hand-laid files keep their layout), his marks into the
+  ledger `docs/hangar/text.json`, his own texts into `docs/voice.md`, the corpus a session
+  reads before drafting shown text (`CLAUDE.md`'s rule). A signed text a session rewords reads
+  Changed since, one whose mechanics moved reads Stale. The ledger is empty: nothing is signed
+  until he signs it, his four chassis codexes and three flavours included. Left out, and said
+  so on the tab: entries' own names, the lines the code composes from numbers, the screens'
+  furniture and Jenny's lines. Checked on a local copy of the page with a stand-in database
+  (signing, writing, the next row, a live sync under a half-typed text, a fold into
+  `chassis.json` and the hand-laid `foes.json`, both flags, a phone's width).
 - **The Lammergeier's rework** (9 November, `ccr-a0b35006-od22d2`; the bible's Lammergeier row):
   Ryan sent it back for more than a fix ("A chassis based around opening an empty spot isn't a
   good design"), the slot form waiting on arrivals the long wall cut. His shape, built: "the
