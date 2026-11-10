@@ -166,12 +166,16 @@ func _field_lines() -> Array:
 		elif not battle.orders.is_empty():
 			lines.append(["ORDERS // ENGAGE WHEN READY", Color(Palette.HUD, 0.9)])
 		var strikes := 0
+		var struck := 0   # what those strikes take off the gate's bar (Battlefield.strike_of: by threat rating, 10 November)
 		var w: Dictionary = walks.call() if walks.is_valid() else {}
 		for k in w.keys():
 			if (w[k] as Battlefield.Walk).strikes:
 				strikes += 1
+				var striker := battle.field.unit_by_id(int(k))
+				if striker != null:
+					struck += Battlefield.strike_of(striker)
 		if strikes > 0:
-			lines.append(["GATE // %d STRIKE%s NEXT" % [strikes, "" if strikes == 1 else "S"], Color(Palette.ENEMY, 0.9)])
+			lines.append(["GATE // %d STRIKE%s NEXT // -%d" % [strikes, "" if strikes == 1 else "S", struck], Color(Palette.ENEMY, 0.9)])
 		else:
 			lines.append(["GATE // CLEAR", Color(Palette.HUD, 0.5)])
 	return lines

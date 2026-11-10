@@ -106,7 +106,7 @@ func test_a_pack_on_the_apron_strikes_the_gate() -> void:
 	assert_true(w.path.is_empty(), "standing on the apron already, it walks nowhere")
 	var hp := f.gate_hp
 	f.enemy_turn()
-	assert_eq(f.gate_hp, hp - 20, "a third of six, ten at least: twenty")
+	assert_eq(f.gate_hp, hp - 3 * Battlefield.STRIKE_PER_PIP, "a pack of no composition is rated three: its rating's strike, whatever its count")
 	assert_eq(sq.pos, front, "it holds at the gate")
 
 
@@ -229,10 +229,76 @@ func test_a_segment_on_water_or_a_wall_resolves_to_the_nearest_land_apron_hex() 
 	assert_eq(Hex.axial_to_offset(walled.pos), Vector2i(14, row), "a wall at its column: likewise")
 
 
+## A pack's strike at the wall follows its threat rating (Ryan, 10 November: "otherwise a single
+## giant dude that composes a threat 3 on his own could be ignored. It also makes elites make more
+## sense too"): a pip's worth a pip, whatever its head count, so the pips say how hard it hits.
+## A pack a fight has worn strikes by the share still standing, the heads it holds over the heads
+## it took the field with, one at least; grown past that count it strikes for its rating and no
+## more. A boss unit's commanders count among its heads.
+func test_a_packs_strike_follows_its_threat_rating_and_wears_with_its_heads() -> void:
+	var f := _field()
+	var pip := Battlefield.STRIKE_PER_PIP
+	for rating in [1, 2, 3, 4]:
+		for count in [1, 3, 8]:
+			var sq := Unit.pack(0, "pack", _o(1, 1), "marsh", 2, count)
+			sq.squad = rating
+			f.add_unit(sq)
+			assert_eq(sq.full_strength, count, "fielded, it remembers its heads")
+			assert_eq(Battlefield.strike_of(sq), rating * pip, "rated %d with %d heads: its rating's strike" % [rating, count])
+			f.units.erase(sq)
+	# A lone giant rated three and eight goblins rated three hit the wall alike.
+	var giant := Unit.pack(0, "a giant", _o(1, 1), "marsh", 2, 1)
+	var horde := Unit.pack(0, "a horde", _o(2, 1), "marsh", 2, 8)
+	f.add_unit(giant)
+	f.add_unit(horde)
+	assert_eq(Battlefield.strike_of(giant), Battlefield.strike_of(horde), "the rating, not the count")
+	# Worn by a fight it won, it strikes by the share still standing.
+	horde.strength = 2
+	assert_eq(Battlefield.strike_of(horde), (3 * pip * 2) / 8, "two of eight standing: a quarter of its strike")
+	horde.strength = 1
+	assert_eq(Battlefield.strike_of(horde), (3 * pip) / 8, "one of eight: an eighth")
+	var swarm := Unit.pack(0, "a swarm", _o(3, 1), "marsh", 2, 18)
+	swarm.squad = 1
+	f.add_unit(swarm)
+	swarm.strength = 1
+	assert_eq(Battlefield.strike_of(swarm), 1, "never less than one")
+	horde.strength = 11
+	assert_eq(Battlefield.strike_of(horde), 3 * pip, "grown past the heads it was fielded with: its rating and no more")
+	# By its members too: a composition's pack is rated by its size, and worn by its survivors.
+	var patrol := Battlefield.pack_of({"id": "trio", "size": "patrol", "members": [["revenant", 3]]}, "marsh")
+	var elite := Battlefield.pack_of({"id": "lord", "size": "elite", "members": [["revenant", 1]]}, "marsh")
+	f.add_unit(patrol)
+	f.add_unit(elite)
+	assert_eq([Battlefield.strike_of(patrol), Battlefield.strike_of(elite)], [pip, 4 * pip], "a patrol one pip, a lone elite four")
+	patrol.set_members([["revenant", 1]])
+	assert_eq(Battlefield.strike_of(patrol), pip / 3, "the patrol worn to one of three")
+	# A boss unit: its commanders are heads, so a boss alone is whole.
+	var boss := Unit.boss(0, "the boss", _o(4, 1), "marsh", 2)
+	boss.squad = 4
+	boss.strength = 6
+	f.add_unit(boss)
+	assert_eq([Battlefield.heads(boss), boss.full_strength], [7, 7], "the boss and its six")
+	assert_eq(Battlefield.strike_of(boss), 4 * pip, "whole: four pips")
+	boss.strength = 0
+	assert_eq(Battlefield.strike_of(boss), (4 * pip) / 7, "its escort gone, the one head of seven")
+	# A pack never fielded (a test's, a save from before) is whole.
+	var loose := Unit.pack(0, "loose", _o(5, 1), "marsh", 2, 4)
+	assert_eq(Battlefield.strike_of(loose), 3 * pip, "no count to wear against: its rating")
+	# And the enemy's turn strikes for it.
+	var g := _field()
+	var gate_o := Hex.axial_to_offset(g.map.gate)
+	var at_wall := Unit.pack(1, "worn", _o(gate_o.x, gate_o.y - BattleMap.GATE_ROWS), "marsh", 2, 8)
+	g.add_unit(at_wall)
+	at_wall.strength = 4
+	var hp := g.gate_hp
+	g.enemy_turn()
+	assert_eq(g.gate_hp, hp - (3 * pip * 4) / 8, "half the pack, half the strike")
+
+
 ## The whole wall is a target (Ryan, 30 October): a pack beside any hex of the bottom rows
-## strikes the gate's bar, so the apron cannot be plugged, and the strike's floor of ten is
-## gone, so a stray pair chips less than a trio.
-func test_the_wall_is_struck_anywhere_along_it_and_a_small_pack_chips_less() -> void:
+## strikes the gate's bar, so the apron cannot be plugged. What it strikes for is its threat
+## rating's worth (10 November), so a patrol rated one chips a third of what a formation does.
+func test_the_wall_is_struck_anywhere_along_it_and_a_patrol_chips_less() -> void:
 	var f := _field()
 	var corner := _o(0, f.map.height - BattleMap.GATE_ROWS - 1)   # the apron row's west end, beside the wall and far from the gate
 	assert_true(f.map.wall_hexes.size() > 0, "the wall stands across the rest of the bottom rows")
@@ -241,13 +307,15 @@ func test_the_wall_is_struck_anywhere_along_it_and_a_small_pack_chips_less() -> 
 		if Hex.distance(corner, g) <= 1:
 			far = false
 	assert_true(far, "the corner is beside no gate hex")
-	var pair := f.add_unit(Unit.pack(1, "a stray pair", corner, "marsh", 2, 2))
+	var stray := Unit.pack(1, "a stray pair", corner, "marsh", 2, 2)
+	stray.squad = 1
+	var pair := f.add_unit(stray)
 	var w: Battlefield.Walk = f.plan_walks()[1]
 	assert_true(w.strikes, "beside the wall it strikes")
 	assert_true(w.path.is_empty(), "and walks nowhere")
 	var hp := f.gate_hp
 	f.enemy_turn()
-	assert_eq(f.gate_hp, hp - 6, "a third of two times ten: six, no floor of ten")
+	assert_eq(f.gate_hp, hp - Battlefield.STRIKE_PER_PIP, "rated one: one pip's strike")
 	assert_eq(pair.pos, corner, "it holds at the wall")
 	assert_eq(f.apron_row(), f.map.height - BattleMap.GATE_ROWS - 1, "the apron is the row before the wall")
 	for col in range(f.map.width):

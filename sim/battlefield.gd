@@ -109,8 +109,37 @@ func add_unit(u: Unit) -> Unit:
 	if u.id == 0:
 		u.id = _next_id
 	_next_id = maxi(_next_id, u.id + 1)
+	if u.is_enemy() and u.full_strength <= 0:
+		u.full_strength = heads(u)   # what it took the field with: its strike is scaled against it as it wears (strike_of)
 	units.append(u)
 	return u
+
+
+## The gate's bar a pip of threat rating strikes for, each enemy turn a pack stands at the wall: a
+## placeholder (a patrol of three struck ten and a formation of eight twenty-six by the head
+## count this replaces).
+const STRIKE_PER_PIP := 10
+
+
+## The heads a pack holds: its foes, and a boss unit's commanders with its escort.
+static func heads(sq: Unit) -> int:
+	return maxi(0, sq.strength) + ((maxi(1, sq.lineup.size())) if sq.is_boss else 0)
+
+
+## A pack's strike at the gate's bar (Ryan, 10 November: "Strike following the threat rating makes
+## a lot of sense, otherwise a single giant dude that composes a threat 3 on his own could be
+## ignored. It also makes elites make more sense too"): its threat rating's worth, STRIKE_PER_PIP
+## a pip, so the pips say how many machines it wants and how hard it hits the wall. A pack a
+## fight has worn strikes by the share still standing, the heads it holds over the heads it took
+## the field with (his word on the survivors, the same day), one at least; a pack that has grown
+## past that count strikes for its rating and no more. It replaces the head count of 30 October
+## (a third of ten a foe), written when a count was the threat.
+static func strike_of(sq: Unit) -> int:
+	var now := heads(sq)
+	var full := maxi(now, sq.full_strength)
+	if full <= 0:
+		return 1
+	return maxi(1, (clampi(sq.squad, 1, 4) * STRIKE_PER_PIP * now) / full)
 
 
 ## Give a pack its foe types' map profile: its move and its wings. `foe` names the entry when
@@ -749,7 +778,7 @@ func _walk_search(sq: Unit, blocked: Dictionary, budget: int = -1) -> Array:
 
 
 ## The enemy's turn: every pack walks what plan_walks says, and a pack on the gate's apron
-## strikes the gate for a third of its strength, ten at least. Returns the walks played.
+## strikes the gate for its threat rating's worth (strike_of). Returns the walks played.
 func enemy_turn() -> Dictionary:
 	var walks := plan_walks()
 	for sq in packs():
@@ -759,7 +788,7 @@ func enemy_turn() -> Dictionary:
 			sq.facing = _direction_index(before, w.end)
 		sq.pos = w.end
 		if w.strikes:
-			var dmg := maxi(1, (sq.strength * 10) / 3)   # a third of its strength, no floor but one (Ryan, 30 October: a stray pair chips less than a trio)
+			var dmg := strike_of(sq)   # by its threat rating, less as a fight has worn it (10 November)
 			gate_hp = maxi(0, gate_hp - dmg)
 			log.append("%s strikes the gate for %d" % [sq.display_name, dmg])
 		elif w.waits:

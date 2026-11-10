@@ -27,8 +27,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   after each.
 - Tests: 1081 tests, 304,222 checks, green on main (9 November, with the shapes relaid and recast,
   the skirmish audit's step 3, the playtest list of 9 November, the Polar Bear's kit and name, the renamed ids and
-  the Lammergeier's rework; Godot 4.8-beta2; either map view on 6 November), and 1090 tests, 305,013 checks, green on
-  `ccr-722ca9f0-yj8na3` (9 November, main with the refit pass's first build); about four minutes in a cloud session, twenty on a slow one. A cloud
+  the Lammergeier's rework; Godot 4.8-beta2; either map view on 6 November), and 1093 tests, 305,059 checks, green on
+  `ccr-722ca9f0-yj8na3` (10 November, main with the refit pass's first build and the wall strike by the rating); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
 - A cloud session gets Godot and the first import from the repository's session-start hook
@@ -100,7 +100,7 @@ and changes"): the bible, the measurements, this file and the to-do the conflict
 words kept (the bible's hunters row this branch's and its boss row main's, the measurements'
 sections main's four and then this branch's, the to-do's lines each by the side that moved it),
 and the proposal's tool following the one foe id it named that main renamed (`magma_elemental`).
-The bible's file is v0.501, main's v0.497 with this branch's rows, its republish on Ryan's word
+The bible's file is v0.502, main's v0.497 with this branch's rows, its republish on Ryan's word
 (Pages below); and `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
@@ -220,7 +220,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   (the brief's section 4, the bible's Foe roles row): a unit is made for a pusher's, a flanker's
   or a hunter's fight and tuned for it, a hunter its line and what keeps up with it, a flanker a
   duel and no small pusher, so the proposal's patrols rated one are to be rewritten and the
-  Meadow and the Waste want a flanker line. The bible at 0.501 carries it.
+  Meadow and the Waste want a flanker line. The bible at 0.502 carries it.
 - **The refit pass's first build and reads** (9 November, on his "Your leans are good"; the
   brief's section 5; nothing in `content/` moved): the injury rule is off in the game
   (`Skirmish.injuries`; `--injury on` reads it back; the tests that read an injury turn it on);
@@ -247,7 +247,12 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   round, the regen's size, breach under a regen, heat's prices. The scratch worktree is gone.
   His words of 10 November on that list: the wall strike follows the threat rating ("otherwise a
   single giant dude that composes a threat 3 on his own could be ignored. It also makes elites
-  make more sense too"), agreed and not built, a worn pack's strike the one detail left; breach
+  make more sense too"), built the same day (`Battlefield.strike_of`: ten a pip, a patrol 10, a
+  formation 30, an elite 40; a pack a fight has worn by the share of its heads still standing,
+  on his "Your lean for the pack survival is fine"; the pack's panel and the orders board say
+  what the gate takes; the rules, the bible's wall row; the wall takes about a tenth more a
+  battle for it, `docs/measurements.md`, and `docs/campaign_run.md` is this branch's run of 10
+  November, the injury rule off and the strike by rating); breach
   parked ("Let's ignore breach for now, it's useless to evaluate at this junction"); a team Ward
   or a team Barrier "probably ok" where the two cannot be cast back to back, the Swallowtail a
   possible home, undecided (the Barrier and Ward row, its brief). What the trial plays without
@@ -686,7 +691,7 @@ commands are in `README.md`.
   field rows, the playtest list of 9 November, the Polar Bear's kit and name and every id
   following its name). Main's file is v0.497 since the Lammergeier's rework landed (its row, the
   Gel's and the reinforcement row's slot-mine lines, the tables), unpublished, its republish on
-  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.501, main's with the formation and refit
+  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.502, main's with the formation and refit
   session's rows (the hunters row's who-may-hunt, the Foe roles row's direction, the kit, shield,
   triangle, redirection, injury, command-die, Puffin, Whip Scorpion, Polar Bear, Swallowtail and
   Musk Ox rows' refit lines, section 12's items), unpublished too. BASE for the

@@ -1192,8 +1192,10 @@ a stat.
   beside it 1), then the nearest the draw. It walks to the land hex of the row before the wall
   nearest that column, a tie toward the gate's column; a pack with no segment (a hunter left
   without prey) walks to the nearest. A pusher ending its walk beside any hex
-  of the gate or the wall strikes the gate's bar for its strength times 10 divided by 3, at least 1 (the floor of
-  ten is gone, so a stray pair chips less than a trio), every enemy turn. The gate is the look
+  of the gate or the wall strikes the gate's bar for its threat rating's worth, 10 a pip (a patrol 10, a
+  formation 30, an elite 40), every enemy turn, whatever its head count. A pack a fight has worn strikes
+  by the share still standing: its rating's strike times the heads it holds over the heads it took the
+  field with, rounded down, at least 1; grown past that count, its rating and no more. The gate is the look
   and the bar's name; the whole wall is the target, so no line plugs it.
 - **Hunters** (the packs whose composition hunts) lock one machine when they appear, by its caveat (nearest, weakest, strongest, slowest or fastest; never
   the Prairie Dog, never a machine another hunter already hunts), keep it while it stands, and

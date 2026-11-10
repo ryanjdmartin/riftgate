@@ -756,7 +756,9 @@ func _behaviour_line(u: Unit) -> Dictionary:
 			var prey := battle.field.unit_by_id(u.prey)
 			return _said("Hunts", "the %s: %s" % [u.hunts, prey.display_name if prey != null else "nobody yet"])
 		_:
-			return _said("Marches", "on the gate")
+			# What leaving it alone costs: its strike at the wall, by its threat rating and what a
+			# fight has left of it (Battlefield.strike_of; Ryan, 10 November).
+			return _said("Marches", "on the gate, striking it for %d" % Battlefield.strike_of(u))
 
 
 ## When a pack gets where its whole way goes, as the field stands (the map draws the way, its

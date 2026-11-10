@@ -6337,3 +6337,34 @@ how far a battle gets, not who wins it.
   names no pack for them (unread); the curve read's own stalls are the light trio against the
   barrow mound. The model's ninth point (every formation carries a rising threat, as a validator
   check) is the guard, and this is its evidence.
+
+## 10 November, the wall strike by the threat rating
+
+A read after the build, not behind the decision (Ryan, 10 November: the strike follows the
+threat rating, a worn pack by the share of its heads still standing; the bible's wall row), kept
+because every campaign number after it stands on the new strike. `tools/campaign_run.gd -- --runs
+40`, the same seeds as the refit pass's runs above, the greedy rung with the defence rule, the
+injury rule off: today's content and the trial's model on the audit's deal (`--refit
+all,vents=guns`), each with the strike by head count (a third of ten a foe, the runs above) and
+by rating (ten a pip, `Battlefield.strike_of`).
+
+| Measure | Today's content, by head count | Today's content, by rating | The trial's model, by head count | The trial's model, by rating |
+|---|---|---|---|---|
+| Battles | 191 | 179 | 201 | 195 |
+| Battles won | 3% | 3% | 10% | 10% |
+| Held after a wipe | 12% | 7% | 7% | 5% |
+| Fell | 83% | 89% | 81% | 83% |
+| Ended in a team wipe | 89% | 88% | 65% | 64% |
+| Gate damage a battle | 128 | 140 | 124 | 130 |
+| Phases a battle | 6.06 | 5.73 | 6.70 | 6.37 |
+| Turns a run | 5.92 | 5.60 | 6.15 | 6.05 |
+| Menace killed a battle | 45 | 45 | 91 | 91 |
+| Battles reaching the Rupture | 16% | 17% | 42% | 40% |
+| Fights | 565 | 534 | 944 | 918 |
+
+Read, a direction. The wall takes about a tenth more a battle on today's content (128 to 140)
+and a twentieth more under the model (124 to 130), a battle ends a third of a phase sooner, and
+fewer battles are held after a wipe (12% to 7%, 7% to 5%), since what is left at the wall after
+one now strikes by its rating: a formation thirty where six to eight heads struck twenty to
+twenty-six, an elite forty where it struck for its head. The fights are the same (menace killed
+and battles won do not move). A patrol of three strikes ten on both rules.

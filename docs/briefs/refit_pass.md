@@ -67,8 +67,10 @@ reads (`docs/measurements.md`, 9 November) are the records this stands on.
   (i.e. scorpion, for one), back to design." Section 6 is that audit.
 - **After the first reads, 10 November**: the wall strike, "Strike following the threat rating
   makes a lot of sense, otherwise a single giant dude that composes a threat 3 on his own could
-  be ignored. It also makes elites make more sense too" (section 4's first hole, answered; to
-  build); breach, "Let's ignore breach for now, it's useless to evaluate at this junction", so
+  be ignored. It also makes elites make more sense too", and of a worn pack's share, "Your lean
+  for the pack survival is fine" (section 4's first hole, answered and built the same day); of
+  the trial, "I guess I find it hard to judge a new game backbone against old content that wasn't
+  made for it. But I will at least feel it out"; breach, "Let's ignore breach for now, it's useless to evaluate at this junction", so
   section 7's breach question is parked and nothing asks it of him until the model's numbers
   stand; and a team Ward or a team Barrier "probably ok", the Swallowtail a possible home, not
   decided (its brief has his words).
@@ -202,11 +204,13 @@ Dullahan, the Banshee, the Sphinx, the Roc, Anzû, the Iron Giant, Cerberus, the
   already shows (ten a pip), so the pips say how many machines it wants and how hard it hits the
   wall. Ryan, 10 November: "Strike following the threat rating makes a lot of sense, otherwise a
   single giant dude that composes a threat 3 on his own could be ignored. It also makes elites
-  make more sense too." Agreed, not built: it replaces his rule of 30 October ("a stray pair
-  chips less than a trio"), written when a count was the threat. One detail his words leave
-  open: a pack that has won a fight keeps its survivors and its rating, so a formation worn to
-  two foes would still strike as a three. Claude's lean: the rating's strike scaled by the share
-  of the pack still standing, never under one pip's; his call when it is built.
+  make more sense too." Built 10 November (`Battlefield.strike_of`; the rules, the bible's wall
+  row): it replaces his rule of 30 October ("a stray pair chips less than a trio"), written when
+  a count was the threat. A pack that has won a fight keeps its survivors and its rating, so its
+  strike is scaled by the share of its heads still standing, one at least (his word: "Your lean
+  for the pack survival is fine"); the share is by head, so a worn pack left with its massive
+  alone strikes for that one head's share, where a share by menace would weigh the massive more:
+  named for him, not asked. The pack's panel and the orders board say what the gate takes.
 - A duel a light enjoys: one sharp question from the kit the engine has (a countdown to beat, a
   brace to time, a barrier to pop cheaply, a getting-up to kill twice, a last act to shield
   before), HP for three or four rounds of one die, and no flat armour, which the reads showed
@@ -267,7 +271,8 @@ Not built, so the trial plays without it (10 November, on his asking what is bui
   number moved.
 - **The foes.** The formation proposal's grids; the bombs that no longer hunt (content's bomb,
   grenade and balloon compositions still do); the roles and the flankers as duels; the rising
-  threat and its validator check; the wall strike by the rating.
+  threat and its validator check. (The wall strike by the rating is built, 10 November, on
+  every pack as content has it.)
 - **The machines.** The four reworks; the two modules (the Skeleton's rule does nothing with the
   injury off, the Conjugator never fires on a die with no shield); the lines on fielded machines
   that name a shield or a vent (the Musk Ox's forge reads neither; the Storm Petrel's and the
@@ -512,8 +517,8 @@ word:
 6. The four machines' sessions and their order (the Polar Bear first, since Minerva's tier-one
    front and his own try of 9 November ride on it).
 7. The roles (section 4): a role on every rank-and-file unit, the flankers as duels, the units
-   each domain lacks. The strike at the wall follows the rating (his word, 10 November; a worn
-   pack's strike the one detail left, section 4).
+   each domain lacks. The strike at the wall follows the rating (his word and built, 10
+   November: section 4).
 8. The Reinforced Skeleton: parked with destruction, or a new rule now.
 9. The commander layer's shield and vent actions: a note now, a row when that layer is designed.
 
@@ -547,6 +552,6 @@ word:
    and his answers to section 7's first five but the fourth, which is parked.
 3. The content of section 6 as marked, with the deal he picks; the regen and cooling numbers by
    chassis; the heat prices; the pushers re-cut and read by hull lost, each with its rising
-   threat and the validator's check for it; the flankers rewritten as duels; the wall strike by
-   the rating; the records, the vocabulary, the rules, the hangar page.
+   threat and the validator's check for it; the flankers rewritten as duels; the records, the
+   vocabulary, the rules, the hangar page.
 4. The formation proposal's remaining questions settled in play; the bosses' blocks after.

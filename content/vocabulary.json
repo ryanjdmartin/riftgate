@@ -103,7 +103,7 @@
    "id": "gate",
    "category": "resource",
    "name": "Gate Integrity",
-   "codex": "Each pusher makes for a segment of the wall of its own, drawn as it is dealt. A pusher that ends its walk beside any hex of the gate or the wall strikes the gate's bar for a third of its strength, at least one. The whole wall is the target, so no line plugs it. Gate integrity persists across battles and is repaired in the meta.",
+   "codex": "Each pusher makes for a segment of the wall of its own, drawn as it is dealt. A pusher that ends its walk beside any hex of the gate or the wall strikes the gate's bar every turn: ten for each machine it is a fight for, less as it loses foes, at least one. The whole wall is the target, so no line plugs it. Gate integrity persists across battles and is repaired in the meta.",
    "status": "implemented",
    "design": {
     "holes": "The gate damage formula is a placeholder; city defences along the wall are not built."

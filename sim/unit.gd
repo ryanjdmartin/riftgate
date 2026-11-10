@@ -102,6 +102,7 @@ var hunts: String = "nearest"    # a hunter's caveat: nearest, weakest, stronges
 var prey: int = 0                # a hunter's locked machine, by unit id; 0 until it has picked one
 var layout: Array = []           # a dealt composition's grid, eight cells (the front rank's four, then the back's), each a foe id or "" (the long wall brief, section 6; ContentDB.resolve_layout); [] for none
 var squad: int = 3               # the threat rating, the machines the pack is intended for, 1 to 4 (the long wall brief 3.7; ContentDB.squad_of)
+var full_strength: int = 0       # the heads it took the field with (Battlefield.add_unit; a boss unit's commanders counted), what its strike at the wall is scaled against once a fight has worn it (Battlefield.strike_of); 0 until it is fielded
 var goal_col: int = -1           # a pusher's wall segment, the column of the apron hex it walks to (the long wall brief 3.3, Battlefield.assign_goal); -1 for none, which walks to the nearest apron hex
 var is_boss: bool = false    # this unit commands the rift: the faction's boss, a final's hero or the finale's line (`elite` until 15 October, the word now the elites')
 var sealed: bool = false     # a boss unit's seal (the pacing session, 30 October): while it holds, the unit cannot be ordered onto and joins no fight; the Rupture breaks it
