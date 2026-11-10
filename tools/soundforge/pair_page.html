@@ -158,14 +158,20 @@
 <h2>Hold The Line: passed</h2>
 <p>You passed the full pair. Both halves are built into the game's files as you heard them here: the battle half plays wherever Hold The Line played, and the map half sits beside it until the game can play a pair (the map choosing the track, a fight flipping to the battle half in place). The full pair on the switch is still <strong>Hold The Line, round twenty-seven</strong>. X's riff stays in <a href="https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV">the Melody Desk</a> as Hold The Line, round twenty-two.</p>
 
-<h2>Round thirty-two: Night Shift at 96</h2>
-<p>Both halves are at 96 now. Every arpeggio is 3 dB down, whatever plays it, and the battle half's snare is 3 dB down, ghost notes and fills with it. The intro's own fill into the head is back; the other new fills stay. The full pair on the switch is <strong>Night Shift, round thirty-two</strong>.</p>
-<p><strong>The intro's kick.</strong> It follows the bass, as it has everywhere since the drive. The bass in the intro plays your 11 and 12, and the kick lands where each of their runs starts: on one, on the and of two, and on four.</p>
-<pre class="score">           1e+a 2e+a 3e+a 4e+a
-bass, 11   --.. ..-- .... ---.
-bass, 12   --.. ..-- .... ----
-kick       -... ..-. .... -...</pre>
-<p>The set has it that way, on one and three, and on every beat as the map half's intro has it.</p>
+<h2>Round thirty-three: Night Shift's kick</h2>
+<p>The kick is rewritten through the battle half. It used to strike wherever a run of the bass's rhythm started, up to six times a bar, and it landed on the snare's beats. Now it plays two or three times a bar and never on two or four. The rest of the pair is round thirty-two's: both halves at 96, the arpeggios and the snare 3 dB down. The full pair on the switch is <strong>Night Shift, round thirty-three</strong>.</p>
+<pre class="score">               1e+a 2e+a 3e+a 4e+a
+intro, outro   -... ..-. .... ....
+               -... ..-. -... ....
+head (1, 3)    -... .... -.-. ....
+               -..- .... -... ....
+lead (9s)      -..- ..-. .... ....
+lead (5, 6)    -..- .... -... ....
+               -... .... -.-. ....
+D              -..- ..-. .... ....
+fill bars      -... -... -... ....</pre>
+<p>Two rows are the two bars of a pair, in turn. R takes each pass's rows (the head's, then 5 and 6, then the 9s), with one and three alone through its first four bars. The breakdown's kick is as it was.</p>
+<p><strong>The set.</strong> The whole battle half with the new kick or as it was.</p>
 <div class="how"><p>Every row of a set is the same bars from the same seed at one gain. Tap another row partway through and it carries on from the same beat; a row that adds a voice is louder by what it adds. The number by a row is its loudness on a phone's speaker; by a seam, its length.</p>
   <label class="keep"><input type="checkbox" id="keep" checked> keep my place</label></div>
 <div id="sets-night"><p class="setnote">Loading the sets&hellip;</p></div>
@@ -517,12 +523,12 @@ kick       -... ..-. .... -...</pre>
   function none() { return null; }
 
   var RUN_LABELS = {engage: 'ENGAGE', victory: 'victory', field: 'back to the field', contact: 'a hunter catches'};
-  Promise.all([getJSON('manifest.json'), getJSON('hold27.json').catch(none), getJSON('night32.json').catch(none), getJSON('far8.json').catch(none)]).then(function (all) {
+  Promise.all([getJSON('manifest.json'), getJSON('hold27.json').catch(none), getJSON('night33.json').catch(none), getJSON('far8.json').catch(none)]).then(function (all) {
     var m = all[0], hold = all[1], night = all[2], far = all[3];
     man = m;
     // Each later round's pairs after its first-round track.
     if (hold) hold.tracks.forEach(function (t) { t.round = 'twenty-seven'; });
-    if (night) night.tracks.forEach(function (t) { t.round = 'thirty-two'; });
+    if (night) night.tracks.forEach(function (t) { t.round = 'thirty-three'; });
     if (far) far.tracks.forEach(function (t) { t.round = 'eight'; });
     var later = [].concat(hold ? hold.tracks : [], night ? night.tracks : [], far ? far.tracks : []);
     var tracks = [];
@@ -542,7 +548,7 @@ kick       -... ..-. .... -...</pre>
       pick.appendChild(b);
     });
     choose(later[0] || tracks[0]);
-    if (night) buildSets(document.getElementById('sets-night'), night.sets.concat(night.seams || []), ['ni']);
+    if (night) buildSets(document.getElementById('sets-night'), night.sets.concat(night.seams || []), ['nx']);
     else document.getElementById('sets-night').innerHTML = '';
     var runBox = document.getElementById('run-marks');
     [{at: 0, what: 'map'}].concat(m.run.events).forEach(function (e) {

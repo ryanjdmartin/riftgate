@@ -1,4 +1,7 @@
-"""Night Shift's thirty-second round as a pair (Ryan, 10 November: "Go with 96. 98 is ok but the arpeggios start to
+"""Night Shift's thirty-third round as a pair (Ryan, 10 November: "redo the kicks in the whole track so they are more
+natural for the flow, now that the bass riffs and backing 8s are in and working. Don't overdo the kick for this track,
+since its already bass-driven"): the thirty-second's with the kick on a plain backbone (KICK_FLOW, battle_half's
+`kick`), never on the snare's beats. Before it, the thirty-second as a pair (Ryan, 10 November: "Go with 96. 98 is ok but the arpeggios start to
 muddy. Bring arpeggio volume down like 3db everywhere. Snare hits need to come down like 3db across the board. I liked
 the original fill from I into A more. What is the kick doing in I?"): both halves at 96 (BPM), every arpeggio 3 dB
 down (ARP_DB), the battle half's snare 3 dB down (SNARE_DB), the intro's own fill back, and a set of the intro's kick
@@ -359,14 +362,33 @@ TURNS_DRIVE = {   # on his core pairs since the twenty-eighth round
 }
 
 
-def turns_kick(turns, fill=True):
-    """A section's kick from its turns: the run starts of the bass's rhythm, one and three under eighths or a hold;
+# The kick for the flow (Ryan, 10 November: "redo the kicks in the whole track so they are more natural for the flow
+# ... Don't overdo the kick for this track, since its already bass-driven"). On each run's start it struck up to six
+# times a bar and landed on the snare's beats (the intro's on four). Now two or three a bar, never on two or four:
+# one, and with it either three or the bass's own push (the a of one, the and of two), a bar of each in turn so a
+# two-bar phrase breathes; the tresillo's first half under the bass's threes and under D's piano; one and three
+# where the bass rests or a fill is coming.
+KICK_FLOW = {"n1": "x.......x.x.....", "n3": "x..x....x.......", "n5": "x..x....x.......", "n6": "x.......x.x.....",
+             "n9": "x..x..x.........", "n14": "x..x..x.........", "n11": "x.....x.........", "n12": "x.....x.x.......",
+             "n4": "x.......x.......", "n7": "x.......x......."}
+KICK_WAY = "flow"   # the full pair's; "runs" the kick on each run's start, as it was
+
+
+def bar_kick(rhythm, way=None):
+    way = way or KICK_WAY
+    if rhythm not in RHYTHMS:
+        return K13
+    return KICK_FLOW.get(rhythm, K13) if way == "flow" else run_starts(RHYTHMS[rhythm])
+
+
+def turns_kick(turns, fill=True, way=None):
+    """A section's kick from its turns: the bass's rhythm's kick (bar_kick), one and three under eighths or a hold;
     a fill's bar closing each eight where `fill`."""
     out = []
     for choice, _synth in turns:
         for i in range(2):
             rhythm = paired(choice, i).partition(".")[0]
-            out.append(run_starts(RHYTHMS[rhythm]) if rhythm in RHYTHMS else K13)
+            out.append(bar_kick(rhythm, way))
     if fill:
         out = [("x...x...x......." if b % 8 == 7 else bar) for b, bar in enumerate(out)]
     return "".join(out)
@@ -1024,7 +1046,7 @@ def duel_voices(call, b2=None, backing_db=DUEL_BACKING, bass_db=BASS_DB, levels=
     return voices
 
 
-def duel_drums(brk=True, dark=False, drive=False):
+def duel_drums(brk=True, dark=False, drive=False, kick=None):
     """R's kit bar by bar under the duel: the groove under the trades, a crash and a china opening
     each turn; each stop's one alone with the hat counting, a snare building out of each stop's
     second bar (the break's from its third beat, its hits with the china too); the band's hits on
@@ -1045,7 +1067,7 @@ def duel_drums(brk=True, dark=False, drive=False):
             row = {"kick": HITS_332, "snare": HITS_332, "crash": STOP_HIT, "china": "........x......."}
         else:
             last = b == R_BARS - 1
-            row = {"kick": run_starts(RHYTHMS[LEAD_GROOVES[b]]) if is_lead(dark) else DUEL_THREE_KICK[b] if drive == "three" else K13 if drive else groove(GROOVE_KICK, b), "snare": SN24 if drive else groove(GROOVE_SNARE, b),
+            row = {"kick": (K13 if (kick or KICK_WAY) == "flow" and (b < LEAD_IN and dark != "lead_hard" or last) else bar_kick(LEAD_GROOVES[b], kick)) if is_lead(dark) else DUEL_THREE_KICK[b] if drive == "three" else K13 if drive else groove(GROOVE_KICK, b), "snare": SN24 if drive else groove(GROOVE_SNARE, b),
                    "hat": ("x.x.x.x........." if last else HATQ) if drive else "xxxxxxxx........" if last else "x" * 16,
                    "china": "........x......." if turn_start else "." * 16, "stack": "." * 16 if drive else "..x...x...x...x.",
                    "tom": FILL_TOM if last else "." * 16, "tom2": FILL_TOM2 if last else "." * 16,
@@ -1237,7 +1259,7 @@ def arp_bars(pat, keep):
 def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=BASS_DB, bass=BASS, guitar=GUITAR,
                 d_bass=D_BASS, pluck_db=PLUCK_DB, lead=LEAD, duel_b2=DUEL_UPPER, duel_backing=DUEL_BACKING,
                 duel_break=True, duel_chords=False, duel_octaves=False, dark_notes=DARK_NOTES, dark_colours=DARK_COLOURS,
-                written=WRITTEN_ON, cut=(), drive=DRIVE_ON, duel=DUEL_WAY, duel_riffer=None, duel_pusher="synth", d_riff=D_RIFF, d_fill=True, dress=None, fills=True, i_kick=None):
+                written=WRITTEN_ON, cut=(), drive=DRIVE_ON, duel=DUEL_WAY, duel_riffer=None, duel_pusher="synth", d_riff=D_RIFF, d_fill=True, dress=None, fills=True, i_kick=None, kick=None):
     """Night Shift's battle half: see the module's notes. `hold` is what the guitar and the bass play
     under the hook and the arpeggio together; `split` the guitar's interval over the bass in the
     later spot (SPLITS); `d` D's turn; `bass_db` the bass's level, wherever it plays; `bass` its
@@ -1372,7 +1394,7 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
         "clank": {"A": "..............x" + "." * 49, "D": "..............x" + "." * 17},
         "glitch": {"I": "........x.......", "A": "...x.......x....x.........x.....", "D": "...x.......x....", "O": "........x......."},
     }
-    for name, pat in duel_drums(duel_break, duel if duel == "three" or is_lead(duel) else walk, "three" if drive and duel == "three" else drive).items():
+    for name, pat in duel_drums(duel_break, duel if duel == "three" or is_lead(duel) else walk, "three" if drive and duel == "three" else drive, kick).items():
         drums.setdefault(name, {})["R"] = pat
     if "opens" in cut:
         # The open hat's off-beats out, the closed hat through the gaps it left.
@@ -1422,14 +1444,14 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
         bvp = BASS_VOICES[bass]
         voices.append({"inst": bvp["inst"], "params": dict(bvp["params"]), "mode": "riff", "hold": 0.8, "octave": -1,
                        "gain": 0.27 * 10.0 ** (bass_db / 20.0) * bvp["level"] * PUSHER_FINGERS, "pat": {"R": r_pulse} if fingers else {}})
-        drums["kick"].update({sec: turns_kick(turns[sec], sec != "O") for sec in "IACO" if sec in turns})
+        drums["kick"].update({sec: turns_kick(turns[sec], sec != "O", kick) for sec in "IACO" if sec in turns})
         drums["snare"].update(A=SN24, C=SN24, O=SN24)
         drums["hat"].update(I=HATQ * 7 + "x.x.x.x.........", A=HATQ * 7 + "x.x.x.x.........", O=HATQ, D=HATQ)
         drums["ride"] = {}
         drums["hat"]["C"] = HATQ * 7 + "x.x.x.x........."
         drums["stack"].pop("D", None)
         if d == "blend":
-            drums["kick"]["D"] = K332 * 7 + "x..x..x.x...x.x."
+            drums["kick"]["D"] = ("x..x..x........." if (kick or KICK_WAY) == "flow" else K332) * 7 + "x..x..x.x...x.x."
         if d_fill:   # the toms' fill closing D into R
             drums["tom"]["D"], drums["tom2"]["D"] = "." * 112 + FILL_TOM, "." * 112 + FILL_TOM2
             drums["hat"]["D"] = HATQ * 7 + "x.x.x.x........."
@@ -1539,13 +1561,12 @@ def drive_set(sid, title, form, note):
 
 
 SETS = [
-    {"id": "ni", "half": "battle", "title": "The intro's kick", "form": "I" * 8 + " " + "A" * 4, "seed": NAME + "_battle",
-     "note": "The intro and the head's first four bars (Ryan, 10 November: \"What is the kick doing in I?\"). It follows the bass, as everywhere since the drive: the bass plays your 11 and 12, and the kick lands where each of their runs starts, on one, on the and of two, and on four. Switch rows anywhere: each carries on from the same beat.",
-     "rows": [("ni0", "On the bass's rhythm", "One, the and of two, and four (the full pair's).", {}),
-              ("ni1", "On one and three", "The default where no rhythm leads.", {"i_kick": K13}),
-              ("ni2", "On every beat", "Four on the floor, as the map half's intro has it.", {"i_kick": "x...x...x...x..."})]},
+    {"id": "nx", "half": "battle", "title": "The kick", "form": FORM10, "seed": NAME + "_battle",
+     "note": "The whole battle half (Ryan, 10 November: \"redo the kicks in the whole track so they are more natural for the flow ... Don't overdo the kick for this track, since its already bass-driven\"). Switch rows anywhere: each carries on from the same beat.",
+     "rows": [("nx0", "For the flow", "Two or three kicks a bar, never on the snare's beats: one, with three or with the bass's own push (the full pair's).", {}),
+              ("nx1", "As it was", "A kick wherever a run of the bass's rhythm starts.", {"kick": "runs"})]},
 ]
-PAIR = {"id": "night_shift_r32", "title": "Night Shift, round thirty-two"}
+PAIR = {"id": "night_shift_r33", "title": "Night Shift, round thirty-three"}
 INTRO = "intro: the kick on every beat and the hats, the pad fading in through the fourth bar and swelling from 0:10, the sub from the fifth"
 MAP_SAID = dict(F.MUSIC[NAME]["names"], I=INTRO,   # each section on the map, without its muted guitar
                 A="groove: the piano off the beat, the chime's hook, a soft clap, the sub, knocks and ticks",
@@ -1675,7 +1696,7 @@ def main(argv):
         raw = {(si, ri): x for si, ri, x in pool.map(render_row, jobs)}
         for f in fulls:
             f.result()
-    path = os.path.join(P.OUT, "night32.json")
+    path = os.path.join(P.OUT, "night33.json")
     manifest = json.load(open(path)) if os.path.exists(path) else {"sets": [], "tracks": [], "seams": []}
     for si, s in enumerate(SETS):
         if s["id"] not in wanted:
@@ -1687,7 +1708,7 @@ def main(argv):
         rows = []
         for ri, (rid, title, note, _opts) in enumerate(s["rows"]):
             x = F.limit(mastered[ri] * gain)
-            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night32_" + rid, x)),
+            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night33_" + rid, x)),
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         manifest["sets"] = [e for e in manifest["sets"] if e["id"] != s["id"]] + [{"id": s["id"], "half": s["half"], "title": s["title"], "note": s["note"], "rows": rows}]
         print("%-2s %s" % (s["id"], "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))
