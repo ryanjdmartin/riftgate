@@ -27,7 +27,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1084 tests, 323,684 checks, green (10 November, `ccr-1e6e6571-7x7ayr` with the shapes laid to the rift's row, the passing and the catch at one, on main with the Text tab and the side
+- Tests: 1084 tests, 323,199 checks, green (10 November, `ccr-1e6e6571-7x7ayr` with the shapes reworked on Ryan's play, the passing and the catch at one, on main with the Text tab and the side
   session's work: the runner's crash check, the caches' pictures, the audit's structure 13; one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
   either map view on 6 November); about four minutes in a cloud session, twenty on a slow one;
@@ -334,7 +334,17 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   range everyone shares (`Unit.ENGAGE_RANGE`, 1; `ContentDB.HUNTER_RING` gone), the readout's ring
   line with it, the ring drawn now the hexes beside the walk's end. The bible's passing, crossing,
   ring, fights and hunters rows carry it (v0.500); the campaign runner's 40 runs after it are in
-  `docs/measurements.md` (a direction). The maps' seeding issues are the to-do's.
+  `docs/measurements.md` (a direction). His play of the shapes in context the same evening, built:
+  the 3D map's road UV turned with the view, so the roads meet in both views as the painted ones
+  did; the painted world drawing a wall by what it is (crags the ranges, mesas a stepped block,
+  towers lit blocks, cliffs a ridge edge to edge: `DomainGround.draw_walls`); the river winding
+  through the whole field through its centre with narrows (water fords) and tributaries, no land
+  ford, the roads to the narrows; the fjord flooded, half to two thirds water with lanes carved as
+  the gorge's channels are (`BattleMap._carve_lanes`) and islands; the gorge a trunk for every
+  five hexes of wall with junctions; the badlands in groups of two to five mesas; the steppe with
+  scrub belts, a crag for every seven hexes of wall and grass on the open field in the 3D (the
+  dress's `field` word). The bible's shapes row carries his words (v0.501). The maps' seeding issues
+  are the to-do's.
 - **A hunter's reach** (8 November, `ccr-d26a1321-xg9xge`, from Ryan's bug report: on the first
   enemy walk a goblin warband caught the Polar Bear from three hexes, "No indication of catch
   range, nor why a normal goblin pack is now suddenly a hunter"). The three came from a pack

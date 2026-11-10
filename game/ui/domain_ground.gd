@@ -1107,19 +1107,99 @@ static func draw_hex(ci: CanvasItem, c: Vector2, hex_px: float, t: int, seed_val
 ## A wall hex's range: one of the domain's, its foot low in the hex and its peaks standing up
 ## out of it into the hexes above (Ryan, 30 October: "The wall objects on all can be larger,
 ## or at least taller"), so the ranges go down after every hex's ground, the top rows' first.
-static func draw_walls(ci: CanvasItem, c: Vector2, hex_px: float, seed_value: int, frame: int, biome: String) -> void:
+## A wall is drawn by what it is (`look`, BattleMap.WALL_LOOKS; Ryan, 10 November: "The
+## different spire types probably need to be represented in the painted world, for clarity"):
+## crags are the domain's range sprites; mesas a stepped flat-topped block, towers a few tall
+## blocks with lit windows, cliffs a low ridge the whole hex wide so neighbours join, each
+## built from the domain's wall inks (BLOCK_INKS).
+static func draw_walls(ci: CanvasItem, c: Vector2, hex_px: float, seed_value: int, frame: int, biome: String, look: String = "crags") -> void:
 	var key := key_of(biome)
 	var ts: Dictionary = TILESETS[key]
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_value
 	var s := scale_of(hex_px)
+	var foot := c + Vector2(0.0, hex_px * WALL_FOOT)
+	if look != "crags" and BLOCK_INKS.has(key):
+		var tex := _block_tex(key, look, rng.randi_range(0, 2), s)
+		var pos := (foot - Vector2(tex.get_width() * 0.5, tex.get_height())).floor()
+		ci.draw_texture(tex, pos)
+		return
 	var name: String = ts["walls"][rng.randi() % ts["walls"].size()]
 	var mirror := rng.randf() < 0.5
 	var tex := _tex(key, name, mirror, s)
-	var foot := c + Vector2(0.0, hex_px * WALL_FOOT)
 	var rect := Rect2((foot - Vector2(tex.get_width() * 0.5, tex.get_height())).floor(), tex.get_size())
 	ci.draw_texture(tex, rect.position)
 	_attach(ci, key, name, rect, mirror, s, frame)
+
+
+## The ink letters a domain's block walls (mesas, towers, cliffs) are built from: its range
+## sprite's outline, body, shade and light.
+const BLOCK_INKS := {
+	"plains": {"out": "k", "body": "m", "shade": "M", "light": "S"},
+	"sand": {"out": "z", "body": "m", "shade": "M", "light": "l"},
+	"marsh": {"out": "o", "body": "m", "shade": "d", "light": "l"},
+	"lava": {"out": "o", "body": "m", "shade": "d", "light": "c"},
+}
+
+
+## A block wall as a texture in design pixels at `s` pixels each, cached by look and variant.
+## Sizes are in design pixels, a hex 24 wide from middle to corner: a mesa 34 wide and 22 tall
+## in two steps; towers 36 wide, three blocks 26 to 36 tall with windows; a cliff 42 wide
+## (the hex's whole width) and 18 tall with cracks.
+static func _block_tex(key: String, look: String, variant: int, s: int) -> ImageTexture:
+	var ck := "%s/block/%s/%d/%d" % [key, look, variant, s]
+	if _textures.has(ck):
+		return _textures[ck]
+	var ink: Dictionary = INKS[key]
+	var letters: Dictionary = BLOCK_INKS[key]
+	var out := Color(str(ink[letters["out"]]))
+	var body := Color(str(ink[letters["body"]]))
+	var shade := Color(str(ink[letters["shade"]]))
+	var light := Color(str(ink[letters["light"]]))
+	var w := 42
+	var h := 40
+	var img := Image.create_empty(w * s, h * s, false, Image.FORMAT_RGBA8)
+	var px := func(x: int, y: int, col: Color) -> void:
+		if x >= 0 and y >= 0 and x < w and y < h:
+			img.fill_rect(Rect2i(x * s, y * s, s, s), col)
+	# A block: outlined, its top strip light, its right third in shade.
+	var block := func(x0: int, y0: int, bw: int, bh: int, windows: bool) -> void:
+		for y in range(y0, y0 + bh):
+			for x in range(x0, x0 + bw):
+				var edge := x == x0 or x == x0 + bw - 1 or y == y0 or y == y0 + bh - 1
+				var col := body
+				if edge:
+					col = out
+				elif y <= y0 + 1:
+					col = light
+				elif x >= x0 + bw - maxi(2, bw / 3):
+					col = shade
+				elif windows and (y - y0) % 4 == 0 and (x - x0) % 3 == 1 and y > y0 + 2 and y < y0 + bh - 2:
+					col = light if ((x * 7 + y * 13 + variant) % 5) != 0 else shade
+				px.call(x, y, col)
+	match look:
+		"mesas":
+			var top_w := 22 + variant * 2
+			block.call(4, 18, 34, 22, false)          # the base
+			block.call(10 - variant, 8, top_w, 12, false)   # the top step
+		"towers":
+			var heights: Array = [[34, 26, 30], [28, 36, 24], [30, 22, 34]][variant]
+			var x := 3
+			for i in range(3):
+				var bh: int = heights[i]
+				var bw := 10 + (i + variant) % 2
+				block.call(x, h - bh, bw, bh, true)
+				x += bw + 2
+		_:
+			block.call(0, 22, 42, 18, false)          # the ridge, edge to edge
+			for i in range(3):
+				var cx := 6 + i * 13 + (variant * 3) % 5
+				for y in range(25, 39):
+					if (y + i) % 3 != 0:
+						px.call(cx, y, shade)
+	var tex := ImageTexture.create_from_image(img)
+	_textures[ck] = tex
+	return tex
 
 
 ## A sprite as a texture, its letters inked in the domain's colours, `s` pixels a letter.
