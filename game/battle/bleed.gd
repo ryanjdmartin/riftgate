@@ -14,7 +14,7 @@ extends RefCounted
 static var pack_radius_hex := 1.45   # a var, so the map tuner can move it live
 const BOSS_RADIUS_HEX := 2.6
 const RIFT_RADIUS_HEX := 2.6
-const GRADIENT_ROWS := 5.0      # the rift's bleed is total on its row and gone this many rows south before the seam creeps (Battlefield.seam_start(), a row past the mouth: 4 at twelve deep)
+const GRADIENT_ROWS := 5.0      # the rift's bleed is total on its row and gone this many rows south before the seam creeps (Battlefield.seam_start(): row 4 at twelve deep)
 const FLAT_AT := 0.42           # columns are fully collapsed by this much bleed, just before the seam
 const MAX_SOURCES := 32         # the shader's array size
 

@@ -25,8 +25,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1062 tests, 303,981 checks, green (9 November, main with the shapes relaid and recast and the
-  skirmish audit's step 3, Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
+- Tests: 1062 tests, 323,333 checks, green (10 November, `ccr-1e6e6571-7x7ayr` with the shapes laid to the
+  rift's row on main's skirmish audit step 3, Godot 4.8-beta2; either map view on 6 November); about four minutes in a cloud session, twenty on a slow one. A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
 - A cloud session gets Godot and the first import from the repository's session-start hook
@@ -175,8 +175,14 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   views (the river's bars, the gorge's mass and the city's blocks in the 3D); the to-do's Ryan
   list has the phone judge, with the counts and the authored sectors (the long wall proposal's
   lean, a content proposal only if these are not enough). The bible's shapes and field rows carry
-  it (v0.491, this file; not republished: the live page's republish waits on Ryan's word, Pages
-  below).
+  it (v0.492, this file; not republished: the live page's republish waits on Ryan's word, Pages
+  below). His first play (10 November): the flattened side wants features all the way to the back,
+  built the same day: the rift's mouth is the bared ring beside the rift and nothing more, every
+  shape laying from the rift's row (eight open rows at twelve deep), the opening's packs off the
+  rift's row (`Battle.OPENING_FLOOR_ROW`) and the seam keeping its own start (row 4 at twelve
+  deep, `Battlefield.seam_start`); the shores laid after the guarantee so no bar outlives its
+  water. His other notes, the body blocking and the maps' seeding, are the next items (section
+  12 and the to-do).
 - **A hunter's reach** (8 November, `ccr-d26a1321-xg9xge`, from Ryan's bug report: on the first
   enemy walk a goblin warband caught the Armadillo from three hexes, "No indication of catch
   range, nor why a normal goblin pack is now suddenly a hunter"). The three came from a pack

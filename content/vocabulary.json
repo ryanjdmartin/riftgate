@@ -1140,7 +1140,7 @@
    "id": "tear",
    "category": "battlefield",
    "name": "Tear",
-   "codex": "A mouth beside the rift's. At a peak of Rift Pressure the ramp's count of tears (one; two from Convergence 8) open on the seam, one row past the rift's mouth and creeping toward the wall, as far from the rift and the other tears as the row allows, and every tear open before the peak sends a patrol. A tear opens a peak before it first sends, so where the next flood comes from is known an interval ahead. Tears stay open and never close.",
+   "codex": "A mouth beside the rift's. At a peak of Rift Pressure the ramp's count of tears (one; two from Convergence 8) open on the seam, a few rows past the rift (row 4 at twelve deep) and creeping toward the wall, as far from the rift and the other tears as the row allows, and every tear open before the peak sends a patrol. A tear opens a peak before it first sends, so where the next flood comes from is known an interval ahead. Tears stay open and never close.",
    "status": "implemented",
    "design": {
     "holes": "Drawn as a first cut for the phone; its mark and its opening are to judge running (RIFTGATE_PEAK_DEBUG=1 peaks every enemy turn)."
@@ -1150,7 +1150,7 @@
    "id": "seam",
    "category": "battlefield",
    "name": "Seam",
-   "codex": "The flattening's edge: the row the rift's bleed reaches, the first row past the rift's mouth at the start, creeping two rows toward the gate at every peak, as far as the row before the wall. The tears open on it. It is the clock's picture: no rule reads the ground behind it.",
+   "codex": "The flattening's edge: the row the rift's bleed reaches, a row for every five of the field's depth and one more at the start (row 4 at twelve deep), creeping two rows toward the gate at every peak, as far as the row before the wall. The tears open on it. It is the clock's picture: no rule reads the ground behind it.",
    "status": "implemented",
    "design": {
     "holes": "The creep a peak is a placeholder (the ramp's table, flat at two)."

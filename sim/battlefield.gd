@@ -62,11 +62,13 @@ var _patrol_index: int = 0
 var seam_row: int = 0   # seam_start(), set as the field takes its map
 
 
-## Where the seam stands at a battle's start (the long wall brief 3.2): the first row past the
-## rift's mouth at any depth (BattleMap.mouth_rows: 4 at twelve deep, 5 at twenty, the old
-## field's number).
+## Where the seam stands at a battle's start (the long wall brief 3.2): a share of the depth, a
+## row for every five of it rounded up (two at least, four at most) and one more: row 4 at twelve
+## deep, 5 at twenty, the old field's number. It was the first row past the rift's mouth while
+## the mouth was rows (to 10 November); the shapes now lay to the rift's row and the seam keeps
+## its own start. A placeholder.
 func seam_start() -> int:
-	return map.mouth_rows() + 1
+	return clampi(ceili(float(map.height) / 5.0), 2, 4) + 1
 
 
 ## The tears (Ryan's name, 30 October): the mouths beside the rift's, each {"pos": Vector2i,
@@ -1048,8 +1050,8 @@ func machine_adjacent(h: Vector2i) -> bool:
 ## Where a pack emerging at a mouth lands: the nearest hex it can stand on with no machine
 ## adjacent, by ring search; the nearest it can stand on at all when none is clear. With a
 ## `floor_row` the search never enters a row nearer the rift than it (the opening's packs stay
-## out of the rift's mouth, Battle._open_row: a shape may lay water or a wall on the first row
-## past the mouth, and the pack goes along it rather than back into the mouth).
+## off the rift's row, Battle._open_row: a shape may lay water or a wall on the floor row, and
+## the pack goes along it rather than back onto the rift's).
 func landing(sq: Unit, mouth: Vector2i, floor_row: int = -1) -> Vector2i:
 	var seen := {mouth: true}
 	var queue: Array[Vector2i] = [mouth]
