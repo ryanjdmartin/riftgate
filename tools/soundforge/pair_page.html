@@ -192,9 +192,10 @@ sparingly:
  4         -..- ---- .... ..--
  7         --.- -.-- .--. -.-.</pre>
 <p><strong>Where they play.</strong> The intro and the outro: 11 and 12. The head: 1 and 3 throughout, under the hook and the arpeggio and then under the hook, the crunch synth on the straight eighths as it is everywhere the bass plays a rhythm. The lead's section: 9 and its pair, then 5 and 6. In those the bass stays on the root with its last note leaning into the next chord. The kick lands on the first hit of each run, and the hat is on eighths through the whole track.</p>
-<p><strong>R, a lead over the grooves.</strong> No unisons, no stop-time, no band's hits. The fingers bass keeps the grooves, 1 and 3, then 5 and 6, then 9 and its pair, eight bars each, and walks where the lead's section does not: each bar's last three notes go to the fourth, the fifth and the lean. Your 4 closes the first two passes and 7 the last. Over it the top Omnific plays a lead that gets fancier each pass: long notes, then quarters, then eighths. The crunch synth holds the eighths. The plucked string's arpeggio runs low all through, the hook joins on the synth lead in the second pass, the chime's in the third. The lead's notes are mine, chord tones and steps of E minor; they can go to the Melody Desk for you to rewrite.</p>
+<p><strong>R, a lead over the grooves.</strong> No unisons, no stop-time, no band's hits. It builds in now: a fill on the toms closes D; R's first four bars are the fingers bass on the root with the crunch synth's eighths and an arpeggio on the synth lead, moving between octaves; the top Omnific's lead comes in at the fifth bar, and the bass starts walking with it (each bar's last three notes to the fourth, the fifth and the lean). The fingers keep the grooves, 1 and 3, then 5 and 6, then 9 and its pair, eight bars each, your 4 closing the first two passes and 7 the last. The lead gets fancier each pass: long notes, then quarters, then eighths. From the second pass the arpeggio is the plucked string's, low, and the hook joins on the synth lead; the chime's joins in the third. The crashes and chinas in the middle of phrases were left from the old two-bar turns: a crash now marks each pass's one and nothing else. The lead's notes are mine; they can go to the Melody Desk for you to rewrite.</p>
+<p><strong>D's riff.</strong> We had not tried it on the fingers bass. The riff's voice and level had not changed since round six; the drive took D's sixteenth hats and stack away and thinned its kick, which uncovered the crunch synth. In the pair it is on the fingers bass now, 3 dB under its walking level.</p>
 <p><strong>Arpeggios.</strong> The synths' arpeggios move between octaves, two bars low and two bars high; the plucked string's stays in the lower octave everywhere.</p>
-<p><strong>The sets.</strong> The head and the lead's section as the pair has them beside round twenty-one, and R as the lead over the grooves beside round twenty-seven's three basses.</p>
+<p><strong>The sets.</strong> The head and the lead's section as the pair has them beside round twenty-one. R's way in: building in (the pair's) or as it was. D's riff on the fingers bass (the pair's), on the crunch synth 6 dB down, or on the synth as it was. And the map half's groove with its off-beat piano or without: the battle half has had no off-beat piano in the head or the lead's section since round twenty-five, so the map half is the one place it still plays; without it the map's groove is 1.4 dB quieter on a phone, so it does carry there.</p>
 <div id="sets-night"><p class="setnote">Loading the sets&hellip;</p></div>
 
 <h2>Round eight: The Far Bank's map half</h2>
@@ -228,7 +229,7 @@ sparingly:
 <h2>What to listen for</h2>
 <ol class="ask">
   <li>Hold The Line, round twenty-seven: M with L's instruments on the descent; X with the fingers bass's eighths on E, D, C-sharp, C.</li>
-  <li>Night Shift, round twenty-eight: the core pairs through the track; R as a lead over the grooves, the bass walking and the lead fancier each pass; the arpeggios between octaves.</li>
+  <li>Night Shift, round twenty-eight: R building in from D; D's riff on the fingers bass or the quieter synth; the map half with or without its off-beat piano.</li>
   <li>Every pair in tune: the first-round pairs and the run are built again on the shipped tracks with the plucked string tuned.</li>
   <li>Still open from the first round: the map halves of Full Bore, The Far Bank and The Crossing, and Low Ground's battle half.</li>
 </ol>
@@ -571,7 +572,7 @@ sparingly:
     choose(later[0] || tracks[0]);
     if (hold) buildSets(document.getElementById('sets-hold'), hold.sets.concat(hold.seams || []), ['hm', 'hv']);
     else document.getElementById('sets-hold').innerHTML = '';
-    if (night) buildSets(document.getElementById('sets-night'), night.sets.concat(night.seams || []), ['ne', 'nf', 'nt']);
+    if (night) buildSets(document.getElementById('sets-night'), night.sets.concat(night.seams || []), ['ne', 'nf', 'nt', 'nd', 'nm']);
     else document.getElementById('sets-night').innerHTML = '';
     var runBox = document.getElementById('run-marks');
     [{at: 0, what: 'map'}].concat(m.run.events).forEach(function (e) {

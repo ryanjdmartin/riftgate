@@ -146,7 +146,7 @@ MAP_DRUMS_DB = -3.0
 MAP_DRUM_SECTIONS = "CR"
 
 
-def map_intro(call, guitar=MAP_GUITAR, drums_db=MAP_DRUMS_DB):
+def map_intro(call, guitar=MAP_GUITAR, drums_db=MAP_DRUMS_DB, piano=True):
     """The shipped map with its front cut (Ryan: don't start with the sub and the drone, it breaks
     the loop; the drone's crescendo from about 0:10 works): the sub's pulse joins at the intro's
     fifth bar, and the pad is silent for three bars and fades in through the fourth, where its
@@ -157,6 +157,10 @@ def map_intro(call, guitar=MAP_GUITAR, drums_db=MAP_DRUMS_DB):
     if not guitar:
         for v in kw["voices"]:
             if v["inst"] == "guitar_real":
+                v["pat"] = {}
+    if not piano:   # the off-beat piano out (Ryan, 10 November: "I can't really hear the off-beat piano everywhere, and that makes me think we should cut it")
+        for v in kw["voices"]:
+            if v["inst"] == "epiano" and v.get("mode") == "stab" and "A" in v["pat"]:
                 v["pat"] = {}
     for v in kw["voices"]:
         if v["inst"] == "sub_bass" and "I" in v["pat"]:
@@ -353,6 +357,13 @@ def turns_kick(turns, fill=True):
 
 
 DRIVE_ON = True   # the full pair's
+# D's riff (Ryan, 10 November: "Did we try D with the finger bass running the HtL riff instead of the crunch synth? I
+# feel like there was a subtlety pass that we did in D that is lost now, its back to being very 'hey guys this is hold
+# the line now,' with a very loud crunch synth"): the riff's voice and level had not moved since the sixth round; the
+# drive took D's sixteenth hats and stack away and thinned its kick, which uncovered it. On the fingers bass, 3 dB
+# under its walking level ("fingers", the pair's), on the crunch synth as it was ("synth") or 6 dB down ("synth_down").
+D_RIFF = "fingers"
+D_RIFF_FINGERS, D_RIFF_DOWN = 0.7, 0.5
 DUEL_WAY = "lead"   # the duel as a lead over the grooves (the full pair's); "three" the three basses; "trade" round twenty-one's lines
 PUSHER_FINGERS = 0.7   # the fingers on the eighths against the riffer's level, 3 dB under it
 DRIVE_PULSE = {"inst": "bass", "mode": "riff", "gain": 0.3, "hold": 0.8, "params": {"drive": 2.5, "cutoff": 700.0}}
@@ -778,14 +789,27 @@ DUEL_THREE_KICK = [run_starts(RYAN_13[1])] * 8 + [run_starts(RYAN_13[8])] * 8 + 
 # crunch synth on the eighths; no stop-time, no break, no band's hits; the plucked string's arpeggio low all through,
 # the hook on the synth lead from the second pass, the chime's from the third.
 LEAD_GROOVES = ["n4" if b in (7, 15) else "n7" if b == 23 else PAIRS_13[("1", "5", "9")[b // 8]].split("|")[b % 2] for b in range(24)]
-DUEL_LEAD = [(((1, rh + ".walk", 0, 16), (2, "written.L", 0, 16)), None) for rh in LEAD_GROOVES]
+DUEL_LEAD_HARD = [(((1, rh + ".walk", 0, 16), (2, "written.L", 0, 16)), None) for rh in LEAD_GROOVES]
+# R's way in (Ryan, 10 November: "In R, it hits too hard immediately after that quiet section. I think the first couple
+# bars should be a little less busy, to give somewhere to build to. Maybe the lead doesn't come in right away. Drums do
+# something at the end of D to bring us into it. Start R with the synth arpeggios instead of string ones ... Drums in R
+# have strangely placed crash or china hits in the middle of phrases"): the first four bars the fingers on the root
+# alone, the lead in at the fifth; the first pass's arpeggio on the synth lead, between octaves, the plucked string's
+# from the second; a crash on each pass's one and nowhere else, the china and the clank of the old two-bar turns out;
+# a fill on the toms closing D.
+LEAD_IN = 4
+DUEL_LEAD = [(((1, rh + ".lean", 0, 16),), None) if b < LEAD_IN else bar for b, (rh, bar) in enumerate(zip(LEAD_GROOVES, DUEL_LEAD_HARD))]
+
+
+def is_lead(way):
+    return way in ("lead", "lead_hard")
 
 
 def duel_plan(brk=True, dark=False):
     """R's bars and its stop bars: DUEL with the break, or with the band playing on through it; its
     end falling where `dark` (DUEL_DARK)."""
-    if dark == "lead":
-        return DUEL_LEAD, ()
+    if is_lead(dark):
+        return (DUEL_LEAD_HARD if dark == "lead_hard" else DUEL_LEAD), ()
     duel = DUEL_THREE if dark == "three" else DUEL_WRITTEN if dark == "written" else [DUEL_DARK.get(b, bar) for b, bar in enumerate(DUEL)] if dark else DUEL
     if brk:
         return duel, STOPS[0] + STOPS[1]
@@ -893,9 +917,12 @@ def duel_voices(call, b2=None, backing_db=DUEL_BACKING, bass_db=BASS_DB, levels=
                     "pat": {"R": r_bars(dict([(4, PIANO_TURN[0].replace("x", str(k))), (5, PIANO_TURN[1].replace("x", str(k)))]
                                              + [(b, STOP_HIT.replace("x", str(k))) for b in stops] + [(DUEL_HITS, HITS_332.replace("x", str(k)))]))}})
          for k in range(3)]
-    if dark == "lead":
+    if is_lead(dark):
+        first = 0 if dark == "lead_hard" else 8   # the plucked string's arpeggio from the second pass, the synth lead's through the first
         backing = [
-            ("pluck", dict(ARP_VOICES["pluck"], mode="chord", octave=1, dur=1.4, pat={"R": r_bars({b: ARP for b in range(R_BARS)})})),
+            ("pluck", dict(ARP_VOICES["pluck"], mode="chord", octave=1, dur=1.4, pat={"R": r_bars({b: ARP for b in range(first, R_BARS)})})),
+            ("lead", dict(ARP_VOICES["lead"], mode="chord", octave=1, dur=1.4, pat={"R": r_bars({b: ARP for b in range(first) if b // 2 % 2 == 0})})),
+            ("lead", dict(ARP_VOICES["lead"], mode="chord", octave=2, dur=1.4, pat={"R": r_bars({b: ARP for b in range(first) if b // 2 % 2 == 1})})),
             ("lead", dict(HOOK_VOICES["lead"], mode="chord", octave=1, dur=3.0, pat={"R": r_bars({b: (up if b % 2 else hook) for b in range(8, R_BARS)})})),
             ("chime", dict(recipe("chime_metal"), gain=0.2, pat={"R": r_bars({b: hook for b in range(16, R_BARS)})})),
         ]
@@ -921,17 +948,19 @@ def duel_drums(brk=True, dark=False, drive=False):
                    "snare": "." * 16 if first else BREAK_BUILD if brk_bar else "..........6.7.8x"}
             if brk_bar:
                 row["china"] = STOP_HIT
-        elif b == DUEL_HITS and dark != "lead":
+        elif b == DUEL_HITS and not is_lead(dark):
             row = {"kick": HITS_332, "snare": HITS_332, "crash": STOP_HIT, "china": "........x......."}
         else:
             last = b == R_BARS - 1
-            row = {"kick": run_starts(RHYTHMS[LEAD_GROOVES[b]]) if dark == "lead" else DUEL_THREE_KICK[b] if drive == "three" else K13 if drive else groove(GROOVE_KICK, b), "snare": SN24 if drive else groove(GROOVE_SNARE, b),
+            row = {"kick": run_starts(RHYTHMS[LEAD_GROOVES[b]]) if is_lead(dark) else DUEL_THREE_KICK[b] if drive == "three" else K13 if drive else groove(GROOVE_KICK, b), "snare": SN24 if drive else groove(GROOVE_SNARE, b),
                    "hat": ("x.x.x.x........." if last else HATQ) if drive else "xxxxxxxx........" if last else "x" * 16,
                    "china": "........x......." if turn_start else "." * 16, "stack": "." * 16 if drive else "..x...x...x...x.",
                    "tom": FILL_TOM if last else "." * 16, "tom2": FILL_TOM2 if last else "." * 16,
                    "knock": "......x.......x.", "tick": "x" * 16, "clank": "..............x." if turn_start else "." * 16}
             if turn_start:
                 row["crash"] = STOP_HIT
+            if dark == "lead":   # a crash on each pass's one alone; no china or clank in the middle of a phrase
+                row.update(crash=STOP_HIT if b % 8 == 0 else "." * 16, china="." * 16, clank="." * 16)
         for k in bars:
             bars[k].append(row.get(k, "." * 16))
     return {k: "".join(v) for k, v in bars.items()}
@@ -1115,7 +1144,7 @@ def arp_bars(pat, keep):
 def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=BASS_DB, bass=BASS, guitar=GUITAR,
                 d_bass=D_BASS, pluck_db=PLUCK_DB, lead=LEAD, duel_b2=DUEL_UPPER, duel_backing=DUEL_BACKING,
                 duel_break=True, duel_chords=False, duel_octaves=False, dark_notes=DARK_NOTES, dark_colours=DARK_COLOURS,
-                written=WRITTEN_ON, cut=(), drive=DRIVE_ON, duel=DUEL_WAY, duel_riffer=None, duel_pusher="synth"):
+                written=WRITTEN_ON, cut=(), drive=DRIVE_ON, duel=DUEL_WAY, duel_riffer=None, duel_pusher="synth", d_riff=D_RIFF, d_fill=True):
     """Night Shift's battle half: see the module's notes. `hold` is what the guitar and the bass play
     under the hook and the arpeggio together; `split` the guitar's interval over the bass in the
     later spot (SPLITS); `d` D's turn; `bass_db` the bass's level, wherever it plays; `bass` its
@@ -1219,7 +1248,7 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
     voices += [{"inst": "epiano", "mode": "chord", "octave": 1, "gain": PIANO_BLEND if d == "blend" else PIANO_D, "dur": 1.5,
                 "pat": {"D": THREE_THREE_TWO.replace("r", str(k))} if d in ("piano", "blend") else {}} for k in range(3)]
     voices += [{k: w for k, w in v.items() if k != "duel"} for v in duel_voices(call, duel_b2, duel_backing, bass_db, brk=duel_break, chords=duel_chords, octaves=duel_octaves,
-                                                                                 dark=duel if duel in ("three", "lead") else walk, arp_octave=arp_octave, riffer=duel_riffer)]
+                                                                                 dark=duel if duel in ("three", "lead", "lead_hard") else walk, arp_octave=arp_octave, riffer=duel_riffer)]
     bv = BASS_VOICES[bass]
     voices = [dict(v, inst=bv["inst"], params=bv["params"], gain=v["gain"] * 10.0 ** (bass_db / 20.0) * bv["level"]) if v["inst"] == "bass_real" else v for v in voices]
     drums = {
@@ -1250,7 +1279,7 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
         "clank": {"A": "..............x" + "." * 49, "D": "..............x" + "." * 17},
         "glitch": {"I": "........x.......", "A": "...x.......x....x.........x.....", "D": "...x.......x....", "O": "........x......."},
     }
-    for name, pat in duel_drums(duel_break, duel if duel in ("three", "lead") else walk, "three" if drive and duel == "three" else drive).items():
+    for name, pat in duel_drums(duel_break, duel if duel in ("three", "lead", "lead_hard") else walk, "three" if drive and duel == "three" else drive).items():
         drums.setdefault(name, {})["R"] = pat
     if "opens" in cut:
         # The open hat's off-beats out, the closed hat through the gaps it left.
@@ -1280,9 +1309,16 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
             drums["knock"]["D"] = "x..x..x.x..x..x.".replace("x", FACTORY)
             drums["clank"]["D"] = "........x.......".replace("x", FACTORY)
             drums["tick"]["D"] = "x" * 16
+    nod = next((v for v in voices if v["inst"] == "bass" and "D" in v.get("pat", {}) and v.get("gain") == NOD["gain"]), None)
+    if nod is not None and d_riff == "fingers":
+        bvd = BASS_VOICES[bass]
+        nod.update(inst=bvd["inst"], params=dict(bvd["params"]), octave=0, hold=0.9,
+                   gain=0.27 * 10.0 ** (bass_db / 20.0) * bvd["level"] * D_RIFF_FINGERS)
+    elif nod is not None and d_riff == "synth_down":
+        nod["gain"] = NOD["gain"] * D_RIFF_DOWN
     if drive:
         e8 = "".join(WRITTEN["E"])
-        _plan, stops = duel_plan(duel_break, duel if duel in ("three", "lead") else walk)
+        _plan, stops = duel_plan(duel_break, duel if duel in ("three", "lead", "lead_hard") else walk)
         r_pulse = r_tiled(e8, lambda b: b not in stops)
         if duel == "three":   # the pusher with the band's hits on three-three-two
             root = e8[16 * (DUEL_HITS % 8)]
@@ -1301,6 +1337,9 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
         drums["stack"].pop("D", None)
         if d == "blend":
             drums["kick"]["D"] = K332 * 7 + "x..x..x.x...x.x."
+        if d_fill:   # the toms' fill closing D into R
+            drums["tom"]["D"], drums["tom2"]["D"] = "." * 112 + FILL_TOM, "." * 112 + FILL_TOM2
+            drums["hat"]["D"] = HATQ * 7 + "x.x.x.x........."
     kit = P.fight_kit()
     kit.update({"knock": (F.knock_perc(), 0.5), "tick": (F.tick(), 0.22), "clank": (F.clank(), 0.25),
                 "glitch": (F.glitch_perc(), 0.3), "kick_hard": (F.variants(F.kick_real), 1.9)})
@@ -1344,15 +1383,16 @@ def battle(form=FORM10, mastered=True, **opts):
     return settled(kw, mastered)
 
 
-def map_half(form=FORM10, mastered=True, guitar=MAP_GUITAR, drums_db=MAP_DRUMS_DB):
+def map_half(form=FORM10, mastered=True, guitar=MAP_GUITAR, drums_db=MAP_DRUMS_DB, piano=True):
     """The map half on a form: the shipped map with its front cut, its muted guitar or not, its
     drums `drums_db` in C and R."""
-    return settled(map_intro(on_form(form), guitar, drums_db), mastered)
+    return settled(map_intro(on_form(form), guitar, drums_db, piano), mastered)
 
 
 R_PARTS = [   # (bars, what the battle plays) through R, in order
-    (8, "the fingers on his rhythms 1 and 3 a bar each, walking at each bar's end, the top Omnific's lead in long notes over it, the crunch synth on the eighths, the plucked string's arpeggio low"),
-    (8, "the fingers on 5 and 6, the lead in quarters, the hook joining on the synth lead"),
+    (4, "the fingers on his rhythms 1 and 3 a bar each on the root, the crunch synth on the eighths, the synth lead's arpeggio"),
+    (4, "the top Omnific's lead in, long notes, the fingers walking at each bar's end"),
+    (8, "the fingers on 5 and 6, the lead in quarters, the plucked string's arpeggio low, the hook joining on the synth lead"),
     (8, "the fingers on 9 and its partner, the lead in eighths, the chime's hook joining, his 7 closing into the outro"),
 ]
 
@@ -1391,10 +1431,19 @@ def drive_set(sid, title, form, note):
 SETS = [
     drive_set("ne", "The head, driving", HEAD_FORM, "The intro and the groove (Ryan, 10 November: \"something needs to be pushing those 8th notes\"): the intro on three-three-two with the kick on it; the bass on straight eighths under the hook and the arpeggio, the kick on one and three; then the bass on the gallop with the kick, the crunch synth taking the eighths."),
     drive_set("nf", "The lead's section, driving", LEAD_FORM, "The lead's long notes over the bass on three-three-two for eight bars, then on the gallop with the arpeggio behind, the crunch synth on the eighths throughout, the kick on the bass's rhythm."),
-    {"id": "nt", "half": "battle", "title": "R, a lead over the grooves", "form": DUEL_FORM, "seed": NAME + "_battle",
-     "note": "D into R and out into the outro (Ryan, 10 November: \"Duel - no unisons. Keep the lower bass on the fingers doing its thing with the grooves ... Lets cut the stop-times for now\"). Switch rows anywhere: each carries on from the same beat.",
-     "rows": [("nt0", "The lead over the grooves", "The fingers on your core rhythms, walking; the top Omnific's lead, fancier each pass; the synth on the eighths (the full pair's).", {}),
-              ("nt1", "Round twenty-seven's three basses", "The octaves and the stop-time, as it was.", {"duel": "three"})]},
+    {"id": "nt", "half": "battle", "title": "R's way in", "form": DUEL_FORM, "seed": NAME + "_battle",
+     "note": "D into R and out into the outro (Ryan, 10 November: \"it hits too hard immediately after that quiet section ... Maybe the lead doesn't come in right away. Drums do something at the end of D to bring us into it. Start R with the synth arpeggios instead of string ones\"). Switch rows anywhere: each carries on from the same beat.",
+     "rows": [("nt0", "Building in", "A fill closing D; R's first four bars the bass on the root, the synth's eighths and the synth lead's arpeggio; the lead in at the fifth bar; a crash on each pass's one alone (the full pair's).", {}),
+              ("nt1", "As it was", "The lead, the walk and the plucked arpeggio from R's first bar, the crashes and chinas every two bars, no fill.", {"duel": "lead_hard", "d_fill": False})]},
+    {"id": "nm", "half": "map", "title": "The map half's off-beat piano", "form": "A" * 16, "seed": NAME,
+     "note": "The map half's groove (Ryan, 10 November: \"I can't really hear the off-beat piano everywhere, and that makes me think we should cut it\"). The battle half has had none in the head or the lead's section since round twenty-five, and R has none; the map half still plays it in the groove, the lead's section and the return. Switch rows anywhere: each carries on from the same beat.",
+     "rows": [("nm0", "With the off-beat piano", "As the pair's map half has it.", {}),
+              ("nm1", "Without it", "The house piano's off-beat stabs out.", {"piano": False})]},
+    {"id": "nd", "half": "battle", "title": "D's riff", "form": "C" * 4 + " " + "D" * 8 + " " + "R" * R_BARS, "seed": NAME + "_battle",
+     "note": "The lead's last four bars, D and on into R (Ryan, 10 November: \"Did we try D with the finger bass running the HtL riff instead of the crunch synth? ... a very loud crunch synth\"). We had not. Switch rows anywhere: each carries on from the same beat.",
+     "rows": [("nd0", "On the fingers bass", "The riff on the track's fingers bass, 3 dB under its walking level (the full pair's).", {}),
+              ("nd1", "On the crunch synth, 6 dB down", "The synth as it was, quieter.", {"d_riff": "synth_down"}),
+              ("nd2", "On the crunch synth as it was", "For the comparison.", {"d_riff": "synth"})]},
 ]
 PAIR = {"id": "night_shift_r28", "title": "Night Shift, round twenty-eight"}
 INTRO = "intro: the kick on every beat and the hats, the pad fading in through the fourth bar and swelling from 0:10, the sub from the fifth"
