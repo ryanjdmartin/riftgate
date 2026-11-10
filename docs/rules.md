@@ -406,11 +406,13 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - Every number inside a fight is single digits or low tens: a blow 1 to 6, big guns to 10, one
   capstone 12; an amp a point a stack; foe HP 2 to 8 for rank and file at tier one and to 16 at
   tier three, 30 to 40 massive at tier one and to 56 at tier three, 12
-  to 24 heroes, the slate's bosses 48 at tier one (a core in parts 40, a part 8 to 12, a boss
-  that may rise once 40; the kill-time test's read, under the 80 to 100 first written for
-  them); a foe's blow 2 to 8 at tier one (the rank and file's mostly 2 or 3)
-  and to 10 at tier three, a massive
-  foe's 7 or 8, a hero's 4 to 10, the slate's bosses' 6 to 10; machine hull 20 to 50 by size (the
+  to 24 heroes, an elite 16 to 60, the slate's bosses 72 at tier one (a core in parts 40, a part
+  8 to 18, a boss that may rise once 50); a foe's blow 2 to 8 at tier one (the rank and file's
+  mostly 2 or 3) and to 10 at tier three, a massive
+  foe's 7 or 8, a hero's 4 to 10, an elite's 7 to 18 and the slate's bosses' 10 to 20, sized
+  against a shield that refills (at tier one no action of theirs takes the lightest machine
+  from full: a breach under 20, and any one action's blows on one machine under its shield and
+  hull together); machine hull 20 to 50 by size (the
   Kite's paper hull 12, its row's one-off), shield 6 to 16, shield regen 1 to 3 a round, base armour 0 to 2 by role, timed armour to 4 or 5; heat
   1 to 20 (1 to 30 if the pricing needs it), the maxima 10 to 14 (the Musk Ox's 8), a vent 3 to
   8 (the Entropy Condenser's 10 the capstone, paid in hull). The scales are magnitudes,
@@ -1285,8 +1287,8 @@ a stat.
   the finale's line; it stands while one of its commanders does and holds the rift whatever
   its escort. It stands at the battle's tier (the tiers as the quick campaign shows them, one
   to three: in the campaign tier two runs from Convergence 4 and tier three from 8, and the
-  finale at 12 takes tier three's numbers): its commanders' HP ×1.25 at tier two and
-  ×1.5 at tier three, their attack +1 and +2, a boss whose kit is armour its `armour_step` more
+  finale at 12 takes tier three's numbers): its commanders' HP ×1.1 at tier two and
+  ×1.25 at tier three, their attack +1 and +2, a boss whose kit is armour its `armour_step` more
   armour a tier above one (the Cinder Tortoise 1, 2 and 3). Its escort is curated, never grown by
   the tier: its domain's `escort` composition at the battle's tier, one that names the boss first
   and then one that names none, as content writes it, validated to fit the slots beside its
@@ -1344,8 +1346,9 @@ a stat.
   kills: on a battle won or held, never on a fall; each component one copy in the stores, each
   blueprint the run's.
 - **Menace** is a foe's weight: its heaviest blow plus a quarter of its HP, rounded up, an
-  elite's doubled. The Rupture meter, Anathema and salvage count kills by it, so the rift's
-  reinforcements pay a trickle and the formations and the elites pay the most.
+  elite's as any foe's, its own numbers carrying its weight. The Rupture meter, Anathema and
+  salvage count kills by it, so the rift's reinforcements pay a trickle and the formations and
+  the elites pay the most.
 - **The Rupture meter** fills by the menace of every foe killed, in any fight however it ended,
   tallied as each fight ends, toward the tier's Fractures (three at tier one, four at tier two,
   five at tier three). The thresholds are set from the field's menace at the start (the packs

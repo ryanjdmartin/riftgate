@@ -2057,7 +2057,7 @@
    "id": "menace",
    "category": "foe",
    "name": "Menace",
-   "codex": "A foe's weight: its heaviest blow plus a quarter of its HP, rounded up; an elite's doubled. The Rupture meter, Anathema and salvage count every kill by it, so the rift's reinforcements pay a trickle and the field's formations and the elites pay the most.",
+   "codex": "A foe's weight: its heaviest blow plus a quarter of its HP, rounded up. The Rupture meter, Anathema and salvage count every kill by it, so the rift's reinforcements pay a trickle and the field's formations and the elites pay the most.",
    "status": "implemented",
    "design": {
     "holes": "The formula is Claude's placeholder, one weight for the three tallies; the bosses' menace counts as any foe's."

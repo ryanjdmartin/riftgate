@@ -612,11 +612,14 @@ func foes_for(sq: Unit) -> Array[Foe]:
 ## compromise for the sake of run diversity"): its commanders' HP multiplied and their attack
 ## raised, a domain's boss, a final's hero and the finale's line alike. Its escort is the tier's
 ## curated composition (an `escort` naming it), never grown by count (Ryan, 7 November: "packs
-## don't auto scale, so why would a bosses? Should be treated the same way"). Placeholders.
+## don't auto scale, so why would a bosses? Should be treated the same way"). Placeholders: the
+## HP step a tenth and a quarter since 10 November (a quarter and a half before), a guess with
+## the elites' and bosses' numbers for the refit pass's model, on which the old step walled a
+## stock four at tiers two and three (docs/measurements.md).
 const BOSS_TIERS := [
 	{"hp": 1.0, "attack": 0},
-	{"hp": 1.25, "attack": 1},
-	{"hp": 1.5, "attack": 2},
+	{"hp": 1.1, "attack": 1},
+	{"hp": 1.25, "attack": 2},
 ]
 
 
@@ -1155,7 +1158,10 @@ func is_elite(foe_id: String) -> bool:
 ## A foe's menace, the one weight the Rupture meter, Anathema and salvage count a kill at (the
 ## foes' fresh start, 30 October): its heaviest implemented blow (damage times strikes, a breach
 ## one more: the engine's threat, which already orders the deployment) plus a quarter of its HP,
-## rounded up; an elite's doubled. Read off the content, so no new number is written per foe.
+## rounded up. Read off the content, so no new number is written per foe. An elite's was doubled
+## until 10 November, while its numbers were a rank and file's; its own numbers carry its weight
+## since the guess of that day (about twice the HP and two and a half times the blow), which
+## leaves an elite's kill worth on the meter about what it was.
 func menace(foe_id: String) -> int:
 	if _menace.has(foe_id):
 		return int(_menace[foe_id])
@@ -1163,8 +1169,6 @@ func menace(foe_id: String) -> int:
 		return 0
 	var f := make_foe(foe_id)
 	var m := f.threat() + int(ceil(float(f.hp_max) / 4.0))
-	if is_elite(foe_id):
-		m *= 2
 	_menace[foe_id] = m
 	return m
 

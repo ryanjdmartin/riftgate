@@ -32,7 +32,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   playtest list), and 1111 tests, 361,077 checks, green on `ccr-722ca9f0-yj8na3` (10 November, that
   main with the refit pass's first build, the wall strike by the rating, the trial's regen row,
   every machine one more move, the field's dials, the goblin's line on its straight knife and wall,
-  the model as content and the formation pass; the
+  the model as content, the formation pass and the elites' and bosses' guess; the
   map suite now paints fourteen and sixteen deep too, which is most of the checks' rise); one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
   either map view on 6 November; about four minutes in a cloud session, twenty on a slow one;
@@ -129,7 +129,8 @@ and a trial, the fight bot's aggressor habit; and in `content/`, all of 10 Novem
 words: every chassis's move, one more; the refit pass's model (the stock dice, a regen by
 chassis, the basics, the drafts and four machines undealt); the goblin's line and the Marsh's;
 thirteen new foes (the Draugr and four flanker lines); the formation pass's patrols and
-formations in place of the old; and the Gate Integrity entry's strike). It took main at
+formations in place of the old; the elites' and the bosses' numbers, a guess; and the Gate
+Integrity entry's strike). It took main at
 `2d489f7` on 9 November (Ryan: "merge main in here so that you're working on the latest engine
 and changes"): the bible, the measurements, this file and the to-do the conflicts, both sides'
 words kept (the bible's hunters row this branch's and its boss row main's, the measurements'
@@ -157,7 +158,7 @@ in here first before you begin": his second map list of 10 November, the stores'
 BLOCKED tag): the bible (its version above both, v0.509; the three clocks row this branch's,
 the names row main's, the Armoured table row rewritten from content by its tool), this file and
 the to-do the conflicts, both sides kept; `docs/vocabulary.md` made again.
-The bible's file is v0.511, main's v0.504 with this branch's rows, its republish on Ryan's word
+The bible's file is v0.512, main's v0.504 with this branch's rows, its republish on Ryan's word
 (Pages below); and `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
@@ -472,6 +473,35 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   (`git show 3e44fe1:tools/formation_proposal.py`); the proposal stays for the bosses' stat
   blocks (its section 6). Not in it: the standing foes' numbers, the bosses' blocks, the
   rising threat's rule ("leave out rising threat for now").
+- **The elites and the bosses guessed for the model** (10 November; Ryan: "I'd like you to
+  guesstimate some elite and boss tweaks as well, but leave out rising threat for now").
+  Before, every elite and boss read free for a gathered squad on the model (a hundredth of a
+  four's hull): a blow under a fresh gauge costs nothing and a squad brings a gauge a machine.
+  The guess, placeholders all (`docs/measurements.md` has the rule, every number and every
+  read): a boss half again its hit points (72 at tier one) and about two and a half times its
+  blow (10 to 20), which gives the default four back the kill time the test asks, four to six
+  rounds; an elite two and a half times its blow (7 to 18), twice the hit points where it is
+  light, so its kit plays against a squad; a cap from the scale row's own clause, no action
+  taking the lightest tier-one machine from full; the tier's hit-point step halved (×1.1 and
+  ×1.25), since the old step walled the stock fours of tiers two and three; an elite's menace
+  no longer doubled, so its kill fills the Rupture meter about as it did where doubled on the
+  new numbers it would have filled most of a tier-one meter (the rules, the bible's meter row
+  and the glossary's Menace line follow, the last a draft redrafted as little as the rule
+  needs). The Old Man of the Desert and the Skeleton King are unchanged, the two that cost a
+  squad hull already. After: an elite is a wall for the machine it catches, a third of two
+  machines' hull and a twentieth of four's; a boss costs four a tenth at tier one and a third
+  at tiers two and three, and three machines can lose. Named, his: the guess does not reach
+  the hull budget (an elite a quarter of a four's hull, the boss what is left), and what would
+  close it pulls against the kill-time test, since under four pooled gauges a short fight
+  costs little whatever the blow (the brief's section 7, item 10); the Barrier is the swing
+  (one in a tier-two four takes a boss from 36% of its hull to 21%); some kits read soft
+  whatever their numbers (the King Gel, the Mantis Ant, the Vampire Lord alone, the shaman's
+  warband) and the adds in the kits (the Ape's gold, a rally, the Nob's rage) are small
+  beside the new blows; a final's hero rides the tier's step and is a little softer at tiers
+  two and three, its own numbers not guessed; a boss's kill banks more salvage. The campaign
+  runner's plain player, which never gathers, wins 8% of its battles where it won 19%: a
+  fight for four with one machine in it is won one time in four where it was one in two. The
+  bible is v0.512 (the scale row).
 - **Ryan's play of Phase 2** (9 November, his read of the long wall as built, on the phone): hard
   to judge; the packs as they were too hard, "but not for any particular one reason"; incoming
   damage high, so the tank tanked every turn while the rest could not take foes down reliably
@@ -948,9 +978,9 @@ weapon or equipment, the shield innate and regenerating, cooling passive, the ho
 decision, component destruction off to test, two rerolls kept; the formation pass folded into it,
 its proposal's grids re-cut under the new model and read by hull lost), in its brief's order: the
 what-if and its first reads are in (9 November), his two reads of the trial, the model as
-content and the formation pass (10 November: the brief's sections 5 and 9); next his play of
-what landed, with the field's dials (the to-do's Ryan list), and his answers to the brief's
-section 7, then the content still to come (the stock re-deal proper as a table in chat first,
+content, the formation pass and a guess at the elites' and bosses' numbers (10 November: the
+brief's sections 5, 8 and 9); next his play of what landed, with the field's dials (the
+to-do's Ryan list), and his answers to the brief's section 7, then the content still to come (the stock re-deal proper as a table in chat first,
 the component pass, the heat prices, the foes' numbers after his play, the bosses' stat
 blocks, what prices a round), the vocabulary, the rules and the rows. Then the long wall's other open item (the bible's section 12: the shell). Beside them, the rest of the skirmish code audit
 (`docs/skirmish_audit.md`; its questions answered and its bugs built 8 November; the Ammit's Tap
@@ -1011,11 +1041,12 @@ commands are in `README.md`.
   playtest list landed (the boss's picture, the scenery under the painting, the tears row's
   read of 10 November and the hunters' declaration, on the map session's v0.500 and v0.498's
   Text tab rows: the hangar row's tabs and the shown-text row), unpublished, its republish on
-  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.511, main's with the formation and refit
+  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.512, main's with the formation and refit
   session's rows (the hunters row's who-may-hunt and its settled hunting packs, the Foe roles row
   Decided with the flanker lines, the goblin's
   lesson, his call on its form and the pusher's yardstick, the recolour row's two rungs that
-  changed their archetype, his calls on each and the Draugr,
+  changed their archetype, his calls on each and the Draugr, the scale row's guess for the
+  elites and the bosses with the meter row's and the boss row's lines on it,
   the wall row's strike by the rating, the kit, shield, triangle, redirection, injury,
   command-die, Barrier and Ward, Puffin, Whip Scorpion, Polar Bear, Swallowtail and Musk Ox
   rows' refit lines, section 12's items, and from his second read the move row's 3 to 6, the

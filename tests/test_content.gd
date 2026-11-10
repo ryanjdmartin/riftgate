@@ -251,7 +251,8 @@ func test_the_compositions_go_by_tier() -> void:
 
 ## Menace (the foes' fresh start, 30 October): the one weight the Rupture meter, Anathema and
 ## salvage count a kill at, read off the content: the heaviest implemented blow (damage times
-## strikes, a breach one more) plus a quarter of the HP rounded up, an elite's doubled.
+## strikes, a breach one more) plus a quarter of the HP rounded up, an elite's like any foe's
+## (doubled until 10 November, while its numbers were a rank and file's).
 func test_menace_is_the_heaviest_blow_and_a_quarter_of_the_hp() -> void:
 	var db := _db()
 	for id in db.foes.keys():
@@ -259,8 +260,6 @@ func test_menace_is_the_heaviest_blow_and_a_quarter_of_the_hp() -> void:
 			continue
 		var f := db.make_foe(str(id))
 		var want := f.threat() + int(ceil(float(f.hp_max) / 4.0))
-		if db.is_elite(str(id)):
-			want *= 2
 		assert_eq(db.menace(str(id)), want, "%s's menace" % id)
 		assert_true(db.menace(str(id)) >= 1, "%s is worth something" % id)
 	var goblin := db.make_foe("goblin")

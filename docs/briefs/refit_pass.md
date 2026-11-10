@@ -710,6 +710,12 @@ word:
    are Claude's drafts), the shown text (drafted, unsigned), and whether a role is ever shown.
 8. The Reinforced Skeleton: parked with destruction, or a new rule now.
 9. The commander layer's shield and vent actions: a note now, a row when that layer is designed.
+10. The elites and the bosses (section 8's last hole): the guess of 10 November is his to play
+    and move. Two things in it pull against each other and only he can say which gives: the
+    kill-time test of 21 October (a boss three to five rounds for a squad of four) and the hull
+    budget above (the boss what is left), since under four pooled gauges a fight that short
+    costs a squad little whatever the blow; the guess sides with the fight's length the 48 had
+    on the old dice (72 hit points on the new) and stops there.
 
 ## 8. Holes raised, each with what settles it
 
@@ -729,9 +735,20 @@ word:
 - The lights' identity: big shields on small hulls read differently when the shield regenerates;
   Kestrel's shields against Minerva's armour is the lean, the regen and the armour the two
   makers' answers.
-- The elites under a regen: their blows are plain, so a lone Badger takes most of tier one's lone
-  elites for a few points of hull (section 5's second point). Their numbers are their own item
-  (the bible's section 12); this is one more read for it, no proposal.
+- The elites and the bosses under a regen: a blow under a fresh gauge costs nothing and a squad
+  brings a gauge a machine, so at their old numbers every one read free for a gathered four
+  (a hundredth of its hull) and a lone Badger took most of tier one's lone elites for a few
+  points. Guessed 10 November on his word ("I'd like you to guesstimate some elite and boss
+  tweaks as well, but leave out rising threat for now"), placeholders for his play
+  (`docs/measurements.md`, the rule and every number): their blows sized against the gauge (a
+  boss's 10 to 20, an elite's 7 to 18), a boss 72 hit points at tier one, the light lone elites
+  twice theirs, the tier's hit-point step halved, an elite's menace no longer doubled so its
+  kill fills the meter about as it did. What the guess does not reach is the hull budget of
+  section 7's head (an elite's fight a quarter of a four's hull, the boss what is left): single
+  plain blows are soaked by four pooled gauges, so a gathered four loses about a twentieth to
+  an elite and a tenth to a boss at tier one, and what closes it is area, many strikes or a
+  longer fight, a kit question for their sessions. It bites where the squad is not gathered:
+  an elite is a wall for the machine it catches and costs two machines a third of their hull.
 
 ## 9. The formation pass, executed: what landed and what is left
 
@@ -773,8 +790,8 @@ flat, or flat with a Marsh twist, if a simple one exists") and the go.
 **Not in the pass, and where each waits**: a foe's numbers (the refit's, after he plays the
 formations); the die's re-deal proper, the component pass and the heat prices (section 6, the
 refit's content); the bosses' stat blocks and their escorts (the proposal's section 6, a
-session of their own; the elites' and bosses' first guesses under the model are the to-do's
-line and `docs/measurements.md`); the rising threat in every formation and its validator check
+session of their own; the elites' and bosses' first guesses under the model are section 8's
+last hole and `docs/measurements.md`); the rising threat in every formation and its validator check
 (section 3's ninth point: "leave out rising threat for now"); the field's dials (the to-do);
 the sizes' names if the role becomes the word (a flanker for a patrol: section 4's holes).
 
