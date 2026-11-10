@@ -5389,3 +5389,134 @@ seed 7, BADLANDS, ponds, narrowest crossing 5, the guarantee opened 0
 , , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
  , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
 ```
+
+## 10 November: the shapes laid to the rift's row
+
+The same run (`--seeds 200 --width 20 --height 12`, every shape on seeds 1 to 200) after Ryan's
+play of the 9 November shapes ("the flattened side needs features, all the way to the back"): the
+rift's mouth is the bared ring beside the rift and nothing more, so every shape lays from the
+rift's row and has eight open rows at twelve deep where it had five.
+
+| Shape | Open | Rough | Ruins | Water | Walls | Crossing | Opened | Route | Phases T/W/Wh/H/F | Reach T/W/Wh/H/F | Steps | Lone |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| RIVER CROSSING | 68% | 10% | 0% | 22% | 0% | 200 of 200 at 3+ | 0.0 | 11.1 | 3.0/3.0/3.0/3.0/3.0 | 35/55/78/82/82% | 0% | 0.0 |
+| FJORD | 72% | 10% | 0% | 19% | 0% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/57/77/82/82% | 0% | 0.0 |
+| BADLANDS | 31% | 50% | 0% | 4% | 15% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 31/51/69/70/82% | 19% | 0.6 |
+| OPEN STEPPE | 98% | 0% | 0% | 1% | 0% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/59/81/81/82% | 3% | 0.0 |
+| RUINED CITY | 27% | 0% | 27% | 1% | 45% | 200 of 200 at 3+ | 0.5 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 23/35/46/46/82% | 0% | 0.0 |
+| GORGE | 47% | 8% | 0% | 1% | 45% | 200 of 200 at 3+ | 3.0 | 11.6 | 3.0/3.0/3.0/3.0/3.0 | 24/35/45/45/82% | 0% | 0.0 |
+
+Read: with eight rows to lay in the heavy shapes are heavier (the city 45% of the field in towers
+where it had 29%, the gorge 45% in cliffs where it had 27%) and the ground's room smaller (tracked
+reach after two phases 23% and 24%, hover 46% and 45%, against the steppe's 35% and 81%; the
+flyer's 82% untouched). The gorge is the first shape the guarantee has to open for: 3.0 hexes a
+map on average, where every other shape opens none or next to none (the city 0.5), since its
+trunks start at the rift's row now and the rift's ring is bared after them; a trunk that does not
+meet the ring is opened to it. The river and the fjord grew with the band (22% and 19% water) and
+the badlands' scrub covers half the field at the mesas' feet. Every map keeps the crossing at
+three or more and every way of moving its path; the route is unchanged but the gorge's (11.6).
+This is the edge of "how far we can push it" at today's counts: a tracked machine with a quarter
+of the field in reach after two moves, and a city or a gorge nearly half walls. Nothing here is
+a decision: Ryan judges the look on the phone (the to-do), and the counts are placeholders.
+
+Every shape at seed 7 (`--show 7`; `~` water, `^` a wall, `"` rough, `#` rubble, `=` a street or
+road, `R` the rift, `G` the gate, `|` the wall, the scenery outside the brackets):
+
+```
+seed 7, RIVER CROSSING, river, narrowest crossing 5, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[. . . . . . = . . R R R . = . . . . . .], , , , 
+ , , , ,[. . . . " . = . . . . . . = . . . . . .], , , " 
+" " " "[~ . . ~ ~ . = " " . " . . = ~ ~ ~ " . "], , " ~ 
+ ~ ~ ~ ~[~ ~ ~ ~ ~ " = ~ ~ ~ . . " = ~ ~ ~ ~ ~ ~]~ ~ ~ ~ 
+~ ~ ~ ~[~ ~ ~ ~ ~ . = ~ ~ ~ ~ ~ ~ = . ~ ~ ~ ~ ~]~ ~ ~ ~ 
+ " , , ~[~ . . . . = ~ . ~ " ~ ~ = . . . ~ ^ ~ ~]~ ~ ~ , 
+, , , ~[" . . . . . = = = = ~ ~ ~ = . . " ^ " "]" , " , 
+ , , " ,[. . . . . . . . . = " " = . . . . . . .], , , , 
+, , , ,[. . . . . . . . . . = . = . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . = = . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, FJORD, fjord, narrowest crossing 5, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+ , , , ,[, , , , " " " , , , , , , " " , , , , ,], , , , 
+, , , ,[. . . . . ~ ~ . . R R R . ~ ~ " . . . .], , , , 
+ , , , ,[. . . . " ~ ~ " . . . . . ~ ~ . . . . .], , , , 
+, , , ,[. . . . . ~ ~ ~ " . . . " ~ ~ " " . . .], , , , 
+ , , , ,[. . . . " ~ ~ . . . . . " " ~ ~ . . . .], , , , 
+, , , ,[. . . . . ~ ~ . " . . . . . . ~ ~ . . .], , , , 
+ , , , ,[. . . . . ~ ~ ~ . . . . . . ~ ~ . . . .], , , , 
+, , , ,[. . . . " ~ ~ " . . . . . ~ ~ " " . . .], , , , 
+ , , , ,[. . . . ~ ~ . . . . . . . " ~ ~ . . . .], , , , 
+, , , ,[. . . . " . . . . . . . . . " . " . . .], , , , 
+ , , , ,[. . . . . . . . . . . . . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, BADLANDS, ponds, narrowest crossing 5, the guarantee opened 0
+ " " " "[" " " " " " " " " " " " " " " " " " " "]^ " " " 
+" " " "[" " " " " " " ^ " " " " ^ " " " " " " "]^ ^ " " 
+ ^ " " "[" " " " " " " " " " " " " " " " " " " "]" " " " 
+" " " "[. . " " ^ " ^ " . R R R . ^ " . " " . .]" " " " 
+ " " " "[. " ^ " " " " ~ . . . . ^ " . " ^ " " "]" " " " 
+" " " "[" " " " . " " ~ . " ^ " " " " " " " ^ ^]" " " " 
+ ^ " " "[^ " . . " ^ " " " " " ^ ^ " ^ " ^ " " "]" " " " 
+^ ^ " "[" " . ~ . " " " ^ ^ " " " " ^ ^ " " ^ "]" " " " 
+ " " " "[^ " . ~ ~ " ^ " " " " " . " " " . " " ~]" " " " 
+^ " " "[^ " " ~ " " " " . " ^ ^ " " " ^ " . ~ ~]" " " " 
+ " " " "[" ^ " " ^ " ^ " . " " " ^ " " " . . . .]" " " " 
+" " " "[. " " . " " " " . . . . " " . . . . . .]" " " " 
+ " " " "[. . . . . . . . . . . . . . . . . . . .]" " " " 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, OPEN STEPPE, , narrowest crossing 5, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , ^ , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , ^ , ,], , , , 
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[. . . . . . . . . R R R = . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . . . = . . . . . . .], , , , 
+, , , ,[. . . . . . . . . . . . = . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . . = . . . . . ^ . .], , , , 
+, , , ,[. . . . . . . . . . . . = . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . . = . . . . . . . .], , , , 
+, , , ,[. . . . . . ^ . . . . = . . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . = . . . . . . . . .], , , , 
+, , , ,[. . . . . . . . . . . = . . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . = . . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, RUINED CITY, a fountain, narrowest crossing 3, the guarantee opened 1
+ ^ ^ # ^[# # ^ # # ^ ^ # ^ ^ ^ ^ # ^ ^ ^ ^ ^ # ^]^ ^ # ^ 
+^ ^ ^ #[^ # ^ # # # ^ # ^ ^ ^ # # ^ ^ ^ ^ # # #]^ ^ # ^ 
+ ^ ^ ^ ^[# # # # # # ^ ^ ^ # # # ^ ^ ^ ^ ^ # # ^]# ^ # ^ 
+^ # # ^[^ ^ ^ ^ ^ = ^ ^ . R R R . ^ ^ # ^ ^ ^ ^]^ # ^ ^ 
+ ^ # ^ #[^ ^ ^ ^ ^ = ^ ^ . . = . ^ ^ ^ # ^ ^ ^ ^]^ # ^ # 
+# # ^ #[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # . ^ ^ = = = = =]^ # # # 
+ ^ ^ ^ ^[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # # # # = ^ ^ ^ ^]^ # ^ ^ 
+# # # #[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # # # # = ^ ^ ^ ^]# # ^ # 
+ ^ # # ^[^ ^ ^ ^ ^ = ^ ^ ^ ^ # = = = # = = = = =]^ # # ^ 
+^ ^ # #[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # # # # = ^ ^ ^ ^]# # # # 
+ ^ # ^ ^[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # # ~ # = ^ ^ ^ ^]# # # ^ 
+# # # #[# # # # # # # # # # # # # # # # # # # #]# # # # 
+ # # # #[# # # # # # # # . . = . . # # # # # # #]# # # # 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, GORGE, flooded channels, narrowest crossing 4, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+ , , , ,[" , , , , , , , , , , , , , , , , , , "]" " " , 
+^ ^ ^ ^[^ ^ ^ ^ ^ . . . . R R R . . . " ^ ^ ^ ^]^ ^ ^ ^ 
+ ^ ^ ^ ^[^ ^ ^ ^ ^ . . . . . . . ^ . . ^ ^ ^ ^ ^]^ ^ ^ ^ 
+^ ^ ^ ^[^ ~ ^ ^ ^ . ^ " " ^ ^ ^ . " . ^ ^ ^ ^ ^]^ ^ ^ ^ 
+ ^ ^ ^ ^[^ ~ " " . " . . . ^ ^ ^ " " ^ ^ ^ ^ ^ ^]^ ^ ^ ^ 
+^ ^ ^ ^[^ ^ ~ . . . . . " . ^ . " . . ^ ^ ^ ^ ^]^ ^ ^ ^ 
+ ^ ^ ^ ^[^ ^ ^ ~ . . . ^ ^ " ^ . . . . ^ ^ ^ ^ ^]^ ^ ^ ^ 
+^ ^ ^ ^[^ ^ ^ ^ ^ ~ ^ ^ . " . . . " ^ ^ ^ ^ ^ ^]^ ^ ^ ^ 
+ ^ ^ ^ ^[^ ^ ^ ^ ^ ~ ^ ^ . ^ ^ " . ^ ^ ^ ^ ^ ^ ^]^ ^ ^ ^ 
+, , " ,[. . . . . . . " " " . . . . " . . . . .], " , , 
+ , , , ,[. . . . . . . . . . . . . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+```
