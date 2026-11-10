@@ -58,6 +58,8 @@ var shown: Dictionary = {}           # machine id -> [hex, facing]: where a plan
 var scroll_y: float = 0.0            # the map's offset on screen, in pixels
 var scroll_x: float = 0.0
 var zoom: float = 1.0                # the reconstruction's zoom (Ryan, 21 September); 1 fits the width
+var seam_shown := -1.0               # the seam's row as drawn while a peak's creep waits or plays (hold_peak, play_peak); under 0, the field's own
+var tears_shown := -1                # how many of the field's tears are drawn, the rest waiting for their opening; under 0, all
 
 const ZOOM_MIN := 1.0
 const ZOOM_MAX := 2.6
@@ -100,6 +102,7 @@ func _init() -> void:
 
 func set_field(f: Battlefield) -> void:
 	field = f
+	_end_cutscene()
 	_layout()
 	scroll_to_bottom()
 	# The battlefield is geometry with the other world bleeding in (decided 19 September):
@@ -319,7 +322,7 @@ func _lift_at(h: Vector2i) -> float:
 	if lift == 0.0:
 		return 0.0
 	if _bleed_src.is_empty():
-		_bleed_grad = Bleed.gradient(field, _origin, HEX_SIZE)
+		_bleed_grad = Bleed.gradient(field, _origin, HEX_SIZE, seam_shown)
 		_bleed_src = Bleed.sources(field, _origin, HEX_SIZE, _anim_px)
 	return lift * Bleed.solid(base(h), _bleed_grad, _bleed_src)
 
@@ -391,19 +394,22 @@ func zoom_at(local: Vector2, factor: float) -> void:
 ## sit at the top or bottom edge at the pack's x, nudged right when two would overlap, so an
 ## intent line entering the view has a face at its source.
 ## The edge tags (the long wall brief 7.1: a wall longer than a screen wants them in both views):
-## every pack, machine and tear past the view's edge gets a tag at the edge it lies past, laid
-## along that edge in the order they stand, never overlapping. [[Rect2, the Unit or the tear's
-## {"pos"}, "top" | "bottom" | "left" | "right"], ...].
+## every pack and machine past the view's edge gets a tag at the edge it lies past, laid along
+## that edge in the order they stand, never overlapping. [[Rect2, the Unit, "top" | "bottom" |
+## "left" | "right"], ...]. A tear has none, as the rift has none (Ryan, 10 November: "Tear
+## doesn't need an edge tag, same way the rift doesn't"): its opening is shown as it happens
+## (play_peak).
 func offscreen_tags() -> Array:
 	var out: Array = []
 	if field == null:
 		return out
 	var edges := {"top": [], "bottom": [], "left": [], "right": []}
-	var things: Array = field.packs() + field.mechs()
-	things.append_array(field.tears)
+	var things: Array = []
+	things.append_array(field.packs())
+	things.append_array(field.mechs())
 	var m := HEX_SIZE * 0.3
 	for thing in things:
-		var c := to_screen(center(thing.pos if thing is Unit else thing["pos"]))
+		var c := to_screen(center((thing as Unit).pos))
 		var edge := "top" if c.y < -m else ("bottom" if c.y > size.y + m else ("left" if c.x < -m else ("right" if c.x > size.x + m else "")))
 		if not edge.is_empty():
 			(edges[edge] as Array).append([c, thing])
@@ -430,7 +436,7 @@ func offscreen_tags() -> Array:
 	return out
 
 
-## What an edge tag under a screen point stands for (a Unit, or a tear), null for none.
+## The unit an edge tag under a screen point stands for, null for none.
 func _tag_at(local: Vector2) -> Variant:
 	for t in _tags:
 		if t[0].has_point(local):
@@ -449,6 +455,12 @@ static func foe_sprite_id(u: Unit) -> String:
 	return u.foe_id
 
 
+## An enemy's picture on the map: a pack's token, the boss's own larger picture.
+static func foe_picture(u: Unit) -> Texture2D:
+	var id := foe_sprite_id(u)
+	return Sprites.map_boss(id) if u.is_boss else Sprites.map_foe(id)
+
+
 # ---------------------------------------------------------------- drawing
 
 func _draw() -> void:
@@ -464,12 +476,13 @@ func _draw() -> void:
 		# on top in map space.
 		_map3d.look(Vector2(scroll_x, scroll_y), zoom)
 		_map3d.held = shown
+		_map3d.seam_shown = seam_shown
 		_map3d.sync()
 		var mat: ShaderMaterial = _composite.material
 		var src := Bleed.sources(field, _origin, HEX_SIZE, _anim_px)
 		if flatten_r > 0.0 and src.size() < Bleed.MAX_SOURCES:
 			src.append(Vector3(flatten_at.x, flatten_at.y, flatten_r * HEX_SIZE))
-		_bleed_grad = Bleed.gradient(field, _origin, HEX_SIZE)
+		_bleed_grad = Bleed.gradient(field, _origin, HEX_SIZE, seam_shown)
 		_bleed_src = src.duplicate()   # what the overlays' lifts read this frame (_lift_at)
 		mat.set_shader_parameter("grad", _bleed_grad)
 		mat.set_shader_parameter("source_count", src.size())
@@ -702,6 +715,7 @@ func _draw() -> void:
 	# far the reconstruction is zoomed (Ryan, 22 September).
 	if _map3d != null and frame_alpha > 0.0:
 		_draw_frame(hud)
+	_draw_seam_front()
 	_draw_tears()
 	_draw_tags()
 	if _map3d != null:
@@ -903,24 +917,273 @@ func _solid_at(h: Vector2i) -> float:
 	if _map3d == null:
 		return 1.0
 	if _bleed_src.is_empty():
-		_bleed_grad = Bleed.gradient(field, _origin, HEX_SIZE)
+		_bleed_grad = Bleed.gradient(field, _origin, HEX_SIZE, seam_shown)
 		_bleed_src = Bleed.sources(field, _origin, HEX_SIZE, _anim_px)
 	return Bleed.solid(base(h), _bleed_grad, _bleed_src)
 
 
 ## The tears (30 October): each a small vortex ring in the rift's own light on the seam's
-## ground, with its name, so where the next flood comes from is known an interval ahead. A
-## first cut, to be judged running on the phone with the seam's creep.
+## ground, with its name, so where the next flood comes from is known an interval ahead. The
+## ring is sized to its hex and stands on it in map space, its lines one width at every zoom;
+## its name is a plaque on screen at that place. Called from screen space and left there (the
+## ring was once drawn in it too, at its map position, so it hung at one place on the glass
+## while the map scrolled under it: Ryan, 10 November, "it's just fixed in place as I pan
+## around"). A tear that opened at the peak just played waits unseen for its opening
+## (tears_shown) and then bursts open (_tear_opening). A first cut, judged running on the phone.
 func _draw_tears() -> void:
-	for t in field.tears:
-		var c := center(t["pos"])
-		var r := HEX_SIZE * 0.55
-		draw_arc(c, r, 0.0, TAU, 24, Color(Palette.ENEMY, 0.9), 3.0)
-		draw_arc(c, r * 0.6, 0.0, TAU, 18, Color(Palette.ENEMY, 0.6), 2.0)
+	var n := field.tears.size() if tears_shown < 0 else mini(tears_shown, field.tears.size())
+	for i in range(n):
+		_map_space()
+		var c := center(field.tears[i]["pos"])
+		var age: float = _ring_t - float(_tear_born[i]) if _tear_born.has(i) else TEAR_OPEN_SECONDS
+		var grow := 1.0
+		if age < TEAR_OPEN_SECONDS:
+			grow = _tear_opening(field.tears[i]["pos"], c, age)
+		var r := HEX_SIZE * 0.55 * grow
+		draw_arc(c, r, 0.0, TAU, 24, Color(Palette.ENEMY, 0.9), _px(3.0))
+		draw_arc(c, r * 0.6, 0.0, TAU, 18, Color(Palette.ENEMY, 0.6), _px(2.0))
 		for k in range(6):
 			var a := float(k) * TAU / 6.0 + fmod(_ring_t, TAU)
-			draw_line(c + Vector2(cos(a), sin(a)) * r * 0.6, c + Vector2(cos(a + 0.5), sin(a + 0.5)) * r, Color(Palette.ENEMY, 0.8), 2.0)
-		_plaque(c + Vector2(0.0, -r - 12.0), "TEAR", Palette.ENEMY, 1.5)
+			draw_line(c + Vector2(cos(a), sin(a)) * r * 0.6, c + Vector2(cos(a + 0.5), sin(a + 0.5)) * r, Color(Palette.ENEMY, 0.8), _px(2.0))
+		if age > TEAR_OPEN_SECONDS * 0.3:
+			_plaque(c + Vector2(0.0, -HEX_SIZE * 0.55 - 12.0), _term("tear"), Palette.ENEMY, 1.5)
+	_screen_space()
+
+
+## A battlefield term's name for a plaque, content's own (the vocabulary's entry).
+static func _term(id: String) -> String:
+	return ContentDB.load_default().term_name(id).to_upper()
+
+
+## A tear opening, `age` seconds in (map space): a white burst on its hex that goes to the
+## enemy's violet, the hex lit under it, and three heavy rings thrown out one after another past
+## its neighbours, while the ring itself springs open from a point and overshoots. By motion and
+## by weight, hot for the phone. Returns the ring's size, 0 to a little over 1.
+const TEAR_OPEN_SECONDS := 1.3
+
+func _tear_opening(h: Vector2i, c: Vector2, age: float) -> float:
+	var u := clampf(age / TEAR_OPEN_SECONDS, 0.0, 1.0)
+	_fill(h, Color(Palette.ENEMY, 0.75 * (1.0 - u)))
+	var flash := clampf(age / 0.28, 0.0, 1.0)
+	if flash < 1.0:
+		draw_circle(c, HEX_SIZE * (0.3 + 1.1 * flash), Color(Color.WHITE.lerp(Palette.ENEMY, flash), 0.85 * (1.0 - flash)))
+	for k in range(3):
+		var ph := (age - float(k) * 0.16) / 0.85
+		if ph <= 0.0 or ph >= 1.0:
+			continue
+		var eased := 1.0 - (1.0 - ph) * (1.0 - ph)
+		draw_arc(c, HEX_SIZE * (0.4 + 2.4 * eased), 0.0, TAU, 48, Color(ENEMY_HOT if k == 0 else Palette.ENEMY, 1.0 - ph), _px(7.0 * (1.0 - ph) + 2.0))
+	# The ring springs open: past its size and back (a back ease).
+	var g := clampf(age / 0.55, 0.0, 1.0) - 1.0
+	return 1.0 + 2.2 * g * g * g + 1.2 * g * g
+
+
+# ---------------------------------------------------------------- the cutscenes
+
+## The map shows a thing as it happens (Ryan, 10 November: a tear "needs ... an
+## animation/cutscene when one opens. And an animation/cutscene when the seam moves, too"; "We
+## should pan and zoom to hunters when they acquire as well"): it glides to the thing, zooming in
+## on what stands on one hex (a tear, a hunter), shows it, and glides back to where the player
+## was looking, at the zoom they had. One plays at a time; a press on the map skips to its end;
+## headless, or with nothing to show, it hands on at once. First cuts, judged running.
+##
+## A peak of Rift Pressure: the field has already peaked when the enemy's turn is taken, so the
+## screen calls hold_peak before it (the map keeps the seam where it stood and the new tears
+## unseen while the packs walk) and play_peak after the walks: the map glides to the seam, the
+## painting's edge sweeps to its new row under a hot violet front with its name on it, then the
+## map glides in on each new tear as it bursts open (RIFTGATE_PEAK_DEBUG=1 peaks every enemy
+## turn). A hunter's lock: play_locks glides in on each hunter that turned on a machine, in
+## turn, and the screen declares it there.
+signal peak_beat(what: String)   # "seam" as the creep starts, "tear" as each opens: the screen's sounds
+
+const CUT_GLIDE := 0.45          # the map's glide to a thing and back
+const CUT_ZOOM := 1.6            # the zoom on what stands on one hex, a tear or a hunter; a player zoomed further in keeps their own
+const SEAM_SWEEP := 1.2          # the edge's sweep to its new row
+const SEAM_FADE := 0.6           # the front's fade once it stands
+const LOCK_HOLD := 2.0           # the map held on a hunter while its declaration shows
+
+var _cut_tween: Tween = null
+var _cut_done := Callable()
+var _cut_home := Vector3.ZERO    # the scroll (x, y) and the zoom (z) the cutscene started from
+var _cut_cam := Vector3.ZERO     # the map point at mid-screen (x, y) and the zoom (z) the last glide ends on
+var _tear_born: Dictionary = {}  # a tear's index -> the clock (_ring_t) its opening began at
+var _seam_front := -1.0          # the clock the seam's sweep began at; under 0, no front is drawn
+var _seam_to := 0.0              # the row the sweep ends on
+
+
+## Keep the seam and the tears as they stand now, through whatever the field does next.
+func hold_peak() -> void:
+	if field == null:
+		return
+	seam_shown = float(field.seam_row)
+	tears_shown = field.tears.size()
+
+
+## Whether a cutscene is playing.
+func cutscene_playing() -> bool:
+	return _cut_tween != null
+
+
+## Play what the field did since hold_peak (the seam's creep, the tears opened), then `done`.
+func play_peak(done: Callable) -> void:
+	var crept: bool = field != null and seam_shown >= 0.0 and float(field.seam_row) > seam_shown
+	var opened: int = (field.tears.size() - tears_shown) if field != null and tears_shown >= 0 else 0
+	if not _can_play() or (not crept and opened <= 0):
+		_end_cutscene()
+		if done.is_valid():
+			done.call()
+		return
+	var tw := _begin_cutscene(done)
+	if crept:
+		# The seam, where the player is looking along the wall: its old edge and its new both in
+		# view, the middle of the creep at the middle of the screen across the field, at the
+		# player's own zoom (the seam is the whole field's, nothing to close in on).
+		_seam_to = float(field.seam_row)
+		var mid := (Bleed.seam_edge(field, _origin, HEX_SIZE, seam_shown) + Bleed.seam_edge(field, _origin, HEX_SIZE, _seam_to)) * 0.5
+		var axis := Bleed.axis()
+		var here := to_map(size * 0.5)
+		_glide_to(tw, here + axis * (mid - here.dot(axis)), zoom)
+		tw.tween_callback(func() -> void:
+			_seam_front = _ring_t
+			peak_beat.emit("seam"))
+		tw.tween_property(self, "seam_shown", _seam_to, SEAM_SWEEP).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+		tw.tween_interval(0.35)
+	for i in range(maxi(0, tears_shown), field.tears.size()):
+		_glide_to(tw, center(field.tears[i]["pos"]), maxf(zoom, CUT_ZOOM))
+		tw.tween_callback(func() -> void:
+			tears_shown = i + 1
+			_tear_born[i] = _ring_t
+			peak_beat.emit("tear"))
+		tw.tween_interval(TEAR_OPEN_SECONDS + 0.2)
+	_glide_home(tw)
+
+
+## The hunters that turned on a machine, shown one after another ([[hunter, prey], ...]): the
+## map glides in on each hunter, `each` is called with the pair as it arrives (the screen's
+## declaration) and the map holds there while it shows; then home, then `done`. The hunter
+## stands `at_y` down the view (under the screen's band; the middle when not given). With
+## nothing to play `each` is still called for every pair, at once.
+func play_locks(locks: Array, each: Callable, done: Callable, at_y: float = -1.0) -> void:
+	if not _can_play() or locks.is_empty():
+		for pair in locks:
+			each.call(pair[0], pair[1])
+		if done.is_valid():
+			done.call()
+		return
+	var tw := _begin_cutscene(done)
+	for pair in locks:
+		var hunter: Unit = pair[0]
+		var z := maxf(zoom, CUT_ZOOM)
+		var drop := (at_y - size.y * 0.5) if at_y >= 0.0 else 0.0
+		_glide_to(tw, center(shown_hex(hunter)) - Vector2(0.0, drop / z), z)
+		tw.tween_callback(each.bind(hunter, pair[1]))
+		tw.tween_interval(LOCK_HOLD)
+	_glide_home(tw)
+
+
+## Whether a cutscene can play here: on a screen, in the tree.
+func _can_play() -> bool:
+	return DisplayServer.get_name() != "headless" and is_inside_tree() and field != null
+
+
+## Start a cutscene: its tween, the view it began on to come home to, and what follows it.
+func _begin_cutscene(done: Callable) -> Tween:
+	if _cut_tween != null:
+		_finish_cutscene()   # one at a time: the one playing ends where it would have
+	_cut_done = done
+	_cut_home = Vector3(scroll_x, scroll_y, zoom)
+	var mid := to_map(size * 0.5)
+	_cut_cam = Vector3(mid.x, mid.y, zoom)
+	_cut_tween = create_tween()
+	return _cut_tween
+
+
+## A glide from where the last one ended to the map point `at` at mid-screen, at zoom `z`.
+func _glide_to(tw: Tween, at: Vector2, z: float) -> void:
+	var to := Vector3(at.x, at.y, z)
+	tw.tween_method(_glide.bind(_cut_cam, to), 0.0, 1.0, CUT_GLIDE).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_cut_cam = to
+
+
+## The last glide, back to the view the cutscene began on, and its end.
+func _glide_home(tw: Tween) -> void:
+	var mid := (size * 0.5 - Vector2(_cut_home.x, _cut_home.y)) / _cut_home.z
+	_glide_to(tw, mid, _cut_home.z)
+	tw.tween_callback(_finish_cutscene)
+
+
+## The view `u` of the way from one camera to another (a map point at mid-screen and a zoom),
+## kept on the painted content: a cutscene may look past the scroll's own range into the
+## scenery, so a tear at the field's end stands mid-screen and not under the frame at the edge.
+func _glide(u: float, from: Vector3, to: Vector3) -> void:
+	var cam := from.lerp(to, u)
+	zoom = cam.z
+	scroll_x = _clamp_axis(size.x * 0.5 - cam.x * zoom, 0.0, _map_size.x, size.x)
+	scroll_y = _clamp_axis(size.y * 0.5 - cam.y * zoom, 0.0, _map_size.y, size.y)
+	queue_redraw()
+
+
+## The cutscene over, played out or skipped: the field as it stands, the view where it was.
+func _finish_cutscene() -> void:
+	if _cut_tween == null:
+		return
+	scroll_x = _cut_home.x
+	scroll_y = _cut_home.y
+	zoom = _cut_home.z
+	var done := _cut_done
+	_end_cutscene()
+	if done.is_valid():
+		done.call()
+
+
+## Let a cutscene go, and a peak's hold with it: the seam and the tears drawn as the field has
+## them.
+func _end_cutscene() -> void:
+	if _cut_tween != null:
+		_cut_tween.kill()
+		_cut_tween = null
+	_cut_done = Callable()
+	seam_shown = -1.0
+	tears_shown = -1
+	_tear_born = {}
+	if _seam_front >= 0.0 and _ring_t - _seam_front < SEAM_SWEEP:
+		_seam_front = -1.0   # skipped mid-sweep: no front left standing where the edge is not
+	queue_redraw()
+
+
+## The seam's front while its creep plays and a moment after (map space, left in screen space):
+## a wide violet band on the painting's moving edge across the whole field, a bright line in it
+## and a white hairline in that, three fainter echoes trailing behind it toward the rift, and
+## the seam's name on the line where the player is looking. A line and its motion, never a hue
+## alone; hot for the phone.
+func _draw_seam_front() -> void:
+	if _seam_front < 0.0 or field == null:
+		return
+	var age := _ring_t - _seam_front
+	if age > SEAM_SWEEP + 0.35 + SEAM_FADE:
+		_seam_front = -1.0
+		return
+	var a := 1.0 - clampf((age - SEAM_SWEEP - 0.35) / SEAM_FADE, 0.0, 1.0)
+	var row := seam_shown if seam_shown >= 0.0 else _seam_to
+	var axis := Bleed.axis()
+	var side := Vector2(-axis.y, axis.x)
+	var edge := Bleed.seam_edge(field, _origin, HEX_SIZE, row)
+	var r := _hex_bounds(field.map.all_hexes())
+	r.position += _origin
+	var mid := r.get_center()
+	var half := maxf(r.size.x, r.size.y) * 0.5 + HEX_SIZE
+	var on := axis * edge + side * mid.dot(side)
+	_map_space()
+	var moving := age < SEAM_SWEEP
+	for k in range(3, 0, -1):
+		var back := on - axis * HEX_SIZE * 0.45 * float(k)
+		draw_line(back - side * half, back + side * half, Color(Palette.ENEMY, a * (0.5 - 0.13 * float(k)) * (1.0 if moving else 0.4)), _px(5.0))
+	draw_line(on - side * half, on + side * half, Color(Palette.ENEMY, 0.45 * a), _px(22.0))
+	draw_line(on - side * half, on + side * half, Color(ENEMY_HOT, a), _px(7.0))
+	draw_line(on - side * half, on + side * half, Color(Color.WHITE, 0.9 * a), _px(2.0))
+	var here := to_map(size * 0.5)
+	_plaque(on + side * (here.dot(side) - on.dot(side)) + Vector2(0.0, -16.0 / zoom), _term("seam"), Color(Palette.ENEMY, a), 2.5)
+	_screen_space()
 
 
 ## The one scan bar crosses the whole screen on the top layer (the battle screen draws it);
@@ -942,6 +1205,16 @@ func rift_foot(map: BattleMap) -> Vector2i:
 		if base(r).y > base(foot).y:
 			foot = r
 	return foot
+
+
+## How far below its foot hex's centre the vortex's picture ends, in hexes. With the wall at the
+## bottom its foot hex is pointy-top, a whole radius from centre to its lowest point, and the
+## picture ends a little inside it; with the wall at the left the hex is flat-top, 0.87 of a
+## radius from centre to its lower edge, so the same drop hung the roots past the hex into the
+## one below: there it ends as far inside its hex as the other view's does, a little higher
+## (Ryan, 10 November: "wall-left, rift sprite needs to move up a tiny bit").
+static func rift_drop() -> float:
+	return 0.9 * (sqrt(3.0) * 0.5 if MapOrient.wall_left else 1.0)
 
 
 const RIFT_FRAME_SECONDS := 0.7    # a frame, on the vortex's own clock
@@ -969,7 +1242,7 @@ func _draw_rift(map: BattleMap) -> void:
 	var beat := Sound.beat() if RIFT_ON_BEAT else -1.0
 	var k := int(beat / 4.0 * frames if beat >= 0.0 else _ring_t / RIFT_FRAME_SECONDS) % frames
 	var c := center(rift_foot(map))
-	var dest := Rect2((c - Vector2(fw * SPRITE_SCALE * 0.5, fh * SPRITE_SCALE - HEX_SIZE * 0.9)).floor(), Vector2(fw, fh) * SPRITE_SCALE)
+	var dest := Rect2((c - Vector2(fw * SPRITE_SCALE * 0.5, fh * SPRITE_SCALE - HEX_SIZE * rift_drop())).floor(), Vector2(fw, fh) * SPRITE_SCALE)
 	# The vortex is the worst input the display gets: it is drawn in bands, and now and
 	# then one tears sideways and dims, the same tear the compositor gives the ground
 	# around it (Ryan, 23 September; a band in five each tick was far too much). Off with
@@ -1037,9 +1310,6 @@ func _draw_tags() -> void:
 	for t in _tags:
 		var rect: Rect2 = t[0]
 		var edge: String = t[2]
-		if not (t[1] is Unit):
-			_tear_tag(rect, edge)
-			continue
 		var sq: Unit = t[1]
 		if sq.is_player():
 			_machine_tag(rect, sq, edge)
@@ -1081,17 +1351,6 @@ func _machine_tag(rect: Rect2, m: Unit, edge: String) -> void:
 	Hud.box(self, rect, 6.0, Color(Palette.BG, 0.94), Color(col, 0.9), 1.5)
 	var name := m.display_name.to_upper()
 	draw_string(Hud.mono(), rect.position + Vector2(0, rect.size.y * 0.5 + 5.0), name.substr(0, 6), HORIZONTAL_ALIGNMENT_CENTER, rect.size.x, 12, col)
-	_tag_chevron(rect, edge, col)
-
-
-## A tear past the edge: its ring, so where the next flood comes from is known off screen.
-func _tear_tag(rect: Rect2, edge: String) -> void:
-	var col := Palette.ENEMY
-	Hud.box(self, rect, 6.0, Color(Palette.BG, 0.94), Color(col, 0.9), 1.5)
-	var c := rect.position + Vector2(rect.size.x * 0.5, 24.0)
-	draw_arc(c, 13.0, 0.0, TAU, 20, Color(col, 0.9), 3.0)
-	draw_arc(c, 7.0, 0.0, TAU, 14, Color(col, 0.6), 2.0)
-	draw_string(Hud.mono(), rect.position + Vector2(0, rect.size.y - 6.0), "TEAR", HORIZONTAL_ALIGNMENT_CENTER, rect.size.x, 12, Palette.INK)
 	_tag_chevron(rect, edge, col)
 
 
@@ -1769,7 +2028,7 @@ static func _piece_units(p: Dictionary) -> Dictionary:
 
 
 func is_playing() -> bool:
-	return not _anim.is_empty() or not _anim_queue.is_empty()
+	return not _anim.is_empty() or not _anim_queue.is_empty() or _cut_tween != null
 
 
 ## Play the phase's moves: the mechs along their routes, then the packs along their
@@ -1932,7 +2191,7 @@ func _draw_unit(u: Unit) -> void:
 		for h in u.hexes():
 			draw_colored_polygon(MapOrient.corners(center(h), HEX_SIZE - 6.0), Color("4a2e66"))
 	var c := _unit_center(u)
-	var tex: Texture2D = null if u.is_player() else Sprites.map_foe(foe_sprite_id(u))
+	var tex: Texture2D = null if u.is_player() else foe_picture(u)
 	if _map3d != null and u.is_player() and not u.is_static():
 		pass   # a mech is geometry in the 3D viewport; the gauge below stays
 	elif tex != null:
@@ -1968,11 +2227,13 @@ func _draw_unit(u: Unit) -> void:
 
 
 ## How big a foe's picture draws on the map at zoom 1: a pack's a little larger than its pixels,
-## so it holds its own beside a machine; the boss's far larger, BOSS_SPRITE_H tall (Ryan, 9
-## November: "enemy bosses need bigger map sprites. They disappear right now, they should be very
-## big and ominous"), so the thing the battle is about towers over its ground and the rift's.
+## so it holds its own beside a machine; the boss's far larger, its frame BOSS_SPRITE_H tall (Ryan,
+## 9 November: "enemy bosses need bigger map sprites. They disappear right now, they should be very
+## big and ominous"), so the thing the battle is about towers over its ground and the rift's. The
+## boss's picture is drawn for that size (foe_picture: a 48-pixel frame, so a texel of it is about
+## a pack's token's), never its token enlarged.
 const SPRITE_FEET := 22.0      # a picture's feet below its hex's centre
-const BOSS_SPRITE_H := 128.0   # the boss's picture's height: eight texels a texel of the 16-pixel art
+const BOSS_SPRITE_H := 128.0   # the boss's picture's frame on the map: 2.67 pixels a texel of its 48, a pack's token at 2.6
 
 static func sprite_size(u: Unit, tex: Texture2D) -> Vector2:
 	if tex == null:
@@ -2011,6 +2272,12 @@ func _threat_pips(badge_at: Vector2, n: int, border: Color) -> void:
 # ---------------------------------------------------------------- gestures
 
 func _gui_input(event: InputEvent) -> void:
+	if _cut_tween != null:
+		# A press skips the cutscene; nothing else is taken while it plays.
+		if (event is InputEventMouseButton and event.pressed) or (event is InputEventScreenTouch and event.pressed):
+			_finish_cutscene()
+		accept_event()
+		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
 			_pressed = true

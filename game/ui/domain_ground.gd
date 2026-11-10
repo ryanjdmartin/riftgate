@@ -1072,8 +1072,9 @@ static func road_links(map: BattleMap, h: Vector2i) -> int:
 ## One hex of the other world in a domain's tileset: its ground, and on it the domain's water
 ## or what stands on a decorative ground; a road runs to `links` (as road_links), across the
 ## hex when it has none. A wall hex's range is draw_walls's, drawn after every hex's ground,
-## since it stands taller than its hex. The second frame moves what moves.
-static func draw_hex(ci: CanvasItem, c: Vector2, hex_px: float, t: int, seed_value: int, frame: int, biome: String, links: int = 0) -> void:
+## since it stands taller than its hex. The second frame moves what moves. With `cell` off the
+## hex has no outline of its own: ground with no cells, the scenery past the field (PaintedMap).
+static func draw_hex(ci: CanvasItem, c: Vector2, hex_px: float, t: int, seed_value: int, frame: int, biome: String, links: int = 0, cell: bool = true) -> void:
 	var key := key_of(biome)
 	var ts: Dictionary = TILESETS[key]
 	var rng := RandomNumberGenerator.new()
@@ -1101,7 +1102,8 @@ static func draw_hex(ci: CanvasItem, c: Vector2, hex_px: float, t: int, seed_val
 		_:
 			_specks(ci, ts, c, r, s, rng)
 			_scatter(ci, key, ts, c, r, s, rng, frame, ts["plain"], 0, 0.0)
-	Hud.stroke_poly(ci, pts, Color(Color(str(ts["grid"])), 0.35), 1.0)
+	if cell:
+		Hud.stroke_poly(ci, pts, Color(Color(str(ts["grid"])), 0.35), 1.0)
 
 
 ## A wall hex's range: one of the domain's, its foot low in the hex and its peaks standing up
@@ -1111,8 +1113,9 @@ static func draw_hex(ci: CanvasItem, c: Vector2, hex_px: float, t: int, seed_val
 ## different spire types probably need to be represented in the painted world, for clarity"):
 ## crags are the domain's range sprites; mesas a stepped flat-topped block, towers a few tall
 ## blocks with lit windows, cliffs a low ridge the whole hex wide so neighbours join, each
-## built from the domain's wall inks (BLOCK_INKS).
-static func draw_walls(ci: CanvasItem, c: Vector2, hex_px: float, seed_value: int, frame: int, biome: String, look: String = "crags") -> void:
+## built from the domain's wall inks (BLOCK_INKS). `tint` multiplies its colours (the scenery's
+## shade, PaintedMap).
+static func draw_walls(ci: CanvasItem, c: Vector2, hex_px: float, seed_value: int, frame: int, biome: String, tint: Color = Color.WHITE, look: String = "crags") -> void:
 	var key := key_of(biome)
 	var ts: Dictionary = TILESETS[key]
 	var rng := RandomNumberGenerator.new()
@@ -1122,14 +1125,14 @@ static func draw_walls(ci: CanvasItem, c: Vector2, hex_px: float, seed_value: in
 	if look != "crags" and BLOCK_INKS.has(key):
 		var tex := _block_tex(key, look, rng.randi_range(0, 2), s)
 		var pos := (foot - Vector2(tex.get_width() * 0.5, tex.get_height())).floor()
-		ci.draw_texture(tex, pos)
+		ci.draw_texture(tex, pos, tint)
 		return
 	var name: String = ts["walls"][rng.randi() % ts["walls"].size()]
 	var mirror := rng.randf() < 0.5
 	var tex := _tex(key, name, mirror, s)
 	var rect := Rect2((foot - Vector2(tex.get_width() * 0.5, tex.get_height())).floor(), tex.get_size())
-	ci.draw_texture(tex, rect.position)
-	_attach(ci, key, name, rect, mirror, s, frame)
+	ci.draw_texture(tex, rect.position, tint)
+	_attach(ci, key, name, rect, mirror, s, frame, tint)
 
 
 ## The ink letters a domain's block walls (mesas, towers, cliffs) are built from: its range
@@ -1378,7 +1381,7 @@ static func _crowded(rect: Rect2, placed: Array, overlap: float) -> bool:
 
 
 ## A sprite's moving companion (ATTACH), set by its host and stepped by the frame.
-static func _attach(ci: CanvasItem, key: String, name: String, rect: Rect2, mirror: bool, s: int, frame: int) -> void:
+static func _attach(ci: CanvasItem, key: String, name: String, rect: Rect2, mirror: bool, s: int, frame: int, tint: Color = Color.WHITE) -> void:
 	var a = ATTACH.get(key, {}).get(name)
 	if a == null:
 		return
@@ -1389,7 +1392,7 @@ static func _attach(ci: CanvasItem, key: String, name: String, rect: Rect2, mirr
 	var x := float(a[1]) * s
 	if mirror:
 		x = rect.size.x - x - tex.get_width()
-	ci.draw_texture(tex, (rect.position + Vector2(x, float(a[2] - a[3] * frame) * s)).floor())
+	ci.draw_texture(tex, (rect.position + Vector2(x, float(a[2] - a[3] * frame) * s)).floor(), tint)
 
 
 ## The water: the domain's liquid, a rim inside its edge and ripples drifting a step a frame.

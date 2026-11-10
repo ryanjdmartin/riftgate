@@ -248,6 +248,7 @@ func _build() -> void:
 	_map.route_drag_started.connect(_on_route_drag_started)
 	_map.route_drag_to.connect(_on_route_drag_to)
 	_map.route_drag_ended.connect(_on_route_drag_ended)
+	_map.peak_beat.connect(_on_peak_beat)
 	_apply_display()
 	_map.hold_released.connect(_on_hold_released)
 
@@ -1043,6 +1044,7 @@ func _on_end_turn() -> void:
 		Sound.say("resolve_all" if committed == free else "resolve_move")
 	var gate_before := battle.field.gate_hp
 	var plan := battle.take_plan()   # the machines' planned moves play first, then the packs walk
+	_map.hold_peak()   # a peak this turn is shown after the walks (_after_step): the seam and the tears stand as they were until then
 	var walks := battle.end_turn()
 	_gate_struck = battle.field.gate_hp < gate_before
 	_spawned = battle.last_spawned
@@ -1067,26 +1069,59 @@ func _after_step() -> void:
 		_top.flash("rift")
 	_gate_struck = false
 	_spawned = false
-	match battle.state:
-		Battle.State.DONE:
-			_refresh()
-			_show_outcome()
-		_:
-			_refresh()
-			var locks := battle.take_locks()
-			if not locks.is_empty():
-				_show_lock(locks[0][0], locks[0][1])
-			if battle.state == Battle.State.PLAN and not battle.forced.is_empty():
-				_show_caught()
+	if battle.state == Battle.State.DONE:
+		_map.play_peak(Callable())   # nothing to show over the outcome: the hold is let go
+		_refresh()
+		_show_outcome()
+		_autosave()
+		return
+	# A peak's cutscene first (the seam's creep, a tear opening: BattleMapView.play_peak), then
+	# what the turn opens with; at once when the turn held no peak.
+	_refresh()
+	_map.play_peak(_after_peak)
+	if _map.cutscene_playing():
+		_refresh()   # the buttons grey while it plays
+
+
+## A beat of the peak's cutscene, heard: the seam's creep starting, a tear opening. Borrowed
+## sounds until each has its own (the audio to-do).
+func _on_peak_beat(what: String) -> void:
+	if what == "tear":
+		Sound.play("reveal")
+	else:
+		Sound.play("contact", -4.0)
+	_top.flash("rift")
+
+
+## The peak shown (or none to show): every hunter that turned on a machine this turn is declared,
+## the map gliding in on each in turn (BattleMapView.play_locks), then the turn opens.
+func _after_peak() -> void:
+	if battle.state == Battle.State.DONE:
+		_refresh()
+		_show_outcome()
+		_autosave()
+		return
+	_refresh()
+	# The hunter stands clear under the band, whatever the glass's height.
+	_map.play_locks(battle.take_locks(), _show_lock, _after_locks, maxf(_map.size.y * 0.5, WARN_BAND_Y + WARN_BAND_H + 130.0))
+	if _map.cutscene_playing():
+		_refresh()   # the buttons grey while it plays
+
+
+## The locks declared (or none): the next turn opens, with any catch.
+func _after_locks() -> void:
+	_refresh()
+	if battle.state == Battle.State.PLAN and not battle.forced.is_empty():
+		_show_caught()
 	_autosave()
 
 
 ## A hunter turns on a machine (Ryan, 8 November: "Declare when a hunter selects a target. Maybe
-## zoom on it and declare the target on screen"): the map scrolls to the hunter and the band says
-## who turns on whom, the catch's band in its shape; one declaration a turn, the first lock's,
-## the rest in the log. A roar from the enemy belongs here (noted, not made: the audio to-do).
+## zoom on it and declare the target on screen"; 10 November: "We should pan and zoom to hunters
+## when they acquire as well"): the map has glided in on the hunter (play_locks) and the band
+## says who turns on whom, the catch's band in its shape; every lock of the turn in its turn,
+## each in the log too. A roar from the enemy belongs here (noted, not made: the audio to-do).
 func _show_lock(hunter: Unit, prey: Unit) -> void:
-	_map.scroll_to_unit(hunter)
 	_warn_band("HUNTED", "%s TURNS ON %s" % [hunter.display_name.to_upper(), prey.display_name.to_upper()], false)
 
 
@@ -1107,6 +1142,9 @@ func _show_caught() -> void:
 ## The warning band over the map: a black band with violet rules across it, the map dimmed under
 ## it, the title big in the enemy's violet and a line under it; two beats, drawn out (Ryan, 22
 ## September: one flash looked accidental), the catch's second contact beat and its line with it.
+const WARN_BAND_Y := 260.0   # the band's top in the map's rect
+const WARN_BAND_H := 150.0
+
 func _warn_band(title: String, sub_text: String, catch: bool, sound: String = "contact") -> void:
 	var warn := Control.new()
 	warn.position = Vector2(0, MAP_Y)
@@ -1118,8 +1156,8 @@ func _warn_band(title: String, sub_text: String, catch: bool, sound: String = "c
 	warn.add_child(dim)
 	var band := ColorRect.new()
 	band.color = Color(0, 0, 0, 0.92)
-	band.position = Vector2(0, 260.0)
-	band.size = Vector2(W, 150.0)
+	band.position = Vector2(0, WARN_BAND_Y)
+	band.size = Vector2(W, WARN_BAND_H)
 	warn.add_child(band)
 	for y in [band.position.y, band.position.y + band.size.y - 4.0]:
 		var rule := ColorRect.new()
@@ -1358,9 +1396,9 @@ func _play_boss_reveal(sk: Skirmish, group: Array) -> void:
 	reveal.family = str(battle.db.factions.get(battle.faction, {}).get("name", battle.faction))
 	var fid := BattleMapView.foe_sprite_id(boss)
 	reveal.tex = Sprites.combat_foe(fid)
+	var map_tex := BattleMapView.foe_picture(boss)
 	if reveal.tex == null:
-		reveal.tex = Sprites.map_foe(fid)
-	var map_tex := Sprites.map_foe(fid)
+		reveal.tex = map_tex
 	reveal.from = _map.position + _map.to_screen(_map.center(boss.pos)) - reveal.position
 	reveal.from_size = BattleMapView.sprite_size(boss, map_tex) * _map.zoom
 	reveal.finished.connect(func() -> void:

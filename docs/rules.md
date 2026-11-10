@@ -1054,12 +1054,16 @@ a stat.
   are the same in both. With the wall at the bottom the wall and the gate stand on the last row
   and their height covers the row before it; with the wall at the left they stand on that row,
   against the apron, the last row behind them the city's, and the rift's vortex stands on the
-  lowest of its three hexes. A pack, a machine or a tear past the screen's edge has a tag at that
-  edge. Three gauges stand at the top of the screen whatever the scroll: the gate's integrity,
+  lowest of its three hexes. A pack or a machine past the screen's edge has a tag at that
+  edge; a tear has none, as the rift has none. Three gauges stand at the top of the screen whatever the scroll: the gate's integrity,
   Rift Pressure toward the next spawn (a box a turn of the beat) and the Rupture meter toward its
   Fractures (a notch a Fracture, those earned lit); the gate and the rift carry no bar on the map
   and are no selection. A gauge that changes flashes. The boss's picture stands far larger than
-  a pack's.
+  a pack's and is drawn for that size: a picture of its own (`art/foes/<id>_boss.png`, cut from
+  its combat sprite), its token serving the small faces (an edge tag, a hunter's plate). The
+  field reads apart from the scenery past it in both worlds: the reconstruction's grid lies on
+  the field alone, and under the painting the field is bright cells and the scenery (the margin
+  past the field's sides and past the rift, the city) one shaded ground with no cells.
 - **Ground**: open (plain or road), rough, ruins, water, and walls, a wall named by what it is
   (crags, mesas, towers or cliffs) with one rule under every name. Six map shapes, one a
   battle, each with its own water, walls, decorative ground and relief, laid to fill the open
@@ -1255,8 +1259,17 @@ a stat.
   walk are seen for a whole turn and nothing appears on top of a detachment. Packs never
   escalate in place.
 - **The seam** is the flattening's edge: the row the rift's bleed reaches, at the start a row for
-  every five of the field's depth and one more (row 4 at twelve deep, 5 at twenty), total on the rift's row and gone past the seam. It is the
-  clock's picture: no rule reads the flattened hexes.
+  every five of the field's depth and one more (row 4 at twelve deep, 5 at twenty). It is the clock's picture,
+  and it shows where the tears can open: the painting's edge stands on it, the seam's own row
+  the painting's front row and the row past it solid ground. No rule reads the flattened hexes.
+- **A peak is shown** once the packs have walked: the map keeps the seam where it stood and the
+  new tears unseen through the walks, then glides to the seam, whose edge sweeps to its new row
+  under a bright front with its name on it, then in on each new tear, zoomed, as it bursts open,
+  and back to where the player was looking at the zoom they had; a press on the map skips it.
+- **A hunter's lock is shown** after it: for every hunter that turned on a machine this turn,
+  in turn, the map glides in on the hunter, zoomed, and the band says HUNTED and who turns on
+  whom; then back to the player's view. A press on the map skips the rest. A catch's band
+  follows.
 - **Caches** (the field's loot; `content/loot.json`): the field holds its caches from the first
   turn, so many seeded with the map, one in each of as many bands along the wall, in the rows
   from the third past the rift's to the second short of the apron (never that close to the

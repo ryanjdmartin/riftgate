@@ -27,8 +27,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1084 tests, 323,199 checks, green (10 November, `ccr-1e6e6571-7x7ayr` with the shapes reworked on Ryan's play, the passing and the catch at one, on main with the Text tab and the side
-  session's work: the runner's crash check, the caches' pictures, the audit's structure 13; one
+- Tests: 1089 tests, 323,782 checks, green (10 November, `ccr-1e6e6571-7x7ayr` with the shapes reworked on Ryan's play, on main with the Text tab, the side session's work, the
+  map session's shapes laid to the rift's row, the passing and the catch at one, and the map
+  playtest list; one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
   either map view on 6 November); about four minutes in a cloud session, twenty on a slow one;
   words after `--` run only the files whose names hold one (`-- loot rig`). A cloud
@@ -51,6 +52,13 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 Everything is on main as of 10 November 2026 but the formation and refit session's branch and
 the music session's, both below.
+`ccr-c71bc17f-hclj2c`, Ryan's map playtest list of 10 November and his answers to it (How things
+stand below), cut from main at `aa40832`, landed on main as a fast-forward on his word ("Ok,
+merge this into main so I can try it"), after taking the map session's main in a merge (the shapes laid
+to the rift's row, no body blocking, the catch at one: the bible, the rules, this file and
+`game/battle/bleed.gd` the conflicts, both sides kept, the bible's version main's plus one); it is merged and to delete with
+the rest (the formation and refit session meets its edits in `game/battle/battle_map_view.gd`,
+`game/battle/battle_screen.gd`, the bible and these records when it takes main).
 `ccr-df879779-uf9076`, the side session of 9 and 10 November (How things stand below: the test
 runner's crash check, the caches' pictures, the screen's half of the audit's mirrors, the enemy
 art routes parked), took main's Text tab in a merge (this file and the README the conflicts, both
@@ -60,6 +68,10 @@ Ryan's word ("Merge everything into main and clean up"); it is merged and to del
 `ccr-7d7ed303-tbdkg4`, the hangar's Text tab of 10 November (How things stand below), landed on
 main as a fast-forward on Ryan's word ("Ok merge into main please"); it is merged and to delete
 with the rest.
+`claude/hangar-bench`, the hangar's Bench tab (10 November, cut from main on Ryan's word, "Yes,
+start a fresh branch off main for it", so it landed ahead of the refit's branch), is on main as a
+fast-forward on his word ("Ok merge into main and republish the hangar"); it is merged and to
+delete with the rest.
 `claude/modest-ramanujan-uovd42`, the Polar Bear's kit of 9 November, its id's rename and every id
 following its name (How things stand below), landed on main as fast-forwards on Ryan's word ("merge
 it into main so I can try it"; "clean up and merge into main"); it is merged and to delete with the rest.
@@ -176,6 +188,34 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
+- **The map playtest list of 10 November** (`ccr-c71bc17f-hclj2c`, on main the same day; five
+  points from Ryan's phone, then his answers). A tear's ring stands on its hex: it was drawn in
+  screen space at its map position, so it hung at one place on the glass while the map scrolled
+  ("it's just fixed in place as I pan around"), and its plaque left the transform in map space
+  for the edge tags and the scan lines after it. A tear has no edge tag ("same way the rift
+  doesn't"; none had ever drawn, the tags' list refusing one with an error a frame). The boss
+  has a picture of its own on the map ("now it's just a giant blob. Probably needs to be
+  actually regenerated for a sensible size"): `art/foes/<id>_boss.png`, 48 pixels, cut from its
+  combat sprite for all twenty-one that can lead a boss unit (the domains' bosses and benches)
+  by `forge.py boss`, which needs no image model; the token stays for the small faces, and a
+  test ties the pictures to content. Under the painting the scenery past the field is one shaded
+  ground with no cells ("the out-of-play areas on the flattened parts of the map are made
+  clear"; `PaintedMap`). The vortex stands a little higher with the wall at the left
+  (`BattleMapView.rift_drop`). The painting's edge stands on the seam's own row ("The point of
+  the seam was to visually represent where the tears can open"; `Bleed.gradient`: it stood at
+  half the seam's distance, so a tear "spawned at the apron without the seam moving"): four rows
+  painted as a battle opens and the field to the apron by the third peak, the engine untouched.
+  A peak is shown as it happens ("an animation/cutscene when one opens. And ... when the seam
+  moves, too"; `BattleMapView.hold_peak` and `play_peak`, the rules' "A peak is shown"): held
+  through the packs' walks, then the seam's sweep under its front and each tear bursting open,
+  a press skipping it; its two sounds are borrowed (`contact`, `reveal`). A hunter's lock is
+  shown the same way ("We should pan and zoom to hunters when they acquire as well";
+  `play_locks`): the map glides in on each hunter that turned on a machine, zoomed to 1.6 as it
+  is on a tear, the HUNTED band over it, every lock of the turn in its turn where the first
+  alone was declared, then back to the player's view. The `tear`, `peak` and `hunted` poses are
+  new. His notes for a later session are in the bible's tears row (the seam starts too
+  far up and could be curved; crossing the map is the issue more than the tears' distance). All
+  first cuts (the to-do's judge line).
 - **The side session of 9 November** (`ccr-df879779-uf9076`, beside the formation and refit pass,
   on Ryan's "go"; on main since 10 November). The test runner hears a crash: it reads the engine's log for
   script errors while each test runs (a Logger) and fails the test for each, in the test or under
@@ -623,9 +663,11 @@ commands are in `README.md`.
   page's Version 502, published from main at `2d489f7` on Ryan's word, "republish the hangar
   page and the bible": main's file whole, since the live v0.496 matched `f048e67`'s byte for byte
   and so needed no merge; it carries the Lammergeier's rework, its row, the Gel's and the
-  reinforcement row's slot-mine lines and the tables). Main's file is v0.498 since the Text tab
-  landed (the hangar row's tabs and the shown-text row), unpublished, its republish on Ryan's
-  word; `ccr-722ca9f0-yj8na3`'s file is ahead of both with the formation and refit session's
+  reinforcement row's slot-mine lines and the tables). Main's file is v0.501 since the map
+  playtest list landed (the boss's picture, the scenery under the painting, the tears row's
+  read of 10 November and the hunters' declaration, on the map session's v0.500 and v0.498's
+  Text tab rows: the hangar row's tabs and the shown-text row), unpublished, its republish on
+  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is ahead of both with the formation and refit session's
   rows, unpublished too. BASE for the next merge is `2d489f7`'s file. The live
   page may carry rows ahead of main's code while a branch has not landed (the music session's
   track rows: Hold The Line's settled pair and its trial notes, Night Shift's duelling basses,
@@ -642,8 +684,15 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 218 (10 November, main's `5a490e5`): the page with its Text tab,
-  `hangar/text.json` new beside it (332 files) and `designs.json` with its stamp. Version 217 was
+  page's Version 219 (10 November, main's `f49a90f`, on Ryan's word, "Ok merge into main and
+  republish the hangar"): the page with its Bench tab, his working sheet for a machine, the
+  second tab (the roster by where each machine stands, one flat sheet a machine; no file and no
+  collection of its own, every write an edit of the entry in `edits`, his notes, state and
+  upgrade ideas under its `design.bench`), with the three files that had moved since: the
+  vocabulary (the map session's four codex lines), `text.json` for them and `designs.json` for
+  its stamp. The live page matched `5a490e5`'s file byte for byte before it was replaced, and
+  each of the three its last publish. Version 218 (main's `5a490e5`) was the page with its Text
+  tab, `hangar/text.json` new beside it (332 files) and `designs.json` with its stamp. Version 217 was
   the side session's publish of main at `2d489f7` (9 November, on Ryan's word, "republish the
   hangar page and the bible": the three content files the Lammergeier's rework moved and
   `designs.json` from its briefs, the live copies matching `f048e67`'s before they were replaced
