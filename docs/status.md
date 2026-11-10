@@ -100,7 +100,7 @@ and changes"): the bible, the measurements, this file and the to-do the conflict
 words kept (the bible's hunters row this branch's and its boss row main's, the measurements'
 sections main's four and then this branch's, the to-do's lines each by the side that moved it),
 and the proposal's tool following the one foe id it named that main renamed (`magma_elemental`).
-The bible's file is v0.506 (the refit's rows of 10 November with the locked row, the tiers row and the basic kit row), main's v0.497 with this branch's rows, its republish on Ryan's word
+The bible's file is v0.507 (the refit's rows of 10 November with the locked row, the tiers row and the basic kit row), main's v0.497 with this branch's rows, its republish on Ryan's word
 (Pages below); and `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
@@ -151,11 +151,12 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   and its locked pieces together, with a branch that tweaks a locked piece or the passive and
   never a stat; a higher chassis arrives at its level, a wreck keeps it. One ladder of three:
   tier zero is tier one's power, a basic a plain tier-one piece owned from the start, a machine
-  stocking up to its own tier at one and two, so the basics' numbers come up and the refit's
-  damage baseline moves with them. Six pieces that are neither glue nor an exclusive yet (the
+  stocking up to its own tier at one and two; the two meet at the basics' numbers, tier one's
+  coming down (his lean, so the refit's reads stand). Six pieces that are neither glue nor an exclusive yet (the
   Lance, the Flechette Pod, the Solar Flare Array, the Flakshot Repeater, the Plow, the Harpoon)
-  get a tweak before any cut: Claude's first round is in the chat of 10 November, his marks
-  next. Every rework in design sorts its pieces on this footing.
+  get a tweak before any cut: Claude's first round and his first answers are the proposal's
+  section 4; open with him there, the shape of a branch (his three), the Pod's lock and the
+  Dingo's identity. Every rework in design sorts its pieces on this footing.
 - Kestrel: ten machines, eight decided, in content and fielded (the bible's Kestrel row; the hub
   `docs/briefs/kestrel_line.md`); the Puffin back in design (`kestrel_puffin.md`). The Magpie (a
   working name, a support engine) and the Snowy Owl (a stealth unit, leaning to Cryo: Ryan,
