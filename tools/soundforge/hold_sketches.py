@@ -1687,11 +1687,11 @@ XQ_PULSE = {"synth": {"inst": "bass", "mode": "riff", "octave": 0, "gain": 0.504
 
 # The pair's (Ryan, 10 November: "Yeah go back to finger bass for X, and do E, D, C-sharp, C for both halves"): the
 # fingers bass on the eighths, a bar each on E, D, C-sharp and C, through the first four bars as through the rest,
-# an octave over the low Omnific so the line falls from E.
+# at the low Omnific's octave, falling from the low E to the C under it (it was an octave up at first).
 X_DESCENT = (0, -2, -3, -4)
 
 
-def x_quarters(call, voice, roots=False):
+def x_quarters(call, voice, roots=False, up=False):
     """A voice on eighths under X's twelve bars, on E or on each bar's chord root where `roots`."""
     chords = call["chords"]["X"]
     pat = ["."] * 168
@@ -1700,8 +1700,8 @@ def x_quarters(call, voice, roots=False):
         root = X_DESCENT[bar % 4] if roots == "descent" else chords[bar % len(chords)][0] % 12 if roots else 0
         pat[step] = P.spell(root)
     v = dict(XQ_PULSE[voice], params=dict(XQ_PULSE[voice]["params"]), pat={"X": "".join(pat)})
-    if roots == "descent":
-        v["octave"] = 0
+    if roots == "descent" and up:
+        v["octave"] = 0   # the octave it first had; the pair's is the fingers' own, under it (Ryan, 10 November: "can we drop the back finger bass an octave?")
     call["voices"].append(v)
     return call
 
@@ -1724,13 +1724,13 @@ def m_join(call):
     return call
 
 
-def round27(riff=None, swap=False, quarters="fingers", roots="descent", m_l=True):
+def round27(riff=None, swap=False, quarters="fingers", roots="descent", m_l=True, up=False):
     base = round26(riff=riff, swap=swap, cymbal="hat_half", knock=True, fill="intro_wash_open")
 
     def edit(call):
         base(call)
         if quarters:
-            x_quarters(call, quarters, roots)
+            x_quarters(call, quarters, roots, up)
         if m_l:
             m_join(call)
     return edit
@@ -1744,8 +1744,8 @@ SETS = [
     ]},
     {"id": "hv", "half": "battle", "title": "X with the eighths driven", "form": FORM_X,
      "note": "The bar down into the seven and the seven (Ryan, 10 November: \"go back to finger bass for X, and do E, D, C-sharp, C for both halves\"). Switch rows anywhere: each carries on from the same beat.", "rows": [
-        ("hv0", "The fingers bass on E, D, C-sharp, C", "Eighths, a bar on each, through the first four bars as through the rest (the full pair's).", round27()),
-        ("hv1", "The fingers bass on E", "Eighths on the riff's pedal.", round27(roots=False)),
+        ("hv0", "The fingers bass an octave down", "Eighths on E, D, C-sharp, C at the low Omnific's octave, from the low E down to the C under it (the full pair's).", round27()),
+        ("hv1", "Where it was", "The same an octave up.", round27(up=True)),
         ("hv2", "Nothing on the eighths", "As it was.", round27(quarters=None)),
     ]},
 ]
