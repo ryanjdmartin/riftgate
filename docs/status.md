@@ -27,7 +27,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1094 tests, 323,822 checks, green (10 November, `ccr-c71bc17f-hclj2c` with the second map list on main's Bench tab; main with the Text tab, the side session's work, the
+- Tests: 1094 tests, 323,337 checks, green (10 November, main with the Text tab, the side session's work, the shapes reworked on Ryan's play, the second map list, the
   map session's shapes laid to the rift's row, the passing and the catch at one, and the map
   playtest list; one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
@@ -82,8 +82,9 @@ word ("Ok clean up and merge into main"); it is merged and to delete with the re
 the map session of 9 November (the shapes relaid and recast, How things stand below), took main's
 skirmish audit step 3 as it landed and main took it as a fast-forward on Ryan's word ("push this
 into main, so I can try it"), then again on 10 November with the shapes laid to the rift's row,
-the passing and the catch at one ("put this in main so I can try it in context"); it is merged
-and to delete with the rest. The
+the passing and the catch at one ("put this in main so I can try it in context"), and a third
+time that evening with the shapes reworked on his play, the 3D roads and the painted walls ("put
+this in main so I can try it"); it is merged and to delete with the rest. The
 branches that landed on 3 to 9 November, each a session of its own, fully merged and to delete
 from GitHub and the desk machine (the command is in the audit's last chat;
 `git push origin --delete` the merged ones, then `git fetch --prune`):
@@ -114,9 +115,7 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4` (a cloud session may not delete
 one). Each merge commit says how its conflicts were settled.
 
-Still working (10 November; every other branch on GitHub is merged): `ccr-c71bc17f-hclj2c`
-again, with Ryan's second map list of 10 November (How things stand below), pushed, waiting on
-his word to land; `ccr-722ca9f0-yj8na3`,
+Still working (10 November; every other branch on GitHub is merged): `ccr-722ca9f0-yj8na3`,
 the formation and refit session, whose own status says where it stands (it meets the side
 session's edits in `tests/run_tests.gd`, `sim/skirmish.gd` and these records when it takes main);
 and `ccr-7effd31a-u5z4gw`, the
@@ -191,7 +190,9 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
 - **Ryan's second map list of 10 November** (`ccr-c71bc17f-hclj2c`, cut from main at `ccd71d9`,
-  not on main; his words in the two commits' messages and the bible's rows). The map: no
+  on main the same day on his word, "yeah, merge into main", after taking the shapes' rework in
+  a merge, this file the one conflict and the bible's version main's plus one, v0.504; his words
+  in the commits' messages and the bible's rows). The map: no
   hunter's ring (its code gone), a hunter's chip with its prey's small render and the hunted
   machine's tag, both with the attack mark (a sword in the reticle's ring); the threat pips under
   the pack and no count; every walk's end under a crawling border, the warning on it where the
@@ -401,7 +402,17 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   range everyone shares (`Unit.ENGAGE_RANGE`, 1; `ContentDB.HUNTER_RING` gone), the readout's ring
   line with it, the ring drawn now the hexes beside the walk's end. The bible's passing, crossing,
   ring, fights and hunters rows carry it (v0.500); the campaign runner's 40 runs after it are in
-  `docs/measurements.md` (a direction). The maps' seeding issues are the to-do's.
+  `docs/measurements.md` (a direction). His play of the shapes in context the same evening, built:
+  the 3D map's road UV turned with the view, so the roads meet in both views as the painted ones
+  did; the painted world drawing a wall by what it is (crags the ranges, mesas a stepped block,
+  towers lit blocks, cliffs a ridge edge to edge: `DomainGround.draw_walls`); the river winding
+  through the whole field through its centre with narrows (water fords) and tributaries, no land
+  ford, the roads to the narrows; the fjord flooded, half to two thirds water with lanes carved as
+  the gorge's channels are (`BattleMap._carve_lanes`) and islands; the gorge a trunk for every
+  five hexes of wall with junctions; the badlands in groups of two to five mesas; the steppe with
+  scrub belts, a crag for every seven hexes of wall and grass on the open field in the 3D (the
+  dress's `field` word). The bible's shapes row carries his words (v0.501). The maps' seeding issues
+  are the to-do's.
 - **A hunter's reach** (8 November, `ccr-d26a1321-xg9xge`, from Ryan's bug report: on the first
   enemy walk a goblin warband caught the Polar Bear from three hexes, "No indication of catch
   range, nor why a normal goblin pack is now suddenly a hunter"). The three came from a pack
@@ -680,9 +691,9 @@ commands are in `README.md`.
   page's Version 502, published from main at `2d489f7` on Ryan's word, "republish the hangar
   page and the bible": main's file whole, since the live v0.496 matched `f048e67`'s byte for byte
   and so needed no merge; it carries the Lammergeier's rework, its row, the Gel's and the
-  reinforcement row's slot-mine lines and the tables). `ccr-c71bc17f-hclj2c`'s file is v0.503 with the second map list's rows (the marks row
+  reinforcement row's slot-mine lines and the tables). Main's file is v0.504 with the second map list's rows (the marks row
   rewritten, the pack, undo, gesture, Fracture, reconstruction and tears rows, the Badger's and
-  the store's), unpublished. Main's file is v0.502 (the hangar's Bench tab on v0.501), v0.501 since the map
+  the store's) on the shapes' rework's v0.503 and the hangar's Bench tab's v0.502, unpublished; v0.501 since the map
   playtest list landed (the boss's picture, the scenery under the painting, the tears row's
   read of 10 November and the hunters' declaration, on the map session's v0.500 and v0.498's
   Text tab rows: the hangar row's tabs and the shown-text row), unpublished, its republish on

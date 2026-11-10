@@ -1086,26 +1086,29 @@ a stat.
   (crags, mesas, towers or cliffs) with one rule under every name. Six map shapes, one a
   battle, each with its own water, walls, decorative ground and relief, laid to fill the open
   rows at any size the ramp deals, none of them a band and none an orientation. Two water
-  shapes: River Crossing (a river along the wall, two hexes thick and three where the field is
-  deep, between a bank row at the rift's row and one before the team's ground, with one or
-  two fords three or four hexes wide in all, a crag on a bank at most, gravel bars along its
-  banks) and Fjord (water from the rift toward the wall, two or three wide, one fjord for every
-  ten hexes of wall, each in its own stretch of it with a lane two wide at least at the field's
-  edges and four between two, shingle on its shores). Three wall shapes, a spectrum by the mass
+  shapes: River Crossing (a river winding through the whole field from past one edge to past
+  the other, through the field's centre, two hexes thick and three in places, with one or two
+  narrows a hex thick, the water fords where the wade is short, one or two tributaries a hex
+  thick off it, a crag on a bank at most, gravel bars along its banks; no land ford: everyone
+  wades) and Fjord (the open rows under water, the scenery beside them too, with land lanes
+  winding from the rift's row to the team's ground, two hexes wide and pinched to one in
+  places, one for every seven hexes of wall, a branch or two off each, and islands; shingle on
+  its shores; half to two thirds of the field water). Three wall shapes, a spectrum by the mass
   and the structure of what blocks you: Gorge (cliff mass over the open rows cut by winding,
-  branching channels, a trunk for every seven hexes of wall from the rift's row to the team's
-  ground, one or two hexes wide, two or three branches off each, a stretch or two flooded, scree
-  at the cliffs' feet, the gorge's own sides past both edges), Ruined City (large blocks of
+  branching channels, a trunk for every five hexes of wall from the rift's row to the team's
+  ground, one or two hexes wide, three or four branches off each toward the next trunk, meeting
+  a channel at a junction or ending blind, a stretch or two flooded, scree at the cliffs' feet,
+  the gorge's own sides past both edges), Ruined City (large blocks of
   towers in a grid of streets: avenues one wide from the wall toward the rift four to five
   columns apart, the gate's always one and two wide, side streets along the wall mid the blocks
   whose segments are there or not, an avenue segment fallen in now and then, a plaza or two with
   a fountain in some, a street segment or two flooded, rubble everywhere else, towers thick in
-  the scenery) and Badlands (an open field of small mesas, one to three hexes, a hex of ground
-  between any two so no straight path crosses, two or three ponds of two to four hexes, scrub at
-  the mesas' feet). And Open Steppe, the baseline (a lone crag and a pond at most for every ten
-  hexes of wall). A ford is one to three hexes wide, with a hex of river between two; the fords'
-  total is the team's number and does not scale with the wall. A battle that names no shape
-  draws one by its seed, never by its domain. Every map guarantees the
+  the scenery) and Badlands (an open field of mesas in groups of two to five, many of them, a
+  hex of ground between any two groups so no straight path crosses, two or three ponds of two
+  to four hexes, scrub at the mesas' feet). And Open Steppe, the baseline, clear but never bare
+  (a crag of one or two hexes at most for every seven hexes of wall, a pond at most for every
+  ten, scrub in belts over about a sixth of the field, grass on the open ground). A battle that
+  names no shape draws one by its seed, never by its domain. Every map guarantees the
   horde a crossing three hexes wide or more through its walls; the ground beside the rift (its
   mouth, where the packs land) and the gate, and the two rows before the gate, hold no water and
   no wall; every other row is the shape's, the rift's own included. Height is landscape and a look

@@ -100,4 +100,4 @@ func _draw() -> void:
 		var pb := MapOrient.to_pixel(b, hex_px)
 		return pa.y < pb.y or (is_equal_approx(pa.y, pb.y) and pa.x < pb.x))
 	for h in walls:
-		DomainGround.draw_walls(self, origin + MapOrient.to_pixel(h, hex_px), hex_px, h.x * 131 + h.y * 7919, frame, biome, SCENERY_SHADE if is_scenery(h) else Color.WHITE)
+		DomainGround.draw_walls(self, origin + MapOrient.to_pixel(h, hex_px), hex_px, h.x * 131 + h.y * 7919, frame, biome, SCENERY_SHADE if is_scenery(h) else Color.WHITE, str(map.wall_look.get(h, BattleMap.WALL_LOOKS[0])))
