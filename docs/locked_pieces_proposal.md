@@ -108,6 +108,15 @@ His later rounds, the same day:
   it. But like the dingos passive, what would you really add there as a meaningful choice that
   isn't just giving it a whole new passive on top?" Claude's lean of one direction on the piece
   and one on the passive is withdrawn on it.
+- **The shape of a branch, settled**: "I think keep the mixed build so that we aren't making 6
+  distinct upgrades per tier 1 machine." So his second shape: two directions two steps deep, the
+  second pick the deeper step or the first one skipped, four forms a tier-one machine.
+- **The machines with no locked piece branch too**: "I think the Clydesdale and Cottonmouth
+  upgrades aren't that complicated. Clydesdale can add rerolls or module slots or something of
+  the like, and cottonmouth can just modify its passive since the passive itself is a weapon, so
+  it fits."
+- **The guard is an aim, never a rule**: "Don't hard-lock the upgrades to one keyword or so on, I
+  think the principle is sound but I don't like arbitrary restrictions."
 
 ## 2. What the content shows (10 November, main's content)
 
@@ -256,26 +265,17 @@ and become the thing nobody else has in a branch.
 Still his: the six tweaks (section 4), the sort's glue row as Claude cut it, the name for a
 machine's level, and three things his later rounds opened:
 
-1. **The shape of a branch**, his three (section 1). What each means for the roster: under the
-   first a tier one and a tier two each choose once, so the lower chassis is no more customized
-   than the higher, which was his reason for branching; under the second a tier one ends in one
-   of three builds (one direction taken twice, the other taken twice, or one step of each) from
-   four forms, only three of which must stand alone, since the deeper step is only ever offered
-   to a machine that took the first; under the third a tier one ends in one of four pairs, every
-   pair two different tweaks, the most soup and four pairings to keep sensible. Claude's lean:
-   the second, its second pick a real one (deepen or broaden) and its deep end one idea taken
-   further, the place an exclusive can arrive late. Both directions live on the locked pieces
-   (his word). What follows: a machine with two locked pieces takes a direction on each (the
-   Badger's Claw or its Fragmenter); most machines lock one, so both directions sit on the one
-   piece and the mixed build puts two tweaks on one entry, which is where the soup would come
-   from; a machine with no locked piece (the Clydesdale, the Cottonmouth) has no branch, its
-   lifts plain. Claude's guard for the one-piece machines, his to take or leave: a tweak changes
-   what is there before it adds (a number, a reach, a count of strikes, a cost, a condition), of
-   a piece's two directions at most one adds a word, and whatever two picks are taken the piece
-   still reads in one line, as a passive must. What his words leave out: a tier two,
-   which arrives at level two with no first pick. Claude's lean: it picks one of its two
-   directions' single step, two forms, so a tier one has three ends, a tier two two and a tier
-   three none.
+1. **The shape of a branch: settled, his second** (section 1). A tier one ends in one of three
+   builds (one direction taken twice, the other taken twice, or one step of each) from four
+   forms, only three of which must stand alone, since the deeper step is only ever offered to a
+   machine that took the first; the deep end is one idea taken further, the place an exclusive
+   can arrive late. Both directions live on the locked pieces: a machine with two takes a
+   direction on each (the Badger's Claw or its Fragmenter), a machine with one carries both on
+   it, the Clydesdale branches on rerolls or module slots and the Cottonmouth on its passive (his
+   words). A tweak that changes what is there before it adds a word, and a piece that still reads
+   in one line after two picks, are the aim and no rule (his word). A tier two, which arrives at
+   level two with no first pick, picks one of its two directions' single step (Claude's lean,
+   unmarked): three ends for a tier one, two for a tier two, none for a tier three.
 2. **The Pod's lock.** Area is in the pool at tier one in three shapes already (Splash on the
    Howitzer, Spread on the Airburst Shell, Penetrate on the Enfilade Beam), and a tier-one
    machine may now stock them, so no team needs Sweep to have area: his "my team had no aoe" was
