@@ -1,4 +1,6 @@
-"""Night Shift's twenty-sixth round as a pair (Ryan, 10 November): the twenty-fifth's drive, and the duel on three
+"""Night Shift's twenty-seventh round as a pair (Ryan, 10 November): his thirteen rhythms (RYAN_13) on the root in
+place of the gallop and three-three-two, through the drive and the three-bass duel, the kick on each rhythm's run
+starts (turns_kick), and a set auditioning all thirteen on the head (nu). Before it, the twenty-sixth: the twenty-fifth's drive, and the duel on three
 basses, none trading (DUEL_THREE: a pusher on the eighths, a riffer, the top in octaves with it or on long notes over
 it; set nt). The twenty-fifth's notes:
 
@@ -235,6 +237,21 @@ RHYTHMS = {
     "long": "x.....x...x.....",      # three long notes, the top bass's line over a riff (the three-bass duel)
 }
 
+# Ryan's thirteen (10 November: "I think the gallop and the 3-3-2 are wrong, they're too bouncy. Try some of these
+# (not specifying pitches) ... I know some of those are used already in the walking lines - I'm saying to use them
+# without walking, just either on root or moving a little"), numbered in his order, n1 to n13; each on the root
+# ("root") or on the root with its last note leaning a semitone into the next chord's ("lean").
+RYAN_13 = ["x.x.xxxx..x.x.x.", "x.x.x.xx..x.x.x.", "x..xxxxx..x.x.x.", "x..xxxxx......xx", "x..xxxxx....xxxx", "x..xxxxx....xxx.",
+           "xx.xx.xx.xx.x.x.", "xx.xx.xx.xx.xxx.", "x..x..x..x..x.x.", "xx....xx....xx..", "xx....xx....xxx.", "xx....xx....xxxx",
+           "xxx.x.xx..x.x.x."]
+RHYTHMS.update({"n%d" % (k + 1): r for k, r in enumerate(RYAN_13)})
+
+
+def run_starts(rhythm):
+    """A rhythm's kick: the first hit of each run of hits."""
+    return "".join("x" if c == "x" and (i == 0 or rhythm[i - 1] != "x") else "." for i, c in enumerate(rhythm))
+
+
 # Each rhythm's figures: the line's notes on its hits as steps along E minor from the bar's chord
 # root (0 the root, 4 its fifth, 7 its octave), "A" and "V" a semitone under and over the next
 # chord's root, "b" the blues note (E minor's flat fifth, for E's bars alone).
@@ -250,6 +267,8 @@ FIGURES = {
     "groups": {"climb": [0, 1, 2, 0, 1, 2, 2, 3, 4, 2, 3, 4], "arch": [0, 2, 4, 0, 2, 4, 4, 2, 0, 4, 2, 0],   # each beat's group twice, a beat for each bass
                "sink": [4, 3, 2, 4, 3, 2, 2, 1, 0, 2, 1, 0]},
 }
+
+FIGURES.update({"n%d" % (k + 1): {"root": [0] * r.count("x"), "lean": [0] * (r.count("x") - 1) + ["A"]} for k, r in enumerate(RYAN_13)})
 
 # The battle half in turns of two bars (Ryan, 30 October: "Jam session, everybody gets a turn, we
 # keep it moving, we try different additions at different points"): what the guitar and the bass
@@ -295,14 +314,28 @@ TURNS_WRITTEN = {
 # notes, then the gallop; wherever the bass leaves the eighths, the crunch synth, dark, takes them on the roots
 # (DRIVE_PULSE), through the duel too; the hat on quarters, no open hat, no ghost snares, the kick on the bass's
 # rhythm or on one and three; the off-beat piano out; the arpeggio kept.
-TURNS_DRIVE = {
-    "I": [("332.home", ""), ("332.home", ""), ("332.home", "arp:high"), ("332.home", "arp:high")],
-    "A": [("written.E", "both:push")] * 4 + [("gallop.drive", "hook:back")] * 4,
-    "C": [("332.home", "")] * 4 + [("gallop.drive", "arp:back")] * 4,
+TURNS_DRIVE = {   # on his rhythms since the twenty-seventh round, the gallop and three-three-two out
+    "I": [("n10.root", ""), ("n10.root", ""), ("n11.lean", "arp:high"), ("n11.lean", "arp:high")],
+    "A": [("written.E", "both:push")] * 4 + [("n3.lean", "hook:back")] * 4,
+    "C": [("n9.lean", "")] * 4 + [("n1.lean", "arp:back")] * 4,
     "D": [("332.home", "")] * 4,
     "R": [("rest", "")] * (R_BARS // 2),
-    "O": [("332.home", "arp:high")] * 4,
+    "O": [("n10.root", "arp:high")] * 4,
 }
+
+
+def turns_kick(turns, fill=True):
+    """A section's kick from its turns: the run starts of the bass's rhythm, one and three under eighths or a hold;
+    a fill's bar closing each eight where `fill`."""
+    out = []
+    for choice, _synth in turns:
+        rhythm = choice.partition(".")[0]
+        out += [run_starts(RHYTHMS[rhythm]) if rhythm in RHYTHMS else K13] * 2
+    if fill:
+        out = [("x...x...x......." if b % 8 == 7 else bar) for b, bar in enumerate(out)]
+    return "".join(out)
+
+
 DRIVE_ON = True   # the full pair's
 DUEL_WAY = "three"   # the duel on three basses, none trading (the full pair's); "trade" round twenty-one's lines
 PUSHER_FINGERS = 0.7   # the fingers on the eighths against the riffer's level, 3 dB under it
@@ -522,7 +555,7 @@ def turn_parts(call, turns, hold="332", dark=False):
             elif choice == "stop":
                 hit = P.spell(root % 12) + "--" + "." * 13
                 played = {"stop_guitar": hit, "stop_bass": hit}
-            elif synth == "both" and not choice.startswith("written."):
+            elif synth == "both" and not choice.startswith(("written.", "n")):
                 raise ValueError("%s %s: the walk takes the arpeggio or the hook, never both" % (sec, choice))
             else:
                 alone, _, fig = choice.rpartition(":")
@@ -699,7 +732,7 @@ DUEL_WRITTEN = [   # the duel on the written parts: the gallop traded, the riff 
 # last) with the top in octaves. The stop-time and the break stay, both basses together from beat two; then all
 # three on three-three-two under the band's hits and the gallop out. The pusher holds eighths on the roots through
 # all but the stops, on the crunch synth or the fingers (duel_pusher).
-T_G, T_3, T_L, T_T = "gallop.drive", "332.fifth", "long.line", "threes.root"
+T_G, T_3, T_L, T_T = "n2.lean", "n9.lean", "long.line", "n13.lean"   # his second, ninth and thirteenth since the twenty-seventh round
 DUEL_THREE = ([(((1, T_G, 0, 16), (2, T_G, 0, 16)), None)] * 8
               + [(((1, T_3, 0, 16), (2, T_L, 0, 16)), None)] * 4
               + [(((1, T_G, 4, 16), (2, T_G, 4, 16)), None)] * 2          # stop-time
@@ -707,8 +740,8 @@ DUEL_THREE = ([(((1, T_G, 0, 16), (2, T_G, 0, 16)), None)] * 8
               + [(((1, T_T, 0, 16), (2, T_T, 0, 16)), None)] * 4
               + [(((1, T_T, 4, 16), (2, T_T, 4, 16)), None)] * 2          # the break
               + [(((1, "332.home", 0, 16), (2, "332.home", 0, 16)), None),
-                 (((1, T_G, 0, 16), (2, T_G, 0, 16)), None)])
-DUEL_THREE_KICK = [KGAL] * 8 + [K332] * 8 + ["x....x....x.x..."] * 8   # the kick on the riffer's rhythm
+                 (((1, "n5.lean", 0, 16), (2, "n5.lean", 0, 16)), None)])
+DUEL_THREE_KICK = [run_starts(RYAN_13[1])] * 8 + [run_starts(RYAN_13[8])] * 8 + [run_starts(RYAN_13[12])] * 8   # the kick on the riffer's rhythm
 
 
 def duel_plan(brk=True, dark=False):
@@ -1047,7 +1080,7 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
     one, out = GUITARS[guitar]
     if drive:
         cut = tuple(cut) + ("piano", "opens")
-        turns = turns or TURNS_DRIVE
+        turns = dict(TURNS_DRIVE, **(turns or {}))
 
     def strings(part, v):
         # The guitar's part on one string where `guitar` says so: the voice stays in its place in
@@ -1204,8 +1237,7 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
         bvp = BASS_VOICES[bass]
         voices.append({"inst": bvp["inst"], "params": dict(bvp["params"]), "mode": "riff", "hold": 0.8, "octave": -1,
                        "gain": 0.27 * 10.0 ** (bass_db / 20.0) * bvp["level"] * PUSHER_FINGERS, "pat": {"R": r_pulse} if fingers else {}})
-        drums["kick"].update(I=K332 * 7 + "x..x..x.x.......", A=K13 * 8 + KGAL * 7 + "x...x...x.......",
-                             C=K332 * 4 + KGAL * 3 + "x...x...x.......", O=K332)
+        drums["kick"].update({sec: turns_kick(turns[sec], sec != "O") for sec in "IACO" if sec in turns})
         drums["snare"].update(A=SN24, C=SN24, O=SN24)
         drums["hat"].update(I=HATQ * 7 + "x...x...........", A=HATQ * 7 + "x...x...........", O=HATQ, D=HATQ)
         drums["ride"] = {}
@@ -1263,13 +1295,13 @@ def map_half(form=FORM10, mastered=True, guitar=MAP_GUITAR, drums_db=MAP_DRUMS_D
 
 
 R_PARTS = [   # (bars, what the battle plays) through R, in order
-    (8, "three basses: one on eighths on the roots, the riffer on the gallop on the root, the top with it an octave up"),
-    (4, "the riffer on three-three-two with its fifth, the top's three long notes over it, the eighths under both"),
-    (2, "stop-time: the band's hit on each one, then the riffer and the top on the gallop in octaves"),
-    (2, "three-three-two and the long notes again"),
-    (4, "the riffer on threes on the root, the top with it an octave up, the eighths under both"),
-    (2, "the break: the band's hit, the riffer and the top on the threes in octaves, a snare building"),
-    (2, "all three on three-three-two under the band's hits, then the gallop out in octaves"),
+    (8, "three basses: one on eighths on the roots, the riffer on his rhythm 2 on the root, the top with it an octave up"),
+    (4, "the riffer on his rhythm 9, the top's three long notes over it, the eighths under both"),
+    (2, "stop-time: the band's hit on each one, then the riffer and the top on rhythm 2 in octaves"),
+    (2, "rhythm 9 and the long notes again"),
+    (4, "the riffer on his rhythm 13, the top with it an octave up, the eighths under both"),
+    (2, "the break: the band's hit, the riffer and the top on rhythm 13 in octaves, a snare building"),
+    (2, "all three with the band's hits, then his rhythm 5 out in octaves"),
 ]
 
 
@@ -1304,7 +1336,12 @@ def drive_set(sid, title, form, note):
             "rows": [("%s%d" % (sid, k), t, n, opts) for k, (t, n, opts) in enumerate(DRIVE_ROWS)]}
 
 
+AUDITION = [("nu%d" % (k + 1), "Rhythm %d" % (k + 1), "%s, on the root, its last note leaning." % " ".join(r[i:i + 4] for i in range(0, 16, 4)).replace("x", "-"),
+             {"turns": {"A": [("n%d.lean" % (k + 1), "both:push")] * 4 + [("n%d.lean" % (k + 1), "hook:back")] * 4}}) for k, r in enumerate(RYAN_13)]
 SETS = [
+    {"id": "nu", "half": "battle", "title": "Your thirteen rhythms on the head", "form": "A" * 16, "seed": NAME + "_battle",
+     "note": "The groove's sixteen bars with the bass on one of your rhythms throughout, on the root, the kick on the first hit of each run (Ryan, 10 November: \"use them without walking, just either on root or moving a little\"). The first eight bars are under the hook and the arpeggio; in the second eight the crunch synth joins on the eighths. Switch rows anywhere: each carries on from the same beat.",
+     "rows": AUDITION},
     drive_set("ne", "The head, driving", HEAD_FORM, "The intro and the groove (Ryan, 10 November: \"something needs to be pushing those 8th notes\"): the intro on three-three-two with the kick on it; the bass on straight eighths under the hook and the arpeggio, the kick on one and three; then the bass on the gallop with the kick, the crunch synth taking the eighths."),
     drive_set("nf", "The lead's section, driving", LEAD_FORM, "The lead's long notes over the bass on three-three-two for eight bars, then on the gallop with the arpeggio behind, the crunch synth on the eighths throughout, the kick on the bass's rhythm."),
     {"id": "nt", "half": "battle", "title": "The duel on three basses", "form": DUEL_FORM, "seed": NAME + "_battle",
@@ -1313,7 +1350,7 @@ SETS = [
               ("nt1", "The fingers push, the Omnific riffs", "The fingers bass on the eighths, the riffer on the Omnific, the top on the dirty Omnific.", {"duel_riffer": "real_omnific", "duel_pusher": "fingers"}),
               ("nt2", "Round twenty-five's trading", "The two basses trading phrases over the synth's eighths, as it was.", {"duel": "trade"})]},
 ]
-PAIR = {"id": "night_shift_r26", "title": "Night Shift, round twenty-six"}
+PAIR = {"id": "night_shift_r27", "title": "Night Shift, round twenty-seven"}
 INTRO = "intro: the kick on every beat and the hats, the pad fading in through the fourth bar and swelling from 0:10, the sub from the fifth"
 MAP_SAID = dict(F.MUSIC[NAME]["names"], I=INTRO,   # each section on the map, without its muted guitar
                 A="groove: the piano off the beat, the chime's hook, a soft clap, the sub, knocks and ticks",
@@ -1342,6 +1379,8 @@ FIGURE_SAID = {"home": "on the root", "lift": "lifting to the octave", "climb": 
 VOICE_SAID = {"lead": "the synth lead", "fm": "the FM synth", "pluck": "the plucked string"}
 
 
+RHYTHM_SAID.update({"n%d" % (k + 1): "his rhythm %d" % (k + 1) for k in range(13)})
+FIGURE_SAID.update({"root": "on the root", "lean": "on the root, leaning into the next"})
 WRITTEN_SAID = {"E": "the bass on straight eighths on the roots", "P": "the bass on the riff, an E pedal on three-three-two with its blues fall and its turn back",
                 "G": "the bass on the gallop through the chords' roots", "S": "the bass chugging three-three-two on the roots"}
 
@@ -1438,7 +1477,7 @@ def main(argv):
         raw = {(si, ri): x for si, ri, x in pool.map(render_row, jobs)}
         for f in fulls:
             f.result()
-    path = os.path.join(P.OUT, "night26.json")
+    path = os.path.join(P.OUT, "night27.json")
     manifest = json.load(open(path)) if os.path.exists(path) else {"sets": [], "tracks": [], "seams": []}
     for si, s in enumerate(SETS):
         if s["id"] not in wanted:
@@ -1450,7 +1489,7 @@ def main(argv):
         rows = []
         for ri, (rid, title, note, _opts) in enumerate(s["rows"]):
             x = F.limit(mastered[ri] * gain)
-            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night26_" + rid, x)),
+            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night27_" + rid, x)),
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         manifest["sets"] = [e for e in manifest["sets"] if e["id"] != s["id"]] + [{"id": s["id"], "half": s["half"], "title": s["title"], "note": s["note"], "rows": rows}]
         print("%-2s %s" % (s["id"], "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))

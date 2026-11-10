@@ -1683,13 +1683,12 @@ XQ_PULSE = {"synth": {"inst": "bass", "mode": "riff", "octave": 0, "gain": 0.504
 
 
 def x_quarters(call, voice, roots=False):
-    """A voice on quarters under X's twelve bars, on E or on each bar's chord root where `roots`."""
+    """A voice on eighths under X's twelve bars, on E or on each bar's chord root where `roots`."""
     chords = call["chords"]["X"]
     pat = ["."] * 168
-    for step in range(0, 168, 4):
+    for step in range(0, 168, 2):   # eighths (Ryan, 10 November: "I think I meant to say 8ths, not quarters")
         root = chords[(step // 14) % len(chords)][0] % 12 if roots else 0
         pat[step] = P.spell(root)
-        pat[step + 1] = "-"
     call["voices"].append(dict(XQ_PULSE[voice], params=dict(XQ_PULSE[voice]["params"]), pat={"X": "".join(pat)}))
     return call
 
@@ -1705,12 +1704,12 @@ def round27(riff=None, swap=False, quarters=None, roots=False):
 
 
 SETS = [
-    {"id": "hv", "half": "battle", "title": "X with the quarters driven", "form": FORM_X,
-     "note": "The bar down into the seven and the seven as the pair has it now, on the loose half-open hat with the knock (Ryan, 10 November: \"can we get a bass or synth driving the quarters underneath?\"). The quarters run straight through the riff's two bars, seven to the fourteen eighths, so they cross the bar line as your 4-4-4-2 count does. Each voice sits 3 dB under the low Omnific. Switch rows anywhere: each carries on from the same beat.", "rows": [
-        ("hv0", "As the pair has it", "No voice on the quarters.", round27()),
-        ("hv1", "The crunch synth on E", "K's crunch synth on quarters on E, the riff's pedal.", round27(quarters="synth")),
-        ("hv2", "The fingers bass on E", "The fingers bass on quarters on E, an octave under the synth's.", round27(quarters="fingers")),
-        ("hv3", "The crunch synth on the chords' roots", "The synth on quarters on each bar's chord root: E, E, G, D, then E, D, C-sharp, C under the held line.", round27(quarters="synth", roots=True)),
+    {"id": "hv", "half": "battle", "title": "X with the eighths driven", "form": FORM_X,
+     "note": "The bar down into the seven and the seven as the pair has it, on the loose half-open hat with the knock (Ryan, 10 November: \"can we get a bass or synth driving the quarters underneath?\", then \"I think I meant to say 8ths, not quarters\"). Seven eighths a bar, straight through. Each voice sits about 3 dB under the low Omnific. Switch rows anywhere: each carries on from the same beat.", "rows": [
+        ("hv0", "As the pair has it", "No voice on the eighths.", round27()),
+        ("hv1", "The crunch synth on E", "K's crunch synth on eighths on E, the riff's pedal.", round27(quarters="synth")),
+        ("hv2", "The fingers bass on E", "The fingers bass on eighths on E, an octave under the synth's.", round27(quarters="fingers")),
+        ("hv3", "The crunch synth on the chords' roots", "The synth on eighths on each bar's chord root: E, E, G, D, then E, D, C-sharp, C under the held line.", round27(quarters="synth", roots=True)),
     ]},
 ]
 PAIR = {"id": "hold_the_line_r27", "title": "Hold The Line, round twenty-seven"}
