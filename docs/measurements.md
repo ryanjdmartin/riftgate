@@ -6882,3 +6882,33 @@ meter and pays more salvage, and the Meadow's thresholds rise with its field. On
 built the Meadow's tier-one meter reads: base 138, the first Fracture at 21, the Rupture at
 92, the formation 28 (30% of the Rupture, from 26%), a flank patrol 16 (17%, from 21%), the
 shaman's warband 26. The meter's read above stands, the middle's share a little larger.
+
+## 10 November, the goblin's line on its straight knife: the Guard and the Captain in front
+
+The Meadow's formations at tiers two and three before and after the Goblin Guard took the
+straight knife (5, with its Shield Wall) and the Goblin Captain stepped into the front rank (a
+straight 6, the wall, his Warcry the third move), on Ryan's "Put the captain in front, yeah".
+The curve read (`tools/balance.gd --packs curve --domains meadow --sizes formation`), the greedy
+rung, 20 seeds, today's dice, the tier's four cut from one machine to four, a heavy first (tier
+two: the Wild Boar, the Clydesdale, the Buzzard, the Dingo; tier three: the Swallowtail, the
+Musk Ox, the Ammit, the Giant Petrel): greedy's hull lost and rounds at two, three and four
+machines (one machine is a wall or near it on every row, before and after). Before is the tree
+with the tier-one Goblin already on its knife of 4. Each a direction.
+
+| Tier | Composition | Before: two, three, four | After: two, three, four |
+|---|---|---|---|
+| 2 | `guard_warband` (two Guards and two Goblins before three Mandrakes) | 3% · 3.9, 0% · 2.9, 0% · 2.2 | 4% · 4.0, 0% · 2.9, 0% · 2.4 |
+| 2 | `treant_march` | 37% · 12.3, 7% · 6.2, 4% · 5.0 | 37% · 12.6, 8% · 6.2, 5% · 5.2 |
+| 2 | `rotblooms_bed` | 19% · 8.6, 4% · 5.0, 2% · 3.9 | 22% · 8.6, 5% · 5.1, 2% · 4.0 |
+| 3 | `captains_warband` (was four Guards before two Captains and two Alraunes; now two Captains and two Guards before two Alraunes) | 35% · 6.8, 4% · 4.2, 0% · 3.2 | 12% · 5.8, 2% · 3.5, 0% · 2.5 |
+| 3 | `alpha_hunt` | 39% · 6.7, 6% · 4.6, 1% · 3.1 | 41% · 6.7, 8% · 4.7, 1% · 3.0 |
+| 3 | `metal_drift` (the Captain in a Bubble Gel's cell, seven where it was eight) | 87% · 11.1, 24% · 7.0, 6% · 4.5 | 58% · 10.9, 11% · 5.5, 2% · 3.9 |
+| 3 | `treant_wilds` | 89% · 33.7, 15% · 11.6, 4% · 7.0 | 92% · 30.9, 17% · 12.2, 4% · 7.4 |
+| 3 | `rotblooms_bed` | 50% · 17.2, 8% · 7.4, 1% · 5.2 | 51% · 15.6, 9% · 7.5, 2% · 5.2 |
+
+Read. The line's new kit moves no band: where the grid is the same, the cost is the same to a
+point or two. The two grids that gave up a body to seat the Captain in front read easier, the
+captain's warband at a third of what it cost two machines and the metal drift at two thirds:
+that is the body count and a rallier now in Direct reach, the grids' doing and the formation
+pass's to re-cut, not the knife's. At its rating every formation here costs its tier's three
+between nothing and a sixth of their hull, the Treant's and the gels' the dear ones.

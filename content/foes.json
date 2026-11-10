@@ -14,22 +14,23 @@
     },
     {
       "id": "goblin_guard", "name": "Goblin Guard", "faction": "meadow", "tier": 2,
-      "design": { "fantasy": "The genre's second goblin, the one with the shield. Tier two of the goblin line." },
-      "codex": "A goblin that found a shield. It braces when it is not stabbing, so the swarm takes a blow more to clear.",
-      "hp": 3, "attack": 3, "rank": "front", "movespeed": 2,
+      "design": { "fantasy": "The genre's second goblin, the one with the shield. Tier two of the goblin line: the goblin's knife and wall at tier two's numbers, no twist of its own since the Goblin took the wall (Ryan, 10 November: a recolour keeps its archetype). Its knife's 5 is a placeholder, a step over the Goblin's." },
+      "codex": "A bigger goblin with a harder knife. It braces when it is not stabbing, so the line takes a blow more to clear.",
+      "hp": 3, "attack": 5, "rank": "front", "movespeed": 2,
       "actions": [
-        { "id": "stab", "name": "Stab", "kind": "attack", "swarm": 1, "weight": 2, "text": "A knife from the crowd for {damage}: more for every other guard standing.", "status": "implemented" },
+        { "id": "stab", "name": "Stab", "kind": "attack", "weight": 2, "text": "A knife from the crowd for {damage}.", "status": "implemented" },
         { "id": "shield_wall", "name": "Shield Wall", "kind": "defend", "effect": "brace", "value": 1, "weight": 1, "text": "Raises a scrap shield: armour +{value} until its next action.", "status": "implemented" }
       ],
       "flavour": "Gate order one still stands. Add: some of the green ones carry doors now."
     },
     {
       "id": "goblin_captain", "name": "Goblin Captain", "faction": "meadow", "tier": 3,
-      "design": { "fantasy": "The goblin chieftain, the commander in the crowd. Tier three of the goblin line." },
-      "codex": "The goblin that shouts. It stands at the back and rallies the rest, so the swarm hits harder while it lives.",
-      "hp": 4, "attack": 4, "rank": "back", "movespeed": 2,
+      "design": { "fantasy": "The goblin chieftain, the commander in the crowd. Tier three of the goblin line, in the front rank since 10 November (Ryan: 'Put the captain in front, yeah'; 'I didn't think the recolours changed like, the archetype of the foes?'): the goblin's knife and wall at tier three's numbers, its Warcry the twist, the third move. Its knife's 6 is a placeholder, a step over the Guard's." },
+      "codex": "The goblin that shouts. It stands in the front and rallies the rest, so the line hits harder while it lives.",
+      "hp": 4, "attack": 6, "rank": "front", "movespeed": 2,
       "actions": [
-        { "id": "stab", "name": "Stab", "kind": "attack", "swarm": 1, "weight": 2, "text": "A knife from the crowd for {damage}: more for every other captain standing.", "status": "implemented" },
+        { "id": "stab", "name": "Stab", "kind": "attack", "weight": 2, "text": "A knife from the crowd for {damage}.", "status": "implemented" },
+        { "id": "shield_wall", "name": "Shield Wall", "kind": "defend", "effect": "brace", "value": 1, "weight": 1, "text": "Raises a scrap shield: armour +{value} until its next action.", "status": "implemented" },
         { "id": "warcry", "name": "Warcry", "kind": "buff", "effect": "rally", "value": 1, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder, fading by half each round.", "status": "implemented" }
       ],
       "flavour": "They have ranks. We do not know how they decide them. We suspect volume."

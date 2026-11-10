@@ -98,6 +98,15 @@ reads (`docs/measurements.md`, 9 November) are the records this stands on.
   goblin's lesson). The same play's map points (every machine one more move, built; the field's
   depth, the opening and the Fracture's worth of fodder, each a dial on the phone) are the
   status's and the to-do's.
+- **The goblin's line, the Marsh's, and back to the pass** (10 November, later): of the goblin's
+  block, "I think the earlier goblin can have shield wall as well"; of the Captain, "Put the
+  captain in front, yeah"; of a block that walls the lights, "don't worry about walling the
+  lights too much because the gobs are part of a threat-3 formation, right? theoretically there
+  should be at least one heavier unit in there to help out"; of the Lich, "its no longer a
+  revenant. It's its own thing. The tier 3 revenant shouldnt be a lich, it should be, well, a
+  tier 3 revenant. And a lich its own backliner to pair with it." And: "We've gotten off on a
+  tangent from the main issue, which is the actual formation pass. What do we need to actually
+  execute on it?" Section 9 is the answer.
 - **The refit's direction, before the model was reached**: "Enemy HP is probably too high, or
   player damage is too low. I'd rather lower enemy HP slightly, and boost synergy pieces to
   increase damage instead of just raw numbers. However, I want to judge the new formations
@@ -253,8 +262,27 @@ session's draft and never his mark. What stands in the front at tier three is th
 two's unit at tier two's numbers: Goblin Guards in every Meadow grid that fields the line (the
 captain's warband is four Guards before two Captains and two Alraunes), Wights beside the
 knights in the Marsh's (the Lich's court is two Wights and two Dread Knights before the Lich).
-The validator holds a foe to its rank's cells, so a Captain in front is a change of its rank
-and of the tier-three grids together. His call (section 7's seventh item).
+His calls, the same day. The Captain goes in front ("Put the captain in front, yeah"): built,
+the Goblin Captain the tier-three goblin, a straight knife of 6, the Shield Wall and his Warcry
+the third move, and the Goblin Guard on the same knife at 5, each number a placeholder a step
+over the rung under it. The validator holds a foe to its rank's cells, so the four grids that
+field him moved him into a front cell, a free one where there was one (the two escorts), a
+Guard's in the captain's warband (two Captains and two Guards before two Alraunes, six where it
+was eight) and a Bubble Gel's in the metal drift: the least that keeps content sound, and the
+pass re-cuts tier three whole. The Lich is its own backliner and the revenant's line gets a
+tier-three rung of its own (his words in section 2): content's with the pass, since the rung
+is a new unit and its name is his.
+
+**The yardstick for a pusher** (Ryan, the same message): "don't worry about walling the lights
+too much because the gobs are part of a threat-3 formation, right? theoretically there should
+be at least one heavier unit in there to help out." Right by content: no patrol fields a goblin
+at any tier, only formations rated three and elites and escorts rated four. So a formation is
+read against three machines with a heavier one among them (the proposal's default four and its
+tier's fours, each a heavy first), and what it costs a squad of lights is no test of it; the
+light read is the flankers', the rating of one. It answers the proposal's thirteenth question,
+and it puts armour that is always there back on the table for a pusher's front if he wants the
+line to hold longer (it costs three lights a twentieth of their hull and a squad with a heavy
+nothing: `docs/measurements.md`); the goblins keep the Shield Wall he picked until he says.
 
 **What the proposal's grids keep and lose under it**: the formations stand (pushers of pusher
 units), less the antlions in the Waste's four (a hunting line in a pusher: the antlion pit, the
@@ -618,17 +646,12 @@ word:
    front and his own try of 9 November ride on it).
 7. The roles (section 4): a role on every rank-and-file unit, the flankers as duels, the units
    each domain lacks. The strike at the wall follows the rating (his word and built, 10
-   November: section 4). The goblin's form is his and built at tier one (10 November: a
-   straight knife and the Guard's Shield Wall, the knife's 4 a placeholder). Open with it, the
-   line above it, since he did not expect a recolour to change its archetype and the Goblin
-   Captain and the Lich do (section 4's table). For each, one of two: it steps into its line's
-   front at tier three, the line's blow and block at tier three's numbers with its Warcry or
-   its Reraise as the third move, the tier-three grids re-cut with it in front; or it stands
-   as a unit of its own at the back, no recolour, and its line gets a tier-three front rung,
-   the name and the hue his. Claude's lean: the first for the Captain (the wolves already
-   rally from the front), the second for the Lich (a caster by its fantasy), each his to
-   overrule. With it the Guard on the new knife (a straight blow a step over the goblin's) and
-   the Revenant's claw.
+   November: section 4). The goblin's line is his and built (10 November: a straight knife and
+   the Shield Wall at every rung, the Captain in front with his Warcry). Still his, with the
+   pass (section 9): the flankers, a duel a domain; the tier-three revenant's name; and
+   whether the Revenant's claw goes straight as the goblin's knife did, and what holds the
+   Marsh's front in a wall's place (Claude's lean: nothing at tier one, the Wight's Grave Mend
+   the line's hold, since the Marsh's answer is getting back up).
 8. The Reinforced Skeleton: parked with destruction, or a new rule now.
 9. The commander layer's shield and vent actions: a note now, a row when that layer is designed.
 
@@ -654,14 +677,62 @@ word:
   elites for a few points of hull (section 5's second point). Their numbers are their own item
   (the bible's section 12); this is one more read for it, no proposal.
 
-## 9. The order, on his answers
+## 9. The order: what the formation pass needs to execute
 
-1. Done, 9 November: the what-if, the injury rule off, the aggressor's habit, the trial, and the
-   first reads (section 5).
-2. His play at placeholders: the trial under each deal of the Barrier (the to-do's Ryan list),
-   and his answers to section 7's first five but the fourth, which is parked.
-3. The content of section 6 as marked, with the deal he picks; the regen and cooling numbers by
-   chassis; the heat prices; the pushers re-cut and read by hull lost, each with its rising
-   threat and the validator's check for it; the flankers rewritten as duels; the records, the
-   vocabulary, the rules, the hangar page.
-4. The formation proposal's remaining questions settled in play; the bosses' blocks after.
+Ryan, 10 November: "We've gotten off on a tangent from the main issue, which is the actual
+formation pass. What do we need to actually execute on it?" The pass is structure: who stands
+where, in what role, posing what question. It moves no foe's number beyond what a new unit
+needs, on his word of 9 November ("I want to judge the new formations before applying the
+refit based on this"), so the numbers follow his play of it and the Chassis Inventory session's
+work on the player's damage.
+
+**Standing, nothing to ask**: the schema and the engine (grids, ratings, leads, hunts, ramp
+gates); the proposal's 92 grids as code, validated (`tools/formation_proposal.py`); his calls
+(the bombs never hunt; a hunter is its line and what keeps up with it; a unit is made for its
+role; a flanker is a duel and no small pusher; the strike follows the rating; a formation is
+read with a heavier machine among its three; the goblin's line; the Lich its own backliner and
+a tier-three revenant) and his "Your leans are good" on the proposal's remaining leans (the
+hunters heavy patrols rated two and no formation hunting, a question on every composition, the
+gates at the ramp's own steps, the twelve prunings).
+
+**His, before the grids that need it can be written**:
+
+1. The flankers. Every patrol rated one in the proposal is a cut-down pusher, which his rule
+   refuses, and no domain has a unit made for a duel (section 4's roster). Each is a new unit
+   or a re-tuning, so a content idea, proposed in chat first: the slate is put to him, one
+   duel a domain from his bench of 3 November and the moves the engine runs (the Whisker Cat,
+   the Roc, the Dullahan, Cerberus: `docs/formation_proposal.md`, section 13), and he marks
+   it. Nothing else in the pass waits on it.
+2. The Marsh's front: the tier-three revenant's name, and the Revenant's claw (section 7's
+   seventh item).
+3. His go on landing the formations and the hunters ahead of the flankers, today's patrols
+   standing in on the flanks until the slate is marked.
+
+**Claude's, in order, on that go**:
+
+1. A role on every rank-and-file foe (a pusher's, a hunter's or a flanker's; internal until he
+   says it is shown), and the validator holding a composition to it: a hunting composition is
+   its lead's line and what keeps its pace, a formation fields pushers, a patrol rated one
+   fields flankers, and a crossing carries its reason under `design`.
+2. The proposal's formations and hunters re-cut to his calls since it was written: the
+   antlions out of the Waste's four pushers, the goblin's fronts by tier (Goblins, Guards,
+   Captains), the Marsh's tier-three fronts on the new rung with the Lich behind it, each
+   grid's question rewritten where its units changed.
+3. Landed in `content/factions.json` in place of today's formations and hunters, the pruned
+   set, a question on every composition and required on a formation, the opening's line that
+   deals no hunter at turn one, the content tests on the new shape.
+4. Read: the curve read on the trial's model with a heavy first, by hull lost, into
+   `docs/measurements.md`. A direction; no number moves on it.
+5. The flankers once the slate is marked: the units, the patrols rated one, their read by a
+   lone light.
+6. The vocabulary, the rules, the bible's rows, the status and the to-do; the hangar page
+   republished on his word.
+
+**Not in the pass**: a foe's numbers (the refit's, after he plays the formations); the die's
+re-deal, the regen and the heat prices (section 6, the refit's content); the bosses' stat
+blocks and their escorts (the proposal's section 6, a session of their own); the rising threat
+in every formation and its validator check (section 3's ninth point, his to set once he has
+played); the field's dials (the to-do).
+
+Done before it: the what-if, the injury rule off, the aggressor's habit, the trial and its
+dials, the first reads (section 5), the wall strike by the rating, the goblin's line.

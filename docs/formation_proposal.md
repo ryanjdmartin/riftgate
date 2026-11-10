@@ -34,6 +34,19 @@ cut, re-cut in the refit pass (`docs/briefs/refit_pass.md`), which this pass fol
   keeps up with it. So every patrol rated one below, each a cut-down pusher, is to be rewritten
   round units made for a duel, the Waste's four formations that carry antlions are re-cut or
   defended, and rule 5 of section 3 is superseded where it lets members mix freely.
+- **The goblin's line and the Marsh's** (10 November, after his play of the refit trial): a
+  pusher's front is a straight blow and a block, so the Goblin, the Guard and the Captain each
+  stab straight and raise the Shield Wall, and the Captain stands in the front rank with his
+  Warcry ("Put the captain in front, yeah": a recolour keeps its archetype). The Lich is a
+  backliner of its own and the revenant's line gets a tier-three rung, its name his. The
+  tier-three Meadow grids in section 12 show the Captain in the back, as they were read; the
+  tool's grids and content carry him in front, and rule 3's "the goblin's and the revenant's
+  add" no longer describes the goblin.
+- **A formation is read with a heavier machine among its three** (the same day: "don't worry
+  about walling the lights too much because the gobs are part of a threat-3 formation"), which
+  answers question 13: the light four's read is the flankers', the rating of one.
+- **What the pass needs to execute** is the refit brief's section 9: his three inputs (the
+  flankers, the Marsh's front, his go) and the six steps that follow.
 
 ## 1. What Ryan said, and when
 
@@ -901,3 +914,54 @@ Tier 3: the reads (F free, D a decision, W a wall; greedy's hull lost beside eac
 | `magma_lizards` | 1 | 20 | F 34% | F 1% | F 0% | F 0% | W 100% | F 16% | F 1% | F 0% | F 40% | F 2% | F 0% | F 0% | D 75% | F 4% | F 1% | F 0% | balloon_flight, dragons_perch |
 | `dragons_perch` | 2 | 22 | F 14% | F 0% | F 0% | F 0% | W 100% | F 21% | F 1% | F 0% | F 36% | F 1% | F 0% | F 0% | D 69% | F 2% | F 0% | F 0% | balloon_flight, magma_lizards |
 | `balloon_flight` | 2 | 32 | F 18% | F 1% | F 0% | F 0% | W 95% | F 6% | F 0% | F 0% | F 33% | F 0% | F 0% | F 0% | D 65% | F 1% | F 0% | F 0% | dragons_perch, magma_lizards |
+
+## 13. The flankers: a slate for Ryan's marks (10 November)
+
+His rule (9 November): a flanker is a duel for one machine and no small pusher, "One spooky
+flanker revenant or whatever is a more interesting duel for a Skua or Kite than the Skua or Kite
+just mowing down less goblins than they would if they were grouped." No domain has a unit made
+for one, so every patrol rated one above is to be rewritten. The slate is one duelist a domain,
+each from his bench of 3 November ("what misses the cut may be rank and file"), each one sharp
+question built from moves the engine already runs, so none needs code. Everything here is an
+idea for him to mark, swap or strike; the numbers are placeholders set for a lone light's three
+or four rounds and read after.
+
+The test each is written to (the refit brief's section 4): one question the player can see and
+answer with a die; hit points for three or four rounds of one light machine; no flat armour,
+which walls the lights whatever else a unit does; a decision for a lone light and free for the
+Honey Badger; a heavy sent at it wins slowly, so a mismatch costs time and never hull.
+
+| Domain | The duelist | The duel | Built from |
+|---|---|---|---|
+| The Meadow | The Whisker Cat | Its whiskers switch off the entry the machine is showing when the blow lands: what do I leave showing, and do I spend my best die before it strikes? | A plain claw, and a blow that disables (the Thunder Ape's beam, the Cockatrice's stone) |
+| The Waste | The Roc | It stoops from height a round after you see its shadow, through the shield: spend the round on a Barrier, or kill it before it lands? | A plain talon, and a breaching blow on a countdown of one (the Wyvern's Dive, the Great Needler's count); winged, so walls and water do not turn it on the map |
+| The Marsh | The Dullahan | It gets back up once: burst it before it readies the rise, purge the rise, or keep the big die for the second life? | A blade, and a rise it readies as an action (the Zombie Knight's), with none of the Knight's armour |
+| The Peak | Cerberus | Three heads bite in one action and each bite scorches: Armoured turns a point off every head where a Barrier stops one, and what lands runs the next shots hotter. | Three strikes in a blow (the Thunder Ape's rampage), a scorch on each (the Salamander's bite) |
+
+Each stands alone as a patrol rated one, about a dozen hit points (the Dullahan six, twice),
+and as a pair for the ramp's later bands if the pair still reads as a one. Tiers two and three
+follow his recolour rule: a bigger number, and a twist where he marks one.
+
+**Holes, each with what settles it**:
+
+- The Whisker Cat's switch-off can cost a lone machine its whole round, and a lone machine has
+  no second die to answer with: the blow's weight and its damage are the dial, and the read by
+  a lone light says whether it stalls.
+- The Roc on a countdown of one is seen for a single round: enough to roll for a Barrier, not
+  enough to plan one. A count of two is the gentler form.
+- The Dullahan and the Zombie Knight ask the same question. The slate keeps the Knight in the
+  Marsh's formations as their anchor, armour and all, and gives the flank the rider.
+- Cerberus asks for Armoured, which the model's stock deal puts on few dice (the Shoring Jack):
+  a lone light without one takes all three heads, so it may read as a two for the lights.
+- The duels repeat, four to eight packs a battle from one line a domain: the pair and the
+  later tiers' rungs are the variety, and a second line a domain if play says it grates.
+- The proposal's patrols rated two that are no hunters (the knights' retinue, the lizard trio,
+  the wyverns' perch and the rest) are small pushers too: whether a flank ever fields a fight
+  for two is his, open with the roles.
+
+**Bench** (his names left off the slate, one line each): the Sphinx (a riddle is a condition on
+the player's dice, which the foes' one rule set refuses: no gate reads the player's state); the
+Banshee (a wail that takes a reroll is the Mandragora's scream on another body); the Iron Giant
+(a massive foe is no patrol by "a few foes"); the Drowned King and Anzû (no question found that
+is theirs alone yet); the lone Bomb (a burst that decides the fight, his own refusal for the
+hunters); the Zombie Knight re-tuned (kept as the formations' anchor).
