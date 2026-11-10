@@ -21,7 +21,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   Mac is out of reach and what it held outside git is gone: of the foeforge renders only the
   Augur's survive (`tools/foeforge/out/`, for her next pass; the rest `git show fb45141`), and
   foeforge's `generate` and `fix` have no machine until a route for the image model is chosen:
-  Ryan is trying the Windows PC first (10 November), the cloud routes researched and parked (the
+  Ryan is trying the Windows PC first with a GTX 980 of his to go in (10 November), the cloud routes researched and parked (the
   to-do's Art line).
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last check,
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
