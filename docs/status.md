@@ -27,7 +27,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1089 tests, 323,782 checks, green (10 November, `ccr-1e6e6571-7x7ayr` with the shapes reworked on Ryan's play, on main with the Text tab, the side session's work, the
+- Tests: 1089 tests, 323,297 checks, green (10 November, `ccr-1e6e6571-7x7ayr` with the shapes reworked on Ryan's play, on main with the Text tab, the side session's work, the
   map session's shapes laid to the rift's row, the passing and the catch at one, and the map
   playtest list; one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
