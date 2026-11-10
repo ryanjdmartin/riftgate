@@ -68,6 +68,10 @@ Ryan's word ("Merge everything into main and clean up"); it is merged and to del
 `ccr-7d7ed303-tbdkg4`, the hangar's Text tab of 10 November (How things stand below), landed on
 main as a fast-forward on Ryan's word ("Ok merge into main please"); it is merged and to delete
 with the rest.
+`claude/hangar-bench`, the hangar's Bench tab (10 November, cut from main on Ryan's word, "Yes,
+start a fresh branch off main for it", so it landed ahead of the refit's branch), is on main as a
+fast-forward on his word ("Ok merge into main and republish the hangar"); it is merged and to
+delete with the rest.
 `claude/modest-ramanujan-uovd42`, the Polar Bear's kit of 9 November, its id's rename and every id
 following its name (How things stand below), landed on main as fast-forwards on Ryan's word ("merge
 it into main so I can try it"; "clean up and merge into main"); it is merged and to delete with the rest.
@@ -666,16 +670,19 @@ commands are in `README.md`.
   copy is read, so a subagent reads it and publishes the merge. After main merges in, check the
   tables script's run against the file's tables before keeping it: a row it reverts belongs to a
   branch not yet landed.
-- The hangar's Bench tab (10 November, `claude/hangar-bench`, off main on Ryan's word: "Yes, start a
-  fresh branch off main for it"): his working sheet for a machine, built and checked in a browser
-  against a stand-in database at the desk's and the phone's widths, not yet on main and not
-  published; both wait on his word. It adds no file to the page's map and no collection.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 218 (10 November, main's `5a490e5`): the page with its Text tab,
-  `hangar/text.json` new beside it (332 files) and `designs.json` with its stamp. Version 217 was
+  page's Version 219 (10 November, main's `f49a90f`, on Ryan's word, "Ok merge into main and
+  republish the hangar"): the page with its Bench tab, his working sheet for a machine, the
+  second tab (the roster by where each machine stands, one flat sheet a machine; no file and no
+  collection of its own, every write an edit of the entry in `edits`, his notes, state and
+  upgrade ideas under its `design.bench`), with the three files that had moved since: the
+  vocabulary (the map session's four codex lines), `text.json` for them and `designs.json` for
+  its stamp. The live page matched `5a490e5`'s file byte for byte before it was replaced, and
+  each of the three its last publish. Version 218 (main's `5a490e5`) was the page with its Text
+  tab, `hangar/text.json` new beside it (332 files) and `designs.json` with its stamp. Version 217 was
   the side session's publish of main at `2d489f7` (9 November, on Ryan's word, "republish the
   hangar page and the bible": the three content files the Lammergeier's rework moved and
   `designs.json` from its briefs, the live copies matching `f048e67`'s before they were replaced
