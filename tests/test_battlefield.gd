@@ -304,7 +304,7 @@ func test_a_peak_sends_from_the_rift_and_a_tear_sends_from_the_peak_after_it_ope
 func test_gate_is_wider_than_one_hex() -> void:
 	var f := _field()
 	assert_eq(f.map.gate_hexes.size(), 7, "four gate hexes on the apron row, three below")
-	assert_eq(f.map.rift_hexes.size(), 3, "three rift hexes")
+	assert_eq(f.map.rift_hexes.size(), 5, "five rift hexes: its row's three and the two in front of its middle")
 	var side: Vector2i = f.map.gate_hexes[0]
 	var side_o := Hex.axial_to_offset(side)
 	f.add_unit(Unit.pack(1, "ghouls", _o(side_o.x, side_o.y - 1), "marsh", 2))
@@ -379,7 +379,10 @@ func test_pressure_spawns_pack_at_rift() -> void:
 	assert_eq(f.packs()[0].foe_id, "revenant", "spawned from the cycle")
 	assert_eq(f.packs()[0].members, [["revenant", 6]], "its members at the ramp's density, one at the start")
 	assert_eq(f.rift_pressure, 0, "clock reset")
-	assert_true(Hex.distance(f.packs()[0].pos, f.map.rift) <= 1, "spawned at or beside the rift")
+	var beside := false
+	for r in f.map.rift_hexes:
+		beside = beside or Hex.distance(f.packs()[0].pos, r) == 1
+	assert_true(beside, "spawned beside the rift, one of its five hexes")
 
 
 func test_a_hunter_picks_its_prey_by_its_caveat_and_keeps_it() -> void:

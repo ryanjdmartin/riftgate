@@ -232,7 +232,10 @@ func test_each_shape_lays_what_its_name_says() -> void:
 							if (group as Array).size() >= 2:
 								grouped += 1
 						assert_true(grouped >= 2, "%s: the mesas stand in groups: %d" % [tag, grouped])
-						assert_true(water.size() >= 2 and water.size() <= 12, "%s: ponds: %d" % [tag, water.size()])
+						# On a field under nine wide the rift's five hexes and the ground bared round them
+						# (10 November) take most of the first rows' width, so a pond laid there may go:
+						# one is the floor there, two everywhere the game deals.
+						assert_true(water.size() >= (2 if w >= 9 else 1) and water.size() <= 12, "%s: ponds: %d" % [tag, water.size()])
 					"steppe":
 						assert_true(walls.size() <= 2 * maxi(1, w / 7), "%s: a crag of one or two at most for every seven hexes of wall: %d" % [tag, walls.size()])
 						assert_true(water.size() <= 3 * maxi(1, w / 10), "%s: a pond at most for every ten hexes of wall: %d" % [tag, water.size()])

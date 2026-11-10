@@ -27,7 +27,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1094 tests, 323,337 checks, green (10 November, main with the Text tab, the side session's work, the shapes reworked on Ryan's play, the second map list, the
+- Tests: 1094 tests, 325,125 checks, green (10 November, `ccr-c71bc17f-hclj2c` with the third map list; main with the Text tab, the side session's work, the shapes reworked on Ryan's play, the second map list, the
   map session's shapes laid to the rift's row, the passing and the catch at one, and the map
   playtest list; one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
@@ -115,7 +115,9 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4` (a cloud session may not delete
 one). Each merge commit says how its conflicts were settled.
 
-Still working (10 November; every other branch on GitHub is merged): `ccr-722ca9f0-yj8na3`,
+Still working (10 November; every other branch on GitHub is merged): `ccr-c71bc17f-hclj2c`
+again, with Ryan's third map list of 10 November (How things stand below), pushed, waiting on
+his word to land; `ccr-722ca9f0-yj8na3`,
 the formation and refit session, whose own status says where it stands (it meets the side
 session's edits in `tests/run_tests.gd`, `sim/skirmish.gd` and these records when it takes main);
 and `ccr-7effd31a-u5z4gw`, the
@@ -189,6 +191,24 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
+- **Ryan's third map list of 10 November** (`ccr-c71bc17f-hclj2c`, cut from main at `a3b48c0`,
+  not on main; his words in the commit and the bible's rows). The bug first: the block that
+  draws a machine's planned route had been cut with the hunters' rings, so a move was planned
+  and nothing showed it ("I can, but the UI doesnt register it"); it is back, and no test could
+  have seen it go (a draw), so the `route` pose is the check. Taking an order back is its own
+  undo (`Battle.retake` takes the order's steps off the stack and makes every later step forget
+  the plan; "The undo grows infinitely when I take back a move"), a new move takes the old
+  one's place on it, and the tap that takes it back lets the machine go. The reach's border and
+  the enemy's borders are the animated two-tone ones (`_region_outline`, `_enemy_border`); the
+  chests 26 (36); the map's double-tap window 0.1 s (the die's 0.15); select and deselect on the
+  map 10 dB down (`MAP_TAP_DB`); the vortex higher and half a hex toward the field with the wall
+  at the left, the scroll showing one row of scenery behind it. The rift is five hexes
+  (`BattleMap._widen_rift`: the two before its middle taken once the shape is laid, so no seed's
+  water and walls moved; the mouth bared round all five, the roads and relief after it), the
+  boss in front of them a row further out, a path into the rift crossing the rift's own hexes;
+  the battle's save is 21 and the run's 20, so a battle saved before is refused. One test bound
+  moved with it: a badlands field under nine wide may keep one pond (the wider mouth bares the
+  other; no size the game deals). The 3D scenery's shade he passed ("3D scenery shade is good").
 - **Ryan's second map list of 10 November** (`ccr-c71bc17f-hclj2c`, cut from main at `ccd71d9`,
   on main the same day on his word, "yeah, merge into main", after taking the shapes' rework in
   a merge, this file the one conflict and the bible's version main's plus one, v0.504; his words
@@ -692,7 +712,7 @@ commands are in `README.md`.
   page's Version 502, published from main at `2d489f7` on Ryan's word, "republish the hangar
   page and the bible": main's file whole, since the live v0.496 matched `f048e67`'s byte for byte
   and so needed no merge; it carries the Lammergeier's rework, its row, the Gel's and the
-  reinforcement row's slot-mine lines and the tables). Main's file is v0.504 with the second map list's rows (the marks row
+  reinforcement row's slot-mine lines and the tables). `ccr-c71bc17f-hclj2c`'s file is v0.505 (the rift's five hexes on the field row, the undo and marks rows); main's is v0.504 with the second map list's rows (the marks row
   rewritten, the pack, undo, gesture, Fracture, reconstruction and tears rows, the Badger's and
   the store's) on the shapes' rework's v0.503 and the hangar's Bench tab's v0.502, unpublished; v0.501 since the map
   playtest list landed (the boss's picture, the scenery under the painting, the tears row's
