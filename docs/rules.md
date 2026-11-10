@@ -99,7 +99,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 ### The round
 1. Rerolls reset to two (less any a foe drained). Every machine sheds heat by its cooling,
    then regains its shield regen up to its maximum (a shield gain like any). Every die rolls;
-   entries are equally likely. Round-start passives fire.
+   entries are equally likely. Round-start passives fire, and a store that grants a buff
+   grants it for the round (the Honey Badger's hopper its Armoured), before the foes pick.
 2. Every foe picks its move, then its target; both show, exact, before the player acts, its
    intent chip under it: the move's kind, its blow's number and strikes, and each rider by its
    mark, a numbered one with its stacks. A blow's number counts the rallies on their way to it
@@ -570,10 +571,10 @@ unit's own mechanic, the rule it plays by, and never a buff or a debuff, so no P
 or Cleanse touches it; its chip shows its mark cut out of a solid tile, ahead of the unit's
 other chips, and its hold line names it an Ability and says what goes on. A foe's: the Goblin
 Nob's Enrage, a core's guard (Guarded), a Gel's split, a last act, a golden rage while it
-lasts. A machine's: the Polar Bear's seal (its form), the Ore Plate (what the hopper's loads
-are worth) and the Kite's Hot Streak. What an ability or a passive grants beyond itself is a
-buff like any (the Nob's gathered Enraged, a module's Empowered or Armoured): a stack is a
-stack, whatever granted it.
+lasts. A machine's: the Polar Bear's seal (its form) and the Kite's Hot Streak. What an
+ability, a passive or a store grants beyond itself is a buff like any (the Nob's gathered
+Enraged, a module's Empowered or Armoured, the Armoured the Honey Badger's hopper grants): a
+stack is a stack, whatever granted it.
 
 Every status on a unit says what it is, wherever it shows: a **buff**, which a Purge reaches,
 wears a wedge pointing up off its chip's top at the left, and its hold line begins "Buff"; a
@@ -590,8 +591,6 @@ On a machine:
 - **Armoured** (buff, on either side): armour +1 a stack, every stack at once, whatever
   granted it, so the count is the armour: a machine's until the round's end, a foe's (from
   its brace) until its next action.
-- **Ore Plate** (Ability, the Honey Badger's): armour +1 a stack, what the loads in its hopper
-  are worth (a point for every two loads), standing while they are held and going as they are fired.
 - **Primed** (buff, on either side): each blow leaves a Burning stack per Primed stack on its
   target, a sweep's on each shot's own foe, a blow that kills on the foe it felled, a shot at a
   corpse on the corpse. A foe's,
@@ -656,13 +655,19 @@ On a machine:
   and stands.
 - **Rage** (store, the Nemesis's): a stack each time it takes hull damage (a blow, a bite
   of its own, an overheat), up to 5, spent by its fists to roll again; lasts the skirmish,
-  never decays, and nothing cleanses it. It shows as five boxes under the heat, one lit a
-  stack.
+  never decays, and nothing cleanses it. It shows as a bar under the heat, in the heat bar's
+  shape, five segments, one lit a stack.
 - **Hopper** (store, the Honey Badger's): its Ore Hopper puts a load in for each foe a spend
   of its weapons damages, after the blow (a weapon that prints its own number puts that in
-  instead), up to four, and every two loads held stand as a point of Ore Plate; a weapon that fires
-  the hopper spends them; a Mine's blast fills none. It lasts the skirmish, never decays, nothing cleanses it, and it shows as four boxes
-  under the heat, one lit a load.
+  instead), up to four; a weapon that fires
+  the hopper spends them; a Mine's blast fills none. It lasts the skirmish, never decays, nothing cleanses it, and it shows as a bar
+  under the heat, in the heat bar's shape, four segments, one lit a load. What the loads are
+  worth is Armoured, a stack for every two held, granted by the hopper: as each round opens it
+  grants the machine Armoured up to that worth, and between rounds the grant follows the loads
+  by the change in their worth alone (a load that makes a pair adds a stack, loads fired take
+  their stacks back, off the hopper's own grant and no other). It is a buff like any Armoured:
+  it goes at the round's end, and a Purge strips it and leaves the loads, so what a Purge took
+  comes back at the machine's next turn and no sooner.
 - **Sealed** (Ability, the Polar Bear's form): a shield it spends on itself seals it: armour +3,
   its own cooling stopped, 3 heat more at the end of each turn before the overheat, and its Cryo
   Flinger gains Spread (one foe open, its rank's three sealed); a vent or a weapon opens it; a
@@ -801,6 +806,11 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or a
   the turn, before the enemy acts, the excess burns hull one for one (an overheat) and the
   gauge settles at the maximum. With volatile, it is the way a machine dies on its own
   turn. Machines cool at the start of the round. Heat starts each fight at zero.
+- The console speaks of heat on a spend, one line a spend: the overheat every time a spend
+  heats a machine and leaves it over its maximum; the warning once, as a machine first stands at
+  three quarters of its maximum or past, and not again until it has been seen back under (as a
+  round opens, once the machines have cooled, or after a spend), so a machine that stays hot, or
+  settles at its maximum after an overheat, is not warned twice.
 - An overheat is hull damage for every passive that reads hull damage.
 - **The Riot Field Generator** (the Storm Petrel's passive): its weapons' heat comes off its
   shield as they are spent, every point of a gun's own heat taken from the shield as it

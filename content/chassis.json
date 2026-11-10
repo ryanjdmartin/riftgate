@@ -48,7 +48,7 @@
     "fantasy": "A repurposed mining vehicle, designed to take severe punishment and keep on working. Refurbishments were minimal, basically bolting on weapons and armour, it keeps most of its utilitarian mining machinery flavour.",
     "niche": "tanky bruiser",
     "name_clash": "Flagged 28 September: the id badger is Heavy Gear's Badger APC and BattleTech's Badger transport; the nickname Honey Badger is nobody's. Kept: the shown name is clear.",
-    "notes": "Its identity settled 31 October on Ryan's go (\"agreed on all proposed. Build it\"; the rounds in its brief, retired: git show c05c41b:docs/briefs/minerva_honey_badger.md): the hopper the passive's business, a load for each foe a spend damages, held loads plate shown as the Ore Plate, the claw the boss chase, never destroyed a module. Numbers at the stock pass's scale: a cap of four, a point of armour for every two loads held over base armour 1 (1 to 3), Ryan's second fallback, landed the same day on the runner's read (docs/measurements.md): a point a load (1 to 5) read well past the old Badger alone, and his first fallback (base 2, a point for every two, to 4) barely moved it. Ore Hopper and Ore Plate are working names."
+    "notes": "Its identity settled 31 October on Ryan's go (\"agreed on all proposed. Build it\"; the rounds in its brief, retired: git show c05c41b:docs/briefs/minerva_honey_badger.md): the hopper the passive's business, a load for each foe a spend damages, held loads plate shown as the Ore Plate, the claw the boss chase, never destroyed a module. Numbers at the stock pass's scale: a cap of four, a point of armour for every two loads held over base armour 1 (1 to 3), Ryan's second fallback, landed the same day on the runner's read (docs/measurements.md): a point a load (1 to 5) read well past the old Badger alone, and his first fallback (base 2, a point for every two, to 4) barely moved it. Ore Hopper is a working name. Since 10 November what the loads are worth is the game's Armoured, granted by the hopper as each round opens and following the loads between, a buff a Purge strips until the machine's next turn (Ryan: \"The buff he gets from it is Armoured, not an ability. Its purgeable, but returns at the start of his turn since its granted by the funnel bar\"); the Ore Plate, an ability of its own, is retired."
    },
    "codex": "The Minerva EX-45L (colloquially nicknamed the \"Badger\") was popular a mining mech widely praised for its reliability and durability, being designed to operate in the harshest, deepest environments imaginable. Reports exist of Badgers being caught in cave-ins while mining over 5 kilometers underground, only to dig their way out to the surface by nightfall, just in time for drinks with the crew. So naturally, when the Rifts opened, the ever-practical Minerva engineering team's first instinct was to finally give their prized Badger claws, teeth, and as many missiles as it could carry, putting its legendary longevity to work on the battlefield.",
    "hull": 36,
@@ -75,7 +75,7 @@
    "passive": {
     "id": "ore_hopper",
     "name": "Ore Hopper",
-    "description": "Every foe its weapons damage puts a load in its hopper, up to four. Every two loads held are a point of armour.",
+    "description": "Every foe its weapons damage puts a load in its hopper, up to four. Every two loads held are a stack of Armoured, granted as each round opens.",
     "effects": [
      {
       "trigger": "static",

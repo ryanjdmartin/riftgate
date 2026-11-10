@@ -341,6 +341,7 @@ var _turns: Array[Foe] = []           # the foes a Lure in hand would turn, thei
 func setup(skirmish: Skirmish) -> void:
 	sk = skirmish
 	sk.keeps_undo = true   # the screen's fight keeps the undo's snapshots (the runners never)
+	_heat_warned.clear()
 	locked.clear()
 	for m in sk.mechs:
 		locked.append(false)
@@ -1263,13 +1264,14 @@ func _refresh(save: bool = true) -> void:
 		# The sixth shot's count as pips under the heat bar (Ryan, 19 October: the best spot).
 		var every := Effects.counts_shots(ms.unit)
 		v.pips = [Effects.stacks_of(ms.unit, "shots"), every] if every > 0 else []
-		# A capped store as boxes under the heat (Ryan, 21 and 22 October: every store a bar, the
-		# rage boxes up to its cap), in its chip's colour and place.
-		v.boxes = []
+		# A capped store as a bar under the heat (Ryan, 21 and 22 October: every store a bar;
+		# 10 November: in the heat bar's shape, a segment a stack up to its cap), in its chip's
+		# colour and place.
+		v.store = []
 		for id in Effects.STATUS.keys():
 			var cap := Effects.store_cap(ms.unit, str(id)) if (Effects.STATUS[id].get("tags", []) as Array).has("store") else 0
 			if cap > 0:
-				v.boxes = [Effects.banked(ms.unit, str(id)), cap, _chip_colour(str(id)), status_glyph(str(id))]
+				v.store = [Effects.banked(ms.unit, str(id)), cap, _chip_colour(str(id)), status_glyph(str(id))]
 				break
 		v.highlight = support.has(ms)
 		v.statuses = []
@@ -1802,7 +1804,7 @@ static func status_glyph(id: String) -> String:
 			return "regenerating"
 		"retaliate":
 			return "shocked"
-		"hopper", "ore_plate":
+		"hopper":
 			return "hopper"
 		"sealed":
 			return "seal"   # the shell's mark, as the die's chip that seals it (2 November)
@@ -1830,7 +1832,7 @@ static func status_glyph(id: String) -> String:
 ## Statuses and warnings on a mech as [glyph, chip text, readout text, colour], the readout text
 ## the chip's name and count (as a foe's, _foe_rows). Warnings come from the forecast: what the
 ## end of the round does if nothing changes.
-## A machine status's colour on its chip, or on a capped store's boxes: its term's (Terms), the
+## A machine status's colour on its chip, or on a capped store's bar: its term's (Terms), the
 ## Nemesis's rage, a store the keywords list holds no term for, in heat's, and any other in ink,
 ## never the HUD colour (Ryan, 30 October: "Stay away from HUD colour").
 static func _chip_colour(id: String) -> Color:
@@ -1877,15 +1879,15 @@ func _mech_rows(i: int) -> Array:
 		if int(d[3]) < Effects.SKIRMISH and not Effects.is_status(id):
 			continue
 		if id == "shots" or id == "quick_turned" or id == "muster" or Effects.store_cap(ms.unit, id) > 0:
-			continue   # a count shows as pips under the heat bar (the Cassowary's sixth shot), a capped store as its boxes, and the gate by the Rapid it grants, never a chip
+			continue   # a count shows as pips under the heat bar (the Cassowary's sixth shot), a capped store as its bar, and the gate by the Rapid it grants, never a chip
 		if not first.has(id):
 			order.append(id)
 			first[id] = d
 			total[id] = 0
 		total[id] = int(total[id]) + int(d[4])
 	# An ability (Ryan, 8 November: "It's not a Buff, it's not a Debuff, it's labelled as an
-	# Ability, so it doesn't get purged"): the machine's own mechanic, the Polar Bear's seal, the
-	# Ore Plate, Hot Streak, on a solid tile and named so in its readout, ahead of the buffs.
+	# Ability, so it doesn't get purged"): the machine's own mechanic, the Polar Bear's seal,
+	# Hot Streak, on a solid tile and named so in its readout, ahead of the buffs.
 	var abilities: Array = []
 	var at := rows.size()
 	for id in order:
@@ -2781,14 +2783,50 @@ func _heat_marks() -> Array:
 	return out
 
 
-## Jenny on the heat a spend just added: the overheat when a machine went over the cap, else
-## the warning when one passed three quarters; one line for the spend.
+## Each machine's heat as the gauge holds it, to tell a spend that heated one.
+func _heats() -> Array:
+	var out: Array = []
+	for ms in sk.mechs:
+		out.append(ms.heat)
+	return out
+
+
+## The machines Jenny has warned are past three quarters heat (mech index -> true), each until it
+## is seen back under (_heat_rearm).
+var _heat_warned: Dictionary = {}
+
+
+## A machine seen back under three quarters heat can be warned of it again: looked at as a
+## round opens, once the machines have cooled, and after every spend.
+func _heat_rearm() -> void:
+	var marks := _heat_marks()
+	for k in range(marks.size()):
+		if int(marks[k]) == 0:
+			_heat_warned.erase(k)
+
+
+## Jenny on the heat a spend just added, one line for the spend (Ryan, 10 November: "The heat
+## warning shouldn't fire every time, not anymore ... I think we only need to warn: -Every time
+## we're overheating -The first time we reach over the warning threshold, but not again until
+## we've got back under"). The overheat, every time: a spend that heats a machine and leaves it
+## over its cap says so, whether it was over already or not. The warning, once: a machine past
+## three quarters is warned the first time it gets there and not again until it has been seen
+## back under, so a machine that stays hot, or comes down from an overheat to its cap, is not
+## warned a second time. `before` is _heats() as the spend began.
 func _heat_hook(before: Array) -> String:
-	var after := _heat_marks()
+	_heat_rearm()
+	var marks := _heat_marks()
 	var worst := 0
-	for k in range(mini(before.size(), after.size())):
-		if int(after[k]) > int(before[k]):
-			worst = maxi(worst, int(after[k]))
+	for k in range(mini(before.size(), marks.size())):
+		var m := int(marks[k])
+		if m == 0:
+			continue
+		var first := not _heat_warned.has(k)
+		_heat_warned[k] = true
+		if m == 2 and (first or sk.mechs[k].heat > int(before[k])):
+			worst = 2
+		elif first:
+			worst = maxi(worst, 1)
 	return "overheat" if worst == 2 else ("heat_high" if worst == 1 else "")
 
 
@@ -2847,7 +2885,7 @@ func _use_die(i: int, target, second = null) -> bool:
 	var returns_before := sk.returned.size()
 	var spent: Face = sk.mechs[i].face()
 	var sealed_before := Effects.is_sealed(sk.mechs[i].unit)
-	var heat_before := _heat_marks()
+	var heat_before := _heats()
 	var fuel := spent.rolls_again_on if spent != null else ""
 	var fuel_before := Effects.stacks_of(sk.mechs[i].unit, fuel) if not fuel.is_empty() else 0
 	var ok := sk.assign(i, target, second)
@@ -3972,6 +4010,7 @@ func _end_turn_now() -> void:
 	var rose_in_turn := _risen_since(returns_before)   # read before the next round's start clears the returns
 	if outcome == Skirmish.Outcome.NONE:
 		sk.start_round()
+		_heat_rearm()   # the machines have cooled: one back under three quarters can be warned again
 		for i in range(locked.size()):
 			locked[i] = false
 	_refresh_log()   # the blows type into the log as they play

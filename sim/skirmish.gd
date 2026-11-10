@@ -1325,6 +1325,14 @@ func start_round() -> void:
 	# shield, a vent (the Buzzard's Thermal Recoupler reads the heat as it stands now).
 	for ms in live_mechs():
 		_fired(ms, Effects.round_start(ms.unit, ms.heat), "round start")
+	# The hopper grants its Armoured for the round, what the loads it holds are worth (the Honey
+	# Badger's, Ryan, 10 November: "returns at the start of his turn since its granted by the
+	# funnel bar"): last round's went at the round's end as every machine's Armoured does, and a
+	# Purge may have taken it sooner. Before the foes announce, so their blows are drawn against it.
+	for ms in live_mechs():
+		var plated := Effects.plate_round(ms.unit)
+		if plated > 0:
+			log.append("%s's hopper plates it: %s ×%d" % [ms.unit.display_name, Effects.STATUS["braced"]["name"], Effects.plated(ms.unit)])
 	# Every foe announces its move for the round: which action, at whom. Chosen now, before
 	# the player acts, so the intent chips and the forecast are exact. The move first, from
 	# the ones its conditions allow (never the same special twice running), then the pick by
@@ -2921,7 +2929,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	# it took; then each foe the spend's blows damaged puts loads in, after the blow, so a claw
 	# never feeds the shot it is part of: a weapon's own number where it prints one (the
 	# Chainsaw Claw's two), the passive's for any other weapon, never past the hopper's cap. The
-	# Ore Plate follows the loads both ways.
+	# hopper's Armoured follows the loads' worth both ways (Effects._plate).
 	if loads > 0:
 		Effects.spend_loads(ms.unit, loads)
 		log.append("%s fires the hopper: %d load%s, +%d" % [ms.unit.display_name, loads, "" if loads == 1 else "s", from_hopper])

@@ -49,7 +49,7 @@ const DEVOUR_ROUNDS := 2.0       # rounds of damage a kill's Empowered stacks ar
 const SHOCK_WEIGHT := 0.6        # a Shock cashed later (a mine's, a hull's): the doubled blow, as a share of the team's average; a blow's own reads the hitter in hand (shock_cash)
 const CLEANSE_ROUNDS := 2.0      # rounds a cleansed status would otherwise have cost (Corrupted lasts the fight, Burning fades)
 const HOPPER_WEIGHT := 0.6       # a load in the hopper, as a share of what it adds when a later shot fires it
-const PLATE_ROUNDS := 2.0        # rounds a held load's Ore Plate is likely to stand (this round's blows and the next's), for the hull its armour keeps
+const PLATE_ROUNDS := 2.0        # rounds a held load's Armoured is likely to stand (this round's blows and the next's), for the hull its armour keeps
 const ROLL_AGAIN_WEIGHT := 1.0   # another roll of the die bought with a stack (the Nemesis's rage), as the die's own average blow
 const RAGE_BANK_WEIGHT := 0.5    # a stack banked by a bite of its own, as a share of the roll it buys: it waits for a fist to show
 const VITRIOL_WEIGHT := 0.5      # a status a passive lays (the funnel-web's acid) pays out over the actions to come, as Burn's does
@@ -1043,7 +1043,7 @@ func hopper_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 
 
 ## What filling the hopper is worth (the Chainsaw Claw, 11 October; any weapon on the Ore
-## Hopper, 31 October): each load gained, up to the cap's room, the Ore Plate it stands (the
+## Hopper, 31 October): each load gained, up to the cap's room, the Armoured it stands (the
 ## hull its armour keeps over the rounds it is likely held) and what this machine's best
 ## hopper-firing entry adds a load, at the odds a later shot fires it. With no cap, the hopper
 ## is worth filling while it holds less than two of that entry's shots (more would sit unfired).

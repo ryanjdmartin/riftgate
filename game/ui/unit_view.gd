@@ -44,7 +44,7 @@ var massive: bool = false
 var bars: Array = []              # [[value, max, Color, (pending)], ...]
 var bars_above: bool = false      # true: full-width gauges above the sprite; false: floating
 var pips: Array = []              # [count, of]: a count drawn as pips under the gauges (the Cassowary's sixth shot), the last lit when it is next; empty for none
-var boxes: Array = []             # [count, cap, colour, glyph]: a capped store's boxes under the gauges, lit to its count (the Nemesis's rage, Ryan, 22 October); empty for none
+var store: Array = []             # [count, cap, colour, glyph]: a capped store's bar under the heat, a segment a stack up to its cap, lit to its count (the Honey Badger's hopper, the Nemesis's rage); empty for none
 var sprite_density := 1.0         # a machine's render is this much larger than the frame it stands for (MechView3D.density); pixel art is 1
 var intent_kind: String = ""      # "attack", "defend", "heal", "buff", "debuff", or ""
 var intent_value: int = 0
@@ -122,7 +122,7 @@ func _init() -> void:
 ## What the view draws, to dress another as it (dress()): a foe the spend kills is stood in for by
 ## a copy of its view as it stood, its gauge ticking down a blow at a time, until its killing blow
 ## lands (Ryan, 2 November: "damage needs to be timed to the animation across the board").
-const LOOK := ["display_name", "is_enemy", "massive", "bars", "bars_above", "pips", "boxes", "sprite_density",
+const LOOK := ["display_name", "is_enemy", "massive", "bars", "bars_above", "pips", "store", "sprite_density",
 	"intent_kind", "intent_value", "intent_note", "intent_riders", "intent", "intent_dim", "statuses", "chip_wrap",
 	"sprite", "pixel_snap", "used_override", "breathe", "flip_h", "breathe_phase", "ground_shadow", "feet_y",
 	"hover", "sprite_at", "ground_at", "shadow_rx", "shadow_ratio", "empty_pad", "size", "texture_filter"]
@@ -148,15 +148,21 @@ func anchor_global() -> Vector2:
 
 
 func _bars_height() -> float:
-	return (bars.size() * BAR_STEP + _pips_step() + _boxes_step() + GAP) if bars_above and not bars.is_empty() else 0.0
+	return (bars.size() * BAR_STEP + _pips_step() + _store_step() + GAP) if bars_above and not bars.is_empty() else 0.0
 
 
 func _pips_step() -> float:
 	return PIP_H + 3.0 if pips.size() >= 2 and int(pips[1]) > 0 else 0.0
 
 
-func _boxes_step() -> float:
-	return PIP_H + 3.0 if boxes.size() >= 2 and int(boxes[1]) > 0 else 0.0
+## The room a capped store's bar takes in the stack: a gauge's own step.
+func _store_step() -> float:
+	return BAR_STEP if store.size() >= 2 and int(store[1]) > 0 else 0.0
+
+
+## The top of the stack of gauges above the drawing.
+func _bars_top() -> float:
+	return _visible().position.y - GAP - bars.size() * BAR_STEP - _pips_step() - _store_step()
 
 
 func _scale() -> float:
@@ -238,7 +244,7 @@ func drawn_top() -> float:
 	if bars.is_empty() or dead:
 		return vis.position.y
 	if bars_above:
-		return vis.position.y - GAP - bars.size() * BAR_STEP - _pips_step() - _boxes_step()
+		return vis.position.y - GAP - bars.size() * BAR_STEP - _pips_step() - _store_step()
 	return vis.position.y - FLOAT_LIFT
 
 
@@ -380,11 +386,11 @@ func glitch(kind: String = "tear", seconds: float = 0.5) -> void:
 func spend_chip(glyph: String) -> void:
 	_spend = 0.0
 	_spend_glyph = glyph
-	# A capped store's stack goes from its boxes (the rage, 22 October): the burst is on the box
-	# that just emptied, the count having already dropped.
-	if boxes.size() >= 4 and str(boxes[3]) == glyph and int(boxes[1]) > 0:
-		var at := clampi(int(boxes[0]), 0, int(boxes[1]) - 1)
-		_chip_rects[glyph] = [_box_rect(at).grow(3.0), boxes[2]]
+	# A capped store's stack goes from its bar (the rage, 22 October): the burst is on the
+	# segment that just emptied, the count having already dropped.
+	if store.size() >= 4 and str(store[3]) == glyph and int(store[1]) > 0:
+		var at := clampi(int(store[0]), 0, int(store[1]) - 1)
+		_chip_rects[glyph] = [_store_cell(at).grow(3.0), store[2]]
 	set_process(true)
 	queue_redraw()
 
@@ -614,15 +620,16 @@ func _draw() -> void:
 			# Full-width gauges stacked above the drawing: hull, shield, heat.
 			var bx := size.x * 0.1
 			var bw := size.x * 0.8
-			var y := vis.position.y - GAP - bars.size() * BAR_STEP - _pips_step() - _boxes_step()
+			var y := vis.position.y - GAP - bars.size() * BAR_STEP - _pips_step() - _store_step()
 			for b in bars:
 				_gauge(Rect2(bx, y, bw, BAR_H), b)
 				y += BAR_STEP
+			# A capped store's bar nestles under them, the heat's last, in their shape.
+			if _store_step() > 0.0:
+				_draw_store(Rect2(bx, y, bw, BAR_H))
+				y += _store_step()
 			if _pips_step() > 0.0:
 				_draw_pips(Rect2(bx, y, bw, PIP_H))
-				y += _pips_step()
-			if _boxes_step() > 0.0:
-				_draw_boxes(Rect2(bx, y, bw, PIP_H))
 		else:
 			# One small gauge floating above the drawing's top-right, with a leader dropping
 			# from a third of the way along its underside, diagonally down-left onto the sprite.
@@ -918,32 +925,43 @@ func _draw_pips(rect: Rect2) -> void:
 			draw_rect(box, col, false, 1.5)
 
 
-## A capped store as boxes across the gauges' width (Ryan, 22 October: the rage, individual
-## boxes up to the cap), one lit for each stack it holds, so the count reads by how many are
-## filled. The last lit box is where a stack's spend bursts (spend_chip), as the chip it
-## replaces was.
-func _draw_boxes(rect: Rect2) -> void:
-	var cap := int(boxes[1])
-	var count := clampi(int(boxes[0]), 0, cap)
-	var col: Color = boxes[2] if boxes.size() >= 3 else Palette.HUD
-	for k in range(cap):
-		var box := _box_rect(k, rect)
-		draw_rect(box.grow(1.5), Color(Palette.BG, 0.9))
-		if k < count:
-			draw_rect(box, col)
-		draw_rect(box, col, false, 1.5)
+## A capped store as one more bar under the heat, in the heat bar's own shape (Ryan, 10 November:
+## "Resource bars like the badgers should be the same shape as the other resource bars, and
+## continuous. So the badger's should nestle under the Heat bar, same shape, divided into four
+## clear segments"; separate boxes from 22 October until then): one bar on its dark ground, lit
+## from the left to its count in the store's colour, divided into as many segments as its cap.
+## A divider leans as the bar's ends lean and reads on both sides of the fill: a wide cut in the
+## ground's dark through the lit part, a line in the bar's colour through the dark part, so the
+## count is how many segments are lit and the room left how many are not, by structure on any
+## colour. The last lit segment is where a stack's spend bursts (spend_chip).
+const STORE_CUT := 4.0    # a divider's cut through the lit part: hot, for the phone
+const STORE_LINE := 2.0   # a divider's line through the unlit part
+
+func _draw_store(rect: Rect2) -> void:
+	var cap := maxi(1, int(store[1]))
+	var count := clampi(int(store[0]), 0, cap)
+	var col: Color = store[2] if store.size() >= 3 else Palette.HUD
+	Hud.fill_poly(self, Hud.slant(rect.grow(1.0), 4.0), Color(Palette.BG, 0.9))
+	Hud.gauge(self, rect, float(count) / float(cap), col)
+	Hud.stroke_poly(self, Hud.slant(rect, 4.0), Color(col, 0.95), 1.0)   # a full-strength edge, so an empty bar still shows
+	for k in range(1, cap):
+		# The bar's ends lean 4 across its height (Hud.slant): a divider leans with them.
+		var x := rect.position.x + rect.size.x * float(k) / float(cap)
+		var top := Vector2(x + 2.0, rect.position.y)
+		var foot := Vector2(x - 2.0, rect.end.y)
+		if k <= count:
+			draw_line(top + Vector2(0.4, -1.0), foot + Vector2(-0.4, 1.0), Color(Palette.BG, 0.95), STORE_CUT)
+		else:
+			draw_line(top, foot, Color(col, 0.95), STORE_LINE)
 
 
-## Box `k` of a capped store's row, in `row` or where the gauges put the row.
-func _box_rect(k: int, row: Rect2 = Rect2()) -> Rect2:
+## Segment `k` of a capped store's bar, in `row` or where the gauges put the bar.
+func _store_cell(k: int, row: Rect2 = Rect2()) -> Rect2:
 	if row.size == Vector2.ZERO:
-		var vis := _visible()
-		row = Rect2(size.x * 0.1, vis.position.y - GAP - _boxes_step(), size.x * 0.8, PIP_H)
-	var cap := maxi(1, int(boxes[1]))
+		row = Rect2(size.x * 0.1, _bars_top() + bars.size() * BAR_STEP, size.x * 0.8, BAR_H)
+	var cap := maxi(1, int(store[1]))
 	var step := row.size.x / float(cap)
-	var side := minf(row.size.y + 2.0, step * 0.7)
-	var c := Vector2(row.position.x + step * (k + 0.5), row.get_center().y)
-	return Rect2(c - Vector2(side, side) * 0.5, Vector2(side, side))
+	return Rect2(row.position.x + step * k, row.position.y, step, row.size.y)
 
 
 func _gauge(rect: Rect2, b: Array) -> void:

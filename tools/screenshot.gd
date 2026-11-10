@@ -245,6 +245,28 @@ func _apply_pose() -> void:
 				for id in ["burning", "flakked", "shocked", "cryoed", "vitriol"]:
 					Effects.stack(foe, Effects.STATUS[id], Effects.SKIRMISH, "mech", 2, Effects.status_decay(Effects.STATUS[id]))
 			s._refresh()
+		"stores":
+			# Every machine's own resource row part filled, to judge the rows beside the heat bar
+			# (10 November; RIFTGATE_TEAM=badger,nemesis,cassowary,swallowtail, then musk_ox): the
+			# Honey Badger's hopper at three loads of four, the Nemesis's rage at three, the
+			# Cassowary's count two short of its shot, the Swallowtail's Muster a charge and a
+			# half, the Musk Ox's magazine two down, and each machine a little hot.
+			for ms in s.sk.mechs:
+				var u: Unit = ms.unit
+				ms.heat = maxi(ms.heat, int(u.heat_max * 0.4))
+				if Effects.store_cap(u, "hopper") > 0:
+					Effects.add_loads(u, 3)
+				if Effects.store_cap(u, "rage") > 0:
+					Effects.stack(u, Effects.STATUS["rage"], Effects.SKIRMISH, "mech", 3, Effects.DECAY_NONE)
+				var every := Effects.counts_shots(u)
+				if every > 2:
+					Effects.stack(u, Effects.STATUS["shots"], Effects.SKIRMISH, "mech", every - 2, Effects.DECAY_NONE)
+				var rule := Effects.muster_rule(u)
+				if not rule.is_empty():
+					Effects.stack(u, Effects.STATUS["muster"], Effects.SKIRMISH, "mech", int(int(rule.get("value", 30)) * 1.5), Effects.DECAY_NONE)
+				if ms.ammo_max > 0:
+					ms.ammo = maxi(0, ms.ammo_max - 2)
+			s._refresh()
 		"heat":
 			# A foe's fire on the first machine: Burning ×2 and Scorched ×1 on its chip row, with
 			# Primed beside them, the one other flame a machine wears.
