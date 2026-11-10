@@ -6,8 +6,8 @@ locked piece earns its lock by gluing its chassis's identity together or by bein
 nobody else has, its number even with the kit beside it; a machine holds a level, bought in the
 hangar once the Convergence reaches it, that lifts the whole machine, its locked pieces and its
 stats, with a branch; and tier zero is tier one's power, only simpler. His words carry his name
-and the day; everything else is Claude's for him to move. Nothing here is in `content/` or a
-Decided row: the rows, the rules and the content land on his go, after section 6.
+and the day; everything else is Claude's for him to move. Nothing here is in `content/`: the direction is the bible's locked row and tiers row since his answers of that day; the content,
+the rules as built and the code follow in section 9's order.
 
 "Level" is a working word for the bought step, since "tier" stays the chassis's complexity; the
 name is his.
@@ -177,22 +177,24 @@ Built from his words; each line a consequence unless it is marked a question:
    `sim/effects.gd` like every number, never a write to a stat or a component; a machine's level
    and its branches are the run's to save.
 
-## 6. Open, for Ryan
+## 6. Settled, and what is still his
 
-Where his words give two answers or none:
+Both questions of the second round are settled on Claude's leans (Ryan, 10 November: "Your leans
+make sense"), and the bible's locked row and tiers row carry the direction:
 
-1. **What a tier-two and a tier-three machine stock.** "We can still put those into stock
-   loadouts" lets a tier-one machine stock tier one. The same reading one step up has a tier-two
-   machine stocking tier two and a tier three stocking tier three, which is his "better outfitted
-   from the start" and keeps a locked piece even with its stock at every level; but the tiers row
-   keeps tier three as "only ever found", the "highlight, chase pieces". Claude's lean: a machine
-   stocks up to its own tier at tiers one and two, and a tier three stocks to tier two, its
-   tier-three kit still found; its locked pieces are then a band above its stock as it arrives,
-   in a team whose blueprints are there already.
-2. **Whether tier zero is still a tier.** With its power tier one's, four tier names cover three
-   bands. Claude's lean: one ladder of three everywhere (the rift's tier, the chassis's, the
-   level, the component's), and "basic" a property of a plain tier-one piece: its blueprint owned
-   from a run's start.
+1. **What a machine stocks**: up to its own tier at tiers one and two; a tier three stocks to
+   tier two, its tier-three kit still found, so its locked pieces are a band above its stock as
+   it arrives, in a team whose blueprints are there already.
+2. **One ladder of three**: the rift's tier, the chassis's, the level and the component's; a
+   basic is a plain tier-one piece whose blueprint is owned from a run's start, and "tier zero"
+   is no longer a tier.
+
+For the tweak round, his word the same day: "Remember during the tweak that the special identity
+can also be after it's upgrades, not just at its base form." So a piece may be plain at level one
+and become the thing nobody else has in a branch.
+
+Still his: the six tweaks (section 4), the sort's glue row as Claude cut it, and the name for a
+machine's level.
 
 ## 7. The bench
 
@@ -240,10 +242,9 @@ reason and not only the idea:
 
 ## 9. The order, on his answers
 
-1. His marks on section 6 and on the sort's first cut.
-2. The six tweaks, a first round in chat: the four tier-one pieces, then the Plow and the
-   Harpoon.
-3. The rows and the rules, the bible republished on his word.
+1. Done, 10 November: his marks on the questions, and the direction as the bible's rows.
+2. The six tweaks, a first round in chat (brought 10 November), then his marks.
+3. The rules as each part is built, the bible republished on his word.
 4. The basics' numbers and the stock rule with the refit pass's stock re-deal, read by the
    runner before they stand.
 5. The ladders and the level in the engine, the runner's rows at each level; the branches as
