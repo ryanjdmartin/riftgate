@@ -144,8 +144,9 @@ every machine is wrecked. There is no round limit.
   cylinder, in order (the one showing lit and an arrow to the next, in the readout). Its Spin-Up spins the whole die, the entry
   showing included, one of the two rolls kept on purpose (Rerolls, above), so it may land on itself and
   be spent again. Every sixth weapon or equipment it aims at a foe in the fight counts double,
-  its damage and the stacks it lays; the count shows as six pips under the heat bar, the sixth
-  lit when it is next, and a shield, a vent, a buff and a spin are no shots.
+  its damage and the stacks it lays; the count shows as six cells under the heat bar, as a
+  store's are, the sixth apart by its shape (taller, a heavier border, a diamond set in it) and
+  lit in the heat's colour when it is next, and a shield, a vent, a buff and a spin are no shots.
 - **The Quick-turn Avionics Relay** (the Needletail's passive): equipment, a buff or a debuff
   read on the entry as it is spent, is Rapid on it once a round, the entry dark for the rest of
   the round as Rapid's is; the die shows the Rapid on every setup while the gate is open. A piece Rapid of its own spends no gate.
@@ -568,7 +569,8 @@ hopper, the Cassowary's shot count; the Musk Ox's magazine works the same way), 
 and never a buff: each shows as a row under the heat in the heat bar's shape, by how it fills:
 one that comes in whole units (the hopper's loads, the rage, the magazine's ammo) as separate
 cells, each with its own border and clear ground between them, the lit ones filled; one that
-fills by degrees (the Muster) as a meter with a notch a charge; the shot count as its pips; and no Silence or Purge touches it, its filling or its use. An **Ability** is a
+fills by degrees (the Muster) as a meter with a notch a charge; the shot count as cells too,
+its last marked as the shot that counts; and no Silence or Purge touches it, its filling or its use. An **Ability** is a
 unit's own mechanic, the rule it plays by, and never a buff or a debuff, so no Purge, Silence
 or Cleanse touches it; its chip shows its mark cut out of a solid tile, ahead of the unit's
 other chips, and its hold line names it an Ability and says what goes on. A foe's: the Goblin

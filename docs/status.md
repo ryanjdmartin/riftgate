@@ -211,8 +211,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   stripping it until then, `ore_plate` retired everywhere; a resource that comes in whole units a row of
   separate cells under the heat, bordered, clear ground between ("split them into different
   bars with borders and whitespace, in the same row": the hopper's four, the rage's five, the
-  Musk Ox's ammo; `UnitView._draw_cells`), the Muster a meter still and the Cassowary's pips as
-  they were. Poses new: `hunter`, `elite`, `stores`. A route drawn by hand from a machine that
+  Musk Ox's ammo; `UnitView._draw_cells`), the Muster a meter still, the Cassowary's
+  count cells too with its sixth marked (taller, a heavier border, a diamond). Poses new: `hunter`, `elite`, `stores`. A route drawn by hand from a machine that
   already has an order is still refused (the tap gives it again). All first cuts (the to-do's
   judge line).
 - **The map playtest list of 10 November** (`ccr-c71bc17f-hclj2c`, on main the same day; five

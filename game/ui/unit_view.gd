@@ -29,7 +29,6 @@ const FLOAT_BAR_W := 60.0
 const GAP := 10.0          # between the drawing and its gauges above or its chips below
 const FLOAT_LIFT := 16.0   # a foe's floating gauge: how far its bottom row sits above the drawing (any higher and it crowds the rank above)
 const LEADER := 16.0       # the floating gauge's leader, in x and in y; it runs onto the sprite, which is allowed
-const PIP_H := 9.0         # the pips' row under the gauges, and the step it adds to them
 const PENDING_RATE := 3.2  # the one clock every pending mark breathes on, radians a second: a gauge's change and a buff on its way (a preview chip) pulse in step
 const CHIP_GAP := 6.0      # between two chips in a row
 const ROW_GAP := 4.0       # between two rows of chips
@@ -43,7 +42,7 @@ var is_enemy: bool = false
 var massive: bool = false
 var bars: Array = []              # [[value, max, Color, (pending)], ...]
 var bars_above: bool = false      # true: full-width gauges above the sprite; false: floating
-var pips: Array = []              # [count, of]: a count drawn as pips under the gauges (the Cassowary's sixth shot), the last lit when it is next; empty for none
+var pips: Array = []              # [count, of]: a count toward a shot drawn as cells under the gauges (the Cassowary's sixth shot), the last lit when it is next; empty for none
 var store: Array = []             # [count, cap, colour, glyph]: a capped store's bar under the heat, a segment a stack up to its cap, lit to its count (the Honey Badger's hopper, the Nemesis's rage); empty for none
 var sprite_density := 1.0         # a machine's render is this much larger than the frame it stands for (MechView3D.density); pixel art is 1
 var intent_kind: String = ""      # "attack", "defend", "heal", "buff", "debuff", or ""
@@ -152,7 +151,7 @@ func _bars_height() -> float:
 
 
 func _pips_step() -> float:
-	return PIP_H + 3.0 if pips.size() >= 2 and int(pips[1]) > 0 else 0.0
+	return BAR_STEP + 2.0 if pips.size() >= 2 and int(pips[1]) > 0 else 0.0   # a gauge's step, and room for the last cell, taller than its row
 
 
 ## The room a capped store's bar takes in the stack: a gauge's own step.
@@ -629,7 +628,7 @@ func _draw() -> void:
 				_draw_store(Rect2(bx, y, bw, BAR_H))
 				y += _store_step()
 			if _pips_step() > 0.0:
-				_draw_pips(Rect2(bx, y, bw, PIP_H))
+				_draw_pips(Rect2(bx, y + 1.0, bw, BAR_H))
 		else:
 			# One small gauge floating above the drawing's top-right, with a leader dropping
 			# from a third of the way along its underside, diagonally down-left onto the sprite.
@@ -896,33 +895,39 @@ func _draw_dashed(rect: Rect2, color: Color, width: float) -> void:
 ## to read against any bar colour and for any kind of colour vision. Where it sits says
 ## which way the bar moves: inside the fill, that much is about to go; past the fill, that
 ## much is coming.
-## The count as pips across the gauges' width (the Cassowary's sixth shot, 21 October: six
-## under the heat bar, Ryan's spot): a filled pip a shot, the last a diamond, so it reads as
-## the one that counts by shape as well as colour, lit in the heat's colour when it is next.
+## A count toward a shot as cells across the gauges' width, in the stores' own shape and row (the
+## Cassowary's sixth shot; pips from 21 October until Ryan, 10 November: "Cassowary's needs to
+## match as well - just need a different kind of indication that the sixth is special"): a cell
+## a shot, lit to the count, and the last, the one that counts double, apart from the rest by
+## structure: taller than its row, under a heavier border, a diamond set in it. When it is next
+## the whole cell lights in the heat's colour and breathes, the diamond cut out of it.
 func _draw_pips(rect: Rect2) -> void:
-	var of := int(pips[1])
+	var of := maxi(1, int(pips[1]))
 	var count := int(pips[0]) % of
-	var step := rect.size.x / float(of)
 	var hud := Palette.HUD
-	for k in range(of):
-		var c := Vector2(rect.position.x + step * (k + 0.5), rect.get_center().y)
-		var r := minf(rect.size.y * 0.5, step * 0.32)
-		var last := k == of - 1
-		var lit := last and count == of - 1
-		var col: Color = Palette.HEAT if lit else hud
-		if last:
-			var pts := PackedVector2Array([c + Vector2(0, -r - 1.5), c + Vector2(r + 1.5, 0), c + Vector2(0, r + 1.5), c + Vector2(-r - 1.5, 0)])
-			draw_colored_polygon(pts, Color(Palette.BG, 0.9))
-			if lit:
-				draw_colored_polygon(pts, col)
-			pts.append(pts[0])
-			draw_polyline(pts, col, 1.5)
-		else:
-			var box := Rect2(c - Vector2(r, r), Vector2(r, r) * 2.0)
-			draw_rect(box.grow(1.0), Color(Palette.BG, 0.9))
-			if k < count:
-				draw_rect(box, col)
-			draw_rect(box, col, false, 1.5)
+	for k in range(of - 1):
+		var cell := _cell_rect(k, of, rect)
+		var pts := Hud.slant(cell, 4.0)
+		Hud.fill_poly(self, Hud.slant(cell.grow(1.0), 4.0), Color(Palette.BG, 0.9))
+		if k < count:
+			Hud.fill_poly(self, Hud.slant(cell.grow(-2.0), 2.4) if cell.size.x >= 18.0 else pts, hud)
+		Hud.stroke_poly(self, pts, Color(hud, 0.95), 1.5)
+	var last := _cell_rect(of - 1, of, rect).grow_individual(0.0, 2.0, 0.0, 2.0)
+	var next := count == of - 1
+	var col: Color = Palette.HEAT if next else hud
+	var lpts := Hud.slant(last, 4.0)
+	Hud.fill_poly(self, Hud.slant(last.grow(1.5), 4.0), Color(Palette.BG, 0.92))
+	if next:
+		var beat := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 1000.0 * PENDING_RATE)
+		Hud.fill_poly(self, lpts, Color(col, 0.7 + 0.3 * beat))
+	Hud.stroke_poly(self, lpts, Color(col, 1.0), 2.5)
+	var c := last.get_center()
+	var r := minf(last.size.y * 0.5 - 2.5, last.size.x * 0.3)
+	var gem := PackedVector2Array([c + Vector2(0, -r), c + Vector2(r, 0), c + Vector2(0, r), c + Vector2(-r, 0)])
+	if next:
+		draw_colored_polygon(gem, Color(Palette.BG, 0.95))
+	else:
+		draw_colored_polygon(gem, col)
 
 
 ## A capped store as one more bar under the heat, in the heat bar's own shape and place (Ryan, 10
@@ -937,8 +942,8 @@ func _draw_pips(rect: Rect2) -> void:
 ## so (the hopper's loads, the rage, the Musk Ox's ammo); one that fills by degrees stays a
 ## meter (the Swallowtail's Muster: "that's a meter with non-discrete fills"). The last lit cell
 ## is where a stack's spend bursts (spend_chip).
-const CELL_GAP := 5.0        # the clear ground between two cells: hot, for the phone
-const CELL_GAP_MANY := 3.0   # the same in a row of more than six (the magazine's ten)
+const CELL_GAP := 3.0        # the clear ground between two cells (5 at first; Ryan, 10 November: "Reduce space in between them, otherwise good")
+const CELL_GAP_MANY := 2.0   # the same in a row of more than six (the magazine's ten)
 
 func _draw_store(rect: Rect2) -> void:
 	_draw_cells(rect, int(store[0]), int(store[1]), store[2] if store.size() >= 3 else Palette.HUD)
