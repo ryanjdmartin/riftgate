@@ -1560,12 +1560,20 @@ def drive_set(sid, title, form, note):
             "rows": [("%s%d" % (sid, k), t, n, opts) for k, (t, n, opts) in enumerate(DRIVE_ROWS)]}
 
 
+# A's halves swapped (Ryan, 10 November: "I think before I choose I need to hear a version with A2 and A1 swapped in
+# position"): the hook alone on the FM synth opening the head, the hook on the synth lead over the FM synth's arpeggio
+# closing it into the breakdown. The halves share A's eight bars of chords, the bass's rhythms and the kick, and the
+# drums keep their places, so only the synths' parts move.
+A_SWAPPED = TURNS_DRIVE["A"][4:] + TURNS_DRIVE["A"][:4]
 SETS = [
-    {"id": "nv", "half": "battle", "title": "Without the synth's eighths", "form": FORM10, "seed": NAME + "_battle",
-     "note": "The whole battle half (Ryan, 10 November: \"Drop the 8th note drive from the synth in the background, everywhere. The same, but also back up to 98\"). The first two rows switch anywhere, each carrying on from the same beat; the third runs faster, so start it from its top.",
-     "rows": [("nv0", "As the pair has it", "The crunch synth on straight eighths under the head, the lead's section and R, at 96.", {}),
+    {"id": "nv", "half": "battle", "title": "Without the synth's eighths, and A's halves swapped", "form": FORM10, "seed": NAME + "_battle",
+     "note": "The whole battle half (Ryan, 10 November: \"Drop the 8th note drive from the synth in the background, everywhere. The same, but also back up to 98\"; \"I think before I choose I need to hear a version with A2 and A1 swapped in position\"). The four rows at 96 switch anywhere, each carrying on from the same beat, and so do the two at 98; going between 96 and 98, start the row from its top.",
+     "rows": [("nv0", "As the pair has it", "A1 then A2; the crunch synth on straight eighths under the head, the lead's section and R; at 96.", {}),
               ("nv1", "Without the synth's eighths", "The crunch synth's eighths out everywhere, at 96.", {"pulse": False}),
-              ("nv2", "Without them, at 98", "The same, two beats a minute faster.", {"pulse": False, "bpm": 98})]},
+              ("nv2", "Without them, at 98", "The same, two beats a minute faster.", {"pulse": False, "bpm": 98}),
+              ("nv3", "A's halves swapped", "A2 then A1, with the synth's eighths, at 96.", {"turns": {"A": A_SWAPPED}}),
+              ("nv4", "Swapped, without the synth's eighths", "A2 then A1, the synth's eighths out, at 96.", {"turns": {"A": A_SWAPPED}, "pulse": False}),
+              ("nv5", "Swapped, without them, at 98", "The same, two beats a minute faster.", {"turns": {"A": A_SWAPPED}, "pulse": False, "bpm": 98})]},
 ]
 PAIR = {"id": "night_shift_r33", "title": "Night Shift, round thirty-three"}
 INTRO = "intro: the kick on every beat and the hats, the pad fading in through the fourth bar and swelling from 0:10, the sub from the fifth"
