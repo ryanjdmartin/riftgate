@@ -99,6 +99,15 @@ His later rounds, the same day:
 - **The Dingo**: "I agree about the harpoon, but the dingo needs an identity other than 'acts
   twice.' So either the harpoon gets really cool, or it gets cut and we shuffle the model around
   and go all in on the translocator."
+- **The floor, not the step** (of the lowering): "The first step in power was always going to be
+  tier two, wasn't it? I'm just lowering the floor."
+- **A branch tweaks the locked piece, not the passive**: "I was for the most part leaning towards
+  tweaking the locked pieces more than the passives when it comes to upgrades. Many passives have
+  enough going on already, and I don't want to add complexity for the sake of complexity, we have
+  enough of that. A passive numbers increase can be part of the straight upgrade if it warrants
+  it. But like the dingos passive, what would you really add there as a meaningful choice that
+  isn't just giving it a whole new passive on top?" Claude's lean of one direction on the piece
+  and one on the passive is withdrawn on it.
 
 ## 2. What the content shows (10 November, main's content)
 
@@ -202,8 +211,8 @@ Built from his words; each line a consequence unless it is marked a question:
      basics by another name: each takes a mechanic, becomes a basic or retires, the component
      pass's call.
    - In tier-one rifts a find is a new trick and never a bigger number; the first step in power
-     is tier two's, at the Convergence's gate, and how tall that step is with tier one lowered is
-     the pricing pass's read.
+     is tier two's, at the Convergence's gate, as it was always going to be (his word: the
+     lowering moves the floor, never the step's place).
 2. **A machine holds a level, one to three.** A chassis arrives at the level of its tier (his
    word), so a tier one is bought up twice, a tier two once and a tier three never. The chassis's
    tier keeps its meaning, complexity, and gains one: where it starts.
@@ -212,8 +221,9 @@ Built from his words; each line a consequence unless it is marked a question:
    machine in one purchase: its stat line (hull and shield; under the refit pass its regen and
    cooling, a number a level) and the number on every locked piece it carries. It belongs to the
    chassis and a wreck keeps it (his word; a wreck sits out a turn and returns).
-4. **Each upgrade carries a branch**, a pick of one from two: a tweak to a locked piece, or to
-   the passive's number or mechanic, never a stat (his word: stats are the modules' job). A tier
+4. **Each upgrade carries a branch**, a pick of one from two, a tweak to a locked piece: never a
+   stat (his word: stats are the modules' job) and not the passive, whose number may rise with
+   the plain lift where it warrants one (his word). A tier
    one picks twice, a tier two once, which is what makes a lower chassis worth investing in (his
    reason). Twenty-nine choices and fifty-eight forms on today's roster, each proposed in chat.
 5. **A locked piece at level N is a tier-N piece in power**, even with the kit beside it (his
@@ -254,8 +264,15 @@ machine's level, and three things his later rounds opened:
    to a machine that took the first; under the third a tier one ends in one of four pairs, every
    pair two different tweaks, the most soup and four pairings to keep sensible. Claude's lean:
    the second, its second pick a real one (deepen or broaden) and its deep end one idea taken
-   further, the place an exclusive can arrive late; where a machine has a locked piece and a
-   passive, one direction each (the gun or the suite). What his words leave out: a tier two,
+   further, the place an exclusive can arrive late. Both directions live on the locked pieces
+   (his word). What follows: a machine with two locked pieces takes a direction on each (the
+   Badger's Claw or its Fragmenter); most machines lock one, so both directions sit on the one
+   piece and the mixed build puts two tweaks on one entry, which is where the soup would come
+   from; a machine with no locked piece (the Clydesdale, the Cottonmouth) has no branch, its
+   lifts plain. Claude's guard for the one-piece machines, his to take or leave: a tweak changes
+   what is there before it adds (a number, a reach, a count of strikes, a cost, a condition), of
+   a piece's two directions at most one adds a word, and whatever two picks are taken the piece
+   still reads in one line, as a passive must. What his words leave out: a tier two,
    which arrives at level two with no first pick. Claude's lean: it picks one of its two
    directions' single step, two forms, so a tier one has three ends, a tier two two and a tier
    three none.
