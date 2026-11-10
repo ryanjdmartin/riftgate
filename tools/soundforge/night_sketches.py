@@ -330,7 +330,8 @@ TURNS_WRITTEN = {
 # rhythm or on one and three; the off-beat piano out; the arpeggio kept.
 TURNS_DRIVE = {   # on his core pairs since the twenty-eighth round
     "I": [("n11.root|n12.root", "")] * 2 + [("n11.root|n12.root", "arp:high")] * 2,
-    "A": [("written.E", "both:push")] * 4 + [("n1.lean|n3.lean", "hook:back")] * 4,
+    # the head on a core pair throughout, the eighths the synth's (10 November: "section A should be a core, not straight eighths, yes. The straight 8s are the synth bass's job")
+    "A": [("n1.lean|n3.lean", "both:push")] * 4 + [("n1.lean|n3.lean", "hook:back")] * 4,
     "C": [("n9.lean|n14.lean", "")] * 4 + [("n5.lean|n6.lean", "arp:back")] * 4,
     "D": [("332.home", "")] * 4,
     "R": [("rest", "")] * (R_BARS // 2),
@@ -355,7 +356,7 @@ DRIVE_ON = True   # the full pair's
 DUEL_WAY = "lead"   # the duel as a lead over the grooves (the full pair's); "three" the three basses; "trade" round twenty-one's lines
 PUSHER_FINGERS = 0.7   # the fingers on the eighths against the riffer's level, 3 dB under it
 DRIVE_PULSE = {"inst": "bass", "mode": "riff", "gain": 0.3, "hold": 0.8, "params": {"drive": 2.5, "cutoff": 700.0}}
-K13, K332, KGAL, SN24, HATQ = "x.......x.......", "x..x..x.x..x..x.", "x.xx..x.x.xx..x.", "....x.......x...", "x...x...x...x..."
+K13, K332, KGAL, SN24, HATQ = "x.......x.......", "x..x..x.x..x..x.", "x.xx..x.x.xx..x.", "....x.......x...", "x.x.x.x.x.x.x.x."   # the hat on eighths (10 November: "Hats should be on 8s for the whole track, not quarters")
 VOICINGS = {"back": ("lead", "fm"), "push": ("fm", "lead"), "high": ("pluck", "fm")}
 UP = "R"   # the later spot where the guitar leaves the bass's octave ("save the octave-up for a later spot")
 
@@ -925,7 +926,7 @@ def duel_drums(brk=True, dark=False, drive=False):
         else:
             last = b == R_BARS - 1
             row = {"kick": run_starts(RHYTHMS[LEAD_GROOVES[b]]) if dark == "lead" else DUEL_THREE_KICK[b] if drive == "three" else K13 if drive else groove(GROOVE_KICK, b), "snare": SN24 if drive else groove(GROOVE_SNARE, b),
-                   "hat": ("x...x..........." if last else HATQ) if drive else "xxxxxxxx........" if last else "x" * 16,
+                   "hat": ("x.x.x.x........." if last else HATQ) if drive else "xxxxxxxx........" if last else "x" * 16,
                    "china": "........x......." if turn_start else "." * 16, "stack": "." * 16 if drive else "..x...x...x...x.",
                    "tom": FILL_TOM if last else "." * 16, "tom2": FILL_TOM2 if last else "." * 16,
                    "knock": "......x.......x.", "tick": "x" * 16, "clank": "..............x." if turn_start else "." * 16}
@@ -1288,15 +1289,15 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
             r_pulse = r_pulse[:16 * DUEL_HITS] + THREE_THREE_TWO.replace("r", root) + r_pulse[16 * DUEL_HITS + 16:]
         fingers = duel == "three" and duel_pusher == "fingers"
         voices.append(dict(DRIVE_PULSE, params=dict(DRIVE_PULSE["params"]),
-                           pat=dict({"A": "." * 128 + e8, "C": e8}, **({} if fingers else {"R": r_pulse}))))
+                           pat=dict({"A": e8, "C": e8}, **({} if fingers else {"R": r_pulse}))))
         bvp = BASS_VOICES[bass]
         voices.append({"inst": bvp["inst"], "params": dict(bvp["params"]), "mode": "riff", "hold": 0.8, "octave": -1,
                        "gain": 0.27 * 10.0 ** (bass_db / 20.0) * bvp["level"] * PUSHER_FINGERS, "pat": {"R": r_pulse} if fingers else {}})
         drums["kick"].update({sec: turns_kick(turns[sec], sec != "O") for sec in "IACO" if sec in turns})
         drums["snare"].update(A=SN24, C=SN24, O=SN24)
-        drums["hat"].update(I=HATQ * 7 + "x...x...........", A=HATQ * 7 + "x...x...........", O=HATQ, D=HATQ)
+        drums["hat"].update(I=HATQ * 7 + "x.x.x.x.........", A=HATQ * 7 + "x.x.x.x.........", O=HATQ, D=HATQ)
         drums["ride"] = {}
-        drums["hat"]["C"] = HATQ * 7 + "x...x..........."
+        drums["hat"]["C"] = HATQ * 7 + "x.x.x.x........."
         drums["stack"].pop("D", None)
         if d == "blend":
             drums["kick"]["D"] = K332 * 7 + "x..x..x.x...x.x."

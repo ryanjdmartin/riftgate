@@ -915,7 +915,7 @@ The tasks are the to-do's; this is the index of what waits.
   before it the duel on three basses, none trading, a pusher on the
   eighths, a riffer and the top Omnific, "trading was the mistake"; the drive on trial over round twenty-one's half, the
   turns of two bars gone ("the turn taking was a mistake"), a rhythm held eight bars, the bass or the
-  crunch synth always on the eighths, the hat on quarters, the kick on the bass's rhythm or one and
+  crunch synth always on the eighths, the hat on eighths, the kick on the bass's rhythm or one and
   three, no off-beat piano or open hat; 9 November: the dark
   pass and the written bass lines at 96 both retired, "take a step back to the previous version, before both 'darkening' passes, and look
   at the root cause ... more intense, more driving, less chipper"; a set takes the off-beat piano,
@@ -1215,7 +1215,7 @@ into this file in the same commit as its first publish; the procedures are in `R
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
   twenty-seventh, the new hats in, the fingers bass's eighths under X, L's instruments on M, `hold_sketches.py`; Night Shift's twenty-eighth, his core rhythms and R a lead over the grooves, `night_sketches.py`;
-  The Far Bank's map half's eighth, its lift settled, `far_sketches.py`; the real basses, `real_bass.py`), every pair on the shipped tracks as built in tune on 6 November, at the page's version 73. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
+  The Far Bank's map half's eighth, its lift settled, `far_sketches.py`; the real basses, `real_bass.py`), every pair on the shipped tracks as built in tune on 6 November, at the page's version 74. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
   publish's 64 MB goes up in two publishes: the new files first under the live page, then the
   new page with the rest, the old round's files removed.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
