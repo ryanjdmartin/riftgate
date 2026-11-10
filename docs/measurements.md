@@ -6733,8 +6733,8 @@ seed 7, GORGE, flooded channels, narrowest crossing 3, the guarantee opened 2
 
 Probes behind the field's and the fodder's dials (a debug build's SETTINGS → TRIALS; `Ramp.depth_trial`,
 `Battle.opening_trial`, `Battle.fodder_trial`) and behind the goblin's role put to him in chat.
-The only content that moved is every machine's move, one more, on his word; no probe here
-reads it. His play (the MODEL deal at a regen of two): "I think the map is a bit too shallow
+The only content that moved with them is every machine's move, one more, on his word, which
+no probe here reads; the goblin's own kit followed on his call (its part, below). His play (the MODEL deal at a regen of two): "I think the map is a bit too shallow
 ... If the map is a little deeper, and the seam starts a little farther out, it will feel more
 like I can actually plan a little bit ahead instead of panicking from the very start, which is
 the case now - feels like the correct play is to throw all machines down the middle and grind
@@ -6810,41 +6810,75 @@ fight more is turns on the clock, a wave every third turn and the seam two rows 
 peak. `Battle.fodder_trial` counts a kill at the share when its pack came as no elite, an
 elite's pack whole, and leaves the tally salvage and Anathema read as it was.
 
-**The goblin's knife.** The goblin as content has it: 3 hit points, a knife of 2 and one more
+**The goblin's knife.** The goblin as content had it: 3 hit points, a knife of 2 and one more
 for every other goblin standing, so four deal 20 a round, then 12, 6 and 2 as they fall.
-Variants laid over the loaded content for the run (nothing in `content/` moved), the Meadow's
-goblin warband (four goblins before two Mandragoras, rated for three), the greedy rung, 30
-seeds a cell, each a direction: won, rounds, hull lost. The block is the Goblin Guard's Shield
-Wall (armour up one until its next action, one action in three), or one point of armour always.
+Variants laid over the loaded content for the run, the greedy rung, 30 seeds a cell, each a
+direction: rounds and hull lost, and the share won where it is under 100%. The wall is the
+Goblin Guard's Shield Wall (armour up one until its next action, one action in three).
 
-| The goblin | The default three, today's dice | The Stingray and the Prairie Dog, today's dice | The default three, the MODEL at regen 2 | The Stingray and the Prairie Dog, the MODEL at regen 2 |
+Corrected the same day. This probe's first run kept the loaded content between its variants
+(the default content is cached, and a variant's wall was added on top of the last one's), so
+every walled row after the first carried two or three walls, the always-on armour's row three
+walls with it, and the grove's rows none of today's knife; what it said of them was wrong, and
+the lean it gave Ryan (armour always on "holds for about the same hull") with it. The rows
+below are the rerun, a fresh load for every variant and the goblin's kit pinned in the probe;
+the rows that were right the first time read the same.
+
+The goblin warband (four goblins before two Mandragoras, rated for three):
+
+| The goblin | The default three: today's dice, the MODEL at regen 2 | The Stingray and the Prairie Dog: today's dice | The MODEL at regen 2 | The Stingray, the Prairie Dog and the Skua: today's dice, the MODEL |
 |---|---|---|---|---|
-| Today: 2, one more a peer | 100% · 2.4 · 0% | 97% · 6.5 · 30% | 100% · 2.2 · 0% | 100% · 5.5 · 12% |
-| A straight 3 | 100% · 2.4 · 0% | 100% · 6.6 · 20% | 100% · 2.2 · 0% | 100% · 5.3 · 8% |
-| A straight 4 | 100% · 2.4 · 0% | 97% · 6.7 · 37% | 100% · 2.2 · 0% | 100% · 5.4 · 18% |
-| A straight 3 and the wall | 100% · 2.5 · 0% | 100% · 6.7 · 10% | 100% · 2.1 · 0% | 100% · 5.3 · 3% |
-| A straight 4 and the wall | 100% · 2.5 · 0% | 100% · 7.0 · 19% | 100% · 2.0 · 0% | 100% · 5.6 · 5% |
-| A straight 5 and the wall | 100% · 2.3 · 0% | 97% · 7.6 · 28% | 100% · 2.0 · 0% | 100% · 6.0 · 8% |
-| A straight 4, armour 1 always |  |  | 100% · 2.3 · 0% | 100% · 8.4 · 16% |
-| Today's knife at 5 hit points |  |  | 100% · 2.4 · 0% | 83% · 7.7 · 52% |
-| A straight 4 and the wall, 5 hit points |  |  | 100% · 2.4 · 0% | 100% · 7.8 · 24% |
-| A straight 4 and the wall, 6 hit points |  |  | 100% · 2.5 · 0% | 100% · 8.8 · 27% |
-| A straight 5 and the wall, 6 hit points |  |  | 100% · 2.4 · 0% | 100% · 9.5 · 33% |
+| The old knife: 2, one more a peer | 2.4 · 0%, 2.2 · 0% | 97% · 6.5 · 30% | 5.5 · 12% | 3.3 · 1%, 3.1 · 0% |
+| A straight 3 | 2.4 · 0%, 2.2 · 0% | 6.6 · 20% | 5.3 · 8% | 3.3 · 0%, 3.0 · 0% |
+| A straight 4 | 2.4 · 0%, 2.2 · 0% | 97% · 6.7 · 37% | 5.4 · 18% | 3.3 · 1%, 3.1 · 0% |
+| A straight 5 | 2.4 · 0%, 2.2 · 0% | 93% · 6.9 · 55% | 5.8 · 28% | 3.3 · 2%, 3.1 · 0% |
+| A straight 3 and the wall | 2.5 · 0%, 2.1 · 0% | 6.7 · 10% | 5.3 · 3% | 3.3 · 0%, 3.1 · 0% |
+| **A straight 4 and the wall (built)** | 2.5 · 0%, 2.0 · 0% | 6.9 · 22% | 5.4 · 9% | 3.4 · 1%, 3.2 · 0% |
+| A straight 5 and the wall | 2.5 · 0%, 2.1 · 0% | 97% · 7.1 · 40% | 5.6 · 11% | 3.5 · 1%, 3.2 · 0% |
+| A straight 6 and the wall | 2.5 · 0%, 2.1 · 0% | 93% · 7.2 · 50% | 6.3 · 21% | 3.5 · 2%, 3.3 · 1% |
+| A straight 4, armour 1 always | 2.4 · 0%, 2.2 · 0% | 53% · 9.0 · 78% | 83% · 8.1 · 52% | 5.6 · 7%, 4.7 · 5% |
+| The old knife at 5 hit points | 2.5 · 1%, 2.4 · 0% | 70% · 8.4 · 73% | 83% · 7.7 · 52% | 4.5 · 4%, 4.0 · 1% |
+| A straight 4 and the wall, 5 hit points | 2.6 · 0%, 2.4 · 0% | 80% · 11.4 · 64% | 7.8 · 24% | 4.1 · 1%, 4.2 · 1% |
+| A straight 4 and the wall, 6 hit points | 2.6 · 0%, 2.5 · 1% | 67% · 11.9 · 73% | 9.1 · 33% | 5.1 · 3%, 4.8 · 1% |
+| A straight 5 and the wall, 6 hit points | 2.7 · 0%, 2.5 · 1% | 20% · 8.2 · 93% | 93% · 9.0 · 46% | 5.3 · 8%, 4.8 · 2% |
 
-The treant's grove (a Treant and three goblins before two Mandragoras) moves little with the
-goblin: the default three lose 3% to 5% of their hull on every variant and both dice, and the
-pair's 24% to 37% under the model is the Treant's fight.
+The treant's grove (a Treant and three goblins before two Mandragoras, rated for three):
 
-Read. Three things. A block that is an action softens the goblin: a goblin raising its wall is
-a goblin not stabbing, so at any attack the walled goblin costs the pair less than the plain one
-(3% against 8% at a straight 3, 5% against 18% at 4), and the wall does not make the line last
-(5.6 rounds against 5.5). Armour that is always there is the form that holds: three rounds
-longer at the same hit points for about the same hull (16% against the plain knife's 18%), and
-it is the form that walls the small blows, which the formation pass's reads found bites the
-lights hardest. And at three hit
-points no form reaches a full squad: the Honey Badger, the Clydesdale and the Kite clear the
-warband in two and a half rounds and lose no hull on any row, six hit points and a knife of 5
-included, so what he is feeling with three machines is how fast the front dies, the
-player's damage against the fodder's hit points, more than the knife's shape. The knife that
-counts its peers is not weak where the goblins live (52% of the pair's hull at 5 hit points, one
-fight in six lost): its fault is the one he names, that the first kill takes two fifths of it.
+| The goblin | The default three: today's dice, the MODEL | The Stingray and the Prairie Dog: today's dice | The MODEL at regen 2 | The three lights: today's dice, the MODEL |
+|---|---|---|---|---|
+| The old knife | 4.6 · 3%, 4.4 · 4% | 27% · 17.7 · 96% | 26.6 · 36% | 16.5 · 11%, 14.2 · 2% |
+| A straight 4 | 4.6 · 4%, 4.6 · 5% | 3% · 13.7 · 99% | 93% · 27.2 · 52% | 17.8 · 13%, 13.8 · 4% |
+| A straight 4 and the wall (built) | 4.6 · 5%, 4.6 · 5% | 10% · 18.6 · 99% | 97% · 27.1 · 42% | 18.1 · 14%, 15.3 · 4% |
+| A straight 5 and the wall | 4.6 · 5%, 4.6 · 5% | 3% · 16.6 · 100% | 90% · 27.7 · 49% | 18.1 · 16%, 15.0 · 4% |
+
+Read. A block that is an action softens the goblin: a goblin raising its wall is a goblin not
+stabbing, so at the same knife the walled goblin costs the pair about half what the plain one
+does (9% against 18% at a straight 4 under the model, 22% against 37% on today's dice), and
+the wall does not make the line last (5.4 rounds both). Armour that is always there is no
+gentler form of it: it walls the small blows, three rounds longer and 52% of the pair's hull
+under the model, half the fights lost on today's dice, which is what the formation pass's
+reads said of flat armour and the lights. Hit points are what make the front hold (a straight
+4 and the wall at 6 hit points: nine rounds and a third of the pair's hull under the model).
+And three machines of any weight clear the warband in two to five rounds for a few points of
+hull at most on every row (the default three 1% at worst, three lights 8%), a knife of 5 at 6
+hit points included: with a full squad what is felt is how fast the front dies, the player's
+damage against the fodder's hit points, more than the knife's shape.
+The old knife was not weak where the goblins lived (at 5 hit points, half the pair's hull and
+one fight in six lost): its fault is the one he names, that the first kill takes two fifths
+of it.
+
+Built on his call ("I think the earlier goblin can have shield wall as well"): a straight 4
+and the wall, the 4 a placeholder. Against the old knife it costs the pair a little less in
+the warband (9% against 12% under the model, 22% against 30% on today's dice) and a little
+more in the grove, where the goblins live long beside the Treant (42% against 36% under the
+model); a 5 costs them as much in the warband under the model and a third more on today's
+dice, and out-hits the Goblin Guard as content has it (3, one more a peer). The campaign
+runner's 40 runs on the tree with it (`docs/campaign_run.md`) read as the 40 before it: won 3%
+both, fallen 88% both, the gate's damage a battle 139 against 140.
+
+The knife moves the goblin's menace with it, 5 where it was 3 (the weight reads a foe's best
+blow, and the old knife's was read without its peers), so a goblin's kill fills more of the
+meter and pays more salvage, and the Meadow's thresholds rise with its field. On the tree as
+built the Meadow's tier-one meter reads: base 138, the first Fracture at 21, the Rupture at
+92, the formation 28 (30% of the Rupture, from 26%), a flank patrol 16 (17%, from 21%), the
+shaman's warband 26. The meter's read above stands, the middle's share a little larger.

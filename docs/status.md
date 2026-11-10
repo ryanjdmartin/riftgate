@@ -31,8 +31,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   map session's shapes laid to the rift's row, the passing and the catch at one, and the map
   playtest list), and 1104 tests, 360,621 checks, green on `ccr-722ca9f0-yj8na3` (10 November, that
   main with the refit pass's first build, the wall strike by the rating, the trial's regen row,
-  every machine one more move and the field's dials; the map suite now paints fourteen and
-  sixteen deep too, which is most of the checks' rise); one
+  every machine one more move, the field's dials and the goblin's straight knife and wall; the
+  map suite now paints fourteen and sixteen deep too, which is most of the checks' rise); one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
   either map view on 6 November; about four minutes in a cloud session, twenty on a slow one;
   words after `--` run only the files whose names hold one (`-- loot rig`). A cloud
@@ -125,7 +125,8 @@ brief `docs/briefs/refit_pass.md` and the briefs it sends machines back to; the 
 pass's reads in `docs/measurements.md`, 9 November, taken before it took main; and the refit
 pass's first build and reads, below: the injury rule off in the game, the model as a what-if
 and a trial, the fight bot's aggressor habit; in `content/` only every chassis's move, one
-more on his word of 10 November, and the Gate Integrity entry's strike). It took main at
+more on his word of 10 November, the tier-one Goblin's knife and wall on his call of the same
+day, and the Gate Integrity entry's strike). It took main at
 `2d489f7` on 9 November (Ryan: "merge main in here so that you're working on the latest engine
 and changes"): the bible, the measurements, this file and the to-do the conflicts, both sides'
 words kept (the bible's hunters row this branch's and its boss row main's, the measurements'
@@ -148,7 +149,7 @@ by head count), so the gate they need standing fell. `docs/vocabulary.md` and
 It took main once more at `fda02f9` that evening (the shapes reworked on his play and the
 hangar's Bench tab, so his map points are answered on the latest map code): the bible's version,
 this file's tests line and the measurements' order the conflicts, both sides kept.
-The bible's file is v0.506, main's v0.503 with this branch's rows, its republish on Ryan's word
+The bible's file is v0.507, main's v0.503 with this branch's rows, its republish on Ryan's word
 (Pages below); and `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
@@ -344,11 +345,33 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   first Fracture, which calls the elite at once, and about four fights earn the Rupture, every
   one to be had in the middle, so his "throw all machines down the middle" is the meter's
   arithmetic; a flank patrol already pays more for the machine sent, and what keeps the flankers
-  home is that the middle is enough. **The goblin** is his next call ("A straight attack, and a
-  block of some kind, so they're a true frontliner and not a lame not-really-damage-threat.
-  Probably a good lesson there"): the probe says a block that is an action softens it, armour
-  that is always there holds, and no form at three hit points reaches three machines, who clear
-  the warband in two and a half rounds; its form is put to him in chat (the brief's section 7).
+  home is that the middle is enough.
+- **The goblin, and the recolours' archetype** (10 November, later). His lesson from the play:
+  "A straight attack, and a block of some kind, so they're a true frontliner and not a lame
+  not-really-damage-threat. Probably a good lesson there"; and his call on the form, hearing
+  that a block that is an action softens it: "I think the earlier goblin can have shield wall
+  as well." Built: the tier-one Goblin stabs straight for 4 and raises the Guard's Shield Wall
+  one action in three, its codex and its Stab's line redrafted as little as the rule needs (two
+  drafts on the Text tab, none of them signed; a new slot for its Shield Wall's line); the 4 is
+  a placeholder (with the wall the warband costs two lights a little less than the old knife
+  did and the treant's grove a little more, and nothing reaches three machines either way);
+  its menace follows the knife, 5 where it was 3, so a goblin's kill is worth more on the
+  Rupture meter and in salvage and the Meadow's thresholds rise with it. The
+  first run of the goblin's probe was wrong and what it told him is corrected (it kept the
+  loaded content between variants, so a variant's wall stacked onto the next: the rows after
+  the first walled one, the grove's and the always-on armour's; `docs/measurements.md` says
+  which and holds the rerun): armour that is always there does not "hold for the same hull",
+  it walls the lights, so his pick is the better form and Claude's lean of that hour is
+  withdrawn. His question of the same message: "If the captain is the back rank at tier 3, what
+  stands in the front rank? I didn't think the recolours changed like, the archetype of the
+  foes?" Answered from content (the brief's section 4 has every line): tier two's unit stands
+  there, Goblin Guards at the Meadow's tier three and Wights at the Marsh's; fifteen of
+  seventeen lines keep their rank and role up the ladder, and the two that do not are the
+  Goblin Captain and the Lich, back-rank commanders at tier three, drafts of the ladder's brief
+  of 28 October that he never marked. Open, his (the brief's section 7): each steps into its
+  line's front with its Warcry or Reraise as the third move, or stands as a unit of its own
+  while its line gets a tier-three rung; with it the Guard on the new knife and the Revenant's
+  claw. The Guard and the Captain are untouched until he says.
 - **Ryan's play of Phase 2** (9 November, his read of the long wall as built, on the phone): hard
   to judge; the packs as they were too hard, "but not for any particular one reason"; incoming
   damage high, so the tank tanked every turn while the rest could not take foes down reliably
@@ -826,8 +849,8 @@ weapon or equipment, the shield innate and regenerating, cooling passive, the ho
 decision, component destruction off to test, two rerolls kept; the formation pass folded into it,
 its proposal's grids re-cut under the new model and read by hull lost), in its brief's order: the
 what-if and its first reads are in (9 November) and his two reads of the trial (10 November);
-next his play with the field's dials and his call on the goblin's form (the to-do's Ryan list)
-and his answers to the brief's section 7, then the content (the stock re-deal as a table
+next his play with the field's dials and the new goblin and his call on the goblin's line (the
+to-do's Ryan list) and his answers to the brief's section 7, then the content (the stock re-deal as a table
 in chat first, the regen and cooling numbers, the heat prices, the pushers each with a rising
 threat, the flankers as duels), the vocabulary, the rules and the rows. Then the long wall's other open item (the bible's section 12: the shell). Beside them, the rest of the skirmish code audit
 (`docs/skirmish_audit.md`; its questions answered and its bugs built 8 November; the Ammit's Tap
@@ -886,9 +909,10 @@ commands are in `README.md`.
   playtest list landed (the boss's picture, the scenery under the painting, the tears row's
   read of 10 November and the hunters' declaration, on the map session's v0.500 and v0.498's
   Text tab rows: the hangar row's tabs and the shown-text row), unpublished, its republish on
-  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.506, main's with the formation and refit
-  session's rows (the hunters row's who-may-hunt, the Foe roles row's direction and the goblin's
-  lesson, the wall row's strike by the rating, the kit, shield, triangle, redirection, injury,
+  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.507, main's with the formation and refit
+  session's rows (the hunters row's who-may-hunt, the Foe roles row's direction, the goblin's
+  lesson and his call on its form, the recolour row's two rungs that change their archetype,
+  the wall row's strike by the rating, the kit, shield, triangle, redirection, injury,
   command-die, Barrier and Ward, Puffin, Whip Scorpion, Polar Bear, Swallowtail and Musk Ox
   rows' refit lines, section 12's items, and from his second read the move row's 3 to 6, the
   grid row's and the three clocks row's lines on the depth and the fodder on trial),

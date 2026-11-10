@@ -208,11 +208,53 @@ the same unit is lame wherever it stands in ones and twos (his point of 9 Novemb
 a pusher's front rank is a straight blow and a block, and a threat that is the pack's head count
 is no identity for a pusher. What the engine has for the block and what a probe says of each
 form is `docs/measurements.md`, 10 November: a block that is an action costs the goblin a
-third of its blows, so at any attack it deals less than a goblin with none, and at three hit
-points no form matters to three machines, who clear the formation in two rounds. The goblin's
-numbers are his (section 7's seventh item). The Revenant's claw counts its peers the same way,
-and the Goblin Guard already carries the knife and the wall together: both follow his call on
-the goblin.
+third of its blows, so at any attack it deals less than a goblin with none; armour that is
+always there walls the lights; and at three hit points no form matters to three machines, who
+clear the formation in two and a half rounds. His call on the form, hearing that: "I think the
+earlier goblin can have shield wall as well." Built 10 November: the tier-one Goblin stabs
+straight for 4 and raises the Guard's Shield Wall one action in three (armour up one until its
+next action). The 4 is a placeholder: with the wall it costs two lights a little less than the
+old knife did (9% of their hull against 12% under the trial's model, 22% against 30% on today's
+dice) and holds as the goblins fall, where a 5 costs them as much or more (11% and 40%) and
+out-hits the Guard as content has it. The Goblin Guard and the Goblin Captain are untouched
+and wait on the line's question, next; the Revenant's claw counts its peers the same way and
+follows his call.
+
+**The recolours and the archetype** (Ryan, 10 November): "If the captain is the back rank at
+tier 3, what stands in the front rank? I didn't think the recolours changed like, the archetype
+of the foes?" By his rule they do not: a recolour is "a repaint, a name and a bigger number,
+with a twist where one is marked" (the bible's recolour row, 28 October), the twist one more
+move. Content as it stands, every line, tier one to three:
+
+| Line | Tier two's rung | Tier three's rung | Its rank and role kept |
+|---|---|---|---|
+| Goblin, Goblin Guard, Goblin Captain | adds the Shield Wall | stands in the back rank and adds a Warcry | no: the Captain |
+| Revenant, Wight, Lich | adds Grave Mend | a back-rank caster, Soul Bolt and Reraise, no Claw | no: the Lich |
+| Wolf, Warg, Alpha Warg | numbers | numbers, a louder Howl | yes |
+| Gel, Bubble Gel, Metal Gel | armour 1 | armour 3 on fewer hit points | yes |
+| Mandragora, Mandrake, Alraune | numbers | Shriek in Scream's place | yes, a move swapped |
+| Needler, Barbed Needler, Great Needler | Corrupt on its needles | adds Thousand Needles | yes |
+| Antlion, Pit Antlion, Antlion Queen | a Barrier for its brace, a breach | adds Devour | yes |
+| Cockatrice, Basilisk, Gorgon | numbers | Corrupt on its peck | yes |
+| Ghost, Spectre, Wraith | adds Hallow | Hallow, Corrupt on its bolt | yes |
+| Zombie Knight, Death Knight, Dread Knight | adds Grave Guard | numbers, no Grave Guard | yes |
+| Bomb, Grenade, Balloon | its blast reaches every machine | a countdown and a scorch on it | yes |
+| Salamander, Fire Lizard, Magma Lizard | more scorch | adds Stoke the Pack | yes |
+| Drake, Wyvern, Red Dragon | adds Dive | Crush and Flame Breath, Stoke out by his trim | yes, a move swapped |
+| Treant, Dusk Treant, Frost Treant | adds Root Storm | numbers | yes |
+| Sandworm, Night Sandworm, Salt Sandworm | adds Quake | numbers | yes |
+| Magma, Basalt and Sulphur Elemental | adds Stoke the Forge | numbers | yes |
+| Barrow, Grave and Charnel Giant | adds Rise Again | numbers | yes |
+
+So fifteen of seventeen lines keep their rank and role, and the two that do not are the two
+whose blow counted its peers, each topped by a commander at the back. Both came with the
+ladder's first build (28 October, "exactly as the brief gives them ... as placeholders"), a
+session's draft and never his mark. What stands in the front at tier three is therefore tier
+two's unit at tier two's numbers: Goblin Guards in every Meadow grid that fields the line (the
+captain's warband is four Guards before two Captains and two Alraunes), Wights beside the
+knights in the Marsh's (the Lich's court is two Wights and two Dread Knights before the Lich).
+The validator holds a foe to its rank's cells, so a Captain in front is a change of its rank
+and of the tier-three grids together. His call (section 7's seventh item).
 
 **What the proposal's grids keep and lose under it**: the formations stand (pushers of pusher
 units), less the antlions in the Waste's four (a hunting line in a pusher: the antlion pit, the
@@ -576,10 +618,17 @@ word:
    front and his own try of 9 November ride on it).
 7. The roles (section 4): a role on every rank-and-file unit, the flankers as duels, the units
    each domain lacks. The strike at the wall follows the rating (his word and built, 10
-   November: section 4). The goblin first, on his second read: a straight blow and a block. Its
-   form is put to him in chat with the probe's numbers (which block, since one that is an
-   action softens it; how hard the blow; whether three hit points can be a front at all), then
-   the Goblin Guard and the Revenant on the same call.
+   November: section 4). The goblin's form is his and built at tier one (10 November: a
+   straight knife and the Guard's Shield Wall, the knife's 4 a placeholder). Open with it, the
+   line above it, since he did not expect a recolour to change its archetype and the Goblin
+   Captain and the Lich do (section 4's table). For each, one of two: it steps into its line's
+   front at tier three, the line's blow and block at tier three's numbers with its Warcry or
+   its Reraise as the third move, the tier-three grids re-cut with it in front; or it stands
+   as a unit of its own at the back, no recolour, and its line gets a tier-three front rung,
+   the name and the hue his. Claude's lean: the first for the Captain (the wolves already
+   rally from the front), the second for the Lich (a caster by its fantasy), each his to
+   overrule. With it the Guard on the new knife (a straight blow a step over the goblin's) and
+   the Revenant's claw.
 8. The Reinforced Skeleton: parked with destruction, or a new rule now.
 9. The commander layer's shield and vent actions: a note now, a row when that layer is designed.
 
