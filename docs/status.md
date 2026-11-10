@@ -27,7 +27,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1089 tests, 323,782 checks, green (10 November, main with the Text tab, the side session's work, the
+- Tests: 1094 tests, 323,818 checks, green (10 November, `ccr-c71bc17f-hclj2c` with the second map list on main's Bench tab; main with the Text tab, the side session's work, the
   map session's shapes laid to the rift's row, the passing and the catch at one, and the map
   playtest list; one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
@@ -114,7 +114,9 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4` (a cloud session may not delete
 one). Each merge commit says how its conflicts were settled.
 
-Still working (10 November; every other branch on GitHub is merged): `ccr-722ca9f0-yj8na3`,
+Still working (10 November; every other branch on GitHub is merged): `ccr-c71bc17f-hclj2c`
+again, with Ryan's second map list of 10 November (How things stand below), pushed, waiting on
+his word to land; `ccr-722ca9f0-yj8na3`,
 the formation and refit session, whose own status says where it stands (it meets the side
 session's edits in `tests/run_tests.gd`, `sim/skirmish.gd` and these records when it takes main);
 and `ccr-7effd31a-u5z4gw`, the
@@ -188,6 +190,29 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
+- **Ryan's second map list of 10 November** (`ccr-c71bc17f-hclj2c`, cut from main at `ccd71d9`,
+  not on main; his words in the two commits' messages and the bible's rows). The map: no
+  hunter's ring (its code gone), a hunter's chip with its prey's small render and the hunted
+  machine's tag, both with the attack mark (a sword in the reticle's ring); the threat pips under
+  the pack and no count; every walk's end under a crawling border, the warning on it where the
+  pack attacks from there this turn, CATCHES gone; a tapped pack's target the thing it attacks
+  (`BattleMapView.target_hex`: the wall segment, the machine), and no whole way for a selected
+  machine's hunters; a machine's reach under one border; an order given again
+  (`Battle.retake`, `move_again`, `reach_if_retaken`: a tap on the machine in hand takes its
+  order back, a new move or order replaces the old, each one undo; refused out of order where it
+  would break another machine's plan); the map's tap on a unit waiting out the die's double-tap
+  window; the caches' chests in place of name and pips; the tilt-shift along the rift's axis
+  (`far_axis`: right and left with the wall at the left), the vortex shifted right there, the
+  3D scenery a step darker; nothing takes a touch during a cutscene and nothing skips one; an
+  elite introduced as it arrives after a Fracture (`hold_spawn`, `play_spawn`). The skirmish,
+  built by a worker in a worktree and cherry-picked: Jenny's heat warning latched a machine
+  (once over three quarters until seen back under, the overheat every time); the hopper's worth
+  the game's Armoured, granted as each round opens and following the loads between, a Purge
+  stripping it until then, `ore_plate` retired everywhere; a capped store one segmented bar under
+  the heat (the hopper four, the rage five; `UnitView.store`), the Cassowary's pips as they
+  were. Poses new: `hunter`, `elite`, `stores`. A route drawn by hand from a machine that
+  already has an order is still refused (the tap gives it again). All first cuts (the to-do's
+  judge line).
 - **The map playtest list of 10 November** (`ccr-c71bc17f-hclj2c`, on main the same day; five
   points from Ryan's phone, then his answers). A tear's ring stands on its hex: it was drawn in
   screen space at its map position, so it hung at one place on the glass while the map scrolled
@@ -538,7 +563,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   rockets, shell and casing; shot trails tabled behind SHOT TRAILS. All first cuts for Ryan's
   judge lines; the render margin (a piece fired out cut at the view's edge) is his to judge running.
 - **The Honey Badger's hopper** (31 October): a load a foe its weapons damage, four at most,
-  every two loads a point of Ore Plate, the first buff a store grants; "never destroyed" is the
+  every two loads a stack of Armoured, granted as each round opens (10 November; the Ore Plate before it), the first buff a store grants; "never destroyed" is the
   Reinforced Skeleton module. Read at 30 seeds, Ryan's second fallback landed.
 - **The Petrels** (30 October): the Storm Petrel's shield pays its weapons' heat and zaps the
   target for what it paid; the Giant Petrel banks rerolls and buys an ally's action. Both
@@ -653,7 +678,9 @@ commands are in `README.md`.
   page's Version 502, published from main at `2d489f7` on Ryan's word, "republish the hangar
   page and the bible": main's file whole, since the live v0.496 matched `f048e67`'s byte for byte
   and so needed no merge; it carries the Lammergeier's rework, its row, the Gel's and the
-  reinforcement row's slot-mine lines and the tables). Main's file is v0.501 since the map
+  reinforcement row's slot-mine lines and the tables). `ccr-c71bc17f-hclj2c`'s file is v0.503 with the second map list's rows (the marks row
+  rewritten, the pack, undo, gesture, Fracture, reconstruction and tears rows, the Badger's and
+  the store's), unpublished. Main's file is v0.502 (the hangar's Bench tab on v0.501), v0.501 since the map
   playtest list landed (the boss's picture, the scenery under the painting, the tears row's
   read of 10 November and the hunters' declaration, on the map session's v0.500 and v0.498's
   Text tab rows: the hangar row's tabs and the shown-text row), unpublished, its republish on

@@ -448,7 +448,9 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # the field: the vortex and the boss at its size; RIFTGATE_BLEED_DEBUG=1 shows the scenery past the field under the painting),
 # tear (a peak of Rift Pressure: the seam crept and a tear open on its row, the map looking at it; RIFTGATE_PEAKS=<n> for more),
 # peak (a peak's cutscene playing: RIFTGATE_SHOT_FRAME picks the moment, in a cloud session the seam's sweep near 12 and the tear's burst near 26),
-# hunted (a hunter's lock declared: the map zoomed in on it under the HUNTED band, near frame 9)
+# hunted (a hunter's lock declared: the map zoomed in on it under the HUNTED band, near frame 9),
+# hunter (a hunter a few hexes off the first machine: its chip with the machine's small picture, the machine's tag with its own),
+# elite (a Fracture's elite introduced as it arrives: the burst near frame 10, the band naming it near 14)
 # and fracture (a Fracture announced: the band, the top bar's gauge flashing;
 # the default frame catches the band at full).
 # RIFTGATE_SHOT_FRAME=<n> picks the capture frame, to catch an animation mid-flight.
