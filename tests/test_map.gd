@@ -133,18 +133,28 @@ func _field(m: BattleMap, t: int) -> Array:
 const SIZES := [[7, 20], [9, 20], [20, 12], [30, 10], [24, 14]]
 
 
-func test_the_mouth_is_a_share_of_the_depth() -> void:
-	# The shapes relaid for the shallow field (9 November): the rift's mouth is one row for
-	# every five of depth, rounded up, two at least (the rift's row and the boss's) and four at
-	# most (the old field's), so a field twelve deep keeps five rows for its shape where the old
-	# four-row mouth left four.
-	assert_eq(BattleMap.flat(20, 12).mouth_rows(), 3, "three rows at twelve deep")
-	assert_eq(BattleMap.flat(9, 20).mouth_rows(), 4, "four at twenty, the old field's")
-	assert_eq(BattleMap.flat(30, 10).mouth_rows(), 2, "two at ten")
-	assert_eq(BattleMap.flat(20, 8).mouth_rows(), 2, "never fewer than the rift's row and the boss's")
-	assert_eq(BattleMap.flat(20, 40).mouth_rows(), 4, "never more than the old field's")
-	assert_eq(BattleMap.flat(20, 12)._open_rows(), 5, "five open rows at twelve deep")
-	assert_eq(BattleMap.flat(9, 20)._open_rows(), 12, "twelve at twenty")
+func test_the_shapes_lay_to_the_rifts_row() -> void:
+	# Ryan, 10 November, after his play: "the flattened side needs features, all the way to the
+	# back". The rift's mouth is the ground beside the rift and nothing more, so a shape lays from
+	# the rift's row and has every row but the team's two: eight at twelve deep, sixteen at twenty.
+	assert_eq(BattleMap.flat(20, 12).mouth_rows(), 0, "a shape lays from the rift's row")
+	assert_eq(BattleMap.flat(20, 12)._open_rows(), 8, "eight open rows at twelve deep")
+	assert_eq(BattleMap.flat(9, 20)._open_rows(), 16, "sixteen at twenty")
+	var back := 0
+	for kind in BattleMap.KINDS.keys():
+		for s in range(1, 21):
+			var m := BattleMap.generate(20, 12, s, kind)
+			for hx in m.all_hexes():
+				var t: int = m.terrain[hx]
+				if Hex.axial_to_offset(hx).y <= 1 and (t == BattleMap.Terrain.WATER or t == BattleMap.Terrain.MOUNTAIN):
+					back += 1
+					break
+			for r in m.rift_hexes:
+				for n in Hex.neighbors(r):
+					if m.has(n):
+						var t2: int = m.terrain[n]
+						assert_true(t2 != BattleMap.Terrain.WATER and t2 != BattleMap.Terrain.MOUNTAIN, "%s seed %d: no water and no wall beside the rift" % [kind, s])
+	assert_true(back >= 40, "features reach the rift's two rows on most maps of the shapes that lay any: %d of 120" % back)
 
 
 func test_each_shape_lays_what_its_name_says() -> void:
@@ -201,7 +211,8 @@ func test_each_shape_lays_what_its_name_says() -> void:
 							for col in range(w):
 								if m.terrain[Hex.offset_to_axial(col, row)] == BattleMap.Terrain.WATER:
 									cols.append(col)
-							assert_true(cols.size() >= 2 * n, "%s: every fjord two wide on row %d" % [tag, row])
+							if row > 1:   # the rift's ring is bared, so its two rows may cut a fjord short
+								assert_true(cols.size() >= 2 * n, "%s: every fjord two wide on row %d" % [tag, row])
 							if not cols.is_empty():
 								assert_true(cols.min() >= 2 and cols.max() <= w - 3, "%s: a lane two wide at either edge on row %d: %s" % [tag, row, str(cols)])
 							# Two fjords never meet: a lane two wide at least between two wet runs.

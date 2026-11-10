@@ -10,10 +10,6 @@ const DIR := "res://content/"
 # Design knobs. Loosen or tighten here; the validator and the bible should agree.
 const MAX_AUTHORED_KEYWORDS := 3    # per authored face; upgrades may exceed this at runtime
 const MAX_MOVE := 6                 # a move in hexes, chassis or foe, is 1 to this (a placeholder bound, 28 October)
-## A hunter's ring, its pounce: the one catch range, the same for every hunter (Ryan, 29 October: "a
-## minimum range of 2 instead of 1 (wolfs pounce, etc.)"). No foe or composition carries a ring of its
-## own (8 November, the rings purged with the engagement system): a catch reads this number alone.
-const HUNTER_RING := 2
 ## The caveats a hunting composition may name (`hunts`): whom its pack locks.
 const HUNT_CAVEATS := ["nearest", "weakest", "strongest", "slowest", "fastest"]
 const MIN_DIE := 3                  # the Kite is a d3 (its row, Ryan's go of 21 October: every dark entry felt)
@@ -549,7 +545,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 ## What the map needs of a foe type (bible section 5): its move, its wings and its shown name.
 ## Keyed by foe id, for Battlefield.foe_profiles; a boss's entry serves the boss unit. Defaults
 ## are the engine's when the content says nothing. Whether a pack hunts is its composition's
-## (`hunts`, Battlefield.pack_of), never a foe's, and no foe carries a ring (HUNTER_RING).
+## (`hunts`, Battlefield.pack_of), never a foe's, and no foe carries a ring (a hunter catches at Unit.ENGAGE_RANGE).
 func pack_profiles() -> Dictionary:
 	var out: Dictionary = {}
 	for id in foes.keys():
@@ -2358,7 +2354,7 @@ func _validate_foes(errs: Array[String]) -> void:
 		# The rings are gone and the hunt is a composition's (Ryan, 8 November: "The composition
 		# should say if it hunts, not the units"): a foe carries neither, so the old fields are refused.
 		if f.has("zone"):
-			errs.append("%s: zone is gone (8 November): no foe carries a ring; a hunter catches at the pounce, %d" % [where, HUNTER_RING])
+			errs.append("%s: zone is gone (8 November): no foe carries a ring; a hunter catches at the engage range, %d (Unit.ENGAGE_RANGE)" % [where, Unit.ENGAGE_RANGE])
 		for key in ["behaviour", "hunts"]:
 			if f.has(key):
 				errs.append("%s: %s is gone from the foe (8 November): a composition says whether its pack hunts (hunts)" % [where, key])

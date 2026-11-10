@@ -75,12 +75,14 @@ const STRUCTURE_HALF_WIDTH := 1   # gate and rift span centre plus this many hex
 ## above is their apron, so the wall never hides a unit behind it from the map camera
 ## (Ryan, 20 September). A pack strikes the gate from the row above the apron.
 const GATE_ROWS := 2
-## A shape lays its water and walls past the rift's mouth (mouth_rows) and short of the team's
-## two rows above the gate's apron (_hi); the rows between are its open rows (_open_rows), which
-## every shape is laid to fill at any size the ramp deals (9 November, the shapes relaid for the
-## shallow field: the long wall brief's open item 5).
-const MOUTH_FLOOR := 2   # the rift's row and the boss's: never laid on
-const MOUTH_CAP := 4     # the old field's mouth; no depth needs more
+## A shape lays its water and walls from the rift's row to the last row short of the team's two
+## rows above the gate's apron (_hi); the rows between are its open rows (_open_rows), which every
+## shape is laid to fill at any size the ramp deals (9 November, the shapes relaid for the shallow
+## field: the long wall brief's open item 5). The rift's mouth is the ground beside the rift and
+## nothing more, bared by _clear_ends with the gate's front (Ryan, 10 November, after his play: "the
+## flattened side needs features, all the way to the back"; until then the mouth was rows, four on
+## the old field and a share of the depth for a day).
+const FIRST_ROW := 0   # the first row a shape lays on: the rift's own
 
 
 ## A map of nothing but plain ground. Used by tests and as a fallback.
@@ -156,18 +158,17 @@ static func generate(w: int, h: int, seed_value: int, map_kind: String = "") -> 
 			m._lay_steppe(rng)
 	m._clear_ends()
 	m._ensure_ground_path(rng)
+	m._dress_shores()
 	m._lay_roads(rng)
 	m._lay_relief(rng)
 	return m
 
 
-## The rift's mouth: the rows at the rift's end that hold no water and no wall, the enemy's
-## staging ground (the rift's row, the boss's, where the packs land and where a pack opens no
-## nearer the rift; the seam starts a row past it). One row for every five of depth, rounded up,
-## two at least and four at most: rows 0 to 2 at twelve deep, 0 to 3 at twenty (the old field's
-## four), so a shallow field keeps rows for its shape. A placeholder (the long wall brief).
+## Where a shape's laying starts: the rift's row (FIRST_ROW). Kept as a function so the sim reads
+## one name for it (the opening's packs and the seam read their own rows: Battle.OPENING_FLOOR_ROW,
+## Battlefield.seam_start).
 func mouth_rows() -> int:
-	return clampi(ceili(float(height) / 5.0), MOUTH_FLOOR, MOUTH_CAP)
+	return FIRST_ROW
 
 
 ## The last row a shape lays water or a wall on: the team's two rows above the gate's apron
@@ -176,8 +177,8 @@ func _hi() -> int:
 	return height - GATE_ROWS - 3
 
 
-## How many rows a shape has to lay in, the mouth's and the team's aside: five at twelve deep,
-## twelve at twenty. A shape that needs more than it has lays less (a thinner river, one band
+## How many rows a shape has to lay in, the team's aside: eight at twelve deep, sixteen at
+## twenty. A shape that needs more than it has lays less (a thinner river, one band
 ## of towers), never into the mouth or the team's rows.
 func _open_rows() -> int:
 	return _hi() - mouth_rows() + 1
@@ -401,7 +402,7 @@ static func _span_of(widths: Array) -> int:
 ## RIVER CROSSING: a river across the field (along the wall) and on past both edges, two hexes
 ## thick and three where the field is deep, with one or two fords three or four hexes wide in
 ## all (_crossing_runs), at most a crag on a bank, and gravel bars in stretches along both
-## banks (_shore). A bank row at the mouth's edge and one before the team's ground wherever
+## banks (_shore). A bank row at the rift's row and one before the team's ground wherever
 ## the depth allows, so the river lies between two shores and is never a moat at the wall.
 ## Everyone but a hovercraft and a flyer wades the river at two a hex, the horde too, so a
 ## ford is the quick way across for both sides and a ford held only slows the horde. Tests
@@ -415,7 +416,7 @@ func _lay_river(rng: RandomNumberGenerator) -> void:
 	var hi := _hi()
 	var open := _open_rows()
 	var thick := 3 if open >= 7 else (2 if open >= 4 else 1)
-	# A bank row at the mouth's edge and one before the team's ground where the field has them,
+	# A bank row at the rift's row and one before the team's ground where the field has them,
 	# so the river is a thing between two shores and never a moat at the wall.
 	var banked := open >= thick + 2
 	var top := lo + 1 if banked else lo
@@ -484,10 +485,9 @@ func _lay_river(rng: RandomNumberGenerator) -> void:
 					if banks.has(nb):
 						_wall(nb, "crags")
 						break
-	_shore(Terrain.WATER, SHORE_SHARE)
 
 
-## FJORD: water down the field from the rift's mouth to the team's ground, two hexes wide and
+## FJORD: water down the field from the rift's row to the team's ground, two hexes wide and
 ## three in places, drifting a column at most a row (so no land crosses it) with lanes two
 ## wide at least either side, and shingle in stretches along its shores (_shore). On a wide
 ## field one fjord for every ten hexes of wall (two on twenty, three on thirty), each in a
@@ -526,7 +526,6 @@ func _lay_fjord(rng: RandomNumberGenerator) -> void:
 				_flood(Hex.offset_to_axial(c, row))
 		laid += 1
 	water_feature = "fjord" if laid > 0 else ""
-	_shore(Terrain.WATER, SHORE_SHARE)
 
 
 ## BADLANDS (Ryan, 9 November: "winding paths broken by small obstacles, like an open field that
@@ -743,7 +742,7 @@ func _cut(hx: Vector2i) -> void:
 
 
 ## GORGE (Ryan, 9 November: "winding, branching channels"): cliff mass over the whole open band,
-## the field and the scenery beside it, cut by channels. Trunks run from the mouth's edge to the
+## the field and the scenery beside it, cut by channels. Trunks run from the rift's row to the
 ## team's ground, one for every seven hexes of wall, each wandering a column or so a row and one
 ## or two hexes wide; two or three branches leave each trunk sideways and wander a few hexes, meeting another
 ## channel or ending blind; a stretch or two of channel lies flooded, a wade. The gorge's own
@@ -841,7 +840,6 @@ func _lay_gorge(rng: RandomNumberGenerator) -> void:
 					_flood(channel[j])
 					flooded += 1
 	water_feature = "flooded channels" if flooded > 0 else ""
-	_shore(Terrain.MOUNTAIN, GORGE_SCREE)
 
 
 ## Rough ground in stretches along the water's edge or at a wall's foot: a river's gravel bars,
@@ -851,6 +849,16 @@ func _lay_gorge(rng: RandomNumberGenerator) -> void:
 ## plain hexes of the field and the scenery beside `beside` (water or a wall); never over a
 ## road, water or a wall, and the ground in front of a structure is bared after (_clear_ends).
 const SHORE_SHARE := 0.45
+
+
+## Each shape's second ground, laid once the horde's guarantee has opened what it opens and the
+## structures' fronts are bared, so no bar or scree outlives the water or the cliff it lay by.
+func _dress_shores() -> void:
+	match kind:
+		"river", "fjord":
+			_shore(Terrain.WATER, SHORE_SHARE)
+		"gorge":
+			_shore(Terrain.MOUNTAIN, GORGE_SCREE)
 
 
 func _shore(beside: int, share: float) -> void:
@@ -872,9 +880,9 @@ func _shore(beside: int, share: float) -> void:
 			_dress_ground(hx, Terrain.ROUGH)
 
 
-## The gate, the rift and the ground right in front of each are always open and bare; the
-## rift's mouth (mouth_rows, the boss's patrol) and the team's two rows above the gate's
-## apron hold no water and no wall, so a deployed machine always has somewhere to go.
+## The gate, the rift and the ground right in front of each are always open and bare (the rift's
+## ring is its mouth, where the packs land); the team's two rows above the gate's apron hold no
+## water and no wall, so a deployed machine always has somewhere to go.
 func _clear_ends() -> void:
 	var base: int = int(KINDS[kind]["ground"])
 	for hx in terrain.keys():

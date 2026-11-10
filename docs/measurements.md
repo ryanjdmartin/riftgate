@@ -5390,6 +5390,136 @@ seed 7, BADLANDS, ponds, narrowest crossing 5, the guarantee opened 0
  , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
 ```
 
+## 10 November: the shapes laid to the rift's row
+
+The same run (`--seeds 200 --width 20 --height 12`, every shape on seeds 1 to 200) after Ryan's
+play of the 9 November shapes ("the flattened side needs features, all the way to the back"): the
+rift's mouth is the bared ring beside the rift and nothing more, so every shape lays from the
+rift's row and has eight open rows at twelve deep where it had five.
+
+| Shape | Open | Rough | Ruins | Water | Walls | Crossing | Opened | Route | Phases T/W/Wh/H/F | Reach T/W/Wh/H/F | Steps | Lone |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| RIVER CROSSING | 68% | 10% | 0% | 22% | 0% | 200 of 200 at 3+ | 0.0 | 11.1 | 3.0/3.0/3.0/3.0/3.0 | 35/55/78/82/82% | 0% | 0.0 |
+| FJORD | 72% | 10% | 0% | 19% | 0% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/57/77/82/82% | 0% | 0.0 |
+| BADLANDS | 31% | 50% | 0% | 4% | 15% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 31/51/69/70/82% | 19% | 0.6 |
+| OPEN STEPPE | 98% | 0% | 0% | 1% | 0% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/59/81/81/82% | 3% | 0.0 |
+| RUINED CITY | 27% | 0% | 27% | 1% | 45% | 200 of 200 at 3+ | 0.5 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 23/35/46/46/82% | 0% | 0.0 |
+| GORGE | 47% | 8% | 0% | 1% | 45% | 200 of 200 at 3+ | 3.0 | 11.6 | 3.0/3.0/3.0/3.0/3.0 | 24/35/45/45/82% | 0% | 0.0 |
+
+Read: with eight rows to lay in the heavy shapes are heavier (the city 45% of the field in towers
+where it had 29%, the gorge 45% in cliffs where it had 27%) and the ground's room smaller (tracked
+reach after two phases 23% and 24%, hover 46% and 45%, against the steppe's 35% and 81%; the
+flyer's 82% untouched). The gorge is the first shape the guarantee has to open for: 3.0 hexes a
+map on average, where every other shape opens none or next to none (the city 0.5), since its
+trunks start at the rift's row now and the rift's ring is bared after them; a trunk that does not
+meet the ring is opened to it. The river and the fjord grew with the band (22% and 19% water) and
+the badlands' scrub covers half the field at the mesas' feet. Every map keeps the crossing at
+three or more and every way of moving its path; the route is unchanged but the gorge's (11.6).
+This is the edge of "how far we can push it" at today's counts: a tracked machine with a quarter
+of the field in reach after two moves, and a city or a gorge nearly half walls. Nothing here is
+a decision: Ryan judges the look on the phone (the to-do), and the counts are placeholders.
+
+Every shape at seed 7 (`--show 7`; `~` water, `^` a wall, `"` rough, `#` rubble, `=` a street or
+road, `R` the rift, `G` the gate, `|` the wall, the scenery outside the brackets):
+
+```
+seed 7, RIVER CROSSING, river, narrowest crossing 5, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[. . . . . . = . . R R R . = . . . . . .], , , , 
+ , , , ,[. . . . " . = . . . . . . = . . . . . .], , , " 
+" " " "[~ . . ~ ~ . = " " . " . . = ~ ~ ~ " . "], , " ~ 
+ ~ ~ ~ ~[~ ~ ~ ~ ~ " = ~ ~ ~ . . " = ~ ~ ~ ~ ~ ~]~ ~ ~ ~ 
+~ ~ ~ ~[~ ~ ~ ~ ~ . = ~ ~ ~ ~ ~ ~ = . ~ ~ ~ ~ ~]~ ~ ~ ~ 
+ " , , ~[~ . . . . = ~ . ~ " ~ ~ = . . . ~ ^ ~ ~]~ ~ ~ , 
+, , , ~[" . . . . . = = = = ~ ~ ~ = . . " ^ " "]" , " , 
+ , , " ,[. . . . . . . . . = " " = . . . . . . .], , , , 
+, , , ,[. . . . . . . . . . = . = . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . = = . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, FJORD, fjord, narrowest crossing 5, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+ , , , ,[, , , , " " " , , , , , , " " , , , , ,], , , , 
+, , , ,[. . . . . ~ ~ . . R R R . ~ ~ " . . . .], , , , 
+ , , , ,[. . . . " ~ ~ " . . . . . ~ ~ . . . . .], , , , 
+, , , ,[. . . . . ~ ~ ~ " . . . " ~ ~ " " . . .], , , , 
+ , , , ,[. . . . " ~ ~ . . . . . " " ~ ~ . . . .], , , , 
+, , , ,[. . . . . ~ ~ . " . . . . . . ~ ~ . . .], , , , 
+ , , , ,[. . . . . ~ ~ ~ . . . . . . ~ ~ . . . .], , , , 
+, , , ,[. . . . " ~ ~ " . . . . . ~ ~ " " . . .], , , , 
+ , , , ,[. . . . ~ ~ . . . . . . . " ~ ~ . . . .], , , , 
+, , , ,[. . . . " . . . . . . . . . " . " . . .], , , , 
+ , , , ,[. . . . . . . . . . . . . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, BADLANDS, ponds, narrowest crossing 5, the guarantee opened 0
+ " " " "[" " " " " " " " " " " " " " " " " " " "]^ " " " 
+" " " "[" " " " " " " ^ " " " " ^ " " " " " " "]^ ^ " " 
+ ^ " " "[" " " " " " " " " " " " " " " " " " " "]" " " " 
+" " " "[. . " " ^ " ^ " . R R R . ^ " . " " . .]" " " " 
+ " " " "[. " ^ " " " " ~ . . . . ^ " . " ^ " " "]" " " " 
+" " " "[" " " " . " " ~ . " ^ " " " " " " " ^ ^]" " " " 
+ ^ " " "[^ " . . " ^ " " " " " ^ ^ " ^ " ^ " " "]" " " " 
+^ ^ " "[" " . ~ . " " " ^ ^ " " " " ^ ^ " " ^ "]" " " " 
+ " " " "[^ " . ~ ~ " ^ " " " " " . " " " . " " ~]" " " " 
+^ " " "[^ " " ~ " " " " . " ^ ^ " " " ^ " . ~ ~]" " " " 
+ " " " "[" ^ " " ^ " ^ " . " " " ^ " " " . . . .]" " " " 
+" " " "[. " " . " " " " . . . . " " . . . . . .]" " " " 
+ " " " "[. . . . . . . . . . . . . . . . . . . .]" " " " 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, OPEN STEPPE, , narrowest crossing 5, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , ^ , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , ^ , ,], , , , 
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[. . . . . . . . . R R R = . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . . . = . . . . . . .], , , , 
+, , , ,[. . . . . . . . . . . . = . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . . = . . . . . ^ . .], , , , 
+, , , ,[. . . . . . . . . . . . = . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . . = . . . . . . . .], , , , 
+, , , ,[. . . . . . ^ . . . . = . . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . = . . . . . . . . .], , , , 
+, , , ,[. . . . . . . . . . . = . . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . = . . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, RUINED CITY, a fountain, narrowest crossing 3, the guarantee opened 1
+ ^ ^ # ^[# # ^ # # ^ ^ # ^ ^ ^ ^ # ^ ^ ^ ^ ^ # ^]^ ^ # ^ 
+^ ^ ^ #[^ # ^ # # # ^ # ^ ^ ^ # # ^ ^ ^ ^ # # #]^ ^ # ^ 
+ ^ ^ ^ ^[# # # # # # ^ ^ ^ # # # ^ ^ ^ ^ ^ # # ^]# ^ # ^ 
+^ # # ^[^ ^ ^ ^ ^ = ^ ^ . R R R . ^ ^ # ^ ^ ^ ^]^ # ^ ^ 
+ ^ # ^ #[^ ^ ^ ^ ^ = ^ ^ . . = . ^ ^ ^ # ^ ^ ^ ^]^ # ^ # 
+# # ^ #[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # . ^ ^ = = = = =]^ # # # 
+ ^ ^ ^ ^[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # # # # = ^ ^ ^ ^]^ # ^ ^ 
+# # # #[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # # # # = ^ ^ ^ ^]# # ^ # 
+ ^ # # ^[^ ^ ^ ^ ^ = ^ ^ ^ ^ # = = = # = = = = =]^ # # ^ 
+^ ^ # #[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # # # # = ^ ^ ^ ^]# # # # 
+ ^ # ^ ^[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # # ~ # = ^ ^ ^ ^]# # # ^ 
+# # # #[# # # # # # # # # # # # # # # # # # # #]# # # # 
+ # # # #[# # # # # # # # . . = . . # # # # # # #]# # # # 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, GORGE, flooded channels, narrowest crossing 4, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+ , , , ,[" , , , , , , , , , , , , , , , , , , "]" " " , 
+^ ^ ^ ^[^ ^ ^ ^ ^ . . . . R R R . . . " ^ ^ ^ ^]^ ^ ^ ^ 
+ ^ ^ ^ ^[^ ^ ^ ^ ^ . . . . . . . ^ . . ^ ^ ^ ^ ^]^ ^ ^ ^ 
+^ ^ ^ ^[^ ~ ^ ^ ^ . ^ " " ^ ^ ^ . " . ^ ^ ^ ^ ^]^ ^ ^ ^ 
+ ^ ^ ^ ^[^ ~ " " . " . . . ^ ^ ^ " " ^ ^ ^ ^ ^ ^]^ ^ ^ ^ 
+^ ^ ^ ^[^ ^ ~ . . . . . " . ^ . " . . ^ ^ ^ ^ ^]^ ^ ^ ^ 
+ ^ ^ ^ ^[^ ^ ^ ~ . . . ^ ^ " ^ . . . . ^ ^ ^ ^ ^]^ ^ ^ ^ 
+^ ^ ^ ^[^ ^ ^ ^ ^ ~ ^ ^ . " . . . " ^ ^ ^ ^ ^ ^]^ ^ ^ ^ 
+ ^ ^ ^ ^[^ ^ ^ ^ ^ ~ ^ ^ . ^ ^ " . ^ ^ ^ ^ ^ ^ ^]^ ^ ^ ^ 
+, , " ,[. . . . . . . " " " . . . . " . . . . .], " , , 
+ , , , ,[. . . . . . . . . . . . . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+```
 ## 9 November, the flankers' segments
 
 Ryan, 9 November: "the flankers should target their closest wall with a small amount of
@@ -5551,3 +5681,32 @@ The same day the Mine's riders became the spend's whole result on its target (ev
 stacks as its machine laid them, Ryan's word, `ccr-a0b35006-od22d2` after `31a87f2`). The read
 stands: no piece the Lammergeier fields here strikes more than once, and nothing on it deepens or
 doubles a stack, so every Mine it lays carries what it carried when the read ran.
+
+## 10 November: the passing and the catch at one, on the campaign runner
+
+`tools/campaign_run.gd -- --runs 40 --shape steppe` (115 s) on `ccr-1e6e6571-7x7ayr` after the body
+blocking went (every unit passes every other, nobody ends on another's hex) and the hunter's catch
+became the engage range everyone shares (1, the pounce of two gone): the greedy rung, the draft's
+three machines, the defence rule as the floor (the long wall brief, section 5). A direction, read
+against the record of 9 November (`docs/campaign_run.md`, each battle's shape by its seed), which it
+is not a cell match for, since that run drew every shape.
+
+| Measure | 9 November, every shape | 10 November, the steppe, passing, catch at one |
+|---|---|---|
+| Runs won | 0 of 40 | 0 of 40 |
+| Battles | 184: won 3%, held after a wipe 9%, fell 86% | 186: won 6%, held after a wipe 7%, fell 86% |
+| Fights | 524 | 519 |
+| Machines wrecked a battle | 1.66 | 1.63 |
+| Phases a battle | 5.96 | 5.81 |
+| Gate damage a battle | 135 | 134 |
+| The pressure ratio, a run's mean | 1.70 | 1.48 |
+| Turns above 1.0 | 40% | 34% |
+
+Read: nothing moved that the defence rule can show. The bot never held a line, so it never lost
+one: the runs, the battles, the fights, the wrecks and the gate's damage all land where they were,
+and the ratio eases a little because the packs now walk straight to the wall and the bot meets
+them where they end. The catch at one did not empty the hunters' fights (519 fights against 524).
+What this cannot read is the thing Ryan changed it for, his own play: whether a pusher's straight
+walk and a machine's slide through its allies feel right, and whether a hunter caught beside its
+prey reads without a ring. Nothing here is a decision.
+

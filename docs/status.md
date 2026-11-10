@@ -27,8 +27,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1090 tests, 304,428 checks, green (10 November, main with the Text tab, the side
-  session's work and the map playtest list; one
+- Tests: 1089 tests, 323,782 checks, green (10 November, main with the Text tab, the side session's work, the
+  map session's shapes laid to the rift's row, the passing and the catch at one, and the map
+  playtest list; one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
   either map view on 6 November); about four minutes in a cloud session, twenty on a slow one;
   words after `--` run only the files whose names hold one (`-- loot rig`). A cloud
@@ -53,7 +54,9 @@ Everything is on main as of 10 November 2026 but the formation and refit session
 the music session's, both below.
 `ccr-c71bc17f-hclj2c`, Ryan's map playtest list of 10 November and his answers to it (How things
 stand below), cut from main at `aa40832`, landed on main as a fast-forward on his word ("Ok,
-merge this into main so I can try it"), main not having moved; it is merged and to delete with
+merge this into main so I can try it"), after taking the map session's main in a merge (the shapes laid
+to the rift's row, no body blocking, the catch at one: the bible, the rules, this file and
+`game/battle/bleed.gd` the conflicts, both sides kept, the bible's version main's plus one); it is merged and to delete with
 the rest (the formation and refit session meets its edits in `game/battle/battle_map_view.gd`,
 `game/battle/battle_screen.gd`, the bible and these records when it takes main).
 `ccr-df879779-uf9076`, the side session of 9 and 10 November (How things stand below: the test
@@ -74,7 +77,9 @@ and this file the conflicts, both sides' words kept) and main took it as a fast-
 word ("Ok clean up and merge into main"); it is merged and to delete with the rest. `ccr-1e6e6571-7x7ayr`,
 the map session of 9 November (the shapes relaid and recast, How things stand below), took main's
 skirmish audit step 3 as it landed and main took it as a fast-forward on Ryan's word ("push this
-into main, so I can try it"); it is merged and to delete with the rest. The
+into main, so I can try it"), then again on 10 November with the shapes laid to the rift's row,
+the passing and the catch at one ("put this in main so I can try it in context"); it is merged
+and to delete with the rest. The
 branches that landed on 3 to 9 November, each a session of its own, fully merged and to delete
 from GitHub and the desk machine (the command is in the audit's last chat;
 `git push origin --delete` the merged ones, then `git fetch --prune`):
@@ -352,7 +357,20 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   views (the river's bars, the gorge's mass and the city's blocks in the 3D); the to-do's Ryan
   list has the phone judge, with the counts and the authored sectors (the long wall proposal's
   lean, a content proposal only if these are not enough). The bible's shapes and field rows carry
-  it (live on the page since 9 November's republish, Pages below).
+  it (the shapes row live since the republish of v0.496; the field row's 10 November sentence and
+  the section 12 row on the blocking are this file's, not yet the page's, Pages below). His first play (10 November): the flattened side wants features all the way to the back,
+  built the same day: the rift's mouth is the bared ring beside the rift and nothing more, every
+  shape laying from the rift's row (eight open rows at twelve deep), the opening's packs off the
+  rift's row (`Battle.OPENING_FLOOR_ROW`) and the seam keeping its own start (row 4 at twelve
+  deep, `Battlefield.seam_start`); the shores laid after the guarantee so no bar outlives its
+  water. His second note, built the same day on his go ("it's fine to slide the units under each
+  other"; "I'd love to try getting rid of the hunter catch radius"): no body blocking, every unit
+  passing every other and nobody ending on another's hex (`Battlefield.passes`), the pusher that
+  turned back and the sealed-off prey's stand-in gone with it; and a hunter catching at the engage
+  range everyone shares (`Unit.ENGAGE_RANGE`, 1; `ContentDB.HUNTER_RING` gone), the readout's ring
+  line with it, the ring drawn now the hexes beside the walk's end. The bible's passing, crossing,
+  ring, fights and hunters rows carry it (v0.500); the campaign runner's 40 runs after it are in
+  `docs/measurements.md` (a direction). The maps' seeding issues are the to-do's.
 - **A hunter's reach** (8 November, `ccr-d26a1321-xg9xge`, from Ryan's bug report: on the first
   enemy walk a goblin warband caught the Polar Bear from three hexes, "No indication of catch
   range, nor why a normal goblin pack is now suddenly a hunter"). The three came from a pack
@@ -631,10 +649,11 @@ commands are in `README.md`.
   page's Version 502, published from main at `2d489f7` on Ryan's word, "republish the hangar
   page and the bible": main's file whole, since the live v0.496 matched `f048e67`'s byte for byte
   and so needed no merge; it carries the Lammergeier's rework, its row, the Gel's and the
-  reinforcement row's slot-mine lines and the tables). Main's file is v0.499 since the map
+  reinforcement row's slot-mine lines and the tables). Main's file is v0.501 since the map
   playtest list landed (the boss's picture, the scenery under the painting, the tears row's
-  read of 10 November and the hunters' declaration, on v0.498's Text tab rows: the hangar row's
-  tabs and the shown-text row), unpublished, its republish on Ryan's word; `ccr-722ca9f0-yj8na3`'s file is ahead of both with the formation and refit session's
+  read of 10 November and the hunters' declaration, on the map session's v0.500 and v0.498's
+  Text tab rows: the hangar row's tabs and the shown-text row), unpublished, its republish on
+  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is ahead of both with the formation and refit session's
   rows, unpublished too. BASE for the next merge is `2d489f7`'s file. The live
   page may carry rows ahead of main's code while a branch has not landed (the music session's
   track rows: Hold The Line's settled pair and its trial notes, Night Shift's duelling basses,

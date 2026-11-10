@@ -576,8 +576,8 @@ func _draw() -> void:
 				Hud.stroke_poly(self, MapOrient.corners(center(rd[3]), HEX_SIZE - _px(6.0)), Color(hud, 0.8), _px(2.5))
 
 	# Where every pack walks on the enemy's turn (bible section 4), from where the machines
-	# stand now, and every hunter's tag on what it comes for (its prey, or the machine it takes
-	# when its prey is sealed off); nothing while a move plays or a fight is entered. A fight a
+	# stand now, and every hunter's tag on what it comes for (its prey); nothing while a move
+	# plays or a fight is entered. A fight a
 	# hunter forced comes first, so its marks have the map until it is fought.
 	var hunted := {}   # prey -> the packs hunting it, for the tags drawn over the units
 	if _anim.is_empty() and fight_group.is_empty() and forced.is_empty():
@@ -1844,8 +1844,8 @@ func hunter_rings() -> Array:
 
 
 ## The hexes inside a hunter's ring with its anchor at `anchor`, as its catch counts them
-## (Battlefield._distance_from): within the pounce (ContentDB.HUNTER_RING, one number for every
-## hunter) of any of its footprint's hexes as the crow flies, over anything between; on the map, no
+## (Battlefield._distance_from): within the engage range (Unit.ENGAGE_RANGE, one number for
+## everyone) of any of its footprint's hexes as the crow flies, over anything between; on the map, no
 ## structure (nobody stands there to be caught).
 func ring_hexes(sq: Unit, anchor: Vector2i) -> Dictionary:
 	var region := {}
@@ -1857,7 +1857,7 @@ func ring_hexes(sq: Unit, anchor: Vector2i) -> Dictionary:
 			var h: Vector2i = queue.pop_front()
 			if field.map.has(h) and not field.map.is_structure(h):
 				region[h] = true
-			if int(dist[h]) >= ContentDB.HUNTER_RING:
+			if int(dist[h]) >= Unit.ENGAGE_RANGE:
 				continue
 			for n in Hex.neighbors(h):
 				if not dist.has(n):
