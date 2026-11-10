@@ -155,7 +155,7 @@ in here first before you begin": his second map list of 10 November, the stores'
 BLOCKED tag): the bible (its version above both, v0.509; the three clocks row this branch's,
 the names row main's, the Armoured table row rewritten from content by its tool), this file and
 the to-do the conflicts, both sides kept; `docs/vocabulary.md` made again.
-The bible's file is v0.509, main's v0.504 with this branch's rows, its republish on Ryan's word
+The bible's file is v0.510, main's v0.504 with this branch's rows, its republish on Ryan's word
 (Pages below); and `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
@@ -417,6 +417,26 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   are part of a threat-3 formation ... there should be at least one heavier unit in there to
   help out", so a formation is read with a heavier machine among its three and the pair of
   lights is no yardstick for a pusher (the bible's Foe roles row).
+- **The refit pass's model is content** (10 November, on his "The re-deal with regen and heat,
+  despite my tests showing it easy, seems like the correct way to go ... start with the minimal
+  swaps (The "Model" setting) and we'll go up from there"; the brief's section 5 has it whole).
+  The trial's MODEL deal is written into `content/`: on every stock die a shield's slot holds a
+  defensive basic (the Halo Projector, a Barrier, where a shield for anyone stood; the Shoring
+  Jack, Armoured 2, where one for itself did) and a vent's a Twin Autoguns, a placeholder; the
+  basics are six, the four guns each making heat; every chassis regains its own `shield_regen`,
+  one to three, the faster on the smaller gauge ("a smaller shield that regens fast, a fatter
+  shield that regens slow, some variation of the middle"; the Nemesis and the Buzzard one by
+  role); the Stingray cools one; the ten slottable shields and vents are planned drafts nothing
+  deals; the four machines back in design are undealt by `"status": "planned"` on their own
+  entries, their kits still built. Saves from before are refused (the three save versions).
+  The trial's rows are gone but one: SETTINGS → TRIALS → SHIELD REGEN (BUILT, 0, 1, 2, 3), a
+  flat regen in place of each chassis's own; `--refit` and `RIFTGATE_REFIT` keep the what-ifs
+  that still mean something (regen, cooling, hotter, a price on the Barrier basic). The
+  campaign runner reads it as the what-if did (`docs/measurements.md`: battles won 10% where
+  they were 3%, the Rupture reached twice as often, four battles in five still lost). Not
+  landed, each a later step: the re-deal proper (what each die wants in a vent's old slot), the
+  component pass (three pieces to be made equipment, three back in design, the Blast Door, two
+  modules), the heat prices, the four reworks.
 - **Back to the formation pass** (Ryan, 10 November: "We've gotten off on a tangent from the
   main issue, which is the actual formation pass. What do we need to actually execute on it?").
   The refit brief's section 9 is the list: the pass is structure and moves no foe's number
@@ -968,7 +988,7 @@ commands are in `README.md`.
   playtest list landed (the boss's picture, the scenery under the painting, the tears row's
   read of 10 November and the hunters' declaration, on the map session's v0.500 and v0.498's
   Text tab rows: the hangar row's tabs and the shown-text row), unpublished, its republish on
-  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.508, main's with the formation and refit
+  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.510, main's with the formation and refit
   session's rows (the hunters row's who-may-hunt, the Foe roles row's direction, the goblin's
   lesson, his call on its form and the pusher's yardstick, the recolour row's two rungs that
   changed their archetype and his calls on each,

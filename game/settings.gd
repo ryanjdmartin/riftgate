@@ -35,8 +35,7 @@ const DISPLAY_DEFAULTS := {
 	"skirmish_controls": "middle",   # SKIRMISH_CONTROLS: where the skirmish's log, dice and Reroll sit
 	"shot_trails": false,   # a debug build's trial: a shot crossing the field from the muzzle to its target (ShotTrail), tabled as maybe too busy (Ryan, 3 November)
 	"map_view": "wall_left",   # MAP_VIEWS: the battle map's orientation (MapOrient), a view only
-	"refit_trial": "off",   # REFIT_TRIALS: a debug build's trial, the refit pass's model laid over the content as the game starts (Refit), read at the next launch (docs/briefs/refit_pass.md)
-	"refit_regen": "2",   # REFIT_REGENS: the trial's shield regen, what every chassis regains a round while a trial is on
+	"shield_regen": "built",   # SHIELD_REGENS: a debug build's what-if, a flat shield regen on every chassis in place of each one's own (Refit), read at the next launch (docs/briefs/refit_pass.md)
 	"field_depth": "12",   # FIELD_DEPTHS: a debug build's trial of the field's depth in rows (Ramp.depth_trial), read as a battle starts
 	"field_opening": "0",   # FIELD_OPENINGS: a debug build's trial of how many moves farther from the wall the opening's packs stand (Battle.opening_trial), read as a battle starts
 	"fodder_worth": "100",   # FODDER_WORTHS: a debug build's trial of what a rank-and-file kill fills of the Rupture meter, in hundredths (Battle.fodder_trial), read as a battle starts
@@ -62,24 +61,14 @@ const AA_LABELS := {"off": "OFF", "fxaa": "FXAA", "msaa2": "MSAA 2X", "msaa4": "
 ## forces one for a run.
 const MAP_VIEWS := ["wall_left", "wall_bottom"]
 const MAP_VIEW_LABELS := {"wall_left": "WALL LEFT", "wall_bottom": "WALL BOTTOM"}
-## The refit pass's model as a trial (docs/briefs/refit_pass.md; Harness.refit_trial), a debug
-## build's: off, or the model (no shield or vent on a stock die, the shield regen, the basics at
-## heat one) with its Barrier basic dealt one of four ways, the question its first reads left to
-## his play (9 November): where a Halo stood and nowhere else, the audit's own deal, a gun in
-## every vent's slot (MODEL); on every die that lacks one (EVERY); on every die and dark the round
-## after it is spent (RESTS); or on none, the Armoured piece the one defensive basic (NONE). Each
-## is a spec Refit.parse takes; the desk's RIFTGATE_REFIT takes any other (a Ward in the
-## Barrier's place among them).
-const REFIT_TRIALS := ["off", "all,vents=guns", "all", "all,barrier=cooldown", "all,barrier=off"]
-const REFIT_LABELS := {"off": "OFF", "all,vents=guns": "MODEL", "all": "EVERY", "all,barrier=cooldown": "RESTS", "all,barrier=off": "NONE"}
-## The trial's shield regen, a flat number every chassis regains a round, or half its gauge, the
-## pass's first lean (Ryan's first read of the trial, 10 November: "the half recovery I have a nigh
-## unkillable team, even just stingray + prairie dog against 4 goblins/2 mandragora ... Just the
-## MODEL seemed like enough mitigation, but the shield really made that hard to judge"). Two is the
-## placeholder the probe of those fights points at (docs/measurements.md); nought plays the
-## model's dice alone. Read with the trial, at the next launch.
-const REFIT_REGENS := ["0", "1", "2", "3", "half"]
-const REFIT_REGEN_LABELS := {"0": "0", "1": "1", "2": "2", "3": "3", "half": "HALF"}
+## The shield's regen as a what-if, a debug build's: as built, each chassis its own number
+## (content's `shield_regen`, 1 to 3 since the refit pass landed on 10 November: "a smaller shield
+## that regens fast, a fatter shield that regens slow, some variation of the middle"), or a flat
+## number on every chassis in its place (his reads of the trial: at half the gauge "a nigh
+## unkillable team", at two "I feel like even with zero regen I would be fine"). Read as the game
+## starts (Harness.refit_trial), so at the next launch.
+const SHIELD_REGENS := ["built", "0", "1", "2", "3"]
+const SHIELD_REGEN_LABELS := {"built": "BUILT", "0": "0", "1": "1", "2": "2", "3": "3"}
 ## The field's trial, a debug build's (Ryan, 10 November, after his play of the long wall: "I think
 ## the map is a bit too shallow ... If the map is a little deeper, and the seam starts a little
 ## farther out, it will feel more like I can actually plan a little bit ahead instead of panicking

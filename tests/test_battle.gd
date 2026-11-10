@@ -893,6 +893,7 @@ func test_finish_skirmish_removes_the_pack_and_keeps_shields_as_they_were() -> v
 	var sq: Unit = b.field.packs()[0]
 	_engage(b, sq, m)
 	var sk := b.attack(sq, [m])
+	m.base["shield_regen"] = 0   # the regen is the fight's own way back; this reads what the map gives, which is nothing
 	m.shield = 0
 	_win(sk)
 	assert_eq(sk.outcome, Skirmish.Outcome.VICTORY, "won")

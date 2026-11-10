@@ -16,10 +16,12 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 
 ## Machines
 
-- **Chassis**: hull, shield, shield regen (shield regained as each round opens; no chassis
-  sets it yet), heat maximum, cooling, armour, move, size class, one way of moving, hardpoints, fixed components, module
+- **Chassis**: hull, shield, shield regen (shield regained as each round opens: one to three
+  by chassis, the faster on the smaller gauge), heat maximum, cooling (one at least on every chassis that is dealt), armour, move, size class, one way of moving, hardpoints, fixed components, module
   slots (two; the Clydesdale three) and one passive. Twenty-four chassis from five makers
-  (`content/chassis.json`). A run has four squad slots and starts with three
+  (`content/chassis.json`), four of them back in design and dealt by nothing until their
+  sessions hand them back (the Polar Bear, the Puffin, the Whip Scorpion, the Swallowtail: a
+  chassis whose entry says `"status": "planned"`). A run has four squad slots and starts with three
   machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
   order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die,
@@ -71,11 +73,17 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   of tiers one to three are found; a bought chassis brings one copy of each component it
   stocks, never its blueprint. A fixed component has no tier; the Arsenal (the capital's
   maker) makes no basics and fields no tier-one chassis, though its tier-one components exist
-  and its tier-two chassis stock them. The basic kit is eight pieces, each a maker's: four
-  guns (the Twin Autoguns and the Rivet Gun, Direct; the Ankle Mortar, Indirect; the Laser
-  Carbine, Direct and warm), two shields (the Halo Shield, self or ally; the Canopy, self only, the
-  bigger) and two vents (the Coolant Jacket, self or ally; the Bleed Valve, self only, the
-  bigger).
+  and its tier-two chassis stock them. The basic kit is six pieces, each a maker's: four
+  guns, each making heat (the Twin Autoguns and the Rivet Gun, Direct; the Ankle Mortar, Indirect; the Laser
+  Carbine, Direct and warm), and two defensive pieces, each spent on itself or an ally (the
+  Halo Projector, a Barrier; the Shoring Jack, Armoured 2 for the round).
+- **No recovery on the die**: a component is a weapon or equipment. No stock die holds a
+  shield or a vent and no slottable one is dealt: the shield is the chassis's and comes back
+  by its regen, heat goes by its cooling, and the decision heat leaves is the hold (fire the
+  cold entry, keep the hot one, or pass and cool). The slottable shields and vents are kept in
+  content as drafts nothing deals (no blueprint, no loot, no basic), each until it is made
+  equipment or removed; the engine still runs both kinds, for the locked pieces that are one
+  (the Musk Ox's Quick Reload) and the machines back in design.
 - **Damage states**: a component is intact or destroyed, for the whole battle (none is destroyed
   while the injury rule is off: Injury, below).
 
@@ -403,8 +411,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   them); a foe's blow 2 to 8 at tier one (the rank and file's mostly 2 or 3)
   and to 10 at tier three, a massive
   foe's 7 or 8, a hero's 4 to 10, the slate's bosses' 6 to 10; machine hull 20 to 50 by size (the
-  Kite's paper hull 12, its row's one-off), shield 6 to 16, shield regen 0 to 2 a round (none
-  set yet), base armour 0 to 2 by role, timed armour to 4 or 5; heat
+  Kite's paper hull 12, its row's one-off), shield 6 to 16, shield regen 1 to 3 a round, base armour 0 to 2 by role, timed armour to 4 or 5; heat
   1 to 20 (1 to 30 if the pricing needs it), the maxima 10 to 14 (the Musk Ox's 8), a vent 3 to
   8 (the Entropy Condenser's 10 the capstone, paid in hull). The scales are magnitudes,
   not steps: any whole number may be used, and content sits a little past them where its
@@ -1443,7 +1450,7 @@ and nothing scales a pack.
 
 - **Start**: three different tier-one chassis, picked freely from every one the engine can
   field, in their stock. Four squad slots, the fourth filled by an offer's chassis. The party is
-  dealt as in the campaign. The eight basics are free and without limit.
+  dealt as in the campaign. The six basics are free and without limit.
 - **Battles**: twelve, a tier every four, then the finale. Each is fought against a lead domain
   drawn at random and, from tier two, a guest. Its fights before the boss are as many as the
   Rupture's Fractures at its tier (three, four, five), and one, two and three of them are

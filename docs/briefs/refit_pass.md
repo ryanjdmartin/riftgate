@@ -107,6 +107,17 @@ reads (`docs/measurements.md`, 9 November) are the records this stands on.
   tier 3 revenant. And a lich its own backliner to pair with it." And: "We've gotten off on a
   tangent from the main issue, which is the actual formation pass. What do we need to actually
   execute on it?" Section 9 is the answer.
+- **Land it** (10 November, on that answer): "Revenant 3 name is whatever you think. Make
+  revenant stab flat, or flat with a Marsh twist, if a simple one exists. Duelists are as you
+  see fit, might as well jam them in here as well as part of the pass." "The re-deal with regen
+  and heat, despite my tests showing it easy, seems like the correct way to go. I would start
+  with regen 1-3, depending on the machine, its role and maker (i.e. a smaller shield that
+  regens fast, a fatter shield that regens slow, some variation of the middle). I think start
+  with the minimal swaps (The "Model" setting) and we'll go up from there." "Make sure main is
+  in here first before you begin. I'd like you to guesstimate some elite and boss tweaks as
+  well, but leave out rising threat for now." So the model is content in its least form
+  (section 5), the formation pass takes the Marsh's line and the duelists with it (section 9),
+  the elites and bosses get a first guess, and the rising threat waits.
 - **The refit's direction, before the model was reached**: "Enemy HP is probably too high, or
   player damage is too low. I'd rather lower enemy HP slightly, and boost synergy pieces to
   increase damage instead of just raw numbers. However, I want to judge the new formations
@@ -341,63 +352,68 @@ The twelve prunings, the gates, the bosses' stat blocks (its section 6) and the 
 (its hole 8) stand as the proposal has them until the re-read. Nothing of it lands before the
 model's numbers.
 
-## 5. The what-if, built, and what its first reads say
+## 5. The model landed, the what-ifs left, and what its first reads say
 
-Built 9 November, none of it content (`sim/refit.gd`, `tests/test_refit.gd`; the README has every
-option):
+**Landed in content, 10 November**, in its least form, on his word (section 2): the trial's MODEL
+deal written into `content/`, with the regen by chassis.
 
+- **The stock dice.** On every chassis a shield's slot holds a defensive basic and a vent's a
+  Twin Autoguns, 37 slots: the Halo Projector (a Barrier, on itself or an ally) where a shield
+  for anyone stood (the Baboon, the Prairie Dog, the Stingray, the Cassowary, the Cottonmouth,
+  the Puffin, and the Nemesis and the Ammit where the Oblation Mantle stood), the Shoring Jack
+  (Armoured 2 for the round) where a shield for itself stood (the Honey Badger, the Clydesdale,
+  the Wild Boar, the Buzzard, the Funnel-web, the Musk Ox, the Skua, the Storm Petrel, and the
+  Polar Bear and the Swallowtail), a Twin Autoguns in each of the nineteen vents' slots. The
+  gun is a placeholder until the re-deal proper says what each die wants there.
+- **The basics** are six: the four guns, each making heat (the Twin Autoguns and the Rivet Gun
+  now one), the Halo Projector (the Halo Shield re-made as the Barrier basic, its id following
+  its name) and the Shoring Jack (down to tier zero).
+- **The shield's regen** by chassis, one to three (his words: "a smaller shield that regens
+  fast, a fatter shield that regens slow, some variation of the middle"):
+
+  | Regen a round | Gauge | Chassis |
+  |---|---|---|
+  | 3 | 8 | the Honey Badger, the Polar Bear, the Wild Boar, the Puffin, the Cassowary, the Cottonmouth, the Whip Scorpion |
+  | 2 | 10 to 12 | the Clydesdale, the Baboon, the Prairie Dog, the Dingo, the Ammit, the Stingray, the Funnel-web, the Musk Ox, the Skua, the Needletail |
+  | 1 | 14 to 16 | the Kite, the Swallowtail, the Lammergeier, the Storm Petrel, the Giant Petrel |
+  | 1, by role | 6 and 12 | the Nemesis (its rage reads hull, and its plate is its answer), the Buzzard (it makes shield from its own heat) |
+
+- **Cooling**: every dealt chassis cools one at least (the Stingray one, from nought).
+- **The pieces with no entry left**: the ten slottable shields and vents are planned drafts
+  nothing deals (no blueprint, no loot, no basic, no pick in the harness), each with its fate
+  from section 6 under its `design`: the Canopy, the Coolant Jacket, the Bleed Valve and the
+  Radiator Sail retired; the Laminar Deflector, the Corona Shield and the Phased Sublimator to
+  be made equipment by the component pass (the engine's Cleanse rides only a shield or a vent
+  today); the Wake Diffuser, the Oblation Mantle and the Entropy Condenser back in design.
+- **The four machines back in design** are undealt by a status on their own entries
+  (`ContentDB.chassis_runnable`): the tender, the harness and the runners skip them, and their
+  kits still build, so their sessions and their tests have them.
 - **The injury rule is off in the game** (`Skirmish.injuries`, false): no break in a fight and
   no destruction after it; `--injury on|N` reads a run with it back.
-- **`--refit SPEC`** on both runners lays the model over the loaded content for a run and names
-  what it did in the report's head: `die` (every stock shield and vent swapped in its own slot
-  for a defensive basic, a shield spent on its own machine for the Armoured piece and any other
-  for the Barrier piece, a vent for whichever the die lacks, else a tier-zero gun; section 6's
-  four machines undealt; the Stingray cooling one), `vents=guns` (a vent's slot takes a gun
-  instead, so a die holds a defensive basic only where a shield stood: the audit's own deal and
-  the stock re-deal's placeholder), `regen=half|N`, `cooling=N`, `heat1` (the basics at heat
-  one), `barrier=off|cooldown|heatN|ward` (the Barrier basic's rule: none, dark the round after
-  it is spent, N heat a spend, or a Ward in its place), and `all` for the die, half the gauge
-  and heat one. The tier-one Blast Door, Shoring Jack and Decoherence Veil stand in for the
-  pieces section 6 names.
-- **`--guard W`**: the aggressor's habit for the fight bot (`Policy.guard_weight`: a block at a
-  share of its worth; at 0.05 it never rerolls for one and spends one only when its die is stuck
-  showing it), so the hull the blocks keep and the rounds they cost are read as its gap from the
-  rung, which takes every block worth making.
-- **The trial in the game**: `RIFTGATE_REFIT=<spec>` on the desk, and on the phone a debug
-  build's SETTINGS → TRIALS → REFIT TRIAL (OFF, MODEL, EVERY, RESTS, NONE: the model with its
-  Barrier basic where a Halo stood, on every die, on every die and resting a round, or on none)
-  and REFIT REGEN beside it (0, 1, 2, 3, HALF: what every shield regains a round, two the
-  placeholder since his first read), read at the next launch and judged on a new battle or run.
-  The same page holds the field's dials of his second read (FIELD DEPTH, OPENING, FODDER: the
-  status and the README), read as the next battle starts.
-- `hotter=N` on the what-if: every weapon makes N more heat, a read for the heat prices.
-- The Barrier is one stack whoever grants it (a status may be single: `Effects.is_single`), so
-  the Stingray's Exothermic Suite no longer counts it to two; it only ever took one blow.
-- The curve read's cells carry greedy's rounds and its stalled fights beside the band and the
-  hull lost.
 
-Not built, so the trial plays without it (10 November, on his asking what is built):
+**The what-ifs left** (`sim/refit.gd`, `--refit SPEC` on both runners, `RIFTGATE_REFIT` in the
+game): `regen=N` or `regen=half` (a flat regen in place of each chassis's own), `cooling=N`,
+`hotter=N`, `barrier=cooldown|heatN` (a price on the Barrier basic). On the phone a debug
+build's SETTINGS → TRIALS has SHIELD REGEN (BUILT, 0, 1, 2, 3), read at the next launch, beside
+the field's dials. `--guard W` is the aggressor's habit for the fight bot
+(`Policy.guard_weight`). The Barrier is one stack whoever grants it (`Effects.is_single`).
 
-- **Section 6's content.** No component is retired, renamed or re-kinded: the eleven slottable
-  shield and vent pieces are still in content, four of them basics, so a refit by hand, a loot
-  drop and the quick campaign's hangar can still put one on a die. The tier-zero Shoring Jack
-  and the Halo Projector do not exist; the tier-one pieces stand in, on the stock dice only.
-- **The stock re-deal.** A vent's slot holds a Twin Autoguns as a placeholder (MODEL) or the
-  defensive basic the die lacks (EVERY).
-- **The numbers.** The regen is half the gauge on every chassis, no role or maker in it; cooling
-  is as it was but for the Stingray's one; no heat price moved but the two basics'; no foe's
-  number moved.
-- **The foes.** The formation proposal's grids; the bombs that no longer hunt (content's bomb,
-  grenade and balloon compositions still do); the roles and the flankers as duels; the rising
-  threat and its validator check. (The wall strike by the rating is built, 10 November, on
-  every pack as content has it.)
-- **The machines.** The four reworks; the two modules (the Skeleton's rule does nothing with the
-  injury off, the Conjugator never fires on a die with no shield); the lines on fielded machines
-  that name a shield or a vent (the Musk Ox's forge reads neither; the Storm Petrel's and the
-  Buzzard's shields run as written, cheaper under a regen).
+**Not landed yet** (each "we'll go up from there"):
+
+- **The re-deal proper.** What each die wants in a vent's old slot (a placeholder gun today),
+  and the fifth basic gun he wants, an Indirect one: a table in chat.
+- **The component pass.** The three pieces to be made equipment and the three back in design;
+  the Blast Door, a Barrier at tier one that must be more than the basic or retire; the two
+  modules whose rules stop firing (the Reinforced Skeleton, the Phase Conjugator).
+- **The numbers.** The heat prices on every other entry, with the cooling and the gauges (the
+  heat session's); the regen read again once the foes' numbers move.
+- **The four reworks**, and the lines on fielded machines that name a shield or a vent (the Musk
+  Ox's forge reads neither; the Storm Petrel's and the Buzzard's shields run as written,
+  cheaper under a regen).
 - **The engine and the words.** Shield and vent are still kinds, with their keywords, their
   vocabulary and the Overshield; shown text still names the injury (the keywords list) though
   the rule is off. The bot does not value the regen. The commander layer is a note.
+- **The rising threat** in every formation: set aside on his word.
 
 The first reads are `docs/measurements.md`'s (9 November, the refit pass's first reads), 30 seeds
 a cell and 40 runs a campaign, each a direction, in the bot's hands. What they say:
@@ -595,6 +611,12 @@ pieces' fates (section 6, with the names following); the hull budget by kind (a 
 twentieth of the squad's hull at its rating, a flanker's a thirtieth or less, a hunter's a
 tenth, an elite's a quarter, the boss what is left); and the formation proposal's remaining leans,
 which his point on the makeups (section 4) now re-cuts for the flankers.
+
+Settled 10 November with the landing (section 5): the first item, how common the Barrier is
+("start with the minimal swaps (The "Model" setting) and we'll go up from there": a defensive
+basic only where a shield stood), and the third, the regen's size ("regen 1-3, depending on the
+machine, its role and maker"); the second, what prices a round, is set aside ("leave out rising
+threat for now"). The reads behind each stay below.
 
 Still his, the first five with what the first reads say (section 5), the fourth parked on his
 word:

@@ -921,7 +921,7 @@
   "repulsor_r"
  ],
  "pins": {
-  "hp_1": "halo_shield",
+  "hp_1": "halo_projector",
   "hp_2": "twin_autoguns",
   "hp_3": "laser_carbine",
   "hp_4": ""

@@ -1,6 +1,15 @@
 extends TestCase
 
 
+
+## A component of content as a template for a test's own piece, read by the validator like any
+## built piece: the shields and vents are planned drafts since the refit pass landed (10
+## November), and a draft's face is not held to the engine, which these tests need it to be.
+func _piece(db: ContentDB, id: String) -> Dictionary:
+	var c: Dictionary = db.components[id].duplicate(true)
+	c.erase("status")
+	return c
+
 func _db() -> ContentDB:
 	return ContentDB.load_default()
 
@@ -757,7 +766,7 @@ func test_a_planned_chassis_is_kept_but_never_fielded() -> void:
 func test_planned_component_may_carry_a_planned_keyword() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var plate: Dictionary = db.components["laminar_deflector"].duplicate(true)
+	var plate: Dictionary = _piece(db, "laminar_deflector")
 	# The vocabulary's planned keyword of the day (Corrode until 18 October, Web until it was
 	# built that day), found rather than named, so the test outlives the content; with none
 	# planned, a synthetic one stands in.
@@ -891,7 +900,7 @@ func test_breach_is_a_weapon_keyword_the_foes_share() -> void:
 	gun["face"]["keywords"] = ["breach"]
 	gun["face"].erase("penetrate")   # the beam's Penetrate number goes with its keyword
 	db.components["breacher"] = gun
-	var plate: Dictionary = db.components["halo_shield"].duplicate(true)
+	var plate: Dictionary = _piece(db, "canopy")
 	plate["tier"] = 1
 	plate["face"]["keywords"] = ["breach"]
 	db.components["breach_plate"] = plate
@@ -1050,8 +1059,10 @@ func test_the_field_recharge_is_refused_and_the_shield_regen_is_a_slot() -> void
 	assert_true(db.validate().is_empty(), "content validates")
 	for id in db.chassis.keys():
 		assert_false(db.chassis[id].has("recharge_field"), "%s names no field recharge" % id)
-		assert_eq(db.make_mech(id).shield_regen, 0, "%s regains nothing a round (no chassis sets it yet)" % id)
+		var regen: int = db.make_mech(id).shield_regen
+		assert_true(regen >= 1 and regen <= 3, "%s regains one to three a round, its own number (got %d)" % [id, regen])
 	var base: Dictionary = db.chassis["kite"].duplicate(true)
+	base.erase("shield_regen")
 	var cases := {"old": ["recharge_field", 4, true], "regen": ["shield_regen", 2, false], "top": ["shield_regen", 9, false],
 		"over": ["shield_regen", 10, true], "under": ["shield_regen", -1, true], "half": ["shield_regen", 1.5, true]}
 	for tag in cases.keys():
@@ -1071,7 +1082,8 @@ func test_the_field_recharge_is_refused_and_the_shield_regen_is_a_slot() -> void
 	for item in db.codex_for_unit(u)["stat_items"]:
 		shown = shown or str(item[0]) == "shield regen"
 	assert_true(shown, "the codex shows a regen that is not zero")
-	var plain_items: Array = db.codex_for_unit(db.make_mech("kite"))["stat_items"]
+	db.chassis["probe_plain"] = base.duplicate(true)
+	var plain_items: Array = db.codex_for_unit(db.make_mech("probe_plain"))["stat_items"]
 	assert_false(plain_items.any(func(item) -> bool: return str(item[0]) == "shield regen"), "and none where it is zero")
 	assert_false(str(db.codex_for_unit(db.make_mech("kite"))["stats"]).contains("PHASE"), "the stats line names no field recharge")
 
@@ -1198,7 +1210,7 @@ static func _with(c: Dictionary, key: String, value) -> Dictionary:
 func test_support_keywords_ride_on_shields_and_vents_only() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var scrubber: Dictionary = db.components["laminar_deflector"].duplicate(true)
+	var scrubber: Dictionary = _piece(db, "laminar_deflector")
 	scrubber["face"]["keywords"] = ["cleanse"]
 	scrubber["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["scrubber"] = scrubber
@@ -1207,7 +1219,7 @@ func test_support_keywords_ride_on_shields_and_vents_only() -> void:
 	gun["face"].erase("penetrate")   # the beam's Penetrate number goes with its keyword
 	gun["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["cleansing_gun"] = gun
-	var plate: Dictionary = db.components["laminar_deflector"].duplicate(true)
+	var plate: Dictionary = _piece(db, "laminar_deflector")
 	plate["face"]["keywords"] = ["burn"]
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["burning_plate"] = plate
@@ -1226,7 +1238,7 @@ func test_support_keywords_ride_on_shields_and_vents_only() -> void:
 func test_a_component_passive_from_content_lands_on_the_mech() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var fins: Dictionary = db.components["coolant_jacket"].duplicate(true)
+	var fins: Dictionary = _piece(db, "coolant_jacket")
 	fins["name"] = "Finned Sink"
 	fins["passive"] = {"id": "fins", "name": "Fins", "description": "Cooling +5.",
 		"effects": [{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 5}]}
@@ -1258,7 +1270,7 @@ func test_a_component_passive_from_content_lands_on_the_mech() -> void:
 func test_a_buff_face_names_a_machine_status() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var good: Dictionary = db.components["laminar_deflector"].duplicate(true)
+	var good: Dictionary = _piece(db, "laminar_deflector")
 	good["face"] = {"kind": "buff", "status": "overcharged", "stacks": 2}
 	good["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["coil_ok"] = good
@@ -1288,7 +1300,7 @@ func test_a_buff_face_names_a_machine_status() -> void:
 func test_a_spend_keyword_rides_on_any_kind_of_component() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var plate: Dictionary = db.components["laminar_deflector"].duplicate(true)
+	var plate: Dictionary = _piece(db, "laminar_deflector")
 	plate["face"]["volatile"] = 3
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["hot_plate"] = plate
@@ -1297,7 +1309,7 @@ func test_a_spend_keyword_rides_on_any_kind_of_component() -> void:
 	gun["face"]["shield_cost"] = 2
 	gun["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["hot_gun"] = gun
-	var fins: Dictionary = db.components["coolant_jacket"].duplicate(true)
+	var fins: Dictionary = _piece(db, "coolant_jacket")
 	fins["face"]["volatile"] = 3
 	fins["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["hot_fins"] = fins
@@ -1412,7 +1424,7 @@ func test_a_reach_beside_the_rank_is_an_attacks_and_a_real_reach() -> void:
 ## fields on their keyword, their face or their status, so the content and the landing set them.
 func test_the_rule_numbers_are_fields_on_their_keyword_their_face_or_their_status() -> void:
 	var db := _fresh()
-	var base: Dictionary = db.components["coolant_jacket"].duplicate(true)
+	var base: Dictionary = _piece(db, "coolant_jacket")
 	base["tier"] = 1
 	var cases := {
 		"test_keyword": [{"keywords": ["volatile"]}, "Volatile is a cost, not a keyword"],
@@ -1457,7 +1469,7 @@ func test_the_rule_numbers_are_fields_on_their_keyword_their_face_or_their_statu
 func test_the_content_carries_a_live_hull_the_engine_runs() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var plate: Dictionary = db.components["laminar_deflector"].duplicate(true)
+	var plate: Dictionary = _piece(db, "laminar_deflector")
 	plate["passive"] = {"id": "live_plate", "name": "Live Plate", "description": "", "effects": [
 		{"trigger": "static", "effect": "shock_on_block", "value": 1}]}
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
@@ -1481,7 +1493,7 @@ func test_lure_and_disrupt_ride_on_attacks_and_never_on_a_shield() -> void:
 	gun["face"].erase("penetrate")   # the beam's Penetrate number goes with its keyword
 	gun["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["loud_gun"] = gun
-	var plate: Dictionary = db.components["laminar_deflector"].duplicate(true)
+	var plate: Dictionary = _piece(db, "laminar_deflector")
 	plate["face"]["keywords"] = ["lure"]
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["loud_plate"] = plate
@@ -1524,7 +1536,7 @@ func test_grant_keyword_names_a_keyword_the_engine_runs() -> void:
 func test_the_vent_on_fire_fields_belong_to_an_attack() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var plate: Dictionary = db.components["laminar_deflector"].duplicate(true)
+	var plate: Dictionary = _piece(db, "laminar_deflector")
 	plate["face"]["vents_all"] = true
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["hot_plate"] = plate
@@ -1549,7 +1561,7 @@ func test_a_brace_is_a_positive_number_of_stacks() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	assert_true(int(db.components["breaching_plow"]["face"].get("braces", 0)) > 0, "the plow braces")
-	var plate: Dictionary = db.components["laminar_deflector"].duplicate(true)
+	var plate: Dictionary = _piece(db, "laminar_deflector")
 	plate["face"]["braces"] = 0
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["limp_plate"] = plate
@@ -1907,12 +1919,12 @@ func test_rapid_rides_on_anything_and_shock_on_weapons_only() -> void:
 	# 9 October: rapid joined volatile as a keyword about the spend, so a vent may carry it;
 	# shock is a weapon's.
 	var db := _fresh()
-	var vent: Dictionary = db.components["coolant_jacket"].duplicate(true)
+	var vent: Dictionary = _piece(db, "coolant_jacket")
 	vent["face"]["keywords"] = ["rapid"]
 	vent["face"]["cooldown"] = 1   # its limiter, printed (Rapid carries none of its own, 2 November)
 	vent["tier"] = 1
 	db.components["test_vent"] = vent
-	var plate: Dictionary = db.components["laminar_deflector"].duplicate(true)
+	var plate: Dictionary = _piece(db, "laminar_deflector")
 	plate["face"]["keywords"] = ["shock"]
 	plate["tier"] = 1
 	db.components["test_plate"] = plate
@@ -2318,7 +2330,7 @@ func test_the_flakshot_lays_flak_and_the_validator_asks_for_its_stacks() -> void
 ## entry that prints none pays heat, Volatile or a shield cost every spend.
 func test_a_cooldown_is_whole_rounds_and_every_rapid_entry_carries_a_limiter() -> void:
 	var db := _fresh()
-	var base: Dictionary = db.components["coolant_jacket"].duplicate(true)
+	var base: Dictionary = _piece(db, "coolant_jacket")
 	base["tier"] = 1
 	var cases := {
 		"test_free": [{"keywords": ["rapid"]}, "carries another limiter"],
@@ -2401,7 +2413,7 @@ func test_a_rewrite_says_its_shot_and_a_rank_condition_its_rank() -> void:
 ## taken is a positive number, and a blast a positive share.
 func test_the_siphons_rules_and_the_vent_blast_say_their_numbers() -> void:
 	var db := _fresh()
-	var plate: Dictionary = db.components["coolant_jacket"].duplicate(true)
+	var plate: Dictionary = _piece(db, "coolant_jacket")
 	plate["tier"] = 1
 	plate["face"]["targets"] = "every_ally"
 	plate["face"]["heat_per_blow"] = 0

@@ -2586,7 +2586,21 @@ func test_a_last_act_records_the_gauges_it_met() -> void:
 func test_the_polar_bears_form_reads_on_its_die_and_its_view() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
-	var m := db.make_mech("polar_bear")
+	# Its seal is spent on a shield, and no stock die holds one since the refit pass landed (10
+	# November: the machine is back in design for it): the kit under test carries the draft
+	# self shield in the slot the re-deal gave its Armoured basic.
+	var stock: Array = (db.chassis["polar_bear"]["loadout"] as Array).duplicate()
+	var self_shield := ""
+	for cid in db.components.keys():
+		var face: Dictionary = db.components[cid].get("face", {})
+		if str(face.get("kind", "")) == "shield" and str(face.get("targets", "")) == "self" and db.component_tier(str(cid)) == 0:
+			self_shield = str(cid)
+	for k in range(stock.size()):
+		var face: Dictionary = db.components[stock[k]].get("face", {})
+		if str(face.get("kind", "")) == "buff":
+			stock[k] = self_shield
+			break
+	var m := db.make_mech("polar_bear", 0, Vector2i.ZERO, stock)
 	sk.add_mech(m)
 	sk.add_foes([Foe.make("revenant", 30, 1)])
 	var s := SkirmishScreen.new()

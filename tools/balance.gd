@@ -19,10 +19,10 @@ extends SceneTree
 ## Scorpion's pilot light; Skirmish.pilot, 3 November), --shield-ahead (a persona valuing a shield left standing by the blows it turns next round),
 ## --injury on|N (the injury rule on for this run, off in the game since 9 November, at the
 ## engine's threshold or at N percent of maximum hull, Skirmish.INJURY_MIN_HULL_PCT; 25 October,
-## for the one state), --refit SPEC (the refit pass's what-if, sim/refit.gd, 9 November: "die" the
-## model's die, every stock shield and vent swapped for a defensive basic and the machines back in
-## design unfielded; "regen=half" or "regen=N" a shield regen on every chassis; "cooling=N" an
-## offset; "heat1" the basics at heat one; "all" the first three as leaned; comma-separated),
+## for the one state), --refit SPEC (the refit pass's what-ifs over its model, which is content
+## since 10 November, sim/refit.gd: "regen=N" or "regen=half" a flat shield regen in place of each
+## chassis's own; "cooling=N" an offset; "hotter=N" every weapon N heat more; "barrier=cooldown" or
+## "barrier=heatN" a price on the Barrier basic; comma-separated),
 ## --targeting aim|lowest (the foes' targeting rule for the matrix: the aims as shipped, or
 ## the lowest-shield rule from before 2 October; the team cells are always run under both
 ## and compared in their own section, since a single machine cannot see targeting),
@@ -126,9 +126,9 @@ func _init() -> void:
 		quit(1)
 		return
 	if not refit_spec.is_empty():
-		# The refit pass's what-if (docs/briefs/refit_pass.md): the model's die, the regen, the
-		# cooling and the basics' heat laid over this run's content, before any --set, so an edit
-		# may still move one of its numbers.
+		# The refit pass's what-ifs (docs/briefs/refit_pass.md): a flat regen, a cooling offset,
+		# hotter weapons or a price on the Barrier basic laid over this run's content, before any
+		# --set, so an edit may still move one of its numbers.
 		refit_notes = Refit.apply(db, Refit.parse(refit_spec))
 	for e in edits:
 		var err := _apply_edit(str(e))

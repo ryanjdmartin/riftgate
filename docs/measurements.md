@@ -6912,3 +6912,35 @@ captain's warband at a third of what it cost two machines and the metal drift at
 that is the body count and a rallier now in Direct reach, the grids' doing and the formation
 pass's to re-cut, not the knife's. At its rating every formation here costs its tier's three
 between nothing and a sixth of their hull, the Treant's and the gels' the dear ones.
+
+## 10 November, the refit pass's model landed in content
+
+The campaign runner's 40 runs (`tools/campaign_run.gd -- --runs 40`, the plain player, the
+greedy rung, each run three tier-one machines of its tender) on the tree before and after the
+model became content: the stock dice with no shield or vent (a defensive basic where a shield
+stood, a Twin Autoguns where a vent did), every chassis its own shield regen of one to three,
+the four basic guns each making heat, four machines undealt. Ryan, the same day: "The re-deal
+with regen and heat, despite my tests showing it easy, seems like the correct way to go ... I
+would start with regen 1-3, depending on the machine, its role and maker ... start with the
+minimal swaps (The "Model" setting) and we'll go up from there." `docs/campaign_run.md` is the
+run after. A direction.
+
+| Measure | Before | The model landed |
+|---|---|---|
+| Battles won, fallen | 3%, 88% | 10%, 81% |
+| Battles ended in a team wipe | 90% | 76% |
+| Battles reaching the Rupture | 18% | 37% |
+| Fractures a battle | 1.07 | 1.60 |
+| Menace killed a battle | 50 | 83 |
+| Gate damage a battle | 139 | 125 |
+| Fights a run of 40 | 552 | 849 |
+| A fight for three, one machine in it: won | 13% of 170 | 31% of 225 |
+| A fight for three, two in it | 69% of 72 | 85% of 99 |
+| A fight for three, three in it | 100% of 49 | 98% of 65 |
+| A fight for four, one in it | 32% of 52 | 55% of 80 |
+
+Read. The landed model does what the what-if did on 9 November: the plain player goes about
+two thirds farther (menace killed 83 where it was 50, the Rupture twice as often), wins three
+times the battles it did and still falls in four of five. The gain is where the reads put it,
+short-handed: a machine alone against a formation rated for three wins one fight in three
+where it won one in eight. At its rating nothing moved, since nothing was at stake there.

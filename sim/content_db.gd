@@ -767,10 +767,15 @@ func chassis_of_tier(t: int) -> Array:
 ## Can the engine field this chassis today? Not while its passive or one of its locked
 ## components is a planned draft (19 October): a draft is kept in content so it can be written
 ## ahead of its engine, but dealt it would put a plain die with a dead piece in the player's
-## hands, and measured it would read the body without the kit. The tender, the campaign
-## runner and the balance runner skip what this refuses.
+## hands, and measured it would read the body without the kit. Nor while the chassis itself is
+## back in design ("status": "planned" on its entry, the refit pass's four since 10 November):
+## its kit still runs and its tests still build it, but nothing deals it until its session hands
+## it back. The tender, the harness, the campaign runner and the balance runner skip what this
+## refuses.
 func chassis_runnable(chassis_id: String) -> bool:
 	var c: Dictionary = chassis.get(chassis_id, {})
+	if str(c.get("status", "implemented")) == "planned":
+		return false
 	var p = c.get("passive")
 	if p is Dictionary and str(p.get("status", "implemented")) == "planned":
 		return false
@@ -785,9 +790,16 @@ func chassis_runnable(chassis_id: String) -> bool:
 func starting_blueprints() -> Array:
 	var out: Array = []
 	for cid in components.keys():
-		if component_tier(str(cid)) == 0:
+		if component_tier(str(cid)) == 0 and component_dealt(str(cid)):
 			out.append(str(cid))
 	return out
+
+
+## Is this component in the game's hands today? Not while it is a planned draft: one the
+## engine cannot run yet, or one the refit pass retired or sent back to design (the shields and
+## vents, undealt since 10 November). A draft is no blueprint, no loot and no basic.
+func component_dealt(component_id: String) -> bool:
+	return components.has(component_id) and str(components[component_id].get("status", "implemented")) != "planned"
 
 
 func default_faction() -> String:
@@ -2089,6 +2101,8 @@ func _validate_chassis(errs: Array[String]) -> void:
 			errs.append("%s: recharge_field is gone (the long wall brief, docs/briefs/long_wall_build.md 3.6): the shield is full as every fight opens and nothing returns on the map" % where)
 		if int(c.get("armour", 0)) < 0 or int(c.get("cooling", 0)) < 0:
 			errs.append("%s: armour and cooling cannot be negative" % where)
+		if c.has("status") and not VALID_STATUS.has(str(c["status"])):
+			errs.append("%s: status is one of %s (planned: back in design and undealt)" % [where, ", ".join(VALID_STATUS)])
 		if c.has("shield_regen") and (not (c["shield_regen"] is float or c["shield_regen"] is int) or int(c["shield_regen"]) != c["shield_regen"] or int(c["shield_regen"]) < 0 or int(c["shield_regen"]) > 9):
 			errs.append("%s: shield_regen is a whole number from 0 to 9 (the long wall brief 3.6)" % where)
 		_validate_design(where, c, errs)

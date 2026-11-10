@@ -454,21 +454,25 @@ func _menu_labels(menu: PauseMenu) -> Array:
 	return labels
 
 
-## While the refit trial stands, the machines it sends back to design are left out of the
-## harness: no row to tick, none deployed, the launch greyed when nobody else is ticked, and the
-## team as it was ticked kept for when the trial ends (never saved over).
-func test_the_refit_trial_benches_its_machines_and_keeps_the_team_as_ticked() -> void:
-	var db := _db()
-	var ids: Array = db.chassis.keys()
+## The machines back in design (the refit pass's four since its model landed, 10 November; a
+## chassis whose entry says so) are left out of the harness: no row to tick, none deployed, the
+## launch greyed when nobody else is ticked, and the team as it was ticked kept for when one is
+## handed back (never saved over).
+func test_a_machine_back_in_design_has_no_row_and_the_team_as_ticked_is_kept() -> void:
+	var db := ContentDB.new()   # its own copy: the test sends one back and hands it back
+	db.load_dir(ContentDB.DIR)
+	var ids: Array = []
+	for id in db.chassis.keys():
+		if db.chassis_runnable(str(id)):
+			ids.append(str(id))
 	var out: String = str(ids[0])
 	var kept: String = str(ids[1])
-	var was: Array = HARNESS.refit_benched
-	HARNESS.refit_benched = [out]
+	db.chassis[out]["status"] = "planned"
 	var h: Control = HARNESS.new()
 	var s := HarnessSetup.defaults(db)
 	s.team = [out, kept]
 	h.build(s)
-	assert_false(h._rows.has(out), "the benched machine has no row to tick")
+	assert_false(h._rows.has(out), "the machine back in design has no row to tick")
 	assert_true(h._rows.has(kept), "the others keep theirs")
 	assert_eq(s.fielded(), [kept], "the team that deploys leaves it out")
 	var mechs := s.make_team()
@@ -479,66 +483,52 @@ func test_the_refit_trial_benches_its_machines_and_keeps_the_team_as_ticked() ->
 	assert_eq(Array(s.to_dict()["team"]), [out, kept], "a save keeps the ticks")
 	s.team = [out]
 	h._refresh_summary()
-	assert_true(h._battle_btn.disabled and h._fight_btn.disabled, "only a benched machine ticked: nothing to launch")
+	assert_true(h._battle_btn.disabled and h._fight_btn.disabled, "only a machine back in design ticked: nothing to launch")
 	h.free()
-	HARNESS.refit_benched = was
+	db.chassis[out].erase("status")
 	var plain: Control = HARNESS.new()
 	var s2 := HarnessSetup.defaults(db)
 	s2.team = [out, kept]
 	plain.build(s2)
-	assert_true(plain._rows.has(out) and s2.fielded() == [out, kept], "with no trial every machine has its row and deploys")
+	assert_true(plain._rows.has(out) and s2.fielded() == [out, kept], "handed back, it has its row and deploys")
 	plain.free()
+	var real := _db()
+	var benched := 0
+	var live: Control = HARNESS.new()
+	live.build(HarnessSetup.defaults(real))
+	for id in real.chassis.keys():
+		if not real.chassis_runnable(str(id)):
+			benched += 1
+			assert_false(live._rows.has(str(id)), "%s is back in design in content: no row" % id)
+	assert_true(benched > 0, "content has machines back in design")
+	live.free()
 
 
-## The refit pass's model is a trial the harness lays over the content as it starts
-## (docs/briefs/refit_pass.md): off unless RIFTGATE_REFIT names a spec or a debug build's setting
-## names one of its trials, the model with its Barrier basic dealt one of four ways, each a spec
-## the what-if takes.
-func test_the_refit_trial_is_off_until_the_setting_or_the_environment_asks() -> void:
+## The refit pass's what-ifs are off until something asks (docs/briefs/refit_pass.md; the model
+## itself is content): RIFTGATE_REFIT names a spec, or a debug build's SHIELD REGEN names a flat
+## number in place of each chassis's own.
+func test_the_refit_what_if_is_off_until_the_setting_or_the_environment_asks() -> void:
 	if not OS.get_environment("RIFTGATE_REFIT").is_empty():
-		assert_eq(HARNESS.refit_spec(), OS.get_environment("RIFTGATE_REFIT"), "the environment's spec is the trial's")
+		assert_eq(HARNESS.refit_spec(), OS.get_environment("RIFTGATE_REFIT"), "the environment's spec is the what-if's")
 		return
-	var was = Settings.display.get("refit_trial", "off")
-	Settings.display["refit_trial"] = "off"
-	assert_eq(HARNESS.refit_spec(), "", "off by default: the game plays the content as written")
-	var regen_was = Settings.display.get("refit_regen", "2")
-	for trial in Settings.REFIT_TRIALS:
-		Settings.display["refit_trial"] = trial
-		for regen in Settings.REFIT_REGENS:
-			Settings.display["refit_regen"] = regen
-			var want: String = "" if trial == "off" or not OS.is_debug_build() else "%s,regen=%s" % [trial, regen]
-			assert_eq(HARNESS.refit_spec(), want, "a debug build's settings name the trial and its regen: %s, %s" % [trial, regen])
-			if not want.is_empty():
-				assert_eq(str(Refit.parse(want)["regen"]), regen, "the regen named after the deal is the one that holds")
-		Settings.display["refit_regen"] = "2"
-		assert_true(Settings.REFIT_LABELS.has(trial), "%s has its button's label" % trial)
-		if trial == "off":
-			continue
-		var spec := Refit.parse(trial)
-		assert_true(bool(spec["die"]) and str(spec["regen"]) == "half" and bool(spec["heat1"]), "%s is the model as leaned" % trial)
-	Settings.display["refit_trial"] = "anything else"
-	assert_eq(HARNESS.refit_spec(), "", "a value that is no trial asks for nothing")
-	Settings.display["refit_trial"] = Settings.REFIT_TRIALS[1]
-	Settings.display["refit_regen"] = "plenty"
-	assert_eq(HARNESS.refit_spec(), str(Settings.REFIT_TRIALS[1]) if OS.is_debug_build() else "", "a regen that is no option leaves the deal's own")
-	Settings.display["refit_regen"] = regen_was
-	Settings.display["refit_trial"] = was
-	assert_true(Settings.REFIT_REGENS.has(str(Settings.DISPLAY_DEFAULTS.get("refit_regen", ""))), "the regen ships on one of its options")
-	for regen in Settings.REFIT_REGENS:
-		assert_true(Settings.REFIT_REGEN_LABELS.has(regen), "regen %s has its button's label" % regen)
-	assert_eq(str(Settings.DISPLAY_DEFAULTS.get("refit_trial", "")), "off", "and the setting ships off")
-	var deals := {}
-	for trial in Settings.REFIT_TRIALS:
-		if trial != "off":
-			var parsed := Refit.parse(trial)
-			deals["%s|%s" % [str(parsed["barrier"]), str(parsed["vents"])]] = true
-	assert_eq(deals.size(), 4, "four deals of the Barrier basic, each its own: %s" % str(deals.keys()))
+	var was = Settings.display.get("shield_regen", "built")
+	Settings.display["shield_regen"] = "built"
+	assert_eq(HARNESS.refit_spec(), "", "as built by default: the game plays the content as written")
+	for regen in Settings.SHIELD_REGENS:
+		Settings.display["shield_regen"] = regen
+		var want: String = "" if regen == "built" or not OS.is_debug_build() else "regen=%s" % regen
+		assert_eq(HARNESS.refit_spec(), want, "a debug build's setting names the flat regen: %s" % regen)
+		if not want.is_empty():
+			assert_eq(str(Refit.parse(want)["regen"]), regen, "and the what-if takes it")
+		assert_true(Settings.SHIELD_REGEN_LABELS.has(regen), "%s has its button's label" % regen)
+	Settings.display["shield_regen"] = "plenty"
+	assert_eq(HARNESS.refit_spec(), "", "a value that is no option asks for nothing")
+	Settings.display["shield_regen"] = was
+	assert_eq(str(Settings.DISPLAY_DEFAULTS.get("shield_regen", "")), "built", "and the setting ships as built")
 	if OS.is_debug_build():
 		var menu := PauseMenu.new()
 		menu._show_page("trials")
 		var labels := _menu_labels(menu)
-		for trial in Settings.REFIT_TRIALS:
-			assert_true(labels.has(str(Settings.REFIT_LABELS[trial])), "a debug build's trials page offers %s" % Settings.REFIT_LABELS[trial])
-		for regen in Settings.REFIT_REGENS:
-			assert_true(labels.has(str(Settings.REFIT_REGEN_LABELS[regen])), "and the regen %s" % Settings.REFIT_REGEN_LABELS[regen])
+		for regen in Settings.SHIELD_REGENS:
+			assert_true(labels.has(str(Settings.SHIELD_REGEN_LABELS[regen])), "a debug build's trials page offers the regen %s" % Settings.SHIELD_REGEN_LABELS[regen])
 		menu.free()

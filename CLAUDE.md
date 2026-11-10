@@ -67,9 +67,12 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   none; Ryan, 26 October), so text never says "damaging weapon": a trigger is damaging a foe
   with a weapon, hitting a foe with a weapon, or hitting a foe with a weapon or equipment.
   The engine's `Kind.ATTACK` is a weapon and a debuff alike (`is_weapon()`, `is_attack()`).
-  The refit pass's direction (Ryan, 9 November; `docs/briefs/refit_pass.md`): shields and vents
-  leave the die, so a component becomes a weapon or equipment, the shield innate and
-  regenerating, cooling passive; the engine still runs the four kinds until that pass lands.
+  The refit pass's model (Ryan, 9 November; landed in content 10 November on his "start with
+  the minimal swaps"; `docs/briefs/refit_pass.md`): shields and vents have left the die, so a
+  dealt component is a weapon or equipment, the shield is the chassis's and regenerates (its
+  `shield_regen`, one to three), cooling is the chassis's; the slottable shields and vents are
+  planned drafts nothing deals, four machines are back in design (`"status": "planned"` on the
+  chassis), and the engine still runs the four kinds for the locked pieces that are one.
 - `sim/` never touches scenes. Everything there runs headless with a seeded RNG.
 - Numbers in content are placeholders, not balance.
 - Content ideas (makers, chassis, components, foes, names, lore) are proposed in conversation first;

@@ -53,6 +53,7 @@
    "codex": "The Minerva EX-45L (colloquially nicknamed the \"Badger\") was popular a mining mech widely praised for its reliability and durability, being designed to operate in the harshest, deepest environments imaginable. Reports exist of Badgers being caught in cave-ins while mining over 5 kilometers underground, only to dig their way out to the surface by nightfall, just in time for drinks with the crew. So naturally, when the Rifts opened, the ever-practical Minerva engineering team's first instinct was to finally give their prized Badger claws, teeth, and as many missiles as it could carry, putting its legendary longevity to work on the battlefield.",
    "hull": 36,
    "shield": 8,
+   "shield_regen": 3,
    "movespeed": 3,
    "heat_max": 12,
    "hardpoints": 3,
@@ -69,8 +70,8 @@
    ],
    "loadout": [
     "rivet_gun",
-    "canopy",
-    "coolant_jacket"
+    "shoring_jack",
+    "twin_autoguns"
    ],
    "passive": {
     "id": "ore_hopper",
@@ -106,6 +107,7 @@
    "codex": "Surprisingly, or perhaps not, the ever-pragmatic Wainwright & Sutler were the first surviving manufacturer to field a combat walker when the invasion first began. Not knowing the full scope of the threat, the Clydesdale was positioned as a rugged and effective jack-of-all trades, a true workhorse befitting its namesake. A hundred years later, and the original design is still barely changed, its signature W&S simplicity being favourited by pilots and maintenence crews alike. It also serves as an effective training vehicle, as its notoriously poor turning radius results in one less thing for a green pilot to worry about on the battlefield.",
    "hull": 40,
    "shield": 10,
+   "shield_regen": 2,
    "movespeed": 4,
    "heat_max": 12,
    "hardpoints": 9,
@@ -124,9 +126,9 @@
     "ankle_mortar",
     "howitzer",
     "airburst_shell",
-    "canopy",
+    "shoring_jack",
     "incendiary_shells",
-    "coolant_jacket"
+    "twin_autoguns"
    ],
    "passive": {
     "id": "battery_director",
@@ -156,6 +158,7 @@
    "codex": "Shortly into the invasion, it was determined that the masses of zombies, demons, and otherwordly things were, frankly, quite dumb without a guiding intelligence coordinating them. Naturally, Kestrel won the bid to produce a small interceptor aircraft, designed to eliminate priority targets and disengage before getting overwhelmed. However, the weapons package traditionally mounted on such a small frame proved ineffective to the task. It wasn't until one inspired engineer suggested cutting all 'uneccesary' weight from the design that a breakthrough was achieved; Armour, weapon regulators, ejection systems, and padded seats were all deemed frivolous, and their omission skyrocketed the Kite to excel in its role.",
    "hull": 12,
    "shield": 16,
+   "shield_regen": 1,
    "movespeed": 6,
    "heat_max": 10,
    "hardpoints": 2,
@@ -171,7 +174,7 @@
    ],
    "loadout": [
     "transonic_rifle",
-    "bleed_valve"
+    "twin_autoguns"
    ],
    "passive": {
     "id": "disabled_regulators",
@@ -216,6 +219,7 @@
    "codex": "Looking like a cross between an orangutan and a troll, what the Baboon lacks in speed or endurance it more than makes up for with high-tech Aphelion technomagic. After the rifts first opened (and upended everything mankind knew about the laws of physics and the nature of the universe), Aphelion set to work assimilating the torrent of new data, developing experimental countermeasures at a frenetic pace. One unlucky researcher managed to knock out his past self using a localized pocket paradoxical time loop. The effect was quickly weaponized and a frame built to lug the heavy device in into battle, nicknamed the \"Baboon\" in the researcher's memory.",
    "hull": 28,
    "shield": 10,
+   "shield_regen": 2,
    "movespeed": 3,
    "heat_max": 14,
    "hardpoints": 6,
@@ -232,8 +236,8 @@
    "loadout": [
     "twin_autoguns",
     "laser_carbine",
-    "halo_shield",
-    "coolant_jacket",
+    "halo_projector",
+    "twin_autoguns",
     "rivet_gun",
     "ankle_mortar"
    ],
@@ -257,13 +261,16 @@
    "designation": "HW-22T Heavy Weapons Carrier",
    "maker": "minerva",
    "tier": 1,
+   "status": "planned",
    "design": {
     "fantasy": "A squat, heavily armoured walker with short, thick legs, its back bristling with weaponry from shielded ports that can seal for additional protection. The cockpit is tucked under the front armour, providing reduced visibility but extra protection. It seals: the ports shutter and the shell goes dark.",
-    "niche": "tank"
+    "niche": "tank",
+    "refit": "Back in design since the refit pass landed (10 November): undealt until its session hands it back (its brief). Its stock is the model's mechanical re-deal and waits on that session too."
    },
    "codex": "",
    "hull": 40,
    "shield": 8,
+   "shield_regen": 3,
    "movespeed": 3,
    "heat_max": 12,
    "hardpoints": 4,
@@ -280,8 +287,8 @@
    "loadout": [
     "rivet_gun",
     "twin_autoguns",
-    "canopy",
-    "bleed_valve"
+    "shoring_jack",
+    "twin_autoguns"
    ],
    "passive": {
     "id": "lockdown",
@@ -325,6 +332,7 @@
    "codex": "",
    "hull": 36,
    "shield": 8,
+   "shield_regen": 3,
    "movespeed": 4,
    "heat_max": 12,
    "hardpoints": 5,
@@ -342,8 +350,8 @@
     "slugthrower",
     "slugthrower",
     "shotfire_rack",
-    "canopy",
-    "coolant_jacket"
+    "shoring_jack",
+    "twin_autoguns"
    ],
    "passive": {
     "id": "juggernaut_drive",
@@ -373,6 +381,7 @@
    "codex": "",
    "hull": 20,
    "shield": 10,
+   "shield_regen": 2,
    "movespeed": 6,
    "heat_max": 12,
    "hardpoints": 3,
@@ -388,8 +397,8 @@
    ],
    "loadout": [
     "twin_autoguns",
-    "halo_shield",
-    "coolant_jacket"
+    "halo_projector",
+    "twin_autoguns"
    ],
    "passive": {
     "id": "track_dispersing_tyres",
@@ -426,6 +435,7 @@
    "codex": "",
    "hull": 20,
    "shield": 10,
+   "shield_regen": 2,
    "movespeed": 5,
    "heat_max": 12,
    "hardpoints": 3,
@@ -443,7 +453,7 @@
    "loadout": [
     "airburst_shell",
     "twin_autoguns",
-    "coolant_jacket"
+    "twin_autoguns"
    ],
    "passive": {
     "id": "retrograde_flywheel",
@@ -472,6 +482,7 @@
    "codex": "",
    "hull": 28,
    "shield": 12,
+   "shield_regen": 1,
    "movespeed": 5,
    "heat_max": 14,
    "hardpoints": 5,
@@ -489,8 +500,8 @@
     "overclocked_railgun",
     "transonic_rifle",
     "arc_fault_cannon",
-    "canopy",
-    "bleed_valve"
+    "shoring_jack",
+    "twin_autoguns"
    ],
    "passive": {
     "id": "thermal_recoupler",
@@ -520,6 +531,7 @@
    "codex": "",
    "hull": 36,
    "shield": 6,
+   "shield_regen": 1,
    "movespeed": 3,
    "heat_max": 14,
    "hardpoints": 4,
@@ -538,7 +550,7 @@
     "plasma_arquebus",
     "blazethrower",
     "retribution_thurible",
-    "oblation_mantle"
+    "halo_projector"
    ],
    "passive": {
     "id": "crucible_capacitor",
@@ -568,6 +580,7 @@
    "codex": "",
    "hull": 32,
    "shield": 10,
+   "shield_regen": 2,
    "movespeed": 4,
    "heat_max": 14,
    "hardpoints": 4,
@@ -587,8 +600,8 @@
    "loadout": [
     "plasma_arquebus",
     "blazethrower",
-    "oblation_mantle",
-    "entropy_condenser"
+    "halo_projector",
+    "twin_autoguns"
    ],
    "passive": {
     "id": "quintessence_tap",
@@ -617,12 +630,13 @@
    "codex": "",
    "hull": 24,
    "shield": 12,
+   "shield_regen": 2,
    "movespeed": 5,
    "heat_max": 14,
    "hardpoints": 5,
    "module_slots": 2,
    "armour": 0,
-   "cooling": 0,
+   "cooling": 1,
    "traits": [
     "hover"
    ],
@@ -632,8 +646,8 @@
    ],
    "loadout": [
     "laser_carbine",
-    "halo_shield",
-    "coolant_jacket",
+    "halo_projector",
+    "twin_autoguns",
     "twin_autoguns",
     "ankle_mortar"
    ],
@@ -658,13 +672,16 @@
    "designation": "K-11 Mk I Ground-Effect Escort",
    "maker": "kestrel",
    "tier": 1,
+   "status": "planned",
    "design": {
     "fantasy": "Kestrel's one machine that touches the ground, and so the one Kestrel that can stop a pack. A short deep body in chrome on two boosters far too big for it, stubby wings, tail fins, and the whole front one shield projector, a great faired beak. Kestrel called it a very cool ground-effect escort; pilots took one look and called it the Puffin.",
-    "niche": "shield specialist"
+    "niche": "shield specialist",
+    "refit": "Back in design since the refit pass landed (10 November): undealt until its session hands it back (its brief). Its stock is the model's mechanical re-deal and waits on that session too."
    },
    "codex": "",
    "hull": 20,
    "shield": 8,
+   "shield_regen": 3,
    "movespeed": 5,
    "heat_max": 12,
    "hardpoints": 4,
@@ -679,8 +696,8 @@
     "backwash_ionizer"
    ],
    "loadout": [
-    "halo_shield",
-    "coolant_jacket",
+    "halo_projector",
+    "twin_autoguns",
     "twin_autoguns",
     "laser_carbine"
    ],
@@ -712,6 +729,7 @@
    "codex": "",
    "hull": 30,
    "shield": 10,
+   "shield_regen": 2,
    "movespeed": 4,
    "heat_max": 12,
    "hardpoints": 4,
@@ -729,7 +747,7 @@
     "maxigun",
     "howitzer",
     "twin_autoguns",
-    "canopy"
+    "shoring_jack"
    ],
    "passive": {
     "id": "ambush",
@@ -761,6 +779,7 @@
    "codex": "",
    "hull": 24,
    "shield": 8,
+   "shield_regen": 3,
    "movespeed": 5,
    "heat_max": 12,
    "hardpoints": 5,
@@ -778,8 +797,8 @@
     "twin_autoguns",
     "rivet_gun",
     "ankle_mortar",
-    "halo_shield",
-    "coolant_jacket"
+    "halo_projector",
+    "twin_autoguns"
    ],
    "passive": {
     "id": "indexed_cylinder",
@@ -822,6 +841,7 @@
    "codex": "",
    "hull": 20,
    "shield": 8,
+   "shield_regen": 3,
    "movespeed": 6,
    "heat_max": 12,
    "hardpoints": 4,
@@ -836,8 +856,8 @@
    "loadout": [
     "ankle_mortar",
     "twin_autoguns",
-    "halo_shield",
-    "coolant_jacket"
+    "halo_projector",
+    "twin_autoguns"
    ],
    "passive": {
     "id": "adaptive_munitions_drum",
@@ -878,13 +898,16 @@
    "designation": "Pattern 22 Heavy Walker",
    "maker": "wainwright_sutler",
    "tier": 2,
+   "status": "planned",
    "design": {
     "fantasy": "Ryan's eight-legged spider whose vents blast a random foe for the heat they shed (12 and 13 October): \"a crazy steampunk machine venting everywhere\"; 20 October: \"it doesn't actually use steam to run, its a future-tech machine. it just kind of behaves like a steampunk device.\" The whip scorpion sprays when provoked. Named by Ryan, 20 October.",
-    "niche": "The maker's sustained damage dealer at tier two (Ryan, 18 October: promoted to damage class; 20 October: \"a sustained dps engine\"): heat is its ammunition and every vent is a gun, blasting a random live foe for the heat it takes off. Nothing cools it but its vents (cooling 0), so every point of heat it earns, from its hot guns, its Siphon's lure-all or the Peak's debuffs, stays until a valve opens on it. A heavy body that can detach; its Siphon makes it a partner."
+    "niche": "The maker's sustained damage dealer at tier two (Ryan, 18 October: promoted to damage class; 20 October: \"a sustained dps engine\"): heat is its ammunition and every vent is a gun, blasting a random live foe for the heat it takes off. Nothing cools it but its vents (cooling 0), so every point of heat it earns, from its hot guns, its Siphon's lure-all or the Peak's debuffs, stays until a valve opens on it. A heavy body that can detach; its Siphon makes it a partner.",
+    "refit": "Back in design since the refit pass landed (10 November): undealt until its session hands it back (its brief). Its stock is the model's mechanical re-deal and waits on that session too."
    },
    "codex": "",
    "hull": 40,
    "shield": 8,
+   "shield_regen": 3,
    "movespeed": 3,
    "heat_max": 14,
    "hardpoints": 4,
@@ -900,8 +923,8 @@
    ],
    "loadout": [
     "thermal_ray",
-    "coolant_jacket",
-    "coolant_jacket",
+    "twin_autoguns",
+    "twin_autoguns",
     "maxigun"
    ],
    "passive": {
@@ -924,13 +947,16 @@
    "designation": "Pattern 20 Field Headquarters",
    "maker": "wainwright_sutler",
    "tier": 3,
+   "status": "planned",
    "design": {
     "fantasy": "Ryan's helicarrier: the apex of steampunk-silly military technology, a mobile headquarters on rotors that carries the squad, directs its fire, refuels it and gives it a lift. A butterfly: four wings for four rotors, big, slow, and it carries its load home.",
-    "niche": "The maker's first tier three: a mobile HQ for strategic and tactical support and resupply (Ryan, 20 October: \"a helicarrier, a mobile HQ, made for strategic and tactical support, and possible resupply\"). It doesn't rain death; it directs units to rain death."
+    "niche": "The maker's first tier three: a mobile HQ for strategic and tactical support and resupply (Ryan, 20 October: \"a helicarrier, a mobile HQ, made for strategic and tactical support, and possible resupply\"). It doesn't rain death; it directs units to rain death.",
+    "refit": "Back in design since the refit pass landed (10 November): undealt until its session hands it back (its brief). Its stock is the model's mechanical re-deal and waits on that session too."
    },
    "codex": "",
    "hull": 48,
    "shield": 14,
+   "shield_regen": 1,
    "movespeed": 3,
    "heat_max": 14,
    "hardpoints": 3,
@@ -950,7 +976,7 @@
    "loadout": [
     "howitzer",
     "twin_autoguns",
-    "canopy"
+    "shoring_jack"
    ],
    "passive": {
     "id": "muster_deck",
@@ -985,6 +1011,7 @@
    "codex": "",
    "hull": 44,
    "shield": 10,
+   "shield_regen": 2,
    "movespeed": 3,
    "heat_max": 8,
    "hardpoints": 4,
@@ -1003,8 +1030,8 @@
    "loadout": [
     "thermal_ray",
     "enfilade_beam",
-    "coolant_jacket",
-    "canopy"
+    "twin_autoguns",
+    "shoring_jack"
    ],
    "passive": {
     "id": "desublimation_forge",
@@ -1038,6 +1065,7 @@
    "codex": "",
    "hull": 28,
    "shield": 16,
+   "shield_regen": 1,
    "movespeed": 5,
    "heat_max": 14,
    "hardpoints": 4,
@@ -1086,6 +1114,7 @@
    "codex": "",
    "hull": 20,
    "shield": 12,
+   "shield_regen": 2,
    "movespeed": 6,
    "heat_max": 12,
    "hardpoints": 3,
@@ -1102,7 +1131,7 @@
    "loadout": [
     "laser_carbine",
     "twin_autoguns",
-    "canopy"
+    "shoring_jack"
    ],
    "passive": {
     "id": "split_cycle_breech",
@@ -1132,6 +1161,7 @@
    "codex": "",
    "hull": 24,
    "shield": 16,
+   "shield_regen": 1,
    "movespeed": 6,
    "heat_max": 12,
    "hardpoints": 4,
@@ -1149,7 +1179,7 @@
     "laser_carbine",
     "ankle_mortar",
     "twin_autoguns",
-    "canopy"
+    "shoring_jack"
    ],
    "passive": {
     "id": "riot_field_generator",
@@ -1185,6 +1215,7 @@
    "codex": "",
    "hull": 20,
    "shield": 10,
+   "shield_regen": 2,
    "movespeed": 6,
    "heat_max": 12,
    "hardpoints": 3,
@@ -1201,7 +1232,7 @@
    "loadout": [
     "transonic_rifle",
     "overcharge_coil",
-    "bleed_valve"
+    "twin_autoguns"
    ],
    "passive": {
     "id": "quick_turn_avionics_relay",
@@ -1232,6 +1263,7 @@
    "codex": "",
    "hull": 44,
    "shield": 14,
+   "shield_regen": 1,
    "movespeed": 3,
    "heat_max": 14,
    "hardpoints": 3,
@@ -1250,7 +1282,7 @@
    "loadout": [
     "overclocked_railgun",
     "twin_autoguns",
-    "bleed_valve"
+    "twin_autoguns"
    ],
    "passive": {
     "id": "mavericks_playbook",

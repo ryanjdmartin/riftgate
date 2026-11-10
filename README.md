@@ -308,16 +308,14 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # tier's chassis for its compositions: the formation pass, 9 November), and --tiers 1,2, --sizes
 # patrol,formation, --domains meadow,waste and --ids goblin_horde,gel_wall narrow the read. Each
 # cell carries greedy's hull lost, its rounds and its stalled fights beside the band.
-# --refit SPEC lays the refit pass's what-if over the run's content (sim/refit.gd; the brief
-# docs/briefs/refit_pass.md): "die" (every stock shield and vent swapped for a defensive basic, the
-# machines back in design unfielded), "regen=half" or "regen=N", "cooling=N", "heat1" (the basics
-# at heat one), "hotter=N" (every weapon N heat more, a read for the heat prices), or "all" for
-# the die, half the gauge and heat one (a part named after it takes its place: all,regen=2); with the die, "barrier=off" (no Barrier
-# among the basics: Armoured or a gun in its place), "barrier=cooldown" (it goes dark the round
-# after it is spent), "barrier=heatN" (it costs N heat) or "barrier=ward" (a Ward in its place),
-# and "vents=guns" (a vent's slot takes a gun, so a die holds a defensive basic only where a
-# shield stood: the audit's own deal; without it a vent's slot takes the basic the die lacks);
-# tools/campaign_run.gd takes it too.
+# --refit SPEC lays one of the refit pass's what-ifs over the run's content (sim/refit.gd; the brief
+# docs/briefs/refit_pass.md). The model itself is content since 10 November (no stock die holds a
+# shield or a vent, every chassis regains its own shield regen, the basics make heat), so what is
+# left are the numbers a read may still ask about: "regen=N" (a flat regen on every chassis in
+# place of its own) or "regen=half", "cooling=N" (an offset), "hotter=N" (every weapon N heat
+# more, a read for the heat prices), "barrier=cooldown" (the Barrier basic dark the round after
+# it is spent) or "barrier=heatN" (it costs N heat); comma-separated; tools/campaign_run.gd takes
+# it too.
 # --guard 0.05 is the aggressor's habit (a block, a Barrier, Armoured or a Ward, at a twentieth of
 # its worth to the bot, so it never rerolls for one and spends one only when its die is stuck
 # showing it): the hull the blocks keep and the rounds they cost are the gap between it and the
@@ -515,20 +513,12 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # ability's chip (Enrage on a foe, Sealed on a machine), to judge the look beside the buffs and debuffs.
 # RIFTGATE_MINE_DEBUG=1 (any skirmish) opens the fight with a Mine of 3 (Burn 1, Shock) on every foe,
 # so any kill shows its blast land round the slot, to judge the Mine's chip and blast running.
-# RIFTGATE_REFIT=all (any run; or a part of the spec tools/balance.gd's --refit takes) plays the
-# refit pass's model as a trial (docs/briefs/refit_pass.md; sim/refit.gd): no shield or vent on a
-# stock die (a Barrier or an Armoured piece in its place), a shield regen of half the gauge a round,
-# the basics at heat one, and the four machines back in design left out of every picker;
-# RIFTGATE_REFIT=all,vents=guns is the audit's own deal (a Barrier only where a Halo stood, a
-# gun in every vent's slot), all,barrier=cooldown rests the Barrier basic a round after it is
-# spent, all,barrier=off leaves none among the basics (an Armoured piece or a gun in its place),
-# and all,barrier=ward puts a Ward in its place (a breach lands on the shield the regen refills).
-# On the phone a debug build's SETTINGS → TRIALS has REFIT TRIAL (OFF, MODEL, EVERY, RESTS, NONE: the
-# model with its Barrier basic where a Halo stood, on every die, on every die and resting, or on
-# none) and REFIT REGEN under it (0, 1, 2, 3, HALF: what every shield regains a round while a
-# trial is on, two the placeholder since Ryan's first read of 10 November; on the desk name it
-# after the spec, RIFTGATE_REFIT=all,vents=guns,regen=2): pick, close the app, open it, and start
-# a new battle or run, since a saved one keeps the dice it was saved with.
+# RIFTGATE_REFIT=regen=0 (any run; any spec tools/balance.gd's --refit takes) lays a what-if over
+# the refit pass's model, which is content since 10 November: a flat shield regen in place of
+# each chassis's own, a cooling offset, hotter weapons, a price on the Barrier basic.
+# On the phone a debug build's SETTINGS → TRIALS has SHIELD REGEN (BUILT, 0, 1, 2, 3: each
+# chassis its own number, or a flat one on all): pick, close the app, open it, and start a new
+# battle or run, since a saved one keeps the numbers it was saved with.
 # RIFTGATE_FIELD_DEPTH=14 and RIFTGATE_OPENING=1 (any battle) try a deeper field and a farther
 # opening (Ryan, 10 November: "I think the map is a bit too shallow"): the rows from the rift to
 # the wall, 10 to 24 and 12 the game's, and how many more of their own moves from the wall the
