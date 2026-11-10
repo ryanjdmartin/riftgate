@@ -107,7 +107,7 @@ func _draw_fractures(r: Rect2) -> void:
 	var last := maxi(1, int(thresholds[thresholds.size() - 1]))
 	var sealed := battle.is_sealed()
 	var bar := _plate(r, col, "fractures", "FRACTURES" if sealed else "THE RUPTURE", ("%d/%d" % [battle.fractures, thresholds.size()]) if sealed else "SEAL BROKEN")
-	var frac := clampf(float(battle.menace_killed) / float(last), 0.0, 1.0) if sealed else 1.0
+	var frac := clampf(float(battle.meter()) / float(last), 0.0, 1.0) if sealed else 1.0
 	draw_rect(bar, Color(col, 0.18))
 	draw_rect(Rect2(bar.position, Vector2(bar.size.x * frac, bar.size.y)), col)
 	for k in range(thresholds.size()):

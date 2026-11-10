@@ -42,6 +42,7 @@ var _quick_resume_btn: Button
 func _ready() -> void:
 	Settings.apply()
 	refit_trial()
+	Settings.field_trial(true)
 	Hud.oversample(get_window())   # text rasterised at the glass's density, not the design's
 	build(HarnessSetup.load_or_default())
 
@@ -847,6 +848,7 @@ func _on_fight() -> void:
 ## A whole battle: the ticked team in its loadouts against the BATTLE tab's domain as a run deals
 ## it, on a map generated from the seed.
 func _on_battle() -> void:
+	Settings.field_trial(true)   # the field's trial as the settings stand now: a change needs no relaunch
 	var b := setup.make_battle()
 	if b == null:
 		return

@@ -143,6 +143,7 @@ func _on_primary() -> void:
 				_save()
 				_refresh()
 		QuickRun.HANGAR:
+			Settings.field_trial(true)   # the field's trial as the settings stand now (a debug build's)
 			if run.start_battle():
 				_save()
 				_refresh()

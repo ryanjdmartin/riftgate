@@ -92,4 +92,14 @@ static func wall_length_at(_c: int) -> int:
 ## The field's depth: the rows from the rift's row to the last wall row inclusive, the map's
 ## height (the long wall brief 3.1).
 static func depth_at(_c: int) -> int:
-	return 12   # placeholder (the long wall brief)
+	return depth_trial if depth_trial > 0 else 12   # placeholder (the long wall brief)
+
+
+## A trial depth for the field, 0 for none (Ryan, 10 November, after his play: "I think the map
+## is a bit too shallow ... If the map is a little deeper, and the seam starts a little farther
+## out, it will feel more like I can actually plan a little bit ahead instead of panicking from
+## the very start"): a debug build's SETTINGS → FIELD DEPTH and RIFTGATE_FIELD_DEPTH set it
+## (Settings.field_trial), so he finds the number on the phone before the placeholder moves. The
+## seam's start is a share of the depth with a ceiling (Battlefield.seam_start), so a deeper
+## field leaves it that much farther from the wall.
+static var depth_trial: int = 0

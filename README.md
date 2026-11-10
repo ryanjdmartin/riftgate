@@ -464,7 +464,7 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # carry (a carrier's route to a stop where its rider cannot land: NO
 # ROOM), hold, north, zoom, zoomlast,
 # flyer, attack (a fight set up beside a pack), caught (a hunter's catch), resolve (a turn
-# ended), contact and engage (the handover into a fight), codex, foecodex, menu, settings, tune, and
+# ended), contact and engage (the handover into a fight), codex, foecodex, menu, settings, trials (a debug build's TRIALS page), tune, and
 # bosscontact (the boss attacked: the reveal; RIFTGATE_REVEAL_T=<seconds> pins its frame), logfull (the battle log full screen), foe (a pack tapped: its whole way,
 # its later turns numbered; select shows the whole way of a hunter coming for the machine in hand), rift (the rift's end of
 # the field: the vortex and the boss at its size; RIFTGATE_BLEED_DEBUG=1 shows the scenery past the field under the painting),
@@ -520,12 +520,23 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # gun in every vent's slot), all,barrier=cooldown rests the Barrier basic a round after it is
 # spent, all,barrier=off leaves none among the basics (an Armoured piece or a gun in its place),
 # and all,barrier=ward puts a Ward in its place (a breach lands on the shield the regen refills).
-# On the phone a debug build's SETTINGS has REFIT TRIAL (OFF, MODEL, EVERY, RESTS, NONE: the
+# On the phone a debug build's SETTINGS → TRIALS has REFIT TRIAL (OFF, MODEL, EVERY, RESTS, NONE: the
 # model with its Barrier basic where a Halo stood, on every die, on every die and resting, or on
 # none) and REFIT REGEN under it (0, 1, 2, 3, HALF: what every shield regains a round while a
 # trial is on, two the placeholder since Ryan's first read of 10 November; on the desk name it
 # after the spec, RIFTGATE_REFIT=all,vents=guns,regen=2): pick, close the app, open it, and start
 # a new battle or run, since a saved one keeps the dice it was saved with.
+# RIFTGATE_FIELD_DEPTH=14 and RIFTGATE_OPENING=1 (any battle) try a deeper field and a farther
+# opening (Ryan, 10 November: "I think the map is a bit too shallow"): the rows from the rift to
+# the wall, 10 to 24 and 12 the game's, and how many more of their own moves from the wall the
+# first packs stand, 0 to 3. The opening is measured from the wall, so depth alone leaves the
+# first strike where it was and the opening's distance is what buys the turns; the seam's first
+# row follows the depth by its own rule. RIFTGATE_FODDER=50 (any battle) fills the Rupture meter
+# by that share, in hundredths, of a kill's menace when its pack came as no elite (his "If
+# fracture rewards were a little lower for fodder"; salvage and Anathema read the whole tally
+# as before). On the phone a debug build's SETTINGS → TRIALS has FIELD DEPTH (12, 14, 16),
+# OPENING (+0, +1, +2) and FODDER (FULL, 3/4, HALF), read as the harness or the quick run starts
+# a battle, with no relaunch; a saved battle keeps the field it was saved with.
 # RIFTGATE_HALO=off|all (any run) draws no halo round the lit parts, or one round every lit part, to compare
 # with the vetted set (31 October).
 # RIFTGATE_PLUME=off (any run) draws a booster's ring in place of its plume (the Stingray's, on

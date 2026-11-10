@@ -133,6 +133,14 @@ var rupture_turn: int = -1        # the phase the seal broke at; -1 while it hol
 var stall_guard: bool = false     # the Rupture came by the guard, not the tally
 var elites_spawned: Array = []    # the elite compositions spawned this battle, by id
 var field_menace: int = 0         # the field's menace at the start, the thresholds' base
+## The fodder's trial (Ryan, 10 November, after his play: "If fracture rewards were a little lower
+## for fodder, then it becomes a bit more of a quantity game for non-elites and I'll feel more
+## like sending my flankers out"): the share, in hundredths, of a kill's menace the Rupture meter
+## counts when its pack came as no elite, 100 the game's. The tally itself (salvage's and
+## Anathema's) is never touched: the meter reads it less what the trial held back. A debug
+## build's SETTINGS → TRIALS → FODDER and RIFTGATE_FODDER set it (Settings.field_trial).
+static var fodder_trial: int = 100
+var meter_held: int = 0           # hundredths of menace the fodder's trial has kept off the meter this battle; 0 with no trial
 ## The battle's share of the run's Sponsorship measures (the bible's Sponsorship row): the
 ## hexes its machines move on the map, and each fight's own (Skirmish.sponsorship), added up.
 var sponsorship := {"hexes_moved": 0, "guarded": 0, "damaging_spends": 0, "quiet_spends": 0}   # ContentDB.SPONSORSHIP_MEASURES
@@ -310,9 +318,15 @@ static func make_boss_unit(content: ContentDB, faction_id: String, t: int, boss_
 ## A hunter catches at the engage range, 1 (Unit.ENGAGE_RANGE), and the machines open eight rows or
 ## more below the floor, so a hunter always finds a row clear of them.
 const OPENING_FLOOR_ROW := 1   # the row nearest the rift a pack opens on: the rift's own row is the spawns' (10 November, the mouth no longer rows)
+## How many moves farther from the wall the opening's packs stand, a trial beside Ramp.depth_trial
+## and 0 for the opening as the brief has it (10 November): the opening is measured from the wall,
+## so a deeper field alone leaves a formation's first walk on the wall as before; a debug build's
+## SETTINGS → OPENING and RIFTGATE_OPENING set it (Settings.field_trial).
+static var opening_trial: int = 0
 
 
 func _open_row(sq: Unit, col: int, moves: int) -> void:
+	moves += maxi(0, opening_trial)
 	var row := maxi(OPENING_FLOOR_ROW, field.apron_row() - moves * sq.movespeed)   # placeholder (the long wall brief)
 	sq.pos = field.landing(sq, Hex.offset_to_axial(col, row), OPENING_FLOOR_ROW)
 	while sq.behaviour == "hunt" and row > OPENING_FLOOR_ROW and field.catch_of(sq) != null:
@@ -323,6 +337,11 @@ func _open_row(sq: Unit, col: int, moves: int) -> void:
 ## Whether the boss's seal holds: it cannot be ordered onto and joins no fight until the Rupture.
 func is_sealed() -> bool:
 	return boss != null and boss.sealed
+
+
+## What the Rupture meter reads: the menace killed, less what the fodder's trial held back.
+func meter() -> int:
+	return (menace_killed * 100 - meter_held) / 100
 
 
 ## The Rupture: the seal breaks, by the last Fracture or by the stall guard. Engaging the boss
@@ -345,7 +364,7 @@ func rupture(by_guard: bool = false) -> void:
 ## elite the tier names at it spawns at the rift, and the last breaks the seal; then the stall
 ## guard. Read as a fight ends, after the map has taken its result.
 func _fractures() -> void:
-	while fractures < thresholds.size() and menace_killed >= int(thresholds[fractures]):
+	while fractures < thresholds.size() and meter() >= int(thresholds[fractures]):
 		fractures += 1
 		field.log.append("FRACTURE %d of %d" % [fractures, thresholds.size()])
 		if Ramp.elite_fractures_at(tier).has(fractures):
@@ -1262,9 +1281,13 @@ func finish_skirmish() -> void:
 		action_hexes.erase(ms.unit.id)
 	for sq in current.packs:
 		var by_type := current.kills_by_type(sq)
+		var whole := 0
 		for cid in by_type.keys():
 			foes_killed += int(by_type[cid])
-			menace_killed += db.menace(str(cid)) * int(by_type[cid])
+			whole += db.menace(str(cid)) * int(by_type[cid])
+		menace_killed += whole
+		if fodder_trial < 100 and sq.composition_size != "elite":
+			meter_held += whole * (100 - clampi(fodder_trial, 0, 100))
 	for k in current.sponsorship.keys():
 		sponsorship[k] = int(sponsorship.get(k, 0)) + int(current.sponsorship[k])
 	field.apply_skirmish_result(current)

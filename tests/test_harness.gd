@@ -395,6 +395,65 @@ func test_a_composition_is_picked_by_tier_and_rating() -> void:
 	h.free()
 
 
+## The field's trial is the game's own field until something asks (Ryan, 10 November, the map "a
+## bit too shallow"): a debug build's two settings where the game starts a battle, the
+## environment anywhere, and a scene run alone or a test never reads a machine's saved settings.
+func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battle() -> void:
+	if not OS.get_environment("RIFTGATE_FIELD_DEPTH").is_empty() or not OS.get_environment("RIFTGATE_OPENING").is_empty():
+		Settings.field_trial()
+		assert_true(Ramp.depth_trial > 0 or Battle.opening_trial > 0, "the environment's trial is the field's")
+		return
+	var depth_was = Settings.display.get("field_depth", "12")
+	var opening_was = Settings.display.get("field_opening", "0")
+	var fodder_was = Settings.display.get("fodder_worth", "100")
+	Settings.display["field_depth"] = "16"
+	Settings.display["field_opening"] = "2"
+	Settings.display["fodder_worth"] = "50"
+	Settings.field_trial()
+	assert_eq([Ramp.depth_trial, Battle.opening_trial, Battle.fodder_trial], [0, 0, 100], "run alone, the saved settings move nothing")
+	Settings.field_trial(true)
+	assert_eq([Ramp.depth_trial, Battle.opening_trial, Battle.fodder_trial], [16, 2, 50] if OS.is_debug_build() else [0, 0, 100], "where the game starts a battle, a debug build's settings are the trial")
+	assert_eq(Ramp.depth_at(0), 16 if OS.is_debug_build() else 12, "and the ramp answers with it")
+	Settings.display["field_depth"] = "a mile"
+	Settings.display["field_opening"] = "far"
+	Settings.display["fodder_worth"] = "a pittance"
+	Settings.field_trial(true)
+	assert_eq([Ramp.depth_trial, Battle.opening_trial, Battle.fodder_trial], [0, 0, 100], "a value that is no option asks for nothing")
+	Settings.display["field_depth"] = depth_was
+	Settings.display["field_opening"] = opening_was
+	Settings.display["fodder_worth"] = fodder_was
+	assert_eq([str(Settings.DISPLAY_DEFAULTS["field_depth"]), str(Settings.DISPLAY_DEFAULTS["field_opening"]), str(Settings.DISPLAY_DEFAULTS["fodder_worth"])], ["12", "0", "100"], "all three ship on the game's own field and meter")
+	assert_true(Settings.FIELD_DEPTHS.has("12") and Settings.FIELD_OPENINGS.has("0") and Settings.FODDER_WORTHS.has("100"), "and the game's own is among the options")
+	Ramp.depth_trial = 0
+	Battle.opening_trial = 0
+	Battle.fodder_trial = 100
+	if OS.is_debug_build():
+		var menu := PauseMenu.new()
+		menu._show_page("settings")
+		assert_true(_menu_labels(menu).has("TRIALS"), "a debug build's settings page opens the trials' page")
+		for d in Settings.FIELD_DEPTHS:
+			assert_false(_menu_labels(menu).has(str(d)), "and carries none of their rows itself (%s)" % d)
+		menu._show_page("trials")
+		var labels := _menu_labels(menu)
+		for d in Settings.FIELD_DEPTHS:
+			assert_true(labels.has(str(d)), "the trials' page offers the depth %s" % d)
+		for o in Settings.FIELD_OPENINGS:
+			assert_true(labels.has(str(Settings.FIELD_OPENING_LABELS[o])), "the opening %s" % Settings.FIELD_OPENING_LABELS[o])
+		for f in Settings.FODDER_WORTHS:
+			assert_true(labels.has(str(Settings.FODDER_WORTH_LABELS[f])), "and the fodder's worth %s" % Settings.FODDER_WORTH_LABELS[f])
+		assert_true(labels.has("BACK"), "with its way back")
+		menu.free()
+
+
+## The text of every button a menu page shows.
+func _menu_labels(menu: PauseMenu) -> Array:
+	var labels: Array = []
+	for b in menu._rows.find_children("*", "", true, false):
+		if b is HudButton:
+			labels.append(str((b as HudButton).text))
+	return labels
+
+
 ## While the refit trial stands, the machines it sends back to design are left out of the
 ## harness: no row to tick, none deployed, the launch greyed when nobody else is ticked, and the
 ## team as it was ticked kept for when the trial ends (never saved over).
@@ -476,13 +535,10 @@ func test_the_refit_trial_is_off_until_the_setting_or_the_environment_asks() -> 
 	assert_eq(deals.size(), 4, "four deals of the Barrier basic, each its own: %s" % str(deals.keys()))
 	if OS.is_debug_build():
 		var menu := PauseMenu.new()
-		menu._show_page("settings")
-		var labels: Array = []
-		for b in menu._rows.find_children("*", "", true, false):
-			if b is HudButton:
-				labels.append(str((b as HudButton).text))
+		menu._show_page("trials")
+		var labels := _menu_labels(menu)
 		for trial in Settings.REFIT_TRIALS:
-			assert_true(labels.has(str(Settings.REFIT_LABELS[trial])), "a debug build's settings page offers %s" % Settings.REFIT_LABELS[trial])
+			assert_true(labels.has(str(Settings.REFIT_LABELS[trial])), "a debug build's trials page offers %s" % Settings.REFIT_LABELS[trial])
 		for regen in Settings.REFIT_REGENS:
 			assert_true(labels.has(str(Settings.REFIT_REGEN_LABELS[regen])), "and the regen %s" % Settings.REFIT_REGEN_LABELS[regen])
 		menu.free()

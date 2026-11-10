@@ -153,7 +153,7 @@ func _apply_pose() -> void:
 		"keywords":
 			s._open_menu()
 			s._menu._show_page("keywords")   # as the menu's KEYWORDS opens it
-		"menu", "settings", "quit", "colours":
+		"menu", "settings", "quit", "colours", "trials":
 			s._open_menu()
 			if _pose != "menu":
 				s._menu._show_page(_pose)
@@ -436,6 +436,10 @@ func _apply_battle_pose() -> void:
 		"settings":
 			s._open_menu()
 			s._menu._show_page("settings")
+		"trials":
+			# A debug build's TRIALS page (the refit's and the field's dials), to check it fits the glass.
+			s._open_menu()
+			s._menu._show_page("trials")
 		"queue":
 			# The fight queue (the long wall brief 7.4): two packs parked beside two machines and
 			# each machine ordered onto one, so the map numbers the two fights and the button reads

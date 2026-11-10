@@ -67,6 +67,7 @@ static func to_dict(b: Battle) -> Dictionary:
 		"guest": b.guest,
 		"foes_killed": b.foes_killed,
 		"menace_killed": b.menace_killed,
+		"meter_held": b.meter_held,
 		"tier": b.tier, "ramp": b.ramp,
 		"thresholds": b.thresholds, "fractures": b.fractures, "rupture_turn": b.rupture_turn, "stall_guard": b.stall_guard,
 		"elites_spawned": b.elites_spawned, "field_menace": b.field_menace,
@@ -124,6 +125,7 @@ static func from_dict(d: Dictionary) -> Battle:
 	b.guest = str(d.get("guest", ""))
 	b.foes_killed = int(d.get("foes_killed", 0))
 	b.menace_killed = int(d.get("menace_killed", 0))
+	b.meter_held = int(d.get("meter_held", 0))
 	b.tier = int(d.get("tier", 0))
 	b.ramp = int(d.get("ramp", 0))
 	for t in d.get("thresholds", []):
