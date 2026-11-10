@@ -907,8 +907,11 @@ The tasks are the to-do's; this is the index of what waits.
   full pair"), its W six beats.
   A mixing desk on pre-rendered stems was proposed for picking voices without a round and tabled (5
   November: "Tough if it's not completely flexible. That's ok, let's table it for now").
-  Night Shift back at its twenty-first (9 November: the dark pass and the written bass lines at 96
-  both retired, "take a step back to the previous version, before both 'darkening' passes, and look
+  Night Shift on its twenty-fifth (10 November: the drive on trial over round twenty-one's half, the
+  turns of two bars gone ("the turn taking was a mistake"), a rhythm held eight bars, the bass or the
+  crunch synth always on the eighths, the hat on quarters, the kick on the bass's rhythm or one and
+  three, no off-beat piano or open hat, the duel's trading lines still to rewrite; 9 November: the dark
+  pass and the written bass lines at 96 both retired, "take a step back to the previous version, before both 'darkening' passes, and look
   at the root cause ... more intense, more driving, less chipper"; a set takes the off-beat piano,
   the open hat, the arpeggio and the bouncing bass out of the head one at a time; the map's
   intro without its front and its muted guitar out, his
@@ -1205,8 +1208,8 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
-  twenty-sixth, X's kick on the riff in the pair and the hats rebuilt as sizzle, `hold_sketches.py`; Night Shift back at its twenty-first with a set looking for the cause, `night_sketches.py`;
-  The Far Bank's map half's eighth, its lift settled, `far_sketches.py`; the real basses, `real_bass.py`), every pair on the shipped tracks as built in tune on 6 November, at the page's version 64. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
+  twenty-sixth, X's kick on the riff in the pair and the hats rebuilt as sizzle, `hold_sketches.py`; Night Shift's twenty-fifth, the drive, `night_sketches.py`;
+  The Far Bank's map half's eighth, its lift settled, `far_sketches.py`; the real basses, `real_bass.py`), every pair on the shipped tracks as built in tune on 6 November, at the page's version 65. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
   publish's 64 MB goes up in two publishes: the new files first under the live page, then the
   new page with the rest, the old round's files removed.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
