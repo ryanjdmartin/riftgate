@@ -15,7 +15,7 @@ Halo's Mammoth; BattleTech's, Heavy Gear's and 40K's Mastodon).
 
 **Status**: Ryan's idea of 4 November, Claude's first round below, unanswered. **Maker**: Minerva.
 **Proposed tier**: two. **Read first**: `docs/briefs/README.md` (ten a maker, the orbits); the
-bible's Armadillo row (Cryo, the cooling the team contends for), retaliation and thorns row
+bible's Polar Bear row (Cryo, the cooling the team contends for), retaliation and thorns row
 (section 5); `arsenal_misharu.md` (Penance).
 
 ## What Ryan said
@@ -23,7 +23,7 @@ bible's Armadillo row (Cryo, the cooling the team contends for), retaliation and
 - 4 November: "Minerva: A cryo synergy party defense, units with Cryo deal 1 less damage or
   something. Possibly Cryo is applied on shield or hull hit, or some other more party-wide trigger
   to be unique. Mastodon/Mammoth type unit."
-- 20 October, of the Armadillo's Cryo: marked for reuse ("probably a healthier way to grant ally
+- 20 October, of the Polar Bear's Cryo: marked for reuse ("probably a healthier way to grant ally
   cooling than venting directly"), with "a minor rider later, only if the roster has room".
 
 ## Claude's first round (4 and 5 November)
@@ -56,7 +56,7 @@ a debuff the team must lay and keep on the foe, and any weapon hit cashes it awa
    That would be two weakens on the shield layer, so the trigger wants another home (the being
    struck orbit, the briefs README).
 5. **Cryo's orbit.** With the Snowy Owl on Cryo (Ryan, 5 November), four machines orbit it: the
-   Armadillo lays it, this one keeps it, the Owl cashes it to stay hidden, the Arsenal's frost
+   Polar Bear lays it, this one keeps it, the Owl cashes it to stay hidden, the Arsenal's frost
    figure blows it up. This machine is the one that wants the frost left in place.
 
 ## Open for the session

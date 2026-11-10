@@ -419,7 +419,7 @@ static func plan_from_spec(spec: String, db: ContentDB) -> Array:
 
 
 ## Hold what each status the machine carries holds on its model, and let it go when it does not:
-## a form of the same name (the Armadillo's Sealed: its guns sink and its ports shut) and a spin
+## a form of the same name (the Polar Bear's Sealed: its guns sink and its ports shut) and a spin
 ## (the Cassowary's Spun Up: its capacitor turns). A borrowed model holds nothing.
 func hold_statuses(u: Unit) -> void:
 	if u == null or rig == null or model_id != u.chassis_id:
@@ -1366,7 +1366,7 @@ func aim_joint_for(cid: String) -> String:
 
 ## Hang a component's model on a socket: the stock part under `hp_<n>` is hidden and the
 ## scene is added under the pin, so it points where the pin points and wears the pin's
-## scale (lowforge sets both; a Sparrowhawk's pins are half size). Returns false when the
+## scale (lowforge sets both; a Kite's pins are half size). Returns false when the
 ## model has no such socket, or hides it (hidden_pins).
 func mount(n: int, scene: PackedScene, maker: String) -> bool:
 	if not hardpoints.has(n) or hidden_pins(model_id).has(n):

@@ -218,3 +218,26 @@ func test_the_keywords_list_heads_each_term_with_its_icon_in_its_colour() -> voi
 				assert_eq(w.get("ink"), Terms.colour(str(l["term"])), "%s in its colour" % l["text"])
 	assert_eq(heads, _listed(ContentDB.load_default()).size(), "a head a term")
 	menu.free()
+
+
+## The keywords list files every status by what it is to its unit (Ryan, 9 November), and a term's
+## tip says so over it: a buff's, that a Purge takes it.
+func test_the_keywords_list_files_the_statuses_by_buff_debuff_and_ability() -> void:
+	var db := ContentDB.load_default()
+	var seen := {}
+	for kind in PauseMenu.glossary(db):
+		var title := str(kind["title"])
+		for e in kind["entries"]:
+			var what := Effects.status_kind(Terms.engine_status(str(e[2])))
+			if title.begins_with("BUFFS"):
+				assert_eq(what, "buff", "%s under BUFFS is a buff" % e[0])
+			elif title.begins_with("DEBUFFS"):
+				assert_eq(what, "debuff", "%s under DEBUFFS is a debuff" % e[0])
+			elif title.begins_with("ABILITIES"):
+				assert_eq(what, "ability", "%s under ABILITIES is an ability" % e[0])
+			seen[title.split(" ")[0]] = true
+	for t in ["BUFFS", "DEBUFFS", "ABILITIES"]:
+		assert_true(seen.has(t), "a heading for the %s" % t.to_lower())
+	assert_true(str(Terms.entry("overcharged", db)["heading"]).begins_with("BUFF"), "a buff's tip says so")
+	assert_true(str(Terms.entry("burning", db)["heading"]).begins_with("DEBUFF"), "and a debuff's")
+	assert_true(str(Terms.entry("sealed", db)["heading"]).begins_with("ABILITY"), "and an ability's")

@@ -505,7 +505,7 @@ func test_burn_ticks_down() -> void:
 	assert_eq(g.burn_stacks(), 2, "one stack consumed")
 
 
-## A blow that grows with its target's missing hull (10 October, the Sparrowhawk's rifle): flat,
+## A blow that grows with its target's missing hull (10 October, the Kite's rifle): flat,
 ## +5 for every 20 the target has lost, read as the die is spent, and the bot reads the same.
 func test_a_blow_grows_with_its_targets_missing_hull() -> void:
 	var gun := Face.attack(10, L)
@@ -1057,7 +1057,7 @@ func test_skirmish_reroll_moves_every_unlocked_die() -> void:
 	var db := ContentDB.load_default()
 	for seed_value in range(1, 25):
 		var sk := Skirmish.new(seed_value)
-		for id in ["badger", "clydesdale", "sparrowhawk"]:
+		for id in ["badger", "clydesdale", "kite"]:
 			sk.add_mech(db.make_mech(id))
 		sk.add_foes([Foe.make("revenant", 30, 10)])
 		sk.begin()
@@ -1147,7 +1147,7 @@ func test_shield_never_comes_back_on_its_own_in_a_fight() -> void:
 ## The shield regen (the long wall brief 3.6; Ryan, 5 November: "Base shield regen and cooling
 ## returning, as a build-strategy buffer"): a machine regains its shield_regen at each round's
 ## start after the cooling, up to its maximum, one log line for all. A sealed machine's regen
-## runs: the Armadillo's seal stops its own cooling, and nothing says it stops the regen.
+## runs: the Polar Bear's seal stops its own cooling, and nothing says it stops the regen.
 func test_the_shield_regen_comes_back_each_round_to_the_maximum_sealed_or_not() -> void:
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.attack(1, L)), 10, 100)
@@ -1414,27 +1414,6 @@ func test_a_weapon_that_burns_its_firer_sets_its_own_machine_burning() -> void:
 	sk.end_round()
 	assert_eq(ms.heat, heat + tick, "its fire ticks at the turn's end")
 	assert_false(Effects.has(ms.unit, "burning_mech"), "then the stack fades")
-
-
-## A mine carries the gate and the consumer from the face it was laid from: each foe it reaches
-## judged as the shot lands, the arrival's stacks eaten.
-func test_a_mine_carries_its_gate_and_its_consumer() -> void:
-	var sk := Skirmish.new(1)
-	sk.add_mech(_mech("A", Die.single(Face.attack(2, I)), 40, 100))
-	var cold := _ghoul(100, 1)
-	var marked := _ghoul(100, 1)
-	sk.add_foes([cold, marked])
-	sk.begin()
-	sk.start_round()
-	Effects.stack(cold, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 2)
-	Effects.stack(marked, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_HALF)
-	var face := {"gates": {"suppress": {"when": "target_status", "status": "flakked"}}, "consumes": "burning", "per_consumed": 1}
-	sk._mine_hit(cold, {"damage": 2, "keywords": [K.SUPPRESS], "face": face, "by": "A", "mech": 0})
-	assert_eq(cold.hp, 96, "the shot eats the arrival's two stacks for two more")
-	assert_false(Effects.has(cold, "burning"), "the fire is out")
-	assert_false(Effects.has(cold, "suppressed"), "no Flak on it: the gate is shut")
-	sk._mine_hit(marked, {"damage": 2, "keywords": [K.SUPPRESS], "face": face, "by": "A", "mech": 0})
-	assert_true(Effects.has(marked, "suppressed"), "Flak on it: the gate is open")
 
 
 ## A reach read on the rank (the Ram Frame and the Artillery Rangefinder, mirrors: Ryan, 22
@@ -1732,21 +1711,21 @@ func test_charged_and_supercooled_ride_the_weapon_fired_as_its_keywords() -> voi
 	assert_true(sk.assign(0, h), "fired again, at h")
 	assert_false(Effects.has(h, "shocked"), "no Charged left")
 	assert_eq([Effects.stacks_of(h, "cryoed"), Effects.stacks_of(m, "supercooled")], [2, 0], "the last Supercooled spent on h, a stack a strike")
-	# A laid shot carries the keywords and spends the stack as it is laid.
+	# A Mine carries the keywords the primers gave the fire, the stacks spent as it fires.
 	var s2 := Skirmish.new(1, 2)
 	var bomber := _mech("Bomber", Die.single(Face.attack(4, I)), 40, 100)
 	bomber.grant_passive(MINER)
 	s2.add_mech(bomber)
-	s2.add_foes([_ghoul(100, 0)])
+	var prey := _ghoul(100, 0)
+	s2.add_foes([prey])
 	s2.begin()
 	s2.start_round()
 	Effects.stack(bomber, Effects.STATUS["charged"], Effects.SKIRMISH, "buff", 1, Effects.DECAY_NONE)
 	Effects.stack(bomber, Effects.STATUS["supercooled"], Effects.SKIRMISH, "buff", 1, Effects.DECAY_NONE)
-	var slot := Vector2i(0, 1)
-	assert_true(s2.assign(0, slot), "a mine laid")
-	assert_eq([Effects.stacks_of(bomber, "charged"), Effects.stacks_of(bomber, "supercooled")], [0, 0], "both spent at the lay")
-	var shot: Dictionary = s2.mines_at(slot)[0]
-	assert_true(shot["keywords"].has(int(K.SHOCK)) and int(shot["cryo"]) == 1, "the shot carries the Shock and the Cryo 1: %s" % str(shot))
+	assert_true(s2.assign(0, prey), "fired, a Mine left")
+	assert_eq([Effects.stacks_of(bomber, "charged"), Effects.stacks_of(bomber, "supercooled")], [0, 0], "both spent at the fire")
+	var mine := Skirmish.mine_of(prey)
+	assert_true(mine["riders"]["keywords"].has("shock") and int(mine["riders"]["stacks"].get("cryoed", 0)) == 1, "the Mine carries the Shock and the Cryo 1: %s" % str(mine))
 
 
 ## Riders land after the hits (Ryan, 3 November: "resulting in 2 applications, not
@@ -5435,7 +5414,7 @@ func test_a_disrupt_breaks_off_a_gathering_move() -> void:
 
 
 func test_a_healer_cures_the_most_hurt_of_its_own() -> void:
-	# The White Mage's Cure (15 October): foes helping foes.
+	# The Cleric's Cure (15 October): foes helping foes.
 	var sk := Skirmish.new(1, 3)
 	sk.add_mech(_mech("A", Die.single(Face.attack(10, L)), 40, 100))
 	var healer := Foe.make("mage", 60, 10, true)
@@ -5462,7 +5441,7 @@ func test_a_healer_cures_the_most_hurt_of_its_own() -> void:
 
 
 func test_protect_braces_every_foe_through_the_next_round() -> void:
-	# The White Mage's Protect (15 October): a brace on every foe, gone when the enemy acts
+	# The Cleric's Protect (15 October): a brace on every foe, gone when the enemy acts
 	# again; Braced since 16 October, the move's value in stacks of armour +5.
 	var sk := Skirmish.new(1, 3)
 	sk.add_mech(_mech("A", Die.single(Face.attack(30, L)), 400, 400))
@@ -5630,7 +5609,7 @@ func test_a_core_that_falls_takes_its_parts_with_it() -> void:
 
 
 func _meteor_beast(hp: int = 30) -> Foe:
-	var f := Foe.make("behemoth", hp, 20)
+	var f := Foe.make("gargantuan_king", hp, 20)
 	f.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all"]})}
 	return f
 
@@ -5644,7 +5623,7 @@ func test_a_last_act_at_every_machine_passes_a_machine_out_of_the_fight_by() -> 
 	var b := _mech("B", Die.single(Face.blank()), 0, 100)
 	sk.add_mech(a)
 	sk.add_mech(b)
-	var beast := Foe.make("behemoth", 30, 20)
+	var beast := Foe.make("gargantuan_king", 30, 20)
 	beast.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all", "scorch"], "scorch": 1})}
 	sk.add_foes([beast, _ghoul(500, 0)])
 	sk.begin()
@@ -5658,7 +5637,7 @@ func test_a_last_act_at_every_machine_passes_a_machine_out_of_the_fight_by() -> 
 
 
 func test_a_last_act_lands_the_moment_its_foe_falls() -> void:
-	# The Behemoth's Meteor (15 October): shield up, then kill it.
+	# The Gargantuan King's Meteor (15 October): shield up, then kill it.
 	var sk := Skirmish.new(1, 3)
 	var a := _mech("A", Die.single(Face.attack(40, I)), 0, 100)
 	var b := _mech("B", Die.single(Face.attack(10, I)), 10, 100)
@@ -5793,8 +5772,8 @@ func test_a_packs_survivors_are_its_own_and_a_split_is_no_kill_but_a_half_is() -
 
 ## The Gel's pair (Ryan, 26 October: the halves "should exist as a pair taking the place of one
 ## unit"): both stand in its slot at once, one slot to the formation; an area blow reaches both,
-## a single-target blow one; no mine goes in while either stands, a drone's included; when one
-## falls the other keeps the slot alone, and with both gone it is a plain slot.
+## a single-target blow one; a half's Mine blows on its twin beside it; when one falls the other
+## keeps the slot alone, and with both gone it is a plain slot.
 func test_a_pair_of_halves_stands_in_one_slot() -> void:
 	var sk := Skirmish.new(2, 3)
 	var spread := Face.attack(3, L, K.CLEAVE)
@@ -5820,19 +5799,19 @@ func test_a_pair_of_halves_stands_in_one_slot() -> void:
 	assert_eq(sk.field_foes(), [heavy, left, right] as Array[Foe], "the right half acts after the left")
 	assert_true(left.fresh and right.fresh, "their round over")
 	assert_true("\n".join(sk.log).contains("a pair in one slot"), "the log says so")
-	assert_false(sk.slot_targets(ms, Face.attack(3, L)).has(Vector2i(0, 1)), "the slot is full: no mine goes in")
 	assert_true(sk.targets_for_face(ms, single).has(right), "each half its own target")
 	assert_eq(sk.web_catch(left), right, "a web on the left half catches the right")
 	# An area blow reaches the slot whole; a single-target blow one half.
 	assert_true(sk.reached_by(spread, heavy).has(left) and sk.reached_by(spread, heavy).has(right), "a Spread beside it reaches both")
 	assert_true(sk.reached_by(spread, right).has(left), "and aimed at one, its twin too")
 	assert_eq(sk.reached_by(single, right), [right] as Array[Foe], "a single-target blow the one")
-	# The drone: a marked half killed while its twin stands leaves no mine.
-	Effects.stack(left, Effects.STATUS["syrinx_drone"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	# A half's Mine: it falls, and the blast meets its twin in the slot and the foe beside it.
+	sk._add_mine(left, 3, {})
+	var heavy_hp := heavy.hp
 	left.hp = 0
-	sk._drone_mine(left, {"damage": 3, "keywords": [], "seq": 1, "by": "A", "mech": 0, "face": {}, "burn": 0, "cryo": 0, "flak": 0})
-	assert_true(sk.mines.is_empty(), "no mine while its twin holds the slot")
 	sk._clear_dead()
+	assert_eq(right.hp, 5 - 3, "its twin took the 3")
+	assert_eq(heavy.hp, heavy_hp - 3, "and the foe beside the slot")
 	assert_eq(sk.front[1], right, "the survivor keeps the slot alone")
 	assert_true(sk.twins.is_empty(), "the pair gone")
 	right.hp = 0
@@ -5861,27 +5840,6 @@ func test_a_pair_moves_and_saves_together() -> void:
 	var cl: Foe = c.front[2]
 	assert_true(cl != null and c.twin_of(cl) != null, "a copy through the save keeps the pair")
 	assert_eq(c.twin_of(cl).hp, right.hp, "its right half as it was")
-
-
-func test_a_split_steps_onto_a_mine_waiting_in_its_slot_and_a_stun_takes_its_next_action() -> void:
-	# A half stepping up mid-turn is a way in like a Swap's: a mine waiting in the slot goes off
-	# at once, and a stun in it takes the half's next action, its round being over.
-	var sk := Skirmish.new(2, 1)
-	sk.add_mech(_mech("A", Die.single(Face.attack(200, L)), 40, 100))
-	var gel := _ghoul(30, 10)
-	gel.on_death = {"summon": "gel_small", "count": 1}
-	sk.foe_factory = func(id: String) -> Foe: return Foe.make(id, 10, 5)
-	sk.add_foes([gel])
-	sk.begin()
-	sk.start_round()
-	# A shot waiting in the slot the gel holds (as a drone's kill would leave one there).
-	sk.mines[Vector2i(0, 0)] = [{"damage": 3, "keywords": [int(K.SUPPRESS)], "seq": 1, "by": "A", "mech": 0, "face": {}, "burn": 0, "cryo": 0, "flak": 0}]
-	sk.assign(0, gel)
-	var half: Foe = sk.front[0]
-	assert_eq(half.display_name, "gel_small", "the half stepped up")
-	assert_eq(half.hp, 7, "onto the shot, which went off at once")
-	assert_false(sk.mines.has(Vector2i(0, 0)), "and is spent")
-	assert_true(sk._suppressed_through(half, sk.round + 1), "and its stun takes the next round's action")
 
 
 func test_the_reach_tally_counts_a_spend_and_its_hull() -> void:
@@ -6364,7 +6322,7 @@ func test_an_attacker_status_condition_reads_the_foe_striking() -> void:
 	assert_eq(Effects.damage_taken(other, 20, lit), 20, "a status the engine lacks never holds")
 
 
-## The form-changing tank (the Armadillo's Lockdown; Ryan's framework of 15 October, his go 20
+## The form-changing tank (the Polar Bear's Lockdown; Ryan's framework of 15 October, his go 20
 ## October): a shield spent on itself seals the machine, one chip carrying the passive's armour;
 ## sealed, its own cooling stops and it runs hotter at the end of each turn, before the overheat;
 ## a vent or a weapon opens it; a shield on an ally and a debuff (its lures) leave the form
@@ -6465,6 +6423,113 @@ func test_a_cool_and_shield_entry_seals_an_open_machine_and_opens_a_sealed_one()
 		sk.mechs[0].face_index = 0
 		assert_true(sk.assign(0, sk.mechs[1]), "%s, on the ally" % kind)
 		assert_false(Effects.is_sealed(m), "%s on an ally: its vent opens the spender, as any vent does" % kind)
+
+
+## A passive's grant scoped to one of its machine's pieces and held while it is sealed (the
+## Polar Bear's Lockdown, Ryan, 9 November: "Cryo flinger: No rapid. While sealed, gains Spread"):
+## open, its lure turns the one foe it is aimed at; sealed, the foes beside it in its rank too, each
+## taking the entry's Cryo; the grant reaches that piece alone, never the machine's gun, and goes as
+## the seal opens. Synthetic pieces and passive, so content may move.
+func test_a_grant_scoped_to_one_piece_holds_on_it_alone_while_sealed() -> void:
+	var sk := Skirmish.new(1)
+	var lure := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure", "cryo"], "heat": 1, "cryo": 1})
+	lure.component = "test_flinger"
+	var shield := Face.shield(20)
+	var gun := Face.attack(10, I)
+	gun.component = "test_gun"
+	var m := _mech("A", Die.of([lure, shield, gun]), 0, 200)
+	m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
+		{"trigger": "static", "effect": "seal_form", "value": 3, "heat": 3},
+		{"trigger": "static", "effect": "grant_keyword", "value": "cleave", "when": "sealed", "entry": "test_flinger"}]})
+	sk.add_mech(m)
+	sk.add_mech(_mech("B", Die.single(Face.attack(10, L)), 40, 100))
+	sk.add_foes([_ghoul(500, 5), _ghoul(500, 5), _ghoul(500, 5), _ghoul(500, 5)])
+	sk.begin()
+	sk.start_round()
+	var ms := sk.mechs[0]
+	var aim: Foe = sk.front[1]
+	assert_false(Effects.effective_face(m, lure, aim).has(K.CLEAVE), "open, the lure carries no Spread")
+	assert_eq(sk.reached_by(Effects.effective_face(m, lure, aim), aim).size(), 1, "and reaches its one foe")
+	ms.face_index = 0
+	assert_true(sk.assign(0, aim), "the lure, open")
+	assert_eq(aim.target, ms, "its foe turns on it")
+	for k in [0, 2, 3]:
+		assert_eq(Effects.stacks_of(sk.front[k], "cryoed"), 0, "a foe beside it takes nothing (column %d)" % k)
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 1
+	assert_true(sk.assign(0, null), "a shield on itself")
+	assert_true(Effects.is_sealed(m), "seals it")
+	assert_true(Effects.effective_face(m, lure, aim).has(K.CLEAVE), "sealed, the lure gains Spread")
+	assert_false(Effects.effective_face(m, gun, aim).has(K.CLEAVE), "and the gun does not: the grant names its piece")
+	assert_eq(Effects.effective_face(m, lure, aim).power, 0, "the lure still deals nothing")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 0
+	assert_true(sk.assign(0, aim), "the lure, sealed")
+	for k in [0, 1, 2]:
+		assert_eq(sk.front[k].target, ms, "the foe in column %d turns on it" % k)
+	assert_eq(Effects.stacks_of(sk.front[0], "cryoed"), 1, "the neighbours take its Cryo")
+	assert_eq(Effects.stacks_of(sk.front[2], "cryoed"), 1, "on both sides")
+	assert_eq(Effects.stacks_of(aim, "cryoed"), 2, "the foe it was aimed at gains a second stack")
+	assert_eq(Effects.stacks_of(sk.front[3], "cryoed"), 0, "the foe past the neighbours, nothing")
+	assert_true(Effects.is_sealed(m), "a lure leaves the seal as it is")
+	var notes := Effects.explain(m, lure)
+	assert_true(notes.has("while sealed: gains spread (Lockdown)"), "the entry's row says the grant with its condition: %s" % str(notes))
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 2
+	assert_true(sk.assign(0, sk.front[3]), "the gun")
+	assert_false(Effects.is_sealed(m), "opens it")
+	assert_false(Effects.effective_face(m, lure, aim).has(K.CLEAVE), "and the Spread goes with the seal")
+
+
+## Its weapons deal 1 more to a foe carrying Cryo (the Polar Bear's Lockdown, Ryan, 9 November): an
+## add on the blow, the attacker's condition read on the foe as each strike lands, so the strike
+## that meets the Cryo takes it and its hit spends the stacks; a later strike of the same spend
+## meets none and lands plain; a foe with none takes the plain blow, and a debuff deals nothing still.
+func test_its_weapons_hit_a_foe_carrying_cryo_one_harder_on_the_strike_that_cashes_it() -> void:
+	var sk := Skirmish.new(1)
+	var gun := Face.attack(2, L)
+	var twin := Face.from_dict({"kind": "attack", "reach": "direct", "power": 2, "strikes": 2, "keywords": [], "heat": 0})
+	var lure := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure", "cryo"], "heat": 1, "cryo": 1})
+	var m := _mech("A", Die.of([gun, twin, lure]), 0, 200)
+	m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "add_damage", "value": 1, "when": "target_status", "status": "cryoed"}]})
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(20, 0), _ghoul(20, 0)])
+	sk.begin()
+	sk.start_round()
+	var ms := sk.mechs[0]
+	var cold: Foe = sk.front[0]
+	var clean: Foe = sk.front[1]
+	Effects.stack(cold, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	ms.heat = 8
+	assert_eq(sk.shown_number(ms, gun, cold), 3, "over a foe carrying Cryo the die shows the blow 1 harder")
+	assert_eq(sk.shown_number(ms, gun, clean), 2, "and over a clean foe the plain blow")
+	ms.face_index = 0
+	assert_true(sk.assign(0, cold), "the gun on the cold foe")
+	assert_eq(cold.hp, 17, "it lands 3")
+	assert_eq(Effects.stacks_of(cold, "cryoed"), 0, "and its hit spent the Cryo")
+	assert_eq(ms.heat, 8 - Effects.status_value("cryoed", "cool_hitter"), "cooling the hitter as ever")
+	sk.end_round()
+	sk.start_round()
+	Effects.stack(cold, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	ms.face_index = 1
+	assert_true(sk.assign(0, cold), "two strikes on a foe carrying Cryo")
+	assert_eq(cold.hp, 12, "the first strike 1 harder, its hit spending the Cryo, the second plain")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 0
+	assert_true(sk.assign(0, cold), "again, the Cryo spent")
+	assert_eq(cold.hp, 10, "the plain 2")
+	sk.end_round()
+	sk.start_round()
+	Effects.stack(clean, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	ms.face_index = 2
+	assert_true(sk.assign(0, clean), "the lure on a foe carrying Cryo")
+	assert_eq(clean.hp, 20, "a debuff deals nothing, Cryo or none")
+	assert_eq(Effects.effect_text(m.modifiers[0].effects[0]), "foes carrying Cryo: damage +1", "the rule reads with the status it names")
 
 
 ## Cryo (Ryan, 18 and 20 October): the Cryo Flinger's mark pays in cooling. Any machine's
@@ -7518,7 +7583,7 @@ func _purger() -> Foe:
 ## Purge (Ryan, 17 and 21 October; by its number since 2 November; 8 November: "A stack is a
 ## stack, doesn't matter where it came from"): a foe's Purge N takes N stacks of every buff the
 ## machine carries, for good, whatever granted it, a die entry or a passive; an ability is no
-## buff (the Armadillo's seal, its form, stays and so does its armour); the stores and the
+## buff (the Polar Bear's seal, its form, stays and so does its armour); the stores and the
 ## passives stay; a kept stack is its passive's own and stays, drawing no purger; a Ward turns it
 ## away.
 func test_a_purge_takes_every_buffs_stacks_and_leaves_the_abilities() -> void:
@@ -7542,7 +7607,7 @@ func test_a_purge_takes_every_buffs_stacks_and_leaves_the_abilities() -> void:
 	assert_true("\n".join(sk.log).contains("purges A ×9: Empowered gone, Armoured gone"), "the log says what went")
 	sk.start_round()
 	assert_false(Effects.has(u, "overcharged") or Effects.has(u, "braced"), "and nothing comes back")
-	# The seal is the Armadillo's form, an ability: the purge leaves it, its armour standing.
+	# The seal is the Polar Bear's form, an ability: the purge leaves it, its armour standing.
 	var s2 := Skirmish.new(1, 2)
 	var shield := Face.shield(20)
 	var m := _mech("D", Die.of([shield, Face.attack(10, L)]), 40, 200)
@@ -7913,10 +7978,9 @@ func test_a_players_purge_lowers_every_buff_a_foe_carries_by_its_number_but_guar
 	assert_false("\n".join(sk.log).contains("gets back up"), "no return")
 
 
-## A laid Purge (28 October): the shot carries the keyword, and the foe it lands on loses its buffs.
-func test_a_laid_purge_purges_the_foe_it_lands_on() -> void:
-	var pull := Face.attack(0, I)
-	pull.pulls_mines = true
+## A Purge in a Mine (28 October; the Mines on foes, 9 November): the Mine carries the keyword, and
+## every foe its blast meets loses its buffs.
+func test_a_purge_in_a_mine_purges_every_foe_its_blast_meets() -> void:
 	var sk := Skirmish.new(1, 2)
 	var purge9 := Face.attack(0, I, [K.DISPEL])
 	purge9.dispel = 9
@@ -7924,19 +7988,17 @@ func test_a_laid_purge_purges_the_foe_it_lands_on() -> void:
 	a.grant_passive(MINER)
 	sk.add_mech(a)
 	sk.add_mech(_mech("Killer", Die.single(Face.attack(10, L)), 40, 100))
-	sk.add_mech(_mech("Puller", Die.single(pull), 40, 100))
 	var weak := _ghoul(10, 0)
 	var boss := _ghoul(300, 0)
 	sk.add_foes([weak, boss])
 	sk.begin()
 	sk.start_round()
+	assert_true(sk.assign(0, weak), "the Purge spent on the weak foe, its Mine left")
 	Effects.stack(boss, Effects.STATUS["braced"], Effects.SKIRMISH, "foe:revenant", 2, Effects.DECAY_ROUND)
 	Effects.stack(boss, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:revenant", 1, Effects.DECAY_NONE)
-	assert_true(sk.assign(1, weak), "a slot emptied")
-	assert_true(sk.assign(0, Vector2i(0, 0)), "the Purge laid there")
-	assert_true(sk.assign(2, boss), "the pull on the boss")
-	assert_false(Effects.has(boss, "braced") or Effects.has(boss, "risen"), "the shot purges it")
-	assert_true("\n".join(sk.log).contains("a mine of Bomber's purges"), "the log says so")
+	assert_true(sk.assign(1, weak), "the weak foe felled")
+	assert_false(Effects.has(boss, "braced") or Effects.has(boss, "risen"), "the blast purges the foe beside it")
+	assert_true("\n".join(sk.log).contains("the Mine purges"), "the log says so")
 
 
 ## Swap (the Dingo's Combat Translocator, Ryan's go of 19 October; built 21 October): the spend
@@ -8574,9 +8636,8 @@ func test_what_a_kill_brings_back_waits_for_the_spend_to_end() -> void:
 ## target the hit felled too (Ryan, 7 November: "if a swap did damage, it should play out the
 ## same: deal damage, then swap (in the rider phase), check death, end spend, and revive in the
 ## NEW spot, since the split/revive is attached to the unit, not the spot"): a damaging Swap
-## moves the foe it kills, which gets back up where it was moved to and takes the mine waiting
-## there, a corpse setting off nothing; a damaging drone rides the foe it kills, whose mine falls
-## in the slot it dies in.
+## moves the foe it kills, which gets back up where it was moved to; a detonation lands on a
+## target its own chip felled, before the death check, and its fall blows nothing more.
 func test_a_swap_lands_in_the_rider_phase_and_a_revive_stands_in_the_new_spot() -> void:
 	var swapper := Face.attack(10, L, [K.SWAP])
 	var sk := Skirmish.new(3, 3)
@@ -8588,24 +8649,24 @@ func test_a_swap_lands_in_the_rider_phase_and_a_revive_stands_in_the_new_spot() 
 	sk.start_round()
 	Effects.stack(up, Effects.STATUS["risen"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
 	assert_true(sk.front[0] == up and sk.front[1] == other and sk.front[2] == null, "two in front, the third column empty")
-	# A mine waits in the empty slot the swap will move the dying foe into.
-	sk.mines[Vector2i(0, 2)] = [{"damage": 3, "weapon": true, "keywords": [], "seq": 1, "by": "test", "mech": 0, "face": {}, "burn": 0, "cryo": 0, "flak": 0, "dispel": 0, "row": 0, "column": 0, "chain": 0}]
 	assert_true(sk.assign(0, up, Vector2i(0, 2)), "the damaging swap: its blow kills, then it moves the foe")
 	assert_eq(sk.front[2], up, "it got back up in the slot it was moved to, not the one it was struck in")
 	assert_true(sk.front[0] == null, "the slot it was struck in stands empty")
-	assert_eq(up.hp, 4 - 3, "whole, then the mine waiting there: its corpse set off nothing as it came")
-	# A damaging drone rides the foe it kills, its mine left in the slot it dies in.
+	assert_eq(up.hp, 4, "whole")
+	# A damaging detonation lands on the target its blow felled, before the death check.
 	var drone := Face.attack(10, L)
-	drone.drones = true
+	drone.detonates = true
 	var s2 := Skirmish.new(3, 2)
 	s2.add_mech(_mech("B", Die.single(drone), 40, 100))
 	var prey := _ghoul(4, 10)
-	s2.add_foes([prey, _ghoul(100, 10)])
+	var beside := _ghoul(100, 10)
+	s2.add_foes([prey, beside])
 	s2.begin()
 	s2.start_round()
+	s2._add_mine(prey, 3, {})
 	assert_true(s2.assign(0, prey), "the damaging drone")
 	assert_false(prey.alive(), "its blow kills")
-	assert_eq((s2.mines.get(Vector2i(0, 0), []) as Array).size(), 1, "the drone fell with it and left the killing shot in its slot")
+	assert_eq(beside.hp, 97, "the Mine blew once, on the foe beside it")
 
 
 ## A massive foe fills both slots of its column. Area aimed at it reaches the foes beside it, and
@@ -8695,280 +8756,516 @@ func test_an_expose_puts_a_back_foe_in_direct_reach_and_zeroes_its_armour() -> v
 	assert_false(sk.targets_for(1).has(caster), "behind its wall again")
 
 
-## The Lammergeier's mines (the Fuse-delayed Bay, decided 15 to 17 October, built 21 October),
-## on a synthetic passive: a machine that lays mines may spend a weapon or a debuff on an empty slot under
-## the reach rules as if a foe stood there; the shot waits with its number as laid and its
-## keywords, joining what waits; the arrival takes every shot in laid order before it acts, a
-## Shock mine doubling the shot after it. A machine without the passive lays nothing.
-const MINER := {"id": "bay", "name": "Bay", "description": "", "effects": [{"trigger": "static", "effect": "lay_mines"}]}
+## The Lammergeier's Mines (the Reverberant Payload, Ryan, 9 November: "the lammergeier basically
+## converts all hits to AoE hits, at the cost of a delay until Death"), on a synthetic passive: a
+## machine that leaves Mines leaves one on every foe it aims a weapon or equipment at, its flat damage
+## and the spend's keywords, one Mine a foe however many spends feed it; when the foe falls, getting
+## back up or splitting included, the Mine blows on every foe round its slot (Splash's shape).
+const MINER := {"id": "bay", "name": "Bay", "description": "", "effects": [{"trigger": "static", "effect": "mine_on_spend", "value": 2}]}
 
 
-func test_a_weapon_laid_on_an_empty_slot_waits_for_the_arrival_and_lands_in_laid_order() -> void:
-	var sk := Skirmish.new(1, 1)
-	var shocker := Face.attack(10, I, [K.SHOCK])
-	shocker.heat = 5
-	var a := _mech("Bomber A", Die.single(shocker), 40, 100)
-	a.grant_passive(MINER)
-	var b := _mech("Bomber B", Die.single(Face.attack(10, L)), 40, 100)
-	b.grant_passive(MINER)
-	sk.add_mech(a)
-	sk.add_mech(b)
-	sk.add_mech(_mech("Killer", Die.single(Face.attack(10, L)), 40, 100))
-	var first := _ghoul(10, 10)
-	var arrival := _ghoul(100, 10)
-	sk.add_foes([first])
-	sk.begin()
-	sk.reinforcements.append(arrival)
-	sk.start_round()
-	assert_eq(sk.slot_targets(sk.mechs[1], sk.mechs[1].face()), [], "a Direct gun reaches no slot behind a standing front")
-	assert_eq(sk.slot_targets(sk.mechs[0], sk.mechs[0].face()), [Vector2i(1, 0)], "an Indirect one the empty back slot")
-	assert_true(sk.assign(2, first), "the killer empties the slot")
-	assert_eq(sk.slot_targets(sk.mechs[2], sk.mechs[2].face()), [], "a machine without the bay lays nothing")
-	assert_false(sk.can_assign(2, Vector2i(0, 0)), "nor may it be spent on the slot")
-	assert_true(sk.slot_targets(sk.mechs[1], sk.mechs[1].face()).has(Vector2i(0, 0)), "a Direct gun of the bay reaches the empty front")
-	assert_true(sk.can_assign(0, Vector2i(0, 0)), "and an Indirect one any")
-	assert_true(sk.assign(0, Vector2i(0, 0)), "the shock mine laid")
-	assert_eq(sk.mechs[0].heat, 5, "its heat paid now")
-	assert_true(sk.assign(1, Vector2i(0, 0)), "and a plain one behind it")
-	var waiting := sk.mines_at(Vector2i(0, 0))
-	assert_eq(waiting.size(), 2, "both wait in the slot, stacked")
-	assert_eq([int(waiting[0]["damage"]), int(waiting[1]["damage"])], [10, 10], "each its number as laid")
-	assert_eq(arrival.hp, 100, "nothing lands with no foe there")
-	sk.end_round()
-	sk._first_deployment(true)   # the arrival stepped in by hand: nothing steps in on its own since the cut (6 November); the Lammergeier's rework settles what a mine meets
-	assert_eq(sk.foe_at(0, 0), arrival, "the arrival steps in")
-	assert_eq(arrival.hp, 70, "and takes the shock mine's 10, then the next one doubled")
-	assert_false(Effects.has(arrival, "shocked"), "the second shot spent the shock")
-	assert_true(sk.mines.is_empty(), "nothing waits any more")
-	assert_true("\n".join(sk.log).contains("steps onto 2 mines"), "the log says so")
-
-
-## Every keyword rides inside a mine and acts as it lands (Ryan, 21 October): a Spread mine hits
-## the arrival's rank neighbours, a stun takes the arrival's first action (it stepped in after
-## the round's turn), and a massive arrival takes both slots' shots.
-func test_a_spread_mine_catches_the_neighbours_a_stun_takes_the_first_action_and_a_massive_arrival_takes_both() -> void:
+## One Mine a spend (Ryan, 9 November: "One mine per spend ... we're only adding N flat damage
+## (plain, not modified by lammergeier modifiers), and the keywords attached to it. Area modifiers,
+## targeting rules (sweep), and hit counts are ignored. Anything that ties it back to the firer is
+## ignored, like lure"; "the mine should take the entire result of the spend"): the target alone,
+## its damage flat whatever the strikes, its stacks every hit's; a second spend adds to the Mine.
+func test_every_spend_at_a_foe_leaves_one_mine_of_its_flat_damage_and_keywords() -> void:
 	var sk := Skirmish.new(1, 3)
-	var stun_mine := Face.attack(10, L, [K.CLEAVE, K.SUPPRESS])
-	stun_mine.cleave = 5
-	var bay := _mech("Bomber", Die.single(stun_mine), 40, 100)
-	bay.grant_passive(MINER)
-	sk.add_mech(bay)
+	var gun := Face.attack(2, I, [K.BURN, K.SHOCK, K.CLEAVE, K.LURE])
+	gun.burn = 1
+	gun.cleave = 1
+	gun.strikes = 3
+	var bomber := _mech("Bomber", Die.single(gun), 40, 100)
+	bomber.grant_passive(MINER)
+	bomber.grant_passive({"id": "test_edge", "name": "Edge", "description": "", "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 5}]})
+	sk.add_mech(bomber)
+	sk.add_mech(_mech("Plain", Die.single(Face.attack(1, I)), 40, 100))
+	var a := _ghoul(200, 0)
+	var b := _ghoul(200, 0)
+	var c := _ghoul(200, 0)
+	sk.add_foes([a, b, c])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, b), "the bomber's spend at the middle foe")
+	var mine := Skirmish.mine_of(b)
+	assert_eq(int(mine["damage"]), 2, "one Mine of the flat 2, whatever the gun's strikes or its firer's +5")
+	assert_eq(int(mine["riders"]["stacks"]["burning"]), 3, "the Burning its three hits fired")
+	assert_eq(mine["riders"]["keywords"], ["shock"], "its Shock rides; Spread and Lure stay with the spend")
+	assert_true(Skirmish.mine_of(a).is_empty() and Skirmish.mine_of(c).is_empty(), "the target alone: the Spread's neighbours carry none")
+	assert_true("\n".join(sk.log).contains("leaves a Mine on revenant: Mine 2: Burn 3, Shock"), "the log says so")
+	sk.mechs[0].assigned = false
+	assert_true(sk.assign(0, b), "a second spend at it")
+	mine = Skirmish.mine_of(b)
+	assert_eq([int(mine["damage"]), int(mine["riders"]["stacks"]["burning"])], [4, 6], "one Mine, the second spend's 2 and its three Burning added")
+	assert_eq(mine["riders"]["keywords"], ["shock"], "a flag rides once")
+	assert_true(sk.assign(1, a), "a machine without the passive")
+	assert_true(Skirmish.mine_of(a).is_empty(), "leaves none")
+
+
+## The Mine blows when its foe falls (Ryan, 9 November: "On death, the mine explodes, dealing its
+## damage and keywords in an area, I would probably go for Splash as the shape to start"): every foe
+## beside it in its rank and the other rank of its column takes its damage, plain, through its own
+## Flak and armour, aimed at nobody (a Shock neither doubles nor is spent), then its keywords; the
+## blast lands as a blow the screen plays, after the spend's own.
+func test_a_mine_blows_on_every_foe_round_its_slot_when_its_foe_falls() -> void:
+	var sk := Skirmish.new(1, 3)
+	var gun := Face.attack(1, I, [K.BURN])
+	gun.burn = 1
+	var bomber := _mech("Bomber", Die.single(gun), 40, 100)
+	bomber.grant_passive(MINER)
+	sk.add_mech(bomber)
 	sk.add_mech(_mech("Killer", Die.single(Face.attack(200, L)), 40, 100))
-	var arrival := _ghoul(100, 10)
-	sk.add_foes([_ghoul(200, 0), _ghoul(200, 0), _ghoul(200, 0)])
+	var a := _ghoul(100, 0)
+	var b := _ghoul(100, 0)
+	var c := _ghoul(100, 0)
+	var behind := _archer(100, 0)
+	var far := _archer(100, 0)
+	sk.add_foes([a, b, c, far, behind])
 	sk.begin()
-	sk.reinforcements.append(arrival)   # it waits, the only one that strikes
 	sk.start_round()
-	var left: Foe = sk.front[0]
-	var right: Foe = sk.front[2]
-	assert_true(sk.assign(1, sk.front[1]), "the middle slot emptied")
-	assert_true(sk.assign(0, Vector2i(0, 1)), "a Spread stun mine laid there")
-	sk.end_round()
-	sk._first_deployment(true)   # the arrival stepped in by hand: nothing steps in on its own since the cut (6 November); the Lammergeier's rework settles what a mine meets
-	assert_eq(sk.foe_at(0, 1), arrival, "the arrival in the middle")
-	assert_eq([left.hp, arrival.hp, right.hp], [195, 90, 195], "the mine hits it and both its neighbours for its Spread 5 (area by shape, numbered)")
+	assert_true(sk.front[1] == b and sk.back[1] == behind, "b mid-front, the archer behind it")
+	a.armour = 1
+	Effects.stack(c, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 1, Effects.status_decay(Effects.STATUS["flakked"]))
+	_shock_on(behind)
+	assert_true(sk.assign(0, b), "the Mine laid on b")
+	var b_hp := b.hp
+	assert_true(sk.assign(1, b), "the killer fells it")
+	assert_false(b.alive(), "b is down")
+	assert_eq(a.hp, 100 - 1, "beside it, its armour off the 2")
+	assert_eq(c.hp, 100 - 3, "beside it, its Flak on the 2")
+	assert_eq(behind.hp, 100 - 2, "behind it, the 2 plain: no Shock doubles a blast")
+	assert_true(Effects.has(behind, "shocked"), "and its Shock stands")
+	assert_eq(far.hp, 100, "the far back slot is no neighbour")
+	for f in [a, c, behind]:
+		assert_eq(Effects.stacks_of(f, "burning"), 1, "its Burn 1 on each foe it met")
+	assert_true(sk.spend_blows.any(func(x: Dictionary) -> bool: return str(x["kind"]) == "mine" and x["foe"] == behind), "the screen lands the blast as its own blows")
+	assert_true("\n".join(sk.log).contains("the Mine on revenant blows: Mine 2: Burn 1"), "the log says so")
+	assert_eq(b_hp, 100 - 1, "the bomber's own hit landed whole first")
+
+
+## The Mine takes the spend's whole result on its target (Ryan, 9 November: "the mine should take
+## the entire result of the spend, then apply it. So a 3-hit flak that burns 1 per hit if the target
+## is under 50% HP, would result in adding a 2 damage mine with 3 flak, and 0-3 burn depending on
+## when the target reached under 50% HP during the spend"): every hit's stacks, as its machine
+## deepened and doubled them, a passive's lays and a burn whose condition held as the die was spent
+## (a single-target weapon's conditions are read then, the rules' blow order); the damage stays flat.
+func test_a_mine_takes_the_whole_result_of_the_spend_every_hits_stacks_as_fired() -> void:
+	var sk := Skirmish.new(1, 3)
+	var flak := Face.attack(1, I, [K.FLAK])
+	flak.flak = 1
+	flak.strikes = 3
+	var bomber := _mech("Bomber", Die.single(flak), 40, 100)
+	bomber.grant_passive(MINER)
+	bomber.grant_passive({"id": "test_scorch_flak", "name": "Scorch", "description": "", "effects": [{"trigger": "on_attack", "effect": "add_burn", "value": 1, "when": "target_status", "status": "flakked"}]})
+	sk.add_mech(bomber)
+	var b := _ghoul(100, 0)
+	sk.add_foes([_ghoul(100, 0), b])
+	sk.begin()
 	sk.start_round()
-	var hull := sk.mechs[0].unit.hull + sk.mechs[0].unit.shield + sk.mechs[1].unit.hull + sk.mechs[1].unit.shield
-	sk.end_round()
-	assert_eq(sk.mechs[0].unit.hull + sk.mechs[0].unit.shield + sk.mechs[1].unit.hull + sk.mechs[1].unit.shield, hull, "the stunned arrivals land no blow in their first turn")
-	# A massive arrival fills its column and takes both slots' shots.
-	var s2 := Skirmish.new(1, 1)
-	var x := _mech("X", Die.single(Face.attack(10, L)), 40, 100)
-	x.grant_passive(MINER)
-	var y := _mech("Y", Die.single(Face.attack(20, I)), 40, 100)
-	y.grant_passive(MINER)
-	s2.add_mech(x)
-	s2.add_mech(y)
-	var lance := Face.attack(10, I, [K.PENETRATE])
-	lance.penetrate = 5
-	s2.add_mech(_mech("Killer", Die.single(lance), 40, 100))
-	var g := _ghoul(10, 0)
-	var arch := _archer(5, 0)   # the Penetrate 5 empties the back slot too
-	s2.add_foes([g, arch])
+	assert_true(sk.assign(0, b), "three hits of Flak 1 on a foe with no Flak")
+	var mine := Skirmish.mine_of(b)
+	assert_eq(int(mine["damage"]), 2, "a 2 damage Mine")
+	assert_eq(int(mine["riders"]["stacks"].get("flakked", 0)), 3, "with 3 Flak")
+	assert_eq(int(mine["riders"]["stacks"].get("burning", 0)), 0, "and no Burning: the condition did not hold as the die was spent")
+	sk.mechs[0].assigned = false
+	assert_true(sk.assign(0, b), "again, the foe now Flakked")
+	mine = Skirmish.mine_of(b)
+	assert_eq([int(mine["riders"]["stacks"]["flakked"]), int(mine["riders"]["stacks"].get("burning", 0))], [6, 3], "its 3 Flak more and 3 Burning, a hit each")
+	# Deepened and doubled as its machine lays them, and a passive's lays among them.
+	var s2 := Skirmish.new(1, 3)
+	var burner := Face.attack(1, I, [K.BURN])
+	burner.burn = 1
+	burner.strikes = 2
+	var deep := _mech("Deep", Die.single(burner), 40, 100)
+	deep.grant_passive(MINER)
+	deep.grant_passive({"id": "test_deepen", "name": "Deepen", "description": "", "effects": [{"trigger": "on_stack", "effect": "add_stacks", "value": 1}]})
+	deep.grant_passive({"id": "test_double", "name": "Double", "description": "", "effects": [{"trigger": "on_attack", "effect": "multiply_stacks", "value": 2}]})
+	deep.grant_passive({"id": "test_vitriol", "name": "Ambush", "description": "", "effects": [{"trigger": "on_attack", "effect": "lay_status", "value": "vitriol", "stacks": 1}]})
+	s2.add_mech(deep)
+	var t := _ghoul(100, 0)
+	s2.add_foes([t])
 	s2.begin()
-	var big := Foe.make("titan", 500, 0)
+	s2.start_round()
+	assert_true(s2.assign(0, t), "two hits of Burn 1, deepened a stack and doubled")
+	var landed_burn := Effects.stacks_of(t, "burning")
+	var m2 := Skirmish.mine_of(t)
+	assert_eq(int(m2["riders"]["stacks"]["burning"]), landed_burn, "the Mine's Burning is what the spend landed: %d" % landed_burn)
+	assert_eq(landed_burn, 2 * (1 + 1) * 2, "each hit's 1 deepened to 2 and doubled to 4")
+	assert_eq(int(m2["riders"]["stacks"]["vitriol"]), Effects.stacks_of(t, "vitriol"), "and the Vitriol its passive laid")
+	assert_true(Skirmish.mine_text(m2).contains("Burn 8") and Skirmish.mine_text(m2).contains("Vitriol"), "the readout names them: %s" % Skirmish.mine_text(m2))
+
+
+## The Mine is laid as a rider, before the death check (Ryan, 9 November: "applied before the death
+## check, correct"), so a spend that fells its target blows the Mine it just left, with whatever the
+## target carried.
+func test_a_kill_by_the_bombers_own_spend_blows_its_mine_at_once() -> void:
+	var sk := Skirmish.new(1, 3)
+	var bomber := _mech("Bomber", Die.single(Face.attack(50, I)), 40, 100)
+	bomber.grant_passive(MINER)
+	sk.add_mech(bomber)
+	var a := _ghoul(100, 0)
+	var b := _ghoul(40, 0)
+	var c := _ghoul(100, 0)
+	sk.add_foes([a, b, c])
+	sk.begin()
+	sk.start_round()
+	sk._add_mine(b, 3, {})
+	assert_true(sk.assign(0, b), "the bomber's killing spend")
+	assert_eq([a.hp, c.hp], [95, 95], "its own 2 and the 3 it carried blow on both neighbours at once")
+	assert_true(Skirmish.mine_of(b).is_empty(), "the Mine spent")
+
+
+## It blows on any fall the death check clears (Ryan, 9 November: "the explosion should occur after
+## the death check regardless of revive or split ... I'd go with 'a killing blow' instead of 'on
+## death'"; Claude's lean, his: a fall, so a tick's counts too): a foe that gets back up rises
+## clean, a Gel's halves stand after the blast and take none of it, and a foe its Burning fells in
+## the enemy's turn blows there.
+func test_a_mine_blows_when_its_foe_falls_to_get_back_up_or_to_split_or_to_a_tick() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("Killer", Die.single(Face.attack(200, L)), 40, 100))
+	var a := _ghoul(100, 0)
+	var riser := _ghoul(30, 0)
+	var c := _ghoul(100, 0)
+	sk.add_foes([a, riser, c])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(riser, Effects.STATUS["risen"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	sk._add_mine(riser, 4, {})
+	assert_true(sk.assign(0, riser), "the riser felled")
+	assert_eq([a.hp, c.hp], [96, 96], "its Mine blew on its neighbours")
+	assert_eq(sk.front[1], riser, "and it got back up in its slot")
+	assert_true(Skirmish.mine_of(riser).is_empty(), "clean")
+	# A Gel splits after the blast: the halves stand where it fell and take none of it.
+	var s2 := Skirmish.new(1, 3)
+	s2.add_mech(_mech("Killer", Die.single(Face.attack(200, L)), 40, 100))
+	var left := _ghoul(100, 0)
+	var gel := _ghoul(30, 0)
+	gel.on_death = {"summon": "gel_small", "count": 2, "pair": true}
+	s2.foe_factory = func(id: String) -> Foe: return Foe.make(id, 5, 0)
+	s2.add_foes([left, gel])
+	s2.begin()
+	s2.start_round()
+	s2._add_mine(gel, 4, {"keywords": ["suppress"]})
+	assert_true(s2.assign(0, gel), "the gel felled")
+	var half: Foe = s2.front[1]
+	assert_eq(half.display_name, "gel_small", "its halves stood")
+	assert_eq([half.hp, s2.twin_of(half).hp], [5, 5], "whole: the blast came first")
+	assert_eq(left.hp, 96, "its neighbour took the 4")
+	assert_true(s2._suppressed_through(left, s2.round), "and its stun")
+	assert_false(s2._suppressed_through(half, s2.round + 1), "the halves none of it")
+	# A tick's fall in the enemy's turn blows there.
+	var s3 := Skirmish.new(1, 3)
+	s3.add_mech(_mech("A", Die.single(Face.attack(1, L)), 40, 100))
+	var p := _ghoul(100, 0)
+	var burnt := _ghoul(1, 0)
+	var q := _ghoul(100, 0)
+	s3.add_foes([p, burnt, q])
+	s3.begin()
+	s3.start_round()
+	Effects.stack(burnt, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 3)
+	s3._add_mine(burnt, 5, {})
+	s3.end_round()
+	assert_false(burnt.alive(), "its Burning felled it")
+	assert_eq([p.hp, q.hp], [95, 95], "and its Mine blew on both sides")
+
+
+## Several Mines due at one death check blow in strike order, front left to right, then the back,
+## each once its slot is clear; a blast that fells a mined foe blows its Mine in turn.
+func test_mines_blow_in_strike_order_and_a_blast_that_fells_a_mined_foe_blows_its_own() -> void:
+	var sk := Skirmish.new(1, 4)
+	sk.add_mech(_mech("Killer", Die.single(Face.attack(200, L)), 40, 100))
+	var a := _ghoul(30, 0)
+	var b := _ghoul(3, 0)
+	var c := _ghoul(100, 0)
+	var d := _ghoul(100, 0)
+	sk.add_foes([a, b, c, d])
+	sk.begin()
+	sk.start_round()
+	sk._add_mine(a, 5, {})
+	sk._add_mine(b, 7, {})
+	assert_true(sk.assign(0, a), "a felled")
+	assert_false(b.alive(), "a's 5 fells b beside it")
+	assert_eq(c.hp, 93, "and b's own 7 blows on c, the blast's chain")
+	assert_eq(d.hp, 100, "d stands past the chain's reach")
+	var said := sk.log.filter(func(l: String) -> bool: return l.begins_with("the Mine on"))
+	assert_eq(said.size(), 2, "two blasts")
+	assert_true(said[0].contains("Mine 5") and said[1].contains("Mine 7"), "a's first, then b's: %s" % str(said))
+
+
+## The single big hit (Ryan, 9 November: "mines combine into one large hit with all keywords
+## combined ... a way to group small weapons into armour-overcoming hits"): the numbered keywords
+## add up, the rest ride once; one Breach carries the whole blast through armour; a gated keyword
+## rides only where its gate held on the hit; nothing a hit reads off its foe rides.
+func test_a_mines_keywords_add_up_and_one_breach_carries_the_whole_blast_through_armour() -> void:
+	var merged := Skirmish.mine_riders_merged({"stacks": {"burning": 2}, "keywords": ["shock"]}, {"stacks": {"burning": 3}, "chain": 1, "keywords": ["shock", "breach"]})
+	assert_eq([int(merged["stacks"]["burning"]), int(merged["chain"])], [5, 1], "Burning 2 and Burning 3 are Burning 5")
+	assert_eq(merged["keywords"], ["shock", "breach"], "the flags once each, in a fixed order")
+	var sk := Skirmish.new(1, 3)
+	var gated := Face.attack(1, I, [K.SUPPRESS])
+	gated.gates = {"suppress": {"when": "target_status", "status": "flakked"}}
+	gated.consumes = "burning"
+	gated.per_consumed = 1
+	var bomber := _mech("Bomber", Die.of([gated, Face.attack(1, I, [K.BREACH])]), 40, 100)
+	bomber.grant_passive(MINER)
+	sk.add_mech(bomber)
+	sk.add_mech(_mech("Killer", Die.single(Face.attack(200, L)), 40, 100))
+	var a := _ghoul(100, 0)
+	var b := _ghoul(100, 0)
+	var c := _ghoul(100, 0)
+	sk.add_foes([a, b, c])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(b, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 4)
+	sk.mechs[0].face_index = 0
+	assert_true(sk.assign(0, b), "the gated stun on a foe without Flak")
+	assert_eq(Skirmish.mine_of(b)["riders"]["keywords"], [], "the gate shut: no Suppress in the Mine")
+	assert_eq(int(Skirmish.mine_of(b)["damage"]), 2, "and the eaten stacks stay with the hit")
+	Effects.stack(b, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 1, Effects.status_decay(Effects.STATUS["flakked"]))
+	sk.mechs[0].assigned = false
+	sk.mechs[0].face_index = 0
+	assert_true(sk.assign(0, b), "again, on the Flak")
+	assert_true(Skirmish.mine_of(b)["riders"]["keywords"].has("suppress"), "the gate held: the Suppress rides")
+	sk.mechs[0].assigned = false
+	sk.mechs[0].face_index = 1
+	assert_true(sk.assign(0, b), "a Breach gun")
+	a.armour = 50
+	c.armour = 50
+	assert_true(sk.assign(1, b), "b felled")
+	assert_eq([a.hp, c.hp], [94, 94], "the whole Mine of 6 through their armour")
+
+
+## The Syrinx Drone (Ryan, 9 November: "Deals a small amount of damage and detonates a foe's
+## combined mine immediately ... The small chip damage makes it add a stack first. Try without a
+## cooldown first"): its chip lands, its own Mine joins the target's, then the Mine blows on the
+## target and every foe round it, spent, so the target's fall blows nothing more; a Shock doubles
+## the chip, never the Mine.
+func test_the_drone_adds_its_mine_then_detonates_it_on_the_target_and_round_it() -> void:
+	var drone := Face.attack(1, I)
+	drone.detonates = true
+	assert_true(drone.has_unique_rule() and drone.describe().contains("detonates its Mine"), "the entry prints its rule")
+	var sk := Skirmish.new(1, 3)
+	var bomber := _mech("Bomber", Die.single(drone), 40, 100)
+	bomber.grant_passive(MINER)
+	sk.add_mech(bomber)
+	var a := _ghoul(100, 0)
+	var b := _ghoul(100, 0)
+	var c := _ghoul(100, 0)
+	sk.add_foes([a, b, c])
+	sk.begin()
+	sk.start_round()
+	sk._add_mine(b, 4, {"stacks": {"burning": 1}})
+	_shock_on(b)
+	assert_true(sk.assign(0, b), "the drone at b")
+	assert_eq(b.hp, 100 - 2 - 6, "the chip doubled on the Shock, then the Mine of 4 and its own 2")
+	assert_eq([a.hp, c.hp], [94, 94], "the Mine on both neighbours")
+	assert_eq(Effects.stacks_of(a, "burning"), 1, "its Burn rides the blast")
+	assert_true(Skirmish.mine_of(b).is_empty(), "spent")
+	assert_eq(cooldown_rounds_of(sk, 0), 0, "no cooldown: it may go again whenever it shows")
+	# A drone that fells its target blows the Mine once, before the death check.
+	var s2 := Skirmish.new(1, 3)
+	var b2 := _mech("Bomber", Die.single(drone), 40, 100)
+	b2.grant_passive(MINER)
+	s2.add_mech(b2)
+	var p := _ghoul(100, 0)
+	var frail := _ghoul(1, 0)
+	var q := _ghoul(100, 0)
+	s2.add_foes([p, frail, q])
+	s2.begin()
+	s2.start_round()
+	s2._add_mine(frail, 3, {})
+	assert_true(s2.assign(0, frail), "the drone at a foe its chip fells")
+	assert_eq([p.hp, q.hp], [95, 95], "the 5 blew once on each neighbour, never again at its fall")
+
+
+func cooldown_rounds_of(sk: Skirmish, i: int) -> int:
+	return sk.cooldown_of(sk.mechs[i], sk.mechs[i].face())
+
+
+## The Lorentz Contractor (Ryan, 9 November: "moves all mines to a single target, and Exposes that
+## target. The Expose rider will effectively create an AoE expose mine"): every other foe's Mine
+## joins the target's, which carries the Contractor's own Mine and Expose too; a Ward on the target
+## turns the gather away.
+func test_the_contractor_gathers_every_mine_onto_its_target_and_exposes_it() -> void:
+	var gather := Face.attack(0, I, [K.EXPOSE])
+	gather.gathers_mines = true
+	assert_true(gather.has_unique_rule() and gather.describe().contains("gathers every Mine onto it"), "the entry prints its rule")
+	var sk := Skirmish.new(1, 3)
+	var bomber := _mech("Bomber", Die.single(gather), 40, 100)
+	bomber.grant_passive(MINER)
+	sk.add_mech(bomber)
+	sk.add_mech(_mech("Killer", Die.single(Face.attack(200, L)), 40, 100))
+	var a := _ghoul(100, 0)
+	var b := _ghoul(100, 0)
+	var c := _ghoul(100, 0)
+	var behind := _archer(100, 0)
+	sk.add_foes([a, b, c, behind])
+	sk.begin()
+	sk.start_round()
+	sk._add_mine(a, 3, {"stacks": {"burning": 1}})
+	sk._add_mine(c, 4, {"keywords": ["shock"]})
+	assert_true(sk.back[0] == behind, "the archer behind a")
+	assert_true(sk.assign(0, behind), "the gather at the back foe")
+	var mine := Skirmish.mine_of(behind)
+	assert_eq(int(mine["damage"]), 3 + 4 + 2, "both Mines and its own 2 on it")
+	assert_eq(int(mine["riders"]["stacks"]["burning"]), 1, "their Burning")
+	assert_true(mine["riders"]["keywords"].has("shock") and mine["riders"]["keywords"].has("expose"), "the Shock, and its own Expose")
+	assert_true(Skirmish.mine_of(a).is_empty() and Skirmish.mine_of(c).is_empty(), "none left where they lay")
+	assert_true(Effects.has(behind, "exposure"), "the target Exposed")
+	assert_true(sk.targets_for(1).has(behind), "in the killer's Direct reach")
+	assert_true(sk.assign(1, behind), "the killer fells it")
+	assert_eq(a.hp, 91, "the 9 blows on the foe in front of it")
+	assert_true(Effects.has(a, "exposure"), "an AoE Expose")
+	assert_eq(b.hp, 100, "the foe beside its column untouched")
+	# A Ward on the target turns the gather away: the Mines stay where they lay.
+	var s2 := Skirmish.new(1, 3)
+	var b2 := _mech("Bomber", Die.single(gather), 40, 100)
+	s2.add_mech(b2)
+	var x := _ghoul(100, 0)
+	var y := _ghoul(100, 0)
+	s2.add_foes([x, y])
+	s2.begin()
+	s2.start_round()
+	s2._add_mine(x, 3, {})
+	Effects.stack(y, Effects.STATUS["ward"], Effects.SKIRMISH, "foe", 1, Effects.DECAY_NONE)
+	assert_true(s2.assign(0, y), "the gather at a Warded foe")
+	assert_eq(int(Skirmish.mine_of(x).get("damage", 0)), 3, "the Mine stays on x")
+	assert_true(Skirmish.mine_of(y).is_empty(), "none on y")
+
+
+## A Mine is a mark the team laid: a Ward turns it away, and a foe's cleanse takes it off.
+func test_a_ward_turns_a_mine_away_and_a_foes_cleanse_takes_it() -> void:
+	var sk := Skirmish.new(1, 3)
+	var bomber := _mech("Bomber", Die.single(Face.attack(1, I)), 40, 100)
+	bomber.grant_passive(MINER)
+	sk.add_mech(bomber)
+	var healer := _caster("cleanse", "defend", "ally_marked")
+	var warded := _ghoul(100, 0)
+	var marked := _ghoul(100, 0)
+	sk.add_foes([healer, warded, marked])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(warded, Effects.STATUS["ward"], Effects.SKIRMISH, "foe", 1, Effects.DECAY_NONE)
+	assert_true(sk.assign(0, warded), "a spend at the Warded foe")
+	assert_true(Skirmish.mine_of(warded).is_empty(), "its Ward turned the Mine away")
+	sk._add_mine(marked, 5, {})
+	assert_eq(sk.cleanse_target(healer), marked, "the Mine is a mark: the cleanse picks it")
+	assert_eq(Effects.team_marks(marked), 1, "one mark")
+
+
+## A foe taken into a merge never falls (Ryan's lean of 9 November): its Mine goes in with it,
+## joining the merger's, so the merger's fall blows them all.
+func test_a_merge_takes_in_the_mines_of_the_foes_it_takes_in() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(1, L)), 40, 100))
+	var king := Foe.make("king", 500, 0)
+	var small := Foe.make("slime", 10, 0)
+	small.content_id = "slime"
+	sk.add_foes([king, small])
+	sk.begin()
+	sk.start_round()
+	sk._add_mine(small, 3, {"stacks": {"burning": 2}})
+	sk._add_mine(king, 1, {})
+	sk._merge(king, {"effect": "merge", "foe": ["slime"], "value": 1, "name": "Merge"})
+	assert_false(small.on_field(), "the slime taken in")
+	var mine := Skirmish.mine_of(king)
+	assert_eq([int(mine["damage"]), int(mine["riders"]["stacks"]["burning"])], [4, 2], "its Mine joined the king's")
+
+
+## Massive foes carry Mines like any foe: a massive foe's blast meets the front-rank foes in the
+## columns either side, its column being its own; a blast beside a massive foe meets it once.
+func test_a_massive_foes_mine_blows_on_its_rank_neighbours_and_a_blast_meets_one_once() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("Killer", Die.single(Face.attack(900, L)), 40, 100))
+	var big := Foe.make("titan", 300, 5)
 	big.size = 2
-	s2.reinforcements.append(big)
-	s2.start_round()
-	assert_true(s2.assign(2, g), "the column emptied, both ranks")
-	assert_true(s2.slot_targets(s2.mechs[0], s2.mechs[0].face()).has(Vector2i(1, 0)), "Direct reaches the back slot whose front is empty")
-	assert_true(s2.assign(0, Vector2i(0, 0)) and s2.assign(1, Vector2i(1, 0)), "a mine in each slot")
-	s2.end_round()
-	s2._first_deployment(true)   # the arrival stepped in by hand: nothing steps in on its own since the cut (6 November); the Lammergeier's rework settles what a mine meets
-	assert_eq(s2.foe_at(0, 0), big, "the massive arrival fills the column")
-	assert_eq(big.hp, 470, "and takes both slots' shots")
-	assert_true(s2.mines.is_empty(), "both spent")
-
-
-## The Lorentz Contractor (the Lammergeier's pull, 17 October): every mine on the field gathers
-## into the slot it is spent on, in laid order, and a foe standing there takes them now; spent
-## on an empty slot it gathers them there and lands nothing; with nothing laid it is a dead spend.
-func test_the_pull_gathers_every_mine_into_its_slot_and_a_foe_there_takes_them_now() -> void:
-	var pull := Face.attack(0, I)
-	pull.pulls_mines = true
-	pull.heat = 10
-	assert_true(pull.has_unique_rule() and pull.describe().contains("gathers every mine into its slot"), "the entry prints its rule")
-	var sk := Skirmish.new(1, 2)
-	var a := _mech("Bomber A", Die.single(Face.attack(10, I, [K.SHOCK])), 40, 100)
-	a.grant_passive(MINER)
-	var b := _mech("Bomber B", Die.single(Face.attack(10, L)), 40, 100)
-	b.grant_passive(MINER)
-	sk.add_mech(a)
-	sk.add_mech(b)
-	sk.add_mech(_mech("Killer", Die.single(Face.attack(10, L)), 40, 100))
-	sk.add_mech(_mech("Puller", Die.single(pull), 40, 100))
-	var weak := _ghoul(10, 0)
-	var boss := _ghoul(300, 0)
-	sk.add_foes([weak, boss])
+	var a := _ghoul(100, 0)
+	var behind := _archer(100, 0)
+	sk.add_foes([big, a, behind])
 	sk.begin()
 	sk.start_round()
-	assert_true(sk.assign(3, boss), "the pull with nothing laid: the dead spend allowed")
-	assert_true("\n".join(sk.log).contains("pulls, and nothing waits"), "the log says so")
-	assert_eq(boss.hp, 300, "a pull deals nothing")
-	assert_true(sk.assign(2, weak), "a slot emptied")
-	assert_true(sk.assign(0, Vector2i(0, 0)), "the shock mine in the front")
-	assert_true(sk.assign(1, Vector2i(1, 0)), "a plain one behind it, its front empty")
-	sk.end_round()
+	assert_true(sk.front[0] == big and sk.back[0] == big and sk.front[1] == a and sk.back[1] == behind, "the titan fills column 0; a and its archer column 1")
+	sk._add_mine(a, 3, {})
+	assert_eq(sk.mine_reach(0, 1, false).filter(func(f: Foe) -> bool: return f == big).size(), 1, "the blast at a's slot meets the titan once")
+	sk._add_mine(big, 7, {})
+	var met := sk.mine_reach(0, 0, true)
+	assert_true(met.has(a) and not met.has(behind), "the titan's blast its rank's neighbour alone")
+	assert_true(sk.assign(0, big), "the titan felled")
+	assert_eq(a.hp, 93, "its 7 on the foe beside it")
+	assert_eq(behind.hp, 100, "never the back rank beside it")
+
+
+## A Mine's Disrupt does nothing in the enemy's turn (Ryan's lean of 9 November), the foes' moves
+## being under way; in the player's turn it turns the foes its blast meets.
+func test_a_mines_disrupt_turns_its_foes_in_the_players_turn_and_never_in_the_enemys() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("Killer", Die.single(Face.attack(200, L)), 40, 500))
+	var a := _ghoul(100, 1)
+	a.actions = [{"id": "jab", "name": "Jab", "kind": "attack", "weight": 1, "text": ""}, {"id": "swing", "name": "Swing", "kind": "attack", "factor": 2, "weight": 1, "text": ""}]
+	var b := _ghoul(10, 0)
+	sk.add_foes([a, b])
+	sk.begin()
 	sk.start_round()
-	assert_eq(sk.mines.size(), 2, "two slots mined, nothing stepping in")
-	var heat := sk.mechs[3].heat
-	assert_true(sk.assign(3, boss), "the pull on the boss")
-	assert_eq(boss.hp, 270, "both land now in laid order: 10, then 10 doubled by the shock")
-	assert_eq(sk.mechs[3].heat, heat + 10, "the pull's heat")
-	assert_true(sk.mines.is_empty(), "every mine spent")
-	# On an empty slot the pull gathers there and lands nothing.
-	var s2 := Skirmish.new(1, 2)
-	var c := _mech("Bomber", Die.single(Face.attack(10, I)), 40, 100)
-	c.grant_passive(MINER)
-	s2.add_mech(c)
-	var sweep := Face.attack(10, I, [K.CLEAVE])
-	sweep.cleave = 5
-	s2.add_mech(_mech("Killer", Die.single(sweep), 40, 100))
-	s2.add_mech(_mech("Puller", Die.single(pull), 40, 100))
-	s2.add_foes([_ghoul(10, 0), _ghoul(5, 0), _archer(300, 0)])   # the Spread 5 clears the second
+	var before := str(a.action.get("id", ""))
+	sk._add_mine(b, 1, {"keywords": ["disrupt"]})
+	assert_true(sk.assign(0, b), "b felled in the player's turn")
+	assert_true(str(a.action.get("id", "")) != before, "its Disrupt turned a's move")
+	var s2 := Skirmish.new(1, 3)
+	s2.add_mech(_mech("A", Die.single(Face.attack(1, L)), 40, 500))
+	var x := _ghoul(100, 1)
+	x.actions = a.actions.duplicate(true)
+	var burnt := _ghoul(1, 0)
+	s2.add_foes([burnt, x])
 	s2.begin()
 	s2.start_round()
-	assert_true(s2.assign(1, s2.front[0]), "the front cleared")
-	assert_true(s2.assign(0, Vector2i(0, 0)), "a mine in one front slot")
-	assert_true(s2.can_assign(2, Vector2i(0, 1)), "the pull, Indirect, on any empty slot")
-	assert_true(s2.assign(2, Vector2i(0, 1)), "spent on the other")
-	assert_eq(s2.mines.keys(), [Vector2i(0, 1)], "the mine moved there")
+	Effects.stack(burnt, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 3)
+	s2._add_mine(burnt, 1, {"keywords": ["disrupt"]})
+	var picked := str(x.action.get("id", ""))
+	s2.end_round()
+	assert_false(burnt.alive(), "felled by its tick in the enemy's turn")
+	assert_false("\n".join(s2.log).contains("is disrupted"), "and its Disrupt did nothing")
 
 
-## A weapon's mine of 0 (a split 1 laid: two shots of 0) takes the foe's Flak as its
-## blow would, before the armour, in the landing and in the bot's read of the pull (Ryan, 25
-## October: "Flak and overcharge exist in part to get past armour").
-func test_a_weapons_mine_of_0_takes_the_foes_flak() -> void:
-	var pull := Face.attack(0, I)
-	pull.pulls_mines = true
-	var sk := Skirmish.new(1, 2)
-	var a := _mech("Bomber", Die.single(Face.attack(1, I)), 40, 100)
-	a.grant_passive(MINER)
-	a.grant_passive({"id": "split", "name": "Split", "description": "", "effects": [
-		{"trigger": "on_attack", "effect": "split_strikes", "value": 2}]})
-	sk.add_mech(a)
-	sk.add_mech(_mech("Killer", Die.single(Face.attack(10, L)), 40, 100))
-	sk.add_mech(_mech("Puller", Die.single(pull), 40, 100))
-	var weak := _ghoul(10, 0)
-	var boss := _ghoul(300, 0)
-	boss.armour = 1
-	sk.add_foes([weak, boss])
+## A Sweep and a salvo are one spend: one Mine, on the foe the die was dropped on.
+func test_a_sweep_leaves_one_mine_on_the_foe_it_was_dropped_on() -> void:
+	var sk := Skirmish.new(1, 3)
+	var sweep := Face.attack(1, S)
+	sweep.strikes = 3
+	var bomber := _mech("Bomber", Die.single(sweep), 40, 100)
+	bomber.grant_passive(MINER)
+	sk.add_mech(bomber)
+	var a := _ghoul(100, 0)
+	var b := _ghoul(100, 0)
+	var c := _ghoul(100, 0)
+	sk.add_foes([a, b, c])
 	sk.begin()
 	sk.start_round()
-	assert_true(sk.assign(1, weak), "a slot emptied")
-	assert_true(sk.assign(0, Vector2i(0, 0)), "the split 1 laid there")
-	var shots := sk.mines_at(Vector2i(0, 0))
-	assert_true(shots.size() == 2 and int(shots[0]["damage"]) == 1 and int(shots[1]["damage"]) == 1, "two shots of 1, a split 1 never below one: %s" % str(shots))
-	Effects.stack(boss, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 3, Effects.DECAY_HALF)
-	assert_eq(Policy.make(Policy.GREEDY).pull_score(sk, boss), 6.0, "the bot reads each shot's 1 with the 3 Flak, the armour off")
-	assert_true(sk.assign(2, boss), "the pull on the boss")
-	assert_eq(boss.hp, 294, "each takes the Flak, then loses the armour: 3 twice")
+	assert_true(sk.assign(0, c), "the sweep dropped on c")
+	assert_eq(int(Skirmish.mine_of(c).get("damage", 0)), 2, "one Mine on c")
+	assert_true(Skirmish.mine_of(a).is_empty() and Skirmish.mine_of(b).is_empty(), "none on the foes its other shots met")
 
 
-## The Syrinx Drone (Ryan's go, 21 October): the foe carries it, and the next weapon to kill it,
-## any machine's, leaves its shot in the slot it empties, one mine a drone; it gives the foe
-## Exposed, never refreshing it, and is Rapid on a foe already Exposed; a death by a tick leaves
-## nothing; the drone takes a foe, never a slot.
-func test_the_drone_leaves_the_killing_shot_and_is_rapid_on_a_foe_already_exposed() -> void:
-	var drone := Face.attack(0, I)
-	drone.drones = true
-	drone.cooldown = 1   # the Syrinx Drone prints its cooldown, as content does (2 November)
-	var sk := Skirmish.new(1, 2)
-	var m := _mech("Droner", Die.of([drone, Face.attack(10, L), Face.shield(10)]), 40, 100)
-	m.grant_passive(MINER)
-	sk.add_mech(m)
-	var napalm := Face.attack(30, L, [K.BURN])
-	napalm.burn = 2
-	sk.add_mech(_mech("Gunner", Die.single(napalm), 40, 100))
-	var marked := _ghoul(30, 0)
-	var boss := _ghoul(300, 0)
-	var arrival := _ghoul(100, 0)
-	sk.add_foes([marked, boss])
+## A Mine survives a save's round trip with its riders, and the round preview's copy shares
+## nothing with the fight: a merge on the copy leaves the fight's Mine as it was.
+func test_a_mine_survives_the_save_and_the_preview_leaves_it_alone() -> void:
+	var sk := Skirmish.new(1, 3)
+	var bomber := _mech("Bomber", Die.single(Face.attack(1, I, [K.SHOCK])), 40, 100)
+	bomber.grant_passive(MINER)
+	sk.add_mech(bomber)
+	var a := _ghoul(100, 0)
+	var b := _ghoul(100, 0)
+	sk.add_foes([a, b])
 	sk.begin()
-	sk.reinforcements.append(arrival)
 	sk.start_round()
-	sk.mechs[0].face_index = 0
-	assert_eq(sk.slot_targets(sk.mechs[0], drone), [], "the drone takes a foe, never a slot")
-	assert_true(sk.assign(0, marked), "the drone on a foe not Exposed")
-	assert_true(Effects.has(marked, "syrinx_drone") and Effects.has(marked, "exposure"), "it carries the drone, and Exposed")
-	assert_true(sk.mechs[0].assigned, "not Rapid: it was not Exposed before")
-	assert_true(sk.assign(1, marked), "another machine's weapon kills it")
-	var left := sk.mines_at(Vector2i(0, 0))
-	assert_eq(left.size(), 1, "its killing shot waits in the slot it emptied")
-	assert_eq(int(left[0]["damage"]), 30, "the shot as fired")
-	assert_true(Array(left[0]["keywords"]).has(K.BURN), "its keywords with it")
-	sk.end_round()
-	sk._first_deployment(true)   # the arrival stepped in by hand: nothing steps in on its own since the cut (6 November); the Lammergeier's rework settles what a mine meets
-	assert_eq(arrival.hp, 70, "the arrival takes it")
-	assert_true(Effects.has(arrival, "burning"), "napalm")
-	sk.start_round()
-	Effects.grant_for_rounds(boss, Effects.STATUS["exposure"], "test", sk.round + 1)
-	var until := -1
-	for mod in Effects.live(boss):
-		if mod.id == "exposure":
-			until = mod.expires_round
-	sk.mechs[0].face_index = 0
-	assert_true(sk.assign(0, boss), "the drone on a foe already Exposed")
-	assert_false(sk.mechs[0].assigned, "is Rapid: the machine acts again")
-	assert_eq(Effects.dark_rounds(m, 0, sk.round), 1, "the drone dark for the rest of the round")
-	for mod in Effects.live(boss):
-		if mod.id == "exposure":
-			assert_eq(mod.expires_round, until, "Exposed is never refreshed")
-	# A death by a tick leaves nothing.
-	boss.hp = 1
-	Effects.stack(boss, Effects.STATUS["burning"], Effects.SKIRMISH, "test", 3)
-	sk.end_round()
-	assert_false(boss.alive(), "the burn finishes it")
-	assert_false(sk.mines.has(Vector2i(0, 1)), "and leaves no mine")
-
-
-## Chain does what Chain does on a blow (Ryan, 21 October; the conductor 28 October, its charge
-## 29 October): a Chain mine lands its number as laid on every other Shocked foe as it lands, plain,
-## each conductor keeping its charge, and pays no heat for the arc.
-func test_a_chain_mine_arcs_its_number_as_laid_to_the_shocked_foes_as_it_lands() -> void:
-	var sk := Skirmish.new(1, 2)
-	var m := _mech("Bomber", Die.single(_chain_gun(4, 2, 5)), 40, 100)
-	m.grant_passive(MINER)
-	sk.add_mech(m)
-	sk.add_mech(_mech("Killer", Die.single(Face.attack(10, L)), 40, 100))
-	var weak := _ghoul(10, 0)
-	var other := _ghoul(300, 0)
-	var arrival := _ghoul(30, 0)
-	sk.add_foes([weak, other])
-	sk.begin()
-	sk.reinforcements.append(arrival)
-	sk.start_round()
-	assert_true(sk.assign(1, weak), "a slot emptied")
-	assert_true(sk.assign(0, Vector2i(0, 0)), "a Chain mine laid")
-	var heat_laid := sk.mechs[0].heat
-	_shock_on(other)
-	sk.end_round()
-	sk._first_deployment(true)   # the arrival stepped in by hand: nothing steps in on its own since the cut (6 November); the Lammergeier's rework settles what a mine meets
-	assert_eq(arrival.hp, 26, "the arrival takes the shot")
-	assert_eq(other.hp, 298, "and the Shocked foe takes Chain 2 as laid, plain, as the mine lands")
-	assert_true(Effects.has(other, "shocked"), "its charge stands")
-	assert_true("\n".join(sk.log).contains("arcs to"), "the log says so")
-	assert_eq([heat_laid, sk.mechs[0].heat], [5, 5], "the lay paid its heat; the arc pays none")
+	sk._add_mine(a, 3, {"stacks": {"burning": 2}})
+	var c := SaveGame.clone_skirmish(sk)
+	var ca: Foe = c.front[0]
+	assert_eq(JSON.stringify(Skirmish.mine_of(ca)), JSON.stringify(Skirmish.mine_of(a)), "the copy's Mine as the fight's")
+	c._add_mine(ca, 5, {"keywords": ["shock"]})
+	var mine := Skirmish.mine_of(a)
+	assert_eq([int(mine["damage"]), mine["riders"]["keywords"]], [3, []], "the fight's Mine untouched by the copy's")
+	var preview := sk.preview_round(0, a)
+	assert_eq(int(Skirmish.mine_of(a)["damage"]), 3, "the preview leaves it as it was")
+	assert_true(preview is Dictionary, "and reads the round")
 
 
 ## The Needletail's gate (the Quick-turn Avionics Relay, Ryan's go of 21 October; built that
@@ -9612,44 +9909,6 @@ func test_splash_reaches_the_plus_and_a_twin_takes_its_shape() -> void:
 	assert_eq([int(shapes.get(right, 0)), int(shapes.get(heavy, 0))], [Skirmish.AREA_ROW, Skirmish.AREA_ROW], "Spread at a half: its twin and the foe beside both in the row")
 	assert_eq(int(s2.area_shapes(lance, left).get(right, 0)), Skirmish.AREA_COLUMN, "Penetrate alone at a half: its twin takes the column's number")
 	assert_eq(Skirmish.area_number(lance, Skirmish.AREA_COLUMN), 1, "Penetrate's 1")
-
-
-## A mine carries its area numbers as laid, each through its spender's modifiers with no foe in
-## hand, as its own number is; the foes beside the arrival take the row's.
-func test_a_mine_carries_its_area_numbers_as_laid() -> void:
-	var sk := Skirmish.new(1, 3)
-	var shell := Face.attack(4, L, K.CLEAVE)
-	shell.cleave = 2
-	var bay := _mech("Bomber", Die.single(shell), 40, 100)
-	bay.grant_passive(MINER)
-	bay.grant_passive({"id": "test_edge", "name": "Edge", "description": "", "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 1}]})
-	sk.add_mech(bay)
-	sk.add_mech(_mech("Killer", Die.single(Face.attack(200, L)), 40, 100))
-	var arrival := _ghoul(100, 0)
-	sk.add_foes([_ghoul(200, 0), _ghoul(200, 0), _ghoul(200, 0)])
-	sk.begin()
-	sk.reinforcements.append(arrival)
-	sk.start_round()
-	var left: Foe = sk.front[0]
-	var right: Foe = sk.front[2]
-	assert_true(sk.assign(1, sk.front[1]), "the middle slot emptied")
-	assert_true(sk.assign(0, Vector2i(0, 1)), "a Spread mine laid there")
-	var shot: Dictionary = sk.mines[Vector2i(0, 1)][0]
-	assert_eq([int(shot["damage"]), int(shot["row"]), int(shot["column"])], [5, 3, 0], "its number and its row's, the firer's point on each; no column")
-	sk.end_round()
-	sk._first_deployment(true)   # the arrival stepped in by hand: nothing steps in on its own since the cut (6 November); the Lammergeier's rework settles what a mine meets
-	assert_eq([left.hp, arrival.hp, right.hp], [197, 95, 197], "the arrival takes the shot, its neighbours the row's 3")
-	# A shot laid before the numbers (an old save) lands half of itself on the foes past the arrival.
-	var s2 := Skirmish.new(1, 3)
-	s2.add_mech(_mech("A", Die.single(Face.attack(1, L)), 40, 100))
-	var a := _ghoul(100, 0)
-	var b := _ghoul(100, 0)
-	var c := _ghoul(100, 0)
-	s2.add_foes([a, b, c])
-	s2.begin()
-	s2.start_round()
-	s2._mine_hit(b, {"damage": 6, "keywords": [K.CLEAVE], "seq": 1, "by": "A", "mech": 0, "face": {}, "burn": 0, "cryo": 0, "flak": 0})
-	assert_eq([a.hp, b.hp, c.hp], [97, 94, 97], "the old shot's neighbours half of it")
 
 
 ## A numbered grant (the drum's, Ryan, 28 October) gives the keyword its number; on an entry

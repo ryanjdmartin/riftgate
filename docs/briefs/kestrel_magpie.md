@@ -75,8 +75,8 @@ the Empowered row; `docs/rules.md` on foes' moves and blows.
   1. A copy of a gun makes it a hitter, so the mirror may want to copy only what is spent on
      machines (shields, vents, buffs), which keeps it a support.
   2. Locked pieces never copy (unique by rule).
-  3. The Lammergeier's Syrinx Drone copies a killing shot into a mine; parted by time and
-     target, but two copiers in one maker.
+  3. The Lammergeier's Syrinx Drone copied a killing shot into a mine until 9 November; since
+     then it detonates a Mine, so Kestrel holds one copier.
   4. A round where it must act first shows a blank mirror.
 
 **C, one line (intelligence as planning): the cache.** Corvids cache food and come back for

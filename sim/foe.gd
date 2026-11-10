@@ -270,7 +270,7 @@ static func countdown_of(a: Dictionary) -> int:
 	return maxi(0, int(a.get("countdown", 0)))
 
 
-## A last act as an attack action (content `on_death.blow`, 15 October: the Behemoth's Meteor),
+## A last act as an attack action (content `on_death.blow`, 15 October: the Gargantuan King's Meteor),
 ## shaped like any move so the blow reads through the same rules.
 static func death_blow_from(b: Dictionary) -> Dictionary:
 	return {"id": "last_act", "name": str(b.get("name", "Last Act")), "kind": "attack", "factor": float(b.get("factor", 1.0)),

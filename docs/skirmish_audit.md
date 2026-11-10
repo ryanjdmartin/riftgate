@@ -40,11 +40,14 @@ with Structure 3. All of it landed on main on 8 November (Ryan: "If there's noth
 clean up and merge into main"); what is left is Structure, the Unused list and the comments,
 in the order at the end.
 
-**The mine path waits for the Lammergeier's rework** (Ryan, 8 November: "Flag the mine path as
-an issue but don't bother fixing mine problems until the rework, in case it stops existing"):
-Bug 7, Questions 9 and 11, Root 1's mine half (`_mine_hit`, `_mine_spill`), the strands in
-Structure 7 and the mine half of Structure 4 are known faults left as they are. The rework
-fixes them or removes them; nothing else builds on them meanwhile.
+**The mine path went with the Lammergeier's rework** (Ryan, 8 November: "Flag the mine path as
+an issue but don't bother fixing mine problems until the rework, in case it stops existing"; the
+rework, 9 November: Mines on foes, the bible's Lammergeier row). The slot mines' code is gone, so
+Bug 7, Question 11, Root 1's mine half (`_mine_hit`, `_mine_spill`), the strands in Structure 7
+and the mine half of Structure 4 went with it rather than being fixed: a Mine's blast is one
+plain blow a foe its reach meets (`_blow_mine`), no copy of the hit routine, and nothing lands on
+an arrival. Question 9 carries on in the new form, on the lean: a blast set off in a spend is
+part of it, so what its falls bring back stands once the spend is done (the rules say so).
 
 **Step 3 began the same day** (`ccr-8df9952c-4cccdf`, Ryan: "No behaviour changes; the suite green
 after each step"): Root 1's spend half, Root 3 and Structure 3's engine half, each part checked by
@@ -56,7 +59,8 @@ no longer drop to the bot's estimate while a Swap waits), and the die-in-hand ha
 gone, which no production code called but twenty-three tests pinned rules through (Scorched's
 extra under a heat multiplier, the Thrust Overboost's, by a synthetic passive; the Storm Petrel's
 burn; a bite; a brace), each now read through `preview_round` with the die in hand or the die as
-shown. The engine's play stayed identical to main's. Left: the mine's half, the rework's.
+shown. The engine's play stayed identical to main's. The mine's half went with the slot mines (9
+November).
 
 ## The roots
 
@@ -70,7 +74,7 @@ a finding alone leaves the habit to grow the next one.
    Spillover branch in the resolver keeps a third shape. One per-hit routine both call.
    *The spend's half done 8 November (step 3): one `_hit` for the plain spend, the salvo and the
    blast, each caller paying its own (`_finish_hits`), and one `_land_blow` for every blow of a
-   hit, the spill's included. The mine's half waits for the rework.*
+   hit, the spill's included. The mine's half went with the slot mines, 9 November.*
 2. **The engine's rules worked out again outside it.** The bot restates the blow's arithmetic
    (`damage_outcomes`, `_area_mean`), the salvo, Spillover, a last act, the blast, the Paradox
    feed, the Cryo cash and Shock; the screen infers deaths and returns, a Sweep's rank and the
@@ -141,7 +145,7 @@ balance runner's valuation only).
    the bought stacks, or ends the passive's for good, depending on which came first. Fix: a
    `bought` field in the merge key, set at the grant (and the same for "cooldown", read by
    source string at 1965 and 2079). Change: to the rules. *Checked.*
-7. **A mine that kills lands none of its riders.** *Waits for the Lammergeier's rework.* `_mine_hit` meets a foe its shot felled with
+7. **A mine that kills lands none of its riders.** *Gone with the slot mines (9 November): a Mine's blast lands its riders on every foe it meets, felled or not.* `_mine_hit` meets a foe its shot felled with
    `continue` (its line 91 from the function's head): no Burn, Suppress, Web, Cryo, Flak,
    Shock or Expose, and no Cryo cash for the spender (a Purge alone is patched in). Its area
    drops corpses that `reached_by` keeps (so a pair's living half is missed once its left half
@@ -231,7 +235,7 @@ balance runner's valuation only).
    only for a committed follow-up). Lean: the die strikes it; the opener stands.
 7. **The cool-and-shield entry's two encodings.** *Ryan: "both types at once ... atomic based on the current game state." The form built; the Musk Ox's reload once, the greater ("Once, take the greater number").* The Sutler's Hoist is a shield that cools and
    the Wake Diffuser a vent that shields; the paths differ (the vent logs its printed number, not
-   the heat it took off, and never overshields), and the encoding decides the Armadillo's form (a
+   the heat it took off, and never overshields), and the encoding decides the Polar Bear's form (a
    shield seals, a vent opens) and the Musk Ox's reload (3 for a vent, 2 for a shield). Lean: one
    "cools then shields" helper; the form and the forge read what the entry does.
 8. **A countdown's rally.** *Ryan: "It shouldn't forecast rounds in the future. Show what it would deal at the current game state." Built.* A gathering countdown shows its blow with the rallies it carries now,
@@ -239,7 +243,7 @@ balance runner's valuation only).
    November: a countdown of 2 announced beside a rally of 2 shows its blow +2, then +1 the round
    after, and lands at +0).
    Lean: show what lands.
-9. **A mine set off inside a spend** *Waits for the rework.* (a pull or a Swap) holds its kill's return until the spend
+9. **A mine set off inside a spend** *Settled with the rework (9 November) on the lean: a blast set off in a spend is part of it, its falls' returns standing once the spend is done.* (a pull or a Swap) holds its kill's return until the spend
    ends, where the rules say "at once to a mine". Lean: the spend's rule, since a mine set off by
    a spend is part of it; the rules line says so.
 10. **A Sweep's dropped-on foe and its entry effects.** *Ryan: "I think you're correct, except that I would use up a shot for each gel half." Built: the spots queued at the spend's start, the zap on the dropped-on foe, the validator refusing a Swap, drone or pull on a Sweep.* The drop picks the rank and nothing else,
@@ -248,7 +252,7 @@ balance runner's valuation only).
     half. No content reaches these. Lean: the validator refuses a Swap, drone or pull on a Sweep;
     a Sweep's zap and conditions read each shot's foe; a twin slot's shot meets both halves, as an
     area does.
-11. **The drone's mine.** *Waits for the rework.* It carries the killing blow including the dead foe's own reads (a
+11. **The drone's mine.** *Gone with the slot mines (9 November): a Mine carries a flat damage, never the killing blow, so no foe's reads ride in it.* It carries the killing blow including the dead foe's own reads (a
     Backdraft Charge's eaten stacks, counted again when the mine eats the next arrival's; a
     Coriolis's missing hull baked in) and no Primed Burning, and a Storm Petrel zap that kills a
     droned foe leaves none. Lean: the firer's number without the foe's reads, Primed Burning
@@ -283,10 +287,10 @@ balance runner's valuation only).
 6. **One `lands_on(ms, f, keyword, foe)`** for the die, the resolver and the bot: gates, a Ward,
    a Numbed foe's stun, a committed or fresh foe's Disrupt and Lure (the die shows Lure and
    Disrupt live over a fresh foe today).
-7. **One arrival** that stands a foe, a pair or a massive foe and lands the slot's mines, in place
-   of six paths (`_place`, `_step_up`, the pair split, `_arrive_at`, the twin riser, the riser),
-   two of them setting the massive foe's back slot in different orders; and shots left in a slot
-   after its arrival falls go on to its twin, not stranded under it.
+7. **One arrival** that stands a foe, a pair or a massive foe, in place of the paths (`_place`,
+   `_step_up`, the pair split, the twin riser, the riser), two of them setting the massive foe's
+   back slot in different orders. *Its mine strand (`_arrive_at`, the slot's shots) went with the
+   slot mines, 9 November.*
 8. **One spend legality.** `can_assign`, `can_spend` and `_assign` check it three ways
    (`_assign` has no index bound, runs `charge_lands` twice, accepts a blank `can_assign`
    refuses); `_assign` spends a blank only so the screen can grey it.
@@ -311,9 +315,11 @@ balance runner's valuation only).
     `last_act_cost`, `blast_score`, the Paradox feed and the Cryo cash call them; the rolled
     outcome lists become one number.
 13. **The screen asks the engine.** Deaths and returns from `returned` (Bug 11) and `form_mark`
-    from the engine's `form_change` (Question 7), both done 8 November; left: a Sweep's rank from
-    `sweep_rank_of` (worked out by hand three times), the intent's value once (three times now),
-    the mine text from `_shot_text`.
+    from the engine's `form_change` (Question 7), both done 8 November; the mine text went with
+    the slot mines (`Skirmish.mine_text`). *Done 9 November:* a Sweep's rank from
+    `sweep_rank_of` at each of the screen's four reads, and the intent's number from
+    `Skirmish.intent_value` through one read for the field's chip and the readout's
+    (`_intent_read`).
 
 ## Unused (checked by grep across `sim/`, `game/`, `tools/` and `tests/`)
 
@@ -377,11 +383,11 @@ scheduled to regrow and then rise as well (no content pairs them).
 
 1. Ryan's calls on the eleven questions. *Done 8 November.*
 2. The bugs that take the rules as written (1-13), each with a test that fails first. *Done 8
-   November, the mine's waiting for the rework.*
+   November; the mine's went with the slot mines, 9 November.*
 3. Roots 1 and 3 together (one hit routine, its arguments), since Bugs 7 and 8 and Question 10
    live there; then Root 2's engine half (one round model, `_finish_round`). *Done 8 and 9
-   November but the mine's half, the rework's; nothing the engine plays changed, the Swap's
-   gauges alone (Bug 16).*
+   November, the mine's half going with the slot mines; nothing the engine plays changed, the
+   Swap's gauges alone (Bug 16).*
 4. The bot's mirrors onto the engine's helpers, then a 30-seed run read as a direction against
    the last, since the bot's valuations move.
 5. Statuses as data, the Face, the dead code and the comments, in one pass each.

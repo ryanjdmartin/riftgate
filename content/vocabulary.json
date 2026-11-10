@@ -601,22 +601,6 @@
    }
   },
   {
-   "id": "syrinx_drone",
-   "category": "status",
-   "name": "Syrinx Drone",
-   "codex": "Foe status, the Lammergeier's: the next weapon to kill it, any machine's, leaves its shot in the slot it empties, a mine. One mine a drone; it lasts the fight, and a death by a tick leaves nothing.",
-   "status": "implemented",
-   "design": {
-    "holes": "A status the team put on the foe, so the Paradox counts it.",
-    "table": {
-     "kind": "debuff",
-     "on": "foe",
-     "stacks": "Never: one drone at a time",
-     "lasts": "The fight, until a weapon kills it"
-    }
-   }
-  },
-  {
    "id": "overcharged",
    "category": "status",
    "name": "Empowered",
@@ -636,7 +620,7 @@
    "id": "sealed",
    "category": "status",
    "name": "Sealed",
-   "codex": "Ability, the Armadillo's form. A shield it spends on itself seals it: armour up by its Lockdown's number, its own cooling stopped, and it runs hotter at the end of each turn. A vent or a weapon opens it; a shield on an ally and equipment leave it as it is; an entry that cools and shields at once does the one its form calls for. An ally's vent still cools it. No Purge touches it.",
+   "codex": "Ability, the Polar Bear's form. A shield it spends on itself seals it: armour up by its Lockdown's number, its own cooling stopped, its Cryo Flinger gaining Spread, and it runs hotter at the end of each turn. A vent or a weapon opens it; a shield on an ally and equipment leave it as it is; an entry that cools and shields at once does the one its form calls for. An ally's vent still cools it. No Purge touches it.",
    "status": "implemented",
    "design": {
     "holes": "One chip, renewing, never stacking: the armour it grants is tied to the form. The numbers are placeholders.",
@@ -968,12 +952,18 @@
   },
   {
    "id": "mine",
-   "category": "formation",
+   "category": "status",
    "name": "Mine",
-   "codex": "A shot waiting in an empty slot of the enemy's formation: laid there by a machine whose weapons and equipment aimed at foes may also be spent on an empty slot (the Lammergeier's Fuse-delayed Bay), as if a foe stood there, or left by a kill on a foe carrying the Syrinx Drone. Its number is fixed when laid and its keywords ride in it; the shots in one slot stack. Whoever steps into the slot takes every shot waiting, in laid order, before it acts (a massive foe both slots'), through its own armour and statuses; every keyword acts as on a blow, and Lure and Disrupt do nothing, their round being over. Any way in sets it off, and nothing expires.",
+   "codex": "Foe status, the Lammergeier's: every weapon and equipment it aims at a foe adds its flat damage to a Mine on that foe, with what the spend fired at it: every hit's stacks and its other keywords, one Mine a foe however many spends feed it. When the foe falls, even one that gets back up or splits, the Mine blows: its damage on every foe round its slot, each through its own Flak and armour (none under Breach), then its keywords as on a blow. Spread, Penetrate, Splash, Spillover, Sweep's targeting and Lure stay with the spend, and its damage never grows with the spend's. The chip shows its damage; its readout, its keywords.",
    "status": "implemented",
    "design": {
-    "holes": "Any arrival sets it off at once: a Swap's foe, a split's half, a summon, a part grown back beside its core. Nothing steps in at the round's end since reinforcement inside a fight was cut (6 November), so a mine waits for one of those."
+    "holes": "Ryan, 9 November: \"the lammergeier basically converts all hits to AoE hits, at the cost of a delay until Death\". One Mine a spend at a flat 2 (\"then look at per hit later if it's weak\"); its riders the spend's whole result on the foe (\"the mine should take the entire result of the spend, then apply it. So a 3-hit flak that burns 1 per hit if the target is under 50% HP, would result in adding a 2 damage mine with 3 flak, and 0-3 burn\"), every hit's stacks as its machine deepened and doubled them and a gated keyword where its gate held (\"if a gate is met when fired only, then apply it\"); the numbered ones add up and the rest ride once; Chain rides as its arcs (Claude's lean, which he took); in the enemy's turn a Mine's Disrupt does nothing; a Suppress rides as fired, each foe the blast meets judging its own Numbed (Claude's read; Ryan: \"Your reads are correct\"). A mark the team laid: a Ward turns it away, a foe's cleanse takes it, the Paradox counts it. A foe taken into a merge hands its Mine to the merger.",
+    "table": {
+     "kind": "debuff",
+     "on": "foe",
+     "stacks": "Yes: its damage, every spend adding to it, one Mine a foe",
+     "lasts": "The fight, until the foe falls or the Syrinx Drone detonates it"
+    }
    }
   },
   {
@@ -1497,23 +1487,23 @@
    }
   },
   {
-   "id": "pull",
+   "id": "gather",
    "category": "component_property",
-   "name": "Pull",
-   "codex": "A rule printed on a component (the Lammergeier's Lorentz Contractor, a debuff): every mine on the field gathers into the slot it is spent on, in laid order, and a foe standing there takes them now. Spent on an empty slot, it gathers them there.",
+   "name": "Gather",
+   "codex": "A rule printed on a component (the Lammergeier's Lorentz Contractor, a debuff): every Mine the field's other foes carry joins the one its target carries, their damage added and their keywords as one.",
    "status": "implemented",
    "design": {
-    "holes": "Never Rapid, so a pull costs the turn and the laying is still chosen."
+    "holes": "Ryan, 9 November: \"moves all mines to a single target, and Exposes that target. The Expose rider will effectively create an AoE expose mine, which we can try and see if it's dangerous.\" Its Expose is its keyword, so the Mine it gathers carries Expose. A Ward on the target turns the gather away."
    }
   },
   {
-   "id": "drone",
+   "id": "detonate",
    "category": "component_property",
-   "name": "Drone",
-   "codex": "A rule printed on a component (the Lammergeier's Syrinx Drone, a debuff): the foe carries the Syrinx Drone. If it already carries Exposed, the spend is Rapid; otherwise it gives the foe Exposed, never refreshing it.",
+   "name": "Detonate",
+   "codex": "A rule printed on a component (the Lammergeier's Syrinx Drone, a weapon): after the spend's own Mine joins its target's, the target's Mine blows now, on it and every foe round its slot.",
    "status": "implemented",
    "design": {
-    "holes": "The condition is read before the drone lands, so its own Exposed never makes it Rapid."
+    "holes": "Ryan, 9 November: \"Deals a small amount of damage and detonates a foe's combined mine immediately ... The small chip damage makes it add a stack first. Try without a cooldown first.\" Its chip strike spends a Shock on the target, so a Shock doubles the chip, never the Mine."
    }
   },
   {
@@ -1693,7 +1683,7 @@
    "codex": "A blow a foe lands the moment it falls, shown on it by the skull and its number. It lands at once, before anything else, even when the foe was the last one standing, so shield up before the kill rather than after.",
    "status": "implemented",
    "design": {
-    "holes": "Content: on_death.blow, an attack's shape (name, factor, strikes, keywords), beside or instead of a split. The Behemoth's Meteor (30 October)."
+    "holes": "Content: on_death.blow, an attack's shape (name, factor, strikes, keywords), beside or instead of a split. The Gargantuan King's Meteor (30 October)."
    }
   },
   {
@@ -2020,7 +2010,7 @@
    "id": "ability",
    "category": "status",
    "name": "Ability",
-   "codex": "A unit's own mechanic, the rule it plays by: never a buff or a debuff, so no Purge, Silence or Cleanse touches it. Its chip shows its mark cut out of a solid tile: the Goblin Nob's Enrage, a core's guard, a Gel's split, a last act, the Thunder Ape's golden rage; the Armadillo's seal, the Honey Badger's Ore Plate, the Kite's Hot Streak.",
+   "codex": "A unit's own mechanic, the rule it plays by: never a buff or a debuff, so no Purge, Silence or Cleanse touches it. Its chip shows its mark cut out of a solid tile: the Goblin Nob's Enrage, a core's guard, a Gel's split, a last act, the Thunder Ape's golden rage; the Polar Bear's seal, the Honey Badger's Ore Plate, the Kite's Hot Streak.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 8 November, of the Nob's rage: \"Nob, and any other enemies with a passive ability, should have an unpurgable passive chip that points out what's going on. Plus, that's how slay the Spire works, where he comes from. It's not a Buff, it's not a Debuff, it's labelled as an Ability, so it doesn't get purged. Can use this for player units as well, like the armadillo's form. Golden rage should be an ability chip too.\" The tile is a placeholder look, to judge on the phone (RIFTGATE_ABILITY_DEBUG=1)."

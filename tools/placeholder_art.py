@@ -432,7 +432,7 @@ def fell_rider(d, w, h):
         d.rectangle((x, 84, x + 4, 94), fill=beast)
 
 
-def collector(d, w, h):
+def antiquarian(d, w, h):
     cloak, cage, light = (34, 30, 40, 255), (90, 90, 100, 255), (230, 240, 200, 255)
     d.polygon([(22, 94), (28, 30), (44, 30), (50, 94)], fill=cloak)
     d.rectangle((28, 10, 44, 32), fill=cage)
@@ -458,7 +458,7 @@ def wild_hunt_rider(d, w, h):
     d.ellipse((4, 80, 14, 90), fill=frost)
 
 
-def ravener(d, w, h):
+def world_eater(d, w, h):
     hide, belly, teeth = (56, 90, 50, 255), (120, 130, 90, 255), (240, 240, 230, 255)
     d.ellipse((14, 60, 80, 110), fill=hide)
     d.polygon([(14, 86), (0, 120), (26, 104)], fill=hide)   # the tail
@@ -473,7 +473,7 @@ def ravener(d, w, h):
     d.rectangle((56, 106, 68, 136), fill=hide)
 
 
-def shambler(d, w, h):
+def shuffler(d, w, h):
     flesh, dark, eye = (90, 50, 80, 255), (50, 26, 46, 255), (230, 220, 90, 255)
     d.ellipse((12, 50, 84, 126), fill=flesh)
     for x0, y0, x1, y1 in ((20, 110, 4, 140), (40, 118, 34, 142), (58, 118, 66, 142), (76, 110, 92, 140), (14, 70, 0, 56), (84, 70, 96, 54)):
@@ -483,7 +483,7 @@ def shambler(d, w, h):
         d.ellipse((cx - 2, cy - 2, cx + 2, cy + 2), fill=OUTLINE)
 
 
-def shambler_spawn(d, w, h):
+def shuffler_spawn(d, w, h):
     flesh, eye = (90, 50, 80, 255), (230, 220, 90, 255)
     d.ellipse((20, 44, 52, 76), fill=flesh)
     d.line((26, 72, 16, 90), fill=flesh, width=4)
@@ -554,7 +554,7 @@ def marsh_serpent(d, w, h):
     d.line((60, 56, 60, 70, 56, 76), fill=(220, 60, 60, 255), width=2)   # the tongue
 
 
-def king_scorpion(d, w, h):
+def emperor_scorpion(d, w, h):
     shell, dark, sting, sand, eye = (170, 130, 70, 255), (90, 60, 30, 255), (40, 30, 20, 255), (214, 190, 130, 255), (240, 60, 40, 255)
     d.ellipse((8, 120, 88, 142), fill=sand)                      # the dune it rises from
     d.ellipse((18, 84, 78, 126), fill=shell)                     # the body
@@ -646,7 +646,7 @@ def old_man_of_the_desert(d, w, h):
         d.polygon([(ox + px, oy + py), (ox - px, oy - py), (ix, iy)], fill=tooth)   # the ring of teeth
 
 
-def star_magician(d, w, h):
+def astromancer(d, w, h):
     robe, drobe, skin, staff, star = (40, 40, 110, 255), (25, 25, 70, 255), (220, 190, 160, 255), (160, 120, 60, 255), (255, 240, 120, 255)
     d.polygon([(26, 40), (46, 40), (54, 92), (18, 92)], fill=robe)           # the robe
     d.polygon([(30, 60), (42, 60), (46, 92), (26, 92)], fill=drobe)
@@ -713,21 +713,21 @@ FOES = {
     "rust_monster": (rust_monster, False),
     "skeleton_king": (skeleton_king, False),
     "fell_rider": (fell_rider, False),
-    "collector": (collector, False),
+    "antiquarian": (antiquarian, False),
     "wild_hunt_rider": (wild_hunt_rider, False),
-    "ravener": (ravener, True),
-    "shambler": (shambler, True),
-    "shambler_spawn": (shambler_spawn, False),
+    "world_eater": (world_eater, True),
+    "shuffler": (shuffler, True),
+    "shuffler_spawn": (shuffler_spawn, False),
     "enkidu": (enkidu, False),
     "goblin_nob": (goblin_nob, False),
     "mantis_ant": (mantis_ant, True),
     "marsh_serpent": (marsh_serpent, True),
-    "king_scorpion": (king_scorpion, True),
+    "emperor_scorpion": (emperor_scorpion, True),
     "goblin_shaman": (goblin_shaman, False),
     "elder_treant": (elder_treant, True),
     "leshy": (leshy, False),
     "old_man_of_the_desert": (old_man_of_the_desert, True),
-    "star_magician": (star_magician, False),
+    "astromancer": (astromancer, False),
     "warding_orb": (warding_orb, False),
     "storm_orb": (storm_orb, False),
     "mending_orb": (mending_orb, False),

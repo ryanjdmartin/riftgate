@@ -115,7 +115,7 @@ does not; Misharu's own shield counts; no Misharu, no payoff; a multi-strike foe
 counting it. The draft's "a blocked break and a breached break both convict" and "Numbed
 resisting" belong to the old shield rule and the suppress.
 
-**What the runner should read**: the boss cells (the Treant, the Sandworm, the Bone Dragon, the
+**What the runner should read**: the boss cells (the Treant, the Sandworm, the Bone Wyvern, the
 Magma Elemental), the Peak's cells, team rows beside shielders, and how often shield entries are
 spent on Misharu's team; the analysis (section 4) reads Misharu beside the Puffin first.
 
@@ -146,7 +146,7 @@ He has answered none of it. Nothing landed on main since has changed Misharu.
 
 **Found in the content (15 October).** A breach never breaks a shield: under the shield rule
 the shield stands and the whole blow passes it. The breaching blows are the Sandworm's Swallow
-and the Magma Golem's Slag Fist (40 each; the Waste's and the Peak's bosses in content, elites
+and the Magma Elemental's Slag Fist (40 each; the Waste's and the Peak's bosses in content, elites
 once the slate lands), every Needler's, the Black Mage's Flare, the Lancer's Jump and Dragon
 Dive, and the Bomb's self-destruct. As written, Misharu never sentences the heaviest single
 blows of two domains of four, which is Ryan's boss hole from the other side.
@@ -218,7 +218,7 @@ items 1 and 2 to him first.
 5. The edges (the round's list above), with Penance and a countdown unexamined.
 6. What Misharu answers: the breach hole closes only by a Ward, the Pavise's or a carrier the
    stock pass places; without one it answers the blows that do not breach (the Treant's and
-   the Bone Dragon's among the bosses) and never the Waste's or the Peak's biggest.
+   the Bone Wyvern's among the bosses) and never the Waste's or the Peak's biggest.
 
 ## Holes already raised
 

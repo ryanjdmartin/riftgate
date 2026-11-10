@@ -5,6 +5,11 @@ extends RefCounted
 
 var failures: Array[String] = []
 var checks: int = 0
+## How many script errors the test means to raise. The runner fails a test for every script error
+## the engine logs while it runs (a crash aborts its function and the caller plays on, so a
+## crashed test read as passed); a test of that check itself says how many it raises, and fails on
+## any other count. The runner clears it before each test.
+var script_errors_expected: int = 0
 
 
 func assert_true(cond: bool, msg: String) -> void:

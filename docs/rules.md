@@ -108,8 +108,10 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
    the next. UNDO takes back the last spend or reroll, in the order made, back to the last
    roll, its floor: the round's roll, a reroll that draws, or a spend that draws inside itself
    (Rapid's reroll, a roll again, the Scorpion's blast); a stepping die's step draws nothing,
-   so it is taken back like a spend. The trail shows a bar at every roll, and UNDO's badge
-   says how many spends it reaches. END TURN pulses once no
+   so it is taken back like a spend. The trail shows a bar at every roll, every line of it at
+   full strength, and UNDO's badge says how many spends it reaches; UNDO opens once a spend's
+   last blow has played. END TURN sits bottom-left and UNDO bottom-right, and UNDO reads on or
+   off by its edge, a heavy solid one or a faint dashed one. END TURN pulses once no
    die has anywhere to be spent, rerolls aside.
 4. END TURN: a machine's Burning adds its heat and loses a stack, and its Scorched goes;
    then heat over a machine's maximum burns hull one for one and the gauge settles at the
@@ -205,8 +207,8 @@ every machine is wrecked. There is no round limit.
   nothing is cleared until the shots are done; a massive foe fills both slots of its column, so
   either rank's shot there hits it; a Gel's pair takes a shot for each half, a spot each, as if
   it were another column. The spots are queued as the spend begins, each column at least once,
-  so a half that fell before the spend leaves none. A Sweep carries no Swap, drone or pull, each
-  of them acting on one foe or slot. Each shot is aimed at its column's foe and is a hit of its own (A spend's
+  so a half that fell before the spend leaves none. A Sweep carries no Swap, detonation or
+  gather, each of them acting on one foe. Each shot is aimed at its column's foe and is a hit of its own (A spend's
   order, below), and an area keyword's shape rides each. The die shows a shot's number, and
   dragged over a foe it lights that foe's rank whole and brackets it. The Skua's Flechette
   Pod, and the Musk Ox's salvo an ammo a shot.
@@ -221,21 +223,6 @@ every machine is wrecked. There is no round limit.
   stands once the spend is done (A spend's order, below), and otherwise the hole stays open:
   nothing steps into it after but a split's half, a summon, a part that grows back or a
   Swap's foe.
-- **A mine** (the Lammergeier's Fuse-delayed Bay, its passive; held as it stands for the
-  Lammergeier's rework, since the step that fed it is gone and a mine now waits for a Swap, a
-  split, a summon or a regrowth to step in): every weapon and equipment it
-  aims at a foe may also be spent on an empty slot in the enemy's formation as if a foe stood there (Direct a front slot, or a back slot whose
-  front is empty; Indirect any); a Swap and the Syrinx Drone take a foe, a slot holding none
-  to move or carry it. The shot waits there, its number as modified when laid
-  (each strike a shot), with its keywords, behind what already waits; its heat lands now.
-  Whoever steps in (a Swap's foe, a split's half, a summon, a part that grows back beside its
-  core) takes every shot waiting, in laid order, before it acts, and a massive arrival takes both
-  slots'; shots still waiting when it falls wait on for the next. Any way in sets them off at
-  once. Every keyword acts as the shot lands, as on a blow:
-  a stun takes the arrival's first action, and a Chain mine arcs its number as laid to every
-  other Shocked foe on the field as it lands; Lure and
-  Disrupt do nothing, their round being over, and Rapid and Volatile acted at the spend.
-  Nothing expires.
 
 ### A blow
 Every foe a strike reaches takes a blow of its own, read in one order:
@@ -268,14 +255,14 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   bring back. A multi-target weapon (Sweep alone) fires each shot in turn (its column's foe,
   its hit, its riders), then the death check once every shot is done; then the spend ends,
   then the returns. Everything a hit does lands before the death check, on a foe it fells
-  too (its riders, a Shock, an Expose, a Lure's turn, a Swap, a drone, a pull, the zap after
-  the strikes), so the
+  too (its riders, a Mine, a Shock, an Expose, a Lure's turn, a Swap, a gather, a detonation,
+  the zap after the strikes), so the
   preview shows the chips beside the skull and no trigger goes unfired; a spend that asks
   whether it killed (a kill trigger, the talons, the reset gun) reads its own death check. The death check
   clears a kill's slot; a foe getting back up and a split's arrivals stand only once the spend
   is done, in the slot their unit died in, wherever a Swap moved it, so nothing the spend does meets them, and the preview shows a foe that will get back
-  up or split with its return's chip in the skull's place. What a foe's tick or a mine fells
-  comes back at once. The prediction runs in phases: a foe its Burning will kill before it
+  up or split with its return's chip in the skull's place. What a foe's tick fells comes back
+  at once, once the Mines its falls set off have blown. The prediction runs in phases: a foe its Burning will kill before it
   acts keeps its intent shown, information whether its blow lands or not, and its blow is left
   out. The enemy's turn is sequenced as it happens: a foe its tick kills never strikes, and a
   wreck takes no more strikes. Its death check runs as each foe's action is done, and at once
@@ -290,9 +277,32 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - Every blow of a strike is read before any of them lands. A foe's own reads (the hull it is
   missing, the stacks it carries) are taken as its hit judges them: a single-target weapon's
   as the die is spent, before any strike lands; a Sweep's at each shot.
-- A mine carries its numbers as laid: its own on the foe it lands on and its area's on every
-  other foe its keywords reach there, each through its spender's modifiers when it was laid
-  with no foe in hand, then each foe's own as it lands.
+- **A Mine** (the Lammergeier's Reverberant Payload, its passive): every weapon and equipment it
+  aims at a foe leaves a Mine on that foe as a rider, before the death check, one a spend
+  whatever its strikes (a Sweep's and a salvo's on the foe the die is dropped on): the passive's
+  flat damage, 2, plain, and the spend's whole result on that foe, joining any Mine the foe
+  carries, one Mine a foe: every status's stacks the hits aimed at it fired (each hit's, as its
+  machine deepened and doubled them, a Primed machine's Burning and a passive's lays among them,
+  a condition read as the die was spent), its Purge and Chain at every hit's number, the rest
+  once each (Shock, Suppress, Web, Expose, Breach, Disrupt), a gated keyword where its gate held.
+  The numbered ones add up across the spends that feed it. Spread, Penetrate, Splash and
+  Spillover, the Swap, Rapid and Lure stay with the spend, and what a hit reads off its foe for
+  damage (missing hull, a consumer's stacks) means nothing to a flat Mine; each foe its blast
+  meets takes it with its own defences (a Ward, its Numbed). When the foe falls, one
+  that gets back up or splits included, a tick's fall and a part's too, the Mine blows once the
+  death check has cleared the slots and before what the falls bring back stands: one blow of
+  its damage on every foe round its slot (the slot's other half, the foes beside it in its rank
+  and the other rank of its column; a massive foe's, the front-rank foes in the columns either
+  side), each through its own Flak, a Barrier and its armour, none under Breach, aimed at nobody
+  so a Shock neither doubles it nor is spent; Chain's number on every other Shocked foe on the
+  field; then its keywords on each foe it met, felled or not, as a hit's riders land, Shock and
+  Expose after its blow, Disrupt only in the player's turn. Several Mines due at one death check
+  blow in strike order, front left to right, then the back, and a blast that fells a mined foe
+  blows that one's Mine in turn. A blast set off in a spend is part of it, so what its falls
+  bring back stands once the spend is done. A Mine moves with its foe (a Swap) and goes into a
+  merger with the foe a merge takes in; it is a mark the team laid, so a Ward turns it away, a
+  foe's cleanse takes it and the Paradox counts it. Its chip shows its damage, its readout its
+  keywords.
 - Strikes are separate blows; each lands the number and carries the keywords. Heat is paid once a spend.
   A split weapon (the Skua's) hits twice as often, or fires twice the shots for a Sweep, each
   hit's base (its number and what it prints from its firer) halved before the attacker's
@@ -315,8 +325,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   its arrow on it, the way it moved: each number on its own, so a split weapon's smaller blow
   and its extra strike each say so. No source is listed. A tap on it again closes it, and it
   is one readout with the units' (below): a tap on another die or a unit moves it. A die's tap
-  lands once the double-tap window (0.2 s) has passed with no second tap, the die lit from the
-  touch until it does, so a double-tap only locks and leaves the readouts as they stand; a tap
+  lands once the double-tap window (0.15 s, from the tap's release to a second touch) has passed
+  with no second touch, the die lit from the touch until it does, so a double-tap only locks and
+  leaves the readouts as they stand; a tap
   that lands as the enemy's turn replays, or under a codex, opens nothing. The whole die is in
   the codex (double-tap the machine). **The keywords list**, in the pause menu, gives every reach, keyword, rule and status the dice and chips print, and the keywords
   a foe's move carries (Every Machine, Countdown, Last Act and the rest), with its codex line. Wherever shown text names one of those terms (the holds, the readouts, the codex, the
@@ -327,7 +338,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   violet for what only a foe does, the red-red for harm (Exposed, a destroyed component), the
   hull's colour for a price in hull, and ink for a shape, a reach or a rule; never the HUD
   colour.
-  A piece that changes its machine's form wears that form's chip: on the Armadillo, a shield it
+  A piece that changes its machine's form wears that form's chip: on the Polar Bear, a shield it
   may spend on itself the seal's while its shell is open, and a weapon or a vent the opening's
   while it is sealed; the sealed machine wears a shell round it, a burst as it seals or opens.
   A vent on a machine whose vents blast shows the blast beside it (its mark and the blow the
@@ -342,8 +353,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   its gauges with their numbers (a machine's shield, hull and heat, and its magazine if it
   has one; a foe's HP), a maximum something moved off its own coloured with its arrow; its
   armour and cooling (a foe's armour and attack) as the codex's stats, the base with the change
-  beside it ("Armour 2 (+1▲)"); every chip on it by its name and count, what it does a tap on its
-  term away, and the round's warnings (an overheat, a wreck, an injury's risk); then a foe's intent
+  beside it ("Armour 2 (+1▲)"); every chip on it by its name and count, a buff's and a debuff's
+  headed by the word ("Buff, Empowered +2", "Debuff, Burning ×2") as an Ability's is, what it does
+  a tap on its term away, and the round's warnings (an overheat, a wreck, an injury's risk); then a foe's intent
   under its chip as the field draws it, a line a mark: its move's name,
   its blow as it will land read against its own, the machine it is aimed at by name, when it
   lands, its riders and its text. The colours are the unit's, so a foe hitting harder is green
@@ -427,7 +439,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - **Lure**: every foe reached turns on the spender for the round, a felled one too. The Whip
   Scorpion's Siphon lures Every Foe, and every blow a foe lands on it that round adds 2 heat
   to it (Siphoning), in the enemy's turn, after the overheat.
-- **Expose** (the Needletail's Fovea Designator, the Swallowtail's Spotting Flare): every foe reached
+- **Expose** (the Needletail's Fovea Designator, the Swallowtail's Spotting Flare, the Lammergeier's Lorentz Contractor): every foe reached
   is Exposed through the next round, a felled one too; a second Expose refreshes it, never
   adds.
 - **Disrupt**: every foe reached (by each shot of a Sweep that meets it, so two shots turn a
@@ -440,13 +452,13 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   Undying, Primed, Barrier, Regenerating, Numbed; an unstackable buff is one stack; its
   Abilities, a core's guard and a golden rage among them, are no buffs and stay), after
   the blow and with the riders, a debuff's included, so a foe the blow kills stays down and a
-  Barrier the blow pops is gone already; a Ward turns it away and stands; a laid shot purges the
-  foe it lands on.
+  Barrier the blow pops is gone already; a Ward turns it away and stands; a Mine's purges every
+  foe its blast meets.
 - **Rapid** (any component): the die rerolls free onto any other entry, a copy of the same
   component included, and the machine acts again, so copies of one Rapid component chain.
   Rapid carries no cooldown of its own: a Rapid component prints its cooldown (most print one,
   dark for the rest of the round), shown on the die by its clock like any cooldown, or pays
-  heat, hull or shield every spend (the Cryo Flinger, 1 heat). A Rapid component always
+  heat, hull or shield every spend instead. A Rapid component always
   carries a limiter, a cooldown, heat or a cost; a piece locked on a stepping die (the
   Cassowary's Spin-Up) needs none: its spin
   is a true roll over every chamber, so it lands on itself one time in six, to be spent again,
@@ -471,8 +483,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   another foe or an empty slot, and they trade places; no damage; a massive foe does not move.
   A Swap lands in the rider phase, before the death check, like every rider: one whose spend
   fells its first target moves the corpse, which dies in the slot it was moved to and gets back
-  up or splits there; a corpse moved onto a mine sets off nothing, the shots waiting for the
-  next arrival.
+  up or splits there. A Mine moves with its foe.
   A foe keeps its pick and its move, from the rank it now stands in (a back foe pulled into the
   front stands exposed to Direct fire). On the screen: drag the die to the first target and
   drop it; the second targets light; tap one to spend it; a tap or a hold on the die reads it; drag the die
@@ -508,12 +519,12 @@ Coriolis Accelerator: +1 per 5). **Gated**: a keyword printed with a condition o
 Flak, or on a foe carrying two Burning or more) lands only on a foe that meets it, judged as its
 hit is (as the die is spent, a Sweep's at each shot) and before the hit's own riders, so a hit
 never opens its own gate; the die
-held over a foe strikes the chip where it will not land; a mine laid from it is judged as it
-lands. Suppress alone carries a gate. **Consumes**: the first blow on each foe it strikes eats every stack of the status
+held over a foe strikes the chip where it will not land; a Mine its spend leaves carries the
+keyword only where the gate held. Suppress alone carries a gate. **Consumes**: the first blow on each foe it strikes eats every stack of the status
 the entry names on that foe and deals it a point more a stack eaten, after the attacker's
 modifiers and before the foe's own, so an area consumer spikes only the foes carrying the status; the die over the foe
-showing the number with the stacks in; one blow on each foe (no strikes past one); a mine laid
-from it eats each foe's own as it lands. The Suppression Battery's Suppress is
+showing the number with the stacks in; one blow on each foe (no strikes past one); a Mine eats
+nothing. The Suppression Battery's Suppress is
 gated on Flak, and the Backdraft Charge consumes Burning, its Suppress gated at two.
 **Burns its firer** (the Stoker's): spending it sets its own machine Burning, the stacks it
 prints, after the blow; the round preview with the die in hand counts the first tick with the turn's heat.
@@ -526,11 +537,14 @@ spending it Armours its owner, the stacks it says, an armour point each, until t
 end (the Wild Boar's Breaching Plow, two). **Rolls again** (the Nemesis's Knuckle of Fury, on rage): spending it
 with a stack of its status spends one, and the die rolls again, a plain roll as the round
 opens, so the machine acts again and the same entry may show again; nothing switches off,
-the stacks being the limit, and the fight's last blow rolls nothing. **The pull** (the
-Lammergeier's Lorentz Contractor): every mine on the field gathers into the slot it is spent on, and a foe
-standing there takes them now, in laid order; spent on an empty slot, it gathers them there. **The drone**
-(the Lammergeier's Syrinx Drone): the foe carries the Syrinx Drone; if it already carries Exposed (read
-before the drone lands) the drone is Rapid, and otherwise it gives the foe Exposed, never refreshing it. **The Immelmann Booster** (the Giant Petrel's, Rapid):
+the stacks being the limit, and the fight's last blow rolls nothing. **The gather** (the
+Lammergeier's Lorentz Contractor, a debuff with Expose): every Mine the field's other foes carry
+joins its target's, their damage added and their keywords as one, in the rider phase after the
+spend's own Mine joined it; a Ward on the target turns the gather away, the Mines staying where
+they lay. **The detonation** (the Lammergeier's Syrinx Drone, a weapon of 1, no cooldown): in
+the rider phase, after the spend's own Mine joined its target's, the target's Mine blows now on
+it and every foe round its slot as a fall's does (A Mine, above), and is spent, so a target the
+drone fells blows nothing more; its strike spends a Shock on the target, never the Mine. **The Immelmann Booster** (the Giant Petrel's, Rapid):
 spent on itself, the team gains a reroll (Rallied); spent on an ally whose die is spent, which
 it may land on only while the team holds the price, three rerolls are paid, banked or fresh,
 and the ally's die rolls again by Rapid's path, never onto the entry it showed, and it acts
@@ -556,10 +570,17 @@ unit's own mechanic, the rule it plays by, and never a buff or a debuff, so no P
 or Cleanse touches it; its chip shows its mark cut out of a solid tile, ahead of the unit's
 other chips, and its hold line names it an Ability and says what goes on. A foe's: the Goblin
 Nob's Enrage, a core's guard (Guarded), a Gel's split, a last act, a golden rage while it
-lasts. A machine's: the Armadillo's seal (its form), the Ore Plate (what the hopper's loads
+lasts. A machine's: the Polar Bear's seal (its form), the Ore Plate (what the hopper's loads
 are worth) and the Kite's Hot Streak. What an ability or a passive grants beyond itself is a
 buff like any (the Nob's gathered Enraged, a module's Empowered or Armoured): a stack is a
 stack, whatever granted it.
+
+Every status on a unit says what it is, wherever it shows: a **buff**, which a Purge reaches,
+wears a wedge pointing up off its chip's top at the left, and its hold line begins "Buff"; a
+**debuff**, laid by the other side, wears a wedge pointing down off its chip's bottom at the
+right, and its line begins "Debuff"; an Ability its solid tile and "Ability". A term's tip heads a
+status by what it is, and the keywords list files the statuses under BUFFS, DEBUFFS and
+ABILITIES.
 
 On a machine:
 - **Empowered** (buff): +1 damage a stack, so the count is the bonus. At the end of each
@@ -607,7 +628,7 @@ On a machine:
 - **Charged** (buff): while it lasts the machine's weapons fire with Shock, shown on the die
   and landing as the keyword does, after the blows; a weapon fired spends a stack (a Rapid's
   second fire is a second fire, a salvo one, a blast none; equipment carries it not and spends
-  nothing); a laid shot spends the stack as it is laid and carries the Shock.
+  nothing); a Mine the fire leaves carries the Shock.
 - **Supercooled** (buff): the same with Cryo, one more stack a strike on each foe hit (Cryo 1
   on a gun without it), laid after the hits.
 - **Spun Up** (buff): the next weapon the machine spends deals +2 a stack and takes every
@@ -630,7 +651,7 @@ On a machine:
   absorbs a breach like any blow; a blow's damage lands. Until the round's end. The Decoherence
   Veil grants it, self or ally. A foe's, from a special that wards every foe on the field: no mark
   the team lays lands on it (Burning, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox,
-  the Syrinx Drone), nor a stun, nor a Purge, so a turned mark feeds no Paradox; the damage
+  a Mine), nor a stun, nor a Purge, so a turned mark feeds no Paradox; the damage
   lands; until the end of the player's next turn. On either side a Ward turns the whole thing
   and stands.
 - **Rage** (store, the Nemesis's): a stack each time it takes hull damage (a blow, a bite
@@ -640,15 +661,18 @@ On a machine:
 - **Hopper** (store, the Honey Badger's): its Ore Hopper puts a load in for each foe a spend
   of its weapons damages, after the blow (a weapon that prints its own number puts that in
   instead), up to four, and every two loads held stand as a point of Ore Plate; a weapon that fires
-  the hopper spends them. A mine laid with the loads' bonus loads nothing when it goes off
-  later. It lasts the skirmish, never decays, nothing cleanses it, and it shows as four boxes
+  the hopper spends them; a Mine's blast fills none. It lasts the skirmish, never decays, nothing cleanses it, and it shows as four boxes
   under the heat, one lit a load.
-- **Sealed** (Ability, the Armadillo's form): a shield it spends on itself seals it: armour +3,
-  its own cooling stopped, 3 heat more at the end of each turn before the overheat; a vent or
-  a weapon opens it; a shield on an ally and equipment leave the form as it is. An entry that
+- **Sealed** (Ability, the Polar Bear's form): a shield it spends on itself seals it: armour +3,
+  its own cooling stopped, 3 heat more at the end of each turn before the overheat, and its Cryo
+  Flinger gains Spread (one foe open, its rank's three sealed); a vent or a weapon opens it; a
+  shield on an ally and equipment leave the form as it is. An entry that
   is a shield and a vent at once (a vent that shields, a shield that cools) does the one the
   form calls for, never both: spent on itself it seals an open machine and opens a sealed one;
   on an ally its vent opens it. An ally's vent still cools it. One seal, however many shields.
+  Its Lockdown also lands its weapons 1 harder on a foe carrying Cryo, open or sealed, read as
+  each strike lands: the strike that meets the stacks takes the 1 and its hit spends them, so a
+  later strike of the same spend lands plain.
 - **Burning** (debuff, from a foe's burn; a foe's Burning below is the same word on the
   other body): +1 heat a stack at the end of the player's turn, before the overheat, then a
   stack fades, so a vent makes room for it or a cleanse takes it off. Cleansable.
@@ -682,16 +706,14 @@ On a foe:
   stun resist in Numbed, after the round's decay.
 - **Shocked** (debuff): when a weapon's strike aimed at it lands, the blow deals double and the
   shock is spent. A strike is aimed at the foe it resolves on: the player's pick, or the draw of
-  a vent's blast, a sweep's shot or a mine's arrival, which the game targets
-  rather than the player. A blow that only reaches it (an area's, a Chain's arc, a spill)
-  neither doubles nor spends it, and equipment leaves it standing; it never stacks.
+  a vent's blast or a sweep's shot, which the game targets rather than the player. A blow that
+  only reaches it (an area's, a Chain's arc, a spill, a Mine's blast) neither doubles nor spends it, and equipment leaves it standing; it never stacks.
 - **Exposed** (debuff): it stands in Direct reach of every machine as if its
   column's front were empty, and its armour counts for nothing, its own and any Armoured.
   Through the next round; refreshed, never added.
-- **Syrinx Drone** (debuff, the name of the Lammergeier's piece that leaves it): the next weapon to kill it, any
-  machine's, leaves its killing shot as a mine in the slot it dies in, as the death check clears
-  it, a slot a Swap moved it to included; one mine a drone; it lasts the skirmish, and a death by
-  a tick leaves nothing.
+- **Mine** (debuff, the Lammergeier's): its damage, the spends that fed it added, and their
+  keywords, one Mine a foe; when the foe falls it blows on every foe round its slot (A Mine,
+  under A blow). It lasts the skirmish, until its foe falls or the Syrinx Drone detonates it.
 - **Paradox** (debuff, while the Baboon fights): a stack each time the foe gains any other
   debuff, once a hit per debuff however many strikes or stacks (a single-target weapon's hits
   are one, a Sweep's shots each their own); at three it is Suppressed
@@ -744,8 +766,8 @@ On a foe:
   condition: not gold), so one rage at a time.
 - **Undying** (buff, Reraise, on itself or from an ally's): after it falls it gets
   back up once, whole, in its own slot, unless it self-destructed: once the spend that felled
-  it is done, or at once to a tick or a mine; its round is over, as a split's half's is, and it
-  takes a mine its fall left there. A Purge on the hit that fells it strips it first.
+  it is done, or at once to a tick; its round is over, as a split's half's is, and it comes back
+  with no Mine. A Purge on the hit that fells it strips it first.
 - **Numbed** (buff): the rounds until one stun lands. A stun on a Numbed foe strips a stack and
   lands nothing, so a foe with Numbed N takes N+1 stuns in a round. As a stunned foe recovers it
   gains its stun resist in stacks (content's `resist`; by its kind when content says none: 1, a
@@ -754,7 +776,7 @@ On a foe:
   nothing deepens, spreads or cleanses it, and a fresh foe is stunned by one.
 
 "A foe carrying a status" (the Susceptibility Tensor) means a debuff the team put on it:
-Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or the Syrinx Drone.
+Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or a Mine.
 
 ### Shields, armour, hull
 - A shield absorbs a blow up to its number and loses what it absorbed; the excess reaches
@@ -763,9 +785,10 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
 - A machine's armour comes off every blow that reaches its hull, flat, what passes a shield
   included, never a breach; a blow at or under the armour is nothing; a shield takes no armour
   off. A foe's armour comes off every blow on it the same way, never off Burning, Vitriol or a
-  breaching weapon. Base armour is set by role (a tank 2, a heavy worker 1, the rest 0), and
+  breaching weapon. Base armour is set by role (a tank 2, a heavy worker 1, the rest 0; the
+  Polar Bear, a tank in its sealed form, 1 open and 4 sealed), and
   Armoured adds to it (a brace: a buff, the Breaching Plow, the Siphon) until the
-  round's end, the Armadillo's seal until a vent or a weapon opens it.
+  round's end, the Polar Bear's seal until a vent or a weapon opens it.
   Damage-taken effects apply before armour.
 - The shield is the fight's, as the heat is: full as every fight opens, and nothing returns on
   the map. In a fight it comes from components, modules, passives and the shield regen. Hull
@@ -898,7 +921,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   disable, silence (Silenced), purge (Purge N: N stacks off every buff, for good, whatever
   granted it; the Djinn's Unmake at 1; never a last act's), cleanse
   (every mark the team laid, Burning, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox
-  and the Drone, off the most-marked of its own, itself included, the first in strike order on
+  and a Mine, off the most-marked of its own, itself included, the first in strike order on
   a tie; never Numbed, never Suppressed; cast where one of its own carries a mark), barrier (a
   Barrier on itself), regenerate (Regenerating at its value on itself), ward all (a Ward on
   every foe on the field, itself included), prime (Primed at its value on every other foe on the
@@ -927,18 +950,18 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   alone: its countdown gathers, a special on its own side acts, and the turn goes on to the foes
   after it.
 - **A split** (the Gel): a dead Gel splits into two Half-Gels (one deep) once the spend that
-  felled it is done, or at once to a tick or a mine, standing as a
+  felled it is done, or at once to a tick, standing as a
   pair in the slot it fell from: a twin slot, one slot to the formation, so its hole never
   opens (the Gel is a wall, not an attacker, and its blow carries no breach). An area blow
-  that reaches the slot (Spread, Penetrate, Splash, a mine's) reaches both halves, aimed at one
+  that reaches the slot (Spread, Penetrate, Splash, a Mine's blast) reaches both halves, aimed at one
   of them or beside, each half taking the number of the shape it stands in (the aimed half's
   twin the row's, or the column's when the entry reaches no row); a single-target blow, a Spillover included, the one it is spent on. The slot is
-  full while either stands: no mine is laid in it, and a Syrinx Drone on a half that falls
-  while its twin stands leaves none. The left half acts first; a web on it catches its twin; a
+  full while either stands, and a half's Mine blows on its twin as on the foes round the slot.
+  The left half acts first; a web on it catches its twin; a
   Swap moves the pair together and never swaps a half with its twin. When one falls the other
   keeps the slot alone, still drawn on its own half of it, and with both gone it is a plain slot: the pair is only ever its
-  split's, so no half joins another's slot. A mine waiting in the slot goes off on the pair
-  as they step up. Their round is over: no intent, no Lure or Disrupt turns them, a stun takes
+  split's, so no half joins another's slot. A Mine the Gel carried blows before the pair stands,
+  so they take none of it. Their round is over: no intent, no Lure or Disrupt turns them, a stun takes
   their next action, and they act from the next round. A split that is no pair (none in
   content) steps up one into the slot and the rest into the nearest empty slots of their rank;
   one with no room never forms.
@@ -946,8 +969,8 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or t
   left on a tie, its round over like a split's half's; a call for several stands as many as fit,
   and a summoner with room for none never picks the summon.
 - **A corpse**: a part that falls and will grow back leaves its corpse in its slot, drawn dimmed
-  with the rounds until it regrows, and grows back there; no Swap, mine or arrival takes the
-  slot meanwhile. A part with no corpse to grow into takes the nearest empty slot of its rank,
+  with the rounds until it regrows, and grows back there; no Swap or arrival takes the slot
+  meanwhile. A part with no corpse to grow into takes the nearest empty slot of its rank,
   or waits for one. The corpses go with their core.
 
 ### Withdrawal
@@ -1000,8 +1023,8 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   it is dragged to. The Whip Scorpion's makes every vent it spends on itself blast a random
   live foe, back rank included, for the heat it took off: a weapon's hit, flat and Indirect,
   that does everything a weapon's hit does (the machine's adds, the foe's Flak, a Shock spent,
-  its Cryo cashed for the machine's cooling, its armour, a Primed machine's Burning, a drone's
-  mine, the machine's kill trigger), inside the vent's spend, whose heat is paid once (a vent on an ally blasts nothing,
+  its Cryo cashed for the machine's cooling, its armour, a Primed machine's Burning, the
+  machine's kill trigger), inside the vent's spend, whose heat is paid once (a vent on an ally blasts nothing,
   an ally's vent on it blasts nothing, a vent with no heat to take off blasts nothing).
 
 ### Every number is a question
@@ -1028,7 +1051,15 @@ a stat.
   too. The map is a view the player turns (MAP VIEW in the settings): the wall at the left with
   the rift at the right, flat-top hexes, scrolled down the wall (the default); or the wall at the
   bottom with the rift at the top, pointy-top, scrolled along the wall. The field and every rule
-  are the same in both. A pack, a machine or a tear past the screen's edge has a tag at that edge.
+  are the same in both. With the wall at the bottom the wall and the gate stand on the last row
+  and their height covers the row before it; with the wall at the left they stand on that row,
+  against the apron, the last row behind them the city's, and the rift's vortex stands on the
+  lowest of its three hexes. A pack, a machine or a tear past the screen's edge has a tag at that
+  edge. Three gauges stand at the top of the screen whatever the scroll: the gate's integrity,
+  Rift Pressure toward the next spawn (a box a turn of the beat) and the Rupture meter toward its
+  Fractures (a notch a Fracture, those earned lit); the gate and the rift carry no bar on the map
+  and are no selection. A gauge that changes flashes. The boss's picture stands far larger than
+  a pack's.
 - **Ground**: open (plain or road), rough, ruins, water, and walls, a wall named by what it is
   (crags, mesas, towers or cliffs) with one rule under every name. Six map shapes, one a
   battle, each with its own water, walls, decorative ground and relief, laid to fill the open
@@ -1085,9 +1116,13 @@ a stat.
   intended for; and every hunter coming for a machine wears its ring round where its coming walk
   ends, where its catch is judged (round where it stands while a catch it made waits), a dashed
   violet edge, tinted under a solid one while the hunter is tapped or its catch waits; no other
-  pack's ring is drawn. Each machine has one action (the Dingo two): one move,
-  in one go, then it may fight; a fight ends the action however it ends, and a pip under the
-  machine stays lit until it does. A selected machine lights the hexes its move reaches and
+  pack's ring is drawn. Every walk's end hex is lit, tinted under a solid edge. A tapped pack
+  shows its whole way as the field stands, past this turn's walk to its goal (a pusher's wall
+  segment, a hunter's place beside what it comes for), dashed, each later turn's stop numbered,
+  the goal marked and a hunter's pounce dotted on to its prey; a selected machine shows the whole
+  way of every hunter coming for it. Each machine has one action (the Dingo two): one move,
+  in one go, then it may fight; a fight ends the action however it ends, and the board under the
+  map says what each can still do. A selected machine lights the hexes its move reaches and
   brackets the packs it could be ordered onto. A move is planned: its route shows from where the
   machine stands, and the next move or order reads from the route's end. The one button reads
   ENGAGE while a fight is ready (a catch, or a machine ordered onto a pack), ENGAGE 1 OF N while
@@ -1103,12 +1138,13 @@ a stat.
   Pressure rises one. Nothing returns on the map: the shield is full as every fight opens. Once every
   machine has fought, is ordered, is caught, or can neither move nor reach a pack where it
   stands, the button pulses, whichever it reads.
-- **The readout**: holding or tapping a machine, a pack, the boss, the gate or the ground shows
+- **The readout**: holding or tapping a machine, a pack, the boss or the ground shows
   it in the strip under the map, as the fight's holds read: a machine's hull as a gauge (its
   shield is the fight's), its move and actions left, a chip for its damaged components; a pack's
   threat rating first ("A fight for three"), then its members (each foe type and its count),
-  move, a hunter's ring, and what it is doing, and SEALED on the boss while its seal
-  holds; the gate's integrity as its gauge; the ground by
+  move, a hunter's ring, what it is doing, and when its whole way gets there as the field stands
+  (at the wall, or catching what it comes for, this turn or in so many), and SEALED on the boss
+  while its seal holds; the ground by
   its name (a wall by what it is): who crosses it, who wades it and who cannot, and whether
   packs enter it. A refused order
   says what stopped it there too.
@@ -1143,10 +1179,13 @@ a stat.
   against the packs; the walk shown is the walk played. The
   enemy never attacks a machine on the map: pushers strike the gate, hunters catch.
 - **Pushers** make for the wall at a segment of their own: as a pusher is dealt it draws a wall
-  column, the rift's and a draw either side within the ramp's spread (2 at Convergence 0, half
-  the wall's length at 12), from the turn and the pack, and walks to the land hex of the row
-  before the wall nearest that column, a tie toward the gate's column; a pack with no segment
-  (a hunter left without prey) walks to the nearest. A pusher ending its walk beside any hex
+  column about the wall nearest it, from the turn and the pack: a pack the rift sends about the
+  rift's column within the ramp's spread (2 at Convergence 0, half the wall's length at 12), any
+  other (a flank patrol, a formation the opening places, a tear's patrol) about its own column
+  within 2; of those columns the least crowded wins (another pusher's segment counting 2, one
+  beside it 1), then the nearest the draw. It walks to the land hex of the row before the wall
+  nearest that column, a tie toward the gate's column; a pack with no segment (a hunter left
+  without prey) walks to the nearest. A pusher ending its walk beside any hex
   of the gate or the wall strikes the gate's bar for its strength times 10 divided by 3, at least 1 (the floor of
   ten is gone, so a stray pair chips less than a trio), every enemy turn. The gate is the look
   and the bar's name; the whole wall is the target, so no line plugs it.
@@ -1228,7 +1267,11 @@ a stat.
   shows what it holds): it holds its kind's salvage (a range), so many components of the
   battle's tier, and on its kind's chance (the Relic's) a blueprint of that tier the run holds
   none of, drawn from the battle's seed and the cache. A tap on a cache shows its kind and its
-  likely contents, never the contents. The campaign banks what was claimed as it banks the
+  likely contents, never the contents. On the map a cache is its kind's model while its hex is
+  the reconstruction's (a wrecked machine, a skeleton of theirs, splinters of their stone round a
+  lit core that turns) and a flat token where the painting has taken the hex, crossing over as
+  the ground does; over it in both worlds its name and as many pips as its kind's tier, which
+  are what say its kind. A machine standing on one hides the model and dims the name. The campaign banks what was claimed as it banks the
   kills: on a battle won or held, never on a fall; each component one copy in the stores, each
   blueprint the run's.
 - **Menace** is a foe's weight: its heaviest blow plus a quarter of its HP, rounded up, an
@@ -1240,7 +1283,8 @@ a stat.
   placed, the boss aside) and the first compositions the rift will send, as many as the tier's
   Fractures, in the cycle's order: the last at two thirds of it, the steps 1, 1.5, 2, 2.5 and 3, so
   later Fractures cost more and a battle that kills the field as it stood earns the Rupture
-  with a third of the field left to leave. A Fracture pays out as a fight ends. At the Fractures
+  with a third of the field left to leave. A Fracture pays out as a fight ends, announced over
+  the map (FRACTURE with its count and what it brings, the last THE RUPTURE). At the Fractures
   the tier names (tier one's first; tier two's first and third; tier three's first, second and
   fourth) the lead domain's next own elite composition not yet sent this battle emerges at the
   rift, or a wanderer (`wanders`: Gilgamesh, the Reaper, the Wild Hunt, the World Eater, the
@@ -1257,7 +1301,7 @@ a stat.
 - **The battle ends** when the gate reaches zero, every machine is wrecked, or the boss unit
   falls (every commander of the unit at the rift, its fight won); a wipe after the commander's
   fall is a wipe.
-- Not built: city defences (along the wall when they come), the Fracture's prize, rift tiles.
+- Not built: city defences (wall segment upgrades, when they come), the Fracture's prize, rift tiles.
 
 ## The campaign
 

@@ -11,7 +11,7 @@ extends TestCase
 func _team() -> Array:
 	var db := ContentDB.load_default()
 	var out: Array = []
-	for id in ["badger", "clydesdale", "sparrowhawk"]:
+	for id in ["badger", "clydesdale", "kite"]:
 		out.append(db.make_mech(id))
 	return out
 
@@ -261,3 +261,92 @@ func test_a_tap_on_a_cache_says_its_kind_and_likely_contents() -> void:
 	var up := BattleScreen.cache_lines(b.field, {"id": 6, "tier": top, "pos": Vector2i.ZERO})
 	var said_up := "\n".join(up.map(func(l) -> String: return str(l.get("text", ""))))
 	assert_true(said_up.contains(str(db.loot[db.loot_kind_of_tier(top)]["name"]).to_upper()), "the top kind by its name")
+
+
+# ---------------------------------------------------------------- a cache's picture
+
+## Every kind in content has its model for solid ground and its flat token for the painting, and
+## no picture is left under a kind content no longer names: the files are keyed by the kind's id
+## (art/models/cache_<id>.glb, art/loot/<id>_map.png), so a renamed kind fails here until its
+## files and its grid in tools/loot_tokens.py follow.
+func test_every_kind_has_its_model_and_its_token_and_no_other_has() -> void:
+	var db := ContentDB.load_default()
+	for kind in db.loot_kinds():
+		assert_true(Map3D.has_cache_model(str(kind)), "%s has a model" % kind)
+		assert_true(Sprites.map_cache(str(kind)) != null, "%s has a token for flattened ground" % kind)
+	for f in DirAccess.get_files_at("res://art/models"):
+		if f.begins_with("cache_") and f.ends_with(".glb"):
+			assert_true(db.loot.has(f.trim_prefix("cache_").trim_suffix(".glb")), "%s is a kind content names" % f)
+	for f in DirAccess.get_files_at("res://art/loot"):
+		if f.ends_with("_map.png"):
+			assert_true(db.loot.has(f.trim_suffix("_map.png")), "%s is a kind content names" % f)
+	assert_false(Map3D.has_cache_model(""), "no kind, no model")
+
+
+func _cache_map(f: Battlefield) -> Map3D:
+	var m := Map3D.new()
+	m.field = f
+	m.hex_px = 44.0
+	m._ppu = m.hex_px / Map3D.HEX_WORLD
+	m._sin = sin(deg_to_rad(Map3D.PITCH))
+	m._cos = cos(deg_to_rad(Map3D.PITCH))
+	return m
+
+
+## On the 3D map a cache is a model on its hex while the ground is solid, sunk and gone where the
+## painting has the hex, hidden under a machine standing on it, and freed once it is claimed.
+func test_a_caches_model_stands_on_solid_ground_alone_and_goes_when_claimed() -> void:
+	var b := _battle(11)
+	var f := b.field
+	assert_true(f.caches.size() >= 2, "caches to show")
+	var m := _cache_map(f)
+	var solid_ground := Vector2(-1.0e7, -1.0e7 + 1.0)   # the gradient gone everywhere: every hex solid
+	var painted := Vector2(1.0e7, 1.0e7 + 1.0)          # total everywhere, as RIFTGATE_BLEED_DEBUG paints it
+	m._sync_caches({}, solid_ground, PackedVector3Array())
+	for c in f.caches:
+		assert_true(m.cache_shown(int(c["id"])), "cache %d stands on solid ground" % int(c["id"]))
+		assert_true(is_equal_approx((m._caches[int(c["id"])] as Node3D).scale.y, Map3D.CACHE_FIT), "at its whole height")
+	var first: Dictionary = f.caches[0]
+	var occupied := {first["pos"]: true}
+	m._sync_caches(occupied, solid_ground, PackedVector3Array())
+	assert_false(m.cache_shown(int(first["id"])), "hidden under a machine on its hex")
+	assert_true(m.cache_shown(int(f.caches[1]["id"])), "the others stand")
+	var asked := {}
+	m._sync_caches(asked, solid_ground, PackedVector3Array())
+	for c in f.caches:
+		assert_true(asked.has(c["pos"]), "a cache's hex hides its own dressing")
+	m._sync_caches({}, painted, PackedVector3Array())
+	for c in f.caches:
+		assert_false(m.cache_shown(int(c["id"])), "gone under the painting, where the map view draws its token")
+	f.caches.remove_at(0)
+	m._sync_caches({}, solid_ground, PackedVector3Array())
+	assert_false(m._caches.has(int(first["id"])), "a claimed cache's model is freed")
+	assert_eq(m._caches.size(), f.caches.size(), "one model a cache left")
+	m.free()
+
+
+## A cache is dressed matt whatever maker's tiles it was built from, and a part named `core` is
+## the one the map turns: built about its own centre, so it turns in place.
+func test_a_caches_model_is_matt_and_its_core_turns_in_place() -> void:
+	var db := ContentDB.load_default()
+	var m := _cache_map(_battle(11).field)
+	var cores := 0
+	for kind in db.loot_kinds():
+		var node := m._make_cache(str(kind))
+		for child in node.find_children("*", "MeshInstance3D", true, false):
+			var mi: MeshInstance3D = child
+			if mi.has_meta("is_trace") or mi.mesh == null:
+				continue
+			for i in range(mi.mesh.get_surface_count()):
+				var mat := mi.get_surface_override_material(i) as StandardMaterial3D
+				if mat != null:
+					assert_true(mat.metallic == 0.0 and mat.roughness > 0.9, "%s's %s is matt" % [kind, mi.name])
+		var core := node.find_child("core", true, false) as MeshInstance3D
+		if core != null:
+			cores += 1
+			var box := core.mesh.get_aabb()
+			assert_true(box.get_center().length() < 0.5, "%s's core is built about its own centre (off by %.2f)" % [kind, box.get_center().length()])
+			assert_true(core.position.y > 5.0, "and hung clear of the ground")
+		node.free()
+	assert_true(cores >= 1, "one kind at least has a core to turn")
+	m.free()

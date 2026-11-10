@@ -112,8 +112,8 @@ paid for in an ally's own turn.
    freezes Numbed against the team's own stuns (the stun orbit, the briefs README).
 6. **It parts by pattern** from the jellyfish, which changes the move and purges; from the Baboon,
    whose Paradox removes the action; from the Swallowtail's charged screens, which phase every
-   ally at a muster's price with the action lost; and from the Lammergeier's mines, which act on
-   arrivals.
+   ally at a muster's price with the action lost; and from the Lammergeier's Mines, which blow
+   round a foe as it falls.
 
 **One machine or two**, for its session. Aphelion's open tenth slot is the time area's if it wants
 it. Claude would split it by whose clock. The time-shifter keeps the foes' clocks (delay and

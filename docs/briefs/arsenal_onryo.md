@@ -30,7 +30,7 @@ never popped for burst; for reliability it may stay after the machine dies.
 ## The analysis (14 October)
 
 Back to the board: Grudge reads the roster's most crowded state (a blow on hull, also read by
-the Armadillo's Hull, the Nemesis's rage and two modules), in the Arsenal's own house, at the
+the Polar Bear's Hull, the Nemesis's rage and two modules), in the Arsenal's own house, at the
 Nemesis's tier, so the two would compete for the same wounds; and its product is damage over
 time in the crowded class. The Pall is new. The analysis suggested Grudge laid by the Pall (a
 wound the Onryō takes for an ally curses the striker), so the machine that suffers is the one
@@ -213,13 +213,13 @@ blow, the overflow landing on the Onryō.
   adds nothing, which is about what it produces; a Grudge laid only through the Pall is fed by
   the Pall and feeds every hitter on the team (the Nemesis's rage and fists, the other way
   round). The real objection to it is one route in, never the row.
-- The own-hull trigger is the shape Ryan called dangerous on 15 October, of the Armadillo's
+- The own-hull trigger is the shape Ryan called dangerous on 15 October, of the Polar Bear's
   Shock under a draw ("rewarding it for doing it's job seems potentially dangerous"), and the
   per-foe cap does not tell them apart, since Shocked never stacked either. What differs is the
   price: armour 0, so a lured pack of wolves is 60 hull a round, and hull never heals. The lure
   build is the old discharge's shape, priced in hull.
 - A Grudge laid only through the Pall makes every curse a spend that shows on an intent, which
-  is how Ryan settled the Armadillo's draw, but it is blank when a lone boss picks the Onryō
+  is how Ryan settled the Polar Bear's draw, but it is blank when a lone boss picks the Onryō
   itself, which the exposed aim does often at armour 0 and shield 30. Both triggers stood after
   the review, with no clean lean.
 - The strafer pair the round called clean is the convergence Ryan flagged on the

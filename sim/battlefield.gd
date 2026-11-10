@@ -23,6 +23,7 @@ extends RefCounted
 ## A pack's walk on the enemy's turn.
 class Walk:
 	var path: Array[Vector2i] = []   # the hexes it walks, after its own
+	var route: Array[Vector2i] = []  # its whole way to its goal as the field stands, after its own hex: the path, then the turns after it (a pusher's to its wall segment, a hunter's to where its prey stands inside its ring); empty when it goes nowhere
 	var end: Vector2i                # where it stops
 	var strikes := false             # it stops on the gate's apron and strikes the gate
 	var waits := false               # no way to its goal: it stays where it is
@@ -475,6 +476,7 @@ func _stand_in_walk(sq: Unit, blocked: Dictionary, prey: Unit) -> Walk:
 	while c != sq.pos:
 		w.path.push_front(c)
 		c = prev[c]
+	w.route = w.path.duplicate()   # it reaches the machine it takes this turn
 	w.end = goal
 	w.prey = taken.id
 	w.catches = taken.id
@@ -585,6 +587,11 @@ func apron_row() -> int:
 	return map.height - BattleMap.GATE_ROWS - 1
 
 
+## Whether a hunter anchored at `at` holds `u` inside its ring: the catch's own reach.
+func catches_at(sq: Unit, at: Vector2i, u: Unit) -> bool:
+	return u != null and _distance_from(sq, at, u) <= ContentDB.HUNTER_RING
+
+
 ## The shortest distance from a pack anchored at `at` to a unit.
 func _distance_from(sq: Unit, at: Vector2i, u: Unit) -> int:
 	var best := 1 << 30
@@ -607,6 +614,7 @@ func _walk(sq: Unit, blocked: Dictionary) -> Walk:
 		var step := _patrol_step(sq, blocked)
 		if step != sq.pos:
 			w.path.append(step)
+			w.route.append(step)
 			w.end = step
 		return w
 	var prey: Unit = pick_prey(sq) if sq.behaviour == "hunt" else null
@@ -672,11 +680,37 @@ func _walk(sq: Unit, blocked: Dictionary) -> Walk:
 	while not walked.is_empty() and not _landable(sq, walked[walked.size() - 1], blocked):
 		walked.pop_back()
 	w.path = walked
+	w.route = route   # the whole way, of which the path is the first turn's
 	w.end = walked[walked.size() - 1] if not walked.is_empty() else sq.pos
 	w.strikes = prey == null and on_apron(sq, w.end)
 	if prey != null and _distance_from(sq, w.end, prey) <= ContentDB.HUNTER_RING:
 		w.catches = prey.id
 	return w
+
+
+## Where each later turn of a walk's whole way ends (Walk.route past its path), as indices into
+## the route: a pack walks its move a turn, a water hex costing two and entered with whatever is
+## left, as the turn's own walk does (_walk), from the first turn's end. The map numbers them on a
+## tapped pack's way (Ryan, 9 November: "Pushers should show their current complete path to their
+## targeted wall segment when tapped"). Read as the field stands, so a stop is where it would be
+## if nothing moved; it reads no landing, since who stands where then is unknown.
+func turn_ends(sq: Unit, w: Walk) -> Array[int]:
+	var out: Array[int] = []
+	var at := w.path.size()
+	while at < w.route.size():
+		var budget := sq.movespeed
+		var moved := false
+		while at < w.route.size():
+			var cost := BattleMap.spend(map.terrain[w.route[at]], sq.traits, budget)
+			if cost < 0:
+				break
+			budget -= cost
+			at += 1
+			moved = true
+		if not moved:
+			break   # nothing this pack can cross: no stop further on
+		out.append(at - 1)
+	return out
 
 
 ## Whether a hex is land: neither water nor a wall (a pusher's segment is a land apron hex).
@@ -882,7 +916,7 @@ func emerge(c: Dictionary, mouth: Vector2i) -> Unit:
 	dress_pack(sq)
 	sq.pos = landing(sq, mouth)
 	add_unit(sq)
-	assign_goal(sq)
+	assign_goal(sq, -1, mouth == map.rift)
 	return sq
 
 
@@ -1022,20 +1056,48 @@ func cache_at(h: Vector2i) -> Dictionary:
 	return {}
 
 
-## A pusher's wall segment (the long wall brief 3.3; Ryan, 5 November: rift packs "can target a
-## segment left or right of it, reducing clogging and creating extra tension. The variance of
-## where they target can even be a ramp factor"): the rift's column and a draw in [-spread,
-## +spread], the spread the ramp's (Ramp.spread_at) unless one is given, clamped to the wall. The
-## draw takes no stream, only the turn and the pack's id, so a resumed battle draws as the
-## unbroken one did. A hunter and the boss draw none. Called as a pack is dealt (emerge: the
-## start's placements and every spawn).
-func assign_goal(sq: Unit, spread: int = -1) -> void:
+## A pusher's wall segment (the long wall brief 3.3): the wall nearest where it is dealt, and a
+## draw either side, from the turn and the pack, so a resumed battle draws as the unbroken one did
+## (no stream). A pack the rift sends draws about the rift's column within the ramp's spread (Ryan,
+## 5 November: rift packs "can target a segment left or right of it, reducing clogging and creating
+## extra tension. The variance of where they target can even be a ramp factor"); any other (a flank
+## patrol, a formation the opening places, a tear's patrol) about its own column within
+## Ramp.FLANK_SPREAD (Ryan, 9 November: "the flankers should target their closest wall with a small
+## amount of randomness, avoiding crowding, in order to force the player to make decisions ... make
+## sure packs don't get stuck on one another, but also don't target halfway across the map and
+## become irrelevant"). Of the window's columns the least crowded wins (_crowding: the other
+## pushers' segments on it or beside it), then the one nearest the draw, so the packs spread along
+## the wall and never pile onto one stretch, and none leaves its window for room. A spread given
+## (the tests) sets the window. A hunter and the boss draw none. Called as a pack is dealt
+## (emerge: the start's placements and every spawn).
+func assign_goal(sq: Unit, spread: int = -1, from_rift: bool = false) -> void:
 	if sq.is_boss or sq.behaviour != "push":
 		return
 	if spread < 0:
-		spread = Ramp.spread_at(ramp, map.width)
-	var draw := (phase * 31 + sq.id * 17) % (2 * spread + 1) - spread
-	sq.goal_col = clampi(Hex.axial_to_offset(map.rift).x + draw, 0, map.width - 1)
+		spread = Ramp.spread_at(ramp, map.width) if from_rift else Ramp.FLANK_SPREAD
+	var base := Hex.axial_to_offset(map.rift if from_rift else sq.pos).x
+	var want := clampi(base + (phase * 31 + sq.id * 17) % (2 * spread + 1) - spread, 0, map.width - 1)
+	var best := want
+	var best_key := Vector2i(1 << 30, 0)
+	for col in range(maxi(0, base - spread), mini(map.width - 1, base + spread) + 1):
+		var key := Vector2i(_crowding(sq, col), absi(col - want))
+		if key.x < best_key.x or (key.x == best_key.x and key.y < best_key.y):
+			best_key = key
+			best = col
+	sq.goal_col = best
+
+
+## How crowded a wall column is for a pusher drawing its segment: two for every other pusher whose
+## segment it is, one for each whose segment is beside it, so two packs share a stretch of wall only
+## when the window holds nothing emptier.
+func _crowding(sq: Unit, col: int) -> int:
+	var n := 0
+	for other in packs():
+		if other == sq or other.is_boss or other.behaviour != "push" or other.goal_col < 0:
+			continue
+		var d := absi(other.goal_col - col)
+		n += 2 if d == 0 else (1 if d == 1 else 0)
+	return n
 
 
 ## Whether a machine stands beside a hex.

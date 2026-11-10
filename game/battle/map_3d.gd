@@ -1260,7 +1260,7 @@ func _build_ground() -> void:
 			# same way, by standing on it.
 			_bake(_grid_geo(hgt + 0.35), at_xf, _grid_material(), band, false)
 		rng.seed = h.x * 131 + h.y * 7919
-		if map.city.has(h):
+		if map.city.has(h) or _city_row(h):
 			_city_block(col, hgt, rng)
 			continue
 		if t == BattleMap.Terrain.MOUNTAIN:
@@ -1630,11 +1630,35 @@ func _along_wall() -> Vector3:
 	return Vector3(1.0 / _sin, 1.0, 1.0) if MapOrient.wall_left else Vector3.ONE
 
 
+## Where the wall's models stand off the back row (the gate's and the wall's both stand on it).
+## With the wall at the bottom the camera's pitch stands their height over the row in front, so
+## that row reads as the wall's foot; with the wall at the left the pitch runs along the wall and
+## that row lay bare in front of it, out of play and looking like ground (Ryan, 9 November: "the
+## wall in wall-left view has the out-of-play row completely bare in front ... It looks weird").
+## So there they stand a row toward the field, against the apron, and the back row behind them is
+## the city's (_city_row), so neither view shows a row out of play (Ryan, the same day: "yeah that's
+## the best solution I think").
+func _wall_shift() -> Vector3:
+	if not MapOrient.wall_left:
+		return Vector3.ZERO
+	return _world(MapOrient.toward_rift() * hex_px * 1.5)   # one row's pitch toward the rift
+
+
+## Whether a hex on the wall's back row stands behind the shifted wall (_wall_shift), so it holds a
+## city block, as the city past the wall does: every hex of the field's last row and of the margin's,
+## the city's own aside (it builds its block already).
+func _city_row(h: Vector2i) -> bool:
+	if _wall_shift() == Vector3.ZERO or field.map.city.has(h):
+		return false
+	return Hex.axial_to_offset(h).y == field.map.height - 1
+
+
 func _build_structures() -> void:
 	var map := field.map
+	var shift := _wall_shift()
 	if MechView3D.has_model("gate"):
 		var g := _model("gate", "arsenal")
-		g.position = _hex_world(map.gate)
+		g.position = _hex_world(map.gate) + shift
 		g.rotation.y = MapOrient.yaw(PI)   # turned about, so its portcullis face is the one the player sees; with the wall at the left, toward the city
 		g.scale = _along_wall()
 		_bake_model(g, _band(map.gate))   # with ink on its creases, so the towers and reveals read as geometry
@@ -1653,7 +1677,7 @@ func _build_structures() -> void:
 		m.rotation.y = MapOrient.yaw(PI)
 		m.scale = _along_wall()
 		for w in bottom:
-			m.position = _hex_world(w)
+			m.position = _hex_world(w) + shift
 			_bake_model(m, _band(w))
 		_baked_models.append(m)
 	_flush_batches()
@@ -1731,6 +1755,7 @@ func sync() -> void:
 			if not _rest_yaw.has(u.id) or not _rigs.has(u.id):
 				(_pivots[u.id] as Node3D).rotation.y = facing_yaw(_facing_of(u))
 			_rest_yaw[u.id] = facing_yaw(_facing_of(u))
+	_sync_caches(occupied, grad, src)
 	_hide_props_under(occupied)
 	for uid in _units.keys():
 		if not seen.has(uid):
@@ -1754,6 +1779,104 @@ func sync() -> void:
 				_shadows.erase(uid)
 
 
+# ---------------------------------------------------------------- the field's caches
+
+## The caches as models (Ryan, 9 November: "can we get models (and art, when flattened), for loot
+## caches on map?"): each kind in content/loot.json wears art/models/cache_<id>.glb (tools/lowforge)
+## on its hex while the ground there is the reconstruction's, in the world's layer like a prop, so
+## the painting covers it as it covers the ground; the map view draws its flat token over the
+## painting from there (BattleMapView._draw_caches, art/loot). The kind's name and pips are the map
+## view's in both worlds: the model is the picture, never the information. A kind with no model
+## keeps the map view's diamond. A machine on the hex hides the model, as it hides a prop.
+const CACHE_FIT := 1.3          # a cache's size on its hex, over the model's own (built to about two thirds of a hex): hot, for the phone
+const CACHE_TURN := 0.7         # radians a second the Relic's core turns
+const CACHE_BOB := 1.6          # model units its core rides up and down
+var _caches: Dictionary = {}    # cache id -> its model's Node3D
+var _cache_hex: Dictionary = {} # cache id -> the hex it was built on
+var _cache_cores: Dictionary = {}   # cache id -> [the part named `core`, its resting height]: the one the map turns
+
+
+static func cache_model(kind: String) -> String:
+	return "cache_%s" % kind
+
+
+static func has_cache_model(kind: String) -> bool:
+	return not kind.is_empty() and MechView3D.has_model(cache_model(kind))
+
+
+## Whether a cache's model stands on a hex right now, for the map view: built, and not hidden
+## under a machine.
+func cache_shown(cid: int) -> bool:
+	return _caches.has(cid) and (_caches[cid] as Node3D).visible
+
+
+func _sync_caches(occupied: Dictionary, grad: Vector2, src: PackedVector3Array) -> void:
+	var db := ContentDB.load_default()
+	var live := {}
+	for c in field.caches:
+		var cid := int(c["id"])
+		var h: Vector2i = c["pos"]
+		var kind := db.loot_kind_of_tier(int(c.get("tier", 1)))
+		if not has_cache_model(kind):
+			continue
+		live[cid] = true
+		var node: Node3D = _caches.get(cid, null)
+		if node == null:
+			node = _make_cache(kind)
+			add_child(node)
+			_caches[cid] = node
+			_cache_hex[cid] = h
+			var core := node.find_child("core", true, false) as Node3D
+			if core != null:
+				_cache_cores[cid] = [core, core.position.y]
+		# Its hex's own dressing would stand through it: hidden, as under a machine.
+		var under_machine: bool = occupied.has(h)
+		occupied[h] = true
+		# As the painting takes the hex the model sinks into it, as the ground's height does
+		# (Bleed.solid, the compositor's threshold), and is gone where the hex is flat.
+		var solid := Bleed.solid(_origin + MapOrient.to_pixel(h, hex_px), grad, src)
+		node.visible = solid > 0.02 and not under_machine
+		node.position = _hex_world(h, _height_of(h))
+		node.scale = Vector3(CACHE_FIT, CACHE_FIT * maxf(solid, 0.02), CACHE_FIT)
+	for cid in _caches.keys():
+		if not live.has(cid):
+			(_caches[cid] as Node3D).queue_free()   # claimed
+			_caches.erase(cid)
+			_cache_hex.erase(cid)
+			_cache_cores.erase(cid)
+
+
+## A cache's model, dressed matt whatever its tiles' maker: a wreck's dead steel, bone and their
+## stone take no machine's polish. Its lit parts (the amber role: a Derelict's lamp, a Relic's
+## light) glow as a machine's do. Traced like a prop, so it reads at one hex.
+func _make_cache(kind: String) -> Node3D:
+	var scene: PackedScene = load("res://art/models/%s.glb" % cache_model(kind))
+	var node: Node3D = scene.instantiate()
+	MechView3D.toon(node, "", "clean", {}, false)
+	for child in node.find_children("*", "MeshInstance3D", true, false):
+		var mi: MeshInstance3D = child
+		mi.layers = 1   # the world's layer alone: no sheen light
+		for i in range(mi.mesh.get_surface_count()):
+			var m := mi.get_surface_override_material(i) as StandardMaterial3D
+			if m != null:
+				m.roughness = 0.95
+				m.metallic = 0.0
+				m.metallic_specular = 0.15
+	_marker(node)
+	return node
+
+
+## The Relic's core turns and rides on its own light, each on its own beat (a part named `core`,
+## models_low.cache_relic); every other cache lies still.
+func _turn_caches(delta: float) -> void:
+	for cid in _cache_cores.keys():
+		var core: Node3D = _cache_cores[cid][0]
+		if not is_instance_valid(core):
+			continue
+		core.rotate_y(CACHE_TURN * delta)
+		core.position.y = float(_cache_cores[cid][1]) + sin(_time * 1.3 + float(cid) * 1.9) * CACHE_BOB
+
+
 ## Only a flyer sways at rest: it rides a slow swell, each on its own beat; a hovercraft
 ## balances on its cushion (HoverBalance). A grounded
 ## machine holds still and every few seconds plays one of its own idle acts through its rig,
@@ -1764,6 +1887,7 @@ var _dt := 1.0 / 60.0
 
 func _process(delta: float) -> void:
 	_time += delta
+	_turn_caches(delta)
 	_dt = delta
 	for uid in _rigs.keys():
 		var rig: MechRig = _rigs[uid]

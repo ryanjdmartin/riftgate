@@ -569,8 +569,8 @@
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "It launches a sticky cryo canister with a really annoying beep or something, for the lore reason (Ryan, 18 October). Whatever it sticks to comes for the Armadillo, and whoever hits the canister gets the cold out of it.",
-    "niche": "The Armadillo's locked pair: an Indirect debuff with Lure, Rapid and Cryo, heat its limiter. The foe it lures carries Cryo; any machine's hit with a weapon spends every stack and cools the hitter, so the tank's output is the team's cooling and the loop is seal, lure, open, cash, seal."
+    "fantasy": "It launches a sticky cryo canister with a really annoying beep or something, for the lore reason (Ryan, 18 October). Whatever it sticks to comes for the Polar Bear, and whoever hits the canister gets the cold out of it.",
+    "niche": "The Polar Bear's locked lure, one on its die (Ryan, 9 November: one Flinger and no Rapid, so the lure costs its action): an Indirect debuff with Lure and Cryo, gaining Spread while its machine is sealed (Lockdown's grant), so it turns one foe open and a rank's three sealed. The foe it lures carries Cryo; any machine's hit with a weapon spends every stack and cools the hitter, and the Polar Bear's own weapons hit a foe carrying Cryo 1 harder, so who cashes it is the round's call."
    },
    "face": {
     "kind": "attack",
@@ -578,7 +578,6 @@
     "power": 0,
     "keywords": [
      "lure",
-     "rapid",
      "cryo"
     ],
     "heat": 1,
@@ -710,7 +709,7 @@
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "The Goshawk's engines fire forward for one shot. The hotter the airframe, the bigger the shot, and the airframe is cold afterwards.",
+    "fantasy": "The Buzzard's engines fire forward for one shot. The hotter the airframe, the bigger the shot, and the airframe is cold afterwards.",
     "niche": "The Buzzard's burst: spend the heat the passive was living on."
    },
    "face": {
@@ -1278,7 +1277,7 @@
    ]
   },
   {
-   "id": "oblation_ward",
+   "id": "oblation_mantle",
    "name": "Oblation Mantle",
    "maker": "arsenal",
    "tier": 1,
@@ -1677,16 +1676,18 @@
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "Length contraction shrinks the space between, so every mine on the field ends in one slot (Ryan, 21 October, on the pull's name: \"something about warping or teleporting\"; he picked this one that day).",
-    "niche": "The Lammergeier's first lock, the pull (Ryan, 17 October): every mine on the field gathers into the slot it is spent on, in laid order, and a foe standing there takes them now; spent on an empty slot it gathers them there and lands nothing. Mines laid in a quiet round are cashed on a chosen foe at a chosen moment (a Shock up, a boss stepped in), so nothing laid against reinforcements that never come is lost. Never Rapid and no cooldown, so a pull costs the turn; no damage of its own, a tool and not a gun, and with nothing laid the dead spend Ryan allows."
+    "fantasy": "Length contraction shrinks the space between, so every Mine on the field ends on one foe (Ryan, 21 October, on the pull's name: \"something about warping or teleporting\"; he picked this one that day).",
+    "niche": "The Lammergeier's gather (Ryan, 9 November: \"moves all mines to a single target, and Exposes that target. The Expose rider will effectively create an AoE expose mine, which we can try and see if it's dangerous.\"): a debuff that Exposes its target and, in the rider phase, moves every Mine the field's other foes carry onto it, so the team's Direct guns can finish the foe that holds them all and its blast Exposes its neighbours. Never Rapid and no damage of its own, a tool and not a gun. Retired: the pull of 17 October onto a slot, with the slot mines."
    },
    "face": {
     "kind": "attack",
     "reach": "indirect",
     "power": 0,
-    "keywords": [],
+    "keywords": [
+     "expose"
+    ],
     "heat": 2,
-    "pulls_mines": true
+    "gathers_mines": true
    },
    "passive": null,
    "tags": []
@@ -1700,17 +1701,16 @@
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "A syrinx is a bird's voice box, where a mimic copies any sound (Ryan named it 21 October): the drone copies the killing shot into the slot the foe empties.",
-    "niche": "The Lammergeier's second lock, the mark (Ryan, 17 and 21 October): the foe carries the Syrinx Drone, and the next weapon to kill it, any machine's, leaves its shot in the slot it empties, one mine a drone; if the foe already carries Exposed the drone is Rapid, and otherwise it gives the foe Exposed, never refreshing it. Its pair is the Needletail: the interceptor Exposes a foe on its die, the bomber drones it free on its own, and the team's kill leaves its shot for whoever steps in."
+    "fantasy": "A syrinx is a bird's voice box, where a mimic copies any sound (Ryan named it 21 October): the drone sings the note the Reverberant Payload holds, and the Mine answers it.",
+    "niche": "The Lammergeier's detonator (Ryan, 9 November: \"Deals a small amount of damage and detonates a foe's combined mine immediately (or mine stacks, whichever shape we end up with). The small chip damage makes it add a stack first. Try without a cooldown first.\"): a weapon of chip damage whose spend adds its own Mine first, then blows the target's Mine on it and every foe round it. Alone it is a small Splash gun; on a gathered Mine it is the cash-out. Its chip spends a Shock on the target, so a Shock doubles the chip, never the Mine. Retired: the mark of 21 October (the next weapon to kill the foe left its shot in the empty slot), with the slot mines."
    },
    "face": {
-    "cooldown": 1,
     "kind": "attack",
     "reach": "indirect",
-    "power": 0,
+    "power": 1,
     "keywords": [],
     "heat": 0,
-    "drones": true
+    "detonates": true
    },
    "passive": null,
    "tags": []

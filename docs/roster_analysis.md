@@ -133,7 +133,7 @@ new chassis finds room.
 |---|---|---|
 | A foe gains a debuff | the Baboon | the jellyfish (spreads it), Misharu and the web bomb (add one) |
 | This machine's heat | the Goshawk (shield), the Stingray (stacks) | the boiler (blows) |
-| A blow reaching this machine's hull, or any hull | the Armadillo (Shocks the striker), the Nemesis (banks rage), the Spall Liner and the Grievance Reliquary (modules) | the Onryō (Grudge on the striker, team-wide) |
+| A blow reaching this machine's hull, or any hull | the Polar Bear (Shocks the striker), the Nemesis (banks rage), the Spall Liner and the Grievance Reliquary (modules) | the Onryō (Grudge on the striker, team-wide) |
 | A kill | the Ammit's talons (Devour), the Arc Fault Cannon (Chain) | Mastema (a burning foe's death), the Zoids walker (Rapid, open) |
 | A shield this machine grants | the Puffin | nobody |
 | A shield this machine gains | nobody | nobody (the line frame's round one, superseded) |
@@ -153,7 +153,7 @@ new chassis finds room.
 
 | Maker | Tier one | Tier two | Tier three | Among the proposals |
 |---|---|---|---|---|
-| Minerva | Honey Badger (heavy, tracked), Armadillo (assault, walker) | Wild Boar (heavy, tracked) | none | none standing; section 8 |
+| Minerva | Honey Badger (heavy, tracked), Polar Bear (assault, walker) | Wild Boar (heavy, tracked) | none | none standing; section 8 |
 | Kestrel | Sparrowhawk (light, flyer) | Goshawk (medium, flyer), Puffin (light, hover) | none | none standing; section 8 |
 | Wainwright & Sutler | Prairie Dog (light, wheeled), Dingo (light, wheeled) | Clydesdale (assault, walker) | none | the fan-boat (1, light, hover); the boiler, the revolver, the funnel-web, the gunship (2); the multi-rotor (3, assault, flyer) |
 | Aphelion | Baboon (medium, walker), Stingray (medium, hover) | none | none | the line frame (1, walker); the jellyfish (2, flyer), the Zoids walker (2, open); the Carrier (3, assault, flyer) |
@@ -175,13 +175,13 @@ seven walkers, five flyers, two hover, no tracks and no wheels.
    and Lure is Minerva's lean carried by one piece.
 3. **Damage over time is where the proposals crowd**: Mastema's three pieces, Grudge and the
    Brand on top of five burners, Primed and the Stingray.
-4. **Amplify for others has no chassis identity**: the Armadillo produces it as a side effect of
+4. **Amplify for others has no chassis identity**: the Polar Bear produces it as a side effect of
    being struck and the Stingray deepens buffs, and no passive is about making an ally's blow
    land harder, though Overcharged is Kestrel's lean.
 5. **Area damage on a hardpoint is one piece** (the Enfilade Beam) until the stock pass puts
    Spread and Penetrate on the explosives; the Meadow's answer lives on locked pieces today.
 6. **Two reads are crowded**: this machine's heat (the Goshawk, the Stingray, the boiler) and a
-   blow on hull (the Armadillo, the Nemesis, two modules, the Onryō). Each has distinct payoffs,
+   blow on hull (the Polar Bear, the Nemesis, two modules, the Onryō). Each has distinct payoffs,
    which is what keeps them apart.
 7. **Nothing reads the foes' intents as drawn, the reinforcements, or the die's own unspent
    entries and locks.** These are the room.
@@ -237,7 +237,7 @@ destroyed.*
   (section 11). Nothing of this is built; it is the roster's one identity question and Ryan's
   to settle.
 
-### Armadillo (Minerva, tier one, assault, walker)
+### Polar Bear (Minerva, tier one, assault, walker)
 
 *The tank: its shutters and live hull Shock whatever strikes it.*
 
@@ -246,12 +246,12 @@ destroyed.*
   the bible's own line on a tank, "sets up kills, and does nothing else". The Lockdown Shutters
   extend it to blocked blows, so a shield on a hardpoint does not fight the passive. It holds
   together; the question on it is Ryan's (12 October): if a retaliation mechanic must go, this
-  goes first, the Armadillo being armoured and not a porcupine.
+  goes first, the Polar Bear being armoured and not a porcupine.
 - **Niche: sound, and shared.** The tank by numbers is a niche of plain numbers, which the
   bible allows. The passive's read (a foe's blow on this machine) is the roster's most crowded,
   and its product is exactly the Retribution Thurible's: a buff any machine fits for a
-  hardpoint and two rounds that does what the Armadillo's passive does. That is the overlap
-  that costs the Armadillo its niche, not the Nemesis (which banks tempo) or the proposed
+  hardpoint and two rounds that does what the Polar Bear's passive does. That is the overlap
+  that costs the Polar Bear its niche, not the Nemesis (which banks tempo) or the proposed
   Grudge (a slow curse).
 - **Build diversity: sound.** Five hardpoints; every gun on the team cashes its Shocks, so the
   payoffs are everything; the routes in are the enemy's blows and anything that draws them (the
@@ -263,10 +263,10 @@ destroyed.*
 - **Verdict: stands; keep the Faraday Hull.** Claude's lean on the open row: the passive is
   worth keeping because it is the one tank passive that composes, Shocked-as-setup is a decided
   design line, and the Arsenal's retribution is a lean and never an exclusion (first row). What
-  should move is the duplicate: the Retribution Thurible gives the Armadillo's whole passive to
+  should move is the duplicate: the Retribution Thurible gives the Polar Bear's whole passive to
   any machine as stock kit on the Nemesis, so either it differs on purpose (a Shock from
   blocked blows too, the shutters' half, or a longer buff at a cost) or it becomes the rare,
-  tier-three way to borrow the Armadillo's trick, and the Nemesis stocks something of its own.
+  tier-three way to borrow the Polar Bear's trick, and the Nemesis stocks something of its own.
   If Ryan removes the Hull anyway, the replacement should still be something the team cashes,
   and the bench has the shape that fits the fantasy best: a conditional draw on the locked
   shutters (section 11), the interpose the bible allows on a locked piece and the mitigation
@@ -435,7 +435,7 @@ destroyed.*
   basics on it.
 - **Niche: strong.** The only meter, and the only passive that reads a foe gaining a debuff,
   which every status piece of every maker feeds: Burn from Wainwright & Sutler's shells and the
-  Arsenal's plasma, Shock from the Armadillo's hull and Minerva's gauntlets, Disrupt and Shock
+  Arsenal's plasma, Shock from the Polar Bear's hull and Minerva's gauntlets, Disrupt and Shock
   from its own house. The status house's hub.
 - **Build diversity: strong.** Six untyped hardpoints; any debuff piece of any maker is a route
   in, and Suppressed is a payoff everything cashes. With basics the meter fills slowly, which is
@@ -504,7 +504,7 @@ destroyed.*
   Arsenal's machine is +10 for the battle); the payoff is every blow it makes. The build is
   four slots, the rest is talons.
 - **Composition: sound.** It asks the one question nothing else asks, who takes the kill, and
-  takes the Baboon's suppresses and the Armadillo's Shocks as free kills; it gives a body that
+  takes the Baboon's suppresses and the Polar Bear's Shocks as free kills; it gives a body that
   grows. Can detach: no, it starts weak.
 - **Verdict: stands.** A tier three whose complexity is in its kit count; fine as the Arsenal's
   first.
@@ -514,7 +514,7 @@ destroyed.*
 | Machine | Quality | Niche | Build diversity | Composition | Verdict |
 |---|---|---|---|---|---|
 | Honey Badger | sound kit, thin passive | strong, on the kit | thin | a body; detaches | stands; the identity row |
-| Armadillo | sound | sound, shared with the Thurible | sound | strong; detaches | stands; keep the Hull |
+| Polar Bear | sound | sound, shared with the Thurible | sound | strong; detaches | stands; keep the Hull |
 | Wild Boar | sound | sound, waits on back ranks | sound | a body; detaches | stands |
 | Sparrowhawk | strong | strong | sound | strong cash-out | stands |
 | Goshawk | strong | strong | sound | a second body | stands |
@@ -527,10 +527,10 @@ destroyed.*
 | Nemesis | strong | strong | sound | a body; detaches | stands |
 | Ammit | sound | sound | sound | sound | stands |
 
-- **What a four can be today.** Bodies: the Badger, the Armadillo, the Boar, the Nemesis, the
+- **What a four can be today.** Bodies: the Badger, the Polar Bear, the Boar, the Nemesis, the
   Clydesdale. Burst: the Sparrowhawk, the Goshawk's cannon. Control: the Baboon, the Dingo's
-  pin. Support: the Puffin, the Dingo. Amplifiers: the Stingray, the Armadillo's Shocks. A
-  ramp: the Ammit. So a four of body, controller, amplifier and support exists (the Armadillo,
+  pin. Support: the Puffin, the Dingo. Amplifiers: the Stingray, the Polar Bear's Shocks. A
+  ramp: the Ammit. So a four of body, controller, amplifier and support exists (the Polar Bear,
   the Baboon, the Stingray, the Puffin) and reads as a composition on paper; the runner cannot
   see it because the bot cannot value three of the four, which is the to-do's valuation line,
   not the roster's fault.
@@ -631,7 +631,7 @@ foe a stack of Grudge: 5 a stack at its action, past armour, never fading.* Lock
   team for being wounded, and the team's best verb (a standing shield) earns it nothing, so a
   well-played team feeds it least.
 - **Niche: thin on the passive, sound on the Pall.** Grudge reads the roster's most crowded
-  state (a blow on hull: the Armadillo, the Nemesis, two modules), in the Arsenal's own house,
+  state (a blow on hull: the Polar Bear, the Nemesis, two modules), in the Arsenal's own house,
   at the same tier as the Nemesis: two Arsenal tier twos built around being wounded would
   compete for the same team slot and the same wounds. Its product is damage over time with a
   new source, in the crowded class. The Pall is new: the first interpose, and it shelters a
@@ -842,7 +842,7 @@ and the maker left out gets no hearing that run. Today's pools:
 
 | Maker | Tier-one pool | What the deal can be |
 |---|---|---|
-| Minerva | Honey Badger, Armadillo | always a body that holds a front and detaches |
+| Minerva | Honey Badger, Polar Bear | always a body that holds a front and detaches |
 | Kestrel | Sparrowhawk | always the Sparrowhawk: the deal never varies |
 | Wainwright & Sutler | Prairie Dog, Dingo | always a light wheeled car that cannot stand in a front or finish a pack alone |
 | Aphelion | Baboon, Stingray | always a medium support or amplifier without armour |
@@ -865,7 +865,7 @@ becomes a choice taken rather than a corner dealt.
 
 1. Each maker's deal is legible with basics alone: the locked piece and the passive show what
    the machine is in the first fight, and the basics fill it (Slay the Spire's opening). The
-   Badger, the Armadillo, the Sparrowhawk (once the Pinion Driver is locked), the Stingray and
+   Badger, the Polar Bear, the Sparrowhawk (once the Pinion Driver is locked), the Stingray and
    the Baboon pass; the cars pass on the map and not on the die; the fan-boat fails until its
    tier moves.
 2. Any three of the dealt four can win the first battles at competent play: the small packs
@@ -1006,7 +1006,7 @@ is the draw and the draw is a spend that shows on the intent, which is the redir
 bible wants and never a tank's lock (the lure lasts the round and reaches only what it hit).
 Verb class: soft control, the thinnest. Tier two: a plain line that needs plate under it, so
 the numbers carry half the identity, and its locked piece can be the tool that makes the draw
-worth taking (a shield that does something, as the Armadillo's does, or a Braces blow). What
+worth taking (a shield that does something, as the Polar Bear's does, or a Braces blow). What
 it reads: nothing new; what it produces: soft control on every entry, which nothing does.
 Routes in: any weapon of any maker (a Spread piece lures three, Penetrate a column, Indirect
 the back rank onto it); payoffs: everything that reads being struck (the Retribution Thurible,
@@ -1014,7 +1014,7 @@ the Spall Liner, a Nemesis beside it that wants the blows it does not take), and
 is struck instead of. Composition: the protection the starter set was asked for on 30
 September, by choice rather than by lock, and the Peak's answer (a lure onto a cold machine)
 as an identity. Holes: it is a second Minerva tank in a team, so it should read as the one
-struck by its own choice where the Armadillo is struck by the enemy's; a lure on every blow is
+struck by its own choice where the Polar Bear is struck by the enemy's; a lure on every blow is
 a lure the player cannot refuse, so a weapon aimed at a foe the machine does not want drawn is
 a decision the die must show; and against a lone boss the passive is a plain taunt, which is
 fine, since a boss is the exam for the body anyway.
@@ -1105,7 +1105,7 @@ a design.
 2. The Honey Badger's identity: the hopper as the passive's business (loads held are plate,
    loads fired are damage, every weapon fills) with "never destroyed" as a Minerva module, or
    one of the benched shapes.
-3. The Armadillo: keep the Faraday Hull and make the Retribution Thurible differ or rarer, or
+3. The Polar Bear: keep the Faraday Hull and make the Retribution Thurible differ or rarer, or
    remove the Hull and take the shutters' conditional draw.
 4. The cars: the fight's half on the Prairie Dog's locked gun (a rule that reads *alone*), the
    Dingo as a team piece whose die is the stock pass's.
@@ -1151,8 +1151,8 @@ the rule and not only the idea.
   passive; the economy is unbuilt and a map or economy rule alone is a weak identity.
 - **The Badger's every-blow fill without a cap or plate**: the hopper overflows and the
   fragmenter becomes a flat number; the cap and the plate are what keep the decision.
-- **The Armadillo's conditional draw on the Lockdown Shutters** (while the shutters are raised,
-  a blow at an ally's bare hull turns on the Armadillo): the interpose the bible allows on a
+- **The Polar Bear's conditional draw on the Lockdown Shutters** (while the shutters are raised,
+  a blow at an ally's bare hull turns on the Polar Bear): the interpose the bible allows on a
   locked piece and the mitigation the starter set was asked for; set aside only because the
   Faraday Hull should stay, and it is the first thing to take if the Hull goes.
 - **The Retribution Thurible retired**: it is Retaliate's only carrier and Retaliate is the
@@ -1203,6 +1203,6 @@ settled or opened lives in its usual home, so this section is only a pointer:
 - **Tasks** in `docs/todo.md`, the order of work in `docs/status.md`, the economy items in
   `docs/economy_pass.md`.
 
-Sections 2, 4 and 8 were written before the go: the Armadillo's options, the raider and the
+Sections 2, 4 and 8 were written before the go: the Polar Bear's options, the raider and the
 interceptor, Misharu's sentence and every reading that rests on the whole-block shield are
 superseded where the briefs say so.

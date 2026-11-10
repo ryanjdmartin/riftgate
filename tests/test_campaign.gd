@@ -94,7 +94,7 @@ func test_the_tender_offers_one_tier_one_machine_from_each_city_maker() -> void:
 
 
 ## The mechanics audit (25 October): the tender drew on the run's own stream, so the runner's
-## random pick of three reread Minerva's offer and the Armadillo started every run it was
+## random pick of three reread Minerva's offer and the Polar Bear started every run it was
 ## offered. On a stream of its own, an offered machine sits a run out as often as any other.
 func test_the_runners_pick_never_rereads_the_offer() -> void:
 	var db := ContentDB.load_default()

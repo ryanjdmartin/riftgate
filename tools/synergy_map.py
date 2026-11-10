@@ -43,7 +43,6 @@ CURRENCIES = OrderedDict([
     ("suppressed", ("Suppressed", "on a foe")),
     ("webbed", ("Webbed", "on a foe")),
     ("vitriol", ("Vitriol", "on a foe")),
-    ("syrinx_drone", ("Syrinx Drone", "on a foe")),
     ("paradox", ("Paradox", "on a foe")),
     ("lure", ("A foe's turn drawn (Lure)", "on a foe")),
     ("disrupt", ("A foe's move changed (Disrupt)", "on a foe")),
@@ -74,7 +73,7 @@ CURRENCIES = OrderedDict([
     ("missing_hp", ("A foe's missing HP", "a resource")),
     ("rank", ("The rank a blow is aimed at", "a resource")),
     ("strikes", ("Several blows a spend", "a resource")),
-    ("mine", ("A mine", "a resource")),
+    ("mine", ("Mine", "on a foe")),
     ("ammo", ("Ammo", "a store")),
     ("muster", ("The Muster", "a store")),
     ("rage", ("Rage", "a store")),
@@ -96,8 +95,8 @@ KEYWORDS = {
 # A face field and what it sets or reads.
 FACE_FIELDS = {
     "braces": [("braced", "sets")], "devours": [("overcharged", "sets"), ("kill", "reads")], "fills_hopper": [("hopper", "sets")],
-    "fires_hopper": [("hopper", "reads")], "heat_per_blow": [("heat", "sets")], "drones": [("syrinx_drone", "sets"), ("exposure", "sets"), ("mine", "sets")],
-    "pulls_mines": [("mine", "reads")], "vents_all": [("heat", "reads")], "power_per_heat": [("heat", "reads")],
+    "fires_hopper": [("hopper", "reads")], "heat_per_blow": [("heat", "sets")], "detonates": [("mine", "reads")],
+    "gathers_mines": [("mine", "reads")], "vents_all": [("heat", "reads")], "power_per_heat": [("heat", "reads")],
     "power_per_missing": [("missing_hp", "reads")], "resets_on_kill": [("kill", "reads")], "rolls_again_on": [("rage", "reads")],
     "kill_rerolls": [("kill", "reads"), ("reroll", "sets")], "ally_action": [("reroll", "reads")], "regenerates": [("regenerating", "sets")],
     "spends_magazine": [("ammo", "reads")], "reloads_ammo": [("ammo", "sets")], "ammo_per_foe_hit": [("ammo", "sets")],
@@ -112,7 +111,7 @@ EFFECTS = {
     "shock_on_hull_strike": [("shocked", "sets"), ("hull_damage", "reads")], "seal_form": [("sealed", "sets"), ("braced", "sets"), ("heat", "sets")],
     "paradox": [("paradox", "sets"), ("suppressed", "sets")], "muster": [("muster", "sets"), ("reroll", "reads")],
     "shield_per_heat": [("heat", "reads")], "shield_per_ally_heat": [("ally_heat", "reads"), ("shield_granted", "reads")],
-    "add_stacks": [], "vent_blast": [("heat", "reads")], "forge": [("ammo", "sets"), ("heat", "reads")], "lay_mines": [("mine", "sets")],
+    "add_stacks": [], "vent_blast": [("heat", "reads")], "forge": [("ammo", "sets"), ("heat", "reads")], "mine_on_spend": [("mine", "sets")],
     "step_die": [("reroll", "reads")], "split_strikes": [("strikes", "sets")], "multiply_printed": [], "free_reroll": [("reroll", "sets")],
     "extra_action": [], "never_hunted": [], "no_destroy": [], "carry": [], "keep_status": [], "rewrite_weapon": [], "grant_keyword": [],
     "add_shield": [], "vent_heat": [], "stack_status": [], "lay_status": [],
@@ -142,7 +141,6 @@ ENGINE_READERS = {
     "suppressed": ["it loses its next action (Numbed is the brake)"],
     "webbed": ["the burst at the end of its action: it and its neighbour Suppressed"],
     "vitriol": ["its tick: 10% of its current HP a stack, past armour"],
-    "syrinx_drone": ["the next kill on it leaves a mine in its slot"],
     "paradox": ["at three, Suppressed"],
     "lure": ["every foe reached turns on the spender, so whatever reads being struck pays (Retaliate, a Barrier, the Armoured and Sealed plate, and every reader of hull damage)"],
     "disrupt": ["the foe takes its next open move"],
@@ -169,7 +167,7 @@ ENGINE_READERS = {
     "reroll": ["three a round, banked up to three while a Giant Petrel fights"],
     "rank": ["Direct reaches the front, Indirect any"],
     "strikes": ["each strike takes the foe's conditions and armour on its own"],
-    "mine": ["whoever steps in takes every shot waiting"],
+    "mine": ["blows on every foe round its slot when it falls"],
     "ammo": [], "muster": [], "rage": [], "hopper": [], "missing_hp": [], "ally_heat": [], "shield_granted": [], "tags": ["the screen's lunge reads Melee; nothing else reads a tag"],
     "foe_buff": ["each has an answer beside a purge: kill, suppress or disrupt the rallier, Expose or breach the brace, pop a Barrier with a cheap blow, wait out a Ward, burst what regenerates"],
 }
@@ -290,7 +288,7 @@ class Map:
                 self.unmapped.append("%s: trigger %s" % (p["who"], trig))
             tcur = TRIGGERS.get(trig)
             if tcur == "paradox_feed":
-                for cur in ("burning", "flakked", "shocked", "exposure", "cryoed", "suppressed", "webbed", "vitriol", "syrinx_drone"):
+                for cur in ("burning", "flakked", "shocked", "exposure", "cryoed", "suppressed", "webbed", "vitriol", "mine"):
                     self.add(cur, "reads", dict(p, how="counts it"))
             elif tcur:
                 self.add(tcur, "reads", p)
@@ -301,7 +299,7 @@ class Map:
                 if eff.get("status"):
                     self.add(eff["status"], "reads", p)
                 else:
-                    for cur in ("burning", "flakked", "shocked", "exposure", "cryoed", "suppressed", "webbed", "vitriol", "syrinx_drone", "paradox"):
+                    for cur in ("burning", "flakked", "shocked", "exposure", "cryoed", "suppressed", "webbed", "vitriol", "mine", "paradox"):
                         self.add(cur, "reads", dict(p, how="any status"))
             if when == "attacker_status":
                 self.add(eff.get("status"), "reads", p)
@@ -385,7 +383,7 @@ def render(m):
             if len(sl) == 1:
                 holes.append("**%s** has one slottable setter, %s." % (label, word(sl[0])))
             if not readers and cur not in ("suppressed", "webbed", "disrupt", "swap", "phased", "barrier", "ward", "sealed", "regenerating",
-                                           "rallied", "spun_up", "braced", "vitriol", "syrinx_drone", "paradox", "lure", "retaliate"):
+                                           "rallied", "spun_up", "braced", "vitriol", "mine", "paradox", "lure", "retaliate"):
                 holes.append("**%s** is read by nothing but its own effect." % label)
     L.append("")
     L.append("Tags, by the slottable pieces that wear them (locked in brackets); nothing but the screen's lunge reads one:")

@@ -9,7 +9,7 @@ extends SceneTree
 ## showing), mechhold and foehold (the first machine's and the first foe's readout, as a tap opens it), confirm (the
 ## end-turn question), lock, rage (the rage's roll again mid-burst), heat (Burning and
 ## Scorched on the first machine), foeheat (heat's red-orange beside the enemy's violet on three foes' chips), repick (a foe whose machine falls before it acts, a second
-## arrow dashed to the machine it will strike).
+## arrow dashed to the machine it will strike), columns (every foe aimed at the machine nearest its column, every arrow on).
 
 var _frames := 0
 var _vp: SubViewport
@@ -219,6 +219,18 @@ func _apply_pose() -> void:
 				foes[i].target = s.sk.mechs[0]
 			s._toggle_all_arrows(true)
 			s._refresh()
+		"columns":
+			# One column's two arrows apart (Ryan, 9 November: two foes of one column at the machine
+			# below blended): every foe aimed at the machine nearest its column, its blow drawn, every
+			# arrow on (RIFTGATE_FOES=goblin:4,mandragora:4 fills both ranks).
+			for foe in s.sk.field_foes():
+				for a in foe.actions:
+					if Foe.is_attack_action(a):
+						foe.action = a
+						break
+				foe.target = s.sk.mechs[clampi(foe.column - (s.sk.columns - s.sk.mechs.size()) / 2, 0, s.sk.mechs.size() - 1)]
+			s._toggle_all_arrows(true)
+			s._refresh()
 		"chips":
 			# Every unit crowded with chips (Ryan, 2 November: "chips can go off the sides of the
 			# screen ... Need to wrap rows ... space for 2-3 rows of chips under the player units"):
@@ -291,7 +303,7 @@ func _apply_pose() -> void:
 			var swept: Foe = s.sk.back[0] if s.sk.back[0] != null else s.sk.front[0]
 			s._on_drag_moved(s._foe_view_for(swept).get_global_rect().get_center())
 		"undo":
-			# One die spent on a scratch (3 November): UNDO lit at the reroll row's right end with
+			# One die spent on a scratch (3 November): UNDO lit at the bottom row's right end with
 			# the one spend it reaches on its badge, the round's bar in the trail over the spend's line.
 			s.sk.mechs[0].die.faces[s.sk.mechs[0].face_index] = Face.attack(1)
 			s._use_die(0, s.sk.front[0])
@@ -305,7 +317,7 @@ func _apply_pose() -> void:
 ## (two machines ordered onto two packs: the numbered fights and ENGAGE 1 OF 2), draft (a
 ## route drawn by hand, about halfway through the move), carry (a
 ## carrier's route drawn to a stop where its rider cannot land: NO ROOM), hold (a
-## pack's readout; boss, gate and ground the others'), codex / foecodex (a machine's or a pack's entry), resolve (one turn
+## pack's readout; boss and ground the others'), fracture (a Fracture announced), rift (the rift's end: the vortex and the boss), codex / foecodex (a machine's or a pack's entry), resolve (one turn
 ## ended), attack (a fight set up beside a pack), caught (a hunter's forced fight), engage
 ## (the handover into a fight), bosscontact (the boss's reveal).
 func _apply_battle_pose() -> void:
@@ -477,6 +489,18 @@ func _apply_battle_pose() -> void:
 					s._map.zoom_at(s._map.size * 0.5, 2.0)
 					s._map.scroll_to_unit(m)
 					break
+		"caches", "cachesflat":
+			# Zoomed in on the first cache (with RIFTGATE_CACHE_DEBUG=1 the three kinds beside the
+			# team, on solid ground) or the last (the three by the rift, under the painting).
+			var cs: Array = b.field.caches
+			if not cs.is_empty():
+				var on: Vector2i = cs[0 if _pose == "caches" else cs.size() - 1]["pos"]
+				s._map.zoom_at(s._map.size * 0.5, 2.0)
+				var p: Vector2 = s._map.center(on)
+				s._map.scroll_x = s._map.size.x * 0.5 - p.x * s._map.zoom
+				s._map.scroll_y = s._map.size.y * 0.5 - p.y * s._map.zoom
+				s._map._clamp_scroll()
+				s._map.queue_redraw()
 		"zoom", "zoomlast":
 			# Zoomed in twice on the first (or last) mech, panned so it sits mid-screen.
 			s._map.zoom_at(s._map.size * 0.5, 2.4)
@@ -487,9 +511,20 @@ func _apply_battle_pose() -> void:
 			s._on_hex_double_tapped(b.field.packs()[0].pos)
 		"resolve":
 			s._on_end_turn()
-		"gate":
-			# The gate tapped: its footprint, the hexes it can be attacked from and its readout.
-			s._on_hex_tapped(b.field.map.gate_hexes[0])
+		"rift":
+			# The rift's end of the field: the vortex standing on its hexes (on the lowest of them
+			# with the wall at the left) and the boss's picture at its size beside it (9 November).
+			s._map.scroll_to_top()
+			s._map.queue_redraw()
+		"fracture":
+			# A Fracture announced as a fight's tally earns it (Ryan, 9 November: "Fractures need to
+			# be announced"): the band over the map and the top bar's gauge flashing (the default
+			# frame catches the band at full; it is gone by about the fortieth in a cloud session).
+			if not b.thresholds.is_empty():
+				b.menace_killed = int(b.thresholds[0])
+				b.fractures = 1
+			s._refresh()
+			s._show_fracture(false)
 		"foe":
 			# A pack tapped: bracketed, its path heavy, its strength over it; the map looks at it.
 			var fsq: Unit = b.field.packs()[0]

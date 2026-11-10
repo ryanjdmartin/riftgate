@@ -100,7 +100,7 @@ here.
 - Reroll-related effects are Kestrel's (Ryan, 19 October, after sending them to Wainwright &
   Sutler on 18 October: that maker's ten filled without effort): "it actually fits, and means
   we can push Kestrel way into the risk-versus-reward space, like a real maverick pilot."
-- A tier-one body from more than one maker takes the pressure off the Armadillo being a
+- A tier-one body from more than one maker takes the pressure off the Polar Bear being a
   must-pick (Ryan, 19 October: Wainwright & Sutler is pure offence and utility, Aphelion to be
   decided), which is why the Kestrel off-tank takes a tier-one slot with a lure of its own;
   Aphelion also needs a defensive tier one (Ryan, 19 October), a line in the to-do for its
@@ -145,7 +145,7 @@ here.
   higher tiers; the economy items the go raised are in `docs/economy_pass.md`.
 - The 12 October basic-kit row no longer gives every tier one a locked piece (reworded 20
   October): a tier one shows its identity with basics alone, with a locked piece or without (the
-  Cottonmouth; the form-changing Armadillo keeps its lure by Ryan's framework of 15 October).
+  Cottonmouth; the form-changing Polar Bear keeps its lure by Ryan's framework of 15 October).
 
 ## Ten a maker (4 and 5 November)
 
@@ -178,7 +178,7 @@ The roster, 47 named and 3 open (a brief's name in brackets; the rest are built)
 
 | Maker | Tier one | Tier two | Tier three |
 |---|---|---|---|
-| Minerva (10) | Honey Badger; the lure tank (`minerva_lure_tank.md`); the Wild Boar or the mole | the Armadillo (up); the echidna (`minerva_hedgehog.md`); the Cryo party defence (`minerva_cryo_defence.md`); the immune one (`minerva_immune.md`); the mole (`minerva_mole.md`) or the Wild Boar | the siege battery (`minerva_siege_battery.md`); the battlecruiser (`minerva_battlecruiser.md`) |
+| Minerva (10) | Honey Badger; the lure tank (`minerva_lure_tank.md`); the Wild Boar or the mole | the Polar Bear (up); the echidna (`minerva_hedgehog.md`); the Cryo party defence (`minerva_cryo_defence.md`); the immune one (`minerva_immune.md`); the mole (`minerva_mole.md`) or the Wild Boar | the siege battery (`minerva_siege_battery.md`); the battlecruiser (`minerva_battlecruiser.md`) |
 | Kestrel (10, the Magpie's slot open to another design) | Skua, Storm Petrel, Puffin | Buzzard, Kite, Needletail | Lammergeier, Giant Petrel |
 | Kestrel's two, tiers open | the Snowy Owl, leaning to Cryo (`kestrel_owl.md`) | the Magpie (`kestrel_magpie.md`) | |
 | Wainwright & Sutler (10) | Prairie Dog, Cassowary, Cottonmouth | Dingo, Clydesdale, funnel-web, the gunship (`ws_gunship.md`), Whip Scorpion | Swallowtail, Musk Ox |
@@ -245,11 +245,11 @@ fit touches it. `docs/synergy_map.md` is the built content's piece-level view. R
   striker of bare hull besides; the retaliation row allows a debuff on the striker, and its thorns
   line reads only the echidna's damage. The collision found: the Cryo party defence's shield
   trigger, Claude's first lean, beside Misharu's, both weakening the striker.
-- **Lure (4, 5 with the jellyfish spreading it):** the Armadillo, the Storm Petrel, the Whip
+- **Lure (4, 5 with the jellyfish spreading it):** the Polar Bear, the Storm Petrel, the Whip
   Scorpion and the lure tank. They part by shape: a locked piece, every weapon, every foe. The
   greedy bot values a lure for allies at nothing, so the runner can read none of them yet (the
   to-do's engine line on the bot's valuations).
-- **Cryo (4, 5 with the Macross's Battroid):** the Armadillo lays it, the Cryo party defence keeps
+- **Cryo (4, 5 with the Macross's Battroid):** the Polar Bear lays it, the Cryo party defence keeps
   it, the Snowy Owl cashes it to stay hidden, the frost figure blows it up. The frost figure is the
   one to check for room.
 - **Stuns (5):** the Baboon's Paradox, the funnel-web's web, the Swallowtail's charged flare, the
@@ -263,7 +263,7 @@ fit touches it. `docs/synergy_map.md` is the built content's piece-level view. R
 - **Aphelion's status house (5):** the Stingray goes deep, the jellyfish wide, the time-shifter
   long, the Baboon counts, and Static lays a new mark. The tension: the jellyfish's EMP wipes the
   marks the other four build; a decision, and it wants the counter-play visible.
-- **Minerva's armour (5):** the Badger's plate, the Armadillo's seal, the Wild Boar's brace, the
+- **Minerva's armour (5):** the Badger's plate, the Polar Bear's seal, the Wild Boar's brace, the
   lure tank's ramp and the shield bash that cashes them; they part by where the armour comes from.
 - **Heat (8 and more):** the pillar, as the heat row means it. The Snowy Owl is the first machine
   to want heat at zero.
@@ -294,8 +294,8 @@ any of them, which is the Suppress pattern (one answer, so every design reaches 
 
 | The want | Who chases it | What Rapid gives it |
 |---|---|---|
-| another look at the die | the Cassowary (a roll is a step), the gun platform (a roll is growth), the Armadillo (fishing for the seal or the lure), the Pulse Vacillator's own niche | the free reroll |
-| a second action on one machine, setup then cash | the Armadillo (seal, then act), the Cassowary (the Rapid before the chamber it doubles), the interceptor, the Puffin (vent an ally and still act; answered by the Diffuser's combined entry, 20 October), the siege battery (reload and still act) | act again |
+| another look at the die | the Cassowary (a roll is a step), the gun platform (a roll is growth), the Polar Bear (fishing for the seal or the lure), the Pulse Vacillator's own niche | the free reroll |
+| a second action on one machine, setup then cash | the Polar Bear (seal, then act), the Cassowary (the Rapid before the chamber it doubles), the interceptor, the Puffin (vent an ally and still act; answered by the Diffuser's combined entry, 20 October), the siege battery (reload and still act) | act again |
 | spends counted | the Cassowary's sixth shot, the Paradox (once a spend); the line frame's combo until it counted every blow (Ryan, 20 October) | more spends a round |
 | a small effect that costs no turn | the Deflector, the Diffuser, the Flakshot (lay Flak, cash it the same round) | the cantrip |
 | tempo lent to the best machine | the multi-rotor, the Cottonmouth (a Rapid shell is two drum shots) | an action moved |
@@ -310,7 +310,7 @@ Homes for each want other than more Rapid pieces, with the engine's state:
 - **Own rerolls as a number** (another look). The engine runs it: the Clydesdale's Battery
   Director is one free reroll of its own die a round, a static effect a module may carry
   today. Give it to the machines whose identity reads its die (the Cassowary, the platform,
-  the Armadillo), as a passive clause or a priced module (its stat line paid elsewhere, so it
+  the Polar Bear), as a passive clause or a priced module (its stat line paid elsewhere, so it
   is no universal must-pick). A look without an action. Hole: the Clydesdale's identity thins;
   the number is the lever (one on a d9 is not one on a d3).
 - **The team's order instead of self-sequencing** (the second action). A passive that needs
@@ -376,7 +376,7 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `minerva_battlecruiser.md` | direction | Minerva | 3 | nothing: the cooldown property it waited on is built |
 | `kestrel_strafer.md` | landed 25 October as the Skua, its engine built (each roll halved, rounded down, and struck twice; the Pod's spray), retired (`git show f87b831:docs/briefs/kestrel_strafer.md`) | Kestrel | 1 | Ryan's play and its look (the to-do); its runner rows read 25 October (`docs/measurements.md`) |
 | `kestrel_shield_spender.md` | landed 30 October as the Storm Petrel's engine (the burn and its zap, the plate, Regenerating's machine half on its lock, the bot's reads), retired (`git show d84ad16:docs/briefs/kestrel_shield_spender.md`) | Kestrel | 1 | his play and its look (the to-do; its burn on basics stays as built, Ryan, 31 October); its runner rows read 30 October (`docs/measurements.md`) |
-| `kestrel_bomber.md` | landed 21 October as the Lammergeier, its engine and content built, retired (`git show 62192a4:docs/briefs/kestrel_bomber.md`) | Kestrel | 3 (Ryan, 15 October) | its stock, model and assets (the to-do; the stock pass's table had no row for it); its runner rows once fights have a wait list worth trapping |
+| `kestrel_bomber.md` | landed 21 October as the Lammergeier, its engine and content built, retired (`git show 62192a4:docs/briefs/kestrel_bomber.md`); reworked 9 November onto Mines on foes (the bible's Lammergeier row) | Kestrel | 3 (Ryan, 15 October) | its stock (the to-do; the stock pass's table had no row for it) and Ryan's play of the Mines |
 | `kestrel_gun_platform.md` | landed 30 October as the Giant Petrel's engine (the bank, the Immelmann Booster's ally action, the Salvo's kill rider, the Uplink's roll, the bot's look-or-action valuation), retired (`git show d84ad16:docs/briefs/kestrel_gun_platform.md`) | Kestrel | 3 | his play and its look, the catamaran (the to-do); its runner rows read 30 October (`docs/measurements.md`) |
 | `kestrel_kite.md` | landed 21 October, its engine and content built, retired (`git show 95d4ed3:docs/briefs/kestrel_kite.md`) | Kestrel | 2 (from 1) | its model with the Pinion Driver built in (the to-do; its stock and its team rows landed with the stock pass, 22 October) |
 | `kestrel_interceptor.md` | landed 23 October as the Needletail, runnable, retired (`git show 9ced5e5:docs/briefs/kestrel_interceptor.md`) | Kestrel | 2 (Ryan, 21 October) | its look (the to-do; its rows read 3 November) |

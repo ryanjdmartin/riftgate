@@ -3,7 +3,7 @@
 <!-- hangar: {"kind": "chassis", "maker": "minerva", "tier": null, "status": "shape", "slot": true, "name": "the mole"} -->
 
 The session finds a verb for Ryan's drill-tank mole of 4 November, a silhouette with no mechanic
-yet, and with it its tier: the mole or the Wild Boar comes down to tier one as the Armadillo goes
+yet, and with it its tier: the mole or the Wild Boar comes down to tier one as the Polar Bear goes
 up. "The mole" is a working label; the name is Ryan's.
 
 **Status**: a shape (Ryan, 4 November), its hook later on his word. **Maker**: Minerva. **Proposed

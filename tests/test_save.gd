@@ -343,8 +343,8 @@ func test_the_file_is_written_read_and_cleared() -> void:
 	SaveGame.clear(TMP)
 
 
-## The mines (the Lammergeier's) ride the save: each slot's shots in laid order, their
-## keywords and spender, and the order count, so a resumed fight lands them alike.
+## The Mines (the Lammergeier's, 9 November) ride the save: a foe's Mine is a status, its damage
+## and its riders, so a resumed fight blows it alike.
 func test_the_mines_survive_the_trip() -> void:
 	var b := _battle(9)
 	var m: Unit = b.mechs()[0]
@@ -353,29 +353,17 @@ func test_the_mines_survive_the_trip() -> void:
 	var sk := b.attack(sq, [m])
 	sk.begin()
 	sk.start_round()
-	m.grant_passive({"id": "bay", "name": "Bay", "description": "", "effects": [{"trigger": "static", "effect": "lay_mines"}]})
-	var ms: Skirmish.MechState = sk.mechs[0]
-	var gun := -1
-	for i in range(ms.die.faces.size()):
-		if ms.die.faces[i].is_attack() and ms.die.faces[i].power > 0:
-			gun = i
-	assert_true(gun >= 0, "the machine carries a gun")
-	ms.face_index = gun
-	var slot := Vector2i(-1, -1)
-	for col in range(sk.columns):
-		if sk.front[col] == null:
-			slot = Vector2i(0, col)
-	if slot.x < 0:
-		sk.front[0].hp = 0
-		sk._clear_dead()
-		slot = Vector2i(0, 0)
-	assert_true(sk.assign(0, slot), "a mine laid")
+	m.grant_passive({"id": "bay", "name": "Bay", "description": "", "effects": [{"trigger": "static", "effect": "mine_on_spend", "value": 2}]})
+	var foe: Foe = sk.field_foes()[0]
+	sk._add_mine(foe, 5, {"stacks": {"burning": 2, "vitriol": 1}, "keywords": ["shock", "breach"]})
 	var back := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
 	var sk2: Skirmish = back.current
-	assert_eq(sk2.mines.keys(), sk.mines.keys(), "the mined slots")
-	assert_eq(JSON.stringify(sk2.mines_at(slot)), JSON.stringify(sk.mines_at(slot)), "their shots")
-	assert_eq(typeof(sk2.mines_at(slot)[0]["keywords"]), TYPE_ARRAY, "keywords as a list")
-	assert_eq(sk2.mine_seq, sk.mine_seq, "the order count")
+	var foe2: Foe = sk2.field_foes()[0]
+	var mine := Skirmish.mine_of(foe2)
+	assert_eq(int(mine.get("damage", 0)), 5, "its damage")
+	assert_eq([int(mine["riders"]["stacks"]["burning"]), int(mine["riders"]["stacks"]["vitriol"])], [2, 1], "its stacks by status")
+	assert_eq(mine["riders"]["keywords"], ["shock", "breach"], "its flags, as a list")
+	assert_eq(JSON.stringify(mine), JSON.stringify(Skirmish.mine_of(foe)), "the Mine as it was")
 
 
 ## The planner's copy (SaveGame.clone_skirmish, 22 October): every unit its own, the fight under

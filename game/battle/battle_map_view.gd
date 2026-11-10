@@ -48,7 +48,6 @@ var forced: Array = []               # the fights hunters forced, first in line 
 var attack: Dictionary = {}          # the fight shown (Battle.roster) with "committed": the machines in it; empty for none
 var orders: Dictionary = {}          # mech id -> the pack it is ordered onto (Battle.orders): drawn as a line to it
 var fight_group: Array = []          # the fight being entered: the map freezes on it through the handover
-var spent: Dictionary = {}           # machine id -> true: no action left this turn
 var queue: Array = []                # the fights waiting, in the order ENGAGE opens them (Battle.fights_waiting): numbered on the map
 var flatten_at := Vector2.ZERO       # the handover into a skirmish: one more bleed source, growing
 var flatten_r := 0.0                 # its radius in hexes; 0 is none (tweened by the screen)
@@ -579,10 +578,18 @@ func _draw() -> void:
 					if not hunted.has(prey):
 						hunted[prey] = []
 					(hunted[prey] as Array).append(sq)
+			var whole := shows_whole_way(sq, w)
+			if whole:
+				# Its whole way as the field stands, past this turn's walk to its goal, with the
+				# turns after it numbered (Ryan, 9 November: "Pushers should show their current
+				# complete path to their targeted wall segment when tapped. Similarly, hunters ...
+				# I would also show the hunter path when the hunted unit is tapped as well").
+				_way_on(sq, w)
 			if not w.path.is_empty():
 				# The same route mark as the player's (Ryan, 29 September), in steady violet; the
-				# colour breathes only on the pack that was tapped.
-				_route(sq.pos, w.path, Palette.ENEMY, false, false, sq.pos == inspected, true)
+				# colour breathes only on the pack that was tapped, or a hunter of the machine in hand.
+				_route(sq.pos, w.path, Palette.ENEMY, false, false, whole, true)
+				_walk_end(w.end, whole)
 			var below := center(w.end) + Vector2(0.0, HEX_SIZE * 0.7)
 			if w.strikes:
 				_plaque(below, "STRIKES THE GATE", Palette.ENEMY, 1.5)
@@ -590,28 +597,6 @@ func _draw() -> void:
 				_plaque(below, "WAITS", Palette.MUTED, 1.5)
 			elif w.catches != 0:
 				_plaque(below, "CATCHES", Palette.ENEMY, 1.5)
-
-	# The gate selected: its footprint outlined, and the hexes it can be attacked from
-	# tinted (Ryan, 29 September: the bar lit alone did not say where the danger stands).
-	if gate_selected and _anim.is_empty():
-		var attack: Dictionary = {}
-		for g in map.gate_hexes:
-			for n in Hex.neighbors(g):
-				if map.has(n) and not map.is_structure(n):
-					attack[n] = true
-		# The hexes a pack can strike from read as warning zones (Ryan, 29 September): a violet
-		# border crawling round each with a warning glyph at its centre; the gate's own
-		# footprint translucent but plain to see, a tint under a half-strength outline.
-		var blink := 0.55 + 0.45 * sin(_ring_t * 3.0)   # the glyphs pulse together
-		for n in attack.keys():
-			_fill(n, Color(Palette.ENEMY, 0.06))
-			_crawl_poly(MapOrient.corners(center(n), HEX_SIZE - _px(5.5)), Palette.ENEMY, HEX_SIZE * 0.2, fmod(_ring_t * 1.2, 2.0), ENEMY_EDGE)
-			Glyphs.draw(self, "warning", center(n), _px(HEX_SIZE * (0.42 + 0.08 * blink)), Color(ENEMY_HOT, 0.5 + 0.5 * blink), _px(2.5))
-		for g in map.gate_hexes:
-			# A light tint (ground marks land at alpha to the 2.2, so 0.3 is faint) under
-			# lines at a third (Ryan, 29 September).
-			_fill(g, Color(hud, 0.3))
-			Hud.stroke_poly(self, MapOrient.corners(center(g), HEX_SIZE - _px(2.0)), Color(hud, 0.35), _px(1.5))
 
 	# A selected machine wears its shield and hull over its hex; an inspected pack its
 	# strength as one segment a foe (Ryan, 29 September: a pack keeps only its count between
@@ -690,17 +675,16 @@ func _draw() -> void:
 		for u in fight_group:
 			_contact_effect((u as Unit).pos, true, (u as Unit).is_enemy())
 	# The queue (the long wall brief 7.4): each fight waiting numbered in the order ENGAGE opens
-	# it, on its pack (a catch's on the machine caught); and each machine's action pip, lit until
-	# it fights, open once its action is spent.
+	# it, on its pack (a catch's on the machine caught). No pip under a machine says whether it can
+	# still act: the board under the map says it, each machine's row (Ryan, 9 November: "I don't
+	# like the action-remaining marker, it causes clutter and confusion. Remove, the panel does that
+	# job").
 	if _anim.is_empty() and fight_group.is_empty():
 		for k in range(queue.size()):
 			var q: Dictionary = queue[k]
 			var on: Unit = q["target"] if q["target"] != null else q["prey"]
 			if on != null:
 				_queue_number(center(on.pos) + Vector2(-HEX_SIZE * 0.62, -HEX_SIZE * 0.55), k + 1)
-	if _anim.is_empty():
-		for m in field.mechs():
-			_action_pip(_unit_center(m) + Vector2(-HEX_SIZE * 0.55, HEX_SIZE * 0.45), not spent.has(m.id))   # at its hex's lower left, clear of a machine standing below it with the wall at the left
 
 	_draw_caches()
 	for u in field.units:
@@ -718,9 +702,6 @@ func _draw() -> void:
 	# far the reconstruction is zoomed (Ryan, 22 September).
 	if _map3d != null and frame_alpha > 0.0:
 		_draw_frame(hud)
-	_draw_gate_bar()
-	_draw_rupture_bar()
-	_draw_rift_bar()
 	_draw_tears()
 	_draw_tags()
 	if _map3d != null:
@@ -745,21 +726,6 @@ func _queue_number(at: Vector2, n: int) -> void:
 	var t := str(n)
 	var tw := font.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, 18).x
 	draw_string(font, p + Vector2(-tw * 0.5, 7.0), t, HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Palette.BG)
-	_map_space()
-
-
-## A machine's action this turn: a pip under it, filled in the display's light while it may still
-## fight and open once its action is spent (a fight ends it), by structure as well as light.
-func _action_pip(at: Vector2, lit: bool) -> void:
-	_screen_space()
-	var p := to_screen(at)
-	var pts := Hex.corners(p, 8.0)
-	draw_colored_polygon(Hex.corners(p, 10.0), Color(Palette.BG, 0.85))
-	if lit:
-		draw_colored_polygon(pts, Palette.HUD)
-	else:
-		pts.append(pts[0])
-		draw_polyline(pts, Palette.MUTED, 2.0, true)
 	_map_space()
 
 
@@ -865,79 +831,24 @@ func _readout(font: Font, at: Vector2, text: String, fc: Color) -> void:
 	draw_string(font, at, text, HORIZONTAL_ALIGNMENT_LEFT, -1, FRAME_FONT, fc)
 
 
-## A HUD bar in screen space: a backing, a track, a fill, a rim, a label above on its own
-## dark plaque, so it reads on any ground, the rift's included (Ryan, 23 September).
-const BAR_FONT := 14
-
-func _hud_bar(map_pos: Vector2, map_w: float, frac: float, col: Color, label: String, a: float = 1.0) -> Rect2:
-	var p := to_screen(map_pos)
-	var rect := Rect2(p.x - map_w * zoom * 0.5, p.y, map_w * zoom, 12.0)
-	var font := Hud.mono()
-	var tw := font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, BAR_FONT).x
-	draw_rect(Rect2(rect.position.x - 3.0, rect.position.y - 22.0, tw + 10.0, 20.0), Color(Palette.BG, 0.85), true)
-	draw_rect(rect.grow(3.0), Color(Palette.BG, 0.85), true)
-	draw_rect(rect, Color(col, 0.18 * a), true)
-	draw_rect(Rect2(rect.position, Vector2(rect.size.x * frac, rect.size.y)), Color(col, a), true)
-	draw_rect(rect.grow(3.0), Color(col, 0.7 * a), false, 1.5)
-	draw_string(font, Vector2(rect.position.x + 2.0, rect.position.y - 7.0), label, HORIZONTAL_ALIGNMENT_LEFT, -1, BAR_FONT, Color(col, a))
-	return rect
+## The hex a tap asked about (a pack, the ground): lit while its readout is up. The gate and the
+## rift carry no bar and no selection on the map (Ryan, 9 November: "The rift and wall no longer
+## need to show their bars, nor be selectable"): their numbers are the top bar's (TopBar).
+var inspected := Vector2i(-9999, -9999)
 
 
-## The gate's integrity as a true bar (Ryan, 22 September), on the wall's face under the
-## gate, always; brighter while the gate is selected.
-var gate_selected := false
-## The Rupture meter as the screen reads it off the battle (30 October): {"tally", "thresholds",
-## "fractures", "sealed"}; empty for a battle without one (the harness with no boss).
-var meter: Dictionary = {}
-var inspected := Vector2i(-9999, -9999)   # the hex a tap asked about (a pack, the ground): lit while its readout is up
+## The caches lying on the field (the bible's loot rows; built 7 November). A cache's picture is
+## its model while its hex is the reconstruction's (Map3D's, Ryan, 9 November: "can we get models
+## (and art, when flattened), for loot caches on map?") and its flat token once the painting has
+## taken the hex (art/loot, tools/loot_tokens.py), crossing over with the ground as the
+## compositor does. What says its kind is over the picture in both worlds: its name on a plaque
+## and under it as many pips as its kind's tier (a Derelict one, a Carcass two, a Relic three), so
+## a kind reads by its structure and its name, never a hue or a silhouette alone. A kind with no
+## model, and every cache drawn headless, wears the first cut's mark instead: the pips in a white
+## diamond on a black plate. Under the units: a machine standing on one draws over its dimmed
+## mark, and claims it as the turn ends. First cuts, judged on the phone.
+const CACHE_TOKEN := 3.0   # a cache's token, in screen pixels a texel at zoom 1: a little over a foe's (2.6), hot for the phone
 
-## Where the gate's bar stands, the Rupture meter's under it: on the wall's face under the gate
-## with the wall at the bottom; with it at the left the face is too narrow, so on the wall's line
-## past the gate's top end, clear of the machines that open beside the gate.
-func _gate_bar_at() -> Vector2:
-	var map := field.map
-	if not MapOrient.wall_left:
-		return base(map.gate) + Vector2(0, -HEX_SIZE * 1.5 * (BattleMap.GATE_ROWS - 0.5) + 26.0)
-	var top := INF
-	for g in map.gate_hexes:
-		top = minf(top, base(g).y)
-	return Vector2(base(map.gate).x, top - HEX_SIZE * 2.2)
-
-
-func _draw_gate_bar() -> void:
-	var map := field.map
-	var at := _gate_bar_at()
-	var frac := float(field.gate_hp) / maxf(1.0, float(field.gate_hp_max))
-	var col := Palette.HUD if frac > 0.34 else Palette.LOSS
-	var rect := _hud_bar(at, HEX_SIZE * 3.2, frac, col, "GATE %d/%d" % [field.gate_hp, field.gate_hp_max], 1.0 if gate_selected else 0.8)
-	if gate_selected:
-		Hud.brackets(self, rect.grow(10.0), 8.0, col, 2.0)
-
-
-## The Rupture meter (30 October): a bar under the gate's toward the Rupture, a notch at each
-## Fracture, in the rift's own light; it reads SEALED until the Rupture and THE RUPTURE after.
-## A first cut, to be judged running on the phone.
-func _draw_rupture_bar() -> void:
-	if meter.is_empty() or (meter.get("thresholds", []) as Array).is_empty():
-		return
-	var thresholds: Array = meter["thresholds"]
-	var last := maxi(1, int(thresholds[thresholds.size() - 1]))
-	var map := field.map
-	var at := _gate_bar_at() + Vector2(0.0, 22.0)
-	var frac := clampf(float(int(meter.get("tally", 0))) / float(last), 0.0, 1.0)
-	var sealed := bool(meter.get("sealed", true))
-	var label := ("RUPTURE %d/%d" % [int(meter.get("fractures", 0)), thresholds.size()]) if sealed else "THE RUPTURE"
-	var rect := _hud_bar(at, HEX_SIZE * 3.2, frac, Palette.ENEMY, label, 0.9)
-	for t in thresholds:
-		var x := rect.position.x + rect.size.x * clampf(float(int(t)) / float(last), 0.0, 1.0)
-		draw_line(Vector2(x, rect.position.y - 2.0), Vector2(x, rect.end.y + 2.0), Color(Palette.ENEMY, 0.9), 2.0)
-
-
-## The caches lying on the field (the bible's loot rows; built 7 November): each a white diamond
-## on a black plate, as many pips in it as its kind's tier (a Derelict one, a Carcass two, a Relic
-## three) and its kind's name over it, so a kind reads by its structure and its name, never a hue
-## (white is good's; the plaque's look is settled). Under the units: a machine standing on one draws
-## over its dimmed mark, and claims it as the turn ends. A first cut, judged on the phone.
 func _draw_caches() -> void:
 	if field == null or field.caches.is_empty():
 		return
@@ -949,14 +860,52 @@ func _draw_caches() -> void:
 		var t := int(c.get("tier", 1))
 		var a := 0.45 if field.unit_at(h) != null else 1.0
 		var r := HEX_SIZE * 0.46
-		var pts := PackedVector2Array([at + Vector2(0, -r), at + Vector2(r * 0.85, 0), at + Vector2(0, r), at + Vector2(-r * 0.85, 0)])
-		draw_colored_polygon(pts, Color(0, 0, 0, 0.85 * a))
-		Hud.stroke_poly(self, pts, Color(Palette.INK, a), _px(3.0))
-		for k in range(t):
-			var dot := at + Vector2((float(k) - float(t - 1) * 0.5) * r * 0.42, 0.0)
-			draw_circle(dot, maxf(_px(3.0), r * 0.12), Color(Palette.INK, a))
 		var kind := db.loot_kind_of_tier(t)
-		_plaque(at + Vector2(0.0, -r - 10.0), str(db.loot.get(kind, {}).get("name", kind)).to_upper(), Color(Palette.INK, a), 1.5)
+		var label := str(db.loot.get(kind, {}).get("name", kind)).to_upper()
+		if _map3d == null or not Map3D.has_cache_model(kind):
+			var pts := PackedVector2Array([at + Vector2(0, -r), at + Vector2(r * 0.85, 0), at + Vector2(0, r), at + Vector2(-r * 0.85, 0)])
+			draw_colored_polygon(pts, Color(0, 0, 0, 0.85 * a))
+			Hud.stroke_poly(self, pts, Color(Palette.INK, a), _px(3.0))
+			for k in range(t):
+				var dot := at + Vector2((float(k) - float(t - 1) * 0.5) * r * 0.42, 0.0)
+				draw_circle(dot, maxf(_px(3.0), r * 0.12), Color(Palette.INK, a))
+			_plaque(at + Vector2(0.0, -r - 10.0), label, Color(Palette.INK, a), 1.5)
+			continue
+		# The token over the painting, by how much of the hex the painting has (the model's own
+		# sinking is Map3D's, by the same threshold).
+		var flat := 1.0 - _solid_at(h)
+		var tex := Sprites.map_cache(kind)
+		if flat > 0.02 and tex != null:
+			var ts := tex.get_size() * CACHE_TOKEN
+			draw_texture_rect(tex, Rect2((at - Vector2(ts.x * 0.5, ts.y - SPRITE_FEET)).floor(), ts), false, Color(1, 1, 1, flat * a))
+		# The name over the picture and the pips under the name, on their own plate.
+		var top := at + Vector2(0.0, -HEX_SIZE * 0.98)
+		_plaque(top, label, Color(Palette.INK, a), 1.5)
+		_cache_pips(top, t, a)
+
+
+## A cache's kind as pips, on a black plate under its name: as many white dots as its kind's
+## tier. Drawn in screen space like the plaque it hangs under, so it holds its size at every zoom.
+func _cache_pips(name_at: Vector2, n: int, a: float) -> void:
+	_screen_space()
+	var w := float(n) * PIP + float(n - 1) * PIP_GAP + 10.0
+	var rect := _plaque_rect(to_screen(name_at) + Vector2(0.0, 9.0 + 2.0 + (PIP + 6.0) * 0.5), Vector2(w, PIP + 6.0))
+	draw_rect(rect, Color(Palette.BG, a), true)
+	draw_rect(rect, Color(Palette.INK, a), false, 1.5)
+	for i in range(n):
+		draw_circle(rect.position + Vector2(5.0 + PIP * 0.5 + float(i) * (PIP + PIP_GAP), rect.size.y * 0.5), PIP * 0.5, Color(Palette.INK, a))
+	_map_space()
+
+
+## How much of a hex is still the reconstruction's, 1 solid to 0 under the painting (Bleed.solid,
+## the compositor's threshold); 1 with no 3D map, which paints nothing.
+func _solid_at(h: Vector2i) -> float:
+	if _map3d == null:
+		return 1.0
+	if _bleed_src.is_empty():
+		_bleed_grad = Bleed.gradient(field, _origin, HEX_SIZE)
+		_bleed_src = Bleed.sources(field, _origin, HEX_SIZE, _anim_px)
+	return Bleed.solid(base(h), _bleed_grad, _bleed_src)
 
 
 ## The tears (30 October): each a small vortex ring in the rift's own light on the seam's
@@ -974,19 +923,25 @@ func _draw_tears() -> void:
 		_plaque(c + Vector2(0.0, -r - 12.0), "TEAR", Palette.ENEMY, 1.5)
 
 
-## The rift's pressure as a bar toward the next spawn (Ryan, 22 September), above the rift
-## in the scenery rows, where the boss standing in front of the rift never covers it.
-func _draw_rift_bar() -> void:
-	var at := _origin + MapOrient.to_pixel(field.map.rift, HEX_SIZE) + MapOrient.turn(Vector2(0, -HEX_SIZE * 2.7))
-	var frac := float(field.rift_pressure) / maxf(1.0, float(field.rift_pressure_max))
-	_hud_bar(at, HEX_SIZE * 3.2, frac, Palette.ENEMY, "NEXT SPAWN IN %d" % (field.rift_pressure_max - field.rift_pressure))
-
-
 ## The one scan bar crosses the whole screen on the top layer (the battle screen draws it);
 ## it tells the map where it is, in this control's pixels, and the traces under it light.
 func sweep_at(local_y: float) -> void:
 	if _map3d != null:
 		_map3d.set_sweep((local_y - scroll_y) / zoom if sweep_on else -1.0e6)
+
+
+## The hex the vortex stands on: the rift's middle hex with the wall at the bottom, where its three
+## hexes lie side by side under it; with the wall at the left they stack up the screen, so it stands
+## on the lowest of them and rises over all three (Ryan, 9 November: "the rift sprite needs to be
+## anchored on the lower hex in wall-left view").
+func rift_foot(map: BattleMap) -> Vector2i:
+	if not MapOrient.wall_left:
+		return map.rift
+	var foot: Vector2i = map.rift
+	for r in map.rift_hexes:
+		if base(r).y > base(foot).y:
+			foot = r
+	return foot
 
 
 const RIFT_FRAME_SECONDS := 0.7    # a frame, on the vortex's own clock
@@ -1013,7 +968,7 @@ func _draw_rift(map: BattleMap) -> void:
 	# chance once, and Ryan liked it, then wanted it slower).
 	var beat := Sound.beat() if RIFT_ON_BEAT else -1.0
 	var k := int(beat / 4.0 * frames if beat >= 0.0 else _ring_t / RIFT_FRAME_SECONDS) % frames
-	var c := center(map.rift)
+	var c := center(rift_foot(map))
 	var dest := Rect2((c - Vector2(fw * SPRITE_SCALE * 0.5, fh * SPRITE_SCALE - HEX_SIZE * 0.9)).floor(), Vector2(fw, fh) * SPRITE_SCALE)
 	# The vortex is the worst input the display gets: it is drawn in bands, and now and
 	# then one tears sideways and dims, the same tear the compositor gives the ground
@@ -1393,6 +1348,90 @@ func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool
 	_crawl_poly(MapOrient.corners(end, HEX_SIZE - _px(5.5)), Color(0, 0, 0, 0), HEX_SIZE * 0.2, fmod(_ring_t * 1.5, 2.0))   # just inside the hex lines (Ryan, 30 September)
 
 
+## Whether a pack's whole way shows: the pack tapped, or a hunter coming for the machine in hand.
+func shows_whole_way(sq: Unit, w: Battlefield.Walk) -> bool:
+	if sq.pos == inspected:
+		return true
+	return selected != null and selected.is_player() and w != null and w.prey == selected.id and sq.behaviour == "hunt"
+
+
+## Where a pack's walk ends this turn (Ryan, 9 November: "enemy unit path intents should have the
+## end hex highlighted"): the hex tinted in the enemy's violet under a solid edge on a deep-violet
+## track, so the stop reads by its fill and its line, not by the route's tip; heavier while the
+## pack's whole way shows.
+func _walk_end(h: Vector2i, lit: bool) -> void:
+	_fill(h, Color(Palette.ENEMY, 0.62 if lit else 0.45))
+	var pts := MapOrient.corners(center(h), HEX_SIZE - _px(4.0))
+	Hud.stroke_poly(self, pts, Color(ENEMY_EDGE, 0.95), _px(6.0))
+	Hud.stroke_poly(self, pts, ENEMY_HOT if lit else Palette.ENEMY, _px(3.0))
+
+
+## A pack's way past this turn's walk (Walk.route), to its goal: a dashed violet line on a deep
+## track, apart by structure from the walk's solid one, a chevron a step; each later turn's stop a
+## numbered pip (2, 3, ...: when it gets there, as the field stands); the goal marked, a pusher's
+## wall hex by the warning (where it strikes the wall from) and a hunter's by the target, with its
+## pounce dotted on to the machine it comes for, so the way runs all the way to its target.
+func _way_on(sq: Unit, w: Battlefield.Walk) -> void:
+	var from_i := w.path.size()
+	var pts := PackedVector2Array([center(w.end) if from_i > 0 else center(sq.pos)])
+	for i in range(from_i, w.route.size()):
+		pts.append(center(w.route[i]))
+	var col := Palette.ENEMY
+	for i in range(pts.size() - 1):
+		var a := pts[i]
+		var b := pts[i + 1]
+		if i == 0 and from_i == 0:
+			a = a.lerp(b, 0.45)   # out of the sprite's edge, as the walk's leaves it
+		draw_line(a, b, Color(ENEMY_EDGE, 0.85), _px(6.0))
+		_dashed_line(a, b, col, HEX_SIZE * 0.16, 0.0, 0.0, 3.0)
+		var dir := (b - a).normalized()
+		var tip := a.lerp(b, 0.55)
+		var side := Vector2(-dir.y, dir.x)
+		var k := _px(5.0)
+		draw_polyline(PackedVector2Array([tip - dir * k + side * k, tip, tip - dir * k - side * k]), col, _px(2.0))
+	if w.route.is_empty():
+		return
+	var goal: Vector2i = w.route[w.route.size() - 1]
+	# The goal: a crawling dashed edge round its hex and its mark at the middle.
+	_crawl_poly(MapOrient.corners(center(goal), HEX_SIZE - _px(5.5)), col, HEX_SIZE * 0.2, fmod(_ring_t * 1.2, 2.0), ENEMY_EDGE)
+	var prey := field.unit_by_id(w.prey) if w.prey != 0 else null
+	if prey != null:
+		_target_mark(center(goal), _px(13.0))
+		# The pounce: dotted on from the goal to the machine it comes for.
+		var pa := center(goal)
+		var pb := _unit_center(prey)
+		var dir := (pb - pa).normalized()
+		if pa.distance_to(pb) > HEX_SIZE * 1.2:
+			_dashed_line(pa + dir * HEX_SIZE * 0.45, pb - dir * HEX_SIZE * 0.55, ENEMY_HOT, HEX_SIZE * 0.08, 0.0, 0.0, 2.0)
+	else:
+		var blink := 0.55 + 0.45 * sin(_ring_t * 3.0)
+		Glyphs.draw(self, "warning", center(goal), _px(HEX_SIZE * (0.42 + 0.08 * blink)), Color(ENEMY_HOT, 0.5 + 0.5 * blink), _px(2.5))
+	# Each later turn's stop, numbered from the second (the first is this turn's, its end lit); the
+	# goal's at its hex's corner, clear of its mark.
+	var stops := field.turn_ends(sq, w)
+	for n in range(stops.size()):
+		var at := center(w.route[stops[n]])
+		if stops[n] == w.route.size() - 1:
+			at += MapOrient.turn(Vector2(-0.5, -0.55)) * HEX_SIZE
+		_turn_pip(at, n + 2)
+
+
+## A later turn's stop on a pack's way: its turn's number on a dark disc ringed in the violet,
+## held at its size on screen at every zoom.
+func _turn_pip(at: Vector2, n: int) -> void:
+	_screen_space()
+	var p := to_screen(at)
+	var r := 10.0
+	draw_circle(p, r + 2.0, ENEMY_EDGE)
+	draw_circle(p, r, Palette.BG)
+	draw_arc(p, r, 0.0, TAU, 20, Palette.ENEMY, 2.0)
+	var font := Hud.display_bold()
+	var t := str(n)
+	var tw := font.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x
+	draw_string(font, p + Vector2(-tw * 0.5, 5.0), t, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Palette.INK)
+	_map_space()
+
+
 ## A closed outline drawn as dashes that crawl round it: `offset` in dashes, dash and gap
 ## both `dash` screen pixels long.
 func _crawl_poly(pts: PackedVector2Array, col: Color, dash: float, offset: float, edge: Color = Color(0, 0, 0, 0), phase: float = 0.0) -> void:
@@ -1619,7 +1658,7 @@ func focus_on(p: Vector2, z: float) -> void:
 	queue_redraw()
 
 
-## "Badger + Sparrowhawk vs ghouls ×6 + necromancers ×3": one contact group, in words.
+## "Badger + Kite vs ghouls ×6 + necromancers ×3": one contact group, in words.
 static func contact_text(group: Array) -> String:
 	var mechs: Array[String] = []
 	var packs: Array[String] = []
@@ -1899,9 +1938,10 @@ func _draw_unit(u: Unit) -> void:
 	elif tex != null:
 		# A foe is a flat picture on the screen, never an object in the scene: no shadow, no
 		# base, no lighting. It is the other world showing through (decided 19 September).
-		# A small foe draws a little larger than its pixels, so it holds its own beside a mech.
-		var ts := tex.get_size() * SPRITE_SCALE * (1.3 if u.is_enemy() and not u.is_multi_hex() else 1.0)
-		draw_texture_rect(tex, Rect2((c - Vector2(ts.x * 0.5, ts.y - 22.0)).floor(), ts), false)   # its feet 22 px below the hex's centre: a little lower toward the centre (Ryan, 29 September)
+		# A small foe draws a little larger than its pixels, so it holds its own beside a mech; the
+		# boss far larger (sprite_size).
+		var ts := sprite_size(u, tex)
+		draw_texture_rect(tex, Rect2((c - Vector2(ts.x * 0.5, ts.y - SPRITE_FEET)).floor(), ts), false)   # its feet SPRITE_FEET below the hex's centre: a little lower toward the centre (Ryan, 29 September)
 	elif u.is_player():
 		draw_circle(c, 17.0, Palette.BG)
 		draw_circle(c, 14.0, Palette.INK)
@@ -1919,8 +1959,28 @@ func _draw_unit(u: Unit) -> void:
 	# No gauge over a mech: shield and hull read in the docked readout when it is tapped
 	# (Ryan, 21 September), where the contrast is under control.
 	if u.is_enemy() and u.strength > 0:
-		_plaque(c + Vector2(28.0, -30.0), "×%d" % u.strength, Palette.ENEMY, 3.0 if u.is_boss else 1.5)   # up and right, clear of the picture
-		_threat_pips(c + Vector2(28.0, -30.0), u.squad, Palette.ENEMY)
+		var badge := c + Vector2(28.0, -30.0)   # up and right, clear of the picture
+		if u.is_boss and tex != null:
+			var bs := sprite_size(u, tex)
+			badge = c + Vector2(bs.x * 0.42, SPRITE_FEET - bs.y + 10.0)   # the boss's at its picture's top right
+		_plaque(badge, "×%d" % u.strength, Palette.ENEMY, 3.0 if u.is_boss else 1.5)
+		_threat_pips(badge, u.squad, Palette.ENEMY)
+
+
+## How big a foe's picture draws on the map at zoom 1: a pack's a little larger than its pixels,
+## so it holds its own beside a machine; the boss's far larger, BOSS_SPRITE_H tall (Ryan, 9
+## November: "enemy bosses need bigger map sprites. They disappear right now, they should be very
+## big and ominous"), so the thing the battle is about towers over its ground and the rift's.
+const SPRITE_FEET := 22.0      # a picture's feet below its hex's centre
+const BOSS_SPRITE_H := 128.0   # the boss's picture's height: eight texels a texel of the 16-pixel art
+
+static func sprite_size(u: Unit, tex: Texture2D) -> Vector2:
+	if tex == null:
+		return Vector2(40, 40)
+	var ts := tex.get_size()
+	if u != null and u.is_boss:
+		return ts * (BOSS_SPRITE_H / maxf(1.0, maxf(ts.x, ts.y)))
+	return ts * SPRITE_SCALE * (1.3 if u != null and u.is_enemy() and not u.is_multi_hex() else 1.0)
 
 
 const PIP := 9.0       # a threat pip's width on screen: hot, for the phone

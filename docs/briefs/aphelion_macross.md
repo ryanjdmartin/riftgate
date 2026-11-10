@@ -10,7 +10,7 @@ is a working label; the name is Ryan's (Valkyrie, the VF-1's own nickname, is Ba
 
 **Status**: Ryan's idea of 4 November, Claude's first round below, unanswered. **Maker**: Aphelion.
 **Proposed tier**: three. **Read first**: `docs/briefs/README.md` (ten a maker, the orbits); the
-bible's primers row (section 5's weapons), the Armadillo's row and the transforming chassis pin
+bible's primers row (section 5's weapons), the Polar Bear's row and the transforming chassis pin
 (section 7), and the Swallowtail's row on the team shield.
 
 ## What Ryan said
@@ -40,7 +40,7 @@ pieces are content to propose", the primers row), so this machine would be their
 The shifts grant Empowered (a point a stack, halving at the round's end), Regenerating's machine
 half, and Armoured (until the round's end).
 
-A form-change system has existed since the Armadillo. It has two forms: spending a piece on itself
+A form-change system has existed since the Polar Bear. It has two forms: spending a piece on itself
 changes the form, and each form wears its chip on the pieces that change it. Three forms is the
 next step. This machine reopens the bible's pin on transforming chassis (section 7: "One reads
 only with a form-change system, which could be built and is not a priority"). Aphelion's profile
@@ -50,7 +50,7 @@ already names "variable geometry".
 
 1. **What shifts it.** Ryan's list says what each mode does, not how the machine changes mode.
    There are three shapes:
-   - **The Armadillo's**: the kind of entry it spends picks the mode. This breaks on its own
+   - **The Polar Bear's**: the kind of entry it spends picks the mode. This breaks on its own
      riders. A weapon spent while it shifts fires in either the mode it leaves or the one it
      enters, so one mode's rider always rides that weapon.
    - **A piece a mode**: three locked pieces, each its mode's entry and none of them a weapon (a
@@ -66,7 +66,7 @@ already names "variable geometry".
    Rapid shift piece makes shifting nearly free, so every round would carry a grant to the whole
    team.
 2. **The grants are team stats, and the records split them.** Ryan's taste (the briefs README):
-   "giving the team tank stats is just as toxic as taking all the blows". The Armadillo's row
+   "giving the team tank stats is just as toxic as taking all the blows". The Polar Bear's row
    refused "team armour or a team shield on opening". The Swallowtail's row passed a shield number
    for every ally ("the team shield, honest by its number") and refused Armoured for every ally
    ("Armoured on all hands four machines the dearest stat"); the screens' gate, "only while none
@@ -108,7 +108,7 @@ already names "variable geometry".
 
 ## Open for the session
 
-1. What shifts it: the Armadillo's way, a piece a mode (the lean), or one stepping shift piece.
+1. What shifts it: the Polar Bear's way, a piece a mode (the lean), or one stepping shift piece.
 2. Battroid's Armoured on every ally: one ally, a shield number, or the row overruled.
 3. Whom Battroid armours.
 4. Whether the mode sets the way of moving on the map.

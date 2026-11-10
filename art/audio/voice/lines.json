@@ -54,10 +54,6 @@
    "info": false,
    "lines": [
     {
-     "file": "line_bogey_eliminated",
-     "text": "bogey eliminated"
-    },
-    {
      "file": "line_neutralising_hostile",
      "text": "neutralising hostile"
     },
