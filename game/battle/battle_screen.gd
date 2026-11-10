@@ -713,7 +713,7 @@ func mech_lines(u: Unit) -> Array:
 	return out
 
 
-## A pack's readout the same way: its name, its foe and strength, its move and its ring, then
+## A pack's readout the same way: its name, its foe and strength and its move, then
 ## what it is doing. The boss's: its name as the boss, its size (its own in content, apart from
 ## its being the boss, 15 October) and ring, what it brings (a final's hero its wildlife, the
 ## finale's line the party), and its holding the rift.
@@ -728,22 +728,13 @@ func pack_lines(u: Unit) -> Array:
 				parts.append("·")
 			parts.append_array([str(db.foes.get(str(m[0]), {}).get("name", str(m[0]))), "×%d" % int(m[1])])
 		parts.append_array(["·", "Move", str(u.movespeed)])
-		if u.behaviour == "hunt":
-			parts.append_array(["·", "Ring", str(ContentDB.HUNTER_RING)])   # a hunter's catch, the pounce every hunter shares; a pusher has none (8 November)
 		if u.traits.has("winged"):
 			parts.append_array(["·", "Winged"])   # it crosses water and crags as a flyer does
 		var lines: Array = [_title(u.display_name), _squad_line(u), _words(parts), _behaviour_line(u)]
-		# Its prey sealed off, it takes the machine nearest it this turn (Ryan, 29 October:
-		# "It's just punishing hiding"), and the readout says whom and why.
 		var w: Battlefield.Walk = _map.walks.get(u.id, null) if _map != null else null
 		var when := _way_line(u, w)
 		if not when.is_empty():
 			lines.append(when)
-		if w != null and w.prey != 0 and w.prey != u.prey:
-			var took := battle.field.unit_by_id(w.prey)
-			var sealed := battle.field.unit_by_id(u.prey)
-			if took != null and sealed != null:
-				lines.append(_said("Takes", "%s in its place: %s is sealed off" % [took.display_name, sealed.display_name]))
 		return lines
 	var out: Array = [_title(u.display_name, "Boss"), _squad_line(u)]
 	var stats: Array[String] = []
@@ -798,7 +789,7 @@ func _way_line(u: Unit, w: Battlefield.Walk) -> Dictionary:
 	if w.prey != 0:
 		var prey := battle.field.unit_by_id(w.prey)
 		if not battle.field.catches_at(u, w.route[w.route.size() - 1], prey):
-			return _said("Closes", "on it, as near as it gets %s" % when)   # sealed off past any walk: as near as it gets
+			return _said("Closes", "on it, as near as it gets %s" % when)   # past any walk: as near as it gets
 		return _said("Catches", "it %s, as the field stands" % when)
 	return _said("At the wall", "%s, as the field stands" % when)
 

@@ -307,7 +307,7 @@ static func make_boss_unit(content: ContentDB, faction_id: String, t: int, boss_
 ## until it has caught nobody, so no battle opens on a forced fight (Ryan, 6 November: "I
 ## probably would shy away from hitting the first battle with a fight in the first turn, that's
 ## for sure. That's just mean"); its first walk is the enemy's first turn, after the player's.
-## A hunter's ring is the pounce, 2 (ContentDB.HUNTER_RING), and the machines open eight rows or
+## A hunter catches at the engage range, 1 (Unit.ENGAGE_RANGE), and the machines open eight rows or
 ## more below the floor, so a hunter always finds a row clear of them.
 const OPENING_FLOOR_ROW := 1   # the row nearest the rift a pack opens on: the rift's own row is the spawns' (10 November, the mouth no longer rows)
 

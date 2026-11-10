@@ -516,7 +516,7 @@ func test_a_hunters_ring_is_drawn_round_where_its_walk_ends() -> void:
 	var ring: Dictionary = rings[0]["hexes"]
 	var wrong: Array = []
 	for h in b.field.map.all_hexes():
-		var inside := Hex.distance(h, w.end) <= ContentDB.HUNTER_RING and not b.field.map.is_structure(h)
+		var inside := Hex.distance(h, w.end) <= Unit.ENGAGE_RANGE and not b.field.map.is_structure(h)
 		if ring.has(h) != inside:
 			wrong.append(h)
 	assert_eq(wrong, [], "every hex its ring holds from the walk's end, and no other")
@@ -579,37 +579,6 @@ func test_a_hunters_catch_is_fought_first() -> void:
 	s._on_skirmish_back()
 	assert_true(b.forced.is_empty(), "fought")
 	assert_eq(s._resolve_btn.text, "END TURN", "the turn may end")
-	s.free()
-
-
-## A hunter whose prey is sealed off takes the machine nearest it (Ryan, 29 October: "It's just
-## punishing hiding"): its tag and the board follow the machine it comes for, and its readout
-## says whom it takes and why.
-func test_a_hunter_taking_a_machine_in_its_preys_place_says_so() -> void:
-	var s := _screen()
-	var b := s.battle
-	var hunter: Unit = b.field.packs()[0]
-	for p in b.field.packs():
-		p.behaviour = "push"
-	hunter.behaviour = "hunt"
-	var sealed: Unit = b.mechs()[0]
-	var taken: Unit = b.mechs()[1]
-	hunter.prey = sealed.id
-	var w := Battlefield.Walk.new()
-	w.end = hunter.pos
-	w.prey = taken.id
-	w.catches = taken.id
-	s._map.walks = {hunter.id: w}
-	var text := ""
-	for line in s.pack_lines(hunter):
-		text += str((line as Dictionary).get("text", "")) + " / "
-	assert_true(text.contains("Hunts"), "it still names its prey: %s" % text)
-	assert_true(text.contains("Takes %s in its place: %s is sealed off" % [taken.display_name, sealed.display_name]), "and whom it takes instead: %s" % text)
-	var meets := {}
-	for row in s._board._rows():
-		meets[(row["unit"] as Unit).id] = str(row["meets"])
-	assert_true(str(meets[taken.id]).begins_with("HUNTED BY"), "the board marks the machine it comes for")
-	assert_eq(str(meets[sealed.id]), "", "and not the one sealed off")
 	s.free()
 
 
@@ -688,7 +657,7 @@ func test_hold_shows_a_readout() -> void:
 	var sq: Unit = s.battle.field.packs()[0]
 	s._on_unit_held(sq)
 	assert_true(s._details_entry.text().contains("×%d" % int(sq.member_list()[0][1])), "the pack's members, each at its count")
-	assert_eq(s._details_entry.text().contains("Ring %d" % ContentDB.HUNTER_RING), sq.behaviour == "hunt", "its ring, the pounce, only when it hunts (the long wall brief 7.2)")
+	assert_false(s._details_entry.text().contains("Ring"), "no ring line: a hunter catches at the engage range everyone shares (10 November)")
 	assert_true(s._details_entry.text().contains("Marches") or s._details_entry.text().contains("Hunts"), "and what it is doing")
 	s._on_unit_held(s.battle.boss)
 	assert_eq(str(s._details_entry.lines[0]["type"]), "Boss", "the boss says so beside its name")

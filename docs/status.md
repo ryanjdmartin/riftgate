@@ -27,7 +27,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1085 tests, 323,678 checks, green (10 November, `ccr-1e6e6571-7x7ayr` with the shapes laid to the rift's row, on main with the Text tab and the side
+- Tests: 1084 tests, 323,684 checks, green (10 November, `ccr-1e6e6571-7x7ayr` with the shapes laid to the rift's row, the passing and the catch at one, on main with the Text tab and the side
   session's work: the runner's crash check, the caches' pictures, the audit's structure 13; one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
   either map view on 6 November); about four minutes in a cloud session, twenty on a slow one;
@@ -325,8 +325,14 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   shape laying from the rift's row (eight open rows at twelve deep), the opening's packs off the
   rift's row (`Battle.OPENING_FLOOR_ROW`) and the seam keeping its own start (row 4 at twelve
   deep, `Battlefield.seam_start`); the shores laid after the guarantee so no bar outlives its
-  water. His other notes, the body blocking and the maps' seeding, are the next items (section
-  12 and the to-do).
+  water. His second note, built the same day on his go ("it's fine to slide the units under each
+  other"; "I'd love to try getting rid of the hunter catch radius"): no body blocking, every unit
+  passing every other and nobody ending on another's hex (`Battlefield.passes`), the pusher that
+  turned back and the sealed-off prey's stand-in gone with it; and a hunter catching at the engage
+  range everyone shares (`Unit.ENGAGE_RANGE`, 1; `ContentDB.HUNTER_RING` gone), the readout's ring
+  line with it, the ring drawn now the hexes beside the walk's end. The bible's passing, crossing,
+  ring, fights and hunters rows carry it (v0.500); the campaign runner's 40 runs after it are in
+  `docs/measurements.md` (a direction). The maps' seeding issues are the to-do's.
 - **A hunter's reach** (8 November, `ccr-d26a1321-xg9xge`, from Ryan's bug report: on the first
   enemy walk a goblin warband caught the Polar Bear from three hexes, "No indication of catch
   range, nor why a normal goblin pack is now suddenly a hunter"). The three came from a pack
