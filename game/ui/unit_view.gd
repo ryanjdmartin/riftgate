@@ -151,7 +151,7 @@ func _bars_height() -> float:
 
 
 func _pips_step() -> float:
-	return BAR_STEP + 2.0 if pips.size() >= 2 and int(pips[1]) > 0 else 0.0   # a gauge's step, and room for the last cell, taller than its row
+	return BAR_STEP if pips.size() >= 2 and int(pips[1]) > 0 else 0.0   # a gauge's step
 
 
 ## The room a capped store's bar takes in the stack: a gauge's own step.
@@ -628,7 +628,7 @@ func _draw() -> void:
 				_draw_store(Rect2(bx, y, bw, BAR_H))
 				y += _store_step()
 			if _pips_step() > 0.0:
-				_draw_pips(Rect2(bx, y + 1.0, bw, BAR_H))
+				_draw_pips(Rect2(bx, y, bw, BAR_H))
 		else:
 			# One small gauge floating above the drawing's top-right, with a leader dropping
 			# from a third of the way along its underside, diagonally down-left onto the sprite.
@@ -899,7 +899,7 @@ func _draw_dashed(rect: Rect2, color: Color, width: float) -> void:
 ## Cassowary's sixth shot; pips from 21 October until Ryan, 10 November: "Cassowary's needs to
 ## match as well - just need a different kind of indication that the sixth is special"): a cell
 ## a shot, lit to the count, and the last, the one that counts double, apart from the rest by
-## structure: taller than its row, under a heavier border, a diamond set in it. When it is next
+## structure: under a heavier border, a diamond set in it, at its row's own height. When it is next
 ## the whole cell lights in the heat's colour and breathes, the diamond cut out of it.
 func _draw_pips(rect: Rect2) -> void:
 	var of := maxi(1, int(pips[1]))
@@ -912,17 +912,17 @@ func _draw_pips(rect: Rect2) -> void:
 		if k < count:
 			Hud.fill_poly(self, Hud.slant(cell.grow(-2.0), 2.4) if cell.size.x >= 18.0 else pts, hud)
 		Hud.stroke_poly(self, pts, Color(hud, 0.95), 1.5)
-	var last := _cell_rect(of - 1, of, rect).grow_individual(0.0, 2.0, 0.0, 2.0)
+	var last := _cell_rect(of - 1, of, rect)   # its row's own height: taller, it touched the heat bar above (Ryan, 10 November)
 	var next := count == of - 1
 	var col: Color = Palette.HEAT if next else hud
 	var lpts := Hud.slant(last, 4.0)
-	Hud.fill_poly(self, Hud.slant(last.grow(1.5), 4.0), Color(Palette.BG, 0.92))
+	Hud.fill_poly(self, Hud.slant(last.grow(1.0), 4.0), Color(Palette.BG, 0.92))
 	if next:
 		var beat := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 1000.0 * PENDING_RATE)
 		Hud.fill_poly(self, lpts, Color(col, 0.7 + 0.3 * beat))
 	Hud.stroke_poly(self, lpts, Color(col, 1.0), 2.5)
 	var c := last.get_center()
-	var r := minf(last.size.y * 0.5 - 2.5, last.size.x * 0.3)
+	var r := minf(last.size.y * 0.5 - 2.0, last.size.x * 0.3)
 	var gem := PackedVector2Array([c + Vector2(0, -r), c + Vector2(r, 0), c + Vector2(0, r), c + Vector2(-r, 0)])
 	if next:
 		draw_colored_polygon(gem, Color(Palette.BG, 0.95))
@@ -942,8 +942,8 @@ func _draw_pips(rect: Rect2) -> void:
 ## so (the hopper's loads, the rage, the Musk Ox's ammo); one that fills by degrees stays a
 ## meter (the Swallowtail's Muster: "that's a meter with non-discrete fills"). The last lit cell
 ## is where a stack's spend bursts (spend_chip).
-const CELL_GAP := 3.0        # the clear ground between two cells (5 at first; Ryan, 10 November: "Reduce space in between them, otherwise good")
-const CELL_GAP_MANY := 2.0   # the same in a row of more than six (the magazine's ten)
+const CELL_GAP := 1.0        # the ground between two cells: a hairline, the borders doing the parting (5, then 3; Ryan, 10 November: "still too spaced apart, need like 1 or two pixels only")
+const CELL_GAP_MANY := 1.0   # the same in a row of more than six (the magazine's ten)
 
 func _draw_store(rect: Rect2) -> void:
 	_draw_cells(rect, int(store[0]), int(store[1]), store[2] if store.size() >= 3 else Palette.HUD)
@@ -1029,8 +1029,10 @@ func _gauge(rect: Rect2, b: Array) -> void:
 		var step := float(int(b[4])) / mx
 		var at := step
 		while at < 0.999:
+			# The notch leans as the bar's ends lean, 4 across its height (Hud.slant; Ryan, 10
+			# November: "Ticks on the swallowtail should be slanted").
 			var x := rect.position.x + rect.size.x * at
-			draw_line(Vector2(x, rect.position.y - 1.0), Vector2(x, rect.end.y + 1.0), Color(Palette.BG, 0.95), 3.0)
+			draw_line(Vector2(x + 2.4, rect.position.y - 1.0), Vector2(x - 2.4, rect.end.y + 1.0), Color(Palette.BG, 0.95), 3.0)
 			at += step
 	elif b.size() < 4 or int(b[3]) == int(b[0]):
 		Hud.ticks(self, rect.grow(-2.0), int(b[0]), int(b[1]), col, 2.4)

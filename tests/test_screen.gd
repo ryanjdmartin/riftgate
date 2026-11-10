@@ -1166,7 +1166,7 @@ func test_a_capped_store_shows_as_a_segmented_bar_under_the_heat_in_its_chips_pl
 	for k in range(4):
 		var here: Rect2 = v._store_cell(k)
 		var next: Rect2 = v._store_cell(k + 1)
-		assert_true(next.position.x - here.end.x >= 3.0, "clear ground between cell %d and %d" % [k, k + 1])
+		assert_true(next.position.x - here.end.x >= 1.0, "a hairline of ground between cell %d and %d" % [k, k + 1])
 		assert_true(is_equal_approx(here.size.x, next.size.x) and is_equal_approx(here.position.y, next.position.y), "one width, one row")
 	for r in s._mech_rows(0):
 		assert_ne(str(r[0]), SkirmishScreen.status_glyph("rage"), "and no rage chip")
