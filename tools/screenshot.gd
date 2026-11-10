@@ -367,6 +367,22 @@ func _apply_battle_pose() -> void:
 			var sq: Unit = b.field.packs()[0]
 			s._on_hex_tapped(sq.pos)
 			s._map.scroll_to_unit(sq)
+		"hunter":
+			# A hunter and its chip (10 November): the first pack a few hexes off the first machine
+			# and hunting it, the map looking at the pack: its chip with the machine's small picture
+			# and the attack mark, the machine's tag with the hunter's, no ring round either.
+			var hsq: Unit = b.field.packs()[0]
+			var hm: Unit = b.mechs()[0]
+			var best := hsq.pos
+			for h in b.field.map.all_hexes():
+				if Hex.distance(h, hm.pos) == 4 and b.field.can_stand(hsq, h) and Hex.axial_to_offset(h).y < Hex.axial_to_offset(hm.pos).y:
+					best = h
+					break
+			hsq.pos = best
+			hsq.behaviour = "hunt"
+			hsq.prey = hm.id
+			s._refresh()
+			s._map.scroll_to_unit(hsq)
 		"draft":
 			# A route being drawn by hand: it stops about halfway through the move. The first
 			# machine that has such a hex.
@@ -552,6 +568,16 @@ func _apply_battle_pose() -> void:
 				b.fractures = 1
 			s._refresh()
 			s._show_fracture(false)
+		"elite":
+			# A Fracture's elite introduced as it arrives (10 November): the map gliding in on its
+			# hex, zoomed, the elite bursting out under the band that names it; RIFTGATE_SHOT_FRAME
+			# picks the moment (in a cloud session the burst near 10, the band over it near 14).
+			if not b.thresholds.is_empty():
+				b.menace_killed = int(b.thresholds[0])
+				b.fractures = 1
+			b._spawn_elite()
+			s._refresh()
+			s._show_fracture(true)
 		"foe":
 			# A pack tapped: bracketed, its path heavy, its strength over it; the map looks at it.
 			var fsq: Unit = b.field.packs()[0]

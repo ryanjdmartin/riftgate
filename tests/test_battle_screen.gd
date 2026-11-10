@@ -351,10 +351,10 @@ func test_a_fracture_earned_by_a_fight_is_announced_on_the_top_bar() -> void:
 	s.free()
 
 
-## A pack's whole way shows while it is tapped, and a hunter's while the machine it comes for is in
-## hand (Ryan, 9 November: "I would also show the hunter path when the hunted unit is tapped as
-## well"); no other pack's.
-func test_a_tapped_pack_and_a_hunted_machine_show_the_whole_way() -> void:
+## A pack's whole way shows while it is tapped, and no other's: not a hunter's while the machine
+## it comes for is in hand (Ryan, 10 November: "When a machine is selected, don't need to see the
+## whole hunter path to them").
+func test_a_tapped_pack_alone_shows_its_whole_way() -> void:
 	var s := _screen()
 	var b := s.battle
 	var packs := b.field.packs().filter(func(p: Unit) -> bool: return not p.is_boss)
@@ -372,9 +372,7 @@ func test_a_tapped_pack_and_a_hunted_machine_show_the_whole_way() -> void:
 	s._refresh()
 	s._on_hex_tapped(m.pos)
 	assert_eq(s._map.selected, m, "the hunted machine in hand")
-	var hw: Battlefield.Walk = s._map.walks[sq.id]
-	if hw.prey == m.id:
-		assert_true(s._map.shows_whole_way(sq, hw), "its hunter's way shows")
+	assert_false(s._map.shows_whole_way(sq, s._map.walks[sq.id]), "its hunter's whole way stays put away")
 	s.free()
 
 
@@ -493,48 +491,81 @@ func test_a_pack_tapped_with_nothing_in_hand_shows_its_fight() -> void:
 	s.free()
 
 
-## A hunter's ring is drawn (Ryan, 8 November, of a catch from three hexes: "No indication of
-## catch range"): round where its walk ends, where the catch is judged, holding every hex inside
-## its ring and none past it; lit while it is tapped; none for a pusher; and while its catch waits,
-## round where it stands, lit.
-func test_a_hunters_ring_is_drawn_round_where_its_walk_ends() -> void:
+## What a pack comes for is the thing it attacks (Ryan, 10 November: "The "target" hexes for
+## pushers and hunters should be the thing they're attacking. So an actual wall segment, and the
+## actual machine"): a hunter's is the machine it hunts, where the map shows it; a pusher's is a
+## hex of the wall or the gate beside where its way ends. And a landing that attacks says so: a
+## walk that ends with a strike or a catch (attacks_on_landing), no other.
+func test_a_packs_target_is_the_thing_it_attacks() -> void:
 	var s := _screen()
 	var b := s.battle
 	var packs: Array = b.field.packs().filter(func(u: Unit) -> bool: return not u.is_boss)
 	for p in packs:
 		p.behaviour = "push"
 	var hunter: Unit = packs[0]
+	var pusher: Unit = packs[1]
 	var m: Unit = b.mechs()[0]
 	hunter.behaviour = "hunt"
 	hunter.prey = m.id
 	s._refresh()
-	var rings: Array = s._map.hunter_rings()
-	assert_eq(rings.size(), 1, "one hunter, one ring; the pushers draw none")
-	var w: Battlefield.Walk = s._map.walks[hunter.id]
-	assert_eq(rings[0]["pack"], hunter, "the hunter's")
-	assert_eq(rings[0]["at"], w.end, "round where its walk ends")
-	var ring: Dictionary = rings[0]["hexes"]
-	var wrong: Array = []
-	for h in b.field.map.all_hexes():
-		var inside := Hex.distance(h, w.end) <= Unit.ENGAGE_RANGE and not b.field.map.is_structure(h)
-		if ring.has(h) != inside:
-			wrong.append(h)
-	assert_eq(wrong, [], "every hex its ring holds from the walk's end, and no other")
-	assert_false(bool(rings[0]["lit"]), "at rest")
-	s._on_hex_tapped(hunter.pos)
-	assert_true(bool(s._map.hunter_rings()[0]["lit"]), "lit while the hunter is tapped")
-	s._on_hex_tapped(hunter.pos)
-	# Its catch waiting: round where it stands, lit, the machine it caught inside.
-	_engage(b, hunter, m)
-	hunter.behaviour = "hunt"
-	hunter.prey = m.id
-	b._new_turn()
-	s._after_step()
-	rings = s._map.hunter_rings()
-	assert_eq(rings.size(), 1, "the catch's hunter")
-	assert_eq(rings[0]["at"], hunter.pos, "round where it stands")
-	assert_true(bool(rings[0]["lit"]), "lit")
-	assert_true((rings[0]["hexes"] as Dictionary).has(m.pos), "the machine it caught inside")
+	var hw: Battlefield.Walk = s._map.walks[hunter.id]
+	assert_eq(s._map.target_hex(hunter, hw), m.pos, "the hunter's target is the machine it comes for")
+	var pw: Battlefield.Walk = s._map.walks[pusher.id]
+	var wall: Vector2i = s._map.target_hex(pusher, pw)
+	assert_true(wall != BattleMapView.NO_TARGET, "the pusher has a target")
+	assert_true(b.field.map.is_structure(wall), "a hex of the wall or the gate, the thing it strikes")
+	var from: Vector2i = pw.route[pw.route.size() - 1] if not pw.route.is_empty() else pw.end
+	assert_eq(Hex.distance(wall, from), 1, "beside where its way ends")
+	assert_false(BattleMapView.attacks_on_landing(pw) and not pw.strikes, "a landing warns only when it attacks")
+	var struck := Battlefield.Walk.new()
+	struck.strikes = true
+	var caught := Battlefield.Walk.new()
+	caught.catches = m.id
+	assert_true(BattleMapView.attacks_on_landing(struck), "a strike from the landing hex is an attack")
+	assert_true(BattleMapView.attacks_on_landing(caught), "a catch from it too")
+	assert_false(BattleMapView.attacks_on_landing(Battlefield.Walk.new()), "a plain walk is none")
+	s.free()
+
+
+## A machine's order can be given again (Ryan, 10 November: "If I order a unit to move or engage,
+## I should be able to re-order them by tapping on them again. Tapping on them when they are
+## selected should cancel the order"): in hand it shows its reach from where it started; a new
+## move replaces the planned one; a tap on it takes its order back and a second lets it go; and
+## one UNDO puts each step back.
+func test_an_order_is_given_again_and_taken_back_by_a_tap() -> void:
+	var s := _screen()
+	var b := s.battle
+	var m: Unit = b.mechs()[0]
+	var start := m.pos
+	s._on_hex_tapped(start)
+	var reach: Dictionary = s._map.destinations.duplicate()
+	assert_true(reach.size() >= 2, "a reach to move in")
+	var first: Vector2i = reach.keys()[0]
+	s._on_hex_tapped(first)
+	assert_eq(m.pos, first, "the move planned")
+	assert_true(b.has_plan(m), "it has a plan")
+	assert_eq(s._map.selected, m, "still in hand")
+	assert_eq(s._map.destinations.keys().size(), reach.size(), "its reach from where it started, to give the move again")
+	var second: Vector2i = first
+	for h in reach.keys():
+		if h != first:
+			second = h
+			break
+	s._on_hex_tapped(second)
+	assert_eq(m.pos, second, "the new move in the old one's place")
+	assert_eq(b.plan_pieces().filter(func(p: Dictionary) -> bool: return int(p["unit"]) == m.id).size(), 1, "one move planned, not two")
+	assert_eq(b.plan_pieces()[0]["from"], start, "from where it started")
+	b.undo()
+	assert_eq(m.pos, first, "one UNDO puts the first move back")
+	s._select(m)
+	s._on_hex_tapped(start)   # the machine is drawn where it started: a tap on it in hand
+	assert_eq(m.pos, start, "a tap on the machine in hand takes its order back")
+	assert_false(b.has_plan(m), "nothing planned")
+	assert_eq(s._map.selected, m, "and it stays in hand")
+	s._on_hex_tapped(start)
+	assert_eq(s._map.selected, null, "a second tap, with nothing to take back, lets it go")
+	b.undo()
+	assert_eq(m.pos, first, "and UNDO puts the plan back")
 	s.free()
 
 

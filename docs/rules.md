@@ -1054,7 +1054,10 @@ a stat.
   are the same in both. With the wall at the bottom the wall and the gate stand on the last row
   and their height covers the row before it; with the wall at the left they stand on that row,
   against the apron, the last row behind them the city's, and the rift's vortex stands on the
-  lowest of its three hexes. A pack or a machine past the screen's edge has a tag at that
+  lowest of its three hexes, a little toward the scenery behind it. The far ground softens
+  toward the rift and the city softens past the wall in either view: at the screen's top and
+  foot with the wall at the bottom, at its right and left with the wall at the left, never its
+  top there. A pack or a machine past the screen's edge has a tag at that
   edge; a tear has none, as the rift has none. Three gauges stand at the top of the screen whatever the scroll: the gate's integrity,
   Rift Pressure toward the next spawn (a box a turn of the beat) and the Rupture meter toward its
   Fractures (a notch a Fracture, those earned lit); the gate and the rift carry no bar on the map
@@ -1062,8 +1065,9 @@ a stat.
   a pack's and is drawn for that size: a picture of its own (`art/foes/<id>_boss.png`, cut from
   its combat sprite), its token serving the small faces (an edge tag, a hunter's plate). The
   field reads apart from the scenery past it in both worlds: the reconstruction's grid lies on
-  the field alone, and under the painting the field is bright cells and the scenery (the margin
-  past the field's sides and past the rift, the city) one shaded ground with no cells.
+  the field alone and the scenery's ground past it stands a step darker, and under the painting
+  the field is bright cells and the scenery (the margin past the field's sides and past the
+  rift, the city) one shaded ground with no cells.
 - **Ground**: open (plain or road), rough, ruins, water, and walls, a wall named by what it is
   (crags, mesas, towers or cliffs) with one rule under every name. Six map shapes, one a
   battle, each with its own water, walls, decorative ground and relief, laid to fill the open
@@ -1116,19 +1120,26 @@ a stat.
   a pack that hunts opens a row further back at a time, never onto the rift's row, until no machine
   stands inside its catch, so its first walk comes on the enemy's first turn.
 - **A turn**: the map shows every pack's coming walk, read from where the machines' plans end,
-  and every pack's threat rating under its count, four pips with one filled a machine it is
-  intended for; and every hunter coming for a machine wears its ring, the hexes beside where its
-  coming walk ends, where its catch is judged (round where it stands while a catch it made
-  waits), a dashed violet edge, tinted under a solid one while the hunter is tapped or its catch
-  waits; no other pack's ring is drawn. Every walk's end hex is lit, tinted under a solid edge. A tapped pack
-  shows its whole way as the field stands, past this turn's walk to its goal (a pusher's wall
-  segment, a hunter's place beside what it comes for), dashed, each later turn's stop numbered,
-  the goal marked and a hunter's last step dotted on to its prey; a selected machine shows the whole
-  way of every hunter coming for it. Each machine has one action (the Dingo two): one move,
+  and every pack's threat rating under the pack, four pips with one filled a machine it is
+  intended for, and no count; no ring is drawn round a hunter: it wears a chip, the attack mark
+  and a small picture of the machine it comes for, as that machine wears a tag with the
+  hunter's. Every walk's end hex is lit, tinted under a border of dashes crawling round it,
+  tapped or not; where the pack attacks from that hex this turn (a pusher striking the wall, a
+  hunter catching its prey), the warning stands on it, as the plan stands. A tapped pack
+  shows its whole way as the field stands, past this turn's walk to its goal, dashed, each later
+  turn's stop numbered, and the thing it comes for under a crawling border with the attack mark
+  on it (a sword in the reticle's turning ring, one mark for both): a pusher's piece of the
+  wall, a hunter's machine; no other pack's whole way shows, a selected machine's hunters'
+  included. Each machine has one action (the Dingo two): one move,
   in one go, then it may fight; a fight ends the action however it ends, and the board under the
-  map says what each can still do. A selected machine lights the hexes its move reaches and
-  brackets the packs it could be ordered onto. A move is planned: its route shows from where the
-  machine stands, and the next move or order reads from the route's end. The one button reads
+  map says what each can still do. A selected machine lights the hexes its move reaches, one
+  border round the whole reach, and brackets the packs it could be ordered onto. A move is
+  planned: its route shows from where the machine stands, and the next move or order reads from
+  the route's end. An order can be given again: a machine with a move planned or an order
+  waiting shows, in hand, its reach from where it started, and a new move or order there
+  replaces the old one; a tap on it in hand takes its order back, and a tap on it with none lets
+  it go. A machine it carried that has since been given an order of its own, or one whose
+  starting hex another now plans to stand on, is taken back by UNDO alone. The one button reads
   ENGAGE while a fight is ready (a catch, or a machine ordered onto a pack), ENGAGE 1 OF N while
   N fights wait, each numbered on the map in the order ENGAGE opens them (a catch first, then
   the packs in the order their orders were given), else EXECUTE while planned moves wait, else
@@ -1142,6 +1153,11 @@ a stat.
   Pressure rises one. Nothing returns on the map: the shield is full as every fight opens. Once every
   machine has fought, is ordered, is caught, or can neither move nor reach a pack where it
   stands, the button pulses, whichever it reads.
+- **A tap and a double-tap** on the map work as a die's do in a fight: a double-tap on a
+  machine or a pack opens its codex, and a tap on one lands only once the double-tap window
+  (0.15 s, from the tap's release to a second touch) has passed with no second touch, its hex
+  bracketed from the touch until it does, so a double-tap never selects first; a tap on bare
+  ground lands at once.
 - **The readout**: holding or tapping a machine, a pack, the boss or the ground shows
   it in the strip under the map, as the fight's holds read: a machine's hull as a gauge (its
   shield is the fight's), its move and actions left, a chip for its damaged components; a pack's
@@ -1262,11 +1278,11 @@ a stat.
 - **A peak is shown** once the packs have walked: the map keeps the seam where it stood and the
   new tears unseen through the walks, then glides to the seam, whose edge sweeps to its new row
   under a bright front with its name on it, then in on each new tear, zoomed, as it bursts open,
-  and back to where the player was looking at the zoom they had; a press on the map skips it.
+  and back to where the player was looking at the zoom they had. Nothing on the screen takes
+  a touch while the map plays one of these, and nothing skips it.
 - **A hunter's lock is shown** after it: for every hunter that turned on a machine this turn,
   in turn, the map glides in on the hunter, zoomed, and the band says HUNTED and who turns on
-  whom; then back to the player's view. A press on the map skips the rest. A catch's band
-  follows.
+  whom; then back to the player's view. A catch's band follows.
 - **Caches** (the field's loot; `content/loot.json`): the field holds its caches from the first
   turn, so many seeded with the map, one in each of as many bands along the wall, in the rows
   from the third past the rift's to the second short of the apron (never that close to the
@@ -1281,8 +1297,9 @@ a stat.
   likely contents, never the contents. On the map a cache is its kind's model while its hex is
   the reconstruction's (a wrecked machine, a skeleton of theirs, splinters of their stone round a
   lit core that turns) and a flat token where the painting has taken the hex, crossing over as
-  the ground does; over it in both worlds its name and as many pips as its kind's tier, which
-  are what say its kind. A machine standing on one hides the model and dims the name. The campaign banks what was claimed as it banks the
+  the ground does; over it in both worlds a chest on a plate, which says how good it is by what
+  it is made of (a bare chest, a strapped one with a lock, a solid treasure chest with a glint
+  on a doubled plate) and carries no name. A machine standing on one hides the model and dims the chest. The campaign banks what was claimed as it banks the
   kills: on a battle won or held, never on a fall; each component one copy in the stores, each
   blueprint the run's.
 - **Menace** is a foe's weight: its heaviest blow plus a quarter of its HP, rounded up, an
@@ -1295,7 +1312,9 @@ a stat.
   Fractures, in the cycle's order: the last at two thirds of it, the steps 1, 1.5, 2, 2.5 and 3, so
   later Fractures cost more and a battle that kills the field as it stood earns the Rupture
   with a third of the field left to leave. A Fracture pays out as a fight ends, announced over
-  the map (FRACTURE with its count and what it brings, the last THE RUPTURE). At the Fractures
+  the map (FRACTURE with its count and what it brings, the last THE RUPTURE); an elite it
+  brings is unseen until the map has glided in on its hex, zoomed, then bursts out under the
+  band, which names it. At the Fractures
   the tier names (tier one's first; tier two's first and third; tier three's first, second and
   fourth) the lead domain's next own elite composition not yet sent this battle emerges at the
   rift, or a wanderer (`wanders`: Gilgamesh, the Reaper, the Wild Hunt, the World Eater, the
