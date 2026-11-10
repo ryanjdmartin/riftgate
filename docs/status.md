@@ -69,7 +69,9 @@ and this file the conflicts, both sides' words kept) and main took it as a fast-
 word ("Ok clean up and merge into main"); it is merged and to delete with the rest. `ccr-1e6e6571-7x7ayr`,
 the map session of 9 November (the shapes relaid and recast, How things stand below), took main's
 skirmish audit step 3 as it landed and main took it as a fast-forward on Ryan's word ("push this
-into main, so I can try it"); it is merged and to delete with the rest. The
+into main, so I can try it"), then again on 10 November with the shapes laid to the rift's row,
+the passing and the catch at one ("put this in main so I can try it in context"); it is merged
+and to delete with the rest. The
 branches that landed on 3 to 9 November, each a session of its own, fully merged and to delete
 from GitHub and the desk machine (the command is in the audit's last chat;
 `git push origin --delete` the merged ones, then `git fetch --prune`):
