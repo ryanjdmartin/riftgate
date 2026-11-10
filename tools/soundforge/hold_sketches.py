@@ -1679,6 +1679,9 @@ FORM_W = "FFFF W SSSSSSSS"         # the keys' tune's first bars, the turn, the 
 # quarters to the fourteen eighths): the crunch synth or the fingers bass on E, the riff's own pedal, or the synth
 # on each bar's chord root; each 3 dB under the low Omnific, met halfway.
 XQ_PULSE = {"synth": {"inst": "bass", "mode": "riff", "octave": 0, "gain": 0.504, "hold": 0.9, "params": {"drive": 3.5, "cutoff": 800.0}},
+            # the Omnific on them (Ryan, 10 November: "can I hear an Omnific doing the chord roots like you have the synth
+            # doing?"): the low Omnific's own voice and octave, 3 dB under its riff's gain
+            "omnific": {"inst": "real_bass", "mode": "riff", "octave": -1, "gain": 0.2075, "hold": 0.9, "params": {"preset": "active", "amp": "dirty"}},
             "fingers": {"inst": "real_bass", "mode": "riff", "octave": -1, "gain": 0.565, "hold": 0.9, "params": {"preset": "finger", "amp": "modern"}}}
 
 
@@ -1710,6 +1713,7 @@ SETS = [
         ("hv1", "The crunch synth on E", "K's crunch synth on eighths on E, the riff's pedal.", round27(quarters="synth")),
         ("hv2", "The fingers bass on E", "The fingers bass on eighths on E, an octave under the synth's.", round27(quarters="fingers")),
         ("hv3", "The crunch synth on the chords' roots", "The synth on eighths on each bar's chord root: E, E, G, D, then E, D, C-sharp, C under the held line.", round27(quarters="synth", roots=True)),
+        ("hv4", "An Omnific on the chords' roots", "A third dirty Omnific on eighths on each bar's chord root, at the low Omnific's octave.", round27(quarters="omnific", roots=True)),
     ]},
 ]
 PAIR = {"id": "hold_the_line_r27", "title": "Hold The Line, round twenty-seven"}
