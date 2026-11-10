@@ -925,46 +925,75 @@ func _draw_pips(rect: Rect2) -> void:
 			draw_rect(box, col, false, 1.5)
 
 
-## A capped store as one more bar under the heat, in the heat bar's own shape (Ryan, 10 November:
-## "Resource bars like the badgers should be the same shape as the other resource bars, and
-## continuous. So the badger's should nestle under the Heat bar, same shape, divided into four
-## clear segments"; separate boxes from 22 October until then): one bar on its dark ground, lit
-## from the left to its count in the store's colour, divided into as many segments as its cap.
-## A divider leans as the bar's ends lean and reads on both sides of the fill: a wide cut in the
-## ground's dark through the lit part, a line in the bar's colour through the dark part, so the
-## count is how many segments are lit and the room left how many are not, by structure on any
-## colour. The last lit segment is where a stack's spend bursts (spend_chip).
-const STORE_CUT := 4.0    # a divider's cut through the lit part: hot, for the phone
-const STORE_LINE := 2.0   # a divider's line through the unlit part
+## A capped store as one more bar under the heat, in the heat bar's own shape and place (Ryan, 10
+## November: "Resource bars like the badgers should be the same shape as the other resource bars
+## ... So the badger's should nestle under the Heat bar, same shape, divided into four clear
+## segments"), and split into its units (the same day, of the first cut's thick ticks: "can we
+## actually split them into different bars with borders and whitespace, in the same row? So a
+## continuous bar but actually split into discrete segments"): one little bar a unit, each with
+## its own border and dark ground and a gap of clear ground between, lit from the left to the
+## count in the store's colour. So the count is how many are filled and the room left how many
+## are outlines, by structure on any colour. Every resource that comes in whole units is drawn
+## so (the hopper's loads, the rage, the Musk Ox's ammo); one that fills by degrees stays a
+## meter (the Swallowtail's Muster: "that's a meter with non-discrete fills"). The last lit cell
+## is where a stack's spend bursts (spend_chip).
+const CELL_GAP := 5.0        # the clear ground between two cells: hot, for the phone
+const CELL_GAP_MANY := 3.0   # the same in a row of more than six (the magazine's ten)
 
 func _draw_store(rect: Rect2) -> void:
-	var cap := maxi(1, int(store[1]))
-	var count := clampi(int(store[0]), 0, cap)
-	var col: Color = store[2] if store.size() >= 3 else Palette.HUD
-	Hud.fill_poly(self, Hud.slant(rect.grow(1.0), 4.0), Color(Palette.BG, 0.9))
-	Hud.gauge(self, rect, float(count) / float(cap), col)
-	Hud.stroke_poly(self, Hud.slant(rect, 4.0), Color(col, 0.95), 1.0)   # a full-strength edge, so an empty bar still shows
-	for k in range(1, cap):
-		# The bar's ends lean 4 across its height (Hud.slant): a divider leans with them.
-		var x := rect.position.x + rect.size.x * float(k) / float(cap)
-		var top := Vector2(x + 2.0, rect.position.y)
-		var foot := Vector2(x - 2.0, rect.end.y)
-		if k <= count:
-			draw_line(top + Vector2(0.4, -1.0), foot + Vector2(-0.4, 1.0), Color(Palette.BG, 0.95), STORE_CUT)
-		else:
-			draw_line(top, foot, Color(col, 0.95), STORE_LINE)
+	_draw_cells(rect, int(store[0]), int(store[1]), store[2] if store.size() >= 3 else Palette.HUD)
 
 
-## Segment `k` of a capped store's bar, in `row` or where the gauges put the bar.
+## A row of whole units as cells across `rect`: `count` of `cap` lit, and with `after` given the
+## change on its way pulsing as a gauge's does (the cells about to go breathing in ink, the ones
+## about to come hatched in the row's colour).
+func _draw_cells(rect: Rect2, count: int, cap: int, col: Color, after: int = -1) -> void:
+	cap = maxi(1, cap)
+	count = clampi(count, 0, cap)
+	after = count if after < 0 else clampi(after, 0, cap)
+	var clock := Time.get_ticks_msec() / 1000.0
+	var beat := 0.5 + 0.5 * sin(clock * PENDING_RATE)
+	for k in range(cap):
+		var cell := _cell_rect(k, cap, rect)
+		var pts := Hud.slant(cell, 4.0)
+		Hud.fill_poly(self, Hud.slant(cell.grow(1.0), 4.0), Color(Palette.BG, 0.9))
+		# A cell too narrow for a fill set in from its border is filled whole (the magazine's ten).
+		var inner := Hud.slant(cell.grow(-2.0), 2.4) if cell.size.x >= 18.0 else pts
+		if k < count:
+			Hud.fill_poly(self, inner, col)
+			if k >= after:
+				# About to go: it breathes between dimmed and lit in ink, as a gauge's loss does.
+				Hud.fill_poly(self, inner, Color(Palette.BG, 0.65 * (1.0 - beat)))
+				Hud.fill_poly(self, inner, Color(Palette.INK, 0.55 * beat))
+		elif k < after:
+			# About to come: hatched in the row's colour, "coming", not "there".
+			var x := cell.position.x + 2.0
+			while x < cell.end.x - 2.0:
+				draw_line(Vector2(x, cell.end.y - 2.0), Vector2(minf(x + cell.size.y - 4.0, cell.end.x - 2.0), cell.position.y + 2.0), Color(col, 0.5 + 0.3 * beat), 1.0)
+				x += 4.0
+		Hud.stroke_poly(self, pts, Color(col, 0.95), 1.5)   # every cell its own border, lit or not
+
+
+## Cell `k` of `cap` across `row`, the gaps between them clear ground.
+func _cell_rect(k: int, cap: int, row: Rect2) -> Rect2:
+	var gap := CELL_GAP_MANY if cap > 6 else CELL_GAP
+	var w := (row.size.x - gap * float(cap - 1)) / float(cap)
+	return Rect2(row.position.x + (w + gap) * float(k), row.position.y, w, row.size.y)
+
+
+## Cell `k` of a capped store's row, in `row` or where the gauges put the row.
 func _store_cell(k: int, row: Rect2 = Rect2()) -> Rect2:
 	if row.size == Vector2.ZERO:
 		row = Rect2(size.x * 0.1, _bars_top() + bars.size() * BAR_STEP, size.x * 0.8, BAR_H)
-	var cap := maxi(1, int(store[1]))
-	var step := row.size.x / float(cap)
-	return Rect2(row.position.x + step * k, row.position.y, step, row.size.y)
+	return _cell_rect(k, maxi(1, int(store[1])), row)
 
 
 func _gauge(rect: Rect2, b: Array) -> void:
+	if b.size() >= 5 and int(b[4]) == 1:
+		# A bar whose every unit is its own notch holds whole units (the Musk Ox's ammo): cells,
+		# as a store's are, its change on its way pulsing on them.
+		_draw_cells(rect, int(b[0]), int(b[1]), b[2], int(b[3]))
+		return
 	var mx := float(maxi(1, int(b[1])))
 	var frac: float = clampf(float(b[0]) / mx, 0.0, 1.0)
 	var col: Color = b[2]

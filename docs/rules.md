@@ -565,8 +565,10 @@ weapons wears the star, the die's readout reading the passive's line, and no key
 ### Buffs, debuffs and resistance
 A **store** is a capped resource a machine fills and spends (the Muster, the rage, the
 hopper, the Cassowary's shot count; the Musk Ox's magazine works the same way), its own kind
-and never a buff: each shows as a bar under the heat, boxes or a smooth fill in segments by how
-it fills, and no Silence or Purge touches it, its filling or its use. An **Ability** is a
+and never a buff: each shows as a row under the heat in the heat bar's shape, by how it fills:
+one that comes in whole units (the hopper's loads, the rage, the magazine's ammo) as separate
+cells, each with its own border and clear ground between them, the lit ones filled; one that
+fills by degrees (the Muster) as a meter with a notch a charge; the shot count as its pips; and no Silence or Purge touches it, its filling or its use. An **Ability** is a
 unit's own mechanic, the rule it plays by, and never a buff or a debuff, so no Purge, Silence
 or Cleanse touches it; its chip shows its mark cut out of a solid tile, ahead of the unit's
 other chips, and its hold line names it an Ability and says what goes on. A foe's: the Goblin
@@ -660,8 +662,8 @@ On a machine:
 - **Hopper** (store, the Honey Badger's): its Ore Hopper puts a load in for each foe a spend
   of its weapons damages, after the blow (a weapon that prints its own number puts that in
   instead), up to four; a weapon that fires
-  the hopper spends them; a Mine's blast fills none. It lasts the skirmish, never decays, nothing cleanses it, and it shows as a bar
-  under the heat, in the heat bar's shape, four segments, one lit a load. What the loads are
+  the hopper spends them; a Mine's blast fills none. It lasts the skirmish, never decays, nothing cleanses it, and it shows as a row
+  under the heat, in the heat bar's shape, four cells, one lit a load. What the loads are
   worth is Armoured, a stack for every two held, granted by the hopper: as each round opens it
   grants the machine Armoured up to that worth, and between rounds the grant follows the loads
   by the change in their worth alone (a load that makes a pair adds a stack, loads fired take
@@ -832,7 +834,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or a
   of heating it, 1 for every 2 heat a gun's own spend would make, rounded up, at least 1, the
   price printed on the die where the gun's heat would be; its debuffs, buffs and shields and
   the foes' heat land on its heat bar as on any machine's, Scorched's extra included. The
-  magazine is a bar under the heat bar, a notch an ammo, never a status, so no Silence or Purge
+  magazine is a row of cells under the heat bar, a cell an ammo, never a status, so no Silence or Purge
   reaches it; it holds 10, opens each fight at 3 and gains 1 at the start of every round after
   the first; a vent it spends on itself adds 3, a shield 2, an entry both at once 3, once, the
   greater; a gun it cannot pay for cannot be

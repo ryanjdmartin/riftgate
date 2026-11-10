@@ -1161,8 +1161,13 @@ func test_a_capped_store_shows_as_a_segmented_bar_under_the_heat_in_its_chips_pl
 	assert_true(is_equal_approx(first.position.y, v._bars_top() + v.bars.size() * UnitView.BAR_STEP), "directly under the heat, the last gauge")
 	assert_true(is_equal_approx(first.position.x, v.size.x * 0.1) and is_equal_approx(last.end.x, v.size.x * 0.9), "across the gauges' own width")
 	assert_eq(first.size.y, UnitView.BAR_H, "a gauge's height")
+	# Its units are cells of their own, one width, clear ground between each and the next (Ryan,
+	# 10 November: "split them into different bars with borders and whitespace, in the same row").
 	for k in range(4):
-		assert_true(is_equal_approx((v._store_cell(k) as Rect2).end.x, (v._store_cell(k + 1) as Rect2).position.x), "its segments run on, one bar: %d into %d" % [k, k + 1])
+		var here: Rect2 = v._store_cell(k)
+		var next: Rect2 = v._store_cell(k + 1)
+		assert_true(next.position.x - here.end.x >= 3.0, "clear ground between cell %d and %d" % [k, k + 1])
+		assert_true(is_equal_approx(here.size.x, next.size.x) and is_equal_approx(here.position.y, next.position.y), "one width, one row")
 	for r in s._mech_rows(0):
 		assert_ne(str(r[0]), SkirmishScreen.status_glyph("rage"), "and no rage chip")
 	assert_true(s._use_die(0, sk.front[0]), "the fist lands")

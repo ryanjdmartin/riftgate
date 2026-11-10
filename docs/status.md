@@ -27,7 +27,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1094 tests, 323,818 checks, green (10 November, `ccr-c71bc17f-hclj2c` with the second map list on main's Bench tab; main with the Text tab, the side session's work, the
+- Tests: 1094 tests, 323,822 checks, green (10 November, `ccr-c71bc17f-hclj2c` with the second map list on main's Bench tab; main with the Text tab, the side session's work, the
   map session's shapes laid to the rift's row, the passing and the catch at one, and the map
   playtest list; one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
@@ -208,9 +208,11 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   built by a worker in a worktree and cherry-picked: Jenny's heat warning latched a machine
   (once over three quarters until seen back under, the overheat every time); the hopper's worth
   the game's Armoured, granted as each round opens and following the loads between, a Purge
-  stripping it until then, `ore_plate` retired everywhere; a capped store one segmented bar under
-  the heat (the hopper four, the rage five; `UnitView.store`), the Cassowary's pips as they
-  were. Poses new: `hunter`, `elite`, `stores`. A route drawn by hand from a machine that
+  stripping it until then, `ore_plate` retired everywhere; a resource that comes in whole units a row of
+  separate cells under the heat, bordered, clear ground between ("split them into different
+  bars with borders and whitespace, in the same row": the hopper's four, the rage's five, the
+  Musk Ox's ammo; `UnitView._draw_cells`), the Muster a meter still and the Cassowary's pips as
+  they were. Poses new: `hunter`, `elite`, `stores`. A route drawn by hand from a machine that
   already has an order is still refused (the tap gives it again). All first cuts (the to-do's
   judge line).
 - **The map playtest list of 10 November** (`ccr-c71bc17f-hclj2c`, on main the same day; five
