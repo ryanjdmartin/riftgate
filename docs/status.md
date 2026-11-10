@@ -20,7 +20,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   (gl_compatibility, the project's setting), so a lit part's colour there is the phone's. The
   Mac is out of reach and what it held outside git is gone: of the foeforge renders only the
   Augur's survive (`tools/foeforge/out/`, for her next pass; the rest `git show fb45141`), and
-  foeforge's `generate` and `fix` have no machine until a route for the image model is chosen.
+  foeforge's `generate` and `fix` have no machine until a route for the image model is chosen:
+  Ryan is trying the Windows PC first (10 November), the cloud routes researched and parked (the
+  to-do's Art line).
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last check,
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
@@ -183,8 +185,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   Sweep rank is the engine's `sweep_rank_of` and the intent's number the engine's
   `intent_value`, one read for the field's chip and the readout's; the engine gained that one
   function and plays as it did, so no behaviour trace was run. Both pages were republished on
-  his word (Pages). His question on enemy art from a cloud session was researched and answered
-  in chat; nothing is built for it and no route is chosen.
+  his word (Pages). His question on enemy art from a cloud session was researched and parked
+  (10 November, the to-do's Art line); nothing is built for it.
 - **The Lammergeier's rework** (9 November, `ccr-a0b35006-od22d2`; the bible's Lammergeier row):
   Ryan sent it back for more than a fix ("A chassis based around opening an empty spot isn't a
   good design"), the slot form waiting on arrivals the long wall cut. His shape, built: "the
