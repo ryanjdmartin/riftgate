@@ -2938,12 +2938,12 @@ def whip_scorpion(b):
     Thermal Ejection Manifold (the passive, modelled in): four short gun-barrelled vents in a
     broadside on the boiler's shoulders, angled forward and out, fed by a manifold pipe down each
     flank, each kicking back along its line as it blasts, its bore and a collar round its barrel
-    flaring. The Heliographic Siphon (fixed, no pin): a signal mirror on a yoke at the head of a
-    mast off the cab's back, turning on its head and tilting in the yoke, its glass banked dim and
-    flashing white. Mounts in the die's order: hp_1 the left shoulder gun (the stock's Thermal Ray
+    flaring. The Heliographic Death Ray (fixed, no pin; 11 November, in the signal mirror's
+    place): a steam-fed mirrored railgun on a pedestal off the cab's back, its head turning and
+    the gun elevating, its glass banked dim and flashing white. Mounts in the die's order: hp_1 the left shoulder gun (the stock's Thermal Ray
     as its barrel class) and hp_4 the right's (the Maxigun), each on a ring at a front corner of
     the roof that traverses (turret_l, turret_r); hp_2 and hp_3 bare pads on raised rings either
-    side of the mast, inboard of the shoulder guns so that a gun fitted there runs clear of them
+    side of the ray's pedestal, inboard of the shoulder guns so that a gun fitted there runs clear of them
     (the two Coolant Jackets show nowhere, vents). The look, the rig, the acts and the gait are
     Ryan's to judge running."""
     # The legs, each in the planes the walk solver works in: the knee displaced along the
@@ -3000,27 +3000,73 @@ def whip_scorpion(b):
     for s, n in ((-1.0, 2), (1.0, 3)):
         b.prism("z", s * 6.5, 0.0, 60.4, 4.2, 2.6, "steel.dark", 8, "pad_ring", phase=math.pi / 8)
         b.pad("hp_%d" % n, (s * 6.5, 0.0, 63.0), scale=0.9, size=(6.6, 1.2))
-    # The mast off the cab's back and the Heliographic Siphon at its head: a pole to a head that
-    # turns (turret_mirror), a yoke on it and the mirror tilting in the yoke (mirror), its face
-    # forward and up, a cold glass banked dim that flashes white (St. Elmo's spark, the one lit
-    # colour on the machine that is no flame), its back in the livery.
-    b.box(-3.0, 3.0, -5.0, 5.0, 58.5, 61.5, "steel.dark", "mast_base")
-    b.prism("z", 0.0, 0.0, 75.0, 2.1, 28.0, "steel.dark", 6, "mast")
-    b.prism("z", 0.0, 0.0, 88.2, 3.2, 1.6, "steel.plate", 8, "mast_collar", phase=math.pi / 8)
-    MZ = 99.0
-    N = Vector((0.0, math.cos(math.radians(40.0)), math.sin(math.radians(40.0))))
-    with b.joint("turret_mirror", (0.0, 0.0, 89.0), limits=(-70.0, 70.0)):
-        b.box(-3.4, 3.4, -3.0, 3.0, 89.0, 91.5, "steel.dark", "yoke_base")
-        b.box(-13.5, 13.5, -1.5, 1.5, 90.0, 92.0, "steel.plate", "yoke")
+    # The Heliographic Death Ray (fixed, no pin; Ryan, 11 November: "an actual gun. Pipes
+    # connecting it to the boiler, steampunk style. Mirror or mirrors as part of it because weird
+    # future nonsense tech. Like a steam powered mirrored laser railgun"): a pedestal off the cab's
+    # back, two steam mains up its rear from the waist into a collar under a head that turns
+    # (turret_ray); on it, in trunnion cheeks, the gun that elevates (ray): a dark breech with a
+    # brown pressure accumulator hooped on its back and a gauge on its end, a collector mirror on
+    # a bracket over the breech with its glass to the sky (so the map, the codex and the skirmish
+    # all see it flash), two long rails clamped in iron hoops with the bore between them banked
+    # with heat, three relay mirrors along the rails' top tipped by turns, a steam line down each
+    # rail, and a muzzle ring round a lens. The glass is cold and flashes white, the one lit
+    # colour on the machine that is no flame.
+    PY, PZ, GZ = -7.0, 72.0, 79.0   # the pedestal's line, the head's foot, the gun's axis
+    b.box(-4.2, 4.2, PY - 4.2, PY + 4.2, 58.5, 60.6, "steel.dark", "ray_foot")
+    b.prism("z", 0.0, PY, 65.6, 3.4, 10.4, "steel.plate", 8, "ray_pedestal", phase=math.pi / 8)
+    b.prism("z", 0.0, PY, 71.1, 6.0, 1.8, "steel.dark", 8, "ray_collar", phase=math.pi / 8)
+    for s in (-1.0, 1.0):
+        # A main up from the waist, over the cab's back edge and up the pedestal's rear.
+        _beam(b, (s * 6.0, -16.0, 55.0), (s * 6.0, -14.6, 61.4), _poly(2.5, 6), _poly(2.5, 6), "livery.livery2", "ray_main")
+        _beam(b, (s * 6.0, -14.6, 61.4), (s * 3.6, PY - 3.6, 63.0), _poly(2.5, 6), _poly(2.5, 6), "livery.livery2", "ray_main")
+        _beam(b, (s * 3.6, PY - 3.6, 63.0), (s * 3.6, PY - 3.6, 70.4), _poly(2.5, 6), _poly(2.5, 6), "livery.livery2", "ray_main")
+        b.prism("z", s * 3.6, PY - 3.6, 66.3, 3.2, 1.2, "steel.dark", 6, "ray_main_flange")
+    N = Vector((0.0, math.cos(math.radians(50.0)), math.sin(math.radians(50.0))))   # the collector's face: forward and up
+    RELAYS = (10.0, 23.0, 36.0)   # the relay mirrors, along the rails
+    with b.joint("turret_ray", (0.0, PY, PZ), limits=(-60.0, 60.0)):
+        b.box(-8.0, 8.0, PY - 5.0, PY + 5.0, PZ, PZ + 1.6, "steel.dark", "ray_cradle")
         for s in (-1.0, 1.0):
-            x0, x1 = sorted((s * 12.0, s * 13.5))
-            b.box(x0, x1, -1.5, 1.5, 91.0, MZ + 1.2, "steel.plate", "yoke")
-        b.prism("x", 0.0, 0.0, MZ, 1.3, 27.0, "steel.dark", 6, "mirror_pin")
-        with b.joint("mirror", (0.0, 0.0, MZ), limits=(-40.0, 40.0)):
-            c = Vector((0.0, 0.0, MZ))
+            x0, x1 = sorted((s * 6.4, s * 8.0))
+            b.box(x0, x1, PY - 3.4, PY + 3.4, PZ + 0.4, GZ + 3.0, "steel.plate", "ray_cheek")
+        b.prism("x", 0.0, PY, GZ, 1.8, 17.2, "steel.dark", 6, "ray_trunnion")
+        with b.joint("ray", (0.0, PY, GZ), limits=(-8.0, 28.0)):
+            b.box(-6.0, 6.0, PY - 12.0, PY + 3.0, GZ - 4.4, GZ + 4.4, "steel.dark", "ray_breech")
+            b.prism("y", 0.0, PY - 4.5, GZ + 8.2, 4.2, 12.0, "livery.livery2", 8, "ray_tank", phase=math.pi / 8)
+            for y in (PY - 8.5, PY - 0.5):
+                b.prism("y", 0.0, y, GZ + 8.2, 4.7, 1.4, "steel.dark", 8, "ray_tank_hoop", phase=math.pi / 8)
+            b.prism("y", 0.0, PY - 10.9, GZ + 8.2, 2.6, 0.8, "steel.dark", 8, "ray_gauge", phase=math.pi / 8)
+            b.prism("y", 0.0, PY - 11.4, GZ + 8.2, 2.0, 0.4, "amber.light", 8, "ray_gauge_face", phase=math.pi / 8)
+            # A steam line from the tank down each flank of the breech, elbowed.
+            for s in (-1.0, 1.0):
+                _beam(b, (s * 3.6, PY - 4.5, GZ + 9.0), (s * 7.2, PY - 4.5, GZ + 6.0), _poly(1.4, 6), _poly(1.4, 6), "livery.livery2", "ray_line")
+                _beam(b, (s * 7.2, PY - 4.5, GZ + 6.0), (s * 7.2, PY - 4.5, GZ - 2.0), _poly(1.4, 6), _poly(1.4, 6), "livery.livery2", "ray_line")
+            # The collector on its bracket, behind and over the tank.
+            c = Vector((0.0, PY - 16.0, GZ + 17.0))
+            _beam(b, (0.0, PY - 11.0, GZ + 3.0), tuple(c - N * 1.2), _sq(3.0, 2.0), _sq(3.0, 2.0), "steel.plate", "ray_bracket")
             _beam(b, tuple(c - N * 1.3), tuple(c + N * 0.2), _poly(10.6, 8, math.pi / 8), _poly(10.6, 8, math.pi / 8), "livery.livery2", "mirror_back")
             _tube(b, tuple(c - N * 0.6), tuple(c + N * 1.1), 11.4, 10.3, 8, "steel.dark", "mirror_rim", floor=False, phase=math.pi / 8)
             _disc(b, tuple(c + N * 0.3), tuple(N), 9.9, 8, "amber.spark", "mirror_face", phase=math.pi / 8)
+            # The rails, the bore between them, their hoops and the steam line down each.
+            Y0, Y1 = PY + 3.0, PY + 54.0
+            for s in (-1.0, 1.0):
+                x0, x1 = sorted((s * 2.0, s * 5.0))
+                b.box(x0, x1, Y0, Y1, GZ - 2.6, GZ + 2.6, "steel.plate", "ray_rail")
+                b.prism("y", s * 6.6, (Y0 + Y1) / 2.0 - 3.0, GZ - 2.0, 1.4, Y1 - Y0 - 8.0, "livery.livery2", 6, "ray_line")
+            b.box(-2.0, 2.0, Y0, Y1 - 0.5, GZ - 1.0, GZ + 1.4, "amber.heat", "ray_bore")
+            for y in (PY + 9.0, PY + 22.0, PY + 35.0, PY + 48.0):
+                b.box(-8.2, 8.2, y - 1.3, y + 1.3, GZ - 4.0, GZ + 0.2, "steel.dark", "ray_hoop")
+                for s in (-1.0, 1.0):   # the hoop's cheeks up the rails' flanks, the bore left open to the sky
+                    x0, x1 = sorted((s * 5.0, s * 8.2))
+                    b.box(x0, x1, y - 1.3, y + 1.3, GZ + 0.2, GZ + 3.4, "steel.dark", "ray_hoop")
+            for k, y in enumerate(RELAYS):
+                side = 1.0 if k % 2 == 0 else -1.0   # on the left rail and the right by turns, each tipped in over the bore and up at the sky
+                rn = Vector((-side * 0.5, 0.2, 1.0)).normalized()
+                rc = Vector((side * 6.2, PY + y + 5.5, GZ + 8.2))
+                b.prism("z", side * 6.2, PY + y + 5.5, GZ + 5.6, 1.0, 4.0, "steel.dark", 6, "ray_relay_post")
+                _beam(b, tuple(rc - rn * 0.9), tuple(rc), _poly(4.6, 4, math.pi / 4), _poly(4.6, 4, math.pi / 4), "steel.dark", "ray_relay_back")
+                _disc(b, tuple(rc + rn * 0.08), tuple(rn), 4.0, 4, "amber.spark", "ray_relay_%d" % (k + 1), phase=math.pi / 4)
+            _tube(b, (0.0, Y1 - 1.5, GZ), (0.0, Y1 + 4.0, GZ), 7.4, 4.8, 8, "steel.dark", "ray_muzzle", floor=False, phase=math.pi / 8)
+            _disc(b, (0.0, Y1 + 3.0, GZ), (0.0, 1.0, 0.0), 4.7, 8, "amber.spark", "ray_lens", phase=math.pi / 8)
     # The boiler on the waist (abdomen): a fat pressure vessel in the maker's brown, eight-sided,
     # hooped in dark iron, dished to its end; a sight glass down its spine banked with heat; a
     # gauge on its end; a valve wheel on its back on a spindle (valve), spokes so its turn reads;
@@ -3048,6 +3094,9 @@ def whip_scorpion(b):
             a = math.radians(90.0 + 120.0 * k)
             _beam(b, (0.0, VY, TOP + 3.4), (5.0 * math.cos(a), VY + 5.0 * math.sin(a), TOP + 3.4), _sq(1.1, 0.8), _sq(1.1, 0.8), "steel.dark", "valve_spoke")
         b.box(-0.9, 0.9, VY + 4.6, VY + 6.2, TOP + 3.0, TOP + 5.6, "steel.dark", "valve_knob")
+    for s in (-1.0, 1.0):   # the mains' ends on the boiler's shoulder, meeting the cab's at the waist
+        _beam(b, (s * 6.0, -23.0, BZ + 15.2), (s * 6.0, -17.6, 56.5), _poly(2.5, 6), _poly(2.5, 6), "livery.livery2", "ray_main")
+        b.prism("y", s * 6.0, -17.6, 56.5, 3.2, 1.2, "steel.dark", 6, "ray_main_flange")
     vents = []
     for s in (-1.0, 1.0):
         side = "l" if s < 0 else "r"
@@ -3072,33 +3121,34 @@ def whip_scorpion(b):
     limbs = [limb(leg) for leg in LEGS]
     by_name = {leg: limb(leg) for leg in LEGS}
     HEAT = 196.0   # the heat tile's light at its height: #ff7800 under the phone's eased light, as the Polar Bear's vents
-    # The flash (the Heliographic Siphon's lure): it rises tall on its legs, the boiler's end
-    # tipping up, the shoulder guns swinging wide, the lamps and floodlights up; the mirror tips its
-    # glass to the sky and its head swings round to the left, flashing short, short, long, then
-    # sweeps the whole field to the right flashing as it goes and holds there on a long flash,
-    # every foe on the field its mark (the glass to the sky, so the map, the codex and the
-    # skirmish all see it flash); it swings home and hunkers down braced (Armoured for the round),
-    # the guns home, as the siphon drinks the blows into the boiler's sight glass.
-    tracks, body = _planted(limbs, _dense([(0.4, 0.0, 0.0, 0.0), (1.7, 0.0, 4.0, 2.5), (6.0, 0.0, 4.4, 2.8), (6.6, 0.0, 4.4, 2.8),
-                                           (7.6, 0.0, -2.6, -1.5), (8.6, 0.0, -2.8, -1.6), (9.6, 0.0, 0.0, 0.0)], 10.0))
+    # The ray (the Heliographic Death Ray): it squats and braces, the boiler's end tipping up and
+    # its pressure climbing the sight glass and the gun's gauge; the gun lifts off its rest and
+    # the collector flashes twice at the sky; then the light runs down the gun, relay by relay,
+    # the bore between the rails going white behind it, and the lens fires, the gun kicked back
+    # along its line and held, the whole machine jolting on its planted feet; the bore banks down,
+    # the gun runs out and settles, and it rises again.
+    FIRE = 3.1
+    tracks, body = _planted(limbs, _dense([(0.3, 0.0, 0.0, 0.0), (1.5, 0.0, -1.2, -2.2), (FIRE - 0.02, 0.0, -1.2, -2.2), (FIRE + 0.08, 0.0, -3.4, -2.6),
+                                           (FIRE + 0.6, 0.0, -1.6, -2.2), (5.2, 0.0, -1.2, -2.0), (6.6, 0.0, 0.0, 0.0)], 10.0))
     tracks.update({
-        "turret_mirror": [(0.6, 0.0), (1.9, 45.0), (3.0, 45.0), (5.6, -45.0), (6.4, -45.0), (7.7, 0.0)],
-        "mirror": [(0.6, 0.0), (1.8, 34.0), (6.6, 34.0), (7.7, 0.0)],
-        "turret_l": [(0.8, 0.0), (2.2, 40.0), (6.4, 40.0), (7.6, 0.0)],
-        "turret_r": [(0.95, 0.0), (2.35, -40.0), (6.55, -40.0), (7.75, 0.0)],
-        "abdomen": [(1.0, 0.0, 0.0, 0.0), (2.2, -6.0, 0.0, 0.0), (6.4, -6.0, 0.0, 0.0), (7.6, 3.0, 0.0, 0.0), (8.6, 3.0, 0.0, 0.0), (9.4, 0.0, 0.0, 0.0)],
+        "ray": _dense([(0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (1.7, 6.0, 0.0, 0.0, 0.0, 0.0, 0.0), (FIRE - 0.02, 6.0, 0.0, 0.0, 0.0, 0.0, 0.0), (FIRE + 0.06, 7.5, 0.0, 0.0, 0.0, -5.0, 0.0),
+                       (FIRE + 0.45, 7.5, 0.0, 0.0, 0.0, -5.0, 0.0), (FIRE + 1.5, 6.0, 0.0, 0.0, 0.0, 0.0, 0.0), (5.4, 6.0, 0.0, 0.0, 0.0, 0.0, 0.0), (6.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)]),
+        "turret_l": [(0.8, 0.0), (1.8, 24.0), (5.2, 24.0), (6.3, 0.0)],
+        "turret_r": [(0.9, 0.0), (1.9, -24.0), (5.3, -24.0), (6.4, 0.0)],
+        "abdomen": _dense([(0.5, 0.0, 0.0, 0.0), (1.6, -6.0, 0.0, 0.0), (FIRE - 0.02, -6.0, 0.0, 0.0), (FIRE + 0.1, -9.0, 0.0, 0.0), (FIRE + 0.7, -5.0, 0.0, 0.0), (5.4, -5.0, 0.0, 0.0), (6.5, 0.0, 0.0, 0.0)]),
     })
     FLASH = 24.0   # the glass's light at a flash: past white under the phone's eased light
     blink = lambda t, d, k=FLASH: [(round(t, 3), 1.0), (round(t + 0.05, 3), k), (round(t + d - 0.05, 3), k), (round(t + d, 3), 1.0)]
-    keys = [(1.9, 0.0)] + blink(1.95, 0.2) + blink(2.32, 0.2) + blink(2.66, 0.4)
-    for t in (3.35, 3.75, 4.15, 4.55, 4.95, 5.35):
-        keys += blink(t, 0.22)
-    keys += blink(5.72, 0.6) + [(6.5, 0.0)]
-    b.act("flash", 9.8, tracks, body=body,
-          glow=[(["mirror_face"], keys),
-                (["lamp"], [(0.5, 0.0), (1.2, 7.0), (7.2, 7.0), (8.0, 0.0)]),
-                (["floodlight"], [(0.7, 0.0), (1.4, 6.0), (6.8, 6.0), (7.6, 0.0)]),
-                (["gauge_glass"], [(6.9, 0.0), (7.7, 60.0), (8.9, 60.0), (9.6, 0.0)]), (["gauge_face"], [(6.9, 0.0), (7.5, 7.0), (8.9, 7.0), (9.6, 0.0)])])
+    glow = [(["mirror_face"], [(1.6, 0.0)] + blink(1.75, 0.2) + blink(2.1, 0.2) + blink(2.45, 0.9) + [(4.2, 0.0)]),
+            (["ray_lens"], [(FIRE - 0.1, 0.0)] + blink(FIRE - 0.04, 0.6) + [(4.4, 0.0)]),
+            (["ray_bore"], [(0.6, 0.0), (2.4, 30.0), (FIRE - 0.04, 60.0), (FIRE, HEAT), (FIRE + 0.5, HEAT), (5.0, 30.0), (6.4, 0.0)]),
+            (["gauge_glass"], [(0.5, 0.0), (1.6, 40.0), (FIRE - 0.05, 120.0), (FIRE + 0.1, 0.0)]),
+            (["gauge_face", "ray_gauge_face"], [(0.5, 0.0), (1.6, 5.0), (FIRE - 0.05, 9.0), (FIRE + 0.3, 2.0), (6.0, 0.0)]),
+            (["lamp", "floodlight"], [(0.5, 0.0), (1.2, 6.0), (5.4, 6.0), (6.2, 0.0)])]
+    for k in range(3):
+        t = 2.62 + 0.15 * k
+        glow.append((["ray_relay_%d" % (k + 1)], [(t - 0.1, 0.0)] + blink(t, FIRE + 0.5 - t) + [(4.2, 0.0)]))
+    b.act("ray", 6.8, tracks, body=body, ease="linear", heft=0.08, glow=glow)
     # The blast (the Thermal Ejection Manifold): the pilot spins the valve wheel open a whole turn
     # as the machine squats and braces, the boiler's end pumping up and its pressure building in
     # the sight glass and every bore; then the broadside fires, the right pair and then the left,
@@ -3136,7 +3186,7 @@ def whip_scorpion(b):
     # The stamp: it rocks its weight back onto its other legs, lifts its fore-left foot high and
     # holds it, then stamps it down hard, the whole body dropping onto it and the boiler's end
     # slamming down on its waist, the lamps and floodlights flaring and the heat jolted up the
-    # sight glass; it settles, and does the same with its fore-right. The mirror's head turns to
+    # sight glass; it settles, and does the same with its fore-right. The ray's head turns to
     # watch each foot, the glass tipped down at it, and the shoulder guns swing out for balance.
     # On quicker servos than its own (the act's heft), so the stamp stops dead.
     FL, FR = legs["fl"][2], legs["fr"][2]
@@ -3154,8 +3204,8 @@ def whip_scorpion(b):
         "abdomen": _dense([(0.5, 0.0, 0.0, 0.0), (1.4, -3.0, 0.0, 0.0), (2.2, -3.0, 0.0, 0.0)] + [(tt, *v) for tt, v in _slam(2.2, (-3.0, 0.0, 0.0), 2.45, (4.0, 0.0, 0.0))] +
                           [(3.05, 4.0, 0.0, 0.0), (3.6, 0.0, 0.0, 0.0), (4.5, -3.0, 0.0, 0.0), (5.3, -3.0, 0.0, 0.0)] + [(tt, *v) for tt, v in _slam(5.3, (-3.0, 0.0, 0.0), 5.55, (4.0, 0.0, 0.0))] +
                           [(6.15, 4.0, 0.0, 0.0), (6.8, 0.0, 0.0, 0.0)]),
-        "turret_mirror": [(0.6, 0.0), (1.6, 25.0), (3.0, 25.0), (4.6, -25.0), (6.0, -25.0), (6.9, 0.0)],
-        "mirror": [(0.6, 0.0), (1.6, -18.0), (6.0, -18.0), (7.0, 0.0)],
+        "turret_ray": [(0.6, 0.0), (1.6, 25.0), (3.0, 25.0), (4.6, -25.0), (6.0, -25.0), (6.9, 0.0)],
+        "ray": [(0.6, 0.0), (1.6, -6.0), (6.0, -6.0), (7.0, 0.0)],
         "turret_l": [(0.8, 0.0), (1.8, 20.0), (6.2, 20.0), (7.0, 0.0)],
         "turret_r": [(0.9, 0.0), (1.9, -20.0), (6.3, -20.0), (7.1, 0.0)],
     })
@@ -3166,7 +3216,7 @@ def whip_scorpion(b):
     # The survey: it turns on the spot to look round, stepping each foot in turn (a round of six
     # steps, the sides by turns), twelve degrees left and holding, then right through the middle
     # to twelve degrees right in two rounds, holding, and home; a little lower as it steps. The
-    # shoulder guns and the mirror's head lead the turn round and hold on what it watches, the
+    # shoulder guns and the ray's head lead the turn round and hold on what it watches, the
     # glass tipped up at the field, the lamps and floodlights up. On quicker servos than its own
     # (the act's heft), so each step lifts clear.
     turn = lambda yaw, dz=0.0: (0.0, 0.0, dz, yaw, 0.0, 0.0)
@@ -3186,8 +3236,8 @@ def whip_scorpion(b):
     tracks.update({
         "turret_l": [(0.6, 0.0), (2.0, 30.0), (3.6, 30.0), (5.3, -26.0), (8.2, -26.0), (9.4, 0.0)],
         "turret_r": [(0.7, 0.0), (2.1, 26.0), (3.7, 26.0), (5.4, -30.0), (8.3, -30.0), (9.5, 0.0)],
-        "turret_mirror": [(0.6, 0.0), (1.8, 40.0), (3.6, 40.0), (6.0, -40.0), (8.2, -40.0), (9.4, 0.0)],
-        "mirror": _dense([(0.6, 0.0), (1.6, 10.0), (8.6, 10.0), (9.6, 0.0)]),
+        "turret_ray": [(0.6, 0.0), (1.8, 40.0), (3.6, 40.0), (6.0, -40.0), (8.2, -40.0), (9.4, 0.0)],
+        "ray": _dense([(0.6, 0.0), (1.6, 10.0), (8.6, 10.0), (9.6, 0.0)]),
     })
     b.act("survey", 10.4, tracks, body=body, ease="linear", heft=0.08,
           glow=[(["lamp", "floodlight"], [(0.4, 0.0), (1.0, 6.0), (9.2, 6.0), (9.9, 0.0)])])
@@ -3203,10 +3253,9 @@ def whip_scorpion(b):
     tracks["abdomen"] = ([(i / 40.0, round(0.8 * math.sin(4.0 * math.pi * i / 40.0), 3), round(2.5 * math.sin(2.0 * math.pi * i / 40.0), 3), 0.0) for i in range(41)], 0.0)
     b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
     b.move(accel=1.4, heft=0.22)
-    # Its Heliographic Siphon fires with a slice of its flash (Ryan, 31 October: the cheapest first,
-    # where an act already shows the weapon; found unfired on 3 November): the mirror raised and
-    # swung out, the blow at its first flash, the flashes running on as every foe turns to it.
-    b.fires = {"heliographic_siphon": ("flash", 0.9, 3.0, 2.0)}
+    # Its Heliographic Death Ray fires with a slice of its ray: the collector's last flash, the
+    # light down the relays, the blow as the lens fires, the gun kicked back and running out.
+    b.fires = {"heliographic_death_ray": ("ray", 2.3, 5.0, FIRE)}
     # Its manifold's four vents wear the halo every glowing vent does (Ryan, 31 October: "applied to all
     # 'hot' things - so all glowing boosters and vents"; found bare on 3 November), the collar and the
     # bore's floor lit together as its blast flares them.

@@ -213,15 +213,19 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   fires its whole field; heat still raises its regen; Chain a candidate branch. With it the
   bible's design test "What a machine does, it does unasked: no extra controls" (his words:
   "Everything should be automatic in this game, I don't want extra controls"). The Whip
-  Scorpion's rework is his of the same day and built (the bible's Whip Scorpion row, v0.526: the
+  Scorpion's rework is his of the same day and built (the bible's Whip Scorpion row, v0.527: the
   tier-two formation breaker; nothing cools it; a pass, a turn it ends with an entry it could
   have spent, Sweeps the rank with the most foes as the enemy's turn ends, a shot of 2 for every
   heat, the back on a tie, the blows it took banked on top; its locked ray the Buzzard's old
   form on one foe), dealt again, its brief retired: `pass_sweep` a passive's rule, the release
   after the enemy's turn in the round and its forecast, the bot holding its die when the
   release beats its best spend, the screen playing the shots once the enemy's turn has (a first
-  cut). Its leavings are the to-do's line (two names his to give, the old vent blast and
-  Siphoning unused in the engine, its runner row unread). On this branch, not on main. The Dingo and the Prairie Dog are this branch's next (11 November), the
+  cut). Its locked piece is the Heliographic Death Ray (his keep of the name; id
+  `heliographic_death_ray`), remodelled the same day as a steam-fed mirrored railgun in the
+  mast's place, with a firing act of its own (the model rebuilt in a cloud session: a python3.11
+  venv with `bpy==5.0.1` as `BPY_PYTHON`, renders under `xvfb-run`). Its leavings are the to-do's
+  line (the Minerva draft's name, the old vent blast and Siphoning unused in the engine, its
+  runner row unread). On this branch, not on main. The Dingo and the Prairie Dog are this branch's next (11 November), the
   Clydesdale's review and the Skua his other sessions'.
 - The locked pieces' footing, decided 10 November (the bible's locked row, section 7, and tiers
   row, section 10; `docs/locked_pieces_proposal.md` holds what follows and the order; nothing

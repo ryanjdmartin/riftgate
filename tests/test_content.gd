@@ -2554,7 +2554,7 @@ func test_the_siphons_rules_and_the_vent_blast_say_their_numbers() -> void:
 	plate["face"]["targets"] = "every_ally"
 	plate["face"]["heat_per_blow"] = 0
 	db.components["test_vent_all"] = plate
-	var old: Dictionary = db.components["heliographic_siphon"].duplicate(true)
+	var old: Dictionary = db.components["heliographic_death_ray"].duplicate(true)
 	old["face"]["keywords"] = ["lure"]
 	old["face"]["reaches_all"] = true
 	db.components["test_old_reach"] = old

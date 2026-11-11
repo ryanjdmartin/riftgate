@@ -1448,7 +1448,7 @@
    "tags": []
   },
   {
-   "id": "heliographic_siphon",
+   "id": "heliographic_death_ray",
    "name": "Heliographic Death Ray",
    "maker": "wainwright_sutler",
    "shape": "dish",
@@ -1456,7 +1456,7 @@
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "The signal mirror on its mast, turned on one foe with the whole boiler behind it. Ryan, 11 November: the locked piece \"takes the buzzards old form. Cools completely, damage per heat spent. Low base damage\"; \"The heliograph term can go on the new locked piece\" (his name of 20 October: \"Keep heliographic cause its dumber\"). The name is a session's draft, his to change; the id keeps the old piece's until he names it.",
+    "fantasy": "The signal mirror on its mast, turned on one foe with the whole boiler behind it. Ryan, 11 November: the locked piece \"takes the buzzards old form. Cools completely, damage per heat spent. Low base damage\"; \"The heliograph term can go on the new locked piece\" (his name of 20 October: \"Keep heliographic cause its dumber\"). The name is a session's draft he kept (11 November: \"Heliographic death ray is a great name. Kept\"), and its gun his the same day: \"an actual gun. Pipes connecting it to the boiler, steampunk style. Mirror or mirrors as part of it because weird future nonsense tech. Like a steam powered mirrored laser railgun.\"",
     "niche": "The Whip Scorpion's answer to one big foe: it fires every point of heat the machine holds as one blow and leaves it cold, a low base and a point for every 2 heat. The same gauge feeds its passive's Sweep, which is the stronger spend against a rank (Ryan: \"I'd keep the sweep the more attractive option in terms of raw power\"), so each round is the ray on one foe now or the valves on a rank after the enemy's turn. The Buzzard's Afterburner Cannon held this form until its rework of 11 November."
    },
    "face": {
