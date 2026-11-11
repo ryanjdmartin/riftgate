@@ -16,8 +16,9 @@ a rider, now it would just have to sack the turn to release after the enemy turn
 that bothers me about that is the shape is very similar to the Buzzard pattern. The execution and
 result is different, but their builds would functionally be similar, more or less, with some nuance
 if the scorpion still wants to get hit or not." He asked for a look at what the Buzzard is for
-first (it has had no review pass, and the Storm Petrel's rework steps near it): in chat, 11
-November, his answer pending.
+first (it has had no review pass, and the Storm Petrel's rework steps near it): settled the same
+day (`kestrel_buzzard.md`), the Buzzard taking the zap and giving up firing all its heat as one
+blow, so the release is this machine's shape alone.
 
 Wainwright & Sutler's sustained damage dealer at tier two, built and fielded (the bible's Whip
 Scorpion row, Ryan's go of 20 October: "the boiler whose vents are its guns"): its Thermal
@@ -83,7 +84,8 @@ other pack. Wainwright & Sutler reach many foes at tier one (the Cottonmouth) an
 (the Musk Ox) and not between. Damage on one foe at tier two is the most crowded cell.
 
 **Heat, the Scorpion's fantasy**: the Stingray (stacks deeper with heat), the Buzzard (heat
-into regen; the Afterburner fires it all, one foe), the Kite (runs hotter as it kills), the
+into regen; the Afterburner fires it all, one foe, until its rework of 11 November spends its
+shield there instead), the Kite (runs hotter as it kills), the
 Musk Ox (ammo in heat's place), the Polar Bear (the seal's clock), the Cottonmouth (a hot drum
 shot), and two reworks waiting on the heat pass (the Storm Petrel's shield as it gains heat, the
 Puffin moving heat between machines). The refit made the hold the heat decision (fire the
@@ -101,8 +103,8 @@ the sandbox, the Funnel-web an ambusher, the gunship (rough), the Whip Scorpion,
    tier where formations grow and nothing built breaks one: closest to its first role ("a spread
    damage dealer") and its fantasy ("open the valves into the crowd"), and its slow heavy walk
    suits a lane a formation walks into rather than a chase. Its parting from the Cottonmouth
-   (every weapon as area, tier one) and the Buzzard (heat fired as one blow) is its fuel and its
-   price: heat held and released, the hold the refit asks for. The Siphon fits it as it is (every
+   (every weapon as area, tier one) and the Buzzard (its shield fired into one foe, since its
+   rework) is its fuel and its price: heat held and released, the hold the refit asks for. The Siphon fits it as it is (every
    foe turned on it, braced, its fuel richest against a formation's many blows), the old
    condition kept (a machine that spends its turn to be struck and is paid later).
 2. **Wainwright & Sutler's front.** The maker has none; the Siphon is a lure on every foe and its
@@ -146,9 +148,10 @@ pass's hold is its read. The mechanics wait on his pick of the role.
   its own it leaves unspent as its turn ends opens a valve, a blow of so much heat off the gauge.
   The player then reads its die as guns to fire and valves to leave shut, which is the
   deliberate trigger finger he wants from heat, on the one machine built round it.
-- **A locked valve.** One fixed weapon that fires its heat (the Buzzard's Afterburner Cannon is
-  this already, "one blow that fires it all"), so it would want a second idea to part them: the
-  valve's blow by rounds held, or by the foes that struck it.
+- **A locked valve.** One fixed weapon that fires its heat (the Buzzard's Afterburner Cannon was
+  this, "one blow that fires it all", until its rework moved the cannon onto shield), so the
+  shape is free; a second idea would still give it a read of its own: the valve's blow by rounds
+  held, or by the foes that struck it.
 - The blast's target: his row made the random pick the rider's limit; the randomness pass wants
   it aimed or laid by a rule the player can see. His call with the form.
 
