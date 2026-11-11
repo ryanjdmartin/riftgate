@@ -47,8 +47,8 @@ own guns work between paints. In a pair it is the partner's reach and armour and
 fire. With the whole squad there is no fire to call and it is the spotter it is today.
 
 **What it is for.** The long fight alone: a duel, a pair, an elite's own, the flank that has to
-stand while the squad is busy, where the Kite's pass cannot finish and the Skua's small hits
-bounce. Why take it: the plan is to split, and the flank needs the squad's weight without the
+stand while the squad is busy, where the Kite's opening does not finish and the Skua's small
+hits bounce. Why take it: the plan is to split, and the flank needs the squad's weight without the
 squad.
 
 **What it is bad at.** Its own guns are the lightest of the three; a wide pack outruns one paint
@@ -59,8 +59,8 @@ holes ask for a slottable one; one that spreads is its area build); guns for the
 paints; a Barrier of its own for the round the duelist telegraphs, its vector to dodge.
 
 **The pairs.** With the Skua: a painted foe's armour counts for nothing, the one thing two halved
-hits fear. With the Kite: its paint puts the back rank in reach of the Kite's Direct guns, so a
-pass need not start on the Driver.
+hits fear. With the Kite: its paint puts an untouched back rank in reach of the Kite's Direct
+guns.
 
 ## The smaller step: one of each, every round
 
@@ -78,6 +78,9 @@ three: alone it duels by having the answer free, never by weight.
 - **A number that reads the map.** The count is fixed as the fight opens and shown with the
   passive; "an ally is in the fight" is a read the engine has, and this is its mirror. A lone
   skirmish in the harness wants a setting for it.
+- **His word on the Kite's exit, the same day**: "it adds clunk to the battle". The shelling
+  changes no fight's course and adds no ending, but it is a fight that reads the battle; if that
+  is the same clunk to him, the smaller step is the Needletail.
 - **Power from no action.** The squad fights its own fight and shells the Needletail's the same
   turn. Priced in X, in its own thin guns and in the round's wait (the blow lands as the round
   ends, after the foe has acted, and a foe felled before then wastes it).

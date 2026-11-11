@@ -57,24 +57,27 @@ worker behind a formation's front, an elite's own), and a fight too long for a l
 | Machine | Its fight | It wins by | With the squad | What it cannot do | What its kit wants |
 |---|---|---|---|---|---|
 | The Skua | the wide one | count: every hit twice, a shot a column | the team's riders and stacks, twice | plate, and one big foe | riders a hit, flat buffs, multi-strike guns |
-| The Kite | the short one, a pass | magnitude, then the exit | two or three doubled shots and gone | hold ground, or grind | one or two decisive guns; heat as time on target |
+| The Kite | the first shot, and the small fight whole | magnitude on what nothing has touched, a kill chaining it on | it shoots first: what it kills never acts | anything already hurt; a long fight | one big single hit; reach; a setter before it |
 | The Needletail | the long one, alone | the squad's fire on what it paints | reach and armour for every Direct gun | a wide pack; weight of its own | every source of Exposed |
-| The Buzzard (move 5, medium) | either, squad or flank (his word) | the burst that stays: its shield spent into its blow | the big blow on the big foe | | hot guns |
+| The Buzzard (move 5, medium) | either, squad or flank (his word) | the burst that builds and commits: its shield spent into its blow | the big blow on the big foe | | hot guns |
 
 Why one over another is what the squad lacks. No area and riders to double: the Skua, which holds
 a flank against numbers. A plan to split, with a flank that must stand a real fight: the
 Needletail, which brings the squad's weight without the squad. Fights that are won but bled for,
-a back rank that works, more wall than machines: the Kite, which takes the head off a pack
-anywhere, a turn before the squad meets it or instead of it. They pair: a painted foe's armour
-counts for nothing, the one thing the Skua's halved hits fear, and the paint puts a back rank in
-reach of the Kite's Direct guns; the Puffin's direction (it moves heat) keeps a Kite on target or
-throws it out a round early.
+a back rank that works, flank duels to end before they start: the Kite, which takes one
+untouched head off the field a round from the first shot. They pair: a painted foe's armour
+counts for nothing, the one thing the Skua's halved hits fear, and the paint puts an untouched
+back rank in reach of the Kite's Direct guns; the Kite shoots before the Skua, never after. In
+time they spread too: the Kite opens a fight, the Skua works its width, and the Buzzard builds
+and commits.
 
 Where each stands:
 
-- **The Kite**: redesigned from the ground up on his word, a proposal in its brief
-  (`kestrel_kite.md`): the one machine a fight cannot hold, its heat its time on target, breaking
-  off at its maximum. His calls open there.
+- **The Kite**: redesigned from the ground up on his word, in its brief (`kestrel_kite.md`). The
+  first round, a Kite that left a fight at its heat maximum, he declined the same day ("it adds
+  clunk to the battle. We ditched withdrawal and the game feels better for it"). The second, a
+  proposal: the opener, every weapon doubled on an unhurt foe and nothing else, the Driver as
+  built; the smaller step beside it, a kill that costs no heat. His pick open there.
 - **The Needletail**: a proposal in its brief (`kestrel_needletail.md`): what it paints, the
   squad's machines outside the fight shell; the smaller step beside it, a weapon and an equipment
   every round. His pick open there.
