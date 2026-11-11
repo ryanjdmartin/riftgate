@@ -90,7 +90,7 @@ const STEPS := {"tracked": "step_tracked", "walker": "step_legged", "wheeled": "
 ## loop each, the last crossfading into the first again: the map's, the two calm tracks,
 ## rift B and human B (Ryan, 25 September: both very good; one loop of each, then
 ## crossfade, to judge the crossfade). A picking set (PICK) takes one loop per visit, the
-## next one each visit, and loops it: the skirmish's, human A, rift C and human C, since a
+## next one each visit, and loops it: the skirmish's, human A, rift C, human C and rift A, since a
 ## fight must never crossfade tracks in the middle of itself (Ryan, the same day: fade in
 ## from the map, loop, fade back to the map on exit). The player may still skip: the pause
 ## menu's next and previous move within the screen's set (Ryan, 25 September).
@@ -100,19 +100,19 @@ const STEPS := {"tracked": "step_tracked", "walker": "step_legged", "wheeled": "
 ## identity. A boss set is keyed "boss_<faction id>" and holds one loop; the battle screen
 ## starts it on the field the moment the boss is contacted, from its top, so the intro bars
 ## play under the reveal and the handover and the fight arrives in the groove. A family
-## without a set falls back to the skirmish's pick (`boss_set`). The Far Bank is the
-## Marsh's (it was The Chorus's until the domains of 9 October): the most choral and the
-## most symphonic of the six, and the far bank of a river is where the Marsh is.
+## without a set falls back to the skirmish's pick (`boss_set`). No family has one now: The
+## Far Bank was the Marsh's (The Chorus's until the domains of 9 October) until it joined the
+## skirmish's pick (Ryan, 11 November: "Take far bank off of the boss and add it to the regular
+## pool").
 const SETS := {
 	"map": ["music_low_ground", "music_night_shift"],
-	"skirmish": ["music_hold_the_line", "music_crossing", "music_full_bore"],
-	"boss_marsh": ["music_far_bank"],
+	"skirmish": ["music_hold_the_line", "music_crossing", "music_full_bore", "music_far_bank"],
 }
 const PICK := ["skirmish"]
 
-## Where a loop wraps to, in bars from its top, when it is not the top: a boss theme's intro
-## plays once, under the reveal, and a long fight wraps into the groove instead (Ryan, 25
-## September). Bars are the 4/4 bar's length at the loop's TEMPO. Absent means the top.
+## Where a loop wraps to, in bars from its top, when it is not the top: an intro plays once
+## and a long fight wraps into the groove instead (Ryan, 25 September, of a boss theme's, under
+## the reveal; The Far Bank keeps its wrap in the skirmish's pick). Bars are the 4/4 bar's length at the loop's TEMPO. Absent means the top.
 const LOOP_FROM := {"music_far_bank": 8, "music_hold_the_line": 8}   # Hold The Line wraps to the power chords, bar nine (Ryan, 29 September: its seam was the janky one; the bass's entrance at five was tried first)
 
 ## Every loop's shown title and its working label. The files are named for the titles
@@ -302,7 +302,7 @@ static func set_playing() -> String:
 	return _node._set
 
 
-## The boss set for a domain ("boss_marsh"), or "" when the family has no theme yet and
+## The boss set for a domain ("boss_<faction id>"), or "" when the family has no theme yet and
 ## the fight takes the skirmish's pick.
 static func boss_set(faction: String) -> String:
 	var name := "boss_" + faction

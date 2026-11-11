@@ -128,8 +128,8 @@ file and the to-do the conflicts: the bible three-way on the v0.469 both files c
 v0.506 kept whole with the session's track rows over it as v0.507; this file and the to-do on
 main's trimmed form with the session's lines brought to it, the to-do's ticked lines pruned) and
 main took it as a fast-forward on Ryan's word ("I think this is a good spot to ship everything to
-main"), then again with The Far Bank's pair ("Oh I thought far bank was done?"); it is merged and
-to delete with the rest. Landed
+main"), then again with The Far Bank's pair ("Oh I thought far bank was done?") and its move off the
+Marsh's boss into the fights' pool; it is merged and to delete with the rest. Landed
 9 November: `ccr-a0b35006-od22d2`, the Lammergeier's rework (How things stand), on Ryan's word
 ("Merge this into main. Your reads are correct"), main taken as it landed twice (the Polar Bear,
 then every renamed id: the save versions stacked, battles 20, runs 19 and quick runs 4; the
@@ -677,7 +677,9 @@ The tasks are the to-do's; this is the index of what waits.
   November: "Full pair for HtL is good to ship"; "Keep 96. I think this is a good spot to ship
   everything to main"; "Oh I thought far bank was done?"), all three built into art/audio by the
   forge's SHIP from their sketches' `ship`: each track's shipped half where it played (Night Shift's
-  map half now at 96, Sound's TEMPO with it; The Far Bank's battle half the shipped track itself),
+  map half now at 96, Sound's TEMPO with it; The Far Bank's battle half the shipped track itself, in
+  the fights' pool since it came off the Marsh's boss, 11 November: "Take far bank off of the boss
+  and add it to the regular pool", so no domain has a boss theme now),
   its new half beside it (`music_hold_the_line_map`, `music_night_shift_battle`, `music_far_bank_map`),
   unplayed until the engine plays a pair (one synchronized stream, the map choosing the track, the
   3 s flip). The rest in a music session of Ryan's own (11 November: "I'll resume the remaining
@@ -737,7 +739,7 @@ commands are in `README.md`.
   page's Version 502, published from main at `2d489f7` on Ryan's word, "republish the hangar
   page and the bible": main's file whole, since the live v0.496 matched `f048e67`'s byte for byte
   and so needed no merge; it carries the Lammergeier's rework, its row, the Gel's and the
-  reinforcement row's slot-mine lines and the tables). Main's file is v0.508 since The Far Bank's pair shipped (its track row), v0.507 since the music session landed (11 November: its track rows since v0.469, Hold The Line's and Night Shift's pairs passed and shipped, the fills' lean and The Far Bank's pick of the lift, merged three-way on the v0.469 both files carried), unpublished, its republish on Ryan's word ("publish the bible"); v0.506 since the boss's hex landed (its patrol retired, the vortex lower with the wall at the bottom), v0.505 since the third map list landed (the rift's five hexes on the field row, the undo and marks rows), v0.504 with the second map list's rows (the marks row
+  reinforcement row's slot-mine lines and the tables). Main's file is v0.509 since The Far Bank's pair shipped and it joined the fights' pool (its track row and the boss themes' Open row), v0.507 since the music session landed (11 November: its track rows since v0.469, Hold The Line's and Night Shift's pairs passed and shipped, the fills' lean and The Far Bank's pick of the lift, merged three-way on the v0.469 both files carried), unpublished, its republish on Ryan's word ("publish the bible"); v0.506 since the boss's hex landed (its patrol retired, the vortex lower with the wall at the bottom), v0.505 since the third map list landed (the rift's five hexes on the field row, the undo and marks rows), v0.504 with the second map list's rows (the marks row
   rewritten, the pack, undo, gesture, Fracture, reconstruction and tears rows, the Badger's and
   the store's) on the shapes' rework's v0.503 and the hangar's Bench tab's v0.502, unpublished; v0.501 since the map
   playtest list landed (the boss's picture, the scenery under the painting, the tears row's

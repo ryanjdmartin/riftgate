@@ -184,7 +184,7 @@ Ryan, 4 November: "I want to target 10 per maker, at least for now." The roster 
 
 - [ ] The pairs in the game, once the halves are picked (Hold The Line's passed 10 November, Night Shift's and The Far Bank's 11 November, the three pairs in art/audio, `music_hold_the_line_map`, `music_night_shift_battle` and `music_far_bank_map` unplayed until this lands): each pair one synchronized stream, the map choosing the track and looping it about twice before the next, a fight flipping to its battle half in place over 3 s from ENGAGE and back on the field, the boss's reveal as today; each picked half into the forge's SHIP table at its level
 - [ ] Level the other five tracks against Hold The Line through the phone model
-- [ ] Boss themes for the Meadow, the Waste, the Peak and the finale, melodies proposed in chat first
+- [ ] Boss themes for the Marsh, the Meadow, the Waste, the Peak and the finale, melodies proposed in chat first (the Marsh's since The Far Bank joined the fights' pool, 11 November: "Take far bank off of the boss and add it to the regular pool")
 - [ ] Foe tags (Ryan, 4 November: flavour the codex shows, hooks for audio and perhaps attack and death animations, never a mechanic; the bible's foe tags row, section 9): the working set proposed in chat first (his examples: Undead, skeletal; Animal, demonic; flying), then `tags` on every foe in content with the validator holding the set, the codex showing them beside the name, and Jenny's foe-down pools (undead, demonic, eldritch) keyed by them
 - [ ] A foe death per domain, later
 - [ ] A hunter's roar as it turns on a machine (Ryan, 8 November: "a good place for a sound effect from the enemy, a roar or whatever"), under the HUNTED band
