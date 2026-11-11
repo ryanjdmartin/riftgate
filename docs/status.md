@@ -280,15 +280,17 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
     clunk to the battle. We ditched withdrawal and the game feels better for it. Forced withdrawal
     probably feels bad": the bible's withdrawal row, its file v0.530 on this branch, unpublished).
     Its kit as his words leave it, "Burst glass cannon": four entries and no reset, every weapon
-    doubled on an unhurt foe, the Pinion Driver the finisher again, a kill recharging a small
-    shield whole; Phased on a kill he kept for the shadow panther (a line at the Zoids walker's
-    brief's head). Open with him: the Coriolis Accelerator (the Driver's twin in the pool), the
-    frame's numbers, then his go.
+    doubled on an unhurt foe, the Pinion Driver a finisher in a simpler form than the Coriolis
+    Accelerator's slope (both stand, his word), a kill recharging a small shield whole; Phased on
+    a kill he kept for the shadow panther (a line at the Zoids walker's brief's head). Open with
+    him: the Driver's form (Claude's: a double on a foe at half its hull or less), the frame's
+    numbers, then his go.
   - The Skua (`kestrel_skua.md`): his rewrite, "Ramping Dakka": Ricochet (a stack for damaging an
     enemy, once a round; a strike of 1 more a stack; half lost on hull damage), the Hypersonic
-    Swoop its lock (a stack, Rapid, a cooldown of one), the Flechette Pod an ordinary weapon.
-    Claude's readings of what his words leave are in the brief, written so unless he says. He
-    had kept the Skua for a session of his own; the rewrite came in this one.
+    Swoop its lock (a stack, Rapid, a cooldown of one), the Flechette Pod an ordinary weapon;
+    the stacks ride a shot (a Sweep's every shot, a weapon of several strikes once after them).
+    Claude's other readings are in the brief, written so unless he says. He had kept the Skua
+    for a session of his own; the rewrite came in this one.
   - The Needletail (`kestrel_needletail.md`): settled ("I agree with the Needletail, yes"): two
     things a round, a weapon and an equipment every round, the Designator kept; the chassis that
     orbits Exposed is one of the two unspecced mediums. Its build waits on his go.

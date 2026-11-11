@@ -191,16 +191,31 @@ The kit, every number a placeholder:
 - **Four entries**: the Pinion Driver and three hardpoints.
 - **The passive**: every weapon it fires hits an unhurt foe at double its printed number; a kill
   recharges its shield whole.
-- **The Pinion Driver**: the finisher, a flat number that grows with the hull its target is
-  missing.
+- **The Pinion Driver**: the finisher, in a simpler form than the Coriolis Accelerator's slope
+  (his word; Claude's form of it below, a double on a foe at half its hull or less).
 - **The frame**: a paper hull, a small shield, and a low regen (Claude's: on a small gauge a big
   regen refills it anyway and the kill's pay is noise, so the shield should come back by
   killing).
 - **Gone**: the reset, the flat heat, the dark rounds, Hot Streak.
 
-Still open on it: the Coriolis Accelerator (hole 4, home as the Driver or its twin in the
-pool); and the passive now holding two lines, the opener and the refill, which Claude reads as
-one idea, first blood, and the one-idea row is his to read.
+Still open on it: the passive now holding two lines, the opener and the refill, which Claude
+reads as one idea, first blood, and the one-idea row is his to read.
+
+### The Driver beside the Coriolis (11 November)
+
+His answer on hole 4: "I think mechanically two execute pieces can exist - is there a way to make
+the pinion driver simpler but fill the same purpose, and the Accelerator then keeps the full
+missing-hp damage with the difficult math?" So both stand: the Coriolis Accelerator keeps the
+slope in the pool, and the Driver wants a simpler finish.
+
+Claude's answer, for him to move: **the Pinion Driver hits a foe at half its hull or less at
+double.** One condition and no arithmetic, the passive's mirror: the Kite opens at double on the
+unhurt and its lock finishes at double on the half-dead. The two never meet on one blow (an
+unhurt foe is not at half), so nothing stacks. It is the Coriolis's slope as one step: weak on
+the fresh, strong on the wounded. A duelist the opener leaves at 3 of 13 takes the Driver's two
+strikes at 4 each; a boss feels it from half down. Both conditions read the target's hull, one
+small family for the engine. The simpler still, benched: double on any hurt foe, which with the
+passive makes the Driver doubled always on the Kite, a strong gun and no finisher.
 
 ## Holes raised (the opener)
 
@@ -258,7 +273,7 @@ fight, and a gauge no single round can fill.
 
 ## Open, his
 
-1. The Coriolis Accelerator: home as the Driver, or kept in the pool beside it.
+1. The Driver's simpler form: a double at half its hull or less (Claude's), or another.
 2. The passive's two lines (the opener, the refill): one idea by his read, or the refill on the
    Driver.
 3. The frame's numbers: how small the shield, and the regen beside it.
@@ -267,7 +282,8 @@ fight, and a gauge no single round can fill.
 
 Answered 11 November: Phased is the shadow panther's, and the kill pays the Kite's shield, on a
 small gauge; with the gauge small Claude's gate on the Driver's kill is withdrawn, so any kill of
-its own pays, as he first wrote it.
+its own pays, as he first wrote it. The Coriolis Accelerator stays in the pool with its slope, and
+the Driver takes a simpler form beside it.
 
 ## What the session hands back
 

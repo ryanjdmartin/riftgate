@@ -74,15 +74,17 @@ Where each stands:
   Kite that left a fight at its heat maximum he declined ("it adds clunk to the battle. We
   ditched withdrawal and the game feels better for it"). Its kit as his words of 11 November
   leave it: four entries and no reset; every weapon doubled on an unhurt foe; the Pinion Driver
-  the finisher again; a kill recharging a small shield whole. Phased on a kill he kept for the
-  shadow panther ("It keeps the phased orbit, not the Kite"). Open: the Coriolis Accelerator,
-  the Driver's twin in the pool, and the frame's numbers.
+  a finisher in a simpler form than the Coriolis Accelerator's, which keeps its slope in the
+  pool ("two execute pieces can exist"); a kill recharging a small shield whole. Phased on a
+  kill he kept for the shadow panther ("It keeps the phased orbit, not the Kite"). Open: the
+  Driver's form (Claude's: a double on a foe at half its hull or less) and the frame's numbers.
 - **The Skua**: his rewrite of 11 November, in a brief of its own (`kestrel_skua.md`): a stack of
   Ricochet for damaging an enemy, once a round, and a second only by its lock, the Hypersonic
   Swoop (Rapid, a cooldown of one); a strike of 1 more for every stack, half lost on any hull
-  damage; the Flechette Pod an ordinary weapon. Open: Claude's readings of what his words leave
-  (strikes of 1 through the whole blow; once for each enemy a spend is aimed at; half rounded
-  down at each blow that takes hull; no cap), written so unless he says.
+  damage; the Flechette Pod an ordinary weapon. The stacks ride a shot, his word: a Sweep gets
+  them on every shot, a weapon of several strikes once after them. Claude's other readings
+  stand unless he says (strikes of 1 through the whole blow; half rounded down at each blow that
+  takes hull; no cap).
 - **The Needletail**: settled 11 November ("I agree with the Needletail, yes"), in its brief
   (`kestrel_needletail.md`): two things a round, a weapon and an equipment every round, the
   Designator kept, so it marks every round. The squad's fire on its paint he set aside

@@ -65,12 +65,15 @@ the Swoop, Rapid with a cooldown of one, is the one way to a second.
    is a squad's whole fight at tier one, and eight or more against a boss. If the loss is the
    cap, nothing more; the lever is a ceiling.
 
-What Claude writes for each unless he says otherwise (put to him 11 November, his answers on
-the Swoop alone so far):
+What Claude writes for each unless he says otherwise (put to him 11 November; the second
+answered, the Swoop's limiter too):
 
 1. Strikes of 1, through the whole blow: his word.
-2. Once a spend for each enemy a strike was aimed at. The one that most wants his yes or no,
-   since the other reading multiplies a gun's strikes by the stacks.
+2. Answered 11 November: "if your question was does it add to every strike, then no, my intent
+   was for every shot. So a sweep gets +N strikes every shot, a multi-hit gets+N strikes after,
+   where N is number of stacks." So the stacks ride a hit, as the rules count one: a
+   single-target weapon's whole spend, once, after its strikes; a Sweep's every shot, so a foe
+   two shots meet takes them twice. An area's other foes, reached and not aimed at, take none.
 3. What is left is half, rounded down, as every halving in the game is (Empowered, Flak), so a
    lone stack is lost; at each blow that takes hull, as "any hull damage" reads.
 4. No cap.
