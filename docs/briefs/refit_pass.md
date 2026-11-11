@@ -120,6 +120,26 @@ the records this stands on.
   well, but leave out rising threat for now." So the model is content in its least form
   (section 5), the formation pass takes the Marsh's line and the duelists with it (section 9),
   the elites and bosses get a first guess, and the rising threat waits.
+- **11 November, on what landed**: "Badger probably goes to Regen 1 with the amount of armour
+  it's able to get. Take me through your thought process when assigning shields and shield
+  Regen. Just based on their current shield values?" (It was: section 5's shield row.) "Draugr
+  is fine as a name, as are your other working names. That's all part of my own to-do, later."
+  "Let's focus only on balancing tier 1 fights for now. If you've read the other work done then
+  you'll know that we're considering tier 3 machines to have higher stats, and lower tiers be
+  upgradeable. That lets us actually scale player durability slightly for higher tiers. And we
+  don't have enough higher tier content right now to satisfactorily outfit a higher tier." And
+  his big question: "When in the convergence does the player get their fourth mech? We're
+  leaving it up to them in the economy, after their first battle they'll be offered one chassis
+  from that maker, and then presumably some choices on the shelf, but if they don't like those,
+  then I assume a smart player might hold out. That means that the first battle should be tuned
+  around 3 units, and possibly second convergence battles should be tuned around 3.5 units,
+  with some assumptions about whatever the player chooses during that hangar phase will get
+  them enough power to overcome the missing 4th unit. 3rd convergence battles onward we should
+  tune it around 4 units. I'm harping on this for a couple points. One, it significantly
+  affects boss scaling, since the whole team is brought in. Second, the main battlefield power
+  a fourth unit gets is being able to reliably cover a flank, and stay out there without
+  presumably needing to come back to reinforce for an elite, most of the time anyway." Section
+  10 holds what the records say of the fourth machine, the reads at three and the holes.
 - **The refit's direction, before the model was reached**: "Enemy HP is probably too high, or
   player damage is too low. I'd rather lower enemy HP slightly, and boost synergy pieces to
   increase damage instead of just raw numbers. However, I want to judge the new formations
@@ -407,10 +427,24 @@ deal written into `content/`, with the regen by chassis.
 
   | Regen a round | Gauge | Chassis |
   |---|---|---|
-  | 3 | 8 | the Honey Badger, the Polar Bear, the Wild Boar, the Puffin, the Cassowary, the Cottonmouth, the Whip Scorpion |
+  | 3 | 8 | the Polar Bear, the Wild Boar, the Puffin, the Cassowary, the Cottonmouth, the Whip Scorpion |
   | 2 | 10 to 12 | the Clydesdale, the Baboon, the Prairie Dog, the Dingo, the Ammit, the Stingray, the Funnel-web, the Musk Ox, the Skua, the Needletail |
   | 1 | 14 to 16 | the Kite, the Swallowtail, the Lammergeier, the Storm Petrel, the Giant Petrel |
-  | 1, by role | 6 and 12 | the Nemesis (its rage reads hull, and its plate is its answer), the Buzzard (it makes shield from its own heat) |
+  | 1, by role | 6, 8 and 12 | the Nemesis (its rage reads hull, and its plate is its answer), the Buzzard (it makes shield from its own heat), the Honey Badger (his word of 11 November: "with the amount of armour it's able to get") |
+
+  The bands were the gauge's alone, his sentence taken as a rule, and the two role calls were
+  the only ones made. It flattened what it meant to part: over a four-round fight every
+  tier-one machine holds 16 to 19 points of shield (the gauge and three rounds of regen), so
+  the regen set a machine's tempo and nothing of its durability. And it missed the call the
+  Nemesis's line states: plate and regen are two answers to the same small blows, and a
+  machine's armour does nothing while its shield stands, so a fast regen on a plated machine
+  keeps its plate idle. The Honey Badger carries a point of plate, two more from a full
+  hopper and two from its Shoring Jack. At one it reads the same in a full trio, a few points
+  dearer as a pair, and alone it no longer wins a formation rated for three
+  (`docs/measurements.md`, 11 November). By the same line the Wild Boar (two of plate, a regen
+  of three) and the Polar Bear follow; the Boar is tier two and the Bear is in design, so
+  neither is moved. A machine's regen becomes a number a level when machines hold levels (the
+  locked pieces' proposal on `ccr-4d58b054-3lyj0a`, its section 5), so these are level one's.
 
 - **Cooling**: every dealt chassis cools one at least (the Stingray one, from nought).
 - **The pieces with no entry left**: the ten slottable shields and vents are planned drafts
@@ -713,6 +747,17 @@ word:
    are Claude's drafts), the shown text (drafted, unsigned), and whether a role is ever shown.
 8. The Reinforced Skeleton: parked with destruction, or a new rule now.
 9. The commander layer's shield and vent actions: a note now, a row when that layer is designed.
+10. The elites and the bosses (section 8's last hole): the guess of 10 November is his to play
+    and move. Two things in it pull against each other and only he can say which gives: the
+    kill-time test of 21 October (a boss three to five rounds for a squad of four) and the hull
+    budget above (the boss what is left), since under four pooled gauges a fight that short
+    costs a squad little whatever the blow; the guess sides with the fight's length the 48 had
+    on the old dice (72 hit points on the new) and stops there.
+11. The squad a battle is tuned for, by the Convergence (his direction of 11 November: three
+    at the first battle, three and a half at the second Convergence, four from the third):
+    section 10 has what the records say of the fourth machine, the reads at three, the holes
+    and Claude's leans. His: the route to a fourth machine that survives a lost first battle,
+    the opening's second flank patrol, and his go on the boss's blocks by ramp band.
 
 ## 8. Holes raised, each with what settles it
 
@@ -732,9 +777,20 @@ word:
 - The lights' identity: big shields on small hulls read differently when the shield regenerates;
   Kestrel's shields against Minerva's armour is the lean, the regen and the armour the two
   makers' answers.
-- The elites under a regen: their blows are plain, so a lone Badger takes most of tier one's lone
-  elites for a few points of hull (section 5's second point). Their numbers are their own item
-  (the bible's section 12); this is one more read for it, no proposal.
+- The elites and the bosses under a regen: a blow under a fresh gauge costs nothing and a squad
+  brings a gauge a machine, so at their old numbers every one read free for a gathered four
+  (a hundredth of its hull) and a lone Badger took most of tier one's lone elites for a few
+  points. Guessed 10 November on his word ("I'd like you to guesstimate some elite and boss
+  tweaks as well, but leave out rising threat for now"), placeholders for his play
+  (`docs/measurements.md`, the rule and every number): their blows sized against the gauge (a
+  boss's 10 to 20, an elite's 7 to 18), a boss 72 hit points at tier one, the light lone elites
+  twice theirs, the tier's hit-point step halved, an elite's menace no longer doubled so its
+  kill fills the meter about as it did. What the guess does not reach is the hull budget of
+  section 7's head (an elite's fight a quarter of a four's hull, the boss what is left): single
+  plain blows are soaked by four pooled gauges, so a gathered four loses about a twentieth to
+  an elite and a tenth to a boss at tier one, and what closes it is area, many strikes or a
+  longer fight, a kit question for their sessions. It bites where the squad is not gathered:
+  an elite is a wall for the machine it catches and costs two machines a third of their hull.
 
 ## 9. The formation pass, executed: what landed and what is left
 
@@ -776,10 +832,102 @@ flat, or flat with a Marsh twist, if a simple one exists") and the go.
 **Not in the pass, and where each waits**: a foe's numbers (the refit's, after he plays the
 formations); the die's re-deal proper, the component pass and the heat prices (section 6, the
 refit's content); the bosses' stat blocks and their escorts (the proposal's section 6, a
-session of their own; the elites' and bosses' first guesses under the model are the to-do's
-line and `docs/measurements.md`); the rising threat in every formation and its validator check
+session of their own; the elites' and bosses' first guesses under the model are section 8's
+last hole and `docs/measurements.md`); the rising threat in every formation and its validator check
 (section 3's ninth point: "leave out rising threat for now"); the field's dials (the to-do);
 the sizes' names if the role becomes the word (a flanker for a patrol: section 4's holes).
 
 Done before it: the what-if, the injury rule off, the aggressor's habit, the trial and its
 dials, the first reads (section 5), the wall strike by the rating, the goblin's line.
+
+## 10. The squad a battle is tuned for, by the Convergence (11 November)
+
+His direction, in his words in section 2: the first battle tuned around three units, the
+second Convergence around three and a half, the third onward around four, because a boss's
+fight brings the whole team in and because the fourth unit's power on the field is a flank
+covered without coming back for the elite. And his scope the same day: tier one only.
+
+**What the records say of the fourth machine** (the rules' campaign part,
+`docs/economy_pass.md`, `sim/campaign.gd`):
+
+- A run starts with three machines and four squad slots: a tender of one tier-one machine from
+  each of the four city makers, three taken (`START_MACHINES`, 7 October: "the fourth is
+  bought").
+- Two routes lead to a fourth, neither built in the campaign: the host maker's offer after a
+  won battle (a chassis, a component copy and a module from its catalogue, one taken free, the
+  chassis always in it: his shape of 14 and 15 October), and the procurement shelf, bought with
+  Favour ("the fourth slot is empty from the start and its machine is bought, never
+  unlocked"). The quick campaign has the offer.
+- The Convergence rises one a turn, a battle or a pass, won or lost. Tier one is Convergences 0
+  to 3, four turns, and the ramp a battle reads is the Convergence as the battle starts, never
+  reset.
+- A wreck sits out the next turn unless rushed for 100 Favour, the whole starting purse, and
+  only a win pays Favour.
+
+So his three bands are battle one, battle two, and battles three and four, and the earliest
+fourth machine is Convergence 1, after a first battle won and its offer spent on the chassis.
+
+**What the reads say** (`docs/measurements.md`, 11 November; eight starting trios and three
+fours, stock, the bot playing):
+
+| A fight | Three machines | Four |
+|---|---|---|
+| A formation | 9% to 18% of the squad's hull | 4% to 5% |
+| An elite | 8% to 20% | 4% to 5% |
+| A boss | 24% to 61%, won 61% to 99%, nine to fifteen rounds | 11% to 16%, won every time, seven or eight rounds |
+
+The fourth machine halves or thirds every cost and the boss's most, which is his first point
+in numbers. A trio without the Honey Badger loses a quarter to two fifths of its boss fights.
+The six fodder formations are on the pusher's budget for three and the four led by a breach
+are not. An elite at three sits near the budget he accepted (a tenth to a fifth), where at
+four it is a twentieth. And a boss at three quarters of its hit points and of its blow costs
+three machines what the whole boss costs four, with no machine wrecked.
+
+**The holes, each with what settles it**:
+
+1. The fourth needs a win, and the Convergence never waits. A first battle lost, or won with
+   a wreck, meets Convergence 1 with three machines or two and Convergence 2, tuned for four,
+   with three. What settles it is his: the first offer owed however the first battle ended, a
+   tier-one chassis on the shelf inside the starting purse, or the spiral accepted as the
+   run's graded loss.
+2. Three and a half is no squad a runner can field. Until a run deals components and modules,
+   the second Convergence is read at three and at four and its numbers set between.
+3. Holding out. By the levels' proposal a find in a tier-one rift is a new trick and never a
+   bigger number, and the reads say a fourth die, hull and gauge halve a squad's costs, so in
+   tier one the chassis is likely the pick every time and holding out is waiting, at that
+   price, for a chassis one likes better. If holding out is meant as a real choice, a
+   tier-one find has to be worth a third of a machine, which that proposal says it is not.
+4. The ratings. A formation is rated three, and the opening places one with two flank patrols
+   at Convergences 0 to 2 (`Ramp.formations_at`, `Ramp.patrols_at`), so the first field asks
+   five machines' worth of three. If the fourth's power is the covered flank, three machines
+   are meant to leave one open and the price is the wall's; if not, the second patrol waits
+   for Convergence 1 or 2. His to say; the lever is a placeholder in the ramp.
+5. The boss is the one fight the squad's size decides by rule. The form he chose on 7
+   November, fixed entries by tier and ramp, is what this needs: tier one's boss in three
+   blocks, Convergence 0, 1, and 2 to 3. Not built (`ContentDB.BOSS_TIERS` is by tier alone).
+6. The campaign runner's player never gets a fourth machine, so every battle it fights is
+   three machines against a field for four. Its win rates measure that and nothing of a squad
+   of four, until its player takes an offer's chassis.
+
+**Claude's leans, for his marks** (nothing built):
+
+- The boss: three blocks at tier one, their first numbers three quarters of the guess's hit
+  points and blow at Convergence 0, seven eighths at 1, the guess whole from 2.
+- The elites: their numbers stay, since at three they sit near the budget. The Old Man's
+  rising and the Wild Hunt, the two that cost a trio most, gated from Convergence 2 if he
+  wants the first two battles without them.
+- The formations: nothing moves. The four led by a breach are dear for three, and breach is
+  parked on his word.
+- The runner: its player takes the chassis from a won battle's offer, so its battles from the
+  second read a squad of four.
+
+**The scope.** Tier one only (his word). The tier-two and tier-three reads of 10 November are
+stock machines, which the levels' plan will not field: a machine holds a level, bought in the
+hangar once the Convergence reaches it, that lifts its stat line and its locked pieces, and
+tier one comes down to the basics (`docs/locked_pieces_proposal.md` on `ccr-4d58b054-3lyj0a`,
+his calls of 10 November, not on main yet; this session read it on 11 November, after the
+guess). So the tier's hit-point step guessed on 10 November stands as a placeholder and is
+tuned no further, a machine's regen is level one's number, and the guess's tier-one reads
+were taken with locked pieces that proposal brings down (the Photosphere Lance, the Flechette
+Pod), so the squads here hit a little harder than they will.
+

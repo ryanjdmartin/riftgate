@@ -445,24 +445,26 @@ laid out so his marks have a table to land on:
 - **The escort stays an `escort` composition**, by tier and, when wanted, a ramp band, so a boss's
   escort at the ramp's top can be its own entry as a pack's variant is. Nothing new in the
   schema for it: the gate field exists since 7 November.
-- **Today's numbers as the first entries** (×1.0, ×1.25 and ×1.5 on HP, +0, +1 and +2 on attack,
-  the multiplier made explicit and no number moved), each a placeholder for his marks:
+- **Today's numbers as the first entries** (×1.0, ×1.1 and ×1.25 on HP, +0, +1 and +2 on attack,
+  the multiplier made explicit; the numbers are the guess of 10 November for the refit pass's
+  model, `docs/measurements.md`, 48 hit points and a blow of 6 to 8 before it), each a
+  placeholder for his marks:
 
 | Boss | Domain | Tier 1 HP / attack / armour | Tier 2 | Tier 3 | Escort today (tier 1 / 2 / 3) |
 |---|---|---|---|---|---|
-| Floraison | The Meadow | 48 / 6 / 0 | 60 / 7 / 0 | 72 / 8 / 0 | alone / two Wargs / two Alpha Wargs, a Guard, a Captain |
-| The King Gel | The Meadow | 48 / 6 / 0 | 60 / 7 / 0 | 72 / 8 / 0 | three Gels / two Gels, a Bubble Gel / a Bubble, a Metal and a Gel |
-| The Mantis Ant | The Meadow | 48 / 6 / 0 | 60 / 7 / 0 | 72 / 8 / 0 | alone / two Guards / a Guard, a Captain, two Alraunes |
-| The Ruby Colossus | The Waste | 40 / 8 / 1 | 50 / 9 / 1 | 60 / 10 / 1 | alone / a Pit Antlion, a Basilisk / the Antlion Queen, two Gorgons |
-| The Fallen Weapon | The Waste | 40 / 8 / 1 | 50 / 9 / 1 | 60 / 10 / 1 | alone / a Barbed Needler, a Basilisk / a Barbed Needler, two Gorgons |
-| The Emperor Scorpion | The Waste | 48 / 7 / 1 | 60 / 8 / 1 | 72 / 9 / 1 | alone / a Pit Antlion, a Barbed Needler / a Pit Antlion, a Great Needler, a Gorgon |
-| The Matador | The Marsh | 48 / 7 / 0 | 60 / 8 / 0 | 72 / 9 / 0 | alone / two Wights / three Wights, a Spectre |
-| The Phantom Train | The Marsh | 48 / 8 / 1 | 60 / 9 / 1 | 72 / 10 / 1 | alone / two Ghosts / a Ghost, a Wraith, a Spectre |
-| The Vampire Lord | The Marsh | 40 / 6 / 0 | 50 / 7 / 0 | 60 / 8 / 0 | alone / a Death Knight, a Wight / a Dread Knight, a Death Knight, a Wight |
-| The Marsh Serpent | The Marsh | 48 / 7 / 0 | 60 / 8 / 0 | 72 / 9 / 0 | alone / two Ghosts / two Wights, a Spectre, a Ghost |
-| The Gargantuan King | The Peak | 48 / 8 / 0 | 60 / 9 / 0 | 72 / 10 / 0 | alone / a Bomb, a Grenade / two Grenades, a Balloon |
-| The Fiend of Fire | The Peak | 48 / 7 / 0 | 60 / 8 / 0 | 72 / 9 / 0 | alone / two Fire Lizards / two Magma Lizards, a Wyvern |
-| The Obsidian Tyrant | The Peak | 48 / 8 / 1 | 60 / 9 / 1 | 72 / 10 / 1 | alone / a Fire Lizard, a Wyvern / two Magma Lizards, two Wyverns |
+| Floraison | The Meadow | 72 / 10 / 0 | 79 / 11 / 0 | 90 / 12 / 0 | alone / two Wargs / two Alpha Wargs, a Guard, a Captain |
+| The King Gel | The Meadow | 72 / 15 / 0 | 79 / 16 / 0 | 90 / 17 / 0 | three Gels / two Gels, a Bubble Gel / a Bubble, a Metal and a Gel |
+| The Mantis Ant | The Meadow | 72 / 15 / 0 | 79 / 16 / 0 | 90 / 17 / 0 | alone / two Guards / a Guard, a Captain, two Alraunes |
+| The Ruby Colossus | The Waste | 40 / 14 / 1 | 44 / 15 / 1 | 50 / 16 / 1 | alone / a Pit Antlion, a Basilisk / the Antlion Queen, two Gorgons |
+| The Fallen Weapon | The Waste | 40 / 20 / 1 | 44 / 21 / 1 | 50 / 22 / 1 | alone / a Barbed Needler, a Basilisk / a Barbed Needler, two Gorgons |
+| The Emperor Scorpion | The Waste | 72 / 18 / 1 | 79 / 19 / 1 | 90 / 20 / 1 | alone / a Pit Antlion, a Barbed Needler / a Pit Antlion, a Great Needler, a Gorgon |
+| The Matador | The Marsh | 72 / 12 / 0 | 79 / 13 / 0 | 90 / 14 / 0 | alone / two Wights / three Wights, a Spectre |
+| The Phantom Train | The Marsh | 72 / 20 / 1 | 79 / 21 / 1 | 90 / 22 / 1 | alone / two Ghosts / a Ghost, a Wraith, a Spectre |
+| The Vampire Lord | The Marsh | 50 / 12 / 0 | 55 / 13 / 0 | 63 / 14 / 0 | alone / a Death Knight, a Wight / a Dread Knight, a Death Knight, a Wight |
+| The Marsh Serpent | The Marsh | 72 / 18 / 0 | 79 / 19 / 0 | 90 / 20 / 0 | alone / two Ghosts / two Wights, a Spectre, a Ghost |
+| The Gargantuan King | The Peak | 72 / 15 / 0 | 79 / 16 / 0 | 90 / 17 / 0 | alone / a Bomb, a Grenade / two Grenades, a Balloon |
+| The Fiend of Fire | The Peak | 72 / 14 / 0 | 79 / 15 / 0 | 90 / 16 / 0 | alone / two Fire Lizards / two Magma Lizards, a Wyvern |
+| The Obsidian Tyrant | The Peak | 72 / 18 / 1 | 79 / 19 / 1 | 90 / 20 / 1 | alone / a Fire Lizard, a Wyvern / two Magma Lizards, two Wyverns |
 
 A part's numbers ride its core's block (the tentacles, the eyes, the Saurian Queen), as they ride
 the multiplier today. The Cinder Tortoise's `armour_step` (1, 2, 3 by tier) is an elite's and

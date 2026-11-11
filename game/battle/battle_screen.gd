@@ -574,10 +574,15 @@ func _select(u: Unit) -> void:
 
 # ---------------------------------------------------------------- gestures
 
+## A select's and a deselect's sounds on the map, turned down (Ryan, 10 November: "Select and
+## deselect on the map need to be quieter"): taps that only look, never the sounds of a thing
+## done (a move planned, an order given, a refusal).
+const MAP_TAP_DB := -10.0
+
 ## Tap a machine to select it; tap a lit hex and it moves there, staying in hand while it can
-## still act; tap it again to take its order back (a planned move, an order onto a pack), and
-## again to let it go; a machine with an order shows its reach from where it started, and a new
-## move or order there replaces the old one. With a machine in hand, a tap on a pack orders it onto
+## still act; tap it again to take its order back (a planned move, an order onto a pack) and
+## let it go; a machine with an order shows its reach from where it started, and a new move or
+## order there replaces the old one. With a machine in hand, a tap on a pack orders it onto
 ## that fight, moving it into range first (and a second tap on the pack it is ordered onto
 ## takes the order back). With nothing in hand, a tap on a pack shows its fight.
 func _on_hex_tapped(h: Vector2i) -> void:
@@ -598,7 +603,7 @@ func _on_hex_tapped(h: Vector2i) -> void:
 		return
 	if was_inspected:
 		_select(null)
-		Sound.play("ui_back")
+		Sound.play("ui_back", MAP_TAP_DB)
 		_refresh()
 		return
 	if sel != null and u == null and _map.destinations.has(h):
@@ -607,28 +612,28 @@ func _on_hex_tapped(h: Vector2i) -> void:
 			return
 	elif u != null and u.is_player() and not u.is_static():
 		if sel == u and battle.retake(u):
-			# A tap on the machine in hand takes its order back (Ryan, 10 November: "Tapping on them
-			# when they are selected should cancel the order"); it stays in hand, free to be given
-			# another, and a tap on it with nothing to take back lets it go.
-			_select(u)
-			Sound.play("ui_back")
+			# A tap on the machine in hand takes its order back and lets it go (Ryan, 10 November:
+			# "Tapping on them when they are selected should cancel the order"; "When I tap a unit
+			# to cancel its order, it should deselect"). The order's own undo: the UNDO count drops.
+			_select(null)
+			Sound.play("ui_back", MAP_TAP_DB)
 			_refresh()
 			_autosave()
 			return
 		if sel == u:
 			_select(null)
-			Sound.play("ui_back")
+			Sound.play("ui_back", MAP_TAP_DB)
 		else:
 			_select(u)
 			_on_unit_held(u)   # its shield, hull, move and actions, in the readout
-			Sound.play("map_select")
+			Sound.play("map_select", MAP_TAP_DB)
 	elif u != null and u.is_enemy():
 		# Nothing in hand: the pack's fight is shown, who would join and who is ordered in.
 		_select(null)
 		_inspect_pack = u
 		_map.inspected = h
 		_on_unit_held(u)
-		Sound.play("map_select")
+		Sound.play("map_select", MAP_TAP_DB)
 	elif sel == null and u == null and battle.field.map.has(h) and not battle.field.map.is_structure(h):
 		# Nothing to move: the tap asks what the ground is (Ryan, 21 September), and what lies on
 		# it (a cache: its kind and its likely contents, never the contents; the bible's loot row).
@@ -637,7 +642,7 @@ func _on_hex_tapped(h: Vector2i) -> void:
 		var lines: Array = cache_lines(battle.field, cache) if not cache.is_empty() else []
 		lines.append_array(ground_lines(battle.field.map.terrain[h], battle.field.map.ground_id(h)))
 		_show_details(lines)
-		Sound.play("map_select")
+		Sound.play("map_select", MAP_TAP_DB)
 	else:
 		_select(null)
 	_refresh()
@@ -661,7 +666,7 @@ func _on_route_drag_started(u: Unit) -> void:
 	_draft_unit = u
 	_drag_target = null
 	_map.draft = []
-	Sound.play("map_select")
+	Sound.play("map_select", MAP_TAP_DB)
 
 
 func _on_route_drag_to(h: Vector2i) -> void:

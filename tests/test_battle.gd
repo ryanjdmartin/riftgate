@@ -65,6 +65,16 @@ func test_setup_places_team_formation_and_boss() -> void:
 	assert_eq(b.mechs().size(), 3, "three mechs")
 	assert_eq(b.field.packs().size(), 1 + Ramp.formations_at(0) + Ramp.patrols_at(0), "the ramp's formations and patrols at the start, plus the boss")
 	assert_true(b.boss != null and b.field.units.has(b.boss), "boss on the field")
+	# Its hex (Ryan, 10 November: "Put him on the single hex in front of the two new out of play
+	# ones"): touching both of the rift's front hexes, on the rift's middle line.
+	assert_eq(b.boss.pos, Battle.boss_home(b.map), "the boss on its hex")
+	var fronts := 0
+	for r in b.map.rift_hexes:
+		if Hex.axial_to_offset(r).y == 1:
+			fronts += 1
+			assert_eq(Hex.distance(b.boss.pos, r), 1, "beside each of the rift's front hexes")
+	assert_eq(fronts, 2, "the two of them")
+	assert_true(is_equal_approx(Hex.to_pixel(b.boss.pos, 1.0).x, Hex.to_pixel(b.map.rift, 1.0).x), "on the rift's middle line")
 	assert_eq(b.boss.foe_id, "", "boss unpacks by faction, not foe id")
 	for u in b.field.units:
 		assert_true(b.field.can_stand(u, u.pos), "%s stands on legal ground" % u.display_name)
@@ -228,13 +238,21 @@ func test_the_field_takes_the_ramps_size_and_keeps_its_shape_at_any_size() -> vo
 			for col in range(w):
 				walled = walled and c.map.is_structure(Hex.offset_to_axial(col, row))
 		assert_true(walled, "the gate and the wall span the width in the bottom two rows " + at)
+		# The rift's five hexes (10 November): three at the top centre, and the two of the next
+		# row that touch its middle.
 		var rift_cols: Array = []
+		var front := 0
 		for rh in c.map.rift_hexes:
 			var o := Hex.axial_to_offset(rh)
-			assert_eq(o.y, 0, "the rift on the top row " + at)
-			rift_cols.append(o.x)
+			if o.y == 0:
+				rift_cols.append(o.x)
+			else:
+				front += 1
+				assert_eq(o.y, 1, "the rift's front hexes on the next row " + at)
+				assert_eq(Hex.distance(rh, c.map.rift), 1, "each beside its middle " + at)
 		rift_cols.sort()
 		assert_eq(rift_cols, [w / 2 - 1, w / 2, w / 2 + 1], "the rift three hexes at the top centre " + at)
+		assert_eq(front, 2, "and two in front of them " + at)
 		assert_eq(c.mechs().size(), 4, "four machines " + at)
 		for m in c.mechs():
 			assert_eq(Hex.axial_to_offset(m.pos).y, c.field.apron_row(), "%s on the row before the gate's apron %s" % [m.display_name, at])

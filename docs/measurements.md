@@ -7044,7 +7044,7 @@ the landed model's dice: each composition against its tier's four cut to every s
 first, the cell at its rating and the cell one machine short (the band, greedy's mean hull lost
 and rounds; a stall named). The decision they inform: none yet. The pass moved no standing
 foe's number, and these are the cells his play and the refit's numbers start from. Each a
-direction at 20 seeds. The same reads' elite cells are kept for the elites' own read.
+direction at 20 seeds. The same reads' elite cells are the before of the elites' own read, the next section.
 
 The counts at the rating:
 
@@ -7169,7 +7169,7 @@ its rating, a flanker's a thirtieth, a hunter's a tenth):
 
 The campaign runner's 40 runs (`tools/campaign_run.gd -- --runs 40`, the plain player, the
 greedy rung, three tier-one machines of its tender) before and after the set landed, both on
-the landed model; `docs/campaign_run.md` is the run after. A direction.
+the landed model. A direction (`docs/campaign_run.md` holds the run after the elites' and bosses' guess of the same day: the next section).
 
 | Measure | The model, the old set | The pass landed |
 |---|---|---|
@@ -7195,3 +7195,463 @@ set kept the anchored formations and dropped the ones that read free at eight fo
 player wins twice the battles it did and still falls in three of four: it spreads its three
 machines one to a pack, which is the play the ratings now punish, and no bot here reads a
 rating before it commits.
+
+## 10 November, the elites and the bosses guessed for the model
+
+Ryan, 10 November: "I'd like you to guesstimate some elite and boss tweaks as well, but leave
+out rising threat for now." The decision these inform: the guess itself, every number a
+placeholder for his play (`content/foes.json`; the tier's step in `ContentDB.BOSS_TIERS`).
+Method: a probe on the battle's own builders (`Battlefield.pack_of`, `Battle.make_boss_unit`,
+`ContentDB.foes_for`), every elite composition a tier deals and every boss with its escort at
+the tier, against a stock four of the tier cut to four, three, two and one machines (its first
+N, a heavy first), the greedy rung, 20 seeds a cell unless said, the landed model's dice. Each
+cell: greedy's mean hull lost (percent of the cut's hull) and mean rounds, its wins where it
+lost any, a stall named. The tier-two and tier-three elites before the guess are the curve
+read's cells of the same day (the formation pass's section), and the bosses before at those
+tiers are 10 seeds. Each a direction.
+
+### Before: free for a gathered squad
+
+On the model as it landed, at the old numbers (a boss 48 hit points and a blow of 6 to 8, an
+elite 8 to 44 and 3 to 10):
+
+| Tier, the four | An elite: four machines | Three | A boss: four | Three |
+|---|---|---|---|---|
+| One: the Honey Badger, the Baboon, the Stingray, the Skua | 1% · 3.0 r | 2% · 3.4 r | 1% · 4.7 r | 2% · 5.2 r |
+| One: the default four (the Honey Badger, the Clydesdale, the Kite, the Baboon) | 1% · 2.2 r | 4% · 2.7 r | 1% · 3.4 r | 2% · 4.1 r |
+| Two: the Wild Boar, the Clydesdale, the Buzzard, the Dingo | 4% | 7% | 6% · 5.9 r | 12% · 7.8 r |
+| Three: the Musk Ox, the Ammit, the Giant Petrel, the Lammergeier | 4% | 12% | 12% · 7.4 r | 39% · 12.4 r, won 85% |
+
+Why. A blow under a fresh gauge costs nothing, the gauge refills, and a squad brings a gauge a
+machine: the tier-one four hold 42 points of shield and regain 9 a round, so a boss that lands
+8 a round for four rounds never reaches a hull. And the model's dice, a gun where a vent
+stood, cut the kill time: the default four finish a tier-one boss in 2.3 to 4.2 rounds where
+the 48 was set at 4 to 7 on the old dice (30 October).
+
+### The grid: what moves them
+
+Every tier-one elite and boss at its hit points ×1 to ×3 and its blow ×1.5 to ×3, eighteen
+points, four machines, 10 seeds (the tier-one four). Three things read off it:
+
+- The blow alone does little while the fight is short. At the old hit points and three times
+  the blow, ten of thirteen bosses still cost the four 4% to 20%: four fresh gauges soak the
+  first three or four blows whatever their size, so what a fight costs is its rounds times
+  what gets past the gauges, and it needs both.
+- One rule fits nobody. At hit points ×1.5 and the blow ×2.5 the King Gel, the Mantis Ant and
+  the Vampire Lord cost 3% to 5%, and the Ruby Colossus 86% with three wins in ten: a single
+  plain blow is soaked, and what is not soaked is a part that breaches and regrows (the
+  Colossus's tentacle, the Fallen Weapon's eye), a last act on every machine (the Gargantuan
+  King's Meteor) and many strikes on one machine (Floraison, the Fiend of Fire).
+- The shaman's warband reads 0% to 1% at every point of the grid: its threat is its court of
+  two Goblins and two Dire Wolves, which the pass did not touch, so no number on the Shaman
+  moves it.
+
+### The guess
+
+The rule, and where a unit leaves it:
+
+- A boss: half again its hit points (48 to 72) and two and a half times its blow. The 72 gives
+  the default four back the kill time the test asks (the table below: 3.6 to 5.9 rounds).
+- An elite: two and a half times its blow; twice its hit points at 20 or under and for the two
+  that fight alone at 24 (the Goblin Nob, the Thunder Ape), so its kit plays against a squad
+  (the Reaper fell in 1.2 rounds); half again for the rest.
+- The cap, the scale row's own clause on hull (a telegraphed finisher never takes a machine
+  from full), read at tier one against the lightest machine, the Cottonmouth's 8 of shield
+  and 20 of hull: a blow that breaches stays under 20, and no one action lands 28 on one
+  machine. It sets the blow of every unit that strikes many times or breaches.
+- The tier's step: hit points ×1.1 at tier two and ×1.25 at tier three (×1.25 and ×1.5
+  before), the blow +1 and +2 as it was. On the old step and the rule's numbers the stock
+  four of tier two lost half its hull to a boss and won 88% (10 seeds), the Vampire Lord's
+  court a wall.
+- An elite's menace is no longer doubled (`ContentDB.menace`). Doubled on these numbers an
+  elite's kill would fill 34 to 95 of a tier-one Rupture meter of 80 to 129; undoubled it is
+  what it was within a quarter for every elite the rule moved (the Nob 31 from 28, the Wild
+  Hunt 45 from 42), and a third lower for the two it did not (the Old Man's rising 37 from
+  59, the Skeleton King's court 37 from 52). The thresholds do not move: they read the
+  field's rank and file.
+
+| Boss or part | HP | Blow | HP now | Blow now | Why |
+|---|---|---|---|---|---|
+| Floraison | 48 | 6 | 72 | 10 | its blow by the cap: its combos strike three and five times, and Full Bloom at 10 is 25 on one machine |
+| King Gel | 48 | 6 | 72 | 15 | the rule |
+| The Mantis Ant | 48 | 6 | 72 | 15 | the rule (its Upheaval breaches for 19, the cap) |
+| The Ruby Colossus | 40 | 8 | 40 | 14 | its hit points kept and the blow ×1.75: its tentacles breach and regrow, and at the rule it was a wall for four |
+| Burrowing Tentacle | 10 | 4 | 10 | 7 | with its core (it breaches) |
+| Thrashing Tentacle | 10 | 3 | 10 | 5 | with its core |
+| The Fallen Weapon | 40 | 8 | 40 | 20 | its hit points kept: its eyes guard it and regrow, and the fight was seven rounds as it stood |
+| Piercing Eye | 8 | 5 | 8 | 10 | twice (it breaches) |
+| Prising Eye | 8 | 5 | 8 | 10 | twice |
+| The Emperor Scorpion | 48 | 7 | 72 | 18 | the rule |
+| The Matador | 48 | 7 | 72 | 12 | its blow by the cap: Andalucía strikes four times, 24 on one machine |
+| The Phantom Train | 48 | 8 | 72 | 20 | the rule |
+| The Vampire Lord | 40 | 6 | 50 | 12 | a quarter more and twice the blow: it rises once, and its knights at tiers two and three are the dearest escort |
+| The Marsh Serpent | 48 | 7 | 72 | 18 | the rule (its Coil lands 27, the cap) |
+| The Gargantuan King | 48 | 8 | 72 | 15 | its blow by the cap (its Charge breaches for 19); its Meteor three quarters of its blow where it was the whole, since at the whole the bot's light four would not finish it |
+| The Fiend of Fire | 48 | 7 | 72 | 14 | twice the blow: Six Blades strikes six times, 24 on one machine |
+| The Obsidian Tyrant | 48 | 8 | 72 | 18 | its blow by the cap: its Firestorm lands 27 on every machine |
+| The Saurian Queen | 12 | 5 | 18 | 12 | with its core |
+
+| Elite or part | HP | Blow | HP now | Blow now | Why |
+|---|---|---|---|---|---|
+| Bone Wyvern | 32 | 7 | 48 | 18 | the rule |
+| Goblin Shaman | 8 | 3 | 16 | 8 | the rule, twice the hit points |
+| Elder Treant | 40 | 8 | 50 | 16 | a quarter more and twice the blow: the four massive elites read over a third of a four's hull at the rule, tier two |
+| Leshy | 8 | 3 | 16 | 8 | the rule, twice the hit points |
+| Old Man of the Desert | 44 | 10 | 44 | 10 | unchanged: its maw breaches, and it was the one elite that already cost a squad hull |
+| The Reaper | 12 | 6 | 24 | 12 | twice the hit points and twice the blow; Death's Knell one and a half times its blow where it was twice, 18 through the shield where the rule would have made it 30 |
+| The Goblin Nob | 24 | 6 | 48 | 15 | the rule, twice the hit points: it fights alone |
+| The Bane | 36 | 8 | 54 | 16 | twice the blow (its Shadow Blade breaches) |
+| The Firelord | 44 | 9 | 55 | 18 | as the Elder Treant |
+| The Thunder Ape | 24 | 7 | 48 | 16 | twice the hit points: it fights alone; its blow by the cap (its Rampage, gold, lands 27) |
+| The Rust Monster | 20 | 5 | 40 | 12 | the rule, twice the hit points |
+| The Skeleton King | 28 | 7 | 28 | 7 | unchanged: its court of knights costs a squad a fifth already |
+| The Fell Rider | 16 | 6 | 32 | 15 | the rule, twice the hit points |
+| The Antiquarian | 24 | 5 | 36 | 10 | twice the blow (its Reach breaches) |
+| The World Eater | 40 | 8 | 50 | 16 | as the Elder Treant |
+| Rider of the Wild Hunt | 10 | 4 | 20 | 10 | the rule, twice the hit points, each of the three |
+| The Shuffler | 32 | 6 | 48 | 15 | the rule |
+| Gilgamesh | 40 | 7 | 60 | 18 | the rule |
+| Cinder Tortoise | 40 | 7 | 50 | 14 | as the Elder Treant |
+| The Astromancer | 24 | 6 | 36 | 15 | the rule |
+| Warding Orb | 8 | 3 | 12 | 8 | its part, with it |
+| The Pilgrim | 40 | 6 | 60 | 9 | half again of each: the Chef's Knife is twice its blow through the shield, 18 by the cap |
+
+### After
+
+Tier one, the tier-one four (the Honey Badger, the Baboon, the Stingray, the Skua), each fight
+before and after:
+
+| Domain | Kind | Fight | Its lead, before | Before: four | Before: three | Its lead, after | After: four | Three | Two | One |
+|---|---|---|---|---|---|---|---|---|---|---|
+| The Meadow | elite | `shamans_warband` | 8 hp, 3 | 0% · 2.6 r | 0% · 2.8 r | 16 hp, 8; Goblin ×2, Dire Wolf ×2 | 0% · 2.9 r | 0% · 3.5 r | 2% · 5.0 r | 12% · 7.9 r |
+| The Meadow | elite | `the_nob` | 24 hp, 6 | 0% · 2.0 r | 0% · 2.2 r | 48 hp, 15 | 3% · 3.6 r | 9% · 4.4 r | 41% · 6.0 r | 100% · 4.7 r · won 0% |
+| The Meadow | boss | `floraison` | 48 hp, 6 | 1% · 3.9 r | 2% · 4.2 r | 72 hp, 10 | 8% · 6.4 r | 17% · 6.7 r | 63% · 12.2 r | 100% · 13.6 r · won 0% |
+| The Meadow | boss | `king_gel` | 48 hp, 6 | 1% · 4.8 r | 1% · 5.2 r | 72 hp, 15; Gel ×3 | 5% · 6.9 r | 12% · 7.3 r | 68% · 10.7 r · won 75% | 100% · 5.5 r · won 0% |
+| The Meadow | boss | `mantis_ant` | 48 hp, 6 | 2% · 3.8 r | 1% · 4.5 r | 72 hp, 15 | 10% · 6.0 r | 7% · 6.5 r | 55% · 9.5 r · won 90% | 100% · 5.0 r · won 0% |
+| The Waste | elite | `old_mans_rising` | 44 hp, 10, armour 1 | 7% · 6.2 r | 20% · 6.7 r | 44 hp, 10, armour 1; Needler ×3 | 7% · 6.2 r | 20% · 6.7 r | 67% · 10.0 r · won 90% | 100% · 3.0 r · won 0% |
+| The Waste | elite | `pilgrims_wake` | 40 hp, 6 | 0% · 3.3 r | 3% · 4.6 r | 60 hp, 9; Needler ×3 | 1% · 4.5 r | 6% · 5.7 r | 32% · 8.5 r | 100% · 7.2 r · won 0% |
+| The Waste | elite | `rust_monsters_scavenge` | 20 hp, 5 | 0% · 2.0 r | 0% · 2.0 r | 40 hp, 12 | 1% · 3.3 r | 1% · 3.7 r | 7% · 5.6 r | 88% · 8.2 r · won 40% |
+| The Waste | elite | `gilgamesh_wanders` | 40 hp, 7, armour 1 | 0% · 4.1 r | 0% · 4.2 r | 60 hp, 18, armour 1 | 6% · 5.9 r | 5% · 6.1 r | 35% · 10.3 r · won 95% | 100% · 9.1 r · won 0% |
+| The Waste | boss | `ruby_colossus` | 40 hp, 8, armour 1 | 7% · 6.9 r | 13% · 8.4 r | 40 hp, 14, armour 1; Burrowing Tentacle ×1, Thrashing Tentacle ×1 | 17% · 7.0 r | 39% · 9.4 r · won 90% | 100% · 7.5 r · won 0% | 100% · 2.6 r · won 0% |
+| The Waste | boss | `fallen_weapon` | 40 hp, 8, armour 1 | 2% · 6.9 r | 3% · 7.0 r | 40 hp, 20, armour 1; Piercing Eye ×1, Prising Eye ×1 | 20% · 6.8 r | 31% · 7.7 r | 95% · 6.5 r · won 10% | 100% · 2.1 r · won 0% |
+| The Waste | boss | `emperor_scorpion` | 48 hp, 7, armour 1 | 1% · 4.8 r | 1% · 4.9 r | 72 hp, 18, armour 1 | 18% · 7.5 r | 30% · 8.1 r | 94% · 10.2 r · won 20% | 100% · 4.1 r · won 0% |
+| The Marsh | elite | `fell_riders_hunt` | 16 hp, 6 | 0% · 1.7 r | 0% · 2.0 r | 32 hp, 15 | 2% · 3.0 r | 3% · 3.3 r | 20% · 4.4 r | 78% · 5.8 r · won 70% |
+| The Marsh | elite | `the_reaper` | 12 hp, 6 | 0% · 1.2 r | 0% · 1.2 r | 24 hp, 12 | 0% · 2.2 r | 0% · 2.5 r | 6% · 3.5 r | 52% · 4.8 r · won 95% |
+| The Marsh | elite | `the_wild_hunt` | 10 hp, 4 | 0% · 2.5 r | 0% · 3.2 r | 20 hp, 10; Rider of the Wild Hunt ×3 | 10% · 5.2 r | 28% · 6.6 r | 94% · 7.6 r · won 35% | 100% · 2.7 r · won 0% |
+| The Marsh | boss | `matador` | 48 hp, 7 | 0% · 4.1 r | 2% · 4.4 r | 72 hp, 12 | 6% · 6.2 r | 11% · 6.7 r | 48% · 10.6 r · won 90% | 100% · 7.8 r · won 0% |
+| The Marsh | boss | `phantom_train` | 48 hp, 8, armour 1 | 1% · 5.3 r | 1% · 6.3 r | 72 hp, 20, armour 1 | 17% · 7.8 r | 19% · 9.2 r | 95% · 12.3 r · won 25% | 100% · 4.0 r · won 0% |
+| The Marsh | boss | `vampire_lord` | 40 hp, 6 | 0% · 4.2 r | 1% · 4.7 r | 50 hp, 12 | 1% · 5.3 r | 2% · 6.0 r | 43% · 13.6 r · won 85% | 100% · 7.3 r · won 0% |
+| The Marsh | boss | `marsh_serpent` | 48 hp, 7 | 0% · 3.5 r | 1% · 3.7 r | 72 hp, 18 | 9% · 5.7 r | 9% · 5.8 r | 59% · 8.6 r · won 85% | 100% · 4.4 r · won 0% |
+| The Peak | elite | `cinder_tortoises_brood` | 40 hp, 7, armour 1 | 1% · 5.5 r | 2% · 5.9 r | 50 hp, 14, armour 1; Salamander ×2 | 4% · 6.5 r | 6% · 8.0 r | 40% · 10.2 r | 95% · 9.9 r · won 25% |
+| The Peak | elite | `thunder_apes_rampage` | 24 hp, 7 | 0% · 2.2 r | 1% · 2.5 r | 48 hp, 16 | 9% · 4.2 r | 15% · 4.8 r | 44% · 7.3 r | 100% · 5.5 r · won 0% |
+| The Peak | boss | `gargantuan_king` | 48 hp, 8 | 1% · 3.9 r | 2% · 4.0 r | 72 hp, 15 | 8% · 5.6 r | 13% · 5.9 r | 47% · 8.6 r | 100% · 5.2 r · won 0% |
+| The Peak | boss | `fiend_of_fire` | 48 hp, 7 | 0% · 3.5 r | 3% · 4.2 r | 72 hp, 14 | 12% · 5.8 r | 28% · 6.3 r | 69% · 10.0 r · won 80% | 100% · 7.2 r · won 0% |
+| The Peak | boss | `obsidian_tyrant` | 48 hp, 8, armour 1 | 1% · 6.0 r | 1% · 6.2 r | 72 hp, 18, armour 1; The Saurian Queen ×1 | 17% · 9.0 r | 24% · 9.3 r | 77% · 13.3 r · won 65% | 100% · 4.2 r · won 0% |
+
+Tier one, the means by team (an elite, then a boss; hull lost and rounds):
+
+| The four | An elite: four | Three | Two | One | A boss: four | Three | Two |
+|---|---|---|---|---|---|---|---|
+| The Honey Badger, the Baboon, the Stingray, the Skua | 4% · 4.3 r | 8% · 5.0 r | 35% · 7.1 r, won 93% | 84%, won 30% | 11% · 6.6 r | 19% · 7.3 r | 70% · 10.3 r, won 63% |
+| The default four | 3% · 3.2 r | 13% · 3.9 r | | | 7% · 4.6 r | 28% · 6.0 r | |
+| A light four with no tank (the Stingray, the Cassowary, the Cottonmouth, the Skua) | 4% · 5.5 r | 11% · 6.8 r | | | 21% · 10.4 r | 40% · 12.3 r, won 84% | |
+
+Tier two, the stock four (the Wild Boar, the Clydesdale, the Buzzard, the Dingo, no Barrier
+among them), each fight before and after at the tier's numbers, a boss with its escort:
+
+| Domain | Kind | Fight | Before: four | Before: three | Its lead and court, after | After: four | Three |
+|---|---|---|---|---|---|---|---|
+| The Meadow | elite | `shamans_warband` | 0% · 2.3 r | 0% · 2.6 r | 18 hp, 9; Goblin ×2, Dire Wolf ×2 | 0% · 2.6 r | 0% · 3.1 r |
+| The Meadow | elite | `elder_treants_grove` | 1% · 4.3 r | 2% · 6.5 r | 55 hp, 17, armour 1; Mandragora ×2 | 21% · 5.5 r | 38% · 8.0 r |
+| The Meadow | elite | `leshys_hunt` | 0% · 2.0 r | 0% · 2.3 r | 18 hp, 9; Dire Wolf ×3 | 0% · 2.4 r | 0% · 3.1 r |
+| The Meadow | elite | `the_nob` | 0% · 2.1 r | 0% · 2.7 r | 53 hp, 16 | 13% · 3.4 r | 22% · 4.2 r |
+| The Meadow | boss | `floraison` | 3% · 4.8 r | 8% · 6.4 r | 79 hp, 11; Warg ×2 | 21% · 6.7 r | 37% · 9.8 r |
+| The Meadow | boss | `king_gel` | 0% · 5.1 r | 3% · 6.4 r | 79 hp, 16; Gel ×2, Bubble Gel ×1 | 25% · 6.5 r | 45% · 8.3 r |
+| The Meadow | boss | `mantis_ant` | 7% · 4.6 r | 8% · 5.8 r | 79 hp, 16; Goblin Guard ×2 | 29% · 6.1 r | 45% · 7.6 r |
+| The Waste | elite | `old_mans_rising` | 28% · 5.5 r | 45% · 7.1 r | 48 hp, 11, armour 1; Needler ×3 | 25% · 5.0 r | 41% · 6.4 r |
+| The Waste | elite | `pilgrims_wake` | 6% · 4.0 r | 11% · 5.0 r | 66 hp, 10; Needler ×3 | 16% · 4.8 r | 23% · 6.2 r |
+| The Waste | elite | `rust_monsters_scavenge` | 0% · 1.9 r | 0% · 2.4 r | 44 hp, 13 | 3% · 3.0 r | 4% · 4.0 r |
+| The Waste | elite | `gilgamesh_wanders` | 0% · 4.1 r | 0% · 5.3 r | 66 hp, 19, armour 1 | 15% · 5.3 r | 25% · 7.4 r |
+| The Waste | elite | `the_astromancer` | 1% · 4.2 r | 2% · 5.5 r | 40 hp, 16; Warding Orb ×1, Storm Orb ×1, Mending Orb ×1 | 14% · 5.3 r | 32% · 7.2 r |
+| The Waste | boss | `ruby_colossus` | 20% · 8.0 r | 52% · 15.4 r · won 70% | 44 hp, 15, armour 1; Burrowing Tentacle ×1, Thrashing Tentacle ×1, Basilisk ×1, Pit Antlion ×1 | 36% · 7.7 r | 91% · 11.4 r · won 30% |
+| The Waste | boss | `fallen_weapon` | 6% · 6.6 r | 18% · 9.5 r | 44 hp, 21, armour 1; Piercing Eye ×1, Prising Eye ×1, Barbed Needler ×1, Basilisk ×1 | 46% · 7.2 r · won 95% | 90% · 9.2 r · won 25% |
+| The Waste | boss | `emperor_scorpion` | 2% · 5.9 r | 5% · 7.4 r | 79 hp, 19, armour 1; Pit Antlion ×1, Barbed Needler ×1 | 53% · 8.5 r | 89% · 12.2 r · won 45% |
+| The Marsh | elite | `fell_riders_hunt` | 0% · 1.6 r | 0% · 2.0 r | 35 hp, 16 | 4% · 2.5 r | 6% · 3.0 r |
+| The Marsh | elite | `skeleton_kings_court` | 22% · 5.3 r | 34% · 7.5 r | 31 hp, 8, armour 1; Zombie Knight ×2, Revenant ×1 | 21% · 5.0 r | 33% · 6.9 r |
+| The Marsh | elite | `antiquarians_hall` | 6% · 2.9 r | 10% · 4.0 r | 40 hp, 11; Revenant ×2 | 14% · 3.6 r | 24% · 5.0 r |
+| The Marsh | elite | `bone_wyverns_flight` | 2% · 4.2 r | 4% · 5.8 r | 53 hp, 19, armour 1; Revenant ×3 | 28% · 5.5 r | 42% · 7.5 r |
+| The Marsh | elite | `the_reaper` | 0% · 1.4 r | 0% · 1.6 r | 26 hp, 13 | 0% · 1.9 r | 1% · 2.5 r |
+| The Marsh | elite | `the_wild_hunt` | 0% · 2.5 r | 1% · 3.5 r | 22 hp, 11; Rider of the Wild Hunt ×3 | 15% · 4.0 r | 36% · 5.9 r |
+| The Marsh | elite | `the_shuffler` | 0% · 2.9 r | 0% · 4.3 r | 53 hp, 16 | 3% · 3.6 r | 7% · 5.3 r |
+| The Marsh | boss | `matador` | 3% · 5.3 r | 9% · 6.9 r | 79 hp, 13; Wight ×2 | 19% · 6.8 r | 37% · 9.8 r |
+| The Marsh | boss | `phantom_train` | 1% · 5.9 r | 4% · 7.4 r | 79 hp, 21, armour 1; Ghost ×2 | 43% · 7.9 r | 79% · 11.6 r · won 75% |
+| The Marsh | boss | `vampire_lord` | 12% · 7.3 r | 22% · 9.4 r | 55 hp, 13; Death Knight ×1, Wight ×1 | 53% · 10.8 r · won 80% | 94% · 14.0 r · won 25% |
+| The Marsh | boss | `marsh_serpent` | 1% · 4.2 r | 2% · 5.3 r | 79 hp, 19; Ghost ×2 | 29% · 5.3 r | 55% · 7.6 r |
+| The Peak | elite | `cinder_tortoises_brood` | 2% · 6.7 r | 3% · 9.0 r | 55 hp, 15, armour 2; Salamander ×2 | 23% · 7.8 r | 42% · 11.1 r |
+| The Peak | elite | `thunder_apes_rampage` | 0% · 2.1 r | 1% · 2.9 r | 53 hp, 17 | 14% · 3.8 r | 25% · 5.6 r · won 95% |
+| The Peak | elite | `the_bane` | 8% · 3.5 r | 19% · 5.0 r | 59 hp, 17, armour 1 | 25% · 4.8 r | 51% · 7.3 r |
+| The Peak | elite | `firelords_rising` | 5% · 5.8 r | 14% · 8.8 r | 61 hp, 19, armour 1 | 34% · 6.7 r | 85% · 11.7 r · won 35% |
+| The Peak | elite | `the_world_eater` | 4% · 4.2 r | 9% · 5.3 r | 55 hp, 17, armour 1 | 32% · 5.0 r | 58% · 6.7 r · won 85% |
+| The Peak | boss | `gargantuan_king` | 10% · 7.3 r | 11% · 6.5 r | 79 hp, 16; Bomb ×1, Grenade ×1 | 39% · 8.3 r | 51% · 8.2 r |
+| The Peak | boss | `fiend_of_fire` | 4% · 4.8 r | 10% · 6.7 r | 79 hp, 15; Fire Lizard ×2 | 34% · 7.0 r | 59% · 10.6 r · won 95% |
+| The Peak | boss | `obsidian_tyrant` | 3% · 6.7 r | 7% · 8.7 r | 79 hp, 19, armour 1; The Saurian Queen ×1, Wyvern ×1, Fire Lizard ×1 | 36% · 8.4 r | 80% · 13.9 r · won 95% |
+
+Tier three, the stock four (the Musk Ox, the Ammit, the Giant Petrel, the Lammergeier):
+
+| Domain | Kind | Fight | Before: four | Before: three | Its lead and court, after | After: four | Three |
+|---|---|---|---|---|---|---|---|
+| The Meadow | elite | `shamans_warband` | 0% · 2.0 r | 0% · 2.8 r | 20 hp, 10; Goblin ×2, Dire Wolf ×2 | 0% · 2.6 r | 1% · 3.6 r |
+| The Meadow | elite | `elder_treants_grove` | 4% · 6.2 r | 12% · 10.6 r | 63 hp, 18, armour 1; Mandragora ×2 | 16% · 6.8 r | 51% · 13.1 r · won 90% |
+| The Meadow | elite | `leshys_hunt` | 0% · 1.8 r | 0% · 2.8 r | 20 hp, 10; Dire Wolf ×3 | 0% · 2.5 r | 1% · 3.9 r |
+| The Meadow | elite | `the_nob` | 1% · 2.7 r | 3% · 3.9 r | 60 hp, 17 | 16% · 4.5 r | 40% · 7.2 r |
+| The Meadow | boss | `floraison` | 9% · 6.1 r | 30% · 10.0 r | 90 hp, 12; Alpha Warg ×2, Goblin Guard ×1, Goblin Captain ×1 | 24% · 7.8 r | 74% · 13.6 r · won 75% |
+| The Meadow | boss | `king_gel` | 2% · 5.7 r | 7% · 9.3 r | 90 hp, 17; Bubble Gel ×1, Metal Gel ×1, Gel ×1 | 22% · 7.5 r | 58% · 12.9 r · won 95% |
+| The Meadow | boss | `mantis_ant` | 5% · 6.0 r | 13% · 9.0 r | 90 hp, 17; Goblin Captain ×1, Goblin Guard ×1, Alraune ×2 | 21% · 7.7 r | 47% · 12.7 r |
+| The Waste | elite | `old_mans_rising` | 19% · 6.7 r | 37% · 11.7 r | 55 hp, 12, armour 1; Needler ×3 | 18% · 5.9 r | 38% · 9.8 r |
+| The Waste | elite | `pilgrims_wake` | 5% · 4.6 r | 13% · 6.8 r | 75 hp, 11; Needler ×3 | 10% · 5.7 r | 22% · 8.4 r |
+| The Waste | elite | `rust_monsters_scavenge` | 0% · 2.2 r | 0% · 3.3 r | 50 hp, 14 | 3% · 3.5 r | 6% · 6.0 r |
+| The Waste | elite | `gilgamesh_and_enkidu` | 1% · 5.1 r | 6% · 8.7 r | 75 hp, 20, armour 1; Enkidu ×1 | 11% · 6.9 r | 25% · 11.5 r |
+| The Waste | elite | `the_astromancer` | 1% · 4.5 r | 9% · 7.9 r | 45 hp, 17; Warding Orb ×1, Storm Orb ×1, Mending Orb ×1 | 15% · 6.6 r | 58% · 12.2 r · won 90% |
+| The Waste | boss | `ruby_colossus` | 29% · 9.6 r | 100% · 15.2 r · won 0% | 50 hp, 16, armour 1; Burrowing Tentacle ×1, Thrashing Tentacle ×1, Gorgon ×2, Antlion Queen ×1 | 40% · 8.3 r | 100% · 7.9 r · won 0% |
+| The Waste | boss | `fallen_weapon` | 13% · 7.9 r | 59% · 16.6 r · won 80% | 50 hp, 22, armour 1; Piercing Eye ×1, Prising Eye ×1, Barbed Needler ×1, Gorgon ×2 | 43% · 8.0 r · won 95% | 99% · 11.1 r · won 5% |
+| The Waste | boss | `emperor_scorpion` | 7% · 7.1 r | 23% · 11.5 r | 90 hp, 20, armour 1; Gorgon ×1, Pit Antlion ×1, Great Needler ×1 | 54% · 9.8 r · won 95% | 98% · 13.8 r · won 10% |
+| The Marsh | elite | `fell_riders_hunt` | 0% · 2.0 r | 0% · 2.5 r | 40 hp, 17 | 2% · 3.1 r | 8% · 4.4 r |
+| The Marsh | elite | `skeleton_kings_court` | 11% · 5.7 r | 34% · 9.5 r | 35 hp, 9, armour 1; Zombie Knight ×2, Revenant ×1 | 11% · 5.2 r | 33% · 8.3 r |
+| The Marsh | elite | `antiquarians_hall` | 6% · 3.2 r | 16% · 5.4 r | 45 hp, 12; Revenant ×2 | 14% · 4.1 r | 30% · 7.5 r |
+| The Marsh | elite | `bone_wyverns_flight` | 1% · 5.3 r | 11% · 7.7 r | 60 hp, 20, armour 1; Revenant ×3 | 21% · 7.0 r | 46% · 11.5 r · won 95% |
+| The Marsh | elite | `the_reaper` | 0% · 1.9 r | 0% · 2.2 r | 30 hp, 14 | 0% · 2.4 r | 1% · 3.4 r |
+| The Marsh | elite | `the_wild_hunt` | 1% · 3.0 r | 2% · 4.3 r | 25 hp, 12; Rider of the Wild Hunt ×3 | 17% · 4.7 r | 54% · 8.0 r · won 90% |
+| The Marsh | elite | `the_shuffler` | 0% · 3.6 r | 1% · 5.9 r | 60 hp, 17 | 4% · 4.5 r | 21% · 7.9 r |
+| The Marsh | boss | `matador` | 12% · 7.1 r | 23% · 10.0 r | 90 hp, 14; Wight ×3, Spectre ×1 | 25% · 8.6 r | 66% · 14.7 r · won 90% |
+| The Marsh | boss | `phantom_train` | 5% · 7.9 r | 25% · 14.6 r | 90 hp, 22, armour 1; Ghost ×1, Wraith ×1, Spectre ×1 | 45% · 10.9 r | 94% · 17.6 r · won 40% |
+| The Marsh | boss | `vampire_lord` | 38% · 10.4 r | 93% · 18.2 r · won 30% | 63 hp, 14; Dread Knight ×1, Death Knight ×1, Wight ×1 | 61% · 14.2 r · won 85% | 100% · 10.2 r · won 0% |
+| The Marsh | boss | `marsh_serpent` | 5% · 5.6 r | 17% · 9.2 r | 90 hp, 20; Wight ×2, Spectre ×1, Ghost ×1 | 28% · 7.3 r | 63% · 13.1 r · won 90% |
+| The Peak | elite | `cinder_tortoises_brood` | 3% · 6.4 r | 15% · 14.8 r | 63 hp, 16, armour 3; Salamander ×2 | 16% · 6.9 r | 66% · 18.1 r · won 90% |
+| The Peak | elite | `thunder_apes_rampage` | 0% · 3.1 r | 3% · 4.0 r | 60 hp, 18 | 12% · 4.4 r | 34% · 7.7 r |
+| The Peak | elite | `the_bane` | 6% · 4.5 r | 20% · 7.9 r | 68 hp, 18, armour 1 | 25% · 6.9 r | 77% · 13.8 r · won 70% |
+| The Peak | elite | `firelords_rising` | 8% · 6.5 r | 32% · 16.1 r | 69 hp, 20, armour 1 | 17% · 7.5 r | 71% · 17.4 r · won 75% |
+| The Peak | elite | `the_world_eater` | 7% · 5.2 r | 30% · 8.5 r | 63 hp, 18, armour 1 | 26% · 6.2 r | 82% · 10.8 r · won 55% |
+| The Peak | boss | `gargantuan_king` | 9% · 6.7 r | 20% · 12.4 r | 90 hp, 17; Grenade ×2, Balloon ×1 | 26% · 7.5 r | 59% · 12.3 r · won 95% |
+| The Peak | boss | `fiend_of_fire` | 14% · 6.2 r | 61% · 11.2 r · won 90% | 90 hp, 16; Magma Lizard ×2, Wyvern ×1 | 53% · 8.3 r · won 95% | 99% · 10.1 r · won 5% |
+| The Peak | boss | `obsidian_tyrant` | 11% · 9.4 r | 40% · 14.4 r | 90 hp, 20, armour 1; The Saurian Queen ×1, Magma Lizard ×2, Wyvern ×2 | 53% · 11.6 r | 99% · 15.9 r · won 5% |
+
+The means at tiers two and three:
+
+| Tier, the four | An elite: four | Three | A boss: four | Three |
+|---|---|---|---|---|
+| Two, the stock four | 15% · 4.4 r | 28% · 6.1 r, won 96% | 36% · 7.5 r, won 98% | 66% · 10.3 r, won 76% |
+| Two, the Nemesis in the Dingo's place (one Barrier) | 9% · 4.5 r | 20% · 6.5 r | 21% · 6.8 r | 46% · 10.1 r, won 93% |
+| Three, the stock four | 12% · 5.1 r | 36% · 9.3 r, won 93% | 38% · 9.0 r, won 98% | 81% · 12.8 r, won 47% |
+
+Read.
+
+- The shape is the one the roles ask for. An elite is a wall for the machine it catches (30%
+  won alone at tier one, the lone Badger at that), a decision for two (a third of their hull)
+  and a tax on the gathered squad; a boss is a fight for four that three can lose.
+- The guess does not reach the hull budget he accepted with the model (an elite's fight a
+  quarter of a four's hull, the boss what is left): at tier one a gathered four loses a
+  twentieth to an elite and a tenth to a boss. Tiers two and three sit nearer it (an eighth
+  and a third), on fours that carry one Barrier or none.
+- What would close it pulls against the kill-time test (a boss three to five rounds for a
+  squad of four, 21 October). Under four pooled gauges a fight that short costs little
+  whatever the blow, and the blow is already at the cap. The levers left are the fight's
+  length, which the test refuses, or a kit that goes round the gauges (area, many strikes, a
+  rising threat, set aside on his word). The guess takes the kill time and stops; which of the
+  two gives is his (the refit brief's section 7).
+- The Barrier is the swing. One machine with a Halo Projector in the tier-two four takes a
+  boss from 36% of its hull to 21% and an elite from 15% to 9%. Five tier-one machines carry
+  one in stock, one of tier two and one of tier three, so the model's deal makes the tier-one
+  stock the best defended against a big blow.
+- Soft whatever their numbers: the King Gel, the Mantis Ant, the Vampire Lord alone and the
+  Marsh Serpent at tier one (1% to 10% for four), the shaman's warband and Leshy's hunt at
+  every tier (0%), the Rust Monster and the Shuffler (1% to 4%). Their blows are single and
+  plain or their threat is a court the pass did not touch; a kit question for their sessions.
+- Dear at tiers two and three for what stands beside them, not for their own numbers: the
+  Vampire Lord's knights (53% of the stock four's hull at tier two, won 80%; it was 12%
+  before), the Waste's three bosses with their escorts (36% to 54%), the Peak's at tier three
+  (26% to 53%). Three machines lose to most tier-three bosses (won 47%), and three lost to
+  the Ruby Colossus at tier three before the guess too.
+- A tier-three boss fight is nine rounds for the stock four, over the kill-time test. The
+  stock machines of a tier hit little harder than tier one's, and the escorts add bodies; the
+  test is read on built fours when a run can build one.
+
+The campaign runner's 40 runs (`tools/campaign_run.gd -- --runs 40`, the plain player, the
+greedy rung, three tier-one machines of its tender) before and after the guess, both on the
+landed formations. A direction (`docs/campaign_run.md` is the run made again after the branch took main's third map list, the rift's five hexes under it, so its numbers sit a little off the column here).
+
+| Measure | The formation pass landed | The guess |
+|---|---|---|
+| Battles won, fallen | 19%, 76% | 8%, 87% |
+| Battles ended in a team wipe | 69% | 83% |
+| Battles reaching the Rupture | 34% | 23% |
+| Fractures a battle | 1.50 | 1.26 |
+| Menace killed a battle | 72 | 57 |
+| Gate damage a battle | 117 | 136 |
+| Machines wrecked a battle | 1.42 | 1.60 |
+| A fight for four, one machine in it: won | 51% of 72 | 25% of 74 |
+| A fight for four, two in it | 91% of 46 | 51% of 33 |
+| A fight for four, three in it | 97% of 44 | 92% of 28 |
+| A fight for three, three in it | 100% of 80 | 100% of 60 |
+
+Read. The fights for four are the elites' and the boss's, and the plain player sends whatever
+stands nearest: one machine wins such a fight one time in four where it won one in two, a pair
+one in two where it won nine in ten, three still nine in ten. So it wins 8% of its battles
+where it won 19%, about where it stood before the formation pass. That is the guess doing what
+an elite is for (the squad comes to it, or it takes a machine) against a player that never
+gathers; it is also the read most likely to feel harsh in play, where a hunting elite catches
+a machine alone before the squad can come.
+
+What follows from it, named:
+
+- A boss's menace rises with its numbers (Floraison 48 from 27, the Vampire Lord 25 from 16),
+  so its kill banks more salvage, two a point: the economy pass's.
+- A final's hero and the finale's line ride the tier's step, so each is a little softer at
+  tiers two and three until its own numbers are guessed. They were not: the heroes' proposal
+  waits on his marks.
+- The adds in their kits were sized against the old blows and are small beside the new: the
+  Thunder Ape's gold (+2 on a blow of 16), a rally's +2, the Goblin Nob's rage (a point a
+  spend, and the model left few spends to punish), the riders' lance (+1 a rider). So are a
+  machine's Armoured 2 and its regen against a blow of 15 to 20, which is the other half of
+  why the Barrier is the swing.
+- The cap is read at tier one. At tiers two and three the blow's +1 and +2 carry a few
+  finishers past it (the Mantis Ant's Upheaval breaches for 20 at tier two).
+
+## 11 November, tier one with three machines: the Badger's regen, the starting trios, the first boss
+
+Ryan, 11 November: "Badger probably goes to Regen 1 with the amount of armour it's able to
+get"; "Let's focus only on balancing tier 1 fights for now"; and "the first battle should be
+tuned around 3 units, and possibly second convergence battles should be tuned around 3.5
+units ... 3rd convergence battles onward we should tune it around 4 units ... it significantly
+affects boss scaling, since the whole team is brought in." The decisions these inform: the
+Honey Badger's regen (set to one), and the squad a battle is tuned for by the Convergence, his
+to settle (the refit brief's section 10). Method: a probe on the battle's own builders
+(`Battlefield.pack_of`, `Battle.make_boss_unit`, `ContentDB.foes_for`), every tier-one
+formation and elite the first Convergence deals and every boss, against a squad of stock
+tier-one machines, the greedy rung, 10 seeds a cell unless said, the elites' and bosses'
+numbers of 10 November. Each cell: greedy's mean hull lost and rounds, its wins where it lost
+any. Each a direction.
+
+### The Honey Badger at a regen of three and of one
+
+The trio at 20 seeds, the pair and the Badger alone at 10 on a sample (four patrols, five
+formations, five elites). Hull lost, and the Badger's own beside it:
+
+| The squad | Fights | Regen 3 | Regen 1 |
+|---|---|---|---|
+| The Badger, the Skua, the Baboon | the ten formations | 14% (its own 11%) | 14% (its own 13%) |
+| | the eleven elites | 16% (its own 12%) | 17% (its own 14%) |
+| | the thirteen bosses | 45% (its own 37%), won 89% | 50% (its own 46%), won 86% |
+| The Badger and the Skua | five formations | 25% (its own 19%), won 92% | 28% (its own 24%), won 90% |
+| | five elites | 56% (its own 50%), won 78% | 61% (its own 57%), won 66% |
+| The Badger alone | four patrols | 6% (its own 6%) | 9% (its own 9%) |
+| | five formations | 74% (its own 74%), won 68% | 78% (its own 78%), won 52% |
+| | five elites | 87% (its own 87%), won 32% | 89% (its own 89%), won 24% |
+
+Read. In a full trio nothing moves against a formation or an elite, and a boss costs five
+points more over its ten rounds. Short-handed it is a few points dearer, and two coin flips
+for the pair become losses (the Goblin Nob and the Thunder Ape, won one in two at three and one
+in five at one). Alone it no longer wins a formation rated for three: the Treant's grove was
+won four times in five at a regen of three and never at one, which is the lone tank beating a
+formation rated for three that the regen's first reads flagged (9 November). A machine's
+armour does nothing while its shield stands, so the faster regen was keeping the Badger's
+plate idle against small blows.
+
+### The starting trios, and what a fourth machine adds
+
+A run starts with three machines, one from each of three city makers (the tender deals one
+from each of the four, the player takes three), and the fourth is an offer's or bought. Eight
+trios at three, four with the Badger (at a regen of one) and four without, and three squads of
+four, a formation, an elite and a boss each the mean of its kind:
+
+| The squad | A formation | An elite | A boss | Machines wrecked a boss |
+|---|---|---|---|---|
+| Three: the Honey Badger, the Baboon, the Skua | 14% · 5.9 r | 20% · 6.2 r | 46% · 10.5 r, won 88% | 0.61 |
+| Three: the Honey Badger, the Stingray, the Cassowary | 9% · 5.8 r | 8% · 5.4 r | 24% · 8.6 r, won 99% | 0.11 |
+| Three: the Honey Badger, the Storm Petrel, the Cottonmouth | 10% · 5.1 r | 11% · 6.0 r | 36% · 10.4 r, won 95% | 0.35 |
+| Three: the Honey Badger, the Baboon, the Prairie Dog | 12% · 6.9 r | 11% · 6.3 r | 32% · 10.7 r, won 95% | 0.26 |
+| Three: the Baboon, the Skua, the Cassowary | 18% · 7.3 r, won 99% | 19% · 7.9 r, won 97% | 52% · 13.8 r, won 77% | 0.90 |
+| Three: the Stingray, the Storm Petrel, the Cottonmouth | 12% · 6.3 r | 10% · 6.9 r | 52% · 13.0 r, won 72% | 1.04 |
+| Three: the Baboon, the Storm Petrel, the Prairie Dog | 18% · 8.6 r, won 99% | 16% · 9.1 r, won 98% | 52% · 15.0 r, won 70% | 1.07 |
+| Three: the Stingray, the Skua, the Cottonmouth | 11% · 6.6 r | 13% · 7.7 r, won 99% | 61% · 15.1 r, won 61% | 1.39 |
+| Four: the Honey Badger, the Baboon, the Skua, the Cassowary | 4% · 4.5 r | 5% · 4.9 r | 15% · 8.0 r | 0.07 |
+| Four: the Baboon, the Skua, the Cassowary, the Stingray | 5% · 5.1 r | 5% · 5.2 r | 16% · 8.0 r | 0.05 |
+| Four: the Stingray, the Storm Petrel, the Cottonmouth, the Honey Badger | 4% · 4.0 r | 4% · 4.5 r | 11% · 7.0 r | 0.03 |
+
+Every fight, hull lost (T1 to T8 the trios in the table's order, F1 to F3 the fours):
+
+| Fight | Kind | T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | F1 | F2 | F3 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `goblin_horde` | formation | 1% | 1% | 0% | 1% | 0% | 0% | 0% | 0% | 0% | 0% | 0% |
+| `treant_grove` | formation | 4% | 3% | 1% | 4% | 5% | 2% | 3% | 3% | 1% | 1% | 1% |
+| `gel_wall` | formation | 3% | 3% | 1% | 8% | 5% | 0% | 8% | 1% | 0% | 1% | 0% |
+| `shamans_warband` | elite | 0% | 0% | 0% | 0% | 1% | 0% | 0% | 0% | 0% | 0% | 0% |
+| `the_nob` | elite | 24% | 11% | 15% | 10% | 22% | 10% | 13% | 19% | 9% | 5% | 3% |
+| `floraison` | boss | 26% | 23% | 30% | 27% | 60% (won 80%) | 61% (won 90%) | 43% (won 90%) | 86% (won 50%) | 4% | 10% | 10% |
+| `king_gel` | boss | 34% | 16% | 36% | 13% | 27% | 20% | 26% | 16% | 9% | 9% | 6% |
+| `mantis_ant` | boss | 30% | 13% | 21% | 12% | 23% | 14% | 8% | 23% (won 90%) | 9% | 6% | 6% |
+| `needler_thicket` | formation | 2% | 5% | 3% | 4% | 5% | 3% | 4% | 1% | 1% | 2% | 0% |
+| `sandworm_ambush` | formation | 35% | 18% | 24% | 24% | 26% | 23% | 29% | 13% | 10% | 9% | 10% |
+| `old_mans_rising` | elite | 43% | 18% | 27% | 20% | 36% (won 90%) | 16% | 29% | 19% | 9% | 7% | 12% |
+| `pilgrims_wake` | elite | 14% | 6% | 5% | 10% | 15% | 3% | 15% | 12% | 6% | 2% | 0% |
+| `rust_monsters_scavenge` | elite | 5% | 1% | 2% | 1% | 4% | 1% | 1% | 3% | 1% | 1% | 1% |
+| `gilgamesh_wanders` | elite | 30% | 5% | 9% | 7% | 12% | 9% | 9% | 4% | 3% | 1% | 3% |
+| `ruby_colossus` | boss | 79% (won 50%) | 49% (won 90%) | 48% | 72% (won 70%) | 98% (won 10%) | 94% (won 10%) | 100% (won 0%) | 100% (won 0%) | 21% | 31% | 11% |
+| `fallen_weapon` | boss | 72% (won 60%) | 34% | 61% (won 80%) | 55% (won 80%) | 91% (won 20%) | 100% (won 10%) | 100% (won 0%) | 100% (won 0%) | 18% | 24% | 10% |
+| `emperor_scorpion` | boss | 78% (won 60%) | 40% | 80% (won 60%) | 58% (won 90%) | 71% (won 70%) | 93% (won 20%) | 88% (won 40%) | 93% (won 30%) | 27% | 20% | 29% |
+| `grave_throng` | formation | 0% | 2% | 1% | 2% | 1% | 0% | 1% | 0% | 0% | 0% | 0% |
+| `barrow_mound` | formation | 5% | 1% | 2% | 1% | 3% | 4% | 3% | 4% | 0% | 1% | 1% |
+| `knights_vigil` | formation | 34% | 23% | 25% | 25% | 38% | 31% | 38% | 34% | 13% | 16% | 12% |
+| `fell_riders_hunt` | elite | 8% | 2% | 1% | 2% | 8% | 2% | 3% | 1% | 2% | 1% | 1% |
+| `the_reaper` | elite | 0% | 0% | 1% | 1% | 1% | 0% | 3% | 0% | 0% | 0% | 0% |
+| `the_wild_hunt` | elite | 35% | 20% | 27% | 31% | 59% (won 80%) | 37% | 57% (won 80%) | 37% | 14% | 21% | 13% |
+| `matador` | boss | 31% | 20% | 18% | 19% | 30% | 36% | 20% | 42% (won 90%) | 8% | 8% | 4% |
+| `phantom_train` | boss | 67% (won 80%) | 22% | 45% (won 90%) | 42% | 66% (won 70%) | 59% (won 80%) | 78% (won 50%) | 82% (won 50%) | 22% | 18% | 10% |
+| `vampire_lord` | boss | 14% | 5% | 8% | 4% | 20% | 8% | 8% | 16% | 2% | 1% | 1% |
+| `marsh_serpent` | boss | 26% | 13% | 21% | 22% | 29% | 24% | 28% | 31% | 9% | 2% | 3% |
+| `ember_pyre` | formation | 17% | 15% | 7% | 34% | 47% (won 90%) | 17% | 55% (won 90%) | 13% | 3% | 6% | 1% |
+| `magma_vent` | formation | 38% | 21% | 35% | 16% | 45% | 39% | 39% | 36% | 14% | 16% | 13% |
+| `cinder_tortoises_brood` | elite | 29% | 10% | 13% | 12% | 16% | 9% | 10% | 13% | 7% | 4% | 4% |
+| `thunder_apes_rampage` | elite | 27% | 18% | 27% | 23% | 36% | 25% | 34% | 39% (won 90%) | 4% | 13% | 7% |
+| `gargantuan_king` | boss | 38% | 12% | 21% | 11% | 28% (won 90%) | 20% | 16% | 19% | 11% | 9% | 14% |
+| `fiend_of_fire` | boss | 36% | 38% | 32% | 46% | 67% (won 70%) | 98% (won 20%) | 81% (won 50%) | 98% (won 10%) | 17% | 30% | 20% |
+| `obsidian_tyrant` | boss | 63% | 33% | 49% | 38% | 70% (won 90%) | 53% | 84% (won 80%) | 81% (won 70%) | 41% | 39% | 20% |
+
+Read.
+
+- The fourth machine halves or thirds everything, and the boss most. A formation costs three
+  machines 9% to 18% and four 4% to 5%; an elite 8% to 20% and 4% to 5%; a boss 24% to 61%
+  and 11% to 16%. A boss is nine to fifteen rounds for three where it is seven or eight for
+  four, and wrecks a machine in one fight of nine at best and more than one a fight at worst,
+  where four lose one in twenty.
+- A trio without the Badger loses a quarter to two fifths of its boss fights. The Waste's
+  three bosses are walls for it (their parts breach), and Floraison and the Fiend of Fire, who
+  strike many times, close to it.
+- The six fodder formations are on the pusher's budget for three (0% to 8%). The four led by
+  a breach are not (the sandworm ambush 13% to 35%, the knights' vigil 23% to 38%, the magma
+  vent 16% to 45%, the ember pyre 7% to 55%); breach under the regen is parked on his word.
+- An elite at three is near the hull budget he accepted with the model (a tenth to a fifth of
+  the squad's hull), where at four it is a twentieth. The Old Man's rising (16% to 43%), the
+  Wild Hunt (20% to 59%, two trios losing one fight in five) and the Thunder Ape (18% to 39%)
+  are the dear ones.
+
+### The first boss, sized for three
+
+Every tier-one boss at a share of its hit points and of its blow, three machines, the mean of
+the thirteen:
+
+| Hit points | Blow | The Honey Badger, the Baboon, the Skua | The Honey Badger, the Stingray, the Cassowary | The Stingray, the Storm Petrel, the Cottonmouth |
+|---|---|---|---|---|
+| whole | whole | 46% · 10.5 r, won 88% · 0.61 wrecked | 24% · 8.6 r, won 99% · 0.11 wrecked | 52% · 13.0 r, won 72% · 1.04 wrecked |
+| seven eighths | whole | 41% · 9.5 r, won 91% · 0.50 wrecked | 21% · 7.6 r · 0.08 wrecked | 46% · 12.0 r, won 78% · 0.82 wrecked |
+| three quarters | whole | 32% · 8.3 r, won 97% · 0.29 wrecked | 16% · 6.5 r, won 99% · 0.07 wrecked | 40% · 10.1 r, won 86% · 0.52 wrecked |
+| two thirds | whole | 28% · 7.3 r, won 97% · 0.24 wrecked | 14% · 5.9 r · 0.06 wrecked | 28% · 8.9 r, won 94% · 0.25 wrecked |
+| whole | three quarters | 25% · 10.1 r, won 99% · 0.13 wrecked | 13% · 8.2 r · 0.00 wrecked | 31% · 13.2 r, won 92% · 0.31 wrecked |
+| seven eighths | three quarters | 22% · 9.2 r, won 98% · 0.10 wrecked | 10% · 7.3 r · 0.00 wrecked | 23% · 10.9 r, won 99% · 0.09 wrecked |
+| three quarters | three quarters | 17% · 7.8 r · 0.04 wrecked | 8% · 6.2 r · 0.01 wrecked | 16% · 8.9 r · 0.02 wrecked |
+| two thirds | three quarters | 14% · 6.9 r · 0.03 wrecked | 7% · 5.6 r · 0.00 wrecked | 11% · 7.5 r · 0.01 wrecked |
+
+Read. At three quarters of both, three machines pay a boss what four pay it whole (8% to 17%
+against 11% to 16%), in six to nine rounds, with no machine wrecked: a boss for three is three
+quarters of a boss for four. Hit points alone do not do it: at two thirds of the hit points
+(the old 48) and the whole blow two trios still lose a quarter of their hull and a machine in
+one fight of four.

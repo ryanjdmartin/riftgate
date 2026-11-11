@@ -53,7 +53,7 @@
    "codex": "The Minerva EX-45L (colloquially nicknamed the \"Badger\") was popular a mining mech widely praised for its reliability and durability, being designed to operate in the harshest, deepest environments imaginable. Reports exist of Badgers being caught in cave-ins while mining over 5 kilometers underground, only to dig their way out to the surface by nightfall, just in time for drinks with the crew. So naturally, when the Rifts opened, the ever-practical Minerva engineering team's first instinct was to finally give their prized Badger claws, teeth, and as many missiles as it could carry, putting its legendary longevity to work on the battlefield.",
    "hull": 36,
    "shield": 8,
-   "shield_regen": 3,
+   "shield_regen": 1,
    "movespeed": 3,
    "heat_max": 12,
    "hardpoints": 3,

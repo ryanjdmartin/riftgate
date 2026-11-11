@@ -251,7 +251,8 @@ func test_the_compositions_go_by_tier() -> void:
 
 ## Menace (the foes' fresh start, 30 October): the one weight the Rupture meter, Anathema and
 ## salvage count a kill at, read off the content: the heaviest implemented blow (damage times
-## strikes, a breach one more) plus a quarter of the HP rounded up, an elite's doubled.
+## strikes, a breach one more) plus a quarter of the HP rounded up, an elite's like any foe's
+## (doubled until 10 November, while its numbers were a rank and file's).
 func test_menace_is_the_heaviest_blow_and_a_quarter_of_the_hp() -> void:
 	var db := _db()
 	for id in db.foes.keys():
@@ -259,8 +260,6 @@ func test_menace_is_the_heaviest_blow_and_a_quarter_of_the_hp() -> void:
 			continue
 		var f := db.make_foe(str(id))
 		var want := f.threat() + int(ceil(float(f.hp_max) / 4.0))
-		if db.is_elite(str(id)):
-			want *= 2
 		assert_eq(db.menace(str(id)), want, "%s's menace" % id)
 		assert_true(db.menace(str(id)) >= 1, "%s is worth something" % id)
 	var goblin := db.make_foe("goblin")
@@ -392,7 +391,7 @@ func test_a_silence_or_a_purge_rides_no_blow() -> void:
 	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe rites") and e.contains("on_death blow") and e.contains("never a rider")), "a purge in a last act is reported")
 
 
-## A hero only commands the boss unit, which patrols a hex a turn and never hunts (Ryan, 28
+## A hero only commands the boss unit, which holds its hex and never hunts (Ryan, 28
 ## October, of the Thief's move: "it's a boss so it doesn't need it"): the validator refuses a map
 ## move on a hero, and the rank and file keep theirs. A hunt it refuses on every foe (the next test).
 func test_a_hero_carries_no_map_move_or_hunt() -> void:

@@ -27,12 +27,12 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1094 tests, 323,337 checks, green on main (10 November, with the Text tab, the side session's work, the shapes reworked on Ryan's play, the second map list, the
+- Tests: 1094 tests, 325,124 checks, green on main (10 November, with the boss's hex, the third map list, the Text tab, the side session's work, the shapes reworked on Ryan's play, the second map list, the
   map session's shapes laid to the rift's row, the passing and the catch at one, and the map
-  playtest list), and 1111 tests, 361,077 checks, green on `ccr-722ca9f0-yj8na3` (10 November, that
+  playtest list), and 1111 tests, 362,582 checks, green on `ccr-722ca9f0-yj8na3` (11 November, that
   main with the refit pass's first build, the wall strike by the rating, the trial's regen row,
   every machine one more move, the field's dials, the goblin's line on its straight knife and wall,
-  the model as content and the formation pass; the
+  the model as content, the formation pass and the elites' and bosses' guess; the
   map suite now paints fourteen and sixteen deep too, which is most of the checks' rise); one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
   either map view on 6 November; about four minutes in a cloud session, twenty on a slow one;
@@ -56,13 +56,18 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 Everything is on main as of 10 November 2026 but the formation and refit session's branch and
 the music session's, both below.
-`ccr-c71bc17f-hclj2c`, Ryan's map playtest list of 10 November and his answers to it (How things
-stand below), cut from main at `aa40832`, landed on main as a fast-forward on his word ("Ok,
-merge this into main so I can try it"), after taking the map session's main in a merge (the shapes laid
-to the rift's row, no body blocking, the catch at one: the bible, the rules, this file and
-`game/battle/bleed.gd` the conflicts, both sides kept, the bible's version main's plus one); it is merged and to delete with
-the rest (the formation and refit session meets its edits in `game/battle/battle_map_view.gd`,
-`game/battle/battle_screen.gd`, the bible and these records when it takes main).
+`ccr-c71bc17f-hclj2c`, Ryan's map playtest list of 10 November, his answers to it and his second
+and third map lists the same day (How things stand below), cut from main at `aa40832`, landed on
+main as fast-forwards on his word each time ("Ok, merge this into main so I can try it"; "yeah,
+merge into main"; "Ok, merge to main"; "Yeah that will do. Merge into main"): the first after taking
+the map session's main in a merge
+(the shapes laid to the rift's row, no body blocking, the catch at one: the bible, the rules, this
+file and `game/battle/bleed.gd` the conflicts, both sides kept, the bible's version main's plus
+one), the second after taking the shapes' rework (this file the one conflict), the third and the
+fourth (the boss's hex) with main unmoved; it is merged and to delete with the rest (the formation and refit session meets its
+edits in `game/battle/battle_map_view.gd`, `game/battle/battle_screen.gd`, `sim/battle.gd`,
+`sim/battle_map.gd`, `sim/save.gd`'s versions (the battle's 22, the run's 21), the bible and these
+records when it takes main).
 `ccr-df879779-uf9076`, the side session of 9 and 10 November (How things stand below: the test
 runner's crash check, the caches' pictures, the screen's half of the audit's mirrors, the enemy
 art routes parked), took main's Text tab in a merge (this file and the README the conflicts, both
@@ -129,7 +134,8 @@ and a trial, the fight bot's aggressor habit; and in `content/`, all of 10 Novem
 words: every chassis's move, one more; the refit pass's model (the stock dice, a regen by
 chassis, the basics, the drafts and four machines undealt); the goblin's line and the Marsh's;
 thirteen new foes (the Draugr and four flanker lines); the formation pass's patrols and
-formations in place of the old; and the Gate Integrity entry's strike). It took main at
+formations in place of the old; the elites' and the bosses' numbers, a guess; and the Gate
+Integrity entry's strike). It took main at
 `2d489f7` on 9 November (Ryan: "merge main in here so that you're working on the latest engine
 and changes"): the bible, the measurements, this file and the to-do the conflicts, both sides'
 words kept (the bible's hunters row this branch's and its boss row main's, the measurements'
@@ -157,7 +163,17 @@ in here first before you begin": his second map list of 10 November, the stores'
 BLOCKED tag): the bible (its version above both, v0.509; the three clocks row this branch's,
 the names row main's, the Armoured table row rewritten from content by its tool), this file and
 the to-do the conflicts, both sides kept; `docs/vocabulary.md` made again.
-The bible's file is v0.512 (with `ccr-4d58b054-3lyj0a`'s locked row, tiers row and basic kit row of 10 November), main's v0.504 with this branch's rows, its republish on Ryan's word
+And at `944cd5e` as the formation pass and the elites' guess closed (his third map list of 10
+November: the rift's five hexes, the order's own undo, the planned route drawn again): the
+bible (its version above both, v0.513; the grid row both sides' sentences, the wall row this
+branch's), this file, the to-do and `sim/save.gd` the conflicts, both sides kept, the save
+versions stacked (a battle's 22, a run's 21, the model's landing and then the rift's five
+hexes with the formation pass's compositions; a quick run's 6 for the compositions).
+And at `5d14088` on 11 November (the boss holding its hex in front of the rift, never
+walking): the bible (v0.514, above both; the grid row main's sentences on the boss's hex set
+into this branch's), this file, the to-do and `sim/save.gd` the conflicts, both sides kept, the
+save versions stacked again (a battle's 23, a run's 22).
+The bible's file is v0.516 (with `ccr-4d58b054-3lyj0a`'s locked row, tiers row and basic kit row of 10 November and its Polar Bear and Buzzard rows of 11 November), main's v0.506 with this branch's rows, its republish on Ryan's word
 (Pages below); and `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
@@ -266,6 +282,35 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
+- **The boss holds its hex** (`ccr-c71bc17f-hclj2c` from main at `944cd5e`, on main the same day on
+  his word, "Yeah that will do. Merge into main"; Ryan, 10 November). The boss stands on the one hex touching both of the rift's front hexes, on its
+  middle line, and never walks ("Put him on the single hex in front of the two new out of play
+  ones"; `Battle.boss_home`): its patrol of 22 September is gone ("I feel like the boss no longer
+  should patrol"), `_patrol_step` and `BOSS_ZONE` with it. Shown first as a still and set aside: the
+  boss on the rift's front hexes, centred across both or on the one in line with the gate ("it
+  looks silly on wall-left no matter what"). With the wall at the bottom the vortex stands a row
+  lower, over its five hexes ("we can move the gate sprite down now that there's a home for it",
+  read as the rift's vortex, nothing having changed at the gate), its eye kept over the rift's own
+  row so the boss in front never covers it. The battle's save is 22 and the run's 21.
+- **Ryan's third map list of 10 November** (`ccr-c71bc17f-hclj2c`, cut from main at `a3b48c0`,
+  on main the same day on his word, "Ok, merge to main"; his words in the commit and the bible's
+  rows). The bug first: the block that
+  draws a machine's planned route had been cut with the hunters' rings, so a move was planned
+  and nothing showed it ("I can, but the UI doesnt register it"); it is back, and no test could
+  have seen it go (a draw), so the `route` pose is the check. Taking an order back is its own
+  undo (`Battle.retake` takes the order's steps off the stack and makes every later step forget
+  the plan; "The undo grows infinitely when I take back a move"), a new move takes the old
+  one's place on it, and the tap that takes it back lets the machine go. The reach's border and
+  the enemy's borders are the animated two-tone ones (`_region_outline`, `_enemy_border`); the
+  chests 26 (36); the map's double-tap window 0.1 s (the die's 0.15); select and deselect on the
+  map 10 dB down (`MAP_TAP_DB`); the vortex higher and half a hex toward the field with the wall
+  at the left, the scroll showing one row of scenery behind it. The rift is five hexes
+  (`BattleMap._widen_rift`: the two before its middle taken once the shape is laid, so no seed's
+  water and walls moved; the mouth bared round all five, the roads and relief after it), the
+  boss in front of them a row further out, a path into the rift crossing the rift's own hexes;
+  the battle's save is 21 and the run's 20, so a battle saved before is refused. One test bound
+  moved with it: a badlands field under nine wide may keep one pond (the wider mouth bares the
+  other; no size the game deals). The 3D scenery's shade he passed ("3D scenery shade is good").
 - **Ryan's second map list of 10 November** (`ccr-c71bc17f-hclj2c`, cut from main at `ccd71d9`,
   on main the same day on his word, "yeah, merge into main", after taking the shapes' rework in
   a merge, this file the one conflict and the bible's version main's plus one, v0.504; his words
@@ -496,6 +541,59 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   (`git show 3e44fe1:tools/formation_proposal.py`); the proposal stays for the bosses' stat
   blocks (its section 6). Not in it: the standing foes' numbers, the bosses' blocks, the
   rising threat's rule ("leave out rising threat for now").
+- **The elites and the bosses guessed for the model** (10 November; Ryan: "I'd like you to
+  guesstimate some elite and boss tweaks as well, but leave out rising threat for now").
+  Before, every elite and boss read free for a gathered squad on the model (a hundredth of a
+  four's hull): a blow under a fresh gauge costs nothing and a squad brings a gauge a machine.
+  The guess, placeholders all (`docs/measurements.md` has the rule, every number and every
+  read): a boss half again its hit points (72 at tier one) and about two and a half times its
+  blow (10 to 20), which gives the default four back the kill time the test asks, four to six
+  rounds; an elite two and a half times its blow (7 to 18), twice the hit points where it is
+  light, so its kit plays against a squad; a cap from the scale row's own clause, no action
+  taking the lightest tier-one machine from full; the tier's hit-point step halved (×1.1 and
+  ×1.25), since the old step walled the stock fours of tiers two and three; an elite's menace
+  no longer doubled, so its kill fills the Rupture meter about as it did where doubled on the
+  new numbers it would have filled most of a tier-one meter (the rules, the bible's meter row
+  and the glossary's Menace line follow, the last a draft redrafted as little as the rule
+  needs). The Old Man of the Desert and the Skeleton King are unchanged, the two that cost a
+  squad hull already. After: an elite is a wall for the machine it catches, a third of two
+  machines' hull and a twentieth of four's; a boss costs four a tenth at tier one and a third
+  at tiers two and three, and three machines can lose. Named, his: the guess does not reach
+  the hull budget (an elite a quarter of a four's hull, the boss what is left), and what would
+  close it pulls against the kill-time test, since under four pooled gauges a short fight
+  costs little whatever the blow (the brief's section 7, item 10); the Barrier is the swing
+  (one in a tier-two four takes a boss from 36% of its hull to 21%); some kits read soft
+  whatever their numbers (the King Gel, the Mantis Ant, the Vampire Lord alone, the shaman's
+  warband) and the adds in the kits (the Ape's gold, a rally, the Nob's rage) are small
+  beside the new blows; a final's hero rides the tier's step and is a little softer at tiers
+  two and three, its own numbers not guessed; a boss's kill banks more salvage. The campaign
+  runner's plain player, which never gathers, wins 8% of its battles where it won 19%: a
+  fight for four with one machine in it is won one time in four where it was one in two. The
+  bible's scale row holds it (v0.512, v0.513 since the branch took main's third map list).
+- **Tier one at three machines, and Ryan's calls of 11 November.** His words: "Badger probably
+  goes to Regen 1 with the amount of armour it's able to get"; "Draugr is fine as a name, as are
+  your other working names"; "Let's focus only on balancing tier 1 fights for now", since tier
+  three machines are to have higher stats and the lower tiers to be upgradeable; and his big
+  question, when the player gets a fourth machine, with a direction: the first battle tuned
+  around three units, the second Convergence around three and a half, the third onward around
+  four, since a boss's fight brings the whole team in and the fourth unit's power is a flank
+  covered. Built: the Honey Badger's regen is one (plate and regen answer the same small blows,
+  and armour does nothing while the shield stands; in a full trio nothing moves, short-handed
+  it is a few points dearer, alone it no longer wins a formation rated for three). Read, not
+  built (`docs/measurements.md`, 11 November; the refit brief's section 10): eight starting
+  trios and three fours, stock. A formation costs three machines 9% to 18% of their hull and
+  four 4% to 5%, an elite 8% to 20% and 4% to 5%, a boss 24% to 61% and 11% to 16%, and a trio
+  without the Badger loses a quarter to two fifths of its boss fights; at three quarters of its
+  hit points and blow a boss costs three what the whole boss costs four. What the records say
+  of the fourth machine: three at the start of four slots, the fourth an offer's after a won
+  battle or bought on the shelf, neither built in the campaign, while the Convergence rises
+  every turn, so a lost first battle meets a field tuned for more. The holes and Claude's
+  leans are the brief's, for his answers; nothing of the tuning is built. The regen was
+  assigned by the gauge's bands alone, which he asked and the brief now says. This session had
+  not read the locked pieces' session (`ccr-4d58b054-3lyj0a`, `docs/locked_pieces_proposal.md`,
+  not on main: a machine holds a level, bought, lifting its stats and locked pieces; tier one
+  comes down to the basics) when it guessed the elites and bosses: the tier-two and tier-three
+  reads of 10 November are stock machines that plan will not field, and are tuned no further.
 - **Ryan's play of Phase 2** (9 November, his read of the long wall as built, on the phone): hard
   to judge; the packs as they were too hard, "but not for any particular one reason"; incoming
   damage high, so the tank tanked every turn while the rest could not take foes down reliably
@@ -972,9 +1070,11 @@ weapon or equipment, the shield innate and regenerating, cooling passive, the ho
 decision, component destruction off to test, two rerolls kept; the formation pass folded into it,
 its proposal's grids re-cut under the new model and read by hull lost), in its brief's order: the
 what-if and its first reads are in (9 November), his two reads of the trial, the model as
-content and the formation pass (10 November: the brief's sections 5 and 9); next his play of
-what landed, with the field's dials (the to-do's Ryan list), and his answers to the brief's
-section 7, then the content still to come (the stock re-deal proper as a table in chat first,
+content, the formation pass and a guess at the elites' and bosses' numbers (10 November: the
+brief's sections 5, 8 and 9); tier one only for now (his word, 11 November), and next his
+answers on the squad a battle is tuned for by the Convergence (the brief's section 10: the
+boss's numbers by ramp band wait on them), beside his play of what landed, with the field's
+dials (the to-do's Ryan list), and his answers to the brief's section 7, then the content still to come (the stock re-deal proper as a table in chat first,
 the component pass, the heat prices, the foes' numbers after his play, the bosses' stat
 blocks, what prices a round), the vocabulary, the rules and the rows. Then the long wall's other open item (the bible's section 12: the shell). Beside them, the rest of the skirmish code audit
 (`docs/skirmish_audit.md`; its questions answered and its bugs built 8 November; the Ammit's Tap
@@ -1031,17 +1131,18 @@ commands are in `README.md`.
   page's Version 502, published from main at `2d489f7` on Ryan's word, "republish the hangar
   page and the bible": main's file whole, since the live v0.496 matched `f048e67`'s byte for byte
   and so needed no merge; it carries the Lammergeier's rework, its row, the Gel's and the
-  reinforcement row's slot-mine lines and the tables). Main's file is v0.504 with the second map list's rows (the marks row
+  reinforcement row's slot-mine lines and the tables). Main's file is v0.506 since the boss's hex landed (its patrol retired, the vortex lower with the wall at the bottom), v0.505 since the third map list landed (the rift's five hexes on the field row, the undo and marks rows), v0.504 with the second map list's rows (the marks row
   rewritten, the pack, undo, gesture, Fracture, reconstruction and tears rows, the Badger's and
   the store's) on the shapes' rework's v0.503 and the hangar's Bench tab's v0.502, unpublished; v0.501 since the map
   playtest list landed (the boss's picture, the scenery under the painting, the tears row's
   read of 10 November and the hunters' declaration, on the map session's v0.500 and v0.498's
   Text tab rows: the hangar row's tabs and the shown-text row), unpublished, its republish on
-  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.511, main's with the formation and refit
+  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.515, main's with the formation and refit
   session's rows (the hunters row's who-may-hunt and its settled hunting packs, the Foe roles row
   Decided with the flanker lines, the goblin's
   lesson, his call on its form and the pusher's yardstick, the recolour row's two rungs that
-  changed their archetype, his calls on each and the Draugr,
+  changed their archetype, his calls on each and the Draugr, the scale row's guess for the
+  elites and the bosses with the meter row's and the boss row's lines on it,
   the wall row's strike by the rating, the kit, shield, triangle, redirection, injury,
   command-die, Barrier and Ward, Puffin, Whip Scorpion, Polar Bear, Swallowtail and Musk Ox
   rows' refit lines, section 12's items, and from his second read the move row's 3 to 6, the

@@ -529,13 +529,16 @@ func test_a_packs_target_is_the_thing_it_attacks() -> void:
 
 ## A machine's order can be given again (Ryan, 10 November: "If I order a unit to move or engage,
 ## I should be able to re-order them by tapping on them again. Tapping on them when they are
-## selected should cancel the order"): in hand it shows its reach from where it started; a new
-## move replaces the planned one; a tap on it takes its order back and a second lets it go; and
-## one UNDO puts each step back.
+## selected should cancel the order"; "When I tap a unit to cancel its order, it should
+## deselect"; "The undo grows infinitely when I take back a move"): in hand it shows its reach
+## from where it started; a new move replaces the planned one, one step on the undo where there
+## was one; a tap on it takes its order back, lets it go and takes its step off the undo; and
+## another machine's step given since keeps its own, forgetting the plan taken back.
 func test_an_order_is_given_again_and_taken_back_by_a_tap() -> void:
 	var s := _screen()
 	var b := s.battle
 	var m: Unit = b.mechs()[0]
+	var other: Unit = b.mechs()[1]
 	var start := m.pos
 	s._on_hex_tapped(start)
 	var reach: Dictionary = s._map.destinations.duplicate()
@@ -544,6 +547,7 @@ func test_an_order_is_given_again_and_taken_back_by_a_tap() -> void:
 	s._on_hex_tapped(first)
 	assert_eq(m.pos, first, "the move planned")
 	assert_true(b.has_plan(m), "it has a plan")
+	assert_eq(b.history.size(), 1, "one step on the undo")
 	assert_eq(s._map.selected, m, "still in hand")
 	assert_eq(s._map.destinations.keys().size(), reach.size(), "its reach from where it started, to give the move again")
 	var second: Vector2i = first
@@ -555,17 +559,33 @@ func test_an_order_is_given_again_and_taken_back_by_a_tap() -> void:
 	assert_eq(m.pos, second, "the new move in the old one's place")
 	assert_eq(b.plan_pieces().filter(func(p: Dictionary) -> bool: return int(p["unit"]) == m.id).size(), 1, "one move planned, not two")
 	assert_eq(b.plan_pieces()[0]["from"], start, "from where it started")
-	b.undo()
-	assert_eq(m.pos, first, "one UNDO puts the first move back")
-	s._select(m)
-	s._on_hex_tapped(start)   # the machine is drawn where it started: a tap on it in hand
-	assert_eq(m.pos, start, "a tap on the machine in hand takes its order back")
+	assert_eq(b.history.size(), 1, "still one step: the new move took the old one's place on the undo")
+	# Another machine moves after it; then the first's order is taken back by a tap.
+	s._on_hex_tapped(start)   # a tap on the machine in hand (drawn where it started) ...
+	assert_eq(m.pos, start, "... takes its order back")
 	assert_false(b.has_plan(m), "nothing planned")
-	assert_eq(s._map.selected, m, "and it stays in hand")
+	assert_eq(s._map.selected, null, "and lets it go")
+	assert_eq(b.history.size(), 0, "its step is off the undo: nothing to take back")
 	s._on_hex_tapped(start)
-	assert_eq(s._map.selected, null, "a second tap, with nothing to take back, lets it go")
+	s._on_hex_tapped(first)
+	var o_start := other.pos
+	s._on_hex_tapped(o_start)
+	var o_to: Vector2i = o_start
+	for h in s._map.destinations.keys():
+		if h != first:
+			o_to = h
+			break
+	s._on_hex_tapped(o_to)
+	assert_eq(b.history.size(), 2, "two machines moved: two steps")
+	s._select(m)
+	s._on_hex_tapped(start)
+	assert_eq(m.pos, start, "the first machine's move taken back out of order")
+	assert_eq(other.pos, o_to, "the other's stands")
+	assert_eq(b.history.size(), 1, "one step left, the other's")
 	b.undo()
-	assert_eq(m.pos, first, "and UNDO puts the plan back")
+	assert_eq(other.pos, o_start, "UNDO takes the other's back")
+	assert_eq(m.pos, start, "and never puts the first's plan back")
+	assert_false(b.has_plan(m) or b.has_plan(other), "the turn as it opened")
 	s.free()
 
 
