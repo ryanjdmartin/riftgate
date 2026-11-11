@@ -698,9 +698,12 @@ class Build:
         `fits`, given, says how a class sits at this mount where its standard shape at the
         pin's scale does not (Ryan, 2 November: "Hardpoint just needs to declare shape (if
         offered) and scaling"): {class: a variant's name (models_low.VARIANTS), a scale on the
-        pin's own, or (variant, scale)}, so a round port takes a round launcher and a dish
-        small enough to pass its bore. The sidecar carries it (rig()'s `fits`); the engine
-        hangs what it names.
+        pin's own, (variant, scale), or (variant, scale, sink)}, so a round port takes a round
+        launcher and a dish small enough to pass its bore. `sink` is how far back along the
+        pin's line the class sits, in the pin's own units, so a port's gun starts deeper and a
+        round rack sits flush in its mouth (Ryan, 11 November: "Can't the polar bears guns start
+        deeper? ... a round missile rack doesn't need to poke out at all"). The sidecar carries
+        it (rig()'s `fits`); the engine hangs what it names.
 
         `hidden` makes a mount that shows nothing, its stock or a fitted component's class (the
         Cottonmouth's guns, mounted inside its drum: Ryan, 19 October, "the guns mounted
@@ -1352,7 +1355,8 @@ class Build:
         self.stock_shapes[name] = shape
         fit = _fits(self.name, name, fits or {}).get(shape, {})
         models_low.shape_builder(fit.get("shape", shape))(self, 1.0)
-        m = Matrix.Translation(Vector(at)) @ pin_frame(forward).to_4x4() @ Matrix.Scale(scale * fit.get("scale", 1.0), 4)
+        m = (Matrix.Translation(Vector(at)) @ pin_frame(forward).to_4x4() @ Matrix.Scale(scale, 4)
+             @ Matrix.Translation((0.0, -fit.get("sink", 0.0), 0.0)) @ Matrix.Scale(fit.get("scale", 1.0), 4))
         parts = self.objects[start:]
         for ob in parts:
             ob.matrix_world = m
@@ -1367,18 +1371,22 @@ def _fits(model, pin, fits):
     for cls, how in fits.items():
         if cls not in models_low.SHAPES:
             raise ValueError("%s: %s fits %r, which is no class (%s)" % (model, pin, cls, ", ".join(models_low.SHAPES)))
-        shape, scale = cls, 1.0
+        shape, scale, sink = cls, 1.0, 0.0
         if isinstance(how, str):
             shape = how
         elif isinstance(how, (int, float)):
             scale = float(how)
         else:
             shape, scale = how[0], float(how[1])
+            if len(how) > 2:
+                sink = float(how[2])
         if shape != cls and (shape not in models_low.VARIANTS or models_low.VARIANTS[shape][0] != cls):
             raise ValueError("%s: %s fits its %s with %r, which is no variant of it" % (model, pin, cls, shape))
         if scale <= 0.0:
             raise ValueError("%s: %s fits its %s at a scale of %s" % (model, pin, cls, scale))
         out[cls] = {"shape": shape, "scale": round(scale, 3)}
+        if sink:
+            out[cls]["sink"] = round(sink, 3)
     return out
 
 

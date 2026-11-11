@@ -45204,8 +45204,8 @@
       0.0,
       0.0,
       -0.0,
-      -21.917,
-      -21.917
+      -12.372,
+      -12.372
      ],
      [
       1.2,
@@ -45213,8 +45213,8 @@
       0.0,
       0.0,
       -0.0,
-      -21.917,
-      -21.917
+      -12.372,
+      -12.372
      ]
     ],
     "run_r": [
@@ -45233,8 +45233,8 @@
       0.0,
       0.0,
       -0.0,
-      -21.917,
-      -21.917
+      -12.372,
+      -12.372
      ],
      [
       1.2,
@@ -45242,8 +45242,8 @@
       0.0,
       0.0,
       -0.0,
-      -21.917,
-      -21.917
+      -12.372,
+      -12.372
      ]
     ],
     "run_fl": [
@@ -48829,7 +48829,8 @@
   "hp_1": {
    "rack": {
     "shape": "rack_round",
-    "scale": 0.78
+    "scale": 0.78,
+    "sink": 5.0
    },
    "dish": {
     "shape": "dish",
@@ -48837,21 +48838,25 @@
    },
    "blade": {
     "shape": "blade",
-    "scale": 0.8
+    "scale": 0.8,
+    "sink": 3.9
    },
    "twin_barrel": {
     "shape": "twin_barrel",
-    "scale": 0.7
+    "scale": 0.7,
+    "sink": 4.3
    },
    "barrel": {
     "shape": "barrel",
-    "scale": 0.9
+    "scale": 0.9,
+    "sink": 11.7
    }
   },
   "hp_2": {
    "rack": {
     "shape": "rack_round",
-    "scale": 0.78
+    "scale": 0.78,
+    "sink": 5.0
    },
    "dish": {
     "shape": "dish",
@@ -48859,21 +48864,25 @@
    },
    "blade": {
     "shape": "blade",
-    "scale": 0.8
+    "scale": 0.8,
+    "sink": 3.9
    },
    "twin_barrel": {
     "shape": "twin_barrel",
-    "scale": 0.7
+    "scale": 0.7,
+    "sink": 4.3
    },
    "barrel": {
     "shape": "barrel",
-    "scale": 0.9
+    "scale": 0.9,
+    "sink": 11.7
    }
   },
   "hp_3": {
    "rack": {
     "shape": "rack_round",
-    "scale": 0.68
+    "scale": 0.68,
+    "sink": 2.6
    },
    "dish": {
     "shape": "dish",
@@ -48881,21 +48890,25 @@
    },
    "blade": {
     "shape": "blade",
-    "scale": 0.7
+    "scale": 0.7,
+    "sink": 2.0
    },
    "twin_barrel": {
     "shape": "twin_barrel",
-    "scale": 0.6
+    "scale": 0.6,
+    "sink": 2.0
    },
    "barrel": {
     "shape": "barrel",
-    "scale": 0.8
+    "scale": 0.8,
+    "sink": 9.2
    }
   },
   "hp_4": {
    "rack": {
     "shape": "rack_round",
-    "scale": 0.68
+    "scale": 0.68,
+    "sink": 2.6
    },
    "dish": {
     "shape": "dish",
@@ -48903,15 +48916,18 @@
    },
    "blade": {
     "shape": "blade",
-    "scale": 0.7
+    "scale": 0.7,
+    "sink": 2.0
    },
    "twin_barrel": {
     "shape": "twin_barrel",
-    "scale": 0.6
+    "scale": 0.6,
+    "sink": 2.0
    },
    "barrel": {
     "shape": "barrel",
-    "scale": 0.8
+    "scale": 0.8,
+    "sink": 9.2
    }
   }
  }

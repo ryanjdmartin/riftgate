@@ -1772,7 +1772,7 @@ class Stage {
   // the sidecar's `fits` declare for it there, else the class itself at the pin's scale.
   fitOf(n, shape) {
     const how = ((((this.side || {}).fits || {})["hp_" + n]) || {})[shape] || {};
-    return {shape: how.shape || shape, scale: Number(how.scale) || 1};
+    return {shape: how.shape || shape, scale: Number(how.scale) || 1, sink: Number(how.sink) || 0};   // sink: back along the pin's line, its +z in the glTF (MechView3D.sink_offset)
   }
   // Fit a mount as the game does (MechView3D.wear): the stock part under hp_<n> hides and a
   // silhouette class in a maker's metal hangs under the pin, in the variant and at the scale the
@@ -1790,6 +1790,7 @@ class Stage {
       if (this.id !== id) return;
       part = gltf.scene;
       part.scale.setScalar(how.scale);
+      part.position.set(0, 0, how.sink);
       prepareMaterials(part);
       part.userData.mounted = true;
     }
@@ -2060,7 +2061,7 @@ class Stage {
     const c = cid ? kit[cid] : null;
     if (c && (c.face || {}).kind !== "attack") return;
     const looks = flareLooks(c ? c.tags : [], shape), T = window.THREE, how = this.fitOf(n, shape);
-    const worn = own || (places[how.shape] || []).map(([p, size]) => [[p[0] * how.scale, p[1] * how.scale, p[2] * how.scale], size * how.scale]);
+    const worn = own || (places[how.shape] || []).map(([p, size]) => [[p[0] * how.scale, p[1] * how.scale, p[2] * how.scale + how.sink], size * how.scale]);
     for (const [at, size] of worn) looks.forEach((look, k) => {
       const b = FLARES.beats[look], w = size * b.scale * Math.pow(FLARES.layerScale, k), col = FLARES.colours[look];
       const mat = new T.ShaderMaterial({uniforms: {colour: {value: new T.Vector3(col[0], col[1], col[2])}, strength: {value: 0}, rays: {value: b.rays}, spin: {value: 0}, ahead: {value: 4}, core: {value: FLARES.cores[look]}},
@@ -2096,6 +2097,7 @@ class Stage {
       if (this.rig !== rig || !node) return;   // a later visit replaced this rig
       const part = gltf.scene;
       part.scale.setScalar(how.scale);
+      part.position.set(0, 0, how.sink);
       prepareMaterials(part);
       part.userData.burn = cid;
       node.add(part);

@@ -897,9 +897,13 @@ def polar_bear(b):
     # racks, that fixes the armadillo"): a round launcher for a rack, and every class at the
     # scale that passes the port's bore whole (its octagon's flats: the rear ports' 11.8 across,
     # the fore ports' 10.3), so a fitted part rises out of its port as the guns do, never jammed
-    # in its mouth, and sinks under the iris when the shell seals.
-    REAR_FITS = {"rack": ("rack_round", 0.78), "dish": 0.7, "blade": 0.8, "twin_barrel": 0.7, "barrel": 0.9}
-    FORE_FITS = {"rack": ("rack_round", 0.68), "dish": 0.6, "blade": 0.7, "twin_barrel": 0.6, "barrel": 0.8}
+    # in its mouth, and sinks under the iris when the shell seals. Each sits at its depth (the
+    # third number, back along the line in the pin's units; Ryan, 11 November: "Can't the polar
+    # bears guns start deeper? Why do they have to come all the way out? Like a round missile rack
+    # doesn't need to poke out at all"): a round rack's face just inside the rim, a gun about as
+    # far out as the old hand-built ones (13 past a rear rim, 11 past a fore one), a dish as it was.
+    REAR_FITS = {"rack": ("rack_round", 0.78, 5.0), "dish": 0.7, "blade": ("blade", 0.8, 3.9), "twin_barrel": ("twin_barrel", 0.7, 4.3), "barrel": ("barrel", 0.9, 11.7)}
+    FORE_FITS = {"rack": ("rack_round", 0.68, 2.6), "dish": 0.6, "blade": ("blade", 0.7, 2.0), "twin_barrel": ("twin_barrel", 0.6, 2.0), "barrel": ("barrel", 0.8, 9.2)}
     # The shell: six bands from tail to brow, a dome in section, each proud of the last;
     # the tail band fuller than before (Ryan, 30 September: it tapered too much).
     bands = [(-50.0, -38.0, 50.0, Z0 + 21.0, 9.0), (-39.0, -22.0, 54.0, Z0 + 24.0, 10.0), (-23.0, -4.0, 60.0, Z0 + 28.0, 12.0),
@@ -1235,10 +1239,10 @@ def polar_bear(b):
     # dipped: the defensive base pose (Ryan, 29 October). Opening runs it back, the plugs
     # dropping before the guns rise. RIFTGATE_SEAL_DEBUG=1 holds it and lets it go in turn,
     # as the hangar's Forms toggle does, to judge running.
-    # SINK takes the longest class a rear port wears (a barrel at its fit, 32.4 along its line)
-    # under the iris, which closes about 3.2 out from the mount (the stock's barrel since 11
-    # November; 23 cleared the hand-built guns).
-    SINK, SINK_F, T_SINK, T_PLUG0, T_PLUG1, T_ALL = 31.0, 32.0, 0.45, 0.45, 0.85, 1.2
+    # SINK takes the farthest a rear port's class reaches at its depth (18.4 along its line, a
+    # gun's muzzle) under the iris, which closes about 3.2 out from the mount, and leaves the
+    # deepest (a barrel's receiver, 18.3 back) inside the shell's floor, 37.5 down the line.
+    SINK, SINK_F, T_SINK, T_PLUG0, T_PLUG1, T_ALL = 17.5, 32.0, 0.45, 0.45, 0.85, 1.2
     HUNK = (0.0, -11.0, -1.5)   # (dy, dz, pitch): low, the brow dipped
     FWD = (0.0, 1.0, 0.0)
     tracks = {jn: [along(0.0, 0.0), along(T_SINK, -SINK)] for jn in ("run_l", "run_r")}
