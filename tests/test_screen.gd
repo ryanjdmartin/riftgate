@@ -20,6 +20,66 @@ func _screen(seed_value: int = 3, massive: Foe = null) -> SkirmishScreen:
 	return screen
 
 
+## Jenny's heat lines (Ryan, 10 November: "The heat warning shouldn't fire every time, not
+## anymore ... we only need to warn: -Every time we're overheating -The first time we reach over
+## the warning threshold, but not again until we've got back under"): the warning once as a
+## machine passes three quarters, silent while it stays there, armed again once it is seen back
+## under; the overheat for every spend that heats a machine and leaves it over its cap.
+func test_the_heat_warning_once_and_the_overheat_every_time() -> void:
+	var s := _screen()
+	var ms: Skirmish.MechState = s.sk.mechs[0]
+	var cap := ms.heat_max
+	var line := (cap * 3 + 3) / 4   # the first heat at three quarters or past
+	assert_true(cap >= 8 and line < cap, "a cap with room between the warning and the burn")
+	var before: Array = s._heats()
+	ms.heat = line
+	assert_eq(s._heat_hook(before), "heat_high", "past three quarters for the first time: warned")
+	before = s._heats()
+	ms.heat = line + 1
+	assert_eq(s._heat_hook(before), "", "hotter and still past it: not again")
+	before = s._heats()
+	s.sk.mechs[1].heat += 1
+	assert_eq(s._heat_hook(before), "", "another machine's spend, the first still hot: not again")
+	# Back under and over again with no look between (an undo and the same spend): not again.
+	before = s._heats()
+	ms.heat = line
+	assert_eq(s._heat_hook(before), "", "never seen back under: not again")
+	before = s._heats()
+	ms.heat = cap + 1
+	assert_eq(s._heat_hook(before), "overheat", "over the cap: the overheat")
+	before = s._heats()
+	ms.heat = cap + 2
+	assert_eq(s._heat_hook(before), "overheat", "heated again while over: the overheat, every time")
+	before = s._heats()
+	s.sk.mechs[1].heat += 1
+	assert_eq(s._heat_hook(before), "", "a spend that heats another machine says nothing of the one already over")
+	# The turn's end settles it at the cap, still past three quarters: no second warning.
+	ms.heat = cap
+	before = s._heats()
+	s.sk.mechs[1].heat += 1
+	assert_eq(s._heat_hook(before), "", "down from the overheat to its cap: not warned again")
+	before = s._heats()
+	ms.heat = cap + 1
+	assert_eq(s._heat_hook(before), "overheat", "over again the next turn: the overheat again")
+	# Cooled back under as a round opens, then past the line again: warned again.
+	ms.heat = line - 1
+	s._heat_rearm()
+	before = s._heats()
+	ms.heat = line
+	assert_eq(s._heat_hook(before), "heat_high", "back under and over again: warned again")
+	# Straight from cool to over the cap: the overheat alone, and no warning once it settles.
+	var other: Skirmish.MechState = s.sk.mechs[2]
+	other.heat = 0
+	s._heat_rearm()
+	before = s._heats()
+	other.heat = other.heat_max + 1
+	assert_eq(s._heat_hook(before), "overheat", "cool to over the cap in one spend: the overheat")
+	other.heat = other.heat_max
+	before = s._heats()
+	assert_eq(s._heat_hook(before), "", "settled at its cap: no warning after the overheat")
+	s.free()
+
+
 func test_screen_builds_and_starts_round_one() -> void:
 	var s := _screen()
 	assert_eq(s.sk.round, 1, "round one started")
@@ -827,7 +887,7 @@ func test_double_tap_opens_and_closes_the_codex() -> void:
 	assert_eq(s._codex._sub.text, "THE MARSH", "the domain's name as the subtitle")
 	assert_true(not s._codex._body.text().is_empty(), "foe codex text present")
 	assert_true(s._codex._moves.visible and s._codex._moves.text().contains("CLAW"), "implemented moves listed")
-	assert_true(s._codex._moves.text().contains("a kin standing"), "the swarm is said too")
+	assert_true(s._codex._moves.text().contains("Attack %d" % foe.attack), "its blow at its own number")
 	assert_true(s._codex._flavour.text.begins_with("“"), "flavour shown as a quote")
 	assert_true(s._codex._flavour.text.contains("tired"), "the foe's own line, not the faction's")
 	assert_false(s._codex._faces.visible, "no face list for a foe")
@@ -1071,10 +1131,12 @@ func test_a_rage_roll_bursts_the_chip_and_gives_the_die_back() -> void:
 	s.free()
 
 
-## A capped store on the screen (Ryan, 22 October: the rage, individual boxes up to the cap):
-## boxes under the heat lit to its count, in its chip's colour, and no chip; a rage spent from
-## them bursts there as it did from the chip.
-func test_a_capped_store_shows_as_boxes_under_the_heat_in_its_chips_place() -> void:
+## A capped store on the screen (Ryan, 22 October: every store a bar; 10 November: "Resource bars
+## like the badgers should be the same shape as the other resource bars, and continuous ...
+## nestle under the Heat bar, same shape, divided into four clear segments"): one bar under the
+## heat, a gauge's own shape and step, a segment a stack up to its cap, lit to its count, in its
+## chip's colour, and no chip; a rage spent from it bursts on the segment that emptied.
+func test_a_capped_store_shows_as_a_segmented_bar_under_the_heat_in_its_chips_place() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
 	var m := db.make_mech("badger")
@@ -1090,13 +1152,52 @@ func test_a_capped_store_shows_as_boxes_under_the_heat_in_its_chips_place() -> v
 	Effects.stack(m, Effects.STATUS["rage"], Effects.SKIRMISH, "test", 2, Effects.DECAY_NONE)
 	s._refresh()
 	var v: UnitView = s._mech_views[0]
-	assert_eq([int(v.boxes[0]), int(v.boxes[1])], [2, 5], "two of five boxes lit")
-	assert_eq(str(v.boxes[3]), SkirmishScreen.status_glyph("rage"), "the store's own mark, for its burst")
+	assert_eq([int(v.store[0]), int(v.store[1])], [2, 5], "two of five segments lit")
+	assert_eq(str(v.store[3]), SkirmishScreen.status_glyph("rage"), "the store's own mark, for its burst")
+	# The bar is one more gauge in the stack: under the last of them, their width, their height.
+	assert_eq(v._store_step(), UnitView.BAR_STEP, "it takes a gauge's step in the stack")
+	var first: Rect2 = v._store_cell(0)
+	var last: Rect2 = v._store_cell(4)
+	assert_true(is_equal_approx(first.position.y, v._bars_top() + v.bars.size() * UnitView.BAR_STEP), "directly under the heat, the last gauge")
+	assert_true(is_equal_approx(first.position.x, v.size.x * 0.1) and is_equal_approx(last.end.x, v.size.x * 0.9), "across the gauges' own width")
+	assert_eq(first.size.y, UnitView.BAR_H, "a gauge's height")
+	# Its units are cells of their own, one width, clear ground between each and the next (Ryan,
+	# 10 November: "split them into different bars with borders and whitespace, in the same row").
+	for k in range(4):
+		var here: Rect2 = v._store_cell(k)
+		var next: Rect2 = v._store_cell(k + 1)
+		assert_true(next.position.x - here.end.x >= 1.0, "a hairline of ground between cell %d and %d" % [k, k + 1])
+		assert_true(is_equal_approx(here.size.x, next.size.x) and is_equal_approx(here.position.y, next.position.y), "one width, one row")
 	for r in s._mech_rows(0):
 		assert_ne(str(r[0]), SkirmishScreen.status_glyph("rage"), "and no rage chip")
 	assert_true(s._use_die(0, sk.front[0]), "the fist lands")
 	assert_true(v._spend >= 0.0 and v._spend_glyph == SkirmishScreen.status_glyph("rage"), "the spent rage bursts")
-	assert_eq(int(v.boxes[0]), 1, "one box left lit")
+	assert_eq(int(v.store[0]), 1, "one segment left lit")
+	assert_true(((v._chip_rects[SkirmishScreen.status_glyph("rage")][0]) as Rect2).encloses(v._store_cell(1)), "the burst on the segment that emptied")
+	s.free()
+
+
+## The Honey Badger's hopper is such a bar, four segments, and what its loads are worth is an
+## Armoured chip like any buff's, never an ability's (10 November).
+func test_the_badgers_hopper_is_a_bar_of_four_and_its_plate_an_armoured_chip() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	sk.add_mech(m)
+	sk.add_foes([Foe.make("revenant", 300, 10)])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	Effects.add_loads(m, 3)
+	s._refresh()
+	var v: UnitView = s._mech_views[0]
+	assert_eq([int(v.store[0]), int(v.store[1])], [3, 4], "three of four segments lit")
+	var armoured := 0
+	for r in s._mech_rows(0):
+		assert_ne(str(r[0]), SkirmishScreen.status_glyph("hopper"), "no chip for the loads, and none in the hopper's mark")
+		if str(r[0]) == SkirmishScreen.status_glyph("braced"):
+			armoured += 1
+			assert_eq(str(r[5]) if r.size() > 5 else "", "buff", "a buff's chip, one a Purge takes")
+	assert_eq(armoured, 1, "one Armoured chip for what the loads are worth")
 	s.free()
 
 
@@ -1858,7 +1959,7 @@ func test_the_barrier_and_the_ward_wear_chips_and_a_dark_entry_counts_its_rounds
 
 
 ## A stepping die (the Cassowary's, 21 October) shows its next chamber on the die and in the
-## hold, and a machine that counts its shots shows the count as pips under the heat bar.
+## hold, and a machine that counts its shots shows the count as cells under the heat bar, the last marked.
 func test_a_stepping_die_shows_its_next_chamber_and_its_shot_count() -> void:
 	var s := _screen()
 	var ms: Skirmish.MechState = s.sk.mechs[0]
@@ -1872,9 +1973,9 @@ func test_a_stepping_die_shows_its_next_chamber_and_its_shot_count() -> void:
 	assert_eq(s._dice[0].next_face.kind, ms.die.faces[(ms.face_index + 1) % n].kind, "the one it steps to")
 	assert_eq(s._mech_views[0].pips, [5, 6], "five shots of six: the sixth is next")
 	for r in s._mech_rows(0):
-		assert_false(str(r[2]).begins_with("Shots"), "the count is pips, never a chip")
+		assert_false(str(r[2]).begins_with("Shots"), "the count is cells under the heat, never a chip")
 	assert_true(s._dice[1].next_face == null, "a die that rolls shows none")
-	assert_true(s._mech_views[1].pips.is_empty(), "nor pips")
+	assert_true(s._mech_views[1].pips.is_empty(), "nor a count's cells")
 	# The readout's cylinder (Ryan's ring, 19 October): every chamber in order, the one showing lit,
 	# the arrow to the next; a die that rolls has none.
 	s._on_die_tapped(0)
@@ -2485,7 +2586,21 @@ func test_a_last_act_records_the_gauges_it_met() -> void:
 func test_the_polar_bears_form_reads_on_its_die_and_its_view() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
-	var m := db.make_mech("polar_bear")
+	# Its seal is spent on a shield, and no stock die holds one since the refit pass landed (10
+	# November: the machine is back in design for it): the kit under test carries the draft
+	# self shield in the slot the re-deal gave its Armoured basic.
+	var stock: Array = (db.chassis["polar_bear"]["loadout"] as Array).duplicate()
+	var self_shield := ""
+	for cid in db.components.keys():
+		var face: Dictionary = db.components[cid].get("face", {})
+		if str(face.get("kind", "")) == "shield" and str(face.get("targets", "")) == "self" and db.component_tier(str(cid)) == 0:
+			self_shield = str(cid)
+	for k in range(stock.size()):
+		var face: Dictionary = db.components[stock[k]].get("face", {})
+		if str(face.get("kind", "")) == "buff":
+			stock[k] = self_shield
+			break
+	var m := db.make_mech("polar_bear", 0, Vector2i.ZERO, stock)
 	sk.add_mech(m)
 	sk.add_foes([Foe.make("revenant", 30, 1)])
 	var s := SkirmishScreen.new()

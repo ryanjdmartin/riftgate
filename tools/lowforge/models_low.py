@@ -720,7 +720,7 @@ def baboon(b):
         b.box(px - 4.0, px + 4.0, -2.0, 6.0, 60.0 + Z0, 65.0 + Z0, "steel.plate", "projector_mount")
         side = "l" if s < 0 else "r"
         with b.joint("elev_%s" % side, (px, 2.0, 63.0 + Z0), limits=(-6.0, 50.0)):   # the shoulder piece elevates on its mount
-            b.stock("hp_%d" % (3 if s < 0 else 5), (px, 6.0, 64.0 + Z0), "dish" if s < 0 else "rack", scale=0.6, carries="halo_shield" if s < 0 else "ankle_mortar")
+            b.stock("hp_%d" % (3 if s < 0 else 5), (px, 6.0, 64.0 + Z0), "dish" if s < 0 else "rack", scale=0.6, carries="halo_projector" if s < 0 else "ankle_mortar")
         # The arm: the elbow back and out behind the shoulder, the forearm forward and
         # down to a wrist drum, the fist hanging from it to rest on the ground, knuckles
         # forward (Ryan, 30 September: back on the ground, and loaded).
@@ -1595,7 +1595,7 @@ def prairie_dog(b):
     b.box(-1.5, 1.5, -34.0, -30.0, 8.0 + L, 10.0 + L, "steel.dark", "hitch")
     # The projector on the rear-left corner (hp_2): the stock's Halo Shield as its class, a
     # dish facing forward (the launcher there went with the old stock: Ryan's go, 28 October).
-    b.stock("hp_2", (-10.0, -26.0, 28.5 + L), "dish", scale=0.6, carries="halo_shield")
+    b.stock("hp_2", (-10.0, -26.0, 28.5 + L), "dish", scale=0.6, carries="halo_projector")
     # The third mount (hp_3) is bare on the rear-right corner, the projector's twin.
     b.pad("hp_3", (10.0, -26.0, 26.0 + L), scale=0.7, size=(6.0, 2.0))   # on the roof, not above it
     for s in (-1.0, 1.0):
@@ -1941,7 +1941,7 @@ def cassowary(b):
     with b.joint("elev_mortar", (7.5, -10.5, 87.0), limits=(-15.0, 25.0)):
         b.stock("hp_3", (7.5, -11.0, 87.5), "rack", forward=(0.0, 0.819, 0.574), scale=0.5, carries="ankle_mortar")
     b.prism("z", -7.5, 3.0, 86.0, 2.0, 4.4, "steel.dark", 6, "dish_base")
-    b.stock("hp_4", (-7.5, 3.0, 88.2), "dish", scale=0.55, carries="halo_shield")
+    b.stock("hp_4", (-7.5, 3.0, 88.2), "dish", scale=0.55, carries="halo_projector")
     b.pad("hp_5", (-7.5, -10.5, 85.5), scale=0.55, size=(6.0, 1.5))
     # The capacitor on the right flank, where the revolver drum hung (Ryan, 2 November: "some kind
     # of capacitor, charging up for the sixth hit of its passive"): six cells round a core between
@@ -2471,7 +2471,7 @@ def cottonmouth(b):
             _cottonmouth_prisms(b, [("y", (0.0, yb + 0.4, ZA + cr), 2.1, 0.4, 8, math.pi / 8)], "amber.heat", "top_lamp_glow")   # wider than the lamp it lights, inside the cap it passes through
         # The four mounts, hidden inside the casing (nothing drawn there, stock or fitted), on
         # the elevation so a shot kicks the drum up; in the die's order.
-        for n, (dx, dz), carries in ((1, (-4.2, 4.2), "ankle_mortar"), (2, (4.2, 4.2), "twin_autoguns"), (3, (-4.2, -4.2), "halo_shield"), (4, (4.2, -4.2), "")):
+        for n, (dx, dz), carries in ((1, (-4.2, 4.2), "ankle_mortar"), (2, (4.2, 4.2), "twin_autoguns"), (3, (-4.2, -4.2), "halo_projector"), (4, (4.2, -4.2), "")):
             b.pin("hp_%d" % n, (dx, PY + 2.0, ZA + dz), scale=0.5, carries=carries, hidden=True)
 
     # The stern: two ducted fans side by side on a fairing, each on a pylon, its lip
@@ -5242,7 +5242,7 @@ def stingray(b):
         b.prism("y", px, 24.0, pz, 2.0, 24.0, "steel.dark", 6, "wing_pod")   # y 12 to 36; the wing's leading edge is near y 34 here
         b.prism("y", px, 36.4, pz, 2.3, 1.2, "steel.plate", 6, "pod_collar")
         if name == "hp_2":
-            b.stock(name, (px, 37.0, pz), "dish", scale=0.6, carries="halo_shield")
+            b.stock(name, (px, 37.0, pz), "dish", scale=0.6, carries="halo_projector")
         else:
             b.pad(name, (px, 37.0, pz), scale=0.7, size=(3.6, 1.4))
 
@@ -5984,7 +5984,7 @@ def puffin(b):
     for s in (-1.0, 1.0):
         px = s * 12.0 * K
         b.box(min(px - 0.8, px + 0.8), max(px - 0.8, px + 0.8), 12.0, 18.0, 8.4, 10.2, "steel.plate", "pod_pylon")
-        with b.socket("hp_%d" % (1 if s < 0 else 4), (px, 20.0, 8.2), scale=0.5, carries="halo_shield" if s < 0 else ""):
+        with b.socket("hp_%d" % (1 if s < 0 else 4), (px, 20.0, 8.2), scale=0.5, carries="halo_projector" if s < 0 else ""):
             b.prism("y", px, 15.0, 8.2, 1.5, 11.0, "steel.dark", 6, "pod")
             if s < 0:
                 b.prism("y", px, 22.5, 8.2, 3.0, 1.2, "steel.plate", 8, "dish")
@@ -8262,6 +8262,141 @@ def wall(b):
 
 
 wall.maker = "arsenal"
+
+
+# ---------------------------------------------------------------- the field's caches
+
+def _tilt(roll=0.0, pitch=0.0, yaw=0.0, at=(0.0, 0.0, 0.0)):
+    """A part's cant: turned about z, then pitched about x and rolled about y, then moved."""
+    return (Matrix.Translation(at) @ Matrix.Rotation(math.radians(roll), 4, "Y")
+            @ Matrix.Rotation(math.radians(pitch), 4, "X") @ Matrix.Rotation(math.radians(yaw), 4, "Z"))
+
+
+def cache_derelict(b):
+    """A Derelict, the field's commonest cache (content/loot.json): a machine's hulk left where
+    it fell, canted and half sunk, a track thrown, its gun drooped, a hatch stood open and one
+    lamp still lit. Low and wide: a machine standing on its hex hides it, and it must read from
+    above as wreckage, never as a unit. A first cut."""
+    b.tile_world = 40.0
+    hull = _tilt(roll=-13.0, pitch=7.0, yaw=24.0, at=(-2.0, 1.0, 3.0))
+    b.box(-15.0, 15.0, -11.0, 11.0, -3.0, 9.0, "steel.panel", "hull", hull)
+    b.loft([(-11.0, rect(0.0, 30.0, 9.0, 9.2)), (-6.0, rect(0.0, 24.0, 9.0, 14.0)), (7.0, rect(0.0, 24.0, 9.0, 14.0)), (11.0, rect(0.0, 30.0, 9.0, 9.2))],
+           "steel.plate", "deck", hull)
+    b.box(-17.5, -15.0, -12.0, 12.0, -3.0, 6.0, "steel.tread", "track", hull)          # the track it kept, on its low side
+    for wy in (-8.0, 0.0, 8.0):
+        b.prism("x", 16.5, wy, 1.5, 4.0, 3.0, "steel.dark", 6, "wheel").matrix_world = hull @ b.objects[-1].matrix_world   # the bared road wheels on its high side
+    b.box(-6.0, 6.0, -5.0, 5.0, 14.0, 19.0, "steel.panel", "turret", hull)
+    b.prism("y", 0.0, 0.0, 0.0, 1.8, 20.0, "steel.dark", 6, "gun").matrix_world = hull @ _tilt(pitch=-24.0, at=(1.0, 13.0, 13.5))   # drooped over the bow
+    b.box(-4.0, 4.0, -0.5, 0.5, 0.0, 8.0, "steel.plate", "hatch", hull @ _tilt(pitch=28.0, at=(-1.0, -4.5, 19.0)))   # stood open
+    b.box(-3.0, 3.0, -3.5, 3.5, 18.6, 19.2, "bore.dark", "hatchway", hull)
+    b.box(8.5, 11.5, -11.6, -11.0, 4.0, 6.5, "amber.light", "lamp", hull)             # the one lamp still lit, at its stern
+    b.box(-11.5, -8.5, -11.6, -11.0, 4.0, 6.5, "steel.dark", "lamp_dead", hull)
+    # What came off it: the thrown track laid out behind, a plate and a few lumps.
+    b.box(-3.0, 3.0, -13.0, 13.0, 0.0, 1.6, "steel.tread", "thrown_track", _tilt(yaw=-38.0, at=(17.0, -12.0, 0.0)))
+    b.box(-6.0, 6.0, -4.5, 4.5, 0.0, 1.2, "steel.plate", "plate", _tilt(roll=9.0, yaw=15.0, at=(-17.0, 13.0, 0.6)))
+    for x, y, w, yaw in ((14.0, 15.0, 3.6, 20.0), (-20.0, -9.0, 2.8, 50.0), (6.0, -19.0, 2.4, 10.0), (-9.0, 19.0, 2.0, 65.0)):
+        b.box(-w, w, -w * 0.8, w * 0.8, 0.0, w * 1.1, "steel.dark", "lump", _tilt(roll=14.0, yaw=yaw, at=(x, y, 0.0)))
+
+
+cache_derelict.maker = "arsenal"
+
+
+def _rib(b, y, reach, rise, thick, side, lean, label="rib"):
+    """One rib, as a boat's: a crescent standing in the plane across the spine, from the spine out
+    and up and curling back in over it, tapering to a point; `side` -1 or 1, leaned along the
+    spine by `lean` degrees."""
+    outer, inner = [], []
+    n = 8
+    for i in range(n + 1):
+        f = i / n
+        a = math.radians(5.0 + 150.0 * f)                 # from the spine, out through the widest, in over the top
+        t = thick * (1.0 - 0.8 * f)
+        outer.append((side * reach * math.sin(a), rise * 0.5 * (1.0 - math.cos(a))))
+        inner.append((side * (reach - t) * math.sin(a), rise * 0.5 - (rise * 0.5 - t) * math.cos(a)))
+    pts = outer + inner[::-1]
+    if side < 0:
+        pts = pts[::-1]
+    return b.loft([(-thick * 0.5, pts), (thick * 0.5, pts)], "bone.bone", label, _tilt(pitch=lean, at=(0.0, y, 1.0)))
+
+
+def cache_carcass(b):
+    """A Carcass, the field's middle cache: one of theirs, dead in our ground and picked to the
+    bone. A spine along the hex, a cage of ribs open to the sky, a long horned skull at one end
+    and a tail of vertebrae at the other, dried hide still on the haunch. Bone is the picture: it
+    must not read as a foe standing (they are flat pictures, never geometry). A first cut."""
+    b.tile_world = 40.0
+    # The spine: vertebrae from the skull's nape to the tail, sagging in the middle.
+    for i in range(11):
+        y = 15.0 - i * 3.6
+        z = 3.2 - 1.4 * math.sin(math.pi * i / 10.0)
+        w = 2.6 - 0.14 * i
+        b.box(-w, w, -1.5, 1.5, 0.0, 2.6, "bone.bone", "vertebra", _tilt(yaw=4.0 * math.sin(i * 0.9), at=(0.6 * math.sin(i * 0.7), y, z)))
+        if 1 <= i <= 8:
+            b.box(-0.6, 0.6, -1.0, 1.0, 2.6, 5.4 - 0.25 * i, "bone.bone", "spine_spur", _tilt(pitch=-18.0, at=(0.6 * math.sin(i * 0.7), y, z)))
+    # The ribs: five pairs, the largest amidships, each leaned back a little further.
+    for k, (y, reach, rise) in enumerate(((11.0, 13.0, 15.0), (6.5, 16.0, 19.0), (2.0, 17.0, 21.0), (-2.5, 15.5, 19.0), (-7.0, 12.5, 15.0))):
+        for side in (-1.0, 1.0):
+            _rib(b, y, reach, rise, 2.4, side, -8.0 - 3.0 * k)
+    # One rib broken off and fallen outside the cage.
+    _rib(b, 0.0, 12.0, 14.0, 2.2, 1.0, 0.0, "rib_fallen").matrix_world = _tilt(roll=82.0, yaw=30.0, at=(21.0, -6.0, 1.5))
+    # The skull: a long wedge on the ground past the nape, two horns swept back, dark sockets.
+    skull = _tilt(pitch=-6.0, yaw=-14.0, at=(1.5, 21.0, 0.0))
+    b.loft([(-6.0, rect(0.0, 11.0, 0.5, 10.0)), (1.0, rect(0.0, 10.0, 0.5, 9.0)), (12.0, rect(0.0, 4.5, 0.5, 4.5))], "bone.bone", "skull", skull)
+    b.box(-4.2, 4.2, 3.0, 12.4, -0.4, 0.9, "bone.bone", "jaw", skull)
+    for side in (-1.0, 1.0):
+        b.box(side * 5.0 - 0.8, side * 5.0 + 0.8, -2.0, 2.4, 5.0, 8.6, "bore.dark", "socket", skull)   # a socket in each cheek
+        b.box(side * 2.6 - 1.5, side * 2.6 + 1.5, -1.0, 2.6, 9.0, 9.9, "bore.dark", "socket_top", skull)
+        b.loft([(0.0, rect(0.0, 3.0, -1.5, 1.5)), (8.0, rect(0.0, 2.0, -1.0, 1.0)), (15.0, rect(0.0, 0.5, -0.25, 0.25))], "bone.bone", "horn",
+               skull @ _tilt(pitch=34.0, yaw=side * 150.0, at=(side * 4.2, -4.0, 8.6)))
+    # The tail's last bones strewn, and the hide still on the haunch.
+    for i, (x, y) in enumerate(((2.5, -25.0), (5.5, -28.0), (9.5, -29.5))):
+        b.box(-1.6 + 0.3 * i, 1.6 - 0.3 * i, -1.3, 1.3, 0.0, 2.0 - 0.3 * i, "bone.bone", "tail_bone", _tilt(yaw=40.0 + 25.0 * i, at=(x, y, 0.0)))
+    b.loft([(-6.0, rect(0.0, 7.0, 0.0, 0.8)), (0.0, rect(0.0, 12.0, 0.0, 5.0)), (5.0, rect(0.0, 9.0, 0.0, 1.0))], "steel.hide", "hide", _tilt(yaw=12.0, at=(-3.0, -14.0, 1.0)))
+    b.box(-9.0, 9.0, -1.0, 1.0, 0.0, 0.6, "steel.hide", "hide_flap", _tilt(yaw=70.0, at=(-13.0, -12.0, 0.0)))
+    # Laid across the hex with its skull toward the eye (the map looks from the south, the
+    # model's -y), so the skull and the cage both read.
+    lie = _tilt(yaw=148.0, at=(-2.0, 2.0, 0.0))
+    for ob in b.objects:
+        ob.matrix_world = lie @ ob.matrix_world
+
+
+cache_carcass.maker = "arsenal"
+
+
+def _shard(b, at, w, d, h, lean, yaw, label="shard", glyph=True):
+    """A standing splinter of their stone: four-sided, tapering to an off-centre point, leaned,
+    a seam of their light cut up its outward face."""
+    m = _tilt(roll=lean, yaw=yaw, at=at)
+    b.loft([(-d, [(-w, 0.0), (w, 0.0), (w * 0.72, h * 0.62), (w * 0.1, h), (-w * 0.55, h * 0.7)]),
+            (d, [(-w * 0.8, 0.0), (w * 0.8, 0.0), (w * 0.5, h * 0.55), (w * 0.05, h * 0.9), (-w * 0.5, h * 0.6)])], "steel.stone", label, m)
+    if glyph:
+        b.box(-0.8, 0.8, -d - 0.5, -d + 0.1, h * 0.1, h * 0.42, "amber.rift", "seam_light", m)
+        b.box(-0.8, 0.8, -d - 0.5, -d + 0.1, h * 0.48, h * 0.48 + 1.6, "amber.rift", "seam_light", m)   # a stroke and a point over it: no cross
+
+
+def cache_relic(b):
+    """A Relic, the field's rarest cache: a thing of theirs, never ours. Three splinters of black
+    stone stood leaning round a hollow, a seam of their light cut in each, and in the hollow a
+    core of that light hung clear of the ground, an eight-sided stone the map turns slowly (the
+    part named `core`, Map3D). The one cache that glows: it is seen from across the field, which
+    is where it lies. A first cut."""
+    b.tile_world = 40.0
+    b.prism("z", 0.0, 0.0, 0.6, 15.0, 1.2, "steel.stone", 6, "plinth", phase=math.pi / 6.0)
+    b.prism("z", 0.0, 0.0, 1.5, 9.0, 0.7, "amber.rift", 6, "well", phase=math.pi / 6.0)
+    _shard(b, (-13.0, 4.0, 0.0), 6.0, 3.2, 34.0, 12.0, 28.0)
+    _shard(b, (12.0, 7.0, 0.0), 5.0, 2.8, 26.0, -14.0, -30.0)
+    _shard(b, (2.0, -14.0, 0.0), 4.4, 2.6, 19.0, 6.0, 176.0)
+    _shard(b, (17.0, -9.0, 0.0), 3.0, 2.0, 9.0, -30.0, 70.0, "shard_fallen", glyph=False)
+    # The core: two four-sided points base to base, hung over the well.
+    r, hh, cz = 5.2, 8.0, 17.0
+    ring = [(r, 0.0), (0.0, r), (-r, 0.0), (0.0, -r)]
+    tip = [(0.01, 0.0), (0.0, 0.01), (-0.01, 0.0), (0.0, -0.01)]
+    # Built about its own centre and stood there by its object's place, so the map turns the
+    # part about itself with no rig.
+    b.loft([(-hh, tip), (0.0, ring), (hh, tip)], "amber.rift", "core", Matrix.Rotation(-math.pi / 2, 4, "X")).matrix_world = Matrix.Translation((0.0, 0.0, cz))
+
+
+cache_relic.maker = "arsenal"
 
 
 def gate(b):

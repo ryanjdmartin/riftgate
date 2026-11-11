@@ -106,7 +106,13 @@ var full_strength: int = 0       # the heads it took the field with (Battlefield
 var goal_col: int = -1           # a pusher's wall segment, the column of the apron hex it walks to (the long wall brief 3.3, Battlefield.assign_goal); -1 for none, which walks to the nearest apron hex
 var is_boss: bool = false    # this unit commands the rift: the faction's boss, a final's hero or the finale's line (`elite` until 15 October, the word now the elites')
 var sealed: bool = false     # a boss unit's seal (the pacing session, 30 October): while it holds, the unit cannot be ordered onto and joins no fight; the Rupture breaks it
-var attack_range: int = 1    # placeholder (the long wall brief): adjacency; a machine may be committed to a fight on a pack within this many hexes
+## The engage range, one number for everyone on the map (Ryan, 10 November: a hunter catches at
+## "the same melee engage range as everyone else"): a machine may be committed to a fight on a
+## pack within it, and a hunter catches a machine within it where its walk ends. Adjacency, a
+## placeholder (the long wall brief); the hunters' pounce of two (29 October) retired with the
+## body blocking.
+const ENGAGE_RANGE := 1
+var attack_range: int = ENGAGE_RANGE    # a machine's reach onto a pack: the engage range
 
 const TRIANGLE: Array[Vector2i] = [Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1)]
 

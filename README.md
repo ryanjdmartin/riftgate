@@ -143,7 +143,10 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   simulations chose); `soundforge/` builds every sound and the
   six music tracks from written recipes (numpy); `phone.sh` puts a Web build on a phone
   over the LAN, `android.sh` the real debug APK over USB; `hangar.html` is the
-  hangar page, one artifact with five tabs (the codex, the content editor, the names list, the
+  hangar page, one artifact with seven tabs (the codex; the bench: Ryan's working sheet for a machine, the roster by where each stands and one flat sheet for its numbers, its locked pieces, its upgrades, its stock and his notes, every write an edit of the entry in `edits`, his notes and upgrade ideas under its `design.bench`; the content editor; the text: every text
+  the player reads, one row a text by kind and by voice, where the game draws it and who wrote
+  it, read from `hangar/text.json`, which `hangar_text.py` writes from content, two tables in
+  the code and the ledger `docs/hangar/text.json`, and folds his writing back with; the names list, the
   designs: every brief in `docs/briefs/` laid out for Ryan to correct, read from
   `hangar/designs.json`, which `hangar_designs.py` writes from the briefs and folds his
   corrections back with; and the models: each machine live in 3D, its motion and mounts, over
@@ -154,32 +157,35 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   at that same path as the shipped content every tab reads and the editor diffs against,
   `hangar/pins.json` (the models' mounts) and `hangar/renders.json` with the renders under
   `docs/hangar/`; Ryan's saved edits live in its database (collection `edits`), the name
-  candidates in `candidates`, his corrections to the briefs in `designs`; `spriter/.venv` is the Python
-  the tools run with. The gate and wall are lowforge models too (`gate`, `wall`).
+  candidates in `candidates`, his corrections to the briefs in `designs`, his texts, marks and
+  notes from the Text tab in `text`; `spriter/.venv` is the Python
+  the tools run with. The gate and wall are lowforge models too (`gate`, `wall`), and the
+  field's caches (`cache_<kind>`, one a kind in `content/loot.json`); `loot_tokens.py` writes each
+  cache's flat map token, for a hex the painting has taken, from the grids typed in it.
 - `art/` — `models/` every glTF the engine draws (units, gate, wall) with a `<id>.rig.json`
   sidecar beside each machine (its joints' axes and limits, its idle acts, its cornering
   numbers, what each hardpoint's stock part is, `hidden_pins` where a model hides its mounts
   (`b.pin(..., hidden=True)`, the Cottonmouth's), `counts` and `spin_held` where a model shows a count or a status, `spin_step` and an act's `locks` where an act stops a spinner on a step, `fires` (each fixed weapon's slices of its acts, in turn, and a slice's `blow`), an act's `idle: false` where it only fires, `launches` where a weapon fires a part out (the Lammergeier's drones, `b.launch(...)`); written by lowforge, read by `mech_rig.gd`
   and by `mech_view_3d.gd`, which wears a fitted die against that record), `models/shapes/` the
   silhouette classes in each maker's metal, a burn weapon's fire for each and `muzzles.json`,
-  where each class's muzzle flare blooms (`forge.py shapes` writes all three), `foes/` the combat sprites foeforge cuts from Ryan's picks and the
-  16x16 map tokens the sheet export writes, `fonts/` the HUD faces, `audio/` every sound by name (`game/audio/sound.gd` lists
+  where each class's muzzle flare blooms (`forge.py shapes` writes all three), `foes/` the combat sprites foeforge cuts from Ryan's picks, the
+  16x16 map tokens the sheet export writes and each boss's 48-pixel picture for the map (`forge.py boss`), `loot/` the caches' 16x16 map tokens (`tools/loot_tokens.py`), `fonts/` the HUD faces, `audio/` every sound by name (`game/audio/sound.gd` lists
   them) and `audio/voice/` Jenny's lines with `lines.json` (`game/audio/voice_lines.gd` is
   her system). A missing foe sprite falls back to a placeholder shape; a missing sound is silence.
 - `docs/` — one job each. `rules.md` the rules as they stand; `design-bible.html` the
   decisions and why, with the questions only Ryan can settle in its section 12; `status.md`
   how things stand and the order of work, rewritten at every handoff; `todo.md` the tasks, one
   line each by who moves it, ticked in the commit that lands it; `measurements.md` every run a
-  decision cites; `vocabulary.md` generated from the vocabulary; `synergy_map.md`, who sets and
+  decision cites; `vocabulary.md` generated from the vocabulary; `voice.md`, every shown text
+  Ryan has signed as his own, generated from the ledger by `tools/hangar_text.py`, read before
+  a session drafts shown text; `synergy_map.md`, who sets and
   who reads every status and resource, generated from content; `balance.md`, `campaign_run.md`,
   `quick_run.md` and `map_survey.md` generated by the runners. Proposals and briefs, each the
   design's one home until its decisions are rows and content, then retired to git: the
   design-session briefs (`briefs/`, with a README that says what each waits on), the economy
-  pass (`economy_pass.md`), the formation pass (`formation_proposal.md`: every domain's patrols
-  and formations as grids with a question each, the hunters as heavy patrols, the bosses' stat
-  blocks, waiting on Ryan's marks; its grids as code in `tools/formation_proposal.py`, which writes
-  them to a scratch worktree for the curve read, merges the reads into its tables and counts the
-  bands, and retires with it), the refit pass's brief (`briefs/refit_pass.md`: the resource model Ryan set on 9 November, the formation pass folded into it), the locked pieces' footing (`locked_pieces_proposal.md`: Ryan's direction of 10 November, glue kept locked and a bought level that lifts the whole machine, waiting on his marks), the bosses' and elites' slate (`bosses_proposal.md`), the heroes'
+  pass (`economy_pass.md`), the formation pass (`formation_proposal.md`: its grids landed in `content/factions.json` on
+  10 November, re-cut to the roles, and its tool retired with them; kept for the bosses' stat
+  blocks, its section 6, and the flankers' slate and bench, its section 13), the refit pass's brief (`briefs/refit_pass.md`: the resource model Ryan set on 9 November, the formation pass folded into it), the locked pieces' footing (`locked_pieces_proposal.md`: Ryan's direction of 10 November, glue kept locked and a bought level that lifts the whole machine, waiting on his marks), the bosses' and elites' slate (`bosses_proposal.md`), the heroes'
   pass beyond Final Fantasy (`heroes_proposal.md`), the mechanics audit (`mechanics_audit.md`),
   the skirmish code audit (`skirmish_audit.md`: exceptions, duplicates and dead code, its
   questions and its order of work) and the roster analysis (`roster_analysis.md`, published as a page by
@@ -224,6 +230,7 @@ perl -e 'alarm 600; exec @ARGV' godot --headless --path . --import
 
 # run the test suite (about four minutes)
 perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s tests/run_tests.gd
+perl -e 'alarm 400; exec @ARGV' godot --headless --path . -s tests/run_tests.gd -- loot rig   # only the files whose names hold one of those words, for a quick look while working
 
 # run the harness: a battle, a skirmish, a saved battle and the quick campaign
 godot --path .
@@ -231,6 +238,9 @@ godot --path .
 # the hangar page: the codex, the content editor, the names, the designs and the renders in one artifact
 python3 tools/hangar_data.py        # writes docs/hangar/pins.json and build/hangar/designs.json, checks the renders manifest, prints the files map
 python3 tools/hangar_designs.py --check   # every brief's hangar header, alone
+python3 tools/hangar_text.py              # the Text tab's inventory into build/hangar/text.json, and its counts: every shown text by kind and by who wrote it (--check: every string key in content classified, the ledger sound)
+# after Ryan writes on the Text tab: save the `text` collection with ArtifactData's list (out_dir build/hangar/text_inbox), then
+python3 tools/hangar_text.py --fold build/hangar/text_inbox --dry   # what it would change; without --dry it writes his texts into content/*.json where they stand, his marks into docs/hangar/text.json and docs/voice.md, and prints his notes and the batch that clears what landed
 # a design session's first step: save the `designs` collection with ArtifactData's list (out_dir build/hangar/inbox), then
 python3 tools/hangar_designs.py --fold build/hangar/inbox --dry   # what it would fold; without --dry it writes the briefs and prints the batch that clears them
 # then publish tools/hangar.html to https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH with that map (a render round: pictures into
@@ -296,16 +306,14 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # tier's chassis for its compositions: the formation pass, 9 November), and --tiers 1,2, --sizes
 # patrol,formation, --domains meadow,waste and --ids goblin_horde,gel_wall narrow the read. Each
 # cell carries greedy's hull lost, its rounds and its stalled fights beside the band.
-# --refit SPEC lays the refit pass's what-if over the run's content (sim/refit.gd; the brief
-# docs/briefs/refit_pass.md): "die" (every stock shield and vent swapped for a defensive basic, the
-# machines back in design unfielded), "regen=half" or "regen=N", "cooling=N", "heat1" (the basics
-# at heat one), "hotter=N" (every weapon N heat more, a read for the heat prices), or "all" for
-# the die, half the gauge and heat one (a part named after it takes its place: all,regen=2); with the die, "barrier=off" (no Barrier
-# among the basics: Armoured or a gun in its place), "barrier=cooldown" (it goes dark the round
-# after it is spent), "barrier=heatN" (it costs N heat) or "barrier=ward" (a Ward in its place),
-# and "vents=guns" (a vent's slot takes a gun, so a die holds a defensive basic only where a
-# shield stood: the audit's own deal; without it a vent's slot takes the basic the die lacks);
-# tools/campaign_run.gd takes it too.
+# --refit SPEC lays one of the refit pass's what-ifs over the run's content (sim/refit.gd; the brief
+# docs/briefs/refit_pass.md). The model itself is content since 10 November (no stock die holds a
+# shield or a vent, every chassis regains its own shield regen, the basics make heat), so what is
+# left are the numbers a read may still ask about: "regen=N" (a flat regen on every chassis in
+# place of its own) or "regen=half", "cooling=N" (an offset), "hotter=N" (every weapon N heat
+# more, a read for the heat prices), "barrier=cooldown" (the Barrier basic dark the round after
+# it is spent) or "barrier=heatN" (it costs N heat); comma-separated; tools/campaign_run.gd takes
+# it too.
 # --guard 0.05 is the aggressor's habit (a block, a Barrier, Armoured or a Ward, at a twentieth of
 # its worth to the bot, so it never rerolls for one and spends one only when its die is stuck
 # showing it): the hull the blocks keep and the rounds they cost are the gap between it and the
@@ -428,7 +436,8 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # first term its passive names opened, as a tap opens it), pair and pair_spread (a Gel's halves in its slot, and a
 # Spread held over them; RIFTGATE_FOES=gel:2,goblin:3), hold (the second die read, its readout; RIFTGATE_HOLD_ENTRY=<place>
 # picks the entry showing, with RIFTGATE_TEAM to choose the machine), mechhold and foehold (the first machine's
-# and the first foe's: gauges, chips, a foe's intent), confirm, lock, touch (the first die lit as its tap waits out the double-tap window), swaphome (a waiting Swap sent home by a tap on nothing; RIFTGATE_SHOT_FRAME=6 catches it in flight), repick (a foe whose machine falls first, a
+# and the first foe's: gauges, chips, a foe's intent), stores (every machine's own resource row part filled, under its heat bar:
+# RIFTGATE_TEAM=badger,nemesis,cassowary,swallowtail, then musk_ox, to judge the hopper's and the rage's segmented bars beside the Muster, the magazine and the shot count's pips), confirm, lock, touch (the first die lit as its tap waits out the double-tap window), swaphome (a waiting Swap sent home by a tap on nothing; RIFTGATE_SHOT_FRAME=6 catches it in flight), repick (a foe whose machine falls first, a
 # second arrow dashed to the machine it will strike; RIFTGATE_FOES=wolf:3), strike,
 # enemyturn (RIFTGATE_SHOT_FRAME=8 catches the acting foe lit), chips (every unit crowded with chips, the rows wrapping:
 # seven statuses on each machine, five on each foe), plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), foeheat (Burning, Flak and Shocked on the first three front foes, heat's red-orange beside each violet intent), blast and siphon (the Whip Scorpion's vent dragged over itself, every foe ringed with its blast; its Siphon dragged over a foe, the turned foes' arrows dashed; `RIFTGATE_TEAM=whip_scorpion,...`), rounds, logfull, killed, acquire, menu, settings, quit, keywords (the keywords list, as the menu's KEYWORDS opens it), colours and colourpick (a debug build's COLOURS page, and with the red's picker open), and the feed's
@@ -452,10 +461,16 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # carry (a carrier's route to a stop where its rider cannot land: NO
 # ROOM), hold, north, zoom, zoomlast,
 # flyer, attack (a fight set up beside a pack), caught (a hunter's catch), resolve (a turn
-# ended), contact and engage (the handover into a fight), codex, foecodex, menu, settings, tune, and
+# ended), contact and engage (the handover into a fight), codex, foecodex, menu, settings, trials (a debug build's TRIALS page), tune, and
 # bosscontact (the boss attacked: the reveal; RIFTGATE_REVEAL_T=<seconds> pins its frame), logfull (the battle log full screen), foe (a pack tapped: its whole way,
 # its later turns numbered; select shows the whole way of a hunter coming for the machine in hand), rift (the rift's end of
-# the field: the vortex and the boss at its size) and fracture (a Fracture announced: the band, the top bar's gauge flashing;
+# the field: the vortex and the boss at its size; RIFTGATE_BLEED_DEBUG=1 shows the scenery past the field under the painting),
+# tear (a peak of Rift Pressure: the seam crept and a tear open on its row, the map looking at it; RIFTGATE_PEAKS=<n> for more),
+# peak (a peak's cutscene playing: RIFTGATE_SHOT_FRAME picks the moment, in a cloud session the seam's sweep near 12 and the tear's burst near 26),
+# hunted (a hunter's lock declared: the map zoomed in on it under the HUNTED band, near frame 9),
+# hunter (a hunter a few hexes off the first machine: its chip with the machine's small picture, the machine's tag with its own),
+# elite (a Fracture's elite introduced as it arrives: the burst near frame 10, the band naming it near 14)
+# and fracture (a Fracture announced: the band, the top bar's gauge flashing;
 # the default frame catches the band at full).
 # RIFTGATE_SHOT_FRAME=<n> picks the capture frame, to catch an animation mid-flight.
 # RIFTGATE_FEED_DEBUG=1 (any run) fires the skirmish feed's analysis events every half
@@ -496,20 +511,23 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # ability's chip (Enrage on a foe, Sealed on a machine), to judge the look beside the buffs and debuffs.
 # RIFTGATE_MINE_DEBUG=1 (any skirmish) opens the fight with a Mine of 3 (Burn 1, Shock) on every foe,
 # so any kill shows its blast land round the slot, to judge the Mine's chip and blast running.
-# RIFTGATE_REFIT=all (any run; or a part of the spec tools/balance.gd's --refit takes) plays the
-# refit pass's model as a trial (docs/briefs/refit_pass.md; sim/refit.gd): no shield or vent on a
-# stock die (a Barrier or an Armoured piece in its place), a shield regen of half the gauge a round,
-# the basics at heat one, and the four machines back in design left out of every picker;
-# RIFTGATE_REFIT=all,vents=guns is the audit's own deal (a Barrier only where a Halo stood, a
-# gun in every vent's slot), all,barrier=cooldown rests the Barrier basic a round after it is
-# spent, all,barrier=off leaves none among the basics (an Armoured piece or a gun in its place),
-# and all,barrier=ward puts a Ward in its place (a breach lands on the shield the regen refills).
-# On the phone a debug build's SETTINGS has REFIT TRIAL (OFF, MODEL, EVERY, RESTS, NONE: the
-# model with its Barrier basic where a Halo stood, on every die, on every die and resting, or on
-# none) and REFIT REGEN under it (0, 1, 2, 3, HALF: what every shield regains a round while a
-# trial is on, two the placeholder since Ryan's first read of 10 November; on the desk name it
-# after the spec, RIFTGATE_REFIT=all,vents=guns,regen=2): pick, close the app, open it, and start
-# a new battle or run, since a saved one keeps the dice it was saved with.
+# RIFTGATE_REFIT=regen=0 (any run; any spec tools/balance.gd's --refit takes) lays a what-if over
+# the refit pass's model, which is content since 10 November: a flat shield regen in place of
+# each chassis's own, a cooling offset, hotter weapons, a price on the Barrier basic.
+# On the phone a debug build's SETTINGS → TRIALS has SHIELD REGEN (BUILT, 0, 1, 2, 3: each
+# chassis its own number, or a flat one on all): pick, close the app, open it, and start a new
+# battle or run, since a saved one keeps the numbers it was saved with.
+# RIFTGATE_FIELD_DEPTH=14 and RIFTGATE_OPENING=1 (any battle) try a deeper field and a farther
+# opening (Ryan, 10 November: "I think the map is a bit too shallow"): the rows from the rift to
+# the wall, 10 to 24 and 12 the game's, and how many more of their own moves from the wall the
+# first packs stand, 0 to 3. The opening is measured from the wall, so depth alone leaves the
+# first strike where it was and the opening's distance is what buys the turns; the seam's first
+# row follows the depth by its own rule. RIFTGATE_FODDER=50 (any battle) fills the Rupture meter
+# by that share, in hundredths, of a kill's menace when its pack came as no elite (his "If
+# fracture rewards were a little lower for fodder"; salvage and Anathema read the whole tally
+# as before). On the phone a debug build's SETTINGS → TRIALS has FIELD DEPTH (12, 14, 16),
+# OPENING (+0, +1, +2) and FODDER (FULL, 3/4, HALF), read as the harness or the quick run starts
+# a battle, with no relaunch; a saved battle keeps the field it was saved with.
 # RIFTGATE_HALO=off|all (any run) draws no halo round the lit parts, or one round every lit part, to compare
 # with the vetted set (31 October).
 # RIFTGATE_PLUME=off (any run) draws a booster's ring in place of its plume (the Stingray's, on
@@ -575,6 +593,7 @@ tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate warrior --chibi
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py prompts                                   # every foe's prompt into tools/foeforge/prompts.md, no model needed (runs anywhere)
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate revenant --n 4
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut tools/foeforge/out/revenant/revenant_3.png revenant
+python3 tools/foeforge/forge.py boss                                                              # the boss's picture on the map (art/foes/<id>_boss.png, 48 pixels) for every domain's bosses and bench, each from its combat sprite; ids after it for some; Pillow and numpy alone, on any machine, then the import (a cut of a boss writes its own; after a placeholder or a rename, run it)
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py rift --n 4                                   # the rift's vortex, the same way
 tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut-rift tools/foeforge/out/rift/rift_3.png  # three frames into art/terrain/rift.png
 
@@ -592,6 +611,10 @@ python3 tools/placeholder_art.py
 
 # the gate and wall are built the same way
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build gate wall
+# the field's caches: a model a kind for solid ground, and each kind's flat token for a hex the painting has taken; then re-import
+tools/spriter/.venv/bin/python tools/lowforge/forge.py build cache_derelict cache_carcass cache_relic
+tools/spriter/.venv/bin/python tools/loot_tokens.py [sheet.png]
+RIFTGATE_CACHE_DEBUG=1 godot --path .          # a new battle lies one cache of every kind beside the team and one of every kind by the rift (the screenshot poses `caches` and `cachesflat`)
 # joints are code too: `with b.joint("shoulder_l", pivot, axis="pitch", limits=(-12, 40)):` in models_low.py hangs a limb under a
 # joint_<name> Empty, nested where it rides another; `b.act(name, seconds, {joint: [(t, degrees), ...]}, body=, glow=)` at the end of a
 # machine writes its idle acts to art/models/<id>.rig.json with the joints. Judge them running:

@@ -46,6 +46,18 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   (a foe action, a passive, a component or a vocabulary term): it is kept, not shown, not run, and not validated
   against the engine, so content can be written ahead of code. Tests never assert on a
   specific entry's passive; they use synthetic passives.
+- Shown text is Ryan's to write (9 November: "I need to get a strong foothold on content I've
+  written myself, so that you can do a better job of mimicking my intended writing style"). The
+  hangar's Text tab lists every text the player reads (`tools/hangar_text.py` is the one
+  definition of what is shown, where and whether any screen draws it); `docs/hangar/text.json`,
+  the ledger, says which he signed as his own and which drafts he passed, and a text it does
+  not name is a session's draft. Before drafting any shown text, read `docs/voice.md` (his own,
+  by kind and by voice), the kind you are writing and its maker's or domain's group first, and
+  write the draft to sit beside them. Never sign a text for him and never edit the ledger by
+  hand: the fold writes it from his marks. A signed text changes only when its rule does, as
+  little as the rule needs, and is named in the report (the page shows it to him as changed);
+  a rename moves the slot's ledger line with the id (`python3 tools/hangar_text.py --check`
+  says when one is left behind). A new key that holds shown text gets a slot there.
 - Kit words (decided 18 September): a **component** is one piece of kit and exactly one
   entry on the die; a **hardpoint** is a free slot (one `hp_<n>` pin on the model); a
   chassis's **fixed** components are built in and use no hardpoint; an empty hardpoint is a
@@ -55,9 +67,12 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   none; Ryan, 26 October), so text never says "damaging weapon": a trigger is damaging a foe
   with a weapon, hitting a foe with a weapon, or hitting a foe with a weapon or equipment.
   The engine's `Kind.ATTACK` is a weapon and a debuff alike (`is_weapon()`, `is_attack()`).
-  The refit pass's direction (Ryan, 9 November; `docs/briefs/refit_pass.md`): shields and vents
-  leave the die, so a component becomes a weapon or equipment, the shield innate and
-  regenerating, cooling passive; the engine still runs the four kinds until that pass lands.
+  The refit pass's model (Ryan, 9 November; landed in content 10 November on his "start with
+  the minimal swaps"; `docs/briefs/refit_pass.md`): shields and vents have left the die, so a
+  dealt component is a weapon or equipment, the shield is the chassis's and regenerates (its
+  `shield_regen`, one to three), cooling is the chassis's; the slottable shields and vents are
+  planned drafts nothing deals, four machines are back in design (`"status": "planned"` on the
+  chassis), and the engine still runs the four kinds for the locked pieces that are one.
 - `sim/` never touches scenes. Everything there runs headless with a seeded RNG.
 - Numbers in content are placeholders, not balance.
 - Content ideas (makers, chassis, components, foes, names, lore) are proposed in conversation first;
@@ -195,6 +210,10 @@ Sessions have died mid-flight before. To keep the next one cheap to start:
   rows and content. Never the same item in two files, and no row carries a conversation: a long
   Open row is a paragraph and a pointer to its proposal or brief.
 - Design canvases under `docs/canvas/` are not watched. Ryan says when one changes.
+- Ryan's writing on the hangar's Text tab waits in the page's `text` collection. A session that
+  touches shown text, or republishes the hangar, folds it in first (`tools/hangar_text.py
+  --fold`, the README's commands): his words into content, his marks into the ledger, his notes
+  answered in the work.
 - The quick campaign is an experiment, not a feature (Ryan, 28 October): no decision reads its
   runs and no balance call cites them, until he says that changes. It always follows the main
   content and code, one code tree for both modes (Ryan, 7 November: "The experiment portion is

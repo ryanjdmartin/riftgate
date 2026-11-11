@@ -6,12 +6,14 @@ The battle's resource model remade from Ryan's play of Phase 2 and the formation
 November: shields and vents leave the die, a component is a weapon or equipment, the shield is
 innate and regenerates, cooling is passive, the hold is the heat decision, component destruction
 is off, and the formation pass folds in, its grids re-cut under the new model. The direction is
-his and set; the numbers, the reads and the content are this pass's work, and no content moves
-before the reads say where the numbers sit and he has played them: the injury rule is off in the
-game, the model is a what-if for the runners and a trial in a debug build, and its first reads
-are in (section 5). Read `docs/briefs/README.md`'s
-How a session runs first; the formation pass's proposal (`docs/formation_proposal.md`) and its
-reads (`docs/measurements.md`, 9 November) are the records this stands on.
+his and set. On 10 November the model landed in content in its least form (section 5: the
+minimal swaps, a regen of one to three by chassis, the basics warm) and the formation pass with
+it (section 9: the roles, the Marsh's line, a flanker line a domain, the re-cut grids). What is
+left is this pass's too and waits on his play of what landed: the foes' numbers, the re-deal
+proper and the component pass, heat's prices, the four machines' sessions, what prices a round.
+Read `docs/briefs/README.md`'s How a session runs first; the formation pass's proposal
+(`docs/formation_proposal.md`) and the reads (`docs/measurements.md`, 9 and 10 November) are
+the records this stands on.
 
 ## 1. Where it stands
 
@@ -83,6 +85,41 @@ reads (`docs/measurements.md`, 9 November) are the records this stands on.
   shouldn't be stackable. The stingray stacks it due to its passive." So half the gauge is far
   too much, the deal cannot be judged under it, the heat prices are as low as the reads said,
   and the Barrier is one stack whoever grants it (built).
+- **His second read, 10 November** (the MODEL deal at a regen of two): "Even with regen 2, I
+  don't find myself feeling like I need to use defensive tools. Kill-to-prevent-damage seems to
+  be back on the table, which is good, but its now the best choice every time. I feel like even
+  with zero regen I would be fine. Enemy fodder damage might just be too low, and player damage
+  a bit high, especially on the locked pieces - a known issue, obviously, and one that I've been
+  discussing in the Chassis Inventory session." Of the goblins: "part of it is the Goblins
+  getting damage from their peers. Kill one goblin, suddenly the whole formation falls apart. I
+  think their role needs to be shifted: A straight attack, and a block of some kind, so they're
+  a true frontliner and not a lame not-really-damage-threat. Probably a good lesson there." So
+  on today's content the model has swung past its mark: killing first is right every round, no
+  block is wanted, and the regen's size is not what decides it. The player's damage is the
+  Chassis Inventory session's; the fodder's is this pass's with the roles (section 4, the
+  goblin's lesson). The same play's map points (every machine one more move, built; the field's
+  depth, the opening and the Fracture's worth of fodder, each a dial on the phone) are the
+  status's and the to-do's.
+- **The goblin's line, the Marsh's, and back to the pass** (10 November, later): of the goblin's
+  block, "I think the earlier goblin can have shield wall as well"; of the Captain, "Put the
+  captain in front, yeah"; of a block that walls the lights, "don't worry about walling the
+  lights too much because the gobs are part of a threat-3 formation, right? theoretically there
+  should be at least one heavier unit in there to help out"; of the Lich, "its no longer a
+  revenant. It's its own thing. The tier 3 revenant shouldnt be a lich, it should be, well, a
+  tier 3 revenant. And a lich its own backliner to pair with it." And: "We've gotten off on a
+  tangent from the main issue, which is the actual formation pass. What do we need to actually
+  execute on it?" Section 9 is the answer.
+- **Land it** (10 November, on that answer): "Revenant 3 name is whatever you think. Make
+  revenant stab flat, or flat with a Marsh twist, if a simple one exists. Duelists are as you
+  see fit, might as well jam them in here as well as part of the pass." "The re-deal with regen
+  and heat, despite my tests showing it easy, seems like the correct way to go. I would start
+  with regen 1-3, depending on the machine, its role and maker (i.e. a smaller shield that
+  regens fast, a fatter shield that regens slow, some variation of the middle). I think start
+  with the minimal swaps (The "Model" setting) and we'll go up from there." "Make sure main is
+  in here first before you begin. I'd like you to guesstimate some elite and boss tweaks as
+  well, but leave out rising threat for now." So the model is content in its least form
+  (section 5), the formation pass takes the Marsh's line and the duelists with it (section 9),
+  the elites and bosses get a first guess, and the rising threat waits.
 - **The refit's direction, before the model was reached**: "Enemy HP is probably too high, or
   player damage is too low. I'd rather lower enemy HP slightly, and boost synergy pieces to
   increase damage instead of just raw numbers. However, I want to judge the new formations
@@ -146,11 +183,11 @@ reads (`docs/measurements.md`, 9 November) are the records this stands on.
 
 ## 4. What the formation pass hands in, and the roles
 
-The proposal stands as the grids' first cut (`docs/formation_proposal.md`; its grids as code in
-`tools/formation_proposal.py`, which writes them to a scratch worktree for the reads). Two things
-re-cut it: the model (the pushers measured by hull lost at three under the regen, the hunters,
-elites and bosses keeping survival), and his point on the makeups, which changes who stands in a
-flanker.
+The pass landed in content on 10 November (section 9 says what, in its order): the proposal's
+grids (`docs/formation_proposal.md`) re-cut by two things, the model (the pushers measured by
+hull lost at three under the regen, the hunters, elites and bosses keeping survival) and his
+point on the makeups, which changed who stands in a flanker. What follows is the reasoning it
+was built on, each part saying what is built.
 
 **Ryan, 9 November, on the makeups**, asked whether the units of pushers, flankers and hunters
 are exclusive: "My point about the formation makeups is twofold: 1) player expectation. If a
@@ -166,44 +203,153 @@ of generally-threatening or HP sponges to fill out ranks. One spooky flanker rev
 is a more interesting duel for a Skua or Kite than the Skua or Kite just mowing down less goblins
 than they would if they were grouped."
 
-So, as a direction (the bible's Foe roles row, open until he marks the form):
+So (the bible's Foe roles row, Decided; built 10 November as `role` on a foe and the
+validator's holds on a composition):
 
 - **A rank-and-file unit is designed for a battlefield role**, a pusher's, a flanker's or a
-  hunter's, and tuned for the fight that role meets: a pusher's for three machines, its identity
-  sharp in numbers (the goblin's add, a caster behind a wall); a flanker's for one machine, a
+  hunter's, and tuned for the fight that role meets: a pusher's for three machines, a front
+  that holds while its back rank works (a caster behind a wall), its threat never its head count
+  alone (the goblin's lesson, below); a flanker's for one machine, a
   duel; a hunter's for the catch, a sequence a lone machine can play against. A unit crossing
   into another role's pack is deliberate, and its composition says why (beside its question,
   under `design`), so a filler is a thing the author has to defend.
 - **A hunter is its line and what keeps up with it.** The engine already walks a pack at its
-  slowest member's pace, so the validator can hold it: every member of a hunting composition
-  moves at its lead's pace and flies if it does.
-- **A flanker is a duel, not a small pusher.** The proposal's patrols rated one are cut-down
+  slowest member's pace, and the validator holds it: a hunting composition is led by a hunter's
+  unit, and every member moves at its lead's pace at least and flies if it does.
+- **A flanker is a duel, not a small pusher.** The proposal's patrols rated one were cut-down
   pushers (three goblins, two knives and a screamer, three needlers), which is what his point
-  refuses; they go, and each domain's flankers are written round units made for a duel.
+  refuses; they went, and each domain's flankers are a line made for a duel (the roster below).
 
-**What the proposal's grids keep and lose under it**: the formations stand (pushers of pusher
-units), less the antlions in the Waste's four (a hunting line in a pusher: the antlion pit, the
-pit ambush, the pit wall and the queen's court are re-cut or defended); the hunters stand (each
-its own line: the wolves, the antlions, the queen with her pits); every patrol rated one is
-rewritten; the patrols the reads rated two that are no hunters (the knight's retinue, the lizard
-trio, the wyverns' perch and the rest) are rewritten with them: a two stays legal for a heavy
-patrol by his word of 6 November, and whether a flanker is ever a fight for two is open with the
-roles.
+**The goblin's lesson** (Ryan, 10 November, his second read of the trial): "part of it is the
+Goblins getting damage from their peers. Kill one goblin, suddenly the whole formation falls
+apart. I think their role needs to be shifted: A straight attack, and a block of some kind, so
+they're a true frontliner and not a lame not-really-damage-threat. Probably a good lesson
+there." A blow that counts its peers puts the whole threat at the front of the fight: four
+goblins deal 20 a round, then 12, 6 and 2 as they fall, so the first kill takes two fifths of
+the formation's damage, killing first is right every round and no block is ever wanted; and
+the same unit is lame wherever it stands in ones and twos (his point of 9 November, above). So
+a pusher's front rank is a straight blow and a block, and a threat that is the pack's head count
+is no identity for a pusher. What the engine has for the block and what a probe says of each
+form is `docs/measurements.md`, 10 November: a block that is an action costs the goblin a
+third of its blows, so at any attack it deals less than a goblin with none; armour that is
+always there walls the lights; and at three hit points no form matters to three machines, who
+clear the formation in two and a half rounds. His call on the form, hearing that: "I think the
+earlier goblin can have shield wall as well." Built 10 November: the tier-one Goblin stabs
+straight for 4 and raises the Guard's Shield Wall one action in three (armour up one until its
+next action). The 4 is a placeholder: with the wall it costs two lights a little less than the
+old knife did (9% of their hull against 12% under the trial's model, 22% against 30% on today's
+dice) and holds as the goblins fall, where a 5 costs them as much or more (11% and 40%) and
+out-hit the Guard as content had it. The Guard and the Captain followed on his next call
+(below), and the Revenant's claw, which counted its peers the same way, is flat on his word of
+the same day ("Make revenant stab flat, or flat with a Marsh twist, if a simple one exists").
 
-**The roster by role today**, tier one's lines (the recolours follow their bases):
+**The recolours and the archetype** (Ryan, 10 November): "If the captain is the back rank at
+tier 3, what stands in the front rank? I didn't think the recolours changed like, the archetype
+of the foes?" By his rule they do not: a recolour is "a repaint, a name and a bigger number,
+with a twist where one is marked" (the bible's recolour row, 28 October), the twist one more
+move. Content as it stands since his calls of that day, every line, tier one to three:
+
+| Line | Tier two's rung | Tier three's rung | Its rank and role kept |
+|---|---|---|---|
+| Goblin, Goblin Guard, Goblin Captain | numbers | adds a Warcry | yes, since his call (the Captain stood in the back) |
+| Revenant, Wight, Draugr | adds Grave Mend | a faster mend | yes, since his call (the Lich topped the line, a back-rank caster with no Claw) |
+| Wolf, Warg, Alpha Warg | numbers | numbers, a louder Howl | yes |
+| Gel, Bubble Gel, Metal Gel | armour 1 | armour 3 on fewer hit points | yes |
+| Mandragora, Mandrake, Alraune | numbers | Shriek in Scream's place | yes, a move swapped |
+| Needler, Barbed Needler, Great Needler | Corrupt on its needles | adds Thousand Needles | yes |
+| Antlion, Pit Antlion, Antlion Queen | a Barrier for its brace, a breach | adds Devour | yes |
+| Cockatrice, Basilisk, Gorgon | numbers | Corrupt on its peck | yes |
+| Ghost, Spectre, Wraith | adds Hallow | Hallow, Corrupt on its bolt | yes |
+| Zombie Knight, Death Knight, Dread Knight | adds Grave Guard | numbers, no Grave Guard | yes |
+| Bomb, Grenade, Balloon | its blast reaches every machine | a countdown and a scorch on it | yes |
+| Salamander, Fire Lizard, Magma Lizard | more scorch | adds Stoke the Pack | yes |
+| Drake, Wyvern, Red Dragon | adds Dive | Crush and Flame Breath, Stoke out by his trim | yes, a move swapped |
+| Treant, Dusk Treant, Frost Treant | adds Root Storm | numbers | yes |
+| Sandworm, Night Sandworm, Salt Sandworm | adds Quake | numbers | yes |
+| Magma, Basalt and Sulphur Elemental | adds Stoke the Forge | numbers | yes |
+| Barrow, Grave and Charnel Giant | adds Rise Again | numbers | yes |
+| Whisker Cat, Sabre Cat, Storm Cat | numbers | numbers | yes |
+| Roc, Night Roc, Great Roc | numbers | numbers | yes |
+| Dullahan, Grave Dullahan, Charnel Dullahan | numbers | numbers | yes |
+| Cerberus, Basalt Cerberus, Sulphur Cerberus | numbers | numbers | yes |
+
+When he asked, fifteen of seventeen lines kept their rank and role, and the two that did not
+were the two whose blow counted its peers, each topped by a commander at the back. Both came
+with the ladder's first build (28 October, "exactly as the brief gives them ... as
+placeholders"), a session's draft and never his mark, so the front at tier three was tier two's
+unit at tier two's numbers (Goblin Guards before the Captains, Wights before the Lich). His
+calls, the same day, are both built, and every line now keeps its rank and role up its ladder.
+
+The Captain goes in front ("Put the captain in front, yeah"): the Goblin Captain is the
+tier-three goblin, a straight knife of 6, the Shield Wall and his Warcry the third move, and the
+Goblin Guard is on the same knife at 5, each number a placeholder a step over the rung under it.
+The validator holds a foe to its rank's cells, so every grid that fields him seats him in a
+front cell (the captain's warband is two Captains and two Guards before two Alraunes).
+
+The Lich is its own backliner and the revenant's line has a tier-three rung of its own (his
+words in section 2): the Draugr, 7 hit points, a claw of 5 and the Wight's Grave Mend at three a
+round, the name Claude's on his "Revenant 3 name is whatever you think" and his to change in the
+name pass. The Lich stands behind it in the Lich's court and the draugr host. The Revenant's and
+the Wight's claws are flat, 3 and 4. No Marsh twist went on the claw: every simple one is
+another unit's already (the rise is the knights' and the Dullahan's, the mend the Wight's), so
+the Marsh's return stays where it lives, the ghosts' raising behind the line and the Wight's
+mend above it. One consequence, named, the goblin's over again: a foe's menace reads its blow
+alone, and the flat claw is a point more than the old one was without its peers, so a
+revenant's kill fills more of the meter and pays more salvage, and the Marsh's thresholds rise
+with its field.
+
+**The yardstick for a pusher** (Ryan, the same message): "don't worry about walling the lights
+too much because the gobs are part of a threat-3 formation, right? theoretically there should
+be at least one heavier unit in there to help out." Right by content: no patrol fields a goblin
+at any tier, only formations rated three and elites and escorts rated four. So a formation is
+read against three machines with a heavier one among them (the proposal's default four and its
+tier's fours, each a heavy first), and what it costs a squad of lights is no test of it; the
+light read is the flankers', the rating of one. It answers the proposal's thirteenth question,
+and it puts armour that is always there back on the table for a pusher's front if he wants the
+line to hold longer (it costs three lights a twentieth of their hull and a squad with a heavy
+nothing: `docs/measurements.md`); the goblins keep the Shield Wall he picked until he says.
+
+**What the proposal's grids kept and lost under it** (landed 10 November): the formations stand
+(pushers of pusher units), the pruned set, less the antlions in the Waste's four (a hunting line
+in a pusher: the antlion pit, the pit ambush, the pit wall and the queen's court are gone, the
+djinns' mirage in their place); the hunters stand, one pack a domain and tier where its rank and
+file hunt (the wolves, the antlions, the queen with her pits), each a heavy patrol rated two;
+every patrol rated one is a lone duelist; and the patrols the reads rated two that were no
+hunters (the knight's retinue, the lizard trio, the wyverns' perch and the rest) are gone with
+the cut-down pushers, a pair of duelists the heavy patrol in their place: a two stays legal for
+a heavy patrol by his word of 6 November.
+
+**The roster by role**, tier one's lines (the recolours follow their bases):
 
 | Domain | Pushers | Hunters | Flankers |
 |---|---|---|---|
-| The Meadow | the Goblin, the Mandragora, the Gel, the Treant | the Dire Wolf | none |
-| The Waste | the Needler, the Cockatrice, the Sandworm (the Djinn from tier two) | the Antlion | none |
-| The Marsh | the Revenant, the Ghost, the Barrow Giant | none in the ranks (its elites) | the Zombie Knight, if it is re-tuned for one machine and leaves the formations |
-| The Peak | the Salamander, the Drake, the Magma Elemental | none in the ranks (its elites) | the Bomb, if a lone one is the duel (kill it whole, or eat the burst) |
+| The Meadow | the Goblin, the Mandragora, the Gel, the Treant | the Dire Wolf | the Whisker Cat |
+| The Waste | the Needler, the Cockatrice, the Sandworm (the Djinn from tier two) | the Antlion | the Roc |
+| The Marsh | the Revenant, the Ghost, the Zombie Knight, the Barrow Giant | none in the ranks (its elites) | the Dullahan |
+| The Peak | the Salamander, the Drake, the Bomb, the Magma Elemental | none in the ranks (its elites) | Cerberus |
 
-So the Meadow and the Waste want a flanker line each, and the Marsh's and the Peak's are a
-re-tuning of a unit that then leaves the pushers, or new units too. New units are content ideas,
-proposed in chat first; his own bench from the elites session holds candidates (the Coeurl, the
-Dullahan, the Banshee, the Sphinx, the Roc, Anzû, the Iron Giant, Cerberus, the Drowned King:
-"what misses the cut may be rank and file").
+**The flankers, built** (Ryan, 10 November: "Duelists are as you see fit, might as well jam them
+in here as well as part of the pass"). A line a domain, each a name from his own bench of the
+elites session ("what misses the cut may be rank and file") and each one sharp question from
+moves the engine ran already, so no new rule came with them:
+
+| Line | Its question | Its moves |
+|---|---|---|
+| The Whisker Cat (the Sabre Cat, the Storm Cat) | what is your die showing when the whiskers land? | a claw, or a lash for half that switches off the entry the die shows (Disable) |
+| The Roc (the Night Roc, the Great Roc) | can you stop one blow, or finish it first? | talons, or a climb and a stoop a round on for half again, through the shield |
+| The Dullahan (the Grave and the Charnel Dullahan) | kill it fast, or kill it twice? | a blade, and a rise it readies once it is hurt, once a fight |
+| Cerberus (the Basalt and the Sulphur Cerberus) | which is coming, three bites or the maul? | three bites at once, or one maul that scorches |
+
+Each moves three (it keeps a light's pace on the flank), stands alone as a patrol rated one and
+as a pair rated two on the ramp's later steps (the second line of the "duels repeat" hole
+below). The rungs' names (Sabre, Storm, Night, Great, Grave, Charnel, Basalt, Sulphur) follow
+the ladders beside them and are Claude's drafts, like the sprites (`tools/placeholder_art.py`)
+and every number; the shown text is drafted and unsigned (the hangar's Text tab). Read as duels
+(`docs/measurements.md`, 10 November): one duelist is a fight every machine of its tier wins,
+costing almost nothing but where its question bites (the Roc's stoop a quarter of the Skua's
+hull, Cerberus a third of a thin gauge's); a pair is a wall for the slow lights alone, which is
+why it is rated two. The Zombie Knight and the Bomb stay pushers, in the formations they were
+written for.
 
 **Holes raised, each with what settles it**:
 
@@ -226,73 +372,82 @@ Dullahan, the Banshee, the Sphinx, the Roc, Anzû, the Iron Giant, Cerberus, the
   walls the Skua whatever else the unit does. A heavy sent at it wins slowly: mismatch costs
   time.
 - The duels repeat: the flanks at the start and every tear send flankers, so a battle meets four
-  to eight of them from one or two lines a domain and tier. A second line a domain, or a line's
-  duelist alone and as a pair, is the room; the guest's flankers help from tier two.
+  to eight of them from one line a domain and tier, alone and as a pair (built). A second line a
+  domain is the room if his play finds them stale; the guest's flankers help from tier two.
 - The words: content calls the small composition a patrol and the player's glossary says Patrol;
   his word is flanker. If the role is the word, the schema's sizes follow (a flanker, a pusher,
   a hunter, an elite, an escort), an engine rename with the pass's content.
 - The role is read by the validator, so it is a field on the foe, not a line under `design`:
-  `role`, a pusher's unless it says otherwise. Shown or internal is his (the Foe roles row).
+  `role`, a pusher's unless it says otherwise (built). Shown or internal is his (the Foe roles
+  row).
+- A patrol rated one that is no duel: the validator refuses a pusher in a patrol that pushes
+  unless the composition gives its reason (`design.crossing`), and none does today.
 
-The twelve prunings, the gates, the bosses' stat blocks (its section 6) and the escalation check
-(its hole 8) stand as the proposal has them until the re-read. Nothing of it lands before the
-model's numbers.
+The bosses' stat blocks (the proposal's section 6) are a session of their own, and the
+escalation check (its hole 8) is the rising threat's, set aside on his word.
 
-## 5. The what-if, built, and what its first reads say
+## 5. The model landed, the what-ifs left, and what its first reads say
 
-Built 9 November, none of it content (`sim/refit.gd`, `tests/test_refit.gd`; the README has every
-option):
+**Landed in content, 10 November**, in its least form, on his word (section 2): the trial's MODEL
+deal written into `content/`, with the regen by chassis.
 
+- **The stock dice.** On every chassis a shield's slot holds a defensive basic and a vent's a
+  Twin Autoguns, 37 slots: the Halo Projector (a Barrier, on itself or an ally) where a shield
+  for anyone stood (the Baboon, the Prairie Dog, the Stingray, the Cassowary, the Cottonmouth,
+  the Puffin, and the Nemesis and the Ammit where the Oblation Mantle stood), the Shoring Jack
+  (Armoured 2 for the round) where a shield for itself stood (the Honey Badger, the Clydesdale,
+  the Wild Boar, the Buzzard, the Funnel-web, the Musk Ox, the Skua, the Storm Petrel, and the
+  Polar Bear and the Swallowtail), a Twin Autoguns in each of the nineteen vents' slots. The
+  gun is a placeholder until the re-deal proper says what each die wants there.
+- **The basics** are six: the four guns, each making heat (the Twin Autoguns and the Rivet Gun
+  now one), the Halo Projector (the Halo Shield re-made as the Barrier basic, its id following
+  its name) and the Shoring Jack (down to tier zero).
+- **The shield's regen** by chassis, one to three (his words: "a smaller shield that regens
+  fast, a fatter shield that regens slow, some variation of the middle"):
+
+  | Regen a round | Gauge | Chassis |
+  |---|---|---|
+  | 3 | 8 | the Honey Badger, the Polar Bear, the Wild Boar, the Puffin, the Cassowary, the Cottonmouth, the Whip Scorpion |
+  | 2 | 10 to 12 | the Clydesdale, the Baboon, the Prairie Dog, the Dingo, the Ammit, the Stingray, the Funnel-web, the Musk Ox, the Skua, the Needletail |
+  | 1 | 14 to 16 | the Kite, the Swallowtail, the Lammergeier, the Storm Petrel, the Giant Petrel |
+  | 1, by role | 6 and 12 | the Nemesis (its rage reads hull, and its plate is its answer), the Buzzard (it makes shield from its own heat) |
+
+- **Cooling**: every dealt chassis cools one at least (the Stingray one, from nought).
+- **The pieces with no entry left**: the ten slottable shields and vents are planned drafts
+  nothing deals (no blueprint, no loot, no basic, no pick in the harness), each with its fate
+  from section 6 under its `design`: the Canopy, the Coolant Jacket, the Bleed Valve and the
+  Radiator Sail retired; the Laminar Deflector, the Corona Shield and the Phased Sublimator to
+  be made equipment by the component pass (the engine's Cleanse rides only a shield or a vent
+  today); the Wake Diffuser, the Oblation Mantle and the Entropy Condenser back in design.
+- **The four machines back in design** are undealt by a status on their own entries
+  (`ContentDB.chassis_runnable`): the tender, the harness and the runners skip them, and their
+  kits still build, so their sessions and their tests have them.
 - **The injury rule is off in the game** (`Skirmish.injuries`, false): no break in a fight and
   no destruction after it; `--injury on|N` reads a run with it back.
-- **`--refit SPEC`** on both runners lays the model over the loaded content for a run and names
-  what it did in the report's head: `die` (every stock shield and vent swapped in its own slot
-  for a defensive basic, a shield spent on its own machine for the Armoured piece and any other
-  for the Barrier piece, a vent for whichever the die lacks, else a tier-zero gun; section 6's
-  four machines undealt; the Stingray cooling one), `vents=guns` (a vent's slot takes a gun
-  instead, so a die holds a defensive basic only where a shield stood: the audit's own deal and
-  the stock re-deal's placeholder), `regen=half|N`, `cooling=N`, `heat1` (the basics at heat
-  one), `barrier=off|cooldown|heatN|ward` (the Barrier basic's rule: none, dark the round after
-  it is spent, N heat a spend, or a Ward in its place), and `all` for the die, half the gauge
-  and heat one. The tier-one Blast Door, Shoring Jack and Decoherence Veil stand in for the
-  pieces section 6 names.
-- **`--guard W`**: the aggressor's habit for the fight bot (`Policy.guard_weight`: a block at a
-  share of its worth; at 0.05 it never rerolls for one and spends one only when its die is stuck
-  showing it), so the hull the blocks keep and the rounds they cost are read as its gap from the
-  rung, which takes every block worth making.
-- **The trial in the game**: `RIFTGATE_REFIT=<spec>` on the desk, and on the phone a debug
-  build's SETTINGS → REFIT TRIAL (OFF, MODEL, EVERY, RESTS, NONE: the model with its Barrier
-  basic where a Halo stood, on every die, on every die and resting a round, or on none) and
-  REFIT REGEN beside it (0, 1, 2, 3, HALF: what every shield regains a round, two the
-  placeholder since his first read), read at the next launch and judged on a new battle or run.
-- `hotter=N` on the what-if: every weapon makes N more heat, a read for the heat prices.
-- The Barrier is one stack whoever grants it (a status may be single: `Effects.is_single`), so
-  the Stingray's Exothermic Suite no longer counts it to two; it only ever took one blow.
-- The curve read's cells carry greedy's rounds and its stalled fights beside the band and the
-  hull lost.
 
-Not built, so the trial plays without it (10 November, on his asking what is built):
+**The what-ifs left** (`sim/refit.gd`, `--refit SPEC` on both runners, `RIFTGATE_REFIT` in the
+game): `regen=N` or `regen=half` (a flat regen in place of each chassis's own), `cooling=N`,
+`hotter=N`, `barrier=cooldown|heatN` (a price on the Barrier basic). On the phone a debug
+build's SETTINGS → TRIALS has SHIELD REGEN (BUILT, 0, 1, 2, 3), read at the next launch, beside
+the field's dials. `--guard W` is the aggressor's habit for the fight bot
+(`Policy.guard_weight`). The Barrier is one stack whoever grants it (`Effects.is_single`).
 
-- **Section 6's content.** No component is retired, renamed or re-kinded: the eleven slottable
-  shield and vent pieces are still in content, four of them basics, so a refit by hand, a loot
-  drop and the quick campaign's hangar can still put one on a die. The tier-zero Shoring Jack
-  and the Halo Projector do not exist; the tier-one pieces stand in, on the stock dice only.
-- **The stock re-deal.** A vent's slot holds a Twin Autoguns as a placeholder (MODEL) or the
-  defensive basic the die lacks (EVERY).
-- **The numbers.** The regen is half the gauge on every chassis, no role or maker in it; cooling
-  is as it was but for the Stingray's one; no heat price moved but the two basics'; no foe's
-  number moved.
-- **The foes.** The formation proposal's grids; the bombs that no longer hunt (content's bomb,
-  grenade and balloon compositions still do); the roles and the flankers as duels; the rising
-  threat and its validator check. (The wall strike by the rating is built, 10 November, on
-  every pack as content has it.)
-- **The machines.** The four reworks; the two modules (the Skeleton's rule does nothing with the
-  injury off, the Conjugator never fires on a die with no shield); the lines on fielded machines
-  that name a shield or a vent (the Musk Ox's forge reads neither; the Storm Petrel's and the
-  Buzzard's shields run as written, cheaper under a regen).
+**Not landed yet** (each "we'll go up from there"):
+
+- **The re-deal proper.** What each die wants in a vent's old slot (a placeholder gun today),
+  and the fifth basic gun he wants, an Indirect one: a table in chat.
+- **The component pass.** The three pieces to be made equipment and the three back in design;
+  the Blast Door, a Barrier at tier one that must be more than the basic or retire; the two
+  modules whose rules stop firing (the Reinforced Skeleton, the Phase Conjugator).
+- **The numbers.** The heat prices on every other entry, with the cooling and the gauges (the
+  heat session's); the regen read again once the foes' numbers move.
+- **The four reworks**, and the lines on fielded machines that name a shield or a vent (the Musk
+  Ox's forge reads neither; the Storm Petrel's and the Buzzard's shields run as written,
+  cheaper under a regen).
 - **The engine and the words.** Shield and vent are still kinds, with their keywords, their
   vocabulary and the Overshield; shown text still names the injury (the keywords list) though
   the rule is off. The bot does not value the regen. The commander layer is a note.
+- **The rising threat** in every formation: set aside on his word.
 
 The first reads are `docs/measurements.md`'s (9 November, the refit pass's first reads), 30 seeds
 a cell and 40 runs a campaign, each a direction, in the bot's hands. What they say:
@@ -491,6 +646,12 @@ twentieth of the squad's hull at its rating, a flanker's a thirtieth or less, a 
 tenth, an elite's a quarter, the boss what is left); and the formation proposal's remaining leans,
 which his point on the makeups (section 4) now re-cuts for the flankers.
 
+Settled 10 November with the landing (section 5): the first item, how common the Barrier is
+("start with the minimal swaps (The "Model" setting) and we'll go up from there": a defensive
+basic only where a shield stood), and the third, the regen's size ("regen 1-3, depending on the
+machine, its role and maker"); the second, what prices a round, is set aside ("leave out rising
+threat for now"). The reads behind each stay below.
+
 Still his, the first five with what the first reads say (section 5), the fourth parked on his
 word:
 
@@ -539,9 +700,14 @@ word:
    every face, the basics included, with the cooling and the gauge).
 6. The four machines' sessions and their order (the Polar Bear first, since Minerva's tier-one
    front and his own try of 9 November ride on it).
-7. The roles (section 4): a role on every rank-and-file unit, the flankers as duels, the units
-   each domain lacks. The strike at the wall follows the rating (his word and built, 10
-   November: section 4).
+7. The roles (section 4), built 10 November on his words: a role on every rank-and-file unit,
+   the strike at the wall by the rating, the goblin's line (a straight knife and the Shield Wall
+   at every rung, the Captain in front with his Warcry), the Marsh's (the claw flat, the Draugr,
+   the Lich its own backliner; nothing holds the Marsh's front in a wall's place at tier one,
+   the Wight's Grave Mend the line's hold, since the Marsh's answer is getting back up) and a
+   flanker line a domain. What is left of it is his play and his pen: the duelists' numbers,
+   whether a pair is the heavy patrol a flank wants, the names (the Draugr and the eight rungs
+   are Claude's drafts), the shown text (drafted, unsigned), and whether a role is ever shown.
 8. The Reinforced Skeleton: parked with destruction, or a new rule now.
 9. The commander layer's shield and vent actions: a note now, a row when that layer is designed.
 
@@ -567,14 +733,50 @@ word:
   elites for a few points of hull (section 5's second point). Their numbers are their own item
   (the bible's section 12); this is one more read for it, no proposal.
 
-## 9. The order, on his answers
+## 9. The formation pass, executed: what landed and what is left
 
-1. Done, 9 November: the what-if, the injury rule off, the aggressor's habit, the trial, and the
-   first reads (section 5).
-2. His play at placeholders: the trial under each deal of the Barrier (the to-do's Ryan list),
-   and his answers to section 7's first five but the fourth, which is parked.
-3. The content of section 6 as marked, with the deal he picks; the regen and cooling numbers by
-   chassis; the heat prices; the pushers re-cut and read by hull lost, each with its rising
-   threat and the validator's check for it; the flankers rewritten as duels; the records, the
-   vocabulary, the rules, the hangar page.
-4. The formation proposal's remaining questions settled in play; the bosses' blocks after.
+Ryan, 10 November: "We've gotten off on a tangent from the main issue, which is the actual
+formation pass. What do we need to actually execute on it?" The pass is structure: who stands
+where, in what role, posing what question. It moves no foe's number beyond what a new unit
+needs, on his word of 9 November ("I want to judge the new formations before applying the
+refit based on this"), so the numbers follow his play of it and the Chassis Inventory session's
+work on the player's damage. The three things it waited on were his, and he gave them the same
+day: the flankers ("Duelists are as you see fit, might as well jam them in here as well as part
+of the pass"), the Marsh's front ("Revenant 3 name is whatever you think. Make revenant stab
+flat, or flat with a Marsh twist, if a simple one exists") and the go.
+
+**Landed, 10 November**, in the order it was built:
+
+1. The model first (section 5), so the pass is read on the dice it will be played with.
+2. The Marsh's line and the four flanker lines (section 4): thirteen new foes, each a recolour
+   ladder's rung or its base, with placeholder sprites.
+3. A role on every rank-and-file foe (a pusher's unless its entry says a hunter's or a
+   flanker's; internal), and the validator holding a composition to it: a hunting composition
+   is its lead's line and what keeps its pace, a formation fields pushers, a patrol that pushes
+   fields flankers, and a crossing carries its reason under `design`.
+4. The proposal's formations and hunters re-cut to his calls since it was written and landed in
+   `content/factions.json` in place of the old patrols and formations: the pruned set, the
+   antlions out of the Waste's pushers, the goblin's fronts by tier (Goblins, Guards, Captains),
+   the Marsh's tier three on the Draugr with the Lich behind it, one hunting pack a domain and
+   tier where its rank and file hunt (rated two), a lone duelist the patrol rated one and a pair
+   the heavy patrol on the ramp's later steps. A question stands on every one and is required on
+   a patrol and a formation; the elites and the escorts are as they were.
+5. The opening places its patrols from those that push, so no hunter stands at turn one (his
+   word of 8 November), in code and held by a test.
+6. The reads (`docs/measurements.md`, 10 November): the duelists as duels, the landed set by the
+   curve read with a heavy first, the campaign runner. Each a direction; no number moved on
+   them but the new units' own.
+7. The rules, the bible's rows (the Foe roles row Decided, the hunters row settled, the
+   recolour row), the content files' notes, the status and the to-do. The hangar page and the
+   bible page republish on his word.
+
+**Not in the pass, and where each waits**: a foe's numbers (the refit's, after he plays the
+formations); the die's re-deal proper, the component pass and the heat prices (section 6, the
+refit's content); the bosses' stat blocks and their escorts (the proposal's section 6, a
+session of their own; the elites' and bosses' first guesses under the model are the to-do's
+line and `docs/measurements.md`); the rising threat in every formation and its validator check
+(section 3's ninth point: "leave out rising threat for now"); the field's dials (the to-do);
+the sizes' names if the role becomes the word (a flanker for a patrol: section 4's holes).
+
+Done before it: the what-if, the injury rule off, the aggressor's habit, the trial and its
+dials, the first reads (section 5), the wall strike by the rating, the goblin's line.

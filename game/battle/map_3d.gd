@@ -288,7 +288,20 @@ func _lit(color: Color) -> StandardMaterial3D:
 
 ## A terrain tile as a lit material sampled by world position, or by the hex's UVs for a
 ## tile that covers one hex exactly (terrain.gdshader).
-func _terrain_material(tile: String, ripple: float = 0.0, by_uv: bool = false) -> ShaderMaterial:
+## The scenery's ground in shade (Ryan, 10 November, of the painting's shaded scenery: "should do
+## something equivalent to the 3D map as well, can be more subtle since the hex highlight does
+## some of the work"): the ground past the field a step darker than the field's, by its material's
+## own brightness, the city and the wall's rows as they were. Lightness, never a hue.
+const SCENERY_SHADE := 0.62
+
+func _terrain_material(tile: String, ripple: float = 0.0, by_uv: bool = false, shade: float = 1.0) -> ShaderMaterial:
+	if shade != 1.0:
+		var key := "%s/shade" % tile
+		if not _materials.has(key):
+			var dark: ShaderMaterial = _terrain_material(tile, ripple, by_uv).duplicate()
+			dark.set_shader_parameter("lift", 1.35 * shade)
+			_materials[key] = dark
+		return _materials[key]
 	if _materials.has(tile):
 		return _materials[tile]
 	var m := ShaderMaterial.new()
@@ -317,8 +330,14 @@ func _road_links(h: Vector2i) -> int:
 
 
 var _road_mat: ShaderMaterial = null
+var _road_mat_shade: ShaderMaterial = null
 
-func _road_material() -> ShaderMaterial:
+func _road_material(shaded: bool = false) -> ShaderMaterial:
+	if shaded:
+		if _road_mat_shade == null:
+			_road_mat_shade = _road_material().duplicate()
+			_road_mat_shade.set_shader_parameter("lift", 1.35 * SCENERY_SHADE)
+		return _road_mat_shade
 	if _road_mat == null:
 		_road_mat = ShaderMaterial.new()
 		_road_mat.shader = load("res://game/battle/road.gdshader")
@@ -713,6 +732,7 @@ func set_sweep(map_y: float) -> void:
 var _anim_px: Dictionary = {}   # unit id -> map pixel while a move plays, in place of its hex
 ## A machine whose move is planned and not yet played stands where its plan starts (Ryan, 25
 ## October): unit id -> [hex, facing], in place of the battle's hex, until the plan plays.
+var seam_shown := -1.0   # the seam's row as the map shows it while its creep waits or plays (BattleMapView.seam_shown); under 0, the field's
 var held: Dictionary = {}
 
 
@@ -1172,6 +1192,11 @@ func _hex_mesh(inset: float) -> ArrayMesh:
 ## that wants per-hex data (the road's links).
 func _column_geo(h: float, sides: Array, colour: Color = Color.WHITE) -> Array:
 	var corners := MapOrient.corners(Vector2.ZERO, hex_px - 0.75)
+	# The UV is the pointy-top hex inscribed in the tile whichever way the view turns (corner i
+	# of the flat-top layout is pointy corner i turned), so a shader that reads the hex's
+	# directions off the UV (road.gdshader's edge midpoints) reads them right in both views
+	# (Ryan, 10 November: the roads lined up in the painted world and not in the 3D).
+	var uv_corners := Hex.corners(Vector2.ZERO, hex_px - 0.75)
 	var top: Array[Vector3] = []
 	for c in corners:
 		top.append(_world(c, h))
@@ -1180,7 +1205,7 @@ func _column_geo(h: float, sides: Array, colour: Color = Color.WHITE) -> Array:
 	for i in range(1, corners.size() - 1):
 		for j in [0, i + 1, i]:
 			tv.append(top[j])
-			tuv.append(corners[j] / (hex_px * 2.0) + Vector2(0.5, 0.5))   # the hex inscribed in the tile
+			tuv.append(uv_corners[j] / (hex_px * 2.0) + Vector2(0.5, 0.5))
 	var tc := PackedColorArray()
 	tc.resize(tv.size())
 	tc.fill(colour)
@@ -1213,6 +1238,9 @@ func _build_ground() -> void:
 	var corners := MapOrient.corners(Vector2.ZERO, hex_px)
 	var hexes: Array = map.all_hexes().duplicate()
 	hexes.append_array(map.margin.keys())
+	var scenery := {}
+	for h in map._scenery():
+		scenery[h] = true
 	for h in hexes:
 		var t: int = map.terrain_of(h)
 		var in_field: bool = map.has(h)
@@ -1243,17 +1271,18 @@ func _build_ground() -> void:
 		# flavour of the tile shows through under the rock).
 		var ground_t: int = map.crag_base.get(h, t) if t == BattleMap.Terrain.MOUNTAIN else t
 		var at_xf := Transform3D(Basis.IDENTITY, at)
+		var shaded: bool = scenery.has(h)   # past the field: in shade (SCENERY_SHADE)
 		var column: Array
 		if ground_t == BattleMap.Terrain.ROAD:
 			# The road's links and its seed ride in the vertex colour (road.gdshader), so
 			# road hexes bake like any other and need nothing per instance.
 			var seed_f := fmod(float(h.x * 131 + h.y * 7919) * 0.0137, 1.0)
 			column = _column_geo(hgt, sides, Color(float(_road_links(h)) / 255.0, absf(seed_f), 0.0, 1.0))
-			_bake(column[0], at_xf, _road_material(), band, true)
+			_bake(column[0], at_xf, _road_material(shaded), band, true)
 		else:
 			column = _column_geo(hgt, sides)
-			_bake(column[0], at_xf, _terrain_material(TILE[ground_t], 1.0 if ground_t == BattleMap.Terrain.WATER else 0.0), band, true)
-		_bake(column[1], at_xf, rock, band, true)
+			_bake(column[0], at_xf, _terrain_material(TILE[ground_t], 1.0 if ground_t == BattleMap.Terrain.WATER else 0.0, false, SCENERY_SHADE if shaded else 1.0), band, true)
+		_bake(column[1], at_xf, _terrain_material("rock", 0.0, false, SCENERY_SHADE) if shaded else rock, band, true)
 		if in_field and not (map.gate_hexes.has(h) or map.wall_hexes.has(h)):
 			# The grid is the display's own light, drawn on the ground in the scene so a
 			# raised hex hides the lines behind it; the wall and the machines hide it the
@@ -1314,6 +1343,8 @@ func _dress(col: Node3D, h: Vector2i, t: int, hgt: float, rng: RandomNumberGener
 				word = str(dress.get("foot", ""))
 			elif scenery:
 				word = str(dress.get("scenery", ""))
+			else:
+				word = str(dress.get("field", ""))   # the open field's own, sparse (the steppe's grass: Ryan, 10 November, "VERY barren")
 			return _strew(col, word, hgt, rng, density)
 	return 0.0
 
@@ -1697,7 +1728,7 @@ func _build_camera() -> void:
 ## Put every mech where the field says it is, on top of its column and turned to its
 ## facing.
 func sync() -> void:
-	var grad := Bleed.gradient(field, _origin, hex_px)
+	var grad := Bleed.gradient(field, _origin, hex_px, seam_shown)
 	var src := Bleed.sources(field, _origin, hex_px, _anim_px)
 	var map := field.map
 	for h in _columns.keys():
@@ -1755,6 +1786,7 @@ func sync() -> void:
 			if not _rest_yaw.has(u.id) or not _rigs.has(u.id):
 				(_pivots[u.id] as Node3D).rotation.y = facing_yaw(_facing_of(u))
 			_rest_yaw[u.id] = facing_yaw(_facing_of(u))
+	_sync_caches(occupied, grad, src)
 	_hide_props_under(occupied)
 	for uid in _units.keys():
 		if not seen.has(uid):
@@ -1778,6 +1810,104 @@ func sync() -> void:
 				_shadows.erase(uid)
 
 
+# ---------------------------------------------------------------- the field's caches
+
+## The caches as models (Ryan, 9 November: "can we get models (and art, when flattened), for loot
+## caches on map?"): each kind in content/loot.json wears art/models/cache_<id>.glb (tools/lowforge)
+## on its hex while the ground there is the reconstruction's, in the world's layer like a prop, so
+## the painting covers it as it covers the ground; the map view draws its flat token over the
+## painting from there (BattleMapView._draw_caches, art/loot). The kind's name and pips are the map
+## view's in both worlds: the model is the picture, never the information. A kind with no model
+## keeps the map view's diamond. A machine on the hex hides the model, as it hides a prop.
+const CACHE_FIT := 1.3          # a cache's size on its hex, over the model's own (built to about two thirds of a hex): hot, for the phone
+const CACHE_TURN := 0.7         # radians a second the Relic's core turns
+const CACHE_BOB := 1.6          # model units its core rides up and down
+var _caches: Dictionary = {}    # cache id -> its model's Node3D
+var _cache_hex: Dictionary = {} # cache id -> the hex it was built on
+var _cache_cores: Dictionary = {}   # cache id -> [the part named `core`, its resting height]: the one the map turns
+
+
+static func cache_model(kind: String) -> String:
+	return "cache_%s" % kind
+
+
+static func has_cache_model(kind: String) -> bool:
+	return not kind.is_empty() and MechView3D.has_model(cache_model(kind))
+
+
+## Whether a cache's model stands on a hex right now, for the map view: built, and not hidden
+## under a machine.
+func cache_shown(cid: int) -> bool:
+	return _caches.has(cid) and (_caches[cid] as Node3D).visible
+
+
+func _sync_caches(occupied: Dictionary, grad: Vector2, src: PackedVector3Array) -> void:
+	var db := ContentDB.load_default()
+	var live := {}
+	for c in field.caches:
+		var cid := int(c["id"])
+		var h: Vector2i = c["pos"]
+		var kind := db.loot_kind_of_tier(int(c.get("tier", 1)))
+		if not has_cache_model(kind):
+			continue
+		live[cid] = true
+		var node: Node3D = _caches.get(cid, null)
+		if node == null:
+			node = _make_cache(kind)
+			add_child(node)
+			_caches[cid] = node
+			_cache_hex[cid] = h
+			var core := node.find_child("core", true, false) as Node3D
+			if core != null:
+				_cache_cores[cid] = [core, core.position.y]
+		# Its hex's own dressing would stand through it: hidden, as under a machine.
+		var under_machine: bool = occupied.has(h)
+		occupied[h] = true
+		# As the painting takes the hex the model sinks into it, as the ground's height does
+		# (Bleed.solid, the compositor's threshold), and is gone where the hex is flat.
+		var solid := Bleed.solid(_origin + MapOrient.to_pixel(h, hex_px), grad, src)
+		node.visible = solid > 0.02 and not under_machine
+		node.position = _hex_world(h, _height_of(h))
+		node.scale = Vector3(CACHE_FIT, CACHE_FIT * maxf(solid, 0.02), CACHE_FIT)
+	for cid in _caches.keys():
+		if not live.has(cid):
+			(_caches[cid] as Node3D).queue_free()   # claimed
+			_caches.erase(cid)
+			_cache_hex.erase(cid)
+			_cache_cores.erase(cid)
+
+
+## A cache's model, dressed matt whatever its tiles' maker: a wreck's dead steel, bone and their
+## stone take no machine's polish. Its lit parts (the amber role: a Derelict's lamp, a Relic's
+## light) glow as a machine's do. Traced like a prop, so it reads at one hex.
+func _make_cache(kind: String) -> Node3D:
+	var scene: PackedScene = load("res://art/models/%s.glb" % cache_model(kind))
+	var node: Node3D = scene.instantiate()
+	MechView3D.toon(node, "", "clean", {}, false)
+	for child in node.find_children("*", "MeshInstance3D", true, false):
+		var mi: MeshInstance3D = child
+		mi.layers = 1   # the world's layer alone: no sheen light
+		for i in range(mi.mesh.get_surface_count()):
+			var m := mi.get_surface_override_material(i) as StandardMaterial3D
+			if m != null:
+				m.roughness = 0.95
+				m.metallic = 0.0
+				m.metallic_specular = 0.15
+	_marker(node)
+	return node
+
+
+## The Relic's core turns and rides on its own light, each on its own beat (a part named `core`,
+## models_low.cache_relic); every other cache lies still.
+func _turn_caches(delta: float) -> void:
+	for cid in _cache_cores.keys():
+		var core: Node3D = _cache_cores[cid][0]
+		if not is_instance_valid(core):
+			continue
+		core.rotate_y(CACHE_TURN * delta)
+		core.position.y = float(_cache_cores[cid][1]) + sin(_time * 1.3 + float(cid) * 1.9) * CACHE_BOB
+
+
 ## Only a flyer sways at rest: it rides a slow swell, each on its own beat; a hovercraft
 ## balances on its cushion (HoverBalance). A grounded
 ## machine holds still and every few seconds plays one of its own idle acts through its rig,
@@ -1788,6 +1918,7 @@ var _dt := 1.0 / 60.0
 
 func _process(delta: float) -> void:
 	_time += delta
+	_turn_caches(delta)
 	_dt = delta
 	for uid in _rigs.keys():
 		var rig: MechRig = _rigs[uid]

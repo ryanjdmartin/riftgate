@@ -153,7 +153,7 @@ func _apply_pose() -> void:
 		"keywords":
 			s._open_menu()
 			s._menu._show_page("keywords")   # as the menu's KEYWORDS opens it
-		"menu", "settings", "quit", "colours":
+		"menu", "settings", "quit", "colours", "trials":
 			s._open_menu()
 			if _pose != "menu":
 				s._menu._show_page(_pose)
@@ -244,6 +244,28 @@ func _apply_pose() -> void:
 			for foe in s.sk.field_foes():
 				for id in ["burning", "flakked", "shocked", "cryoed", "vitriol"]:
 					Effects.stack(foe, Effects.STATUS[id], Effects.SKIRMISH, "mech", 2, Effects.status_decay(Effects.STATUS[id]))
+			s._refresh()
+		"stores":
+			# Every machine's own resource row part filled, to judge the rows beside the heat bar
+			# (10 November; RIFTGATE_TEAM=badger,nemesis,cassowary,swallowtail, then musk_ox): the
+			# Honey Badger's hopper at three loads of four, the Nemesis's rage at three, the
+			# Cassowary's count two short of its shot, the Swallowtail's Muster a charge and a
+			# half, the Musk Ox's magazine two down, and each machine a little hot.
+			for ms in s.sk.mechs:
+				var u: Unit = ms.unit
+				ms.heat = maxi(ms.heat, int(u.heat_max * 0.4))
+				if Effects.store_cap(u, "hopper") > 0:
+					Effects.add_loads(u, 3)
+				if Effects.store_cap(u, "rage") > 0:
+					Effects.stack(u, Effects.STATUS["rage"], Effects.SKIRMISH, "mech", 3, Effects.DECAY_NONE)
+				var every := Effects.counts_shots(u)
+				if every > 2:
+					Effects.stack(u, Effects.STATUS["shots"], Effects.SKIRMISH, "mech", every - 2, Effects.DECAY_NONE)
+				var rule := Effects.muster_rule(u)
+				if not rule.is_empty():
+					Effects.stack(u, Effects.STATUS["muster"], Effects.SKIRMISH, "mech", int(int(rule.get("value", 30)) * 1.5), Effects.DECAY_NONE)
+				if ms.ammo_max > 0:
+					ms.ammo = maxi(0, ms.ammo_max - 2)
 			s._refresh()
 		"heat":
 			# A foe's fire on the first machine: Burning ×2 and Scorched ×1 on its chip row, with
@@ -367,6 +389,22 @@ func _apply_battle_pose() -> void:
 			var sq: Unit = b.field.packs()[0]
 			s._on_hex_tapped(sq.pos)
 			s._map.scroll_to_unit(sq)
+		"hunter":
+			# A hunter and its chip (10 November): the first pack a few hexes off the first machine
+			# and hunting it, the map looking at the pack: its chip with the machine's small picture
+			# and the attack mark, the machine's tag with the hunter's, no ring round either.
+			var hsq: Unit = b.field.packs()[0]
+			var hm: Unit = b.mechs()[0]
+			var best := hsq.pos
+			for h in b.field.map.all_hexes():
+				if Hex.distance(h, hm.pos) == 4 and b.field.can_stand(hsq, h) and Hex.axial_to_offset(h).y < Hex.axial_to_offset(hm.pos).y:
+					best = h
+					break
+			hsq.pos = best
+			hsq.behaviour = "hunt"
+			hsq.prey = hm.id
+			s._refresh()
+			s._map.scroll_to_unit(hsq)
 		"draft":
 			# A route being drawn by hand: it stops about halfway through the move. The first
 			# machine that has such a hex.
@@ -436,6 +474,10 @@ func _apply_battle_pose() -> void:
 		"settings":
 			s._open_menu()
 			s._menu._show_page("settings")
+		"trials":
+			# A debug build's TRIALS page (the refit's and the field's dials), to check it fits the glass.
+			s._open_menu()
+			s._menu._show_page("trials")
 		"queue":
 			# The fight queue (the long wall brief 7.4): two packs parked beside two machines and
 			# each machine ordered onto one, so the map numbers the two fights and the button reads
@@ -489,6 +531,18 @@ func _apply_battle_pose() -> void:
 					s._map.zoom_at(s._map.size * 0.5, 2.0)
 					s._map.scroll_to_unit(m)
 					break
+		"caches", "cachesflat":
+			# Zoomed in on the first cache (with RIFTGATE_CACHE_DEBUG=1 the three kinds beside the
+			# team, on solid ground) or the last (the three by the rift, under the painting).
+			var cs: Array = b.field.caches
+			if not cs.is_empty():
+				var on: Vector2i = cs[0 if _pose == "caches" else cs.size() - 1]["pos"]
+				s._map.zoom_at(s._map.size * 0.5, 2.0)
+				var p: Vector2 = s._map.center(on)
+				s._map.scroll_x = s._map.size.x * 0.5 - p.x * s._map.zoom
+				s._map.scroll_y = s._map.size.y * 0.5 - p.y * s._map.zoom
+				s._map._clamp_scroll()
+				s._map.queue_redraw()
 		"zoom", "zoomlast":
 			# Zoomed in twice on the first (or last) mech, panned so it sits mid-screen.
 			s._map.zoom_at(s._map.size * 0.5, 2.4)
@@ -504,6 +558,33 @@ func _apply_battle_pose() -> void:
 			# with the wall at the left) and the boss's picture at its size beside it (9 November).
 			s._map.scroll_to_top()
 			s._map.queue_redraw()
+		"tear":
+			# A peak of Rift Pressure (RIFTGATE_PEAKS=<n> for more): the seam crept, a tear open on
+			# its row, the map looking at the newest, a little off the middle so the ring is seen
+			# to stand on its hex under its name wherever the map is scrolled (10 November).
+			for i in range(maxi(1, int(OS.get_environment("RIFTGATE_PEAKS")))):
+				b.field.peak()
+			s._refresh()
+			if not b.field.tears.is_empty():
+				var tp: Vector2 = s._map.center(b.field.tears[b.field.tears.size() - 1]["pos"])
+				s._map.scroll_x = s._map.size.x * 0.4 - tp.x * s._map.zoom
+				s._map.scroll_y = s._map.size.y * 0.6 - tp.y * s._map.zoom
+				s._map._clamp_scroll()
+			s._map.queue_redraw()
+		"peak":
+			# A peak's cutscene (10 November): the seam's creep under its front, then the tear
+			# bursting open, then the map back where it was; RIFTGATE_SHOT_FRAME picks the moment
+			# (a cloud session draws few frames a second: the sweep near 12, the tear's burst near 26).
+			s._map.hold_peak()
+			b.field.peak()
+			s._refresh()
+			s._map.play_peak(Callable())
+		"hunted":
+			# A hunter turns on a machine (10 November): the map gliding in on it, zoomed, the
+			# HUNTED band over it, then back; RIFTGATE_SHOT_FRAME picks the moment (in a cloud
+			# session the band over the hunter near 9).
+			var lm: Unit = b.mechs()[0]
+			s._map.play_locks([[b.field.packs()[0], lm]], s._show_lock, s._after_locks, maxf(s._map.size.y * 0.5, s.WARN_BAND_Y + s.WARN_BAND_H + 130.0))
 		"fracture":
 			# A Fracture announced as a fight's tally earns it (Ryan, 9 November: "Fractures need to
 			# be announced"): the band over the map and the top bar's gauge flashing (the default
@@ -513,6 +594,16 @@ func _apply_battle_pose() -> void:
 				b.fractures = 1
 			s._refresh()
 			s._show_fracture(false)
+		"elite":
+			# A Fracture's elite introduced as it arrives (10 November): the map gliding in on its
+			# hex, zoomed, the elite bursting out under the band that names it; RIFTGATE_SHOT_FRAME
+			# picks the moment (in a cloud session the burst near 10, the band over it near 14).
+			if not b.thresholds.is_empty():
+				b.menace_killed = int(b.thresholds[0])
+				b.fractures = 1
+			b._spawn_elite()
+			s._refresh()
+			s._show_fracture(true)
 		"foe":
 			# A pack tapped: bracketed, its path heavy, its strength over it; the map looks at it.
 			var fsq: Unit = b.field.packs()[0]

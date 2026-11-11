@@ -16,10 +16,12 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 
 ## Machines
 
-- **Chassis**: hull, shield, shield regen (shield regained as each round opens; no chassis
-  sets it yet), heat maximum, cooling, armour, move, size class, one way of moving, hardpoints, fixed components, module
+- **Chassis**: hull, shield, shield regen (shield regained as each round opens: one to three
+  by chassis, the faster on the smaller gauge), heat maximum, cooling (one at least on every chassis that is dealt), armour, move, size class, one way of moving, hardpoints, fixed components, module
   slots (two; the Clydesdale three) and one passive. Twenty-four chassis from five makers
-  (`content/chassis.json`). A run has four squad slots and starts with three
+  (`content/chassis.json`), four of them back in design and dealt by nothing until their
+  sessions hand them back (the Polar Bear, the Puffin, the Whip Scorpion, the Swallowtail: a
+  chassis whose entry says `"status": "planned"`). A run has four squad slots and starts with three
   machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
   order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die,
@@ -71,11 +73,17 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   of tiers one to three are found; a bought chassis brings one copy of each component it
   stocks, never its blueprint. A fixed component has no tier; the Arsenal (the capital's
   maker) makes no basics and fields no tier-one chassis, though its tier-one components exist
-  and its tier-two chassis stock them. The basic kit is eight pieces, each a maker's: four
-  guns (the Twin Autoguns and the Rivet Gun, Direct; the Ankle Mortar, Indirect; the Laser
-  Carbine, Direct and warm), two shields (the Halo Shield, self or ally; the Canopy, self only, the
-  bigger) and two vents (the Coolant Jacket, self or ally; the Bleed Valve, self only, the
-  bigger).
+  and its tier-two chassis stock them. The basic kit is six pieces, each a maker's: four
+  guns, each making heat (the Twin Autoguns and the Rivet Gun, Direct; the Ankle Mortar, Indirect; the Laser
+  Carbine, Direct and warm), and two defensive pieces, each spent on itself or an ally (the
+  Halo Projector, a Barrier; the Shoring Jack, Armoured 2 for the round).
+- **No recovery on the die**: a component is a weapon or equipment. No stock die holds a
+  shield or a vent and no slottable one is dealt: the shield is the chassis's and comes back
+  by its regen, heat goes by its cooling, and the decision heat leaves is the hold (fire the
+  cold entry, keep the hot one, or pass and cool). The slottable shields and vents are kept in
+  content as drafts nothing deals (no blueprint, no loot, no basic), each until it is made
+  equipment or removed; the engine still runs both kinds, for the locked pieces that are one
+  (the Musk Ox's Quick Reload) and the machines back in design.
 - **Damage states**: a component is intact or destroyed, for the whole battle (none is destroyed
   while the injury rule is off: Injury, below).
 
@@ -100,7 +108,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 ### The round
 1. Rerolls reset to two (less any a foe drained). Every machine sheds heat by its cooling,
    then regains its shield regen up to its maximum (a shield gain like any). Every die rolls;
-   entries are equally likely. Round-start passives fire.
+   entries are equally likely. Round-start passives fire, and a store that grants a buff
+   grants it for the round (the Honey Badger's hopper its Armoured), before the foes pick.
 2. Every foe picks its move, then its target; both show, exact, before the player acts, its
    intent chip under it: the move's kind, its blow's number and strikes, and each rider by its
    mark, a numbered one with its stacks. A blow's number counts the rallies on their way to it
@@ -144,8 +153,9 @@ every machine is wrecked. There is no round limit.
   cylinder, in order (the one showing lit and an arrow to the next, in the readout). Its Spin-Up spins the whole die, the entry
   showing included, one of the two rolls kept on purpose (Rerolls, above), so it may land on itself and
   be spent again. Every sixth weapon or equipment it aims at a foe in the fight counts double,
-  its damage and the stacks it lays; the count shows as six pips under the heat bar, the sixth
-  lit when it is next, and a shield, a vent, a buff and a spin are no shots.
+  its damage and the stacks it lays; the count shows as six cells under the heat bar, as a
+  store's are, the sixth apart by its shape (a heavier border, a diamond set in it) and
+  lit in the heat's colour when it is next, and a shield, a vent, a buff and a spin are no shots.
 - **The Quick-turn Avionics Relay** (the Needletail's passive): equipment, a buff or a debuff
   read on the entry as it is spent, is Rapid on it once a round, the entry dark for the rest of
   the round as Rapid's is; the die shows the Rapid on every setup while the gate is open. A piece Rapid of its own spends no gate.
@@ -401,13 +411,12 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   them); a foe's blow 2 to 8 at tier one (the rank and file's mostly 2 or 3)
   and to 10 at tier three, a massive
   foe's 7 or 8, a hero's 4 to 10, the slate's bosses' 6 to 10; machine hull 20 to 50 by size (the
-  Kite's paper hull 12, its row's one-off), shield 6 to 16, shield regen 0 to 2 a round (none
-  set yet), base armour 0 to 2 by role, timed armour to 4 or 5; heat
+  Kite's paper hull 12, its row's one-off), shield 6 to 16, shield regen 1 to 3 a round, base armour 0 to 2 by role, timed armour to 4 or 5; heat
   1 to 20 (1 to 30 if the pricing needs it), the maxima 10 to 14 (the Musk Ox's 8), a vent 3 to
   8 (the Entropy Condenser's 10 the capstone, paid in hull). The scales are magnitudes,
   not steps: any whole number may be used, and content sits a little past them where its
   loops moved it (the Zombie Knight's 8 HP, the promoted forms' 32 to 48, a hero's finisher, a
-  multiple of its blow, to 16). A move is a count of hexes, 1 to 6 (the machines' 2 to 5).
+  multiple of its blow, to 16). A move is a count of hexes, 1 to 6 (the machines' 3 to 6, the foes' 1 to 4).
   The content's numbers are the stock pass's fills as its loops moved them
   (`docs/measurements.md`; set by `tools/stock_fills.py`), the four Kestrel machines' by hand at the same scale; placeholders until play.
 
@@ -565,16 +574,19 @@ weapons wears the star, the die's readout reading the passive's line, and no key
 ### Buffs, debuffs and resistance
 A **store** is a capped resource a machine fills and spends (the Muster, the rage, the
 hopper, the Cassowary's shot count; the Musk Ox's magazine works the same way), its own kind
-and never a buff: each shows as a bar under the heat, boxes or a smooth fill in segments by how
-it fills, and no Silence or Purge touches it, its filling or its use. An **Ability** is a
+and never a buff: each shows as a row under the heat in the heat bar's shape, by how it fills:
+one that comes in whole units (the hopper's loads, the rage, the magazine's ammo) as separate
+cells, each with its own border and a hairline of ground between them, the lit ones filled; one that
+fills by degrees (the Muster) as a meter with a notch a charge; the shot count as cells too,
+its last marked as the shot that counts; and no Silence or Purge touches it, its filling or its use. An **Ability** is a
 unit's own mechanic, the rule it plays by, and never a buff or a debuff, so no Purge, Silence
 or Cleanse touches it; its chip shows its mark cut out of a solid tile, ahead of the unit's
 other chips, and its hold line names it an Ability and says what goes on. A foe's: the Goblin
 Nob's Enrage, a core's guard (Guarded), a Gel's split, a last act, a golden rage while it
-lasts. A machine's: the Polar Bear's seal (its form), the Ore Plate (what the hopper's loads
-are worth) and the Kite's Hot Streak. What an ability or a passive grants beyond itself is a
-buff like any (the Nob's gathered Enraged, a module's Empowered or Armoured): a stack is a
-stack, whatever granted it.
+lasts. A machine's: the Polar Bear's seal (its form) and the Kite's Hot Streak. What an
+ability, a passive or a store grants beyond itself is a buff like any (the Nob's gathered
+Enraged, a module's Empowered or Armoured, the Armoured the Honey Badger's hopper grants): a
+stack is a stack, whatever granted it.
 
 Every status on a unit says what it is, wherever it shows: a **buff**, which a Purge reaches,
 wears a wedge pointing up off its chip's top at the left, and its hold line begins "Buff"; a
@@ -591,8 +603,6 @@ On a machine:
 - **Armoured** (buff, on either side): armour +1 a stack, every stack at once, whatever
   granted it, so the count is the armour: a machine's until the round's end, a foe's (from
   its brace) until its next action.
-- **Ore Plate** (Ability, the Honey Badger's): armour +1 a stack, what the loads in its hopper
-  are worth (a point for every two loads), standing while they are held and going as they are fired.
 - **Primed** (buff, on either side): each blow leaves a Burning stack per Primed stack on its
   target, a sweep's on each shot's own foe, a blow that kills on the foe it felled, a shot at a
   corpse on the corpse. A foe's,
@@ -659,13 +669,19 @@ On a machine:
   and stands.
 - **Rage** (store, the Nemesis's): a stack each time it takes hull damage (a blow, a bite
   of its own, an overheat), up to 5, spent by its fists to roll again; lasts the skirmish,
-  never decays, and nothing cleanses it. It shows as five boxes under the heat, one lit a
-  stack.
+  never decays, and nothing cleanses it. It shows as a bar under the heat, in the heat bar's
+  shape, five segments, one lit a stack.
 - **Hopper** (store, the Honey Badger's): its Ore Hopper puts a load in for each foe a spend
   of its weapons damages, after the blow (a weapon that prints its own number puts that in
-  instead), up to four, and every two loads held stand as a point of Ore Plate; a weapon that fires
-  the hopper spends them; a Mine's blast fills none. It lasts the skirmish, never decays, nothing cleanses it, and it shows as four boxes
-  under the heat, one lit a load.
+  instead), up to four; a weapon that fires
+  the hopper spends them; a Mine's blast fills none. It lasts the skirmish, never decays, nothing cleanses it, and it shows as a row
+  under the heat, in the heat bar's shape, four cells, one lit a load. What the loads are
+  worth is Armoured, a stack for every two held, granted by the hopper: as each round opens it
+  grants the machine Armoured up to that worth, and between rounds the grant follows the loads
+  by the change in their worth alone (a load that makes a pair adds a stack, loads fired take
+  their stacks back, off the hopper's own grant and no other). It is a buff like any Armoured:
+  it goes at the round's end, and a Purge strips it and leaves the loads, so what a Purge took
+  comes back at the machine's next turn and no sooner.
 - **Sealed** (Ability, the Polar Bear's form): a shield it spends on itself seals it: armour +3,
   its own cooling stopped, 3 heat more at the end of each turn before the overheat, and its Cryo
   Flinger gains Spread (one foe open, its rank's three sealed); a vent or a weapon opens it; a
@@ -804,6 +820,11 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or a
   the turn, before the enemy acts, the excess burns hull one for one (an overheat) and the
   gauge settles at the maximum. With volatile, it is the way a machine dies on its own
   turn. Machines cool at the start of the round. Heat starts each fight at zero.
+- The console speaks of heat on a spend, one line a spend: the overheat every time a spend
+  heats a machine and leaves it over its maximum; the warning once, as a machine first stands at
+  three quarters of its maximum or past, and not again until it has been seen back under (as a
+  round opens, once the machines have cooled, or after a spend), so a machine that stays hot, or
+  settles at its maximum after an overheat, is not warned twice.
 - An overheat is hull damage for every passive that reads hull damage.
 - **The Riot Field Generator** (the Storm Petrel's passive): its weapons' heat comes off its
   shield as they are spent, every point of a gun's own heat taken from the shield as it
@@ -825,7 +846,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or a
   of heating it, 1 for every 2 heat a gun's own spend would make, rounded up, at least 1, the
   price printed on the die where the gun's heat would be; its debuffs, buffs and shields and
   the foes' heat land on its heat bar as on any machine's, Scorched's extra included. The
-  magazine is a bar under the heat bar, a notch an ammo, never a status, so no Silence or Purge
+  magazine is a row of cells under the heat bar, a cell an ammo, never a status, so no Silence or Purge
   reaches it; it holds 10, opens each fight at 3 and gains 1 at the start of every round after
   the first; a vent it spends on itself adds 3, a shield 2, an entry both at once 3, once, the
   greater; a gun it cannot pay for cannot be
@@ -1061,40 +1082,50 @@ a stat.
   are the same in both. With the wall at the bottom the wall and the gate stand on the last row
   and their height covers the row before it; with the wall at the left they stand on that row,
   against the apron, the last row behind them the city's, and the rift's vortex stands on the
-  lowest of its three hexes. A pack, a machine or a tear past the screen's edge has a tag at that
-  edge. Three gauges stand at the top of the screen whatever the scroll: the gate's integrity,
+  lowest of its three hexes, a little toward the scenery behind it. The far ground softens
+  toward the rift and the city softens past the wall in either view: at the screen's top and
+  foot with the wall at the bottom, at its right and left with the wall at the left, never its
+  top there. A pack or a machine past the screen's edge has a tag at that
+  edge; a tear has none, as the rift has none. Three gauges stand at the top of the screen whatever the scroll: the gate's integrity,
   Rift Pressure toward the next spawn (a box a turn of the beat) and the Rupture meter toward its
   Fractures (a notch a Fracture, those earned lit); the gate and the rift carry no bar on the map
   and are no selection. A gauge that changes flashes. The boss's picture stands far larger than
-  a pack's.
+  a pack's and is drawn for that size: a picture of its own (`art/foes/<id>_boss.png`, cut from
+  its combat sprite), its token serving the small faces (an edge tag, a hunter's plate). The
+  field reads apart from the scenery past it in both worlds: the reconstruction's grid lies on
+  the field alone and the scenery's ground past it stands a step darker, and under the painting
+  the field is bright cells and the scenery (the margin past the field's sides and past the
+  rift, the city) one shaded ground with no cells.
 - **Ground**: open (plain or road), rough, ruins, water, and walls, a wall named by what it is
   (crags, mesas, towers or cliffs) with one rule under every name. Six map shapes, one a
   battle, each with its own water, walls, decorative ground and relief, laid to fill the open
   rows at any size the ramp deals, none of them a band and none an orientation. Two water
-  shapes: River Crossing (a river along the wall, two hexes thick and three where the field is
-  deep, between a bank row at the mouth's edge and one before the team's ground, with one or
-  two fords three or four hexes wide in all, a crag on a bank at most, gravel bars along its
-  banks) and Fjord (water from the rift toward the wall, two or three wide, one fjord for every
-  ten hexes of wall, each in its own stretch of it with a lane two wide at least at the field's
-  edges and four between two, shingle on its shores). Three wall shapes, a spectrum by the mass
+  shapes: River Crossing (a river winding through the whole field from past one edge to past
+  the other, through the field's centre, two hexes thick and three in places, with one or two
+  narrows a hex thick, the water fords where the wade is short, one or two tributaries a hex
+  thick off it, a crag on a bank at most, gravel bars along its banks; no land ford: everyone
+  wades) and Fjord (the open rows under water, the scenery beside them too, with land lanes
+  winding from the rift's row to the team's ground, two hexes wide and pinched to one in
+  places, one for every seven hexes of wall, a branch or two off each, and islands; shingle on
+  its shores; half to two thirds of the field water). Three wall shapes, a spectrum by the mass
   and the structure of what blocks you: Gorge (cliff mass over the open rows cut by winding,
-  branching channels, a trunk for every seven hexes of wall from the mouth's edge to the team's
-  ground, one or two hexes wide, two or three branches off each, a stretch or two flooded, scree
-  at the cliffs' feet, the gorge's own sides past both edges), Ruined City (large blocks of
+  branching channels, a trunk for every five hexes of wall from the rift's row to the team's
+  ground, one or two hexes wide, three or four branches off each toward the next trunk, meeting
+  a channel at a junction or ending blind, a stretch or two flooded, scree at the cliffs' feet,
+  the gorge's own sides past both edges), Ruined City (large blocks of
   towers in a grid of streets: avenues one wide from the wall toward the rift four to five
   columns apart, the gate's always one and two wide, side streets along the wall mid the blocks
   whose segments are there or not, an avenue segment fallen in now and then, a plaza or two with
   a fountain in some, a street segment or two flooded, rubble everywhere else, towers thick in
-  the scenery) and Badlands (an open field of small mesas, one to three hexes, a hex of ground
-  between any two so no straight path crosses, two or three ponds of two to four hexes, scrub at
-  the mesas' feet). And Open Steppe, the baseline (a lone crag and a pond at most for every ten
-  hexes of wall). A ford is one to three hexes wide, with a hex of river between two; the fords'
-  total is the team's number and does not scale with the wall. A battle that names no shape
-  draws one by its seed, never by its domain. Every map guarantees the
-  horde a crossing three hexes wide or more through its walls; the rift's mouth (one row for
-  every five of depth, rounded up, two at least and four at most: rows 0 to 2 at twelve deep,
-  0 to 3 at twenty) and the two rows before the gate hold no water and no wall; the rows
-  between are the shape's. Height is landscape and a look
+  the scenery) and Badlands (an open field of mesas in groups of two to five, many of them, a
+  hex of ground between any two groups so no straight path crosses, two or three ponds of two
+  to four hexes, scrub at the mesas' feet). And Open Steppe, the baseline, clear but never bare
+  (a crag of one or two hexes at most for every seven hexes of wall, a pond at most for every
+  ten, scrub in belts over about a sixth of the field, grass on the open ground). A battle that
+  names no shape draws one by its seed, never by its domain. Every map guarantees the
+  horde a crossing three hexes wide or more through its walls; the ground beside the rift (its
+  mouth, where the packs land) and the gate, and the two rows before the gate, hold no water and
+  no wall; every other row is the shape's, the rift's own included. Height is landscape and a look
   alone; no rule reads it: the field is level but for the badlands' mesas on their shoulders and the
   steppe's one rise, at most two steps and never a lone raised hex, and the scenery past the
   edges rises to three.
@@ -1103,36 +1134,46 @@ a stat.
   and never a rule of its own. Open ground (plain, road), rough and ruins are ground to
   everyone. Water: a ground machine wades it, a water hex costing two of its move, and it can
   always enter one with whatever move it has left; a hovercraft and a flyer cross it at one.
-  Walls stop all but a flyer. Nobody stops on another unit's hex. A flyer and a grounded unit
-  pass each other and meet only in a fight: a flyer flies over machines and packs, and they
-  pass under it and under a winged pack. A grounded machine never passes another grounded
-  machine or a grounded pack: each move lands at once, so the next is planned from where it
-  ended and the player sequences them.
+  Walls stop all but a flyer. Nobody stops on another unit's hex, and nothing else blocks a
+  move: every unit passes every other, a machine through a machine or a pack and a pack through
+  a machine, as under a flyer (they slide under each other, from two different dimensional
+  counts), and the two sides meet only in a fight. Each move still lands at once, so the next is
+  planned from where it ended.
 - **Setup**: up to four machines on the row before the gate; the boss one row below the rift,
   sealed (below); and on the field, the siege under way, the compositions the tier and the ramp
   put there: the ramp's count of formations (one; two from Convergence 3; three from 8) spread
   across the width, each a move of its own from the row before the wall, and its count of
-  patrols (two; one from 8) on the flanks two moves out, none inside the rift's mouth (a pack
-  whose opening hex the shape took goes along its row, never back into the mouth), each the
+  patrols (two; one from 8) on the flanks two moves out, none on the rift's row (a pack
+  whose opening hex the shape took goes along its row, never back toward the rift), each the
   tier's compositions in turn, the lead's and the guest's in turn with the lead's first, each
   as content writes it (the ramp scales no pack: it scales the field). Rift Pressure opens a
-  turn short of its peak. No battle opens on a forced fight:
-  a pack that hunts opens a row further back at a time, never into the mouth, until no machine
-  stands inside its catch, so its first walk comes on the enemy's first turn.
+  turn short of its peak. No hunter stands on the field at turn one: the opening's patrols
+  are the tier's that push, in their order, and the packs that hunt come with the tide and the
+  tears (a tier whose patrols all hunt opens with them, each a row further back at a time,
+  never onto the rift's row, until no machine stands inside its catch). So no battle opens on a
+  forced fight.
 - **A turn**: the map shows every pack's coming walk, read from where the machines' plans end,
-  and every pack's threat rating under its count, four pips with one filled a machine it is
-  intended for; and every hunter coming for a machine wears its ring round where its coming walk
-  ends, where its catch is judged (round where it stands while a catch it made waits), a dashed
-  violet edge, tinted under a solid one while the hunter is tapped or its catch waits; no other
-  pack's ring is drawn. Every walk's end hex is lit, tinted under a solid edge. A tapped pack
-  shows its whole way as the field stands, past this turn's walk to its goal (a pusher's wall
-  segment, a hunter's place beside what it comes for), dashed, each later turn's stop numbered,
-  the goal marked and a hunter's pounce dotted on to its prey; a selected machine shows the whole
-  way of every hunter coming for it. Each machine has one action (the Dingo two): one move,
+  and every pack's threat rating under the pack, four pips with one filled a machine it is
+  intended for, and no count; no ring is drawn round a hunter: it wears a chip, the attack mark
+  and a small picture of the machine it comes for, as that machine wears a tag with the
+  hunter's. Every walk's end hex is lit, tinted under a border of dashes crawling round it,
+  tapped or not; where the pack attacks from that hex this turn (a pusher striking the wall, a
+  hunter catching its prey), the warning stands on it, as the plan stands, and no tag says so;
+  a pusher with nowhere beside the wall to land that turn stays where it is under a BLOCKED tag. A tapped pack
+  shows its whole way as the field stands, past this turn's walk to its goal, dashed, each later
+  turn's stop numbered, and the thing it comes for under a crawling border with the attack mark
+  on it (a sword in the reticle's turning ring, one mark for both): a pusher's piece of the
+  wall, a hunter's machine; no other pack's whole way shows, a selected machine's hunters'
+  included. Each machine has one action (the Dingo two): one move,
   in one go, then it may fight; a fight ends the action however it ends, and the board under the
-  map says what each can still do. A selected machine lights the hexes its move reaches and
-  brackets the packs it could be ordered onto. A move is planned: its route shows from where the
-  machine stands, and the next move or order reads from the route's end. The one button reads
+  map says what each can still do. A selected machine lights the hexes its move reaches, one
+  border round the whole reach, and brackets the packs it could be ordered onto. A move is
+  planned: its route shows from where the machine stands, and the next move or order reads from
+  the route's end. An order can be given again: a machine with a move planned or an order
+  waiting shows, in hand, its reach from where it started, and a new move or order there
+  replaces the old one; a tap on it in hand takes its order back, and a tap on it with none lets
+  it go. A machine it carried that has since been given an order of its own, or one whose
+  starting hex another now plans to stand on, is taken back by UNDO alone. The one button reads
   ENGAGE while a fight is ready (a catch, or a machine ordered onto a pack), ENGAGE 1 OF N while
   N fights wait, each numbered on the map in the order ENGAGE opens them (a catch first, then
   the packs in the order their orders were given), else EXECUTE while planned moves wait, else
@@ -1146,11 +1187,16 @@ a stat.
   Pressure rises one. Nothing returns on the map: the shield is full as every fight opens. Once every
   machine has fought, is ordered, is caught, or can neither move nor reach a pack where it
   stands, the button pulses, whichever it reads.
+- **A tap and a double-tap** on the map work as a die's do in a fight: a double-tap on a
+  machine or a pack opens its codex, and a tap on one lands only once the double-tap window
+  (0.15 s, from the tap's release to a second touch) has passed with no second touch, its hex
+  bracketed from the touch until it does, so a double-tap never selects first; a tap on bare
+  ground lands at once.
 - **The readout**: holding or tapping a machine, a pack, the boss or the ground shows
   it in the strip under the map, as the fight's holds read: a machine's hull as a gauge (its
   shield is the fight's), its move and actions left, a chip for its damaged components; a pack's
   threat rating first ("A fight for three"), then its members (each foe type and its count),
-  move, a hunter's ring, what it is doing, and when its whole way gets there as the field stands
+  move, what it is doing, and when its whole way gets there as the field stands
   (at the wall, or catching what it comes for, this turn or in so many), and SEALED on the boss
   while its seal holds; the ground by
   its name (a wall by what it is): who crosses it, who wades it and who cannot, and whether
@@ -1160,9 +1206,9 @@ a stat.
   range its move reaches (or leaves it, if in range) and orders it, one step for UNDO; a
   second tap on the pack takes the order back. ENGAGE opens one fight at a time: the first
   order's pack and every machine ordered onto it.
-- **A fight** is one pack: nothing joins it, whatever its ring, and it joins nothing; a hunter's
-  catch is a fight a hunter, one hunter a machine. The machines whose attack range covers
-  it (1: beside it) may join. Orders onto several packs queue, ENGAGE opening them one at a
+- **A fight** is one pack: nothing joins it and it joins nothing; a hunter's
+  catch is a fight a hunter, one hunter a machine. The machines whose engage range covers
+  it (1: beside it, the one range everyone on the map has) may join. Orders onto several packs queue, ENGAGE opening them one at a
   time, a catch first; the order changes nothing a fight opens on, its dice included: a fight's
   seed is the battle's seed, the turn, its packs and its machines. Afterwards each machine in it has used its action, a wreck stays on its hex and blocks it for the battle (not built: today
   it leaves), a pack keeps only its survivors, by member, and Rift Pressure does not tick: it
@@ -1170,8 +1216,13 @@ a stat.
 - **Packs**: a pack is a composition on one hex: its members, each a foe type times a
   strength, in content order, the lead first, whose sprite the pack wears; a hold lists them. It
   hunts when its composition says so (its caveat, Content conventions), never by its foes; else it
-  pushes. A composition is a patrol (a few foes, one machine's fight), a formation (the
-  body's), an elite (an elite leading its own) or a boss's escort. Every member unpacks into
+  pushes. A composition is a patrol (a flanker alone, a duel for one machine; a pair of them,
+  or a hunting pack, a fight for two), a formation (the body's, a fight for three, which
+  pushes), an elite (an elite leading its own) or a boss's escort. A rank-and-file unit is
+  made for one role, a pusher's unless its entry says a hunter's or a flanker's: a formation
+  fields pushers, a patrol that pushes fields flankers, and a pack that hunts is led by a
+  hunter and holds only what keeps its pace and flies if it does; a unit standing outside its
+  role is a crossing its composition gives a reason for. Every member unpacks into
   the fight, and the survivors come back by member. A composition may name its lead, which then
   stands first; its grid is where each stands (Content conventions). Each pack carries its threat rating, the machines it is intended
   for: its composition's own, else a patrol 1, a formation 3, an elite and an escort 4, a pack
@@ -1181,10 +1232,10 @@ a stat.
   and never enter walls; a winged pack (the Cockatrice, the Ghost, the Bone Wyvern, the Bomb,
   the Drake, and their lines' recolours) crosses both as a flyer does and may stand there;
   moves 2 (fast 3, the Dire Wolf's line 4, massive 1). No foe and no pack carries a ring: a
-  hunter catches at the pounce, 2, one number for every hunter. A ring counts hexes as the
-  crow flies, over anything between. They walk round grounded machines, through each other and under a flyer, never
-  ending a walk on another unit's hex, so a flyer holds no ground and a pack holds none
-  against the packs; the walk shown is the walk played. The
+  hunter catches a machine beside where its walk ends, at the engage range everyone on the map
+  shares (1). They walk through every other unit, never ending a walk on another unit's hex, so
+  nobody holds ground against them and a pusher never turns back for a machine in its way; the
+  walk shown is the walk played. The
   enemy never attacks a machine on the map: pushers strike the gate, hunters catch.
 - **Pushers** make for the wall at a segment of their own: as a pusher is dealt it draws a wall
   column about the wall nearest it, from the turn and the pack: a pack the rift sends about the
@@ -1201,20 +1252,18 @@ a stat.
   and the bar's name; the whole wall is the target, so no line plugs it.
 - **Hunters** (the packs whose composition hunts) lock one machine when they appear, by its caveat (nearest, weakest, strongest, slowest or fastest; never
   the Prairie Dog, never a machine another hunter already hunts), keep it while it stands, and
-  walk to put it inside their ring; a hunter that finds every machine hunted pushes for the wall
+  walk to stand beside it; a hunter that finds every machine hunted pushes for the wall
   as a pusher does until one is free, and turns on it then (the log says so). One hunter a
   machine, so a machine is never caught twice at once. The machine a
   hunter comes for wears a tag by it, a plate a hunter with the hunter's picture and a target,
-  and the board says HUNTED BY. A hunter with what it comes for in its ring at the start of the
+  and the board says HUNTED BY. A hunter with what it comes for beside it at the start of the
   player's turn has caught it: that fight comes first and is fought to its end, the caught
   machine cannot move first, others in range may join; another hunter's catch (of another
-  machine) is a fight of its own after it. A prey that any route reaches is the only machine its hunter
-  catches, however near the others stand. A prey sealed off (no hex the hunter can walk to,
-  round walls and grounded machines, through packs and under flyers, and stand on puts it
-  inside its ring) is not safe: the hunter takes the machine that a walk this turn can put
-  inside its ring and that stands nearest the prey, its caveat breaking a tie and never one
-  that is never hunted; the tag moves to it and the pack's readout says whom it takes and why.
-  With none in reach that turn it walks as near its prey as it gets.
+  machine) is a fight of its own after it. Its prey is the only machine it catches, however near
+  the others stand: short of it, it walks as near as it gets. A prey no hex beside can be stood
+  on (every one a wall, water a ground pack cannot stand in, or another unit's) is not caught
+  that turn, which is a screen the player paid for with those units' places; nothing stands in
+  for it.
 - **The carry** (the Swallowtail's Muster Deck): the machines on the hexes beside
   it are lifted in place when it moves and travel as a ring round it, so they never block its
   way; it lands them as a block, each where it rode from the carrier, keeping their action, and
@@ -1263,9 +1312,18 @@ a stat.
   spawn lands on the nearest free hex to its mouth with no machine beside it, so it and its
   walk are seen for a whole turn and nothing appears on top of a detachment. Packs never
   escalate in place.
-- **The seam** is the flattening's edge: the row the rift's bleed reaches, the first row past
-  the rift's mouth at the start (row 4 at twelve deep, 5 at twenty), total on the rift's row and gone past the seam. It is the
-  clock's picture: no rule reads the flattened hexes.
+- **The seam** is the flattening's edge: the row the rift's bleed reaches, at the start a row for
+  every five of the field's depth and one more (row 4 at twelve deep, 5 at twenty). It is the clock's picture,
+  and it shows where the tears can open: the painting's edge stands on it, the seam's own row
+  the painting's front row and the row past it solid ground. No rule reads the flattened hexes.
+- **A peak is shown** once the packs have walked: the map keeps the seam where it stood and the
+  new tears unseen through the walks, then glides to the seam, whose edge sweeps to its new row
+  under a bright front with its name on it, then in on each new tear, zoomed, as it bursts open,
+  and back to where the player was looking at the zoom they had. Nothing on the screen takes
+  a touch while the map plays one of these, and nothing skips it.
+- **A hunter's lock is shown** after it: for every hunter that turned on a machine this turn,
+  in turn, the map glides in on the hunter, zoomed, and the band says HUNTED and who turns on
+  whom; then back to the player's view. A catch's band follows.
 - **Caches** (the field's loot; `content/loot.json`): the field holds its caches from the first
   turn, so many seeded with the map, one in each of as many bands along the wall, in the rows
   from the third past the rift's to the second short of the apron (never that close to the
@@ -1277,7 +1335,12 @@ a stat.
   shows what it holds): it holds its kind's salvage (a range), so many components of the
   battle's tier, and on its kind's chance (the Relic's) a blueprint of that tier the run holds
   none of, drawn from the battle's seed and the cache. A tap on a cache shows its kind and its
-  likely contents, never the contents. The campaign banks what was claimed as it banks the
+  likely contents, never the contents. On the map a cache is its kind's model while its hex is
+  the reconstruction's (a wrecked machine, a skeleton of theirs, splinters of their stone round a
+  lit core that turns) and a flat token where the painting has taken the hex, crossing over as
+  the ground does; over it in both worlds a chest on a plate, which says how good it is by what
+  it is made of (a bare chest, a strapped one with a lock, a solid treasure chest with a glint
+  on a doubled plate) and carries no name. A machine standing on one hides the model and dims the chest. The campaign banks what was claimed as it banks the
   kills: on a battle won or held, never on a fall; each component one copy in the stores, each
   blueprint the run's.
 - **Menace** is a foe's weight: its heaviest blow plus a quarter of its HP, rounded up, an
@@ -1290,7 +1353,9 @@ a stat.
   Fractures, in the cycle's order: the last at two thirds of it, the steps 1, 1.5, 2, 2.5 and 3, so
   later Fractures cost more and a battle that kills the field as it stood earns the Rupture
   with a third of the field left to leave. A Fracture pays out as a fight ends, announced over
-  the map (FRACTURE with its count and what it brings, the last THE RUPTURE). At the Fractures
+  the map (FRACTURE with its count and what it brings, the last THE RUPTURE); an elite it
+  brings is unseen until the map has glided in on its hex, zoomed, then bursts out under the
+  band, which names it. At the Fractures
   the tier names (tier one's first; tier two's first and third; tier three's first, second and
   fourth) the lead domain's next own elite composition not yet sent this battle emerges at the
   rift, or a wanderer (`wanders`: Gilgamesh, the Reaper, the Wild Hunt, the World Eater, the
@@ -1392,7 +1457,7 @@ and nothing scales a pack.
 
 - **Start**: three different tier-one chassis, picked freely from every one the engine can
   field, in their stock. Four squad slots, the fourth filled by an offer's chassis. The party is
-  dealt as in the campaign. The eight basics are free and without limit.
+  dealt as in the campaign. The six basics are free and without limit.
 - **Battles**: twelve, a tier every four, then the finale. Each is fought against a lead domain
   drawn at random and, from tier two, a guest. Its fights before the boss are as many as the
   Rupture's Fractures at its tier (three, four, five), and one, two and three of them are
@@ -1447,7 +1512,11 @@ and nothing scales a pack.
   Fractures' elites deal only the compositions whose gate holds their ramp, and where a domain's
   compositions of a size at a tier (an escort's, of its boss) carry any, together they hold
   every Convergence that tier is fought at, from its first (0, 4 and 8 for tiers one to three)
-  to 12, which the Convergence never passes (a turn cannot be passed once the finale is due). No
+  to 12, which the Convergence never passes (a turn cannot be passed once the finale is due).
+  Every patrol and formation writes down the question it poses, `design.question`, internal
+  like everything under `design`; and a foe's `role` (pusher, hunter or flanker; absent: a
+  pusher's) is what the validator holds a patrol's and a formation's members to, a crossing
+  saying why under `design.crossing`. No
   composition in content writes `ramp` yet.
 
 ## Known gaps between these rules and the code

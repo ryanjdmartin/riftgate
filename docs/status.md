@@ -20,15 +20,23 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   (gl_compatibility, the project's setting), so a lit part's colour there is the phone's. The
   Mac is out of reach and what it held outside git is gone: of the foeforge renders only the
   Augur's survive (`tools/foeforge/out/`, for her next pass; the rest `git show fb45141`), and
-  foeforge's `generate` and `fix` have no machine until a route for the image model is chosen.
+  foeforge's `generate` and `fix` have no machine until a route for the image model is chosen:
+  Ryan is trying the Windows PC first with a GTX 980 of his to go in (10 November), the cloud routes researched and parked (the
+  to-do's Art line).
 - Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last check,
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1081 tests, 304,222 checks, green on main (9 November, with the shapes relaid and recast,
-  the skirmish audit's step 3, the playtest list of 9 November, the Polar Bear's kit and name, the renamed ids and
-  the Lammergeier's rework; Godot 4.8-beta2; either map view on 6 November), and 1093 tests, 305,251 checks, green on
-  `ccr-722ca9f0-yj8na3` (10 November, main with the refit pass's first build and the wall strike by the rating); about four minutes in a cloud session, twenty on a slow one. A cloud
+- Tests: 1094 tests, 323,337 checks, green on main (10 November, with the Text tab, the side session's work, the shapes reworked on Ryan's play, the second map list, the
+  map session's shapes laid to the rift's row, the passing and the catch at one, and the map
+  playtest list), and 1111 tests, 361,077 checks, green on `ccr-722ca9f0-yj8na3` (10 November, that
+  main with the refit pass's first build, the wall strike by the rating, the trial's regen row,
+  every machine one more move, the field's dials, the goblin's line on its straight knife and wall,
+  the model as content and the formation pass; the
+  map suite now paints fourteen and sixteen deep too, which is most of the checks' rise); one
+  SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
+  either map view on 6 November; about four minutes in a cloud session, twenty on a slow one;
+  words after `--` run only the files whose names hold one (`-- loot rig`). A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
 - A cloud session gets Godot and the first import from the repository's session-start hook
@@ -46,8 +54,28 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 ## Branches
 
-Everything is on main as of 9 November 2026 but the formation and refit session's branch and the
-music session's, both below.
+Everything is on main as of 10 November 2026 but the formation and refit session's branch and
+the music session's, both below.
+`ccr-c71bc17f-hclj2c`, Ryan's map playtest list of 10 November and his answers to it (How things
+stand below), cut from main at `aa40832`, landed on main as a fast-forward on his word ("Ok,
+merge this into main so I can try it"), after taking the map session's main in a merge (the shapes laid
+to the rift's row, no body blocking, the catch at one: the bible, the rules, this file and
+`game/battle/bleed.gd` the conflicts, both sides kept, the bible's version main's plus one); it is merged and to delete with
+the rest (the formation and refit session meets its edits in `game/battle/battle_map_view.gd`,
+`game/battle/battle_screen.gd`, the bible and these records when it takes main).
+`ccr-df879779-uf9076`, the side session of 9 and 10 November (How things stand below: the test
+runner's crash check, the caches' pictures, the screen's half of the audit's mirrors, the enemy
+art routes parked), took main's Text tab in a merge (this file and the README the conflicts, both
+sides' words kept: the two sessions' entries, the bible's line with the live v0.497 and main's
+v0.498, the hangar's with versions 217 and 218 each named) and main took it as a fast-forward on
+Ryan's word ("Merge everything into main and clean up"); it is merged and to delete with the rest.
+`ccr-7d7ed303-tbdkg4`, the hangar's Text tab of 10 November (How things stand below), landed on
+main as a fast-forward on Ryan's word ("Ok merge into main please"); it is merged and to delete
+with the rest.
+`claude/hangar-bench`, the hangar's Bench tab (10 November, cut from main on Ryan's word, "Yes,
+start a fresh branch off main for it", so it landed ahead of the refit's branch), is on main as a
+fast-forward on his word ("Ok merge into main and republish the hangar"); it is merged and to
+delete with the rest.
 `claude/modest-ramanujan-uovd42`, the Polar Bear's kit of 9 November, its id's rename and every id
 following its name (How things stand below), landed on main as fast-forwards on Ryan's word ("merge
 it into main so I can try it"; "clean up and merge into main"); it is merged and to delete with the rest.
@@ -57,7 +85,10 @@ and this file the conflicts, both sides' words kept) and main took it as a fast-
 word ("Ok clean up and merge into main"); it is merged and to delete with the rest. `ccr-1e6e6571-7x7ayr`,
 the map session of 9 November (the shapes relaid and recast, How things stand below), took main's
 skirmish audit step 3 as it landed and main took it as a fast-forward on Ryan's word ("push this
-into main, so I can try it"); it is merged and to delete with the rest. The
+into main, so I can try it"), then again on 10 November with the shapes laid to the rift's row,
+the passing and the catch at one ("put this in main so I can try it in context"), and a third
+time that evening with the shapes reworked on his play, the 3D roads and the painted walls ("put
+this in main so I can try it"); it is merged and to delete with the rest. The
 branches that landed on 3 to 9 November, each a session of its own, fully merged and to delete
 from GitHub and the desk machine (the command is in the audit's last chat;
 `git push origin --delete` the merged ones, then `git fetch --prune`):
@@ -88,19 +119,45 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4` (a cloud session may not delete
 one). Each merge commit says how its conflicts were settled.
 
-Still working (9 November; every other branch on GitHub is merged): `ccr-722ca9f0-yj8na3`, the
+Still working (10 November; every other branch on GitHub is merged): `ccr-722ca9f0-yj8na3`, the
 formation pass and the refit pass's opening (the proposal `docs/formation_proposal.md`, the
 brief `docs/briefs/refit_pass.md` and the briefs it sends machines back to; the curve read's
 `--team`, `--tiers`, `--sizes`, `--domains` and `--ids`, its rounds and stalls; the formation
 pass's reads in `docs/measurements.md`, 9 November, taken before it took main; and the refit
 pass's first build and reads, below: the injury rule off in the game, the model as a what-if
-and a trial, the fight bot's aggressor habit; nothing in `content/` moved). It took main at
+and a trial, the fight bot's aggressor habit; and in `content/`, all of 10 November on his
+words: every chassis's move, one more; the refit pass's model (the stock dice, a regen by
+chassis, the basics, the drafts and four machines undealt); the goblin's line and the Marsh's;
+thirteen new foes (the Draugr and four flanker lines); the formation pass's patrols and
+formations in place of the old; and the Gate Integrity entry's strike). It took main at
 `2d489f7` on 9 November (Ryan: "merge main in here so that you're working on the latest engine
 and changes"): the bible, the measurements, this file and the to-do the conflicts, both sides'
 words kept (the bible's hunters row this branch's and its boss row main's, the measurements'
 sections main's four and then this branch's, the to-do's lines each by the side that moved it),
 and the proposal's tool following the one foe id it named that main renamed (`magma_elemental`).
-The bible's file is v0.509 (the refit's rows of 10 November with the locked row, the tiers row and the basic kit row), main's v0.497 with this branch's rows, its republish on Ryan's word
+It took main again at `e67645f` on 10 November (Ryan: "can you pull main in first? Some
+complimentary side work went in that I want to look at in parallel": the map session's shapes
+laid to the rift's row, no body blocking and the catch at one, the map playtest list, the
+hangar's Text tab, the caches' pictures, the test runner's crash check): the bible, the
+measurements, this file, the to-do, `tests/run_tests.gd` and `tests/test_battle_screen.gd` the
+conflicts, both sides kept (the runner resets the injury switch and counts script errors; each
+side's new screen tests stand; the bible's wall row this branch's strike with main's field
+words, its version above both; the measurements' sections main's and then this branch's by
+date; this file's entries each side's), and the engine merged by itself, the wall strike by the
+rating beside main's walking with no body blocking. Two campaign tests' scene was thinned to
+one patrol: with the strike by rating and the packs walking straight to the wall, the horde
+takes a city gate's whole 200 in the six unopposed phases after a wipe at a quiet start (160
+by head count), so the gate they need standing fell. `docs/vocabulary.md` and
+`docs/campaign_run.md` were made again on the merged tree.
+It took main once more at `fda02f9` that evening (the shapes reworked on his play and the
+hangar's Bench tab, so his map points are answered on the latest map code): the bible's version,
+this file's tests line and the measurements' order the conflicts, both sides kept.
+And again at `a3b48c0` before the re-deal and the formation pass began (Ryan: "Make sure main is
+in here first before you begin": his second map list of 10 November, the stores' cells, the
+BLOCKED tag): the bible (its version above both, v0.509; the three clocks row this branch's,
+the names row main's, the Armoured table row rewritten from content by its tool), this file and
+the to-do the conflicts, both sides kept; `docs/vocabulary.md` made again.
+The bible's file is v0.512 (with `ccr-4d58b054-3lyj0a`'s locked row, tiers row and basic kit row of 10 November), main's v0.504 with this branch's rows, its republish on Ryan's word
 (Pages below); and `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
@@ -199,6 +256,34 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
+- **Ryan's second map list of 10 November** (`ccr-c71bc17f-hclj2c`, cut from main at `ccd71d9`,
+  on main the same day on his word, "yeah, merge into main", after taking the shapes' rework in
+  a merge, this file the one conflict and the bible's version main's plus one, v0.504; his words
+  in the commits' messages and the bible's rows). The map: no
+  hunter's ring (its code gone), a hunter's chip with its prey's small render and the hunted
+  machine's tag, both with the attack mark (a sword in the reticle's ring); the threat pips under
+  the pack and no count; every walk's end under a crawling border, the warning on it where the
+  pack attacks from there this turn, CATCHES gone; a tapped pack's target the thing it attacks
+  (`BattleMapView.target_hex`: the wall segment, the machine), and no whole way for a selected
+  machine's hunters; a machine's reach under one border; an order given again
+  (`Battle.retake`, `move_again`, `reach_if_retaken`: a tap on the machine in hand takes its
+  order back, a new move or order replaces the old, each one undo; refused out of order where it
+  would break another machine's plan); the map's tap on a unit waiting out the die's double-tap
+  window; the caches' chests in place of name and pips; the tilt-shift along the rift's axis
+  (`far_axis`: right and left with the wall at the left), the vortex shifted right there, the
+  3D scenery a step darker; nothing takes a touch during a cutscene and nothing skips one; an
+  elite introduced as it arrives after a Fracture (`hold_spawn`, `play_spawn`); no STRIKES THE
+  GATE tag, and the rare pusher with nowhere beside the wall to land tagged BLOCKED (WAITS before). The skirmish,
+  built by a worker in a worktree and cherry-picked: Jenny's heat warning latched a machine
+  (once over three quarters until seen back under, the overheat every time); the hopper's worth
+  the game's Armoured, granted as each round opens and following the loads between, a Purge
+  stripping it until then, `ore_plate` retired everywhere; a resource that comes in whole units a row of
+  separate cells under the heat, bordered, a pixel of ground between ("split them into different
+  bars with borders and whitespace, in the same row": the hopper's four, the rage's five, the
+  Musk Ox's ammo; `UnitView._draw_cells`), the Muster a meter still, the Cassowary's
+  count cells too with its sixth marked (a heavier border, a diamond). Poses new: `hunter`, `elite`, `stores`. A route drawn by hand from a machine that
+  already has an order is still refused (the tap gives it again). All first cuts (the to-do's
+  judge line).
 - **The refit pass's direction** (9 November, from the chat after his play and the formation
   pass's reads; `docs/briefs/refit_pass.md`): the block-everything loop is structural (hull
   permanent across eight to ten fights, an injury destroying a component for good, a rolled
@@ -234,7 +319,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   (the brief's section 4, the bible's Foe roles row): a unit is made for a pusher's, a flanker's
   or a hunter's fight and tuned for it, a hunter its line and what keeps up with it, a flanker a
   duel and no small pusher, so the proposal's patrols rated one are to be rewritten and the
-  Meadow and the Waste want a flanker line. The bible at 0.503 carries it.
+  Meadow and the Waste want a flanker line. The bible's Foe roles row carries it.
 - **The refit pass's first build and reads** (9 November, on his "Your leans are good"; the
   brief's section 5; nothing in `content/` moved): the injury rule is off in the game
   (`Skirmish.injuries`; `--injury on` reads it back; the tests that read an injury turn it on);
@@ -282,6 +367,125 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   same); and `hotter=N` for the runners, whose probe says generation is no dial alone (every
   weapon two hotter with the cooling at one stalls the long fights), so no heat row went on
   the phone and the heat prices are the price pass's, the cooling and the gauge with them.
+- **Ryan's second read of the trial, and what was built on it** (10 November, the MODEL deal at
+  a regen of two; the brief's section 2 has his words on the model, the bible's move, grid, three
+  clocks and Foe roles rows the rest). The model on today's content: "Even with regen 2, I don't
+  find myself feeling like I need to use defensive tools. Kill-to-prevent-damage seems to be
+  back on the table, which is good, but its now the best choice every time. I feel like even
+  with zero regen I would be fine", the fodder's damage maybe too low and the player's a bit
+  high, "especially on the locked pieces", which is the Chassis Inventory session's. Built:
+  **every machine one more move** ("Let's set move 3 as the slowest move, for now, and give all
+  machines 1 more move across the board. The enemies feel like they move at the right pace":
+  3 to 6 hexes, the validator's cap; the foes' moves untouched, so a hunter gains a hex less a
+  turn on a machine that runs). On trial, each a dial on a debug build's new SETTINGS → TRIALS
+  page, where the refit's two rows moved too (the settings page had reached the bottom of the
+  phone's glass), nothing moved in the game until he picks: **FIELD DEPTH** (12, 14, 16) and
+  **OPENING** (+0, +1, +2 moves farther from the wall), for "the map is a bit too shallow ... a
+  little deeper, and the seam starts a little farther out"; and **FODDER** (FULL, 3/4, HALF: what
+  a kill fills of the Rupture meter when its pack came as no elite), for "If fracture rewards
+  were a little lower for fodder, then it becomes a bit more of a quantity game for non-elites
+  and I'll feel more like sending my flankers out". On the desk `RIFTGATE_FIELD_DEPTH`,
+  `RIFTGATE_OPENING` and `RIFTGATE_FODDER`. The width stays ("the right amount of 'epic'",
+  perhaps "a tier 2 or 3 width"). What the probes say (`docs/measurements.md`, 10 November):
+  depth alone buys no planning turn, since the opening is measured from the wall, so the
+  opening's distance is the dial for the first turns and depth the room for it, while depth by
+  itself puts the seam's first tears seven or eight rows from the wall where they are five and
+  lengthens every later walk from the rift, the time to regroup for an elite; fourteen with the
+  opening a move out is the pair to try first. At tier one the middle formation alone earns the
+  first Fracture, which calls the elite at once, and about four fights earn the Rupture, every
+  one to be had in the middle, so his "throw all machines down the middle" is the meter's
+  arithmetic; a flank patrol already pays more for the machine sent, and what keeps the flankers
+  home is that the middle is enough.
+- **The goblin, and the recolours' archetype** (10 November, later). His lesson from the play:
+  "A straight attack, and a block of some kind, so they're a true frontliner and not a lame
+  not-really-damage-threat. Probably a good lesson there"; and his call on the form, hearing
+  that a block that is an action softens it: "I think the earlier goblin can have shield wall
+  as well." Built: the tier-one Goblin stabs straight for 4 and raises the Guard's Shield Wall
+  one action in three, its codex and its Stab's line redrafted as little as the rule needs (two
+  drafts on the Text tab, none of them signed; a new slot for its Shield Wall's line); the 4 is
+  a placeholder (with the wall the warband costs two lights a little less than the old knife
+  did and the treant's grove a little more, and nothing reaches three machines either way);
+  its menace follows the knife, 5 where it was 3, so a goblin's kill is worth more on the
+  Rupture meter and in salvage and the Meadow's thresholds rise with it. The
+  first run of the goblin's probe was wrong and what it told him is corrected (it kept the
+  loaded content between variants, so a variant's wall stacked onto the next: the rows after
+  the first walled one, the grove's and the always-on armour's; `docs/measurements.md` says
+  which and holds the rerun): armour that is always there does not "hold for the same hull",
+  it walls the lights, so his pick is the better form and Claude's lean of that hour is
+  withdrawn. His question of the same message: "If the captain is the back rank at tier 3, what
+  stands in the front rank? I didn't think the recolours changed like, the archetype of the
+  foes?" Answered from content (the brief's section 4 has every line): tier two's unit stands
+  there, Goblin Guards at the Meadow's tier three and Wights at the Marsh's; fifteen of
+  seventeen lines keep their rank and role up the ladder, and the two that do not are the
+  Goblin Captain and the Lich, back-rank commanders at tier three, drafts of the ladder's brief
+  of 28 October that he never marked. Open, his (the brief's section 7): each steps into its
+  line's front with its Warcry or Reraise as the third move, or stands as a unit of its own
+  while its line gets a tier-three rung; with it the Guard on the new knife and the Revenant's
+  claw (both since answered and built: this bullet's end and the formation pass's, below). His
+  calls, the same evening: "Put the captain in front, yeah", built (the Goblin
+  Captain the tier-three goblin in the front rank, a straight knife of 6, the Shield Wall and
+  his Warcry the third move; the Goblin Guard on the same knife at 5; each a placeholder a step
+  over the rung under it; the four grids that field the Captain moved him into a front cell,
+  the captain's warband two Captains and two Guards before two Alraunes; the shown drafts
+  redrafted as little as the rule needs, none signed); the Lich "its own thing ... its own
+  backliner" and "The tier 3 revenant shouldnt be a lich, it should be, well, a tier 3
+  revenant", built with the formation pass (below); and of a
+  block that walls the lights, "don't worry about walling the lights too much because the gobs
+  are part of a threat-3 formation ... there should be at least one heavier unit in there to
+  help out", so a formation is read with a heavier machine among its three and the pair of
+  lights is no yardstick for a pusher (the bible's Foe roles row).
+- **The refit pass's model is content** (10 November, on his "The re-deal with regen and heat,
+  despite my tests showing it easy, seems like the correct way to go ... start with the minimal
+  swaps (The "Model" setting) and we'll go up from there"; the brief's section 5 has it whole).
+  The trial's MODEL deal is written into `content/`: on every stock die a shield's slot holds a
+  defensive basic (the Halo Projector, a Barrier, where a shield for anyone stood; the Shoring
+  Jack, Armoured 2, where one for itself did) and a vent's a Twin Autoguns, a placeholder; the
+  basics are six, the four guns each making heat; every chassis regains its own `shield_regen`,
+  one to three, the faster on the smaller gauge ("a smaller shield that regens fast, a fatter
+  shield that regens slow, some variation of the middle"; the Nemesis and the Buzzard one by
+  role); the Stingray cools one; the ten slottable shields and vents are planned drafts nothing
+  deals; the four machines back in design are undealt by `"status": "planned"` on their own
+  entries, their kits still built. Saves from before are refused (the three save versions).
+  The trial's rows are gone but one: SETTINGS → TRIALS → SHIELD REGEN (BUILT, 0, 1, 2, 3), a
+  flat regen in place of each chassis's own; `--refit` and `RIFTGATE_REFIT` keep the what-ifs
+  that still mean something (regen, cooling, hotter, a price on the Barrier basic). The
+  campaign runner reads it as the what-if did (`docs/measurements.md`: battles won 10% where
+  they were 3%, the Rupture reached twice as often, four battles in five still lost). Not
+  landed, each a later step: the re-deal proper (what each die wants in a vent's old slot), the
+  component pass (three pieces to be made equipment, three back in design, the Blast Door, two
+  modules), the heat prices, the four reworks.
+- **The formation pass landed** (10 November; Ryan: "We've gotten off on a tangent from the
+  main issue, which is the actual formation pass. What do we need to actually execute on it?",
+  then, to the list: "Revenant 3 name is whatever you think. Make revenant stab flat, or flat
+  with a Marsh twist, if a simple one exists. Duelists are as you see fit, might as well jam
+  them in here as well as part of the pass"). The refit brief's section 9 has it in its order;
+  the pass is structure and moves no standing foe's number but the two claws. Built: the
+  Marsh's line (the Revenant's and the Wight's claws flat, 3 and 4; the Draugr the tier-three
+  revenant, the name a draft for his name pass; the Lich its own backliner behind it; no Marsh
+  twist on the claw, since every simple one is another unit's already); a flanker line a
+  domain, each a duel for one machine from his bench of 3 November and from moves the engine
+  ran already (the Whisker Cat, the Roc, the Dullahan, Cerberus, each with two recolours,
+  placeholder sprites and drafted, unsigned text); a role on every rank-and-file foe (`role`:
+  a pusher's unless it says a hunter's or a flanker's, internal) and the validator holding a
+  formation to pushers, a patrol that pushes to flankers and a hunting pack to a hunter's lead
+  and what keeps its pace, a crossing giving its reason; the proposal's grids re-cut and landed
+  in `content/factions.json` in place of the old patrols and formations (the pruned
+  formations, the antlions out of the Waste's pushers, the fronts by tier, one hunting pack a
+  domain and tier where the rank and file hunt, a lone duelist the patrol rated one and a pair
+  the heavy patrol rated two on the ramp's later steps), a question on every one and required;
+  the opening placing its patrols from those that push, so no hunter stands at turn one. The
+  elites and the escorts are as they were. The bible's Foe roles row is Decided and its
+  hunters row settled (v0.511). The reads (`docs/measurements.md`, 10 November): a lone
+  duelist is a fight every machine of its tier wins, dear only where its question bites (the
+  Roc's stoop a quarter of the Skua's hull, Cerberus a third of a thin gauge's), and a pair is
+  a wall for the slow lights alone; the landed set by the curve read and the campaign runner
+  are there too. Two things found building it, both fixed with what the engine had: the
+  Dullahan could ready its rise again after rising (the action's `once`), and three scorching
+  bites walled the thin shields (the bites are plain, the scorch on the maul; a machine's
+  armour does nothing while its shield stands). `tools/formation_proposal.py` is retired
+  (`git show 3e44fe1:tools/formation_proposal.py`); the proposal stays for the bosses' stat
+  blocks (its section 6). Not in it: the standing foes' numbers, the bosses' blocks, the
+  rising threat's rule ("leave out rising threat for now").
 - **Ryan's play of Phase 2** (9 November, his read of the long wall as built, on the phone): hard
   to judge; the packs as they were too hard, "but not for any particular one reason"; incoming
   damage high, so the tank tanked every turn while the rest could not take foes down reliably
@@ -312,9 +516,9 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   the bench and the order. The proposal was written to a scratch worktree as content, validated,
   and read by the curve read with the default four, a light four (the Skua first, for the rating
   of one) and a tier-two four (`--team`, new), its bands the tables' last columns and the gates
-  and the pruning read off them; `docs/measurements.md`, 9 November. Nothing in `content/` moved;
-  the grids are code in `tools/formation_proposal.py` (it writes them to a worktree for the reads
-  and merges the reads into the tables; it retires with the proposal). What the reads said: at
+  and the pruning read off them; `docs/measurements.md`, 9 November. Nothing in `content/` moved
+  with the proposal; its grids landed on 10 November, re-cut (the bullet above), and the tool
+  that held them as code is retired. What the reads said: at
   tier one only the massive-anchored formations are a decision for three (the sandworm ambush,
   the magma vent), every fodder formation reads free for three at eight foes and the eight-slot
   variants move no band against the six (twelve prunings), so the fodder's lever is the refit's
@@ -324,10 +528,87 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   flights read as twos, the wolf pack and the warg pack as ones (a two on them his word); the
   light four walls on every massive and stalls against the grave field (the giants' line has no
   escalation). His first answer, the same day: the bombs never hunt, so the Peak's hunters are its
-  elites and the wanderers; its first question is settled and twelve stand. Next: his marks on
-  them, or his word to land the grids on the leans so he can play them (he wants the new
-  formations judged before the refit), then the content lands with the opening's line, the
-  vocabulary and the rules, and the bosses' blocks in a session of their own.
+  elites and the wanderers; its first question is settled, and the rest went by his "Your leans
+  are good" and his calls of 10 November. Still the proposal's: the bosses' blocks, a session
+  of their own.
+- **The map playtest list of 10 November** (`ccr-c71bc17f-hclj2c`, on main the same day; five
+  points from Ryan's phone, then his answers). A tear's ring stands on its hex: it was drawn in
+  screen space at its map position, so it hung at one place on the glass while the map scrolled
+  ("it's just fixed in place as I pan around"), and its plaque left the transform in map space
+  for the edge tags and the scan lines after it. A tear has no edge tag ("same way the rift
+  doesn't"; none had ever drawn, the tags' list refusing one with an error a frame). The boss
+  has a picture of its own on the map ("now it's just a giant blob. Probably needs to be
+  actually regenerated for a sensible size"): `art/foes/<id>_boss.png`, 48 pixels, cut from its
+  combat sprite for all twenty-one that can lead a boss unit (the domains' bosses and benches)
+  by `forge.py boss`, which needs no image model; the token stays for the small faces, and a
+  test ties the pictures to content. Under the painting the scenery past the field is one shaded
+  ground with no cells ("the out-of-play areas on the flattened parts of the map are made
+  clear"; `PaintedMap`). The vortex stands a little higher with the wall at the left
+  (`BattleMapView.rift_drop`). The painting's edge stands on the seam's own row ("The point of
+  the seam was to visually represent where the tears can open"; `Bleed.gradient`: it stood at
+  half the seam's distance, so a tear "spawned at the apron without the seam moving"): four rows
+  painted as a battle opens and the field to the apron by the third peak, the engine untouched.
+  A peak is shown as it happens ("an animation/cutscene when one opens. And ... when the seam
+  moves, too"; `BattleMapView.hold_peak` and `play_peak`, the rules' "A peak is shown"): held
+  through the packs' walks, then the seam's sweep under its front and each tear bursting open,
+  a press skipping it; its two sounds are borrowed (`contact`, `reveal`). A hunter's lock is
+  shown the same way ("We should pan and zoom to hunters when they acquire as well";
+  `play_locks`): the map glides in on each hunter that turned on a machine, zoomed to 1.6 as it
+  is on a tear, the HUNTED band over it, every lock of the turn in its turn where the first
+  alone was declared, then back to the player's view. The `tear`, `peak` and `hunted` poses are
+  new. His notes for a later session are in the bible's tears row (the seam starts too
+  far up and could be curved; crossing the map is the issue more than the tears' distance). All
+  first cuts (the to-do's judge line).
+- **The side session of 9 November** (`ccr-df879779-uf9076`, beside the formation and refit pass,
+  on Ryan's "go"; on main since 10 November). The test runner hears a crash: it reads the engine's log for
+  script errors while each test runs (a Logger) and fails the test for each, in the test or under
+  it, where a test that crashed after its first check had read as passed; `tests/test_runner.gd`
+  raises one on purpose so the suite fails if the runner ever stops hearing them (that one SCRIPT
+  ERROR is in every run's log); the suite as it stood hid none. The runner takes words after
+  `--` and runs only the files whose names hold one (`-- loot rig`), for a quick look. The
+  caches have pictures (Ryan: "can we get models (and art, when flattened), for loot caches on
+  map?"; first cuts, the to-do's judge line): a lowforge model a kind on solid ground
+  (`cache_derelict` a canted hulk, `cache_carcass` a skeleton of theirs, `cache_relic` splinters
+  of their stone round a lit core the map turns; `Map3D._sync_caches`, in the world's layer like
+  a prop, sunk and gone where the painting has the hex, hidden under a machine) and a 16 by 16
+  token a kind under the painting (`art/loot/`, typed grids in `tools/loot_tokens.py`,
+  `BattleMapView._draw_caches`), the name and the tier's pips over both; a kind's files are
+  keyed by its id and `tests/test_loot.gd` ties them to content; `RIFTGATE_CACHE_DEBUG=1` lays
+  one of every kind in each world. The Relic's light is a new tile, the enemy's violet (`rift`),
+  with `stone` and `hide` beside it. The skirmish audit's structure 13 is done: the screen's
+  Sweep rank is the engine's `sweep_rank_of` and the intent's number the engine's
+  `intent_value`, one read for the field's chip and the readout's; the engine gained that one
+  function and plays as it did, so no behaviour trace was run. Both pages were republished on
+  his word (Pages). His question on enemy art from a cloud session was researched and parked
+  (10 November, the to-do's Art line); nothing is built for it.
+- **The hangar's Text tab** (10 November, `ccr-7d7ed303-tbdkg4`; the bible's shown-text row): Ryan,
+  9 November, wants to work on "all in-game text that the player sees" and to get "a strong
+  foothold on content I've written myself, so that you can do a better job of mimicking my
+  intended writing style", the hangar being "hard to find what is visible in-game, what needs
+  editing, what's outdated, and compare between entries". Claude's first cut, built on that
+  statement, his to judge in use (the to-do's Ryan list). `tools/hangar_text.py` is the one
+  inventory of shown text: 1,326 texts in seventeen kinds (a term's entry, a codex, a flavour,
+  a passive, a module's rule, a foe's move, a title; and read-only, two tables the code holds:
+  a status's line in `sim/effects.gd` and a foe's aim and condition words in `sim/foe.gd`),
+  each with where the game draws it, the engine's facts under it and its maker's voice. 1,064
+  are drawn by a screen today (943 drafts, 121 empty) and 262 by none: every component's
+  flavour, every module's codex and flavour, the four domains' flavour, the planned moves and
+  rules, 88 terms the keywords list leaves out (the rules' reference only), and the 43 status
+  lines, which since 2 November show only in a codex's KEPT FOR THE BATTLE row (a chip's
+  meaning is its term's entry). The tab is one row a text by kind, grouped by voice, filtered
+  by state, edited in place; he signs a text his own (Mine, or by saving what he typed), passes
+  a session's draft (Pass), pins texts to keep beside what he writes, and leaves a note for the
+  session. His work waits in the page's `text` collection until `--fold` writes it: his words
+  into content where they stand (the hand-laid files keep their layout), his marks into the
+  ledger `docs/hangar/text.json`, his own texts into `docs/voice.md`, the corpus a session
+  reads before drafting shown text (`CLAUDE.md`'s rule). A signed text a session rewords reads
+  Changed since, one whose mechanics moved reads Stale. The ledger is empty: nothing is signed
+  until he signs it, his four chassis codexes and three flavours included. Left out, and said
+  so on the tab: entries' own names, the lines the code composes from numbers, the screens'
+  furniture and Jenny's lines. Checked on a local copy of the page with a stand-in database
+  (signing, writing, the next row, a live sync under a half-typed text, a fold into
+  `chassis.json` and the hand-laid `foes.json`, both flags, a phone's width), then published
+  (Pages, below).
 - **The Lammergeier's rework** (9 November, `ccr-a0b35006-od22d2`; the bible's Lammergeier row):
   Ryan sent it back for more than a fix ("A chassis based around opening an empty spot isn't a
   good design"), the slot form waiting on arrivals the long wall cut. His shape, built: "the
@@ -423,7 +704,30 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   views (the river's bars, the gorge's mass and the city's blocks in the 3D); the to-do's Ryan
   list has the phone judge, with the counts and the authored sectors (the long wall proposal's
   lean, a content proposal only if these are not enough). The bible's shapes and field rows carry
-  it (live on the page since 9 November's republish, Pages below).
+  it (the shapes row live since the republish of v0.496; the field row's 10 November sentence and
+  the section 12 row on the blocking are this file's, not yet the page's, Pages below). His first play (10 November): the flattened side wants features all the way to the back,
+  built the same day: the rift's mouth is the bared ring beside the rift and nothing more, every
+  shape laying from the rift's row (eight open rows at twelve deep), the opening's packs off the
+  rift's row (`Battle.OPENING_FLOOR_ROW`) and the seam keeping its own start (row 4 at twelve
+  deep, `Battlefield.seam_start`); the shores laid after the guarantee so no bar outlives its
+  water. His second note, built the same day on his go ("it's fine to slide the units under each
+  other"; "I'd love to try getting rid of the hunter catch radius"): no body blocking, every unit
+  passing every other and nobody ending on another's hex (`Battlefield.passes`), the pusher that
+  turned back and the sealed-off prey's stand-in gone with it; and a hunter catching at the engage
+  range everyone shares (`Unit.ENGAGE_RANGE`, 1; `ContentDB.HUNTER_RING` gone), the readout's ring
+  line with it, the ring drawn now the hexes beside the walk's end. The bible's passing, crossing,
+  ring, fights and hunters rows carry it (v0.500); the campaign runner's 40 runs after it are in
+  `docs/measurements.md` (a direction). His play of the shapes in context the same evening, built:
+  the 3D map's road UV turned with the view, so the roads meet in both views as the painted ones
+  did; the painted world drawing a wall by what it is (crags the ranges, mesas a stepped block,
+  towers lit blocks, cliffs a ridge edge to edge: `DomainGround.draw_walls`); the river winding
+  through the whole field through its centre with narrows (water fords) and tributaries, no land
+  ford, the roads to the narrows; the fjord flooded, half to two thirds water with lanes carved as
+  the gorge's channels are (`BattleMap._carve_lanes`) and islands; the gorge a trunk for every
+  five hexes of wall with junctions; the badlands in groups of two to five mesas; the steppe with
+  scrub belts, a crag for every seven hexes of wall and grass on the open field in the 3D (the
+  dress's `field` word). The bible's shapes row carries his words (v0.501). The maps' seeding issues
+  are the to-do's.
 - **A hunter's reach** (8 November, `ccr-d26a1321-xg9xge`, from Ryan's bug report: on the first
   enemy walk a goblin warband caught the Polar Bear from three hexes, "No indication of catch
   range, nor why a normal goblin pack is now suddenly a hunter"). The three came from a pack
@@ -587,7 +891,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   rockets, shell and casing; shot trails tabled behind SHOT TRAILS. All first cuts for Ryan's
   judge lines; the render margin (a piece fired out cut at the view's edge) is his to judge running.
 - **The Honey Badger's hopper** (31 October): a load a foe its weapons damage, four at most,
-  every two loads a point of Ore Plate, the first buff a store grants; "never destroyed" is the
+  every two loads a stack of Armoured, granted as each round opens (10 November; the Ore Plate before it), the first buff a store grants; "never destroyed" is the
   Reinforced Skeleton module. Read at 30 seeds, Ryan's second fallback landed.
 - **The Petrels** (30 October): the Storm Petrel's shield pays its weapons' heat and zaps the
   target for what it paid; the Giant Petrel banks rerolls and buys an ally's action. Both
@@ -657,10 +961,12 @@ Ryan set on 9 November after his play of Phase 2: shields and vents leave the di
 weapon or equipment, the shield innate and regenerating, cooling passive, the hold the heat
 decision, component destruction off to test, two rerolls kept; the formation pass folded into it,
 its proposal's grids re-cut under the new model and read by hull lost), in its brief's order: the
-what-if and its first reads are in (9 November); next his play of the trial (the to-do's Ryan
-list) and his answers to the brief's section 7, then the content (the stock re-deal as a table
-in chat first, the regen and cooling numbers, the heat prices, the pushers each with a rising
-threat, the flankers as duels), the vocabulary, the rules and the rows. Then the long wall's other open item (the bible's section 12: the shell). Beside them, the rest of the skirmish code audit
+what-if and its first reads are in (9 November), his two reads of the trial, the model as
+content and the formation pass (10 November: the brief's sections 5 and 9); next his play of
+what landed, with the field's dials (the to-do's Ryan list), and his answers to the brief's
+section 7, then the content still to come (the stock re-deal proper as a table in chat first,
+the component pass, the heat prices, the foes' numbers after his play, the bosses' stat
+blocks, what prices a round), the vocabulary, the rules and the rows. Then the long wall's other open item (the bible's section 12: the shell). Beside them, the rest of the skirmish code audit
 (`docs/skirmish_audit.md`; its questions answered and its bugs built 8 November; the Ammit's Tap
 is section 12's, its test the to-do's): its structural steps in order (step 3 built on
 `ccr-8df9952c-4cccdf`, the mine's half gone with the slot mines on 9 November; then the bot's
@@ -711,18 +1017,26 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. The live page is v0.496, dated 9 November (the
-  page's Version 501, published from main at `f048e67` on Ryan's word, "republish the bible":
-  main's file whole, since the live v0.488 matched `dc265dc9`'s byte for byte and so needed no
-  merge; it carries the hunt the composition's and the rings purged, the map session's shapes and
-  field rows, the playtest list of 9 November, the Polar Bear's kit and name and every id
-  following its name). Main's file is v0.497 since the Lammergeier's rework landed (its row, the
-  Gel's and the reinforcement row's slot-mine lines, the tables), unpublished, its republish on
-  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.503, main's with the formation and refit
-  session's rows (the hunters row's who-may-hunt, the Foe roles row's direction, the kit, shield,
-  triangle, redirection, injury, command-die, Puffin, Whip Scorpion, Polar Bear, Swallowtail and
-  Musk Ox rows' refit lines, section 12's items), unpublished too. BASE for the
-  next merge is `f048e67`'s file. The live
+  `docs/design-bible.html` after every change. The live page is v0.497, dated 9 November (the
+  page's Version 502, published from main at `2d489f7` on Ryan's word, "republish the hangar
+  page and the bible": main's file whole, since the live v0.496 matched `f048e67`'s byte for byte
+  and so needed no merge; it carries the Lammergeier's rework, its row, the Gel's and the
+  reinforcement row's slot-mine lines and the tables). Main's file is v0.504 with the second map list's rows (the marks row
+  rewritten, the pack, undo, gesture, Fracture, reconstruction and tears rows, the Badger's and
+  the store's) on the shapes' rework's v0.503 and the hangar's Bench tab's v0.502, unpublished; v0.501 since the map
+  playtest list landed (the boss's picture, the scenery under the painting, the tears row's
+  read of 10 November and the hunters' declaration, on the map session's v0.500 and v0.498's
+  Text tab rows: the hangar row's tabs and the shown-text row), unpublished, its republish on
+  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.511, main's with the formation and refit
+  session's rows (the hunters row's who-may-hunt and its settled hunting packs, the Foe roles row
+  Decided with the flanker lines, the goblin's
+  lesson, his call on its form and the pusher's yardstick, the recolour row's two rungs that
+  changed their archetype, his calls on each and the Draugr,
+  the wall row's strike by the rating, the kit, shield, triangle, redirection, injury,
+  command-die, Barrier and Ward, Puffin, Whip Scorpion, Polar Bear, Swallowtail and Musk Ox
+  rows' refit lines, section 12's items, and from his second read the move row's 3 to 6, the
+  grid row's and the three clocks row's lines on the depth and the fodder on trial),
+  unpublished too. BASE for the next merge is `2d489f7`'s file. The live
   page may carry rows ahead of main's code while a branch has not landed (the music session's
   track rows: Hold The Line's settled pair and its trial notes, Night Shift's duelling basses,
   The Far Bank's fretless bass). Before
@@ -737,20 +1051,27 @@ commands are in `README.md`.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
-  the last publish's before it is replaced, and `edits` and `designs` read first. At the page's
-  version 216 (9 November, main at `f048e67`, every id following its name on Ryan's word: "Yes,
-  rename them all"): the files changed since version 215 (main at `a95e0a1`, which the page
-  matched file for file, the Polar Bear's id and the hunts work of 8 November) and the old ids'
-  27 paths removed; the Kite's and the Buzzard's cards, models and renders and the renamed foes'
-  sprites checked on a local copy of the page. Behind main since the Lammergeier's rework landed
-  (`content/chassis.json`, `components.json` and `vocabulary.json`, and `designs.json` from its
-  briefs; the page and every other file as main's): the publish was refused by the permission
-  check as unrequested, so it waits on Ryan's word. `edits` empty, `designs` the two folded ideas (the Giant
-  Petrel and the Needletail, briefed), and one name candidate of Ryan's, the Tesla Gauntlets of
-  28 September, still saying "the Armadillo's status" (his words of then, kept). Behind main since the Lammergeier's rework landed (9 November) by `content/chassis.json`,
-  `content/components.json` and `content/vocabulary.json` (the Mines), its republish on Ryan's word.
+  the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
+  page's Version 219 (10 November, main's `f49a90f`, on Ryan's word, "Ok merge into main and
+  republish the hangar"): the page with its Bench tab, his working sheet for a machine, the
+  second tab (the roster by where each machine stands, one flat sheet a machine; no file and no
+  collection of its own, every write an edit of the entry in `edits`, his notes, state and
+  upgrade ideas under its `design.bench`), with the three files that had moved since: the
+  vocabulary (the map session's four codex lines), `text.json` for them and `designs.json` for
+  its stamp. The live page matched `5a490e5`'s file byte for byte before it was replaced, and
+  each of the three its last publish. Version 218 (main's `5a490e5`) was the page with its Text
+  tab, `hangar/text.json` new beside it (332 files) and `designs.json` with its stamp. Version 217 was
+  the side session's publish of main at `2d489f7` (9 November, on Ryan's word, "republish the
+  hangar page and the bible": the three content files the Lammergeier's rework moved and
+  `designs.json` from its briefs, the live copies matching `f048e67`'s before they were replaced
+  and main's after), recorded on its branch and so unknown to the Text tab's session until the
+  two met here; version 216 was main at `f048e67`. `edits` empty, `text`
+  empty, `designs` the two folded ideas (the Giant Petrel and the Needletail, briefed), and one
+  name candidate of Ryan's, the Tesla Gauntlets of 28 September, still saying "the Armadillo's
+  status" (his words of then, kept). The Text tab's ledger is empty until he signs. The page
+  does not show the caches' models (they are no chassis).
   `build/hangar/designs.json` is one
-  878 KB line, so a session that must read it whole before publishing writes it indented first.
+  795 KB line, so a session that must read it whole before publishing writes it indented first.
   Its lit parts show as the phone's renderer shows
   them, the light eased by the power 1/2.2 as the game eases it (`MechRig.light`); every file
   the page reads is fetched with a stamp on the URL. Its database: Ryan's saved edits

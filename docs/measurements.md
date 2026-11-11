@@ -5390,6 +5390,136 @@ seed 7, BADLANDS, ponds, narrowest crossing 5, the guarantee opened 0
  , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
 ```
 
+## 10 November: the shapes laid to the rift's row
+
+The same run (`--seeds 200 --width 20 --height 12`, every shape on seeds 1 to 200) after Ryan's
+play of the 9 November shapes ("the flattened side needs features, all the way to the back"): the
+rift's mouth is the bared ring beside the rift and nothing more, so every shape lays from the
+rift's row and has eight open rows at twelve deep where it had five.
+
+| Shape | Open | Rough | Ruins | Water | Walls | Crossing | Opened | Route | Phases T/W/Wh/H/F | Reach T/W/Wh/H/F | Steps | Lone |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| RIVER CROSSING | 68% | 10% | 0% | 22% | 0% | 200 of 200 at 3+ | 0.0 | 11.1 | 3.0/3.0/3.0/3.0/3.0 | 35/55/78/82/82% | 0% | 0.0 |
+| FJORD | 72% | 10% | 0% | 19% | 0% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/57/77/82/82% | 0% | 0.0 |
+| BADLANDS | 31% | 50% | 0% | 4% | 15% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 31/51/69/70/82% | 19% | 0.6 |
+| OPEN STEPPE | 98% | 0% | 0% | 1% | 0% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/59/81/81/82% | 3% | 0.0 |
+| RUINED CITY | 27% | 0% | 27% | 1% | 45% | 200 of 200 at 3+ | 0.5 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 23/35/46/46/82% | 0% | 0.0 |
+| GORGE | 47% | 8% | 0% | 1% | 45% | 200 of 200 at 3+ | 3.0 | 11.6 | 3.0/3.0/3.0/3.0/3.0 | 24/35/45/45/82% | 0% | 0.0 |
+
+Read: with eight rows to lay in the heavy shapes are heavier (the city 45% of the field in towers
+where it had 29%, the gorge 45% in cliffs where it had 27%) and the ground's room smaller (tracked
+reach after two phases 23% and 24%, hover 46% and 45%, against the steppe's 35% and 81%; the
+flyer's 82% untouched). The gorge is the first shape the guarantee has to open for: 3.0 hexes a
+map on average, where every other shape opens none or next to none (the city 0.5), since its
+trunks start at the rift's row now and the rift's ring is bared after them; a trunk that does not
+meet the ring is opened to it. The river and the fjord grew with the band (22% and 19% water) and
+the badlands' scrub covers half the field at the mesas' feet. Every map keeps the crossing at
+three or more and every way of moving its path; the route is unchanged but the gorge's (11.6).
+This is the edge of "how far we can push it" at today's counts: a tracked machine with a quarter
+of the field in reach after two moves, and a city or a gorge nearly half walls. Nothing here is
+a decision: Ryan judges the look on the phone (the to-do), and the counts are placeholders.
+
+Every shape at seed 7 (`--show 7`; `~` water, `^` a wall, `"` rough, `#` rubble, `=` a street or
+road, `R` the rift, `G` the gate, `|` the wall, the scenery outside the brackets):
+
+```
+seed 7, RIVER CROSSING, river, narrowest crossing 5, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[. . . . . . = . . R R R . = . . . . . .], , , , 
+ , , , ,[. . . . " . = . . . . . . = . . . . . .], , , " 
+" " " "[~ . . ~ ~ . = " " . " . . = ~ ~ ~ " . "], , " ~ 
+ ~ ~ ~ ~[~ ~ ~ ~ ~ " = ~ ~ ~ . . " = ~ ~ ~ ~ ~ ~]~ ~ ~ ~ 
+~ ~ ~ ~[~ ~ ~ ~ ~ . = ~ ~ ~ ~ ~ ~ = . ~ ~ ~ ~ ~]~ ~ ~ ~ 
+ " , , ~[~ . . . . = ~ . ~ " ~ ~ = . . . ~ ^ ~ ~]~ ~ ~ , 
+, , , ~[" . . . . . = = = = ~ ~ ~ = . . " ^ " "]" , " , 
+ , , " ,[. . . . . . . . . = " " = . . . . . . .], , , , 
+, , , ,[. . . . . . . . . . = . = . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . = = . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, FJORD, fjord, narrowest crossing 5, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+ , , , ,[, , , , " " " , , , , , , " " , , , , ,], , , , 
+, , , ,[. . . . . ~ ~ . . R R R . ~ ~ " . . . .], , , , 
+ , , , ,[. . . . " ~ ~ " . . . . . ~ ~ . . . . .], , , , 
+, , , ,[. . . . . ~ ~ ~ " . . . " ~ ~ " " . . .], , , , 
+ , , , ,[. . . . " ~ ~ . . . . . " " ~ ~ . . . .], , , , 
+, , , ,[. . . . . ~ ~ . " . . . . . . ~ ~ . . .], , , , 
+ , , , ,[. . . . . ~ ~ ~ . . . . . . ~ ~ . . . .], , , , 
+, , , ,[. . . . " ~ ~ " . . . . . ~ ~ " " . . .], , , , 
+ , , , ,[. . . . ~ ~ . . . . . . . " ~ ~ . . . .], , , , 
+, , , ,[. . . . " . . . . . . . . . " . " . . .], , , , 
+ , , , ,[. . . . . . . . . . . . . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, BADLANDS, ponds, narrowest crossing 5, the guarantee opened 0
+ " " " "[" " " " " " " " " " " " " " " " " " " "]^ " " " 
+" " " "[" " " " " " " ^ " " " " ^ " " " " " " "]^ ^ " " 
+ ^ " " "[" " " " " " " " " " " " " " " " " " " "]" " " " 
+" " " "[. . " " ^ " ^ " . R R R . ^ " . " " . .]" " " " 
+ " " " "[. " ^ " " " " ~ . . . . ^ " . " ^ " " "]" " " " 
+" " " "[" " " " . " " ~ . " ^ " " " " " " " ^ ^]" " " " 
+ ^ " " "[^ " . . " ^ " " " " " ^ ^ " ^ " ^ " " "]" " " " 
+^ ^ " "[" " . ~ . " " " ^ ^ " " " " ^ ^ " " ^ "]" " " " 
+ " " " "[^ " . ~ ~ " ^ " " " " " . " " " . " " ~]" " " " 
+^ " " "[^ " " ~ " " " " . " ^ ^ " " " ^ " . ~ ~]" " " " 
+ " " " "[" ^ " " ^ " ^ " . " " " ^ " " " . . . .]" " " " 
+" " " "[. " " . " " " " . . . . " " . . . . . .]" " " " 
+ " " " "[. . . . . . . . . . . . . . . . . . . .]" " " " 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, OPEN STEPPE, , narrowest crossing 5, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , ^ , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , ^ , ,], , , , 
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[. . . . . . . . . R R R = . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . . . = . . . . . . .], , , , 
+, , , ,[. . . . . . . . . . . . = . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . . = . . . . . ^ . .], , , , 
+, , , ,[. . . . . . . . . . . . = . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . . = . . . . . . . .], , , , 
+, , , ,[. . . . . . ^ . . . . = . . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . = . . . . . . . . .], , , , 
+, , , ,[. . . . . . . . . . . = . . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . = . . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, RUINED CITY, a fountain, narrowest crossing 3, the guarantee opened 1
+ ^ ^ # ^[# # ^ # # ^ ^ # ^ ^ ^ ^ # ^ ^ ^ ^ ^ # ^]^ ^ # ^ 
+^ ^ ^ #[^ # ^ # # # ^ # ^ ^ ^ # # ^ ^ ^ ^ # # #]^ ^ # ^ 
+ ^ ^ ^ ^[# # # # # # ^ ^ ^ # # # ^ ^ ^ ^ ^ # # ^]# ^ # ^ 
+^ # # ^[^ ^ ^ ^ ^ = ^ ^ . R R R . ^ ^ # ^ ^ ^ ^]^ # ^ ^ 
+ ^ # ^ #[^ ^ ^ ^ ^ = ^ ^ . . = . ^ ^ ^ # ^ ^ ^ ^]^ # ^ # 
+# # ^ #[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # . ^ ^ = = = = =]^ # # # 
+ ^ ^ ^ ^[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # # # # = ^ ^ ^ ^]^ # ^ ^ 
+# # # #[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # # # # = ^ ^ ^ ^]# # ^ # 
+ ^ # # ^[^ ^ ^ ^ ^ = ^ ^ ^ ^ # = = = # = = = = =]^ # # ^ 
+^ ^ # #[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # # # # = ^ ^ ^ ^]# # # # 
+ ^ # ^ ^[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # # ~ # = ^ ^ ^ ^]# # # ^ 
+# # # #[# # # # # # # # # # # # # # # # # # # #]# # # # 
+ # # # #[# # # # # # # # . . = . . # # # # # # #]# # # # 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, GORGE, flooded channels, narrowest crossing 4, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+ , , , ,[" , , , , , , , , , , , , , , , , , , "]" " " , 
+^ ^ ^ ^[^ ^ ^ ^ ^ . . . . R R R . . . " ^ ^ ^ ^]^ ^ ^ ^ 
+ ^ ^ ^ ^[^ ^ ^ ^ ^ . . . . . . . ^ . . ^ ^ ^ ^ ^]^ ^ ^ ^ 
+^ ^ ^ ^[^ ~ ^ ^ ^ . ^ " " ^ ^ ^ . " . ^ ^ ^ ^ ^]^ ^ ^ ^ 
+ ^ ^ ^ ^[^ ~ " " . " . . . ^ ^ ^ " " ^ ^ ^ ^ ^ ^]^ ^ ^ ^ 
+^ ^ ^ ^[^ ^ ~ . . . . . " . ^ . " . . ^ ^ ^ ^ ^]^ ^ ^ ^ 
+ ^ ^ ^ ^[^ ^ ^ ~ . . . ^ ^ " ^ . . . . ^ ^ ^ ^ ^]^ ^ ^ ^ 
+^ ^ ^ ^[^ ^ ^ ^ ^ ~ ^ ^ . " . . . " ^ ^ ^ ^ ^ ^]^ ^ ^ ^ 
+ ^ ^ ^ ^[^ ^ ^ ^ ^ ~ ^ ^ . ^ ^ " . ^ ^ ^ ^ ^ ^ ^]^ ^ ^ ^ 
+, , " ,[. . . . . . . " " " . . . . " . . . . .], " , , 
+ , , , ,[. . . . . . . . . . . . . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+```
 ## 9 November, the flankers' segments
 
 Ryan, 9 November: "the flankers should target their closest wall with a small amount of
@@ -6338,6 +6468,34 @@ how far a battle gets, not who wins it.
   barrow mound. The model's ninth point (every formation carries a rising threat, as a validator
   check) is the guard, and this is its evidence.
 
+## 10 November: the passing and the catch at one, on the campaign runner
+
+`tools/campaign_run.gd -- --runs 40 --shape steppe` (115 s) on `ccr-1e6e6571-7x7ayr` after the body
+blocking went (every unit passes every other, nobody ends on another's hex) and the hunter's catch
+became the engage range everyone shares (1, the pounce of two gone): the greedy rung, the draft's
+three machines, the defence rule as the floor (the long wall brief, section 5). A direction, read
+against the record of 9 November (`docs/campaign_run.md`, each battle's shape by its seed), which it
+is not a cell match for, since that run drew every shape.
+
+| Measure | 9 November, every shape | 10 November, the steppe, passing, catch at one |
+|---|---|---|
+| Runs won | 0 of 40 | 0 of 40 |
+| Battles | 184: won 3%, held after a wipe 9%, fell 86% | 186: won 6%, held after a wipe 7%, fell 86% |
+| Fights | 524 | 519 |
+| Machines wrecked a battle | 1.66 | 1.63 |
+| Phases a battle | 5.96 | 5.81 |
+| Gate damage a battle | 135 | 134 |
+| The pressure ratio, a run's mean | 1.70 | 1.48 |
+| Turns above 1.0 | 40% | 34% |
+
+Read: nothing moved that the defence rule can show. The bot never held a line, so it never lost
+one: the runs, the battles, the fights, the wrecks and the gate's damage all land where they were,
+and the ratio eases a little because the packs now walk straight to the wall and the bot meets
+them where they end. The catch at one did not empty the hunters' fights (519 fights against 524).
+What this cannot read is the thing Ryan changed it for, his own play: whether a pusher's straight
+walk and a machine's slide through its allies feel right, and whether a hunter caught beside its
+prey reads without a ring. Nothing here is a decision.
+
 ## 10 November, the wall strike by the threat rating
 
 A read after the build, not behind the decision (Ryan, 10 November: the strike follows the
@@ -6346,7 +6504,8 @@ because every campaign number after it stands on the new strike. `tools/campaign
 40`, the same seeds as the refit pass's runs above, the greedy rung with the defence rule, the
 injury rule off: today's content and the trial's model on the audit's deal (`--refit
 all,vents=guns`), each with the strike by head count (a third of ten a foe, the runs above) and
-by rating (ten a pip, `Battlefield.strike_of`).
+by rating (ten a pip, `Battlefield.strike_of`). All four were taken on this branch before it took
+main's passing and catch at one (the section above), so the pairs differ by the strike alone.
 
 | Measure | Today's content, by head count | Today's content, by rating | The trial's model, by head count | The trial's model, by rating |
 |---|---|---|---|---|
@@ -6368,6 +6527,15 @@ fewer battles are held after a wipe (12% to 7%, 7% to 5%), since what is left at
 one now strikes by its rating: a formation thirty where six to eight heads struck twenty to
 twenty-six, an elite forty where it struck for its head. The fights are the same (menace killed
 and battles won do not move). A patrol of three strikes ten on both rules.
+
+On the merged tree (main's passing and catch at one beside the strike by rating, the branch
+having taken main at `e67645f`), the same 40 runs on today's content read where the branch stood
+before it: 139 gate damage a battle, 8% of battles held after a wipe, 88% fell, 2% won
+(`docs/campaign_run.md` is that run). One scene shows the two changes together: the campaign
+tests' wipe at a quiet start, a formation and two patrols left to walk on the wall, took 160 of
+a city gate's 200 in the six unopposed phases by head count and takes the whole 200 by rating
+with the packs walking straight to the wall, so those two tests thin the field to one patrol to
+keep reading what they read (a gate wounded and standing).
 
 ## 10 November, the regen's size and hotter weapons, after Ryan's first read of the trial
 
@@ -6430,3 +6598,600 @@ sustained rate is the cooling over a shot's heat and the burst is the gauge over
 pass moves the three together (the heat session's list). No heat row went on the phone for it.
 The bot holds rather than overheat, where a player may fire hot and pass a round, so the stall
 is the rung's and the arithmetic is not.
+
+## 10 November, evening: the shapes reworked on Ryan's play in context
+
+The same run (`--seeds 200 --width 20 --height 12`, every shape on seeds 1 to 200) after his notes
+on the shapes in context (the bible's shapes row): the river winding through the centre with
+narrows and tributaries, the fjord flooded, the gorge with more lanes and junctions, the badlands
+in groups, the steppe with scrub and grass; the city as it was.
+
+| Shape | Open | Rough | Ruins | Water | Walls | Crossing | Opened | Route | Phases T/W/Wh/H/F | Reach T/W/Wh/H/F | Steps | Lone |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| RIVER CROSSING | 65% | 10% | 0% | 26% | 0% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.2/3.2/3.2/3.0/3.0 | 33/51/75/82/82% | 0% | 0.0 |
+| FJORD | 37% | 17% | 0% | 46% | 0% | 200 of 200 at 3+ | 0.0 | 11.1 | 3.0/3.0/3.0/3.0/3.0 | 32/51/71/82/82% | 0% | 0.0 |
+| BADLANDS | 23% | 48% | 0% | 4% | 24% | 200 of 200 at 3+ | 0.0 | 11.1 | 3.0/3.0/3.0/3.0/3.0 | 28/45/61/62/82% | 14% | 0.3 |
+| OPEN STEPPE | 85% | 12% | 0% | 1% | 1% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/59/81/81/82% | 3% | 0.0 |
+| RUINED CITY | 27% | 0% | 27% | 1% | 45% | 200 of 200 at 3+ | 0.5 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 23/35/46/46/82% | 0% | 0.0 |
+| GORGE | 55% | 9% | 0% | 1% | 35% | 200 of 200 at 3+ | 0.5 | 11.5 | 3.0/3.0/3.0/3.0/3.0 | 27/40/54/54/82% | 0% | 0.0 |
+
+Read: the fjord is 46% of the field in water, which is about seven tenths of the eight rows it
+lays in (the team's two rows and the rift's bared ring hold none), at or past Ryan's "50-60% of
+it"; its ground reach after two phases (32% tracked, 71% wheeled) is the river's, the wade
+costing both alike, and the hover's and the flyer's untouched. The river at 26% water is the
+first shape whose ground phases to the rift read above three (3.2), the wade across it where no
+narrow lies. The gorge opened to 35% walls from 45% with its fourth trunk and its junctions, and
+its ground reach rose (27% tracked, 54% hover, from 24% and 45%); the badlands doubled its mesas
+(24% from 10%) and its reach fell to the gorge's (28% tracked), its scrub half the field; the
+steppe carries 12% scrub and a crag or two where it had nothing. Every map keeps the crossing
+at three or more, the gorge and the city opening half a hex a map. Nothing here is a decision:
+the look is Ryan's to judge on the phone (the to-do), the counts placeholders.
+
+Every shape at seed 7 (`--show 7`; `~` water, `^` a wall, `"` rough, `#` rubble, `=` a street or
+road, `R` the rift, `G` the gate, `|` the wall, the scenery outside the brackets):
+
+```
+seed 7, RIVER CROSSING, river, narrowest crossing 5, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+ , , , ,[, , , , , , , , , , , , , " " , , " , "]" " " , 
+, , , ,[. . . . = . . . . R R R . " ~ ~ ~ ~ ~ ~]~ ~ ~ ~ 
+ , " " ,[. . . . = . . . . . " " ~ . ~ ~ . . ~ ~]~ ~ ~ ~ 
+" " ~ "[. . . . . = " " " . " ~ ~ ~ ~ ~ " . . ~]~ , " ~ 
+ ~ ~ ~ ~[~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ = . . . ~], , , , 
+~ ~ ~ ~[~ ~ ~ ~ . . " ~ ~ ~ ~ ~ " " ~ = . . . "], , , , 
+ ~ , , ~[. ~ . . . . ~ . ~ ~ ~ . . ~ . . . . . .], , , , 
+, " , ,[" . " . . . . = = = . . . " " . . . . .], , , , 
+ , , , ,[. . . . . . . . . = . . . = . . . . . .], , , , 
+, , , ,[. . . . . . . . . . = . . = . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . = = = . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, FJORD, fjord, narrowest crossing 5, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+ , " , "[" , , " " , , , , , , , , , , , , , , "]" " " , 
+~ ~ ~ ~[~ ~ ~ ~ ~ . . . . R R R . " " " . . . ~]~ ~ ~ ~ 
+ ~ ~ ~ ~[~ ~ ~ ~ ~ " . . . . " " . ~ ~ ~ ~ . . ~]~ ~ ~ ~ 
+~ ~ ~ ~[. ~ ~ ~ ~ . . . . . " ~ ~ ~ ~ ~ ~ " . ~]~ ~ ~ ~ 
+ ~ ~ ~ ~[. ~ ~ ~ " . . . . ~ . ~ ~ ~ ~ ~ . " . ~]~ ~ ~ ~ 
+~ ~ ~ ~[~ ~ ~ ~ ~ . " ~ ~ ~ ~ ~ ~ " . . " ~ ~ ~]~ ~ ~ ~ 
+ ~ ~ ~ ~[~ ~ ~ ~ . . . . ~ ~ ~ ~ ~ ~ ~ . . ~ ~ .]~ ~ ~ ~ 
+~ ~ ~ ~[" ~ ~ ~ " " . . . ~ ~ ~ ~ ~ " " " ~ ~ "]~ ~ ~ ~ 
+ ~ ~ ~ ~[~ ~ ~ ~ ~ " . . . ~ ~ ~ ~ ~ . ~ ~ ~ ~ ~]~ ~ ~ ~ 
+" " " ,[" . . " " . . . . " . " " . " . " . . "], " , " 
+ , , , ,[. . . . . . . . . . . . . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, BADLANDS, ponds, narrowest crossing 5, the guarantee opened 0
+ " " " "[" ^ ^ " ^ " " " " " " " " " " " " ^ " "]^ ^ " " 
+^ ^ " ^[^ " " " ^ ^ " " " " " " " " " " " ^ ^ "]^ " " " 
+ ^ " " "[" " " " " " " " " " " " " " " " " " " "]" " " " 
+" " " "[" " " ^ ^ ^ " . . R R R . ^ " . " ^ " .]" " " " 
+ " " " "[^ ^ " " " " . ~ . . . . " " . " ^ " " "]" " " " 
+" " " "[^ " " ^ ^ " " ~ " " " ^ " " " " " " ^ ^]" " " " 
+ " " " "[" . " " " ^ " " ^ ^ " ^ " ^ ^ ^ " " " "]" " " " 
+" " " "[" " . ~ . " ^ ^ " ^ ^ " " ^ " " " ^ ^ "]" " " " 
+ " " " "[^ " . ~ ~ " ^ ^ " " " " " " " ^ " " " ~]" " ^ " 
+" " " "[^ " " ~ . " " " " " ^ ^ ^ " ^ " ^ " ~ ~]" " " " 
+ ^ " " "[" ^ " . " ^ ^ ^ " " " " " ^ ^ " " . . .]" ^ " " 
+" " " "[. " " . . " " " " . . . . " " " . . . .]" " " " 
+ " " " "[. . . . . . . . . . . . . . . . . . . .]" " " " 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, OPEN STEPPE, ponds, narrowest crossing 5, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[. " " . . . . . . R R R . . . . . . . .], , , , 
+ ^ , , ,[. . . . . . . " . . = . ~ ~ ~ . . . ~ .], , , , 
+^ , , ,[" . . . . . . . " . = . " " " " . . ~ .], , , , 
+ , , , ,[" " . . . . . . . . = . " " " . . . . "], , , , 
+, , , ,[. . " . . . . . . . . = . . . . . . . .], , , , 
+ , , , ,[. . " " . . . . . . . . . . . . . . ^ .], , , , 
+, , , ,[. . . . . . . . . " " = . . " . . . . .], , , , 
+ , , , ,[. . . . . . " . . . = . . " . . . . " .], , , , 
+, , , ,[. . . . . . . . . . . = . . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . = . . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, RUINED CITY, a fountain, narrowest crossing 3, the guarantee opened 1
+ ^ ^ # ^[# # ^ # # ^ ^ # ^ ^ ^ ^ # ^ ^ ^ ^ ^ # ^]^ ^ # ^ 
+^ ^ ^ #[^ # ^ # # # ^ # ^ ^ ^ # # ^ ^ ^ ^ # # #]^ ^ # ^ 
+ ^ ^ ^ ^[# # # # # # ^ ^ ^ # # # ^ ^ ^ ^ ^ # # ^]# ^ # ^ 
+^ # # ^[^ ^ ^ ^ ^ = ^ ^ . R R R . ^ ^ # ^ ^ ^ ^]^ # ^ ^ 
+ ^ # ^ #[^ ^ ^ ^ ^ = ^ ^ . . = . ^ ^ ^ # ^ ^ ^ ^]^ # ^ # 
+# # ^ #[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # . ^ ^ = = = = =]^ # # # 
+ ^ ^ ^ ^[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # # # # = ^ ^ ^ ^]^ # ^ ^ 
+# # # #[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # # # # = ^ ^ ^ ^]# # ^ # 
+ ^ # # ^[^ ^ ^ ^ ^ = ^ ^ ^ ^ # = = = # = = = = =]^ # # ^ 
+^ ^ # #[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # # # # = ^ ^ ^ ^]# # # # 
+ ^ # ^ ^[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # # ~ # = ^ ^ ^ ^]# # # ^ 
+# # # #[# # # # # # # # # # # # # # # # # # # #]# # # # 
+ # # # #[# # # # # # # # . . = . . # # # # # # #]# # # # 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, GORGE, flooded channels, narrowest crossing 3, the guarantee opened 2
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+ , , , ,[" , , , , , , , , , , , , " , , , , , "]" " " , 
+^ ^ ^ ^[^ ^ ^ " . . ~ . . R R R . ^ ^ ^ ^ ^ . .]^ ^ ^ ^ 
+ ^ ^ ^ ^[^ ^ ^ . ^ . ~ ^ . . . " ^ ^ ^ ^ . . . .]^ ^ ^ ^ 
+^ ^ ^ ^[^ ^ ^ . ^ ^ " " ^ ^ ^ . . ^ ^ ^ ^ . ^ .]^ ^ ^ ^ 
+ ^ ^ ^ ^[^ ^ " " . " . . . ^ . . ^ ^ ^ ^ ^ . ^ .]^ ^ ^ ^ 
+^ ^ ^ ^[^ ^ ^ ^ . ^ ^ . " . . . ^ ^ ^ ^ ^ ^ ^ .]^ ^ ^ ^ 
+ ^ ^ ^ ^[^ . . . ~ . ^ ^ ^ ^ . . ^ ^ . . . . . .]^ ^ ^ ^ 
+^ ^ ^ ^[^ ^ ^ . . . . . . " ~ . . " . . ^ . ^ .]^ ^ ^ ^ 
+ ^ ^ ^ ^[^ ^ . . . . . . . . . . . . . . . . " ^]^ ^ ^ ^ 
+, , " ,[. . . . . . . . . . . . . . . . . . . .], " , , 
+ , , , ,[. . . . . . . . . . . . . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+```
+
+## 10 November, after Ryan's second read of the trial: the field's depth and the opening, the Rupture meter's shares, the goblin's knife
+
+Probes behind the field's and the fodder's dials (a debug build's SETTINGS → TRIALS; `Ramp.depth_trial`,
+`Battle.opening_trial`, `Battle.fodder_trial`) and behind the goblin's role put to him in chat.
+The only content that moved with them is every machine's move, one more, on his word, which
+no probe here reads; the goblin's own kit followed on his call (its part, below). His play (the MODEL deal at a regen of two): "I think the map is a bit too shallow
+... If the map is a little deeper, and the seam starts a little farther out, it will feel more
+like I can actually plan a little bit ahead instead of panicking from the very start, which is
+the case now - feels like the correct play is to throw all machines down the middle and grind
+out Fracture as fast as possible that way. If fracture rewards were a little lower for fodder,
+then it becomes a bit more of a quantity game for non-elites and I'll feel more like sending my
+flankers out"; and of the goblins, "Kill one goblin, suddenly the whole formation falls apart
+... A straight attack, and a block of some kind, so they're a true frontliner".
+
+**Every machine one more move.** The campaign runner's 40 runs on the tree with it
+(`docs/campaign_run.md`) read as the 40 before it: battles won 3% against 2%, fallen 88% both,
+team wipes 90% against 88%, the gate's damage a battle 140 against 139, the Rupture reached in
+19% both. The plain player does nothing with the hex, so what the move is worth is his play's
+to say.
+
+**The field's depth and the opening's distance.** The Meadow at tier one, 20 seeds, the wall
+twenty long, nobody fighting (the machines taken off the field, so the clock alone), six enemy
+turns. The opening stands a formation one of its own moves from the apron and a patrol two; the
+trial adds moves to both.
+
+| Depth | Opening | The seam's first row, and its rows from the wall | The first strike, enemy turn | The gate has taken by turn 2 | By turn 4 | By turn 6 | A formation's walk from the rift to the wall, turns |
+|---|---|---|---|---|---|---|---|
+| 12 | +0 | row 4, 5 | 1.1 | 67 | 165 | 200 | 4 |
+| 12 | +1 | row 4, 5 | 2.1 | 26 | 118 | 198 | 4 |
+| 12 | +2 | row 4, 5 | 2.5 | 5 | 72 | 168 | 4 |
+| 14 | +0 | row 4, 7 | 1.0 | 70 | 168 | 200 | 5 |
+| 14 | +1 | row 4, 7 | 2.2 | 23 | 110 | 192 | 5 |
+| 14 | +2 | row 4, 7 | 3.0 | 0 | 71 | 166 | 5 |
+| 16 | +0 | row 5, 8 | 1.2 | 64 | 160 | 200 | 6 |
+| 16 | +1 | row 5, 8 | 2.2 | 24 | 111 | 194 | 6 |
+| 16 | +2 | row 5, 8 | 3.1 | 0 | 65 | 158 | 6 |
+
+Read. Depth alone buys no planning turn: the opening is measured from the wall, so at any depth
+the first formation strikes on the first enemy turn and the gate has taken a third of its bar
+by the second. What buys the turns is the opening's distance, a turn for each move, and depth is
+the room for it: at twelve deep two more moves run out of field (the first strike at 2.5 where
+fourteen and sixteen give 3.0 and 3.1). Depth by itself moves the two things he named beside it:
+the seam's first tears open seven and eight rows from the wall where they open five today, by
+the seam's own rule, and everything the rift sends later walks a turn or two longer, which is
+the time to regroup for an elite. So the pair to try first is fourteen deep with the opening a
+move farther out (the first strike on the second enemy turn, 23 off the gate by then where it
+is 70 today), and sixteen with two for a first strike on the third. Nobody fights in this read,
+so the gate's numbers are the clock's and not a battle's. On the phone's glass with the wall at
+the left, the rift's edge shows at twelve deep and is a scroll away at fourteen and sixteen.
+
+**What a kill is worth on the Rupture meter.** Every domain, 20 seeds, the field at the start
+as the game sets it: the meter's base is the menace placed and the first waves the rift will
+send, the Rupture at two thirds of it.
+
+| Domain, tier one | The meter's base (placed, the first waves) | The first Fracture, the Rupture | The one formation, in the middle | Each of the two patrols, on the flanks | The elites the first Fracture calls |
+|---|---|---|---|---|---|
+| The Meadow | 116 (52, 64) | 17, 78 | 20, 26% of the Rupture | 16, 21% | 22 or 28 |
+| The Waste | 140 (59, 81) | 21, 94 | 28, 30% | 16, 16% | 20 to 61 |
+| The Marsh | 127 (54, 73) | 19, 85 | 24, 28% | 15, 18% | 20 to 42 |
+| The Peak | 236 (107, 129) | 35, 158 | 46, 29% | 30, 19% | 36 or 48 |
+
+Tier two reads the same by its own numbers (four Fractures; the formation 25% to 28% of the
+Rupture, a patrol 16% to 19%, the first Fracture at 16 to 30 against a formation of 29 to 58).
+
+Read. In every domain the one formation in the middle is worth more than the first Fracture,
+so the first fight there earns it and calls the elite at once; the elite's kill counts double
+and is most of the second; and two more packs make the Rupture, about four fights in all (three
+in the Waste, whose elites are worth 59 and 61 of 94). The first waves come down the rift's
+column, so the middle alone supplies every one of them: the formation and the waves are 84 of
+the Meadow's 78 before the elite is counted. That is his read ("throw all machines down the
+middle"). A flank patrol already pays more for the machine sent than the middle does (16 for a
+fight rated for one against 20 for a fight rated for three), so what keeps the flankers home is
+not the patrol's worth but that the middle is enough. Lowering the fodder's worth is the lever
+he names and it works that way: at three quarters the Meadow's first Fracture takes the
+formation and a patrol and the Rupture about five fights; at half, the same two for the first
+and about seven fights for the Rupture, which the middle alone reaches only with its fifth
+wave, so the flanks' patrols and the tears' are the faster road. Its price is the battle's length: every
+fight more is turns on the clock, a wave every third turn and the seam two rows nearer each
+peak. `Battle.fodder_trial` counts a kill at the share when its pack came as no elite, an
+elite's pack whole, and leaves the tally salvage and Anathema read as it was.
+
+**The goblin's knife.** The goblin as content had it: 3 hit points, a knife of 2 and one more
+for every other goblin standing, so four deal 20 a round, then 12, 6 and 2 as they fall.
+Variants laid over the loaded content for the run, the greedy rung, 30 seeds a cell, each a
+direction: rounds and hull lost, and the share won where it is under 100%. The wall is the
+Goblin Guard's Shield Wall (armour up one until its next action, one action in three).
+
+Corrected the same day. This probe's first run kept the loaded content between its variants
+(the default content is cached, and a variant's wall was added on top of the last one's), so
+every walled row after the first carried two or three walls, the always-on armour's row three
+walls with it, and the grove's rows none of today's knife; what it said of them was wrong, and
+the lean it gave Ryan (armour always on "holds for about the same hull") with it. The rows
+below are the rerun, a fresh load for every variant and the goblin's kit pinned in the probe;
+the rows that were right the first time read the same.
+
+The goblin warband (four goblins before two Mandragoras, rated for three):
+
+| The goblin | The default three: today's dice, the MODEL at regen 2 | The Stingray and the Prairie Dog: today's dice | The MODEL at regen 2 | The Stingray, the Prairie Dog and the Skua: today's dice, the MODEL |
+|---|---|---|---|---|
+| The old knife: 2, one more a peer | 2.4 · 0%, 2.2 · 0% | 97% · 6.5 · 30% | 5.5 · 12% | 3.3 · 1%, 3.1 · 0% |
+| A straight 3 | 2.4 · 0%, 2.2 · 0% | 6.6 · 20% | 5.3 · 8% | 3.3 · 0%, 3.0 · 0% |
+| A straight 4 | 2.4 · 0%, 2.2 · 0% | 97% · 6.7 · 37% | 5.4 · 18% | 3.3 · 1%, 3.1 · 0% |
+| A straight 5 | 2.4 · 0%, 2.2 · 0% | 93% · 6.9 · 55% | 5.8 · 28% | 3.3 · 2%, 3.1 · 0% |
+| A straight 3 and the wall | 2.5 · 0%, 2.1 · 0% | 6.7 · 10% | 5.3 · 3% | 3.3 · 0%, 3.1 · 0% |
+| **A straight 4 and the wall (built)** | 2.5 · 0%, 2.0 · 0% | 6.9 · 22% | 5.4 · 9% | 3.4 · 1%, 3.2 · 0% |
+| A straight 5 and the wall | 2.5 · 0%, 2.1 · 0% | 97% · 7.1 · 40% | 5.6 · 11% | 3.5 · 1%, 3.2 · 0% |
+| A straight 6 and the wall | 2.5 · 0%, 2.1 · 0% | 93% · 7.2 · 50% | 6.3 · 21% | 3.5 · 2%, 3.3 · 1% |
+| A straight 4, armour 1 always | 2.4 · 0%, 2.2 · 0% | 53% · 9.0 · 78% | 83% · 8.1 · 52% | 5.6 · 7%, 4.7 · 5% |
+| The old knife at 5 hit points | 2.5 · 1%, 2.4 · 0% | 70% · 8.4 · 73% | 83% · 7.7 · 52% | 4.5 · 4%, 4.0 · 1% |
+| A straight 4 and the wall, 5 hit points | 2.6 · 0%, 2.4 · 0% | 80% · 11.4 · 64% | 7.8 · 24% | 4.1 · 1%, 4.2 · 1% |
+| A straight 4 and the wall, 6 hit points | 2.6 · 0%, 2.5 · 1% | 67% · 11.9 · 73% | 9.1 · 33% | 5.1 · 3%, 4.8 · 1% |
+| A straight 5 and the wall, 6 hit points | 2.7 · 0%, 2.5 · 1% | 20% · 8.2 · 93% | 93% · 9.0 · 46% | 5.3 · 8%, 4.8 · 2% |
+
+The treant's grove (a Treant and three goblins before two Mandragoras, rated for three):
+
+| The goblin | The default three: today's dice, the MODEL | The Stingray and the Prairie Dog: today's dice | The MODEL at regen 2 | The three lights: today's dice, the MODEL |
+|---|---|---|---|---|
+| The old knife | 4.6 · 3%, 4.4 · 4% | 27% · 17.7 · 96% | 26.6 · 36% | 16.5 · 11%, 14.2 · 2% |
+| A straight 4 | 4.6 · 4%, 4.6 · 5% | 3% · 13.7 · 99% | 93% · 27.2 · 52% | 17.8 · 13%, 13.8 · 4% |
+| A straight 4 and the wall (built) | 4.6 · 5%, 4.6 · 5% | 10% · 18.6 · 99% | 97% · 27.1 · 42% | 18.1 · 14%, 15.3 · 4% |
+| A straight 5 and the wall | 4.6 · 5%, 4.6 · 5% | 3% · 16.6 · 100% | 90% · 27.7 · 49% | 18.1 · 16%, 15.0 · 4% |
+
+Read. A block that is an action softens the goblin: a goblin raising its wall is a goblin not
+stabbing, so at the same knife the walled goblin costs the pair about half what the plain one
+does (9% against 18% at a straight 4 under the model, 22% against 37% on today's dice), and
+the wall does not make the line last (5.4 rounds both). Armour that is always there is no
+gentler form of it: it walls the small blows, three rounds longer and 52% of the pair's hull
+under the model, half the fights lost on today's dice, which is what the formation pass's
+reads said of flat armour and the lights. Hit points are what make the front hold (a straight
+4 and the wall at 6 hit points: nine rounds and a third of the pair's hull under the model).
+And three machines of any weight clear the warband in two to five rounds for a few points of
+hull at most on every row (the default three 1% at worst, three lights 8%), a knife of 5 at 6
+hit points included: with a full squad what is felt is how fast the front dies, the player's
+damage against the fodder's hit points, more than the knife's shape.
+The old knife was not weak where the goblins lived (at 5 hit points, half the pair's hull and
+one fight in six lost): its fault is the one he names, that the first kill takes two fifths
+of it.
+
+Built on his call ("I think the earlier goblin can have shield wall as well"): a straight 4
+and the wall, the 4 a placeholder. Against the old knife it costs the pair a little less in
+the warband (9% against 12% under the model, 22% against 30% on today's dice) and a little
+more in the grove, where the goblins live long beside the Treant (42% against 36% under the
+model); a 5 costs them as much in the warband under the model and a third more on today's
+dice, and out-hits the Goblin Guard as content has it (3, one more a peer). The campaign
+runner's 40 runs on the tree with it (`docs/campaign_run.md`) read as the 40 before it: won 3%
+both, fallen 88% both, the gate's damage a battle 139 against 140.
+
+The knife moves the goblin's menace with it, 5 where it was 3 (the weight reads a foe's best
+blow, and the old knife's was read without its peers), so a goblin's kill fills more of the
+meter and pays more salvage, and the Meadow's thresholds rise with its field. On the tree as
+built the Meadow's tier-one meter reads: base 138, the first Fracture at 21, the Rupture at
+92, the formation 28 (30% of the Rupture, from 26%), a flank patrol 16 (17%, from 21%), the
+shaman's warband 26. The meter's read above stands, the middle's share a little larger.
+
+## 10 November, the goblin's line on its straight knife: the Guard and the Captain in front
+
+The Meadow's formations at tiers two and three before and after the Goblin Guard took the
+straight knife (5, with its Shield Wall) and the Goblin Captain stepped into the front rank (a
+straight 6, the wall, his Warcry the third move), on Ryan's "Put the captain in front, yeah".
+The curve read (`tools/balance.gd --packs curve --domains meadow --sizes formation`), the greedy
+rung, 20 seeds, today's dice, the tier's four cut from one machine to four, a heavy first (tier
+two: the Wild Boar, the Clydesdale, the Buzzard, the Dingo; tier three: the Swallowtail, the
+Musk Ox, the Ammit, the Giant Petrel): greedy's hull lost and rounds at two, three and four
+machines (one machine is a wall or near it on every row, before and after). Before is the tree
+with the tier-one Goblin already on its knife of 4. Each a direction.
+
+| Tier | Composition | Before: two, three, four | After: two, three, four |
+|---|---|---|---|
+| 2 | `guard_warband` (two Guards and two Goblins before three Mandrakes) | 3% · 3.9, 0% · 2.9, 0% · 2.2 | 4% · 4.0, 0% · 2.9, 0% · 2.4 |
+| 2 | `treant_march` | 37% · 12.3, 7% · 6.2, 4% · 5.0 | 37% · 12.6, 8% · 6.2, 5% · 5.2 |
+| 2 | `rotblooms_bed` | 19% · 8.6, 4% · 5.0, 2% · 3.9 | 22% · 8.6, 5% · 5.1, 2% · 4.0 |
+| 3 | `captains_warband` (was four Guards before two Captains and two Alraunes; now two Captains and two Guards before two Alraunes) | 35% · 6.8, 4% · 4.2, 0% · 3.2 | 12% · 5.8, 2% · 3.5, 0% · 2.5 |
+| 3 | `alpha_hunt` | 39% · 6.7, 6% · 4.6, 1% · 3.1 | 41% · 6.7, 8% · 4.7, 1% · 3.0 |
+| 3 | `metal_drift` (the Captain in a Bubble Gel's cell, seven where it was eight) | 87% · 11.1, 24% · 7.0, 6% · 4.5 | 58% · 10.9, 11% · 5.5, 2% · 3.9 |
+| 3 | `treant_wilds` | 89% · 33.7, 15% · 11.6, 4% · 7.0 | 92% · 30.9, 17% · 12.2, 4% · 7.4 |
+| 3 | `rotblooms_bed` | 50% · 17.2, 8% · 7.4, 1% · 5.2 | 51% · 15.6, 9% · 7.5, 2% · 5.2 |
+
+Read. The line's new kit moves no band: where the grid is the same, the cost is the same to a
+point or two. The two grids that gave up a body to seat the Captain in front read easier, the
+captain's warband at a third of what it cost two machines and the metal drift at two thirds:
+that is the body count and a rallier now in Direct reach, the grids' doing and the formation
+pass's to re-cut, not the knife's. At its rating every formation here costs its tier's three
+between nothing and a sixth of their hull, the Treant's and the gels' the dear ones.
+
+## 10 November, the refit pass's model landed in content
+
+The campaign runner's 40 runs (`tools/campaign_run.gd -- --runs 40`, the plain player, the
+greedy rung, each run three tier-one machines of its tender) on the tree before and after the
+model became content: the stock dice with no shield or vent (a defensive basic where a shield
+stood, a Twin Autoguns where a vent did), every chassis its own shield regen of one to three,
+the four basic guns each making heat, four machines undealt. Ryan, the same day: "The re-deal
+with regen and heat, despite my tests showing it easy, seems like the correct way to go ... I
+would start with regen 1-3, depending on the machine, its role and maker ... start with the
+minimal swaps (The "Model" setting) and we'll go up from there." `docs/campaign_run.md` is the
+run after. A direction.
+
+| Measure | Before | The model landed |
+|---|---|---|
+| Battles won, fallen | 3%, 88% | 10%, 81% |
+| Battles ended in a team wipe | 90% | 76% |
+| Battles reaching the Rupture | 18% | 37% |
+| Fractures a battle | 1.07 | 1.60 |
+| Menace killed a battle | 50 | 83 |
+| Gate damage a battle | 139 | 125 |
+| Fights a run of 40 | 552 | 849 |
+| A fight for three, one machine in it: won | 13% of 170 | 31% of 225 |
+| A fight for three, two in it | 69% of 72 | 85% of 99 |
+| A fight for three, three in it | 100% of 49 | 98% of 65 |
+| A fight for four, one in it | 32% of 52 | 55% of 80 |
+
+Read. The landed model does what the what-if did on 9 November: the plain player goes about
+two thirds farther (menace killed 83 where it was 50, the Rupture twice as often), wins three
+times the battles it did and still falls in four of five. The gain is where the reads put it,
+short-handed: a machine alone against a formation rated for three wins one fight in three
+where it won one in eight. At its rating nothing moved, since nothing was at stake there.
+
+## 10 November, the duelists: a lone machine against one, and against a pair
+
+The four flanker lines built with the formation pass (the Whisker Cat, the Roc, the Dullahan and
+Cerberus, each with two recolours; Ryan: "Duelists are as you see fit, might as well jam them in
+here as well as part of the pass"), each read as the duel it is made for: one stock machine of
+the tier against one duelist of the tier, a skirmish with no field, the greedy rung, 30 seeds,
+the landed model's dice and each chassis's own regen. A probe (a scratch script over `Skirmish`
+and `Policy`, content loaded fresh for every variant: `ContentDB.reset_cache()`). Each cell:
+won, mean rounds, mean hull lost. The decision they inform: the lines' placeholder numbers and
+the pair's rating. Each a direction.
+
+Tier one, as built: the Whisker Cat (10 hit points; a claw of 5, or a lash of 3 that switches
+off the entry the die shows), the Roc (10; talons of 4, or a climb and a breaching stoop of 6 a
+round on), the Dullahan (8; a blade of 5, and a rise it readies once it is hurt, once a fight),
+Cerberus (10; three bites of 2, or a maul of 5 that scorches 2).
+
+| Machine | Whisker Cat | Roc | Dullahan | Cerberus |
+|---|---|---|---|---|
+| Honey Badger | 100% · 2.2 · 0% | 100% · 2.2 · 1% | 100% · 2.3 · 0% | 100% · 2.2 · 0% |
+| Baboon | 100% · 3.4 · 0% | 100% · 3.4 · 6% | 100% · 3.8 · 0% | 100% · 3.3 · 4% |
+| Prairie Dog | 100% · 6.0 · 4% | 100% · 6.0 · 10% | 100% · 9.1 · 7% | 100% · 6.8 · 35% |
+| Stingray | 100% · 2.9 · 0% | 100% · 3.2 · 1% | 100% · 2.7 · 0% | 100% · 2.9 · 1% |
+| Cassowary | 100% · 3.7 · 1% | 100% · 3.8 · 3% | 100% · 4.1 · 0% | 100% · 3.6 · 5% |
+| Cottonmouth | 100% · 3.0 · 0% | 100% · 3.2 · 1% | 100% · 2.0 · 0% | 100% · 3.0 · 3% |
+| Skua | 100% · 5.2 · 2% | 100% · 5.0 · 27% | 100% · 7.7 · 5% | 100% · 8.4 · 31% |
+| Storm Petrel | 100% · 3.9 · 0% | 100% · 3.9 · 9% | 100% · 3.3 · 0% | 100% · 3.8 · 0% |
+
+Tier two, the tier's own machines: the Sabre Cat (13; 6 and a lash of 3), the Night Roc (14; 5
+and a stoop of 8), the Grave Dullahan (10; 6), the Basalt Cerberus (14; bites of 2, a maul of
+6).
+
+| Machine | Sabre Cat | Night Roc | Grave Dullahan | Basalt Cerberus |
+|---|---|---|---|---|
+| Clydesdale | 100% · 3.5 · 1% | 100% · 3.6 · 7% | 100% · 3.5 · 1% | 100% · 3.5 · 4% |
+| Kite | 100% · 2.0 · 0% | 100% · 2.0 · 0% | 100% · 1.1 · 0% | 100% · 2.0 · 0% |
+| Wild Boar | 100% · 4.0 · 1% | 100% · 4.0 · 11% | 100% · 5.1 · 0% | 100% · 4.0 · 2% |
+| Dingo | 100% · 6.1 · 30% | 100% · 5.7 · 47% | 100% · 7.7 · 44% | 100% · 5.8 · 66% |
+| Buzzard | 100% · 2.7 · 0% | 100% · 3.1 · 9% | 100% · 3.0 · 2% | 100% · 3.2 · 3% |
+| Nemesis | 100% · 3.2 · 4% | 100% · 3.3 · 5% | 100% · 2.7 · 2% | 100% · 3.1 · 5% |
+| Funnel-web | 100% · 4.2 · 1% | 100% · 4.3 · 13% | 100% · 4.0 · 1% | 100% · 4.3 · 4% |
+| Needletail | 100% · 3.9 · 6% | 100% · 3.5 · 19% | 100% · 3.3 · 3% | 100% · 3.4 · 13% |
+
+Tier three: the Storm Cat (16; 7 and a lash of 4), the Great Roc (18; 6 and a stoop of 9), the
+Charnel Dullahan (12; 7), the Sulphur Cerberus (18; bites of 2, a maul of 7).
+
+| Machine | Storm Cat | Great Roc | Charnel Dullahan | Sulphur Cerberus |
+|---|---|---|---|---|
+| Ammit | 100% · 4.8 · 11% | 100% · 5.5 · 19% | 100% · 6.6 · 12% | 100% · 5.4 · 17% |
+| Musk Ox | 100% · 6.5 · 19% | 100% · 7.2 · 33% | 100% · 8.4 · 26% | 100% · 7.4 · 24% |
+| Lammergeier | 100% · 4.1 · 5% | 100% · 4.5 · 23% | 100% · 4.5 · 7% | 100% · 4.5 · 15% |
+| Giant Petrel | 100% · 3.9 · 4% | 100% · 3.9 · 11% | 100% · 3.2 · 4% | 100% · 4.0 · 9% |
+
+A pair of the same duelist at tier one, the same lone machine:
+
+| Machine | Whisker Cat | Roc | Dullahan | Cerberus |
+|---|---|---|---|---|
+| Honey Badger | 100% · 4.9 · 4% | 100% · 4.5 · 14% | 100% · 4.9 · 4% | 100% · 4.6 · 5% |
+| Baboon | 100% · 7.7 · 52% | 100% · 7.1 · 38% | 80% · 9.3 · 65% | 60% · 6.0 · 82% |
+| Prairie Dog | 0% · 6.9 · 100% | 43% · 12.4 · 92% | 0% · 8.3 · 100% | 0% · 4.6 · 100% |
+| Stingray | 97% · 6.9 · 36% | 100% · 6.4 · 26% | 87% · 6.4 · 34% | 53% · 7.4 · 85% |
+| Cassowary | 100% · 7.5 · 35% | 100% · 7.0 · 32% | 100% · 7.4 · 46% | 73% · 6.4 · 83% |
+| Cottonmouth | 100% · 4.4 · 39% | 100% · 4.3 · 31% | 100% · 4.0 · 15% | 63% · 4.8 · 88% |
+| Skua | 0% · 6.2 · 100% | 60% · 8.0 · 90% | 0% · 7.2 · 100% | 0% · 6.3 · 100% |
+| Storm Petrel | 100% · 9.9 · 33% | 100% · 6.9 · 39% | 83% · 8.8 · 42% | 97% · 10.4 · 31% |
+
+Read. One duelist is the fight for one machine the role asks for: every machine of its tier wins
+every seed, in two to nine rounds, and what it pays is the line's own question, the Roc's stoop
+through the shield (the Skua a quarter of its hull, the lights a tenth) and Cerberus's bites
+against a thin gauge (the Prairie Dog and the Skua a third), where the Cat and the Dullahan cost
+almost nothing to a machine that kills them in time. So the lone duelist is rated one, and it
+sits above the hull budget's thirtieth only for the two slow lights. The Dingo is tier two's
+outlier on every column (30% to 66%), its own die's doing and its session's, no duelist's. A
+pair is no duel: it is a wall for the slow lights alone and costs every other machine but the
+Badger a third or more, so a pair is rated two and waits for the ramp's later steps.
+
+What the forms tried along the way say, tier one, the same probe:
+
+- The Dullahan's rise at weight three with no limit stalled the slow lights (the Prairie Dog won
+  43% with 17 fights of 30 run to the bot's sixty rounds, the Skua 37%): it readied its rise
+  again after rising. The engine's `once` on the action is the fix, no new rule: it rises once a
+  fight, and both lights win every seed at 7% and 5%.
+- Cerberus as first written (12 hit points; three bites of 2, each scorching; a maul of 6) cost
+  the Prairie Dog 56% and the Skua 77% with one loss in ten. Taking the scorch off the bites
+  changed no cell, and a machine's armour does nothing while its shield stands (the shield is
+  not armoured, so a Shoring Jack blunts no bite until the gauge is gone): the cost is three
+  blows a round against a gauge of three or four. At 10 hit points and an attack of 5 it is 35%
+  and 31%; with bites of 1 it is nothing to anyone (0% on every row), so the bites stay at 2,
+  plain, the scorch on the maul alone, and the hound is the dear duel for a thin shield.
+
+## 10 November, the formation pass landed: the set by the curve read, and the campaign runner
+
+The patrols and formations as content has them since the pass (the re-cut set: the pruned
+formations, one hunting pack a domain and tier where the rank and file hunt, a lone duelist the
+patrol rated one and a pair rated two on the ramp's later steps), read by the curve read
+(`tools/balance.gd --packs curve --tiers N --seeds 20`, with `--team` at tiers two and three) on
+the landed model's dice: each composition against its tier's four cut to every size, a heavy
+first, the cell at its rating and the cell one machine short (the band, greedy's mean hull lost
+and rounds; a stall named). The decision they inform: none yet. The pass moved no standing
+foe's number, and these are the cells his play and the refit's numbers start from. Each a
+direction at 20 seeds. The same reads' elite cells are kept for the elites' own read.
+
+The counts at the rating:
+
+| Tier | Size, rating | Cells | Free | Decision | Wall | Hull lost |
+|---|---|---|---|---|---|---|
+| 1 | patrol, 1 | 4 | 4 | 0 | 0 | 0% |
+| 1 | patrol, 2 | 6 | 6 | 0 | 0 | 1% |
+| 1 | formation, 3 | 10 | 10 | 0 | 0 | 13% |
+| 2 | patrol, 1 | 4 | 4 | 0 | 0 | 3% |
+| 2 | patrol, 2 | 6 | 6 | 0 | 0 | 3% |
+| 2 | formation, 3 | 14 | 13 | 1 | 0 | 14% |
+| 3 | patrol, 1 | 4 | 4 | 0 | 0 | 25% |
+| 3 | patrol, 2 | 6 | 6 | 0 | 0 | 12% |
+| 3 | formation, 3 | 16 | 11 | 4 | 1 | 30% |
+
+Tier one, the default four (the Honey Badger, the Clydesdale, the Kite, the Baboon):
+
+| Domain | Size | Composition | Members | Ramp | Rated | At its rating | One short |
+|---|---|---|---|---|---|---|---|
+| The Meadow | patrol | `lone_whisker_cat` | Whisker Cat ×1 | any | 1 | free · 0% · 2.2 r |  |
+| The Meadow | patrol | `whisker_cat_pair` | Whisker Cat ×2 | C3 to 12 | 2 | free · 0% · 2.9 r | free · 5% · 4.8 r |
+| The Meadow | patrol | `wolf_pack` | Dire Wolf ×4 | any | 2 | free · 0% · 2.5 r | free · 1% · 4.7 r |
+| The Meadow | formation | `goblin_horde` | Goblin ×4, Mandragora ×4 | C0 to 7 | 3 | free · 2% · 3.0 r | free · 2% · 4.8 r |
+| The Meadow | formation | `treant_grove` | Treant ×1, Goblin ×3, Mandragora ×3 | any | 3 | free · 7% · 4.9 r | free · 14% · 8.6 r |
+| The Meadow | formation | `gel_wall` | Gel ×4, Mandragora ×3 | C0 to 7 | 3 | free · 3% · 4.9 r | free · 9% · 7.2 r |
+| The Waste | patrol | `lone_roc` | Roc ×1 | any | 1 | free · 2% · 2.2 r |  |
+| The Waste | patrol | `roc_pair` | Roc ×2 | C3 to 12 | 2 | free · 2% · 2.8 r | free · 14% · 4.4 r |
+| The Waste | patrol | `antlion_trio` | Antlion ×3 | any | 2 | free · 2% · 2.6 r | free · 21% · 3.7 r |
+| The Waste | formation | `needler_thicket` | Needler ×4, Cockatrice ×4 | C0 to 7 | 3 | free · 8% · 2.9 r | free · 13% · 4.8 r |
+| The Waste | formation | `sandworm_ambush` | Sandworm ×1, Needler ×3, Cockatrice ×2 | any | 3 | free · 40% · 5.8 r | decision · 76% · 8.9 r |
+| The Marsh | patrol | `lone_dullahan` | Dullahan ×1 | any | 1 | free · 0% · 2.3 r |  |
+| The Marsh | patrol | `dullahan_pair` | Dullahan ×2 | C3 to 12 | 2 | free · 0% · 2.4 r | free · 4% · 4.9 r |
+| The Marsh | formation | `grave_throng` | Revenant ×4, Ghost ×4 | C0 to 7 | 3 | free · 3% · 3.1 r | free · 7% · 6.0 r |
+| The Marsh | formation | `barrow_mound` | Barrow Giant ×1, Revenant ×3, Ghost ×2 | C0 to 7 | 3 | free · 5% · 4.2 r | free · 10% · 8.8 r |
+| The Marsh | formation | `knights_vigil` | Zombie Knight ×2, Revenant ×2, Ghost ×2 | any | 3 | free · 15% · 3.4 r | decision · 51% · 5.6 r |
+| The Peak | patrol | `lone_cerberus` | Cerberus ×1 | any | 1 | free · 0% · 2.2 r |  |
+| The Peak | patrol | `cerberus_pair` | Cerberus ×2 | C3 to 12 | 2 | free · 1% · 2.8 r | free · 5% · 4.6 r |
+| The Peak | formation | `ember_pyre` | Salamander ×2, Bomb ×2, Drake ×4 | C0 to 7 | 3 | free · 7% · 3.4 r | decision · 42% · 5.5 r |
+| The Peak | formation | `magma_vent` | Magma Elemental ×1, Salamander ×2, Bomb ×1, Drake ×1 | any | 3 | free · 40% · 5.6 r | decision · 74% · 8.5 r |
+
+Tier two, the tier-two four (the Wild Boar, the Clydesdale, the Buzzard, the Dingo):
+
+| Domain | Size | Composition | Members | Ramp | Rated | At its rating | One short |
+|---|---|---|---|---|---|---|---|
+| The Meadow | patrol | `lone_sabre_cat` | Sabre Cat ×1 | any | 1 | free · 1% · 4.0 r |  |
+| The Meadow | patrol | `sabre_cat_pair` | Sabre Cat ×2 | C8 to 12 | 2 | free · 1% · 3.7 r | free · 18% · 7.2 r |
+| The Meadow | patrol | `warg_pack` | Warg ×4 | any | 2 | free · 0% · 2.1 r | free · 2% · 4.0 r |
+| The Meadow | formation | `guard_horde` | Goblin Guard ×4, Mandrake ×4 | C4 to 7 | 3 | free · 1% · 3.2 r | free · 5% · 4.3 r |
+| The Meadow | formation | `treant_march` | Dusk Treant ×1, Goblin Guard ×3, Mandrake ×3 | C4 to 7 | 3 | free · 6% · 6.9 r | free · 18% · 11.4 r |
+| The Meadow | formation | `rotblooms_bed` | Rotbloom ×1, Goblin Guard ×2, Mandrake ×1 | any | 3 | free · 0% · 4.6 r | free · 5% · 7.0 r |
+| The Meadow | formation | `gel_drift` | Bubble Gel ×2, Gel ×2, Mandrake ×2 | C4 to 7 | 3 | free · 1% · 4.8 r | free · 8% · 7.8 r |
+| The Meadow | formation | `grove_and_bloom` | Dusk Treant ×1, Rotbloom ×1, Goblin Guard ×2, Mandrake ×2 | any | 3 | free · 25% · 9.8 r | decision · 79% · 17.8 r |
+| The Waste | patrol | `lone_night_roc` | Night Roc ×1 | any | 1 | free · 11% · 4.0 r |  |
+| The Waste | patrol | `night_roc_pair` | Night Roc ×2 | C8 to 12 | 2 | free · 5% · 3.7 r | free · 48% · 7.3 r |
+| The Waste | patrol | `pit_pair` | Pit Antlion ×2 | any | 2 | free · 12% · 2.1 r | decision · 77% · 4.0 r |
+| The Waste | formation | `barbed_swarm` | Barbed Needler ×2, Needler ×2, Basilisk ×2, The Djinn ×1 | C4 to 7 | 3 | free · 4% · 3.0 r | free · 13% · 4.0 r |
+| The Waste | formation | `sandworm_pit` | Night Sandworm ×1, Barbed Needler ×3, Basilisk ×2 | any | 3 | free · 42% · 7.1 r | wall · 98% · 10.8 r |
+| The Waste | formation | `djinns_mirage` | Barbed Needler ×2, Needler ×2, The Djinn ×2, Basilisk ×1 | any | 3 | free · 4% · 2.9 r | free · 13% · 4.2 r |
+| The Marsh | patrol | `lone_grave_dullahan` | Grave Dullahan ×1 | any | 1 | free · 0% · 5.0 r |  |
+| The Marsh | patrol | `grave_dullahan_pair` | Grave Dullahan ×2 | C8 to 12 | 2 | free · 0% · 3.2 r | free · 26% · 10.1 r |
+| The Marsh | formation | `wight_host` | Wight ×4, Spectre ×3 | C4 to 7 | 3 | free · 2% · 3.6 r | free · 12% · 6.0 r |
+| The Marsh | formation | `grave_field` | Grave Giant ×1, Wight ×3, Spectre ×2 | any | 3 | free · 11% · 11.6 r | decision · 43% · 42.5 r · 9 stalled |
+| The Marsh | formation | `death_knights_retinue` | Death Knight ×2, Wight ×2, Spectre ×2 | any | 3 | free · 34% · 6.3 r | wall · 99% · 10.8 r |
+| The Peak | patrol | `lone_basalt_cerberus` | Basalt Cerberus ×1 | any | 1 | free · 1% · 4.0 r |  |
+| The Peak | patrol | `basalt_cerberus_pair` | Basalt Cerberus ×2 | C8 to 12 | 2 | free · 1% · 3.8 r | free · 12% · 7.5 r |
+| The Peak | formation | `wyvern_roost` | Fire Lizard ×2, Bomb ×1, Grenade ×1, Wyvern ×2 | C4 to 7 | 3 | free · 10% · 3.2 r | free · 36% · 4.8 r |
+| The Peak | formation | `grenade_volley` | Grenade ×2, Bomb ×1, Fire Lizard ×1, Wyvern ×2 | C4 to 7 | 3 | free · 9% · 3.0 r | free · 22% · 4.5 r |
+| The Peak | formation | `magma_forge` | Basalt Elemental ×1, Fire Lizard ×2, Grenade ×1, Wyvern ×1 | any | 3 | decision · 47% · 7.4 r | wall · 100% · 9.2 r |
+
+Tier three, a tier-three four (the Musk Ox, the Ammit, the Giant Petrel, the Lammergeier; the Swallowtail is undealt):
+
+| Domain | Size | Composition | Members | Ramp | Rated | At its rating | One short |
+|---|---|---|---|---|---|---|---|
+| The Meadow | patrol | `lone_storm_cat` | Storm Cat ×1 | any | 1 | free · 17% · 6.2 r |  |
+| The Meadow | patrol | `storm_cat_pair` | Storm Cat ×2 | C11 to 12 | 2 | free · 6% · 5.2 r | wall · 91% · 8.8 r |
+| The Meadow | patrol | `alpha_pack` | Alpha Warg ×3 | any | 2 | free · 1% · 2.7 r | free · 16% · 5.0 r |
+| The Meadow | formation | `rotblooms_bed` | Rotbloom ×1, Goblin Guard ×2, Mandrake ×1 | any | 3 | free · 2% · 5.2 r | free · 11% · 8.9 r |
+| The Meadow | formation | `captains_warband` | Goblin Captain ×2, Goblin Guard ×2, Alraune ×2 | any | 3 | free · 0% · 2.9 r | free · 5% · 4.1 r |
+| The Meadow | formation | `metal_drift` | Metal Gel ×2, Bubble Gel ×1, Goblin Captain ×1, Mandrake ×2, Alraune ×1 | any | 3 | free · 6% · 4.6 r | free · 43% · 7.0 r |
+| The Meadow | formation | `treant_wilds` | Frost Treant ×1, Goblin Guard ×3, Alraune ×2 | any | 3 | free · 11% · 9.0 r | free · 40% · 14.2 r |
+| The Meadow | formation | `frost_and_bloom` | Frost Treant ×1, Rotbloom ×1, Goblin Guard ×1, Goblin Captain ×1, Alraune ×1 | any | 3 | decision · 42% · 12.1 r | wall · 98% · 15.4 r |
+| The Waste | patrol | `lone_great_roc` | Great Roc ×1 | any | 1 | free · 32% · 7.1 r |  |
+| The Waste | patrol | `great_roc_pair` | Great Roc ×2 | C11 to 12 | 2 | free · 14% · 5.8 r | wall · 91% · 8.9 r |
+| The Waste | patrol | `queens_hunt` | Antlion Queen ×1, Pit Antlion ×2 | any | 2 | free · 38% · 4.1 r | wall · 95% · 4.0 r |
+| The Waste | formation | `great_swarm` | Great Needler ×2, Barbed Needler ×2, Gorgon ×2, Basilisk ×2 | any | 3 | free · 12% · 3.5 r | free · 38% · 5.0 r |
+| The Waste | formation | `mirage_court` | Gorgon ×2, Great Needler ×1, Barbed Needler ×3, The Djinn ×2 | any | 3 | free · 10% · 3.5 r | free · 41% · 4.9 r |
+| The Waste | formation | `sandworm_flats` | Salt Sandworm ×1, Great Needler ×3, Gorgon ×2 | any | 3 | free · 45% · 10.8 r | wall · 100% · 11.9 r |
+| The Marsh | patrol | `lone_charnel_dullahan` | Charnel Dullahan ×1 | any | 1 | free · 30% · 9.2 r |  |
+| The Marsh | patrol | `charnel_dullahan_pair` | Charnel Dullahan ×2 | C11 to 12 | 2 | free · 6% · 5.9 r | wall · 97% · 9.3 r |
+| The Marsh | formation | `lichs_court` | Lich ×1, Draugr ×2, Dread Knight ×2, Spectre ×2, Wraith ×1 | C11 to 12 | 3 | wall · 95% · 11.5 r | wall · 100% · 4.3 r |
+| The Marsh | formation | `charnel_pit` | Charnel Giant ×1, Draugr ×3, Wraith ×2 | any | 3 | decision · 56% · 32.0 r · 6 stalled | wall · 100% · 10.6 r |
+| The Marsh | formation | `wraith_choir` | Wraith ×2, Draugr ×2, Death Knight ×2, Spectre ×2 | any | 3 | decision · 62% · 9.6 r | wall · 100% · 5.1 r |
+| The Marsh | formation | `draugr_host` | Draugr ×4, Lich ×1, Wraith ×2 | any | 3 | free · 17% · 5.0 r | decision · 75% · 7.8 r |
+| The Peak | patrol | `lone_sulphur_cerberus` | Sulphur Cerberus ×1 | any | 1 | free · 22% · 7.0 r |  |
+| The Peak | patrol | `sulphur_cerberus_pair` | Sulphur Cerberus ×2 | C11 to 12 | 2 | free · 9% · 6.5 r | decision · 86% · 10.7 r |
+| The Peak | formation | `dragons_roost` | Red Dragon ×2, Magma Lizard ×1, Fire Lizard ×1, Balloon ×1, Grenade ×1, Wyvern ×2 | any | 3 | free · 39% · 5.2 r | wall · 100% · 5.2 r |
+| The Peak | formation | `magma_pit` | Magma Lizard ×2, Fire Lizard ×1, Grenade ×1, Red Dragon ×2 | any | 3 | free · 9% · 4.1 r | decision · 70% · 7.2 r |
+| The Peak | formation | `balloon_storm` | Balloon ×2, Grenade ×1, Magma Lizard ×1, Wyvern ×2, Red Dragon ×1 | any | 3 | free · 15% · 4.6 r | decision · 74% · 7.9 r |
+| The Peak | formation | `magma_caldera` | Sulphur Elemental ×1, Magma Lizard ×2, Balloon ×1, Wyvern ×1 | any | 3 | decision · 63% · 12.4 r | wall · 100% · 9.4 r |
+
+Read, against the hull budget he accepted (a pusher's fight a twentieth of the squad's hull at
+its rating, a flanker's a thirtieth, a hunter's a tenth):
+
+- Every patrol is free at its rating at every tier, the lone duelist the fight for one it was
+  written as. At tier three the lone duelist costs the Musk Ox a sixth to a third of its hull:
+  the slowest machine of the tier reads them dearest, and a pair is a wall or near one for it
+  alone, which is the pair's rating saying what it should.
+- Tier one's formations sit on the budget (2% to 8% for three) but where a breach stands: the
+  sandworm ambush and the magma vent at two fifths, the knights' vigil at a seventh. Breach
+  under the regen is parked on his word; these are the cells it is parked with.
+- Tier two is the same shape a step up: the fodder formations 0% to 11%, the anchored ones a
+  quarter to a half (the grove and bloom, the sandworm pit, the death knights' retinue, the
+  magma forge, the one decision). The grave field stalls nine fights in twenty one machine
+  short: the giants' line has no escalation, the rising threat's defect, set aside.
+- Tier three spreads widest, and the Marsh is its dearest domain: the Lich's court is a wall
+  for the tier's three (greedy loses, 95% of the hull gone) and the charnel pit and the wraith
+  choir cost over half, the pit stalling six fights in twenty. The draugr host, four Draugr
+  before the Lich and two Wraiths, costs a sixth, so the new rung is not the cause: it is the
+  knights' breach and the giant, with the Lich's raising behind them. The Lich's court holds
+  the ramp's last step alone (Convergences 11 and 12), and the read is stock machines with no
+  module or upgrade, so it is flagged for his play, not moved.
+
+The campaign runner's 40 runs (`tools/campaign_run.gd -- --runs 40`, the plain player, the
+greedy rung, three tier-one machines of its tender) before and after the set landed, both on
+the landed model; `docs/campaign_run.md` is the run after. A direction.
+
+| Measure | The model, the old set | The pass landed |
+|---|---|---|
+| Battles won, fallen | 10%, 81% | 19%, 76% |
+| Battles ended in a team wipe | 76% | 69% |
+| Battles reaching the Rupture | 37% | 34% |
+| Fractures a battle | 1.60 | 1.50 |
+| Menace killed a battle | 83 | 72 |
+| Gate damage a battle | 125 | 117 |
+| Machines wrecked a battle | 1.54 | 1.42 |
+| Fights a run of 40 | 849 | 733 |
+| A fight for one, one machine in it: won | 70% of 204 | 98% of 94 |
+| A fight for two, one in it | none dealt | 66% of 15 |
+| A fight for three, one in it | 31% of 225 | 17% of 219 |
+| A fight for three, two in it | 85% of 99 | 69% of 107 |
+| A fight for three, three in it | 98% of 65 | 100% of 80 |
+| A fight for four, one in it | 55% of 80 | 51% of 72 |
+
+Read. The ratings mean more than they did: a fight for one is won alone 98 times in 100 where
+it was 70 (the old patrols were cut-down pushers that read as twos), and a formation costs a
+machine alone or a pair more than it did (17% and 69% won, from 31% and 85%), since the pruned
+set kept the anchored formations and dropped the ones that read free at eight foes. The plain
+player wins twice the battles it did and still falls in three of four: it spreads its three
+machines one to a pack, which is the play the ratings now punish, and no bot here reads a
+rating before it commits.

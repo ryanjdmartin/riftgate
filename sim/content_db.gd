@@ -10,10 +10,6 @@ const DIR := "res://content/"
 # Design knobs. Loosen or tighten here; the validator and the bible should agree.
 const MAX_AUTHORED_KEYWORDS := 3    # per authored face; upgrades may exceed this at runtime
 const MAX_MOVE := 6                 # a move in hexes, chassis or foe, is 1 to this (a placeholder bound, 28 October)
-## A hunter's ring, its pounce: the one catch range, the same for every hunter (Ryan, 29 October: "a
-## minimum range of 2 instead of 1 (wolfs pounce, etc.)"). No foe or composition carries a ring of its
-## own (8 November, the rings purged with the engagement system): a catch reads this number alone.
-const HUNTER_RING := 2
 ## The caveats a hunting composition may name (`hunts`): whom its pack locks.
 const HUNT_CAVEATS := ["nearest", "weakest", "strongest", "slowest", "fastest"]
 const MIN_DIE := 3                  # the Kite is a d3 (its row, Ryan's go of 21 October: every dark entry felt)
@@ -549,7 +545,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 ## What the map needs of a foe type (bible section 5): its move, its wings and its shown name.
 ## Keyed by foe id, for Battlefield.foe_profiles; a boss's entry serves the boss unit. Defaults
 ## are the engine's when the content says nothing. Whether a pack hunts is its composition's
-## (`hunts`, Battlefield.pack_of), never a foe's, and no foe carries a ring (HUNTER_RING).
+## (`hunts`, Battlefield.pack_of), never a foe's, and no foe carries a ring (a hunter catches at Unit.ENGAGE_RANGE).
 func pack_profiles() -> Dictionary:
 	var out: Dictionary = {}
 	for id in foes.keys():
@@ -771,10 +767,15 @@ func chassis_of_tier(t: int) -> Array:
 ## Can the engine field this chassis today? Not while its passive or one of its locked
 ## components is a planned draft (19 October): a draft is kept in content so it can be written
 ## ahead of its engine, but dealt it would put a plain die with a dead piece in the player's
-## hands, and measured it would read the body without the kit. The tender, the campaign
-## runner and the balance runner skip what this refuses.
+## hands, and measured it would read the body without the kit. Nor while the chassis itself is
+## back in design ("status": "planned" on its entry, the refit pass's four since 10 November):
+## its kit still runs and its tests still build it, but nothing deals it until its session hands
+## it back. The tender, the harness, the campaign runner and the balance runner skip what this
+## refuses.
 func chassis_runnable(chassis_id: String) -> bool:
 	var c: Dictionary = chassis.get(chassis_id, {})
+	if str(c.get("status", "implemented")) == "planned":
+		return false
 	var p = c.get("passive")
 	if p is Dictionary and str(p.get("status", "implemented")) == "planned":
 		return false
@@ -789,9 +790,16 @@ func chassis_runnable(chassis_id: String) -> bool:
 func starting_blueprints() -> Array:
 	var out: Array = []
 	for cid in components.keys():
-		if component_tier(str(cid)) == 0:
+		if component_tier(str(cid)) == 0 and component_dealt(str(cid)):
 			out.append(str(cid))
 	return out
+
+
+## Is this component in the game's hands today? Not while it is a planned draft: one the
+## engine cannot run yet, or one the refit pass retired or sent back to design (the shields and
+## vents, undealt since 10 November). A draft is no blueprint, no loot and no basic.
+func component_dealt(component_id: String) -> bool:
+	return components.has(component_id) and str(components[component_id].get("status", "implemented")) != "planned"
 
 
 func default_faction() -> String:
@@ -2093,6 +2101,8 @@ func _validate_chassis(errs: Array[String]) -> void:
 			errs.append("%s: recharge_field is gone (the long wall brief, docs/briefs/long_wall_build.md 3.6): the shield is full as every fight opens and nothing returns on the map" % where)
 		if int(c.get("armour", 0)) < 0 or int(c.get("cooling", 0)) < 0:
 			errs.append("%s: armour and cooling cannot be negative" % where)
+		if c.has("status") and not VALID_STATUS.has(str(c["status"])):
+			errs.append("%s: status is one of %s (planned: back in design and undealt)" % [where, ", ".join(VALID_STATUS)])
 		if c.has("shield_regen") and (not (c["shield_regen"] is float or c["shield_regen"] is int) or int(c["shield_regen"]) != c["shield_regen"] or int(c["shield_regen"]) < 0 or int(c["shield_regen"]) > 9):
 			errs.append("%s: shield_regen is a whole number from 0 to 9 (the long wall brief 3.6)" % where)
 		_validate_design(where, c, errs)
@@ -2313,10 +2323,71 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 		errs.append("%s: needs at least one implemented attack action" % where)
 
 
+## A rank-and-file unit's battlefield role (Ryan, 9 November: a unit is made for a pusher's, a
+## flanker's or a hunter's fight and tuned for it, so a goblin tuned for three machines is not
+## the same goblin in a pack sent at one): a pusher's unless its entry says otherwise. A pusher
+## stands in the formations that march on the wall, a flanker is a duel for one machine in a
+## patrol, a hunter is a hunting pack's line. Internal: nothing shows it, the validator holds
+## the compositions to it (_validate_roles). Elites, bosses and their escorts carry none.
+const FOE_ROLES := ["pusher", "hunter", "flanker"]
+const ROLE_DEFAULT := "pusher"
+
+
+func role_of(foe_id: String) -> String:
+	return str(foes.get(foe_id, {}).get("role", ROLE_DEFAULT))
+
+
+## A patrol or a formation is held to its members' roles (the formation pass, 10 November). A
+## pack that hunts is its lead's line and what keeps up with it (Ryan: "A pack of wolves and
+## things that keep up with the wolves makes sense"): a hunter leads it, and every member moves
+## at its lead's pace or faster and flies if it does. A formation that pushes fields pushers, a
+## patrol that pushes fields flankers ("One spooky flanker revenant or whatever is a more
+## interesting duel for a Skua or Kite than the Skua or Kite just mowing down less goblins").
+## A crossing is deliberate, and the composition says why under design.crossing ("I'm not saying
+## we can't cross lines between battlefield roles, just that I don't want it to come across as
+## lazy"). Elites and escorts are written by other rules.
+func _validate_roles(cw: String, c: Dictionary, size: String, errs: Array[String]) -> void:
+	var cells: Array = []
+	for r in ["front", "back"]:
+		var row = c.get(r, [])
+		if row is Array:
+			for x in row:
+				if x is String and foes.has(x):
+					cells.append(str(x))
+	if cells.is_empty():
+		return
+	var d = c.get("design", null)
+	var crossing := str(d.get("crossing", "")).strip_edges() if d is Dictionary else ""
+	if c.has("hunts"):
+		var lead := str(c.get("lead", cells[0]))
+		if not foes.has(lead):
+			return
+		if role_of(lead) != "hunter" and crossing.is_empty():
+			errs.append("%s: a pack that hunts is led by a hunter; %s is a %s (say why under design.crossing)" % [cw, lead, role_of(lead)])
+		var pace := int(foes[lead].get("movespeed", Unit.PACK_MOVE))
+		var flies := bool(foes[lead].get("winged", false))
+		for x in cells:
+			if int(foes[x].get("movespeed", Unit.PACK_MOVE)) < pace:
+				errs.append("%s: %s does not keep up with its lead (%s moves %d): a hunter is its line and what keeps up with it" % [cw, x, lead, pace])
+			elif flies and not bool(foes[x].get("winged", false)):
+				errs.append("%s: %s cannot follow its lead %s over walls and water" % [cw, x, lead])
+		return
+	var want := "pusher" if size == "formation" else "flanker"
+	if not crossing.is_empty():
+		return
+	var said := {}
+	for x in cells:
+		if role_of(x) != want and not said.has(x):
+			said[x] = true
+			errs.append("%s: %s is a %s in a %s's %s (a crossing says why under design.crossing)" % [cw, x, role_of(x), want, size])
+
+
 func _validate_foes(errs: Array[String]) -> void:
 	for id in foes.keys():
 		var f: Dictionary = foes[id]
 		var where := "foe %s" % id
+		if f.has("role") and not FOE_ROLES.has(str(f["role"])):
+			errs.append("%s: role is one of %s (absent: a pusher's)" % [where, ", ".join(FOE_ROLES)])
 		for key in ["name", "codex", "flavour", "actions", "hp", "attack", "rank"]:
 			if not f.has(key):
 				errs.append("%s: missing %s" % [where, key])
@@ -2358,7 +2429,7 @@ func _validate_foes(errs: Array[String]) -> void:
 		# The rings are gone and the hunt is a composition's (Ryan, 8 November: "The composition
 		# should say if it hunts, not the units"): a foe carries neither, so the old fields are refused.
 		if f.has("zone"):
-			errs.append("%s: zone is gone (8 November): no foe carries a ring; a hunter catches at the pounce, %d" % [where, HUNTER_RING])
+			errs.append("%s: zone is gone (8 November): no foe carries a ring; a hunter catches at the engage range, %d (Unit.ENGAGE_RANGE)" % [where, Unit.ENGAGE_RANGE])
 		for key in ["behaviour", "hunts"]:
 			if f.has(key):
 				errs.append("%s: %s is gone from the foe (8 November): a composition says whether its pack hunts (hunts)" % [where, key])
@@ -2496,6 +2567,15 @@ func _validate_factions(errs: Array[String]) -> void:
 			if c.has("members") or c.has("layout"):
 				errs.append("%s: members and layout are gone (8 November); the grid, front and back, is the whole declaration" % cw)
 			_validate_grid(cw, c, size, errs)
+			# The formation pass's fields (10 November): what the player must answer, written down on
+			# every patrol and formation (internal, under design, never shown), and the roles.
+			if c.has("design") and not (c["design"] is Dictionary):
+				errs.append("%s: design is an object (question, crossing, note)" % cw)
+			elif size == "patrol" or size == "formation":
+				var cd = c.get("design", null)
+				if not (cd is Dictionary) or str(cd.get("question", "")).strip_edges().is_empty():
+					errs.append("%s: design.question says what the player must answer (every patrol and formation poses one)" % cw)
+				_validate_roles(cw, c, size, errs)
 			# The long wall brief's fields (section 6): the squad it is intended for and the ramp gate.
 			if c.has("squad"):
 				var sv = c["squad"]

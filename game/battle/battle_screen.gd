@@ -102,10 +102,38 @@ var _overlay_text: Label
 var _skirmish: SkirmishScreen = null
 
 
+## RIFTGATE_CACHE_DEBUG=1: a new battle lies one cache of every kind beside the team, on solid
+## ground, and one of every kind by the rift, under the painting, in place of the caches its seed
+## dealt, so each kind's model and its flat token are judged side by side in one look (Ryan, 9
+## November: "models (and art, when flattened), for loot caches on map"). A battle read back
+## from a save keeps its own.
+static var CACHE_DEBUG := OS.get_environment("RIFTGATE_CACHE_DEBUG") == "1"
+
+
 func setup(b: Battle) -> void:
 	battle = b
+	if CACHE_DEBUG and b.field.phase == 0:
+		_debug_caches(b)
 	_build()
 	_refresh()
+
+
+func _debug_caches(b: Battle) -> void:
+	var f := b.field
+	var kinds := b.db.loot_kinds()
+	if kinds.is_empty() or b.mechs().is_empty():
+		return
+	f.caches = []
+	for from in [b.mechs()[0].pos, f.map.rift]:
+		var open: Array = f.map.all_hexes().filter(func(h: Vector2i) -> bool: return Hex.distance(h, from) >= 2)
+		open.sort_custom(func(x: Vector2i, y: Vector2i) -> bool: return Hex.distance(x, from) < Hex.distance(y, from))
+		var k := 0
+		for h in open:
+			if k >= kinds.size():
+				break
+			if f._cache_fits(h):
+				f.caches.append({"id": f.caches.size() + 1, "tier": int(b.db.loot[kinds[k]].get("tier", 1)), "pos": h})
+				k += 1
 
 
 func _ready() -> void:
@@ -153,6 +181,7 @@ func _start_music() -> void:
 ## the enemy; RIFTGATE_MAP_KIND=gorge picks the map's shape (BattleMap.KINDS; none draws one by
 ## the seed) and RIFTGATE_SEED=<n> the battle's seed (7).
 static func _default_battle() -> Battle:
+	Settings.field_trial()   # RIFTGATE_FIELD_DEPTH and RIFTGATE_OPENING, for a shot or a scene run alone
 	var db := ContentDB.load_default()
 	var seed_env := OS.get_environment("RIFTGATE_SEED")
 	var b := Battle.new(int(seed_env) if seed_env.is_valid_int() else 7)
@@ -220,6 +249,8 @@ func _build() -> void:
 	_map.route_drag_started.connect(_on_route_drag_started)
 	_map.route_drag_to.connect(_on_route_drag_to)
 	_map.route_drag_ended.connect(_on_route_drag_ended)
+	_map.peak_beat.connect(_on_peak_beat)
+	_map.cutscene_changed.connect(_on_cutscene)
 	_apply_display()
 	_map.hold_released.connect(_on_hold_released)
 
@@ -533,14 +564,20 @@ func _toggle_log_full() -> void:
 func _select(u: Unit) -> void:
 	_queue_pulse = false   # the player is doing something else: the queue waits quietly
 	_map.selected = u
-	_map.destinations = battle.destinations_for(u) if u != null else {}
-	_map.threat = battle.threat_for(u) if u != null else {}
+	# A machine with a move planned or an order given shows what it could do instead (Ryan, 10
+	# November: "I should be able to re-order them by tapping on them again"): its reach from
+	# where it started, as if its plan were taken back; a move or an order given there replaces it.
+	var reach: Array = battle.reach_if_retaken(u) if u != null else [{}, {}]
+	_map.destinations = reach[0]
+	_map.threat = reach[1]
 
 
 # ---------------------------------------------------------------- gestures
 
 ## Tap a machine to select it; tap a lit hex and it moves there, staying in hand while it can
-## still act; tap it again to let it go. With a machine in hand, a tap on a pack orders it onto
+## still act; tap it again to take its order back (a planned move, an order onto a pack), and
+## again to let it go; a machine with an order shows its reach from where it started, and a new
+## move or order there replaces the old one. With a machine in hand, a tap on a pack orders it onto
 ## that fight, moving it into range first (and a second tap on the pack it is ordered onto
 ## takes the order back). With nothing in hand, a tap on a pack shows its fight.
 func _on_hex_tapped(h: Vector2i) -> void:
@@ -565,10 +602,19 @@ func _on_hex_tapped(h: Vector2i) -> void:
 		_refresh()
 		return
 	if sel != null and u == null and _map.destinations.has(h):
-		if not battle.move_to(sel, h).is_empty():
+		if not battle.move_again(sel, h).is_empty():   # a machine with a plan gives it up for this one
 			_planned(sel)
 			return
 	elif u != null and u.is_player() and not u.is_static():
+		if sel == u and battle.retake(u):
+			# A tap on the machine in hand takes its order back (Ryan, 10 November: "Tapping on them
+			# when they are selected should cancel the order"); it stays in hand, free to be given
+			# another, and a tap on it with nothing to take back lets it go.
+			_select(u)
+			Sound.play("ui_back")
+			_refresh()
+			_autosave()
+			return
 		if sel == u:
 			_select(null)
 			Sound.play("ui_back")
@@ -685,7 +731,7 @@ func mech_lines(u: Unit) -> Array:
 	return out
 
 
-## A pack's readout the same way: its name, its foe and strength, its move and its ring, then
+## A pack's readout the same way: its name, its foe and strength and its move, then
 ## what it is doing. The boss's: its name as the boss, its size (its own in content, apart from
 ## its being the boss, 15 October) and ring, what it brings (a final's hero its wildlife, the
 ## finale's line the party), and its holding the rift.
@@ -700,22 +746,13 @@ func pack_lines(u: Unit) -> Array:
 				parts.append("·")
 			parts.append_array([str(db.foes.get(str(m[0]), {}).get("name", str(m[0]))), "×%d" % int(m[1])])
 		parts.append_array(["·", "Move", str(u.movespeed)])
-		if u.behaviour == "hunt":
-			parts.append_array(["·", "Ring", str(ContentDB.HUNTER_RING)])   # a hunter's catch, the pounce every hunter shares; a pusher has none (8 November)
 		if u.traits.has("winged"):
 			parts.append_array(["·", "Winged"])   # it crosses water and crags as a flyer does
 		var lines: Array = [_title(u.display_name), _squad_line(u), _words(parts), _behaviour_line(u)]
-		# Its prey sealed off, it takes the machine nearest it this turn (Ryan, 29 October:
-		# "It's just punishing hiding"), and the readout says whom and why.
 		var w: Battlefield.Walk = _map.walks.get(u.id, null) if _map != null else null
 		var when := _way_line(u, w)
 		if not when.is_empty():
 			lines.append(when)
-		if w != null and w.prey != 0 and w.prey != u.prey:
-			var took := battle.field.unit_by_id(w.prey)
-			var sealed := battle.field.unit_by_id(u.prey)
-			if took != null and sealed != null:
-				lines.append(_said("Takes", "%s in its place: %s is sealed off" % [took.display_name, sealed.display_name]))
 		return lines
 	var out: Array = [_title(u.display_name, "Boss"), _squad_line(u)]
 	var stats: Array[String] = []
@@ -772,7 +809,7 @@ func _way_line(u: Unit, w: Battlefield.Walk) -> Dictionary:
 	if w.prey != 0:
 		var prey := battle.field.unit_by_id(w.prey)
 		if not battle.field.catches_at(u, w.route[w.route.size() - 1], prey):
-			return _said("Closes", "on it, as near as it gets %s" % when)   # sealed off past any walk: as near as it gets
+			return _said("Closes", "on it, as near as it gets %s" % when)   # past any walk: as near as it gets
 		return _said("Catches", "it %s, as the field stands" % when)
 	return _said("At the wall", "%s, as the field stands" % when)
 
@@ -1026,6 +1063,7 @@ func _on_end_turn() -> void:
 		Sound.say("resolve_all" if committed == free else "resolve_move")
 	var gate_before := battle.field.gate_hp
 	var plan := battle.take_plan()   # the machines' planned moves play first, then the packs walk
+	_map.hold_peak()   # a peak this turn is shown after the walks (_after_step): the seam and the tears stand as they were until then
 	var walks := battle.end_turn()
 	_gate_struck = battle.field.gate_hp < gate_before
 	_spawned = battle.last_spawned
@@ -1050,26 +1088,76 @@ func _after_step() -> void:
 		_top.flash("rift")
 	_gate_struck = false
 	_spawned = false
-	match battle.state:
-		Battle.State.DONE:
-			_refresh()
-			_show_outcome()
-		_:
-			_refresh()
-			var locks := battle.take_locks()
-			if not locks.is_empty():
-				_show_lock(locks[0][0], locks[0][1])
-			if battle.state == Battle.State.PLAN and not battle.forced.is_empty():
-				_show_caught()
+	if battle.state == Battle.State.DONE:
+		_map.play_peak(Callable())   # nothing to show over the outcome: the hold is let go
+		_refresh()
+		_show_outcome()
+		_autosave()
+		return
+	# A peak's cutscene first (the seam's creep, a tear opening: BattleMapView.play_peak), then
+	# what the turn opens with; at once when the turn held no peak.
+	_refresh()
+	_map.play_peak(_after_peak)
+	if _map.cutscene_playing():
+		_refresh()   # the buttons grey while it plays
+
+
+## While the map plays a cutscene nothing on the screen takes a touch (Ryan, 10 November: "I feel
+## like I glitched one out by tapping, we should remove interactions while they run"): a clear
+## sheet over everything swallows them, the menu too, for the few seconds it runs.
+var _cut_block: Control = null
+
+func _on_cutscene(playing: bool) -> void:
+	if _cut_block == null:
+		_cut_block = Control.new()
+		_cut_block.mouse_filter = Control.MOUSE_FILTER_STOP
+		_cut_block.position = Vector2.ZERO
+		_cut_block.size = Vector2(W, H)
+		add_child(_cut_block)
+	_cut_block.visible = playing
+	if playing:
+		_cut_block.move_to_front()
+
+
+## A beat of the peak's cutscene, heard: the seam's creep starting, a tear opening. Borrowed
+## sounds until each has its own (the audio to-do).
+func _on_peak_beat(what: String) -> void:
+	if what == "tear":
+		Sound.play("reveal")
+	else:
+		Sound.play("contact", -4.0)
+	_top.flash("rift")
+
+
+## The peak shown (or none to show): every hunter that turned on a machine this turn is declared,
+## the map gliding in on each in turn (BattleMapView.play_locks), then the turn opens.
+func _after_peak() -> void:
+	if battle.state == Battle.State.DONE:
+		_refresh()
+		_show_outcome()
+		_autosave()
+		return
+	_refresh()
+	# The hunter stands clear under the band, whatever the glass's height.
+	_map.play_locks(battle.take_locks(), _show_lock, _after_locks, maxf(_map.size.y * 0.5, WARN_BAND_Y + WARN_BAND_H + 130.0))
+	if _map.cutscene_playing():
+		_refresh()   # the buttons grey while it plays
+
+
+## The locks declared (or none): the next turn opens, with any catch.
+func _after_locks() -> void:
+	_refresh()
+	if battle.state == Battle.State.PLAN and not battle.forced.is_empty():
+		_show_caught()
 	_autosave()
 
 
 ## A hunter turns on a machine (Ryan, 8 November: "Declare when a hunter selects a target. Maybe
-## zoom on it and declare the target on screen"): the map scrolls to the hunter and the band says
-## who turns on whom, the catch's band in its shape; one declaration a turn, the first lock's,
-## the rest in the log. A roar from the enemy belongs here (noted, not made: the audio to-do).
+## zoom on it and declare the target on screen"; 10 November: "We should pan and zoom to hunters
+## when they acquire as well"): the map has glided in on the hunter (play_locks) and the band
+## says who turns on whom, the catch's band in its shape; every lock of the turn in its turn,
+## each in the log too. A roar from the enemy belongs here (noted, not made: the audio to-do).
 func _show_lock(hunter: Unit, prey: Unit) -> void:
-	_map.scroll_to_unit(hunter)
 	_warn_band("HUNTED", "%s TURNS ON %s" % [hunter.display_name.to_upper(), prey.display_name.to_upper()], false)
 
 
@@ -1090,6 +1178,9 @@ func _show_caught() -> void:
 ## The warning band over the map: a black band with violet rules across it, the map dimmed under
 ## it, the title big in the enemy's violet and a line under it; two beats, drawn out (Ryan, 22
 ## September: one flash looked accidental), the catch's second contact beat and its line with it.
+const WARN_BAND_Y := 260.0   # the band's top in the map's rect
+const WARN_BAND_H := 150.0
+
 func _warn_band(title: String, sub_text: String, catch: bool, sound: String = "contact") -> void:
 	var warn := Control.new()
 	warn.position = Vector2(0, MAP_Y)
@@ -1101,8 +1192,8 @@ func _warn_band(title: String, sub_text: String, catch: bool, sound: String = "c
 	warn.add_child(dim)
 	var band := ColorRect.new()
 	band.color = Color(0, 0, 0, 0.92)
-	band.position = Vector2(0, 260.0)
-	band.size = Vector2(W, 150.0)
+	band.position = Vector2(0, WARN_BAND_Y)
+	band.size = Vector2(W, WARN_BAND_H)
 	warn.add_child(band)
 	for y in [band.position.y, band.position.y + band.size.y - 4.0]:
 		var rule := ColorRect.new()
@@ -1341,9 +1432,9 @@ func _play_boss_reveal(sk: Skirmish, group: Array) -> void:
 	reveal.family = str(battle.db.factions.get(battle.faction, {}).get("name", battle.faction))
 	var fid := BattleMapView.foe_sprite_id(boss)
 	reveal.tex = Sprites.combat_foe(fid)
+	var map_tex := BattleMapView.foe_picture(boss)
 	if reveal.tex == null:
-		reveal.tex = Sprites.map_foe(fid)
-	var map_tex := Sprites.map_foe(fid)
+		reveal.tex = map_tex
 	reveal.from = _map.position + _map.to_screen(_map.center(boss.pos)) - reveal.position
 	reveal.from_size = BattleMapView.sprite_size(boss, map_tex) * _map.zoom
 	reveal.finished.connect(func() -> void:
@@ -1474,7 +1565,7 @@ func _on_skirmish_back() -> void:
 
 ## A Fracture earned, announced (Ryan, 9 November: "Fractures need to be announced"): the warning
 ## band over the map, FRACTURE with its count and what it brings, an elite out of the rift (the
-## map scrolls to it) or nothing more; the last, THE RUPTURE, the seal broken and the boss open to
+## map glides in on it as it arrives and the band names it) or nothing more; the last, THE RUPTURE, the seal broken and the boss open to
 ## a fight; and the top bar's gauge flashes. Several earned by one fight are one band, its count the
 ## last. The stall guard's Rupture (no pack but the boss's left) says so.
 func _show_fracture(elite: bool) -> void:
@@ -1488,11 +1579,17 @@ func _show_fracture(elite: bool) -> void:
 		return
 	var said := "FRACTURE %d OF %d" % [battle.fractures, n]
 	if elite:
+		# The elite is introduced as it arrives (Ryan, 10 November: "After fracture, we should zoom
+		# and introduce the elite as it spawns"): unseen until the map has glided in on its hex,
+		# zoomed, then it bursts out of the ground under the band, which names it.
 		var sq := _newest_elite()
-		if sq != null:
-			_map.scroll_to_unit(sq)
-		_warn_band("FRACTURE", said + " // AN ELITE EMERGES AT THE RIFT", false)
-		Sound.play_after(0.35, Sound.family("spawn", battle.faction))
+		var named := (" // " + sq.display_name.to_upper()) if sq != null else ""
+		_map.hold_spawn(sq)
+		_map.play_spawn(sq, func() -> void:
+			_warn_band("FRACTURE", said + " // AN ELITE EMERGES" + named, false)
+			Sound.play_after(0.35, Sound.family("spawn", battle.faction)), _refresh, maxf(_map.size.y * 0.5, WARN_BAND_Y + WARN_BAND_H + 130.0))
+		if _map.cutscene_playing():
+			_refresh()   # the buttons grey while it plays
 	else:
 		_warn_band("FRACTURE", said + " // %d MORE TO THE RUPTURE" % (n - battle.fractures), false)
 

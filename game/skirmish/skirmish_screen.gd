@@ -341,6 +341,7 @@ var _turns: Array[Foe] = []           # the foes a Lure in hand would turn, thei
 func setup(skirmish: Skirmish) -> void:
 	sk = skirmish
 	sk.keeps_undo = true   # the screen's fight keeps the undo's snapshots (the runners never)
+	_heat_warned.clear()
 	locked.clear()
 	for m in sk.mechs:
 		locked.append(false)
@@ -1096,8 +1097,8 @@ func _refresh(save: bool = true) -> void:
 			# targeting a rank"): over a foe, the rank it stands in is the target, lit whole and
 			# bracketed (below), the other rank plain until the finger moves there.
 			if sk.reach_of(dm, f) == Face.Reach.SWEEP and _drag_over is Foe:
-				var swept_rank: int = 0 if (_drag_over as Foe).is_massive() else (_drag_over as Foe).rank
-				targets = targets.filter(func(foe: Foe) -> bool: return (0 if foe.is_massive() else foe.rank) == swept_rank)
+				var swept_rank := sk.sweep_rank_of(_drag_over)
+				targets = targets.filter(func(foe: Foe) -> bool: return sk.sweep_rank_of(foe) == swept_rank)
 		elif f != null and f.on_machines():
 			support = sk.machine_targets_for(dm, Effects.effective_face(dm.unit, f))
 
@@ -1201,12 +1202,12 @@ func _refresh(save: bool = true) -> void:
 		var sm: Skirmish.MechState = sk.mechs[_drag_from]
 		var sf := sk.spend_face(sm)
 		if sf != null and sf.is_attack() and sk.reach_of(sm, sf) == Face.Reach.SWEEP:
-			var swept_rank: int = 0 if (_drag_over as Foe).is_massive() else (_drag_over as Foe).rank
+			var swept_rank := sk.sweep_rank_of(_drag_over)
 			var whole := Rect2()
 			var any := false
 			for v in _view_foe.keys():
 				var foe: Foe = _view_foe[v]
-				if not foe.alive() or (0 if foe.is_massive() else foe.rank) != swept_rank:
+				if not foe.alive() or sk.sweep_rank_of(foe) != swept_rank:
 					continue
 				var uv: UnitView = v
 				uv.highlight = false
@@ -1263,13 +1264,14 @@ func _refresh(save: bool = true) -> void:
 		# The sixth shot's count as pips under the heat bar (Ryan, 19 October: the best spot).
 		var every := Effects.counts_shots(ms.unit)
 		v.pips = [Effects.stacks_of(ms.unit, "shots"), every] if every > 0 else []
-		# A capped store as boxes under the heat (Ryan, 21 and 22 October: every store a bar, the
-		# rage boxes up to its cap), in its chip's colour and place.
-		v.boxes = []
+		# A capped store as a bar under the heat (Ryan, 21 and 22 October: every store a bar;
+		# 10 November: in the heat bar's shape, a segment a stack up to its cap), in its chip's
+		# colour and place.
+		v.store = []
 		for id in Effects.STATUS.keys():
 			var cap := Effects.store_cap(ms.unit, str(id)) if (Effects.STATUS[id].get("tags", []) as Array).has("store") else 0
 			if cap > 0:
-				v.boxes = [Effects.banked(ms.unit, str(id)), cap, _chip_colour(str(id)), status_glyph(str(id))]
+				v.store = [Effects.banked(ms.unit, str(id)), cap, _chip_colour(str(id)), status_glyph(str(id))]
 				break
 		v.highlight = support.has(ms)
 		v.statuses = []
@@ -1483,10 +1485,10 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	# threatens nothing.
 	v.intent_kind = "" if (foe.is_suppressed() or foe.target == null or not foe.alive()) else Foe.kind_of(foe.action)
 	# A move still gathering (a countdown) shows the blow it will land; its rounds are a chip.
-	var blow := foe.attacks() or foe.gathering()
-	v.intent_value = sk.foe_blow(foe) if blow else int(foe.action.get("value", 0))
-	v.intent_note = ("×%d" % foe.strikes() if foe.strikes() > 1 else "") if blow else ""
-	v.intent_riders = intent_riders(foe) if blow else []   # the readout's chip is _intent_chip's, the same read
+	var read := _intent_read(foe)   # the readout's chip is _intent_chip's, the same read
+	v.intent_value = read[0]
+	v.intent_note = read[1]
+	v.intent_riders = read[2]
 	v.statuses = []
 	for r in _foe_rows(foe):
 		v.statuses.append([r[0], r[1], r[3], r[4] if r.size() > 4 else "status", r[5] if r.size() > 5 else ""])
@@ -1802,7 +1804,7 @@ static func status_glyph(id: String) -> String:
 			return "regenerating"
 		"retaliate":
 			return "shocked"
-		"hopper", "ore_plate":
+		"hopper":
 			return "hopper"
 		"sealed":
 			return "seal"   # the shell's mark, as the die's chip that seals it (2 November)
@@ -1830,7 +1832,7 @@ static func status_glyph(id: String) -> String:
 ## Statuses and warnings on a mech as [glyph, chip text, readout text, colour], the readout text
 ## the chip's name and count (as a foe's, _foe_rows). Warnings come from the forecast: what the
 ## end of the round does if nothing changes.
-## A machine status's colour on its chip, or on a capped store's boxes: its term's (Terms), the
+## A machine status's colour on its chip, or on a capped store's bar: its term's (Terms), the
 ## Nemesis's rage, a store the keywords list holds no term for, in heat's, and any other in ink,
 ## never the HUD colour (Ryan, 30 October: "Stay away from HUD colour").
 static func _chip_colour(id: String) -> Color:
@@ -1877,15 +1879,15 @@ func _mech_rows(i: int) -> Array:
 		if int(d[3]) < Effects.SKIRMISH and not Effects.is_status(id):
 			continue
 		if id == "shots" or id == "quick_turned" or id == "muster" or Effects.store_cap(ms.unit, id) > 0:
-			continue   # a count shows as pips under the heat bar (the Cassowary's sixth shot), a capped store as its boxes, and the gate by the Rapid it grants, never a chip
+			continue   # a count shows as pips under the heat bar (the Cassowary's sixth shot), a capped store as its bar, and the gate by the Rapid it grants, never a chip
 		if not first.has(id):
 			order.append(id)
 			first[id] = d
 			total[id] = 0
 		total[id] = int(total[id]) + int(d[4])
 	# An ability (Ryan, 8 November: "It's not a Buff, it's not a Debuff, it's labelled as an
-	# Ability, so it doesn't get purged"): the machine's own mechanic, the Polar Bear's seal, the
-	# Ore Plate, Hot Streak, on a solid tile and named so in its readout, ahead of the buffs.
+	# Ability, so it doesn't get purged"): the machine's own mechanic, the Polar Bear's seal,
+	# Hot Streak, on a solid tile and named so in its readout, ahead of the buffs.
 	var abilities: Array = []
 	var at := rows.size()
 	for id in order:
@@ -2335,10 +2337,18 @@ func _foe_hold_lines(foe: Foe) -> Array:
 func _intent_chip(foe: Foe) -> Array:
 	if foe.is_suppressed() or foe.target == null or not foe.alive() or foe.action.is_empty():
 		return []
+	var read := _intent_read(foe)
+	var value: int = read[0]
+	return [Glyphs.intent_for(Foe.kind_of(foe.action)), (str(value) + str(read[1])) if value > 0 else "", Palette.ENEMY, "intent", read[2]]
+
+
+## What a foe's intent says, read once for the field's chip and the readout's: [its number (the
+## engine's, Skirmish.intent_value), the mark for more strikes than one, its riders]. A move that
+## strikes, or is still gathering to, carries the mark and the riders; any other shows its number
+## alone.
+func _intent_read(foe: Foe) -> Array:
 	var blow := foe.attacks() or foe.gathering()
-	var value := sk.foe_blow(foe) if blow else int(foe.action.get("value", 0))
-	var note := ("×%d" % foe.strikes() if foe.strikes() > 1 else "") if blow else ""
-	return [Glyphs.intent_for(Foe.kind_of(foe.action)), (str(value) + note) if value > 0 else "", Palette.ENEMY, "intent", intent_riders(foe) if blow else []]
+	return [sk.intent_value(foe), ("×%d" % foe.strikes()) if blow and foe.strikes() > 1 else "", intent_riders(foe) if blow else []]
 
 
 ## A stat in a hold, as the codex has it: its label, its base in ink and the change in a
@@ -2773,14 +2783,50 @@ func _heat_marks() -> Array:
 	return out
 
 
-## Jenny on the heat a spend just added: the overheat when a machine went over the cap, else
-## the warning when one passed three quarters; one line for the spend.
+## Each machine's heat as the gauge holds it, to tell a spend that heated one.
+func _heats() -> Array:
+	var out: Array = []
+	for ms in sk.mechs:
+		out.append(ms.heat)
+	return out
+
+
+## The machines Jenny has warned are past three quarters heat (mech index -> true), each until it
+## is seen back under (_heat_rearm).
+var _heat_warned: Dictionary = {}
+
+
+## A machine seen back under three quarters heat can be warned of it again: looked at as a
+## round opens, once the machines have cooled, and after every spend.
+func _heat_rearm() -> void:
+	var marks := _heat_marks()
+	for k in range(marks.size()):
+		if int(marks[k]) == 0:
+			_heat_warned.erase(k)
+
+
+## Jenny on the heat a spend just added, one line for the spend (Ryan, 10 November: "The heat
+## warning shouldn't fire every time, not anymore ... I think we only need to warn: -Every time
+## we're overheating -The first time we reach over the warning threshold, but not again until
+## we've got back under"). The overheat, every time: a spend that heats a machine and leaves it
+## over its cap says so, whether it was over already or not. The warning, once: a machine past
+## three quarters is warned the first time it gets there and not again until it has been seen
+## back under, so a machine that stays hot, or comes down from an overheat to its cap, is not
+## warned a second time. `before` is _heats() as the spend began.
 func _heat_hook(before: Array) -> String:
-	var after := _heat_marks()
+	_heat_rearm()
+	var marks := _heat_marks()
 	var worst := 0
-	for k in range(mini(before.size(), after.size())):
-		if int(after[k]) > int(before[k]):
-			worst = maxi(worst, int(after[k]))
+	for k in range(mini(before.size(), marks.size())):
+		var m := int(marks[k])
+		if m == 0:
+			continue
+		var first := not _heat_warned.has(k)
+		_heat_warned[k] = true
+		if m == 2 and (first or sk.mechs[k].heat > int(before[k])):
+			worst = 2
+		elif first:
+			worst = maxi(worst, 1)
 	return "overheat" if worst == 2 else ("heat_high" if worst == 1 else "")
 
 
@@ -2839,7 +2885,7 @@ func _use_die(i: int, target, second = null) -> bool:
 	var returns_before := sk.returned.size()
 	var spent: Face = sk.mechs[i].face()
 	var sealed_before := Effects.is_sealed(sk.mechs[i].unit)
-	var heat_before := _heat_marks()
+	var heat_before := _heats()
 	var fuel := spent.rolls_again_on if spent != null else ""
 	var fuel_before := Effects.stacks_of(sk.mechs[i].unit, fuel) if not fuel.is_empty() else 0
 	var ok := sk.assign(i, target, second)
@@ -3964,6 +4010,7 @@ func _end_turn_now() -> void:
 	var rose_in_turn := _risen_since(returns_before)   # read before the next round's start clears the returns
 	if outcome == Skirmish.Outcome.NONE:
 		sk.start_round()
+		_heat_rearm()   # the machines have cooled: one back under three quarters can be warned again
 		for i in range(locked.size()):
 			locked[i] = false
 	_refresh_log()   # the blows type into the log as they play

@@ -10,7 +10,9 @@ corner, so nobody mistakes it for a pick. A render picked through tools/foeforge
     python3 tools/placeholder_art.py king_gel   # just these, overwriting
     python3 tools/placeholder_art.py --force    # every foe below, overwriting
 
-Then run Godot's import (README) so the new PNGs load.
+Then run Godot's import (README) so the new PNGs load. A foe that can stand as the boss on the
+map (a domain's boss) has a larger picture cut from its combat sprite, the stamp left off:
+`python3 tools/foeforge/forge.py boss <id>` after drawing one (a test fails until it is there).
 """
 import math
 import os
@@ -687,6 +689,82 @@ def fuming_orb(d, w, h):
     _orb(d, w, h, (240, 70, 50, 255), mark)
 
 
+
+def whisker_cat(d, w, h):
+    # The Meadow's duelist (10 November): a tawny great cat, two long whiskers with bright tips.
+    fur, dark, tip = (206, 150, 70, 255), (140, 94, 40, 255), (120, 240, 255, 255)
+    d.ellipse((12, 50, 60, 82), fill=fur)
+    d.rectangle((16, 74, 24, 92), fill=dark)
+    d.rectangle((46, 74, 54, 92), fill=dark)
+    d.rectangle((26, 76, 32, 92), fill=fur)
+    d.rectangle((38, 76, 44, 92), fill=fur)
+    d.ellipse((38, 30, 66, 58), fill=fur)
+    d.polygon([(42, 34), (44, 20), (52, 32)], fill=dark)
+    d.polygon([(56, 32), (62, 20), (64, 36)], fill=dark)
+    d.ellipse((46, 40, 50, 44), fill=(255, 240, 80, 255))
+    d.ellipse((56, 40, 60, 44), fill=(255, 240, 80, 255))
+    d.line((48, 50, 58, 50), fill=OUTLINE)
+    d.line((44, 48, 14, 22), fill=dark, width=2)
+    d.line((62, 48, 68, 14), fill=dark, width=2)
+    d.ellipse((10, 18, 18, 26), fill=tip)
+    d.ellipse((64, 8, 71, 16), fill=tip)
+    d.line((12, 62, 2, 44), fill=fur, width=4)
+
+
+def roc(d, w, h):
+    # The Waste's duelist: a great brown bird, wings spread, talons down.
+    brown, dark, beak = (132, 96, 62, 255), (86, 60, 38, 255), (236, 190, 60, 255)
+    d.polygon([(36, 40), (2, 18), (8, 44), (20, 56)], fill=dark)
+    d.polygon([(36, 40), (70, 18), (64, 44), (52, 56)], fill=dark)
+    d.polygon([(4, 20), (0, 34), (10, 30)], fill=brown)
+    d.polygon([(68, 20), (71, 34), (62, 30)], fill=brown)
+    d.ellipse((24, 36, 48, 76), fill=brown)
+    d.ellipse((28, 22, 44, 42), fill=brown)
+    d.polygon([(34, 34), (38, 34), (36, 44)], fill=beak)
+    d.point((32, 30), fill=OUTLINE)
+    d.point((40, 30), fill=OUTLINE)
+    d.polygon([(28, 72), (44, 72), (36, 90)], fill=dark)
+    d.line((30, 76, 26, 88), fill=beak, width=2)
+    d.line((42, 76, 46, 88), fill=beak, width=2)
+
+
+def dullahan(d, w, h):
+    # The Marsh's duelist: a headless rider on a dark horse, its head under its arm.
+    horse, plate, glow, bone = (44, 46, 58, 255), (96, 104, 122, 255), (120, 255, 170, 255), (214, 214, 200, 255)
+    d.ellipse((8, 52, 60, 78), fill=horse)
+    d.rectangle((14, 72, 20, 94), fill=horse)
+    d.rectangle((26, 74, 32, 94), fill=horse)
+    d.rectangle((42, 74, 48, 94), fill=horse)
+    d.rectangle((52, 72, 58, 94), fill=horse)
+    d.polygon([(52, 56), (66, 34), (70, 44), (60, 62)], fill=horse)
+    d.ellipse((60, 30, 71, 42), fill=horse)
+    d.point((66, 35), fill=glow)
+    d.rectangle((26, 30, 42, 56), fill=plate)
+    d.rectangle((24, 28, 44, 34), fill=plate)
+    d.rectangle((30, 24, 38, 28), fill=OUTLINE)
+    d.line((26, 38, 16, 50), fill=plate, width=4)
+    d.ellipse((8, 46, 22, 60), fill=bone)
+    d.point((13, 52), fill=glow)
+    d.point((17, 52), fill=glow)
+    d.line((42, 36, 56, 16), fill=bone, width=2)
+
+
+def cerberus(d, w, h):
+    # The Peak's duelist: a black hound with three heads and embers in its mouths.
+    hide, dark, ember = (70, 40, 38, 255), (40, 24, 26, 255), (255, 120, 30, 255)
+    d.ellipse((6, 50, 54, 78), fill=hide)
+    d.rectangle((10, 72, 17, 94), fill=dark)
+    d.rectangle((22, 74, 28, 94), fill=hide)
+    d.rectangle((36, 74, 42, 94), fill=hide)
+    d.rectangle((46, 72, 53, 94), fill=dark)
+    d.line((8, 58, 0, 40), fill=ember, width=3)
+    for hx, hy in ((40, 22), (52, 36), (46, 50)):
+        d.line((40, 58, hx + 6, hy + 8), fill=hide, width=6)
+        d.ellipse((hx, hy, hx + 18, hy + 14), fill=hide)
+        d.polygon([(hx + 2, hy + 2), (hx + 4, hy - 5), (hx + 8, hy + 1)], fill=dark)
+        d.point((hx + 11, hy + 5), fill=ember)
+        d.line((hx + 12, hy + 10, hx + 17, hy + 10), fill=ember)
+
 FOES = {
     # id: (draw, massive)
     "king_gel": (king_gel, True),
@@ -732,6 +810,10 @@ FOES = {
     "storm_orb": (storm_orb, False),
     "mending_orb": (mending_orb, False),
     "fuming_orb": (fuming_orb, False),
+    "whisker_cat": (whisker_cat, False),
+    "roc": (roc, False),
+    "dullahan": (dullahan, False),
+    "cerberus": (cerberus, False),
 }
 
 

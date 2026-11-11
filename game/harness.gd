@@ -42,47 +42,35 @@ var _quick_resume_btn: Button
 func _ready() -> void:
 	Settings.apply()
 	refit_trial()
+	Settings.field_trial(true)
 	Hud.oversample(get_window())   # text rasterised at the glass's density, not the design's
 	build(HarnessSetup.load_or_default())
 
 
-## The refit pass's model as a trial (docs/briefs/refit_pass.md; sim/refit.gd): laid over the
-## content once, as the game starts and before anything is built from it, when RIFTGATE_REFIT
-## names a spec ("all", or its parts: die, regen=half|N, cooling=N, heat1, hotter=N,
-## barrier=off|cooldown|heatN|ward, vents=guns) or a debug build's SETTINGS has REFIT TRIAL on one
-## of its four deals (the phone's way, read at the next launch: the model with its Barrier basic
-## where a Halo stood, on every die, on every die and resting, or on none; Settings.REFIT_TRIALS),
-## with REFIT REGEN beside it, what every shield regains a round (Settings.REFIT_REGENS). A battle
-## or a run saved before the switch keeps the dice it was saved with, so judge it on a new one.
+## The refit pass's what-ifs (docs/briefs/refit_pass.md; sim/refit.gd), laid over the content
+## once, as the game starts and before anything is built from it: RIFTGATE_REFIT names a spec (its
+## parts: regen=half|N, cooling=N, hotter=N, barrier=cooldown|heatN), or a debug build's SETTINGS →
+## TRIALS has SHIELD REGEN on a flat number (the phone's way, read at the next launch;
+## Settings.SHIELD_REGENS). The model itself is content since 10 November. A battle or a run saved
+## before a switch keeps the numbers it was saved with, so judge it on a new one.
 static var _refit_trial_done := false
-## The machines the trial leaves out, by chassis id: back in design under the model (Refit.sent_back),
-## so no row on the team page and none deployed, the team as ticked kept for when the trial ends.
-static var refit_benched: Array = []
 static func refit_trial() -> void:
 	var spec := refit_spec()
 	if _refit_trial_done or spec.is_empty():
 		return
 	_refit_trial_done = true
-	var content := ContentDB.load_default()
-	var parsed := Refit.parse(spec)
-	if bool(parsed.get("die", false)):
-		refit_benched = Refit.sent_back(content)
-	for line in Refit.apply(content, parsed):
-		print("refit trial: " + line)
+	for line in Refit.apply(ContentDB.load_default(), Refit.parse(spec)):
+		print("refit what-if: " + line)
 
 
-## The trial's spec, "" while it is off: the environment's as written, else the one a debug
-## build's settings name, the deal (Settings.REFIT_TRIALS) and the shield regen beside it
-## (Settings.REFIT_REGENS: a part named after "all" takes the place of all's own half).
+## The what-if's spec, "" for the game as built: the environment's as written, else a debug
+## build's flat shield regen (Settings.SHIELD_REGENS).
 static func refit_spec() -> String:
 	var spec := OS.get_environment("RIFTGATE_REFIT")
 	if spec.is_empty() and OS.is_debug_build():
-		var asked := str(Settings.display.get("refit_trial", "off"))
-		if asked != "off" and Settings.REFIT_TRIALS.has(asked):
-			spec = asked
-			var regen := str(Settings.display.get("refit_regen", Settings.DISPLAY_DEFAULTS["refit_regen"]))
-			if Settings.REFIT_REGENS.has(regen):
-				spec += ",regen=" + regen
+		var regen := str(Settings.display.get("shield_regen", "built"))
+		if regen != "built" and Settings.SHIELD_REGENS.has(regen):
+			spec = "regen=" + regen
 	return spec
 
 
@@ -90,7 +78,6 @@ static func refit_spec() -> String:
 func build(s: HarnessSetup) -> void:
 	setup = s
 	db = s.db
-	setup.benched = refit_benched.duplicate()   # the refit trial's machines back in design (refit_trial)
 	for c in get_children():
 		c.queue_free()
 	_rows = {}
@@ -205,14 +192,14 @@ func _build_team(page: VBoxContainer) -> void:
 	ids.sort_custom(func(a, b) -> bool: return str(db.chassis[a]["name"]) < str(db.chassis[b]["name"]))
 	var out: Array[String] = []
 	for id in ids:
-		if setup.benched.has(str(id)):
+		if not db.chassis_runnable(str(id)):   # back in design (the refit pass's four) or a planned draft: no row to tick
 			out.append(str(db.chassis[id]["name"]))
 			continue
 		page.add_child(HSeparator.new())
 		page.add_child(_chassis_row(str(id)))
 	if not out.is_empty():
 		page.add_child(HSeparator.new())
-		page.add_child(_hint("REFIT TRIAL: back in design under the model, so left out while it stands: %s." % ", ".join(out)))
+		page.add_child(_hint("Back in design, so not fielded: %s." % ", ".join(out)))
 
 
 func _chassis_row(id: String) -> VBoxContainer:
@@ -368,6 +355,8 @@ func _component_picker(selected: String) -> OptionButton:
 	ob.set_item_metadata(0, "")
 	var by_maker: Dictionary = {}
 	for cid in db.components.keys():
+		if not db.component_dealt(str(cid)) and str(cid) != selected:
+			continue   # a draft nothing deals (the shields and vents since the refit pass landed) is no pick; one a saved loadout still holds stays listed
 		var m := str(db.components[cid].get("maker", ""))
 		if not by_maker.has(m):
 			by_maker[m] = []
@@ -847,6 +836,7 @@ func _on_fight() -> void:
 ## A whole battle: the ticked team in its loadouts against the BATTLE tab's domain as a run deals
 ## it, on a map generated from the seed.
 func _on_battle() -> void:
+	Settings.field_trial(true)   # the field's trial as the settings stand now: a change needs no relaunch
 	var b := setup.make_battle()
 	if b == null:
 		return

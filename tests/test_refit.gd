@@ -1,8 +1,10 @@
 extends TestCase
 
-## The refit pass's what-if (sim/refit.gd; docs/briefs/refit_pass.md, Ryan's direction of 9
-## November): the model laid over a loaded ContentDB, the copy in memory and never the files.
-## These hold what it promises the runners, on whatever content says: no id is named.
+## The refit pass's model as content holds it (docs/briefs/refit_pass.md; landed 10 November on
+## Ryan's "The re-deal with regen and heat ... seems like the correct way to go ... start with the
+## minimal swaps"), and the what-ifs sim/refit.gd still lays over a loaded ContentDB, the copy in
+## memory and never the files. These hold what the model promises on whatever content says: no id
+## is named.
 
 
 func _own() -> ContentDB:
@@ -15,123 +17,149 @@ func _kind(db: ContentDB, cid) -> String:
 	return str(db.components.get(str(cid), {}).get("face", {}).get("kind", ""))
 
 
-func test_a_spec_parses_its_parts_and_all_is_the_model_as_leaned() -> void:
-	var all := Refit.parse("all")
-	assert_true(bool(all["die"]) and bool(all["heat1"]), "all: the model's die and the basics at heat one")
-	assert_eq(str(all["regen"]), "half", "all: half the gauge a round")
-	var some := Refit.parse("regen=3, cooling=-1")
-	assert_false(bool(some["die"]), "a part not named is off")
-	assert_eq([str(some["regen"]), int(some["cooling"])], ["3", -1], "a flat regen and an offset as written")
-	assert_eq(Refit.parse(""), {"die": false, "regen": "", "cooling": 0, "heat1": false, "hotter": 0, "barrier": "", "vents": ""}, "nothing asked, nothing set")
-	assert_eq(int(Refit.parse("all,hotter=2")["hotter"]), 2, "and how much hotter the weapons run")
-	assert_eq(str(Refit.parse("all,vents=guns,regen=2")["regen"]), "2", "a part named later takes the place of all's own: a flat regen over half the gauge")
-	assert_eq(str(Refit.parse("die,barrier=off")["barrier"]), "off", "the Barrier basic's rule as written")
-	assert_eq(str(Refit.parse("all,vents=guns")["vents"]), "guns", "and what a vent's slot takes")
-
-
-## The model's die: no chassis it fields stocks a shield or a vent, each that stocked one holds a
-## Barrier or an Armoured piece in its place, every die keeps its size and its other entries where
-## they stood, and the chassis whose kit reads a shield or a vent spent are left undealt.
-func test_the_models_die_swaps_every_stock_shield_and_vent_and_leaves_the_rest() -> void:
-	var before := _own()
-	var db := _own()
-	var notes := Refit.apply(db, Refit.parse("die"))
-	assert_false(notes.is_empty(), "it says what it did")
-	var barrier := Refit.basic_granting(db, Refit.BARRIER)
-	var armoured := Refit.basic_granting(db, Refit.ARMOURED)
-	assert_false(barrier.is_empty() or armoured.is_empty() or Refit.basic_gun(db).is_empty(), "content has a slottable Barrier, an Armoured piece and a basic gun")
-	var back := Refit.sent_back(before)
-	assert_false(back.is_empty(), "content has machines whose kit reads a shield or a vent spent")
-	var swapped := 0
+## Shields and vents left the die: no chassis stocks one, no slottable one is dealt (each is a
+## planned draft until the component pass makes it what the audit says or removes it), and the
+## two defensive basics a stock die may hold stand at tier zero, the Barrier's and the Armoured.
+func test_no_stock_die_holds_a_shield_or_a_vent_and_none_is_dealt() -> void:
+	var db := ContentDB.load_default()
+	var defensive := 0
 	for id in db.chassis.keys():
-		var was: Array = before.chassis[id].get("loadout", [])
-		var now: Array = db.chassis[id].get("loadout", [])
-		if back.has(str(id)):
-			assert_false(db.chassis_runnable(str(id)), "%s is back in design: not fielded under the model" % id)
-			assert_true(before.chassis_runnable(str(id)), "%s is fielded as content stands" % id)
-			assert_eq(now, was, "%s: its stock is left as it was" % id)
-			continue
-		assert_true(db.chassis_runnable(str(id)) == before.chassis_runnable(str(id)), "%s: fielded as before" % id)
-		assert_eq(now.size(), was.size(), "%s: its die keeps its size" % id)
-		var defended := false
-		for i in range(mini(now.size(), was.size())):
-			var k := _kind(before, was[i])
-			if k == "shield" or k == "vent":
-				swapped += 1
-				assert_true(_kind(db, now[i]) in ["buff", "attack"], "%s: slot %d holds equipment or a gun where a %s stood" % [id, i, k])
-			else:
-				assert_eq(now[i], was[i], "%s: slot %d is left as it was" % [id, i])
-			defended = defended or str(now[i]) == barrier or str(now[i]) == armoured
-		for cid in now:
-			assert_false(_kind(db, cid) in ["shield", "vent"], "%s stocks no shield and no vent" % id)
-		var had: bool = was.any(func(cid) -> bool: return _kind(before, cid) in ["shield", "vent"])
-		if had:
-			assert_true(defended, "%s: a defensive basic stands where its shield or vent stood" % id)
-			assert_true(int(db.chassis[id].get("cooling", 0)) >= 1 or not was.any(func(cid) -> bool: return _kind(before, cid) == "vent"), "%s: a chassis that stocked a vent cools one at least" % id)
-	assert_true(swapped > 0, "content stocks shields and vents to swap")
-	# The files' own copy is untouched: the what-if edits the copy it is handed.
-	var fresh := _own()
-	for id in fresh.chassis.keys():
-		assert_eq(fresh.chassis[id].get("loadout", []), before.chassis[id].get("loadout", []), "%s: content as loaded is as it was" % id)
+		for cid in db.chassis[id].get("loadout", []):
+			assert_false(_kind(db, cid) in ["shield", "vent"], "%s stocks %s, a %s: shields and vents left the die" % [id, cid, _kind(db, cid)])
+			assert_true(str(db.components[cid].get("status", "implemented")) != "planned", "%s stocks %s, a piece nothing deals" % [id, cid])
+			var face: Dictionary = db.components[cid].get("face", {})
+			if str(face.get("kind", "")) == "buff" and str(face.get("status", "")) in ["barrier", "braced"]:
+				defensive += 1
+	assert_true(defensive > 0, "the stock dice carry the defensive basics where a shield stood")
+	for cid in db.components.keys():
+		if _kind(db, cid) in ["shield", "vent"] and db.component_tier(str(cid)) != ContentDB.NO_TIER:
+			assert_eq(str(db.components[cid].get("status", "implemented")), "planned", "%s is slottable and a %s: undealt since the model landed" % [cid, _kind(db, cid)])
+	for status in ["barrier", "braced"]:
+		var basic := Refit.basic_granting(db, status)
+		assert_true(not basic.is_empty(), "content has a slottable piece granting %s" % status)
+		assert_eq(db.component_tier(basic), 0, "and it is a basic, tier zero, so a tier-one chassis may stock it")
+	for t in [0, 1, 2, 3]:
+		for cid in db.loot_pool(t):
+			assert_false(_kind(db, cid) in ["shield", "vent"], "no loot pool deals %s" % cid)
 
 
-func test_the_regen_the_cooling_and_the_basics_heat_are_each_their_own_part() -> void:
-	var before := _own()
+## Every chassis regains its own shield regen a round, one to three, the larger on the smaller
+## gauge (Ryan, 10 November: "a smaller shield that regens fast, a fatter shield that regens
+## slow, some variation of the middle"); every chassis cools; and every basic weapon makes heat.
+func test_every_chassis_regains_its_own_regen_cools_and_the_basics_make_heat() -> void:
+	var db := ContentDB.load_default()
+	var by_regen := {}
+	for id in db.chassis.keys():
+		var c: Dictionary = db.chassis[id]
+		var regen := int(c.get("shield_regen", 0))
+		assert_true(regen >= 1 and regen <= 3, "%s regains %d a round: one to three" % [id, regen])
+		if not by_regen.has(regen):
+			by_regen[regen] = []
+		by_regen[regen].append(int(c.get("shield", 0)))
+		if db.chassis_runnable(str(id)):
+			assert_true(int(c.get("cooling", 0)) >= 1, "%s cools: with no vent on the die, cooling is its way down" % id)
+		var u := db.make_mech(str(id), 1)
+		assert_eq(u.shield_regen, regen, "%s: the machine carries its chassis's regen" % id)
+	assert_eq(by_regen.size(), 3, "all three speeds are in use")
+	var mean := func(a: Array) -> float:
+		var t := 0.0
+		for x in a:
+			t += float(x)
+		return t / float(a.size())
+	assert_true(mean.call(by_regen[3]) < mean.call(by_regen[2]) and mean.call(by_regen[2]) < mean.call(by_regen[1]), "the faster the regen, the smaller the gauge on average (%.1f, %.1f, %.1f)" % [mean.call(by_regen[3]), mean.call(by_regen[2]), mean.call(by_regen[1])])
+	for cid in db.components.keys():
+		var face: Dictionary = db.components[cid].get("face", {})
+		if db.component_tier(str(cid)) == 0 and str(face.get("kind", "")) == "attack" and int(face.get("power", 0)) > 0:
+			assert_true(int(face.get("heat", 0)) >= 1, "%s is a basic weapon and makes heat" % cid)
+
+
+## The machines back in design are undealt, by a status of their own on the chassis: the tender
+## and the runners skip them, and their kits still build, so their sessions and their tests have
+## them. A passive that reads a shield or a vent spent has nothing left to read: every chassis
+## carrying one is among them.
+func test_the_machines_back_in_design_are_undealt_and_still_build() -> void:
+	var db := ContentDB.load_default()
+	var back: Array = []
+	for id in db.chassis.keys():
+		if str(db.chassis[id].get("status", "implemented")) == "planned":
+			back.append(str(id))
+			assert_false(db.chassis_runnable(str(id)), "%s is back in design: nothing deals it" % id)
+			var u := db.make_mech(str(id), 1)
+			assert_true(u != null and u.die != null and u.die.faces.size() > 0, "%s still builds, kit and all" % id)
+	assert_true(back.size() > 0, "the refit pass sent machines back")
+	for id in db.chassis.keys():
+		var dead := false
+		var p = db.chassis[id].get("passive", null)
+		if p is Dictionary:
+			for e in p.get("effects", []):
+				if str(e.get("effect", "")) in ["seal_form", "vent_blast"] or str(e.get("trigger", "")) == "on_shield_granted":
+					dead = true
+		for cid in db.chassis[id].get("fixed", []):
+			var face: Dictionary = db.components.get(cid, {}).get("face", {})
+			if str(face.get("kind", "")) == "shield" or (str(face.get("kind", "")) == "vent" and int(face.get("reloads_ammo", 0)) <= 0):
+				dead = true
+		if dead:
+			assert_true(back.has(str(id)), "%s reads a shield or a vent the die no longer has: back in design" % id)
+	var copy := _own()
+	copy.chassis[back[0]].erase("status")
+	assert_true(copy.chassis_runnable(back[0]), "and its session hands it back by taking the status off")
+	copy.chassis[back[0]]["status"] = "elsewhere"
+	var refused := false
+	for e in copy.validate():
+		if e.contains("status is one of"):
+			refused = true
+	assert_true(refused, "a status content does not know is refused")
+
+
+func test_a_spec_parses_its_parts() -> void:
+	var s := Refit.parse("regen=2,cooling=-1,hotter=2,barrier=cooldown")
+	assert_eq([str(s["regen"]), int(s["cooling"]), int(s["hotter"]), str(s["barrier"])], ["2", -1, 2, "cooldown"], "each part is its own")
+	var none := Refit.parse("")
+	assert_eq([str(none["regen"]), int(none["cooling"]), int(none["hotter"]), str(none["barrier"])], ["", 0, 0, ""], "nothing asked, nothing set")
+	assert_true(Refit.apply(_own(), none).is_empty(), "and nothing changed")
+
+
+## The what-ifs left over the landed model: a flat regen in place of each chassis's own, an
+## offset on the cooling, every weapon hotter, and a price on the Barrier basic.
+func test_the_what_ifs_move_the_regen_the_cooling_the_heat_and_the_barriers_price() -> void:
+	var before := ContentDB.load_default()
 	var db := _own()
+	var notes := Refit.apply(db, Refit.parse("regen=0"))
+	assert_eq(notes.size(), 1, "one line for the one change")
+	for id in db.chassis.keys():
+		assert_eq(int(db.chassis[id].get("shield_regen", -1)), 0, "%s: a flat nought in place of its own" % id)
+	db = _own()
 	Refit.apply(db, Refit.parse("regen=half"))
 	for id in db.chassis.keys():
-		var shield := int(before.chassis[id].get("shield", 0))
-		assert_eq(int(db.chassis[id].get("shield_regen", 0)), mini(9, int(ceil(shield / 2.0))), "%s: half its shield a round, rounded up" % id)
-		assert_eq(db.chassis[id].get("loadout", []), before.chassis[id].get("loadout", []), "%s: the regen alone moves no die" % id)
-	var some_id := str(db.chassis.keys()[0])
-	var u := db.make_mech(some_id, 1)
-	assert_eq(u.shield_regen, int(db.chassis[some_id]["shield_regen"]), "a machine made from it regains that much a round")
-	var flat := _own()
-	Refit.apply(flat, Refit.parse("regen=3,cooling=2"))
-	for id in flat.chassis.keys():
-		assert_eq(int(flat.chassis[id].get("shield_regen", 0)), 3, "%s: a flat three" % id)
-		assert_eq(int(flat.chassis[id].get("cooling", 0)), int(before.chassis[id].get("cooling", 0)) + 2, "%s: two more cooling a round" % id)
-	var warm := _own()
-	Refit.apply(warm, Refit.parse("heat1"))
-	var basics := 0
-	for cid in warm.components.keys():
-		var face = warm.components[cid].get("face", null)
-		if warm.component_tier(str(cid)) == 0 and face is Dictionary and str(face.get("kind", "")) == "attack" and int(face.get("power", 0)) > 0:
-			basics += 1
-			assert_true(int(face.get("heat", 0)) >= 1, "%s, a basic gun, makes a heat at least" % cid)
-		elif face is Dictionary:
-			assert_eq(int(face.get("heat", 0)), int(before.components[cid].get("face", {}).get("heat", 0)), "%s is no basic gun: its heat is left" % cid)
-	assert_true(basics > 0, "content has basic guns")
-	# Hotter weapons: every weapon makes that much more, fixed pieces too, after the basics' one;
-	# equipment, shields and vents are left; a regen of nought and a flat one over "all" hold.
-	var hot := _own()
-	Refit.apply(hot, Refit.parse("heat1,hotter=2"))
-	var guns := 0
-	for cid in hot.components.keys():
-		var face = hot.components[cid].get("face", null)
-		if not (face is Dictionary):
-			continue
-		var was := int(warm.components[cid].get("face", {}).get("heat", 0))
+		assert_eq(int(db.chassis[id]["shield_regen"]), int(ceil(float(int(db.chassis[id]["shield"])) / 2.0)), "%s: half its gauge, rounded up" % id)
+	db = _own()
+	Refit.apply(db, Refit.parse("cooling=1"))
+	for id in db.chassis.keys():
+		assert_eq(int(db.chassis[id].get("cooling", 0)), int(before.chassis[id].get("cooling", 0)) + 1, "%s cools one more" % id)
+	db = _own()
+	Refit.apply(db, Refit.parse("hotter=2"))
+	var hot := 0
+	for cid in db.components.keys():
+		var face: Dictionary = db.components[cid].get("face", {})
+		var was: Dictionary = before.components[cid].get("face", {})
 		if str(face.get("kind", "")) == "attack" and int(face.get("power", 0)) > 0:
-			guns += 1
-			assert_eq(int(face.get("heat", 0)), was + 2, "%s, a weapon, makes two more than under heat1 alone" % cid)
+			assert_eq(int(face.get("heat", 0)), int(was.get("heat", 0)) + 2, "%s runs two hotter" % cid)
+			hot += 1
 		else:
-			assert_eq(int(face.get("heat", 0)), was, "%s is no weapon: its heat is left" % cid)
-	assert_true(guns > basics, "the tier-zero guns and every other weapon")
-	var none := _own()
-	Refit.apply(none, Refit.parse("all,vents=guns,regen=0"))
-	var two := _own()
-	Refit.apply(two, Refit.parse("all,vents=guns,regen=2"))
-	for id in none.chassis.keys():
-		assert_eq(int(none.chassis[id].get("shield_regen", 0)), 0, "%s: a regen of nought over all's half" % id)
-		assert_eq(int(two.chassis[id].get("shield_regen", 0)), 2, "%s: a flat two over all's half" % id)
+			assert_eq(int(face.get("heat", 0)), int(was.get("heat", 0)), "%s is no weapon and runs as it did" % cid)
+	assert_true(hot > 0, "the weapons ran hotter")
+	var barrier := Refit.basic_granting(before, "barrier")
+	db = _own()
+	Refit.apply(db, Refit.parse("barrier=cooldown"))
+	assert_eq(int(db.components[barrier]["face"].get("cooldown", 0)), 2, "the Barrier basic rests the round after it is spent")
+	db = _own()
+	Refit.apply(db, Refit.parse("barrier=heat3"))
+	assert_eq(int(db.components[barrier]["face"].get("heat", 0)), 3, "or it costs heat")
+	assert_eq(int(before.components[barrier]["face"].get("heat", 0)), 0, "and the game's own copy is untouched")
 
 
-## The model as leaned plays: a team of the first chassis it fields fights a pack to its end on
-## the model's dice, its shields regaining each round and no vent or shield spent.
 func test_a_fight_plays_on_the_models_dice() -> void:
-	var db := _own()
-	Refit.apply(db, Refit.parse("all"))
+	var db := ContentDB.load_default()
 	var team: Array = []
 	for id in db.chassis.keys():
 		if db.chassis_runnable(str(id)) and team.size() < 3:
@@ -149,6 +177,9 @@ func test_a_fight_plays_on_the_models_dice() -> void:
 	sk.foe_factory = func(foe_id: String) -> Foe: return db.make_foe(foe_id) if db.foes.has(foe_id) else null
 	sk.add_foes(foes)
 	sk.begin()
+	var shields: Array = []
+	for ms in sk.mechs:
+		shields.append(ms.unit.shield)
 	var pol := Policy.make(Policy.GREEDY, 5)
 	var outcome := pol.play(sk)
 	assert_true(outcome == Skirmish.Outcome.VICTORY or outcome == Skirmish.Outcome.DEFEAT or pol.stalled, "the fight runs to an end")
@@ -156,72 +187,3 @@ func test_a_fight_plays_on_the_models_dice() -> void:
 		var c: Dictionary = db.components.get(str(kind), {})
 		assert_false(str(c.get("face", {}).get("kind", "")) in ["shield", "vent"], "%s: no shield and no vent is spent" % kind)
 	assert_true(sk.destroyed == 0, "and nothing is destroyed, the injury rule off")
-
-
-## The Barrier basic's price is a question the reads ask (a free one on every stock die is spent
-## every round it is rolled): with none among the basics no chassis the model fields stocks a
-## Barrier it did not stock before, and its slot holds the Armoured piece or a gun; with a
-## cooldown or a heat the piece itself carries the price.
-func test_the_barrier_basics_rule_is_a_part_of_the_die() -> void:
-	var before := _own()
-	var barrier := Refit.basic_granting(before, Refit.BARRIER)
-	var off := _own()
-	Refit.apply(off, Refit.parse("die,barrier=off"))
-	var back := Refit.sent_back(before)
-	for id in off.chassis.keys():
-		if back.has(str(id)):
-			continue   # back in design: its stock is left as it was
-		var was: Array = before.chassis[id].get("loadout", [])
-		var now: Array = off.chassis[id].get("loadout", [])
-		assert_eq(now.count(barrier), was.count(barrier), "%s: no Barrier it did not stock already" % id)
-		for cid in now:
-			assert_false(_kind(off, cid) in ["shield", "vent"], "%s stocks no shield and no vent" % id)
-	var dark := _own()
-	Refit.apply(dark, Refit.parse("die,barrier=cooldown"))
-	assert_eq(int(dark.components[barrier]["face"].get("cooldown", 0)), 2, "the next round dark once spent (a cooldown counts the round of the spend)")
-	var hot := _own()
-	Refit.apply(hot, Refit.parse("die,barrier=heat3"))
-	assert_eq(int(hot.components[barrier]["face"].get("heat", 0)), 3, "three heat a spend")
-	assert_eq(int(before.components[barrier]["face"].get("heat", 0)), 0, "and content's own makes none")
-	# The audit's own deal (vents=guns): a vent's slot takes a gun, so the die holds a defensive
-	# basic only where a shield stood.
-	var lean := _own()
-	Refit.apply(lean, Refit.parse("die,vents=guns"))
-	var armoured := Refit.basic_granting(before, Refit.ARMOURED)
-	var guns := 0
-	for id in lean.chassis.keys():
-		if back.has(str(id)):
-			continue
-		var was: Array = before.chassis[id].get("loadout", [])
-		var now: Array = lean.chassis[id].get("loadout", [])
-		assert_eq(now.size(), was.size(), "%s: every slot keeps its place" % id)
-		for i in range(was.size()):
-			var kind := _kind(before, was[i])
-			if kind == "vent":
-				assert_true(_kind(lean, now[i]) == "attack" and int(lean.components[now[i]]["face"].get("power", 0)) > 0, "%s: a gun where its vent stood" % id)
-				guns += 1
-			elif kind != "shield":
-				assert_eq(now[i], was[i], "%s: a piece that is no shield and no vent stays" % id)
-			else:
-				assert_true(now[i] == barrier or now[i] == armoured or _kind(lean, now[i]) == "attack", "%s: a defensive basic (or a gun, the die holding both) where its shield stood" % id)
-	assert_true(guns > 0, "some stock die held a vent")
-	# A Ward in its place: the die's Barrier slots hold the Ward piece, and no Barrier is added.
-	var ward := Refit.basic_granting(before, Refit.WARD)
-	if ward.is_empty():
-		return
-	var warded := _own()
-	Refit.apply(warded, Refit.parse("die,barrier=ward"))
-	var model := _own()
-	Refit.apply(model, Refit.parse("die"))
-	var held := 0
-	for id in warded.chassis.keys():
-		if back.has(str(id)):
-			continue
-		var plain: Array = model.chassis[id].get("loadout", [])
-		var now: Array = warded.chassis[id].get("loadout", [])
-		var was: Array = before.chassis[id].get("loadout", [])
-		assert_eq(now.count(barrier), was.count(barrier), "%s: no Barrier it did not stock already" % id)
-		assert_eq(now.count(ward) - was.count(ward), plain.count(barrier) - was.count(barrier), "%s: a Ward wherever the model's die put a Barrier" % id)
-		held += now.count(ward)
-	assert_true(held > 0, "some stock die holds the Ward")
-

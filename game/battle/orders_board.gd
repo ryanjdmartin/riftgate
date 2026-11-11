@@ -115,7 +115,7 @@ func _title() -> String:
 
 ## One entry per machine: its unit (for the gauges), what it can still do this turn (READY,
 ## MOVED, ONE MORE, SPENT, its order, CAUGHT) and which hunter is after it: the one whose tag it
-## wears on the map, its prey or the machine it takes when its prey is sealed off. A caught
+## wears on the map, its prey. A caught
 ## machine names its fight there instead, as an order names its pack (Ryan, 2 November: the catch
 ## reads as its attack order): CAUGHT > the hunter that caught it, +1 a hunter more.
 func _rows() -> Array:
