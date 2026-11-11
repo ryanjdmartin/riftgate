@@ -141,7 +141,14 @@ here.
   Arsenal in reverse, little access early and much late. Ryan, 4 November: "I want to target 10
   per maker, at least for now" (the roster below, "Ten a maker"). Ryan, 15 October, in the Minerva
   session: Minerva's two tier threes are a treaded capstone and a capital ship, "the capital
-  ship that it seems like every maker is going to end up getting".
+  ship that it seems like every maker is going to end up getting". Ryan, 11 November, once the
+  fourth machine became the first battle's choice from the catalogue of the maker whose city
+  was defended: "I think with this in mind, we restructure the tier list from 3-5-2 to 4-4-2,
+  which was an open question for a while now. I'll pose that in the chassis session." His lean
+  then, his to pose there; the rosters stand as their rows have them until he does. What it
+  bears on: that first choice is as wide as a maker's tier-one line less what the tender
+  dealt, which in content today is three for Wainwright & Sutler and two each for Aphelion,
+  Kestrel and Minerva (the Polar Bear dealt again since 11 November).
 - **The sort** (Claude's, partly agreed): tier one is itself with basics alone and stands in a
   start (a body or a hitter, not a support); tier three bends a rule the player has already
   learned; the rest is tier two, where the supports and the machines that are only good

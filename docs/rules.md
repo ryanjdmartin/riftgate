@@ -284,8 +284,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - **A kill**: a foe the death check clears that stays down. A foe getting back up and a split
   are none (a split's halves are kills of their own), nor a part, felled alone or taken with
   its core, since a core and its parts are one unit and only the core's fall counts, nor a
-  Bomb's burst or a foe a merge takes in. Every kill trigger, the grudge, salvage and menace
-  read it.
+  Bomb's burst or a foe a merge takes in. Every kill trigger, the grudge and the battle's
+  count of kills read it; menace reads the pack, not the kill (the battlefield's Menace).
 - Every blow of a strike is read before any of them lands. A foe's own reads (the hull it is
   missing, the stacks it carries) are taken as its hit judges them: a single-target weapon's
   as the die is spent, before any strike lands; a Sweep's at each shot.
@@ -1356,17 +1356,26 @@ a stat.
   on a doubled plate) and carries no name. A machine standing on one hides the model and dims the chest. The campaign banks what was claimed as it banks the
   kills: on a battle won or held, never on a fall; each component one copy in the stores, each
   blueprint the run's.
-- **Menace** is a foe's weight: its heaviest blow plus a quarter of its HP, rounded up, an
-  elite's as any foe's, its own numbers carrying its weight. The Rupture meter, Anathema and
-  salvage count kills by it, so the rift's reinforcements pay a trickle and the formations and
-  the elites pay the most.
-- **The Rupture meter** fills by the menace of every foe killed, in any fight however it ended,
-  tallied as each fight ends, toward the tier's Fractures (three at tier one, four at tier two,
-  five at tier three). The thresholds are set from the field's menace at the start (the packs
-  placed, the boss aside) and the first compositions the rift will send, as many as the tier's
-  Fractures, in the cycle's order: the last at two thirds of it, the steps 1, 1.5, 2, 2.5 and 3, so
-  later Fractures cost more and a battle that kills the field as it stood earns the Rupture
-  with a third of the field left to leave. A Fracture pays out as a fight ends, announced over
+- **Menace** is a pack's worth, its threat rating: a lone patrol 1, a heavier patrol 2, a
+  formation 3, an elite 4 and a boss's unit 4, whoever is in it, in every domain and at every
+  tier. The Rupture meter, Anathema and salvage count by it. A pack's fall pays its rating
+  whole. A pack a fight has worn and left standing has paid the share of its rating that its
+  strike at the wall has lost, the heads gone of the heads it took the field with; its fall
+  pays the rest, and nothing pays past its rating or twice, so a head raised, split off or
+  grown back adds none. The boss's unit's four is a placeholder: what a boss pays in salvage
+  and Anathema is the economy pass's to set.
+- **The Rupture meter** fills by the menace killed, in any fight however it ended, tallied as
+  each fight ends, toward the tier's Fractures (three at tier one, four at tier two, five at
+  tier three). It is sized in beats of the tide, a beat a peak of Rift Pressure, two at every
+  tier: the Rupture takes the ratings of the packs the opening places (the boss aside) and the
+  tide sends through its second peak (the rift's compositions and the tears' patrols, as the
+  peaks send them), less the lightest patrol the tide deals, which the squad may leave; and on
+  top an elite's four for each elite the tier's Fractures call. So the seal is earned by
+  fighting the tide, never the opening alone, the size follows the ramp's counts with no
+  table of its own and is level across the domains, and more Fractures at a higher tier are
+  more elites, not a longer run of beats.
+  The Fractures split the size at the steps 1, 1.5, 2, 2.5 and 3, so later ones cost more.
+  A Fracture pays out as a fight ends, announced over
   the map (FRACTURE with its count and what it brings, the last THE RUPTURE); an elite it
   brings is unseen until the map has glided in on its hex, zoomed, then bursts out under the
   band, which names it. At the Fractures
@@ -1380,8 +1389,9 @@ a stat.
   may come again in a later battle, never twice in one; a run never repeats a boss. Every elite
   stands at the battle's tier as a boss does, its HP and attack the tier's, the other members of
   its composition at their own. The last Fracture is the Rupture:
-  the boss's seal breaks. The stall guard breaks it too, when no pack but the boss's stands as
-  a fight ends, so a team that cleared the field never waits on the clock. Rift Pressure keeps
+  the boss's seal breaks, and nothing else breaks it. A field cleared with the seal standing
+  earns nothing by itself: it is the squad's breathing room, to reposition or fetch a cache,
+  until the next peak comes on its beat. Rift Pressure keeps
   running after. A Fracture brings no prize (not built).
 - **The battle ends** when the gate reaches zero, every machine is wrecked, or the boss unit
   falls (every commander of the unit at the rift, its fight won); a wipe after the commander's
@@ -1406,7 +1416,7 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   to its end and a team wipe is the graded loss; a withdrawal from a battle is not built (open:
   the bible's section 4).
 - **Won** (the boss dies): the gate refills, the rift closes, no rift opens there next turn;
-  2 salvage a point of menace killed, the boss's included; 100 Favour less 1 per gate
+  18 salvage a pip of menace killed, the boss's included; 100 Favour less 1 per gate
   point the city lost, never below 0; a research
   token of the lead domain and an offer from the host maker are owed (the token a choice of
   three blueprints of the domain's theme at the Convergence's tier; the offer a chassis, a

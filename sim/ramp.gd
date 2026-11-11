@@ -64,6 +64,48 @@ static func fractures_at(tier: int) -> int:
 	return int(FRACTURES[clampi(tier, 0, FRACTURES.size() - 1)])
 
 
+## The Rupture's size, in beats of the tide (the pacing discussion of 11 November; Ryan: "Try
+## your lean first"): a beat is a peak of Rift Pressure, and the meter's field part is what the
+## opening places and the tide sends through this many peaks (Battle.setup). Two at every tier:
+## the ramp grows what a beat holds by itself (the opening's formations, the tears a peak, the
+## beat's length), and more Fractures at a higher tier are for more elites, never to make the
+## battle much longer (his word the same day). Placeholder.
+const BEATS := 2
+## A trial count of beats, 0 for the game's: a debug build's SETTINGS → TRIALS → RUPTURE and
+## RIFTGATE_BEATS set it (Settings.field_trial), so he feels one beat or three beside the two.
+static var beats_trial: int = 0
+
+
+static func beats_at(_tier: int) -> int:
+	return beats_trial if beats_trial > 0 else BEATS
+
+
+## The tide's density on trial, in hundredths, 100 the game's (Ryan, 11 November: "I think we
+## should try to lean for noticeably more spawns then the minimum number required for our
+## target completion speed. When I was playing I felt the need to chase every pack down, since
+## that felt possible. I think that's wrong. More pusher and flanker packs, even if it means
+## that each needs to do less to the wall, is better"): how many packs the opening places and
+## the tide sends against the game's own counts, the Rupture's size left on the game's (the
+## length is the meter's, the choice is the tide's: Battle.setup). A debug build's SETTINGS →
+## TRIALS → TIDE and RIFTGATE_TIDE set it (Settings.field_trial); the strike a pip beside it
+## is Battlefield.strike_trial.
+static var tide_trial: int = 100
+
+
+## A count of the opening's under the tide's trial: `n` of the game's by the trial's
+## hundredths, whole packs only and never fewer (half again as many of one is one, of two
+## three).
+static func dense(n: int) -> int:
+	return maxi(n, (n * tide_trial) / 100) if tide_trial > 100 else n
+
+
+## How many times over the `k`th peak (from one) sends under the tide's trial: the whole
+## numbers the trial's running total crosses at it, so half again as many is one, two, one,
+## two and twice as many two at every peak. One with no trial.
+static func dense_at(k: int) -> int:
+	return maxi(0, (k * tide_trial) / 100 - ((k - 1) * tide_trial) / 100) if tide_trial > 100 else 1
+
+
 static func elite_fractures_at(tier: int) -> Array:
 	return Array(ELITE_FRACTURES[clampi(tier, 0, ELITE_FRACTURES.size() - 1)])
 

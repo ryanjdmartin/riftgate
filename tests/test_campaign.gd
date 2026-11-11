@@ -209,14 +209,15 @@ func test_a_won_battle_lifts_the_siege_and_banks_its_salvage() -> void:
 	var b := _battle(c)
 	var faction := b.faction
 	b.foes_killed = 10
-	b.menace_killed = 30
+	b.menace_killed = 350   # three and a half pips, in hundredths
 	_end(b, Battle.Outcome.VICTORY)
 	var r := c.finish_battle()
 	assert_eq(r["result"], "won", "won")
 	assert_eq(c.cities[front].gate, Campaign.CITY_GATE, "the gate is restored to full")
 	assert_true(c.cities[front].rift.is_empty(), "its rift is closed")
-	assert_eq(c.salvage, Campaign.START_SALVAGE + 30 * Campaign.SALVAGE_PER_MENACE, "the salvage banks, by the menace killed")
-	assert_eq(int(c.anathema.get(faction, 0)), 30, "and Anathema takes the menace")
+	assert_eq(c.salvage, Campaign.START_SALVAGE + (350 * Campaign.SALVAGE_PER_PIP) / ContentDB.MENACE_PER_PIP, "the salvage banks, by the pips of menace killed")
+	assert_eq(Campaign.salvage_for(ContentDB.worth_of(3)), 3 * Campaign.SALVAGE_PER_PIP, "a formation's fall three pips' worth")
+	assert_eq(int(c.anathema.get(faction, 0)), 350, "and Anathema takes the menace")
 	assert_true(c.tokens.has(faction), "the boss drops a research token of its faction")
 	assert_true(c.offers.has(front), "the host maker owes an offer")
 	assert_eq(c.turn, 1, "the turn ends")
@@ -260,7 +261,7 @@ func test_a_wipe_lets_the_horde_strike_and_the_city_holds_wounded() -> void:
 	for u in b.mechs():
 		_wreck(b, u)
 	b.foes_killed = 4
-	b.menace_killed = 12
+	b.menace_killed = 200
 	var gate := b.field.gate_hp
 	_end(b, Battle.Outcome.WRECKED)
 	var r := c.finish_battle()
@@ -269,7 +270,7 @@ func test_a_wipe_lets_the_horde_strike_and_the_city_holds_wounded() -> void:
 	assert_eq(r["result"], "held", "the gate held the strikes")
 	assert_true(not c.cities[front].fallen, "the city stands")
 	assert_true(not c.cities[front].rift.is_empty(), "its rift stays open")
-	assert_eq(c.salvage, Campaign.START_SALVAGE + 12 * Campaign.SALVAGE_PER_MENACE, "the salvage was in the city and is kept")
+	assert_eq(c.salvage, Campaign.START_SALVAGE + Campaign.salvage_for(200), "the salvage was in the city and is kept")
 	assert_eq(c.tokens.size(), 0, "no token")
 	assert_eq(c.ready_machines().size(), 0, "every machine is in the shop")
 
@@ -808,7 +809,7 @@ func test_a_battle_not_won_pays_no_favour() -> void:
 	for u in b.mechs():
 		_wreck(b, u)
 	b.foes_killed = 3
-	b.menace_killed = 9
+	b.menace_killed = 100
 	_end(b, Battle.Outcome.WRECKED)
 	var r := c.finish_battle()
 	assert_eq(r["result"], "held", "the city held")
