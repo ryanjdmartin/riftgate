@@ -7515,3 +7515,143 @@ What follows from it, named:
   why the Barrier is the swing.
 - The cap is read at tier one. At tiers two and three the blow's +1 and +2 carry a few
   finishers past it (the Mantis Ant's Upheaval breaches for 20 at tier two).
+
+## 11 November, tier one with three machines: the Badger's regen, the starting trios, the first boss
+
+Ryan, 11 November: "Badger probably goes to Regen 1 with the amount of armour it's able to
+get"; "Let's focus only on balancing tier 1 fights for now"; and "the first battle should be
+tuned around 3 units, and possibly second convergence battles should be tuned around 3.5
+units ... 3rd convergence battles onward we should tune it around 4 units ... it significantly
+affects boss scaling, since the whole team is brought in." The decisions these inform: the
+Honey Badger's regen (set to one), and the squad a battle is tuned for by the Convergence, his
+to settle (the refit brief's section 10). Method: a probe on the battle's own builders
+(`Battlefield.pack_of`, `Battle.make_boss_unit`, `ContentDB.foes_for`), every tier-one
+formation and elite the first Convergence deals and every boss, against a squad of stock
+tier-one machines, the greedy rung, 10 seeds a cell unless said, the elites' and bosses'
+numbers of 10 November. Each cell: greedy's mean hull lost and rounds, its wins where it lost
+any. Each a direction.
+
+### The Honey Badger at a regen of three and of one
+
+The trio at 20 seeds, the pair and the Badger alone at 10 on a sample (four patrols, five
+formations, five elites). Hull lost, and the Badger's own beside it:
+
+| The squad | Fights | Regen 3 | Regen 1 |
+|---|---|---|---|
+| The Badger, the Skua, the Baboon | the ten formations | 14% (its own 11%) | 14% (its own 13%) |
+| | the eleven elites | 16% (its own 12%) | 17% (its own 14%) |
+| | the thirteen bosses | 45% (its own 37%), won 89% | 50% (its own 46%), won 86% |
+| The Badger and the Skua | five formations | 25% (its own 19%), won 92% | 28% (its own 24%), won 90% |
+| | five elites | 56% (its own 50%), won 78% | 61% (its own 57%), won 66% |
+| The Badger alone | four patrols | 6% (its own 6%) | 9% (its own 9%) |
+| | five formations | 74% (its own 74%), won 68% | 78% (its own 78%), won 52% |
+| | five elites | 87% (its own 87%), won 32% | 89% (its own 89%), won 24% |
+
+Read. In a full trio nothing moves against a formation or an elite, and a boss costs five
+points more over its ten rounds. Short-handed it is a few points dearer, and two coin flips
+for the pair become losses (the Goblin Nob and the Thunder Ape, won one in two at three and one
+in five at one). Alone it no longer wins a formation rated for three: the Treant's grove was
+won four times in five at a regen of three and never at one, which is the lone tank beating a
+formation rated for three that the regen's first reads flagged (9 November). A machine's
+armour does nothing while its shield stands, so the faster regen was keeping the Badger's
+plate idle against small blows.
+
+### The starting trios, and what a fourth machine adds
+
+A run starts with three machines, one from each of three city makers (the tender deals one
+from each of the four, the player takes three), and the fourth is an offer's or bought. Eight
+trios at three, four with the Badger (at a regen of one) and four without, and three squads of
+four, a formation, an elite and a boss each the mean of its kind:
+
+| The squad | A formation | An elite | A boss | Machines wrecked a boss |
+|---|---|---|---|---|
+| Three: the Honey Badger, the Baboon, the Skua | 14% · 5.9 r | 20% · 6.2 r | 46% · 10.5 r, won 88% | 0.61 |
+| Three: the Honey Badger, the Stingray, the Cassowary | 9% · 5.8 r | 8% · 5.4 r | 24% · 8.6 r, won 99% | 0.11 |
+| Three: the Honey Badger, the Storm Petrel, the Cottonmouth | 10% · 5.1 r | 11% · 6.0 r | 36% · 10.4 r, won 95% | 0.35 |
+| Three: the Honey Badger, the Baboon, the Prairie Dog | 12% · 6.9 r | 11% · 6.3 r | 32% · 10.7 r, won 95% | 0.26 |
+| Three: the Baboon, the Skua, the Cassowary | 18% · 7.3 r, won 99% | 19% · 7.9 r, won 97% | 52% · 13.8 r, won 77% | 0.90 |
+| Three: the Stingray, the Storm Petrel, the Cottonmouth | 12% · 6.3 r | 10% · 6.9 r | 52% · 13.0 r, won 72% | 1.04 |
+| Three: the Baboon, the Storm Petrel, the Prairie Dog | 18% · 8.6 r, won 99% | 16% · 9.1 r, won 98% | 52% · 15.0 r, won 70% | 1.07 |
+| Three: the Stingray, the Skua, the Cottonmouth | 11% · 6.6 r | 13% · 7.7 r, won 99% | 61% · 15.1 r, won 61% | 1.39 |
+| Four: the Honey Badger, the Baboon, the Skua, the Cassowary | 4% · 4.5 r | 5% · 4.9 r | 15% · 8.0 r | 0.07 |
+| Four: the Baboon, the Skua, the Cassowary, the Stingray | 5% · 5.1 r | 5% · 5.2 r | 16% · 8.0 r | 0.05 |
+| Four: the Stingray, the Storm Petrel, the Cottonmouth, the Honey Badger | 4% · 4.0 r | 4% · 4.5 r | 11% · 7.0 r | 0.03 |
+
+Every fight, hull lost (T1 to T8 the trios in the table's order, F1 to F3 the fours):
+
+| Fight | Kind | T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | F1 | F2 | F3 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `goblin_horde` | formation | 1% | 1% | 0% | 1% | 0% | 0% | 0% | 0% | 0% | 0% | 0% |
+| `treant_grove` | formation | 4% | 3% | 1% | 4% | 5% | 2% | 3% | 3% | 1% | 1% | 1% |
+| `gel_wall` | formation | 3% | 3% | 1% | 8% | 5% | 0% | 8% | 1% | 0% | 1% | 0% |
+| `shamans_warband` | elite | 0% | 0% | 0% | 0% | 1% | 0% | 0% | 0% | 0% | 0% | 0% |
+| `the_nob` | elite | 24% | 11% | 15% | 10% | 22% | 10% | 13% | 19% | 9% | 5% | 3% |
+| `floraison` | boss | 26% | 23% | 30% | 27% | 60% (won 80%) | 61% (won 90%) | 43% (won 90%) | 86% (won 50%) | 4% | 10% | 10% |
+| `king_gel` | boss | 34% | 16% | 36% | 13% | 27% | 20% | 26% | 16% | 9% | 9% | 6% |
+| `mantis_ant` | boss | 30% | 13% | 21% | 12% | 23% | 14% | 8% | 23% (won 90%) | 9% | 6% | 6% |
+| `needler_thicket` | formation | 2% | 5% | 3% | 4% | 5% | 3% | 4% | 1% | 1% | 2% | 0% |
+| `sandworm_ambush` | formation | 35% | 18% | 24% | 24% | 26% | 23% | 29% | 13% | 10% | 9% | 10% |
+| `old_mans_rising` | elite | 43% | 18% | 27% | 20% | 36% (won 90%) | 16% | 29% | 19% | 9% | 7% | 12% |
+| `pilgrims_wake` | elite | 14% | 6% | 5% | 10% | 15% | 3% | 15% | 12% | 6% | 2% | 0% |
+| `rust_monsters_scavenge` | elite | 5% | 1% | 2% | 1% | 4% | 1% | 1% | 3% | 1% | 1% | 1% |
+| `gilgamesh_wanders` | elite | 30% | 5% | 9% | 7% | 12% | 9% | 9% | 4% | 3% | 1% | 3% |
+| `ruby_colossus` | boss | 79% (won 50%) | 49% (won 90%) | 48% | 72% (won 70%) | 98% (won 10%) | 94% (won 10%) | 100% (won 0%) | 100% (won 0%) | 21% | 31% | 11% |
+| `fallen_weapon` | boss | 72% (won 60%) | 34% | 61% (won 80%) | 55% (won 80%) | 91% (won 20%) | 100% (won 10%) | 100% (won 0%) | 100% (won 0%) | 18% | 24% | 10% |
+| `emperor_scorpion` | boss | 78% (won 60%) | 40% | 80% (won 60%) | 58% (won 90%) | 71% (won 70%) | 93% (won 20%) | 88% (won 40%) | 93% (won 30%) | 27% | 20% | 29% |
+| `grave_throng` | formation | 0% | 2% | 1% | 2% | 1% | 0% | 1% | 0% | 0% | 0% | 0% |
+| `barrow_mound` | formation | 5% | 1% | 2% | 1% | 3% | 4% | 3% | 4% | 0% | 1% | 1% |
+| `knights_vigil` | formation | 34% | 23% | 25% | 25% | 38% | 31% | 38% | 34% | 13% | 16% | 12% |
+| `fell_riders_hunt` | elite | 8% | 2% | 1% | 2% | 8% | 2% | 3% | 1% | 2% | 1% | 1% |
+| `the_reaper` | elite | 0% | 0% | 1% | 1% | 1% | 0% | 3% | 0% | 0% | 0% | 0% |
+| `the_wild_hunt` | elite | 35% | 20% | 27% | 31% | 59% (won 80%) | 37% | 57% (won 80%) | 37% | 14% | 21% | 13% |
+| `matador` | boss | 31% | 20% | 18% | 19% | 30% | 36% | 20% | 42% (won 90%) | 8% | 8% | 4% |
+| `phantom_train` | boss | 67% (won 80%) | 22% | 45% (won 90%) | 42% | 66% (won 70%) | 59% (won 80%) | 78% (won 50%) | 82% (won 50%) | 22% | 18% | 10% |
+| `vampire_lord` | boss | 14% | 5% | 8% | 4% | 20% | 8% | 8% | 16% | 2% | 1% | 1% |
+| `marsh_serpent` | boss | 26% | 13% | 21% | 22% | 29% | 24% | 28% | 31% | 9% | 2% | 3% |
+| `ember_pyre` | formation | 17% | 15% | 7% | 34% | 47% (won 90%) | 17% | 55% (won 90%) | 13% | 3% | 6% | 1% |
+| `magma_vent` | formation | 38% | 21% | 35% | 16% | 45% | 39% | 39% | 36% | 14% | 16% | 13% |
+| `cinder_tortoises_brood` | elite | 29% | 10% | 13% | 12% | 16% | 9% | 10% | 13% | 7% | 4% | 4% |
+| `thunder_apes_rampage` | elite | 27% | 18% | 27% | 23% | 36% | 25% | 34% | 39% (won 90%) | 4% | 13% | 7% |
+| `gargantuan_king` | boss | 38% | 12% | 21% | 11% | 28% (won 90%) | 20% | 16% | 19% | 11% | 9% | 14% |
+| `fiend_of_fire` | boss | 36% | 38% | 32% | 46% | 67% (won 70%) | 98% (won 20%) | 81% (won 50%) | 98% (won 10%) | 17% | 30% | 20% |
+| `obsidian_tyrant` | boss | 63% | 33% | 49% | 38% | 70% (won 90%) | 53% | 84% (won 80%) | 81% (won 70%) | 41% | 39% | 20% |
+
+Read.
+
+- The fourth machine halves or thirds everything, and the boss most. A formation costs three
+  machines 9% to 18% and four 4% to 5%; an elite 8% to 20% and 4% to 5%; a boss 24% to 61%
+  and 11% to 16%. A boss is nine to fifteen rounds for three where it is seven or eight for
+  four, and wrecks a machine in one fight of nine at best and more than one a fight at worst,
+  where four lose one in twenty.
+- A trio without the Badger loses a quarter to two fifths of its boss fights. The Waste's
+  three bosses are walls for it (their parts breach), and Floraison and the Fiend of Fire, who
+  strike many times, close to it.
+- The six fodder formations are on the pusher's budget for three (0% to 8%). The four led by
+  a breach are not (the sandworm ambush 13% to 35%, the knights' vigil 23% to 38%, the magma
+  vent 16% to 45%, the ember pyre 7% to 55%); breach under the regen is parked on his word.
+- An elite at three is near the hull budget he accepted with the model (a tenth to a fifth of
+  the squad's hull), where at four it is a twentieth. The Old Man's rising (16% to 43%), the
+  Wild Hunt (20% to 59%, two trios losing one fight in five) and the Thunder Ape (18% to 39%)
+  are the dear ones.
+
+### The first boss, sized for three
+
+Every tier-one boss at a share of its hit points and of its blow, three machines, the mean of
+the thirteen:
+
+| Hit points | Blow | The Honey Badger, the Baboon, the Skua | The Honey Badger, the Stingray, the Cassowary | The Stingray, the Storm Petrel, the Cottonmouth |
+|---|---|---|---|---|
+| whole | whole | 46% · 10.5 r, won 88% · 0.61 wrecked | 24% · 8.6 r, won 99% · 0.11 wrecked | 52% · 13.0 r, won 72% · 1.04 wrecked |
+| seven eighths | whole | 41% · 9.5 r, won 91% · 0.50 wrecked | 21% · 7.6 r · 0.08 wrecked | 46% · 12.0 r, won 78% · 0.82 wrecked |
+| three quarters | whole | 32% · 8.3 r, won 97% · 0.29 wrecked | 16% · 6.5 r, won 99% · 0.07 wrecked | 40% · 10.1 r, won 86% · 0.52 wrecked |
+| two thirds | whole | 28% · 7.3 r, won 97% · 0.24 wrecked | 14% · 5.9 r · 0.06 wrecked | 28% · 8.9 r, won 94% · 0.25 wrecked |
+| whole | three quarters | 25% · 10.1 r, won 99% · 0.13 wrecked | 13% · 8.2 r · 0.00 wrecked | 31% · 13.2 r, won 92% · 0.31 wrecked |
+| seven eighths | three quarters | 22% · 9.2 r, won 98% · 0.10 wrecked | 10% · 7.3 r · 0.00 wrecked | 23% · 10.9 r, won 99% · 0.09 wrecked |
+| three quarters | three quarters | 17% · 7.8 r · 0.04 wrecked | 8% · 6.2 r · 0.01 wrecked | 16% · 8.9 r · 0.02 wrecked |
+| two thirds | three quarters | 14% · 6.9 r · 0.03 wrecked | 7% · 5.6 r · 0.00 wrecked | 11% · 7.5 r · 0.01 wrecked |
+
+Read. At three quarters of both, three machines pay a boss what four pay it whole (8% to 17%
+against 11% to 16%), in six to nine rounds, with no machine wrecked: a boss for three is three
+quarters of a boss for four. Hit points alone do not do it: at two thirds of the hit points
+(the old 48) and the whole blow two trios still lose a quarter of their hull and a machine in
+one fight of four.

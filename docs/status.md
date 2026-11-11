@@ -29,7 +29,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   after each.
 - Tests: 1094 tests, 325,124 checks, green on main (10 November, with the boss's hex, the third map list, the Text tab, the side session's work, the shapes reworked on Ryan's play, the second map list, the
   map session's shapes laid to the rift's row, the passing and the catch at one, and the map
-  playtest list), and 1111 tests, 362,583 checks, green on `ccr-722ca9f0-yj8na3` (11 November, that
+  playtest list), and 1111 tests, 362,582 checks, green on `ccr-722ca9f0-yj8na3` (11 November, that
   main with the refit pass's first build, the wall strike by the rating, the trial's regen row,
   every machine one more move, the field's dials, the goblin's line on its straight knife and wall,
   the model as content, the formation pass and the elites' and bosses' guess; the
@@ -173,7 +173,7 @@ And at `5d14088` on 11 November (the boss holding its hex in front of the rift, 
 walking): the bible (v0.514, above both; the grid row main's sentences on the boss's hex set
 into this branch's), this file, the to-do and `sim/save.gd` the conflicts, both sides kept, the
 save versions stacked again (a battle's 23, a run's 22).
-The bible's file is v0.514, main's v0.506 with this branch's rows, its republish on Ryan's word
+The bible's file is v0.515, main's v0.506 with this branch's rows, its republish on Ryan's word
 (Pages below); and `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
@@ -546,6 +546,30 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   runner's plain player, which never gathers, wins 8% of its battles where it won 19%: a
   fight for four with one machine in it is won one time in four where it was one in two. The
   bible's scale row holds it (v0.512, v0.513 since the branch took main's third map list).
+- **Tier one at three machines, and Ryan's calls of 11 November.** His words: "Badger probably
+  goes to Regen 1 with the amount of armour it's able to get"; "Draugr is fine as a name, as are
+  your other working names"; "Let's focus only on balancing tier 1 fights for now", since tier
+  three machines are to have higher stats and the lower tiers to be upgradeable; and his big
+  question, when the player gets a fourth machine, with a direction: the first battle tuned
+  around three units, the second Convergence around three and a half, the third onward around
+  four, since a boss's fight brings the whole team in and the fourth unit's power is a flank
+  covered. Built: the Honey Badger's regen is one (plate and regen answer the same small blows,
+  and armour does nothing while the shield stands; in a full trio nothing moves, short-handed
+  it is a few points dearer, alone it no longer wins a formation rated for three). Read, not
+  built (`docs/measurements.md`, 11 November; the refit brief's section 10): eight starting
+  trios and three fours, stock. A formation costs three machines 9% to 18% of their hull and
+  four 4% to 5%, an elite 8% to 20% and 4% to 5%, a boss 24% to 61% and 11% to 16%, and a trio
+  without the Badger loses a quarter to two fifths of its boss fights; at three quarters of its
+  hit points and blow a boss costs three what the whole boss costs four. What the records say
+  of the fourth machine: three at the start of four slots, the fourth an offer's after a won
+  battle or bought on the shelf, neither built in the campaign, while the Convergence rises
+  every turn, so a lost first battle meets a field tuned for more. The holes and Claude's
+  leans are the brief's, for his answers; nothing of the tuning is built. The regen was
+  assigned by the gauge's bands alone, which he asked and the brief now says. This session had
+  not read the locked pieces' session (`ccr-4d58b054-3lyj0a`, `docs/locked_pieces_proposal.md`,
+  not on main: a machine holds a level, bought, lifting its stats and locked pieces; tier one
+  comes down to the basics) when it guessed the elites and bosses: the tier-two and tier-three
+  reads of 10 November are stock machines that plan will not field, and are tuned no further.
 - **Ryan's play of Phase 2** (9 November, his read of the long wall as built, on the phone): hard
   to judge; the packs as they were too hard, "but not for any particular one reason"; incoming
   damage high, so the tank tanked every turn while the rest could not take foes down reliably
@@ -1023,8 +1047,10 @@ decision, component destruction off to test, two rerolls kept; the formation pas
 its proposal's grids re-cut under the new model and read by hull lost), in its brief's order: the
 what-if and its first reads are in (9 November), his two reads of the trial, the model as
 content, the formation pass and a guess at the elites' and bosses' numbers (10 November: the
-brief's sections 5, 8 and 9); next his play of what landed, with the field's dials (the
-to-do's Ryan list), and his answers to the brief's section 7, then the content still to come (the stock re-deal proper as a table in chat first,
+brief's sections 5, 8 and 9); tier one only for now (his word, 11 November), and next his
+answers on the squad a battle is tuned for by the Convergence (the brief's section 10: the
+boss's numbers by ramp band wait on them), beside his play of what landed, with the field's
+dials (the to-do's Ryan list), and his answers to the brief's section 7, then the content still to come (the stock re-deal proper as a table in chat first,
 the component pass, the heat prices, the foes' numbers after his play, the bosses' stat
 blocks, what prices a round), the vocabulary, the rules and the rows. Then the long wall's other open item (the bible's section 12: the shell). Beside them, the rest of the skirmish code audit
 (`docs/skirmish_audit.md`; its questions answered and its bugs built 8 November; the Ammit's Tap
@@ -1085,7 +1111,7 @@ commands are in `README.md`.
   playtest list landed (the boss's picture, the scenery under the painting, the tears row's
   read of 10 November and the hunters' declaration, on the map session's v0.500 and v0.498's
   Text tab rows: the hangar row's tabs and the shown-text row), unpublished, its republish on
-  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.514, main's with the formation and refit
+  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.515, main's with the formation and refit
   session's rows (the hunters row's who-may-hunt and its settled hunting packs, the Foe roles row
   Decided with the flanker lines, the goblin's
   lesson, his call on its form and the pusher's yardstick, the recolour row's two rungs that
