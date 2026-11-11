@@ -3592,12 +3592,16 @@ def _pair_half(module, half):
     return build
 
 
-# A track's pair as Ryan passed it on the pair page: the battle half under the track's own name, the map half beside
-# it. Hold The Line's (10 November: "Full pair for HtL is good to ship"), hold_sketches.py's twenty-seventh round;
-# music_hold_the_line() above stays the recipe the pair is built on. The game plays the battle half where it played
-# the track; the map half waits on the engine's pairs (docs/todo.md).
+# A track's pair as Ryan passed it on the pair page: the half the track shipped as under the track's own name, the
+# new half beside it, each waiting there on the engine's pairs (docs/todo.md). Hold The Line's (10 November: "Full pair
+# for HtL is good to ship"), hold_sketches.py's twenty-seventh round: the battle half where the track played, the map
+# half beside it. Night Shift's (11 November: "Keep 96. I think this is a good spot to ship everything to main"),
+# night_sketches.py's thirty-fifth round: the map half where the track played, at 96 where MUSIC's recipe runs at 94,
+# the battle half beside it. music_hold_the_line() and music_night_shift() above stay the recipes the pairs build on.
 SHIP["music_hold_the_line"] = _pair_half("hold_sketches", "battle")
 SHIP["music_hold_the_line_map"] = _pair_half("hold_sketches", "map")
+SHIP["music_night_shift"] = _pair_half("night_sketches", "map")
+SHIP["music_night_shift_battle"] = _pair_half("night_sketches", "battle")
 
 
 def write_level(x, name, level):

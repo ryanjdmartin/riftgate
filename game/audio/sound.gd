@@ -213,7 +213,8 @@ static func step_for(traits: Array) -> String:
 
 ## The loops' tempos, as tools/soundforge writes them, so a thing on screen can move on
 ## the beat (the rift's vortex, Ryan, 23 September: it had landed near the beat by chance).
-const TEMPO := {"music_far_bank": 88.0, "music_hold_the_line": 104.0, "music_low_ground": 90.0, "music_night_shift": 94.0, "music_crossing": 126.0, "music_full_bore": 105.0}
+## Night Shift ships its pair's map half at 96 (Ryan, 11 November: "Keep 96"), where its recipe ran at 94.
+const TEMPO := {"music_far_bank": 88.0, "music_hold_the_line": 104.0, "music_low_ground": 90.0, "music_night_shift": 96.0, "music_crossing": 126.0, "music_full_bore": 105.0}
 
 
 ## Beats elapsed in the loop that is playing, or -1 when nothing is.

@@ -1,8 +1,9 @@
 """Night Shift's thirty-fifth round as a pair (Ryan, 11 November: "Lock in 'The hook cut.' Then the last thing is I want is
 another listen at 98"): the thirty-fourth's with the FM synth's arpeggio through all of the head, alone in its first
 half with the hook cut and the chime's doubling resting there (TURNS_DRIVE's A, CHIME_REST), the hook on the synth
-lead over it in the second; the plucked string no longer carried in (A_CARRY); and a set of each half whole at 96 and
-98. Before it, the thirty-fourth as a pair (Ryan, 11 November: "Keep the synth and the swap. Keep the arpeggio from
+lead over it in the second; the plucked string no longer carried in (A_CARRY); 98 heard again on each half whole and
+96 kept, and the pair passed and shipped (11 November: "Keep 96. I think this is a good spot to ship everything to
+main"; `ship`, forge.py's SHIP). Before it, the thirty-fourth as a pair (Ryan, 11 November: "Keep the synth and the swap. Keep the arpeggio from
 the intro going into A, still on the plucked string, but drop it like 6 db when A hits"): the thirty-third's with the
 crunch synth's eighths kept, the head's halves swapped (TURNS_DRIVE's A: the hook alone, then the hook over the
 arpeggio into the breakdown), and the intro's plucked arpeggio carried into the head 6 dB down (A_CARRY, battle_half's
@@ -1615,19 +1616,9 @@ A_FM = [("n1.lean|n3.lean", "both:fm")] * 4 + TURNS_DRIVE["A"][4:]
 # The head's first half with the hook on the plucked string over the FM synth's arpeggio (11 November, heard beside the
 # hook cut, which won): kept as an option, the chime doubling it.
 A_PLUCK = [("n1.lean|n3.lean", "both:plucked")] * 4 + TURNS_DRIVE["A"][4:]
-# Another listen at 98 (Ryan, 11 November: "the last thing is I want is another listen at 98"; of the first, 10 November:
-# "98 is ok but the arpeggios start to muddy", since when every arpeggio is 3 dB down): each half whole, at 96 and 98.
-TEMPO_NOTE = "The rows run at different speeds, so start each from its top."
-SETS = [
-    {"id": "nb", "half": "battle", "title": "The battle half at 98", "form": FORM10, "seed": NAME + "_battle",
-     "note": "The whole battle half (Ryan, 11 November: \"the last thing is I want is another listen at 98\"). " + TEMPO_NOTE,
-     "rows": [("nb0", "At 96", "The full pair's.", {}),
-              ("nb1", "At 98", "Two beats a minute faster.", {"bpm": 98})]},
-    {"id": "nq", "half": "map", "title": "The map half at 98", "form": FORM10, "seed": NAME,
-     "note": "The whole map half, which moves with the battle half since the two keep one timeline. " + TEMPO_NOTE,
-     "rows": [("nq0", "At 96", "The full pair's.", {}),
-              ("nq1", "At 98", "Two beats a minute faster.", {"bpm": 98})]},
-]
+# Another listen at 98 (11 November: "the last thing is I want is another listen at 98"), each half whole at 96 and 98:
+# 96 kept ("Keep 96"), and the pair passed and shipped (forge.py's SHIP builds both halves from `ship`). No sets.
+SETS = []
 PAIR = {"id": "night_shift_r35", "title": "Night Shift, round thirty-five"}
 INTRO = "intro: the kick on every beat and the hats, the pad fading in through the fourth bar and swelling from 0:10, the sub from the fifth"
 MAP_SAID = dict(F.MUSIC[NAME]["names"], I=INTRO,   # each section on the map, without its muted guitar
@@ -1740,14 +1731,20 @@ def render_row(job):
     return si, ri, render(s["form"], mastered=False, **opts)
 
 
-def render_full(which):
-    if which == "battle":
+def ship(half):
+    """A half of the pair as Ryan passed it (11 November: "Keep 96. I think this is a good spot to ship everything to
+    main"), from its own seed at its half's level, unlimited: what the forge's SHIP builds into art/audio
+    (music_night_shift the map half, playing where the track played, now at 96; music_night_shift_battle the battle
+    half) and what the page's full pair is cut from."""
+    if half == "battle":
         F.seed(NAME + "_battle")
-        x, db = battle(), BATTLE_LEVEL
-    else:
-        F.seed(NAME)
-        x, db = map_half(), MAP_LEVEL
-    P.write("%s_%s" % (PAIR["id"], which), F.limit(F.write_level(x, NAME, db)), aac=False)
+        return F.write_level(battle(), NAME, BATTLE_LEVEL)
+    F.seed(NAME)
+    return F.write_level(map_half(), NAME, MAP_LEVEL)
+
+
+def render_full(which):
+    P.write("%s_%s" % (PAIR["id"], which), F.limit(ship(which)), aac=False)
     return which
 
 

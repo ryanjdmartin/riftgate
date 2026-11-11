@@ -158,9 +158,8 @@
 <h2>Hold The Line: passed</h2>
 <p>You passed the full pair. Both halves are built into the game's files as you heard them here: the battle half plays wherever Hold The Line played, and the map half sits beside it until the game can play a pair (the map choosing the track, a fight flipping to the battle half in place). The full pair on the switch is still <strong>Hold The Line, round twenty-seven</strong>. X's riff stays in <a href="https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV">the Melody Desk</a> as Hold The Line, round twenty-two.</p>
 
-<h2>Round thirty-five: Night Shift</h2>
-<p>The hook cut is locked in. The head opens on the FM synth's arpeggio alone, straight out of the intro's plucked one, and the hook comes in on the synth lead over it at the head's ninth bar. The metal chime that doubled the hook rests through the first half with it. Nothing else in the pair has moved, and the map half is the same file as round thirty-four's. The full pair on the switch is <strong>Night Shift, round thirty-five</strong>, at 96.</p>
-<p><strong>98, once more.</strong> Each half whole, at 96 and at 98, in two sets, since both halves would move together. The rows run at different speeds, so start each from its top. Every arpeggio is 3 dB down from the first time you heard 98, when they started to muddy.</p>
+<h2>Night Shift: passed</h2>
+<p>You passed the full pair at 96. Both halves are built into the game's files as you heard them here: the map half plays wherever Night Shift played, now at 96, and the battle half sits beside it until the game can play a pair. The full pair on the switch is still <strong>Night Shift, round thirty-five</strong>.</p>
 <div class="how"><p>Every row of a set is the same bars from the same seed at one gain. Tap another row partway through and it carries on from the same beat; a row that adds a voice is louder by what it adds. The number by a row is its loudness on a phone's speaker; by a seam, its length.</p>
   <label class="keep"><input type="checkbox" id="keep" checked> keep my place</label></div>
 <div id="sets-night"><p class="setnote">Loading the sets&hellip;</p></div>
@@ -537,7 +536,7 @@
       pick.appendChild(b);
     });
     choose(later[0] || tracks[0]);
-    if (night) buildSets(document.getElementById('sets-night'), night.sets.concat(night.seams || []), ['nb', 'nq']);
+    if (night) buildSets(document.getElementById('sets-night'), night.sets.concat(night.seams || []), []);
     else document.getElementById('sets-night').innerHTML = '';
     var runBox = document.getElementById('run-marks');
     [{at: 0, what: 'map'}].concat(m.run.events).forEach(function (e) {
