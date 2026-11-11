@@ -321,7 +321,7 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
     declined (the bible's withdrawal row); Phased on a kill he kept for the shadow panther. The
     model's third mount is a bare pad on the nose's spine. Its brief is retired; his play is the
     to-do's.
-  - The Skua: built as his "Ramping Dakka" (the bible's Kestrel row, v0.534 on this branch,
+  - The Skua: built as his "Ramping Dakka" (the bible's Kestrel row, v0.535 on this branch,
     unpublished). Its passive gains a stack of Ricochet the first time each round one of its
     weapons damages a foe (the trigger `on_damage`; an effect's `once: round`, open to any effect
     an event fires). Ricochet is a buff that lasts the fight: after each shot of a weapon a
@@ -1334,7 +1334,7 @@ commands are in `README.md`.
   pacing, menace and tier counts), and v0.531 since the Whip Scorpion's rework and the Clydesdale's
   review landed the same day (its rows; the hardpoints row: every stock gun its class, a mount's depth
   by class; the flare row), unpublished,
-  its republish on Ryan's word. `ccr-e3ddf00b-ilkwbi`'s file is v0.534 (main's v0.531, the
+  its republish on Ryan's word. `ccr-e3ddf00b-ilkwbi`'s file is v0.535 (main's v0.531, the
   withdrawal row with Ryan's call of 11 November on a break-off for one machine, the Kite's row
   rewritten, the Kestrel row's Needletail and Skua, the tiers row's stock rule, section 12's
   Sweep question), unpublished too. BASE for the next merge is `60a0e4d`'s file. The live page may carry rows ahead of main's code while a branch has not landed. Before
