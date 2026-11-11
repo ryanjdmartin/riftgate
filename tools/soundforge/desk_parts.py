@@ -9,8 +9,15 @@ roll and edited.
 Each track is built with `groove` swapped for a capture, so the recipe runs (kits and all)
 but nothing is mixed. A voice's notes come from the same walk the engine does: riff mode
 from its pattern letters, chord mode from the bar's chord, stabs and pads as the chord's
-tones. Pitches are semitones above E2, the forge's root; steps are the section's own (a
-12-step bar is flagged, since the desk draws sixteen)."""
+tones. Pitches are semitones above E2, the forge's root, a quarter-tone half a semitone (a voice's
+own `notes`, Hold The Line's X); a double-stop's fifth is a note of its own. Steps are the section's
+own, and the desk draws a part's bars at its own length (16, 14 or 12 steps).
+
+    tools/spriter/.venv/bin/python tools/soundforge/desk_parts.py --sketch hold_the_line_r22   # a sketch's X, as a part document
+
+A sketch's document (SKETCHES) is one round of a sketch file's battle half, cut to the sections a
+note asked about, under an id of its own (`parts/sketch_<round>`) so the desk lists it beside the
+shipped tracks."""
 import json
 import os
 import sys
@@ -69,17 +76,23 @@ def voice_notes(g, v):
     octave = v.get("octave", 0)
     notes = []
     if mode == "riff":
+        table = dict(forge.NOTE, **v["notes"]) if v.get("notes") else forge.NOTE
+        fifth = (v.get("params") or {}).get("fifth")
         i = 0
         while i < len(s):
             c = s[i]
             if c in ".-":
                 i += 1
                 continue
-            semis = int(c) if c.isdigit() else forge.NOTE[c]
+            semis = int(c) if c.isdigit() else table[c]
+            if isinstance(semis, (list, tuple)):   # a bent note ([from, to, wait, glide]) as the pitch it bends to
+                semis = semis[1]
             length = 1
             while i + length < len(s) and s[i + length] == "-":
                 length += 1
             notes.append((i, semis + 12 * octave, length))
+            if fifth:   # a double-stop: the fifth on the next string, as real_bass plays it
+                notes.append((i, semis + 7 + 12 * octave, length))
             i += length
     elif mode == "chord":
         dur = max(1, int(round(v.get("dur", 1.6))))
@@ -148,29 +161,34 @@ def sections(g, notes):
 
 
 def export(name):
-    g = capture(name)
+    return export_call(capture(name), name, TITLES.get(name, name))
+
+
+def export_call(g, name, title, keys=None, labels=None):
+    """A call's parts (its voices and pads), in the sections `keys` names where given, a voice's label
+    from `labels` (by its index) where given."""
     docs = []
     for vi, v in enumerate(g["voices"]):
         notes = voice_notes(g, v)
-        secs = sections(g, notes)
+        secs = [x for x in sections(g, notes) if keys is None or x["key"] in keys]
         if not secs:
             continue
         mode = v.get("mode", "riff")
         docs.append({
             "id": "%s__v%02d_%s" % (name, vi, v["inst"]),
-            "track": name, "trackName": TITLES.get(name, name), "bpm": g["bpm"], "form": g["form"],
+            "track": name, "trackName": title, "bpm": g["bpm"], "form": g["form"],
             "voice": vi, "inst": v["inst"], "mode": mode, "octave": v.get("octave", 0), "gain": v.get("gain", 0.4),
-            "label": "%s (%s)" % (v["inst"], mode) if mode != "riff" else v["inst"],
+            "label": (labels or {}).get(vi) or ("%s (%s)" % (v["inst"], mode) if mode != "riff" else v["inst"]),
             "sections": secs,
         })
     pads = g["pad"] if isinstance(g["pad"], list) else ([g["pad"]] if g["pad"] else [])
     for pi, pad in enumerate(pads):
-        secs = sections(g, pad_notes(g, pad))
+        secs = [x for x in sections(g, pad_notes(g, pad)) if keys is None or x["key"] in keys]
         if not secs:
             continue
         docs.append({
             "id": "%s__p%02d_%s" % (name, pi, pad["inst"]),
-            "track": name, "trackName": TITLES.get(name, name), "bpm": g["bpm"], "form": g["form"],
+            "track": name, "trackName": title, "bpm": g["bpm"], "form": g["form"],
             "voice": 100 + pi, "inst": pad["inst"], "mode": "pad", "octave": int(pad.get("octave", 0)), "gain": pad.get("gain", 0.2),
             "label": "%s (pad)" % pad["inst"],
             "sections": secs,
@@ -178,16 +196,47 @@ def export(name):
     return docs
 
 
+def sketch_hold_the_line_r22():
+    """Hold The Line's round twenty-two, its seven (X) as the battle half plays it (Ryan, 7 November: "can I
+    get this imported into the melody desk and have the melody desk support quarter tones?"): the riff on
+    the low Omnific, its power chords on the upper with each note's fifth, the held line, the chime and the
+    piano, the riff's high C a quarter-tone flat the first time through."""
+    import hold_sketches as H
+    call = H.copied(H.call_on(H.FORM_K, H.METER))
+    H.round22()(call)
+    g = {"bpm": call["bpm"], "form": call["form"].replace(" ", ""), "chords": call["chords"], "voices": call["voices"],
+         "pad": call.get("pad"), "meter": call.get("meter")}
+    labels = {}
+    for vi, v in enumerate(g["voices"]):
+        if "X" not in v.get("pat", {}):
+            continue
+        if v["inst"] == "real_bass":
+            labels[vi] = "the riff's power chords, the upper Omnific" if (v.get("params") or {}).get("fifth") else "the riff, the low Omnific"
+        elif v["inst"] == "guitar_real":
+            labels[vi] = "the held line, the lead guitar"
+        elif v["inst"] == "chime_metal":
+            labels[vi] = "the chime"
+        elif v["inst"] == "epiano":
+            labels[vi] = "the piano on the long beat"
+    docs = [d for d in export_call(g, "music_hold_the_line", "Hold The Line, round twenty-two", keys="X", labels=labels) if d["voice"] in labels]
+    return "sketch_hold_the_line_r22", docs
+
+
+SKETCHES = {"hold_the_line_r22": sketch_hold_the_line_r22}
+
+
 def main(argv):
     """One JSON file per track (document `parts/<track>`), its parts inside, so the desk
-    reads six documents and a session seeds them in one batch."""
-    names = argv or [n for n in forge.SOUNDS if n.startswith("music_")]
+    reads six documents and a session seeds them in one batch; or a sketch's (`--sketch <round>`)."""
     os.makedirs(OUT, exist_ok=True)
-    for name in names:
-        docs = export(name)
+    if argv[:1] == ["--sketch"]:
+        jobs = [SKETCHES[r]() for r in argv[1:]]
+    else:
+        jobs = [(name, export(name)) for name in (argv or [n for n in forge.SOUNDS if n.startswith("music_")])]
+    for name, docs in jobs:
         body = {
-            "track": name, "trackName": TITLES.get(name, name), "bpm": docs[0]["bpm"] if docs else None,
-            "form": docs[0]["form"] if docs else "",
+            "track": docs[0]["track"] if docs else name, "trackName": docs[0]["trackName"] if docs else TITLES.get(name, name),
+            "bpm": docs[0]["bpm"] if docs else None, "form": docs[0]["form"] if docs else "",
             "parts": [{k: d[k] for k in ("voice", "inst", "mode", "octave", "gain", "label", "sections")} for d in docs],
         }
         path = os.path.join(OUT, name + ".json")
