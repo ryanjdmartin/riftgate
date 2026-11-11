@@ -7680,6 +7680,573 @@ quarters of a boss for four. Hit points alone do not do it: at two thirds of the
 (the old 48) and the whole blow two trios still lose a quarter of their hull and a machine in
 one fight of four.
 
+## 11 November, the Rupture meter by the tier and the Convergence, and the first battle played whole
+
+Ryan, 11 November: "I was going to say that the 3 fractures, with the current rate of fill,
+felt short to me. I assume that needs to be tuned still, though. The answer could be that the
+amount to reach a fracture probably scales by Convergence, with a step down at each tier when
+we add another fracture step. Makes sense, or no? Either way, I think battle one should only
+serve one elite. With 3 fractures, that was sending two elites, right?" The decisions these
+inform, both his: the Rupture meter's size and whether it moves by the tier and the
+Convergence (the bible's pacing row; on trial as a dial, `Battle.rupture_trial`), and the
+first battle's shape (the refit brief's section 10). Each a direction.
+
+### The meter as the game sets it
+
+Method: `Battle.setup` on every domain at each tier and a Convergence in each of the ramp's
+bands, 20 seeds, the thresholds as set; the menace of the tier's formations, patrols and elite
+compositions the ramp's gate holds, the mean of each kind; then every Fracture paid at once,
+to count the elites sent. A size in formations' worth is the threshold over the domain's mean
+formation, its range over the four domains. The big fights' worth is the elites sent and the
+formations it takes beside their kills, patrols aside.
+
+| The rift | The opening places | The Rupture, in formations' worth | The first Fracture | A Fracture, on average | An elite's kill | Elites sent | Big fights' worth to the Rupture |
+|---|---|---|---|---|---|---|---|
+| Tier one, Convergences 0 to 2 | one formation, two patrols | 2.4 to 2.5 | 0.53 to 0.57 | 0.78 to 0.83 | 0.72 to 0.91 | 1 | 2.4 to 2.7 |
+| Tier one, from Convergence 3 | two formations and two patrols, three and one from Convergence 8 | 3.1 to 3.4 | 0.69 to 0.76 | 1.04 to 1.14 | 0.69 to 0.91 | 1 | 3.3 to 3.6 |
+| Tier two, Convergences 4 to 7 | two formations, two patrols | 3.7 | 0.52 to 0.53 | 0.91 to 0.93 | 0.62 to 0.81 | 2 | 4.1 to 4.4 |
+| Tier two, from Convergence 8 | three formations, one patrol | 3.7 to 4.2 | 0.53 to 0.60 | 0.93 to 1.04 | 0.62 to 0.78 | 2 | 4.4 to 4.6 |
+| Tier three | three formations, one patrol | 4.0 to 5.0 | 0.41 to 0.49 | 0.81 to 1.00 | 0.52 to 0.65 | 3 | 5.1 to 6.4 |
+
+By domain, in menace:
+
+| Domain | The rift | The field's menace | The Fractures at | A formation | A patrol | An elite's pack |
+|---|---|---|---|---|---|---|
+| The Meadow | tier one, Convergence 0 | 138 | 21, 51, 92 | 37 | 12 | 29 |
+| The Meadow | tier one, Convergence 3 | 188 | 28, 70, 126 | 37 | 13 | 29 |
+| The Meadow | tier two, Convergence 4 | 240 | 23, 57, 103, 161 | 44 | 15 | 30 |
+| The Meadow | tier three, Convergence 8 | 277 | 19, 46, 84, 130, 186 | 46 | 16 | 30 |
+| The Waste | tier one, Convergence 0 | 143 | 21, 53, 96 | 39 | 17 | 35 |
+| The Waste | tier one, Convergence 3 | 194 | 29, 72, 130 | 39 | 18 | 35 |
+| The Waste | tier two, Convergence 4 | 239 | 23, 57, 103, 160 | 43 | 17 | 35 |
+| The Waste | tier three, Convergence 8 | 444 | 30, 74, 134, 208, 297 | 63 | 25 | 36 |
+| The Marsh | tier one, Convergence 0 | 120 | 18, 45, 80 | 34 | 7 | 31 |
+| The Marsh | tier one, Convergence 3 | 162 | 24, 60, 109 | 34 | 11 | 31 |
+| The Marsh | tier two, Convergence 4 | 251 | 24, 60, 108, 168 | 45 | 9 | 32 |
+| The Marsh | tier three, Convergence 8 | 402 | 27, 67, 121, 189, 269 | 55 | 10 | 32 |
+| The Peak | tier one, Convergence 0 | 192 | 29, 71, 129 | 54 | 9 | 39 |
+| The Peak | tier one, Convergence 3 | 250 | 37, 93, 168 | 54 | 14 | 39 |
+| The Peak | tier two, Convergence 4 | 320 | 31, 77, 138, 214 | 58 | 10 | 36 |
+| The Peak | tier three, Convergence 8 | 513 | 34, 86, 155, 241, 344 | 69 | 12 | 36 |
+
+Read.
+
+- One elite at tier one, the first Fracture's, in every domain and on every seed; two at tier
+  two and three at tier three, as the rules have it. An elite is one pack: the Wild Hunt's is
+  three Riders, the one tier-one elite that arrives as more than one foe of the rank.
+- The shape he names is the meter's own. The Rupture is two thirds of the field's menace (the
+  opening's packs and the rift's first waves, as many as the tier has Fractures), split over
+  the tier's Fractures. So it grows where the ramp grows the opening, at Convergences 3 and 8,
+  and a Fracture is cheaper at each tier that adds one: 1.04 to 1.14 of a formation where tier
+  one ends, 0.91 to 0.93 where tier two starts, 0.81 to 1.00 at tier three. It moves at the
+  ramp's steps only, never between them.
+- What is short is tier one before Convergence 3. The Rupture there is two and a half
+  formations' worth and an elite's kill is most of one, so the opening's formation, the first
+  wave's formation and the elite fill it in every domain: 2.4 to 2.7 big fights' worth, where
+  tier two takes 4.1 to 4.6 and tier three 5.1 to 6.4. The pacing row asks four to five at
+  every tier.
+- Two things in how it is built make it so. The elites the Fractures send fill the meter and
+  are not in its base: one is a third of tier one's Rupture. And the rift's first three waves
+  are a formation, a patrol and a formation, on the player's turns 2, 5 and 8 at a beat of
+  three, while every tear sends a patrol a peak: past the opening's formation and the first
+  wave's, what the tide supplies until the eighth turn is patrols.
+- The first battle's two formations are one composition. The opening places the domain's
+  first formation in content order and the first wave sends it again, on every seed (the
+  cycle starts at its head whatever the opening placed): two goblin hordes in the Meadow, two
+  needler thickets in the Waste, two grave throngs in the Marsh, two ember pyres on the Peak,
+  the second composition coming with the third wave. On the Peak that first formation is led
+  by a breach, and a trio reaches the Rupture there in 5% to 30% of its battles (below); the
+  two are not told apart by any read here.
+
+### The first battle whole, and the meter's size
+
+Method: a scratch probe on the battle's own setup and the runner's player (`BattleBot`, the
+greedy rung, the defence rule: it never gathers, never reads a fight's odds and fights every
+fight out, a floor and no player). Tier one at Convergence 0, each domain, its three bosses in
+turn by the seed, 20 seeds a cell. Three starting trios (the Honey Badger, the Baboon and the
+Skua; the Honey Badger, the Stingray and the Cassowary; the Stingray, the Storm Petrel and the
+Cottonmouth), a cell their range, and one four (the first trio and the Cassowary). The meter's
+size is every threshold by a factor as the battle is set up, which is what
+`Battle.rupture_trial` does. Read as the Rupture comes, over the battles that reached it: the
+player's turn, the first counted one, the fights fought so far, the squad's hull, the gate.
+
+The first battle as it is:
+
+| Domain | The squad | Won | The team wiped | The gate fell | The Rupture reached | Its turn | Fights to it | Of them formations; patrols; the elite's | Hull then | The gate then, of 200 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| The Meadow | three | 40% to 60% | 10% to 40% | 0% to 50% | 65% to 90% | 3.3 to 4.8 | 3.5 to 4.7 | 2.0 to 2.2; 0.4 to 1.2; 1.1 to 1.4 | 71% to 80% | 167 to 189 |
+| The Meadow | four | 65% | 0% | 35% | 100% | 4.6 | 5.0 | 2.5; 1.4; 1.1 | 65% | 178 |
+| The Marsh | three | 15% to 55% | 30% to 45% | 15% to 40% | 60% to 80% | 3.0 to 5.0 | 3.4 to 4.8 | 1.9 to 2.2; 0.4 to 1.2; 0.9 to 1.6 | 60% to 77% | 172 to 194 |
+| The Marsh | four | 55% | 5% | 40% | 90% | 4.1 | 4.4 | 2.4; 0.8; 1.1 | 64% | 180 |
+| The Waste | three | 0% to 15% | 45% to 95% | 5% to 55% | 60% to 90% | 4.4 to 6.5 | 4.7 to 5.7 | 2.0 to 2.6; 1.3 to 2.7; 0.8 to 1.1 | 48% to 54% | 126 to 171 |
+| The Waste | four | 10% | 35% | 55% | 100% | 5.8 | 6.0 | 2.5; 2.5; 1.0 | 58% | 163 |
+| The Peak | three | 0% to 5% | 55% to 95% | 5% to 40% | 5% to 30% | 4.0 to 8.5 | 4.0 to 7.0 | 2.0 to 2.5; 1.0 to 4.0; 0.5 to 1.0 | 15% to 81% | 120 to 180 |
+| The Peak | four | 10% | 40% | 50% | 40% | 7.1 | 6.5 | 3.4; 2.2; 0.9 | 25% | 145 |
+
+The meter's size:
+
+| Domain, the squad | The meter | The Rupture reached | By the guard | Its turn | Fights to it | Of them formations; patrols; the elite's | Hull then | The gate then, of 200 | Won |
+|---|---|---|---|---|---|---|---|---|---|
+| The Meadow, three | as it is | 65% to 90% | 0% | 3.3 to 4.8 | 3.5 to 4.7 | 2.0 to 2.2; 0.4 to 1.2; 1.1 to 1.4 | 71% to 80% | 167 to 189 | 40% to 60% |
+| The Meadow, three | half again | 50% to 85% | 30% to 41% | 7.5 to 7.6 | 7.3 to 7.4 | 2.2 to 2.7; 3.4 to 3.9; 1.1 to 1.3 | 51% to 81% | 129 to 137 | 15% to 20% |
+| The Meadow, three | doubled | 20% to 60% | 25% to 40% | 9.5 to 10.6 | 9.1 to 10.6 | 2.5 to 2.8; 5.3 to 6.5; 1.0 to 1.4 | 41% to 73% | 92 to 103 | 5% to 15% |
+| The Marsh, three | as it is | 60% to 80% | 0% | 3.0 to 5.0 | 3.4 to 4.8 | 1.9 to 2.2; 0.4 to 1.2; 0.9 to 1.6 | 60% to 77% | 172 to 194 | 15% to 55% |
+| The Marsh, three | half again | 45% to 80% | 0% to 6% | 5.4 to 7.0 | 5.6 to 6.4 | 2.1 to 2.4; 2.3 to 2.5; 1.0 to 1.7 | 52% to 75% | 135 to 159 | 5% to 25% |
+| The Marsh, three | doubled | 10% to 70% | 0% to 50% | 8.1 to 11.0 | 8.0 to 10.5 | 2.6 to 3.5; 4.3 to 5.6; 1.0 to 1.5 | 30% to 61% | 90 to 119 | 0% to 10% |
+| The Waste, three | as it is | 60% to 90% | 0% | 4.4 to 6.5 | 4.7 to 5.7 | 2.0 to 2.6; 1.3 to 2.7; 0.8 to 1.1 | 48% to 54% | 126 to 171 | 0% to 15% |
+| The Waste, three | half again | 15% to 45% | 0% to 22% | 8.0 to 8.6 | 7.0 to 7.6 | 2.2 to 2.3; 3.7 to 4.4; 1.0 | 38% to 60% | 92 to 125 | 0% |
+| The Waste, three | doubled | 10% to 35% | 0% to 50% | 8.5 to 12.5 | 8.0 to 10.5 | 2.0 to 2.6; 4.4 to 7.0; 1.0 to 1.5 | 21% to 62% | 60 to 121 | 0% |
+| The Peak, three | as it is | 5% to 30% | 0% | 4.0 to 8.5 | 4.0 to 7.0 | 2.0 to 2.5; 1.0 to 4.0; 0.5 to 1.0 | 15% to 81% | 120 to 180 | 0% to 5% |
+| The Peak, three | half again | 0% to 5% | 0% | 9.0 to 11.0 | 9.0 | 2.0; 6.0; 1.0 | 29% to 69% | 90 to 110 | 0% |
+| The Peak, three | doubled | 0% | | | | | | | 0% |
+| The Meadow, four | as it is | 100% | 0% | 4.6 | 5.0 | 2.5; 1.4; 1.1 | 65% | 178 | 65% |
+| The Meadow, four | half again | 85% | 71% | 7.2 | 7.8 | 2.5; 4.1; 1.2 | 69% | 153 | 35% |
+| The Meadow, four | doubled | 75% | 47% | 8.9 | 9.6 | 3.2; 5.3; 1.1 | 56% | 116 | 35% |
+
+The Meadow's first battle with the levers the refit brief's section 10 names, the boss in a
+first block of its own (three quarters of its hit points and of its blow) and one flank
+patrol at the start where the ramp places two:
+
+| The Meadow's first battle, three machines | The meter | Won | The team wiped | The gate fell | The Rupture's turn | By the guard | Hull then | The gate then, of 200 |
+|---|---|---|---|---|---|---|---|---|
+| As it is | as it is | 40% to 60% | 10% to 40% | 0% to 50% | 3.3 to 4.8 | 0% | 71% to 80% | 167 to 189 |
+| As it is | half again | 15% to 20% | 25% to 30% | 50% to 60% | 7.5 to 7.6 | 30% to 41% | 51% to 81% | 129 to 137 |
+| The boss at three quarters of its hit points and of its blow | as it is | 40% to 70% | 10% to 30% | 0% to 50% | 3.3 to 4.8 | 0% | 71% to 80% | 167 to 189 |
+| The boss at three quarters of its hit points and of its blow | a quarter more | 25% to 40% | 20% to 30% | 30% to 55% | 5.6 to 6.8 | 6% to 8% | 58% to 84% | 133 to 155 |
+| The boss at three quarters of its hit points and of its blow | half again | 15% to 25% | 15% to 30% | 50% to 60% | 7.5 to 7.6 | 30% to 41% | 51% to 81% | 129 to 137 |
+| That boss, and one flank patrol at the start | as it is | 55% to 80% | 15% to 20% | 0% to 30% | 3.1 to 5.2 | 0% | 62% to 90% | 160 to 195 |
+| That boss, and one flank patrol at the start | a quarter more | 25% to 55% | 20% to 25% | 25% to 50% | 5.1 to 6.9 | 8% to 14% | 59% to 90% | 128 to 173 |
+| That boss, and one flank patrol at the start | half again | 15% to 55% | 15% to 25% | 30% to 60% | 6.2 to 8.5 | 27% to 82% | 54% to 89% | 120 to 164 |
+| One flank patrol at the start, the boss whole: two of the trios | as it is | 40% to 75% | 25% to 30% | 0% to 30% | 3.1 to 5.2 | 0% | 62% to 90% | 160 to 195 |
+| One flank patrol at the start, the boss whole: two of the trios | half again | 15% to 50% | 20% to 25% | 30% to 60% | 6.2 to 8.5 | 27% to 82% | 54% to 89% | 120 to 164 |
+| As it is, the same two trios | as it is | 40% to 60% | 10% to 30% | 10% to 50% | 3.4 to 4.8 | 0% | 71% to 80% | 167 to 189 |
+| As it is, the same two trios | half again | 15% | 25% | 60% | 7.5 | 30% to 41% | 51% to 81% | 129 to 137 |
+
+Read.
+
+- As it is the seal breaks on the bot's fourth turn or so (3.0 to 5.0 in the Meadow and the
+  Marsh, 4.4 to 6.5 in the Waste), after two formations, the elite and a patrol. That is his
+  "short".
+- A longer meter is more turns and more patrols, not more formations. In the Meadow half
+  again the meter is the Rupture three or four turns later (7.5 to 7.6 against 3.3 to 4.8),
+  with 3.4 to 3.9 patrol fights where there were 0.4 to 1.2 and the same two formations;
+  doubled, the tenth turn and five or six patrols. It is the quantity game for non-elites he
+  asked for on 10 November, and it is fought on the flanks.
+- The gate pays for the turns. By the Rupture it has lost 11 to 33 of its 200 as it is, 63 to
+  71 at half again and 97 to 108 doubled, and the bot's wins in the Meadow go from 40% to 60%
+  of its first battles to 15% to 20% and 5% to 15%. This player leaves its flanks, so the
+  sizes are the direction and not a player's.
+- The stall guard caps the meter. A field cleared breaks the seal whatever the meter reads:
+  never as it is, 30% to 41% of the trios' Ruptures in the Meadow at half again, 71% of the
+  four's. From about half again, a squad ahead of the tide ends on the guard and the meter's
+  size no longer reaches it.
+- The first battle is no gift as it stands. The floor player wins 40% to 60% of them in the
+  Meadow, 15% to 55% in the Marsh, 0% to 15% in the Waste and 0% to 5% on the Peak, and a
+  fourth machine moves that less than it moves a single fight (65%, 55%, 10% and 10%), since
+  what this player loses to is the wall it does not cover and the machines it sends in alone.
+- The boss's first block alone does not make the Meadow's first battle easy for this player:
+  at three quarters of both the wins are 40% to 70% where they were 40% to 60%, since most of
+  its losses come before the boss. One flank patrol fewer at the start does more for the gate
+  (it falls in 0% to 30% of the battles where it fell in 0% to 50%), and the two together win
+  55% to 80%. A player who gathers is not this one: the single fights of the section above
+  are what a gathered trio pays.
+
+## 11 November, pacing from scratch: the tide by beat, a fight's length, the meter in beats
+
+Ryan, 11 November: "I don't think the 4 to 5 guideline holds anything anymore. This is a
+different game now. I think start this pacing and length discussion from scratch. We know the
+elite needs to be worth a good chunk of malice, so work that in. And the fact that flanker
+fights are faster, so we have more buffer for more fights. And that formation size goes up
+with convergence, so scaling fracture cost at the same rate doesn't actually change anything."
+The decision these inform, his: how long a battle runs before its boss and what the Rupture
+meter is sized in (the bible's pacing row, its count retired that day; the refit brief's
+section 11). Each a direction.
+
+### The tide by beat
+
+Method: `Battle.setup` and `Battlefield.peak` with nobody fighting, five seeds a cell (the
+schedule is the content's order, the same on every seed): what stands at the start and what
+each peak adds, by kind, with its menace. A beat is a peak of Rift Pressure, every three turns
+(two from Convergence 8), the first at the end of the first turn; a peak sends the rift's next
+composition and a patrol from every tear open before it, and opens a tear (two from
+Convergence 8). A lone patrol is rated one, a heavier one two (a pair of duelists, a hunting
+pack). Tier one at Convergence 0, each cell what arrives, its menace and the menace so far:
+
+| Beat | On the field for the player's turn | The Meadow | The Waste | The Marsh | The Peak |
+|---|---|---|---|---|---|
+| The opening | 1 | 1 formation, 2 lone (52, 52 so far) | 1 formation, 2 lone (56, 56 so far) | 1 formation, 2 lone (46, 46 so far) | 1 formation, 2 lone (76, 76 so far) |
+| Peak 1 | 2 | 1 formation (36, 88 so far) | 1 formation (36, 92 so far) | 1 formation (32, 78 so far) | 1 formation (58, 134 so far) |
+| Peak 2 | 5 | 2 lone (16, 104 so far) | 2 lone (20, 112 so far) | 2 lone (14, 92 so far) | 2 lone (18, 152 so far) |
+| Peak 3 | 8 | 1 formation, 1 lone, 1 heavier (66, 170 so far) | 1 formation, 1 lone, 1 heavier (75, 187 so far) | 1 formation, 2 lone (49, 141 so far) | 1 formation, 2 lone (67, 219 so far) |
+| Peak 4 | 11 | 1 lone, 3 heavier (56, 226 so far) | 1 lone, 3 heavier (82, 269 so far) | 1 formation, 3 lone (55, 196 so far) | 1 formation, 3 lone (85, 304 so far) |
+| Peak 5 | 14 | 1 formation, 2 lone, 2 heavier (80, 306 so far) | 1 formation, 2 lone, 2 heavier (104, 373 so far) | 1 formation, 4 lone (60, 256 so far) | 5 lone (45, 349 so far) |
+
+What a battle holds through each of its first three peaks, the elites its Fractures send
+counted in, every domain's range:
+
+| The rift | The beat, turns | Elites | Through the first peak | Through the second | Through the third |
+|---|---|---|---|---|---|
+| Tier one, Convergences 0 to 2 | 3 | 1 | 5 fights: 2 formations, 2 patrols, by turn 2 | 7 fights: 2 formations, 4 patrols, by turn 5 | 10 fights: 3 formations, 6 patrols, by turn 8 |
+| Tier one, from Convergence 3 | 3 | 1 | 6 fights: 3 formations, 2 patrols, by turn 2 | 8 fights: 3 formations, 4 patrols, by turn 5 | 11 fights: 4 formations, 6 patrols, by turn 8 |
+| Tier two, Convergences 4 to 7 | 3 | 2 | 7 fights: 3 formations, 2 patrols, by turn 2 | 9 fights: 3 formations, 4 patrols, by turn 5 | 12 fights: 4 formations, 6 patrols, by turn 8 |
+| Tier two, from Convergence 8 | 2 | 2 | 7 fights: 4 formations, 1 patrols, by turn 2 | 10 fights: 4 formations, 4 patrols, by turn 4 | 15 fights: 4 to 5 formations, 8 to 9 patrols, by turn 6 |
+| Tier three | 2 | 3 | 8 fights: 4 formations, 1 patrols, by turn 2 | 11 fights: 4 formations, 4 patrols, by turn 4 | 16 fights: 5 formations, 8 patrols, by turn 6 |
+
+### A fight's length
+
+From the reads on file, tier one, stock, the greedy rung (10 November, the duelists; 11
+November, the starting trios and the fours), in machine-turns, one machine acting once, the
+unit of the player's time in a fight:
+
+| The fight | Rounds | Machines in it | Machine-turns |
+|---|---|---|---|
+| A lone duelist | 2.0 to 9.1, mean 4.1 | 1 | 4 |
+| A formation | 5.1 to 8.6, mean 6.6, for three; 4.0 to 5.1 for four | 3 or 4 | 20 or 18 |
+| An elite's pack | 5.4 to 9.1, mean 6.9, for three; 4.5 to 5.2 for four | 3 or 4 | 21 or 20 |
+| A boss | 8.6 to 15.1, mean 12.1, for three; 7.0 to 8.0 for four | 3 or 4 | 36 or 31 |
+
+A heavier patrol has no read of its own with two machines in it. The first battle, three
+machines, everything killed: through the first peak 2 formations, 2 lone duels and the elite
+are 68 machine-turns and the boss 36 more; through the second peak 4 lone duels, 76; through
+the third 3 formations and 5 or 6 patrols, 100 to 104 with a heavier patrol counted as a lone
+one.
+
+What the meter pays for the time, tier one: a lone patrol 7 to 10 menace, 1.7 to 2.4 a
+machine-turn; a formation 32 to 58, 1.6 to 2.9; an elite's pack 22 to 49 by which elite the
+roll sends (the Rust Monster's scavenge to the Pilgrim's wake), 1.1 to 2.4.
+
+### The meter as it stands, in beats
+
+The thresholds of the section above (11 November, the meter as the game sets it) against the
+tide: the Rupture, what its elites' kills fill at their mean, what is left for the field, and
+what the opening alone holds. Every domain's range:
+
+| The rift | The Rupture | Its elites' kills | Left for the field | The opening holds | The first wave adds | The field's part, of the opening |
+|---|---|---|---|---|---|---|
+| Tier one, Convergence 0 | 80 to 129 | 29 to 39 | 49 to 90 | 46 to 76 | 32 to 58 | 106% to 121% |
+| Tier one, Convergence 3 | 109 to 168 | 29 to 39 | 78 to 129 | 88 to 134 | 32 to 58 | 88% to 96% |
+| Tier two, Convergence 4 | 160 to 214 | 60 to 72 | 90 to 142 | 107 to 136 | 39 to 58 | 77% to 104% |
+| Tier three, Convergence 8 | 186 to 344 | 90 to 108 | 96 to 236 | 128 to 224 | 35 to 82 | 75% to 105% |
+
+An elite's pack against its tier's mean formation: 0.57 to 1.34 of one at tier one, 0.51 to
+1.15 at tier two, 0.35 to 0.82 at tier three (its menace is its content's numbers, the same at
+every tier, while a formation's grows).
+
+Read.
+
+- The meter asks nothing of the tide. At every tier the field's part of the Rupture is about
+  what the opening places (75% to 105% of it from Convergence 3 on, the opening and a tenth to
+  a third of the first wave before that), and the elites it calls fill the rest. A squad that kills what
+  stood at the start and the elites has broken the seal, by its fourth turn or so, whatever
+  the tier. The dial's settings at tier one's start, with the elite's own menace: 1X is the
+  opening, 1.25X the first peak, 1.5X the second, 2X nearly the third.
+- A beat is the unit that means the same at every tier. Menace is not, since a formation's
+  grows with the tier and the opening's count with the Convergence (his point: a threshold
+  scaled at that rate changes nothing). A count of fights is not, since a lone duel is a fifth
+  of a formation's fight in the player's time.
+- At a fixed number of beats the battle grows by itself. Through the second peak it is 7
+  fights before the boss at tier one's start, 8 from Convergence 3, 9 at tier two, 10 from
+  Convergence 8 and 11 at tier three; through the third, 10 to 16. From Convergence 8 the
+  third peak alone adds five fights, the tears opening two a peak.
+- The second beat is cheap in time and the third is not. At tier one's start the second peak
+  is two lone duels, 8 machine-turns on about a hundred with the boss; the third is a
+  formation, two patrols and the first hunting packs, 24 to 28 more.
+- The meter already pays a duel about what it costs in time, a fifth to a quarter of a
+  formation for a fifth of its length. It underpays the elite and by a roll: a third to one
+  and a third of a formation for a fight as long as a formation's.
+
+### The Rupture sized in beats, played whole
+
+Method: the scratch probe of 11 November's first battle played whole, the thresholds set as
+the first shape has them (the refit brief's section 11) and the game's rule untouched: the
+field's part everything the opening places and the tide sends through its Kth peak (the
+rift's cycle and the tears' patrols as `Battlefield.peak` sends them), one lone patrol's
+worth left; an elite's fall filling a formation and a half of the tier's mean formation in
+place of its own menace; the Fractures at the steps as built. The runner's player (the
+floor: it never gathers and leaves its flanks), 20 seeds a cell, each domain's bosses in turn.
+"As it is" is the game's rule. Read as the Rupture comes, over the battles that reached it;
+the bar as the elite falls is the meter's share of the Rupture once its pack is dead.
+
+Tier one at Convergence 0, three trios (the Honey Badger, the Baboon and the Skua; the Honey
+Badger, the Stingray and the Cassowary; the Stingray, the Storm Petrel and the Cottonmouth), a
+cell their range:
+
+| Domain | The Rupture | In menace | Reached | By the guard | Its turn | Fights before it | Of them formations; patrols; the elite's | Hull then | The gate then, of 200 | The bar as the elite falls | Won |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| The Meadow | as it is | 92 | 65% to 90% | 0% | 3.3 to 4.8 | 3.5 to 4.7 | 2.0 to 2.2; 0.4 to 1.2; 1.1 to 1.4 | 71% to 80% | 167 to 189 | 68% to 73% | 40% to 60% |
+| The Meadow | two beats | 151 | 60% to 85% | 6% to 8% | 5.8 to 6.5 | 5.9 to 6.4 | 2.0 to 2.6; 2.5 to 2.9; 1.1 to 1.3 | 58% to 84% | 140 to 154 | 61% to 66% | 20% to 40% |
+| The Meadow | three beats | 217 | 20% to 50% | 20% to 29% | 10.2 to 11.0 | 10.0 to 10.8 | 2.7 to 2.9; 6.0 to 6.7; 1.1 to 1.2 | 46% to 57% | 73 to 98 | 59% to 64% | 0% to 5% |
+| The Marsh | as it is | 80 | 60% to 80% | 0% | 3.0 to 5.0 | 3.4 to 4.8 | 1.9 to 2.2; 0.4 to 1.2; 0.9 to 1.6 | 60% to 77% | 172 to 194 | 77% to 80% | 15% to 55% |
+| The Marsh | two beats | 136 | 45% to 80% | 0% | 4.5 to 5.7 | 4.6 to 5.6 | 2.0 to 2.2; 1.4 to 1.7; 1.0 to 1.7 | 59% to 76% | 160 to 169 | 65% to 68% | 15% to 45% |
+| The Marsh | three beats | 185 | 25% to 55% | 0% to 27% | 9.0 to 11.0 | 8.1 to 10.4 | 2.7 to 3.2; 4.3 to 5.6; 1.0 to 1.6 | 23% to 50% | 70 to 98 | 61% to 65% | 0% to 10% |
+| The Waste | as it is | 96 | 60% to 90% | 0% | 4.4 to 6.5 | 4.7 to 5.7 | 2.0 to 2.6; 1.3 to 2.7; 0.8 to 1.1 | 48% to 54% | 126 to 171 | 64% to 85% | 0% to 15% |
+| The Waste | two beats | 160 | 15% to 40% | 0% | 6.0 to 8.2 | 6.0 to 7.3 | 2.0 to 2.5; 3.0 to 3.5; 1.0 to 1.3 | 29% to 83% | 102 to 137 | 59% to 68% | 0% to 10% |
+| The Waste | three beats | 235 | 0% to 25% | 40% to 50% | 9.0 to 9.8 | 9.0 to 10.0 | 2.5 to 2.8; 5.5 to 6.2; 1.0 | 30% to 37% | 70 to 132 | 57% to 63% | 0% |
+| The Peak | as it is | 129 | 5% to 30% | 0% | 4.0 to 8.5 | 4.0 to 7.0 | 2.0 to 2.5; 1.0 to 4.0; 0.5 to 1.0 | 15% to 81% | 120 to 180 | 64% to 71% | 0% to 5% |
+| The Peak | two beats | 223 | 0% to 5% | 0% | 7.0 to 9.0 | 6.0 to 8.0 | 2.0; 3.0 to 5.0; 1.0 | 29% to 69% | 110 to 130 | 62% to 66% | 0% |
+| The Peak | three beats | 290 | 0% | | | | | | | 51% to 56% | 0% |
+
+Tier one at Convergence 3, a four (the Honey Badger, the Baboon, the Skua and the Cassowary):
+
+| Domain | The Rupture | In menace | Reached | By the guard | Its turn | Fights before it | Of them formations; patrols; the elite's | Hull then | The gate then, of 200 | The bar as the elite falls | Won |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| The Meadow | as it is | 126 | 95% | 0% | 4.4 | 5.9 | 2.9; 2.1; 0.9 | 60% | 182 | 97% | 20% |
+| The Meadow | two beats | 201 | 75% | 27% | 6.7 | 8.3 | 3.7; 3.5; 1.2 | 47% | 155 | 79% | 30% |
+| The Meadow | three beats | 275 | 55% | 64% | 8.6 | 10.4 | 3.7; 5.5; 1.1 | 47% | 127 | 58% | 25% |
+| The Marsh | as it is | 109 | 100% | 0% | 2.0 | 3.1 | 2.0; 0.7; 0.5 | 66% | 192 | 121% | 15% |
+| The Marsh | two beats | 178 | 85% | 0% | 5.5 | 6.9 | 3.2; 2.2; 1.5 | 28% | 163 | 93% | 20% |
+| The Marsh | three beats | 234 | 40% | 25% | 7.4 | 8.6 | 4.0; 3.2; 1.4 | 24% | 138 | 73% | 5% |
+| The Waste | as it is | 130 | 90% | 0% | 5.1 | 6.3 | 3.4; 2.2; 0.7 | 24% | 165 | 101% | 0% |
+| The Waste | two beats | 211 | 10% | 0% | 5.0 | 7.5 | 3.5; 2.5; 1.5 | 40% | 159 | 77% | 0% |
+| The Waste | three beats | 296 | 10% | 100% | 6.0 | 9.0 | 4.0; 4.0; 1.0 | 35% | 134 | 55% | 0% |
+| The Peak | as it is | 168 | 0% | | | | | | | 62% | 0% |
+| The Peak | two beats | 281 | 0% | | | | | | | 57% | 0% |
+| The Peak | three beats | 357 | 0% | | | | | | | 46% | 0% |
+
+Read.
+
+- Two beats is the Rupture two or three turns later for this player (the Meadow 5.8 to 6.5
+  where it was 3.3 to 4.8, the Marsh 4.5 to 5.7 from 3.0 to 5.0), about six fights where there
+  were four, the added ones patrols, and the gate at 140 to 169 where it stood at 167 to 194.
+- Three beats is its tenth or eleventh turn after ten fights, six of them patrols, the gate at
+  70 to 98: the third beat costs this player a third of the gate, and it wins none.
+- The elite's fall as a formation and a half leaves the bar at about three fifths for this
+  player, which meets the elite on its second or third turn, before the field's part is done;
+  a squad that takes the field first makes it the seal's last kill. As it is at Convergence 3
+  the elite's fall is the Rupture itself (the bar at 97% to 121% as it falls).
+- The stall guard takes a share again once the meter asks for the tide: 6% to 8% of the trios'
+  Ruptures in the Meadow at two beats, 20% to 29% at three, and 27% and 64% of the four's.
+- The wins are the floor's and measure the bot, not the shape: at Convergence 3 this player
+  loses with four machines as it is (won 0% to 20%, the Peak a wipe on every seed), the wall
+  it leaves and the machines it sends in alone.
+
+## 11 November, the Rupture in beats as built, and a second flank patrol
+
+Ryan's marks on the first shape, 11 November: "Try your lean first" (two beats), "Let's go 1.5
+and I'll see how it feels" (the elite's chunk), "To me a clear field is its own reward, it's
+breathing room to reposition or get loot" (so the stall guard goes and nothing takes its
+place), and of the flank's variety, "Another would probably be smart, yeah. Different enough
+that the same strategy doesn't strictly work on both would be ideal ... We can make flankers
+out of pusher units if it makes sense ... just not sending pushers that are designed to
+counter multiple mechs to the flanks (i.e., does area damage, buffs the whole field, that
+kind of thing)." The decisions these inform: the meter as built that day (the bible's pacing
+row), and a second flank patrol a domain, proposed and his to mark (the refit brief's section
+11). Each a direction.
+
+### The built rule against the what-if
+
+The probe of the section above with no what-if, so the game's own rule (two beats, the
+elite's fall a formation and a half, no stall guard), tier one at Convergence 0, the three
+trios, 20 seeds a cell:
+
+| Domain | The Rupture | In menace | Reached | By the guard | Its turn | Fights before it | Of them formations; patrols; the elite's | Hull then | The gate then, of 200 | The bar as the elite falls | Won |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| The Meadow | as built | 151 | 60% to 85% | 0% | 6.0 to 6.9 | 6.1 to 6.8 | 2.0 to 2.6; 2.8 to 3.0; 1.1 to 1.3 | 58% to 84% | 133 to 150 | 61% to 64% | 20% to 40% |
+| The Marsh | as built | 136 | 45% to 80% | 0% | 4.5 to 5.7 | 4.6 to 5.6 | 2.0 to 2.2; 1.4 to 1.7; 1.0 to 1.7 | 59% to 76% | 160 to 169 | 65% to 68% | 15% to 45% |
+
+Read. It is the what-if's two beats with the stall guard gone. The Marsh's rows are the
+what-if's to the digit, the guard having broken no seal there; in the Meadow the 6% to 8% of
+Ruptures the guard had given now wait on the meter, so the seal breaks on the sixth or
+seventh turn (6.0 to 6.9 where the what-if read 5.8 to 6.5) after six or seven fights, the
+gate at 133 to 150.
+
+The campaign runner's 40 runs on the built rule (`docs/campaign_run.md`), against the 40 on
+the meter as first built: battles won 6% against 5%, ended in a wipe 80% against 82%; the
+Rupture reached in 18% of battles against 25%, the seal breaking a turn and a half later
+where it broke (its sixth turn against its fourth or fifth); Fractures reached a battle 0.99
+against 1.33, an elite spawned in 53% of battles against 65%, phases a battle 5.9 against
+5.5. The plain player loses its battles before the meter matters, so the runs say the seal
+comes later for it and little else.
+
+### A lone machine against a picket of a domain's own units
+
+Method: a scratch probe over `Skirmish` and `Policy`, a hand-made patrol built by
+`Battlefield.pack_of` from a front and a back rank of units as content has them (nothing in
+content), one stock tier-one machine against it, each of the nine dealt, the greedy rung, 20
+seeds. Each cell: won, mean rounds, mean hull lost. The built duelist of each domain is its
+first row.
+
+| Domain | Patrol | Menace | Honey Badger | Baboon | Polar Bear | Prairie Dog | Stingray | Cassowary | Cottonmouth | Skua | Storm Petrel | Mean |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| The Meadow | the Whisker Cat (built) | 8 | 100% · 2.2 · 0% | 100% · 3.5 · 0% | 100% · 5.4 · 1% | 100% · 5.8 · 5% | 100% · 2.9 · 0% | 100% · 3.6 · 1% | 100% · 3.0 · 0% | 100% · 5.2 · 3% | 100% · 3.7 · 0% | 100% · 3.9 · 1% |
+| The Meadow | two Goblins | 10 | 100% · 2.4 · 0% | 100% · 2.8 · 0% | 100% · 4.1 · 0% | 100% · 4.1 · 0% | 100% · 2.8 · 0% | 100% · 3.0 · 0% | 100% · 2.0 · 0% | 100% · 3.5 · 0% | 100% · 2.2 · 0% | 100% · 3.0 · 0% |
+| The Meadow | three Goblins | 15 | 100% · 3.5 · 3% | 100% · 4.1 · 8% | 100% · 6.8 · 6% | 100% · 6.0 · 18% | 100% · 3.9 · 2% | 100% · 4.5 · 5% | 100% · 3.0 · 1% | 100% · 3.2 · 7% | 100% · 3.2 · 0% | 100% · 4.2 · 5% |
+| The Meadow | a Gel | 5 | 100% · 3.4 · 0% | 100% · 3.6 · 0% | 100% · 5.2 · 0% | 100% · 5.3 · 0% | 100% · 3.8 · 0% | 100% · 4.2 · 0% | 100% · 3.0 · 0% | 100% · 4.5 · 0% | 100% · 4.1 · 0% | 100% · 4.1 · 0% |
+| The Meadow | two Gels | 10 | 100% · 6.4 · 0% | 100% · 7.5 · 4% | 100% · 10.3 · 3% | 100% · 10.1 · 25% | 100% · 7.5 · 3% | 100% · 8.2 · 3% | 100% · 3.0 · 0% | 100% · 7.2 · 7% | 100% · 7.6 · 0% | 100% · 7.5 · 5% |
+| The Waste | the Roc (built) | 10 | 100% · 2.2 · 2% | 100% · 3.5 · 7% | 100% · 5.1 · 11% | 100% · 5.8 · 11% | 100% · 3.1 · 1% | 100% · 3.6 · 4% | 100% · 3.2 · 2% | 100% · 5.0 · 29% | 100% · 3.6 · 9% | 100% · 3.9 · 8% |
+| The Waste | two Needlers | 10 | 100% · 2.0 · 8% | 100% · 2.0 · 11% | 100% · 2.0 · 8% | 100% · 2.1 · 17% | 100% · 2.0 · 13% | 100% · 2.2 · 14% | 100% · 1.0 · 0% | 100% · 1.8 · 11% | 100% · 2.0 · 8% | 100% · 1.9 · 10% |
+| The Waste | three Needlers | 15 | 100% · 3.0 · 25% | 100% · 3.0 · 32% | 100% · 3.1 · 24% | 100% · 3.1 · 48% | 100% · 3.0 · 38% | 100% · 3.2 · 42% | 100% · 1.0 · 0% | 95% · 1.7 · 21% | 100% · 3.0 · 25% | 99% · 2.7 · 28% |
+| The Waste | two Cockatrices | 8 | 100% · 2.4 · 0% | 100% · 3.5 · 0% | 100% · 4.4 · 0% | 100% · 4.5 · 0% | 100% · 3.2 · 0% | 100% · 3.0 · 0% | 100% · 2.0 · 0% | 100% · 3.4 · 0% | 100% · 4.1 · 0% | 100% · 3.4 · 0% |
+| The Waste | a Needler before a Cockatrice | 9 | 100% · 2.2 · 0% | 100% · 2.8 · 0% | 100% · 3.1 · 0% | 100% · 3.2 · 0% | 100% · 2.5 · 0% | 100% · 2.7 · 2% | 100% · 1.2 · 0% | 100% · 3.0 · 0% | 100% · 3.0 · 0% | 100% · 2.6 · 0% |
+| The Waste | an Antlion | 8 | 100% · 1.4 · 0% | 100% · 2.2 · 0% | 100% · 3.0 · 0% | 100% · 3.3 · 0% | 100% · 1.9 · 0% | 100% · 2.1 · 0% | 100% · 2.0 · 0% | 100% · 3.0 · 0% | 100% · 3.0 · 0% | 100% · 2.4 · 0% |
+| The Marsh | the Dullahan (built) | 7 | 100% · 2.3 · 0% | 100% · 3.9 · 0% | 100% · 7.2 · 0% | 100% · 9.1 · 8% | 100% · 2.9 · 0% | 100% · 3.8 · 0% | 100% · 2.0 · 0% | 100% · 7.8 · 5% | 100% · 3.4 · 0% | 100% · 4.7 · 1% |
+| The Marsh | three Revenants | 12 | 100% · 3.4 · 1% | 100% · 3.9 · 4% | 100% · 7.3 · 10% | 100% · 5.5 · 23% | 100% · 4.1 · 5% | 100% · 4.5 · 9% | 100% · 3.0 · 0% | 95% · 3.5 · 17% | 100% · 3.0 · 0% | 99% · 4.2 · 8% |
+| The Marsh | a Revenant before a Ghost | 8 | 100% · 2.5 · 0% | 100% · 3.8 · 0% | 95% · 7.0 · 6% | 85% · 7.7 · 26% | 100% · 3.6 · 0% | 100% · 4.3 · 0% | 100% · 2.2 · 0% | 100% · 6.3 · 4% | 100% · 3.6 · 0% | 98% · 4.6 · 4% |
+| The Marsh | two Revenants before a Ghost | 12 | 100% · 4.4 · 1% | 100% · 5.5 · 11% | 85% · 11.2 · 39% | 55% · 8.2 · 70% | 100% · 5.2 · 6% | 95% · 5.8 · 17% | 100% · 2.2 · 0% | 80% · 9.2 · 58% | 100% · 4.7 · 0% | 91% · 6.3 · 22% |
+| The Marsh | a Zombie Knight | 9 | 100% · 3.0 · 25% | 95% · 5.2 · 50% | 0% · 10.2 · 100% | 0% · 15.7 · 100% | 95% · 4.3 · 43% | 80% · 8.2 · 55% | 60% · 14.2 · 85% | 0% · 4.7 · 100% | 20% · 6.3 · 93% | 50% · 8.0 · 72% |
+| The Peak | Cerberus (built) | 9 | 100% · 2.2 · 0% | 100% · 3.4 · 4% | 100% · 5.5 · 5% | 100% · 6.5 · 33% | 100% · 2.9 · 0% | 100% · 3.5 · 5% | 100% · 3.0 · 3% | 100% · 8.4 · 31% | 100% · 3.5 · 0% | 100% · 4.3 · 9% |
+| The Peak | a Salamander | 7 | 100% · 1.4 · 0% | 100% · 2.2 · 0% | 100% · 3.1 · 0% | 100% · 3.1 · 0% | 100% · 1.9 · 0% | 100% · 2.1 · 0% | 100% · 2.0 · 0% | 100% · 3.0 · 0% | 100% · 3.0 · 0% | 100% · 2.4 · 0% |
+| The Peak | two Salamanders | 14 | 100% · 2.5 · 4% | 100% · 5.2 · 26% | 0% · 15.8 · 100% | 35% · 7.9 · 94% | 100% · 4.5 · 18% | 100% · 4.2 · 19% | 100% · 2.0 · 10% | 75% · 6.2 · 76% | 90% · 6.7 · 25% | 78% · 6.1 · 41% |
+| The Peak | a Bomb | 10 | 100% · 1.1 · 0% | 100% · 1.6 · 0% | 100% · 2.0 · 0% | 100% · 2.1 · 0% | 100% · 1.6 · 0% | 100% · 1.6 · 0% | 100% · 1.0 · 0% | 100% · 2.0 · 0% | 100% · 2.1 · 0% | 100% · 1.7 · 0% |
+| The Peak | a Salamander before a Drake | 13 | 100% · 2.7 · 4% | 95% · 5.2 · 22% | 35% · 8.7 · 77% | 15% · 8.1 · 96% | 100% · 3.9 · 8% | 100% · 3.7 · 8% | 100% · 2.0 · 0% | 20% · 7.4 · 94% | 100% · 4.5 · 5% | 74% · 5.1 · 35% |
+
+Read.
+
+- Three Goblins, two Needlers and three Revenants each stand where a lone duelist stands:
+  every machine wins every fight against the goblins and the needlers and all but one in a
+  hundred and eighty against the revenants, in one to seven rounds, for a mean of 5%, 10% and
+  8% of its hull against the duelists' 1% to 9%. The Prairie Dog pays the most to each (17%
+  to 23%), as it does to the duelists.
+- They turn the machines round. The Skua takes the goblins in 3.2 rounds and the Whisker Cat
+  in 5.2, the Stingray the Cat in 2.9 and the goblins in 3.9; the Stingray pays the Roc 1% and
+  two needlers 13%, the Skua 29% and 11%; the Stingray takes the Dullahan in 2.9 rounds for
+  nothing and three revenants in 4.1 for 5%. A machine that sweeps is the picket's answer and
+  a machine with one big die the duelist's.
+- The needlers are a fight of two rounds that costs a tenth whoever comes, since no shield
+  stops a needle: a toll more than a duel, unless the machine kills both before they loose
+  (the Cottonmouth alone does).
+- The Peak has no picket in what it holds. One Salamander is dead in two rounds for nothing
+  and two are a wall for three machines of nine (the Polar Bear never wins, the Prairie Dog
+  one fight in three), its bite's scorch and its hide's heat ending slow machines; a Drake
+  behind one is the same wall, and a Bomb alone dies before it acts.
+- Tried as a picket and not picked, each staying in its formations as it is: the Gel (two
+  take seven to ten rounds for a twentieth of the hull), the Cockatrice and the Antlion alone
+  (nothing lost), a Ghost behind a Revenant (the Prairie Dog loses three fights in twenty to
+  the raise, and with two revenants half of them), the Zombie Knight (won one fight in two),
+  three Needlers (28% of the hull).
+- The Cottonmouth takes every patrol here but the Zombie Knight in one to three rounds for
+  next to nothing: it is the flanker this bot would always send, which is the machine's
+  question and none of the patrols'.
+
+## 11 November, menace a pack's threat rating: the thresholds in pips and the salvage rate
+
+Ryan, 11 November: "Maybe just 1-2-3-4 for now to keep math simple. But yes this direction
+makes way more sense. We can tune difficulty to the value, within an acceptable band. It
+gives us an absolute unbiased benchmark. I think the value can stay unchanged by tier, as
+only salvage needs to scale, right." Built the same day: menace is a pack's threat rating, a
+pip a hundred in the engine, read by the Rupture meter, salvage and Anathema (the bible's
+tally row; `ContentDB.worth_of`).
+
+The Rupture's Fractures in pips, as the game sets them (two beats, the tide's lightest patrol
+left, four for each elite the tier calls), a battle set up in each domain:
+
+| Tier | Convergence | The field's part | The Fractures, in pips |
+|---|---|---|---|
+| 1 | 0 | 10 | 2.9, 7.2, 13 |
+| 1 | 3 | 14 | 3.8, 9.4, 17 |
+| 2 | 4 | 13 | 2.9, 7.1, 12.9, 20 |
+| 2 | 8 | 17 | 3.4, 8.6, 15.4, 24 |
+| 3 | 8 | 16 or 17 | 2.8, 7.0, 12.6, 19.6, 28 at 17 |
+| 3 | 12 | 17 | 2.8, 7.0, 12.6, 19.6, 28 |
+
+Every domain reads the same but for tier three at Convergence 8, where the Marsh's and the
+Peak's tide is a pip lighter than the Meadow's and the Waste's (a patrol of one rating in
+the place of another's in the tears' order). By the sum of each foe's own numbers the same
+first battle's Rupture was 123 in the Marsh and 191 on the Peak before its boss.
+
+The salvage rate. The campaign runner on the same forty runs (`tools/campaign_run.gd -- --runs
+40`, the floor player, its report `docs/campaign_run.md`), before and after:
+
+| Measure | The sum, two salvage a point | The rating, eighteen a pip |
+|---|---|---|
+| Salvage banked a won battle | 369 (302 to 485) | 372 (344 to 397) |
+| Menace killed a battle | 62 points | 6.1 pips |
+| Battles reaching the Rupture | 18% of 180 | 18% of 179 |
+| The turn the seal broke, where it did | 5.0 (2 to 12) | 5.6 (4 to 11) |
+| Fractures reached a battle | 0.99 | 1.01 |
+| Battles won | 6% | 4% |
+
+Read. Eighteen a pip banks what a won battle banked, and the band is a third as wide, since
+a domain's kills are worth what another's are. The floor player reaches the Rupture as
+often; its wins, eleven and eight of some 180, are one direction's noise. Forty runs: a
+direction.
+
+## 11 November, more spawns than the Rupture needs: the tide's density and the wall strike
+
+Ryan, 11 November: "I think we should try to lean for noticeably more spawns then the minimum
+number required for our target completion speed. When I was playing I felt the need to chase
+every pack down, since that felt possible. I think that's wrong. More pusher and flanker
+packs, even if it means that each needs to do less to the wall, is better: It gives options
+depending on player comp strengths, it forces choices, it looks more thematically intense and
+interesting, it keeps offering something to do and analyze, and prevents field wipes."
+
+What was read: a first battle whole (tier one, Convergence 0, three machines) under two
+trial switches, the game's rule untouched. The tide's density (`Ramp.tide_trial`) multiplies
+the packs the opening places and each peak sends, in whole packs, and leaves the Rupture's
+size on the game's own tide, 13 pips. At tier one's start half again as many is one
+formation and three flank patrols at the opening where two patrols stood, the rift sending
+one composition then two at alternate peaks and the tears opening one then two; twice as many
+is two formations and four patrols, two compositions a peak and two tears. The strike
+(`Battlefield.strike_trial`) is what a pip of threat rating strikes the wall for, ten the
+game's. The player is the runner's (a floor: every machine fights the pack nearest the wall
+that it can reach, and it never declines a fight), 20 seeds a cell, each domain's bosses in
+turn by the seed, three starting trios in the Meadow. Twenty seeds: a direction.
+
+At the Rupture, the Meadow, a cell the range over the three trios, at ten a pip:
+
+| The tide | Packs standing as a turn opens | Rupture reached | Its turn | Spawned by then, pips | Killed | Share killed | Standing then, pips | Of them at the wall | Hull then | Gate then, of 200 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| The game's | 2.9 to 3.2 | 60 to 85% | 6.0 to 6.9 | 14 to 16 | 13 to 14 | 82 to 91% | 1 to 3 | 0.6 to 1.2 | 58 to 84% | 133 to 150 |
+| Half again | 4.0 to 4.4 | 70 to 80% | 5.7 to 6.2 | 18 to 19 | 13 to 14 | 70 to 74% | 5 to 6 | 0.9 to 2.6 | 57 to 72% | 128 to 148 |
+| Twice | 6.1 to 7.3 | 60 to 90% | 5.1 to 5.9 | 24 to 28 | 14 | 49 to 57% | 10 to 14 | 1.5 to 2.6 | 38 to 59% | 84 to 143 |
+
+No turn opened on an empty field with the seal standing, in any cell, the game's own
+included. A hunter forced under one fight a battle before the Rupture in every cell (0.0 to
+0.7).
+
+The battle's end. The defence rule never walks to the boss while a pack is nearer the wall,
+so a denser field leaves it nothing but losses (won 0 to 5% at half again, where it won 20 to
+40%). The read below gives it one habit more, a race: once the seal breaks the machine
+nearest the boss walks for it and is ordered onto it when it can stand in reach, which
+brings every machine into the fight, and the rest keep the defence rule. Won, and how the
+rest ended, by trio:
+
+| The trio | The tide | Won, at ten, seven, five and three a pip alike | At ten a pip: wiped, gate fell | At five | At three | Boss fought, its turn, at ten |
+|---|---|---|---|---|---|---|
+| Honey Badger, Baboon, Skua | the game's | 20% | 30%, 50% | 50%, 30% | 80%, 0% | 35%, 7.0 |
+| | half again | 25% | 30%, 45% | 45%, 30% | 55%, 20% | 40%, 6.4 |
+| | twice | 5% | 35%, 60% | 45%, 50% | 60%, 35% | 25%, 5.8 |
+| Honey Badger, Stingray, Cassowary | the game's | 55% | 35%, 10% | 35%, 10% | 35%, 10% | 60%, 7.5 |
+| | half again | 35% | 20%, 45% | 25%, 40% | 30%, 35% | 45%, 6.7 |
+| | twice | 45% | 25%, 30% | 25%, 30% | 35%, 20% | 55%, 6.3 |
+| Stingray, Storm Petrel, Cottonmouth | the game's | 65% | 30%, 5% | 35%, 0% | 35%, 0% | 80%, 7.3 |
+| | half again | 45% | 50%, 5% | 55%, 0% | 55%, 0% | 75%, 6.5 |
+| | twice | 15% | 15%, 70% | 50%, 35% | 60%, 25% | 25%, 6.2 |
+
+Beside it, the same race: four machines at Convergence 3 in the Meadow (Honey Badger,
+Baboon, Skua, Cassowary; the opening two formations and two patrols by the ramp's own count)
+won 40% at the game's tide, 25% at half again and 5% at twice, the gate falling in 20%, 45%
+and 95% at ten a pip and in 15%, 30% and 80% at five. The Marsh, the second trio: won 40%,
+20% and 30%. On the Peak and in the Waste the first trio wins none at the game's own tide
+and reaches the Rupture in 5% and 50% of battles; twice the tide ends it in two turns on the
+Peak, whose patrols all hunt, so the opening's four catch the squad at once. Those two are
+walls for a floor trio as they stand, which is their formations' and elites' own session.
+
+Read.
+
+- The chase is in the numbers. At the game's tide the floor player has killed 82 to 91% of
+  every pip that had come by the time the seal breaks, and one to three pips stand: the
+  meter asks for nine tenths of the field, so killing everything is both possible and asked.
+- Half again as many packs leaves a third standing for the same meter: 13 to 14 of 18 to 19
+  pips killed, five or six standing, one to three of them at the wall. The seal breaks half
+  a turn sooner, since a pack is always in reach, and the boss is fought most of a turn
+  sooner. The gate when the seal breaks is where it was at ten a pip.
+- What more packs cost this player is hull, not the gate. The hull at the Rupture falls a
+  little at half again (57 to 72% where it was 58 to 84%) and a lot at twice (38 to 59%),
+  and the two stronger trios win twenty points less at half again. Twice as many is past
+  what three machines carry: half the field stands, two trios of three win 5% and 15%, and
+  at Convergence 3 it stacks on the ramp's own growth and the gate falls nineteen times in
+  twenty.
+- The strike moved no win. In all nine cells the wins are the same at ten, seven, five and
+  three a pip; a lower strike turns a fallen gate into a wipe a turn or two later. That is
+  this player: it never declines a fight, so it never spends the wall to save hull, which is
+  the trade a lower strike is for. A player who leaves packs is the read that is missing,
+  and Ryan's play is where it comes from.
+- The floor player never clears the field at any density, the game's included, so his field
+  wipes are a better player's: the bot takes six or seven turns over what he does in fewer.
+- A multiplier is a trial's shape. On top of the ramp's own counts it compounds, so the form
+  for the game is the ramp's table and the Rupture's share of it, not a factor over both.
+
 ## 11 November, the Kite's turns: a probe
 
 Ryan, 11 November: "I want to revisit the Kite a bit. Something about it feels clunky to me." What

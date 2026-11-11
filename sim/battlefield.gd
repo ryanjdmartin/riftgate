@@ -121,6 +121,14 @@ func add_unit(u: Unit) -> Unit:
 ## placeholder (a patrol of three struck ten and a formation of eight twenty-six by the head
 ## count this replaces).
 const STRIKE_PER_PIP := 10
+## A trial strike a pip, 0 for the game's (Ryan, 11 November, of more spawns: "even if it means
+## that each needs to do less to the wall"): a debug build's SETTINGS → TRIALS → STRIKE and
+## RIFTGATE_STRIKE set it (Settings.field_trial), beside the tide's density (Ramp.tide_trial).
+static var strike_trial: int = 0
+
+
+static func strike_per_pip() -> int:
+	return strike_trial if strike_trial > 0 else STRIKE_PER_PIP
 
 
 ## The heads a pack holds: its foes, and a boss unit's commanders with its escort.
@@ -141,7 +149,7 @@ static func strike_of(sq: Unit) -> int:
 	var full := maxi(now, sq.full_strength)
 	if full <= 0:
 		return 1
-	return maxi(1, (clampi(sq.squad, 1, 4) * STRIKE_PER_PIP * now) / full)
+	return maxi(1, (clampi(sq.squad, 1, 4) * strike_per_pip() * now) / full)
 
 
 ## Give a pack its foe types' map profile: its move and its wings. `foe` names the entry when
@@ -791,7 +799,10 @@ func tick_pressure(ticks: int) -> bool:
 ## peak; and the interval shortens by the ramp's step. One clock, more mouths as the ramp rises.
 func peak() -> void:
 	peaks += 1
-	if not cycle.is_empty():
+	var times := Ramp.dense_at(peaks)   # one, but under the tide's trial (Ramp.tide_trial)
+	for i in range(times):
+		if cycle.is_empty():
+			break
 		var c: Dictionary = cycle[_cycle_index % cycle.size()]
 		_cycle_index += 1
 		var sq := emerge(c, map.rift)
@@ -808,7 +819,7 @@ func peak() -> void:
 			tear_spawns += 1
 			log.append("A tear sends %s at %s" % [sq.display_name, str(sq.pos)])
 	seam_row = mini(seam_row + Ramp.seam_creep_at(ramp), apron_row())
-	for i in range(Ramp.tears_at(ramp)):
+	for i in range(Ramp.tears_at(ramp) * times):
 		var at := tear_hex()
 		if at == NO_HEX:
 			break

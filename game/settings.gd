@@ -39,6 +39,9 @@ const DISPLAY_DEFAULTS := {
 	"field_depth": "12",   # FIELD_DEPTHS: a debug build's trial of the field's depth in rows (Ramp.depth_trial), read as a battle starts
 	"field_opening": "0",   # FIELD_OPENINGS: a debug build's trial of how many moves farther from the wall the opening's packs stand (Battle.opening_trial), read as a battle starts
 	"fodder_worth": "100",   # FODDER_WORTHS: a debug build's trial of what a rank-and-file kill fills of the Rupture meter, in hundredths (Battle.fodder_trial), read as a battle starts
+	"rupture_beats": "2",   # RUPTURE_BEATS: a debug build's trial of the Rupture meter's size in beats of the tide (Ramp.beats_trial), read as a battle starts
+	"tide_density": "100",   # TIDES: a debug build's trial of how many packs the opening places and the tide sends, in hundredths of the game's (Ramp.tide_trial), read as a battle starts
+	"wall_strike": "10",   # STRIKES: a debug build's trial of what a pip of threat rating strikes the wall for (Battlefield.strike_trial), read as a battle starts
 }
 const DISPLAY_RANGES := {
 	"brightness": Vector2(0.5, 1.5), "pace": Vector2(0.5, 2.0), "enemy_pace": Vector2(0.5, 3.75),
@@ -82,21 +85,46 @@ const FIELD_OPENING_LABELS := {"0": "+0", "1": "+1", "2": "+2"}
 ## The fodder's trial beside them (the same play: "If fracture rewards were a little lower for
 ## fodder, then it becomes a bit more of a quantity game for non-elites and I'll feel more like
 ## sending my flankers out"): what a kill fills of the Rupture meter when its pack came as no
-## elite, in hundredths, the whole the game's. At tier one the middle formation alone earns the
-## first Fracture and about four fights the Rupture (docs/measurements.md, 10 November).
+## elite, in hundredths, the whole the game's; an elite's fall fills its chunk whatever the dial.
+## As the meter was first built the middle formation alone earned the first Fracture and three
+## fights the Rupture; sized in beats since, the flank's patrols are part of it
+## (docs/measurements.md, 10 and 11 November).
 const FODDER_WORTHS := ["100", "75", "50"]
 const FODDER_WORTH_LABELS := {"100": "FULL", "75": "3/4", "50": "HALF"}
+## The meter's size beside it, in beats of the tide (Ryan, 11 November: "the 3 fractures, with
+## the current rate of fill, felt short to me", then "Try your lean first" of two beats): how many
+## peaks of Rift Pressure the Rupture's field part runs through, two the game's (Ramp.BEATS). One
+## beat is the opening and the first wave; three brings the second composition and the first
+## hunting packs, the runner's player's tenth turn (docs/measurements.md, 11 November). The two
+## dials lengthen a battle from two sides: this one leaves a kill's worth alone.
+const RUPTURE_BEATS := ["1", "2", "3"]
+const RUPTURE_BEATS_LABELS := {"1": "1 BEAT", "2": "2 BEATS", "3": "3 BEATS"}
+## The tide's density and the wall strike beside them (Ryan, 11 November: "I think we should try
+## to lean for noticeably more spawns then the minimum number required for our target completion
+## speed. When I was playing I felt the need to chase every pack down, since that felt possible.
+## I think that's wrong. More pusher and flanker packs, even if it means that each needs to do
+## less to the wall, is better"): how many packs the opening places and each wave sends against
+## the game's own, half again or twice (whole packs: Ramp.dense, Ramp.dense_at), with the
+## Rupture's size left on the game's own tide, so the extras are a choice and never more to
+## kill; and what a pip of threat rating strikes the wall for, ten the game's. The bot's reads
+## are docs/measurements.md, 11 November.
+const TIDES := ["100", "150", "200"]
+const TIDE_LABELS := {"100": "×1", "150": "×1.5", "200": "×2"}
+const STRIKES := ["10", "7", "5", "3"]
 
 
 ## Set the field's trial for the battles that start after this: RIFTGATE_FIELD_DEPTH,
-## RIFTGATE_OPENING and RIFTGATE_FODDER on any run, else a debug build's three settings when
-## `saved` (the game's own entry points pass it; a scene run alone and the tests read the
-## environment only, so no machine's saved settings move a test's field). Nothing set is the
-## game's own field and meter.
+## RIFTGATE_OPENING, RIFTGATE_FODDER, RIFTGATE_BEATS, RIFTGATE_TIDE and RIFTGATE_STRIKE on any
+## run, else a debug build's six settings when `saved` (the game's own entry points pass it; a
+## scene run alone and the tests read the environment only, so no machine's saved settings move
+## a test's field). Nothing set is the game's own field, meter and tide.
 static func field_trial(saved: bool = false) -> void:
 	var depth := OS.get_environment("RIFTGATE_FIELD_DEPTH")
 	var opening := OS.get_environment("RIFTGATE_OPENING")
 	var fodder := OS.get_environment("RIFTGATE_FODDER")
+	var beats := OS.get_environment("RIFTGATE_BEATS")
+	var tide := OS.get_environment("RIFTGATE_TIDE")
+	var strike := OS.get_environment("RIFTGATE_STRIKE")
 	if saved and OS.is_debug_build():
 		if depth.is_empty() and FIELD_DEPTHS.has(str(display.get("field_depth", ""))):
 			depth = str(display["field_depth"])
@@ -104,9 +132,19 @@ static func field_trial(saved: bool = false) -> void:
 			opening = str(display["field_opening"])
 		if fodder.is_empty() and FODDER_WORTHS.has(str(display.get("fodder_worth", ""))):
 			fodder = str(display["fodder_worth"])
+		if beats.is_empty() and RUPTURE_BEATS.has(str(display.get("rupture_beats", ""))):
+			beats = str(display["rupture_beats"])
+		if tide.is_empty() and TIDES.has(str(display.get("tide_density", ""))):
+			tide = str(display["tide_density"])
+		if strike.is_empty() and STRIKES.has(str(display.get("wall_strike", ""))):
+			strike = str(display["wall_strike"])
 	Ramp.depth_trial = clampi(int(depth), 10, 24) if depth.is_valid_int() else 0
 	Battle.opening_trial = clampi(int(opening), 0, 3) if opening.is_valid_int() else 0
 	Battle.fodder_trial = clampi(int(fodder), 10, 100) if fodder.is_valid_int() else 100
+	Ramp.beats_trial = clampi(int(beats), 1, 6) if beats.is_valid_int() else 0
+	Ramp.tide_trial = clampi(int(tide), 100, 400) if tide.is_valid_int() else 100
+	var pip := clampi(int(strike), 1, 20) if strike.is_valid_int() else 0
+	Battlefield.strike_trial = 0 if pip == Battlefield.STRIKE_PER_PIP else pip
 
 
 ## Load once and push the choices into the palette. Safe to call repeatedly.

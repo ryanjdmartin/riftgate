@@ -83,10 +83,10 @@
    "id": "rupture_meter",
    "category": "resource",
    "name": "Rupture meter",
-   "codex": "Fills by the menace of the foes you kill, in any fight however it ends, toward the tier's Fractures (three, four or five). The Fractures are set from the field's menace at the start and the first compositions the rift will send, the last at two thirds of it and each later one costing more. The last Fracture is the Rupture: the boss's seal breaks. It also breaks once nothing but the boss's pack stands as a fight ends.",
+   "codex": "Fills by the menace of the packs you kill, in any fight however it ends, toward the tier's Fractures (three, four or five), each later one costing more. The last, the Rupture, takes the packs the field opens with and the rift's first two peaks send, one lone patrol left over, and 4 more for each elite the tier's Fractures bring. The Rupture breaks the boss's seal, and nothing else does: a cleared field is breathing room until the next peak.",
    "status": "implemented",
    "design": {
-    "holes": "Shown as a bar under the gate's with a notch a Fracture, a first cut; the share and the steps are placeholders."
+    "holes": "Shown as a bar under the gate's with a notch a Fracture, a first cut; the beats, the patrol left and the steps are placeholders."
    }
   },
   {
@@ -2077,10 +2077,10 @@
    "id": "menace",
    "category": "foe",
    "name": "Menace",
-   "codex": "A foe's weight: its heaviest blow plus a quarter of its HP, rounded up. The Rupture meter, Anathema and salvage count every kill by it, so the rift's reinforcements pay a trickle and the field's formations and the elites pay the most.",
+   "codex": "A pack's worth, its threat rating: a lone patrol 1, a heavier patrol 2, a formation 3, an elite or a boss 4, in every domain and at every tier. The Rupture meter, Anathema and salvage count by it. A pack's fall pays it whole. A pack a fight wore down and left standing has paid for the heads it lost, and its fall pays the rest.",
    "status": "implemented",
    "design": {
-    "holes": "The formula is Claude's placeholder, one weight for the three tallies; the bosses' menace counts as any foe's."
+    "holes": "One weight for the three tallies, flat by tier; salvage's growth by tier and what a boss pays are the economy pass's to set, the boss's four a placeholder."
    }
   },
   {
@@ -2097,7 +2097,7 @@
    "id": "seal",
    "category": "foe",
    "name": "Seal",
-   "codex": "The boss's seal holds until the Rupture: while it does the boss cannot be attacked and joins no fight, its ring inert, SEALED on its readout. The Rupture breaks it, by the last Fracture or by a cleared field.",
+   "codex": "The boss's seal holds until the Rupture: while it does the boss cannot be attacked and joins no fight, its ring inert, SEALED on its readout. The Rupture breaks it, the last Fracture, and nothing else.",
    "status": "implemented",
    "design": {
     "holes": "The seal's look on the ring is a first cut for the phone."
