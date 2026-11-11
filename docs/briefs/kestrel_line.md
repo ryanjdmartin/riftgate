@@ -52,42 +52,43 @@ strikes the wall by the heads it still holds. So what a flank sends comes in thr
 small heads (a hunting pack, a pair, the tide's patrols), one head that matters (a duelist, the
 worker behind a formation's front, an elite's own), and a fight too long for a light.
 
-**The map (Claude's, for him to move)**: each by the fight it is built to take.
+**The map**, as his refinement of 11 November left it (his words lead each; the rest Claude's
+reading, for him to move):
 
-| Machine | Its fight | It wins by | With the squad | What it cannot do | What its kit wants |
+| Machine | His word | Its fight | It wins by | What it cannot do | What its kit wants |
 |---|---|---|---|---|---|
-| The Skua | the wide one | count: every hit twice, a shot a column | the team's riders and stacks, twice | plate, and one big foe | riders a hit, flat buffs, multi-strike guns |
-| The Kite | the first shot, and the small fight whole | magnitude on what nothing has touched, a kill chaining it on | it shoots first: what it kills never acts | anything already hurt; a long fight | one big single hit; reach; a setter before it |
-| The Needletail | the long one, alone | the squad's fire on what it paints | reach and armour for every Direct gun | a wide pack; weight of its own | every source of Exposed |
-| The Buzzard (move 5, medium) | either, squad or flank (his word) | the burst that builds and commits: its shield spent into its blow | the big blow on the big foe | | hot guns |
+| The Kite | "Burst glass cannon" | the short one, and the first rounds of any | opening at double on what nothing has touched, finishing with its lock, a kill paying it | anything big after its first shot; a long fight | one big single hit; reach |
+| The Skua | "Ramping Dakka" | the long one | Ricochet: a strike more for every stack, a stack a round | plate; a pack that out-hits its shield | riders a hit, flat buffs, Exposed |
+| The Needletail | "free to be whatever we want" | beside another machine | two things a round, a weapon and an equipment, the mark every round | weight of its own | every maker's equipment |
+| The Buzzard (move 5, medium) | "risky dps/burst engine" | either, squad or flank | the burst that builds and commits: its shield spent into its blow | | hot guns |
+| A medium, unspecced | "at least one chassis that orbits" Exposed | its session's | cashing the mark the others set | | |
 
-Why one over another is what the squad lacks. No area and riders to double: the Skua, which holds
-a flank against numbers. A plan to split, with a flank that must stand a real fight: the
-Needletail, which brings the squad's weight without the squad. Fights that are won but bled for,
-a back rank that works, flank duels to end before they start: the Kite, which takes one
-untouched head off the field a round from the first shot. They pair: a painted foe's armour
-counts for nothing, the one thing the Skua's halved hits fear, and the paint puts an untouched
-back rank in reach of the Kite's Direct guns; the Kite shoots before the Skua, never after. In
-time they spread too: the Kite opens a fight, the Skua works its width, and the Buzzard builds
-and commits.
+In time they spread: the Kite is strongest in a fight's first round, the Skua in its last, the
+Buzzard when it chooses, and the Needletail every round alike. They pair on Exposed, the maker's
+keyword: a painted foe's armour counts for nothing, which is the one thing a strike of 1 fears,
+and the paint puts an untouched back rank in reach of the Kite's Direct opener.
 
 Where each stands:
 
 - **The Kite**: redesigned from the ground up on his word, in its brief (`kestrel_kite.md`). The
-  first round, a Kite that left a fight at its heat maximum, he declined the same day ("it adds
-  clunk to the battle. We ditched withdrawal and the game feels better for it"). The second, a
-  proposal: the opener, every weapon doubled on an unhurt foe and nothing else, the Driver as
-  built; the smaller step beside it, a kill that costs no heat. His pick open there.
-- **The Needletail**: a proposal in its brief (`kestrel_needletail.md`): what it paints, the
-  squad's machines outside the fight shell; the smaller step beside it, a weapon and an equipment
-  every round. His pick open there.
-- **The Skua**: his own session's (11 November: "Clydesdale and skua I'm handling in other
-  sessions"), its direction kept. What this map asks of its tweaks, no more: that it stays in its
-  fight (the flank's holder against numbers), that each hit still pays the foe's armour (its
-  counter, and the Needletail's reason beside it), and that riders count on each hit. His levers
-  of 7 November are in the bible's Kestrel row.
-- **The last two slots** (the Snowy Owl, the Magpie): medium, by his word above; open, and not
-  this round's.
+  first round, a Kite that left a fight at its heat maximum, he declined ("it adds clunk to the
+  battle. We ditched withdrawal and the game feels better for it"). The second gave it the
+  opener, every weapon doubled on an unhurt foe. His refinement is the third: four entries, no
+  reset, the Pinion Driver the finisher again, and a kill paying its shield whole or Phased on a
+  frame of paper. Claude's holes and leans are there (the reward on the Driver's kill alone;
+  Phased if the shadow panther gives it up); his calls open.
+- **The Skua**: his rewrite of 11 November, in a brief of its own (`kestrel_skua.md`): Ricochet,
+  the Hypersonic Swoop its lock, the Flechette Pod an ordinary weapon. What follows from the
+  rules and the holes his words leave (a strike of 1 or a plain point; for each enemy or each
+  strike; the half it loses) are there; his answers open.
+- **The Needletail**: in its brief (`kestrel_needletail.md`). The first round, the squad's
+  machines outside the fight shelling what it paints, he set aside ("spotting, yes, but
+  artillery, not necessarily"), and asked where two ideas go: a chassis that orbits Exposed, and
+  one that uses two things a round ("very Kestrel and deserves a chassis"). Claude's answer: two
+  things a round is the Needletail's, which keeps the Designator and so marks every round; the
+  orbit's missing half is a payoff, and that is a medium's. His call open.
+- **The last two slots** (the Snowy Owl, the Magpie): medium, by his word above, and one of them
+  the Exposed payoff if he takes the placement; their sessions' to design.
 
 ## The line as it stands
 

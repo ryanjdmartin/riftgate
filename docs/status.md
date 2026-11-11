@@ -272,20 +272,26 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
 - The Kestrel fast flyers, 11 November (`ccr-e3ddf00b-ilkwbi`; Ryan: "I want to revisit the Kite a
   bit. Something about it feels clunky to me", then the Kite "from the ground up, ignoring target
   tier and previous assumptions" and the three move-six flyers' identities under the long wall,
-  "what does what and why you'd want one over the other"). A probe of the Kite's turns is in
+  "what does what and why you'd want one over the other"). Nothing built; every round is in its
+  brief and the map at the head of `kestrel_line.md`. A probe of the Kite's turns is in
   `docs/measurements.md` (its die opens dark a round in five, its own heat costs it as much hull
-  as the foes do, its reset fires under once a fight). Claude's rounds, nothing built: the map at
-  the head of `kestrel_line.md` (the Skua the wide fight, the Kite the
-  first shot and the small fight whole, the Needletail the long one alone, beside the Buzzard's
-  burst that builds and commits); the Kite's brief (`kestrel_kite.md`), whose first round, a
-  Kite leaving a fight at its heat maximum, he declined the same day ("it adds clunk to the
-  battle. We ditched withdrawal and the game feels better for it. Forced withdrawal probably
-  feels bad": the bible's withdrawal row, its file v0.530 on this branch, unpublished), and whose
-  second is the opener, every weapon doubled on an unhurt foe with every brake gone, the smaller
-  step beside it a kill that costs no heat; the Needletail's in `kestrel_needletail.md` (the
-  squad's machines outside the fight shell what it paints, or the smaller step, a weapon and an
-  equipment every round). Open with him: which Kite and which Needletail. The Skua is his own
-  session's.
+  as the foes do, its reset fires under once a fight). Where it stands:
+  - The Kite (`kestrel_kite.md`): a Kite leaving a fight at its heat maximum declined ("it adds
+    clunk to the battle. We ditched withdrawal and the game feels better for it. Forced withdrawal
+    probably feels bad": the bible's withdrawal row, its file v0.530 on this branch, unpublished);
+    the opener its passive, every weapon doubled on an unhurt foe; his refinement, "Burst glass
+    cannon": four entries, no reset, the Pinion Driver the finisher again, a kill paying its
+    shield whole or Phased on a frame of paper. Open with him: whether the kill pays on the
+    Driver alone (Claude's lean) or on every weapon, Phased or the shield, the Coriolis
+    Accelerator's fate.
+  - The Skua (`kestrel_skua.md`): his rewrite, "Ramping Dakka": Ricochet (a stack for damaging an
+    enemy, once a round; a strike of 1 more a stack; half lost on hull damage), the Hypersonic
+    Swoop its lock, the Flechette Pod an ordinary weapon. Open with him: the four holes his words
+    leave. He had kept the Skua for a session of his own; the rewrite came in this one.
+  - The Needletail (`kestrel_needletail.md`): the shelling set aside by him ("spotting, yes, but
+    artillery, not necessarily"); Claude's answer to where his two ideas go: two things a round
+    here, the Exposed payoff ("at least one chassis that orbits it") on an unspecced medium. Open
+    with him.
 
 ## How things stand
 

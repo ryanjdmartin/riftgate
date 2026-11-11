@@ -17,6 +17,14 @@ adds clunk to the battle. We ditched withdrawal and the game feels better for it
 probably feels bad." Declined: the fight stays closed (the bible's withdrawal row carries it), and
 the second round below is built inside it.
 
+**His refinement of the second round (11 November)**: "Kite: Burst glass cannon. I would  consider
+removing the reset and giving it 4 faces again. A softer reset could be "kills recharge it's
+shield completely" or something. Or if we wanted to lean completely into the guerilla aspect,
+kills just straight up grant it Phased, and we make it out of paper - small hull, small shield, big
+Regen. Not sure what the pinion driver becomes, but maybe it gains it's execution mechanism back so
+the kite has a finisher to pair with its opener of choice." The third round, below, is his shape
+with Claude's reading of it and the holes raised.
+
 Kestrel's tier-two light flyer, built and dealt (the bible's Kite row, his go of 21 October: "a
 flying accident that kills to stay alive"; its first brief, `git show
 95d4ed3:docs/briefs/kestrel_kite.md`). Today: a d3 of the locked Pinion Driver and two hardpoints,
@@ -56,10 +64,11 @@ one thing, a double on every shot at every foe for a whole fight. Four effects o
 is the row's one-off, and a one-off for balance is a symptom (his rule of 18 October). Price the
 double by what it is aimed at and the brakes have nothing left to do.
 
-## The second round: the opener (Claude's lean, for him to move)
+## The second round: the opener (Claude's; the third round keeps its passive)
 
 First strike: the Kite kills what nothing has touched yet. Every number is a placeholder and
-today's stand until its session.
+today's stand until its session. The round as it was proposed; his refinement, below, changes
+its lock, its die and what a kill pays.
 
 - **The passive** (the name his): every weapon it fires hits an unhurt foe at double its printed
   number. Unhurt is at its full HP as the die is spent; the buffs once after, as the blow's order
@@ -94,25 +103,73 @@ fight. The Buzzard is the reverse, a machine that builds and then commits.
 **What it wants in its kit.** One big single hit above all (the Railgun's 10 is 20 on anything
 untouched, and its heat is then the round's whole budget, so the hold becomes its decision); reach
 for the untouched back rank; a setter before it (an unhurt Shocked foe takes four times, the
-interaction today's double already has). The Coriolis Accelerator in a hardpoint gives it both
-ends, the opening and the finish.
+interaction today's double already has). The finish is its lock's since his refinement.
 
 **Where it falls out.** One rule, whole on basics (a doubled basic kills the rank and file a plain
 one only wounds), so tier one by the sort, which would refill Kestrel's tier-one deal once the
-Puffin moves to two. Its tier is his.
+Puffin moves to two. The third round's lock and reward sort it back to two. Its tier is his.
 
 **The build.** Small: a condition on the target (unhurt) beside the ones the engine reads already
 (a debuff on it, its rank, no intent on this machine), the passive's other effects dropped, the bot
 taught to spend it first. A what-if on a scratch tree can give a direction before any go.
 
-## The smaller step: a kill costs no heat
+## The third round: the burst glass cannon (his refinement, 11 November)
 
-If the opener is too far from the machine he has: keep the double on every shot and the flat 2,
-and a spend that kills pays no heat at all; the Driver as built. It stays the over-tuned, hot
-machine: every shot is a bet that it kills, free through whatever dies to one shot and dear
-against whatever survives, the overheat on a paper hull its accident. It pairs the other way
-round: the squad wounds, the Kite takes the kill for nothing and chains. One brake where there are
-three, and the blanket double still wants that one.
+His shape, as Claude reads it: the opener stands as its passive (his "opener of choice" the gun
+the player fits), and round it:
+
+- **Four entries**: the lock and three hardpoints. The d3 was there to make dark entries felt,
+  and none is left.
+- **No reset.** The act-again goes; a kill pays it something softer.
+- **The Pinion Driver the finisher again**: its old mechanism, a flat number that grows with the
+  hull its target is missing, so the Kite opens with a fitted gun and finishes with its lock.
+- **What a kill pays**, one of his two: its shield recharged whole; or Phased, on a frame of
+  paper (a small hull, a small shield, a big regen), the guerilla.
+
+What follows without a question (Claude's, built so unless he says):
+
+- The opener and the finisher sit on one die without touching: the double is on the printed
+  number and a foe's missing hull is added after it, undoubled (the blow's order). On an unhurt
+  foe the Driver is a doubled base with nothing to add; on a hurt one, its growth and no double.
+- With the reset gone no piece carries Reset, and the verb his note of 6 November called the
+  Kite's ("the rapid on kill is now kind of the Kites thing") is free for the Zoids walker again.
+- A fourth entry is a third pin on its model and a third piece in its stock, his to name.
+- A lock with a rule and a kill's reward sort it back to tier two.
+
+### Holes raised on it (Claude's)
+
+1. **Every kill paying is the danger he named on 19 October** ("kills-grant-invulnerability and
+   really go full assassin, but there's danger there"; the first brief's bench, "immune while
+   farming trash"), and the opener feeds it: the rank and file stay unhurt until the Kite shoots
+   them, so against them a kill a round is the ordinary case.
+   - The shield, whole, at today's 16: a kill a round refills about what a tier-one formation's
+     round takes off it (seven of the horde's eight land about 16), and more with every head
+     that falls, so alone it outlasts a pack it thins a head a round, and with the squad it is
+     the machine blows are wasted on. The danger is the gauge's size: mild on a small one.
+   - Phased: alone, a round it kills in is a round no foe strikes at all; with the squad every
+     blow aimed at it picks an ally instead, each round it kills.
+2. **Phased has one gate and this is past it.** The Phased row: "granted only to a unit that has
+   not acted this round, so the status always costs the action it protects"; "the one rule gates
+   every grant of it". On a kill it costs nothing the Kite was not spending anyway. A passive may
+   bend a rule as its one-off; this bends the one that keeps the status priced.
+3. **Phased on a kill, very squishy, is his shadow panther** (the Zoids walker's note, 6
+   November). One of the two machines has it.
+4. **The Coriolis Accelerator is the Driver's old mechanism**, in the pool at tier two since 21
+   October. If the lock takes it back the pool holds its twin, and his rule of 10 November wants
+   a lock to be something nobody else has.
+5. **A third Kestrel shield** if the reward is the shield: the Buzzard's regen from its heat, the
+   Storm Petrel's shield for heat gained, the Kite's for a kill.
+
+### Claude's leans, for him to move
+
+- **The reward on the Driver's kill alone**, as the reset was. The die is then the brake (the
+  lock is one entry in four, and the team's rerolls are what buy it, Kestrel's lean and a real
+  price in a squad), the machine's rhythm is open, finish, vanish, and the Driver has its
+  answer: the finisher whose kill pays. Either reward fits it.
+- **Phased, with the paper frame**, if the panther gives it up: nothing else of Kestrel's does
+  it, and it keeps the glass honest where a shield from a kill makes the machine sturdier in the
+  fights it already wins. Else the shield, on a small gauge.
+- **The Coriolis comes home** as the Driver and leaves the pool.
 
 ## Holes raised (the opener)
 
@@ -127,9 +184,9 @@ three, and the blanket double still wants that one.
   on a kill is still on the bench if the title's promise wants a mechanism.
 - **A foe that heals to full** is untouched again (a cure, a regrowth that tops it up): a gift
   against healers, and a thing to check against a part that grows back.
-- **The Driver's reach**: an untouched worker stands behind a front. Indirect on the lock would
-  make the Kite the back rank's answer by itself; without it that is the Needletail's paint or a
-  hole in the front. Free reach has been set aside twice (below), so his call.
+- **Reach**: an untouched worker stands behind a front. Since his refinement the opener is a
+  fitted gun, so its reach is the player's pick (an Indirect gun in a hardpoint), the
+  Needletail's paint or a hole in the front; the lock, a finisher, asks for none.
 
 ## Declined: the one machine a fight cannot hold (the first round, 11 November)
 
@@ -143,6 +200,8 @@ fight, and a gauge no single round can fill.
 
 ## Bench, one line each with what set it aside
 
+- A kill costs no heat (the second round's smaller step: the double on every shot and the flat 2
+  kept, a spend that kills paying none): not taken; his refinement builds on the opener.
 - Leaving a fight, by its gauge or by a button: declined above; a button besides is the no extra
   controls row's.
 - A round out of the fight in place of leaving (it climbs, cannot act or be struck, comes back
@@ -168,15 +227,19 @@ fight, and a gauge no single round can fill.
 
 ## Open, his
 
-1. The opener, the smaller step, or neither.
-2. If the opener: whether the Driver reaches any foe, and whether the double is the aimed foe's
-   alone.
-3. A what-if on a scratch tree before any go, if he wants a direction first.
+1. Whether a kill pays on the Driver alone or on every weapon.
+2. Phased (the panther's hook moving here, the Phased row bent for it) or the shield, and the
+   frame with it.
+3. The Coriolis Accelerator: home as the Driver, or kept in the pool beside it.
+4. Still open from the second round: whether the double is the aimed foe's alone, and a what-if
+   on a scratch tree before any go.
 
 ## What the session hands back
 
-On his go: the passive in content with its engine's condition and tests, the bible's Kite row
-rewritten with its exit and the rules' passive lines, the vocabulary (Hot Streak and the passive
-grant of a cooldown retire with it), its numbers read by the runner (alone on the duelists and
-the hunting packs, in the default three with the Kite spent first), its text slots in the
-hangar, this brief retired.
+On his go: the passive, the Driver and the kill's reward in content with the engine's condition
+and tests, its fourth entry (the stock's third piece his, the model's third pin), the bible's
+Kite row rewritten with its exit, the Phased row if it bends, the rules' passive lines, the
+vocabulary (Reset, Hot Streak and the passive grant of a cooldown retire with it), the Coriolis
+Accelerator's fate in the pool, its numbers read by the runner (alone on the duelists and the
+hunting packs, in the default three with the Kite spent first), its text slots in the hangar,
+this brief retired.

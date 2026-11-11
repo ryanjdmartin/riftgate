@@ -7,6 +7,14 @@ skua has a direction but needs tweaks and the needletail is basically free to be
 Asked with the Kite's redesign, for the fast flyers' identities under the long wall: "Not
 pigeonholes, but just what does what and why you'd want one over the other."
 
+**His word on the first round (11 November)**: "Needletail: Exposed being Kestrels primary keyword
+means we need at least one chassis that orbits it. The question is if it's this one, or one of the
+two unspecced mediums. The pattern you proposed doesn't feel all that Kestrel - spotting, yes, but
+artillery, not necessarily. The other idea of using two things a round is very Kestrel and deserves
+a chassis, just again, is it this one or one of the unspecced mediums." So the shelling is
+withdrawn, and two ideas want a home each: a chassis that orbits Exposed, and a chassis that uses
+two things a round.
+
 Kestrel's tier-two spotter, built and dealt (the bible's Kestrel row, his go of 21 October; its
 first brief, `git show 9ced5e5:docs/briefs/kestrel_interceptor.md`). Today: a light flyer at move
 6, a d4 of the locked Fovea Designator and three hardpoints. Its Quick-turn Avionics Relay makes
@@ -24,78 +32,67 @@ until a go.
   plainest setter of it.
 - Its body, its tilt-jet and its two modes, his look session's (the to-do).
 
-## Why it reads dull (Claude's, 11 November)
+## Where the two ideas go (Claude's answer, for him to move)
 
-Its lock is a mark with no moment of its own and its passive a tempo rule whose payoff is always
-another machine's. With the squad it is reach and armour for the others; alone it is one gun and
-a paint nobody else cashes. And nothing about it reads the battle it now fights in.
+**Two things a round is the Needletail's.**
 
-## The proposal: what it paints, the whole squad shells (Claude's lean, for him to move)
+- It was born as it: its first session designed the Kestrel that acts twice a round, on his
+  word of 18 October ("first fire rapid is a great tier 1 design"), and its passive is still
+  that idea behind a gate.
+- A tilt-jet has two modes, and since the refit a die has two kinds.
+- Glass prices tempo. Two spends a round on a light's hull and three hardpoints pay for
+  themselves; the same rule on a medium with five hardpoints is far stronger and has nothing to
+  pay with.
 
-The spotter as the long wall makes one possible: the machine that never fights alone, wherever
-it is.
+**The Exposed orbit's missing half is a payoff, and a payoff wants a medium.**
 
-- **The passive**: as each round ends, every Exposed foe takes a blow of X for every ally on the
-  field outside the fight.
+- Three locks set Exposed today (the Needletail's Designator, the Lammergeier's Contractor, the
+  Swallowtail's flare) and nothing reads it but every machine's reach and the foe's own armour:
+  the orbit has setters and no chassis that cashes.
+- A chassis that cashes wants a body and hardpoints: the Buzzard's and the Storm Petrel's space,
+  one of the two unspecced slots, and its session's to design.
+- The Needletail keeps the Designator, so it is the line's dependable setter either way, and
+  under the kit below it marks every round. It feeds; the medium cashes. The other two already
+  want the mark: a point of plate stops every strike of the Skua's Ricochet and an Exposed foe
+  has none, and the paint puts an untouched back rank in reach of the Kite's Direct opener.
+
+## The kit: one of each, every round
+
+- **The passive**: each round it acts twice, once with a weapon and once with equipment. After
+  its first spend its die turns to an entry of the other kind.
 - **The lock**: the Fovea Designator as built (Indirect, Exposes through the next round).
-- **Gone**: equipment Rapid once a round.
 
-Exposed already means every machine reaches it; on the Needletail's field that includes the
-machines that are not there. So the piece has two faces by where it flies. Alone on a flank with
-three allies elsewhere, its paint brings three machines' fire each round for two rounds, and its
-own guns work between paints. In a pair it is the partner's reach and armour and two machines'
-fire. With the whole squad there is no fire to call and it is the spotter it is today.
-
-**What it is for.** The long fight alone: a duel, a pair, an elite's own, the flank that has to
-stand while the squad is busy, where the Kite's opening does not finish and the Skua's small
-hits bounce. Why take it: the plan is to split, and the flank needs the squad's weight without the
-squad.
-
-**What it is bad at.** Its own guns are the lightest of the three; a wide pack outruns one paint
-at a time; and it is glass in a fight it cannot leave.
-
-**What it wants in its kit.** Every source of Exposed, its own and the pool's (the to-do's synergy
-holes ask for a slottable one; one that spreads is its area build); guns for the rounds between
-paints; a Barrier of its own for the round the duelist telegraphs, its vector to dodge.
-
-**The pairs.** With the Skua: a painted foe's armour counts for nothing, the one thing two halved
-hits fear. With the Kite: its paint puts an untouched back rank in reach of the Kite's Direct
-guns.
-
-## The smaller step: one of each, every round
-
-If the fire from outside is too much: keep it the squad's piece and sharpen what is built. Since
-the refit a die holds two kinds, weapons and equipment, and the tilt-jet has two modes: each round
-it acts twice, once with a weapon and once with equipment, the die turning to an entry of the
-other kind after its first spend. Today a weapon showing first is one action; this is two every
-round, in either order, paid in two spends' heat. Its build is then every maker's equipment (a
-setter and the gun that cashes it, a buff for the hitter and a shot of its own), and its identity
-tempo beside the Skua's count and the Kite's magnitude. Less new, and the most team-bound of the
-three: alone it duels by having the answer free, never by weight.
+Today a weapon showing first is one action, and equipment showing first rolls on to anything;
+this is two every round, in either order. Its build is every maker's equipment: a setter and the
+gun that cashes it, a buff for the hitter and a shot of its own, a Barrier for the round a duelist
+telegraphs, its vector to dodge. Its identity is tempo beside the Kite's burst and the Skua's
+ramp, and the most team-bound of the three: alone it duels by having the answer free, never by
+weight.
 
 ## Holes raised
 
-- **A number that reads the map.** The count is fixed as the fight opens and shown with the
-  passive; "an ally is in the fight" is a read the engine has, and this is its mirror. A lone
-  skirmish in the harness wants a setting for it.
-- **His word on the Kite's exit, the same day**: "it adds clunk to the battle". The shelling
-  changes no fight's course and adds no ending, but it is a fight that reads the battle; if that
-  is the same clunk to him, the smaller step is the Needletail.
-- **Power from no action.** The squad fights its own fight and shells the Needletail's the same
-  turn. Priced in X, in its own thin guns and in the round's wait (the blow lands as the round
-  ends, after the foe has acted, and a foe felled before then wastes it).
-- **It pays for standing alone**, on the lightest hull: the reward is the risk, Kestrel's lean,
-  and it moves only the Needletail, never the squad's own choice of how to split.
-- **The fiction**: a Honey Badger's claw shells nothing from fifteen hexes. The fire is the
-  squad's, called and abstract; the exit, if that grates, is a count of the allies within so many
-  hexes, a second read of the map.
-- **One status**: the shelling is the passive's read of Exposed, never a second mark (the debuffs
-  grow by kinds, never by copies).
-- **A spread Expose** shells every painted foe: its area build, and the lever a cap of one foe a
-  round, or X.
-- **With all four in a fight** (an elite, the boss) it calls nothing and is today's spotter, the
-  kit he called dull. Whether the mark alone carries it there is what the smaller step answers
-  the other way.
+- **An Expose every round** while the Designator is its one equipment, so the mark's two rounds
+  stop mattering and one foe is always painted. Heat is the brake: two spends a round against a
+  gauge of 12 and a cooling of 1 (the Designator's 2 and a rifle's 4) has it holding one of the
+  two by the third round, which is the hold as its decision.
+- **No live entry of the other kind** (a die of weapons alone but for the lock is fine; equipment
+  alone is one action a round): self-limiting, and the build's first question.
+- **Rapid's rule** is met without a cooldown: the second action is once a round by its own
+  wording and cannot chain.
+- **Its tier.** On 21 October "no basic is either" a buff or a debuff sent it to two; since the
+  refit two basics are equipment (the Halo Projector, the Shoring Jack), so it shows whole on
+  basics. The sort still puts a machine that is best beside others at two. His.
+- **Still dull?** What he called dull was a mark with no moment and a tempo whose payoff is
+  another machine's. This gives it a second action every round and leaves the payoff where it
+  was; whether that is enough is his read, and the Exposed payoff on a medium is the other half
+  of the answer.
+
+## Declined: what it paints, the whole squad shells (the first round, 11 November)
+
+Claude's proposal: as each round ended, every Exposed foe took a blow for every ally on the field
+outside the fight, so a lone Needletail on a flank carried the squad's fire. His word is at this
+brief's head: spotting is Kestrel's, artillery is not. Its holes as raised: a number read off the
+map inside a fight, and power the squad paid no action for.
 
 ## Bench, one line each with what set it aside
 
@@ -110,15 +107,17 @@ three: alone it duels by having the answer free, never by weight.
   the Giant Petrel's price.
 - The dive (a Direct gun through a standing front, struck as it passes): his "overdesigned" of 20
   October, kept for a smaller Kestrel.
+- Any two spends a round (the first spend Rapid, whatever it is): the first kit's passive,
+  which he read as thin on 20 October ("What's the build hook?"); it chooses no piece, where one
+  of each chooses two.
 
 ## Open, his
 
-1. A flanker that carries the squad's fire (the proposal), or the squad's own piece (the smaller
-   step): which Needletail the three want.
-2. Whether a count of allies outside the fight is a read he wants in the game at all.
+1. The placement: two things a round here, the Exposed payoff on a medium.
+2. The form: one of each, or another shape of two things.
 
 ## What the session hands back
 
-On his pick: the passive in content (planned until its engine), Exposed's line in the rules and
-the vocabulary if the shelling lands, its runner rows alone, in a pair and in a four, its text
-slots, and its look session unchanged (the to-do's line).
+On his pick: the passive in content (planned until its engine), its runner rows alone, in a pair
+and in a four, its text slots, and its look session unchanged (the to-do's line); a line in the
+unspecced medium's brief for the Exposed payoff once he says which slot.
