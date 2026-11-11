@@ -649,7 +649,7 @@ func test_the_boss_fight_plays_its_theme() -> void:
 	assert_eq(s._skirmish.sk.mechs.size(), b.mechs().size(), "with every machine in it")
 	assert_false(has_button(s._skirmish, "WITHDRAW"), "no withdrawing: no button for it (the long wall brief 7.5)")
 	var want := Sound.boss_set(b.faction)
-	assert_eq(s._skirmish.music_set, want if not want.is_empty() else "skirmish", "the fight plays the family's theme, or the skirmish's pick without one")
+	assert_eq(s._skirmish.music_set, want if not want.is_empty() else "skirmish", "the fight plays the family's theme, or the battle's pair on its battle half without one")
 	s._on_skirmish_back()
 	assert_false(b.boss_fight, "the flag drops on the way back")
 	s.free()

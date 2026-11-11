@@ -48,7 +48,7 @@ func _ready() -> void:
 	if run.state == QuickRun.BATTLE and run.current != null:
 		_enter_fight(run.current)   # a fight resumed from the save
 	else:
-		Sound.music("map")
+		Sound.music("map", true)   # a run picks its pair as it opens, as a battle does
 
 
 # ---------------------------------------------------------------- the frame

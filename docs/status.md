@@ -1049,19 +1049,24 @@ The tasks are the to-do's; this is the index of what waits.
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).
 - The long wall's view (`git show 68381ff:docs/briefs/long_wall_build.md`, section 7: the two orientations, the
   threat rating's pips, the field scrolled along the wall), on Ryan's word after the hand-back.
-- The pairs in the game (the bible's pair row): Hold The Line's pair passed on its twenty-seventh
-  round, Night Shift's on its thirty-fifth, at 96, and The Far Bank's on its eighth (10 and 11
-  November: "Full pair for HtL is good to ship"; "Keep 96. I think this is a good spot to ship
-  everything to main"; "Oh I thought far bank was done?"), all three built into art/audio by the
-  forge's SHIP from their sketches' `ship`: each track's shipped half where it played (Night Shift's
-  map half now at 96, Sound's TEMPO with it; The Far Bank's battle half the shipped track itself, in
-  the fights' pool since it came off the Marsh's boss, 11 November: "Take far bank off of the boss
-  and add it to the regular pool", so no domain has a boss theme now),
-  its new half beside it (`music_hold_the_line_map`, `music_night_shift_battle`, `music_far_bank_map`),
-  unplayed until the engine plays a pair (one synchronized stream, the map choosing the track, the
-  3 s flip). The rest in a music session of Ryan's own (11 November: "I'll resume the remaining
-  tracks in another session"): the map halves of Full Bore and The Crossing and Low Ground's battle
-  half, each on the pair page at its first round.
+- The pairs in the game (the bible's pair row): Hold The Line's pair passed on its twenty-seventh round,
+  Night Shift's on its thirty-fifth, at 96, and The Far Bank's on its eighth (10 and 11 November: "Full
+  pair for HtL is good to ship"; "Keep 96. I think this is a good spot to ship everything to main"; "Oh
+  I thought far bank was done?"), all three built into art/audio by the forge's SHIP from their
+  sketches' `ship`: each track's shipped half where it played (Night Shift's map half now at 96, Sound's
+  TEMPO with it; The Far Bank's battle half the shipped track itself, in the fights' pool since it came
+  off the Marsh's boss, 11 November: "Take far bank off of the boss and add it to the regular pool", so
+  no domain has a boss theme now), its new half beside it (`music_hold_the_line_map`,
+  `music_night_shift_battle`, `music_far_bank_map`), all six halves played in the game since 11 November
+  (Ryan: "let's pick the track when the battle starts and loop it. The player can change the track in
+  the menu easily. Only put in the three finished ones for now"): each pair one
+  `AudioStreamSynchronized` (`Sound.PAIRS`), a battle picking its pair as it starts (the next of the
+  three after the last battle's, the first at random) and looping it, the field on the map half, a fight
+  flipping to the battle half in place over 3 s from ENGAGE and back on the field, the pause menu
+  changing the pair on the half the screen plays; Low Ground, The Crossing and Full Bore play nowhere
+  until their pairs pass. The rest in a music session of Ryan's own (11 November: "I'll resume the
+  remaining tracks in another session"): the map halves of Full Bore and The Crossing and Low Ground's
+  battle half, each on the pair page at its first round.
 
 ## Next, in order
 
@@ -1134,7 +1139,8 @@ commands are in `README.md`.
   the bible": main's file whole, since the live v0.497 matched `2d489f7`'s byte for byte and so
   needed no merge; it carries everything to 11 November: the formation and refit session's
   rows, the locked, tiers and basic kit rows, the Polar Bear, Buzzard and Nemesis rows, the music
-  session's track rows, the map lists' and the Bench's). Main's file is v0.522 since The Far Bank
+  session's track rows, the map lists' and the Bench's). Main's file is v0.523 since the pairs play in the game (the pair row: a battle
+  picks its pair and loops it), v0.522 since The Far Bank
   joined the fights' pool (its track row and the boss themes' Open row: the Marsh's theme it was,
   so no domain has one now), unpublished, its republish on Ryan's word. BASE for the next merge is
   `9ebf74b`'s file. The live page may carry rows ahead of main's code while a branch has not landed. Before

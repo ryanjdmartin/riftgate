@@ -57,6 +57,7 @@ const NAMES := [
 	# the rift and the red
 	"reveal", "arrival", "contact", "engage", "cut", "gate_hit", "victory", "defeat", "withdraw",
 	"music_far_bank", "music_hold_the_line", "music_low_ground", "music_night_shift", "music_crossing", "music_full_bore",
+	"music_hold_the_line_map", "music_night_shift_battle", "music_far_bank_map",
 ]
 
 ## A component's sound word (ContentDB.SOUNDS) to its blow.
@@ -86,39 +87,46 @@ const DEATH_AFTER_LINE := 1.7   # her line and a breath, before anything else ha
 ## A way of moving (BattleMap.WAYS) to its footfall; a hovercraft passes like a flyer.
 const STEPS := {"tracked": "step_tracked", "walker": "step_legged", "wheeled": "step_wheeled", "flyer": "step_flyer", "hover": "step_flyer"}
 
-## What a screen's music is: a set of loops. A cycling set plays them in turn, one full
-## loop each, the last crossfading into the first again: the map's, the two calm tracks,
-## rift B and human B (Ryan, 25 September: both very good; one loop of each, then
-## crossfade, to judge the crossfade). A picking set (PICK) takes one loop per visit, the
-## next one each visit, and loops it: the skirmish's, human A, rift C, human C and rift A, since a
-## fight must never crossfade tracks in the middle of itself (Ryan, the same day: fade in
-## from the map, loop, fade back to the map on exit). The player may still skip: the pause
-## menu's next and previous move within the screen's set (Ryan, 25 September).
-##
+## What a screen's music is. Every track is a pair (the bible's pair row): a map half and a
+## battle half on one timeline, played together as one synchronized stream with the screen's
+## half audible, so a fight changes what plays and never where the music is. A battle picks
+## its pair as it starts and loops it (Ryan, 11 November: "pick the track when the battle
+## starts and loop it. The player can change the track in the menu easily"): the next of the
+## pool after the last battle's, the first at random. The field plays the map half ("map"); a
+## fight flips the same pair to its battle half in place over FLIP, from ENGAGE, and back on
+## the field ("skirmish"). The pause menu's next and previous change the pair, from its top,
+## on the half the screen plays, and the battle keeps it. The pool is the finished pairs, each
+## [map half, battle half] (Ryan, 11 November: "Only put in the three finished ones for now"):
+## Low Ground, The Crossing and Full Bore wait on their new halves.
+const PAIRS := [
+	["music_hold_the_line_map", "music_hold_the_line"],
+	["music_night_shift", "music_night_shift_battle"],
+	["music_far_bank_map", "music_far_bank"],
+]
+const HALVES := {"map": 0, "skirmish": 1}   # the half each screen's set plays
+const FLIP := 3.0                             # seconds: a pair flipping to its other half, in place
+
 ## Boss themes (Ryan, 25 September): one per family, in the acts' order, since every battle
 ## ends on the same family's boss three or four times an act and the theme is the act's
 ## identity. A boss set is keyed "boss_<faction id>" and holds one loop; the battle screen
 ## starts it on the field the moment the boss is contacted, from its top, so the intro bars
-## play under the reveal and the handover and the fight arrives in the groove. A family
-## without a set falls back to the skirmish's pick (`boss_set`). No family has one now: The
-## Far Bank was the Marsh's (The Chorus's until the domains of 9 October) until it joined the
-## skirmish's pick (Ryan, 11 November: "Take far bank off of the boss and add it to the regular
-## pool").
-const SETS := {
-	"map": ["music_low_ground", "music_night_shift"],
-	"skirmish": ["music_hold_the_line", "music_crossing", "music_full_bore", "music_far_bank"],
-}
-const PICK := ["skirmish"]
+## play under the reveal and the handover and the fight arrives in the groove; back on the
+## field the pair comes back where it left. A family without a set flips the battle's pair
+## like any fight (`boss_set`). No family has one now: The Far Bank was the Marsh's (The
+## Chorus's until the domains of 9 October) until it joined the pool (Ryan, 11 November: "Take
+## far bank off of the boss and add it to the regular pool"). A set of several loops would
+## play them in turn, one full loop each, the last crossfading into the first again.
+const SETS := {}
 
 ## Where a loop wraps to, in bars from its top, when it is not the top: an intro plays once
 ## and a long fight wraps into the groove instead (Ryan, 25 September, of a boss theme's, under
-## the reveal; The Far Bank keeps its wrap in the skirmish's pick). Bars are the 4/4 bar's length at the loop's TEMPO. Absent means the top.
-const LOOP_FROM := {"music_far_bank": 8, "music_hold_the_line": 8}   # Hold The Line wraps to the power chords, bar nine (Ryan, 29 September: its seam was the janky one; the bass's entrance at five was tried first)
+## the reveal; The Far Bank keeps its wrap in its pair, both halves at one bar). Bars are the 4/4 bar's length at the loop's TEMPO. Absent means the top.
+const LOOP_FROM := {"music_far_bank": 8, "music_hold_the_line": 8, "music_far_bank_map": 8, "music_hold_the_line_map": 8}   # Hold The Line wraps to the power chords, bar nine (Ryan, 29 September: its seam was the janky one; the bass's entrance at five was tried first)
 
 ## Every loop's shown title and its working label. The files are named for the titles
 ## (Ryan's picks, 25 September); the labels are creation order, human A B C and rift A B C,
 ## which is how listens are still discussed. The header's ticker shows the title; the
-## pause menu shows both.
+## pause menu shows both. A pair's new half takes its track's (`_titled`).
 const TRACKS := {
 	"music_hold_the_line": {"title": "Hold The Line", "label": "Human A"},
 	"music_night_shift": {"title": "Night Shift", "label": "Human B"},
@@ -214,7 +222,8 @@ static func step_for(traits: Array) -> String:
 ## The loops' tempos, as tools/soundforge writes them, so a thing on screen can move on
 ## the beat (the rift's vortex, Ryan, 23 September: it had landed near the beat by chance).
 ## Night Shift ships its pair's map half at 96 (Ryan, 11 November: "Keep 96"), where its recipe ran at 94.
-const TEMPO := {"music_far_bank": 88.0, "music_hold_the_line": 104.0, "music_low_ground": 90.0, "music_night_shift": 96.0, "music_crossing": 126.0, "music_full_bore": 105.0}
+const TEMPO := {"music_far_bank": 88.0, "music_hold_the_line": 104.0, "music_low_ground": 90.0, "music_night_shift": 96.0, "music_crossing": 126.0, "music_full_bore": 105.0,
+	"music_hold_the_line_map": 104.0, "music_night_shift_battle": 96.0, "music_far_bank_map": 88.0}
 
 
 ## Beats elapsed in the loop that is playing, or -1 when nothing is.
@@ -222,21 +231,25 @@ static func beat() -> float:
 	if _node == null or not is_instance_valid(_node) or not _node.is_inside_tree():
 		return -1.0
 	var p := _node._music[_node._music_live]
-	if not p.playing or not TEMPO.has(_node._playing):
+	var loop := _node._audible()
+	if not p.playing or not TEMPO.has(loop):
 		return -1.0
-	return p.get_playback_position() * float(TEMPO[_node._playing]) / 60.0
+	return p.get_playback_position() * float(TEMPO[loop]) / 60.0
 
 var _voices: Array[AudioStreamPlayer] = []
 var _next_voice := 0
 var _music: Array[AudioStreamPlayer] = []   # two, so one loop fades into the next
 var _music_live := 0
 var _playing := ""
-var _set := ""                               # the set a screen asked for ("map", "skirmish")
+var _set := ""                               # the set a screen asked for ("map", "skirmish", a boss set)
 var _set_at: Dictionary = {}                 # set -> which of its loops is current
 var _advance: Timer = null                   # fires SET_FADE before a set's loop ends, to go on to the next
 var _loop_of: Array[String] = ["", ""]      # which loop each music player holds
 var _pos: Dictionary = {}                    # loop -> where it was when it left, to resume there
 var _fade: Tween = null                      # the crossfade in flight, killed by the next
+var _pair := -1                              # the battle's pair, by its place in PAIRS; -1 before the first
+var _flip_x := 0.0                           # where its flip stands: 0 the map half, 1 the battle half
+var _flip: Tween = null                      # the flip in flight
 var _streams: Dictionary = {}
 var _ducked := false
 var _duck_db := 0.0
@@ -267,11 +280,13 @@ static func play_after(delay: float, name: String, db: float = 0.0, vary: float 
 	_call("_play_after", [delay, name, db, vary])
 
 
-## The music a screen wants: a set from SETS ("map", "skirmish"), a loop's own name
-## ("crossing"), or "" for silence. Crossfades, and a set coming back resumes its current
-## loop where it left (the map after a fight), unless `restart`: a new battle starts the set
-## from its first loop's top (Ryan, 24 September: the map's music began mid-lift, where the
-## last battle had left it). Asking for the set already playing does nothing.
+## The music a screen wants: "map" or "skirmish", a half of the battle's pair (HALVES); a
+## boss set from SETS; a loop's own name ("crossing"); or "" for silence. The pair flips in
+## place over FLIP; anything else crossfades, and the pair coming back resumes where it left
+## (the field after a boss theme), unless `restart`: a new battle picks its pair and starts it
+## from its top (Ryan, 24 September: the map's music began mid-lift, where the last battle had
+## left it; 11 November: "pick the track when the battle starts and loop it"). Asking for the
+## set already playing does nothing.
 static func music(name: String, restart: bool = false) -> void:
 	_call("_music_to", [name, restart])
 
@@ -281,18 +296,26 @@ static func duck(on: bool) -> void:
 	_call("_duck", [on])
 
 
-## The pause menu's next (+1) and previous (-1): the neighbouring loop of the set that is
-## playing, from its top, with the screen's own crossfade. A set of one loop, or silence,
-## has nowhere to go.
+## The pause menu's next (+1) and previous (-1): the neighbouring pair of the pool, from its
+## top, on the half the screen plays, and the battle keeps it; or the neighbouring loop of a set
+## of several. A set of one loop, or silence, has nowhere to go (`can_skip`).
 static func skip(step: int) -> void:
 	_call("_skip", [step])
 
 
-## The loop playing (or arriving), by its full name, or "" when nothing is.
+## The loop playing (or arriving), by its full name, or "" when nothing is: of a pair, the
+## half that is heard.
 static func track() -> String:
 	if _node == null or not is_instance_valid(_node):
 		return ""
-	return _node._playing
+	return _node._audible()
+
+
+## Whether the pause menu's next and previous have somewhere to go.
+static func can_skip() -> bool:
+	if _node == null or not is_instance_valid(_node):
+		return false
+	return _node._can_skip()
 
 
 ## The set a screen asked for ("map", "skirmish"), or "" when none is.
@@ -303,7 +326,7 @@ static func set_playing() -> String:
 
 
 ## The boss set for a domain ("boss_<faction id>"), or "" when the family has no theme yet and
-## the fight takes the skirmish's pick.
+## the fight flips the battle's pair.
 static func boss_set(faction: String) -> String:
 	var name := "boss_" + faction
 	return name if SETS.has(name) else ""
@@ -311,11 +334,23 @@ static func boss_set(faction: String) -> String:
 
 ## A loop's shown title, and its working label ("Human A"); "" for a loop without one.
 static func title(loop: String) -> String:
-	return str(TRACKS.get(loop, {}).get("title", ""))
+	return str(TRACKS.get(_titled(loop), {}).get("title", ""))
 
 
 static func label(loop: String) -> String:
-	return str(TRACKS.get(loop, {}).get("label", ""))
+	return str(TRACKS.get(_titled(loop), {}).get("label", ""))
+
+
+## The loop TRACKS names for a loop: itself, or for a pair's new half the half it shipped as.
+static func _titled(loop: String) -> String:
+	if TRACKS.has(loop):
+		return loop
+	for pair in PAIRS:
+		if pair.has(loop):
+			for half in pair:
+				if TRACKS.has(half):
+					return half
+	return loop
 
 
 ## The volume knobs from Settings onto the buses.
@@ -432,6 +467,17 @@ func _stream(name: String) -> AudioStream:
 	if _streams.has(name):
 		return _streams[name]
 	var path := DIR + name + ".wav"
+	if name.begins_with("pair:"):
+		# A pair as one synchronized stream: both halves play in step, each at its own volume
+		# (`_set_flip`), so the screen's half is heard and the other waits on the same beat.
+		var sync := AudioStreamSynchronized.new()
+		var halves: Array = PAIRS[int(name.substr(5))]
+		sync.stream_count = halves.size()
+		for i in range(halves.size()):
+			sync.set_sync_stream(i, _stream(str(halves[i])))
+			sync.set_sync_stream_volume(i, SILENT_DB)
+		_streams[name] = sync
+		return sync
 	var s: AudioStream = load(path) if ResourceLoader.exists(path) else null
 	if s is AudioStreamWAV and name.begins_with("music_"):
 		# The loops play round: the forge renders their tails across the seam. A loop with
@@ -478,6 +524,9 @@ func _music_to(name: String, restart: bool = false) -> void:
 		_set = ""
 		_fade_to("", FADE_OUT, FADE_IN, FADE_IN_DELAY)
 		return
+	if HALVES.has(name):
+		_pair_to(name, restart)
+		return
 	var loops: Array = SETS.get(name, ["music_" + name])
 	if restart:
 		_set_at[name] = 0
@@ -486,11 +535,85 @@ func _music_to(name: String, restart: bool = false) -> void:
 	if name == _set:
 		return
 	_set = name
-	if PICK.has(name) and loops.size() > 1:
-		# The next loop each visit; it starts from its top.
-		_set_at[name] = (int(_set_at.get(name, -1)) + 1) % loops.size()
-		_pos.erase(loops[int(_set_at[name])])
 	_fade_to(loops[int(_set_at.get(name, 0)) % loops.size()], FADE_OUT, FADE_IN, FADE_IN_DELAY)
+
+
+## The battle's pair on a screen's half. A new battle (`restart`), or the first ask, picks the
+## pair: the next of the pool after the last, the first at random, from its top. The same pair
+## playing flips in place over FLIP; the pair coming back from a boss theme or silence resumes
+## where it left, already on the screen's half.
+func _pair_to(name: String, restart: bool) -> void:
+	var half := int(HALVES[name])
+	if restart or _pair < 0:
+		_pair = randi() % PAIRS.size() if _pair < 0 else (_pair + 1) % PAIRS.size()
+		var key := _pair_key(_pair)
+		_pos.erase(key)
+		_set = name
+		_flip_now(half)
+		if key == _playing:
+			_music[_music_live].play(0.0)   # a pool of one: the same pair again, from its top
+		else:
+			_fade_to(key, FADE_OUT, FADE_IN, FADE_IN_DELAY)
+		return
+	if name == _set:
+		return
+	_set = name
+	if _playing == _pair_key(_pair):
+		_flip_to(half)
+		return
+	_flip_now(half)
+	_fade_to(_pair_key(_pair), FADE_OUT, FADE_IN, FADE_IN_DELAY)
+
+
+static func _pair_key(i: int) -> String:
+	return "pair:%d" % i
+
+
+## The half that is heard: of the battle's pair while it plays, the map half until the flip is
+## halfway; otherwise the loop playing.
+func _audible() -> String:
+	if _pair >= 0 and _playing == _pair_key(_pair):
+		return str(PAIRS[_pair][1 if _flip_x >= 0.5 else 0])
+	return _playing
+
+
+func _can_skip() -> bool:
+	if _pair >= 0 and _playing == _pair_key(_pair):
+		return PAIRS.size() > 1
+	return SETS.get(_set, []).size() > 1
+
+
+## The flip to a half, equal power like every crossfade, over FLIP for the whole way (less
+## when a flip is already part way there).
+func _flip_to(half: int) -> void:
+	if _flip != null and _flip.is_valid():
+		_flip.kill()
+	var to := float(half)
+	var span := absf(to - _flip_x) * FLIP
+	if span <= 0.0:
+		_set_flip(to)
+		return
+	_flip = create_tween()
+	_flip.tween_method(_set_flip, _flip_x, to, span)
+
+
+func _flip_now(half: int) -> void:
+	if _flip != null and _flip.is_valid():
+		_flip.kill()
+	_set_flip(float(half))
+
+
+## The pair's two volumes at `x` along the flip: the map half the cosine, the battle half the
+## sine, so the sum of powers holds through it.
+func _set_flip(x: float) -> void:
+	_flip_x = x
+	if _pair < 0:
+		return
+	var sync := _stream(_pair_key(_pair)) as AudioStreamSynchronized
+	if sync == null:
+		return
+	sync.set_sync_stream_volume(0, _gain_db(cos(x * PI / 2.0)))
+	sync.set_sync_stream_volume(1, _gain_db(sin(x * PI / 2.0)))
 
 
 ## SET_FADE before the current loop's end: the set's next loop, from its top, the two
@@ -508,10 +631,21 @@ func _advance_set() -> void:
 	_pos.erase(ending)
 
 
-## A step through the playing set, from the player's hand. The loop left behind is
-## forgotten like a loop that ended, so its next turn starts from the top; the set's
-## counter moves with the step, so a picking set's next visit goes on from here.
+## A step from the player's hand: through the pool while the battle's pair plays, the new pair
+## from its top on the half the flip stands at, kept for the rest of the battle; otherwise
+## through the playing set. The pair or loop left behind is forgotten like a loop that ended,
+## so its next turn starts from the top.
 func _skip(step: int) -> void:
+	if _pair >= 0 and _playing == _pair_key(_pair):
+		if PAIRS.size() < 2:
+			return
+		var left := _playing
+		_pair = posmod(_pair + step, PAIRS.size())
+		_pos.erase(_pair_key(_pair))
+		_set_flip(_flip_x)
+		_fade_to(_pair_key(_pair), FADE_OUT, FADE_IN, FADE_IN_DELAY)
+		_pos.erase(left)
+		return
 	var loops: Array = SETS.get(_set, [])
 	if loops.size() < 2 or _playing.is_empty():
 		return
@@ -559,7 +693,7 @@ func _fade_to(full: String, fade_out: float, fade_in: float, delay: float) -> vo
 	var pos := fmod(float(_pos.get(full, 0.0)), maxf(s.get_length(), 0.001))
 	into.play(pos)
 	_fade.tween_method(_fade_in_gain.bind(into), 0.0, 1.0, fade_in).set_delay(delay)
-	if SETS.get(_set, []).size() > 1 and not PICK.has(_set):
+	if SETS.get(_set, []).size() > 1:
 		_advance.start(maxf(0.1, s.get_length() - pos - SET_FADE))
 
 

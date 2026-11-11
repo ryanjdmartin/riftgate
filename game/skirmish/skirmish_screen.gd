@@ -28,7 +28,7 @@ signal back_requested
 signal quit_requested   # the menu's QUIT: the host leaves for the harness
 
 var back_label := "BACK"   # the outcome's button: the battle screen says where back leads
-var music_set := "skirmish"   # the set this fight plays: the skirmish's pick, or a family's boss theme the battle screen already started at contact
+var music_set := "skirmish"   # what this fight plays: the battle's pair on its battle half, or a family's boss theme the battle screen already started at contact
 var autosave: Callable = Callable()   # the battle screen's save, called after every change to the fight, so a phone put down mid-fight resumes here
 
 const W := 720.0
@@ -368,7 +368,7 @@ func _ready() -> void:
 		_refresh()
 	_scroll_to_end(_log_scroll)   # set up before entering the tree: the strip starts at its last line
 	_acquire_intents()
-	Sound.music(music_set)   # the set already playing (a boss theme from the field) carries on
+	Sound.music(music_set)   # the flip ENGAGE started (or a boss theme from the field) carries on; a fight resumed from a save flips here
 
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks): two
