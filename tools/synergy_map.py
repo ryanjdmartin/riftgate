@@ -54,6 +54,7 @@ CURRENCIES = OrderedDict([
     ("barrier", ("Barrier", "on a machine")),
     ("ward", ("Ward", "on a machine")),
     ("spun_up", ("Spun Up", "on a machine")),
+    ("ricochet", ("Ricochet", "on a machine")),
     ("rallied", ("Rallied", "on a machine")),
     ("phased", ("Phased", "on a machine")),
     ("sealed", ("Sealed", "on a machine")),
@@ -120,9 +121,9 @@ EFFECTS = {
 }
 TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_shield_granted": "shield_granted", "on_kill": "kill",
             "on_foe_status": "paradox_feed", "on_stack": None, "on_attack": None, "static": None, "on_round_start": None,
-            "on_injury": None, "on_skirmish_start": None, "on_shield_gain": None}
+            "on_injury": None, "on_skirmish_start": None, "on_shield_gain": None, "on_damage": None}
 CONDITIONS = {"target_status": None, "attacker_status": None, "target_rank": "rank", "nth_shot": None,
-              "target_no_intent": None, "shield_up": None}
+              "target_no_intent": None, "shield_up": None, "target_unhurt": "missing_hp", "target_half": "missing_hp"}
 # A foe move's riders and effects, on machines.
 FOE_RIDERS = {"burn": "burning_mech", "scorch": "scorched", "disable": "disabled", "corrupt": "corrupted", "silence": "silenced", "breach": None}
 FOE_EFFECTS = {"burn": "burning_mech", "scorch_all": "scorched", "disable": "disabled", "corrupt_all": "corrupted", "drain_rerolls": "reroll",
@@ -150,6 +151,7 @@ ENGINE_READERS = {
     "barrier": ["the next blow deals nothing"],
     "ward": ["no rider lands this round"],
     "spun_up": ["the next weapon spend +2 a stack"],
+    "ricochet": ["a strike of 1 more a stack after each shot of a weapon: most on a Sweep, whose every shot bounces, on riders a strike and on flat buffs; hull damage halves it"],
     "rallied": ["one reroll more this round"],
     "phased": ["untouchable until the round's end"],
     "sealed": ["armour +3, cooling stopped, 3 heat a turn"],
@@ -380,7 +382,7 @@ def render(m):
             if len(sl) == 1:
                 holes.append("**%s** has one slottable setter, %s." % (label, word(sl[0])))
             if not readers and cur not in ("suppressed", "webbed", "disrupt", "swap", "phased", "barrier", "ward", "sealed", "regenerating",
-                                           "rallied", "spun_up", "braced", "vitriol", "mine", "paradox", "lure", "retaliate"):
+                                           "rallied", "spun_up", "ricochet", "braced", "vitriol", "mine", "paradox", "lure", "retaliate"):
                 holes.append("**%s** is read by nothing but its own effect." % label)
     L.append("")
     L.append("Tags, by the slottable pieces that wear them (locked in brackets); nothing but the screen's lunge reads one:")

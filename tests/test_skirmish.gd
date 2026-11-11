@@ -9610,6 +9610,241 @@ func test_a_mine_survives_the_save_and_the_preview_leaves_it_alone() -> void:
 ## several are a draw among them; a dark entry is none; a spend Rapid of its own keeps the turn
 ## for the next; with nothing of the other kind there is no second action; the next round opens
 ## it again, and the bot weighs the action the turn gives.
+## Ricochet (the Skua's rewrite, Ryan, 11 November), on synthetic passives. "When striking an enemy
+## with a weapon, the weapon strikes it again for each stack of Ricochet, dealing 1 damage each
+## time. Lose half stacks of Ricochet on any hull damage"; "a sweep gets +N strikes every shot, a
+## multi-hit gets+N strikes after, where N is number of stacks".
+const SKIP_FIRE := {"id": "skip_fire", "name": "Skip fire", "description": "", "effects": [
+	{"trigger": "on_damage", "effect": "stack_status", "value": "ricochet", "once": "round"}]}
+
+
+func _ricochet(u: Unit, n: int) -> void:
+	Effects.stack(u, Effects.STATUS["ricochet"], Effects.SKIRMISH, "test", n, Effects.DECAY_NONE)
+
+
+func test_ricochet_strikes_again_for_one_a_stack_after_each_shot() -> void:
+	var gun := Face.attack(5, L)
+	var twin := Face.attack(3, L)
+	twin.strikes = 2
+	var probe := Face.attack(0, I, [K.EXPOSE])
+	var sk := Skirmish.new(1, 3)
+	var m := _mech("Skua", Die.of([gun, twin, probe]), 40, 100)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(100, 0), _ghoul(100, 0), _ghoul(100, 0)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var a: Foe = sk.front[0]
+	_ricochet(m, 3)
+	ms.face_index = 0
+	assert_true(sk.assign(0, a), "a gun of 5 on three stacks")
+	assert_eq(a.hp, 92, "its 5, then three strikes of 1")
+	var kinds: Array = []
+	for b in sk.spend_blows:
+		kinds.append(str(b["kind"]))
+	assert_eq(kinds, ["strike", "ricochet", "ricochet", "ricochet"], "each a blow of its own for the screen, in order")
+	var places: Array = []
+	for b in sk.spend_blows:
+		places.append(int(b["strike"]))
+	assert_eq(places, [0, 1, 2, 3], "each on its own place in the spend")
+	sk.end_round()
+	sk.start_round()
+	assert_eq(Effects.stacks_of(m, "ricochet"), 3, "the stacks last the fight: no round takes one")
+	ms.face_index = 1
+	assert_true(sk.assign(0, a), "a gun of two strikes")
+	assert_eq(a.hp, 83, "its two strikes of 3, then the three once: a multi-hit's come after it, never a strike")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 2
+	assert_true(sk.assign(0, a), "equipment aimed at a foe")
+	assert_eq(a.hp, 83, "is no weapon: nothing strikes again")
+	assert_eq(sk.spend_blows.filter(func(b): return str(b["kind"]) == "ricochet").size(), 0, "and no blow of one is told")
+
+
+func test_a_ricochet_is_a_strike_through_the_whole_blow() -> void:
+	var gun := Face.attack(5, L)
+	var burner := Face.attack(3, L, [K.BURN])
+	burner.burn = 1
+	var spread := Face.attack(4, L, [K.CLEAVE])
+	spread.cleave = 2
+	var sk := Skirmish.new(1, 3)
+	var m := _mech("Skua", Die.of([gun, burner, spread]), 40, 100)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(100, 0), _ghoul(100, 0), _ghoul(100, 0)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var a: Foe = sk.front[0]
+	var b: Foe = sk.front[1]
+	var c: Foe = sk.front[2]
+	_ricochet(m, 3)
+	# Armour comes off each: a point of plate stops every one of them.
+	a.armour = 1
+	ms.face_index = 0
+	assert_true(sk.assign(0, a), "the gun on a plated foe")
+	assert_eq(a.hp, 96, "its 5 less the plate, and three strikes of 1 the plate takes whole")
+	sk.end_round()
+	sk.start_round()
+	# A flat buff adds to each, as to any strike.
+	Effects.grant_buff(m, "overcharged", 1, "test", sk.round)
+	ms.face_index = 0
+	assert_true(sk.assign(0, a), "Empowered by one")
+	assert_eq(a.hp, 88, "its 6 less the plate, and three strikes of 2 less the plate")
+	sk.end_round()
+	sk.start_round()
+	# The weapon's riders ride each strike.
+	a.armour = 0
+	ms.face_index = 1
+	assert_true(sk.assign(0, b), "a Burn 1 gun")
+	assert_eq(Effects.stacks_of(b, "burning"), 4, "a stack for its strike and one for each Ricochet")
+	sk.end_round()
+	sk.start_round()
+	# An area is the shot's, never the Ricochet's.
+	var c_before := c.hp
+	var a_before := a.hp
+	ms.face_index = 2
+	assert_true(sk.assign(0, b), "a Spread gun between two foes")
+	assert_eq([a_before - a.hp, c_before - c.hp], [2, 2], "each neighbour its Spread 2 once: the Ricochets strike the aimed foe alone")
+
+
+func test_a_sweep_ricochets_after_every_shot_that_finds_a_foe() -> void:
+	var pod := Face.attack(2, S)
+	pod.strikes = 3
+	var sk := Skirmish.new(1, 3)
+	var m := _mech("Skua", Die.single(pod), 40, 100)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(100, 0), _ghoul(100, 0), _ghoul(100, 0)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var a: Foe = sk.front[0]
+	var b: Foe = sk.front[1]
+	var c: Foe = sk.front[2]
+	_ricochet(m, 2)
+	b.hp = 0   # a hole in the rank: its column's shot is wasted
+	sk._clear_dead()
+	assert_true(sk.assign(0, a), "the pod along the front")
+	assert_eq([a.hp, c.hp], [96, 96], "each foe its shot of 2 and two strikes of 1: every shot ricochets")
+	var kinds: Array = []
+	for blow in sk.spend_blows:
+		kinds.append(str(blow["kind"]))
+	assert_eq(kinds, ["strike", "ricochet", "ricochet", "miss", "strike", "ricochet", "ricochet"], "the wasted shot struck no foe to strike again")
+	var bot := Policy.make(Policy.GREEDY, 1)
+	sk.end_round()
+	sk.start_round()
+	var with := bot.attack_score(sk, ms, pod, a)
+	Effects.remove(m, "ricochet")
+	assert_true(with > bot.attack_score(sk, ms, pod, a), "the bot counts them")
+
+
+func test_hull_damage_halves_ricochet_and_a_shield_keeps_it() -> void:
+	var gun := Face.attack(5, L)
+	var sk := Skirmish.new(1, 1)
+	var m := _mech("Skua", Die.single(gun), 4, 100)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(300, 4)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	_ricochet(m, 5)
+	sk.end_round()
+	assert_eq(m.shield, 0, "the blow of 4 lands on its shield of 4")
+	assert_eq(Effects.stacks_of(m, "ricochet"), 5, "nothing on the hull: the stacks stand")
+	sk.start_round()
+	m.shield = 0
+	sk.end_round()
+	assert_true(m.hull < 100, "the next reaches the hull")
+	assert_eq(Effects.stacks_of(m, "ricochet"), 2, "and half the stacks go, rounded down")
+	sk.start_round()
+	m.shield = 0
+	sk.end_round()
+	assert_eq(Effects.stacks_of(m, "ricochet"), 1, "half again at the next")
+	sk.start_round()
+	m.shield = 0
+	sk.end_round()
+	assert_eq(Effects.stacks_of(m, "ricochet"), 0, "and a lone stack is lost")
+	# An overheat is hull damage like any other.
+	sk.start_round()
+	m.shield = 40
+	_ricochet(m, 4)
+	ms.heat = ms.heat_max + 3
+	sk.end_round()
+	assert_eq(Effects.stacks_of(m, "ricochet"), 2, "its own heat burning hull halves them too")
+	# A stack is a stack: a Purge takes one.
+	Effects.purge(m, 1)
+	assert_eq(Effects.stacks_of(m, "ricochet"), 1, "a buff a Purge lowers")
+
+
+func test_damaging_a_foe_earns_a_stack_once_a_round_after_the_spend() -> void:
+	var quick := Face.attack(5, L, [K.RAPID])
+	var gun := Face.attack(5, L)
+	var probe := Face.attack(0, I, [K.EXPOSE])
+	var sk := Skirmish.new(1, 2)
+	var m := _mech("Skua", Die.of([quick, gun]), 40, 100)
+	m.grant_passive(SKIP_FIRE)
+	sk.add_mech(m)
+	var other := _mech("Wing", Die.single(probe), 40, 100)
+	other.id = 1
+	other.grant_passive(SKIP_FIRE)
+	sk.add_mech(other)
+	sk.add_foes([_ghoul(100, 0), _ghoul(100, 0)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var a: Foe = sk.front[0]
+	var plated: Foe = sk.front[1]
+	plated.armour = 9
+	ms.face_index = 0
+	assert_true(sk.assign(0, a), "its first weapon to damage a foe this round")
+	assert_eq(a.hp, 95, "strikes for its 5 alone: the stack lands after the spend that earned it")
+	assert_eq(Effects.stacks_of(m, "ricochet"), 1, "and earns a stack")
+	assert_false(ms.assigned, "Rapid: it acts again")
+	assert_true(sk.assign(0, a), "its second spend of the round")
+	assert_eq(a.hp, 89, "ricochets off the stack: 5 and 1")
+	assert_eq(Effects.stacks_of(m, "ricochet"), 1, "and earns no second: once a round")
+	assert_false(Effects.describe(m).any(func(d): return str(d[5]).begins_with("once:")), "the gate's mark is the engine's own, never described")
+	assert_true(sk.assign(1, a), "equipment aimed at a foe")
+	assert_eq(Effects.stacks_of(other, "ricochet"), 0, "damages nothing and earns nothing")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 1
+	assert_true(sk.assign(0, plated), "a blow its armour takes whole")
+	assert_eq(plated.hp, 100, "damaged nothing")
+	assert_eq(Effects.stacks_of(m, "ricochet"), 1, "so it earns nothing")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 1
+	assert_true(sk.assign(0, a), "the next round's first")
+	assert_eq(Effects.stacks_of(m, "ricochet"), 2, "earns the next stack")
+
+
+func test_a_buff_grants_ricochet_for_the_fight() -> void:
+	var swoop := Face.buff("ricochet", 1)
+	swoop.add_keyword(K.RAPID)
+	swoop.cooldown = 1
+	var gun := Face.attack(5, L)
+	var sk := Skirmish.new(1, 1)
+	var m := _mech("Skua", Die.of([swoop, gun]), 40, 100)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(100, 0)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var a: Foe = sk.front[0]
+	ms.face_index = 0
+	assert_true(sk.assign(0, ms), "the swoop, spent on itself")
+	assert_eq(Effects.stacks_of(m, "ricochet"), 1, "a stack")
+	assert_false(ms.assigned, "Rapid: its die rolls again")
+	assert_eq(ms.face_index, 1, "onto its gun, the swoop dark for the round")
+	assert_true(sk.assign(0, a), "the gun, the same round")
+	assert_eq(a.hp, 94, "ricochets off it: 5 and 1")
+	sk.end_round()
+	sk.start_round()
+	sk.end_round()
+	sk.start_round()
+	assert_eq(Effects.stacks_of(m, "ricochet"), 1, "no rounds run out on it: it lasts the fight")
+
+
 const RELAY := {"id": "relay", "name": "Relay", "description": "", "effects": [{"trigger": "static", "effect": "one_of_each"}]}
 
 

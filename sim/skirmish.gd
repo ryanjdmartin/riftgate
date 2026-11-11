@@ -107,6 +107,8 @@ class Hits:
 	var reached: Array = []         # every foe the blows reached, felled or not (the casings' refund)
 	var thawed := 0                 # Cryo stacks the hits spent, cooling the hitter once its heat lands (_pay_hits)
 	var swept: Array[String] = []   # a Sweep's shots, the foe and what it took, for the log
+	var damaged := 0                # the foes the blows took HP off (the on_damage trigger's read)
+	var steps := 0                  # the strikes and shots the spend came in, a Ricochet's among them: what lands after them takes the next place (_zap)
 	var sweep_rank := -1            # the rank a Sweep fired along
 	## What the hits aimed at the spend's target fired at it, for the Mine its machine leaves there
 	## (Ryan, 9 November: "the mine should take the entire result of the spend, then apply it"):
@@ -2834,8 +2836,33 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	var blocked := 0                 # the weapon's blows a living foe's armour or Barrier took whole (on_blocked)
 	if sweep:
 		h.heat += int(Effects.attack(ms.unit, f, 0, f.heat, target)["heat"])   # a sweep's heat, once, wherever its first shot falls
-	for s in range(maxi(1, f.strikes)):
-		if sweep:
+	# Ricochet (the Skua's, Ryan, 11 November: "When striking an enemy with a weapon, the weapon
+	# strikes it again for each stack of Ricochet, dealing 1 damage each time"): a strike of 1 more a
+	# stack after each shot, at that shot's foe ("a sweep gets +N strikes every shot, a multi-hit
+	# gets+N strikes after"): a single-target weapon's once, after its strikes, a Sweep's after every
+	# shot that found a foe. Each is a strike through the whole blow, its number 1 in place of the
+	# entry's and what the entry reads: the firer's pipeline on it, the foe's Flak and armour, the
+	# weapon's riders a strike, and no area. Read as the spend begins, so a stack the spend earns
+	# bounces no shot of it.
+	var bounces := Effects.stacks_of(ms.unit, "ricochet") if f.is_weapon() else 0
+	var steps: Array = []   # the spend's strikes in order, [the entry's strike (a Sweep's shot), a Ricochet's]
+	for shot in range(maxi(1, f.strikes)):
+		steps.append([shot, false])
+		for _b in range(bounces if sweep else 0):
+			steps.append([shot, true])
+	for _b in range(0 if sweep else bounces):
+		steps.append([maxi(1, f.strikes) - 1, true])
+	h.steps = steps.size()
+	for at in range(steps.size()):
+		var s: int = steps[at][0]
+		var bounce: bool = steps[at][1]
+		if bounce:
+			if aimed == null:
+				continue   # a shot at an empty column struck no foe to strike again
+			var only: Array[Foe] = [aimed]
+			hit = only
+			shapes = {}
+		elif sweep:
 			# A shot at its spot: the foe there, standing or felled by an earlier shot, since a kill
 			# clears nothing until the death check (Ryan, 7 November: "sweep hits a unit it already
 			# killed and doesn't skip it"); an empty column takes the shot and nothing else, its area
@@ -2845,7 +2872,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			aimed = spot[0]
 			if aimed == null:
 				h.swept.append("nothing")
-				_note_miss(Vector2i(h.sweep_rank, int(spot[1])), s)   # fired all the same, so the screen shows it land
+				_note_miss(Vector2i(h.sweep_rank, int(spot[1])), at)   # fired all the same, so the screen shows it land
 				continue
 			hit = reached_by(f, aimed)
 			shapes = area_shapes(f, aimed)
@@ -2859,18 +2886,21 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			judged_hp = judged["hp"]
 			struck_once.clear()
 			doubled = Effects.stack_multiplier(ms.unit, f, aimed)
-		if s % split == 0:
+		if bounce:
+			h.base += 1
+		elif s % split == 0:
 			h.base += f.power + own   # the number before the pipeline, once a split's hits, for the screen's flash
-		var heat := f.heat if s == 0 and not sweep else 0
+		var heat := f.heat if at == 0 and not sweep else 0
 		# The blow's order (Ryan, 28 October), the hit's own foe (the target, or a shot's) first:
 		# the entry's number and what it prints from its firer (the heat Vents all fired, the
 		# hopper's loads), a split's halving of that base (the Skua's, Ryan, 7 November: "base
 		# weapon damage is halved"), then the firer's pipeline, every live modifier's adds,
 		# multiplies and floors in that order, its conditions read on that foe; then that foe's own
 		# reads, flat (_foe_reads): "the spirit of buffs and riders is they happen after".
-		var modded := Effects.attack(ms.unit, f, split_share(f.power + own, split), heat, aimed, _judged(judged_hp, aimed))
-		var dmg: int = int(modded["damage"]) + _foe_reads(f, reads, aimed, not struck_once.has(aimed))
-		if s == 0 and not sweep:
+		# A Ricochet's strike is 1 where the entry's number and its reads of the foe would stand.
+		var modded := Effects.attack(ms.unit, f, 1 if bounce else split_share(f.power + own, split), heat, aimed, _judged(judged_hp, aimed))
+		var dmg: int = int(modded["damage"]) + (0 if bounce else _foe_reads(f, reads, aimed, not struck_once.has(aimed)))
+		if at == 0 and not sweep:
 			h.heat += modded["heat"]   # heat is paid once a spend, every modifier's with it (the rules: a blow)
 		h.vent += modded["vent"]
 		var landed := dmg
@@ -2907,8 +2937,8 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				# (the audit's eighth bug, 8 November: a Wild Boar's ×2 Flak 1 that kills with its
 				# first strike leaves Flak 2).
 				if foe == aimed:
-					_note_blow(foe, s, 0, "strike")   # the shot lands on the corpse before it spills
-				_spill(ms, f, foe, blow, hit, s, not f.is_debuff())
+					_note_blow(foe, at, 0, "ricochet" if bounce else "strike")   # the shot lands on the corpse before it spills
+				_spill(ms, f, foe, blow, hit, at, not f.is_debuff())
 				if foe == aimed:
 					landed = blow
 			else:
@@ -2920,7 +2950,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				# breaching blow meets none (one breach, 22 October). Every blow is recorded, one on a
 				# foe an earlier hit of the spend felled included, so the screen shows every hit and
 				# shot land (Ryan, 7 November: "Anything truncated confuses the player").
-				var landing := _land_blow(foe, blow, ms.unit, not f.is_debuff(), foe == aimed, foe.armour_for(f), s, "strike" if foe == aimed else ("chain" if int(shapes.get(foe, 0)) == AREA_CHAIN else "area"))
+				var landing := _land_blow(foe, blow, ms.unit, not f.is_debuff(), foe == aimed, foe.armour_for(f), at, ("ricochet" if bounce else "strike") if foe == aimed else ("chain" if int(shapes.get(foe, 0)) == AREA_CHAIN else "area"))
 				taken = int(landing["taken"])
 				var foe_armoured := int(landing["armoured"])
 				var barred := bool(landing["barred"])
@@ -2957,7 +2987,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 						h.mine_stack(sid, n_laid)
 			# The killing strike: what it had past the kill carries on.
 			if spills and was_alive and not foe.alive():
-				_spill(ms, f, foe, taken - hp_before, hit, s)
+				_spill(ms, f, foe, taken - hp_before, hit, at)
 			# Every rider lands on the foe its strike struck, felled or not (Ryan, 3 November: "the
 			# point is to show that the riders hit, AND it dies"; death is the spend's last check, so
 			# the preview shows them beside the skull and no trigger goes unfired).
@@ -3026,12 +3056,14 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				h.mine_stack("burning", primed_laid)
 		h.total += landed
 		if sweep:
-			h.swept.append("%s %d" % [aimed.display_name, landed])
+			h.swept.append(("+%d" if bounce else "%s %d") % ([landed] if bounce else [aimed.display_name, landed]))
 			# A shot is a hit of its own (Ryan, 7 November: "[select target - hit(s) - riders per
-			# hit] for each shot fired"): its riders, and what lands after its blow, land before
-			# the next shot fires, so a later shot at the same column reads them.
-			_land_riders(ms, riders, laid, webbed)
-			_after_blow(ms, f, touched, gained, turned)
+			# hit] for each shot fired"), its Ricochets part of it: its riders, and what lands after
+			# its blow, land once they are done and before the next shot fires, so a later shot at
+			# the same column reads them.
+			if at + 1 >= steps.size() or not bool(steps[at + 1][1]):
+				_land_riders(ms, riders, laid, webbed)
+				_after_blow(ms, f, touched, gained, turned)
 	# Riders land after the hits (Ryan, 3 November: "a multi-hit weapon with Shock would apply it
 	# after both hits ... Cryo should work the same way, resulting in 2 applications, not
 	# apply-cash-apply-cash, and not hit-hit-apply once"; and "It should be standard, not
@@ -3049,6 +3081,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	if loads > 0:
 		Effects.spend_loads(ms.unit, loads)
 		log.append("%s fires the hopper: %d load%s, +%d" % [ms.unit.display_name, loads, "" if loads == 1 else "s", from_hopper])
+	h.damaged = damaged.size()
 	var per_foe := hopper_fill_of(ms.unit, f)
 	if per_foe > 0 and not damaged.is_empty():
 		var n := Effects.add_loads(ms.unit, per_foe * damaged.size())
@@ -3097,6 +3130,10 @@ func _finish_hits(mech_index: int, ms: MechState, f: Face, target: Foe, h: Hits,
 	# at the front rank costs its firer nothing (danger close retired with the stock pass, 22 October).
 	_clear_dead()
 	_pay_hits(ms, f, h, pays)
+	# What damaging a foe earns the machine (on_damage; the Skua's stack of Ricochet, once a round
+	# by its own gate): after the spend that did it, so none of that spend's shots bounce off it.
+	if h.damaged > 0 and f.is_weapon() and ms.alive():
+		_fired(ms, Effects.fire(ms.unit, "on_damage"), "for the damage")
 
 
 ## The hits told: the screen's last roll and the log's line (a Sweep's shots, a vent's blast or a
@@ -3134,7 +3171,7 @@ func _zap(ms: MechState, f: Face, target: Foe, h: Hits) -> void:
 	if _barrier_eats(target, true):
 		zap = 0
 	target.hp -= zap
-	_note_blow(target, maxi(1, f.strikes), zap, "zap")   # after the strikes, on a corpse too
+	_note_blow(target, maxi(maxi(1, f.strikes), h.steps), zap, "zap")   # after the strikes, on a corpse too
 	h.dealt += clampi(zap, 0, maxi(0, zap_before))
 	log.append("%s zaps %s for %d" % [ms.unit.display_name, target.display_name, zap])
 
@@ -4529,6 +4566,11 @@ func _hull_damaged(ms: MechState) -> void:
 	var parts := _apply(ms, Effects.hull_damaged(ms.unit))
 	if not parts.is_empty():
 		log.append("%s: %s from the hit" % [ms.unit.display_name, ", ".join(parts)])
+	# What halves on hull damage (Ricochet: Ryan, 11 November, "Lose half stacks of Ricochet on any
+	# hull damage"), at each blow, bite or overheat that takes hull.
+	var halved := Effects.halve_on_hull_damage(ms.unit)
+	if not halved.is_empty():
+		log.append("%s: its hull takes the hit, %s" % [ms.unit.display_name, ", ".join(halved)])
 
 
 ## A foe's blow its shield took, nothing of it on the hull (Ryan, 11 November, the Nemesis: "hull

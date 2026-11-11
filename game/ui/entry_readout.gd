@@ -907,6 +907,14 @@ static func turn_line(next: Face, place: int, db: ContentDB) -> Dictionary:
 	return marked(text_line("effect", "Spent, its die turns to %s, %s, and it acts again" % [Hud.roman(place), named], "rule"), [passive_mark(str(shown[0]), shown[1], shown[2])])
 
 
+## The strikes a machine's Ricochet adds to the weapon showing (the Skua's, 11 November), as a
+## line headed by the passive box the die shows them in: a Sweep's after every shot, any other
+## weapon's once after its strikes.
+static func ricochet_line(stacks: int, sweep: bool) -> Dictionary:
+	var said := "Ricochet: %s strikes its foe again, %d for 1" % ["each shot" if sweep else "after its strikes it", stacks]
+	return marked(text_line("effect", said, "rule"), [passive_mark("ricochet", "+%d" % stacks, Glyphs.colour_for("ricochet"))])
+
+
 ## The terms under `point`, in the readout's own space; none off them.
 func terms_at(point: Vector2) -> Array:
 	for h in _hits:

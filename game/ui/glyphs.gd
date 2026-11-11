@@ -418,6 +418,12 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			]), color, width)
 			ci.draw_polyline(PackedVector2Array([c + Vector2(s * 0.45, -s * 0.75), c + Vector2(s * 0.9, -s * 0.35), c + Vector2(s * 0.45, s * 0.05)]), color, width)
 			ci.draw_line(c + Vector2(-s * 0.3, -s * 0.2), c + Vector2(0.25 * s, s * 0.6), color, width * 0.7)
+		"ricochet":
+			# A shot glancing off a plate and away: the line in, the bounce, the arrow out (a
+			# placeholder for Ryan's eye, 11 November).
+			ci.draw_line(c + Vector2(-s * 0.9, s * 0.65), c + Vector2(s * 0.9, s * 0.65), color, width * 0.7)
+			ci.draw_polyline(PackedVector2Array([c + Vector2(-s * 0.9, -s * 0.5), c + Vector2(-s * 0.1, s * 0.65), c + Vector2(s * 0.8, -s * 0.7)]), color, width)
+			ci.draw_polyline(PackedVector2Array([c + Vector2(s * 0.25, -s * 0.7), c + Vector2(s * 0.8, -s * 0.7), c + Vector2(s * 0.75, -s * 0.15)]), color, width)
 		"rapid":
 			# Two chevrons: spent, and the die rolls again.
 			for i in range(2):

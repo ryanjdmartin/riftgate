@@ -732,13 +732,21 @@ func city_makers() -> Array:
 ## Tiers (bible section 10, the ledger, 7 October; stored since the stock pass, 22 October). A
 ## chassis carries its tier, 1 to 3; every component that is not locked carries its own, 0 to
 ## 3: 0 the basics, whose blueprints a run starts with, 1 to 3 found or brought by a bought
-## chassis, and a chassis stocks only components below its own tier. A locked component has
+## chassis, and a chassis stocks components up to its own tier, a tier three to tier two
+## (stock_tier). A locked component has
 ## none (NO_TIER).
 const NO_TIER := -1
 
 
 func chassis_tier(chassis_id: String) -> int:
 	return int(chassis.get(chassis_id, {}).get("tier", 0))
+
+
+## The highest tier of component a chassis of tier `own` stocks (the bible's tiers row): its own
+## at tiers one and two, and tier two for a tier three, so a tier-three component is only ever
+## found.
+static func stock_tier(own: int) -> int:
+	return mini(own, 2)
 
 
 func component_tier(component_id: String) -> int:
@@ -1670,6 +1678,8 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		# One a use spends (Spun Up, spent by the next weapon) lasts until then.
 		if Effects.STATUS.get(st, {}).has("spent_by") and fd.has("rounds"):
 			errs.append("%s: %s lasts until a use spends it, so a buff grants it stacks and no rounds" % [where, st])
+		if Effects.lasts_the_fight(Effects.STATUS.get(st, {})) and fd.has("rounds"):
+			errs.append("%s: %s lasts the fight, so a buff grants it stacks and no rounds" % [where, st])
 	elif fd.has("status") or fd.has("stacks") or fd.has("rounds"):
 		errs.append("%s: status, stacks and rounds belong to a buff face" % where)
 	if fd.has("targets"):
@@ -1762,6 +1772,11 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: lay_status lays at least one stack a hit" % where)
 		if effect == "stack_status" and eff.has("cap") and int(eff["cap"]) < 1:
 			errs.append("%s: stack_status's cap is the most stacks it banks, at least 1" % where)
+		# An effect that fires once a round (the Skua's stack of Ricochet for damaging a foe, Ryan,
+		# 11 November: "once per turn"): a gate on what an event fires (Effects.fire), which the
+		# pipeline's effects (static, on_attack, on_injury) never pass through.
+		if eff.has("once") and (str(eff["once"]) != "round" or ["static", "on_attack", "on_injury"].has(trig)):
+			errs.append("%s: once is \"round\", on an effect an event fires (never static, on_attack or on_injury)" % where)
 		# The Cottonmouth's drum (19 October): every weapon and debuff fired as one shot of a flat number,
 		# a reach and a heat; never keyed on reach, which reads the rewrite.
 		if effect == "rewrite_weapon":
@@ -2086,7 +2101,9 @@ func _validate_chassis(errs: Array[String]) -> void:
 	# Tiers (7 October; stored since the stock pass, 22 October): every chassis 1 to 3, and the
 	# capital's maker fields no tier one; every component that is not locked stores its tier, 0
 	# to 3, and a locked one none; the capital's maker makes no basics (tier zero); a chassis
-	# stocks only components below its own tier.
+	# stocks components up to its own tier at tiers one and two, and a tier three to tier two (the
+	# bible's tiers row; the validator's half since 11 November, with the Skua's Pod), so a
+	# tier-three component is only ever found.
 	var capital := capital_maker()
 	var stocked_ids := {}
 	var fixed_ids := {}
@@ -2120,8 +2137,8 @@ func _validate_chassis(errs: Array[String]) -> void:
 		var own := int(chassis[id].get("tier", 0))
 		for cid in chassis[id].get("loadout", []):
 			var ct := component_tier(str(cid))
-			if components.has(cid) and not fixed_ids.has(cid) and ct >= own:
-				errs.append("chassis %s: stocks %s at tier %d, and a chassis stocks only below its own tier (%d)" % [id, cid, ct, own])
+			if components.has(cid) and not fixed_ids.has(cid) and ct > stock_tier(own):
+				errs.append("chassis %s: stocks %s at tier %d, and a tier-%d chassis stocks up to tier %d" % [id, cid, ct, own, stock_tier(own)])
 	for id in chassis.keys():
 		var c: Dictionary = chassis[id]
 		var where := "chassis %s" % id

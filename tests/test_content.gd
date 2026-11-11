@@ -524,6 +524,41 @@ func test_passive_effect_cap_is_enforced() -> void:
 	assert_true(hit, "four effects in one passive is reported")
 
 
+## An effect an event fires may fire once a round (Ryan, 11 November, of the Skua's stack of
+## Ricochet: "once per turn"): `once` is "round", never on an effect the pipeline reads; and a
+## status that lasts the fight takes stacks and no rounds from a buff. Synthetic, as every
+## passive a test asserts on.
+func test_a_once_gate_and_a_fight_long_buff_are_validated() -> void:
+	var db := _fresh()
+	var cid := ""
+	for id in db.chassis.keys():
+		if db.chassis[id].get("passive", null) is Dictionary and str(db.chassis[id].get("status", "")) != "planned":
+			cid = str(id)
+			break
+	var gated := func(eff: Dictionary) -> bool:
+		db.chassis[cid]["passive"] = {"id": "test_once", "name": "Once", "description": "Once.", "effects": [eff]}
+		for e in db.validate():
+			if e.begins_with("chassis %s" % cid) and e.contains("once is"):
+				return true
+		return false
+	assert_false(gated.call({"trigger": "on_damage", "effect": "stack_status", "value": "ricochet", "once": "round"}), "once a round on an event's effect: allowed")
+	assert_true(gated.call({"trigger": "on_damage", "effect": "stack_status", "value": "ricochet", "once": "turn"}), "any other span: refused")
+	assert_true(gated.call({"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 1, "once": "round"}), "on a static effect, which no event fires: refused")
+	assert_true(gated.call({"trigger": "on_attack", "effect": "add_damage", "value": 1, "once": "round"}), "on the blow's pipeline: refused")
+	db = _fresh()
+	var buff := ""
+	for id in db.components.keys():
+		if str(db.components[id].get("face", {}).get("kind", "")) == "buff" and str(db.components[id].get("status", "")) != "planned" and not db.components[id]["face"].has("ally_action"):
+			buff = str(id)
+			break
+	assert_false(buff.is_empty(), "the content has a buff")
+	db.components[buff]["face"]["status"] = "ricochet"
+	db.components[buff]["face"]["rounds"] = 2
+	assert_true(_has_error(db, "ricochet lasts the fight"), "rounds on a status that lasts the fight: refused")
+	db.components[buff]["face"].erase("rounds")
+	assert_false(_has_error(db, "component %s" % buff), "stacks alone: allowed")
+
+
 func test_a_boss_is_marked_by_content_and_may_be_any_size() -> void:
 	# The bible's tiers row (15 October): big is an attribute apart from boss and elite, so a
 	# human-sized boss validates and is the boss; a hero is a final, dealt from the bench.
@@ -2022,9 +2057,18 @@ func test_the_tier_rules_are_validated() -> void:
 	db = _fresh()
 	db.components[stocked]["tier"] = 4
 	assert_true(_has_error(db, "component %s: tier must be 0, 1, 2 or 3" % stocked), "and only 0 to 3")
-	db = _fresh()
-	db.components[stocked]["tier"] = int(db.chassis[plain]["tier"])
-	assert_true(_has_error(db, "chassis %s: stocks %s at tier" % [plain, stocked]), "a chassis stocks only below its own tier")
+	# A chassis stocks up to its own tier at tiers one and two, and a tier three to tier two (the
+	# bible's tiers row; the validator's half since 11 November), so a tier-three piece is found.
+	for own in [1, 2, 3]:
+		db = _fresh()
+		db.chassis[plain]["tier"] = own
+		for cid in db.chassis[plain]["loadout"]:
+			db.components[cid]["tier"] = 0
+		assert_false(_has_error(db, "chassis %s: stocks %s at tier" % [plain, stocked]), "a tier-%d chassis stocks basics" % own)
+		db.components[stocked]["tier"] = mini(own, 2)
+		assert_false(_has_error(db, "chassis %s: stocks %s at tier" % [plain, stocked]), "a tier-%d chassis stocks a tier-%d piece" % [own, mini(own, 2)])
+		db.components[stocked]["tier"] = mini(own, 2) + 1
+		assert_true(_has_error(db, "chassis %s: stocks %s at tier" % [plain, stocked]), "a tier-%d chassis stocks nothing of tier %d" % [own, mini(own, 2) + 1])
 	db = _fresh()
 	var cap_piece := ""
 	for cid in db.components.keys():

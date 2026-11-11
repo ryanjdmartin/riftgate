@@ -1115,9 +1115,9 @@
    "maker": "kestrel",
    "tier": 1,
    "design": {
-    "fantasy": "The strafer (Ryan, 14 October: \"Love the [strafer], lock that in\"), a swing-wing since 21 October, the strafing jet by trade, its wings sweeping as it fires twice; the Skua, the seabird that harries others in repeated dives until they drop what they carry.",
-    "niche": "Kestrel's second tier one, the many-blows machine: every weapon it fires strikes twice at half, the Kite's bargain in count instead of magnitude. Each strike pays the foe's armour, so it slaughters trash and bounces off plate, a detachment the map can read. Its payoffs are riders laid a hit, flat buffs counted on each hit and multi-hit pieces, every maker's; its Flechette Pod fires a shot at each column of a rank.",
-    "notes": "Ryan's go, 21 October (the bible's Kestrel row). Its engine landed 25 October: the Split-cycle Breech (each roll halved, rounded down, Ryan's call of 24 October, and struck twice) and the Flechette Pod's spray; its rounds are in git (git show f87b831:docs/briefs/kestrel_strafer.md). Numbers are placeholders at the stock pass's scale, a light flyer at the floor of 20 hull. The stock by kind from the basics (a warm flat gun, a cold rolled gun, a self shield): the Laser Carbine, the Twin Autoguns and the Canopy. Its model is Claude's first cut of 23 October (tools/lowforge/models_low.py, skua), in a second round of looks on Ryan's notes (the to-do)."
+    "fantasy": "The strafer (Ryan, 14 October: \"Love the [strafer], lock that in\"), a swing-wing since 21 October, the strafing jet by trade; the Skua, the seabird that harries others in repeated dives until they drop what they carry. Since 11 November, in his words, Ramping Dakka.",
+    "niche": "Ramping Dakka (Ryan, 11 November, a complete rewrite): the first weapon it damages a foe with each round gains it a stack of Ricochet, and every shot of its weapons strikes its foe again for 1 a stack, so it is the long fight's hitter, weak in its first round and a storm by its fifth. Hull damage halves the stacks, so it ramps only while its shield holds: Kestrel's risk. Its lock, the Hypersonic Swoop, is the one way to a second stack in a round. Every bounce pays the foe's armour, so plate stops it and an Exposed foe does not; its payoffs are riders laid a strike, flat buffs counted on each strike, and Sweep, whose every shot bounces.",
+    "notes": "Rewritten 11 November on his words (the fast flyers' round: the bible's Kestrel row; its brief, git show e5638e2:docs/briefs/kestrel_skua.md). The stack is the passive's (on_damage, once a round) and the Swoop's; Ricochet is a buff that lasts the fight, read by the hit, halved on hull damage. Retired with it: the Split-cycle Breech (every weapon hitting twice at half; the engine keeps split_strikes, which no passive uses) and the Flechette Pod as its lock, now an ordinary weapon in its stock. Every number a placeholder. Its stock is three guns, the Pod in the Shoring Jack's place (his to move). Its model is the jaeger of 26 and 27 October (tools/lowforge/models_low.py, skua): the Pod hangs as a rack on the belly mount, and the twin pods on its spine, the old lock's, are housings nothing fires until its look is revisited."
    },
    "codex": "",
    "hull": 20,
@@ -1134,22 +1134,23 @@
    ],
    "size": "light",
    "fixed": [
-    "flechette_pod"
+    "hypersonic_swoop"
    ],
    "loadout": [
     "laser_carbine",
     "twin_autoguns",
-    "shoring_jack"
+    "flechette_pod"
    ],
    "passive": {
-    "id": "split_cycle_breech",
-    "name": "Split-cycle Breech",
-    "description": "Doubles the number of hits (or number of shots, for Sweep) for Weapons and Equipment. Base weapon damage is halved (rounded down, minimum 1).",
+    "id": "skip_fire_breech",
+    "name": "Skip-fire Breech",
+    "description": "Once a round, damaging a foe with a weapon gains it a stack of Ricochet.",
     "effects": [
      {
-      "trigger": "on_attack",
-      "effect": "split_strikes",
-      "value": 2
+      "trigger": "on_damage",
+      "effect": "stack_status",
+      "value": "ricochet",
+      "once": "round"
      }
     ]
    },

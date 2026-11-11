@@ -2556,6 +2556,39 @@ func test_every_hit_and_shot_lands_on_the_screen_a_wasted_one_included() -> void
 	s2.free()
 
 
+## Ricochet on the screen (the Skua's, 11 November; a synthetic passive): each of its strikes a
+## beat of its own, quick on its shot's heels; the die's passive box says how many a shot gets;
+## the status is a chip like any buff, and its once-a-round mark never one.
+func test_a_ricochet_lands_on_its_own_quick_beat_and_shows_in_the_passive_box() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1, 2)
+	var m := db.make_mech("badger")
+	m.die = Die.single(Face.attack(3))
+	m.grant_passive({"id": "skip", "name": "Skip", "description": "", "effects": [{"trigger": "on_damage", "effect": "stack_status", "value": "ricochet", "once": "round"}]})
+	sk.add_mech(m)
+	var foe := Foe.make("revenant", 30, 1)
+	sk.add_foes([foe])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	Effects.stack(m, Effects.STATUS["ricochet"], Effects.SKIRMISH, "test", 2, Effects.DECAY_NONE)
+	s._refresh()
+	assert_eq(s._dice[0].ricochet, 2, "the die carries the two strikes more")
+	assert_true(s._dice[0].passive_marks().any(func(x: Array) -> bool: return str(x[0]) == "ricochet" and str(x[1]) == "+2"), "in its passive box: %s" % str(s._dice[0].passive_marks()))
+	assert_true(s._mech_rows(0).any(func(r: Array) -> bool: return str(r[2]).contains("Ricochet")), "the status a chip")
+	assert_true(s._use_die(0, foe), "spent")
+	var blows: Array = sk.spend_blows
+	assert_eq(SkirmishScreen._strikes_of(blows), 3, "three beats, the shot and its two: %s" % str(blows))
+	var beats := SkirmishScreen._beats(blows)
+	assert_true(is_equal_approx(beats[1], SkirmishScreen.RICOCHET_GAP) and is_equal_approx(beats[2], 2.0 * SkirmishScreen.RICOCHET_GAP), "each quick on the heels of the one before: %s" % str(beats))
+	assert_true(SkirmishScreen._is_ricochet(blows, 1) and not SkirmishScreen._is_ricochet(blows, 0), "the shot is a strike, what follows a Ricochet")
+	assert_eq(s._view_struck(blows, 2, {}, null), s._foe_view_for(foe), "a Ricochet is aimed at its shot's foe")
+	assert_eq(Effects.stacks_of(m, "ricochet"), 3, "the spend earned its stack")
+	s._refresh()
+	assert_false(s._mech_rows(0).any(func(r: Array) -> bool: return str(r[2]).strip_edges().is_empty() or str(r[2]).contains("once")), "the gate's mark is no chip: %s" % str(s._mech_rows(0)))
+	assert_eq(s._dice[0].ricochet, 0, "a spent die prints none")
+	s.free()
+
+
 ## A last act lands its damage with the act: the sim records each struck machine's gauges as the
 ## act met them, for the screen to hold until it is named.
 func test_a_last_act_records_the_gauges_it_met() -> void:

@@ -15,7 +15,7 @@ now carries "The kit, written out" (the Buzzard's and the Puffin's below), its s
 and a piece named only where it fits as it is.
 
 **Status**: the fast flyers' identities reopened under the long wall on 11 November (the next
-section; the Kite and the Needletail rebuilt that day, the Skua's rewrite in a brief of its own). Before that: every chassis decided by 21 October and named that evening (the Skua, the Storm
+section; the Kite, the Needletail and the Skua rebuilt that day on placeholder numbers). Before that: every chassis decided by 21 October and named that evening (the Skua, the Storm
 Petrel, the Needletail and the Giant Petrel in content and modelled 23 October, the Needletail
 whole, the Skua whole since its engine of 25 October, the other two planned until theirs); the Buzzard's stock filled and the stock
 holes taken; the last two slots marked (the Magpie, a support engine; the
@@ -80,13 +80,17 @@ Where each stands:
   Phased on a kill he kept for the shadow panther ("It keeps the phased orbit, not the Kite").
   Its brief is retired (`git show eed817e:docs/briefs/kestrel_kite.md`); the bible's Kite row
   carries it, and his play is the to-do's.
-- **The Skua**: his rewrite of 11 November, in a brief of its own (`kestrel_skua.md`): a stack of
-  Ricochet for damaging an enemy, once a round, and a second only by its lock, the Hypersonic
-  Swoop (Rapid, a cooldown of one); a strike of 1 more for every stack, half lost on any hull
-  damage; the Flechette Pod an ordinary weapon. The stacks ride a shot, his word: a Sweep gets
-  them on every shot, a weapon of several strikes once after them. Claude's other readings
-  stand unless he says (strikes of 1 through the whole blow; half rounded down at each blow that
-  takes hull; no cap).
+- **The Skua**: his rewrite of 11 November ("Ramping Dakka. Complete rewrite"), built the same
+  day on his go: a stack of Ricochet for damaging a foe with a weapon, once a round, and a
+  second only by its lock, the Hypersonic Swoop (Rapid, a cooldown of one); a strike of 1 more
+  for every stack after each shot, half lost on any hull damage; the Flechette Pod an ordinary
+  tier-one weapon in its stock. The stacks ride a shot, his word: a Sweep gets them on every
+  shot, a weapon of several strikes once after them. Claude's other readings are built so and
+  his to move (a strike through the whole blow, no area; half rounded down at each blow that
+  takes hull; no cap). The Split-cycle Breech is gone from content. Its brief is retired (`git
+  show e5638e2:docs/briefs/kestrel_skua.md`); the bible's Kestrel row carries it, and his play
+  is the to-do's. His question of the same day, Sweep reworked or scrapped, is the bible's
+  section 12's.
 - **The Needletail**: settled 11 November ("I agree with the Needletail, yes") and built the same
   day on his go ("Yes build them with placeholder numbers"): two things a round, a weapon and an
   equipment every round, its die turning to a lit entry of the other kind, the Designator kept,

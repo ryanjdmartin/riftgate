@@ -68,8 +68,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   `content/modules.json`.
 - **Tiers and blueprints**: the basics are tier zero, what comes off the assembly line: a run
   starts with every basic's blueprint. Every other component carries its tier, one to three,
-  and a chassis stocks only components below its own tier, so a tier-one chassis stocks
-  basics beside its fixed pieces and a tier-three component is only ever found. Blueprints
+  and a chassis stocks components up to its own tier at tiers one and two, a tier three to
+  tier two, so a tier-three component is only ever found. Blueprints
   of tiers one to three are found; a bought chassis brings one copy of each component it
   stocks, never its blueprint. A fixed component has no tier; the Arsenal (the capital's
   maker) makes no basics and fields no tier-one chassis, though its tier-one components exist
@@ -228,7 +228,7 @@ every machine is wrecked. There is no round limit.
   so a half that fell before the spend leaves none. A Sweep carries no Swap, detonation or
   gather, each of them acting on one foe. Each shot is aimed at its column's foe and is a hit of its own (A spend's
   order, below), and an area keyword's shape rides each. The die shows a shot's number, and
-  dragged over a foe it lights that foe's rank whole and brackets it. The Skua's Flechette
+  dragged over a foe it lights that foe's rank whole and brackets it. The Flechette
   Pod, and the Musk Ox's salvo an ammo a shot.
 - **Every Foe** (a debuff's) reaches any foe and lands on every foe in the fight, front rank and
   back, as on its target. A weapon reaches wide by Spread, Penetrate or Splash instead. Like
@@ -254,8 +254,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 3. The foe's own, flat first: what the entry reads off it (the hull it is missing on every
    blow, the stacks a consumer eats on it on its first blow) and its Flak; then its multiplies
    (Shocked doubles a weapon's strike aimed at it, never a blow that only reaches it); then its
-   armour comes off. A weapon's blow takes them whatever it deals, a 0 included (the Skua's
-   halved 1); a debuff's blow stays nothing. Its riders land on every foe struck, after its
+   armour comes off. A weapon's blow takes them whatever it deals, a 0 included; a debuff's
+   blow stays nothing. Its riders land on every foe struck, after its
    weapon's hits (below).
 - **Riders land after the hits**: each hit's Cryo and Flak gather on its own foe and land
   once its weapon's hits are done, an application a hit, so no hit of a single-target weapon
@@ -322,10 +322,11 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   foe's cleanse takes it and the Paradox counts it. Its chip shows its damage, its readout its
   keywords.
 - Strikes are separate blows; each lands the number and carries the keywords. Heat is paid once a spend.
-  A split weapon (the Skua's) hits twice as often, or fires twice the shots for a Sweep, each
-  hit's base (its number and what it prints from its firer) halved before the attacker's
-  modifiers, rounded down and never below one (a number of nothing stays nothing); every
-  modifier and the foe's own reads then count on each hit.
+  A split weapon (a passive's split; none splits today) hits twice as often, or fires twice the
+  shots for a Sweep, each hit's base (its number and what it prints from its firer) halved
+  before the attacker's modifiers, rounded down and never below one (a number of nothing stays
+  nothing); every modifier and the foe's own reads then count on each hit. A machine carrying
+  Ricochet strikes again after each shot (Ricochet, below).
 - **The die shows the number** one blow will deal after every modifier; a debuff shows none,
   and a gun whose blow is nothing here shows 0. Dragged over a foe it may strike,
   it shows that foe's number: its missing hull, conditions on it, its Flak, its armour off. A
@@ -340,8 +341,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   written-out grant's line last, then its tags. A number the live sources moved off the
   component's own is coloured, green where the change is good for its unit and red where it
   is bad (more heat, a smaller blow), always relative to the unit and never the player, with
-  its arrow on it, the way it moved: each number on its own, so a split weapon's smaller blow
-  and its extra strike each say so. No source is listed. A tap on it again closes it, and it
+  its arrow on it, the way it moved: each number on its own, so a smaller blow and an extra
+  strike each say so. No source is listed. A tap on it again closes it, and it
   is one readout with the units' (below): a tap on another die or a unit moves it. A die's tap
   lands once the double-tap window (0.15 s, from the tap's release to a second touch) has passed
   with no second touch, the die lit from the touch until it does, so a double-tap only locks and
@@ -657,6 +658,18 @@ On a machine:
   on a gun without it), laid after the hits.
 - **Spun Up** (buff): the next weapon the machine spends deals +2 a stack and takes every
   stack; equipment leaves them standing; carried between turns until a weapon takes it.
+- **Ricochet** (buff, the Skua's): each shot of a weapon strikes its foe again for 1, once a
+  stack: a single-target weapon once, after all its strikes, and a Sweep after every shot
+  that finds a foe (a shot at an empty column strikes nothing again). Each is a strike of its
+  own through the whole blow, its number 1 in place of the entry's and of what the entry reads
+  off the foe: the firer's modifiers on it (Empowered adds), the foe's Flak, then its armour, so
+  a point of plate stops every one and an Exposed foe's plate stops none; the weapon's riders
+  land with each, a stack a strike; an area's shape is the shot's and no Ricochet carries it.
+  The stacks are read as the spend begins, so one the spend earns bounces no shot of it.
+  Equipment strikes nothing again. Whenever the machine's hull is damaged (a blow, a bite or
+  an overheat) half its stacks go, rounded down, so a lone stack is lost; a blow its shield
+  takes whole costs none. It lasts the fight, with no cap, and a Purge takes it as any buff.
+  The die shows the strikes a shot will get in its passive box ("+3").
 - **Retaliate** (buff): a foe whose blow reaches this machine's bare hull is Shocked.
 - **Regenerating** (buff, on either side): a foe's, from its own special, regrows its value in HP
   at each of its next three actions, after its Burning and Vitriol have ticked (a suppressed
@@ -1028,14 +1041,18 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   on hull damage (any hull lost: a blow, a bite or an overheat), on shield gain, on shield
   granted (an ally this machine shields), on heat gain, out of combat, on foe status (a foe
   gains a debuff), on stack (this machine applies stacks), on a kill (once after an attack of
-  this machine's that killed, arcs, spills and a vent's blast included). No trigger feeds itself.
+  this machine's that killed, arcs, spills and a vent's blast included), on damaging a foe
+  (after a spend of its weapons that took HP off a foe, once however many it hurt; what it
+  grants lands after the spend, so the Skua's stack bounces none of the shots that earned
+  it). An effect an event fires may fire once a round only (the Skua's). No trigger feeds
+  itself.
 - A passive may double a weapon's printed number before its buffs, on every blow, what the
   entry prints from its firer included (an area's number, heat fired, hopper loads), the buffs
   added once after it and the struck foe's own reads (its missing HP, the stacks consumed on
   it) after those, undoubled, and under a condition where it carries one (the Kite's, against
   an unhurt foe); it may grant a cooldown to every weapon and equipment its machine aims at a
   foe (none does today). On a kill a passive may recharge its machine's shield whole (the
-  Kite's), as any shield gained is. It may split every weapon and equipment aimed at a foe instead (the Skua's):
+  Kite's), as any shield gained is. It may split every weapon and equipment aimed at a foe instead (none does today):
   each hits twice as often, a Sweep firing twice the shots, and each hit's base weapon damage
   (its number and what the entry prints) is halved, rounded down and never below one, every
   buff and passive and the foe's conditions counting on each hit after it, its armour too; the

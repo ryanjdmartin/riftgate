@@ -5766,9 +5766,10 @@ def _mirror(pts, s):
     return [(s * x, z) for (x, z) in (pts if s > 0 else list(reversed(pts)))]
 
 def skua(b):
-    """Kestrel "Skua" (K-13 Mk I Swing-Wing Strafer): Kestrel's second tier one, every weapon
-    striking twice at half (Ryan's go, 21 October: a swing-wing, the strafing jet by trade, its
-    wings sweeping as it fires twice). Second round, the jaeger (Ryan, 26 October, on the first
+    """Kestrel "Skua" (K-13 Mk I Swing-Wing Strafer): Kestrel's second tier one (Ryan's go, 21
+    October: a swing-wing, the strafing jet by trade), "Ramping Dakka" since his rewrite of 11
+    November (Ricochet; its lock the Hypersonic Swoop, equipment that shows nowhere). Second
+    round, the jaeger (Ryan, 26 October, on the first
     cut's F-14: "I'm ok for a homage, but that has no originality in it whatsoever"; the jaeger
     "pretty cool", then "a bit too bird-like", then "go back to the previous Jaeger" with a jet's
     nose, the wings low, the fin back and taller; 27 October, "Skua as the Jaeger is good, ditch
@@ -5780,11 +5781,13 @@ def skua(b):
     for the run and spreads past square to brake, the bone-white flash a bar across the hand's
     root; a V tail of two canted stabilisers; two long streamers off the tail (the jaeger's
     central tail feathers); the fin from the fairing back over the booster, swept and tall; the
-    Flechette Pod (fixed, no pin) twin pods on the spine, honeycomb faces forward in dark collars
-    the strafing run lights twice. On the move the hands sweep back as it gathers speed and
-    spread as it slows. Mounts in the die's order: hp_1 under the left arm's root (the Laser
-    Carbine), hp_2 under the right (the Twin Autoguns), hp_3 bare under the belly (the self
-    shield shows nowhere). Centred on z = 0 like the Kite."""
+    twin pods on the spine, honeycomb faces forward in dark collars: the housings of the Flechette
+    Pod while it was its lock, kept as they are and firing nothing since the Pod became an
+    ordinary weapon (11 November; theirs to settle with its look). On the move the hands sweep
+    back as it gathers speed and spread as it slows. Mounts in the die's order: hp_1 under the
+    left arm's root (the Laser Carbine), hp_2 under the right (the Twin Autoguns), hp_3 under the
+    belly (the Flechette Pod, a rack, a strafer's centreline pod). Centred on z = 0 like the
+    Kite."""
     FUSE = [(30.0, 7.0, 3.3, 3.3), (18.0, 10.0, 4.4, 4.0), (4.0, 11.4, 4.9, 4.4), (-10.0, 10.8, 4.8, 4.4), (-22.0, 9.4, 4.5, 4.3)]   # (y, w, top, bottom)
     NOSE = [(30.0, 7.0, 3.3, 3.3), (40.0, 5.2, 2.5, 2.5), (49.0, 3.0, 1.4, 1.4), (55.0, 1.2, 0.5, 0.5)]
     BY, BR = -36.0, 7.0   # the booster's centre and radius
@@ -5827,19 +5830,19 @@ def skua(b):
         b.box(s * 1.6 - 0.6, s * 1.6 + 0.6, -41.0, -31.0, 4.6, 8.0, "steel.plate", "streamer_root")
     # The fin: its root from the fairing back over the booster, swept and tall.
     _rings(b, [_fin_section(0.0, -18.0, -44.0, 5.0, 0.8), _fin_section(0.0, -37.0, -47.0, 20.0, 0.3)], "livery.livery", "fin")
-    # The Flechette Pod (fixed): twin pods on the spine, honeycomb faces forward (one missile
-    # tile each), collars banked dark at rest and lit hot by the run.
+    # The spine's twin pods, honeycomb faces forward (one missile tile each), collars banked dark:
+    # the Flechette Pod's housings while it was the lock, body detail since 11 November.
     for px in (-3.0, 3.0):
         b.loft([(-16.0, rect(px, 1.8, 4.2, 6.5)), (-10.0, rect(px, 3.4, 4.4, 8.2)), (3.0, rect(px, 3.4, 4.4, 8.2))], "steel.panel", "flechette_pod")
         _missile_face(b, (px - 1.7, 3.1, 4.4), (0.0, 0.0, 1.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), 3.4, "flechette_face")
         for (za, zb) in ((8.1, 8.6), (4.0, 4.5)):
             b.box(px - 2.1, px + 2.1, 2.2, 3.0, za, zb, "amber.ember", "pod_collar")
-    # The mounts: a pylon under each arm's root, the gun ahead of the arm's edge; the third bare
-    # under the belly.
+    # The mounts: a pylon under each arm's root, the gun ahead of the arm's edge; the third under
+    # the belly, the Flechette Pod's rack on the centreline.
     for s in (-1.0, 1.0):
         b.box(s * 10.0 - 0.7, s * 10.0 + 0.7, -2.0, 5.0, -2.4, -0.4, "steel.plate", "pylon")
         b.stock("hp_%d" % (1 if s < 0 else 2), (s * 10.0, 5.0, -3.0), "barrel" if s < 0 else "twin_barrel", scale=0.5, carries="laser_carbine" if s < 0 else "twin_autoguns")
-    b.pad("hp_3", (0.0, -10.0, -5.0), scale=0.5, size=(5.0, 1.4))
+    b.stock("hp_3", (0.0, -10.0, -5.0), "rack", scale=0.5, carries="flechette_pod")
 
     # Idle acts (five, like the Kite's, loud and never in step; Ryan, 28 October: the strafing
     # run and the sweep-dash read the same, and it wants the Kite's treatment, bigger
@@ -5909,9 +5912,11 @@ def skua(b):
     # The burst (Ryan, 3 November: the Fire button "sometimes makes it do a loop. Is that because
     # it's attached to Strafing run? Its janky either way"): the strafing run is a flown path on
     # the map, and its slice carried the machine round its circle in the fight's frame. Its pods
-    # fire on their own act instead, where it stands: the hands half swept, the nose dipped at its
+    # fired on their own act instead, where it stands: the hands half swept, the nose dipped at its
     # mark with a little surge, two bursts, each kicking it back, then level. A weapon's firing
-    # alone (idle=False).
+    # alone (idle=False), and no weapon's since 11 November: the Pod is an ordinary weapon on a
+    # mount and fires as its class does, so nothing plays this until its look is revisited (the
+    # Hypersonic Swoop, its lock, is equipment).
     b.act("pod_burst", 1.8, {"wing_l": [(0.1, 0.0), (0.4, SW * 0.5), (1.0, SW * 0.5), (1.5, 0.0)],
                              "wing_r": [(0.1, 0.0), (0.4, -SW * 0.5), (1.0, -SW * 0.5), (1.5, 0.0)]},
           body=[(0.1, 0.0, 0.0, 0.0), (0.42, 0.0, 2.5, -1.0, 0.0, -7.0, 0.0), (0.5, 0.0, 0.8, -0.6, 0.0, -4.0, 0.0), (0.6, 0.0, 2.0, -0.9, 0.0, -6.0, 0.0),
@@ -5919,7 +5924,6 @@ def skua(b):
           heft=0.06, idle=False,
           glow=[(["pod_collar"], [(0.44, 0.0), (0.48, 18.0), (0.54, 1.0), (0.62, 18.0), (0.68, 1.0), (0.76, 0.0)]),
                 (boosters, [(0.1, 0.0), (0.35, 6.0), (0.9, 6.0), (1.5, 0.0)])])
-    b.fires = {"flechette_pod": ("pod_burst", 0.25, 1.6, 0.48)}   # its fixed weapon fires with its burst, its blow at the first
     b.move(slide=0.5, bank=44.0, accel=0.7, heft=0.08, oversteer=0.3)
 
 skua.maker = "kestrel"

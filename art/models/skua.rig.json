@@ -2798,7 +2798,7 @@
  "pins": {
   "hp_1": "laser_carbine",
   "hp_2": "twin_autoguns",
-  "hp_3": ""
+  "hp_3": "flechette_pod"
  },
  "gait_options": {
   "spread": {
@@ -2886,16 +2886,9 @@
    1.8
   ]
  ],
- "fires": {
-  "flechette_pod": {
-   "act": "pod_burst",
-   "from": 0.25,
-   "to": 1.6,
-   "blow": 0.48
-  }
- },
  "stock_shapes": {
   "hp_1": "barrel",
-  "hp_2": "twin_barrel"
+  "hp_2": "twin_barrel",
+  "hp_3": "rack"
  }
 }

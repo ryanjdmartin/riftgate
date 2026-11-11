@@ -54,6 +54,7 @@ const SHOCK_WEIGHT := 0.6        # a Shock cashed later (a mine's, a hull's): th
 const CLEANSE_ROUNDS := 2.0      # rounds a cleansed status would otherwise have cost (Corrupted lasts the fight, Burning fades)
 const HOPPER_WEIGHT := 0.6       # a load in the hopper, as a share of what it adds when a later shot fires it
 const PLATE_ROUNDS := 2.0        # rounds a held load's Armoured is likely to stand (this round's blows and the next's), for the hull its armour keeps
+const RICOCHET_WORTH := 2.0      # a stack of Ricochet (the Skua's, 11 November), in foe hit points: about two shots' worth before the fight ends or a blow halves it; a placeholder, as every weight
 const ROLL_AGAIN_WEIGHT := 1.0   # another roll of the die bought with a stack (the Nemesis's rage), as the die's own average blow
 const RAGE_BANK_WEIGHT := 0.5    # a stack banked by a bite of its own, as a share of the roll it buys: it waits for a fist to show
 const VITRIOL_WEIGHT := 0.5      # a status a passive lays (the funnel-web's acid) pays out over the actions to come, as Burn's does
@@ -1219,7 +1220,15 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, strike
 		var first := maxi(0, (Effects.damage_taken(target, dmg + eats, ms.unit, damaging) if target != null else dmg + eats) - arm)
 		if barred:
 			first = 0
-		out.append([float(first) + float(later) * maxf(0.0, n - 1.0), w])
+		# Ricochet (the Skua's, 11 November): a strike of 1 more a stack after each shot, through
+		# the firer's pipeline, the foe's Flak and its armour: a Sweep's after every shot at this
+		# foe, any other weapon's once.
+		var bounced := 0.0
+		var stacks := Effects.stacks_of(ms.unit, "ricochet") if f.is_weapon() and target != null else 0
+		if stacks > 0:
+			var one := int(Effects.attack(ms.unit, f, 1, 0, target)["damage"])
+			bounced = float(maxi(0, Effects.damage_taken(target, one, ms.unit, true, false) - arm)) * stacks * (n if f.reach == Face.Reach.SWEEP else 1.0)
+		out.append([float(first) + float(later) * maxf(0.0, n - 1.0) + bounced, w])
 	return out
 
 
@@ -1751,6 +1760,8 @@ func buff_score(sk: Skirmish, who: Skirmish.MechState, f: Face) -> float:
 			score += phased_score(sk, who)
 		"rallied":
 			score += REROLL_SHARE * _team_raw_attack_mean(sk) * float(n)   # a team reroll more this round
+		"ricochet":
+			score += RICOCHET_WORTH * float(n)   # a strike of 1 more after each shot, for the fight
 	return score
 
 

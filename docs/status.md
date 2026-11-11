@@ -54,11 +54,12 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 Everything is on main as of 11 November 2026; the formation and refit session's branch lands as it goes, below.
 `ccr-e3ddf00b-ilkwbi`, the Kestrel fast flyers' session of 11 November (The design sessions, below),
-cut from main at `209112b`, took main at `2a9242e` as a fast-forward before its first commit and
-again at `e286f8d` in a merge (the bible's version, the measurements' end and this file the
-conflicts, both sides kept): records alone (three briefs, the hub's section, a probe in the
-measurements, the to-do's lines, the bible's withdrawal row with his call of 11 November, its file
-v0.530 here and unpublished), nothing built and no rule changed; it lands on Ryan's word.
+cut from main at `209112b`, took main at `2a9242e` as a fast-forward before its first commit, at
+`e286f8d` in a merge and at `6cf3582` in a second (the Whip Scorpion's rework and the
+Clydesdale's review: the engine's static effects, the bible's version, this file and the
+generated vocabulary the conflicts, both sides kept): the Needletail, the Kite and the Skua
+rebuilt on his go on placeholder numbers, engine, content, models and tests (The design sessions,
+below), the bible's file v0.534 here and unpublished; it lands on Ryan's word.
 `ccr-c71bc17f-hclj2c`, Ryan's map playtest list of 10 November, his answers to it and his second
 and third map lists the same day (How things stand below), cut from main at `aa40832`, landed on
 main as fast-forwards on his word each time ("Ok, merge this into main so I can try it"; "yeah,
@@ -296,9 +297,11 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
 - The Kestrel fast flyers, 11 November (`ccr-e3ddf00b-ilkwbi`; Ryan: "I want to revisit the Kite a
   bit. Something about it feels clunky to me", then the Kite "from the ground up, ignoring target
   tier and previous assumptions" and the three move-six flyers' identities under the long wall,
-  "what does what and why you'd want one over the other"). The Needletail and the Kite are built
-  on his go, placeholder numbers; the Skua's rewrite is next. The map is at the head of
-  `kestrel_line.md`. A probe of the old Kite's turns is in `docs/measurements.md` (its die opened
+  "what does what and why you'd want one over the other"). All three are built on his go
+  ("Yes build them with placeholder numbers"), each to be played (the to-do's Ryan list); the
+  map is at the head of `kestrel_line.md`. Main's Whip Scorpion and Clydesdale work is merged in
+  (11 November). His question of the same day, Sweep reworked or scrapped, is the bible's
+  section 12's, with Claude's lean; nothing of it is built. A probe of the old Kite's turns is in `docs/measurements.md` (its die opened
   dark a round in five, its own heat cost it as much hull as the foes did, its reset fired under
   once a fight). Where it stands:
   - The Kite: built as his "Burst glass cannon" (the bible's Kite row, v0.532 on this branch,
@@ -312,12 +315,20 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
     declined (the bible's withdrawal row); Phased on a kill he kept for the shadow panther. The
     model's third mount is a bare pad on the nose's spine. Its brief is retired; his play is the
     to-do's.
-  - The Skua (`kestrel_skua.md`): his rewrite, "Ramping Dakka": Ricochet (a stack for damaging an
-    enemy, once a round; a strike of 1 more a stack; half lost on hull damage), the Hypersonic
-    Swoop its lock (a stack, Rapid, a cooldown of one), the Flechette Pod an ordinary weapon;
-    the stacks ride a shot (a Sweep's every shot, a weapon of several strikes once after them).
-    Claude's other readings are in the brief, written so unless he says. He had kept the Skua
-    for a session of his own; the rewrite came in this one.
+  - The Skua: built as his "Ramping Dakka" (the bible's Kestrel row, v0.534 on this branch,
+    unpublished). Its passive gains a stack of Ricochet the first time each round one of its
+    weapons damages a foe (the trigger `on_damage`; an effect's `once: round`, open to any effect
+    an event fires). Ricochet is a buff that lasts the fight: after each shot of a weapon a
+    strike of 1 more a stack (a Sweep's every shot, any other weapon's once after its strikes),
+    through the whole blow, no area; hull damage halves it, rounded down. Its lock is the
+    Hypersonic Swoop (a stack, Rapid, a cooldown of one). The Flechette Pod is an ordinary
+    tier-one weapon in its stock, printed as it played (2 a shot, four shots), and the validator
+    lets a machine stock up to its own tier at one and two (the bible's tiers row, its
+    validator's half). The Split-cycle Breech is gone from content; the engine keeps the split.
+    The bot counts the bounces and values a stack at a flat guess. On screen, unjudged: each
+    bounce a quick beat of its own, "+N" in the die's passive box by a placeholder glyph. The
+    model: the Pod a rack on the belly mount, the spine's pods firing nothing. Its brief is
+    retired; his play is the to-do's.
   - The Needletail: settled ("I agree with the Needletail, yes") and built on his go ("Yes build
     them with placeholder numbers"): two things a round, a weapon and an equipment every round,
     its die turning to a lit entry of the other kind (the static `one_of_each`; one entry to turn
@@ -1317,9 +1328,10 @@ commands are in `README.md`.
   pacing, menace and tier counts), and v0.531 since the Whip Scorpion's rework and the Clydesdale's
   review landed the same day (its rows; the hardpoints row: every stock gun its class, a mount's depth
   by class; the flare row), unpublished,
-  its republish on Ryan's word. `ccr-e3ddf00b-ilkwbi`'s file is v0.533 (main's v0.531, the
+  its republish on Ryan's word. `ccr-e3ddf00b-ilkwbi`'s file is v0.534 (main's v0.531, the
   withdrawal row with Ryan's call of 11 November on a break-off for one machine, the Kite's row
-  rewritten and the Kestrel row's Needletail), unpublished too. BASE for the next merge is `60a0e4d`'s file. The live page may carry rows ahead of main's code while a branch has not landed. Before
+  rewritten, the Kestrel row's Needletail and Skua, the tiers row's stock rule, section 12's
+  Sweep question), unpublished too. BASE for the next merge is `60a0e4d`'s file. The live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
   this branch's file, THEIRS the saved live source with the tool's wrapper line and its trailing

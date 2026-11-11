@@ -64,6 +64,7 @@ const SUPPORTED_EFFECTS := {
 	"status": ["tick_hp", "tick_hp_share", "tick_heat", "skip_action", "disable_entry", "corrupt_entry", "regrow"],
 	"on_foe_status": ["paradox"],
 	"on_stack": ["add_stacks"],
+	"on_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_kill": ["stack_status", "add_shield", "vent_heat", "refill_shield"],
 }
 const DECAY_NONE := 0    # lives until its scope ends
@@ -299,6 +300,14 @@ const STATUS := {
 	# them, since it only adds damage: Ryan, 26 October; a buff grants it with no rounds).
 	"spun_up": {"id": "spun_up", "name": "Spun Up", "description": "The next weapon it spends deals {value} more a stack and takes every stack; equipment leaves them standing. Carried between turns until then.", "decay": "none", "spent_by": "weapon",
 		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 2}]},
+	# Ricochet (the Skua's, Ryan, 11 November: "When striking an enemy with a weapon, the weapon
+	# strikes it again for each stack of Ricochet, dealing 1 damage each time. Lose half stacks of
+	# Ricochet on any hull damage"): a buff that lasts the fight (`lasts`: a buff component grants
+	# it stacks and no rounds), read by the hit (Skirmish._hit: a strike of 1 more a stack after
+	# each shot, "a sweep gets +N strikes every shot, a multi-hit gets+N strikes after") and halved,
+	# rounded down, whenever its machine's hull is damaged (`halves_on`, Skirmish._hull_damaged).
+	"ricochet": {"id": "ricochet", "name": "Ricochet", "description": "Each shot of a weapon strikes its foe again for 1, once a stack. Hull damage halves the stacks, rounded down.", "decay": "none", "lasts": "fight", "halves_on": "hull_damage",
+		"tags": ["buff"], "effects": []},
 	# A count a rule reads (the Cassowary's sixth shot, 21 October): every weapon and equipment the
 	# machine aims at a foe this fight, a stack each, kept only where a live effect counts them (nth_shot). A
 	# store with no effect of its own; the screen draws it as pips under the heat bar.
@@ -345,7 +354,7 @@ const STATUS := {
 }
 ## The statuses a buff component may grant: the machines' own (Braced is a foe's too, from its
 ## brace), never one only a foe carries.
-const MECH_STATUSES := ["overcharged", "braced", "primed", "retaliate", "barrier", "ward", "spun_up", "phased", "rallied"]
+const MECH_STATUSES := ["overcharged", "braced", "primed", "retaliate", "barrier", "ward", "spun_up", "phased", "rallied", "ricochet"]
 
 
 ## Is this id one of the engine's statuses: an id in STATUS, or a die entry's Corrupted or
@@ -1554,6 +1563,11 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 	var out := {"shield": 0, "vent": 0, "statuses": [] as Array[String]}
 	for pair in _taking_part(u, trigger, null):
 		var eff: Dictionary = pair[0]
+		# An effect that fires once a round (its `once`: "round"; the Skua's stack of Ricochet for
+		# damaging a foe, Ryan, 11 November: "once per turn"): a mark on the unit says it has,
+		# gone at the round's tick (_once).
+		if str(eff.get("once", "")) == "round" and not _once(u, pair[1], eff):
+			continue
 		var v: int = int(eff.get("value", 0)) * int(pair[1].stacks)
 		match str(eff.get("effect", "")):
 			"shield_per_heat":
@@ -1580,6 +1594,47 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 						if m != null and not (out["statuses"] as Array).has(m.name):
 							(out["statuses"] as Array).append(m.name)
 	return out
+
+
+## The once-a-round gate of a fired effect: true the first time `eff` of modifier `m` fires on
+## `u` this round, and false after, until the round's tick lifts the mark it leaves (a modifier
+## tagged ONCE, the round's decay: the engine's own note, never described, shown or stripped).
+const ONCE := "once"
+static func _once(u, m, eff: Dictionary) -> bool:
+	var mark := "once:%s:%s:%d" % [str(m.id), str(eff.get("trigger", "")), (m.effects as Array).find(eff)]
+	for held in u.modifiers:
+		if held.id == mark:
+			return false
+	var note := Modifier.new()
+	note.id = mark
+	note.source = "gate"
+	note.scope = SKIRMISH
+	note.decay = DECAY_ROUND
+	note.tags.append(ONCE)
+	grant(u, note)
+	return true
+
+
+## A unit's hull was damaged: every status that halves on it halves, rounded down, and goes at
+## none (its `halves_on`: "hull_damage"; Ricochet, Ryan, 11 November: "Lose half stacks of
+## Ricochet on any hull damage"), each halving at each blow that takes hull. Returns what it
+## touched with what is left ("Ricochet 2", "Ricochet gone"), for the log.
+static func halve_on_hull_damage(u) -> Array[String]:
+	var told: Array[String] = []
+	var left := {}
+	var keep: Array = []
+	for m in u.modifiers:
+		if str(STATUS.get(m.id, {}).get("halves_on", "")) != "hull_damage":
+			keep.append(m)
+			continue
+		m.stacks = int(m.stacks / 2.0)
+		left[m.name] = int(left.get(m.name, 0)) + maxi(0, m.stacks)
+		if m.stacks > 0:
+			keep.append(m)
+	u.modifiers = keep
+	for name in left.keys():
+		told.append("%s %d" % [name, int(left[name])] if int(left[name]) > 0 else "%s gone" % name)
+	return told
 
 
 ## Every stack of a status the machine carries: what a cap counts.
@@ -2206,6 +2261,12 @@ static func cleansable_disable(u, index: int) -> bool:
 	return false
 
 
+## Does the status last the fight once granted (its `lasts`: "fight"; Ricochet), so a buff
+## component grants it stacks and no rounds, as one a use spends?
+static func lasts_the_fight(def: Dictionary) -> bool:
+	return str(def.get("lasts", "")) == "fight"
+
+
 ## A buff component's grant (29 September): `stacks` of a machine status through the end of
 ## `until_round`. A grant ending the same round as one already there stacks onto it; one
 ## ending another round is its own, and each goes when its own rounds run out (16 October).
@@ -2217,8 +2278,9 @@ static func grant_buff(u, status_id: String, stacks: int, source: String, until_
 	var def: Dictionary = STATUS[status_id]
 	if decays_to_zero(def):
 		return stack(u, def, SKIRMISH, source, stacks, status_decay(def))
-	# One a use spends (Spun Up, spent by the next weapon) lasts until then, across turns.
-	if def.has("spent_by"):
+	# One a use spends (Spun Up, spent by the next weapon) lasts until then, across turns; one
+	# that lasts the fight (Ricochet) until the fight ends or its own rule takes it.
+	if def.has("spent_by") or lasts_the_fight(def):
 		return stack(u, def, SKIRMISH, source, stacks, DECAY_NONE)
 	return stack(u, def, ROUNDS, source, stacks, DECAY_NONE, until_round)
 
@@ -2355,6 +2417,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"on_heat_gain": lead = "on gaining heat: "
 		"out_of_combat": lead = "each phase out of combat: "
 		"on_kill": lead = "after an attack that killed: "
+		"on_damage": lead = "after a spend of its weapons that damaged a foe: "
 	match str(eff.get("when", "")):
 		"reach_direct": lead += "direct attacks: "
 		"reach_indirect": lead += "indirect attacks: "
@@ -2376,6 +2439,8 @@ static func effect_text(eff: Dictionary) -> String:
 			lead += ("%s blows aimed at the %s rank: " % [by, str(eff.get("rank", "front"))]) if not by.is_empty() else ("aimed at the %s rank: " % str(eff.get("rank", "front")))
 	if str(eff.get("when", "")).begins_with("tag_"):
 		lead += "pieces tagged %s: " % str(eff["when"]).substr(4)
+	if str(eff.get("once", "")) == "round":
+		body += ", once a round"
 	return lead + body
 
 
@@ -2448,5 +2513,7 @@ static func printed_grants(u, face: Face) -> Array[String]:
 static func describe(u) -> Array:
 	var out: Array = []
 	for m in live(u):
+		if m.tags.has(ONCE):
+			continue   # a once-a-round gate's mark: the engine's own note
 		out.append([m.name, m.description, m.source, m.scope, m.stacks, m.id])
 	return out
