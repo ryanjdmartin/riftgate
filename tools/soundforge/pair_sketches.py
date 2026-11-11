@@ -124,7 +124,131 @@ def figure(fig, notes):
     return "".join(fig.replace("r", n) for n in notes)
 
 
+# The fills' vocabulary (Ryan, 7 November, of Hold The Line's W: "The implementation of the new triplets are
+# superb ... keep those triplets in mind for existing or future drum parts, theyre awesome. The other common
+# drum pattern we're missing in general is the sixteenth note descending doubles pattern, as in the famous
+# Phil Collins In the Air Tonight fill"). Each returns (drum, step, velocity) events for a bar's grid
+# (`per_beat` steps a beat: 4 on a bar of sixteenths, 12 on Hold The Line's six-beat W), velocities rising
+# from `soft` to `hard` across the figure; drawn into patterns by the sketch that uses them. A sixteenth
+# needs a grid of four steps a beat or a multiple of it, a Bonham triplet six or a multiple of it.
+VELOCITIES = "123456789xabcdefgh"   # a drum hit's velocity characters, tenths to full, then over full
+
+
+def _ramp(n, soft, hard):
+    a, b = VELOCITIES.index(soft), VELOCITIES.index(hard)
+    return [VELOCITIES[round(a + (b - a) * k / max(1, n - 1))] for k in range(n)]
+
+
+def bonham_triplets(start, beats, hands, per_beat=12, foot="kick", soft="7", hard="9"):
+    """Bonham's triplets: two hands and the foot in sextuplets, a group of three to each half beat, the
+    hands on `hands` (a drum, or one a beat in turn) and the foot on `foot`, from step `start` for `beats`."""
+    if per_beat % 6:
+        raise ValueError("Bonham's triplets want a grid in sixes, not %d a beat" % per_beat)
+    step = per_beat // 6
+    drums = [hands] * beats if isinstance(hands, str) else list(hands)
+    hits = []
+    for b in range(beats):
+        for k in range(6):
+            hits.append((foot if k % 3 == 2 else drums[b], start + b * per_beat + k * step))
+    return [(d, s, v) for (d, s), v in zip(hits, _ramp(len(hits), soft, hard))]
+
+
+def descending_doubles(start, drums, per_beat=12, soft="6", hard="8", foot="kick", tail=2):
+    """The sixteenth-note descending doubles, as In the Air Tonight's fill plays them (Ryan, 7 November, with
+    its transcription: "while the rhythm of your fill is correct, the spirit of it is in the tom/snare rhythm
+    ... it's a tool to keep in our toolbox"): two sixteenths in the hands on each of `drums` in turn, high to
+    low, the foot on the sixteenth after each pair, so the hands fall in threes across the beat (hand, hand,
+    foot: 1 e (+) a | 2 (e) + a | (3) e + (a)), then `tail` eighths on the last of them. A drum may be a pair
+    struck together, as the record's two toms at once. From step `start` on a grid of `per_beat` a beat."""
+    if per_beat % 4:
+        raise ValueError("sixteenths want a grid in fours, not %d a beat" % per_beat)
+    s16 = per_beat // 4
+    hits, pos = [], start
+    for d in drums:
+        for k in range(2):
+            hits.append((d, pos + k * s16))
+        if foot:
+            hits.append((foot, pos + 2 * s16))
+        pos += 3 * s16
+    hits += [(drums[-1], pos + k * 2 * s16) for k in range(tail)]
+    out = []
+    for (d, step), v in zip(hits, _ramp(len(hits), soft, hard)):
+        out += [(x, step, v) for x in ((d,) if isinstance(d, str) else d)]
+    return out
+
+
+def lead_power(f, dur):
+    """The lead guitar on power chords (Hold The Line's X, Ryan, 7 November: "Can we try adding lead power
+    chords"): the root, its fifth and its octave on three strings into the lead guitar's gain and cabinet
+    together (forge's lead_real), so the strings grind in the one amp, without the single string's late
+    vibrato, which a chord does not take."""
+    n = F.n_of(dur)
+    x = F.pluck(f, dur, bright=0.7, damp=0.9992)[:n]
+    x = x + F.pluck(f * 2.0 ** (7.0 / 12.0), dur, bright=0.7, damp=0.9992)[:n] * 0.8
+    x = x + F.pluck(f * 2.0, dur, bright=0.7, damp=0.9992)[:n] * 0.5
+    x = np.clip(F.sat(F.hp(x / 1.6, 400.0) * 14.0, 4.0) * 1.2, -1.0, 1.0)
+    return F.cabinet(x) * F.env_pts(n, [(0.0, 0.0), (0.005, 1.0), (max(dur - 0.04, 0.02), 0.85), (dur, 0.0)]) * 0.9
+
+
+F.NOTE_INST["lead_power"] = lambda f, d, p: lead_power(f, d)
+
+
+def hat_wash(pitch=1.0, decay=0.12, rattle=0.7, length=0.5):
+    """A hi-hat that is mostly sizzle (Hold The Line, Ryan, 9 November: "The half hat could be much looser sounding,
+    but the open hat sounds like a ride though, it's very bell sounding"): the forge's open hat (hat_real) rings
+    five fixed partials for up to 180 ms at half its level, which reads as a ride's bell on a phone. Here the
+    partials are a short tick at the stroke and the body is noise, a broad wash and a narrower band inside it,
+    rattling as two loose cymbals do; `decay` and `rattle` set how open and how loose."""
+    n = F.n_of(length)
+    tick = F.knock([3100.0 * pitch, 4700.0 * pitch, 6900.0 * pitch, 9300.0 * pitch, 11800.0 * pitch],
+                   [0.02, 0.018, 0.015, 0.012, 0.01], [0.5, 0.45, 0.4, 0.3, 0.2], noise_gain=0.0)
+    slow = F.lp(F.noise(n), 45.0 + 60.0 * rattle)
+    slow = slow / (np.max(np.abs(slow)) + 1e-9)
+    body = F.bp(F.noise(n), 4500.0 * pitch, 14000.0) + F.bp(F.noise(n), 7000.0 * pitch, 10000.0 * pitch) * 0.6
+    wash = body * F.env_ad(n, 0.001, decay) * (1.0 + rattle * slow)
+    return F.mix(tick * 0.25, wash * 0.6) * 0.4
+
+
+def hat_half(pitch=1.0):
+    """The half-open hat, loose: a medium wash with a heavy rattle."""
+    return hat_wash(pitch, decay=0.12, rattle=0.7, length=0.5)
+
+
+def hat_open(pitch=1.0):
+    """The open hat as sizzle, no bell: a long wash, a lighter rattle."""
+    return hat_wash(pitch, decay=0.24, rattle=0.35, length=0.9)
+
+
 TICKING = {"inst": "guitar_real", "mode": "riff", "octave": 0, "params": {"clean": True}}   # the map's pulse, as Hold The Line's
+
+# The guitar on one string (Night Shift's twelfth round; Hold The Line's bass variations of 4 November).
+ONE_DRIVE = 1.32  # the one string pushed into the gain as hard as the chord's three strings together (their RMS)
+
+
+def guitar_one(f, dur, mute=True, clean=False):
+    """The guitar on one string: the forge's guitar (`guitar_real`, a power chord on three strings)
+    with its root string alone, pushed into the same gain stages as hard as the three were, through
+    the same pick, cabinet and palm; `clean` its lead voice's chain (Hold The Line's lead guitar,
+    the clean guitar of its climax, on single notes: Ryan, 5 November)."""
+    n = F.n_of(dur)
+    x = F.pluck(f * F.RNG.uniform(0.998, 1.002), dur, bright=F.RNG.uniform(0.4, 0.6), damp=0.993)[:n] * ONE_DRIVE
+    scrape = F.bp(F.noise(F.n_of(0.012)), 2000.0, 7000.0) * F.env_ad(F.n_of(0.012), 0.0002, 0.003) * 0.6
+    x = F.at(x, scrape, 0.0)[:n]
+    if clean:
+        x = np.clip(F.sat(F.hp(x, 400.0) * 2.5 + x * 1.2, 2.0) * 1.2, -1.0, 1.0)
+        x = F.cabinet(x, peaks=((110.0, 1.0), (420.0, 0.9), (1150.0, 0.6)))
+        match = 1.0   # as guitar_real's clean voice keeps its own level
+    else:
+        y = F.asat(F.hp(x, 600.0) * 3.5 + x * 1.2, 1.6)
+        y = F.lp(y, 3000.0) + F.bp(y, 700.0, 1400.0) * 0.3
+        x = F.cabinet(F.asat(y * 1.3, 1.2)) * 1.1
+        match = 0.61
+    env = F.env_ad(n, 0.001, min(0.16, dur * 0.5), curve=3.0) if mute else F.env_ad(n, 0.001, dur * 0.7, curve=2.0)
+    return F.mix(x * env, F.body(200.0, 90.0, 0.05, drive=2.0, click=0.2) * 0.3) * match
+
+
+F.NOTE_INST["guitar_one"] = lambda f, d, p: guitar_one(f, d, p.get("mute", True), p.get("clean", False))
+
 QUIETER_BELLS = 0.7   # the bells 3 dB under the first cut (Ryan, 28 October: a little loud)
 
 

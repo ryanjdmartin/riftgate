@@ -913,19 +913,32 @@ def brass(f, dur):
 
 def pluck(f, dur, bright=0.6, damp=0.996):
     """A plucked string (Karplus-Strong): a burst of noise round a delay line the length of
-    the pitch, averaged each pass so it darkens as it rings."""
+    the pitch, averaged each pass so it darkens as it rings. The loop is tuned to the pitch:
+    whole samples, the average's half sample, and a first-order allpass for the fraction left
+    (Ryan, 6 November: "sometimes it sounds out of tune ... it comes across as sounding like the
+    note is flat"; the line rounded to whole samples plus the average's half had played the
+    high notes flat by up to a third of a semitone, B5 by 32 cents, E5 by 16)."""
     n = n_of(dur)
-    length = max(2, int(round(SR / f)))
-    ring = lp(noise(length), 600.0 + 9000.0 * bright)
+    period = SR / f - 0.5                  # the loop less the average's half sample
+    length = max(2, int(period - 0.1))     # whole samples, leaving the allpass 0.1 to 1.1 of one
+    frac = period - length
+    c = (1.0 - frac) / (1.0 + frac)        # the allpass's delay at low frequencies is `frac`
+    # The burst drawn at the untuned loop's length and cut to the tuned one, so the random stream
+    # after it is where every render before the tuning left it: a shipped track built again moves
+    # only its plucked notes' pitch, not every later random choice.
+    ring = lp(noise(max(2, int(round(SR / f)))), 600.0 + 9000.0 * bright)[:length]
     ring /= np.max(np.abs(ring)) + 1e-9
     out = np.empty(n)
-    prev = 0.0
+    prev = ap_x = ap_y = 0.0
     for i in range(n):
         j = i % length
         y = ring[j]
-        ring[j] = damp * 0.5 * (y + prev)
-        prev = y
         out[i] = y
+        avg = damp * 0.5 * (y + prev)
+        prev = y
+        ap_y = c * avg + ap_x - c * ap_y
+        ap_x = avg
+        ring[j] = ap_y
     return out * env_pts(n, [(0.0, 1.0), (max(dur - 0.02, 0.0), 1.0), (dur, 0.0)])
 
 
@@ -1115,12 +1128,45 @@ def bass_guitar(f, dur, drive=2.2):
     return hp(lp(x, 2400.0), 45.0) * 0.9
 
 
-def lead(f, dur):
-    # The unison lead: two saws a hair apart with a slow vibrato, driven, sustained.
+def lead(f, dur, fade=0.0):
+    # The unison lead: two saws a hair apart with a slow vibrato, driven, sustained; or fading `fade` dB
+    # over the note (Hold The Line's W, 7 November: "2 beats of fading held notes").
     n = n_of(dur)
     x = saws_vib(f, n, (0.997, 1.003), vib_hz=5.5, vib_depth=0.004)
     x = hp(lp(sat(x, 1.8), 2400.0), 260.0)   # softer on top, and out of the bass's band
-    return x * env_pts(n, [(0.0, 0.0), (0.01, 1.0), (max(dur - 0.03, 0.02), 0.9), (dur, 0.0)])
+    return x * env_pts(n, [(0.0, 0.0), (0.01, 1.0), (max(dur - 0.03, 0.02), 0.9 * 10.0 ** (-fade / 20.0)), (dur, 0.0)])
+
+
+def bent(x, ratio, wait, glide):
+    """A note bent: played as it is for `wait` seconds, then its pitch eased to `ratio` of itself over
+    `glide` seconds and held there, as a string pushed up or a pitch wheel turned."""
+    return bent_path(x, [(wait, ratio)], glide)
+
+
+def bent_path(x, points, glide):
+    """A note bent along a path: from each (time, ratio) in turn its pitch eases over `glide` seconds to
+    that ratio of where it began and holds, so a string can be pushed up and let back down. The note is
+    read faster (or slower) as its pitch moves, so it keeps its own sound and its randomness; it comes
+    out a hair shorter where it went up, a few milliseconds faded off its end and padded back to its
+    length."""
+    n = len(x)
+    if n < 4 or all(r == 1.0 for _t, r in points):
+        return x
+    t = np.arange(n) / SR
+    rate, cur = np.ones(n), 1.0
+    for when, r in points:
+        u = np.clip((t - when) / max(glide, 1e-4), 0.0, 1.0)
+        rate = np.where(t >= when, cur + (r - cur) * (0.5 - 0.5 * np.cos(np.pi * u)), rate)
+        cur = r
+    pos = np.concatenate([[0.0], np.cumsum(rate[:-1])])
+    m = int(np.searchsorted(pos, n - 1.0))
+    i0 = np.floor(pos[:m]).astype(int)
+    fr = pos[:m] - i0
+    y = x[i0] * (1.0 - fr) + x[np.minimum(i0 + 1, n - 1)] * fr
+    k = min(len(y), n_of(0.005))
+    if k > 1:
+        y[-k:] *= np.linspace(1.0, 0.0, k)
+    return np.concatenate([y, np.zeros(n - len(y))]) if len(y) < n else y[:n]
 
 
 def crush(x, bits=6, hold=6):
@@ -1155,7 +1201,7 @@ def swell_rev(semis, dur):
 
 
 NOTE_INST["bass_guitar"] = lambda f, d, p: bass_guitar(f, d, p.get("drive", 2.2))
-NOTE_INST["lead"] = lambda f, d, p: lead(f, d)
+NOTE_INST["lead"] = lambda f, d, p: lead(f, d, p.get("fade", 0.0))
 NOTE_INST["bell_stutter"] = lambda f, d, p: bell_stutter(f, d)
 STAB_INST["swell_rev"] = swell_rev
 
@@ -1443,18 +1489,35 @@ def groove(bpm, form, kit, drums, chords, voices, pad=None, tilt=4.0, crescendo=
                 g = own[0] + (own[1] - own[0]) * pos
             return note * (g / max(float(g[0]), 1e-6))
         if mode == "riff":
+            # A voice may name notes of its own beside the shared ones, a fractional semitone among
+            # them: a quarter-tone is half of one (Hold The Line's X, Ryan, 6 November).
+            table = dict(NOTE, **v["notes"]) if v.get("notes") else NOTE
             i = 0
             while i < len(s):
                 c = s[i]
                 if c in ".-":
                     i += 1
                     continue
-                semis = int(c) if c.isdigit() else NOTE[c]
+                semis = int(c) if c.isdigit() else table[c]
+                bend = None
+                if isinstance(semis, (list, tuple)):
+                    # A bent note (Hold The Line's X, Ryan, 7 November: "a quick b-b up- would be how I would
+                    # play it in real life"): [from, to, wait, glide], played from `from` and pushed to `to`; or
+                    # [from, [[time, to], ...], glide], pushed and let back along a path (8 November: "the bend as
+                    # quick b-bup-b as a triplet").
+                    if isinstance(semis[1], (list, tuple)):
+                        start, path, glide = semis
+                        bend = ([(t, 2.0 ** ((to - start) / 12.0)) for t, to in path], glide)
+                        semis = start
+                    else:
+                        semis, to, wait, glide = semis
+                        bend = ([(wait, 2.0 ** ((to - semis) / 12.0))], glide)
                 length = 1
                 while i + length < len(s) and s[i + length] == "-":
                     length += 1
                 f = E2 * 2.0 ** ((semis + 12 * octave) / 12.0)
-                note = along(NOTE_INST[name](f, span(i, length) * hold, params), i, length)
+                note = NOTE_INST[name](f, span(i, length) * hold, params)
+                note = along(bent_path(note, *bend) if bend else note, i, length)
                 buf = at(buf, note, when(i + late), gain * vel() * vs(i), wrap=True)
                 i += length
         elif mode == "chord":
@@ -3520,6 +3583,25 @@ for _f in FAMILIES:
     SHIP["spawn_%s" % _f] = _third_cut("spawn_%s" % _f)
 for _name in [n for n in SOUNDS if n.startswith("music_")]:
     SHIP[_name] = (lambda n=_name: write_level(SOUNDS[n](), n, LEVELS[n]))
+
+
+def _pair_half(module, half):
+    def build():
+        import importlib
+        return importlib.import_module(module).ship(half)
+    return build
+
+
+# A track's pair as Ryan passed it on the pair page: the half the track shipped as under the track's own name, the
+# new half beside it, each waiting there on the engine's pairs (docs/todo.md). Hold The Line's (10 November: "Full pair
+# for HtL is good to ship"), hold_sketches.py's twenty-seventh round: the battle half where the track played, the map
+# half beside it. Night Shift's (11 November: "Keep 96. I think this is a good spot to ship everything to main"),
+# night_sketches.py's thirty-fifth round: the map half where the track played, at 96 where MUSIC's recipe runs at 94,
+# the battle half beside it. music_hold_the_line() and music_night_shift() above stay the recipes the pairs build on.
+SHIP["music_hold_the_line"] = _pair_half("hold_sketches", "battle")
+SHIP["music_hold_the_line_map"] = _pair_half("hold_sketches", "map")
+SHIP["music_night_shift"] = _pair_half("night_sketches", "map")
+SHIP["music_night_shift_battle"] = _pair_half("night_sketches", "battle")
 
 
 def write_level(x, name, level):

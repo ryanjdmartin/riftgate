@@ -1,31 +1,131 @@
-"""Night Shift's tenth round as a pair (Ryan, 3 November, on the ninth): the bass's voice, R as a
-jam, the map without its muted guitar.
+"""Night Shift's thirty-fifth round as a pair (Ryan, 11 November: "Lock in 'The hook cut.' Then the last thing is I want is
+another listen at 98"): the thirty-fourth's with the FM synth's arpeggio through all of the head, alone in its first
+half with the hook cut and the chime's doubling resting there (TURNS_DRIVE's A, CHIME_REST), the hook on the synth
+lead over it in the second; the plucked string no longer carried in (A_CARRY); 98 heard again on each half whole and
+96 kept, and the pair passed and shipped (11 November: "Keep 96. I think this is a good spot to ship everything to
+main"; `ship`, forge.py's SHIP). Before it, the thirty-fourth as a pair (Ryan, 11 November: "Keep the synth and the swap. Keep the arpeggio from
+the intro going into A, still on the plucked string, but drop it like 6 db when A hits"): the thirty-third's with the
+crunch synth's eighths kept, the head's halves swapped (TURNS_DRIVE's A: the hook alone, then the hook over the
+arpeggio into the breakdown), and the intro's plucked arpeggio carried into the head 6 dB down (A_CARRY, battle_half's
+`carry`). Before it, the thirty-third as a pair (Ryan, 10 November: "redo the kicks in the whole track so they are more
+natural for the flow, now that the bass riffs and backing 8s are in and working. Don't overdo the kick for this track,
+since its already bass-driven"): the thirty-second's with the kick on a plain backbone (KICK_FLOW, battle_half's
+`kick`), never on the snare's beats. Before it, the thirty-second as a pair (Ryan, 10 November: "Go with 96. 98 is ok but the arpeggios start to
+muddy. Bring arpeggio volume down like 3db everywhere. Snare hits need to come down like 3db across the board. I liked
+the original fill from I into A more. What is the kick doing in I?"): both halves at 96 (BPM), every arpeggio 3 dB
+down (ARP_DB), the battle half's snare 3 dB down (SNARE_DB), the intro's own fill back, and a set of the intro's kick
+(battle_half's `i_kick`). Before it, the thirty-first as a pair (Ryan, 10 November: "the amount of dressing is good in your sample. Can
+use a few more fills and such, especially during transitions. Almost there"; "Can I hear 98?"): the thirtieth's with
+the kit dressed (DRESS_ON) and fills at the transitions (FILLS_MORE, battle_half's `fills`), and each half at 96 and
+98 beside 94. Before it, the thirtieth as a pair (Ryan, 10 November: "Remove the piano from A, keep in C and R. Like the new
+R. I think that locks the tunes for now. Can I hear the 96? And a version where we dress up the drums a bit?"): the
+twenty-ninth's with the off-beat piano out of the head again (PIANO_OUT), the tunes locked, and two things to hear:
+the pair's bars at 96 beside 94 (the renders' `bpm`), and the kit dressed (battle_half's `dress`, DRESS). Before it,
+the twenty-ninth: the twenty-eighth's with the off-beat piano back in
+the battle half's head, lead's section and R ("I think I hear it missing now in the battle version"), D's riff on the
+crunch synth 6 dB down, and R's lead a tune that grows where it only got busier (WRITTEN's L; the old one L28). The
+head and the lead's section are settled ("we can close the head and lead section questions with what's there right
+now"); the tempo is the shipped 94. Before it, the twenty-eighth: his calls on the thirteen (four core pairs a bar
+each in turn, PAIRS_13; 4 and 7 sparingly; four cut), R a lead over the grooves with no unisons or stop-time
+(DUEL_LEAD, WRITTEN's L), the synths' arpeggios between octaves and the plucked one low. Before it, the twenty-seventh: his thirteen rhythms (RYAN_13) on the root in
+place of the gallop and three-three-two, through the drive and the three-bass duel, the kick on each rhythm's run
+starts (turns_kick), and a set auditioning all thirteen on the head (nu). Before it, the twenty-sixth: the twenty-fifth's drive, and the duel on three
+basses, none trading (DUEL_THREE: a pusher on the eighths, a riffer, the top in octaves with it or on long notes over
+it; set nt). The twenty-fifth's notes:
 
-  "Can I hear the whole battle track with the Synth bass instead of the driven bass? Or, a whole new
-  voice that's more of a slightly distorted bass/slap bass? R also can be rewritten and extended,
-  adding more instrument and tune play (i.e. different riff variations, different voices taking
-  priority, etc), to really sell the "jam" vibe. Map half - Can I hear it without the backing
-  guitar on the quarters throughout?"
+  "I think the turn taking was a mistake, honestly, as evidenced by my subsequent edits trying to bring them back
+  into a form of unison ... Letting all rhythm lines walk all over the place. I think for the most part, something
+  needs to be pushing those 8th notes. If two basses are running rhythms and/or riffs, then something else needs to
+  take over the 8th note drive for that section ... try quarters instead of sixteenths for the hat to start, and
+  matching the kick to whatever the predominant riff rhythm is at the time, defaulting back to 1s and 3s ... the
+  chord progressions are ok in the map version ... some of the bass rhythms that are too bouncy ... you probably
+  are correct on the open hat and the off-beat piano making it disco. I think the arpeggio is good though."
 
-The bass: every part the driven bass played (the walk, the hold under the two synth lines, the
-breakdown's held roots) on the synth bass (the crunch synth dark and soft, Hold The Line's map
-K's) for the full pair, and on a slapped bass a little driven in a set of whole battle halves
-beside the driven bass as the ninth round had it: the slap at the driven bass's level, the synth
-bass, which a phone plays little of, 3 dB under it there and 3 dB over it in full (BASS_VOICES).
+Round twenty-one's battle half with the drive over it (battle_half's `drive`, TURNS_DRIVE, DRIVE_PULSE): no turns
+of two bars; the bass on eighths, the gallop or three-three-two on the roots, eight bars each; the crunch synth on
+the eighths wherever the bass leaves them, the duel included; the hat on quarters, the kick on the bass's rhythm or
+one and three, no ghost snares, no open hat, no off-beat piano; the arpeggio and the chords as they were. The duel's
+own lines still trade: its rewrite waits on his word. Sets ne, nf and ng beside round twenty-one. The dark pass and
+the written lines stay retired behind their switches.
 
-R twice as long, sixteen bars in turns of two, each turn giving a different voice the lead: the
-head (the walk with the guitar a tenth over the bass, the hook pushed on the synth lead); the hook
-traded, its call on the synth lead and the lead guitar's answer a chord tone higher; the lead
-guitar's lick over the hold; the bass's turn, alone with the kick, the hats and the backbeat, a
-soloist's 4 dB forward; the house piano's, the hook's rhythm in chords over the walk; the plucked
-string's arpeggio over the walk; stop-time, the band hitting each bar's one, the FM synth answering
-in the gap of the first and the drums filling the second; the head again, climbing into the
-outro. The chime keeps the hook under the two heads alone, the sub's pulse and the piano's
-off-beats rest where a turn leaves the room.
+The twenty-second round's, kept: the dark pass's chords (A minor, G's power chord, DARK_CHORDS) and its colours
+(the arpeggio an octave down, the map's pad, the stack on the off-beats). Retired by the written lines: the walks
+on F for F-sharp and the duel's falling end (jam_bar's `dark`, DUEL_DARK; a row plays them).
 
-The map half's muted guitar out, the rhythm it played in eighths through the groove, the lead's
-section and the groove again; its R twice as long, the groove again repeating, so the halves keep
-one timeline.
+The twenty-first round's, kept: the battle half named in parts on the page (parts_on); R's upper bass
+on the dirtier Omnific (DUEL_UPPER, its level against the first bass DIRTY_B2, its chords DIRTY_CHORDS),
+and the map's drums 3 dB down in C and R (MAP_DRUMS_DB), his picks; the lower in two octaves and the
+upper in chords still options (duel_voices' `octaves` and `chords`), the full pair without them until he picks.
+
+The twentieth round's, kept: the lower in two octaves as an option ("it was whether the lower line
+kept its lower octave unison as well"); the FM synth out of R and the outro ("It sounds good when
+it's being highlighted, if it's just plucking notes in the background it just sounds like weird
+boops").
+
+The nineteenth round's, kept (6 November: "the stop time right before the outro, where everything
+cuts out, that sounds like a glitch or mistake instead of a stop time ... the second time the high bass
+comes in in R, 3-3-2 for the first bar and unison for the second bar would be cool. Also, keeping the
+upper exposed on its own sometimes is good too ... that line coming from such a high note as the first
+time it appears is jarring ... I'm not worried about making this section longer since it's like the
+climax of this track ... In the outro, there's a synth playing the root notes, it can leave. I also
+don't want that particular voice in the R section either"): R twenty-four bars, its chords three times
+(the map half's R with it: the halves keep one timeline); the upper's first answer climbing from its
+own root on the call's rhythm, its falling line the second time through; the lower under the upper by
+the bar (DUEL), in unison, on three-three-two, holding the root under the stop-time fill, and out where
+the trades are quickest, half a bar and then a beat each, the upper alone; the hole (the whole band out
+on a bar's last beat) a break, the band's hit on the one again and both basses on the stop-time's two
+fills together in octaves while the hat counts and a snare builds into the band's hits; the FM synth out
+of R's backing (its answers to the synth lead's hook on the plucked string) and the outro, where it
+played the chime's hook over the arpeggio, each chord's root on the one; the plucked string in tune
+wherever it plays (forge.py's pluck).
+
+The eighteenth round's, kept: the lower bass playing on under the upper's phrases, 3 dB under its
+own phrases so the answer stays on top; the second bass the active bass; the backing 3 dB under the
+basses (DUEL_BACKING).
+
+The seventeenth round's, kept: R a duel (DUEL), the track's bass and a second bassist an octave
+over it trading phrases on his rhythms, two bars each, a bar each, then half a bar each, through two
+bars of stop-time (the band's hit on each bar's one, then one bass alone), then the two together on
+three-three-two under the band's hits, climbing into the outro in octaves; the backing trading the
+tune over them at one level under the basses (DUEL_LEVELS); the sub out of R.
+
+The sixteenth round's, kept: the bass the fingers into the modern prog drive (real_bass.py's
+MODERN) wherever it plays; C's long notes, the lead guitar's line, on that bass an octave under the
+guitar (LEAD), the top of its high string.
+
+The fifteenth round's, kept: the drive on the fingers through an amp, a step at a time; on a held
+E1 every step's overtones fall away as the note rings, the grind at the attack.
+
+The fourteenth round's, kept: the rhythm guitar back in the breakdown (B) alone, the lead guitar's
+lines kept; D's hold without the bass; R at one level; the plucked string 3 dB down wherever the
+arpeggio takes it. In detail: the rhythm guitar's ringing chords in the breakdown alone (GUITARS
+"breakdown"); D's hold without the bass (D_BASS), the house piano carrying three-three-two over the
+nod's riff; the plucked string 3 dB down (PLUCK_DB), since at the synth lead's level on a phone and in
+full it read 1.6 dB over it by the ear's weighting (BS.1770), its 2 to 5 kHz 6 dB hotter. Why the
+modelled basses read as guitars is real_bass.py's.
+
+The thirteenth round's, kept: the map half without its muted guitar (his call); the rhythm guitar
+out of the walk and its ghost notes, R's tenth, the hold and the stop-time hits; the bass voices.
+
+The twelfth round's, kept as a way of the guitar: the bass plays single notes, and the guitar that
+walked the same line in unison played every note as a power chord (root, fifth and octave), so the
+line sounded in chords over it; on one string (guitar_one) it went into the gain as hard as the
+three strings did and met their level on a phone and in full.
+
+The eleventh round's, kept: every part the driven bass played (the walk, the hold under the two
+synth lines, the breakdown's held roots, R's turn) on a finger bass with no drive: the driven bass's
+two strings, its finger's thump, its body and its cabinet, evened as a compressor would, beside the
+synth bass, the finger bass with a touch of drive, a slapped bass with its clip taken out and the
+slap with the same touch. On a sine at a note's peak the driven bass's amp makes 39% harmonic
+distortion and the tenth round's slap a little driven 41%; the clean voices make none and the touch
+about 5%, an amp just breaking up. That measured the amp alone: the string under it is the forge's
+plucked string, bright and ringing whatever the amp does (the fourteenth round's). Each meets the
+driven bass's level on a phone and in full alike (BASS_VOICES).
+
+The tenth round's, kept: R longer than the shipped track's eight bars (sixteen then, the duel's
+twenty-four now); the chime's hook, the sub's pulse and the piano's off-beats resting where R leaves
+the room. The map half without its muted guitar (his call since the twelfth); its R as long, the
+groove again repeating, so the halves keep one timeline.
 
 Kept from the earlier rounds: the battle half as a jam in turns of two bars, the walk with the
 arpeggio or the hook and never both, the hold under the two together on three-three-two 6 dB down,
@@ -34,44 +134,61 @@ through; D the piano's turn and the factory's blended, the riff dark and low as 
 guitar a tenth over the bass in R; the bass 3 dB down everywhere; the map half (the intro without
 its front), no crash at the top and no drone.
 
-    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py          # the sets and the full pair, then night10.json beside the pairs
-    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py m        # the named sets only (b m, and full for the pair)
+    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py          # the sets and the full pair, then night23.json beside the pairs
+    tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py nb nc nd    # the named sets only (and full for the pair)
 """
 import json
 import os
 import sys
+import zlib
 from concurrent.futures import ProcessPoolExecutor
 
 import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import forge as F  # noqa: E402
+import real_bass  # noqa: E402,F401  (the real basses' voice)
 import pair_sketches as P  # noqa: E402
 from hold_sketches import copied, master_together, run_steps  # noqa: E402
 
 NAME = "music_night_shift"
+# Round twenty-three's tempo (Ryan, 9 November: "I wonder if speeding it up like 2 BPM might help, unless it upsets
+# the map half too much"): 96 where the track ships at 94, both halves, since they keep one timeline.
+BPM = 96   # his pick of 94, 96 and 98 (10 November: "Go with 96. 98 is ok but the arpeggios start to muddy"); the track ships at 94
+F.MUSIC[NAME]["bpm"] = BPM
 MAP_LEVEL = F.LEVELS[NAME]
 BATTLE_LEVEL = P.PAIRS["night_shift"]["level"]
-R_BARS = 16   # R twice as long (Ryan, 3 November: "R also can be rewritten and extended")
+R_BARS = 24   # R three times through its chords (Ryan, 3 November: "R also can be rewritten and extended"; 6 November, of the duel: "I'm not worried about making this section longer since it's like the climax of this track")
 FORM10 = F.MUSIC[NAME]["form"].replace("R" * 8, "R" * R_BARS)
 
 
 # ---------------------------------------------------------------- the map half
 
-MAP_GUITAR = False   # the map's muted guitar (Ryan, 3 November: "without the backing guitar on the quarters throughout")
+MAP_GUITAR = False   # the map's muted guitar out (Ryan, 4 November: "Map groove sounds better without the muted guitar")
 
 
-def map_intro(call, guitar=MAP_GUITAR):
+# The map's drums down in C and R (Ryan, 6 November: "it's version of R is a little too busy for the map and
+# I think it's the drums. Let's try lowering drum volume on the map half for C and R"; then, of 3 and 6 dB,
+# "-3db solves it"): the whole kit, the industry's knocks, ticks and clanks with it, in dB.
+MAP_DRUMS_DB = -3.0
+MAP_DRUM_SECTIONS = "CR"
+
+
+def map_intro(call, guitar=MAP_GUITAR, drums_db=MAP_DRUMS_DB, piano=True):
     """The shipped map with its front cut (Ryan: don't start with the sub and the drone, it breaks
     the loop; the drone's crescendo from about 0:10 works): the sub's pulse joins at the intro's
     fifth bar, and the pad is silent for three bars and fades in through the fourth, where its
     slow filter is at its darkest, so from 0:10 it opens just as it did. Without `guitar`, the
     muted guitar's rhythm is gone from every section; its voices stay in the list, empty, so every
-    other voice keeps its humanising."""
+    other voice keeps its humanising. The drums `drums_db` in C and R (MAP_DRUMS_DB)."""
     kw = copied(call)
     if not guitar:
         for v in kw["voices"]:
             if v["inst"] == "guitar_real":
+                v["pat"] = {}
+    if not piano:   # the off-beat piano out (Ryan, 10 November: "I can't really hear the off-beat piano everywhere, and that makes me think we should cut it")
+        for v in kw["voices"]:
+            if v["inst"] == "epiano" and v.get("mode") == "stab" and "A" in v["pat"]:
                 v["pat"] = {}
     for v in kw["voices"]:
         if v["inst"] == "sub_bass" and "I" in v["pat"]:
@@ -79,6 +196,8 @@ def map_intro(call, guitar=MAP_GUITAR):
     for p in kw["pad"]:
         if "I" in p.get("sections", ""):
             p["enter"] = {"I": (3, 1)}
+    if drums_db:
+        kw["drum_gain"] = dict(kw.get("drum_gain") or {}, **{sec: round(10.0 ** (drums_db / 20.0), 4) for sec in MAP_DRUM_SECTIONS})
     return kw
 
 
@@ -148,19 +267,54 @@ RHYTHMS = {
     "offbeats": "xx.x.x.x.x.xx.x.",  # his second
     "bursts": "xxx..x.x.x..xxx.",    # his third
     "threes": "xxx..xxx..x.xxx.",    # his fourth
+    "groups": "xxx.xxx.xxx.xxx.",    # three to a beat: R's duel trading a beat each
+    "long": "x.....x...x.....",      # three long notes, the top bass's line over a riff (the three-bass duel)
 }
+
+# Ryan's thirteen (10 November: "I think the gallop and the 3-3-2 are wrong, they're too bouncy. Try some of these
+# (not specifying pitches) ... I know some of those are used already in the walking lines - I'm saying to use them
+# without walking, just either on root or moving a little"), numbered in his order, n1 to n13; each on the root
+# ("root") or on the root with its last note leaning a semitone into the next chord's ("lean").
+# His calls on them (10 November, "blasting through"): 1 core; 3 rewritten to x..xxxxx....x.x. and paired with 1,
+# "interchanging back and forth"; 5 core, paired with 6; 9 core, paired with x..x..x..x..xxxx (n14); 11 core, paired
+# with 12; 4 and 7 sparingly; 2, 8, 10 and 13 cut (kept in the list, played nowhere in the pair).
+RYAN_13 = ["x.x.xxxx..x.x.x.", "x.x.x.xx..x.x.x.", "x..xxxxx....x.x.", "x..xxxxx......xx", "x..xxxxx....xxxx", "x..xxxxx....xxx.",
+           "xx.xx.xx.xx.x.x.", "xx.xx.xx.xx.xxx.", "x..x..x..x..x.x.", "xx....xx....xx..", "xx....xx....xxx.", "xx....xx....xxxx",
+           "xxx.x.xx..x.x.x."]
+RHYTHMS.update({"n%d" % (k + 1): r for k, r in enumerate(RYAN_13)})
+RHYTHMS["n14"] = "x..x..x..x..xxxx"
+PAIRS_13 = {"1": "n1|n3", "5": "n5|n6", "9": "n9|n14", "11": "n11|n12"}   # the core pairs, a bar each in turn
+
+
+def paired(choice, i):
+    """A turn's choice for bar `i`: "a|b" plays a on even bars and b on odd ones."""
+    return choice.split("|")[i % 2] if "|" in choice else choice
+
+
+def run_starts(rhythm):
+    """A rhythm's kick: the first hit of each run of hits."""
+    return "".join("x" if c == "x" and (i == 0 or rhythm[i - 1] != "x") else "." for i, c in enumerate(rhythm))
+
 
 # Each rhythm's figures: the line's notes on its hits as steps along E minor from the bar's chord
 # root (0 the root, 4 its fifth, 7 its octave), "A" and "V" a semitone under and over the next
 # chord's root, "b" the blues note (E minor's flat fifth, for E's bars alone).
 FIGURES = {
-    "332": {"home": [0, 0, 0, 0, 0, 0], "lift": [0, 0, 7, 0, 4, "A"], "climb": [0, 2, 3, 4, 6, 7]},
+    "long": {"line": [7, 4, "A"]},   # the octave, the fifth, the lean into the next root
+    "332": {"fifth": [0, 0, 0, 4, 0, "A"], "home": [0, 0, 0, 0, 0, 0], "lift": [0, 0, 7, 0, 4, "A"], "climb": [0, 2, 3, 4, 6, 7]},
     "gallop": {"drive": [0, 0, 0, 7, 0, 0, 0, "A"], "octs": [0, 7, 7, 0, 0, 7, 7, "V"], "walk": [0, 0, 2, 3, 4, 4, 6, "A"]},
     "pairs": {"pops": [0, 7, 0, 7, 0, 7, 0, 7, 4, "A"], "stairs": [0, 0, 2, 2, 3, 3, 4, 4, 6, "A"], "fall": [7, 7, 6, 6, 4, 4, 2, 2, 0, "V"]},
     "offbeats": {"run": [0, 0, 2, 3, 4, 6, 7, 4, "A"], "zigzag": [0, 7, 0, 6, 0, 4, 0, 2, "A"], "blues": [0, 0, 2, 3, "b", 4, 6, 7, "A"]},
     "bursts": {"turn": [0, 1, 0, 4, 6, 7, 6, 4, "A"], "chug": [0, 0, 0, 7, 0, 7, 0, 0, "A"], "rise": [0, 2, 4, 7, 4, 2, 0, 2, "A"]},
-    "threes": {"octs": [0, 0, 7, 0, 0, 7, 4, 0, 0, "A"], "steps": [0, 2, 3, 4, 3, 2, 7, 6, 4, "A"], "climb": [0, 0, 0, 2, 2, 2, 4, 6, 7, "A"]},
+    "threes": {"root": [0, 0, 0, 0, 0, 0, 4, 0, 0, "A"], "octs": [0, 0, 7, 0, 0, 7, 4, 0, 0, "A"], "steps": [0, 2, 3, 4, 3, 2, 7, 6, 4, "A"], "climb": [0, 0, 0, 2, 2, 2, 4, 6, 7, "A"],
+               "fall": [7, 7, 7, 6, 6, 6, 4, 2, 0, "V"]},   # the dark pass's way into the outro: down from the octave, a semitone over E last
+    "groups": {"climb": [0, 1, 2, 0, 1, 2, 2, 3, 4, 2, 3, 4], "arch": [0, 2, 4, 0, 2, 4, 4, 2, 0, 4, 2, 0],   # each beat's group twice, a beat for each bass
+               "sink": [4, 3, 2, 4, 3, 2, 2, 1, 0, 2, 1, 0]},
 }
+
+FIGURES.update({name: {"root": [0] * r.count("x"), "lean": [0] * (r.count("x") - 1) + ["A"],
+                       "walk": [0] * (r.count("x") - 3) + ["F", "P", "A"]}   # the root, then its fourth, its fifth and the lean: the duel's walk
+                for name, r in RHYTHMS.items() if name[0] == "n"})
 
 # The battle half in turns of two bars (Ryan, 30 October: "Jam session, everybody gets a turn, we
 # keep it moving, we try different additions at different points"): what the guitar and the bass
@@ -176,15 +330,8 @@ TURNS = {
     "C": [("332.lift", ""), ("pairs.pops", ""), ("gallop.walk", ""), ("threes.climb", ""),   # under the lead guitar's long notes
           ("offbeats.zigzag", "arp:back"), ("bursts.chug", "arp:back"), ("pairs.stairs", "arp:back"), ("threes.steps", "arp:back")],
     "D": [("332.home", "")] * 4,
-    "R": [("pairs.pops", "hook:push"),     # the head
-          ("gallop.octs", ""),             # the hook traded (R_PARTS)
-          ("hold", ""),                    # the lead guitar's lick (R_PARTS)
-          ("bass:threes.steps", ""),       # the bass's turn: the walk on the bass alone
-          ("offbeats.run", ""),            # the house piano's turn (R_PARTS)
-          ("bursts.rise", "arp:high"),     # the plucked string's arpeggio
-          ("stop", ""),                    # stop-time: the FM synth's answer, then the drums' fill (R_PARTS)
-          ("threes.climb", "hook:push")],  # the head again, climbing into the outro
-    "O": [("hold", "both:high")] * 4,
+    "R": [("rest", "")] * (R_BARS // 2),   # the duel's (DUEL): its two basses and its backing are their own voices
+    "O": [("hold", "arp:high")] * 4,   # the hook on the FM synth out (Ryan, 6 November: "In the outro, there's a synth playing the root notes, it can leave")
 }
 # The synth lines' voicings, (the arpeggio's voice, the hook's), each picked for its job (Ryan, 30
 # October: "When the arpeggio is taking a backseat, the synth lead works best. When we want to push
@@ -192,7 +339,155 @@ TURNS = {
 # or tine are great ... The plucked is certainly more unique"): the arpeggio behind on the synth
 # lead, the hook pushed on the synth lead over the arpeggio on the FM synth, the arpeggio
 # highlighted on the plucked string, the hook otherwise on the FM synth.
-VOICINGS = {"back": ("lead", "fm"), "push": ("fm", "lead"), "high": ("pluck", "fm")}
+# The turns on the written parts: the riff through the intro, the head's first eight bars (under the hook and the
+# arpeggio together, at the walk's level now, since the riff is the tone) and the outro; the gallop under the hook
+# and behind the arpeggio; the chug under the lead's long notes.
+TURNS_WRITTEN = {
+    "I": [("written.P", ""), ("written.P", ""), ("written.P", "arp:high"), ("written.P", "arp:high")],
+    "A": [("written.P", "both:push")] * 4 + [("written.G", "hook:back")] * 4,
+    "C": [("written.S", "")] * 4 + [("written.G", "arp:back")] * 4,
+    "D": [("332.home", "")] * 4,
+    "R": [("rest", "")] * (R_BARS // 2),
+    "O": [("written.P", "arp:high")] * 4,
+}
+# The drive (Ryan, 10 November: "I think the turn taking was a mistake, honestly ... Letting all rhythm lines walk all
+# over the place. I think for the most part, something needs to be pushing those 8th notes. If two basses are running
+# rhythms and/or riffs, then something else needs to take over the 8th note drive for that section ... try quarters
+# instead of sixteenths for the hat to start, and matching the kick to whatever the predominant riff rhythm is at the
+# time, defaulting back to 1s and 3s ... you probably are correct on the open hat and the off-beat piano making it
+# disco. I think the arpeggio is good though"): no turns of two bars, a rhythm held eight bars on the roots; the bass
+# on straight eighths under the hook and the arpeggio, then on the gallop; three-three-two under the lead's long
+# notes, then the gallop; wherever the bass leaves the eighths, the crunch synth, dark, takes them on the roots
+# (DRIVE_PULSE), through the duel too; the hat on quarters, no open hat, no ghost snares, the kick on the bass's
+# rhythm or on one and three; the off-beat piano out; the arpeggio kept.
+TURNS_DRIVE = {   # on his core pairs since the twenty-eighth round
+    "I": [("n11.root|n12.root", "")] * 2 + [("n11.root|n12.root", "arp:high")] * 2,
+    # the head on a core pair throughout, the eighths the synth's (10 November: "section A should be a core, not straight eighths, yes. The straight 8s are the synth bass's job")
+    # the head's halves swapped (10 November: "a version with A2 and A1 swapped in position"; 11 November: "Keep the synth and the swap"),
+    # the FM synth's arpeggio through it ("Try doing the FM synth through all of A instead"), its first half with the hook cut
+    # ("Lock in 'The hook cut.'"; the chime's doubling rests there too, CHIME_REST), then the hook on the synth lead over it
+    "A": [("n1.lean|n3.lean", "arp:push")] * 4 + [("n1.lean|n3.lean", "both:push")] * 4,
+    "C": [("n9.lean|n14.lean", "")] * 4 + [("n5.lean|n6.lean", "arp:back")] * 4,
+    "D": [("332.home", "")] * 4,
+    "R": [("rest", "")] * (R_BARS // 2),
+    "O": [("n11.root|n12.root", "arp:high")] * 4,
+}
+
+
+# The kick for the flow (Ryan, 10 November: "redo the kicks in the whole track so they are more natural for the flow
+# ... Don't overdo the kick for this track, since its already bass-driven"). On each run's start it struck up to six
+# times a bar and landed on the snare's beats (the intro's on four). Now two or three a bar, never on two or four:
+# one, and with it either three or the bass's own push (the a of one, the and of two), a bar of each in turn so a
+# two-bar phrase breathes; the tresillo's first half under the bass's threes and under D's piano; one and three
+# where the bass rests or a fill is coming.
+KICK_FLOW = {"n1": "x.......x.x.....", "n3": "x..x....x.......", "n5": "x..x....x.......", "n6": "x.......x.x.....",
+             "n9": "x..x..x.........", "n14": "x..x..x.........", "n11": "x.....x.........", "n12": "x.....x.x.......",
+             "n4": "x.......x.......", "n7": "x.......x......."}
+KICK_WAY = "flow"   # the full pair's; "runs" the kick on each run's start, as it was
+
+
+def bar_kick(rhythm, way=None):
+    way = way or KICK_WAY
+    if rhythm not in RHYTHMS:
+        return K13
+    return KICK_FLOW.get(rhythm, K13) if way == "flow" else run_starts(RHYTHMS[rhythm])
+
+
+def turns_kick(turns, fill=True, way=None):
+    """A section's kick from its turns: the bass's rhythm's kick (bar_kick), one and three under eighths or a hold;
+    a fill's bar closing each eight where `fill`."""
+    out = []
+    for choice, _synth in turns:
+        for i in range(2):
+            rhythm = paired(choice, i).partition(".")[0]
+            out.append(bar_kick(rhythm, way))
+    if fill:
+        out = [("x...x...x......." if b % 8 == 7 else bar) for b, bar in enumerate(out)]
+    return "".join(out)
+
+
+DRIVE_ON = True   # the full pair's
+# The intro's arpeggio carried into the head (Ryan, 11 November: "Keep the arpeggio from the intro going into A, still on
+# the plucked string, but drop it like 6 db when A hits"): the plucked string's arpeggio of the intro's last four bars
+# plays on from the head's first bar CARRY_DB under its level there, until the head's own arpeggio comes in ("half",
+# the full pair's: the FM synth's at the head's ninth bar, so two arpeggios never play at once), or through all of the
+# head in place of the FM synth's ("all"); False, it stops as the head comes in (the full pair's since the FM synth's
+# arpeggio starts on the head's first bar: "Hm. Try doing the FM synth through all of A instead").
+A_CARRY, CARRY_DB = False, -6.0
+# The chime's doubling of the hook resting through the head's first half, where the hook is cut (Ryan, 11 November: "Lock
+# in 'The hook cut.'"): the recipe's metal chime plays the hook an octave up all through the head, 6 dB under the FM
+# synth's hook on a phone; battle_half's `chime_rest`, in bars.
+CHIME_REST = 8
+PIANO_OUT = "A"   # the off-beat piano's sections out of the battle half (Ryan, 10 November: "Remove the piano from A, keep in C and R")
+# The kit dressed a bit (Ryan, 10 November: "a version where we dress up the drums a bit"), over the drive's plain kit
+# (the hat on eighths, the snare on two and four) wherever a bar is that plain bar, so the fills and D stay as they
+# are: the hat's off-beats softer than its beats, a loose half-open hat on the last off-beat of every second bar and
+# two sixteenths closing every fourth; ghost notes on the snare, placed differently in odd and even bars, with a
+# small turn every fourth. The kick stays on the bass's rhythm.
+DRESS = {"hat": ("x.6.x.6.x.6.x.6.", "x.6.x.6.x.6.x...", "x.6.x.6.x.6.x.6.", "x.6.x.6.x.6.x.77"),
+         "hat_half": ("." * 16, "..............x.", "." * 16, "." * 16),
+         "snare": ("....x..o....x...", "....x....o..x..o", "....x..o....x...", "....x..o.o..x.o.")}
+
+
+DRESS_ON = True   # the full pair's (Ryan, 10 November: "the amount of dressing is good in your sample")
+# More fills, at the transitions most (Ryan, 10 November: "Can use a few more fills and such, especially during
+# transitions"), by section and bar (the intro's own fill kept: "I liked the original fill from I into A more"): the head's last a snare
+# and the toms down into the breakdown; the lead's section's last the toms and the snare trading into D; R's eighth
+# bar two snares closing the first pass, its sixteenth the toms' fill closing the second; the outro's last two snares
+# into the top. The fills already there stay: the toms' at each section's eighth bar, D's into R, R's into the outro.
+FILL_HAT = "x.x.x.x........."
+SEC_BARS = {"I": 8, "A": 16, "C": 16, "R": R_BARS, "O": 8}
+FILLS_MORE = {
+    ("A", 15): {"snare": "....x...6x7x....", "tom": "............xx..", "tom2": "..............xx", "hat": FILL_HAT, "hat_half": "." * 16},
+    ("C", 15): {"snare": "....x.....xx....", "tom": "........xx..x...", "tom2": "..............xx", "hat": FILL_HAT, "hat_half": "." * 16},
+    ("R", 7): {"snare": "....x..o....x.xx"},
+    ("R", 15): {"tom": FILL_TOM, "tom2": FILL_TOM2, "hat": FILL_HAT, "hat_half": "." * 16, "snare": "....x.......x..."},
+    ("O", 7): {"snare": "....x..o....x.xx"},
+}
+
+
+def more_fills(drums):
+    """FILLS_MORE written over the kit, each section's patterns laid out to its whole length first."""
+    for (sec, bar), rows in FILLS_MORE.items():
+        n = 16 * SEC_BARS[sec]
+        for name, pat in rows.items():
+            old = drums.setdefault(name, {}).get(sec) or "." * 16
+            old = (old * (n // len(old) + 1))[:n]
+            drums[name][sec] = old[:16 * bar] + pat + old[16 * bar + 16:]
+
+
+def dressed(drums):
+    """The drive's plain bars dressed in place (DRESS), in the intro, the head, the lead's section, R and the outro."""
+    drums.setdefault("hat_half", {})
+    for sec in "IACRO":
+        hat, snare = drums["hat"].get(sec), drums["snare"].get(sec)
+        if not hat or not snare:
+            continue
+        n = max(len(hat), len(snare), 64)
+        hat, snare = (x * (n // len(x)) for x in (hat, snare))
+        out = {"hat": [], "hat_half": [], "snare": []}
+        for b in range(n // 16):
+            h, sn = hat[16 * b:16 * b + 16], snare[16 * b:16 * b + 16]
+            plain = h == HATQ
+            out["hat"].append(DRESS["hat"][b % 4] if plain else h)
+            out["hat_half"].append(DRESS["hat_half"][b % 4] if plain else "." * 16)
+            out["snare"].append(DRESS["snare"][b % 4] if plain and sn == SN24 else sn)
+        for k, v in out.items():
+            drums[k][sec] = "".join(v)
+# D's riff (Ryan, 10 November: "Did we try D with the finger bass running the HtL riff instead of the crunch synth? I
+# feel like there was a subtlety pass that we did in D that is lost now, its back to being very 'hey guys this is hold
+# the line now,' with a very loud crunch synth"): the riff's voice and level had not moved since the sixth round; the
+# drive took D's sixteenth hats and stack away and thinned its kick, which uncovered it. On the fingers bass, 3 dB
+# under its walking level ("fingers", the pair's), on the crunch synth as it was ("synth") or 6 dB down ("synth_down").
+D_RIFF = "synth_down"   # Ryan, 10 November: "D - On the crunch synth, 6 dB down"
+D_RIFF_FINGERS, D_RIFF_DOWN = 0.7, 0.5
+DUEL_WAY = "lead"   # the duel as a lead over the grooves (the full pair's); "three" the three basses; "trade" round twenty-one's lines
+PUSHER_FINGERS = 0.7   # the fingers on the eighths against the riffer's level, 3 dB under it
+DRIVE_PULSE = {"inst": "bass", "mode": "riff", "gain": 0.3, "hold": 0.8, "params": {"drive": 2.5, "cutoff": 700.0}}
+K13, K332, KGAL, SN24, HATQ = "x.......x.......", "x..x..x.x..x..x.", "x.xx..x.x.xx..x.", "....x.......x...", "x.x.x.x.x.x.x.x."   # the hat on eighths (10 November: "Hats should be on 8s for the whole track, not quarters")
+VOICINGS = {"back": ("lead", "fm"), "push": ("fm", "lead"), "high": ("pluck", "fm"),
+            "fm": ("fm", "fm"),   # both lines on the FM synth (A_FM, heard 11 November)
+            "plucked": ("fm", "pluck")}   # the FM synth's arpeggio under the hook on the plucked string (A_PLUCK)
 UP = "R"   # the later spot where the guitar leaves the bass's octave ("save the octave-up for a later spot")
 
 # D, the dark synth's section, plays Hold The Line's first riff, which the map half voices as a nod
@@ -218,6 +513,7 @@ D_TURNS = {
 # little under its own turn, the knocks in its gaps a step before each of its hits, a clank every
 # second bar, the ticks soft.
 D_PLAN = "blend"
+D_BASS = False   # the bass out of D's hold (Ryan, 4 November: "The bass 3-3-2s in D don't make sense, they cause a bad kind of discord, I think the piano can carry that rhythm on its own")
 PIANO_BLEND = 0.5
 BLEND_KNOCK = "..c..c....c..c.."
 BLEND_CLANK = "." * 16 + ".......c........"
@@ -258,11 +554,26 @@ ARP_VOICES = {
     "fm": {"inst": "synlead", "gain": 0.14},     # the FM synth
     "pluck": {"inst": "pluck", "gain": 0.64},    # a plucked string
 }
+# The plucked string down wherever the arpeggio takes it (Ryan, 4 November: "Plucked guitar needs to
+# be a bit quieter whenever it's used, it pierces so it sounds loud"). At 0.64 it met the synth lead
+# on a phone and in full within a third of a dB, and read 1.6 dB over it by the ear's weighting
+# (BS.1770's), its 2 to 5 kHz 6 dB hotter than the synth lead's.
+ARP_DB = -3.0   # every arpeggio, whatever plays it (Ryan, 10 November: "Bring arpeggio volume down like 3db everywhere")
+for _v in ARP_VOICES.values():
+    _v["gain"] *= 10.0 ** (ARP_DB / 20.0)
+SNARE_DB = -3.0   # the battle half's snare, ghosts and fills with it (Ryan, 10 November: "Snare hits need to come down like 3db across the board")
+PLUCK_DB = -3.0   # his call (4 November: "Plucked string -3Db is good")
 HOOK_VOICES = {
     "fm": {"inst": "synlead", "gain": 0.28},     # the FM synth, the fourth round's
     "lead": {"inst": "lead", "gain": 0.25},      # the synth lead
 }
-SYNTH_PARTS = tuple("arp:" + v for v in ARP_VOICES) + tuple("hook:" + v for v in HOOK_VOICES)
+# The hook on the plucked string (Ryan, 11 November: "try moving the hook in the first half to the plucked string"): met
+# halfway with the FM synth's hook it replaces, each alone over the head's bars on a phone and in full (+0.6 and -0.6 dB
+# at 0.894), then 3 dB down as the plucked string is wherever it plays (PLUCK_DB). Its voice goes last in the battle
+# half's list, so every other voice keeps its seed.
+PLUCK_HOOK = {"inst": "pluck", "gain": 0.894}
+HOOK_PARTS = tuple(HOOK_VOICES) + ("pluck",)
+SYNTH_PARTS = tuple("arp:" + v for v in ARP_VOICES) + tuple("hook:" + v for v in HOOK_PARTS)
 
 SCALE = (0, 2, 3, 5, 7, 8, 10)   # E natural minor, the track's key
 GHOST = 0.7   # a group's sixteenths after its first, 3 dB under it
@@ -291,11 +602,72 @@ def moved(pat, by):
     return "".join(out)
 
 
-def jam_bar(choice, home, next_home):
+# The bass lines written (Ryan, 9 November, of the dark pass: "The main difference in your new version is you swapped
+# some bass notes out, and now it just sounds awkward and bad. I think take another pass at the whole thing, it's
+# the bass lines that need to set the tone, with notes, riffs, and structure"). The walks before were figures
+# stepped along E minor from each chord's root, so they had no riff and went major over G and D. Three written
+# parts, bar by bar, replace them, each note a semitone count over E:
+# P, the riff, four bars on an E pedal whatever the chord (the chords over it lean on E: C over E, D over E), on
+#   three-three-two: E E E, G E D; E E E, B-flat A G (the blues fall); the first again; E E E, C B D-sharp (the
+#   flat sixth to the fifth, then the leading tone back to E).
+# G, the gallop, eight bars on the chords' roots, one motif through them, its colour notes E minor's own (the
+#   minor third, the flat seventh, C falling to B) and never a chord's major third, each bar's last note leaning a
+#   semitone into the next root; the last bar ends on F, falling to E.
+# S, the chug, the same eight bars on three-three-two: the root four times, its fifth, and the lean.
+WRITTEN = {
+    "P": ["0..0..0.3..0..a.", "0..0..0.6..5..3.", "0..0..0.3..0..a.", "0..0..0.8..7..l."],
+    "G": ["0.00..0.3.50..a.", "8.88..8.7.38..7.", "a.aa..a.c.8a..8.", "7.77..7.a.57..l.",
+          "0.00..0.3.60..4.", "5.55..5.8.35..4.", "3.33..3.5.03..b.", "a.aa..a.c.8a..1."],
+    "E": ["0.0.0.0.0.0.0.0.", "8.8.8.8.8.8.8.8.", "a.a.a.a.a.a.a.a.", "7.7.7.7.7.7.7.7.",   # straight eighths on the roots
+          "0.0.0.0.0.0.0.0.", "5.5.5.5.5.5.5.5.", "3.3.3.3.3.3.3.3.", "a.a.a.a.a.a.a.a."],
+    # The top Omnific's lead through the duel's twenty-four bars, an octave over the bass. The twenty-eighth round's
+    # (L28) went from two notes a bar to four to eight (Ryan, 10 November: "Lead bass kind of just goes from two
+    # notes a bar to 4, to 8, i wouldn't call that 'fancier,' just more notes. It doesn't need to get busier, just
+    # more of a melody as it grows. Keep it minimalist"). L holds three or four notes a bar from the second pass on:
+    # long notes falling in pairs; then a tune (B, up to E, D, back to B; G held and a step up; the first bar a
+    # step down; F-sharp and a rest) answered from the top; then the same tune climbing to the high G, falling on
+    # three-three-two over B minor, climbing again and coming home on E.
+    "L": ["i-------e-------", "t-------i-------", "f-------j-------", "i---------------",
+          "e-------i-------", "t-------f-------", "i-------e-------", "f-------d-------",
+          "i-----k---j-i---", "e-----------f-i-", "f-----j---t-f---", "d-----------....",
+          "i-----k---j-i---", "k-----------j-t-", "i-----j---i-e---", "f-----------d---",
+          "i-----k---C-D---", "D---------k-j---", "C-----j---f-j---", "j-----i-----d---",
+          "e-----i---k-D---", "k-----D---k-t---", "j-----i---e-i---", "f-----d-----c---"],
+    "L28": ["i-------e-------", "t-------i-------", "f-------j-------", "i---------------",
+            "e-------i-------", "t-------f-------", "i-------e-------", "f-------d-------",
+            "i---e---i---k---", "t---i---e---i---", "j---f---j---f-e-", "i---d---i-------",
+            "k---i---e---i---", "t---f---t---k---", "j---i---e---i---", "f---d---f-e-d-c-",
+            "k-i-e-i-k-i-e-i-", "t-i-e-i-t-i-k-t-", "j-f-d-f-j-f-j-k-", "i-d-i-j-i-d-i---",
+            "k-i-e-c-e-i-k-i-", "t-f-c-f-t-f-k-t-", "j-i-e-i-j-i-e-i-", "f-d-f-j-k-j-f-d-"],
+    "S": ["0..0..0.0..7..a.", "8..8..8.8..3..7.", "a..a..a.a..5..8.", "7..7..7.7..2..l.",
+          "0..0..0.0..7..4.", "5..5..5.5..0..4.", "3..3..3.3..a..b.", "a..a..a.a..8..1."],
+}
+WRITTEN_ON = False   # round twenty-three's written lines, retired with it (9 November: "Night shift isn't better")
+
+
+def written_bar(name, k):
+    """A written bar's hits as jam_bar gives them: (step, note, steps to the next hit, accented)."""
+    pat = WRITTEN[name][k % len(WRITTEN[name])]
+    hits = [i for i, c in enumerate(pat) if c not in ".-"]
+    out = []
+    for j, h in enumerate(hits):
+        c = pat[h]
+        n = int(c) if c.isdigit() else F.NOTE[c]
+        room = (hits[j + 1] if j + 1 < len(hits) else 16) - h
+        if "." in pat and "-" in pat:   # a line that writes its holds rests where it says so
+            room = 1 + len(pat[h + 1:]) - len(pat[h + 1:].lstrip("-"))
+        out.append((h, n, room, j == 0 or hits[j - 1] != h - 1 or h % 4 == 0))
+    return out
+
+
+def jam_bar(choice, home, next_home, dark=False, k=0):
     """One bar of the walk on a chord's root (in the line's first octave, E to D#) before the next
     bar's: (step, note, steps to the next hit, accented) for each hit. A hit is accented when it
-    opens a group of sixteenths or falls on a beat."""
+    opens a group of sixteenths or falls on a beat. Where `dark`, a step along the scale that lands
+    on F# lands on F (the Phrygian second; the dark pass's notes) but over B, whose fifth it is."""
     rhythm, _, fig = choice.partition(".")
+    if rhythm == "written":
+        return written_bar(fig, k)
     hits = [i for i, c in enumerate(RHYTHMS[rhythm]) if c == "x"]
     notes = FIGURES[rhythm][fig]
     if len(notes) != len(hits):
@@ -304,7 +676,10 @@ def jam_bar(choice, home, next_home):
         raise ValueError("%s: the blues note is E minor's" % choice)
     out = []
     for j, (h, t) in enumerate(zip(hits, notes)):
-        n = next_home - 1 if t == "A" else next_home + 1 if t == "V" else home + 6 if t == "b" else along(home, t)
+        n = (next_home - 1 if t == "A" else next_home + 1 if t == "V" else home + 6 if t == "b"
+             else home + 5 if t == "F" else home + 7 if t == "P" else along(home, t))   # F and P: the perfect fourth and fifth over the root
+        if dark and t not in ("A", "V", "b", "F", "P") and n % 12 == 2 and home % 12 != 7:
+            n -= 1
         room = (hits[j + 1] if j + 1 < len(hits) else 16) - h
         out.append((h, n, room, j == 0 or hits[j - 1] != h - 1 or h % 4 == 0))
     return out
@@ -325,7 +700,7 @@ def form_roots(call):
 BAND_PARTS = ("walk", "ghost", "bass_walk", "bass_ghost", "hold_guitar", "hold_bass", "stop_guitar", "stop_bass")
 
 
-def turn_parts(call, turns, hold="332"):
+def turn_parts(call, turns, hold="332", dark=False):
     """The turns' patterns by section, {part: {section: pattern}}: the walk split into its accented
     hits ("walk") and the rest ("ghost"), on the bass alone where a turn's choice is "bass:" and a
     figure ("bass_walk", "bass_ghost"); the hold's guitar and bass; stop-time's hits on each bar's
@@ -346,6 +721,7 @@ def turn_parts(call, turns, hold="332"):
         bars_ = {key: [] for key in out}
         for i in range(n):
             choice, synth = turns[sec][i // 2]
+            choice = paired(choice, i)
             synth, _, voicing = synth.partition(":")
             arp_voice, hook_voice = VOICINGS[voicing or "back"]
             root, next_root = roots[k + i], roots[(k + i + 1) % len(form)]
@@ -358,13 +734,13 @@ def turn_parts(call, turns, hold="332"):
             elif choice == "stop":
                 hit = P.spell(root % 12) + "--" + "." * 13
                 played = {"stop_guitar": hit, "stop_bass": hit}
-            elif synth == "both":
+            elif synth == "both" and not choice.startswith(("written.", "n")):
                 raise ValueError("%s %s: the walk takes the arpeggio or the hook, never both" % (sec, choice))
             else:
                 alone, _, fig = choice.rpartition(":")
                 for key, acc in (("walk", True), ("ghost", False)):
                     bar = ["."] * 16
-                    for h, note, room, accented in jam_bar(fig, root % 12, next_root % 12):
+                    for h, note, room, accented in jam_bar(fig, root % 12, next_root % 12, dark, i):
                         if accented == acc:
                             bar[h] = P.spell(note)
                             for q in range(1, min(room, 2)):
@@ -374,43 +750,128 @@ def turn_parts(call, turns, hold="332"):
                 bars_[key].append(played.get(key, rest))
             for v in ARP_VOICES:
                 bars_["arp:" + v].append(ARP if synth in ("arp", "both") and v == arp_voice else rest)
-            for v in HOOK_VOICES:
+            for v in HOOK_PARTS:
                 bars_["hook:" + v].append(hook[16 * i % len(hook):][:16] if synth in ("hook", "both") and v == hook_voice else rest)
         for key in out:
             out[key][sec] = "".join(bars_[key])
     return out
 
 
-# ---------------------------------------------------------------- R, the jam
+# ---------------------------------------------------------------- R, the duel
 
-# R's sixteen bars run Em C D Bm Em A G D twice; a turn is two bars, bars counted from 0 here. Who
-# takes the lead in each (Ryan, 3 November: "adding more instrument and tune play (i.e. different
-# riff variations, different voices taking priority, etc), to really sell the 'jam' vibe"); the
-# walk, the hold and the stops under them are TURNS["R"]'s.
-TRADE = (2, 3)        # the hook's call on the synth lead, the lead guitar's answer a chord tone higher
-LICK_AT = (4, 5)      # the lead guitar's lick over the hold
-BASS_TURN = (6, 7)    # the bass alone with the kick, the hats and the backbeat
-BASS_SOLO = 1.6       # the bass a soloist's 4 dB forward in its turn: at the walk's level its two bars sat 5 to 6 dB under the head on a phone
-PIANO_AT = (8, 9)     # the house piano on the hook's rhythm, then on three-three-two
-STOPS = (12, 13)      # the band on each bar's one: the FM synth answers in the first, the drums fill the second
-HEADS = (0, 1, 14, 15)   # where the chime keeps the hook
-# The lead guitar's two bars over Em and A, two octaves over E2: up E minor's pentatonic to the
-# octave and back, then a run up to A held over the A chord.
-LICK = ("7ac-e-cac--efeca", "c-efi-ef------..")
-PIANO_TURN = ("x...x.x.....x...", "x..x..x.x..x..x.")
-FM_FILL = "....0...2.1.3.4."   # the hook a beat late, in the stop's gap
-LICK_GAIN, ANSWER_GAIN = 0.3, 0.3   # the lead guitar at its gain in C
-PIANO_JAM = 0.55   # each of the piano's three chord tones, leading
-STOP_PIANO = "x" + "." * 15
+# R's twenty-four bars run Em C D Bm Em A G D three times, bars counted from 0 here: a duel between
+# two basses (Ryan, 5 November: "I think we need to rewrite it again, into more of a dueling basses
+# type jam. The stop time was cool, we can do more of that unexpected kind of thing. The backing
+# instruments trading tunes around was cool too, just keep their volumes consistent so they don't
+# overshadow the basses when they're doing their thing"; 6 November: "I'm not worried about making
+# this section longer since it's like the climax of this track"). The track's bass and a second
+# bassist an octave over it trade phrases on his rhythms, the answer often the call's rhythm on
+# another figure. The first time through the chords, two bars each, the second's first answer
+# climbing from its own root (6 November: "the first time the upper bass comes in, that line coming
+# from such a high note as the first time it appears is jarring. It's a good line, but not as the
+# first time we hear the upper voice"). The second time, the call climbing to the second's high line
+# falling from its octave; two bars of stop-time, the band's hit on each bar's one with both basses
+# on its root, then one bass filling alone while the hat counts; and a bar each. The third, half a
+# bar each and then a beat each, the second echoing the first an octave up; the break, the band's
+# hit again and both basses on the two stop-time fills together in octaves while a snare builds
+# (6 November, of the eighteenth round's hole, the whole band out on a bar's last beat: "sounds
+# like a glitch or mistake instead of a stop time"); the two together on three-three-two under the
+# band's hits; and climbing into the outro in octaves. The duel reads in mono by register and voice:
+# the first on the fingers into the modern drive (BASS), the second an octave up on the active bass
+# near the bridge into the same drive (DUEL_B2; The Omnific's two basses). The backing trades the
+# tune over them, every voice at one level a margin under the basses (DUEL_BACKING): the hook on the
+# synth lead, answered a chord tone higher, and on the plucked string; the house piano on the hook's
+# rhythm, on stop-time's hits and on the band's; the plucked string's arpeggio; the chime's hook with
+# the band's hits; the piano's off-beats under the trades. The FM synth is out of it (6 November:
+# "it doesn't work as a backing voice, sounds like a glitch or alarm going off"). The sub rests
+# through R: two basses are the low end.
+#
+# Under the upper's phrases the lower plays by the bar (Ryan, 5 November: "don't cut out the lower
+# one when the upper comes in, since it sounds fragmented and empty without the lower end"; 6
+# November: "both lower in unison ... and the lower in 3-3-2, sounds good, and I think both have a
+# place. For example, the second time the high bass comes in in R, 3-3-2 for the first bar and
+# unison for the second bar would be cool. Also, keeping the upper exposed on its own sometimes is
+# good too, like in the trade-off section nearer the end"): the upper's line an octave down
+# ("unison"), three-three-two on the roots ("rhythm"), the root held from a stop's hit through the
+# upper's fill ("hold"), or nothing, the upper alone (None); each 3 dB under the lower's own phrases
+# (SUPPORT_DB), so the answer stays on top.
+DUEL = [   # each bar: its phrases (bass, rhythm.figure, the steps it plays from and to), and the lower's part under the upper's
+    (((1, "pairs.pops", 0, 16),), None),                # Em: the first bass calls
+    (((1, "pairs.stairs", 0, 16),), None),              # C
+    (((2, "pairs.stairs", 0, 16),), "unison"),          # D: the second answers on the call's rhythm, climbing from its root
+    (((2, "pairs.pops", 0, 16),), "unison"),            # Bm
+    (((1, "gallop.drive", 0, 16),), None),              # Em: the call again, galloping
+    (((1, "gallop.walk", 0, 16),), None),               # A
+    (((2, "gallop.octs", 0, 16),), "rhythm"),           # G: answered in octaves
+    (((2, "threes.steps", 0, 16),), "unison"),          # D
+    (((1, "bursts.chug", 0, 16),), None),               # Em: the call a third time,
+    (((1, "pairs.stairs", 0, 16),), None),              # C: climbing into the answer
+    (((2, "pairs.fall", 0, 16),), "rhythm"),            # D: the second's high line, falling from its octave
+    (((2, "pairs.pops", 0, 16),), "unison"),            # Bm
+    (((1, "bursts.turn", 4, 16),), None),               # Em: stop-time, the first bass filling alone after the band's hit
+    (((2, "bursts.rise", 4, 16),), "hold"),             # A: then the second
+    (((1, "threes.climb", 0, 16),), None),              # G: a bar each
+    (((2, "threes.steps", 0, 16),), "rhythm"),          # D
+    (((1, "offbeats.blues", 0, 8), (2, "offbeats.run", 8, 16)), None),       # Em: half a bar each, up to the blues note and answered home
+    (((1, "offbeats.zigzag", 0, 8), (2, "offbeats.zigzag", 8, 16)), None),   # C
+    (((1, "groups.climb", 0, 4), (2, "groups.climb", 4, 8), (1, "groups.climb", 8, 12), (2, "groups.climb", 12, 16)), None),   # D: a beat each, the second echoing the first
+    (((1, "groups.arch", 0, 4), (2, "groups.arch", 4, 8), (1, "groups.arch", 8, 12), (2, "groups.arch", 12, 16)), None),       # Bm
+    (((1, "bursts.turn", 4, 16), (2, "bursts.turn", 4, 16)), None),          # Em: the break, both on the first's fill
+    (((1, "bursts.rise", 4, 16), (2, "bursts.rise", 4, 16)), None),          # A: and on the second's
+    (((1, "332.lift", 0, 16), (2, "332.lift", 0, 16)), None),                # G: together, under the band's hits
+    (((1, "threes.climb", 0, 16), (2, "threes.climb", 0, 16)), None),        # D: climbing into the outro in octaves
+]
+STOPS = ((12, 13), (20, 21))   # stop-time, then the break: the band on each bar's one, both basses on its root, then the fills
+# The end without the break (a set's row): both basses on the gallop in octaves, the band playing on.
+NO_BREAK = {20: (((1, "gallop.drive", 0, 16), (2, "gallop.drive", 0, 16)), None),
+            21: (((1, "gallop.walk", 0, 16), (2, "gallop.walk", 0, 16)), None)}
+DUEL_HITS = 22   # the band's hits on three-three-two with both basses, then the climb
+# The dark pass's end of the duel (Ryan, 7 November: "Especially towards the end of the duel section, it just
+# sounds like a bunch of friends having a good time"): the beat-each trade on D sinking where it climbed,
+# and the two basses falling into the outro in octaves where they climbed, down from D's octave to the
+# semitone over E, so the outro's E lands as the Phrygian cadence's (F to E).
+DUEL_DARK = {18: (((1, "groups.sink", 0, 4), (2, "groups.sink", 4, 8), (1, "groups.sink", 8, 12), (2, "groups.sink", 12, 16)), None),
+             23: (((1, "threes.fall", 0, 16), (2, "threes.fall", 0, 16)), None)}
+DUEL_OCTAVE = {1: -1, 2: 0}   # the second bass an octave over the first
+DIRTY_B2 = 0.463   # the upper bass on the dirtier drive against the first bass, met halfway as the modern's 0.618 is (1.5 dB each way)
+DIRTY_CHORDS = 0.827   # its chords against its single notes: at one gain 1.7 dB over them on a phone, 1.6 in full
+DUEL_UPPER = "real_omnific_dirty"   # R's upper bass (Ryan, 6 November: "'upper on the dirtier Omnific' yes")
+# Each voice alone over the bars it plays, against the first bass on a phone and in full, met halfway:
+# the second bass an octave up, and each backing voice brought to the first bass's level before its
+# margin under it (measured on the nineteenth round's duel, each within 1.7 dB of the first bass either
+# way). At their sixteenth-round gains the synth lead stood 1.9 dB over the bass on a phone and the
+# plucked string's arpeggio 2.8, where the plucked string's hook an octave under its arpeggio, the house
+# piano, the chime and the off-beats sat 2 to 9 dB under it.
+DUEL_B2 = {"real_omnific": 0.618, "real_omnific_dirty": DIRTY_B2}
+DUEL_BACKING = 3.0   # the backing's margin under the basses, in dB (Ryan, 5 November: "Keep the backing voices at the 3db under, that works")
+SUPPORT_DB = -3.0
+# The upper bass in chords (Ryan, 5 November: "We could also try what the upper bass line sounds like
+# doing chords instead"): each note with its fifth, two strings into one amp, met halfway with its
+# single notes; a set's row plays them wherever the lower doubles the upper, the bars he heard them in
+# ("both lower in unison (with or without the lower octave as well, both work)").
+DUEL_CHORDS = {"real_omnific": 0.786,   # at one gain 2.2 dB over the single notes on a phone, 2.0 in full
+               "real_omnific_dirty": DIRTY_CHORDS}
+# The lower's unison in two octaves (Ryan, 6 November: "'With or without the lower octave' wasn't for chords,
+# it was whether the lower line kept its lower octave unison as well, as in the one variation, the upper
+# was single, the lower was playing mid and low"): a set's row has the lower bass playing the upper's line
+# at the upper's own pitch as well as an octave under it, both 3 dB under its own phrases, wherever it
+# plays in unison. The chords row is the other way he may have heard it: the upper's fifths on top read
+# as a line of their own, its roots and the lower an octave under them as the lower in two octaves.
+DUEL_LEVELS = {"lead": 0.944, "pluck_hook": 1.592, "piano": 2.505, "pluck": 0.879, "chime": 2.147, "offbeats": 1.925}
+PIANO_TURN = ("x...x.x.....x...", "x..x..x.x..x..x.")   # the house piano on the hook's rhythm, then on three-three-two
+STOP_HIT = "x" + "." * 15
+PIANO_OFFBEAT = 0.165   # each of the house piano's three chord tones at the off-beats' level (the sixteenth round's)
+HITS_332 = "x..x..x.x..x..x."
+BREAK_BUILD = "........5.6.7.8x"   # the snare building out of the break into the band's hits, from its third beat
 
 
 def r_bars(bars):
-    """A pattern through R's sixteen bars: {bar: its sixteen steps}, rests elsewhere."""
+    """A pattern through R's bars: {bar: its sixteen steps}, rests elsewhere."""
     return "".join(bars.get(b, "." * 16) for b in range(R_BARS))
 
 
 def r_tiled(pat, keep):
-    """A pattern repeated through R's sixteen bars, kept only in the bars `keep` passes."""
+    """A pattern repeated through R's bars, kept only in the bars `keep` passes."""
     whole = (pat * (16 * R_BARS // len(pat) + 1))[:16 * R_BARS]
     return "".join(whole[16 * b:16 * b + 16] if keep(b) else "." * 16 for b in range(R_BARS))
 
@@ -420,49 +881,232 @@ def degrees_up(pat, k):
     return "".join(str(int(c) + k) if c.isdigit() else c for c in pat)
 
 
-def r_voices(call):
-    """The voices that take R's turns over the band: see the notes above."""
+W1, W2 = "written.G", "written.P"
+DUEL_WRITTEN = [   # the duel on the written parts: the gallop traded, the riff on its pedal in the middle
+    (((1, W1, 0, 16),), None), (((1, W1, 0, 16),), None),
+    (((2, W1, 0, 16),), "unison"), (((2, W1, 0, 16),), "unison"),
+    (((1, W1, 0, 16),), None), (((1, W1, 0, 16),), None),
+    (((2, W1, 0, 16),), "rhythm"), (((2, W1, 0, 16),), "unison"),
+    (((1, W2, 0, 16),), None), (((1, W2, 0, 16),), None),          # the riff on E under Em and C
+    (((2, W2, 0, 16),), "rhythm"), (((2, W2, 0, 16),), "unison"),    # answered an octave up over D and Bm
+    (((1, W1, 4, 16),), None), (((2, W1, 4, 16),), "hold"),          # stop-time
+    (((1, "written.S", 0, 16),), None), (((2, W1, 0, 16),), "rhythm"),
+    (((1, W1, 0, 8), (2, W1, 8, 16)), None), (((1, W1, 0, 8), (2, W1, 8, 16)), None),
+    (((1, W1, 0, 4), (2, W1, 4, 8), (1, W1, 8, 12), (2, W1, 12, 16)), None),
+    (((1, W1, 0, 4), (2, W1, 4, 8), (1, W1, 8, 12), (2, W1, 12, 16)), None),
+    (((1, W1, 4, 16), (2, W1, 4, 16)), None), (((1, W1, 4, 16), (2, W1, 4, 16)), None),   # the break
+    (((1, "written.S", 0, 16), (2, "written.S", 0, 16)), None),      # together under the band's hits
+    (((1, W1, 0, 16), (2, W1, 0, 16)), None),                        # the gallop's last bar, F falling to E
+]
+
+
+# The duel on three basses, none trading (Ryan, 10 November: "one bass holds the eighths while the other takes the
+# lines, OR go to three basses so something can hold the eighths ... one to hold the eighth drive, one to riff a
+# rhythm with simple pitch changes, and one to run in unison with, or complimentary to, the second one. Top one stays
+# Omnific, so the main riffer either stays finger or goes Omnific, and the eighth pusher is either finger or one of
+# the synths ... either unisons/octaves, OR simultaneous, complimentary but distinct lines and rhythms. Not trading,
+# trading was the mistake"). Three times through the chords: the riffer on the gallop on the root (its octave once,
+# the lean last) with the top in octaves; the riffer on three-three-two (root, root, root, fifth, root, lean) under
+# the top's three long notes (octave, fifth, lean); the riffer on his threes on the root (the fifth once, the lean
+# last) with the top in octaves. The stop-time and the break stay, both basses together from beat two; then all
+# three on three-three-two under the band's hits and the gallop out. The pusher holds eighths on the roots through
+# all but the stops, on the crunch synth or the fingers (duel_pusher).
+T_G, T_3, T_L, T_T = "n2.lean", "n9.lean", "long.line", "n13.lean"   # his second, ninth and thirteenth since the twenty-seventh round
+DUEL_THREE = ([(((1, T_G, 0, 16), (2, T_G, 0, 16)), None)] * 8
+              + [(((1, T_3, 0, 16), (2, T_L, 0, 16)), None)] * 4
+              + [(((1, T_G, 4, 16), (2, T_G, 4, 16)), None)] * 2          # stop-time
+              + [(((1, T_3, 0, 16), (2, T_L, 0, 16)), None)] * 2
+              + [(((1, T_T, 0, 16), (2, T_T, 0, 16)), None)] * 4
+              + [(((1, T_T, 4, 16), (2, T_T, 4, 16)), None)] * 2          # the break
+              + [(((1, "332.home", 0, 16), (2, "332.home", 0, 16)), None),
+                 (((1, "n5.lean", 0, 16), (2, "n5.lean", 0, 16)), None)])
+DUEL_THREE_KICK = [run_starts(RYAN_13[1])] * 8 + [run_starts(RYAN_13[8])] * 8 + [run_starts(RYAN_13[12])] * 8   # the kick on the riffer's rhythm
+
+
+# The duel as a lead over the grooves (Ryan, 10 November: "Duel - no unisons. Keep the lower bass on the fingers doing
+# its thing with the grooves. The main difference between the lead section (C) and R should be how much the groove
+# bass walks, how 'fancy' the lead tone is getting, and how much the other lines join in (arpeggio, hooks, and so
+# on). Lets cut the stop-times for now"): the fingers on his core pairs, walking at each bar's end (the fourth, the
+# fifth, the lean), 4 closing the first two passes and 7 the last; the top Omnific on its lead (WRITTEN's L); the
+# crunch synth on the eighths; no stop-time, no break, no band's hits; the plucked string's arpeggio low all through,
+# the hook on the synth lead from the second pass, the chime's from the third.
+LEAD_GROOVES = ["n4" if b in (7, 15) else "n7" if b == 23 else PAIRS_13[("1", "5", "9")[b // 8]].split("|")[b % 2] for b in range(24)]
+DUEL_LEAD_HARD = [(((1, rh + ".walk", 0, 16), (2, "written.L", 0, 16)), None) for rh in LEAD_GROOVES]
+# R's way in (Ryan, 10 November: "In R, it hits too hard immediately after that quiet section. I think the first couple
+# bars should be a little less busy, to give somewhere to build to. Maybe the lead doesn't come in right away. Drums do
+# something at the end of D to bring us into it. Start R with the synth arpeggios instead of string ones ... Drums in R
+# have strangely placed crash or china hits in the middle of phrases"): the first four bars the fingers on the root
+# alone, the lead in at the fifth; the first pass's arpeggio on the synth lead, between octaves, the plucked string's
+# from the second; a crash on each pass's one and nowhere else, the china and the clank of the old two-bar turns out;
+# a fill on the toms closing D.
+LEAD_IN = 4
+DUEL_LEAD = [(((1, rh + ".lean", 0, 16),), None) if b < LEAD_IN else bar for b, (rh, bar) in enumerate(zip(LEAD_GROOVES, DUEL_LEAD_HARD))]
+
+
+DUEL_LEAD_28 = [(tuple((b, "written.L28" if c == "written.L" else c, lo, hi) for b, c, lo, hi in phrases), under) for phrases, under in DUEL_LEAD]
+LEAD_WAYS = ("lead", "lead_hard", "lead_28")   # the full pair's; from R's first bar; the twenty-eighth round's notes
+
+
+def is_lead(way):
+    return way in LEAD_WAYS
+
+
+def duel_plan(brk=True, dark=False):
+    """R's bars and its stop bars: DUEL with the break, or with the band playing on through it; its
+    end falling where `dark` (DUEL_DARK)."""
+    if is_lead(dark):
+        return (DUEL_LEAD_HARD if dark == "lead_hard" else DUEL_LEAD_28 if dark == "lead_28" else DUEL_LEAD), ()
+    duel = DUEL_THREE if dark == "three" else DUEL_WRITTEN if dark == "written" else [DUEL_DARK.get(b, bar) for b, bar in enumerate(DUEL)] if dark else DUEL
+    if brk:
+        return duel, STOPS[0] + STOPS[1]
+    return [NO_BREAK.get(b, bar) for b, bar in enumerate(duel)], STOPS[0]
+
+
+def duel_lines(call, brk=True, dark=False):
+    """Each bass's line through R, split as the walk is into its accented hits and the rest:
+    {(bass, "walk" or "ghost"): pattern}, with the lower bass's part under the upper's phrases as
+    bass "support"; and the bars where the lower doubles the upper, in unison under it or on the
+    same phrases. A stop bar opens on both basses' root, held three steps, or through the upper's
+    fill where the lower holds it."""
+    plan, stops = duel_plan(brk, dark)
+    if len(plan) != R_BARS:
+        raise ValueError("the duel has %d bars for R's %d" % (len(plan), R_BARS))
+    roots = [c[0] for c in call["chords"]["R"]]
+    out = {(b, k): [] for b in (1, 2, "support") for k in ("walk", "ghost")}
+    doubled = []
+
+    def place(cells, key, choice, root, next_root, lo, hi, bar=0):
+        for h, note, room, accented in jam_bar(choice, root % 12, next_root % 12, dark is True, bar):
+            if lo <= h < hi:
+                row = cells[key, "walk" if accented else "ghost"]
+                row[h] = P.spell(note)
+                for q in range(1, min(room, room if choice.startswith(("long.", "written.L")) else 2, hi - h)):
+                    row[h + q] = "-"
+
+    for bar, (phrases, under) in enumerate(plan):
+        root = roots[bar % len(roots)]
+        next_root = roots[(bar + 1) % len(roots)] if bar + 1 < R_BARS else call["chords"]["O"][0][0]
+        lower = {(choice, lo, hi) for bass, choice, lo, hi in phrases if bass == 1}
+        upper = {(choice, lo, hi) for bass, choice, lo, hi in phrases if bass == 2}
+        if under is not None and (lower or not upper):
+            raise ValueError("bar %d: the lower plays under the upper's phrases only where it plays none of its own" % bar)
+        cells = {key: ["."] * 16 for key in out}
+        if bar in stops:
+            for b in (1, 2):
+                cells[b, "walk"][0:3] = [P.spell(root % 12), "-", "-"]
+        for bass, choice, lo, hi in phrases:
+            place(cells, bass, choice, root, next_root, lo, hi, bar)
+        for choice, lo, hi in upper if under else ():
+            if under == "unison":
+                for key in ("walk", "ghost"):
+                    cells["support", key][lo:hi] = cells[2, key][lo:hi]
+            elif under == "hold":
+                cells[1, "walk"][3:16] = ["-"] * 13   # the root held from the band's hit through the gap
+            else:
+                place(cells, "support", "332.home", root, next_root, lo, hi)
+        if under == "unison" or (upper and lower == upper):
+            doubled.append(bar)
+        for key in out:
+            out[key].append("".join(cells[key]))
+    return {key: "".join(v) for key, v in out.items()}, doubled
+
+
+def duel_voices(call, b2=None, backing_db=DUEL_BACKING, bass_db=BASS_DB, levels=None, b2_level=None,
+                brk=True, chords=False, chords_level=None, octaves=False, dark=False, arp_octave=2, riffer=None, piano=True):
+    """R's voices: the two basses (the first as the track's bass, the second on `b2` an octave up at
+    its level against the first, DUEL_B2, in chords where `chords` wherever the lower doubles it,
+    DUEL_CHORDS), the first's part under the second's phrases (DUEL, SUPPORT_DB) and the backing
+    trading the tune over them, each at the basses' level `backing_db` under (DUEL_LEVELS); `brk`
+    the break before the band's hits or the band playing on through it; `octaves` the lower's unison
+    in two octaves, at the upper's own pitch as well as an octave under it (by DUEL_CHORDS); `dark`
+    the walks on the Phrygian second and the end falling (jam_bar's `dark`, DUEL_DARK), `arp_octave` the
+    plucked string's arpeggio's octave."""
+    b2 = b2 or DUEL_UPPER
+    lv = dict(DUEL_LEVELS, **(levels or {}))
+    under = 10.0 ** (-backing_db / 20.0)
+    bv1, bv2 = BASS_VOICES[riffer or BASS], BASS_VOICES[b2]
+    g1 = 0.27 * 10.0 ** (bass_db / 20.0) * bv1["level"]
+    g2 = g1 * (DUEL_B2[b2] if b2_level is None else b2_level)
+    lines, doubled = duel_lines(call, brk, dark)
+    plan, stops = duel_plan(brk, dark)
+    in_chords = set(doubled) if chords else set()
+    unison = {b for b, (_phrases, under) in enumerate(plan) if under == "unison"} if octaves else set()
+
+    def bars_of(pat, keep):
+        return "".join(pat[16 * b:16 * b + 16] if keep(b) else "." * 16 for b in range(R_BARS))
+    voices = []
+    for name, bv, g, params, octave, key_of, keep in (
+            ("bass1", bv1, g1, dict(bv1["params"]), DUEL_OCTAVE[1], 1, lambda b: True),
+            ("bass2", bv2, g2, dict(bv2["params"]), DUEL_OCTAVE[2], 2, lambda b: b not in in_chords),
+            ("support", bv1, g1 * 10.0 ** (SUPPORT_DB / 20.0), dict(bv1["params"]), DUEL_OCTAVE[1], "support", lambda b: True),
+            ("bass2_chords", bv2, g2 * (DUEL_CHORDS[b2] if chords_level is None else chords_level), dict(bv2["params"], fifth=True),
+             DUEL_OCTAVE[2], 2, lambda b: b in in_chords),
+            ("support_mid", bv1, g1 * 10.0 ** (SUPPORT_DB / 20.0), dict(bv1["params"]), DUEL_OCTAVE[2], "support", lambda b: b in unison)):
+        for key, k in (("walk", 1.0), ("ghost", GHOST)):
+            voices.append({"inst": bv["inst"], "params": params, "mode": "riff", "gain": g * k, "hold": 0.9,
+                           "octave": octave, "pat": {"R": bars_of(lines[key_of, key], keep)}, "duel": name})
     hook = P.part(call, "chime_metal", "R", mode="chord")
-    stop_piano = {b: STOP_PIANO for b in STOPS}
-    return [
-        dict(HOOK_VOICES["lead"], mode="chord", octave=1, dur=3.0, pat={"R": r_bars({TRADE[0]: hook})}),
-        {"inst": "lead_real", "mode": "chord", "octave": 1, "dur": 3.0, "gain": ANSWER_GAIN, "pat": {"R": r_bars({TRADE[1]: degrees_up(hook, 1)})}},
-        {"inst": "lead_real", "mode": "riff", "octave": 2, "hold": 1.0, "gain": LICK_GAIN, "pat": {"R": r_bars(dict(zip(LICK_AT, LICK)))}},
-        dict(HOOK_VOICES["fm"], mode="chord", octave=1, dur=3.0, pat={"R": r_bars({STOPS[0]: FM_FILL})}),
-    ] + [{"inst": "epiano", "mode": "chord", "octave": 1, "gain": PIANO_JAM, "dur": 1.5,
-          "pat": {"R": r_bars({b: x.replace("x", str(k)) for b, x in list(zip(PIANO_AT, PIANO_TURN)) + list(stop_piano.items())})}} for k in range(3)]
+    up = degrees_up(hook, 1)
+    offbeats = P.part(call, "epiano", "R", mode="stab")
+    band = (DUEL_HITS, DUEL_HITS + 1)
+
+    def recipe(inst):
+        # the recipe's own R voice's settings (the chime's echo, the piano's length), its patterns aside
+        return {k: w for k, w in next(v for v in call["voices"] if v["inst"] == inst and "R" in v["pat"]).items() if k != "pat"}
+    backing = [
+        ("lead", dict(HOOK_VOICES["lead"], mode="chord", octave=1, dur=3.0, pat={"R": r_bars({0: hook, 1: up, 8: hook, 9: up, 14: hook})})),
+        ("pluck_hook", dict(ARP_VOICES["pluck"], mode="chord", octave=1, dur=3.0, pat={"R": r_bars({2: hook, 3: up, 15: up})})),
+        ("pluck", dict(ARP_VOICES["pluck"], mode="chord", octave=arp_octave, dur=1.4, pat={"R": r_bars({6: ARP, 7: ARP})})),
+        ("chime", dict(recipe("chime_metal"), gain=0.2, pat={"R": r_bars({b: hook for b in band})})),
+        ("offbeats", dict(recipe("epiano"), pat={"R": r_tiled(offbeats, lambda b: b not in stops + band + (4, 5))})),
+    ] + [("piano", {"inst": "epiano", "mode": "chord", "octave": 1, "gain": PIANO_OFFBEAT, "dur": 1.5,
+                    "pat": {"R": r_bars(dict([(4, PIANO_TURN[0].replace("x", str(k))), (5, PIANO_TURN[1].replace("x", str(k)))]
+                                             + [(b, STOP_HIT.replace("x", str(k))) for b in stops] + [(DUEL_HITS, HITS_332.replace("x", str(k)))]))}})
+         for k in range(3)]
+    if is_lead(dark):
+        first = 0 if dark == "lead_hard" else 8   # the plucked string's arpeggio from the second pass, the synth lead's through the first
+        backing = [
+            ("pluck", dict(ARP_VOICES["pluck"], mode="chord", octave=1, dur=1.4, pat={"R": r_bars({b: ARP for b in range(first, R_BARS)})})),
+            ("lead", dict(ARP_VOICES["lead"], mode="chord", octave=1, dur=1.4, pat={"R": r_bars({b: ARP for b in range(first) if b // 2 % 2 == 0})})),
+            ("lead", dict(ARP_VOICES["lead"], mode="chord", octave=2, dur=1.4, pat={"R": r_bars({b: ARP for b in range(first) if b // 2 % 2 == 1})})),
+            ("lead", dict(HOOK_VOICES["lead"], mode="chord", octave=1, dur=3.0, pat={"R": r_bars({b: (up if b % 2 else hook) for b in range(8, R_BARS)})})),
+            ("chime", dict(recipe("chime_metal"), gain=0.2, pat={"R": r_bars({b: hook for b in range(16, R_BARS)})})),
+        ] + ([("offbeats", dict(recipe("epiano"), pat={"R": r_tiled(offbeats, lambda b: b >= (0 if dark == "lead_hard" else LEAD_IN))}))] if piano else [])
+    for name, v in backing:
+        voices.append(dict(v, gain=v["gain"] * lv[name] * under, duel=name))
+    return voices
 
 
-def r_drums():
-    """R's kit bar by bar: the groove under the heads and the turns; four on the floor, eighths on
-    the hat and the backbeat under the bass's turn, a fill out of it; each stop's one alone, the
-    hat keeping time, the second stop a snare build and a tom fill into the head; a fill into the
-    outro. The industry rests through the stops."""
+def duel_drums(brk=True, dark=False, drive=False, kick=None):
+    """R's kit bar by bar under the duel: the groove under the trades, a crash and a china opening
+    each turn; each stop's one alone with the hat counting, a snare building out of each stop's
+    second bar (the break's from its third beat, its hits with the china too); the band's hits on
+    three-three-two with the basses, kick and snare together under a crash; a fill into the outro.
+    The industry rests through the stops and the hits."""
+    _plan, stops = duel_plan(brk, dark)
     groove = lambda pat, b: pat[16 * (b % 8):16 * (b % 8) + 16]   # noqa: E731
     bars = {k: [] for k in ("kick", "snare", "hat", "crash", "china", "stack", "tom", "tom2", "knock", "tick", "clank")}
-    second = {b: b - 8 if b >= 8 else b for b in range(R_BARS)}   # the groove's bar under each of R's
-    second.update({14: 6, 15: 7})
     for b in range(R_BARS):
         turn_start = b % 2 == 0
-        if b in STOPS:
-            row = {"kick": "x" + "." * 15, "snare": "." * 16 if b == STOPS[0] else "..........6.7.8x",
-                   "hat": "....x...x...x..." if b == STOPS[0] else "....x...x.......", "crash": "x" + "." * 15,
-                   "tom": FILL_TOM if b == STOPS[1] else "." * 16, "tom2": FILL_TOM2 if b == STOPS[1] else "." * 16}
-        elif b in BASS_TURN:
-            last = b == BASS_TURN[1]
-            row = {"kick": "x...x...x......." if last else "x...x...x...x...", "snare": "....x.......x...",
-                   "hat": "x.x.x.x........." if last else "x.x.x.x.x.x.x.x.", "stack": "..x...x...x...x.",
-                   "tom": FILL_TOM if last else "." * 16, "tom2": FILL_TOM2 if last else "." * 16}
+        if b in stops:
+            first, brk_bar = b - 1 not in stops, b in STOPS[1]
+            row = {"kick": STOP_HIT, "crash": STOP_HIT, "hat": "....x...x...x..." if first else "....x...x.......",
+                   "snare": "." * 16 if first else BREAK_BUILD if brk_bar else "..........6.7.8x"}
+            if brk_bar:
+                row["china"] = STOP_HIT
+        elif b == DUEL_HITS and not is_lead(dark):
+            row = {"kick": HITS_332, "snare": HITS_332, "crash": STOP_HIT, "china": "........x......."}
         else:
-            g = second[b]
             last = b == R_BARS - 1
-            row = {"kick": groove(GROOVE_KICK, g), "snare": groove(GROOVE_SNARE, g), "hat": "xxxxxxxx........" if last else "x" * 16,
-                   "china": "........x......." if turn_start else "." * 16, "stack": "..x...x...x...x.",
-                   "tom": FILL_TOM if last else "." * 16, "tom2": FILL_TOM2 if last else "." * 16}
-        if b not in STOPS:
-            row.update(knock="......x.......x.", tick="x" * 16, clank="..............x." if turn_start else "." * 16)
-        if turn_start and b not in STOPS:
-            row["crash"] = "x" + "." * 15
+            row = {"kick": (K13 if (kick or KICK_WAY) == "flow" and (b < LEAD_IN and dark != "lead_hard" or last) else bar_kick(LEAD_GROOVES[b], kick)) if is_lead(dark) else DUEL_THREE_KICK[b] if drive == "three" else K13 if drive else groove(GROOVE_KICK, b), "snare": SN24 if drive else groove(GROOVE_SNARE, b),
+                   "hat": ("x.x.x.x........." if last else HATQ) if drive else "xxxxxxxx........" if last else "x" * 16,
+                   "china": "........x......." if turn_start else "." * 16, "stack": "." * 16 if drive else "..x...x...x...x.",
+                   "tom": FILL_TOM if last else "." * 16, "tom2": FILL_TOM2 if last else "." * 16,
+                   "knock": "......x.......x.", "tick": "x" * 16, "clank": "..............x." if turn_start else "." * 16}
+            if turn_start:
+                row["crash"] = STOP_HIT
+            if dark in ("lead", "lead_28"):   # a crash on each pass's one alone; no china or clank in the middle of a phrase
+                row.update(crash=STOP_HIT if b % 8 == 0 else "." * 16, china="." * 16, clank="." * 16)
         for k in bars:
             bars[k].append(row.get(k, "." * 16))
     return {k: "".join(v) for k, v in bars.items()}
@@ -481,25 +1125,202 @@ def slap_drive(f, dur):
 
 F.NOTE_INST["slap_drive"] = lambda f, d, p: slap_drive(f, d)
 
+# The clean bass (Ryan, 3 November, on the tenth round: "Can I get night shift battle with some clean
+# bass options? Or at least only very slightly distorted?"). Measured on a sine at a note's peak, the
+# driven bass's amp makes 39% harmonic distortion, the tenth round's slap a little driven 41%, the
+# forge's plain slap 26% by its own clip and the synth bass's stage 17%; the clean voices make none,
+# and the touch (TOUCH) about 5%, an amp just breaking up.
+TOUCH = (0.5, 0.8)   # the touch of drive: the stage's input at the note's peak, and its drive
+
+
+def evened(x, amount, most=4.0):
+    """A compressor's evenness on one note, without saturation: the note's level followed (about
+    13 ms) and pulled toward its loudest by `amount`, never more than `most` times up, so the line
+    holds through each note's sustain."""
+    env = np.maximum(F.lp(np.abs(x), 12.0), 0.0)
+    env = np.maximum(env / (np.max(env) + 1e-9), 1e-4)
+    return x * np.minimum(env ** -amount, most)
+
+
+def amp(y, touch):
+    """The amp: clean, or with a touch of drive (TOUCH), on a note brought to one peak first."""
+    y = y / (np.max(np.abs(y)) + 1e-9) * TOUCH[0]
+    return F.asat(y, TOUCH[1]) if touch else y
+
+
+def finger_bass(f, dur, touch=False):
+    """A finger bass: the driven bass's two strings, the finger's thump and the body's peak, evened
+    as a compressor would, into the amp clean or with a touch of drive, then a tone open enough for
+    the string's own overtones, which a phone plays where it plays little of the fundamental, and
+    the driven bass's cabinet."""
+    n = F.n_of(dur)
+    bright = F.RNG.uniform(0.5, 0.62)
+    x = F.pluck(f, dur, bright=bright, damp=0.998)[:n] + F.pluck(f * 1.001, dur, bright=bright * 0.6, damp=0.998)[:n] * 0.5
+    x = x + F.bp(x, 80.0, 140.0) * 0.8
+    thump = F.lp(F.noise(F.n_of(0.02)), 900.0) * F.env_ad(F.n_of(0.02), 0.0005, 0.006) * 0.5
+    y = amp(evened(F.at(x, thump, 0.0)[:n], 0.45), touch)
+    y = F.lp(y, 3200.0) + F.bp(y, 600.0, 1200.0) * 0.3
+    return F.hp(F.bass_cabinet(y), 40.0)
+
+
+def slap_clean(f, dur, touch=False):
+    """A slapped bass with its clip taken out: the forge's slap (the thumb's thump, the string's
+    bright snap against the frets, its quick decay), evened as a compressor would, into the same
+    amp."""
+    n = F.n_of(dur)
+    x = F.pluck(f, dur, bright=0.95, damp=0.996)[:n]
+    snap = F.bp(F.noise(F.n_of(0.01)), 2500.0, 9000.0) * F.env_ad(F.n_of(0.01), 0.0002, 0.002) * 0.9
+    thump = F.lp(F.noise(F.n_of(0.025)), 700.0) * F.env_ad(F.n_of(0.025), 0.0005, 0.007) * 0.7
+    y = amp(evened(F.at(F.at(x, snap, 0.0), thump, 0.0)[:n], 0.3), touch)
+    return F.hp(F.lp(y, 4500.0), 50.0) * F.env_ad(n, 0.001, dur * 0.45, curve=2.0)
+
+
+F.NOTE_INST["finger_bass"] = lambda f, d, p: finger_bass(f, d, p.get("touch", False))
+F.NOTE_INST["slap_clean"] = lambda f, d, p: slap_clean(f, d, p.get("touch", False))
+
 # Every part the driven bass plays on another voice, measured against it alone over the whole battle
-# half (`level`). The slap meets it on a phone's speaker and in full alike. The synth bass is dark: a
+# half (`level`). The slaps meet it on a phone's speaker and in full alike. The synth bass is dark: a
 # phone plays little of it, so at the driven bass's level on a phone it would sit 6 dB over it in
 # full, and at its level in full 6 dB under it on a phone; it sits between, 3 dB under on a phone and
-# 3 dB over in full.
+# 3 dB over in full. The clean voices and their touch meet it on a phone and in full alike, within a
+# fifth of a dB: the string's own overtones and the cabinet carry them on a phone as the amp carries
+# the driven bass.
 BASS_VOICES = {
     "driven": {"inst": "bass_real", "params": {"drive": 3.5}, "level": 1.0},           # the ninth round's
     "synth": {"inst": "bass", "params": {"drive": 2.5, "cutoff": 600.0}, "level": 2.29},   # the synth bass: the crunch synth dark and soft
     "slap": {"inst": "slap_drive", "params": {}, "level": 0.71},                       # a slapped bass a little driven
+    "finger": {"inst": "finger_bass", "params": {}, "level": 9.10},                    # a finger bass, clean
+    "finger_touch": {"inst": "finger_bass", "params": {"touch": True}, "level": 6.55}, # the finger bass with a touch of drive
+    "slap_clean": {"inst": "slap_clean", "params": {}, "level": 11.51},                # the slap, clean
+    "slap_touch": {"inst": "slap_clean", "params": {"touch": True}, "level": 8.25},    # the slap with a touch of drive
+    # The real basses (real_bass.py; Ryan, 4 November: "Yes, build me some real bass options, please"),
+    # each met halfway between the driven bass's level on a phone and in full as the synth bass is:
+    # like it, each is darker than the driven bass, from 1.7 dB under it on a phone and over it in
+    # full (near the bridge) to 4.6 (the flatwounds).
+    "real_finger": {"inst": "real_bass", "params": {"preset": "finger", "amp": "di"}, "level": 6.75},   # fingers over the neck pickup, a direct box
+    "real_bridge": {"inst": "real_bass", "params": {"preset": "bridge", "amp": "di"}, "level": 4.80},   # fingers near the bridge, its pickup
+    "real_pick": {"inst": "real_bass", "params": {"preset": "pick", "amp": "di"}, "level": 6.06},       # a pick between the pickups
+    "real_flat": {"inst": "real_bass", "params": {"preset": "flat", "amp": "di"}, "level": 8.71},       # flatwounds and a soft thumb, the tone rolled back
+    "real_grit": {"inst": "real_bass", "params": {"preset": "finger", "amp": "grit"}, "level": 5.19},   # the fingers through an amp just breaking up
+    # The fingers through an amp driven harder (Ryan, 4 November: "What happens if we distort it a
+    # little? Will it take it? Can we achieve the 'omnific' sound?").
+    # Each met halfway as the rest, phone and full closer the harder it is driven (from 1.7 dB each
+    # way for a little more drive to 0.6 for the active bass).
+    "real_dirt": {"inst": "real_bass", "params": {"preset": "finger", "amp": "dirt"}, "level": 3.37},        # a little more drive
+    "real_driven": {"inst": "real_bass", "params": {"preset": "finger", "amp": "driven"}, "level": 1.80},    # driven, the mids pushed
+    "real_modern": {"inst": "real_bass", "params": {"preset": "finger", "amp": "modern"}, "level": 2.07},    # the fingers into a modern prog drive
+    "real_omnific": {"inst": "real_bass", "params": {"preset": "active", "amp": "modern"}, "level": 1.54},   # an active bass near the bridge into it
+    # The Omnific on the dirtier drive, Hold The Line's since its seventeenth round (Ryan, 6 November:
+    # "that's what that voice needs to sound like everywhere it's used"): R's upper bass, his pick of the
+    # twentieth round's set ("'upper on the dirtier Omnific' yes").
+    "real_omnific_dirty": {"inst": "real_bass", "params": {"preset": "active", "amp": "dirty"}, "level": 1.54 * 0.695},
 }
-BASS = "synth"   # the full pair's ("Can I hear the whole battle track with the Synth bass instead of the driven bass?")
+BASS = "real_modern"   # the full pair's (Ryan, 4 November: "go with the fingers-into-a-modern-drive-prog bass you built")
+# The lead guitar's lines on the bass (Ryan, 4 November: "wherever there's a lead guitar, I want that
+# bass instead playing the high lines"): the same bass an octave under the guitar, the top of a
+# six-string bass (the lick runs to B5 at the guitar's octave, an octave past it), or at the guitar's
+# own octave, a piccolo bass's; each met halfway with the lead guitar's level (0.5 dB each way an
+# octave down, 0.1 at its octave).
+LEAD = "bass"
+LEAD_LEVEL = {"bass": 1.600, "piccolo": 1.297}
+
+# The guitar's strings (Ryan, 4 November, of the eleventh round's clean basses: "Are these bass
+# lines playing chords? Can I hear them as singles if so?"). The bass plays single notes; the guitar
+# that walks the same line in unison plays every note as a power chord (root, fifth and octave), so
+# the line sounds in chords over the bass. Then (4 November, of the twelfth round): "I think I know my
+# issue now, I feel like this wants to just be a bass jam. Rip the guitar out from everything, as an
+# experiment." GUITARS names, for each way, the guitar's parts that go to one string and the parts
+# that go: the walk with its ghost notes and R's tenth ("walk", "up"), the hold under the two synth
+# lines ("hold", whose chords were his own call of 30 October: "the walk needs to calm down back to
+# holding the rhythm and chords like your first take"), the stop-time hits ("stop"), the breakdown's
+# ringing chords ("ring"), and the lead guitar's lines ("lead": C's long notes, R's answer and lick).
+GUITARS = {
+    "chords": ((), ()),                                          # the eleventh round's power chords
+    "walk": (("walk", "up"), ()),                                # the twelfth round's pair
+    "all": (("walk", "up", "hold", "stop"), ()),
+    "out": ((), ("walk", "up", "hold", "stop", "ring")),          # the rhythm guitar out of everything
+    "breakdown": ((), ("walk", "up", "hold", "stop")),           # back in the breakdown alone (Ryan, 4 November: "Put the the rhythm guitar back in on B")
+    "none": ((), ("walk", "up", "hold", "stop", "ring", "lead")),  # every guitar out, the lead guitar's lines too
+}
+GUITAR = "breakdown"   # the full pair's
+ONE_LEVEL = 1.0   # pushed as hard, the one string meets the power chords on a phone and in full alike (measured over the whole battle half: within a tenth of a dB)
+# The guitar on one string (guitar_one) is pair_sketches', shared with Hold The Line's sketches.
+
+# The dark pass (Ryan, 7 November: "It's a battle track, and it sounds too bright! Especially towards the end
+# of the duel section, it just sounds like a bunch of friends having a good time ... It's just the way the
+# chord progressions transferred from the map half to the battle half, all the melancholy got lost. I think
+# you might need to take a pass at the whole thing, tweak backing voices and lead notes, get some of that
+# grit and anxiety back in"). Two halves of it, each a switch so a set can tell them apart.
+#
+# The notes ("dark_notes"). The map half's chords carry no third on A, G and D (A E B, G D A, D A D), so
+# the battle chooses its own: A minor where A had sat on its open ninth, and G a bare power chord where its
+# ninth floated over it (DARK_CHORDS); every voice that plays the chords follows (the arpeggio, the hook,
+# the house piano, the pad, the duel's backing), and a crossfade's overlap with the map's chords reads as
+# A minor's added ninth. The walk's lines (every bass line, the duel's too) step along E minor from each
+# chord's root, so over G and D they climbed in major thirds and over C on its raised fourth, the bright
+# side of the key; on the dark pass a step that lands on F# lands on F instead (jam_bar's `dark`), the Phrygian
+# second that Hold The Line's first riff (D's nod) already turns on: D's lines go minor, E's turns lean
+# on the semitone over the root, G's sevenths go flat. Over B, F# is the chord's fifth and stays. The
+# duel's end falls (DUEL_DARK).
+#
+# The colours ("dark_colours"). The arpeggio an octave down (DARK_ARP_OCTAVE), out of the sparkle two
+# octaves over the chord; the map half's own pad, its house sweep, under the battle's groove, the head and
+# the duel (DARK_PAD), darker and steadier than the map's, since the pad is what carries the map's
+# chords and the battle had none; the open hat's off-beats on the stack cymbal R already plays them on
+# (DARK_HATS), the disco's lift for the kit's grit.
+DARK_CHORDS = {(5, 12, 19): [5, 12, 20], (3, 10, 17): [3, 10, 15]}   # A E B to A E C; G D A to G D G
+DARK_ARP_OCTAVE = 1
+# The pad 12 dB under the battle's mix on a phone (14 in full): at the map's gain, darker, it sat 18 under
+# (20 in full), where the map's own sits 10.5 under its mix (15.6 in full); a bed in a busier mix, felt more than heard.
+DARK_PAD = {"inst": "sweep", "gain": 0.25, "sections": "ACR", "rate": 0.06, "open": 0.3, "depth": 0.6}
+DARK_HATS = "IACO"   # the sections whose open hat goes to the stack
+DARK_NOTES = DARK_COLOURS = False   # the dark pass, retired (9 November: "take a step back to the previous version, before both 'darkening' passes")
 
 
-def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=BASS_DB, bass=BASS):
+def dark_chords(chords):
+    """The battle's chords on the dark pass: A minor and G's power chord (DARK_CHORDS), the breakdown's own."""
+    return {sec: [list(DARK_CHORDS.get(tuple(c), c)) for c in cs] if sec != "B" else cs for sec, cs in chords.items()}
+
+
+def arp_bars(pat, keep):
+    """A section's pattern with only the bars `keep` passes, counted from its start."""
+    return "".join(pat[k:k + 16] if keep(k // 16) else "." * 16 for k in range(0, len(pat), 16))
+
+
+def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=BASS_DB, bass=BASS, guitar=GUITAR,
+                d_bass=D_BASS, pluck_db=PLUCK_DB, lead=LEAD, duel_b2=DUEL_UPPER, duel_backing=DUEL_BACKING,
+                duel_break=True, duel_chords=False, duel_octaves=False, dark_notes=DARK_NOTES, dark_colours=DARK_COLOURS,
+                written=WRITTEN_ON, cut=(), drive=DRIVE_ON, duel=DUEL_WAY, duel_riffer=None, duel_pusher="synth", d_riff=D_RIFF, d_fill=True, dress=None, fills=True, i_kick=None, kick=None, pulse=True, carry=None, fm_arp_db=0.0, chime_rest=None):
     """Night Shift's battle half: see the module's notes. `hold` is what the guitar and the bass play
     under the hook and the arpeggio together; `split` the guitar's interval over the bass in the
     later spot (SPLITS); `d` D's turn; `bass_db` the bass's level, wherever it plays; `bass` its
-    voice (BASS_VOICES)."""
+    voice (BASS_VOICES); `guitar` which of the guitar's parts go to one string and which go (GUITARS);
+    `d_bass` the bass in D's hold or not; `duel_b2` R's second bass (BASS_VOICES), `duel_backing`
+    the backing's margin under the basses there (DUEL_BACKING), `duel_break` the break before the
+    band's hits or the band playing on through it, `duel_chords` the second in chords wherever
+    the first doubles it, and `duel_octaves` the first's unison in two octaves; `pluck_db` the plucked
+    string's level, wherever it plays; `lead` the lead guitar's lines on the guitar or on the bass
+    (LEAD_LEVEL's ways); `dark_notes` and `dark_colours` the dark pass's two halves (DARK_CHORDS)."""
     up_octave, by = SPLITS[split]
+    one, out = GUITARS[guitar]
+    carry = A_CARRY if carry is None else carry
+    chime_rest = CHIME_REST if chime_rest is None else chime_rest
+    if drive:
+        cut = tuple(cut) + ("opens",)   # the off-beat piano back since the twenty-ninth round (Ryan, 10 November: "I think I hear it missing now in the battle version, so lets put it back there"); cut=("piano",) takes it out
+        turns = dict(TURNS_DRIVE, **(turns or {}))
+        if carry == "all":   # the plucked string's arpeggio carried through the head in place of the FM synth's
+            turns["A"] = [(c, "hook:" + v.partition(":")[2] if v.startswith("both:") else v) for c, v in turns["A"]]
+
+    def strings(part, v):
+        # The guitar's part on one string where `guitar` says so: the voice stays in its place in
+        # the list, so every other voice keeps its seed.
+        if part in out:
+            return dict(v, pat={})
+        if part == "lead" and lead != "guitar":
+            b = BASS_VOICES[bass]
+            return dict(v, inst=b["inst"], params=dict(b["params"]), gain=v["gain"] * LEAD_LEVEL[lead],
+                        octave=v.get("octave", 0) - (1 if lead == "bass" else 0))
+        return dict(v, inst="guitar_one", gain=v["gain"] * ONE_LEVEL) if part in one else v
     p = lambda *a, **k: P.part(call, *a, **k)   # noqa: E731
     riff = p("bass", "D", gain=0.34)
     voices = []
@@ -511,36 +1332,49 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
             v["gain"] = 0.24
         elif inst == "chime_metal":
             v["gain"] = 0.2
+            if chime_rest and "A" in v["pat"]:   # its doubling of the hook resting through the head's first `chime_rest` bars
+                a = v["pat"]["A"] * (16 * SEC_BARS["A"] // len(v["pat"]["A"]))
+                v["pat"] = dict(v["pat"], A="." * 16 * chime_rest + a[16 * chime_rest:])
         elif inst == "sub_bass" and "A" in v["pat"]:
             v["gain"] = 0.24   # the pulse under the line
+        elif inst == "epiano" and v.get("mode") == "stab" and "A" in v["pat"] and drive:
+            v["pat"] = {sec: x for sec, x in v["pat"].items() if sec not in ("AC" if "piano" in cut else PIANO_OUT)}   # the off-beat piano out of the head and the lead's section
         elif inst == "lead":
             v.update(inst="lead_real", gain=0.3)
+            v = strings("lead", v)
         if "R" in v["pat"]:
-            # R's jam: the chime's hook under the two heads alone, the sub's pulse and the piano's
-            # off-beats resting where a turn leaves the room.
-            rest_in = {"chime_metal": lambda b: b in HEADS, "sub_bass": lambda b: b not in BASS_TURN + STOPS,
-                       "epiano": lambda b: b not in BASS_TURN + PIANO_AT + STOPS}.get(inst)
-            if rest_in:
-                v["pat"] = dict(v["pat"], R=r_tiled(v["pat"]["R"], rest_in))
+            # R is the duel's: the recipe's own R parts (the sub's pulse, the piano's off-beats, the
+            # chime's hook) rest, the duel's backing taking the piano's and the chime's.
+            v["pat"] = {sec: x for sec, x in v["pat"].items() if sec != "R"}
         voices.append(v)
-    parts = turn_parts(call, dict(turns or TURNS, D=D_TURNS[d]), hold)
+    walk = "written" if written else dark_notes   # the written lines take no swapped notes
+    parts = turn_parts(call, dict(turns or (TURNS_WRITTEN if written else TURNS), D=D_TURNS[d]), hold, walk is True)
+    arp_octave = DARK_ARP_OCTAVE if dark_colours else 2
+    if "arp" in cut:
+        for key in parts:
+            if key.startswith("arp:"):
+                parts[key] = {sec: ("." * len(x) if sec in "AC" else x) for sec, x in parts[key].items()}
+    hold_bass = dict(parts["hold_bass"])
+    if not d_bass:
+        hold_bass.pop("D", None)   # the piano carries D's three-three-two alone
+    bass_walk = {"walk": dict(parts["walk"]), "ghost": parts["ghost"]}
     for key, g in (("walk", 1.0), ("ghost", GHOST)):
         # The guitar palm-muted and the driven bass in unison through the walk, a group's first
         # sixteenth on top: the guitar on its interval over the bass in the later spot, the bass on
         # the riff in D, and on its own in the bass's turn.
         voices += [
-            {"inst": "guitar_real", "mode": "riff", "gain": 0.45 * g, "octave": -1, "pat": {s: x for s, x in parts[key].items() if s != UP}},
+            strings("walk", {"inst": "guitar_real", "mode": "riff", "gain": 0.45 * g, "octave": -1, "pat": {s: x for s, x in parts[key].items() if s != UP}}),
             {"inst": "bass_real", "mode": "riff", "gain": 0.27 * g, "hold": 0.9, "octave": -1, "params": {"drive": 3.5},
-             "pat": {s: x for s, x in parts[key].items() if s != "D" or d != "copy"}},
-            {"inst": "guitar_real", "mode": "riff", "gain": UP_GAIN * g, "octave": up_octave, "pat": {s: moved(x, by) for s, x in parts[key].items() if s == UP}},
-            {"inst": "bass_real", "mode": "riff", "gain": 0.27 * g * BASS_SOLO, "hold": 0.9, "octave": -1, "params": {"drive": 3.5}, "pat": parts["bass_" + key]},
+             "pat": {s: x for s, x in bass_walk[key].items() if s != "D" or d != "copy"}},
+            strings("up", {"inst": "guitar_real", "mode": "riff", "gain": UP_GAIN * g, "octave": up_octave, "pat": {s: moved(x, by) for s, x in parts[key].items() if s == UP}}),
+            {"inst": "bass_real", "mode": "riff", "gain": 0.27 * g, "hold": 0.9, "octave": -1, "params": {"drive": 3.5}, "pat": parts["bass_" + key]},
         ]
     voices += [
         # The hold under the hook and the arpeggio together.
-        {"inst": "guitar_real", "mode": "riff", "gain": 0.45 * HOLD, "octave": -1, "pat": parts["hold_guitar"]},
-        {"inst": "bass_real", "mode": "riff", "gain": 0.27 * HOLD, "hold": 0.9, "octave": -1, "params": {"drive": 3.5}, "pat": parts["hold_bass"]},
+        strings("hold", {"inst": "guitar_real", "mode": "riff", "gain": 0.45 * HOLD, "octave": -1, "pat": parts["hold_guitar"]}),
+        {"inst": "bass_real", "mode": "riff", "gain": 0.27 * HOLD, "hold": 0.9, "octave": -1, "params": {"drive": 3.5}, "pat": hold_bass},
         # Stop-time's hits: the guitar let ring and the bass on each bar's one.
-        {"inst": "guitar_real", "mode": "riff", "gain": 0.45, "octave": -1, "hold": 1.0, "params": {"mute": False}, "pat": parts["stop_guitar"]},
+        strings("stop", {"inst": "guitar_real", "mode": "riff", "gain": 0.45, "octave": -1, "hold": 1.0, "params": {"mute": False}, "pat": parts["stop_guitar"]}),
         {"inst": "bass_real", "mode": "riff", "gain": 0.27, "hold": 1.0, "octave": -1, "params": {"drive": 3.5}, "pat": parts["stop_bass"]},
         # The riff in D (on the driven bass and the crunch synth as the fourth round had it, the
         # map's dark synth alone, or the crunch synth alone two bars in four), held roots through
@@ -551,15 +1385,23 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
         {"inst": "bass", "mode": "riff", "gain": CALL, "octave": 1, "hold": 1.0, "params": {"drive": 3.5, "cutoff": 1200.0}, "pat": {"D": riff + "." * 32}},
         {"inst": "bass_real", "mode": "riff", "gain": 0.32, "legato": True, "params": {"drive": 3.5}, "pat": {"B": p("sub_bass", "B")}},
         # Ringing chords through the breakdown.
-        {"inst": "guitar_hold", "mode": "stab", "gain": 0.55, "dur": 16, "pat": {"B": "x..............."}},
+        strings("ring", {"inst": "guitar_hold", "mode": "stab", "gain": 0.55, "dur": 16, "pat": {"B": "x..............."}}),
         # The synth lines by turns, each voice in the bars its voicing gives it: the arpeggio, up
         # and down two octaves of each chord in sixteenths, and the chime's hook an octave under it.
-    ] + [dict(ARP_VOICES[v], mode="chord", octave=2, dur=1.4, pat=parts["arp:" + v]) for v in ARP_VOICES] + [
+    ] + [dict(ARP_VOICES[v], gain=ARP_VOICES[v]["gain"] * (10.0 ** (pluck_db / 20.0) if v == "pluck" else 10.0 ** (fm_arp_db / 20.0) if v == "fm" else 1.0),
+              mode="chord", octave=1 if drive and v == "pluck" else arp_octave, dur=1.4,
+              pat={sec: arp_bars(x, lambda b: b // 2 % 2 == 1) for sec, x in parts["arp:" + v].items()} if drive and v != "pluck" else parts["arp:" + v])
+         for v in ARP_VOICES] + [
+        # the synths' arpeggios an octave down every other two bars (the drive: "Arpeggios can probably try going between octaves")
+        dict(ARP_VOICES[v], gain=ARP_VOICES[v]["gain"] * (10.0 ** (fm_arp_db / 20.0) if v == "fm" else 1.0), mode="chord", octave=arp_octave - 1, dur=1.4,
+             pat={sec: arp_bars(x, lambda b: b // 2 % 2 == 0) for sec, x in parts["arp:" + v].items()} if drive else {})
+        for v in ARP_VOICES if v != "pluck"] + [
         dict(HOOK_VOICES[v], mode="chord", octave=1, dur=3.0, pat=parts["hook:" + v]) for v in HOOK_VOICES]
     # D's piano: the house piano's chord, each tone a voice an octave up, stabbing three-three-two.
     voices += [{"inst": "epiano", "mode": "chord", "octave": 1, "gain": PIANO_BLEND if d == "blend" else PIANO_D, "dur": 1.5,
                 "pat": {"D": THREE_THREE_TWO.replace("r", str(k))} if d in ("piano", "blend") else {}} for k in range(3)]
-    voices += r_voices(call)
+    voices += [{k: w for k, w in v.items() if k != "duel"} for v in duel_voices(call, duel_b2, duel_backing, bass_db, brk=duel_break, chords=duel_chords, octaves=duel_octaves,
+                                                                                 dark=duel if duel == "three" or is_lead(duel) else walk, arp_octave=arp_octave, riffer=duel_riffer, piano="piano" not in cut)]
     bv = BASS_VOICES[bass]
     voices = [dict(v, inst=bv["inst"], params=bv["params"], gain=v["gain"] * 10.0 ** (bass_db / 20.0) * bv["level"]) if v["inst"] == "bass_real" else v for v in voices]
     drums = {
@@ -590,8 +1432,18 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
         "clank": {"A": "..............x" + "." * 49, "D": "..............x" + "." * 17},
         "glitch": {"I": "........x.......", "A": "...x.......x....x.........x.....", "D": "...x.......x....", "O": "........x......."},
     }
-    for name, pat in r_drums().items():
+    for name, pat in duel_drums(duel_break, duel if duel == "three" or is_lead(duel) else walk, "three" if drive and duel == "three" else drive, kick).items():
         drums.setdefault(name, {})["R"] = pat
+    if "opens" in cut:
+        # The open hat's off-beats out, the closed hat through the gaps it left.
+        for sec in "IACO":
+            drums["open"].pop(sec, None)
+        drums["hat"].update(I="x" * 112 + "xxxxxxxx........", A="x" * 112 + "xxxxxxxx........", O="x" * 16)
+    if dark_colours:
+        # The open hat's off-beats on the stack, as R plays them.
+        for sec in DARK_HATS:
+            if sec in drums["open"]:
+                drums["stack"][sec] = drums["open"].pop(sec)
     if d != "copy":
         # Night Shift's four on the floor under the map's sixteenths and its stack, the backbeat
         # over it, a crash every phrase; no gallop, china or double kick.
@@ -610,12 +1462,68 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
             drums["knock"]["D"] = "x..x..x.x..x..x.".replace("x", FACTORY)
             drums["clank"]["D"] = "........x.......".replace("x", FACTORY)
             drums["tick"]["D"] = "x" * 16
+    nod = next((v for v in voices if v["inst"] == "bass" and "D" in v.get("pat", {}) and v.get("gain") == NOD["gain"]), None)
+    if nod is not None and d_riff == "fingers":
+        bvd = BASS_VOICES[bass]
+        nod.update(inst=bvd["inst"], params=dict(bvd["params"]), octave=0, hold=0.9,
+                   gain=0.27 * 10.0 ** (bass_db / 20.0) * bvd["level"] * D_RIFF_FINGERS)
+    elif nod is not None and d_riff == "synth_down":
+        nod["gain"] = NOD["gain"] * D_RIFF_DOWN
+    if drive:
+        e8 = "".join(WRITTEN["E"])
+        _plan, stops = duel_plan(duel_break, duel if duel == "three" or is_lead(duel) else walk)
+        r_pulse = r_tiled(e8, lambda b: b not in stops)
+        if duel == "three":   # the pusher with the band's hits on three-three-two
+            root = e8[16 * (DUEL_HITS % 8)]
+            r_pulse = r_pulse[:16 * DUEL_HITS] + THREE_THREE_TWO.replace("r", root) + r_pulse[16 * DUEL_HITS + 16:]
+        fingers = duel == "three" and duel_pusher == "fingers"
+        voices.append(dict(DRIVE_PULSE, params=dict(DRIVE_PULSE["params"]),
+                           pat=dict({"A": e8, "C": e8}, **({} if fingers else {"R": r_pulse})) if pulse else {}))   # `pulse` off: the synth's eighths out everywhere, the voice kept in its place
+        bvp = BASS_VOICES[bass]
+        voices.append({"inst": bvp["inst"], "params": dict(bvp["params"]), "mode": "riff", "hold": 0.8, "octave": -1,
+                       "gain": 0.27 * 10.0 ** (bass_db / 20.0) * bvp["level"] * PUSHER_FINGERS, "pat": {"R": r_pulse} if fingers else {}})
+        drums["kick"].update({sec: turns_kick(turns[sec], sec != "O", kick) for sec in "IACO" if sec in turns})
+        drums["snare"].update(A=SN24, C=SN24, O=SN24)
+        drums["hat"].update(I=HATQ * 7 + "x.x.x.x.........", A=HATQ * 7 + "x.x.x.x.........", O=HATQ, D=HATQ)
+        drums["ride"] = {}
+        drums["hat"]["C"] = HATQ * 7 + "x.x.x.x........."
+        drums["stack"].pop("D", None)
+        if d == "blend":
+            drums["kick"]["D"] = ("x..x..x........." if (kick or KICK_WAY) == "flow" else K332) * 7 + "x..x..x.x...x.x."
+        if d_fill:   # the toms' fill closing D into R
+            drums["tom"]["D"], drums["tom2"]["D"] = "." * 112 + FILL_TOM, "." * 112 + FILL_TOM2
+            drums["hat"]["D"] = HATQ * 7 + "x.x.x.x........."
+    # The intro's arpeggio carried into the head (A_CARRY), its voice last so every other voice keeps its seed.
+    n_a = len(parts["walk"].get("A", "")) // 16
+    own = [any(parts["arp:" + v].get("A", "")[16 * b:16 * b + 16].strip(".") for v in ARP_VOICES) for b in range(n_a)]
+    reach = own.index(True) if True in own else n_a
+    pluck = ARP_VOICES["pluck"]
+    voices.append(dict(pluck, gain=pluck["gain"] * 10.0 ** ((pluck_db + CARRY_DB) / 20.0), mode="chord", octave=1 if drive else arp_octave,
+                       dur=1.4, pat={"A": ARP * reach + "." * 16 * (n_a - reach)} if carry and reach else {}))
+    # The hook on the plucked string wherever a turn's voicing puts it there ("plucked"), last again for the seeds.
+    voices.append(dict(PLUCK_HOOK, gain=PLUCK_HOOK["gain"] * 10.0 ** (pluck_db / 20.0), mode="chord", octave=1, dur=3.0, pat=parts["hook:pluck"]))
+    if i_kick:   # the intro's kick on a bar's pattern in place of the bass's rhythm, its fill's bar kept
+        drums["kick"]["I"] = i_kick * 7 + drums["kick"]["I"][112:128]
+    dress = DRESS_ON if dress is None else dress
+    if dress:
+        dressed(drums)
+        if fills:
+            more_fills(drums)
     kit = P.fight_kit()
+    if dress:   # the loose half-open hat, from its own seed so every other sound keeps its own
+        saved, F.RNG = F.RNG, np.random.default_rng(zlib.crc32(b"night_shift_hat_half"))
+        try:
+            kit["hat_half"] = (F.variants(P.hat_half), kit["hat"][1])
+        finally:
+            F.RNG = saved
+    kit["snare"] = (kit["snare"][0], kit["snare"][1] * 10.0 ** (SNARE_DB / 20.0))
     kit.update({"knock": (F.knock_perc(), 0.5), "tick": (F.tick(), 0.22), "clank": (F.clank(), 0.25),
                 "glitch": (F.glitch_perc(), 0.3), "kick_hard": (F.variants(F.kick_real), 1.9)})
-    return {"kit": kit, "drums": drums, "voices": voices, "pad": [{"inst": "choir_real", "gain": 0.22, "vowel": "oh", "sections": "B"}],
+    pads = [{"inst": "choir_real", "gain": 0.22, "vowel": "oh", "sections": "B"}] + ([dict(DARK_PAD)] if dark_colours else [])
+    out = {"chords": dark_chords(call["chords"])} if dark_notes else {}
+    return dict(out, **{"kit": kit, "drums": drums, "voices": voices, "pad": pads,
             "drum_gain": {"I": 1.0, "A": 1.1, "B": 1.0, "C": 1.1, "D": 1.25 if d == "copy" else D_DRUMS, "R": 1.2, "O": 1.1},
-            "air": (0.12, 0.06), "master": 1.1, "headroom": 0.6, "tilt": 1.5, "presence": 0.25, "low": (150.0, -6.0)}
+            "air": (0.12, 0.06), "master": 1.1, "headroom": 0.6, "tilt": 1.5, "presence": 0.25, "low": (150.0, -6.0)})
 
 
 # ---------------------------------------------------------------- the renders
@@ -643,45 +1551,161 @@ def settled(kw, mastered):
     return x if mastered else (x, settings)
 
 
-def battle(form=FORM10, mastered=True, **opts):
-    """The battle half on a form (the round's, or an excerpt's)."""
+def battle(form=FORM10, mastered=True, bpm=None, **opts):
+    """The battle half on a form (the round's, or an excerpt's), at the track's tempo or at `bpm`."""
     call = on_form(form)
     kw = dict(call)
     kw.update(battle_half(call, **opts))
+    kw["bpm"] = bpm or kw["bpm"]
     return settled(kw, mastered)
 
 
-def map_half(form=FORM10, mastered=True, guitar=MAP_GUITAR):
-    """The map half on a form: the shipped map with its front cut, its muted guitar or not."""
-    return settled(map_intro(on_form(form), guitar), mastered)
+def map_half(form=FORM10, mastered=True, guitar=MAP_GUITAR, drums_db=MAP_DRUMS_DB, piano=True, bpm=None):
+    """The map half on a form: the shipped map with its front cut, its muted guitar or not, its
+    drums `drums_db` in C and R."""
+    kw = map_intro(on_form(form), guitar, drums_db, piano)
+    kw["bpm"] = bpm or kw["bpm"]
+    return settled(kw, mastered)
 
 
-SETS = [
-    {"id": "b", "half": "battle", "title": "The bass, through the whole battle half", "form": FORM10, "seed": NAME + "_battle",
-     "note": "The battle half from the top, the bass on each voice wherever it plays (the walk, the hold, the breakdown's held roots). Switch rows anywhere: each carries on from the same beat.",
-     "rows": [("b0", "The driven bass", "As the ninth round had it, 3 dB down.", {"bass": "driven"}),
-              ("b1", "The synth bass", "The crunch synth dark and soft, Hold The Line's map K's: 3 dB under the driven bass on a phone, 3 dB over it in headphones (the full pair's).", {"bass": "synth"}),
-              ("b2", "A slap bass, a little driven", "A slapped string, its snap and thump, through an amp pushed a little, at the driven bass's level.", {"bass": "slap"})]},
-    {"id": "m", "half": "map", "title": "The map's groove without its muted guitar", "form": "A" * 16, "seed": NAME,
-     "note": "The groove's sixteen bars: the piano off the beat, the chime's hook, the sub's pulse, the knocks and ticks.",
-     "rows": [("m0", "The muted guitar as it was", "Its rhythm in eighths on the roots, as the shipped map half plays it.", {"guitar": True}),
-              ("m1", "Without it", "Everywhere in the full pair: the groove, the lead's section and the groove again.", {"guitar": False})]},
+R_PARTS = [   # (bars, what the battle plays) through R, in order
+    (4, "the fingers on his rhythms 1 and 3 a bar each on the root, the crunch synth on the eighths, the synth lead's arpeggio"),
+    (4, "the top Omnific's lead in, long notes, the fingers walking at each bar's end"),
+    (8, "the fingers on 5 and 6, the lead in quarters, the plucked string's arpeggio low, the hook joining on the synth lead"),
+    (8, "the fingers on 9 and its partner, the lead in eighths, the chime's hook joining, his 7 closing into the outro"),
 ]
-PAIR = {"id": "night_shift_r10", "title": "Night Shift, round ten"}
+
+
+def r_marks(form):
+    """Where each of R's parts starts in a form, for a set's note: "R1 0:20 \u00b7 R2 0:30 ..."."""
+    bars, bar_s = form.replace(" ", ""), 16 * 15.0 / F.MUSIC[NAME]["bpm"]
+    out, b = [], bars.index("R")
+    for k, (n, _said) in enumerate(R_PARTS):
+        t = b * bar_s
+        out.append("R%d %d:%02d" % (k + 1, t // 60, t % 60))
+        b += n
+    return " \u00b7 ".join(out)
+
+
+# The step back (Ryan, 9 November: "Night shift isn't better, unfortunately. I think let's take a step back to the
+# previous version, before both 'darkening' passes, and look at the root cause. It's not that it needs to go
+# 'darker', so much as more intense, more driving, less chipper. Less cheery backing chords, riffs, percussion, and
+# structuring"): the pair is round twenty-one's again, and a set looks for the cause by taking one suspect out of
+# its head at a time, each a signal of the genre and none a matter of pitch: the house piano's off-beat stabs, the
+# open hat on every off-beat, the arpeggio's sixteenths sweeping two octaves, and the bass's bouncing lines, which
+# a row plays as straight eighths on the roots (WRITTEN's E); then all four at once.
+HEAD_FORM = "I" * 8 + " " + "A" * 16
+LEAD_FORM = "C" * 16
+DUEL_FORM = "D" * 8 + " " + "R" * R_BARS + " " + "O" * 8
+DRIVE_ROWS = [("The drive", "A rhythm held eight bars, something always on the eighths, the hat on quarters, the kick on the bass's rhythm or on one and three, no off-beat piano or open hat (the full pair's).", {}),
+              ("Round twenty-one", "The turns of two bars, as it was.", {"drive": False, "duel": "trade"})]
+
+
+def drive_set(sid, title, form, note):
+    return {"id": sid, "half": "battle", "title": title, "form": form, "seed": NAME + "_battle",
+            "note": note + " Switch rows anywhere: each carries on from the same beat.",
+            "rows": [("%s%d" % (sid, k), t, n, opts) for k, (t, n, opts) in enumerate(DRIVE_ROWS)]}
+
+
+# The FM synth's arpeggio through all of the head (Ryan, 11 November, of the plucked string's carried in: "Hm. Try doing
+# the FM synth through all of A instead. At the FM synth current level, and like 3 db louder"): the head's first half on
+# the "fm" voicing, the hook staying on the FM synth over its own arpeggio as the swap has it, the second half as it
+# was; the plucked string's carry stops itself where the head's own arpeggio starts, here its first bar. The FM synth's
+# arpeggio plays only in the head, so battle_half's `fm_arp_db` moves it there alone.
+A_FM = [("n1.lean|n3.lean", "both:fm")] * 4 + TURNS_DRIVE["A"][4:]
+# The head's first half with the hook on the plucked string over the FM synth's arpeggio (11 November, heard beside the
+# hook cut, which won): kept as an option, the chime doubling it.
+A_PLUCK = [("n1.lean|n3.lean", "both:plucked")] * 4 + TURNS_DRIVE["A"][4:]
+# Another listen at 98 (11 November: "the last thing is I want is another listen at 98"), each half whole at 96 and 98:
+# 96 kept ("Keep 96"), and the pair passed and shipped (forge.py's SHIP builds both halves from `ship`). No sets.
+SETS = []
+PAIR = {"id": "night_shift_r35", "title": "Night Shift, round thirty-five"}
 INTRO = "intro: the kick on every beat and the hats, the pad fading in through the fourth bar and swelling from 0:10, the sub from the fifth"
 MAP_SAID = dict(F.MUSIC[NAME]["names"], I=INTRO,   # each section on the map, without its muted guitar
                 A="groove: the piano off the beat, the chime's hook, a soft clap, the sub, knocks and ticks",
-                C="the lead in long notes over the sub's pulse and a ride",
-                R="the groove again, sixteen bars")
+                C="the lead in long notes over the sub's pulse and a ride, the drums 3 dB down",
+                R="the groove again, twenty-four bars, the drums 3 dB down")
 TURNS_SAID = {   # each section's turns in the battle half, on the page beside the map half's
     "I": "three-three-two on the root all through, the arpeggio on the plucked string from the fifth bar",
     "A": "the hook pushed on the synth lead over the arpeggio on the FM synth and the hold, then the walk with the hook on the FM synth from the ninth bar",
     "B": "the breakdown: held roots and ringing chords under the choir",
     "C": "the lead guitar's long notes over the walk, the arpeggio joining behind them on the synth lead at the ninth bar",
-    "D": "the piano and the factory blended: the house piano stabbing the chords in three-three-two over the hold, the knocks in its gaps, the riff dark and low as the map's nod",
-    "R": "the jam in turns of two bars: the head, the hook traded between the synth lead and the lead guitar, the lead guitar's lick over the hold, the bass alone with the drums, the house piano on the hook's rhythm, the plucked string's arpeggio, stop-time with the FM synth's answer and the drums' fill, the head again",
-    "O": "the arpeggio on the plucked string and the hook on the FM synth over the hold, into the top",
+    "D": "the piano and the factory blended: the house piano stabbing the chords in three-three-two alone, the knocks in its gaps, the riff dark and low as the map's nod",
+    "R": "a lead over the grooves, three times through the chords: the fingers bass on his core rhythms, walking at each bar's end, the top Omnific's lead from the fifth bar, long notes growing into a tune of three or four notes a bar that climbs on the last pass, the crunch synth on the eighths, the piano off the beat, the arpeggio, then the hook, then the chime joining; no unisons, no stop-time",
+    "O": "the arpeggio on the plucked string over the hold, into the top",
 }
+
+
+# The battle half in parts, each named on the page so a note can name it (Ryan, 6 November: "is there a way
+# to subdivide this so I can give you notes on each particular section?"): a section where its turns change,
+# by its turns (I1, I2; A1 to A5; C1 to C8), R by its duel's phrases (R1 to R9), B, D and O whole.
+RHYTHM_SAID = {"332": "three-three-two", "gallop": "the gallop", "pairs": "pairs of sixteenths", "offbeats": "the off-beats",
+               "bursts": "bursts", "threes": "threes", "groups": "threes on each beat"}
+FIGURE_SAID = {"home": "on the root", "lift": "lifting to the octave", "climb": "climbing", "drive": "driving on the root",
+               "octs": "in octaves", "walk": "walking up", "pops": "popping octaves", "stairs": "stepping up", "fall": "falling",
+               "run": "running up", "zigzag": "zigzagging", "blues": "up to the blues note", "turn": "turning", "chug": "chugging",
+               "rise": "rising", "steps": "stepping", "arch": "arching", "sink": "sinking"}
+VOICE_SAID = {"lead": "the synth lead", "fm": "the FM synth", "pluck": "the plucked string"}
+
+
+RHYTHM_SAID.update({"n%d" % (k + 1): "his rhythm %d" % (k + 1) for k in range(13)})
+FIGURE_SAID.update({"root": "on the root", "lean": "on the root, leaning into the next"})
+WRITTEN_SAID = {"E": "the bass on straight eighths on the roots", "P": "the bass on the riff, an E pedal on three-three-two with its blues fall and its turn back",
+                "G": "the bass on the gallop through the chords' roots", "S": "the bass chugging three-three-two on the roots"}
+
+
+def turn_said(choice, synth):
+    """A turn in words: what the bass plays, and the synth line over it."""
+    if choice == "hold":
+        said = ["the bass holding three-three-two on the roots"]
+    elif choice == "rest":
+        said = []
+    elif "|" in choice:
+        a, b = (c.partition(".")[0][1:] for c in choice.split("|"))
+        said = ["the bass on his rhythms %s and %s a bar each, %s" % (a, "the new partner to 9" if b == "14" else b, FIGURE_SAID[choice.rpartition(".")[2]])]
+    else:
+        rhythm, _, fig = choice.partition(".")
+        said = [WRITTEN_SAID[fig] if rhythm == "written" else "the bass on %s, %s" % (RHYTHM_SAID[rhythm], FIGURE_SAID[fig])]
+    kind, _, voicing = synth.partition(":")
+    arp, hook = VOICINGS[voicing or "back"]
+    if kind == "arp":
+        said.append("the arpeggio on " + VOICE_SAID[arp])
+    elif kind == "hook":
+        said.append("the hook on " + VOICE_SAID[hook])
+    elif kind == "both":
+        said.append("the hook on %s over the arpeggio on %s" % (VOICE_SAID[hook], VOICE_SAID[arp]))
+    return ", ".join(said)
+
+
+def parts_on(form):
+    """The battle half's parts through a form: (name, its section, first and last bar, start, what the
+    battle plays), with the bars' times and the form's length."""
+    runs, bar_at, total = sections_on(form)
+    turns = dict(TURNS_DRIVE if DRIVE_ON else TURNS_WRITTEN if WRITTEN_ON else TURNS, D=D_TURNS[D_PLAN])
+    out = []
+    for sec, b0, b1, at in runs:
+        n = b1 - b0 + 1
+        if sec == "R":
+            groups = list(R_PARTS)
+        elif sec in turns and sec not in "BD":
+            groups = []
+            for i in range(0, n, 2):
+                said = turn_said(*turns[sec][i // 2])
+                if groups and groups[-1][1] == said:
+                    groups[-1] = (groups[-1][0] + 2, said)
+                else:
+                    groups.append((2, said))
+        else:
+            groups = [(n, TURNS_SAID[sec])]
+        if sec == "A" and A_CARRY == "half":
+            groups[0] = (groups[0][0], groups[0][1] + ", the intro's arpeggio carried on the plucked string, 6 dB down")
+        if sum(bars for bars, _said in groups) != n:
+            raise ValueError("%s's parts run %d bars of its %d" % (sec, sum(bars for bars, _said in groups), n))
+        b = b0
+        for k, (bars, said) in enumerate(groups):
+            out.append((sec if len(groups) == 1 else "%s%d" % (sec, k + 1), sec, b, b + bars - 1, bar_at[b - 1], said))
+            b += bars
+    return out, bar_at, total
 
 
 def sections_on(form):
@@ -707,14 +1731,20 @@ def render_row(job):
     return si, ri, render(s["form"], mastered=False, **opts)
 
 
-def render_full(which):
-    if which == "battle":
+def ship(half):
+    """A half of the pair as Ryan passed it (11 November: "Keep 96. I think this is a good spot to ship everything to
+    main"), from its own seed at its half's level, unlimited: what the forge's SHIP builds into art/audio
+    (music_night_shift the map half, playing where the track played, now at 96; music_night_shift_battle the battle
+    half) and what the page's full pair is cut from."""
+    if half == "battle":
         F.seed(NAME + "_battle")
-        x, db = battle(), BATTLE_LEVEL
-    else:
-        F.seed(NAME)
-        x, db = map_half(), MAP_LEVEL
-    P.write("%s_%s" % (PAIR["id"], which), F.limit(F.write_level(x, NAME, db)), aac=False)
+        return F.write_level(battle(), NAME, BATTLE_LEVEL)
+    F.seed(NAME)
+    return F.write_level(map_half(), NAME, MAP_LEVEL)
+
+
+def render_full(which):
+    P.write("%s_%s" % (PAIR["id"], which), F.limit(ship(which)), aac=False)
     return which
 
 
@@ -727,7 +1757,7 @@ def main(argv):
         raw = {(si, ri): x for si, ri, x in pool.map(render_row, jobs)}
         for f in fulls:
             f.result()
-    path = os.path.join(P.OUT, "night10.json")
+    path = os.path.join(P.OUT, "night35.json")
     manifest = json.load(open(path)) if os.path.exists(path) else {"sets": [], "tracks": [], "seams": []}
     for si, s in enumerate(SETS):
         if s["id"] not in wanted:
@@ -739,10 +1769,11 @@ def main(argv):
         rows = []
         for ri, (rid, title, note, _opts) in enumerate(s["rows"]):
             x = F.limit(mastered[ri] * gain)
-            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night10_" + rid, x)),
+            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night35_" + rid, x)),
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         manifest["sets"] = [e for e in manifest["sets"] if e["id"] != s["id"]] + [{"id": s["id"], "half": s["half"], "title": s["title"], "note": s["note"], "rows": rows}]
         print("%-2s %s" % (s["id"], "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))
+    manifest["sets"] = [e for e in manifest["sets"] if e["id"] in [s["id"] for s in SETS]]   # a retired set leaves the manifest
     manifest["sets"].sort(key=lambda e: [s["id"] for s in SETS].index(e["id"]))
     manifest["seams"] = []
     if "full" in wanted:
@@ -750,12 +1781,12 @@ def main(argv):
         if len(m) != len(b):
             raise ValueError("the halves are %d and %d samples" % (len(m), len(b)))
         P.write(PAIR["id"] + "_pair", [m, b], kbps=384)
-        runs, bar_at, total = sections_on(FORM10)
+        parts, bar_at, total = parts_on(FORM10)
         levels = [P.measure("map", m), P.measure("battle", b)]
         manifest["tracks"] = [{"id": PAIR["id"], "title": PAIR["title"], "new": "both", "bpm": F.MUSIC[NAME]["bpm"], "length": round(total, 3),
                                "loop_from_bar": 1, "bar_at": [round(float(t), 4) for t in bar_at],
-                               "sections": [{"section": s, "bars": [b0, b1], "at": round(at, 2),
-                                             "what": "%s; the battle: %s" % (MAP_SAID[s], TURNS_SAID[s])} for s, b0, b1, at in runs],
+                               "sections": [{"section": name, "bars": [b0, b1], "at": round(at, 2),
+                                             "what": "%s; the battle: %s" % (MAP_SAID[sec], said)} for name, sec, b0, b1, at, said in parts],
                                "levels": levels}]
         print("%s  map %.1f (phone %.1f)  battle %.1f (phone %.1f)" % (PAIR["id"], levels[0]["mean_db"], levels[0]["phone_db"], levels[1]["mean_db"], levels[1]["phone_db"]))
     with open(path, "w") as f:
