@@ -1085,7 +1085,7 @@ func _refresh(save: bool = true) -> void:
 	var support: Array[Skirmish.MechState] = []   # the machines a dragged shield, vent or buff may land on
 	var seconds: Array = []   # a pending Swap's second targets: foes and empty slots (Vector2i)
 	if not _pending.is_empty():
-		seconds = sk.swap_targets(_pending["primary"])
+		seconds = sk.swap_targets(_pending["primary"], sk.swap_carries(sk.mechs[int(_pending["mech"])]))
 		for x in seconds:
 			if x is Foe:
 				targets.append(x)
@@ -1723,6 +1723,9 @@ func _foe_rows(foe: Foe) -> Array:
 		# instead of the stacks, with the tooltip showing the riders"): the sea mine's glyph with its
 		# damage, its readout its keywords and what its fall does.
 		rows.append(status_row("mine", "mine", str(int(mine["damage"])), "%s; blows on every foe round its slot when it falls" % Skirmish.mine_text(mine), _foe_chip_colour("mine")))
+	for pin in Effects.HOLDERS.values():   # a pin's chip: the lock on the status it holds
+		if Effects.has(foe, pin):
+			rows.append(status_row(pin, Terms.glyph(pin), "", str(Effects.STATUS[pin]["name"]), _foe_chip_colour(pin)))
 	if Effects.has(foe, "exposure"):
 		# Exposed, the debuff (21 October): the formation's reticle with its armour zeroed. The
 		# chip is the debuff's alone: a back-rank foe with nothing in front wears none (Ryan, 26
@@ -2673,7 +2676,7 @@ func _on_slot_tapped(rank: int, col: int) -> void:
 		return
 	var foe := sk.foe_at(rank, col)
 	var second = foe if foe != null else Vector2i(rank, col)
-	if not sk.swap_targets(_pending["primary"]).has(second):
+	if not sk.swap_targets(_pending["primary"], sk.swap_carries(sk.mechs[int(_pending["mech"])])).has(second):
 		return
 	var i: int = _pending["mech"]
 	var primary: Foe = _pending["primary"]

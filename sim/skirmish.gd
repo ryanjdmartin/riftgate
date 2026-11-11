@@ -154,6 +154,7 @@ var last_roll: Dictionary = {}
 ## The heat released by passed turns as the last enemy turn ended (the Whip Scorpion's), for the
 ## screen: {mech, rank, shots, blows (spend_blows' shape)} each. Cleared as a turn ends.
 var releases: Array = []
+var _held: Dictionary = {}   # Foe -> the status ids a pin holds from this round's halving, read as the round's statuses run out
 var last_blast: Dictionary = {}   # the last vent blast, {mech, foe, dealt}, for the screen; cleared each round
 ## The fight's share of the run's Sponsorship measures (the bible's Sponsorship row; tallied 21
 ## October, never shown live): damage the team took on shield and armour, dice spent on
@@ -1188,13 +1189,13 @@ func targets_for(mech_index: int) -> Array[Foe]:
 ## go of 19 October): every other foe on the field and every empty slot, the slot as
 ## Vector2i(rank, column); never a massive foe, which fills its column and stays, and nothing
 ## for a massive first.
-func swap_targets(first: Foe) -> Array:
+func swap_targets(first: Foe, carries: bool = false) -> Array:
 	var out: Array = []
-	if first == null or not first.alive() or first.is_massive():
+	if first == null or not first.alive() or (first.is_massive() and not carries):
 		return out
 	var pair := twin_of(first)
 	for foe in field_foes():
-		if foe != first and foe != pair and foe.alive() and not foe.is_massive():
+		if foe != first and foe != pair and foe.alive() and (carries or not foe.is_massive()):
 			out.append(foe)
 	for col in range(columns):
 		if front[col] == null and not corpses.has(Vector2i(0, col)):
@@ -1208,6 +1209,18 @@ func swap_targets(first: Foe) -> Array:
 func needs_second(ms: MechState) -> bool:
 	var f := ms.face()
 	return f != null and Effects.effective_face(ms.unit, f).has(Face.Keyword.SWAP)
+
+
+## Whether this machine's Swap carries a rider beside it (the Combat Translocator's Shock; Ryan,
+## 11 November: "Translocator should still target two, always ... maybe you want to target two
+## things and not have them move, just shock both of them"): such an entry may name a massive
+## foe as either target, which stays where it stands, the rider landing on both all the same.
+func swap_carries(ms: MechState) -> bool:
+	var f := ms.face()
+	if f == null:
+		return false
+	var ef := Effects.effective_face(ms.unit, f)
+	return ef.has(Face.Keyword.SWAP) and ef.keywords.size() > 1
 
 
 func targets_for_face(ms: MechState, f: Face) -> Array[Foe]:
@@ -1230,7 +1243,10 @@ func targets_for_face(ms: MechState, f: Face) -> Array[Foe]:
 				out.append(foe)
 	var ef := Effects.effective_face(ms.unit, f)
 	# A Swap moves its target, and a massive foe fills its column and stays (the Dingo's row).
-	if ef.has(Face.Keyword.SWAP):
+	# A Swap that carries a rider beside it may still name a foe it cannot move (the Combat
+	# Translocator's Shock, Ryan, 11 November: "not dead versus ... massives and bosses that can't
+	# be swapped"), with its second target as ever.
+	if ef.has(Face.Keyword.SWAP) and ef.keywords.size() <= 1:
 		out = out.filter(func(foe: Foe) -> bool: return not foe.is_massive())
 	return out
 
@@ -1921,7 +1937,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 		return false
 	# A Swap takes its second target with it (Ryan, 21 October: drag to the first, drop, then
 	# tap the second): another foe or an empty slot, never a massive foe.
-	if f.has(Face.Keyword.SWAP) and not swap_targets(target).has(second):
+	if f.has(Face.Keyword.SWAP) and not swap_targets(target, swap_carries(ms)).has(second):
 		return false
 	if f.on_machines() and not machine_targets_for(ms, f).has(target if target is MechState else ms):
 		return false
@@ -2278,7 +2294,8 @@ func _release_passes() -> void:
 func _finish_round() -> void:
 	_tick_mechs()
 	for f in field_foes():
-		Effects.halve(f)
+		Effects.halve(f, _held.get(f, []))
+	_held.clear()
 	_trim_overshield()
 	_regrow_parts()
 
@@ -2394,7 +2411,11 @@ func _enemy_turn() -> void:
 				log.append("%s recovers: Numbed ×%d" % [f.display_name, Effects.stacks_of(f, "numbed")])
 	for ms in mechs:
 		Effects.end_round(ms.unit, round)   # timed effects run out
+	_held.clear()
 	for f in field_foes():
+		var kept := Effects.held_statuses(f)   # read before its round's statuses run out: a pin holds this round's halving
+		if not kept.is_empty():
+			_held[f] = kept
 		Effects.end_round(f, round)
 
 
@@ -2585,6 +2606,11 @@ static func _rides(f: Foe) -> bool:
 ## back foe into an empty front slot is a pull). A foe keeps its pick and its move; the rank it
 ## stands in is the swap's, so a caster pulled forward stands exposed to Direct fire.
 func _swap(first: Foe, second) -> void:
+	# A massive foe fills its column and stays: named by a Swap that carries a rider, nothing
+	# moves, and the rider lands all the same.
+	if first.is_massive() or (second is Foe and (second as Foe).is_massive()):
+		log.append("%s holds its ground: nothing trades places" % (first.display_name if first.is_massive() else (second as Foe).display_name))
+		return
 	var from := Vector2i(first.rank, first.column)
 	var ours := _slot_contents(from)   # a twin slot's pair moves together, and a Mine with its foe
 	if second is Foe:
@@ -2999,6 +3025,15 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				riders.append(func() -> void: _land_rider(foe, "flakked", flak_laid, gained, turned))
 				if into_mine:
 					h.mine_stack("flakked", flak_laid)
+			# A pin (the Hollow-point Harpoon's; Ryan, 11 November: "the target's flak does not decay
+			# this round"): the status held through this round's end, after what the spend lays.
+			if not f.holds.is_empty():
+				var held_id := f.holds
+				riders.append(func() -> void:
+					var holder: String = Effects.HOLDERS[held_id]
+					if foe.alive() and Effects.grant_for_rounds(foe, Effects.STATUS[holder], "mech", round) != null:
+						log.append("%s is %s: its %s does not decay this round" % [foe.display_name, str(Effects.STATUS[holder]["name"]), str(Effects.STATUS[held_id]["name"])])
+						_foe_gained_status(foe, holder))
 			# Purge (the player's, 28 October): every buff the foe carries but Numbed and Guarded,
 			# with the riders, equipment's included; a foe the blow killed loses its Getting Back
 			# Up, so it stays down.
@@ -3199,6 +3234,10 @@ func _entry_effects(ms: MechState, f: Face, target: Foe, second = null) -> void:
 		_detonate(ms, target)
 	if f.has(Face.Keyword.SWAP) and second != null:
 		_swap(target, second)
+		# What the Swap carries lands on the foe traded with too (the Translocator's Shock: both
+		# come out Shocked).
+		if second is Foe and (second as Foe).alive() and f.has(Face.Keyword.SHOCK):
+			_shock(second, ms)
 
 
 ## A hit's riders landing (Ryan, 3 November: "a multi-hit weapon with Shock would apply it after

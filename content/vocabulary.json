@@ -585,6 +585,38 @@
    }
   },
   {
+   "id": "pinned",
+   "category": "status",
+   "name": "Pinned Flak",
+   "codex": "Foe status, from the Hollow-point Harpoon. Its Flak does not halve at this round's end. Until the round's end; refreshed, never added.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 11 November: \"The Flak pin should be its own status that gets applied for one turn. I assume we're going to want a similar one for burning as well.\" The name is a session's draft.",
+    "table": {
+     "kind": "debuff",
+     "on": "foe",
+     "stacks": "Never: a second pin refreshes it",
+     "lasts": "Until the round's end"
+    }
+   }
+  },
+  {
+   "id": "pinned_burning",
+   "category": "status",
+   "name": "Pinned Burning",
+   "codex": "Foe status. Its Burning burns and loses no stack this round. Until the round's end; refreshed, never added.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 11 November: coded in beside Flak's pin, \"since the Mastema will want it as a fitted piece, if nothing else\". No piece lays it yet. The name is a session's draft.",
+    "table": {
+     "kind": "debuff",
+     "on": "foe",
+     "stacks": "Never: a second pin refreshes it",
+     "lasts": "Until the round's end"
+    }
+   }
+  },
+  {
    "id": "exposure",
    "category": "status",
    "name": "Exposed",

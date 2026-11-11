@@ -2064,7 +2064,7 @@ def dingo(b):
     enough to skirt between a big foe's legs (Ryan, 29 September; the MK-200 and the
     Tumbler, toned down to W&S). A flat wedge of a body, and the wheels out on swing arms,
     each on its own cambered arm off the body's corners, hubs lit, so it reads as a thing
-    that steps rather than rolls. The Megataser Harpoon (fixed, no pin) lies low along
+    that steps rather than rolls. The Hollow-point Harpoon (fixed, no pin; the Megataser Harpoon until 11 November) lies low along
     the roof, its capacitor drum sunk into the tail. The coolant tanks are detail on both
     flanks (Ryan, 30 September: the rail into the drum, a vent on the tail plate, the glass
     along the body). Since the stock pass and Ryan's notes of 28 October ("twin autoguns can't
@@ -2259,7 +2259,7 @@ def dingo(b):
     b.halo = ["coil"]   # the Translocator's coil, hot (Ryan, 31 October)
     b.gait(wheels={"wheel_fl": R, "wheel_fr": R, "wheel_rl": R, "wheel_rr": R},
            aim={"caster_fl": 1.0, "caster_fr": 1.0, "caster_rl": 1.0, "caster_rr": 1.0}, rock=4.0)
-    b.fires = {"megataser_harpoon": ("harpoon", 2.0, 3.2), "combat_translocator": ("coil_check", 2.0, 3.2)}   # its fixed weapons fire with slices of its acts: the harpoon's shot and kick; the coil's second flare (Ryan, 31 October: "go for ones that are cheapest to do first")
+    b.fires = {"hollow_point_harpoon": ("harpoon", 2.0, 3.2), "combat_translocator": ("coil_check", 2.0, 3.2)}   # its fixed weapons fire with slices of its acts: the harpoon's shot and kick; the coil's second flare (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.pivots = True   # its casters turn it on the spot to aim its nose guns, the harpoon and the coil (Ryan, 31 October: "a cheap way of aiming")
     b.move(slide=0.4, bank=0.0, accel=0.5, heft=0.09, oversteer=2.0)   # drifts wildly on the map and does not bank (Ryan, 2 October); its rear kicked out further (the sixth notes), and further again (the seventh)
 

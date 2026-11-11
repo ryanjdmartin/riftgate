@@ -27,7 +27,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1123 tests, 362,685 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
+- Tests: 1132 tests, 363,473 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
+  with the Dingo's pieces, the pins and the Flakshot Repeater over the Clydesdale's review). Before it,
+  1123 tests, 362,685 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
   with the Whip Scorpion's rework over the formation and refit session's landing). Before it,
   1119 tests, 362,994 checks, green on main (11 November, as `ccr-722ca9f0-yj8na3`
   landed with the Rupture sized in beats, menace a pack's threat rating, the stall guard's end
@@ -253,8 +255,11 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   coming down (his lean, so the refit's reads stand). Six pieces that are neither glue nor an exclusive yet (the
   Lance, the Flechette Pod, the Solar Flare Array, the Flakshot Repeater, the Plow, the Harpoon)
   get a tweak before any cut: Claude's first round and his first answers are the proposal's
-  section 4; open with him there, the Dingo's identity and the Prairie Dog's tweak (next, after
-  the Whip Scorpion), the Skua with the Pod's lock in a session of his own (11 November). A branch's shape is settled
+  section 4. The Dingo's is settled and built (11 November, the bible's Dingo row: Shock on the
+  Translocator, the harpoon the Hollow-point Harpoon, a Flak and a pin on its target's Flak for
+  the round, Pinned a status of its own with Burning's beside it), and the Prairie Dog's
+  Flakshot Repeater (Flak 2 on a cooldown of 1); the Skua with the Pod's lock is a session of
+  his own, and the Lance, the Solar Flare Array and the Plow are the three left. A branch's shape is settled
   (two directions two steps deep, the second pick the deeper step or the one skipped). Every rework in design sorts its pieces on this footing.
 - Kestrel: ten machines, eight decided, in content and fielded (the bible's Kestrel row; the hub
   `docs/briefs/kestrel_line.md`); the Puffin back in design (`kestrel_puffin.md`). The Magpie (a

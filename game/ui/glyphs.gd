@@ -8,6 +8,12 @@ extends RefCounted
 static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Color, width: float = 2.0) -> void:
 	var s := size / 2.0
 	match id:
+		"pin_flak", "pin_burn":
+			# A pin (Ryan, 11 November: "Can we combine the lock and the flak/burn for these
+			# glyphs?"): the status it holds, drawn a little smaller up and to the left, with the
+			# lock at its lower right.
+			draw(ci, "flak" if id == "pin_flak" else "burn", c + Vector2(-s * 0.2, -s * 0.16), size * 0.8, color, width)
+			draw(ci, "lock", c + Vector2(s * 0.5, s * 0.48), size * 0.52, color, width)
 		# ---- the die's targeting marks (Ryan, 2 November): one width, under the main mark
 		"aim_direct", "aim_indirect":
 			# Whom a weapon or a debuff reaches (Ryan, 3 November: "I think we had it right with

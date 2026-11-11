@@ -434,7 +434,7 @@ func _blind_pick(sk: Skirmish, i: int) -> Dictionary:
 				if n.rank < t.rank or (n.rank == t.rank and n.column < t.column):
 					t = n
 			if sk.needs_second(ms):
-				var seconds: Array = sk.swap_targets(t)
+				var seconds: Array = sk.swap_targets(t, sk.swap_carries(ms))
 				return {} if seconds.is_empty() else {"target": t, "second": seconds[0]}
 			return {"target": t}
 		_:
@@ -467,8 +467,9 @@ func options_for(sk: Skirmish, i: int) -> Array:
 				# A Swap takes the second target worth the most beside this first.
 				var best_second = null
 				var best := -INF
-				for second in sk.swap_targets(t):
-					var v := swap_score(sk, t, second) + bunching_score(sk, ms, t, second)
+				for second in sk.swap_targets(t, sk.swap_carries(ms)):
+					var stays: bool = t.is_massive() or (second is Foe and (second as Foe).is_massive())   # nothing moves: the rider alone
+					var v := 0.0 if stays else swap_score(sk, t, second) + bunching_score(sk, ms, t, second)
 					if v > best:
 						best = v
 						best_second = second
