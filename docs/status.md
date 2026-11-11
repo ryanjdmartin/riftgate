@@ -27,11 +27,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1115 tests, 362,618 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
-  with the formation and refit session's branch whole and the music session's landing; Godot
-  4.8-beta2), and 1119 tests, 362,994 checks, green on `ccr-722ca9f0-yj8na3` (11 November, main
-  at `60a0e4d` with the Rupture sized in beats, menace a pack's threat rating, the stall
-  guard's end and the tide's and the strike's trial dials); one
+- Tests: 1119 tests, 362,994 checks, green on main (11 November, as `ccr-722ca9f0-yj8na3`
+  landed with the Rupture sized in beats, menace a pack's threat rating, the stall guard's end
+  and the tide's and the strike's trial dials; Godot 4.8-beta2); one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
   either map view on 6 November; about four minutes in a cloud session, twenty on a slow one;
   words after `--` run only the files whose names hold one (`-- loot rig`). A cloud
@@ -52,7 +50,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 ## Branches
 
-Everything is on main as of 11 November 2026 but the formation and refit session's branch, below.
+Everything is on main as of 11 November 2026; the formation and refit session's branch lands as it goes, below.
 `ccr-c71bc17f-hclj2c`, Ryan's map playtest list of 10 November, his answers to it and his second
 and third map lists the same day (How things stand below), cut from main at `aa40832`, landed on
 main as fast-forwards on his word each time ("Ok, merge this into main so I can try it"; "yeah,
@@ -121,13 +119,16 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4` (a cloud session may not delete
 one). Each merge commit says how its conflicts were settled.
 
-Still working (11 November): `ccr-722ca9f0-yj8na3`, the formation and refit session; everything
-it had committed (to `4c8dbf1`) is on main with `ccr-4d58b054-3lyj0a`, below; it took main again
-at `60a0e4d` and at `2a9242e` on 11 November (this file the one conflict, on main's form), and
-its commits since are its own: the first battle read whole, the Rupture meter sized in beats,
-menace a pack's threat rating, the stall guard's end and the tide's and the strike's trial
-dials (its own records say where it stands: the refit brief's sections 10 and 11, the to-do,
-How things stand). Landed 11 November: `ccr-4d58b054-3lyj0a`, the chassis inventory and the locked pieces'
+Still working, and landing as it goes (11 November): `ccr-722ca9f0-yj8na3`, the formation and
+refit session. Everything it had committed to `4c8dbf1` went to main with `ccr-4d58b054-3lyj0a`,
+below; its work since landed on Ryan's word of 11 November ("I think it's safe to start sending
+our code here out to main and having me test there in context"), the branch taking main at
+`60a0e4d` and at `2a9242e` first (this file the one conflict, on main's form) and main taking
+it as a fast-forward: the first battle read whole, the Rupture meter sized in beats, menace a
+pack's threat rating, the stall guard's end and the tide's and the strike's trial dials (the
+refit brief's sections 10 and 11, the to-do, How things stand). Claude's reading of "start
+sending", his to correct: this session's later chunks land the same way once verified, this
+branch alone. Landed 11 November: `ccr-4d58b054-3lyj0a`, the chassis inventory and the locked pieces'
 footing of 10 November and Ryan's round on the busted machines of 11 November (the Polar Bear
 dealt again, the Buzzard's regen, the Nemesis's rage bar; How things stand), carrying
 `ccr-722ca9f0-yj8na3` whole to `4c8dbf1`, took main (the music session's landing: the bible's
@@ -1246,13 +1247,13 @@ commands are in `README.md`.
   clean up and merge into main first before proceeding": main's file whole, since the live v0.521
   (Version 503, main's `9ebf74b`) matched that commit's file byte for byte and so needed no merge;
   it carries everything to 11 November, new since 503 the pairs' row, The Far Bank's track row,
-  the boss themes' Open row and the design test of no extra controls). `ccr-722ca9f0-yj8na3`'s
-  file is v0.529, main's with the pacing row rewritten (the count and the stall guard retired,
-  two beats, the cleared field, ten to thirty minutes, his lean for more spawns), menace a
-  pack's threat rating (the tally row, the sum retired) and the meter's lines with them (the
-  clocks, stall, boss, roster, Anathema and kill rows, section 12's first battle, pacing,
-  menace and tier counts), unpublished, its republish on Ryan's word. BASE for the next merge is
-  `60a0e4d`'s file. The live page may carry rows ahead of main's code while a branch has not landed. Before
+  the boss themes' Open row and the design test of no extra controls). Main's file is v0.529
+  since `ccr-722ca9f0-yj8na3` landed on 11 November: the pacing row rewritten (the count and the
+  stall guard retired, two beats, the cleared field, ten to thirty minutes, his lean for more
+  spawns), menace a pack's threat rating (the tally row, the sum retired) and the meter's lines
+  with them (the clocks, stall, boss, roster, Anathema and kill rows, section 12's first battle,
+  pacing, menace and tier counts), unpublished, its republish on Ryan's word. BASE for the next
+  merge is `60a0e4d`'s file. The live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
   this branch's file, THEIRS the saved live source with the tool's wrapper line and its trailing
@@ -1272,7 +1273,10 @@ commands are in `README.md`.
   brief, the Whip Scorpion's role map and the briefs' table, `text.json` its stamp alone; nobody
   had published since 220, the live copies matching its build but for the stamp); the page
   unchanged, and the live copies match main's after. `edits` and `text` empty, `designs` the two
-  folded ideas. Version 220 (11 November, main's `9ebf74b`,
+  folded ideas. Behind main since `ccr-722ca9f0-yj8na3` landed the same day, its republish on
+  Ryan's word: the vocabulary (the glossary's Menace, Rupture meter and Seal lines, drafts
+  redrafted for menace as a pack's threat rating and the stall guard's end), with `text.json`
+  for them and `designs.json` for the refit brief. Version 220 (11 November, main's `9ebf74b`,
   on Ryan's word, "republish the hangar and the bible") was the fourteen files that had moved since 219 (the five content files with the refit's
   model, the formation pass, the Polar Bear's seal, the Buzzard's regen and the Nemesis's rage;
   `designs.json` and `text.json`; `foes.json`; six rig sidecars, their stock pins following the
