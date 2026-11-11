@@ -140,6 +140,13 @@ var field_menace: int = 0         # the field's menace at the start, the thresho
 ## Anathema's) is never touched: the meter reads it less what the trial held back. A debug
 ## build's SETTINGS → TRIALS → FODDER and RIFTGATE_FODDER set it (Settings.field_trial).
 static var fodder_trial: int = 100
+## The meter's size on trial (Ryan, 11 November: "the 3 fractures, with the current rate of fill,
+## felt short to me. I assume that needs to be tuned still"): the Rupture's share of the field's
+## menace in hundredths of the game's own, 100 the game's, every Fracture moving with it. Read
+## at setup, so a battle under way keeps the thresholds it opened on. The stall guard is not the
+## meter's: a field cleared breaks the seal at any size. A debug build's SETTINGS → TRIALS →
+## RUPTURE and RIFTGATE_RUPTURE set it (Settings.field_trial).
+static var rupture_trial: int = 100
 var meter_held: int = 0           # hundredths of menace the fodder's trial has kept off the meter this battle; 0 with no trial
 ## The battle's share of the run's Sponsorship measures (the bible's Sponsorship row): the
 ## hexes its machines move on the map, and each fight's own (Skirmish.sponsorship), added up.
@@ -280,7 +287,7 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 			total += float(FRACTURE_STEPS[mini(k, FRACTURE_STEPS.size() - 1)])
 			steps.append(total)
 		for k in range(n):
-			thresholds.append(maxi(1, roundi(RUPTURE_SHARE * float(field_menace) * float(steps[k]) / total)))
+			thresholds.append(maxi(1, roundi(RUPTURE_SHARE * (float(maxi(1, rupture_trial)) / 100.0) * float(field_menace) * float(steps[k]) / total)))
 	if boss != null and not thresholds.is_empty():
 		boss.sealed = true
 	state = State.PLAN

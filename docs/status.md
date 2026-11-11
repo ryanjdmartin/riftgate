@@ -29,10 +29,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   after each.
 - Tests: 1094 tests, 325,124 checks, green on main (10 November, with the boss's hex, the third map list, the Text tab, the side session's work, the shapes reworked on Ryan's play, the second map list, the
   map session's shapes laid to the rift's row, the passing and the catch at one, and the map
-  playtest list), and 1111 tests, 362,582 checks, green on `ccr-722ca9f0-yj8na3` (11 November, that
+  playtest list), and 1112 tests, 362,597 checks, green on `ccr-722ca9f0-yj8na3` (11 November, that
   main with the refit pass's first build, the wall strike by the rating, the trial's regen row,
   every machine one more move, the field's dials, the goblin's line on its straight knife and wall,
-  the model as content, the formation pass and the elites' and bosses' guess; the
+  the model as content, the formation pass, the elites' and bosses' guess and the Rupture's dial; the
   map suite now paints fourteen and sixteen deep too, which is most of the checks' rise); one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
   either map view on 6 November; about four minutes in a cloud session, twenty on a slow one;
@@ -173,7 +173,7 @@ And at `5d14088` on 11 November (the boss holding its hex in front of the rift, 
 walking): the bible (v0.514, above both; the grid row main's sentences on the boss's hex set
 into this branch's), this file, the to-do and `sim/save.gd` the conflicts, both sides kept, the
 save versions stacked again (a battle's 23, a run's 22).
-The bible's file is v0.516, main's v0.506 with this branch's rows, its republish on Ryan's word
+The bible's file is v0.517, main's v0.506 with this branch's rows, its republish on Ryan's word
 (Pages below); and `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
@@ -546,6 +546,31 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   runner's plain player, which never gathers, wins 8% of its battles where it won 19%: a
   fight for four with one machine in it is won one time in four where it was one in two. The
   bible's scale row holds it (v0.512, v0.513 since the branch took main's third map list).
+- **The Rupture meter's size on trial, one elite, and 4-4-2** (Ryan, 11 November: "the 3
+  fractures, with the current rate of fill, felt short to me. I assume that needs to be tuned
+  still, though. The answer could be that the amount to reach a fracture probably scales by
+  Convergence, with a step down at each tier when we add another fracture step"; "battle one
+  should only serve one elite"; "we restructure the tier list from 3-5-2 to 4-4-2 ... I'll
+  pose that in the chassis session"). Tier one sends one elite already, at its first Fracture.
+  The shape he names is the meter's own, a share of a field the ramp grows, split over the
+  tier's Fractures: the Rupture is 2.4 to 2.5 formations' worth before Convergence 3, 3.1 to
+  3.4 after, 3.7 to 4.2 at tier two and 4.0 to 5.0 at tier three, about three big fights
+  rising to five or six where the pacing row says four to five, flat. The short end is tier
+  one's start: the opening's formation, the first wave's and the elite fill the meter, the
+  floor player's fourth turn, since the Fractures' elites are not in the meter's base and the
+  rift's first three waves are a formation, a patrol and a formation (the first wave's the
+  opening's own composition again, on every seed). The first battle read whole
+  (`docs/measurements.md`, 11 November; three trios and a four, the runner's player, 20 seeds
+  a cell): a longer meter is more turns and more patrols, never more formations, and the gate
+  pays (a tenth of its bar gone by the Rupture as it is, a third at half again, a half
+  doubled); the stall guard caps it from about half again; and the first battle is no gift
+  for the floor player in any domain (won 40% to 60% in the Meadow, 15% to 55% in the Marsh,
+  0% to 15% in the Waste, 0% to 5% on the Peak), the boss's first block alone moving it
+  little, since that player loses before the boss. Built: a dial, SETTINGS → TRIALS → RUPTURE
+  (1X, 1.25X, 1.5X, 2X; `Battle.rupture_trial`, `RIFTGATE_RUPTURE`), the rule unmoved. Open,
+  his (the brief's section 10; the bible's pacing row and section 12, v0.517): whether the
+  count of fights stays flat across tiers, the share's size by tier, the stall guard as the
+  cap. 4-4-2 is his lean and his to pose in the chassis session (the briefs README's Tiers).
 - **The fourth machine is the first battle's** (Ryan, 11 November, in the discussion that
   followed: "the only reason to leave it up to the player was to put them fully in control.
   But if the choice is in which city to defend in order to get a guaranteed choice from that
@@ -561,8 +586,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   of 3. It's more of an opportunity to gain resources, win, get your party in order, then the
   real game starts from battle 2." Open, his (the brief's section 10; the bible's section
   12): what easy is read as, whether it is short as well, and how it is made easy, since a
-  flat cut of the boss reaches the Meadow's first battle and not the Waste's or the Peak's.
-  The bible is v0.516.
+  flat cut of the boss reaches the Meadow's first battle and not the Waste's or the Peak's
+  (its length is answered since, the bullet above).
 - **Tier one at three machines, and Ryan's calls of 11 November.** His words: "Badger probably
   goes to Regen 1 with the amount of armour it's able to get"; "Draugr is fine as a name, as are
   your other working names"; "Let's focus only on balancing tier 1 fights for now", since tier
@@ -1066,7 +1091,7 @@ what-if and its first reads are in (9 November), his two reads of the trial, the
 content, the formation pass and a guess at the elites' and bosses' numbers (10 November: the
 brief's sections 5, 8 and 9); tier one only for now (his word, 11 November), and next his
 answers on the first battle (the brief's section 10: the fourth machine's route is settled,
-the first battle's shape and the boss's numbers by ramp band wait on him), beside his play of what landed, with the field's
+the first battle's shape, the Rupture meter's size and the boss's numbers by ramp band wait on him), beside his play of what landed, with the field's
 dials (the to-do's Ryan list), and his answers to the brief's section 7, then the content still to come (the stock re-deal proper as a table in chat first,
 the component pass, the heat prices, the foes' numbers after his play, the bosses' stat
 blocks, what prices a round), the vocabulary, the rules and the rows. Then the long wall's other open item (the bible's section 12: the shell). Beside them, the rest of the skirmish code audit
@@ -1128,7 +1153,7 @@ commands are in `README.md`.
   playtest list landed (the boss's picture, the scenery under the painting, the tears row's
   read of 10 November and the hunters' declaration, on the map session's v0.500 and v0.498's
   Text tab rows: the hangar row's tabs and the shown-text row), unpublished, its republish on
-  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.516, main's with the formation and refit
+  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.517, main's with the formation and refit
   session's rows (the hunters row's who-may-hunt and its settled hunting packs, the Foe roles row
   Decided with the flanker lines, the goblin's
   lesson, his call on its form and the pusher's yardstick, the recolour row's two rungs that
@@ -1137,7 +1162,9 @@ commands are in `README.md`.
   the wall row's strike by the rating, the kit, shield, triangle, redirection, injury,
   command-die, Barrier and Ward, Puffin, Whip Scorpion, Polar Bear, Swallowtail and Musk Ox
   rows' refit lines, section 12's items, and from his second read the move row's 3 to 6, the
-  grid row's and the three clocks row's lines on the depth and the fodder on trial),
+  grid row's and the three clocks row's lines on the depth and the fodder on trial, and from
+  11 November the squad row's first battle, the pacing row's line on the meter's size and
+  section 12's first battle and tier counts),
   unpublished too. BASE for the next merge is `2d489f7`'s file. The live
   page may carry rows ahead of main's code while a branch has not landed (the music session's
   track rows: Hold The Line's settled pair and its trial notes, Night Shift's duelling basses,

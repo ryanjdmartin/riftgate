@@ -151,14 +151,14 @@ func _show_page(page: String) -> void:
 				_toggle("TRACES", "traces")   # the map's creases, one device pixel at every zoom: off draws none, to judge the zoomed-out grain on the phone
 				_toggle("SHOT TRAILS", "shot_trails")   # a shot crossing the field from its muzzle to its target (ShotTrail): tabled as maybe too busy, here to judge
 				_toggle("KEYWORD INK", "keyword_ink")   # a term in shown text bold in ink, its icon in its colour, against the word in its colour (Ryan judges which)
-				_button("TRIALS", func() -> void: _show_page("trials"))   # the trial dials (the shield's regen, the field's depth and opening, the fodder's worth), a page of their own so the settings fit every glass
+				_button("TRIALS", func() -> void: _show_page("trials"))   # the trial dials (the shield's regen, the field's depth and opening, the fodder's worth, the Rupture's size), a page of their own so the settings fit every glass
 				_button("COLOURS", func() -> void: _show_page("colours"))   # the colours that carry a meaning and the HUD presets, by wheel or hex (ColourTuner)
 			_button("BACK", func() -> void: _show_page("paused"), false, "ui_back")
 		"trials":
 			# A debug build's dials for the passes on trial, the game's own until one is picked: a
 			# flat shield regen in place of each chassis's own (read at the next launch), the
-			# field's depth, the opening's distance and the fodder's worth on the Rupture meter
-			# (each read as the next battle starts).
+			# field's depth, the opening's distance, the fodder's worth on the Rupture meter and the
+			# meter's size (each read as the next battle starts).
 			_title("TRIALS")
 			_choice_row("SHIELD REGEN", "shield_regen", Settings.SHIELD_REGENS, Settings.SHIELD_REGEN_LABELS)   # a flat shield regen on every chassis in place of each one's own (game/harness.gd, refit_trial): the refit pass's model is content since 10 November, and this is the one what-if left on the phone
 			_credit("Shield back each round: as built by chassis, or flat on all. Next launch.")
@@ -167,6 +167,8 @@ func _show_page(page: String) -> void:
 			_credit("Rows from rift to wall; moves farther out the first packs stand. Next battle.")
 			_choice_row("FODDER", "fodder_worth", Settings.FODDER_WORTHS, Settings.FODDER_WORTH_LABELS)   # what a rank-and-file kill fills of the Rupture meter (Battle.fodder_trial; Ryan, 10 November: "If fracture rewards were a little lower for fodder")
 			_credit("A kill's worth on the Rupture meter, an elite's pack whole. Next battle.")
+			_choice_row("RUPTURE", "rupture_size", Settings.RUPTURE_SIZES, Settings.RUPTURE_SIZE_LABELS)   # the menace the Rupture takes, every Fracture with it (Battle.rupture_trial; Ryan, 11 November: "the 3 fractures, with the current rate of fill, felt short to me")
+			_credit("The kills the Rupture takes, each Fracture with it. Next battle.")
 			_button("BACK", func() -> void: _show_page("settings"), false, "ui_back")
 		"colours":
 			_title("COLOURS")

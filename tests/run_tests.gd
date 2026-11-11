@@ -92,6 +92,7 @@ func _run(f: String, inst, method: String) -> void:
 	Ramp.depth_trial = 0
 	Battle.opening_trial = 0
 	Battle.fodder_trial = 100
+	Battle.rupture_trial = 100
 	inst.script_errors_expected = 0
 	_errors.take()
 	inst.call(method)

@@ -562,6 +562,37 @@ func test_the_fodders_trial_fills_the_meter_by_a_share_and_leaves_the_tally_whol
 	Battle.fodder_trial = 100
 
 
+## The meter's size on trial (Ryan, 11 November: "the 3 fractures, with the current rate of fill,
+## felt short to me"): every Fracture's threshold by the trial's share of the game's own, the
+## count, the growing steps and the field's menace as they were; a battle under way keeps the
+## thresholds it opened on; and the stall guard is none of the meter's.
+func test_the_ruptures_trial_sizes_every_threshold_and_nothing_else() -> void:
+	var whole := _battle()
+	Battle.rupture_trial = 150
+	var b := _battle()   # the same seed, so the same field
+	assert_eq(b.field_menace, whole.field_menace, "the field's menace is the field's")
+	assert_eq(b.thresholds.size(), whole.thresholds.size(), "the tier's count of Fractures stands")
+	assert_eq(int(b.thresholds[-1]), maxi(1, roundi(1.5 * Battle.RUPTURE_SHARE * float(b.field_menace))), "the Rupture at half again the game's share")
+	for k in range(b.thresholds.size()):
+		assert_true(absi(int(b.thresholds[k]) * 2 - int(whole.thresholds[k]) * 3) <= 3, "every Fracture half again its own (%s against %s)" % [str(b.thresholds), str(whole.thresholds)])
+	for k in range(1, b.thresholds.size()):
+		assert_true(int(b.thresholds[k]) - int(b.thresholds[k - 1]) >= int(b.thresholds[k - 1]) - (int(b.thresholds[k - 2]) if k >= 2 else 0), "later Fractures still cost more (%s)" % str(b.thresholds))
+	# A battle under way keeps what it opened on: the save carries the thresholds.
+	Battle.rupture_trial = 100
+	var back := SaveGame.from_dict(SaveGame.to_dict(b))
+	assert_eq(back.thresholds, b.thresholds, "a saved battle keeps the thresholds it opened on, whatever the dial says since")
+	# The guard is the field's: cleared, the seal breaks at any size.
+	Battle.rupture_trial = 200
+	var g := _battle()
+	for sq in g.field.packs():
+		if not sq.is_boss:
+			g.field.units.erase(sq)
+	g._fractures()
+	assert_true(not g.is_sealed() and g.stall_guard, "a field cleared breaks the seal by the guard, the meter empty")
+	assert_eq(g.fractures, 0, "and pays no Fracture for it")
+	Battle.rupture_trial = 100
+
+
 ## The thresholds read the tide (the long wall brief 3.8): the menace placed at the start and
 ## the first compositions the rift will send, as many as the tier's Fractures, at the ramp's
 ## density; and the Rupture quickens the tide, the beat halving once, never sealing again.

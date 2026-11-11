@@ -525,9 +525,13 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # row follows the depth by its own rule. RIFTGATE_FODDER=50 (any battle) fills the Rupture meter
 # by that share, in hundredths, of a kill's menace when its pack came as no elite (his "If
 # fracture rewards were a little lower for fodder"; salvage and Anathema read the whole tally
-# as before). On the phone a debug build's SETTINGS → TRIALS has FIELD DEPTH (12, 14, 16),
-# OPENING (+0, +1, +2) and FODDER (FULL, 3/4, HALF), read as the harness or the quick run starts
-# a battle, with no relaunch; a saved battle keeps the field it was saved with.
+# as before). RIFTGATE_RUPTURE=150 (any battle) sizes the Rupture meter, every Fracture with it,
+# in hundredths of the game's own, 50 to 400 (his "the 3 fractures, with the current rate of
+# fill, felt short to me"); a kill's worth is untouched, and a field cleared still breaks the
+# seal at any size. On the phone a debug build's SETTINGS → TRIALS has FIELD DEPTH (12, 14, 16),
+# OPENING (+0, +1, +2), FODDER (FULL, 3/4, HALF) and RUPTURE (1X, 1.25X, 1.5X, 2X), read as the
+# harness or the quick run starts a battle, with no relaunch; a saved battle keeps the field
+# and the thresholds it was saved with.
 # RIFTGATE_HALO=off|all (any run) draws no halo round the lit parts, or one round every lit part, to compare
 # with the vetted set (31 October).
 # RIFTGATE_PLUME=off (any run) draws a booster's ring in place of its plume (the Stingray's, on
