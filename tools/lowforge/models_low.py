@@ -475,13 +475,15 @@ def clydesdale(b):
     # pivoting vertical, then retreating downward vertically"; the checkerboard his pick): eight
     # ports in two columns either side of the spine and four rows between the boards, the first
     # battery's (hp_1 to hp_4) and the second's (hp_5 to hp_8) alternating, so each raised gun
-    # stands where its neighbours are shut and a turn mirrors the deck. Each port is a stripe
-    # collar on the deck with a dark bore and an iris (the Polar Bear's, square up); in it a lift
-    # (slide, up) carries a turret drum (yaw, the aim) and the gun's elevation (pitch) at the pin.
-    # The first battery is built up, the second stowed: upright, sunk BATTERY_SINK into the hull
-    # (deepened for it) and its irises shut. The form changed_over (Changed Over, the second
-    # battery up) pivots the first upright, sinks it and shuts its irises as the second's open,
-    # rise and pivot down to rest; letting it go runs that back.
+    # stands where its neighbours are shut and a turn mirrors the deck. Each port is square (Ryan,
+    # 11 November: "Sure, square ports, and either trapdoors or split middle"; a rack is square,
+    # and a round bore it could pass would not fit four to a column): a stripe frame on the deck
+    # round a dark mouth, two trapdoors across it (_hatch); in it a lift (slide, up) carries a
+    # turret drum (yaw, the aim) and the gun's elevation (pitch) at the pin. The first battery is
+    # built up, its trapdoors hanging open, the second stowed: upright, sunk BATTERY_SINK into the
+    # hull (deepened for it) and its trapdoors shut. The form changed_over (Changed Over, the
+    # second battery up) pivots the first upright, sinks it and swings its trapdoors shut as the
+    # second's drop open, rise and pivot down to rest; letting it go runs that back.
     ports = []   # (pin number, x, y, built up)
     for k, (px, py) in enumerate(BATTERY_PORTS):
         ports.append((k + 1, px, py, True))
@@ -490,15 +492,9 @@ def clydesdale(b):
     stock = {1: ("barrel", "maxigun"), 2: ("twin_barrel", "twin_autoguns"), 3: ("barrel", "enfilade_beam"), 4: None,
              5: ("rack", "ankle_mortar"), 6: ("barrel", "howitzer"), 7: ("rack", "airburst_shell"), 8: ("rack", "incendiary_shells")}   # the stock's in pin order, the Shoring Jack showing nowhere (hp_4 bare)
     rest_fwd = (0.0, math.cos(math.radians(BATTERY_ELEVATION)), math.sin(math.radians(BATTERY_ELEVATION)))
-    irises = {}   # pin number -> (iris joint, its slide in the form)
+    hatches = {}   # pin number -> [(leaf joint, its swing in the form)]
     for n, px, py, up in ports:
-        _tube(b, (px, py, 47.9), (px, py, 49.5), BATTERY_COLLAR, BATTERY_BORE, 12, "steel.stripe", "port_rim", floor_depth=1.4)
-        if up:
-            joint, home = _plug(b, "p%d" % n, (px, py, 49.0), (0.0, 0.0, 1.0), BATTERY_BORE, BATTERY_IRIS_DEEP)
-            irises[n] = (joint, home)   # open below the floor, it rises to shut as the gun sinks
-        else:
-            joint, _ = _plug(b, "p%d" % n, (px, py, 49.0), (0.0, 0.0, 1.0), BATTERY_BORE, 0.0)
-            irises[n] = (joint, (0.0, 0.0, -BATTERY_IRIS_DEEP))   # shut over its stowed gun, it drops to open
+        hatches[n] = _hatch(b, str(n), (px, py, 48.0), BATTERY_MOUTH, BATTERY_WALL, 1.5, built_open=up)   # the first battery's hanging open, the second's shut over its stowed guns
         dz = 0.0 if up else -BATTERY_SINK
         fwd = rest_fwd if up else (0.0, 0.0, 1.0)
         with b.joint("lift_%d" % n, (px, py, 49.0 + dz), slide=(0.0, 0.0, 1.0)):
@@ -615,37 +611,39 @@ def clydesdale(b):
     b.gait_option("trot", stride=tstride, tracks=ttracks, body=tbody, ease="linear")
     b.move(accel=1.4, heft=0.24)
     # The changeover (the form changed_over, held while the second battery is up): the first
-    # battery pivots upright and sinks as the second's irises open, the second rises as the first
-    # is down, the first's irises shut and the second pivots down to rest; letting it go runs it
-    # back. RIFTGATE_SEAL_DEBUG=1 holds every model's forms and lets them go in turn, to judge it
-    # running.
+    # battery pivots upright and sinks as the second's trapdoors drop open, the second rises as the
+    # first is down, the first's trapdoors swing up shut and the second pivots down to rest;
+    # letting it go runs it back. RIFTGATE_SEAL_DEBUG=1 holds every model's forms and lets them go
+    # in turn, to judge it running.
     P0, P1, S1, I1, O0, O1, R1, E1 = 0.0, 0.35, 0.8, 1.05, 0.25, 0.5, 1.0, 1.4
     lift = lambda t, d: (t, 0.0, 0.0, 0.0, 0.0, 0.0, round(d, 3))
     form = {}
     for n, px, py, up in ports:
-        iris, home = irises[n]
         if up:
             form["elev_%d" % n] = [(P0, 0.0), (P1, BATTERY_PIVOT)]
             form["lift_%d" % n] = [lift(P1, 0.0), lift(S1, -BATTERY_SINK)]
-            form[iris] = [(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (S1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (I1, 0.0, 0.0, 0.0) + tuple(home)]
+            for leaf, swing in hatches[n]:
+                form[leaf] = [(0.0, 0.0), (S1, 0.0), (I1, swing)]   # swung up shut over the sunk gun
         else:
-            form[iris] = [(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (O0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (O1, 0.0, 0.0, 0.0) + tuple(home)]
+            for leaf, swing in hatches[n]:
+                form[leaf] = [(0.0, 0.0), (O0, 0.0), (O1, swing)]   # dropped open for the gun to rise
             form["lift_%d" % n] = [lift(0.0, 0.0), lift(O1, 0.0), lift(R1, BATTERY_SINK)]
             form["elev_%d" % n] = [(0.0, 0.0), (R1, 0.0), (E1, -BATTERY_PIVOT)]
     b.form("changed_over", E1, form)
 
 # The Clydesdale's batteries (the form above): the first battery's ports in pin order, the second's
-# the same rows mirrored across the spine; how far a stowed gun sits under the deck, how far an
-# iris rests down its bore, the guns' rest elevation and the pivot that stands them upright, the
-# traverse, the collar's and bore's radii, the drum's, and the mounts' scale (a barrel stands 18.6,
-# so upright and sunk it clears the deck and stays in the deepened hull).
+# the same rows mirrored across the spine; how far a stowed gun sits under the deck, the guns'
+# rest elevation and the pivot that stands them upright, the traverse, the mouth's half width and
+# the frame's wall (a rack at the mounts' scale stands 9.9 by 9.3 upright, so it rises square
+# between the hanging leaves, and a port's frame keeps a hand's gap to the next row's), the drum's
+# radius, and the mounts' scale (a barrel stands 18.6, so upright and sunk it clears the deck and
+# stays in the deepened hull).
 BATTERY_PORTS = [(-9.5, 11.75), (9.5, -0.75), (-9.5, -13.25), (9.5, -25.75)]
 BATTERY_SINK = 24.0
-BATTERY_IRIS_DEEP = 6.0
 BATTERY_ELEVATION = 8.0
 BATTERY_PIVOT = 82.0
 BATTERY_TRAVERSE = 35.0
-BATTERY_COLLAR, BATTERY_BORE, BATTERY_DRUM = 5.6, 4.6, 4.0
+BATTERY_MOUTH, BATTERY_WALL, BATTERY_DRUM = 5.2, 0.5, 4.0
 BATTERY_SCALE = 0.62
 
 clydesdale.maker = "wainwright_sutler"
@@ -6532,6 +6530,45 @@ def _plug(b, tag, centre, axis, r, depth, n=3, thick=0.6, material="steel.stripe
                            for j in range(5)]
             _slab(b, pts, axis, thick, material, "shutter")
     return name, tuple(axis * depth)
+
+
+def _hatch(b, tag, centre, inner, wall, proud, leaf=0.4, recess=0.25, well=1.25, seam=0.3, built_open=False,
+           material="steel.stripe", leaf_material="steel.panel"):
+    """A square port shut by trapdoors (the Clydesdale's batteries; Ryan, 11 November: "Sure,
+    square ports, and either trapdoors or split middle - slide open, both could work. Depends on
+    geometry"): a stripe frame round a square mouth `inner` from `centre` to each side, `wall`
+    thick and standing `proud` of the deck (`centre` on the deck's top), a dark floor `well`
+    under its rim, and two leaves across the mouth `recess` under the rim, meeting in the middle
+    across a dark `seam`. Each leaf hangs from its bottom edge on the frame's front or back wall
+    (`shutter_<tag>f`, `shutter_<tag>b`, pitch joints), so it drops open into the dark and hangs
+    against its wall, out of a rising gun's way: trapdoors, since a deck with nothing cut out of
+    it and its ports a hand apart has nowhere a sliding leaf could go. Built shut, or hanging
+    open if `built_open`. Returns [(joint, its swing to the other state)], the front leaf's
+    first, degrees on the joint's pitch."""
+    cx, cy, cz = centre
+    top = cz + proud
+    outer = inner + wall
+    b.box(cx - outer, cx + outer, cy + inner, cy + outer, cz - 0.1, top, material, "port_rim")
+    b.box(cx - outer, cx + outer, cy - outer, cy - inner, cz - 0.1, top, material, "port_rim")
+    for s in (-1.0, 1.0):
+        b.box(min(cx + s * inner, cx + s * outer), max(cx + s * inner, cx + s * outer), cy - inner, cy + inner, cz - 0.1, top, material, "port_rim")
+    b.box(cx - inner + 0.02, cx + inner - 0.02, cy - inner + 0.02, cy + inner - 0.02, cz - 0.05, top - well, "bore.dark", "port_floor")
+    z1 = top - recess
+    z0 = z1 - leaf
+    out = []
+    for s, end in ((1.0, "f"), (-1.0, "b")):
+        hinge = (cx, cy + s * (inner - 0.05), z0)
+        opens = 90.0 * s   # a positive pitch drops the front leaf, which lies behind its hinge, and lifts the back one
+        swing = -opens if built_open else opens
+        turn = None
+        if built_open:
+            turn = Matrix.Translation(hinge) @ Matrix.Rotation(math.radians(opens), 4, "X") @ Matrix.Translation(tuple(-v for v in hinge))
+        name = "shutter_%s%s" % (tag, end)
+        with b.joint(name, hinge, axis="pitch", limits=(min(0.0, swing), max(0.0, swing))):
+            y_seam = cy + s * seam / 2.0
+            b.box(cx - inner + 0.1, cx + inner - 0.1, min(y_seam, hinge[1]), max(y_seam, hinge[1]), z0, z1, leaf_material, "shutter", transform=turn)
+        out.append((name, swing))
+    return out
 
 
 def _vent(b, cutting, origin, alpha, width, height, slats, prefix, rest, opens, wall=1.0, depth=3.6, rim=0.4, proud=0.6, pivot=0.7, thick=0.5, housing=None, back=0.0, flank=None, heat="vent_box_floor"):

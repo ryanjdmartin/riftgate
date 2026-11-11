@@ -156,7 +156,7 @@ every machine is wrecked. There is no round limit.
   turns once a round. The second battery up is its Ability, Changed Over, kept from fight to
   fight through the battle and gone as the battle ends, so a battle opens on the first; no chip
   is the first. The codex dims the battery down; on the model the battery down is sunk in the
-  hull under shut irises, the battery up on the deck, and each battery's components take its
+  hull under shut trapdoors, the battery up on the deck, and each battery's components take its
   own mounts in order, so one that shows nowhere leaves its own battery's mount bare.
 - **A stepping die** (the Cassowary's): it never rolls. Each fight opens on a random entry,
   and every roll or reroll steps it to the next entry in order, Rapid's free reroll too; a

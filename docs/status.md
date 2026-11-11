@@ -133,7 +133,7 @@ kept) and main took it as a fast-forward on
 Ryan's word ("Clean up and merge in"). Then the Clydesdale's batteries on his picks ("Checkerboard,
 and the stock split is fine"): its die folded into two batteries of four with a shared Changeover,
 the battery up kept from fight to fight (Changed Over), Battery Director retired, its model eight
-ports in a checkerboard, the brief retired (the bible's Clydesdale row, the to-do's play line),
+ports in a checkerboard, square under trapdoors since his "Sure, square ports", the brief retired (the bible's Clydesdale row, the to-do's play line),
 1129 tests green; on this branch ahead of main, its landing and the hangar's republish his word. And `ccr-722ca9f0-yj8na3`, the formation and
 refit session. Everything it had committed to `4c8dbf1` went to main with `ccr-4d58b054-3lyj0a`,
 below; its work since landed on Ryan's word of 11 November ("I think it's safe to start sending
@@ -1279,9 +1279,9 @@ commands are in `README.md`.
   stall guard retired, two beats, the cleared field, ten to thirty minutes, his lean for more
   spawns), menace a pack's threat rating (the tally row, the sum retired) and the meter's lines
   with them (the clocks, stall, boss, roster, Anathema and kill rows, section 12's first battle,
-  pacing, menace and tier counts), and v0.532 since the Whip Scorpion's rework and the Clydesdale's
+  pacing, menace and tier counts), and v0.533 since the Whip Scorpion's rework and the Clydesdale's
   review landed the same day (its rows; the hardpoints row: every stock gun its class, a mount's depth
-  by class; the flare row; the Clydesdale's batteries row and the lines it retired), unpublished,
+  by class; the flare row; the Clydesdale's batteries row, its square ports, and the lines it retired), unpublished,
   its republish on Ryan's word. BASE for the next merge is `60a0e4d`'s file. The live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
