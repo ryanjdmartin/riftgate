@@ -154,6 +154,7 @@ var last_roll: Dictionary = {}
 ## The heat released by passed turns as the last enemy turn ended (the Whip Scorpion's), for the
 ## screen: {mech, rank, shots, blows (spend_blows' shape)} each. Cleared as a turn ends.
 var releases: Array = []
+var _held: Dictionary = {}   # Foe -> the status ids a pin holds from this round's halving, read as the round's statuses run out
 var last_blast: Dictionary = {}   # the last vent blast, {mech, foe, dealt}, for the screen; cleared each round
 ## The fight's share of the run's Sponsorship measures (the bible's Sponsorship row; tallied 21
 ## October, never shown live): damage the team took on shield and armour, dice spent on
@@ -2286,7 +2287,8 @@ func _release_passes() -> void:
 func _finish_round() -> void:
 	_tick_mechs()
 	for f in field_foes():
-		Effects.halve(f, round)
+		Effects.halve(f, _held.get(f, []))
+	_held.clear()
 	_trim_overshield()
 	_regrow_parts()
 
@@ -2402,7 +2404,11 @@ func _enemy_turn() -> void:
 				log.append("%s recovers: Numbed ×%d" % [f.display_name, Effects.stacks_of(f, "numbed")])
 	for ms in mechs:
 		Effects.end_round(ms.unit, round)   # timed effects run out
+	_held.clear()
 	for f in field_foes():
+		var kept := Effects.held_statuses(f)   # read before its round's statuses run out: a pin holds this round's halving
+		if not kept.is_empty():
+			_held[f] = kept
 		Effects.end_round(f, round)
 
 
@@ -3017,8 +3023,10 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			if not f.holds.is_empty():
 				var held_id := f.holds
 				riders.append(func() -> void:
-					if foe.alive() and Effects.hold(foe, held_id, round):
-						log.append("%s's %s is pinned: it does not decay this round" % [foe.display_name, str(Effects.STATUS[held_id]["name"])]))
+					var holder: String = Effects.HOLDERS[held_id]
+					if foe.alive() and Effects.grant_for_rounds(foe, Effects.STATUS[holder], "mech", round) != null:
+						log.append("%s is %s: its %s does not decay this round" % [foe.display_name, str(Effects.STATUS[holder]["name"]), str(Effects.STATUS[held_id]["name"])])
+						_foe_gained_status(foe, holder))
 			# Purge (the player's, 28 October): every buff the foe carries but Numbed and Guarded,
 			# with the riders, equipment's included; a foe the blow killed loses its Getting Back
 			# Up, so it stays down.

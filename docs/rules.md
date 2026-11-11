@@ -508,8 +508,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - **Flak** (with a number, Wainwright & Sutler's on-hit): each foe hit gains that many stacks
   of Flak a strike (Flak 2: two stacks), laid once the strikes are done, so no strike of the
   spend feeds on what it lays.
-- **A pin** (the Dingo's Hollow-point Harpoon): the Flak on its target, what it lays and what
-  stood there, does not halve at this round's end; it halves again the round after.
+- **A pin** (the Dingo's Hollow-point Harpoon): its target is Pinned for the round, a status of
+  its own, and a Pinned foe's Flak, what the spend lays and what stood there, does not halve at
+  this round's end; it halves again the round after. A Ward turns it away.
 - **Costs** are printed along the entry's foot with its heat, each a mark and a number with no
   word and no sign (the heat's thermometer, the shield's, the hull's machine body, a forging
   gun's shells, the cooldown's clock), never a keyword and never a chip: a
