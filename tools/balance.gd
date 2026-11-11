@@ -17,8 +17,12 @@ extends SceneTree
 ## maximum) and --overheat-corrupt N (a what-if: every overheat Corrupts that component N stacks),
 ## --pilot chassis=N (a what-if: that chassis gains N heat as each round opens, the Whip
 ## Scorpion's pilot light; Skirmish.pilot, 3 November), --shield-ahead (a persona valuing a shield left standing by the blows it turns next round),
-## --injury N (the injury threshold at N percent of maximum hull for this run, a what-if read
-## against the engine's own, Skirmish.INJURY_MIN_HULL_PCT; 25 October, for the one state),
+## --injury on|N (the injury rule on for this run, off in the game since 9 November, at the
+## engine's threshold or at N percent of maximum hull, Skirmish.INJURY_MIN_HULL_PCT; 25 October,
+## for the one state), --refit SPEC (the refit pass's what-ifs over its model, which is content
+## since 10 November, sim/refit.gd: "regen=N" or "regen=half" a flat shield regen in place of each
+## chassis's own; "cooling=N" an offset; "hotter=N" every weapon N heat more; "barrier=cooldown" or
+## "barrier=heatN" a price on the Barrier basic; comma-separated),
 ## --targeting aim|lowest (the foes' targeting rule for the matrix: the aims as shipped, or
 ## the lowest-shield rule from before 2 October; the team cells are always run under both
 ## and compared in their own section, since a single machine cannot see targeting),
@@ -33,7 +37,9 @@ extends SceneTree
 ## short and one over, into its own report, printed or written to --out; no matrix), --packs curve (the
 ## curve read for the formation pass, 7 November: every such composition against the four cut to every
 ## size from one to four, each cell's band and hull, its menace, ramp gate and the bands it shares with
-## its peers, printed or written to --out; no matrix),
+## its peers, printed or written to --out; no matrix; with it --team id,id,id,id reads another team in
+## that cut order, a light machine first for the rating of one, a tier's chassis for its compositions,
+## and --tiers 1,2, --sizes patrol,formation, --domains meadow,waste and --ids a,b narrow the read, 9 November),
 ## "<elite composition> tier 2" with --packs elites (every elite composition at each tier
 ## it names, its elites scaled as a battle scales them; 4 November), or "big" for every big fight and
 ## "rank_and_file" for the rest: 22 October, so the planner's gap reads the big fights alone),
@@ -79,13 +85,20 @@ var out_path := OUT
 var json_path := ""
 var cool_above := 0
 var shield_ahead := false
+var guard_weight := 1.0   # --guard: a block's worth to the bot, as a share (Policy.guard_weight); 0.05 is the aggressor
 var trace := ""
 var targeting := ""   # "" is the aims; "lowest" the rule before 2 October
 var damage_scale := 1.0   # the player's blows, scaled; a question asked of the matrix, never written to content here
 var only_rows: Array = []   # --rows: the row ids to run, all when empty
 var boss_tiers := false     # --boss-tiers: every boss at tiers two and three, with its escort and alone (2 November)
 var only_packs: Array = []  # --packs: the pack ids to run ("big" and "rank_and_file" for the two kinds), all when empty
-var custom_teams: Array = []  # --team: extra rows, each a list of chassis ids
+var custom_teams: Array = []  # --team: extra rows, each a list of chassis ids; the curve read's team when one is given
+var only_tiers: Array = []    # --tiers: the curve read's tiers (1 to 3), all when empty
+var only_sizes: Array = []    # --sizes: the curve read's sizes (patrol, formation, elite), all when empty
+var only_domains: Array = []  # --domains: the curve read's domains, all when empty
+var only_ids: Array = []      # --ids: the curve read's compositions by id, all when empty
+var refit_spec := ""          # --refit: the refit pass's what-if laid over the loaded content (sim/refit.gd)
+var refit_notes: Array[String] = []   # what it changed, for a report's head
 var custom_packs: Array = []  # --pack: extra packs, each a spec "foe:n+foe:n"
 var fit_module := ""        # --module: a module fitted to every machine of every row
 var bumps: Array = []       # --bump: [stat, amount] pairs given to every machine
@@ -112,6 +125,11 @@ func _init() -> void:
 		push_error("content did not load: " + "\n".join(db.load_errors))
 		quit(1)
 		return
+	if not refit_spec.is_empty():
+		# The refit pass's what-ifs (docs/briefs/refit_pass.md): a flat regen, a cooling offset,
+		# hotter weapons or a price on the Barrier basic laid over this run's content, before any
+		# --set, so an edit may still move one of its numbers.
+		refit_notes = Refit.apply(db, Refit.parse(refit_spec))
 	for e in edits:
 		var err := _apply_edit(str(e))
 		if not err.is_empty():
@@ -264,11 +282,21 @@ func _parse_args() -> void:
 				Skirmish.overheat_burnout = true
 			"--shield-ahead":
 				shield_ahead = true
+			"--guard":
+				guard_weight = clampf(float(v), 0.0, 1.0)
+				i += 1
 			"--overheat-corrupt":
 				Skirmish.overheat_corrupt = clampi(int(v), 0, 10)
 				i += 1
 			"--injury":
-				Skirmish.injury_pct = clampi(int(v), 1, 100)
+				# The rule is off in the game since 9 November (Skirmish.injuries); a run may ask
+				# for it back, at the engine's threshold ("on") or at a percent of its own.
+				Skirmish.injuries = v != "off"
+				if v.is_valid_int():
+					Skirmish.injury_pct = clampi(int(v), 1, 100)
+				i += 1
+			"--refit":
+				refit_spec = v
 				i += 1
 			"--rows":
 				only_rows = Array(v.split(","))
@@ -280,6 +308,21 @@ func _parse_args() -> void:
 				i += 1
 			"--team":
 				custom_teams.append(Array(v.split(",")))
+				i += 1
+			"--tiers":
+				only_tiers.clear()
+				for t in v.split(","):
+					only_tiers.append(int(t))
+				i += 1
+			"--sizes":
+				only_sizes = Array(v.split(","))
+				i += 1
+			"--domains":
+				only_domains = Array(v.split(","))
+				i += 1
+			"--ids":
+				only_ids = Array(v.split(","))
+				i += 1
 			"--pack":
 				custom_packs.append(v.strip_edges())
 				i += 1
@@ -595,6 +638,7 @@ func _fight(r: Dictionary, p: Dictionary, k: int, seed_value: int, rule: String 
 	var pol := Policy.make(k, seed_value)
 	pol.cool_above = cool_above
 	pol.shield_ahead = shield_ahead
+	pol.guard_weight = guard_weight
 	var outcome := pol.play(sk)
 	return {"sk": sk, "pol": pol, "hull_max": hull_max, "foes": foes, "outcome": outcome}
 
@@ -666,14 +710,29 @@ func _promise() -> int:
 ## the compositions of its domain, size and tier whose bands match it at every size: a candidate for
 ## pruning. A direction read for placing variants, never a gate. Printed, and written to --out.
 func _curve() -> int:
-	var team: Array = db.default_team(4)
+	# The team is the default four, or --team's (the formation pass, 9 November: a rating of one
+	# is read by a light machine alone, a tier's compositions by a team of its tier), cut to its
+	# first N; --tiers, --sizes and --domains narrow the read.
+	var team: Array = custom_teams[0].duplicate() if not custom_teams.is_empty() else db.default_team(4)
+	for cid in team:
+		if not db.chassis.has(str(cid)):
+			push_error("--team: no chassis '%s' (chassis: %s)" % [str(cid), ", ".join(db.chassis.keys())])
+			return 1
 	var t0 := Time.get_ticks_msec()
 	var fights := 0
 	var found: Array = []
 	for fac in db.factions.keys():
+		if not only_domains.is_empty() and not only_domains.has(str(fac)):
+			continue
 		for t in [1, 2, 3]:
+			if not only_tiers.is_empty() and not only_tiers.has(t):
+				continue
 			for size in ["patrol", "formation", "elite"]:
+				if not only_sizes.is_empty() and not only_sizes.has(size):
+					continue
 				for c in db.compositions(str(fac), t, size):
+					if not only_ids.is_empty() and not only_ids.has(str(c["id"])):
+						continue
 					var mix: Array = c["members"].duplicate(true)
 					var menace := 0
 					var said: Array[String] = []
@@ -695,7 +754,12 @@ func _curve() -> int:
 						var rw := float(r["victory"]) / maxf(1.0, float(r["fights"]))
 						var gw := float(g["victory"]) / maxf(1.0, float(g["fights"]))
 						bands.append("free" if rw >= 0.5 else ("decision" if gw >= 0.5 else "wall"))
-						hulls.append("%d%%" % int(roundf(float(g["hull_lost_pct"]) / maxf(1.0, float(g["fights"])))))
+						# Greedy's hull lost, its rounds a fight and the fights it stalled in (the
+						# bot's cap of rounds, neither side ending it), so a pusher is read by its
+						# price and a stall is never read as a wall (the refit pass, 9 November).
+						var gf := maxf(1.0, float(g["fights"]))
+						hulls.append("%d%% · %.1f r%s" % [int(roundf(float(g["hull_lost_pct"]) / gf)), float(g["rounds"]) / gf,
+							(" · %d stalled" % int(g["stalled"])) if int(g["stalled"]) > 0 else ""])
 					var gate = c.get("ramp", null)
 					found.append({"domain": str(db.factions[fac].get("name", fac)), "size": str(c["size"]), "tier": int(t), "id": str(c["id"]),
 						"members": ", ".join(said), "menace": menace,
@@ -705,8 +769,12 @@ func _curve() -> int:
 	var L: Array[String] = []
 	L.append("# The curve read")
 	L.append("")
-	L.append("Generated by `tools/balance.gd --packs curve` on %s: %d fights in %.0f s, %d seeds a cell, random and greedy, the team %s cut to every size from one to four (its first N machines). Each cell: the band (free: random wins half or more; a decision: greedy wins half or more and random less; a wall: greedy wins less than half) and greedy's mean hull lost (percent of the cut's hull). Read for: the sizes it is a decision for. Same as: the compositions of its domain, size and tier whose bands match it at every size, candidates for pruning. A direction for placing the formation pass's variants, never a gate." % [
+	L.append("Generated by `tools/balance.gd --packs curve` on %s: %d fights in %.0f s, %d seeds a cell, random and greedy, the team %s cut to every size from one to four (its first N machines). Each cell: the band (free: random wins half or more; a decision: greedy wins half or more and random less; a wall: greedy wins less than half), greedy's mean hull lost (percent of the cut's hull), its mean rounds, and the fights it stalled in where any did. Read for: the sizes it is a decision for. Same as: the compositions of its domain, size and tier whose bands match it at every size, candidates for pruning. A direction for placing the formation pass's variants, never a gate." % [
 		Time.get_date_string_from_system(), fights, secs, seeds, ", ".join(_names(team))])
+	L.append("")
+	L.append("The injury rule: %s.%s" % ["on, at %d%% of maximum hull" % Skirmish.injury_pct if Skirmish.injuries else "off, as the game plays it",
+		"" if refit_notes.is_empty() else " The refit what-if (`--refit %s`): %s." % [refit_spec, "; ".join(refit_notes)]]
+		+ ("" if guard_weight == 1.0 else " The fight bot's habit (`--guard`): a block at %d%% of its worth, the aggressor, which never rerolls for one." % int(round(guard_weight * 100.0))))
 	L.append("")
 	L.append("| Domain | Size | Tier | Composition | Members | Menace | Ramp | Rated for | Read for | 1 | 2 | 3 | 4 | Same as |")
 	L.append("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|")
@@ -897,7 +965,7 @@ func _report(fights: int, secs: float) -> String:
 	L.append("")
 	L.append("Generated by `tools/balance.gd` on %s: %d fights in %.0f s%s, %d seeds a cell, policies %s%s%s. Do not edit by hand." % [
 		Time.get_date_string_from_system(), fights, secs, "" if merge.size() < 2 else " (%d parts side by side)" % merge.size(), seeds, ", ".join(_policy_names()),
-		("" if cool_above <= 0 else ", keeping heat under %d%% of the maximum" % cool_above) + ("" if Skirmish.pilot.is_empty() else ", a pilot light (%s)" % str(Skirmish.pilot)) + ("" if Skirmish.overheat_scale <= 1 else ", an overheat burning %d hull a point" % Skirmish.overheat_scale) + ("" if not Skirmish.overheat_burnout else ", an overheat past the injury threshold burning out its component") + ("" if Skirmish.overheat_corrupt <= 0 else ", an overheat corrupting its component ×%d" % Skirmish.overheat_corrupt) + ("" if not shield_ahead else ", a standing shield valued by next round's blows"),
+		("" if cool_above <= 0 else ", keeping heat under %d%% of the maximum" % cool_above) + ("" if Skirmish.pilot.is_empty() else ", a pilot light (%s)" % str(Skirmish.pilot)) + ("" if Skirmish.overheat_scale <= 1 else ", an overheat burning %d hull a point" % Skirmish.overheat_scale) + ("" if not Skirmish.overheat_burnout else ", an overheat past the injury threshold burning out its component") + ("" if Skirmish.overheat_corrupt <= 0 else ", an overheat corrupting its component ×%d" % Skirmish.overheat_corrupt) + ("" if not shield_ahead else ", a standing shield valued by next round's blows") + ("" if guard_weight == 1.0 else ", a block at %d%% of its worth (the aggressor's habit)" % int(round(guard_weight * 100.0))),
 		"" if is_equal_approx(damage_scale, 1.0) else ", the player's damage scaled by %.2f" % damage_scale]
 		+ ("" if fit_module.is_empty() else " Each row runs beside its twin with the %s fitted to every machine." % str(db.modules[fit_module].get("name", fit_module)))
 		+ ("" if bumps.is_empty() else " Every machine bumped: %s." % ", ".join(bumps.map(func(b) -> String: return "%s %+d" % [b[0], b[1]])))

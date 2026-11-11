@@ -42,6 +42,21 @@ func _wreck(b: Battle, u: Unit) -> void:
 	b.wrecks.append(u)
 
 
+## A field the gate outlasts after a wipe: its boss and one patrol, the rest gone. The horde's six
+## unopposed turns then wound the gate and leave it standing whatever a formation strikes for
+## (the strike follows the threat rating since 10 November, and with the packs walking straight
+## to the wall a formation and two patrols take a city's whole gate in those six turns).
+func _thin(b: Battle) -> void:
+	var kept := false
+	for sq in b.field.packs():
+		if sq.is_boss:
+			continue
+		if sq.composition_size == "patrol" and not kept:
+			kept = true
+			continue
+		b.field.units.erase(sq)
+
+
 func _destroy(u: Unit, idx: int) -> void:
 	var d := Face.blank()
 	d.component = u.die.faces[idx].component
@@ -240,14 +255,17 @@ func test_a_wipe_lets_the_horde_strike_and_the_city_holds_wounded() -> void:
 	var c := _run()
 	var front := str(c.fronts()[0])
 	var b := _battle(c)
-	quiet_start(b)   # the packs far off, so the wipe's strikes wound the gate and leave it standing
+	quiet_start(b)
+	_thin(b)   # one patrol left to walk on the wall, so the wipe's strikes wound the gate and leave it standing
 	for u in b.mechs():
 		_wreck(b, u)
 	b.foes_killed = 4
 	b.menace_killed = 12
+	var gate := b.field.gate_hp
 	_end(b, Battle.Outcome.WRECKED)
 	var r := c.finish_battle()
 	assert_true(r["wiped"], "a wipe")
+	assert_true(b.field.gate_hp < gate and b.field.gate_hp > 0, "the horde struck the gate and it stands: %d of %d" % [b.field.gate_hp, gate])
 	assert_eq(r["result"], "held", "the gate held the strikes")
 	assert_true(not c.cities[front].fallen, "the city stands")
 	assert_true(not c.cities[front].rift.is_empty(), "its rift stays open")
@@ -421,7 +439,7 @@ func test_a_guests_spawns_join_the_rifts_cycle() -> void:
 	for c in b.field.cycle:
 		if str(c["faction"]) == str(facs[1]):
 			guest_comps += 1
-	assert_eq(guest_comps, db.compositions(str(facs[1]), 1, "formation").size() + db.compositions(str(facs[1]), 1, "patrol").size(), "every guest formation and patrol is in the cycle")
+	assert_eq(guest_comps, db.compositions(str(facs[1]), 1, "formation", b.ramp).size() + db.compositions(str(facs[1]), 1, "patrol", b.ramp).size(), "every guest formation and patrol the ramp's gate holds is in the cycle")
 	var on_field := 0
 	var guests_on_field := 0
 	for u in b.field.packs():
@@ -785,7 +803,8 @@ func test_the_council_pays_favour_for_a_win_docked_for_gate_damage() -> void:
 func test_a_battle_not_won_pays_no_favour() -> void:
 	var c := _run()
 	var b := _battle(c)
-	quiet_start(b)   # the packs far off, so the wipe's strikes leave the city standing
+	quiet_start(b)
+	_thin(b)   # one patrol left to walk on the wall, so the wipe's strikes leave the city standing
 	for u in b.mechs():
 		_wreck(b, u)
 	b.foes_killed = 3
@@ -1098,8 +1117,8 @@ func test_a_battle_fields_the_compositions_of_its_tier() -> void:
 		b.setup([db.make_mech(str(db.default_team()[0]))], str(facs[0]))
 		var cycle: Array = b.field.cycle.map(func(c) -> String: return str(c["id"]))
 		for fid in [facs[0], facs[1]]:
-			for c in db.compositions(str(fid), t + 1, "formation") + db.compositions(str(fid), t + 1, "patrol"):
-				assert_true(cycle.has(str(c["id"])), "tier %d's %s in the rift's cycle" % [t + 1, str(c["id"])])
+			for c in db.compositions(str(fid), t + 1, "formation", b.ramp) + db.compositions(str(fid), t + 1, "patrol", b.ramp):
+				assert_true(cycle.has(str(c["id"])), "tier %d's %s, which the ramp's gate holds, in the rift's cycle" % [t + 1, str(c["id"])])
 		var ids: Array = []
 		for fid in [facs[0], facs[1]]:
 			ids.append_array((db.compositions(str(fid), t + 1, "formation") + db.compositions(str(fid), t + 1, "patrol")).map(func(c) -> String: return str(c["id"])))

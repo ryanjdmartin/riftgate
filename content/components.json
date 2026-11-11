@@ -123,7 +123,7 @@
     "reach": "direct",
     "power": 2,
     "keywords": [],
-    "heat": 0
+    "heat": 1
    },
    "passive": null,
    "tags": [
@@ -188,13 +188,15 @@
    "name": "Coolant Jacket",
    "maker": "wainwright_sutler",
    "tier": 0,
+   "status": "planned",
    "shape": "none",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
     "fantasy": "Fins. Lots of fins.",
-    "niche": ""
+    "niche": "",
+    "refit": "Retired by the refit pass (landed 10 November): no pure recovery entry stays on the die, cooling is the chassis's. Kept as a draft, undealt; the engine's plain vent until the kinds go."
    },
    "face": {
     "kind": "vent",
@@ -406,13 +408,15 @@
    "name": "Laminar Deflector",
    "maker": "kestrel",
    "tier": 2,
+   "status": "planned",
    "shape": "dish",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
     "fantasy": "A very expensive bubble.",
-    "niche": ""
+    "niche": "",
+    "refit": "Undealt since the refit pass landed (10 November), until the component pass makes it what the audit says: a Barrier, Rapid, a round's cooldown; the name stands (a deflector turns one blow)."
    },
    "face": {
     "cooldown": 1,
@@ -486,13 +490,15 @@
    "name": "Corona Shield",
    "maker": "aphelion",
    "tier": 2,
+   "status": "planned",
    "shape": "dish",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
     "fantasy": "A ring of light that scours whatever the rift left on the metal.",
-    "niche": "The cleanse carrier: shield an ally and clear its statuses. A find, not Aphelion stock."
+    "niche": "The cleanse carrier: shield an ally and clear its statuses. A find, not Aphelion stock.",
+    "refit": "Undealt since the refit pass landed (10 November), until the component pass makes it what the audit says: a Ward and a Cleanse on a machine, renamed the Corona Veil (the engine's Cleanse rides only a shield or a vent today)."
    },
    "face": {
     "kind": "shield",
@@ -741,7 +747,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "Fists, and a temper: every hit the Nemesis takes, its own included, is another swing it gets to throw.",
-    "niche": "The Nemesis's locked melee and its rage's outlet: spent with rage banked, it spends one and the die rolls again, and nothing switches off, so a long rage chains the fists."
+    "niche": "The Nemesis's locked melee and its rage's outlet: with five rage banked it goes out charged, unasked, spends them and breaches, the tank buster's punch (Ryan, 11 November). Its roll again on rage, its signature from 12 October to 11 November, is one direction of its upgrades."
    },
    "face": {
     "kind": "attack",
@@ -749,7 +755,13 @@
     "power": 5,
     "keywords": [],
     "heat": 3,
-    "rolls_again_on": "rage"
+    "charged": {
+     "store": "rage",
+     "price": 5,
+     "keywords": [
+      "breach"
+     ]
+    }
    },
    "passive": null,
    "tags": [
@@ -834,7 +846,7 @@
     "reach": "direct",
     "power": 2,
     "keywords": [],
-    "heat": 0
+    "heat": 1
    },
    "passive": null,
    "tags": [
@@ -871,13 +883,15 @@
    "name": "Bleed Valve",
    "maker": "kestrel",
    "tier": 0,
+   "status": "planned",
    "shape": "none",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
     "fantasy": "A jet's bleed-air valve thrown wide open: the engine dumps its own heat overboard. The jet's brake.",
-    "niche": "Kestrel's basic self vent, the bigger number of the two basic vents, self only."
+    "niche": "Kestrel's basic self vent, the bigger number of the two basic vents, self only.",
+    "refit": "Retired by the refit pass (landed 10 November): no pure recovery entry stays on the die. Kept as a draft, undealt."
    },
    "face": {
     "kind": "vent",
@@ -888,8 +902,8 @@
    "tags": []
   },
   {
-   "id": "halo_shield",
-   "name": "Halo Shield",
+   "id": "halo_projector",
+   "name": "Halo Projector",
    "maker": "aphelion",
    "tier": 0,
    "shape": "dish",
@@ -897,12 +911,14 @@
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "A ring of hard light. Nothing clever about it, which Aphelion resents.",
-    "niche": "Aphelion's generic shield."
+    "fantasy": "A ring of hard light thrown round a machine for the one blow that matters. Nothing clever about it, which Aphelion resents.",
+    "niche": "The Barrier basic, Aphelion's one basic: the next blow a foe lands on the machine deals no damage, until the round's end; on itself or an ally. It was the Halo Shield, a shield of 6, until shields left the die (the refit pass, landed 10 November)."
    },
    "face": {
-    "kind": "shield",
-    "power": 6
+    "kind": "buff",
+    "status": "barrier",
+    "stacks": 1,
+    "rounds": 1
    },
    "passive": null,
    "tags": []
@@ -933,13 +949,15 @@
    "name": "Radiator Sail",
    "maker": "aphelion",
    "tier": 1,
+   "status": "planned",
    "shape": "none",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
     "fantasy": "A deep-space radiator, unfolded. Heat goes where it always went: out.",
-    "niche": "Aphelion's ally vent at tier one."
+    "niche": "Aphelion's ally vent at tier one.",
+    "refit": "Retired by the refit pass (landed 10 November): cooling an ally is the Puffin's by Ryan's direction. Kept as a draft, undealt."
    },
    "face": {
     "kind": "vent",
@@ -1038,13 +1056,15 @@
    "name": "Entropy Condenser",
    "maker": "arsenal",
    "tier": 2,
+   "status": "planned",
    "shape": "none",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
     "fantasy": "Heat condensed and thrown away. Nobody outside the Arsenal knows where.",
-    "niche": "The Arsenal's vent: the biggest number, paid in hull, so on the Nemesis every spend banks a rage."
+    "niche": "The Arsenal's vent: the biggest number, paid in hull, so on the Nemesis every spend banks a rage.",
+    "refit": "Back in design with the Arsenal's sessions since the refit pass landed (10 November), undealt (Claude's lean: its heat thrown at a foe as a blow, paid in hull: a weapon)."
    },
    "face": {
     "kind": "vent",
@@ -1160,13 +1180,15 @@
    "name": "Phased Sublimator",
    "maker": "aphelion",
    "tier": 1,
+   "status": "planned",
    "shape": "none",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
     "fantasy": "Whatever the rift left on the metal goes straight from solid to gone, with the heat.",
-    "niche": "Aphelion's cleanse vent at tier one, where the Corona Shield is the tier-two cleanse shield."
+    "niche": "Aphelion's cleanse vent at tier one, where the Corona Shield is the tier-two cleanse shield.",
+    "refit": "Undealt since the refit pass landed (10 November), until the component pass makes it what the audit says: a Cleanse on itself or an ally, equipment (the engine's Cleanse rides only a shield or a vent today)."
    },
    "face": {
     "kind": "vent",
@@ -1209,14 +1231,14 @@
    "id": "shoring_jack",
    "name": "Shoring Jack",
    "maker": "minerva",
-   "tier": 1,
+   "tier": 0,
    "shape": "none",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
     "fantasy": "A hydraulic pit prop jammed under a machine's plating. It holds the roof up in the mine; it holds the armour on out here.",
-    "niche": "Armoured for the round on itself or an ally: the answer to volume (swarms, multi-strikes, a storm of small blows), nothing against a breach."
+    "niche": "Armoured for the round on itself or an ally: the answer to volume (swarms, multi-strikes, a storm of small blows), nothing against a breach. The Armoured basic at tier zero since the refit pass landed (10 November), in the Canopy's place."
    },
    "face": {
     "kind": "buff",
@@ -1232,13 +1254,15 @@
    "name": "Canopy",
    "maker": "minerva",
    "tier": 0,
+   "status": "planned",
    "shape": "none",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
     "fantasy": "The falling-object guard over a mining machine's cab, swung down to cover the frame: what keeps a cave-in off the pilot keeps a blow off the hull.",
-    "niche": "Minerva's basic self shield, the bigger number of the two basic shields, self only."
+    "niche": "Minerva's basic self shield, the bigger number of the two basic shields, self only.",
+    "refit": "Retired by the refit pass (landed 10 November): shields left the die and the Shoring Jack took its place among the basics. Kept as a draft, undealt, until the component pass removes it (Ryan: 'Canopy was always a little lame')."
    },
    "face": {
     "kind": "shield",
@@ -1281,13 +1305,15 @@
    "name": "Oblation Mantle",
    "maker": "arsenal",
    "tier": 1,
+   "status": "planned",
    "shape": "dish",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
     "fantasy": "A ward projected from the machine's own reactor, paid for out of its frame. The manual calls it devotion.",
-    "niche": "The biggest shield in the pool, paid in the spender's hull: raised on an ally, the Arsenal machine bleeds to cover a friend."
+    "niche": "The biggest shield in the pool, paid in the spender's hull: raised on an ally, the Arsenal machine bleeds to cover a friend.",
+    "refit": "Back in design with the Arsenal's sessions since the refit pass landed (10 November), undealt: what its hull buys when it is no shield (Claude's lean: a Barrier on an ally that holds until it is struck)."
    },
    "face": {
     "kind": "shield",
@@ -1351,13 +1377,15 @@
    "name": "Wake Diffuser",
    "maker": "kestrel",
    "tier": 1,
+   "status": "planned",
    "shape": "none",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
     "fantasy": "A diffuser on the exhaust that spreads the wake thin. It runs cooler, and somehow faster.",
-    "niche": "A combined entry: a vent that also shields, so a support entry is never a dead roll and costs its turn like any other."
+    "niche": "A combined entry: a vent that also shields, so a support entry is never a dead roll and costs its turn like any other.",
+    "refit": "Back in design since the refit pass landed (10 November), undealt: two recoveries on one piece; its own line points at heat turned into tempo, a payoff vent as equipment."
    },
    "face": {
     "kind": "vent",

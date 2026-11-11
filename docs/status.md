@@ -27,11 +27,17 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1094 tests, 325,124 checks, green (10 November, main with the boss's hex, the third map list, the Text tab, the side session's work, the shapes reworked on Ryan's play, the second map list, the
+- Tests: 1115 tests, 362,618 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
+  with the formation and refit session's branch whole and the music session's landing; Godot
+  4.8-beta2). Before it, 1094 tests, 325,124 checks, green on main (10 November, with the boss's hex, the third map list, the Text tab, the side session's work, the shapes reworked on Ryan's play, the second map list, the
   map session's shapes laid to the rift's row, the passing and the catch at one, and the map
-  playtest list; one
+  playtest list), and 1111 tests, 362,582 checks, green on `ccr-722ca9f0-yj8na3` (11 November, that
+  main with the refit pass's first build, the wall strike by the rating, the trial's regen row,
+  every machine one more move, the field's dials, the goblin's line on its straight knife and wall,
+  the model as content, the formation pass and the elites' and bosses' guess; the
+  map suite now paints fourteen and sixteen deep too, which is most of the checks' rise); one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
-  either map view on 6 November); about four minutes in a cloud session, twenty on a slow one;
+  either map view on 6 November; about four minutes in a cloud session, twenty on a slow one;
   words after `--` run only the files whose names hold one (`-- loot rig`). A cloud
   container whose import predates a branch's new `class_name` fails the screen and rig suites
   with a parse error ("MuzzleFlare" not declared): run `--import` again first.
@@ -119,10 +125,17 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4` (a cloud session may not delete
 one). Each merge commit says how its conflicts were settled.
 
-Still working (11 November; every other branch on GitHub is merged): `ccr-722ca9f0-yj8na3`,
-the formation and refit session, whose own status says where it stands (it meets the side
-session's edits in `tests/run_tests.gd`, `sim/skirmish.gd` and these records when it takes main).
-Landed 11 November: `ccr-7effd31a-u5z4gw`, the music session (Hold The Line's, Night Shift's and
+Still working (11 November): `ccr-722ca9f0-yj8na3`, the formation and refit session; everything
+it had committed (to `4c8dbf1`) is on main with `ccr-4d58b054-3lyj0a`, below, and it takes main
+when it next commits (its own records say where it stands: the refit brief, the to-do, How things
+stand). Landed 11 November: `ccr-4d58b054-3lyj0a`, the chassis inventory and the locked pieces'
+footing of 10 November and Ryan's round on the busted machines of 11 November (the Polar Bear
+dealt again, the Buzzard's regen, the Nemesis's rage bar; How things stand), carrying
+`ccr-722ca9f0-yj8na3` whole to `4c8dbf1`, took main (the music session's landing: the bible's
+version, v0.521 above both, and this file the conflicts, both sides kept) and main took it as a
+fast-forward on Ryan's word ("Merge this all to main. I'll move it from there"); it is merged
+and to delete with the rest. The formation and refit session's merges of main before it are in
+its branch's commits. Landed 11 November: `ccr-7effd31a-u5z4gw`, the music session (Hold The Line's, Night Shift's and
 The Far Bank's pairs passed and built into art/audio, How things stand), took main in a merge (the bible, this
 file and the to-do the conflicts: the bible three-way on the v0.469 both files carried, main's
 v0.506 kept whole with the session's track rows over it as v0.507; this file and the to-do on
@@ -163,32 +176,79 @@ rerolls row is the long wall's two with the audit's kept rolls.
 
 Each resumes from its brief; `docs/briefs/README.md`'s table says what each waits on.
 
+- The inventory of 9 November (every chassis, built or briefed, with its state): 24 built, 23 in
+  briefs, three slots open. Of the built, four went back to design with the refit pass and three
+  are there still (the Whip Scorpion whole, the Swallowtail, the Puffin; a brief each), three are
+  unfinished by Ryan's own notes (the Needletail, the Giant Petrel, the Musk Ox) and the rest
+  stand. The to-do's roster is grouped by what each waits on, in the order he took (Next, in
+  order, item 1).
+- Ryan's round on the busted machines, 11 November (`ccr-4d58b054-3lyj0a`): the Polar Bear dealt again,
+  equipment it spends on itself sealing it and a weapon it fires opening it, its lure neutral
+  (his words; the armour kept for his play, a regen seal his first change), the brief retired;
+  the Buzzard's Thermal Recoupler made shield regen, read where every machine's regen is (his
+  word, on its base regen of one). His directions are at each brief's head: the Whip Scorpion's
+  role first, from a role map of the roster; the Swallowtail punted until its niche is carved;
+  the Puffin a heat mover, tier two his lean; and two reworks with briefs of their own, still
+  dealt: the Storm Petrel (shield as it gains heat, after the heat pass) and the Nemesis (a rage
+  bar that breaches, a tank buster). The Ammit's stock wants a Ward piece (the to-do). The holes
+  raised on each are in its brief with his answers of the same day (the Puffin's dump allies
+  only; the Petrel's hook from any source, its zap a piece that spends shield into a blow; the
+  Nemesis's blow on shield and hull two, its rage spent automatically, a Barrier left whole his
+  lean), and the Buzzard is the one to change if it reads too close to the Petrel (the bible's
+  Buzzard row). The Nemesis's rework is built on his answers (the same day): its Crucible
+  Capacitor banks rage from a hit on its shield (1), hull damage (2, hull first) and every blow
+  of its own weapons a foe's armour or Barrier takes whole (2 a blow, his "per blow"), up to 10,
+  and its Knuckles of Fury go out charged on five rage, unasked, and breach (a charged form may
+  now draw on another store than the Muster: `charged.store` and `price`); the roll again is
+  gone from its die, one direction of its upgrades; its rage reads as a meter with a notch at
+  five (`RIFTGATE_RAGE_DEBUG=1` fills it). 1115 tests green.
+- The locked pieces' footing, decided 10 November (the bible's locked row, section 7, and tiers
+  row, section 10; `docs/locked_pieces_proposal.md` holds what follows and the order; nothing
+  built): a locked piece earns its lock as glue for its chassis's identity or as an exclusive,
+  its number even with the kit beside it, a tier-N piece at its machine's level N. A machine
+  holds a level, bought in the hangar, cheap and gated by the Convergence, that lifts its stats
+  and its locked pieces together, with a branch that tweaks a locked piece, never a stat and
+  not the passive (its number may rise with the plain lift); a higher chassis arrives at its level, a wreck keeps it. One ladder of three:
+  tier zero is tier one's power, a basic a plain tier-one piece owned from the start, a machine
+  stocking up to its own tier at one and two; the two meet at the basics' numbers, tier one's
+  coming down (his lean, so the refit's reads stand). Six pieces that are neither glue nor an exclusive yet (the
+  Lance, the Flechette Pod, the Solar Flare Array, the Flakshot Repeater, the Plow, the Harpoon)
+  get a tweak before any cut: Claude's first round and his first answers are the proposal's
+  section 4; open with him there, the Pod's lock and the Dingo's identity. A branch's shape is settled
+  (two directions two steps deep, the second pick the deeper step or the one skipped). Every rework in design sorts its pieces on this footing.
 - Kestrel: ten machines, eight decided, in content and fielded (the bible's Kestrel row; the hub
-  `docs/briefs/kestrel_line.md`). The Magpie (a working name, a support engine) and the Snowy Owl
-  (a stealth unit, leaning to Cryo: Ryan, 5 November) are Ryan's next session, their briefs'
-  first rounds unanswered. The
+  `docs/briefs/kestrel_line.md`); the Puffin back in design (`kestrel_puffin.md`). The Magpie (a
+  working name, a support engine) and the Snowy Owl (a stealth unit, leaning to Cryo: Ryan,
+  5 November) are Ryan's next session, their briefs' first rounds unanswered. The
   Needletail's two modes and the Giant Petrel's catamaran hull are his to pick (the to-do).
-- Wainwright & Sutler: ten decided, 3-5-2, nine built (the bible's roster row). The Musk Ox, the
-  Whip Scorpion (a rework coming), the Swallowtail and the gunship (very rough; Claude's first
-  round in `docs/briefs/ws_gunship.md`) each need a design session for kit and visual design,
-  which Ryan starts himself (4 November; the Needletail likewise).
+- Wainwright & Sutler: ten decided, 3-5-2, nine built (the bible's roster row). The Whip Scorpion
+  and the Swallowtail are back in design (`ws_whip_scorpion.md`, `ws_swallowtail.md`); they, the
+  Musk Ox and the gunship (very rough; Claude's first round in `docs/briefs/ws_gunship.md`) each
+  need a design session for kit and visual design, which Ryan starts himself (4 November; the
+  Needletail likewise).
 - Minerva: the Honey Badger's rework built 31 October (the Ore Hopper and the Reinforced Skeleton
   module); the echidna left open (Ryan's new shape of 4 November in its brief), the siege battery
   parked on Ryan's charge brief, the battlecruiser never with the Carrier's session. Ryan's ideas
   of 4 November wait on his marks, each in its brief: the lure tank (his tier-one tank, which the
-  Polar Bear's move to tier two lands with), the Cryo party defence, the immune one, the mole
-  (its hook later), and the shield bash (the shield-basher cut as a unit, a tier-three piece).
+  Polar Bear's move to tier two lands with), the immune one, the mole (its hook later), and the
+  shield bash (the shield-basher cut as a unit, a tier-three piece). The Cryo party defence took
+  his new direction of 5 November (no free Cryo, a locked piece that detonates it, the Arsenal's
+  frost figure merged in), a first round on it owed. The Polar Bear is dealt again with its new
+  seal trigger (11 November), its play his.
 - Aphelion: the line frame and the Baboon first (the pair that keeps its tier-one deal varied),
   then the jellyfish; the Carrier on its own. Ryan's ideas of 4 November wait on his marks, each
   in its brief: Static, the Barrier and Ward support (the defensive tier one), the Macross
-  flagship, the time-shifter kept unrefined; the status detonator folded into the jellyfish,
-  unrefined; one slot open.
-- The Arsenal: Misharu, the Onryō, Mastema and Minos, Claude's first round and review in their
-  briefs, unanswered: Misharu's two calls first (Penance's shape, how often it may fire), then
-  the Onryō's kind and trigger. On the ten-a-maker plan the frost and thunder figures (Ryan's
-  homages of 4 November) and the Zoids walker move in, each in its brief; its tenth waits until
-  its unrefined ideas settle (Ryan).
-- The roster's tasks, maker by maker, are the to-do's "The roster: ten a maker".
+  flagship, the time-shifter kept unrefined; the jellyfish took his new direction of 5 November
+  (the status payoff carry, no weapons), a first round on it owed; one slot open, the Zoids
+  walker's if it comes back (his note of 6 November).
+- The Arsenal: eight named and two slots open since Ryan cut the frost figure (5 November: "Cut.
+  Moved onto Minerva"). His notes of 6 November, at each brief's head, replace the rounds that
+  stood unanswered, a first round on each owed: Misharu (delayed judgement, in Penance's place),
+  the Onryō (its own hull as a resource, a ramping carry), the thunder figure (the soft Archon
+  homage), the Zoids walker (its maker open again, Aphelion's tenth or the Arsenal's) and Minos
+  ("It needs something else"). Mastema's first round is unanswered; its tenth waits until its
+  unrefined ideas settle (Ryan).
+- The roster's tasks, group by group, are the to-do's "The roster: ten a maker".
 
 ## How things stand
 
@@ -255,6 +315,323 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   count cells too with its sixth marked (a heavier border, a diamond). Poses new: `hunter`, `elite`, `stores`. A route drawn by hand from a machine that
   already has an order is still refused (the tap gives it again). All first cuts (the to-do's
   judge line).
+- **The refit pass's direction** (9 November, from the chat after his play and the formation
+  pass's reads; `docs/briefs/refit_pass.md`): the block-everything loop is structural (hull
+  permanent across eight to ten fights, an injury destroying a component for good, a rolled
+  defence whose failure is permanent against a rolled offence whose failure delays, and packs of
+  eight so a kill buys little safety); Ryan: "The balance between WANTING a tank and NEEDING a
+  tank is pushed all the way to NEED"; "I think we're so worried about preventing stall that
+  we're actually taking away tools that reward aggression." His calls: component destruction off
+  completely to test ("placed to offer a balancing lever between tanks and dps, an issue that
+  clearly no longer exists"; the injury's in-fight break off with it, "for now"); two rerolls stay (three "effective, but
+  boring", two "less boring, but more unfair", doing its job); the resource model his second
+  shape, "innate shield and shield regen, but no shield faces, only other defensive tools like
+  armoured, barrier and ward", and heat the same way, no vent faces, cooling passive, the hold the
+  decision: "Less component types - weapons and equipment. It's simple, elegant, streamlined …
+  if you greed on heat, well you can always pass, which literally how a Mech game works - run
+  hot, and you're forced to wait and think about your decisions while you cool off"; shield and
+  vent faces "perfect commander actions" for the commander layer if it comes; the regen a flat
+  number a chassis, never a full reset; the Puffin back to the drawing board (its brief,
+  `docs/briefs/kestrel_puffin.md`: his instinct the one unit able to cool its allies); a hunting
+  line never leads a pusher, members mixing. The cover (an unrolled interpose for the tank)
+  withdrawn: the redirection row's reason stands. His leans accepted on the rest of the open list
+  ("Your leans are good, but might as well rename the adjusted components when they need to to
+  make sense"): the basics at heat one, the cooling by chassis, the shield pieces' fates, the
+  hull budget by kind. The audit he asked for, on main's content as merged (the brief's section
+  6; "send any machine or component or module that clearly doesn't work in the new system … back
+  to design"): four machines back to design, each a brief (the Whip Scorpion whole, the Polar
+  Bear's seal, the Puffin, the Swallowtail), seven touched without a redesign, thirteen untouched
+  in kind; the eight shields and seven vents each with where it goes (the Halo the Barrier basic
+  as the Halo Projector, the Shoring Jack down to tier zero in the Canopy's place, since the
+  Barrier, Armoured and Ward pieces exist at tier one in no stock; the plain vents retired; the
+  Arsenal's two paid in hull and the Wake Diffuser back to design); two modules whose rules stop
+  firing; a stock re-deal of 37 slots; the foes it touches (the Nob's Enrage, breach against the
+  regen, a common Barrier and his row of 17 October). And his point on the makeups, a direction
+  (the brief's section 4, the bible's Foe roles row): a unit is made for a pusher's, a flanker's
+  or a hunter's fight and tuned for it, a hunter its line and what keeps up with it, a flanker a
+  duel and no small pusher, so the proposal's patrols rated one are to be rewritten and the
+  Meadow and the Waste want a flanker line. The bible's Foe roles row carries it.
+- **The refit pass's first build and reads** (9 November, on his "Your leans are good"; the
+  brief's section 5; nothing in `content/` moved): the injury rule is off in the game
+  (`Skirmish.injuries`; `--injury on` reads it back; the tests that read an injury turn it on);
+  the model is a what-if the runners lay over the loaded content (`sim/refit.gd`, `--refit`: the
+  die with no shield or vent, the regen, the cooling, the basics' heat, the Barrier basic's rule
+  and deal) and a trial in the game (`RIFTGATE_REFIT`; a debug build's SETTINGS → REFIT TRIAL:
+  MODEL, EVERY, RESTS, NONE, the four deals of the Barrier basic); the fight bot has an
+  aggressor's habit (`--guard`: a block at a share of its worth) to read the blocks against. The
+  reads (`docs/measurements.md`, 9 November, each a direction): over a battle the model takes
+  the bot about twice as far (team wipes 89% to 64%, menace killed 45 to about 90), the regen
+  the larger half; the regen is the buffer of the outnumbered and the lights against plain
+  blows and never meets a breach, which is where every hull-costing cell sits; the Barrier
+  matters for a full squad against a breaching massive and nowhere else, where a block trades
+  rounds for hull and a round costs nothing, so blocking stays the best line until a threat
+  rises (the model's ninth point, now more than a guard); fights past sixty rounds are back (5
+  to 19 in some 900); heat is unchanged by losing the vents and still no pace; tier two reads
+  the same by its own team. The what-if's first fill dealt a Barrier to nearly every die where
+  the audit deals one only where a Halo stood: `vents=guns` is the audit's own deal and the
+  trial's MODEL, and it lands with the rest over a battle and reads as well for the light trio
+  in shorter fights. The proposal's fifteen tier-one formations cost the default trio 8% or less
+  at three but for the three that breach (the two with a massive 39%, the knights' vigil 15%),
+  which the audit's deal leaves where they are: the massives' numbers are the refit's first
+  band. His to settle next, the brief's section 7: how common the Barrier is, what prices a
+  round, the regen's size, breach under a regen, heat's prices. The scratch worktree is gone.
+  His words of 10 November on that list: the wall strike follows the threat rating ("otherwise a
+  single giant dude that composes a threat 3 on his own could be ignored. It also makes elites
+  make more sense too"), built the same day (`Battlefield.strike_of`: ten a pip, a patrol 10, a
+  formation 30, an elite 40; a pack a fight has worn by the share of its heads still standing,
+  on his "Your lean for the pack survival is fine"; the pack's panel and the orders board say
+  what the gate takes; the rules, the bible's wall row; the wall takes about a tenth more a
+  battle for it, `docs/measurements.md`, and `docs/campaign_run.md` the refit session's run of 10
+  November, the injury rule off and the strike by rating); breach
+  parked ("Let's ignore breach for now, it's useless to evaluate at this junction"); a team Ward
+  or a team Barrier "probably ok" where the two cannot be cast back to back, the Swallowtail a
+  possible home, undecided (the Barrier and Ward row, its brief). What the trial plays without
+  is the brief's section 5 (the content, the re-deal, the numbers, the foes, the reworks).
+  His first read of the trial, 10 November (MODEL at half the gauge): "the half recovery I have
+  a nigh unkillable team, even just stingray + prairie dog against 4 goblins/2 mandragora ...
+  Just the MODEL seemed like enough mitigation, but the shield really made that hard to judge";
+  "Heat generation is too low, but I think we knew that"; "Barrier probably shouldn't be
+  stackable. The stingray stacks it due to its passive." Built on it: SETTINGS → REFIT REGEN
+  beside the trial (0, 1, 2, 3, HALF, two the placeholder: a probe of his two fights reads the
+  pair's hull lost at 33% with no regen, 13% at two, 5% at half); the Barrier one stack whoever
+  grants it (the Exothermic Suite had counted it to two, a label: it took one blow all the
+  same); and `hotter=N` for the runners, whose probe says generation is no dial alone (every
+  weapon two hotter with the cooling at one stalls the long fights), so no heat row went on
+  the phone and the heat prices are the price pass's, the cooling and the gauge with them.
+- **Ryan's second read of the trial, and what was built on it** (10 November, the MODEL deal at
+  a regen of two; the brief's section 2 has his words on the model, the bible's move, grid, three
+  clocks and Foe roles rows the rest). The model on today's content: "Even with regen 2, I don't
+  find myself feeling like I need to use defensive tools. Kill-to-prevent-damage seems to be
+  back on the table, which is good, but its now the best choice every time. I feel like even
+  with zero regen I would be fine", the fodder's damage maybe too low and the player's a bit
+  high, "especially on the locked pieces", which is the Chassis Inventory session's. Built:
+  **every machine one more move** ("Let's set move 3 as the slowest move, for now, and give all
+  machines 1 more move across the board. The enemies feel like they move at the right pace":
+  3 to 6 hexes, the validator's cap; the foes' moves untouched, so a hunter gains a hex less a
+  turn on a machine that runs). On trial, each a dial on a debug build's new SETTINGS → TRIALS
+  page, where the refit's two rows moved too (the settings page had reached the bottom of the
+  phone's glass), nothing moved in the game until he picks: **FIELD DEPTH** (12, 14, 16) and
+  **OPENING** (+0, +1, +2 moves farther from the wall), for "the map is a bit too shallow ... a
+  little deeper, and the seam starts a little farther out"; and **FODDER** (FULL, 3/4, HALF: what
+  a kill fills of the Rupture meter when its pack came as no elite), for "If fracture rewards
+  were a little lower for fodder, then it becomes a bit more of a quantity game for non-elites
+  and I'll feel more like sending my flankers out". On the desk `RIFTGATE_FIELD_DEPTH`,
+  `RIFTGATE_OPENING` and `RIFTGATE_FODDER`. The width stays ("the right amount of 'epic'",
+  perhaps "a tier 2 or 3 width"). What the probes say (`docs/measurements.md`, 10 November):
+  depth alone buys no planning turn, since the opening is measured from the wall, so the
+  opening's distance is the dial for the first turns and depth the room for it, while depth by
+  itself puts the seam's first tears seven or eight rows from the wall where they are five and
+  lengthens every later walk from the rift, the time to regroup for an elite; fourteen with the
+  opening a move out is the pair to try first. At tier one the middle formation alone earns the
+  first Fracture, which calls the elite at once, and about four fights earn the Rupture, every
+  one to be had in the middle, so his "throw all machines down the middle" is the meter's
+  arithmetic; a flank patrol already pays more for the machine sent, and what keeps the flankers
+  home is that the middle is enough.
+- **The goblin, and the recolours' archetype** (10 November, later). His lesson from the play:
+  "A straight attack, and a block of some kind, so they're a true frontliner and not a lame
+  not-really-damage-threat. Probably a good lesson there"; and his call on the form, hearing
+  that a block that is an action softens it: "I think the earlier goblin can have shield wall
+  as well." Built: the tier-one Goblin stabs straight for 4 and raises the Guard's Shield Wall
+  one action in three, its codex and its Stab's line redrafted as little as the rule needs (two
+  drafts on the Text tab, none of them signed; a new slot for its Shield Wall's line); the 4 is
+  a placeholder (with the wall the warband costs two lights a little less than the old knife
+  did and the treant's grove a little more, and nothing reaches three machines either way);
+  its menace follows the knife, 5 where it was 3, so a goblin's kill is worth more on the
+  Rupture meter and in salvage and the Meadow's thresholds rise with it. The
+  first run of the goblin's probe was wrong and what it told him is corrected (it kept the
+  loaded content between variants, so a variant's wall stacked onto the next: the rows after
+  the first walled one, the grove's and the always-on armour's; `docs/measurements.md` says
+  which and holds the rerun): armour that is always there does not "hold for the same hull",
+  it walls the lights, so his pick is the better form and Claude's lean of that hour is
+  withdrawn. His question of the same message: "If the captain is the back rank at tier 3, what
+  stands in the front rank? I didn't think the recolours changed like, the archetype of the
+  foes?" Answered from content (the brief's section 4 has every line): tier two's unit stands
+  there, Goblin Guards at the Meadow's tier three and Wights at the Marsh's; fifteen of
+  seventeen lines keep their rank and role up the ladder, and the two that do not are the
+  Goblin Captain and the Lich, back-rank commanders at tier three, drafts of the ladder's brief
+  of 28 October that he never marked. Open, his (the brief's section 7): each steps into its
+  line's front with its Warcry or Reraise as the third move, or stands as a unit of its own
+  while its line gets a tier-three rung; with it the Guard on the new knife and the Revenant's
+  claw (both since answered and built: this bullet's end and the formation pass's, below). His
+  calls, the same evening: "Put the captain in front, yeah", built (the Goblin
+  Captain the tier-three goblin in the front rank, a straight knife of 6, the Shield Wall and
+  his Warcry the third move; the Goblin Guard on the same knife at 5; each a placeholder a step
+  over the rung under it; the four grids that field the Captain moved him into a front cell,
+  the captain's warband two Captains and two Guards before two Alraunes; the shown drafts
+  redrafted as little as the rule needs, none signed); the Lich "its own thing ... its own
+  backliner" and "The tier 3 revenant shouldnt be a lich, it should be, well, a tier 3
+  revenant", built with the formation pass (below); and of a
+  block that walls the lights, "don't worry about walling the lights too much because the gobs
+  are part of a threat-3 formation ... there should be at least one heavier unit in there to
+  help out", so a formation is read with a heavier machine among its three and the pair of
+  lights is no yardstick for a pusher (the bible's Foe roles row).
+- **The refit pass's model is content** (10 November, on his "The re-deal with regen and heat,
+  despite my tests showing it easy, seems like the correct way to go ... start with the minimal
+  swaps (The "Model" setting) and we'll go up from there"; the brief's section 5 has it whole).
+  The trial's MODEL deal is written into `content/`: on every stock die a shield's slot holds a
+  defensive basic (the Halo Projector, a Barrier, where a shield for anyone stood; the Shoring
+  Jack, Armoured 2, where one for itself did) and a vent's a Twin Autoguns, a placeholder; the
+  basics are six, the four guns each making heat; every chassis regains its own `shield_regen`,
+  one to three, the faster on the smaller gauge ("a smaller shield that regens fast, a fatter
+  shield that regens slow, some variation of the middle"; the Nemesis and the Buzzard one by
+  role); the Stingray cools one; the ten slottable shields and vents are planned drafts nothing
+  deals; the machines back in design are undealt by `"status": "planned"` on their own
+  entries, their kits still built (three since the Polar Bear came back on 11 November). Saves from before are refused (the three save versions).
+  The trial's rows are gone but one: SETTINGS → TRIALS → SHIELD REGEN (BUILT, 0, 1, 2, 3), a
+  flat regen in place of each chassis's own; `--refit` and `RIFTGATE_REFIT` keep the what-ifs
+  that still mean something (regen, cooling, hotter, a price on the Barrier basic). The
+  campaign runner reads it as the what-if did (`docs/measurements.md`: battles won 10% where
+  they were 3%, the Rupture reached twice as often, four battles in five still lost). Not
+  landed, each a later step: the re-deal proper (what each die wants in a vent's old slot), the
+  component pass (three pieces to be made equipment, three back in design, the Blast Door, two
+  modules), the heat prices, the four reworks.
+- **The formation pass landed** (10 November; Ryan: "We've gotten off on a tangent from the
+  main issue, which is the actual formation pass. What do we need to actually execute on it?",
+  then, to the list: "Revenant 3 name is whatever you think. Make revenant stab flat, or flat
+  with a Marsh twist, if a simple one exists. Duelists are as you see fit, might as well jam
+  them in here as well as part of the pass"). The refit brief's section 9 has it in its order;
+  the pass is structure and moves no standing foe's number but the two claws. Built: the
+  Marsh's line (the Revenant's and the Wight's claws flat, 3 and 4; the Draugr the tier-three
+  revenant, the name a draft for his name pass; the Lich its own backliner behind it; no Marsh
+  twist on the claw, since every simple one is another unit's already); a flanker line a
+  domain, each a duel for one machine from his bench of 3 November and from moves the engine
+  ran already (the Whisker Cat, the Roc, the Dullahan, Cerberus, each with two recolours,
+  placeholder sprites and drafted, unsigned text); a role on every rank-and-file foe (`role`:
+  a pusher's unless it says a hunter's or a flanker's, internal) and the validator holding a
+  formation to pushers, a patrol that pushes to flankers and a hunting pack to a hunter's lead
+  and what keeps its pace, a crossing giving its reason; the proposal's grids re-cut and landed
+  in `content/factions.json` in place of the old patrols and formations (the pruned
+  formations, the antlions out of the Waste's pushers, the fronts by tier, one hunting pack a
+  domain and tier where the rank and file hunt, a lone duelist the patrol rated one and a pair
+  the heavy patrol rated two on the ramp's later steps), a question on every one and required;
+  the opening placing its patrols from those that push, so no hunter stands at turn one. The
+  elites and the escorts are as they were. The bible's Foe roles row is Decided and its
+  hunters row settled (v0.511). The reads (`docs/measurements.md`, 10 November): a lone
+  duelist is a fight every machine of its tier wins, dear only where its question bites (the
+  Roc's stoop a quarter of the Skua's hull, Cerberus a third of a thin gauge's), and a pair is
+  a wall for the slow lights alone; the landed set by the curve read and the campaign runner
+  are there too. Two things found building it, both fixed with what the engine had: the
+  Dullahan could ready its rise again after rising (the action's `once`), and three scorching
+  bites walled the thin shields (the bites are plain, the scorch on the maul; a machine's
+  armour does nothing while its shield stands). `tools/formation_proposal.py` is retired
+  (`git show 3e44fe1:tools/formation_proposal.py`); the proposal stays for the bosses' stat
+  blocks (its section 6). Not in it: the standing foes' numbers, the bosses' blocks, the
+  rising threat's rule ("leave out rising threat for now").
+- **The elites and the bosses guessed for the model** (10 November; Ryan: "I'd like you to
+  guesstimate some elite and boss tweaks as well, but leave out rising threat for now").
+  Before, every elite and boss read free for a gathered squad on the model (a hundredth of a
+  four's hull): a blow under a fresh gauge costs nothing and a squad brings a gauge a machine.
+  The guess, placeholders all (`docs/measurements.md` has the rule, every number and every
+  read): a boss half again its hit points (72 at tier one) and about two and a half times its
+  blow (10 to 20), which gives the default four back the kill time the test asks, four to six
+  rounds; an elite two and a half times its blow (7 to 18), twice the hit points where it is
+  light, so its kit plays against a squad; a cap from the scale row's own clause, no action
+  taking the lightest tier-one machine from full; the tier's hit-point step halved (×1.1 and
+  ×1.25), since the old step walled the stock fours of tiers two and three; an elite's menace
+  no longer doubled, so its kill fills the Rupture meter about as it did where doubled on the
+  new numbers it would have filled most of a tier-one meter (the rules, the bible's meter row
+  and the glossary's Menace line follow, the last a draft redrafted as little as the rule
+  needs). The Old Man of the Desert and the Skeleton King are unchanged, the two that cost a
+  squad hull already. After: an elite is a wall for the machine it catches, a third of two
+  machines' hull and a twentieth of four's; a boss costs four a tenth at tier one and a third
+  at tiers two and three, and three machines can lose. Named, his: the guess does not reach
+  the hull budget (an elite a quarter of a four's hull, the boss what is left), and what would
+  close it pulls against the kill-time test, since under four pooled gauges a short fight
+  costs little whatever the blow (the brief's section 7, item 10); the Barrier is the swing
+  (one in a tier-two four takes a boss from 36% of its hull to 21%); some kits read soft
+  whatever their numbers (the King Gel, the Mantis Ant, the Vampire Lord alone, the shaman's
+  warband) and the adds in the kits (the Ape's gold, a rally, the Nob's rage) are small
+  beside the new blows; a final's hero rides the tier's step and is a little softer at tiers
+  two and three, its own numbers not guessed; a boss's kill banks more salvage. The campaign
+  runner's plain player, which never gathers, wins 8% of its battles where it won 19%: a
+  fight for four with one machine in it is won one time in four where it was one in two. The
+  bible's scale row holds it (v0.512, v0.513 since the branch took main's third map list).
+- **The fourth machine is the first battle's** (Ryan, 11 November, in the discussion that
+  followed: "the only reason to leave it up to the player was to put them fully in control.
+  But if the choice is in which city to defend in order to get a guaranteed choice from that
+  maker, then that works"). The bible's squad row is rewritten (a run starts with three and
+  its first battle brings the fourth, a choice from the host maker's catalogue; the fourth
+  bought when the player chose, 7 October, retired with the test it failed), the offers row,
+  the rules and `docs/economy_pass.md` follow; nothing is built. The read behind it
+  (`docs/measurements.md`, 11 November): one offer of tier-one kit moves a boss's cost by
+  nought to five points and a fourth machine cuts it by two thirds, so the choice was none
+  and "3.5 units" no state a squad is in; the offer's machine against better kit begins at
+  the fifth. Tier one is left with two bands, the first battle at three and the rest at four.
+  His lean for the first: "battle one should be relatively easy, even considering the party
+  of 3. It's more of an opportunity to gain resources, win, get your party in order, then the
+  real game starts from battle 2." Open, his (the brief's section 10; the bible's section
+  12): what easy is read as, whether it is short as well, and how it is made easy, since a
+  flat cut of the boss reaches the Meadow's first battle and not the Waste's or the Peak's.
+  The bible is v0.516.
+- **Tier one at three machines, and Ryan's calls of 11 November.** His words: "Badger probably
+  goes to Regen 1 with the amount of armour it's able to get"; "Draugr is fine as a name, as are
+  your other working names"; "Let's focus only on balancing tier 1 fights for now", since tier
+  three machines are to have higher stats and the lower tiers to be upgradeable; and his big
+  question, when the player gets a fourth machine, with a direction: the first battle tuned
+  around three units, the second Convergence around three and a half, the third onward around
+  four, since a boss's fight brings the whole team in and the fourth unit's power is a flank
+  covered. Built: the Honey Badger's regen is one (plate and regen answer the same small blows,
+  and armour does nothing while the shield stands; in a full trio nothing moves, short-handed
+  it is a few points dearer, alone it no longer wins a formation rated for three). Read, not
+  built (`docs/measurements.md`, 11 November; the refit brief's section 10): eight starting
+  trios and three fours, stock. A formation costs three machines 9% to 18% of their hull and
+  four 4% to 5%, an elite 8% to 20% and 4% to 5%, a boss 24% to 61% and 11% to 16%, and a trio
+  without the Badger loses a quarter to two fifths of its boss fights; at three quarters of its
+  hit points and blow a boss costs three what the whole boss costs four. What the records say
+  of the fourth machine: three at the start of four slots, the fourth an offer's after a won
+  battle or bought on the shelf, neither built in the campaign, while the Convergence rises
+  every turn, so a lost first battle meets a field tuned for more. The holes and Claude's
+  leans are the brief's, for his answers; nothing of the tuning is built. The regen was
+  assigned by the gauge's bands alone, which he asked and the brief now says. This session had
+  not read the locked pieces' session (`ccr-4d58b054-3lyj0a`, `docs/locked_pieces_proposal.md`,
+  on main since 11 November: a machine holds a level, bought, lifting its stats and locked pieces; tier one
+  comes down to the basics) when it guessed the elites and bosses: the tier-two and tier-three
+  reads of 10 November are stock machines that plan will not field, and are tuned no further.
+- **Ryan's play of Phase 2** (9 November, his read of the long wall as built, on the phone): hard
+  to judge; the packs as they were too hard, "but not for any particular one reason"; incoming
+  damage high, so the tank tanked every turn while the rest could not take foes down reliably
+  before a whiffed lure; Floraison impossible ("its HP was insurmountable", eating the tank and
+  whittling the dealers); the Stingray caught by hunters and fine, since the Photosphere Lance at
+  4 with Burn "takes down most foes", used as burst not as the hybrid meant; the Armadillo "a
+  beast of a tank and way too strong for tier 1", the one reason a boss was reached (his notes
+  became the Polar Bear's kit of the same day, below); never in control, every fight "how do I get out of this with all my machines
+  intact", which "should be reserved for Hunter, Elite and Boss packs, not pushers and flankers".
+  The locked pieces warp the die: he chased the Flak Repeater as his only area piece, the Lance
+  and the Skua's sweep every round, heat no deterrent. His rough conclusions, each a direction
+  for discussion first (the formation pass's chat): enemy HP down slightly and the synergy pieces
+  up rather than raw numbers, judged after he plays the new formations, so the refit waits on
+  them; the locked pieces on a new footing, a tier and upgrades his lean over utility-only; shield
+  regen inside a fight back (the slot is built, `shield_regen`, zero everywhere), since nothing
+  buffers a bad roll or an unlucky pick and the tank's pattern is "singular, inflexible,
+  mandatory". The bombs never hunt (his answer to the proposal's first question): a hunter's
+  threat is a sequence a lone support can play against, never a burst that decides the fight.
+- **The formation pass, proposed** (9 November, `ccr-722ca9f0-yj8na3`, Ryan: "I'll sort out the
+  questions in the formation pass"): `docs/formation_proposal.md`, every domain's patrols and
+  formations written anew as grids with a question each under `design` (an anchor and a swarm,
+  the grid carrying the reach question, eight the ceiling and the ramp's variant a step toward
+  it), the hunters as heavy patrols rated two and no formation hunting (the wolf, antlion and
+  bomb lines by their codex; the needlers and the Marsh's dead push), a true one for a lone light
+  machine under every patrol for the Badger, the two hunter questions of section 12 with a lean
+  each (the bombs his call; the opening placing its patrols from the pushers, one line), the
+  bosses as stat blocks by tier and ramp with today's multiplier as the first entries, the holes,
+  the bench and the order. The proposal was written to a scratch worktree as content, validated,
+  and read by the curve read with the default four, a light four (the Skua first, for the rating
+  of one) and a tier-two four (`--team`, new), its bands the tables' last columns and the gates
+  and the pruning read off them; `docs/measurements.md`, 9 November. Nothing in `content/` moved
+  with the proposal; its grids landed on 10 November, re-cut (the bullet above), and the tool
+  that held them as code is retired. What the reads said: at
+  tier one only the massive-anchored formations are a decision for three (the sandworm ambush,
+  the magma vent), every fodder formation reads free for three at eight foes and the eight-slot
+  variants move no band against the six (twelve prunings), so the fodder's lever is the refit's
+  numbers; two-anchor formations written after the first read are true threes at tier two (the
+  grove and bloom, the pit wall); every domain has true ones for the Skua alone (the Peak's the
+  new ember pair); the antlions, the pit pair, the queen's hunt and the grenade and balloon
+  flights read as twos, the wolf pack and the warg pack as ones (a two on them his word); the
+  light four walls on every massive and stalls against the grave field (the giants' line has no
+  escalation). His first answer, the same day: the bombs never hunt, so the Peak's hunters are its
+  elites and the wanderers; its first question is settled, and the rest went by his "Your leans
+  are good" and his calls of 10 November. Still the proposal's: the bosses' blocks, a session
+  of their own.
 - **The map playtest list of 10 November** (`ccr-c71bc17f-hclj2c`, on main the same day; five
   points from Ryan's phone, then his answers). A tear's ring stands on its hex: it was drawn in
   screen space at its map position, so it hung at one place on the glass while the map scrolled
@@ -689,10 +1066,19 @@ The tasks are the to-do's; this is the index of what waits.
 ## Next, in order
 
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
-to-do's Ryan list). Ahead of all of it: Ryan's play of the long wall with its view (built 6
-November; his phone read, the to-do), the harness's BATTLE and FIGHT tabs for it; then the long
-wall's open items (the bible's section 12: the shell, the ratings by who solos, the formations
-and the refit, in that order of his answers). Beside them, the rest of the skirmish code audit
+to-do's Ryan list). Ahead of all of it: **the refit pass** (`docs/briefs/refit_pass.md`, the direction
+Ryan set on 9 November after his play of Phase 2: shields and vents leave the die, a component a
+weapon or equipment, the shield innate and regenerating, cooling passive, the hold the heat
+decision, component destruction off to test, two rerolls kept; the formation pass folded into it,
+its proposal's grids re-cut under the new model and read by hull lost), in its brief's order: the
+what-if and its first reads are in (9 November), his two reads of the trial, the model as
+content, the formation pass and a guess at the elites' and bosses' numbers (10 November: the
+brief's sections 5, 8 and 9); tier one only for now (his word, 11 November), and next his
+answers on the first battle (the brief's section 10: the fourth machine's route is settled,
+the first battle's shape and the boss's numbers by ramp band wait on him), beside his play of what landed, with the field's
+dials (the to-do's Ryan list), and his answers to the brief's section 7, then the content still to come (the stock re-deal proper as a table in chat first,
+the component pass, the heat prices, the foes' numbers after his play, the bosses' stat
+blocks, what prices a round), the vocabulary, the rules and the rows. Then the long wall's other open item (the bible's section 12: the shell). Beside them, the rest of the skirmish code audit
 (`docs/skirmish_audit.md`; its questions answered and its bugs built 8 November; the Ammit's Tap
 is section 12's, its test the to-do's): its structural steps in order (step 3 built on
 `ccr-8df9952c-4cccdf`, the mine's half gone with the slot mines on 9 November; then the bot's
@@ -705,7 +1091,15 @@ with the ladder's, the compositions' and the elites' cells on the desk machine (
 engine line), since the matrix on file predates everything since 27 October.
 
 1. **The design sessions, from the briefs** (above): each decision a bible row, each brief
-   retired once its decisions are rows and content.
+   retired once its decisions are rows and content. The chassis in this order (Ryan, on the
+   inventory of 9 November: "Yes, go ahead"), the to-do's roster grouped to match: the locked
+   pieces' footing first, since every rework designs locked pieces (his direction of 10 November
+   is the bible's locked and tiers rows, `docs/locked_pieces_proposal.md` the detail, and a
+   tweak round on six pieces is with him); the four back in
+   design from the refit pass, the Polar Bear, the Whip Scorpion, the Swallowtail, then the
+   Puffin after the heat prices; the built but unfinished (the Needletail, the Giant Petrel, the
+   Musk Ox) and the gunship; the tier-one fronts (Minerva's lure tank, an Aphelion tier one);
+   Claude's first rounds on his directions of 5 and 6 November; the rest as its session comes.
 2. **The stock pass's tail**: Ryan's name pass; the Lammergeier's stock; the pricing pass's next
    reads (the bible's pricing row, section 11): the equipment ramp on the fresh start's tier-two
    and tier-three formations with tier-matched kits and the planner beside the greedy, the
@@ -739,14 +1133,13 @@ commands are in `README.md`.
   page's Version 502, published from main at `2d489f7` on Ryan's word, "republish the hangar
   page and the bible": main's file whole, since the live v0.496 matched `f048e67`'s byte for byte
   and so needed no merge; it carries the Lammergeier's rework, its row, the Gel's and the
-  reinforcement row's slot-mine lines and the tables). Main's file is v0.509 since The Far Bank's pair shipped and it joined the fights' pool (its track row and the boss themes' Open row), v0.507 since the music session landed (11 November: its track rows since v0.469, Hold The Line's and Night Shift's pairs passed and shipped, the fills' lean and The Far Bank's pick of the lift, merged three-way on the v0.469 both files carried), unpublished, its republish on Ryan's word ("publish the bible"); v0.506 since the boss's hex landed (its patrol retired, the vortex lower with the wall at the bottom), v0.505 since the third map list landed (the rift's five hexes on the field row, the undo and marks rows), v0.504 with the second map list's rows (the marks row
+  reinforcement row's slot-mine lines and the tables). Main's file is v0.522 since The Far Bank joined the fights' pool (its track row and the boss themes' Open row: the Marsh's theme it was, so no domain has one now), v0.521 since `ccr-4d58b054-3lyj0a` landed with the formation and refit session's branch whole (11 November: that session's rows, the locked, tiers and basic kit rows, and the Polar Bear, Buzzard and Nemesis rows, over the music session's), unpublished, its republish on Ryan's word; v0.508 since The Far Bank's pair shipped (its track row), v0.507 since the music session landed (11 November: its track rows since v0.469, Hold The Line's and Night Shift's pairs passed and shipped, the fills' lean and The Far Bank's pick of the lift, merged three-way on the v0.469 both files carried), unpublished, its republish on Ryan's word ("publish the bible"); v0.506 since the boss's hex landed (its patrol retired, the vortex lower with the wall at the bottom), v0.505 since the third map list landed (the rift's five hexes on the field row, the undo and marks rows), v0.504 with the second map list's rows (the marks row
   rewritten, the pack, undo, gesture, Fracture, reconstruction and tears rows, the Badger's and
   the store's) on the shapes' rework's v0.503 and the hangar's Bench tab's v0.502, unpublished; v0.501 since the map
   playtest list landed (the boss's picture, the scenery under the painting, the tears row's
   read of 10 November and the hunters' declaration, on the map session's v0.500 and v0.498's
   Text tab rows: the hangar row's tabs and the shown-text row), unpublished, its republish on
-  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is ahead of both with the formation and refit session's
-  rows, unpublished too. BASE for the next merge is `2d489f7`'s file. The live
+  Ryan's word. BASE for the next merge is `2d489f7`'s file. The live
   page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS

@@ -16,10 +16,12 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 
 ## Machines
 
-- **Chassis**: hull, shield, shield regen (shield regained as each round opens; no chassis
-  sets it yet), heat maximum, cooling, armour, move, size class, one way of moving, hardpoints, fixed components, module
+- **Chassis**: hull, shield, shield regen (shield regained as each round opens: one to three
+  by chassis, the faster on the smaller gauge), heat maximum, cooling (one at least on every chassis that is dealt), armour, move, size class, one way of moving, hardpoints, fixed components, module
   slots (two; the Clydesdale three) and one passive. Twenty-four chassis from five makers
-  (`content/chassis.json`). A run has four squad slots and starts with three
+  (`content/chassis.json`), three of them back in design and dealt by nothing until their
+  sessions hand them back (the Puffin, the Whip Scorpion, the Swallowtail: a chassis whose entry
+  says `"status": "planned"`). A run has four squad slots and starts with three
   machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
   order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die,
@@ -71,12 +73,19 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   of tiers one to three are found; a bought chassis brings one copy of each component it
   stocks, never its blueprint. A fixed component has no tier; the Arsenal (the capital's
   maker) makes no basics and fields no tier-one chassis, though its tier-one components exist
-  and its tier-two chassis stock them. The basic kit is eight pieces, each a maker's: four
-  guns (the Twin Autoguns and the Rivet Gun, Direct; the Ankle Mortar, Indirect; the Laser
-  Carbine, Direct and warm), two shields (the Halo Shield, self or ally; the Canopy, self only, the
-  bigger) and two vents (the Coolant Jacket, self or ally; the Bleed Valve, self only, the
-  bigger).
-- **Damage states**: a component is intact or destroyed, for the whole battle.
+  and its tier-two chassis stock them. The basic kit is six pieces, each a maker's: four
+  guns, each making heat (the Twin Autoguns and the Rivet Gun, Direct; the Ankle Mortar, Indirect; the Laser
+  Carbine, Direct and warm), and two defensive pieces, each spent on itself or an ally (the
+  Halo Projector, a Barrier; the Shoring Jack, Armoured 2 for the round).
+- **No recovery on the die**: a component is a weapon or equipment. No stock die holds a
+  shield or a vent and no slottable one is dealt: the shield is the chassis's and comes back
+  by its regen, heat goes by its cooling, and the decision heat leaves is the hold (fire the
+  cold entry, keep the hot one, or pass and cool). The slottable shields and vents are kept in
+  content as drafts nothing deals (no blueprint, no loot, no basic), each until it is made
+  equipment or removed; the engine still runs both kinds, for the locked pieces that are one
+  (the Musk Ox's Quick Reload) and the machines back in design.
+- **Damage states**: a component is intact or destroyed, for the whole battle (none is destroyed
+  while the injury rule is off: Injury, below).
 
 ## The skirmish
 
@@ -98,7 +107,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 
 ### The round
 1. Rerolls reset to two (less any a foe drained). Every machine sheds heat by its cooling,
-   then regains its shield regen up to its maximum (a shield gain like any). Every die rolls;
+   then regains its shield regen up to its maximum (a shield gain like any; a passive that adds
+   to the regen by heat, the Buzzard's Thermal Recoupler, reads the heat the cooling left). Every die rolls;
    entries are equally likely. Round-start passives fire, and a store that grants a buff
    grants it for the round (the Honey Badger's hopper its Armoured), before the foes pick.
 2. Every foe picks its move, then its target; both show, exact, before the player acts, its
@@ -133,9 +143,9 @@ every machine is wrecked. There is no round limit.
   unspent die, before or after attacking, and lands on any other entry, never the one
   showing; a copy of it may come up, at the odds its copies give it. Every roll inside the round
   follows the same rule (Rapid's free reroll, the Kite's reset, the Booster, the Uplink, the
-  Reveille Horn), but two, kept on purpose and each saying "itself included" on the die: the
-  Nemesis's Knuckle of Fury rolls again as the round's opening roll does, and the Cassowary's
-  Spin-Up spins every chamber. Double-tap or hold a die to lock it, and again to unlock it; spending
+  Reveille Horn), but two, kept on purpose and each saying "itself included" on the die: an
+  entry that rolls again (no piece prints one today) rolls as the round's opening roll does, and
+  the Cassowary's Spin-Up spins every chamber. Double-tap or hold a die to lock it, and again to unlock it; spending
   unlocks it; locks clear each round.
 - **A stepping die** (the Cassowary's): it never rolls. Each fight opens on a random entry,
   and every roll or reroll steps it to the next entry in order, Rapid's free reroll too; a
@@ -340,9 +350,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   violet for what only a foe does, the red-red for harm (Exposed, a destroyed component), the
   hull's colour for a price in hull, and ink for a shape, a reach or a rule; never the HUD
   colour.
-  A piece that changes its machine's form wears that form's chip: on the Polar Bear, a shield it
-  may spend on itself the seal's while its shell is open, and a weapon or a vent the opening's
-  while it is sealed; the sealed machine wears a shell round it, a burst as it seals or opens.
+  A piece that changes its machine's form wears that form's chip: on the Polar Bear, a buff it
+  may spend on itself the seal's while its shell is open, and a weapon the opening's while it is
+  sealed; the sealed machine wears a shell round it, a burst as it seals or opens.
   A vent on a machine whose vents blast shows the blast beside it (its mark and the blow the
   heat it would take off makes), and read or dragged anywhere but over an ally, every foe the
   blast may land on wears a turning dashed ring with the number it would deal there.
@@ -397,18 +407,19 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - Every number inside a fight is single digits or low tens: a blow 1 to 6, big guns to 10, one
   capstone 12; an amp a point a stack; foe HP 2 to 8 for rank and file at tier one and to 16 at
   tier three, 30 to 40 massive at tier one and to 56 at tier three, 12
-  to 24 heroes, the slate's bosses 48 at tier one (a core in parts 40, a part 8 to 12, a boss
-  that may rise once 40; the kill-time test's read, under the 80 to 100 first written for
-  them); a foe's blow 2 to 8 at tier one (the rank and file's mostly 2 or 3)
-  and to 10 at tier three, a massive
-  foe's 7 or 8, a hero's 4 to 10, the slate's bosses' 6 to 10; machine hull 20 to 50 by size (the
-  Kite's paper hull 12, its row's one-off), shield 6 to 16, shield regen 0 to 2 a round (none
-  set yet), base armour 0 to 2 by role, timed armour to 4 or 5; heat
+  to 24 heroes, an elite 16 to 60, the slate's bosses 72 at tier one (a core in parts 40, a part
+  8 to 18, a boss that may rise once 50); a foe's blow 2 to 8 at tier one (the rank and file's
+  mostly 2 or 3) and to 10 at tier three, a massive
+  foe's 7 or 8, a hero's 4 to 10, an elite's 7 to 18 and the slate's bosses' 10 to 20, sized
+  against a shield that refills (at tier one no action of theirs takes the lightest machine
+  from full: a breach under 20, and any one action's blows on one machine under its shield and
+  hull together); machine hull 20 to 50 by size (the
+  Kite's paper hull 12, its row's one-off), shield 6 to 16, shield regen 1 to 3 a round, base armour 0 to 2 by role, timed armour to 4 or 5; heat
   1 to 20 (1 to 30 if the pricing needs it), the maxima 10 to 14 (the Musk Ox's 8), a vent 3 to
   8 (the Entropy Condenser's 10 the capstone, paid in hull). The scales are magnitudes,
   not steps: any whole number may be used, and content sits a little past them where its
   loops moved it (the Zombie Knight's 8 HP, the promoted forms' 32 to 48, a hero's finisher, a
-  multiple of its blow, to 16). A move is a count of hexes, 1 to 6 (the machines' 2 to 5).
+  multiple of its blow, to 16). A move is a count of hexes, 1 to 6 (the machines' 3 to 6, the foes' 1 to 4).
   The content's numbers are the stock pass's fills as its loops moved them
   (`docs/measurements.md`; set by `tools/stock_fills.py`), the four Kestrel machines' by hand at the same scale; placeholders until play.
 
@@ -536,7 +547,7 @@ Honey Badger's Chainsaw Claw, two); a weapon that fires it takes up to its most 
 each adding its bonus to the blow, and spends them (its Bullion Fragmenter fires two at +2),
 the armour they stood for going with them. **Braces**:
 spending it Armours its owner, the stacks it says, an armour point each, until the round's
-end (the Wild Boar's Breaching Plow, two). **Rolls again** (the Nemesis's Knuckle of Fury, on rage): spending it
+end (the Wild Boar's Breaching Plow, two). **Rolls again** (no piece prints it today; the Nemesis's Knuckle of Fury did, and it is one direction of its upgrades): spending it
 with a stack of its status spends one, and the die rolls again, a plain roll as the round
 opens, so the machine acts again and the same entry may show again; nothing switches off,
 the stacks being the limit, and the fight's last blow rolls nothing. **The gather** (the
@@ -567,9 +578,10 @@ weapons wears the star, the die's readout reading the passive's line, and no key
 A **store** is a capped resource a machine fills and spends (the Muster, the rage, the
 hopper, the Cassowary's shot count; the Musk Ox's magazine works the same way), its own kind
 and never a buff: each shows as a row under the heat in the heat bar's shape, by how it fills:
-one that comes in whole units (the hopper's loads, the rage, the magazine's ammo) as separate
+one that comes in whole units (the hopper's loads, the magazine's ammo) as separate
 cells, each with its own border and a hairline of ground between them, the lit ones filled; one that
-fills by degrees (the Muster) as a meter with a notch a charge; the shot count as cells too,
+fills by degrees (the Muster) or is spent in chunks by a charged piece (the rage) as a meter
+with a notch a charge or a chunk, a dragged charged piece's price pending on it; the shot count as cells too,
 its last marked as the shot that counts; and no Silence or Purge touches it, its filling or its use. An **Ability** is a
 unit's own mechanic, the rule it plays by, and never a buff or a debuff, so no Purge, Silence
 or Cleanse touches it; its chip shows its mark cut out of a solid tile, ahead of the unit's
@@ -644,8 +656,10 @@ On a machine:
   next three rounds, up to its maximum; it stacks, each grant keeping its own end, and a die
   entry granted it, a buff, so an enemy's purge takes it.
 - **Barrier** (buff): the next blow a foe lands on this machine deals no damage, so it never
-  injures; its riders land, and a blow of nothing leaves it standing. One at a time; until
-  the round's end. Never granted to every ally at once. The Blast Door grants it, self or ally.
+  injures; its riders land, and a blow of nothing leaves it standing. One at a time and one
+  stack whoever grants it (a passive that deepens the stacks its machine applies leaves it at
+  one, and a Purge of one takes it whole); until the round's end. No piece grants it to every
+  ally at once. The Blast Door grants it, self or ally.
   A foe's, from its own special: the next blow of a weapon the team lands on it deals no damage,
   the blow's riders landing and a Shock it carried spent; equipment pops nothing; until it pops
   or the end of the player's next turn.
@@ -657,10 +671,15 @@ On a machine:
   a Mine), nor a stun, nor a Purge, so a turned mark feeds no Paradox; the damage
   lands; until the end of the player's next turn. On either side a Ward turns the whole thing
   and stands.
-- **Rage** (store, the Nemesis's): a stack each time it takes hull damage (a blow, a bite
-  of its own, an overheat), up to 5, spent by its fists to roll again; lasts the skirmish,
-  never decays, and nothing cleanses it. It shows as a bar under the heat, in the heat bar's
-  shape, five segments, one lit a stack.
+- **Rage** (store, the Nemesis's): its Crucible Capacitor banks one for each foe's blow its
+  shield takes with nothing on its hull, two for hull damage (a blow, a bite of its own, an
+  overheat; a blow that breaks the shield and wounds is hull damage alone), and two for every
+  blow of its own weapons a foe's armour or Barrier takes whole, each foe's and each strike's
+  (a corpse's and a debuff's never), up to 10. A bite of its own on its shield and a blow its
+  own Barrier or armour takes whole bank nothing. With five banked its Knuckles of Fury go out
+  charged, unasked: they spend the five and fire with Breach, which passes a foe's armour and
+  never its Barrier. Lasts the skirmish, never decays, and nothing cleanses it. It shows as a
+  meter under the heat in its chip's colour, a notch at five.
 - **Hopper** (store, the Honey Badger's): its Ore Hopper puts a load in for each foe a spend
   of its weapons damages, after the blow (a weapon that prints its own number puts that in
   instead), up to four; a weapon that fires
@@ -672,13 +691,13 @@ On a machine:
   their stacks back, off the hopper's own grant and no other). It is a buff like any Armoured:
   it goes at the round's end, and a Purge strips it and leaves the loads, so what a Purge took
   comes back at the machine's next turn and no sooner.
-- **Sealed** (Ability, the Polar Bear's form): a shield it spends on itself seals it: armour +3,
-  its own cooling stopped, 3 heat more at the end of each turn before the overheat, and its Cryo
-  Flinger gains Spread (one foe open, its rank's three sealed); a vent or a weapon opens it; a
-  shield on an ally and equipment leave the form as it is. An entry that
-  is a shield and a vent at once (a vent that shields, a shield that cools) does the one the
-  form calls for, never both: spent on itself it seals an open machine and opens a sealed one;
-  on an ally its vent opens it. An ally's vent still cools it. One seal, however many shields.
+- **Sealed** (Ability, the Polar Bear's form): equipment it spends on itself (a buff dropped on
+  itself) seals it: armour +3, its own cooling stopped, 3 heat more at the end of each turn
+  before the overheat, and its Cryo Flinger gains Spread (one foe open, its rank's three sealed);
+  a weapon it fires opens it. Equipment on an ally and a debuff (the Flinger's lure) leave the
+  form as it is, so the sealed shell lures and stays shut; an ally's buff on it seals nothing. Its
+  heat has one way down while it is sealed, opening, and an overheat leaves it sealed. One seal,
+  however often it seals.
   Its Lockdown also lands its weapons 1 harder on a foe carrying Cryo, open or sealed, read as
   each strike lands: the strike that meets the stacks takes the 1 and its hit spends them, so a
   later strike of the same spend lands plain.
@@ -797,7 +816,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or a
   breaching weapon. Base armour is set by role (a tank 2, a heavy worker 1, the rest 0; the
   Polar Bear, a tank in its sealed form, 1 open and 4 sealed), and
   Armoured adds to it (a brace: a buff, the Breaching Plow, the Siphon) until the
-  round's end, the Polar Bear's seal until a vent or a weapon opens it.
+  round's end, the Polar Bear's seal until a weapon opens it.
   Damage-taken effects apply before armour.
 - The shield is the fight's, as the heat is: full as every fight opens, and nothing returns on
   the map. In a fight it comes from components, modules, passives and the shield regen. Hull
@@ -858,6 +877,10 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or a
   machine.
 
 ### Injury
+- The injury rule is switched off: no blow injures, so no entry breaks in a fight and no
+  component is destroyed, in the game and the runners alike (`Skirmish.injuries`; the rule
+  stands behind its switch, and what follows is the rule as it runs when on). Shown text still
+  names it.
 - A foe's blow that puts a quarter of the machine's maximum hull or more past armour into its
   hull (a breach's whole blow included) destroys the entry the machine's die shows (the one it
   spent, held or locked), a blank shrugs it off, and a second such blow in the turn finds it
@@ -1135,9 +1158,11 @@ a stat.
   whose opening hex the shape took goes along its row, never back toward the rift), each the
   tier's compositions in turn, the lead's and the guest's in turn with the lead's first, each
   as content writes it (the ramp scales no pack: it scales the field). Rift Pressure opens a
-  turn short of its peak. No battle opens on a forced fight:
-  a pack that hunts opens a row further back at a time, never onto the rift's row, until no machine
-  stands inside its catch, so its first walk comes on the enemy's first turn.
+  turn short of its peak. No hunter stands on the field at turn one: the opening's patrols
+  are the tier's that push, in their order, and the packs that hunt come with the tide and the
+  tears (a tier whose patrols all hunt opens with them, each a row further back at a time,
+  never onto the rift's row, until no machine stands inside its catch). So no battle opens on a
+  forced fight.
 - **A turn**: the map shows every pack's coming walk, read from where the machines' plans end,
   and every pack's threat rating under the pack, four pips with one filled a machine it is
   intended for, and no count; no ring is drawn round a hunter: it wears a chip, the attack mark
@@ -1203,8 +1228,13 @@ a stat.
 - **Packs**: a pack is a composition on one hex: its members, each a foe type times a
   strength, in content order, the lead first, whose sprite the pack wears; a hold lists them. It
   hunts when its composition says so (its caveat, Content conventions), never by its foes; else it
-  pushes. A composition is a patrol (a few foes, one machine's fight), a formation (the
-  body's), an elite (an elite leading its own) or a boss's escort. Every member unpacks into
+  pushes. A composition is a patrol (a flanker alone, a duel for one machine; a pair of them,
+  or a hunting pack, a fight for two), a formation (the body's, a fight for three, which
+  pushes), an elite (an elite leading its own) or a boss's escort. A rank-and-file unit is
+  made for one role, a pusher's unless its entry says a hunter's or a flanker's: a formation
+  fields pushers, a patrol that pushes fields flankers, and a pack that hunts is led by a
+  hunter and holds only what keeps its pace and flies if it does; a unit standing outside its
+  role is a crossing its composition gives a reason for. Every member unpacks into
   the fight, and the survivors come back by member. A composition may name its lead, which then
   stands first; its grid is where each stands (Content conventions). Each pack carries its threat rating, the machines it is intended
   for: its composition's own, else a patrol 1, a formation 3, an elite and an escort 4, a pack
@@ -1227,8 +1257,10 @@ a stat.
   beside it 1), then the nearest the draw. It walks to the land hex of the row before the wall
   nearest that column, a tie toward the gate's column; a pack with no segment (a hunter left
   without prey) walks to the nearest. A pusher ending its walk beside any hex
-  of the gate or the wall strikes the gate's bar for its strength times 10 divided by 3, at least 1 (the floor of
-  ten is gone, so a stray pair chips less than a trio), every enemy turn. The gate is the look
+  of the gate or the wall strikes the gate's bar for its threat rating's worth, 10 a pip (a patrol 10, a
+  formation 30, an elite 40), every enemy turn, whatever its head count. A pack a fight has worn strikes
+  by the share still standing: its rating's strike times the heads it holds over the heads it took the
+  field with, rounded down, at least 1; grown past that count, its rating and no more. The gate is the look
   and the bar's name; the whole wall is the target, so no line plugs it.
 - **Hunters** (the packs whose composition hunts) lock one machine when they appear, by its caveat (nearest, weakest, strongest, slowest or fastest; never
   the Prairie Dog, never a machine another hunter already hunts), keep it while it stands, and
@@ -1266,8 +1298,8 @@ a stat.
   the finale's line; it stands while one of its commanders does and holds the rift whatever
   its escort. It stands at the battle's tier (the tiers as the quick campaign shows them, one
   to three: in the campaign tier two runs from Convergence 4 and tier three from 8, and the
-  finale at 12 takes tier three's numbers): its commanders' HP ×1.25 at tier two and
-  ×1.5 at tier three, their attack +1 and +2, a boss whose kit is armour its `armour_step` more
+  finale at 12 takes tier three's numbers): its commanders' HP ×1.1 at tier two and
+  ×1.25 at tier three, their attack +1 and +2, a boss whose kit is armour its `armour_step` more
   armour a tier above one (the Cinder Tortoise 1, 2 and 3). Its escort is curated, never grown by
   the tier: its domain's `escort` composition at the battle's tier, one that names the boss first
   and then one that names none, as content writes it, validated to fit the slots beside its
@@ -1325,8 +1357,9 @@ a stat.
   kills: on a battle won or held, never on a fall; each component one copy in the stores, each
   blueprint the run's.
 - **Menace** is a foe's weight: its heaviest blow plus a quarter of its HP, rounded up, an
-  elite's doubled. The Rupture meter, Anathema and salvage count kills by it, so the rift's
-  reinforcements pay a trickle and the formations and the elites pay the most.
+  elite's as any foe's, its own numbers carrying its weight. The Rupture meter, Anathema and
+  salvage count kills by it, so the rift's reinforcements pay a trickle and the formations and
+  the elites pay the most.
 - **The Rupture meter** fills by the menace of every foe killed, in any fight however it ended,
   tallied as each fight ends, toward the tier's Fractures (three at tier one, four at tier two,
   five at tier three). The thresholds are set from the field's menace at the start (the packs
@@ -1364,7 +1397,7 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   run is lost at zero.
 - **Start**: a tender of one tier-one machine from each city maker (by seed, in stock
   loadout; a chassis whose passive or locked piece is still planned is not dealt, so a maker
-  whose only tier one is a draft offers nothing until it lands); the player takes three. Four squad slots, 0 salvage, 100 Favour, a blueprint for
+  whose only tier one is a draft offers nothing until it lands); the player takes three. Four squad slots, the fourth machine the first battle's offer (below; not built), 0 salvage, 100 Favour, a blueprint for
   every basic, the eight of tier zero.
 - **A turn** is one battle at a front, with one to four ready machines, or a pass; once the
   finale is due no turn is passed (the Council demands the capital fought now), so the
@@ -1377,7 +1410,8 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   point the city lost, never below 0; a research
   token of the lead domain and an offer from the host maker are owed (the token a choice of
   three blueprints of the domain's theme at the Convergence's tier; the offer a chassis, a
-  component copy and a module from the maker's catalogue, one taken free; unpacking and offers
+  component copy and a module from the maker's catalogue, one taken free; the first battle's
+  offer is the fourth machine, a choice among the host maker's chassis; unpacking and offers
   not built).
 - **Fell** (the gate reached 0): the city falls, the battle's salvage is lost, the rift stays
   open, as art: no front, and nothing reads its domain. **Wiped** (every machine wrecked): the horde strikes the gate for up to six phases;
@@ -1438,7 +1472,7 @@ and nothing scales a pack.
 
 - **Start**: three different tier-one chassis, picked freely from every one the engine can
   field, in their stock. Four squad slots, the fourth filled by an offer's chassis. The party is
-  dealt as in the campaign. The eight basics are free and without limit.
+  dealt as in the campaign. The six basics are free and without limit.
 - **Battles**: twelve, a tier every four, then the finale. Each is fought against a lead domain
   drawn at random and, from tier two, a guest. Its fights before the boss are as many as the
   Rupture's Fractures at its tier (three, four, five), and one, two and three of them are
@@ -1493,7 +1527,11 @@ and nothing scales a pack.
   Fractures' elites deal only the compositions whose gate holds their ramp, and where a domain's
   compositions of a size at a tier (an escort's, of its boss) carry any, together they hold
   every Convergence that tier is fought at, from its first (0, 4 and 8 for tiers one to three)
-  to 12, which the Convergence never passes (a turn cannot be passed once the finale is due). No
+  to 12, which the Convergence never passes (a turn cannot be passed once the finale is due).
+  Every patrol and formation writes down the question it poses, `design.question`, internal
+  like everything under `design`; and a foe's `role` (pusher, hunter or flanker; absent: a
+  pusher's) is what the validator holds a patrol's and a formation's members to, a crossing
+  saying why under `design.crossing`. No
   composition in content writes `ramp` yet.
 
 ## Known gaps between these rules and the code

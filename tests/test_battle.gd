@@ -104,30 +104,113 @@ func test_setup_places_team_formation_and_boss() -> void:
 	assert_eq(b.field.plan_walks().size(), b.field.packs().size(), "every pack's walk shows")
 
 
+## The field's trial (Ryan, 10 November: "I think the map is a bit too shallow ... If the map is a
+## little deeper, and the seam starts a little farther out, it will feel more like I can actually
+## plan a little bit ahead instead of panicking from the very start"): a trial depth is the
+## field's depth, and the seam's start stands that much farther from the wall while its share's
+## ceiling holds. The opening is measured from the wall, so depth alone leaves a formation's first
+## walk on the wall; a trial of the opening stands every opening pack that many moves farther
+## out, and then the enemy's first turn strikes nothing.
+func test_the_fields_trial_deepens_the_field_and_stands_the_opening_farther_out() -> void:
+	var plain := Battle.new(3)
+	plain.setup(_team(), "meadow")
+	var depth := plain.map.height
+	assert_eq(depth, Ramp.depth_at(0), "no trial: the ramp's own depth")
+	Ramp.depth_trial = depth + 2
+	var deep := Battle.new(3)
+	deep.setup(_team(), "meadow")
+	assert_eq(deep.map.height, depth + 2, "a trial depth is the field's")
+	assert_eq(deep.map.width, plain.map.width, "the wall as long as it was")
+	assert_eq(deep.field.apron_row() - deep.field.seam_row, plain.field.apron_row() - plain.field.seam_row + 2, "the seam starts two rows farther from the wall")
+	# Over a few seeds (a shape may put a wall in a pack's way on one): the deeper field alone
+	# still has packs on the wall in the enemy's first turn; the opening a move farther out, none.
+	var seeds := [1, 2, 3, 4, 5, 6]
+	var pushers := 0
+	var striking := 0
+	for s in seeds:
+		var b := Battle.new(s)
+		b.setup(_team(), "meadow")
+		for sq in b.field.packs():
+			if sq.is_boss or sq.behaviour == "hunt":
+				continue
+			pushers += 1
+			var moves := 1 if sq.composition_size == "formation" else 2
+			var want := maxi(Battle.OPENING_FLOOR_ROW, b.field.apron_row() - moves * sq.movespeed)
+			assert_true(absi(Hex.axial_to_offset(sq.pos).y - want) <= 1, "seed %d: %s still opens %d of its moves from the wall, however deep the field (within the row its landing found): row %d, wanted %d" % [s, sq.display_name, moves, Hex.axial_to_offset(sq.pos).y, want])
+		for w in b.field.plan_walks().values():
+			if (w as Battlefield.Walk).strikes:
+				striking += 1
+	assert_true(pushers > 0 and striking > 0, "so the deeper field alone still has packs on the wall in the enemy's first turn: %d of %d pushers" % [striking, pushers])
+	Battle.opening_trial = 1
+	var first := 0
+	for s in seeds:
+		var far := Battle.new(s)
+		far.setup(_team(), "meadow")
+		for sq in far.field.packs():
+			if sq.is_boss or sq.behaviour == "hunt":
+				continue
+			var moves := (1 if sq.composition_size == "formation" else 2) + 1
+			var want := maxi(Battle.OPENING_FLOOR_ROW, far.field.apron_row() - moves * sq.movespeed)
+			assert_true(absi(Hex.axial_to_offset(sq.pos).y - want) <= 1, "seed %d: %s opens a move farther out (within the row its landing found): row %d, wanted %d" % [s, sq.display_name, Hex.axial_to_offset(sq.pos).y, want])
+		for w in far.field.plan_walks().values():
+			if (w as Battlefield.Walk).strikes:
+				first += 1
+		assert_true(far.forced.is_empty(), "seed %d: nor does the battle open on a forced fight" % s)
+	assert_eq(first, 0, "the opening a move farther out, nothing strikes the wall in the enemy's first turn")
+	Ramp.depth_trial = 0
+	Battle.opening_trial = 0
+	var again := Battle.new(3)
+	again.setup(_team(), "meadow")
+	assert_eq(again.map.height, depth, "the trial off, the field is the game's again")
+
+
 ## No battle opens on a forced fight (Ryan, 6 November: "I probably would shy away from hitting
-## the first battle with a fight in the first turn ... That's just mean"): in every domain, at
-## the foot of the ramp and at its top, at every tier, a pack that hunts opens out of its catch,
-## while the formations still open close to the wall.
-func test_no_battle_opens_on_a_forced_fight() -> void:
+## the first battle with a fight in the first turn ... That's just mean"), and no hunter stands
+## on the field at turn one (8 November: "no hunters should be on the field turn one, but that
+## was a formation pass issue, I think"; built with the pass, 10 November): in every domain, at
+## the foot of the ramp and at its top, at every tier, with a guest and without, the opening's
+## packs all push, while the tier's hunting packs wait in the rift's cycle and the tears'.
+func test_no_battle_opens_on_a_forced_fight_and_no_hunter_stands_at_turn_one() -> void:
 	var db := ContentDB.load_default()
-	var hunters := 0
-	for fid in db.factions.keys():
-		for ramp in [0, 12]:
-			for tier in [0, 1, 2]:
-				for s in range(1, 9):
-					var b := Battle.new(s)
-					b.ramp = ramp
-					b.tier = tier
-					b.setup(_team(), str(fid))
-					assert_true(b.forced.is_empty(), "%s, ramp %d, tier %d, seed %d: no fight forced as the battle opens" % [fid, ramp, tier, s])
-					for sq in b.field.packs():
-						if sq.is_boss:
-							continue
-						assert_true(Hex.axial_to_offset(sq.pos).y >= Battle.OPENING_FLOOR_ROW, "%s opens off the rift's row" % sq.display_name)
-						if sq.behaviour == "hunt":
-							hunters += 1
-							assert_true(b.field.catch_of(sq) == null, "%s, a hunter, has caught nobody as the battle opens" % sq.display_name)
-	assert_true(hunters > 0, "the content opens hunters somewhere, so the rule is read")
+	var hunting_cycles := 0
+	var fids: Array = db.factions.keys()
+	for fid in fids:
+		for guest in ["", str(fids[(fids.find(fid) + 1) % fids.size()])]:
+			for ramp in [0, 12]:
+				for tier in [0, 1, 2]:
+					for s in range(1, 5):
+						var b := Battle.new(s)
+						b.ramp = ramp
+						b.tier = tier
+						b.guest = guest
+						b.setup(_team(), str(fid))
+						assert_true(b.forced.is_empty(), "%s, guest '%s', ramp %d, tier %d, seed %d: no fight forced as the battle opens" % [fid, guest, ramp, tier, s])
+						for sq in b.field.packs():
+							if sq.is_boss:
+								continue
+							assert_true(Hex.axial_to_offset(sq.pos).y >= Battle.OPENING_FLOOR_ROW, "%s opens off the rift's row" % sq.display_name)
+							assert_true(sq.behaviour != "hunt", "%s, guest '%s', ramp %d, tier %d: %s hunts and stands on the field at turn one" % [fid, guest, ramp, tier, sq.display_name])
+						for c in b.field.patrol_cycle:
+							if not str(c.get("hunts", "")).is_empty():
+								hunting_cycles += 1
+	assert_true(hunting_cycles > 0, "the content's hunters still come with the tide and the tears, so the rule is read")
+	# A tier whose patrols all hunt opens with them all the same: the rule drops no pack it cannot replace.
+	var own := ContentDB.new()
+	own.load_dir(ContentDB.DIR)
+	var fid0 := str(own.factions.keys()[0])
+	var kept: Array = []
+	for c in own.factions[fid0]["compositions"]:
+		if str(c.get("size", "")) != "patrol" or c.has("hunts"):
+			kept.append(c)
+	own.factions[fid0]["compositions"] = kept
+	var hb := Battle.new(1)
+	hb.db = own
+	hb.setup(_team(), fid0)
+	var opened := 0
+	for sq in hb.field.packs():
+		if not sq.is_boss and sq.behaviour == "hunt":
+			opened += 1
+	assert_true(opened > 0, "with no patrol that pushes, the hunters open")
 
 
 ## The field's size is the ramp's (the long wall brief 3.1): a battle that names none takes
@@ -436,6 +519,47 @@ func test_the_meter_fills_by_menace_and_the_fractures_pay_out_as_fights_end() ->
 	assert_false(b.stall_guard, "by the tally, not the guard")
 	assert_true(b.can_target(b.boss), "the boss can be fought now")
 	assert_true(bool(b.roster(b.boss).get("all_in", false)), "and its fight takes every machine")
+
+
+## The fodder's trial (Ryan, 10 November: "If fracture rewards were a little lower for fodder,
+## then it becomes a bit more of a quantity game for non-elites"): a kill fills the Rupture meter
+## by the trial's share when its pack came as no elite, an elite's pack whole; the tally that
+## salvage and Anathema read is never touched; and with no trial the meter is the tally.
+func test_the_fodders_trial_fills_the_meter_by_a_share_and_leaves_the_tally_whole() -> void:
+	var whole := _battle()
+	var m0: Unit = whole.mechs()[0]
+	var sq0: Unit = whole.field.packs()[0]
+	_engage(whole, sq0, m0)
+	_win(whole.attack(sq0, [m0]))
+	whole.finish_skirmish()
+	assert_true(whole.menace_killed > 0, "the fight's kills are tallied")
+	assert_eq(whole.meter(), whole.menace_killed, "with no trial the meter reads the tally")
+	assert_eq(whole.meter_held, 0, "and holds nothing back")
+	Battle.fodder_trial = 50
+	var b := _battle()   # the same seed, so the same pack and the same kills
+	var m: Unit = b.mechs()[0]
+	var sq: Unit = b.field.packs()[0]
+	assert_true(sq.composition_size != "elite", "the first pack on the field is rank and file")
+	_engage(b, sq, m)
+	_win(b.attack(sq, [m]))
+	b.finish_skirmish()
+	assert_eq(b.menace_killed, whole.menace_killed, "the tally is whole under the trial: salvage and Anathema read it")
+	assert_eq(b.meter(), whole.menace_killed / 2, "and the meter counts half a rank-and-file kill")
+	assert_eq(b.fractures > 0, b.meter() >= int(b.thresholds[0]), "a Fracture is the meter's to pay, not the tally's")
+	# An elite's pack counts whole: the same pack fought as one.
+	var e := _battle()
+	var me: Unit = e.mechs()[0]
+	var sqe: Unit = e.field.packs()[0]
+	sqe.composition_size = "elite"
+	_engage(e, sqe, me)
+	_win(e.attack(sqe, [me]))
+	e.finish_skirmish()
+	assert_eq(e.meter(), e.menace_killed, "an elite's pack fills the meter whole under the trial")
+	assert_eq(e.menace_killed, whole.menace_killed, "by the same kills")
+	# The held share survives a save, so a resumed battle's meter stands where it stood.
+	var back := SaveGame.from_dict(SaveGame.to_dict(b))
+	assert_eq([back.meter(), back.menace_killed], [b.meter(), b.menace_killed], "a saved battle keeps its meter and its tally")
+	Battle.fodder_trial = 100
 
 
 ## The thresholds read the tide (the long wall brief 3.8): the menace placed at the start and
@@ -810,6 +934,7 @@ func test_finish_skirmish_removes_the_pack_and_keeps_shields_as_they_were() -> v
 	var sq: Unit = b.field.packs()[0]
 	_engage(b, sq, m)
 	var sk := b.attack(sq, [m])
+	m.base["shield_regen"] = 0   # the regen is the fight's own way back; this reads what the map gives, which is nothing
 	m.shield = 0
 	_win(sk)
 	assert_eq(sk.outcome, Skirmish.Outcome.VICTORY, "won")
@@ -885,6 +1010,7 @@ func test_survivors_shrink_the_pack() -> void:
 ## Gels alone, and the split is no kill (Ryan, 8 November).
 func test_a_wipe_never_grows_a_pack_by_its_halves() -> void:
 	var b := Battle.new(3)
+	b.formation = [["gel", 4]]   # a Gel pack of its own: the Meadow's stand in its formations since the pass (10 November)
 	b.setup(_team(), "meadow")
 	quiet_start(b)   # no catch from the opening comes first
 	var m: Unit = b.mechs()[0]

@@ -130,7 +130,7 @@ func _field(m: BattleMap, t: int) -> Array:
 ## The sizes the shapes are read at: the old field (seven and nine wide, twenty deep), the long
 ## wall's (twenty by twelve, the ramp's placeholder) and two the ramp might deal (thirty by ten,
 ## twenty-four by fourteen).
-const SIZES := [[7, 20], [9, 20], [20, 12], [30, 10], [24, 14]]
+const SIZES := [[7, 20], [9, 20], [20, 12], [30, 10], [24, 14], [20, 14], [20, 16]]   # the last two the field trial's depths (Settings.FIELD_DEPTHS)
 
 
 func test_the_shapes_lay_to_the_rifts_row() -> void:

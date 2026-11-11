@@ -20,6 +20,7 @@ const MAX_PHASES := 120   # a battle the bot cannot finish in this many turns is
 
 
 var kind: int = Policy.GREEDY
+var guard_weight: float = 1.0   # the fight bot's habit, passed to every fight (Policy.guard_weight: the aggressor, near nothing)
 var rng := RandomNumberGenerator.new()
 var phases: int = 0
 var fights: int = 0
@@ -196,6 +197,7 @@ func _fight(b: Battle, sk: Skirmish) -> void:
 		squad = maxi(squad, p.squad)
 	var size := [sk.mechs.size(), b.mechs().size(), sk.packs.size(), false, held, squad]
 	var pol := Policy.make(kind, rng.randi())
+	pol.guard_weight = guard_weight
 	if pol.play(sk) == Skirmish.Outcome.VICTORY:
 		fights_won += 1
 		size[3] = true

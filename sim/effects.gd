@@ -51,9 +51,11 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords", "weapon_cooldown", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords", "weapon_cooldown", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
+	"on_shield_hit": ["stack_status", "add_shield", "vent_heat"],
+	"on_blocked": ["stack_status"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
 	"on_shield_gain": ["vent_heat", "stack_status"],
 	"on_shield_granted": ["vent_heat", "stack_status", "shield_per_ally_heat"],
@@ -83,6 +85,10 @@ const CLEANSABLE := "cleansable"
 ## "renew" keeps one grant, its end the later and its count the larger, so on an untimed
 ## one-stack status (Shocked, Guarded) a second grant changes nothing (Ryan, 17 October:
 ## never stacking and renewing are one state, parted only by a timer).
+## A status may be "single": one stack whoever grants it and however deep the grant, so no
+## passive that deepens a stack counts it past one (the Barrier, Ryan, 10 November: "Barrier
+## probably shouldn't be stackable. The stingray stacks it due to its passive": its Exothermic
+## Suite had it read x2 at five heat, though it only ever took one blow).
 const STATUS := {
 	# A damage point a stack since 18 October (Ryan, in the spirit of flattening the numbers;
 	# 5 before), the stacks the Burn keyword's own number.
@@ -92,7 +98,7 @@ const STATUS := {
 	# stack for every hull hit, its own included, for the skirmish (`decay` none overrides a
 	# passive's tick), and an entry that rolls again on it spends one to roll the die again.
 	# A store like the hopper: it does nothing by itself.
-	"rage": {"id": "rage", "name": "Rage", "description": "Banked for the skirmish; an entry that rolls again on rage spends one to roll the die again.", "decay": "none",
+	"rage": {"id": "rage", "name": "Rage", "description": "Banked for the skirmish, up to its cap; a piece charged on rage spends it for its charged form.", "decay": "none",
 		"tags": ["store"], "effects": []},
 	# A foe's fire on a machine (Ryan, 13 October: Burn and Scorch; direct heat retired). Burning
 	# is the player's word on the other body: metal does not burn, it heats, so a stack adds its
@@ -252,7 +258,7 @@ const STATUS := {
 	# with the passive's numbers), renewing, never stacking (Ryan: the granted armour is tied
 	# to the mode). Its own cooling stops and it runs hotter at the end of each turn
 	# (Skirmish); an ally's vent still cools it (Ryan, 20 October: allowed).
-	"sealed": {"id": "sealed", "name": "Sealed", "description": "Sealed: armour up, its own cooling stopped, hotter at the end of each turn. A vent or a weapon opens it.", "decay": "none", "stacking": "renew",
+	"sealed": {"id": "sealed", "name": "Sealed", "description": "Sealed: armour up, its own cooling stopped, hotter at the end of each turn. A weapon it fires opens it.", "decay": "none", "stacking": "renew",
 		"tags": ["ability", "form"], "effects": []},
 	# Cryo (Ryan, 20 October: the Polar Bear's Cryo Flinger, the debuff called Cryo too, marked
 	# for reuse as the healthier way to cool an ally): a foe mark that pays in cooling. Any
@@ -324,7 +330,7 @@ const STATUS := {
 	# (28 October), from its own specials, they last until the end of the player's next turn in
 	# its own words (foe_barrier, foe_ward): its Barrier pops on a weapon's blow alone, and its
 	# Ward turns the team's marks (TEAM_MARKS, turns_mark), Suppressed excepted.
-	"barrier": {"id": "barrier", "name": "Barrier", "description": "The next blow a foe lands on it deals no damage, so it never injures; its riders land. Until the round's end.", "stacking": "renew",
+	"barrier": {"id": "barrier", "name": "Barrier", "description": "The next blow a foe lands on it deals no damage, so it never injures; its riders land. Until the round's end.", "stacking": "renew", "single": true,
 		"tags": ["buff"], "effects": []},
 	# A foe's regrowth over time (28 October; the Marsh's by lean): at each of its actions it
 	# regrows its value in HP, after its Burning and Vitriol have ticked, so a burn is a race and
@@ -579,6 +585,11 @@ static func status_stacking(def: Dictionary) -> String:
 	return str(def.get("stacking", "add"))
 
 
+## Whether a status is one stack whoever grants it (its "single": the STATUS note above).
+static func is_single(status_id: String) -> bool:
+	return bool(STATUS.get(status_id, {}).get("single", false))
+
+
 ## The grant a second one of `passive` renews, or null when the status adds (and the caller
 ## grants as usual). A renewal takes the later end of two timed grants and the larger count,
 ## never a second stack.
@@ -614,6 +625,8 @@ static func stack(u, passive: Dictionary, scope: int, source: String, n: int = 1
 		scope = BATTLE
 		decay = DECAY_NONE
 		expires_round = -1
+	if bool(passive.get("single", false)):
+		n = mini(n, 1)   # one stack whoever grants it (the STATUS note above)
 	var held := _held(u, passive, scope, n, expires_round)
 	if held != null:
 		return held
@@ -1387,8 +1400,8 @@ static func paradox(u) -> Array[int]:
 ## which is exempt from every interaction but suppress and its own decay (Ryan, 2 October:
 ## a touchable stun resist is where other games' combat loops broke).
 static func extra_stacks(u, status_id: String, heat: int) -> int:
-	if status_id == "numbed":
-		return 0
+	if status_id == "numbed" or is_single(status_id):
+		return 0   # Numbed is exempt from every interaction; a single status has no second stack to gain
 	var n := 0
 	for pair in _taking_part(u, "on_stack", null):
 		var eff: Dictionary = pair[0]
@@ -1453,11 +1466,23 @@ static func seal_form(u) -> Dictionary:
 	return {}
 
 
+## The shield regen a machine's heat adds (shield_regen_per_heat, static; the Buzzard's Thermal
+## Recoupler as shield regen since 11 November, Ryan: "I would reword its passive to explicitly say
+## it gains shield regen"): `value` for every `per_heat` it carries as the round opens, read where
+## the regen is, after the cooling, so whatever reads the regen reads this with it.
+static func regen_from_heat(u, heat: int) -> int:
+	var n := 0
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "shield_regen_per_heat":
+			n += int(pair[0].get("value", 0)) * int(pair[1].stacks) * int(heat / maxi(1, int(pair[0].get("per_heat", 10))))
+	return n
+
+
 ## The Sealed status with the seal's own numbers in it: the chip the machine wears while
 ## sealed, carrying the armour as its one effect (the stat pipeline reads it like any add).
 static func sealed_status(armour: int, heat: int) -> Dictionary:
 	var d: Dictionary = STATUS["sealed"].duplicate(true)
-	d["description"] = "Sealed: armour +%d, its own cooling stopped, %d hotter at the end of each turn. A vent or a weapon opens it." % [armour, heat]
+	d["description"] = "Sealed: armour +%d, its own cooling stopped, %d hotter at the end of each turn. A weapon it fires opens it." % [armour, heat]
 	d["effects"] = [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": armour}]
 	return d
 
@@ -1493,6 +1518,21 @@ static func extra_actions(u) -> int:
 ## statuses granted, for the log; shield and vent from it are the caller's to apply.
 static func hull_damaged(u) -> Dictionary:
 	return fire(u, "on_hull_damage")
+
+
+## A foe's blow its shield took with nothing on its hull (on_shield_hit; the Nemesis's rage, Ryan,
+## 11 November: "Taking a hit on shield gives 1 rage, hull damage gives 2", and "hull damage takes
+## priority"): a blow that wounds fires on_hull_damage alone.
+static func shield_hit(u) -> Dictionary:
+	return fire(u, "on_shield_hit")
+
+
+## A blow of the machine's weapon on a foe that the foe's armour or Barrier took whole (on_blocked;
+## the Nemesis's rage, Ryan, 11 November: "getting its attacks completely blocked gives 2 rage",
+## per blow: "every foe hit needs sufficient armour, or multiple barriers, to farm rage from every
+## hit"): fired once a blow.
+static func blow_blocked(u) -> Dictionary:
+	return fire(u, "on_blocked")
 
 
 ## An event on a machine (on_skirmish_start as the fight begins, on_round_start after the
@@ -2237,7 +2277,7 @@ static func effect_text(eff: Dictionary) -> String:
 				body += " %d" % int(eff["number"])   # a numbered grant says its number (the drum's Spread 2)
 		"add_armour_vs_rank": body = "armour +%s against %s-rank blows" % [vs, str(eff.get("rank", "front"))]
 		"keep_status": body = "%s never fades and lasts the battle" % str(STATUS.get(str(v), {}).get("name", str(v)))
-		"seal_form": body = "a shield spent on itself seals it: armour +%s, its own cooling stopped, %s hotter at the end of each turn; a vent or a weapon opens it" % [vs, str(eff.get("heat", 0))]
+		"seal_form": body = "equipment it spends on itself seals it: armour +%s, its own cooling stopped, %s hotter at the end of each turn; a weapon it fires opens it" % [vs, str(eff.get("heat", 0))]
 		"stack_status":
 			var nm := str(STATUS.get(str(v), {}).get("name", str(v)))
 			var k := maxi(1, int(eff.get("stacks", 1)))
@@ -2256,6 +2296,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"multiply_stacks": body = "the stacks it lays ×%s" % vs
 		"free_reroll": body = "%s free reroll%s of this die a round" % [vs, "" if int(v) == 1 else "s"]
 		"shield_per_heat": body = "+%s shield for every %d heat carried" % [vs, int(eff.get("per_heat", 10))]
+		"shield_regen_per_heat": body = "shield regen +%s for every %d heat it carries" % [vs, int(eff.get("per_heat", 10))]
 		"shield_per_ally_heat": body = "the shield grows by %s for every %d heat it carries" % [vs, int(eff.get("per_heat", 10))]
 		"add_shield": body = "+%s shield" % vs
 		"tick_hp": body = "%s damage per stack each turn" % vs
@@ -2280,6 +2321,8 @@ static func effect_text(eff: Dictionary) -> String:
 		"on_injury": lead = "on an injury: "
 		"on_round_start": lead = "at the start of the round: "
 		"on_hull_damage": lead = "on losing hull: "
+		"on_shield_hit": lead = "on a foe's blow its shield takes, none on its hull: "
+		"on_blocked": lead = "on each blow of its weapons a foe's armour or Barrier takes whole: "
 		"on_skirmish_start": lead = "as the fight begins: "
 		"on_shield_gain": lead = "on gaining shield: "
 		"on_shield_granted": lead = "an ally this machine shields: "

@@ -43,7 +43,10 @@ TABLE = {
     "needler": [("barbed_needler", 180, 0.80, 0.45), ("great_needler", 270, 0.80, 0.45)],
     "antlion": [("pit_antlion", 210, 0.80, None), ("antlion_queen", 150, 1.25, None)],
     "cockatrice": [("basilisk", 210, 0.80, None), ("gorgon", 180, 1.25, None)],
-    "revenant": [("wight", 240, 0.80, 0.45), ("lich", 60, 1.25, 0.45)],
+    # The Draugr is the line's tier three since 10 November (the Lich a unit of its own: its
+    # sprites, written from the Revenant's at hue 60, light 1.25, tint 0.45, stay as a placeholder
+    # until it has art); hue 180 keeps it 46 from the Lich and 48 from the Revenant at worst.
+    "revenant": [("wight", 240, 0.80, 0.45), ("draugr", 180, 1.25, 0.45)],
     "ghost": [("spectre", 240, 0.80, 0.45), ("wraith", 60, 1.25, 0.45)],
     "zombie_knight": [("death_knight", 60, 1.25, 0.45), ("dread_knight", 240, 0.80, 0.45)],
     "bomb": [("grenade", 180, 1.25, 0.45), ("balloon", 240, 1.00, None)],
@@ -55,6 +58,14 @@ TABLE = {
     "treant": [("dusk_treant", 15, 0.70, 0.45), ("frost_treant", 180, 1.25, 0.45)],
     "sandworm": [("night_sandworm", 180, 0.80, None), ("salt_sandworm", 150, 1.25, None)],
     "magma_elemental": [("basalt_elemental", 210, 1.25, 0.45), ("sulphur_elemental", 60, 1.25, 0.45)],
+    # The duelists' lines (10 November, the formation pass's flankers), each from its base's rough
+    # placeholder (tools/placeholder_art.py) by the same three simulations: the worst case 122
+    # for the Whisker Cat's, 81 for the Roc's, 55 for the Dullahan's (tinted, its horse and plate
+    # grey) and 43 for Cerberus's. Rerun when a base gets its picked art.
+    "whisker_cat": [("sabre_cat", 150, 1.25, None), ("storm_cat", 180, 0.80, None)],
+    "roc": [("night_roc", 150, 1.25, None), ("great_roc", 210, 0.80, None)],
+    "dullahan": [("grave_dullahan", 60, 1.25, 0.45), ("charnel_dullahan", 180, 1.25, 0.45)],
+    "cerberus": [("basalt_cerberus", 60, 1.25, None), ("sulphur_cerberus", 210, 1.25, None)],
 }
 
 

@@ -3014,7 +3014,7 @@
  "pins": {
   "hp_1": "ankle_mortar",
   "hp_2": "twin_autoguns",
-  "hp_3": "halo_shield",
+  "hp_3": "halo_projector",
   "hp_4": ""
  },
  "hidden_pins": [

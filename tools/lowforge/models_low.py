@@ -720,7 +720,7 @@ def baboon(b):
         b.box(px - 4.0, px + 4.0, -2.0, 6.0, 60.0 + Z0, 65.0 + Z0, "steel.plate", "projector_mount")
         side = "l" if s < 0 else "r"
         with b.joint("elev_%s" % side, (px, 2.0, 63.0 + Z0), limits=(-6.0, 50.0)):   # the shoulder piece elevates on its mount
-            b.stock("hp_%d" % (3 if s < 0 else 5), (px, 6.0, 64.0 + Z0), "dish" if s < 0 else "rack", scale=0.6, carries="halo_shield" if s < 0 else "ankle_mortar")
+            b.stock("hp_%d" % (3 if s < 0 else 5), (px, 6.0, 64.0 + Z0), "dish" if s < 0 else "rack", scale=0.6, carries="halo_projector" if s < 0 else "ankle_mortar")
         # The arm: the elbow back and out behind the shoulder, the forearm forward and
         # down to a wrist drum, the fist hanging from it to rest on the ground, knuckles
         # forward (Ryan, 30 September: back on the ground, and loaded).
@@ -1595,7 +1595,7 @@ def prairie_dog(b):
     b.box(-1.5, 1.5, -34.0, -30.0, 8.0 + L, 10.0 + L, "steel.dark", "hitch")
     # The projector on the rear-left corner (hp_2): the stock's Halo Shield as its class, a
     # dish facing forward (the launcher there went with the old stock: Ryan's go, 28 October).
-    b.stock("hp_2", (-10.0, -26.0, 28.5 + L), "dish", scale=0.6, carries="halo_shield")
+    b.stock("hp_2", (-10.0, -26.0, 28.5 + L), "dish", scale=0.6, carries="halo_projector")
     # The third mount (hp_3) is bare on the rear-right corner, the projector's twin.
     b.pad("hp_3", (10.0, -26.0, 26.0 + L), scale=0.7, size=(6.0, 2.0))   # on the roof, not above it
     for s in (-1.0, 1.0):
@@ -1941,7 +1941,7 @@ def cassowary(b):
     with b.joint("elev_mortar", (7.5, -10.5, 87.0), limits=(-15.0, 25.0)):
         b.stock("hp_3", (7.5, -11.0, 87.5), "rack", forward=(0.0, 0.819, 0.574), scale=0.5, carries="ankle_mortar")
     b.prism("z", -7.5, 3.0, 86.0, 2.0, 4.4, "steel.dark", 6, "dish_base")
-    b.stock("hp_4", (-7.5, 3.0, 88.2), "dish", scale=0.55, carries="halo_shield")
+    b.stock("hp_4", (-7.5, 3.0, 88.2), "dish", scale=0.55, carries="halo_projector")
     b.pad("hp_5", (-7.5, -10.5, 85.5), scale=0.55, size=(6.0, 1.5))
     # The capacitor on the right flank, where the revolver drum hung (Ryan, 2 November: "some kind
     # of capacitor, charging up for the sixth hit of its passive"): six cells round a core between
@@ -2471,7 +2471,7 @@ def cottonmouth(b):
             _cottonmouth_prisms(b, [("y", (0.0, yb + 0.4, ZA + cr), 2.1, 0.4, 8, math.pi / 8)], "amber.heat", "top_lamp_glow")   # wider than the lamp it lights, inside the cap it passes through
         # The four mounts, hidden inside the casing (nothing drawn there, stock or fitted), on
         # the elevation so a shot kicks the drum up; in the die's order.
-        for n, (dx, dz), carries in ((1, (-4.2, 4.2), "ankle_mortar"), (2, (4.2, 4.2), "twin_autoguns"), (3, (-4.2, -4.2), "halo_shield"), (4, (4.2, -4.2), "")):
+        for n, (dx, dz), carries in ((1, (-4.2, 4.2), "ankle_mortar"), (2, (4.2, 4.2), "twin_autoguns"), (3, (-4.2, -4.2), "halo_projector"), (4, (4.2, -4.2), "")):
             b.pin("hp_%d" % n, (dx, PY + 2.0, ZA + dz), scale=0.5, carries=carries, hidden=True)
 
     # The stern: two ducted fans side by side on a fairing, each on a pylon, its lip
@@ -5242,7 +5242,7 @@ def stingray(b):
         b.prism("y", px, 24.0, pz, 2.0, 24.0, "steel.dark", 6, "wing_pod")   # y 12 to 36; the wing's leading edge is near y 34 here
         b.prism("y", px, 36.4, pz, 2.3, 1.2, "steel.plate", 6, "pod_collar")
         if name == "hp_2":
-            b.stock(name, (px, 37.0, pz), "dish", scale=0.6, carries="halo_shield")
+            b.stock(name, (px, 37.0, pz), "dish", scale=0.6, carries="halo_projector")
         else:
             b.pad(name, (px, 37.0, pz), scale=0.7, size=(3.6, 1.4))
 
@@ -5984,7 +5984,7 @@ def puffin(b):
     for s in (-1.0, 1.0):
         px = s * 12.0 * K
         b.box(min(px - 0.8, px + 0.8), max(px - 0.8, px + 0.8), 12.0, 18.0, 8.4, 10.2, "steel.plate", "pod_pylon")
-        with b.socket("hp_%d" % (1 if s < 0 else 4), (px, 20.0, 8.2), scale=0.5, carries="halo_shield" if s < 0 else ""):
+        with b.socket("hp_%d" % (1 if s < 0 else 4), (px, 20.0, 8.2), scale=0.5, carries="halo_projector" if s < 0 else ""):
             b.prism("y", px, 15.0, 8.2, 1.5, 11.0, "steel.dark", 6, "pod")
             if s < 0:
                 b.prism("y", px, 22.5, 8.2, 3.0, 1.2, "steel.plate", 8, "dish")

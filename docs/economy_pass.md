@@ -53,7 +53,7 @@ Three caveats before trusting them:
 | Building a component from a blueprint | salvage | not built, no price | by tier? one price per tier is the simplest start |
 | The capital's gate | salvage | `REPAIR_COST` 5 a point (300 points: 1,500 for a full gate) | the bot's only sink today, so it spends everything here |
 | Procurement: a component | Favour | not built | each standing city's maker, a few a turn |
-| Procurement: a chassis (the fourth machine and later) | Favour | not built | now and then; the fourth slot is empty from the start and its machine is bought, never unlocked |
+| Procurement: a chassis (the fifth machine and later) | Favour | not built | now and then; the fourth slot is empty at the start and filled by the first battle's offer, a choice among the host maker's chassis (Ryan, 11 November; the bible's squad row), so the shelf's chassis is a bench or a swap |
 | The Arsenal's trickle at the capital | Favour | not built | gated by the Convergence's tier |
 | Rushing a wreck | Favour | `RUSH_PRICE` 100 | each wreck its own cost (Ryan, 7 October) |
 

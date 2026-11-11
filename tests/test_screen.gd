@@ -887,7 +887,7 @@ func test_double_tap_opens_and_closes_the_codex() -> void:
 	assert_eq(s._codex._sub.text, "THE MARSH", "the domain's name as the subtitle")
 	assert_true(not s._codex._body.text().is_empty(), "foe codex text present")
 	assert_true(s._codex._moves.visible and s._codex._moves.text().contains("CLAW"), "implemented moves listed")
-	assert_true(s._codex._moves.text().contains("a kin standing"), "the swarm is said too")
+	assert_true(s._codex._moves.text().contains("Attack %d" % foe.attack), "its blow at its own number")
 	assert_true(s._codex._flavour.text.begins_with("“"), "flavour shown as a quote")
 	assert_true(s._codex._flavour.text.contains("tired"), "the foe's own line, not the faction's")
 	assert_false(s._codex._faces.visible, "no face list for a foe")
@@ -2580,9 +2580,10 @@ func test_a_last_act_records_the_gauges_it_met() -> void:
 
 ## The Polar Bear's form reads on its die and its view (Ryan, 2 November: "armadillo needs indication
 ## when a die face will transform it, like a die chip or something. It also needs some highlight or
-## something when it is transforming, and a better indication of what form it's in"): open, a shield
-## it may spend on itself wears the seal chip and its readout says so; sealed, a weapon or a vent
-## wears the opening one; sealed, the view wears its shell; the Sealed chip the seal's own mark.
+## something when it is transforming, and a better indication of what form it's in"): open, a buff
+## it may spend on itself wears the seal chip and its readout says so (its trigger since 11
+## November); sealed, a weapon wears the opening one; sealed, the view wears its shell; the Sealed
+## chip the seal's own mark. Its stock die as content deals it.
 func test_the_polar_bears_form_reads_on_its_die_and_its_view() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
@@ -2592,23 +2593,23 @@ func test_the_polar_bears_form_reads_on_its_die_and_its_view() -> void:
 	var s := SkirmishScreen.new()
 	s.setup(sk)
 	var ms: Skirmish.MechState = sk.mechs[0]
-	var shield := -1
+	var buff := -1
 	var gun := -1
 	for k in range(m.die.faces.size()):
 		var f: Face = m.die.faces[k]
-		if f.kind == Face.Kind.SHIELD and shield < 0:
-			shield = k
-		elif f.is_attack() and f.power > 0 and gun < 0:
+		if f.kind == Face.Kind.BUFF and f.can_target_self() and buff < 0:
+			buff = k
+		elif f.is_weapon() and gun < 0:
 			gun = k
-	assert_true(shield >= 0 and gun >= 0, "its die carries a shield and a gun")
-	ms.face_index = shield
+	assert_true(buff >= 0 and gun >= 0, "its die carries a buff it may spend on itself and a gun")
+	ms.face_index = buff
 	s._refresh()
-	assert_eq(s._dice[0].form_mark, "seal", "open, its shield wears the seal chip")
+	assert_eq(s._dice[0].form_mark, "seal", "open, its buff wears the seal chip")
 	s._on_die_tapped(0)
 	assert_true(s._details_entry.text().contains("Seals it"), "and its readout says so: %s" % s._details_entry.text())
 	s._close_pop()
 	assert_false(s._mech_views[0].shell, "open: no shell")
-	assert_true(s._use_die(0, ms), "the shield spent on itself")
+	assert_true(s._use_die(0, ms), "the buff spent on itself")
 	assert_true(Effects.is_sealed(m), "sealed")
 	assert_true(s._mech_views[0].shell, "the view wears its shell")
 	sk.end_round()

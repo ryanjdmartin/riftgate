@@ -687,6 +687,45 @@ func test_offscreen_packs_get_edge_tags() -> void:
 	s.free()
 
 
+## The board says what the gate takes next (10 November): the strikes the enemy's turn will land
+## and what they take off its bar together, each by its pack's threat rating and what a fight has
+## left of it (Battlefield.strike_of).
+func test_the_board_says_what_the_gate_takes_next() -> void:
+	var s := _screen()
+	var f: Battlefield = s.battle.field
+	var sq := Unit.pack(0, "revenants", Vector2i.ZERO, "marsh", 2, 6, "revenant")
+	sq.squad = 3
+	var placed := false
+	for col in range(f.map.width):   # an apron hex nothing stands on, wherever this seed's map has one
+		var h := Hex.offset_to_axial(col, f.apron_row())
+		if not placed and f.on_apron(sq, h) and f.can_stand(sq, h) and f.unit_at(h) == null:
+			sq.pos = h
+			placed = true
+	f.add_unit(sq)
+	assert_true(placed and f.on_apron(sq, sq.pos), "the pack stands on the apron")
+	s._refresh()
+	var gate_line := ""
+	for l in s._board._field_lines():
+		if str(l[0]).begins_with("GATE //"):
+			gate_line = str(l[0])
+	var want := 0
+	var count := 0
+	for k in s._map.walks.keys():
+		if (s._map.walks[k] as Battlefield.Walk).strikes:
+			count += 1
+			want += Battlefield.strike_of(f.unit_by_id(int(k)))
+	assert_true(count >= 1, "a strike is planned")
+	assert_eq(gate_line, "GATE // %d STRIKE%s NEXT // -%d" % [count, "" if count == 1 else "S", want], "the board counts the strikes and what they take")
+	sq.strength = 3
+	s._refresh()
+	var worn := ""
+	for l in s._board._field_lines():
+		if str(l[0]).begins_with("GATE //"):
+			worn = str(l[0])
+	assert_true(worn.ends_with("-%d" % (want - 3 * Battlefield.STRIKE_PER_PIP + Battlefield.strike_of(sq))), "worn to half, it takes half as much: %s" % worn)
+	s.free()
+
+
 ## A tear has no edge tag, as the rift has none (Ryan, 10 November: "Tear doesn't need an edge
 ## tag, same way the rift doesn't"): wherever the map looks, every tag is a unit's.
 func test_a_tear_has_no_edge_tag() -> void:
@@ -833,6 +872,8 @@ func test_hold_shows_a_readout() -> void:
 	assert_true(s._details_entry.text().contains("×%d" % int(sq.member_list()[0][1])), "the pack's members, each at its count")
 	assert_false(s._details_entry.text().contains("Ring"), "no ring line: a hunter catches at the engage range everyone shares (10 November)")
 	assert_true(s._details_entry.text().contains("Marches") or s._details_entry.text().contains("Hunts"), "and what it is doing")
+	if sq.behaviour != "hunt":
+		assert_true(s._details_entry.text().contains("striking it for %d" % Battlefield.strike_of(sq)), "a pusher's panel says what it strikes the gate for (10 November): %s" % s._details_entry.text())
 	s._on_unit_held(s.battle.boss)
 	assert_eq(str(s._details_entry.lines[0]["type"]), "Boss", "the boss says so beside its name")
 	# Its size is its own in content, apart from its being the boss (15 October): a massive boss

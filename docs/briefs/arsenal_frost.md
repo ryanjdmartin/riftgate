@@ -1,6 +1,6 @@
 # Brief: the frost figure, the Arsenal's Cryo detonator (new chassis)
 
-<!-- hangar: {"kind": "chassis", "maker": "arsenal", "tier": 2, "status": "idea", "slot": true, "name": "the frost figure"} -->
+<!-- hangar: {"kind": "chassis", "maker": "arsenal", "tier": 2, "status": "cut", "slot": false, "name": "the frost figure"} -->
 
 **Ryan's direction (5 November)**: Cut. Moved onto Minerva.
 

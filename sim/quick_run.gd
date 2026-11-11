@@ -182,7 +182,7 @@ func module_slots(m: Machine) -> int:
 ## Basics are free and without limit in the hangar: the run starts with their blueprints and
 ## has no salvage to build with (bible section 3's quick campaign row).
 func is_basic(component_id: String) -> bool:
-	return db.component_tier(component_id) == 0
+	return db.component_tier(component_id) == 0 and db.component_dealt(component_id)
 
 
 # ---------------------------------------------------------------- the hangar

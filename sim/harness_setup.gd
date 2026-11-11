@@ -217,10 +217,16 @@ func fitted(chassis_id: String) -> Array:
 
 # ---------------------------------------------------------------- launching
 
+## The team that deploys: the ticked machines but those content will not deal (back in design
+## or a planned draft: ContentDB.chassis_runnable), the team as ticked kept for when one returns.
+func fielded() -> Array:
+	return team.filter(func(id) -> bool: return db.chassis_runnable(str(id)))
+
+
 func make_team() -> Array:
 	var out: Array = []
 	var uid := 1
-	for id in team:
+	for id in fielded():
 		if db.chassis.has(id):
 			out.append(db.make_mech(str(id), uid, Vector2i.ZERO, fitted(str(id)), fitted_modules(str(id))))
 			uid += 1

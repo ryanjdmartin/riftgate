@@ -26,7 +26,11 @@ extends RefCounted
 ## gun there (the heat report's cautious persona, 30 October; the rungs as they are play the
 ## reckless one, cooling only against an overheat); `shield_ahead` values a shield left standing
 ## by the blows it turns next round, where the rungs bank it at a fifth of a point (the support
-## ladders' bot, 30 October). The weights here trade mech hull against
+## ladders' bot, 30 October); `guard_weight` is a block's worth as a share (a Barrier, Armoured, a
+## Ward, Phased: is_block), and near nothing it is the aggressor, which never rerolls for a block
+## and spends one only when its die is stuck showing it (the refit pass, 9 November: the hull the
+## blocks keep and the rounds they cost are read as the gap between it and the rung that takes
+## every block worth making). The weights here trade mech hull against
 ## foe hit points and are knobs for the tool, not the game. Nothing here is shown to the player.
 
 const RANDOM := 0
@@ -73,6 +77,7 @@ const CYCLE_AHEAD := 0.6         # a stepping die's next round, as a share of th
 var kind: int = GREEDY
 var cool_above: int = 0          # persona: keep the gauge under this percent of the maximum (0: cool only against an overheat)
 var shield_ahead: bool = false   # persona: a standing shield valued by the blows it turns next round (the support ladders' bot, 30 October)
+var guard_weight: float = 1.0    # persona: a block's worth, as a share of what the rung reads (is_block); near nothing, the aggressor (the refit pass, 9 November)
 var rng := RandomNumberGenerator.new()
 
 ## What the fight cost and how it was played, for the runner to tally.
@@ -297,6 +302,7 @@ func rollout(sk: Skirmish, c: Dictionary, seed_value: int) -> float:
 	var g := Policy.make(GREEDY, seed_value)
 	g.cool_above = cool_above   # the persona's habit plays the future out too
 	g.shield_ahead = shield_ahead
+	g.guard_weight = guard_weight
 	if not copy.assign(int(c["mech"]), _mirror(copy, sk, c.get("target")), _mirror(copy, sk, c.get("second"))):
 		return -INF
 	g.play_round(copy, false)
@@ -1230,8 +1236,6 @@ func machine_spend_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.Mec
 			score = shield_score(sk, who, sk.shield_amount(ms, f, who), f.has(Face.Keyword.OVERSHIELD), ms)
 			if f.vents > 0 or f.cools_all:
 				score += vent_score(sk, who, who.heat if f.cools_all else f.vents)   # the Hoist's cooling half
-			if who == ms:
-				score += seal_score(sk, ms)
 		Face.Kind.VENT:
 			score = vent_score(sk, who, f.power)
 			if who == ms:
@@ -1248,6 +1252,8 @@ func machine_spend_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.Mec
 				score = action_value(who) - bank_delta(sk, -f.action_price)
 			else:
 				score = buff_score(sk, who, f)
+				if guard_weight != 1.0 and is_block(f):
+					score *= guard_weight   # the aggressor's habit: a block at a share of its worth
 				if f.action_price > 0 and f.buff_status == "rallied":
 					# The Booster's reroll on itself: the bot rerolls only as the round opens, so a
 					# reroll gained mid-round is worth what the bank carries of it, as its price is.
@@ -1260,6 +1266,8 @@ func machine_spend_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.Mec
 					score -= action_ahead(sk, ms, f)
 			if Effects.quick_turn_live(ms.unit, f):
 				score += ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)   # the Needletail's gate: Rapid once a round
+			if who == ms:
+				score += seal_score(sk, ms)   # a buff on itself seals a machine with a seal (the Polar Bear's Lockdown)
 	if f.has(Face.Keyword.CLEANSE):
 		score += cleanse_score(sk, who)
 	# The Forge's reloads (the Musk Ox's): the entry's own, else a vent's or a shield's on itself,
@@ -1617,6 +1625,26 @@ static func _team_outlook(sk: Skirmish, who: Skirmish.MechState, extra_shield: i
 	return {"hull": hull, "deaths": deaths}
 
 
+## Whether a buff entry is a block (the aggressor's habit, guard_weight): its status takes a blow
+## or a rider whole (a Barrier, a Ward, Phased) or thins what lands (armour for the round, damage
+## taken at a share). Read from the status table, so a new block is one without a line here.
+const BLOCK_STATUSES := ["barrier", "ward", "phased"]
+static func is_block(f: Face) -> bool:
+	if f == null or f.kind != Face.Kind.BUFF:
+		return false
+	if BLOCK_STATUSES.has(f.buff_status):
+		return true
+	for eff in Effects.STATUS.get(f.buff_status, {}).get("effects", []):
+		match str(eff.get("effect", "")):
+			"multiply_damage_taken":
+				if float(eff.get("value", 1.0)) < 1.0:
+					return true
+			"add_stat":
+				if str(eff.get("stat", "")) == "armour" and float(eff.get("value", 0)) > 0.0:
+					return true
+	return false
+
+
 ## A buff on a machine, from what its status does: more damage on the attack it has in hand
 ## this round (and its die's mean for any further round), less of the incoming it faces, or
 ## the burn its blows will leave. Nothing for a machine that has already spent its die.
@@ -1938,10 +1966,10 @@ static func _front_worth(sk: Skirmish, foe: Foe) -> float:
 	return (KILL_BONUS + _threat_now(foe, sk) * HULL_WEIGHT) * SWAP_WEIGHT
 
 
-## What sealing is worth (the Polar Bear's Lockdown, 20 October; valued 21 October): a shield
-## it spends on itself seals it, and the armour stands behind this round's blows, less the heat
-## the seal adds as the turn ends and the cooling it stops, as room lost. Nothing when it is
-## sealed already or has no seal.
+## What sealing is worth (the Polar Bear's Lockdown, 20 October; valued 21 October; its trigger
+## a buff spent on itself since 11 November): the armour stands behind this round's blows, less
+## the heat the seal adds as the turn ends and the cooling it stops, as room lost. Nothing when
+## it is sealed already or has no seal.
 func seal_score(sk: Skirmish, ms: Skirmish.MechState) -> float:
 	var seal := Effects.seal_form(ms.unit)
 	if seal.is_empty() or Effects.is_sealed(ms.unit):

@@ -63,6 +63,33 @@ func _play_alike(a: Skirmish, b: Skirmish) -> void:
 		assert_eq(a.mechs[i].heat, b.mechs[i].heat, "%s's heat" % a.mechs[i].unit.display_name)
 
 
+## A pack's heads as it was fielded ride in the save (10 November), so a pack a fight has worn
+## strikes the wall by the same share after a reload; a save from before has none and the pack
+## strikes for its rating whole.
+func test_a_worn_packs_strike_rides_in_the_save() -> void:
+	var b := _battle()
+	var sq: Unit = b.field.packs()[0]
+	assert_eq(sq.full_strength, Battlefield.heads(sq), "fielded, it remembers its heads")
+	var whole := Battlefield.strike_of(sq)
+	if sq.members.is_empty():
+		sq.strength = maxi(1, sq.strength / 2)
+	else:
+		sq.set_members([[str(sq.members[0][0]), 1]])
+	var worn := Battlefield.strike_of(sq)
+	assert_true(worn < whole or Battlefield.heads(sq) == sq.full_strength, "worn, it strikes for less: %d against %d" % [worn, whole])
+	var d: Dictionary = JSON.parse_string(JSON.stringify(SaveGame.to_dict(b)))
+	var back := SaveGame.from_dict(d)
+	var again: Unit = back.field.unit_by_id(sq.id)
+	assert_eq(again.full_strength, sq.full_strength, "the count comes back")
+	assert_eq(Battlefield.strike_of(again), worn, "and so does its strike")
+	for u in d["field"]["units"]:
+		(u as Dictionary).erase("full_strength")
+	var old := SaveGame.from_dict(d)
+	var before: Unit = old.field.unit_by_id(sq.id)
+	assert_eq(before.full_strength, 0, "a save from before carries none")
+	assert_eq(Battlefield.strike_of(before), clampi(before.squad, 1, 4) * Battlefield.STRIKE_PER_PIP, "so the pack strikes for its rating whole")
+
+
 ## A pusher's wall segment rides in the save (the long wall brief 3.3).
 func test_a_pushers_wall_segment_rides_in_the_save() -> void:
 	var b := _battle()
@@ -161,10 +188,13 @@ func test_a_resumed_battle_dresses_its_spawns_and_its_fight_calls_content_up() -
 		if comp.has("hunts"):
 			assert_eq(spawned.hunts, str(comp["hunts"]), "%s: by its caveat" % spawned.composition)
 	var m: Unit = b.mechs()[0]
+	# A pack that fields a Gel, sent by the rift: whichever of the tier's formations holds one
+	# (the Meadow's stand in its formations since the pass of 10 November).
 	var sq: Unit = null
-	for p in b.field.packs():
-		if p.foe_id == "gel":
-			sq = p
+	for c in b.db.compositions("meadow", 1, "formation"):
+		if sq == null and (c["members"] as Array).any(func(e) -> bool: return str(e[0]) == "gel"):
+			sq = b.field.emerge(c, b.map.rift)
+	assert_true(sq != null, "the Meadow fields a Gel in a formation")
 	_engage(b, sq, m)
 	var sk := b.attack(sq, [m])
 	sk.begin()

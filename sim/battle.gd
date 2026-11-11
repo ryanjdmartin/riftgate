@@ -133,6 +133,14 @@ var rupture_turn: int = -1        # the phase the seal broke at; -1 while it hol
 var stall_guard: bool = false     # the Rupture came by the guard, not the tally
 var elites_spawned: Array = []    # the elite compositions spawned this battle, by id
 var field_menace: int = 0         # the field's menace at the start, the thresholds' base
+## The fodder's trial (Ryan, 10 November, after his play: "If fracture rewards were a little lower
+## for fodder, then it becomes a bit more of a quantity game for non-elites and I'll feel more
+## like sending my flankers out"): the share, in hundredths, of a kill's menace the Rupture meter
+## counts when its pack came as no elite, 100 the game's. The tally itself (salvage's and
+## Anathema's) is never touched: the meter reads it less what the trial held back. A debug
+## build's SETTINGS → TRIALS → FODDER and RIFTGATE_FODDER set it (Settings.field_trial).
+static var fodder_trial: int = 100
+var meter_held: int = 0           # hundredths of menace the fodder's trial has kept off the meter this battle; 0 with no trial
 ## The battle's share of the run's Sponsorship measures (the bible's Sponsorship row): the
 ## hexes its machines move on the map, and each fight's own (Skirmish.sponsorship), added up.
 var sponsorship := {"hexes_moved": 0, "guarded": 0, "damaging_spends": 0, "quiet_spends": 0}   # ContentDB.SPONSORSHIP_MEASURES
@@ -215,9 +223,16 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 		if not forms.is_empty():
 			for k in range(nf):
 				placed.append([forms[k % forms.size()], Hex.offset_to_axial((w_cols * (k + 1)) / (nf + 1), OPENING_FLOOR_ROW), 1])
-		if not patrols.is_empty():
+		# No hunter stands on the field at turn one (Ryan, 8 November: "no hunters should be on the
+		# field turn one, but that was a formation pass issue, I think"): the opening's patrols are
+		# the tier's that push, in their order, and the hunting packs come with the tide and the
+		# tears. A tier whose patrols all hunt opens with them all the same.
+		var openers: Array = patrols.filter(func(c: Dictionary) -> bool: return str(c.get("hunts", "")).is_empty())
+		if openers.is_empty():
+			openers = patrols
+		if not openers.is_empty():
 			for k in range(np):
-				placed.append([patrols[k % patrols.size()], Hex.offset_to_axial(0 if k % 2 == 0 else w_cols - 1, OPENING_FLOOR_ROW), 2])
+				placed.append([openers[k % openers.size()], Hex.offset_to_axial(0 if k % 2 == 0 else w_cols - 1, OPENING_FLOOR_ROW), 2])
 	var gate_o := Hex.axial_to_offset(map.gate)
 	var i := 0
 	var face_rng := RandomNumberGenerator.new()
@@ -310,9 +325,15 @@ static func make_boss_unit(content: ContentDB, faction_id: String, t: int, boss_
 ## A hunter catches at the engage range, 1 (Unit.ENGAGE_RANGE), and the machines open eight rows or
 ## more below the floor, so a hunter always finds a row clear of them.
 const OPENING_FLOOR_ROW := 1   # the row nearest the rift a pack opens on: the rift's own row is the spawns' (10 November, the mouth no longer rows)
+## How many moves farther from the wall the opening's packs stand, a trial beside Ramp.depth_trial
+## and 0 for the opening as the brief has it (10 November): the opening is measured from the wall,
+## so a deeper field alone leaves a formation's first walk on the wall as before; a debug build's
+## SETTINGS → OPENING and RIFTGATE_OPENING set it (Settings.field_trial).
+static var opening_trial: int = 0
 
 
 func _open_row(sq: Unit, col: int, moves: int) -> void:
+	moves += maxi(0, opening_trial)
 	var row := maxi(OPENING_FLOOR_ROW, field.apron_row() - moves * sq.movespeed)   # placeholder (the long wall brief)
 	sq.pos = field.landing(sq, Hex.offset_to_axial(col, row), OPENING_FLOOR_ROW)
 	while sq.behaviour == "hunt" and row > OPENING_FLOOR_ROW and field.catch_of(sq) != null:
@@ -331,6 +352,11 @@ static func boss_home(m: BattleMap) -> Vector2i:
 
 func is_sealed() -> bool:
 	return boss != null and boss.sealed
+
+
+## What the Rupture meter reads: the menace killed, less what the fodder's trial held back.
+func meter() -> int:
+	return (menace_killed * 100 - meter_held) / 100
 
 
 ## The Rupture: the seal breaks, by the last Fracture or by the stall guard. Engaging the boss
@@ -353,7 +379,7 @@ func rupture(by_guard: bool = false) -> void:
 ## elite the tier names at it spawns at the rift, and the last breaks the seal; then the stall
 ## guard. Read as a fight ends, after the map has taken its result.
 func _fractures() -> void:
-	while fractures < thresholds.size() and menace_killed >= int(thresholds[fractures]):
+	while fractures < thresholds.size() and meter() >= int(thresholds[fractures]):
 		fractures += 1
 		field.log.append("FRACTURE %d of %d" % [fractures, thresholds.size()])
 		if Ramp.elite_fractures_at(tier).has(fractures):
@@ -1461,9 +1487,13 @@ func finish_skirmish() -> void:
 		action_hexes.erase(ms.unit.id)
 	for sq in current.packs:
 		var by_type := current.kills_by_type(sq)
+		var whole := 0
 		for cid in by_type.keys():
 			foes_killed += int(by_type[cid])
-			menace_killed += db.menace(str(cid)) * int(by_type[cid])
+			whole += db.menace(str(cid)) * int(by_type[cid])
+		menace_killed += whole
+		if fodder_trial < 100 and sq.composition_size != "elite":
+			meter_held += whole * (100 - clampi(fodder_trial, 0, 100))
 	for k in current.sponsorship.keys():
 		sponsorship[k] = int(sponsorship.get(k, 0)) + int(current.sponsorship[k])
 	field.apply_skirmish_result(current)

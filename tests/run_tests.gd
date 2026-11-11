@@ -86,6 +86,12 @@ func _run(f: String, inst, method: String) -> void:
 	_total_tests += 1
 	inst.failures.clear()
 	inst.checks = 0
+	# Every test starts on the engine's own switches, so one that turns the injury rule on to read
+	# it (off in the game since 9 November) never leaves it on for the next.
+	Skirmish.injuries = false
+	Ramp.depth_trial = 0
+	Battle.opening_trial = 0
+	Battle.fodder_trial = 100
 	inst.script_errors_expected = 0
 	_errors.take()
 	inst.call(method)

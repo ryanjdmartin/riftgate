@@ -5682,6 +5682,792 @@ stacks as its machine laid them, Ryan's word, `ccr-a0b35006-od22d2` after `31a87
 stands: no piece the Lammergeier fields here strikes more than once, and nothing on it deepens or
 doubles a stack, so every Mine it lays carries what it carried when the read ran.
 
+## 9 November, the formation pass's reads
+
+The reads behind `docs/formation_proposal.md` (the decision they inform: the grids' ratings,
+gates and pruning, and section 12's hunter questions; nothing moved in content). Method: the
+proposal's patrols and formations were written to a scratch worktree's `content/factions.json`
+(the elites and escorts as content has them), validated by `sim/content_db.gd`, and read by the
+curve read (`tools/balance.gd --packs curve --seeds 30 --sizes patrol,formation`), random and
+greedy, each composition against a team cut to one, two, three and four machines, each cell its
+band (free: random wins half or more; a decision: greedy wins half or more and random less; a
+wall: greedy wins less than half) with greedy's mean hull lost. Four teams in stock, by `--team`
+(new today): the default four (the Honey Badger, the Clydesdale, the Kite, the Baboon) on every
+tier; a light four (the Skua, the Prairie Dog, the Cottonmouth, the Puffin), the Skua alone the
+rating of one's read, on every tier; a tier-two four (the Wild Boar, the Clydesdale, the Buzzard,
+the Dingo) on tiers two and three; a tier-three four (the Swallowtail, the Musk Ox, the Ammit, the
+Giant Petrel) on tier three. Today's compositions were read with the default four beside them.
+Every cell is a direction at 30 seeds and is called one; the proposal's tables (its section 12)
+carry every cell, and the gates and the pruning it proposes are read off them by the rule in its
+section 5. A stall (the fight bot's sixty rounds) counts as no win, so a wall with little hull
+lost reads as a stall and is named where it shows.
+
+### The curve reads: today's compositions and the proposal's
+
+The counts at the rating, by tier and size (a cell a composition at a tier; free / a decision /
+a wall; greedy's mean hull lost at the rating):
+
+| Read | Tier | Size, rating | Cells | Free | Decision | Wall | Hull lost |
+|---|---|---|---|---|---|---|---|
+| Today, the default four | 1 | formation, 3 | 8 | 8 | 0 | 0 | 10% |
+|  | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 24% |
+|  | 2 | formation, 3 | 13 | 9 | 4 | 0 | 14% |
+|  | 2 | patrol, 1 | 8 | 3 | 2 | 3 | 54% |
+|  | 3 | formation, 3 | 17 | 8 | 7 | 2 | 35% |
+|  | 3 | patrol, 1 | 4 | 1 | 3 | 0 | 50% |
+| Default four | 1 | formation, 3 | 15 | 13 | 2 | 0 | 9% |
+|  | 1 | patrol, 1 | 12 | 12 | 0 | 0 | 7% |
+|  | 1 | patrol, 2 | 5 | 5 | 0 | 0 | 7% |
+|  | 2 | formation, 3 | 15 | 11 | 4 | 0 | 15% |
+|  | 2 | patrol, 1 | 10 | 8 | 2 | 0 | 21% |
+|  | 2 | patrol, 2 | 5 | 5 | 0 | 0 | 8% |
+|  | 3 | formation, 3 | 18 | 8 | 8 | 2 | 35% |
+|  | 3 | patrol, 1 | 6 | 4 | 2 | 0 | 30% |
+|  | 3 | patrol, 2 | 6 | 5 | 1 | 0 | 13% |
+| Light four | 1 | formation, 3 | 15 | 9 | 3 | 3 | 26% |
+|  | 1 | patrol, 1 | 12 | 8 | 1 | 3 | 41% |
+|  | 1 | patrol, 2 | 5 | 3 | 1 | 1 | 28% |
+|  | 2 | formation, 3 | 15 | 4 | 7 | 4 | 41% |
+|  | 2 | patrol, 1 | 10 | 3 | 0 | 7 | 73% |
+|  | 2 | patrol, 2 | 5 | 2 | 0 | 3 | 56% |
+|  | 3 | formation, 3 | 16 | 0 | 7 | 9 | 72% |
+|  | 3 | patrol, 1 | 6 | 0 | 1 | 5 | 92% |
+|  | 3 | patrol, 2 | 6 | 3 | 0 | 3 | 55% |
+| Tier-two four | 2 | formation, 3 | 17 | 11 | 6 | 0 | 18% |
+|  | 2 | patrol, 1 | 10 | 9 | 0 | 1 | 21% |
+|  | 2 | patrol, 2 | 5 | 5 | 0 | 0 | 9% |
+|  | 3 | formation, 3 | 18 | 9 | 7 | 2 | 37% |
+|  | 3 | patrol, 1 | 6 | 5 | 1 | 0 | 30% |
+|  | 3 | patrol, 2 | 6 | 5 | 1 | 0 | 15% |
+| Tier-three four | 3 | formation, 3 | 19 | 9 | 6 | 4 | 44% |
+|  | 3 | patrol, 1 | 6 | 0 | 4 | 2 | 70% |
+|  | 3 | patrol, 2 | 6 | 5 | 0 | 1 | 24% |
+
+The proposal's table counts the candidates before the pruning its section 5 proposes (the
+default four's tier-one patrol count of twelve includes the needler pair, the antlion pair and
+the salamander pair, each pruned, and the ember pair, written after the first read). The light
+four is tier one's stock, so its tier-two and tier-three rows read a light team a tier short, not
+a light flanker of the tier.
+
+Read, in bands, a direction:
+
+- **Tier one's formations stay free for three.** Today's eight read free at their rating (10%
+  hull); the proposal's fifteen read thirteen free and two decisions, both massive-anchored (the
+  sandworm ambush at 37%, the magma vent at 41%, the only two of today's that were decisions
+  for two), and the eight-slot variants move no band at three against the six they fill out
+  (the goblin horde against the warband, the needler thicket against the swarm, the grave throng
+  against the host, the ember pyre against the pit): the counts are at the slots' ceiling and
+  the fodder formations' lever is the refit's numbers, held until Ryan plays Phase 2. The light
+  four finds three of them decisions at three (the treant grove 16%, the barrow mound 23%, the
+  ember pyre 27%) and walls on the three with a massive, since four stock lights cannot pass a
+  point of plate on thirty-six HP that regrows; the knights wall it too.
+- **The true ones exist.** Every patrol rated one is free for the Badger alone (7% hull against
+  today's 24% with the knight's retinue's wall among them), and free or a decision for the Skua
+  alone in every domain but the Peak's, whose salamander pair, trio and drakes' perch wall it
+  (91 to 100% hull): the ember pair, written after the first read, is free for both (25% and
+  0%). The ghost light is the Skua's one decision at tier one (51%); the Marsh's knight's
+  retinue, today a patrol for one and a wall for one, is a two in the proposal and reads one
+  (a wall for the Badger alone, free for a pair at a third of its hull; a wall for the light four
+  up to three).
+- **The twos.** The proposal's heavy patrols read as twos where they carry a knight, a pit or a
+  queen: the antlion trio a decision for the Badger alone (36%) and a wall for the Skua, the pit
+  pair a decision for the Badger and the Boar alone (76%), the queen's hunt a wall for either
+  alone and free for a pair, the knight's retinue a wall for the Badger alone, the knight and
+  wights a wall for the Boar alone and a decision for the Badger at 88% of its hull, the lizard trio and the wyverns' perch walls for the Boar alone, the grenade and
+  balloon flights walls for the Skua and free for every pair. The wolf pack (free for the Skua
+  at 21%, for the Badger at 4%), the warg pack (a decision for the Skua at 40%, free for the
+  Badger and the Boar) and the bomb flight (a decision for the Skua at 48%, free for the Badger)
+  read as ones: a blow of four kills a wolf or a bomb whole.
+- **Tier two, read by its own team**, keeps the shape: the single-anchor formations are decisions
+  for two and free for three (the treant march 10% at three, the pit ambush 16%, the wyvern roost
+  10%, the grenade volley 8%, the grave field and the death knight's retinue the exceptions at
+  21% and 36%), the worm and the forge true threes (the sandworm pit 44%, the magma forge 52%),
+  and the two-anchor candidates written after the first read are true threes: the grove and
+  bloom (a dusk treant and a rotbloom) a wall for two and a decision for three at 41%, the pit
+  wall (four pit antlions behind the Waste's casters) at 43%, the frost and bloom at tier three a
+  decision for three at 56% and for four at 31% a tier short. The fodder formations read
+  decisions for one (the guard horde 66%, the gel drift 73%, the barbed swarm 89%, the djinn's
+  mirage 78%).
+- **The pruning the bands name**: fourteen candidates whose bands match another's at every size
+  with the same question (the proposal's section 5), the six-slot half of each ramp pair among
+  them, the antlion pair against the trio, the needler pair against the scouts, the salamander
+  pair against the trio, the djinn's mirage against the barbed swarm, the bubble pair, the
+  gorgon glare today against the great swarm.
+- **A stall.** The light four against the grave field reads a wall at four with 12% hull lost,
+  which is a stall, traced (`--trace`, the greedy rung, seed 1): the Grave Giant knits three a
+  round while four light kits chip one or two through its plate, and its blow of eight never
+  passes the shields they raise; sixty rounds, nobody loses hull. The Marsh's giants carry no
+  escalation (a cleaver, a knit, a rise), so a kit that cannot out-damage the knit cannot lose or
+  win; the proposal's hole 8.
+- **The elites, today's cells, for the elites' item** (section 12 of the bible): the lone elites
+  are free for the Badger alone (the Reaper at 0%, the Fell Rider 11%, the Thunder Ape 30%,
+  the Rust Monster 18%, the Shaman's warband 13%), decisions for one at most (the Nob 28%, the
+  Leshy's hunt 42%, the Wild Hunt 55%); the ones with a massive or a court are decisions for
+  two or three (the Old Man's rising 41% at three, the Skeleton King's court 50% at three, the
+  Firelord's rising 11% at three, the Astromancer 31% at two); every elite is free for four at
+  tiers one and two, the Old Man at tier three a decision for four. Unchanged by this pass; his
+  "don't downgrade them" stands.
+- **Tier three, read by its own team** (the Swallowtail, the Musk Ox, the Ammit, the Giant
+  Petrel), reads harder alone than tier two's did, since the Swallowtail is a support frame
+  (every fodder patrol a decision for it at 42 to 75% hull where the Boar found them free), and
+  much the same at three: the frost and bloom (72%), the sandworm flats (76%), the queen's court
+  (48%), the dragon's roost (43%) and the magma caldera (89%) are decisions for three; the lich's
+  court walls three and is a decision for four on every read (59 to 81% hull), the dread host
+  walls four on every read (85 to 96%), and the charnel pit walls three for this team (68%) where
+  the default and tier-two teams found it a decision (46%, 61%). The Marsh had no tier-three
+  formation that is a decision for three, so today's wraith choir (two death knights, two wights,
+  two wraiths, two spectres) was read again: a decision for three for the default four (68%) and the tier-two four (71%), a wall for the
+  tier-three four at three (84%) and a decision at four (30%), the charnel pit's shape (46%, 61%,
+  68% and 16%): the Marsh's tier-three formations are decisions for the mixed stock teams and walls
+  for a tier-three trio with no burst for the knit, the Swallowtail, the Musk Ox and the Ammit.
+  A thinner host (one death knight, three wights, two wraiths, a spectre) was written and read
+  after that: a decision for three for the default four at 27% and for the tier-three four at 44%, a wall
+  for two on both: the Marsh's tier-three three, the choir and the pit beside it.
+
+### The campaign runner: 40 runs on the steppe, today's content and the proposal's
+
+`tools/campaign_run.gd -- --runs 40 --shape steppe`, the same seeds, on main's content as it
+stands (267 s) and on the proposal's grids in a scratch worktree (the same code; the patrols and
+formations the proposal's, the elites and escorts today's). The greedy rung, the defence rule on
+the map, three of the tender at random: the floor the brief built for these reads, not the
+player (the to-do's runner line).
+
+| Measure | Today | The proposal |
+|---|---|---|
+| Runs won | 0 of 40 | 0 of 40 |
+| Turns a run | 5.85 (5 to 8) | 6.30 (5 to 8) |
+| The turn the first city fell | 0.50 | 0.60 |
+| Battles: won, held after a wipe, fell | 1%, 14%, 83% of 191 | 3%, 18%, 77% of 206 |
+| Battles ended in a team wipe | 92% | 91% |
+| Machines wrecked a battle | 1.71 | 1.69 |
+| Components destroyed a battle | 0.98 | 0.52 |
+| Phases a battle | 6.17 (1 to 12) | 6.16 (1 to 11) |
+| Gate damage a battle | 128 | 116 |
+| Peaks of Rift Pressure a battle | 1.18 | 1.27 |
+| Patrols the tears sent a battle | 1.86 (0 to 28) | 1.57 (0 to 28) |
+| Elites spawned a battle | 0.42 | 0.45 |
+| Fractures reached a battle (of about 3) | 0.87 | 0.99 |
+| Battles reaching the Rupture | 16% | 21% |
+| The pressure ratio, a run's mean | 1.02 (0.30 to 2.65) | 1.25 (0.29 to 3.62) |
+| Turns above 1.0, percent of a run's | 26 | 28 |
+| Battles by three machines: won, fell | 6%, 57% of 47 | 15%, 55% of 45 |
+| Battles by one machine: fell | 97% of 78 | 73% of 80 |
+
+The fights, by the pack's rating and the machines the defence rule sent at it:
+
+| A fight for | Machines in it | Today: fights, won | The proposal: fights, won |
+|---|---|---|---|
+| 1 | 1 | 86, 63% | 135, 82% |
+| 1 | 2 | 51, 82% | 28, 100% |
+| 1 | 3 | 31, 90% | 4, 100% |
+| 2 | 1 | — | 11, 27% |
+| 2 | 2 | — | 2, 0% |
+| 3 | 1 | 169, 8% | 229, 10% |
+| 3 | 2 | 69, 56% | 78, 66% |
+| 3 | 3 | 53, 100% | 51, 100% |
+| 4 | 1 | 30, 26% | 55, 27% |
+| 4 | 2 | 37, 59% | 31, 87% |
+| 4 | 3 | 15, 100% | 12, 91% |
+
+Read, in bands, a direction. The campaign stays a wall for this bot either way (no run won, the
+first city on the first turn, nine battles in ten a wipe): the defence rule sends a lone machine at
+a formation 229 times and wins one in ten, which is the floor's shape, not the content's. Where the
+content shows: a patrol rated one fought by one machine is won 82% on the proposal's grids against
+63% today, so the true ones read as ones for the bot's random tier-one machines; a pack rated two
+fought alone is won 27% of 11, a fight for two as its rating says; the pressure ratio rises (1.25
+against 1.02, since more patrols stand on the field and a two counts two); components destroyed a
+battle halve (0.52 against 0.98) and the gate takes less (116 against 128), the lighter patrols
+costing less; a battle by three machines is won 15% against 6%. One fight stalled past the bot's sixty
+rounds on the proposal's grids (none today), unread: the runner names no pack for it.
+
+## 9 November, the refit pass's first reads
+
+The reads behind the refit pass's brief (`docs/briefs/refit_pass.md`; the decisions they inform:
+the defensive basic and its rule, the regen's size, the heat levers, breach under a regen, the
+pushers' hull budget; nothing moved in content). Method: the what-if (`sim/refit.gd`, `--refit
+SPEC` on both runners) lays the model over the loaded content for a run and names what it did in
+the report's head. `die` swaps every stock shield and vent for a defensive basic in its own slot
+(a shield spent on its own machine for the Armoured piece, any other shield for the Barrier piece,
+a vent for whichever of the two the die lacks, else a tier-zero gun), leaves the four machines
+the model cannot field undealt (the Polar Bear, the Puffin, the Whip Scorpion, the Swallowtail)
+and lets the Stingray cool one; the tier-one Blast Door and Shoring Jack stand in for the Halo
+Projector and the tier-zero Jack the audit names. That fill puts a Barrier on nearly every die;
+`vents=guns` gives a vent's slot a gun instead, so a die holds a defensive basic only where a
+shield stood, which is the audit's own deal (a Barrier where a Halo stood: the Baboon, the
+Prairie Dog, the Stingray, the Cassowary, the Cottonmouth, and the Arsenal's two). `regen=half` gives every chassis half its gauge
+a round, rounded up (the Badger 4, the Clydesdale and the Baboon 5, the Kite 8, the Skua 6), and
+`regen=N` a flat N; `heat1` puts the tier-zero guns at heat one (the Twin Autoguns, the Rivet
+Gun); `cooling=N` cools every chassis N more; `barrier=off`, `cooldown`, `heatN` and `ward` are
+rules for the Barrier basic (none among the basics, an Armoured piece or a gun in its place;
+dark the round after it is spent; N heat a spend; a Ward, the Decoherence Veil, in its place);
+`all` is the die, half the gauge and heat one, and is what a section below means by the model
+where it names no deal: a Barrier on every die. `--guard 0.05` is the
+aggressor's habit for the fight bot (`Policy.guard_weight`: a block, a Barrier, Armoured or a
+Ward, at a twentieth of its worth, so the bot never rerolls for one and spends one only when its
+die is stuck showing it), read against the rung as it is, which takes every block worth making.
+The injury rule is off in every read but the one that names it (`Skirmish.injuries`, off in the
+game since this day; `--injury on` reads it back).
+
+The curve read (`tools/balance.gd --packs curve --seeds 30`), random and greedy, each composition
+against a team cut to one, two, three and four machines; a cell now carries greedy's mean rounds
+and its stalled fights beside the band and the hull lost. The default four (the Honey Badger, the
+Clydesdale, the Kite, the Baboon, in that cut order) unless a team is named; the light four is
+the Skua, the Prairie Dog, the Cottonmouth and the Cassowary (the Puffin is back in design), and
+the tier-two four the Wild Boar, the Clydesdale, the Buzzard and the Dingo. Probes of one
+composition at 20 seeds (scratch tools over the same engine: the share of spends by component,
+the heat a fight) are named as probes. Every cell is a direction at 30 seeds or fewer and is
+called one; the bot is a floor that reads this round's forecast, never a player.
+
+### Tier one, the default four: each part alone and the model
+
+The counts at the rating (a patrol by the Badger alone, a formation by the Badger, the Clydesdale
+and the Kite, an elite by the four), today's compositions:
+
+| Read | Tier | Size, rating | Cells | Free | Decision | Wall | Hull lost | Rounds | Stalled fights |
+|---|---|---|---|---|---|---|---|---|---|
+| Today | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 24% | 4.7 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 10% | 3.6 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 2% | 2.3 | 0 |
+| Today, the injury rule on | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 24% | 4.7 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 10% | 3.7 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 2% | 2.3 | 0 |
+| The regen alone (regen=half) | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 20% | 4.6 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 9% | 3.6 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 1% | 2.3 | 0 |
+| The die alone (die,heat1) | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 23% | 4.8 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 3% | 4.3 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 0% | 2.5 | 0 |
+| The die, regen 2 | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 20% | 4.8 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 3% | 4.2 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 0% | 2.5 | 0 |
+| The die, regen 4 | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 19% | 4.8 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 3% | 4.2 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 0% | 2.5 | 0 |
+| The model (all) | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 19% | 4.8 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 3% | 4.2 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 0% | 2.5 | 0 |
+| The model, the basics free (die,regen=half) | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 19% | 4.8 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 3% | 4.2 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 0% | 2.5 | 0 |
+| The model, cooling one more | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 19% | 4.8 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 3% | 4.2 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 0% | 2.5 | 0 |
+
+By composition at its rating, the patrols and the formations (the elites move by a point or two:
+every one is free for four on every read, the Old Man's rising 16% today and 3% under the model):
+
+| Composition | Size | Tier | For | Today | The regen alone | The die alone | The model |
+|---|---|---|---|---|---|---|---|
+| `knights_retinue` | patrol | 1 | 1 | wall 100%, 3.7 r | wall 100%, 3.7 r | wall 100%, 4.9 r | wall 100%, 4.9 r |
+| `revenant_shamblers` | patrol | 1 | 1 | free 2%, 3.4 r | free 1%, 3.4 r | free 1%, 3.4 r | free 0%, 3.4 r |
+| `gel_cluster` | patrol | 1 | 1 | free 14%, 13.0 r | free 10%, 12.9 r | free 13%, 13.0 r | free 9%, 12.9 r |
+| `wolf_pack` | patrol | 1 | 1 | free 2%, 3.5 r | free 0%, 3.5 r | free 1%, 3.5 r | free 0%, 3.5 r |
+| `bomb_flight` | patrol | 1 | 1 | free 12%, 4.8 r | free 6%, 4.4 r | free 12%, 4.8 r | free 5%, 4.4 r |
+| `salamander_trio` | patrol | 1 | 1 | free 23%, 4.0 r | free 11%, 3.7 r | free 22%, 3.7 r | free 9%, 3.7 r |
+| `antlion_pair` | patrol | 1 | 1 | free 9%, 2.5 r | free 5%, 2.5 r | free 7%, 2.5 r | free 3%, 2.5 r |
+| `needler_scouts` | patrol | 1 | 1 | free 26%, 3.0 r | free 26%, 3.0 r | free 26%, 3.0 r | free 26%, 3.0 r |
+| `barrow_mound` | formation | 1 | 3 | free 3%, 4.3 r | free 1%, 4.3 r | free 1%, 4.4 r | free 1%, 4.2 r |
+| `grave_host` | formation | 1 | 3 | free 1%, 3.0 r | free 1%, 3.0 r | free 1%, 3.0 r | free 1%, 3.0 r |
+| `goblin_warband` | formation | 1 | 3 | free 0%, 2.4 r | free 0%, 2.4 r | free 0%, 2.4 r | free 0%, 2.4 r |
+| `treant_grove` | formation | 1 | 3 | free 3%, 4.6 r | free 1%, 4.6 r | free 2%, 5.0 r | free 1%, 4.7 r |
+| `ember_pit` | formation | 1 | 3 | free 0%, 2.4 r | free 0%, 2.4 r | free 0%, 2.4 r | free 0%, 2.4 r |
+| `magma_vent` | formation | 1 | 3 | free 32%, 4.9 r | free 32%, 4.9 r | free 8%, 7.4 r | free 8%, 7.4 r |
+| `needler_swarm` | formation | 1 | 3 | free 6%, 2.2 r | free 6%, 2.2 r | free 3%, 2.3 r | free 3%, 2.3 r |
+| `sandworm_ambush` | formation | 1 | 3 | free 34%, 5.4 r | free 34%, 5.4 r | free 11%, 7.3 r | free 11%, 7.3 r |
+
+The same compositions fought short-handed, which is most of a battle's fights for the bot's
+defence rule (the campaign's table below): the formations and the elites by the Badger alone, and
+by the Badger and the Clydesdale.
+
+| Read | Tier | Size, rating | Cells | Free | Decision | Wall | Hull lost | Rounds | Stalled fights |
+|---|---|---|---|---|---|---|---|---|---|
+| Today | 1 | formation, 1 | 8 | 1 | 1 | 6 | 91% | 7.8 | 0 |
+|  | 1 | elite, 1 | 11 | 6 | 3 | 2 | 41% | 7.0 | 0 |
+| The regen alone | 1 | formation, 1 | 8 | 2 | 3 | 3 | 72% | 9.3 | 0 |
+|  | 1 | elite, 1 | 11 | 9 | 1 | 1 | 25% | 6.6 | 0 |
+| The die alone | 1 | formation, 1 | 8 | 1 | 1 | 6 | 90% | 8.5 | 0 |
+|  | 1 | elite, 1 | 11 | 7 | 3 | 1 | 41% | 7.2 | 0 |
+| The die, regen 2 | 1 | formation, 1 | 8 | 1 | 4 | 3 | 83% | 9.9 | 0 |
+|  | 1 | elite, 1 | 11 | 8 | 2 | 1 | 29% | 6.9 | 0 |
+| The model (the Badger regains 4) | 1 | formation, 1 | 8 | 2 | 3 | 3 | 69% | 10.2 | 0 |
+|  | 1 | elite, 1 | 11 | 9 | 1 | 1 | 22% | 6.8 | 0 |
+| Today | 1 | formation, 2 | 8 | 6 | 2 | 0 | 28% | 6.3 | 0 |
+|  | 1 | elite, 2 | 11 | 10 | 1 | 0 | 12% | 4.7 | 0 |
+| The regen alone | 1 | formation, 2 | 8 | 6 | 2 | 0 | 21% | 6.0 | 0 |
+|  | 1 | elite, 2 | 11 | 10 | 1 | 0 | 10% | 4.6 | 0 |
+| The die alone | 1 | formation, 2 | 8 | 5 | 3 | 0 | 21% | 7.1 | 0 |
+|  | 1 | elite, 2 | 11 | 10 | 1 | 0 | 7% | 5.1 | 0 |
+| The die, regen 2 | 1 | formation, 2 | 8 | 6 | 2 | 0 | 16% | 6.7 | 0 |
+|  | 1 | elite, 2 | 11 | 10 | 1 | 0 | 6% | 4.9 | 0 |
+| The model | 1 | formation, 2 | 8 | 6 | 2 | 0 | 15% | 6.6 | 0 |
+|  | 1 | elite, 2 | 11 | 10 | 1 | 0 | 5% | 4.8 | 0 |
+
+By composition, the Badger alone:
+
+| Composition | Size | Tier | For | Today | The regen alone | The die, regen 2 | The model |
+|---|---|---|---|---|---|---|---|
+| `barrow_mound` | formation | 1 | 1 | wall 100%, 12.6 r | decision 36%, 17.3 r | decision 82%, 16.8 r | decision 31%, 16.7 r |
+| `grave_host` | formation | 1 | 1 | wall 91%, 11.4 r | decision 78%, 13.8 r | decision 81%, 15.9 r | decision 75%, 18.4 r |
+| `goblin_warband` | formation | 1 | 1 | free 51%, 8.0 r | free 34%, 7.7 r | free 33%, 8.1 r | free 28%, 7.9 r |
+| `treant_grove` | formation | 1 | 1 | wall 100%, 11.1 r | free 45%, 15.7 r | decision 85%, 15.1 r | free 37%, 15.7 r |
+| `ember_pit` | formation | 1 | 1 | wall 99%, 5.3 r | wall 99%, 5.6 r | wall 99%, 6.1 r | wall 99%, 6.0 r |
+| `magma_vent` | formation | 1 | 1 | wall 100%, 4.5 r | wall 100%, 4.9 r | wall 100%, 7.0 r | wall 100%, 7.2 r |
+| `needler_swarm` | formation | 1 | 1 | decision 86%, 6.3 r | decision 84%, 6.3 r | decision 84%, 6.3 r | decision 83%, 6.3 r |
+| `sandworm_ambush` | formation | 1 | 1 | wall 100%, 3.2 r | wall 100%, 3.2 r | wall 100%, 3.7 r | wall 100%, 3.7 r |
+| `fell_riders_hunt` | elite | 1 | 1 | free 11%, 3.6 r | free 1%, 3.5 r | free 4%, 3.6 r | free 1%, 3.5 r |
+| `the_reaper` | elite | 1 | 1 | free 0%, 2.6 r | free 0%, 2.6 r | free 0%, 2.6 r | free 0%, 2.6 r |
+| `the_wild_hunt` | elite | 1 | 1 | decision 55%, 8.5 r | free 30%, 7.8 r | free 39%, 8.2 r | free 27%, 7.8 r |
+| `shamans_warband` | elite | 1 | 1 | free 13%, 6.8 r | free 5%, 6.5 r | free 6%, 6.7 r | free 4%, 6.4 r |
+| `the_nob` | elite | 1 | 1 | decision 28%, 5.3 r | free 6%, 4.8 r | free 15%, 4.9 r | free 5%, 4.8 r |
+| `cinder_tortoises_brood` | elite | 1 | 1 | decision 63%, 14.1 r | free 18%, 13.2 r | decision 39%, 13.9 r | free 16%, 13.5 r |
+| `thunder_apes_rampage` | elite | 1 | 1 | free 30%, 6.6 r | free 15%, 5.5 r | free 15%, 6.0 r | free 11%, 5.6 r |
+| `gilgamesh_wanders` | elite | 1 | 1 | free 36%, 12.5 r | free 1%, 11.0 r | free 12%, 11.2 r | free 1%, 11.0 r |
+| `old_mans_rising` | elite | 1 | 1 | wall 100%, 3.0 r | wall 100%, 3.0 r | wall 100%, 3.5 r | wall 100%, 3.5 r |
+| `pilgrims_wake` | elite | 1 | 1 | wall 97%, 9.2 r | decision 94%, 9.5 r | decision 77%, 10.9 r | decision 75%, 11.0 r |
+| `rust_monsters_scavenge` | elite | 1 | 1 | free 18%, 5.1 r | free 2%, 4.8 r | free 8%, 4.8 r | free 2%, 4.8 r |
+
+Read, in bands, a direction:
+
+- **The two parts do different jobs.** The regen alone, on today's dice, halves what a lone
+  Badger loses to a plain-blow patrol (the salamander trio 23% to 11%, the bomb flight 12% to
+  6%, the antlion pair 9% to 5%) and moves nothing at three, where little is lost but to the two
+  formations with a massive. The die alone moves nothing for a lone machine and takes those two
+  from a third of the trio's hull to a tenth (the magma vent 32% to 8%, the sandworm ambush 34%
+  to 11%), each two rounds longer. Together they add: 19% at one, 3% at three.
+- **Every cell that still costs hull is a breach.** The sandworm's maw and the magma elemental's
+  fist (8, breach), the needlers (3, breach), the knights' cleaver (6, breach): the regen never
+  meets them, so the needler scouts cost a lone Badger 26% on every read and the knights'
+  retinue walls it on every read. Five of tier one's rank-and-file lines carry breach (the
+  needler, the sandworm, the zombie knight, the bomb, the magma elemental), none of the Meadow's.
+- **The regen's size shows short-handed.** At the rating its sizes read alike (2, 4 and half the
+  gauge: 19 to 20% at one, 3% at three). A lone Badger against a formation for three is where it
+  moves: six walls of eight with no regen, three walls and four decisions at 81 to 85% of its
+  hull at 2, and at 4 (half its gauge) the barrow mound a decision at 31% and the treant grove
+  free at 37%, each over sixteen rounds; the breach formations are walls on every read. By two
+  machines the Meadow's and the Marsh's formations cost 1 to 2% under the model against 3 to 26%
+  today.
+- **The lone elites' blows are plain**, so a lone Badger loses 22% to them under the model against
+  41% today (Gilgamesh 36% to 1%, the Nob 28% to 5%, the Cinder Tortoise's brood 63% to 16%, the
+  Wild Hunt 55% to 27%); the Old Man's rising, a breach, walls it on every read. One more read
+  for the elites' own item (the bible's section 12), no proposal here.
+- **Heat's two levers move no cell.** The basics at heat one and a cooling of one more change
+  nothing at any size: a basic's one heat is the cooling nearly every chassis has.
+- **The injury rule off moves no band and no hull** (24%, 10% and 2% with it on or off): what it
+  cost was components, which the curve read does not count.
+
+### How the Barrier is dealt, and the aggressor
+
+Tier one, the default four, the model with its Barrier basic dealt each way, and the every-die
+deal played by the aggressor. The audit's own deal (`vents=guns`) gives the Badger, the
+Clydesdale and the Kite no Barrier, so at one, two and three machines it is the no-Barrier row;
+the Baboon holds one at four.
+
+| Read | Tier | Size, rating | Cells | Free | Decision | Wall | Hull lost | Rounds | Stalled fights |
+|---|---|---|---|---|---|---|---|---|---|
+| Today | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 24% | 4.7 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 10% | 3.6 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 2% | 2.3 | 0 |
+| A Barrier on every die (all) | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 19% | 4.8 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 3% | 4.2 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 0% | 2.5 | 0 |
+| Every die, resting a round | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 19% | 4.7 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 5% | 3.8 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 1% | 2.4 | 0 |
+| A Ward in its place | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 20% | 4.9 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 4% | 4.1 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 0% | 2.5 | 0 |
+| No Barrier | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 19% | 4.6 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 10% | 3.5 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 2% | 2.2 | 0 |
+| Every die, the aggressor | 1 | patrol, 1 | 8 | 7 | 0 | 1 | 19% | 4.7 | 0 |
+|  | 1 | formation, 3 | 8 | 8 | 0 | 0 | 8% | 3.6 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 1% | 2.3 | 0 |
+
+By composition at its rating, the cells that move (every other patrol and formation is under 5%
+on every read):
+
+| Composition | Size | Tier | For | Today | On every die | Every die, resting | A Ward | No Barrier | The aggressor |
+|---|---|---|---|---|---|---|---|---|---|
+| `knights_retinue` | patrol | 1 | 1 | wall 100%, 3.7 r | wall 100%, 4.9 r | wall 100%, 4.2 r | wall 100%, 5.5 r | wall 100%, 3.7 r | wall 100%, 3.9 r |
+| `gel_cluster` | patrol | 1 | 1 | free 14%, 13.0 r | free 9%, 12.9 r | free 9%, 12.9 r | free 9%, 12.9 r | free 8%, 12.6 r | free 9%, 12.9 r |
+| `bomb_flight` | patrol | 1 | 1 | free 12%, 4.8 r | free 5%, 4.4 r | free 5%, 4.4 r | free 5%, 4.4 r | free 7%, 4.4 r | free 8%, 4.5 r |
+| `salamander_trio` | patrol | 1 | 1 | free 23%, 4.0 r | free 9%, 3.7 r | free 9%, 3.7 r | free 11%, 3.7 r | free 10%, 3.6 r | free 9%, 3.7 r |
+| `antlion_pair` | patrol | 1 | 1 | free 9%, 2.5 r | free 3%, 2.5 r | free 3%, 2.5 r | free 4%, 2.5 r | free 4%, 2.5 r | free 3%, 2.5 r |
+| `needler_scouts` | patrol | 1 | 1 | free 26%, 3.0 r | free 26%, 3.0 r | free 26%, 3.0 r | free 26%, 3.2 r | free 25%, 3.0 r | free 26%, 3.0 r |
+| `magma_vent` | formation | 1 | 3 | free 32%, 4.9 r | free 8%, 7.4 r | free 16%, 5.7 r | free 10%, 6.5 r | free 36%, 5.3 r | free 25%, 4.8 r |
+| `needler_swarm` | formation | 1 | 3 | free 6%, 2.2 r | free 3%, 2.3 r | free 5%, 2.2 r | free 3%, 2.4 r | free 4%, 2.0 r | free 5%, 2.2 r |
+| `sandworm_ambush` | formation | 1 | 3 | free 34%, 5.4 r | free 11%, 7.3 r | free 17%, 6.1 r | free 10%, 7.2 r | free 32%, 5.6 r | free 26%, 5.1 r |
+
+Probes of the two formations with a massive, 20 seeds, the Badger, the Clydesdale and the Kite,
+with the share of the trio's spends that went on the defensive basic:
+
+| Deal | Sandworm ambush: rounds, hull lost | Its share of spends | Magma vent: rounds, hull lost |
+|---|---|---|---|
+| Today | 5.2, 32% | none (vents 7%, the Canopy 2%) | 4.8, 32% |
+| A Barrier on every die | 7.5, 10% | 38% | 7.4, 7% |
+| Every die, resting a round | 6.2, 18% | 24% | 5.8, 15% |
+| Every die, at 3 heat | 7.7, 11% | 39% | not probed |
+| Every die, at 6 heat | 7.3, 21% | 31% | not probed |
+| A Ward in its place, the regen half the gauge | 6.8, 10% | 33% | 6.5, 11% |
+| A Ward, the regen 2 | 6.5, 13% | 32% | not probed |
+| A Ward, no regen | 6.2, 18% | 30% | 5.8, 16% |
+| No Barrier (the Armoured piece, guns) | 5.9, 33% | none (the Shoring Jack 2%) | 5.3, 36% |
+
+And the lone machine against the breach patrols, 20 seeds: the needler scouts cost the Badger 25%
+and the Skua 21% under every deal, and the knights' retinue walls both under every deal.
+
+Read, in bands, a direction:
+
+- **The deal matters in one kind of fight.** A full squad against a massive whose blow breaches
+  (the sandworm's maw and the magma elemental's fist, 8 each): with no Barrier the two cost a
+  third of the trio's hull as they do today, with one on every die a tenth, with a resting one or
+  a Ward between. Nowhere else does a cell move by more than a few points, and over a battle the
+  deals land together (the campaign's table).
+- **A block trades rounds for hull, and a round costs nothing.** With a Barrier on every die it
+  is found and spent on four dice in ten and the fight runs half again as long (5 rounds to
+  7.4); the aggressor, the same dice never rerolled for a block, loses a quarter of the trio's
+  hull where the rung loses 8 to 11% and finishes in 4.8 to 5.1 rounds. Little in these fights
+  makes the seventh round worse than the third (a bomb's fuse, an eruption's heat), so the block
+  is nearly free hull and taking it is the best line: the block-everything loop on one fight's
+  scale. What prices a round is a threat that rises (the model's ninth point), not the Barrier's
+  rule.
+- **A Ward makes the regen the dial against breach.** It lands the round's breaches on the shield,
+  so the hull lost follows the regen (18% with none, 13% at 2, 10% at half the gauge) where a
+  Barrier's does not, in a fight a round shorter than the every-die Barrier's. Against a plain
+  blow it does nothing: the Meadow's tier-one rank and file lay no rider at all, and the Marsh's
+  only the knights' breach.
+- **A heat price on the Barrier does not shorten the fight** (7.7 rounds at 3 heat, 7.3 at 6,
+  where the hull lost doubles to 21% with the Barrier still a third of the spends). A cooldown
+  does (6.2).
+- **A lone machine gets nothing from any of them.** One die a round goes on the kill; against a
+  breach patrol the regen is skipped too, so the lone machine has no buffer there at all.
+
+### Tier one, the light four
+
+The Skua alone at the rating of one, the Skua, the Prairie Dog and the Cottonmouth at three, the
+four with the Cassowary at four: stock lights, no plate and no lure. Under the audit's deal the
+Skua holds an Armoured piece and no Barrier, the other three a Barrier each where their Halo
+stood and a gun where their vent stood.
+
+| Read | Tier | Size, rating | Cells | Free | Decision | Wall | Hull lost | Rounds | Stalled fights |
+|---|---|---|---|---|---|---|---|---|---|
+| Today | 1 | patrol, 1 | 8 | 3 | 1 | 4 | 62% | 3.2 | 0 |
+|  | 1 | formation, 3 | 8 | 4 | 2 | 2 | 30% | 10.2 | 4 |
+|  | 1 | elite, 4 | 11 | 10 | 1 | 0 | 8% | 4.9 | 0 |
+| The model, the audit's deal | 1 | patrol, 1 | 8 | 4 | 2 | 2 | 46% | 4.2 | 0 |
+|  | 1 | formation, 3 | 8 | 6 | 2 | 0 | 8% | 9.2 | 0 |
+|  | 1 | elite, 4 | 11 | 11 | 0 | 0 | 0% | 4.3 | 0 |
+| The model, a Barrier on every die | 1 | patrol, 1 | 8 | 4 | 2 | 2 | 46% | 4.2 | 0 |
+|  | 1 | formation, 3 | 8 | 5 | 3 | 0 | 9% | 10.8 | 1 |
+|  | 1 | elite, 4 | 11 | 10 | 1 | 0 | 1% | 4.8 | 0 |
+
+| Composition | Size | Tier | For | Today | The audit's deal | A Barrier on every die |
+|---|---|---|---|---|---|---|
+| `knights_retinue` | patrol | 1 | 1 | wall 100%, 2.2 r | wall 100%, 2.2 r | wall 100%, 2.2 r |
+| `revenant_shamblers` | patrol | 1 | 1 | free 32%, 3.2 r | free 8%, 3.5 r | free 8%, 3.5 r |
+| `gel_cluster` | patrol | 1 | 1 | wall 100%, 4.4 r | decision 63%, 10.0 r | decision 63%, 10.0 r |
+| `bomb_flight` | patrol | 1 | 1 | decision 48%, 3.1 r | decision 40%, 3.3 r | decision 40%, 3.3 r |
+| `salamander_trio` | patrol | 1 | 1 | wall 98%, 3.4 r | wall 91%, 3.9 r | wall 91%, 3.9 r |
+| `antlion_pair` | patrol | 1 | 1 | wall 99%, 5.0 r | free 48%, 5.7 r | free 48%, 5.7 r |
+| `needler_scouts` | patrol | 1 | 1 | free 19%, 1.7 r | free 19%, 1.7 r | free 19%, 1.7 r |
+| `barrow_mound` | formation | 1 | 3 | decision 19%, 32.3 r, 3 stalled | free 6%, 14.6 r | decision 3%, 17.0 r, 1 stalled |
+| `treant_grove` | formation | 1 | 3 | decision 13%, 17.1 r, 1 stalled | free 1%, 11.4 r | free 1%, 12.4 r |
+| `ember_pit` | formation | 1 | 3 | free 5%, 2.9 r | free 2%, 2.9 r | free 2%, 3.0 r |
+| `magma_vent` | formation | 1 | 3 | wall 100%, 9.3 r | decision 31%, 19.1 r | decision 35%, 24.2 r |
+| `sandworm_ambush` | formation | 1 | 3 | wall 100%, 11.5 r | decision 22%, 16.7 r | decision 28%, 20.6 r |
+| `cinder_tortoises_brood` | elite | 1 | 4 | free 2%, 10.6 r | free 0%, 8.3 r | free 0%, 9.5 r |
+| `thunder_apes_rampage` | elite | 1 | 4 | free 3%, 3.3 r | free 0%, 3.5 r | free 0%, 4.4 r |
+| `gilgamesh_wanders` | elite | 1 | 4 | free 0%, 7.6 r | free 0%, 6.5 r | free 0%, 7.4 r |
+| `old_mans_rising` | elite | 1 | 4 | decision 74%, 12.2 r | free 4%, 10.9 r | decision 5%, 11.6 r |
+| `pilgrims_wake` | elite | 1 | 4 | free 12%, 4.8 r | free 0%, 4.8 r | free 1%, 5.4 r |
+
+Read, a direction. The model is worth most to the team with no plate and no lure. The Skua alone
+loses 46% of its hull to a patrol against 62% (two walls against four: the knights' retinue and
+the salamander trio stay walls, the gel cluster is a decision at 63% over ten rounds, the antlion
+pair free at 48%); the needler scouts cost it 19% on every read, breach again. At three the two
+formations with a massive are decisions where they were walls, and at four the Old Man's rising
+costs 4 or 5% against 74%. The audit's deal reads as well as a Barrier on every die and ends
+sooner (the magma vent 31% over 19 rounds against 35% over 24, the sandworm ambush 22% over 17
+against 28% over 21, no fight past sixty rounds against one): a gun where a vent stood is worth
+more to these three than a second block. What the model buys the lights is time: the fights it
+turns from lost to won still run seventeen rounds and more.
+
+### Heat with no vent: a probe
+
+A probe, 20 seeds a cell (a scratch tool over the same engine): three stock trios against seven
+tier-one formations, today, under the model and under the model cooling one more; the greedy
+rung, which prices an overheat's hull and nothing under the cap (the reckless persona). The
+model with the basics free was probed beside them: 13 of its 21 cells match the model's to the
+digit and the rest sit inside the noise, so its rows are left out.
+
+| Team | Composition | Read | Won | Rounds | Hull lost | Peak heat | Rounds a machine ended hot | Overheats a fight | Hull they burned | Hot dice held a fight |
+|---|---|---|---|---|---|---|---|---|---|---|
+| The Honey Badger, the Clydesdale, the Kite | `goblin_warband` | today | 100% | 2.4 | 0% | 76% | 0.4 | 0.05 | 0.1 | 0.00 |
+|  |  | the model | 100% | 2.4 | 0% | 80% | 0.5 | 0.05 | 0.1 | 0.00 |
+|  |  | the model, cooling one more | 100% | 2.4 | 0% | 74% | 0.3 | 0.05 | 0.1 | 0.05 |
+|  | `treant_grove` | today | 100% | 4.8 | 4% | 104% | 1.9 | 0.55 | 1.2 | 0.00 |
+|  |  | the model | 100% | 4.8 | 1% | 110% | 2.5 | 0.50 | 1.3 | 0.00 |
+|  |  | the model, cooling one more | 100% | 4.7 | 1% | 94% | 1.3 | 0.45 | 0.9 | 0.00 |
+|  | `needler_swarm` | today | 100% | 2.1 | 6% | 70% | 0.3 | 0.00 | 0.0 | 0.00 |
+|  |  | the model | 100% | 2.3 | 4% | 64% | 0.4 | 0.00 | 0.0 | 0.00 |
+|  |  | the model, cooling one more | 100% | 2.3 | 4% | 62% | 0.4 | 0.00 | 0.0 | 0.00 |
+|  | `sandworm_ambush` | today | 100% | 5.2 | 32% | 100% | 1.4 | 0.45 | 0.8 | 0.00 |
+|  |  | the model | 100% | 7.5 | 10% | 73% | 0.8 | 0.10 | 0.1 | 0.00 |
+|  |  | the model, cooling one more | 100% | 7.6 | 10% | 68% | 0.5 | 0.00 | 0.0 | 0.00 |
+|  | `grave_host` | today | 100% | 3.0 | 1% | 79% | 0.7 | 0.15 | 0.6 | 0.20 |
+|  |  | the model | 100% | 3.0 | 1% | 85% | 1.0 | 0.30 | 0.6 | 0.25 |
+|  |  | the model, cooling one more | 100% | 3.0 | 0% | 82% | 0.7 | 0.15 | 0.3 | 0.20 |
+|  | `ember_pit` | today | 100% | 2.4 | 0% | 77% | 0.5 | 0.10 | 0.1 | 0.05 |
+|  |  | the model | 100% | 2.4 | 1% | 85% | 0.8 | 0.25 | 0.3 | 0.05 |
+|  |  | the model, cooling one more | 100% | 2.4 | 1% | 78% | 0.6 | 0.20 | 0.2 | 0.05 |
+|  | `magma_vent` | today | 100% | 4.8 | 32% | 102% | 1.8 | 0.45 | 0.8 | 0.00 |
+|  |  | the model | 100% | 7.4 | 7% | 79% | 1.1 | 0.10 | 0.1 | 0.00 |
+|  |  | the model, cooling one more | 100% | 7.3 | 7% | 72% | 0.7 | 0.00 | 0.0 | 0.00 |
+| The Stingray, the Storm Petrel, the Baboon | `goblin_warband` | today | 100% | 3.5 | 0% | 60% | 0.2 | 0.00 | 0.0 | 0.00 |
+|  |  | the model | 100% | 3.3 | 0% | 56% | 0.1 | 0.00 | 0.0 | 0.00 |
+|  |  | the model, cooling one more | 100% | 3.3 | 0% | 49% | 0.1 | 0.00 | 0.0 | 0.00 |
+|  | `treant_grove` | today | 100% | 8.9 | 8% | 102% | 3.0 | 0.40 | 0.7 | 0.55 |
+|  |  | the model | 100% | 8.0 | 2% | 101% | 2.5 | 0.60 | 1.4 | 0.10 |
+|  |  | the model, cooling one more | 100% | 8.0 | 0% | 78% | 0.8 | 0.15 | 0.2 | 0.00 |
+|  | `needler_swarm` | today | 100% | 2.9 | 5% | 44% | 0.1 | 0.00 | 0.0 | 0.00 |
+|  |  | the model | 100% | 3.0 | 5% | 40% | 0.1 | 0.00 | 0.0 | 0.00 |
+|  |  | the model, cooling one more | 100% | 3.0 | 5% | 38% | 0.1 | 0.00 | 0.0 | 0.00 |
+|  | `sandworm_ambush` | today | 100% | 6.9 | 45% | 105% | 2.5 | 0.60 | 2.0 | 0.20 |
+|  |  | the model | 100% | 8.1 | 25% | 94% | 1.8 | 0.35 | 0.5 | 0.05 |
+|  |  | the model, cooling one more | 100% | 8.3 | 25% | 72% | 0.5 | 0.05 | 0.1 | 0.00 |
+|  | `grave_host` | today | 100% | 4.6 | 1% | 76% | 1.1 | 0.05 | 0.1 | 0.00 |
+|  |  | the model | 100% | 4.0 | 0% | 60% | 0.3 | 0.00 | 0.0 | 0.00 |
+|  |  | the model, cooling one more | 100% | 4.0 | 0% | 48% | 0.1 | 0.00 | 0.0 | 0.00 |
+|  | `ember_pit` | today | 100% | 5.0 | 14% | 104% | 2.4 | 1.10 | 2.8 | 0.60 |
+|  |  | the model | 100% | 4.7 | 5% | 105% | 2.0 | 1.15 | 2.5 | 0.70 |
+|  |  | the model, cooling one more | 100% | 4.8 | 4% | 94% | 1.6 | 0.60 | 1.2 | 0.40 |
+|  | `magma_vent` | today | 95% | 7.8 | 58% | 112% | 3.5 | 0.65 | 1.9 | 0.40 |
+|  |  | the model | 100% | 8.7 | 25% | 105% | 3.1 | 0.60 | 1.8 | 0.20 |
+|  |  | the model, cooling one more | 100% | 8.7 | 23% | 88% | 1.8 | 0.20 | 0.3 | 0.10 |
+| The Skua, the Prairie Dog, the Cottonmouth | `goblin_warband` | today | 100% | 2.7 | 0% | 34% | 0.0 | 0.00 | 0.0 | 0.00 |
+|  |  | the model | 100% | 3.0 | 0% | 35% | 0.0 | 0.00 | 0.0 | 0.00 |
+|  |  | the model, cooling one more | 100% | 3.0 | 0% | 25% | 0.0 | 0.00 | 0.0 | 0.00 |
+|  | `treant_grove` | today | 95% | 17.7 | 14% | 62% | 0.4 | 0.05 | 0.1 | 0.00 |
+|  |  | the model | 100% | 12.7 | 1% | 93% | 2.8 | 0.25 | 0.2 | 0.00 |
+|  |  | the model, cooling one more | 100% | 12.6 | 0% | 25% | 0.0 | 0.00 | 0.0 | 0.00 |
+|  | `needler_swarm` | today | 100% | 2.1 | 2% | 30% | 0.0 | 0.00 | 0.0 | 0.00 |
+|  |  | the model | 100% | 2.1 | 1% | 29% | 0.0 | 0.00 | 0.0 | 0.00 |
+|  |  | the model, cooling one more | 100% | 2.1 | 1% | 25% | 0.0 | 0.00 | 0.0 | 0.00 |
+|  | `sandworm_ambush` | today | 0% | 11.4 | 100% | 49% | 0.0 | 0.00 | 0.0 | 0.00 |
+|  |  | the model | 95% | 21.4 | 27% | 39% | 0.0 | 0.00 | 0.0 | 0.00 |
+|  |  | the model, cooling one more | 95% | 21.4 | 27% | 25% | 0.0 | 0.00 | 0.0 | 0.00 |
+|  | `grave_host` | today | 100% | 3.6 | 1% | 38% | 0.0 | 0.00 | 0.0 | 0.00 |
+|  |  | the model | 100% | 3.9 | 0% | 43% | 0.0 | 0.00 | 0.0 | 0.00 |
+|  |  | the model, cooling one more | 100% | 3.9 | 0% | 25% | 0.0 | 0.00 | 0.0 | 0.00 |
+|  | `ember_pit` | today | 100% | 3.0 | 5% | 73% | 0.4 | 0.10 | 0.1 | 0.05 |
+|  |  | the model | 100% | 2.9 | 2% | 80% | 0.7 | 0.30 | 0.9 | 0.00 |
+|  |  | the model, cooling one more | 100% | 2.9 | 1% | 70% | 0.3 | 0.20 | 0.2 | 0.00 |
+|  | `magma_vent` | today | 0% | 9.2 | 100% | 68% | 0.6 | 0.00 | 0.0 | 0.00 |
+|  |  | the model | 95% | 24.9 | 41% | 85% | 2.0 | 0.00 | 0.0 | 0.50 |
+|  |  | the model, cooling one more | 95% | 25.0 | 40% | 59% | 0.2 | 0.00 | 0.0 | 0.00 |
+
+Read, a direction. Taking the vents off the die costs the bot nothing: on today's dice the default
+trio spent 7% of its dice on vents and 2% on shields against the sandworm ambush (the spends
+probe), and the model's peaks, overheats and hull burned sit where today's do (the default trio's overheats 0.05 to 0.55 a fight burning about a point of hull, the
+hot trio's 0.35 to 1.15 burning one to three of its 76). And heat is not a pace in the bot's
+hands on either die: a hot die is held less than once a fight on every row, and the hottest
+tier-one trio loses one to three hull a fight to it. The basics at heat one are under the cooling
+of one nearly every chassis has, so they are no price; cooling one more takes the peaks down ten
+to twenty points and most of the hull burned with them. The prices are where the hold would come
+from, which is the heat session's list (the brief's third point), and a rung that reads only an
+overheat cannot say whether a player would feel it: the cautious persona (`--cool-above`) is the
+read for that, not taken here.
+
+### Tier two, by its own team
+
+The tier-two four (the Wild Boar alone at the rating of one; the Wild Boar, the Clydesdale and
+the Buzzard at three) against tier two's patrols and formations, today and under the model.
+Tier three was read today only (a patrol 57% at one, a formation 34% at three with two walls of
+seventeen, this team a tier short) and not under the model.
+
+| Read | Tier | Size, rating | Cells | Free | Decision | Wall | Hull lost | Rounds | Stalled fights |
+|---|---|---|---|---|---|---|---|---|---|
+| Today | 2 | patrol, 1 | 8 | 4 | 1 | 3 | 57% | 5.7 | 0 |
+|  | 2 | formation, 3 | 13 | 12 | 1 | 0 | 14% | 4.9 | 0 |
+| The model | 2 | patrol, 1 | 8 | 5 | 0 | 3 | 48% | 6.0 | 0 |
+|  | 2 | formation, 3 | 13 | 13 | 0 | 0 | 8% | 5.5 | 0 |
+
+| Composition | Size | Tier | For | Today | The model |
+|---|---|---|---|---|---|
+| `knight_and_wights` | patrol | 2 | 1 | wall 100%, 6.8 r | wall 100%, 9.0 r |
+| `wight_shamblers` | patrol | 2 | 1 | decision 57%, 5.8 r | free 40%, 6.3 r |
+| `gel_drift` | patrol | 2 | 1 | free 62%, 13.8 r | free 21%, 11.7 r |
+| `warg_pack` | patrol | 2 | 1 | free 7%, 3.9 r | free 1%, 3.9 r |
+| `fire_lizards` | patrol | 2 | 1 | wall 100%, 4.7 r | wall 98%, 6.6 r |
+| `grenade_flight` | patrol | 2 | 1 | free 12%, 5.7 r | free 5%, 5.2 r |
+| `needler_scouts` | patrol | 2 | 1 | free 16%, 2.2 r | free 16%, 2.2 r |
+| `pit_pair` | patrol | 2 | 1 | wall 100%, 3.0 r | wall 100%, 2.9 r |
+| `death_knights_retinue` | formation | 2 | 3 | free 29%, 5.5 r | free 19%, 8.2 r |
+| `grave_field` | formation | 2 | 3 | decision 20%, 12.7 r | free 4%, 10.8 r |
+| `rotblooms_bed` | formation | 2 | 3 | free 4%, 5.0 r | free 1%, 4.9 r |
+| `treant_march` | formation | 2 | 3 | free 7%, 6.1 r | free 1%, 6.5 r |
+| `grenade_volley` | formation | 2 | 3 | free 8%, 3.0 r | free 6%, 3.1 r |
+| `magma_forge` | formation | 2 | 3 | free 40%, 6.6 r | free 20%, 9.8 r |
+| `wyvern_roost` | formation | 2 | 3 | free 10%, 3.1 r | free 8%, 3.3 r |
+| `barbed_swarm` | formation | 2 | 3 | free 5%, 2.9 r | free 5%, 2.8 r |
+| `pit_ambush` | formation | 2 | 3 | free 16%, 3.0 r | free 10%, 3.6 r |
+| `sandworm_pit` | formation | 2 | 3 | free 42%, 7.0 r | free 24%, 9.1 r |
+
+Read, a direction: tier one's shape again. At three the formations with a breaching massive
+cost about half (the magma forge 40% to 20%, the sandworm pit 42% to 24%, the death knight's
+retinue 29% to 19%) at two or three rounds more, the plain-blow ones nearly nothing (the grave field
+20% to 4%, the treant march 7% to 1%), and no formation is a wall or a decision for three. Alone,
+the Wild Boar keeps its three walls (the knight and wights, the fire lizards, the pit pair) and
+loses a third as much to the gel drift (62% to 21%).
+
+### The proposal's tier-one formations under the model
+
+The formation proposal's fifteen tier-one formations, written to a scratch worktree
+(`tools/formation_proposal.py`) and read at three machines: the default trio (the Badger, the
+Clydesdale, the Kite) on today's dice, with a Barrier on every die, and with none, which is the
+audit's deal for this trio; and the light trio (the Skua, the Prairie Dog, the Cottonmouth) on
+today's dice and with a Barrier on every die. The proposal's formations at every tier were read
+on today's dice with the injury rule off beside them (tier one 9% at three, all fifteen free;
+tier two 18%, eleven free and six decisions of seventeen; tier three 35%, eight free, nine
+decisions and two walls of nineteen, the default four a tier and two short); their reads under
+the model at tiers two and three were stopped past the hour, unfinished.
+
+| Read | Tier | Size, rating | Cells | Free | Decision | Wall | Hull lost | Rounds | Stalled fights |
+|---|---|---|---|---|---|---|---|---|---|
+| The default trio, today's dice | 1 | formation, 3 | 15 | 15 | 0 | 0 | 9% | 3.6 | 0 |
+| The default trio, a Barrier on every die | 1 | formation, 3 | 15 | 15 | 0 | 0 | 4% | 4.0 | 0 |
+| The default trio, no Barrier (the audit's deal) | 1 | formation, 3 | 15 | 15 | 0 | 0 | 9% | 3.5 | 0 |
+| The light trio, today's dice | 1 | formation, 3 | 15 | 9 | 4 | 2 | 25% | 7.9 | 3 |
+| The light trio, a Barrier on every die | 1 | formation, 3 | 15 | 11 | 4 | 0 | 12% | 8.7 | 0 |
+
+| Composition | Size | Tier | For | Default, today | Default, every die | Default, no Barrier | Light, today | Light, every die |
+|---|---|---|---|---|---|---|---|---|
+| `barrow_mound` | formation | 1 | 3 | free 6%, 4.5 r | free 2%, 4.6 r | free 3%, 4.3 r | decision 21%, 34.4 r, 2 stalled | decision 6%, 20.8 r |
+| `grave_host` | formation | 1 | 3 | free 1%, 3.0 r | free 1%, 3.0 r | free 1%, 2.6 r | free 1%, 3.7 r | free 0%, 3.9 r |
+| `grave_throng` | formation | 1 | 3 | free 1%, 3.4 r | free 2%, 3.6 r | free 2%, 3.1 r | free 3%, 4.4 r | free 0%, 4.1 r |
+| `knights_vigil` | formation | 1 | 3 | free 15%, 3.1 r | free 9%, 3.9 r | free 15%, 3.2 r | decision 86%, 9.4 r | decision 64%, 14.6 r |
+| `gel_wall` | formation | 1 | 3 | free 4%, 5.1 r | free 1%, 5.1 r | free 2%, 4.8 r | free 7%, 5.5 r | free 0%, 5.1 r |
+| `goblin_horde` | formation | 1 | 3 | free 1%, 3.3 r | free 1%, 3.4 r | free 2%, 3.1 r | free 2%, 3.9 r | free 0%, 4.2 r |
+| `goblin_warband` | formation | 1 | 3 | free 0%, 2.4 r | free 0%, 2.4 r | free 0%, 2.2 r | free 0%, 2.8 r | free 0%, 3.1 r |
+| `treant_grove` | formation | 1 | 3 | free 7%, 5.4 r | free 3%, 5.2 r | free 5%, 5.3 r | decision 18%, 18.0 r, 1 stalled | free 2%, 12.7 r |
+| `ember_pit` | formation | 1 | 3 | free 0%, 2.4 r | free 0%, 2.4 r | free 1%, 2.3 r | free 5%, 2.9 r | free 2%, 3.0 r |
+| `ember_pyre` | formation | 1 | 3 | free 6%, 3.2 r | free 5%, 3.3 r | free 6%, 3.2 r | decision 26%, 4.7 r | free 22%, 4.8 r |
+| `magma_vent` | formation | 1 | 3 | free 39%, 5.6 r | free 7%, 7.9 r | free 39%, 5.6 r | wall 100%, 9.1 r | decision 42%, 25.0 r |
+| `antlion_pit` | formation | 1 | 3 | free 3%, 2.2 r | free 3%, 2.2 r | free 3%, 2.0 r | free 3%, 2.9 r | free 2%, 3.0 r |
+| `needler_swarm` | formation | 1 | 3 | free 6%, 2.2 r | free 3%, 2.3 r | free 4%, 2.0 r | free 2%, 2.1 r | free 1%, 2.1 r |
+| `needler_thicket` | formation | 1 | 3 | free 8%, 3.1 r | free 5%, 3.0 r | free 8%, 2.9 r | free 2%, 3.0 r | free 1%, 3.2 r |
+| `sandworm_ambush` | formation | 1 | 3 | free 35%, 5.3 r | free 12%, 7.9 r | free 39%, 5.7 r | wall 100%, 11.1 r | decision 32%, 20.6 r |
+
+Read, a direction, against the brief's budget for a pusher (a twentieth of the squad's hull at
+its rating). Twelve of the fifteen cost the default trio 8% or less on every read (the goblins,
+the gels and the graves 4% or less). The three that cost more are breach: the magma vent (39%),
+the sandworm ambush (35 to 39%) and the knights' vigil (15%). On the audit's deal this trio
+holds no Barrier and the regen never meets a breach, so the model leaves those three where they
+are today, eight times the budget for the two with a massive; with a Barrier on every die the
+two cost 7 and 12% at two rounds more and the knights' vigil 9%. So the massives' own numbers
+are the lever, the refit's first band, whatever the deal. For the light trio the model
+takes the two walls to decisions over twenty rounds and more (the magma vent 42% over 25, the
+sandworm ambush 32% over 21), the knights' vigil from 86% to 64%, and the three stalled fights
+away.
+
+### The proposal's hunters under the model
+
+The formation proposal's six hunting patrols, each rated two, written to a scratch worktree
+(`tools/formation_proposal.py`), the default four: by the Badger alone, the machine a hunter
+catches, and by the Badger and the Clydesdale, its rating.
+
+| Composition | Size | Tier | Fought by | The Badger alone, today's dice | The Badger alone, the model |
+|---|---|---|---|---|---|
+| `wolf_pack` | patrol | 1 | 1 | free 4%, 4.6 r | free 0%, 4.6 r |
+| `antlion_trio` | patrol | 1 | 1 | decision 36%, 3.7 r | free 18%, 3.8 r |
+| `warg_pack` | patrol | 2 | 1 | free 14%, 4.7 r | free 4%, 4.6 r |
+| `pit_pair` | patrol | 2 | 1 | decision 76%, 3.8 r | decision 72%, 4.3 r |
+| `alpha_pack` | patrol | 3 | 1 | free 16%, 4.0 r | free 6%, 4.0 r |
+| `queens_hunt` | patrol | 3 | 1 | wall 100%, 3.4 r | wall 99%, 4.0 r |
+
+| Composition | Size | Tier | Fought by | Two machines, today's dice | Two machines, the model |
+|---|---|---|---|---|---|
+| `wolf_pack` | patrol | 1 | 2 | free 0%, 2.6 r | free 0%, 2.6 r |
+| `antlion_trio` | patrol | 1 | 2 | free 3%, 2.6 r | free 1%, 2.6 r |
+| `warg_pack` | patrol | 2 | 2 | free 0%, 2.6 r | free 0%, 2.6 r |
+| `pit_pair` | patrol | 2 | 2 | free 13%, 2.2 r | free 13%, 3.2 r |
+| `alpha_pack` | patrol | 3 | 2 | free 1%, 2.4 r | free 0%, 2.4 r |
+| `queens_hunt` | patrol | 3 | 2 | free 35%, 3.4 r | free 35%, 4.0 r |
+
+Read, a direction. At their rating the hunters cost what they did (nothing to 3% for the wolves
+and the antlion trio, 13% for the pit pair, 35% for the queen's hunt, on both reads). Caught
+alone, the plain-blow lines lose their teeth on a tank under the regen (the wolf pack 4% to 0%,
+the warg pack 14% to 4%, the alpha pack 16% to 6%, the antlion trio 36% to 18%), and the
+breaching ones keep theirs (the pit pair 76% and 72%, the queen's hunt a wall on both). A
+hunter's threat to the machine it catches is, under the model, its breach or its numbers; the
+light caught alone was not read here.
+
+### The campaign runner: 40 runs, today and the model under each deal
+
+`tools/campaign_run.gd -- --runs 40` on the same seeds (each battle's map by its seed), the greedy
+rung with the defence rule on the map, three of the tender at random, the injury rule off in all
+eight: today's content; the regen alone on today's dice (`--refit regen=half`); the model on the
+audit's deal (`all,vents=guns`: a Barrier where a Halo stood), with a Barrier on every die
+(`all`), on every die and resting a round (`all,barrier=cooldown`), with a Ward in its place
+(`all,barrier=ward`) and with none (`all,barrier=off`); and the every-die deal played by the
+aggressor (`all --guard 0.05`). The die's six reads deal from a tender without the Polar Bear
+and the Puffin (back in design), so they differ from today's by the tender too; the regen alone
+keeps today's tender, and the six share theirs.
+
+| Measure | Today | The regen alone | The audit's deal | A Barrier on every die | Every die, resting | A Ward in its place | No Barrier | Every die, the aggressor |
+|---|---|---|---|---|---|---|---|---|
+| Runs won | 0 of 40 | 0 of 40 | 0 of 40 | 0 of 40 | 0 of 40 | 0 of 40 | 0 of 40 | 0 of 40 |
+| Turns a run | 5.92 | 6.15 | 6.15 | 6.05 | 6.05 | 6.10 | 6.20 | 6.20 |
+| Battles | 191 | 193 | 201 | 194 | 193 | 198 | 201 | 195 |
+| Battles won | 3% | 8% | 10% | 9% | 8% | 9% | 9% | 8% |
+| Held after a wipe | 12% | 8% | 7% | 8% | 8% | 8% | 9% | 10% |
+| Fell | 83% | 82% | 81% | 82% | 82% | 81% | 80% | 81% |
+| Ended in a team wipe | 89% | 73% | 65% | 64% | 63% | 65% | 65% | 65% |
+| Machines wrecked a battle | 1.69 | 1.52 | 1.44 | 1.44 | 1.44 | 1.44 | 1.42 | 1.44 |
+| Phases a battle | 6.06 | 6.49 | 6.70 | 6.80 | 6.77 | 6.62 | 6.69 | 6.78 |
+| Menace killed a battle | 45 | 70 | 91 | 91 | 88 | 86 | 89 | 90 |
+| Fractures reached a battle (of about 3) | 0.99 | 1.49 | 1.81 | 1.80 | 1.75 | 1.71 | 1.75 | 1.77 |
+| Battles reaching the Rupture | 16% | 35% | 42% | 42% | 42% | 40% | 43% | 43% |
+| Gate damage a battle | 128 | 127 | 124 | 128 | 128 | 125 | 124 | 125 |
+| Battles by three machines: won, wiped | 12%, 77% of 58 | 20%, 55% of 67 | 22%, 44% of 76 | 20%, 45% of 70 | 18%, 47% of 72 | 20%, 45% of 72 | 19%, 46% of 76 | 18%, 48% of 72 |
+| Battles by one machine: fell | 93% of 76 | 93% of 65 | 93% of 63 | 91% of 58 | 91% of 58 | 91% of 62 | 90% of 66 | 90% of 60 |
+| Fights | 565 | 794 | 944 | 921 | 894 | 886 | 933 | 920 |
+| Fights stalled past sixty rounds | 0 | 19 | 11 | 14 | 11 | 11 | 5 | 8 |
+| A fight for 1, 1 in it: won | 58% of 121 | 73% of 212 | 78% of 271 | 79% of 272 | 78% of 256 | 76% of 234 | 79% of 268 | 79% of 267 |
+| A fight for 1, 2 in it: won | 97% of 43 | 95% of 63 | 92% of 95 | 93% of 93 | 94% of 94 | 93% of 102 | 94% of 103 | 93% of 98 |
+| A fight for 1, 3 in it: won | 77% of 9 | 87% of 16 | 100% of 11 | 100% of 9 | 100% of 11 | 100% of 9 | 100% of 12 | 100% of 12 |
+| A fight for 3, 1 in it: won | 16% of 178 | 25% of 222 | 35% of 252 | 36% of 249 | 34% of 246 | 32% of 243 | 38% of 244 | 39% of 247 |
+| A fight for 3, 2 in it: won | 66% of 87 | 84% of 113 | 89% of 124 | 86% of 115 | 90% of 110 | 92% of 112 | 89% of 116 | 93% of 106 |
+| A fight for 3, 3 in it: won | 95% of 40 | 100% of 45 | 100% of 49 | 100% of 47 | 97% of 47 | 100% of 48 | 100% of 47 | 100% of 48 |
+| A fight for 4, 1 in it: won | 30% of 50 | 47% of 68 | 62% of 80 | 64% of 81 | 65% of 73 | 60% of 79 | 57% of 80 | 52% of 87 |
+| A fight for 4, 2 in it: won | 72% of 22 | 88% of 35 | 85% of 42 | 86% of 37 | 82% of 39 | 85% of 40 | 86% of 43 | 84% of 38 |
+| A fight for 4, 3 in it: won | 93% of 15 | 100% of 20 | 100% of 20 | 100% of 18 | 100% of 18 | 100% of 19 | 100% of 20 | 100% of 17 |
+
+Read, in bands, a direction. The campaign stays a wall for this bot on every read (no run won;
+the defence rule sends a lone machine at a formation 178 times today and some 245 times under the model), so the read is
+how far a battle gets, not who wins it.
+
+- **The model takes a battle about twice as far.** Menace killed a battle doubles (45 to about
+  90), the Rupture is reached in four battles in ten against one in six, team wipes fall from nine
+  battles in ten to under two in three, and the team lives to fight half again as many fights (565
+  to about 920). A patrol fought alone is won 79% against 58%, a formation fought alone 36%
+  against 16%, an elite fought alone 64% against 30%.
+- **The regen is the larger half.** On today's dice it alone takes the wipes from 89% to 73% and
+  the menace killed from 45 to 70. The die adds the rest (64%, about 90) whichever way the
+  Barrier is dealt, the tender's difference inside that step.
+- **How the Barrier is dealt is not visible over a battle.** The audit's deal, a Barrier on every
+  die, a resting one, a Ward and no Barrier at all land together on every line (wipes 63 to 65%,
+  menace 86 to 91, battles won 8 to 10%), and so does the aggressor, who never rerolls for a
+  block. Most of a battle's fights are one or two machines against a pack, where a block is
+  seldom worth the one die; the deal is felt only where a full squad meets a massive (the probes
+  above).
+- **The fight nobody can finish is back.** No fight passed the bot's sixty rounds today; 19 of
+  794 did with the regen alone, 14 of 921 with a Barrier on every die, 11 on the audit's deal,
+  with the Barrier resting and with a Ward, 5 with no Barrier and 8 for the aggressor. The runner
+  names no pack for them (unread); the curve read's own stalls are the light trio against the
+  barrow mound. The model's ninth point (every formation carries a rising threat, as a validator
+  check) is the guard, and this is its evidence.
+
 ## 10 November: the passing and the catch at one, on the campaign runner
 
 `tools/campaign_run.gd -- --runs 40 --shape steppe` (115 s) on `ccr-1e6e6571-7x7ayr` after the body
@@ -5709,6 +6495,109 @@ them where they end. The catch at one did not empty the hunters' fights (519 fig
 What this cannot read is the thing Ryan changed it for, his own play: whether a pusher's straight
 walk and a machine's slide through its allies feel right, and whether a hunter caught beside its
 prey reads without a ring. Nothing here is a decision.
+
+## 10 November, the wall strike by the threat rating
+
+A read after the build, not behind the decision (Ryan, 10 November: the strike follows the
+threat rating, a worn pack by the share of its heads still standing; the bible's wall row), kept
+because every campaign number after it stands on the new strike. `tools/campaign_run.gd -- --runs
+40`, the same seeds as the refit pass's runs above, the greedy rung with the defence rule, the
+injury rule off: today's content and the trial's model on the audit's deal (`--refit
+all,vents=guns`), each with the strike by head count (a third of ten a foe, the runs above) and
+by rating (ten a pip, `Battlefield.strike_of`). All four were taken on this branch before it took
+main's passing and catch at one (the section above), so the pairs differ by the strike alone.
+
+| Measure | Today's content, by head count | Today's content, by rating | The trial's model, by head count | The trial's model, by rating |
+|---|---|---|---|---|
+| Battles | 191 | 179 | 201 | 195 |
+| Battles won | 3% | 3% | 10% | 10% |
+| Held after a wipe | 12% | 7% | 7% | 5% |
+| Fell | 83% | 89% | 81% | 83% |
+| Ended in a team wipe | 89% | 88% | 65% | 64% |
+| Gate damage a battle | 128 | 140 | 124 | 130 |
+| Phases a battle | 6.06 | 5.73 | 6.70 | 6.37 |
+| Turns a run | 5.92 | 5.60 | 6.15 | 6.05 |
+| Menace killed a battle | 45 | 45 | 91 | 91 |
+| Battles reaching the Rupture | 16% | 17% | 42% | 40% |
+| Fights | 565 | 534 | 944 | 918 |
+
+Read, a direction. The wall takes about a tenth more a battle on today's content (128 to 140)
+and a twentieth more under the model (124 to 130), a battle ends a third of a phase sooner, and
+fewer battles are held after a wipe (12% to 7%, 7% to 5%), since what is left at the wall after
+one now strikes by its rating: a formation thirty where six to eight heads struck twenty to
+twenty-six, an elite forty where it struck for its head. The fights are the same (menace killed
+and battles won do not move). A patrol of three strikes ten on both rules.
+
+On the merged tree (main's passing and catch at one beside the strike by rating, the branch
+having taken main at `e67645f`), the same 40 runs on today's content read where the branch stood
+before it: 139 gate damage a battle, 8% of battles held after a wipe, 88% fell, 2% won
+(`docs/campaign_run.md` is that run). One scene shows the two changes together: the campaign
+tests' wipe at a quiet start, a formation and two patrols left to walk on the wall, took 160 of
+a city gate's 200 in the six unopposed phases by head count and takes the whole 200 by rating
+with the packs walking straight to the wall, so those two tests thin the field to one patrol to
+keep reading what they read (a gate wounded and standing).
+
+## 10 November, the regen's size and hotter weapons, after Ryan's first read of the trial
+
+Probes behind the trial's regen row and its default (`Settings.REFIT_REGENS`, two) and behind
+leaving a heat dial off the phone; nothing moved in content. His read of the trial at half the
+gauge, the MODEL deal: "the half recovery I have a nigh unkillable team, even just stingray +
+prairie dog against 4 goblins/2 mandragora. The same two handily beat the goblin shaman pack
+without ever using a defensive tool"; and "Heat generation is too low, but I think we knew that."
+Scratch probes over the engine, 20 seeds a cell, the greedy rung, the injury rule off, the
+audit's deal (`all,vents=guns`) with the regen named: each a direction.
+
+The two fights he played, by the same two machines (the Stingray regains 6 at half its gauge and
+the Prairie Dog 5):
+
+| Read | Goblin warband (a formation for three): rounds, hull lost | Shaman's warband (an elite): rounds, hull lost |
+|---|---|---|
+| Today's dice, no regen | 6.4, 31% (19 of 20 won) | 7.2, 9% |
+| The model's dice, no regen | 6.3, 33% | 6.0, 8% |
+| Regen 1 | 5.7, 21% | 5.7, 4% |
+| Regen 2 | 5.5, 13% | 5.5, 1% |
+| Regen 3 | 5.5, 9% | 5.5, 1% |
+| Half the gauge | 5.2, 5% | 5.5, 1% |
+
+Read. The bot agrees with him: at half the gauge two lights lose a twentieth of their hull to a
+formation rated for three, the brief's budget for a full squad at its rating, and nothing to the
+elite. The dice alone mitigate nothing in this fight (33% against today's 31%; the goblins' blows
+are small and many, and the bot spends no Barrier on them), so what he felt as the MODEL being
+enough was the regen. The first point of flat regen is worth twelve points of the pair's hull
+here, the second eight, the third four; two leaves the formation a fight (13%) and is the row's
+default, a placeholder. The elite costs two lights under a tenth of their hull on every read, its own
+item's business.
+
+Every weapon hotter (`hotter=N`, after the basics' one), at regen 2:
+
+| Team | Composition | Hotter | Won | Rounds | Hull lost | Peak heat | Overheats a fight | Hot dice held a fight |
+|---|---|---|---|---|---|---|---|---|
+| The Stingray, the Prairie Dog | `goblin_warband` | 0 | 100% | 5.5 | 13% | 73% | 0.10 | 0.00 |
+|  |  | 1 | 100% | 5.6 | 14% | 97% | 0.40 | 0.00 |
+|  |  | 2 | 100% | 6.2 | 18% | 113% | 0.80 | 0.55 |
+|  |  | 3 | 100% | 7.0 | 23% | 124% | 1.60 | 1.25 |
+|  | `treant_grove` | 0 | 100% | 27.2 | 37% | 118% | 1.20 | 0.70 |
+|  |  | 1 | 20% | 55.1 | 40% | 108% | 1.30 | 14.20 |
+|  |  | 2 | 5% | 57.8 | 41% | 115% | 1.75 | 25.20 |
+|  |  | 3 | 0% | 60.0 | 46% | 124% | 2.45 | 32.85 |
+| The Stingray, the Prairie Dog, the Skua | `goblin_warband` | 0 | 100% | 3.0 | 0% | 54% | 0.00 | 0.00 |
+|  |  | 1 | 100% | 3.0 | 0% | 72% | 0.00 | 0.00 |
+|  |  | 2 | 100% | 3.0 | 0% | 86% | 0.05 | 0.00 |
+|  |  | 3 | 100% | 3.0 | 0% | 93% | 0.05 | 0.00 |
+|  | `treant_grove` | 0 | 100% | 13.8 | 2% | 111% | 0.60 | 0.15 |
+|  |  | 1 | 100% | 28.2 | 2% | 122% | 0.60 | 11.00 |
+|  |  | 2 | 10% | 58.5 | 4% | 106% | 0.65 | 51.25 |
+|  |  | 3 | 0% | 60.0 | 3% | 108% | 0.65 | 66.30 |
+
+Read. Hotter weapons with the cooling left at one make the hold appear in a short fight (two
+hotter: a die held in one goblin fight in two, the gauge past its cap) and end the long one: a
+machine that cools one a round sustains one shot of N heat every N rounds once its gauge is
+full, so against the treant three lights go from fourteen rounds to twenty-eight at one hotter
+and past the bot's sixty at two, losing almost no hull. Generation alone is therefore no dial: the
+sustained rate is the cooling over a shot's heat and the burst is the gauge over it, and a price
+pass moves the three together (the heat session's list). No heat row went on the phone for it.
+The bot holds rather than overheat, where a player may fire hot and pass a round, so the stall
+is the rung's and the arithmetic is not.
 
 ## 10 November, evening: the shapes reworked on Ryan's play in context
 
@@ -5840,3 +6729,953 @@ seed 7, GORGE, flooded channels, narrowest crossing 3, the guarantee opened 2
  , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
 ```
 
+## 10 November, after Ryan's second read of the trial: the field's depth and the opening, the Rupture meter's shares, the goblin's knife
+
+Probes behind the field's and the fodder's dials (a debug build's SETTINGS → TRIALS; `Ramp.depth_trial`,
+`Battle.opening_trial`, `Battle.fodder_trial`) and behind the goblin's role put to him in chat.
+The only content that moved with them is every machine's move, one more, on his word, which
+no probe here reads; the goblin's own kit followed on his call (its part, below). His play (the MODEL deal at a regen of two): "I think the map is a bit too shallow
+... If the map is a little deeper, and the seam starts a little farther out, it will feel more
+like I can actually plan a little bit ahead instead of panicking from the very start, which is
+the case now - feels like the correct play is to throw all machines down the middle and grind
+out Fracture as fast as possible that way. If fracture rewards were a little lower for fodder,
+then it becomes a bit more of a quantity game for non-elites and I'll feel more like sending my
+flankers out"; and of the goblins, "Kill one goblin, suddenly the whole formation falls apart
+... A straight attack, and a block of some kind, so they're a true frontliner".
+
+**Every machine one more move.** The campaign runner's 40 runs on the tree with it
+(`docs/campaign_run.md`) read as the 40 before it: battles won 3% against 2%, fallen 88% both,
+team wipes 90% against 88%, the gate's damage a battle 140 against 139, the Rupture reached in
+19% both. The plain player does nothing with the hex, so what the move is worth is his play's
+to say.
+
+**The field's depth and the opening's distance.** The Meadow at tier one, 20 seeds, the wall
+twenty long, nobody fighting (the machines taken off the field, so the clock alone), six enemy
+turns. The opening stands a formation one of its own moves from the apron and a patrol two; the
+trial adds moves to both.
+
+| Depth | Opening | The seam's first row, and its rows from the wall | The first strike, enemy turn | The gate has taken by turn 2 | By turn 4 | By turn 6 | A formation's walk from the rift to the wall, turns |
+|---|---|---|---|---|---|---|---|
+| 12 | +0 | row 4, 5 | 1.1 | 67 | 165 | 200 | 4 |
+| 12 | +1 | row 4, 5 | 2.1 | 26 | 118 | 198 | 4 |
+| 12 | +2 | row 4, 5 | 2.5 | 5 | 72 | 168 | 4 |
+| 14 | +0 | row 4, 7 | 1.0 | 70 | 168 | 200 | 5 |
+| 14 | +1 | row 4, 7 | 2.2 | 23 | 110 | 192 | 5 |
+| 14 | +2 | row 4, 7 | 3.0 | 0 | 71 | 166 | 5 |
+| 16 | +0 | row 5, 8 | 1.2 | 64 | 160 | 200 | 6 |
+| 16 | +1 | row 5, 8 | 2.2 | 24 | 111 | 194 | 6 |
+| 16 | +2 | row 5, 8 | 3.1 | 0 | 65 | 158 | 6 |
+
+Read. Depth alone buys no planning turn: the opening is measured from the wall, so at any depth
+the first formation strikes on the first enemy turn and the gate has taken a third of its bar
+by the second. What buys the turns is the opening's distance, a turn for each move, and depth is
+the room for it: at twelve deep two more moves run out of field (the first strike at 2.5 where
+fourteen and sixteen give 3.0 and 3.1). Depth by itself moves the two things he named beside it:
+the seam's first tears open seven and eight rows from the wall where they open five today, by
+the seam's own rule, and everything the rift sends later walks a turn or two longer, which is
+the time to regroup for an elite. So the pair to try first is fourteen deep with the opening a
+move farther out (the first strike on the second enemy turn, 23 off the gate by then where it
+is 70 today), and sixteen with two for a first strike on the third. Nobody fights in this read,
+so the gate's numbers are the clock's and not a battle's. On the phone's glass with the wall at
+the left, the rift's edge shows at twelve deep and is a scroll away at fourteen and sixteen.
+
+**What a kill is worth on the Rupture meter.** Every domain, 20 seeds, the field at the start
+as the game sets it: the meter's base is the menace placed and the first waves the rift will
+send, the Rupture at two thirds of it.
+
+| Domain, tier one | The meter's base (placed, the first waves) | The first Fracture, the Rupture | The one formation, in the middle | Each of the two patrols, on the flanks | The elites the first Fracture calls |
+|---|---|---|---|---|---|
+| The Meadow | 116 (52, 64) | 17, 78 | 20, 26% of the Rupture | 16, 21% | 22 or 28 |
+| The Waste | 140 (59, 81) | 21, 94 | 28, 30% | 16, 16% | 20 to 61 |
+| The Marsh | 127 (54, 73) | 19, 85 | 24, 28% | 15, 18% | 20 to 42 |
+| The Peak | 236 (107, 129) | 35, 158 | 46, 29% | 30, 19% | 36 or 48 |
+
+Tier two reads the same by its own numbers (four Fractures; the formation 25% to 28% of the
+Rupture, a patrol 16% to 19%, the first Fracture at 16 to 30 against a formation of 29 to 58).
+
+Read. In every domain the one formation in the middle is worth more than the first Fracture,
+so the first fight there earns it and calls the elite at once; the elite's kill counts double
+and is most of the second; and two more packs make the Rupture, about four fights in all (three
+in the Waste, whose elites are worth 59 and 61 of 94). The first waves come down the rift's
+column, so the middle alone supplies every one of them: the formation and the waves are 84 of
+the Meadow's 78 before the elite is counted. That is his read ("throw all machines down the
+middle"). A flank patrol already pays more for the machine sent than the middle does (16 for a
+fight rated for one against 20 for a fight rated for three), so what keeps the flankers home is
+not the patrol's worth but that the middle is enough. Lowering the fodder's worth is the lever
+he names and it works that way: at three quarters the Meadow's first Fracture takes the
+formation and a patrol and the Rupture about five fights; at half, the same two for the first
+and about seven fights for the Rupture, which the middle alone reaches only with its fifth
+wave, so the flanks' patrols and the tears' are the faster road. Its price is the battle's length: every
+fight more is turns on the clock, a wave every third turn and the seam two rows nearer each
+peak. `Battle.fodder_trial` counts a kill at the share when its pack came as no elite, an
+elite's pack whole, and leaves the tally salvage and Anathema read as it was.
+
+**The goblin's knife.** The goblin as content had it: 3 hit points, a knife of 2 and one more
+for every other goblin standing, so four deal 20 a round, then 12, 6 and 2 as they fall.
+Variants laid over the loaded content for the run, the greedy rung, 30 seeds a cell, each a
+direction: rounds and hull lost, and the share won where it is under 100%. The wall is the
+Goblin Guard's Shield Wall (armour up one until its next action, one action in three).
+
+Corrected the same day. This probe's first run kept the loaded content between its variants
+(the default content is cached, and a variant's wall was added on top of the last one's), so
+every walled row after the first carried two or three walls, the always-on armour's row three
+walls with it, and the grove's rows none of today's knife; what it said of them was wrong, and
+the lean it gave Ryan (armour always on "holds for about the same hull") with it. The rows
+below are the rerun, a fresh load for every variant and the goblin's kit pinned in the probe;
+the rows that were right the first time read the same.
+
+The goblin warband (four goblins before two Mandragoras, rated for three):
+
+| The goblin | The default three: today's dice, the MODEL at regen 2 | The Stingray and the Prairie Dog: today's dice | The MODEL at regen 2 | The Stingray, the Prairie Dog and the Skua: today's dice, the MODEL |
+|---|---|---|---|---|
+| The old knife: 2, one more a peer | 2.4 · 0%, 2.2 · 0% | 97% · 6.5 · 30% | 5.5 · 12% | 3.3 · 1%, 3.1 · 0% |
+| A straight 3 | 2.4 · 0%, 2.2 · 0% | 6.6 · 20% | 5.3 · 8% | 3.3 · 0%, 3.0 · 0% |
+| A straight 4 | 2.4 · 0%, 2.2 · 0% | 97% · 6.7 · 37% | 5.4 · 18% | 3.3 · 1%, 3.1 · 0% |
+| A straight 5 | 2.4 · 0%, 2.2 · 0% | 93% · 6.9 · 55% | 5.8 · 28% | 3.3 · 2%, 3.1 · 0% |
+| A straight 3 and the wall | 2.5 · 0%, 2.1 · 0% | 6.7 · 10% | 5.3 · 3% | 3.3 · 0%, 3.1 · 0% |
+| **A straight 4 and the wall (built)** | 2.5 · 0%, 2.0 · 0% | 6.9 · 22% | 5.4 · 9% | 3.4 · 1%, 3.2 · 0% |
+| A straight 5 and the wall | 2.5 · 0%, 2.1 · 0% | 97% · 7.1 · 40% | 5.6 · 11% | 3.5 · 1%, 3.2 · 0% |
+| A straight 6 and the wall | 2.5 · 0%, 2.1 · 0% | 93% · 7.2 · 50% | 6.3 · 21% | 3.5 · 2%, 3.3 · 1% |
+| A straight 4, armour 1 always | 2.4 · 0%, 2.2 · 0% | 53% · 9.0 · 78% | 83% · 8.1 · 52% | 5.6 · 7%, 4.7 · 5% |
+| The old knife at 5 hit points | 2.5 · 1%, 2.4 · 0% | 70% · 8.4 · 73% | 83% · 7.7 · 52% | 4.5 · 4%, 4.0 · 1% |
+| A straight 4 and the wall, 5 hit points | 2.6 · 0%, 2.4 · 0% | 80% · 11.4 · 64% | 7.8 · 24% | 4.1 · 1%, 4.2 · 1% |
+| A straight 4 and the wall, 6 hit points | 2.6 · 0%, 2.5 · 1% | 67% · 11.9 · 73% | 9.1 · 33% | 5.1 · 3%, 4.8 · 1% |
+| A straight 5 and the wall, 6 hit points | 2.7 · 0%, 2.5 · 1% | 20% · 8.2 · 93% | 93% · 9.0 · 46% | 5.3 · 8%, 4.8 · 2% |
+
+The treant's grove (a Treant and three goblins before two Mandragoras, rated for three):
+
+| The goblin | The default three: today's dice, the MODEL | The Stingray and the Prairie Dog: today's dice | The MODEL at regen 2 | The three lights: today's dice, the MODEL |
+|---|---|---|---|---|
+| The old knife | 4.6 · 3%, 4.4 · 4% | 27% · 17.7 · 96% | 26.6 · 36% | 16.5 · 11%, 14.2 · 2% |
+| A straight 4 | 4.6 · 4%, 4.6 · 5% | 3% · 13.7 · 99% | 93% · 27.2 · 52% | 17.8 · 13%, 13.8 · 4% |
+| A straight 4 and the wall (built) | 4.6 · 5%, 4.6 · 5% | 10% · 18.6 · 99% | 97% · 27.1 · 42% | 18.1 · 14%, 15.3 · 4% |
+| A straight 5 and the wall | 4.6 · 5%, 4.6 · 5% | 3% · 16.6 · 100% | 90% · 27.7 · 49% | 18.1 · 16%, 15.0 · 4% |
+
+Read. A block that is an action softens the goblin: a goblin raising its wall is a goblin not
+stabbing, so at the same knife the walled goblin costs the pair about half what the plain one
+does (9% against 18% at a straight 4 under the model, 22% against 37% on today's dice), and
+the wall does not make the line last (5.4 rounds both). Armour that is always there is no
+gentler form of it: it walls the small blows, three rounds longer and 52% of the pair's hull
+under the model, half the fights lost on today's dice, which is what the formation pass's
+reads said of flat armour and the lights. Hit points are what make the front hold (a straight
+4 and the wall at 6 hit points: nine rounds and a third of the pair's hull under the model).
+And three machines of any weight clear the warband in two to five rounds for a few points of
+hull at most on every row (the default three 1% at worst, three lights 8%), a knife of 5 at 6
+hit points included: with a full squad what is felt is how fast the front dies, the player's
+damage against the fodder's hit points, more than the knife's shape.
+The old knife was not weak where the goblins lived (at 5 hit points, half the pair's hull and
+one fight in six lost): its fault is the one he names, that the first kill takes two fifths
+of it.
+
+Built on his call ("I think the earlier goblin can have shield wall as well"): a straight 4
+and the wall, the 4 a placeholder. Against the old knife it costs the pair a little less in
+the warband (9% against 12% under the model, 22% against 30% on today's dice) and a little
+more in the grove, where the goblins live long beside the Treant (42% against 36% under the
+model); a 5 costs them as much in the warband under the model and a third more on today's
+dice, and out-hits the Goblin Guard as content has it (3, one more a peer). The campaign
+runner's 40 runs on the tree with it (`docs/campaign_run.md`) read as the 40 before it: won 3%
+both, fallen 88% both, the gate's damage a battle 139 against 140.
+
+The knife moves the goblin's menace with it, 5 where it was 3 (the weight reads a foe's best
+blow, and the old knife's was read without its peers), so a goblin's kill fills more of the
+meter and pays more salvage, and the Meadow's thresholds rise with its field. On the tree as
+built the Meadow's tier-one meter reads: base 138, the first Fracture at 21, the Rupture at
+92, the formation 28 (30% of the Rupture, from 26%), a flank patrol 16 (17%, from 21%), the
+shaman's warband 26. The meter's read above stands, the middle's share a little larger.
+
+## 10 November, the goblin's line on its straight knife: the Guard and the Captain in front
+
+The Meadow's formations at tiers two and three before and after the Goblin Guard took the
+straight knife (5, with its Shield Wall) and the Goblin Captain stepped into the front rank (a
+straight 6, the wall, his Warcry the third move), on Ryan's "Put the captain in front, yeah".
+The curve read (`tools/balance.gd --packs curve --domains meadow --sizes formation`), the greedy
+rung, 20 seeds, today's dice, the tier's four cut from one machine to four, a heavy first (tier
+two: the Wild Boar, the Clydesdale, the Buzzard, the Dingo; tier three: the Swallowtail, the
+Musk Ox, the Ammit, the Giant Petrel): greedy's hull lost and rounds at two, three and four
+machines (one machine is a wall or near it on every row, before and after). Before is the tree
+with the tier-one Goblin already on its knife of 4. Each a direction.
+
+| Tier | Composition | Before: two, three, four | After: two, three, four |
+|---|---|---|---|
+| 2 | `guard_warband` (two Guards and two Goblins before three Mandrakes) | 3% · 3.9, 0% · 2.9, 0% · 2.2 | 4% · 4.0, 0% · 2.9, 0% · 2.4 |
+| 2 | `treant_march` | 37% · 12.3, 7% · 6.2, 4% · 5.0 | 37% · 12.6, 8% · 6.2, 5% · 5.2 |
+| 2 | `rotblooms_bed` | 19% · 8.6, 4% · 5.0, 2% · 3.9 | 22% · 8.6, 5% · 5.1, 2% · 4.0 |
+| 3 | `captains_warband` (was four Guards before two Captains and two Alraunes; now two Captains and two Guards before two Alraunes) | 35% · 6.8, 4% · 4.2, 0% · 3.2 | 12% · 5.8, 2% · 3.5, 0% · 2.5 |
+| 3 | `alpha_hunt` | 39% · 6.7, 6% · 4.6, 1% · 3.1 | 41% · 6.7, 8% · 4.7, 1% · 3.0 |
+| 3 | `metal_drift` (the Captain in a Bubble Gel's cell, seven where it was eight) | 87% · 11.1, 24% · 7.0, 6% · 4.5 | 58% · 10.9, 11% · 5.5, 2% · 3.9 |
+| 3 | `treant_wilds` | 89% · 33.7, 15% · 11.6, 4% · 7.0 | 92% · 30.9, 17% · 12.2, 4% · 7.4 |
+| 3 | `rotblooms_bed` | 50% · 17.2, 8% · 7.4, 1% · 5.2 | 51% · 15.6, 9% · 7.5, 2% · 5.2 |
+
+Read. The line's new kit moves no band: where the grid is the same, the cost is the same to a
+point or two. The two grids that gave up a body to seat the Captain in front read easier, the
+captain's warband at a third of what it cost two machines and the metal drift at two thirds:
+that is the body count and a rallier now in Direct reach, the grids' doing and the formation
+pass's to re-cut, not the knife's. At its rating every formation here costs its tier's three
+between nothing and a sixth of their hull, the Treant's and the gels' the dear ones.
+
+## 10 November, the refit pass's model landed in content
+
+The campaign runner's 40 runs (`tools/campaign_run.gd -- --runs 40`, the plain player, the
+greedy rung, each run three tier-one machines of its tender) on the tree before and after the
+model became content: the stock dice with no shield or vent (a defensive basic where a shield
+stood, a Twin Autoguns where a vent did), every chassis its own shield regen of one to three,
+the four basic guns each making heat, four machines undealt. Ryan, the same day: "The re-deal
+with regen and heat, despite my tests showing it easy, seems like the correct way to go ... I
+would start with regen 1-3, depending on the machine, its role and maker ... start with the
+minimal swaps (The "Model" setting) and we'll go up from there." `docs/campaign_run.md` is the
+run after. A direction.
+
+| Measure | Before | The model landed |
+|---|---|---|
+| Battles won, fallen | 3%, 88% | 10%, 81% |
+| Battles ended in a team wipe | 90% | 76% |
+| Battles reaching the Rupture | 18% | 37% |
+| Fractures a battle | 1.07 | 1.60 |
+| Menace killed a battle | 50 | 83 |
+| Gate damage a battle | 139 | 125 |
+| Fights a run of 40 | 552 | 849 |
+| A fight for three, one machine in it: won | 13% of 170 | 31% of 225 |
+| A fight for three, two in it | 69% of 72 | 85% of 99 |
+| A fight for three, three in it | 100% of 49 | 98% of 65 |
+| A fight for four, one in it | 32% of 52 | 55% of 80 |
+
+Read. The landed model does what the what-if did on 9 November: the plain player goes about
+two thirds farther (menace killed 83 where it was 50, the Rupture twice as often), wins three
+times the battles it did and still falls in four of five. The gain is where the reads put it,
+short-handed: a machine alone against a formation rated for three wins one fight in three
+where it won one in eight. At its rating nothing moved, since nothing was at stake there.
+
+## 10 November, the duelists: a lone machine against one, and against a pair
+
+The four flanker lines built with the formation pass (the Whisker Cat, the Roc, the Dullahan and
+Cerberus, each with two recolours; Ryan: "Duelists are as you see fit, might as well jam them in
+here as well as part of the pass"), each read as the duel it is made for: one stock machine of
+the tier against one duelist of the tier, a skirmish with no field, the greedy rung, 30 seeds,
+the landed model's dice and each chassis's own regen. A probe (a scratch script over `Skirmish`
+and `Policy`, content loaded fresh for every variant: `ContentDB.reset_cache()`). Each cell:
+won, mean rounds, mean hull lost. The decision they inform: the lines' placeholder numbers and
+the pair's rating. Each a direction.
+
+Tier one, as built: the Whisker Cat (10 hit points; a claw of 5, or a lash of 3 that switches
+off the entry the die shows), the Roc (10; talons of 4, or a climb and a breaching stoop of 6 a
+round on), the Dullahan (8; a blade of 5, and a rise it readies once it is hurt, once a fight),
+Cerberus (10; three bites of 2, or a maul of 5 that scorches 2).
+
+| Machine | Whisker Cat | Roc | Dullahan | Cerberus |
+|---|---|---|---|---|
+| Honey Badger | 100% · 2.2 · 0% | 100% · 2.2 · 1% | 100% · 2.3 · 0% | 100% · 2.2 · 0% |
+| Baboon | 100% · 3.4 · 0% | 100% · 3.4 · 6% | 100% · 3.8 · 0% | 100% · 3.3 · 4% |
+| Prairie Dog | 100% · 6.0 · 4% | 100% · 6.0 · 10% | 100% · 9.1 · 7% | 100% · 6.8 · 35% |
+| Stingray | 100% · 2.9 · 0% | 100% · 3.2 · 1% | 100% · 2.7 · 0% | 100% · 2.9 · 1% |
+| Cassowary | 100% · 3.7 · 1% | 100% · 3.8 · 3% | 100% · 4.1 · 0% | 100% · 3.6 · 5% |
+| Cottonmouth | 100% · 3.0 · 0% | 100% · 3.2 · 1% | 100% · 2.0 · 0% | 100% · 3.0 · 3% |
+| Skua | 100% · 5.2 · 2% | 100% · 5.0 · 27% | 100% · 7.7 · 5% | 100% · 8.4 · 31% |
+| Storm Petrel | 100% · 3.9 · 0% | 100% · 3.9 · 9% | 100% · 3.3 · 0% | 100% · 3.8 · 0% |
+
+Tier two, the tier's own machines: the Sabre Cat (13; 6 and a lash of 3), the Night Roc (14; 5
+and a stoop of 8), the Grave Dullahan (10; 6), the Basalt Cerberus (14; bites of 2, a maul of
+6).
+
+| Machine | Sabre Cat | Night Roc | Grave Dullahan | Basalt Cerberus |
+|---|---|---|---|---|
+| Clydesdale | 100% · 3.5 · 1% | 100% · 3.6 · 7% | 100% · 3.5 · 1% | 100% · 3.5 · 4% |
+| Kite | 100% · 2.0 · 0% | 100% · 2.0 · 0% | 100% · 1.1 · 0% | 100% · 2.0 · 0% |
+| Wild Boar | 100% · 4.0 · 1% | 100% · 4.0 · 11% | 100% · 5.1 · 0% | 100% · 4.0 · 2% |
+| Dingo | 100% · 6.1 · 30% | 100% · 5.7 · 47% | 100% · 7.7 · 44% | 100% · 5.8 · 66% |
+| Buzzard | 100% · 2.7 · 0% | 100% · 3.1 · 9% | 100% · 3.0 · 2% | 100% · 3.2 · 3% |
+| Nemesis | 100% · 3.2 · 4% | 100% · 3.3 · 5% | 100% · 2.7 · 2% | 100% · 3.1 · 5% |
+| Funnel-web | 100% · 4.2 · 1% | 100% · 4.3 · 13% | 100% · 4.0 · 1% | 100% · 4.3 · 4% |
+| Needletail | 100% · 3.9 · 6% | 100% · 3.5 · 19% | 100% · 3.3 · 3% | 100% · 3.4 · 13% |
+
+Tier three: the Storm Cat (16; 7 and a lash of 4), the Great Roc (18; 6 and a stoop of 9), the
+Charnel Dullahan (12; 7), the Sulphur Cerberus (18; bites of 2, a maul of 7).
+
+| Machine | Storm Cat | Great Roc | Charnel Dullahan | Sulphur Cerberus |
+|---|---|---|---|---|
+| Ammit | 100% · 4.8 · 11% | 100% · 5.5 · 19% | 100% · 6.6 · 12% | 100% · 5.4 · 17% |
+| Musk Ox | 100% · 6.5 · 19% | 100% · 7.2 · 33% | 100% · 8.4 · 26% | 100% · 7.4 · 24% |
+| Lammergeier | 100% · 4.1 · 5% | 100% · 4.5 · 23% | 100% · 4.5 · 7% | 100% · 4.5 · 15% |
+| Giant Petrel | 100% · 3.9 · 4% | 100% · 3.9 · 11% | 100% · 3.2 · 4% | 100% · 4.0 · 9% |
+
+A pair of the same duelist at tier one, the same lone machine:
+
+| Machine | Whisker Cat | Roc | Dullahan | Cerberus |
+|---|---|---|---|---|
+| Honey Badger | 100% · 4.9 · 4% | 100% · 4.5 · 14% | 100% · 4.9 · 4% | 100% · 4.6 · 5% |
+| Baboon | 100% · 7.7 · 52% | 100% · 7.1 · 38% | 80% · 9.3 · 65% | 60% · 6.0 · 82% |
+| Prairie Dog | 0% · 6.9 · 100% | 43% · 12.4 · 92% | 0% · 8.3 · 100% | 0% · 4.6 · 100% |
+| Stingray | 97% · 6.9 · 36% | 100% · 6.4 · 26% | 87% · 6.4 · 34% | 53% · 7.4 · 85% |
+| Cassowary | 100% · 7.5 · 35% | 100% · 7.0 · 32% | 100% · 7.4 · 46% | 73% · 6.4 · 83% |
+| Cottonmouth | 100% · 4.4 · 39% | 100% · 4.3 · 31% | 100% · 4.0 · 15% | 63% · 4.8 · 88% |
+| Skua | 0% · 6.2 · 100% | 60% · 8.0 · 90% | 0% · 7.2 · 100% | 0% · 6.3 · 100% |
+| Storm Petrel | 100% · 9.9 · 33% | 100% · 6.9 · 39% | 83% · 8.8 · 42% | 97% · 10.4 · 31% |
+
+Read. One duelist is the fight for one machine the role asks for: every machine of its tier wins
+every seed, in two to nine rounds, and what it pays is the line's own question, the Roc's stoop
+through the shield (the Skua a quarter of its hull, the lights a tenth) and Cerberus's bites
+against a thin gauge (the Prairie Dog and the Skua a third), where the Cat and the Dullahan cost
+almost nothing to a machine that kills them in time. So the lone duelist is rated one, and it
+sits above the hull budget's thirtieth only for the two slow lights. The Dingo is tier two's
+outlier on every column (30% to 66%), its own die's doing and its session's, no duelist's. A
+pair is no duel: it is a wall for the slow lights alone and costs every other machine but the
+Badger a third or more, so a pair is rated two and waits for the ramp's later steps.
+
+What the forms tried along the way say, tier one, the same probe:
+
+- The Dullahan's rise at weight three with no limit stalled the slow lights (the Prairie Dog won
+  43% with 17 fights of 30 run to the bot's sixty rounds, the Skua 37%): it readied its rise
+  again after rising. The engine's `once` on the action is the fix, no new rule: it rises once a
+  fight, and both lights win every seed at 7% and 5%.
+- Cerberus as first written (12 hit points; three bites of 2, each scorching; a maul of 6) cost
+  the Prairie Dog 56% and the Skua 77% with one loss in ten. Taking the scorch off the bites
+  changed no cell, and a machine's armour does nothing while its shield stands (the shield is
+  not armoured, so a Shoring Jack blunts no bite until the gauge is gone): the cost is three
+  blows a round against a gauge of three or four. At 10 hit points and an attack of 5 it is 35%
+  and 31%; with bites of 1 it is nothing to anyone (0% on every row), so the bites stay at 2,
+  plain, the scorch on the maul alone, and the hound is the dear duel for a thin shield.
+
+## 10 November, the formation pass landed: the set by the curve read, and the campaign runner
+
+The patrols and formations as content has them since the pass (the re-cut set: the pruned
+formations, one hunting pack a domain and tier where the rank and file hunt, a lone duelist the
+patrol rated one and a pair rated two on the ramp's later steps), read by the curve read
+(`tools/balance.gd --packs curve --tiers N --seeds 20`, with `--team` at tiers two and three) on
+the landed model's dice: each composition against its tier's four cut to every size, a heavy
+first, the cell at its rating and the cell one machine short (the band, greedy's mean hull lost
+and rounds; a stall named). The decision they inform: none yet. The pass moved no standing
+foe's number, and these are the cells his play and the refit's numbers start from. Each a
+direction at 20 seeds. The same reads' elite cells are the before of the elites' own read, the next section.
+
+The counts at the rating:
+
+| Tier | Size, rating | Cells | Free | Decision | Wall | Hull lost |
+|---|---|---|---|---|---|---|
+| 1 | patrol, 1 | 4 | 4 | 0 | 0 | 0% |
+| 1 | patrol, 2 | 6 | 6 | 0 | 0 | 1% |
+| 1 | formation, 3 | 10 | 10 | 0 | 0 | 13% |
+| 2 | patrol, 1 | 4 | 4 | 0 | 0 | 3% |
+| 2 | patrol, 2 | 6 | 6 | 0 | 0 | 3% |
+| 2 | formation, 3 | 14 | 13 | 1 | 0 | 14% |
+| 3 | patrol, 1 | 4 | 4 | 0 | 0 | 25% |
+| 3 | patrol, 2 | 6 | 6 | 0 | 0 | 12% |
+| 3 | formation, 3 | 16 | 11 | 4 | 1 | 30% |
+
+Tier one, the default four (the Honey Badger, the Clydesdale, the Kite, the Baboon):
+
+| Domain | Size | Composition | Members | Ramp | Rated | At its rating | One short |
+|---|---|---|---|---|---|---|---|
+| The Meadow | patrol | `lone_whisker_cat` | Whisker Cat ×1 | any | 1 | free · 0% · 2.2 r |  |
+| The Meadow | patrol | `whisker_cat_pair` | Whisker Cat ×2 | C3 to 12 | 2 | free · 0% · 2.9 r | free · 5% · 4.8 r |
+| The Meadow | patrol | `wolf_pack` | Dire Wolf ×4 | any | 2 | free · 0% · 2.5 r | free · 1% · 4.7 r |
+| The Meadow | formation | `goblin_horde` | Goblin ×4, Mandragora ×4 | C0 to 7 | 3 | free · 2% · 3.0 r | free · 2% · 4.8 r |
+| The Meadow | formation | `treant_grove` | Treant ×1, Goblin ×3, Mandragora ×3 | any | 3 | free · 7% · 4.9 r | free · 14% · 8.6 r |
+| The Meadow | formation | `gel_wall` | Gel ×4, Mandragora ×3 | C0 to 7 | 3 | free · 3% · 4.9 r | free · 9% · 7.2 r |
+| The Waste | patrol | `lone_roc` | Roc ×1 | any | 1 | free · 2% · 2.2 r |  |
+| The Waste | patrol | `roc_pair` | Roc ×2 | C3 to 12 | 2 | free · 2% · 2.8 r | free · 14% · 4.4 r |
+| The Waste | patrol | `antlion_trio` | Antlion ×3 | any | 2 | free · 2% · 2.6 r | free · 21% · 3.7 r |
+| The Waste | formation | `needler_thicket` | Needler ×4, Cockatrice ×4 | C0 to 7 | 3 | free · 8% · 2.9 r | free · 13% · 4.8 r |
+| The Waste | formation | `sandworm_ambush` | Sandworm ×1, Needler ×3, Cockatrice ×2 | any | 3 | free · 40% · 5.8 r | decision · 76% · 8.9 r |
+| The Marsh | patrol | `lone_dullahan` | Dullahan ×1 | any | 1 | free · 0% · 2.3 r |  |
+| The Marsh | patrol | `dullahan_pair` | Dullahan ×2 | C3 to 12 | 2 | free · 0% · 2.4 r | free · 4% · 4.9 r |
+| The Marsh | formation | `grave_throng` | Revenant ×4, Ghost ×4 | C0 to 7 | 3 | free · 3% · 3.1 r | free · 7% · 6.0 r |
+| The Marsh | formation | `barrow_mound` | Barrow Giant ×1, Revenant ×3, Ghost ×2 | C0 to 7 | 3 | free · 5% · 4.2 r | free · 10% · 8.8 r |
+| The Marsh | formation | `knights_vigil` | Zombie Knight ×2, Revenant ×2, Ghost ×2 | any | 3 | free · 15% · 3.4 r | decision · 51% · 5.6 r |
+| The Peak | patrol | `lone_cerberus` | Cerberus ×1 | any | 1 | free · 0% · 2.2 r |  |
+| The Peak | patrol | `cerberus_pair` | Cerberus ×2 | C3 to 12 | 2 | free · 1% · 2.8 r | free · 5% · 4.6 r |
+| The Peak | formation | `ember_pyre` | Salamander ×2, Bomb ×2, Drake ×4 | C0 to 7 | 3 | free · 7% · 3.4 r | decision · 42% · 5.5 r |
+| The Peak | formation | `magma_vent` | Magma Elemental ×1, Salamander ×2, Bomb ×1, Drake ×1 | any | 3 | free · 40% · 5.6 r | decision · 74% · 8.5 r |
+
+Tier two, the tier-two four (the Wild Boar, the Clydesdale, the Buzzard, the Dingo):
+
+| Domain | Size | Composition | Members | Ramp | Rated | At its rating | One short |
+|---|---|---|---|---|---|---|---|
+| The Meadow | patrol | `lone_sabre_cat` | Sabre Cat ×1 | any | 1 | free · 1% · 4.0 r |  |
+| The Meadow | patrol | `sabre_cat_pair` | Sabre Cat ×2 | C8 to 12 | 2 | free · 1% · 3.7 r | free · 18% · 7.2 r |
+| The Meadow | patrol | `warg_pack` | Warg ×4 | any | 2 | free · 0% · 2.1 r | free · 2% · 4.0 r |
+| The Meadow | formation | `guard_horde` | Goblin Guard ×4, Mandrake ×4 | C4 to 7 | 3 | free · 1% · 3.2 r | free · 5% · 4.3 r |
+| The Meadow | formation | `treant_march` | Dusk Treant ×1, Goblin Guard ×3, Mandrake ×3 | C4 to 7 | 3 | free · 6% · 6.9 r | free · 18% · 11.4 r |
+| The Meadow | formation | `rotblooms_bed` | Rotbloom ×1, Goblin Guard ×2, Mandrake ×1 | any | 3 | free · 0% · 4.6 r | free · 5% · 7.0 r |
+| The Meadow | formation | `gel_drift` | Bubble Gel ×2, Gel ×2, Mandrake ×2 | C4 to 7 | 3 | free · 1% · 4.8 r | free · 8% · 7.8 r |
+| The Meadow | formation | `grove_and_bloom` | Dusk Treant ×1, Rotbloom ×1, Goblin Guard ×2, Mandrake ×2 | any | 3 | free · 25% · 9.8 r | decision · 79% · 17.8 r |
+| The Waste | patrol | `lone_night_roc` | Night Roc ×1 | any | 1 | free · 11% · 4.0 r |  |
+| The Waste | patrol | `night_roc_pair` | Night Roc ×2 | C8 to 12 | 2 | free · 5% · 3.7 r | free · 48% · 7.3 r |
+| The Waste | patrol | `pit_pair` | Pit Antlion ×2 | any | 2 | free · 12% · 2.1 r | decision · 77% · 4.0 r |
+| The Waste | formation | `barbed_swarm` | Barbed Needler ×2, Needler ×2, Basilisk ×2, The Djinn ×1 | C4 to 7 | 3 | free · 4% · 3.0 r | free · 13% · 4.0 r |
+| The Waste | formation | `sandworm_pit` | Night Sandworm ×1, Barbed Needler ×3, Basilisk ×2 | any | 3 | free · 42% · 7.1 r | wall · 98% · 10.8 r |
+| The Waste | formation | `djinns_mirage` | Barbed Needler ×2, Needler ×2, The Djinn ×2, Basilisk ×1 | any | 3 | free · 4% · 2.9 r | free · 13% · 4.2 r |
+| The Marsh | patrol | `lone_grave_dullahan` | Grave Dullahan ×1 | any | 1 | free · 0% · 5.0 r |  |
+| The Marsh | patrol | `grave_dullahan_pair` | Grave Dullahan ×2 | C8 to 12 | 2 | free · 0% · 3.2 r | free · 26% · 10.1 r |
+| The Marsh | formation | `wight_host` | Wight ×4, Spectre ×3 | C4 to 7 | 3 | free · 2% · 3.6 r | free · 12% · 6.0 r |
+| The Marsh | formation | `grave_field` | Grave Giant ×1, Wight ×3, Spectre ×2 | any | 3 | free · 11% · 11.6 r | decision · 43% · 42.5 r · 9 stalled |
+| The Marsh | formation | `death_knights_retinue` | Death Knight ×2, Wight ×2, Spectre ×2 | any | 3 | free · 34% · 6.3 r | wall · 99% · 10.8 r |
+| The Peak | patrol | `lone_basalt_cerberus` | Basalt Cerberus ×1 | any | 1 | free · 1% · 4.0 r |  |
+| The Peak | patrol | `basalt_cerberus_pair` | Basalt Cerberus ×2 | C8 to 12 | 2 | free · 1% · 3.8 r | free · 12% · 7.5 r |
+| The Peak | formation | `wyvern_roost` | Fire Lizard ×2, Bomb ×1, Grenade ×1, Wyvern ×2 | C4 to 7 | 3 | free · 10% · 3.2 r | free · 36% · 4.8 r |
+| The Peak | formation | `grenade_volley` | Grenade ×2, Bomb ×1, Fire Lizard ×1, Wyvern ×2 | C4 to 7 | 3 | free · 9% · 3.0 r | free · 22% · 4.5 r |
+| The Peak | formation | `magma_forge` | Basalt Elemental ×1, Fire Lizard ×2, Grenade ×1, Wyvern ×1 | any | 3 | decision · 47% · 7.4 r | wall · 100% · 9.2 r |
+
+Tier three, a tier-three four (the Musk Ox, the Ammit, the Giant Petrel, the Lammergeier; the Swallowtail is undealt):
+
+| Domain | Size | Composition | Members | Ramp | Rated | At its rating | One short |
+|---|---|---|---|---|---|---|---|
+| The Meadow | patrol | `lone_storm_cat` | Storm Cat ×1 | any | 1 | free · 17% · 6.2 r |  |
+| The Meadow | patrol | `storm_cat_pair` | Storm Cat ×2 | C11 to 12 | 2 | free · 6% · 5.2 r | wall · 91% · 8.8 r |
+| The Meadow | patrol | `alpha_pack` | Alpha Warg ×3 | any | 2 | free · 1% · 2.7 r | free · 16% · 5.0 r |
+| The Meadow | formation | `rotblooms_bed` | Rotbloom ×1, Goblin Guard ×2, Mandrake ×1 | any | 3 | free · 2% · 5.2 r | free · 11% · 8.9 r |
+| The Meadow | formation | `captains_warband` | Goblin Captain ×2, Goblin Guard ×2, Alraune ×2 | any | 3 | free · 0% · 2.9 r | free · 5% · 4.1 r |
+| The Meadow | formation | `metal_drift` | Metal Gel ×2, Bubble Gel ×1, Goblin Captain ×1, Mandrake ×2, Alraune ×1 | any | 3 | free · 6% · 4.6 r | free · 43% · 7.0 r |
+| The Meadow | formation | `treant_wilds` | Frost Treant ×1, Goblin Guard ×3, Alraune ×2 | any | 3 | free · 11% · 9.0 r | free · 40% · 14.2 r |
+| The Meadow | formation | `frost_and_bloom` | Frost Treant ×1, Rotbloom ×1, Goblin Guard ×1, Goblin Captain ×1, Alraune ×1 | any | 3 | decision · 42% · 12.1 r | wall · 98% · 15.4 r |
+| The Waste | patrol | `lone_great_roc` | Great Roc ×1 | any | 1 | free · 32% · 7.1 r |  |
+| The Waste | patrol | `great_roc_pair` | Great Roc ×2 | C11 to 12 | 2 | free · 14% · 5.8 r | wall · 91% · 8.9 r |
+| The Waste | patrol | `queens_hunt` | Antlion Queen ×1, Pit Antlion ×2 | any | 2 | free · 38% · 4.1 r | wall · 95% · 4.0 r |
+| The Waste | formation | `great_swarm` | Great Needler ×2, Barbed Needler ×2, Gorgon ×2, Basilisk ×2 | any | 3 | free · 12% · 3.5 r | free · 38% · 5.0 r |
+| The Waste | formation | `mirage_court` | Gorgon ×2, Great Needler ×1, Barbed Needler ×3, The Djinn ×2 | any | 3 | free · 10% · 3.5 r | free · 41% · 4.9 r |
+| The Waste | formation | `sandworm_flats` | Salt Sandworm ×1, Great Needler ×3, Gorgon ×2 | any | 3 | free · 45% · 10.8 r | wall · 100% · 11.9 r |
+| The Marsh | patrol | `lone_charnel_dullahan` | Charnel Dullahan ×1 | any | 1 | free · 30% · 9.2 r |  |
+| The Marsh | patrol | `charnel_dullahan_pair` | Charnel Dullahan ×2 | C11 to 12 | 2 | free · 6% · 5.9 r | wall · 97% · 9.3 r |
+| The Marsh | formation | `lichs_court` | Lich ×1, Draugr ×2, Dread Knight ×2, Spectre ×2, Wraith ×1 | C11 to 12 | 3 | wall · 95% · 11.5 r | wall · 100% · 4.3 r |
+| The Marsh | formation | `charnel_pit` | Charnel Giant ×1, Draugr ×3, Wraith ×2 | any | 3 | decision · 56% · 32.0 r · 6 stalled | wall · 100% · 10.6 r |
+| The Marsh | formation | `wraith_choir` | Wraith ×2, Draugr ×2, Death Knight ×2, Spectre ×2 | any | 3 | decision · 62% · 9.6 r | wall · 100% · 5.1 r |
+| The Marsh | formation | `draugr_host` | Draugr ×4, Lich ×1, Wraith ×2 | any | 3 | free · 17% · 5.0 r | decision · 75% · 7.8 r |
+| The Peak | patrol | `lone_sulphur_cerberus` | Sulphur Cerberus ×1 | any | 1 | free · 22% · 7.0 r |  |
+| The Peak | patrol | `sulphur_cerberus_pair` | Sulphur Cerberus ×2 | C11 to 12 | 2 | free · 9% · 6.5 r | decision · 86% · 10.7 r |
+| The Peak | formation | `dragons_roost` | Red Dragon ×2, Magma Lizard ×1, Fire Lizard ×1, Balloon ×1, Grenade ×1, Wyvern ×2 | any | 3 | free · 39% · 5.2 r | wall · 100% · 5.2 r |
+| The Peak | formation | `magma_pit` | Magma Lizard ×2, Fire Lizard ×1, Grenade ×1, Red Dragon ×2 | any | 3 | free · 9% · 4.1 r | decision · 70% · 7.2 r |
+| The Peak | formation | `balloon_storm` | Balloon ×2, Grenade ×1, Magma Lizard ×1, Wyvern ×2, Red Dragon ×1 | any | 3 | free · 15% · 4.6 r | decision · 74% · 7.9 r |
+| The Peak | formation | `magma_caldera` | Sulphur Elemental ×1, Magma Lizard ×2, Balloon ×1, Wyvern ×1 | any | 3 | decision · 63% · 12.4 r | wall · 100% · 9.4 r |
+
+Read, against the hull budget he accepted (a pusher's fight a twentieth of the squad's hull at
+its rating, a flanker's a thirtieth, a hunter's a tenth):
+
+- Every patrol is free at its rating at every tier, the lone duelist the fight for one it was
+  written as. At tier three the lone duelist costs the Musk Ox a sixth to a third of its hull:
+  the slowest machine of the tier reads them dearest, and a pair is a wall or near one for it
+  alone, which is the pair's rating saying what it should.
+- Tier one's formations sit on the budget (2% to 8% for three) but where a breach stands: the
+  sandworm ambush and the magma vent at two fifths, the knights' vigil at a seventh. Breach
+  under the regen is parked on his word; these are the cells it is parked with.
+- Tier two is the same shape a step up: the fodder formations 0% to 11%, the anchored ones a
+  quarter to a half (the grove and bloom, the sandworm pit, the death knights' retinue, the
+  magma forge, the one decision). The grave field stalls nine fights in twenty one machine
+  short: the giants' line has no escalation, the rising threat's defect, set aside.
+- Tier three spreads widest, and the Marsh is its dearest domain: the Lich's court is a wall
+  for the tier's three (greedy loses, 95% of the hull gone) and the charnel pit and the wraith
+  choir cost over half, the pit stalling six fights in twenty. The draugr host, four Draugr
+  before the Lich and two Wraiths, costs a sixth, so the new rung is not the cause: it is the
+  knights' breach and the giant, with the Lich's raising behind them. The Lich's court holds
+  the ramp's last step alone (Convergences 11 and 12), and the read is stock machines with no
+  module or upgrade, so it is flagged for his play, not moved.
+
+The campaign runner's 40 runs (`tools/campaign_run.gd -- --runs 40`, the plain player, the
+greedy rung, three tier-one machines of its tender) before and after the set landed, both on
+the landed model. A direction (`docs/campaign_run.md` holds the run after the elites' and bosses' guess of the same day: the next section).
+
+| Measure | The model, the old set | The pass landed |
+|---|---|---|
+| Battles won, fallen | 10%, 81% | 19%, 76% |
+| Battles ended in a team wipe | 76% | 69% |
+| Battles reaching the Rupture | 37% | 34% |
+| Fractures a battle | 1.60 | 1.50 |
+| Menace killed a battle | 83 | 72 |
+| Gate damage a battle | 125 | 117 |
+| Machines wrecked a battle | 1.54 | 1.42 |
+| Fights a run of 40 | 849 | 733 |
+| A fight for one, one machine in it: won | 70% of 204 | 98% of 94 |
+| A fight for two, one in it | none dealt | 66% of 15 |
+| A fight for three, one in it | 31% of 225 | 17% of 219 |
+| A fight for three, two in it | 85% of 99 | 69% of 107 |
+| A fight for three, three in it | 98% of 65 | 100% of 80 |
+| A fight for four, one in it | 55% of 80 | 51% of 72 |
+
+Read. The ratings mean more than they did: a fight for one is won alone 98 times in 100 where
+it was 70 (the old patrols were cut-down pushers that read as twos), and a formation costs a
+machine alone or a pair more than it did (17% and 69% won, from 31% and 85%), since the pruned
+set kept the anchored formations and dropped the ones that read free at eight foes. The plain
+player wins twice the battles it did and still falls in three of four: it spreads its three
+machines one to a pack, which is the play the ratings now punish, and no bot here reads a
+rating before it commits.
+
+## 10 November, the elites and the bosses guessed for the model
+
+Ryan, 10 November: "I'd like you to guesstimate some elite and boss tweaks as well, but leave
+out rising threat for now." The decision these inform: the guess itself, every number a
+placeholder for his play (`content/foes.json`; the tier's step in `ContentDB.BOSS_TIERS`).
+Method: a probe on the battle's own builders (`Battlefield.pack_of`, `Battle.make_boss_unit`,
+`ContentDB.foes_for`), every elite composition a tier deals and every boss with its escort at
+the tier, against a stock four of the tier cut to four, three, two and one machines (its first
+N, a heavy first), the greedy rung, 20 seeds a cell unless said, the landed model's dice. Each
+cell: greedy's mean hull lost (percent of the cut's hull) and mean rounds, its wins where it
+lost any, a stall named. The tier-two and tier-three elites before the guess are the curve
+read's cells of the same day (the formation pass's section), and the bosses before at those
+tiers are 10 seeds. Each a direction.
+
+### Before: free for a gathered squad
+
+On the model as it landed, at the old numbers (a boss 48 hit points and a blow of 6 to 8, an
+elite 8 to 44 and 3 to 10):
+
+| Tier, the four | An elite: four machines | Three | A boss: four | Three |
+|---|---|---|---|---|
+| One: the Honey Badger, the Baboon, the Stingray, the Skua | 1% · 3.0 r | 2% · 3.4 r | 1% · 4.7 r | 2% · 5.2 r |
+| One: the default four (the Honey Badger, the Clydesdale, the Kite, the Baboon) | 1% · 2.2 r | 4% · 2.7 r | 1% · 3.4 r | 2% · 4.1 r |
+| Two: the Wild Boar, the Clydesdale, the Buzzard, the Dingo | 4% | 7% | 6% · 5.9 r | 12% · 7.8 r |
+| Three: the Musk Ox, the Ammit, the Giant Petrel, the Lammergeier | 4% | 12% | 12% · 7.4 r | 39% · 12.4 r, won 85% |
+
+Why. A blow under a fresh gauge costs nothing, the gauge refills, and a squad brings a gauge a
+machine: the tier-one four hold 42 points of shield and regain 9 a round, so a boss that lands
+8 a round for four rounds never reaches a hull. And the model's dice, a gun where a vent
+stood, cut the kill time: the default four finish a tier-one boss in 2.3 to 4.2 rounds where
+the 48 was set at 4 to 7 on the old dice (30 October).
+
+### The grid: what moves them
+
+Every tier-one elite and boss at its hit points ×1 to ×3 and its blow ×1.5 to ×3, eighteen
+points, four machines, 10 seeds (the tier-one four). Three things read off it:
+
+- The blow alone does little while the fight is short. At the old hit points and three times
+  the blow, ten of thirteen bosses still cost the four 4% to 20%: four fresh gauges soak the
+  first three or four blows whatever their size, so what a fight costs is its rounds times
+  what gets past the gauges, and it needs both.
+- One rule fits nobody. At hit points ×1.5 and the blow ×2.5 the King Gel, the Mantis Ant and
+  the Vampire Lord cost 3% to 5%, and the Ruby Colossus 86% with three wins in ten: a single
+  plain blow is soaked, and what is not soaked is a part that breaches and regrows (the
+  Colossus's tentacle, the Fallen Weapon's eye), a last act on every machine (the Gargantuan
+  King's Meteor) and many strikes on one machine (Floraison, the Fiend of Fire).
+- The shaman's warband reads 0% to 1% at every point of the grid: its threat is its court of
+  two Goblins and two Dire Wolves, which the pass did not touch, so no number on the Shaman
+  moves it.
+
+### The guess
+
+The rule, and where a unit leaves it:
+
+- A boss: half again its hit points (48 to 72) and two and a half times its blow. The 72 gives
+  the default four back the kill time the test asks (the table below: 3.6 to 5.9 rounds).
+- An elite: two and a half times its blow; twice its hit points at 20 or under and for the two
+  that fight alone at 24 (the Goblin Nob, the Thunder Ape), so its kit plays against a squad
+  (the Reaper fell in 1.2 rounds); half again for the rest.
+- The cap, the scale row's own clause on hull (a telegraphed finisher never takes a machine
+  from full), read at tier one against the lightest machine, the Cottonmouth's 8 of shield
+  and 20 of hull: a blow that breaches stays under 20, and no one action lands 28 on one
+  machine. It sets the blow of every unit that strikes many times or breaches.
+- The tier's step: hit points ×1.1 at tier two and ×1.25 at tier three (×1.25 and ×1.5
+  before), the blow +1 and +2 as it was. On the old step and the rule's numbers the stock
+  four of tier two lost half its hull to a boss and won 88% (10 seeds), the Vampire Lord's
+  court a wall.
+- An elite's menace is no longer doubled (`ContentDB.menace`). Doubled on these numbers an
+  elite's kill would fill 34 to 95 of a tier-one Rupture meter of 80 to 129; undoubled it is
+  what it was within a quarter for every elite the rule moved (the Nob 31 from 28, the Wild
+  Hunt 45 from 42), and a third lower for the two it did not (the Old Man's rising 37 from
+  59, the Skeleton King's court 37 from 52). The thresholds do not move: they read the
+  field's rank and file.
+
+| Boss or part | HP | Blow | HP now | Blow now | Why |
+|---|---|---|---|---|---|
+| Floraison | 48 | 6 | 72 | 10 | its blow by the cap: its combos strike three and five times, and Full Bloom at 10 is 25 on one machine |
+| King Gel | 48 | 6 | 72 | 15 | the rule |
+| The Mantis Ant | 48 | 6 | 72 | 15 | the rule (its Upheaval breaches for 19, the cap) |
+| The Ruby Colossus | 40 | 8 | 40 | 14 | its hit points kept and the blow ×1.75: its tentacles breach and regrow, and at the rule it was a wall for four |
+| Burrowing Tentacle | 10 | 4 | 10 | 7 | with its core (it breaches) |
+| Thrashing Tentacle | 10 | 3 | 10 | 5 | with its core |
+| The Fallen Weapon | 40 | 8 | 40 | 20 | its hit points kept: its eyes guard it and regrow, and the fight was seven rounds as it stood |
+| Piercing Eye | 8 | 5 | 8 | 10 | twice (it breaches) |
+| Prising Eye | 8 | 5 | 8 | 10 | twice |
+| The Emperor Scorpion | 48 | 7 | 72 | 18 | the rule |
+| The Matador | 48 | 7 | 72 | 12 | its blow by the cap: Andalucía strikes four times, 24 on one machine |
+| The Phantom Train | 48 | 8 | 72 | 20 | the rule |
+| The Vampire Lord | 40 | 6 | 50 | 12 | a quarter more and twice the blow: it rises once, and its knights at tiers two and three are the dearest escort |
+| The Marsh Serpent | 48 | 7 | 72 | 18 | the rule (its Coil lands 27, the cap) |
+| The Gargantuan King | 48 | 8 | 72 | 15 | its blow by the cap (its Charge breaches for 19); its Meteor three quarters of its blow where it was the whole, since at the whole the bot's light four would not finish it |
+| The Fiend of Fire | 48 | 7 | 72 | 14 | twice the blow: Six Blades strikes six times, 24 on one machine |
+| The Obsidian Tyrant | 48 | 8 | 72 | 18 | its blow by the cap: its Firestorm lands 27 on every machine |
+| The Saurian Queen | 12 | 5 | 18 | 12 | with its core |
+
+| Elite or part | HP | Blow | HP now | Blow now | Why |
+|---|---|---|---|---|---|
+| Bone Wyvern | 32 | 7 | 48 | 18 | the rule |
+| Goblin Shaman | 8 | 3 | 16 | 8 | the rule, twice the hit points |
+| Elder Treant | 40 | 8 | 50 | 16 | a quarter more and twice the blow: the four massive elites read over a third of a four's hull at the rule, tier two |
+| Leshy | 8 | 3 | 16 | 8 | the rule, twice the hit points |
+| Old Man of the Desert | 44 | 10 | 44 | 10 | unchanged: its maw breaches, and it was the one elite that already cost a squad hull |
+| The Reaper | 12 | 6 | 24 | 12 | twice the hit points and twice the blow; Death's Knell one and a half times its blow where it was twice, 18 through the shield where the rule would have made it 30 |
+| The Goblin Nob | 24 | 6 | 48 | 15 | the rule, twice the hit points: it fights alone |
+| The Bane | 36 | 8 | 54 | 16 | twice the blow (its Shadow Blade breaches) |
+| The Firelord | 44 | 9 | 55 | 18 | as the Elder Treant |
+| The Thunder Ape | 24 | 7 | 48 | 16 | twice the hit points: it fights alone; its blow by the cap (its Rampage, gold, lands 27) |
+| The Rust Monster | 20 | 5 | 40 | 12 | the rule, twice the hit points |
+| The Skeleton King | 28 | 7 | 28 | 7 | unchanged: its court of knights costs a squad a fifth already |
+| The Fell Rider | 16 | 6 | 32 | 15 | the rule, twice the hit points |
+| The Antiquarian | 24 | 5 | 36 | 10 | twice the blow (its Reach breaches) |
+| The World Eater | 40 | 8 | 50 | 16 | as the Elder Treant |
+| Rider of the Wild Hunt | 10 | 4 | 20 | 10 | the rule, twice the hit points, each of the three |
+| The Shuffler | 32 | 6 | 48 | 15 | the rule |
+| Gilgamesh | 40 | 7 | 60 | 18 | the rule |
+| Cinder Tortoise | 40 | 7 | 50 | 14 | as the Elder Treant |
+| The Astromancer | 24 | 6 | 36 | 15 | the rule |
+| Warding Orb | 8 | 3 | 12 | 8 | its part, with it |
+| The Pilgrim | 40 | 6 | 60 | 9 | half again of each: the Chef's Knife is twice its blow through the shield, 18 by the cap |
+
+### After
+
+Tier one, the tier-one four (the Honey Badger, the Baboon, the Stingray, the Skua), each fight
+before and after:
+
+| Domain | Kind | Fight | Its lead, before | Before: four | Before: three | Its lead, after | After: four | Three | Two | One |
+|---|---|---|---|---|---|---|---|---|---|---|
+| The Meadow | elite | `shamans_warband` | 8 hp, 3 | 0% · 2.6 r | 0% · 2.8 r | 16 hp, 8; Goblin ×2, Dire Wolf ×2 | 0% · 2.9 r | 0% · 3.5 r | 2% · 5.0 r | 12% · 7.9 r |
+| The Meadow | elite | `the_nob` | 24 hp, 6 | 0% · 2.0 r | 0% · 2.2 r | 48 hp, 15 | 3% · 3.6 r | 9% · 4.4 r | 41% · 6.0 r | 100% · 4.7 r · won 0% |
+| The Meadow | boss | `floraison` | 48 hp, 6 | 1% · 3.9 r | 2% · 4.2 r | 72 hp, 10 | 8% · 6.4 r | 17% · 6.7 r | 63% · 12.2 r | 100% · 13.6 r · won 0% |
+| The Meadow | boss | `king_gel` | 48 hp, 6 | 1% · 4.8 r | 1% · 5.2 r | 72 hp, 15; Gel ×3 | 5% · 6.9 r | 12% · 7.3 r | 68% · 10.7 r · won 75% | 100% · 5.5 r · won 0% |
+| The Meadow | boss | `mantis_ant` | 48 hp, 6 | 2% · 3.8 r | 1% · 4.5 r | 72 hp, 15 | 10% · 6.0 r | 7% · 6.5 r | 55% · 9.5 r · won 90% | 100% · 5.0 r · won 0% |
+| The Waste | elite | `old_mans_rising` | 44 hp, 10, armour 1 | 7% · 6.2 r | 20% · 6.7 r | 44 hp, 10, armour 1; Needler ×3 | 7% · 6.2 r | 20% · 6.7 r | 67% · 10.0 r · won 90% | 100% · 3.0 r · won 0% |
+| The Waste | elite | `pilgrims_wake` | 40 hp, 6 | 0% · 3.3 r | 3% · 4.6 r | 60 hp, 9; Needler ×3 | 1% · 4.5 r | 6% · 5.7 r | 32% · 8.5 r | 100% · 7.2 r · won 0% |
+| The Waste | elite | `rust_monsters_scavenge` | 20 hp, 5 | 0% · 2.0 r | 0% · 2.0 r | 40 hp, 12 | 1% · 3.3 r | 1% · 3.7 r | 7% · 5.6 r | 88% · 8.2 r · won 40% |
+| The Waste | elite | `gilgamesh_wanders` | 40 hp, 7, armour 1 | 0% · 4.1 r | 0% · 4.2 r | 60 hp, 18, armour 1 | 6% · 5.9 r | 5% · 6.1 r | 35% · 10.3 r · won 95% | 100% · 9.1 r · won 0% |
+| The Waste | boss | `ruby_colossus` | 40 hp, 8, armour 1 | 7% · 6.9 r | 13% · 8.4 r | 40 hp, 14, armour 1; Burrowing Tentacle ×1, Thrashing Tentacle ×1 | 17% · 7.0 r | 39% · 9.4 r · won 90% | 100% · 7.5 r · won 0% | 100% · 2.6 r · won 0% |
+| The Waste | boss | `fallen_weapon` | 40 hp, 8, armour 1 | 2% · 6.9 r | 3% · 7.0 r | 40 hp, 20, armour 1; Piercing Eye ×1, Prising Eye ×1 | 20% · 6.8 r | 31% · 7.7 r | 95% · 6.5 r · won 10% | 100% · 2.1 r · won 0% |
+| The Waste | boss | `emperor_scorpion` | 48 hp, 7, armour 1 | 1% · 4.8 r | 1% · 4.9 r | 72 hp, 18, armour 1 | 18% · 7.5 r | 30% · 8.1 r | 94% · 10.2 r · won 20% | 100% · 4.1 r · won 0% |
+| The Marsh | elite | `fell_riders_hunt` | 16 hp, 6 | 0% · 1.7 r | 0% · 2.0 r | 32 hp, 15 | 2% · 3.0 r | 3% · 3.3 r | 20% · 4.4 r | 78% · 5.8 r · won 70% |
+| The Marsh | elite | `the_reaper` | 12 hp, 6 | 0% · 1.2 r | 0% · 1.2 r | 24 hp, 12 | 0% · 2.2 r | 0% · 2.5 r | 6% · 3.5 r | 52% · 4.8 r · won 95% |
+| The Marsh | elite | `the_wild_hunt` | 10 hp, 4 | 0% · 2.5 r | 0% · 3.2 r | 20 hp, 10; Rider of the Wild Hunt ×3 | 10% · 5.2 r | 28% · 6.6 r | 94% · 7.6 r · won 35% | 100% · 2.7 r · won 0% |
+| The Marsh | boss | `matador` | 48 hp, 7 | 0% · 4.1 r | 2% · 4.4 r | 72 hp, 12 | 6% · 6.2 r | 11% · 6.7 r | 48% · 10.6 r · won 90% | 100% · 7.8 r · won 0% |
+| The Marsh | boss | `phantom_train` | 48 hp, 8, armour 1 | 1% · 5.3 r | 1% · 6.3 r | 72 hp, 20, armour 1 | 17% · 7.8 r | 19% · 9.2 r | 95% · 12.3 r · won 25% | 100% · 4.0 r · won 0% |
+| The Marsh | boss | `vampire_lord` | 40 hp, 6 | 0% · 4.2 r | 1% · 4.7 r | 50 hp, 12 | 1% · 5.3 r | 2% · 6.0 r | 43% · 13.6 r · won 85% | 100% · 7.3 r · won 0% |
+| The Marsh | boss | `marsh_serpent` | 48 hp, 7 | 0% · 3.5 r | 1% · 3.7 r | 72 hp, 18 | 9% · 5.7 r | 9% · 5.8 r | 59% · 8.6 r · won 85% | 100% · 4.4 r · won 0% |
+| The Peak | elite | `cinder_tortoises_brood` | 40 hp, 7, armour 1 | 1% · 5.5 r | 2% · 5.9 r | 50 hp, 14, armour 1; Salamander ×2 | 4% · 6.5 r | 6% · 8.0 r | 40% · 10.2 r | 95% · 9.9 r · won 25% |
+| The Peak | elite | `thunder_apes_rampage` | 24 hp, 7 | 0% · 2.2 r | 1% · 2.5 r | 48 hp, 16 | 9% · 4.2 r | 15% · 4.8 r | 44% · 7.3 r | 100% · 5.5 r · won 0% |
+| The Peak | boss | `gargantuan_king` | 48 hp, 8 | 1% · 3.9 r | 2% · 4.0 r | 72 hp, 15 | 8% · 5.6 r | 13% · 5.9 r | 47% · 8.6 r | 100% · 5.2 r · won 0% |
+| The Peak | boss | `fiend_of_fire` | 48 hp, 7 | 0% · 3.5 r | 3% · 4.2 r | 72 hp, 14 | 12% · 5.8 r | 28% · 6.3 r | 69% · 10.0 r · won 80% | 100% · 7.2 r · won 0% |
+| The Peak | boss | `obsidian_tyrant` | 48 hp, 8, armour 1 | 1% · 6.0 r | 1% · 6.2 r | 72 hp, 18, armour 1; The Saurian Queen ×1 | 17% · 9.0 r | 24% · 9.3 r | 77% · 13.3 r · won 65% | 100% · 4.2 r · won 0% |
+
+Tier one, the means by team (an elite, then a boss; hull lost and rounds):
+
+| The four | An elite: four | Three | Two | One | A boss: four | Three | Two |
+|---|---|---|---|---|---|---|---|
+| The Honey Badger, the Baboon, the Stingray, the Skua | 4% · 4.3 r | 8% · 5.0 r | 35% · 7.1 r, won 93% | 84%, won 30% | 11% · 6.6 r | 19% · 7.3 r | 70% · 10.3 r, won 63% |
+| The default four | 3% · 3.2 r | 13% · 3.9 r | | | 7% · 4.6 r | 28% · 6.0 r | |
+| A light four with no tank (the Stingray, the Cassowary, the Cottonmouth, the Skua) | 4% · 5.5 r | 11% · 6.8 r | | | 21% · 10.4 r | 40% · 12.3 r, won 84% | |
+
+Tier two, the stock four (the Wild Boar, the Clydesdale, the Buzzard, the Dingo, no Barrier
+among them), each fight before and after at the tier's numbers, a boss with its escort:
+
+| Domain | Kind | Fight | Before: four | Before: three | Its lead and court, after | After: four | Three |
+|---|---|---|---|---|---|---|---|
+| The Meadow | elite | `shamans_warband` | 0% · 2.3 r | 0% · 2.6 r | 18 hp, 9; Goblin ×2, Dire Wolf ×2 | 0% · 2.6 r | 0% · 3.1 r |
+| The Meadow | elite | `elder_treants_grove` | 1% · 4.3 r | 2% · 6.5 r | 55 hp, 17, armour 1; Mandragora ×2 | 21% · 5.5 r | 38% · 8.0 r |
+| The Meadow | elite | `leshys_hunt` | 0% · 2.0 r | 0% · 2.3 r | 18 hp, 9; Dire Wolf ×3 | 0% · 2.4 r | 0% · 3.1 r |
+| The Meadow | elite | `the_nob` | 0% · 2.1 r | 0% · 2.7 r | 53 hp, 16 | 13% · 3.4 r | 22% · 4.2 r |
+| The Meadow | boss | `floraison` | 3% · 4.8 r | 8% · 6.4 r | 79 hp, 11; Warg ×2 | 21% · 6.7 r | 37% · 9.8 r |
+| The Meadow | boss | `king_gel` | 0% · 5.1 r | 3% · 6.4 r | 79 hp, 16; Gel ×2, Bubble Gel ×1 | 25% · 6.5 r | 45% · 8.3 r |
+| The Meadow | boss | `mantis_ant` | 7% · 4.6 r | 8% · 5.8 r | 79 hp, 16; Goblin Guard ×2 | 29% · 6.1 r | 45% · 7.6 r |
+| The Waste | elite | `old_mans_rising` | 28% · 5.5 r | 45% · 7.1 r | 48 hp, 11, armour 1; Needler ×3 | 25% · 5.0 r | 41% · 6.4 r |
+| The Waste | elite | `pilgrims_wake` | 6% · 4.0 r | 11% · 5.0 r | 66 hp, 10; Needler ×3 | 16% · 4.8 r | 23% · 6.2 r |
+| The Waste | elite | `rust_monsters_scavenge` | 0% · 1.9 r | 0% · 2.4 r | 44 hp, 13 | 3% · 3.0 r | 4% · 4.0 r |
+| The Waste | elite | `gilgamesh_wanders` | 0% · 4.1 r | 0% · 5.3 r | 66 hp, 19, armour 1 | 15% · 5.3 r | 25% · 7.4 r |
+| The Waste | elite | `the_astromancer` | 1% · 4.2 r | 2% · 5.5 r | 40 hp, 16; Warding Orb ×1, Storm Orb ×1, Mending Orb ×1 | 14% · 5.3 r | 32% · 7.2 r |
+| The Waste | boss | `ruby_colossus` | 20% · 8.0 r | 52% · 15.4 r · won 70% | 44 hp, 15, armour 1; Burrowing Tentacle ×1, Thrashing Tentacle ×1, Basilisk ×1, Pit Antlion ×1 | 36% · 7.7 r | 91% · 11.4 r · won 30% |
+| The Waste | boss | `fallen_weapon` | 6% · 6.6 r | 18% · 9.5 r | 44 hp, 21, armour 1; Piercing Eye ×1, Prising Eye ×1, Barbed Needler ×1, Basilisk ×1 | 46% · 7.2 r · won 95% | 90% · 9.2 r · won 25% |
+| The Waste | boss | `emperor_scorpion` | 2% · 5.9 r | 5% · 7.4 r | 79 hp, 19, armour 1; Pit Antlion ×1, Barbed Needler ×1 | 53% · 8.5 r | 89% · 12.2 r · won 45% |
+| The Marsh | elite | `fell_riders_hunt` | 0% · 1.6 r | 0% · 2.0 r | 35 hp, 16 | 4% · 2.5 r | 6% · 3.0 r |
+| The Marsh | elite | `skeleton_kings_court` | 22% · 5.3 r | 34% · 7.5 r | 31 hp, 8, armour 1; Zombie Knight ×2, Revenant ×1 | 21% · 5.0 r | 33% · 6.9 r |
+| The Marsh | elite | `antiquarians_hall` | 6% · 2.9 r | 10% · 4.0 r | 40 hp, 11; Revenant ×2 | 14% · 3.6 r | 24% · 5.0 r |
+| The Marsh | elite | `bone_wyverns_flight` | 2% · 4.2 r | 4% · 5.8 r | 53 hp, 19, armour 1; Revenant ×3 | 28% · 5.5 r | 42% · 7.5 r |
+| The Marsh | elite | `the_reaper` | 0% · 1.4 r | 0% · 1.6 r | 26 hp, 13 | 0% · 1.9 r | 1% · 2.5 r |
+| The Marsh | elite | `the_wild_hunt` | 0% · 2.5 r | 1% · 3.5 r | 22 hp, 11; Rider of the Wild Hunt ×3 | 15% · 4.0 r | 36% · 5.9 r |
+| The Marsh | elite | `the_shuffler` | 0% · 2.9 r | 0% · 4.3 r | 53 hp, 16 | 3% · 3.6 r | 7% · 5.3 r |
+| The Marsh | boss | `matador` | 3% · 5.3 r | 9% · 6.9 r | 79 hp, 13; Wight ×2 | 19% · 6.8 r | 37% · 9.8 r |
+| The Marsh | boss | `phantom_train` | 1% · 5.9 r | 4% · 7.4 r | 79 hp, 21, armour 1; Ghost ×2 | 43% · 7.9 r | 79% · 11.6 r · won 75% |
+| The Marsh | boss | `vampire_lord` | 12% · 7.3 r | 22% · 9.4 r | 55 hp, 13; Death Knight ×1, Wight ×1 | 53% · 10.8 r · won 80% | 94% · 14.0 r · won 25% |
+| The Marsh | boss | `marsh_serpent` | 1% · 4.2 r | 2% · 5.3 r | 79 hp, 19; Ghost ×2 | 29% · 5.3 r | 55% · 7.6 r |
+| The Peak | elite | `cinder_tortoises_brood` | 2% · 6.7 r | 3% · 9.0 r | 55 hp, 15, armour 2; Salamander ×2 | 23% · 7.8 r | 42% · 11.1 r |
+| The Peak | elite | `thunder_apes_rampage` | 0% · 2.1 r | 1% · 2.9 r | 53 hp, 17 | 14% · 3.8 r | 25% · 5.6 r · won 95% |
+| The Peak | elite | `the_bane` | 8% · 3.5 r | 19% · 5.0 r | 59 hp, 17, armour 1 | 25% · 4.8 r | 51% · 7.3 r |
+| The Peak | elite | `firelords_rising` | 5% · 5.8 r | 14% · 8.8 r | 61 hp, 19, armour 1 | 34% · 6.7 r | 85% · 11.7 r · won 35% |
+| The Peak | elite | `the_world_eater` | 4% · 4.2 r | 9% · 5.3 r | 55 hp, 17, armour 1 | 32% · 5.0 r | 58% · 6.7 r · won 85% |
+| The Peak | boss | `gargantuan_king` | 10% · 7.3 r | 11% · 6.5 r | 79 hp, 16; Bomb ×1, Grenade ×1 | 39% · 8.3 r | 51% · 8.2 r |
+| The Peak | boss | `fiend_of_fire` | 4% · 4.8 r | 10% · 6.7 r | 79 hp, 15; Fire Lizard ×2 | 34% · 7.0 r | 59% · 10.6 r · won 95% |
+| The Peak | boss | `obsidian_tyrant` | 3% · 6.7 r | 7% · 8.7 r | 79 hp, 19, armour 1; The Saurian Queen ×1, Wyvern ×1, Fire Lizard ×1 | 36% · 8.4 r | 80% · 13.9 r · won 95% |
+
+Tier three, the stock four (the Musk Ox, the Ammit, the Giant Petrel, the Lammergeier):
+
+| Domain | Kind | Fight | Before: four | Before: three | Its lead and court, after | After: four | Three |
+|---|---|---|---|---|---|---|---|
+| The Meadow | elite | `shamans_warband` | 0% · 2.0 r | 0% · 2.8 r | 20 hp, 10; Goblin ×2, Dire Wolf ×2 | 0% · 2.6 r | 1% · 3.6 r |
+| The Meadow | elite | `elder_treants_grove` | 4% · 6.2 r | 12% · 10.6 r | 63 hp, 18, armour 1; Mandragora ×2 | 16% · 6.8 r | 51% · 13.1 r · won 90% |
+| The Meadow | elite | `leshys_hunt` | 0% · 1.8 r | 0% · 2.8 r | 20 hp, 10; Dire Wolf ×3 | 0% · 2.5 r | 1% · 3.9 r |
+| The Meadow | elite | `the_nob` | 1% · 2.7 r | 3% · 3.9 r | 60 hp, 17 | 16% · 4.5 r | 40% · 7.2 r |
+| The Meadow | boss | `floraison` | 9% · 6.1 r | 30% · 10.0 r | 90 hp, 12; Alpha Warg ×2, Goblin Guard ×1, Goblin Captain ×1 | 24% · 7.8 r | 74% · 13.6 r · won 75% |
+| The Meadow | boss | `king_gel` | 2% · 5.7 r | 7% · 9.3 r | 90 hp, 17; Bubble Gel ×1, Metal Gel ×1, Gel ×1 | 22% · 7.5 r | 58% · 12.9 r · won 95% |
+| The Meadow | boss | `mantis_ant` | 5% · 6.0 r | 13% · 9.0 r | 90 hp, 17; Goblin Captain ×1, Goblin Guard ×1, Alraune ×2 | 21% · 7.7 r | 47% · 12.7 r |
+| The Waste | elite | `old_mans_rising` | 19% · 6.7 r | 37% · 11.7 r | 55 hp, 12, armour 1; Needler ×3 | 18% · 5.9 r | 38% · 9.8 r |
+| The Waste | elite | `pilgrims_wake` | 5% · 4.6 r | 13% · 6.8 r | 75 hp, 11; Needler ×3 | 10% · 5.7 r | 22% · 8.4 r |
+| The Waste | elite | `rust_monsters_scavenge` | 0% · 2.2 r | 0% · 3.3 r | 50 hp, 14 | 3% · 3.5 r | 6% · 6.0 r |
+| The Waste | elite | `gilgamesh_and_enkidu` | 1% · 5.1 r | 6% · 8.7 r | 75 hp, 20, armour 1; Enkidu ×1 | 11% · 6.9 r | 25% · 11.5 r |
+| The Waste | elite | `the_astromancer` | 1% · 4.5 r | 9% · 7.9 r | 45 hp, 17; Warding Orb ×1, Storm Orb ×1, Mending Orb ×1 | 15% · 6.6 r | 58% · 12.2 r · won 90% |
+| The Waste | boss | `ruby_colossus` | 29% · 9.6 r | 100% · 15.2 r · won 0% | 50 hp, 16, armour 1; Burrowing Tentacle ×1, Thrashing Tentacle ×1, Gorgon ×2, Antlion Queen ×1 | 40% · 8.3 r | 100% · 7.9 r · won 0% |
+| The Waste | boss | `fallen_weapon` | 13% · 7.9 r | 59% · 16.6 r · won 80% | 50 hp, 22, armour 1; Piercing Eye ×1, Prising Eye ×1, Barbed Needler ×1, Gorgon ×2 | 43% · 8.0 r · won 95% | 99% · 11.1 r · won 5% |
+| The Waste | boss | `emperor_scorpion` | 7% · 7.1 r | 23% · 11.5 r | 90 hp, 20, armour 1; Gorgon ×1, Pit Antlion ×1, Great Needler ×1 | 54% · 9.8 r · won 95% | 98% · 13.8 r · won 10% |
+| The Marsh | elite | `fell_riders_hunt` | 0% · 2.0 r | 0% · 2.5 r | 40 hp, 17 | 2% · 3.1 r | 8% · 4.4 r |
+| The Marsh | elite | `skeleton_kings_court` | 11% · 5.7 r | 34% · 9.5 r | 35 hp, 9, armour 1; Zombie Knight ×2, Revenant ×1 | 11% · 5.2 r | 33% · 8.3 r |
+| The Marsh | elite | `antiquarians_hall` | 6% · 3.2 r | 16% · 5.4 r | 45 hp, 12; Revenant ×2 | 14% · 4.1 r | 30% · 7.5 r |
+| The Marsh | elite | `bone_wyverns_flight` | 1% · 5.3 r | 11% · 7.7 r | 60 hp, 20, armour 1; Revenant ×3 | 21% · 7.0 r | 46% · 11.5 r · won 95% |
+| The Marsh | elite | `the_reaper` | 0% · 1.9 r | 0% · 2.2 r | 30 hp, 14 | 0% · 2.4 r | 1% · 3.4 r |
+| The Marsh | elite | `the_wild_hunt` | 1% · 3.0 r | 2% · 4.3 r | 25 hp, 12; Rider of the Wild Hunt ×3 | 17% · 4.7 r | 54% · 8.0 r · won 90% |
+| The Marsh | elite | `the_shuffler` | 0% · 3.6 r | 1% · 5.9 r | 60 hp, 17 | 4% · 4.5 r | 21% · 7.9 r |
+| The Marsh | boss | `matador` | 12% · 7.1 r | 23% · 10.0 r | 90 hp, 14; Wight ×3, Spectre ×1 | 25% · 8.6 r | 66% · 14.7 r · won 90% |
+| The Marsh | boss | `phantom_train` | 5% · 7.9 r | 25% · 14.6 r | 90 hp, 22, armour 1; Ghost ×1, Wraith ×1, Spectre ×1 | 45% · 10.9 r | 94% · 17.6 r · won 40% |
+| The Marsh | boss | `vampire_lord` | 38% · 10.4 r | 93% · 18.2 r · won 30% | 63 hp, 14; Dread Knight ×1, Death Knight ×1, Wight ×1 | 61% · 14.2 r · won 85% | 100% · 10.2 r · won 0% |
+| The Marsh | boss | `marsh_serpent` | 5% · 5.6 r | 17% · 9.2 r | 90 hp, 20; Wight ×2, Spectre ×1, Ghost ×1 | 28% · 7.3 r | 63% · 13.1 r · won 90% |
+| The Peak | elite | `cinder_tortoises_brood` | 3% · 6.4 r | 15% · 14.8 r | 63 hp, 16, armour 3; Salamander ×2 | 16% · 6.9 r | 66% · 18.1 r · won 90% |
+| The Peak | elite | `thunder_apes_rampage` | 0% · 3.1 r | 3% · 4.0 r | 60 hp, 18 | 12% · 4.4 r | 34% · 7.7 r |
+| The Peak | elite | `the_bane` | 6% · 4.5 r | 20% · 7.9 r | 68 hp, 18, armour 1 | 25% · 6.9 r | 77% · 13.8 r · won 70% |
+| The Peak | elite | `firelords_rising` | 8% · 6.5 r | 32% · 16.1 r | 69 hp, 20, armour 1 | 17% · 7.5 r | 71% · 17.4 r · won 75% |
+| The Peak | elite | `the_world_eater` | 7% · 5.2 r | 30% · 8.5 r | 63 hp, 18, armour 1 | 26% · 6.2 r | 82% · 10.8 r · won 55% |
+| The Peak | boss | `gargantuan_king` | 9% · 6.7 r | 20% · 12.4 r | 90 hp, 17; Grenade ×2, Balloon ×1 | 26% · 7.5 r | 59% · 12.3 r · won 95% |
+| The Peak | boss | `fiend_of_fire` | 14% · 6.2 r | 61% · 11.2 r · won 90% | 90 hp, 16; Magma Lizard ×2, Wyvern ×1 | 53% · 8.3 r · won 95% | 99% · 10.1 r · won 5% |
+| The Peak | boss | `obsidian_tyrant` | 11% · 9.4 r | 40% · 14.4 r | 90 hp, 20, armour 1; The Saurian Queen ×1, Magma Lizard ×2, Wyvern ×2 | 53% · 11.6 r | 99% · 15.9 r · won 5% |
+
+The means at tiers two and three:
+
+| Tier, the four | An elite: four | Three | A boss: four | Three |
+|---|---|---|---|---|
+| Two, the stock four | 15% · 4.4 r | 28% · 6.1 r, won 96% | 36% · 7.5 r, won 98% | 66% · 10.3 r, won 76% |
+| Two, the Nemesis in the Dingo's place (one Barrier) | 9% · 4.5 r | 20% · 6.5 r | 21% · 6.8 r | 46% · 10.1 r, won 93% |
+| Three, the stock four | 12% · 5.1 r | 36% · 9.3 r, won 93% | 38% · 9.0 r, won 98% | 81% · 12.8 r, won 47% |
+
+Read.
+
+- The shape is the one the roles ask for. An elite is a wall for the machine it catches (30%
+  won alone at tier one, the lone Badger at that), a decision for two (a third of their hull)
+  and a tax on the gathered squad; a boss is a fight for four that three can lose.
+- The guess does not reach the hull budget he accepted with the model (an elite's fight a
+  quarter of a four's hull, the boss what is left): at tier one a gathered four loses a
+  twentieth to an elite and a tenth to a boss. Tiers two and three sit nearer it (an eighth
+  and a third), on fours that carry one Barrier or none.
+- What would close it pulls against the kill-time test (a boss three to five rounds for a
+  squad of four, 21 October). Under four pooled gauges a fight that short costs little
+  whatever the blow, and the blow is already at the cap. The levers left are the fight's
+  length, which the test refuses, or a kit that goes round the gauges (area, many strikes, a
+  rising threat, set aside on his word). The guess takes the kill time and stops; which of the
+  two gives is his (the refit brief's section 7).
+- The Barrier is the swing. One machine with a Halo Projector in the tier-two four takes a
+  boss from 36% of its hull to 21% and an elite from 15% to 9%. Five tier-one machines carry
+  one in stock, one of tier two and one of tier three, so the model's deal makes the tier-one
+  stock the best defended against a big blow.
+- Soft whatever their numbers: the King Gel, the Mantis Ant, the Vampire Lord alone and the
+  Marsh Serpent at tier one (1% to 10% for four), the shaman's warband and Leshy's hunt at
+  every tier (0%), the Rust Monster and the Shuffler (1% to 4%). Their blows are single and
+  plain or their threat is a court the pass did not touch; a kit question for their sessions.
+- Dear at tiers two and three for what stands beside them, not for their own numbers: the
+  Vampire Lord's knights (53% of the stock four's hull at tier two, won 80%; it was 12%
+  before), the Waste's three bosses with their escorts (36% to 54%), the Peak's at tier three
+  (26% to 53%). Three machines lose to most tier-three bosses (won 47%), and three lost to
+  the Ruby Colossus at tier three before the guess too.
+- A tier-three boss fight is nine rounds for the stock four, over the kill-time test. The
+  stock machines of a tier hit little harder than tier one's, and the escorts add bodies; the
+  test is read on built fours when a run can build one.
+
+The campaign runner's 40 runs (`tools/campaign_run.gd -- --runs 40`, the plain player, the
+greedy rung, three tier-one machines of its tender) before and after the guess, both on the
+landed formations. A direction (`docs/campaign_run.md` is the run made again after the branch took main's third map list, the rift's five hexes under it, so its numbers sit a little off the column here).
+
+| Measure | The formation pass landed | The guess |
+|---|---|---|
+| Battles won, fallen | 19%, 76% | 8%, 87% |
+| Battles ended in a team wipe | 69% | 83% |
+| Battles reaching the Rupture | 34% | 23% |
+| Fractures a battle | 1.50 | 1.26 |
+| Menace killed a battle | 72 | 57 |
+| Gate damage a battle | 117 | 136 |
+| Machines wrecked a battle | 1.42 | 1.60 |
+| A fight for four, one machine in it: won | 51% of 72 | 25% of 74 |
+| A fight for four, two in it | 91% of 46 | 51% of 33 |
+| A fight for four, three in it | 97% of 44 | 92% of 28 |
+| A fight for three, three in it | 100% of 80 | 100% of 60 |
+
+Read. The fights for four are the elites' and the boss's, and the plain player sends whatever
+stands nearest: one machine wins such a fight one time in four where it won one in two, a pair
+one in two where it won nine in ten, three still nine in ten. So it wins 8% of its battles
+where it won 19%, about where it stood before the formation pass. That is the guess doing what
+an elite is for (the squad comes to it, or it takes a machine) against a player that never
+gathers; it is also the read most likely to feel harsh in play, where a hunting elite catches
+a machine alone before the squad can come.
+
+What follows from it, named:
+
+- A boss's menace rises with its numbers (Floraison 48 from 27, the Vampire Lord 25 from 16),
+  so its kill banks more salvage, two a point: the economy pass's.
+- A final's hero and the finale's line ride the tier's step, so each is a little softer at
+  tiers two and three until its own numbers are guessed. They were not: the heroes' proposal
+  waits on his marks.
+- The adds in their kits were sized against the old blows and are small beside the new: the
+  Thunder Ape's gold (+2 on a blow of 16), a rally's +2, the Goblin Nob's rage (a point a
+  spend, and the model left few spends to punish), the riders' lance (+1 a rider). So are a
+  machine's Armoured 2 and its regen against a blow of 15 to 20, which is the other half of
+  why the Barrier is the swing.
+- The cap is read at tier one. At tiers two and three the blow's +1 and +2 carry a few
+  finishers past it (the Mantis Ant's Upheaval breaches for 20 at tier two).
+
+## 11 November, tier one with three machines: the Badger's regen, the starting trios, the first boss
+
+Ryan, 11 November: "Badger probably goes to Regen 1 with the amount of armour it's able to
+get"; "Let's focus only on balancing tier 1 fights for now"; and "the first battle should be
+tuned around 3 units, and possibly second convergence battles should be tuned around 3.5
+units ... 3rd convergence battles onward we should tune it around 4 units ... it significantly
+affects boss scaling, since the whole team is brought in." The decisions these inform: the
+Honey Badger's regen (set to one), and the squad a battle is tuned for by the Convergence, his
+to settle (the refit brief's section 10). Method: a probe on the battle's own builders
+(`Battlefield.pack_of`, `Battle.make_boss_unit`, `ContentDB.foes_for`), every tier-one
+formation and elite the first Convergence deals and every boss, against a squad of stock
+tier-one machines, the greedy rung, 10 seeds a cell unless said, the elites' and bosses'
+numbers of 10 November. Each cell: greedy's mean hull lost and rounds, its wins where it lost
+any. Each a direction.
+
+### The Honey Badger at a regen of three and of one
+
+The trio at 20 seeds, the pair and the Badger alone at 10 on a sample (four patrols, five
+formations, five elites). Hull lost, and the Badger's own beside it:
+
+| The squad | Fights | Regen 3 | Regen 1 |
+|---|---|---|---|
+| The Badger, the Skua, the Baboon | the ten formations | 14% (its own 11%) | 14% (its own 13%) |
+| | the eleven elites | 16% (its own 12%) | 17% (its own 14%) |
+| | the thirteen bosses | 45% (its own 37%), won 89% | 50% (its own 46%), won 86% |
+| The Badger and the Skua | five formations | 25% (its own 19%), won 92% | 28% (its own 24%), won 90% |
+| | five elites | 56% (its own 50%), won 78% | 61% (its own 57%), won 66% |
+| The Badger alone | four patrols | 6% (its own 6%) | 9% (its own 9%) |
+| | five formations | 74% (its own 74%), won 68% | 78% (its own 78%), won 52% |
+| | five elites | 87% (its own 87%), won 32% | 89% (its own 89%), won 24% |
+
+Read. In a full trio nothing moves against a formation or an elite, and a boss costs five
+points more over its ten rounds. Short-handed it is a few points dearer, and two coin flips
+for the pair become losses (the Goblin Nob and the Thunder Ape, won one in two at three and one
+in five at one). Alone it no longer wins a formation rated for three: the Treant's grove was
+won four times in five at a regen of three and never at one, which is the lone tank beating a
+formation rated for three that the regen's first reads flagged (9 November). A machine's
+armour does nothing while its shield stands, so the faster regen was keeping the Badger's
+plate idle against small blows.
+
+### The starting trios, and what a fourth machine adds
+
+A run starts with three machines, one from each of three city makers (the tender deals one
+from each of the four, the player takes three), and the fourth is an offer's or bought. Eight
+trios at three, four with the Badger (at a regen of one) and four without, and three squads of
+four, a formation, an elite and a boss each the mean of its kind:
+
+| The squad | A formation | An elite | A boss | Machines wrecked a boss |
+|---|---|---|---|---|
+| Three: the Honey Badger, the Baboon, the Skua | 14% · 5.9 r | 20% · 6.2 r | 46% · 10.5 r, won 88% | 0.61 |
+| Three: the Honey Badger, the Stingray, the Cassowary | 9% · 5.8 r | 8% · 5.4 r | 24% · 8.6 r, won 99% | 0.11 |
+| Three: the Honey Badger, the Storm Petrel, the Cottonmouth | 10% · 5.1 r | 11% · 6.0 r | 36% · 10.4 r, won 95% | 0.35 |
+| Three: the Honey Badger, the Baboon, the Prairie Dog | 12% · 6.9 r | 11% · 6.3 r | 32% · 10.7 r, won 95% | 0.26 |
+| Three: the Baboon, the Skua, the Cassowary | 18% · 7.3 r, won 99% | 19% · 7.9 r, won 97% | 52% · 13.8 r, won 77% | 0.90 |
+| Three: the Stingray, the Storm Petrel, the Cottonmouth | 12% · 6.3 r | 10% · 6.9 r | 52% · 13.0 r, won 72% | 1.04 |
+| Three: the Baboon, the Storm Petrel, the Prairie Dog | 18% · 8.6 r, won 99% | 16% · 9.1 r, won 98% | 52% · 15.0 r, won 70% | 1.07 |
+| Three: the Stingray, the Skua, the Cottonmouth | 11% · 6.6 r | 13% · 7.7 r, won 99% | 61% · 15.1 r, won 61% | 1.39 |
+| Four: the Honey Badger, the Baboon, the Skua, the Cassowary | 4% · 4.5 r | 5% · 4.9 r | 15% · 8.0 r | 0.07 |
+| Four: the Baboon, the Skua, the Cassowary, the Stingray | 5% · 5.1 r | 5% · 5.2 r | 16% · 8.0 r | 0.05 |
+| Four: the Stingray, the Storm Petrel, the Cottonmouth, the Honey Badger | 4% · 4.0 r | 4% · 4.5 r | 11% · 7.0 r | 0.03 |
+
+Every fight, hull lost (T1 to T8 the trios in the table's order, F1 to F3 the fours):
+
+| Fight | Kind | T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | F1 | F2 | F3 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `goblin_horde` | formation | 1% | 1% | 0% | 1% | 0% | 0% | 0% | 0% | 0% | 0% | 0% |
+| `treant_grove` | formation | 4% | 3% | 1% | 4% | 5% | 2% | 3% | 3% | 1% | 1% | 1% |
+| `gel_wall` | formation | 3% | 3% | 1% | 8% | 5% | 0% | 8% | 1% | 0% | 1% | 0% |
+| `shamans_warband` | elite | 0% | 0% | 0% | 0% | 1% | 0% | 0% | 0% | 0% | 0% | 0% |
+| `the_nob` | elite | 24% | 11% | 15% | 10% | 22% | 10% | 13% | 19% | 9% | 5% | 3% |
+| `floraison` | boss | 26% | 23% | 30% | 27% | 60% (won 80%) | 61% (won 90%) | 43% (won 90%) | 86% (won 50%) | 4% | 10% | 10% |
+| `king_gel` | boss | 34% | 16% | 36% | 13% | 27% | 20% | 26% | 16% | 9% | 9% | 6% |
+| `mantis_ant` | boss | 30% | 13% | 21% | 12% | 23% | 14% | 8% | 23% (won 90%) | 9% | 6% | 6% |
+| `needler_thicket` | formation | 2% | 5% | 3% | 4% | 5% | 3% | 4% | 1% | 1% | 2% | 0% |
+| `sandworm_ambush` | formation | 35% | 18% | 24% | 24% | 26% | 23% | 29% | 13% | 10% | 9% | 10% |
+| `old_mans_rising` | elite | 43% | 18% | 27% | 20% | 36% (won 90%) | 16% | 29% | 19% | 9% | 7% | 12% |
+| `pilgrims_wake` | elite | 14% | 6% | 5% | 10% | 15% | 3% | 15% | 12% | 6% | 2% | 0% |
+| `rust_monsters_scavenge` | elite | 5% | 1% | 2% | 1% | 4% | 1% | 1% | 3% | 1% | 1% | 1% |
+| `gilgamesh_wanders` | elite | 30% | 5% | 9% | 7% | 12% | 9% | 9% | 4% | 3% | 1% | 3% |
+| `ruby_colossus` | boss | 79% (won 50%) | 49% (won 90%) | 48% | 72% (won 70%) | 98% (won 10%) | 94% (won 10%) | 100% (won 0%) | 100% (won 0%) | 21% | 31% | 11% |
+| `fallen_weapon` | boss | 72% (won 60%) | 34% | 61% (won 80%) | 55% (won 80%) | 91% (won 20%) | 100% (won 10%) | 100% (won 0%) | 100% (won 0%) | 18% | 24% | 10% |
+| `emperor_scorpion` | boss | 78% (won 60%) | 40% | 80% (won 60%) | 58% (won 90%) | 71% (won 70%) | 93% (won 20%) | 88% (won 40%) | 93% (won 30%) | 27% | 20% | 29% |
+| `grave_throng` | formation | 0% | 2% | 1% | 2% | 1% | 0% | 1% | 0% | 0% | 0% | 0% |
+| `barrow_mound` | formation | 5% | 1% | 2% | 1% | 3% | 4% | 3% | 4% | 0% | 1% | 1% |
+| `knights_vigil` | formation | 34% | 23% | 25% | 25% | 38% | 31% | 38% | 34% | 13% | 16% | 12% |
+| `fell_riders_hunt` | elite | 8% | 2% | 1% | 2% | 8% | 2% | 3% | 1% | 2% | 1% | 1% |
+| `the_reaper` | elite | 0% | 0% | 1% | 1% | 1% | 0% | 3% | 0% | 0% | 0% | 0% |
+| `the_wild_hunt` | elite | 35% | 20% | 27% | 31% | 59% (won 80%) | 37% | 57% (won 80%) | 37% | 14% | 21% | 13% |
+| `matador` | boss | 31% | 20% | 18% | 19% | 30% | 36% | 20% | 42% (won 90%) | 8% | 8% | 4% |
+| `phantom_train` | boss | 67% (won 80%) | 22% | 45% (won 90%) | 42% | 66% (won 70%) | 59% (won 80%) | 78% (won 50%) | 82% (won 50%) | 22% | 18% | 10% |
+| `vampire_lord` | boss | 14% | 5% | 8% | 4% | 20% | 8% | 8% | 16% | 2% | 1% | 1% |
+| `marsh_serpent` | boss | 26% | 13% | 21% | 22% | 29% | 24% | 28% | 31% | 9% | 2% | 3% |
+| `ember_pyre` | formation | 17% | 15% | 7% | 34% | 47% (won 90%) | 17% | 55% (won 90%) | 13% | 3% | 6% | 1% |
+| `magma_vent` | formation | 38% | 21% | 35% | 16% | 45% | 39% | 39% | 36% | 14% | 16% | 13% |
+| `cinder_tortoises_brood` | elite | 29% | 10% | 13% | 12% | 16% | 9% | 10% | 13% | 7% | 4% | 4% |
+| `thunder_apes_rampage` | elite | 27% | 18% | 27% | 23% | 36% | 25% | 34% | 39% (won 90%) | 4% | 13% | 7% |
+| `gargantuan_king` | boss | 38% | 12% | 21% | 11% | 28% (won 90%) | 20% | 16% | 19% | 11% | 9% | 14% |
+| `fiend_of_fire` | boss | 36% | 38% | 32% | 46% | 67% (won 70%) | 98% (won 20%) | 81% (won 50%) | 98% (won 10%) | 17% | 30% | 20% |
+| `obsidian_tyrant` | boss | 63% | 33% | 49% | 38% | 70% (won 90%) | 53% | 84% (won 80%) | 81% (won 70%) | 41% | 39% | 20% |
+
+Read.
+
+- The fourth machine halves or thirds everything, and the boss most. A formation costs three
+  machines 9% to 18% and four 4% to 5%; an elite 8% to 20% and 4% to 5%; a boss 24% to 61%
+  and 11% to 16%. A boss is nine to fifteen rounds for three where it is seven or eight for
+  four, and wrecks a machine in one fight of nine at best and more than one a fight at worst,
+  where four lose one in twenty.
+- A trio without the Badger loses a quarter to two fifths of its boss fights. The Waste's
+  three bosses are walls for it (their parts breach), and Floraison and the Fiend of Fire, who
+  strike many times, close to it.
+- The six fodder formations are on the pusher's budget for three (0% to 8%). The four led by
+  a breach are not (the sandworm ambush 13% to 35%, the knights' vigil 23% to 38%, the magma
+  vent 16% to 45%, the ember pyre 7% to 55%); breach under the regen is parked on his word.
+- An elite at three is near the hull budget he accepted with the model (a tenth to a fifth of
+  the squad's hull), where at four it is a twentieth. The Old Man's rising (16% to 43%), the
+  Wild Hunt (20% to 59%, two trios losing one fight in five) and the Thunder Ape (18% to 39%)
+  are the dear ones.
+
+### What an offer buys at tier one: kit against a fourth machine
+
+His second Convergence at "3.5 units" leans on what the hangar adds to three machines, so
+the same probe with tier-one kit fitted: the Ablative Plating (8 hull and a point of armour,
+the heaviest tier-one module) and the Slugthrower (a plain 4 in a Twin Autoguns' slot), on one
+machine or on all three, against the same squad with a stock fourth. Two trios, 10 seeds, the
+mean hull lost to a formation, an elite and a boss, the boss's wins beside it:
+
+| The squad | The Honey Badger, the Baboon, the Skua | The Stingray, the Storm Petrel, the Cottonmouth |
+|---|---|---|
+| Three, stock | 14%, 20%, 46% (won 88%) | 12%, 10%, 52% (won 72%) |
+| One offer: a module on one machine | 12%, 16%, 41% (won 89%) | 11%, 9%, 49% (won 75%) |
+| One offer: a tier-one gun on one machine | 12%, 17%, 44% (won 88%) | 12%, 10%, 52% (won 72%) |
+| Three offers: a module on each | 10%, 12%, 31% (won 95%) | 8%, 6%, 37% (won 87%) |
+| Six offers: a module and a gun on each | 9%, 10%, 28% (won 98%) | 7%, 6%, 31% (won 95%) |
+| One offer: a fourth machine, stock | 4%, 5%, 15% (won 100%) | 4%, 4%, 11% (won 100%) |
+
+Read. At tier one kit does not stand in for a machine. One offer spent on kit moves a boss's
+cost by nought to five points; the same offer spent on a chassis cuts it by two thirds. Six
+offers of the best tier-one kit, more than tier one has battles, leave a boss twice as dear
+as one stock machine more does. So with a slot empty the chassis is the pick every time, three
+and a half is no state a squad is in, and the choice between a machine and better kit only
+begins at the fifth machine.
+
+### The first boss, sized for three
+
+Every tier-one boss at a share of its hit points and of its blow, three machines, the mean of
+the thirteen:
+
+| Hit points | Blow | The Honey Badger, the Baboon, the Skua | The Honey Badger, the Stingray, the Cassowary | The Stingray, the Storm Petrel, the Cottonmouth |
+|---|---|---|---|---|
+| whole | whole | 46% · 10.5 r, won 88% · 0.61 wrecked | 24% · 8.6 r, won 99% · 0.11 wrecked | 52% · 13.0 r, won 72% · 1.04 wrecked |
+| seven eighths | whole | 41% · 9.5 r, won 91% · 0.50 wrecked | 21% · 7.6 r · 0.08 wrecked | 46% · 12.0 r, won 78% · 0.82 wrecked |
+| three quarters | whole | 32% · 8.3 r, won 97% · 0.29 wrecked | 16% · 6.5 r, won 99% · 0.07 wrecked | 40% · 10.1 r, won 86% · 0.52 wrecked |
+| two thirds | whole | 28% · 7.3 r, won 97% · 0.24 wrecked | 14% · 5.9 r · 0.06 wrecked | 28% · 8.9 r, won 94% · 0.25 wrecked |
+| whole | three quarters | 25% · 10.1 r, won 99% · 0.13 wrecked | 13% · 8.2 r · 0.00 wrecked | 31% · 13.2 r, won 92% · 0.31 wrecked |
+| seven eighths | three quarters | 22% · 9.2 r, won 98% · 0.10 wrecked | 10% · 7.3 r · 0.00 wrecked | 23% · 10.9 r, won 99% · 0.09 wrecked |
+| three quarters | three quarters | 17% · 7.8 r · 0.04 wrecked | 8% · 6.2 r · 0.01 wrecked | 16% · 8.9 r · 0.02 wrecked |
+| two thirds | three quarters | 14% · 6.9 r · 0.03 wrecked | 7% · 5.6 r · 0.00 wrecked | 11% · 7.5 r · 0.01 wrecked |
+
+Read. At three quarters of both, three machines pay a boss what four pay it whole (8% to 17%
+against 11% to 16%), in six to nine rounds, with no machine wrecked: a boss for three is three
+quarters of a boss for four. Hit points alone do not do it: at two thirds of the hit points
+(the old 48) and the whole blow two trios still lose a quarter of their hull and a machine in
+one fight of four.

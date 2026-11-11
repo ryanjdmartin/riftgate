@@ -2,6 +2,12 @@
 
 <!-- hangar: {"kind": "rule", "maker": null, "tier": null, "status": "session", "slot": false, "name": "the heat pillar"} -->
 
+**Folded into the refit pass, 9 November** (`docs/briefs/refit_pass.md`): Ryan's direction of
+that day takes vent entries off the die with the shield entries, makes cooling the heat's
+passive recovery (so cutting it, this brief's lever, is no longer the lean), names the hold as
+the decision, and prices the basics at heat one. What follows is the record that pass reads: the
+rules as built, the measures and the bench; its questions are answered there or moot.
+
 The jumping-off point for a session on heat: what it is today, what is measured, what Ryan
 said on 28 October, Claude's bench, and the questions only he can settle. Nothing here is
 decided beyond what the bible's rows say; the bench is Claude's, for him to move.

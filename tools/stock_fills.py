@@ -60,7 +60,7 @@ def A(p, heat=0, **k): return dict(power=p, heat=heat, **k)
 def E(p, **k): return dict(power=p, **k)   # equipment: its number
 P = {
  'twin_autoguns': A(2, 0), 'rivet_gun': A(2, heat=0), 'ankle_mortar': A(2, 1), 'laser_carbine': A(3, heat=2),
- 'halo_shield': E(6), 'canopy': E(8), 'coolant_jacket': E(4), 'bleed_valve': E(6),
+ 'halo_shield': E(6), 'canopy': E(8), 'coolant_jacket': E(4), 'bleed_valve': E(6),   # the eight basics as the stock pass filled them (22 October); the refit pass landed since (10 November): the Halo is the Halo Projector, a Barrier, and the Canopy and the two vents are drafts nothing deals
  'howitzer': A(4, 1), 'incendiary_shells': A(2, 1, burn=2), 'slugthrower': A(4, 1), 'shotfire_rack': A(4, 2),
  'maxigun': A(2, 1, strikes=3), 'enfilade_beam': A(4, heat=2), 'arc_fault_cannon': A(4, heat=2),
  'overclocked_railgun': A(10, heat=8, keywords=['breach']), 'plasma_arquebus': A(4, 2), 'blazethrower': A(3, heat=3, burn=2),
