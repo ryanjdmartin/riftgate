@@ -3034,7 +3034,7 @@ def whip_scorpion(b):
             # in place, so it overhangs the back of the mount ... give the front some space and make
             # a little scorpion vibe"): the cheeks grip the rails at a block, the breech and the
             # collector riding out over the boiler like a tail carried high.
-            GY = PY - 18.0
+            GY = PY - 9.0
             b.box(-6.2, 6.2, PY - 3.0, PY + 3.0, GZ - 3.4, GZ + 3.2, "steel.dark", "ray_trunnion_block")
             b.box(-6.0, 6.0, GY - 12.0, GY + 3.0, GZ - 4.4, GZ + 4.4, "steel.dark", "ray_breech")
             b.prism("y", 0.0, GY - 4.5, GZ + 8.2, 4.2, 12.0, "livery.livery2", 8, "ray_tank", phase=math.pi / 8)
