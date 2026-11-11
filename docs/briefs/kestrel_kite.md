@@ -160,7 +160,7 @@ What follows without a question (Claude's, built so unless he says):
 5. **A third Kestrel shield** if the reward is the shield: the Buzzard's regen from its heat, the
    Storm Petrel's shield for heat gained, the Kite's for a kill.
 
-### Claude's leans, for him to move
+### Claude's leans, as put to him (his answer is below)
 
 - **The reward on the Driver's kill alone**, as the reset was. The die is then the brake (the
   lock is one entry in four, and the team's rerolls are what buy it, Kestrel's lean and a real
@@ -170,6 +170,37 @@ What follows without a question (Claude's, built so unless he says):
   it, and it keeps the glass honest where a shield from a kill makes the machine sturdier in the
   fights it already wins. Else the shield, on a small gauge.
 - **The Coriolis comes home** as the Driver and leaves the pool.
+
+### His answer, and the kit as it stands (11 November)
+
+"Right, I liked shadow panther. It keeps the phased orbit, not the Kite. What exactly is wrong
+from a shield refill if the max shield is small?"
+
+So Phased stays the Zoids walker's, and the Kite's kill pays its shield. Claude's answer to his
+question: nothing, at a small maximum. The fault was the gauge's size alone: at 16 a refill is
+worth a formation's round, at 6 or 8 it is a blow or two, which is a glass cannon's reward. With
+the gauge small the gate on the Driver's kill has no work to do, and every kill is the better
+decision besides: take the kill it can make for the shield, or shoot the thing that matters.
+Two things stay true and neither is a fault: the refill does nothing on a kill made at full
+shield, so it starts in a fight's second round, survival and never burst; and a shield module
+raises the maximum, so the gauge can be built back up, which is where to look if it ever
+outlasts its rating.
+
+The kit, every number a placeholder:
+
+- **Four entries**: the Pinion Driver and three hardpoints.
+- **The passive**: every weapon it fires hits an unhurt foe at double its printed number; a kill
+  recharges its shield whole.
+- **The Pinion Driver**: the finisher, a flat number that grows with the hull its target is
+  missing.
+- **The frame**: a paper hull, a small shield, and a low regen (Claude's: on a small gauge a big
+  regen refills it anyway and the kill's pay is noise, so the shield should come back by
+  killing).
+- **Gone**: the reset, the flat heat, the dark rounds, Hot Streak.
+
+Still open on it: the Coriolis Accelerator (hole 4, home as the Driver or its twin in the
+pool); and the passive now holding two lines, the opener and the refill, which Claude reads as
+one idea, first blood, and the one-idea row is his to read.
 
 ## Holes raised (the opener)
 
@@ -227,12 +258,16 @@ fight, and a gauge no single round can fill.
 
 ## Open, his
 
-1. Whether a kill pays on the Driver alone or on every weapon.
-2. Phased (the panther's hook moving here, the Phased row bent for it) or the shield, and the
-   frame with it.
-3. The Coriolis Accelerator: home as the Driver, or kept in the pool beside it.
+1. The Coriolis Accelerator: home as the Driver, or kept in the pool beside it.
+2. The passive's two lines (the opener, the refill): one idea by his read, or the refill on the
+   Driver.
+3. The frame's numbers: how small the shield, and the regen beside it.
 4. Still open from the second round: whether the double is the aimed foe's alone, and a what-if
    on a scratch tree before any go.
+
+Answered 11 November: Phased is the shadow panther's, and the kill pays the Kite's shield, on a
+small gauge; with the gauge small Claude's gate on the Driver's kill is withdrawn, so any kill of
+its own pays, as he first wrote it.
 
 ## What the session hands back
 

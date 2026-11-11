@@ -70,25 +70,28 @@ and the paint puts an untouched back rank in reach of the Kite's Direct opener.
 
 Where each stands:
 
-- **The Kite**: redesigned from the ground up on his word, in its brief (`kestrel_kite.md`). The
-  first round, a Kite that left a fight at its heat maximum, he declined ("it adds clunk to the
-  battle. We ditched withdrawal and the game feels better for it"). The second gave it the
-  opener, every weapon doubled on an unhurt foe. His refinement is the third: four entries, no
-  reset, the Pinion Driver the finisher again, and a kill paying its shield whole or Phased on a
-  frame of paper. Claude's holes and leans are there (the reward on the Driver's kill alone;
-  Phased if the shadow panther gives it up); his calls open.
-- **The Skua**: his rewrite of 11 November, in a brief of its own (`kestrel_skua.md`): Ricochet,
-  the Hypersonic Swoop its lock, the Flechette Pod an ordinary weapon. What follows from the
-  rules and the holes his words leave (a strike of 1 or a plain point; for each enemy or each
-  strike; the half it loses) are there; his answers open.
-- **The Needletail**: in its brief (`kestrel_needletail.md`). The first round, the squad's
-  machines outside the fight shelling what it paints, he set aside ("spotting, yes, but
-  artillery, not necessarily"), and asked where two ideas go: a chassis that orbits Exposed, and
-  one that uses two things a round ("very Kestrel and deserves a chassis"). Claude's answer: two
-  things a round is the Needletail's, which keeps the Designator and so marks every round; the
-  orbit's missing half is a payoff, and that is a medium's. His call open.
-- **The last two slots** (the Snowy Owl, the Magpie): medium, by his word above, and one of them
-  the Exposed payoff if he takes the placement; their sessions' to design.
+- **The Kite**: redesigned from the ground up on his word, in its brief (`kestrel_kite.md`). A
+  Kite that left a fight at its heat maximum he declined ("it adds clunk to the battle. We
+  ditched withdrawal and the game feels better for it"). Its kit as his words of 11 November
+  leave it: four entries and no reset; every weapon doubled on an unhurt foe; the Pinion Driver
+  the finisher again; a kill recharging a small shield whole. Phased on a kill he kept for the
+  shadow panther ("It keeps the phased orbit, not the Kite"). Open: the Coriolis Accelerator,
+  the Driver's twin in the pool, and the frame's numbers.
+- **The Skua**: his rewrite of 11 November, in a brief of its own (`kestrel_skua.md`): a stack of
+  Ricochet for damaging an enemy, once a round, and a second only by its lock, the Hypersonic
+  Swoop (Rapid, a cooldown of one); a strike of 1 more for every stack, half lost on any hull
+  damage; the Flechette Pod an ordinary weapon. Open: Claude's readings of what his words leave
+  (strikes of 1 through the whole blow; once for each enemy a spend is aimed at; half rounded
+  down at each blow that takes hull; no cap), written so unless he says.
+- **The Needletail**: settled 11 November ("I agree with the Needletail, yes"), in its brief
+  (`kestrel_needletail.md`): two things a round, a weapon and an equipment every round, the
+  Designator kept, so it marks every round. The squad's fire on its paint he set aside
+  ("spotting, yes, but artillery, not necessarily"). Its build waits on his go.
+- **A chassis that orbits Exposed** ("Exposed being Kestrels primary keyword means we need at
+  least one chassis that orbits it"): one of the two unspecced mediums, the payoff the three
+  setters lack; that slot's session's to design.
+- **The last two slots** (the Snowy Owl, the Magpie): medium, by his word above; open, and not
+  this round's.
 
 ## The line as it stands
 

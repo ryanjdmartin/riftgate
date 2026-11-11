@@ -278,20 +278,20 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   as the foes do, its reset fires under once a fight). Where it stands:
   - The Kite (`kestrel_kite.md`): a Kite leaving a fight at its heat maximum declined ("it adds
     clunk to the battle. We ditched withdrawal and the game feels better for it. Forced withdrawal
-    probably feels bad": the bible's withdrawal row, its file v0.530 on this branch, unpublished);
-    the opener its passive, every weapon doubled on an unhurt foe; his refinement, "Burst glass
-    cannon": four entries, no reset, the Pinion Driver the finisher again, a kill paying its
-    shield whole or Phased on a frame of paper. Open with him: whether the kill pays on the
-    Driver alone (Claude's lean) or on every weapon, Phased or the shield, the Coriolis
-    Accelerator's fate.
+    probably feels bad": the bible's withdrawal row, its file v0.530 on this branch, unpublished).
+    Its kit as his words leave it, "Burst glass cannon": four entries and no reset, every weapon
+    doubled on an unhurt foe, the Pinion Driver the finisher again, a kill recharging a small
+    shield whole; Phased on a kill he kept for the shadow panther (a line at the Zoids walker's
+    brief's head). Open with him: the Coriolis Accelerator (the Driver's twin in the pool), the
+    frame's numbers, then his go.
   - The Skua (`kestrel_skua.md`): his rewrite, "Ramping Dakka": Ricochet (a stack for damaging an
     enemy, once a round; a strike of 1 more a stack; half lost on hull damage), the Hypersonic
-    Swoop its lock, the Flechette Pod an ordinary weapon. Open with him: the four holes his words
-    leave. He had kept the Skua for a session of his own; the rewrite came in this one.
-  - The Needletail (`kestrel_needletail.md`): the shelling set aside by him ("spotting, yes, but
-    artillery, not necessarily"); Claude's answer to where his two ideas go: two things a round
-    here, the Exposed payoff ("at least one chassis that orbits it") on an unspecced medium. Open
-    with him.
+    Swoop its lock (a stack, Rapid, a cooldown of one), the Flechette Pod an ordinary weapon.
+    Claude's readings of what his words leave are in the brief, written so unless he says. He
+    had kept the Skua for a session of his own; the rewrite came in this one.
+  - The Needletail (`kestrel_needletail.md`): settled ("I agree with the Needletail, yes"): two
+    things a round, a weapon and an equipment every round, the Designator kept; the chassis that
+    orbits Exposed is one of the two unspecced mediums. Its build waits on his go.
 
 ## How things stand
 

@@ -19,6 +19,11 @@ hit's base, rounded down and never below one; the Pod sweeps, a shot a column. H
 a session of his own (11 November: "Clydesdale and skua I'm handling in other sessions"); the
 rewrite came in this one. It stays dealt as built until a go.
 
+**His answer on the Swoop (11 November)**: "Swoop was supposed to be a cooldown of one, yes.
+Missed that. Rapid, cooldown 1, the only way to get more than one ricochet a round. I did say only
+once a round, right?" He did ("once per turn", above). So the passive gives a stack a round, and
+the Swoop, Rapid with a cooldown of one, is the one way to a second.
+
 ## What the rewrite replaces
 
 - The Split-cycle Breech goes whole, and its engine with it: the split strikes, the halving and
@@ -39,8 +44,8 @@ rewrite came in this one. It stays dealt as built until a go.
   stack).
 - **An overheat is hull damage**, so its own heat halves its stacks as a foe's blow does.
 - **Stacks last the fight**, as a status does: every fight opens on none.
-- **Rapid carries a limiter**: the Swoop prints a cooldown of one, dark for the rest of its round,
-  the pool's standard, unless he wants its price in heat.
+- **Rapid carries a limiter**: the Swoop prints a cooldown of one, dark for the rest of its
+  round (his, 11 November).
 - "Once per turn" is once a round; the stack lands after the spend that earned it, so that
   spend's own strikes do not ricochet off it.
 
@@ -59,6 +64,16 @@ rewrite came in this one. It stays dealt as built until a go.
 4. **No cap.** One or two a round for as long as the fight runs: two by the third round, which
    is a squad's whole fight at tier one, and eight or more against a boss. If the loss is the
    cap, nothing more; the lever is a ceiling.
+
+What Claude writes for each unless he says otherwise (put to him 11 November, his answers on
+the Swoop alone so far):
+
+1. Strikes of 1, through the whole blow: his word.
+2. Once a spend for each enemy a strike was aimed at. The one that most wants his yes or no,
+   since the other reading multiplies a gun's strikes by the stacks.
+3. What is left is half, rounded down, as every halving in the game is (Empowered, Flak), so a
+   lone stack is lost; at each blow that takes hull, as "any hull damage" reads.
+4. No cap.
 
 ## Watch, no question
 

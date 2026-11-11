@@ -26,6 +26,12 @@ dodge, out fast, "a fox in a henhouse". Where the three fast flyers stand beside
 hub's (`kestrel_line.md`, The fast flyers); this brief is the Needletail's. It stays dealt as built
 until a go.
 
+**Settled (Ryan, 11 November)**: "I agree with the Needletail, yes." So two things a round is the
+Needletail's, in the form below (a weapon and an equipment every round, the Designator kept), and
+the chassis that cashes Exposed is one of the two unspecced mediums, its session's to design.
+Its numbers, its tier and whether the kit reads lively enough are his play's; nothing is built
+until his go.
+
 ## What stands
 
 - The mark: Exposed is Kestrel's lean (his word of 28 October), and its Designator the game's
@@ -113,8 +119,9 @@ map inside a fight, and power the squad paid no action for.
 
 ## Open, his
 
-1. The placement: two things a round here, the Exposed payoff on a medium.
-2. The form: one of each, or another shape of two things.
+1. Answered 11 November: the placement stands, two things a round here and the Exposed payoff
+   on a medium.
+2. His go to build it, and which medium takes the payoff.
 
 ## What the session hands back
 
