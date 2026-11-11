@@ -1236,8 +1236,6 @@ func machine_spend_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.Mec
 			score = shield_score(sk, who, sk.shield_amount(ms, f, who), f.has(Face.Keyword.OVERSHIELD), ms)
 			if f.vents > 0 or f.cools_all:
 				score += vent_score(sk, who, who.heat if f.cools_all else f.vents)   # the Hoist's cooling half
-			if who == ms:
-				score += seal_score(sk, ms)
 		Face.Kind.VENT:
 			score = vent_score(sk, who, f.power)
 			if who == ms:
@@ -1268,6 +1266,8 @@ func machine_spend_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.Mec
 					score -= action_ahead(sk, ms, f)
 			if Effects.quick_turn_live(ms.unit, f):
 				score += ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)   # the Needletail's gate: Rapid once a round
+			if who == ms:
+				score += seal_score(sk, ms)   # a buff on itself seals a machine with a seal (the Polar Bear's Lockdown)
 	if f.has(Face.Keyword.CLEANSE):
 		score += cleanse_score(sk, who)
 	# The Forge's reloads (the Musk Ox's): the entry's own, else a vent's or a shield's on itself,
@@ -1966,10 +1966,10 @@ static func _front_worth(sk: Skirmish, foe: Foe) -> float:
 	return (KILL_BONUS + _threat_now(foe, sk) * HULL_WEIGHT) * SWAP_WEIGHT
 
 
-## What sealing is worth (the Polar Bear's Lockdown, 20 October; valued 21 October): a shield
-## it spends on itself seals it, and the armour stands behind this round's blows, less the heat
-## the seal adds as the turn ends and the cooling it stops, as room lost. Nothing when it is
-## sealed already or has no seal.
+## What sealing is worth (the Polar Bear's Lockdown, 20 October; valued 21 October; its trigger
+## a buff spent on itself since 11 November): the armour stands behind this round's blows, less
+## the heat the seal adds as the turn ends and the cooling it stops, as room lost. Nothing when
+## it is sealed already or has no seal.
 func seal_score(sk: Skirmish, ms: Skirmish.MechState) -> float:
 	var seal := Effects.seal_form(ms.unit)
 	if seal.is_empty() or Effects.is_sealed(ms.unit):

@@ -2,6 +2,14 @@
 
 <!-- hangar: {"kind": "chassis", "maker": "wainwright_sutler", "tier": 2, "status": "rework", "slot": false, "name": "Whip Scorpion", "built": "whip_scorpion"} -->
 
+**Ryan's direction (11 November)**: "Scorpion - a tougher one. The role was initially supposed to
+be a spread damage dealer. I think we need to look at the built and planned roster, and see what
+role it could fill, before just slamming some mechanics together." So the session opens on a role
+map of the built and briefed roster, the hole it shows before any mechanic. Claude's note for it:
+spread damage is crowded inside its own maker already (the Cottonmouth's drum, Spread at the front
+and Penetrate at the back; the Musk Ox's barrage; the Prairie Dog's Flak on a cleave), beside
+Kestrel's Lammergeier and Skua.
+
 Wainwright & Sutler's sustained damage dealer at tier two, built and fielded (the bible's Whip
 Scorpion row, Ryan's go of 20 October: "the boiler whose vents are its guns"): its Thermal
 Ejection Manifold makes every vent it spends blast a random foe for the heat it takes off,

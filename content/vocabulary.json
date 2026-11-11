@@ -620,15 +620,15 @@
    "id": "sealed",
    "category": "status",
    "name": "Sealed",
-   "codex": "Ability, the Polar Bear's form. A shield it spends on itself seals it: armour up by its Lockdown's number, its own cooling stopped, its Cryo Flinger gaining Spread, and it runs hotter at the end of each turn. A vent or a weapon opens it; a shield on an ally and equipment leave it as it is; an entry that cools and shields at once does the one its form calls for. An ally's vent still cools it. No Purge touches it.",
+   "codex": "Ability, the Polar Bear's form. Equipment it spends on itself seals it: armour up by its Lockdown's number, its own cooling stopped, its Cryo Flinger gaining Spread, and it runs hotter at the end of each turn. A weapon it fires opens it; equipment on an ally and a debuff, its lure among them, leave it as it is. No Purge touches it.",
    "status": "implemented",
    "design": {
     "holes": "One chip, renewing, never stacking: the armour it grants is tied to the form. The numbers are placeholders.",
     "table": {
      "kind": "ability",
      "on": "machine",
-     "stacks": "Renews: one seal however many shields",
-     "lasts": "Until a vent or a weapon opens it, or the skirmish ends"
+     "stacks": "Renews: one seal however often it seals",
+     "lasts": "Until a weapon it fires opens it, or the skirmish ends"
     }
    }
   },

@@ -1,6 +1,12 @@
 # The Swallowtail: a rework
 
-<!-- hangar: {"kind": "chassis", "maker": "wainwright_sutler", "tier": 3, "status": "rework", "slot": false, "name": "Swallowtail", "built": "swallowtail"} -->
+<!-- hangar: {"kind": "chassis", "maker": "wainwright_sutler", "tier": 3, "status": "parked", "slot": false, "name": "Swallowtail", "built": "swallowtail"} -->
+
+**Ryan's direction (11 November)**: "Swallowtail we can punt because that guy wasn't finished
+anyway. Needs a skirmish niche properly carved. It's got solid base mechanics but nothing solid to
+do with them." Punted: the Muster Deck (the carry and the Muster) stands, and its session carves
+the niche first, the pieces after. Undealt meanwhile, so Wainwright & Sutler fields one tier three,
+the Musk Ox, itself unfinished.
 
 Wainwright & Sutler's first tier three, the helicarrier, built and fielded (the bible's
 Swallowtail row, Ryan's go of 21 October: a mobile HQ, a Muster its locked pieces spend), its kit

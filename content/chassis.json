@@ -261,7 +261,6 @@
    "designation": "HW-22T Heavy Weapons Carrier",
    "maker": "minerva",
    "tier": 1,
-   "status": "planned",
    "design": {
     "fantasy": "A squat, heavily armoured walker with short, thick legs, its back bristling with weaponry from shielded ports that can seal for additional protection. The cockpit is tucked under the front armour, providing reduced visibility but extra protection. It seals: the ports shutter and the shell goes dark.",
     "niche": "tank",
@@ -293,7 +292,7 @@
    "passive": {
     "id": "lockdown",
     "name": "Lockdown",
-    "description": "A shield it spends on itself seals it: armour +3, its own cooling stopped, 3 hotter at the end of each turn, and its Cryo Flinger gains Spread. A vent or a weapon opens it. Its weapons deal 1 more to a foe carrying Cryo.",
+    "description": "Equipment it spends on itself seals it: armour +3, its own cooling stopped, 3 hotter at the end of each turn, and its Cryo Flinger gains Spread. A weapon it fires opens it. Its weapons deal 1 more to a foe carrying Cryo.",
     "effects": [
      {
       "trigger": "static",
@@ -506,11 +505,11 @@
    "passive": {
     "id": "thermal_recoupler",
     "name": "Thermal Recoupler",
-    "description": "Heat is not waste. At the start of its turn the Buzzard regains 1 shield for every 4 heat it carries.",
+    "description": "Heat is not waste. Its shield regen is 1 higher for every 4 heat it carries.",
     "effects": [
      {
-      "trigger": "on_round_start",
-      "effect": "shield_per_heat",
+      "trigger": "static",
+      "effect": "shield_regen_per_heat",
       "value": 1,
       "per_heat": 4
      }

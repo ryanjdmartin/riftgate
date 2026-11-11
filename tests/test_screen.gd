@@ -2580,49 +2580,36 @@ func test_a_last_act_records_the_gauges_it_met() -> void:
 
 ## The Polar Bear's form reads on its die and its view (Ryan, 2 November: "armadillo needs indication
 ## when a die face will transform it, like a die chip or something. It also needs some highlight or
-## something when it is transforming, and a better indication of what form it's in"): open, a shield
-## it may spend on itself wears the seal chip and its readout says so; sealed, a weapon or a vent
-## wears the opening one; sealed, the view wears its shell; the Sealed chip the seal's own mark.
+## something when it is transforming, and a better indication of what form it's in"): open, a buff
+## it may spend on itself wears the seal chip and its readout says so (its trigger since 11
+## November); sealed, a weapon wears the opening one; sealed, the view wears its shell; the Sealed
+## chip the seal's own mark. Its stock die as content deals it.
 func test_the_polar_bears_form_reads_on_its_die_and_its_view() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
-	# Its seal is spent on a shield, and no stock die holds one since the refit pass landed (10
-	# November: the machine is back in design for it): the kit under test carries the draft
-	# self shield in the slot the re-deal gave its Armoured basic.
-	var stock: Array = (db.chassis["polar_bear"]["loadout"] as Array).duplicate()
-	var self_shield := ""
-	for cid in db.components.keys():
-		var face: Dictionary = db.components[cid].get("face", {})
-		if str(face.get("kind", "")) == "shield" and str(face.get("targets", "")) == "self" and db.component_tier(str(cid)) == 0:
-			self_shield = str(cid)
-	for k in range(stock.size()):
-		var face: Dictionary = db.components[stock[k]].get("face", {})
-		if str(face.get("kind", "")) == "buff":
-			stock[k] = self_shield
-			break
-	var m := db.make_mech("polar_bear", 0, Vector2i.ZERO, stock)
+	var m := db.make_mech("polar_bear")
 	sk.add_mech(m)
 	sk.add_foes([Foe.make("revenant", 30, 1)])
 	var s := SkirmishScreen.new()
 	s.setup(sk)
 	var ms: Skirmish.MechState = sk.mechs[0]
-	var shield := -1
+	var buff := -1
 	var gun := -1
 	for k in range(m.die.faces.size()):
 		var f: Face = m.die.faces[k]
-		if f.kind == Face.Kind.SHIELD and shield < 0:
-			shield = k
-		elif f.is_attack() and f.power > 0 and gun < 0:
+		if f.kind == Face.Kind.BUFF and f.can_target_self() and buff < 0:
+			buff = k
+		elif f.is_weapon() and gun < 0:
 			gun = k
-	assert_true(shield >= 0 and gun >= 0, "its die carries a shield and a gun")
-	ms.face_index = shield
+	assert_true(buff >= 0 and gun >= 0, "its die carries a buff it may spend on itself and a gun")
+	ms.face_index = buff
 	s._refresh()
-	assert_eq(s._dice[0].form_mark, "seal", "open, its shield wears the seal chip")
+	assert_eq(s._dice[0].form_mark, "seal", "open, its buff wears the seal chip")
 	s._on_die_tapped(0)
 	assert_true(s._details_entry.text().contains("Seals it"), "and its readout says so: %s" % s._details_entry.text())
 	s._close_pop()
 	assert_false(s._mech_views[0].shell, "open: no shell")
-	assert_true(s._use_die(0, ms), "the shield spent on itself")
+	assert_true(s._use_die(0, ms), "the buff spent on itself")
 	assert_true(Effects.is_sealed(m), "sealed")
 	assert_true(s._mech_views[0].shell, "the view wears its shell")
 	sk.end_round()

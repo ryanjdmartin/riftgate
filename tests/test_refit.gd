@@ -76,7 +76,8 @@ func test_every_chassis_regains_its_own_regen_cools_and_the_basics_make_heat() -
 ## The machines back in design are undealt, by a status of their own on the chassis: the tender
 ## and the runners skip them, and their kits still build, so their sessions and their tests have
 ## them. A passive that reads a shield or a vent spent has nothing left to read: every chassis
-## carrying one is among them.
+## carrying one is among them. The Polar Bear's seal reads equipment since 11 November, so it is
+## dealt again.
 func test_the_machines_back_in_design_are_undealt_and_still_build() -> void:
 	var db := ContentDB.load_default()
 	var back: Array = []
@@ -92,7 +93,7 @@ func test_the_machines_back_in_design_are_undealt_and_still_build() -> void:
 		var p = db.chassis[id].get("passive", null)
 		if p is Dictionary:
 			for e in p.get("effects", []):
-				if str(e.get("effect", "")) in ["seal_form", "vent_blast"] or str(e.get("trigger", "")) == "on_shield_granted":
+				if str(e.get("effect", "")) == "vent_blast" or str(e.get("trigger", "")) == "on_shield_granted":
 					dead = true
 		for cid in db.chassis[id].get("fixed", []):
 			var face: Dictionary = db.components.get(cid, {}).get("face", {})

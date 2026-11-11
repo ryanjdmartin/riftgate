@@ -1298,8 +1298,8 @@ func start_round() -> void:
 		ms.assigned = is_swallowed(ms)
 		if not ms.alive():
 			continue
-		# A sealed machine's own cooling stops (the Polar Bear's Lockdown, 20 October); an ally's
-		# vent still cools it.
+		# A sealed machine's own cooling stops (the Polar Bear's Lockdown, 20 October): opening
+		# is its one way down, since no die is dealt a vent.
 		var drop := 0 if Effects.is_sealed(ms.unit) else mini(ms.heat, ms.unit.cooling)
 		if drop > 0:
 			ms.heat -= drop
@@ -1321,10 +1321,11 @@ func start_round() -> void:
 	# cooling returning, as a build-strategy buffer"): every machine regains its shield_regen up
 	# to its maximum, after the cooling and before the round-start passives, a shield gain like
 	# any other (on_shield_gain fires), one log line for all. A sealed machine's regen runs:
-	# nothing stops it, where the seal stops its own cooling.
+	# nothing stops it, where the seal stops its own cooling. What its heat adds to the regen (the
+	# Buzzard's Thermal Recoupler) is read here with it, the heat as the cooling left it.
 	var regened: Array[String] = []
 	for ms in live_mechs():
-		var gained := _gain_shield(ms, ms.unit.shield_regen)
+		var gained := _gain_shield(ms, shield_regen_of(ms))
 		if gained > 0:
 			regened.append("%s +%d" % [ms.unit.display_name, gained])
 	if not regened.is_empty():
@@ -2580,6 +2581,12 @@ func _tick_mechs() -> void:
 ## The end of the player's turn, before the overheat (Ryan, 13 October): each machine's
 ## Burning adds its heat, so a vent made room for it or a cleanse took it off; Burning loses a
 ## stack and Scorched goes.
+## A machine's shield regen as the round opens: the stat, and what its heat adds to it (the
+## Buzzard's Thermal Recoupler).
+static func shield_regen_of(ms: MechState) -> int:
+	return maxi(0, ms.unit.shield_regen + Effects.regen_from_heat(ms.unit, ms.heat))
+
+
 ## The heat a sealed machine runs at the end of its turn (the Polar Bear's Lockdown): the
 ## seal's own number, or nothing.
 func seal_heat(ms: MechState) -> int:
@@ -2599,13 +2606,12 @@ func _seal_heat() -> void:
 
 
 ## The form change (the Polar Bear's Lockdown, Ryan's framework of 15 October, his go 20
-## October): a shield spent on itself seals the machine, a vent or a weapon opens it; a shield
-## on an ally and equipment (a buff, a debuff: its lures) leave the form as it is. An entry that
-## is a shield and a vent at once (a vent that shields, the Wake Diffuser; a shield that cools,
-## the Sutler's Hoist) is both, and its trigger one, read off the form as it stands (Ryan, 8
-## November: "it would trigger sealing if unsealed, and unsealing if sealed, but not do both in
-## sequence"). The seal is one chip carrying the passive's armour; the heat clock and the stopped
-## cooling read it.
+## October; its trigger since the refit pass took the shields off the die, Ryan, 11 November:
+## "target equipment at itself to seal. And then the only way to open is with a weapon. Offensive
+## equipment like it's lure remain neutral"): equipment it spends on itself seals the machine, a
+## weapon it fires opens it; equipment on an ally and a debuff (its lures) leave the form as it
+## is, and so does a shield or a vent, kinds no die is dealt. The seal is one chip carrying the
+## passive's armour; the heat clock and the stopped cooling read it.
 func _shift_form(ms: MechState, f: Face, target) -> void:
 	if not ms.alive():
 		return
@@ -2620,14 +2626,15 @@ func _shift_form(ms: MechState, f: Face, target) -> void:
 
 
 ## What a spend does to its machine's form (_shift_form), read off the form as it stands: "seal"
-## for a shield on itself while open, "open" for a vent or a weapon while sealed, "" for nothing;
-## an entry both at once does the one the form calls for. The die's mark reads it too.
+## for a buff spent on itself while open, "open" for a weapon while sealed, "" for nothing. The
+## die's mark reads it too. `on_self` says the spend lands on its own machine: a buff dropped on
+## itself, or one written for itself alone.
 static func form_change(ms: MechState, f: Face, on_self: bool = true) -> String:
 	if ms == null or f == null or Effects.seal_form(ms.unit).is_empty():
 		return ""
 	if Effects.is_sealed(ms.unit):
-		return "open" if f.cools_machine() or (f.is_attack() and f.power > 0) else ""
-	return "seal" if f.shields_machine() and on_self else ""
+		return "open" if f.is_weapon() else ""
+	return "seal" if f.kind == Face.Kind.BUFF and on_self else ""
 
 
 func _burn_mechs() -> void:

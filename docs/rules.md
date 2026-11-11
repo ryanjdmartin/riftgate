@@ -19,9 +19,9 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 - **Chassis**: hull, shield, shield regen (shield regained as each round opens: one to three
   by chassis, the faster on the smaller gauge), heat maximum, cooling (one at least on every chassis that is dealt), armour, move, size class, one way of moving, hardpoints, fixed components, module
   slots (two; the Clydesdale three) and one passive. Twenty-four chassis from five makers
-  (`content/chassis.json`), four of them back in design and dealt by nothing until their
-  sessions hand them back (the Polar Bear, the Puffin, the Whip Scorpion, the Swallowtail: a
-  chassis whose entry says `"status": "planned"`). A run has four squad slots and starts with three
+  (`content/chassis.json`), three of them back in design and dealt by nothing until their
+  sessions hand them back (the Puffin, the Whip Scorpion, the Swallowtail: a chassis whose entry
+  says `"status": "planned"`). A run has four squad slots and starts with three
   machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
   order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die,
@@ -107,7 +107,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 
 ### The round
 1. Rerolls reset to two (less any a foe drained). Every machine sheds heat by its cooling,
-   then regains its shield regen up to its maximum (a shield gain like any). Every die rolls;
+   then regains its shield regen up to its maximum (a shield gain like any; a passive that adds
+   to the regen by heat, the Buzzard's Thermal Recoupler, reads the heat the cooling left). Every die rolls;
    entries are equally likely. Round-start passives fire, and a store that grants a buff
    grants it for the round (the Honey Badger's hopper its Armoured), before the foes pick.
 2. Every foe picks its move, then its target; both show, exact, before the player acts, its
@@ -349,9 +350,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   violet for what only a foe does, the red-red for harm (Exposed, a destroyed component), the
   hull's colour for a price in hull, and ink for a shape, a reach or a rule; never the HUD
   colour.
-  A piece that changes its machine's form wears that form's chip: on the Polar Bear, a shield it
-  may spend on itself the seal's while its shell is open, and a weapon or a vent the opening's
-  while it is sealed; the sealed machine wears a shell round it, a burst as it seals or opens.
+  A piece that changes its machine's form wears that form's chip: on the Polar Bear, a buff it
+  may spend on itself the seal's while its shell is open, and a weapon the opening's while it is
+  sealed; the sealed machine wears a shell round it, a burst as it seals or opens.
   A vent on a machine whose vents blast shows the blast beside it (its mark and the blow the
   heat it would take off makes), and read or dragged anywhere but over an ally, every foe the
   blast may land on wears a turning dashed ring with the number it would deal there.
@@ -682,13 +683,13 @@ On a machine:
   their stacks back, off the hopper's own grant and no other). It is a buff like any Armoured:
   it goes at the round's end, and a Purge strips it and leaves the loads, so what a Purge took
   comes back at the machine's next turn and no sooner.
-- **Sealed** (Ability, the Polar Bear's form): a shield it spends on itself seals it: armour +3,
-  its own cooling stopped, 3 heat more at the end of each turn before the overheat, and its Cryo
-  Flinger gains Spread (one foe open, its rank's three sealed); a vent or a weapon opens it; a
-  shield on an ally and equipment leave the form as it is. An entry that
-  is a shield and a vent at once (a vent that shields, a shield that cools) does the one the
-  form calls for, never both: spent on itself it seals an open machine and opens a sealed one;
-  on an ally its vent opens it. An ally's vent still cools it. One seal, however many shields.
+- **Sealed** (Ability, the Polar Bear's form): equipment it spends on itself (a buff dropped on
+  itself) seals it: armour +3, its own cooling stopped, 3 heat more at the end of each turn
+  before the overheat, and its Cryo Flinger gains Spread (one foe open, its rank's three sealed);
+  a weapon it fires opens it. Equipment on an ally and a debuff (the Flinger's lure) leave the
+  form as it is, so the sealed shell lures and stays shut; an ally's buff on it seals nothing. Its
+  heat has one way down while it is sealed, opening, and an overheat leaves it sealed. One seal,
+  however often it seals.
   Its Lockdown also lands its weapons 1 harder on a foe carrying Cryo, open or sealed, read as
   each strike lands: the strike that meets the stacks takes the 1 and its hit spends them, so a
   later strike of the same spend lands plain.
@@ -807,7 +808,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or a
   breaching weapon. Base armour is set by role (a tank 2, a heavy worker 1, the rest 0; the
   Polar Bear, a tank in its sealed form, 1 open and 4 sealed), and
   Armoured adds to it (a brace: a buff, the Breaching Plow, the Siphon) until the
-  round's end, the Polar Bear's seal until a vent or a weapon opens it.
+  round's end, the Polar Bear's seal until a weapon opens it.
   Damage-taken effects apply before armour.
 - The shield is the fight's, as the heat is: full as every fight opens, and nothing returns on
   the map. In a fight it comes from components, modules, passives and the shield regen. Hull

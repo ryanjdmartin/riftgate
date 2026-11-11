@@ -195,11 +195,21 @@ rerolls row is the long wall's two with the audit's kept rolls.
 Each resumes from its brief; `docs/briefs/README.md`'s table says what each waits on.
 
 - The inventory of 9 November (every chassis, built or briefed, with its state): 24 built, 23 in
-  briefs, three slots open. Of the built, four are back in design from the refit pass (the Polar
-  Bear's seal, the Whip Scorpion whole, the Swallowtail, the Puffin; a brief each), three are
-  unfinished by Ryan's own notes (the Needletail, the Giant Petrel, the Musk Ox) and seventeen
-  stand, six of them read again with the pass's content (the refit brief's section 6). The to-do's
-  roster is grouped by what each waits on, in the order he took (Next, in order, item 1).
+  briefs, three slots open. Of the built, four went back to design with the refit pass and three
+  are there still (the Whip Scorpion whole, the Swallowtail, the Puffin; a brief each), three are
+  unfinished by Ryan's own notes (the Needletail, the Giant Petrel, the Musk Ox) and the rest
+  stand. The to-do's roster is grouped by what each waits on, in the order he took (Next, in
+  order, item 1).
+- Ryan's round on the busted machines, 11 November (this branch): the Polar Bear dealt again,
+  equipment it spends on itself sealing it and a weapon it fires opening it, its lure neutral
+  (his words; the armour kept for his play, a regen seal his first change), the brief retired;
+  the Buzzard's Thermal Recoupler made shield regen, read where every machine's regen is (his
+  word, on its base regen of one). His directions are at each brief's head: the Whip Scorpion's
+  role first, from a role map of the roster; the Swallowtail punted until its niche is carved;
+  the Puffin a heat mover, tier two his lean; and two reworks with briefs of their own, still
+  dealt: the Storm Petrel (shield as it gains heat, after the heat pass) and the Nemesis (a rage
+  bar that breaches, a tank buster). The Ammit's stock wants a Ward piece (the to-do). The holes
+  raised on each are in its brief. 1111 tests green.
 - The locked pieces' footing, decided 10 November (the bible's locked row, section 7, and tiers
   row, section 10; `docs/locked_pieces_proposal.md` holds what follows and the order; nothing
   built): a locked piece earns its lock as glue for its chassis's identity or as an exclusive,
@@ -231,8 +241,8 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   Polar Bear's move to tier two lands with), the immune one, the mole (its hook later), and the
   shield bash (the shield-basher cut as a unit, a tier-three piece). The Cryo party defence took
   his new direction of 5 November (no free Cryo, a locked piece that detonates it, the Arsenal's
-  frost figure merged in), a first round on it owed. The Polar Bear's seal is back in design
-  (`minerva_polar_bear.md`), the first of the four.
+  frost figure merged in), a first round on it owed. The Polar Bear is dealt again with its new
+  seal trigger (11 November), its play his.
 - Aphelion: the line frame and the Baboon first (the pair that keeps its tier-one deal varied),
   then the jellyfish; the Carrier on its own. Ryan's ideas of 4 November wait on his marks, each
   in its brief: Static, the Barrier and Ward support (the defensive tier one), the Macross
@@ -444,8 +454,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   one to three, the faster on the smaller gauge ("a smaller shield that regens fast, a fatter
   shield that regens slow, some variation of the middle"; the Nemesis and the Buzzard one by
   role); the Stingray cools one; the ten slottable shields and vents are planned drafts nothing
-  deals; the four machines back in design are undealt by `"status": "planned"` on their own
-  entries, their kits still built. Saves from before are refused (the three save versions).
+  deals; the machines back in design are undealt by `"status": "planned"` on their own
+  entries, their kits still built (three since the Polar Bear came back on 11 November). Saves from before are refused (the three save versions).
   The trial's rows are gone but one: SETTINGS → TRIALS → SHIELD REGEN (BUILT, 0, 1, 2, 3), a
   flat regen in place of each chassis's own; `--refit` and `RIFTGATE_REFIT` keep the what-ifs
   that still mean something (regen, cooling, hotter, a price on the Barrier basic). The

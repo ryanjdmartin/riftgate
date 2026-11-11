@@ -1520,9 +1520,9 @@ static func pair_halves() -> Dictionary:
 
 
 ## Whether spending entry `f` changes its machine's form (Ryan, 2 November: "armadillo needs
-## indication when a die face will transform it"): "seal" for a shield it may spend on itself while
-## its shell is open (the Polar Bear's Lockdown seals it so), "unseal" for a vent or a weapon while
-## it is sealed (either opens it), "" for anything else or a machine with no form.
+## indication when a die face will transform it"): "seal" for a buff it may spend on itself while
+## its shell is open (the Polar Bear's Lockdown seals it so), "unseal" for a weapon while it is
+## sealed (it opens it), "" for anything else or a machine with no form.
 static func form_mark(ms: Skirmish.MechState, f: Face) -> String:
 	match Skirmish.form_change(ms, f, f != null and f.targets != Face.Target.ALLY):
 		"seal":
