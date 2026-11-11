@@ -318,24 +318,26 @@ func test_a_fixed_weapon_fires_with_a_slice_of_its_own_act() -> void:
 	pair[1].free()
 
 
-func test_every_hand_built_stock_gun_has_a_muzzle_and_every_aim_joint_turns() -> void:
-	# A stock gun built by hand rather than as a class flares where lowforge found its business
-	# end (Ryan, 2 November); a fixed weapon's named aim joint turns about its up axis. A shield
-	# built by hand never fires, so it needs no muzzle, and a hidden mount shows and flares nothing
-	# (the Cottonmouth's guns inside its drum).
+func test_no_stock_gun_is_built_by_hand_and_every_aim_joint_turns() -> void:
+	# Every stock component a mount carries wears its class, as a fitted one does (Ryan, 11
+	# November: "There's no reason to keep hand build guns anywhere"), the class content gives
+	# it, so it flares at its class's muzzles; a hidden mount shows nothing (the Cottonmouth's
+	# guns inside its drum). A fixed weapon's named aim joint turns about its up axis.
 	var db := ContentDB.load_default()
 	for id in MACHINES:
 		var side := MechRig.load_sidecar(id)
 		var pins: Dictionary = side.get("pins", {})
 		var shapes: Dictionary = side.get("stock_shapes", {})
-		var muzzles: Dictionary = side.get("muzzles", {})
 		var hidden = side.get("hidden_pins", [])
+		assert_false(side.has("muzzles"), "%s: no stock gun of its carries muzzles of its own" % id)
 		for pin in pins.keys():
-			if str(pins[pin]).is_empty() or shapes.has(pin) or str(db.components.get(str(pins[pin]), {}).get("face", {}).get("kind", "")) != "attack":
+			var cid := str(pins[pin])
+			if cid.is_empty() or (hidden is Array and (hidden as Array).has(pin)):
 				continue
-			if hidden is Array and (hidden as Array).has(pin):
+			var shape := str(db.components.get(cid, {}).get("shape", ContentDB.SHAPE_NONE))
+			if shape.is_empty() or shape == ContentDB.SHAPE_NONE:
 				continue
-			assert_true(muzzles.has(pin) and not (muzzles[pin] as Array).is_empty(), "%s: the hand-built %s on %s flares somewhere" % [id, pins[pin], pin])
+			assert_eq(str(shapes.get(pin, "")), shape, "%s: the stock %s on %s wears its class, never a part built by hand" % [id, cid, pin])
 		var joints: Dictionary = side.get("joints", {})
 		var aims: Dictionary = side.get("aims", {})
 		for cid in aims.keys():

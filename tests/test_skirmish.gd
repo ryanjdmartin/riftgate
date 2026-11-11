@@ -10559,3 +10559,98 @@ func test_a_foe_its_burn_kills_at_its_action_never_strikes_and_keeps_its_intent(
 	sk.end_round()
 	assert_eq(m.hull, 100, "no zero-hp foe strikes")
 	assert_true(not g.alive() and not sk.field_foes().has(g), "and it is gone once the turn is done")
+
+
+## The boiler's release (the Whip Scorpion's Thermal Ejection Manifold; Ryan, 11 November: "It
+## Sweeps the rank with the most foes on a pass, a shot per heat"; a pass "any time it ends the
+## round with a spendable die face"): a machine that ends its turn with an entry it could have
+## spent fires its heat once the enemy has acted, a Sweep of the fuller rank, and is left cold; one
+## that spent its die, or rolled a blank, releases nothing. Synthetic passive.
+func _boiler(shot: int = 2, per_blow: int = 0) -> Dictionary:
+	var effects: Array = [{"trigger": "static", "effect": "pass_sweep", "value": shot}]
+	if per_blow > 0:
+		effects.append({"trigger": "static", "effect": "heat_per_blow", "value": per_blow})
+	return {"id": "boiler", "name": "Boiler", "description": "", "effects": effects}
+
+
+func _boiler_fight(d: Die, front: int, back: int, atk: int = 0) -> Array:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", d, 40, 1000)
+	m.cooling = 0
+	m.grant_passive(_boiler(2, 2 if atk > 0 else 0))
+	sk.add_mech(m)
+	var foes: Array = []
+	for k in range(front):
+		foes.append(_ghoul(500, atk))
+	for k in range(back):
+		foes.append(_archer(500, atk))
+	sk.add_foes(foes)
+	sk.begin()
+	sk.start_round()
+	return [sk, m, foes]
+
+
+func test_a_pass_sweeps_the_fuller_rank_a_shot_a_heat_and_leaves_it_cold() -> void:
+	var made := _boiler_fight(Die.single(Face.attack(1, L)), 2, 1)
+	var sk: Skirmish = made[0]
+	var foes: Array = made[2]
+	var ms := sk.mechs[0]
+	ms.heat = 5
+	assert_eq(sk.release_rank(), 0, "two in front, one behind: the front")
+	var takes := sk.sweep_shots(foes[0], 5)
+	var landing := 0
+	for foe in takes.keys():
+		landing += int(takes[foe])
+	assert_true(landing > 0 and landing < 5, "five shots over four columns, two of them standing: some are wasted")
+	var pv := sk.preview_round()
+	assert_eq(int(pv["mechs"][0]["heat_after"]), 0, "the preview: cold after the release")
+	assert_eq(int(pv["foes"][foes[0]]["hp"]), 500 - 2 * int(takes.get(foes[0], 0)), "and its shots on the foe")
+	sk.end_round()
+	assert_true(ms.passed, "it ended the turn with an entry it could have spent: a pass")
+	assert_eq(1000 - int(foes[0].hp) - int(foes[1].hp), 2 * landing, "a shot of 2 for every heat that found a foe")
+	assert_eq(int(foes[2].hp), 500, "the back rank untouched")
+	assert_eq(ms.heat, 0, "left cold")
+	assert_eq(sk.releases.size(), 1, "the screen is told")
+	assert_eq([int(sk.releases[0]["rank"]), int(sk.releases[0]["shots"])], [0, 5], "the rank and the shots")
+	assert_true("\n".join(sk.log).contains("opens its valves: 5 heat along the front"), "the log says so")
+
+
+func test_a_spent_die_or_a_blank_is_no_pass() -> void:
+	var made := _boiler_fight(Die.single(Face.attack(1, L)), 2, 0)
+	var sk: Skirmish = made[0]
+	var foes: Array = made[2]
+	var ms := sk.mechs[0]
+	ms.heat = 5
+	assert_true(sk.assign(0, foes[0]), "it fires")
+	var held := ms.heat
+	sk.end_round()
+	assert_false(ms.passed, "a spent die is no pass")
+	assert_eq(ms.heat, held, "its heat stays: nothing cools it")
+	assert_eq(sk.releases.size(), 0, "nothing released")
+	var blank := _boiler_fight(Die.single(Face.blank()), 2, 0)
+	var sb: Skirmish = blank[0]
+	sb.mechs[0].heat = 5
+	sb.end_round()
+	assert_false(sb.mechs[0].passed, "a blank is no pass: a mistake")
+	assert_eq(sb.mechs[0].heat, 5, "and it holds its heat")
+	assert_eq(int(blank[2][0].hp) + int(blank[2][1].hp), 1000, "no foe struck")
+	var cold := _boiler_fight(Die.single(Face.attack(1, L)), 2, 0)
+	(cold[0] as Skirmish).end_round()
+	assert_eq((cold[0] as Skirmish).releases.size(), 0, "a pass with no heat fires nothing")
+
+
+func test_a_tie_sweeps_the_back_and_blows_taken_fire_over_the_maximum() -> void:
+	var made := _boiler_fight(Die.single(Face.attack(1, L)), 1, 1, 3)
+	var sk: Skirmish = made[0]
+	var m: Unit = made[1]
+	var foes: Array = made[2]
+	var ms := sk.mechs[0]
+	ms.heat_max = 10
+	ms.heat = 9
+	assert_eq(sk.release_rank(), 1, "one and one: the back, on a tie")
+	sk.end_round()
+	assert_eq(int(sk.releases[0]["shots"]), 13, "nine held and two blows banked at 2 each: over its maximum of ten")
+	assert_eq(m.hull, 1000, "the heat over the maximum burned nothing: it was fired first")
+	assert_eq(int(foes[0].hp), 500, "the front untouched")
+	assert_true(int(foes[1].hp) < 500, "the back rank swept")
+	assert_eq(ms.heat, 0, "left cold")

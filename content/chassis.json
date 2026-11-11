@@ -903,11 +903,9 @@
    "designation": "Pattern 22 Heavy Walker",
    "maker": "wainwright_sutler",
    "tier": 2,
-   "status": "planned",
    "design": {
-    "fantasy": "Ryan's eight-legged spider whose vents blast a random foe for the heat they shed (12 and 13 October): \"a crazy steampunk machine venting everywhere\"; 20 October: \"it doesn't actually use steam to run, its a future-tech machine. it just kind of behaves like a steampunk device.\" The whip scorpion sprays when provoked. Named by Ryan, 20 October.",
-    "niche": "The maker's sustained damage dealer at tier two (Ryan, 18 October: promoted to damage class; 20 October: \"a sustained dps engine\"): heat is its ammunition and every vent is a gun, blasting a random live foe for the heat it takes off. Nothing cools it but its vents (cooling 0), so every point of heat it earns, from its hot guns, its Siphon's lure-all or the Peak's debuffs, stays until a valve opens on it. A heavy body that can detach; its Siphon makes it a partner.",
-    "refit": "Back in design since the refit pass landed (10 November): undealt until its session hands it back (its brief). Its stock is the model's mechanical re-deal and waits on that session too."
+    "fantasy": "Ryan's boiler (12 and 13 October: \"a crazy steampunk machine venting everywhere\"; 20 October: \"it doesn't actually use steam to run, its a future-tech machine. it just kind of behaves like a steampunk device\"). The whip scorpion sprays when provoked. Named by Ryan, 20 October; 11 November: \"this is a scorpion, so it's probably not a frontliner, thematically\", and it \"goes all in with the weird and wonderful, along with the cassowary and cottonmouth\".",
+    "niche": "The tier-two formation breaker (Ryan, 11 November, from the role map in its brief): heat is its ammunition and nothing cools it. A turn it ends with an entry it could have spent is a pass, and as the enemy's turn ends it Sweeps the rank with the most foes, a shot for every heat it holds, the back on a tie; every blow a foe lands on it banks heat, so the best release ends the turn just under the maximum and lets the foes push it over. Its locked ray fires the same heat at one foe, the weaker spend. A bruiser's body, \"since it's not a burst machine\". Rapid and a granted action let it fire and release in one round."
    },
    "codex": "",
    "hull": 40,
@@ -924,7 +922,7 @@
    ],
    "size": "heavy",
    "fixed": [
-    "heliographic_siphon"
+    "heliographic_death_ray"
    ],
    "loadout": [
     "thermal_ray",
@@ -935,12 +933,17 @@
    "passive": {
     "id": "thermal_ejection_manifold",
     "name": "Thermal Ejection Manifold",
-    "description": "Its vents blast a random foe for the heat they take off it. Nothing else cools it.",
+    "description": "Nothing cools it. A turn it ends with an entry it could have spent opens its valves once the enemy has acted: a Sweep of the rank with the most foes, a shot of 2 for every heat it holds. Every blow a foe lands on it adds 2 heat.",
     "effects": [
      {
       "trigger": "static",
-      "effect": "vent_blast",
-      "value": 1
+      "effect": "pass_sweep",
+      "value": 2
+     },
+     {
+      "trigger": "static",
+      "effect": "heat_per_blow",
+      "value": 2
      }
     ]
    },

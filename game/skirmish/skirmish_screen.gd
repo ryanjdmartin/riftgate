@@ -4039,8 +4039,16 @@ func _end_turn_now() -> void:
 		var rv := _foe_view_for(foe)
 		if Effects.has(foe, "risen") and rv != null:
 			readied[foe] = [rv, rv.sprite, rv.sprite_frame(), rv.flip_h, _home.get(rv, rv.position)]
+	# Every foe's view and look before the turn ends, for a release's shots and deaths (the Whip
+	# Scorpion's valves, 11 November): they play once the enemy's turn has, from what stood there.
+	var was: Dictionary = {}
+	for foe in field_before:
+		var fv := _foe_view_for(foe)
+		if fv != null:
+			was[foe] = [fv, fv.look(), _home.get(fv, fv.position)]
 	var returns_before := sk.returned.size()
 	var outcome := sk.end_round()
+	var released: Array = sk.releases.duplicate(true)
 	var rose_in_turn := _risen_since(returns_before)   # read before the next round's start clears the returns
 	if outcome == Skirmish.Outcome.NONE:
 		sk.start_round()
@@ -4049,10 +4057,18 @@ func _end_turn_now() -> void:
 			locked[i] = false
 	_refresh_log()   # the blows type into the log as they play
 	_play_enemy_turn(before, func() -> void:
+		var valves := _hold_releases(released)
 		if outcome != Skirmish.Outcome.NONE:
-			_show_outcome(outcome)
+			var over := _play_releases(released, was, valves)
+			if over > 0.0 and is_inside_tree():
+				var ow := create_tween()
+				ow.tween_interval(over + 0.75)
+				ow.tween_callback(_show_outcome.bind(outcome))
+			else:
+				_show_outcome(outcome)
 			return
 		_refresh()
+		_play_releases(released, was, valves)
 		_acquire_intents()
 		# A foe that got back up in the enemy's turn falls on screen, then stands again.
 		var rose := 0
@@ -4071,6 +4087,53 @@ func _end_turn_now() -> void:
 				_animate_arrival(_foe_view_for(foe), 0.1)
 				Sound.play_after(0.36 + 0.09 * arrived, "arrival", -3.0 * arrived)
 				arrived += 1)
+
+
+## What every foe a release struck had before it (the Whip Scorpion's valves): Foe -> its HP as
+## the enemy's turn left it, read off its first blow, and its gauge held there until the shots land.
+func _hold_releases(released: Array) -> Dictionary:
+	var hp_before := {}
+	for r in released:
+		for bl in r["blows"]:
+			var foe: Foe = bl.get("foe", null)
+			if foe != null and not hp_before.has(foe):
+				hp_before[foe] = int(bl["hp"]) + int(bl["taken"])
+	if is_inside_tree():
+		for foe in hp_before.keys():
+			if foe.alive():
+				_shown_hp[foe] = int(hp_before[foe])
+	return hp_before
+
+
+## The releases played, once the enemy's turn has (a first cut, to judge running): each machine
+## fires a shot a beat along its rank, every shot its own flash, tick and number, a wasted one at
+## its empty slot, and the foes it felled die after the last. Returns the seconds it takes.
+func _play_releases(released: Array, was: Dictionary, hp_before: Dictionary) -> float:
+	var ends := 0.0
+	for r in released:
+		var blows: Array = r["blows"]
+		var i := int(r["mech"])
+		if blows.is_empty() or i < 0 or i >= _mech_views.size():
+			continue
+		var dead: Array = []
+		for bl in blows:
+			var foe: Foe = bl.get("foe", null)
+			if foe != null and not foe.alive() and not dead.has(foe):
+				dead.append(foe)
+		var fire_at := ends + BLOW_AT
+		var landed := fire_at + Sound.lands("vent")
+		for k in range(_strikes_of(blows)):
+			_attack_at(fire_at - BLOW_AT + k * STRIKE_GAP, _mech_views[i], _view_struck(blows, k, was, null), true, BLOW_AT + Sound.lands("vent"))
+			Sound.play_after(fire_at + k * STRIKE_GAP, "vent", -2.0 if k == 0 else -6.0)
+		var deaths := _land_blows(blows, landed, was, dead, hp_before)
+		ends = landed
+		for bl in blows:
+			ends = maxf(ends, _blow_time(bl, landed))
+		for k in range(dead.size()):
+			var at := float(deaths.get(dead[k], ends))
+			ends = maxf(ends, at)
+			Sound.play_after(at + 0.07 * k, "kill", -2.0 * k)
+	return ends
 
 
 func _show_outcome(outcome: int) -> void:

@@ -698,9 +698,12 @@ class Build:
         `fits`, given, says how a class sits at this mount where its standard shape at the
         pin's scale does not (Ryan, 2 November: "Hardpoint just needs to declare shape (if
         offered) and scaling"): {class: a variant's name (models_low.VARIANTS), a scale on the
-        pin's own, or (variant, scale)}, so a round port takes a round launcher and a dish
-        small enough to pass its bore. The sidecar carries it (rig()'s `fits`); the engine
-        hangs what it names.
+        pin's own, (variant, scale), or (variant, scale, sink)}, so a round port takes a round
+        launcher and a dish small enough to pass its bore. `sink` is how far back along the
+        pin's line the class sits, in the pin's own units, so a port's gun starts deeper and a
+        round rack sits flush in its mouth (Ryan, 11 November: "Can't the polar bears guns start
+        deeper? ... a round missile rack doesn't need to poke out at all"). The sidecar carries
+        it (rig()'s `fits`); the engine hangs what it names.
 
         `hidden` makes a mount that shows nothing, its stock or a fitted component's class (the
         Cottonmouth's guns, mounted inside its drum: Ryan, 19 October, "the guns mounted
@@ -1227,10 +1230,6 @@ class Build:
             out["aims"] = dict(self.aims)
         if self.pivots:
             out["pivots"] = True
-        # Where each hand-built stock gun's muzzle flare blooms (a class's are art/models/shapes/muzzles.json).
-        muzzles = self.muzzles()
-        if muzzles:
-            out["muzzles"] = muzzles
         if self.stock_shapes:
             out["stock_shapes"] = {n: self.stock_shapes[n] for n in sorted(self.stock_shapes, key=lambda n: int(n[3:]))}
         # Each booster's plume (plume()): the Empty at its mouth, the lit part it burns with, its size.
@@ -1247,58 +1246,6 @@ class Build:
         # How a class sits at a mount that declares it (pin()'s `fits`): its variant and scale.
         if self.fits:
             out["fits"] = {n: self.fits[n] for n in sorted(self.fits, key=lambda n: int(n[3:]))}
-        return out
-
-    def muzzles(self):
-        """Each hand-built stock gun's muzzle flare places, so it flares as a class does, found
-        from its parts: in the pin's own frame (the gun pointing down its +y), each part reaching
-        within a unit and a half of the gun's farthest reach is a barrel's end (its vertices there
-        make its middle and its width), and ends that overlap are one (a barrel and its muzzle
-        collar); a flare sits just past each, sized to its width. A class's places are its own
-        and a variant's its own (models_low.MUZZLES); a bare mount has none. In the models'
-        frame as the glTF carries it: a point at (x, y, z) here is at (x, z, -y) there."""
-        out = {}
-        for e in self.pins:
-            name = e.name
-            if not name.startswith("hp_") or name in self.stock_shapes or not self.carries.get(name):
-                continue
-            inv = e.matrix_world.inverted()
-            scale = e.matrix_world.to_scale()[1] or 1.0
-            parts = []
-            stack = list(e.children)
-            while stack:
-                ob = stack.pop()
-                stack.extend(ob.children)
-                if ob.type == "MESH" and ob.data.vertices:
-                    parts.append([inv @ (ob.matrix_world @ v.co) for v in ob.data.vertices])
-            if not parts:
-                continue
-            reach = max(p.y for pts in parts for p in pts)
-            ends = []
-            for pts in parts:
-                tip = [p for p in pts if p.y > reach - 1.5 / scale]
-                if tip:
-                    xs, zs = [p.x for p in tip], [p.z for p in tip]
-                    ends.append([min(xs), max(xs), min(zs), max(zs)])
-            merged = True
-            while merged:   # ends that overlap are one
-                merged = False
-                for a in range(len(ends)):
-                    for b in range(a + 1, len(ends)):
-                        A, B = ends[a], ends[b]
-                        if A[0] <= B[1] and B[0] <= A[1] and A[2] <= B[3] and B[2] <= A[3]:
-                            ends[a] = [min(A[0], B[0]), max(A[1], B[1]), min(A[2], B[2]), max(A[3], B[3])]
-                            del ends[b]
-                            merged = True
-                            break
-                    if merged:
-                        break
-            places = []
-            for x0, x1, z0, z1 in ends:
-                width = max(x1 - x0, z1 - z0, 1.0 / scale)
-                size = min(max(2.4 * width + 6.0 / scale, 8.0 / scale), 30.0 / scale)
-                places.append([[round((x0 + x1) / 2.0, 3), round((z0 + z1) / 2.0, 3), round(-(reach + 1.5 / scale), 3)], round(size, 2)])
-            out[name] = places
         return out
 
     def fx(self, cid, at, forward=(0.0, 1.0, 0.0), size=16.0):
@@ -1376,9 +1323,11 @@ class Build:
         return e
 
     def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None, fits=None):
-        """`with b.socket("hp_1", at, forward, carries="rivet_gun"): ...` builds the stock
-        component inside the block and pins it: every object made in the block hangs under
-        the pin. `carries` names the component it is, `fits` how a class sits there (pin())."""
+        """`with b.socket("hp_1", at, forward): ...` builds a part inside the block and pins it:
+        every object made in the block hangs under the pin. For a proposal's look test alone
+        (tools/lowforge/looks/): a machine's stock gun is never built by hand, it is its class
+        (stock(); Ryan, 11 November), and tests/test_mech_rig.gd holds every model to that.
+        `carries` names the component, `fits` how a class sits there (pin())."""
         return _Socket(self, name, at, forward, scale, carries, fits)
 
     def pad(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, size=(8.0, 3.0), material="steel.panel", fits=None):
@@ -1406,7 +1355,8 @@ class Build:
         self.stock_shapes[name] = shape
         fit = _fits(self.name, name, fits or {}).get(shape, {})
         models_low.shape_builder(fit.get("shape", shape))(self, 1.0)
-        m = Matrix.Translation(Vector(at)) @ pin_frame(forward).to_4x4() @ Matrix.Scale(scale * fit.get("scale", 1.0), 4)
+        m = (Matrix.Translation(Vector(at)) @ pin_frame(forward).to_4x4() @ Matrix.Scale(scale, 4)
+             @ Matrix.Translation((0.0, -fit.get("sink", 0.0), 0.0)) @ Matrix.Scale(fit.get("scale", 1.0), 4))
         parts = self.objects[start:]
         for ob in parts:
             ob.matrix_world = m
@@ -1421,18 +1371,22 @@ def _fits(model, pin, fits):
     for cls, how in fits.items():
         if cls not in models_low.SHAPES:
             raise ValueError("%s: %s fits %r, which is no class (%s)" % (model, pin, cls, ", ".join(models_low.SHAPES)))
-        shape, scale = cls, 1.0
+        shape, scale, sink = cls, 1.0, 0.0
         if isinstance(how, str):
             shape = how
         elif isinstance(how, (int, float)):
             scale = float(how)
         else:
             shape, scale = how[0], float(how[1])
+            if len(how) > 2:
+                sink = float(how[2])
         if shape != cls and (shape not in models_low.VARIANTS or models_low.VARIANTS[shape][0] != cls):
             raise ValueError("%s: %s fits its %s with %r, which is no variant of it" % (model, pin, cls, shape))
         if scale <= 0.0:
             raise ValueError("%s: %s fits its %s at a scale of %s" % (model, pin, cls, scale))
         out[cls] = {"shape": shape, "scale": round(scale, 3)}
+        if sink:
+            out[cls]["sink"] = round(sink, 3)
     return out
 
 

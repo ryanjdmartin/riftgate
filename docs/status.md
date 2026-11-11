@@ -27,7 +27,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1119 tests, 362,994 checks, green on main (11 November, as `ccr-722ca9f0-yj8na3`
+- Tests: 1123 tests, 362,685 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
+  with the Whip Scorpion's rework over the formation and refit session's landing). Before it,
+  1119 tests, 362,994 checks, green on main (11 November, as `ccr-722ca9f0-yj8na3`
   landed with the Rupture sized in beats, menace a pack's threat rating, the stall guard's end
   and the tide's and the strike's trial dials; Godot 4.8-beta2); one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
@@ -44,7 +46,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   times mean nothing). The hook imports only a checkout with no `.godot`, so a container that
   cached one keeps its old import: tests failing on a class name not declared (`MuzzleFlare`)
   mean run `--import` first (about fifteen seconds; 7 November). Models build with `BPY_PYTHON` set to a python3.11 venv holding
-  `bpy==5.0.1` (about twenty minutes to install). The first `--import` may rewrite four Prairie
+  `bpy==5.0.1` (about twenty seconds to install on 11 November). The first `--import` may rewrite four Prairie
   Dog textures and a model build the maker's review tiles: restore both
   (`git checkout -- art/models/prairie_dog_* tools/lowforge/tiles/`) rather than commit them.
 
@@ -125,7 +127,17 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4` (a cloud session may not delete
 one). Each merge commit says how its conflicts were settled.
 
-Still working, and landing as it goes (11 November): `ccr-722ca9f0-yj8na3`, the formation and
+Still working, and landing as it goes (11 November): `claude/clydesdale-design-concept-cg6uyz`,
+the Clydesdale's review (Ryan's other session), cut from main at `2a9242e`: its brief
+(`docs/briefs/ws_clydesdale.md`, his idea and his answers of the day; the to-do's line) and the
+hand-built stock guns gone on his word ("There's no reason to keep hand build guns anywhere"):
+sixteen on seven models rebuilt in the cloud, each stock gun its class, a mount's fits saying
+how deep each class sits (the Polar Bear's port guns deeper and a round rack flush, "that's
+perfect for bear"), the renders a round. It took main at `e286f8d` and again at `45b3190` (the
+Whip Scorpion's rework; the bible's version, v0.531 above both, and this file's lines, both sides
+kept) and main took it as a fast-forward on
+Ryan's word ("Clean up and merge in"); the Clydesdale's model is its next, and the hangar's
+republish waits for it so the page goes up once. And `ccr-722ca9f0-yj8na3`, the formation and
 refit session. Everything it had committed to `4c8dbf1` went to main with `ccr-4d58b054-3lyj0a`,
 below; its work since landed on Ryan's word of 11 November ("I think it's safe to start sending
 our code here out to main and having me test there in context"), the branch taking main at
@@ -187,8 +199,9 @@ rerolls row is the long wall's two with the audit's kept rolls.
 Each resumes from its brief; `docs/briefs/README.md`'s table says what each waits on.
 
 - The inventory of 9 November (every chassis, built or briefed, with its state): 24 built, 23 in
-  briefs, three slots open. Of the built, four went back to design with the refit pass and three
-  are there still (the Whip Scorpion whole, the Swallowtail, the Puffin; a brief each), three are
+  briefs, three slots open. Of the built, four went back to design with the refit pass and two
+  are there still (the Swallowtail and the Puffin, a brief each; the Polar Bear and the Whip
+  Scorpion handed back 11 November), three are
   unfinished by Ryan's own notes (the Needletail, the Giant Petrel, the Musk Ox) and the rest
   stand. The to-do's roster is grouped by what each waits on, in the order he took (Next, in
   order, item 1).
@@ -217,8 +230,19 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   fires its whole field; heat still raises its regen; Chain a candidate branch. With it the
   bible's design test "What a machine does, it does unasked: no extra controls" (his words:
   "Everything should be automatic in this game, I don't want extra controls"). The Whip
-  Scorpion's role map is in its brief, with the heat dump the Buzzard gave up for it; the
-  Scorpion, then the Dingo and the Prairie Dog, are this branch's next (11 November), the
+  Scorpion's rework is his of the same day and built (the bible's Whip Scorpion row, v0.527: the
+  tier-two formation breaker; nothing cools it; a pass, a turn it ends with an entry it could
+  have spent, Sweeps the rank with the most foes as the enemy's turn ends, a shot of 2 for every
+  heat, the back on a tie, the blows it took banked on top; its locked ray the Buzzard's old
+  form on one foe), dealt again, its brief retired: `pass_sweep` a passive's rule, the release
+  after the enemy's turn in the round and its forecast, the bot holding its die when the
+  release beats its best spend, the screen playing the shots once the enemy's turn has (a first
+  cut). Its locked piece is the Heliographic Death Ray (his keep of the name; id
+  `heliographic_death_ray`), remodelled the same day as a steam-fed mirrored railgun in the
+  mast's place, with a firing act of its own (the model rebuilt in a cloud session: a python3.11
+  venv with `bpy==5.0.1` as `BPY_PYTHON`, renders under `xvfb-run`). Its leavings are the to-do's
+  line (the Minerva draft's name, the old vent blast and Siphoning unused in the engine, its
+  runner row unread). On main since the same day ("Yes that's perfect. Merge that into main"). The Dingo and the Prairie Dog are this branch's next (11 November), the
   Clydesdale's review and the Skua his other sessions'.
 - The locked pieces' footing, decided 10 November (the bible's locked row, section 7, and tiers
   row, section 10; `docs/locked_pieces_proposal.md` holds what follows and the order; nothing
@@ -240,9 +264,9 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   working name, a support engine) and the Snowy Owl (a stealth unit, leaning to Cryo: Ryan,
   5 November) are Ryan's next session, their briefs' first rounds unanswered. The
   Needletail's two modes and the Giant Petrel's catamaran hull are his to pick (the to-do).
-- Wainwright & Sutler: ten decided, 3-5-2, nine built (the bible's roster row). The Whip Scorpion
-  and the Swallowtail are back in design (`ws_whip_scorpion.md`, `ws_swallowtail.md`; the
-  Scorpion's session under way, 11 November, the Swallowtail punted); they, the
+- Wainwright & Sutler: ten decided, 3-5-2, nine built (the bible's roster row). The Swallowtail
+  is back in design (`ws_swallowtail.md`, punted); the Whip Scorpion's rework is built (11
+  November). The Swallowtail, the
   Musk Ox and the gunship (very rough; Claude's first round in `docs/briefs/ws_gunship.md`) each
   need a design session for kit and visual design, which Ryan starts himself (4 November; the
   Needletail likewise).
@@ -1247,8 +1271,8 @@ engine line), since the matrix on file predates everything since 27 October.
    pieces' footing first, since every rework designs locked pieces (his direction of 10 November
    is the bible's locked and tiers rows, `docs/locked_pieces_proposal.md` the detail, and a
    tweak round on six pieces is with him); the four back in
-   design from the refit pass, the Polar Bear, the Whip Scorpion, the Swallowtail, then the
-   Puffin after the heat prices; the built but unfinished (the Needletail, the Giant Petrel, the
+   design from the refit pass (the Polar Bear and the Whip Scorpion handed back 11 November),
+   the Swallowtail, then the Puffin after the heat prices; the built but unfinished (the Needletail, the Giant Petrel, the
    Musk Ox) and the gunship; the tier-one fronts (Minerva's lure tank, an Aphelion tier one);
    Claude's first rounds on his directions of 5 and 6 November; the rest as its session comes.
 2. **The stock pass's tail**: Ryan's name pass; the Lammergeier's stock; the pricing pass's next
@@ -1290,10 +1314,12 @@ commands are in `README.md`.
   stall guard retired, two beats, the cleared field, ten to thirty minutes, his lean for more
   spawns), menace a pack's threat rating (the tally row, the sum retired) and the meter's lines
   with them (the clocks, stall, boss, roster, Anathema and kill rows, section 12's first battle,
-  pacing, menace and tier counts), unpublished, its republish on Ryan's word. `ccr-e3ddf00b-ilkwbi`'s
-  file is v0.530 (main's v0.529 and the withdrawal row with Ryan's call of 11 November on a
-  break-off for one machine), unpublished too. BASE for the next
-  merge is `60a0e4d`'s file. The live page may carry rows ahead of main's code while a branch has not landed. Before
+  pacing, menace and tier counts), and v0.531 since the Whip Scorpion's rework and the Clydesdale's
+  review landed the same day (its rows; the hardpoints row: every stock gun its class, a mount's depth
+  by class; the flare row), unpublished,
+  its republish on Ryan's word. `ccr-e3ddf00b-ilkwbi`'s file is v0.533 (main's v0.531, the
+  withdrawal row with Ryan's call of 11 November on a break-off for one machine, the Kite's row
+  rewritten and the Kestrel row's Needletail), unpublished too. BASE for the next merge is `60a0e4d`'s file. The live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
   this branch's file, THEIRS the saved live source with the tool's wrapper line and its trailing
@@ -1306,7 +1332,7 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 222 (11 November, main's `892d804`, on Ryan's word, "Everything else let's clean
+  page's Version 227 (11 November, published from `ccr-4d58b054-3lyj0a` at `9fde357`, ahead of main, on Ryan's word, "Can I see this in hangar?", and again for each of his four notes on its model: the gun slid back in its mount, the vents more upright, the gun forward by half the slide, then nudged back): the Whip Scorpion's rework, the eight files that had moved since 222 (three content files, `designs.json` without its retired brief, `text.json`, `renders.json`, its model and rig) and its three new renders; nobody had published since 222, and the live copies match the branch's after. Version 222 (11 November, main's `892d804`, on Ryan's word, "Everything else let's clean
   up and merge into main first before proceeding"): `designs.json` with the Whip Scorpion's brief
   after the Buzzard's settlement and `text.json` for its stamp, over Version 221 of minutes before
   (main's `60a0e4d`: the two files that had moved since 220, `designs.json` with the Buzzard's new
@@ -1316,7 +1342,11 @@ commands are in `README.md`.
   folded ideas. Behind main since `ccr-722ca9f0-yj8na3` landed the same day, its republish on
   Ryan's word: the vocabulary (the glossary's Menace, Rupture meter and Seal lines, drafts
   redrafted for menace as a pack's threat rating and the stall guard's end), with `text.json`
-  for them and `designs.json` for the refit brief. Version 220 (11 November, main's `9ebf74b`,
+  for them and `designs.json` for the refit brief; and since the Clydesdale's review landed, the
+  seven models rebuilt with their stock guns as classes (their glTFs and rig sidecars, the Polar
+  Bear's fits with depths), their renders and `renders.json`, the page's hangar_motion.js (a fit's
+  depth, no hand-built flares), `designs.json` for the Clydesdale's brief, held for the Clydesdale's
+  model so the page goes up once. Version 220 (11 November, main's `9ebf74b`,
   on Ryan's word, "republish the hangar and the bible") was the fourteen files that had moved since 219 (the five content files with the refit's
   model, the formation pass, the Polar Bear's seal, the Buzzard's regen and the Nemesis's rage;
   `designs.json` and `text.json`; `foes.json`; six rig sidecars, their stock pins following the

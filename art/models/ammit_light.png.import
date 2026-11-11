@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dd0aiyvpxn70i"
-path="res://.godot/imported/ammit_fire.png-ba6607b59ecbd5c402ab58734d0b4695.ctex"
+uid="uid://bewdohbccqnng"
+path="res://.godot/imported/ammit_light.png-fbc997c97ee26c3e9e88555eb20102ef.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "a7e510a59abbaa38aae8cfffd6feec58"
+"md5": "41c119ae711c61c859cb8b2de3a72aed"
 }
 
 [deps]
 
-source_file="res://art/models/ammit_fire.png"
-dest_files=["res://.godot/imported/ammit_fire.png-ba6607b59ecbd5c402ab58734d0b4695.ctex"]
+source_file="res://art/models/ammit_light.png"
+dest_files=["res://.godot/imported/ammit_light.png-fbc997c97ee26c3e9e88555eb20102ef.ctex"]
 
 [params]
 

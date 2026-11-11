@@ -72,6 +72,7 @@ class MechState:
 	var face_index: int = -1
 	var locked: bool = false
 	var assigned: bool = false
+	var passed: bool = false    # it ended the player's turn with an entry it could have spent (a pass: the Whip Scorpion's release reads it)
 	var free_rerolls: int = 0   # rerolls of this die alone left this round, from a passive, on top of the team's
 	var ammo: int = 0           # the magazine (the Musk Ox's Desublimation Forge): a resource beside heat, never a status
 	var ammo_max: int = 0       # its size; 0 for a machine that forges nothing
@@ -150,6 +151,9 @@ var log: Array[String] = []
 ## was fired with (the Cottonmouth's drum adds its own) say how the screen animates it, a lunge in
 ## place of a kick back for melee with nothing that crosses the field.
 var last_roll: Dictionary = {}
+## The heat released by passed turns as the last enemy turn ended (the Whip Scorpion's), for the
+## screen: {mech, rank, shots, blows (spend_blows' shape)} each. Cleared as a turn ends.
+var releases: Array = []
 var last_blast: Dictionary = {}   # the last vent blast, {mech, foe, dealt}, for the screen; cleared each round
 ## The fight's share of the run's Sponsorship measures (the bible's Sponsorship row; tallied 21
 ## October, never shown live): damage the team took on shield and armour, dice spent on
@@ -894,6 +898,8 @@ func preview_round(hover_mech: int = -1, hover_target = null) -> Dictionary:
 	var shield_hit: Array[int] = []
 	for i in range(mechs.size()):
 		shield_hit.append(copy.mechs[i].unit.shield)
+	if played and copy.outcome == Outcome.NONE:
+		copy._release_passes()   # a passed turn's heat, on the rank as the enemy's turn left it
 	if played and copy.outcome == Outcome.NONE:   # a fight decided in the enemy's turn has no round's end
 		copy._finish_round()
 	var coming := {}   # the copy's unit or foe -> {status id: {"stacks", "name", "description"}}
@@ -2197,6 +2203,9 @@ func end_round() -> int:
 	_enemy_turn()
 	if outcome != Outcome.NONE:
 		return outcome   # decided in the enemy's turn: the fight ends there, no round's end after it
+	_release_passes()
+	if outcome != Outcome.NONE:
+		return outcome   # the release felled the last foe
 	_finish_round()
 	# No reinforcement phase (Ryan, 6 November: "Cut"): a pack is what its grid holds, so a kill's
 	# slot stays empty unless a split, a summon or a part regrowing in its corpse's place fills it.
@@ -2206,6 +2215,62 @@ func end_round() -> int:
 	if outcome == Outcome.NONE:
 		state = State.ROUND_START
 	return outcome
+
+
+## The rank a passed turn's release sweeps: the one with the most foes standing, the back on a tie
+## (Ryan, 11 November: "Tie can be back rank"). A massive foe stands in both.
+func release_rank() -> int:
+	var count := [0, 0]
+	for rank in range(2):
+		for spot in sweep_spots(rank):
+			if spot[0] != null and (spot[0] as Foe).alive():
+				count[rank] += 1
+	return 0 if count[0] > count[1] else 1
+
+
+## The shot a machine's release fires: a Sweep, a shot for every heat it holds, each of its
+## passive's damage. Null for a machine whose pass releases nothing, or one holding no heat.
+func release_shot(ms: MechState) -> Face:
+	var power := Effects.pass_sweep(ms.unit) if ms != null else 0
+	if power <= 0 or ms.heat <= 0:
+		return null
+	var shot := Face.attack(power, Face.Reach.SWEEP)
+	shot.strikes = ms.heat
+	return shot
+
+
+## The passes released (the Whip Scorpion's Thermal Ejection Manifold; Ryan, 11 November), as the
+## enemy's turn ends, so the heat the foes' blows banked over its maximum fires with the rest
+## ("end the turn right under the overheat, get hit a couple times to go over the threshold, and
+## then release it all"): each machine that passed and holds heat sweeps the rank with the most
+## foes, a shot for every heat, and is left cold. The shots are its hits, resolved as any Sweep's
+## (_hit), costing no heat of their own; the fight they decide ends there.
+func _release_passes() -> void:
+	for i in range(mechs.size()):
+		var ms := mechs[i]
+		if not ms.passed or not ms.alive() or outcome != Outcome.NONE:
+			continue
+		var shot := release_shot(ms)
+		if shot == null:
+			continue
+		var rank := release_rank()
+		var target: Foe = null
+		for spot in sweep_spots(rank):
+			if spot[0] != null and (spot[0] as Foe).alive():
+				target = spot[0]
+				break
+		if target == null:
+			continue
+		var fired := ms.heat
+		log.append("%s opens its valves: %d heat along the %s" % [ms.unit.display_name, fired, "front" if rank == 0 else "back"])
+		ms.heat = 0
+		spend_blows.clear()
+		var h := _hit(ms, shot, target)
+		_finish_hits(i, ms, shot, target, h, Pays.VENT)
+		ms.heat = 0   # cold after it, whatever the shots cashed
+		releases.append({"mech": i, "rank": rank, "shots": fired, "blows": spend_blows.duplicate()})
+		_refresh_guards()
+		_check_outcome()
 
 
 ## The round's end, once the enemy's turn is done and the fight undecided: the machines' statuses
@@ -2228,6 +2293,12 @@ func _finish_round() -> void:
 ## made room for it or a cleanse took it off. END TURN's (a withdrawal shared it until the long
 ## wall brief, 3.5).
 func _end_player_turn() -> void:
+	# A pass (Ryan, 11 November: "any time it ends the round with a spendable die face"): read as
+	# the turn ends, before anything moves, so an entry Rapid rolled or an action granted and left
+	# unspent is one and a blank, a spent die or an entry with nowhere to land is none.
+	releases.clear()
+	for i in range(mechs.size()):
+		mechs[i].passed = can_spend(i)
 	overheats.clear()
 	history.clear()   # the enemy's turn draws: nothing before it comes back
 	# Maverick's Playbook (the Giant Petrel's, built 30 October): the team's rerolls left unspent
@@ -4961,7 +5032,7 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	var siphoned := Effects.heat_per_blow(ms.unit)
 	if siphoned > 0 and ms.alive():
 		_add_heat(ms, siphoned)   # through the heat path, so a passive on heat gained answers it (the audit's 17)
-		log.append("%s siphons the blow: +%d heat" % [ms.unit.display_name, siphoned])
+		log.append("%s banks the blow: +%d heat" % [ms.unit.display_name, siphoned])
 	if int(r["through"]) > 0:
 		_hull_damaged(ms)
 	elif int(r["absorbed"]) > 0:

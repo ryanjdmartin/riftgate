@@ -205,6 +205,11 @@ func play_round(sk: Skirmish, rerolls: bool = true) -> void:
 					_note_forced(sk, ms)
 					held.append(i)
 					continue
+				# A machine whose pass releases its heat (the Whip Scorpion's) holds its die when the
+				# release is worth more than its best spend: the valves or the gun.
+				if release_worth(sk, ms) > float(pick["score"]):
+					held.append(i)
+					continue
 				if kind == PLANNER:
 					alternatives.append_array(_top_two(opts))
 			if best.is_empty() or pick["score"] > best["score"]:
@@ -233,6 +238,29 @@ func play_round(sk: Skirmish, rerolls: bool = true) -> void:
 			held = still
 		else:
 			held.append(best["mech"])
+
+
+## What a pass would release (the Whip Scorpion's Thermal Ejection Manifold, 11 November), in foe
+## hit points: its heat as shots along the fuller rank as it stands, each through its foe's
+## armour, capped at what the foe has left. The heat the foes' blows will bank is left out, so it
+## reads low. Nothing for a machine whose pass releases nothing.
+func release_worth(sk: Skirmish, ms: Skirmish.MechState) -> float:
+	var shot := sk.release_shot(ms)
+	if shot == null:
+		return 0.0
+	var first: Foe = null
+	for spot in sk.sweep_spots(sk.release_rank()):
+		if spot[0] != null and (spot[0] as Foe).alive():
+			first = spot[0]
+			break
+	if first == null:
+		return 0.0
+	var worth := 0.0
+	var takes := sk.sweep_shots(first, shot.strikes)
+	for foe in takes.keys():
+		var each := sk.shown_number(ms, shot, foe)   # through its pipeline and the foe's armour
+		worth += minf(float(foe.hp), float(each * int(takes[foe])))
+	return worth
 
 
 ## A damaging die held because its heat would cross the maximum: a forced choice, and the

@@ -398,14 +398,16 @@ def clydesdale(b):
     riveted iron with chamfered shoulders, on four thick columnar legs that step fore and
     aft only (the notorious turning circle); a low armoured head on a short neck, a visor
     slit under a brow, lamps at the temples; on top a wagon bed in the maker's brown
-    carrying the whole payload: two twin-autogun turrets forward, the lance along the spine
-    running out past the head, the pocket mortar and the howitzer aft, a rack of shock
-    tubes, ablative slabs bolted on the left flank and a flak skirt hung on the right, the
-    heat sink and a stack at the tail. Bone-white flared skirts over the hooves, the
+    carrying the whole payload: two turrets forward, a mount on a breech along the spine,
+    the mortar's and the howitzer's gimbals aft, a rack of tubes, ablative slabs bolted on
+    the left flank and a flak skirt hung on the right, the heat sink and a stack at the tail. Bone-white flared skirts over the hooves, the
     namesake's feathering. First pass from the content's fantasy (22 September); the pins
     brought up to the d9 loadout 29 September (the howitzer and the shock barrage were new)
     and to the mount rule 30 September: six stock guns on hp_1 to hp_6, the plating and the
-    heat sink detail, three bare mounts (hp_7 to hp_9) on the bed rails and the neck."""
+    heat sink detail, three bare mounts (hp_7 to hp_9) on the bed rails and the neck. Every
+    stock gun wears its class since 11 November (Ryan: no stock gun is built by hand), the
+    lance's rail and emitter gone with it; the turrets, the breech and the gimbals are the
+    chassis's."""
     # Longer legs (Ryan, 5 October: "it is a horse after all", and the walk wanted them):
     # everything above the legs is built where it always was and raised one whole tile
     # (_Raised), so every seam stays on the world grid; the hips rise with it and the legs
@@ -499,20 +501,16 @@ def clydesdale(b):
             if s < 0:
                 b.stock("hp_1", (tx, 12.0, 58.0), "barrel", carries="maxigun")   # the stock's Maxigun as its class (Ryan's go, 28 October)
             else:
-                with b.socket("hp_2", (tx, 12.0, 58.0), carries="twin_autoguns"):
-                    for s2 in (-1.0, 1.0):
-                        b.prism("y", tx + s2 * 2.6, 28.0, 58.0, 1.8, 22.0, "steel.dark", 6, "autogun")
-    # The lance (hp_3): a breech block aft of centre, saddles along the deck, one long
-    # six-sided rail out past the head, a collar, a lit emitter at the point.
+                b.stock("hp_2", (tx, 12.0, 58.0), "twin_barrel", carries="twin_autoguns")   # the stock's Twin Autoguns as its class (Ryan, 11 November: no stock gun is built by hand)
+    # The spine mount (hp_3): a breech block aft of centre and a saddle along the deck, the
+    # stock's Enfilade Beam on the breech as its class (a hand-built lance out past the head
+    # until Ryan, 11 November: no stock gun is built by hand).
     b.box(-5.0, 5.0, -24.0, -6.0, 48.0, 61.0, "steel.panel", "breech")
     b.box(-3.5, 3.5, 6.0, 10.0, 48.0, 54.0, "steel.dark", "saddle")
-    with b.joint("lance", (0.0, -15.0, 57.0), limits=(-4.0, 18.0)):   # the lance pivots at the breech: it kicks on a shot, and lifts
-        with b.socket("hp_3", (0.0, -15.0, 57.0), carries="enfilade_beam"):
-            _beam(b, (0.0, -26.0, 57.0), (0.0, 64.0, 57.0), _poly(3.4, 6), _poly(2.8, 6), "steel.dark", "lance")
-            b.prism("y", 0.0, 24.0, 57.0, 4.8, 5.0, "steel.plate", 6, "guard")
-            _beam(b, (0.0, 64.0, 57.0), (0.0, 72.0, 57.0), _poly(2.8, 6), _poly(0.8, 6), "amber.light", "emitter")
-    # The pocket mortar (hp_4) aft on the deck's left, a stubby tube pitched up and forward
-    # on a base.
+    with b.joint("lance", (0.0, -15.0, 57.0), limits=(-4.0, 18.0)):   # the mount pivots at the breech: it kicks on a shot, and lifts
+        b.stock("hp_3", (0.0, -15.0, 57.0), "barrel", carries="enfilade_beam")
+    # The mortar's gimbal (hp_4) aft on the deck's left, its stock's Ankle Mortar pitched up
+    # and forward as its class.
     # Out toward the bed's edge, away from the lance's breech, and on a gimbal that
     # traverses (Ryan, 1 October).
     # On the deck, turning outward only like the turrets (Ryan, 1 October: the pedestals
@@ -520,18 +518,13 @@ def clydesdale(b):
     b.prism("z", -13.0, -24.0, 49.5, 5.0, 3.0, "steel.dark", 8, "mortar_base")
     with b.joint("turret_mortar", (-13.0, -24.0, 51.0), limits=(0.0, 150.0)):   # outward only, like the turrets
         with b.joint("elev_mortar", (-13.0, -24.0, 53.0), limits=(-12.0, 20.0)):   # the tube's elevation, inside the traverse (the joint pass)
-            with b.socket("hp_4", (-13.0, -24.0, 55.0), forward=(0.0, 0.5, 0.866), carries="ankle_mortar"):   # the same height as the howitzer's mount (Ryan, 1 October)
-                _beam(b, (-13.0, -24.0, 51.0), (-13.0, -16.0, 65.0), _poly(4.0, 6), _poly(4.4, 6), "steel.panel", "mortar")
-                _beam(b, (-13.0, -16.0, 65.0), (-13.0, -15.0, 66.8), _poly(4.4, 6), _poly(3.2, 6), "steel.dark", "muzzle")
-    # The howitzer (hp_5) on the deck's right: a fat short barrel pitched up out of a
-    # breech on a ring, the mortar's big brother; a bit further out, and on its gimbal.
+            b.stock("hp_4", (-13.0, -24.0, 55.0), "rack", forward=(0.0, 0.5, 0.866), carries="ankle_mortar")   # the same height as the howitzer's mount (Ryan, 1 October)
+    # The howitzer's gimbal (hp_5) on the deck's right, a bit further out on its ring, its
+    # stock's Howitzer pitched up as its class.
     b.prism("z", 12.5, -14.0, 49.5, 6.0, 3.0, "steel.dark", 8, "howitzer_base")
     with b.joint("turret_howitzer", (12.5, -14.0, 51.0), limits=(-150.0, 0.0)):
         with b.joint("elev_howitzer", (12.5, -14.0, 55.0), limits=(-15.0, 20.0)):   # the barrel's elevation at the breech
-            with b.socket("hp_5", (12.5, -14.0, 55.0), forward=(0.0, 0.866, 0.5), carries="howitzer"):
-                b.box(7.5, 17.5, -19.0, -9.0, 51.0, 59.0, "steel.panel", "howitzer_breech")
-                _beam(b, (12.5, -12.0, 55.0), (12.5, 6.0, 65.4), _poly(5.0, 6), _poly(4.4, 6), "steel.dark", "howitzer")
-                _beam(b, (12.5, 6.0, 65.4), (12.5, 8.6, 66.9), _poly(4.4, 6), _poly(5.2, 6), "steel.plate", "howitzer_muzzle")
+            b.stock("hp_5", (12.5, -14.0, 55.0), "barrel", forward=(0.0, 0.866, 0.5), carries="howitzer")
     # The Airburst Shell (hp_6; the shock barrage's mount until the stock pass of 22 October):
     # a rack of tubes on the deck's left between the turret and the breech, pitched up; the
     # class shape, since nothing was modelled there.
@@ -566,7 +559,7 @@ def clydesdale(b):
         "elev_mortar": [(4.4, 0.0), (5.4, 18.0), (6.4, 19.0), (7.4, 0.0)],
         "turret_howitzer": [(3.6, 0.0), (5.6, -65.0), (6.3, -65.0), (8.3, 0.0)],
         "elev_howitzer": [(4.8, 0.0), (5.8, 18.0), (6.6, 19.0), (7.6, 0.0)],
-    }, glow=[(["emitter"], [(3.4, 0.0), (4.0, 6.0), (6.6, 6.0), (7.4, 0.0)])])
+    })
     b.act("look_around", 6.0, {   # the head sweeps slowly one way, lamps up, then the other, staring
         "head": [(1.4, -6.0, 26.0, 0.0), (2.4, -7.0, 28.0, 0.0), (3.8, 5.0, -26.0, 0.0), (4.7, 6.0, -28.0, 0.0), (5.8, 0.0, 0.0, 0.0)],
     }, glow=[(["lamp"], [(0.4, 0.0), (1.0, 6.0), (5.0, 6.0), (5.8, 0.0)])])
@@ -907,9 +900,13 @@ def polar_bear(b):
     # racks, that fixes the armadillo"): a round launcher for a rack, and every class at the
     # scale that passes the port's bore whole (its octagon's flats: the rear ports' 11.8 across,
     # the fore ports' 10.3), so a fitted part rises out of its port as the guns do, never jammed
-    # in its mouth, and sinks under the iris when the shell seals.
-    REAR_FITS = {"rack": ("rack_round", 0.78), "dish": 0.7, "blade": 0.8, "twin_barrel": 0.7, "barrel": 0.9}
-    FORE_FITS = {"rack": ("rack_round", 0.68), "dish": 0.6, "blade": 0.7, "twin_barrel": 0.6, "barrel": 0.8}
+    # in its mouth, and sinks under the iris when the shell seals. Each sits at its depth (the
+    # third number, back along the line in the pin's units; Ryan, 11 November: "Can't the polar
+    # bears guns start deeper? Why do they have to come all the way out? Like a round missile rack
+    # doesn't need to poke out at all"): a round rack's face just inside the rim, a gun about as
+    # far out as the old hand-built ones (13 past a rear rim, 11 past a fore one), a dish as it was.
+    REAR_FITS = {"rack": ("rack_round", 0.78, 5.0), "dish": 0.7, "blade": ("blade", 0.8, 3.9), "twin_barrel": ("twin_barrel", 0.7, 4.3), "barrel": ("barrel", 0.9, 11.7)}
+    FORE_FITS = {"rack": ("rack_round", 0.68, 2.6), "dish": 0.6, "blade": ("blade", 0.7, 2.0), "twin_barrel": ("twin_barrel", 0.6, 2.0), "barrel": ("barrel", 0.8, 9.2)}
     # The shell: six bands from tail to brow, a dome in section, each proud of the last;
     # the tail band fuller than before (Ryan, 30 September: it tapered too much).
     bands = [(-50.0, -38.0, 50.0, Z0 + 21.0, 9.0), (-39.0, -22.0, 54.0, Z0 + 24.0, 10.0), (-23.0, -4.0, 60.0, Z0 + 28.0, 12.0),
@@ -975,23 +972,16 @@ def polar_bear(b):
         tag = "r" + ("l" if s < 0 else "r")
         shutters[tag] = _plug(b, tag, Vector((px, -0.9, Z0 + 29.1)) - Vector(D) * 0.5, D, 6.8, PLUG_DEEP)   # closes just under the rim; rests under the floor
         mount = Vector((px, -3.5, Z0 + 26.5))
-        DV = Vector(D)
-        # The barrels a fixed length from the mount (they had run to a fixed muzzle point
-        # and grew with every push back: Ryan, 1 October).
         # Each port gun runs in and out of its port along its line (Ryan, 29 October: it
         # pitched on a joint at the mount, and its barrels clipped the shell presenting): a
         # slide joint at the mount, the socket inside it.
         with b.joint("run_%s" % ("l" if s < 0 else "r"), tuple(mount), slide=D):
+            # Each stock gun is its class at the fit that passes the bore (Ryan, 11 November: no
+            # stock gun is built by hand).
             if kind == "rivet":
-                with b.socket("hp_1", tuple(mount), forward=D, scale=1.2, carries="rivet_gun", fits=REAR_FITS):
-                    _beam(b, tuple(mount), tuple(mount + DV * 16.0), _poly(3.4, 6), _poly(3.4, 6), "steel.dark", "rivet_barrel")
-                    _beam(b, tuple(mount + DV * 16.0), tuple(mount + DV * 18.5), _poly(4.0, 6), _poly(3.6, 6), "steel.plate", "rivet_muzzle")
+                b.stock("hp_1", tuple(mount), "barrel", forward=D, scale=1.2, carries="rivet_gun", fits=REAR_FITS)
             else:
-                with b.socket("hp_2", tuple(mount), forward=D, scale=1.2, carries="twin_autoguns", fits=REAR_FITS):
-                    for xo in (-2.4, 2.4):   # the pair inside the port's bore, no wider than a fitted pair
-                        off = Vector((xo, 0.0, 0.0))
-                        _beam(b, tuple(mount + off), tuple(mount + off + DV * 18.0), _poly(1.9, 6), _poly(1.9, 6), "steel.dark", "autogun_barrel")
-                        _beam(b, tuple(mount + off + DV * 18.0), tuple(mount + off + DV * 20.0), _poly(2.3, 6), _poly(2.1, 6), "steel.plate", "autogun_muzzle")
+                b.stock("hp_2", tuple(mount), "twin_barrel", forward=D, scale=1.2, carries="twin_autoguns", fits=REAR_FITS)
     # The hatch behind the ports: a rack in a stripe frame, pitched forward with the ports,
     # the Cryo Flingers' (no pin since the rework: the four ports are the hardpoints).
     # Up and back a little, so a cannon fitted there clears the shell's crown ahead of it
@@ -1252,7 +1242,10 @@ def polar_bear(b):
     # dipped: the defensive base pose (Ryan, 29 October). Opening runs it back, the plugs
     # dropping before the guns rise. RIFTGATE_SEAL_DEBUG=1 holds it and lets it go in turn,
     # as the hangar's Forms toggle does, to judge running.
-    SINK, SINK_F, T_SINK, T_PLUG0, T_PLUG1, T_ALL = 23.0, 32.0, 0.45, 0.45, 0.85, 1.2
+    # SINK takes the farthest a rear port's class reaches at its depth (18.4 along its line, a
+    # gun's muzzle) under the iris, which closes about 3.2 out from the mount, and leaves the
+    # deepest (a barrel's receiver, 18.3 back) inside the shell's floor, 37.5 down the line.
+    SINK, SINK_F, T_SINK, T_PLUG0, T_PLUG1, T_ALL = 17.5, 32.0, 0.45, 0.45, 0.85, 1.2
     HUNK = (0.0, -11.0, -1.5)   # (dy, dz, pitch): low, the brow dipped
     FWD = (0.0, 1.0, 0.0)
     tracks = {jn: [along(0.0, 0.0), along(T_SINK, -SINK)] for jn in ("run_l", "run_r")}
@@ -1361,19 +1354,16 @@ def wild_boar(b):
         with b.joint("elev", (0.0, 8.0, 37.0), limits=(-6.0, 22.0)):   # the mantlet and both guns elevate together (the joint pass)
             b.box(-15.0, 15.0, 8.0, 14.0, 33.0, 41.0, "steel.plate", "mantlet")
             for s in (-1.0, 1.0):
-                with b.socket("hp_%d" % (1 if s < 0 else 2), (s * 9.0, 14.0, 37.0), carries="slugthrower"):
-                    b.prism("y", s * 9.0, 32.0, 37.0, 2.8, 40.0, "steel.dark", 6, "gun")
-                    b.prism("y", s * 9.0, 51.0, 37.0, 3.4, 4.0, "steel.plate", 6, "muzzle")
+                b.stock("hp_%d" % (1 if s < 0 else 2), (s * 9.0, 14.0, 37.0), "barrel", carries="slugthrower")   # the stock's Slugthrowers as their class (Ryan, 11 November: no stock gun is built by hand)
         b.box(-4.0, 4.0, -20.0, -14.0, 42.0, 44.0, "steel.plate", "hatch")
         b.box(13.0, 16.0, -6.0, 0.0, 42.0, 45.0, "amber.light", "sight")
         b.pad("hp_4", (0.0, 2.0, 44.0))
-    # The stock missile pod on the left rear quarter's deck (hp_3), its face forward.
+    # The pod's mount on the left rear quarter's deck (hp_3), the stock's Shotfire Rack on it
+    # as its class, its face forward.
     # Set back and out so the turret's drum and its guns sweep clear of it (Ryan, 1
     # October: the turret must look able to turn).
     with b.joint("elev_pod", (-TX - 1.0, -23.0, TH + 9.0), limits=(0.0, 16.0)):   # the pod tilts up on its deck
-        with b.socket("hp_3", (-TX - 1.0, -16.0, TH + 16.0), carries="shotfire_rack"):
-            b.box(-TX - 8.0, -TX + 6.0, -30.0, -16.2, TH + 9.0, TH + 23.0, "steel.panel", "missile_box")
-            _missile_face(b, (-TX - 8.0, -16.15, TH + 9.0), (0.0, 0.0, 1.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), 14.0)
+        b.stock("hp_3", (-TX - 1.0, -16.0, TH + 16.0), "rack", carries="shotfire_rack")
     # Ablative plating on the outer faces of the treads and the blowout stack at the hull's
     # tail with vents beside it: detail, no mounts.
     for s in (-1.0, 1.0):
@@ -2941,12 +2931,12 @@ def whip_scorpion(b):
     Thermal Ejection Manifold (the passive, modelled in): four short gun-barrelled vents in a
     broadside on the boiler's shoulders, angled forward and out, fed by a manifold pipe down each
     flank, each kicking back along its line as it blasts, its bore and a collar round its barrel
-    flaring. The Heliographic Siphon (fixed, no pin): a signal mirror on a yoke at the head of a
-    mast off the cab's back, turning on its head and tilting in the yoke, its glass banked dim and
-    flashing white. Mounts in the die's order: hp_1 the left shoulder gun (the stock's Thermal Ray
+    flaring. The Heliographic Death Ray (fixed, no pin; 11 November, in the signal mirror's
+    place): a steam-fed mirrored railgun on a pedestal off the cab's back, its head turning and
+    the gun elevating, its glass banked dim and flashing white. Mounts in the die's order: hp_1 the left shoulder gun (the stock's Thermal Ray
     as its barrel class) and hp_4 the right's (the Maxigun), each on a ring at a front corner of
     the roof that traverses (turret_l, turret_r); hp_2 and hp_3 bare pads on raised rings either
-    side of the mast, inboard of the shoulder guns so that a gun fitted there runs clear of them
+    side of the ray's pedestal, inboard of the shoulder guns so that a gun fitted there runs clear of them
     (the two Coolant Jackets show nowhere, vents). The look, the rig, the acts and the gait are
     Ryan's to judge running."""
     # The legs, each in the planes the walk solver works in: the knee displaced along the
@@ -3003,27 +2993,79 @@ def whip_scorpion(b):
     for s, n in ((-1.0, 2), (1.0, 3)):
         b.prism("z", s * 6.5, 0.0, 60.4, 4.2, 2.6, "steel.dark", 8, "pad_ring", phase=math.pi / 8)
         b.pad("hp_%d" % n, (s * 6.5, 0.0, 63.0), scale=0.9, size=(6.6, 1.2))
-    # The mast off the cab's back and the Heliographic Siphon at its head: a pole to a head that
-    # turns (turret_mirror), a yoke on it and the mirror tilting in the yoke (mirror), its face
-    # forward and up, a cold glass banked dim that flashes white (St. Elmo's spark, the one lit
-    # colour on the machine that is no flame), its back in the livery.
-    b.box(-3.0, 3.0, -5.0, 5.0, 58.5, 61.5, "steel.dark", "mast_base")
-    b.prism("z", 0.0, 0.0, 75.0, 2.1, 28.0, "steel.dark", 6, "mast")
-    b.prism("z", 0.0, 0.0, 88.2, 3.2, 1.6, "steel.plate", 8, "mast_collar", phase=math.pi / 8)
-    MZ = 99.0
-    N = Vector((0.0, math.cos(math.radians(40.0)), math.sin(math.radians(40.0))))
-    with b.joint("turret_mirror", (0.0, 0.0, 89.0), limits=(-70.0, 70.0)):
-        b.box(-3.4, 3.4, -3.0, 3.0, 89.0, 91.5, "steel.dark", "yoke_base")
-        b.box(-13.5, 13.5, -1.5, 1.5, 90.0, 92.0, "steel.plate", "yoke")
+    # The Heliographic Death Ray (fixed, no pin; Ryan, 11 November: "an actual gun. Pipes
+    # connecting it to the boiler, steampunk style. Mirror or mirrors as part of it because weird
+    # future nonsense tech. Like a steam powered mirrored laser railgun"): a pedestal off the cab's
+    # back, two steam mains up its rear from the waist into a collar under a head that turns
+    # (turret_ray); on it, in trunnion cheeks, the gun that elevates (ray): a dark breech with a
+    # brown pressure accumulator hooped on its back and a gauge on its end, a collector mirror on
+    # a bracket over the breech with its glass to the sky (so the map, the codex and the skirmish
+    # all see it flash), two long rails clamped in iron hoops with the bore between them banked
+    # with heat, three relay mirrors along the rails' top tipped by turns, a steam line down each
+    # rail, and a muzzle ring round a lens. The glass is cold and flashes white, the one lit
+    # colour on the machine that is no flame.
+    PY, PZ, GZ = -7.0, 72.0, 79.0   # the pedestal's line, the head's foot, the gun's axis
+    b.box(-4.2, 4.2, PY - 4.2, PY + 4.2, 58.5, 60.6, "steel.dark", "ray_foot")
+    b.prism("z", 0.0, PY, 65.6, 3.4, 10.4, "steel.plate", 8, "ray_pedestal", phase=math.pi / 8)
+    b.prism("z", 0.0, PY, 71.1, 6.0, 1.8, "steel.dark", 8, "ray_collar", phase=math.pi / 8)
+    for s in (-1.0, 1.0):
+        # A main up from the waist, over the cab's back edge and up the pedestal's rear.
+        _beam(b, (s * 6.0, -16.0, 55.0), (s * 6.0, -14.6, 61.4), _poly(2.5, 6), _poly(2.5, 6), "livery.livery2", "ray_main")
+        _beam(b, (s * 6.0, -14.6, 61.4), (s * 3.6, PY - 3.6, 63.0), _poly(2.5, 6), _poly(2.5, 6), "livery.livery2", "ray_main")
+        _beam(b, (s * 3.6, PY - 3.6, 63.0), (s * 3.6, PY - 3.6, 70.4), _poly(2.5, 6), _poly(2.5, 6), "livery.livery2", "ray_main")
+        b.prism("z", s * 3.6, PY - 3.6, 66.3, 3.2, 1.2, "steel.dark", 6, "ray_main_flange")
+    N = Vector((0.0, math.cos(math.radians(50.0)), math.sin(math.radians(50.0))))   # the collector's face: forward and up
+    RELAYS = (10.0, 23.0, 36.0)   # the relay mirrors, along the rails
+    with b.joint("turret_ray", (0.0, PY, PZ), limits=(-60.0, 60.0)):
+        b.box(-8.0, 8.0, PY - 5.0, PY + 5.0, PZ, PZ + 1.6, "steel.dark", "ray_cradle")
         for s in (-1.0, 1.0):
-            x0, x1 = sorted((s * 12.0, s * 13.5))
-            b.box(x0, x1, -1.5, 1.5, 91.0, MZ + 1.2, "steel.plate", "yoke")
-        b.prism("x", 0.0, 0.0, MZ, 1.3, 27.0, "steel.dark", 6, "mirror_pin")
-        with b.joint("mirror", (0.0, 0.0, MZ), limits=(-40.0, 40.0)):
-            c = Vector((0.0, 0.0, MZ))
+            x0, x1 = sorted((s * 6.4, s * 8.0))
+            b.box(x0, x1, PY - 3.4, PY + 3.4, PZ + 0.4, GZ + 3.0, "steel.plate", "ray_cheek")
+        b.prism("x", 0.0, PY, GZ, 1.8, 17.2, "steel.dark", 6, "ray_trunnion")
+        with b.joint("ray", (0.0, PY, GZ), limits=(-8.0, 10.0)):   # its breech rides over the boiler, so it lifts little
+            # The gun slid back in its cradle (Ryan, 11 November: "slide it back, keeping the mount
+            # in place, so it overhangs the back of the mount ... give the front some space and make
+            # a little scorpion vibe"): the cheeks grip the rails at a block, the breech and the
+            # collector riding out over the boiler like a tail carried high.
+            GY = PY - 13.0
+            b.box(-6.2, 6.2, PY - 3.0, PY + 3.0, GZ - 3.4, GZ + 3.2, "steel.dark", "ray_trunnion_block")
+            b.box(-6.0, 6.0, GY - 12.0, GY + 3.0, GZ - 4.4, GZ + 4.4, "steel.dark", "ray_breech")
+            b.prism("y", 0.0, GY - 4.5, GZ + 8.2, 4.2, 12.0, "livery.livery2", 8, "ray_tank", phase=math.pi / 8)
+            for y in (GY - 8.5, GY - 0.5):
+                b.prism("y", 0.0, y, GZ + 8.2, 4.7, 1.4, "steel.dark", 8, "ray_tank_hoop", phase=math.pi / 8)
+            b.prism("y", 0.0, GY - 10.9, GZ + 8.2, 2.6, 0.8, "steel.dark", 8, "ray_gauge", phase=math.pi / 8)
+            b.prism("y", 0.0, GY - 11.4, GZ + 8.2, 2.0, 0.4, "amber.light", 8, "ray_gauge_face", phase=math.pi / 8)
+            # A steam line from the tank down each flank of the breech, elbowed.
+            for s in (-1.0, 1.0):
+                _beam(b, (s * 3.6, GY - 4.5, GZ + 9.0), (s * 7.2, GY - 4.5, GZ + 6.0), _poly(1.4, 6), _poly(1.4, 6), "livery.livery2", "ray_line")
+                _beam(b, (s * 7.2, GY - 4.5, GZ + 6.0), (s * 7.2, GY - 4.5, GZ - 2.0), _poly(1.4, 6), _poly(1.4, 6), "livery.livery2", "ray_line")
+            # The collector on its bracket, behind and over the tank.
+            c = Vector((0.0, GY - 16.0, GZ + 17.0))
+            _beam(b, (0.0, GY - 11.0, GZ + 3.0), tuple(c - N * 1.2), _sq(3.0, 2.0), _sq(3.0, 2.0), "steel.plate", "ray_bracket")
             _beam(b, tuple(c - N * 1.3), tuple(c + N * 0.2), _poly(10.6, 8, math.pi / 8), _poly(10.6, 8, math.pi / 8), "livery.livery2", "mirror_back")
             _tube(b, tuple(c - N * 0.6), tuple(c + N * 1.1), 11.4, 10.3, 8, "steel.dark", "mirror_rim", floor=False, phase=math.pi / 8)
             _disc(b, tuple(c + N * 0.3), tuple(N), 9.9, 8, "amber.spark", "mirror_face", phase=math.pi / 8)
+            # The rails, the bore between them, their hoops and the steam line down each.
+            Y0, Y1 = GY + 3.0, GY + 54.0
+            for s in (-1.0, 1.0):
+                x0, x1 = sorted((s * 2.0, s * 5.0))
+                b.box(x0, x1, Y0, Y1, GZ - 2.6, GZ + 2.6, "steel.plate", "ray_rail")
+                b.prism("y", s * 6.6, (Y0 + Y1) / 2.0 - 3.0, GZ - 2.0, 1.4, Y1 - Y0 - 8.0, "livery.livery2", 6, "ray_line")
+            b.box(-2.0, 2.0, Y0, Y1 - 0.5, GZ - 1.0, GZ + 1.4, "amber.heat", "ray_bore")
+            for y in (GY + 9.0, GY + 22.0, GY + 35.0, GY + 48.0):
+                b.box(-8.2, 8.2, y - 1.3, y + 1.3, GZ - 4.0, GZ + 0.2, "steel.dark", "ray_hoop")
+                for s in (-1.0, 1.0):   # the hoop's cheeks up the rails' flanks, the bore left open to the sky
+                    x0, x1 = sorted((s * 5.0, s * 8.2))
+                    b.box(x0, x1, y - 1.3, y + 1.3, GZ + 0.2, GZ + 3.4, "steel.dark", "ray_hoop")
+            for k, y in enumerate(RELAYS):
+                side = 1.0 if k % 2 == 0 else -1.0   # on the left rail and the right by turns, each tipped in over the bore and up at the sky
+                rn = Vector((-side * 0.5, 0.2, 1.0)).normalized()
+                rc = Vector((side * 6.2, GY + y + 5.5, GZ + 8.2))
+                b.prism("z", side * 6.2, GY + y + 5.5, GZ + 5.6, 1.0, 4.0, "steel.dark", 6, "ray_relay_post")
+                _beam(b, tuple(rc - rn * 0.9), tuple(rc), _poly(4.6, 4, math.pi / 4), _poly(4.6, 4, math.pi / 4), "steel.dark", "ray_relay_back")
+                _disc(b, tuple(rc + rn * 0.08), tuple(rn), 4.0, 4, "amber.spark", "ray_relay_%d" % (k + 1), phase=math.pi / 4)
+            _tube(b, (0.0, Y1 - 1.5, GZ), (0.0, Y1 + 4.0, GZ), 7.4, 4.8, 8, "steel.dark", "ray_muzzle", floor=False, phase=math.pi / 8)
+            _disc(b, (0.0, Y1 + 3.0, GZ), (0.0, 1.0, 0.0), 4.7, 8, "amber.spark", "ray_lens", phase=math.pi / 8)
     # The boiler on the waist (abdomen): a fat pressure vessel in the maker's brown, eight-sided,
     # hooped in dark iron, dished to its end; a sight glass down its spine banked with heat; a
     # gauge on its end; a valve wheel on its back on a spindle (valve), spokes so its turn reads;
@@ -3051,14 +3093,18 @@ def whip_scorpion(b):
             a = math.radians(90.0 + 120.0 * k)
             _beam(b, (0.0, VY, TOP + 3.4), (5.0 * math.cos(a), VY + 5.0 * math.sin(a), TOP + 3.4), _sq(1.1, 0.8), _sq(1.1, 0.8), "steel.dark", "valve_spoke")
         b.box(-0.9, 0.9, VY + 4.6, VY + 6.2, TOP + 3.0, TOP + 5.6, "steel.dark", "valve_knob")
+    for s in (-1.0, 1.0):   # the mains' ends on the boiler's shoulder, meeting the cab's at the waist
+        _beam(b, (s * 6.0, -23.0, BZ + 15.2), (s * 6.0, -17.6, 56.5), _poly(2.5, 6), _poly(2.5, 6), "livery.livery2", "ray_main")
+        b.prism("y", s * 6.0, -17.6, 56.5, 3.2, 1.2, "steel.dark", 6, "ray_main_flange")
     vents = []
+    VENT_UP = 47.0   # the vents' lift off the level: 35 until 11 November (Ryan: "a teeny bit more vertical, to better clear the knees")
     for s in (-1.0, 1.0):
         side = "l" if s < 0 else "r"
         b.prism("y", s * 25.3, -34.0, BZ, 2.0, 28.0, "steel.dark", 6, "manifold")
         for k, y in ((1, -30.25), (2, -42.75)):
             base = (s * 17.0, y, 62.1)
             _beam(b, (s * 25.3, y, BZ), (s * 19.6, y, 59.6), _poly(1.6, 6), _poly(1.6, 6), "steel.dark", "manifold_feed")
-            d = (s * math.cos(math.radians(35.0)) * math.sin(math.radians(55.0)), math.cos(math.radians(35.0)) * math.cos(math.radians(55.0)), math.sin(math.radians(35.0)))
+            d = (s * math.cos(math.radians(VENT_UP)) * math.sin(math.radians(55.0)), math.cos(math.radians(VENT_UP)) * math.cos(math.radians(55.0)), math.sin(math.radians(VENT_UP)))
             vents.append((side + str(k), _whip_scorpion_vent(b, side + str(k), base, d), d))
     abdomen.__exit__(None, None, None)
 
@@ -3075,33 +3121,34 @@ def whip_scorpion(b):
     limbs = [limb(leg) for leg in LEGS]
     by_name = {leg: limb(leg) for leg in LEGS}
     HEAT = 196.0   # the heat tile's light at its height: #ff7800 under the phone's eased light, as the Polar Bear's vents
-    # The flash (the Heliographic Siphon's lure): it rises tall on its legs, the boiler's end
-    # tipping up, the shoulder guns swinging wide, the lamps and floodlights up; the mirror tips its
-    # glass to the sky and its head swings round to the left, flashing short, short, long, then
-    # sweeps the whole field to the right flashing as it goes and holds there on a long flash,
-    # every foe on the field its mark (the glass to the sky, so the map, the codex and the
-    # skirmish all see it flash); it swings home and hunkers down braced (Armoured for the round),
-    # the guns home, as the siphon drinks the blows into the boiler's sight glass.
-    tracks, body = _planted(limbs, _dense([(0.4, 0.0, 0.0, 0.0), (1.7, 0.0, 4.0, 2.5), (6.0, 0.0, 4.4, 2.8), (6.6, 0.0, 4.4, 2.8),
-                                           (7.6, 0.0, -2.6, -1.5), (8.6, 0.0, -2.8, -1.6), (9.6, 0.0, 0.0, 0.0)], 10.0))
+    # The ray (the Heliographic Death Ray): it squats and braces, the boiler's end tipping up and
+    # its pressure climbing the sight glass and the gun's gauge; the gun lifts off its rest and
+    # the collector flashes twice at the sky; then the light runs down the gun, relay by relay,
+    # the bore between the rails going white behind it, and the lens fires, the gun kicked back
+    # along its line and held, the whole machine jolting on its planted feet; the bore banks down,
+    # the gun runs out and settles, and it rises again.
+    FIRE = 3.1
+    tracks, body = _planted(limbs, _dense([(0.3, 0.0, 0.0, 0.0), (1.5, 0.0, -1.2, -2.2), (FIRE - 0.02, 0.0, -1.2, -2.2), (FIRE + 0.08, 0.0, -3.4, -2.6),
+                                           (FIRE + 0.6, 0.0, -1.6, -2.2), (5.2, 0.0, -1.2, -2.0), (6.6, 0.0, 0.0, 0.0)], 10.0))
     tracks.update({
-        "turret_mirror": [(0.6, 0.0), (1.9, 45.0), (3.0, 45.0), (5.6, -45.0), (6.4, -45.0), (7.7, 0.0)],
-        "mirror": [(0.6, 0.0), (1.8, 34.0), (6.6, 34.0), (7.7, 0.0)],
-        "turret_l": [(0.8, 0.0), (2.2, 40.0), (6.4, 40.0), (7.6, 0.0)],
-        "turret_r": [(0.95, 0.0), (2.35, -40.0), (6.55, -40.0), (7.75, 0.0)],
-        "abdomen": [(1.0, 0.0, 0.0, 0.0), (2.2, -6.0, 0.0, 0.0), (6.4, -6.0, 0.0, 0.0), (7.6, 3.0, 0.0, 0.0), (8.6, 3.0, 0.0, 0.0), (9.4, 0.0, 0.0, 0.0)],
+        "ray": _dense([(0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (1.7, 6.0, 0.0, 0.0, 0.0, 0.0, 0.0), (FIRE - 0.02, 6.0, 0.0, 0.0, 0.0, 0.0, 0.0), (FIRE + 0.06, 7.5, 0.0, 0.0, 0.0, -5.0, 0.0),
+                       (FIRE + 0.45, 7.5, 0.0, 0.0, 0.0, -5.0, 0.0), (FIRE + 1.5, 6.0, 0.0, 0.0, 0.0, 0.0, 0.0), (5.4, 6.0, 0.0, 0.0, 0.0, 0.0, 0.0), (6.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)]),
+        "turret_l": [(0.8, 0.0), (1.8, 24.0), (5.2, 24.0), (6.3, 0.0)],
+        "turret_r": [(0.9, 0.0), (1.9, -24.0), (5.3, -24.0), (6.4, 0.0)],
+        "abdomen": _dense([(0.5, 0.0, 0.0, 0.0), (1.6, -6.0, 0.0, 0.0), (FIRE - 0.02, -6.0, 0.0, 0.0), (FIRE + 0.1, -9.0, 0.0, 0.0), (FIRE + 0.7, -5.0, 0.0, 0.0), (5.4, -5.0, 0.0, 0.0), (6.5, 0.0, 0.0, 0.0)]),
     })
     FLASH = 24.0   # the glass's light at a flash: past white under the phone's eased light
     blink = lambda t, d, k=FLASH: [(round(t, 3), 1.0), (round(t + 0.05, 3), k), (round(t + d - 0.05, 3), k), (round(t + d, 3), 1.0)]
-    keys = [(1.9, 0.0)] + blink(1.95, 0.2) + blink(2.32, 0.2) + blink(2.66, 0.4)
-    for t in (3.35, 3.75, 4.15, 4.55, 4.95, 5.35):
-        keys += blink(t, 0.22)
-    keys += blink(5.72, 0.6) + [(6.5, 0.0)]
-    b.act("flash", 9.8, tracks, body=body,
-          glow=[(["mirror_face"], keys),
-                (["lamp"], [(0.5, 0.0), (1.2, 7.0), (7.2, 7.0), (8.0, 0.0)]),
-                (["floodlight"], [(0.7, 0.0), (1.4, 6.0), (6.8, 6.0), (7.6, 0.0)]),
-                (["gauge_glass"], [(6.9, 0.0), (7.7, 60.0), (8.9, 60.0), (9.6, 0.0)]), (["gauge_face"], [(6.9, 0.0), (7.5, 7.0), (8.9, 7.0), (9.6, 0.0)])])
+    glow = [(["mirror_face"], [(1.6, 0.0)] + blink(1.75, 0.2) + blink(2.1, 0.2) + blink(2.45, 0.9) + [(4.2, 0.0)]),
+            (["ray_lens"], [(FIRE - 0.1, 0.0)] + blink(FIRE - 0.04, 0.6) + [(4.4, 0.0)]),
+            (["ray_bore"], [(0.6, 0.0), (2.4, 30.0), (FIRE - 0.04, 60.0), (FIRE, HEAT), (FIRE + 0.5, HEAT), (5.0, 30.0), (6.4, 0.0)]),
+            (["gauge_glass"], [(0.5, 0.0), (1.6, 40.0), (FIRE - 0.05, 120.0), (FIRE + 0.1, 0.0)]),
+            (["gauge_face", "ray_gauge_face"], [(0.5, 0.0), (1.6, 5.0), (FIRE - 0.05, 9.0), (FIRE + 0.3, 2.0), (6.0, 0.0)]),
+            (["lamp", "floodlight"], [(0.5, 0.0), (1.2, 6.0), (5.4, 6.0), (6.2, 0.0)])]
+    for k in range(3):
+        t = 2.62 + 0.15 * k
+        glow.append((["ray_relay_%d" % (k + 1)], [(t - 0.1, 0.0)] + blink(t, FIRE + 0.5 - t) + [(4.2, 0.0)]))
+    b.act("ray", 6.8, tracks, body=body, ease="linear", heft=0.08, glow=glow)
     # The blast (the Thermal Ejection Manifold): the pilot spins the valve wheel open a whole turn
     # as the machine squats and braces, the boiler's end pumping up and its pressure building in
     # the sight glass and every bore; then the broadside fires, the right pair and then the left,
@@ -3139,7 +3186,7 @@ def whip_scorpion(b):
     # The stamp: it rocks its weight back onto its other legs, lifts its fore-left foot high and
     # holds it, then stamps it down hard, the whole body dropping onto it and the boiler's end
     # slamming down on its waist, the lamps and floodlights flaring and the heat jolted up the
-    # sight glass; it settles, and does the same with its fore-right. The mirror's head turns to
+    # sight glass; it settles, and does the same with its fore-right. The ray's head turns to
     # watch each foot, the glass tipped down at it, and the shoulder guns swing out for balance.
     # On quicker servos than its own (the act's heft), so the stamp stops dead.
     FL, FR = legs["fl"][2], legs["fr"][2]
@@ -3157,8 +3204,8 @@ def whip_scorpion(b):
         "abdomen": _dense([(0.5, 0.0, 0.0, 0.0), (1.4, -3.0, 0.0, 0.0), (2.2, -3.0, 0.0, 0.0)] + [(tt, *v) for tt, v in _slam(2.2, (-3.0, 0.0, 0.0), 2.45, (4.0, 0.0, 0.0))] +
                           [(3.05, 4.0, 0.0, 0.0), (3.6, 0.0, 0.0, 0.0), (4.5, -3.0, 0.0, 0.0), (5.3, -3.0, 0.0, 0.0)] + [(tt, *v) for tt, v in _slam(5.3, (-3.0, 0.0, 0.0), 5.55, (4.0, 0.0, 0.0))] +
                           [(6.15, 4.0, 0.0, 0.0), (6.8, 0.0, 0.0, 0.0)]),
-        "turret_mirror": [(0.6, 0.0), (1.6, 25.0), (3.0, 25.0), (4.6, -25.0), (6.0, -25.0), (6.9, 0.0)],
-        "mirror": [(0.6, 0.0), (1.6, -18.0), (6.0, -18.0), (7.0, 0.0)],
+        "turret_ray": [(0.6, 0.0), (1.6, 25.0), (3.0, 25.0), (4.6, -25.0), (6.0, -25.0), (6.9, 0.0)],
+        "ray": [(0.6, 0.0), (1.6, -6.0), (6.0, -6.0), (7.0, 0.0)],
         "turret_l": [(0.8, 0.0), (1.8, 20.0), (6.2, 20.0), (7.0, 0.0)],
         "turret_r": [(0.9, 0.0), (1.9, -20.0), (6.3, -20.0), (7.1, 0.0)],
     })
@@ -3169,7 +3216,7 @@ def whip_scorpion(b):
     # The survey: it turns on the spot to look round, stepping each foot in turn (a round of six
     # steps, the sides by turns), twelve degrees left and holding, then right through the middle
     # to twelve degrees right in two rounds, holding, and home; a little lower as it steps. The
-    # shoulder guns and the mirror's head lead the turn round and hold on what it watches, the
+    # shoulder guns and the ray's head lead the turn round and hold on what it watches, the
     # glass tipped up at the field, the lamps and floodlights up. On quicker servos than its own
     # (the act's heft), so each step lifts clear.
     turn = lambda yaw, dz=0.0: (0.0, 0.0, dz, yaw, 0.0, 0.0)
@@ -3189,8 +3236,8 @@ def whip_scorpion(b):
     tracks.update({
         "turret_l": [(0.6, 0.0), (2.0, 30.0), (3.6, 30.0), (5.3, -26.0), (8.2, -26.0), (9.4, 0.0)],
         "turret_r": [(0.7, 0.0), (2.1, 26.0), (3.7, 26.0), (5.4, -30.0), (8.3, -30.0), (9.5, 0.0)],
-        "turret_mirror": [(0.6, 0.0), (1.8, 40.0), (3.6, 40.0), (6.0, -40.0), (8.2, -40.0), (9.4, 0.0)],
-        "mirror": _dense([(0.6, 0.0), (1.6, 10.0), (8.6, 10.0), (9.6, 0.0)]),
+        "turret_ray": [(0.6, 0.0), (1.8, 40.0), (3.6, 40.0), (6.0, -40.0), (8.2, -40.0), (9.4, 0.0)],
+        "ray": _dense([(0.6, 0.0), (1.6, 10.0), (8.6, 10.0), (9.6, 0.0)]),
     })
     b.act("survey", 10.4, tracks, body=body, ease="linear", heft=0.08,
           glow=[(["lamp", "floodlight"], [(0.4, 0.0), (1.0, 6.0), (9.2, 6.0), (9.9, 0.0)])])
@@ -3206,10 +3253,9 @@ def whip_scorpion(b):
     tracks["abdomen"] = ([(i / 40.0, round(0.8 * math.sin(4.0 * math.pi * i / 40.0), 3), round(2.5 * math.sin(2.0 * math.pi * i / 40.0), 3), 0.0) for i in range(41)], 0.0)
     b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
     b.move(accel=1.4, heft=0.22)
-    # Its Heliographic Siphon fires with a slice of its flash (Ryan, 31 October: the cheapest first,
-    # where an act already shows the weapon; found unfired on 3 November): the mirror raised and
-    # swung out, the blow at its first flash, the flashes running on as every foe turns to it.
-    b.fires = {"heliographic_siphon": ("flash", 0.9, 3.0, 2.0)}
+    # Its Heliographic Death Ray fires with a slice of its ray: the collector's last flash, the
+    # light down the relays, the blow as the lens fires, the gun kicked back and running out.
+    b.fires = {"heliographic_death_ray": ("ray", 2.3, 5.0, FIRE)}
     # Its manifold's four vents wear the halo every glowing vent does (Ryan, 31 October: "applied to all
     # 'hot' things - so all glowing boosters and vents"; found bare on 3 November), the collar and the
     # bore's floor lit together as its blast flares them.
@@ -3295,12 +3341,8 @@ def buzzard(b):
             if n == 4:
                 b.pin("hp_4", nose, scale=0.7, carries="", fits=POD_FITS)
                 continue
-            with b.socket("hp_%d" % n, nose, scale=0.7, carries={1: "overclocked_railgun", 2: "transonic_rifle", 3: "arc_fault_cannon"}[n], fits=POD_FITS):
-                if n == 3:
-                    for s2 in (-1.0, 1.0):   # the Arc-fault Cannon's prongs
-                        b.prism("y", s * px + s2 * 1.1, 14.0, pz, r * 0.3, 6.0, "steel.dark", 6, "prong")
-                else:
-                    b.prism("y", s * px, 14.0, pz, r * 0.55, 6.0, "steel.dark", 6, "pod_gun")
+            # Each stock gun is its class on the nose (Ryan, 11 November: no stock gun is built by hand).
+            b.stock("hp_%d" % n, nose, {1: "barrel", 2: "barrel", 3: "twin_barrel"}[n], scale=0.7, carries={1: "overclocked_railgun", 2: "transonic_rifle", 3: "arc_fault_cannon"}[n], fits=POD_FITS)
     # The nacelles: two boosters on the aft shoulders, their mouths dark, exhausts lit, and a
     # fin canted outward off each nacelle's top; a short ventral strake under the tail.
     for s in (-1.0, 1.0):
@@ -3984,12 +4026,11 @@ def nemesis(b):
                 _spike(b, (px, py, pz), (px - 7.0, py, pz + 5.0), 1.6, "steel.dark", "forearm_spike")
         el.__exit__(None, None, None)
         jt.__exit__(None, None, None)
-    # The waist cannon (hp_1): a mount on the right of the waist, the Plasma Carbine
-    # forward off it (Ryan, 30 September: on the waist, not the hip).
+    # The waist cannon (hp_1): a mount on the right of the waist, the stock's Plasma Arquebus
+    # forward off it as its class (Ryan, 30 September: on the waist, not the hip; 11 November:
+    # no stock gun is built by hand).
     b.box(13.0, 23.0, -7.0, 5.0, 51.0, 59.0, "steel.plate", "waist_mount")
-    with b.socket("hp_1", (18.0, 5.0, 55.0), carries="plasma_arquebus"):
-        b.prism("y", 18.0, 17.0, 55.0, 3.0, 24.0, "steel.dark", 6, "plasma_carbine")
-        b.prism("y", 18.0, 29.5, 55.0, 2.2, 1.5, "amber.engine", 6, "carbine_tip")
+    b.stock("hp_1", (18.0, 5.0, 55.0), "barrel", carries="plasma_arquebus")
     # The Entropy Condenser on the lower back, a dark block with lit slots (hp_4).
     b.box(-12.0, 12.0, -20.0, -10.0, 60.0, 74.0, "steel.dark", "condenser")   # detail: a vent takes no mount; up on the back (Ryan, 1 October)
     for z in (64.0, 68.0, 71.5):
@@ -4722,15 +4763,9 @@ def ammit(b):
         gun = base + U * 3.0 + N * 5.0
         # Each shoulder cannon elevates along the plate (the joint pass).
         with b.joint("elev_%s" % ("l" if s < 0 else "r"), tuple(gun), limits=(-12.0, 18.0)):
-            if s > 0:
-                with b.socket("hp_1", tuple(gun), forward=tuple(U), carries="plasma_arquebus"):
-                    _beam(b, gun, gun + U * 26.0, _poly(2.6, 6), _poly(2.6, 6), "steel.dark", "plasma_carbine")
-                    _beam(b, gun + U * 26.0, gun + U * 27.5, _poly(2.0, 6), _poly(2.0, 6), "amber.engine", "carbine_tip")
-            else:
-                with b.socket("hp_2", tuple(gun), forward=tuple(U), carries="blazethrower"):
-                    _beam(b, gun - U * 8.0, gun + U * 2.0, _poly(3.6, 8), _poly(3.6, 8), "steel.dark", "fuel_tank")
-                    _beam(b, gun + U * 2.0, gun + U * 19.0, _poly(2.0, 6), _poly(2.0, 6), "steel.dark", "nozzle")
-                    _beam(b, gun + U * 19.0, gun + U * 20.5, _poly(2.6, 6), _poly(2.6, 6), "amber.fire", "pilot_flame")   # a fire weapon's red, never white (Ryan, 31 October)
+            # Each stock gun is its class (Ryan, 11 November: no stock gun is built by hand); the
+            # Blazethrower's fire is its class's, a burn weapon's (31 October).
+            b.stock("hp_1" if s > 0 else "hp_2", tuple(gun), "barrel", forward=tuple(U), carries="plasma_arquebus" if s > 0 else "blazethrower")
     # The spines: a row down the panel's centre line, each rooted in the plate.
     for k in range(5):
         root = Vector((0.0, 0.0, 51.2)) - U * (5.0 * k) + N * 2.0
@@ -4914,8 +4949,7 @@ def ammit(b):
         # (Ryan, 6 October, the eighth notes: even more, unnaturally so), one after another.
         tracks.update({"talon_%s_%s" % (side, w): [(2.4 + 0.12 * k, 0.0, 0.0, 0.0), (3.1 + 0.12 * k, -74.0, 0.0, 0.0), (6.6, -76.0, 0.0, 0.0), (7.4, 0.0, 0.0, 0.0)]
                        for k, w in enumerate(("out", "mid", "in"))})
-    b.act("raise_cannons", 9.2, tracks, body=body,
-          glow=[(["carbine_tip", "pilot_flame"], [(2.4, 0.0), (3.0, 8.0), (6.4, 8.0), (7.1, 0.0)])])
+    b.act("raise_cannons", 9.2, tracks, body=body)
     # The threat: the snout drops, the throat vent breathes out its heat, long and hot, and the
     # upper claws strike in a one-two (Ryan, 6 October, the ninth notes): each cocked back
     # with its talons spread, the middle one hung low beneath them ready to grab, thrusts out
@@ -5015,7 +5049,7 @@ def ammit(b):
         limbs.append({"hip": "shoulder_low_" + side, "knee": "elbow_low_" + side, "ankle": "hand_low_" + side, "at": arms[side],
                       "phase": 0.25 if side == "r" else 0.75, "shift": -12.0, "cycles": 3})
     tracks, body, stride = _plant(limbs, sweep=60.0, lift=8.0, crouch=0.5, dip=1.5, nod=0.9, n=120)
-    b.halo = ["tail_slot", "pilot_flame"]   # the vent at its tail (the condenser's twin) and the Blazethrower's pilot flame, a burn weapon's, hot (Ryan, 31 October)
+    b.halo = ["tail_slot"]   # the vent at its tail (the condenser's twin), hot (Ryan, 31 October); the Blazethrower's fire is its class's
     b.standing = {"tail_slot": 5.0}   # the rear vent always lit, the Arsenal's creepy glowing exhaust, hot under its flares (Ryan, 31 October), brighter at rest on its own sickly amber (3 November, the second notes); the throat under the jaw is never seen
     b.gait(stride=stride, tracks=tracks, hold={"shoulder_l": 12.0, "shoulder_r": 12.0}, body=body, ease="linear")
     # Its talons fire with the threat's bite and the rear's rake in turn (Ryan, 3 November: it "can
@@ -5987,11 +6021,11 @@ def puffin(b):
     for s in (-1.0, 1.0):
         px = s * 12.0 * K
         b.box(min(px - 0.8, px + 0.8), max(px - 0.8, px + 0.8), 12.0, 18.0, 8.4, 10.2, "steel.plate", "pod_pylon")
-        with b.socket("hp_%d" % (1 if s < 0 else 4), (px, 20.0, 8.2), scale=0.5, carries="halo_projector" if s < 0 else ""):
-            b.prism("y", px, 15.0, 8.2, 1.5, 11.0, "steel.dark", 6, "pod")
-            if s < 0:
-                b.prism("y", px, 22.5, 8.2, 3.0, 1.2, "steel.plate", 8, "dish")
-                b.prism("y", px, 23.3, 8.2, 1.2, 0.8, "amber.engine", 8, "dish_core")
+        b.prism("y", px, 15.0, 8.2, 1.5, 11.0, "steel.dark", 6, "pod")   # the pod is the chassis's and stays when its mount is fitted, as the Buzzard's (2 November)
+        if s < 0:
+            b.stock("hp_1", (px, 20.0, 8.2), "dish", scale=0.5, carries="halo_projector")   # the stock's Halo Projector as its class (Ryan, 11 November: no stock gun is built by hand)
+        else:
+            b.pin("hp_4", (px, 20.0, 8.2), scale=0.5, carries="")
         rx, ry = s * 6.5, -22.0
         dz = deck(ry)
         b.loft([(ry - 6.0, rect(rx, 2.6, dz - 0.6, dz + 1.0)), (ry + 5.0, rect(rx, 3.8, dz - 0.6, dz + 2.0))], "steel.panel", "shoulder_fairing")

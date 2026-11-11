@@ -19,8 +19,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 - **Chassis**: hull, shield, shield regen (shield regained as each round opens: one to three
   by chassis, the faster on the smaller gauge), heat maximum, cooling (one at least on every chassis that is dealt), armour, move, size class, one way of moving, hardpoints, fixed components, module
   slots (two; the Clydesdale three) and one passive. Twenty-four chassis from five makers
-  (`content/chassis.json`), three of them back in design and dealt by nothing until their
-  sessions hand them back (the Puffin, the Whip Scorpion, the Swallowtail: a chassis whose entry
+  (`content/chassis.json`), two of them back in design and dealt by nothing until their
+  sessions hand them back (the Puffin and the Swallowtail: a chassis whose entry
   says `"status": "planned"`). A run has four squad slots and starts with three
   machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
@@ -38,8 +38,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   modes of their own: the entry lands on the whole team, its own machine among them, or on every
   machine but its own, each taking all of it. They and Every Foe (Reach, below) are targeting
   modes, never keywords, so a Silence leaves them whole. A passive may make a piece count as
-  a second kind on its machine (the Whip Scorpion's vents blast a foe, so they are weapons
-  too there, and the blast is a weapon's hit): the die's readout shows the kind on the machine, the
+  a second kind on its machine (a vent that blasts a foe is a weapon too there, and the blast
+  a weapon's hit; no chassis's does since the Whip Scorpion's rework, the engine's rule kept): the die's readout shows the kind on the machine, the
   codex the piece as built. A rule over the pieces a machine aims at foes reads every weapon
   and equipment aimed at a foe, so a buff, a shield and a vent stay out of it. A
   component has a number (or none), heat, strikes, up to three authored keywords, and may
@@ -118,7 +118,7 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 3. The player's turn: spend, lock and reroll in any order. Each spend resolves fully before
    the next. UNDO takes back the last spend or reroll, in the order made, back to the last
    roll, its floor: the round's roll, a reroll that draws, or a spend that draws inside itself
-   (Rapid's reroll, a roll again, the Scorpion's blast); a stepping die's step draws nothing,
+   (Rapid's reroll, a roll again, a vent's blast); a stepping die's step draws nothing,
    so it is taken back like a spend. The trail shows a bar at every roll, every line of it at
    full strength, and UNDO's badge says how many spends it reaches; UNDO opens once a spend's
    last blow has played. END TURN sits bottom-left and UNDO bottom-right, and UNDO reads on or
@@ -128,7 +128,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
    then heat over a machine's maximum burns hull one for one and the gauge settles at the
    maximum (an overheat). A machine it wrecks is lost on its own turn, before the enemy
    acts.
-5. The enemy's turn (below). Round-timed effects end.
+5. The enemy's turn (below), then a passed turn's release (the Whip Scorpion's, Passives
+   below). Round-timed effects end.
 6. Machines' statuses tick, and foes' Flak halves. Shield past the maximum (overshield) fades.
 7. A part due to grow back does, in its corpse's slot (below). Next round.
 
@@ -206,7 +207,7 @@ every machine is wrecked. There is no round limit.
   down the edge. What the machine's passive adds sits in its passive box at the foot of the
   edge, never joined to the blow: a blow added after the strikes by the mark of what pays it
   (the Storm Petrel's zap by the shield's, in the shield's colour), a vent's blast at a random
-  foe by the blast's mark (the Whip Scorpion's), a stepping die's next entry by its mark and the
+  foe by the blast's mark, a stepping die's next entry by its mark and the
   number it will show (the Cassowary's). The readout says each on a line of its own, headed by
   the same box. A dark entry is blank, its clock and its turns left along the foot. How each
   mark is drawn is `tools/die_sheet.gd`'s sheet and the bible's section 6.
@@ -232,7 +233,7 @@ every machine is wrecked. There is no round limit.
 - **Every Foe** (a debuff's) reaches any foe and lands on every foe in the fight, front rank and
   back, as on its target. A weapon reaches wide by Spread, Penetrate or Splash instead. Like
   Sweep it is a targeting mode of its own: no passive turns it into Direct or Indirect, and a
-  Silence, which mutes keywords, leaves it whole. The Whip Scorpion's Siphon.
+  Silence, which mutes keywords, leaves it whole. No dealt piece carries it (the Shift Whistle, a draft).
 - Chain's arcs read no reach: they land on every Shocked foe on the field, front or back,
   whatever the gun's reach.
 - A kill clears its slot at its spend's death check, so a hole in the front opens that
@@ -408,7 +409,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   warning (the overheat, an injury, the destroyed chip itself) pulses the same way, a
   prediction like any other. A Lure in hand shows its turn before it is spent: the foes it
   would turn draw dashed arrows to its machine, those on it already solid, and the gauges read
-  the round as the lure would leave it (the Siphon's heat a blow included).
+  the round as the lure would leave it (a machine's heat a blow taken included).
 - Every number inside a fight is single digits or low tens: a blow 1 to 6, big guns to 10, one
   capstone 12; an amp a point a stack; foe HP 2 to 8 for rank and file at tier one and to 16 at
   tier three, 30 to 40 massive at tier one and to 56 at tier three, 12
@@ -454,9 +455,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   and an arc adds no heat. Its footprint, like an area's, is read from the strike's own foe: an arc
   spreads nowhere, a foe an area reaches never arcs, and a foe both beside the target and
   Shocked takes one blow, the area's.
-- **Lure**: every foe reached turns on the spender for the round, a felled one too. The Whip
-  Scorpion's Siphon lures Every Foe, and every blow a foe lands on it that round adds 2 heat
-  to it (Siphoning), in the enemy's turn, after the overheat.
+- **Lure**: every foe reached turns on the spender for the round, a felled one too.
 - **Expose** (the Needletail's Fovea Designator, the Swallowtail's Spotting Flare, the Lammergeier's Lorentz Contractor): every foe reached
   is Exposed through the next round, a felled one too; a second Expose refreshes it, never
   adds.
@@ -823,7 +822,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or a
   off. A foe's armour comes off every blow on it the same way, never off Burning, Vitriol or a
   breaching weapon. Base armour is set by role (a tank 2, a heavy worker 1, the rest 0; the
   Polar Bear, a tank in its sealed form, 1 open and 4 sealed), and
-  Armoured adds to it (a brace: a buff, the Breaching Plow, the Siphon) until the
+  Armoured adds to it (a brace: a buff, the Breaching Plow) until the
   round's end, the Polar Bear's seal until a weapon opens it.
   Damage-taken effects apply before armour.
 - The shield is the fight's, as the heat is: full as every fight opens, and nothing returns on
@@ -1070,12 +1069,18 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   under every other change (Indirect,
   a flat 4, heat 3, one blow, Ballistic, the entry's keywords, rules and tags kept),
   Penetrate 2 when aimed at the back rank and Spread 2 at the front, shown on the die over the foe
-  it is dragged to. The Whip Scorpion's makes every vent it spends on itself blast a random
-  live foe, back rank included, for the heat it took off: a weapon's hit, flat and Indirect,
-  that does everything a weapon's hit does (the machine's adds, the foe's Flak, a Shock spent,
-  its Cryo cashed for the machine's cooling, its armour, a Primed machine's Burning, the
-  machine's kill trigger), inside the vent's spend, whose heat is paid once (a vent on an ally blasts nothing,
-  an ally's vent on it blasts nothing, a vent with no heat to take off blasts nothing).
+  it is dragged to. The Whip Scorpion's Thermal Ejection Manifold is its boiler: nothing cools
+  it, every blow a foe lands on it adds 2 heat (in the enemy's turn, after the overheat, so the
+  gauge may stand past its maximum), and a pass releases the lot. A pass is a turn it ends with
+  an entry it could have spent: a die never spent or locked and left, an entry Rapid rolled or
+  an action granted and not used; a blank, or an entry with nowhere to land, is none. As the
+  enemy's turn ends a machine that passed fires its heat as a Sweep of the rank with the most
+  foes standing, the back on a tie, a shot of 2 for every heat, and is left cold: its own hits,
+  each shot through its machine's adds and its foe's armour as any Sweep's, costing no heat; a
+  shot at an empty column is wasted, so a lone foe takes its own column's alone. The round's
+  forecast plays it. Its locked Heliographic Death Ray fires the same heat at one foe: 2, and 1
+  more for every 2 heat, leaving it cold (the form the Buzzard's Afterburner Cannon also has
+  until its rework).
 
 ### Every number is a question
 Every stat, damage figure and property is read through one pipeline (`sim/effects.gd`), in

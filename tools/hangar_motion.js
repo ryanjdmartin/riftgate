@@ -96,7 +96,7 @@ void main() { vec3 t = texture2D(tile, vUv).rgb; vec3 c = (t - min(t.r, min(t.g,
   float f = abs(dot(normalize(vN), normalize(vV))); float a = sqrt(reach * presence * smoothstep(0.0, 0.6, f)); gl_FragColor = vec4(c * a, a); }`;
 // A weapon's muzzle flare (MuzzleFlare; Ryan, 31 October: "If the flare colour of the weapons can
 // follow their tags, that would be really cool"): a quad facing the eye at its gun's muzzle (a
-// class's in hangar/models/shapes/muzzles.json, a hand-built gun's in its sidecar's `muzzles`), a
+// class's in hangar/models/shapes/muzzles.json, a stock gun's as its class's), a
 // soft core with rays, its middle hot, a layer a tag (the delivery first, what it carries smaller
 // and a beat behind), each on its look's beat, its colour laid over what is there
 // (flare.gdshader). Colours as each kind of shot looks, free of the colourblind rules (Ryan, 2
@@ -1772,7 +1772,7 @@ class Stage {
   // the sidecar's `fits` declare for it there, else the class itself at the pin's scale.
   fitOf(n, shape) {
     const how = ((((this.side || {}).fits || {})["hp_" + n]) || {})[shape] || {};
-    return {shape: how.shape || shape, scale: Number(how.scale) || 1};
+    return {shape: how.shape || shape, scale: Number(how.scale) || 1, sink: Number(how.sink) || 0};   // sink: back along the pin's line, its +z in the glTF (MechView3D.sink_offset)
   }
   // Fit a mount as the game does (MechView3D.wear): the stock part under hp_<n> hides and a
   // silhouette class in a maker's metal hangs under the pin, in the variant and at the scale the
@@ -1790,6 +1790,7 @@ class Stage {
       if (this.id !== id) return;
       part = gltf.scene;
       part.scale.setScalar(how.scale);
+      part.position.set(0, 0, how.sink);
       prepareMaterials(part);
       part.userData.mounted = true;
     }
@@ -1800,9 +1801,9 @@ class Stage {
     if (part) pin.add(part);
     for (const f of this.flares.filter(f => f.pin === n)) pin.remove(f.mesh);
     this.flares = this.flares.filter(f => f.pin !== n);
-    if (shape === null) {   // the stock part back: its class's flares, or a hand-built gun's own
+    if (shape === null) {   // the stock part back: its class's flares (a stock gun is its class, 11 November)
       const side = this.side || {}, cls = (side.stock_shapes || {})["hp_" + n];
-      this.hangFlares(n, cls, (side.pins || {})["hp_" + n], cls ? null : (side.muzzles || {})["hp_" + n]);
+      this.hangFlares(n, cls, (side.pins || {})["hp_" + n]);
     }
     else if (shape) this.hangFlares(n, shape, "");
     rig.glowCache = {};   // a fitted part's lights now answer the mount's glow
@@ -2060,7 +2061,7 @@ class Stage {
     const c = cid ? kit[cid] : null;
     if (c && (c.face || {}).kind !== "attack") return;
     const looks = flareLooks(c ? c.tags : [], shape), T = window.THREE, how = this.fitOf(n, shape);
-    const worn = own || (places[how.shape] || []).map(([p, size]) => [[p[0] * how.scale, p[1] * how.scale, p[2] * how.scale], size * how.scale]);
+    const worn = own || (places[how.shape] || []).map(([p, size]) => [[p[0] * how.scale, p[1] * how.scale, p[2] * how.scale + how.sink], size * how.scale]);
     for (const [at, size] of worn) looks.forEach((look, k) => {
       const b = FLARES.beats[look], w = size * b.scale * Math.pow(FLARES.layerScale, k), col = FLARES.colours[look];
       const mat = new T.ShaderMaterial({uniforms: {colour: {value: new T.Vector3(col[0], col[1], col[2])}, strength: {value: 0}, rays: {value: b.rays}, spin: {value: 0}, ahead: {value: 4}, core: {value: FLARES.cores[look]}},
@@ -2078,7 +2079,6 @@ class Stage {
     const shapes = side.stock_shapes || {}, pins = side.pins || {};
     // A fixed weapon's business end (MechView3D.wear_fx_flares): its flares at the fx_ node riding its joint.
     for (const [cid, size] of Object.entries(side.fx || {})) this.hangFlares("fx:" + cid, "", cid, [[[0, 0, 0], size]]);
-    for (const [pin, own] of Object.entries(side.muzzles || {})) if (pins[pin] && !shapes[pin]) this.hangFlares(Number(pin.slice(3)), "", pins[pin], own);   // a hand-built stock gun (MechView3D.flare_rows)
     if (!Object.keys(shapes).length) return;
     for (const [pin, shape] of Object.entries(shapes)) this.hangFlares(Number(pin.slice(3)), shape, pins[pin] || "");
     if (!this.burnsOf) this.burnsOf = fetch("content/components.json?v=" + Date.now(), {cache: "no-store"}).then(r => r.json()).then(j => {
@@ -2097,6 +2097,7 @@ class Stage {
       if (this.rig !== rig || !node) return;   // a later visit replaced this rig
       const part = gltf.scene;
       part.scale.setScalar(how.scale);
+      part.position.set(0, 0, how.sink);
       prepareMaterials(part);
       part.userData.burn = cid;
       node.add(part);
