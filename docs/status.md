@@ -1148,16 +1148,13 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. The live page is v0.521, dated 11 November (the
-  page's Version 503, published from main at `9ebf74b` on Ryan's word, "republish the hangar and
-  the bible": main's file whole, since the live v0.497 matched `2d489f7`'s byte for byte and so
-  needed no merge; it carries everything to 11 November: the formation and refit session's
-  rows, the locked, tiers and basic kit rows, the Polar Bear, Buzzard and Nemesis rows, the music
-  session's track rows, the map lists' and the Bench's). Main's file is v0.523 since the pairs play in the game (the pair row: a battle
-  picks its pair and loops it), v0.522 since The Far Bank
-  joined the fights' pool (its track row and the boss themes' Open row: the Marsh's theme it was,
-  so no domain has one now), unpublished, its republish on Ryan's word. BASE for the next merge is
-  `9ebf74b`'s file. The live page may carry rows ahead of main's code while a branch has not landed. Before
+  `docs/design-bible.html` after every change. The live page is v0.524, dated 11 November (the
+  page's Version 504, published from main at `60a0e4d` on Ryan's word, "Everything else let's
+  clean up and merge into main first before proceeding": main's file whole, since the live v0.521
+  (Version 503, main's `9ebf74b`) matched that commit's file byte for byte and so needed no merge;
+  it carries everything to 11 November, new since 503 the pairs' row, The Far Bank's track row,
+  the boss themes' Open row and the design test of no extra controls). BASE for the next merge is
+  `60a0e4d`'s file. The live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
   this branch's file, THEIRS the saved live source with the tool's wrapper line and its trailing
@@ -1170,12 +1167,14 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 221 (11 November, main's `60a0e4d`, on Ryan's word, "Everything else let's clean
-  up and merge into main first before proceeding"): the two files that had moved since 220,
-  `designs.json` (the Buzzard's new brief, the Whip Scorpion's role map, the briefs' table) and
-  `text.json` (its stamp alone), the page unchanged; nobody had published since 220 (the live
-  copies matched its build but for the stamp), and the live copies match main's after. `edits`
-  and `text` empty, `designs` the two folded ideas. Version 220 (11 November, main's `9ebf74b`,
+  page's Version 222 (11 November, main's `892d804`, on Ryan's word, "Everything else let's clean
+  up and merge into main first before proceeding"): `designs.json` with the Whip Scorpion's brief
+  after the Buzzard's settlement and `text.json` for its stamp, over Version 221 of minutes before
+  (main's `60a0e4d`: the two files that had moved since 220, `designs.json` with the Buzzard's new
+  brief, the Whip Scorpion's role map and the briefs' table, `text.json` its stamp alone; nobody
+  had published since 220, the live copies matching its build but for the stamp); the page
+  unchanged, and the live copies match main's after. `edits` and `text` empty, `designs` the two
+  folded ideas. Version 220 (11 November, main's `9ebf74b`,
   on Ryan's word, "republish the hangar and the bible") was the fourteen files that had moved since 219 (the five content files with the refit's
   model, the formation pass, the Polar Bear's seal, the Buzzard's regen and the Nemesis's rage;
   `designs.json` and `text.json`; `foes.json`; six rig sidecars, their stock pins following the
