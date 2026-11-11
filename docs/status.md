@@ -29,9 +29,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   after each.
 - Tests: 1115 tests, 362,618 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
   with the formation and refit session's branch whole and the music session's landing; Godot
-  4.8-beta2), and 1118 tests, 362,959 checks, green on `ccr-722ca9f0-yj8na3` (11 November, main
-  at `60a0e4d` with the Rupture sized in beats, menace a pack's threat rating and the stall
-  guard's end); one
+  4.8-beta2), and 1119 tests, 362,994 checks, green on `ccr-722ca9f0-yj8na3` (11 November, main
+  at `60a0e4d` with the Rupture sized in beats, menace a pack's threat rating, the stall
+  guard's end and the tide's and the strike's trial dials); one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
   either map view on 6 November; about four minutes in a cloud session, twenty on a slow one;
   words after `--` run only the files whose names hold one (`-- loot rig`). A cloud
@@ -608,6 +608,28 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   saying that the yield prices no stall now, a pack the tide sends paying what the opening's
   does; the rules and the glossary's Menace, Rupture meter and Seal lines follow, drafts
   redrafted. Left to the economy pass: what a boss pays and salvage's growth by tier.
+- **More spawns than the Rupture needs, on trial** (Ryan, 11 November: "I think we should try
+  to lean for noticeably more spawns then the minimum number required for our target
+  completion speed. When I was playing I felt the need to chase every pack down, since that
+  felt possible. I think that's wrong. More pusher and flanker packs, even if it means that
+  each needs to do less to the wall, is better"). The rule built that morning is the minimum
+  he names: the Rupture takes nine pips of the field's ten. Nothing of the game's rule moved;
+  two dials are on SETTINGS → TRIALS for his play: TIDE, ×1, ×1.5, ×2 (`Ramp.tide_trial`,
+  `RIFTGATE_TIDE`), how many packs the opening places and each wave sends, in whole packs,
+  the Rupture's size left on the game's own tide so the extras are a choice and never more to
+  kill; and STRIKE, 10, 7, 5, 3 (`Battlefield.strike_trial`, `RIFTGATE_STRIKE`), what a pip
+  of threat rating strikes the wall for. The floor player's reads (`docs/measurements.md`,
+  11 November; three trios in the Meadow, twenty seeds a cell, a direction): at the game's
+  tide it has killed 82 to 91% of all that had come when the seal breaks; at half again 70
+  to 74%, five or six pips standing, the seal half a turn sooner and the gate where it was;
+  at twice, half, with the hull at 38 to 59% and two trios of three winning 5% and 15%. The
+  strike moved none of its wins, a lower one turning a fallen gate into a wipe: it never
+  declines a fight, so it cannot show the wall spent to save hull, which is his play's to
+  find. Claude's lean for his first play, ×1.5 with the strike at ten, and the holes (the
+  elite's demand rides on the strike; salvage still pays by the pack; a multiplier compounds
+  with the ramp, so the game's form is the ramp's counts and the Rupture a stated share of
+  them, two pips in three at ×1.5) are the refit brief's section 11; the bible's pacing row
+  carries his lean and section 12 what is open (v0.529).
 - **One elite, the first battle read whole, and 4-4-2** (Ryan, 11 November, before the restart
   above: "the 3 fractures, with the current rate of fill, felt short to me"; "battle one
   should only serve one elite"; "we restructure the tier list from 3-5-2 to 4-4-2 ... I'll
@@ -1153,8 +1175,8 @@ its proposal's grids re-cut under the new model and read by hull lost), in its b
 what-if and its first reads are in (9 November), his two reads of the trial, the model as
 content, the formation pass and a guess at the elites' and bosses' numbers (10 November: the
 brief's sections 5, 8 and 9); tier one only for now (his word, 11 November), and next his
-play of the Rupture in beats and his marks on the flanks' second patrols (the brief's section
-11), and his answers on the first battle (section
+play of the Rupture in beats and of the tide's and the strike's dials, and his marks on the
+flanks' second patrols (the brief's section 11), and his answers on the first battle (section
 10: the fourth machine's route is settled, the first battle's shape and the boss's numbers by
 ramp band wait on him), beside his play of what landed, with the field's
 dials (the to-do's Ryan list), and his answers to the brief's section 7, then the content still to come (the stock re-deal proper as a table in chat first,
@@ -1219,7 +1241,7 @@ commands are in `README.md`.
   picks its pair and loops it), v0.522 since The Far Bank
   joined the fights' pool (its track row and the boss themes' Open row: the Marsh's theme it was,
   so no domain has one now), unpublished, its republish on Ryan's word; `ccr-722ca9f0-yj8na3`'s
-  file is v0.528, main's with the pacing row rewritten (the count and the stall guard retired,
+  file is v0.529, main's with the pacing row rewritten (the count and the stall guard retired,
   two beats, the cleared field, ten to thirty minutes), menace a pack's threat rating (the
   tally row, the sum retired) and the meter's lines with them (the clocks, stall, boss,
   roster, Anathema and kill rows, section 12's first battle, pacing, menace and tier counts),

@@ -200,7 +200,7 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 	# start the ramp's count of formations (the second the guest's where there is one) and
 	# patrols, at the ramp's density. The harness's composed side (`formation`) is each entry a
 	# pack of one type under its own foe's faction, all placed and all cycled, as before.
-	var placed: Array = []   # [composition, hex, opening]: opening 0 places it on the hex, 1 a move from the apron, 2 two moves
+	var placed: Array = []   # [composition, hex, opening, extra]: opening 0 places it on the hex, 1 a move from the apron, 2 two moves; extra, a pack the tide's trial adds past the game's count (Ramp.tide_trial), which the Rupture's size leaves out
 	var w_cols := w
 	if not formation.is_empty():
 		var comps: Array = []
@@ -212,7 +212,7 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 		field.cycle = comps
 		field.patrol_cycle = comps.duplicate(true)
 		for j in range(comps.size()):
-			placed.append([comps[j], Hex.offset_to_axial((w_cols * (j + 1)) / (comps.size() + 1), 3 + (j % 3)), 0])
+			placed.append([comps[j], Hex.offset_to_axial((w_cols * (j + 1)) / (comps.size() + 1), 3 + (j % 3)), 0, false])
 	else:
 		var has_guest := not guest.is_empty() and guest != faction and db.factions.has(guest)
 		# The tier's compositions the ramp's gate holds (7 November: variants placed on the tier and
@@ -221,15 +221,15 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 		var patrols := _alternate(db.compositions(faction, tier + 1, "patrol", ramp), db.compositions(guest, tier + 1, "patrol", ramp) if has_guest else [])
 		field.cycle = _alternate(forms, patrols)
 		field.patrol_cycle = patrols
-		var nf := Ramp.formations_at(ramp)
-		var np := Ramp.patrols_at(ramp)
+		var nf := Ramp.dense(Ramp.formations_at(ramp))   # the game's count, but under the tide's trial
+		var np := Ramp.dense(Ramp.patrols_at(ramp))
 		# The opening (the long wall brief 3.2): the ramp's formations across the width as before,
 		# each a move of its own from the apron, so its first walk reaches the wall; the ramp's
 		# patrols on the flanks, two moves out. The rows are set once each pack is dressed and
 		# its pace known (_open_rows, below).
 		if not forms.is_empty():
 			for k in range(nf):
-				placed.append([forms[k % forms.size()], Hex.offset_to_axial((w_cols * (k + 1)) / (nf + 1), OPENING_FLOOR_ROW), 1])
+				placed.append([forms[k % forms.size()], Hex.offset_to_axial((w_cols * (k + 1)) / (nf + 1), OPENING_FLOOR_ROW), 1, k >= Ramp.formations_at(ramp)])
 		# No hunter stands on the field at turn one (Ryan, 8 November: "no hunters should be on the
 		# field turn one, but that was a formation pass issue, I think"): the opening's patrols are
 		# the tier's that push, in their order, and the hunting packs come with the tide and the
@@ -239,7 +239,8 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 			openers = patrols
 		if not openers.is_empty():
 			for k in range(np):
-				placed.append([openers[k % openers.size()], Hex.offset_to_axial(0 if k % 2 == 0 else w_cols - 1, OPENING_FLOOR_ROW), 2])
+				var inset := (k / 2) * 3   # the two flanks' edges first; a trial's extras three columns in at a time
+				placed.append([openers[k % openers.size()], Hex.offset_to_axial(inset if k % 2 == 0 else w_cols - 1 - inset, OPENING_FLOOR_ROW), 2, k >= Ramp.patrols_at(ramp)])
 	var gate_o := Hex.axial_to_offset(map.gate)
 	var i := 0
 	var face_rng := RandomNumberGenerator.new()
@@ -269,9 +270,12 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 	# ramp's beats, as Battlefield.peak sends it (the rift's cycle in order; a patrol from every
 	# tear open before a peak, in the tears' cycle's order; the ramp's tears opening after it),
 	# each at its threat rating's worth, so a layout's draw moves no threshold. Placeholders.
+	# Under the tide's trial the size stays the game's: the extras it places and sends are
+	# the squad's to choose among, never more to kill (Ramp.tide_trial).
 	field_menace = 0
 	for p in placed:
-		field_menace += db.composition_menace(p[0])
+		if not bool(p[3]):
+			field_menace += db.composition_menace(p[0])
 	var tears_open := 0
 	var patrol_at := 0
 	for j in range(Ramp.beats_at(tier)):

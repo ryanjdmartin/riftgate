@@ -1016,9 +1016,10 @@ convergence, so scaling fracture cost at the same rate doesn't actually change a
 So the count is retired (the bible's pacing row) and three things are given: the elite's kill
 is a good chunk of the meter, a battle has room for more fights because the flank's are
 quick, and a threshold that scales with the formations' size scales nothing. He marked the
-first shape the same day and it is built (below: settled and built); what is left is his play
-of it and the flank's second patrol. The reads are `docs/measurements.md`, 11 November,
-pacing from scratch.
+first shape the same day and it is built (below: settled and built); menace became a pack's
+threat rating the same day (below); what is left is his play of it, the flank's second
+patrol, and his direction for more spawns than the Rupture needs, which is on trial (below).
+The reads are `docs/measurements.md`, 11 November.
 
 **The frame: a battle is counted in beats.** The clock already cuts a battle into beats: a
 peak of Rift Pressure every three turns (two from Convergence 8), the first at the end of the
@@ -1216,11 +1217,81 @@ equal worth is not equal difficulty: the elites are a guess whose cost to a trio
 nothing to half its hull by which came, and tuning each composition to its rating within a
 band is its own session's.
 
+**More spawns than the Rupture needs: his direction of 11 November, on trial.** His words:
+"I think we should try to lean for noticeably more spawns then the minimum number required
+for our target completion speed. When I was playing I felt the need to chase every pack
+down, since that felt possible. I think that's wrong. More pusher and flanker packs, even if
+it means that each needs to do less to the wall, is better: It gives options depending on
+player comp strengths, it forces choices, it looks more thematically intense and
+interesting, it keeps offering something to do and analyze, and prevents field wipes. The
+player doesn't feel like they need to hunt everything down because the fracture cannot be
+delayed - if the player is killing packs the elite is forced out and (should) demand a
+response, and eventually the seal is broken and that still opens the floodgates, correct?"
+
+The mechanics he asks about, as built: yes to each. A Fracture pays out the moment a fight
+ends with the meter over its mark, and nothing holds it back but not killing. Tier one's
+first is 2.9 pips, so the first formation's fall, or three lone duels, brings the elite; it
+is rated four, so at the wall it strikes for 40 a turn of the gate's 200, or it hunts where
+its composition does. The last Fracture breaks the seal and halves the beat once, three
+turns to one at tier one, so the rift sends a composition and every tear a patrol each turn
+and a tear opens each turn; nothing seals again.
+
+What the direction runs against is the rule built that morning: the Rupture takes
+everything two beats send but one lone patrol, nine pips of the field's ten, which is the
+minimum he names and no more. The floor player's read says so: it has killed 82 to 91% of
+all that had come when the seal breaks.
+
+On trial, two dials, the game's own rule untouched (SETTINGS → TRIALS; `RIFTGATE_TIDE` and
+`RIFTGATE_STRIKE` on the desk):
+
+- TIDE, ×1, ×1.5 or ×2 (`Ramp.tide_trial`): how many packs the opening places and each
+  wave sends, in whole packs, with the Rupture's size left on the game's own tide. So the
+  meter is the length and the tide is the choice: the extras are never more to kill. At
+  tier one's start ×1.5 is a third flank patrol at the opening, the rift sending one
+  composition then two at alternate peaks, the tears opening one then two; ×2 is a second
+  formation and four patrols, two compositions a peak, two tears.
+- STRIKE, 10, 7, 5 or 3 (`Battlefield.strike_trial`): what a pip of threat rating strikes
+  the wall for, his "each needs to do less to the wall".
+
+The reads (`docs/measurements.md`, 11 November; the floor player, three trios in the
+Meadow, twenty seeds a cell, a direction):
+
+| The tide | Killed of what had come, at the Rupture | Standing then, pips | The seal breaks, turn | Hull then | Won, racing for the boss |
+|---|---|---|---|---|---|
+| The game's | 82 to 91% | 1 to 3 | 6.0 to 6.9 | 58 to 84% | 20 to 65% |
+| ×1.5 | 70 to 74% | 5 to 6 | 5.7 to 6.2 | 57 to 72% | 25 to 45% |
+| ×2 | 49 to 57% | 10 to 14 | 5.1 to 5.9 | 38 to 59% | 5 to 45% |
+
+Claude's lean for his first play: ×1.5 with the strike left at ten. It leaves about one
+pack in three standing for the same meter, breaks the seal a little sooner because a pack is
+always in reach, and leaves the gate where it was when the seal breaks. Twice is past what
+three machines carry.
+
+Its holes, his:
+
+1. What more packs cost the floor player is hull, not the gate, and the strike moved no
+   win in any cell: a lower strike turned a fallen gate into a wipe a turn or two later.
+   That is a player who never declines a fight. The trade he names, the wall spent to save
+   hull, is exactly what it cannot show, so the strike's right number is his play's to find.
+2. The elite's demand rides on the same strike. A pip at five makes its 40 a turn 20.
+3. Salvage pays by the pack. Five or six pips left on the field at ×1.5 are about a
+   hundred salvage left beside the 370 a won battle banks, so the meter stops asking and
+   the purse does not. The stall row's bench holds the answer if it is wanted, salvage
+   capped at the rift's bounty; it is the economy pass's.
+4. A multiplier is a trial's shape. At Convergence 3 twice the tide stacks on the ramp's own
+   second formation and the gate falls nineteen times in twenty. The form for the game is
+   the ramp's own counts, and the Rupture a stated share of what its beats bring: two pips
+   in three is what ×1.5 comes to.
+5. More tears are more hunters, and a catch is a fight nobody chose. It stayed under one
+   forced fight a battle in every cell, so it is no trouble yet; the pickets above are the
+   way to add flank packs that push.
+
 **Open, his.**
 
 1. His play of the two beats and of the elite's four, on the phone; the RUPTURE dial sets
    one beat or three beside them.
-2. More spawns than the Rupture needs (below).
+2. His play of the TIDE and STRIKE dials (above): how much more, and what a pack left at
+   the wall should cost.
 3. The pickets above, and the Peak's: a tougher Salamander alone, a pair gated to the ramp's
    later steps as the duelists' pairs are, or a body the Peak does not have yet.
 4. The first wave repeating the opening's formation (a domain's first two formations are one

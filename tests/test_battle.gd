@@ -626,6 +626,50 @@ func test_the_beats_trial_moves_the_fields_part_and_nothing_else() -> void:
 	Ramp.beats_trial = 0
 
 
+## The tide's density on trial (Ryan, 11 November: "we should try to lean for noticeably more
+## spawns then the minimum number required for our target completion speed ... More pusher and
+## flanker packs, even if it means that each needs to do less to the wall, is better"): the dial
+## adds packs to the opening and to every peak and leaves the Rupture's size on the game's own
+## tide, so what it adds is the squad's to choose among, never more to kill; and the strike's
+## dial beside it sets what a pip of rating strikes the wall for.
+func test_the_tides_trial_adds_packs_and_leaves_the_rupture_where_it_was() -> void:
+	assert_eq([Ramp.dense(1), Ramp.dense(2), Ramp.dense_at(1), Ramp.dense_at(2)], [1, 2, 1, 1], "with no trial the game's own counts")
+	var own := _battle()
+	var own_packs := own.field.packs().size() - 1   # the boss's unit aside
+	var own_size := int(own.thresholds[-1])
+	own.field.peak()
+	own.field.peak()
+	var own_sent := own.field.rift_spawns
+	var own_tears := own.field.tears.size()
+	assert_true(own_packs > 0 and own_sent == 2 and own_tears > 0, "the game's own: a composition a peak and the ramp's tears")
+	Ramp.tide_trial = 200
+	var b := _battle()   # the same seed, so the same field under it
+	assert_eq(b.field.packs().size() - 1, 2 * own_packs, "twice the tide: twice the opening's packs")
+	assert_eq(int(b.thresholds[-1]), own_size, "and the Rupture where the game's own tide puts it")
+	assert_eq(b.thresholds, own.thresholds, "every Fracture with it")
+	for sq in b.field.packs():
+		assert_true(b.field.can_stand(sq, sq.pos), "%s stands on legal ground" % sq.display_name)
+	b.field.peak()
+	b.field.peak()
+	assert_eq(b.field.rift_spawns, 2 * own_sent, "the rift sends twice over at each peak")
+	assert_eq(b.field.tears.size(), 2 * own_tears, "and twice the tears open")
+	Ramp.tide_trial = 150
+	assert_eq([Ramp.dense(1), Ramp.dense(2), Ramp.dense(3)], [1, 3, 4], "half again as many: whole packs only, never fewer")
+	assert_eq([Ramp.dense_at(1), Ramp.dense_at(2), Ramp.dense_at(3), Ramp.dense_at(4)], [1, 2, 1, 2], "and a peak sends one, two, one, two")
+	var half := _battle()
+	assert_eq(int(half.thresholds[-1]), own_size, "the Rupture stands at half again as many too")
+	assert_true(half.field.packs().size() - 1 > own_packs, "with more on the field at the start")
+	Ramp.tide_trial = 100
+	# The strike's dial: what a pip of threat rating strikes the wall for.
+	var sq0: Unit = own.field.packs()[0]
+	var rating := clampi(sq0.squad, 1, 4)
+	assert_eq(Battlefield.strike_of(sq0), rating * Battlefield.STRIKE_PER_PIP, "the game's own strike a pip")
+	Battlefield.strike_trial = 5
+	assert_eq(Battlefield.strike_of(sq0), rating * 5, "the strike's trial: five a pip")
+	Battlefield.strike_trial = 0
+	assert_eq(Battlefield.strike_of(sq0), rating * Battlefield.STRIKE_PER_PIP, "and the game's own again")
+
+
 ## Menace is a pack's threat rating (Ryan, 11 November: "Maybe just 1-2-3-4 for now to keep math
 ## simple ... It gives us an absolute unbiased benchmark"): a pack's fall pays its rating's
 ## worth, a pip a hundred, whoever is in it, so every elite pays four and the meter is the

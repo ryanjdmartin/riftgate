@@ -529,11 +529,16 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # as before). RIFTGATE_BEATS=3 (any battle) sizes the Rupture meter in beats of the tide, the
 # peaks of Rift Pressure its field part runs through, 1 to 6 and 2 the game's (his "Try your
 # lean first"; one beat is the opening and the first wave, three brings the second composition
-# and the first hunting packs); an elite's fall stays a formation and a half on top. On the
-# phone a debug build's SETTINGS → TRIALS has FIELD DEPTH (12, 14, 16), OPENING (+0, +1, +2),
-# FODDER (FULL, 3/4, HALF) and RUPTURE (1 BEAT, 2 BEATS, 3 BEATS), read as the harness or the
-# quick run starts a battle, with no relaunch; a saved battle keeps the field and the
-# thresholds it was saved with.
+# and the first hunting packs); an elite's four pips stay on top. RIFTGATE_TIDE=150 (any
+# battle) multiplies the packs the opening places and each wave sends, in hundredths and whole
+# packs, 100 the game's, and leaves the Rupture's size on the game's own tide (his "noticeably
+# more spawns then the minimum number required"); RIFTGATE_STRIKE=5 sets what a pip of threat
+# rating strikes the wall for, 10 the game's ("even if it means that each needs to do less to
+# the wall"). On the phone a debug build's SETTINGS → TRIALS has FIELD DEPTH (12, 14, 16),
+# OPENING (+0, +1, +2), FODDER (FULL, 3/4, HALF), RUPTURE (1 BEAT, 2 BEATS, 3 BEATS), TIDE
+# (×1, ×1.5, ×2) and STRIKE (10, 7, 5, 3), read as the harness or the quick run starts a
+# battle, with no relaunch; a saved battle keeps the field and the thresholds it was saved
+# with, and follows the tide and the strike as they stand.
 # RIFTGATE_HALO=off|all (any run) draws no halo round the lit parts, or one round every lit part, to compare
 # with the vetted set (31 October).
 # RIFTGATE_PLUME=off (any run) draws a booster's ring in place of its plume (the Stingray's, on

@@ -8161,3 +8161,89 @@ a domain's kills are worth what another's are. The floor player reaches the Rupt
 often; its wins, eleven and eight of some 180, are one direction's noise. Forty runs: a
 direction.
 
+## 11 November, more spawns than the Rupture needs: the tide's density and the wall strike
+
+Ryan, 11 November: "I think we should try to lean for noticeably more spawns then the minimum
+number required for our target completion speed. When I was playing I felt the need to chase
+every pack down, since that felt possible. I think that's wrong. More pusher and flanker
+packs, even if it means that each needs to do less to the wall, is better: It gives options
+depending on player comp strengths, it forces choices, it looks more thematically intense and
+interesting, it keeps offering something to do and analyze, and prevents field wipes."
+
+What was read: a first battle whole (tier one, Convergence 0, three machines) under two
+trial switches, the game's rule untouched. The tide's density (`Ramp.tide_trial`) multiplies
+the packs the opening places and each peak sends, in whole packs, and leaves the Rupture's
+size on the game's own tide, 13 pips. At tier one's start half again as many is one
+formation and three flank patrols at the opening where two patrols stood, the rift sending
+one composition then two at alternate peaks and the tears opening one then two; twice as many
+is two formations and four patrols, two compositions a peak and two tears. The strike
+(`Battlefield.strike_trial`) is what a pip of threat rating strikes the wall for, ten the
+game's. The player is the runner's (a floor: every machine fights the pack nearest the wall
+that it can reach, and it never declines a fight), 20 seeds a cell, each domain's bosses in
+turn by the seed, three starting trios in the Meadow. Twenty seeds: a direction.
+
+At the Rupture, the Meadow, a cell the range over the three trios, at ten a pip:
+
+| The tide | Packs standing as a turn opens | Rupture reached | Its turn | Spawned by then, pips | Killed | Share killed | Standing then, pips | Of them at the wall | Hull then | Gate then, of 200 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| The game's | 2.9 to 3.2 | 60 to 85% | 6.0 to 6.9 | 14 to 16 | 13 to 14 | 82 to 91% | 1 to 3 | 0.6 to 1.2 | 58 to 84% | 133 to 150 |
+| Half again | 4.0 to 4.4 | 70 to 80% | 5.7 to 6.2 | 18 to 19 | 13 to 14 | 70 to 74% | 5 to 6 | 0.9 to 2.6 | 57 to 72% | 128 to 148 |
+| Twice | 6.1 to 7.3 | 60 to 90% | 5.1 to 5.9 | 24 to 28 | 14 | 49 to 57% | 10 to 14 | 1.5 to 2.6 | 38 to 59% | 84 to 143 |
+
+No turn opened on an empty field with the seal standing, in any cell, the game's own
+included. A hunter forced under one fight a battle before the Rupture in every cell (0.0 to
+0.7).
+
+The battle's end. The defence rule never walks to the boss while a pack is nearer the wall,
+so a denser field leaves it nothing but losses (won 0 to 5% at half again, where it won 20 to
+40%). The read below gives it one habit more, a race: once the seal breaks the machine
+nearest the boss walks for it and is ordered onto it when it can stand in reach, which
+brings every machine into the fight, and the rest keep the defence rule. Won, and how the
+rest ended, by trio:
+
+| The trio | The tide | Won, at ten, seven, five and three a pip alike | At ten a pip: wiped, gate fell | At five | At three | Boss fought, its turn, at ten |
+|---|---|---|---|---|---|---|
+| Honey Badger, Baboon, Skua | the game's | 20% | 30%, 50% | 50%, 30% | 80%, 0% | 35%, 7.0 |
+| | half again | 25% | 30%, 45% | 45%, 30% | 55%, 20% | 40%, 6.4 |
+| | twice | 5% | 35%, 60% | 45%, 50% | 60%, 35% | 25%, 5.8 |
+| Honey Badger, Stingray, Cassowary | the game's | 55% | 35%, 10% | 35%, 10% | 35%, 10% | 60%, 7.5 |
+| | half again | 35% | 20%, 45% | 25%, 40% | 30%, 35% | 45%, 6.7 |
+| | twice | 45% | 25%, 30% | 25%, 30% | 35%, 20% | 55%, 6.3 |
+| Stingray, Storm Petrel, Cottonmouth | the game's | 65% | 30%, 5% | 35%, 0% | 35%, 0% | 80%, 7.3 |
+| | half again | 45% | 50%, 5% | 55%, 0% | 55%, 0% | 75%, 6.5 |
+| | twice | 15% | 15%, 70% | 50%, 35% | 60%, 25% | 25%, 6.2 |
+
+Beside it, the same race: four machines at Convergence 3 in the Meadow (Honey Badger,
+Baboon, Skua, Cassowary; the opening two formations and two patrols by the ramp's own count)
+won 40% at the game's tide, 25% at half again and 5% at twice, the gate falling in 20%, 45%
+and 95% at ten a pip and in 15%, 30% and 80% at five. The Marsh, the second trio: won 40%,
+20% and 30%. On the Peak and in the Waste the first trio wins none at the game's own tide
+and reaches the Rupture in 5% and 50% of battles; twice the tide ends it in two turns on the
+Peak, whose patrols all hunt, so the opening's four catch the squad at once. Those two are
+walls for a floor trio as they stand, which is their formations' and elites' own session.
+
+Read.
+
+- The chase is in the numbers. At the game's tide the floor player has killed 82 to 91% of
+  every pip that had come by the time the seal breaks, and one to three pips stand: the
+  meter asks for nine tenths of the field, so killing everything is both possible and asked.
+- Half again as many packs leaves a third standing for the same meter: 13 to 14 of 18 to 19
+  pips killed, five or six standing, one to three of them at the wall. The seal breaks half
+  a turn sooner, since a pack is always in reach, and the boss is fought most of a turn
+  sooner. The gate when the seal breaks is where it was at ten a pip.
+- What more packs cost this player is hull, not the gate. The hull at the Rupture falls a
+  little at half again (57 to 72% where it was 58 to 84%) and a lot at twice (38 to 59%),
+  and the two stronger trios win twenty points less at half again. Twice as many is past
+  what three machines carry: half the field stands, two trios of three win 5% and 15%, and
+  at Convergence 3 it stacks on the ramp's own growth and the gate falls nineteen times in
+  twenty.
+- The strike moved no win. In all nine cells the wins are the same at ten, seven, five and
+  three a pip; a lower strike turns a fallen gate into a wipe a turn or two later. That is
+  this player: it never declines a fight, so it never spends the wall to save hull, which is
+  the trade a lower strike is for. A player who leaves packs is the read that is missing,
+  and Ryan's play is where it comes from.
+- The floor player never clears the field at any density, the game's included, so his field
+  wipes are a better player's: the bot takes six or seven turns over what he does in fewer.
+- A multiplier is a trial's shape. On top of the ramp's own counts it compounds, so the form
+  for the game is the ramp's table and the Rupture's share of it, not a factor over both.
+

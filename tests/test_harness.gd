@@ -407,32 +407,51 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 	var opening_was = Settings.display.get("field_opening", "0")
 	var fodder_was = Settings.display.get("fodder_worth", "100")
 	var beats_was = Settings.display.get("rupture_beats", "2")
+	var tide_was = Settings.display.get("tide_density", "100")
+	var strike_was = Settings.display.get("wall_strike", "10")
+	Settings.display["tide_density"] = "150"
+	Settings.display["wall_strike"] = "5"
 	Settings.display["field_depth"] = "16"
 	Settings.display["field_opening"] = "2"
 	Settings.display["fodder_worth"] = "50"
 	Settings.display["rupture_beats"] = "3"
 	Settings.field_trial()
 	assert_eq([Ramp.depth_trial, Battle.opening_trial, Battle.fodder_trial, Ramp.beats_trial], [0, 0, 100, 0], "run alone, the saved settings move nothing")
+	assert_eq([Ramp.tide_trial, Battlefield.strike_trial], [100, 0], "nor the tide's density or the wall strike")
 	Settings.field_trial(true)
 	assert_eq([Ramp.depth_trial, Battle.opening_trial, Battle.fodder_trial, Ramp.beats_trial], [16, 2, 50, 3] if OS.is_debug_build() else [0, 0, 100, 0], "where the game starts a battle, a debug build's settings are the trial")
+	assert_eq([Ramp.tide_trial, Battlefield.strike_trial], [150, 5] if OS.is_debug_build() else [100, 0], "the tide's density and the wall strike with them")
+	assert_eq(Battlefield.strike_per_pip(), 5 if OS.is_debug_build() else Battlefield.STRIKE_PER_PIP, "and the field answers with the strike")
 	assert_eq(Ramp.beats_at(0), 3 if OS.is_debug_build() else Ramp.BEATS, "and the ramp answers with the beats")
 	assert_eq(Ramp.depth_at(0), 16 if OS.is_debug_build() else 12, "and the ramp answers with it")
 	Settings.display["field_depth"] = "a mile"
 	Settings.display["field_opening"] = "far"
 	Settings.display["fodder_worth"] = "a pittance"
 	Settings.display["rupture_beats"] = "an age"
+	Settings.display["tide_density"] = "a flood"
+	Settings.display["wall_strike"] = "a tap"
 	Settings.field_trial(true)
 	assert_eq([Ramp.depth_trial, Battle.opening_trial, Battle.fodder_trial, Ramp.beats_trial], [0, 0, 100, 0], "a value that is no option asks for nothing")
+	assert_eq([Ramp.tide_trial, Battlefield.strike_trial], [100, 0], "of the tide or the strike either")
+	Settings.display["wall_strike"] = str(Battlefield.STRIKE_PER_PIP)
+	Settings.field_trial(true)
+	assert_eq(Battlefield.strike_trial, 0, "and the game's own strike is no trial")
 	Settings.display["field_depth"] = depth_was
 	Settings.display["field_opening"] = opening_was
 	Settings.display["fodder_worth"] = fodder_was
 	Settings.display["rupture_beats"] = beats_was
+	Settings.display["tide_density"] = tide_was
+	Settings.display["wall_strike"] = strike_was
+	assert_eq([str(Settings.DISPLAY_DEFAULTS["tide_density"]), str(Settings.DISPLAY_DEFAULTS["wall_strike"])], ["100", str(Battlefield.STRIKE_PER_PIP)], "the tide and the strike ship on the game's own")
+	assert_true(Settings.TIDES.has("100") and Settings.STRIKES.has(str(Battlefield.STRIKE_PER_PIP)), "which are among their options")
 	assert_eq([str(Settings.DISPLAY_DEFAULTS["field_depth"]), str(Settings.DISPLAY_DEFAULTS["field_opening"]), str(Settings.DISPLAY_DEFAULTS["fodder_worth"]), str(Settings.DISPLAY_DEFAULTS["rupture_beats"])], ["12", "0", "100", str(Ramp.BEATS)], "all four ship on the game's own field and meter")
 	assert_true(Settings.FIELD_DEPTHS.has("12") and Settings.FIELD_OPENINGS.has("0") and Settings.FODDER_WORTHS.has("100") and Settings.RUPTURE_BEATS.has(str(Ramp.BEATS)), "and the game's own is among the options")
 	Ramp.depth_trial = 0
 	Battle.opening_trial = 0
 	Battle.fodder_trial = 100
 	Ramp.beats_trial = 0
+	Ramp.tide_trial = 100
+	Battlefield.strike_trial = 0
 	if OS.is_debug_build():
 		var menu := PauseMenu.new()
 		menu._show_page("settings")
@@ -449,6 +468,10 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 			assert_true(labels.has(str(Settings.FODDER_WORTH_LABELS[f])), "and the fodder's worth %s" % Settings.FODDER_WORTH_LABELS[f])
 		for r in Settings.RUPTURE_BEATS:
 			assert_true(labels.has(str(Settings.RUPTURE_BEATS_LABELS[r])), "and the Rupture's beats %s" % Settings.RUPTURE_BEATS_LABELS[r])
+		for t in Settings.TIDES:
+			assert_true(labels.has(str(Settings.TIDE_LABELS[t])), "the tide's density %s" % Settings.TIDE_LABELS[t])
+		for k in Settings.STRIKES:
+			assert_true(labels.has(str(k)), "and the wall strike %s" % k)
 		assert_true(labels.has("BACK"), "with its way back")
 		menu.free()
 
