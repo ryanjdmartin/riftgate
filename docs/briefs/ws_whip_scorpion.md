@@ -10,6 +10,15 @@ spread damage is crowded inside its own maker already (the Cottonmouth's drum, S
 and Penetrate at the back; the Musk Ox's barrage; the Prairie Dog's Flak on a cleave), beside
 Kestrel's Lammergeier and Skua.
 
+**Ryan's first thought on the form (11 November, after the role map)**: "have it 'pass' a turn to
+release it's spent heat. Whereas before it would need to get vented by a component, that might have
+a rider, now it would just have to sack the turn to release after the enemy turn. The only thing
+that bothers me about that is the shape is very similar to the Buzzard pattern. The execution and
+result is different, but their builds would functionally be similar, more or less, with some nuance
+if the scorpion still wants to get hit or not." He asked for a look at what the Buzzard is for
+first (it has had no review pass, and the Storm Petrel's rework steps near it): in chat, 11
+November, his answer pending.
+
 Wainwright & Sutler's sustained damage dealer at tier two, built and fielded (the bible's Whip
 Scorpion row, Ryan's go of 20 October: "the boiler whose vents are its guns"): its Thermal
 Ejection Manifold makes every vent it spends blast a random foe for the heat it takes off,
