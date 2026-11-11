@@ -433,7 +433,7 @@ func _blind_pick(sk: Skirmish, i: int) -> Dictionary:
 			for n in foes:
 				if n.rank < t.rank or (n.rank == t.rank and n.column < t.column):
 					t = n
-			if sk.needs_second(ms):
+			if sk.needs_second(ms, t):
 				var seconds: Array = sk.swap_targets(t)
 				return {} if seconds.is_empty() else {"target": t, "second": seconds[0]}
 			return {"target": t}
@@ -461,7 +461,7 @@ func options_for(sk: Skirmish, i: int) -> Array:
 			var swaps := sk.needs_second(ms)
 			for t in sk.targets_for_face(ms, f):
 				var score := attack_score(sk, ms, f, t)
-				if not swaps:
+				if not swaps or not sk.needs_second(ms, t):
 					out.append({"mech": i, "target": t, "score": score})
 					continue
 				# A Swap takes the second target worth the most beside this first.

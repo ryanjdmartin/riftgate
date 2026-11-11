@@ -2616,7 +2616,7 @@ func _on_drag_ended(global_pos: Vector2) -> void:
 		return
 	var target = _drop_target_at(global_pos)
 	_ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if target is Foe and sk.needs_second(sk.mechs[i]) and sk.can_assign(i, target):
+	if target is Foe and sk.needs_second(sk.mechs[i], target) and sk.can_assign(i, target):
 		_begin_second(i, target)
 		return
 	if target == null or not _use_die(i, target):

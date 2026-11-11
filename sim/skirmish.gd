@@ -1205,9 +1205,11 @@ func swap_targets(first: Foe) -> Array:
 
 
 ## Does this entry, spent now, take a second target (a Swap)?
-func needs_second(ms: MechState) -> bool:
+func needs_second(ms: MechState, target = null) -> bool:
 	var f := ms.face()
-	return f != null and Effects.effective_face(ms.unit, f).has(Face.Keyword.SWAP)
+	if f == null or not Effects.effective_face(ms.unit, f).has(Face.Keyword.SWAP):
+		return false
+	return not (target is Foe) or not swap_targets(target).is_empty()   # a foe with nowhere to trade takes the entry alone
 
 
 func targets_for_face(ms: MechState, f: Face) -> Array[Foe]:
@@ -1230,7 +1232,10 @@ func targets_for_face(ms: MechState, f: Face) -> Array[Foe]:
 				out.append(foe)
 	var ef := Effects.effective_face(ms.unit, f)
 	# A Swap moves its target, and a massive foe fills its column and stays (the Dingo's row).
-	if ef.has(Face.Keyword.SWAP):
+	# A Swap that carries a rider beside it still lands on a foe it cannot move, alone (the Combat
+	# Translocator's Shock, Ryan, 11 November: "not dead versus ... massives and bosses that can't
+	# be swapped").
+	if ef.has(Face.Keyword.SWAP) and ef.keywords.size() <= 1:
 		out = out.filter(func(foe: Foe) -> bool: return not foe.is_massive())
 	return out
 
@@ -1920,7 +1925,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 		return false
 	# A Swap takes its second target with it (Ryan, 21 October: drag to the first, drop, then
 	# tap the second): another foe or an empty slot, never a massive foe.
-	if f.has(Face.Keyword.SWAP) and not swap_targets(target).has(second):
+	if f.has(Face.Keyword.SWAP) and not swap_targets(target).has(second) and not (second == null and swap_targets(target).is_empty()):
 		return false
 	if f.on_machines() and not machine_targets_for(ms, f).has(target if target is MechState else ms):
 		return false
@@ -2271,7 +2276,7 @@ func _release_passes() -> void:
 func _finish_round() -> void:
 	_tick_mechs()
 	for f in field_foes():
-		Effects.halve(f)
+		Effects.halve(f, round)
 	_trim_overshield()
 	_regrow_parts()
 
@@ -2992,6 +2997,13 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				riders.append(func() -> void: _land_rider(foe, "flakked", flak_laid, gained, turned))
 				if into_mine:
 					h.mine_stack("flakked", flak_laid)
+			# A pin (the Hollow-point Harpoon's; Ryan, 11 November: "the target's flak does not decay
+			# this round"): the status held through this round's end, after what the spend lays.
+			if not f.holds.is_empty():
+				var held_id := f.holds
+				riders.append(func() -> void:
+					if foe.alive() and Effects.hold(foe, held_id, round):
+						log.append("%s's %s is pinned: it does not decay this round" % [foe.display_name, str(Effects.STATUS[held_id]["name"])]))
 			# Purge (the player's, 28 October): every buff the foe carries but Numbed and Guarded,
 			# with the riders, equipment's included; a foe the blow killed loses its Getting Back
 			# Up, so it stays down.
@@ -3192,6 +3204,10 @@ func _entry_effects(ms: MechState, f: Face, target: Foe, second = null) -> void:
 		_detonate(ms, target)
 	if f.has(Face.Keyword.SWAP) and second != null:
 		_swap(target, second)
+		# What the Swap carries lands on the foe traded with too (the Translocator's Shock: both
+		# come out Shocked).
+		if second is Foe and (second as Foe).alive() and f.has(Face.Keyword.SHOCK):
+			_shock(second, ms)
 
 
 ## A hit's riders landing (Ryan, 3 November: "a multi-hit weapon with Shock would apply it after

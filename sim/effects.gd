@@ -513,6 +513,7 @@ class Modifier:
 	var seq: int = 0               # grant order, for override ties
 	var stacks: int = 1
 	var decay: int = DECAY_NONE
+	var held_round: int = -1       # a halving status held through this round's end (the Hollow-point Harpoon's pin): it skips that halving
 
 	func matches(key: String) -> bool:
 		return id == key or tags.has(key)
@@ -847,15 +848,35 @@ static func tick(u, halving: bool = true) -> Dictionary:
 ## The round's end for a foe (Flak, 21 October: it halves at the end of each round, rounded
 ## down, Empowered's clock): every halving status halves and the empty ones go. Its other
 ## statuses tick at its action (tick).
-static func halve(u) -> void:
+static func halve(u, round: int = -1) -> void:
 	var keep: Array = []
 	for m in u.modifiers:
-		if m.decay == DECAY_HALF:
+		if m.decay == DECAY_HALF and not (round >= 0 and m.held_round == round):
 			m.stacks = int(m.stacks / 2.0)
 			if m.stacks <= 0:
 				continue
 		keep.append(m)
 	u.modifiers = keep
+
+
+## Hold a status on `u` through `round`'s end (the Hollow-point Harpoon's; Ryan, 11 November: "the
+## target's flak does not decay this round"): its stacks skip that round's halving. True when it
+## carried any.
+static func hold(u, status_id: String, round: int) -> bool:
+	var held := false
+	for m in u.modifiers:
+		if m.id == status_id:
+			m.held_round = round
+			held = true
+	return held
+
+
+## Whether `u`'s status is held through `round`'s end.
+static func is_held(u, status_id: String, round: int) -> bool:
+	for m in u.modifiers:
+		if m.id == status_id and m.held_round == round:
+			return true
+	return false
 
 
 static func supports(trigger: String, effect: String) -> bool:

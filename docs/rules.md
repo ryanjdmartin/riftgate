@@ -493,6 +493,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   beside it (Webbed, below).
 - **Swap** (the Dingo's Combat Translocator): the spend takes two targets, a foe and then
   another foe or an empty slot, and they trade places; no damage; a massive foe does not move.
+  What the entry carries beside the Swap lands on both foes traded (the Translocator's Shock: both
+  come out Shocked), and such an entry still lands on a foe it cannot move, alone, with no
+  second target; a Swap that carries nothing else has no use for one.
   A Swap lands in the rider phase, before the death check, like every rider: one whose spend
   fells its first target moves the corpse, which dies in the slot it was moved to and gets back
   up or splits there. A Mine moves with its foe.
@@ -504,6 +507,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - **Flak** (with a number, Wainwright & Sutler's on-hit): each foe hit gains that many stacks
   of Flak a strike (Flak 2: two stacks), laid once the strikes are done, so no strike of the
   spend feeds on what it lays.
+- **A pin** (the Dingo's Hollow-point Harpoon): the Flak on its target, what it lays and what
+  stood there, does not halve at this round's end; it halves again the round after.
 - **Costs** are printed along the entry's foot with its heat, each a mark and a number with no
   word and no sign (the heat's thermometer, the shield's, the hull's machine body, a forging
   gun's shells, the cooldown's clock), never a keyword and never a chip: a

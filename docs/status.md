@@ -240,8 +240,10 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   coming down (his lean, so the refit's reads stand). Six pieces that are neither glue nor an exclusive yet (the
   Lance, the Flechette Pod, the Solar Flare Array, the Flakshot Repeater, the Plow, the Harpoon)
   get a tweak before any cut: Claude's first round and his first answers are the proposal's
-  section 4; open with him there, the Dingo's identity and the Prairie Dog's tweak (next, after
-  the Whip Scorpion), the Skua with the Pod's lock in a session of his own (11 November). A branch's shape is settled
+  section 4. The Dingo's is settled and built (11 November, the bible's Dingo row: Shock on the
+  Translocator, the harpoon the Hollow-point Harpoon, a Flak and a pin on its target's Flak for
+  the round); the Prairie Dog's tweak is next, the Skua with the Pod's lock in a session of his
+  own. A branch's shape is settled
   (two directions two steps deep, the second pick the deeper step or the one skipped). Every rework in design sorts its pieces on this footing.
 - Kestrel: ten machines, eight decided, in content and fielded (the bible's Kestrel row; the hub
   `docs/briefs/kestrel_line.md`); the Puffin back in design (`kestrel_puffin.md`). The Magpie (a

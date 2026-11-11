@@ -124,6 +124,7 @@ var shield_cost: int = 0      # a cost (Ryan, 26 October): the shield a spend ta
 var short: bool = false       # shown only: the shield cannot pay the entry's shield cost now (Skirmish.shown_face), struck through on the die like a dry gun
 var volatile: int = 0         # a cost (Ryan, 26 October, a keyword with a chip until then): the hull a spend bites its owner, past shield and armour, before the component acts; it may wreck it (a numbered keyword since the stock pass's engine, 22 October; a constant of 10 before)
 var gates: Dictionary = {}    # an attack: keyword name -> the condition it lands under, read against each foe at the spend before its own riders (the Suppression Battery's Suppress on a foe carrying Flak; the stock pass's engine, 22 October)
+var holds: String = ""        # an attack: the status its target keeps through this round's end, its halving skipped (the Hollow-point Harpoon's pin on Flak)
 var consumes: String = ""     # an attack: the status it consumes on its target, every stack, a point more a stack before the multiplies (the Backdraft Charge's Burning, 22 October)...
 var per_consumed: int = 1     # ...the damage a stack consumed adds
 var self_burn: int = 0        # an attack: spending it sets its own machine Burning, this many stacks (the Stoker's slow fuel by decision, the stock pass's landing, 22 October)
@@ -350,6 +351,7 @@ static func from_dict(d: Dictionary) -> Face:
 		var g = d.get("gates", {})
 		f.gates = (g as Dictionary).duplicate(true) if g is Dictionary else {}
 		f.consumes = str(d.get("consumes", ""))
+		f.holds = str(d.get("holds", ""))
 		f.per_consumed = maxi(1, int(d.get("per_consumed", 1)))
 		f.self_burn = maxi(0, int(d.get("self_burn", 0)))
 		f.fires_hopper = maxi(0, int(d.get("fires_hopper", 0)))
@@ -442,6 +444,8 @@ func to_dict() -> Dictionary:
 		d["shield_cost"] = shield_cost
 	if not gates.is_empty():
 		d["gates"] = gates.duplicate(true)
+	if not holds.is_empty():
+		d["holds"] = holds
 	if not consumes.is_empty():
 		d["consumes"] = consumes
 		d["per_consumed"] = per_consumed
@@ -571,7 +575,7 @@ func cooldown_rounds() -> int:
 ## prints with its shells (Ryan, 2 November), and a shield's cooling the number under its steam
 ## (3 November), so none of them is.
 func has_unique_rule() -> bool:
-	return vents_all or power_per_missing > 0 or not gates.is_empty() or not consumes.is_empty() or self_burn > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() or not printed.is_empty() \
+	return vents_all or power_per_missing > 0 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or self_burn > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() or not printed.is_empty() \
 		or spins or heat_per_blow > 0 or resets_on_kill or gathers_mines or detonates \
 		or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine \
@@ -688,6 +692,7 @@ func duplicate_face() -> Face:
 	f.short = short
 	f.gates = gates.duplicate(true)
 	f.consumes = consumes
+	f.holds = holds
 	f.per_consumed = per_consumed
 	f.self_burn = self_burn
 	f.fills_hopper = fills_hopper
@@ -824,6 +829,8 @@ func rule_phrases() -> Array[String]:
 			out.append("+%d per %d HP missing" % [power_per_missing, per_missing])
 		if not consumes.is_empty():
 			out.append("consumes %s, +%d a stack" % [str(Effects.STATUS.get(consumes, {}).get("name", consumes)), per_consumed])
+		if not holds.is_empty():
+			out.append("its target's %s does not decay this round" % str(Effects.STATUS.get(holds, {}).get("name", holds)))
 		if self_burn > 0:
 			out.append("Burning %d on itself" % self_burn)
 		if devours > 0:
@@ -971,6 +978,8 @@ func describe() -> String:
 				s += " +%d per %d HP missing" % [power_per_missing, per_missing]
 			if not consumes.is_empty():
 				s += " consumes %s, +%d a stack" % [str(Effects.STATUS.get(consumes, {}).get("name", consumes)), per_consumed]
+			if not holds.is_empty():
+				s += " its target's %s does not decay this round" % str(Effects.STATUS.get(holds, {}).get("name", holds))
 			if self_burn > 0:
 				s += " Burning %d on itself" % self_burn   # the Stoker's: its own machine set burning as it fires
 			if devours > 0:

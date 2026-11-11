@@ -1512,6 +1512,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 			errs.append("%s: gates belong to an attack, spent on a foe" % where)
 	# A consumer (the Backdraft Charge's, 22 October): one blow on one foe, eating every stack of
 	# a status the team puts on foes, a point more a stack (per_consumed).
+	# A pin (the Hollow-point Harpoon's, 11 November): a status that halves, held on the target
+	# through the round's end.
+	if fd.has("holds") and (kind != "attack" or Effects.status_decay(Effects.STATUS.get(str(fd["holds"]), {})) != Effects.DECAY_HALF):
+		errs.append("%s: holds names a status that halves each round (Flak), on an attack" % where)
 	if fd.has("consumes"):
 		if kind != "attack" or not Effects.FOE_STATUSES.has(str(fd["consumes"])):
 			errs.append("%s: consumes names a status the team puts on a foe (%s), on an attack" % [where, ", ".join(Effects.FOE_STATUSES)])

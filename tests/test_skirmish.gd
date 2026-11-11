@@ -10472,3 +10472,67 @@ func test_a_tie_sweeps_the_back_and_blows_taken_fire_over_the_maximum() -> void:
 	assert_eq(int(foes[0].hp), 500, "the front untouched")
 	assert_true(int(foes[1].hp) < 500, "the back rank swept")
 	assert_eq(ms.heat, 0, "left cold")
+
+
+## The Hollow-point Harpoon's pin (Ryan, 11 November: "Applies 1 flak and the target's flak does
+## not decay this round"): the Flak on its target, its own and what stood there, skips this
+## round's halving and halves again the round after. Synthetic piece.
+func test_a_pin_holds_its_targets_flak_through_the_rounds_end() -> void:
+	var sk := Skirmish.new(1)
+	var pin := Face.from_dict({"kind": "attack", "reach": "direct", "power": 1, "keywords": ["flak"], "flak": 1, "holds": "flakked"})
+	sk.add_mech(_mech("A", Die.single(pin), 40, 1000))
+	var a := _ghoul(500, 0)
+	var b := _ghoul(500, 0)
+	sk.add_foes([a, b])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(a, Effects.STATUS["flakked"], Effects.SKIRMISH, "test", 4, Effects.DECAY_HALF)
+	Effects.stack(b, Effects.STATUS["flakked"], Effects.SKIRMISH, "test", 4, Effects.DECAY_HALF)
+	assert_true(sk.assign(0, a), "the harpoon on the first")
+	assert_eq(Effects.stacks_of(a, "flakked"), 5, "it lays its own")
+	assert_true(Effects.is_held(a, "flakked", sk.round), "and pins the lot")
+	sk.end_round()
+	assert_eq(Effects.stacks_of(a, "flakked"), 5, "pinned: no halving this round")
+	assert_eq(Effects.stacks_of(b, "flakked"), 2, "the other's halves as ever")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(Effects.stacks_of(a, "flakked"), 2, "and it halves the round after")
+
+
+## The Combat Translocator's Shock (Ryan, 11 November: "not dead versus only frontliners and
+## versus massives and bosses that can't be swapped"): both foes a Swap trades come out Shocked;
+## a foe it cannot move takes the entry alone, with no second target; a Swap carrying nothing
+## else still has no use for one. Synthetic pieces.
+func test_a_swap_that_shocks_marks_both_and_lands_alone_on_a_foe_it_cannot_move() -> void:
+	var shocker := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["swap", "shock"]})
+	var sk := Skirmish.new(1)
+	sk.add_mech(_mech("A", Die.single(shocker), 40, 1000))
+	var a := _ghoul(500, 0)
+	var b := _ghoul(500, 0)
+	sk.add_foes([a, b])
+	sk.begin()
+	sk.start_round()
+	var at := [a.column, b.column]
+	assert_true(sk.needs_second(sk.mechs[0], a), "a foe that can move: a second target")
+	assert_true(sk.assign(0, a, b), "the two trade")
+	assert_eq([a.column, b.column], [at[1], at[0]], "places traded")
+	assert_true(Effects.has(a, "shocked") and Effects.has(b, "shocked"), "both come out Shocked")
+	var boss := Skirmish.new(1)
+	boss.add_mech(_mech("A", Die.single(shocker), 40, 1000))
+	var big := _ghoul(500, 0)
+	big.size = 2
+	boss.add_foes([big])
+	boss.begin()
+	boss.start_round()
+	assert_false(boss.needs_second(boss.mechs[0], big), "a massive foe: nowhere to trade")
+	assert_true(boss.can_spend(0), "and still somewhere to be spent")
+	assert_true(boss.assign(0, big), "it lands alone")
+	assert_true(Effects.has(big, "shocked"), "Shocked where it stands")
+	var plain := Skirmish.new(1)
+	plain.add_mech(_mech("A", Die.single(Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["swap"]})), 40, 1000))
+	var huge := _ghoul(500, 0)
+	huge.size = 2
+	plain.add_foes([huge])
+	plain.begin()
+	plain.start_round()
+	assert_false(plain.can_spend(0), "a Swap that carries nothing else has no use for a foe it cannot move")
