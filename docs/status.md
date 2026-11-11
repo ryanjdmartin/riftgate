@@ -1274,15 +1274,16 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. The live page is v0.533, dated 11 November (the
-  page's Version 505, published from main at `d2c024d` on Ryan's word, "Merge in and republish":
-  main's file whole, since the live v0.524 (Version 504, main's `60a0e4d`) matched that commit's
-  file byte for byte and so needed no merge; new since 504 the pacing row in beats of the tide,
+  `docs/design-bible.html` after every change. The live page is v0.534, dated 11 November (the
+  page's Version 506, published from main at `da18614` on Ryan's word, "Pull in main and
+  republish": main's file whole, the live v0.533 matching `d2c024d`'s file byte for byte; new since
+  505 the Prairie Dog's and the Dingo's rows from `ccr-4d58b054-3lyj0a`, the Flakshot Repeater, the
+  Hollow-point Harpoon, the Translocator's Shock and the two pins in the debuff table). Version 505
+  (main's `d2c024d`, on his "Merge in and republish") was main's file whole over the live v0.524
+  (Version 504, main's `60a0e4d`), which matched that commit's file; new since 504 the pacing row in beats of the tide,
   menace a pack's threat rating and the rows that follow it, the Whip Scorpion's rework, the
   hardpoints row with every stock gun its class, the Clydesdale's batteries row and its square
-  ports, and Changed Over in the buff table). Main's file is v0.534 since the Dingo's pieces and
-  the Flakshot Repeater landed from `ccr-4d58b054-3lyj0a` (the Prairie Dog's and the Dingo's
-  rows), unpublished. BASE for the next merge is `d2c024d`'s file. The
+  ports, and Changed Over in the buff table). BASE for the next merge is `da18614`'s file. The
   live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
