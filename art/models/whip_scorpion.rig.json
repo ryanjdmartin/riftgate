@@ -237,7 +237,7 @@
    "limits": {
     "pitch": [
      -8.0,
-     28.0
+     10.0
     ]
    },
    "swing": false,

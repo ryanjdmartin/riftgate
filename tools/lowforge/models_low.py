@@ -3029,31 +3029,37 @@ def whip_scorpion(b):
             x0, x1 = sorted((s * 6.4, s * 8.0))
             b.box(x0, x1, PY - 3.4, PY + 3.4, PZ + 0.4, GZ + 3.0, "steel.plate", "ray_cheek")
         b.prism("x", 0.0, PY, GZ, 1.8, 17.2, "steel.dark", 6, "ray_trunnion")
-        with b.joint("ray", (0.0, PY, GZ), limits=(-8.0, 28.0)):
-            b.box(-6.0, 6.0, PY - 12.0, PY + 3.0, GZ - 4.4, GZ + 4.4, "steel.dark", "ray_breech")
-            b.prism("y", 0.0, PY - 4.5, GZ + 8.2, 4.2, 12.0, "livery.livery2", 8, "ray_tank", phase=math.pi / 8)
-            for y in (PY - 8.5, PY - 0.5):
+        with b.joint("ray", (0.0, PY, GZ), limits=(-8.0, 10.0)):   # its breech rides over the boiler, so it lifts little
+            # The gun slid back in its cradle (Ryan, 11 November: "slide it back, keeping the mount
+            # in place, so it overhangs the back of the mount ... give the front some space and make
+            # a little scorpion vibe"): the cheeks grip the rails at a block, the breech and the
+            # collector riding out over the boiler like a tail carried high.
+            GY = PY - 18.0
+            b.box(-6.2, 6.2, PY - 3.0, PY + 3.0, GZ - 3.4, GZ + 3.2, "steel.dark", "ray_trunnion_block")
+            b.box(-6.0, 6.0, GY - 12.0, GY + 3.0, GZ - 4.4, GZ + 4.4, "steel.dark", "ray_breech")
+            b.prism("y", 0.0, GY - 4.5, GZ + 8.2, 4.2, 12.0, "livery.livery2", 8, "ray_tank", phase=math.pi / 8)
+            for y in (GY - 8.5, GY - 0.5):
                 b.prism("y", 0.0, y, GZ + 8.2, 4.7, 1.4, "steel.dark", 8, "ray_tank_hoop", phase=math.pi / 8)
-            b.prism("y", 0.0, PY - 10.9, GZ + 8.2, 2.6, 0.8, "steel.dark", 8, "ray_gauge", phase=math.pi / 8)
-            b.prism("y", 0.0, PY - 11.4, GZ + 8.2, 2.0, 0.4, "amber.light", 8, "ray_gauge_face", phase=math.pi / 8)
+            b.prism("y", 0.0, GY - 10.9, GZ + 8.2, 2.6, 0.8, "steel.dark", 8, "ray_gauge", phase=math.pi / 8)
+            b.prism("y", 0.0, GY - 11.4, GZ + 8.2, 2.0, 0.4, "amber.light", 8, "ray_gauge_face", phase=math.pi / 8)
             # A steam line from the tank down each flank of the breech, elbowed.
             for s in (-1.0, 1.0):
-                _beam(b, (s * 3.6, PY - 4.5, GZ + 9.0), (s * 7.2, PY - 4.5, GZ + 6.0), _poly(1.4, 6), _poly(1.4, 6), "livery.livery2", "ray_line")
-                _beam(b, (s * 7.2, PY - 4.5, GZ + 6.0), (s * 7.2, PY - 4.5, GZ - 2.0), _poly(1.4, 6), _poly(1.4, 6), "livery.livery2", "ray_line")
+                _beam(b, (s * 3.6, GY - 4.5, GZ + 9.0), (s * 7.2, GY - 4.5, GZ + 6.0), _poly(1.4, 6), _poly(1.4, 6), "livery.livery2", "ray_line")
+                _beam(b, (s * 7.2, GY - 4.5, GZ + 6.0), (s * 7.2, GY - 4.5, GZ - 2.0), _poly(1.4, 6), _poly(1.4, 6), "livery.livery2", "ray_line")
             # The collector on its bracket, behind and over the tank.
-            c = Vector((0.0, PY - 16.0, GZ + 17.0))
-            _beam(b, (0.0, PY - 11.0, GZ + 3.0), tuple(c - N * 1.2), _sq(3.0, 2.0), _sq(3.0, 2.0), "steel.plate", "ray_bracket")
+            c = Vector((0.0, GY - 16.0, GZ + 17.0))
+            _beam(b, (0.0, GY - 11.0, GZ + 3.0), tuple(c - N * 1.2), _sq(3.0, 2.0), _sq(3.0, 2.0), "steel.plate", "ray_bracket")
             _beam(b, tuple(c - N * 1.3), tuple(c + N * 0.2), _poly(10.6, 8, math.pi / 8), _poly(10.6, 8, math.pi / 8), "livery.livery2", "mirror_back")
             _tube(b, tuple(c - N * 0.6), tuple(c + N * 1.1), 11.4, 10.3, 8, "steel.dark", "mirror_rim", floor=False, phase=math.pi / 8)
             _disc(b, tuple(c + N * 0.3), tuple(N), 9.9, 8, "amber.spark", "mirror_face", phase=math.pi / 8)
             # The rails, the bore between them, their hoops and the steam line down each.
-            Y0, Y1 = PY + 3.0, PY + 54.0
+            Y0, Y1 = GY + 3.0, GY + 54.0
             for s in (-1.0, 1.0):
                 x0, x1 = sorted((s * 2.0, s * 5.0))
                 b.box(x0, x1, Y0, Y1, GZ - 2.6, GZ + 2.6, "steel.plate", "ray_rail")
                 b.prism("y", s * 6.6, (Y0 + Y1) / 2.0 - 3.0, GZ - 2.0, 1.4, Y1 - Y0 - 8.0, "livery.livery2", 6, "ray_line")
             b.box(-2.0, 2.0, Y0, Y1 - 0.5, GZ - 1.0, GZ + 1.4, "amber.heat", "ray_bore")
-            for y in (PY + 9.0, PY + 22.0, PY + 35.0, PY + 48.0):
+            for y in (GY + 9.0, GY + 22.0, GY + 35.0, GY + 48.0):
                 b.box(-8.2, 8.2, y - 1.3, y + 1.3, GZ - 4.0, GZ + 0.2, "steel.dark", "ray_hoop")
                 for s in (-1.0, 1.0):   # the hoop's cheeks up the rails' flanks, the bore left open to the sky
                     x0, x1 = sorted((s * 5.0, s * 8.2))
@@ -3061,8 +3067,8 @@ def whip_scorpion(b):
             for k, y in enumerate(RELAYS):
                 side = 1.0 if k % 2 == 0 else -1.0   # on the left rail and the right by turns, each tipped in over the bore and up at the sky
                 rn = Vector((-side * 0.5, 0.2, 1.0)).normalized()
-                rc = Vector((side * 6.2, PY + y + 5.5, GZ + 8.2))
-                b.prism("z", side * 6.2, PY + y + 5.5, GZ + 5.6, 1.0, 4.0, "steel.dark", 6, "ray_relay_post")
+                rc = Vector((side * 6.2, GY + y + 5.5, GZ + 8.2))
+                b.prism("z", side * 6.2, GY + y + 5.5, GZ + 5.6, 1.0, 4.0, "steel.dark", 6, "ray_relay_post")
                 _beam(b, tuple(rc - rn * 0.9), tuple(rc), _poly(4.6, 4, math.pi / 4), _poly(4.6, 4, math.pi / 4), "steel.dark", "ray_relay_back")
                 _disc(b, tuple(rc + rn * 0.08), tuple(rn), 4.0, 4, "amber.spark", "ray_relay_%d" % (k + 1), phase=math.pi / 4)
             _tube(b, (0.0, Y1 - 1.5, GZ), (0.0, Y1 + 4.0, GZ), 7.4, 4.8, 8, "steel.dark", "ray_muzzle", floor=False, phase=math.pi / 8)
