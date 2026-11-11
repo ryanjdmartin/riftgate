@@ -1058,6 +1058,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 
 The tasks are the to-do's; this is the index of what waits.
 
+- The hand-built stock guns' retirement (the bible's hardpoints row, 11 November): sixteen on seven models rebuilt
+  with every stock gun as its class (the to-do's Art line).
 - The Fracture's prize (section 12); the escorts' marks (`docs/bosses_proposal.md`) and the
   promoted forms' one move more for seven of them (`docs/heroes_proposal.md`).
 - The planned foe moves (the Lich's Dark Rite among them); a silence carrier and a purge

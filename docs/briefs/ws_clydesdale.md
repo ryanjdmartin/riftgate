@@ -104,9 +104,9 @@ rerolls or module slots (the tiers row).
   hardpoints row: each machine's own look out of the box): sixteen on seven machines today, the
   Clydesdale's four the right turret's Twin Autoguns, the lance, the pocket mortar and the
   howitzer (its Maxigun, Airburst Shell and Incendiary Shells wear their classes). What rides the
-  eight ports is open: hand-built guns rebuilt to fold and sink, as the Polar Bear's sink into
-  theirs, or classes on all eight (Claude's lean: on this machine the ports and the flip are the
-  look, a refit then looks exactly like the stock, and every class must fit the ports anyway).
+  eight ports was hand-built guns rebuilt to fold and sink or classes on all eight (Claude's lean
+  classes: on this machine the ports and the flip are the look, a refit then looks exactly like
+  the stock, and every class must fit the ports anyway); settled as classes (Open, item 6).
 - **His doubt, the same day**: "Yeah I though all hand built models went away already. What are
   left? I don't remember agreeing to keeping them, I thought the opposite. Polar bears guns are no
   longer hand built, that's certain. Something you're reading is out of date, regarding the polar
@@ -158,14 +158,12 @@ a back-rank kit, the flip's first lesson in the stock.
 
 1. The ports: eight alternating (Claude's lean), a checkerboard or pairs by row.
 2. The lance: whether it goes (Claude's lean).
-3. What rides the ports: hand-built stock guns or classes on all eight (Claude's lean classes);
-   settled with item 6 if the hand-built guns go everywhere.
+3. What rides the ports: settled, classes on all eight, since the hand-built stock guns go
+   everywhere (item 6).
 4. The stock split, and the Direct half first.
 5. The names and texts.
-6. The hand-built stock guns across the roster (his doubt of 11 November): sixteen on seven
-   machines (the Ammit's Plasma Arquebus and Blazethrower; the Buzzard's Overclocked Railgun,
-   Transonic Rifle and Arc Fault Cannon; the Clydesdale's four; the Nemesis's Plasma Arquebus; the
-   Polar Bear's Rivet Gun and Twin Autoguns; the Puffin's Halo Projector; the Wild Boar's two
-   Slugthrowers and Shotfire Rack). If they go: seven models rebuilt in lowforge (the desk's
-   bpy), their renders and the fit sheet, the hand-built guns' muzzle records and their test gone
-   as dead code, and the hardpoints row rewritten to his call.
+6. The hand-built stock guns across the roster: settled 11 November, they go ("Yes I think the
+   hand built guns have to go, clearly that session got cut off. My quote might have been
+   misinterpreted. There's no reason to keep hand build guns anywhere"; Claude agreed, the fixed
+   pieces staying modelled in). The bible's hardpoints row holds it and the to-do's Art line the
+   sixteen to rebuild, lowforge running in the cloud (the README's recipe).
