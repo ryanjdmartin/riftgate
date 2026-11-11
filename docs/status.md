@@ -173,7 +173,7 @@ And at `5d14088` on 11 November (the boss holding its hex in front of the rift, 
 walking): the bible (v0.514, above both; the grid row main's sentences on the boss's hex set
 into this branch's), this file, the to-do and `sim/save.gd` the conflicts, both sides kept, the
 save versions stacked again (a battle's 23, a run's 22).
-The bible's file is v0.518 (with `ccr-4d58b054-3lyj0a`'s locked row, tiers row and basic kit row of 10 November and its Polar Bear and Buzzard rows of 11 November), main's v0.506 with this branch's rows, its republish on Ryan's word
+The bible's file is v0.519 (with `ccr-4d58b054-3lyj0a`'s locked row, tiers row and basic kit row of 10 November and its Polar Bear, Buzzard and Nemesis rows of 11 November), main's v0.506 with this branch's rows, its republish on Ryan's word
 (Pages below); and `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
@@ -580,6 +580,23 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   runner's plain player, which never gathers, wins 8% of its battles where it won 19%: a
   fight for four with one machine in it is won one time in four where it was one in two. The
   bible's scale row holds it (v0.512, v0.513 since the branch took main's third map list).
+- **The fourth machine is the first battle's** (Ryan, 11 November, in the discussion that
+  followed: "the only reason to leave it up to the player was to put them fully in control.
+  But if the choice is in which city to defend in order to get a guaranteed choice from that
+  maker, then that works"). The bible's squad row is rewritten (a run starts with three and
+  its first battle brings the fourth, a choice from the host maker's catalogue; the fourth
+  bought when the player chose, 7 October, retired with the test it failed), the offers row,
+  the rules and `docs/economy_pass.md` follow; nothing is built. The read behind it
+  (`docs/measurements.md`, 11 November): one offer of tier-one kit moves a boss's cost by
+  nought to five points and a fourth machine cuts it by two thirds, so the choice was none
+  and "3.5 units" no state a squad is in; the offer's machine against better kit begins at
+  the fifth. Tier one is left with two bands, the first battle at three and the rest at four.
+  His lean for the first: "battle one should be relatively easy, even considering the party
+  of 3. It's more of an opportunity to gain resources, win, get your party in order, then the
+  real game starts from battle 2." Open, his (the brief's section 10; the bible's section
+  12): what easy is read as, whether it is short as well, and how it is made easy, since a
+  flat cut of the boss reaches the Meadow's first battle and not the Waste's or the Peak's.
+  The bible is v0.516.
 - **Tier one at three machines, and Ryan's calls of 11 November.** His words: "Badger probably
   goes to Regen 1 with the amount of armour it's able to get"; "Draugr is fine as a name, as are
   your other working names"; "Let's focus only on balancing tier 1 fights for now", since tier
@@ -1082,8 +1099,8 @@ its proposal's grids re-cut under the new model and read by hull lost), in its b
 what-if and its first reads are in (9 November), his two reads of the trial, the model as
 content, the formation pass and a guess at the elites' and bosses' numbers (10 November: the
 brief's sections 5, 8 and 9); tier one only for now (his word, 11 November), and next his
-answers on the squad a battle is tuned for by the Convergence (the brief's section 10: the
-boss's numbers by ramp band wait on them), beside his play of what landed, with the field's
+answers on the first battle (the brief's section 10: the fourth machine's route is settled,
+the first battle's shape and the boss's numbers by ramp band wait on him), beside his play of what landed, with the field's
 dials (the to-do's Ryan list), and his answers to the brief's section 7, then the content still to come (the stock re-deal proper as a table in chat first,
 the component pass, the heat prices, the foes' numbers after his play, the bosses' stat
 blocks, what prices a round), the vocabulary, the rules and the rows. Then the long wall's other open item (the bible's section 12: the shell). Beside them, the rest of the skirmish code audit
@@ -1147,7 +1164,7 @@ commands are in `README.md`.
   playtest list landed (the boss's picture, the scenery under the painting, the tears row's
   read of 10 November and the hunters' declaration, on the map session's v0.500 and v0.498's
   Text tab rows: the hangar row's tabs and the shown-text row), unpublished, its republish on
-  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.515, main's with the formation and refit
+  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.516, main's with the formation and refit
   session's rows (the hunters row's who-may-hunt and its settled hunting packs, the Foe roles row
   Decided with the flanker lines, the goblin's
   lesson, his call on its form and the pusher's yardstick, the recolour row's two rungs that
