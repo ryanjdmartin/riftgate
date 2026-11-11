@@ -1280,7 +1280,9 @@ commands are in `README.md`.
   file byte for byte and so needed no merge; new since 504 the pacing row in beats of the tide,
   menace a pack's threat rating and the rows that follow it, the Whip Scorpion's rework, the
   hardpoints row with every stock gun its class, the Clydesdale's batteries row and its square
-  ports, and Changed Over in the buff table). BASE for the next merge is `d2c024d`'s file. The
+  ports, and Changed Over in the buff table). Main's file is v0.534 since the Dingo's pieces and
+  the Flakshot Repeater landed from `ccr-4d58b054-3lyj0a` (the Prairie Dog's and the Dingo's
+  rows), unpublished. BASE for the next merge is `d2c024d`'s file. The
   live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
@@ -1305,6 +1307,10 @@ commands are in `README.md`.
   square ports (two content files, its model, its renders with a second-battery view). Nobody had
   published since 227, every live copy matching `9fde357`'s build but for its stamp, and the
   live copies match main's after; `edits` and `text` empty, `designs` the two folded ideas.
+  Behind main since, held for Ryan's word on what goes up: the Models tab's mode note moved into
+  its buttons' tooltips (`df67c13`, his ask that evening), and the Dingo's pieces from
+  `ccr-4d58b054-3lyj0a` (three content files, the Dingo's rig, `designs.json` and `text.json`),
+  every live copy still matching 228's.
   Version 227 (11 November, published from `ccr-4d58b054-3lyj0a` at `9fde357`, ahead of main, on Ryan's word, "Can I see this in hangar?", and again for each of his four notes on its model: the gun slid back in its mount, the vents more upright, the gun forward by half the slide, then nudged back): the Whip Scorpion's rework, the eight files that had moved since 222 (three content files, `designs.json` without its retired brief, `text.json`, `renders.json`, its model and rig) and its three new renders; nobody had published since 222, and the live copies match the branch's after. Version 222 (11 November, main's `892d804`, on Ryan's word, "Everything else let's clean
   up and merge into main first before proceeding"): `designs.json` with the Whip Scorpion's brief
   after the Buzzard's settlement and `text.json` for its stamp, over Version 221 of minutes before
