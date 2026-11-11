@@ -211,8 +211,10 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   fires its whole field; heat still raises its regen; Chain a candidate branch. With it the
   bible's design test "What a machine does, it does unasked: no extra controls" (his words:
   "Everything should be automatic in this game, I don't want extra controls"). The Whip
-  Scorpion's role map is in its brief, with the heat dump the Buzzard gave up for it; the
-  Scorpion, then the Dingo and the Prairie Dog, are this branch's next (11 November), the
+  Scorpion's direction is his of the same day (the bible's Whip Scorpion row, v0.525: the
+  tier-two formation breaker, a pass Sweeping the rank with the most foes for its heat as the
+  enemy's turn ends, its locked piece the Buzzard's old form; three points open in its brief,
+  the build after the heat pass); the Dingo and the Prairie Dog are this branch's next (11 November), the
   Clydesdale's review and the Skua his other sessions'.
 - The locked pieces' footing, decided 10 November (the bible's locked row, section 7, and tiers
   row, section 10; `docs/locked_pieces_proposal.md` holds what follows and the order; nothing

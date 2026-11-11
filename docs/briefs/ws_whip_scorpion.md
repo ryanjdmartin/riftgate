@@ -29,6 +29,49 @@ besides the die) and Siphoning was left for it on 9 November. The refit pass sen
 (`docs/briefs/refit_pass.md`): Ryan, 9 November, "send any machine or component or module that
 clearly doesn't work in the new system (i.e. scorpion, for one), back to design."
 
+## The direction (Ryan, 11 November)
+
+The role: the tier-two formation breaker, and no front ("I think this is a scorpion, so it's
+probably not a frontliner, thematically. W&S themes are weird and wonderful, flexible, and map
+power. I think this one goes all in with the weird and wonderful, along with the cassowary and
+cottonmouth"). The bible's Whip Scorpion row holds the decision; the detail and what is open:
+
+- **A pass** is "any time it ends the round with a spendable die face. If it rolled a rapid but
+  didn't spend after, that's a pass. If it rolled a rapid but rerolled onto a dark face, that's
+  not a pass, that's a mistake. If it acts and is granted another action it doesn't use, then
+  that's a pass." So a die locked and never spent is a pass, a blank is none, and Rapid or a
+  granted action lets it fire and release in one round (its premium kit, and the thing to watch).
+- **The stroke**: on a pass, as the enemy's turn ends, it Sweeps the rank with the most foes, a
+  shot for every heat, and is left cold. After the enemy's turn for his best play: "end the turn
+  right under the overheat, get hit a couple times to go over the threshold, and then release it
+  all for extra damage over the top of the heat max" (heat banked from blows lands after the
+  overheat as the rules stand, so the excess burns nothing). A Sweep, the rank the passive's to
+  name, so it needs no target; "since it's a sweep and not a stacking attack, it can afford to be
+  a bit heavier hitting", and a lone foe takes its own column's shots alone, the weakness by
+  design.
+- **Heat on a hit** is the passive's, always: "an off build if the player decides to spec it
+  there."
+- **Its body**: "more bruisery than glass cannon, since it's not a burst machine."
+- **Its locked piece** "takes the buzzards old form. Cools completely, damage per heat spent. Low
+  base damage. That lets it do something against a boss, but I'd keep the sweep the more
+  attractive option in terms of raw power. It still parallels the Buzzard somewhat, but they
+  function very differently with very different roles." Spending it is a spend, so the two draw
+  on one gauge: one foe now, or a rank after the enemy's turn.
+
+Open with him (Claude's leans):
+
+- The rank on a tie: the back, the tail over the wall.
+- Its cooling: none, the boiler's old rule, so the heat it holds never leaks and the gauge's cap
+  forces the pass; with cooling it is any hot machine (Holes raised, below).
+- The Heliographic Siphon, no longer its locked piece: an ordinary Wainwright & Sutler piece (a
+  lure on every foe and a brace), the off build's own tool, or cut; its mirror on the model
+  with it.
+- Numbers (a shot's damage, the heat a blow, the cannon's rate) after the heat pass, with the
+  Buzzard's.
+
+The sections below are the session's path to it; "First thoughts" and the roles list are
+answered by the above.
+
 ## The role map (11 November)
 
 Ryan's ask (11 November: "build me the scorpion data"): the built and briefed roster by role,
