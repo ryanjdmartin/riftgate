@@ -11,10 +11,9 @@ two though."
 
 Holes raised in chat the same day (Claude's), for its session:
 
-- Where the dump may go: his examples are allies (the Buzzard and the Stingray want heat; an
-  overheat forced on the Nemesis banks its rage, which reads hull damage, an overheat's included).
-  "Another unit" leaves a foe open, where heat would land as Burning, a damage piece by another
-  name. Allies only, or foes too?
+- Where the dump may go: allies only (Ryan, 11 November: "just allies"). The Buzzard and the
+  Stingray want the heat; an overheat forced on the Nemesis banks its rage, which reads hull
+  damage, an overheat's included; no foe takes heat as Burning.
 - The pull rides any equipment it spends on an ally, every maker's buffs, so it is a rule over
   other makers' pieces (the bible's identity test) and no entry is pure recovery (the refit's
   principle holds): the cooling is what the buff carries, the dump a buff with a price.

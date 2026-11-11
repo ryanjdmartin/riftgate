@@ -26,17 +26,21 @@ It stays dealt; the rework waits on the heat pass.
 
 ## The hook, and the holes raised in chat the same day (Claude's)
 
-- **The hook exists as a module.** The Boundary-layer Bleed (Kestrel, tier one): "Each time its
-  heat climbs, it stands up 1 shield." The Petrel's hook wants to differ in kind (shield for every
-  point of heat gained, whatever brought it: its guns, Burning, the Puffin's dump), or the module
-  moves (retired, changed, or folded into the Petrel and replaced), or the Petrel takes another.
+- **The hook is shield for heat gained from any source** (Ryan, 11 November: "I did mean any
+  source"): its guns, Burning, the Puffin's dump. The Boundary-layer Bleed (Kestrel, tier one:
+  "Each time its heat climbs, it stands up 1 shield") is no bar (Ryan: "I'm not concerned about
+  modules. The best fit for the chassis is the best fit. Plus nothing says that a module can't
+  borrow parts of a passive anyway").
 - **The Buzzard turns heat into shield too**: its Thermal Recoupler adds to its shield regen for
   the heat it carries (as regen since 11 November). They part by when: the Buzzard by heat held,
-  each round; the Petrel by heat arriving, at once. Two Kestrel machines on heat into shield, so
-  the difference has to read at a glance.
-- **The zap travels with its payment.** "A blow of what the shield paid" needs weapons that pay in
-  shield; with the hook its weapons make heat again, so the payment goes too. The zap's new home
-  carries its own way to pay: a component's printed shield cost (the refit kept it) is one.
+  each round; the Petrel by heat arriving, at once. Ryan, 11 November: "different enough, but I
+  agree they're similar. If anything I'd think the Buzzard should change, though. It's Regen was
+  given when Regen was rare." So the Petrel keeps the hook, and the Buzzard is the one to change
+  if they read alike (the bible's Buzzard row).
+- **The zap travels with its payment**, and its new form is Ryan's (11 November: "I know the zap
+  can't move alone. It would be something like spend X shield and add it to the attack"): a piece
+  or a module that spends shield and adds what it spent to the blow, on another machine or as a
+  module; its weapons make heat again, so the Petrel pays nothing in shield.
 - **The St. Elmo's Regenerator**: his words leave it; its regrowth is a regen grant beside the
   chassis's own.
 

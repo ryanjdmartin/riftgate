@@ -173,7 +173,7 @@ And at `5d14088` on 11 November (the boss holding its hex in front of the rift, 
 walking): the bible (v0.514, above both; the grid row main's sentences on the boss's hex set
 into this branch's), this file, the to-do and `sim/save.gd` the conflicts, both sides kept, the
 save versions stacked again (a battle's 23, a run's 22).
-The bible's file is v0.516 (with `ccr-4d58b054-3lyj0a`'s locked row, tiers row and basic kit row of 10 November and its Polar Bear and Buzzard rows of 11 November), main's v0.506 with this branch's rows, its republish on Ryan's word
+The bible's file is v0.517 (with `ccr-4d58b054-3lyj0a`'s locked row, tiers row and basic kit row of 10 November and its Polar Bear and Buzzard rows of 11 November), main's v0.506 with this branch's rows, its republish on Ryan's word
 (Pages below); and `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
@@ -225,7 +225,11 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   the Puffin a heat mover, tier two his lean; and two reworks with briefs of their own, still
   dealt: the Storm Petrel (shield as it gains heat, after the heat pass) and the Nemesis (a rage
   bar that breaches, a tank buster). The Ammit's stock wants a Ward piece (the to-do). The holes
-  raised on each are in its brief. 1111 tests green.
+  raised on each are in its brief with his answers of the same day (the Puffin's dump allies
+  only; the Petrel's hook from any source, its zap a piece that spends shield into a blow; the
+  Nemesis's blow on shield and hull two, its rage spent automatically, a Barrier left whole his
+  lean), and the Buzzard is the one to change if it reads too close to the Petrel (the bible's
+  Buzzard row). The Nemesis waits on his go to build. 1111 tests green.
 - The locked pieces' footing, decided 10 November (the bible's locked row, section 7, and tiers
   row, section 10; `docs/locked_pieces_proposal.md` holds what follows and the order; nothing
   built): a locked piece earns its lock as glue for its chassis's identity or as an exclusive,
