@@ -693,6 +693,24 @@
      "alt": "lammergeier, laying mines"
     }
    ]
+  },
+  "whip_scorpion": {
+   "when": "The Heliographic Death Ray, 11 November.",
+   "note": "The mirror's mast is a gun (Ryan, 11 November: \"an actual gun. Pipes connecting it to the boiler, steampunk style. Mirror or mirrors as part of it because weird future nonsense tech. Like a steam powered mirrored laser railgun\"): a railgun on a pedestal off the cab's back, steam mains up from the waist, a hooped tank on its breech, a collector mirror over it, three relay mirrors down its rails and a lens in its muzzle. A first cut, to judge running. The last picture is the ray firing.",
+   "images": [
+    {
+     "file": "whip_scorpion/whip_scorpion_front.png",
+     "alt": "whip scorpion, front"
+    },
+    {
+     "file": "whip_scorpion/whip_scorpion_rear.png",
+     "alt": "whip scorpion, rear"
+    },
+    {
+     "file": "whip_scorpion/whip_scorpion_ray.png",
+     "alt": "whip scorpion, the ray firing"
+    }
+   ]
   }
  }
 }
