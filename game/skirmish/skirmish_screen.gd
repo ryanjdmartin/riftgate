@@ -3298,7 +3298,9 @@ func _stand_in_dies(foe: Foe) -> void:
 	si.intent_kind = ""
 	si.breathe = false
 	si.queue_redraw()
-	var tw := create_tween()
+	# Bound to the stand-in, not the screen: a flush of the blows (`_flush_blows`) that frees it
+	# mid-fade kills its fade with it, where the fade's end used to free it a second time.
+	var tw := si.create_tween()
 	tw.tween_property(si, "modulate", Color(2.0, 1.2, 1.2), 0.06)
 	tw.tween_property(si, "modulate", Color(Palette.LOSS_DIM, 1.0), 0.12)
 	tw.set_parallel(true)
