@@ -825,22 +825,6 @@
    }
   },
   {
-   "id": "hot_streak",
-   "category": "status",
-   "name": "Hot Streak",
-   "codex": "Ability, the Kite's: its shots run 1 hotter a stack this fight, a stack for each attack that killed. Its passive's price: no cleanse, silence or purge lifts it.",
-   "status": "implemented",
-   "design": {
-    "holes": "A working name, the Kite's heat tax.",
-    "table": {
-     "kind": "ability",
-     "on": "machine",
-     "stacks": "Yes: one for each attack that killed",
-     "lasts": "The fight"
-    }
-   }
-  },
-  {
    "id": "shots",
    "category": "resource",
    "name": "Shots",
@@ -1285,7 +1269,7 @@
    "id": "on_attack",
    "category": "trigger",
    "name": "On attack",
-   "codex": "Passive trigger. Fires on every attack, after its number is read. Effects: multiply or add damage or heat, multiply the printed number alone before any buff (the Kite's double), or set a minimum damage.",
+   "codex": "Passive trigger. Fires on every attack, after its number is read. Effects: multiply or add damage or heat, multiply the printed number alone before any buff (the Kite's double, on an unhurt foe), or set a minimum damage.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1395,7 +1379,7 @@
    "id": "on_kill",
    "category": "trigger",
    "name": "On a kill",
-   "codex": "Passive trigger. Fires once after an attack of this machine's that killed, however many foes fell to it, chains, spills and a vent's blast included: a status (the Kite's Hot Streak), a shield or a vent.",
+   "codex": "Passive trigger. Fires once after an attack of this machine's that killed, however many foes fell to it, chains, spills and a vent's blast included: a status, a shield (the Kite's, recharged whole) or a vent.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1485,10 +1469,10 @@
    "id": "reset",
    "category": "component_property",
    "name": "Reset",
-   "codex": "A rule printed on a weapon: if its spend kills, every entry dark from a cooldown comes back, itself included, and its machine acts again, the free roll never landing on the entry just spent; a team reroll may bring it back up, and every kill resets it again (the Kite's Pinion Driver).",
+   "codex": "A rule printed on a weapon: if its spend kills, every entry dark from a cooldown comes back, itself included, and its machine acts again, the free roll never landing on the entry just spent; a team reroll may bring it back up, and every kill resets it again. No piece prints it today (the Kite's Pinion Driver did until its rework of 11 November).",
    "status": "implemented",
    "design": {
-    "holes": "No limit (Ryan, 24 October: \"Let the Kite reset infinitely. There are other ways to nerf it that aren't more rules exceptions\"): the free roll never lands on the entry just spent, so each action past the second is a team reroll back onto it and another kill, and the Kite's heat climbs with every kill."
+    "holes": "No limit (Ryan, 24 October: \"Let the Kite reset infinitely. There are other ways to nerf it that aren't more rules exceptions\"): the free roll never lands on the entry just spent, so each action past the second is a team reroll back onto it and another kill, and the Kite's heat climbed with every kill. Free since 11 November, when the Kite gave it up; the Zoids walker's old verb."
    }
   },
   {
@@ -1762,6 +1746,16 @@
    }
   },
   {
+   "id": "finisher",
+   "category": "component_property",
+   "name": "Finisher",
+   "codex": "A rule printed on a weapon: against a foe at half its HP or less its number is doubled, read as the die is spent, so every strike of the spend takes it or none does. The die shows the doubled number while held over such a foe. The Kite's Pinion Driver.",
+   "status": "implemented",
+   "design": {
+    "holes": "A working name. The Coriolis Accelerator's slope as one step (Ryan, 11 November: \"is there a way to make the pinion driver simpler but fill the same purpose\"); its factor is the entry's own (finisher), a placeholder."
+   }
+  },
+  {
    "id": "gated",
    "category": "component_property",
    "name": "Gated",
@@ -1835,7 +1829,7 @@
    "id": "static",
    "category": "trigger",
    "name": "Static",
-   "codex": "Passive trigger. Always on. Its effects change a machine's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat, armour, move or recharge; add_damage_taken and multiply_damage_taken on every incoming blow; weapon_cooldown (every weapon the machine fires goes dark for so many rounds: the Kite's); set_reach on a component (direct or indirect while a condition holds); suppress, which turns off another effect by id or tag.",
+   "codex": "Passive trigger. Always on. Its effects change a machine's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat, armour, move or recharge; add_damage_taken and multiply_damage_taken on every incoming blow; weapon_cooldown (every weapon the machine fires goes dark for so many rounds; no passive grants one today); set_reach on a component (direct or indirect while a condition holds); suppress, which turns off another effect by id or tag.",
    "status": "implemented",
    "design": {
     "holes": "Every read asks the pipeline; nothing is written to a stat or a component, so an effect that is gone stops answering. A static reach rule cannot be conditioned on reach."
@@ -2015,7 +2009,7 @@
    "id": "ability",
    "category": "status",
    "name": "Ability",
-   "codex": "A unit's own mechanic, the rule it plays by: never a buff or a debuff, so no Purge, Silence or Cleanse touches it. Its chip shows its mark cut out of a solid tile: the Goblin Nob's Enrage, a core's guard, a Gel's split, a last act, the Thunder Ape's golden rage; the Polar Bear's seal, the Kite's Hot Streak.",
+   "codex": "A unit's own mechanic, the rule it plays by: never a buff or a debuff, so no Purge, Silence or Cleanse touches it. Its chip shows its mark cut out of a solid tile: the Goblin Nob's Enrage, a core's guard, a Gel's split, a last act, the Thunder Ape's golden rage; the Polar Bear's seal.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 8 November, of the Nob's rage: \"Nob, and any other enemies with a passive ability, should have an unpurgable passive chip that points out what's going on. Plus, that's how slay the Spire works, where he comes from. It's not a Buff, it's not a Debuff, it's labelled as an Ability, so it doesn't get purged. Can use this for player units as well, like the armadillo's form. Golden rage should be an ability chip too.\" The tile is a placeholder look, to judge on the phone (RIFTGATE_ABILITY_DEBUG=1)."

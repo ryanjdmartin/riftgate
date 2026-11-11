@@ -142,7 +142,7 @@ every machine is wrecked. There is no round limit.
   module: one a round each, on top of the team's). A reroll rerolls every unlocked,
   unspent die, before or after attacking, and lands on any other entry, never the one
   showing; a copy of it may come up, at the odds its copies give it. Every roll inside the round
-  follows the same rule (Rapid's free reroll, the Kite's reset, the Booster, the Uplink, the
+  follows the same rule (Rapid's free reroll, a Reset's, the Booster, the Uplink, the
   Reveille Horn), but two, kept on purpose and each saying "itself included" on the die: an
   entry that rolls again (no piece prints one today) rolls as the round's opening roll does, and
   the Cassowary's Spin-Up spins every chamber. Double-tap or hold a die to lock it, and again to unlock it; spending
@@ -275,7 +275,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   too (its riders, a Mine, a Shock, an Expose, a Lure's turn, a Swap, a gather, a detonation,
   the zap after the strikes), so the
   preview shows the chips beside the skull and no trigger goes unfired; a spend that asks
-  whether it killed (a kill trigger, the talons, the reset gun) reads its own death check. The death check
+  whether it killed (a kill trigger, the talons, a Reset) reads its own death check. The death check
   clears a kill's slot; a foe getting back up and a split's arrivals stand only once the spend
   is done, in the slot their unit died in, wherever a Swap moved it, so nothing the spend does meets them, and the preview shows a foe that will get back
   up or split with its return's chip in the skull's place. What a foe's tick fells comes back
@@ -485,15 +485,20 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   A Rapid vent is never below tier three (the one is the Musk Ox's quick reload, locked on a
   tier three, which cools nothing), and a Rapid shield never below tier two (the Laminar
   Deflector's two).
-- **Cooldown** (a printed property on specific pieces, or one a passive grants every weapon
-  and equipment its machine aims at a foe, the Kite's two; the longer stands), a cost printed
+- **Cooldown** (a printed property on specific pieces; a passive may grant one to every weapon
+  and equipment its machine aims at a foe, none does today, and the longer stands), a cost printed
   along the entry's foot by its clock: once spent, the entry is dark for that many rounds, this
   one included, shown on the die with the turns left; the die may land on it, and a dark entry
   does nothing. No cleanse lifts it.
-- **Reset** (the Kite's Pinion Driver): if its spend kills, every entry dark from a cooldown
+- **Reset** (no piece prints it today): if its spend kills, every entry dark from a cooldown
   comes back, itself included, and the machine acts again, the free roll never landing on the
   entry just spent; a team reroll may bring it back up, and every kill resets it again, with
   no limit.
+- **Finisher** (the Kite's Pinion Driver, ×2): against a foe at half its HP or less the
+  weapon's printed number is multiplied, before its buffs as a passive's double is. The foe's
+  HP is read once a hit, as the hit begins (a Sweep's every shot its own), so every strike of
+  the hit is multiplied or none is: a strike that takes the foe to half does nothing for the
+  strikes after it.
 - **Web** (the funnel-web's Web Bomb): the foe hit is Webbed, one web however often it is
   webbed; at the end of its action the web bursts, Suppressing it and the next foe to act
   beside it (Webbed, below).
@@ -592,7 +597,7 @@ unit's own mechanic, the rule it plays by, and never a buff or a debuff, so no P
 or Cleanse touches it; its chip shows its mark cut out of a solid tile, ahead of the unit's
 other chips, and its hold line names it an Ability and says what goes on. A foe's: the Goblin
 Nob's Enrage, a core's guard (Guarded), a Gel's split, a last act, a golden rage while it
-lasts. A machine's: the Polar Bear's seal (its form) and the Kite's Hot Streak. What an
+lasts. A machine's: the Polar Bear's seal (its form). What an
 ability, a passive or a store grants beyond itself is a buff like any (the Nob's gathered
 Enraged, a module's Empowered or Armoured, the Armoured the Honey Badger's hopper grants): a
 stack is a stack, whatever granted it.
@@ -727,8 +732,6 @@ On a machine:
   for good, whatever granted it (a stack is a stack); its Abilities and its stores stay, and the
   Ammit's Quintessence Tap keeps its Empowered from a Purge as from every clock, whatever granted
   it; a Ward turns it away too.
-- **Hot Streak** (Ability, the Kite's, its passive's price): its shots run 1 hotter a stack this
-  fight, a stack for each attack that killed; no cleanse, silence or purge lifts it.
 
 On a foe:
 - **Burning** (debuff): 1 damage a stack at the start of its action, past armour, then a
@@ -1030,8 +1033,10 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
 - A passive may double a weapon's printed number before its buffs, on every blow, what the
   entry prints from its firer included (an area's number, heat fired, hopper loads), the buffs
   added once after it and the struck foe's own reads (its missing HP, the stacks consumed on
-  it) after those, undoubled (the Kite's), and may grant a cooldown to every weapon and equipment its machine
-  aims at a foe. It may split every weapon and equipment aimed at a foe instead (the Skua's):
+  it) after those, undoubled, and under a condition where it carries one (the Kite's, against
+  an unhurt foe); it may grant a cooldown to every weapon and equipment its machine aims at a
+  foe (none does today). On a kill a passive may recharge its machine's shield whole (the
+  Kite's), as any shield gained is. It may split every weapon and equipment aimed at a foe instead (the Skua's):
   each hits twice as often, a Sweep firing twice the shots, and each hit's base weapon damage
   (its number and what the entry prints) is halved, rounded down and never below one, every
   buff and passive and the foe's conditions counting on each hit after it, its armour too; the
@@ -1049,7 +1054,10 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   Frame's Direct blows at the front rank, the Artillery Rangefinder's Indirect blows at the
   back, a point each); the striker carries a status (the Prairie Dog's fight
   half: its damage-taken effect reads the foe whose blow it is taking, so a foe carrying Flak
-  hits it 1 lighter, whoever laid the Flak).
+  hits it 1 lighter, whoever laid the Flak); the target is unhurt (at its full HP) or at half
+  its HP or less, each read once a hit as the hit begins (a Sweep's every shot its own), so a
+  hit's strikes share one answer and the first strike of a two-strike gun does not take the
+  double from the second.
 - A passive may lay a status on each foe its blows hit, a stack per strike, the foe judged by
   the passive's condition alone; every strike that reaches it lays it, on a foe the spend fells
   too (A spend's order), a blow of nothing included, unless the passive's text asks for a weapon's hit (the funnel-web's Vitriol).

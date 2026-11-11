@@ -7382,7 +7382,7 @@ func test_a_blast_that_kills_fires_the_kill_trigger() -> void:
 	var a := _mech("A", Die.single(Face.vent(30)), 40, 100)
 	a.grant_passive({"id": "test_blast_streak", "name": "Blast", "description": "", "effects": [
 		{"trigger": "static", "effect": "vent_blast", "value": 1},
-		{"trigger": "on_kill", "effect": "stack_status", "value": "hot_streak"}]})
+		{"trigger": "on_kill", "effect": "stack_status", "value": "rallied"}]})
 	var sk := Skirmish.new(1, 2)
 	sk.add_mech(a)
 	sk.add_foes([_ghoul(10, 1), _ghoul(10, 1)])
@@ -7392,7 +7392,7 @@ func test_a_blast_that_kills_fires_the_kill_trigger() -> void:
 	ms.heat = 30
 	assert_true(sk.assign(0, ms), "the vent spent on itself")
 	assert_eq(sk.field_foes().size(), 1, "the blast kills the foe it draws")
-	assert_eq(Effects.stacks_of(a, "hot_streak"), 1, "and the kill fires the kill trigger, once")
+	assert_eq(Effects.stacks_of(a, "rallied"), 1, "and the kill fires the kill trigger, once")
 	assert_true("\n".join(sk.log).contains("after the kill"), "the log says so")
 
 
@@ -8375,14 +8375,15 @@ func test_a_vent_that_shields_cools_first_then_shields_on_what_is_left() -> void
 	assert_true(refused, "a shield half on anything but a vent is refused")
 
 
-## The Kite's rework (Ryan's go, 21 October), on synthetic passives: a multiply on the printed
-## number alone, the buffs added once after it; the cooldown granted to every weapon and debuff
-## by a passive; a kill trigger laying a status whose heat rides every later shot.
+## Three pieces the Kite's first rework built (Ryan's go, 21 October) and the engine keeps, on
+## synthetic passives, no content using them since its second (11 November): a multiply on the
+## printed number alone, the buffs added once after it; the cooldown granted to every weapon and
+## debuff by a passive; a kill trigger laying a status.
 func test_a_printed_double_a_granted_cooldown_and_a_kill_trigger() -> void:
 	var regs := {"id": "regs", "name": "Regs", "description": "", "effects": [
 		{"trigger": "on_attack", "effect": "multiply_printed", "value": 2},
 		{"trigger": "static", "effect": "weapon_cooldown", "value": 2},
-		{"trigger": "on_kill", "effect": "stack_status", "value": "hot_streak"}]}
+		{"trigger": "on_kill", "effect": "stack_status", "value": "rallied"}]}
 	var gun := Face.attack(10, L)
 	gun.heat = 5
 	var shield := Face.shield(10)
@@ -8401,12 +8402,156 @@ func test_a_printed_double_a_granted_cooldown_and_a_kill_trigger() -> void:
 	sk.mechs[0].face_index = 0
 	assert_true(sk.assign(0, weak), "the doubled gun kills the weak foe")
 	assert_eq(Effects.dark_rounds(m, 0, sk.round), 2, "and goes dark for two rounds, this one included")
-	assert_eq(Effects.stacks_of(m, "hot_streak"), 1, "the kill lays a stack of the tax")
-	assert_eq(int(Effects.attack(m, gun, 0, gun.heat)["heat"]), 5 + _rule("hot_streak", "add_heat"), "every later shot runs hotter by the streak's number")
+	assert_eq(Effects.stacks_of(m, "rallied"), 1, "the kill lays the status its trigger names")
 	assert_true("\n".join(sk.log).contains("after the kill"), "the log says why")
 	sk.end_round()
 	sk.start_round()
 	assert_eq(Effects.dark_rounds(m, 0, sk.round), 1, "one round left the next round")
+
+
+## The Kite's kit since 11 November (Ryan: "Burst glass cannon"), on a synthetic passive. The
+## opener: a double on the printed number against an unhurt foe alone, read as the hit judges
+## the foe, so both strikes of a two-strike gun take it and the next spend on that foe takes
+## none; the die shows each foe its own number; an area reads each foe for itself; a Sweep's
+## shots each judge their own.
+const OPENER := {"id": "opener", "name": "Opener", "description": "", "effects": [
+	{"trigger": "on_attack", "effect": "multiply_printed", "value": 2, "when": "target_unhurt"},
+	{"trigger": "on_kill", "effect": "refill_shield"}]}
+
+
+func test_an_opener_doubles_on_the_unhurt_judged_once_a_hit() -> void:
+	var twin := Face.attack(3, L)
+	twin.strikes = 2
+	var spread := Face.attack(4, L, [K.CLEAVE])
+	spread.cleave = 2
+	var sk := Skirmish.new(1, 3)
+	var m := _mech("Kite", Die.of([twin, Face.attack(5, L), spread]), 40, 100)
+	m.grant_passive(OPENER)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(100, 0), _ghoul(100, 0), _ghoul(100, 0)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var a: Foe = sk.front[0]
+	var b: Foe = sk.front[1]
+	var c: Foe = sk.front[2]
+	assert_eq(sk.shown_number(ms, twin, a), 6, "the die over an unhurt foe shows its 3 doubled")
+	ms.face_index = 0
+	assert_true(sk.assign(0, a), "the two-strike gun on the unhurt foe")
+	assert_eq(a.hp, 88, "both strikes at 6: the foe was judged as the die was spent, not between them")
+	assert_eq(sk.shown_number(ms, twin, a), 3, "hurt now: the die shows the plain number over it")
+	assert_eq(sk.shown_number(ms, twin, b), 6, "and the doubled one over a foe nothing has touched")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 1
+	assert_true(sk.assign(0, a), "a later spend on the hurt foe")
+	assert_eq(a.hp, 83, "is plain")
+	sk.end_round()
+	sk.start_round()
+	# An area: the aimed foe hurt, its neighbour unhurt, each read for itself.
+	ms.face_index = 2
+	assert_true(sk.assign(0, a), "the Spread gun on the hurt foe")
+	assert_eq([a.hp, b.hp, c.hp], [79, 96, 100], "the hurt target its plain 4, the unhurt neighbour its Spread 2 doubled, the far one out of the shape")
+	# A Sweep: each shot judges its own column's foe.
+	var s2 := Skirmish.new(1, 2)
+	var sweep := Face.attack(3, S)
+	sweep.strikes = 2
+	var n := _mech("Kite", Die.single(sweep), 40, 100)
+	n.grant_passive(OPENER)
+	s2.add_mech(n)
+	s2.add_foes([_ghoul(100, 0), _ghoul(100, 0)])
+	s2.begin()
+	s2.start_round()
+	s2.front[0].hp = 90
+	assert_true(s2.assign(0, s2.front[0]), "a sweep along the front")
+	assert_eq([s2.front[0].hp, s2.front[1].hp], [87, 94], "the hurt foe's shot plain, the unhurt foe's doubled")
+
+
+## Its lock's finish (the Pinion Driver since 11 November; the Coriolis Accelerator's slope as one
+## step): the entry's number times its finisher against a foe at half its HP or less, read as
+## the hit judges the foe, so a first strike that takes a foe to half does not double the
+## second; with the opener beside it the two never meet on one blow.
+func test_a_finisher_doubles_at_half_or_less_judged_once_a_hit() -> void:
+	var driver := Face.attack(2, L)
+	driver.strikes = 2
+	driver.finisher = 2
+	assert_true(driver.has_unique_rule() and driver.describe().contains("×2 on a foe at half its HP or less"), "the entry prints its rule")
+	assert_true(driver.rule_phrases().has("×2 on a foe at half its HP or less"), "and its hold lists it")
+	assert_eq(Face.from_dict(driver.to_dict()).finisher, 2, "it survives the content round-trip")
+	assert_eq(driver.duplicate_face().finisher, 2, "and a copy")
+	var sk := Skirmish.new(1, 3)
+	var m := _mech("Kite", Die.single(driver), 40, 100)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(20, 0), _ghoul(20, 0), _ghoul(20, 0)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var whole: Foe = sk.front[0]
+	var half: Foe = sk.front[1]
+	var near: Foe = sk.front[2]
+	half.hp = 10
+	near.hp = 11
+	assert_eq([sk.shown_number(ms, driver, whole), sk.shown_number(ms, driver, half), sk.shown_number(ms, driver, near)], [2, 4, 2], "the die shows the double over the foe at half alone")
+	assert_true(sk.assign(0, half), "on the foe at half")
+	assert_eq(half.hp, 2, "both strikes doubled")
+	sk.end_round()
+	sk.start_round()
+	assert_true(sk.assign(0, near), "on the foe a point above half")
+	assert_eq(near.hp, 7, "both plain: the first strike took it to half, and the hit had judged it already")
+	# With the opener: doubled on the unhurt by the passive, on the half-dead by its own rule.
+	m.grant_passive(OPENER)
+	near.hp = 15   # hurt, and above half
+	assert_eq([sk.shown_number(ms, driver, whole), sk.shown_number(ms, driver, half), sk.shown_number(ms, driver, near)], [4, 4, 2], "double at both ends and plain between, never both at once")
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var cid := ""
+	for id in db.components.keys():
+		if str(db.components[id].get("face", {}).get("kind", "")) == "shield":
+			cid = str(id)
+			break
+	if not cid.is_empty():
+		db.components[cid]["face"]["finisher"] = 2
+		var refused := false
+		for e in db.validate():
+			if e.contains("finisher is a weapon's"):
+				refused = true
+		assert_true(refused, "a finisher on anything but a weapon is refused")
+
+
+## A kill of its own recharges its shield whole (Ryan, 11 November: "kills recharge it's shield
+## completely"): what it is short of its maximum and no more, once a spend that killed; nothing
+## for a spend that kills nothing; and the bot weighs the shield a kill would give back.
+func test_a_kill_recharges_the_shield_whole() -> void:
+	var gun := Face.attack(10, L)
+	var sk := Skirmish.new(1, 3)
+	var m := _mech("Kite", Die.single(gun), 40, 100)
+	m.grant_passive(OPENER)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(5, 10), _ghoul(300, 10), _ghoul(300, 10)])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var weak: Foe = null
+	var big: Foe = null
+	for f in sk.field_foes():
+		if f.hp_max == 5:
+			weak = f
+		elif big == null:
+			big = f
+	m.shield = 12
+	var bot := Policy.make(Policy.GREEDY, 1)
+	var short := bot.attack_score(sk, ms, gun, weak)
+	m.shield = m.shield_max
+	assert_true(short > bot.attack_score(sk, ms, gun, weak), "the bot weighs the shield a kill gives back")
+	m.shield = 12
+	assert_true(sk.assign(0, big), "a spend that kills nothing")
+	assert_eq(m.shield, 12, "recharges nothing")
+	sk.end_round()
+	sk.start_round()
+	m.shield = 3
+	assert_true(sk.assign(0, weak), "a spend that kills")
+	assert_eq(m.shield, m.shield_max, "the shield back whole")
+	assert_true("\n".join(sk.log).contains("after the kill"), "the log says why")
 
 
 ## The reset gun (the Kite's Pinion Driver, 21 October): if its spend kills, every entry dark

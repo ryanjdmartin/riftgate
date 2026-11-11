@@ -610,9 +610,14 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		# die's own average blow, read plainly so the scorer never asks itself.
 		score += ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)
 	if f.resets_on_kill:
-		# The reset gun (the Kite's Pinion Driver): a kill lights every dark entry and the machine
-		# acts again, about the die's own average blow, at the odds of the kill.
+		# A reset gun (no piece prints one since the Kite's Pinion Driver gave it up, 11 November): a
+		# kill lights every dark entry and the machine acts again, about the die's own average
+		# blow, at the odds of the kill.
 		score += p_kill * ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)
+	if f.is_weapon() and p_kill > 0.0 and Effects.refills_on_kill(ms.unit) and ms.unit.shield < ms.unit.shield_max:
+		# A kill that recharges its shield whole (the Kite's, 11 November): what the shield it
+		# would regain turns of the blows coming, at the odds of the kill.
+		score += p_kill * shield_score(sk, ms, ms.unit.shield_max - ms.unit.shield, false, ms)
 	if quick:
 		# The Needletail's two things a round: its first spend turns the die to the other kind
 		# and the machine acts again, about the die's own average blow.

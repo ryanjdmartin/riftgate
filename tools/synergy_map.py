@@ -62,7 +62,6 @@ CURRENCIES = OrderedDict([
     ("scorched", ("Scorched", "on a machine")),
     ("disabled", ("Disabled", "on a machine")),
     ("corrupted", ("Corrupted", "on a machine")),
-    ("hot_streak", ("Hot Streak", "on a machine")),
     ("heat", ("This machine's heat", "a resource")),
     ("ally_heat", ("An ally's heat", "a resource")),
     ("hull_damage", ("Hull damage taken", "a resource")),
@@ -96,7 +95,7 @@ FACE_FIELDS = {
     "braces": [("braced", "sets")], "devours": [("overcharged", "sets"), ("kill", "reads")], "fills_hopper": [("hopper", "sets")],
     "fires_hopper": [("hopper", "reads")], "heat_per_blow": [("heat", "sets")], "detonates": [("mine", "reads")],
     "gathers_mines": [("mine", "reads")], "vents_all": [("heat", "reads")], "power_per_heat": [("heat", "reads")],
-    "power_per_missing": [("missing_hp", "reads")], "resets_on_kill": [("kill", "reads")], "rolls_again_on": [("rage", "reads")],
+    "power_per_missing": [("missing_hp", "reads")], "finisher": [("missing_hp", "reads")], "resets_on_kill": [("kill", "reads")], "rolls_again_on": [("rage", "reads")],
     "kill_rerolls": [("kill", "reads"), ("reroll", "sets")], "ally_action": [("reroll", "reads")], "regenerates": [("regenerating", "sets")],
     "spends_magazine": [("ammo", "reads")], "reloads_ammo": [("ammo", "sets")], "ammo_per_foe_hit": [("ammo", "sets")],
     "self_burn": [("burning_mech", "sets"), ("heat", "sets")], "volatile": [("hull_damage", "sets")], "strikes": [("strikes", "sets")],
@@ -113,7 +112,7 @@ EFFECTS = {
     "add_stacks": [], "vent_blast": [("heat", "reads")], "forge": [("ammo", "sets"), ("heat", "reads")], "mine_on_spend": [("mine", "sets")],
     "step_die": [("reroll", "reads")], "split_strikes": [("strikes", "sets")], "multiply_printed": [], "free_reroll": [("reroll", "sets")],
     "extra_action": [], "never_hunted": [], "no_destroy": [], "carry": [], "keep_status": [], "rewrite_weapon": [], "grant_keyword": [],
-    "add_shield": [], "vent_heat": [], "stack_status": [], "lay_status": [],
+    "add_shield": [], "refill_shield": [], "vent_heat": [], "stack_status": [], "lay_status": [],
     "multiply_heat": [("heat", "sets")], "add_damage": [], "add_damage_taken": [], "hull_per_spend": [("hull_damage", "sets")],
     "multiply_damage": [], "multiply_stacks": [], "add_heat": [("heat", "sets")], "weapon_cooldown": [], "one_of_each": [], "min_damage": [], "add_burn": [],
     "burn_shield": [("heat", "reads")], "bank_rerolls": [("reroll", "reads"), ("reroll", "sets")],
@@ -159,7 +158,6 @@ ENGINE_READERS = {
     "scorched": ["every weapon fired runs 1 hotter a stack this turn"],
     "disabled": ["the entry comes up blank"],
     "corrupted": ["each spend bites 3 a stack"],
-    "hot_streak": ["its shots run 1 hotter a stack this fight: the Kite's own price"],
     "heat": ["the overheat: hull one for one past the maximum"],
     "hull_damage": ["the injury roll at a quarter of maximum hull in one blow"],
     "kill": ["the slot clears: Direct opens on the foe behind (every weapon sets it)"],
@@ -375,7 +373,7 @@ def render(m):
         if cur == "heat":
             set_text = "every weapon with heat (%d pieces); " % m.heat_guns + set_text
         L.append("| %s | %s | %s | %s |" % (label, side, set_text, "; ".join(engine + [word(e) for e in readers]) or "nothing"))
-        foe_laid = cur in ("scorched", "disabled", "corrupted", "burning_mech", "hot_streak")
+        foe_laid = cur in ("scorched", "disabled", "corrupted", "burning_mech")
         if (side == "on a foe" or side == "on a machine") and not foe_laid:
             if setters and not sl:
                 unique.append(label)

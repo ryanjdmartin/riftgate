@@ -141,6 +141,7 @@ var power_per_heat: int = 0   # ...and each `per_heat` heat it fired adds this t
 var per_heat: int = 10        # ...the heat a step of power_per_heat stands for (the stock pass, 22 October: a field, 10 until the content landing)
 var power_per_missing: int = 0   # an attack: added for every per_missing HP its target is missing (10 October; flat, shown on the hover)...
 var per_missing: int = 20     # ...the HP a step of power_per_missing stands for (the stock pass, 22 October: a field, 20 until the content landing)
+var finisher: int = 0         # an attack: its number times this against a foe at half its HP or less, read as the hit judges the foe (the Kite's Pinion Driver, 11 November: the Coriolis's slope as one step); 0 for none
 var devours: int = 0          # an attack: each kill gives its owner this many stacks of Empowered (the Soulcutter Talons' rule; a keyword until 11 October, a count since 18 October)
 var fills_hopper: int = 0     # an attack: loads it puts in its machine's hopper for each foe its blows reach (the Chainsaw Claw, 11 October)
 var fires_hopper: int = 0     # an attack: the most loads one shot fires from the hopper...
@@ -333,6 +334,7 @@ static func from_dict(d: Dictionary) -> Face:
 		f.per_heat = maxi(1, int(d.get("per_heat", 10)))
 		f.power_per_missing = maxi(0, int(d.get("power_per_missing", 0)))
 		f.per_missing = maxi(1, int(d.get("per_missing", 20)))
+		f.finisher = maxi(0, int(d.get("finisher", 0)))
 		f.fills_hopper = maxi(0, int(d.get("fills_hopper", 0)))
 		# A save or a draft from before 11 October lists devour as a keyword, and one from before
 		# 18 October says `true`: each reads as the rule, a stack a kill.
@@ -420,6 +422,8 @@ func to_dict() -> Dictionary:
 	if power_per_missing > 0:
 		d["power_per_missing"] = power_per_missing
 		d["per_missing"] = per_missing
+	if finisher > 1:
+		d["finisher"] = finisher
 	if devours > 0:
 		d["devours"] = devours
 	if burn > 0 and has(Keyword.BURN):
@@ -571,7 +575,7 @@ func cooldown_rounds() -> int:
 ## prints with its shells (Ryan, 2 November), and a shield's cooling the number under its steam
 ## (3 November), so none of them is.
 func has_unique_rule() -> bool:
-	return vents_all or power_per_missing > 0 or not gates.is_empty() or not consumes.is_empty() or self_burn > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() or not printed.is_empty() \
+	return vents_all or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or self_burn > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() or not printed.is_empty() \
 		or spins or heat_per_blow > 0 or resets_on_kill or gathers_mines or detonates \
 		or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine \
@@ -643,6 +647,15 @@ func missing_bonus(target) -> int:
 	return power_per_missing * int(maxi(0, int(target.hp_max) - int(target.hp)) / maxi(1, per_missing))
 
 
+## Does this entry's finish hold against `target` (finisher: its number multiplied against a foe
+## at half its HP or less)? `hp` is the HP its hit judged the foe at, the foe's own when none is
+## given (a forecast, the die held over it).
+func finishes(target, hp: int = -1) -> bool:
+	if finisher <= 1 or target == null or target.get("hp_max") == null:
+		return false
+	return (hp if hp >= 0 else int(target.hp)) * 2 <= int(target.hp_max)
+
+
 ## What this blow adds against `target` for the stacks it consumes (the Backdraft Charge's
 ## Burning, 22 October): a point a stack, per_consumed each, read as the die is spent and
 ## added before the multiplies; nothing without a target or a status to eat.
@@ -674,6 +687,7 @@ func duplicate_face() -> Face:
 	f.per_heat = per_heat
 	f.power_per_missing = power_per_missing
 	f.per_missing = per_missing
+	f.finisher = finisher
 	f.devours = devours
 	f.burn = burn
 	f.cryo = cryo
@@ -822,6 +836,8 @@ func rule_phrases() -> Array[String]:
 			out.append("vents all" + (", +%d per %d heat" % [power_per_heat, per_heat] if power_per_heat > 0 else ""))
 		if power_per_missing > 0:
 			out.append("+%d per %d HP missing" % [power_per_missing, per_missing])
+		if finisher > 1:
+			out.append("×%d on a foe at half its HP or less" % finisher)
 		if not consumes.is_empty():
 			out.append("consumes %s, +%d a stack" % [str(Effects.STATUS.get(consumes, {}).get("name", consumes)), per_consumed])
 		if self_burn > 0:
@@ -969,6 +985,8 @@ func describe() -> String:
 				s += " vents all" + (", +%d per %d heat" % [power_per_heat, per_heat] if power_per_heat > 0 else "")
 			if power_per_missing > 0:
 				s += " +%d per %d HP missing" % [power_per_missing, per_missing]
+			if finisher > 1:
+				s += " ×%d on a foe at half its HP or less" % finisher
 			if not consumes.is_empty():
 				s += " consumes %s, +%d a stack" % [str(Effects.STATUS.get(consumes, {}).get("name", consumes)), per_consumed]
 			if self_burn > 0:

@@ -2633,7 +2633,7 @@ func test_a_promoted_form_takes_its_heros_kit_and_adds_its_own() -> void:
 
 
 ## A passive may break a rule as a one-off (the bible's section 7): the chassis's design names
-## it, and the effect cap lifts by one for that passive alone (the Kite's four effects).
+## it, and the effect cap lifts by one for that passive alone (the first Kite's four effects).
 func test_a_passive_one_off_lifts_the_effect_cap_by_one() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
@@ -2647,7 +2647,7 @@ func test_a_passive_one_off_lifts_the_effect_cap_by_one() -> void:
 		{"trigger": "on_attack", "effect": "multiply_printed", "value": 2},
 		{"trigger": "on_attack", "effect": "add_heat", "value": 10},
 		{"trigger": "static", "effect": "weapon_cooldown", "value": 2},
-		{"trigger": "on_kill", "effect": "stack_status", "value": "hot_streak"}]}
+		{"trigger": "on_kill", "effect": "stack_status", "value": "rallied"}]}
 	db.chassis[cid]["passive"] = four
 	db.chassis[cid]["design"].erase("one_off")
 	var capped := func() -> bool:

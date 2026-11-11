@@ -246,7 +246,7 @@ def kite(b):
     the boosters, ending in two angled stabilisers. Small but deadly. Reskinned 22 September
     to Kestrel's metals: the body in chrome plate, the wings cobalt, the boosters dark (the
     bone body predated the palettes). Since its rework (21 October) it carries the Pinion
-    Driver locked and two hardpoints, and Ryan, 28 October: "both wingtips be the 'Pinion
+    Driver locked and two hardpoints, three since 11 November, and Ryan, 28 October: "both wingtips be the 'Pinion
     Drivers'... Then the nose mounts are the hardpoints. Then the wingtips can maintain a
     streamlined symmetrical appearance based on what the drivers look like." So a matched
     driver at each tip, fixed, no pin, each a ramjet-gun (Ryan, 29 October: "a kind of
@@ -271,6 +271,9 @@ def kite(b):
             b.stock("hp_1", (s * 4.5, 28.0, -1.0), "barrel", scale=0.5, carries="transonic_rifle")
         else:
             b.pad("hp_2", (s * 4.5, 30.0, -1.0), scale=0.5, size=(3.0, 1.0))
+    # A third mount since its fourth entry (Ryan, 11 November: "giving it 4 faces again"): bare, on
+    # the nose's spine between the two, a placeholder place for him to move.
+    b.pad("hp_3", (0.0, 26.0, 3.1), scale=0.5, size=(3.0, 1.0))
     # Canopy: far back, low, faired into the spine rather than a bubble.
     b.loft([(-2.0, hexagon(0.0, 6.2, 7.0, 0.5)), (-10.0, hexagon(0.0, 7.4, 9.0, 3.0)),
             (-18.0, hexagon(0.0, 7.5, 9.0, 3.2)), (-26.0, hexagon(0.0, 7.2, 9.0, 3.0))], "glass.glass", "canopy")

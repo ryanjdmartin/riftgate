@@ -15,7 +15,7 @@ now carries "The kit, written out" (the Buzzard's and the Puffin's below), its s
 and a piece named only where it fits as it is.
 
 **Status**: the fast flyers' identities reopened under the long wall on 11 November (the next
-section; the Kite and the Needletail a proposal each in a brief of its own). Before that: every chassis decided by 21 October and named that evening (the Skua, the Storm
+section; the Kite and the Needletail rebuilt that day, the Skua's rewrite in a brief of its own). Before that: every chassis decided by 21 October and named that evening (the Skua, the Storm
 Petrel, the Needletail and the Giant Petrel in content and modelled 23 October, the Needletail
 whole, the Skua whole since its engine of 25 October, the other two planned until theirs); the Buzzard's stock filled and the stock
 holes taken; the last two slots marked (the Magpie, a support engine; the
@@ -70,14 +70,16 @@ and the paint puts an untouched back rank in reach of the Kite's Direct opener.
 
 Where each stands:
 
-- **The Kite**: redesigned from the ground up on his word, in its brief (`kestrel_kite.md`). A
-  Kite that left a fight at its heat maximum he declined ("it adds clunk to the battle. We
-  ditched withdrawal and the game feels better for it"). Its kit as his words of 11 November
-  leave it: four entries and no reset; every weapon doubled on an unhurt foe; the Pinion Driver
-  a finisher in a simpler form than the Coriolis Accelerator's, which keeps its slope in the
-  pool ("two execute pieces can exist"); a kill recharging a small shield whole. Phased on a
-  kill he kept for the shadow panther ("It keeps the phased orbit, not the Kite"). Open: the
-  Driver's form (Claude's: a double on a foe at half its hull or less) and the frame's numbers.
+- **The Kite**: redesigned from the ground up on his word and built 11 November on his go ("Yes
+  build them with placeholder numbers"). A Kite that left a fight at its heat maximum he
+  declined ("it adds clunk to the battle. We ditched withdrawal and the game feels better for
+  it"). The kit: four entries and no reset; every weapon doubled on an unhurt foe; the Pinion
+  Driver the finisher, doubled on a foe at half its HP or less (Claude's form of his "simpler
+  but fill the same purpose", his to move), beside the Coriolis Accelerator, which keeps its
+  slope in the pool ("two execute pieces can exist"); a kill recharging a small shield whole.
+  Phased on a kill he kept for the shadow panther ("It keeps the phased orbit, not the Kite").
+  Its brief is retired (`git show eed817e:docs/briefs/kestrel_kite.md`); the bible's Kite row
+  carries it, and his play is the to-do's.
 - **The Skua**: his rewrite of 11 November, in a brief of its own (`kestrel_skua.md`): a stack of
   Ricochet for damaging an enemy, once a round, and a second only by its lock, the Hypersonic
   Swoop (Rapid, a cooldown of one); a strike of 1 more for every stack, half lost on any hull
@@ -102,7 +104,9 @@ Where each stands:
 ## The line as it stands
 
 Eight machines decided, 3-3-2 across the tiers, and the last two of Ryan's ten marked on 21
-October, their tiers open (the counts: 3-5-2 or 4-4-2). Each with what it reads, what it produces, what it pays, and the currency the
+October, their tiers open (the counts: 3-5-2 or 4-4-2). The table is the line as that review
+left it; the Kite, the Needletail and the Skua have moved since 11 November (the fast flyers'
+section above, and the bible's rows). Each with what it reads, what it produces, what it pays, and the currency the
 direction gives it (the row's homes: strikes, a die mechanic, a banked resource, a cooldown
 burst, a delayed action, a combined entry, own rerolls).
 

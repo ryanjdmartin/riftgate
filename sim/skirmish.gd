@@ -2743,6 +2743,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	var lays: Dictionary = judged["lays"]
 	var reads: Dictionary = judged["reads"]
 	var shut: Dictionary = judged["shut"]
+	var judged_hp: Dictionary = judged["hp"]   # each foe's HP as the hit judged it, for a condition on it
 	var laid := {}
 	var webbed: Array[Foe] = []
 	var riders: Array[Callable] = []   # every rider the strikes earn, in order, landed once the strikes are done (Ryan, 3 November)
@@ -2784,6 +2785,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			lays = judged["lays"]
 			reads = judged["reads"]
 			shut = judged["shut"]
+			judged_hp = judged["hp"]
 			struck_once.clear()
 			doubled = Effects.stack_multiplier(ms.unit, f, aimed)
 		if s % split == 0:
@@ -2795,7 +2797,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 		# weapon damage is halved"), then the firer's pipeline, every live modifier's adds,
 		# multiplies and floors in that order, its conditions read on that foe; then that foe's own
 		# reads, flat (_foe_reads): "the spirit of buffs and riders is they happen after".
-		var modded := Effects.attack(ms.unit, f, split_share(f.power + own, split), heat, aimed)
+		var modded := Effects.attack(ms.unit, f, split_share(f.power + own, split), heat, aimed, _judged(judged_hp, aimed))
 		var dmg: int = int(modded["damage"]) + _foe_reads(f, reads, aimed, not struck_once.has(aimed))
 		if s == 0 and not sweep:
 			h.heat += modded["heat"]   # heat is paid once a spend, every modifier's with it (the rules: a blow)
@@ -2809,7 +2811,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 		# strike, never this one's other blows.
 		var blows := {}
 		for foe in hit:
-			blows[foe] = dmg if foe == aimed else _area_blow(ms, f, int(shapes.get(foe, AREA_ALL)), foe, own, split) + _foe_reads(f, reads, foe, not struck_once.has(foe))
+			blows[foe] = dmg if foe == aimed else _area_blow(ms, f, int(shapes.get(foe, AREA_ALL)), foe, own, split, _judged(judged_hp, foe)) + _foe_reads(f, reads, foe, not struck_once.has(foe))
 		for foe in hit:
 			var was_alive := foe.alive()
 			var hp_before := foe.hp
@@ -3106,14 +3108,16 @@ func _judge(ms: MechState, f: Face, foes: Array) -> Dictionary:
 	var lays := {}
 	var reads := {}
 	var shut := {}
+	var hp := {}
 	for foe in foes:
 		var l := Effects.laid_statuses(ms.unit, f, foe)
 		if not l.is_empty():
 			lays[foe] = l
 		reads[foe] = [f.missing_bonus(foe), Effects.stacks_of(foe, f.consumes) if not f.consumes.is_empty() else 0]
+		hp[foe] = foe.hp   # the HP a condition on it reads for every blow of the hit (the Kite's opener, its lock's finish)
 		if f.has(Face.Keyword.SUPPRESS) and not Effects.gate_holds(ms.unit, f, Face.Keyword.SUPPRESS, foe):
 			shut[foe] = [Face.Keyword.SUPPRESS]
-	return {"lays": lays, "reads": reads, "shut": shut}
+	return {"lays": lays, "reads": reads, "shut": shut, "hp": hp}
 
 
 ## What an entry does past its blow, landed in the rider phase before the death check, on a
@@ -3408,8 +3412,14 @@ static func _foe_reads(f: Face, reads: Dictionary, foe: Foe, first: bool) -> int
 ## One hit's blow on a foe past its own, before the foe's own reads, statuses and armour: its
 ## shape's number with `prints` (what the entry prints from its firer), a split's halving of that
 ## base, through the firer's pipeline with its conditions judged on that foe.
-func _area_blow(ms: MechState, f: Face, shape: int, foe: Foe, prints: int, split: int) -> int:
-	return int(Effects.attack(ms.unit, f, split_share(area_number(f, shape) + prints, split), 0, foe)["damage"])
+func _area_blow(ms: MechState, f: Face, shape: int, foe: Foe, prints: int, split: int, ctx: Dictionary = {}) -> int:
+	return int(Effects.attack(ms.unit, f, split_share(area_number(f, shape) + prints, split), 0, foe, ctx)["damage"])
+
+
+## What a blow's pipeline reads of a foe in place of its own state: the HP its hit judged it at,
+## so a condition on it (unhurt, at half) holds for every blow of the hit or for none.
+static func _judged(judged_hp: Dictionary, foe) -> Dictionary:
+	return {"hp": int(judged_hp[foe])} if judged_hp.has(foe) else {}
 
 
 ## Every twin of the foes in `hit` joins it, the slot reached whole: an area blow's (26 October).

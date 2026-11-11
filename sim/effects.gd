@@ -64,7 +64,7 @@ const SUPPORTED_EFFECTS := {
 	"status": ["tick_hp", "tick_hp_share", "tick_heat", "skip_action", "disable_entry", "corrupt_entry", "regrow"],
 	"on_foe_status": ["paradox"],
 	"on_stack": ["add_stacks"],
-	"on_kill": ["stack_status", "add_shield", "vent_heat"],
+	"on_kill": ["stack_status", "add_shield", "vent_heat", "refill_shield"],
 }
 const DECAY_NONE := 0    # lives until its scope ends
 const DECAY_TICK := 1    # loses a stack each tick, gone at zero
@@ -342,12 +342,6 @@ const STATUS := {
 		"tags": ["buff"], "effects": [{"trigger": "status", "effect": "regrow", "value": 2}]},
 	"ward": {"id": "ward", "name": "Ward", "description": "No rider a foe lays lands on it this round, from a blow or a move of its own (breach, burn, scorch, disable, corrupt, silence, purge); a blow's damage lands. Until the round's end.", "stacking": "renew",
 		"tags": ["buff"], "effects": []},
-	# The Kite's heat tax (Ryan's direction of 19 October, his go of 21 October; a working name):
-	# each attack that killed makes its shots 5 hotter for the fight, a stack a killing attack.
-	# The passive's own price, so neither a buff nor a store (no silence or purge lifts it) and no
-	# cleanse takes it; it lasts the fight.
-	"hot_streak": {"id": "hot_streak", "name": "Hot Streak", "description": "Its shots run {value} hotter a stack this fight: a stack for each attack that killed.", "decay": "none",
-		"tags": ["ability", "tax"], "effects": [{"trigger": "on_attack", "effect": "add_heat", "value": 1}]},
 }
 ## The statuses a buff component may grant: the machines' own (Braced is a foe's too, from its
 ## brace), never one only a foe carries.
@@ -483,12 +477,16 @@ const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol",
 ## is taking carries the status the effect's `status` names (any of FOE_STATUSES when it names
 ## none). Read by damage_taken alone, which is handed the striker; every other static query
 ## has no striker, so the condition never holds there. A status the engine lacks never holds.
+## target_unhurt and target_half (the Kite's opener and its lock's finish, 11 November): the foe
+## the blow is aimed at stands at its full HP, or at half its HP or less. Read as the hit judges
+## the foe, never between its strikes: a single-target weapon's as the die is spent, a Sweep's at
+## each shot (the spend hands the HP it judged in `ctx`; a forecast reads the foe's own).
 ## shield_up (the Storm Petrel's plate, built 30 October): the machine's own shield stands, read
 ## on the shield as it is before the blow (damage_taken's `shield` when a forecast walks its blows).
 ## sealed (the Polar Bear's Lockdown, 9 November): the machine wears its seal (is_sealed), so a
 ## grant holds only in the sealed form; with an `entry` beside it (any effect may carry one: a
 ## component id) it holds on that piece's entries alone.
-const SUPPORTED_WHEN := ["reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank", "shield_up", "sealed"]
+const SUPPORTED_WHEN := ["reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank", "target_unhurt", "target_half", "shield_up", "sealed"]
 ## Stats a static effect may change: the mech's base numbers by these names.
 const STATS := ["hull", "shield", "heat", "armour", "move", "cooling", "shield_regen"]
 ## Effects that are bonuses (a destroyed component keeps them) rather than abilities.
@@ -971,6 +969,12 @@ static func _holds(u, eff: Dictionary, face: Face, target = null, ctx: Dictionar
 			return stacks_of(target, want) >= maxi(1, int(eff.get("stacks", 1)))
 		"target_no_intent":
 			return target != null and target.has_method("intent_on") and not target.intent_on(u)
+		"target_unhurt":
+			# The foe stands at its full HP as its hit judged it (the Kite's opener, 11 November).
+			return target != null and target.get("hp_max") != null and int(ctx.get("hp", target.hp)) >= int(target.hp_max)
+		"target_half":
+			# The foe stands at half its HP or less as its hit judged it.
+			return target != null and target.get("hp_max") != null and int(ctx.get("hp", target.hp)) * 2 <= int(target.hp_max)
 		"attacker_status":
 			return target != null and target.get("modifiers") != null and carries_status(target, str(eff.get("status", "")))
 		"ally_present":
@@ -1056,7 +1060,7 @@ static func split_of(u, face: Face) -> int:
 ## damage and on heat, with the burn and the vent the effects add. `target` is the foe the
 ## blow is aimed at, for conditions on it (null when only the heat is asked). Returns
 ## {damage, heat, burn, vent}.
-static func attack(u, face: Face, dmg: int, heat: int, target = null) -> Dictionary:
+static func attack(u, face: Face, dmg: int, heat: int, target = null, ctx: Dictionary = {}) -> Dictionary:
 	var d_add := 0.0
 	var d_mult := 1.0
 	var d_floor := 0
@@ -1065,7 +1069,12 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null) -> Diction
 	var p_mult := 1.0   # a multiply on the entry's own number alone, before the adds (the Kite's double: the printed number, buffs once)
 	var burn := 0
 	var vent := 0
-	var parts: Array = _taking_part(u, "on_attack", face, target)
+	# The entry's own finish (the Kite's Pinion Driver, 11 November): its number multiplied against a
+	# foe at half its HP or less, on the printed number as a passive's double is, the buffs once
+	# after it; the HP the hit judged, as a passive's condition on it is.
+	if face != null and face.finishes(target, int(ctx.get("hp", -1))):
+		p_mult *= float(face.finisher)
+	var parts: Array = _taking_part(u, "on_attack", face, target, ctx)
 	for pair in parts:
 		var eff: Dictionary = pair[0]
 		var v: float = float(eff.get("value", 0))
@@ -1551,6 +1560,10 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 				out["shield"] += v * int(amount / maxi(1, int(eff.get("per_heat", 10))))
 			"add_shield":
 				out["shield"] += v
+			"refill_shield":
+				# The shield back whole (the Kite's kill, Ryan, 11 November: "kills recharge it's
+				# shield completely"): what it is short of its maximum, no more.
+				out["shield"] += maxi(0, int(u.shield_max) - int(u.shield))
 			"vent_heat":
 				out["vent"] += v
 			"stack_status":
@@ -1854,7 +1867,7 @@ static func purgeable(m) -> bool:
 
 ## Is this status an ability (Ryan, 8 November): a unit's own mechanic, shown as its chip on a
 ## solid tile, never a buff or a debuff, so nothing that strips buffs or marks reaches it (the
-## Polar Bear's seal, a core's guard, a golden rage, Hot Streak).
+## Polar Bear's seal, a core's guard, a golden rage).
 static func is_ability(status_id: String) -> bool:
 	return (STATUS.get(status_id, {}).get("tags", []) as Array).has("ability")
 
@@ -2105,6 +2118,15 @@ static func muster_charges(u) -> int:
 	return stacks_of(u, "muster") / maxi(1, int(rule.get("value", 30)))
 
 
+## Does a kill of its own recharge this machine's shield whole (on_kill refill_shield, the Kite's
+## Disabled Weapon Regulators since 11 November)? The bot's read of a kill's worth.
+static func refills_on_kill(u) -> bool:
+	for pair in _taking_part(u, "on_kill", null):
+		if str(pair[0].get("effect", "")) == "refill_shield":
+			return true
+	return false
+
+
 ## Does the machine act twice a round, once with a weapon and once with equipment (static
 ## one_of_each, the Needletail's Quick-turn Avionics Relay; Ryan, 11 November: "using two things a
 ## round is very Kestrel and deserves a chassis")? After its first spend of either kind its die
@@ -2290,6 +2312,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"shield_regen_per_heat": body = "shield regen +%s for every %d heat it carries" % [vs, int(eff.get("per_heat", 10))]
 		"shield_per_ally_heat": body = "the shield grows by %s for every %d heat it carries" % [vs, int(eff.get("per_heat", 10))]
 		"add_shield": body = "+%s shield" % vs
+		"refill_shield": body = "its shield recharges whole"
 		"tick_hp": body = "%s damage per stack each turn" % vs
 		"tick_hp_share": body = "loses %s%% of its current HP per stack each turn" % vs
 		"tick_heat": body = "%s heat per stack each turn" % vs
@@ -2328,6 +2351,8 @@ static func effect_text(eff: Dictionary) -> String:
 			var want := str(eff.get("status", ""))
 			lead += ("foes carrying %s: " % str(STATUS[want]["name"])) if STATUS.has(want) else "foes carrying a status: "
 		"target_no_intent": lead += "foes showing no intent on this machine: "
+		"target_unhurt": lead += "unhurt foes: "
+		"target_half": lead += "foes at half their HP or less: "
 		"attacker_status":
 			var st := str(eff.get("status", ""))
 			lead += "blows from foes carrying %s: " % (str(STATUS[st]["name"]) if STATUS.has(st) else (st.capitalize() if not st.is_empty() else "a status"))
@@ -2379,7 +2404,7 @@ static func explain(u, face: Face) -> Array[String]:
 				# A condition on the target is shown as a rule (its lead says when), since
 				# the row has no target in hand.
 				var w := str(eff.get("when", ""))
-				var on_target := w in ["target_status", "target_no_intent", "target_rank"]
+				var on_target := w in ["target_status", "target_no_intent", "target_rank", "target_unhurt", "target_half"]
 				if w == "target_rank" and not str(eff.get("reach", "")).is_empty():
 					on_target = effective_reach(u, face) == Face.reach_from_name(str(eff["reach"]))   # the Ram Frame's read: Direct entries only
 				if _usable(u, m, name) and (on_target or _holds(u, eff, face)):

@@ -360,8 +360,8 @@
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "A pinion is a wing's flight feathers, and a gear: the reset gun that keeps the Kite in the air by killing.",
-    "niche": "The Kite's lock, its reset gun: a sure kill the drag shows on most trash; two shots at half each, one from each wing tip, the old total in two; if either kills, every weapon comes back and the Kite acts again, and a team reroll back onto it chains it again with every kill, with no limit (Ryan, 24 October)."
+    "fantasy": "A pinion is a wing's flight feathers, and a gear: the gun at each wing tip that finishes what the Kite's opening left.",
+    "niche": "The Kite's lock, its finisher (Ryan, 11 November: \"maybe it gains it's execution mechanism back so the kite has a finisher to pair with its opener of choice\", in a simpler form than the Coriolis Accelerator's slope, which keeps the missing-HP growth in the pool: \"two execute pieces can exist\"): two shots, one from each wing tip, each doubled against a foe at half its HP or less, read as the die is spent. With the Kite's passive it doubles on the unhurt too, never both at once. Until then its reset gun (21 October)."
    },
    "face": {
     "kind": "attack",
@@ -370,7 +370,7 @@
     "strikes": 2,
     "keywords": [],
     "heat": 0,
-    "resets_on_kill": true
+    "finisher": 2
    },
    "passive": null,
    "tags": []

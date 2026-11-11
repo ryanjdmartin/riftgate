@@ -12,7 +12,7 @@ const MAX_AUTHORED_KEYWORDS := 3    # per authored face; upgrades may exceed thi
 const MAX_MOVE := 6                 # a move in hexes, chassis or foe, is 1 to this (a placeholder bound, 28 October)
 ## The caveats a hunting composition may name (`hunts`): whom its pack locks.
 const HUNT_CAVEATS := ["nearest", "weakest", "strongest", "slowest", "fastest"]
-const MIN_DIE := 3                  # the Kite is a d3 (its row, Ryan's go of 21 October: every dark entry felt)
+const MIN_DIE := 4                  # a d3 was the first Kite's one-off (21 October to 11 November); no machine rolls one today
 const MAX_DIE := 10                 # the Clydesdale carries nine (Ryan, 28 September); ten leaves it room
 ## A chassis's class by mass, lightest first (Ryan, 5 October: the machines' scale on the map
 ## and in the skirmish): how big it is drawn, Map3D.SIZE_FIT and MechView3D.SIZE_FILL.
@@ -1418,6 +1418,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: power_per_missing is a positive number on an attack" % where)
 	if fd.has("per_missing") and (not fd.has("power_per_missing") or int(fd["per_missing"]) <= 0):
 		errs.append("%s: per_missing is the HP a step of power_per_missing stands for: positive, and only beside power_per_missing" % where)
+	# The Pinion Driver's finish (the Kite's, 11 November): a weapon's number times this against a
+	# foe at half its HP or less, a whole number of two or more.
+	if fd.has("finisher") and (kind != "attack" or int(fd.get("power", 0)) <= 0 or int(fd["finisher"]) < 2 or float(fd["finisher"]) != floorf(float(fd["finisher"]))):
+		errs.append("%s: finisher is a weapon's: its number times that, a whole number of 2 or more, against a foe at half its HP or less" % where)
 	# Volatile is a cost, not a keyword (Ryan, 26 October): `volatile`, the hull a spend bites, a
 	# positive number beside the heat; and a shield cost the same way (`shield_cost`), the shield
 	# a spend takes first, the entry unplayable while the shield is short of it.
@@ -1703,7 +1707,8 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 
 ## `one_off`: the chassis's design names the rule its passive breaks as a one-off (the bible's
 ## section 7: a passive may break a rule, the rule bending for one machine), which lifts the
-## effect cap by one: the Kite's double, its heat, its dark rounds and its tax, two lines.
+## effect cap by one (the first Kite's double, its heat, its dark rounds and its tax, two lines; no
+## chassis names one today).
 func _validate_passive(where: String, p, errs: Array[String], one_off: bool = false) -> void:
 	if p == null:
 		return

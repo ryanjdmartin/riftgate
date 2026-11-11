@@ -55,6 +55,7 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("vents_all", "Vents all", lambda f: bool(f.get("vents_all"))),
            ("kill_overcharge", "Empowered a kill", lambda f: int(f.get("devours", 0) or 0) > 0),   # Overcharged is Empowered since 3 November
            ("power_per_missing", "Grows with missing HP", lambda f: int(f.get("power_per_missing", 0)) > 0),
+           ("finisher", "Finisher", lambda f: int(f.get("finisher", 0) or 0) > 1),
            ("gated", "Gated", lambda f: bool(f.get("gates"))),
            ("consumes", "Consumes", lambda f: bool(f.get("consumes"))),
            ("self_burn", "Burns its firer", lambda f: int(f.get("self_burn", 0) or 0) > 0),

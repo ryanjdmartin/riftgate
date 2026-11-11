@@ -272,19 +272,22 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
 - The Kestrel fast flyers, 11 November (`ccr-e3ddf00b-ilkwbi`; Ryan: "I want to revisit the Kite a
   bit. Something about it feels clunky to me", then the Kite "from the ground up, ignoring target
   tier and previous assumptions" and the three move-six flyers' identities under the long wall,
-  "what does what and why you'd want one over the other"). Nothing built; every round is in its
-  brief and the map at the head of `kestrel_line.md`. A probe of the Kite's turns is in
-  `docs/measurements.md` (its die opens dark a round in five, its own heat costs it as much hull
-  as the foes do, its reset fires under once a fight). Where it stands:
-  - The Kite (`kestrel_kite.md`): a Kite leaving a fight at its heat maximum declined ("it adds
-    clunk to the battle. We ditched withdrawal and the game feels better for it. Forced withdrawal
-    probably feels bad": the bible's withdrawal row, its file v0.530 on this branch, unpublished).
-    Its kit as his words leave it, "Burst glass cannon": four entries and no reset, every weapon
-    doubled on an unhurt foe, the Pinion Driver a finisher in a simpler form than the Coriolis
-    Accelerator's slope (both stand, his word), a kill recharging a small shield whole; Phased on
-    a kill he kept for the shadow panther (a line at the Zoids walker's brief's head). Open with
-    him: the Driver's form (Claude's: a double on a foe at half its hull or less), the frame's
-    numbers, then his go.
+  "what does what and why you'd want one over the other"). The Needletail and the Kite are built
+  on his go, placeholder numbers; the Skua's rewrite is next. The map is at the head of
+  `kestrel_line.md`. A probe of the old Kite's turns is in `docs/measurements.md` (its die opened
+  dark a round in five, its own heat cost it as much hull as the foes did, its reset fired under
+  once a fight). Where it stands:
+  - The Kite: built as his "Burst glass cannon" (the bible's Kite row, v0.532 on this branch,
+    unpublished). Four entries and no reset; every weapon doubled on an unhurt foe
+    (`target_unhurt`); the Pinion Driver the finisher, doubled on a foe at half its HP or less (a
+    component's `finisher`; Claude's form, his to move); a kill recharging its shield whole
+    (`refill_shield`); hull 12, shield 8 at a regen of 1. Both doubles read the foe's HP once a
+    hit, so a two-shot gun is doubled whole or not at all. Gone from content: the flat heat, the
+    dark rounds, Hot Streak, the d3 (the die's minimum is four again); the engine keeps Reset and
+    a passive's cooldown, which no piece prints. A Kite leaving a fight at its heat maximum he
+    declined (the bible's withdrawal row); Phased on a kill he kept for the shadow panther. The
+    model's third mount is a bare pad on the nose's spine. Its brief is retired; his play is the
+    to-do's.
   - The Skua (`kestrel_skua.md`): his rewrite, "Ramping Dakka": Ricochet (a stack for damaging an
     enemy, once a round; a strike of 1 more a stack; half lost on hull damage), the Hypersonic
     Swoop its lock (a stack, Rapid, a cooldown of one), the Flechette Pod an ordinary weapon;

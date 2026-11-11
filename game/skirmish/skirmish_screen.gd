@@ -1913,7 +1913,7 @@ func _mech_rows(i: int) -> Array:
 		total[id] = int(total[id]) + int(d[4])
 	# An ability (Ryan, 8 November: "It's not a Buff, it's not a Debuff, it's labelled as an
 	# Ability, so it doesn't get purged"): the machine's own mechanic, the Polar Bear's seal,
-	# Hot Streak, on a solid tile and named so in its readout, ahead of the buffs.
+	# on a solid tile and named so in its readout, ahead of the buffs.
 	var abilities: Array = []
 	var at := rows.size()
 	for id in order:
