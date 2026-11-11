@@ -57,6 +57,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 ## Branches
 
 Everything is on main as of 11 November 2026 but the formation and refit session's branch, below.
+`ccr-e3ddf00b-ilkwbi`, the Kestrel fast flyers' session of 11 November (The design sessions, below),
+cut from main at `209112b` and took main at `2a9242e` as a fast-forward before its first commit:
+records alone (two briefs, the hub's section, a probe in the measurements, the to-do's lines),
+nothing built and no rule changed; it lands on Ryan's word.
 `ccr-c71bc17f-hclj2c`, Ryan's map playtest list of 10 November, his answers to it and his second
 and third map lists the same day (How things stand below), cut from main at `aa40832`, landed on
 main as fast-forwards on his word each time ("Ok, merge this into main so I can try it"; "yeah,
@@ -263,6 +267,20 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   ("It needs something else"). Mastema's first round is unanswered; its tenth waits until its
   unrefined ideas settle (Ryan).
 - The roster's tasks, group by group, are the to-do's "The roster: ten a maker".
+- The Kestrel fast flyers, 11 November (`ccr-e3ddf00b-ilkwbi`; Ryan: "I want to revisit the Kite a
+  bit. Something about it feels clunky to me", then the Kite "from the ground up, ignoring target
+  tier and previous assumptions" and the three move-six flyers' identities under the long wall,
+  "what does what and why you'd want one over the other"). A probe of the Kite's turns is in
+  `docs/measurements.md` (its die opens dark a round in five, its own heat costs it as much hull
+  as the foes do, its reset fires under once a fight). Claude's first round, nothing decided and
+  nothing built: the map at the head of `kestrel_line.md` (the Skua the wide fight, the Kite the
+  short one, the Needletail the long one alone, beside the Buzzard's burst that stays); the
+  Kite's proposal in `kestrel_kite.md` (its heat its time on target: it breaks off at its
+  maximum, the one machine that leaves a fight; the dark rounds and Hot Streak gone); the
+  Needletail's in `kestrel_needletail.md` (the squad's machines outside the fight shell what it
+  paints, or the smaller step, a weapon and an equipment every round). Open with him: whether one
+  machine may leave a fight (the withdrawal row bent as a passive's one-off) and when, and which
+  Needletail. The Skua is his own session's.
 
 ## How things stand
 

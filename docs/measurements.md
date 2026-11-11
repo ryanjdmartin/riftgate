@@ -7679,3 +7679,38 @@ against 11% to 16%), in six to nine rounds, with no machine wrecked: a boss for 
 quarters of a boss for four. Hit points alone do not do it: at two thirds of the hit points
 (the old 48) and the whole blow two trios still lose a quarter of their hull and a machine in
 one fight of four.
+
+## 11 November, the Kite's turns: a probe
+
+Ryan, 11 November: "I want to revisit the Kite a bit. Something about it feels clunky to me." What
+its turns hold, counted: a scratch script over `Skirmish` and `Policy` (the greedy rung; each
+round played by `Policy.play_round`, the Kite's die read as the round opens and the log read for
+its spends, its resets and its overheats), on main's content at `209112b`. Three reads: the
+default team cut to three (the Honey Badger, the Clydesdale, the Kite) against every tier-one
+patrol and formation of every domain, the same against tier two's, and the Kite with the Buzzard
+and the Lammergeier against tier two's formations; 20 seeds a composition. A first pass at 30
+seeds read the same on every counter the two share. A direction. The decision it informs: his
+call of the same day to redesign the Kite from the ground up (`docs/briefs/kestrel_kite.md`).
+
+| Read | The default three, tier one | The default three, tier two | With the Buzzard and the Lammergeier, tier two's formations |
+|---|---|---|---|
+| Fights, all won; mean rounds | 400; 2.7 | 480; 3.8 | 280; 4.0 |
+| Its die opens on a dark entry, of its rounds | 18% | 17% | 20% |
+| It spends nothing, of the rounds the fight goes on after | 6% | 13% | 13% |
+| Spends a fight: the Driver, the rifle, the autoguns | 1.1, 0.9, 0.5 | 1.5, 0.9, 0.5 | 1.7, 1.0, 0.8 |
+| Attacks that killed a fight | 1.8 | 1.8 | 2.2 |
+| Resets a fight; the action it gives spent, held | 0.6; 0.5, 0.1 | 0.7; 0.5, 0.1 | 0.9; 0.7, 0.1 |
+| Hot Streak at its peak | 1.3 | 1.3 | 1.8 |
+| Hull lost a fight to its own heat, to the foes (of 12) | 1.3, 1.1 | 1.4, 1.7 | 1.8, 2.1 |
+| Wrecked; by its own heat | 6%; 2% | 12%; 1% | 11%; 3% |
+
+Read. The entry it spent is dark the round after, so from the second round its die opens dark
+one time in three, about one round in five over fights this short; the bot buys most of them
+back with the team's rerolls. The reset fires under once a fight, and a d3 holds at most one
+entry dark from the round before, so what it brings back is that entry and the Driver itself.
+Its own heat takes about as much of its hull as the foes do, and it is the machine that falls in
+fights its team wins every time. One fight's log for the shape (`tools/balance.gd -- --trace
+"kestrel team|meadow formation tier 2|greedy|1"`): over five rounds it burnt 11 of its 12 hull
+itself and ended on 1, every blow the foes aimed at it stopped by its shield. Alone against a
+tier-two duelist it wins in two rounds with no hull lost (the duelists' read of 10 November,
+above). The Hot Streak figure is read as its turn ends, so a fight's last kill is not in it.

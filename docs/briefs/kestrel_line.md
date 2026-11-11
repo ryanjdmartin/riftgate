@@ -14,7 +14,8 @@ stock by kind, since most stock pieces are placeholders until the stock pass; so
 now carries "The kit, written out" (the Buzzard's and the Puffin's below), its stock by kind
 and a piece named only where it fits as it is.
 
-**Status**: every chassis decided by 21 October and named that evening (the Skua, the Storm
+**Status**: the fast flyers' identities reopened under the long wall on 11 November (the next
+section; the Kite and the Needletail a proposal each in a brief of its own). Before that: every chassis decided by 21 October and named that evening (the Skua, the Storm
 Petrel, the Needletail and the Giant Petrel in content and modelled 23 October, the Needletail
 whole, the Skua whole since its engine of 25 October, the other two planned until theirs); the Buzzard's stock filled and the stock
 holes taken; the last two slots marked (the Magpie, a support engine; the
@@ -24,6 +25,66 @@ Snowy Owl, a stealth unit), each in a brief of its own since that evening. A pro
 bible's action-economy row, its leans row and its Kestrel rows (sections 5 and 7); the five
 Kestrel briefs; `content/chassis.json` and `content/components.json` (maker `kestrel`);
 `docs/balance.md` (13 October: the Kestrel rows and the pick shares).
+
+## The fast flyers, under the long wall (11 November)
+
+Newer than the review below, which predates the long wall, the refit and the foes' roles: where
+the two differ, this section stands.
+
+- Ryan, 11 November: "Given our new battle framework, I want to settle the identities of the
+  Kestrel fast flyers. Not pigeonholes, but just what does what and why you'd want one over the
+  other." "Kite, Skua, and Needletail are the 3 move Sixers, where the skua has a direction but
+  needs tweaks and the needletail is basically free to be whatever we want. Buzzard is close
+  behind as a move 5 risky dps/burst engine, giving it a hybrid identity that can fit into either
+  a squad or flanker role. So what about the other three? Let's sort them out together, now."
+- Of the Kite and the Buzzard: "I feel like the "cousin" angle between kite and Buzzard can be
+  dropped since they no longer share names."
+- Of the last two slots: "the remaining two Kestrel chassis probably shouldn't be in the move 6
+  light space with these three. Probably more in the Buzzard/storm Petrel medium space. So their
+  roles are still open but not really relevant to this discussion."
+
+**What the wall asks of a fast machine** (the rules' battlefield; the bible's squad row and roles
+row). A high-move machine is the flanker and the firefighter (his word of 5 November). A
+formation is a fight for three; a patrol is a duel for one or, as a pair or a hunting pack, a
+fight for two; an elite and the boss are a true four. A machine has one action a turn, no fight is
+left, hull stays for the battle while the shield opens full, and a pack that a fight has worn
+strikes the wall by the heads it still holds. So what a flank sends comes in three shapes: many
+small heads (a hunting pack, a pair, the tide's patrols), one head that matters (a duelist, the
+worker behind a formation's front, an elite's own), and a fight too long for a light.
+
+**The map (Claude's, for him to move)**: each by the fight it is built to take.
+
+| Machine | Its fight | It wins by | With the squad | What it cannot do | What its kit wants |
+|---|---|---|---|---|---|
+| The Skua | the wide one | count: every hit twice, a shot a column | the team's riders and stacks, twice | plate, and one big foe | riders a hit, flat buffs, multi-strike guns |
+| The Kite | the short one, a pass | magnitude, then the exit | two or three doubled shots and gone | hold ground, or grind | one or two decisive guns; heat as time on target |
+| The Needletail | the long one, alone | the squad's fire on what it paints | reach and armour for every Direct gun | a wide pack; weight of its own | every source of Exposed |
+| The Buzzard (move 5, medium) | either, squad or flank (his word) | the burst that stays: its shield spent into its blow | the big blow on the big foe | | hot guns |
+
+Why one over another is what the squad lacks. No area and riders to double: the Skua, which holds
+a flank against numbers. A plan to split, with a flank that must stand a real fight: the
+Needletail, which brings the squad's weight without the squad. Fights that are won but bled for,
+a back rank that works, more wall than machines: the Kite, which takes the head off a pack
+anywhere, a turn before the squad meets it or instead of it. They pair: a painted foe's armour
+counts for nothing, the one thing the Skua's halved hits fear, and the paint puts a back rank in
+reach of the Kite's Direct guns; the Puffin's direction (it moves heat) keeps a Kite on target or
+throws it out a round early.
+
+Where each stands:
+
+- **The Kite**: redesigned from the ground up on his word, a proposal in its brief
+  (`kestrel_kite.md`): the one machine a fight cannot hold, its heat its time on target, breaking
+  off at its maximum. His calls open there.
+- **The Needletail**: a proposal in its brief (`kestrel_needletail.md`): what it paints, the
+  squad's machines outside the fight shell; the smaller step beside it, a weapon and an equipment
+  every round. His pick open there.
+- **The Skua**: his own session's (11 November: "Clydesdale and skua I'm handling in other
+  sessions"), its direction kept. What this map asks of its tweaks, no more: that it stays in its
+  fight (the flank's holder against numbers), that each hit still pays the foe's armour (its
+  counter, and the Needletail's reason beside it), and that riders count on each hit. His levers
+  of 7 November are in the bible's Kestrel row.
+- **The last two slots** (the Snowy Owl, the Magpie): medium, by his word above; open, and not
+  this round's.
 
 ## The line as it stands
 
@@ -460,7 +521,8 @@ folded 7 November), for the design session the to-do names for them:
 - **The Giant Petrel**: "marked built, but it is far from completed. Placeholder model,
   unrefined kit."
 - **The Needletail**: "marked built, but it is far from completed. Placeholder model,
-  unrefined, dull, kit, not worthy of tier 2."
+  unrefined, dull, kit, not worthy of tier 2." Its kit has a brief of its own since 11 November
+  (`kestrel_needletail.md`).
 
 The last two slots are their briefs' (`kestrel_magpie.md`, `kestrel_owl.md`), taken up in
 another session (Ryan, 21 October: "I'll take up the last 2 chassis in another session").
