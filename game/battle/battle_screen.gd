@@ -1573,15 +1573,14 @@ func _on_skirmish_back() -> void:
 ## band over the map, FRACTURE with its count and what it brings, an elite out of the rift (the
 ## map glides in on it as it arrives and the band names it) or nothing more; the last, THE RUPTURE, the seal broken and the boss open to
 ## a fight; and the top bar's gauge flashes. Several earned by one fight are one band, its count the
-## last. The stall guard's Rupture (no pack but the boss's left) says so.
+## last.
 func _show_fracture(elite: bool) -> void:
 	_top.flash("fractures")
 	var n := battle.thresholds.size()
 	if not battle.is_sealed():
 		if battle.boss != null:
 			_map.scroll_to_unit(battle.boss)
-		var why := "THE FIELD IS CLEAR // " if battle.stall_guard else ""
-		_warn_band("RUPTURE", why + "THE SEAL BREAKS // THE BOSS CAN BE FOUGHT", false, "reveal")
+		_warn_band("RUPTURE", "THE SEAL BREAKS // THE BOSS CAN BE FOUGHT", false, "reveal")
 		return
 	var said := "FRACTURE %d OF %d" % [battle.fractures, n]
 	if elite:

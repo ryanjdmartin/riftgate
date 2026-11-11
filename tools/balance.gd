@@ -36,7 +36,7 @@ extends SceneTree
 ## elite composition at each tier it names, fought by the default four machines cut to its threat rating, one
 ## short and one over, into its own report, printed or written to --out; no matrix), --packs curve (the
 ## curve read for the formation pass, 7 November: every such composition against the four cut to every
-## size from one to four, each cell's band and hull, its menace, ramp gate and the bands it shares with
+## size from one to four, each cell's band and hull, its weight, ramp gate and the bands it shares with
 ## its peers, printed or written to --out; no matrix; with it --team id,id,id,id reads another team in
 ## that cut order, a light machine first for the rating of one, a tier's chassis for its compositions,
 ## and --tiers 1,2, --sizes patrol,formation, --domains meadow,waste and --ids a,b narrow the read, 9 November),
@@ -706,7 +706,8 @@ func _promise() -> int:
 ## random and greedy at the seeds given. Each cell's band is the bible's reading: free (random play
 ## wins half its fights or more), a decision (greedy wins half or more and random less) or a wall
 ## (greedy wins less than half), with greedy's mean hull lost beside it. Each composition carries its
-## menace (its members' added), its ramp gate, its threat rating, the sizes it is a decision for, and
+## weight (its members' own numbers added, ContentDB.weight: what its stat blocks come to beside the
+## rating its menace is), its ramp gate, its threat rating, the sizes it is a decision for, and
 ## the compositions of its domain, size and tier whose bands match it at every size: a candidate for
 ## pruning. A direction read for placing variants, never a gate. Printed, and written to --out.
 func _curve() -> int:
@@ -734,10 +735,10 @@ func _curve() -> int:
 					if not only_ids.is_empty() and not only_ids.has(str(c["id"])):
 						continue
 					var mix: Array = c["members"].duplicate(true)
-					var menace := 0
+					var weight := 0
 					var said: Array[String] = []
 					for m in mix:
-						menace += db.menace(str(m[0])) * int(m[1])
+						weight += db.weight(str(m[0])) * int(m[1])
 						said.append("%s ×%d" % [str(db.foes[str(m[0])].get("name", m[0])), int(m[1])])
 					var pack := {"id": "%s tier %d" % [str(c["id"]), t], "name": str(c["id"]), "foe": "", "strength": 0, "mix": mix, "tier": int(t) - 1, "layout": c["layout"]}
 					var bands: Array[String] = []
@@ -762,7 +763,7 @@ func _curve() -> int:
 							(" · %d stalled" % int(g["stalled"])) if int(g["stalled"]) > 0 else ""])
 					var gate = c.get("ramp", null)
 					found.append({"domain": str(db.factions[fac].get("name", fac)), "size": str(c["size"]), "tier": int(t), "id": str(c["id"]),
-						"members": ", ".join(said), "menace": menace,
+						"members": ", ".join(said), "weight": weight,
 						"ramp": ("C%d to %d" % [int(gate[0]), int(gate[1])]) if gate is Array and (gate as Array).size() == 2 else "any",
 						"rating": ContentDB.squad_of(c), "bands": bands, "hulls": hulls})
 	var secs := (Time.get_ticks_msec() - t0) / 1000.0
@@ -776,7 +777,7 @@ func _curve() -> int:
 		"" if refit_notes.is_empty() else " The refit what-if (`--refit %s`): %s." % [refit_spec, "; ".join(refit_notes)]]
 		+ ("" if guard_weight == 1.0 else " The fight bot's habit (`--guard`): a block at %d%% of its worth, the aggressor, which never rerolls for one." % int(round(guard_weight * 100.0))))
 	L.append("")
-	L.append("| Domain | Size | Tier | Composition | Members | Menace | Ramp | Rated for | Read for | 1 | 2 | 3 | 4 | Same as |")
+	L.append("| Domain | Size | Tier | Composition | Members | Weight | Ramp | Rated for | Read for | 1 | 2 | 3 | 4 | Same as |")
 	L.append("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|")
 	for e in found:
 		var read_for: Array[String] = []
@@ -790,7 +791,7 @@ func _curve() -> int:
 		var cells: Array[String] = []
 		for k in range(4):
 			cells.append("" if str(e["bands"][k]).is_empty() else "%s · %s" % [e["bands"][k], e["hulls"][k]])
-		L.append("| %s | %s | %d | %s | %s | %d | %s | %d | %s | %s | %s | %s | %s | %s |" % [e["domain"], e["size"], e["tier"], e["id"], e["members"], e["menace"], e["ramp"], e["rating"],
+		L.append("| %s | %s | %d | %s | %s | %d | %s | %d | %s | %s | %s | %s | %s | %s |" % [e["domain"], e["size"], e["tier"], e["id"], e["members"], e["weight"], e["ramp"], e["rating"],
 			", ".join(read_for) if not read_for.is_empty() else "none", cells[0], cells[1], cells[2], cells[3], ", ".join(same)])
 	L.append("")
 	var text := "\n".join(L)

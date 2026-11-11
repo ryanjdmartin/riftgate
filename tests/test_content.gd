@@ -249,28 +249,42 @@ func test_the_compositions_go_by_tier() -> void:
 	assert_true(errs.any(func(e) -> bool: return e.begins_with("faction %s" % fid) and e.contains("needs a tier-one patrol")), "and without a tier-one patrol")
 
 
-## Menace (the foes' fresh start, 30 October): the one weight the Rupture meter, Anathema and
-## salvage count a kill at, read off the content: the heaviest implemented blow (damage times
-## strikes, a breach one more) plus a quarter of the HP rounded up, an elite's like any foe's
-## (doubled until 10 November, while its numbers were a rank and file's).
-func test_menace_is_the_heaviest_blow_and_a_quarter_of_the_hp() -> void:
+## Menace is a pack's threat rating (Ryan, 11 November: "Maybe just 1-2-3-4 for now to keep math
+## simple ... It gives us an absolute unbiased benchmark"): the one weight the Rupture meter,
+## Anathema and salvage count kills by is a composition's rating, a pip a hundred, a lone patrol
+## one, a formation three, an elite four, the same in every domain and at every tier. A foe's
+## own numbers add up to its weight (the heaviest implemented blow, damage times strikes, a
+## breach one more, plus a quarter of the HP rounded up: what menace was from 30 October), the
+## other side of the benchmark and nothing a kill pays.
+func test_menace_is_a_compositions_threat_rating_and_weight_its_foes_own_numbers() -> void:
 	var db := _db()
+	var pip := ContentDB.MENACE_PER_PIP
 	for id in db.foes.keys():
 		if db.foes[id].has("promotes"):
 			continue
 		var f := db.make_foe(str(id))
 		var want := f.threat() + int(ceil(float(f.hp_max) / 4.0))
-		assert_eq(db.menace(str(id)), want, "%s's menace" % id)
-		assert_true(db.menace(str(id)) >= 1, "%s is worth something" % id)
+		assert_eq(db.weight(str(id)), want, "%s's weight" % id)
+		assert_true(db.weight(str(id)) >= 1, "%s weighs something" % id)
 	var goblin := db.make_foe("goblin")
-	assert_eq(db.menace("goblin"), goblin.threat() + 1, "a goblin: its stab and a quarter of three HP, rounded up")
-	assert_eq(db.menace("nobody"), 0, "an unknown foe is worth nothing")
+	assert_eq(db.weight("goblin"), goblin.threat() + 1, "a goblin: its stab and a quarter of three HP, rounded up")
+	assert_eq(db.weight("nobody"), 0, "an unknown foe weighs nothing")
 	var elites := 0
+	var by_size := {}
 	for fid in db.factions.keys():
+		for t in [1, 2, 3]:
+			for size in ["patrol", "formation", "elite"]:
+				for c in db.compositions(str(fid), t, size):
+					assert_eq(db.composition_menace(c), ContentDB.squad_of(c) * pip, "%s's menace is its threat rating, a pip a hundred" % str(c["id"]))
+					assert_eq(db.composition_weight(c), (c["members"] as Array).reduce(func(acc, m): return acc + db.weight(str(m[0])) * int(m[1]), 0), "%s's weight is its members'" % str(c["id"]))
+					if not c.has("squad"):
+						by_size[size] = db.composition_menace(c)
 		for c in db.elite_compositions(str(fid), 1):
 			elites += 1
 			assert_true(db.is_elite(str(c["members"][0][0])), "%s is led by its elite" % str(c["id"]))
-			assert_eq(db.composition_menace(c), (c["members"] as Array).reduce(func(acc, m): return acc + db.menace(str(m[0])) * int(m[1]), 0), "%s's menace is its members'" % str(c["id"]))
+			assert_eq(db.composition_menace(c), 4 * pip, "%s: an elite is four pips, whichever" % str(c["id"]))
+	assert_eq(by_size, {"patrol": pip, "formation": 3 * pip, "elite": 4 * pip}, "a lone patrol one, a formation three, an elite four, in every domain and at every tier")
+	assert_eq([ContentDB.worth_of(0), ContentDB.worth_of(9)], [pip, 4 * pip], "a rating outside one to four is held to it")
 	assert_true(elites >= 1, "some domain has an elite at tier one")
 	assert_true(db.escort_composition("meadow", 1).is_empty(), "no hand-tailored escort is written yet")
 

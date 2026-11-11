@@ -47,7 +47,7 @@ var categories: Array = []
 ## (see normalise_name) with "Name (a BattleTech 'Mech)" for the message. A chassis nickname
 ## or id that lands on one fails validation (Ryan, 28 September: ours or a homage, never a copy).
 var reserved_names: Dictionary = {}
-var _menace: Dictionary = {}      # foe id -> its menace, read once (menace)
+var _weight: Dictionary = {}      # foe id -> its weight by its own numbers, read once (weight)
 var load_errors: Array[String] = []
 
 
@@ -1155,29 +1155,48 @@ func is_elite(foe_id: String) -> bool:
 	return bool(foes.get(foe_id, {}).get("elite", false))
 
 
-## A foe's menace, the one weight the Rupture meter, Anathema and salvage count a kill at (the
-## foes' fresh start, 30 October): its heaviest implemented blow (damage times strikes, a breach
-## one more: the engine's threat, which already orders the deployment) plus a quarter of its HP,
-## rounded up. Read off the content, so no new number is written per foe. An elite's was doubled
-## until 10 November, while its numbers were a rank and file's; its own numbers carry its weight
-## since the guess of that day (about twice the HP and two and a half times the blow), which
-## leaves an elite's kill worth on the meter about what it was.
-func menace(foe_id: String) -> int:
-	if _menace.has(foe_id):
-		return int(_menace[foe_id])
+## Menace, the one weight the Rupture meter, Anathema and salvage count kills by, is a pack's
+## threat rating (Ryan, 11 November: "Maybe just 1-2-3-4 for now to keep math simple ... We can
+## tune difficulty to the value, within an acceptable band. It gives us an absolute unbiased
+## benchmark"): a lone patrol one, a heavier patrol two, a formation three, an elite and a boss's
+## unit four, whoever is in it and whatever its tier ("the value can stay unchanged by tier, as
+## only salvage needs to scale"). Counted in hundredths of a pip, so a head's share of its pack
+## is a whole number. The sum of each foe's own numbers that it was to that day (weight, below)
+## made an elite's pack 22 to 49 by which came and a domain's kills worth what its stat blocks
+## were.
+const MENACE_PER_PIP := 100
+
+
+static func worth_of(squad: int) -> int:
+	return clampi(squad, 1, 4) * MENACE_PER_PIP
+
+
+## A composition's menace: its threat rating's worth.
+func composition_menace(c: Dictionary) -> int:
+	return worth_of(squad_of(c))
+
+
+## A foe's weight by its own numbers: its heaviest implemented blow (damage times strikes, a
+## breach one more: the engine's threat, which already orders the deployment) plus a quarter of
+## its HP, rounded up. What menace was until 11 November and what a kill no longer pays; kept as
+## the other side of the benchmark, what a pack's stat blocks add up to against the rating its
+## difficulty is tuned to (the balance report's column).
+func weight(foe_id: String) -> int:
+	if _weight.has(foe_id):
+		return int(_weight[foe_id])
 	if not foes.has(foe_id):
 		return 0
 	var f := make_foe(foe_id)
 	var m := f.threat() + int(ceil(float(f.hp_max) / 4.0))
-	_menace[foe_id] = m
+	_weight[foe_id] = m
 	return m
 
 
-## A composition's menace: every member's times its strength.
-func composition_menace(c: Dictionary) -> int:
+## A composition's weight: every member's times its strength.
+func composition_weight(c: Dictionary) -> int:
 	var m := 0
 	for e in c.get("members", []):
-		m += menace(str(e[0])) * int(e[1])
+		m += weight(str(e[0])) * int(e[1])
 	return m
 
 

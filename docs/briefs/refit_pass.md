@@ -903,7 +903,9 @@ three machines what the whole boss costs four, with no machine wrecked.
    at Convergences 0 to 2 (`Ramp.formations_at`, `Ramp.patrols_at`), so the first field asks
    five machines' worth of three. If the fourth's power is the covered flank, three machines
    are meant to leave one open and the price is the wall's; if not, the second patrol waits
-   for Convergence 1 or 2. His to say; the lever is a placeholder in the ramp.
+   for Convergence 1 or 2. His to say; the lever is a placeholder in the ramp. Played whole
+   by the floor player, one flank patrol at the start is the gate falling in 0% to 30% of the
+   Meadow's first battles where it fell in 0% to 50% (`docs/measurements.md`, 11 November).
 5. The boss is the one fight the squad's size decides by rule. The form he chose on 7
    November, fixed entries by tier and ramp, is what this needs: tier one's boss in three
    blocks, Convergence 0, 1, and 2 to 3. Not built (`ContentDB.BOSS_TIERS` is by tier alone).
@@ -934,8 +936,8 @@ is a bench against a wreck. Two bands are left in tier one, the first battle at 
 everything after at four. Unmarked, Claude's lean: a first battle lost, or a maker with no
 tier one the roster lacks, sends the machine left on the tender. One thing it shows about
 content: the choice is as wide as a maker's tier-one line, which today is three for
-Wainwright & Sutler, two for Aphelion and for Kestrel, and one for Minerva, less whatever the
-tender dealt.
+Wainwright & Sutler and two each for Aphelion, Kestrel and Minerva (the Polar Bear dealt
+again since 11 November), less whatever the tender dealt.
 
 **His lean for the first battle, the same day**: "It seems to me like battle one should be
 relatively easy, even considering the party of 3. It's more of an opportunity to gain
@@ -963,24 +965,336 @@ his to settle:
 
 1. What easy is read as. Claude's lean: no fight of the first battle costs the worst trio
    more than a tenth of its hull, and none wrecks a machine, the bot playing.
-2. Whether it is short as well. Every run replays it, and an easy battle that runs its three
-   Fractures, an elite and a boss is the stretch a player resents by the fifth run.
+2. Its length. Answered the same day: not shorter ("the 3 fractures, with the current rate
+   of fill, felt short to me"), and with one elite, which tier one already sends. The
+   meter's size is the part below.
 3. How it is made easy. On the bench, each with what it costs: the first rifts are the
    Meadow's, the domain already easy for three, and only the boss's first block is needed
    (every run then opens on the same domain); a cut for each domain at the first Convergence,
    the boss's block with gates on the breach-led formations and the heavy elites (the Waste's
    bosses and the Peak's formations want numbers of their own even so); a first battle
-   written by hand (the most content, and a second code path).
+   written by hand (the most content, and a second code path). Played whole by the floor
+   player, which never gathers, the boss's block alone moves the Meadow's first battle
+   little (won 40% to 70% where it was 40% to 60%: it loses to the wall it leaves and the
+   machines it sends in alone, before the boss) and a flank patrol fewer with it more (55%
+   to 80%); a player who gathers pays the single fights' prices above, so this is the floor
+   under the bench and no answer to it.
 4. What a rich, near-certain first battle is. Claude's read: the second half of the draft,
    played, its choices the front (the maker), the boss's token and the machine.
+
+**The Rupture meter's size (11 November).** His first words on it: "I was going to say that
+the 3 fractures, with the current rate of fill, felt short to me. I assume that needs to be
+tuned still, though. The answer could be that the amount to reach a fracture probably scales
+by Convergence, with a step down at each tier when we add another fracture step ... Either
+way, I think battle one should only serve one elite." Tier one sends one elite already, at
+its first Fracture, in every domain on every seed; two is tier two's rule. Built for the
+size, a dial and nothing of the rule: a debug build's SETTINGS → TRIALS → RUPTURE (1X, 1.25X,
+1.5X, 2X; `Battle.rupture_trial`, `RIFTGATE_RUPTURE` on the desk), every threshold by the
+factor as a battle starts. The first read of it measured the meter against the pacing row's
+four to five fights; he retired that guideline the same day and restarted the discussion, so
+the size, its scaling and the stall guard are section 11's, from scratch. What the reads of
+this part found stands there (`docs/measurements.md`, 11 November): a longer meter is more
+turns and more patrols, never more formations, and the gate pays for the turns.
 
 **The scope.** Tier one only (his word). The tier-two and tier-three reads of 10 November are
 stock machines, which the levels' plan will not field: a machine holds a level, bought in the
 hangar once the Convergence reaches it, that lifts its stat line and its locked pieces, and
-tier one comes down to the basics (`docs/locked_pieces_proposal.md` on `ccr-4d58b054-3lyj0a`,
-his calls of 10 November, not on main yet; this session read it on 11 November, after the
-guess). So the tier's hit-point step guessed on 10 November stands as a placeholder and is
+tier one comes down to the basics (`docs/locked_pieces_proposal.md`, his calls of 10
+November, on main and in this branch since 11 November: the bible's locked row and tiers
+row; this session read it that day, after the guess). So the tier's hit-point step guessed on 10 November stands as a placeholder and is
 tuned no further, a machine's regen is level one's number, and the guess's tier-one reads
 were taken with locked pieces that proposal brings down (the Photosphere Lance, the Flechette
 Pod), so the squads here hit a little harder than they will.
 
+## 11. Pacing and length, from scratch (11 November)
+
+His words: "I don't think the 4 to 5 guideline holds anything anymore. This is a different
+game now. I think start this pacing and length discussion from scratch. We know the elite
+needs to be worth a good chunk of malice, so work that in. And the fact that flanker fights
+are faster, so we have more buffer for more fights. And that formation size goes up with
+convergence, so scaling fracture cost at the same rate doesn't actually change anything."
+So the count is retired (the bible's pacing row) and three things are given: the elite's kill
+is a good chunk of the meter, a battle has room for more fights because the flank's are
+quick, and a threshold that scales with the formations' size scales nothing. He marked the
+first shape the same day and it is built (below: settled and built); menace became a pack's
+threat rating the same day (below); what is left is his play of it, the flank's second
+patrol, and his direction for more spawns than the Rupture needs, which is on trial (below).
+The reads are `docs/measurements.md`, 11 November.
+
+**The frame: a battle is counted in beats.** The clock already cuts a battle into beats: a
+peak of Rift Pressure every three turns (two from Convergence 8), the first at the end of the
+first turn, each sending the rift's next composition and a patrol from every tear, and
+opening a tear. A beat is the one unit that means the same at every tier. Menace is not: a
+formation's grows with the tier and the opening's count with the Convergence, which is his
+third point. A count of fights is not: a lone duel is a fifth of a formation's fight in the
+player's time, which is his second. So the question "how long is a battle" becomes "how many
+beats of the tide does the squad fight through before the seal breaks", and the ramp does
+the rest.
+
+**Where the meter stands: no beat at all.** At every tier the field's part of the Rupture is
+about what the opening places, and the elites it calls fill the rest: a squad that kills what
+stood at the start and the elites has broken the seal, by its fourth turn or so.
+
+| The rift | The Rupture | Its elites' kills | Left for the field | The opening holds | The first wave adds | The field's part, of the opening |
+|---|---|---|---|---|---|---|
+| Tier one, Convergence 0 | 80 to 129 | 29 to 39 | 49 to 90 | 46 to 76 | 32 to 58 | 106% to 121% |
+| Tier one, Convergence 3 | 109 to 168 | 29 to 39 | 78 to 129 | 88 to 134 | 32 to 58 | 88% to 96% |
+| Tier two, Convergence 4 | 160 to 214 | 60 to 72 | 90 to 142 | 107 to 136 | 39 to 58 | 77% to 104% |
+| Tier three, Convergence 8 | 186 to 344 | 90 to 108 | 96 to 236 | 128 to 224 | 35 to 82 | 75% to 105% |
+
+**What the tide holds, beat by beat.** The elites counted in, every domain's range:
+
+| The rift | The beat, turns | Elites | Through the first peak | Through the second | Through the third |
+|---|---|---|---|---|---|
+| Tier one, Convergences 0 to 2 | 3 | 1 | 5 fights: 2 formations, 2 patrols, by turn 2 | 7 fights: 2 formations, 4 patrols, by turn 5 | 10 fights: 3 formations, 6 patrols, by turn 8 |
+| Tier one, from Convergence 3 | 3 | 1 | 6 fights: 3 formations, 2 patrols, by turn 2 | 8 fights: 3 formations, 4 patrols, by turn 5 | 11 fights: 4 formations, 6 patrols, by turn 8 |
+| Tier two, Convergences 4 to 7 | 3 | 2 | 7 fights: 3 formations, 2 patrols, by turn 2 | 9 fights: 3 formations, 4 patrols, by turn 5 | 12 fights: 4 formations, 6 patrols, by turn 8 |
+| Tier two, from Convergence 8 | 2 | 2 | 7 fights: 4 formations, 1 patrols, by turn 2 | 10 fights: 4 formations, 4 patrols, by turn 4 | 15 fights: 4 to 5 formations, 8 to 9 patrols, by turn 6 |
+| Tier three | 2 | 3 | 8 fights: 4 formations, 1 patrols, by turn 2 | 11 fights: 4 formations, 4 patrols, by turn 4 | 16 fights: 5 formations, 8 patrols, by turn 6 |
+
+At tier one's start the first wave is the opening's formation again, the second peak is two
+lone duelists, and the third brings the second composition, two patrols and the first
+hunting packs.
+
+**His three givens, in numbers.**
+
+- The elite's chunk. Today an elite's fall is worth its own menace, 22 to 49 at tier one by
+  which elite the roll sends: 0.57 to 1.34 of a formation there and 0.35 to 0.82 at tier
+  three, since its menace is the same at every tier while a formation's grows. Its fight is as
+  long as a formation's, so the meter pays it the least for the time.
+- The flank's fights. In machine-turns, one machine acting once: a lone duel 4, a formation
+  20 for three machines, an elite 21, a boss 36. The second beat of a first battle is two
+  lone duels: two fights more for 8 machine-turns on about a hundred. The third beat is a
+  formation and two or three patrols: 24 to 28 more.
+- What scales by itself. Through the second peak a battle is 7 fights before its boss at tier
+  one's start, 8 from Convergence 3, 9 at tier two, 10 from Convergence 8 and 11 at tier
+  three, with no number moved.
+
+**Settled and built, 11 November.** The first shape as it was put to him, and his marks:
+
+1. The Rupture sized in beats, two at every tier: the field's part is everything the opening
+   places and the tide sends through its second peak, the tide's lightest patrol left to
+   leave. His: "Try your lean first." Built (`Ramp.BEATS`, `Battle.setup`).
+2. An elite's fall a formation and a half of its tier, whichever elite, on top of the
+   field's part: over a third of the bar in one kill at tier one. His: "Let's go 1.5 and I'll
+   see how it feels." Built that morning as a chunk on the meter alone, and replaced the
+   same day by the elite's rating, four against a formation's three, once menace became the
+   rating (below: menace, standardized).
+3. The cleared field. The shape had it bring the next peak at once, in place of the stall
+   guard's breaking of the seal. His: "I didn't know this was a thing. Why does a cleared
+   field mean anything? If field clears are a norm, I would think that indicates it's
+   probably too easy, right? To me a clear field is its own reward, it's breathing room to
+   reposition or get loot." So neither: a cleared field does nothing, the seal is the meter's
+   alone and the tide comes on its beat. Built: the stall guard is gone. Why it was there:
+   it came with the meter on 30 October, when the rift sent a pack every twelve turns, so a
+   squad that cleared the field short of the Rupture would have waited a dozen turns on the
+   clock with nothing to fight. The beat is three since the long wall, so the wait it guarded
+   is a lull of three turns at most, which is the breathing room he names, and all the guard
+   still did was cut a battle short.
+4. What the count guarded. His: "A duel doesn't have to be two rounds, who said that? And
+   really, the types of mobile units that flank probably are bursty anyway." Nobody ruled it:
+   two to nine rounds is what the four duelists' placeholder numbers give the bot. The reason
+   goes with the count; a duel's length is its content's dial.
+5. The minutes. His: "I'd probably set the range at 10-30 minutes, with most falling in the
+   middle. The scaling fracture meter is the biggest factor in that. To me the only reason to
+   have more fractures is to send more elites, not necessarily to make it significantly
+   longer." So the beats stay flat across tiers and a tier's extra Fractures are its elites.
+   What two beats give, in the fights' machine-turns at tier one's fight lengths: about 113
+   for a first battle with its boss and about 187 at tier three, two thirds more, most of it
+   the two more elites and the opening's two more formations; nothing measures a minute yet.
+
+The dial that came with it: a debug build's SETTINGS → TRIALS → RUPTURE is 1 BEAT, 2 BEATS or
+3 BEATS (`Ramp.beats_trial`, `RIFTGATE_BEATS` on the desk), two the game's, in place of the
+multiplier of the morning.
+
+What it gives a first battle, three machines: 2 formations, 4 lone duels and the elite
+before the boss, about six turns, a tenth more play than the meter as first built for three
+fights more. The bot's read, the Meadow, three trios (a floor: it leaves its flanks):
+
+| The Rupture | Its turn | Fights before it | Of them patrols | The gate then, of 200 |
+|---|---|---|---|---|
+| As first built | 3.3 to 4.8 | 3.5 to 4.7 | 0.4 to 1.2 | 167 to 189 |
+| Two beats, the elite a formation and a half, as the what-if had it | 5.8 to 6.5 | 5.9 to 6.4 | 2.5 to 2.9 | 140 to 154 |
+| The same as built, the game's since, no stall guard | 6.0 to 6.9 | 6.1 to 6.8 | 2.8 to 3.0 | 133 to 150 |
+| Three beats | 10.2 to 11.0 | 10.0 to 10.8 | 6.0 to 6.7 | 73 to 98 |
+
+**The bench**, each with the rule or the read that set it aside, for him to overrule:
+
+- A count of meaningful fights, flat across tiers (the row of 13 October): his retiring of
+  it; a duel, a formation and an elite are three lengths.
+- A share of the field's menace (the meter as first built): it hid the beats, and at two
+  thirds it sat on the opening.
+- A table of menace by Convergence: it moves with every retune of a foe, and a formation is
+  34 in the Marsh and 54 on the Peak.
+- The elite's own menace doubled (the rule to 10 November): it still swings by which elite,
+  44 to 98 at tier one.
+- An elite's fall as the next Fracture outright: at tier three the last elite's fall would
+  be the Rupture.
+- More beats later in the campaign (three from tier two or from Convergence 8): his word
+  that more Fractures are for more elites, not a longer battle; and from Convergence 8 the
+  third peak alone is five fights more, the tears opening two a peak.
+- A cleared field breaking the seal (the stall guard) or bringing the next peak at once
+  (Claude's lean): his, a clear field is its own reward.
+- The fodder's worth lowered (the FODDER dial): the same length from the other side; with
+  the size in beats the flank's quantity is in the size, and the dial is still on the phone
+  until he says it has no job.
+
+**A second flank patrol a domain: Claude's first proposal, for his marks** (nothing in
+content). His words: "Another would probably be smart, yeah. Different enough that the same
+strategy doesn't strictly work on both would be ideal. Don't want to be able to hyperoptomize
+the flankers. We can make flankers out of pusher units if it makes sense, they don't have to
+be completely disjoint sets, just not sending pushers that are designed to counter multiple
+mechs to the flanks (i.e., does area damage, buffs the whole field, that kind of thing)."
+
+The shape: a picket, two or three of the domain's own front-rank pushers, rated one. Every
+duelist is one body with a trick; a picket is several bodies with their line's plain habit,
+so the die that answers the one is the wrong die for the other, and a picket is its domain's
+formation in miniature, which the flanker meets before the core does. Each rides its tier by
+its line's recolours, as the formations do. A lone tier-one machine against each, the nine
+of them, the greedy rung, 20 seeds, a direction (`docs/measurements.md`, 11 November):
+
+| Domain | Its duelist asks | The picket | It asks | The bot's lone machine, rounds and hull lost | Who it turns round |
+|---|---|---|---|---|---|
+| The Meadow | the Whisker Cat: what to leave showing | three Goblins | a blow of four through the Shield Wall, or the reach to take three | 4.2 rounds, 5% (none to 18%); the Cat 3.9 and 1% | the Skua takes the goblins in 3.2 rounds and the Cat in 5.2; the Stingray the Cat in 2.9 and the goblins in 3.9 |
+| The Waste | the Roc: a Barrier for the stoop, or a kill before it lands | two Needlers | both dead before they loose, or hull paid, since no shield stops a needle | 1.9 rounds, 10% (none to 17%); the Roc 3.9 and 8% | the Stingray pays the Roc 1% and the needlers 13%; the Skua 29% and 11% |
+| The Marsh | the Dullahan: the big die kept for the second life | three Revenants | volume, nine a round until they thin | 4.2 rounds, 8% (none to 23%, the Skua losing one fight in twenty); the Dullahan 4.7 and 1% | the Stingray takes the Dullahan in 2.9 rounds for nothing and the revenants in 4.1 for 5% |
+| The Peak | Cerberus: a shield that takes three bites | open | heat: its bite scorches and its hide runs the striker hot | one Salamander is no fight (2.4 rounds, nothing lost) and two are a wall for three machines of nine (won 78%, 41% of the hull, the Polar Bear never) | |
+
+Tried as a second flank patrol and not picked, each with why, and each staying in its
+formations as it is: the Mandragora, the Drake and the Magma Elemental
+(his rule: a scream that costs the whole team a reroll, a breath over a rank, an eruption);
+the Bomb (a burst that decides a lone machine's fight, his word on hunters of 9 November,
+and its own call still held); a Ghost behind a Revenant (its raise snowballs on a slow
+machine, the Prairie Dog losing three fights in twenty, and it is made to keep a wall
+standing); the Gel (two take seven to ten rounds for almost nothing lost: a wait with no
+stakes); the Cockatrice (its Stone is the Whisker Cat's question again, and costs nothing);
+the Zombie Knight (the Dullahan's own question, and a wall alone); three Needlers (28% of a
+lone machine's hull).
+
+**Menace, standardized: settled and built (11 November).** His question: "I'd hope that the
+elites menace should match between elites, since they should all be the same difficulty. I
+assume this means that your menace is empirically calculated, when probably it should be
+standardized so all domains are equivalent, yes?" It was calculated: each foe's heaviest blow
+and a quarter of its hit points, summed over a pack, so an elite's pack ran 22 to 49 at tier
+one, a formation 34 in the Marsh and 54 on the Peak, and the same first battle paid half
+again as much salvage on the Peak as in the Marsh. His marks on the form: "Maybe just 1-2-3-4
+for now to keep math simple. But yes this direction makes way more sense. We can tune
+difficulty to the value, within an acceptable band. It gives us an absolute unbiased
+benchmark. I think the value can stay unchanged by tier, as only salvage needs to scale,
+right." And of the boss: "Boss' menace rewards for salvage and anathema can be completely
+whatever we need to make the economy work, so the placeholder doesn't really matter now."
+
+| The pack | Its menace, in pips |
+|---|---|
+| A lone patrol | 1 |
+| A heavier patrol, a pair or a hunting pack | 2 |
+| A formation | 3 |
+| An elite | 4 |
+| A boss's unit | 4, a placeholder |
+
+As built: menace is a pack's threat rating, the same at every tier and in every domain, and
+the meter, salvage and Anathema all read it. A pack's fall pays its rating whole. A pack a
+fight wore down and left standing has paid the share of its rating its strike at the wall
+has lost, the heads gone of the heads it took the field with, and its fall pays the rest;
+nothing pays past the rating or twice, so a Gel's halves and a Ghost's raised Revenants add
+none. That is simpler than the form put to him, which shared a pack's worth among its kills
+by each foe's own numbers: the wall strike already wears by the head, so the two are one
+number read from both ends, and a pack is only left standing by a fight the machines lost.
+The sum of a foe's own numbers stays as its weight, the balance report's column beside the
+rating: the benchmark's other side, what a composition's stat blocks come to against the
+rating its difficulty is tuned to.
+
+What moved with it. The elite is four against a formation's three, a formation and a third,
+where the chunk built that morning was a formation and a half on the meter alone; it is now
+the same in the meter, salvage and Anathema. A first battle's Rupture is 13 pips in every
+domain, nine of the field's ten and the elite's four, with Fractures at about 3, 7 and 13,
+so the first formation's fall brings the elite. Salvage is 18 a pip, a placeholder set to
+bank what a battle banked: the runner's won battle banks 372 where it banked 369
+(`docs/measurements.md`, 11 November). Saves from before the change are set aside.
+
+What it leaves, the economy pass's: what a boss pays, and salvage's growth by tier. And
+equal worth is not equal difficulty: the elites are a guess whose cost to a trio runs from
+nothing to half its hull by which came, and tuning each composition to its rating within a
+band is its own session's.
+
+**More spawns than the Rupture needs: his direction of 11 November, on trial.** His words:
+"I think we should try to lean for noticeably more spawns then the minimum number required
+for our target completion speed. When I was playing I felt the need to chase every pack
+down, since that felt possible. I think that's wrong. More pusher and flanker packs, even if
+it means that each needs to do less to the wall, is better: It gives options depending on
+player comp strengths, it forces choices, it looks more thematically intense and
+interesting, it keeps offering something to do and analyze, and prevents field wipes. The
+player doesn't feel like they need to hunt everything down because the fracture cannot be
+delayed - if the player is killing packs the elite is forced out and (should) demand a
+response, and eventually the seal is broken and that still opens the floodgates, correct?"
+
+The mechanics he asks about, as built: yes to each. A Fracture pays out the moment a fight
+ends with the meter over its mark, and nothing holds it back but not killing. Tier one's
+first is 2.9 pips, so the first formation's fall, or three lone duels, brings the elite; it
+is rated four, so at the wall it strikes for 40 a turn of the gate's 200, or it hunts where
+its composition does. The last Fracture breaks the seal and halves the beat once, three
+turns to one at tier one, so the rift sends a composition and every tear a patrol each turn
+and a tear opens each turn; nothing seals again.
+
+What the direction runs against is the rule built that morning: the Rupture takes
+everything two beats send but one lone patrol, nine pips of the field's ten, which is the
+minimum he names and no more. The floor player's read says so: it has killed 82 to 91% of
+all that had come when the seal breaks.
+
+On trial, two dials, the game's own rule untouched (SETTINGS → TRIALS; `RIFTGATE_TIDE` and
+`RIFTGATE_STRIKE` on the desk):
+
+- TIDE, ×1, ×1.5 or ×2 (`Ramp.tide_trial`): how many packs the opening places and each
+  wave sends, in whole packs, with the Rupture's size left on the game's own tide. So the
+  meter is the length and the tide is the choice: the extras are never more to kill. At
+  tier one's start ×1.5 is a third flank patrol at the opening, the rift sending one
+  composition then two at alternate peaks, the tears opening one then two; ×2 is a second
+  formation and four patrols, two compositions a peak, two tears.
+- STRIKE, 10, 7, 5 or 3 (`Battlefield.strike_trial`): what a pip of threat rating strikes
+  the wall for, his "each needs to do less to the wall".
+
+The reads (`docs/measurements.md`, 11 November; the floor player, three trios in the
+Meadow, twenty seeds a cell, a direction):
+
+| The tide | Killed of what had come, at the Rupture | Standing then, pips | The seal breaks, turn | Hull then | Won, racing for the boss |
+|---|---|---|---|---|---|
+| The game's | 82 to 91% | 1 to 3 | 6.0 to 6.9 | 58 to 84% | 20 to 65% |
+| ×1.5 | 70 to 74% | 5 to 6 | 5.7 to 6.2 | 57 to 72% | 25 to 45% |
+| ×2 | 49 to 57% | 10 to 14 | 5.1 to 5.9 | 38 to 59% | 5 to 45% |
+
+Claude's lean for his first play: ×1.5 with the strike left at ten. It leaves about one
+pack in three standing for the same meter, breaks the seal a little sooner because a pack is
+always in reach, and leaves the gate where it was when the seal breaks. Twice is past what
+three machines carry.
+
+Its holes, his:
+
+1. What more packs cost the floor player is hull, not the gate, and the strike moved no
+   win in any cell: a lower strike turned a fallen gate into a wipe a turn or two later.
+   That is a player who never declines a fight. The trade he names, the wall spent to save
+   hull, is exactly what it cannot show, so the strike's right number is his play's to find.
+2. The elite's demand rides on the same strike. A pip at five makes its 40 a turn 20.
+3. Salvage pays by the pack. Five or six pips left on the field at ×1.5 are about a
+   hundred salvage left beside the 370 a won battle banks, so the meter stops asking and
+   the purse does not. The stall row's bench holds the answer if it is wanted, salvage
+   capped at the rift's bounty; it is the economy pass's.
+4. A multiplier is a trial's shape. At Convergence 3 twice the tide stacks on the ramp's own
+   second formation and the gate falls nineteen times in twenty. The form for the game is
+   the ramp's own counts, and the Rupture a stated share of what its beats bring: two pips
+   in three is what ×1.5 comes to.
+5. More tears are more hunters, and a catch is a fight nobody chose. It stayed under one
+   forced fight a battle in every cell, so it is no trouble yet; the pickets above are the
+   way to add flank packs that push.
+
+**Open, his.**
+
+1. His play of the two beats and of the elite's four, on the phone; the RUPTURE dial sets
+   one beat or three beside them.
+2. His play of the TIDE and STRIKE dials (above): how much more, and what a pack left at
+   the wall should cost.
+3. The pickets above, and the Peak's: a tougher Salamander alone, a pair gated to the ramp's
+   later steps as the duelists' pairs are, or a body the Peak does not have yet.
+4. The first wave repeating the opening's formation (a domain's first two formations are one
+   composition on every seed): left, the first wave starting on the list's second, or the
+   opening's formation drawn by the seed.
+5. What measures a battle's minutes against his ten to thirty: nothing does yet.

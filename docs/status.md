@@ -27,16 +27,11 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1120 tests, 362,688 checks, green on `ccr-4d58b054-3lyj0a` (11 November, the Whip
-  Scorpion's rework). Before it, 1115 tests, 362,618 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
-  with the formation and refit session's branch whole and the music session's landing; Godot
-  4.8-beta2). Before it, 1094 tests, 325,124 checks, green on main (10 November, with the boss's hex, the third map list, the Text tab, the side session's work, the shapes reworked on Ryan's play, the second map list, the
-  map session's shapes laid to the rift's row, the passing and the catch at one, and the map
-  playtest list), and 1111 tests, 362,582 checks, green on `ccr-722ca9f0-yj8na3` (11 November, that
-  main with the refit pass's first build, the wall strike by the rating, the trial's regen row,
-  every machine one more move, the field's dials, the goblin's line on its straight knife and wall,
-  the model as content, the formation pass and the elites' and bosses' guess; the
-  map suite now paints fourteen and sixteen deep too, which is most of the checks' rise); one
+- Tests: 1123 tests, 362,685 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
+  with the Whip Scorpion's rework over the formation and refit session's landing). Before it,
+  1119 tests, 362,994 checks, green on main (11 November, as `ccr-722ca9f0-yj8na3`
+  landed with the Rupture sized in beats, menace a pack's threat rating, the stall guard's end
+  and the tide's and the strike's trial dials; Godot 4.8-beta2); one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
   either map view on 6 November; about four minutes in a cloud session, twenty on a slow one;
   words after `--` run only the files whose names hold one (`-- loot rig`). A cloud
@@ -57,7 +52,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 ## Branches
 
-Everything is on main as of 11 November 2026 but the formation and refit session's branch, below.
+Everything is on main as of 11 November 2026; the formation and refit session's branch lands as it goes, below.
 `ccr-c71bc17f-hclj2c`, Ryan's map playtest list of 10 November, his answers to it and his second
 and third map lists the same day (How things stand below), cut from main at `aa40832`, landed on
 main as fast-forwards on his word each time ("Ok, merge this into main so I can try it"; "yeah,
@@ -126,10 +121,16 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4` (a cloud session may not delete
 one). Each merge commit says how its conflicts were settled.
 
-Still working (11 November): `ccr-722ca9f0-yj8na3`, the formation and refit session; everything
-it had committed (to `4c8dbf1`) is on main with `ccr-4d58b054-3lyj0a`, below; it took main again
-at `0cb7313`, and its commits since are its own (its own records say where it stands: the refit
-brief, the to-do, How things stand). Landed 11 November: `ccr-4d58b054-3lyj0a`, the chassis inventory and the locked pieces'
+Still working, and landing as it goes (11 November): `ccr-722ca9f0-yj8na3`, the formation and
+refit session. Everything it had committed to `4c8dbf1` went to main with `ccr-4d58b054-3lyj0a`,
+below; its work since landed on Ryan's word of 11 November ("I think it's safe to start sending
+our code here out to main and having me test there in context"), the branch taking main at
+`60a0e4d` and at `2a9242e` first (this file the one conflict, on main's form) and main taking
+it as a fast-forward: the first battle read whole, the Rupture meter sized in beats, menace a
+pack's threat rating, the stall guard's end and the tide's and the strike's trial dials (the
+refit brief's sections 10 and 11, the to-do, How things stand). Claude's reading of "start
+sending", his to correct: this session's later chunks land the same way once verified, this
+branch alone. Landed 11 November: `ccr-4d58b054-3lyj0a`, the chassis inventory and the locked pieces'
 footing of 10 November and Ryan's round on the busted machines of 11 November (the Polar Bear
 dealt again, the Buzzard's regen, the Nemesis's rage bar; How things stand), carrying
 `ccr-722ca9f0-yj8na3` whole to `4c8dbf1`, took main (the music session's landing: the bible's
@@ -225,7 +226,7 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   mast's place, with a firing act of its own (the model rebuilt in a cloud session: a python3.11
   venv with `bpy==5.0.1` as `BPY_PYTHON`, renders under `xvfb-run`). Its leavings are the to-do's
   line (the Minerva draft's name, the old vent blast and Siphoning unused in the engine, its
-  runner row unread). On this branch, not on main. The Dingo and the Prairie Dog are this branch's next (11 November), the
+  runner row unread). On main since the same day ("Yes that's perfect. Merge that into main"). The Dingo and the Prairie Dog are this branch's next (11 November), the
   Clydesdale's review and the Skua his other sessions'.
 - The locked pieces' footing, decided 10 November (the bible's locked row, section 7, and tiers
   row, section 10; `docs/locked_pieces_proposal.md` holds what follows and the order; nothing
@@ -573,6 +574,98 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   runner's plain player, which never gathers, wins 8% of its battles where it won 19%: a
   fight for four with one machine in it is won one time in four where it was one in two. The
   bible's scale row holds it (v0.512, v0.513 since the branch took main's third map list).
+- **The Rupture in beats, built** (Ryan, 11 November, retiring the count and marking the first
+  shape the same day: "I don't think the 4 to 5 guideline holds anything anymore. This is a
+  different game now ... start this pacing and length discussion from scratch"; then "Try your
+  lean first", "Let's go 1.5 and I'll see how it feels", "To me a clear field is its own
+  reward, it's breathing room to reposition or get loot", "A duel doesn't have to be two
+  rounds, who said that?", "I'd probably set the range at 10-30 minutes, with most falling in
+  the middle ... the only reason to have more fractures is to send more elites, not
+  necessarily to make it significantly longer"). Built: the Rupture is sized in beats of the
+  tide, a beat a peak of Rift Pressure, two at every tier (`Ramp.BEATS`): what the opening
+  places and the tide sends through its second peak, the tide's lightest patrol left, and an
+  elite's part for each the tier calls (a chunk of a formation and a half on the meter alone
+  that morning, its rating's four since menace became the rating, below); and a field
+  cleared with the seal standing does nothing, the
+  stall guard gone from the battle, its save, the screen's band and the runner. The
+  multiplier's dial of the morning is the beats': SETTINGS → TRIALS → RUPTURE, 1 BEAT, 2 BEATS,
+  3 BEATS (`Ramp.beats_trial`, `RIFTGATE_BEATS`). The bible's pacing row holds his calls, the
+  count retired with the test it failed and the guard with his (v0.525); the rules follow.
+  Why it was needed (`docs/measurements.md`, 11 November, pacing from scratch): as first
+  built the meter asked nothing of the tide, the opening's packs and the elites filling it at
+  every tier by about the fourth turn; a lone duel is 4 machine-turns of the player's time
+  against a formation's 20, an elite's 21 and a boss's 36; an elite's fall was worth a third
+  to one and a third of a formation by which elite rolled; and at a fixed number of beats a
+  battle grows by itself, 7 fights before the boss through the second peak where tier one
+  starts and 11 at tier three. The bot's first battle in the Meadow as built breaks the
+  seal on its sixth or seventh turn after six or seven fights, the gate at 133 to 150 of 200,
+  and the campaign runner's plain player reaches the Rupture in 18% of its battles where it
+  reached it in 25%, a turn and a half later. Proposed and
+  his to mark (the refit brief's section 11, nothing in content): a second flank patrol a
+  domain, a picket of its own front-rank pushers beside its duelist ("Different enough that
+  the same strategy doesn't strictly work on both ... We can make flankers out of pusher
+  units if it makes sense"): three Goblins, two Needlers, three Revenants, the Peak open.
+  Still his: his play of the beats and the elite's four, the first wave repeating the
+  opening's formation, and what measures a battle's minutes.
+- **Menace is a pack's threat rating** (Ryan, 11 November, on his "I'd hope that the elites
+  menace should match between elites ... probably it should be standardized so all domains
+  are equivalent": "Maybe just 1-2-3-4 for now to keep math simple. But yes this direction
+  makes way more sense. We can tune difficulty to the value, within an acceptable band. It
+  gives us an absolute unbiased benchmark. I think the value can stay unchanged by tier, as
+  only salvage needs to scale"; and "Boss' menace rewards for salvage and anathema can be
+  completely whatever we need to make the economy work, so the placeholder doesn't really
+  matter now"). Built: a lone patrol one, a heavier patrol two, a formation three, an elite
+  four and a boss's unit four as a placeholder, flat by tier (`ContentDB.worth_of`, a pip a
+  hundred in the engine), read by the Rupture meter, salvage and Anathema alike. A pack's
+  fall pays its rating; a pack a fight wore down has paid the share its strike at the wall
+  has lost, the heads gone of the heads it took the field with, and its fall pays the rest,
+  nothing past the rating or twice (`Battle.pack_paid`). Named, since they follow from his
+  rule and were no question: the elite's fall is four against a formation's three, a
+  formation and a third where the morning's chunk was a formation and a half, and it is the
+  same in salvage and Anathema; a worn pack pays by the head, as its strike wears, simpler
+  than the form put to him (a share by each foe's own numbers); salvage is eighteen a pip,
+  set to bank what a battle banked (the runner's won battle 372 where it was 369); a first
+  battle's Rupture is 13 pips in every domain; and saves from before it are set aside
+  (battle 24, run 23). The sum of a foe's own numbers stays as its weight, the balance
+  report's column beside the rating. The bible's tally row holds it, the sum retired with the
+  test it failed (v0.528); the pacing, stall, Anathema and kill rows follow, the stall row
+  saying that the yield prices no stall now, a pack the tide sends paying what the opening's
+  does; the rules and the glossary's Menace, Rupture meter and Seal lines follow, drafts
+  redrafted. Left to the economy pass: what a boss pays and salvage's growth by tier.
+- **More spawns than the Rupture needs, on trial** (Ryan, 11 November: "I think we should try
+  to lean for noticeably more spawns then the minimum number required for our target
+  completion speed. When I was playing I felt the need to chase every pack down, since that
+  felt possible. I think that's wrong. More pusher and flanker packs, even if it means that
+  each needs to do less to the wall, is better"). The rule built that morning is the minimum
+  he names: the Rupture takes nine pips of the field's ten. Nothing of the game's rule moved;
+  two dials are on SETTINGS → TRIALS for his play: TIDE, ×1, ×1.5, ×2 (`Ramp.tide_trial`,
+  `RIFTGATE_TIDE`), how many packs the opening places and each wave sends, in whole packs,
+  the Rupture's size left on the game's own tide so the extras are a choice and never more to
+  kill; and STRIKE, 10, 7, 5, 3 (`Battlefield.strike_trial`, `RIFTGATE_STRIKE`), what a pip
+  of threat rating strikes the wall for. The floor player's reads (`docs/measurements.md`,
+  11 November; three trios in the Meadow, twenty seeds a cell, a direction): at the game's
+  tide it has killed 82 to 91% of all that had come when the seal breaks; at half again 70
+  to 74%, five or six pips standing, the seal half a turn sooner and the gate where it was;
+  at twice, half, with the hull at 38 to 59% and two trios of three winning 5% and 15%. The
+  strike moved none of its wins, a lower one turning a fallen gate into a wipe: it never
+  declines a fight, so it cannot show the wall spent to save hull, which is his play's to
+  find. Claude's lean for his first play, ×1.5 with the strike at ten, and the holes (the
+  elite's demand rides on the strike; salvage still pays by the pack; a multiplier compounds
+  with the ramp, so the game's form is the ramp's counts and the Rupture a stated share of
+  them, two pips in three at ×1.5) are the refit brief's section 11; the bible's pacing row
+  carries his lean and section 12 what is open (v0.529).
+- **One elite, the first battle read whole, and 4-4-2** (Ryan, 11 November, before the restart
+  above: "the 3 fractures, with the current rate of fill, felt short to me"; "battle one
+  should only serve one elite"; "we restructure the tier list from 3-5-2 to 4-4-2 ... I'll
+  pose that in the chassis session"). Tier one sends one elite already, at its first Fracture.
+  The first battle read whole on the meter as first built (`docs/measurements.md`, 11
+  November; three trios and a four, the runner's player, 20 seeds a cell): a longer meter is
+  more turns and more patrols, never more formations, and the gate pays; the first battle is
+  no gift for the floor player in any domain (won 40% to 60% in the Meadow, 15% to 55% in the
+  Marsh, 0% to 15% in the Waste, 0% to 5% on the Peak), the boss's first block alone moving it
+  little, since that player loses before the boss; and a domain's first two formations are
+  one composition on every seed, the first wave sending the opening's again. 4-4-2 is his
+  lean and his to pose in the chassis session (the briefs README's Tiers).
 - **The fourth machine is the first battle's** (Ryan, 11 November, in the discussion that
   followed: "the only reason to leave it up to the player was to put them fully in control.
   But if the choice is in which city to defend in order to get a guaranteed choice from that
@@ -588,8 +681,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   of 3. It's more of an opportunity to gain resources, win, get your party in order, then the
   real game starts from battle 2." Open, his (the brief's section 10; the bible's section
   12): what easy is read as, whether it is short as well, and how it is made easy, since a
-  flat cut of the boss reaches the Meadow's first battle and not the Waste's or the Peak's.
-  The bible is v0.516.
+  flat cut of the boss reaches the Meadow's first battle and not the Waste's or the Peak's
+  (its length is answered since, the bullet above).
 - **Tier one at three machines, and Ryan's calls of 11 November.** His words: "Badger probably
   goes to Regen 1 with the amount of armour it's able to get"; "Draugr is fine as a name, as are
   your other working names"; "Let's focus only on balancing tier 1 fights for now", since tier
@@ -1106,8 +1199,10 @@ its proposal's grids re-cut under the new model and read by hull lost), in its b
 what-if and its first reads are in (9 November), his two reads of the trial, the model as
 content, the formation pass and a guess at the elites' and bosses' numbers (10 November: the
 brief's sections 5, 8 and 9); tier one only for now (his word, 11 November), and next his
-answers on the first battle (the brief's section 10: the fourth machine's route is settled,
-the first battle's shape and the boss's numbers by ramp band wait on him), beside his play of what landed, with the field's
+play of the Rupture in beats and of the tide's and the strike's dials, and his marks on the
+flanks' second patrols (the brief's section 11), and his answers on the first battle (section
+10: the fourth machine's route is settled, the first battle's shape and the boss's numbers by
+ramp band wait on him), beside his play of what landed, with the field's
 dials (the to-do's Ryan list), and his answers to the brief's section 7, then the content still to come (the stock re-deal proper as a table in chat first,
 the component pass, the heat prices, the foes' numbers after his play, the bosses' stat
 blocks, what prices a round), the vocabulary, the rules and the rows. Then the long wall's other open item (the bible's section 12: the shell). Beside them, the rest of the skirmish code audit
@@ -1166,8 +1261,13 @@ commands are in `README.md`.
   clean up and merge into main first before proceeding": main's file whole, since the live v0.521
   (Version 503, main's `9ebf74b`) matched that commit's file byte for byte and so needed no merge;
   it carries everything to 11 November, new since 503 the pairs' row, The Far Bank's track row,
-  the boss themes' Open row and the design test of no extra controls). BASE for the next merge is
-  `60a0e4d`'s file. The live page may carry rows ahead of main's code while a branch has not landed. Before
+  the boss themes' Open row and the design test of no extra controls). Main's file is v0.529
+  since `ccr-722ca9f0-yj8na3` landed on 11 November: the pacing row rewritten (the count and the
+  stall guard retired, two beats, the cleared field, ten to thirty minutes, his lean for more
+  spawns), menace a pack's threat rating (the tally row, the sum retired) and the meter's lines
+  with them (the clocks, stall, boss, roster, Anathema and kill rows, section 12's first battle,
+  pacing, menace and tier counts), unpublished, its republish on Ryan's word. BASE for the next
+  merge is `60a0e4d`'s file. The live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
   this branch's file, THEIRS the saved live source with the tool's wrapper line and its trailing
@@ -1187,7 +1287,10 @@ commands are in `README.md`.
   brief, the Whip Scorpion's role map and the briefs' table, `text.json` its stamp alone; nobody
   had published since 220, the live copies matching its build but for the stamp); the page
   unchanged, and the live copies match main's after. `edits` and `text` empty, `designs` the two
-  folded ideas. Version 220 (11 November, main's `9ebf74b`,
+  folded ideas. Behind main since `ccr-722ca9f0-yj8na3` landed the same day, its republish on
+  Ryan's word: the vocabulary (the glossary's Menace, Rupture meter and Seal lines, drafts
+  redrafted for menace as a pack's threat rating and the stall guard's end), with `text.json`
+  for them and `designs.json` for the refit brief. Version 220 (11 November, main's `9ebf74b`,
   on Ryan's word, "republish the hangar and the bible") was the fourteen files that had moved since 219 (the five content files with the refit's
   model, the formation pass, the Polar Bear's seal, the Buzzard's regen and the Nemesis's rage;
   `designs.json` and `text.json`; `foes.json`; six rig sidecars, their stock pins following the
