@@ -7634,6 +7634,30 @@ Read.
   Wild Hunt (20% to 59%, two trios losing one fight in five) and the Thunder Ape (18% to 39%)
   are the dear ones.
 
+### What an offer buys at tier one: kit against a fourth machine
+
+His second Convergence at "3.5 units" leans on what the hangar adds to three machines, so
+the same probe with tier-one kit fitted: the Ablative Plating (8 hull and a point of armour,
+the heaviest tier-one module) and the Slugthrower (a plain 4 in a Twin Autoguns' slot), on one
+machine or on all three, against the same squad with a stock fourth. Two trios, 10 seeds, the
+mean hull lost to a formation, an elite and a boss, the boss's wins beside it:
+
+| The squad | The Honey Badger, the Baboon, the Skua | The Stingray, the Storm Petrel, the Cottonmouth |
+|---|---|---|
+| Three, stock | 14%, 20%, 46% (won 88%) | 12%, 10%, 52% (won 72%) |
+| One offer: a module on one machine | 12%, 16%, 41% (won 89%) | 11%, 9%, 49% (won 75%) |
+| One offer: a tier-one gun on one machine | 12%, 17%, 44% (won 88%) | 12%, 10%, 52% (won 72%) |
+| Three offers: a module on each | 10%, 12%, 31% (won 95%) | 8%, 6%, 37% (won 87%) |
+| Six offers: a module and a gun on each | 9%, 10%, 28% (won 98%) | 7%, 6%, 31% (won 95%) |
+| One offer: a fourth machine, stock | 4%, 5%, 15% (won 100%) | 4%, 4%, 11% (won 100%) |
+
+Read. At tier one kit does not stand in for a machine. One offer spent on kit moves a boss's
+cost by nought to five points; the same offer spent on a chassis cuts it by two thirds. Six
+offers of the best tier-one kit, more than tier one has battles, leave a boss twice as dear
+as one stock machine more does. So with a slot empty the chassis is the pick every time, three
+and a half is no state a squad is in, and the choice between a machine and better kit only
+begins at the fifth machine.
+
 ### The first boss, sized for three
 
 Every tier-one boss at a share of its hit points and of its blow, three machines, the mean of

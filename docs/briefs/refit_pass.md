@@ -889,11 +889,13 @@ three machines what the whole boss costs four, with no machine wrecked.
    run's graded loss.
 2. Three and a half is no squad a runner can field. Until a run deals components and modules,
    the second Convergence is read at three and at four and its numbers set between.
-3. Holding out. By the levels' proposal a find in a tier-one rift is a new trick and never a
-   bigger number, and the reads say a fourth die, hull and gauge halve a squad's costs, so in
-   tier one the chassis is likely the pick every time and holding out is waiting, at that
-   price, for a chassis one likes better. If holding out is meant as a real choice, a
-   tier-one find has to be worth a third of a machine, which that proposal says it is not.
+3. Holding out, and the half machine. Measured (`docs/measurements.md`, 11 November): one
+   offer spent on tier-one kit moves a boss's cost by nought to five points and the same
+   offer spent on a chassis cuts it by two thirds; six offers of the best tier-one kit leave
+   a boss twice as dear as one stock machine more. So with a slot empty the chassis is the
+   pick every time, holding out is a mistake the offer would be presenting as a choice, and
+   the choice it was written for (a machine against better kit: the bible's offers row)
+   begins at the fifth machine, where a chassis is a bench against a wreck.
 4. The ratings. A formation is rated three, and the opening places one with two flank patrols
    at Convergences 0 to 2 (`Ramp.formations_at`, `Ramp.patrols_at`), so the first field asks
    five machines' worth of three. If the fourth's power is the covered flank, three machines
