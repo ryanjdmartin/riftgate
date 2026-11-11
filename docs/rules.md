@@ -157,9 +157,14 @@ every machine is wrecked. There is no round limit.
   its damage and the stacks it lays; the count shows as six cells under the heat bar, as a
   store's are, the sixth apart by its shape (a heavier border, a diamond set in it) and
   lit in the heat's colour when it is next, and a shield, a vent, a buff and a spin are no shots.
-- **The Quick-turn Avionics Relay** (the Needletail's passive): equipment, a buff or a debuff
-  read on the entry as it is spent, is Rapid on it once a round, the entry dark for the rest of
-  the round as Rapid's is; the die shows the Rapid on every setup while the gate is open. A piece Rapid of its own spends no gate.
+- **The Quick-turn Avionics Relay** (the Needletail's passive): each round it acts twice, once
+  with a weapon and once with equipment (a buff or a debuff). After its first spend of either
+  kind its die turns to a lit entry of the other kind and it acts again, once a round. One entry
+  to turn to is no draw: the die shows it in its passive box beforehand, and an undo reaches
+  past the turn; several are a draw among them. With no lit entry of the other kind it has no
+  second action, and a spend that is neither kind (a blank) gives none. A piece Rapid of its own
+  acts again by its own rule and leaves the turn for the next spend. It is the machine's own
+  rule and no keyword, so a Silence leaves it.
 - **Maverick's Playbook** (the Giant Petrel's passive): the team's rerolls unspent as the
   player's turn ends are banked, up to three, and come back at the next round's start beside
   its two, spent like any reroll; a roar's cost comes off the whole. It banks while the

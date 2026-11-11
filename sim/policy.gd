@@ -459,7 +459,7 @@ func options_for(sk: Skirmish, i: int) -> Array:
 ## roll makes it, the burn it leaves and a Chain's charge, less the hull the heat will burn and
 ## the shield the splash will cost. Suppress counts the blow it stops.
 func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) -> float:
-	var quick := Effects.quick_turn_live(ms.unit, f)
+	var quick := second_action(sk, ms, f)   # its machine's second action this round (the Needletail's)
 	var real := f
 	f = Effects.effective_face(ms.unit, f, target)
 	if f.spends_magazine:
@@ -614,8 +614,8 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		# acts again, about the die's own average blow, at the odds of the kill.
 		score += p_kill * ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)
 	if quick:
-		# The Needletail's gate: a setup it spends is Rapid once a round, so the machine acts
-		# again, about the die's own average blow.
+		# The Needletail's two things a round: its first spend turns the die to the other kind
+		# and the machine acts again, about the die's own average blow.
 		score += ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)
 	score += rapid_worth(ms, f, quick)   # a plain Rapid entry's action again (4 November)
 	# The Forge (the Musk Ox's): the gun's price in ammo, at what an ammo buys; the cluster
@@ -1230,7 +1230,7 @@ func machine_spend_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.Mec
 		plain.keywords.erase(Face.Keyword.RAPID)   # its action again counted once, below, not once a machine
 		for w in sk.reached_machines(ms, f):
 			score += machine_spend_score(sk, ms, w, plain)
-		return score + rapid_worth(ms, f, Effects.quick_turn_live(ms.unit, f))
+		return score + rapid_worth(ms, f, second_action(sk, ms, f))
 	match f.kind:
 		Face.Kind.SHIELD:
 			score = shield_score(sk, who, sk.shield_amount(ms, f, who), f.has(Face.Keyword.OVERSHIELD), ms)
@@ -1264,8 +1264,8 @@ func machine_spend_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.Mec
 					# Spent on itself, the Booster goes dark for the round (its cooldown of one): the
 					# ally's action it could still buy once an ally has spent is given up.
 					score -= action_ahead(sk, ms, f)
-			if Effects.quick_turn_live(ms.unit, f):
-				score += ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)   # the Needletail's gate: Rapid once a round
+			if second_action(sk, ms, f):
+				score += ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)   # the Needletail's two things a round: the die turns and it acts again
 			if who == ms:
 				score += seal_score(sk, ms)   # a buff on itself seals a machine with a seal (the Polar Bear's Lockdown)
 	if f.has(Face.Keyword.CLEANSE):
@@ -1281,15 +1281,22 @@ func machine_spend_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.Mec
 	if f.heat > 0:
 		score -= heat_cost(sk, ms, f)
 	score -= rage_cost(sk)   # a shield, a vent or a buff feeds a raging foe (3 November)
-	score += rapid_worth(ms, f, Effects.quick_turn_live(ms.unit, f))   # a plain Rapid entry's action again (4 November)
+	score += rapid_worth(ms, f, second_action(sk, ms, f))   # a plain Rapid entry's action again (4 November)
 	return score - volatile_cost(sk, ms, f) - cooldown_cost(ms, f, score)
+
+
+## Does this spend leave its machine a second action by its own rule (Effects.one_of_each, the
+## Needletail's Quick-turn Avionics Relay): its die turning to the other kind once it is out? A
+## spend Rapid of its own keeps the turn for the next, so it reads as none here.
+func second_action(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> bool:
+	return f != null and not f.has(Face.Keyword.RAPID) and not sk.turn_entries(ms, f).is_empty()
 
 
 ## What a plain Rapid entry's action again is worth (4 November; Ryan: "If the bot doesn't value
 ## rapid property, it probably should be fixed"): spent, the die rolls again, never onto the entry
 ## just spent, and its machine acts again, about the die's own average blow, read plainly so the
 ## scorer never asks itself (as the rage's, the reset gun's and the Horn's are). Nothing for a spend
-## the Needletail's gate makes Rapid (`quick`, valued as its own), nor on a stepping die, whose
+## the Needletail's turn follows (`quick`, valued as its own), nor on a stepping die, whose
 ## cycle plan reads the chamber its Rapid steps to (cycle_chain). The bot had valued none, so the
 ## Laminar Deflector, the Pulse Vacillator, the Cryo Flinger, the Musk Ox's Quick Reload and the
 ## Immelmann Booster's own action again were each worth only what they did once.
@@ -2324,14 +2331,14 @@ static func _cleanse_worth(f: Foe, sk: Skirmish) -> float:
 
 
 ## What a spend about to go out means for the Needletail's tallies (3 November): whether its
-## gate makes it Rapid, whether it paints (an Expose on a foe), and whether it cashes a paint
+## die turns after it for a second action, whether it paints (an Expose on a foe), and whether it cashes a paint
 ## (a Direct weapon spend by another machine on a foe standing Exposed by one).
 func _paint_marks(sk: Skirmish, ms: Skirmish.MechState, f: Face, target) -> Dictionary:
 	if f == null:
 		return {}
 	var marks := {}
-	if Effects.quick_turn_live(ms.unit, f):
-		marks["quick"] = true   # read before the target: a buff spent on a machine goes out free too
+	if second_action(sk, ms, f):
+		marks["quick"] = true   # read before the spend: the die will turn and its machine act again
 	if not (target is Foe):
 		return marks
 	var foe := target as Foe

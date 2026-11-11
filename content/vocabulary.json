@@ -860,10 +860,10 @@
    "id": "quick_turned",
    "category": "status",
    "name": "Quick turn spent",
-   "codex": "Machine marker, the Needletail's gate: its free setup this round is spent, so its next debuff or buff this round is a full action. Never a chip: the die shows the gate open by the Rapid it grants a setup. Gone at the round's end.",
+   "codex": "Machine marker, the Needletail's: its die has turned once this round, so the spend it holds is its last. Never a chip: the die shows the turn it still has in its passive box. Gone at the round's end.",
    "status": "implemented",
    "design": {
-    "holes": "Set by a static grant of Rapid on setup_once (the Needletail's relay).",
+    "holes": "Set by the static one_of_each (the Needletail's relay): two things a round, a weapon and an equipment.",
     "table": {
      "kind": "buff",
      "on": "machine",

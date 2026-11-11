@@ -85,10 +85,14 @@ Where each stands:
   them on every shot, a weapon of several strikes once after them. Claude's other readings
   stand unless he says (strikes of 1 through the whole blow; half rounded down at each blow that
   takes hull; no cap).
-- **The Needletail**: settled 11 November ("I agree with the Needletail, yes"), in its brief
-  (`kestrel_needletail.md`): two things a round, a weapon and an equipment every round, the
-  Designator kept, so it marks every round. The squad's fire on its paint he set aside
-  ("spotting, yes, but artillery, not necessarily"). Its build waits on his go.
+- **The Needletail**: settled 11 November ("I agree with the Needletail, yes") and built the same
+  day on his go ("Yes build them with placeholder numbers"): two things a round, a weapon and an
+  equipment every round, its die turning to a lit entry of the other kind, the Designator kept,
+  so it marks every round. The squad's fire on its paint he set aside ("spotting, yes, but
+  artillery, not necessarily"). Its brief is retired (`git show
+  bf6bd1e:docs/briefs/kestrel_needletail.md`); the bible's Kestrel row carries it. Its look is
+  his pick from the fifth round's sheet (`docs/looks/kestrel_needletail4.png`: the fold-wing
+  Fox or the tail-sitter), never made.
 - **A chassis that orbits Exposed** ("Exposed being Kestrels primary keyword means we need at
   least one chassis that orbits it"): one of the two unspecced mediums, the payoff the three
   setters lack; that slot's session's to design.
@@ -530,8 +534,8 @@ folded 7 November), for the design session the to-do names for them:
 - **The Giant Petrel**: "marked built, but it is far from completed. Placeholder model,
   unrefined kit."
 - **The Needletail**: "marked built, but it is far from completed. Placeholder model,
-  unrefined, dull, kit, not worthy of tier 2." Its kit has a brief of its own since 11 November
-  (`kestrel_needletail.md`).
+  unrefined, dull, kit, not worthy of tier 2." Its kit was settled and rebuilt on 11 November
+  (The fast flyers, above); its model and its look stand open.
 
 The last two slots are their briefs' (`kestrel_magpie.md`, `kestrel_owl.md`), taken up in
 another session (Ryan, 21 October: "I'll take up the last 2 chassis in another session").

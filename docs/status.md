@@ -291,9 +291,13 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
     the stacks ride a shot (a Sweep's every shot, a weapon of several strikes once after them).
     Claude's other readings are in the brief, written so unless he says. He had kept the Skua
     for a session of his own; the rewrite came in this one.
-  - The Needletail (`kestrel_needletail.md`): settled ("I agree with the Needletail, yes"): two
-    things a round, a weapon and an equipment every round, the Designator kept; the chassis that
-    orbits Exposed is one of the two unspecced mediums. Its build waits on his go.
+  - The Needletail: settled ("I agree with the Needletail, yes") and built on his go ("Yes build
+    them with placeholder numbers"): two things a round, a weapon and an equipment every round,
+    its die turning to a lit entry of the other kind (the static `one_of_each`; one entry to turn
+    to is no draw, the die showing it in its passive box; the bot weighs the second action; the
+    once-a-round gate that made equipment Rapid is gone from the engine). Its stock is the
+    Designator and three guns, so it marks every round. The chassis that orbits Exposed is one of
+    the two unspecced mediums. Its brief is retired; his play is the to-do's.
 
 ## How things stand
 

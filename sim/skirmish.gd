@@ -1908,7 +1908,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 	var charged := charge_lands(ms)
 	var raw := spend_face(ms)   # the entry as spent, its charged form when a muster pays for it
 	f = raw
-	var quick := Effects.quick_turn_live(ms.unit, f)   # Rapid by a once-a-round gate (the Needletail's), read before the spend
+	var turn := turn_entries(ms, f)   # where a one-of-each machine's die may turn once this is out (the Needletail's), read before the spend
 	f = Effects.effective_face(ms.unit, f, target if target is Foe else null)   # the entry as this machine's passives make it, over the foe it is aimed at
 	if f.is_attack() and (not (target is Foe) or not targets_for_face(ms, raw).has(target)):
 		return false
@@ -2157,11 +2157,21 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 	# A spin (the Spin-Up's, Ryan's exception to the reroll rule, 19 October) is a true roll
 	# over every entry, itself included; a stepping die's free reroll steps it.
 	if f.has(Face.Keyword.RAPID) and not reset:
-		if quick:
-			# The gate spent (the Needletail's Quick-turn Avionics Relay): once a round.
-			Effects.grant_for_rounds(ms.unit, Effects.STATUS["quick_turned"], "gate", round)
 		_act_again(ms, f)
-		log.append("%s: %s" % [ms.unit.display_name, "the cylinder spins" if f.spins else ("a quick turn, rolls again" if quick else "rapid, rolls again")])
+		log.append("%s: %s" % [ms.unit.display_name, "the cylinder spins" if f.spins else "rapid, rolls again"])
+	# Two things a round (the Needletail's Quick-turn Avionics Relay, Ryan, 11 November): its
+	# first spend of a weapon or of equipment turns its die to a live entry of the other kind and
+	# it acts again, once a round. A spend Rapid of its own, or one whose kill reset it, leaves
+	# the turn for the next; a fight already won turns nothing.
+	elif not reset and not turn.is_empty() and ms.alive() and not (field_foes().is_empty() and reinforcements.is_empty()):
+		var lit: Array[int] = []
+		for at in turn:
+			if not Effects.is_entry_disabled(ms.unit, at):
+				lit.append(at)   # still lit once the spend is done
+		if not lit.is_empty():
+			Effects.grant_for_rounds(ms.unit, Effects.STATUS["quick_turned"], "gate", round)
+			_turn_die(ms, lit)
+			log.append("%s: a quick turn, and it acts again" % ms.unit.display_name)
 	# Rolling again on a status (the Nemesis's fists on rage, Ryan, 12 October): spending the
 	# entry spends a stack, if its owner has one, and the die rolls again, a plain roll as the
 	# round opens. Not Rapid's reroll, which never lands on the entry just spent: a plain roll
@@ -3655,6 +3665,62 @@ func _act_again(ms: MechState, f: Face) -> void:
 	else:
 		ms.face_index = ms.die.reroll(rng, ms.face_index)
 	ms.assigned = false
+
+
+## The entries a one-of-each machine's die may turn to once `spent` is out (Effects.one_of_each,
+## the Needletail's Quick-turn Avionics Relay): its lit entries of the other kind, equipment for
+## a weapon and weapons for equipment, each read as the machine has it. None while its second
+## action this round is spent, on a machine without the rule, or for a spend that is neither
+## kind (a shield, a vent, a blank).
+func turn_entries(ms: MechState, spent: Face) -> Array[int]:
+	var out: Array[int] = []
+	if ms == null or spent == null or not ms.alive() or not Effects.one_of_each(ms.unit) or Effects.has(ms.unit, "quick_turned"):
+		return out
+	var kind := _turn_kind(ms, spent)
+	if kind == 0:
+		return out
+	for at in range(ms.die.faces.size()):
+		if not Effects.is_entry_disabled(ms.unit, at) and _turn_kind(ms, ms.die.faces[at]) == 3 - kind:
+			out.append(at)
+	return out
+
+
+## An entry's kind for the turn: 1 a weapon, 2 equipment (a buff or a debuff), 0 neither.
+func _turn_kind(ms: MechState, f: Face) -> int:
+	var as_fired := Effects.rewritten(ms.unit, f)
+	if as_fired == null:
+		return 0
+	return 1 if as_fired.is_weapon() else (2 if as_fired.is_equipment() else 0)
+
+
+## The one entry a one-of-each machine's die turns to once the entry showing is spent, as the
+## die would show it; null when its second action is spent, when it has none to turn to, or
+## when several stand and the turn is a draw among them. The die's passive box shows it.
+func turn_face(ms: MechState) -> Face:
+	if ms == null or ms.assigned or ms.face() == null:
+		return null
+	var entries := turn_entries(ms, spend_face(ms))
+	return shown_face(ms, ms.die.faces[entries[0]]) if entries.size() == 1 else null
+
+
+## Its place on the die, from 0; -1 with turn_face's null.
+func turn_index(ms: MechState) -> int:
+	if ms == null or ms.assigned or ms.face() == null:
+		return -1
+	var entries := turn_entries(ms, spend_face(ms))
+	return entries[0] if entries.size() == 1 else -1
+
+
+## Turn a die to one of `entries` and give its machine the turn back: the one, with no draw (so
+## the undo reaches past it), or a draw among several. A preview's copy takes the first, a
+## stand-in of the right kind and never a promise.
+func _turn_die(ms: MechState, entries: Array[int]) -> void:
+	ms.assigned = false
+	if previewing or entries.size() == 1:
+		ms.face_index = entries[0]
+		return
+	_rolled()
+	ms.face_index = entries[rng.randi_range(0, entries.size() - 1)]
 
 
 # ---------------------------------------------------------------- the Musk Ox's

@@ -51,7 +51,7 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords", "weapon_cooldown", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "one_of_each", "add_armour_vs_rank", "keep_status", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords", "weapon_cooldown", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_shield_hit": ["stack_status", "add_shield", "vent_heat"],
@@ -185,10 +185,10 @@ const STATUS := {
 	# laid, so a Ward turns it away, a foe's cleanse takes it and the Paradox counts it.
 	"mine": {"id": "mine", "name": "Mine", "description": "When this foe falls, even if it gets back up or splits, the Mine blows: its damage and its riders on every foe round its slot.",
 		"tags": ["mine"], "effects": []},
-	# The Needletail's gate spent (the Quick-turn Avionics Relay, Ryan's go of 21 October; built
-	# that day): its free setup this round is used. A marker, never a chip: the die shows the
-	# gate open by the Rapid it grants a setup.
-	"quick_turned": {"id": "quick_turned", "name": "Quick turn spent", "description": "Its free setup this round is spent.", "stacking": "renew",
+	# The Needletail's second action spent (the Quick-turn Avionics Relay as Ryan settled it on 11
+	# November: two things a round, a weapon and an equipment): its die has turned once this
+	# round. A marker, never a chip: the die shows the turn it still has in its passive box.
+	"quick_turned": {"id": "quick_turned", "name": "Quick turn spent", "description": "Its second action this round is spent.", "stacking": "renew",
 		"tags": ["marker"], "effects": []},
 	# The Swallowtail's (Ryan's go, 21 October; built that day). The Muster: a store of points,
 	# every die's roll a point and a kill by its own guns more, a charge every so many (the
@@ -483,14 +483,12 @@ const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol",
 ## is taking carries the status the effect's `status` names (any of FOE_STATUSES when it names
 ## none). Read by damage_taken alone, which is handed the striker; every other static query
 ## has no striker, so the condition never holds there. A status the engine lacks never holds.
-## setup_once (the Needletail's gate, 21 October; listed 23 October, when its content landed):
-## the entry spent is a debuff or a buff while the machine's free setup this round is unspent.
 ## shield_up (the Storm Petrel's plate, built 30 October): the machine's own shield stands, read
 ## on the shield as it is before the blow (damage_taken's `shield` when a forecast walks its blows).
 ## sealed (the Polar Bear's Lockdown, 9 November): the machine wears its seal (is_sealed), so a
 ## grant holds only in the sealed form; with an `entry` beside it (any effect may carry one: a
 ## component id) it holds on that piece's entries alone.
-const SUPPORTED_WHEN := ["reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank", "setup_once", "shield_up", "sealed"]
+const SUPPORTED_WHEN := ["reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank", "shield_up", "sealed"]
 ## Stats a static effect may change: the mech's base numbers by these names.
 const STATS := ["hull", "shield", "heat", "armour", "move", "cooling", "shield_regen"]
 ## Effects that are bonuses (a destroyed component keeps them) rather than abilities.
@@ -991,10 +989,6 @@ static func _holds(u, eff: Dictionary, face: Face, target = null, ctx: Dictionar
 			# Every n-th spend at a foe this fight (the Cassowary's sixth shot): this one, when the
 			# count so far is one short of a multiple of `every`.
 			return face != null and face.is_attack() and (stacks_of(u, "shots") + 1) % maxi(1, int(eff.get("every", 6))) == 0
-		"setup_once":
-			# A setup (the Needletail's gate, 21 October): a debuff or a buff, read on the entry
-			# as it is spent, while the machine's free one this round is unspent.
-			return face != null and (face.is_debuff() or face.kind == Face.Kind.BUFF) and not has(u, "quick_turned")
 	var w := str(eff.get("when", ""))
 	if w.begins_with("tag_"):
 		return face != null and face.tags.has(w.substr(4))
@@ -2111,18 +2105,14 @@ static func muster_charges(u) -> int:
 	return stacks_of(u, "muster") / maxi(1, int(rule.get("value", 30)))
 
 
-## Is this entry Rapid by a once-a-round gate (a grant_keyword of rapid on setup_once, the
-## Needletail's Quick-turn Avionics Relay, 21 October), its own Rapid aside? Spent so, the gate
-## closes for the round (the quick_turned marker).
-static func quick_turn_live(u, face: Face) -> bool:
-	if face == null:
-		return false
-	var base := rewritten(u, face)
-	if base.has(Face.Keyword.RAPID) or keywords_muted(u):
-		return false
-	for pair in _taking_part(u, "static", base, null):
-		var eff: Dictionary = pair[0]
-		if str(eff.get("effect", "")) == "grant_keyword" and str(eff.get("value", "")) == "rapid" and str(eff.get("when", "")) == "setup_once":
+## Does the machine act twice a round, once with a weapon and once with equipment (static
+## one_of_each, the Needletail's Quick-turn Avionics Relay; Ryan, 11 November: "using two things a
+## round is very Kestrel and deserves a chassis")? After its first spend of either kind its die
+## turns to a live entry of the other kind and it acts again, once a round (the quick_turned
+## marker; Skirmish.turn_entries). The machine's own rule and no keyword, so a Silence leaves it.
+static func one_of_each(u) -> bool:
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "one_of_each":
 			return true
 	return false
 
@@ -2244,6 +2234,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"multiply_printed": body = "the printed number ×%s, before any buff" % vs
 		"split_strikes": body = "hits twice (fires twice the shots, for a Sweep), its base weapon damage halved, rounded down, never below one" if vs == "2" else "hits ×%s (×%s the shots, for a Sweep), its base weapon damage divided by %s, rounded down, never below one" % [vs, vs, vs]
 		"weapon_cooldown": body = "every weapon and equipment it aims at a foe goes dark for %s rounds" % vs
+		"one_of_each": body = "acts twice a round, once with a weapon and once with equipment: after its first spend the die turns to an entry of the other kind"
 		"mine_on_spend": body = "every weapon and equipment it aims at a foe leaves a Mine of %s on it with the spend's keywords, one Mine a foe however many spends feed it; when the foe falls the Mine blows on every foe round its slot" % vs
 		"carry": body = "the machines beside it on the map travel with it when it moves"
 		"forge": body = "its weapons spend ammo instead of heating it, 1 for every %d heat, its magazine %s, opening at %d and gaining %d a round" % [int(eff.get("per_heat", 10)), vs, int(eff.get("start", 0)), int(eff.get("per_round", 0))]

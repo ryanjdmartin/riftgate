@@ -898,6 +898,15 @@ static func next_chamber_line(next: Face, place: int, db: ContentDB) -> Dictiona
 	return marked(text_line("effect", "A roll or reroll steps it to %s, %s" % [Hud.roman(place), named], "rule"), [passive_mark(str(shown[0]), shown[1], shown[2])])
 
 
+## The entry a one-of-each die turns to once the one showing is spent (the Needletail's Quick-turn
+## Avionics Relay, 11 November), as a line: its place and its name, headed by the passive box
+## the die shows it in.
+static func turn_line(next: Face, place: int, db: ContentDB) -> Dictionary:
+	var named := db.component_name(next.component) if next != null and not next.component.is_empty() else (next.describe() if next != null else "")
+	var shown := DieFaceView.next_mark(next)
+	return marked(text_line("effect", "Spent, its die turns to %s, %s, and it acts again" % [Hud.roman(place), named], "rule"), [passive_mark(str(shown[0]), shown[1], shown[2])])
+
+
 ## The terms under `point`, in the readout's own space; none off them.
 func terms_at(point: Vector2) -> Array:
 	for h in _hits:

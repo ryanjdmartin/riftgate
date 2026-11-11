@@ -1222,9 +1222,9 @@
    "maker": "kestrel",
    "tier": 2,
    "design": {
-    "fantasy": "The interceptor, a tilt-jet (Ryan, 20 October: \"agile and omnidirectional\"), named 21 October for the swift claimed the fastest in flapping flight. It spots for the team: what it paints, every machine's Direct guns reach, armour and all, and its setups cost it no turn.",
-    "niche": "Kestrel's spotter at tier two: a debuff or a buff is Rapid on it once a round (the Quick-turn Avionics Relay), so a setup is a free action and the cash its second; its Fovea Designator Exposes a foe through the next round, in every machine's Direct reach and its armour counting for nothing. It wants control pieces of every maker and a Direct-heavy team to cash its paint, and it feeds the Baboon's Paradox a status a round.",
-    "notes": "Ryan's go, 21 October (the bible's Kestrel row; its brief retired 23 October: git show 9ced5e5:docs/briefs/kestrel_interceptor.md). Landed 23 October: every part of it was built 21 October (Expose and Exposed; the gate, a static grant of Rapid on setup_once), so it is runnable; a tier two, so the tender never deals it. Numbers are placeholders at the stock pass's scale, a light flyer at the floor of 20 hull, glass on purpose. The stock by kind, the brief's die (a Direct flat gun to cash the paint, a buff, a vent), Kestrel's own: the Transonic Rifle, the Overcharge Coil and the Bleed Valve. Its model is Claude's first cut of 23 October (tools/lowforge/models_low.py, needletail), Ryan's to judge running."
+    "fantasy": "The interceptor, a tilt-jet (Ryan, 20 October: \"agile and omnidirectional\"), named 21 October for the swift claimed the fastest in flapping flight. Two modes, and two things a round: in fast, mark, hover and vector to dodge, out fast (his picture of it), \"a fox in a henhouse\".",
+    "niche": "Kestrel's tempo machine at tier two (Ryan, 11 November: \"using two things a round is very Kestrel and deserves a chassis\"): each round it acts twice, once with a weapon and once with equipment (the Quick-turn Avionics Relay), its die turning to an entry of the other kind after its first spend. Its Fovea Designator Exposes a foe through the next round, so with one equipment on its die it marks every round, the line's dependable setter; the chassis that cashes Exposed is one of the unspecced mediums. It wants every maker's equipment (a setter and the gun that cashes it, a buff for the hitter and a shot of its own), and it feeds the Baboon's Paradox a status a round. Beside the Kite's burst and the Skua's ramp it is tempo, and the most team-bound of the three.",
+    "notes": "Settled 11 November (the fast flyers' round: the bible's Kestrel row; its first brief retired 23 October, git show 9ced5e5:docs/briefs/kestrel_interceptor.md) and built that day: the passive a static one_of_each, the machine's own rule and no keyword, so a Silence leaves it; one entry to turn to is no draw. Until then (his go of 21 October) equipment was Rapid on it once a round. Numbers are placeholders at the stock pass's scale, a light flyer at the floor of 20 hull, glass on purpose; two spends a round pay two spends' heat. The stock is three guns beside the Designator (the Transonic Rifle, the Laser Carbine and the Twin Autoguns, placeholders, his to name), so the Designator is its one equipment and it marks every round, as settled; the Overcharge Coil it stocked until then is a found piece again, its first build question. Its model is Claude's first cut of 23 October (tools/lowforge/models_low.py, needletail); its two modes' look is Ryan's pick from the fifth round's sheet (docs/looks/kestrel_needletail4.png)."
    },
    "codex": "",
    "hull": 20,
@@ -1245,19 +1245,17 @@
    ],
    "loadout": [
     "transonic_rifle",
-    "overcharge_coil",
+    "laser_carbine",
     "twin_autoguns"
    ],
    "passive": {
     "id": "quick_turn_avionics_relay",
     "name": "Quick-turn Avionics Relay",
-    "description": "Equipment is Rapid on the Needletail, once a round: a buff or a debuff.",
+    "description": "Each round the Needletail acts twice: once with a weapon, once with equipment. After its first spend its die turns to an entry of the other kind.",
     "effects": [
      {
       "trigger": "static",
-      "effect": "grant_keyword",
-      "value": "rapid",
-      "when": "setup_once"
+      "effect": "one_of_each"
      }
     ]
    },

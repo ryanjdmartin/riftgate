@@ -175,7 +175,7 @@ def tally(words):
             if eff.get("when") == "nth_shot" and not counted:   # a rule on every n-th shot keeps the count
                 t.grant("shots", "machine", label, how, planned, who=who)
                 counted = True
-            if eff.get("when") == "setup_once":   # a grant once a round marks the round's turn spent (the Needletail's gate)
+            if e == "one_of_each":   # two things a round marks the round's turn spent (the Needletail's relay)
                 t.grant("quick_turned", "machine", label, how, planned, who=who)
             if e == "grant_keyword":
                 t.count(str(eff.get("value")), "passive", planned)

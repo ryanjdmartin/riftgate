@@ -9458,58 +9458,95 @@ func test_a_mine_survives_the_save_and_the_preview_leaves_it_alone() -> void:
 	assert_true(preview is Dictionary, "and reads the round")
 
 
-## The Needletail's gate (the Quick-turn Avionics Relay, Ryan's go of 21 October; built that
-## day), on a synthetic passive: a setup, a debuff or a buff read on the entry as spent, is
-## Rapid on its machine once a round, the entry switched off for the round as Rapid's is; a
-## gun never; a second setup that round is a full action; a piece Rapid of its own spends no
-## gate; the next round opens it again.
-func test_a_setup_is_rapid_once_a_round_on_the_gate() -> void:
-	var relay := {"id": "relay", "name": "Relay", "description": "", "effects": [{"trigger": "static", "effect": "grant_keyword", "value": "rapid", "when": "setup_once"}]}
+## The Needletail's two things a round (the Quick-turn Avionics Relay as Ryan settled it on 11
+## November; built that day), on a synthetic passive: after its first spend of a weapon or of
+## equipment its die turns to a lit entry of the other kind and the machine acts again, once a
+## round. One entry to turn to is no draw, so the die shows it and the undo reaches past it;
+## several are a draw among them; a dark entry is none; a spend Rapid of its own keeps the turn
+## for the next; with nothing of the other kind there is no second action; the next round opens
+## it again, and the bot weighs the action the turn gives.
+const RELAY := {"id": "relay", "name": "Relay", "description": "", "effects": [{"trigger": "static", "effect": "one_of_each"}]}
+
+
+func test_a_one_of_each_die_turns_to_the_other_kind_once_a_round() -> void:
 	var probe := Face.attack(0, I, [K.EXPOSE])
-	var coil := Face.buff("overcharged", 2)
 	var gun := Face.attack(10, L)
 	var sk := Skirmish.new(1, 2)
-	var m := _mech("Spotter", Die.of([probe, coil, gun]), 40, 100)
-	m.grant_passive(relay)
+	sk.keeps_undo = true
+	var m := _mech("Spotter", Die.of([probe, gun, Face.attack(5, L)]), 40, 100)
+	m.grant_passive(RELAY)
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(300, 0), _ghoul(300, 0)])
 	sk.begin()
 	sk.start_round()
 	var ms: Skirmish.MechState = sk.mechs[0]
-	assert_true(sk.shown_face(ms, probe).has(K.RAPID), "the die shows the debuff Rapid while the gate is open")
-	assert_false(sk.shown_face(ms, gun).has(K.RAPID), "a gun never")
-	ms.face_index = 0
-	assert_true(sk.assign(0, sk.front[0]), "the debuff spent")
-	assert_false(ms.assigned, "is Rapid: the machine acts again")
-	assert_eq(Effects.dark_rounds(m, 0, sk.round), 0, "lit still: the gate's Rapid carries no cooldown (2 November), the gate itself the limit")
-	assert_true("\n".join(sk.log).contains("a quick turn, rolls again"), "the log says so")
-	assert_false(sk.shown_face(ms, coil).has(K.RAPID), "the gate closed for the round")
+	# A weapon first: one equipment to turn to, so no draw.
 	ms.face_index = 1
-	assert_true(sk.assign(0, ms), "the buff, a second setup this round")
-	assert_true(ms.assigned, "a full action")
+	assert_eq(sk.turn_index(ms), 0, "the die knows where it turns: its one equipment")
+	assert_true(sk.turn_face(ms).has(K.EXPOSE), "and shows that entry")
+	var before := sk.rng.state
+	assert_true(sk.assign(0, sk.front[0]), "the gun spent")
+	assert_false(ms.assigned, "the machine acts again")
+	assert_eq(ms.face_index, 0, "its die turned to the equipment")
+	assert_eq(sk.rng.state, before, "one entry to turn to is no draw")
+	assert_true("\n".join(sk.log).contains("a quick turn"), "the log says so")
+	assert_eq(sk.turn_index(ms), -1, "its second action is the one it holds: nothing more to turn to")
+	assert_true(sk.undo(), "with no draw the undo reaches past the turn")
+	ms = sk.mechs[0]   # the undo writes the fight back: its units are read again
+	m = ms.unit
+	assert_true(ms.face_index == 1 and not ms.assigned and not Effects.has(m, "quick_turned"), "the gun showing again, the turn unspent")
+	assert_true(sk.assign(0, sk.front[0]), "spent again")
+	assert_true(sk.assign(0, sk.front[0]), "then the equipment")
+	assert_true(ms.assigned, "a full action: once a round")
 	sk.end_round()
 	sk.start_round()
-	assert_true(sk.shown_face(ms, coil).has(K.RAPID), "the next round opens it again")
+	# Equipment first: two guns to turn to, a draw among them.
+	ms.face_index = 0
+	assert_eq(sk.turn_entries(ms, ms.face()), [1, 2] as Array[int], "its two guns")
+	assert_eq(sk.turn_index(ms), -1, "a draw among several is never promised")
+	before = sk.rng.state
+	assert_true(sk.assign(0, sk.front[0]), "the equipment first this round")
+	assert_false(ms.assigned, "it acts again")
+	assert_true(ms.face_index == 1 or ms.face_index == 2, "on one of its guns")
+	assert_true(sk.rng.state != before, "a draw among several")
+	assert_false(sk.can_undo(), "and a draw is the undo's floor")
+	sk.end_round()
+	sk.start_round()
+	# A dark entry is none to turn to; with nothing of the other kind there is no second action.
+	Effects.disable_entry(m, 0, "foe:x", sk.round)
 	ms.face_index = 1
-	assert_true(sk.assign(0, ms), "the buff first this time")
-	assert_false(ms.assigned, "Rapid on the gate")
-	# A piece Rapid of its own spends no gate.
+	assert_true(sk.turn_entries(ms, ms.face()).is_empty(), "its one equipment dark: nothing to turn to")
+	assert_true(sk.assign(0, sk.front[0]), "the gun")
+	assert_true(ms.assigned, "a full action")
+	# A piece Rapid of its own keeps the turn for the next spend.
 	var s2 := Skirmish.new(1, 2)
 	var own := Face.attack(0, I, [K.RAPID, K.SHOCK])
 	own.heat = 5
-	var n := _mech("Spotter", Die.of([own, probe.duplicate_face(), gun]), 40, 100)
-	n.grant_passive(relay)
+	var n := _mech("Spotter", Die.of([own, gun.duplicate_face()]), 40, 100)
+	n.grant_passive(RELAY)
 	s2.add_mech(n)
 	s2.add_foes([_ghoul(300, 0)])
 	s2.begin()
 	s2.start_round()
-	s2.mechs[0].face_index = 0
+	var ns: Skirmish.MechState = s2.mechs[0]
+	ns.face_index = 0
 	assert_true(s2.assign(0, s2.front[0]), "its own Rapid")
-	assert_true(sk.shown_face(s2.mechs[0], probe).has(K.RAPID), "the gate still open for the next setup")
+	assert_true(not ns.assigned and not Effects.has(n, "quick_turned"), "acts again by Rapid, the turn unspent")
 	var bot := Policy.make(Policy.GREEDY, 1)
-	var open := bot.attack_score(s2, s2.mechs[0], probe, s2.front[0])
+	ns.face_index = 1
+	Effects.clear_cooldowns(n)
+	var open := bot.attack_score(s2, ns, ns.face(), s2.front[0])
 	Effects.grant_for_rounds(n, Effects.STATUS["quick_turned"], "test", s2.round)
-	assert_true(open > bot.attack_score(s2, s2.mechs[0], probe, s2.front[0]), "the bot weighs the free action the open gate gives")
+	assert_true(open > bot.attack_score(s2, ns, ns.face(), s2.front[0]), "the bot weighs the action the turn gives")
+	# A machine without the rule turns nothing.
+	var plain := _mech("Plain", Die.of([probe.duplicate_face(), gun.duplicate_face()]), 40, 100)
+	var s3 := Skirmish.new(1, 2)
+	s3.add_mech(plain)
+	s3.add_foes([_ghoul(300, 0)])
+	s3.begin()
+	s3.start_round()
+	s3.mechs[0].face_index = 1
+	assert_true(s3.turn_entries(s3.mechs[0], s3.mechs[0].face()).is_empty(), "no rule, no turn")
 
 
 ## The Swallowtail's Muster (Ryan's go, 21 October; built that day), on a synthetic passive at

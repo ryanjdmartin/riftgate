@@ -1304,6 +1304,8 @@ func _refresh(save: bool = true) -> void:
 		d.dark = Effects.dark_rounds(ms.unit, ms.face_index, sk.round) if sf != null and sf.disabled else 0
 		d.cooldown = sk.cooldown_of(ms, sf)   # the rounds a spend darkens it, its passives in: a cost along its foot
 		d.next_face = sk.next_face(ms) if ms.alive() else null   # a stepping die's next chamber
+		if d.next_face == null and ms.alive():
+			d.next_face = sk.turn_face(ms)   # the entry a one-of-each die turns to once this is spent (the Needletail's), when one stands
 		d.next_number = sk.shown_number_text(ms, d.next_face) if d.next_face != null and d.next_face.is_weapon() else ""   # its blow as it would deal it now
 		d.slot = ms.face_index + 1   # its place on the die: a reroll onto a copy shows by it
 		d.spent = ms.assigned
@@ -2166,6 +2168,11 @@ func _show_die(i: int) -> bool:
 		var next_at := sk.next_index(ms)
 		if next_at >= 0:
 			extra.append(EntryReadout.next_chamber_line(sk.next_face(ms), next_at + 1, ContentDB.load_default()))
+		# The entry a one-of-each die turns to once this is spent (the Needletail's two things a
+		# round), by the same box.
+		var turn_at := sk.turn_index(ms)
+		if next_at < 0 and turn_at >= 0:
+			extra.append(EntryReadout.turn_line(sk.turn_face(ms), turn_at + 1, ContentDB.load_default()))
 		# Its machine's form (the Polar Bear's): the seal or the opening this entry brings, by the
 		# chip the die shows for it, Sealed a term a tap opens.
 		var shift := form_mark(ms, sf) if not ms.assigned else ""

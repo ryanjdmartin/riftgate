@@ -115,14 +115,14 @@ EFFECTS = {
     "extra_action": [], "never_hunted": [], "no_destroy": [], "carry": [], "keep_status": [], "rewrite_weapon": [], "grant_keyword": [],
     "add_shield": [], "vent_heat": [], "stack_status": [], "lay_status": [],
     "multiply_heat": [("heat", "sets")], "add_damage": [], "add_damage_taken": [], "hull_per_spend": [("hull_damage", "sets")],
-    "multiply_damage": [], "multiply_stacks": [], "add_heat": [("heat", "sets")], "weapon_cooldown": [], "min_damage": [], "add_burn": [],
+    "multiply_damage": [], "multiply_stacks": [], "add_heat": [("heat", "sets")], "weapon_cooldown": [], "one_of_each": [], "min_damage": [], "add_burn": [],
     "burn_shield": [("heat", "reads")], "bank_rerolls": [("reroll", "reads"), ("reroll", "sets")],
     "fill_hopper": [("hopper", "sets")], "hopper_plate": [("hopper", "reads"), ("braced", "sets")],
 }
 TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_shield_granted": "shield_granted", "on_kill": "kill",
             "on_foe_status": "paradox_feed", "on_stack": None, "on_attack": None, "static": None, "on_round_start": None,
             "on_injury": None, "on_skirmish_start": None, "on_shield_gain": None}
-CONDITIONS = {"target_status": None, "attacker_status": None, "target_rank": "rank", "nth_shot": None, "setup_once": None,
+CONDITIONS = {"target_status": None, "attacker_status": None, "target_rank": "rank", "nth_shot": None,
               "target_no_intent": None, "shield_up": None}
 # A foe move's riders and effects, on machines.
 FOE_RIDERS = {"burn": "burning_mech", "scorch": "scorched", "disable": "disabled", "corrupt": "corrupted", "silence": "silenced", "breach": None}
