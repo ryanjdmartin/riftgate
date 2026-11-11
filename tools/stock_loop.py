@@ -30,8 +30,8 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(REPO, 'build', 'loops')
 GODOT = os.environ.get('GODOT') or shutil.which('godot') or os.path.expanduser('~/bin/godot')
 # The default team as a --team row, so the runner skips the targeting comparison it runs on "team".
-TEAMS = ['team:badger+clydesdale+sparrowhawk', 'minerva team', 'kestrel team', 'wainwright_sutler team']
-TEAM_EXTRA = ['--team', 'badger,clydesdale,sparrowhawk']
+TEAMS = ['team:badger+clydesdale+kite', 'minerva team', 'kestrel team', 'wainwright_sutler team']
+TEAM_EXTRA = ['--team', 'badger,clydesdale,kite']
 POLICIES = ['random', 'greedy', 'blind', 'planner']
 GAP_MIN_WIN = 25   # the runner's: the gap reads a cell only where both rungs win this share
 GROUPS = ('trash', 'massive', 'formation', 'final', 'finale')
@@ -99,16 +99,14 @@ def lever_blows_by(root, arg):
 
 
 def lever_durability(root, arg):
-    """Our hull, shield and field recharge times k: durability:0.75"""
+    """Our hull and shield times k: durability:0.75 (the field recharge went with the long wall brief)"""
     k = float(arg or 0.75)
     d = jl(root, 'chassis')
     for c in d['entries']:
         c['hull'] = max(1, rnd(c['hull'] * k))
         c['shield'] = max(0, rnd(c['shield'] * k))
-        if 'recharge_field' in c:
-            c['recharge_field'] = max(0, rnd(c['recharge_field'] * k))
     js(root, 'chassis', d)
-    return 'our hull, shield and recharge x%s' % (arg or '0.75')
+    return 'our hull and shield x%s' % (arg or '0.75')
 
 
 def lever_cooling(root, arg):
@@ -148,7 +146,7 @@ def lever_gunheat(root, arg):
 
 
 def lever_armour(root, arg):
-    """Foes' armour set by id: armour:sandworm=1,magma_golem=1"""
+    """Foes' armour set by id: armour:sandworm=1,magma_elemental=1"""
     m = {a: int(b) for a, b in (p.split('=') for p in arg.split(','))}
     d = jl(root, 'foes')
     for f in d['entries']:
@@ -170,7 +168,7 @@ def lever_hp(root, arg):
 
 
 def lever_move(root, arg):
-    """A foe move's value set: move:treant.regen=3,bone_dragon.regen=3"""
+    """A foe move's value set: move:treant.regen=3,bone_wyvern.regen=3"""
     m = {a: int(b) for a, b in (p.split('=') for p in arg.split(','))}
     d = jl(root, 'foes')
     hit = set()

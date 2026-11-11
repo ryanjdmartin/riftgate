@@ -2,7 +2,8 @@
 
 The hangar page (tools/hangar.html) renders the codex, the content editor, the names list
 and the renders from files published beside it, so one republish refreshes every tab.
-This writes the one piece the browser cannot read for itself, the hp_<n> pins each built
+The Designs tab reads every brief in docs/briefs/, parsed by tools/hangar_designs.py into
+build/hangar/designs.json. This writes the one piece the browser cannot read for itself, the hp_<n> pins each built
 model carries (docs/hangar/pins.json, from art/models/<chassis>.glb), checks the renders
 manifest (docs/hangar/renders.json) against the files on disk, and prints the `files` map
 to pass to the Artifact tool, published path to source path. The map carries the Animation
@@ -22,6 +23,9 @@ or render change, then publish tools/hangar.html with the printed map to the pag
     python3 tools/hangar_data.py --check    # check only, no write
 """
 import base64, json, os, re, struct, sys
+
+import hangar_designs
+import hangar_text
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONTENT = ["chassis", "components", "modules", "foes", "factions", "vocabulary", "reserved_names"]
@@ -73,6 +77,20 @@ def main():
     files["hangar/pins.json"] = "docs/hangar/pins.json"
     files["hangar/renders.json"] = "docs/hangar/renders.json"
     files["hangar/motion.js"] = "tools/hangar_motion.js"
+    # The Designs tab's briefs (5 November): every brief in docs/briefs/ parsed by
+    # tools/hangar_designs.py into build/hangar/designs.json, a header each checked.
+    _docs, problems = hangar_designs.build(check_only)
+    if problems:
+        print("\n".join(problems), file=sys.stderr)
+        sys.exit(1)
+    files["hangar/designs.json"] = hangar_designs.OUT
+    # The Text tab's inventory (9 November): every shown text as tools/hangar_text.py lists it,
+    # with who wrote each from docs/hangar/text.json, into build/hangar/text.json.
+    _slots, _groups, problems = hangar_text.build(check_only)
+    if problems:
+        print("\n".join(problems), file=sys.stderr)
+        sys.exit(1)
+    files["hangar/text.json"] = hangar_text.OUT
     # The foes' combat sprites (4 November, Ryan: the sprites in the hangar's foe list, compared
     # and inventoried): every foe with art, and a manifest saying which sprite is a rough
     # placeholder (tools/placeholder_art.py's table, read as text so no PIL is needed here).

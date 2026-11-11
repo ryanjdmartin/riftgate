@@ -1,6 +1,6 @@
 """Lowforge: units in the mid-nineties 3D register, built by code from a brief.
 
-    tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger sparrowhawk   # from models_low.py
+    tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger kite   # from models_low.py
     tools/spriter/.venv/bin/python tools/lowforge/forge.py export badger              # from a hand-edited .blend
     tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes                     # the component silhouette classes, every maker
     godot --headless --path . --import

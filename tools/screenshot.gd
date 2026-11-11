@@ -9,7 +9,7 @@ extends SceneTree
 ## showing), mechhold and foehold (the first machine's and the first foe's readout, as a tap opens it), confirm (the
 ## end-turn question), lock, rage (the rage's roll again mid-burst), heat (Burning and
 ## Scorched on the first machine), foeheat (heat's red-orange beside the enemy's violet on three foes' chips), repick (a foe whose machine falls before it acts, a second
-## arrow dashed to the machine it will strike).
+## arrow dashed to the machine it will strike), columns (every foe aimed at the machine nearest its column, every arrow on).
 
 var _frames := 0
 var _vp: SubViewport
@@ -166,13 +166,14 @@ func _apply_pose() -> void:
 			if not swatches.is_empty():
 				var pb: ColorPickerButton = swatches[3]   # ENEMY
 				pb.get_popup().popup_centered()
-		"withdraw":
-			# Withdraw confirmed: the enemy's parting blows replay (RIFTGATE_SHOT_FRAME) before
-			# the outcome.
-			s._on_withdraw()
-			s._confirm_yes()
 		"strike":
-			# Spend the first mech's face on the first front foe: the attack animation plays.
+			# Spend the first mech's face on the first front foe: the attack animation plays, a
+			# strike at a time (RIFTGATE_SHOT_FRAME catches a burst between its blows), the entry
+			# RIFTGATE_HOLD_ENTRY=<place> names showing first (RIFTGATE_TEAM=skua and its Flechette Pod).
+			var place := int(OS.get_environment("RIFTGATE_HOLD_ENTRY")) - 1
+			if place >= 0 and place < s.sk.mechs[0].die.faces.size():
+				s.sk.mechs[0].face_index = place
+				s._refresh()
 			var foe: Foe = s.sk.front[0]
 			s._use_die(0, foe)
 		"plaque":
@@ -199,16 +200,6 @@ func _apply_pose() -> void:
 					var at := over.get_global_rect().get_center()
 					s._on_drag_moved(at)
 					return
-		"reserve":
-			# The reinforcements waiting by rank in the formation's gutter: two for the front, one
-			# for the back, one massive (its tall plaque between the ranks).
-			var archer := Foe.make("skeleton_archer", 30, 10)
-			archer.prefers_back = true
-			var big := Foe.make("revenant", 300, 10)
-			big.size = 2
-			s.sk.reinforcements.clear()
-			s.sk.reinforcements.append_array([Foe.make("revenant", 30, 10), Foe.make("revenant", 30, 10), archer, big])
-			s._refresh()
 		"rage":
 			# The rage's roll again: the chip's burst and the die folded before its flip
 			# (RIFTGATE_SHOT_FRAME=8 catches the burst mid-flight).
@@ -227,6 +218,54 @@ func _apply_pose() -> void:
 						break
 				foes[i].target = s.sk.mechs[0]
 			s._toggle_all_arrows(true)
+			s._refresh()
+		"columns":
+			# One column's two arrows apart (Ryan, 9 November: two foes of one column at the machine
+			# below blended): every foe aimed at the machine nearest its column, its blow drawn, every
+			# arrow on (RIFTGATE_FOES=goblin:4,mandragora:4 fills both ranks).
+			for foe in s.sk.field_foes():
+				for a in foe.actions:
+					if Foe.is_attack_action(a):
+						foe.action = a
+						break
+				foe.target = s.sk.mechs[clampi(foe.column - (s.sk.columns - s.sk.mechs.size()) / 2, 0, s.sk.mechs.size() - 1)]
+			s._toggle_all_arrows(true)
+			s._refresh()
+		"chips":
+			# Every unit crowded with chips (Ryan, 2 November: "chips can go off the sides of the
+			# screen ... Need to wrap rows ... space for 2-3 rows of chips under the player units"):
+			# seven statuses on each machine and five on each foe, so the rows wrap at the unit's
+			# width and the third row under a machine shows its room.
+			for ms in s.sk.mechs:
+				var u: Unit = ms.unit
+				for st in [["burning_mech", Effects.DECAY_TURN], ["scorched", Effects.DECAY_TURN_ALL], ["primed", Effects.DECAY_TICK], ["overcharged", Effects.DECAY_NONE], ["braced", Effects.DECAY_TURN_ALL], ["phased", Effects.DECAY_TURN_ALL], ["cryoed", Effects.DECAY_NONE]]:
+					if Effects.STATUS.has(st[0]):
+						Effects.stack(u, Effects.STATUS[st[0]], Effects.SKIRMISH, "shot", 2, st[1])
+			for foe in s.sk.field_foes():
+				for id in ["burning", "flakked", "shocked", "cryoed", "vitriol"]:
+					Effects.stack(foe, Effects.STATUS[id], Effects.SKIRMISH, "mech", 2, Effects.status_decay(Effects.STATUS[id]))
+			s._refresh()
+		"stores":
+			# Every machine's own resource row part filled, to judge the rows beside the heat bar
+			# (10 November; RIFTGATE_TEAM=badger,nemesis,cassowary,swallowtail, then musk_ox): the
+			# Honey Badger's hopper at three loads of four, the Nemesis's rage at three, the
+			# Cassowary's count two short of its shot, the Swallowtail's Muster a charge and a
+			# half, the Musk Ox's magazine two down, and each machine a little hot.
+			for ms in s.sk.mechs:
+				var u: Unit = ms.unit
+				ms.heat = maxi(ms.heat, int(u.heat_max * 0.4))
+				if Effects.store_cap(u, "hopper") > 0:
+					Effects.add_loads(u, 3)
+				if Effects.store_cap(u, "rage") > 0:
+					Effects.stack(u, Effects.STATUS["rage"], Effects.SKIRMISH, "mech", 3, Effects.DECAY_NONE)
+				var every := Effects.counts_shots(u)
+				if every > 2:
+					Effects.stack(u, Effects.STATUS["shots"], Effects.SKIRMISH, "mech", every - 2, Effects.DECAY_NONE)
+				var rule := Effects.muster_rule(u)
+				if not rule.is_empty():
+					Effects.stack(u, Effects.STATUS["muster"], Effects.SKIRMISH, "mech", int(int(rule.get("value", 30)) * 1.5), Effects.DECAY_NONE)
+				if ms.ammo_max > 0:
+					ms.ammo = maxi(0, ms.ammo_max - 2)
 			s._refresh()
 		"heat":
 			# A foe's fire on the first machine: Burning ×2 and Scorched ×1 on its chip row, with
@@ -286,7 +325,7 @@ func _apply_pose() -> void:
 			var swept: Foe = s.sk.back[0] if s.sk.back[0] != null else s.sk.front[0]
 			s._on_drag_moved(s._foe_view_for(swept).get_global_rect().get_center())
 		"undo":
-			# One die spent on a scratch (3 November): UNDO lit at the reroll row's right end with
+			# One die spent on a scratch (3 November): UNDO lit at the bottom row's right end with
 			# the one spend it reaches on its badge, the round's bar in the trail over the spend's line.
 			s.sk.mechs[0].die.faces[s.sk.mechs[0].face_index] = Face.attack(1)
 			s._use_die(0, s.sk.front[0])
@@ -295,10 +334,12 @@ func _apply_pose() -> void:
 
 
 ## Battle screen poses: select (a mech and its reach), route (two machines' moves planned),
-## plan_play (those two played on END TURN), inspect (a pack tapped, its ring lit), draft (a
+## plan_play (those two played on END TURN), execute (played on EXECUTE, the turn going on),
+## endask (END TURN's question while machines can still act), inspect (a pack tapped: its walk and its hold), queue
+## (two machines ordered onto two packs: the numbered fights and ENGAGE 1 OF 2), draft (a
 ## route drawn by hand, about halfway through the move), carry (a
 ## carrier's route drawn to a stop where its rider cannot land: NO ROOM), hold (a
-## pack's readout; boss, gate and ground the others'), codex / foecodex (a machine's or a pack's entry), resolve (one turn
+## pack's readout; boss and ground the others'), fracture (a Fracture announced), rift (the rift's end: the vortex and the boss), codex / foecodex (a machine's or a pack's entry), resolve (one turn
 ## ended), attack (a fight set up beside a pack), caught (a hunter's forced fight), engage
 ## (the handover into a fight), bosscontact (the boss's reveal).
 func _apply_battle_pose() -> void:
@@ -328,19 +369,42 @@ func _apply_battle_pose() -> void:
 				if pick != Vector2i(-9999, -9999):
 					break
 			s._on_hex_tapped(pick)
-		"plan_play":
-			# Two machines' moves planned, then END TURN: the plan playing (RIFTGATE_SHOT_FRAME).
+		"plan_play", "execute":
+			# Two machines' moves planned, then END TURN, or EXECUTE (the turn going on): the plan
+			# playing (RIFTGATE_SHOT_FRAME), or played, at a later frame.
 			for i in range(mini(2, b.mechs().size())):
 				s._on_hex_tapped(b.mechs()[i].pos)
 				var dests: Array = s._map.destinations.keys()
 				if not dests.is_empty():
 					s._on_hex_tapped(dests[dests.size() / 2])
-			s._on_end_turn()
+			if _pose == "execute":
+				s._on_main_button()
+			else:
+				s._on_end_turn()
+		"endask":
+			# END TURN pressed with every machine still able to act: the question.
+			s._on_main_button()
 		"inspect":
 			# A pack tapped with nothing in hand: its ring lit, every other pack's at rest.
 			var sq: Unit = b.field.packs()[0]
 			s._on_hex_tapped(sq.pos)
 			s._map.scroll_to_unit(sq)
+		"hunter":
+			# A hunter and its chip (10 November): the first pack a few hexes off the first machine
+			# and hunting it, the map looking at the pack: its chip with the machine's small picture
+			# and the attack mark, the machine's tag with the hunter's, no ring round either.
+			var hsq: Unit = b.field.packs()[0]
+			var hm: Unit = b.mechs()[0]
+			var best := hsq.pos
+			for h in b.field.map.all_hexes():
+				if Hex.distance(h, hm.pos) == 4 and b.field.can_stand(hsq, h) and Hex.axial_to_offset(h).y < Hex.axial_to_offset(hm.pos).y:
+					best = h
+					break
+			hsq.pos = best
+			hsq.behaviour = "hunt"
+			hsq.prey = hm.id
+			s._refresh()
+			s._map.scroll_to_unit(hsq)
 		"draft":
 			# A route being drawn by hand: it stops about halfway through the move. The first
 			# machine that has such a hex.
@@ -410,9 +474,27 @@ func _apply_battle_pose() -> void:
 		"settings":
 			s._open_menu()
 			s._menu._show_page("settings")
+		"queue":
+			# The fight queue (the long wall brief 7.4): two packs parked beside two machines and
+			# each machine ordered onto one, so the map numbers the two fights and the button reads
+			# ENGAGE 1 OF 2; the third machine's action pip still lit.
+			var ms := b.mechs()
+			var packs: Array = b.field.packs().filter(func(u: Unit) -> bool: return not u.is_boss)
+			for k in range(mini(2, mini(ms.size(), packs.size()))):
+				var m: Unit = ms[k]
+				var sq: Unit = packs[k]
+				for n in Hex.neighbors(m.pos):
+					if b.field.can_stand(sq, n):
+						sq.pos = n
+						break
+				sq.movespeed = 0
+				sq.behaviour = "push"
+				b.order(m, sq)
+			s._refresh()
+			s._map.scroll_to_unit(ms[0])
 		"attack", "predict":
 			# A pack parked beside the first machine and tapped with it in hand: the fight's
-			# panel, the target lit, the attack range and the joining rings on the map.
+			# panel, the target lit and the machines in it bracketed.
 			var m: Unit = b.mechs()[0]
 			var sq: Unit = b.field.packs()[0]
 			for n in Hex.neighbors(m.pos):
@@ -445,6 +527,18 @@ func _apply_battle_pose() -> void:
 					s._map.zoom_at(s._map.size * 0.5, 2.0)
 					s._map.scroll_to_unit(m)
 					break
+		"caches", "cachesflat":
+			# Zoomed in on the first cache (with RIFTGATE_CACHE_DEBUG=1 the three kinds beside the
+			# team, on solid ground) or the last (the three by the rift, under the painting).
+			var cs: Array = b.field.caches
+			if not cs.is_empty():
+				var on: Vector2i = cs[0 if _pose == "caches" else cs.size() - 1]["pos"]
+				s._map.zoom_at(s._map.size * 0.5, 2.0)
+				var p: Vector2 = s._map.center(on)
+				s._map.scroll_x = s._map.size.x * 0.5 - p.x * s._map.zoom
+				s._map.scroll_y = s._map.size.y * 0.5 - p.y * s._map.zoom
+				s._map._clamp_scroll()
+				s._map.queue_redraw()
 		"zoom", "zoomlast":
 			# Zoomed in twice on the first (or last) mech, panned so it sits mid-screen.
 			s._map.zoom_at(s._map.size * 0.5, 2.4)
@@ -455,9 +549,57 @@ func _apply_battle_pose() -> void:
 			s._on_hex_double_tapped(b.field.packs()[0].pos)
 		"resolve":
 			s._on_end_turn()
-		"gate":
-			# The gate tapped: its footprint, the hexes it can be attacked from and its readout.
-			s._on_hex_tapped(b.field.map.gate_hexes[0])
+		"rift":
+			# The rift's end of the field: the vortex standing on its hexes (on the lowest of them
+			# with the wall at the left) and the boss's picture at its size beside it (9 November).
+			s._map.scroll_to_top()
+			s._map.queue_redraw()
+		"tear":
+			# A peak of Rift Pressure (RIFTGATE_PEAKS=<n> for more): the seam crept, a tear open on
+			# its row, the map looking at the newest, a little off the middle so the ring is seen
+			# to stand on its hex under its name wherever the map is scrolled (10 November).
+			for i in range(maxi(1, int(OS.get_environment("RIFTGATE_PEAKS")))):
+				b.field.peak()
+			s._refresh()
+			if not b.field.tears.is_empty():
+				var tp: Vector2 = s._map.center(b.field.tears[b.field.tears.size() - 1]["pos"])
+				s._map.scroll_x = s._map.size.x * 0.4 - tp.x * s._map.zoom
+				s._map.scroll_y = s._map.size.y * 0.6 - tp.y * s._map.zoom
+				s._map._clamp_scroll()
+			s._map.queue_redraw()
+		"peak":
+			# A peak's cutscene (10 November): the seam's creep under its front, then the tear
+			# bursting open, then the map back where it was; RIFTGATE_SHOT_FRAME picks the moment
+			# (a cloud session draws few frames a second: the sweep near 12, the tear's burst near 26).
+			s._map.hold_peak()
+			b.field.peak()
+			s._refresh()
+			s._map.play_peak(Callable())
+		"hunted":
+			# A hunter turns on a machine (10 November): the map gliding in on it, zoomed, the
+			# HUNTED band over it, then back; RIFTGATE_SHOT_FRAME picks the moment (in a cloud
+			# session the band over the hunter near 9).
+			var lm: Unit = b.mechs()[0]
+			s._map.play_locks([[b.field.packs()[0], lm]], s._show_lock, s._after_locks, maxf(s._map.size.y * 0.5, s.WARN_BAND_Y + s.WARN_BAND_H + 130.0))
+		"fracture":
+			# A Fracture announced as a fight's tally earns it (Ryan, 9 November: "Fractures need to
+			# be announced"): the band over the map and the top bar's gauge flashing (the default
+			# frame catches the band at full; it is gone by about the fortieth in a cloud session).
+			if not b.thresholds.is_empty():
+				b.menace_killed = int(b.thresholds[0])
+				b.fractures = 1
+			s._refresh()
+			s._show_fracture(false)
+		"elite":
+			# A Fracture's elite introduced as it arrives (10 November): the map gliding in on its
+			# hex, zoomed, the elite bursting out under the band that names it; RIFTGATE_SHOT_FRAME
+			# picks the moment (in a cloud session the burst near 10, the band over it near 14).
+			if not b.thresholds.is_empty():
+				b.menace_killed = int(b.thresholds[0])
+				b.fractures = 1
+			b._spawn_elite()
+			s._refresh()
+			s._show_fracture(true)
 		"foe":
 			# A pack tapped: bracketed, its path heavy, its strength over it; the map looks at it.
 			var fsq: Unit = b.field.packs()[0]
@@ -533,8 +675,8 @@ func _apply_battle_pose() -> void:
 
 ## The quick campaign's screens (25 October): draft (the default, nothing picked), picked (three
 ## picked), hangar (the first battle ahead, a stored piece and module: RIFTGATE_SHOT_H=3000 shows
-## the stores at its foot), chooser (a hardpoint's pieces), fight (the first fight open, no
-## withdrawal), track (between fights, one won), rewards (the boss down, a card chosen), over.
+## the stores at its foot), chooser (a hardpoint's pieces), fight (the first fight open), track
+## (between fights, one won), rewards (the boss down, a card chosen), over.
 func _apply_quick_pose() -> void:
 	var s: QuickRunScreen = _node
 	var r := s.run

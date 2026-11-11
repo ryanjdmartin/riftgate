@@ -348,7 +348,7 @@ func test_the_slates_bosses_are_whole_in_content() -> void:
 			continue
 		var ranked := false
 		for c in db.factions.get(str(f.get("faction", "")), {}).get("compositions", []):
-			if ["formation", "patrol"].has(str(c.get("size", ""))) and Array(c.get("members", [])).any(func(m): return str(m.get("foe", "")) == str(id)):
+			if ["formation", "patrol"].has(str(c.get("size", ""))) and (Array(c.get("front", [])) + Array(c.get("back", []))).has(str(id)):
 				ranked = true
 		assert_true(ranked, "%s, massive rank and file, stands in its domain's ranks" % id)
 	for id in db.foes.keys():
@@ -426,10 +426,12 @@ func test_the_harness_fields_the_boss_it_picks_whichever_of_its_domains() -> voi
 	assert_ne(fid, "", "a domain lists two bosses or more")
 	var second := str(db.bosses_of(fid)[1])
 	var s := HarnessSetup.defaults(db)
-	s.use_faction(fid)
-	s.boss = second
+	s.battle_faction = fid
+	s.battle_boss = second
 	var b := s.make_battle()
 	assert_eq(str(b.boss.lineup[0]), second, "the battle's boss unit is the one picked")
+	s.use_faction(fid)
+	s.boss = second
 	var sk := s.make_skirmish()
 	var named := false
 	for f in sk.reinforcements:
@@ -491,7 +493,7 @@ func test_a_merge_takes_its_kinds_in_and_regrows_what_they_had() -> void:
 	for g in gels:
 		assert_false(sk.field_foes().has(g), "each Gel is gone from the field")
 	assert_eq(sk.team_kills, 0, "and none is a kill of the team's")
-	assert_eq(k.damage_of(k.actions[0]), 6 + 3, "its next move hits a point harder for each")
+	assert_eq(k.damage_of(k.actions[0]), 6 + 1, "a point of Empowered for each, three, halved to one at the round's end (one clock, 4 November)")
 	assert_true("\n".join(sk.log).contains("3 taken in"), "the log says how many")
 
 
@@ -902,28 +904,36 @@ func test_the_validator_holds_wanders_to_the_elites() -> void:
 	assert_true(errs.any(func(e) -> bool: return e.contains("x_wander") and e.contains("only an elite wanders")), "the rank and file never wander")
 
 
-## The elites session (3 November): an opener is the foe's first move of the fight (the Goblin
-## Nob's Bellow), taken before any other and never again.
-func test_an_opener_is_the_foes_first_move_of_the_fight() -> void:
+## The Nob's rage is its own from the fight's start (Ryan, 8 November, on the Bellow it had to cast
+## first: "It's not innate? ... That is so unbelievably incorrect"): the content's Nob rages before
+## it has acted, the team's first shield feeds it, and it has no move to bellow with; a fight
+## saved with a Bellow still on its list loads with the rage and the move gone.
+func test_the_nobs_rage_is_its_own_from_the_fights_start() -> void:
+	var db := ContentDB.load_default()
+	var nob := db.make_foe("goblin_nob")
+	assert_true(nob.rage >= 1, "it rages as it is made")
+	assert_false(nob.actions.any(func(a: Dictionary) -> bool: return str(a.get("effect", "")) == "enrage"), "and no move of its casts it")
 	var sk := Skirmish.new(1, 3)
-	sk.add_mech(_mech("A", Die.single(Face.blank())))
-	var nob := Foe.make("nob", 40, 6)
-	nob.actions = [_move("rush"), {"id": "bellow", "name": "Bellow", "kind": "buff", "effect": "enrage", "value": 1, "once": true, "opens": true, "weight": 1, "text": ""}]
+	sk.add_mech(_mech("A", Die.single(Face.shield(10)), 0, 500))
 	sk.add_foes([nob])
 	sk.begin()
-	var ids: Array = sk.legal_actions(nob).map(func(x): return str(x.get("id", "")))
-	assert_eq(ids, ["bellow"], "the opener is its only legal move before it has acted")
 	sk.start_round()
-	assert_eq(str(nob.action.get("id", "")), "bellow", "so it is the move it announces")
-	sk.end_round()
-	assert_eq(nob.rage, 1, "it rages at the move's value")
-	ids = sk.legal_actions(nob).map(func(x): return str(x.get("id", "")))
-	assert_eq(ids, ["rush"], "and from then on its blows")
+	assert_true(sk.assign(0), "the team's first shield, before the Nob has acted")
+	assert_eq(Effects.stacks_of(nob, "enraged"), nob.rage, "feeds its rage at once")
+	var fd := SaveGame._foe_dict(nob, sk)
+	var bellow := {"id": "bellow", "name": "Bellow", "kind": "buff", "effect": "enrage", "value": 2, "once": true, "opens": true, "weight": 1, "text": ""}
+	fd["actions"] = [bellow] + fd["actions"]
+	fd["action"] = 2   # the third saved move, the second once the Bellow goes
+	fd["rage"] = 0
+	var old := SaveGame._foe_from(JSON.parse_string(JSON.stringify(fd)), sk)
+	assert_eq(old.rage, 2, "an old save's Bellow becomes its rage")
+	assert_false(old.actions.any(func(a: Dictionary) -> bool: return str(a.get("effect", "")) == "enrage"), "and the move goes")
+	assert_eq(str(old.action.get("id", "")), str(nob.actions[1].get("id", "")), "its announced move still the one it was")
 
 
 ## The rage (3 November): every shield, vent or equipment entry the team spends stacks Enraged
-## on a foe that has bellowed, a point of attack a stack for the rest of the fight; a weapon
-## feeds nothing; the player's Purge clears the stacks and the rage goes on.
+## on a foe that rages, a point of attack a stack for the rest of the fight; a weapon feeds
+## nothing; the player's Purge clears the stacks and the rage goes on.
 func test_a_rage_grows_with_the_teams_safe_spends_and_a_purge_lowers_it() -> void:
 	var sk := Skirmish.new(1, 3)
 	var d := Die.of([Face.shield(10), Face.attack(5, I), Face.vent(4)])
@@ -931,7 +941,7 @@ func test_a_rage_grows_with_the_teams_safe_spends_and_a_purge_lowers_it() -> voi
 	var nob := Foe.make("nob", 900, 6)
 	nob.actions = [_move("rush")]
 	nob.action = nob.actions[0]
-	nob.rage = 1   # bellowed
+	nob.rage = 1   # its own from the start (8 November)
 	sk.add_foes([nob])
 	sk.begin()
 	sk.start_round()
@@ -952,10 +962,10 @@ func test_a_rage_grows_with_the_teams_safe_spends_and_a_purge_lowers_it() -> voi
 	assert_true(sk.assign(0), "a vent spent")
 	assert_eq(Effects.stacks_of(nob, "enraged"), 2, "feeds it again")
 	assert_eq(nob.damage_of(nob.actions[0]), 8, "two points now")
-	var lowered := Effects.purge_foe(nob)
+	var lowered := Effects.purge(nob)
 	assert_true(lowered.has(Effects.STATUS["enraged"]["name"] + " 1"), "a Purge 1 lowers the stacks by one (Purge N, 2 November)")
 	assert_eq(nob.damage_of(nob.actions[0]), 7, "a point harder still")
-	var gone := Effects.purge_foe(nob, 2)
+	var gone := Effects.purge(nob, 2)
 	assert_true(gone.has(Effects.STATUS["enraged"]["name"] + " gone"), "a Purge 2 takes what is left")
 	assert_eq(nob.damage_of(nob.actions[0]), 6, "back to its own number")
 	assert_eq(nob.rage, 1, "and the rage goes on")
@@ -997,9 +1007,9 @@ func test_the_wanderers_are_drawn_by_the_roll_among_those_not_yet_sent() -> void
 		assert_true(pool.has(str(db.next_elite(fid, t, sent, 0.0)["id"])), "another wanderer instead")
 
 
-## The elites' shapes in content (3 November): a hunter walks or flies at a ring of two at
-## least, a pack of clones is led by its elite at a strength above one, and every elite
-## composition's members exist. Read by structure, never by id.
+## The elites' shapes in content (3 November): hunters among them (the composition says so since
+## 8 November, every hunter pouncing at two), a pack of clones led by its elite at a strength above
+## one, and every elite composition's members exist. Read by structure, never by id.
 func test_the_elites_compositions_hold_their_shapes() -> void:
 	var db := ContentDB.load_default()
 	var clones := 0
@@ -1010,10 +1020,9 @@ func test_the_elites_compositions_hold_their_shapes() -> void:
 			assert_true(db.is_elite(lead), "%s is led by its elite" % str(c["id"]))
 			if int(c["members"][0][1]) > 1:
 				clones += 1
-			var entry: Dictionary = db.foes[lead]
-			if str(entry.get("behaviour", "push")) == "hunt":
+			if c.has("hunts"):
 				hunters += 1
-				assert_true(int(entry.get("zone", 1)) >= 2, "%s, a hunter, pounces at a ring of two at least" % lead)
+				assert_true(ContentDB.HUNT_CAVEATS.has(str(c["hunts"])), "%s hunts by a caveat the engine has" % str(c["id"]))
 	assert_true(clones >= 1, "an elite pack of clones is in content (the Wild Hunt's shape)")
 	assert_true(hunters >= 3, "hunters among the elites")
 	for fid in db.factions.keys():
@@ -1051,7 +1060,7 @@ func test_a_golden_rage_is_a_mode_that_a_quarter_of_its_hp_or_a_stun_breaks() ->
 	var cp: Foe = copy.field_foes()[0]
 	assert_eq(cp.golden_mark, 24, "a save keeps the mark")
 	assert_true(Effects.has(cp, "golden"), "and the gold")
-	assert_true(Effects.purge_foe(cp).has(Effects.STATUS["golden"]["name"] + " gone"), "a Purge strips the gold, one stack")
+	assert_true(Effects.purge(cp, 9).is_empty() and Effects.has(cp, "golden"), "no Purge strips the gold: an ability (8 November)")
 	assert_true(sk.assign(0, ape), "A strikes for 6, 5 through the plate")
 	assert_eq(ape.hp, 19, "a point of plate off the six")
 	assert_true(Effects.has(ape, "golden"), "short of a quarter, it holds")
@@ -1096,6 +1105,57 @@ func test_a_golden_rage_is_a_mode_that_a_quarter_of_its_hp_or_a_stun_breaks() ->
 			{"id": "g", "name": "G", "kind": "buff", "effect": "golden", "value": 2, "rounds": 9, "weight": 1, "text": "", "status": "implemented"}]}
 	var errs: Array = db.validate()
 	assert_true(errs.any(func(e) -> bool: return e.contains("x_gold") and e.contains("golden's rounds")), "nine rounds of gold is refused")
+
+
+## A stagger is the mode's own, no stun piece's (4 November): it numbs the foe nothing, so the
+## next stun lands and breaks the gold again; and a rage the foe's own tick breaks in the enemy's
+## turn staggers it out of its next action, never the one it has had.
+func test_a_stagger_numbs_nothing_and_a_tick_broken_rage_costs_the_next_action() -> void:
+	var rage := {"id": "golden_rage", "name": "Golden Rage", "kind": "buff", "effect": "golden", "value": 2, "rounds": 3, "weight": 1, "when": "calm", "text": ""}
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(6, I))))
+	sk.add_mech(_mech("B", Die.single(Face.attack(6, I))))
+	var ape := Foe.make("ape", 24, 7)
+	ape.elite = true   # an elite recovers from a stun with Numbed 3, so a stagger that numbed would show
+	ape.actions = [_move("fist"), rage]
+	sk.add_foes([ape])
+	sk.begin()
+	sk.start_round()
+	ape.action = rage
+	sk.end_round()
+	sk.start_round()
+	assert_true(Effects.has(ape, "golden"), "gold")
+	assert_true(sk.assign(0, ape), "A strikes")
+	assert_true(sk.assign(1, ape), "B strikes: a quarter lost")
+	assert_true(ape.is_suppressed(), "staggered")
+	sk.end_round()
+	assert_eq(Effects.stacks_of(ape, "numbed"), 0, "a stagger numbs nothing")
+	sk.start_round()
+	ape.action = rage
+	sk.end_round()
+	sk.start_round()
+	assert_true(Effects.has(ape, "golden"), "gold again")
+	assert_true(sk._suppress(ape), "a stun lands, no Numbed in its way")
+	assert_false(Effects.has(ape, "golden"), "and breaks the gold")
+	# Broken by its own tick in the enemy's turn: it acted gold, and loses the next action.
+	var sk2 := Skirmish.new(1, 3)
+	sk2.add_mech(_mech("A", Die.single(Face.attack(1, I))))
+	var ape2 := Foe.make("ape", 24, 7)
+	ape2.actions = [_move("fist"), rage]
+	sk2.add_foes([ape2])
+	sk2.begin()
+	sk2.start_round()
+	ape2.action = rage
+	sk2.end_round()
+	sk2.start_round()
+	assert_true(Effects.has(ape2, "golden"), "gold at 24, a quarter breaks it at 18")
+	Effects.stack(ape2, Effects.STATUS["burning"], Effects.SKIRMISH, "test", 6)
+	ape2.action = ape2.actions[0]
+	sk2.end_round()
+	assert_eq(ape2.hp, 18, "its burn took it to the break")
+	assert_false(Effects.has(ape2, "golden"), "the gold goes")
+	sk2.start_round()
+	assert_true(ape2.is_suppressed(), "and it staggers out of the next round's action, not the one it had")
 
 
 ## The World Eater's pin (4 November, Ryan: "rework the below half attack into a form of its pin,

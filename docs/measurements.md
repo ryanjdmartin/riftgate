@@ -32,7 +32,7 @@ the thirteen machines, read in hull at 2.9 points for 20 hull. Means over thirte
 twenty packs, so bands, not directions. Shield 20 is worth about 17 hull, armour 5 about 53,
 5 more on every blow about 60, cooling 5 and heat maximum 20 almost nothing (only the
 Sparrowhawk, which runs hot, values heat). Passives average about 45: the Sparrowhawk's about
-200, the Armadillo's about 130 (with the discharge still in), the Nemesis's about 110 (the
+200, the Polar Bear's about 130 (with the discharge still in), the Nemesis's about 110 (the
 Crucible), the Goshawk's about 50, the Ammit's, the Clydesdale's, the Baboon's and the Stingray's
 20 to 30, the Wild Boar's about 7, and nothing alone for the Badger's, the Prairie Dog's, the
 Dingo's and the Puffin's, which work on the map, on allies or never fire. Module list prices
@@ -47,9 +47,9 @@ each a direction at 50 seeds: the Badger against the Salamanders 56 against 38 a
 formation 90 against 48 for the Booster; the Clydesdale against the Bombs 26 against 4 and the
 Treant 98 against 80 for the Databank. Bible section 7.
 
-**The Faraday Hull.** The lone Armadillo, 50 seeds a cell, random and greedy win rates averaged
+**The Faraday Hull.** The lone Polar Bear, 50 seeds a cell, random and greedy win rates averaged
 over twenty packs (a row mean): 85 and 92 with the discharge, 64 and 85 without, 72 and 85 with
-one Shocked foe a round. Without the discharge the Armadillo stands at the Wild Boar's level
+one Shocked foe a round. Without the discharge the Polar Bear stands at the Wild Boar's level
 against swarms and formations and above it against bosses; Minerva's team wins everything
 either way. Bible section 7.
 
@@ -110,7 +110,7 @@ against the Sandworm 70 to 30 and the Magma Golem 60 to 20; greedy against the B
 and the Salamanders 100 to 57; the Meadow formation greedy 13 to 40. Its die: the fists 66% to
 53% of its spends, the Retribution Thurible 4 to 10%, the Oblation Ward 1 to 4%. It rolls again
 about twice a fight alone, 0.3 times beside the Badger and the Sparrowhawk, 0.6 beside the
-Armadillo and the Prairie Dog; every team wins everything for 5 to 7% of its hull; a team's foes
+Polar Bear and the Prairie Dog; every team wins everything for 5 to 7% of its hull; a team's foes
 reach its hull 0.15 times a round. Bible section 7.
 
 **The shield rule.** Letting every blow's excess past a standing shield: the machines' mean win
@@ -118,7 +118,7 @@ rate 46 to 45 (greedy, 30 seeds a cell, a mean over every machine and pack). Bib
 
 **Armour lowered.** Every chassis's armour 5 lower, then 10, greedy, 30 seeds a cell. The team
 rows move by a point or two of hull (the Minerva team 1 to 3%) at 5, up to 5% at 10, every team
-still winning every single pack. Alone (directions): the Armadillo 88 to 79, then 58; the Wild
+still winning every single pack. Alone (directions): the Polar Bear 88 to 79, then 58; the Wild
 Boar 81 to 64, then 53; the Badger 67 to 49, then 46. What makes fights easy that day: every team
 row beats every boss for 1 to 15% of its hull, the Minerva team every formation for 1 to 11%;
 the Kestrel and Wainwright & Sutler teams lose the Marsh's formation at 7 and 0%. Bible section
@@ -179,7 +179,7 @@ Bombs: the Clydesdale 1 to 72, the Wild Boar 76 to 100, the Nemesis 65 to 100; t
 the Boar 54 to 98, the Badger 77 to 97) and closed for the Goshawk (the Salamanders 80 to 6, as
 the heat-debuff row foresaw); the bosses got harder for the heavy machines (the Treant and the
 Bone Dragon: the Badger greedy 100 to 46, the Nemesis random 71 to 25; the Sandworm: the Badger
-66 to 21); the Marsh's formation turned from a free win into a decision for the Armadillo
+66 to 21); the Marsh's formation turned from a free win into a decision for the Polar Bear
 (random 98 to 2, greedy 100 to 99) and a wall for the Boar (greedy 95 to 49); the Wainwright &
 Sutler team took the Peak's formation (greedy 10 to 68) and the Meadow's (79 to 99). Reach:
 Direct is 76% of attack spends at 17.6 hull a spend for 9.8 heat, Indirect 24% at 12.5 for 8.9,
@@ -205,16 +205,16 @@ single packs, the four bosses and the four formations:
 | Honey Badger alone | 59/79 | 1/24 | 18/48 | 38%, 96%, 76% |
 | Sparrowhawk alone | 62/85 | 64/90 | 0/0 | 36%, 50%, 100% |
 | Honey Badger and Sparrowhawk | 100/100 | 100/100 | 48/89 | 6%, 10%, 54% |
-| Armadillo and Baboon | 99/100 | 98/100 | 49/86 | 7%, 10%, 58% |
+| Polar Bear and Baboon | 99/100 | 98/100 | 49/86 | 7%, 10%, 58% |
 | Clydesdale and Prairie Dog | 82/99 | 77/100 | 0/26 | 9%, 8%, 91% |
 | Nemesis and Puffin | 73/98 | 42/96 | 5/50 | 20%, 36%, 84% |
 | The starting trio | 100/100 | 100/100 | 86/100 | 2%, 4%, 20% |
-| Badger, Clydesdale, Sparrowhawk, Armadillo | 100/100 | 100/100 | 100/100 | 1%, 2%, 8% |
-| Armadillo, Baboon, Nemesis, Puffin | 100/100 | 100/100 | 92/100 | 0%, 0%, 9% |
+| Badger, Clydesdale, Sparrowhawk, Polar Bear | 100/100 | 100/100 | 100/100 | 1%, 2%, 8% |
+| Polar Bear, Baboon, Nemesis, Puffin | 100/100 | 100/100 | 92/100 | 0%, 0%, 9% |
 
 Read: a formation costs a pair about 1.1 machines' worth of hull, a trio 0.6, a four 0.3, and
 a pair loses a formation outright one fight in four to one in two (the Peak's against the
-Armadillo and the Baboon 43%, the Marsh's against the Badger and the Sparrowhawk 75%). Two
+Polar Bear and the Baboon 43%, the Marsh's against the Badger and the Sparrowhawk 75%). Two
 pairs fighting two formations spend about three times the hull of one four fighting both in
 turn, and risk half the team each. A boss alone is two rounds and 2% of a four's hull: no exam.
 Count dominates composition: a four of tank, controller, bruiser and support reads the same as
@@ -244,7 +244,7 @@ five-weapon kit; each tag's bonus is a `--bump`, or for Arc's higher top roll th
 Velocity Booster with its value set. A lone machine is a diagnostic: teams and whole runs
 decide.
 
-The roster that day, for scale: the Armadillo 92, the Wild Boar 83, the Nemesis 72, the Badger
+The roster that day, for scale: the Polar Bear 92, the Wild Boar 83, the Nemesis 72, the Badger
 70, the Sparrowhawk 68, the Clydesdale 48, the Goshawk 36, the Ammit 34, the Prairie Dog 30, the
 Stingray 26, the Baboon 25, the Dingo 11, the Puffin 11. The stand-in with no bonus: 23 to 28,
 whatever its kit. Prices on it, in hull at its kit's own: armour 5 about 78, 10 about 106, 15
@@ -285,7 +285,7 @@ between fights and hull never heals), which one fight cannot see. The warp is ar
 doubles: every steep build is five Ballistic tags, a second tag adding its own row on top (hull
 60 about 17 points, shield 60 about 8), and five Missile and Beam pieces, with no armour,
 win 52. Two two-tag pieces in a mix win 61, about 11 over the plain mix; five pieces sharing two
-tags win 52 to 83, sharing three 86, all under the Armadillo's 92, and Bold's armour 20 puts
+tags win 52 to 83, sharing three 86, all under the Polar Bear's 92, and Bold's armour 20 puts
 five Ballistic at 84 and the three-tag die at 95, past it. So diminishing returns were not
 needed at these amounts: the riders only a mix uses lift the middle with no caveat (+5 here),
 and the falling ladder lifts the mixes 9 to 12 points with five Ballistic unchanged, at a
@@ -446,7 +446,7 @@ random / greedy:
 | Clydesdale | 34.9 / 48.0 | 32.1 / 47.5 | 32.1 / 47.5 |
 | Kite (the Sparrowhawk until its rework) | 49.3 / 67.7 | 44.1 / 58.9 | 21.2 / 26.9 |
 | Baboon | 12.7 / 26.5 | 12.2 / 25.4 | 12.2 / 25.4 |
-| Armadillo | 79.0 / 94.7 | 25.9 / 39.0 | 25.9 / 39.3 |
+| Polar Bear | 79.0 / 94.7 | 25.9 / 39.0 | 25.9 / 39.3 |
 | Wild Boar | 55.3 / 84.9 | 55.2 / 82.0 | 55.2 / 82.0 |
 | Prairie Dog | 19.2 / 31.1 | 15.8 / 23.4 | 15.8 / 23.4 |
 | Dingo | 4.0 / 11.2 | 4.5 / 10.8 | 2.6 / 10.4 |
@@ -471,7 +471,7 @@ The shield rule alone, read from the Flak entry's rows on its parent (`5abc6760`
 seeds): the Wainwright & Sutler team 79.4 / 91.8 to 74.5 / 91.3, the Prairie Dog 16.2 / 28.6 to
 15.8 / 23.4, the starting team 96.9 / 100 to 96.8 / 100; of the Peak's cells it was to move, the
 Wainwright & Sutler team's formation 42 to 34 greedy and the Prairie Dog's Drakes 57 to 50,
-directions at one cell's band. The Armadillo alone falls from the top of the table to the middle
+directions at one cell's band. The Polar Bear alone falls from the top of the table to the middle
 with its rework (20 October), a team tank whose team holds: alone it loses every formation,
 every boss (2 greedy at most), the Goblins, the Revenants and the Salamanders (a trace, six
 Goblins at seed 1: open it takes 15 a blow where the old shell took 5, sealing costs the round's
@@ -483,22 +483,22 @@ Minerva's in both rungs at 100, so a final against a team is no decision; the fi
 for three teams (the starting team 0 / 16, Kestrel's and Wainwright & Sutler's 0 / 0) and a
 decision for Minerva's (3 / 71). Alone, the Badger, the Boar, the Nemesis and the Whip Scorpion
 win every final a third of the time or more greedy and the Cleric's, the Augur's and the
-Summoner's nearly always; the Clydesdale, the Armadillo, the Funnel-web, the Buzzard and the
+Summoner's nearly always; the Clydesdale, the Polar Bear, the Funnel-web, the Buzzard and the
 Cottonmouth take a few; the rest lose nearly all of them. The new rows: the Whip Scorpion in the
 Nemesis's band (the Bombs 91 / 100, the Drakes 100 / 100), the Cassowary among the weakest alone
 (its Spin-Up and its Coolant Jacket never picked: the bot turns the dial and never plans, the
 to-do's line). The heat section, new: the Whip Scorpion peaks at 83% of its maximum, the Kite
-79%, the Armadillo 74% with 0.73 overheats a fight, and the Kestrel team holds back 0.72
+79%, the Polar Bear 74% with 0.73 overheats a fight, and the Kestrel team holds back 0.72
 damaging dice a fight for heat; the stock pass's heat re-pricing reads these.
 
 **The campaign's wall, found** (the to-do's line of 21 October; `docs/campaign_run.md`
 regenerated on main, `32c438ab`). A bisect at three runs a probe (`tools/campaign_run.gd --runs
 3`, seeds 1 to 3: 27% of 36 battles won on the 13 October report's commit `b15e2707`, none of 29
-on main) lands on the Armadillo's rework (`fdb8d6c1`, 20 October: 3% of 33), its parent the
+on main) lands on the Polar Bear's rework (`fdb8d6c1`, 20 October: 3% of 33), its parent the
 merge of main into the Minerva branch (`63487a9c`: 27% of 36). Forty runs either side: 12 of 40
-runs won and 27% of 459 battles before it, 1 of 40 and 5% of 391 after. Before it the Armadillo
-started 20 runs and won 11, the other 20 won one; after it the Armadillo's won none and the rest
-still one, so the rework took the Armadillo's runs and nothing else. Forty runs on main's line
+runs won and 27% of 459 battles before it, 1 of 40 and 5% of 391 after. Before it the Polar Bear
+started 20 runs and won 11, the other 20 won one; after it the Polar Bear's won none and the rest
+still one, so the rework took the Polar Bear's runs and nothing else. Forty runs on main's line
 after it: 4% of 391 battles on the Minerva merge (`459ada33`), 1% of 374 after Flak and the
 shield rule (`9ac36662`), 1% of 373 with the day's engines and the party (`899a7725`), and 0 of
 40 runs, one battle in 348, from the Kestrel merge on (`eee55775`, and main), where the tender
@@ -506,7 +506,7 @@ the draft deals from has changed under the same seeds (the Puffin at tier one, t
 the Cottonmouth dealt, the Kite and the Dingo gone to tier two). On main, 572 of 734 fights hold
 one machine; one machine against one pack wins 31% (64% on 13 October), two together 64 to 76%.
 
-Read: no bug. The old Armadillo was the one machine that carried a lone fight (alone 79 / 95
+Read: no bug. The old Polar Bear was the one machine that carried a lone fight (alone 79 / 95
 over the twenty packs, the next the Boar at 55 / 85), and the plain player's fights are mostly
 one machine alone; the reworked one is the team tank its bible row decided. The rest of the
 slide is the week's small moves on a run that had no margin left, not a second break. The
@@ -540,7 +540,7 @@ read as on 21 October (every team wins every final greedy; the finale 0 / 16 for
 team, 3 / 74 for Minerva's, 0 / 0 for Kestrel's and Wainwright & Sutler's). Heat, greedy, the
 before for the heat test (a hot kit overheats by its third round of firing): the hottest rows
 peak at 70 to 80% of their maximum as a turn ends (the Whip Scorpion 81%, the Kite 79%, the
-Armadillo 74%, the Nemesis 71%), overheat under once a fight (the Armadillo 0.73, the rest under
+Polar Bear 74%, the Nemesis 71%), overheat under once a fight (the Polar Bear 0.73, the rest under
 0.45) and hold back a damaging die for heat almost never (the Kite 0.28 a fight, the Kestrel
 team 0.72, everything else under 0.11); the Buzzard, whose passive turns heat to shield, peaks
 at 20%. So heat barely bites today, the stock pass's heat row's premise.
@@ -584,10 +584,10 @@ design tests (the bible's section 2):
 | Test | At the fills | At the baseline |
 |---|---|---|
 | Rank and file die to a die or two | a team wins a wildlife pack in 1.0 to 3.1 rounds greedy, 1.3 to 4.0 random; one machine in 2.4 to 10 | passes |
-| A massive foe, a round or two of focus | a team of three takes 3.4 to 6.2 rounds greedy on the Treant and the Wyvern, 4.7 to 11.5 on the Sandworm, 5.2 to 10.4 on the Golem; alone, the Armadillo, the Boar, the Swallowtail and the Musk Ox stall past sixty rounds on the Treant and the Wyvern, whose regrow of 5 outpaces what their blows leave past armour 1 | fails by two to five times |
+| A massive foe, a round or two of focus | a team of three takes 3.4 to 6.2 rounds greedy on the Treant and the Wyvern, 4.7 to 11.5 on the Sandworm, 5.2 to 10.4 on the Golem; alone, the Polar Bear, the Boar, the Swallowtail and the Musk Ox stall past sixty rounds on the Treant and the Wyvern, whose regrow of 5 outpaces what their blows leave past armour 1 | fails by two to five times |
 | The coordination gap, about 2 on the big foes, none on the rank and file | the teams 1.39 to 1.56 on the big fights and 1.23 to 1.55 on the rank and file | 1.40 to 1.63 and 1.35 to 1.60: unchanged, and the same on both kinds |
 | Wear, about four hard fights unwithdrawn | a team loses 0.2 to 1.5% of its hull on a wildlife pack, 8 to 22% on a massive foe, 2.5 to 12% on a formation, 0.2 to 1.8% on a final | 0.2 to 4.8%, 8 to 42%, 7 to 84%, 1.5 to 11% |
-| A hot kit overheats by its third round | the Kite peaks at 101% and overheats 0.88 a fight, the Baboon 83% and 0.82, the Nemesis 90% and 0.46, the Stingray 72%, the Whip Scorpion 70%; the other fifteen rows peak at 11 to 49% and hold no die for heat | the Scorpion 81%, the Kite 79%, the Armadillo 74%, the Nemesis 71%, the rest cold |
+| A hot kit overheats by its third round | the Kite peaks at 101% and overheats 0.88 a fight, the Baboon 83% and 0.82, the Nemesis 90% and 0.46, the Stingray 72%, the Whip Scorpion 70%; the other fifteen rows peak at 11 to 49% and hold no die for heat | the Scorpion 81%, the Kite 79%, the Polar Bear 74%, the Nemesis 71%, the rest cold |
 
 Win rates, row means over the twenty packs, random / greedy: every team 95 to 100 / 100 (the
 baseline 67 to 99 / 84 to 100); alone, every machine rose, most by fifteen to thirty points on
@@ -765,7 +765,7 @@ Row means over the twenty packs, random / greedy:
 | Clydesdale | 33.0 / 49.1 | 39.9 / 60.1 |
 | Kite | 21.2 / 26.9 | 34.8 / 50.5 |
 | Baboon | 12.2 / 25.4 | 24.2 / 39.6 |
-| Armadillo | 25.9 / 39.3 | 28.2 / 37.4 |
+| Polar Bear | 25.9 / 39.3 | 28.2 / 37.4 |
 | Wild Boar | 55.2 / 82.0 | 47.9 / 69.8 |
 | Prairie Dog | 15.8 / 23.4 | 8.0 / 19.1 |
 | Dingo | 2.6 / 10.4 | 7.7 / 21.4 |
@@ -803,7 +803,7 @@ to 11.
 Heat, greedy, the hottest machine as a turn ends: the Nemesis 94% of its maximum (0.50 overheats
 and 0.17 dice held for heat a fight), the Kite 92% (0.29, 0.18), the Buzzard 87%, the Whip
 Scorpion 78%, the Stingray 74% (0.16 held), the Lammergeier 56%; every other kit 6 to 44%. The
-baseline's hottest were the Whip Scorpion 81%, the Kite 79%, the Armadillo 74% and the Nemesis
+baseline's hottest were the Whip Scorpion 81%, the Kite 79%, the Polar Bear 74% and the Nemesis
 71%, with everything else cold.
 
 Pick share, greedy: the Ammit's Entropy Condenser 0%, the Dingo's Combat Translocator 1%, the
@@ -880,7 +880,7 @@ and on a trio's order. Directions.
 The fits, through the runner's overrides (applied after the content loads and never validated,
 since a chassis stocks only below its own tier): a tier-zero basic swapped for a found setup
 piece, so each trio carries a Shock and Flak beside its stock's. The Honey Badger's Rivet Gun
-for the Polarity Projector, the Clydesdale's Twin Autoguns for the Flak Cannon, the Armadillo's
+for the Polarity Projector, the Clydesdale's Twin Autoguns for the Flak Cannon, the Polar Bear's
 Twin Autoguns for the Flak Cannon, the Puffin's Twin Autoguns and Laser Carbine for the Polarity
 Projector and the Flak Cannon, the Prairie Dog's Twin Autoguns for the Suppression Battery. The
 overrides are global, so a machine on two rows carries one fit. The fours: the default team with
@@ -955,7 +955,7 @@ experiment's form, and not the cause.
 by stage, which compositions are harder for an early stock team of three than for an endgame
 optimized four; this is the early half). Run with `tools/stock_loop.py` on main's head
 (`781c4d5`): the 28 trios of three tier-one machines from three city makers (the Honey Badger or
-the Armadillo; the Puffin; the Prairie Dog, the Cassowary or the Cottonmouth; the Baboon or the
+the Polar Bear; the Puffin; the Prairie Dog, the Cassowary or the Cottonmouth; the Baboon or the
 Stingray), in stock loadouts, against the twenty-nine packs, random and greedy, 30 seeds a cell,
 no campaign. A direction. The runner's team rows are no starters: each fields a tier-two machine
 and three are one maker's.
@@ -981,7 +981,7 @@ and hull lost:
 By trio, on the five hard fights (the Peak's, the Marsh's and the Meadow's formations, the Golem,
 the Sandworm): the sixteen trios with the Honey Badger or the Cottonmouth win them 96 to 100% of
 the time for 16 to 47% of their hull; the twelve with neither win 25 to 89% for 54 to 93%, the
-Armadillo, the Puffin and the Prairie Dog the lowest. By tender (one tier-one machine a city
+Polar Bear, the Puffin and the Prairie Dog the lowest. By tender (one tier-one machine a city
 maker, the player taking three): the eight tenders that deal the Badger or the Cottonmouth hold
 a pick that clears all five (16 to 31% hull); the four that deal neither top out at 80 to 89%
 for 54 to 68%; a tender's worst pick reads 25 to 100%.
@@ -1016,7 +1016,7 @@ the enemy's turn opens (after any Lure), and its share of its team's hull lost:
 |---|---|---|---|---|---|
 | Baboon | 28 / 10 / 0 | 36% | 36% | 34% | 36% |
 | Honey Badger | 36 / 8 / 2 | 36% | 36% | 38% | 34% |
-| Armadillo | 40 / 8 / 2 | 35% | 41% | 49% | 43% |
+| Polar Bear | 40 / 8 / 2 | 35% | 41% | 49% | 43% |
 | Stingray | 24 / 12 / 0 | 35% | 34% | 31% | 33% |
 | Puffin | 20 / 8 / 0 | 32% | 30% | 28% | 30% |
 | Cassowary | 24 / 8 / 0 | 31% | 30% | 28% | 31% |
@@ -1025,14 +1025,14 @@ the enemy's turn opens (after any Lure), and its share of its team's hull lost:
 
 By kind of fight, with all three standing: the rank and file and the formations spread 28 to
 39%; the breaching bosses (the Golem, the Sandworm) 30 to 39%, every shield failing their blow
-so the draw is near level; the Treant and the Wyvern put 47% on the Armadillo and 44% on the
+so the draw is near level; the Treant and the Wyvern put 47% on the Polar Bear and 44% on the
 Honey Badger, 23 to 33% on the rest. Their blow of 7 is held by a standing shield, so the draw
 follows whichever shield is down, and the tanks' shields hold it least often (38 and 56% of
 the picks, the rest 63 to 81%).
 
 Read: the aim does not pile blows on thick machines while the team stands; the lean to the
 tanks comes from their outliving the light machines (every pick after a wreck lands on a
-survivor), from the Armadillo's Lure (its share of the swings the highest), and against the
+survivor), from the Polar Bear's Lure (its share of the swings the highest), and against the
 shield-held bosses from the draw chasing a broken shield. Half the exposed aim's picks are a
 level draw. Against a boss whose one blow a round a shield holds, the round asks only which
 machine to shield, and the tank's armour takes what gets through: the depth and the pressure
@@ -1123,7 +1123,7 @@ The fours, each machine's pieces and then its modules:
   Plate), the Puffin (Corona Shield, Laminar Deflector, Radiator Sail, Cyclic Cannon; Phase
   Conjugator, Flak Skirt), the Buzzard as above.
 - Armour and the drum: the Honey Badger as above, the Cottonmouth (Flak Cannon, Tesla Gauntlets,
-  Meteor Artillery, Corona Shield; Susceptibility Tensor, Flak Skirt), the Armadillo (Proximity
+  Meteor Artillery, Corona Shield; Susceptibility Tensor, Flak Skirt), the Polar Bear (Proximity
   Klaxon, Slugthrower, Canopy, Bleed Valve; Ward Plate, Ablative Plating), the Musk Ox (its
   stock; Ward Plate, Flak Skirt).
 - The statuses: the Stingray (Incendiary Shells, Airburst Shell, Corona Shield, Aurora Lattice,
@@ -1296,7 +1296,7 @@ Black Mage and the Summoner alone, 30 seeds a cell, 3,600 fights. A direction.
 By trio, ×1 / ×2 / ×3: the four Honey Badger trios, the coldest, win 93 to 100% at ×2 and pay
 0 to 9% of their hull to heat (0 to 1% at ×1, 1 to 26% at ×3); the two Cottonmouth and Stingray
 trios win every fight at every step; the two Cassowary and Baboon trios fall from 90 and 97% won
-to 33 and 47% (20 and 10% at ×3); the two Armadillo and Puffin trios, already hard at ×1 (23
+to 33 and 47% (20 and 10% at ×3); the two Polar Bear and Puffin trios, already hard at ×1 (23
 and 73%) with the seal's own heat, to 3 and 13%. The Magma Elemental, the Black Mage and the
 Summoner alone barely move at any step: the Elemental's breaching blows are its fight, and the
 heroes die in about three rounds, before heat builds.
@@ -1363,7 +1363,7 @@ greedy.
 | Cottonmouth | 38 / 55 | 63 / 91 | 0 / 0 | 0 / 0 | 51% |
 | **Skua** | **27 / 37** | **45 / 61** | **0 / 0** | **0 / 0** | **69%** |
 | Baboon | 25 / 37 | 41 / 55 | 0 / 22 | 0 / 0 | 74% |
-| Armadillo | 25 / 33 | 41 / 55 | 0 / 0 | 0 / 0 | 77% |
+| Polar Bear | 25 / 33 | 41 / 55 | 0 / 0 | 0 / 0 | 77% |
 | Stingray | 23 / 29 | 38 / 48 | 1 / 3 | 0 / 0 | 74% |
 | Cassowary | 16 / 23 | 27 / 38 | 0 / 0 | 0 / 0 | 84% |
 | Puffin | 8 / 22 | 14 / 37 | 0 / 0 | 0 / 0 | 86% |
@@ -1469,10 +1469,10 @@ only.
 **The tender on its own stream** (`docs/mechanics_audit.md`, item 33). `tools/campaign_run.gd`,
 40 runs from seed 1, the greedy rung, on the content as at this entry's commit (the audit's
 fixes with `ccr-170f6d81-465jnr`'s day merged in). Who started the runs, against the 22 October
-report: the Honey Badger 11 (9), the Baboon 15 (18), the Armadillo 17 (20), the Prairie Dog 10
+report: the Honey Badger 11 (9), the Baboon 15 (18), the Polar Bear 17 (20), the Prairie Dog 10
 (12), the Stingray 10 (14), the Puffin 16 (28), the Cassowary 16 (12), the Cottonmouth 10 (7),
 the Skua 15 (not dealt then). On 22 October the tender and the run drew one stream, so the
-runner's pick of three reread Minerva's offer: the Armadillo started every run it was offered
+runner's pick of three reread Minerva's offer: the Polar Bear started every run it was offered
 and the Badger about half. A model of Godot's PCG32 reproduces that table run for run, and on
 the new streams puts every machine at about three starts in four offers over 4,000 seeds. The
 report's other rows (37 of 40 runs to the finale against 25, 3.92 cities fallen a run against
@@ -1679,7 +1679,7 @@ greedy, no party, 72,000 fights: won, random / greedy, before and after.
 | Cottonmouth | 38 / 55 → 31 / 49 | 63 / 91 → 52 / 82 | 0 / 0 | 0 / 0 | 51% → 61% |
 | Prairie Dog | 11 / 21 → 8 / 19 | 18 / 35 → 13 / 32 | 0 / 0 | 0 / 0 | 85% → 86% |
 
-The other six (the Skua, the Baboon, the Armadillo, the Stingray, the Cassowary, the Puffin)
+The other six (the Skua, the Baboon, the Polar Bear, the Stingray, the Cassowary, the Puffin)
 read the same to the fight: their stock carries no area. By pack: the Cottonmouth's drum, Spread
 at the front and Penetrate at the back on every shot, lost the swarms it had cleared at full: the
 Goblin and Revenant sixes 40 / 100 to 10 / 62, the Salamander's three 16 / 96 to 11 / 62, the
@@ -1699,7 +1699,7 @@ seeds) holds in direction; the Cottonmouth, whose every shot carries area, did n
 
 Whether the greedy should read the round preview's copy (Skirmish.preview_round) in place of the
 hand-summed forecast, which misses a heal, a last act and a spill. Timed in a cloud session on
-a four-machine team (Badger, Clydesdale, Sparrowhawk, Armadillo) against six goblins and three
+a four-machine team (Badger, Clydesdale, Sparrowhawk, Polar Bear) against six goblins and three
 wolves, six seeds, eight rounds each (18 rounds played): the greedy spends 145 ms a round and
 reads 391 forecasts a round, at 0.19 ms each; a copy's play costs 2.42 ms a call on the same
 fight. Read through the copy, a round would cost about a second, some seven times what it does,
@@ -1794,8 +1794,8 @@ time in a working copy: as the head stands, injuries off (`--injury`), and area 
 
 By pack, the mean move over the 24 rows both reports hold, random / greedy: the Gels +24 / +33
 (16 rows' cells moved ten points or more, most of them free now: the Badger 7 / 61 to 94 / 100,
-the Boar 15 / 53 to 100 / 100, the Armadillo 0 / 0 to 46 / 100); the Bombs -8 / -8, the
-Salamanders -4 / -8, the Drakes -3 / -4 (the Armadillo against the Drakes 94 / 100 to 51 / 65,
+the Boar 15 / 53 to 100 / 100, the Polar Bear 0 / 0 to 46 / 100); the Bombs -8 / -8, the
+Salamanders -4 / -8, the Drakes -3 / -4 (the Polar Bear against the Drakes 94 / 100 to 51 / 65,
 the Ammit against the Bombs 99 to 69 greedy, the Nemesis against the Salamanders 100 to 76);
 the Meadow formation +1 / +4 (the Boar greedy 6 to 55, the Buzzard 0 to 41), the Waste -1 / -2,
 the Marsh +1 / -1, the Peak -1 / -1; the Augur's final -4 / -6, the Summoner's -3 / -6; every
@@ -1809,7 +1809,7 @@ What moved each, the experiments deciding where a cell could carry more than one
   the Meadow formation eases for the heavies. The Gel's work is inside a formation, where it
   holds a slot; as a pack of its own it is free.
 - The doubled heat (24 October): the Peak's three packs and its finals, the seal's own heat
-  walling the Armadillo against the Drakes.
+  walling the Polar Bear against the Drakes.
 - Area at half (26 October): the Cottonmouth's swarms (the Goblins and Revenants 98 to 62
   greedy) and its finals (the Augur's 88 to 4, the Summoner's 99 to 23, the Cleric's 43 to 10),
   and the formation cells of the other area carriers, which the 26 October read on the tier
@@ -1842,9 +1842,9 @@ and the two swarms of six, 14,400 fights a form: area at half as built; half rou
 (`(dmg + 1) / 2` at the engine's two sites and in the bot's valuation); and whole (every foe
 reached taking the blow, as before 26 October), the bot valuing each form as the engine runs it.
 The rows: the starting team (the Honey Badger, the Clydesdale, the Kite: the Claw, the Enfilade
-Beam and the Airburst Shell); a four without an area piece (the Armadillo, the Cassowary, the
+Beam and the Airburst Shell); a four without an area piece (the Polar Bear, the Cassowary, the
 Skua, the Puffin); a four with two carriers (the Honey Badger, the Cottonmouth, the Cassowary,
-the Puffin); a trio without (the Armadillo, the Cassowary, the Puffin); a trio with (the Honey
+the Puffin); a trio without (the Polar Bear, the Cassowary, the Puffin); a trio with (the Honey
 Badger, the Cottonmouth, the Puffin). Then `tools/quick_run.gd` at 40 runs, greedy, in the
 whole and the rounded-up copies, beside the committed run at half (the stand-in out, above).
 
@@ -1925,7 +1925,7 @@ and the Plow's 2, the Flak spreaders 1), read on the die as Burn N is; the numbe
 **Formations thinned, for the trio** (the same day, for the quick campaign question and the
 three-or-four question). `tools/balance.gd` on main's head after the Zombie Knight's line
 (`b9f85c7d`, area at half as built), 200 seeds a cell, random and greedy, three trio rows (the
-starting team; the Armadillo, the Cassowary and the Puffin without an area piece; the Honey
+starting team; the Polar Bear, the Cassowary and the Puffin without an area piece; the Honey
 Badger, the Cottonmouth and the Puffin with two) against each formation at two thirds and at
 half of its size (`--pack`; the Meadow 10 and 8 foes of 15, the Waste 6 and 5 of 9, the Marsh 7
 and 6 of 11, the Peak 6 and 5 of 9), and the Marsh at its new full size, 14,400 fights. Then
@@ -2006,7 +2006,7 @@ held for heat a fight:
 | Row | Win | Rounds | Hull | Peak | Overheats | Held |
 |---|---|---|---|---|---|---|
 | The default team (Honey Badger, Clydesdale, Kite) | 100 | 3.1 | 5% | 80% | 0.21 | 0.11 |
-| Minerva's team (Honey Badger, Armadillo, Wild Boar) | 100 | 4.9 | 7% | 31% | 0.05 | 0.01 |
+| Minerva's team (Honey Badger, Polar Bear, Wild Boar) | 100 | 4.9 | 7% | 31% | 0.05 | 0.01 |
 | Kestrel's team (Kite, Buzzard, Puffin) | 100 | 2.9 | 8% | 93% | 0.29 | 0.07 |
 | Wainwright & Sutler's team (Clydesdale, Prairie Dog, Dingo) | 99.6 | 5.9 | 18% | 33% | 0.13 | 0.04 |
 | The Arsenal bench's row (Nemesis, Ammit, Puffin) | 100 | 4.5 | 10% | 69% | 0.17 | 0.04 |
@@ -2024,7 +2024,7 @@ the other 41 read as their row (the stock's shields and vents among them, every 
 | Kestrel's | Buzzard | Overclocked Railgun | 10% | 2.9 to 3.2 | 8 to 9% |
 | Wainwright & Sutler's | Clydesdale | Maxigun | 9% | 5.9 to 6.1 | 18 to 20% |
 | Kestrel's | Puffin | Laser Carbine | 11% | 2.9 to 3.2 | 8 to 10% |
-| Minerva's | Armadillo | Twin Autoguns | 13% | 4.9 to 5.1 | 7 to 8% |
+| Minerva's | Polar Bear | Twin Autoguns | 13% | 4.9 to 5.1 | 7 to 8% |
 | Wainwright & Sutler's | Prairie Dog | Halo Shield | 8% | 5.9 to 5.6 | 18 to 20% |
 
 **The ladders.** Each candidate's rounds and hull against the bench's stock row, and its share
@@ -2244,7 +2244,7 @@ the half on main's head before the build (`2b1ace78`, 2,400 fights), which repea
 first read above to the fight; the other cells against the 27 October forms entry, whose content
 differs from today's in the Marsh alone.
 
-The rows without an area piece (the four of the Armadillo, the Cassowary, the Skua and the
+The rows without an area piece (the four of the Polar Bear, the Cassowary, the Skua and the
 Puffin; the trio without the Skua) read the same in every cell, wins, rounds and hull, fight for
 fight: the blow read for each foe struck leaves single-target play, the Skua's spray among it,
 as it was.
@@ -2296,7 +2296,7 @@ every fight of the cell, won or not.
 | 3 | 4 | 84% | 5.6 | 37% | 4% |
 
 By row, won / rounds / hull lost: tier one, the Honey Badger 98% / 4.7 / 27%, the Cottonmouth
-87 / 3.2 / 34, the Skua 65 / 3.7 / 47, the Armadillo 64 / 10.5 / 57, the Baboon 58 / 5.6 / 58,
+87 / 3.2 / 34, the Skua 65 / 3.7 / 47, the Polar Bear 64 / 10.5 / 57, the Baboon 58 / 5.6 / 58,
 the Stingray 49 / 5.8 / 56, the Cassowary 39 / 7.1 / 74, the Puffin 37 / 7.0 / 76, the Prairie
 Dog 32 / 9.5 / 77; tier two, the Wild Boar 99 / 4.9 / 22, the Nemesis 98 / 3.7 / 23, the Whip
 Scorpion 98 / 4.1 / 32, the Buzzard 96 / 2.9 / 15, the Clydesdale 90 / 5.1 / 38, the Kite 72 /
@@ -3820,7 +3820,7 @@ patrols cost more than their tenth.
 Salvage by menace: a won battle banks 246 (230 to 254) at 2 a point of menace where ten a kill
 banked 163 (100 to 320), on 6 won battles against 23, so the constant reads about half again high
 at a won battle and is the economy pass's number (section 10); components destroyed a won battle
-0.44 (1.15). On every read the plain player wins no run, as since the Armadillo's rework, and the
+0.44 (1.15). On every read the plain player wins no run, as since the Polar Bear's rework, and the
 reads of the fights' shape stay the quick campaign's until a runner player fields a squad
 (section 12).
 
@@ -3911,7 +3911,7 @@ Drawn as icons at the chips' size, the three clear the 3:1 a graphic wants, the 
 **The slate's seven read alone, at the scale row's 80 and at 48** (`tools/balance.gd`, 30 seeds,
 the greedy rung, each boss alone with nothing beside it; a direction). Rows: the default team
 (the Honey Badger, the Clydesdale, the Kite), the three makers' trios and a stock four of tier
-ones (the Honey Badger, the Baboon, the Armadillo, the Prairie Dog). The bosses as built, at 80
+ones (the Honey Badger, the Baboon, the Polar Bear, the Prairie Dog). The bosses as built, at 80
 (the Fallen Weapon's core 64, its eyes 12), and at 48 by `--set foes/<id>/hp` (the core 40);
 Rotbloom and the Fallen Weapon read on the fixed runner (below), the eyes once more at 8. Mean
 rounds of the fights won, the win rate where under 100%:
@@ -3961,7 +3961,7 @@ the boss in parts' cells are read again at the next 200-seed matrix.
 
 **Their engine session's reads** (the Storm Petrel and the Giant Petrel fielded 30 October on
 `claude/affectionate-ramanujan-5d24t6`, from main's `d84ad16`), as their briefs asked: the Storm
-Petrel alone and beside the Puffin, its magazine, each against the Armadillo, the other tier-one
+Petrel alone and beside the Puffin, its magazine, each against the Polar Bear, the other tier-one
 body, in the same run; the Giant Petrel in two teams of four against the same three with another
 machine in its place. `tools/balance.gd`, 30 seeds a cell (a direction), random and greedy, no
 party, the matrix's 55 packs as it stands (the thirteen tier-one packs, the ladder's twenty-six
@@ -3970,20 +3970,20 @@ installed it on the old head; the 4.8-beta2 build's unpacking and first run were
 mode, and the headless sim reads no renderer). Won, random / greedy, then greedy's hull lost and
 rounds to a win.
 
-**The Storm Petrel alone**, beside the Armadillo:
+**The Storm Petrel alone**, beside the Polar Bear:
 
 | Row | Every pack | Tier-one rank and file (13) | Tiers two and three (26) | The four big foes | The twelve formations | Hull lost | Rounds won |
 |---|---|---|---|---|---|---|---|
 | Storm Petrel | 32 / 45 | 52 / 66 | 42 / 61 | 0 / 0 | 0 / 0 | 63% | 4.9 |
-| Armadillo | 25 / 38 | 48 / 65 | 29 / 49 | 0 / 0 | 0 / 0 | 75% | 9.7 |
+| Polar Bear | 25 / 38 | 48 / 65 | 29 / 49 | 0 / 0 | 0 / 0 | 75% | 9.7 |
 
 Pick share (greedy): the Laser Carbine 31%, the St. Elmo's Regenerator 24%, the Canopy 20%, the
-Ankle Mortar 15%, the Twin Autoguns 9%. Its heat peaks at a tenth of its gauge (the Armadillo's
+Ankle Mortar 15%, the Twin Autoguns 9%. Its heat peaks at a tenth of its gauge (the Polar Bear's
 41%), 0.04 overheats a fight. The first run of the day, before the bot valued the regen, read the
 row 32 / 46 with the Regenerator spent 4% of the time: valuing it moved the lock's share and not
 the row.
 
-Read: alone it stands in the Armadillo's band and above it on the ladder's recolours, winning in
+Read: alone it stands in the Polar Bear's band and above it on the ladder's recolours, winning in
 half the rounds; every tier one alone is walled by the big foes and the formations, and so is it.
 On its stock the burn is a trickle: the Carbine's 2 is the most any basic burns, and the gauge
 never sees it, so its identity shows at the size of its basics' heat (the bible's section 12 holds
@@ -3994,13 +3994,13 @@ the question).
 | Row | Every pack | Tier-one rank and file | Tiers two and three | The four big foes | The twelve formations | Hull lost | Rounds won |
 |---|---|---|---|---|---|---|---|
 | Storm Petrel + Puffin | 53 / 66 | 85 / 94 | 68 / 84 | 4 / 51 | 0 / 2 | 39% | 4.5 |
-| Armadillo + Puffin | 47 / 62 | 77 / 93 | 60 / 78 | 0 / 32 | 0 / 8 | 46% | 6.5 |
+| Polar Bear + Puffin | 47 / 62 | 77 / 93 | 60 / 78 | 0 / 32 | 0 / 8 | 46% | 6.5 |
 
 Pick share (greedy, the Storm Petrel's pair): the Laser Carbine 31%, the Twin Autoguns 24%, the
 Regenerator 13%, the Halo Shield 10%, the Ankle Mortar 10%, the Canopy 6%, the Backwash Ionizer 3%.
 
-Read: the escort pair reads a few points over the Armadillo's on the rank and file and about half
-again on the big foes (51% against 32%, in a third the rounds), for less hull; the Armadillo's pair
+Read: the escort pair reads a few points over the Polar Bear's on the rank and file and about half
+again on the big foes (51% against 32%, in a third the rounds), for less hull; the Polar Bear's pair
 takes a formation now and then where it takes almost none. Neither is a must-pick on this read; the
 Puffin's overshield is rarely spent on it (the Ionizer 3%), so the brief's magazine claim is not
 read here, the greedy shielding its ally against this round's blows and never for a burn to come.
@@ -4223,13 +4223,13 @@ lost 10 to 35%. Every row won every fight.
 **Three machines or four, against the slate** (31 October; `tools/balance.gd`, 20 seeds, the
 greedy rung, each boss alone, its parts with it; a direction). Ryan's question of 30 October:
 "the biggest power spike the player gets is probably going from 3 to 4 units, right?" The stock
-four (Honey Badger, Baboon, Armadillo, Prairie Dog, stock kits) against each of its trios, the
+four (Honey Badger, Baboon, Polar Bear, Prairie Dog, stock kits) against each of its trios, the
 same kit a machine short, over the twelve bosses at tier one:
 
 | Row | Won | Mean rounds of the fights won | Hull lost |
 |---|---|---|---|
 | The stock four | 100% | 8.6 (7.0 to 12.1) | 2.4% |
-| Less the Armadillo | 100% | 10.3 | 8.0% |
+| Less the Polar Bear | 100% | 10.3 | 8.0% |
 | Less the Prairie Dog | 100% | 10.4 | 8.8% |
 | Less the Honey Badger | 92% | 14.9 | 17.7% |
 | Less the Baboon | 92% | 18.5 | 24.4% |
@@ -4282,7 +4282,7 @@ rounds and the default team 3.3 to 4.7, against the kill-time test's three to fi
 
 **The bosses' escorts at tiers two and three** (2 November; `tools/balance.gd --boss-tiers`, 20 seeds,
 the greedy rung; the default team (the Honey Badger, the Clydesdale, the Kite) and the stock four
-(the Armadillo, the Prairie Dog, the Badger, the Baboon), each with its tier-zero kit, so a
+(the Polar Bear, the Prairie Dog, the Badger, the Baboon), each with its tier-zero kit, so a
 tier-three cell is a trio or a four above its station and the escort's delta, never the cell, is
 the read; a direction). Each boss at the tier's numbers (`ContentDB.scale_boss`, its parts with
 it) with its own escort composition and alone. Won, mean rounds of the fights won, mean hull lost
@@ -4371,14 +4371,14 @@ greedy's hull lost and rounds to a win.
 | Second fallback (base 1, a point for every two loads, to 3) | 38 / 60 | 65 / 95 | 42 / 67 | 34 / 61 | 0 / 4 | 56% | 6.1 |
 | As proposed, the claw 2 a strike | 44 / 64 | 76 / 94 | 44 / 72 | 45 / 59 | 6 / 16 | 51% | 7.4 |
 | As proposed, no plate | 30 / 53 | 53 / 82 | 36 / 64 | 21 / 47 | 0 / 0 | 62% | 5.3 |
-| The Armadillo (beside the old Badger) | 16 / 27 | 37 / 56 | 15 / 30 | 11 / 15 | 0 / 0 | 83% | 10.2 |
+| The Polar Bear (beside the old Badger) | 16 / 27 | 37 / 56 | 15 / 30 | 11 / 15 | 0 / 0 | 83% | 10.2 |
 
 The lone foes the change moved most, random / greedy: the Treant 3 / 67 as it was, 97 / 100 as
 proposed, 83 / 100 at the first fallback, 53 / 100 at the second; the Bone Dragon 3 / 77, 97 /
 100, 83 / 100, 57 / 100; Gilgamesh 7 / 93, 100 / 100, 100 / 100, 80 / 100; the Bourgeon 0 / 0, 100
 / 100, 100 / 100, 67 / 100. The rounds to beat the Treant fell from 27 to 10.
 
-**The Minerva team** (the Badger, the Armadillo, the Wild Boar):
+**The Minerva team** (the Badger, the Polar Bear, the Wild Boar):
 
 | Row | Every pack | Tier-one rank and file | Tiers two and three, the party | Lone big foes and bosses | Formations | Hull lost | Rounds won |
 |---|---|---|---|---|---|---|---|
@@ -4389,7 +4389,7 @@ proposed, 83 / 100 at the first fallback, 53 / 100 at the second; the Bone Drago
 
 Read: the plate carries it. With no plate it reads at the old Badger's line, a claw of 2 a strike
 takes four or five points off, its shield at 6 a point or two; a point a load lifts it eighteen
-points greedy and random play past half the lone big foes, which the old Badger and the Armadillo
+points greedy and random play past half the lone big foes, which the old Badger and the Polar Bear
 lose. Ryan's first fallback moves it two points, since base 2 keeps the early armour the second
 point a load would have given; his second brings it to 38 / 60, a few points over the old Badger,
 its lone big foes at 34 / 61. Landed: the second fallback, as his sequence said. Its base shield
@@ -4426,6 +4426,57 @@ our floor #4a4438 2.5 to 5.7:1 / 18 to 64; a steel hull #8a9098 1.0 to 1.9:1 / 1
 Aphelion's white #e8e8ec 1.4 to 3.2:1 / 24 to 73. A flare is laid over the hull rather than added
 (added, the plasma read pale pink on the Badger's grey), so its colour holds on every hull; on a
 mid steel its edge is its shape, not its lightness.
+
+## 2 November, the bosses' escorts at tiers two and three
+
+Written as a paragraph inside "30 October, the slate's last five" (above), where its method,
+its seeds and its table are; this heading indexes it.
+
+## 2 November, the Polar Bear at tier one
+
+**Is the Polar Bear too much of a wall for tier one?** (Ryan's play test of 2 November: "armadillo
+is probably too much of a wall for tier 1. It's very good at its job.") The balance runner,
+greedy, 30 seeds a cell (a direction), the tier-one packs and formations (`--packs` the seventeen
+of tier one: each spawn-table pack at its strength and each domain's tier-one formation;
+`--noparty`): the Polar Bear alone beside three tier-one peers (the Storm Petrel, the Baboon, the
+Cassowary) and the Honey Badger; then a starter trio, the Honey Badger and the Skua with the
+Polar Bear in the middle seat, beside the same trio with each peer there; then three what-ifs on
+the Polar Bear's trio, its Lockdown's armour 3 to 2 (`--set
+chassis/armadillo/passive/effects/0/value=2`), its base armour 2 to 1, and both. About twenty
+minutes on two cores, from a frozen copy of `3929042`'s tree (this branch's base, the engine as main has it).
+
+The trios' hull lost, mean of every fight (greedy):
+
+| Trio (Honey Badger, X, Skua) | Rank and file (13 packs) | Meadow formation | Waste | Marsh | Peak |
+|---|---|---|---|---|---|
+| Polar Bear | 0 to 2%, the Zombie Knights 28% | 6% | 6% | 82% | 8% |
+| Storm Petrel | 0 to 2%, the Zombie Knights 25% | 4% | 4% | 83% | 4% |
+| Baboon | 0 to 2%, the Zombie Knights 19% | 10% | 7% | 78% | 8% |
+| Cassowary | 0 to 1%, the Zombie Knights 33% | 13% | 8% | 94% | 12% |
+| Polar Bear, Lockdown +2 | as the Polar Bear's | 6% | 6% | 82% | 8% |
+| Polar Bear, armour 1 | as the Polar Bear's | 9% | 6% | 81% | 9% |
+| Polar Bear, both | as the Polar Bear's | 9% | 6% | 81% | 9% |
+
+Alone, the Polar Bear kills slowly and loses hull on most tier-one packs (98% on the goblins and the
+revenants, 88% on the gels, 100% on every formation), the slowest of the five rows (5.6 to 27.9
+rounds won where the Badger takes 2.3 to 10). In the trio, the Canopy is 6% of the spends (26%
+alone): the greedy bot rarely seals in a team, so the runner barely reads Lockdown at all (its
++2 what-if moves no trio cell).
+
+Read:
+
+- **Every starter trio walls tier one's rank and file**: none loses more than 2% hull on any of the
+  thirteen packs but the Zombie Knights, whoever sits in the middle seat; the formations take 4% to
+  13% but the Marsh's (about 80%, its Zombie Knights). On the bot's play the Polar Bear's trio sits
+  in the band, and the Storm Petrel's takes less.
+- **The seal is where the bot cannot look**: sealed, the Polar Bear's armour is 5 against tier-one
+  blows of 2 or 3 (the rank and file's), so once its shield is down a sealed Polar Bear takes
+  nothing from them; the greedy bot spends the Canopy on itself too rarely in a team to show it.
+  Ryan's read is of play the runner does not make, so the runner neither confirms it nor clears
+  it; the arithmetic agrees with him for a sealed Polar Bear against the rank and file.
+- **A smaller seal does not reach the root**: at Lockdown +2 the sealed armour is 4, still over
+  every tier-one rank-and-file blow; flat armour at or over a tier's blows is immunity at any
+  number. The question is the bible's section 12 (the Polar Bear at tier one).
 
 ## 3 November, the Cassowary's cycle and the Cottonmouth beside it
 
@@ -4640,14 +4691,14 @@ six groups of 3 November: won, random / greedy.
 
 | Row | Tier one's rank and file | Its big four | Its formations | Tiers two and three | Their formations | The bosses | Every pack | Hull lost (greedy) | Rounds won (greedy) |
 |---|---|---|---|---|---|---|---|---|---|
-| Armadillo, old bot | 37 / 56 | 0 / 0 | 0 / 0 | 22 / 36 | 0 / 0 | 0 / 0 | 16 / 26 | 83% | 9.8 |
-| Armadillo, new | 37 / 56 | 0 / 0 | 0 / 0 | 22 / 36 | 0 / 0 | 0 / 1 | 16 / 27 | 83% | 9.9 |
+| Polar Bear, old bot | 37 / 56 | 0 / 0 | 0 / 0 | 22 / 36 | 0 / 0 | 0 / 0 | 16 / 26 | 83% | 9.8 |
+| Polar Bear, new | 37 / 56 | 0 / 0 | 0 / 0 | 22 / 36 | 0 / 0 | 0 / 1 | 16 / 27 | 83% | 9.9 |
 | Giant Petrel, old bot | 49 / 76 | 3 / 32 | 0 / 0 | 38 / 62 | 0 / 0 | 1 / 20 | 26 / 46 | 67% | 4.8 |
 | Giant Petrel, new | 49 / 76 | 3 / 29 | 0 / 0 | 38 / 62 | 0 / 0 | 1 / 17 | 26 / 46 | 67% | 4.7 |
 | Musk Ox, old bot | 81 / 79 | 2 / 19 | 0 / 0 | 55 / 64 | 0 / 0 | 14 / 54 | 41 / 52 | 64% | 7.1 |
 | Musk Ox, new | 81 / 79 | 2 / 21 | 0 / 0 | 55 / 65 | 0 / 0 | 14 / 51 | 41 / 53 | 64% | 6.9 |
 
-Spends, greedy: the Armadillo's two Cryo Flingers 9% of its spends on the old bot, 13% on the new; the Giant
+Spends, greedy: the Polar Bear's two Cryo Flingers 9% of its spends on the old bot, 13% on the new; the Giant
 Petrel's Immelmann Booster under 2% (alone it buys no ally an action) and 14%; the Musk Ox's Quick
 Reload 11% and 17%. Random play comes out identical cell for cell (76 of 76 for each machine).
 
@@ -4819,3 +4870,973 @@ the harder fight section 9 asks for wants the massive band in both numbers (the 
 of 7 or 8 with the 30 to 40 HP), an escort each, or its curveball read on the map (the hunter's
 catch, the World Eater's push), which no cell reads; the HP alone is not the lever. Ryan's to mark
 (the bible's section 12), then the 200-seed read.
+
+
+## 6 November, the long wall's Phase 1 reads
+
+The reads the long wall's build brief asks for (`git show 68381ff:docs/briefs/long_wall_build.md`, section 10), on
+`ccr-56b5169d-lsa2rg` with Phase 1 built: the field 20 by 12 at every Convergence; the tide (the
+beat 3 turns, 2 from Convergence 8, the siege a turn short of its first peak at the start, the
+beat halved at the Rupture); a pusher's segment of the wall; one pack one fight from beside it;
+no withdrawal; the shield full at every fight's start, with the shield regen at zero everywhere;
+the threat rating (a patrol 1, a formation 3, an elite and the boss 4); the rerolls at two. Every
+new number is a placeholder (the table at the end). Each read is a direction and called one: 40
+runs of the campaign runner on the steppe, 30 seeds of the balance runner, 200 maps of the survey.
+
+### The campaign runner: 40 runs on the steppe
+
+`tools/campaign_run.gd -- --runs 40 --shape steppe` (139 s): the greedy rung, each run the draft's
+three machines of its tender at random, the defence rule on the map (the brief's section 5: a
+hunter's catch first, then each machine onto the pack it can stand beside that reaches the wall
+soonest, ties by the larger rating and then the nearer, the rest walking toward the soonest,
+never the sealed boss, every fight fought out).
+
+| Measure | Mean | Range |
+|---|---|---|
+| Runs won | 0 of 40 | |
+| Turns a run | 5.72 | 5 to 8 |
+| The turn the first city fell | 0.50 | 0 to 2 |
+| Battles: won, held after a wipe, fell | 1%, 12%, 86% of 185 | |
+| Battles ended in a team wipe | 97% | |
+| Machines wrecked a battle | 1.76 | 0 to 3 |
+| Phases a battle | 5.64 | 1 to 12 |
+| Gate damage a battle | 134 | 0 to 200 |
+| Peaks of Rift Pressure a battle | 0.94 | 0 to 7 |
+| Compositions the rift sent a battle | 0.94 | 0 to 7 |
+| Patrols the tears sent a battle | 1.25 | 0 to 21 |
+| Tears open at a battle's end | 0.94 | 0 to 7 |
+| Elites spawned a battle | 0.34 | 0 to 1 |
+| Fractures reached a battle (of 3.01 held) | 0.75 | 0 to 3 |
+| Battles reaching the Rupture | 14% | |
+| Of those, by the stall guard | 0% | |
+| The turn the seal broke, where it did | 3.37 | 2 to 6 |
+| Stalemate fights (ten rounds with no foe's HP, hull or shield changed) | 0 | |
+| Fights stalled past the fight bot's cap of 60 rounds | 0 | |
+
+The pressure ratio, as each player's turn opens: the ratings of the packs on the apron and of
+those whose walk ends there this coming enemy turn, over the machines standing.
+
+| Measure | Mean | Range |
+|---|---|---|
+| A run's mean over its turns | 0.87 | 0.27 to 3.29 |
+| Turns above 1.0, percent of a run's | 21 | 7 to 50 |
+| A battle's highest, a run's mean | 1.56 | 0.60 to 5.00 |
+
+The fights, 481 (2.6 a battle), by the pack's rating and the machines the defence rule sent at it:
+
+| A fight for | Machines in it | Fights | Won |
+|---|---|---|---|
+| 1 | 1 | 94 | 61% |
+| 1 | 2 | 30 | 83% |
+| 1 | 3 | 7 | 85% |
+| 3 | 1 | 169 | 5% |
+| 3 | 2 | 52 | 48% |
+| 3 | 3 | 54 | 96% |
+| 4 | 1 | 45 | 8% |
+| 4 | 2 | 21 | 95% |
+| 4 | 3 | 9 | 88% |
+
+Read, in bands, a direction. The campaign is a wall for the plain player on the defence rule: no
+run won, the first city falling on the first or second turn, 86% of battles fell and 97% ended
+in a wipe, so the battles are short (five or six phases) and the tide's later beats (under one
+peak a battle), the Fractures (0.75 of 3) and the Rupture (14%) are barely reached. The fights
+table shows where it breaks: the rule sends each machine at the pack nearest the wall it can
+reach, so on a wall twenty long the three split, and 169 of the 481 fights are one machine
+against a formation, won 5%; a formation fought by the three it is rated for is won 96%, by two
+48%. A patrol fought alone is won 61% (worn machines among them); an elite fought by two is won
+95%, so at tier zero an elite reads as a fight for two, its four unearned (the elites' numbers,
+the to-do). The pressure ratio sits under one on average and above it a fifth of the turns. The
+defence rule is the floor the brief built for these reads, not the player Ryan's change to the
+runner will make (the to-do's engine line).
+
+### The promise read: every composition at its rating, one short and one over
+
+`tools/balance.gd -- --packs promise --seeds 30` (15,600 fights in 2,685 s): every patrol,
+formation and elite composition of every domain at each tier it names, against the runner's
+default team (the Honey Badger, the Clydesdale, the Kite and the Baboon, stock) cut to the
+composition's threat rating (its first N machines), one short (N − 1) and one over (N + 1, four
+at most); random and greedy, 30 seeds a cell, a direction. The escorts are left out (they fight
+with their boss). The team is tier one's at every tier, so tiers two and three read a stock
+tier-one team against the higher tiers' packs.
+
+Means by size and tier, random / greedy won, then greedy's hull lost (percent of the cut's) and
+rounds:
+
+| Size, tier | Cells | Short | At its rating | Over |
+|---|---|---|---|---|
+| Patrol (for 1), tier 1 | 8 | — | 78 / 88%, 24% hull, 4.7 r | 95 / 100%, 5% hull, 2.9 r |
+| Patrol, tier 2 | 8 | — | 39 / 65%, 57% hull, 6.0 r | 89 / 100%, 14% hull, 4.1 r |
+| Patrol, tier 3 | 4 | — | 32 / 66%, 62% hull, 5.2 r | 98 / 100%, 8% hull, 3.5 r |
+| Formation (for 3), tier 1 | 8 | 52 / 97%, 36% hull, 7.2 r | 87 / 100%, 13% hull, 4.2 r | 100 / 100%, 6% hull, 3.4 r |
+| Formation, tier 2 | 13 | 24 / 62%, 66% hull, 9.3 r | 56 / 98%, 23% hull, 5.9 r | 86 / 100%, 10% hull, 4.4 r |
+| Formation, tier 3 | 17 | 5 / 21%, 89% hull, 6.7 r | 20 / 69%, 57% hull, 7.6 r | 45 / 87%, 30% hull, 5.8 r |
+| Elite (for 4), tier 1 | 11 | 92 / 100%, 5% hull, 2.9 r | 99 / 100%, 2% hull, 2.4 r | — |
+| Elite, tier 2 | 21 | 85 / 99%, 9% hull, 4.1 r | 96 / 100%, 4% hull, 3.2 r | — |
+| Elite, tier 3 | 21 | 78 / 95%, 17% hull, 5.4 r | 90 / 100%, 6% hull, 3.9 r | — |
+
+The bands, by the earlier reads' convention (random winning 90% or more too easy; greedy under
+25% a wall; greedy twenty points or more above random a decision; otherwise none):
+
+| | Short | At its rating | Over |
+|---|---|---|---|
+| Patrols, 20 cells | — | 7 too easy, 9 decision, 4 walls | 16 too easy, 4 decision |
+| Formations, 38 cells | 4 too easy, 18 decision, 16 walls | 10 too easy, 24 decision, 1 none, 3 walls | 21 too easy, 14 decision, 1 none, 2 walls |
+| Elites, 53 cells | 38 too easy, 13 decision, 2 none | 47 too easy, 6 decision | — |
+
+Read, in bands, a direction:
+- **Formations** hold the promise best. At their rating of three they carry a decision in 24 of 38 cells. Tier one's are mostly too easy (random 87%) and tier three's hard (greedy 69% at 57% hull). One short, with two machines, they wall in 16 of 38, most at tiers two and three. One over, with four, they are too easy in 21.
+- **Patrols** at their rating of one cost the lone machine a quarter of its hull at tier one and over half at tiers two and three (greedy 65 to 66%). Four of the twenty are walls: the Waste's pit pair and great scouts, the Marsh's knight's retinue, the Peak's fire lizards. With a second machine every patrol falls (greedy 100%).
+- **Elites** do not earn their four. At their rating they are too easy in 47 of 53 cells (random 90 to 99%), and three machines, one short, beat them too (random 78 to 92%, greedy 95 to 100%). The campaign read's elites fought by two say the same.
+- **The Marsh's tier-three formations** (the Lich's court, the dread host, the wraith choir) wall four machines as well as three.
+- **By domain** at the rating, the Meadow is the easiest (its formations random 82%, greedy 99%) and the Marsh the hardest (random 29%, greedy 61%, 49% hull).
+
+Each cell, random / greedy, as the read wrote it:
+
+| Domain | Composition | Tier | For | Short | At its rating | Over |
+|---|---|---|---|---|---|---|
+| The Meadow | goblin_warband | 1 | 3 | 100% · 7.8 r · 41% hull / 100% · 5.0 r · 8% hull | 100% · 4.8 r · 6% hull / 100% · 3.2 r · 1% hull | 100% · 4.2 r · 3% hull / 100% · 2.6 r · 0% hull |
+| The Meadow | wolf_pack | 1 | 1 |  | 100% · 6.5 r · 12% hull / 100% · 3.5 r · 2% hull | 100% · 3.2 r · 0% hull / 100% · 2.0 r · 0% hull |
+| The Meadow | gel_cluster | 1 | 1 |  | 90% · 22.3 r · 61% hull / 100% · 13.0 r · 14% hull | 100% · 10.5 r · 18% hull / 100% · 6.1 r · 4% hull |
+| The Meadow | guard_warband | 2 | 3 | 97% · 10.1 r · 59% hull / 100% · 6.6 r · 23% hull | 100% · 6.2 r · 18% hull / 100% · 4.3 r · 4% hull | 100% · 4.9 r · 7% hull / 100% · 3.4 r · 1% hull |
+| The Meadow | warg_hunt | 2 | 3 | 93% · 17.8 r · 63% hull / 100% · 9.9 r · 18% hull | 100% · 12.7 r · 29% hull / 100% · 6.6 r · 5% hull | 100% · 8.9 r · 11% hull / 100% · 5.1 r · 3% hull |
+| The Meadow | warg_pack | 2 | 1 |  | 77% · 7.9 r · 54% hull / 100% · 4.7 r · 14% hull | 100% · 4.4 r · 4% hull / 100% · 2.6 r · 0% hull |
+| The Meadow | gel_drift | 2 | 1 |  | 30% · 16.8 r · 93% hull / 100% · 16.2 r · 45% hull | 100% · 13.3 r · 45% hull / 100% · 7.8 r · 16% hull |
+| The Meadow | captains_warband | 3 | 3 | 17% · 8.4 r · 97% hull / 100% · 7.6 r · 46% hull | 80% · 9.1 r · 61% hull / 100% · 4.7 r · 9% hull | 100% · 6.9 r · 24% hull / 100% · 3.9 r · 2% hull |
+| The Meadow | alpha_hunt | 3 | 3 | 3% · 4.6 r · 100% hull / 47% · 7.1 r · 87% hull | 50% · 8.1 r · 81% hull / 100% · 5.9 r · 24% hull | 93% · 6.9 r · 39% hull / 100% · 4.6 r · 6% hull |
+| The Meadow | metal_drift | 3 | 3 | 0% · 4.5 r · 100% hull / 0% · 6.2 r · 100% hull | 0% · 6.2 r · 100% hull / 90% · 9.2 r · 66% hull | 30% · 9.8 r · 92% hull / 100% · 6.2 r · 23% hull |
+| The Meadow | alpha_pack | 3 | 1 |  | 17% · 5.1 r · 94% hull / 70% · 5.3 r · 68% hull | 100% · 6.1 r · 37% hull / 100% · 3.7 r · 6% hull |
+| The Meadow | shamans_warband | 1 | 4 | 100% · 4.7 r · 5% hull / 100% · 2.7 r · 1% hull | 100% · 4.2 r · 2% hull / 100% · 2.3 r · 0% hull |  |
+| The Meadow | shamans_warband | 2 | 4 | 100% · 4.9 r · 5% hull / 100% · 2.7 r · 1% hull | 100% · 4.5 r · 3% hull / 100% · 2.4 r · 0% hull |  |
+| The Meadow | shamans_warband | 3 | 4 | 100% · 5.3 r · 9% hull / 100% · 2.8 r · 0% hull | 100% · 4.6 r · 4% hull / 100% · 2.6 r · 0% hull |  |
+| The Meadow | elder_treants_grove | 2 | 4 | 100% · 9.8 r · 27% hull / 100% · 5.2 r · 7% hull | 100% · 7.1 r · 9% hull / 100% · 4.2 r · 1% hull |  |
+| The Meadow | elder_treants_grove | 3 | 4 | 97% · 15.2 r · 56% hull / 100% · 6.2 r · 12% hull | 100% · 8.8 r · 19% hull / 100% · 4.9 r · 2% hull |  |
+| The Meadow | leshys_hunt | 2 | 4 | 100% · 3.5 r · 0% hull / 100% · 1.9 r · 0% hull | 100% · 2.9 r · 0% hull / 100% · 1.8 r · 0% hull |  |
+| The Meadow | leshys_hunt | 3 | 4 | 100% · 3.7 r · 0% hull / 100% · 2.0 r · 0% hull | 100% · 3.1 r · 0% hull / 100% · 2.0 r · 0% hull |  |
+| The Meadow | the_nob | 1 | 4 | 100% · 2.6 r · 1% hull / 100% · 2.0 r · 0% hull | 100% · 2.4 r · 0% hull / 100% · 1.8 r · 0% hull |  |
+| The Meadow | the_nob | 2 | 4 | 100% · 3.2 r · 1% hull / 100% · 2.1 r · 0% hull | 100% · 3.1 r · 1% hull / 100% · 2.0 r · 0% hull |  |
+| The Meadow | the_nob | 3 | 4 | 100% · 3.8 r · 2% hull / 100% · 2.6 r · 1% hull | 100% · 3.6 r · 2% hull / 100% · 2.2 r · 0% hull |  |
+| The Meadow | treant_grove | 1 | 3 | 70% · 15.6 r · 80% hull / 100% · 9.2 r · 31% hull | 100% · 10.4 r · 33% hull / 100% · 4.8 r · 6% hull | 100% · 7.7 r · 13% hull / 100% · 4.2 r · 2% hull |
+| The Meadow | treant_march | 2 | 3 | 27% · 16.5 r · 95% hull / 100% · 10.6 r · 38% hull | 100% · 11.8 r · 38% hull / 100% · 5.6 r · 8% hull | 100% · 8.0 r · 15% hull / 100% · 4.6 r · 3% hull |
+| The Meadow | treant_wilds | 3 | 3 | 0% · 11.8 r · 100% hull / 100% · 12.7 r · 54% hull | 80% · 15.6 r · 67% hull / 100% · 6.6 r · 13% hull | 100% · 9.3 r · 25% hull / 100% · 5.0 r · 3% hull |
+| The Meadow | rotblooms_bed | 2 | 3 | 63% · 13.7 r · 80% hull / 100% · 8.0 r · 23% hull | 97% · 8.3 r · 34% hull / 100% · 4.3 r · 5% hull | 100% · 6.8 r · 17% hull / 100% · 3.7 r · 1% hull |
+| The Meadow | rotblooms_bed | 3 | 3 | 63% · 13.7 r · 80% hull / 100% · 8.0 r · 23% hull | 97% · 8.3 r · 34% hull / 100% · 4.3 r · 5% hull | 100% · 6.8 r · 17% hull / 100% · 3.7 r · 1% hull |
+| The Waste | needler_swarm | 1 | 3 | 100% · 6.0 r · 36% hull / 100% · 4.0 r · 19% hull | 100% · 4.2 r · 16% hull / 100% · 2.5 r · 7% hull | 100% · 3.2 r · 7% hull / 100% · 2.0 r · 2% hull |
+| The Waste | antlion_pair | 1 | 1 |  | 93% · 5.2 r · 42% hull / 100% · 2.5 r · 9% hull | 100% · 2.8 r · 2% hull / 100% · 2.0 r · 0% hull |
+| The Waste | needler_scouts | 1 | 1 |  | 90% · 4.5 r · 51% hull / 100% · 3.0 r · 26% hull | 100% · 2.4 r · 8% hull / 100% · 2.0 r · 4% hull |
+| The Waste | needler_scouts | 2 | 1 |  | 90% · 4.5 r · 51% hull / 100% · 3.0 r · 26% hull | 100% · 2.4 r · 8% hull / 100% · 2.0 r · 4% hull |
+| The Waste | barbed_swarm | 2 | 3 | 13% · 6.5 r · 98% hull / 93% · 6.0 r · 57% hull | 80% · 7.9 r · 65% hull / 100% · 3.8 r · 20% hull | 100% · 5.5 r · 29% hull / 100% · 3.0 r · 7% hull |
+| The Waste | pit_ambush | 2 | 3 | 3% · 4.5 r · 100% hull / 67% · 6.3 r · 89% hull | 43% · 6.7 r · 83% hull / 100% · 3.8 r · 26% hull | 90% · 5.7 r · 47% hull / 100% · 3.1 r · 13% hull |
+| The Waste | pit_pair | 2 | 1 |  | 0% · 2.0 r · 100% hull / 0% · 2.8 r · 100% hull | 73% · 5.4 r · 78% hull / 100% · 3.2 r · 35% hull |
+| The Waste | great_swarm | 3 | 3 | 0% · 4.8 r · 100% hull / 7% · 5.7 r · 99% hull | 23% · 7.0 r · 95% hull / 100% · 5.0 r · 39% hull | 77% · 8.1 r · 67% hull / 100% · 4.0 r · 17% hull |
+| The Waste | queens_court | 3 | 3 | 0% · 3.2 r · 100% hull / 0% · 3.8 r · 100% hull | 0% · 4.4 r · 100% hull / 67% · 5.7 r · 71% hull | 13% · 6.8 r · 99% hull / 100% · 4.7 r · 32% hull |
+| The Waste | gorgon_glare | 3 | 3 | 0% · 4.7 r · 100% hull / 0% · 6.3 r · 100% hull | 10% · 7.6 r · 97% hull / 100% · 6.2 r · 49% hull | 70% · 8.7 r · 66% hull / 100% · 4.4 r · 17% hull |
+| The Waste | great_scouts | 3 | 1 |  | 3% · 3.5 r · 99% hull / 3% · 3.8 r · 100% hull | 93% · 4.7 r · 42% hull / 100% · 3.1 r · 21% hull |
+| The Waste | old_mans_rising | 1 | 4 | 10% · 12.3 r · 97% hull / 97% · 7.1 r · 44% hull | 93% · 11.1 r · 56% hull / 100% · 5.0 r · 20% hull |  |
+| The Waste | old_mans_rising | 2 | 4 | 7% · 10.8 r · 98% hull / 90% · 9.5 r · 62% hull | 70% · 14.4 r · 75% hull / 100% · 5.9 r · 25% hull |  |
+| The Waste | old_mans_rising | 3 | 4 | 0% · 9.0 r · 100% hull / 33% · 11.2 r · 90% hull | 30% · 15.8 r · 90% hull / 100% · 7.8 r · 39% hull |  |
+| The Waste | sandworm_ambush | 1 | 3 | 3% · 9.1 r · 100% hull / 90% · 9.1 r · 76% hull | 77% · 10.7 r · 80% hull / 100% · 5.9 r · 37% hull | 100% · 8.7 r · 45% hull / 100% · 4.3 r · 17% hull |
+| The Waste | sandworm_pit | 2 | 3 | 0% · 5.5 r · 100% hull / 3% · 9.6 r · 100% hull | 10% · 10.5 r · 98% hull / 93% · 9.1 r · 60% hull | 83% · 13.9 r · 73% hull / 100% · 5.4 r · 23% hull |
+| The Waste | sandworm_flats | 3 | 3 | 0% · 5.4 r · 100% hull / 0% · 8.0 r · 100% hull | 0% · 8.9 r · 100% hull / 67% · 11.1 r · 75% hull | 50% · 13.3 r · 85% hull / 100% · 6.4 r · 30% hull |
+| The Waste | pilgrims_wake | 1 | 4 | 100% · 6.6 r · 23% hull / 100% · 3.4 r · 4% hull | 100% · 5.1 r · 15% hull / 100% · 3.1 r · 0% hull |  |
+| The Waste | pilgrims_wake | 2 | 4 | 100% · 7.9 r · 35% hull / 100% · 4.2 r · 10% hull | 100% · 6.2 r · 20% hull / 100% · 3.5 r · 2% hull |  |
+| The Waste | pilgrims_wake | 3 | 4 | 100% · 9.3 r · 46% hull / 100% · 5.1 r · 17% hull | 100% · 7.3 r · 23% hull / 100% · 4.0 r · 6% hull |  |
+| The Waste | rust_monsters_scavenge | 1 | 4 | 100% · 2.2 r · 0% hull / 100% · 1.7 r · 0% hull | 100% · 1.9 r · 0% hull / 100% · 1.4 r · 0% hull |  |
+| The Waste | rust_monsters_scavenge | 2 | 4 | 100% · 2.9 r · 1% hull / 100% · 2.0 r · 0% hull | 100% · 2.6 r · 0% hull / 100% · 2.0 r · 0% hull |  |
+| The Waste | rust_monsters_scavenge | 3 | 4 | 100% · 3.4 r · 2% hull / 100% · 2.1 r · 0% hull | 100% · 3.2 r · 0% hull / 100% · 2.0 r · 0% hull |  |
+| The Waste | gilgamesh_wanders | 1 | 4 | 100% · 5.9 r · 2% hull / 100% · 3.6 r · 1% hull | 100% · 5.0 r · 1% hull / 100% · 3.1 r · 0% hull |  |
+| The Waste | gilgamesh_wanders | 2 | 4 | 100% · 7.1 r · 4% hull / 100% · 4.4 r · 1% hull | 100% · 6.0 r · 2% hull / 100% · 3.6 r · 0% hull |  |
+| The Waste | gilgamesh_and_enkidu | 3 | 4 | 100% · 10.7 r · 24% hull / 100% · 5.8 r · 9% hull | 100% · 8.9 r · 13% hull / 100% · 4.8 r · 2% hull |  |
+| The Waste | the_astromancer | 2 | 4 | 77% · 11.3 r · 51% hull / 100% · 4.2 r · 3% hull | 100% · 7.3 r · 17% hull / 100% · 3.2 r · 1% hull |  |
+| The Waste | the_astromancer | 3 | 4 | 60% · 13.4 r · 74% hull / 100% · 5.0 r · 7% hull | 100% · 7.9 r · 22% hull / 100% · 4.2 r · 2% hull |  |
+| The Marsh | grave_host | 1 | 3 | 53% · 10.8 r · 84% hull / 100% · 7.7 r · 27% hull | 87% · 7.8 r · 33% hull / 100% · 3.8 r · 3% hull | 100% · 5.5 r · 9% hull / 100% · 3.2 r · 1% hull |
+| The Marsh | barrow_mound | 1 | 3 | 37% · 19.2 r · 93% hull / 100% · 8.7 r · 27% hull | 97% · 13.1 r · 39% hull / 100% · 4.7 r · 5% hull | 100% · 8.4 r · 13% hull / 100% · 4.0 r · 1% hull |
+| The Marsh | knights_retinue | 1 | 1 |  | 0% · 3.6 r · 100% hull / 0% · 3.7 r · 100% hull | 57% · 8.0 r · 73% hull / 100% · 3.8 r · 32% hull |
+| The Marsh | revenant_shamblers | 1 | 1 |  | 97% · 6.3 r · 21% hull / 100% · 3.4 r · 2% hull | 100% · 2.9 r · 1% hull / 100% · 2.0 r · 0% hull |
+| The Marsh | wight_host | 2 | 3 | 7% · 8.6 r · 98% hull / 93% · 9.3 r · 61% hull | 67% · 12.3 r · 71% hull / 100% · 4.9 r · 8% hull | 100% · 8.5 r · 25% hull / 100% · 4.1 r · 2% hull |
+| The Marsh | grave_field | 2 | 3 | 0% · 9.7 r · 100% hull / 43% · 23.9 r · 85% hull | 7% · 25.0 r · 96% hull / 97% · 10.3 r · 20% hull | 47% · 34.0 r · 65% hull / 100% · 5.7 r · 5% hull |
+| The Marsh | death_knights_retinue | 2 | 3 | 0% · 6.9 r · 100% hull / 0% · 7.7 r · 100% hull | 7% · 10.5 r · 100% hull / 90% · 7.6 r · 51% hull | 37% · 13.1 r · 85% hull / 100% · 6.7 r · 30% hull |
+| The Marsh | wight_shamblers | 2 | 1 |  | 40% · 5.3 r · 82% hull / 93% · 5.1 r · 46% hull | 100% · 5.3 r · 20% hull / 100% · 3.1 r · 4% hull |
+| The Marsh | wight_shamblers | 3 | 1 |  | 40% · 5.3 r · 82% hull / 93% · 5.1 r · 46% hull | 100% · 5.3 r · 20% hull / 100% · 3.1 r · 4% hull |
+| The Marsh | knight_and_wights | 2 | 1 |  | 3% · 4.9 r · 100% hull / 27% · 6.3 r · 96% hull | 73% · 11.6 r · 72% hull / 100% · 5.7 r · 29% hull |
+| The Marsh | lichs_court | 3 | 3 | 0% · 3.9 r · 100% hull / 0% · 4.0 r · 100% hull | 0% · 5.3 r · 100% hull / 0% · 5.3 r · 100% hull | 0% · 7.0 r · 100% hull / 13% · 9.0 r · 96% hull |
+| The Marsh | charnel_pit | 3 | 3 | 0% · 6.3 r · 100% hull / 0% · 12.3 r · 100% hull | 0% · 12.1 r · 100% hull / 63% · 21.7 r · 56% hull | 23% · 25.9 r · 85% hull / 100% · 7.0 r · 11% hull |
+| The Marsh | dread_host | 3 | 3 | 0% · 3.6 r · 100% hull / 0% · 3.7 r · 100% hull | 0% · 4.5 r · 100% hull / 0% · 4.7 r · 100% hull | 0% · 6.0 r · 100% hull / 0% · 7.0 r · 100% hull |
+| The Marsh | wraith_choir | 3 | 3 | 0% · 4.7 r · 100% hull / 0% · 4.7 r · 100% hull | 0% · 6.0 r · 100% hull / 3% · 6.9 r · 100% hull | 0% · 8.2 r · 100% hull / 63% · 9.5 r · 77% hull |
+| The Marsh | fell_riders_hunt | 1 | 4 | 100% · 1.7 r · 0% hull / 100% · 1.1 r · 0% hull | 100% · 1.6 r · 0% hull / 100% · 1.0 r · 0% hull |  |
+| The Marsh | fell_riders_hunt | 2 | 4 | 100% · 2.3 r · 0% hull / 100% · 1.7 r · 0% hull | 100% · 1.9 r · 0% hull / 100% · 1.4 r · 0% hull |  |
+| The Marsh | fell_riders_hunt | 3 | 4 | 100% · 2.6 r · 0% hull / 100% · 2.1 r · 0% hull | 100% · 2.4 r · 0% hull / 100% · 1.9 r · 0% hull |  |
+| The Marsh | skeleton_kings_court | 2 | 4 | 20% · 11.2 r · 91% hull / 87% · 7.9 r · 50% hull | 50% · 13.6 r · 72% hull / 97% · 5.5 r · 20% hull |  |
+| The Marsh | skeleton_kings_court | 3 | 4 | 20% · 11.8 r · 93% hull / 80% · 9.3 r · 57% hull | 40% · 14.7 r · 77% hull / 97% · 6.4 r · 24% hull |  |
+| The Marsh | collectors_hall | 2 | 4 | 80% · 9.7 r · 50% hull / 100% · 3.2 r · 10% hull | 100% · 5.6 r · 17% hull / 100% · 2.4 r · 6% hull |  |
+| The Marsh | collectors_hall | 3 | 4 | 67% · 9.9 r · 59% hull / 100% · 3.5 r · 14% hull | 100% · 6.3 r · 22% hull / 100% · 2.9 r · 9% hull |  |
+| The Marsh | bone_wyverns_flight | 2 | 4 | 100% · 7.7 r · 21% hull / 100% · 4.6 r · 5% hull | 100% · 6.1 r · 9% hull / 100% · 3.7 r · 1% hull |  |
+| The Marsh | bone_wyverns_flight | 3 | 4 | 100% · 9.1 r · 29% hull / 100% · 5.4 r · 10% hull | 100% · 6.9 r · 12% hull / 100% · 4.2 r · 2% hull |  |
+| The Marsh | the_reaper | 1 | 4 | 100% · 1.4 r · 0% hull / 100% · 1.0 r · 0% hull | 100% · 1.3 r · 0% hull / 100% · 1.0 r · 0% hull |  |
+| The Marsh | the_reaper | 2 | 4 | 100% · 1.6 r · 0% hull / 100% · 1.1 r · 0% hull | 100% · 1.5 r · 0% hull / 100% · 1.0 r · 0% hull |  |
+| The Marsh | the_reaper | 3 | 4 | 100% · 2.0 r · 0% hull / 100% · 1.4 r · 0% hull | 100% · 1.8 r · 0% hull / 100% · 1.1 r · 0% hull |  |
+| The Marsh | the_wild_hunt | 1 | 4 | 100% · 3.7 r · 2% hull / 100% · 2.2 r · 0% hull | 100% · 3.4 r · 1% hull / 100% · 2.1 r · 0% hull |  |
+| The Marsh | the_wild_hunt | 2 | 4 | 100% · 4.8 r · 9% hull / 100% · 2.8 r · 0% hull | 100% · 4.1 r · 4% hull / 100% · 2.6 r · 0% hull |  |
+| The Marsh | the_wild_hunt | 3 | 4 | 100% · 5.7 r · 19% hull / 100% · 3.3 r · 2% hull | 100% · 4.6 r · 10% hull / 100% · 2.8 r · 1% hull |  |
+| The Marsh | the_shambler | 2 | 4 | 100% · 6.1 r · 6% hull / 100% · 3.3 r · 0% hull | 100% · 4.7 r · 1% hull / 100% · 2.6 r · 0% hull |  |
+| The Marsh | the_shambler | 3 | 4 | 100% · 7.2 r · 12% hull / 100% · 3.9 r · 1% hull | 100% · 6.1 r · 4% hull / 100% · 3.1 r · 0% hull |  |
+| The Peak | ember_pit | 1 | 3 | 57% · 7.2 r · 85% hull / 100% · 4.8 r · 22% hull | 100% · 5.2 r · 22% hull / 100% · 2.8 r · 2% hull | 100% · 4.0 r · 6% hull / 100% · 2.4 r · 0% hull |
+| The Peak | bomb_flight | 1 | 1 |  | 93% · 7.7 r · 44% hull / 100% · 4.8 r · 12% hull | 100% · 3.7 r · 5% hull / 100% · 2.5 r · 0% hull |
+| The Peak | salamander_trio | 1 | 1 |  | 63% · 5.7 r · 66% hull / 100% · 4.0 r · 23% hull | 100% · 3.9 r · 7% hull / 100% · 2.6 r · 2% hull |
+| The Peak | wyvern_roost | 2 | 3 | 3% · 5.1 r · 100% hull / 33% · 6.7 r · 91% hull | 47% · 6.7 r · 79% hull / 100% · 3.9 r · 12% hull | 93% · 6.4 r · 48% hull / 100% · 3.4 r · 7% hull |
+| The Peak | grenade_volley | 2 | 3 | 3% · 5.6 r · 99% hull / 70% · 7.3 r · 72% hull | 63% · 7.8 r · 75% hull / 100% · 3.9 r · 13% hull | 97% · 6.2 r · 41% hull / 100% · 3.4 r · 5% hull |
+| The Peak | grenade_flight | 2 | 1 |  | 70% · 9.9 r · 74% hull / 100% · 6.3 r · 32% hull | 100% · 5.3 r · 12% hull / 100% · 3.4 r · 1% hull |
+| The Peak | fire_lizards | 2 | 1 |  | 0% · 3.1 r · 100% hull / 0% · 3.9 r · 100% hull | 67% · 6.3 r · 75% hull / 100% · 4.9 r · 27% hull |
+| The Peak | dragons_roost | 3 | 3 | 0% · 3.2 r · 100% hull / 0% · 3.8 r · 100% hull | 0% · 4.3 r · 100% hull / 60% · 6.9 r · 82% hull | 3% · 5.9 r · 100% hull / 97% · 5.6 r · 33% hull |
+| The Peak | magma_pit | 3 | 3 | 0% · 4.7 r · 100% hull / 0% · 5.7 r · 100% hull | 0% · 6.5 r · 100% hull / 93% · 6.8 r · 40% hull | 30% · 9.3 r · 92% hull / 100% · 5.6 r · 16% hull |
+| The Peak | balloon_storm | 3 | 3 | 0% · 4.3 r · 100% hull / 0% · 5.7 r · 100% hull | 3% · 6.1 r · 100% hull / 93% · 6.9 r · 41% hull | 43% · 8.2 r · 86% hull / 100% · 4.8 r · 12% hull |
+| The Peak | balloon_flight | 3 | 1 |  | 67% · 10.1 r · 74% hull / 97% · 6.4 r · 36% hull | 100% · 6.1 r · 17% hull / 100% · 4.0 r · 3% hull |
+| The Peak | magma_vent | 1 | 3 | 0% · 7.8 r · 100% hull / 83% · 9.3 r · 81% hull | 33% · 10.8 r · 92% hull / 100% · 6.2 r · 42% hull | 100% · 9.1 r · 51% hull / 100% · 4.6 r · 21% hull |
+| The Peak | magma_forge | 2 | 3 | 0% · 5.4 r · 100% hull / 0% · 9.1 r · 100% hull | 10% · 10.6 r · 99% hull / 97% · 9.0 r · 64% hull | 70% · 11.8 r · 73% hull / 100% · 5.9 r · 24% hull |
+| The Peak | magma_caldera | 3 | 3 | 0% · 5.5 r · 100% hull / 0% · 8.0 r · 100% hull | 0% · 9.2 r · 100% hull / 33% · 10.8 r · 92% hull | 27% · 13.2 r · 91% hull / 100% · 7.1 r · 34% hull |
+| The Peak | cinder_tortoises_brood | 1 | 4 | 100% · 8.5 r · 19% hull / 100% · 5.0 r · 2% hull | 100% · 6.8 r · 9% hull / 100% · 4.1 r · 1% hull |  |
+| The Peak | cinder_tortoises_brood | 2 | 4 | 77% · 18.4 r · 67% hull / 100% · 8.0 r · 11% hull | 100% · 12.5 r · 32% hull / 100% · 5.9 r · 3% hull |  |
+| The Peak | cinder_tortoises_brood | 3 | 4 | 0% · 23.1 r · 100% hull / 93% · 20.2 r · 55% hull | 53% · 24.1 r · 79% hull / 100% · 8.7 r · 8% hull |  |
+| The Peak | thunder_apes_rampage | 1 | 4 | 100% · 2.8 r · 1% hull / 100% · 2.1 r · 1% hull | 100% · 2.6 r · 1% hull / 100% · 1.8 r · 0% hull |  |
+| The Peak | thunder_apes_rampage | 2 | 4 | 100% · 3.5 r · 3% hull / 100% · 2.1 r · 1% hull | 100% · 3.3 r · 2% hull / 100% · 2.0 r · 1% hull |  |
+| The Peak | thunder_apes_rampage | 3 | 4 | 100% · 4.3 r · 7% hull / 100% · 2.8 r · 3% hull | 100% · 3.8 r · 5% hull / 100% · 2.2 r · 1% hull |  |
+| The Peak | the_bane | 2 | 4 | 93% · 8.3 r · 38% hull / 100% · 4.1 r · 15% hull | 100% · 5.7 r · 19% hull / 100% · 3.3 r · 8% hull |  |
+| The Peak | the_bane | 3 | 4 | 83% · 10.2 r · 55% hull / 100% · 4.9 r · 24% hull | 100% · 6.9 r · 25% hull / 100% · 4.0 r · 10% hull |  |
+| The Peak | firelords_rising | 2 | 4 | 37% · 14.1 r · 79% hull / 100% · 6.8 r · 11% hull | 97% · 9.4 r · 23% hull / 100% · 4.2 r · 3% hull |  |
+| The Peak | firelords_rising | 3 | 4 | 20% · 14.6 r · 92% hull / 97% · 9.2 r · 24% hull | 77% · 12.8 r · 46% hull / 100% · 5.1 r · 5% hull |  |
+| The Peak | the_ravener | 2 | 4 | 100% · 8.2 r · 43% hull / 100% · 4.4 r · 12% hull | 100% · 6.2 r · 20% hull / 100% · 3.7 r · 3% hull |  |
+| The Peak | the_ravener | 3 | 4 | 87% · 10.5 r · 71% hull / 100% · 5.6 r · 25% hull | 100% · 7.7 r · 34% hull / 100% · 4.3 r · 6% hull |  |
+
+### The map survey at 20 by 12
+
+`tools/map_survey.gd -- --seeds 200 --type steppe --width 20 --height 12`. The steppe: plain 95%,
+road 4%, water 1%; the horde's route 11 hexes on every map; the narrowest crossing 5 hexes on all
+200; every way of moving reaches the rift in 3 phases at move 3, the packs at move 2 in 4; after
+two phases tracked machines reach 35% of the field, walkers 59%, wheels, hovers and flyers 81 to
+82%, every one making the crossing by phase 2. The shapes compared, each on seeds 1 to 200:
+
+| Shape | Open | Rough | Ruins | Water | Walls | Crossing | Opened | Route | Phases T/W/Wh/H/F | Reach T/W/Wh/H/F | Steps | Lone |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| RIVER CROSSING | 80% | 0% | 0% | 19% | 0% | 200 of 200 at 3+ | 0.0 | 11.1 | 3.0/3.0/3.0/3.0/3.0 | 33/55/77/81/82% | 0% | 0.0 |
+| FJORD | 95% | 0% | 0% | 5% | 0% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/59/81/82/82% | 0% | 0.0 |
+| BADLANDS | 61% | 26% | 0% | 3% | 10% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 30/51/71/71/82% | 17% | 0.4 |
+| OPEN STEPPE | 99% | 0% | 0% | 1% | 0% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/59/81/81/82% | 0% | 0.0 |
+| RUINED CITY | 12% | 0% | 75% | 0% | 13% | 200 of 200 at 3+ | 0.0 | 11.4 | 3.0/3.0/3.0/3.0/3.0 | 27/46/65/65/82% | 0% | 0.0 |
+| GORGE | 96% | 0% | 0% | 0% | 4% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/57/77/77/82% | 0% | 0.0 |
+
+Read: at twelve deep the depth no longer parts the shapes (three phases to the rift at move 3
+and a route of about 11 hexes on all six); what parts them is the lanes, read in the reach after two phases
+(the ruined city's 27/46/65/65/82% and the badlands' 30/51/71/71/82% against the steppe's
+35/59/81/81/82%). The shapes are laid by the old generator for the old field; their relaying is the
+brief's open item 5.
+
+### The shapes at 20 by 12
+
+Each shape at seed 7 (`R` the rift, `G` the gate, `W` the wall, `~` water, `#` rock, `=` road, `,`
+rough, `:` ruins, `.` plain; odd rows indented), as the proposal's section 3 printed them at 24 by 12:
+
+```
+river 20x12: water 35, rock 1, opened 0, narrowest crossing 5
+.   .   .   .   .   .   .   .   .   R   R   R   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   ~   ~   .   ~   .   #   .   .   .   .   .   =   ~   ~   .   .   .   .
+  ~   ~   ~   ~   .   ~   ~   ~   ~   .   .   .   =   .   ~   ~   ~   ~   ~   ~
+~   ~   ~   .   .   .   ~   ~   ~   ~   ~   ~   .   .   .   .   ~   ~   ~   ~
+  .   .   .   .   .   .   .   .   .   ~   ~   ~   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   .   =   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   =   =   .   .   .   .   .   .   .   .
+W   W   W   W   W   W   W   W   W   G   G   G   G   W   W   W   W   W   W   W
+  W   W   W   W   W   W   W   W   W   G   G   G   W   W   W   W   W   W   W   W
+fjord 20x12: water 9, rock 0, opened 0, narrowest crossing 5
+.   .   .   .   .   .   .   .   .   R   R   R   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   ~   ~   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   ~   ~   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   ~   ~   ~   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   ~   ~   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+W   W   W   W   W   W   W   W   W   G   G   G   G   W   W   W   W   W   W   W
+  W   W   W   W   W   W   W   W   W   G   G   G   W   W   W   W   W   W   W   W
+badlands 20x12: water 9, rock 20, opened 0, narrowest crossing 5
+.   .   ,   ,   ,   ,   .   .   .   R   R   R   .   .   ,   ,   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+  ,   ,   .   .   .   ,   ,   ,   ,   .   .   .   .   ,   ,   ,   .   ,   ,   ,
+,   #   ,   .   .   ,   #   #   #   ,   .   .   .   ,   #   #   ,   ,   #   ,
+  ,   #   ,   .   .   ,   ,   ,   ,   .   .   .   .   ,   #   ,   #   #   ,   ~
+#   #   ,   ~   ~   ,   #   #   #   ,   .   .   .   .   ,   #   ,   #   ,   ~
+  #   ,   .   .   ~   ,   ,   ,   ,   .   ~   ~   ~   ,   #   ,   ,   ,   .   ~
+,   ,   .   .   .   .   .   .   .   .   .   .   .   .   ,   ,   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+W   W   W   W   W   W   W   W   W   G   G   G   G   W   W   W   W   W   W   W
+  W   W   W   W   W   W   W   W   W   G   G   G   W   W   W   W   W   W   W   W
+steppe 20x12: water 0, rock 1, opened 0, narrowest crossing 5
+.   .   .   .   .   .   .   .   .   R   R   R   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   =   .   .   .   .   .   .   #   .   .
+.   .   .   .   .   .   .   .   .   .   .   =   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   =   .   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   =   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   =   .   .   .   .   .   .   .   .   .
+W   W   W   W   W   W   W   W   W   G   G   G   G   W   W   W   W   W   W   W
+  W   W   W   W   W   W   W   W   W   G   G   G   W   W   W   W   W   W   W   W
+city 20x12: water 0, rock 34, opened 0, narrowest crossing 3
+:   :   :   :   :   :   :   :   .   R   R   R   .   :   :   :   :   :   :   :
+  :   :   :   :   :   :   :   :   .   .   .   .   :   :   :   :   :   :   :   :
+:   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :
+  :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :
+:   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :   :
+  #   #   #   #   #   #   :   =   :   #   #   #   #   #   #   #   #   #   #   #
+#   #   #   #   #   #   :   =   =   #   #   #   #   #   #   #   #   #   #   #
+  :   :   :   :   :   :   :   :   =   =   :   :   :   :   :   :   :   :   :   :
+:   :   :   :   :   :   :   :   :   :   =   :   :   :   :   :   :   :   :   :
+  :   :   :   :   :   :   :   :   .   .   =   .   .   :   :   :   :   :   :   :
+W   W   W   W   W   W   W   W   W   G   G   G   G   W   W   W   W   W   W   W
+  W   W   W   W   W   W   W   W   W   G   G   G   W   W   W   W   W   W   W   W
+gorge 20x12: water 0, rock 8, opened 0, narrowest crossing 5
+.   .   .   .   .   .   .   .   .   R   R   R   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   #   .   .   .   #   .   .   .   .   .   .   .   .   .   .   .   .
+  .   .   .   #   .   .   .   #   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   #   .   .   .   #   .   .   .   .   .   .   .   .   .   .   .   .
+  .   .   .   #   .   .   #   .   .   .   .   .   .   .   .   .   .   .   .   .
+.   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+W   W   W   W   W   W   W   W   W   G   G   G   G   W   W   W   W   W   W   W
+  W   W   W   W   W   W   W   W   W   G   G   G   W   W   W   W   W   W   W   W
+```
+
+### The placeholders
+
+Every number the build set only so the mechanism runs, each marked `# placeholder (the long wall
+brief)` where it stands, and moved only on Ryan's word:
+
+| Number | Value | Where |
+|---|---|---|
+| The wall's length | 20 at every Convergence | `sim/ramp.gd:89` (`wall_length_at`) |
+| The depth | 12 at every Convergence | `sim/ramp.gd:95` (`depth_at`) |
+| The beat (Rift Pressure's fill) | 3 turns, 2 from Convergence 8 | `sim/ramp.gd:52` (`timer_at`) |
+| The spread of a pusher's segment | 2 + ((length / 2 − 2) × Convergence) / 12 either side of the rift's column: 2 at the foot, 10 at the top on a wall of 20 | `sim/ramp.gd:82` (`spread_at`) |
+| The opening pressure | a turn short of the first peak (the beat − 1) | `sim/battle.gd:172` |
+| The opening rows | a formation one of its moves short of the apron, a patrol two (the 1 and 2 at `sim/battle.gd:207` and `:210`), never into the rift's mouth | `sim/battle.gd:289` (`_open_row`) |
+| The beat after the Rupture | halved once, never below 1 | `sim/battle.gd:310` (`rupture`) |
+| The attack range | 1 (adjacency) | `sim/unit.gd:108` |
+
+## 9 November: the shapes relaid for the shallow field
+
+`tools/map_survey.gd -- --seeds 200 --type steppe --width 20 --height 12` on `ccr-1e6e6571-7x7ayr`
+(the shapes relaid, the to-do's map line): every shape on seeds 1 to 200 at 20 by 12, read against the
+same table of 6 November (above, "The map survey at 20 by 12"). The mouth is three rows at twelve deep
+(four on 6 November), so a shape has rows 3 to 7.
+
+| Shape | Open | Rough | Ruins | Water | Walls | Crossing | Opened | Route | Phases T/W/Wh/H/F | Reach T/W/Wh/H/F | Steps | Lone |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| RIVER CROSSING | 72% | 9% | 0% | 19% | 0% | 200 of 200 at 3+ | 0.0 | 11.1 | 3.0/3.0/3.0/3.0/3.0 | 33/55/78/81/82% | 0% | 0.0 |
+| FJORD | 81% | 8% | 0% | 12% | 0% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/57/79/82/82% | 0% | 0.0 |
+| BADLANDS | 54% | 30% | 0% | 3% | 12% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 30/49/69/69/82% | 19% | 0.3 |
+| OPEN STEPPE | 98% | 0% | 0% | 1% | 0% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/59/81/81/82% | 3% | 0.0 |
+| RUINED CITY | 12% | 0% | 75% | 0% | 13% | 200 of 200 at 3+ | 0.0 | 11.5 | 3.0/3.0/3.0/3.0/3.0 | 28/46/65/65/82% | 0% | 0.0 |
+| GORGE | 80% | 12% | 0% | 0% | 8% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 33/54/73/73/82% | 0% | 0.0 |
+
+Read: the shapes tell apart again by what they lay, where on 6 November three had nothing to lay
+(the fjord 5% water in one puddle, the gorge 4% walls in two stubs, the steppe bare): the fjord's
+two channels put 12% of the field under water, the gorge's three cliff walls 8% in walls, the
+steppe's crag and pond for every ten hexes of wall 1% water (none on 51 maps, a pond on 97, ponds
+on 52), and the second ground lies along the landforms (the river's bars 9% of the field, the
+fjord's shingle 8%, the gorge's scree 12%; the badlands' scrub 30%, the city's rubble 75%, the
+steppe none). Every map keeps the horde's crossing at three or more with nothing opened, and the
+route to the gate stays about 11 hexes on every shape, so the depth still parts nothing: what
+parts the shapes is the lanes, read in the reach after two phases, now widest on the steppe
+(35/59/81/81/82%) and narrowest in the city (28/46/65/65/82%), the badlands (30/49/69/69/82%)
+and the gorge (33/54/73/73/82%, the river's and the fjord's wade between). The relief stands as
+decided: level but the badlands' shoulders and the steppe's rise (3% of neighbouring land at
+different heights there, the one rise), never a lone hex but the badlands' 0.3 a map. The
+laying takes 13 ms a map. Nothing here is a decision: the shapes are judged running on the
+phone (the to-do's Ryan list) and the counts (`BattleMap.FJORD_PER`, `GORGE_PER`, `STEPPE_PER`)
+are placeholders.
+
+The two shapes the shallow field had broken, at seed 3 (`--show 3`; `~` water, `^` a wall, `"`
+rough, `=` road, `R` the rift, `G` the gate, `|` the wall, the scenery outside the brackets):
+
+```
+seed 3, FJORD, fjord, narrowest crossing 5, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[. . . . . . . . . R R R . . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . . . . . . . . . . .], , , , 
+, , , ,[. . " " . . . . . . . . . " . " " . . .], , , , 
+ , , , ,[. " ~ ~ . . . . . . . . . ~ ~ ~ . . . .], , , , 
+, , , ,[. " ~ ~ ~ " . . . . . . " ~ ~ . . . . .], , , , 
+ , , , ,[. " ~ ~ . . . . . . . . " ~ ~ " . . . .], , , , 
+, , , ,[. . ~ ~ " . . . . . . . . . ~ ~ ~ " . .], , , , 
+ , , , ,[. . ~ ~ . . . . . . . . . . ~ ~ ~ " . .], , , , 
+, , , ,[. . . " . . . . . . . . . . . . " . . .], , , , 
+ , , , ,[. . . . . . . . . . . . . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 3, GORGE, , narrowest crossing 5, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+ , , " ,[, , , , , , , , , , , , , , , , , , , "], , , , 
+, , , ^[. . . . . . . . . R R R . . . . . . . "]^ " , , 
+ , , , ^[" . . . . . . . . . . . . . . . . . . .]^ , , , 
+, , " ^[. . " " . . . . . " . . . . . " " . . .]^ , , , 
+ , , " ^[. " ^ . . . . . . ^ " . . . " ^ . . . .]^ " , , 
+, , " ^[" . . ^ . . . . " ^ . . . . . ^ . . . .]^ " , , 
+ , , , ^[. . . ^ . . . . " ^ " . . . . ^ . . . "]^ , , , 
+, , " ^[. . " ^ " . . . . ^ . . . . . ^ . . . .]^ " , , 
+ , , , ^[" . . ^ . . . . " ^ " . . . . ^ . . . .]^ , , , 
+, , , "[" . . " . . . . . . " . . . . . " . . .], , , , 
+ , , , ,[. . . . . . . . . . . . . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+```
+
+### The recast of the three wall shapes, the same day
+
+The same run again (`--seeds 200 --width 20 --height 12`, every shape on seeds 1 to 200) after
+Ryan's recast of the gorge, the city and the badlands (the bible's shapes row): cliff mass cut by
+channels, tower blocks in a street grid, an open field of small mesas. The river, the fjord and
+the steppe are as above.
+
+| Shape | Open | Rough | Ruins | Water | Walls | Crossing | Opened | Route | Phases T/W/Wh/H/F | Reach T/W/Wh/H/F | Steps | Lone |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| RIVER CROSSING | 72% | 9% | 0% | 19% | 0% | 200 of 200 at 3+ | 0.0 | 11.1 | 3.0/3.0/3.0/3.0/3.0 | 33/55/78/81/82% | 0% | 0.0 |
+| FJORD | 81% | 8% | 0% | 12% | 0% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/57/79/82/82% | 0% | 0.0 |
+| BADLANDS | 48% | 38% | 0% | 4% | 10% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 31/52/72/73/82% | 20% | 0.1 |
+| OPEN STEPPE | 98% | 0% | 0% | 1% | 0% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/59/81/81/82% | 3% | 0.0 |
+| RUINED CITY | 18% | 0% | 52% | 1% | 29% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 24/38/52/53/82% | 0% | 0.0 |
+| GORGE | 64% | 7% | 0% | 1% | 27% | 200 of 200 at 3+ | 0.0 | 11.7 | 3.0/3.0/3.0/3.0/3.0 | 26/38/52/53/82% | 0% | 0.0 |
+
+Read: the three now part by mass and by the ground machines' room, where before they parted by
+little. The city (29% of the field in towers, the band's seven tenths) and the gorge (27%, the
+channels a third of the band) are the two heavy shapes, and their tracked reach after two phases
+falls to 24% and 26% against the steppe's 35%, the hover's to 53% against 81%, the flyer's 82%
+untouched: the mass costs the ground a third of its room and the flyer nothing, which is the
+flyer's crossing of its own. The badlands sits between (10% in small mesas, 38% scrub, tracked
+reach 31%), its paths winding but open. Every map keeps the horde's crossing at three or more
+with nothing opened; the gorge's route is the one longer one (11.7 hexes against 11.0: the
+channels wind). Water lies in all three as Ryan asked (the gorge's flooded stretches and the
+city's streets and fountains 1% each, the badlands' ponds 4%). The relief stands (the badlands'
+shoulders, the steppe's rise, the scenery's first ring level since this run). The heavy
+shapes are the floor "how far we can push it" is read against: a tracked machine with a
+quarter of the field in reach after two moves is still a decision, not a wall, since every
+apron hex stays land and every way of moving keeps a path; past this the city's one-wide
+avenues would need widening before more mass. Nothing here is a decision: the three are first
+cuts for the phone (the to-do), and the counts and chances (`BattleMap.GORGE_PER`,
+`GORGE_BRANCHES`, `CITY_SIDE_SEGMENT`, `CITY_FALLEN`, `BADLANDS_PER`) are placeholders.
+
+The three at seed 7 (`--show 7`; `~` water, `^` a wall, `"` rough, `#` rubble, `=` a street or
+road, `R` the rift, `G` the gate, `|` the wall, the scenery outside the brackets):
+
+```
+seed 7, GORGE, , narrowest crossing 3, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+ , , , ,[, , , , , , , , , , , , , , , , , , , "]" , , , 
+, , , ^[. . . . . . . . . R R R . . . . . . . .]^ , , , 
+ , , " ^[. . . . . . . . . . . . . . . . . . . .]^ , , , 
+" " , ^[. . . . . . . " " . . . . " . . . . . .]^ , " " 
+ ^ ^ ^ ^[^ ^ ^ ^ ^ " . ^ . ^ ^ ^ ^ ^ " " ^ ^ ^ ^]^ ^ ^ ^ 
+^ ^ ^ ^[. . . . . . . . " . ^ . ^ ^ . . ^ ^ ^ ^]^ ^ ^ ^ 
+ ^ ^ ^ ^[. . . . . . . . . " . ^ ^ . ^ . ^ ^ ^ ^]^ ^ ^ ^ 
+^ ^ ^ ^[. ^ " . . . . . . " . ^ ^ ^ . . " ^ ^ ^]^ ^ ^ ^ 
+ ^ ^ ^ ^[^ ^ ^ . " ^ . . . ^ ^ ^ ^ ^ ^ . ^ ^ ^ ^]^ ^ ^ ^ 
+, , " ,[. . . . . . . . . " . . " . " . . . . .], " , , 
+ , , , ,[. . . . . . . . . . . . . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, RUINED CITY, a fountain, narrowest crossing 4, the guarantee opened 0
+ # # ^ ^[^ # # # ^ ^ ^ # ^ ^ ^ # ^ ^ # ^ # ^ ^ #]# ^ # ^ 
+# ^ # ^[^ ^ # ^ ^ ^ # ^ # ^ ^ ^ # ^ # ^ # ^ ^ #]# # # ^ 
+ ^ # # #[^ # # ^ # # # # # # # ^ ^ # ^ ^ # ^ # #]# # ^ ^ 
+^ # ^ ^[# # # # # # # # . R R R . # # # # # # #]# # ^ ^ 
+ # ^ # #[# # # # # # # # . . . . # # # # # # # #]^ # # ^ 
+^ # # ^[# # # # # # # # # # # # # # # # # # # #]^ ^ ^ ^ 
+ ^ ^ # #[^ ^ ^ ^ ^ # ^ ^ ^ ^ = # ^ ^ ^ = ^ ^ ^ ^]^ ^ # ^ 
+^ # ^ #[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # ^ ^ ^ = ^ ^ ^ ^]# # # # 
+ # ^ # ^[^ ^ ^ ^ ^ = = = = # = # ^ ^ ^ = ^ ^ ^ ^]# # ^ ^ 
+# # ^ ^[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # ^ ^ ^ = # # ~ #]^ # # # 
+ ^ # ^ #[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # ^ ^ ^ = # # # #]^ ^ ^ ^ 
+# # # #[# # # # # # # # # # # # # # # # # # # #]# # # # 
+ # # # #[# # # # # # # # . . = . . # # # # # # #]# # # # 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, BADLANDS, ponds, narrowest crossing 5, the guarantee opened 0
+ " " " "[" ^ " " " " " " " " " " " " " " " " " "]" " " " 
+" " " "[" " " " " " ^ " " " " " " " " " " " " "]" " " " 
+ " " " "[" " " " " " " " " " " " " " " " " " " "]" " " " 
+" " " "[. . . . . . . . . R R R . . . . . . . .]" " " " 
+ " " " "[. . . . . . . . . . . . . . . . . . . .]" " " " 
+" " " "[. . . . . . . . . . . . . " " . . . . .]" " " ^ 
+ " " " "[" . . . ~ ~ . . . . . . " ^ " ~ ~ ~ " "]" " ^ " 
+^ " " "[^ " . . . . ~ ~ . " " . . " " " . " " ^]" " ^ " 
+ ^ ^ " "[" " " . " " . . " ^ " " " ^ ^ " " ^ " "]" " " " 
+" " " "[^ " ^ " " ^ " ~ ~ " " " ^ " " " ^ " " ^]" ^ " " 
+ " " " "[" " " ^ " ^ " . ~ . . " " ^ ^ " ^ " " ^]" " " " 
+" " " "[. . . " " " " . . . . . . " " " " " . "]" " " " 
+ " " " "[. . . . . . . . . . . . . . . . . . . .]" " " " 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+```
+
+## 10 November: the shapes laid to the rift's row
+
+The same run (`--seeds 200 --width 20 --height 12`, every shape on seeds 1 to 200) after Ryan's
+play of the 9 November shapes ("the flattened side needs features, all the way to the back"): the
+rift's mouth is the bared ring beside the rift and nothing more, so every shape lays from the
+rift's row and has eight open rows at twelve deep where it had five.
+
+| Shape | Open | Rough | Ruins | Water | Walls | Crossing | Opened | Route | Phases T/W/Wh/H/F | Reach T/W/Wh/H/F | Steps | Lone |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| RIVER CROSSING | 68% | 10% | 0% | 22% | 0% | 200 of 200 at 3+ | 0.0 | 11.1 | 3.0/3.0/3.0/3.0/3.0 | 35/55/78/82/82% | 0% | 0.0 |
+| FJORD | 72% | 10% | 0% | 19% | 0% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/57/77/82/82% | 0% | 0.0 |
+| BADLANDS | 31% | 50% | 0% | 4% | 15% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 31/51/69/70/82% | 19% | 0.6 |
+| OPEN STEPPE | 98% | 0% | 0% | 1% | 0% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/59/81/81/82% | 3% | 0.0 |
+| RUINED CITY | 27% | 0% | 27% | 1% | 45% | 200 of 200 at 3+ | 0.5 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 23/35/46/46/82% | 0% | 0.0 |
+| GORGE | 47% | 8% | 0% | 1% | 45% | 200 of 200 at 3+ | 3.0 | 11.6 | 3.0/3.0/3.0/3.0/3.0 | 24/35/45/45/82% | 0% | 0.0 |
+
+Read: with eight rows to lay in the heavy shapes are heavier (the city 45% of the field in towers
+where it had 29%, the gorge 45% in cliffs where it had 27%) and the ground's room smaller (tracked
+reach after two phases 23% and 24%, hover 46% and 45%, against the steppe's 35% and 81%; the
+flyer's 82% untouched). The gorge is the first shape the guarantee has to open for: 3.0 hexes a
+map on average, where every other shape opens none or next to none (the city 0.5), since its
+trunks start at the rift's row now and the rift's ring is bared after them; a trunk that does not
+meet the ring is opened to it. The river and the fjord grew with the band (22% and 19% water) and
+the badlands' scrub covers half the field at the mesas' feet. Every map keeps the crossing at
+three or more and every way of moving its path; the route is unchanged but the gorge's (11.6).
+This is the edge of "how far we can push it" at today's counts: a tracked machine with a quarter
+of the field in reach after two moves, and a city or a gorge nearly half walls. Nothing here is
+a decision: Ryan judges the look on the phone (the to-do), and the counts are placeholders.
+
+Every shape at seed 7 (`--show 7`; `~` water, `^` a wall, `"` rough, `#` rubble, `=` a street or
+road, `R` the rift, `G` the gate, `|` the wall, the scenery outside the brackets):
+
+```
+seed 7, RIVER CROSSING, river, narrowest crossing 5, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[. . . . . . = . . R R R . = . . . . . .], , , , 
+ , , , ,[. . . . " . = . . . . . . = . . . . . .], , , " 
+" " " "[~ . . ~ ~ . = " " . " . . = ~ ~ ~ " . "], , " ~ 
+ ~ ~ ~ ~[~ ~ ~ ~ ~ " = ~ ~ ~ . . " = ~ ~ ~ ~ ~ ~]~ ~ ~ ~ 
+~ ~ ~ ~[~ ~ ~ ~ ~ . = ~ ~ ~ ~ ~ ~ = . ~ ~ ~ ~ ~]~ ~ ~ ~ 
+ " , , ~[~ . . . . = ~ . ~ " ~ ~ = . . . ~ ^ ~ ~]~ ~ ~ , 
+, , , ~[" . . . . . = = = = ~ ~ ~ = . . " ^ " "]" , " , 
+ , , " ,[. . . . . . . . . = " " = . . . . . . .], , , , 
+, , , ,[. . . . . . . . . . = . = . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . = = . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, FJORD, fjord, narrowest crossing 5, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+ , , , ,[, , , , " " " , , , , , , " " , , , , ,], , , , 
+, , , ,[. . . . . ~ ~ . . R R R . ~ ~ " . . . .], , , , 
+ , , , ,[. . . . " ~ ~ " . . . . . ~ ~ . . . . .], , , , 
+, , , ,[. . . . . ~ ~ ~ " . . . " ~ ~ " " . . .], , , , 
+ , , , ,[. . . . " ~ ~ . . . . . " " ~ ~ . . . .], , , , 
+, , , ,[. . . . . ~ ~ . " . . . . . . ~ ~ . . .], , , , 
+ , , , ,[. . . . . ~ ~ ~ . . . . . . ~ ~ . . . .], , , , 
+, , , ,[. . . . " ~ ~ " . . . . . ~ ~ " " . . .], , , , 
+ , , , ,[. . . . ~ ~ . . . . . . . " ~ ~ . . . .], , , , 
+, , , ,[. . . . " . . . . . . . . . " . " . . .], , , , 
+ , , , ,[. . . . . . . . . . . . . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, BADLANDS, ponds, narrowest crossing 5, the guarantee opened 0
+ " " " "[" " " " " " " " " " " " " " " " " " " "]^ " " " 
+" " " "[" " " " " " " ^ " " " " ^ " " " " " " "]^ ^ " " 
+ ^ " " "[" " " " " " " " " " " " " " " " " " " "]" " " " 
+" " " "[. . " " ^ " ^ " . R R R . ^ " . " " . .]" " " " 
+ " " " "[. " ^ " " " " ~ . . . . ^ " . " ^ " " "]" " " " 
+" " " "[" " " " . " " ~ . " ^ " " " " " " " ^ ^]" " " " 
+ ^ " " "[^ " . . " ^ " " " " " ^ ^ " ^ " ^ " " "]" " " " 
+^ ^ " "[" " . ~ . " " " ^ ^ " " " " ^ ^ " " ^ "]" " " " 
+ " " " "[^ " . ~ ~ " ^ " " " " " . " " " . " " ~]" " " " 
+^ " " "[^ " " ~ " " " " . " ^ ^ " " " ^ " . ~ ~]" " " " 
+ " " " "[" ^ " " ^ " ^ " . " " " ^ " " " . . . .]" " " " 
+" " " "[. " " . " " " " . . . . " " . . . . . .]" " " " 
+ " " " "[. . . . . . . . . . . . . . . . . . . .]" " " " 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, OPEN STEPPE, , narrowest crossing 5, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , ^ , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , ^ , ,], , , , 
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[. . . . . . . . . R R R = . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . . . = . . . . . . .], , , , 
+, , , ,[. . . . . . . . . . . . = . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . . = . . . . . ^ . .], , , , 
+, , , ,[. . . . . . . . . . . . = . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . . = . . . . . . . .], , , , 
+, , , ,[. . . . . . ^ . . . . = . . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . = . . . . . . . . .], , , , 
+, , , ,[. . . . . . . . . . . = . . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . = . . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, RUINED CITY, a fountain, narrowest crossing 3, the guarantee opened 1
+ ^ ^ # ^[# # ^ # # ^ ^ # ^ ^ ^ ^ # ^ ^ ^ ^ ^ # ^]^ ^ # ^ 
+^ ^ ^ #[^ # ^ # # # ^ # ^ ^ ^ # # ^ ^ ^ ^ # # #]^ ^ # ^ 
+ ^ ^ ^ ^[# # # # # # ^ ^ ^ # # # ^ ^ ^ ^ ^ # # ^]# ^ # ^ 
+^ # # ^[^ ^ ^ ^ ^ = ^ ^ . R R R . ^ ^ # ^ ^ ^ ^]^ # ^ ^ 
+ ^ # ^ #[^ ^ ^ ^ ^ = ^ ^ . . = . ^ ^ ^ # ^ ^ ^ ^]^ # ^ # 
+# # ^ #[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # . ^ ^ = = = = =]^ # # # 
+ ^ ^ ^ ^[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # # # # = ^ ^ ^ ^]^ # ^ ^ 
+# # # #[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # # # # = ^ ^ ^ ^]# # ^ # 
+ ^ # # ^[^ ^ ^ ^ ^ = ^ ^ ^ ^ # = = = # = = = = =]^ # # ^ 
+^ ^ # #[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # # # # = ^ ^ ^ ^]# # # # 
+ ^ # ^ ^[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # # ~ # = ^ ^ ^ ^]# # # ^ 
+# # # #[# # # # # # # # # # # # # # # # # # # #]# # # # 
+ # # # #[# # # # # # # # . . = . . # # # # # # #]# # # # 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, GORGE, flooded channels, narrowest crossing 4, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+ , , , ,[" , , , , , , , , , , , , , , , , , , "]" " " , 
+^ ^ ^ ^[^ ^ ^ ^ ^ . . . . R R R . . . " ^ ^ ^ ^]^ ^ ^ ^ 
+ ^ ^ ^ ^[^ ^ ^ ^ ^ . . . . . . . ^ . . ^ ^ ^ ^ ^]^ ^ ^ ^ 
+^ ^ ^ ^[^ ~ ^ ^ ^ . ^ " " ^ ^ ^ . " . ^ ^ ^ ^ ^]^ ^ ^ ^ 
+ ^ ^ ^ ^[^ ~ " " . " . . . ^ ^ ^ " " ^ ^ ^ ^ ^ ^]^ ^ ^ ^ 
+^ ^ ^ ^[^ ^ ~ . . . . . " . ^ . " . . ^ ^ ^ ^ ^]^ ^ ^ ^ 
+ ^ ^ ^ ^[^ ^ ^ ~ . . . ^ ^ " ^ . . . . ^ ^ ^ ^ ^]^ ^ ^ ^ 
+^ ^ ^ ^[^ ^ ^ ^ ^ ~ ^ ^ . " . . . " ^ ^ ^ ^ ^ ^]^ ^ ^ ^ 
+ ^ ^ ^ ^[^ ^ ^ ^ ^ ~ ^ ^ . ^ ^ " . ^ ^ ^ ^ ^ ^ ^]^ ^ ^ ^ 
+, , " ,[. . . . . . . " " " . . . . " . . . . .], " , , 
+ , , , ,[. . . . . . . . . . . . . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+```
+## 9 November, the flankers' segments
+
+Ryan, 9 November: "the flankers should target their closest wall with a small amount of
+randomness, avoiding crowding, in order to force the player to make decisions". The rule built on
+`claude/playtesting-ui-feedback-hfdiok` (a pusher's segment about the wall nearest where it is dealt:
+a rift pack within the ramp's spread of the rift's column, any other within 2 of its own, the least
+crowded column of the window winning) read against the rule before it (every pusher within the
+ramp's spread of the rift's column), the same code but `Battlefield.assign_goal`, the old rule from
+a worktree at `bc36ed9`. Each read is a direction and called one.
+
+### The pushers on 160 opening battles, nobody fighting
+
+A probe (the scratchpad's, not kept): seeds 1 to 40 on each domain, the default team standing
+where it opens, twelve enemy turns or the battle's end.
+
+| Measure | Before | After |
+|---|---|---|
+| A pusher's segment from the column it was dealt at, mean | 5.22 | 0.91 |
+| Pushers with a segment more than 4 columns away | 308 of 656 | 0 of 492 |
+| Pushers stuck (short of the wall, not moving, 3 turns) | 0 | 0 |
+| Walks that waited (no way to the wall) | 0 | 0 |
+| A turn's column shared by two pushers' segments, counted a column a turn | 752 | 0 |
+
+Fewer pushers are counted after because the gate falls sooner with nobody fighting: the flankers
+strike their own ends of the wall within two turns instead of crossing to the middle.
+
+### The campaign runner, 40 runs each
+
+`tools/campaign_run.gd -- --runs 40`, every map shape by its seed, the defence rule on the map (the
+floor, not the player: Ryan, 6 November, "I wouldn't count anything until we've got everything in
+place").
+
+| Measure | Before | After |
+|---|---|---|
+| Battles: won, fell, wiped | 2%, 82%, 90% of 195 | 3%, 86%, 87% of 184 |
+| Gate damage a battle, of 200 | 124 | 135 |
+| The pressure ratio, a run's mean over its turns | 1.16 | 1.70 |
+| Turns above 1.0, percent of a run's | 29 | 40 |
+| A battle's highest ratio, a run's mean | 2.34 | 3.09 |
+| Favour paid per won battle, of 100 | 89 | 65 |
+| Turns a run | 6.03 | 5.75 |
+| Fractures reached a battle | 0.90 | 0.99 |
+
+The direction: the tide spread along the wall asks more of the squad's split, as the rule meant
+it to; the defence bot, which sends each machine at the pack that reaches the wall soonest, leaks
+more, a third more turns above a ratio of one. The full report is `docs/campaign_run.md` (after).
+
+## 9 November, the Polar Bear's seal and lure, before the kit of the same day
+
+**Why**: Ryan's play ("The Armadillo is OP. I never really felt strongly about Sealing it"), read
+before his try of the same day landed (the bible's Polar Bear row). A scratch probe, not
+committed, and this section is its whole description: the balance runner's fight
+(`tools/balance.gd`'s `_fight`, a composition's members and grid as `--packs promise` fields
+them) on a skirmish whose every blow on a machine is recorded as it lands (what arrived, what its
+shield took, what its armour took and the seal's own share of that, what reached its hull,
+breach or not), with the fight's lures and seals counted from its log. Main's `ee0b27d` (the
+kit of 20 October: armour 2, Lockdown +3, two Rapid Cryo Flingers at 1 heat), tier one's 27
+compositions (patrols, formations, elites; elites scaled as a battle scales them) and tier two's
+42, 30 seeds a cell: a direction throughout. The team is the one Ryan reported from on 8 November
+(the Polar Bear, the Honey Badger, the Clydesdale) unless a row says another. The players: the bot
+as built (greedy, and the planner where said); two personas over the greedy rung, a lure-happy
+one (each foe a lure turns worth the whole blow it takes off an ally, on top of the bot's own
+reading) and a seal-holder (the same, sealing whenever a shield shows with room for two sealed
+turns and holding it while the coming turn's end stays under the maximum, a vent or the clock
+opening it). What-ifs as kits in memory: the Flinger without its lure, without Rapid; a stand-in
+for the lure spreading while sealed (no Rapid, the lure turning the target's neighbours too, its
+Cryo not spreading and no bot valuing it); and the seal's armour taken off a blow before its
+shield rather than after.
+
+**The seal**, per fight, over tier one's 27 compositions:
+
+| Player and kit | Seals | Blows on the sealed shell | Taken whole by its shield | Breach | Hull the seal's +3 saved | Team hull lost | Rounds |
+|---|---|---|---|---|---|---|---|
+| The bot | 0.22 | 0.18 | 0.16 | 0.01 | 0.01 | 6.8% | 4.04 |
+| The bot, the planner | 0.25 | 0.20 | 0.17 | 0.01 | 0.02 | 6.6% | 3.99 |
+| The bot, armour before shield while sealed | 0.21 | 0.16 | 0 | 0.01 | 0.31 | 6.7% | 4.03 |
+| Lure-happy, never holding | 0.28 | 0.36 | 0.28 | 0.01 | 0.07 | 7.3% | 4.05 |
+| Seal-holder | 1.11 | 1.19 | 0.69 | 0.30 | 0.26 | 7.7% | 4.28 |
+| Seal-holder, armour before shield | 1.12 | 1.17 | 0 | 0.30 | 1.53 | 7.3% | 4.28 |
+| Seal-holder, no Rapid, the lure spreading sealed | 1.00 | 1.23 | 0.64 | 0.28 | 0.52 | 8.3% | 4.47 |
+| The same, armour before shield | 0.99 | 1.22 | 0 | 0.28 | 1.62 | 8.0% | 4.44 |
+
+Tier two, the 42 compositions, the same team: the bot 15.0% team hull lost (the seal's +3 saving
+0.20 hull a fight), the seal-holder 16.4% (0.86), the seal-holder with armour before shield 15.4%
+(3.57).
+
+**The lure**, the lure-happy player, formations, a fight:
+
+| Team and kit | Team hull lost | The Polar Bear's hull | The allies' | Its share of the blows | Lures | Components destroyed |
+|---|---|---|---|---|---|---|
+| As built | 12.9% | 11.3 | 3.6 | 68% | 2.2 | |
+| The Flinger's lure removed | 12.7% | 4.6 | 10.1 | 32% | 0 | |
+| Its Rapid removed | 13.9% | 11.6 | 4.5 | 64% | 1.9 | |
+| The Storm Petrel in its seat | 11.6% | 4.7 | 6.9 | 45% | | |
+| With the Skua and the Cassowary, as built | 35.3% | 15.8 | 13.8 | 58% | | 1.30 |
+| With the Skua and the Cassowary, the lure removed | 35.4% | 11.9 | 17.8 | 37% | | 1.65 |
+
+The elites and the patrols read the same way (the team's total within two points, the allies'
+hull falling by three fifths beside the Badger and the Clydesdale, by a fifth to a third beside
+the light pair). Of the hull the lured-on Polar Bear lost, 77% was
+breach on the formations and the elites and 95% on the patrols. Over every tier-one composition
+the planner lost 6.6% team hull with the Polar Bear and 5.8% with the Storm Petrel in its seat
+(3.99 rounds against 3.59); caught alone by tier one's patrols, the bot's Polar Bear won 57 to 61%
+for 64% of its hull in 11 rounds, the Storm Petrel 59% for 55% in 6.
+
+Read, a direction:
+- The seal's armour met almost no blow. Three rules meet: a shield takes a blow whole before
+  armour and takes no armour off; the shield is full as every fight opens; the seal is entered by
+  a shield spent on itself, so the spend that seals it tops up the shield in front of the armour,
+  and the bot's next gun opens it. Held, it saved a quarter of a hull a fight and cost more in the
+  guns not fired; with its armour before the shield it saved one and a half and held even with the
+  player who never holds, at tier two within half a point of the bot.
+- The lure moved the team's blows onto the Polar Bear without lessening them: three full shields
+  soak a fight's blows spread by random picks, and one shield piled on spills into one hull, most
+  of what reached it breach. Beside light allies it broke a fifth fewer of their components on
+  the formations (1.30 against 1.65 a fight), 6 to 14% fewer on the elites and the patrols.
+- Rapid barely moved a row: the lure's alternative is a 2-damage basic.
+- The runner does not read the Polar Bear as OP against its peer: Ryan's play is the evidence, and
+  his try of 9 November is judged there.
+
+## 9 November, the Lammergeier's Mines on foes
+
+Ryan's rework of the day (the bible's Lammergeier row): every spend it aims at a foe leaves a Mine
+there, a flat 2 and the spend's keywords, blowing in Splash's shape round its slot when the foe
+falls; the Syrinx Drone detonates and the Lorentz Contractor gathers. `tools/balance.gd`, 30 seeds
+a cell (a direction), random and greedy, no party, alone, the matrix's 78 packs in six groups
+(tier one's rank and file 13, its four big foes, its four formations, the ladder's recolours at
+tiers two and three 36, their formations 8, the thirteen bosses alone), before on main at
+`f4906ee` (the slot mines) and after on `ccr-a0b35006-od22d2` at `37e0b5a`, beside the other tier
+threes. The four other rows came out identical cell for cell before and after, so the engine's
+change moved no machine but the Lammergeier.
+
+| Row | Tier one's rank and file | Its big four | Its formations | Tiers two and three | Their formations | The bosses | Every pack |
+|---|---|---|---|---|---|---|---|
+| Lammergeier, slot mines | 10 / 83 | 0 / 2 | 0 / 0 | 12 / 64 | 0 / 0 | 0 / 1 | 7 / 43 |
+| **Lammergeier, Mines on foes** | 78 / 93 | 8 / 10 | 0 / 0 | 62 / 69 | 0 / 0 | 2 / 13 | 42 / 50 |
+| Musk Ox | 85 / 89 | 0 / 0 | 0 / 0 | 64 / 67 | 0 / 0 | 1 / 5 | 44 / 47 |
+| Giant Petrel | 65 / 90 | 3 / 34 | 0 / 0 | 57 / 69 | 0 / 0 | 0 / 10 | 38 / 50 |
+| Ammit | 75 / 84 | 0 / 0 | 0 / 0 | 59 / 66 | 0 / 0 | 0 / 1 | 40 / 45 |
+| Swallowtail | 43 / 74 | 0 / 0 | 0 / 0 | 41 / 62 | 0 / 0 | 0 / 7 | 26 / 42 |
+
+Pick share, greedy: before, the Arc Fault Cannon 29%, the Enfilade Beam 27%, the Incendiary Shells
+25%, the Syrinx Drone 6%, the Polarity Projector 5%, the Lorentz Contractor 4%; after, the Arc Fault
+Cannon 25%, the Enfilade Beam 23%, the Syrinx Drone 21%, the Incendiary Shells 19%, the Lorentz
+Contractor 5%, the Polarity Projector 5%. Its heat as a turn ends, greedy: a peak of 34% of its
+maximum before, 27% after.
+
+The direction: from the band's floor to its top, every pack 42 / 50 against the Musk Ox's 44 / 47
+and the Giant Petrel's 38 / 50, the best of the band on the bosses greedy (13%), and the random rung
+up from 7 to 42, so most of the old gap between the rungs was the slot mines' spends a player had
+to find. Neither a wall nor a free win in any group the band shares; formations stay at 0 for the
+whole band alone. The detonation carries the gain (picked 21%, from 6%); the gather is still
+rarely picked (5%), which reads either as the bot's valuation of a Mine to come or as the piece,
+for Ryan's play to say. Not weak, so the per-hit lever (his: "then look at per hit later if it's
+weak") stays on the shelf for now; whether the AoE Expose or a Suppress Mine is dangerous is a
+team question this solo read cannot answer.
+
+The same day the Mine's riders became the spend's whole result on its target (every hit's
+stacks as its machine laid them, Ryan's word, `ccr-a0b35006-od22d2` after `31a87f2`). The read
+stands: no piece the Lammergeier fields here strikes more than once, and nothing on it deepens or
+doubles a stack, so every Mine it lays carries what it carried when the read ran.
+
+## 10 November: the passing and the catch at one, on the campaign runner
+
+`tools/campaign_run.gd -- --runs 40 --shape steppe` (115 s) on `ccr-1e6e6571-7x7ayr` after the body
+blocking went (every unit passes every other, nobody ends on another's hex) and the hunter's catch
+became the engage range everyone shares (1, the pounce of two gone): the greedy rung, the draft's
+three machines, the defence rule as the floor (the long wall brief, section 5). A direction, read
+against the record of 9 November (`docs/campaign_run.md`, each battle's shape by its seed), which it
+is not a cell match for, since that run drew every shape.
+
+| Measure | 9 November, every shape | 10 November, the steppe, passing, catch at one |
+|---|---|---|
+| Runs won | 0 of 40 | 0 of 40 |
+| Battles | 184: won 3%, held after a wipe 9%, fell 86% | 186: won 6%, held after a wipe 7%, fell 86% |
+| Fights | 524 | 519 |
+| Machines wrecked a battle | 1.66 | 1.63 |
+| Phases a battle | 5.96 | 5.81 |
+| Gate damage a battle | 135 | 134 |
+| The pressure ratio, a run's mean | 1.70 | 1.48 |
+| Turns above 1.0 | 40% | 34% |
+
+Read: nothing moved that the defence rule can show. The bot never held a line, so it never lost
+one: the runs, the battles, the fights, the wrecks and the gate's damage all land where they were,
+and the ratio eases a little because the packs now walk straight to the wall and the bot meets
+them where they end. The catch at one did not empty the hunters' fights (519 fights against 524).
+What this cannot read is the thing Ryan changed it for, his own play: whether a pusher's straight
+walk and a machine's slide through its allies feel right, and whether a hunter caught beside its
+prey reads without a ring. Nothing here is a decision.
+
+## 10 November, evening: the shapes reworked on Ryan's play in context
+
+The same run (`--seeds 200 --width 20 --height 12`, every shape on seeds 1 to 200) after his notes
+on the shapes in context (the bible's shapes row): the river winding through the centre with
+narrows and tributaries, the fjord flooded, the gorge with more lanes and junctions, the badlands
+in groups, the steppe with scrub and grass; the city as it was.
+
+| Shape | Open | Rough | Ruins | Water | Walls | Crossing | Opened | Route | Phases T/W/Wh/H/F | Reach T/W/Wh/H/F | Steps | Lone |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| RIVER CROSSING | 65% | 10% | 0% | 26% | 0% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.2/3.2/3.2/3.0/3.0 | 33/51/75/82/82% | 0% | 0.0 |
+| FJORD | 37% | 17% | 0% | 46% | 0% | 200 of 200 at 3+ | 0.0 | 11.1 | 3.0/3.0/3.0/3.0/3.0 | 32/51/71/82/82% | 0% | 0.0 |
+| BADLANDS | 23% | 48% | 0% | 4% | 24% | 200 of 200 at 3+ | 0.0 | 11.1 | 3.0/3.0/3.0/3.0/3.0 | 28/45/61/62/82% | 14% | 0.3 |
+| OPEN STEPPE | 85% | 12% | 0% | 1% | 1% | 200 of 200 at 3+ | 0.0 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 35/59/81/81/82% | 3% | 0.0 |
+| RUINED CITY | 27% | 0% | 27% | 1% | 45% | 200 of 200 at 3+ | 0.5 | 11.0 | 3.0/3.0/3.0/3.0/3.0 | 23/35/46/46/82% | 0% | 0.0 |
+| GORGE | 55% | 9% | 0% | 1% | 35% | 200 of 200 at 3+ | 0.5 | 11.5 | 3.0/3.0/3.0/3.0/3.0 | 27/40/54/54/82% | 0% | 0.0 |
+
+Read: the fjord is 46% of the field in water, which is about seven tenths of the eight rows it
+lays in (the team's two rows and the rift's bared ring hold none), at or past Ryan's "50-60% of
+it"; its ground reach after two phases (32% tracked, 71% wheeled) is the river's, the wade
+costing both alike, and the hover's and the flyer's untouched. The river at 26% water is the
+first shape whose ground phases to the rift read above three (3.2), the wade across it where no
+narrow lies. The gorge opened to 35% walls from 45% with its fourth trunk and its junctions, and
+its ground reach rose (27% tracked, 54% hover, from 24% and 45%); the badlands doubled its mesas
+(24% from 10%) and its reach fell to the gorge's (28% tracked), its scrub half the field; the
+steppe carries 12% scrub and a crag or two where it had nothing. Every map keeps the crossing
+at three or more, the gorge and the city opening half a hex a map. Nothing here is a decision:
+the look is Ryan's to judge on the phone (the to-do), the counts placeholders.
+
+Every shape at seed 7 (`--show 7`; `~` water, `^` a wall, `"` rough, `#` rubble, `=` a street or
+road, `R` the rift, `G` the gate, `|` the wall, the scenery outside the brackets):
+
+```
+seed 7, RIVER CROSSING, river, narrowest crossing 5, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+ , , , ,[, , , , , , , , , , , , , " " , , " , "]" " " , 
+, , , ,[. . . . = . . . . R R R . " ~ ~ ~ ~ ~ ~]~ ~ ~ ~ 
+ , " " ,[. . . . = . . . . . " " ~ . ~ ~ . . ~ ~]~ ~ ~ ~ 
+" " ~ "[. . . . . = " " " . " ~ ~ ~ ~ ~ " . . ~]~ , " ~ 
+ ~ ~ ~ ~[~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ = . . . ~], , , , 
+~ ~ ~ ~[~ ~ ~ ~ . . " ~ ~ ~ ~ ~ " " ~ = . . . "], , , , 
+ ~ , , ~[. ~ . . . . ~ . ~ ~ ~ . . ~ . . . . . .], , , , 
+, " , ,[" . " . . . . = = = . . . " " . . . . .], , , , 
+ , , , ,[. . . . . . . . . = . . . = . . . . . .], , , , 
+, , , ,[. . . . . . . . . . = . . = . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . = = = . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, FJORD, fjord, narrowest crossing 5, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+ , " , "[" , , " " , , , , , , , , , , , , , , "]" " " , 
+~ ~ ~ ~[~ ~ ~ ~ ~ . . . . R R R . " " " . . . ~]~ ~ ~ ~ 
+ ~ ~ ~ ~[~ ~ ~ ~ ~ " . . . . " " . ~ ~ ~ ~ . . ~]~ ~ ~ ~ 
+~ ~ ~ ~[. ~ ~ ~ ~ . . . . . " ~ ~ ~ ~ ~ ~ " . ~]~ ~ ~ ~ 
+ ~ ~ ~ ~[. ~ ~ ~ " . . . . ~ . ~ ~ ~ ~ ~ . " . ~]~ ~ ~ ~ 
+~ ~ ~ ~[~ ~ ~ ~ ~ . " ~ ~ ~ ~ ~ ~ " . . " ~ ~ ~]~ ~ ~ ~ 
+ ~ ~ ~ ~[~ ~ ~ ~ . . . . ~ ~ ~ ~ ~ ~ ~ . . ~ ~ .]~ ~ ~ ~ 
+~ ~ ~ ~[" ~ ~ ~ " " . . . ~ ~ ~ ~ ~ " " " ~ ~ "]~ ~ ~ ~ 
+ ~ ~ ~ ~[~ ~ ~ ~ ~ " . . . ~ ~ ~ ~ ~ . ~ ~ ~ ~ ~]~ ~ ~ ~ 
+" " " ,[" . . " " . . . . " . " " . " . " . . "], " , " 
+ , , , ,[. . . . . . . . . . . . . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, BADLANDS, ponds, narrowest crossing 5, the guarantee opened 0
+ " " " "[" ^ ^ " ^ " " " " " " " " " " " " ^ " "]^ ^ " " 
+^ ^ " ^[^ " " " ^ ^ " " " " " " " " " " " ^ ^ "]^ " " " 
+ ^ " " "[" " " " " " " " " " " " " " " " " " " "]" " " " 
+" " " "[" " " ^ ^ ^ " . . R R R . ^ " . " ^ " .]" " " " 
+ " " " "[^ ^ " " " " . ~ . . . . " " . " ^ " " "]" " " " 
+" " " "[^ " " ^ ^ " " ~ " " " ^ " " " " " " ^ ^]" " " " 
+ " " " "[" . " " " ^ " " ^ ^ " ^ " ^ ^ ^ " " " "]" " " " 
+" " " "[" " . ~ . " ^ ^ " ^ ^ " " ^ " " " ^ ^ "]" " " " 
+ " " " "[^ " . ~ ~ " ^ ^ " " " " " " " ^ " " " ~]" " ^ " 
+" " " "[^ " " ~ . " " " " " ^ ^ ^ " ^ " ^ " ~ ~]" " " " 
+ ^ " " "[" ^ " . " ^ ^ ^ " " " " " ^ ^ " " . . .]" ^ " " 
+" " " "[. " " . . " " " " . . . . " " " . . . .]" " " " 
+ " " " "[. . . . . . . . . . . . . . . . . . . .]" " " " 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, OPEN STEPPE, ponds, narrowest crossing 5, the guarantee opened 0
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[. " " . . . . . . R R R . . . . . . . .], , , , 
+ ^ , , ,[. . . . . . . " . . = . ~ ~ ~ . . . ~ .], , , , 
+^ , , ,[" . . . . . . . " . = . " " " " . . ~ .], , , , 
+ , , , ,[" " . . . . . . . . = . " " " . . . . "], , , , 
+, , , ,[. . " . . . . . . . . = . . . . . . . .], , , , 
+ , , , ,[. . " " . . . . . . . . . . . . . . ^ .], , , , 
+, , , ,[. . . . . . . . . " " = . . " . . . . .], , , , 
+ , , , ,[. . . . . . " . . . = . . " . . . . " .], , , , 
+, , , ,[. . . . . . . . . . . = . . . . . . . .], , , , 
+ , , , ,[. . . . . . . . . . = . . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, RUINED CITY, a fountain, narrowest crossing 3, the guarantee opened 1
+ ^ ^ # ^[# # ^ # # ^ ^ # ^ ^ ^ ^ # ^ ^ ^ ^ ^ # ^]^ ^ # ^ 
+^ ^ ^ #[^ # ^ # # # ^ # ^ ^ ^ # # ^ ^ ^ ^ # # #]^ ^ # ^ 
+ ^ ^ ^ ^[# # # # # # ^ ^ ^ # # # ^ ^ ^ ^ ^ # # ^]# ^ # ^ 
+^ # # ^[^ ^ ^ ^ ^ = ^ ^ . R R R . ^ ^ # ^ ^ ^ ^]^ # ^ ^ 
+ ^ # ^ #[^ ^ ^ ^ ^ = ^ ^ . . = . ^ ^ ^ # ^ ^ ^ ^]^ # ^ # 
+# # ^ #[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # . ^ ^ = = = = =]^ # # # 
+ ^ ^ ^ ^[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # # # # = ^ ^ ^ ^]^ # ^ ^ 
+# # # #[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # # # # = ^ ^ ^ ^]# # ^ # 
+ ^ # # ^[^ ^ ^ ^ ^ = ^ ^ ^ ^ # = = = # = = = = =]^ # # ^ 
+^ ^ # #[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # # # # = ^ ^ ^ ^]# # # # 
+ ^ # ^ ^[^ ^ ^ ^ ^ = ^ ^ ^ ^ = # # ~ # = ^ ^ ^ ^]# # # ^ 
+# # # #[# # # # # # # # # # # # # # # # # # # #]# # # # 
+ # # # #[# # # # # # # # . . = . . # # # # # # #]# # # # 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+seed 7, GORGE, flooded channels, narrowest crossing 3, the guarantee opened 2
+ , , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+, , , ,[, , , , , , , , , , , , , , , , , , , ,], , , , 
+ , , , ,[" , , , , , , , , , , , , " , , , , , "]" " " , 
+^ ^ ^ ^[^ ^ ^ " . . ~ . . R R R . ^ ^ ^ ^ ^ . .]^ ^ ^ ^ 
+ ^ ^ ^ ^[^ ^ ^ . ^ . ~ ^ . . . " ^ ^ ^ ^ . . . .]^ ^ ^ ^ 
+^ ^ ^ ^[^ ^ ^ . ^ ^ " " ^ ^ ^ . . ^ ^ ^ ^ . ^ .]^ ^ ^ ^ 
+ ^ ^ ^ ^[^ ^ " " . " . . . ^ . . ^ ^ ^ ^ ^ . ^ .]^ ^ ^ ^ 
+^ ^ ^ ^[^ ^ ^ ^ . ^ ^ . " . . . ^ ^ ^ ^ ^ ^ ^ .]^ ^ ^ ^ 
+ ^ ^ ^ ^[^ . . . ~ . ^ ^ ^ ^ . . ^ ^ . . . . . .]^ ^ ^ ^ 
+^ ^ ^ ^[^ ^ ^ . . . . . . " ~ . . " . . ^ . ^ .]^ ^ ^ ^ 
+ ^ ^ ^ ^[^ ^ . . . . . . . . . . . . . . . . " ^]^ ^ ^ ^ 
+, , " ,[. . . . . . . . . . . . . . . . . . . .], " , , 
+ , , , ,[. . . . . . . . . . . . . . . . . . . .], , , , 
+, , , ,[| | | | | | | | | G G G G | | | | | | |], , , , 
+ , , , ,[| | | | | | | | | G G G | | | | | | | |], , , ,
+```
+

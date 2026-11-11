@@ -5,19 +5,16 @@ extends SceneTree
 ## prints it.
 ##   perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40
 ## Options: --runs N (40), --seed S (1, the first run's seed), --policy greedy|random,
-## --withdraw N (the fight bot's persona on every fight the player picks: withdraw once the
-## fighters' hull is under N percent; a fight a hunter forced is fought out; 0, never, by
-## default), --solo (every machine walks toward its own nearest enemy, the map rule before 26
-## October; by default the squad moves as one, on the pack nearest the squad), --turtle (the
-## squad holds the rows before the gate and fights only what reaches it: the stall's read, 30
-## October), --detach (one machine is sent at the nearest patrol while the body fights the
-## nearest formation), --out path (docs/campaign_run.md), --trace SEED (print one run battle
-## by battle).
+## --shape KIND (every battle on that map shape, a key of BattleMap.KINDS; by default each
+## battle's seed draws one), --out path (docs/campaign_run.md), --trace SEED (print one run
+## battle by battle). The squad-as-one rule (--solo before it) and the turtle and detaching
+## personas went with the long wall brief: the map is the defence rule (BattleBot).
 ##
 ## The player it stands in for is plain: it defends the front nearest to falling (the
 ## finale's capital once due) with every ready machine, rushes a wreck out of the shop with
 ## Favour only when nobody is ready, passes the turn when it cannot rush, and puts all its
-## salvage into the capital's gate. On the map it hunts the nearest enemy (BattleBot).
+## salvage into the capital's gate. On the map it plays the defence rule (BattleBot): every
+## machine onto the pack it can reach that reaches the wall soonest.
 ## Its starting team is three of the run's tender at random (the draft, 7 October). Nothing
 ## yet brings anything in (offers, research, building are not built), so a run is the
 ## starting team and what it loses: the loss rate with no inflow, which is the number
@@ -28,10 +25,7 @@ const OUT := "res://docs/campaign_run.md"
 var runs := 40
 var first_seed := 1
 var policy := Policy.GREEDY
-var withdraw_below := 0
-var solo := false
-var turtle := false
-var detach := false
+var shape := ""
 var out_path := OUT
 var trace := 0
 
@@ -49,22 +43,17 @@ func _init() -> void:
 				first_seed = int(v)
 			"--policy":
 				policy = Policy.RANDOM if v == "random" else Policy.GREEDY
-			"--withdraw":
-				withdraw_below = int(v)
-			"--solo":
-				solo = true
-				i -= 1
-			"--turtle":
-				turtle = true
-				i -= 1
-			"--detach":
-				detach = true
-				i -= 1
+			"--shape":
+				shape = v
 			"--out":
 				out_path = v
 			"--trace":
 				trace = int(v)
 		i += 2
+	if not shape.is_empty() and not BattleMap.KINDS.has(shape):
+		push_error("no such map shape: %s (%s)" % [shape, ", ".join(BattleMap.KINDS.keys())])
+		quit(1)
+		return
 	if trace != 0:
 		var r := play_run(trace, true)
 		print("run %d: %s after %d turns, %d battles" % [trace, "won" if r["won"] else "lost", r["turns"], r["reports"].size()])
@@ -82,11 +71,12 @@ func _init() -> void:
 func play_run(seed_value: int, verbose: bool = false) -> Dictionary:
 	var t0 := Time.get_ticks_msec()
 	var c := Campaign.new(seed_value)
+	c.map_kind = shape
 	var team: Array = []
 	for m in c.roster:
 		team.append(m.chassis)
 	var out := {"team": team, "won": false, "turns": 0, "reports": [], "passes": 0, "rushes": 0, "stalled": 0,
-		"first_fall": -1, "finale": false, "fights": 0, "withdrawals": 0, "detachments": 0, "spends": {}, "fight_sizes": [], "party": c.party.duplicate()}
+		"first_fall": -1, "finale": false, "fights": 0, "spends": {}, "fight_sizes": [], "party": c.party.duplicate()}
 	var guard := 0
 	while c.state != Campaign.OVER and guard < 200:
 		guard += 1
@@ -99,10 +89,15 @@ func play_run(seed_value: int, verbose: bool = false) -> Dictionary:
 					out["rushes"] += 1
 					break
 			if not rushed:
-				c.pass_turn()
-				out["passes"] += 1
-				if verbose:
-					print("turn %d: nobody ready, passed" % c.turn)
+				if c.pass_turn():
+					out["passes"] += 1
+					if verbose:
+						print("turn %d: nobody ready, passed" % c.turn)
+				else:
+					c.forfeit_finale()   # the finale cannot be passed (8 November): nobody to field it, the capital falls
+					out["forfeits"] = int(out.get("forfeits", 0)) + 1
+					if verbose:
+						print("turn %d: nobody ready at the finale, the capital falls" % c.turn)
 				continue
 			ready = c.ready_machines()
 		var fronts := c.fronts()
@@ -121,14 +116,8 @@ func play_run(seed_value: int, verbose: bool = false) -> Dictionary:
 			continue
 		var gate_before: int = c.cities[city].gate
 		var bot := BattleBot.make(policy, seed_value * 1000 + c.turn)
-		bot.withdraw_below = withdraw_below
-		bot.as_one = not solo
-		bot.turtle = turtle
-		bot.detach = detach
 		bot.play(b)
 		out["fights"] += bot.fights
-		out["withdrawals"] += bot.withdrawals
-		out["detachments"] += bot.detachments
 		out["fight_sizes"].append_array(bot.fight_sizes)
 		for cid in bot.spends.keys():
 			out["spends"][cid] = int(out["spends"].get(cid, 0)) + int(bot.spends[cid])
@@ -144,6 +133,10 @@ func play_run(seed_value: int, verbose: bool = false) -> Dictionary:
 		r["hero"] = hero
 		r["squad"] = uids.size()
 		r["gate_damage"] = maxi(0, gate_before - int(r["gate_left"]))
+		r["ratios"] = bot.ratios.duplicate()   # the pressure ratio as each turn opened (the long wall brief, section 5)
+		r["stalemates"] = bot.stalemates
+		r["stalled_fights"] = bot.stalled_fights
+		r["field"] = "%d by %d" % [b.map.width, b.map.height]
 		out["reports"].append(r)
 		if r["result"] == "fell" and int(out["first_fall"]) < 0:
 			out["first_fall"] = int(r["turn"])
@@ -203,15 +196,16 @@ func report() -> String:
 	var L: Array[String] = []
 	L.append("# Campaign run")
 	L.append("")
-	L.append("Generated by `tools/campaign_run.gd` on %s: %d runs from seed %d in %.0f s, the %s rung%s%s%s, each run starting with %d machines of its tender at random (the draft). Do not edit by hand." % [
+	var fields := {}
+	for r in results:
+		for rep in r["reports"]:
+			fields[str(rep.get("field", "?"))] = true
+	L.append("Generated by `tools/campaign_run.gd` on %s: %d runs from seed %d in %.0f s, the %s rung, %s, each run starting with %d machines of its tender at random (the draft), on a field of %s hexes (the wall's length by the depth: Ramp.wall_length_at, Ramp.depth_at). Do not edit by hand." % [
 		Time.get_date_string_from_system(), runs, first_seed, secs, Policy.kind_name(policy),
-		"" if withdraw_below <= 0 else " withdrawing from a fight under %d%% of its fighters' hull (never from a hunter's catch)" % withdraw_below,
-		", the turtle persona (the squad holds the rows before the gate and fights only what reaches it)" if turtle else "",
-		", the detaching persona (one machine sent at the nearest patrol while the body fights the nearest formation)" if detach else "",
-		Campaign.START_MACHINES])
+		("every battle on the %s map" % shape) if not shape.is_empty() else "each battle's map shape drawn by its seed",
+		Campaign.START_MACHINES, ", ".join(fields.keys())])
 	L.append("")
-	L.append("Every number the campaign uses is a placeholder (`sim/campaign.gd`); this measures them against a plain player, it does not tune them. Nothing brings anything in yet (offers, research and building are not built), so every run is its starting team (three of its tender at random) and what it loses. The player defends the front nearest to falling with every ready machine, rushes a wreck with Favour only when nobody is ready, and puts all its salvage into the capital's gate; on the map %s. Read the bands." % (
-		"every machine hunts its own nearest enemy (--solo)" if solo else "the squad moves as one, on the pack nearest the squad, and fights it with every machine in range"))
+	L.append("Every number the campaign uses is a placeholder (`sim/campaign.gd`); this measures them against a plain player, it does not tune them. Nothing brings anything in yet (offers, research and building are not built), so every run is its starting team (three of its tender at random) and what it loses. The player defends the front nearest to falling with every ready machine, rushes a wreck with Favour only when nobody is ready, and puts all its salvage into the capital's gate; on the map it plays the defence rule (the long wall brief, section 5): a hunter's catch first, then every machine onto the pack it can stand beside that reaches the wall soonest, ties by the larger threat rating and then the nearer, a machine with no pack in reach taking a cache its move reaches (the nearest, the higher kind on a tie) and the rest walking toward the pack that reaches the wall soonest, never the sealed boss, every fight fought out. Read the bands.")
 	L.append("")
 	# The runs.
 	var won := 0
@@ -223,13 +217,11 @@ func report() -> String:
 	var stalled := 0
 	var passes := 0
 	var rushes := 0
-	var withdrawals := 0
 	var fights_all := 0
 	var kit_left: Array[float] = []
 	for r in results:
 		if r["won"]:
 			won += 1
-		withdrawals += int(r["withdrawals"])
 		fights_all += int(r["fights"])
 		lengths.append(float(r["turns"]))
 		fallen.append(float(r["fallen"]))
@@ -256,8 +248,6 @@ func report() -> String:
 	L.append("| Hardpoints still filled at the end, percent | %s |" % _band(kit_left))
 	L.append("| Turns passed with nobody ready | %d in all | |" % passes)
 	L.append("| Wrecks rushed | %d in all | |" % rushes)
-	if withdraw_below > 0:
-		L.append("| Fights withdrawn from, of %d | %d in all | |" % [fights_all, withdrawals])
 	L.append("| Battles the bot could not finish (run abandoned) | %d | |" % stalled)
 	L.append("")
 	# Who started: each tier-one machine, the runs it started and how many of those were won.
@@ -311,6 +301,8 @@ func report() -> String:
 	var lost_all: Array[float] = []
 	var wrecked_all: Array[float] = []
 	var salvage_won: Array[float] = []
+	var loot_salvage: Array[float] = []
+	var caches_all: Array[float] = []
 	var favour_won: Array[float] = []
 	var phases_all: Array[float] = []
 	for b in battles:
@@ -320,6 +312,8 @@ func report() -> String:
 		lost_all.append(float(b["lost"].size()))
 		wrecked_all.append(float(b["wrecked"].size()))
 		phases_all.append(float(b["phases"]))
+		caches_all.append(float((b.get("loot", []) as Array).size()))   # claimed; banked on a won or held battle
+		loot_salvage.append(float(b.get("loot_salvage", 0)))
 		if b["result"] == "won":
 			lost_won.append(float(b["lost"].size()))
 			salvage_won.append(float(b["salvage"]))
@@ -335,7 +329,9 @@ func report() -> String:
 	L.append("| Components destroyed per won battle (gone for good; the inflow has to beat this) | %s |" % _band(lost_won))
 	L.append("| Components destroyed per battle, any outcome | %s |" % _band(lost_all))
 	L.append("| Machines wrecked per battle | %s |" % _band(wrecked_all))
-	L.append("| Salvage banked per won battle | %s |" % _band(salvage_won))
+	L.append("| Salvage banked per won battle (the kills' and the loot's) | %s |" % _band(salvage_won))
+	L.append("| Caches banked per battle (a fall loses what was claimed) | %s |" % _band(caches_all))
+	L.append("| Salvage the loot banked per battle | %s |" % _band(loot_salvage))
 	L.append("| Favour paid per won battle, after the gate's docking, of %d | %s |" % [Campaign.FAVOUR_PER_WIN, _band(favour_won)])
 	L.append("| Phases a battle | %s |" % _band(phases_all))
 	L.append("")
@@ -385,11 +381,48 @@ func report() -> String:
 	L.append("| Elites spawned a battle | %s |" % _band(elites))
 	L.append("| Menace killed a battle | %s |" % _band(menace))
 	L.append("| Gate damage a battle | %s |" % _band(gate_dmg))
-	if detach:
-		var det := 0
-		for r in results:
-			det += int(r["detachments"])
-		L.append("| Fights a detached machine was sent to | %d in all | |" % det)
+	L.append("")
+	# The pressure ratio (the long wall brief, section 5): as each player's turn opens, the threat
+	# ratings of the packs at the wall or reaching it this coming enemy turn, over the machines
+	# standing; per run, the mean over its turns, the share of its turns above one and the mean
+	# of its battles' maxima, banded over the runs.
+	var run_mean: Array[float] = []
+	var run_over: Array[float] = []
+	var run_max: Array[float] = []
+	for r in results:
+		var all: Array[float] = []
+		var maxima: Array[float] = []
+		for rep in r["reports"]:
+			var rs: Array = rep.get("ratios", [])
+			if rs.is_empty():
+				continue
+			var top := 0.0
+			for x in rs:
+				all.append(float(x))
+				top = maxf(top, float(x))
+			maxima.append(top)
+		if all.is_empty():
+			continue
+		var sum := 0.0
+		var over := 0
+		for x in all:
+			sum += x
+			over += 1 if x > 1.0 else 0
+		run_mean.append(sum / all.size())
+		run_over.append(100.0 * over / all.size())
+		var msum := 0.0
+		for x in maxima:
+			msum += x
+		run_max.append(msum / maxima.size())
+	L.append("## The pressure ratio")
+	L.append("")
+	L.append("As each player's turn opens: the threat ratings of the packs on the apron and of those whose planned walk ends there this coming enemy turn (a patrol 1, a formation 3, an elite and a boss 4), over the machines standing; a formation and a patrol arriving against four machines read 1.0, two formations 1.5. Per run, banded over the runs.")
+	L.append("")
+	L.append("| Measure | Mean | Range |")
+	L.append("|---|---|---|")
+	L.append("| The ratio, a run's mean over its turns | %s |" % _band(run_mean, true))
+	L.append("| Turns above 1.0, percent of a run's | %s |" % _band(run_over))
+	L.append("| A battle's highest, a run's mean | %s |" % _band(run_max, true))
 	L.append("")
 	# By tier and by faction.
 	L.append("## By kind, tier of the Convergence, lead faction, squad size and guest")
@@ -445,57 +478,37 @@ func report() -> String:
 			var m := maxi(1, int(e["n"]))
 			L.append("| %s | %d | %d%% | %d%% | %d%% | %.2f |" % [k, int(e["n"]), 100 * int(e["won"]) / m, 100 * int(e["fell"]) / m, 100 * int(e["wiped"]) / m, float(e["lost"]) / m])
 	L.append("")
-	# The fights: who the rings and the attack range actually put in them.
+	# The fights by the pack's threat rating and the machines in them (the long wall brief,
+	# section 5): one pack a fight, so a fight holds the machines the defence rule sent at it.
 	var sizes: Array = []
+	var stalemates := 0
+	var stalled_fights := 0
 	for r in results:
 		sizes.append_array(r["fight_sizes"])
+		for rep in r["reports"]:
+			stalemates += int(rep.get("stalemates", 0))
+			stalled_fights += int(rep.get("stalled_fights", 0))
 	var cells := {}
-	var packs_in := {}
 	for f in sizes:
-		var withdrew: bool = f.size() > 4 and bool(f[4])
-		var k := "%d of %d" % [int(f[0]), int(f[1])]
+		var squad := int(f[5]) if f.size() > 5 else 0
+		var k := Vector2i(squad, int(f[0]))
 		if not cells.has(k):
-			cells[k] = [0, 0, 0]
+			cells[k] = [0, 0]
 		cells[k][0] += 1
 		cells[k][1] += 1 if f[3] else 0
-		cells[k][2] += 1 if withdrew else 0
-		var pk := "%d machines against %d packs" % [int(f[0]), int(f[2])]
-		if not packs_in.has(pk):
-			packs_in[pk] = [0, 0, 0]
-		packs_in[pk][0] += 1
-		packs_in[pk][1] += 1 if f[3] else 0
-		packs_in[pk][2] += 1 if withdrew else 0
 	L.append("## The fights")
 	L.append("")
-	L.append("%d fights. A fight holds the machines committed (those whose attack range covers the pack attacked) and every pack whose ring covers it, so a fight need not hold the whole squad; this bot %s, and attacks the pack the most of them can reach, so a player who splits the team fights more fights with fewer machines in each. Machines in the fight of machines on the field, then machines against packs, each with the fight's win rate%s." % [
-		sizes.size(), "walks every machine toward its own nearest enemy" if solo else "walks the squad as one toward the pack nearest it",
-		" and the share withdrawn from" if withdraw_below > 0 else ""])
+	L.append("%d fights. One pack is one fight, with the machines the defence rule sent at it; each row a pack's threat rating (the machines it is intended for, the largest of a catch's hunters') and the machines in the fight, with the fight's win rate. Stalemates, ten rounds running with no foe's HP, no machine's hull or shield changed, %d; fights stalled past the fight bot's cap of %d rounds, %d." % [
+		sizes.size(), stalemates, Policy.MAX_ROUNDS, stalled_fights])
 	L.append("")
-	# What the fight held, by the packs' sizes (the fight-size spectrum, 30 October).
-	var held_in := {}
-	for f in sizes:
-		if f.size() < 6:
-			continue
-		var held: Dictionary = f[5]
-		var parts: Array = []
-		for key in ["boss", "elite", "formation", "patrol"]:
-			if int(held.get(key, 0)) > 0:
-				parts.append("%d %s%s" % [int(held[key]), key, "" if int(held[key]) == 1 else "s"])
-		var hk := "%d machines against %s" % [int(f[0]), ", ".join(parts) if not parts.is_empty() else "nothing"]
-		if not held_in.has(hk):
-			held_in[hk] = [0, 0, 0]
-		held_in[hk][0] += 1
-		held_in[hk][1] += 1 if f[3] else 0
-		held_in[hk][2] += 1 if (f.size() > 4 and bool(f[4])) else 0
-	L.append("| In the fight | Fights | Won |%s" % (" Withdrew |" if withdraw_below > 0 else ""))
-	L.append("|---|---|---|%s" % ("---|" if withdraw_below > 0 else ""))
-	for bucket in [cells, packs_in, held_in]:
-		var ks: Array = bucket.keys()
-		ks.sort()
-		for k in ks:
-			var e: Array = bucket[k]
-			var fn := maxi(1, int(e[0]))
-			L.append("| %s | %d | %d%% |%s" % [k, int(e[0]), 100 * int(e[1]) / fn, (" %d%% |" % (100 * int(e[2]) / fn)) if withdraw_below > 0 else ""])
+	L.append("| A fight for | Machines in it | Fights | Won |")
+	L.append("|---|---|---|---|")
+	var ks: Array = cells.keys()
+	ks.sort()
+	for k in ks:
+		var e: Array = cells[k]
+		var fn := maxi(1, int(e[0]))
+		L.append("| %d | %d | %d | %d%% |" % [(k as Vector2i).x, (k as Vector2i).y, int(e[0]), 100 * int(e[1]) / fn])
 	L.append("")
 	L.append("## The placeholders measured")
 	L.append("")
@@ -507,7 +520,8 @@ func report() -> String:
 	return "\n".join(L)
 
 
-func _band(xs: Array[float]) -> String:
+## A measure's mean and range; `fine` gives the range two decimals (a ratio's).
+func _band(xs: Array[float], fine: bool = false) -> String:
 	if xs.is_empty():
 		return "none | "
 	var lo := xs[0]
@@ -519,4 +533,5 @@ func _band(xs: Array[float]) -> String:
 		sum += x
 	var mean := sum / xs.size()
 	var fmt := "%.0f" if absf(mean) >= 10.0 else "%.2f"
-	return (fmt % mean) + " | " + (("%.0f" % lo) + " to " + ("%.0f" % hi))
+	var rfmt := "%.2f" if fine else "%.0f"
+	return (fmt % mean) + " | " + ((rfmt % lo) + " to " + (rfmt % hi))

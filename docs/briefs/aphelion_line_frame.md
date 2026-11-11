@@ -1,5 +1,7 @@
 # Brief: the line frame, the Gundam homage (proposal reworked into a direction)
 
+<!-- hangar: {"kind": "chassis", "maker": "aphelion", "tier": 1, "status": "direction", "slot": true, "name": "the line frame"} -->
+
 The session designs Aphelion's Gundam homage as the most tempo-oriented damage dealer in the
 game: a duelist whose combo builds a rhythm until something breaks it. "The line frame" is a
 working label; the name and the look are Ryan's.
@@ -73,7 +75,7 @@ section 7.
   brake. Small pieces at tier two or three, the combo's fuel. Since Ryan's call the same day,
   Rapid's free reroll may land on a copy (stacked copies chain), so stacked cantrips with no
   cooldown can bounce from copy to copy, and a die of nothing but cantrips never ends its turn:
-  they need the limit raised in the Armadillo's brief (`minerva_armadillo.md`) before they are
+  they need the limit raised in the Polar Bear's brief (`minerva_armadillo.md`) before they are
   built. Ryan's proposal there (15 October) is heat paid every spend; Claude's earlier one, a
   Rapid reroll never landing on an entry already spent this round, is its alternative.
 
@@ -171,7 +173,7 @@ section is Claude's, for him to move, and every number is a placeholder.
   decisions left are the team's: rerolls spent on its die rather than an ally's, and allies
   cooling or shielding it (an ally's shield, vent or buff spent on it never breaks it). The double-edged
   form has its decision built in and was undersold on 15 October.
-- **The second in-fight shield regen** beside the Goshawk's (the first hole below), read by
+- **The second in-fight shield regen** beside the Buzzard's (the first hole below), read by
   pattern in context (Ryan, 16 October): its regen is paid only while it attacks every round,
   so it cannot turtle; the runner's stall mark (past 60 rounds) reads it.
 - **Showing it**: a count chip like the Paradox's with the next threshold, loud, and a debug
@@ -218,7 +220,7 @@ limiter, a Suppress priced by a gate, the overlap rule); and the shield's tag wa
 - A Rapid parry: free, so no decision; and the 20 October rule on a Rapid shield's tier.
 - 1 cooling and 1 shield a stack: too small to see on a phone.
 - The double-edged form (stacks raise damage and lower defence, broken by choice): Ryan finds
-  it less Gundam, and the Sparrowhawk has the shape; its built-in decision is the review's
+  it less Gundam, and the Kite has the shape; its built-in decision is the review's
   point in its favour.
 - Chain on the saber: Chain's rework.
 

@@ -1,5 +1,11 @@
 # Brief: Minos, the ranks turned (proposal)
 
+<!-- hangar: {"kind": "chassis", "maker": "arsenal", "tier": 3, "status": "proposal", "slot": true, "name": "Minos"} -->
+
+**Ryan's direction (6 November)**: The movement is a cool idea, but I don't know what a build on it
+would look like, and that's the issue. It needs something else, or the lammergeier takes over its
+movement role since ita mining niche needs altering.
+
 The session finishes Minos, whose every foe reached changes rank, as written or adjusted, and
 settles when it is worth its slot.
 
@@ -128,7 +134,10 @@ Ryan has not ruled on. Unexamined with it: a turn that moves a part and its core
   line). Soft control has a tier-two carrier before Minos lands.
 - The bomber (Kestrel, tier three) leaves mines on empty slots, and Ryan, 15 October: "If Minos
   or any other move effect causes an enemy to step on a mine, it blows up. That's a synergy." A
-  Minos spend on a lone foe steps it into the empty slot of its column.
+  Minos spend on a lone foe steps it into the empty slot of its column. Since 9 November the
+  Lammergeier's Mines ride the foes it hits and blow round their slots when they fall (the bible's
+  Lammergeier row), so its rework took no movement from Minos (Ryan's direction above): a foe
+  Minos turns carries its Mine with it, and where it stands when it falls is where it blows.
 - Indirect's splash is retired (decided, not built: area belongs to the keywords), so the edge
   on where an Indirect spend splashes goes when that lands; Chain's rework, open in section 12,
   would change the edge that a Chain turns every link's survivors once.

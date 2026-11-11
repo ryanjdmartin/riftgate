@@ -20,6 +20,7 @@ func _team() -> Array:
 func _battle(seed_value: int = 5) -> Battle:
 	var b := Battle.new(seed_value)
 	b.setup(_team(), "")
+	quiet_start(b)   # a save's rules, not the opening's (TestCase.quiet_start)
 	return b
 
 
@@ -60,6 +61,17 @@ func _play_alike(a: Skirmish, b: Skirmish) -> void:
 	for i in range(a.mechs.size()):
 		assert_eq(a.mechs[i].unit.hull, b.mechs[i].unit.hull, "%s's hull" % a.mechs[i].unit.display_name)
 		assert_eq(a.mechs[i].heat, b.mechs[i].heat, "%s's heat" % a.mechs[i].unit.display_name)
+
+
+## A pusher's wall segment rides in the save (the long wall brief 3.3).
+func test_a_pushers_wall_segment_rides_in_the_save() -> void:
+	var b := _battle()
+	var sq: Unit = b.field.packs()[0]
+	sq.goal_col = 3
+	var back := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
+	assert_eq(back.field.unit_by_id(sq.id).goal_col, 3, "the segment comes back")
+	for p in b.field.packs():
+		assert_eq(back.field.unit_by_id(p.id).goal_col, p.goal_col, "%s keeps its segment" % p.display_name)
 
 
 func test_a_battle_in_plan_round_trips() -> void:
@@ -115,33 +127,39 @@ func test_a_battle_in_plan_round_trips() -> void:
 
 
 ## The mechanics audit (25 October): a battle read back from its save dresses every pack Rift
-## Pressure spawns from the content (its ring, move and hunt), a resumed fight calls content up
+## Pressure spawns from the content (its move, and its hunt as its composition says), a resumed fight calls content up
 ## as a fresh one does (a fallen Gel splits), and a final's commanders come back with it.
 func test_a_resumed_battle_dresses_its_spawns_and_its_fight_calls_content_up() -> void:
 	var b := Battle.new(4)
 	b.lineup = ["warrior"]
 	b.escort = ["goblin", 3]
 	b.setup(_team(), "meadow")
+	quiet_start(b)   # no catch from the opening comes first
 	var back := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
 	assert_eq(back.lineup, b.lineup, "the rift's commanders")
 	assert_eq(back.escort, b.escort, "and its escort")
 	var profiles: Dictionary = b.db.pack_profiles()
 	assert_eq(back.field.cycle.size(), b.field.cycle.size(), "the cycle rides in the save")
 	assert_eq(back.field.patrol_cycle.size(), b.field.patrol_cycle.size(), "and the tears' cycle")
+	assert_eq(back.field.cycle.map(func(c) -> String: return str(c.get("hunts", ""))), b.field.cycle.map(func(c) -> String: return str(c.get("hunts", ""))), "each composition's hunt with it")
+	assert_true(back.field.cycle.any(func(c) -> bool: return c.has("hunts")), "a hunting composition among them, to read")
 	for i in range(back.field.cycle.size()):
 		var before := back.field.packs().size()
 		assert_true(back.field.tick_pressure(back.field.rift_pressure_max), "the rift spawns")
 		var spawned: Unit = back.field.packs()[before]
 		var p: Dictionary = profiles.get(spawned.foe_id, {})
 		assert_false(p.is_empty(), "a content foe: %s" % spawned.foe_id)
-		var ring := 1
 		var pace := 99
 		for m in spawned.member_list():
-			ring = maxi(ring, int(profiles.get(str(m[0]), {}).get("zone", 1)))
 			pace = mini(pace, int(profiles.get(str(m[0]), {}).get("movespeed", Unit.PACK_MOVE)))
-		assert_eq(spawned.zone, ring, "%s: its ring, the largest of its members'" % spawned.foe_id)
 		assert_eq(spawned.movespeed, pace, "%s: its move, the slowest" % spawned.foe_id)
-		assert_eq(spawned.behaviour, str(p.get("behaviour", "push")), "%s: its walk, its lead's" % spawned.foe_id)
+		var comp: Dictionary = {}
+		for c in back.field.cycle:
+			if str(c["id"]) == spawned.composition:
+				comp = c
+		assert_eq(spawned.behaviour, "hunt" if comp.has("hunts") else "push", "%s: its walk, its composition's" % spawned.composition)
+		if comp.has("hunts"):
+			assert_eq(spawned.hunts, str(comp["hunts"]), "%s: by its caveat" % spawned.composition)
 	var m: Unit = b.mechs()[0]
 	var sq: Unit = null
 	for p in b.field.packs():
@@ -219,7 +237,10 @@ func test_a_skirmish_under_way_resumes_and_plays_on_alike() -> void:
 	assert_eq(back.state, b.state, "the battle's state after")
 	assert_eq(back.field.units.size(), b.field.units.size(), "the same units left")
 	assert_eq(back.field.rift_pressure, b.field.rift_pressure, "the same pressure")
-	assert_eq(back.actions_left(back.field.unit_by_id(m.id)), b.actions_left(m), "and the machine spent alike")
+	var m2 := back.field.unit_by_id(m.id)
+	assert_eq(m2 == null, not b.field.units.has(m), "the machine wrecked alike, or standing alike")
+	if m2 != null:
+		assert_eq(back.actions_left(m2), b.actions_left(m), "and the machine spent alike")
 
 
 func test_a_foe_keeps_its_role_and_its_death_through_the_trip() -> void:
@@ -259,12 +280,10 @@ func test_a_compositions_members_survive_the_trip() -> void:
 	var sk := Skirmish.new(3)
 	sk.add_mech(b.mechs()[0])
 	sk.add_foes(b.db.foes_for(host), host)
-	sk.joined_fallen_types[host.id] = {"gel_half": 2}
+	sk.kills[host.id] = {"revenant": 1, "gel_half": 2}
 	var sd: Dictionary = JSON.parse_string(JSON.stringify(SaveGame._skirmish_dict(sk, b.field)))
 	var sk2 := SaveGame._skirmish_from(sd, b.field)
-	assert_eq(sk2.came_with.get(host.id, {}), {"revenant": 2, "ghost": 1}, "what the pack came with")
-	assert_eq(sk2.joined_fallen_types.get(host.id, {}), {"gel_half": 2}, "and the joined fallen by type")
-	assert_eq(sk2.kills_by_type(host), sk.kills_by_type(host), "the kills by type read alike")
+	assert_eq(sk2.kills_by_type(host), {"revenant": 1, "gel_half": 2}, "the kills by type survive the trip")
 
 
 func test_damage_and_statuses_survive_the_trip() -> void:
@@ -324,8 +343,8 @@ func test_the_file_is_written_read_and_cleared() -> void:
 	SaveGame.clear(TMP)
 
 
-## The mines (the Lammergeier's) ride the save: each slot's shots in laid order, their
-## keywords and spender, and the order count, so a resumed fight lands them alike.
+## The Mines (the Lammergeier's, 9 November) ride the save: a foe's Mine is a status, its damage
+## and its riders, so a resumed fight blows it alike.
 func test_the_mines_survive_the_trip() -> void:
 	var b := _battle(9)
 	var m: Unit = b.mechs()[0]
@@ -334,29 +353,17 @@ func test_the_mines_survive_the_trip() -> void:
 	var sk := b.attack(sq, [m])
 	sk.begin()
 	sk.start_round()
-	m.grant_passive({"id": "bay", "name": "Bay", "description": "", "effects": [{"trigger": "static", "effect": "lay_mines"}]})
-	var ms: Skirmish.MechState = sk.mechs[0]
-	var gun := -1
-	for i in range(ms.die.faces.size()):
-		if ms.die.faces[i].is_attack() and ms.die.faces[i].power > 0:
-			gun = i
-	assert_true(gun >= 0, "the machine carries a gun")
-	ms.face_index = gun
-	var slot := Vector2i(-1, -1)
-	for col in range(sk.columns):
-		if sk.front[col] == null:
-			slot = Vector2i(0, col)
-	if slot.x < 0:
-		sk.front[0].hp = 0
-		sk._clear_dead()
-		slot = Vector2i(0, 0)
-	assert_true(sk.assign(0, slot), "a mine laid")
+	m.grant_passive({"id": "bay", "name": "Bay", "description": "", "effects": [{"trigger": "static", "effect": "mine_on_spend", "value": 2}]})
+	var foe: Foe = sk.field_foes()[0]
+	sk._add_mine(foe, 5, {"stacks": {"burning": 2, "vitriol": 1}, "keywords": ["shock", "breach"]})
 	var back := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
 	var sk2: Skirmish = back.current
-	assert_eq(sk2.mines.keys(), sk.mines.keys(), "the mined slots")
-	assert_eq(JSON.stringify(sk2.mines_at(slot)), JSON.stringify(sk.mines_at(slot)), "their shots")
-	assert_eq(typeof(sk2.mines_at(slot)[0]["keywords"]), TYPE_ARRAY, "keywords as a list")
-	assert_eq(sk2.mine_seq, sk.mine_seq, "the order count")
+	var foe2: Foe = sk2.field_foes()[0]
+	var mine := Skirmish.mine_of(foe2)
+	assert_eq(int(mine.get("damage", 0)), 5, "its damage")
+	assert_eq([int(mine["riders"]["stacks"]["burning"]), int(mine["riders"]["stacks"]["vitriol"])], [2, 1], "its stacks by status")
+	assert_eq(mine["riders"]["keywords"], ["shock", "breach"], "its flags, as a list")
+	assert_eq(JSON.stringify(mine), JSON.stringify(Skirmish.mine_of(foe)), "the Mine as it was")
 
 
 ## The planner's copy (SaveGame.clone_skirmish, 22 October): every unit its own, the fight under

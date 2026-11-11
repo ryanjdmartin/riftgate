@@ -419,7 +419,7 @@ static func plan_from_spec(spec: String, db: ContentDB) -> Array:
 
 
 ## Hold what each status the machine carries holds on its model, and let it go when it does not:
-## a form of the same name (the Armadillo's Sealed: its guns sink and its ports shut) and a spin
+## a form of the same name (the Polar Bear's Sealed: its guns sink and its ports shut) and a spin
 ## (the Cassowary's Spun Up: its capacitor turns). A borrowed model holds nothing.
 func hold_statuses(u: Unit) -> void:
 	if u == null or rig == null or model_id != u.chassis_id:
@@ -1025,6 +1025,15 @@ func _setup(chassis_id: String, maker: String) -> void:
 	sun.rotation_degrees = Vector3(-55.0, (yaw if field.is_empty() else YAW_FIELD) - 150.0, 0.0)   # on the floor one sun for the squad, however each is turned
 	sun.shadow_enabled = true
 	sun.directional_shadow_max_distance = 2000.0 if field.is_empty() else 30.0   # the floor's world is in hexes
+	if not field.is_empty():
+		# On the floor, one shadow map fitted to the machine's own distance from the floor's
+		# camera (Ryan, 2 November: "there's a shadow on middle units in the skirmish screen when
+		# controls set to middle"): the split maps over thirty hexes put a machine on the Middle
+		# layout, nearly twice as far from the camera as on the Bottom one, in a coarse split
+		# whose bias shaded its lower body. Fitted, both layouts light a machine alike.
+		var at: Vector2 = field.get("at", Vector2.ZERO)
+		sun.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL
+		sun.directional_shadow_max_distance = Vector3(at.x, float(field.get("height", 0.0)), at.y).length() + 3.0
 	_inner.add_child(sun)
 	var env := WorldEnvironment.new()
 	var e := Environment.new()
@@ -1357,7 +1366,7 @@ func aim_joint_for(cid: String) -> String:
 
 ## Hang a component's model on a socket: the stock part under `hp_<n>` is hidden and the
 ## scene is added under the pin, so it points where the pin points and wears the pin's
-## scale (lowforge sets both; a Sparrowhawk's pins are half size). Returns false when the
+## scale (lowforge sets both; a Kite's pins are half size). Returns false when the
 ## model has no such socket, or hides it (hidden_pins).
 func mount(n: int, scene: PackedScene, maker: String) -> bool:
 	if not hardpoints.has(n) or hidden_pins(model_id).has(n):

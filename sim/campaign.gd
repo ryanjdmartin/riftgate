@@ -91,6 +91,9 @@ class Machine:
 
 
 var seed_value: int = 1
+## A map shape every battle of the run is fought on (BattleMap.KINDS), for the campaign runner's
+## --shape; "" draws each battle's shape by its seed, as the game does. Never saved.
+var map_kind := ""
 var rng := RandomNumberGenerator.new()
 var db: ContentDB
 var state: int = PICK
@@ -152,7 +155,7 @@ func _init(seed_arg: int = 1, team: Array = []) -> void:
 ## planned; ContentDB.chassis_runnable) is never dealt, so a maker whose only tier one is a
 ## draft offers nothing until it lands. The same seed always offers the same machines, drawn on
 ## a stream of its own, as the party's (the mechanics audit, 25 October: on the run's own
-## stream the runner's pick of three reread Minerva's offer, so the Armadillo started every run
+## stream the runner's pick of three reread Minerva's offer, so the Polar Bear started every run
 ## it was offered, and the offer told where the first rifts would open).
 static func tender(content: ContentDB, seed_arg: int) -> Array:
 	var r := RandomNumberGenerator.new()
@@ -341,6 +344,8 @@ func start_battle(city_id: String, uids: Array) -> Battle:
 		var boss_id := draw_boss(lead)
 		if not boss_id.is_empty():
 			b.lineup = [boss_id]
+	b.map_kind = map_kind
+	b.blueprints_known = blueprints.duplicate()   # a cache's blueprint is one the run lacks
 	b.setup(team, lead)
 	b.field.gate_hp_max = c.gate_max
 	b.field.gate_hp = c.gate
@@ -401,7 +406,7 @@ func finish_battle() -> Dictionary:
 		var final := bool(c.rift.get("final", false))
 		c.rift = {}
 		c.quiet = QUIET_TURNS
-		var banked := b.menace_killed * SALVAGE_PER_MENACE
+		var banked := b.menace_killed * SALVAGE_PER_MENACE + _bank_loot(b, report)
 		salvage += banked
 		report["salvage"] = banked
 		# The Council pays for results: its Favour for the win, docked for the gate damage the
@@ -428,7 +433,7 @@ func finish_battle() -> Dictionary:
 		_fall(c)
 	else:
 		report["result"] = "held"
-		var banked := b.menace_killed * SALVAGE_PER_MENACE
+		var banked := b.menace_killed * SALVAGE_PER_MENACE + _bank_loot(b, report)
 		salvage += banked
 		report["salvage"] = banked
 	report["gate_left"] = c.gate
@@ -450,6 +455,25 @@ func finish_battle() -> Dictionary:
 	for m in wrecked:
 		m.shop = SHOP_BATTLES
 	return report
+
+
+## The caches the battle's machines claimed (the bible's loot rows; built 7 November), banked as
+## the kills are, on a battle won or held and never on a fall: each component one copy into the
+## stores, each blueprint into the run's (a blueprint found twice is one), and their salvage,
+## returned for the battle's total. The report keeps them under "loot".
+func _bank_loot(b: Battle, report: Dictionary) -> int:
+	var got := 0
+	report["loot"] = b.loot.duplicate(true)
+	for l in b.loot:
+		got += int(l.get("salvage", 0))
+		for cid in l.get("components", []):
+			if db.components.has(str(cid)):
+				components[str(cid)] = int(components.get(str(cid), 0)) + 1
+		var bp := str(l.get("blueprint", ""))
+		if db.components.has(bp) and not blueprints.has(bp):
+			blueprints.append(bp)
+	report["loot_salvage"] = got
+	return got
 
 
 ## The boss a domain's next battle brings (the bible's section 9, decided 15 October; built 22
@@ -584,11 +608,29 @@ func _fall(c: City) -> void:
 	# The rift stays open: the city's horde is loose and marches on the capital.
 
 
-## Spend the turn without a battle (6 October: waiting a cycle for the shop is a choice).
-func pass_turn() -> void:
-	if state != PICK:
-		return
+## Spend the turn without a battle (6 October: waiting a cycle for the shop is a choice), never
+## once the finale is due (Ryan, 8 November: "you can't pass a turn when the finale is due. That
+## gate at the capital needs to be fought right now, the Council demands it"), so the Convergence
+## never runs past the finale's. False when refused.
+func pass_turn() -> bool:
+	if state != PICK or finale_due():
+		return false
 	_end_turn("")
+	return true
+
+
+## The finale forfeited (the Council's demand unmet: nobody to field and no Favour to rush a
+## wreck): the capital falls unfought and the run is over. The runner's way out of a turn it
+## cannot pass; a placeholder for what the game shows there.
+func forfeit_finale() -> bool:
+	if state != PICK or not finale_due():
+		return false
+	var cap := capital()
+	if cap != null:
+		_fall(cap)
+	state = OVER
+	won = false
+	return true
 
 
 func _end_turn(fought: String) -> void:

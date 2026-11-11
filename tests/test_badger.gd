@@ -2,9 +2,11 @@ extends TestCase
 
 ## The Honey Badger's rework (Ryan's go, 31 October: "agreed on all proposed. Build it"), on
 ## synthetic passives and entries: a load for each foe a weapon's spend damages, never past the
-## hopper's cap; a weapon's own number in place of the passive's; the Ore Plate standing at what
-## the loads are worth, asleep under a purge while the loads stay; a shot firing loads takes their
-## plate with it; never destroyed as a module's rule; the bot pricing the plate a shot spends.
+## hopper's cap; a weapon's own number in place of the passive's; what the loads are worth
+## granted as Armoured as each round opens and following the loads between (Ryan, 10 November: a
+## buff a Purge strips, back at the machine's next turn; the Ore Plate, an ability, before), the
+## loads a store no Purge touches; a shot firing loads takes their plate with it; never destroyed
+## as a module's rule; the bot pricing the plate a shot spends.
 
 const L := Face.Reach.DIRECT
 const K := Face.Keyword
@@ -61,7 +63,8 @@ func test_every_foe_a_weapon_damages_puts_a_load_in_and_the_plate_follows() -> v
 	assert_eq([Effects.store_cap(u, "hopper"), u.armour], [4, 1], "a cap of four, and the base armour before any load")
 	assert_true(sk.assign(0, sk.front[0]), "a plain gun spent")
 	assert_eq(Effects.stacks_of(u, "hopper"), 1, "one foe damaged: a load")
-	assert_eq([Effects.stacks_of(u, "ore_plate"), u.armour], [1, 2], "its plate stands as a buff, a point of armour")
+	assert_eq([Effects.stacks_of(u, "braced"), u.armour], [1, 2], "its plate stands as Armoured, a point of armour")
+	assert_eq(Effects.status_kind("braced"), "buff", "a buff like any Armoured")
 	assert_true("\n".join(sk.log).contains("fills the hopper: +1 (1)"), "the log says so")
 
 
@@ -115,29 +118,60 @@ func test_a_shot_fires_its_loads_and_their_plate_goes_with_them() -> void:
 	assert_eq(u.armour, 4, "the plate follows: three loads, three points")
 
 
-## A purge lowers the plate by its N and leaves the loads (Ryan's row on stores, 21 October; Purge
-## N, 2 November: "lower everything by N"): a store's grant is never bought, so the stacks it loses
-## sleep and wake at the player's turn, and a load added meanwhile adds its point awake.
-func test_a_purge_sleeps_the_plates_stacks_by_its_number_and_leaves_the_loads() -> void:
+## The plate is Armoured, granted by the hopper (Ryan, 10 November: "The buff he gets from it is
+## Armoured, not an ability. Its purgeable, but returns at the start of his turn since its granted
+## by the funnel bar"): a Purge strips it and leaves the loads (a store's: his row on stores, 21
+## October); a load gained after it brings back its own point and no more; it goes at the round's
+## end as every machine's Armoured does, and the hopper grants it whole as the next round opens.
+func test_a_purge_strips_the_plate_and_the_next_round_brings_it_back() -> void:
 	var u := _mech("Badger", Die.single(Face.attack(3, L)))
 	u.grant_passive(HOPPER)
+	var sk := _fight([u], [_foe(60)])
 	Effects.add_loads(u, 3)
-	assert_eq(u.armour, 4, "three loads held")
-	var r: Dictionary = Effects.purge(u)
-	assert_true((r["lowered"] as Array).has("Ore Plate"), "a store's grant is lowered, never bought, so never gone")
-	assert_eq([Effects.stacks_of(u, "hopper"), u.armour], [3, 3], "the loads stay; one point of their armour sleeps (a Purge 1)")
-	Effects.add_loads(u, 1)
-	assert_eq([Effects.banked(u, "ore_plate"), u.armour], [4, 4], "a load while part sleeps adds its point, the slept one still asleep")
-	Effects.wake(u)
-	assert_eq(u.armour, 5, "it wakes at the loads' worth")
-	var p := _mech("Badger", Die.single(Face.attack(3, L)))
-	p.grant_passive(HOPPER)
-	Effects.add_loads(p, 2)
-	var r3: Dictionary = Effects.purge(p, 3)
-	assert_true((r3["slept"] as Array).has("Ore Plate"), "a Purge past its stacks sleeps the plate whole")
-	assert_eq([Effects.stacks_of(p, "hopper"), p.armour, Effects.banked(p, "ore_plate")], [2, 1, 2], "the loads stay, the plate asleep, still held")
-	Effects.wake(p)
-	assert_eq(p.armour, 3, "and it wakes whole")
+	assert_eq([Effects.stacks_of(u, "braced"), u.armour], [3, 4], "three loads held: Armoured ×3")
+	assert_false(Effects.is_ability("braced"), "no ability")
+	assert_eq(Effects.purge(u, 3), ["Armoured gone"] as Array[String], "a Purge takes it")
+	assert_eq([Effects.stacks_of(u, "hopper"), u.armour], [3, 1], "the loads stay, their armour gone")
+	assert_true(sk.assign(0, sk.front[0]), "a gun spent: a fourth load")
+	assert_eq([Effects.stacks_of(u, "hopper"), Effects.stacks_of(u, "braced")], [4, 1], "the new load's own point, never the purged three")
+	sk.end_round()
+	assert_eq([Effects.stacks_of(u, "hopper"), Effects.stacks_of(u, "braced")], [4, 0], "the round's end takes the Armoured, as any machine's, and leaves the loads")
+	sk.start_round()
+	assert_eq([Effects.stacks_of(u, "braced"), u.armour], [4, 5], "the hopper grants it whole as the round opens")
+	assert_true("\n".join(sk.log).contains("hopper plates it: Armoured ×4"), "the log says so")
+	sk.end_round()
+	sk.start_round()
+	assert_eq(Effects.stacks_of(u, "braced"), 4, "and again every round, never piling up")
+
+
+## The hopper takes back only what it gave: loads fired leave another source's Armoured alone,
+## and a plate a Purge already took is not taken twice.
+func test_loads_fired_take_only_the_hoppers_own_armoured() -> void:
+	var u := _mech("Badger", Die.single(Face.attack(3, L)))
+	u.grant_passive(HOPPER)
+	var sk := _fight([u], [_foe(60)])
+	Effects.add_loads(u, 2)
+	Effects.grant_buff(u, "braced", 2, "brace:test", sk.round)
+	assert_eq([Effects.plated(u), Effects.stacks_of(u, "braced")], [2, 4], "the hopper's two beside a component's two")
+	Effects.spend_loads(u, 2)
+	assert_eq([Effects.plated(u), Effects.stacks_of(u, "braced")], [0, 2], "the loads fired: the hopper's two go, the component's stay")
+	Effects.add_loads(u, 2)
+	Effects.purge(u, 9)
+	Effects.spend_loads(u, 2)
+	assert_eq(Effects.stacks_of(u, "braced"), 0, "nothing left to take after a Purge, and nothing goes under")
+
+
+## A battle saved before 10 November may hold the Ore Plate: it loads as the hopper's Armoured,
+## stack for stack, so the old ability never stands beside the new grant.
+func test_a_saved_ore_plate_loads_as_the_hoppers_armoured() -> void:
+	var old := Effects.make({"id": "ore_plate", "name": "Ore Plate", "description": "", "decay": "none", "tags": ["ability"],
+		"effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]}, Effects.SKIRMISH, "store:hopper")
+	old.stacks = 2
+	var loaded: Array = SaveGame._modifiers_from([SaveGame._modifier_dict(old)])
+	assert_eq(loaded.size(), 1, "one modifier")
+	var m: Effects.Modifier = loaded[0]
+	assert_eq([m.id, m.stacks, m.source, m.decay], ["braced", 2, Effects.HOPPER_PLATE, Effects.DECAY_ROUND], "Armoured, the hopper's grant, two stacks, gone at the round's end")
+	assert_true(Effects.purgeable(m), "and a Purge reaches it")
 
 
 func test_the_fallback_plates_a_point_for_every_two_loads() -> void:
@@ -148,7 +182,7 @@ func test_the_fallback_plates_a_point_for_every_two_loads() -> void:
 	Effects.add_loads(u, 1)
 	assert_eq(u.armour, 4, "four loads, two points: the total of four")
 	Effects.spend_loads(u, 3)
-	assert_eq([Effects.stacks_of(u, "ore_plate"), u.armour], [0, 2], "one load is worth nothing")
+	assert_eq([Effects.stacks_of(u, "braced"), u.armour], [0, 2], "one load is worth nothing")
 
 
 func test_a_hopper_with_no_passive_fills_as_its_weapon_says_with_no_cap_or_plate() -> void:
@@ -157,13 +191,13 @@ func test_a_hopper_with_no_passive_fills_as_its_weapon_says_with_no_cap_or_plate
 	var sk := _fight([u], [_foe(30), _foe(30), _foe(30)])
 	assert_true(sk.assign(0, sk.front[1]), "a filling spread")
 	assert_eq(Effects.stacks_of(u, "hopper"), 6, "two a foe, three foes, no cap")
-	assert_eq([Effects.stacks_of(u, "ore_plate"), u.armour], [0, 1], "and no plate without a passive that plates it")
+	assert_eq([Effects.stacks_of(u, "braced"), u.armour], [0, 1], "and no plate without a passive that plates it")
 
 
 func test_the_rules_read_as_sentences() -> void:
 	assert_eq(Effects.effect_text(HOPPER["effects"][0]), "every foe its weapons damage puts a load in its hopper, up to 4", "the fill")
-	assert_eq(Effects.effect_text(HOPPER["effects"][1]), "each load held is a point of armour", "the plate")
-	assert_eq(Effects.effect_text(HALF["effects"][1]), "every 2 loads held are a point of armour", "the fallback's plate")
+	assert_eq(Effects.effect_text(HOPPER["effects"][1]), "each load held grants a stack of Armoured as each round opens", "the plate")
+	assert_eq(Effects.effect_text(HALF["effects"][1]), "every 2 loads held grant a stack of Armoured as each round opens", "the fallback's plate")
 
 
 func test_never_destroyed_is_a_modules_rule() -> void:

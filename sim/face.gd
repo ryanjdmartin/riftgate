@@ -11,7 +11,7 @@ extends RefCounted
 enum Kind { ATTACK, SHIELD, VENT, BLANK, BUFF }
 ## Two reaches since 10 October (Ryan): Close, a worse Direct by design, is removed and melee
 ## is a tag. Direct was line of sight until 9 October.
-enum Reach { NONE, DIRECT, INDIRECT, SWEEP }   # Sweep (Ryan, 3 November): a targeting mode, a rank picked and its filled slots walked
+enum Reach { NONE, DIRECT, INDIRECT, SWEEP, EVERY_FOE }   # Sweep (Ryan, 3 November): a targeting mode, a rank picked and its filled slots walked; Every Foe (4 November), below
 ## Execute and Steady are retired (10 October): a threshold doubling is a hard sum hidden in
 ## a keyword, and a rolled weapon dealing its average is simply a flat one.
 ## The Soulcutter Talons' kill rule is a count printed on its one carrier (Ryan, 11 October: no
@@ -29,17 +29,25 @@ enum Reach { NONE, DIRECT, INDIRECT, SWEEP }   # Sweep (Ryan, 3 November): a tar
 ## 29 October retired 3 November for the Charged primer): Shock's other payoff, every other
 ## Shocked foe on the field taking N as its blow's number, wherever it stands and whatever the
 ## gun's reach, plain, no strike being aimed at it, so its Shock stands. A weapon's alone.
+## Every Foe and Every Ally are targeting modes (Ryan, 4 November: "Silence should not narrow
+## targeting modes, that's why I'm switching them to targeting modes"; keywords from 2 November):
+## Every Foe a reach (a debuff's, the Siphon's lure-all: dropped on any foe, it lands on every
+## foe in the fight); Every Ally and Every Other Ally `targets` (a shield's or a buff's: the whole
+## team, its own machine among them, or every machine but its own, the Mooring Screens'; Ryan:
+## "the difference is whether the center one is lit or not, its two modes"). `reaches_all` reads
+## any of them.
 enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB, CRYO, FLAK, SWAP, EXPOSE, BREACH, SPLASH, DISPEL }
 ## Whom a component may be spent on (Ryan, 26 September): an attack (a weapon or a debuff)
 ## targets foes; a shield, a vent or a buff targets self and allies by default, and content may
-## narrow one to self only or allies only, so the design space stays open.
-enum Target { SELF_ALLY, SELF, ALLY, FOE }
+## narrow one to self only or allies only, so the design space stays open; Every Ally and Every
+## Other Ally (4 November), targeting modes, land on the whole team or every machine but its own.
+enum Target { SELF_ALLY, SELF, ALLY, FOE, EVERY_ALLY, EVERY_OTHER_ALLY }
 
 const KIND_NAMES := {
 	Kind.ATTACK: "attack", Kind.SHIELD: "shield", Kind.VENT: "vent", Kind.BLANK: "blank", Kind.BUFF: "buff",
 }
 const REACH_NAMES := {
-	Reach.NONE: "none", Reach.DIRECT: "direct", Reach.INDIRECT: "indirect", Reach.SWEEP: "sweep",
+	Reach.NONE: "none", Reach.DIRECT: "direct", Reach.INDIRECT: "indirect", Reach.SWEEP: "sweep", Reach.EVERY_FOE: "every_foe",
 }
 const KEYWORD_NAMES := {
 	Keyword.NONE: "", Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate", Keyword.BURN: "burn",
@@ -72,7 +80,7 @@ const NUMBER_FIELDS := {
 ## The area keywords (Ryan, 11 and 12 October: three shapes, three keywords; numbered 28 October).
 const AREA_KEYWORDS := [Keyword.CLEAVE, Keyword.PENETRATE, Keyword.SPLASH]
 const TARGET_NAMES := {
-	Target.SELF_ALLY: "self_ally", Target.SELF: "self", Target.ALLY: "ally", Target.FOE: "foe",
+	Target.SELF_ALLY: "self_ally", Target.SELF: "self", Target.ALLY: "ally", Target.FOE: "foe", Target.EVERY_ALLY: "every_ally", Target.EVERY_OTHER_ALLY: "every_other_ally",
 }
 ## Keywords that ride on a shield or vent component (spent on a machine, not a foe); every
 ## other keyword is an attack's, except the few that ride on anything. The validator holds
@@ -139,14 +147,37 @@ var fires_hopper: int = 0     # an attack: the most loads one shot fires from th
 var power_per_load: int = 0   # ...each adding this to the blow (the Bullion Fragmenter, 11 October)
 var braces: int = 0           # any entry: spending it Braces its owner, this many stacks, until the round's end (the Breaching Plow, 12 October)
 var rolls_again_on: String = ""   # any entry: spending it spends a stack of this status, if its owner has one, and the die rolls again (the Nemesis's fists on rage, 12 October)
-var cooldown: int = -1        # any entry: the rounds it goes dark once spent, this one included (Ryan, 14 October); -1 reads its keywords (Rapid's switch-off, 1), 0 none
+var cooldown: int = -1        # any entry: the rounds it goes dark once spent, this one included (Ryan, 14 October), printed on it; -1 or 0, none (Rapid carries none of its own, 2 November)
 var spins: bool = false       # a Rapid entry whose free reroll is a true spin over every entry, itself included (the Cassowary's Spin-Up: Ryan's exception to the reroll rule, 19 October)
-var reaches_all: bool = false # an attack that reaches every foe in the fight from its target (the Whip Scorpion's Heliographic Siphon, a lure-all, 20 October)
+## Reaches every foe in the fight (an attack: the Whip Scorpion's Heliographic Siphon, a
+## lure-all, 20 October), or the whole team or every machine but its own (a shield or a buff: the
+## Swallowtail's Mooring Screens the latter): its targeting mode, Every Foe, Every Ally or Every
+## Other Ally (4 November), so a Silence, which mutes keywords, leaves it whole. Setting it on
+## gives the entry the mode that reaches all it may be spent on (any foe; itself and its allies the
+## whole team, its allies every other ally); off, the one target it may be dropped on.
+var reaches_all: bool:
+	get:
+		return reach == Reach.EVERY_FOE or targets == Target.EVERY_ALLY or targets == Target.EVERY_OTHER_ALLY
+	set(on):
+		if kind == Kind.ATTACK:
+			if on:
+				reach = Reach.EVERY_FOE
+			elif reach == Reach.EVERY_FOE:
+				reach = Reach.INDIRECT
+		elif kind != Kind.BLANK:
+			if on and targets == Target.SELF_ALLY:
+				targets = Target.EVERY_ALLY
+			elif on and targets == Target.ALLY:
+				targets = Target.EVERY_OTHER_ALLY
+			elif not on and targets == Target.EVERY_ALLY:
+				targets = Target.SELF_ALLY
+			elif not on and targets == Target.EVERY_OTHER_ALLY:
+				targets = Target.ALLY
 var heat_per_blow: int = 0    # any entry: spending it, every blow a foe lands on its owner this round adds this much heat (the Siphon's, next round's fuel)
 var shields: int = 0          # a vent: the shield it also gives the machine it cools, after the vent (the combined entry, Ryan's go of 20 October: the Wake Diffuser)
 var resets_on_kill: bool = false   # an attack: if its spend kills, every entry dark from a cooldown comes back and its machine acts again (the Kite's Pinion Driver, 21 October)
-var pulls_mines: bool = false # an attack: every mine on the field gathers into the slot it is spent on, a foe there taking them now (the Lammergeier's Lorentz Contractor, 21 October)
-var drones: bool = false      # an attack: the foe carries the Syrinx Drone; Rapid on a foe already Exposed, otherwise it Exposes (the Lammergeier's, 21 October)
+var gathers_mines: bool = false   # an attack: every Mine on the field's other foes joins its target's (the Lammergeier's Lorentz Contractor, Ryan, 9 November)
+var detonates: bool = false   # an attack: its target's Mine blows now, on it and every foe round it, after the spend's own Mine joined it (the Lammergeier's Syrinx Drone, Ryan, 9 November)
 # The Swallowtail's locked pieces (Ryan's go, 21 October; built that day):
 var vents: int = 0            # a shield: the heat it also takes off the machine it shields, first (the Sutler's Hoist)
 var fills_shield: bool = false   # a shield: it fills the machine's shield to its maximum (the Hoist's charged form)
@@ -263,6 +294,11 @@ static func reach_from_name(name: String) -> int:
 	return -1
 
 
+## A reach as text reads it (every foe, not every_foe).
+static func reach_label(r: int) -> String:
+	return str(REACH_NAMES.get(r, "")).replace("_", " ")
+
+
 static func target_from_name(name: String) -> int:
 	for t in TARGET_NAMES.keys():
 		if TARGET_NAMES[t] == name:
@@ -324,12 +360,11 @@ static func from_dict(d: Dictionary) -> Face:
 	f.rolls_again_on = str(d.get("rolls_again_on", ""))
 	f.cooldown = maxi(0, int(d["cooldown"])) if d.has("cooldown") else -1
 	f.spins = bool(d.get("spins", false))
-	f.reaches_all = bool(d.get("reaches_all", false)) and f.kind != Kind.BLANK   # an attack: every foe; a piece spent on machines: every machine it may land on
 	f.heat_per_blow = maxi(0, int(d.get("heat_per_blow", 0)))
 	f.shields = maxi(0, int(d.get("shields", 0))) if f.kind == Kind.VENT else 0
 	f.resets_on_kill = bool(d.get("resets_on_kill", false)) and f.kind == Kind.ATTACK
-	f.pulls_mines = bool(d.get("pulls_mines", false)) and f.kind == Kind.ATTACK
-	f.drones = bool(d.get("drones", false)) and f.kind == Kind.ATTACK
+	f.gathers_mines = bool(d.get("gathers_mines", false)) and f.kind == Kind.ATTACK
+	f.detonates = bool(d.get("detonates", false)) and f.kind == Kind.ATTACK
 	f.vents = maxi(0, int(d.get("vents", 0))) if f.kind == Kind.SHIELD and not (d.get("vents") is String) else 0
 	f.fills_shield = bool(d.get("fills_shield", false)) and f.kind == Kind.SHIELD
 	f.cools_all = bool(d.get("cools_all", false)) and f.kind == Kind.SHIELD
@@ -352,6 +387,11 @@ static func from_dict(d: Dictionary) -> Face:
 		var kw := keyword_from_name(str(name))
 		if kw > 0:
 			f.add_keyword(kw)
+	# A save from before the targeting modes (4 November) writes Every Foe or Every Ally among its
+	# keywords, and one from before 2 November says `reaches_all`: either reads as the mode its kind takes.
+	var old_kw: Array = d.get("keywords", [])
+	if (old_kw.has("every_foe") or old_kw.has("every_ally") or bool(d.get("reaches_all", false))) and f.kind != Kind.BLANK and not f.reaches_all:
+		f.reaches_all = true
 	f.label = str(d.get("label", ""))
 	return f
 
@@ -420,18 +460,16 @@ func to_dict() -> Dictionary:
 		d["cooldown"] = cooldown
 	if spins:
 		d["spins"] = true
-	if reaches_all:
-		d["reaches_all"] = true
 	if heat_per_blow > 0:
 		d["heat_per_blow"] = heat_per_blow
 	if shields > 0:
 		d["shields"] = shields
 	if resets_on_kill:
 		d["resets_on_kill"] = true
-	if pulls_mines:
-		d["pulls_mines"] = true
-	if drones:
-		d["drones"] = true
+	if gathers_mines:
+		d["gathers_mines"] = true
+	if detonates:
+		d["detonates"] = true
 	if vents > 0:
 		d["vents"] = vents
 	if fills_shield:
@@ -470,6 +508,8 @@ func add_keyword(kw: int) -> void:
 		cryo = 1
 	if kw == Keyword.FLAK and flak <= 0:
 		flak = 1
+	if kw == Keyword.DISPEL and dispel <= 0:
+		dispel = 1   # Purge says its number; one when nothing says
 	if (AREA_KEYWORDS.has(kw) or kw == Keyword.CHAIN) and int(get(NUMBER_FIELDS[kw])) <= 0:
 		set(NUMBER_FIELDS[kw], 1)   # an area keyword or Chain says its number; one when nothing says (a synthetic entry, an old save)
 
@@ -519,37 +559,45 @@ func column_number() -> int:
 
 
 ## The rounds this entry goes dark once spent, this one included (the cooldown row, 14
-## October): what it prints, or else Rapid's switch-off, a cooldown of one, the rest of this
-## round; none for any other entry.
+## October): what it prints, a cost the die shows by its clock; none when it prints none.
 func cooldown_rounds() -> int:
-	if cooldown >= 0:
-		return cooldown
-	return 1 if has(Keyword.RAPID) else 0
+	return maxi(cooldown, 0)   # the entry's own, printed; Rapid carries none (Ryan, 2 November: "Rapid does not have a native Cooldown")
 
 
 ## A rule printed on the entry rather than a keyword (bible section 6: the die's star chip):
 ## Vents all, the missing-hull bonus, the talons' kill rule, the hopper, the brace, rolling
-## again on a status (the Nemesis's rage), a printed cooldown (Rapid's own switch-off aside,
-## and a Rapid entry's "no cooldown" with it), a spin (the Spin-Up's), the Siphon's reach over
-## every foe and its heat a blow, or a labelled effect.
+## again on a status (the Nemesis's rage), a spin (the Spin-Up's), the Siphon's heat a blow, or a
+## labelled effect. A cooldown is a cost the die prints with its clock, a reload the ammo the die
+## prints with its shells (Ryan, 2 November), and a shield's cooling the number under its steam
+## (3 November), so none of them is.
 func has_unique_rule() -> bool:
 	return vents_all or power_per_missing > 0 or not gates.is_empty() or not consumes.is_empty() or self_burn > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() or not printed.is_empty() \
-		or printed_cooldown() or spins or reaches_all or heat_per_blow > 0 or resets_on_kill or pulls_mines or drones \
-		or vents > 0 or fills_shield or cools_all or act_again or not charged.is_empty() \
-		or ammo_per_foe_hit > 0 or spends_magazine or reloads_ammo > 0 \
+		or spins or heat_per_blow > 0 or resets_on_kill or gathers_mines or detonates \
+		or fills_shield or cools_all or act_again or not charged.is_empty() \
+		or ammo_per_foe_hit > 0 or spends_magazine \
 		or regen_shield > 0 or action_price > 0 or rolls_target or kill_rerolls > 0
 
 
-## Whether the entry prints a cooldown of its own: a number past Rapid's switch-off, or a
-## Rapid entry's "no cooldown".
+## Whether the entry prints a cooldown: one round or more.
 func printed_cooldown() -> bool:
-	if has(Keyword.RAPID):
-		return cooldown == 0 or cooldown > 1
 	return cooldown > 0
 
 
 func is_attack() -> bool:
 	return kind == Kind.ATTACK
+
+
+## Does the entry shield the machine it lands on: a shield, or a vent that shields too (the
+## combined entry, the Wake Diffuser)? A shield that cools is a shield and a vent at once (Ryan, 8
+## November: "The venting shield is both types at once"), whichever way it is written.
+func shields_machine() -> bool:
+	return kind == Kind.SHIELD or (kind == Kind.VENT and shields > 0)
+
+
+## Does the entry cool the machine it lands on: a vent (the quick reload's, which cools nothing,
+## is a vent all the same), or a shield that cools too (the Sutler's Hoist)?
+func cools_machine() -> bool:
+	return kind == Kind.VENT or (kind == Kind.SHIELD and (vents > 0 or cools_all))
 
 
 ## A weapon (Ryan, 26 October): an attack that deals damage, spent on a foe within its reach.
@@ -580,11 +628,11 @@ func on_machines() -> bool:
 
 
 func can_target_self() -> bool:
-	return on_machines() and (targets == Target.SELF_ALLY or targets == Target.SELF)
+	return on_machines() and (targets == Target.SELF_ALLY or targets == Target.SELF or targets == Target.EVERY_ALLY)
 
 
 func can_target_ally() -> bool:
-	return on_machines() and (targets == Target.SELF_ALLY or targets == Target.ALLY)
+	return on_machines() and (targets == Target.SELF_ALLY or targets == Target.ALLY or targets == Target.EVERY_ALLY or targets == Target.EVERY_OTHER_ALLY)
 
 
 ## What this blow adds against `target` for the hull it is missing (power_per_missing), read
@@ -649,12 +697,11 @@ func duplicate_face() -> Face:
 	f.rolls_again_on = rolls_again_on
 	f.cooldown = cooldown
 	f.spins = spins
-	f.reaches_all = reaches_all
 	f.heat_per_blow = heat_per_blow
 	f.shields = shields
 	f.resets_on_kill = resets_on_kill
-	f.pulls_mines = pulls_mines
-	f.drones = drones
+	f.gathers_mines = gathers_mines
+	f.detonates = detonates
 	f.vents = vents
 	f.fills_shield = fills_shield
 	f.cools_all = cools_all
@@ -741,9 +788,7 @@ func spin_text() -> String:
 func _spin_phrases() -> Array[String]:
 	var out: Array[String] = []
 	if spins:
-		out.append("spins the die")
-	if reaches_all and kind == Kind.ATTACK:
-		out.append("reaches every foe")
+		out.append("spins the die, itself included")   # Ryan, 8 November: the Cassowary keeps its true spin, "we just need to make it clear"
 	if heat_per_blow > 0:
 		out.append("+%d heat a blow taken this round" % heat_per_blow)
 	return out
@@ -752,7 +797,8 @@ func _spin_phrases() -> Array[String]:
 ## The rules an entry prints past its number, its reach, whom it is spent on and its keywords,
 ## one phrase each in describe()'s own words (a test holds every phrase to describe()): the
 ## die's hold lists them a line each, last (Ryan, 25 October: "unique effects last"). A reload
-## with no vent of its own is that vent's number, not a rule.
+## with no vent of its own is that vent's number, and a shield's cooling a number the die prints
+## beside its shield's (3 November), so neither is a rule.
 func rule_phrases() -> Array[String]:
 	var out: Array[String] = []
 	if kind == Kind.BLANK:
@@ -772,24 +818,19 @@ func rule_phrases() -> Array[String]:
 			out.append("fills the hopper" + ("" if fills_hopper == 1 else " ×%d" % fills_hopper))
 		if fires_hopper > 0:
 			out.append("fires the hopper, +%d a load (%d a shot)" % [power_per_load, fires_hopper])
-	else:
-		if reloads_ammo > 0 and power > 0:
-			out.append("reloads %d ammo" % reloads_ammo)
-		if vents > 0:
-			out.append("cools %d" % vents)
-		if cools_all:
-			out.append("cools to nothing")
+	elif cools_all:
+		out.append("cools to nothing")
 	if braces > 0:
 		out.append("braces" + ("" if braces == 1 else " ×%d" % braces))
 	if not rolls_again_on.is_empty():
-		out.append("spends a %s to roll again" % str(Effects.STATUS.get(rolls_again_on, {}).get("name", rolls_again_on)))
+		out.append("spends a %s to roll again, itself included" % str(Effects.STATUS.get(rolls_again_on, {}).get("name", rolls_again_on)))
 	if kind == Kind.ATTACK:
 		if resets_on_kill:
 			out.append("a kill brings back every entry its cooldowns darkened and it acts again")
-		if pulls_mines:
-			out.append("gathers every mine into its slot")
-		if drones:
-			out.append("leaves a Syrinx Drone, Rapid on a foe already Exposed, else Exposing it")
+		if gathers_mines:
+			out.append("gathers every Mine onto it")
+		if detonates:
+			out.append("detonates its Mine")
 		if spends_magazine:
 			out.append("a strike for every ammo in the magazine")
 		if ammo_per_foe_hit > 0:
@@ -803,8 +844,6 @@ func rule_phrases() -> Array[String]:
 			out.append(_action_text())
 		if rolls_target:
 			out.append("its die rolls again")
-	if printed_cooldown():
-		out.append(cooldown_text().strip_edges())
 	out.append_array(_spin_phrases())
 	if not charged.is_empty():
 		out.append("%s: %s" % ["a muster" if muster_price() == 1 else "%d musters" % muster_price(), charged_form().describe()])
@@ -825,12 +864,9 @@ func _action_text() -> String:
 	return "on an ally whose die is spent, %d reroll%s: its die rolls again and it acts again" % [action_price, "" if action_price == 1 else "s"]
 
 
-## A printed cooldown as the entry's text says it: " cooldown 2", or " no cooldown" on a Rapid
-## entry that prints none; nothing for Rapid's own switch-off or an entry with no cooldown.
+## A printed cooldown as the entry's text says it, " cooldown 2"; nothing for an entry with none.
 func cooldown_text() -> String:
-	if not printed_cooldown():
-		return ""
-	return " no cooldown" if cooldown == 0 else " cooldown %d" % cooldown
+	return " cooldown %d" % cooldown if printed_cooldown() else ""
 
 
 func number_text() -> String:
@@ -875,8 +911,8 @@ func describe() -> String:
 				s += " cools %d" % vents
 			if cools_all:
 				s += " cools to nothing"
-			if reaches_all:
-				s += " on every ally yet to act" if not_acted else " on every ally"
+			if targets == Target.EVERY_ALLY or targets == Target.EVERY_OTHER_ALLY:
+				s += (" every ally" if targets == Target.EVERY_ALLY else " every other ally") + (" yet to act" if not_acted else "")   # its targeting mode, where its keyword stood
 			for k in keywords:
 				if not printed.has(k):
 					s += " " + keyword_label(k)
@@ -887,7 +923,7 @@ func describe() -> String:
 			if braces > 0:
 				s += " braces" + ("" if braces == 1 else " ×%d" % braces)
 			if not rolls_again_on.is_empty():
-				s += " spends a %s to roll again" % str(Effects.STATUS.get(rolls_again_on, {}).get("name", rolls_again_on))
+				s += " spends a %s to roll again, itself included" % str(Effects.STATUS.get(rolls_again_on, {}).get("name", rolls_again_on))
 			s += cooldown_text() + spin_text() + cost_text()
 			if targets == Target.SELF:
 				s += " (self only)"
@@ -896,7 +932,7 @@ func describe() -> String:
 		_:
 			# Direct is the default and goes unsaid; only indirect reach is called out. A debuff
 			# has no number to say, so its reach and keywords are its whole line.
-			s = " ".join(PackedStringArray([REACH_NAMES[reach] if reach != Reach.DIRECT else "", number_text()])).strip_edges()
+			s = " ".join(PackedStringArray([reach_label(reach) if reach != Reach.DIRECT else "", number_text()])).strip_edges()
 			if strikes > 1:
 				s += " ×%d" % strikes
 			for k in keywords:
@@ -909,6 +945,8 @@ func describe() -> String:
 					s += " %d" % cryo
 				if k == Keyword.FLAK:
 					s += " %d" % flak
+				if k == Keyword.DISPEL:
+					s += " %d" % maxi(1, dispel)   # Purge N: the stacks it takes off each buff (the audit's thirteenth bug, 8 November)
 				if (AREA_KEYWORDS.has(k) or k == Keyword.CHAIN) and not is_debuff():
 					s += " %d" % number_of(k)   # area by shape and Chain, numbered: what each foe past the target or each conductor takes (a debuff's deals nothing)
 				if gates.has(KEYWORD_NAMES[k]):
@@ -930,13 +968,13 @@ func describe() -> String:
 			if braces > 0:
 				s += " braces" + ("" if braces == 1 else " ×%d" % braces)
 			if not rolls_again_on.is_empty():
-				s += " spends a %s to roll again" % str(Effects.STATUS.get(rolls_again_on, {}).get("name", rolls_again_on))
+				s += " spends a %s to roll again, itself included" % str(Effects.STATUS.get(rolls_again_on, {}).get("name", rolls_again_on))
 			if resets_on_kill:
 				s += " a kill brings back every entry its cooldowns darkened and it acts again"
-			if pulls_mines:
-				s += " gathers every mine into its slot"
-			if drones:
-				s += " leaves a Syrinx Drone, Rapid on a foe already Exposed, else Exposing it"
+			if gathers_mines:
+				s += " gathers every Mine onto it"
+			if detonates:
+				s += " detonates its Mine"
 			if spends_magazine:
 				s += " a strike for every ammo in the magazine"
 			if ammo_per_foe_hit > 0:

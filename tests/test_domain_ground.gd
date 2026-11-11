@@ -13,7 +13,7 @@ const DECORATIVE := [BattleMap.Terrain.PLAIN, BattleMap.Terrain.ROAD, BattleMap.
 func _battle(faction: String) -> Battle:
 	var db := ContentDB.load_default()
 	var team: Array = []
-	for id in ["badger", "clydesdale", "sparrowhawk"]:
+	for id in ["badger", "clydesdale", "kite"]:
 		team.append(db.make_mech(id))
 	var b := Battle.new(3)
 	b.setup(team, faction)
@@ -151,7 +151,7 @@ func test_a_battle_paints_its_lead_domains_tileset() -> void:
 
 func test_the_debug_switch_gives_the_whole_field_to_the_painting() -> void:
 	var b := _battle(str(ContentDB.load_default().factions.keys()[0]))
-	var south := Vector2(0.0, 5000.0)   # far past the rift's gradient
+	var south := Bleed.axis() * 5000.0   # far past the rift's gradient, toward the wall in either view
 	var was := Bleed.everywhere
 	Bleed.everywhere = false
 	assert_true(Bleed.at(south, Bleed.gradient(b.field, Vector2.ZERO, 48.0), PackedVector3Array()) < 0.01, "the reconstruction stands far from the rift")

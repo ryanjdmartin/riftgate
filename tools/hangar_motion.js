@@ -60,7 +60,7 @@ function turnToward(facing, vel, want, rate, dt) {
   return [facing, vel];
 }
 const GLOW_PAGE = 1.8;   // a lit part's light at rest, the game's (MechView3D.toon), shown as the phone shows it (PHONE_GLOW)
-// A lit part's colour as the phone shows it (Ryan, 29 October: the Armadillo's new vent glow looked
+// A lit part's colour as the phone shows it (Ryan, 29 October: the Polar Bear's new vent glow looked
 // "the same" here). The game's renderer (gl_compatibility, the phone's and the desk's) lights in sRGB
 // space: a lit tile shows as the tile as stored times its light, each channel clipped at one (measured
 // from its renders), the light first eased by the power 1/2.2 so a flare holds its colour (MechRig.light;
@@ -508,7 +508,7 @@ class Rig {
     return Math.max(s.x, s.y, s.z);
   }
   // The forms a sidecar names (MechRig._setup_forms): poses held while the machine carries the
-  // status of the same name (the Armadillo's seal), their tracks and body as curves over their
+  // status of the same name (the Polar Bear's seal), their tracks and body as curves over their
   // turn, their lit parts with the light each has at rest, and the acts each plays while held.
   setupForms(fs) {
     this.forms = {}; this.formOn = {}; this.formT = {}; this.formRot = {}; this.formSlide = {};
@@ -590,7 +590,7 @@ class Rig {
   lightCounts() { for (const d of this.countDisplays || []) d.parts.forEach((mats, i) => { for (const [m, base] of mats) m.emissiveIntensity = base * Math.max(0, 1 + d.k[i]); }); }
   static keysAny(a, held) { return Object.keys(a.tracks || {}).some(jn => held[jn]); }
   // The acts it may play now (MechRig.act_set): none while a form turns; a form held all the way
-  // in plays its own when it has any (the sealed Armadillo's, from its hunkered pose); else its
+  // in plays its own when it has any (the sealed Polar Bear's, from its hunkered pose); else its
   // own, less any that moves a joint a held form keeps.
   actSet() {
     const held = {};
@@ -1267,7 +1267,7 @@ class Rig {
     else cycles(g, this.gaitCurves, 1 - startW, this.mainOffset || 0);
     if (st && startW > 0) cycles(st.gait, st.curves, startW, this.startOffset || 0);
     for (const [name, r] of Object.entries(g.wheels || {})) if (this.joints[name]) addRot(name, v3(-fposmod(this.dist / Math.max(0.1, r) / D2R, 360), 0, 0));
-    // MechRig: steering about each joint's own axis (a knuckle yaws, the Goshawk's nacelles pitch: the eighteenth notes)
+    // MechRig: steering about each joint's own axis (a knuckle yaws, the Buzzard's nacelles pitch: the eighteenth notes)
     for (const name of Object.keys(g.steer || {})) if (this.joints[name]) { const a = (this.steerVal[name] || 0) * b, ax = Math.max(0, AXES.indexOf((this.meta[name] || {}).axis || "yaw")); addRot(name, v3(ax === 0 ? a : 0, ax === 1 ? a : 0, ax === 2 ? a : 0)); }
     for (const [name, k] of Object.entries(g.aim || {})) if (this.joints[name]) addRot(name, v3(0, aim / D2R * k * b, 0));
     for (const [name, h] of Object.entries(g.hold || {})) if (this.joints[name]) addRot(name, mul3(v3(h[0], h[1], h[2]), b));

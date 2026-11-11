@@ -5,16 +5,19 @@
 
 BASE is the file both sides started from (the last publish this branch made, or main's copy),
 OURS this branch's docs/design-bible.html, THEIRS the live page's saved source with the tool's
-wrapper line and its trailing </body></html> stripped. The bible is one row a line, so a line
+wrapper line and its trailing newline and </body></html> stripped. The bible is one row a line, so a line
 merge of the whole file conflicts on every neighbouring row two sessions touched; this merges by
 row instead: a row is keyed by its lead (a table row by its first cell, any other line by its
 text), every row either side added or removed is added or removed, and a row both sides changed
 is merged word by word with `git merge-file`. A section-12 list is merged item by item the same
-way. The version is bumped past the higher of the two. A row the merge cannot settle keeps git's
-conflict markers inline, is named on stderr, and the exit code is 1.
+way. A line that occurs many times (a blank line, a closing tag) is found where the change stands,
+never at its first occurrence. The briefing's stamp is set, not merged: the version bumped past
+the higher of the two, the date the later. A row the merge cannot settle keeps git's conflict
+markers inline, is named on stderr, and the exit code is 1.
 """
 import difflib
 import os
+from datetime import datetime
 import re
 import subprocess
 import sys
@@ -65,15 +68,39 @@ def split_items(line: str):
     return head, items
 
 
+STAMP = re.compile(r'<span class="eyebrow">(Version|Date)</span>([^<]*)<')
+
+
+def stamp_date(text: str):
+    try:
+        return datetime.strptime(text.strip(), '%d %B %Y')
+    except ValueError:
+        return None
+
+
 def merge_seq(base, ours, theirs, conflicts, label):
     """Theirs with every change base->ours applied to it, by identity, then by key."""
     merged = list(theirs)
+    # Where each base line stands in theirs, so a line that occurs many times (a blank line, a
+    # closing tag) is found where the change is, never at its first occurrence in the file.
+    pos = [None] * (len(base) + 1)
+    for a, b, size in difflib.SequenceMatcher(None, base, theirs, autojunk=False).get_matching_blocks():
+        for k in range(size):
+            pos[a + k] = b + k
+    last = -1
+    for i in range(len(base) + 1):
+        if pos[i] is None:
+            pos[i] = last + 1
+        else:
+            last = pos[i]
+    near = 0
 
-    def find(line):
-        try:
-            return merged.index(line)
-        except ValueError:
+    def find(line, at=None):
+        hits = [i for i, l in enumerate(merged) if l == line]
+        if not hits:
             return -1
+        want = near if at is None else at
+        return min(hits, key=lambda i: abs(i - want))
 
     def find_key(k):
         hits = [i for i, l in enumerate(merged) if key(l) == k]
@@ -83,9 +110,21 @@ def merge_seq(base, ours, theirs, conflicts, label):
         if tag == 'equal':
             continue
         olds, news = base[i1:i2], ours[j1:j2]
+        near = pos[i1] + len(merged) - len(theirs)   # the changes so far all stand above this one
         if tag == 'replace' and len(olds) == len(news):
-            for old, new in zip(olds, news):
-                at = find(old)
+            for n_old, (old, new) in enumerate(zip(olds, news)):
+                so, sn = STAMP.search(old), STAMP.search(new)
+                if so and sn and so.group(1) == sn.group(1):
+                    # The briefing's stamp: both sides move it every publish, so its line never
+                    # keys alike. main() sets the version past both; the date is the later one.
+                    hits = [i for i, l in enumerate(merged) if (m := STAMP.search(l)) and m.group(1) == so.group(1)]
+                    if len(hits) == 1 and so.group(1) == 'Date':
+                        mine, theirs_at = stamp_date(sn.group(2)), stamp_date(STAMP.search(merged[hits[0]]).group(2))
+                        if mine and (theirs_at is None or mine > theirs_at):
+                            merged[hits[0]] = new
+                    if len(hits) == 1:
+                        continue
+                at = find(old, near + n_old)
                 if at >= 0:
                     merged[at] = new
                     continue
@@ -117,7 +156,7 @@ def merge_seq(base, ours, theirs, conflicts, label):
                 conflicts.append(f'{label}: a row ours removed is not in theirs: {key(old)}')
         if news:
             prev = ours[j1 - 1] if j1 > 0 else None
-            at = find(prev) if prev is not None else -1
+            at = find(prev, near - 1) if prev is not None else -1
             if at < 0 and prev is not None:
                 at = find_key(key(prev))
             if at < 0:

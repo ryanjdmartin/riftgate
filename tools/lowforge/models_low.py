@@ -239,8 +239,8 @@ KESTREL_HALO = 1.8
 KESTREL_BURN = 8.0    # a light multiple at full speed (the gait's glow k): 5 before
 KESTREL_HEAVY = 7.0   # the heavy flyers' (the Lammergeier, the Giant Petrel): 4 before
 
-def sparrowhawk(b):
-    """Kestrel "Sparrowhawk": a small hit-and-run interceptor. Sleek, speed over defence;
+def kite(b):
+    """Kestrel "Kite": a small hit-and-run interceptor. Sleek, speed over defence;
     reverse-swept wings whose rear faces run back into the boosters, a faired canopy far
     back, twin nose guns, two big boosters, a tail rooted into the fuselage and riding over
     the boosters, ending in two angled stabilisers. Small but deadly. Reskinned 22 September
@@ -386,7 +386,7 @@ def sparrowhawk(b):
     b.fires = {"pinion_driver": ("flare_boosters", 0.4, 1.8)}   # its fixed weapon fires with a slice of its act: the drivers flaring (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.move(slide=0.6, bank=50.0, accel=0.7, heft=0.08, oversteer=0.35)   # strafes most of the aircraft, banks hardest (Ryan, 5 October: more); the lightest in its acts; the nose a little into its corners (the fifth notes: the jets oversteer too, a bit)
 
-sparrowhawk.maker = "kestrel"
+kite.maker = "kestrel"
 
 
 def clydesdale(b):
@@ -581,7 +581,7 @@ def clydesdale(b):
     # side): each hoof planted flat while the body passes over it, then lifted high and
     # stamped down.
     # A lumbering giant's gallop (Ryan, 7 October, the sixteenth notes: the amble moved to the
-    # Armadillo; he still liked the gallop of the eighth notes, so how far toward a lumbering
+    # Polar Bear; he still liked the gallop of the eighth notes, so how far toward a lumbering
     # giant?): the transverse gallop, hind left, hind right, fore left, fore right, then a
     # moment gathered with every hoof off the ground. Its stride cannot lengthen: at a sweep of
     # 30 a hind hoof swinging forward passes within two units of the fore planted on its side,
@@ -609,7 +609,7 @@ def clydesdale(b):
     tracks, body, stride = _gallop(gallop, sweep=30.0, duty=0.34, lift=7.0, crouch=3.0, hop=0.5, rock=6.0, dip=5.0, smooth=0.015, thud=True, airborne=0.99)
     tracks["head"] = ([(i / 40.0, round(-4.5 * math.cos(2.0 * math.pi * (i / 40.0 - 0.16)), 3)) for i in range(41)], 0.0)   # the head heaves after the rock
     # A heavy trot (Ryan, 6 October, the ninth notes: the gallop has potential but is a bit
-    # much, and its hooves met through each other; somewhere between it and the Armadillo's
+    # much, and its hooves met through each other; somewhere between it and the Polar Bear's
     # stomp), the gait it sets off and pulls up in (below). The gait between the two in a horse:
     # diagonal pairs, high-stepping, each fore landing a beat before its hind partner so every
     # pair comes down as a heavy double thud, the hull dropping and nodding onto each pair.
@@ -863,8 +863,8 @@ baboon.maker = "aphelion"
 # ---------------------------------------------------------------- the 28 September machines
 # Second passes on Ryan's notes (29 September). Every number is a proportion.
 
-def armadillo(b):
-    """Minerva "Armadillo" (HW-22T Heavy Weapons Carrier): the biggest land machine in the
+def polar_bear(b):
+    """Minerva "Polar Bear" (HW-22T Heavy Weapons Carrier): the biggest land machine in the
     game. A domed shell of overlapping armour bands, longer than it is wide (Ryan, 30
     September: armadillo, not turtle), on four long heavy legs whose hips stand out of the
     shell's flanks. The front band runs on as a cowl over a small cockpit bay tucked under
@@ -897,7 +897,7 @@ def armadillo(b):
     sight under the floor), the radiators shut, the cowl lamps go dark and the whole machine
     hunkers down on its planted feet, the defensive base pose its own acts play from (Ryan,
     29 October: sealed, "the animations set shouldn't be the same"), none of them a vent; the
-    flingers' rack stays live, since a sealed Armadillo still lures; opening runs it back."""
+    flingers' rack stays live, since a sealed Polar Bear still lures; opening runs it back."""
     Z0 = 26.0   # the shell's floor: the legs lift it this high
     PLUG_DEEP, PLUG_DEEP_F = 12.0, 9.0   # how far down its line each port's iris plug rests, rear and fore: under the floor, out of sight in the shell
     # How each class sits in a port (Ryan, 2 November: "some hardpoints want circular missile
@@ -1265,10 +1265,18 @@ def armadillo(b):
     legs_t, body = _planted(limbs4, [(0.0, 0.0, 0.0, 0.0)] + hunker)
     tracks.update(legs_t)
     b.form("sealed", T_ALL, tracks, glow=[(["lamp"] + [heat for heat, _ in vents] + [p[0] for p in pops], -1.0)], body=body)
+    # Open, its vents stand ajar (Ryan, 2 November: "When unsealed, the vents should be open, and
+    # then more open during the vent animation"): each louvre half its throw and each side vent
+    # half out of its well, the vent act opening them the rest of the way, the seal shutting them.
+    AJAR = 0.5
+    ajar = {jn: swing * AJAR for _, vent in vents for jn, shut, swing in vent}
+    for heat, jn, line, out in pops:
+        ajar[jn] = tuple(v * out * AJAR for v in line)
+    b.ajar("sealed", ajar)
     # Sealed, it plays acts of its own from the hunker (Ryan, 29 October: "the animations set
     # shouldn't be the same, its base pose should be hunkered down in a defensive position"):
     # it braces lower and back as for a blow, rocks its weight back onto its hinds and forward
-    # again, and runs the flingers' rack out to beep, since a sealed Armadillo still lures; it
+    # again, and runs the flingers' rack out to beep, since a sealed Polar Bear still lures; it
     # never vents sealed (Ryan, the same day: "I don't think a vent animation should run
     # during the sealed form"). Each an offset over the hunker, the legs solved from the
     # hunkered pose so the feet stay planted (_planted_over).
@@ -1279,7 +1287,7 @@ def armadillo(b):
     b.act("lure", 5.2, {"run_rack": [along(0.6, 0.0), along(1.4, 4.0), along(3.8, 4.0), along(4.6, 0.0)]}, form="sealed",
           glow=[(["beacon"], blink(1.4, 3.8))])
 
-armadillo.maker = "minerva"
+polar_bear.maker = "minerva"
 
 
 def wild_boar(b):
@@ -2506,7 +2514,7 @@ def cottonmouth(b):
     # seconds; a key is (t, value) on the joint's own axis; a body key is (t, dx, dy, dz) or
     # (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k), k the light added over rest.
     rudders = ("rudder_l1", "rudder_l2", "rudder_r1", "rudder_r2")
-    HEAT = 196.0   # the heat tile's light at its height: near black at rest, #ff7800 here under the phone's eased light (the Armadillo's vents)
+    HEAT = 196.0   # the heat tile's light at its height: near black at rest, #ff7800 here under the phone's eased light (the Polar Bear's vents)
     STRIP = ["chamber_window", "chamber_lamp"]   # burning whenever the drum turns on past its idle, every chamber
     FLASH = ["top_mouth_glow", "top_lamp_glow"]  # the top chamber, front and back, lit for a shot alone
     CHAMBERS = 1                                 # chambers the drum turns on between its test shots (Ryan, 3 November: "Ranging can just move one barrel at a time during its animation. Shots moving two makes sense": a weapon's real shot, the hookup's, turns two)
@@ -3063,7 +3071,7 @@ def whip_scorpion(b):
     limb = lambda leg: {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg]}
     limbs = [limb(leg) for leg in LEGS]
     by_name = {leg: limb(leg) for leg in LEGS}
-    HEAT = 196.0   # the heat tile's light at its height: #ff7800 under the phone's eased light, as the Armadillo's vents
+    HEAT = 196.0   # the heat tile's light at its height: #ff7800 under the phone's eased light, as the Polar Bear's vents
     # The flash (the Heliographic Siphon's lure): it rises tall on its legs, the boiler's end
     # tipping up, the shoulder guns swinging wide, the lamps and floodlights up; the mirror tips its
     # glass to the sky and its head swings round to the left, flashing short, short, long, then
@@ -3207,8 +3215,8 @@ def whip_scorpion(b):
 whip_scorpion.maker = "wainwright_sutler"
 
 
-def goshawk(b):
-    """Kestrel "Goshawk" (K-9 Mk II Attack Airframe): a medium-large airframe, endurance over
+def buzzard(b):
+    """Kestrel "Buzzard" (K-9 Mk II Attack Airframe): a medium-large airframe, endurance over
     burst. Second pass (Ryan, 29 September): a wider span on a shorter body, a smaller
     canopy, weapons clear of the wings, no traditional tail: the boosters ride the aft
     fuselage's shoulders as nacelles, each carrying a fin canted outward, and the cannon is
@@ -3219,7 +3227,7 @@ def goshawk(b):
     outer an empty pod (the stock's Canopy shows nowhere; its Deflector's dish went with the
     old stock, Ryan's go of 28 October); hp_5 bare under the belly aft of the cannon (the Ram-air Scoop is the dorsal intake,
     detail, no mount). Ryan, 30 September: the cannon recessed behind the nose, a wide low
-    oval bore, its fairing blended into the fuselage. Centred on z = 0 like the Sparrowhawk."""
+    oval bore, its fairing blended into the fuselage. Centred on z = 0 like the Kite."""
     # Fuselage: short and deep, a blunt nose.
     b.loft([(44.0, _fuse(6.0, 2.2, 2.4)), (34.0, _fuse(12.0, 4.4, 4.2)), (18.0, _fuse(17.0, 5.8, 5.2)),
             (0.0, _fuse(20.0, 6.8, 5.8)), (-18.0, _fuse(20.0, 6.6, 5.6)), (-34.0, _fuse(14.0, 4.6, 4.0)), (-42.0, _fuse(8.0, 2.6, 2.4))], "steel.plate", "fuselage")
@@ -3414,9 +3422,9 @@ def goshawk(b):
                                                                         (blow, 26.0), (blow + 0.12, 7.0), (blow + 0.35, 0.0)])],
         body=[(blow, 0.0, 0.0, 0.0), (blow + 0.06, 0.0, -1.5, 0.0), (2.4, 0.0, 0.0, 0.0)], idle=False)
     b.fires = {"afterburner_cannon": ("fire_cannon", 0.0, 2.4, blow)}
-    b.move(slide=0.3, bank=36.0, accel=0.9, heft=0.12, oversteer=0.3)   # larger and slower than the Sparrowhawk: slides less, banks well (Ryan, 5 October: more); the nose a little into its corners (the fifth notes)
+    b.move(slide=0.3, bank=36.0, accel=0.9, heft=0.12, oversteer=0.3)   # larger and slower than the Kite: slides less, banks well (Ryan, 5 October: more); the nose a little into its corners (the fifth notes)
 
-goshawk.maker = "kestrel"
+buzzard.maker = "kestrel"
 
 
 # ---------------------------------------------------------------- the Swallowtail (31 October)
@@ -3906,7 +3914,7 @@ def nemesis(b):
     for s, n in ((-1.0, 3), (1.0, 4)):
         b.prism("y", s * 12.0, 12.5, 73.0, 3.6, 2.0, "steel.dark", 8, "port_ring", phase=math.pi / 8)
         b.prism("y", s * 12.0, 12.6, 73.0, 2.6, 1.6, "bore.dark", 8, "port_throat", phase=math.pi / 8)
-        b.stock("hp_%d" % n, (s * 12.0, 13.5, 73.0), "dish", scale=0.5, carries="retribution_thurible" if n == 3 else "oblation_ward")
+        b.stock("hp_%d" % n, (s * 12.0, 13.5, 73.0), "dish", scale=0.5, carries="retribution_thurible" if n == 3 else "oblation_mantle")
     # The helm: hooded, low between the shoulders, a visor slit (lit, as every Arsenal
     # cockpit's glass is: Ryan, 29 October; it flares in the roar and its other fierce acts,
     # the same day) and two horns.
@@ -4694,7 +4702,7 @@ def ammit(b):
         _beam(b, (px, 24.0, 47.0), (px, 30.0, 45.0), _poly(3.0, 8), _poly(3.0, 8), "steel.dark", "throat_port")
         _beam(b, (px, 29.0, 45.3), (px, 31.0, 44.7), _poly(2.2, 8), _poly(2.2, 8), "bore.dark", "port_throat")
         if n == 3:
-            b.stock("hp_3", (px, 30.0, 45.0), "dish", forward=(0.0, 0.949, -0.316), scale=0.45, carries="oblation_ward")
+            b.stock("hp_3", (px, 30.0, 45.0), "dish", forward=(0.0, 0.949, -0.316), scale=0.45, carries="oblation_mantle")
         else:
             b.pin("hp_4", (px, 30.0, 45.0), forward=(0.0, 0.949, -0.316), carries="")
     # The back panel (the Ward Plate, detail): a rectangular plate lying flat on the back's
@@ -5321,7 +5329,7 @@ def stingray(b):
     b.spin("fan_l", -480.0, -840.0)
     b.spin("fan_r", 480.0, 840.0)
     # The eighteenth notes (Ryan, 7 October: it moves as a helicopter, so it should turn as the
-    # jets do, banking into the corner and not sliding so much): the Goshawk's cornering, a
+    # jets do, banking into the corner and not sliding so much): the Buzzard's cornering, a
     # little oversteer and a hard bank (36 degrees, from 14), where it drifted as the Dingo
     # and the Puffin do (oversteer 1.2 since the seventh notes); its nose-down tilt kept.
     # The nineteenth notes (Ryan, 7 October: it would not keep its nose down so far in the
@@ -6457,7 +6465,7 @@ def _slab(b, pts, normal, thick, material, label):
 
 
 def _plug(b, tag, centre, axis, r, depth, n=3, thick=0.6, material="steel.stripe"):
-    """A port's iris plug (the Armadillo's Lockdown Shutters): `n` leaves of a disc of radius
+    """A port's iris plug (the Polar Bear's Lockdown Shutters): `n` leaves of a disc of radius
     `r` about `centre`, square to `axis`, each a hair off the centre so the iris's seams read
     dark, all on one joint (`shutter_<tag>`, sliding along `axis`) that rests `depth` down the
     port's line, under its floor and out of sight in the shell. A form slides it home: it
@@ -6483,7 +6491,7 @@ def _plug(b, tag, centre, axis, r, depth, n=3, thick=0.6, material="steel.stripe
 
 
 def _vent(b, cutting, origin, alpha, width, height, slats, prefix, rest, opens, wall=1.0, depth=3.6, rim=0.4, proud=0.6, pivot=0.7, thick=0.5, housing=None, back=0.0, flank=None, heat="vent_box_floor"):
-    """An armoured louvred vent (the Armadillo's radiators): a dark steel box `width` by
+    """An armoured louvred vent (the Polar Bear's radiators): a dark steel box `width` by
     `height` with heat banked in its floor (the part a glow names, labelled `heat`), a
     stripe rim round its mouth, and `slats` heavy louvres across the mouth, each on a pitch
     joint `<prefix><k>`, the lowest first. Sunk into a face of the shell, a hole cut through
@@ -6496,7 +6504,7 @@ def _vent(b, cutting, origin, alpha, width, height, slats, prefix, rest, opens, 
     top). A louvre stands `rest` degrees out of the face (positive lifts its upper edge out),
     so its joint's 0 is that rest; it shuts flat at `-rest` and opens to `opens` degrees out
     of the face at `opens - rest`. `flank`, given (-1 the left, 1 the right), lays the vent
-    on that flank's 45-degree chamfer instead (the Armadillo's radiators since Ryan's notes
+    on that flank's 45-degree chamfer instead (the Polar Bear's radiators since Ryan's notes
     of 30 October), `width` along the machine and `height` up the slope, `alpha` unused: its
     louvres run along the machine on roll joints, the upper edge the one toward the spine.
     Returns [(joint, its shut swing, its open swing)], the lowest first, in the joint's own
@@ -6547,7 +6555,7 @@ def _vent(b, cutting, origin, alpha, width, height, slats, prefix, rest, opens, 
 
 
 def _popvent(b, cutting, centre, side, name, length=14.0, width=8.0, out=6.0, slats=5, heat="vent_box_floor"):
-    """A vent on a flank's 45-degree chamfer (the Armadillo's side vents: Ryan, 29 October,
+    """A vent on a flank's 45-degree chamfer (the Polar Bear's side vents: Ryan, 29 October,
     "small rectangular protrusions when sealed" that "slide out ... to show the vent face when
     venting", then "a larger footprint to sell"): a well cut into `cutting` and lined in dark steel under a stripe rim,
     and on a slide joint `name` along the slope's outward normal a dark cap `length` along the
@@ -6736,7 +6744,7 @@ def _plate(b, outer, holes, material, label):
 def _rings(b, rings, material, label, frame=None, cap=True):
     """A loft through any number of sections given as 3D point rings, capped at both ends
     unless `cap` is False (an annulus or an open tube: a cap would be a disc over the
-    hole, which is what hid the Goshawk's muzzle until 1 October). `frame` maps the tiles
+    hole, which is what hid the Buzzard's muzzle until 1 October). `frame` maps the tiles
     in the part's own axes (see Build._finish)."""
     bm = bmesh.new()
     vs = [[bm.verts.new(p) for p in ring] for ring in rings]
@@ -6879,7 +6887,7 @@ def _planted(limbs, body):
 
 
 def _planted_over(limbs, base, body):
-    """_planted for an act played over a held pose (a form's own acts: the sealed Armadillo's,
+    """_planted for an act played over a held pose (a form's own acts: the sealed Polar Bear's,
     29 October): `base` the pose's (dy, dz, pitch), `body` the act's keys as offsets from it.
     The legs' keys are what each offset adds to the held pose's own angles (one axis each,
     so they add exactly in the engine), so the feet stay planted from the held pose."""
@@ -6933,7 +6941,7 @@ def _leg_ik(leg, target, body, q0):
     leg's ankle on `target` (the model's axes) with its foot flat to the ground, under a
     body slid and pitched by `body` (dy, dz, pitch); Newton's method from `q0`, so a pose
     keyed after the last keeps its knee on the same side (Ryan, 5 October: a foot stepped
-    out wide, the Armadillo's sumo stance, needs the hip to roll and the ankle with it). A
+    out wide, the Polar Bear's sumo stance, needs the hip to roll and the ankle with it). A
     straight leg is no place to start from, so the knee is tried bent each way too, and the
     answer bends it the way `q0` does."""
     bend = q0[2]
@@ -6982,7 +6990,7 @@ def _leg_newton(leg, target, body, q0):
 
 def _stance(legs, frames):
     """Keys for an act that steps a walker's feet about under its body (Ryan, 5 October: the
-    Armadillo widening its stance a foot at a time): `legs` maps a leg's name to its (hip,
+    Polar Bear widening its stance a foot at a time): `legs` maps a leg's name to its (hip,
     knee, ankle) points, `frames` is a list of (t, (dy, dz, pitch), {leg: ankle point}) with
     every leg's ankle wherever it stands at that moment (its rest point if it is not named,
     else the last place named), flat to the ground. Returns joint -> keys, to merge into the
@@ -7378,7 +7386,7 @@ def _leg_ik6(leg, target, heading, body, q0, fold):
 def _footwork(limbs, body, steps, until, hz=30.0):
     """Leg tracks and body keys for an act that moves a walker's body about over planted feet
     and steps some of them (Ryan, 20 October: the funnel-web's planted pivot for the rest of
-    the walkers; the Armadillo comes about, the Nemesis paces and braces, the Ammit circles
+    the walkers; the Polar Bear comes about, the Nemesis paces and braces, the Ammit circles
     its prey), the body free in every axis. `body` is its keys as (t, (dx, dy, dz, yaw,
     pitch, roll)), straight between them; `steps` the steps as (name, t_lift, t_land, where,
     lift), `where` ("under", t) for the foot's rest point under the body as it stands at t,
@@ -7985,7 +7993,7 @@ def _swing(amp, phase=0.0, n=40):
 # armour and vents show nowhere). The die says what the component is; the model only has
 # to look like it could be. Each class is built at the origin along +y (the socket at the
 # origin, the business end forward, +z up) at the scale of a 60-unit machine; a pin's own
-# scale sizes it to its machine (a Sparrowhawk's pins are half size). Five classes: barrel,
+# scale sizes it to its machine (a Kite's pins are half size). Five classes: barrel,
 # twin barrel, rack, blade (katar-style), dish (a projector: equipment that can look like a
 # gun). `forge.py shapes` builds every class in every maker's metal into
 # art/models/shapes/<shape>_<maker>.glb, and MechView3D.mount() hangs one on a pin.
@@ -8254,6 +8262,141 @@ def wall(b):
 
 
 wall.maker = "arsenal"
+
+
+# ---------------------------------------------------------------- the field's caches
+
+def _tilt(roll=0.0, pitch=0.0, yaw=0.0, at=(0.0, 0.0, 0.0)):
+    """A part's cant: turned about z, then pitched about x and rolled about y, then moved."""
+    return (Matrix.Translation(at) @ Matrix.Rotation(math.radians(roll), 4, "Y")
+            @ Matrix.Rotation(math.radians(pitch), 4, "X") @ Matrix.Rotation(math.radians(yaw), 4, "Z"))
+
+
+def cache_derelict(b):
+    """A Derelict, the field's commonest cache (content/loot.json): a machine's hulk left where
+    it fell, canted and half sunk, a track thrown, its gun drooped, a hatch stood open and one
+    lamp still lit. Low and wide: a machine standing on its hex hides it, and it must read from
+    above as wreckage, never as a unit. A first cut."""
+    b.tile_world = 40.0
+    hull = _tilt(roll=-13.0, pitch=7.0, yaw=24.0, at=(-2.0, 1.0, 3.0))
+    b.box(-15.0, 15.0, -11.0, 11.0, -3.0, 9.0, "steel.panel", "hull", hull)
+    b.loft([(-11.0, rect(0.0, 30.0, 9.0, 9.2)), (-6.0, rect(0.0, 24.0, 9.0, 14.0)), (7.0, rect(0.0, 24.0, 9.0, 14.0)), (11.0, rect(0.0, 30.0, 9.0, 9.2))],
+           "steel.plate", "deck", hull)
+    b.box(-17.5, -15.0, -12.0, 12.0, -3.0, 6.0, "steel.tread", "track", hull)          # the track it kept, on its low side
+    for wy in (-8.0, 0.0, 8.0):
+        b.prism("x", 16.5, wy, 1.5, 4.0, 3.0, "steel.dark", 6, "wheel").matrix_world = hull @ b.objects[-1].matrix_world   # the bared road wheels on its high side
+    b.box(-6.0, 6.0, -5.0, 5.0, 14.0, 19.0, "steel.panel", "turret", hull)
+    b.prism("y", 0.0, 0.0, 0.0, 1.8, 20.0, "steel.dark", 6, "gun").matrix_world = hull @ _tilt(pitch=-24.0, at=(1.0, 13.0, 13.5))   # drooped over the bow
+    b.box(-4.0, 4.0, -0.5, 0.5, 0.0, 8.0, "steel.plate", "hatch", hull @ _tilt(pitch=28.0, at=(-1.0, -4.5, 19.0)))   # stood open
+    b.box(-3.0, 3.0, -3.5, 3.5, 18.6, 19.2, "bore.dark", "hatchway", hull)
+    b.box(8.5, 11.5, -11.6, -11.0, 4.0, 6.5, "amber.light", "lamp", hull)             # the one lamp still lit, at its stern
+    b.box(-11.5, -8.5, -11.6, -11.0, 4.0, 6.5, "steel.dark", "lamp_dead", hull)
+    # What came off it: the thrown track laid out behind, a plate and a few lumps.
+    b.box(-3.0, 3.0, -13.0, 13.0, 0.0, 1.6, "steel.tread", "thrown_track", _tilt(yaw=-38.0, at=(17.0, -12.0, 0.0)))
+    b.box(-6.0, 6.0, -4.5, 4.5, 0.0, 1.2, "steel.plate", "plate", _tilt(roll=9.0, yaw=15.0, at=(-17.0, 13.0, 0.6)))
+    for x, y, w, yaw in ((14.0, 15.0, 3.6, 20.0), (-20.0, -9.0, 2.8, 50.0), (6.0, -19.0, 2.4, 10.0), (-9.0, 19.0, 2.0, 65.0)):
+        b.box(-w, w, -w * 0.8, w * 0.8, 0.0, w * 1.1, "steel.dark", "lump", _tilt(roll=14.0, yaw=yaw, at=(x, y, 0.0)))
+
+
+cache_derelict.maker = "arsenal"
+
+
+def _rib(b, y, reach, rise, thick, side, lean, label="rib"):
+    """One rib, as a boat's: a crescent standing in the plane across the spine, from the spine out
+    and up and curling back in over it, tapering to a point; `side` -1 or 1, leaned along the
+    spine by `lean` degrees."""
+    outer, inner = [], []
+    n = 8
+    for i in range(n + 1):
+        f = i / n
+        a = math.radians(5.0 + 150.0 * f)                 # from the spine, out through the widest, in over the top
+        t = thick * (1.0 - 0.8 * f)
+        outer.append((side * reach * math.sin(a), rise * 0.5 * (1.0 - math.cos(a))))
+        inner.append((side * (reach - t) * math.sin(a), rise * 0.5 - (rise * 0.5 - t) * math.cos(a)))
+    pts = outer + inner[::-1]
+    if side < 0:
+        pts = pts[::-1]
+    return b.loft([(-thick * 0.5, pts), (thick * 0.5, pts)], "bone.bone", label, _tilt(pitch=lean, at=(0.0, y, 1.0)))
+
+
+def cache_carcass(b):
+    """A Carcass, the field's middle cache: one of theirs, dead in our ground and picked to the
+    bone. A spine along the hex, a cage of ribs open to the sky, a long horned skull at one end
+    and a tail of vertebrae at the other, dried hide still on the haunch. Bone is the picture: it
+    must not read as a foe standing (they are flat pictures, never geometry). A first cut."""
+    b.tile_world = 40.0
+    # The spine: vertebrae from the skull's nape to the tail, sagging in the middle.
+    for i in range(11):
+        y = 15.0 - i * 3.6
+        z = 3.2 - 1.4 * math.sin(math.pi * i / 10.0)
+        w = 2.6 - 0.14 * i
+        b.box(-w, w, -1.5, 1.5, 0.0, 2.6, "bone.bone", "vertebra", _tilt(yaw=4.0 * math.sin(i * 0.9), at=(0.6 * math.sin(i * 0.7), y, z)))
+        if 1 <= i <= 8:
+            b.box(-0.6, 0.6, -1.0, 1.0, 2.6, 5.4 - 0.25 * i, "bone.bone", "spine_spur", _tilt(pitch=-18.0, at=(0.6 * math.sin(i * 0.7), y, z)))
+    # The ribs: five pairs, the largest amidships, each leaned back a little further.
+    for k, (y, reach, rise) in enumerate(((11.0, 13.0, 15.0), (6.5, 16.0, 19.0), (2.0, 17.0, 21.0), (-2.5, 15.5, 19.0), (-7.0, 12.5, 15.0))):
+        for side in (-1.0, 1.0):
+            _rib(b, y, reach, rise, 2.4, side, -8.0 - 3.0 * k)
+    # One rib broken off and fallen outside the cage.
+    _rib(b, 0.0, 12.0, 14.0, 2.2, 1.0, 0.0, "rib_fallen").matrix_world = _tilt(roll=82.0, yaw=30.0, at=(21.0, -6.0, 1.5))
+    # The skull: a long wedge on the ground past the nape, two horns swept back, dark sockets.
+    skull = _tilt(pitch=-6.0, yaw=-14.0, at=(1.5, 21.0, 0.0))
+    b.loft([(-6.0, rect(0.0, 11.0, 0.5, 10.0)), (1.0, rect(0.0, 10.0, 0.5, 9.0)), (12.0, rect(0.0, 4.5, 0.5, 4.5))], "bone.bone", "skull", skull)
+    b.box(-4.2, 4.2, 3.0, 12.4, -0.4, 0.9, "bone.bone", "jaw", skull)
+    for side in (-1.0, 1.0):
+        b.box(side * 5.0 - 0.8, side * 5.0 + 0.8, -2.0, 2.4, 5.0, 8.6, "bore.dark", "socket", skull)   # a socket in each cheek
+        b.box(side * 2.6 - 1.5, side * 2.6 + 1.5, -1.0, 2.6, 9.0, 9.9, "bore.dark", "socket_top", skull)
+        b.loft([(0.0, rect(0.0, 3.0, -1.5, 1.5)), (8.0, rect(0.0, 2.0, -1.0, 1.0)), (15.0, rect(0.0, 0.5, -0.25, 0.25))], "bone.bone", "horn",
+               skull @ _tilt(pitch=34.0, yaw=side * 150.0, at=(side * 4.2, -4.0, 8.6)))
+    # The tail's last bones strewn, and the hide still on the haunch.
+    for i, (x, y) in enumerate(((2.5, -25.0), (5.5, -28.0), (9.5, -29.5))):
+        b.box(-1.6 + 0.3 * i, 1.6 - 0.3 * i, -1.3, 1.3, 0.0, 2.0 - 0.3 * i, "bone.bone", "tail_bone", _tilt(yaw=40.0 + 25.0 * i, at=(x, y, 0.0)))
+    b.loft([(-6.0, rect(0.0, 7.0, 0.0, 0.8)), (0.0, rect(0.0, 12.0, 0.0, 5.0)), (5.0, rect(0.0, 9.0, 0.0, 1.0))], "steel.hide", "hide", _tilt(yaw=12.0, at=(-3.0, -14.0, 1.0)))
+    b.box(-9.0, 9.0, -1.0, 1.0, 0.0, 0.6, "steel.hide", "hide_flap", _tilt(yaw=70.0, at=(-13.0, -12.0, 0.0)))
+    # Laid across the hex with its skull toward the eye (the map looks from the south, the
+    # model's -y), so the skull and the cage both read.
+    lie = _tilt(yaw=148.0, at=(-2.0, 2.0, 0.0))
+    for ob in b.objects:
+        ob.matrix_world = lie @ ob.matrix_world
+
+
+cache_carcass.maker = "arsenal"
+
+
+def _shard(b, at, w, d, h, lean, yaw, label="shard", glyph=True):
+    """A standing splinter of their stone: four-sided, tapering to an off-centre point, leaned,
+    a seam of their light cut up its outward face."""
+    m = _tilt(roll=lean, yaw=yaw, at=at)
+    b.loft([(-d, [(-w, 0.0), (w, 0.0), (w * 0.72, h * 0.62), (w * 0.1, h), (-w * 0.55, h * 0.7)]),
+            (d, [(-w * 0.8, 0.0), (w * 0.8, 0.0), (w * 0.5, h * 0.55), (w * 0.05, h * 0.9), (-w * 0.5, h * 0.6)])], "steel.stone", label, m)
+    if glyph:
+        b.box(-0.8, 0.8, -d - 0.5, -d + 0.1, h * 0.1, h * 0.42, "amber.rift", "seam_light", m)
+        b.box(-0.8, 0.8, -d - 0.5, -d + 0.1, h * 0.48, h * 0.48 + 1.6, "amber.rift", "seam_light", m)   # a stroke and a point over it: no cross
+
+
+def cache_relic(b):
+    """A Relic, the field's rarest cache: a thing of theirs, never ours. Three splinters of black
+    stone stood leaning round a hollow, a seam of their light cut in each, and in the hollow a
+    core of that light hung clear of the ground, an eight-sided stone the map turns slowly (the
+    part named `core`, Map3D). The one cache that glows: it is seen from across the field, which
+    is where it lies. A first cut."""
+    b.tile_world = 40.0
+    b.prism("z", 0.0, 0.0, 0.6, 15.0, 1.2, "steel.stone", 6, "plinth", phase=math.pi / 6.0)
+    b.prism("z", 0.0, 0.0, 1.5, 9.0, 0.7, "amber.rift", 6, "well", phase=math.pi / 6.0)
+    _shard(b, (-13.0, 4.0, 0.0), 6.0, 3.2, 34.0, 12.0, 28.0)
+    _shard(b, (12.0, 7.0, 0.0), 5.0, 2.8, 26.0, -14.0, -30.0)
+    _shard(b, (2.0, -14.0, 0.0), 4.4, 2.6, 19.0, 6.0, 176.0)
+    _shard(b, (17.0, -9.0, 0.0), 3.0, 2.0, 9.0, -30.0, 70.0, "shard_fallen", glyph=False)
+    # The core: two four-sided points base to base, hung over the well.
+    r, hh, cz = 5.2, 8.0, 17.0
+    ring = [(r, 0.0), (0.0, r), (-r, 0.0), (0.0, -r)]
+    tip = [(0.01, 0.0), (0.0, 0.01), (-0.01, 0.0), (0.0, -0.01)]
+    # Built about its own centre and stood there by its object's place, so the map turns the
+    # part about itself with no rig.
+    b.loft([(-hh, tip), (0.0, ring), (hh, tip)], "amber.rift", "core", Matrix.Rotation(-math.pi / 2, 4, "X")).matrix_world = Matrix.Translation((0.0, 0.0, cz))
+
+
+cache_relic.maker = "arsenal"
 
 
 def gate(b):

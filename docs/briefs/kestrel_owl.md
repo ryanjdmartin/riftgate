@@ -1,5 +1,7 @@
 # Brief: the Snowy Owl, Kestrel's stealth unit (new chassis, direction)
 
+<!-- hangar: {"kind": "chassis", "maker": "kestrel", "tier": null, "status": "direction", "slot": true, "name": "the Snowy Owl"} -->
+
 The session designs the tenth of Kestrel's ten, marked by Ryan on 21 October as a stealth
 unit. The Snowy Owl is his name for it ("probably"); a plain Owl is a Heavy Gear machine (the
 reserved list), so the species stays in the name. The look and the numbers are Ryan's.
@@ -70,6 +72,18 @@ re-pick when it hides mid-round) and the same hole as A's first.
 
 A two-clause passive (the map half and the fight half, the Prairie Dog's and the Swallowtail's
 shape) can join B to A or C.
+
+## Since then (5 November)
+
+Ryan, 5 November: the Magpie and the Snowy Owl are "completely unspecced other than general
+directions and names". Claude's note the same day, from his chassis ideas of 4 November
+(the briefs README's "Ten a maker"; the frost figure's brief, `arsenal_frost.md`): of the ideas
+folded or moved to fit ten a maker, one fits this slot. A, cold is quiet, meets Cryo. A weapon hit on a foe carrying Cryo cools the
+hitter, so an owl that frosts its prey and strikes it stays cold and unseen. The Cryo detonator's
+Suppress at enough stacks reads as the prey frozen in place. The Arsenal's frost figure could keep
+the version that blows the frost up for damage; the two part by payoff, silence against the blow.
+Ryan, 5 November: "assuming we take the cryo direction with the owl - which makes a lot of
+sense". His lean, the kit still to design.
 
 ## Open for Ryan
 

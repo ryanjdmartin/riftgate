@@ -1,5 +1,7 @@
 # Brief: the Magpie, Kestrel's support engine (new chassis, direction)
 
+<!-- hangar: {"kind": "chassis", "maker": "kestrel", "tier": null, "status": "direction", "slot": true, "name": "the Magpie"} -->
+
 The session designs the ninth of Kestrel's ten, marked by Ryan on 21 October as a support
 engine. "Magpie" is a working name (Ryan, 21 October); the name, the look and the numbers are
 Ryan's.
@@ -73,8 +75,8 @@ the Empowered row; `docs/rules.md` on foes' moves and blows.
   1. A copy of a gun makes it a hitter, so the mirror may want to copy only what is spent on
      machines (shields, vents, buffs), which keeps it a support.
   2. Locked pieces never copy (unique by rule).
-  3. The Lammergeier's Syrinx Drone copies a killing shot into a mine; parted by time and
-     target, but two copiers in one maker.
+  3. The Lammergeier's Syrinx Drone copied a killing shot into a mine until 9 November; since
+     then it detonates a Mine, so Kestrel holds one copier.
   4. A round where it must act first shows a blank mirror.
 
 **C, one line (intelligence as planning): the cache.** Corvids cache food and come back for
@@ -85,6 +87,14 @@ kept, where the Petrel keeps rerolls.
 Each could take a map clause too (the Prairie Dog's and the Swallowtail's two-clause shape):
 the thief's would be loot on the map (a wreck claimed from a hex away, or more salvage from the
 fights it is in), the economy engine the Honey Badger was once offered.
+
+## Since then (5 November)
+
+Ryan, 5 November: the Magpie and the Snowy Owl are "completely unspecced other than general
+directions and names". C's cache, an ally's rolled entry held into the next round, is close to
+the time-shifter's bank in Claude's first round of 4 November
+(`aphelion_time_shifter.md`): an ally Phased now acts twice next round. Whichever
+is designed first sets the other's shape.
 
 ## Open for Ryan
 

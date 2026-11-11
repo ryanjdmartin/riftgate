@@ -9,6 +9,7 @@ extends RefCounted
 ## Layout on disk (all transparent PNGs, imported with nearest filtering):
 ##   art/foes/<foe>_combat.png                     enemy combat sprite (optional)
 ##   art/foes/<foe>_map.png                        enemy map sprite, one frame (optional)
+##   art/loot/<kind>_map.png                       a cache's map token, for flattened ground (optional)
 
 static var _cache: Dictionary = {}
 
@@ -21,6 +22,15 @@ static func map_foe(foe_id: String) -> Texture2D:
 	return _foe("res://art/foes/%s_map.png", foe_id)
 
 
+## The boss's picture on the map: drawn for the size it stands at (tools/foeforge `boss`, three
+## times a token's frame, cut from its combat sprite), where the 16-pixel token blown up to that
+## size was a blob (Ryan, 10 November); its token while it has none. The small faces (an edge tag,
+## a hunter's plate) keep the token.
+static func map_boss(foe_id: String) -> Texture2D:
+	var tex := _foe("res://art/foes/%s_boss.png", foe_id)
+	return tex if tex != null else map_foe(foe_id)
+
+
 ## A foe's art, or a promoted form's hero's while it has none of its own (its boss register
 ## waits on Ryan's picks).
 static func _foe(pattern: String, foe_id: String) -> Texture2D:
@@ -30,6 +40,11 @@ static func _foe(pattern: String, foe_id: String) -> Texture2D:
 		if not base.is_empty():
 			tex = _load(pattern % base)
 	return tex
+
+
+## A cache's flat token, for a hex the painting has taken (tools/loot_tokens.py), or null.
+static func map_cache(kind: String) -> Texture2D:
+	return _load("res://art/loot/%s_map.png" % kind)
 
 
 ## The rift on the map: a strip of three frames (tools/foeforge `cut-rift`), or null.

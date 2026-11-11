@@ -46,6 +46,18 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   (a foe action, a passive, a component or a vocabulary term): it is kept, not shown, not run, and not validated
   against the engine, so content can be written ahead of code. Tests never assert on a
   specific entry's passive; they use synthetic passives.
+- Shown text is Ryan's to write (9 November: "I need to get a strong foothold on content I've
+  written myself, so that you can do a better job of mimicking my intended writing style"). The
+  hangar's Text tab lists every text the player reads (`tools/hangar_text.py` is the one
+  definition of what is shown, where and whether any screen draws it); `docs/hangar/text.json`,
+  the ledger, says which he signed as his own and which drafts he passed, and a text it does
+  not name is a session's draft. Before drafting any shown text, read `docs/voice.md` (his own,
+  by kind and by voice), the kind you are writing and its maker's or domain's group first, and
+  write the draft to sit beside them. Never sign a text for him and never edit the ledger by
+  hand: the fold writes it from his marks. A signed text changes only when its rule does, as
+  little as the rule needs, and is named in the report (the page shows it to him as changed);
+  a rename moves the slot's ledger line with the id (`python3 tools/hangar_text.py --check`
+  says when one is left behind). A new key that holds shown text gets a slot there.
 - Kit words (decided 18 September): a **component** is one piece of kit and exactly one
   entry on the die; a **hardpoint** is a free slot (one `hp_<n>` pin on the model); a
   chassis's **fixed** components are built in and use no hardpoint; an empty hardpoint is a
@@ -97,12 +109,19 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   (ā, ō, ū), so a name that carries one is checked wherever the mono face shows it.
 - When Ryan suggests a rule or a change, look for holes in the argument and discuss them in
   chat before building. A suggestion opens a discussion; it is not a spec. If he reaffirms
-  after hearing the holes, build it as he said. It runs both ways: every rule and guideline,
+  after hearing the holes, build it as he said. A consequence that follows from a rule as he
+  stated it is no hole and no question: build it and name it in the report (Ryan, 7 November:
+  "all logically fall out with the way I stated the mechanics without ever being a question");
+  a hole is where his words give two answers or none. It runs both ways: every rule and guideline,
   these included, is open to debate for a good reason (bible section 2), so argue for changing
   one in the open rather than designing around it.
 - A one-off exception proposed for balance is a symptom (Ryan, 18 October): before proposing
   one, look for the root cause that makes it seem reasonable and fix that, in the open; a
   passive breaking a rule for its design is a different thing (bible section 7).
+- Content slated to change waits for its own session (Ryan, 9 November: "Don't propose issues
+  with content slated to change. We're basing decisions around designs that aren't finished"): a
+  piece whose rework or design session is pending (the to-do's design sessions, a brief) gets no
+  question and no proposal from other work; build around it as it stands and leave it alone.
 - Judge a visual effect running, never from a still: Ryan does, and a screenshot of a
   breathing mark says nothing about it. Ship a debug switch that fires the thing constantly
   (`RIFTGATE_FEED_DEBUG=1` is the pattern), expect several rounds of small tweaks, and when
@@ -180,9 +199,18 @@ Sessions have died mid-flight before. To keep the next one cheap to start:
   in order", kept at every handoff; a question only Ryan can answer is the bible's section 12;
   a task is `docs/todo.md`; a run a decision cites is `docs/measurements.md`; a proposal is
   `docs/<topic>_proposal.md` until its evaluation, then a design in progress is its brief in
-  `docs/briefs/` until its session lands; each retires (git keeps it) once its decisions are
+  `docs/briefs/` until its session lands (Ryan corrects briefs in the hangar's Designs tab, and
+  a design session folds those in first: the briefs README); each retires (git keeps it) once its decisions are
   rows and content. Never the same item in two files, and no row carries a conversation: a long
   Open row is a paragraph and a pointer to its proposal or brief.
 - Design canvases under `docs/canvas/` are not watched. Ryan says when one changes.
+- Ryan's writing on the hangar's Text tab waits in the page's `text` collection. A session that
+  touches shown text, or republishes the hangar, folds it in first (`tools/hangar_text.py
+  --fold`, the README's commands): his words into content, his marks into the ledger, his notes
+  answered in the work.
 - The quick campaign is an experiment, not a feature (Ryan, 28 October): no decision reads its
-  runs and no balance call cites them, until he says that changes.
+  runs and no balance call cites them, until he says that changes. It always follows the main
+  content and code, one code tree for both modes (Ryan, 7 November: "The experiment portion is
+  in regards to maintaining a seperate balance matrix. I don't want to keep two seperate code
+  trees for both modes, not until we have to"): its fights are built by the battle's own
+  builders, never a copy of them.

@@ -68,7 +68,7 @@ Each draft chassis, the runs it started and the battles those runs won (coverage
 |---|---|---|---|
 | Honey Badger | 17 | 0.00 | 0 |
 | Baboon | 10 | 0.00 | 0 |
-| Armadillo | 10 | 0.00 | 0 |
+| Polar Bear | 10 | 0.00 | 0 |
 | Prairie Dog | 12 | 0.58 | 0 |
 | Stingray | 17 | 0.00 | 0 |
 | Puffin | 15 | 0.00 | 0 |

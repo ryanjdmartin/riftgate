@@ -213,6 +213,21 @@ static func label(text: String, size_px: int, color: Color, font: Font = null) -
 	return l
 
 
+## A scrolled list a finger drags from anywhere (Ryan, 2 November: the quick campaign's draft
+## was hard to scroll on the phone). On a touch screen a ScrollContainer scrolls on the touch
+## itself, and a touch goes no further than the first control under the finger that stops it (a
+## HudPanel's card, a HudButton), so only the gaps between the cards scrolled. Every control
+## under `list` that would stop it passes it on to the scroller instead. A button still takes the
+## touch first, so a tap presses it, and lets go of the press when the scroll begins, so a drag
+## never does; a picker, which opens on the touch itself, is set to open on the lift where a
+## list holds one (the harness's). Called again whenever the list is rebuilt.
+static func pass_touches(list: Node) -> void:
+	if list is Control and (list as Control).mouse_filter == Control.MOUSE_FILTER_STOP:
+		(list as Control).mouse_filter = Control.MOUSE_FILTER_PASS
+	for c in list.get_children():
+		pass_touches(c)
+
+
 # ---------------------------------------------------------------- shapes
 
 ## A parallelogram: the top-left and bottom-right corners cut by `k` along x.
@@ -270,6 +285,56 @@ static func gauge(ci: CanvasItem, rect: Rect2, frac: float, color: Color, k: flo
 	if frac > 0.0:
 		var w := maxf(2.0, inner.size.x * clampf(frac, 0.0, 1.0))
 		fill_poly(ci, slant(Rect2(inner.position, Vector2(w, inner.size.y)), k * 0.6), color)
+
+
+## The closest two ticks may stand, in design pixels (six device pixels on the 1080 phone): the
+## ones closer than this crowd, and the bar ticks its fives alone, then its tens.
+const TICK_PITCH := 4.0
+
+
+## Which whole points of a bar `span` wide holding `top` are ticked: every one (its fives the
+## big ticks), every fifth when the ones would crowd, every tenth when the fives would; 0 when
+## even those would, or the bar holds one point.
+static func tick_step(span: float, top: int) -> int:
+	if top <= 1 or span <= 0.0:
+		return 0
+	var pitch := span / float(top)
+	for step in [1, 5, 10]:
+		if pitch * step >= TICK_PITCH:
+			return step
+	return 0
+
+
+## A gauge's scale (Ryan, 2 November: "with the number rescaling, HP/Shield/heat bars can have
+## tick marks now. Tick on the ones, a bigger or more prominent tick on the 5s, reduce to ticking
+## on 5s only if the 1s get crowded on a particular bar"): a tick at each whole point across
+## `inner` (the fill's own span) for a bar holding `now` of `top`, every fifth one long and
+## heavy, the rest short; the fives alone, all long, where the ones would crowd (tick_step).
+## Inside the fill a tick is a cut in the ground's dark, past it a line in the bar's colour, so
+## the room left counts as well as what is held, by structure on any bar colour. `lean` leans
+## each tick as the fill's end leans (the slanted gauges'), its top `lean` right of its foot.
+static func ticks(ci: CanvasItem, inner: Rect2, now: int, top: int, color: Color, lean: float = 0.0) -> void:
+	var step := tick_step(inner.size.x, top)
+	if step == 0:
+		return
+	var v := step
+	while v < top:
+		var big := v % 5 == 0
+		var x := inner.position.x + inner.size.x * float(v) / float(top)   # the tick's top, where the fill ends at v
+		var held := v < now
+		var ink := Color(Palette.BG, 0.9 if big else 0.75) if held else Color(color, 0.85 if big else 0.45)
+		var h := inner.size.y if big else ceilf(inner.size.y * 0.5)
+		var foot := Vector2(x - lean, inner.end.y)
+		var head := Vector2(x - lean + lean * h / maxf(1.0, inner.size.y), inner.end.y - h)
+		if big:
+			# A five stands past the fill's edges, a little proud of the bar, so it reads as the
+			# scale's long tick and not a seam.
+			var out := 1.5
+			var dir := (head - foot) / maxf(0.01, h)
+			foot -= dir * out
+			head += dir * out
+		ci.draw_line(foot, head, ink, 2.0 if big else 1.0)
+		v += step
 
 
 ## Faint scanlines over a rect: the screen is a display, not paper.

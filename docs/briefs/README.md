@@ -1,7 +1,14 @@
 # Design session briefs
 
+<!-- hangar: {"kind": "shared", "maker": null, "tier": null, "status": "hub", "slot": false, "name": "the briefs README"} -->
+
 One brief for each chassis proposal, chassis direction and rework that came out of the roster
-analysis (`docs/roster_analysis.md`) and Ryan's go on it, 14 and 15 October. Each is the
+analysis (`docs/roster_analysis.md`) and Ryan's go on it, 14 and 15 October. One brief of
+another kind was `long_wall_build.md`, the build order for Ryan's redesign of 5 and 6 November
+(the battle as the defence of a long wall), retired to git as its branch landed on 8 November
+(`git show 68381ff:docs/briefs/long_wall_build.md`; its design `git show
+68381ff:docs/long_wall_proposal.md`), its decisions the bible's rows and its open items section
+12's. Each is the
 starting point for a design session of its own: where the design stands, what Ryan said and
 when, what Claude proposed, what is open, the holes already raised, and what the session hands
 back. A brief retires to git once its decisions are rows and content, as a proposal does.
@@ -15,6 +22,28 @@ chat first.
 - Read `CLAUDE.md`, `docs/rules.md`, the bible's first row (`docs/design-bible.html`), the
   "Start here" of `docs/status.md`, this file, then the brief and the files it names. If a chat
   and a file disagree, the chat is newer.
+- Fold in Ryan's corrections first (5 November). The hangar's Designs tab lays every brief out
+  for him to correct a paragraph, strike one, note a heading, set the session's direction or
+  leave an idea with no brief yet, and keeps them in its database's `designs` collection until a
+  session folds them in. Before reading the brief, save that collection with ArtifactData's
+  `list` (`collection` `designs`, `out_dir` `build/hangar/inbox`) and run
+  `python3 tools/hangar_designs.py --fold build/hangar/inbox` (`--dry` to look first): a
+  correction replaces its block, closed with "(Ryan's correction, <day>.)"; a strike removes its
+  block; a note goes under its heading and a direction under the header, each opening on his
+  name and the day. Read the diff, fold by hand what it could not place (it says why) and close
+  the numbers of a list it struck an item from; commit, run `python3 tools/hangar_data.py` and
+  republish the hangar with the files that moved; then clear the folded documents with the
+  ArtifactData batch it printed. An idea becomes a brief or a bench line and is then marked
+  briefed or dropped. A correction is Ryan's call at the strength he wrote it: a hole in one is
+  raised in chat, as with any suggestion of his.
+- One brief a design (5 November): every chassis, component or module in progress has a file of
+  its own here, named `<maker>_<label>.md`, whose title line is followed by a hangar header, an
+  HTML comment holding a JSON object: `kind` (chassis, component, module, rule, hub or shared),
+  `maker` (a content maker id, or null), `tier` (1 to 3, or null while open), `status` (a short
+  word: idea, shape, direction, proposal, parked, rework, session, hub), `slot` (true when it fills
+  a roster slot of its maker's ten; false for a piece, a rework of a built machine, a rule or a
+  hub), `name` (its working name), and `built` (the content id, on a rework). The hangar's Designs
+  tab reads every brief by it, so a new brief is written with one.
 - Each brief is the design's one home. The three makers' proposal files were folded into
   their briefs on 15 October and retired, with `docs/mechanic_budgets.md`; git keeps them
   (`git show 2df9340:docs/arsenal_proposal.md`, and likewise `ws_chassis_proposal.md`,
@@ -71,7 +100,7 @@ here.
 - Reroll-related effects are Kestrel's (Ryan, 19 October, after sending them to Wainwright &
   Sutler on 18 October: that maker's ten filled without effort): "it actually fits, and means
   we can push Kestrel way into the risk-versus-reward space, like a real maverick pilot."
-- A tier-one body from more than one maker takes the pressure off the Armadillo being a
+- A tier-one body from more than one maker takes the pressure off the Polar Bear being a
   must-pick (Ryan, 19 October: Wainwright & Sutler is pure offence and utility, Aphelion to be
   decided), which is why the Kestrel off-tank takes a tier-one slot with a lure of its own;
   Aphelion also needs a defensive tier one (Ryan, 19 October), a line in the to-do for its
@@ -101,7 +130,8 @@ here.
 - **Ryan's counts** (14 and 15 October): about ten chassis per city maker at the top end, split
   3-5-2 or 4-4-2 across tiers one, two and three (18 October, of Wainwright & Sutler: eleven is
   too many); tier three late-game capstones, so few; the
-  Arsenal in reverse, little access early and much late. Ryan, 15 October, in the Minerva
+  Arsenal in reverse, little access early and much late. Ryan, 4 November: "I want to target 10
+  per maker, at least for now" (the roster below, "Ten a maker"). Ryan, 15 October, in the Minerva
   session: Minerva's two tier threes are a treaded capstone and a capital ship, "the capital
   ship that it seems like every maker is going to end up getting".
 - **The sort** (Claude's, partly agreed): tier one is itself with basics alone and stands in a
@@ -113,25 +143,60 @@ here.
   player takes three, so each maker's tier-one pool should vary and more than one maker's deal
   should hold a front. The host maker's offer after a win and procurement's shelf deal the
   higher tiers; the economy items the go raised are in `docs/economy_pass.md`.
-- Each brief gives a proposed tier; Wainwright & Sutler's (20 October, 3-5-2) and Kestrel's
-  (21 October, 3-3-2 with the last two open) are decided, in the bible's rows. The reshuffle proposed so far: the Wild Boar to tier one; the
-  Baboon to tier two (the Clydesdale, the boiler, the revolver, the fan-boat and the Dingo are
-  settled by the maker's row). The 12 October basic-kit row no longer gives every tier one a
-  locked piece (reworded 20 October): a tier one shows its identity with basics alone, with a
-  locked piece or without (the Cottonmouth; the form-changing Armadillo keeps its lure by
-  Ryan's framework of 15 October).
+- The 12 October basic-kit row no longer gives every tier one a locked piece (reworded 20
+  October): a tier one shows its identity with basics alone, with a locked piece or without (the
+  Cottonmouth; the form-changing Polar Bear keeps its lure by Ryan's framework of 15 October).
 
-The tiers, the two decided lines and the briefs' proposals (the rest nothing decided; "down" and "up" against a chassis's
-tier today; the targets two or three tier ones a city maker, two or three tier twos and one
-tier three, the Arsenal none, three and three):
+## Ten a maker (4 and 5 November)
+
+Ryan, 4 November, on his chassis ideas of that day: "I want to target 10 per maker, at least for
+now. How do you see that shaking out with these specs? Anything to merge, move to another maker,
+or cut in favour of another missing hole/niche?" Ten for each of the five makers is fifty, his
+"roster of up to 50 units" of 18 October. Claude's shake-out, as his calls moved it, is the
+working roster; the moves and merges he has not marked stand as its plan. His list and Claude's
+first round on it were the proposal `docs/aphelion_minerva_chassis_proposal.md`, retired into the
+briefs below (`git show a228545:docs/aphelion_minerva_chassis_proposal.md`).
+
+His calls, in his words:
+
+- "Cut shield-basher as a unit, but add it as a potential minervan tier 3 weapon or module -
+  bonus damage equal to armour, then armour zero until end of round." (`minerva_shield_bash.md`)
+- "Mole needs a better hook than 'ignores armour' but we can work on that later."
+- "Armadillo moves to T2, and either Boar or Mole will move down." The move lands with Minerva's
+  replacement tier-one tank, which Ryan is designing himself (the bible's section 12, 4 November),
+  so Minerva keeps a tier-one front: the lure tank, or the Boar or the mole come down (the to-do).
+- "The two slots you pegged for aphelion aren't relevant." Then: "Let's say we're folding the
+  unrefined detonator concept into the Science vessel, yes, and keeping the unrefined time
+  shifter." (`aphelion_jellyfish.md`, `aphelion_time_shifter.md`)
+- "Arsenal 10th can wait until its many unrefined ideas are settled."
+- 5 November, of the Kestrel slots: the Magpie and the Snowy Owl are "completely unspecced other
+  than general directions and names"; and "assuming we take the cryo direction with the owl -
+  which makes a lot of sense - that leaves one open kestrel slot (Magpie, or other), one aphelion
+  slot, and one Arsenal slot" (`kestrel_owl.md`).
+
+The roster, 47 named and 3 open (a brief's name in brackets; the rest are built):
 
 | Maker | Tier one | Tier two | Tier three |
 |---|---|---|---|
-| Minerva | Honey Badger, the Armadillo as a form changer, Wild Boar (down) | the echidna (the hedgehog) | the H-tank (the siege battery), the battlecruiser |
-| Kestrel (decided 21 October, `kestrel_line.md`; the Magpie and the Snowy Owl, tiers open, in their briefs) | Skua, Storm Petrel, Puffin | Buzzard, Kite, Needletail | Lammergeier, Giant Petrel |
-| Wainwright & Sutler (decided 20 October) | Prairie Dog, Cassowary, Cottonmouth | Dingo, Clydesdale, funnel-web, the gunship (a proposal), Whip Scorpion | Swallowtail, Musk Ox |
-| Aphelion | Stingray, the line frame, the Zoids walker if it is Aphelion's (its brief proposes two) | Baboon (up), the jellyfish | the Carrier |
-| The Arsenal | none | Nemesis, Misharu, the Onryō, the Zoids walker if it is the Arsenal's | Ammit, Mastema, Minos |
+| Minerva (10) | Honey Badger; the lure tank (`minerva_lure_tank.md`); the Wild Boar or the mole | the Polar Bear (up); the echidna (`minerva_hedgehog.md`); the Cryo party defence (`minerva_cryo_defence.md`); the immune one (`minerva_immune.md`); the mole (`minerva_mole.md`) or the Wild Boar | the siege battery (`minerva_siege_battery.md`); the battlecruiser (`minerva_battlecruiser.md`) |
+| Kestrel (10, the Magpie's slot open to another design) | Skua, Storm Petrel, Puffin | Buzzard, Kite, Needletail | Lammergeier, Giant Petrel |
+| Kestrel's two, tiers open | the Snowy Owl, leaning to Cryo (`kestrel_owl.md`) | the Magpie (`kestrel_magpie.md`) | |
+| Wainwright & Sutler (10) | Prairie Dog, Cassowary, Cottonmouth | Dingo, Clydesdale, funnel-web, the gunship (`ws_gunship.md`), Whip Scorpion | Swallowtail, Musk Ox |
+| Aphelion (9 and one open) | Stingray; the line frame (`aphelion_line_frame.md`); Static (`aphelion_static.md`); the Barrier and Ward support, the defensive tier one (`aphelion_barrier_ward.md`) | Baboon (up, `aphelion_baboon.md`); the jellyfish with the status detonator (`aphelion_jellyfish.md`); the time-shifter (`aphelion_time_shifter.md`); one open, the time area's if it wants it | the Carrier (`aphelion_carrier.md`); the Macross with the aura-shifter (`aphelion_macross.md`) |
+| The Arsenal (9, its tenth waiting) | none | Nemesis; Misharu (`arsenal_misharu.md`); the Onryō (`arsenal_onryo.md`); the Zoids walker (`zoids_walker.md`); the frost figure (`arsenal_frost.md`) | Ammit; Mastema (`arsenal_mastema.md`); Minos (`arsenal_minos.md`); the thunder figure (`arsenal_thunder.md`) |
+
+What moved to fit (Claude's, unmarked unless Ryan's word stands above):
+
+- **Moved to the Arsenal**: the Zoids walker (Ryan's sign of 12 October; cats stay out of
+  Aphelion's names; its first verb is now the Kite's Reset, so it opens again) and the Cryo
+  detonator, as the frost figure (consuming a status for a blow is the Backdraft Charge's shape).
+- **Merged**: the shock-synergy unit's Aphelion half is Static, its Arsenal half the thunder
+  figure; the aura-shifter is the Macross's shifts; the status detonator is the jellyfish's EMP
+  (Ryan's word above).
+- **Cut as a unit**: the shield-basher, now the shield bash (Ryan's word above).
+- **The Snowy Owl takes Cryo** for its cold (Ryan's lean, 5 November); the Arsenal's frost figure
+  keeps the blow while it stays, and if the Owl takes the detonator whole the Arsenal has two
+  slots open.
 
 ## Budgets (Ryan, 15 October)
 
@@ -163,6 +228,57 @@ line, Wainwright & Sutler's ten, the stock pass's kit; git keeps the full list):
   to-do); Wainwright & Sutler's deal holds no front, accepted (the Cassowary row).
 - Every maker fields every tier it may once its briefs land; the Arsenal fields none at tier one.
 
+## Orbits (5 November)
+
+Ryan, 5 November, once four machines were found orbiting Cryo: "What other orbits do we have
+now?" Claude's count across the 47 named machines. A machine counts where its identity sits on
+the thing (its passive or a locked piece, as built or as planned), never because a piece it could
+fit touches it. `docs/synergy_map.md` is the built content's piece-level view. Ryan, the same day:
+"There's some assumptions and holes here, but this is good information."
+
+**Worth watching.**
+
+- **Being struck (6):** Misharu (a shield broken), the Onryō (a hull wound), the Nemesis (its own
+  hull damage), the echidna (strikers bite themselves later), the lure tank (armour for each hit)
+  and the Cryo party defence (frost on strikers). The largest; the roster analysis of 14 October
+  already called a blow on hull the roster's most crowded state. Retaliate (a buff) Shocks a
+  striker of bare hull besides; the retaliation row allows a debuff on the striker, and its thorns
+  line reads only the echidna's damage. The collision found: the Cryo party defence's shield
+  trigger, Claude's first lean, beside Misharu's, both weakening the striker.
+- **Lure (4, 5 with the jellyfish spreading it):** the Polar Bear, the Storm Petrel, the Whip
+  Scorpion and the lure tank. They part by shape: a locked piece, every weapon, every foe. The
+  greedy bot values a lure for allies at nothing, so the runner can read none of them yet (the
+  to-do's engine line on the bot's valuations).
+- **Cryo (4, 5 with the Macross's Battroid):** the Polar Bear lays it, the Cryo party defence keeps
+  it, the Snowy Owl cashes it to stay hidden, the frost figure blows it up. The frost figure is the
+  one to check for room.
+- **Stuns (5):** the Baboon's Paradox, the funnel-web's web, the Swallowtail's charged flare, the
+  frost figure's gated Suppress and the time-shifter's delay. Numbed is the shared brake, and the
+  time-shifter's stasis freezes Numbed, so it works against the other four.
+- **Kills (5):** the Kite's Reset, the Ammit's talons, the Giant Petrel's Salvo, the Wild Boar's
+  spill and Mastema's Bellows; the reason the Zoids walker should not get its old verb back.
+
+**Maker leans, crowded on purpose.**
+
+- **Aphelion's status house (5):** the Stingray goes deep, the jellyfish wide, the time-shifter
+  long, the Baboon counts, and Static lays a new mark. The tension: the jellyfish's EMP wipes the
+  marks the other four build; a decision, and it wants the counter-play visible.
+- **Minerva's armour (5):** the Badger's plate, the Polar Bear's seal, the Wild Boar's brace, the
+  lure tank's ramp and the shield bash that cashes them; they part by where the armour comes from.
+- **Heat (8 and more):** the pillar, as the heat row means it. The Snowy Owl is the first machine
+  to want heat at zero.
+- **Exposed (3):** Kestrel's lean. The Needletail, the Lammergeier and the Swallowtail all set it
+  with locked pieces, and the to-do already asks for a slottable setter.
+
+**Light.**
+
+- **Shock and Chain:** Static and the thunder figure at the core; the Dingo's harpoon, the
+  Macross's GERWALK mode and the echidna's needle, if kept, beside them.
+- **An ally acting again (3, 4 with the Magpie's cache):** the Giant Petrel, the Swallowtail and
+  the time-shifter's bank.
+- **Empowered (3, 4 with the Magpie's thief):** the Ammit, the Giant Petrel's Uplink and the
+  Macross's Fighter mode.
+
 ## The action economy, and why things want Rapid (20 October)
 
 Ryan, 20 October: "Do you think there's a case to be made for trying to expand the ways to
@@ -178,8 +294,8 @@ any of them, which is the Suppress pattern (one answer, so every design reaches 
 
 | The want | Who chases it | What Rapid gives it |
 |---|---|---|
-| another look at the die | the Cassowary (a roll is a step), the gun platform (a roll is growth), the Armadillo (fishing for the seal or the lure), the Pulse Vacillator's own niche | the free reroll |
-| a second action on one machine, setup then cash | the Armadillo (seal, then act), the Cassowary (the Rapid before the chamber it doubles), the interceptor, the Puffin (vent an ally and still act; answered by the Diffuser's combined entry, 20 October), the siege battery (reload and still act) | act again |
+| another look at the die | the Cassowary (a roll is a step), the gun platform (a roll is growth), the Polar Bear (fishing for the seal or the lure), the Pulse Vacillator's own niche | the free reroll |
+| a second action on one machine, setup then cash | the Polar Bear (seal, then act), the Cassowary (the Rapid before the chamber it doubles), the interceptor, the Puffin (vent an ally and still act; answered by the Diffuser's combined entry, 20 October), the siege battery (reload and still act) | act again |
 | spends counted | the Cassowary's sixth shot, the Paradox (once a spend); the line frame's combo until it counted every blow (Ryan, 20 October) | more spends a round |
 | a small effect that costs no turn | the Deflector, the Diffuser, the Flakshot (lay Flak, cash it the same round) | the cantrip |
 | tempo lent to the best machine | the multi-rotor, the Cottonmouth (a Rapid shell is two drum shots) | an action moved |
@@ -194,7 +310,7 @@ Homes for each want other than more Rapid pieces, with the engine's state:
 - **Own rerolls as a number** (another look). The engine runs it: the Clydesdale's Battery
   Director is one free reroll of its own die a round, a static effect a module may carry
   today. Give it to the machines whose identity reads its die (the Cassowary, the platform,
-  the Armadillo), as a passive clause or a priced module (its stat line paid elsewhere, so it
+  the Polar Bear), as a passive clause or a priced module (its stat line paid elsewhere, so it
   is no universal must-pick). A look without an action. Hole: the Clydesdale's identity thins;
   the number is the lever (one on a d9 is not one on a d3).
 - **The team's order instead of self-sequencing** (the second action). A passive that needs
@@ -252,15 +368,15 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 
 | Brief | Kind | Maker | Proposed tier | Waits on |
 |---|---|---|---|---|
-| `elites.md` | landed 3 November on Ryan's marks (the bible's register row and tiers row, section 9; `docs/bosses_proposal.md`'s elites table: twenty elites, five wanderers, the Nob's rage, the Fiend of Fire, the demotions), retired (`git show e75be15:docs/briefs/elites.md`) | the foes | — | his calls still open (the to-do: the Meadow's and the Waste's third boss, the Fell Rider's mount, the rage's shape, the Monster Hunter nods, the names) |
+| `elites.md` | landed 3 November on Ryan's marks (the bible's register row and tiers row, section 9; `docs/bosses_proposal.md`'s elites table: twenty-one elites, six wanderers, the Nob's rage, the Fiend of Fire, the demotions; every domain's third boss landed 4 November), retired (`git show e75be15:docs/briefs/elites.md`) | the foes | — | his calls still open (the to-do: the elites' numbers, the names) |
 | `minerva_armadillo.md` | landed 20 October, retired (`git show 63487a9:docs/briefs/minerva_armadillo.md`) | Minerva | 1 | its model (the to-do) |
-| `minerva_honey_badger.md` | landed 31 October on Ryan's go (the Ore Hopper: a load a foe a spend damages, four at most, a point of Ore Plate a load; the claw the boss chase, the fragmenter firing two at +2; never destroyed the Reinforced Skeleton module), retired (`git show c05c41b:docs/briefs/minerva_honey_badger.md`) | Minerva | 1 | Ryan's play (the to-do); its runner rows read 31 October (`docs/measurements.md`), his fallbacks waiting on them |
-| `minerva_hedgehog.md` | direction, left open for now (Ryan, 20 October; the echidna) | Minerva | 2 | nothing |
+| `minerva_honey_badger.md` | landed 31 October on Ryan's go (the Ore Hopper: a load a foe a spend damages, four at most, a point of Ore Plate for every two loads; the claw the boss chase, the fragmenter firing two at +2; never destroyed the Reinforced Skeleton module), retired (`git show c05c41b:docs/briefs/minerva_honey_badger.md`) | Minerva | 1 | Ryan's play (the to-do); its runner rows read 31 October (`docs/measurements.md`), his fallbacks waiting on them |
+| `minerva_hedgehog.md` | direction, left open for now (Ryan, 20 October; the echidna); his new shape of 4 November (strikers debuffed to hurt themselves after they act) and Claude's first round on it in the brief | Minerva | 2 | Ryan's calls on the new shape (the brief's open item 2) |
 | `minerva_siege_battery.md` | direction, parked on Ryan's charge brief (20 October; his H-tank) | Minerva | 3 | Ryan picking it up |
 | `minerva_battlecruiser.md` | direction | Minerva | 3 | nothing: the cooldown property it waited on is built |
 | `kestrel_strafer.md` | landed 25 October as the Skua, its engine built (each roll halved, rounded down, and struck twice; the Pod's spray), retired (`git show f87b831:docs/briefs/kestrel_strafer.md`) | Kestrel | 1 | Ryan's play and its look (the to-do); its runner rows read 25 October (`docs/measurements.md`) |
 | `kestrel_shield_spender.md` | landed 30 October as the Storm Petrel's engine (the burn and its zap, the plate, Regenerating's machine half on its lock, the bot's reads), retired (`git show d84ad16:docs/briefs/kestrel_shield_spender.md`) | Kestrel | 1 | his play and its look (the to-do; its burn on basics stays as built, Ryan, 31 October); its runner rows read 30 October (`docs/measurements.md`) |
-| `kestrel_bomber.md` | landed 21 October as the Lammergeier, its engine and content built, retired (`git show 62192a4:docs/briefs/kestrel_bomber.md`) | Kestrel | 3 (Ryan, 15 October) | its stock, model and assets (the to-do; the stock pass's table had no row for it); its runner rows once fights have a wait list worth trapping |
+| `kestrel_bomber.md` | landed 21 October as the Lammergeier, its engine and content built, retired (`git show 62192a4:docs/briefs/kestrel_bomber.md`); reworked 9 November onto Mines on foes (the bible's Lammergeier row) | Kestrel | 3 (Ryan, 15 October) | its stock (the to-do; the stock pass's table had no row for it) and Ryan's play of the Mines |
 | `kestrel_gun_platform.md` | landed 30 October as the Giant Petrel's engine (the bank, the Immelmann Booster's ally action, the Salvo's kill rider, the Uplink's roll, the bot's look-or-action valuation), retired (`git show d84ad16:docs/briefs/kestrel_gun_platform.md`) | Kestrel | 3 | his play and its look, the catamaran (the to-do); its runner rows read 30 October (`docs/measurements.md`) |
 | `kestrel_kite.md` | landed 21 October, its engine and content built, retired (`git show 95d4ed3:docs/briefs/kestrel_kite.md`) | Kestrel | 2 (from 1) | its model with the Pinion Driver built in (the to-do; its stock and its team rows landed with the stock pass, 22 October) |
 | `kestrel_interceptor.md` | landed 23 October as the Needletail, runnable, retired (`git show 9ced5e5:docs/briefs/kestrel_interceptor.md`) | Kestrel | 2 (Ryan, 21 October) | its look (the to-do; its rows read 3 November) |
@@ -277,19 +393,31 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `ws_prairie_dog.md` | landed 19 October (Flak), retired (`git show f5a085a:docs/briefs/ws_prairie_dog.md`) | Wainwright & Sutler | 1 | nothing: Flak built and measured 21 October (`docs/measurements.md`) |
 | `ws_dingo.md` | landed 19 October (the Combat Translocator), retired (`git show 021f075:docs/briefs/ws_dingo.md`) | Wainwright & Sutler | 2 | its model mount and the bot's further reads (the to-do; its piece built 21 October) |
 | `aphelion_line_frame.md` | direction; Claude's first round, its review and Ryan's first calls in the brief (15 to 20 October) | Aphelion | 1 | Ryan's calls on its open list |
-| `aphelion_jellyfish.md` | direction; first round and review in the brief (15 and 16 October) | Aphelion | 2 | Ryan's calls; the foes' fresh start for the one-move rank and file |
+| `aphelion_jellyfish.md` | direction; first round and review in the brief (15 and 16 October); the status detonator folded in, unrefined (Ryan, 4 November), and what moved on main since | Aphelion | 2 | Ryan's calls (the fold's shape among them); its Disrupt read again on the fresh start's compositions |
 | `aphelion_carrier.md` | proposal, open; first round and review in the brief (15 and 16 October) | Aphelion | 3 | Ryan's calls on its open list |
 | `aphelion_baboon.md` | rework; first round and review in the brief (15 and 16 October) | Aphelion | 2 (now 1) | Ryan's calls (the stock pass left it at tier one) |
-| `zoids_walker.md` | proposal, maker open | Aphelion or the Arsenal | 2 (1 if Aphelion's, in the reshuffle) | nothing |
+| `zoids_walker.md` | proposal, maker open; the Arsenal's on the ten-a-maker plan (4 November, unmarked), its verb open | the Arsenal (Aphelion or the Arsenal before) | 2 | Ryan's calls on the move and its verb |
 | `arsenal_misharu.md` | proposal; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 2 | Ryan's calls on its open list |
 | `arsenal_onryo.md` | direction; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 2 | Ryan's calls on its open list |
-| `arsenal_mastema.md` | direction; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 3 | the foes' fresh start (riders on machines), unless its kit lights the fire |
-| `arsenal_minos.md` | proposal; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 3 | the foes' fresh start (back ranks) |
+| `arsenal_mastema.md` | direction; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 3 | Ryan's calls; the foes' riders on machines are in (the fresh start, 30 October), so its fire has fuel |
+| `arsenal_minos.md` | proposal; first round and review in the brief (15 and 16 October), unanswered | the Arsenal | 3 | Ryan's calls; the compositions' back ranks are in (the fresh start, 30 October) |
+| `aphelion_static.md` | Ryan's idea of 4 November, Claude's first round (Static, and the shock unit's Aphelion half) | Aphelion | 1 | Ryan's calls on its open list |
+| `aphelion_macross.md` | Ryan's idea of 4 November, Claude's first round (the flagship mode changer; the aura-shifter folded in) | Aphelion | 3 | Ryan's calls on its open list |
+| `aphelion_barrier_ward.md` | Ryan's idea of 4 November, Claude's first round (the defensive tier one) | Aphelion | 1 | Ryan's calls on its open list |
+| `aphelion_time_shifter.md` | direction (Ryan, 17 October), kept unrefined (4 November); the bench's notes and Claude's first round | Aphelion | 2 | its session |
+| `minerva_lure_tank.md` | Ryan's idea of 4 November, Claude's first round (the tier-one front) | Minerva | 1 | Ryan's calls on its open list |
+| `minerva_cryo_defence.md` | Ryan's idea of 4 November, Claude's first round (Cryo for the party) | Minerva | 2 | Ryan's calls on its open list (its trigger first) |
+| `minerva_immune.md` | Ryan's idea of 4 November, Claude's first round | Minerva | 2 | Ryan's calls on its open list |
+| `minerva_mole.md` | a shape (Ryan, 4 November), its hook later on his word | Minerva | 1 or 2 | its hook |
+| `minerva_shield_bash.md` | Ryan's piece of 4 November, Claude's notes (a weapon or a module) | Minerva | 3 (a piece) | Ryan's call on its form |
+| `arsenal_frost.md` | Ryan's idea of 4 November, Claude's first round (the Cryo detonator, moved from Aphelion) | the Arsenal | 2 | Ryan's calls on its open list |
+| `arsenal_thunder.md` | Ryan's idea of 4 November, Claude's first round (the shock unit's Arsenal half) | the Arsenal | 3 | Ryan's calls on its open list |
 | `map_shapes.md` | landed 29 October (the six shapes laid by the generator, Mixed Ground and the four other types retired, the walls named by what they are, the decoration and the relief laid by the shape, the survey at 200 seeds a shape), retired the same day (`git show b2762d5:docs/briefs/map_shapes.md`) | the battlefield | none | Ryan's read of the shapes running on the phone; a domain's lean toward a shape (the bible's section 12) |
 | `stock_pass.md` | landed 22 October (the content, the loops' numbers, the bands at 200 seeds), retired 23 October (`git show a550c2e:docs/briefs/stock_pass.md`): the scale's tests and first fills, every piece's tags, tier, number and heat, each chassis's stock and armour by role, the breach's carriers, the engine spec, the method | all | 0 to 3 | nothing here: the name pass and the pricing run are the to-do's |
 | `foes_ladder.md` | landed 28 October (the three enemy verbs, four buffs crossing to the foes, the player's Purge and the Null Field Emitter, twenty-six recolours by tier with the spawn lists, their sprites, the matrix's cells by tier read at 30 seeds), retired the same day (`git show 26c54c7:docs/briefs/foes_ladder.md`) | the foes (every domain) | the rank and file's tiers two and three | nothing here: the 200-seed matrix is the to-do's, the six recolours' move counts section 12's |
 | `chain_conductor.md` | keyword rework, decided 28 October (the bible's Chain row), built 29 October and retired (`git show 0cea0ee:docs/briefs/chain_conductor.md`) | Aphelion's lean, the Arc Fault Cannon the first carrier | keyword | its read (the to-do) |
 | `heat_pillar.md` | design session on heat as a pillar (Ryan, 28 October: a core pillar, undervalued; the bible's triangle row and section 12's heat question): what is built, what is measured, his frame, Claude's bench, the questions and the reads | every maker | rule | Ryan's answers to its six questions, then the prices, the cooling and the vent payoffs land on his go, read on the vanilla ladder's heat grid first |
+| `long_wall_build.md` | retired 8 November, its branch landed (`git show 68381ff:docs/briefs/long_wall_build.md`; the design `git show 68381ff:docs/long_wall_proposal.md`): the build order for Ryan's redesign of 5 and 6 November, the battle as the defence of a long wall, Phases 1 and 2 built, the reinforcement cut, the field's loot, the compositions as grids; what is open is the bible's section 12 (the shell, the formation pass, the refit) | the battle | rule | landed |
 
 Not briefed here: the large Aphelion hovercraft (parked by Ryan; below); the empty slots toward
 each maker's ten (later maker sessions); cantrips (Ryan's idea of small Rapid pieces with no
@@ -311,10 +439,9 @@ in its brief; the full rounds are in git (above).
 - The exposed-rotor helicopter (Ryan, 20 October: to Aphelion after all, "they have rotor
   precedence there"; it was Wainwright & Sutler's on 12 October and offered to Kestrel on 19):
   a shape for an Aphelion session, no mechanic attached.
-- The aura-shifter (Claude, 18 October, proposed for Kestrel as a mode-shifter of its shield,
-  three locked shields each a tuning that holds while it stands; Ryan, 19 October: it reads as
-  an Aphelion tier three, "an all-in aura support, maybe, with shifting auras for the team"):
-  for an Aphelion session, beside the Carrier.
+- The aura-shifter (Claude, 18 October, proposed for Kestrel as a mode-shifter of its shield;
+  Ryan, 19 October: an Aphelion tier three, "an all-in aura support, maybe, with shifting auras for
+  the team"): folded into the Macross's shifts on the ten-a-maker plan (`aphelion_macross.md`).
 - The large hovercraft, parked by Ryan (12 October: "Me trying to fill out the hovercraft
   roster, but we can park it for now"): proposed at tier two, heavy, hover. Its holes:
   Aphelion's "high-tech suites over light hulls" against a hover tank, and the Stingray already
@@ -323,23 +450,8 @@ in its brief; the full rounds are in git (above).
   considering that it's possible engagement range could change, it would be tough to balance
   it now"): a machine joining fights three hexes away; attack range is already a number on
   each unit (`Unit.attack_range`, 2 today).
-- The time-shifter (Ryan, 17 October, from the funnel-web's session: "There might be an
-  Aphelion machine that wants to control the battlefield by delaying and redirecting blows,
-  some kind of spacetime manipulator. Soft control, moving or delaying hits as a whole
-  identity."): delay (a foe's next move gathers a round, the countdown as built, so the blow
-  lands late and dies with the foe) and redirect (the blows meant for a machine re-pick by the
-  foes' aim, held rather than lost when no one else stands, the phase its action for the
-  round). Holes for its brief: delay alone is tempo and the fight's last blow, so it pairs with
-  burst; a redirect onto a chosen ally is an interpose by proxy, which the redirection row
-  allows on a locked piece only; our countdown chip on their foe must read as ours; it parts
-  from the jellyfish by pattern (the jellyfish changes the move and purges; this moves the blow
-  in time and target).
-- The burrow, grown on the spider and moved here (Claude, 17 October; Ryan: "hilarious", and
-  "is this actually a broken ability, shuffling all intents away?"): spent on itself,
-  every foe aiming at it re-picks. Broken on the spider (with Rapid it deletes the ambush
-  limit, a locked piece feeding only its own passive; alone, blows lost would be a free stun)
-  and a reverse Lure without the choice for the ally; sound as the time-shifter's shift with the
-  two fixes above.
+- The time-shifter and the burrow: their own brief since 5 November (`aphelion_time_shifter.md`),
+  where the bench's notes moved.
 - Three slot-in ideas for Aphelion's control once the Umbra Inducer went to the Arsenal
   (Claude, 22 October, in the stock pass's stun discussion; Ryan, the same day: logged as
   possibilities, and none gets a brief until the Aphelion roster's powers are read, "or we'll
@@ -347,7 +459,8 @@ in its brief; the full rounds are in git (above).
   register (Indirect, no damage; every status the target carries is laid a stack on the foes
   beside it, so the Paradox counts each and every maker's status build feeds it); a stasis
   piece in the time-shifter's register (the target's statuses do not fade through the next
-  round, its Numbed included, so stun teams pay for it); the Zenith Emitter's promised
+  round, its Numbed included, so stun teams pay for it; the time-shifter's passive in its
+  brief's first round); the Zenith Emitter's promised
   tier-three return as a status reader (a flat beam adding for each kind of status the foe
   carries, the Tensor's read as a gun), which would give Aphelion a tier three and draw the
   line that the Arsenal consumes statuses where Aphelion reads them.

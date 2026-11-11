@@ -7,7 +7,7 @@ extends TestCase
 func _screen(seed_value: int = 3, massive: Foe = null) -> SkirmishScreen:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(seed_value)
-	for id in ["badger", "clydesdale", "sparrowhawk"]:
+	for id in ["badger", "clydesdale", "kite"]:
 		sk.add_mech(db.make_mech(id))
 	var ghouls := Unit.pack(1, "ghouls", Vector2i.ZERO, "marsh", 2, 4, "revenant")
 	sk.add_foes(db.foes_for(ghouls), ghouls)
@@ -18,6 +18,66 @@ func _screen(seed_value: int = 3, massive: Foe = null) -> SkirmishScreen:
 	var screen := SkirmishScreen.new()
 	screen.setup(sk)
 	return screen
+
+
+## Jenny's heat lines (Ryan, 10 November: "The heat warning shouldn't fire every time, not
+## anymore ... we only need to warn: -Every time we're overheating -The first time we reach over
+## the warning threshold, but not again until we've got back under"): the warning once as a
+## machine passes three quarters, silent while it stays there, armed again once it is seen back
+## under; the overheat for every spend that heats a machine and leaves it over its cap.
+func test_the_heat_warning_once_and_the_overheat_every_time() -> void:
+	var s := _screen()
+	var ms: Skirmish.MechState = s.sk.mechs[0]
+	var cap := ms.heat_max
+	var line := (cap * 3 + 3) / 4   # the first heat at three quarters or past
+	assert_true(cap >= 8 and line < cap, "a cap with room between the warning and the burn")
+	var before: Array = s._heats()
+	ms.heat = line
+	assert_eq(s._heat_hook(before), "heat_high", "past three quarters for the first time: warned")
+	before = s._heats()
+	ms.heat = line + 1
+	assert_eq(s._heat_hook(before), "", "hotter and still past it: not again")
+	before = s._heats()
+	s.sk.mechs[1].heat += 1
+	assert_eq(s._heat_hook(before), "", "another machine's spend, the first still hot: not again")
+	# Back under and over again with no look between (an undo and the same spend): not again.
+	before = s._heats()
+	ms.heat = line
+	assert_eq(s._heat_hook(before), "", "never seen back under: not again")
+	before = s._heats()
+	ms.heat = cap + 1
+	assert_eq(s._heat_hook(before), "overheat", "over the cap: the overheat")
+	before = s._heats()
+	ms.heat = cap + 2
+	assert_eq(s._heat_hook(before), "overheat", "heated again while over: the overheat, every time")
+	before = s._heats()
+	s.sk.mechs[1].heat += 1
+	assert_eq(s._heat_hook(before), "", "a spend that heats another machine says nothing of the one already over")
+	# The turn's end settles it at the cap, still past three quarters: no second warning.
+	ms.heat = cap
+	before = s._heats()
+	s.sk.mechs[1].heat += 1
+	assert_eq(s._heat_hook(before), "", "down from the overheat to its cap: not warned again")
+	before = s._heats()
+	ms.heat = cap + 1
+	assert_eq(s._heat_hook(before), "overheat", "over again the next turn: the overheat again")
+	# Cooled back under as a round opens, then past the line again: warned again.
+	ms.heat = line - 1
+	s._heat_rearm()
+	before = s._heats()
+	ms.heat = line
+	assert_eq(s._heat_hook(before), "heat_high", "back under and over again: warned again")
+	# Straight from cool to over the cap: the overheat alone, and no warning once it settles.
+	var other: Skirmish.MechState = s.sk.mechs[2]
+	other.heat = 0
+	s._heat_rearm()
+	before = s._heats()
+	other.heat = other.heat_max + 1
+	assert_eq(s._heat_hook(before), "overheat", "cool to over the cap in one spend: the overheat")
+	other.heat = other.heat_max
+	before = s._heats()
+	assert_eq(s._heat_hook(before), "", "settled at its cap: no warning after the overheat")
+	s.free()
 
 
 func test_screen_builds_and_starts_round_one() -> void:
@@ -73,6 +133,195 @@ func test_a_tap_reads_a_die_and_a_double_tap_or_a_hold_locks_it() -> void:
 	assert_true(s._pop.is_empty(), "nor one under a codex opened meanwhile")
 	s._close_codex()
 	s.free()
+
+
+## Every entry's targeting mark stands under its main mark, never a chip on its rail (Ryan, 2
+## November: "Use a straight arrow for direct, and the curved arrow for indirect, and then
+## standardize the width of those with the width of the 3 hex symbol"; 3 November: "putting
+## targeting underneath"): an arrow under a weapon's sight or equipment's gear aimed at a foe,
+## three hexes under a shield, a vent or equipment spent on machines ("center filled for
+## self-only, left/right filled for ally only, all filled for self or ally"), the default
+## included; a buff and a debuff one equipment mark. A reach over every ally or every foe is a
+## keyword's chip.
+func test_whom_a_piece_reaches_is_three_hexes_under_its_main_glyph() -> void:
+	var shield := Face.shield(4)
+	assert_eq(Glyphs.aim_for(shield), "aim_any", "itself or an ally, the default: all three lit")
+	shield.targets = Face.Target.SELF
+	assert_eq(Glyphs.aim_for(shield), "aim_self", "itself only: the middle")
+	shield.targets = Face.Target.ALLY
+	assert_eq(Glyphs.aim_for(shield), "aim_ally", "its allies only: the two beside it")
+	shield.reaches_all = true
+	assert_eq([Glyphs.aim_for(shield), shield.targets], ["aim_every_other_ally", Face.Target.EVERY_OTHER_ALLY], "its allies all at once: its targeting mode, Every Other Ally, its own cell dark under the arch (4 November)")
+	assert_true(shield.keywords.is_empty(), "never a keyword, so a Silence leaves it whole")
+	var team := Face.shield(4)
+	team.reaches_all = true
+	assert_eq([Glyphs.aim_for(team), team.targets], ["aim_every_ally", Face.Target.EVERY_ALLY], "itself and its allies all at once: Every Ally, its own cell lit")
+	var vent := Face.vent(3)
+	vent.targets = Face.Target.SELF
+	assert_eq([Glyphs.primary_for(vent), Glyphs.aim_for(vent)], ["vent", "aim_self"], "a vent's steam over the middle hex")
+	var buff := Face.buff("overcharged", 1)
+	buff.targets = Face.Target.ALLY
+	assert_eq([Glyphs.primary_for(buff), Glyphs.aim_for(buff)], ["equipment", "aim_ally"], "a buff: equipment's gear over the hexes")
+	var gun := Face.attack(0)
+	assert_eq([Glyphs.primary_for(gun), Glyphs.aim_for(gun)], ["equipment", "aim_direct"], "a debuff: the same gear over the straight line")
+	assert_eq([Glyphs.primary_for(Face.attack(0, Face.Reach.INDIRECT)), Glyphs.aim_for(Face.attack(0, Face.Reach.INDIRECT))], ["equipment", "aim_indirect"], "or the lobbed one")
+	assert_eq([Glyphs.primary_for(Face.attack(4)), Glyphs.aim_for(Face.attack(4))], ["weapon", "aim_direct"], "a weapon: its sight over the line")
+	gun.reaches_all = true
+	assert_eq([Glyphs.aim_for(gun), gun.reach], ["aim_every_foe", Face.Reach.EVERY_FOE], "over every foe: its targeting mode, Every Foe, and its own mark (4 November)")
+	var lure := DieFaceView.new()
+	lure.set_face(gun)
+	assert_eq(lure.rail_tags(), [] as Array[String], "nothing on the rail: a targeting mode is its mark, never a chip")
+	lure.free()
+	assert_eq(Glyphs.aim_for(Face.empty_slot()), "", "a blank holds nothing")
+	var d := DieFaceView.new()
+	var own := Face.shield(4)
+	own.targets = Face.Target.SELF
+	own.add_keyword(Face.Keyword.CLEANSE)
+	d.set_face(own)
+	assert_eq(d.rail_tags(), ["cleanse"] as Array[String], "the rail carries its keyword and no self chip")
+	own.targets = Face.Target.ALLY
+	assert_eq(d.rail_tags(), ["cleanse"] as Array[String], "nor an ally chip")
+	d.free()
+	var db := ContentDB.load_default()
+	var narrowed := 0
+	for cid in db.components.keys():
+		var comp: Dictionary = db.components[cid]
+		if str(comp.get("status", "")) == "planned" or not (comp.get("face", null) is Dictionary):
+			continue
+		var f := db.build_face(comp["face"])
+		var aim := Glyphs.aim_for(f)
+		assert_true(aim.begins_with("aim_"), "%s: its main icon holds whom it is aimed at (%s)" % [cid, aim])
+		assert_eq(aim in ["aim_self", "aim_ally", "aim_any", "aim_every_ally", "aim_every_other_ally"], f.on_machines(), "%s: the hexes on a piece spent on machines, a line of fire or the formation on one aimed at a foe" % cid)
+		if f.on_machines() and f.targets != Face.Target.SELF_ALLY:
+			narrowed += 1
+	assert_true(narrowed > 0, "content narrows some (%d)" % narrowed)
+
+
+## The main mark holds what the entry delivers (Ryan, 3 November: "moving the number inside of
+## the icon"): equipment, which prints no number, holds what it grants or lays inside its gear (a
+## buff's status; a debuff's first keyword that does something to a foe, in content's order; the
+## star for a rule of its own), and the rail never shows it twice; a shield and a vent in one entry
+## is one mark, the shield and the steam (the Wake Diffuser, the Sutler's Hoist), its cooling a
+## number the die prints, never the star; a reload cools nothing, its shells its whole mark.
+func test_the_main_mark_holds_what_an_entry_delivers() -> void:
+	var buff := Face.buff("overcharged", 2)
+	assert_eq(DieFaceView.inside_effect(buff), "overcharged", "a buff: its status inside the gear")
+	var d := DieFaceView.new()
+	d.set_face(buff)
+	assert_false(d.rail_tags().has("overcharged"), "and never on the rail too")
+	var lure := Face.attack(0, Face.Reach.EVERY_FOE, [Face.Keyword.LURE, Face.Keyword.CRYO])
+	assert_eq(DieFaceView.inside_effect(lure), "lure", "a debuff: its first keyword that does something to a foe")
+	d.set_face(lure)
+	assert_eq(d.rail_tags(), ["cryo"] as Array[String], "the second effect on the rail, the first inside, Every Foe its targeting mark")
+	var mines := Face.attack(0)
+	mines.gathers_mines = true
+	assert_eq(DieFaceView.inside_effect(mines), "star", "a debuff whose effect is a rule of its own holds the star")
+	d.set_face(mines)
+	assert_false(d.rail_tags().has("star"), "and the rail does not star it again")
+	assert_eq(DieFaceView.inside_effect(Face.attack(4, Face.Reach.DIRECT, [Face.Keyword.BURN])), "", "a weapon holds its number, never a keyword")
+	d.free()
+	var wake := Face.vent(3)
+	wake.shields = 3
+	var hoist := Face.shield(3)
+	hoist.vents = 2
+	assert_eq([Glyphs.primary_for(wake), Glyphs.primary_for(hoist)], ["shield_vent", "shield_vent"], "a shield and a vent in one entry: one mark, the shield and the steam, whichever half leads")
+	assert_false(hoist.has_unique_rule(), "the Hoist's cooling is a number the die prints, never the star")
+	assert_false(hoist.rule_phrases().has("cools 2"), "nor a rule the hold lists")
+	var reload := Face.vent(0)
+	reload.reloads_ammo = 2
+	assert_eq(Glyphs.primary_for(reload), "ammo", "a reload cools nothing: its shells and its number, no steam")
+
+
+## What a machine's passive adds to an entry stands in its passive box at the rail's foot (Ryan, 4
+## November: "Can't we just put the number in the cassowary-type box, call that the 'passive helper
+## box' for all these types of effects?"): a blow added after the strikes as "+N", no mark (the
+## Storm Petrel's), a vent's blast by its mark (the Whip Scorpion's), a stepping die's next entry by
+## its main mark (the Cassowary's); never beside the main mark, never joined to its number.
+func test_a_passive_adds_its_box_at_the_rails_foot() -> void:
+	var picked := func(d: DieFaceView) -> Array:
+		return d.passive_marks().map(func(m: Array) -> Array: return [m[0], DieFaceView.passive_plain(m[1])])
+	var d := DieFaceView.new()
+	d.set_face(Face.attack(4))
+	assert_eq(picked.call(d), [], "a plain weapon: no box")
+	var hot := Face.attack(4)
+	hot.burns = 3
+	d.set_face(hot)
+	assert_eq(picked.call(d), [["shield", "3"]], "a weapon whose shield pays its heat: what the shield pays, a blow after the strikes, beside the shield's mark")
+	var lines := EntryReadout.effects_of(hot)
+	var boxed := lines.filter(func(l: Dictionary) -> bool: return (l.get("marks", []) as Array).any(func(m: Dictionary) -> bool: return m.has("passive")))
+	assert_eq(boxed.size(), 1, "the readout says it on one line")
+	assert_eq(str(boxed[0]["text"]), "Its shield pays 3 of the heat, and the target takes as much after the strikes", "the tap popup clarifies the number, both the spend and the blow")
+	assert_false(lines.any(func(l: Dictionary) -> bool: return (l.get("marks", []) as Array).any(func(m: Dictionary) -> bool: return str(m.get("glyph", "")) == "shield")), "and no shield cost line: the passive's payment is no cost")
+	assert_eq((boxed[0]["marks"] as Array)[0]["passive"], ["shield", "3"], "headed by the box the die shows")
+	d.after_blow = 2
+	assert_eq(picked.call(d), [["shield", "2"]], "over a foe, that foe's share")
+	d.after_blow = -1
+	d.set_face(Face.vent(3))
+	d.blast = 4
+	assert_eq(picked.call(d), [["blast", "4"]], "a vent's blast by its mark, a bare +4 beside a vent reading as cooling")
+	d.blast = 0
+	d.set_face(Face.attack(3))
+	d.next_face = Face.shield(5)
+	assert_eq(picked.call(d), [["shield", "5"]], "a stepping die's next entry by its mark and its number (Ryan, 4 November: \"Maybe icon+face number?\")")
+	d.next_face = Face.attack(6)
+	assert_eq(picked.call(d), [["weapon", "6"]], "a weapon's blow")
+	d.next_number = "8"
+	assert_eq(picked.call(d), [["weapon", "8"]], "as it would deal it now, the screen's live blow")
+	d.next_number = ""
+	d.next_face = Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.LURE])
+	assert_eq(picked.call(d), [["equipment", ""]], "equipment: its gear, no number (Ryan, 4 November: \"Why drop the equipment gear icon?\")")
+	assert_eq((d.passive_marks()[0][1] as Array)[0][2], "lure", "and what it lays where a number would stand")
+	var wake := Face.vent(3)
+	wake.shields = 2
+	d.next_face = wake
+	assert_eq(picked.call(d), [["", "2|3"]], "a shield and a vent in one: the two numbers alone, shield | cool (Ryan, 4 November)")
+	assert_eq((d.passive_marks()[0][1] as Array).map(func(r: Array) -> Color: return r[1]), [Palette.SHIELD, Palette.MUTED, Palette.HEAT], "each in its colour")
+	d.free()
+	var db := ContentDB.load_default()
+	var next := Face.shield(5)
+	next.component = str(db.components.keys()[0])
+	var said := EntryReadout.next_chamber_line(next, 2, db)
+	assert_eq(str(said["text"]), "A roll or reroll steps it to II, %s" % db.component_name(next.component), "the tap popup names where the die steps (Ryan, 4 November)")
+	assert_eq((said["marks"] as Array)[0]["passive"], ["shield", "5"], "headed by the box the die shows")
+
+
+## Every number a main mark holds is one size, the size the widest of them fits (Ryan, 3 November:
+## "you can measure max width just with the multi-strikes text"; 4 November, a weapon's strikes
+## beside its sight as equipment's stacks are): a two-digit blow is the widest the sight holds,
+## measured at DieFaceView.NUMBER_SIZE; it fits DieFaceView.NUMBER_ROOM, the room sits inside the
+## sight's ring, and every weapon's, shield's and vent's number in content fits it.
+func test_every_number_a_main_mark_holds_fits_at_one_size() -> void:
+	var mono := Hud.mono()
+	var px := DieFaceView.NUMBER_SIZE
+	var width := func(t: String) -> float: return mono.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, px).x
+	var db := ContentDB.load_default()
+	var most := 1
+	for cid in db.components.keys():
+		var comp: Dictionary = db.components[cid]
+		if str(comp.get("status", "")) == "planned" or not (comp.get("face", null) is Dictionary):
+			continue
+		var f := db.build_face(comp["face"])
+		if not (f.is_weapon() or f.kind == Face.Kind.SHIELD or f.kind == Face.Kind.VENT):
+			continue
+		most = maxi(most, f.strikes)
+		var text := str(f.power)
+		assert_true(width.call(text) <= DieFaceView.NUMBER_ROOM, "%s: %s fits at the one size (%.0f)" % [cid, text, width.call(text)])
+	assert_true(most > 1, "content strikes more than once (%d)" % most)
+	assert_true(width.call("12") <= DieFaceView.NUMBER_ROOM, "the widest, a buffed two-digit blow, fits (%.0f)" % width.call("12"))
+	var burst := Face.attack(2)
+	burst.strikes = most
+	var d := DieFaceView.new()
+	d.set_face(burst)
+	assert_eq(DieFaceView.die_number(burst), "2", "a weapon's number is a strike's blow alone; its strikes stand beside the sight")
+	d.free()
+	var s := DieFaceView.MAIN_W * 0.5
+	var ring := s * Glyphs.SIGHT_RING - 1.2   # the ring's inner edge, half its line in
+	var corner := Vector2(DieFaceView.NUMBER_ROOM * 0.5, mono.get_ascent(px) * 0.4).length()
+	assert_true(corner + 2.0 <= ring, "the room's corners clear the sight's ring (%.1f inside %.1f)" % [corner, ring])
+	# The ticks cross the ring inward (Ryan, 3 November: "have the sight lines extend inwards of
+	# the circle"): the side ones stop short of the widest number.
+	var side_tick := s * Glyphs.SIGHT_RING - s * 0.12
+	assert_true(side_tick >= DieFaceView.NUMBER_ROOM * 0.5 + 1.0, "the side ticks' ends clear the room (%.1f past %.1f)" % [side_tick, DieFaceView.NUMBER_ROOM * 0.5])
 
 
 ## The die's tap waits out the double-tap window (Ryan, 30 October), so a double-tap never shows a
@@ -141,6 +390,17 @@ func test_a_dies_tap_waits_out_the_double_tap_window_lit() -> void:
 	d._gui_input(press)
 	d._gui_input(release)
 	assert_eq(count["tap"], 2, "without the wait a tap lands at once")
+	# The window runs from the tap's release to the second touch (Ryan, 9 November: "die face single
+	# press delay can be a bit faster, even"), so the second press's own length never spends it.
+	d.confirm_taps = true
+	d._last_tap_at = -10.0
+	d._gui_input(press)
+	d._gui_input(release)
+	d._gui_input(press)   # the second touch inside the window
+	d._last_tap_at -= 1.0   # held long, as a slow finger's second press is: its release is late
+	d._gui_input(release)
+	assert_eq(count["double"], 2, "a second touch inside the window is a double-tap however long it is held")
+	assert_true(DieFaceView.DOUBLE_TAP_SECONDS <= 0.15, "the single tap's wait")
 	d.free()
 
 
@@ -155,6 +415,37 @@ func test_reroll_skips_locked_and_spent_dice() -> void:
 	s.free()
 
 
+## REROLL lights only with a die it can roll (the audit's tenth bug, 8 November): every die
+## spent or locked, it goes dark.
+func test_reroll_goes_dark_with_every_die_spent_or_locked() -> void:
+	var s := _screen(5)
+	s._refresh()
+	assert_false(s._reroll_btn.disabled, "unspent dice: lit")
+	for i in range(s.sk.mechs.size()):
+		s.locked[i] = true
+	s._refresh()
+	assert_true(s._reroll_btn.disabled, "every die locked: dark")
+	var before := s.sk.rerolls_left
+	s._on_reroll()
+	assert_eq(s.sk.rerolls_left, before, "and a press spends nothing")
+	s.free()
+
+
+## END TURN asks about a die only where it could be spent (the audit's twelfth bug, 8 November): a
+## shield whose cost the machine cannot pay has nowhere to go, so it is no waste.
+func test_end_turn_counts_only_dice_with_somewhere_to_go() -> void:
+	var s := _screen(5)
+	for i in range(s.sk.mechs.size()):
+		var costly := Face.shield(10)
+		costly.shield_cost = 99
+		s.sk.mechs[i].unit.die = Die.single(costly)
+		s.sk.mechs[i].die = s.sk.mechs[i].unit.die
+		s.sk.mechs[i].face_index = 0
+	assert_false(s.sk.can_spend(0), "a shield cost it cannot pay: nowhere to spend it")
+	assert_eq(s._unspent_count(), 0, "so END TURN has nothing to ask about")
+	s.free()
+
+
 func test_attack_then_reroll_flow() -> void:
 	var s := _screen(5)
 	var attacker := -1
@@ -165,7 +456,7 @@ func test_attack_then_reroll_flow() -> void:
 	assert_true(attacker >= 0, "someone rolled an attack")
 	var target: Foe = s.sk.targets_for(attacker)[0]
 	assert_true(s._use_die(attacker, target), "attack lands first")
-	assert_true(s._roll_label.visible, "the number flashed over the target")
+	assert_false(s.sk.spend_blows.is_empty(), "its blows recorded, to land a strike at a time")
 	assert_false(s._reroll_btn.disabled, "reroll still available after attacking")
 	s._on_reroll()
 	assert_eq(s.sk.rerolls_left, Skirmish.REROLLS_PER_ROUND - 1, "reroll spent after the attack")
@@ -309,9 +600,9 @@ func test_a_units_hold_reads_its_gauges_its_chips_and_a_foes_intent() -> void:
 	assert_eq(int(gauges["Shield"]["parts"][1]["trend"]), 0, "one nothing moved: plain")
 	assert_true(s._details_entry.text().contains("Armour %d · Cooling %d" % [m.armour, m.cooling]), "its armour and cooling as stats, nothing moved: %s" % s._details_entry.text())
 	assert_false(s._details_entry.text().contains("breaks the shield"), "no shield-break warning: the gauges preview the blows")
-	assert_true(chips.any(func(c: String) -> bool: return c.begins_with("Empowered")), "every chip listed with what it does: %s" % str(chips))
+	assert_true(chips.any(func(c: String) -> bool: return c.begins_with("Buff, Empowered")), "every chip listed with what it does, a buff's said so: %s" % str(chips))
 	# A foe: its HP, its attack a rally raised (the foe's gain: up and green), its intent.
-	Effects.grant_for_rounds(foe, Effects.kindled(2), "test", sk.round + 1)
+	Effects.stack(foe, Effects.STATUS["kindled"], Effects.SKIRMISH, "test", 2, Effects.DECAY_HALF)
 	s._refresh()
 	s._on_foe_held(s._foe_view_for(foe))
 	var said := s._details_entry.text()
@@ -542,8 +833,7 @@ func test_the_keywords_list_holds_every_term_the_dice_print() -> void:
 
 
 ## The rules the hold lists last are the ones the entry prints, word for word, for every
-## component in content and its charged form; a piece reaching every ally never says it
-## reaches every foe.
+## component in content and its charged form; a piece reaching every ally never says every foe.
 func test_every_rule_the_hold_lists_is_one_the_entry_prints() -> void:
 	var db := ContentDB.load_default()
 	var checked := 0
@@ -553,7 +843,7 @@ func test_every_rule_the_hold_lists_is_one_the_entry_prints() -> void:
 			assert_true(f.describe().contains(r), "%s prints %s: %s" % [cid, r, f.describe()])
 			checked += 1
 		if not f.is_attack():
-			assert_false(f.describe().contains("reaches every foe"), "%s, spent on machines, reaches no foe: %s" % [cid, f.describe()])
+			assert_false(f.describe().contains("every foe"), "%s, spent on machines, reaches no foe: %s" % [cid, f.describe()])
 	assert_true(checked > 10, "the rules read: %d" % checked)
 
 
@@ -610,7 +900,7 @@ func test_double_tap_opens_and_closes_the_codex() -> void:
 	assert_true(s._codex._title.text.contains(title), "titled with the chassis name from content")
 	var headless := DisplayServer.get_name() == "headless"   # no renderer: the model view cannot draw
 	assert_true(headless or (s._codex._sprite.visible and s._codex._sprite.texture != null), "head-on model shown")
-	assert_true(s._codex._passives.visible, "sparrowhawk's passive is shown")
+	assert_true(s._codex._passives.visible, "kite's passive is shown")
 	var passive_name := str(ContentDB.load_default().chassis.get(s.sk.mechs[2].unit.chassis_id, {}).get("passive", {}).get("name", "")).to_lower()
 	var shown := s._codex._passives.text().to_lower()
 	assert_true(not passive_name.is_empty() and shown.contains(passive_name), "by its name from content")
@@ -666,22 +956,20 @@ func test_end_turn_runs_the_enemy_and_returns_to_the_player() -> void:
 	for m in s.sk.mechs:
 		after += m.unit.hull + m.unit.shield
 	assert_true(after < before, "the enemy acted in between")
-	assert_true(s.sk.can_withdraw(), "withdraw offered at the start of round two")
-	assert_false(s._withdraw_btn.disabled, "withdraw button enabled")
+	assert_false(s.sk.can_withdraw(), "no withdrawal at the start of round two either (the long wall brief 3.5)")
+	assert_false(has_button(s, "WITHDRAW"), "and no button for one")
 	s.free()
 
 
-func test_withdraw_asks_then_shows_overlay() -> void:
+## There is no withdrawal (the long wall brief 3.5 and 7.5): the screen has no button for one at
+## any point of the fight, and the fight goes on.
+func test_there_is_no_withdrawal_on_the_screen() -> void:
 	var s := _screen(5)
-	assert_false(s._withdraw_btn.disabled, "withdraw open at the start of round one")
+	assert_false(has_button(s, "WITHDRAW"), "no withdraw button at the start of round one")
 	s._end_turn_now()
-	s._on_withdraw()
-	assert_true(s._confirm.visible, "withdraw always asks first")
-	assert_eq(s.sk.outcome, Skirmish.Outcome.NONE, "not yet withdrawn")
-	s._confirm_yes()
-	assert_eq(s.sk.outcome, Skirmish.Outcome.WITHDRAWN, "withdrawn")
-	assert_true(s._overlay.visible, "overlay shown")
-	assert_eq(s._overlay_title.text, "WITHDREW", "title")
+	assert_false(has_button(s, "WITHDRAW"), "nor at round two's")
+	assert_false(s.sk.can_withdraw(), "nor any withdrawal to take")
+	assert_eq(s.sk.outcome, Skirmish.Outcome.NONE, "and the fight goes on")
 	s.free()
 
 
@@ -843,10 +1131,12 @@ func test_a_rage_roll_bursts_the_chip_and_gives_the_die_back() -> void:
 	s.free()
 
 
-## A capped store on the screen (Ryan, 22 October: the rage, individual boxes up to the cap):
-## boxes under the heat lit to its count, in its chip's colour, and no chip; a rage spent from
-## them bursts there as it did from the chip.
-func test_a_capped_store_shows_as_boxes_under_the_heat_in_its_chips_place() -> void:
+## A capped store on the screen (Ryan, 22 October: every store a bar; 10 November: "Resource bars
+## like the badgers should be the same shape as the other resource bars, and continuous ...
+## nestle under the Heat bar, same shape, divided into four clear segments"): one bar under the
+## heat, a gauge's own shape and step, a segment a stack up to its cap, lit to its count, in its
+## chip's colour, and no chip; a rage spent from it bursts on the segment that emptied.
+func test_a_capped_store_shows_as_a_segmented_bar_under_the_heat_in_its_chips_place() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
 	var m := db.make_mech("badger")
@@ -862,13 +1152,52 @@ func test_a_capped_store_shows_as_boxes_under_the_heat_in_its_chips_place() -> v
 	Effects.stack(m, Effects.STATUS["rage"], Effects.SKIRMISH, "test", 2, Effects.DECAY_NONE)
 	s._refresh()
 	var v: UnitView = s._mech_views[0]
-	assert_eq([int(v.boxes[0]), int(v.boxes[1])], [2, 5], "two of five boxes lit")
-	assert_eq(str(v.boxes[3]), SkirmishScreen.status_glyph("rage"), "the store's own mark, for its burst")
+	assert_eq([int(v.store[0]), int(v.store[1])], [2, 5], "two of five segments lit")
+	assert_eq(str(v.store[3]), SkirmishScreen.status_glyph("rage"), "the store's own mark, for its burst")
+	# The bar is one more gauge in the stack: under the last of them, their width, their height.
+	assert_eq(v._store_step(), UnitView.BAR_STEP, "it takes a gauge's step in the stack")
+	var first: Rect2 = v._store_cell(0)
+	var last: Rect2 = v._store_cell(4)
+	assert_true(is_equal_approx(first.position.y, v._bars_top() + v.bars.size() * UnitView.BAR_STEP), "directly under the heat, the last gauge")
+	assert_true(is_equal_approx(first.position.x, v.size.x * 0.1) and is_equal_approx(last.end.x, v.size.x * 0.9), "across the gauges' own width")
+	assert_eq(first.size.y, UnitView.BAR_H, "a gauge's height")
+	# Its units are cells of their own, one width, clear ground between each and the next (Ryan,
+	# 10 November: "split them into different bars with borders and whitespace, in the same row").
+	for k in range(4):
+		var here: Rect2 = v._store_cell(k)
+		var next: Rect2 = v._store_cell(k + 1)
+		assert_true(next.position.x - here.end.x >= 1.0, "a hairline of ground between cell %d and %d" % [k, k + 1])
+		assert_true(is_equal_approx(here.size.x, next.size.x) and is_equal_approx(here.position.y, next.position.y), "one width, one row")
 	for r in s._mech_rows(0):
 		assert_ne(str(r[0]), SkirmishScreen.status_glyph("rage"), "and no rage chip")
 	assert_true(s._use_die(0, sk.front[0]), "the fist lands")
 	assert_true(v._spend >= 0.0 and v._spend_glyph == SkirmishScreen.status_glyph("rage"), "the spent rage bursts")
-	assert_eq(int(v.boxes[0]), 1, "one box left lit")
+	assert_eq(int(v.store[0]), 1, "one segment left lit")
+	assert_true(((v._chip_rects[SkirmishScreen.status_glyph("rage")][0]) as Rect2).encloses(v._store_cell(1)), "the burst on the segment that emptied")
+	s.free()
+
+
+## The Honey Badger's hopper is such a bar, four segments, and what its loads are worth is an
+## Armoured chip like any buff's, never an ability's (10 November).
+func test_the_badgers_hopper_is_a_bar_of_four_and_its_plate_an_armoured_chip() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	sk.add_mech(m)
+	sk.add_foes([Foe.make("revenant", 300, 10)])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	Effects.add_loads(m, 3)
+	s._refresh()
+	var v: UnitView = s._mech_views[0]
+	assert_eq([int(v.store[0]), int(v.store[1])], [3, 4], "three of four segments lit")
+	var armoured := 0
+	for r in s._mech_rows(0):
+		assert_ne(str(r[0]), SkirmishScreen.status_glyph("hopper"), "no chip for the loads, and none in the hopper's mark")
+		if str(r[0]) == SkirmishScreen.status_glyph("braced"):
+			armoured += 1
+			assert_eq(str(r[5]) if r.size() > 5 else "", "buff", "a buff's chip, one a Purge takes")
+	assert_eq(armoured, 1, "one Armoured chip for what the loads are worth")
 	s.free()
 
 
@@ -922,8 +1251,7 @@ func test_a_status_kept_for_the_battle_is_a_chip_with_its_count() -> void:
 	s.setup(sk)
 	Effects.remove(m, "overcharged")
 	assert_true(Effects.keeps(m, "overcharged"), "the machine keeps Empowered")
-	sk._overcharge_on_kill(sk.mechs[0], sk.front[0], 1)
-	sk._overcharge_on_kill(sk.mechs[0], sk.front[0], 1)
+	sk._overcharge_on_kill(sk.mechs[0], 2, 1)   # two kills, a stack each
 	var scopes: Array = []
 	for d in Effects.describe(m):
 		if str(d[5]) == "overcharged":
@@ -936,7 +1264,7 @@ func test_a_status_kept_for_the_battle_is_a_chip_with_its_count() -> void:
 	assert_eq(_chips_for(s, 0, "overcharged"), ["×3"] as Array[String], "a buff's for the round joins it in one chip")
 	var held := 0
 	for l in s._mech_hold_lines(0):
-		if str(l["style"]) == "chip" and str(l["text"]).begins_with("Empowered"):
+		if str(l["style"]) == "chip" and str(l["text"]).begins_with("Buff, Empowered"):
 			held += 1
 	assert_eq(held, 1, "the hold lists it once")
 	var named := 0
@@ -987,7 +1315,8 @@ func test_a_braced_foe_wears_one_braced_chip() -> void:
 	assert_eq(chips.size(), 1, "one chip for its brace and the Protect on top")
 	if chips.size() == 1:
 		assert_eq(str(chips[0][1]), "+15", "the armour both add")
-		assert_eq(str(chips[0][2]), "Armoured: armour +15 until its next action", "named Armoured, as a machine's is")
+		assert_eq(str(chips[0][2]), "Buff, Armoured +15", "named Armoured, as a machine's is, with what the chip counts (its meaning a tap on the term), labelled a buff")
+		assert_eq(str(chips[0][5]), "buff", "and its chip wears a buff's mark")
 	s.free()
 
 
@@ -1079,38 +1408,125 @@ func test_every_status_on_its_way_wears_a_preview_chip() -> void:
 	s.free()
 
 
-## A buff a purge put to sleep (28 October) wears its chip asleep on the machine, its hold line
-## saying so, until the player's turn wakes it; the machine's view carries each row's style, so
-## a chip on its way pulses there as on a foe.
-func test_a_buff_a_purge_put_to_sleep_wears_its_chip_asleep() -> void:
+## A kill a foe comes back from takes the skull's place in the preview (Ryan, 7 November: "a revive
+## or a split SHOULD be a preview chip that shows up, taking the place of a death chip"): the
+## rising arrow on a foe that gets back up, the fork on one that splits, and no skull on either.
+## The screen plays a fall and a rise only where the engine says one happened (the audit's
+## eleventh bug, 8 November): a Purge that takes a foe's Getting Back Up without felling it plays
+## no death; a blow that fells a foe that gets back up plays its fall and its rise.
+func test_a_purge_that_takes_undying_from_a_standing_foe_plays_no_death() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
 	var m := db.make_mech("badger")
-	m.die = Die.single(Face.blank())
+	var purge := Face.attack(1, Face.Reach.DIRECT, [Face.Keyword.DISPEL])
+	purge.dispel = 1
+	m.die = Die.single(purge)
 	sk.add_mech(m)
-	sk.add_foes([Foe.make("revenant", 300, 1)])
+	var riser := Foe.make("revenant", 30, 2)
+	sk.add_foes([riser])
 	var s := SkirmishScreen.new()
 	s.setup(sk)
-	var seal := Effects.stack(m, Effects.sealed_status(3, 2), Effects.SKIRMISH, "seal", 1, Effects.DECAY_NONE)
-	var r := Effects.purge(m)
-	assert_eq(r["slept"], ["Sealed"], "the seal sleeps")
+	Effects.stack(riser, Effects.STATUS["risen"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	assert_true(s._use_die(0, riser), "the purge, a scratch")
+	assert_false(Effects.has(riser, "risen"), "its Getting Back Up taken")
+	assert_eq(s.spend_played, {"dead": [], "rose": []}, "and no fall nor rise played")
+	s.free()
+	var s2_sk := Skirmish.new(1)
+	var m2 := db.make_mech("badger")
+	m2.die = Die.single(Face.attack(50, Face.Reach.DIRECT))
+	s2_sk.add_mech(m2)
+	var back := Foe.make("revenant", 10, 2)
+	s2_sk.add_foes([back, Foe.make("revenant", 300, 2)])
+	var s2 := SkirmishScreen.new()
+	s2.setup(s2_sk)
+	Effects.stack(back, Effects.STATUS["risen"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	assert_true(s2._use_die(0, back), "the felling blow")
+	assert_eq(s2.spend_played, {"dead": [back], "rose": [back]}, "its fall and its rise played")
+	s2.free()
+
+
+func test_a_foe_that_comes_back_wears_its_return_in_place_of_the_skull() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	m.die = Die.single(Face.attack(50, Face.Reach.DIRECT))
+	sk.add_mech(m)
+	var riser := Foe.make("revenant", 10, 2)
+	var gel := Foe.make("revenant", 10, 2)
+	gel.on_death = {"summon": "revenant", "count": 2}
+	sk.foe_factory = func(id: String) -> Foe: return Foe.make(id, 5, 1)
+	sk.add_foes([riser, gel])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	Effects.stack(riser, Effects.STATUS["risen"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	var glyphs := func(f: Foe) -> Array:
+		return s._foe_rows(f).filter(func(r) -> bool: return r.size() >= 5 and str(r[4]) == "preview").map(func(r) -> String: return str(r[0]))
+	s._drag_from = 0
+	s._drag_over = riser
 	s._refresh()
-	var rows: Array = s._mech_rows(0).filter(func(row) -> bool: return row.size() >= 5 and str(row[4]) == "asleep")
-	assert_eq(rows.size(), 1, "one chip asleep")
-	if rows.size() == 1:
-		assert_true(str(rows[0][2]).contains("asleep until your turn"), "its hold line says so")
-	var kinds: Array = s._mech_views[0].statuses.map(func(st) -> String: return str(st[3]) if st.size() >= 4 else "")
-	assert_true(kinds.has("asleep"), "and the machine's view draws it asleep")
-	Effects.wake(m)
+	assert_true(glyphs.call(riser).has("rises"), "the die over the riser: it gets back up")
+	assert_false(glyphs.call(riser).has("skull"), "and wears no skull")
+	s._drag_over = gel
 	s._refresh()
-	assert_true(s._mech_rows(0).all(func(row) -> bool: return row.size() < 5 or str(row[4]) != "asleep"), "awake, it is a plain chip again")
-	assert_true(seal != null, "the seal was granted")
+	assert_true(glyphs.call(gel).has("splits"), "over the gel: it splits")
+	assert_false(glyphs.call(gel).has("skull"), "and wears no skull")
+	s._drag_over = riser
+	Effects.remove(riser, "risen")
+	s._refresh()
+	assert_true(glyphs.call(riser).has("skull"), "a foe with nothing to come back with keeps the skull")
+	s._drag_from = -1
+	s._drag_over = null
+	s.free()
+
+
+## Abilities (Ryan, 8 November: "Nob, and any other enemies with a passive ability, should have an
+## unpurgable passive chip that points out what's going on ... It's not a Buff, it's not a Debuff,
+## it's labelled as an Ability, so it doesn't get purged"; "Can use this for player units as well,
+## like the armadillo's form"): each its glyph on a solid tile, ahead of the statuses, its hold
+## line naming it an Ability; a Purge takes the buffs and leaves them.
+func test_an_ability_wears_its_own_chip_and_no_purge_takes_it() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1, 4)
+	var m := db.make_mech("badger")
+	m.die = Die.single(Face.blank())
+	sk.add_mech(m)
+	var nob := db.make_foe("goblin_nob")
+	var gel := Foe.make("gel", 30, 1)
+	gel.on_death = {"summon": "gel_half", "count": 2, "pair": true}
+	var beast := Foe.make("gargantuan_king", 30, 5)
+	beast.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all"]})}
+	sk.add_foes([nob, gel, beast])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	Effects.stack(m, Effects.sealed_status(3, 2), Effects.SKIRMISH, "seal", 1, Effects.DECAY_NONE)
+	Effects.grant_buff(m, "overcharged", 2, "buff:overcharge_coil", sk.round)
+	Effects.stack(nob, Effects.STATUS["enraged"], Effects.SKIRMISH, "foe:goblin_nob", 2, Effects.DECAY_NONE)
+	s._refresh()
+	var ability := func(rows: Array) -> Array:
+		return rows.filter(func(row) -> bool: return row.size() >= 5 and str(row[4]) == "ability")
+	var mine: Array = ability.call(s._mech_rows(0))
+	assert_eq(mine.size(), 1, "the seal, the machine's form, is an ability")
+	if mine.size() == 1:
+		assert_true(str(mine[0][2]).begins_with("Ability, Sealed"), "its hold line names it an Ability")
+	assert_true(s._mech_views[0].statuses.any(func(st) -> bool: return st.size() >= 4 and str(st[3]) == "ability"), "and the machine's view draws it on its tile")
+	assert_eq(ability.call(s._foe_rows(nob)).size(), 1, "the Nob's rage is its ability")
+	assert_true(str(ability.call(s._foe_rows(nob))[0][2]).contains("Enraged +1"), "which says what goes on")
+	assert_true(s._foe_rows(nob).any(func(row) -> bool: return str(row[2]) == "Buff, Enraged +2" and (row.size() < 5 or str(row[4]) != "ability")), "and what it has gathered is a buff's chip beside it")
+	assert_true(str(ability.call(s._foe_rows(gel))[0][2]).contains("splits"), "a Gel's split is its ability")
+	assert_true(str(ability.call(s._foe_rows(beast))[0][2]).contains("Last Act: Meteor"), "a last act is the Gargantuan King's")
+	Effects.purge(m, 9)
+	Effects.purge(nob, 9)
+	assert_true(Effects.is_sealed(m), "a Purge leaves the seal")
+	assert_false(Effects.has(m, "overcharged"), "and takes the buff")
+	assert_eq([nob.rage, Effects.stacks_of(nob, "enraged")], [1, 0], "the rage stays, what it gathered goes")
+	s._refresh()
+	assert_eq(ability.call(s._foe_rows(nob)).size(), 1, "its chip still there")
 	s.free()
 
 
 ## The four buffs a foe's specials grant (the ladder's brief, B; 28 October) wear the machines'
 ## chips on a foe, each its own mark: Primed's lit flame never the team's Burning's hollow one,
-## Regenerating's heart never Getting Back Up's star, the Barrier's wall and the Ward's struck ring.
+## Regenerating's heart never Undying's star, the Barrier's wall and the Ward's struck ring.
 func test_a_foes_four_buffs_wear_their_own_chips() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
@@ -1132,15 +1548,17 @@ func test_a_foes_four_buffs_wear_their_own_chips() -> void:
 		by[str(r[0])] = r
 	for g in ["primed", "barrier", "ward", "regenerating"]:
 		assert_true(by.has(g), "a %s chip" % g)
-	assert_true(by.has("burn") and by.has("star"), "beside the Burning and the Getting Back Up, each its own")
+	assert_true(by.has("burn") and by.has("star"), "beside the Burning and the Undying, each its own")
+	# The readout names each chip with its count, never what it does (Ryan, 2 November: "unit popups
+	# don't need the chips descriptions spelled out now that we can tap keywords").
 	if by.has("primed"):
 		assert_eq(str(by["primed"][1]), "×2", "Primed counts its stacks")
-		assert_true(str(by["primed"][2]).contains("2 Burning"), "and says what its move leaves")
+		assert_eq(str(by["primed"][2]), "Buff, Primed ×2", "and the readout names it with them, a buff")
 	if by.has("regenerating"):
 		assert_eq(str(by["regenerating"][1]), "+4", "Regenerating its regrowth")
-		assert_true(str(by["regenerating"][2]).contains("3 actions to go"), "and its clock")
+		assert_true(str(by["regenerating"][2]).contains("3 actions to go"), "and its clock, which no chip shows")
 	if by.has("barrier"):
-		assert_true(str(by["barrier"][2]).contains("weapon"), "a foe's Barrier says a weapon's blow pops it")
+		assert_eq(str(by["barrier"][2]), "Buff, Barrier", "a foe's Barrier by its name alone, a buff, its meaning the term's")
 	assert_eq(SkirmishScreen.status_glyph("primed"), "primed", "the same chip on a machine")
 	s.free()
 
@@ -1250,23 +1668,22 @@ func test_the_formation_is_four_wide_by_default() -> void:
 	s.free()
 
 
-func test_withdraw_plays_the_enemy_turn_before_fleeing() -> void:
+## A fight the enemy's turn decides shows its outcome once that turn has replayed (Ryan, 23
+## September): the team on its last hull, END TURN, the blows replayed with the gauges after
+## each, then the overlay (there is no withdrawal to end a fight otherwise, the long wall brief).
+func test_the_enemy_turn_replays_before_the_outcome() -> void:
 	var s := _screen(5)
-	var before := 0
 	for m in s.sk.mechs:
-		before += m.unit.hull + m.unit.shield
-	s._on_withdraw()
+		m.unit.hull = 1
+		m.unit.shield = 0
+	s._on_end_turn()
 	s._confirm_yes()
-	assert_eq(s.sk.outcome, Skirmish.Outcome.WITHDRAWN, "withdrawn")
-	assert_true(s.sk.turn_events.size() > 0, "the enemy struck on the way out")
+	assert_true(s.sk.turn_events.size() > 0, "the enemy struck")
 	var ev: Dictionary = s.sk.turn_events[0]
 	assert_true(ev.has("shield") and ev.has("hull"), "each blow carries the mech's gauges after it, for the replay")
-	var after := 0
-	for m in s.sk.mechs:
-		after += m.unit.hull + m.unit.shield
-	assert_true(after < before, "and it cost the team")
+	assert_eq(s.sk.outcome, Skirmish.Outcome.DEFEAT, "and it wrecked the team")
 	assert_true(s._overlay.visible, "the outcome shows once the replay is done (headless: at once)")
-	assert_eq(s._overlay_title.text, "WITHDREW", "title")
+	assert_eq(s._overlay_title.text, "WRECKED", "title")
 	assert_false(s._replay_shade.visible, "taps are taken again")
 	s.free()
 
@@ -1515,27 +1932,6 @@ func test_a_lure_in_hand_previews_its_turn_with_dashed_arrows_and_the_gauges() -
 	s.free()
 
 
-## The reinforcements waiting, by rank (Ryan, 15 October; built 22 October): the formation's
-## gutter counts the foes waiting for the front, for the back, and the massive ones that take a
-## whole column; with the reserve empty it shows nothing.
-func test_the_formation_counts_the_reinforcements_waiting_for_each_rank() -> void:
-	var s := _screen()
-	var sk := s.sk
-	sk.reinforcements.clear()
-	var archer := Foe.make("skeleton_archer", 30, 10)
-	archer.prefers_back = true
-	var big := Foe.make("revenant", 300, 10)
-	big.size = 2
-	sk.reinforcements.append_array([Foe.make("revenant", 30, 10), Foe.make("revenant", 30, 10), archer, big])
-	s._refresh()
-	assert_true(big.is_massive(), "a foe of size two is massive")
-	assert_eq(s._reserve.counts, {"front": 2, "back": 1, "massive": 1}, "two for the front, one for the back, one massive")
-	sk.reinforcements.clear()
-	s._refresh()
-	assert_eq(s._reserve.counts, {"front": 0, "back": 0, "massive": 0}, "the reserve empty: nothing to show")
-	s.free()
-
-
 ## The Barrier and the Ward wear chips of their own, one colour parted by what sits inside the
 ## shield (21 October), and a dark entry shows its rounds left on the die and in the hold.
 func test_the_barrier_and_the_ward_wear_chips_and_a_dark_entry_counts_its_rounds() -> void:
@@ -1553,15 +1949,17 @@ func test_the_barrier_and_the_ward_wear_chips_and_a_dark_entry_counts_its_rounds
 	Effects.disable_entry(ms.unit, ms.face_index, "cooldown", s.sk.round + 1)
 	s._refresh()
 	assert_eq(s._dice[0].dark, 2, "the die shows the entry dark with two rounds left")
-	assert_true(s._entry_states(ms, ms.face_index).has("On Cooldown (2 turns left)"), "and so does the hold, in Ryan's words")
+	var dark_state: Array = s._entry_states(ms, ms.face_index)[0]
+	assert_eq(str(dark_state[0]), "On Cooldown (2 turns left)", "and so does the hold, in Ryan's words")
+	assert_eq(str((dark_state[1] as Dictionary).get("glyph", "")), "cooldown", "by the clock the die shows along its foot")
 	Effects.disable_entry(ms.unit, ms.face_index, "foe:x", s.sk.round)
 	s._refresh()
-	assert_true(" · ".join(s._entry_states(ms, ms.face_index)).begins_with("Disabled"), "a foe's switch-off says so, cleansable")
+	assert_true(str(s._entry_states(ms, ms.face_index)[0][0]).begins_with("Disabled"), "a foe's switch-off says so, cleansable")
 	s.free()
 
 
 ## A stepping die (the Cassowary's, 21 October) shows its next chamber on the die and in the
-## hold, and a machine that counts its shots shows the count as pips under the heat bar.
+## hold, and a machine that counts its shots shows the count as cells under the heat bar, the last marked.
 func test_a_stepping_die_shows_its_next_chamber_and_its_shot_count() -> void:
 	var s := _screen()
 	var ms: Skirmish.MechState = s.sk.mechs[0]
@@ -1575,9 +1973,9 @@ func test_a_stepping_die_shows_its_next_chamber_and_its_shot_count() -> void:
 	assert_eq(s._dice[0].next_face.kind, ms.die.faces[(ms.face_index + 1) % n].kind, "the one it steps to")
 	assert_eq(s._mech_views[0].pips, [5, 6], "five shots of six: the sixth is next")
 	for r in s._mech_rows(0):
-		assert_false(str(r[2]).begins_with("Shots"), "the count is pips, never a chip")
+		assert_false(str(r[2]).begins_with("Shots"), "the count is cells under the heat, never a chip")
 	assert_true(s._dice[1].next_face == null, "a die that rolls shows none")
-	assert_true(s._mech_views[1].pips.is_empty(), "nor pips")
+	assert_true(s._mech_views[1].pips.is_empty(), "nor a count's cells")
 	# The readout's cylinder (Ryan's ring, 19 October): every chamber in order, the one showing lit,
 	# the arrow to the next; a die that rolls has none.
 	s._on_die_tapped(0)
@@ -1611,6 +2009,7 @@ func test_a_swap_waits_on_its_first_target_for_a_tap_on_the_second() -> void:
 	s._begin_second(0, first)
 	assert_eq(s._pending["primary"], first, "the die waits on its first target")
 	assert_true(s._ghost.visible and s._ghost.can_drag, "shown there, and it can be picked back up")
+	assert_true(s._forecast_for(0).has("coming"), "the gauges still read the round preview while it waits, the die uncounted (the audit's Bug 16: the bot's estimate stood in here)")
 	assert_eq(s._dice[0].modulate.a, 0.0, "its tray slot stands empty")
 	var second = null
 	for x in s.sk.swap_targets(first):
@@ -1665,32 +2064,38 @@ func test_a_swap_waits_on_its_first_target_for_a_tap_on_the_second() -> void:
 	t.free()
 
 
-## The Lammergeier's mines on the screen (21 October), on a synthetic passive: a weapon of the
-## bay dragged lights the empty slots it may be spent on, a drop there lays the shot, and the
-## mined slot shows its dashed outline and the mine chip with the total waiting; a hold reads it.
-func test_a_weapon_of_the_bay_drops_on_an_empty_slot_and_the_slot_shows_its_mine() -> void:
+## The Lammergeier's Mines on the screen (9 November: "the chip shows the damage instead of the
+## stacks, with the tooltip showing the riders"), on a synthetic passive: a spend at a foe leaves its
+## Mine, and the foe wears the sea mine's chip with the damage, its readout naming the riders; no
+## empty slot lights for a dragged weapon.
+func test_a_mined_foe_wears_its_mine_chip_with_the_damage_and_the_riders_in_its_readout() -> void:
 	var s := _screen()
 	var ms: Skirmish.MechState = s.sk.mechs[0]
-	ms.unit.grant_passive({"id": "bay", "name": "Bay", "description": "", "effects": [{"trigger": "static", "effect": "lay_mines"}]})
-	ms.die.faces[ms.face_index] = Face.attack(10, Face.Reach.INDIRECT, [Face.Keyword.BURN])
+	ms.unit.grant_passive({"id": "bay", "name": "Bay", "description": "", "effects": [{"trigger": "static", "effect": "mine_on_spend", "value": 2}]})
+	ms.die.faces[ms.face_index] = Face.attack(1, Face.Reach.INDIRECT, [Face.Keyword.BURN])
 	ms.die.faces[ms.face_index].burn = 2
-	var slots := s.sk.slot_targets(ms, ms.face())
-	assert_false(slots.is_empty(), "an empty slot to lay in")
-	var slot: Vector2i = slots[0]
-	var sv: UnitView = s._slot_views[slot.x][slot.y]
 	s._drag_from = 0
 	s._refresh()
-	assert_true(sv.highlight, "the empty slot lights while the weapon is dragged")
-	assert_eq(s._drop_target_at(sv.get_global_rect().get_center()), slot, "and is a drop target")
+	for rank in range(2):
+		for col in range(s.sk.columns):
+			if s.sk.foe_at(rank, col) == null:
+				assert_false(s._slot_views[rank][col].highlight, "no empty slot lights for a weapon")
 	s._drag_from = -1
-	assert_true(s._use_die(0, slot), "dropped there, the shot is laid")
+	var foe: Foe = s.sk.targets_for(0)[0]
+	assert_true(s._use_die(0, foe), "spent at a foe")
 	s._refresh()
-	assert_true(sv.mined, "the slot shows its outline")
-	assert_eq(sv.intent, "MINED", "and says so")
-	assert_eq(sv.statuses[0][0], "mine", "the mine's chip first")
-	assert_eq(sv.statuses[0][1], "10", "with the total waiting")
-	assert_eq(sv.statuses[1][0], "burn", "then a chip per keyword riding in it")
-	s._on_foe_held(sv)
+	var v: UnitView = s._foe_view_for(foe)
+	var chip: Array = []
+	for row in v.statuses:
+		if str(row[0]) == "mine":
+			chip = row
+	assert_false(chip.is_empty(), "the foe wears the Mine's chip")
+	assert_eq(str(chip[1]), "2", "with its damage")
+	var said := ""
+	for row in s._foe_rows(foe):
+		if str(row[0]) == "mine":
+			said = str(row[2])
+	assert_true(said.contains("Debuff, Mine 2: Burn 2"), "its readout names the riders: %s" % said)
 	s.free()
 
 
@@ -1760,21 +2165,6 @@ func test_end_turn_pulses_once_nothing_is_left_to_spend() -> void:
 	s.free()
 
 
-## A foe joining the pool is shown going in (Ryan, 25 October): the screen notices who was not
-## waiting at its last look; the fight's opening pool is no join.
-func test_a_foe_joining_the_pool_is_noticed() -> void:
-	var s := _screen(5)
-	assert_true(s._pool_primed, "the opening pool remembered")
-	var waiting := s.sk.reinforcements.size()
-	assert_eq(s._pool_last.size(), waiting, "everyone waiting at the start")
-	var joined := Foe.make("revenant", 3, 2)
-	s.sk.reinforcements.append(joined)
-	s._refresh(false)
-	assert_true(s._pool_last.has(joined), "the newcomer seen joining")
-	assert_eq(s._reserve.pending.get("front", 0), 0, "headless, nothing flies and the count stands as it is")
-	s.free()
-
-
 ## A twin slot (the Gel's pair, 26 October): the left half's view takes the slot's left half and
 ## the right half's view the other, each its own target; a plain slot is one view again.
 func test_a_twin_slot_shows_both_halves() -> void:
@@ -1787,10 +2177,41 @@ func test_a_twin_slot_shows_both_halves() -> void:
 	assert_true(tv.visible, "the right half shows")
 	assert_eq(s._view_foe.get(tv, null), half, "its own view, its own target")
 	assert_eq(s._slot_views[0][0].size.x, SkirmishScreen.SLOT_SIZE.x * 0.5, "the left half takes half the slot")
+	# One half falls: the other keeps its half of the slot, never the whole (Ryan, 2 November: "a half
+	# unit should not take the full unit slot when it's other half dies, only when both are vacated
+	# does it return to a full size slot").
+	var home := s._home[s._slot_views[0][0]] as Vector2
 	s.sk.twins.clear()
 	s._refresh(false)
-	assert_false(tv.visible, "a plain slot again")
-	assert_eq(s._slot_views[0][0].size.x, SkirmishScreen.SLOT_SIZE.x, "one view across it")
+	assert_false(tv.visible, "the fallen half's view goes")
+	assert_eq(s._slot_views[0][0].size.x, SkirmishScreen.SLOT_SIZE.x * 0.5, "the survivor keeps its half")
+	assert_eq(s._home[s._slot_views[0][0]], home, "on its own side")
+	s.sk.front[0] = null
+	s._refresh(false)
+	assert_eq(s._slot_views[0][0].size.x, SkirmishScreen.SLOT_SIZE.x, "both gone: one view across the slot again")
+	s.free()
+
+
+## The right half survives its twin: it stays on the right of its slot, drawn by the slot's own view.
+## A half shown alone after a resume (no side remembered) is still a half, on the left.
+func test_a_right_half_alone_keeps_the_right_of_its_slot() -> void:
+	var s := _screen()
+	var lead: Foe = s.sk.front[0]
+	var half := Foe.make("gel_small", 2, 1)
+	s.sk._set_contents(Vector2i(0, 0), [lead, half])
+	s._refresh(false)
+	var left_x: float = (s._home[s._slot_views[0][0]] as Vector2).x
+	s.sk._set_contents(Vector2i(0, 0), [half, null])   # the left half falls; the right keeps the slot alone
+	s._refresh(false)
+	var v: UnitView = s._slot_views[0][0]
+	assert_eq(s._view_foe.get(v, null), half, "the slot's view draws the survivor")
+	assert_eq((s._home[v] as Vector2).x, left_x + SkirmishScreen.SLOT_SIZE.x * 0.5, "on the right, where it stood")
+	assert_eq(v.size.x, SkirmishScreen.SLOT_SIZE.x * 0.5, "at half a slot")
+	var halves := SkirmishScreen.pair_halves()
+	assert_false(halves.is_empty(), "content names the pair's halves")
+	var resumed := Foe.make(str(halves.keys()[0]), 2, 1)
+	resumed.content_id = str(halves.keys()[0])
+	assert_true(s.is_half(resumed), "a half no screen has shown is one by its content")
 	s.free()
 
 
@@ -1828,6 +2249,379 @@ func test_a_foe_getting_back_up_in_the_enemy_turn_is_shown() -> void:
 	assert_true(s.sk.field_foes().has(foe), "it stood again")
 	assert_eq(foe.hp, foe.hp_max, "whole")
 	assert_false(Effects.has(foe, "risen"), "its charge spent")
+	s.free()
+
+
+## A gauge wears its scale (Ryan, 2 November: "Tick on the ones, a bigger or more prominent tick
+## on the 5s, reduce to ticking on 5s only if the 1s get crowded on a particular bar"): every
+## point while the ones stand TICK_PITCH apart, the fives alone where they would crowd, the tens
+## past that, none on a one-point bar.
+func test_a_bar_ticks_its_ones_and_its_fives_alone_where_the_ones_crowd() -> void:
+	assert_eq(Hud.tick_step(136.8, 12), 1, "a machine's heat: every point")
+	assert_eq(Hud.tick_step(136.8, 16), 1, "its shield: every point")
+	assert_eq(Hud.tick_step(136.8, 34), 1, "a hull of 34 still fits its ones")
+	assert_eq(Hud.tick_step(136.8, 36), 5, "a hull of 36 crowds them: the fives alone")
+	assert_eq(Hud.tick_step(56.0, 6), 1, "a foe's small gauge: every point")
+	assert_eq(Hud.tick_step(56.0, 48), 5, "a boss's: the fives")
+	assert_eq(Hud.tick_step(56.0, 72), 10, "a bigger one's: the tens")
+	assert_eq(Hud.tick_step(56.0, 1), 0, "a one-point bar has no scale")
+	assert_eq(Hud.tick_step(0.0, 10), 0, "nor a bar with no width")
+
+
+## Every icon on a die face is in its readout (Ryan, 2 November: "any icon on a die face NEEDS to
+## be represented in the popup, star icon before the unique effect for instance"): for every
+## component in content, the die's big glyph, each keyword chip, the star for a rule of its own,
+## equipment's status chip, the marks of its costs and the three hexes of whom it reaches each
+## stand at the head of a line of its readout.
+func test_every_mark_on_a_die_face_heads_a_line_of_its_readout() -> void:
+	var db := ContentDB.load_default()
+	for cid in db.components.keys():
+		var comp: Dictionary = db.components[cid]
+		if str(comp.get("status", "")) == "planned" or not (comp.get("face", null) is Dictionary):
+			continue
+		var f := db.build_face(comp["face"])
+		f.component = str(cid)
+		var heads: Array[String] = []
+		var texts: Array[String] = []
+		for l in EntryReadout.lines_for(f, 1, -1, f, [], [], db):
+			texts.append(str(l.get("text", "")))
+			for m in l.get("marks", []):
+				heads.append(str(m.get("glyph", "")))
+		var wanted: Array[String] = [Glyphs.primary_for(f)]
+		for k in f.keywords:
+			if not f.printed.has(k):
+				wanted.append(str(Face.KEYWORD_NAMES[k]))
+		if f.has_unique_rule():
+			wanted.append("star")
+		var granted := DieFaceView.status_chip(f)
+		if not granted.is_empty():
+			wanted.append(Terms.glyph(granted))   # equipment's status, inside its gear
+		if f.vents > 0:
+			wanted.append("vent")     # a shield's cooling, under the steam off its top (3 November)
+		if f.shields > 0:
+			wanted.append("shield")   # a vent's shield, in the shield's half of its mark
+		# The costs along the foot, each a mark and a number (Ryan, 2 November).
+		if f.heat > 0:
+			wanted.append("heat")
+		if f.volatile > 0:
+			wanted.append("hull")
+		if f.cooldown_rounds() > 0:
+			wanted.append("cooldown")   # the cooldown's clock, a cost (2 November)
+		if f.shield_cost > 0:
+			wanted.append("shield")
+		for g in wanted:
+			assert_true(heads.has(g), "%s: the die's %s mark heads a readout line (%s)" % [cid, g, str(heads)])
+		var aim := Glyphs.aim_for(f)
+		if not aim.is_empty():
+			assert_true(heads.has(aim), "%s: the die's hexes head its target line (%s)" % [cid, str(heads)])
+
+
+## The die's readout lines each with the mark it says: the Puffin's projector, an ally's shield
+## with Overshield, its glyph on its number, the three hexes on its target, the keyword's chip on
+## its line (and no second icon in the words), and a lock and a corruption on their states.
+func test_a_dies_readout_heads_each_line_with_its_mark() -> void:
+	var db := ContentDB.load_default()
+	var f := db.build_face(db.components["backwash_ionizer"]["face"])
+	f.component = "backwash_ionizer"
+	var lines := EntryReadout.lines_for(f, 1, -1, f, [["Locked: a reroll skips it", EntryReadout.mark("lock", Palette.HUD, false)]], [], db)
+	var by := {}
+	for l in lines:
+		for m in l.get("marks", []):
+			by[str(m["glyph"])] = l
+	assert_eq(str(by.get("shield", {}).get("text", "")), "Shield 3", "the shield's glyph on its number")
+	var target: Dictionary = {}
+	for l in lines:
+		if str(l.get("text", "")) == "Target: Any other ally":
+			target = l
+	assert_false(target.is_empty(), "whom it reaches, in words")
+	assert_eq((target.get("marks", []) as Array).map(func(m: Dictionary) -> String: return str(m.get("glyph", ""))), ["aim_ally"], "headed by the three hexes the die draws, the two beside lit")
+	assert_false(bool((target.get("marks", [{}]) as Array)[0].get("box", true)), "bare, as the die draws them under its glyph")
+	assert_eq(str(by.get("overshield", {}).get("text", "")), "Overshield", "the keyword's chip on its line")
+	assert_false(bool((by.get("overshield", {}).get("parts", [{}])[0] as Dictionary).get("icon", true)), "its word wears no second icon")
+	assert_eq(str(by.get("lock", {}).get("style", "")), "state", "the lock on its state")
+	var readout := EntryReadout.new()
+	readout.set_lines(lines)
+	var boxed := 0
+	var bare := 0
+	for c in readout._chips:
+		if bool(c["box"]):
+			boxed += 1
+		else:
+			bare += 1
+	assert_eq([boxed, bare], [1, 3], "the keyword's chip boxed as the die boxes it, the big glyph, the hexes and the lock bare")
+	readout.free()
+
+
+## A foe's intent chip carries its blow's riders (Ryan, 2 November: "Enemy intents with a rider need
+## to show that rider as part of the intent chip"): each keyword its move carries by its term's mark,
+## a numbered one with its stacks, the breach no longer a "!" after the number.
+func test_a_foes_intent_chip_carries_its_riders() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	sk.add_mech(db.make_mech("badger"))
+	var foe := Foe.make("revenant", 30, 4)
+	foe.actions = [{"id": "rake", "name": "Rake", "kind": "attack", "weight": 1, "keywords": ["breach", "scorch"], "scorch": 2}]
+	sk.add_foes([foe])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	var v := s._foe_view_for(foe)
+	assert_eq(v.intent_note, "", "no mark after the number for a single blow")
+	var riders: Array = v.intent_riders
+	assert_eq(riders.size(), 2, "both riders inside the chip")
+	if riders.size() == 2:
+		assert_eq([str(riders[0][0]), str(riders[0][1])], [Terms.glyph("breach"), ""], "the breach by its mark")
+		assert_eq([str(riders[1][0]), str(riders[1][1])], [Terms.glyph("scorch"), "2"], "the scorch with its stacks")
+	var plain := UnitView.chip_width(Hud.mono(), ["sword", "4", Palette.ENEMY, "intent", []])
+	assert_true(UnitView.chip_width(Hud.mono(), ["sword", "4", Palette.ENEMY, "intent", riders]) > plain + 30.0, "the chip grows to hold them")
+	# Its readout heads the move with that chip (Ryan, of the Cinder Tortoise's Withdraw: "a chip I
+	# don't recognize ... and more importantly it doesn't show in the popup").
+	s._on_foe_tapped(v, 0, 0)
+	var head := {}
+	for l in s._details_entry.lines:
+		if str(l.get("style", "")) == "name":
+			head = l
+	var marks: Array = head.get("marks", [])
+	assert_eq(marks.size(), 1, "the move's name wears its chip")
+	if marks.size() == 1:
+		assert_eq(marks[0]["chip"], s._intent_chip(foe), "the field's own chip, riders and all")
+		assert_eq(str(marks[0]["chip"][0]), "sword", "a blow's sword")
+	s.free()
+
+
+## A special's chip is its kind's (the Cinder Tortoise's Withdraw, a brace: the defend kite with its
+## value), and its readout heads the move with it.
+func test_a_specials_intent_chip_heads_its_readout() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	sk.add_mech(db.make_mech("badger"))
+	var foe := Foe.make("revenant", 30, 4)
+	foe.actions = [{"id": "withdraw", "name": "Withdraw", "kind": "defend", "effect": "brace", "value": 3, "weight": 1}]
+	sk.add_foes([foe])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	var chip := s._intent_chip(foe)
+	assert_eq([str(chip[0]), str(chip[1])], [Glyphs.intent_for("defend"), "3"], "the defend mark and its value, as under the foe")
+	s._on_foe_held(s._foe_view_for(foe))
+	assert_true(s._details_entry.text().contains("WITHDRAW"), "the move named under it")
+	s.free()
+
+
+## A unit's readout names its chips, never spells them out (Ryan, 2 November: "unit popups don't need
+## the chips descriptions spelled out now that we can tap keywords"): each chip line its status's
+## name and count, the name a term a tap opens.
+func test_a_units_readout_names_its_chips_without_their_descriptions() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	sk.add_mech(m)
+	var foe := Foe.make("revenant", 30, 4)
+	sk.add_foes([foe])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	Effects.stack(foe, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 3)
+	Effects.grant_buff(m, "overcharged", 2, "buff", sk.round)
+	s._refresh()
+	var chips: Array[String] = []
+	for l in s._foe_hold_lines(foe):
+		if str(l["style"]) == "chip":
+			chips.append(str(l["text"]))
+	assert_true(chips.has("Debuff, Burning ×3"), "a foe's Burning by its name and stacks, labelled a debuff (Ryan, 9 November): %s" % str(chips))
+	var mine: Array[String] = []
+	for l in s._mech_hold_lines(0):
+		if str(l["style"]) == "chip":
+			mine.append(str(l["text"]))
+	assert_true(mine.has("Buff, %s ×2" % str(Effects.STATUS["overcharged"]["name"])), "a machine's Empowered the same, by its shown name, labelled a buff: %s" % str(mine))
+	var readout := EntryReadout.new()
+	readout.set_lines(s._foe_hold_lines(foe))
+	var terms: Array = []
+	for h in readout._hits:
+		terms.append_array(h["terms"])
+	assert_true(terms.has("burning"), "the name a term, its meaning a tap away")
+	readout.free()
+	s.free()
+
+
+## An open readout takes every tap on it (Ryan, 2 November: "i managed to reroll when trying to click
+## a keyword on a unit popup since it was underneath. Popups intuitively should prevent triggering
+## things behind them, even other popup triggers"): its panel stops the press, and what it holds
+## lets one through only to a term.
+func test_an_open_readout_takes_every_tap_on_it() -> void:
+	var s := _screen()
+	s._on_mech_tapped(0)
+	assert_true(s._details.visible, "open")
+	assert_eq(s._details.mouse_filter, Control.MOUSE_FILTER_STOP, "the panel stops every press on it")
+	assert_eq(s._details_entry.mouse_filter, Control.MOUSE_FILTER_PASS, "its lines take one on a term alone")
+	assert_false(s._details_entry._has_point(Vector2(-50.0, -50.0)), "nothing off a term")
+	s.free()
+
+
+## The foe acting in the enemy's turn is lit, one at a time (Ryan, 2 November: "enemies need to
+## highlight during their attacks, starting right before"); the replay lights the next a part of
+## the beat before its move lands, out of the beat after the last blow, so the turn keeps its pace.
+func test_the_acting_foe_is_lit_one_at_a_time() -> void:
+	var s := _screen()
+	var views := s._live_foe_views()
+	assert_true(views.size() >= 2, "foes on the field")
+	s._spotlight(views[0])
+	assert_true(views[0].acting, "the first lit")
+	s._spotlight(views[1])
+	assert_true(views[1].acting and not views[0].acting, "the next lit puts the last out")
+	s._spotlight(null)
+	assert_false(views[1].acting, "and none at the turn's end")
+	assert_true(SkirmishScreen.ACT_LEAD > 0.0 and SkirmishScreen.ACT_LEAD < 1.0, "the lead a part of the beat")
+	s.free()
+
+
+## A spend's blows land a strike at a time (Ryan, 2 November: "flechette pod and other multistrikes
+## need to clearly show the strikes in order, with individual ticks of damage ... damage needs to be
+## timed to the animation across the board"): the sim records every blow in the order it landed, its
+## strike, what it took and the HP it left; the screen lands each at its strike's beat, and a foe the
+## spend killed dies at the spend's death check, after its last blow (Ryan, 7 November).
+func test_a_bursts_blows_land_a_strike_at_a_time() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	var gun := Face.attack(2)
+	gun.strikes = 3
+	m.die = Die.single(gun)
+	sk.add_mech(m)
+	var foe := Foe.make("revenant", 5, 1)
+	var other := Foe.make("revenant", 30, 1)
+	sk.add_foes([foe, other])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	assert_true(s._use_die(0, foe), "spent")
+	var blows: Array = sk.spend_blows
+	assert_eq(blows.size(), 3, "three blows for three strikes: %s" % str(blows))
+	if blows.size() == 3:
+		assert_eq([int(blows[0]["strike"]), int(blows[1]["strike"]), int(blows[2]["strike"])], [0, 1, 2], "in order, a strike each")
+		assert_eq([int(blows[0]["hp"]), int(blows[1]["hp"]), int(blows[2]["hp"])], [3, 1, -1], "each with the HP it left")
+		assert_eq(int(blows[0]["taken"]), 2, "and what it took")
+	assert_eq(SkirmishScreen._strikes_of(blows), 3, "three strikes")
+	var deaths := s._land_blows(blows, 0.5, {}, [foe], {foe: 5})
+	assert_true(is_equal_approx(float(deaths[foe]), 0.5 + 2.0 * SkirmishScreen.STRIKE_GAP), "it dies after the third, its killing blow and the last: %s" % str(deaths))
+	assert_true(s._shown_hp.is_empty() and s._stand_ins.is_empty(), "off the tree nothing is held back: the gauges read the fight")
+	s.free()
+
+
+## Nothing a spend fires is cut short on the screen (Ryan, 7 November: "Animate wasted shots.
+## Anything truncated confuses the player"): a multi-hit that kills with its first hit still lands
+## its later hits, on the corpse, and the foe dies after the last; a Sweep's shot at an empty column
+## is recorded with its slot, counted as a beat, aimed at that slot and landed there.
+func test_every_hit_and_shot_lands_on_the_screen_a_wasted_one_included() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1, 3)
+	var m := db.make_mech("badger")
+	var burst := Face.attack(10)
+	burst.strikes = 3
+	m.die = Die.single(burst)
+	sk.add_mech(m)
+	var frail := Foe.make("revenant", 4, 1)
+	var other := Foe.make("revenant", 30, 1)
+	sk.add_foes([frail, other])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	assert_true(s._use_die(0, frail), "the burst spent")
+	var blows: Array = sk.spend_blows
+	assert_eq(blows.size(), 3, "three hits recorded, two on the corpse: %s" % str(blows))
+	assert_eq(SkirmishScreen._strikes_of(blows), 3, "three beats")
+	var deaths := s._land_blows(blows, 0.5, {}, [frail], {frail: 4})
+	assert_true(is_equal_approx(float(deaths[frail]), 0.5 + 2.0 * SkirmishScreen.STRIKE_GAP), "it dies after the third hit, at the death check: %s" % str(deaths))
+	s.free()
+	# A sweep of four shots over three columns, the middle one empty.
+	var s2k := Skirmish.new(1, 3)
+	var m2 := db.make_mech("badger")
+	var pod := Face.attack(2, Face.Reach.SWEEP)
+	pod.strikes = 4
+	m2.die = Die.single(pod)
+	s2k.add_mech(m2)
+	var a := Foe.make("revenant", 30, 1)
+	var gone := Foe.make("revenant", 1, 1)
+	var c := Foe.make("revenant", 30, 1)
+	s2k.add_foes([a, gone, c])
+	var s2 := SkirmishScreen.new()
+	s2.setup(s2k)
+	gone.hp = 0
+	s2k._clear_dead()
+	s2._refresh()
+	assert_true(s2k.front[1] == null, "the middle column empty")
+	assert_true(s2._use_die(0, a), "swept")
+	var swept: Array = s2k.spend_blows
+	var misses: Array = swept.filter(func(x: Dictionary) -> bool: return str(x["kind"]) == "miss")
+	assert_eq(misses.size(), 1, "the shot at the empty column recorded: %s" % str(swept))
+	if misses.size() == 1:
+		assert_eq([int(misses[0]["strike"]), misses[0]["slot"]], [1, Vector2i(0, 1)], "the second shot, in the front rank's middle slot")
+		assert_eq(s2._view_struck(swept, 1, {}, null), s2._slot_views[0][1], "the shot is aimed at that empty slot")
+	assert_eq(SkirmishScreen._strikes_of(swept), 4, "four beats, the wasted one among them")
+	s2.free()
+
+
+## A last act lands its damage with the act: the sim records each struck machine's gauges as the
+## act met them, for the screen to hold until it is named.
+func test_a_last_act_records_the_gauges_it_met() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	m.die = Die.single(Face.attack(10))
+	sk.add_mech(m)
+	var bomb := Foe.make("revenant", 4, 3)
+	bomb.on_death = {"blow": {"name": "Parting Shot", "factor": 1.0, "keywords": ["all"]}}
+	sk.add_foes([bomb, Foe.make("revenant", 30, 1)])
+	sk.begin()
+	sk.start_round()
+	var shield := m.shield
+	var hull := m.hull
+	assert_true(sk.assign(0, bomb), "spent on it")
+	assert_eq(sk.last_acts.size(), 1, "its last act landed")
+	if sk.last_acts.size() == 1:
+		assert_eq(sk.last_acts[0]["gauges"], [[shield, hull]], "the gauges it met")
+		assert_true(m.shield < shield or m.hull < hull, "and it struck")
+
+
+## The Polar Bear's form reads on its die and its view (Ryan, 2 November: "armadillo needs indication
+## when a die face will transform it, like a die chip or something. It also needs some highlight or
+## something when it is transforming, and a better indication of what form it's in"): open, a shield
+## it may spend on itself wears the seal chip and its readout says so; sealed, a weapon or a vent
+## wears the opening one; sealed, the view wears its shell; the Sealed chip the seal's own mark.
+func test_the_polar_bears_form_reads_on_its_die_and_its_view() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("polar_bear")
+	sk.add_mech(m)
+	sk.add_foes([Foe.make("revenant", 30, 1)])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var shield := -1
+	var gun := -1
+	for k in range(m.die.faces.size()):
+		var f: Face = m.die.faces[k]
+		if f.kind == Face.Kind.SHIELD and shield < 0:
+			shield = k
+		elif f.is_attack() and f.power > 0 and gun < 0:
+			gun = k
+	assert_true(shield >= 0 and gun >= 0, "its die carries a shield and a gun")
+	ms.face_index = shield
+	s._refresh()
+	assert_eq(s._dice[0].form_mark, "seal", "open, its shield wears the seal chip")
+	s._on_die_tapped(0)
+	assert_true(s._details_entry.text().contains("Seals it"), "and its readout says so: %s" % s._details_entry.text())
+	s._close_pop()
+	assert_false(s._mech_views[0].shell, "open: no shell")
+	assert_true(s._use_die(0, ms), "the shield spent on itself")
+	assert_true(Effects.is_sealed(m), "sealed")
+	assert_true(s._mech_views[0].shell, "the view wears its shell")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = gun
+	s._refresh()
+	assert_eq(s._dice[0].form_mark, "unseal", "sealed, a weapon wears the opening chip")
+	assert_eq(SkirmishScreen.status_glyph("sealed"), "seal", "the Sealed chip wears the seal's own mark")
+	assert_eq(Terms.glyph("sealed"), "seal", "and the term in text")
+	var other := db.make_mech("badger")
+	var plain := Skirmish.MechState.new()
+	plain.unit = other
+	assert_eq(SkirmishScreen.form_mark(plain, other.die.faces[0]), "", "a machine with no form has no such chip")
 	s.free()
 
 
@@ -1878,16 +2672,97 @@ func test_undo_takes_back_the_last_spend_and_its_badge_says_how_far_it_reaches()
 	var foe: Foe = s.sk.front[0]
 	var hp := foe.hp
 	var opened := s.sk.log.size()
-	assert_true(s._log_text(0).find(SkirmishScreen.ROLL_BAR) >= 0, "the round's bar in the trail")
+	assert_true(s._log_text().find(SkirmishScreen.ROLL_BAR) >= 0, "the round's bar in the trail")
 	assert_true(s._use_die(0, foe), "the die spent")
 	assert_eq(s.sk.front[0].hp, hp - 1, "the blow landed")
 	assert_false(s._undo_btn.disabled, "the undo opens")
 	assert_eq(s._undo_btn.badge, "×1", "one spend back")
-	var text := s._log_text(0)
+	var text := s._log_text()
 	assert_true(text.find(SkirmishScreen.ROLL_BAR) < text.rfind("> "), "the bar sits under the opening lines, the spend's after it")
 	s._on_undo()
 	assert_eq([s.sk.front[0].hp, s.sk.mechs[0].assigned, s.sk.log.size()], [hp, false, opened], "the spend taken back")
 	assert_true(s._undo_btn.disabled, "and nothing is left")
+	s.free()
+
+
+## UNDO opens once a spend's blow has played, on the clock that shut it (Ryan, 9 November:
+## "skirmish undo, it doesn't work anymore": a tween timed to the same moment ran a frame ahead of
+## the clock and left the button shut for good), and it sits bottom-right, END TURN's mirror, where
+## the withdrawal was (Ryan: "Undo at least should move there").
+func test_undo_opens_once_the_blow_has_played_and_sits_bottom_right() -> void:
+	var s := _screen()
+	var ms: Skirmish.MechState = s.sk.mechs[0]
+	ms.unit.die = Die.single(Face.attack(1, Face.Reach.DIRECT))
+	ms.die = ms.unit.die
+	ms.face_index = 0
+	s._refresh()
+	assert_true(s._use_die(0, s.sk.front[0]), "the die spent")
+	s._undo_from = Time.get_ticks_msec() + 100000   # its blow still playing
+	s._undo_waiting = true
+	s._refresh_undo()
+	assert_true(s._undo_btn.disabled, "shut while the blow plays")
+	s._process(0.016)
+	assert_true(s._undo_btn.disabled, "and still, before the clock passes the mark")
+	s._undo_from = Time.get_ticks_msec() - 1   # the clock past it
+	s._process(0.016)
+	assert_false(s._undo_btn.disabled, "then it opens of its own accord, nothing else asked")
+	assert_false(s._undo_waiting, "and stops waiting")
+	assert_eq(s._undo_btn.position, Vector2(SkirmishScreen.W - 16.0 - SkirmishScreen.BOTTOM_BTN.x, s.BOTTOM_Y), "bottom-right")
+	assert_eq(s._undo_btn.position.y, s._end_btn.position.y, "on END TURN's row")
+	assert_true(s._undo_btn.state_marked, "its on and off read by its edge")
+	s.free()
+
+
+## A foe's intent arrow leaves the middle of its intent chip (Ryan, 9 November: "the lines should come
+## from the intent chip, and always from the intent chip's middle") and lands on the machine's middle,
+## and the ranks stand slightly apart, the front a little left and the back a little right ("A slight
+## offset or squeezing would fix the rest"), so one column's two foes at the machine below draw two
+## lines; the outer foes' chip rows, held on the glass, keep their gap to their neighbours' (his
+## question: "What happens to back rank enemies with a lot of chips if they're that close to the
+## right edge?").
+func test_an_intent_arrow_leaves_its_chips_middle_and_the_ranks_stand_slightly_apart() -> void:
+	var s := _screen()
+	for col in range(s.sk.columns):
+		var f: UnitView = s._slot_views[0][col]
+		var b: UnitView = s._slot_views[1][col]
+		assert_eq(b.position.x - f.position.x, 2.0 * SkirmishScreen.RANK_SHIFT, "column %d: the back a little right of the front" % col)
+		assert_true(f.position.x >= 0.0 and b.position.x + b.size.x <= SkirmishScreen.W, "column %d on the glass" % col)
+	var last := s.sk.columns - 1
+	var outer: UnitView = s._slot_views[1][last]
+	var inner: UnitView = s._slot_views[1][last - 1]
+	var oc := outer.position.x + outer.size.x * 0.5
+	var start := minf(oc - outer.chip_wrap * 0.5, SkirmishScreen.W - 2.0 - outer.chip_wrap)   # its widest row, held on the glass
+	var inner_end := inner.position.x + inner.size.x * 0.5 + inner.chip_wrap * 0.5
+	assert_true(start - inner_end >= 6.0 - 0.01, "the back rank's last foe's widest row keeps its gap to its neighbour's")
+	var fv := s._foe_view_for(s.sk.front[0])
+	var laid := fv.chip_layout()
+	assert_eq(str((laid[0][1] as Array)[3]), "intent", "the first chip is the intent's")
+	assert_eq(fv.intent_anchor_global(), fv.get_global_transform() * (laid[0][0] as Rect2).get_center(), "its arrow leaves the chip's middle")
+	s._toggle_all_arrows(true)
+	var inv := s._arrows.get_global_transform().affine_inverse()
+	var from := inv * fv.intent_anchor_global()
+	assert_true(s._arrows.arrows.any(func(x: Array) -> bool: return (x[0] as Vector2).is_equal_approx(from)), "and the arrow drawn starts there")
+	s.free()
+
+
+## A status says what it is (Ryan, 9 November: "Buffs and debuffs ... need to be clearly labeled as
+## such, so that it's clear what gets purged"): its row's line begins Buff or Debuff and its chip
+## carries the word for its mark; an ability keeps its own.
+func test_a_status_row_says_buff_or_debuff_and_its_chip_carries_it() -> void:
+	var buff := SkirmishScreen.status_row("overcharged", "overcharge", "×2", "Empowered ×2", Palette.HEAT)
+	assert_eq(str(buff[2]), "Buff, Empowered ×2", "a buff's line")
+	assert_eq(str(buff[5]), "buff", "and its chip's mark")
+	var debuff := SkirmishScreen.status_row("burning", "burn", "2", "Burning ×2", Palette.HEAT)
+	assert_eq(str(debuff[2]), "Debuff, Burning ×2", "a debuff's line")
+	assert_eq(str(debuff[5]), "debuff", "and its chip's mark")
+	var plain := SkirmishScreen.status_row("quick_turned", "rapid", "", "Quick turn spent", Palette.INK)
+	assert_eq([str(plain[2]), str(plain[5])], ["Quick turn spent", ""], "one that is neither keeps its words and wears no mark")
+	var s := _screen()
+	var m: Unit = s.sk.mechs[0].unit
+	Effects.grant_buff(m, "overcharged", 2, "buff", s.sk.round)
+	s._refresh()
+	var v: UnitView = s._mech_views[0]
+	assert_true(v.statuses.any(func(st: Array) -> bool: return st.size() >= 5 and str(st[4]) == "buff"), "the machine's view carries the buff's mark")
 	s.free()
 
 

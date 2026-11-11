@@ -2,9 +2,17 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 /* One page for the hangar (decided 1 October): the codex, the content editor, the names
-   list and the models, each a tab, all reading the files published beside this page so one
-   republish refreshes every tab. Edits and name candidates live in the artifact's database
-   (collections "edits" and "candidates"). The Models tab (3 October: the renders and the
+   list, the designs and the models, each a tab, all reading the files published beside this
+   page so one republish refreshes every tab. Edits, name candidates and corrections to the
+   briefs live in the artifact's database (collections "edits", "candidates" and "designs"),
+   and his writing on the Text tab (collection "text": 9 November, every text the player reads,
+   one row a text, from hangar/text.json, tools/hangar_text.py).
+   The Bench tab (10 November) is Ryan's working sheet for a machine: the roster by state, and
+   one flat sheet a machine for its numbers, its locked pieces, its upgrades, its stock and his
+   notes. It keeps no store of its own: every write is an edit of the entry (collection
+   "edits", as the Content tab's), his notes and upgrade ideas under the entry's design.bench.
+   The Designs tab (5 November) reads every brief in docs/briefs/ from hangar/designs.json
+   (tools/hangar_designs.py). The Models tab (3 October: the renders and the
    animation viewer merged) runs hangar/motion.js (tools/hangar_motion.js), a port of the
    game's rig, over the game's own renders. */
 :root{
@@ -225,6 +233,105 @@ select{padding:8px;border:1px solid var(--rule-strong);border-radius:4px;backgro
 .rules b{color:var(--ink)}
 .counts{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;color:var(--ink-3);font-size:13px}
 
+/* ---- designs: each maker's roster of ten and its briefs, Ryan's corrections laid over them in
+   the edited colour, a struck paragraph struck through, a note on a dashed edge (5 November) */
+.tab-modules{--acc:var(--parts)} .tab-shared{--acc:var(--other)} .tab-changes{--acc:var(--edited)}
+.dsect{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:18px}
+.dsect h3{margin:0;font:700 17px/1.1 var(--display);letter-spacing:.06em;text-transform:uppercase}
+.roster{margin-top:8px;display:flex;flex-direction:column;gap:6px}
+.roster h4{margin:8px 0 0;font:600 11px/1.2 var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.rcount{font:500 12px/1.4 var(--mono);color:var(--ink-3);font-variant-numeric:tabular-nums}
+.slotrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;align-items:baseline;padding:8px 12px;background:var(--paper);border:1px solid var(--rule);border-left:4px solid var(--acc);border-radius:3px;cursor:pointer;text-align:left;color:var(--ink);font:inherit;width:100%}
+.slotrow:hover,.slotrow:focus-visible{border-color:var(--acc)}
+.slotrow.built{border-left-color:var(--rule-strong)}
+.slotrow.vacant{border:1px dashed var(--rule-strong);border-left:4px dashed var(--rule-strong);background:transparent;color:var(--ink-3);cursor:default}
+.slotrow .name{font:600 19px/1.1 var(--display);letter-spacing:.02em}
+.slotrow .sub2{grid-column:1 / -1;font-size:12.5px;color:var(--ink-3)}
+.slotrow .end{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.brief h2{font:700 25px/1.05 var(--display);text-transform:uppercase;letter-spacing:.02em;margin:10px 0 2px;text-wrap:balance}
+.brief .path{font:400 12px/1.4 var(--mono);color:var(--ink-3)}
+.dir{margin-top:12px;padding:10px 12px;border:1px solid var(--acc);border-left-width:4px;border-radius:3px;background:var(--paper);display:flex;flex-direction:column;gap:6px;max-width:72ch}
+.dir label{font:600 12px/1.2 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.dir .saved{font-size:14px;color:var(--ink);white-space:pre-wrap}
+.dir textarea,.blk textarea,.dnote textarea,.add textarea{width:100%;padding:8px 10px;border:1px solid var(--rule-strong);border-radius:4px;background:var(--ground);color:var(--ink);font:inherit;font-size:14.5px;line-height:1.45;resize:vertical}
+.secnav{display:flex;gap:4px;flex-wrap:wrap;margin-top:12px}
+.secnav button{border:1px solid var(--rule);background:transparent;color:var(--ink-2);border-radius:999px;padding:4px 10px;font:600 12px/1.3 var(--display);letter-spacing:.05em;text-transform:uppercase;cursor:pointer}
+.secnav button:hover{border-color:var(--acc);color:var(--ink)}
+.doc{margin-top:6px;display:flex;flex-direction:column;gap:2px;max-width:72ch}
+.dh{display:flex;gap:10px;align-items:baseline;justify-content:space-between;flex-wrap:wrap;margin-top:14px;padding-top:8px;border-top:1px solid var(--rule);scroll-margin-top:150px}
+.dh h3{margin:0;font:700 19px/1.15 var(--display);text-transform:uppercase;letter-spacing:.03em;text-wrap:balance;min-width:0}
+.dh.h3 h3,.dh.h4 h3{font-size:16px;color:var(--ink-2)}
+.dh .linkbtn{font-size:13px;color:var(--ink-3)}
+.blk{display:block;padding:4px 8px 4px calc(8px + var(--lvl,0) * 1.3em);border:1px solid transparent;border-radius:3px;cursor:pointer;color:var(--ink-2);font-size:14.5px;line-height:1.5}
+.blk:hover,.blk:focus-visible{border-color:var(--rule-strong);background:var(--paper);outline:none}
+.blk .line{display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 6px}
+.blk .mk{color:var(--ink-3);font-variant-numeric:tabular-nums;min-width:1em}
+.blk .txt{display:block;min-width:0;overflow-wrap:anywhere}
+.blk.quote .txt{border-left:3px solid var(--rule-strong);padding-left:10px;font-style:italic}
+.blk.edited{background:var(--paper);border-color:var(--edited)}
+.blk.struck .txt{text-decoration:line-through;color:var(--ink-3)}
+.blk.open{border-color:var(--acc);background:var(--paper);cursor:default}
+.who{display:inline-block;font:600 10px/1.6 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--edited);margin-right:6px}
+.was{margin-top:4px;font-size:13px;color:var(--ink-3)}
+.was summary{font-size:12px}
+.was .old{margin:4px 0 0;white-space:pre-wrap}
+.blkedit{display:flex;flex-direction:column;gap:6px;margin-top:6px;cursor:default}
+.tbl{overflow-x:auto;max-width:100%}
+.tbl table{border-collapse:collapse;font-size:13px}
+.tbl th,.tbl td{border:1px solid var(--rule);padding:4px 6px;text-align:left;vertical-align:top}
+.tbl th{background:var(--sunk);font-weight:600;color:var(--ink)}
+.blk pre{margin:0;overflow-x:auto;font:400 12.5px/1.45 var(--mono);background:var(--sunk);padding:6px 8px;border-radius:3px}
+.blk code,.slotrow code,.dnote code,.card code{font:400 .9em var(--mono);background:var(--sunk);padding:0 3px;border-radius:2px}
+.dnote{margin:4px 0 4px calc(8px + var(--lvl,0) * 1.3em);padding:8px 10px;border:1px dashed var(--edited);border-radius:3px;background:var(--paper);font-size:14px;color:var(--ink);display:flex;flex-direction:column;gap:6px}
+.dnote .body{white-space:pre-wrap;overflow-wrap:anywhere}
+.dnote .meta{font-size:12px;color:var(--ink-3)}
+.dnote .old{white-space:pre-wrap;overflow-wrap:anywhere;color:var(--ink-3);text-decoration:line-through;font-size:13px}
+.ideas .row .concept{white-space:pre-wrap}
+.stale{margin-top:16px}
+.add textarea{min-height:60px}
+@media (max-width:520px){.slotrow .end{justify-content:flex-start}.slotrow{grid-template-columns:1fr}}
+
+/* ---- bench (10 November): the roster by state, and one flat sheet a machine. Every control
+   is a plain field that saves as it is left; a changed number shows what the files hold. */
+.bgroup{margin-top:18px}
+.bgroup h3{margin:0 0 4px;font:700 17px/1.1 var(--display);letter-spacing:.06em;text-transform:uppercase;display:flex;gap:8px;align-items:baseline}
+.bgroup h3 .n{font:500 12px/1 var(--mono);color:var(--ink-3)}
+.bgroup .what{font-size:12.5px;color:var(--ink-3);margin:0 0 6px}
+.brow{--mk:var(--other);display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:baseline;width:100%;text-align:left;background:var(--paper);border:1px solid var(--rule);border-left:5px solid var(--mk);border-radius:3px;padding:8px 10px;margin-top:5px;color:var(--ink);font:inherit;cursor:pointer}
+.brow:hover,.brow:focus-visible{border-color:var(--mk)}
+.brow .bname{font-weight:600}
+.brow .bmeta{font-size:12px;color:var(--ink-3);text-align:right;white-space:nowrap}
+.brow .bline{grid-column:1 / -1;font-size:13px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brow.minerva,.bsheet.minerva{--mk:var(--minerva)} .brow.kestrel,.bsheet.kestrel{--mk:var(--kestrel)} .brow.ws,.bsheet.ws{--mk:var(--ws)} .brow.aphelion,.bsheet.aphelion{--mk:var(--aphelion)} .brow.arsenal,.bsheet.arsenal{--mk:var(--arsenal)}
+.bsheet{--mk:var(--other);--acc:var(--mk)}
+.bsheet .bhead{border-left:5px solid var(--mk);padding:2px 0 2px 12px;margin-top:6px}
+.bsheet .bhead h2{font:700 30px/1 var(--display);text-transform:uppercase;letter-spacing:.02em;margin:1px 0 2px;color:var(--mk)}
+.bsheet h3{font:600 13px/1 var(--display);text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);margin:20px 0 6px;padding-top:10px;border-top:1px solid var(--rule)}
+.bsheet .hint{font-size:12.5px;color:var(--ink-3);margin:0 0 8px;max-width:72ch}
+.bsheet input[type="number"],.bsheet input[type="text"],.bsheet select,.bsheet textarea{width:100%;min-width:0;padding:7px 9px;border:1px solid var(--rule-strong);border-radius:4px;background:var(--paper);color:var(--ink);font:inherit;font-size:15px}
+.bsheet textarea{line-height:1.4;resize:vertical;min-height:38px}
+.bsheet input:disabled,.bsheet select:disabled,.bsheet textarea:disabled{opacity:.7}
+.bsheet label,.bsheet .lab{display:block;font:600 11px/1.3 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin:0 0 3px}
+.bsheet .changed{border-color:var(--edited);box-shadow:inset 3px 0 0 var(--edited)}
+.bsheet .was{font:500 11px/1.3 var(--mono);color:var(--edited);margin-top:2px;min-height:14px}
+.bnums{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.bpiece{background:var(--paper);border:1px solid var(--rule);border-radius:3px;padding:10px 12px;margin-top:8px}
+.bpiece .pname{font-weight:600}
+.bpiece .pline{font-size:13px;color:var(--ink-2);margin:1px 0 6px;font-variant-numeric:tabular-nums}
+.bpiece .kws{margin:0 0 8px}
+.bpiece .prow{display:grid;grid-template-columns:minmax(120px,1fr) 2fr;gap:8px;margin-top:8px}
+.bladder{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bdir{background:var(--paper);border:1px solid var(--rule);border-top:4px solid var(--mk);border-radius:3px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.bdir .dname{font:700 15px/1 var(--display);letter-spacing:.08em;text-transform:uppercase}
+.bdir .deep{padding-left:10px;border-left:2px dashed var(--rule-strong)}
+.blift{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.bstock{display:grid;gap:6px}
+.bstock .srow{display:grid;grid-template-columns:118px 1fr;gap:8px;align-items:center}
+.bstock .shp{margin:0}
+.bstock .swarn{grid-column:2;font-size:12px;color:var(--warn)}
+.bsheet .saved{font-size:14px;color:var(--ink);white-space:pre-wrap;margin:0}
+@media (max-width:560px){.bladder,.blift{grid-template-columns:1fr}.bpiece .prow{grid-template-columns:1fr}.bstock .srow{grid-template-columns:1fr;gap:2px}.bstock .swarn{grid-column:1}}
+
 /* ---- models */
 section.model{background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:12px 14px;margin-top:12px;scroll-margin-top:150px}
 section.model h2{font:700 22px/1 var(--display);text-transform:uppercase;letter-spacing:.03em;margin:0}
@@ -269,6 +376,79 @@ details{margin-top:8px} summary{cursor:pointer;color:var(--ink-3);font-size:13px
 .makers{display:flex;gap:4px;flex-wrap:wrap}
 .makers .btn{border-left:4px solid var(--mk)}
 .under{margin-top:14px}
+/* The Text tab (9 November): every text the player reads, one row a text, by kind. */
+.tkind{background:var(--paper);border:1px solid var(--rule);border-radius:3px;padding:10px 14px;margin:10px 0}
+.tkind .khead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.tkind h3{margin:0;font:700 18px/1.1 var(--display);letter-spacing:.05em;text-transform:uppercase}
+.tkind h3 button{all:unset;cursor:pointer;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+.tkind h3 button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.tkind .where{font-size:13px;color:var(--ink-2);margin:4px 0 8px;max-width:76ch}
+.tkind .where.none{color:var(--ink-3);font-style:italic}
+.tbar{display:flex;height:10px;border:1px solid var(--rule-strong);border-radius:2px;overflow:hidden;margin:0 0 8px;background:var(--sunk)}
+.tbar .yours{background:var(--ink)}
+.tbar .passed{background:repeating-linear-gradient(45deg,var(--ink-2) 0 3px,transparent 3px 6px)}
+.tbar .flag{background:repeating-linear-gradient(90deg,var(--bad) 0 2px,transparent 2px 4px)}
+.tcounts{display:flex;gap:5px;flex-wrap:wrap}
+.tcount{display:inline-flex;gap:6px;align-items:baseline;border:1px solid var(--rule-strong);background:transparent;color:var(--ink-2);border-radius:3px;padding:4px 8px;font:600 12px/1.1 var(--display);letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
+.tcount .n{font:500 12px/1 var(--mono);color:var(--ink);font-variant-numeric:tabular-nums}
+.tcount.zero{opacity:.4}
+.tcount.off{border-style:dashed}
+.ttotal{font-size:14.5px;margin:12px 0 0;max-width:76ch}
+.ttotal b{font-variant-numeric:tabular-nums}
+.tgroup{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:20px;padding-left:8px;border-left:5px solid var(--mk,var(--rule-strong))}
+.tgroup h3{margin:0;font:700 17px/1.1 var(--display);letter-spacing:.06em;text-transform:uppercase}
+.tvoice{font-size:13px;color:var(--ink-2);margin:3px 0 0 13px;max-width:76ch}
+.tvoice b{font:600 11px/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-right:6px}
+.trows{border-top:1px solid var(--rule);margin-top:8px}
+.trow{border-bottom:1px solid var(--rule);border-left:3px solid transparent;padding:8px 6px 8px 9px}
+.trow.st-yours{border-left-color:var(--ink)}
+.trow.st-passed{border-left-color:var(--rule-strong)}
+.trow.st-moved,.trow.st-stale{border-left:3px double var(--bad)}
+.trow.open{background:var(--paper);outline:1px solid var(--acc);outline-offset:-1px}
+.trow .thead{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.trow .tname{font-weight:600}
+.trow .tsub{color:var(--ink-2);font-size:13.5px}
+.trow .tkindname{font:500 11px/1.4 var(--mono);color:var(--ink-3)}
+.trow .ttags{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.trow .tacts{margin-left:auto;display:flex;gap:4px;align-items:center}
+.tmini{border:1px solid var(--rule-strong);background:transparent;color:var(--ink-2);border-radius:3px;padding:4px 7px;font:600 11px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.tmini:hover{background:var(--sunk);color:var(--ink)}
+.tmini[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--ground)}
+.ttext{margin-top:3px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:14.5px;line-height:1.5;color:var(--ink);border-radius:3px;padding:2px 4px;margin-left:-4px;cursor:text}
+.ttext:hover,.ttext:focus-visible{background:var(--paper);outline:none;box-shadow:0 0 0 1px var(--rule-strong)}
+.trow.open .ttext:hover{box-shadow:none}
+.ttext.none{color:var(--ink-3);font-style:italic}
+.ttext.quote{font-style:italic}
+.trow.unshown .ttext{color:var(--ink-2)}
+.tag.yours{background:var(--ink);border-color:var(--ink);color:var(--ground)}
+.tag.passed{color:var(--ink)}
+.tag.draft{color:var(--ink-3);border-style:dashed}
+.tag.empty{color:var(--ink-3);border-style:dotted}
+.tag.moved,.tag.stale,.tag.flagged{color:var(--bad)}
+.tag.pending{color:var(--edited)}
+.tag.unshown{color:var(--ink-3);border-style:dashed;border-width:1px}
+.tedit{display:flex;flex-direction:column;gap:7px;margin-top:8px}
+.tedit textarea{width:100%;min-height:74px;padding:8px 10px;border:1px solid var(--rule-strong);border-radius:4px;background:var(--ground);color:var(--ink);font:inherit;font-size:15px;line-height:1.5;resize:vertical}
+.tedit input[type="text"]{width:100%;padding:7px 10px;border:1px solid var(--rule-strong);border-radius:4px;background:var(--ground);color:var(--ink);font:inherit;font-size:14px}
+.tfacts{display:grid;grid-template-columns:auto minmax(0,1fr);gap:3px 10px;font-size:13px;color:var(--ink-2);margin:0}
+.tfacts dt{font:600 11px/1.7 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.tfacts dd{margin:0;overflow-wrap:anywhere}
+.tfacts dd.mono{font:400 12.5px/1.5 var(--mono)}
+.tmeter{font:500 12px/1.4 var(--mono);color:var(--ink-3)}
+.tbeside{border-left:3px solid var(--rule-strong);padding:2px 0 2px 10px;display:grid;gap:6px}
+.tbeside .lab{font:600 11px/1.4 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.tbeside .ex{font-size:13.5px;color:var(--ink-2);white-space:pre-wrap;overflow-wrap:anywhere}
+.tbeside .ex b{color:var(--ink);font-weight:600}
+.tflagline{font-size:13px;color:var(--bad)}
+.tthen{font-size:13.5px;color:var(--ink-2);background:var(--sunk);border-radius:3px;padding:6px 8px;white-space:pre-wrap;overflow-wrap:anywhere}
+.tthen .lab{display:block;font:600 11px/1.4 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.tpins{margin:12px 0 0;border:1px solid var(--rule-strong);border-radius:3px;padding:6px 10px;background:var(--paper)}
+.tpins summary{font:600 12px/1.6 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);cursor:pointer}
+.tpin{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:start;padding:6px 0;border-top:1px solid var(--rule);font-size:13.5px}
+.tpin .ex{white-space:pre-wrap;overflow-wrap:anywhere;color:var(--ink-2)}
+.tpin .ex b{color:var(--ink);font-weight:600}
+.thow{font-size:13.5px;color:var(--ink-2);max-width:76ch;margin:10px 0 0}
+.thow li{margin:3px 0}
 @media (max-width:760px){.motion{grid-template-columns:1fr}}
 @media (prefers-reduced-motion: reduce){.toast{transition:none}}
 </style>
@@ -291,7 +471,9 @@ details{margin-top:8px} summary{cursor:pointer;color:var(--ink-3);font-size:13px
 // ------------------------------------------------------------------ shared
 // The shipped content is published beside this page at content/<file>.json. Edits are
 // documents in the artifact's database (collection "edits", id "<file>.<list>__<entry id>",
-// the whole edited entry); name candidates are collection "candidates". A session pulls
+// the whole edited entry); name candidates are collection "candidates"; corrections to the
+// briefs are collection "designs" (the Designs tab says how they fold in); his texts, marks and
+// notes on the Text tab are collection "text" (that tab says how they fold in). A session pulls
 // "edits" with ArtifactData and applies them to content/*.json; once the shipped file
 // matches, the entry shows as applied and the document can be cleared.
 const FILES = [
@@ -305,21 +487,27 @@ const FILES = [
 ];
 const SECTIONS = [
   {id: "codex", label: "Codex"},
+  {id: "bench", label: "Bench"},
   {id: "content", label: "Content"},
+  {id: "text", label: "Text"},
   {id: "names", label: "Names"},
+  {id: "designs", label: "Designs"},
   {id: "models", label: "Models"},
 ];
 const MAKER_TAB = {minerva: "minerva", kestrel: "kestrel", wainwright_sutler: "ws", aphelion: "aphelion", arsenal: "arsenal"};
 const KIND_GLYPH = {attack: "ATK", shield: "SHD", vent: "VENT", buff: "BUFF"};
-const REACH = {direct: "direct", indirect: "indirect"};
+const REACH = {direct: "direct", indirect: "indirect", sweep: "sweep", every_foe: "every foe"};
 
 const state = {
   shipped: {}, about: {}, edits: {},
-  section: "codex", sub: {content: "chassis.entries", names: "minerva"},
+  section: "codex", sub: {content: "chassis.entries", names: "minerva", designs: "minerva", text: "overview", bench: "all"},
   open: null, returnTo: null, draft: null, invalid: new Set(),
   db: null, user: null, dbState: "loading", canWrite: true,
   candidates: [], candState: "connecting", openCand: null,
+  designs: null, dnotes: [], designState: "connecting", dOpen: null, dFromHash: false, dEdit: null, dNote: null, dDir: null, dIdea: null, dAdd: null,
   reserved: null, pins: null, renders: null,
+  text: null, tdocs: {}, textState: "connecting", topen: null, tdraft: null, tpins: [], tshown: [], tmore: 0, tkept: {},
+  bopen: null, bdraft: {},
   filters: {},
 };
 try {
@@ -332,6 +520,8 @@ try {
   const f = JSON.parse(localStorage.getItem("hangar.filters") || "{}");
   if (f && typeof f === "object" && !Array.isArray(f)) state.filters = f;
 } catch (e) {}
+// A link to one brief (#br-<its file's name, hyphens for underscores>) opens it on the Designs tab.
+if (location.hash.startsWith("#br-")) { state.section = "designs"; state.dOpen = location.hash.slice(4); state.dFromHash = true; }
 function remember() { try { localStorage.setItem("hangar.tabs", JSON.stringify({section: state.section, sub: state.sub})); } catch (e) {} }
 function rememberFilters() { try { localStorage.setItem("hangar.filters", JSON.stringify(state.filters)); } catch (e) {} }
 
@@ -419,7 +609,7 @@ function foeTiers(e) {
   if (kind === "hero" || kind === "promoted") return ["final"];
   const tiers = new Set();
   for (const f of c.factions.values()) for (const comp of (f.compositions || [])) {
-    if (!(comp.members || []).some(m => m.foe === e.id)) continue;
+    if (![...(comp.front || []), ...(comp.back || [])].includes(e.id)) continue;   // the grid is the declaration (8 November)
     for (const t of [].concat(comp.tiers === undefined ? [1] : comp.tiers)) tiers.add(String(t));
   }
   if (!tiers.size) tiers.add(String(e.tier || 1) + (kind === "part" ? "" : "*"));   // listed nowhere: its own tier, starred (a summon, a split, a part)
@@ -511,7 +701,7 @@ const FILTER_SPECS = {
       EDITS,
     ],
     sorts: [BY_ORDER, BY_NAME, BY_MAKER, stat("tier", "Tier", e => e.tier),
-      stat("hull", "Hull", e => e.hull), stat("shield", "Shield", e => e.shield), stat("recharge_field", "Field recharge", e => e.recharge_field),
+      stat("hull", "Hull", e => e.hull), stat("shield", "Shield", e => e.shield),
       stat("armour", "Armour", e => e.armour ?? 0), stat("heat_max", "Heat max", e => e.heat_max), stat("cooling", "Cooling", e => e.cooling ?? 0),
       stat("movespeed", "Move", e => e.movespeed), stat("die", "Die entries", dieSize)],
     line: e => [makerShort(e.maker), e.tier ? "T" + e.tier : "", (e.traits || []).map(vocabName).join(", "), `hull ${e.hull}`, `shield ${e.shield}`, `move ${e.movespeed}`, "d" + dieSize(e)],
@@ -553,7 +743,7 @@ const FILTER_SPECS = {
   },
   foes: {
     noun: ["foe", "foes"], placeholder: "Name or faction",
-    text: e => [e.name, e.id, factionName(e.faction), e.rank, e.aim, e.hunts, e.behaviour, foeKind(e)],
+    text: e => [e.name, e.id, factionName(e.faction), e.rank, e.aim, foeKind(e)],
     groups: [
       {id: "faction", label: "Faction", of: e => [e.faction], name: factionName, order: () => [...ctx().factions.keys()]},
       {id: "kind", label: "Kind", of: e => [foeKind(e)], order: ["rank and file", "elite", "wanderer", "boss", "hero", "promoted", "part"]},
@@ -565,8 +755,8 @@ const FILTER_SPECS = {
       EDITS,
     ],
     sorts: [BY_ORDER, BY_NAME, stat("hp", "HP", e => e.hp), stat("attack", "Attack", e => e.attack), stat("armour", "Armour", e => e.armour ?? 0),
-      stat("movespeed", "Move", e => e.movespeed), stat("zone", "Zone", e => e.zone), stat("size", "Size", e => e.size ?? 1), stat("stun_resist", "Stun resist", e => e.stun_resist ?? 0)],
-    line: e => [factionName(e.faction), e.rank, `${e.hp} hp`, `attack ${e.attack}`, e.armour ? `armour ${e.armour}${e.armour_step ? ` (+${e.armour_step} a tier)` : ""}` : "", e.movespeed !== undefined ? `move ${e.movespeed}` : "", `zone ${e.zone}`],
+      stat("movespeed", "Move", e => e.movespeed), stat("size", "Size", e => e.size ?? 1), stat("stun_resist", "Stun resist", e => e.stun_resist ?? 0)],
+    line: e => [factionName(e.faction), e.rank, `${e.hp} hp`, `attack ${e.attack}`, e.armour ? `armour ${e.armour}${e.armour_step ? ` (+${e.armour_step} a tier)` : ""}` : "", e.movespeed !== undefined ? `move ${e.movespeed}` : ""],
   },
   factions: {
     noun: ["faction", "factions"], placeholder: "Name",
@@ -601,7 +791,7 @@ const FILTER_SPECS = {
   },
 };
 // A module in one line: its stat lines, then its rule (ContentDB.module_description's shape).
-const STAT_WORDS = {hull: "hull", shield: "shield", heat: "heat max", armour: "armour", move: "move", recharge: "field recharge", cooling: "cooling"};
+const STAT_WORDS = {hull: "hull", shield: "shield", heat: "heat max", armour: "armour", move: "move", cooling: "cooling", shield_regen: "shield regen"};
 function moduleLine(e) {
   const stats = Object.entries(e.stats || {}).map(([k, v]) => `${STAT_WORDS[k] || k} ${v > 0 ? "+" : ""}${v}`).join(", ");
   const rule = e.text && e.text.status !== "planned" ? e.text.description || "" : "";
@@ -712,30 +902,36 @@ function render() {
   VOCAB = null; CTX = null;
   // A filter control keeps focus (and the caret) across the redraw it causes.
   const act = document.activeElement;
-  const keep = act && act.id && act.id.startsWith("flt-") ? {id: act.id, a: act.selectionStart, b: act.selectionEnd} : null;
+  const keep = act && act.id && (act.id.startsWith("flt-") || act.id.startsWith("dz-") || act.id.startsWith("tx-") || act.id.startsWith("bn-")) ? {id: act.id, a: act.selectionStart, b: act.selectionEnd} : null;
   const app = $("#app");
   const sub = state.sub[state.section];
-  app.className = "wrap" + (state.section === "names" && sub ? " tab-" + sub : "");
+  app.className = "wrap" + ((state.section === "names" || state.section === "designs") && sub ? " tab-" + sub : "");
   renderTabs();
   const main = $("#main");
   main.replaceChildren();
   if (state.section === "codex") renderCodex(main);
+  else if (state.section === "bench") renderBench(main);
   else if (state.section === "content") renderContent(main);
+  else if (state.section === "text") renderText(main);
   else if (state.section === "names") renderNames(main);
+  else if (state.section === "designs") renderDesigns(main);
   else if (state.section === "models") renderModels(main);
   if (keep) {
     const n = document.getElementById(keep.id);
     if (n) { n.focus({preventScroll: true}); if (typeof keep.a === "number" && n.setSelectionRange) try { n.setSelectionRange(keep.a, keep.b); } catch (e) {} }
   }
 }
-function setSection(id) { state.section = id; state.open = null; state.returnTo = null; remember(); render(); window.scrollTo(0, 0); }
-function setSub(id) { state.sub[state.section] = id; state.open = null; remember(); render(); }
+function leaveBrief() { state.dOpen = null; state.dEdit = null; state.dNote = null; state.dDir = null; state.dIdea = null; if (location.hash.startsWith("#br-")) setHash(""); }
+function setSection(id) { state.section = id; state.open = null; state.returnTo = null; state.topen = null; state.tmore = 0; state.bopen = null; leaveBrief(); remember(); render(); window.scrollTo(0, 0); }
+function setSub(id) { state.sub[state.section] = id; state.open = null; state.topen = null; state.tmore = 0; state.bopen = null; leaveBrief(); remember(); render(); }
 function renderTabs() {
   const tabs = $("#tabs"); tabs.replaceChildren();
   const pending = pendingCount();
   for (const s of SECTIONS) {
     const b = el("button", {role: "tab", "aria-selected": String(state.section === s.id), onclick: () => setSection(s.id)}, s.label);
     if (s.id === "content" && pending) b.append(el("span", {class: "count"}, String(pending)));
+    if (s.id === "designs" && state.designState === "on") { const n = tabPending("changes"); if (n) b.append(el("span", {class: "count"}, String(n))); }
+    if (s.id === "text" && state.text) { const n = textPending().length; if (n) b.append(el("span", {class: "count"}, String(n))); }
     tabs.append(b);
   }
   const subs = $("#subtabs"); subs.replaceChildren();
@@ -749,10 +945,31 @@ function renderTabs() {
     const b = el("button", {role: "tab", "aria-selected": String(state.sub.content === "changes"), onclick: () => setSub("changes")}, "Changes");
     if (pending) b.append(el("span", {class: "count"}, String(pending)));
     subs.append(b);
+  } else if (state.section === "text") {
+    const tabs = [{id: "overview", label: "Overview"}, {id: "all", label: "All"}, ...textKinds().filter(k => textSlots().some(s => s.kind === k.id)), {id: "changes", label: "Waiting"}];
+    const cur = tabs.some(t => t.id === state.sub.text) ? state.sub.text : "overview";
+    for (const t of tabs) {
+      const b = el("button", {role: "tab", "aria-selected": String(cur === t.id), onclick: () => setSub(t.id)}, t.label);
+      if (t.id === "changes" && state.text) { const n = textPending().length; if (n) b.append(el("span", {class: "count"}, String(n))); }
+      subs.append(b);
+    }
+  } else if (state.section === "bench") {
+    const all = benchMachines();
+    for (const t of BENCH_TABS) {
+      const n = all.filter(m => t.id === "all" || MAKER_TAB[m.maker] === t.id).length;
+      subs.append(el("button", {role: "tab", "aria-selected": String(state.sub.bench === t.id), onclick: () => setSub(t.id)}, t.label + (n ? " · " + n : "")));
+    }
   } else if (state.section === "names") {
     for (const t of NAME_TABS) {
       const n = t.id === "rules" ? 0 : state.candidates.filter(d => d.tab === t.id && statusOf(d) !== "rejected").length;
       subs.append(el("button", {role: "tab", "aria-selected": String(state.sub.names === t.id), onclick: () => setSub(t.id)}, t.label + (n ? " · " + n : "")));
+    }
+  } else if (state.section === "designs") {
+    for (const t of DESIGN_TABS) {
+      const n = state.designState === "on" ? tabPending(t.id) : 0;
+      const b = el("button", {role: "tab", "aria-selected": String(state.sub.designs === t.id), onclick: () => setSub(t.id)}, t.label);
+      if (n) b.append(el("span", {class: "count"}, String(n)));
+      subs.append(b);
     }
   }
   subs.hidden = !subs.childElementCount;
@@ -849,7 +1066,8 @@ function renderCodex(main) {
     if ((e.traits || []).length) { sub.append(" · "); for (const t of e.traits) sub.append(kwChip(t), " "); }
     head.append(sub);
     card.append(head);
-    const stats = [["hull", "hull", e.hull], ["shield", "shield", e.shield], ["recharge_field", "field recharge", e.recharge_field], ["armour", "armour", e.armour], ["heat_max", "heat max", e.heat_max], ["cooling", "cooling", e.cooling], ["movespeed", "move", e.movespeed], ["die", "die", "d" + die], ["module_slots", "module slots", e.module_slots ?? ""]];
+    // The shield regen shows only where it is not zero (the long wall brief 3.6); the field recharge is gone.
+    const stats = [["hull", "hull", e.hull], ["shield", "shield", e.shield], ...(e.shield_regen ? [["shield_regen", "shield regen", "+" + e.shield_regen]] : []), ["armour", "armour", e.armour], ["heat_max", "heat max", e.heat_max], ["cooling", "cooling", e.cooling], ["movespeed", "move", e.movespeed], ["die", "die", "d" + die], ["module_slots", "module slots", e.module_slots ?? ""]];
     card.append(el("div", {class: "stats"}, ...stats.map(([id, k, v]) => el("div", {class: "stat" + (id === sorted ? " sorted" : "")}, el("span", {class: "k"}, k), el("span", {class: "v"}, String(v ?? ""))))));
     if (compact) { main.append(card); continue; }
     const p = e.passive;
@@ -1127,7 +1345,7 @@ async function saveDoc(key, id, fields) {
 const NAME_TABS = [
   {id: "minerva", label: "Minerva", name: "Minerva Heavy Works", voice: "Maintenance manual. Terse, exact, proud of tolerances.",
    builds: "Tracked vehicles (the monopoly on treads), heavy wheeled vehicles, quad walkers, perhaps heavy plantigrade bipeds, perhaps one heavy flyer in the battlecruiser register. Heavy machinery is the root, not mining alone.",
-   names: "Rugged terrestrial mammals: Honey Badger, Armadillo, Wild Boar. Extinct is fine when the picture is common knowledge (Aurochs, Smilodon).",
+   names: "Rugged terrestrial mammals: Honey Badger, Polar Bear, Wild Boar. Extinct is fine when the picture is common knowledge (Aurochs, Smilodon).",
    avoid: "Digitigrade legs read too flimsy. The Musk Ox is Wainwright & Sutler's (21 October)."},
   {id: "kestrel", label: "Kestrel", name: "Kestrel Dynamics", voice: "Flight-test log. Clipped, numbers first.",
    builds: "Small and mid-sized flyers and hovercraft. Nothing that touches the ground, nothing big. The monopoly on fast jets.",
@@ -1282,7 +1500,7 @@ function renderRules() {
     <li><b>Known:</b> a hobbyist recognises it, mostly a Clan or Inner Sphere designation rather than the name people use. Judged case by case: Baboon (the Howler's Clan name) is kept this way. Dingo (a Heavy Gear gear) is still open.</li>
     <li><b>Coincidence:</b> a name every military reaches for, obscure in theirs. Kept.</li>
   </ul>
-  <p>The roster's two passes closed on 21 October: the Sparrowhawk (a BattleTech aircraft, a coincidence) became the Kite and the Goshawk (an obscure nickname's) the Buzzard, their ids kept since nothing the player sees reads one; out with them the Shrike, the Merlin, the Gyrfalcon and the Peregrine (BattleTech's), the Albatross (BattleTech's and Halo's) and the Condor (Halo's). The Butcherbird turned out a BattleTech 'Mech's, so the strafer is the Skua; a plain Owl is Heavy Gear's, so Kestrel's owl is the Snowy Owl.</p>
+  <p>The roster's two passes closed on 21 October: the Sparrowhawk (a BattleTech aircraft, a coincidence) became the Kite and the Goshawk (an obscure nickname's) the Buzzard, their ids following on 9 November, since the designer reads them here; out with them the Shrike, the Merlin, the Gyrfalcon and the Peregrine (BattleTech's), the Albatross (BattleTech's and Halo's) and the Condor (Halo's). The Butcherbird turned out a BattleTech 'Mech's, so the strafer is the Skua; a plain Owl is Heavy Gear's, so Kestrel's owl is the Snowy Owl.</p>
   <p>The validator flags every exact match regardless of tier and the entry records why a kept one stays. The chips here go one step softer: <span class="chip warn">shares a word</span> is only a nudge.</p>
   <h3>Makers by shape</h3>
   <ul>
@@ -1300,6 +1518,1178 @@ async function addCandidate(d) { if (!state.db) return; try { await state.db.col
 async function saveCandidate(id, patch) { if (!state.db) return; try { if (patch.name) patch.clash = clashText(patch.name); await state.db.collection("candidates").doc(id).update(patch); } catch (e) { writeFailed(e); } }
 async function removeCandidate(id) { if (!state.db) return; try { await state.db.collection("candidates").doc(id).delete(); state.openCand = null; } catch (e) { writeFailed(e); } }
 function writeFailed(e) { toast("Write refused: " + (e && e.code ? e.code : "unknown")); if (e && e.code === "invalid_argument") { state.canWrite = false; render(); } }
+
+// ------------------------------------------------------------------ designs
+// Every brief in docs/briefs/, the design in progress for a chassis, a component, a module or a
+// rule (5 November, Ryan: "I'd like to be able to edit briefs and WIP designs in the hangar if
+// possible, so when I start a design session I'm not correcting a bunch of bad assumptions in
+// context"). hangar/designs.json is the briefs as committed (tools/hangar_designs.py), each split
+// into blocks (a paragraph, a list item, a quote, a table, a code fence) that keep their exact
+// source. Ryan's corrections are documents in the collection "designs", an inbox laid over the
+// briefs here: a correction or a strike of a block (id "edit__<brief>__<block>", the block's
+// source kept as "original"), a note under a heading, the session's direction (id
+// "direction__<brief>") and an idea with no brief yet. A design session's first step folds them
+// into the files (tools/hangar_designs.py --fold), commits, republishes and clears them; the
+// files in git stay the truth.
+const DESIGN_TABS = [
+  {id: "minerva", label: "Minerva", maker: "minerva"},
+  {id: "kestrel", label: "Kestrel", maker: "kestrel"},
+  {id: "ws", label: "W&S", maker: "wainwright_sutler"},
+  {id: "aphelion", label: "Aphelion", maker: "aphelion"},
+  {id: "arsenal", label: "Arsenal", maker: "arsenal"},
+  {id: "parts", label: "Components", kind: "component"},
+  {id: "modules", label: "Modules", kind: "module"},
+  {id: "shared", label: "Shared"},
+  {id: "changes", label: "Changes"},
+];
+const ROSTER_TARGET = 10;   // Ryan, 4 November: "I want to target 10 per maker, at least for now"
+const TIER_WORD = {1: "Tier one", 2: "Tier two", 3: "Tier three"};
+const IDEA_STATUSES = ["idea", "liked", "briefed", "dropped"];
+const IDEA_CYCLE = ["idea", "liked", "briefed"];
+const BLOCK_NOUN = {p: "paragraph", li: "item", quote: "quote", table: "table", code: "code block"};
+const NOTE_WORD = {pending: "waiting for its session", folded: "folded into the brief: clear it", moved: "the brief has moved under it: its session checks it by hand"};
+const ensureDesigns = () => ensure("designs", "hangar/designs.json", j => { state.designs = j; });
+const designDocs = () => (state.designs && state.designs.docs) || [];
+const designStamp = () => (state.designs && state.designs.stamp) || "";
+const briefSlug = (id) => String(id).replace(/[^A-Za-z0-9]+/g, "-");
+const briefTitle = (d) => String(d.title || d.id).replace(/^Brief:\s*/i, "");
+function briefBy(key) { return designDocs().find(d => d.id === key || briefSlug(d.id) === key) || null; }
+function designTabOf(d) {
+  const h = d.header || {};
+  if (h.kind === "component") return "parts";
+  if (h.kind === "module") return "modules";
+  return MAKER_TAB[h.maker] || "shared";
+}
+// The tabs that list a brief: its own, and its maker's for a piece a maker owns.
+function briefTabs(d) {
+  const t = new Set([designTabOf(d)]);
+  const m = MAKER_TAB[(d.header || {}).maker];
+  if (m) t.add(m);
+  return t;
+}
+const canDesign = () => state.designState === "on" && state.canWrite;
+const squash = (s) => String(s || "").replace(/\s+/g, " ").trim();
+function editOf(doc, block) { return state.dnotes.find(n => n.type === "edit" && n.doc === doc && n.block === block) || null; }
+function directionOf(doc) { return state.dnotes.find(n => n.type === "direction" && n.doc === doc) || null; }
+// The section a note sits under: its own heading where it still stands, else the first of that
+// name; null once no heading carries it.
+function secOfNote(d, n) {
+  return d.sections.find(s => s.id === n.sec && s.heading === n.section) || d.sections.find(s => s.heading && s.heading === n.section) || null;
+}
+// Pending while the brief still reads as it did when the note was made; folded once the brief
+// as published carries it (an edit's words, a struck block gone, a note's or a direction's
+// words); moved when the brief changed under it without carrying it.
+function noteState(n) {
+  const d = briefBy(n.doc);
+  if (!d) return "moved";
+  const carried = () => squash(d.blocks.map(b => b.text).join(" ")).includes(squash(n.text));
+  if (n.type === "edit") {
+    if (d.blocks.some(b => b.id === n.block)) return "pending";
+    if (n.strike) return d.blocks.some(b => b.src === n.original) ? "moved" : "folded";
+    return carried() ? "folded" : "moved";
+  }
+  if (n.text && carried()) return "folded";
+  if (n.type === "note") return secOfNote(d, n) ? "pending" : "moved";
+  return "pending";
+}
+// Before the briefs load, every note counts as open.
+const designOpen = (n) => n.type === "idea" ? !["briefed", "dropped"].includes(n.status) : (!state.designs || noteState(n) !== "folded");
+const openNotes = () => state.dnotes.filter(designOpen);
+const briefPending = (docKey) => openNotes().filter(n => n.type !== "idea" && n.doc === docKey).length;
+function tabPending(tabId) {
+  if (tabId === "changes") return openNotes().length;
+  return openNotes().filter(n => {
+    if (n.type === "idea") return n.tab === tabId;
+    const d = briefBy(n.doc);
+    return d ? briefTabs(d).has(tabId) : false;
+  }).length;
+}
+// Every write carries the day in the viewer's own calendar (a session dates Ryan's words by it)
+// and the commit the briefs were read at.
+const designDay = () => new Date().toLocaleDateString("en-GB", {day: "numeric", month: "long"});
+const designMeta = () => ({by: "ryan", day: designDay(), updated: new Date().toISOString(), against: designStamp()});
+async function putDesign(id, data) { if (!state.db) return false; try { await state.db.collection("designs").doc(id).set({...data, ...designMeta()}); return true; } catch (e) { writeFailed(e); return false; } }
+async function addDesign(data) { if (!state.db) return false; try { await state.db.collection("designs").add({...data, ...designMeta()}); return true; } catch (e) { writeFailed(e); return false; } }
+async function patchDesign(id, patch) { if (!state.db) return false; try { await state.db.collection("designs").doc(id).update({...patch, updated: new Date().toISOString()}); return true; } catch (e) { writeFailed(e); return false; } }
+async function dropDesign(id) { if (!state.db) return false; try { await state.db.collection("designs").doc(id).delete(); return true; } catch (e) { writeFailed(e); return false; } }
+function setHash(h) { try { const base = location.href.split("#")[0]; history.replaceState(null, "", h ? base + "#" + h : base); } catch (e) {} }
+function focusLater(id) { requestAnimationFrame(() => { const n = document.getElementById(id); if (n) { n.focus(); if (n.tagName === "TEXTAREA") autosize(n); } }); }
+function openBrief(id) {
+  state.dOpen = id; state.dEdit = null; state.dNote = null; state.dDir = null;
+  setHash("br-" + briefSlug(id));
+  render(); window.scrollTo(0, 0);
+}
+function closeBrief() {
+  state.dOpen = null; state.dEdit = null; state.dNote = null; state.dDir = null;
+  setHash("");
+  render(); window.scrollTo(0, 0);
+}
+function openCodexAt(id) {
+  setSection("codex");
+  requestAnimationFrame(() => { const t = document.getElementById("cx-" + id); if (t) t.scrollIntoView(); });
+}
+// Markdown as the briefs write it, built as nodes (never as HTML): `code`, **bold**, *italic*,
+// a link's words.
+function mdInline(text) {
+  const out = [];
+  for (const p of String(text ?? "").split(/(`[^`]+`)/)) {
+    if (!p) continue;
+    if (p.length > 2 && p[0] === "`" && p[p.length - 1] === "`") { out.push(el("code", {}, p.slice(1, -1))); continue; }
+    for (const q of p.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, "$1").split(/(\*\*[^*]+\*\*|\*[^*\s][^*]*\*)/)) {
+      if (!q) continue;
+      if (q.length > 4 && q.startsWith("**") && q.endsWith("**")) out.push(el("b", {}, q.slice(2, -2)));
+      else if (q.length > 2 && q[0] === "*" && q[q.length - 1] === "*") out.push(el("i", {}, q.slice(1, -1)));
+      else out.push(document.createTextNode(q));
+    }
+  }
+  return out;
+}
+function mdTable(src) {
+  const rows = String(src).split("\n").filter(l => l.trim().startsWith("|"));
+  const cells = (l) => l.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map(c => c.trim());
+  const t = el("table");
+  rows.forEach((l, i) => {
+    if (i === 1 && /^[\s|:-]+$/.test(l)) return;   // the header's rule
+    t.append(el("tr", {}, ...cells(l).map(c => el(i === 0 ? "th" : "td", {}, ...mdInline(c)))));
+  });
+  return el("div", {class: "tbl"}, t);
+}
+function dsect(title, count) { return el("div", {class: "dsect"}, el("h3", {}, title), count === undefined ? null : el("span", {class: "rcount"}, count)); }
+
+function renderDesigns(main) {
+  want("designs", ensureDesigns);
+  if (!state.designs) { main.append(el("p", {class: "empty"}, state.loaded.designs ? "The briefs did not load (hangar/designs.json)." : "Loading the briefs…")); return; }
+  if (state.dOpen) {
+    const d = briefBy(state.dOpen);
+    if (d) {
+      // Opened from a link: the brief's own tab lights.
+      if (state.dFromHash) { state.dFromHash = false; state.sub.designs = designTabOf(d); $("#app").className = "wrap tab-" + state.sub.designs; renderTabs(); }
+      renderBrief(main, d); return;
+    }
+    state.dOpen = null; setHash("");
+  }
+  const tab = DESIGN_TABS.find(x => x.id === state.sub.designs) || DESIGN_TABS[0];
+  if (tab.id === "changes") { renderDesignChanges(main); return; }
+  main.append(el("p", {class: "lede"}, "Every brief in docs/briefs/ as the files read at ", el("code", {}, designStamp() || "?"), ". Open one to correct a paragraph, strike one, note a heading or set the session's direction: yours wait here, laid over the brief, until its design session folds them in as its first step and clears them. The files in git stay the truth."));
+  designAccess(main);
+  if (tab.maker) main.append(renderRoster(tab));
+  const others = designDocs().filter(d => briefTabs(d).has(tab.id) && !(tab.maker && (d.header.slot || d.header.built)));
+  if (others.length) {
+    main.append(dsect(tab.maker ? "Other briefs" : "Briefs", others.length));
+    const box = el("div", {class: "roster"});
+    for (const d of others) box.append(rosterRow({brief: d}));
+    main.append(box);
+  } else if (!tab.maker) main.append(el("p", {class: "empty"}, `No ${tab.label.toLowerCase()} brief yet: an idea below becomes one in its session.`));
+  renderIdeas(main, tab);
+}
+function designAccess(main) {
+  if (state.designState === "connecting") main.append(el("p", {class: "help"}, "Connecting to the hangar's notes…"));
+  else if (state.designState === "off") main.append(el("p", {class: "help"}, "Read only: the database did not load in this view, so the briefs show as committed and nothing can be corrected here."));
+  else if (!state.canWrite) main.append(el("p", {class: "help"}, "You can read the briefs and the notes on them but not add to them."));
+}
+function renderRoster(t) {
+  const built = liveEntries("chassis.entries").map(x => x.entry).filter(e => e.maker === t.maker);
+  const briefs = designDocs().filter(d => (d.header || {}).maker === t.maker);
+  const slots = briefs.filter(d => d.header.slot);
+  const rework = new Map(briefs.filter(d => d.header.built).map(d => [d.header.built, d]));
+  const open = Math.max(0, ROSTER_TARGET - built.length - slots.length);
+  const box = el("div", {class: "roster"});
+  const mk = ctx().makers.get(t.maker) || {};
+  box.append(dsect((mk.name || t.label) + ": the roster", `${built.length} built · ${slots.length} in briefs · ${open} open · of ${ROSTER_TARGET}`));
+  const rows = [...built.map(e => ({tier: Number(e.tier) || null, built: e, brief: rework.get(e.id) || null})), ...slots.map(d => ({tier: Number(d.header.tier) || null, brief: d}))];
+  for (const tier of [1, 2, 3, null]) {
+    const here = rows.filter(r => r.tier === tier);
+    if (!here.length) continue;
+    box.append(el("h4", {}, tier ? TIER_WORD[tier] : "Tier open"));
+    for (const r of here) box.append(rosterRow(r));
+  }
+  if (open) {
+    box.append(el("h4", {}, "Open"));
+    for (let i = 0; i < open; i++) box.append(el("div", {class: "slotrow vacant"}, el("span", {class: "name"}, "An open slot"), el("span", {class: "sub2"}, "No brief yet: an idea below, or a session's.")));
+  }
+  return box;
+}
+function rosterRow(r) {
+  const d = r.brief, e = r.built;
+  const end = el("span", {class: "end"});
+  if (e) end.append(el("span", {class: "tag applied", title: "In content now"}, "built"));
+  if (d) end.append(el("span", {class: "tag planned", title: "The brief's status"}, d.header.status || "brief"));
+  const pend = d ? briefPending(d.id) : 0;
+  if (pend) end.append(el("span", {class: "tag edited", title: "Your corrections and notes waiting on this brief"}, pend + " waiting"));
+  const title = d ? briefTitle(d) : "", nm = d ? String(d.header.name || "") : "";
+  const sub2 = d ? (nm && title.toLowerCase().startsWith(nm.toLowerCase() + ", ") ? title.slice(nm.length + 2) : title) : ((e.designation || "") + " · no brief: tap for the codex");
+  return el("button", {class: "slotrow" + (e ? " built" : ""), title: d ? "Open the brief" : "Open it in the codex", onclick: () => d ? openBrief(d.id) : openCodexAt(e.id)},
+    el("span", {class: "name"}, e ? (e.name || e.id) : (d.header.name || d.id)), end, el("span", {class: "sub2"}, sub2));
+}
+
+// ---- one brief, with Ryan's corrections laid over it
+function renderBrief(main, d) {
+  const h = d.header || {};
+  const t = DESIGN_TABS.find(x => x.id === state.sub.designs) || DESIGN_TABS[0];
+  const bar = el("div", {class: "toolbar"}, el("button", {class: "btn", onclick: closeBrief}, "‹ " + (t.id === "changes" ? "Changes" : t.label)));
+  const mk = h.maker ? (ctx().makers.get(h.maker) || {}).name || h.maker : "";
+  for (const s of [h.kind, mk, h.tier ? "T" + h.tier : (h.kind === "chassis" ? "tier open" : ""), h.status, h.slot ? "a roster slot" : ""]) if (s) bar.append(el("span", {class: "tag planned"}, s));
+  const pend = briefPending(d.id);
+  if (pend) bar.append(el("span", {class: "tag edited", title: "Your corrections and notes waiting on this brief"}, pend + " waiting"));
+  main.append(bar);
+  const wrap = el("div", {class: "brief"});
+  wrap.append(el("h2", {}, briefTitle(d)), el("div", {class: "path"}, d.file + " · read at " + designStamp()));
+  designAccess(wrap);
+  wrap.append(directionBox(d));
+  if (canDesign()) wrap.append(el("p", {class: "help"}, "Tap a paragraph, an item or a table to correct or strike it; add a note under any heading. Its session folds yours into the file, dated, as its first step."));
+  const secs = d.sections.filter(s => s.level === 2);
+  if (secs.length > 1) {
+    const nav = el("div", {class: "secnav"});
+    for (const s of secs) nav.append(el("button", {onclick: () => { const n = document.getElementById("dsec-" + s.id); if (n) n.scrollIntoView({block: "start"}); }}, s.heading));
+    wrap.append(nav);
+  }
+  const doc = el("div", {class: "doc"});
+  for (const b of d.blocks) doc.append(b.type[0] === "h" ? headingEl(d, b) : renderBlock(d, b));
+  wrap.append(doc);
+  // What the brief has moved past: a correction whose block is gone, a note whose heading is.
+  const moved = state.dnotes.filter(n => n.doc === d.id && ((n.type === "edit" && !d.blocks.some(b => b.id === n.block)) || (n.type === "note" && !secOfNote(d, n))));
+  if (moved.length) {
+    const box = el("div", {class: "stale"}, dsect("Since the brief moved", moved.length), el("p", {class: "help"}, "The brief changed under these after they were made. Folded ones can go; the rest its session checks by hand."));
+    for (const n of moved) box.append(changeRow(n));
+    wrap.append(box);
+  }
+  main.append(wrap);
+}
+function directionBox(d) {
+  const cur = directionOf(d.id);
+  const box = el("div", {class: "dir"}, el("label", {for: "dz-dir"}, "Direction for the session"));
+  if (!canDesign()) { box.append(el("div", {class: "saved"}, cur ? cur.text : "None set.")); return box; }
+  const was = cur ? cur.text : "";
+  const draft = state.dDir && state.dDir.doc === d.id ? state.dDir.text : was;
+  const ta = el("textarea", {id: "dz-dir", rows: "2", placeholder: "What its session should take as given before it reads a word: a call, a frame the brief has wrong, what to skip."});
+  ta.value = draft;
+  const save = el("button", {class: "btn primary", disabled: squash(draft) === squash(was)}, draft.trim() || !cur ? "Save" : "Clear");
+  ta.addEventListener("input", () => { state.dDir = {doc: d.id, text: ta.value}; save.disabled = squash(ta.value) === squash(was); save.textContent = ta.value.trim() || !cur ? "Save" : "Clear"; autosize(ta); });
+  save.addEventListener("click", async () => {
+    const text = ta.value.trim();
+    const ok = text ? await putDesign("direction__" + d.id, {type: "direction", doc: d.id, file: d.file, text}) : (cur ? await dropDesign(cur.id) : true);
+    if (ok) { state.dDir = null; toast(text ? "Direction saved" : "Direction cleared"); render(); }
+  });
+  requestAnimationFrame(() => autosize(ta));
+  box.append(ta, el("div", {class: "actions"}, save, cur ? el("span", {class: "help"}, "Saved " + (cur.day || "") + (noteState(cur) === "folded" ? " · folded into the brief" : "")) : null));
+  return box;
+}
+function headingEl(d, b) {
+  const s = d.sections.find(x => x.id === b.sec) || {id: b.sec, heading: b.text, level: 2};
+  const box = el("div", {});
+  const head = el("div", {class: "dh " + b.type, id: "dsec-" + b.sec}, el("h3", {}, ...mdInline(b.text)));
+  if (canDesign() && !(state.dNote && state.dNote.doc === d.id && state.dNote.sec === b.sec && !state.dNote.id))
+    head.append(el("button", {class: "linkbtn", onclick: () => { state.dNote = {doc: d.id, sec: b.sec, text: ""}; render(); focusLater("dz-note"); }}, "Add a note"));
+  box.append(head);
+  for (const n of state.dnotes.filter(n => n.type === "note" && n.doc === d.id && secOfNote(d, n) === s)) {
+    box.append(state.dNote && state.dNote.id === n.id ? noteForm(d, s) : noteEl(n));
+  }
+  if (state.dNote && state.dNote.doc === d.id && state.dNote.sec === b.sec && !state.dNote.id) box.append(noteForm(d, s));
+  return box;
+}
+function noteEl(n) {
+  const box = el("div", {class: "dnote"}, el("div", {class: "body"}, el("span", {class: "who"}, "your note"), n.text));
+  const st = noteState(n);
+  const meta = el("div", {class: "meta"}, (n.day || "") + (st === "folded" ? " · " + NOTE_WORD.folded : ""));
+  if (canDesign()) meta.append(" · ", el("button", {class: "linkbtn", onclick: () => { state.dNote = {doc: n.doc, sec: n.sec, id: n.id, text: n.text}; render(); focusLater("dz-note"); }}, "Edit"),
+    " · ", el("button", {class: "linkbtn", onclick: async () => { if (await dropDesign(n.id)) toast("Note dropped"); }}, "Drop"));
+  box.append(meta);
+  return box;
+}
+function noteForm(d, s) {
+  const st = state.dNote;
+  const ta = el("textarea", {id: "dz-note", rows: "3", "aria-label": "A note on " + s.heading, placeholder: "What its session should know about this section: an assumption that is wrong, a call, a question."});
+  ta.value = st.text || "";
+  ta.addEventListener("input", () => { st.text = ta.value; autosize(ta); });
+  const save = async () => {
+    const text = ta.value.trim();
+    if (!text) return;
+    const data = {type: "note", doc: d.id, file: d.file, sec: s.id, section: s.heading, text};
+    if (await (st.id ? putDesign(st.id, data) : addDesign(data))) { state.dNote = null; render(); toast("Note saved"); }
+  };
+  ta.addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); save(); } });
+  return el("div", {class: "dnote"}, ta, el("div", {class: "actions"}, el("button", {class: "btn primary", onclick: save}, "Save note"), el("button", {class: "btn", onclick: () => { state.dNote = null; render(); }}, "Cancel")));
+}
+function blockBody(b, text, ed) {
+  const who = ed ? el("span", {class: "who"}, ed.strike ? "struck" : "your edit") : null;
+  if (b.type === "table") return el("div", {}, who, mdTable(text));
+  if (b.type === "code") return el("div", {}, who, el("pre", {}, String(text).replace(/^```[^\n]*\n?/, "").replace(/\n?```\s*$/, "")));
+  const txt = el("span", {class: "txt"}, who, ...mdInline(text));
+  if (b.type === "li") return el("div", {class: "line"}, el("span", {class: "mk"}, /^\d/.test(b.marker) ? b.marker : "•"), txt);
+  return txt;
+}
+function renderBlock(d, b) {
+  const ed = editOf(d.id, b.id);
+  const open = !!(state.dEdit && state.dEdit.doc === d.id && state.dEdit.block === b.id);
+  const lvl = Math.min(4, Math.ceil((b.level || 0) / 3));
+  const node = el("div", {class: "blk " + b.type + (ed ? (ed.strike ? " struck" : " edited") : "") + (open ? " open" : ""), style: lvl ? `--lvl:${lvl}` : null});
+  const show = ed && !ed.strike ? ed.text : b.text;
+  node.append(blockBody(b, show, ed));
+  if (ed && !ed.strike) node.append(el("details", {class: "was"}, el("summary", {}, "As the brief has it"), el("p", {class: "old"}, b.text)));
+  if (!canDesign()) return node;
+  if (!open) {
+    const start = () => { state.dEdit = {doc: d.id, block: b.id, text: ed && !ed.strike ? ed.text : b.text}; state.dNote = null; render(); focusLater("dz-edit"); };
+    node.setAttribute("tabindex", "0"); node.setAttribute("role", "button");
+    node.addEventListener("click", (ev) => { if (ev.target.closest("details, a, button") || String(window.getSelection() || "").trim()) return; start(); });
+    node.addEventListener("keydown", (ev) => { if ((ev.key === "Enter" || ev.key === " ") && ev.target === node) { ev.preventDefault(); start(); } });
+    return node;
+  }
+  const raw = b.type === "table" || b.type === "code";
+  const ta = el("textarea", {id: "dz-edit", rows: raw ? "8" : "4", "aria-label": "Your correction", spellcheck: raw ? "false" : null, style: raw ? "font-family:var(--mono);font-size:13px" : null});
+  ta.value = state.dEdit.text;
+  ta.addEventListener("input", () => { state.dEdit.text = ta.value; autosize(ta); });
+  const save = () => saveEdit(d, b);
+  ta.addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); save(); } if (e.key === "Escape") { state.dEdit = null; render(); } });
+  const acts = el("div", {class: "actions"},
+    el("button", {class: "btn primary", onclick: save}, "Save correction"),
+    ed && ed.strike ? el("button", {class: "btn", onclick: () => dropEdit(ed)}, "Unstrike") : el("button", {class: "btn danger", onclick: () => strikeBlock(d, b)}, "Strike it"),
+    el("button", {class: "btn", onclick: () => { state.dEdit = null; render(); }}, "Cancel"),
+    ed && !ed.strike ? el("button", {class: "btn", onclick: () => dropEdit(ed)}, "Drop my edit") : null);
+  node.append(el("div", {class: "blkedit"}, ta, acts, el("p", {class: "help"}, raw ? "The raw Markdown, pipes and all." : "Plain words; `code`, **bold** and *italic* as the file writes them. Its session wraps it to the file.")));
+  return node;
+}
+function editData(d, b, extra) {
+  const s = d.sections.find(x => x.id === b.sec);
+  return {type: "edit", doc: d.id, file: d.file, block: b.id, kind: b.type, marker: b.marker || "", level: b.level || 0, line: b.line, sec: b.sec, section: s ? s.heading : "", original: b.src, ...extra};
+}
+async function saveEdit(d, b) {
+  const text = state.dEdit.text.trim();
+  const ed = editOf(d.id, b.id);
+  let ok;
+  if (!text) { strikeBlock(d, b); return; }
+  if (squash(text) === squash(b.text)) ok = ed ? await dropDesign(ed.id) : true;
+  else ok = await putDesign("edit__" + d.id + "__" + b.id, editData(d, b, {text}));
+  if (ok) { state.dEdit = null; render(); toast("Correction saved"); }
+}
+async function strikeBlock(d, b) {
+  if (await putDesign("edit__" + d.id + "__" + b.id, editData(d, b, {text: "", strike: true}))) { state.dEdit = null; render(); toast("Struck"); }
+}
+async function dropEdit(ed) { if (await dropDesign(ed.id)) { state.dEdit = null; render(); toast("Back as the brief has it"); } }
+
+// ---- ideas with no brief yet, each maker's and each kind's
+function renderIdeas(main, t) {
+  const list = state.dnotes.filter(n => n.type === "idea" && n.tab === t.id)
+    .sort((a, b) => IDEA_STATUSES.indexOf(a.status || "idea") - IDEA_STATUSES.indexOf(b.status || "idea") || ((a.created || "") < (b.created || "") ? -1 : 1));
+  main.append(dsect("Ideas, no brief yet", list.length || undefined));
+  const rows = el("div", {class: "rows ideas"});
+  if (state.designState === "on" && !list.length) rows.append(el("div", {class: "help"}, "None yet. A session turns an idea into a brief."));
+  const live = list.filter(n => n.status !== "dropped"), binned = list.filter(n => n.status === "dropped");
+  for (const n of live) rows.append(renderIdea(n));
+  if (binned.length) { rows.append(el("div", {class: "divider"}, "dropped · " + binned.length)); for (const n of binned) rows.append(renderIdea(n)); }
+  main.append(rows);
+  if (canDesign()) main.append(ideaForm(t));
+}
+function renderIdea(n) {
+  const st = IDEA_STATUSES.includes(n.status) ? n.status : "idea";
+  const open = !!(state.dIdea && state.dIdea.id === n.id);
+  const row = el("div", {class: "row" + (open ? " open" : "") + (st === "dropped" ? " rejected" : ""), onclick: (e) => {
+    if (e.target.closest(".edit, .pill") || !canDesign()) return;
+    state.dIdea = open ? null : {id: n.id, name: n.name || "", concept: n.concept || ""}; render();
+  }});
+  row.append(el("div", {class: "name"}, n.name || "Unnamed", el("small", {}, [n.kind || "chassis", n.by === "claude" ? "Claude's" : "", n.day].filter(Boolean).join(" · "))));
+  const side = el("div", {class: "side"});
+  if (!canDesign()) side.append(el("span", {class: "pill " + (st === "briefed" ? "landed" : st === "dropped" ? "rejected" : st)}, st));
+  else if (st === "dropped") side.append(el("button", {class: "pill rejected", title: "Dropped. Tap to restore it as an idea", onclick: async (e) => { e.stopPropagation(); await patchDesign(n.id, {status: "idea"}); }}, "dropped"));
+  else side.append(
+    el("button", {class: "pill " + (st === "briefed" ? "landed" : st), title: "Tap to cycle: idea, liked, briefed", onclick: async (e) => { e.stopPropagation(); await patchDesign(n.id, {status: IDEA_CYCLE[(IDEA_CYCLE.indexOf(st) + 1) % IDEA_CYCLE.length]}); }}, st),
+    el("button", {class: "pill ghost", title: "Drop: keeps it on record at the bottom", onclick: async (e) => { e.stopPropagation(); await patchDesign(n.id, {status: "dropped"}); }}, "drop"));
+  row.append(side);
+  if (n.concept) row.append(el("div", {class: "concept"}, n.concept));
+  if (open) {
+    const dr = state.dIdea;
+    const nm = el("input", {type: "text", id: "dz-idea-name", "aria-label": "Working name"}); nm.value = dr.name;
+    const ta = el("textarea", {rows: "3", id: "dz-idea-concept", "aria-label": "The idea"}); ta.value = dr.concept;
+    nm.addEventListener("input", () => { dr.name = nm.value; });
+    ta.addEventListener("input", () => { dr.concept = ta.value; autosize(ta); });
+    requestAnimationFrame(() => autosize(ta));
+    let confirming = false;
+    const del = el("button", {class: "btn danger", title: "Delete removes it; Drop keeps it at the bottom", onclick: async () => { if (!confirming) { confirming = true; del.textContent = "Really delete"; return; } if (await dropDesign(n.id)) { state.dIdea = null; render(); } }}, "Delete");
+    row.append(el("div", {class: "edit"}, nm, ta, el("div", {class: "actions"},
+      el("button", {class: "btn primary", onclick: async () => { if (await patchDesign(n.id, {name: nm.value.trim() || n.name || "", concept: ta.value.trim()})) { state.dIdea = null; render(); } }}, "Save"),
+      el("button", {class: "btn", onclick: () => { state.dIdea = null; render(); }}, "Cancel"), del)));
+  }
+  return row;
+}
+function ideaForm(t) {
+  if (!state.dAdd || state.dAdd.tab !== t.id) state.dAdd = {tab: t.id, name: "", concept: "", kind: t.kind || (t.id === "shared" ? "rule" : "chassis")};
+  const dr = state.dAdd;
+  const nm = el("input", {type: "text", id: "dz-add-name", placeholder: "A working name (the real one comes later)", autocomplete: "off", "aria-label": "A working name"}); nm.value = dr.name;
+  const kd = el("select", {id: "dz-add-kind", "aria-label": "Kind"});
+  for (const k of ["chassis", "component", "module", "rule"]) { const o = el("option", {value: k}, k); if (k === dr.kind) o.selected = true; kd.append(o); }
+  const cp = el("textarea", {id: "dz-add-concept", rows: "3", placeholder: "The idea: what it does, the fantasy, the hook, the holes you already see", "aria-label": "The idea"}); cp.value = dr.concept;
+  nm.addEventListener("input", () => { dr.name = nm.value; });
+  kd.addEventListener("change", () => { dr.kind = kd.value; });
+  cp.addEventListener("input", () => { dr.concept = cp.value; autosize(cp); });
+  const go = async () => {
+    const name = nm.value.trim(), concept = cp.value.trim();
+    if (!name && !concept) return;
+    if (await addDesign({type: "idea", tab: t.id, kind: kd.value, name: name || concept.split(/[.:;\n]/)[0].slice(0, 48), concept, status: "idea", created: new Date().toISOString()})) {
+      state.dAdd = null; render(); toast("Idea added");
+    }
+  };
+  nm.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); cp.focus(); } });
+  return el("div", {class: "add"}, el("h3", {}, "An idea for " + t.label), el("div", {class: "line"}, nm, kd), cp, el("div", {class: "actions"}, el("button", {class: "btn primary", onclick: go}, "Add the idea")));
+}
+
+// ---- everything waiting for a session, brief by brief
+function changeRow(n) {
+  const st = n.type === "idea" ? (IDEA_STATUSES.includes(n.status) ? n.status : "idea") : noteState(n);
+  const what = n.type === "edit" ? (n.strike ? "strike" : "correction") : n.type;
+  const box = el("div", {class: "dnote"});
+  box.append(el("div", {class: "meta"}, el("span", {class: "who"}, what), [n.section, n.day, NOTE_WORD[st] || st].filter(Boolean).join(" · ")));
+  if (n.type === "edit") {
+    box.append(el("div", {class: "old"}, n.original || ""));
+    if (!n.strike) box.append(el("div", {class: "body"}, n.text));
+  } else if (n.type === "idea") box.append(el("div", {class: "body"}, el("b", {}, n.name || "Unnamed"), (n.kind ? " (" + n.kind + ")" : "") + (n.concept ? ": " + n.concept : "")));
+  else box.append(el("div", {class: "body"}, n.text));
+  if (canDesign()) box.append(el("div", {class: "actions"}, el("button", {class: "btn", onclick: async () => { if (await dropDesign(n.id)) toast("Dropped"); }}, st === "folded" ? "Clear" : "Drop")));
+  return box;
+}
+function renderDesignChanges(main) {
+  main.append(el("p", {class: "lede"}, "Everything waiting in the hangar for a design session, brief by brief. A session's first step folds these into the files (tools/hangar_designs.py --fold), commits, republishes this page and clears them. Folded means the brief as published already carries it."));
+  designAccess(main);
+  if (state.designState !== "on") return;
+  if (!state.dnotes.length) { main.append(el("p", {class: "empty"}, "Nothing waiting: every brief reads as committed.")); return; }
+  const folded = state.dnotes.filter(n => n.type !== "idea" && noteState(n) === "folded");
+  if (folded.length && canDesign()) main.append(el("div", {class: "toolbar"}, el("button", {class: "btn", onclick: async () => { let k = 0; for (const n of folded) if (await dropDesign(n.id)) k++; toast(`Cleared ${k}`); }}, `Clear the ${folded.length} folded`)));
+  const order = {direction: 0, note: 1, edit: 2};
+  const byDoc = new Map();
+  for (const n of state.dnotes.filter(n => n.type !== "idea")) { if (!byDoc.has(n.doc)) byDoc.set(n.doc, []); byDoc.get(n.doc).push(n); }
+  for (const [key, list] of byDoc) {
+    const d = briefBy(key);
+    main.append(el("div", {class: "dh h2"}, el("h3", {}, d ? briefTitle(d) : key), d ? el("button", {class: "linkbtn", onclick: () => openBrief(d.id)}, "Open the brief") : null));
+    for (const n of list.sort((a, b) => (order[a.type] ?? 3) - (order[b.type] ?? 3) || (a.line || 0) - (b.line || 0))) main.append(changeRow(n));
+  }
+  const ideas = state.dnotes.filter(n => n.type === "idea");
+  if (ideas.length) {
+    main.append(el("div", {class: "dh h2"}, el("h3", {}, "Ideas")));
+    for (const n of ideas) main.append(changeRow(n));
+  }
+}
+
+// ------------------------------------------------------------------ text
+// Every text the player reads, one row a text (9 November, Ryan: "I want to start working on all
+// in-game text that the player sees ... it's hard to find what is visible in-game, what needs
+// editing, what's outdated, and compare between entries to ensure style consistency").
+// hangar/text.json is the inventory (tools/hangar_text.py: the kinds, where the game draws each,
+// which no screen draws yet, the facts under a text, and who wrote it, from the ledger
+// docs/hangar/text.json). His work here is documents in the collection "text", one a slot (id the
+// slot's with "__" for "/"): a new text, a mark ("ryan": his own, the corpus a session copies his
+// style from; "ok": a draft passed as it stands; "draft": a signature taken back) and a note to
+// the session. A session folds them into content and the ledger (tools/hangar_text.py --fold),
+// republishes and clears them; a text of the code's is read-only here and takes a note.
+const TEXT_STATES = [
+  {id: "yours", label: "Yours", help: "You wrote it. Sessions copy their style from these."},
+  {id: "passed", label: "Passed", help: "A session's draft you accepted as it stands."},
+  {id: "moved", label: "Changed since", help: "You signed it, and a session has changed the words since."},
+  {id: "stale", label: "Stale", help: "You signed it, and the mechanics under it have moved since."},
+  {id: "draft", label: "Draft", help: "A session's guess, not yet read by you."},
+  {id: "empty", label: "Empty", help: "Nothing written."},
+];
+const TEXT_STATE = Object.fromEntries(TEXT_STATES.map(s => [s.id, s]));
+const TEXT_SORTS = [{id: "order", label: "Content's order"}, {id: "long", label: "Longest first"}, {id: "short", label: "Shortest first"}, {id: "name", label: "Name"}];
+const TEXT_PAGE = 300;   // rows drawn before "Show more", for the All list
+const ensureText = () => ensure("text", "hangar/text.json", j => { state.text = j; state.text.byId = new Map(j.slots.map(s => [s.id, s])); });
+const textKinds = () => (state.text && state.text.kinds) || [];
+const textSlots = () => (state.text && state.text.slots) || [];
+const textDocId = (s) => s.id.replaceAll("/", "__");
+const textDoc = (s) => state.tdocs[textDocId(s)] || null;
+const canText = () => state.textState === "on" && state.canWrite;
+const textDay = () => new Date().toLocaleDateString("en-GB", {day: "numeric", month: "long"});
+try { const p = JSON.parse(localStorage.getItem("hangar.textpins") || "[]"); if (Array.isArray(p)) state.tpins = p.filter(x => typeof x === "string"); } catch (e) {}
+function rememberPins() { try { localStorage.setItem("hangar.textpins", JSON.stringify(state.tpins)); } catch (e) {} }
+// A slot as the page shows it: the published text and signature with his waiting document laid on.
+function textView(s) {
+  const d = textDoc(s);
+  const newText = !!(d && typeof d.text === "string" && d.text !== s.text);
+  const text = newText ? d.text : s.text;
+  const mark = d && ["ryan", "ok", "draft"].includes(d.mark) ? d.mark : "";
+  const by = mark ? (mark === "draft" ? "" : mark) : s.by;
+  const resolved = newText || !!mark;                    // his document answers a flag
+  const newMark = !!mark && (by !== s.by || newText || s.signed != null || s.mech_was != null);
+  let st = !text ? "empty" : by === "ryan" ? "yours" : by === "ok" ? "passed" : "draft";
+  if (!resolved && s.by && s.signed != null) st = "moved";
+  else if (!resolved && s.by && s.mech_was != null) st = "stale";
+  const note = (d && d.note) || "";
+  return {d, text, st, by, newText, newMark, note, pending: newText || newMark || !!note, landed: !!d && !newText && !newMark && !note};
+}
+const textPending = () => textSlots().filter(s => textView(s).pending);
+const textLanded = () => Object.keys(state.tdocs).filter(id => { const s = state.text && state.text.byId.get(String(state.tdocs[id].slot)); return s && textView(s).landed; });
+// A document whose slot the files no longer hold (an id renamed, a move removed): his words kept
+// in sight until a session places them by hand.
+const textOrphans = () => Object.keys(state.tdocs).filter(id => state.text && !state.text.byId.get(String(state.tdocs[id].slot))).map(id => ({id, ...state.tdocs[id]}));
+// Words typed and not saved, kept a slot each in this browser so a tab, a filter or a reload
+// never loses a paragraph; saving or Cancel lets them go.
+try { const k = JSON.parse(localStorage.getItem("hangar.textkept") || "{}"); if (k && typeof k === "object" && !Array.isArray(k)) state.tkept = k; } catch (e) {}
+function keepTyped(sid, t) { if (t) state.tkept[sid] = {text: t.text, note: t.note}; else delete state.tkept[sid]; try { localStorage.setItem("hangar.textkept", JSON.stringify(state.tkept)); } catch (e) {} }
+function tfilter() {
+  const f = state.filters.text || (state.filters.text = {});
+  if (typeof f.q !== "string") f.q = "";
+  for (const k of ["st", "drawn"]) if (!Array.isArray(f[k])) f[k] = [];
+  if (!f.grp || typeof f.grp !== "object" || Array.isArray(f.grp)) f.grp = {};
+  if (!TEXT_SORTS.some(s => s.id === f.sort)) f.sort = "order";
+  return f;
+}
+function setTextFilter(fn) { fn(tfilter()); state.tmore = 0; rememberFilters(); render(); }
+function groupInfo(g) { return (state.text && state.text.groups[g]) || {label: g ? g.split(":").pop() : "", voice: "", style: ""}; }
+function groupVar(g) { const [k, id] = String(g).split(":"); return k === "maker" ? `--mk:var(--${MAKER_TAB[id] || "other"})` : null; }
+function wordCount(t) { const w = String(t).trim().split(/\s+/).filter(Boolean).length; return `${w} word${w === 1 ? "" : "s"} · ${String(t).length} characters`; }
+function openText(sid, focus = true) {
+  const s = state.text.byId.get(sid); if (!s) return;
+  const v = textView(s);
+  const kept = state.tkept[sid];
+  state.topen = sid; state.tdraft = kept && typeof kept.text === "string" ? {text: kept.text, note: kept.note || v.note} : {text: v.text, note: v.note};
+  render(); if (focus) focusLater(s.edit && canText() ? "tx-edit" : "tx-note");
+}
+function closeText(drop = true) { if (drop && state.topen) keepTyped(state.topen, null); state.topen = null; state.tdraft = null; render(); }
+// One write a slot: what he typed, his mark and his note together, with the text and the
+// mechanics he was looking at (the fold tells a session when either moved under him). A document
+// that would change nothing is removed instead.
+async function putText(s, patch) {
+  if (!state.db) return false;
+  const prev = textDoc(s) || {};
+  const d = {text: prev.text, mark: prev.mark, note: prev.note, ...patch};
+  if (typeof d.text !== "string" || d.text === s.text) delete d.text;
+  if (!d.note) delete d.note;
+  const settles = "text" in d || s.signed != null || s.mech_was != null;
+  if (!d.mark || (!settles && (d.mark === "draft" ? "" : d.mark) === s.by)) delete d.mark;
+  const id = textDocId(s);
+  try {
+    if (!("text" in d) && !d.mark && !d.note) { if (textDoc(s)) await state.db.collection("text").doc(id).delete(); delete state.tdocs[id]; return true; }
+    const doc = {slot: s.id, key: s.key, entry: s.entry, path: s.path, kind: s.kind, name: s.name, sub: s.sub || "", base: s.text, mech: s.mech || "", ...d,
+      by: "ryan", day: textDay(), updated: new Date().toISOString(), against: state.text.stamp || ""};
+    await state.db.collection("text").doc(id).set(doc);
+    state.tdocs[id] = doc;
+    return true;
+  } catch (e) { writeFailed(e); return false; }
+}
+async function dropText(s) {
+  if (!state.db || !textDoc(s)) return;
+  try { await state.db.collection("text").doc(textDocId(s)).delete(); delete state.tdocs[textDocId(s)]; toast("Back as it ships"); if (state.topen === s.id) openText(s.id, false); else render(); }
+  catch (e) { writeFailed(e); }
+}
+async function markText(s, mark, say) { if (await putText(s, {mark})) { toast(say); render(); } }
+// Saving what is typed signs it his: he wrote it. `then` "next" opens the row under it.
+async function saveText(s, mark, then) {
+  const t = state.tdraft || {text: s.text, note: ""};
+  const text = t.text.replace(/[ \t]+$/gm, "").trim();
+  const patch = {note: (t.note || "").trim()};
+  if (s.edit && mark) patch.text = text;   // a note saved alone leaves the words as they were
+  if (mark) patch.mark = mark;
+  if (!(await putText(s, patch))) return;
+  keepTyped(s.id, null);
+  toast(mark === "ryan" ? "Saved as yours" : mark === "ok" ? "Passed as it stands" : mark === "draft" ? "Back to a draft" : "Saved");
+  const k = state.tshown.indexOf(s.id);
+  if (then === "next" && k >= 0 && k + 1 < state.tshown.length) openText(state.tshown[k + 1]); else closeText();
+}
+function togglePin(sid) { const k = state.tpins.indexOf(sid); if (k >= 0) state.tpins.splice(k, 1); else state.tpins.push(sid); rememberPins(); render(); }
+
+function stateTag(st) { return el("span", {class: "tag " + st, title: TEXT_STATE[st].help}, TEXT_STATE[st].label); }
+function exampleEl(s, text) {
+  return el("div", {class: "ex"}, el("b", {}, s.name + (s.sub ? ", " + s.sub : "") + ": "), text);
+}
+// What sits beside a text being written: what he pinned, then up to three of his own of its
+// kind, its group's first.
+function besideOf(s) {
+  const out = [], seen = new Set([s.id]);
+  for (const id of state.tpins) { const p = state.text.byId.get(id); if (p && !seen.has(id)) { seen.add(id); out.push({s: p, why: "pinned"}); } }
+  const mine = textSlots().filter(x => x.kind === s.kind && !seen.has(x.id) && textView(x).by === "ryan" && textView(x).text);
+  mine.sort((a, b) => (b.group === s.group) - (a.group === s.group));
+  for (const x of mine.slice(0, 3)) out.push({s: x, why: x.group === s.group ? "yours, same voice" : "yours"});
+  return out;
+}
+function textRow(s, opts = {}) {
+  const v = textView(s), open = state.topen === s.id, kind = textKinds().find(k => k.id === s.kind) || {};
+  const row = el("div", {class: "trow st-" + v.st + (open ? " open" : "") + (s.shown ? "" : " unshown"), id: "tr-" + safeId(s.id)});
+  const tags = el("span", {class: "ttags"}, stateTag(v.st));
+  if (v.pending) tags.append(el("span", {class: "tag pending", title: "Saved here; a session folds it into the files"}, v.newText ? "your text waits" : v.newMark ? "your mark waits" : "your note waits"));
+  if (!s.shown) tags.append(el("span", {class: "tag unshown", title: s.why}, "not drawn"));
+  if (!s.edit) tags.append(el("span", {class: "tag unshown", title: "Written in the code: a note here asks a session to change it"}, "in code"));
+  if (s.lints.length) tags.append(el("span", {class: "tag flagged", title: s.lints.join("; ")}, "flag"));
+  if (!open && state.tkept[s.id]) tags.append(el("span", {class: "tag pending", title: "Typed here and not saved: open it to carry on"}, "unsaved words"));
+  const acts = el("span", {class: "tacts"});
+  if (canText() && !open && v.st === "draft" && s.edit) {
+    acts.append(el("button", {class: "tmini", title: "You wrote this: sign it as yours, as it stands", onclick: () => markText(s, "ryan", "Signed as yours")}, "Mine"),
+      el("button", {class: "tmini", title: "A session's draft, fine as it stands", onclick: () => markText(s, "ok", "Passed as it stands")}, "Pass"));
+  }
+  acts.append(el("button", {class: "tmini", "aria-pressed": String(state.tpins.includes(s.id)), title: "Keep this text beside whatever you write next", onclick: () => togglePin(s.id)}, "Pin"));
+  row.append(el("div", {class: "thead"}, el("span", {class: "tname"}, s.name), s.sub ? el("span", {class: "tsub"}, s.sub) : null,
+    opts.kind ? el("span", {class: "tkindname"}, kind.label || s.kind) : null, tags, acts));
+  const quote = /flavour$/.test(s.kind);
+  if (!open) {
+    const body = el("div", {class: "ttext" + (v.text ? "" : " none") + (quote ? " quote" : ""), tabindex: "0", role: "button", "aria-label": "Edit " + s.name},
+      v.text || (s.edit ? "Nothing written. Tap to write it." : "Nothing."));
+    body.addEventListener("click", () => { if (String(window.getSelection() || "").trim()) return; openText(s.id); });
+    body.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); openText(s.id); } });
+    row.append(body);
+    if (v.note) row.append(el("div", {class: "tflagline", style: "color:var(--edited)"}, "Your note: " + v.note));
+    return row;
+  }
+  const t = state.tdraft, ed = el("div", {class: "tedit"});
+  const facts = el("dl", {class: "tfacts"});
+  const fact = (k, val, mono) => { if (val) facts.append(el("dt", {}, k), el("dd", {class: mono ? "mono" : null}, val)); };
+  fact(s.shown ? "Drawn" : "Not drawn", s.shown ? (kind.where || "") : s.why);
+  fact(s.kind === "title" ? "Heads" : "Engine", s.facts, s.kind !== "title" && !/codex|flavour/.test(s.kind));
+  fact("Pitch", s.pitch);
+  fact("Slot", s.id, true);
+  ed.append(facts);
+  for (const l of s.lints) ed.append(el("div", {class: "tflagline"}, "Flag: " + l));
+  if (v.st === "moved") ed.append(el("div", {class: "tthen"}, el("span", {class: "lab"}, "As you signed it" + (s.on ? ", " + s.on : "")), s.signed));
+  if (v.st === "stale") ed.append(el("div", {class: "tthen"}, el("span", {class: "lab"}, "Its mechanics when you signed it" + (s.on ? ", " + s.on : "")), s.mech_was || "none", el("span", {class: "lab", style: "margin-top:4px"}, "Now"), s.mech || "none"));
+  if (!s.edit) ed.append(el("div", {class: "ttext"}, v.text));
+  let ta = null;
+  const meter = el("div", {class: "tmeter"}, wordCount(t.text));
+  if (s.edit) {
+    ta = el("textarea", {id: "tx-edit", rows: "3", "aria-label": "The text", disabled: !canText()});
+    ta.value = t.text;
+    ta.addEventListener("input", () => { t.text = ta.value; autosize(ta); meter.textContent = wordCount(ta.value); keepTyped(s.id, t); sync(); });
+    requestAnimationFrame(() => autosize(ta));
+    ed.append(ta, meter);
+  }
+  const note = el("input", {type: "text", id: "tx-note", value: t.note, placeholder: s.edit ? "A note to the session (optional): what to fix, what to match" : "A note to the session: what it should say", "aria-label": "Note to the session", disabled: !canText()});
+  note.addEventListener("input", () => { t.note = note.value; keepTyped(s.id, t); sync(); });
+  ed.append(note);
+  const beside = besideOf(s);
+  if (beside.length) {
+    const b = el("div", {class: "tbeside"}, el("span", {class: "lab"}, "Beside it"));
+    for (const x of beside) b.append(exampleEl(x.s, textView(x.s).text));
+    ed.append(b);
+  }
+  const changed = () => s.edit && t.text.trim() !== v.text;
+  const mine = el("button", {class: "btn primary", id: "tx-mine", onclick: () => saveText(s, "ryan")}, "");
+  const next = el("button", {class: "btn", id: "tx-next", title: "Ctrl or ⌘ + Shift + Enter", onclick: () => saveText(s, "ryan", "next")}, "Mine, and the next");
+  const pass = el("button", {class: "btn", id: "tx-pass", title: "A session's draft, fine as it stands", onclick: () => saveText(s, "ok")}, "Pass as it stands");
+  const keep = el("button", {class: "btn", id: "tx-keep", onclick: () => saveText(s, "")}, "Save the note");
+  const acts2 = el("div", {class: "actions"});
+  if (canText()) {
+    if (s.edit) acts2.append(mine, next, pass);
+    acts2.append(keep);
+    if (v.st === "moved" && s.edit) acts2.append(el("button", {class: "btn", onclick: () => { t.text = s.signed; ta.value = s.signed; autosize(ta); sync(); ta.focus(); }}, "Put mine back"));
+    if (v.by && s.edit) acts2.append(el("button", {class: "btn", title: "Take your signature off: a draft again", onclick: () => saveText(s, "draft")}, "Back to a draft"));
+    if (v.d) acts2.append(el("button", {class: "btn danger", onclick: () => dropText(s)}, "Drop what I saved"));
+  }
+  acts2.append(el("button", {class: "btn", title: "Close it and let go of what you typed", onclick: () => closeText()}, canText() ? "Cancel" : "Close"));
+  ed.append(acts2);
+  if (!canText()) ed.append(el("p", {class: "help"}, "Saving is off in this view: open the page signed in, from the artifact link."));
+  else if (s.edit) ed.append(el("p", {class: "help"}, "Ctrl or ⌘ + Enter saves it as yours; Esc closes and keeps what you typed on the row. Saving what you typed signs it yours; Pass is for a draft you did not write and accept."));
+  function sync() {
+    const c = changed(), has = !!t.text.trim();
+    mine.textContent = c ? "Save as mine" : v.st === "moved" ? "Mine as it now stands" : v.st === "stale" ? "Still right, and mine" : "Mine as it stands";
+    mine.disabled = !has || (!c && v.st === "yours" && !v.newMark && (t.note || "").trim() === v.note);
+    next.disabled = !has;
+    pass.disabled = c || !has || v.st === "passed";
+    pass.title = c ? "You typed it, so it is yours: Pass is for a draft left as it stands" : "A session's draft, fine as it stands";
+    keep.hidden = c || (t.note || "").trim() === v.note;
+  }
+  sync();
+  ed.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey) && canText()) { e.preventDefault(); if (!s.edit) saveText(s, ""); else if (t.text.trim()) saveText(s, "ryan", e.shiftKey ? "next" : ""); }
+    if (e.key === "Escape") { e.preventDefault(); const typed = changed() || (t.note || "").trim() !== v.note; closeText(!typed); if (typed) toast("Closed; your unsaved words are kept on the row"); }
+  });
+  row.append(ed);
+  return row;
+}
+function textMatches(s, f, kindId) {
+  const v = textView(s);
+  if (f.st.length && !(f.st.includes(v.st) || (f.st.includes("pending") && v.pending) || (f.st.includes("flag") && s.lints.length))) return false;
+  if (f.drawn.length === 1 && (f.drawn[0] === "yes") !== !!s.shown) return false;
+  const grp = (kindId && f.grp[kindId]) || [];
+  if (grp.length && !grp.includes(s.group)) return false;
+  if (f.q.trim()) {
+    const hay = (s.name + " " + (s.sub || "") + " " + v.text + " " + s.entry + " " + v.note).toLowerCase();
+    for (const w of f.q.toLowerCase().split(/\s+/).filter(Boolean)) if (!hay.includes(w)) return false;
+  }
+  return true;
+}
+function textFilterBar(pool, kindId, shownCount) {
+  const f = tfilter();
+  const bar = el("div", {class: "filters", role: "search", "aria-label": "Filter the texts"});
+  const q = el("input", {type: "search", id: "flt-text-q", placeholder: "Search the words, a name, an id", value: f.q, autocomplete: "off", "aria-label": "Search the texts"});
+  q.addEventListener("input", () => setTextFilter(f => { f.q = q.value; }));
+  const pick = el("select", {id: "flt-text-sort", "aria-label": "Sort by"});
+  for (const o of TEXT_SORTS) { const n = el("option", {value: o.id}, o.label); if (o.id === f.sort) n.selected = true; pick.append(n); }
+  pick.addEventListener("change", () => setTextFilter(f => { f.sort = pick.value; }));
+  bar.append(el("div", {class: "frow"}, q, el("label", {class: "fsort", for: "flt-text-sort"}, "Sort", pick)));
+  const chip = (id, label, n, on, tap, title, style) => el("button", {class: "fchip" + (n || on ? "" : " zero") + (style ? " mk" : ""), id: "flt-text-" + safeId(id), "aria-pressed": String(on), title: title || null, style: style || null, onclick: tap}, label, el("span", {class: "n"}, String(n)));
+  const toggle = (arr, v) => { const k = arr.indexOf(v); if (k >= 0) arr.splice(k, 1); else arr.push(v); };
+  // A chip's count is what tapping it would show with everything else as set.
+  const without = (key) => { const g = {...f, [key]: key === "grp" ? {...f.grp, [kindId]: []} : []}; return pool.filter(s => textMatches(s, g, kindId)); };
+  const stPool = without("st");
+  const states = el("div", {class: "fchips"});
+  for (const st of TEXT_STATES) states.append(chip("st-" + st.id, st.label, stPool.filter(s => textView(s).st === st.id).length, f.st.includes(st.id), () => setTextFilter(f => toggle(f.st, st.id)), st.help));
+  states.append(chip("st-pending", "Waiting", stPool.filter(s => textView(s).pending).length, f.st.includes("pending"), () => setTextFilter(f => toggle(f.st, "pending")), "What you saved here that a session has not folded in yet"));
+  states.append(chip("st-flag", "Flagged", stPool.filter(s => s.lints.length).length, f.st.includes("flag"), () => setTextFilter(f => toggle(f.st, "flag")), "A word the rules keep out of shown text, or a brace nothing fills"));
+  const groups = el("div", {class: "fgroups"}, el("div", {class: "fgroup"}, el("span", {class: "glabel"}, "State"), states));
+  const drPool = without("drawn");
+  groups.append(el("div", {class: "fgroup"}, el("span", {class: "glabel"}, "In game"), el("div", {class: "fchips"},
+    chip("dr-yes", "Drawn", drPool.filter(s => s.shown).length, f.drawn.includes("yes"), () => setTextFilter(f => { f.drawn = f.drawn.includes("yes") ? [] : ["yes"]; }), "A screen draws it today"),
+    chip("dr-no", "Not drawn", drPool.filter(s => !s.shown).length, f.drawn.includes("no"), () => setTextFilter(f => { f.drawn = f.drawn.includes("no") ? [] : ["no"]; }), "Written, and no screen draws it yet: planned, or a field nothing reads"))));
+  if (kindId) {
+    const gp = without("grp"), ids = [];
+    for (const s of pool) if (s.group && !ids.includes(s.group)) ids.push(s.group);
+    if (ids.length > 1) {
+      const on = f.grp[kindId] || [];
+      const row = el("div", {class: "fchips"});
+      for (const g of ids) row.append(chip("g-" + g, groupInfo(g).label, gp.filter(s => s.group === g).length, on.includes(g), () => setTextFilter(f => { const a = f.grp[kindId] || (f.grp[kindId] = []); toggle(a, g); }), groupInfo(g).voice, groupVar(g)));
+      groups.append(el("div", {class: "fgroup"}, el("span", {class: "glabel"}, ids[0].split(":")[0] === "maker" ? "Maker" : ids[0].split(":")[0] === "domain" ? "Domain" : "Kind"), row));
+    }
+  }
+  bar.append(groups);
+  const active = f.q.trim() || f.st.length || f.drawn.length || (kindId && (f.grp[kindId] || []).length);
+  const count = el("div", {class: "fcount", role: "status"}, active ? `${shownCount} of ${pool.length} texts` : `${pool.length} texts`);
+  if (active) count.append(el("button", {class: "linkbtn", id: "flt-text-clear", onclick: () => setTextFilter(f => { f.q = ""; f.st = []; f.drawn = []; if (kindId) f.grp[kindId] = []; })}, "Clear filters"));
+  bar.append(count);
+  return bar;
+}
+function pinsBox() {
+  const pins = state.tpins.map(id => state.text.byId.get(id)).filter(Boolean);
+  if (!pins.length) return null;
+  const box = el("details", {class: "tpins", open: true}, el("summary", {}, `Pinned for comparison · ${pins.length}`));
+  for (const p of pins) box.append(el("div", {class: "tpin"}, exampleEl(p, textView(p).text || "(empty)"), el("button", {class: "tmini", onclick: () => togglePin(p.id)}, "Unpin")));
+  return box;
+}
+function textCounts(pool) {
+  const c = {drawn: 0, off: 0, pending: 0}; for (const st of TEXT_STATES) c[st.id] = 0;
+  for (const s of pool) { const v = textView(s); if (v.pending) c.pending++; if (!s.shown) { c.off++; continue; } c.drawn++; c[v.st]++; }
+  return c;
+}
+function goText(kindId, st, drawn) { state.sub.text = kindId; state.topen = null; setTextFilter(f => { f.q = ""; f.st = st ? [st] : []; f.drawn = drawn ? [drawn] : []; f.grp[kindId] = []; }); remember(); window.scrollTo(0, 0); }
+function renderTextOverview(main) {
+  const all = textSlots(), c = textCounts(all);
+  main.append(el("p", {class: "ttotal"}, "Of ", el("b", {}, String(c.drawn)), " texts a screen draws today, ", el("b", {}, String(c.yours)), " are yours, ", el("b", {}, String(c.passed)), " passed, ",
+    el("b", {}, String(c.draft)), " a session's drafts and ", el("b", {}, String(c.empty)), " empty", c.moved + c.stale ? [", ", el("b", {}, String(c.moved + c.stale)), " to look at again"] : null, ". ",
+    el("b", {}, String(c.off)), " more are written and drawn nowhere yet."));
+  main.append(el("ul", {class: "thow"},
+    el("li", {}, "Tap a text to write it. Saving what you typed signs it yours; Mine signs one you wrote already, Pass accepts a session's draft as it stands."),
+    el("li", {}, "Yours is the corpus: a session reads your signed texts of a kind, and its maker's first, before it drafts another."),
+    el("li", {}, "A text you signed comes back as Changed since when a session rewords it, and as Stale when its mechanics move under it."),
+    el("li", {}, "Pin a text to keep it beside whatever you write next. Everything saved here waits for a session to fold it into the files.")));
+  for (const k of textKinds()) {
+    const pool = all.filter(s => s.kind === k.id); if (!pool.length) continue;
+    const n = textCounts(pool);
+    const card = el("div", {class: "tkind"});
+    card.append(el("div", {class: "khead"}, el("h3", {}, el("button", {onclick: () => goText(k.id)}, k.label)), el("span", {class: "rcount"}, n.drawn ? `${n.drawn} drawn` + (n.off ? ` · ${n.off} not` : "") : `${n.off} written, none drawn`)));
+    card.append(el("p", {class: "where" + (k.where && n.drawn ? "" : " none")}, k.where && n.drawn ? k.where : "No screen draws these yet."));
+    if (n.drawn) {
+      const pct = (x) => `width:${(100 * x / n.drawn).toFixed(2)}%`;
+      card.append(el("div", {class: "tbar", role: "img", "aria-label": `${n.yours} yours, ${n.passed} passed, ${n.moved + n.stale} to look at again, of ${n.drawn}`},
+        el("span", {class: "yours", style: pct(n.yours)}), el("span", {class: "passed", style: pct(n.passed)}), el("span", {class: "flag", style: pct(n.moved + n.stale)})));
+    }
+    const row = el("div", {class: "tcounts"});
+    for (const st of TEXT_STATES) if (n[st.id] || ["yours", "draft", "empty"].includes(st.id)) row.append(el("button", {class: "tcount" + (n[st.id] ? "" : " zero"), title: st.help, onclick: () => goText(k.id, st.id, "yes")}, st.label, el("span", {class: "n"}, String(n[st.id]))));
+    if (n.off) row.append(el("button", {class: "tcount off", title: "Written, and no screen draws them yet", onclick: () => goText(k.id, "", "no")}, "Not drawn", el("span", {class: "n"}, String(n.off))));
+    card.append(row);
+    main.append(card);
+  }
+  const not = el("details", {class: "was", style: "margin-top:16px"}, el("summary", {}, "What the player reads that is not on this page"));
+  const ul = el("ul", {class: "thow"}); for (const t of (state.text.not_listed || [])) ul.append(el("li", {}, t)); not.append(ul);
+  main.append(not);
+  main.append(el("p", {class: "help"}, "Read from the files at " + (state.text.stamp || "an unknown commit") + "."));
+}
+function renderTextList(main, kindId) {
+  const f = tfilter(), kind = textKinds().find(k => k.id === kindId);
+  const pool = kind ? textSlots().filter(s => s.kind === kindId) : textSlots();
+  if (kind) main.append(el("p", {class: "lede"}, kind.what + " ", el("span", {}, kind.where ? "Drawn: " + kind.where : "No screen draws these yet.")));
+  else main.append(el("p", {class: "lede"}, "Every kind together, for a search across all of it."));
+  let rows = pool.filter(s => textMatches(s, f, kindId));
+  const len = (s) => textView(s).text.length;
+  if (f.sort === "long") rows = [...rows].sort((a, b) => len(b) - len(a));
+  else if (f.sort === "short") rows = [...rows].sort((a, b) => len(a) - len(b));
+  else if (f.sort === "name") rows = [...rows].sort((a, b) => (a.name + a.sub).localeCompare(b.name + b.sub));
+  else {
+    // Content's order, each group's rows together under its first (a maker's machines are not
+    // filed together in content, and a voice is compared with itself).
+    const first = new Map();
+    for (const s of rows) { const h = kind ? s.group : s.kind; if (!first.has(h)) first.set(h, first.size); }
+    rows = rows.map((s, i) => [s, i]).sort((a, b) => (first.get(kind ? a[0].group : a[0].kind) - first.get(kind ? b[0].group : b[0].kind)) || (a[1] - b[1])).map(x => x[0]);
+  }
+  main.append(textFilterBar(pool, kindId, rows.length));
+  const pins = pinsBox(); if (pins) main.append(pins);
+  state.tshown = rows.map(s => s.id);
+  if (!rows.length) { main.append(el("p", {class: "empty"}, "No texts match. ", el("button", {class: "linkbtn", onclick: () => setTextFilter(f => { f.q = ""; f.st = []; f.drawn = []; if (kindId) f.grp[kindId] = []; })}, "Clear the filters"))); return; }
+  const limit = TEXT_PAGE + (state.tmore || 0);
+  const draw = rows.slice(0, Math.max(limit, state.topen ? rows.findIndex(s => s.id === state.topen) + 1 : 0));
+  // By its group while content's order stands (a maker's voice together); one flat list once sorted.
+  const grouped = f.sort === "order";
+  let box = null, last = null;
+  for (const s of draw) {
+    const head = grouped ? (kind ? s.group : s.kind) : "";
+    if (!box || head !== last) {
+      last = head;
+      if (grouped && head) {
+        const label = kind ? groupInfo(head).label : (textKinds().find(k => k.id === head) || {}).label;
+        const n = textCounts(rows.filter(x => (kind ? x.group : x.kind) === head));
+        main.append(el("div", {class: "tgroup", style: kind ? groupVar(head) : null}, el("h3", {}, label), el("span", {class: "rcount"}, [n.yours ? n.yours + " yours" : "", n.passed ? n.passed + " passed" : "", n.moved + n.stale ? (n.moved + n.stale) + " to look at again" : "", n.draft ? n.draft + " drafts" : "", n.empty ? n.empty + " empty" : "", n.off ? n.off + " not drawn" : ""].filter(Boolean).join(" · "))));
+        if (kind && groupInfo(head).voice) main.append(el("p", {class: "tvoice"}, el("b", {}, "Voice"), groupInfo(head).voice));
+      }
+      box = el("div", {class: "trows"}); main.append(box);
+    }
+    box.append(textRow(s, {kind: !kind}));
+  }
+  if (draw.length < rows.length) main.append(el("div", {class: "toolbar"}, el("button", {class: "btn", onclick: () => { state.tmore = (state.tmore || 0) + TEXT_PAGE; render(); }}, `Show ${Math.min(TEXT_PAGE, rows.length - draw.length)} more of ${rows.length - draw.length}`)));
+}
+function renderTextChanges(main) {
+  const pend = textPending(), landed = textLanded();
+  main.append(el("p", {class: "help"}, "Everything you saved on this tab that is not in the files yet. A session folds it in (tools/hangar_text.py --fold): your texts into content, your marks into the ledger, your notes answered in the work."));
+  const orphans = textOrphans();
+  if (!pend.length && !orphans.length) main.append(el("p", {class: "empty"}, "Nothing waiting."));
+  for (const o of orphans) {
+    const card = el("div", {class: "card"});
+    card.append(el("div", {class: "toolbar", style: "margin:0 0 6px"}, el("span", {class: "name"}, (o.name || o.slot) + (o.sub ? ", " + o.sub : "")), el("span", {class: "tag flagged"}, "its slot is gone"), el("span", {class: "path"}, String(o.slot))));
+    card.append(el("div", {class: "help"}, "The files no longer hold this text under that id (renamed or removed since you wrote it). A session places it by hand."));
+    if (typeof o.text === "string") card.append(el("div", {class: "diff"}, el("span", {class: "now"}, o.text)));
+    if (o.note) card.append(el("div", {class: "help"}, "Note: " + o.note));
+    main.append(card);
+  }
+  state.tshown = pend.map(s => s.id);
+  for (const s of pend) {
+    const v = textView(s), kind = textKinds().find(k => k.id === s.kind) || {};
+    const card = el("div", {class: "card"});
+    card.append(el("div", {class: "toolbar", style: "margin:0 0 6px"}, el("span", {class: "name"}, s.name + (s.sub ? ", " + s.sub : "")), stateTag(v.st), el("span", {class: "path"}, kind.label || s.kind)));
+    if (v.newText) card.append(el("div", {class: "diff"}, el("span", {class: "was"}, s.text || "(empty)"), " ", el("span", {class: "now"}, v.text)));
+    else if (v.newMark) card.append(el("div", {class: "help"}, (v.d.mark === "ryan" ? "Signed as yours, as it stands: " : v.d.mark === "ok" ? "Passed as it stands: " : "Back to a draft: ") + s.text));
+    if (v.note) card.append(el("div", {class: "help"}, "Note: " + v.note));
+    card.append(el("div", {class: "toolbar", style: "margin:8px 0 0"}, el("button", {class: "btn", onclick: () => { state.sub.text = s.kind; remember(); setTextFilter(f => { f.q = ""; f.st = []; f.drawn = []; f.grp[s.kind] = []; }); openText(s.id); requestAnimationFrame(() => { const n = document.getElementById("tr-" + safeId(s.id)); if (n) n.scrollIntoView({block: "center"}); }); }}, "Open"),
+      canText() ? el("button", {class: "btn danger", onclick: () => dropText(s)}, "Drop") : null));
+    main.append(card);
+  }
+  const bar = el("div", {class: "toolbar"});
+  bar.append(el("button", {class: "btn", disabled: !pend.length, onclick: async () => {
+    const text = JSON.stringify(pend.map(s => ({id: textDocId(s), ...textDoc(s)})), null, 2);
+    try { await navigator.clipboard.writeText(text); toast("Copied as JSON"); }
+    catch (ex) { const ta = el("textarea", {class: "json", style: "width:100%;min-height:200px"}); ta.value = text; main.append(ta); ta.select(); toast("Select and copy"); }
+  }}, "Copy all waiting as JSON"));
+  if (landed.length && canText()) bar.append(el("button", {class: "btn", onclick: async () => {
+    try { for (const id of landed) { await state.db.collection("text").doc(id).delete(); delete state.tdocs[id]; } toast(`Cleared ${landed.length} landed`); render(); } catch (e) { writeFailed(e); }
+  }}, `Clear ${landed.length} landed`));
+  main.append(bar);
+}
+function renderText(main) {
+  want("text", ensureText);
+  if (!state.text) { main.append(el("p", {class: "empty"}, state.loaded.text ? "The text inventory is not published beside this page yet (hangar/text.json: tools/hangar_data.py's map)." : "Loading the texts…")); return; }
+  const sub = state.sub.text;
+  if (sub === "changes") return renderTextChanges(main);
+  if (sub === "all") return renderTextList(main, "");
+  if (textKinds().some(k => k.id === sub)) return renderTextList(main, sub);
+  renderTextOverview(main);
+}
+
+// ------------------------------------------------------------------ bench
+// Ryan's working sheet for a machine (10 November: "I think I need a streamlined way of entering
+// notes, adjustments, and upgrade ideas that isn't the codex or brief tabs. The codex is a lot of
+// nested clicks, and the design briefs tab is a lot of information that is good for context but
+// I'll never actually edit"). Two views: the roster, every machine built or briefed, grouped by
+// its state, which is the chassis to-do; and one flat sheet a machine: its numbers, its passive,
+// its locked pieces with their numbers and whether each earns its lock, its upgrades in the
+// shape he settled that day (a plain lift a level, and two directions two steps deep: the first
+// upgrade takes either direction's first step, the second the deeper step of the same direction
+// or the first one skipped; a tier two picks once, a tier three never), its stock and his notes.
+// The bench keeps no store of its own. A number, a stock piece, a note, a state or an upgrade
+// idea is an edit of the entry, the same document the Content tab writes (collection "edits",
+// the whole entry), his notes and ideas under the entry's design.bench, internal text the game
+// never shows; a session applies them to content/*.json as it applies any edit. A briefed
+// design's sheet carries the direction box its brief has (collection "designs"). Every field
+// saves as it is left, or a moment after the typing stops.
+const BENCH_TABS = [{id: "all", label: "All"}, ...DESIGN_TABS.filter(t => t.maker).map(t => ({id: t.id, label: t.label}))];
+const BENCH_STATES = [
+  {id: "design", label: "In design", what: "Built, and on the drawing board: a rework is owed before it stands."},
+  {id: "unfinished", label: "Unfinished", what: "Built and playable, its kit or its look not finished."},
+  {id: "game", label: "In game", what: "Built and standing."},
+  {id: "brief", label: "Briefed", what: "Not built: a design in progress, its brief on the Designs tab."},
+  {id: "cut", label: "Cut", what: "Set aside."},
+];
+const BENCH_NUMS = [["tier", "tier"], ["hull", "hull"], ["shield", "shield"], ["shield_regen", "shield regen"], ["armour", "armour"], ["heat_max", "heat max"], ["cooling", "cooling"], ["movespeed", "move"], ["hardpoints", "hardpoints"], ["module_slots", "module slots"]];
+const BENCH_LOCKS = [["", "not sorted"], ["glue", "glue: the passive and the piece need each other"], ["exclusive", "an exclusive: nobody else has it"], ["tweak", "wants a tweak before any cut"], ["pool", "to the pool, an ordinary piece"]];
+const benchOf = (e) => ((e && e.design) || {}).bench || {};
+const benchCan = () => state.dbState === "ready" && state.canWrite;
+const benchKind = (id) => "bn-" + safeId(id);
+function reworkBriefOf(id) { return designDocs().find(d => (d.header || {}).kind === "chassis" && d.header.built === id) || null; }
+// A built machine's state: the one he set, else in design where a brief reworks it, else in game.
+const benchDefault = (e) => (reworkBriefOf(e.id) ? "design" : "game");
+const benchState = (e) => benchOf(e).state || benchDefault(e);
+// The upgrade steps a machine's tier leaves it: four at tier one, two at tier two, none at three.
+const benchSteps = (tier) => (Number(tier) === 1 ? [["a", "s1"], ["a", "s2"], ["b", "s1"], ["b", "s2"]] : Number(tier) === 2 ? [["a", "s1"], ["b", "s1"]] : []);
+function benchMachines() {
+  const out = [];
+  for (const {entry: e, st} of liveEntries("chassis.entries")) out.push({kind: "built", id: e.id, name: e.name || e.id, maker: e.maker, tier: e.tier, state: benchState(e), entry: e, st});
+  for (const d of designDocs()) {
+    const h = d.header || {};
+    if (h.kind !== "chassis" || h.built) continue;
+    out.push({kind: "brief", id: d.id, name: h.name || briefTitle(d), maker: h.maker, tier: h.tier, state: h.status === "cut" ? "cut" : "brief", doc: d});
+  }
+  const mk = (m) => { const i = BENCH_TABS.findIndex(t => t.id === MAKER_TAB[m.maker]); return i < 0 ? 99 : i; };
+  const so = (m) => BENCH_STATES.findIndex(s => s.id === m.state);
+  return out.sort((a, b) => so(a) - so(b) || mk(a) - mk(b) || (Number(a.tier) || 9) - (Number(b.tier) || 9) || String(a.name).localeCompare(String(b.name)));
+}
+const benchShown = () => benchMachines().filter(m => state.sub.bench === "all" || MAKER_TAB[m.maker] === state.sub.bench);
+function openBench(m) { state.bopen = {kind: m.kind, id: m.id}; state.dDir = null; render(); window.scrollTo(0, 0); }
+function closeBench() { state.bopen = null; state.dDir = null; render(); window.scrollTo(0, 0); }
+
+// ---- writing: an edit of the whole entry, dropped again when it matches the files
+function benchPrune(data) {
+  const d = data.design;
+  if (!d || !d.bench || typeof d.bench !== "object") return;
+  const clean = (o) => {
+    for (const k of Object.keys(o)) {
+      const v = o[k];
+      if (v && typeof v === "object") { clean(v); if (!Object.keys(v).length) delete o[k]; }
+      else if (v === "" || v === null || v === undefined) delete o[k];
+    }
+  };
+  clean(d.bench);
+  if (!Object.keys(d.bench).length) delete d.bench;
+}
+async function benchWrite(key, id, mutate) {
+  if (!benchCan()) return;
+  const cur = liveMap(key).get(id);
+  if (!cur) return;
+  const data = JSON.parse(JSON.stringify(cur.entry));
+  mutate(data);
+  benchPrune(data);
+  if (same(data, cur.entry)) return;
+  const s = shippedEntry(key, id), e = editFor(key, id);
+  if (s && same(data, s)) {
+    if (e) { try { await state.db.doc("edits/" + docId(key, id)).delete(); delete state.edits[docId(key, id)]; } catch (ex) { writeFailed(ex); } }
+  } else await saveDoc(key, id, {data, note: e ? e.note : ""});
+  render();
+}
+async function benchRevert(key, id) {
+  if (!editFor(key, id)) return;
+  try { await state.db.doc("edits/" + docId(key, id)).delete(); delete state.edits[docId(key, id)]; toast("Back to the files"); } catch (ex) { writeFailed(ex); }
+  render();
+}
+// A number left blank goes back to what the files hold, or leaves the entry where they hold none.
+function benchSetNum(obj, shippedObj, k, v) {
+  const t = String(v).trim(), n = Number(t);
+  if (t === "" || !Number.isFinite(n)) { if (shippedObj && shippedObj[k] !== undefined) obj[k] = shippedObj[k]; else delete obj[k]; }
+  else obj[k] = n;
+}
+function benchSetText(data, path, v) {
+  data.design = data.design || {};
+  let o = data.design.bench = data.design.bench || {};
+  for (const k of path.slice(0, -1)) o = o[k] = (o[k] && typeof o[k] === "object") ? o[k] : {};
+  o[path[path.length - 1]] = String(v).replace(/\s+$/, "");
+}
+const benchGet = (e, path) => { let o = benchOf(e); for (const k of path) o = (o && typeof o === "object") ? o[k] : undefined; return o === undefined || o === null ? "" : o; };
+
+// ---- fields: what is typed is kept across a redraw, and saved as the field is left or a moment after
+const benchTimers = {};
+function benchSend(id, commit) {
+  clearTimeout(benchTimers[id]); delete benchTimers[id];
+  const v = state.bdraft[id];
+  if (v === undefined) return;
+  delete state.bdraft[id];
+  commit(v);
+}
+function bfield(kind, fid, value, commit, attrs = {}) {
+  const id = benchKind(fid);
+  const node = kind === "area" ? el("textarea", {id, rows: "1", ...attrs}) : el("input", {id, type: kind === "num" ? "number" : "text", ...(kind === "num" ? {step: "any", inputmode: "decimal"} : {}), ...attrs});
+  node.value = state.bdraft[id] !== undefined ? state.bdraft[id] : (value === null || value === undefined ? "" : String(value));
+  node.disabled = !benchCan();
+  node.addEventListener("input", () => {
+    state.bdraft[id] = node.value;
+    if (kind === "area") autosize(node);
+    clearTimeout(benchTimers[id]);
+    benchTimers[id] = setTimeout(() => benchSend(id, commit), 1600);
+  });
+  node.addEventListener("change", () => benchSend(id, commit));
+  if (kind === "area") requestAnimationFrame(() => autosize(node));
+  return node;
+}
+function bselect(fid, value, options, commit) {
+  const node = el("select", {id: benchKind(fid)});
+  for (const [v, label] of options) { const o = el("option", {value: v}, label); if (v === value) o.selected = true; node.append(o); }
+  node.disabled = !benchCan();
+  node.addEventListener("change", () => commit(node.value));
+  return node;
+}
+const blabel = (fid, text) => el("label", {for: benchKind(fid)}, text);
+
+// ---- the roster
+function benchLine(m) {
+  if (m.kind === "brief") {
+    // his direction waiting in the database, else the one a session folded into the brief's head
+    const dir = directionOf(m.doc.id);
+    if (dir && dir.text) return "Direction: " + squash(dir.text);
+    const folded = (m.doc.blocks || []).find(b => b.sec === "s0" && /^\*\*Ryan's direction/.test(b.text || ""));
+    return folded ? squash(folded.text).replace(/\*\*/g, "") : "";
+  }
+  const b = benchOf(m.entry);
+  if (b.notes) return String(b.notes).split("\n").find(l => l.trim()) || "";
+  const steps = benchSteps(m.tier), n = steps.filter(p => benchGet(m.entry, p)).length;
+  return n ? `${n} of ${steps.length} upgrade steps written` : "";
+}
+function renderBenchRoster(main) {
+  main.append(el("p", {class: "lede"}, "Every machine, built or briefed, by where it stands: the chassis to-do. Tap one for its sheet: its numbers, its locked pieces, its upgrades, its stock and your notes on one screen, each saved as you leave the field. What you write here waits with the Content tab's edits for a session to apply."));
+  if (!benchCan()) main.append(el("p", {class: "help"}, state.dbState === "loading" ? "Connecting to the page's database…" : "Read only: the database did not load in this view, so nothing can be saved from here."));
+  const shown = benchShown();
+  if (!state.loaded.designs) main.append(el("p", {class: "help"}, "Loading the briefs…"));
+  for (const st of BENCH_STATES) {
+    const rows = shown.filter(m => m.state === st.id);
+    if (!rows.length) continue;
+    const g = el("section", {class: "bgroup"}, el("h3", {}, st.label, el("span", {class: "n"}, String(rows.length))), el("p", {class: "what"}, st.what));
+    for (const m of rows) {
+      const line = benchLine(m);
+      const meta = el("span", {class: "bmeta"}, [makerShort(m.maker), m.tier ? "T" + m.tier : "tier open", m.kind === "brief" ? (m.doc.header || {}).status : null].filter(Boolean).join(" · "));
+      if (m.st) meta.append(" ", el("span", {class: "tag " + m.st}, m.st));
+      g.append(el("button", {class: "brow " + (MAKER_TAB[m.maker] || ""), onclick: () => openBench(m)},
+        el("span", {class: "bname"}, m.name), meta,
+        line ? el("span", {class: "bline"}, line) : null));
+    }
+    main.append(g);
+  }
+  if (!shown.length) main.append(el("p", {class: "empty"}, "Nothing here yet."));
+}
+
+// ---- one machine's sheet
+function benchBar(m) {
+  const list = benchShown(), i = list.findIndex(x => x.kind === m.kind && x.id === m.id);
+  const prev = i > 0 ? list[i - 1] : null, next = i >= 0 && i < list.length - 1 ? list[i + 1] : null;
+  return el("div", {class: "toolbar"},
+    el("button", {class: "btn", onclick: closeBench}, "‹ Bench"),
+    el("button", {class: "btn", disabled: !prev, title: prev ? prev.name : "", onclick: () => prev && openBench(prev)}, "‹ Prev"),
+    el("button", {class: "btn", disabled: !next, title: next ? next.name : "", onclick: () => next && openBench(next)}, "Next ›"));
+}
+function benchNumCell(fid, label, live, shipped, commit) {
+  const changed = shipped !== undefined && live !== shipped || (shipped === undefined && live !== undefined && live !== null && live !== "");
+  const inp = bfield("num", fid, live, commit);
+  if (changed) inp.classList.add("changed");
+  return el("div", {}, blabel(fid, label), inp, el("div", {class: "was"}, changed ? "files: " + (shipped === undefined ? "none" : shipped) : ""));
+}
+function benchPiece(e, cid, copies) {
+  const c = ctx().comps.get(cid);
+  if (!c) return el("div", {class: "bpiece"}, el("div", {class: "pname"}, "unknown component " + cid));
+  const comp = c.entry, f = comp.face || {}, key = "components.entries", s = shippedEntry(key, cid), sf = (s && s.face) || {};
+  const box = el("div", {class: "bpiece"});
+  const name = el("div", {class: "pname"}, (comp.name || cid) + (copies > 1 ? " ×" + copies : ""));
+  if (c.st) name.append(" ", el("span", {class: "tag " + c.st}, c.st));
+  box.append(name, el("div", {class: "pline"}, faceLine(f)));
+  const kws = el("div", {class: "kws"});
+  for (const k of (f.keywords || [])) kws.append(kwChip(k, "kw", kwNumber(f, k)));
+  if (kws.childElementCount) box.append(kws);
+  const nums = el("div", {class: "bnums"});
+  const keys = [...new Set([...Object.keys(sf), ...Object.keys(f)])].filter(k => typeof f[k] === "number" || typeof sf[k] === "number");
+  for (const k of keys) nums.append(benchNumCell(`${cid}.face.${k}`, plain(k), f[k], sf[k], v => benchWrite(key, cid, d => { d.face = d.face || {}; benchSetNum(d.face, sf, k, v); })));
+  if (keys.length) box.append(nums);
+  const lockId = `${cid}.lock`, noteId = `${cid}.note`;
+  box.append(el("div", {class: "prow"},
+    el("div", {}, blabel(lockId, "its lock"), bselect(lockId, benchGet(comp, ["lock"]), BENCH_LOCKS, v => benchWrite(key, cid, d => benchSetText(d, ["lock"], v)))),
+    el("div", {}, blabel(noteId, "note on the piece"), bfield("area", noteId, benchGet(comp, ["note"]), v => benchWrite(key, cid, d => benchSetText(d, ["note"], v)), {placeholder: "What it should do that nobody else does, a tweak, a cut."}))));
+  if (c.st === "edited") box.append(el("div", {class: "toolbar", style: "margin:8px 0 0"}, el("button", {class: "btn", disabled: !benchCan(), onclick: () => benchRevert(key, cid)}, "Piece back to the files")));
+  return box;
+}
+function benchDirection(e, dir, label, deep) {
+  const key = "chassis.entries", fixed = [...new Set(e.fixed || [])];
+  const on = [["", "choose what it tweaks"], ...fixed.map(cid => [cid, (ctx().comps.get(cid) || {entry: {}}).entry.name || cid]), ["passive", "its passive"], ["chassis", "the chassis"]];
+  const cur = benchGet(e, [dir, "on"]);
+  if (cur && !on.some(o => o[0] === cur)) on.push([cur, plain(cur)]);
+  const set = (path) => (v) => benchWrite(key, e.id, d => benchSetText(d, path, v));
+  const onId = `${e.id}.${dir}.on`, s1 = `${e.id}.${dir}.s1`, s2 = `${e.id}.${dir}.s2`;
+  const box = el("div", {class: "bdir"}, el("div", {class: "dname"}, label),
+    el("div", {}, blabel(onId, "on"), bselect(onId, cur, on, set([dir, "on"]))),
+    el("div", {}, blabel(s1, "first step"), bfield("area", s1, benchGet(e, [dir, "s1"]), set([dir, "s1"]), {placeholder: "One line: what the piece gains or changes."})));
+  if (deep) box.append(el("div", {class: "deep"}, blabel(s2, "deeper step"), bfield("area", s2, benchGet(e, [dir, "s2"]), set([dir, "s2"]), {placeholder: "The same idea taken further."})));
+  return box;
+}
+function benchUpgrades(sheet, e) {
+  const key = "chassis.entries", tier = Number(e.tier), set = (path) => (v) => benchWrite(key, e.id, d => benchSetText(d, path, v));
+  sheet.append(el("h3", {}, "Upgrades"));
+  if (tier >= 3) { sheet.append(el("p", {class: "hint"}, "A tier three arrives at level three: nothing to buy.")); return; }
+  sheet.append(el("p", {class: "hint"}, tier === 1
+    ? "Two upgrades. Each lifts the whole machine, and each takes one pick: the first upgrade either direction's first step; the second the deeper step of the same direction, or the first step it skipped."
+    : "A tier two arrives at level two, so one upgrade: the lift, and a pick of one direction's step."));
+  const lift = el("div", {class: "blift"});
+  const l2 = `${e.id}.lift2`, l3 = `${e.id}.lift3`;
+  if (tier === 1) lift.append(el("div", {}, blabel(l2, "level two, the plain lift"), bfield("area", l2, benchGet(e, ["lift2"]), set(["lift2"]), {placeholder: "Stats, each locked piece's number, a passive's number where it warrants one."})));
+  lift.append(el("div", {}, blabel(l3, "level three, the plain lift"), bfield("area", l3, benchGet(e, ["lift3"]), set(["lift3"]), {placeholder: "Stats, each locked piece's number, a passive's number where it warrants one."})));
+  sheet.append(lift);
+  sheet.append(el("div", {class: "bladder"}, benchDirection(e, "a", "Direction A", tier === 1), benchDirection(e, "b", "Direction B", tier === 1)));
+}
+function benchStock(sheet, e) {
+  const key = "chassis.entries", hp = Number(e.hardpoints || 0), fixedN = (e.fixed || []).length, lo = e.loadout || [];
+  sheet.append(el("h3", {}, `Stock · ${hp} hardpoint${hp === 1 ? "" : "s"}`));
+  if (!hp) { sheet.append(el("p", {class: "hint"}, "No hardpoints.")); return; }
+  const {comps, locked} = ctx();
+  const pool = [...comps.values()].map(x => x.entry).filter(c => !locked.has(c.id) || lo.includes(c.id))
+    .sort((a, b) => (Number(a.tier) || 0) - (Number(b.tier) || 0) || String(a.name || a.id).localeCompare(String(b.name || b.id)));
+  const options = [["", "empty"], ...pool.map(c => [c.id, `T${Number(c.tier) || 0} · ${c.name || c.id}${c.status === "planned" ? " (planned)" : ""}`])];
+  const box = el("div", {class: "bstock"});
+  for (let i = 0; i < hp; i++) {
+    const cid = i < lo.length ? lo[i] : "", fid = `${e.id}.stock.${i}`;
+    const opts = cid && !options.some(o => o[0] === cid) ? [...options, [cid, cid]] : options;
+    const row = el("div", {class: "srow"}, el("label", {class: "shp", for: benchKind(fid)}, roman(fixedN + i + 1) + " · hardpoint"),
+      bselect(fid, cid, opts, v => benchWrite(key, e.id, d => {
+        const l = (d.loadout || []).slice(0, hp);
+        if (v) { if (i < l.length) l[i] = v; else l.push(v); } else if (i < l.length) l.splice(i, 1);
+        d.loadout = l;
+      })));
+    const c = cid ? comps.get(cid) : null;
+    if (c && Number(c.entry.tier || 0) >= Number(e.tier || 0)) row.append(el("div", {class: "swarn"}, `Tier ${Number(c.entry.tier || 0)} on a tier-${e.tier} machine: the validator holds a stock below its chassis's tier until the stock rule is built.`));
+    box.append(row);
+  }
+  sheet.append(box);
+}
+function renderBenchSheet(main, m) {
+  const e = m.entry, key = "chassis.entries", s = shippedEntry(key, e.id) || {}, mk = ctx().makers.get(e.maker || "") || {};
+  const sheet = el("div", {class: "bsheet " + (MAKER_TAB[e.maker] || "")});
+  sheet.append(benchBar(m));
+  const h2 = el("h2", {}, e.name || e.id);
+  if (m.st) h2.append(" ", el("span", {class: "tag " + m.st}, m.st));
+  sheet.append(el("div", {class: "bhead"}, el("p", {class: "desig"}, e.designation || ""), h2, el("p", {class: "sub", style: "margin:0"}, [mk.name, e.size, (e.traits || []).map(plain).join(", ")].filter(Boolean).join(" · "))));
+  if (!benchCan()) sheet.append(el("p", {class: "help"}, state.dbState === "loading" ? "Connecting to the page's database…" : "Read only: the database did not load in this view."));
+  // where it stands, and his notes: the two things the roster shows
+  const stId = `${e.id}.state`, noteId = `${e.id}.notes`, def = benchDefault(e);
+  const brief = reworkBriefOf(e.id);
+  sheet.append(el("div", {class: "prow bpiece", style: "margin-top:12px"},
+    el("div", {}, blabel(stId, "where it stands"), bselect(stId, benchState(e), BENCH_STATES.filter(x => x.id !== "brief").map(x => [x.id, x.label]), v => benchWrite(key, e.id, d => benchSetText(d, ["state"], v === def ? "" : v))),
+      brief ? el("div", {class: "was", style: "color:var(--ink-3)"}, el("button", {class: "linkbtn", onclick: () => { state.section = "designs"; state.sub.designs = designTabOf(brief); state.bopen = null; remember(); openBrief(brief.id); }}, "its brief")) : null),
+    el("div", {}, blabel(noteId, "notes"), bfield("area", noteId, benchGet(e, ["notes"]), v => benchWrite(key, e.id, d => benchSetText(d, ["notes"], v)), {placeholder: "What is owed, what to try, what you felt in play. The first line shows on the roster."}))));
+  sheet.append(el("h3", {}, "Numbers"));
+  const nums = el("div", {class: "bnums"});
+  for (const [k, label] of BENCH_NUMS) nums.append(benchNumCell(`${e.id}.${k}`, label, e[k], s[k], v => benchWrite(key, e.id, d => benchSetNum(d, s, k, v))));
+  sheet.append(nums, el("p", {class: "hint", style: "margin-top:6px"}, "Clear a number to put it back as the files have it. The die is the locked pieces and the hardpoints: d" + ((e.fixed || []).length + Number(e.hardpoints || 0)) + "."));
+  // the passive: its words are the Text tab's, so here it is read, with a note beside it
+  sheet.append(el("h3", {}, "Passive"));
+  const p = e.passive, pId = `${e.id}.passive`;
+  sheet.append(p ? el("div", {class: "passive"}, el("h4", {}, p.name || ""), el("p", {}, p.description || "")) : el("div", {class: "passive none"}, el("h4", {}, "No passive"), el("p", {}, "Unwritten.")));
+  sheet.append(el("div", {}, blabel(pId, "note on the passive"), bfield("area", pId, benchGet(e, ["passive"]), v => benchWrite(key, e.id, d => benchSetText(d, ["passive"], v)), {placeholder: "A number to move, a clause to cut. Its wording is the Text tab's."})));
+  // the locked pieces
+  const fixed = e.fixed || [], uniq = [...new Set(fixed)];
+  sheet.append(el("h3", {}, uniq.length ? `Locked piece${uniq.length === 1 ? "" : "s"}` : "Locked pieces"));
+  if (!uniq.length) sheet.append(el("p", {class: "hint"}, "None: its identity is its passive and its numbers."));
+  for (const cid of uniq) sheet.append(benchPiece(e, cid, fixed.filter(x => x === cid).length));
+  benchUpgrades(sheet, e);
+  benchStock(sheet, e);
+  sheet.append(el("div", {class: "toolbar", style: "margin-top:22px"},
+    el("button", {class: "btn", disabled: !benchCan() || !editFor(key, e.id), onclick: () => benchRevert(key, e.id)}, "Machine back to the files"),
+    el("button", {class: "btn", onclick: () => { state.returnTo = null; state.section = "content"; state.sub.content = key; state.bopen = null; remember(); openEntry(key, e.id); }}, "Open in the editor"),
+    el("button", {class: "btn", onclick: () => { state.section = "codex"; state.bopen = null; remember(); render(); requestAnimationFrame(() => { const t = document.getElementById("cx-" + e.id); if (t) t.scrollIntoView(); }); }}, "On the codex")));
+  sheet.append(benchBar(m));
+  main.append(sheet);
+}
+function renderBenchBrief(main, m) {
+  const d = m.doc, h = d.header || {};
+  const sheet = el("div", {class: "bsheet " + (MAKER_TAB[h.maker] || "")});
+  sheet.append(benchBar(m));
+  const h2 = el("h2", {}, briefTitle(d), " ", el("span", {class: "tag planned"}, h.status || "brief"));
+  sheet.append(el("div", {class: "bhead"}, el("p", {class: "desig"}, "not built · " + d.file), h2, el("p", {class: "sub", style: "margin:0"}, [makerShort(h.maker), TIER_WORD[h.tier] || "tier open", h.slot ? "a roster slot" : null].filter(Boolean).join(" · "))));
+  const lead = (d.blocks || []).filter(b => b.sec === "s0" && b.type === "p").slice(0, 2);
+  for (const b of lead) sheet.append(el("p", {class: "saved", style: "margin-top:10px;max-width:72ch;color:var(--ink-2)"}, ...mdInline(b.text)));
+  sheet.append(directionBox(d));
+  const waiting = briefPending(d.id);
+  sheet.append(el("p", {class: "hint", style: "margin-top:10px"}, "A design in progress has no numbers to set yet: what you want its session to take as given goes in the direction above" + (waiting ? `; ${waiting} of your marks wait on this brief.` : ".")));
+  sheet.append(el("div", {class: "toolbar"}, el("button", {class: "btn", onclick: () => { state.section = "designs"; state.sub.designs = designTabOf(d); state.bopen = null; remember(); openBrief(d.id); }}, "Open the brief")));
+  main.append(sheet);
+}
+function renderBench(main) {
+  want("designs", ensureDesigns);
+  if (state.bopen) {
+    const m = benchMachines().find(x => x.kind === state.bopen.kind && x.id === state.bopen.id);
+    if (m) return m.kind === "built" ? renderBenchSheet(main, m) : renderBenchBrief(main, m);
+    if (state.loaded.designs || state.bopen.kind === "built") state.bopen = null; else return main.append(el("p", {class: "help"}, "Loading the briefs…"));
+  }
+  renderBenchRoster(main);
+}
 
 // ------------------------------------------------------------------ models
 // Every machine live in 3D, played from the sidecars the game reads (hangar/models/<id>.rig.json
@@ -1442,7 +2832,7 @@ function paintMotion(force) {
     speed));
   if (!rig) { panel.append(el("p", {class: "mhelp"}, "Loading…")); return; }
   if (st.mode === "acts") {
-    // The acts it may play now: a held form's own while it holds (the sealed Armadillo's), none while one turns.
+    // The acts it may play now: a held form's own while it holds (the sealed Polar Bear's), none while one turns.
     const set = rig.actSet(), own = Object.keys(rig.forms || {}).find(n => rig.formHeld(n) && rig.forms[n].acts.length);
     const turning = Object.keys(rig.forms || {}).some(n => rig.formHeld(n) ? rig.formT[n] < rig.forms[n].duration : rig.formT[n] > 0);
     const acts = el("div", {class: "acts"});
@@ -1470,7 +2860,7 @@ function paintMotion(force) {
     }
   }
   // What a status holds while the machine carries it (MechView3D.hold_statuses): a form, a pose
-  // (the Armadillo's seal), or a spin (the Cassowary's capacitor while Spun Up); held here as the
+  // (the Polar Bear's seal), or a spin (the Cassowary's capacitor while Spun Up); held here as the
   // status would hold it, in any mode.
   const statusNames = [...new Set([...Object.keys(rig.forms || {}), ...Object.keys(rig.heldSpins || {})])];
   if (statusNames.length) {
@@ -1553,11 +2943,13 @@ function statusLine() {
   const parts = [];
   if (state.dbState === "ready") parts.push(n ? `${n} pending edit${n === 1 ? "" : "s"}` : "no pending edits");
   if (state.candState === "on") parts.push(`${state.candidates.length} names`);
+  if (state.designState === "on") { const k = tabPending("changes"); parts.push(k ? `${k} on the briefs` : "nothing on the briefs"); }
+  if (state.textState === "on" && state.text) { const k = textPending().length; if (k) parts.push(`${k} text${k === 1 ? "" : "s"} waiting`); }
   setStatus(parts.length ? parts.join(" · ") + " · synced live" : "Shipped files loaded");
 }
 async function connectDb() {
   const db = window.claude && window.claude.use ? await window.claude.use("db") : null;
-  if (!db) { state.dbState = "none"; state.candState = "off"; setStatus("Read only: the database did not load in this view.", true); render(); return; }
+  if (!db) { state.dbState = "none"; state.candState = "off"; state.designState = "off"; state.textState = "off"; setStatus("Read only: the database did not load in this view.", true); render(); return; }
   state.db = db;
   try { const user = await window.claude.use("user"); if (user) { const w = await user.can("data.write"); if (w === false) state.canWrite = false; } } catch (e) {}
   db.collection("edits").onSnapshot((snap) => {
@@ -1573,6 +2965,19 @@ async function connectDb() {
     statusLine();
     if (state.section === "names") render(); else renderTabs();
   }, (err) => { state.candState = "off"; render(); });
+  db.collection("designs").onSnapshot((snap) => {
+    state.dnotes = snap.docs.map(s => ({id: s.id, ...s.data()})).filter(n => n && n.type);
+    state.designState = "on";
+    statusLine();
+    if (state.section === "designs") render(); else renderTabs();
+  }, (err) => { state.designState = "off"; render(); });
+  db.collection("text").onSnapshot((snap) => {
+    state.tdocs = {};
+    for (const d of snap.docs) { const data = d.data(); if (data && data.slot) state.tdocs[d.id] = data; }
+    state.textState = "on";
+    statusLine();
+    if (state.section === "text") render(); else renderTabs();
+  }, (err) => { state.textState = "off"; render(); });
 }
 
 (async () => {
@@ -1586,6 +2991,11 @@ async function connectDb() {
   }
   connectDb();
 })();
+window.addEventListener("hashchange", () => {
+  if (!location.hash.startsWith("#br-")) return;
+  state.section = "designs"; state.dOpen = location.hash.slice(4); state.dFromHash = true; state.dEdit = null; state.dNote = null; state.dDir = null;
+  render(); window.scrollTo(0, 0);
+});
 $("#tabs").addEventListener("keydown", e => {
   if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
   const ids = SECTIONS.map(s => s.id); const i = ids.indexOf(state.section) + (e.key === "ArrowRight" ? 1 : -1);

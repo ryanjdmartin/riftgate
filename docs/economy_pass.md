@@ -37,8 +37,9 @@ as the budget every price is cut from.
 
 Three caveats before trusting them:
 
-- **Salvage will rise.** The loot on the map is not built (Derelicts, Carcasses, Relics).
-  The bot never detours for it.
+- **Salvage will rise.** The loot on the map is built (7 November: Derelicts, Carcasses,
+  Relics, `content/loot.json`), and the runner's bot takes a cache its move reaches when no pack
+  is in reach, so the runs read it from then on.
 - **Favour runs high.** The bot bunches and rarely lets a pack reach the gate, so the docking
   hardly bites. A player who splits lanes, or takes a detour for loot, will pay more of it.
 - **Kills don't scale with danger yet.** Salvage is a flat 10 a foe, unweighted. Section 4's
@@ -105,6 +106,11 @@ The runner has nothing to buy yet, so the first job is a spending policy, an inf
   to see (`git show 85e28fd:docs/curve_proposal.md`, the pay).
 - The capital's repair price, against what the finale needs the gate to be.
 - Starting salvage and Favour, and whether the starting draft spends either.
+- Deferred here from the bible's section 12 (Ryan, 4 November): what makes a Sponsorship piece
+  rare now that tiers exist, and what a domain-themed research token draws from; whether a
+  module is ever a blueprint or each one a single item, and whether its stat line is rolled or
+  the catalogue's; whether a starting chassis is replaced or kept through a run; the roster's
+  turnover (machines easier to scrap), read with the foes' damage axis.
 - Whether a held battle (a wipe the city survives) should pay any Favour. Today it pays
   none, and the ledger says only a win pays unless that proves terrible for balance.
 

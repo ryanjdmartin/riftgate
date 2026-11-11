@@ -10,7 +10,7 @@ enum Side { PLAYER, ENEMY }
 ## number.
 const MECH_MOVE := 3
 const PACK_MOVE := 2
-const BOSS_MOVE := 1   # the boss patrols a hex a turn
+const BOSS_MOVE := 1   # a boss unit's move, which it never walks: it holds its hex in front of the rift (10 November)
 
 var id: int = 0
 var display_name: String = ""
@@ -22,8 +22,9 @@ var shield: int = 40
 ## Base numbers from the chassis. Every maximum and rate is read through Effects.stat, which
 ## adds every live modifier (fitted components, rewards, buffs) on top; writing hull_max or
 ## armour sets the base. Nothing stores a total (decided 18 September).
-var base: Dictionary = {"hull": 100, "shield": 40, "heat": 60, "armour": 0, "move": 3, "recharge": 0, "cooling": 0}
+var base: Dictionary = {"hull": 100, "shield": 40, "heat": 60, "armour": 0, "move": 3, "cooling": 0, "shield_regen": 0}
 var modifiers: Array = []   # Effects.Modifier list: loadout, battle, skirmish and timed effects
+var recorder = null         # the round preview's copy alone (Skirmish.preview_round): an Array every grant and stack this unit gains is noted in (Effects._record); null in any fight that plays
 var allies: int = 0         # live allies in the fight this unit is in, kept by the skirmish, for passives that read it
 var hull_max: int:
 	get:
@@ -50,11 +51,6 @@ var movespeed: int:
 		return Effects.stat(self, "move")
 	set(v):
 		base["move"] = v
-var recharge_field: int:
-	get:
-		return Effects.stat(self, "recharge")
-	set(v):
-		base["recharge"] = v
 ## Heat shed at the start of every skirmish round, passively, before the roll: venting is a
 ## tactic, but a round spent on shields or cool weapons is a way of cooling too.
 var cooling: int:
@@ -62,6 +58,15 @@ var cooling: int:
 		return Effects.stat(self, "cooling")
 	set(v):
 		base["cooling"] = v
+## Shield regained at the start of every skirmish round, after the cooling, up to the maximum (the
+## long wall brief 3.6; Ryan, 5 November: "Base shield regen and cooling returning, as a
+## build-strategy buffer"): a chassis stat beside cooling, which modules and passives may move.
+## No chassis sets it yet.
+var shield_regen: int:
+	get:
+		return Effects.stat(self, "shield_regen")
+	set(v):
+		base["shield_regen"] = v
 
 ## Chassis traits: a way of moving ("flyer", "hover", "walker", "tracked", "wheeled";
 ## BattleMap.WAYS), or "defense" for a static unit. A pack carries none and moves by the
@@ -84,7 +89,7 @@ var strength: int = 6        # how many foes the pack holds (a boss: its escort,
 var lineup: Array = []       # a boss unit's commanders, foe ids in order (a final's hero, the finale's line); empty for the faction's boss
 var boss_tier: int = 0       # a boss unit's battle tier, 0 to 2: its commanders' numbers and its escort follow it (ContentDB.BOSS_TIERS); an elite's too, for a wandering elite's numbers (31 October)
 ## The pack's members (the foes' fresh start, 30 October): [[foe_id, strength], ...] in content
-## order, the first the lead, whose sprite and behaviour the pack wears; `foe_id` is the lead's
+## order, the first the lead, whose sprite the pack wears; `foe_id` is the lead's
 ## and `strength` the count of every member, kept in step by set_members. Empty is the one-type
 ## pack, `foe_id` times `strength` (a test's, the harness's, a save's from before). A boss unit's
 ## members are its hand-tailored escort when one is written; empty, its escort is its `foe_id`
@@ -92,13 +97,21 @@ var boss_tier: int = 0       # a boss unit's battle tier, 0 to 2: its commanders
 var members: Array = []
 var composition: String = ""       # the composition it emerged as (content's id), "" for a one-type pack
 var composition_size: String = ""  # its size: patrol, formation, elite or escort (ContentDB.COMPOSITION_SIZES); "" for a one-type pack
-var behaviour: String = "push"   # push: walks toward the gate; hunt: walks toward one machine, its prey (bible section 5)
+var behaviour: String = "push"   # push: walks toward the gate; hunt: walks toward one machine, its prey (bible section 5), when its composition says so (`hunts`; Battlefield.pack_of)
 var hunts: String = "nearest"    # a hunter's caveat: nearest, weakest, strongest, slowest or fastest
 var prey: int = 0                # a hunter's locked machine, by unit id; 0 until it has picked one
+var layout: Array = []           # a dealt composition's grid, eight cells (the front rank's four, then the back's), each a foe id or "" (the long wall brief, section 6; ContentDB.resolve_layout); [] for none
+var squad: int = 3               # the threat rating, the machines the pack is intended for, 1 to 4 (the long wall brief 3.7; ContentDB.squad_of)
+var goal_col: int = -1           # a pusher's wall segment, the column of the apron hex it walks to (the long wall brief 3.3, Battlefield.assign_goal); -1 for none, which walks to the nearest apron hex
 var is_boss: bool = false    # this unit commands the rift: the faction's boss, a final's hero or the finale's line (`elite` until 15 October, the word now the elites')
-var sealed: bool = false     # a boss unit's seal (the pacing session, 30 October): while it holds, the unit cannot be ordered onto and joins no fight, its ring inert; the Rupture breaks it
-var zone: int = 1            # the pack's ring: a pack whose ring covers a fight's target joins that fight, and a hunter catches a prey inside it (bible section 5)
-var attack_range: int = 2    # a machine's ring: it may join a fight whose target is within this many hexes (bible section 5)
+var sealed: bool = false     # a boss unit's seal (the pacing session, 30 October): while it holds, the unit cannot be ordered onto and joins no fight; the Rupture breaks it
+## The engage range, one number for everyone on the map (Ryan, 10 November: a hunter catches at
+## "the same melee engage range as everyone else"): a machine may be committed to a fight on a
+## pack within it, and a hunter catches a machine within it where its walk ends. Adjacency, a
+## placeholder (the long wall brief); the hunters' pounce of two (29 October) retired with the
+## body blocking.
+const ENGAGE_RANGE := 1
+var attack_range: int = ENGAGE_RANGE    # a machine's reach onto a pack: the engage range
 
 const TRIANGLE: Array[Vector2i] = [Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1)]
 
@@ -249,9 +262,9 @@ func touches(other: Unit) -> bool:
 	return false
 
 
-## Shield comes back each battlefield phase spent out of combat, at the chassis's field
-## rate, and inside a fight only from shield components. Never a full refill for free, so
-## withdrawing and re-engaging is not a way to reset (Ryan, 18 September).
+## Shield gained in a fight (a component, a module, a passive, the shield regen), up to the
+## maximum or past it with Overshield. Nothing returns on the map: the shield is full as every
+## fight opens (the long wall brief 3.6). Returns what stood up.
 func recharge_shield(amount: int, overshield: bool = false) -> int:
 	var before := shield
 	if overshield:

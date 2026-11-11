@@ -1,5 +1,7 @@
 # Brief: Mastema, fire through the team (proposal reworked into a direction)
 
+<!-- hangar: {"kind": "chassis", "maker": "arsenal", "tier": 3, "status": "direction", "slot": true, "name": "Mastema"} -->
+
 The session reworks Mastema's tools so its fire never sits blank and never doubles a boss for
 free, around Ryan's idea of setting its own allies alight.
 
@@ -237,7 +239,7 @@ He has answered none of it.
   on any machine would repeat the Ewer; it reopens if the buffs-and-debuffs pass gives every
   debuff one meaning on any body.
 
-The economy it gives: a hot ally keeps the fire as fuel (the Goshawk's shield, the Stingray's
+The economy it gives: a hot ally keeps the fire as fuel (the Buzzard's shield, the Stingray's
 deeper stacks, the Nemesis's rage through the overheat) and a cold ally hands it to the Ewer;
 deep against wide survives, the Screen wanting many burning bodies and the Ewer gathering them
 onto one. With the lighter on its own kit the mover is never blank in any domain, so Mastema

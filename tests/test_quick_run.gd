@@ -2,7 +2,7 @@ extends TestCase
 
 ## The quick campaign (Ryan, 25 October; the bible's quick campaign row): the draft, a battle's
 ## fights by tier with the elites folded into the Fractures and the guest from tier two, a fight's
-## damage carried with a field recharge and no withdrawal, the boss's fall (the after-battle rule,
+## damage carried, the next opening on a full shield, no withdrawal, the boss's fall (the after-battle rule,
 ## the loot, the token, the offer), the hangar's verbs and the save. Fights are forced to their
 ## ends here; the bot plays a battle for real once. Content ids come from the content.
 
@@ -102,8 +102,8 @@ func test_a_battle_holds_its_fractures_with_the_elites_folded_in() -> void:
 					var comp: Dictionary = r.db.elite_composition(r.lead, t + 1, id)
 					var want := 0
 					for m in comp.get("members", []):
-						want += Ramp.scaled(int(m[1]), r.ramp())
-					assert_eq(r.encounter_foes(e).size(), want, "its members at the ramp's density")
+						want += int(m[1])
+					assert_eq(r.encounter_foes(e).size(), want, "its members as content writes them (the ramp scales no pack since 7 November)")
 					dealt.append(id)
 				else:
 					assert_eq(id, "", "with no elite left, nothing stands in (Ryan, 27 October)")
@@ -137,7 +137,7 @@ func test_twelve_battles_then_the_finale_on_the_partys_line() -> void:
 	var line: Array = last["line"]
 	assert_eq(line.size(), r.party.size(), "a column a domain, drawn as the finale is rolled")
 	var foes: Array = r.encounter_foes(last)
-	assert_eq(foes.size(), line.size() + ContentDB.escort_at(r.tier()), "the line, then the tier's escort")
+	assert_eq(foes.size(), line.size(), "the line alone: no escort grown by the tier (7 November)")
 	for i in range(line.size()):
 		assert_eq(foes[i].size, 2, "every one promoted, massive")
 
@@ -162,7 +162,10 @@ func test_a_final_may_close_a_battle_from_tier_two_and_leaves_the_finales_line()
 	assert_eq(str(enc["foe"]), str(r.party[r.lead]), "the lead's dealt hero")
 	var foes: Array = r.encounter_foes(enc)
 	assert_true(foes[0].hero and foes[0].size == 1, "the hero leads, human-sized")
-	assert_eq(foes.size(), 1 + r.formation_foes(r.lead).size() + ContentDB.escort_at(r.tier()), "its formation and the tier's escort beside it")
+	var wild: Array = foes.filter(func(f) -> bool: return f.escorts)
+	assert_eq(wild.size(), Skirmish.DEFAULT_COLUMNS - 1, "the campaign's final: the hero with its domain's wildlife in the other columns, no formation beside it (one pack is one fight, 7 November)")
+	for f in wild:
+		assert_eq(r.db.faction_of_foe(f.content_id), r.lead, "its domain's units")
 	# Won, the hero leaves the finale's line for boss-tier wildlife of a standing domain.
 	r.encounters[r.encounters.size() - 1] = enc
 	r.start_battle()
@@ -185,21 +188,21 @@ func test_a_final_may_close_a_battle_from_tier_two_and_leaves_the_finales_line()
 	assert_eq(r2._boss_encounter(r2.tier())["kind"], "boss", "a won final never comes back: a boss again")
 
 
-func test_a_boss_brings_the_tiers_escort() -> void:
+func test_a_boss_brings_its_curated_escort() -> void:
 	var r := _run(6)
 	var counts: Array = []
 	for t in range(QuickRun.TOP_TIER + 1):
 		_at_battle(r, 1 + t * QuickRun.TIER_EVERY)
 		var boss := {"kind": "boss", "domain": r.lead, "foe": r.draw_boss(r.lead)}
 		var foes: Array = r.encounter_foes(boss)
-		var n: int = foes.size() - 1 - r.formation_foes(r.lead).size()
-		# Its own escort composition when one is written (2 November), else the tier's count.
+		var n: int = foes.filter(func(f) -> bool: return f.escorts).size()
+		assert_true(foes.all(func(f) -> bool: return f.commands or f.escorts or f.joined), "the boss, its parts and its escort alone: no formation beside it (one pack is one fight, 7 November)")
+		# Its own escort composition when one is written (2 November), else none: nothing grows one
+		# by the tier (7 November).
 		var tailored: Dictionary = r.db.escort_composition(r.lead, t + 1, str(boss["foe"]))
-		var expected := ContentDB.escort_at(t)
-		if not tailored.is_empty():
-			expected = 0
-			for m in tailored["members"]:
-				expected += Ramp.scaled(int(m[1]), r.ramp())
+		var expected := 0
+		for m in tailored.get("members", []):
+			expected += int(m[1])
 		assert_eq(n, expected, "tier %d's escort beside the formation" % (t + 1))
 		counts.append(n)
 		var content: Dictionary = r.db.foes[str(boss["foe"])]
@@ -214,7 +217,7 @@ func test_a_boss_brings_the_tiers_escort() -> void:
 			assert_true(r.encounter_foes(e).all(func(f) -> bool: return not f.escorts), "no escort in an elite's slot")
 
 
-func test_a_fight_carries_its_damage_recharges_a_field_turn_and_never_withdraws() -> void:
+func test_a_fight_carries_its_damage_opens_the_next_on_a_full_shield_and_never_withdraws() -> void:
 	var r := _run()
 	assert_true(r.start_battle(), "into the battle")
 	assert_eq(r.state, QuickRun.BATTLE, "a battle under way")
@@ -233,7 +236,7 @@ func test_a_fight_carries_its_damage_recharges_a_field_turn_and_never_withdraws(
 	assert_eq(r.fight, 1, "on to the next encounter")
 	assert_eq(r.units[0], u, "the same machine fights on")
 	assert_eq(u.hull, u.hull_max - 5, "its hull not mended")
-	assert_eq(u.shield, mini(u.shield_max, u.recharge_field), "one field recharge since")
+	assert_eq(u.shield, u.shield_max, "the shield full for the next fight (the long wall brief 3.6)")
 	# A wreck sits the rest of the battle out.
 	u.hull = 0
 	var next := r.open_fight()

@@ -1,5 +1,7 @@
 # Brief: the Kestrel line (review, 20 October)
 
+<!-- hangar: {"kind": "hub", "maker": "kestrel", "tier": null, "status": "hub", "slot": false, "name": "the Kestrel line"} -->
+
 The review of every Kestrel chassis, built and proposed, under the action economy's direction
 (the bible's row beside the stun row, 20 October): where each stands, what would improve it,
 and the holes in Kestrel's stock that the stock pass should fill. Ryan asked for it on 20
@@ -38,7 +40,7 @@ burst, a delayed action, a combined entry, own rerolls).
 | two | the Buzzard (built) | its own heat | shield from heat; one blow that fires it all | running hot | heat banked (the row's Kestrel resource) |
 | one | the Puffin (reworked and built 21 October, tier one since that day; the bible's Puffin row) | allies' heat | shields grown by the ally's heat, the overshield the big one | its thin frame | heat converted for others |
 | two | the Kite (reworked and built 21 October; its brief retired) | its kills | a chain of doubled shots | flat heat, the tax, dark guns, hull 30 | a cooldown burst gated by a kill |
-| three | the bomber, the Lammergeier (its go 21 October; the Magpie until that evening; `kestrel_bomber.md`) | the formation's slots | mines, the pull, the mark | a shot delayed | a delayed action |
+| three | the bomber, the Lammergeier (its go 21 October; the Magpie until that evening; `kestrel_bomber.md`; reworked 9 November, the bible's Lammergeier row) | the foes it hits, and their falls | a Mine on each foe it hits, blowing round it as the foe falls; the gather, the detonation | the delay until the fall | a delayed action |
 | three | the gun platform, the capital, the Giant Petrel (its go 21 October, the formation leader; `git show d84ad16:docs/briefs/kestrel_gun_platform.md`, retired with its engine on 30 October) | the team's rerolls | a reroll bank; an ally's action bought with three rerolls; a jet's die relaunched; rerolls brewed | rerolls, the fleet's pace | rerolls |
 | open | the Magpie (marked 21 October, Ryan: a support engine; to design) | | | | |
 | open | the Snowy Owl (marked 21 October, Ryan: a stealth unit; to design) | | | | |
@@ -135,7 +137,10 @@ One pointer each; the proposal is in the brief named.
   before, the name moving to the support engine), a heavy flyer, a flying wing since 27 October (the tandem wing of its go ditched); its mark the
   Syrinx Drone, which leaves a debuff of its own name and is Rapid on a foe already Exposed,
   else gives it Exposed with no refresh (the line review's gate to the bench); every keyword acts from a
-  mine as the shot lands, Chain whatever Chain becomes. `kestrel_bomber.md`.
+  mine as the shot lands, Chain whatever Chain becomes. `kestrel_bomber.md`. Reworked 9 November
+  (Ryan: "A chassis based around opening an empty spot isn't a good design"): every spend it aims at
+  a foe leaves a Mine on it that blows round its slot when the foe falls, the Syrinx Drone its
+  detonator and the Lorentz Contractor its gather, which Exposes; the bible's Lammergeier row.
 - **The gun platform** is Kestrel's capital ship, a hover, not a flyer (Ryan, 20 October,
   from irony: three quarters of the line flies), and the action-economy utility capstone on
   his word: the reroll economy all the way, no growth. Its seventh round: the team's unspent
@@ -449,9 +454,16 @@ Open, with Claude's new picks (21 October):
 
 ## Open for Ryan
 
-Nothing in this brief (21 October). The last two slots are their briefs' (`kestrel_magpie.md`,
-`kestrel_owl.md`), taken up in another session (Ryan, 21 October: "I'll take up the last 2
-chassis in another session").
+Two of the built four are not finished (Ryan's notes on the hangar's Designs tab, 5 November,
+folded 7 November), for the design session the to-do names for them:
+
+- **The Giant Petrel**: "marked built, but it is far from completed. Placeholder model,
+  unrefined kit."
+- **The Needletail**: "marked built, but it is far from completed. Placeholder model,
+  unrefined, dull, kit, not worthy of tier 2."
+
+The last two slots are their briefs' (`kestrel_magpie.md`, `kestrel_owl.md`), taken up in
+another session (Ryan, 21 October: "I'll take up the last 2 chassis in another session").
 
 Done 21 October: the Buzzard's stock (above); the names, the designations and the stock
 pieces (the picks above), the Spindrift Salvo kept; Expose left out of the lean (Ryan); the

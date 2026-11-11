@@ -439,7 +439,7 @@ func test_each_weapon_turns_what_can_aim_it_and_a_quad_fires_where_it_points() -
 	# that turns on the spot (its sidecar's `pivots`: tracks, casters) turns its body for a gun on
 	# its hull; a quad with neither fires where it points (Ryan, 31 October: "don't bother").
 	var named := 0
-	for id in ["badger", "clydesdale", "baboon", "armadillo", "wild_boar", "prairie_dog", "dingo", "nemesis", "ammit", "funnel_web"]:
+	for id in ["badger", "clydesdale", "baboon", "polar_bear", "wild_boar", "prairie_dog", "dingo", "nemesis", "ammit", "funnel_web"]:
 		var view := MechView3D.make(id, "", "clean", "", MechView3D.YAW_FRONT, Vector2i(64, 64))
 		var side := MechRig.load_sidecar(id)
 		for cid in (side.get("aims", {}) as Dictionary).keys():
@@ -453,8 +453,8 @@ func test_each_weapon_turns_what_can_aim_it_and_a_quad_fires_where_it_points() -
 			var joint := view.aim_joint_for(cid)
 			if bool(side.get("pivots", false)):
 				assert_false(joint.is_empty(), "%s: %s aims, a turret or the body turning" % [id, cid])
-			if id == "armadillo":
-				assert_eq(joint, "", "the Armadillo's %s fires where it points" % cid)
+			if id == "polar_bear":
+				assert_eq(joint, "", "the Polar Bear's %s fires where it points" % cid)
 		view.free()
 	assert_true(named >= 2, "the fixed weapons riding a head or a turret name it (%d)" % named)
 
@@ -476,7 +476,7 @@ func test_a_blow_flashes_the_hull_on_a_beat_and_the_shield_takes_its_own() -> vo
 
 func test_a_struck_machine_wears_heats_flash_and_a_lost_one_dims() -> void:
 	var db := ContentDB.load_default()
-	var view := MechView3D.make("armadillo", "minerva", "clean", "", MechView3D.YAW_FRONT, Vector2i(96, 96), false, {}, [])
+	var view := MechView3D.make("polar_bear", "minerva", "clean", "", MechView3D.YAW_FRONT, Vector2i(96, 96), false, {}, [])
 	var meshes: Array = view._model.find_children("*", "MeshInstance3D", true, false)
 	view.hit("shield", 0.0)
 	assert_eq(view._hit_t, -1.0, "a blow its shield took moves nothing on the model")
@@ -561,7 +561,7 @@ func test_a_lost_flyer_comes_down_onto_its_lowest_point() -> void:
 	# origin and a hover's skirt stands above it, so a lost one lands on what hangs lowest.
 	var field := {"focal": 900.0, "height": 2.0, "principal": Vector2(360.0, 300.0), "at": Vector2(0.0, 6.0),
 		"window": Rect2(0.0, 0.0, 200.0, 200.0), "fill": 0.8, "lift": 0.4, "turn": 0.0}
-	for id in ["goshawk", "puffin"]:
+	for id in ["buzzard", "puffin"]:
 		var view := MechView3D.make_on_floor(id, "kestrel", "clean", field)
 		view.lose()
 		for _i in range(60):
@@ -569,7 +569,7 @@ func test_a_lost_flyer_comes_down_onto_its_lowest_point() -> void:
 		var lands := -view.rig.collapse_floor * view._field_scale
 		assert_true(view.rig.airborne, "a machine off the floor is airborne (%s)" % id)
 		assert_true(absf(view._stage.position.y - lands) < 0.001, "it comes down until its lowest point rests on the floor (%s: %.3f, %.3f)" % [id, view._stage.position.y, lands])
-		if id == "goshawk":
+		if id == "buzzard":
 			assert_true(lands > 0.0, "a flyer's wings below its origin hold it short of the floor under that origin")
 		else:
 			assert_true(lands < 0.0, "a hover settles past its origin onto its skirt")

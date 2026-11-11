@@ -5,8 +5,9 @@ extends SceneTree
 ## docs/map_survey.md and prints it.
 ##   perl -e 'alarm 2400; exec @ARGV' godot --headless --path . -s tools/map_survey.gd -- --seeds 200
 ## Options: --seeds N (200), --type KIND (steppe, the baseline; a key of BattleMap.KINDS for the
-## detailed report; the comparison at the end always runs every shape on as many seeds), --w W --h H (Battle's default,
-## 9 by 20, the game's field), --move M (3, the reference move in hexes every way of moving is
+## detailed report; the comparison at the end always runs every shape on as many seeds), --width W --height H (or
+## --w and --h; 9 by 20 by default, the old field's size: a battle's own is the ramp's since the long wall brief, 3.1,
+## so pass --width 20 --height 12 to read it, with --out to keep docs/map_survey.md), --move M (3, the reference move in hexes every way of moving is
 ## measured at; the packs at their own 2), --out path (docs/map_survey.md), --show SEED (print that seed's
 ## map as text instead, of --type's kind).
 ##
@@ -25,8 +26,8 @@ const OUT := "res://docs/map_survey.md"
 const WAYS := ["tracked", "walker", "wheeled", "hover", "flyer"]
 
 var seeds := 200
-var w := Battle.DEFAULT_WIDTH   # the game's field: nine wide since 8 October
-var h := 20
+var w := Battle.DEFAULT_WIDTH   # the old field's size by default; the ramp's (Ramp.wall_length_at) with --width
+var h := Battle.DEFAULT_HEIGHT
 var move := 3
 var out_path := OUT
 var show := 0
@@ -44,9 +45,9 @@ func _init() -> void:
 		match a:
 			"--seeds":
 				seeds = int(v)
-			"--w":
+			"--w", "--width":
 				w = int(v)
-			"--h":
+			"--h", "--height":
 				h = int(v)
 			"--move":
 				move = int(v)

@@ -1,5 +1,5 @@
 {
- "_about": "Chassis. Not classes: any silhouette, any component in any slot. Every number inside a fight is single digits or low tens since the stock pass's landing (22 October: hull 20 to 50 by size, shield 6 to 16, armour 0 to 2 by role; docs/rules.md, the fills set by tools/stock_fills.py, the brief retired: git show a550c2e:docs/briefs/stock_pass.md): magnitudes, not steps, any whole number. movespeed is the move in hexes, a step a hex; water costs a ground machine two and a hovercraft or a flyer one, walls (crags, mesas, towers, cliffs) are the flyer's alone, and the way of moving among traits (tracked, walker, wheeled, hover, flyer; exactly one) is the model, the footfall and a word a passive may read, never a rule (bible section 4). size is the machine's class by mass (light, medium, heavy, assault), which sets how big it is drawn on the map and in the skirmish (bible section 7). shield absorbs a blow up to its number and the excess reaches the hull; a breach ignores it. armour is taken off every blow that reaches the hull, flat, what passes a shield included and never a breach, so small hits bounce off a heavy machine; it is set by role (a tank, a heavy worker, the rest), never by size. recharge_field is shield regained each battlefield phase spent out of combat; in a fight shield comes only from components (never a free refill, so withdrawing is not a reset). cooling is heat shed at the start of every skirmish turn (0 if absent): venting is a tactic, but a round of ballistics or shields is a way of cooling too. tier is the chassis's tier, 1 to 3 (bible section 10): complexity, never more power and never the maker, so any maker may field a tier three and the capital's maker fields no tier one; a run starts with tier-one chassis, and a chassis stocks only components below its own tier (each component carries its own, 0 the basics; the validator checks it). hardpoints is the number of free slots (and of hp_<n> pins on the model); module_slots is how many modules the chassis carries (bible section 10: a number of the chassis, never bought; two as a rule, three on the Clydesdale as its identifying feature; the runner may move the baseline for some or all); fixed lists the components built into the chassis (always on the die, never removed, no hardpoint used); loadout is the components fitted to the hardpoints by default, and a hardpoint left empty is an entry on the die that does nothing. Every component is one entry, so die size is fixed count plus hardpoints. passive is zero or one object: name and description are shown (the codex prints NAME: description), effects are what the engine runs, at most three, one idea (an upside and its cost count as one passive); the validator refuses effects the engine cannot execute. Shown to the player: codex (the inspect entry, combat and hangar), flavour (an in-world quote), the passive's name and description. design is internal and never shown: fantasy (pitch, inspiration, homages), niche (the role it is meant to fill), and notes only where the engine or a brief still owes something; the decisions and their reasons are the bible's.",
+ "_about": "Chassis. Not classes: any silhouette, any component in any slot. Every number inside a fight is single digits or low tens since the stock pass's landing (22 October: hull 20 to 50 by size, shield 6 to 16, armour 0 to 2 by role; docs/rules.md, the fills set by tools/stock_fills.py, the brief retired: git show a550c2e:docs/briefs/stock_pass.md): magnitudes, not steps, any whole number. movespeed is the move in hexes, a step a hex; water costs a ground machine two and a hovercraft or a flyer one, walls (crags, mesas, towers, cliffs) are the flyer's alone, and the way of moving among traits (tracked, walker, wheeled, hover, flyer; exactly one) is the model, the footfall and a word a passive may read, never a rule (bible section 4). size is the machine's class by mass (light, medium, heavy, assault), which sets how big it is drawn on the map and in the skirmish (bible section 7). shield absorbs a blow up to its number and the excess reaches the hull; a breach ignores it. armour is taken off every blow that reaches the hull, flat, what passes a shield included and never a breach, so small hits bounce off a heavy machine; it is set by role (a tank, a heavy worker, the rest), never by size. shield_regen (optional, 0 to 9, 0 when absent) is shield regained at the start of every skirmish round, before the roll, up to the maximum, beside cooling (the long wall brief, docs/briefs/long_wall_build.md 3.6: a slot no chassis fills yet). The shield is full as every fight opens and nothing returns on the map; recharge_field is gone and the validator refuses it. cooling is heat shed at the start of every skirmish turn (0 if absent): venting is a tactic, but a round of ballistics or shields is a way of cooling too. tier is the chassis's tier, 1 to 3 (bible section 10): complexity, never more power and never the maker, so any maker may field a tier three and the capital's maker fields no tier one; a run starts with tier-one chassis, and a chassis stocks only components below its own tier (each component carries its own, 0 the basics; the validator checks it). hardpoints is the number of free slots (and of hp_<n> pins on the model); module_slots is how many modules the chassis carries (bible section 10: a number of the chassis, never bought; two as a rule, three on the Clydesdale as its identifying feature; the runner may move the baseline for some or all); fixed lists the components built into the chassis (always on the die, never removed, no hardpoint used); loadout is the components fitted to the hardpoints by default, and a hardpoint left empty is an entry on the die that does nothing. Every component is one entry, so die size is fixed count plus hardpoints. passive is zero or one object: name and description are shown (the codex prints NAME: description), effects are what the engine runs, at most three, one idea (an upside and its cost count as one passive); the validator refuses effects the engine cannot execute. Shown to the player: codex (the inspect entry, combat and hangar), flavour (an in-world quote), the passive's name and description. design is internal and never shown: fantasy (pitch, inspiration, homages), niche (the role it is meant to fill), and notes only where the engine or a brief still owes something; the decisions and their reasons are the bible's.",
  "makers": [
   {
    "id": "minerva",
@@ -48,7 +48,7 @@
     "fantasy": "A repurposed mining vehicle, designed to take severe punishment and keep on working. Refurbishments were minimal, basically bolting on weapons and armour, it keeps most of its utilitarian mining machinery flavour.",
     "niche": "tanky bruiser",
     "name_clash": "Flagged 28 September: the id badger is Heavy Gear's Badger APC and BattleTech's Badger transport; the nickname Honey Badger is nobody's. Kept: the shown name is clear.",
-    "notes": "Its identity settled 31 October on Ryan's go (\"agreed on all proposed. Build it\"; the rounds in its brief, retired: git show c05c41b:docs/briefs/minerva_honey_badger.md): the hopper the passive's business, a load for each foe a spend damages, held loads plate shown as the Ore Plate, the claw the boss chase, never destroyed a module. Numbers at the stock pass's scale: a cap of four, a point of armour for every two loads held over base armour 1 (1 to 3), Ryan's second fallback, landed the same day on the runner's read (docs/measurements.md): a point a load (1 to 5) read well past the old Badger alone, and his first fallback (base 2, a point for every two, to 4) barely moved it. Ore Hopper and Ore Plate are working names."
+    "notes": "Its identity settled 31 October on Ryan's go (\"agreed on all proposed. Build it\"; the rounds in its brief, retired: git show c05c41b:docs/briefs/minerva_honey_badger.md): the hopper the passive's business, a load for each foe a spend damages, held loads plate shown as the Ore Plate, the claw the boss chase, never destroyed a module. Numbers at the stock pass's scale: a cap of four, a point of armour for every two loads held over base armour 1 (1 to 3), Ryan's second fallback, landed the same day on the runner's read (docs/measurements.md): a point a load (1 to 5) read well past the old Badger alone, and his first fallback (base 2, a point for every two, to 4) barely moved it. Ore Hopper is a working name. Since 10 November what the loads are worth is the game's Armoured, granted by the hopper as each round opens and following the loads between, a buff a Purge strips until the machine's next turn (Ryan: \"The buff he gets from it is Armoured, not an ability. Its purgeable, but returns at the start of his turn since its granted by the funnel bar\"); the Ore Plate, an ability of its own, is retired."
    },
    "codex": "The Minerva EX-45L (colloquially nicknamed the \"Badger\") was popular a mining mech widely praised for its reliability and durability, being designed to operate in the harshest, deepest environments imaginable. Reports exist of Badgers being caught in cave-ins while mining over 5 kilometers underground, only to dig their way out to the surface by nightfall, just in time for drinks with the crew. So naturally, when the Rifts opened, the ever-practical Minerva engineering team's first instinct was to finally give their prized Badger claws, teeth, and as many missiles as it could carry, putting its legendary longevity to work on the battlefield.",
    "hull": 36,
@@ -58,7 +58,6 @@
    "hardpoints": 3,
    "module_slots": 2,
    "armour": 1,
-   "recharge_field": 4,
    "cooling": 1,
    "traits": [
     "tracked"
@@ -76,7 +75,7 @@
    "passive": {
     "id": "ore_hopper",
     "name": "Ore Hopper",
-    "description": "Every foe its weapons damage puts a load in its hopper, up to four. Every two loads held are a point of armour.",
+    "description": "Every foe its weapons damage puts a load in its hopper, up to four. Every two loads held are a stack of Armoured, granted as each round opens.",
     "effects": [
      {
       "trigger": "static",
@@ -112,7 +111,6 @@
    "hardpoints": 9,
    "module_slots": 3,
    "armour": 1,
-   "recharge_field": 5,
    "cooling": 1,
    "traits": [
     "walker"
@@ -145,7 +143,7 @@
    "flavour": "Pilot manual footnotes: Most of the Clydesdale controls are just for show. The only ones you really need are accelerate and alpha strike."
   },
   {
-   "id": "sparrowhawk",
+   "id": "kite",
    "name": "Kite",
    "designation": "K-7 Mk IV Interceptor",
    "maker": "kestrel",
@@ -153,10 +151,9 @@
    "design": {
     "fantasy": "A priority-target interceptor. Designed for speed and firepower and not much else, taking out a key asset and fleeing while its generous shields recharge.",
     "niche": "assassin",
-    "name_clash": "The id only, since 21 October: sparrowhawk is a Halo Wars gunship and a BattleTech aerospace fighter, and the id stays because ids are never shown. The name's pass (Ryan, 28 September) closed when he renamed the machine the Kite, which clashes with nothing.",
     "one_off": "Its passive carries four effects, the cap three (Ryan's sketch of 19 October, his go of 21 October): the double, the flat heat, the dark rounds and the kill's tax are one idea in two lines, the double-edged niche definer the one-idea row names."
    },
-   "codex": "Shortly into the invasion, it was determined that the masses of zombies, demons, and otherwordly things were, frankly, quite dumb without a guiding intelligence coordinating them. Naturally, Kestrel won the bid to produce a small interceptor aircraft, designed to eliminate priority targets and disengage before getting overwhelmed. However, the weapons package traditionally mounted on such a small frame proved ineffective to the task. It wasn't until one inspired engineer suggested cutting all 'uneccesary' weight from the design that a breakthrough was achieved; Armour, weapon regulators, ejection systems, and padded seats were all deemed frivolous, and their omission skyrocketed the Sparrowhawk to excel in its role.",
+   "codex": "Shortly into the invasion, it was determined that the masses of zombies, demons, and otherwordly things were, frankly, quite dumb without a guiding intelligence coordinating them. Naturally, Kestrel won the bid to produce a small interceptor aircraft, designed to eliminate priority targets and disengage before getting overwhelmed. However, the weapons package traditionally mounted on such a small frame proved ineffective to the task. It wasn't until one inspired engineer suggested cutting all 'uneccesary' weight from the design that a breakthrough was achieved; Armour, weapon regulators, ejection systems, and padded seats were all deemed frivolous, and their omission skyrocketed the Kite to excel in its role.",
    "hull": 12,
    "shield": 16,
    "movespeed": 5,
@@ -164,7 +161,6 @@
    "hardpoints": 2,
    "module_slots": 2,
    "armour": 0,
-   "recharge_field": 8,
    "cooling": 2,
    "traits": [
     "flyer"
@@ -215,7 +211,7 @@
    "design": {
     "fantasy": "A long-armed, stubby-legged plantigrade walker with a high tech suite of weapons and equipment mounted on its backpack. Not fast or heavily armoured, it specializes in battlefield control through status effects and high-tech equipment with complex effects.",
     "niche": "combat support",
-    "name_clash": "Was the Mandrill (a BattleTech 'Mech that looks like ours); renamed the Baboon 28 September, Ryan's pick: a funny name for a funky machine Aphelion thought was cool. Gelada was too obscure for pilots to have coined, Silverback implied a fighter. Baboon is itself the Clan designation of BattleTech's Howler (a 20-ton light 'Mech); Ryan keeps it, a designation-tier clash like the Goshawk's."
+    "name_clash": "Was the Mandrill (a BattleTech 'Mech that looks like ours); renamed the Baboon 28 September, Ryan's pick: a funny name for a funky machine Aphelion thought was cool. Gelada was too obscure for pilots to have coined, Silverback implied a fighter. Baboon is itself the Clan designation of BattleTech's Howler (a 20-ton light 'Mech); Ryan keeps it, a designation-tier clash."
    },
    "codex": "Looking like a cross between an orangutan and a troll, what the Baboon lacks in speed or endurance it more than makes up for with high-tech Aphelion technomagic. After the rifts first opened (and upended everything mankind knew about the laws of physics and the nature of the universe), Aphelion set to work assimilating the torrent of new data, developing experimental countermeasures at a frenetic pace. One unlucky researcher managed to knock out his past self using a localized pocket paradoxical time loop. The effect was quickly weaponized and a frame built to lug the heavy device in into battle, nicknamed the \"Baboon\" in the researcher's memory.",
    "hull": 28,
@@ -225,7 +221,6 @@
    "hardpoints": 6,
    "module_slots": 2,
    "armour": 0,
-   "recharge_field": 5,
    "cooling": 1,
    "traits": [
     "walker"
@@ -257,8 +252,8 @@
    "flavour": ""
   },
   {
-   "id": "armadillo",
-   "name": "Armadillo",
+   "id": "polar_bear",
+   "name": "Polar Bear",
    "designation": "HW-22T Heavy Weapons Carrier",
    "maker": "minerva",
    "tier": 1,
@@ -273,15 +268,13 @@
    "heat_max": 12,
    "hardpoints": 4,
    "module_slots": 2,
-   "armour": 2,
-   "recharge_field": 4,
+   "armour": 1,
    "cooling": 1,
    "traits": [
     "walker"
    ],
    "size": "assault",
    "fixed": [
-    "cryo_flinger",
     "cryo_flinger"
    ],
    "loadout": [
@@ -293,13 +286,27 @@
    "passive": {
     "id": "lockdown",
     "name": "Lockdown",
-    "description": "A shield it spends on itself seals it: armour +3, its own cooling stopped, 3 hotter at the end of each turn. A vent or a weapon opens it.",
+    "description": "A shield it spends on itself seals it: armour +3, its own cooling stopped, 3 hotter at the end of each turn, and its Cryo Flinger gains Spread. A vent or a weapon opens it. Its weapons deal 1 more to a foe carrying Cryo.",
     "effects": [
      {
       "trigger": "static",
       "effect": "seal_form",
       "value": 3,
       "heat": 3
+     },
+     {
+      "trigger": "static",
+      "effect": "grant_keyword",
+      "value": "cleave",
+      "when": "sealed",
+      "entry": "cryo_flinger"
+     },
+     {
+      "trigger": "on_attack",
+      "effect": "add_damage",
+      "value": 1,
+      "when": "target_status",
+      "status": "cryoed"
      }
     ]
    },
@@ -323,7 +330,6 @@
    "hardpoints": 5,
    "module_slots": 2,
    "armour": 2,
-   "recharge_field": 5,
    "cooling": 1,
    "traits": [
     "tracked"
@@ -372,7 +378,6 @@
    "hardpoints": 3,
    "module_slots": 2,
    "armour": 0,
-   "recharge_field": 8,
    "cooling": 1,
    "traits": [
     "wheeled"
@@ -426,7 +431,6 @@
    "hardpoints": 3,
    "module_slots": 2,
    "armour": 0,
-   "recharge_field": 6,
    "cooling": 1,
    "traits": [
     "wheeled"
@@ -456,15 +460,14 @@
    "flavour": ""
   },
   {
-   "id": "goshawk",
+   "id": "buzzard",
    "name": "Buzzard",
    "designation": "K-9 Mk II Attack Airframe",
    "maker": "kestrel",
    "tier": 2,
    "design": {
     "fantasy": "The larger cousin of the Kite, trades explosiveness for longevity. Wide downturned wings evoking a hovering predator, weapon mounts mounted under the wings. Double boosters mounted on top of the tail section (similar to an A10 warthog).",
-    "niche": "Hot sustain: shield from its heat, and one blow that fires it all",
-    "name_clash": "The id only, since 21 October: goshawk is the Inner Sphere designation of the Clan Vapor Eagle (a 55-ton 'Mech), and the id stays because ids are never shown. The name's pass (Ryan, 28 September) closed when he renamed the machine the Buzzard, which clashes with nothing."
+    "niche": "Hot sustain: shield from its heat, and one blow that fires it all"
    },
    "codex": "",
    "hull": 28,
@@ -474,7 +477,6 @@
    "hardpoints": 5,
    "module_slots": 2,
    "armour": 0,
-   "recharge_field": 6,
    "cooling": 1,
    "traits": [
     "flyer"
@@ -523,7 +525,6 @@
    "hardpoints": 4,
    "module_slots": 2,
    "armour": 2,
-   "recharge_field": 4,
    "cooling": 1,
    "traits": [
     "walker"
@@ -537,7 +538,7 @@
     "plasma_arquebus",
     "blazethrower",
     "retribution_thurible",
-    "oblation_ward"
+    "oblation_mantle"
    ],
    "passive": {
     "id": "crucible_capacitor",
@@ -572,7 +573,6 @@
    "hardpoints": 4,
    "module_slots": 2,
    "armour": 1,
-   "recharge_field": 5,
    "cooling": 1,
    "traits": [
     "walker"
@@ -587,7 +587,7 @@
    "loadout": [
     "plasma_arquebus",
     "blazethrower",
-    "oblation_ward",
+    "oblation_mantle",
     "entropy_condenser"
    ],
    "passive": {
@@ -622,7 +622,6 @@
    "hardpoints": 5,
    "module_slots": 2,
    "armour": 0,
-   "recharge_field": 6,
    "cooling": 0,
    "traits": [
     "hover"
@@ -671,7 +670,6 @@
    "hardpoints": 4,
    "module_slots": 2,
    "armour": 0,
-   "recharge_field": 8,
    "cooling": 1,
    "traits": [
     "hover"
@@ -719,7 +717,6 @@
    "hardpoints": 4,
    "module_slots": 2,
    "armour": 1,
-   "recharge_field": 5,
    "cooling": 1,
    "traits": [
     "walker"
@@ -769,7 +766,6 @@
    "hardpoints": 5,
    "module_slots": 2,
    "armour": 0,
-   "recharge_field": 5,
    "cooling": 1,
    "traits": [
     "walker"
@@ -831,7 +827,6 @@
    "hardpoints": 4,
    "module_slots": 2,
    "armour": 0,
-   "recharge_field": 8,
    "cooling": 2,
    "traits": [
     "hover"
@@ -895,7 +890,6 @@
    "hardpoints": 4,
    "module_slots": 2,
    "armour": 1,
-   "recharge_field": 4,
    "cooling": 0,
    "traits": [
     "walker"
@@ -942,7 +936,6 @@
    "hardpoints": 3,
    "module_slots": 2,
    "armour": 1,
-   "recharge_field": 5,
    "cooling": 2,
    "traits": [
     "flyer"
@@ -997,7 +990,6 @@
    "hardpoints": 4,
    "module_slots": 2,
    "armour": 1,
-   "recharge_field": 5,
    "cooling": 1,
    "traits": [
     "wheeled"
@@ -1040,8 +1032,8 @@
    "maker": "kestrel",
    "tier": 3,
    "design": {
-    "fantasy": "Ryan's bomber (14 and 15 October): soft control that traps a slot so a reinforcement comes in damaged, \"a bomber of some kind\", its bombs taking on the properties of its weapons. The weapon is the bomb: any weapon may be spent on an empty slot and its keywords ride in the mine. The bearded vulture carries bones and tortoises up and drops them to shatter on rock (Ryan named it 21 October): a heavy tandem-wing flyer on big boosters, a pair of wings fore and a pair aft, the mines dropping from the bay between.",
-    "niche": "Kestrel's tier-three minelayer: the lowest floor and the highest ceiling. With reinforcements waiting it is an engine, every arrival paying before it acts (a stun mine takes its first action, a burn mine ticks on it, a shock mine doubles the team's first blow); with nothing waiting a plain d6 flyer whose laid mines the Lorentz Contractor cashes on a chosen foe. It wants keyword weapons of every maker and the team's killers, the Syrinx Drone copying the best killing shot onto the next arrival."
+    "fantasy": "Ryan's bomber (14 October: \"a bomber of some kind\", its bombs taking on the properties of its weapons: \"napalm, aoe, shock, even suppress\"), reworked 9 November when the slot mines failed with reinforcement gone (\"A chassis based around opening an empty spot isn't a good design\"): \"the lammergeier basically converts all hits to AoE hits, at the cost of a delay until Death. It's the same niche as the Cottonmouth, but executed very differently.\" Every spend aimed at a foe leaves a Mine on it, flat damage and the spend's keywords, one Mine a foe, and when the foe falls the Mine blows round its slot. The bearded vulture carries bones and tortoises up and drops them to shatter on rock (Ryan named it 21 October): a heavy flying wing on big boosters, the mines dropping from the bay under its body.",
+    "niche": "Kestrel's tier-three bomber: the team's kills are its area, a delay its price, where the Cottonmouth's drum makes every shot an area shot now. Every spend it aims at a foe leaves a Mine there (2 flat a spend, the keywords one big hit); the Lorentz Contractor gathers every Mine onto one foe and Exposes it for the team's Direct guns, and the Syrinx Drone sets a Mine off at once, on the foe and every foe round it. It wants keyword pieces of every maker (napalm, a shock or a stun Mine, Breach to carry the whole Mine through armour) and a team that kills where the neighbours stand. Ryan, 9 November: one Mine a spend first, \"then look at per hit later if it's weak\"."
    },
    "codex": "",
    "hull": 28,
@@ -1051,7 +1043,6 @@
    "hardpoints": 4,
    "module_slots": 2,
    "armour": 0,
-   "recharge_field": 6,
    "cooling": 1,
    "traits": [
     "flyer"
@@ -1068,13 +1059,14 @@
     "arc_fault_cannon"
    ],
    "passive": {
-    "id": "fuse_delayed_bay",
-    "name": "Fuse-delayed Bay",
-    "description": "Every weapon and equipment it aims at a foe may also be spent on an empty slot in the enemy's formation, as if a foe stood there. The shot waits there, and whoever steps in takes every shot waiting, in laid order, before it acts.",
+    "id": "reverberant_payload",
+    "name": "Reverberant Payload",
+    "description": "Every weapon and equipment it aims at a foe adds 2 to a Mine on that foe, with the spend's keywords. When the foe falls, even one that gets back up or splits, the Mine blows: its damage and keywords on every foe round its slot.",
     "effects": [
      {
       "trigger": "static",
-      "effect": "lay_mines"
+      "effect": "mine_on_spend",
+      "value": 2
      }
     ]
    },
@@ -1088,7 +1080,7 @@
    "tier": 1,
    "design": {
     "fantasy": "The strafer (Ryan, 14 October: \"Love the [strafer], lock that in\"), a swing-wing since 21 October, the strafing jet by trade, its wings sweeping as it fires twice; the Skua, the seabird that harries others in repeated dives until they drop what they carry.",
-    "niche": "Kestrel's second tier one, the many-blows machine: every weapon it fires strikes twice at half, the Kite's bargain in count instead of magnitude. Each strike pays the foe's armour, so it slaughters trash and bounces off plate, a detachment the map can read. Its payoffs are riders laid a strike, flat buffs counted on each strike and multi-strike pieces, every maker's; its Flechette Pod sprays its later strikes among the foes in reach.",
+    "niche": "Kestrel's second tier one, the many-blows machine: every weapon it fires strikes twice at half, the Kite's bargain in count instead of magnitude. Each strike pays the foe's armour, so it slaughters trash and bounces off plate, a detachment the map can read. Its payoffs are riders laid a hit, flat buffs counted on each hit and multi-hit pieces, every maker's; its Flechette Pod fires a shot at each column of a rank.",
     "notes": "Ryan's go, 21 October (the bible's Kestrel row). Its engine landed 25 October: the Split-cycle Breech (each roll halved, rounded down, Ryan's call of 24 October, and struck twice) and the Flechette Pod's spray; its rounds are in git (git show f87b831:docs/briefs/kestrel_strafer.md). Numbers are placeholders at the stock pass's scale, a light flyer at the floor of 20 hull. The stock by kind from the basics (a warm flat gun, a cold rolled gun, a self shield): the Laser Carbine, the Twin Autoguns and the Canopy. Its model is Claude's first cut of 23 October (tools/lowforge/models_low.py, skua), in a second round of looks on Ryan's notes (the to-do)."
    },
    "codex": "",
@@ -1099,7 +1091,6 @@
    "hardpoints": 3,
    "module_slots": 2,
    "armour": 0,
-   "recharge_field": 8,
    "cooling": 1,
    "traits": [
     "flyer"
@@ -1116,7 +1107,7 @@
    "passive": {
     "id": "split_cycle_breech",
     "name": "Split-cycle Breech",
-    "description": "Every weapon and equipment the Skua aims at a foe strikes twice at half: its number halves, rounded down and never below one, and every buff, passive and foe's condition counts on each strike.",
+    "description": "Doubles the number of hits (or number of shots, for Sweep) for Weapons and Equipment. Base weapon damage is halved (rounded down, minimum 1).",
     "effects": [
      {
       "trigger": "on_attack",
@@ -1146,7 +1137,6 @@
    "hardpoints": 4,
    "module_slots": 2,
    "armour": 0,
-   "recharge_field": 8,
    "cooling": 1,
    "traits": [
     "hover"
@@ -1200,7 +1190,6 @@
    "hardpoints": 3,
    "module_slots": 2,
    "armour": 0,
-   "recharge_field": 8,
    "cooling": 1,
    "traits": [
     "flyer"
@@ -1248,7 +1237,6 @@
    "hardpoints": 3,
    "module_slots": 2,
    "armour": 0,
-   "recharge_field": 5,
    "cooling": 2,
    "traits": [
     "hover"

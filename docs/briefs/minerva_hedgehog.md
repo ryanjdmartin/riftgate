@@ -1,15 +1,17 @@
 # Brief: the echidna (the hedgehog), a tank that fights (new chassis)
 
+<!-- hangar: {"kind": "chassis", "maker": "minerva", "tier": 2, "status": "direction", "slot": true, "name": "the echidna"} -->
+
 The session designs a lighter Minerva tier two that wants to be struck, first as the Faraday
 Hull's new home, since 15 October around Ryan's Sonic Needle (below, "The Minerva session").
 "The echidna" and "the hedgehog" are working labels from Ryan's own list; the name is his.
 
-**Status**: direction, left open for now (Ryan, 20 October); two rounds in session (15 October), Ryan's Sonic Needle passive. **Maker**:
+**Status**: direction, left open for now (Ryan, 20 October); two rounds in session (15 October), Ryan's Sonic Needle passive; his new shape of 4 November (strikers debuffed to hurt themselves after they act), Claude's first round on it below. **Maker**:
 Minerva. **Proposed tier**: two. **Read first**:
 `docs/briefs/README.md`; `minerva_armadillo.md`; the bible's rows on the Faraday Hull (section
 7) and on retaliation and thorns (section 5); `docs/roster_analysis.md` section 8 (Minerva's
 gaps); `content/components.json` (proximity_klaxon, retribution_thurible; the Lockdown Shutters left
-content with the Armadillo's landing, 20 October).
+content with the Polar Bear's landing, 20 October).
 
 ## What Ryan said
 
@@ -26,9 +28,9 @@ content with the Armadillo's landing, 20 October).
   blows in, and the Faraday Hull (a foe that strikes its bare hull is Shocked) for the team to
   cash. Low armour makes the exposed aim choose it, so the Hull fires often, and its hull is
   what it pays: the drawback the thorns need. A lure keeps the multiplication a spend rather
-  than a standing state. Two Minerva tanks that read apart: the Armadillo the wall, this one
+  than a standing state. Two Minerva tanks that read apart: the Polar Bear the wall, this one
   the bait that punishes.
-- 15 October, why the Hull lives here and not on the Armadillo: Shock on a striker lands no
+- 15 October, why the Hull lives here and not on the Polar Bear: Shock on a striker lands no
   damage at the blow and must be cashed by a team spend, so it is capped by the team's dice
   rather than the enemy's blows; but under any draw on a heavy machine it is too much, and on
   armour 15 without a draw too little. On a light machine with a lure it fires often and costs
@@ -76,7 +78,7 @@ rare whose Retaliate deals chip damage (10 to each attacker) in place of Shocked
 **Claude's second round**, in chat: count only a blow that deals it damage (shield or hull), so
 Braced or a Barrier on it cannot make free Shocks; fold the draw into the passive, Lure granted
 to every weapon it fires (the Boar's shape), so every gun is the damaging lure and none eats the
-die, or a locked damaging lure with Rapid (the Armadillo's shape again); no locked piece needed;
+die, or a locked damaging lure with Rapid (the Polar Bear's shape again); no locked piece needed;
 medium, hull 110, shield 30, armour 5; the Faraday Hull and Sealed Live retiring, Shocked on a
 strike leaving the game except through the needle; on the Thurible, chip damage is thorns, so
 keep Retaliate's condition (a blow on bare hull) and let the wound be its drawback.
@@ -100,17 +102,76 @@ the spikes or the luring tank, not both; a damaging lure, if kept, is never Rapi
 becomes a tier-three module whose rule pays back a blow that damages its hull, with shield and
 field recharge down and hull up.
 
-Ryan, 20 October: "Echidna I will leave open for now." The Armadillo landed the same day (the
-bible's Armadillo row), so the Faraday Hull and Sealed Live are out of content: the Hull's idea,
+Ryan, 20 October: "Echidna I will leave open for now." The Polar Bear landed the same day (the
+bible's Polar Bear row), so the Faraday Hull and Sealed Live are out of content: the Hull's idea,
 a tank struck by its own choice that Shocks for the team, is this design's if he takes it.
+
+## Ryan, 4 November: a new shape
+
+In his words: "Minerva Echidna: new shape idea, debuff foes that strike it so that they damage
+themselves after they act. So it's not immediate thorns damage, it's delayed. Locked component
+can spread or synergize the debuff to make it interesting."
+
+The same day he listed a tier-one Minerva tank whose every hit lures. It has its own brief
+(`minerva_lure_tank.md`; the briefs README's "Ten a maker"). So the two halves he
+split on 15 October ("we can either play up the spikes, or the luring tank, not both") go to two
+machines. Claude reads open item 1 as answered (the spikes here, the lure there), unless he says
+otherwise.
+
+**Claude's first round** (4 November), for him to move:
+
+- **In today's engine.** The debuff is laid on a foe whose blow lands on the echidna: Retaliate's
+  trigger, read on any blow or only on one that reaches the hull. It then damages its carrier on
+  the foe's own clock: the Web's (at the end of its action, skipped or not) or Vitriol's (at its
+  action). Laying a status on the striker is built. A status that damages its carrier at the end
+  of an action is new, and small.
+- **The drawback the thorns line asks for.** The bible's retaliation row: "a thorn is balanced
+  only by a drawback it carries and never rides a megatank". What reopens a reward for being
+  struck is a machine that spends its own turn to be struck, deals nothing that turn, and is paid
+  later and at random. The delay covers "later" but not the rest, so the drawback is still the
+  question. Three candidates:
+  - its own hull, this brief's first answer (Ryan, 14 October: a unit that "actually has to worry
+    slightly about its own hull");
+  - the damage is lost if the foe dies first, or if a foe's Cleanse takes the debuff, so the team
+    must choose to let a striker live long enough to pay;
+  - the debuff sticks only on a blow that reaches its hull, so it must bleed to retaliate.
+
+  Claude's lean: the first and the third together, the spikes paid for in wounds. That is the
+  Hull's idea, which the bible keeps for this machine.
+- **Which action.** "After they act" could mean the end of the action that struck it, which is
+  thorns a beat late: the foe's blow lands either way and nothing is decided. It could mean the
+  end of the foe's next action, which gives a round's warning on its chip, so the team chooses to
+  kill it first, let it pay, or Suppress it. Claude's lean: its next action, skipped or not, the
+  way the Web bursts.
+- **How much.** A fixed number a stack, a stack for each strike that lands, so a swarm piles them
+  up. Never the striker's own blow. That would be the deterministic reflect the bible pins as a
+  boss effect, and it scales with the size of the enemy's blows, the old discharge's shape. Paid
+  once, or a tick a stack that fades a stack at each action (Burning's clock): Ryan's call.
+- **The locked piece**, "spread or synergize". To spread, the piece lays the debuff on a foe it
+  hits, so the echidna seeds its own spikes on its turn and the foes' strikes add to them: the
+  Sonic Needle's mark half (15 October), recast. To synergize, the piece makes every marked foe
+  pay now. Claude's lean: the spread. It keeps the spikes the whole identity, and the Sonic
+  Needle's mark becomes the setup the strikes pile onto. A locked lure would be the "self-serving"
+  pair Ryan turned down on 15 October.
+- **The Sonic Needle** (15 October: foes it damages are marked, and a marked foe that strikes it is
+  Shocked). Is it replaced by the new shape, or kept as the locked piece's setup?
+- **Overlaps.** The Aphelion status detonator of the same list, now the jellyfish's EMP
+  (`aphelion_jellyfish.md`), also bites "after their action".
+  They part by what they count (here, the strikes it took; there, every stack on the foe) and by
+  who sets them (here, the striker's own blow; there, a debuff spent on the foe). If the locked
+  piece's spread carries the debuff to a marked foe's neighbours as it pays, that is the Static
+  machine's Splash on another clock (`aphelion_static.md`).
 
 ## Open for the session
 
-1. The spikes or the luring tank.
-2. Its numbers, and a locked piece if the silhouette has a signature.
-3. The Faraday Hull and Sealed Live retiring, now that the needle takes the Hull's place.
-4. The Thurible module's numbers, and its condition read as hull damage past armour.
-5. Its name (Ryan's).
+1. The spikes or the luring tank (Claude's reading of 4 November: answered, the spikes here, above).
+2. The new shape (4 November): its drawback, which action it bites after, its size and clock,
+   its locked piece's verb (spread or synergize), and whether the Sonic Needle stays as that
+   piece's setup.
+3. Its numbers, and a locked piece if the silhouette has a signature.
+4. The Faraday Hull and Sealed Live retiring, now that the needle takes the Hull's place.
+5. The Thurible module's numbers, and its condition read as hull damage past armour.
+6. Its name (Ryan's; Hedgehog is a BattleTech 'Mech's, on the reserved list, and Echidna is free).
 
 ## Holes already raised
 

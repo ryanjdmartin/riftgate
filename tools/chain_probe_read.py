@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Reads tools/chain_probe.gd's parts (25 October): for each shield variant, after the k-th
-formation in a row, the share of chains still winning, their machines standing and their hull
-left (a wreck counted as nothing), with each domain's share winning four, six and eight.
+"""Reads tools/chain_probe.gd's parts (25 October): after the k-th formation in a row, the share
+of chains still winning, their machines standing and their hull left (a wreck counted as
+nothing), with each domain's share winning four, six and eight. One table: the shields full as
+each fight opens (the long wall brief 3.6; the two shield variants went with the field recharge).
 
   python3 tools/chain_probe_read.py "<label>" build/chain_0.json build/chain_1.json ..."""
 import json, sys
@@ -34,9 +35,7 @@ def main():
     rows = []
     for path in sys.argv[2:]:
         rows += json.load(open(path))
-    for recharge in (False, True):
-        table([r for r in rows if r['recharge'] == recharge],
-              f'{sys.argv[1]}, {"one field recharge between fights" if recharge else "no shield back"}')
+    table(rows, f'{sys.argv[1]}, the shields full as each fight opens')
 
 
 if __name__ == '__main__':

@@ -70,6 +70,36 @@ static func corners(center: Vector2, size: float) -> PackedVector2Array:
 	return pts
 
 
+## The flat-top layout (the long wall brief 7.1): the pointy-top one turned a quarter clockwise
+## on screen, (x, y) to (-y, x), so the field's rows run across and its columns down, the wall
+## at the left and the rift at the right. A turn, never a mirror, so a hex's neighbours keep
+## their order round it. Only a view turns: the field and its axial coordinates do not.
+static func turn(v: Vector2) -> Vector2:
+	return Vector2(-v.y, v.x)
+
+
+static func unturn(v: Vector2) -> Vector2:
+	return Vector2(v.y, -v.x)
+
+
+static func to_pixel_flat(h: Vector2i, size: float) -> Vector2:
+	return turn(to_pixel(h, size))
+
+
+static func from_pixel_flat(p: Vector2, size: float) -> Vector2i:
+	return from_pixel(unturn(p), size)
+
+
+## Corner points of a flat-top hex: the pointy-top corners turned with the layout, so corner i
+## and the edge after it face the same neighbour in either.
+static func corners_flat(center: Vector2, size: float) -> PackedVector2Array:
+	var pts := PackedVector2Array()
+	for i in range(6):
+		var angle := deg_to_rad(60.0 * i - 30.0)
+		pts.append(center + turn(Vector2(size * cos(angle), size * sin(angle))))
+	return pts
+
+
 ## odd-r offset -> axial. Rows shove odd rows right by half a hex.
 static func offset_to_axial(col: int, row: int) -> Vector2i:
 	var q := col - (row - (row & 1)) / 2

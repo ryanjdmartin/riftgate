@@ -8,35 +8,174 @@ extends RefCounted
 static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Color, width: float = 2.0) -> void:
 	var s := size / 2.0
 	match id:
-		"line":
-			ci.draw_arc(c, s * 0.62, 0.0, TAU, 28, color, width)
-			ci.draw_line(c + Vector2(-s, 0), c + Vector2(s, 0), color, width)
-			ci.draw_line(c + Vector2(0, -s), c + Vector2(0, s), color, width)
-		"indirect":
-			ci.draw_arc(c + Vector2(0, s * 0.5), s * 0.95, PI, TAU, 20, color, width)
-			ci.draw_circle(c + Vector2(s * 0.95, s * 0.5), width * 1.6, color)
-			ci.draw_line(c + Vector2(-s * 0.95, s * 0.5), c + Vector2(-s * 0.95, s * 0.95), color, width)
-		"debuff_line", "debuff_indirect":
-			# A debuff (Ryan, 20 and 21 October, the die's grammar): its reach frame carries the
-			# status mark where a gun carries its number, the debuff chips' down arrow, so the
-			# frame and the mark both say it (structure twice). The crosshair's cross is cut to
-			# four ticks so the mark sits inside the ring; the arc lobs over it.
-			if id == "debuff_line":
-				ci.draw_arc(c, s * 0.68, 0.0, TAU, 28, color, width)
-				for d in [Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)]:
-					ci.draw_line(c + d * s * 0.68, c + d * s, color, width)
-				draw(ci, "debuff", c, s * 0.82, color, width)
-			else:
-				ci.draw_arc(c + Vector2(0, s * 0.5), s * 0.95, PI, TAU, 20, color, width)
-				ci.draw_circle(c + Vector2(s * 0.95, s * 0.5), width * 1.6, color)
-				ci.draw_line(c + Vector2(-s * 0.95, s * 0.5), c + Vector2(-s * 0.95, s * 0.95), color, width)
-				draw(ci, "debuff", c + Vector2(0, s * 0.12), s * 0.78, color, width)
+		# ---- the die's targeting marks (Ryan, 2 November): one width, under the main mark
+		"aim_direct", "aim_indirect":
+			# Whom a weapon or a debuff reaches (Ryan, 3 November: "I think we had it right with
+			# straight versus curved before, just needed to be cleaned up. Maybe a straight line that
+			# breaks up into smaller and smaller dashes towards the end for direct, and then just
+			# gently curve that for indirect, so it doesn't get much bigger than the 3-hex view"):
+			# a line of fire, a long solid run breaking into ever smaller dashes, thinning as it
+			# goes; straight for Direct, a gentle lob for Indirect, as wide as the three hexes.
+			_fire_line(ci, c, size, color, width, id == "aim_indirect")
+		"aim_sweep":
+			# Sweep (3 November), the third reach: lobbed, since a sweep picks any rank (Ryan, 4
+			# November: "curved to indicate it has indirect reach"), its arc whole along the rank, and a
+			# line of fire rising off it for each of the rank's four columns, a solid run and a dash
+			# ("have the lines poking out have the same kind of segmented look as the others"; then,
+			# of the rising form: "Can we give it 4 lines instead of 3, symbolizing the 4 columns?",
+			# and two pieces, so it sits clear of a full costs row). Drawn small, the strikes plain.
+			var arc := _fire_pts(c + Vector2(0.0, s * 0.22), size, true, 0.85)
+			_run(ci, arc, 0.0, _path_length(arc), color, width)
+			for u in [0.125, 0.375, 0.625, 0.875]:
+				var from := _along(arc, u) + Vector2(0.0, -size * 0.04)
+				var rise := PackedVector2Array([from, from + Vector2(0.0, -s * 0.48)])
+				if size >= INNER_FROM:
+					_segmented(ci, rise, STRIKE_RUNS, STRIKE_GAPS, color, width)
+				else:
+					ci.draw_polyline(rise, color, width)
+		"aim_every_foe":
+			# Every Foe (a targeting mode since 4 November): the enemy's formation whole, both ranks
+			# of its four columns lit, the far rank smaller and narrower, as the field is seen from
+			# behind the machines (Ryan, 4 November: "I actually like the 8 squares with the 4 rear
+			# ones smaller"), the ranks close ("we can gain a bit by narrowing the gap between the two
+			# rows"), held in square brackets at its sides ("Can we get side-brackets on All Foes?
+			# Round or square, not sure"; then "Square brackets are good"), the whole the marks' one
+			# width.
+			var fw := size * 0.68
+			var fc := fw * 0.19
+			var fp := (fw - fc) / 3.0
+			var bc := fc * 0.72
+			var bp := (fw * 0.74 - bc) / 3.0
+			for k in range(4):
+				var back := c + Vector2((k - 1.5) * bp, -s * 0.17)
+				ci.draw_rect(Rect2(back - Vector2(bc, bc) * 0.5, Vector2(bc, bc)), color, true)
+				var front := c + Vector2((k - 1.5) * fp, s * 0.17)
+				ci.draw_rect(Rect2(front - Vector2(fc, fc) * 0.5, Vector2(fc, fc)), color, true)
+			var reach := s * 0.38
+			for side in [-1.0, 1.0]:
+				var x: float = side * (s - width * 0.5)
+				var serif: float = -side * s * 0.2
+				ci.draw_polyline(PackedVector2Array([c + Vector2(x + serif, -reach), c + Vector2(x, -reach), c + Vector2(x, reach), c + Vector2(x + serif, reach)]), color, width)
+		"aim_every_ally", "aim_every_other_ally":
+			# Every Ally and Every Other Ally (targeting modes since 4 November): the three hexes, the
+			# middle its own machine, lit for the whole team and dark for every other ally (Ryan: "the
+			# difference is whether the center one is lit or not, its two modes"), under one low arch
+			# carried out past the outer cells' edges and touching none of them ("ii works for that,
+			# I'd like to see it with the arch widened to carry to the edges of the hexes, but not
+			# actually touching them"); the cells a little smaller than a single target's, so the arch
+			# keeps the marks' one width.
+			var k34 := size / 34.0
+			var r := 4.8 * k34
+			var pitch := sqrt(3.0) * r
+			var hc := c + Vector2(0.0, 2.3 * k34)   # the whole centred on the slot, inside its band
+			for k in range(3):
+				var h := hc + Vector2((k - 1) * pitch, 0.0)
+				if k != 1 or id == "aim_every_ally":
+					ci.draw_colored_polygon(_hex_pts(h, r * 0.72), color)
+				Hud.stroke_poly(ci, _hex_pts(h, r), color, maxf(1.0, width * 0.7))
+			var rx := pitch + sqrt(3.0) * 0.5 * r + 2.6 * k34
+			var base := hc + Vector2(0.0, -r * 0.5 - 1.6 * k34)
+			var arch := PackedVector2Array()
+			for i in range(25):
+				var a := PI + PI * i / 24.0
+				arch.append(base + Vector2(cos(a) * rx, sin(a) * (r * 0.5 + 2.6 * k34)))
+			ci.draw_polyline(arch, color, width)
+		# ---- the die's main marks (Ryan, 3 November): each holds what the entry delivers
+		"weapon":
+			# A weapon (Ryan, 3 November: the faces did not "read weapon"): a sight, its ring broken
+			# where four heavy ticks cross it, in a little and out to the edge ("bigger sight lines,
+			# or have the sight lines extend inwards"; then "I like your second option the most.
+			# broken ring, inner broken circle ... with an additional outer circle"), its blow
+			# inside. The side ticks reach in less, clear of the widest number. At the die's size an
+			# inner broken circle, four short arcs on the diagonals clear of the number, and a thin
+			# whole circle round the ring.
+			if size < INNER_FROM:
+				# Drawn small (a readout's head, a passive box, a chip: under 30 wide), plain: a whole
+				# ring and the four ticks crossing it, the breaks and linings a blur at that size
+				# (Ryan, 4 November: the next chamber "looks a little muddy for some icons").
+				var small := s * 0.6
+				ci.draw_arc(c, small, 0.0, TAU, 20, color, width)
+				for d in [Vector2.RIGHT, Vector2.LEFT, Vector2.DOWN, Vector2.UP]:
+					ci.draw_line(c + d * small * 0.45, c + d * s, color, width)
+				return
+			var ring := s * SIGHT_RING
+			var seg := maxi(8, int(size * 0.3))
+			for k in range(4):
+				var a0 := k * PI * 0.5 + SIGHT_GAP
+				ci.draw_arc(c, ring, a0, a0 + PI * 0.5 - 2.0 * SIGHT_GAP, seg, color, width)
+			for d in [Vector2.RIGHT, Vector2.LEFT, Vector2.DOWN, Vector2.UP]:
+				var inside := s * (0.12 if absf(d.x) > 0.5 else 0.2)
+				ci.draw_line(c + d * (ring - inside), c + d * s, color, width * 1.25)
+			if size >= INNER_FROM:
+				var faint := Color(color, color.a * (INNER_ALPHA + 0.15))
+				for k in range(4):
+					var am := PI * 0.25 + k * PI * 0.5
+					ci.draw_arc(c, ring - s * 0.13, am - 0.23, am + 0.23, 8, faint, 1.2)
+				ci.draw_arc(c, ring + s * 0.12, 0.0, TAU, maxi(48, int(size * 1.1)), Color(color, color.a * 0.55), 1.2)
+		"equipment":
+			# Equipment, one mark for a buff and a debuff (Ryan, 2 November: "merging buff/debuff
+			# into one 'equipment' face type"): gear, a cog of eight square teeth (3 November: the
+			# module before it did not read), what it grants or lays inside it; at the die's size a
+			# lining, a ring inside its teeth.
+			Hud.stroke_poly(ci, _cog(c, s, s * GEAR_ROOT), color, width)
+			if size >= INNER_FROM:
+				ci.draw_arc(c, s * GEAR_ROOT * 0.84, 0.0, TAU, 40, Color(color, color.a * INNER_ALPHA), 1.0)
+		"shield_vent":
+			# A shield and a vent in one entry (Ryan, 3 November: "If the vent was simplified to just
+			# wavy lines, it could be combined with shield as a combo face"; "Shield-vent should have
+			# the vent lines over the whole thing, not just half"; "The shield-vent combo is
+			# squished. Too tight"): the shield, its top lowered to make room, the vent's steam
+			# rising off its whole top; its numbers shield | cool, each in its colour, a size down.
+			var pts := PackedVector2Array([c + Vector2(-s, -s * 0.5), c + Vector2(s, -s * 0.5), c + Vector2(s, s * 0.3), c + Vector2(0, s), c + Vector2(-s, s * 0.3)])
+			Hud.stroke_poly(ci, pts, color, width)
+			_vapour(ci, c + Vector2(0.0, -s * 0.82), s * 0.5, s * 0.25, color, width * 0.9, size >= INNER_FROM)
+			if size >= INNER_FROM:
+				Hud.stroke_poly(ci, _inset(pts, c + Vector2(0.0, s * 0.18), 0.85), Color(color, color.a * INNER_ALPHA), 1.0)
+		"hull":
+			# The hull (2 November, a cost's mark): a machine's body, shoulders over its torso.
+			Hud.stroke_poly(ci, PackedVector2Array([c + Vector2(-s * 0.95, -s * 0.45), c + Vector2(-s * 0.35, -s * 0.85), c + Vector2(s * 0.35, -s * 0.85), c + Vector2(s * 0.95, -s * 0.45), c + Vector2(s * 0.55, s * 0.9), c + Vector2(-s * 0.55, s * 0.9)]), color, width)
+			ci.draw_line(c + Vector2(-s * 0.3, -s * 0.1), c + Vector2(s * 0.3, -s * 0.1), color, width)
+		"aim_self", "aim_ally", "aim_any":
+			# Whom a piece spent on machines reaches (Ryan, 2 November: "just 3 connected hexes:
+			# center filled for self-only, left/right filled for ally only, all filled for self or
+			# ally"): three hex cells sharing their edges, as the map's are, the middle its own
+			# machine; a cell it may be spent on lit, filled inside its edge. As wide as the size given.
+			var r := size / (3.0 * sqrt(3.0))
+			for k in range(3):
+				var hc := c + Vector2((k - 1) * sqrt(3.0) * r, 0.0)
+				var hex := PackedVector2Array()
+				for i in range(6):
+					var a := PI / 6.0 + i * PI / 3.0
+					hex.append(hc + Vector2(cos(a), sin(a)) * r)
+				if id == "aim_any" or (id == "aim_self") == (k == 1):
+					var lit := PackedVector2Array()
+					for q in hex:
+						lit.append(hc + (q - hc) * 0.72)
+					ci.draw_colored_polygon(lit, color)
+				Hud.stroke_poly(ci, hex, color, maxf(1.0, width * 0.7))
 		"shield":
 			var pts := PackedVector2Array([
 				c + Vector2(-s, -s * 0.85), c + Vector2(s, -s * 0.85), c + Vector2(s, s * 0.1),
 				c + Vector2(0, s), c + Vector2(-s, s * 0.1), c + Vector2(-s, -s * 0.85),
 			])
 			ci.draw_polyline(pts, color, width)
+			if size >= INNER_FROM:
+				# At the die's size, its lining (Ryan, 3 November: "I liked the previous iterations
+				# inner lining ... extra little flairs").
+				Hud.stroke_poly(ci, PackedVector2Array([c + Vector2(-s * 0.8, -s * 0.68), c + Vector2(s * 0.8, -s * 0.68), c + Vector2(s * 0.8, s * 0.04), c + Vector2(0, s * 0.77), c + Vector2(-s * 0.8, s * 0.04)]), Color(color, color.a * INNER_ALPHA), 1.0)
+		"seal", "unseal":
+			# The Polar Bear's shell (Ryan, 2 November: "armadillo needs indication when a die face
+			# will transform it"): a seam, and an arrow either side driving shut onto it (seal) or
+			# thrown open off it (unseal), so the two read apart by structure, never by hue.
+			ci.draw_line(c + Vector2(0.0, -s), c + Vector2(0.0, s), color, width * 1.3)
+			for side in [-1.0, 1.0]:
+				var near := Vector2(side * s * 0.2, 0.0)
+				var far := Vector2(side * s, 0.0)
+				var tip := near if id == "seal" else far
+				var tail := far if id == "seal" else near
+				var back := (tail - tip).normalized() * s * 0.45
+				ci.draw_line(c + tail, c + tip, color, width)
+				ci.draw_colored_polygon(PackedVector2Array([c + tip + back + Vector2(0.0, -s * 0.45), c + tip, c + tip + back + Vector2(0.0, s * 0.45)]), color)   # a solid head, so it holds at a chip's size
 		"barrier", "ward":
 			# The block as a buff (21 October): the shield's outline, and inside it a wall for a
 			# Barrier (a solid bar: the next blow stops there) or a ring struck through for a
@@ -66,11 +205,19 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_colored_polygon(PackedVector2Array([head + Vector2(-s * 0.42, -s * 0.12), head + Vector2(s * 0.12, -s * 0.38), head + Vector2(s * 0.1, s * 0.22)]), color)
 			ci.draw_circle(c, s * 0.2, color)
 		"vent":
-			for i in range(3):
-				var y := -s * 0.6 + i * s * 0.6
-				ci.draw_polyline(PackedVector2Array([
-					c + Vector2(-s * 0.8, y + s * 0.35), c + Vector2(0, y - s * 0.15), c + Vector2(s * 0.8, y + s * 0.35),
-				]), color, width)
+			# A vent (Ryan, 3 November: "simplified to just wavy lines"; then "Plain vent looks weird
+			# that close to the number, maybe it needs a chamfered box back"): a plate cut as the
+			# die's, its number inside, three waves of steam rising off its top; at the die's size a
+			# lining inside the plate.
+			# Ryan, the next pass: "can they have secondary thin lines as well? And move the bottom
+			# chamfer to the top, so its got corners on the bottom and chamfers on the top (a
+			# little smaller than now)": its plate cut on both top corners, square below, and at
+			# the die's size two thin waves among the three.
+			var plate := Rect2(c + Vector2(-s * 0.9, -s * 0.28), Vector2(s * 1.8, s * 1.12))
+			Hud.stroke_poly(ci, _top_cut(plate, s * 0.17), color, width)
+			_vapour(ci, c + Vector2(0.0, -s * 0.62), s * 0.47, s * 0.28, color, width * 0.9, size >= INNER_FROM)
+			if size >= INNER_FROM:
+				Hud.stroke_poly(ci, _top_cut(plate.grow(-s * 0.12), s * 0.13), Color(color, color.a * INNER_ALPHA), 1.0)
 		"blank":
 			ci.draw_line(c + Vector2(-s, -s), c + Vector2(s, s), color, width)
 			ci.draw_line(c + Vector2(-s, s), c + Vector2(s, -s), color, width)
@@ -132,22 +279,6 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_rect(Rect2(c - Vector2(s * 0.28, s * 0.28), Vector2(s * 0.56, s * 0.56)), color, true)
 			for d in [Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)]:
 				ci.draw_line(c + d * s * 0.5, c + d * s, color, width)
-		"sweep":
-			# Sweep (3 November), the third reach: the strikes walking a rank, three ticks along a
-			# bar with the arrow on its end, left to right.
-			ci.draw_line(c + Vector2(-s, s * 0.6), c + Vector2(s, s * 0.6), color, width)
-			for i in range(3):
-				var x := -s * 0.75 + i * s * 0.6
-				ci.draw_line(c + Vector2(x, -s * 0.5), c + Vector2(x, s * 0.6), color, width * 0.8)
-			ci.draw_line(c + Vector2(s * 0.55, s * 0.2), c + Vector2(s, s * 0.6), color, width)
-		"debuff_sweep":
-			# A debuff that sweeps: the rank's bar and arrow over the status mark, as the arc lobs over it.
-			ci.draw_line(c + Vector2(-s, -s * 0.45), c + Vector2(s, -s * 0.45), color, width)
-			for i in range(3):
-				var x := -s * 0.75 + i * s * 0.6
-				ci.draw_line(c + Vector2(x, -s), c + Vector2(x, -s * 0.45), color, width * 0.8)
-			ci.draw_line(c + Vector2(s * 0.55, -s * 0.75), c + Vector2(s, -s * 0.45), color, width)
-			draw(ci, "debuff", c + Vector2(0, s * 0.35), s * 0.7, color, width)
 		"penetrate":
 			ci.draw_line(c + Vector2(-s, 0), c + Vector2(s, 0), color, width)
 			ci.draw_line(c + Vector2(s * 0.3, -s * 0.6), c + Vector2(s, 0), color, width)
@@ -171,7 +302,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			]), color)
 		"regenerating":
 			# Regenerating (28 October): the heart's outline with a plus inside it, HP regrown at
-			# each action, so it never reads as Getting Back Up's star.
+			# each action, so it never reads as Undying's star.
 			draw(ci, "heart", c, size, color, width)
 			ci.draw_line(c + Vector2(-s * 0.3, -s * 0.02), c + Vector2(s * 0.3, -s * 0.02), color, width)
 			ci.draw_line(c + Vector2(0, -s * 0.32), c + Vector2(0, s * 0.28), color, width)
@@ -233,7 +364,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_line(c + Vector2(-s * 0.95, s * 0.9), c + Vector2(-s * 0.35, s * 0.9), color, width * 0.9)
 			ci.draw_line(c + Vector2(s * 0.35, s * 0.9), c + Vector2(s * 0.95, s * 0.9), color, width * 0.9)
 		"cryo":
-			# A snowflake: six arms, each with a fork near its tip (Cryo, the Armadillo's mark,
+			# A snowflake: six arms, each with a fork near its tip (Cryo, the Polar Bear's mark,
 			# 20 October; its glyph from 21 October, the keyword and the foe's chip alike). The web
 			# is rings on three threads; this is forks on six arms.
 			for i in range(6):
@@ -263,15 +394,6 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				var a := PI / 8.0 + i * PI / 4.0
 				var dir := Vector2(cos(a), sin(a))
 				ci.draw_line(c + dir * s * 0.5, c + dir * s, color, width)
-		"self":
-			# One machine, ringed: this component reaches only its own.
-			ci.draw_arc(c, s * 0.9, 0.0, TAU, 24, color, width * 0.8)
-			ci.draw_rect(Rect2(c + Vector2(-s * 0.35, -s * 0.35), Vector2(s * 0.7, s * 0.7)), color, true)
-		"ally":
-			# Two machines side by side, the near one hollow: it reaches the other.
-			ci.draw_rect(Rect2(c + Vector2(-s * 0.95, -s * 0.35), Vector2(s * 0.7, s * 0.7)), color, false, width * 0.8)
-			ci.draw_rect(Rect2(c + Vector2(s * 0.25, -s * 0.35), Vector2(s * 0.7, s * 0.7)), color, true)
-			ci.draw_line(c + Vector2(-s * 0.25, 0.0), c + Vector2(s * 0.25, 0.0), color, width * 0.8)
 		"overshield":
 			# A shield's arch with a second arch standing above its crown: more than the maximum.
 			ci.draw_arc(c + Vector2(0, s * 0.3), s * 0.7, PI, TAU, 16, color, width)
@@ -314,13 +436,6 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				var x := -s * 0.5 + i * s * 0.5
 				ci.draw_line(c + Vector2(x, -s * 0.1), c + Vector2(x, s * 0.55), color, width * 0.9)
 			ci.draw_line(c + Vector2(-s * 0.85, -s * 0.1), c + Vector2(s * 0.85, -s * 0.1), color, width)
-		"volatile":
-			# A burst with a spark at its heart: the component that costs its owner to use.
-			for i in range(8):
-				var a := i * TAU / 8.0
-				var r0 := s * (0.55 if i % 2 == 0 else 0.4)
-				ci.draw_line(c + Vector2(cos(a), sin(a)) * r0, c + Vector2(cos(a), sin(a)) * s, color, width * 0.9)
-			ci.draw_circle(c, s * 0.22, color)
 		"corrupt":
 			# A jagged crack through the entry: the rot a foe's corrupt leaves in a component.
 			ci.draw_polyline(PackedVector2Array([
@@ -454,6 +569,21 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			for i in range(3):
 				var x := -s * 0.25 + i * s * 0.25
 				ci.draw_line(c + Vector2(x, s * 0.55), c + Vector2(x, s * 0.9), color, width * 0.8)
+		"rises":
+			# A kill a foe gets back up from (Ryan, 7 November: the preview's chip in the death
+			# chip's place): an arrow rising off the ground it fell to, its head open.
+			ci.draw_line(c + Vector2(-s * 0.8, s * 0.8), c + Vector2(s * 0.8, s * 0.8), color, width)
+			ci.draw_line(c + Vector2(0, s * 0.8), c + Vector2(0, -s * 0.85), color, width)
+			ci.draw_polyline(PackedVector2Array([c + Vector2(-s * 0.55, -s * 0.3), c + Vector2(0, -s * 0.9), c + Vector2(s * 0.55, -s * 0.3)]), color, width)
+		"splits":
+			# A kill that splits a foe in two (the Gel's, Ryan, 7 November: the preview's chip in the
+			# death chip's place): one body above, forking into two below.
+			ci.draw_arc(c + Vector2(0, -s * 0.55), s * 0.32, 0.0, TAU, 16, color, width)
+			ci.draw_line(c + Vector2(0, -s * 0.23), c + Vector2(0, s * 0.05), color, width)
+			ci.draw_line(c + Vector2(0, s * 0.05), c + Vector2(-s * 0.5, s * 0.4), color, width)
+			ci.draw_line(c + Vector2(0, s * 0.05), c + Vector2(s * 0.5, s * 0.4), color, width)
+			ci.draw_arc(c + Vector2(-s * 0.6, s * 0.65), s * 0.26, 0.0, TAU, 14, color, width)
+			ci.draw_arc(c + Vector2(s * 0.6, s * 0.65), s * 0.26, 0.0, TAU, 14, color, width)
 		"mine":
 			# A sea mine (the Lammergeier's, 21 October): a ring and four horned spikes, a shot
 			# waiting in a slot. Unlike Volatile's burst it has a body.
@@ -513,8 +643,8 @@ static func colour_for(id: String) -> Color:
 	if Terms.has(id):
 		return Terms.colour(id)
 	match id:
-		"self", "ally":
-			return Terms.colour("targets")   # whom a piece reaches
+		"seal", "unseal":
+			return Terms.colour("sealed")   # the Polar Bear's shell, the Sealed status's colour
 		"exposed":
 			return Terms.colour("exposure")
 		"overcharge", "heat", "scorch", "devour", "spin", "mine":
@@ -544,20 +674,198 @@ static func intent_for(kind: String) -> String:
 			return "sword"
 
 
+## An entry's main mark (Ryan, 3 November: the number inside it, whom it reaches under it): a
+## weapon's sight, equipment's gear (a buff and a debuff alike), a shield, a vent's steam, the
+## shield and the vent together for an entry that does both (the Wake Diffuser, the Sutler's
+## Hoist), a reload's shells (the Musk Ox's Quick Reload cools nothing: its mark is the one its
+## ammo wears in a cost, no mark of its own, Ryan, 2 November), or the blank.
 static func primary_for(face: Face) -> String:
 	match face.kind:
 		Face.Kind.SHIELD:
-			return "shield"
+			return "shield_vent" if face.vents > 0 else "shield"
 		Face.Kind.VENT:
-			return "ammo" if face.power <= 0 and face.reloads_ammo > 0 else "vent"   # a reload is drawn as one (the Musk Ox's quick reload)
+			if face.power <= 0 and face.reloads_ammo > 0:
+				return "ammo"
+			return "shield_vent" if face.shields > 0 else "vent"
 		Face.Kind.BLANK:
 			return "blank"
 		Face.Kind.BUFF:
-			return "buff"
+			return "equipment"
 		_:
-			# A debuff (equipment aimed at a foe) wears its reach frame with the status mark inside.
-			if face.reach == Face.Reach.INDIRECT:
-				return "debuff_indirect" if face.is_debuff() else "indirect"
-			if face.reach == Face.Reach.SWEEP:
-				return "debuff_sweep" if face.is_debuff() else "sweep"   # a rank swept (3 November): the bar with its ticks and arrow
-			return "debuff_line" if face.is_debuff() else "line"   # direct: the crosshair glyph, whatever its tags
+			return "equipment" if face.is_debuff() else "weapon"   # aimed at a foe: whether it deals damage says which
+
+
+## The weapon's sight: its ring's radius as a share of the mark's half-width, the ticks crossing
+## it out to the edge. Equipment's gear: the root of its teeth as a share of their tips' reach.
+## A main mark this wide or wider wears its lining, a thin line inside it at INNER_ALPHA (Ryan, 3
+## November: "I liked the previous iterations inner lining, that's the kind of thing that moves
+## it out of amateurish, extra little flairs"). A vent's number sits VENT_NUMBER of its
+## half-width under its centre, in its plate's middle.
+const SIGHT_RING := 0.82
+const SIGHT_GAP := 0.19     # radians either side of a tick where the sight's ring breaks for it
+const GEAR_ROOT := 0.76
+const INNER_FROM := 30.0
+const INNER_ALPHA := 0.4
+const VENT_NUMBER := 0.28
+
+
+## A closed outline `pts` drawn in toward `ctr` by `k`, a main mark's lining.
+static func _inset(pts: PackedVector2Array, ctr: Vector2, k: float) -> PackedVector2Array:
+	var out := PackedVector2Array()
+	for p in pts:
+		out.append(ctr + (p - ctr) * k)
+	return out
+
+
+## A line of fire as a targeting mark, `size` wide (Ryan, 3 November): a long solid run, then
+## two dashes each well short of the last, with room between (4 November: "more space between
+## segments"), every one the same thickness ("make sure that each segment is the same height");
+## straight (Direct), or along a gentle lob about a sixth as high as it is wide (Indirect: "Flatten
+## the indirect a little").
+const FIRE_RUNS := [0.42, 0.22, 0.12, 0.06]   # a line of fire: a solid run and three ever shorter dashes, one height (Ryan, 4 November: "You lost your 4-segment direct and indirect that I approved")
+const FIRE_GAPS := [0.07, 0.06, 0.05]
+const STRIKE_RUNS := [0.6, 0.26]   # a Sweep's rising strike: a short line of fire, a solid run and one dash (Ryan, 4 November)
+const STRIKE_GAPS := [0.18]
+
+
+static func _fire_line(ci: CanvasItem, c: Vector2, size: float, color: Color, width: float, lobbed: bool) -> void:
+	_segmented(ci, _fire_pts(c, size, lobbed), FIRE_RUNS, FIRE_GAPS, color, width)
+
+
+## A line of fire's path, `size` wide about `c`: straight, or lobbed low (`lift` its height's share),
+## the lob even about its middle (Ryan, 4 November: "is your arch actually even? looks like the
+## right side is flatter": its peak had stood left of centre, its right end lower).
+static func _fire_pts(c: Vector2, size: float, lobbed: bool, lift: float = 1.0) -> PackedVector2Array:
+	var s := size * 0.5
+	var h := size * 0.17 * lift
+	var pts := PackedVector2Array()
+	var a0 := c + Vector2(-s, h * 0.5 if lobbed else 0.0)
+	var a1 := c + Vector2(0.0, -h * 1.5 if lobbed else 0.0)
+	var a2 := c + Vector2(s, h * 0.5 if lobbed else 0.0)
+	for i in range(41):
+		var t := i / 40.0
+		pts.append(a0.lerp(a1, t).lerp(a1.lerp(a2, t), t))
+	return pts
+
+
+static func _path_length(pts: PackedVector2Array) -> float:
+	var total := 0.0
+	for i in range(1, pts.size()):
+		total += pts[i].distance_to(pts[i - 1])
+	return total
+
+
+## A path drawn as a line of fire: its runs, with the gaps between them, as shares of its length.
+static func _segmented(ci: CanvasItem, pts: PackedVector2Array, runs: Array, gaps: Array, color: Color, width: float) -> void:
+	var total := _path_length(pts)
+	var sum := 0.0
+	for v in runs + gaps:
+		sum += float(v)
+	var at := 0.0
+	for k in range(runs.size()):
+		var b: float = at + float(runs[k]) / sum * total
+		_run(ci, pts, at, b, color, width)
+		if k < gaps.size():
+			at = b + float(gaps[k]) / sum * total
+
+
+## A hex's six corners about `c`, pointy side up as the map's.
+static func _hex_pts(c: Vector2, r: float) -> PackedVector2Array:
+	var hex := PackedVector2Array()
+	for i in range(6):
+		var a := PI / 6.0 + i * PI / 3.0
+		hex.append(c + Vector2(cos(a), sin(a)) * r)
+	return hex
+
+
+## The point a share `u` of the way along a path.
+static func _along(pts: PackedVector2Array, u: float) -> Vector2:
+	var want := u * _path_length(pts)
+	var run := 0.0
+	for i in range(1, pts.size()):
+		var d := pts[i].distance_to(pts[i - 1])
+		if run + d >= want:
+			return pts[i - 1].lerp(pts[i], (want - run) / maxf(d, 0.001))
+		run += d
+	return pts[pts.size() - 1]
+
+
+## The stretch of a polyline from arc length `a` to `b`, drawn.
+static func _run(ci: CanvasItem, pts: PackedVector2Array, a: float, b: float, color: Color, width: float) -> void:
+	var out := PackedVector2Array()
+	var run := 0.0
+	for i in range(1, pts.size()):
+		var p0: Vector2 = pts[i - 1]
+		var p1: Vector2 = pts[i]
+		var l := p0.distance_to(p1)
+		if l > 0.0 and run + l >= a and run <= b:
+			if out.is_empty():
+				out.append(p0.lerp(p1, clampf((a - run) / l, 0.0, 1.0)))
+			out.append(p0.lerp(p1, clampf((b - run) / l, 0.0, 1.0)))
+		run += l
+	if out.size() >= 2:
+		ci.draw_polyline(out, color, width)
+
+
+## A plate chamfered on its two top corners by `k`, square below (a vent's).
+static func _top_cut(r: Rect2, k: float) -> PackedVector2Array:
+	var p := r.position
+	var e := r.end
+	return PackedVector2Array([Vector2(p.x + k, p.y), Vector2(e.x - k, p.y), Vector2(e.x, p.y + k), e, Vector2(p.x, e.y), Vector2(p.x, p.y + k)])
+
+
+## A vent's steam: three waves `half_w` either side of the middle one, `half_h` from their middle
+## to their ends; with `thin`, two thin shorter waves among them (Ryan: "secondary thin lines").
+static func _vapour(ci: CanvasItem, c: Vector2, half_w: float, half_h: float, color: Color, width: float, thin: bool) -> void:
+	_steam(ci, c, half_w, half_h, 3, color, width)
+	if thin:
+		_steam(ci, c + Vector2(0.0, half_h * 0.2), half_w * 0.5, half_h * 0.72, 2, Color(color, color.a * 0.5), 1.0)
+
+
+## A cog `tip` from its centre to its teeth's faces, `root` to the ring between them: eight square
+## teeth, one at each of the eight points between the compass's.
+static func _cog(c: Vector2, tip: float, root: float) -> PackedVector2Array:
+	var pts := PackedVector2Array()
+	for i in range(8):
+		var a := (i + 0.5) * TAU / 8.0
+		for q in [-0.2, -0.13, 0.13, 0.2]:
+			pts.append(c + Vector2(cos(a + q), sin(a + q)) * (root if absf(q) > 0.15 else tip))
+	return pts
+
+
+## Steam: `n` waves rising, each one full turn of a sine a third as wide as it is tall, `half_w`
+## from the middle to the outer waves' centres and `half_h` from the middle to each wave's ends.
+static func _steam(ci: CanvasItem, c: Vector2, half_w: float, half_h: float, n: int, color: Color, width: float) -> void:
+	for j in range(n):
+		var x := (j - (n - 1) * 0.5) * (2.0 * half_w / maxf(1.0, n - 1.0)) if n > 1 else 0.0
+		var pts := PackedVector2Array()
+		for i in range(17):
+			var t := i / 16.0
+			pts.append(c + Vector2(x + sin(t * TAU) * half_h * 0.34, half_h - t * 2.0 * half_h))
+		ci.draw_polyline(pts, color, width)
+
+
+## Whom an entry is aimed at, the targeting mark under its main mark (Ryan, 2 November: one
+## width, "the width of the 3 hex symbol"; 3 November: "putting targeting underneath"): a foe by
+## its reach, a line of fire, straight (Direct), lobbed (Indirect) or walking a rank (Sweep); a
+## machine by three hexes, its own only, its allies only, or either; "" for a blank. A reach past
+## the target is its keyword's chip (an area, Every Foe, Every Ally).
+static func aim_for(face: Face) -> String:
+	if face == null or face.kind == Face.Kind.BLANK:
+		return ""
+	if face.kind == Face.Kind.ATTACK:
+		if face.reach == Face.Reach.SWEEP:
+			return "aim_sweep"   # a rank swept (3 November)
+		if face.reach == Face.Reach.EVERY_FOE:
+			return "aim_every_foe"   # every foe at once (4 November)
+		return "aim_indirect" if face.reach == Face.Reach.INDIRECT else "aim_direct"
+	match face.targets:
+		Face.Target.SELF:
+			return "aim_self"
+		Face.Target.ALLY:
+			return "aim_ally"
+		Face.Target.EVERY_ALLY:
+			return "aim_every_ally"   # the whole team at once (4 November)
+		Face.Target.EVERY_OTHER_ALLY:
+			return "aim_every_other_ally"   # every machine but its own at once
+	return "aim_any"

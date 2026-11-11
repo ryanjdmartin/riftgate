@@ -29,25 +29,46 @@ const FLOAT_BAR_W := 60.0
 const GAP := 10.0          # between the drawing and its gauges above or its chips below
 const FLOAT_LIFT := 16.0   # a foe's floating gauge: how far its bottom row sits above the drawing (any higher and it crowds the rank above)
 const LEADER := 16.0       # the floating gauge's leader, in x and in y; it runs onto the sprite, which is allowed
-const PIP_H := 9.0         # the pips' row under the gauges, and the step it adds to them
 const PENDING_RATE := 3.2  # the one clock every pending mark breathes on, radians a second: a gauge's change and a buff on its way (a preview chip) pulse in step
+const CHIP_GAP := 6.0      # between two chips in a row
+const ROW_GAP := 4.0       # between two rows of chips
+const RIDER_GLYPH := 16.0  # a rider's mark inside the intent chip
+const RIDER_TEXT := 14
+const RIDER_PAD := 6.0     # before a rider: its divider's room
+const ACT_RATE := 9.0      # the acting foe's breath, radians a second: quick, it is happening now
 
 var display_name: String = ""     # for the codex and readouts; never drawn here
 var is_enemy: bool = false
 var massive: bool = false
 var bars: Array = []              # [[value, max, Color, (pending)], ...]
 var bars_above: bool = false      # true: full-width gauges above the sprite; false: floating
-var pips: Array = []              # [count, of]: a count drawn as pips under the gauges (the Cassowary's sixth shot), the last lit when it is next; empty for none
-var boxes: Array = []             # [count, cap, colour, glyph]: a capped store's boxes under the gauges, lit to its count (the Nemesis's rage, Ryan, 22 October); empty for none
+var pips: Array = []              # [count, of]: a count toward a shot drawn as cells under the gauges (the Cassowary's sixth shot), the last lit when it is next; empty for none
+var store: Array = []             # [count, cap, colour, glyph]: a capped store's bar under the heat, a segment a stack up to its cap, lit to its count (the Honey Badger's hopper, the Nemesis's rage); empty for none
 var sprite_density := 1.0         # a machine's render is this much larger than the frame it stands for (MechView3D.density); pixel art is 1
 var intent_kind: String = ""      # "attack", "defend", "heal", "buff", "debuff", or ""
 var intent_value: int = 0
-var intent_note: String = ""      # after the number: "×2" for a double strike, "!" for a breach
-var intent: String = ""           # quiet text for an empty slot, e.g. "MINED"
+var intent_note: String = ""      # after the number: "×2" for a double strike
+## The blow's riders inside the intent chip, after its number (Ryan, 2 November: "Enemy intents with
+## a rider need to show that rider as part of the intent chip"): [[glyph, text, Color], ...], a
+## breach, a scorch with its stacks, a blow at every machine.
+var intent_riders: Array = []
+var chip_wrap := 0.0              # the widest a row of chips runs before the next row starts; 0, the view's width
+var intent: String = ""           # quiet text under a foe, or a corpse's regrowth"
 var intent_dim: bool = false
-var statuses: Array = []          # [[glyph id, chip text, (Color), (kind)], ...] under the sprite; kind "resist" is no status (Numbed), "preview" a buff on its way (a rally's Empowered), pulsing, "asleep" a buff a purge put to sleep, still at half light
+var statuses: Array = []          # [[glyph id, chip text, (Color), (kind), (what)], ...] under the sprite; kind "preview" a buff on its way (a rally's Empowered), pulsing, "ability" the unit's own mechanic, its glyph on a solid tile; what "buff" or "debuff" (Effects.status_kind), its chip's mark
 var highlight: bool = false       # valid drop target while dragging a die
-var mined: bool = false           # an empty slot with mines waiting (the Lammergeier's): a dashed outline round it, never a hue alone
+## The foe acting in the enemy's turn, lit from just before its move until the next acts (Ryan, 2
+## November: "enemies need to highlight during their attacks, starting right before"): a glow in
+## the enemy's violet behind its drawing and heavy corners breathing round it, so it reads by
+## structure and motion as well as hue.
+var acting: bool = false
+## A machine in its sealed form (the Polar Bear's Lockdown; Ryan, 2 November: "a better indication
+## of what form it's in"): a heavy hexagon shell round its drawing in the shield's blue, steady,
+## and a burst as it seals or opens (form_shift), rings closing in or thrown off with the word.
+var shell: bool = false
+var _shift: float = -1.0          # seconds since its form shifted; negative when idle
+var _shift_sealing := true
+const SHIFT_SECONDS := 1.1
 var dead: bool = false
 var away: bool = false             # out of the fight, swallowed (30 October): drawn as a faint ghost under a dashed edge
 var sprite: Texture2D = null      # pixel art drawn at an integer scale; null draws a placeholder
@@ -97,21 +118,50 @@ func _init() -> void:
 	set_process(false)
 
 
+## What the view draws, to dress another as it (dress()): a foe the spend kills is stood in for by
+## a copy of its view as it stood, its gauge ticking down a blow at a time, until its killing blow
+## lands (Ryan, 2 November: "damage needs to be timed to the animation across the board").
+const LOOK := ["display_name", "is_enemy", "massive", "bars", "bars_above", "pips", "store", "sprite_density",
+	"intent_kind", "intent_value", "intent_note", "intent_riders", "intent", "intent_dim", "statuses", "chip_wrap",
+	"sprite", "pixel_snap", "used_override", "breathe", "flip_h", "breathe_phase", "ground_shadow", "feet_y",
+	"hover", "sprite_at", "ground_at", "shadow_rx", "shadow_ratio", "empty_pad", "size", "texture_filter"]
+
+
+func look() -> Dictionary:
+	var out := {}
+	for key in LOOK:
+		var v = get(key)
+		out[key] = v.duplicate(true) if v is Array else v
+	return out
+
+
+func dress(d: Dictionary) -> void:
+	for key in d.keys():
+		set(key, d[key])
+	queue_redraw()
+
+
 ## Centre of the drawing, in global coordinates, for arrows.
 func anchor_global() -> Vector2:
 	return get_global_transform() * _visible().get_center()
 
 
 func _bars_height() -> float:
-	return (bars.size() * BAR_STEP + _pips_step() + _boxes_step() + GAP) if bars_above and not bars.is_empty() else 0.0
+	return (bars.size() * BAR_STEP + _pips_step() + _store_step() + GAP) if bars_above and not bars.is_empty() else 0.0
 
 
 func _pips_step() -> float:
-	return PIP_H + 3.0 if pips.size() >= 2 and int(pips[1]) > 0 else 0.0
+	return BAR_STEP if pips.size() >= 2 and int(pips[1]) > 0 else 0.0   # a gauge's step
 
 
-func _boxes_step() -> float:
-	return PIP_H + 3.0 if boxes.size() >= 2 and int(boxes[1]) > 0 else 0.0
+## The room a capped store's bar takes in the stack: a gauge's own step.
+func _store_step() -> float:
+	return BAR_STEP if store.size() >= 2 and int(store[1]) > 0 else 0.0
+
+
+## The top of the stack of gauges above the drawing.
+func _bars_top() -> float:
+	return _visible().position.y - GAP - bars.size() * BAR_STEP - _pips_step() - _store_step()
 
 
 func _scale() -> float:
@@ -193,7 +243,7 @@ func drawn_top() -> float:
 	if bars.is_empty() or dead:
 		return vis.position.y
 	if bars_above:
-		return vis.position.y - GAP - bars.size() * BAR_STEP - _pips_step() - _boxes_step()
+		return vis.position.y - GAP - bars.size() * BAR_STEP - _pips_step() - _store_step()
 	return vis.position.y - FLOAT_LIFT
 
 
@@ -272,10 +322,15 @@ func _process(delta: float) -> void:
 		if _spend > SPEND_SECONDS:
 			_spend = -1.0
 		queue_redraw()
-	if (_has_pending() or breathe) and visible and not dead:
+	if _shift >= 0.0:
+		_shift += delta
+		if _shift > SHIFT_SECONDS:
+			_shift = -1.0
+		queue_redraw()
+	if (_has_pending() or breathe or acting) and visible and not dead:
 		_t += delta
 		queue_redraw()
-	elif not _pressed and _shatter < 0.0 and _ripple < 0.0 and _acquire < 0.0 and _glitch < 0.0 and _spend < 0.0:
+	elif not _pressed and _shatter < 0.0 and _ripple < 0.0 and _acquire < 0.0 and _glitch < 0.0 and _spend < 0.0 and _shift < 0.0:
 		set_process(false)
 
 
@@ -330,13 +385,62 @@ func glitch(kind: String = "tear", seconds: float = 0.5) -> void:
 func spend_chip(glyph: String) -> void:
 	_spend = 0.0
 	_spend_glyph = glyph
-	# A capped store's stack goes from its boxes (the rage, 22 October): the burst is on the box
-	# that just emptied, the count having already dropped.
-	if boxes.size() >= 4 and str(boxes[3]) == glyph and int(boxes[1]) > 0:
-		var at := clampi(int(boxes[0]), 0, int(boxes[1]) - 1)
-		_chip_rects[glyph] = [_box_rect(at).grow(3.0), boxes[2]]
+	# A capped store's stack goes from its bar (the rage, 22 October): the burst is on the
+	# segment that just emptied, the count having already dropped.
+	if store.size() >= 4 and str(store[3]) == glyph and int(store[1]) > 0:
+		var at := clampi(int(store[0]), 0, int(store[1]) - 1)
+		_chip_rects[glyph] = [_store_cell(at).grow(3.0), store[2]]
 	set_process(true)
 	queue_redraw()
+
+
+## The machine's form shifts as a spend lands (the Polar Bear seals or opens): a burst of rings, closing
+## in on it as it seals or thrown off as it opens, and the word, SEALED or OPEN, rising off it.
+func form_shift(sealing: bool) -> void:
+	_shift = 0.0
+	_shift_sealing = sealing
+	set_process(true)
+	queue_redraw()
+
+
+## The shell's hexagon round the drawing, `grow` past its usual size.
+func _shell_points(vis: Rect2, grow: float) -> PackedVector2Array:
+	var r := maxf(vis.size.x, vis.size.y) * 0.5 + 12.0 + grow
+	var c := vis.get_center()
+	var pts := PackedVector2Array()
+	for k in range(7):
+		var a := PI / 6.0 + TAU * float(k % 6) / 6.0
+		pts.append(c + Vector2(cos(a) * r, sin(a) * r * 0.78))   # a touch flattened, as the floor lies
+	return pts
+
+
+func _draw_shell(vis: Rect2) -> void:
+	var col := Palette.SHIELD
+	if shell:
+		var pts := _shell_points(vis, 0.0)
+		draw_colored_polygon(pts, Color(col, 0.08))
+		draw_polyline(pts, Color(Palette.BG, 0.85), 7.0)
+		draw_polyline(pts, col, 3.5)
+	if _shift < 0.0:
+		return
+	var t := clampf(_shift / SHIFT_SECONDS, 0.0, 1.0)
+	for k in range(3):
+		# Three rings a beat apart: closing onto the shell as it seals, thrown off it as it opens.
+		var u := clampf(t * 1.6 - k * 0.22, 0.0, 1.0)
+		if u <= 0.0 or u >= 1.0:
+			continue
+		var grow := (1.0 - u) * 70.0 if _shift_sealing else u * 70.0
+		var a := (u if _shift_sealing else 1.0 - u) * 0.9
+		draw_polyline(_shell_points(vis, grow), Color(Palette.BG, a * 0.7), 6.0)
+		draw_polyline(_shell_points(vis, grow), Color(col, a), 3.0)
+	var font := Hud.display_bold()
+	var word := "SEALED" if _shift_sealing else "OPEN"
+	var w := font.get_string_size(word, HORIZONTAL_ALIGNMENT_LEFT, -1, 22).x
+	var y := vis.position.y - 8.0 - 26.0 * t
+	var plate := Rect2(vis.get_center().x - w * 0.5 - 8.0, y - 22.0, w + 16.0, 30.0)
+	var fade := 1.0 - maxf(0.0, t - 0.6) / 0.4
+	Hud.box(self, plate, 4.0, Color(Palette.BG, 0.9 * fade), Color(col, fade), 2.0)
+	draw_string(font, Vector2(plate.position.x, plate.end.y - 8.0), word, HORIZONTAL_ALIGNMENT_CENTER, plate.size.x, 22, Color(col, fade))
 
 
 ## The opaque part of the drawing, in this view's pixels, for anything drawn around the
@@ -452,6 +556,11 @@ func _draw() -> void:
 	var mono := Hud.mono()
 	var sil := _silhouette()
 	var vis := _visible()
+	var act := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 1000.0 * ACT_RATE) if acting and not dead else -1.0
+	if act >= 0.0:
+		# The acting foe's glow, behind everything it draws.
+		Hud.fill_poly(self, Hud.cut(vis.grow(12.0), 12.0), Color(Palette.ENEMY, 0.18 + 0.17 * act))
+		Hud.stroke_poly(self, Hud.cut(vis.grow(12.0), 12.0), Color(Palette.ENEMY, 0.35 + 0.3 * act), 2.0)
 	if sprite != null and ground_shadow:
 		var foot := ground_at if ground_at.x >= 0.0 else Vector2(vis.get_center().x, vis.end.y + hover - 1.0)
 		var rx := shadow_rx if shadow_rx > 0.0 else vis.size.x * (0.4 if hover > 0.0 else 0.5)
@@ -488,12 +597,17 @@ func _draw() -> void:
 	if dead:
 		draw_line(vis.position, vis.end, Palette.LOSS_DIM, 2.0)
 		draw_line(Vector2(vis.position.x, vis.end.y), Vector2(vis.end.x, vis.position.y), Palette.LOSS_DIM, 2.0)
-	if mined and sprite == null:
-		_draw_dashed(sil.grow(5.0), Palette.HEAT, 3.0)
 	if highlight:
 		Hud.brackets(self, vis.grow(6.0), 14.0, Palette.TARGET, 2.0)
+	if act >= 0.0:
+		# Heavy corners breathing round the acting foe, on a dark edge so they hold on any ground.
+		var r := vis.grow(14.0 + 4.0 * act)
+		Hud.brackets(self, r, 22.0, Color(Palette.BG, 0.8), 7.0)
+		Hud.brackets(self, r, 22.0, Palette.ENEMY, 4.0)
 	if _shatter >= 0.0:
 		_draw_shatter(vis)
+	if (shell or _shift >= 0.0) and not dead:
+		_draw_shell(vis)
 	if _ripple >= 0.0:
 		_draw_ripple(vis)
 
@@ -505,15 +619,16 @@ func _draw() -> void:
 			# Full-width gauges stacked above the drawing: hull, shield, heat.
 			var bx := size.x * 0.1
 			var bw := size.x * 0.8
-			var y := vis.position.y - GAP - bars.size() * BAR_STEP - _pips_step() - _boxes_step()
+			var y := vis.position.y - GAP - bars.size() * BAR_STEP - _pips_step() - _store_step()
 			for b in bars:
 				_gauge(Rect2(bx, y, bw, BAR_H), b)
 				y += BAR_STEP
+			# A capped store's bar nestles under them, the heat's last, in their shape.
+			if _store_step() > 0.0:
+				_draw_store(Rect2(bx, y, bw, BAR_H))
+				y += _store_step()
 			if _pips_step() > 0.0:
-				_draw_pips(Rect2(bx, y, bw, PIP_H))
-				y += _pips_step()
-			if _boxes_step() > 0.0:
-				_draw_boxes(Rect2(bx, y, bw, PIP_H))
+				_draw_pips(Rect2(bx, y, bw, BAR_H))
 		else:
 			# One small gauge floating above the drawing's top-right, with a leader dropping
 			# from a third of the way along its underside, diagonally down-left onto the sprite.
@@ -536,65 +651,208 @@ func _draw() -> void:
 	if not intent.is_empty() and not dead and sprite == null and intent_kind.is_empty():
 		draw_string(mono, Vector2(0, sil.get_center().y + 5.0), "[%s]" % intent, HORIZONTAL_ALIGNMENT_CENTER, size.x, 13, Color(hud, 0.45 if intent_dim else 0.95))
 
-	# The chip row under the drawing: intent first, then statuses, centred.
+	# The chips under the drawing: intent first, then statuses, centred in rows that wrap at the
+	# view's width (Ryan, 2 November: "chips can go off the sides of the screen if there are too
+	# many ... Need to wrap rows"), each row kept on the screen (chip_layout).
 	if dead:
 		return
-	var chips: Array = []
-	if not intent_kind.is_empty():
-		chips.append([Glyphs.intent_for(intent_kind), (str(intent_value) + intent_note) if intent_value > 0 else "", Palette.ENEMY if is_enemy else hud])
-	for s in statuses:
-		chips.append([s[0], str(s[1]), s[2] if s.size() >= 3 else hud, s[3] if s.size() >= 4 else "status"])
-	if chips.is_empty():
-		_draw_spend(mono)
-		return
-	var widths: Array[float] = []
-	var total := 0.0
-	for ch in chips:
-		var txt: String = ch[1]
-		var w := CHIP_H + (mono.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, CHIP_TEXT).x + 8.0 if not txt.is_empty() else 0.0)
-		widths.append(w)
-		total += w + 6.0
-	total -= 6.0
-	var x := floorf((size.x - total) * 0.5)
-	var cy := minf(vis.end.y + GAP, size.y - 2.0) + CHIP_H * 0.5
-	cy = minf(cy, size.y - CHIP_H * 0.5 - 1.0)
 	var acq := clampf(_acquire / ACQUIRE_SECONDS, 0.0, 1.0) if _acquire >= 0.0 else 1.0
-	for i in range(chips.size()):
-		var ch: Array = chips[i]
-		var col: Color = ch[2]
-		var rect := Rect2(x, cy - CHIP_H * 0.5, widths[i], CHIP_H)
-		_chip_rects[ch[0]] = [rect, col]
-		if ch.size() >= 4 and ch[3] == "preview":
-			# A buff on its way (a rally's Empowered, Ryan, 26 October: "a pulsing version of the
-			# incoming buff as a preview chip"): an opacity pulse, as a gauge's change is ("Similar
-			# in concept to the health and shield bars"), on the gauges' one clock, a full swing
-			# between faint and lit on its dark ground, its edge dashed, so "coming" reads by
-			# motion and structure, never by hue.
-			var beat := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 1000.0 * PENDING_RATE)
-			Hud.fill_poly(self, Hud.cut(rect, 4.0), Color(Palette.BG, 0.94))
-			col = Color(col, 0.3 + 0.7 * beat)
-			_draw_dashed(rect, col, 2.0)
-		elif ch.size() >= 4 and ch[3] == "asleep":
-			# A buff a purge put to sleep (28 October): half its light on a dashed edge, still, so
-			# "asleep" reads by structure and by standing still beside the preview's pulse, never
-			# by hue (placeholders, judged running: RIFTGATE_SLEEP_DEBUG=1).
-			Hud.fill_poly(self, Hud.cut(rect, 4.0), Color(Palette.BG, 0.94))
-			col = Color(col, 0.5)
-			_draw_dashed(rect, col, 2.0)
-		else:
-			Hud.box(self, rect, 4.0, Color(Palette.BG, 0.94), col, 1.2)
-		Glyphs.draw(self, ch[0], Vector2(x + CHIP_H * 0.5, cy), CHIP_GLYPH, col, 2.0)
+	var laid := chip_layout()
+	for k in range(laid.size()):
+		var rect: Rect2 = laid[k][0]
+		var ch: Array = laid[k][1]
+		_chip_rects[ch[0]] = [rect, ch[2]]
+		var locking: bool = k == 0 and not intent_kind.is_empty() and acq < 1.0
 		var txt: String = ch[1]
-		var locking := i == 0 and not intent_kind.is_empty() and acq < 1.0
 		if locking and acq < SCRAMBLE_PART:
 			txt = Hud.scramble(txt, int(Time.get_ticks_msec() / 45), get_instance_id() % 97)
-		if not txt.is_empty():
-			draw_string(mono, Vector2(x + CHIP_H - 2.0, cy + CHIP_TEXT * 0.36), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, CHIP_TEXT, col)
+		draw_chip(self, rect, ch, mono, txt)
 		if locking:
 			# The lock: bracket corners collapsing onto the chip, fading as they land.
-			Hud.brackets(self, rect.grow(2.0 + 18.0 * (1.0 - acq)), 8.0, Color(col, 1.0 - acq * 0.7), 1.5)
-		x += widths[i] + 6.0
+			Hud.brackets(self, rect.grow(2.0 + 18.0 * (1.0 - acq)), 8.0, Color(ch[2], 1.0 - acq * 0.7), 1.5)
 	_draw_spend(mono)
+
+
+## The chips under the drawing as they lay out, in order, the intent's first: [[Rect2 in the view,
+## the chip], ...]: rows that wrap at `chip_wrap` (the view's width when none), each centred under
+## the view and held on the screen, the first row just under the drawing. Empty for a dead unit or
+## one with no chips.
+func chip_layout() -> Array:
+	var out: Array = []
+	if dead:
+		return out
+	var hud := Palette.HUD
+	var mono := Hud.mono()
+	var chips: Array = []
+	if not intent_kind.is_empty():
+		chips.append([Glyphs.intent_for(intent_kind), (str(intent_value) + intent_note) if intent_value > 0 else "", Palette.ENEMY if is_enemy else hud, "intent", intent_riders])
+	for s in statuses:
+		chips.append([s[0], str(s[1]), s[2] if s.size() >= 3 else hud, s[3] if s.size() >= 4 else "status", [], s[4] if s.size() >= 5 else ""])
+	if chips.is_empty():
+		return out
+	var widths: Array[float] = []
+	for ch in chips:
+		widths.append(chip_width(mono, ch))
+	var rows := chip_rows(widths, chip_wrap if chip_wrap > 0.0 else size.x)
+	var lo := -INF
+	var hi := INF
+	var parent := get_parent() as Control
+	if parent != null:
+		lo = 2.0 - position.x
+		hi = parent.size.x - position.x - 2.0
+	var cy := minf(_visible().end.y + GAP, size.y - 2.0) + CHIP_H * 0.5
+	cy = minf(cy, size.y - CHIP_H * 0.5 - 1.0)
+	for row in rows:
+		var total := 0.0
+		for i in row:
+			total += widths[i] + CHIP_GAP
+		total -= CHIP_GAP
+		var x := floorf((size.x - total) * 0.5)
+		x = clampf(x, lo, maxf(lo, hi - total))
+		for i in row:
+			out.append([Rect2(x, cy - CHIP_H * 0.5, widths[i], CHIP_H), chips[i]])
+			x += widths[i] + CHIP_GAP
+		cy += CHIP_H + ROW_GAP
+	return out
+
+
+## Where a foe's intent arrow leaves it (Ryan, 9 November: "the lines should come from the intent
+## chip, and always from the intent chip's middle"): the middle of its intent chip, wherever its
+## row lays it, on the screen; the drawing's middle for a unit showing no intent chip.
+func intent_anchor_global() -> Vector2:
+	var laid := chip_layout()
+	if not intent_kind.is_empty() and not laid.is_empty():
+		return get_global_transform() * (laid[0][0] as Rect2).get_center()
+	return anchor_global()
+
+
+## The chips' rows: each as many chips, in order, as fit `wrap` with their gaps, a chip wider than
+## the row on a row of its own. Index lists, the first row first.
+static func chip_rows(widths: Array, wrap: float) -> Array:
+	var rows: Array = [[]]
+	var run := 0.0
+	for i in range(widths.size()):
+		var w := float(widths[i])
+		var row: Array = rows.back()
+		if not row.is_empty() and run + CHIP_GAP + w > wrap:
+			rows.append([i])
+			run = w
+		else:
+			run += (CHIP_GAP if not row.is_empty() else 0.0) + w
+			row.append(i)
+	return rows
+
+
+## A chip's width: its glyph's square, its text, and each rider inside it after a divider (an
+## intent's). `ch` is [glyph, text, Color, kind, riders].
+static func chip_width(mono: Font, ch: Array) -> float:
+	var txt := str(ch[1])
+	var w := CHIP_H + (mono.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, CHIP_TEXT).x + 8.0 if not txt.is_empty() else 0.0)
+	for r in (ch[4] if ch.size() > 4 else []):
+		w += RIDER_PAD + RIDER_GLYPH + 4.0
+		var rt := str(r[1])
+		if not rt.is_empty():
+			w += mono.get_string_size(rt, HORIZONTAL_ALIGNMENT_LEFT, -1, RIDER_TEXT).x + 2.0
+	return w
+
+
+## One chip in `rect` on `ci` (the field's views, a readout's mark): its frame by its kind (a
+## coming status's dashed pulse, an ability's solid tile, a status's box), its glyph, its text
+## (`txt`, or its own), then each rider after a divider, its mark and its number in its own
+## colour; a buff's or a debuff's mark at its corner (`ch` [glyph, text, Color, kind, riders,
+## what]: _polarity_mark).
+static func draw_chip(ci: CanvasItem, rect: Rect2, ch: Array, mono: Font, txt = null) -> void:
+	var col: Color = ch[2]
+	var kind := str(ch[3]) if ch.size() > 3 else "status"
+	var glyph_col := col
+	if kind == "preview":
+		# A buff on its way (a rally's Empowered, Ryan, 26 October: "a pulsing version of the
+		# incoming buff as a preview chip"): an opacity pulse, as a gauge's change is ("Similar
+		# in concept to the health and shield bars"), on the gauges' one clock, a full swing
+		# between faint and lit on its dark ground, its edge dashed, so "coming" reads by
+		# motion and structure, never by hue.
+		var beat := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 1000.0 * PENDING_RATE)
+		Hud.fill_poly(ci, Hud.cut(rect, 4.0), Color(Palette.BG, 0.94))
+		col = Color(col, 0.3 + 0.7 * beat)
+		dashed_rect(ci, rect, col, 2.0)
+	elif kind == "ability":
+		# An ability (Ryan, 8 November: "It's not a Buff, it's not a Debuff, it's labelled as an
+		# Ability, so it doesn't get purged"): the unit's own mechanic, its glyph cut out of a
+		# solid tile in its colour inside the chip's heavier box, so it reads by structure, never
+		# by hue, as the rule the unit plays by (placeholders to judge on the phone).
+		Hud.box(ci, rect, 4.0, Color(Palette.BG, 0.94), col, 2.0)
+		var p := rect.position
+		var tile_end := minf(rect.end.x, p.x + CHIP_H)
+		var tile := PackedVector2Array([Vector2(p.x + 4.0, p.y), Vector2(tile_end, p.y), Vector2(tile_end, rect.end.y), Vector2(p.x, rect.end.y), Vector2(p.x, p.y + 4.0)])
+		if tile_end >= rect.end.x:
+			tile = Hud.cut(rect, 4.0)
+		Hud.fill_poly(ci, tile, col)
+		glyph_col = Palette.BG
+	else:
+		Hud.box(ci, rect, 4.0, Color(Palette.BG, 0.94), col, 1.2)
+	var cy := rect.get_center().y
+	Glyphs.draw(ci, str(ch[0]), Vector2(rect.position.x + CHIP_H * 0.5, cy), CHIP_GLYPH, glyph_col if kind != "preview" else col, 2.0)
+	var text := str(ch[1]) if txt == null else str(txt)
+	var x := rect.position.x + CHIP_H - 2.0
+	if not text.is_empty():
+		ci.draw_string(mono, Vector2(x, cy + CHIP_TEXT * 0.36), text, HORIZONTAL_ALIGNMENT_LEFT, -1, CHIP_TEXT, col)
+		x += mono.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, CHIP_TEXT).x + 8.0
+	else:
+		x = rect.position.x + CHIP_H
+	for r in (ch[4] if ch.size() > 4 else []):
+		# A rider: a divider, then its mark and its number in its own colour (its term's).
+		var rc: Color = r[2]
+		rc.a *= col.a
+		ci.draw_line(Vector2(x + RIDER_PAD * 0.5 - 2.0, rect.position.y + 5.0), Vector2(x + RIDER_PAD * 0.5 - 2.0, rect.end.y - 5.0), Color(col, 0.55 * col.a), 1.0)
+		x += RIDER_PAD
+		Glyphs.draw(ci, str(r[0]), Vector2(x + RIDER_GLYPH * 0.5, cy), RIDER_GLYPH, rc, 1.8)
+		x += RIDER_GLYPH + 4.0
+		var rt := str(r[1])
+		if not rt.is_empty():
+			ci.draw_string(mono, Vector2(x - 2.0, cy + RIDER_TEXT * 0.36), rt, HORIZONTAL_ALIGNMENT_LEFT, -1, RIDER_TEXT, rc)
+			x += mono.get_string_size(rt, HORIZONTAL_ALIGNMENT_LEFT, -1, RIDER_TEXT).x + 2.0
+	_polarity_mark(ci, rect, str(ch[5]) if ch.size() > 5 else "", col)
+
+
+## A buff's or a debuff's mark on its chip (Ryan, 9 November: "Buffs and debuffs ... need to be
+## clearly labeled as such, so that it's clear what gets purged"): a solid wedge on the chip's
+## edge, pointing up off its top at the left for a buff and down off its bottom at the right for a
+## debuff, in the chip's colour on a dark edge, so the two part by shape and place, never by hue
+## (Ryan is colourblind), and a debuff over a buff in the next row never meets its wedge; an
+## ability's solid tile, a store and a warning wear none. Hot, for the phone.
+const POLARITY_W := 12.0   # the wedge's base, along the chip's edge
+const POLARITY_H := 8.0    # how far it stands off the edge, half of it past the chip
+
+static func _polarity_mark(ci: CanvasItem, rect: Rect2, what: String, col: Color) -> void:
+	if what != "buff" and what != "debuff":
+		return
+	var up := what == "buff"
+	var x0 := rect.position.x + 5.0 if up else rect.end.x - 5.0 - POLARITY_W
+	var edge := rect.position.y if up else rect.end.y
+	var dir := -1.0 if up else 1.0   # away from the chip
+	var base_y := edge - dir * POLARITY_H * 0.5
+	var tip := Vector2(x0 + POLARITY_W * 0.5, edge + dir * POLARITY_H * 0.5)
+	var wedge := PackedVector2Array([Vector2(x0, base_y), Vector2(x0 + POLARITY_W, base_y), tip])
+	var rim := PackedVector2Array([Vector2(x0 - 2.0, base_y - dir * 1.0), Vector2(x0 + POLARITY_W + 2.0, base_y - dir * 1.0), tip + Vector2(0.0, dir * 2.0)])
+	ci.draw_colored_polygon(rim, Color(Palette.BG, 0.95 * col.a))
+	ci.draw_colored_polygon(wedge, col)
+
+
+## A rect drawn in dashes on any canvas item (a chip's edge), its dark edge under each dash.
+static func dashed_rect(ci: CanvasItem, rect: Rect2, color: Color, width: float) -> void:
+	var dash := 9.0
+	var gap := 6.0
+	var corners := [rect.position, Vector2(rect.end.x, rect.position.y), rect.end, Vector2(rect.position.x, rect.end.y)]
+	for k in range(4):
+		var a: Vector2 = corners[k]
+		var b: Vector2 = corners[(k + 1) % 4]
+		var length := a.distance_to(b)
+		var dir := (b - a) / maxf(1.0, length)
+		var t := 0.0
+		while t < length:
+			ci.draw_line(a + dir * t, a + dir * minf(t + dash, length), Color(Palette.BG, 0.8 * color.a), width + 2.0)
+			ci.draw_line(a + dir * t, a + dir * minf(t + dash, length), color, width)
+			t += dash + gap
 
 
 ## The drawing's frame this moment and its lean, a shear about the feet line (a Transform2D
@@ -626,22 +884,10 @@ func _draw_shadow(foot: Vector2, rx: float, alpha: float) -> void:
 	draw_set_transform_matrix(Transform2D.IDENTITY)
 
 
-## A rect drawn in dashes (a mined slot's outline, a preview chip's edge): structure, so it never
+## A rect drawn in dashes (a preview chip's edge): structure, so it never
 ## rests on its hue. The dark edge under each dash fades with the colour.
 func _draw_dashed(rect: Rect2, color: Color, width: float) -> void:
-	var dash := 9.0
-	var gap := 6.0
-	var corners := [rect.position, Vector2(rect.end.x, rect.position.y), rect.end, Vector2(rect.position.x, rect.end.y)]
-	for k in range(4):
-		var a: Vector2 = corners[k]
-		var b: Vector2 = corners[(k + 1) % 4]
-		var length := a.distance_to(b)
-		var dir := (b - a) / maxf(1.0, length)
-		var t := 0.0
-		while t < length:
-			draw_line(a + dir * t, a + dir * minf(t + dash, length), Color(Palette.BG, 0.8 * color.a), width + 2.0)
-			draw_line(a + dir * t, a + dir * minf(t + dash, length), color, width)
-			t += dash + gap
+	dashed_rect(self, rect, color, width)
 
 
 ## A gauge on its own dark ground, with, when a pending value is given, a pulsing overlay on
@@ -649,64 +895,110 @@ func _draw_dashed(rect: Rect2, color: Color, width: float) -> void:
 ## to read against any bar colour and for any kind of colour vision. Where it sits says
 ## which way the bar moves: inside the fill, that much is about to go; past the fill, that
 ## much is coming.
-## The count as pips across the gauges' width (the Cassowary's sixth shot, 21 October: six
-## under the heat bar, Ryan's spot): a filled pip a shot, the last a diamond, so it reads as
-## the one that counts by shape as well as colour, lit in the heat's colour when it is next.
+## A count toward a shot as cells across the gauges' width, in the stores' own shape and row (the
+## Cassowary's sixth shot; pips from 21 October until Ryan, 10 November: "Cassowary's needs to
+## match as well - just need a different kind of indication that the sixth is special"): a cell
+## a shot, lit to the count, and the last, the one that counts double, apart from the rest by
+## structure: under a heavier border, a diamond set in it, at its row's own height. When it is next
+## the whole cell lights in the heat's colour and breathes, the diamond cut out of it.
 func _draw_pips(rect: Rect2) -> void:
-	var of := int(pips[1])
+	var of := maxi(1, int(pips[1]))
 	var count := int(pips[0]) % of
-	var step := rect.size.x / float(of)
 	var hud := Palette.HUD
-	for k in range(of):
-		var c := Vector2(rect.position.x + step * (k + 0.5), rect.get_center().y)
-		var r := minf(rect.size.y * 0.5, step * 0.32)
-		var last := k == of - 1
-		var lit := last and count == of - 1
-		var col: Color = Palette.HEAT if lit else hud
-		if last:
-			var pts := PackedVector2Array([c + Vector2(0, -r - 1.5), c + Vector2(r + 1.5, 0), c + Vector2(0, r + 1.5), c + Vector2(-r - 1.5, 0)])
-			draw_colored_polygon(pts, Color(Palette.BG, 0.9))
-			if lit:
-				draw_colored_polygon(pts, col)
-			pts.append(pts[0])
-			draw_polyline(pts, col, 1.5)
-		else:
-			var box := Rect2(c - Vector2(r, r), Vector2(r, r) * 2.0)
-			draw_rect(box.grow(1.0), Color(Palette.BG, 0.9))
-			if k < count:
-				draw_rect(box, col)
-			draw_rect(box, col, false, 1.5)
-
-
-## A capped store as boxes across the gauges' width (Ryan, 22 October: the rage, individual
-## boxes up to the cap), one lit for each stack it holds, so the count reads by how many are
-## filled. The last lit box is where a stack's spend bursts (spend_chip), as the chip it
-## replaces was.
-func _draw_boxes(rect: Rect2) -> void:
-	var cap := int(boxes[1])
-	var count := clampi(int(boxes[0]), 0, cap)
-	var col: Color = boxes[2] if boxes.size() >= 3 else Palette.HUD
-	for k in range(cap):
-		var box := _box_rect(k, rect)
-		draw_rect(box.grow(1.5), Color(Palette.BG, 0.9))
+	for k in range(of - 1):
+		var cell := _cell_rect(k, of, rect)
+		var pts := Hud.slant(cell, 4.0)
+		Hud.fill_poly(self, Hud.slant(cell.grow(1.0), 4.0), Color(Palette.BG, 0.9))
 		if k < count:
-			draw_rect(box, col)
-		draw_rect(box, col, false, 1.5)
+			Hud.fill_poly(self, Hud.slant(cell.grow(-2.0), 2.4) if cell.size.x >= 18.0 else pts, hud)
+		Hud.stroke_poly(self, pts, Color(hud, 0.95), 1.5)
+	var last := _cell_rect(of - 1, of, rect)   # its row's own height: taller, it touched the heat bar above (Ryan, 10 November)
+	var next := count == of - 1
+	var col: Color = Palette.HEAT if next else hud
+	var lpts := Hud.slant(last, 4.0)
+	Hud.fill_poly(self, Hud.slant(last.grow(1.0), 4.0), Color(Palette.BG, 0.92))
+	if next:
+		var beat := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 1000.0 * PENDING_RATE)
+		Hud.fill_poly(self, lpts, Color(col, 0.7 + 0.3 * beat))
+	Hud.stroke_poly(self, lpts, Color(col, 1.0), 2.5)
+	var c := last.get_center()
+	var r := minf(last.size.y * 0.5 - 2.0, last.size.x * 0.3)
+	var gem := PackedVector2Array([c + Vector2(0, -r), c + Vector2(r, 0), c + Vector2(0, r), c + Vector2(-r, 0)])
+	if next:
+		draw_colored_polygon(gem, Color(Palette.BG, 0.95))
+	else:
+		draw_colored_polygon(gem, col)
 
 
-## Box `k` of a capped store's row, in `row` or where the gauges put the row.
-func _box_rect(k: int, row: Rect2 = Rect2()) -> Rect2:
+## A capped store as one more bar under the heat, in the heat bar's own shape and place (Ryan, 10
+## November: "Resource bars like the badgers should be the same shape as the other resource bars
+## ... So the badger's should nestle under the Heat bar, same shape, divided into four clear
+## segments"), and split into its units (the same day, of the first cut's thick ticks: "can we
+## actually split them into different bars with borders and whitespace, in the same row? So a
+## continuous bar but actually split into discrete segments"): one little bar a unit, each with
+## its own border and dark ground and a gap of clear ground between, lit from the left to the
+## count in the store's colour. So the count is how many are filled and the room left how many
+## are outlines, by structure on any colour. Every resource that comes in whole units is drawn
+## so (the hopper's loads, the rage, the Musk Ox's ammo); one that fills by degrees stays a
+## meter (the Swallowtail's Muster: "that's a meter with non-discrete fills"). The last lit cell
+## is where a stack's spend bursts (spend_chip).
+const CELL_GAP := 1.0        # the ground between two cells: a hairline, the borders doing the parting (5, then 3; Ryan, 10 November: "still too spaced apart, need like 1 or two pixels only")
+const CELL_GAP_MANY := 1.0   # the same in a row of more than six (the magazine's ten)
+
+func _draw_store(rect: Rect2) -> void:
+	_draw_cells(rect, int(store[0]), int(store[1]), store[2] if store.size() >= 3 else Palette.HUD)
+
+
+## A row of whole units as cells across `rect`: `count` of `cap` lit, and with `after` given the
+## change on its way pulsing as a gauge's does (the cells about to go breathing in ink, the ones
+## about to come hatched in the row's colour).
+func _draw_cells(rect: Rect2, count: int, cap: int, col: Color, after: int = -1) -> void:
+	cap = maxi(1, cap)
+	count = clampi(count, 0, cap)
+	after = count if after < 0 else clampi(after, 0, cap)
+	var clock := Time.get_ticks_msec() / 1000.0
+	var beat := 0.5 + 0.5 * sin(clock * PENDING_RATE)
+	for k in range(cap):
+		var cell := _cell_rect(k, cap, rect)
+		var pts := Hud.slant(cell, 4.0)
+		Hud.fill_poly(self, Hud.slant(cell.grow(1.0), 4.0), Color(Palette.BG, 0.9))
+		# A cell too narrow for a fill set in from its border is filled whole (the magazine's ten).
+		var inner := Hud.slant(cell.grow(-2.0), 2.4) if cell.size.x >= 18.0 else pts
+		if k < count:
+			Hud.fill_poly(self, inner, col)
+			if k >= after:
+				# About to go: it breathes between dimmed and lit in ink, as a gauge's loss does.
+				Hud.fill_poly(self, inner, Color(Palette.BG, 0.65 * (1.0 - beat)))
+				Hud.fill_poly(self, inner, Color(Palette.INK, 0.55 * beat))
+		elif k < after:
+			# About to come: hatched in the row's colour, "coming", not "there".
+			var x := cell.position.x + 2.0
+			while x < cell.end.x - 2.0:
+				draw_line(Vector2(x, cell.end.y - 2.0), Vector2(minf(x + cell.size.y - 4.0, cell.end.x - 2.0), cell.position.y + 2.0), Color(col, 0.5 + 0.3 * beat), 1.0)
+				x += 4.0
+		Hud.stroke_poly(self, pts, Color(col, 0.95), 1.5)   # every cell its own border, lit or not
+
+
+## Cell `k` of `cap` across `row`, the gaps between them clear ground.
+func _cell_rect(k: int, cap: int, row: Rect2) -> Rect2:
+	var gap := CELL_GAP_MANY if cap > 6 else CELL_GAP
+	var w := (row.size.x - gap * float(cap - 1)) / float(cap)
+	return Rect2(row.position.x + (w + gap) * float(k), row.position.y, w, row.size.y)
+
+
+## Cell `k` of a capped store's row, in `row` or where the gauges put the row.
+func _store_cell(k: int, row: Rect2 = Rect2()) -> Rect2:
 	if row.size == Vector2.ZERO:
-		var vis := _visible()
-		row = Rect2(size.x * 0.1, vis.position.y - GAP - _boxes_step(), size.x * 0.8, PIP_H)
-	var cap := maxi(1, int(boxes[1]))
-	var step := row.size.x / float(cap)
-	var side := minf(row.size.y + 2.0, step * 0.7)
-	var c := Vector2(row.position.x + step * (k + 0.5), row.get_center().y)
-	return Rect2(c - Vector2(side, side) * 0.5, Vector2(side, side))
+		row = Rect2(size.x * 0.1, _bars_top() + bars.size() * BAR_STEP, size.x * 0.8, BAR_H)
+	return _cell_rect(k, maxi(1, int(store[1])), row)
 
 
 func _gauge(rect: Rect2, b: Array) -> void:
+	if b.size() >= 5 and int(b[4]) == 1:
+		# A bar whose every unit is its own notch holds whole units (the Musk Ox's ammo): cells,
+		# as a store's are, its change on its way pulsing on them.
+		_draw_cells(rect, int(b[0]), int(b[1]), b[2], int(b[3]))
+		return
 	var mx := float(maxi(1, int(b[1])))
 	var frac: float = clampf(float(b[0]) / mx, 0.0, 1.0)
 	var col: Color = b[2]
@@ -731,14 +1023,19 @@ func _gauge(rect: Rect2, b: Array) -> void:
 			draw_line(Vector2(hx, ext.end.y), Vector2(hx + ext.size.y, ext.position.y), Color(Palette.INK, 0.8), 1.0)
 			hx += 4.0
 	# A banked bar's charges (the Swallowtail's Muster, a fifth element the points a charge): a
-	# notch at each charge across the bar, so its count reads by structure.
+	# notch at each charge across the bar, so its count reads by structure; every other bar
+	# wears its scale, a tick a point (Hud.ticks), drawn over its pending change so it holds.
 	if b.size() >= 5 and int(b[4]) > 0:
 		var step := float(int(b[4])) / mx
 		var at := step
 		while at < 0.999:
+			# The notch leans as the bar's ends lean, 4 across its height (Hud.slant; Ryan, 10
+			# November: "Ticks on the swallowtail should be slanted").
 			var x := rect.position.x + rect.size.x * at
-			draw_line(Vector2(x, rect.position.y - 1.0), Vector2(x, rect.end.y + 1.0), Color(Palette.BG, 0.95), 3.0)
+			draw_line(Vector2(x + 2.4, rect.position.y - 1.0), Vector2(x - 2.4, rect.end.y + 1.0), Color(Palette.BG, 0.95), 3.0)
 			at += step
+	elif b.size() < 4 or int(b[3]) == int(b[0]):
+		Hud.ticks(self, rect.grow(-2.0), int(b[0]), int(b[1]), col, 2.4)
 	if b.size() < 4 or int(b[3]) == int(b[0]):
 		return
 	var pending: float = clampf(float(b[3]) / mx, 0.0, 1.0)
@@ -766,3 +1063,5 @@ func _gauge(rect: Rect2, b: Array) -> void:
 		while x < seg.end.x:
 			draw_line(Vector2(x, seg.end.y), Vector2(x + seg.size.y, seg.position.y), Color(col, pulse * 0.8), 1.0)
 			x += 4.0
+	if b.size() < 5 or int(b[4]) <= 0:
+		Hud.ticks(self, rect.grow(-2.0), int(b[0]), int(b[1]), col, 2.4)

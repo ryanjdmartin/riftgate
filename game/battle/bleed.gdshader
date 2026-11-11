@@ -20,15 +20,17 @@ uniform vec2 map_size = vec2(1.0, 1.0);      // the painted map, in map pixels
 uniform vec2 view_size = vec2(1.0, 1.0);     // this texture, in screen pixels
 uniform vec2 scroll = vec2(0.0, 0.0);        // the map view's scroll
 uniform float zoom = 1.0;
-uniform vec2 grad = vec2(0.0, 1.0);          // y where the rift's bleed is total, y where it is gone
+uniform vec2 grad = vec2(0.0, 1.0);          // where the rift's bleed is total and where it is gone, along grad_axis
+uniform vec2 grad_axis = vec2(0.0, 1.0);     // from the rift toward the wall (Bleed.axis): down the screen, or leftward with the wall at the left
 uniform vec3 sources[32];                    // x, y, radius in map pixels
 uniform int source_count = 0;
 uniform sampler2D units : filter_nearest;    // the machines alone: a mask where the scene wins
 uniform float cell = 4.0;                    // the dither's pixel step, on screen
 uniform float levels = 5.0;                  // posterize steps per channel on the flat side
-uniform float focus_y = 0.0;                 // map-pixel y of the screen's middle
-uniform float south_y = 1.0e6;               // map-pixel y of the wall's foot: the city past it softens into the HUD
-uniform float focus_band = 330.0;            // the sharp zone reaches this far north of the middle, in map pixels
+uniform vec2 far_axis = vec2(0.0, -1.0);     // from the wall toward the rift (MapOrient.toward_rift): up the screen, or rightward with the wall at the left; the tilt-shift lies along it in either view
+uniform float focus_d = 0.0;                 // the screen's middle along far_axis, in map pixels
+uniform float south_d = -1.0e6;              // the wall's foot along far_axis: the city past it softens into the HUD, or into the screen's left edge
+uniform float focus_band = 330.0;            // the sharp zone reaches this far toward the rift from the middle, in map pixels
 uniform float focus_falloff = 180.0;         // map pixels over which the blur reaches its maximum
 uniform float blur_max = 3.0;                // the blur's tap spacing at its maximum, in screen pixels
 uniform vec2 play_x = vec2(0.0, 1.0);        // the playable field's left and right, in map pixels
@@ -51,7 +53,7 @@ uniform vec4 boxes[32];                      // left, top, right, bottom, in the
 uniform int box_count = 0;
 
 float bleed_at(vec2 px) {
-	float m = 1.0 - clamp((px.y - grad.x) / max(1.0, grad.y - grad.x), 0.0, 1.0);
+	float m = 1.0 - clamp((dot(px, grad_axis) - grad.x) / max(1.0, grad.y - grad.x), 0.0, 1.0);
 	for (int i = 0; i < source_count; i++) {
 		vec3 s = sources[i];
 		float d = distance(px, s.xy);
@@ -70,11 +72,15 @@ float bayer(ivec2 c) {
 	return (m2lo * 4.0 + m2hi + 0.5) / 16.0;
 }
 
-// Only the far ground softens, north of the focus; the gate end stays sharp (Ryan, 21
-// September). Both worlds soften alike: all or none.
+// Only the far ground softens, toward the rift from the focus; the gate end stays sharp (Ryan,
+// 21 September), and the city past the wall softens. Along far_axis, so with the wall at the
+// left the blur lies at the screen's right and left, never its top (Ryan, 10 November: "The
+// top-side blur can't be there in the wall-left view. Needs to be left and right-side blur
+// only"). Both worlds soften alike: all or none.
 float blur_radius(vec2 px) {
-	float f = clamp((focus_y - focus_band - px.y) / focus_falloff, 0.0, 1.0);
-	float s = clamp((px.y - south_y) / (focus_falloff * 0.5), 0.0, 1.0);
+	float d = dot(px, far_axis);
+	float f = clamp((d - focus_d - focus_band) / focus_falloff, 0.0, 1.0);
+	float s = clamp((south_d - d) / (focus_falloff * 0.5), 0.0, 1.0);
 	return max(f, s) * blur_max;
 }
 

@@ -1,5 +1,7 @@
 # Brief: the gunship (proposal)
 
+<!-- hangar: {"kind": "chassis", "maker": "wainwright_sutler", "tier": 2, "status": "proposal", "slot": true, "name": "the gunship"} -->
+
 The session finishes the medium gunship whose fitted weapons raise its numbers by their tags,
 and settles its overlap with the Clydesdale.
 
@@ -59,7 +61,7 @@ The rest of the proposal (13 October; Claude's, sized on the stand-in):
 
 - **The rows** (recommended: mid with the riders up; the proposal's placeholders, sized under
   the whole-block shield rule):
-  - Ballistic: +3 armour and +4 cooling (five: armour 15, the Armadillo's today; cooling 25).
+  - Ballistic: +3 armour and +4 cooling (five: armour 15, the Polar Bear's today; cooling 25).
   - Beam: +12 shield and +3 field recharge (five: shield 80, the most; recharge 30).
   - Missile: +5 move and +12 hull (five: move 55, the fastest; hull 160, the Badger's).
   - Arc: the others' highest roll 5 higher (the Booster's own number).
@@ -119,8 +121,8 @@ The stand-in's table (`docs/measurements.md`, 13 October) was measured under the
 whole-block shield rule. Under the honest shield rule (decided 14 October) a shield is hit
 points, so the Beam row's worth wants re-reading; every cell ran under the old rule, and a
 rerun before the honest rule is built still measures it. Ryan, 15 October, wants the
-Armadillo's base armour down for its form changer (`minerva_armadillo.md`), which would move
-the Ballistic row's anchor (five at 3 a weapon tie the Armadillo's armour 15 today).
+Polar Bear's base armour down for its form changer (`minerva_armadillo.md`), which would move
+the Ballistic row's anchor (five at 3 a weapon tie the Polar Bear's armour 15 today).
 
 ## Open for the session
 

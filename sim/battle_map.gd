@@ -22,7 +22,7 @@ const WALL_LOOKS := ["crags", "mesas", "towers", "cliffs"]
 const ROAD_GAP_CHANCE := 0.18   # a laid road is missing this share of its slabs: nobody paves between attacks
 
 var width: int = 7
-var height: int = 20              # the game's field (Battle.DEFAULT_HEIGHT): the rift, seventeen rows of ground, two of gate and wall
+var height: int = 20              # the rows from the rift's to the last wall row: a battle's is the ramp's (Ramp.depth_at, the long wall brief 3.1)
 var terrain: Dictionary = {}  # Vector2i (axial) -> Terrain
 var gate: Vector2i            # centre of the gate structure
 var rift: Vector2i            # centre of the rift structure
@@ -40,10 +40,9 @@ const CITY_ROWS := 2                   # city rows behind the wall
 var map_seed: int = 0
 var opened: Dictionary = {}            # hex -> the ground the horde's guarantee opened there (the map survey reads it)
 var water_feature := ""               # "river", "fjord", "ponds", "a pond", or "" for none (the map survey reads it)
-var fords: Array = []                  # a river's fords, each an Array of its hexes: the roads run to them
-var ford_widths: Array = []            # each ford's width along the river, in hexes (_crossing_runs)
-var gaps: Array = []                   # a city band's gaps, each an Array of its hexes: the streets run through them
-var gap_widths: Array = []             # each gap's width across its band, in hexes (_crossing_runs)
+var narrows: Array = []                # a river's narrows, each an Array of its hexes (water a hex thick, the short wade): the roads run to them
+var narrow_widths: Array = []          # each narrow's length along the river, in hexes
+var streets: Array = []                # the city's streets, each an Array of its hexes from the wall's end: the roads run along them (_lay_roads)
 var kind := "steppe"                   # the map's shape, a key of KINDS: the intel the player will read
 
 ## The map shapes (Ryan, 28 and 29 October): six, each testing one thing the movement rule
@@ -51,16 +50,23 @@ var kind := "steppe"                   # the map's shape, a key of KINDS: the in
 ## lays its own water and walls, its own decorative ground (one or two of the four, which all
 ## play alike, never all of them) and its own relief, and a battle that names no shape draws one
 ## by its seed, every shape alike, until a domain lean is decided (the bible's section 12).
-## Every number in the laying is a placeholder; the 200-seed survey measures each
+## On the long wall (Ryan, 9 November) the three wall shapes are a spectrum by the mass and the
+## structure of what blocks you, none a band and none an orientation: the GORGE winding,
+## branching channels through cliff mass; the RUINED CITY channels broken by side streets
+## between large blocks of towers; the BADLANDS an open field of small obstacles no straight
+## path crosses. Water lies in all three (flooded channels, flooded streets and fountains,
+## ponds). The RIVER CROSSING and the FJORD are the water shapes and the OPEN STEPPE the
+## baseline. Every number in the laying is a placeholder; the 200-seed survey measures each
 ## (tools/map_survey.gd).
 ##   name: the front card's word; ground: what the field is laid in; dress: what the 3D map
-##   stands on the land beside water (bank), at a wall's foot (foot) and out in the scenery
-##   (scenery), each a prop's word for Map3D or "" for none.
+##   stands on the land beside water (bank), at a wall's foot (foot), out in the scenery
+##   (scenery) and on the open field itself (field, sparse), each a prop's word for Map3D or ""
+##   for none.
 const KINDS := {
-	"river": {"name": "RIVER CROSSING", "ground": Terrain.PLAIN, "dress": {"bank": "reeds", "foot": "rocks", "scenery": "grass"}},
+	"river": {"name": "RIVER CROSSING", "ground": Terrain.PLAIN, "dress": {"bank": "reeds", "foot": "rocks", "scenery": "grass", "field": ""}},
 	"fjord": {"name": "FJORD", "ground": Terrain.PLAIN, "dress": {"bank": "shingle", "foot": "rocks", "scenery": "boulders"}},
 	"badlands": {"name": "BADLANDS", "ground": Terrain.PLAIN, "dress": {"bank": "rocks", "foot": "", "scenery": ""}},
-	"steppe": {"name": "OPEN STEPPE", "ground": Terrain.PLAIN, "dress": {"bank": "reeds", "foot": "rocks", "scenery": "grass"}},
+	"steppe": {"name": "OPEN STEPPE", "ground": Terrain.PLAIN, "dress": {"bank": "reeds", "foot": "rocks", "scenery": "grass", "field": "grass"}},
 	"city": {"name": "RUINED CITY", "ground": Terrain.RUINS, "dress": {"bank": "", "foot": "", "scenery": ""}},
 	"gorge": {"name": "GORGE", "ground": Terrain.PLAIN, "dress": {"bank": "", "foot": "scree", "scenery": "boulders"}},
 }
@@ -70,13 +76,27 @@ const STRUCTURE_HALF_WIDTH := 1   # gate and rift span centre plus this many hex
 ## above is their apron, so the wall never hides a unit behind it from the map camera
 ## (Ryan, 20 September). A pack strikes the gate from the row above the apron.
 const GATE_ROWS := 2
-## A shape lays its water and walls past the rift's mouth and the boss's patrol (rows 0 to 3)
-## and short of the team's two rows above the gate's apron (_hi).
-const MOUTH_ROWS := 4
+const RIFT_ROWS := 2   # the rows the rift's five hexes lie on: its own, and the next, where two of them stand in front of its middle
+## A shape lays its water and walls from the rift's row to the last row short of the team's two
+## rows above the gate's apron (_hi); the rows between are its open rows (_open_rows), which every
+## shape is laid to fill at any size the ramp deals (9 November, the shapes relaid for the shallow
+## field: the long wall brief's open item 5). The rift's mouth is the ground beside the rift and
+## nothing more, bared by _clear_ends with the gate's front (Ryan, 10 November, after his play: "the
+## flattened side needs features, all the way to the back"; until then the mouth was rows, four on
+## the old field and a share of the depth for a day).
+const FIRST_ROW := 0   # the first row a shape lays on: the rift's own
 
 
 ## A map of nothing but plain ground. Used by tests and as a fallback.
 static func flat(w: int, h: int) -> BattleMap:
+	var m := _bare(w, h)
+	m._widen_rift()
+	return m
+
+
+## The field before its rift takes its two front hexes: what a shape is laid on (generate,
+## _widen_rift).
+static func _bare(w: int, h: int) -> BattleMap:
 	var m := BattleMap.new()
 	m.width = w
 	m.height = h
@@ -127,7 +147,7 @@ static func kind_for_seed(seed_value: int) -> String:
 
 ## A seeded map of one shape, or of the shape its seed draws when `map_kind` names none.
 static func generate(w: int, h: int, seed_value: int, map_kind: String = "") -> BattleMap:
-	var m := flat(w, h)
+	var m := _bare(w, h)
 	m.map_seed = seed_value
 	m.kind = map_kind if KINDS.has(map_kind) else kind_for_seed(seed_value)
 	var rng := RandomNumberGenerator.new()
@@ -146,17 +166,50 @@ static func generate(w: int, h: int, seed_value: int, map_kind: String = "") -> 
 			m._lay_gorge(rng)
 		_:
 			m._lay_steppe(rng)
+	m._widen_rift()   # the rift's two front hexes, once the shape is laid and before its mouth is bared
 	m._clear_ends()
 	m._ensure_ground_path(rng)
+	m._prune_narrows()
+	m._dress_shores()
 	m._lay_roads(rng)
 	m._lay_relief(rng)
 	return m
+
+
+## The rift is five hexes, a half circle open to the field (Ryan, 10 November: "make the rift
+## have the two hexes in front of it also out of play (so it's a 5 hex semicircle)"): its row's
+## three and the two of the next row that touch its middle. A shape is laid on the rift's row
+## alone, as it was, so no seed's water and walls move for them; the two are taken as soon as it
+## is laid, and everything after reads all five: the mouth bared round them (_clear_ends), the
+## horde's guarantee, the shores, the roads and the relief.
+func _widen_rift() -> void:
+	for n in Hex.neighbors(rift):
+		if has(n) and Hex.axial_to_offset(n).y == 1 and not rift_hexes.has(n):
+			rift_hexes.append(n)
+			terrain[n] = Terrain.PLAIN
+			crag_base.erase(n)
+			wall_look.erase(n)
+			elevation[n] = 0
+
+
+## Where a shape's laying starts: the rift's row (FIRST_ROW). Kept as a function so the sim reads
+## one name for it (the opening's packs and the seam read their own rows: Battle.OPENING_FLOOR_ROW,
+## Battlefield.seam_start).
+func mouth_rows() -> int:
+	return FIRST_ROW
 
 
 ## The last row a shape lays water or a wall on: the team's two rows above the gate's apron
 ## stay clear, so a deployed machine always has somewhere to go.
 func _hi() -> int:
 	return height - GATE_ROWS - 3
+
+
+## How many rows a shape has to lay in, the team's aside: eight at twelve deep, sixteen at
+## twenty. A shape that needs more than it has lays less (a thinner river, one band
+## of towers), never into the mouth or the team's rows.
+func _open_rows() -> int:
+	return _hi() - mouth_rows() + 1
 
 
 ## Every hex of the field and of the scenery beside it starts as the shape's ground, level;
@@ -318,119 +371,129 @@ func _field_spots(lo: int, hi: int, west: int = 0, east: int = -1) -> Array:
 	return out
 
 
-## The crossings through a line `n` hexes long, a river's fords or a band's streets (Ryan, 29
-## October: "we can allow more than one ford in a line, especially for the city map, and each
-## can be smaller, as long as we have a total of say, 3 or 4 empty spaces. It symbolizes
-## 'streets', and splitting the team up to cover them all forces the team to fight apart"):
-## at most `most` runs of one to three hexes, three or four in all, every split of the total
-## alike, spread at random along the line with at least a hex of it between two. A band takes
-## up to four streets; a river two fords, since more broke it into ponds (29 October, its
-## laying printed seed by seed). Each run as the indices it covers, west to east.
-const CROSSING_RUN_MAX := 3
-const STREETS_MOST := 4
-const FORDS_MOST := 2
-
-
-func _crossing_runs(rng: RandomNumberGenerator, n: int, most: int) -> Array:
-	var splits: Array = []
-	for total in [CROSSING_WIDTH, CROSSING_WIDTH + 1]:
-		_splits_of(total, [], splits)
-	var fit: Array = []
-	for s in splits:
-		if (s as Array).size() <= most and _span_of(s) <= n:
-			fit.append(s)
-	if fit.is_empty():
-		return [range(0, n)]
-	var widths: Array = fit[rng.randi_range(0, fit.size() - 1)]
-	var slots: Array = []   # the spare hexes before, between and after the runs
-	slots.resize(widths.size() + 1)
-	slots.fill(0)
-	for i in range(n - _span_of(widths)):
-		var k := rng.randi_range(0, slots.size() - 1)
-		slots[k] = int(slots[k]) + 1
-	var runs: Array = []
-	var at := int(slots[0])
-	for i in range(widths.size()):
-		runs.append(range(at, at + int(widths[i])))
-		at += int(widths[i]) + 1 + int(slots[i + 1])
-	return runs
-
-
-## Every way to split `left` into runs of one to CROSSING_RUN_MAX, appended to `out`.
-static func _splits_of(left: int, so_far: Array, out: Array) -> void:
-	if left == 0:
-		out.append(so_far.duplicate())
-		return
-	for w in range(1, mini(CROSSING_RUN_MAX, left) + 1):
-		so_far.append(w)
-		_splits_of(left - w, so_far, out)
-		so_far.pop_back()
-
-
-## The hexes a split takes along its line: its runs and a hex between each two.
-static func _span_of(widths: Array) -> int:
-	var span := widths.size() - 1
-	for w in widths:
-		span += int(w)
-	return span
-
-
-## RIVER CROSSING: a river across the field and on past both edges, two hexes thick and three
-## in places, with one or two fords three or four hexes wide in all (_crossing_runs), and at
-## most a crag on a bank. Everyone but a hovercraft and a flyer wades
-## the river at two a hex, the horde too, so a ford is the quick way across for both sides and
-## a ford held only slows the horde. Tests the wade and where to cross. The line drifts about
-## its row eastward, one hex at a time.
-const RIVER_DEEP := 0.35   # a river hex with a third row below it
-const BANK_CRAG := 0.4     # the chance of a crag on a bank
+## RIVER CROSSING (Ryan, 10 November: "the river should wind through the whole map, crossing the
+## center of the battlefield at least once. Remove the fords, instead just guarantee some
+## narrower sections - so water fords, not land fords"; "some smaller tributaries"): a river
+## from past the west edge to past the east, wandering a row up or down as it goes, through the
+## field's centre hex; two hexes thick and three in places, with one or two narrows a hex thick
+## (the water fords: where the wade is one hex) and one or two tributaries a hex thick wandering
+## off it toward the rift's row or the team's ground; gravel bars in stretches along the banks
+## (_shore), at most a crag on a bank. Everyone wades it at two a hex but a hovercraft and a
+## flyer, the horde too, so a narrow is the quick way across for both sides. The roads run from
+## the gate to the narrows and on past them. Tests the wade and where to cross.
+const RIVER_DEEP := 0.35      # a river hex with a third row below it
+const BANK_CRAG := 0.4        # the chance of a crag on a bank
+const RIVER_WANDER := 0.35    # the chance a step ignores the river's heading and wanders
+const RIVER_NARROWS := [1, 2]
+const RIVER_TRIBUTARIES := [1, 2]
 
 
 func _lay_river(rng: RandomNumberGenerator) -> void:
-	var lo := MOUTH_ROWS
+	var lo := mouth_rows()
 	var hi := _hi()
-	var thick := 3 if hi - lo >= 6 else (2 if hi - lo >= 2 else 1)
-	var bottom := hi - (thick - 1)   # the line's southmost row, its thickening below it
-	var middle := (lo + bottom) / 2
-	var base := clampi(middle + rng.randi_range(-2, 2), lo, bottom)
+	var open := _open_rows()
+	var thick := 3 if open >= 6 else (2 if open >= 3 else 1)
+	var line_lo := lo
+	var line_hi := hi - (thick - 1)   # the line's southmost row, its thickening below it, short of the team's ground
+	var centre := Hex.offset_to_axial(width / 2, (lo + hi) / 2)
+	# The narrows: one or two stretches of two or three columns inside the field, a column apart
+	# at least and clear of the rift's and the gate's columns, where the line runs straight and
+	# lies a hex thick; the rest two, and three where the deep lies.
+	var narrow_cols := {}   # a column -> its narrow's number
+	var n_narrows := int(RIVER_NARROWS[rng.randi_range(0, RIVER_NARROWS.size() - 1)])
+	var rift_col := Hex.axial_to_offset(rift).x
+	for k in range(n_narrows):
+		# Clear of the rift's bared ring and a column from another narrow where the field has the
+		# room; a narrow field takes what fits, the first narrow anywhere at all.
+		for attempt in range(24):
+			var run := rng.randi_range(2, 3)
+			var at := rng.randi_range(1, maxi(1, width - 1 - run))
+			var clear := STRUCTURE_HALF_WIDTH + 2 if attempt < 12 else (STRUCTURE_HALF_WIDTH if attempt < 18 else -1)
+			var margin_cols := 1 if attempt < 18 else 0
+			var ok := true
+			for col in range(at - margin_cols, at + run + margin_cols):
+				ok = ok and not narrow_cols.has(col) and absi(col - rift_col) > clear
+			if ok:
+				for col in range(at, at + run):
+					narrow_cols[col] = k
+				narrows.append([] as Array[Vector2i])
+				narrow_widths.append(run)
+				break
 	var line: Array[Vector2i] = []
-	var cur := Hex.offset_to_axial(-MARGIN_COLS - 1, base)
-	while Hex.axial_to_offset(cur).x <= width + MARGIN_COLS:
-		line.append(cur)
-		var steps: Array[Vector2i] = [Vector2i(1, 0), Vector2i(1, 0)]
-		if cur.y > lo and cur.y > base - 2:
-			steps.append(Vector2i(1, -1))
-		if cur.y < bottom and cur.y < base + 2:
-			steps.append(Vector2i(0, 1))
-		cur += steps[rng.randi_range(0, steps.size() - 1)]
-	var rows_of := {}   # a line hex -> its hexes across the river's thickness, its own first
+	# West of the field to the centre, then the centre to east of it, each leg a walk that heads
+	# for its goal's row and wanders, straight through a narrow.
+	var start := Hex.offset_to_axial(-MARGIN_COLS - 1, clampi(rng.randi_range(line_lo, line_hi), line_lo, line_hi))
+	var far := Hex.offset_to_axial(width + MARGIN_COLS, clampi(rng.randi_range(line_lo, line_hi), line_lo, line_hi))
+	var cur := start
+	for goal in [centre, far]:
+		var guard := (width + 2 * MARGIN_COLS) * 4
+		while Hex.axial_to_offset(cur).x < Hex.axial_to_offset(goal).x and guard > 0:
+			guard -= 1
+			line.append(cur)
+			var steps: Array[Vector2i] = []
+			var east := cur + Vector2i(1, 0)
+			var up := cur + Vector2i(1, -1)
+			var down := cur + Vector2i(0, 1)
+			if up.y >= line_lo:
+				steps.append(up)
+			if down.y <= line_hi:
+				steps.append(down)
+			var next := east
+			var col := Hex.axial_to_offset(cur).x
+			if narrow_cols.has(col) or narrow_cols.has(col + 1):
+				next = east   # straight through a narrow, and into it
+			elif rng.randf() < RIVER_WANDER and not steps.is_empty():
+				next = steps[rng.randi_range(0, steps.size() - 1)]
+			elif cur.y > goal.y and up.y >= line_lo:
+				next = up
+			elif cur.y < goal.y and down.y <= line_hi:
+				next = down
+			cur = next
+		cur = goal if Hex.axial_to_offset(cur).x <= Hex.axial_to_offset(goal).x else cur
+	line.append(cur)
 	for hx in line:
-		var hexes: Array[Vector2i] = [hx]
-		if thick >= 2:
-			hexes.append(hx + Vector2i(0, 1))
-		if thick >= 3 and rng.randf() < RIVER_DEEP:
-			hexes.append(hx + Vector2i(-1, 2))
-		rows_of[hx] = hexes
-		for wet in hexes:
-			_flood(wet)
+		_flood(hx)
+		var col := Hex.axial_to_offset(hx).x
+		if narrow_cols.has(col) and has(hx):
+			(narrows[int(narrow_cols[col])] as Array).append(hx)
+			continue
+		if thick >= 2 and hx.y + 1 <= hi:
+			_flood(hx + Vector2i(0, 1))
+		if thick >= 3 and hx.y + 2 <= hi and rng.randf() < RIVER_DEEP:
+			_flood(hx + Vector2i(-1, 2))
+	# The tributaries keep clear of the narrows.
+	var inside: Array[int] = []
+	for i in range(line.size()):
+		if has(line[i]) and not narrow_cols.has(Hex.axial_to_offset(line[i]).x):
+			inside.append(i)
+	# The tributaries: a hex thick, off a line hex inside the field, wandering toward the rift's
+	# row or the team's ground for a few hexes, never onto the team's rows.
+	for k in range(int(RIVER_TRIBUTARIES[rng.randi_range(0, RIVER_TRIBUTARIES.size() - 1)])):
+		if inside.is_empty():
+			break
+		var from := line[inside[rng.randi_range(0, inside.size() - 1)]]
+		var toward_rift := from.y > (lo + hi) / 2 or (from.y > lo and rng.randf() < 0.5)
+		var at := from
+		for step in range(rng.randi_range(3, 6)):
+			var options: Array[Vector2i] = []
+			if toward_rift:
+				options = [at + Vector2i(0, -1), at + Vector2i(1, -1)]
+			else:
+				options = [at + Vector2i(0, 1), at + Vector2i(-1, 1)]
+			if rng.randf() < 0.3:
+				options.append(at + (Vector2i(1, 0) if rng.randf() < 0.5 else Vector2i(-1, 0)))
+			var next: Vector2i = options[rng.randi_range(0, options.size() - 1)]
+			if not has(next) or is_structure(next) or next.y < lo or next.y > hi:
+				break
+			var by_narrow := false
+			for narrow in narrows:
+				for nh in narrow:
+					by_narrow = by_narrow or Hex.distance(next, nh) <= 1
+			if by_narrow:
+				break
+			_flood(next)
+			at = next
 	water_feature = "river"
-	# The fords: runs of the line inside the field (_crossing_runs), back to open ground through
-	# the river's whole thickness. Along the line, so a ford is as many hexes wide as it is
-	# long, whichever way the river bends there.
-	var inside: Array[Vector2i] = []
-	for hx in line:
-		if has(hx):
-			inside.append(hx)
-	for run in _crossing_runs(rng, inside.size(), FORDS_MOST):
-		var ford: Array[Vector2i] = []
-		for j in run:
-			for hx in rows_of[inside[j]]:
-				if has(hx) and terrain[hx] == Terrain.WATER:
-					terrain[hx] = Terrain.PLAIN
-					elevation[hx] = 0
-					ford.append(hx)
-		if not ford.is_empty():
-			fords.append(ford)
-			ford_widths.append((run as Array).size())
 	if rng.randf() < BANK_CRAG:
 		var banks: Array = []
 		for hx in _field_spots(lo, hi, 1, width - 2):
@@ -440,8 +503,8 @@ func _lay_river(rng: RandomNumberGenerator) -> void:
 			for nb in Hex.neighbors(hx):
 				wet = wet or terrain_of(nb) == Terrain.WATER
 			var clear := true
-			for ford in fords:
-				for f in ford:
+			for narrow in narrows:
+				for f in narrow:
 					clear = clear and Hex.distance(hx, f) >= 3
 			if wet and clear:
 				banks.append(hx)
@@ -455,43 +518,168 @@ func _lay_river(rng: RandomNumberGenerator) -> void:
 						break
 
 
-## FJORD: water down the field from the rift's mouth to the team's ground, two hexes wide and
-## three in places, drifting a column at most a row (so no land crosses it) with lanes two
-## wide at least either side: the packs walk the lanes, and a ground squad and a hunter alike
-## wade from one to the other at two a hex. Tests lane choice and a detachment across water.
-const FJORD_DRIFT := 0.35   # the chance a row's water sits a column over from the row above's
-const FJORD_WIDE := 0.3     # the chance a row is three wide
+## FJORD (Ryan, 10 November: "the new flooded, it can use more water. I'd say 50-60% of it should
+## be water, at least"): the open rows under water, the scenery beside them too, with land lanes
+## winding from the rift's row to the team's ground, two hexes wide and pinched to one in places,
+## one for every seven hexes of wall, a branch or two off each, and islands of one to three
+## hexes out in the water; shingle on the shores (_shore). Everyone wades the rest at two a hex,
+## the horde too, where a hovercraft and a flyer cross at one, so the lanes are the quick way and
+## the water the short cut that costs. Tests lane choice and a detachment across water.
+const FJORD_PER := 7          # hexes of wall a lane
+const FJORD_MOST := 4
+const FJORD_WIDEN := 0.8      # the chance a lane's step is two hexes wide
+const FJORD_SIDEWAYS := 0.35  # the chance a lane's step runs along the row rather than toward the wall
+const FJORD_BRANCHES := [1, 2]
+const FJORD_ISLANDS := [3, 5]
+
+
+## How many lanes the width takes: one for every FJORD_PER hexes of wall, one at least.
+func _fjord_count() -> int:
+	return clampi(roundi(float(width) / float(FJORD_PER)), 1, FJORD_MOST)
 
 
 func _lay_fjord(rng: RandomNumberGenerator) -> void:
-	var west := rng.randi_range(2, width - 4)   # the water's west column, the lanes two wide at least
-	for row in range(MOUTH_ROWS, _hi() + 1):
-		var wide := 3 if rng.randf() < FJORD_WIDE else 2
-		var want := west
-		if row > MOUTH_ROWS and rng.randf() < FJORD_DRIFT:
-			want += -1 if rng.randf() < 0.5 else 1
-		west = clampi(want, maxi(2, west - 1), mini(width - 2 - wide, west + 1))
-		for c in range(west, west + wide):
-			_flood(Hex.offset_to_axial(c, row))
+	var lo := mouth_rows()
+	var hi := _hi()
+	for hx in _field_spots(lo, hi):
+		_flood(hx)
+	for hx in _scenery():
+		var row := Hex.axial_to_offset(hx).y
+		if row >= lo and row <= hi:
+			_flood(hx)
+	# A shallow band keeps its lanes thinner and its branches fewer, so the water stays half the
+	# field or more at any depth.
+	var shallow := _open_rows() < 8
+	_carve_lanes(rng, _fjord_count(), FJORD_WIDEN if not shallow else FJORD_WIDEN * 0.7, FJORD_SIDEWAYS, FJORD_BRANCHES if not shallow else [0, 1], 0.5)
+	for k in range(int(FJORD_ISLANDS[rng.randi_range(0, FJORD_ISLANDS.size() - 1)])):
+		var spots := _field_spots(lo, hi)
+		for attempt in range(20):
+			var hx: Vector2i = spots[rng.randi_range(0, spots.size() - 1)]
+			if terrain[hx] != Terrain.WATER:
+				continue
+			var land := false
+			for nb in Hex.neighbors(hx):
+				land = land or (has(nb) and terrain[nb] != Terrain.WATER)
+			if land:
+				continue
+			_cut(hx)
+			for extra in range(rng.randi_range(0, 2)):
+				var nb: Vector2i = Hex.neighbors(hx)[rng.randi_range(0, 5)]
+				if has(nb) and terrain[nb] == Terrain.WATER and nb.y >= lo and nb.y <= hi:
+					_cut(nb)
+			break
 	water_feature = "fjord"
 
 
-## BADLANDS: mesas in groups of two to four with a hex between groups at least, and two or
-## three ponds of two or three hexes, breaking the field into winding paths; scrub at the
-## mesas' feet and out in the scenery, dry ground between. Tests everything at once, and the
-## longest walks.
+## Lanes carved through a flooded or walled band, from the rift's row to the team's ground:
+## `n` trunks, each in its stretch of the wall, wandering a column or so a row (`sideways`) and
+## two hexes wide at `widen` (a pinch otherwise), with `branches` off each running sideways
+## toward the neighbouring trunk until they meet a lane or run out, `branch_widen` wide. The
+## gorge's channels and the fjord's lanes are the same carving (Ryan, 10 November: the gorge
+## "more winding lanes between walls, with junctions and branches"). Returns every lane hex in
+## the order cut.
+func _carve_lanes(rng: RandomNumberGenerator, n: int, widen: float, sideways: float, branches: Array, branch_widen: float) -> Array[Vector2i]:
+	var lo := mouth_rows()
+	var hi := _hi()
+	var lane: Array[Vector2i] = []
+	var trunks: Array = []   # each trunk's hexes
+	var cols: Array[int] = []
+	for i in range(n):
+		var west := (width * i) / n
+		var east := (width * (i + 1)) / n - 1
+		var col := rng.randi_range(west, east)
+		cols.append(col)
+		var row := lo
+		var cur := Hex.offset_to_axial(col, row)
+		var mine: Array[Vector2i] = [cur]
+		_cut(cur)
+		var guard := width * 4
+		while row < hi and guard > 0:
+			guard -= 1
+			var options: Array[Vector2i] = []
+			for nb in Hex.neighbors(cur):
+				var o := Hex.axial_to_offset(nb)
+				if not has(nb) or is_structure(nb) or o.y < lo or o.y > hi:
+					continue
+				if o.y == row + 1:
+					options.append(nb)
+				elif o.y == row and rng.randf() < sideways and o.x >= west - 1 and o.x <= east + 1:
+					options.append(nb)
+			if options.is_empty():
+				break
+			cur = options[rng.randi_range(0, options.size() - 1)]
+			row = Hex.axial_to_offset(cur).y
+			_cut(cur)
+			mine.append(cur)
+			if rng.randf() < widen:
+				var beside := Hex.neighbors(cur)
+				var side: Vector2i = beside[rng.randi_range(0, beside.size() - 1)]
+				var so := Hex.axial_to_offset(side)
+				if has(side) and so.y >= lo and so.y <= hi and not is_structure(side):
+					_cut(side)
+					mine.append(side)
+		trunks.append(mine)
+		lane.append_array(mine)
+	# The branches: from a point on a trunk, sideways toward the neighbouring trunk's column,
+	# wandering a row now and then, until they meet a lane hex or run out: a junction, or a blind
+	# end.
+	for i in range(n):
+		var mine: Array = trunks[i]
+		for b in range(int(branches[rng.randi_range(0, branches.size() - 1)])):
+			var from: Vector2i = mine[rng.randi_range(0, mine.size() - 1)]
+			var dir := 1 if (i + 1 < n and (i == 0 or rng.randf() < 0.5)) else -1
+			if n == 1:
+				dir = -1 if rng.randf() < 0.5 else 1
+			var at := from
+			for step in range(rng.randi_range(4, 8)):
+				var o := Hex.axial_to_offset(at)
+				var next := Hex.offset_to_axial(o.x + dir, o.y)
+				if rng.randf() < 0.3:
+					next = Hex.offset_to_axial(o.x + (dir if o.y % 2 == 1 else 0), o.y + (1 if rng.randf() < 0.5 else -1))
+				var no := Hex.axial_to_offset(next)
+				if not has(next) or is_structure(next) or no.y < lo or no.y > hi:
+					break
+				var joined := _is_cut(next) and not mine.has(next)
+				_cut(next)
+				lane.append(next)
+				if rng.randf() < branch_widen:
+					var wide := Hex.offset_to_axial(no.x, no.y + (1 if no.y < hi else -1))
+					if has(wide) and Hex.axial_to_offset(wide).y >= lo and not is_structure(wide):
+						_cut(wide)
+						lane.append(wide)
+				if joined:
+					break   # a junction
+				at = next
+	return lane
+
+
+## Whether a hex of the field is cut ground: the shape's own ground, neither water nor a wall.
+func _is_cut(hx: Vector2i) -> bool:
+	return has(hx) and terrain[hx] != Terrain.WATER and terrain[hx] != Terrain.MOUNTAIN
+
+
+## BADLANDS (Ryan, 9 November: "winding paths broken by small obstacles, like an open field that
+## you can't take a straight path through"; 10 November: "can use more spires, and I barely see
+## any grouping"): mesas in groups of two to five, many of them, a hex of ground between any two
+## groups, so no straight line crosses the field and every walk winds; two or three ponds of two
+## to four hexes among them; scrub at the mesas' feet and out in the scenery, where the mesas go
+## on. Tests the longest walks and the pack that cannot come straight.
+const BADLANDS_PER := 9      # open hexes a group of mesas
+const BADLANDS_SIZES := [2, 2, 3, 3, 3, 4, 4, 5]   # a group's hexes, drawn from this
+
+
 func _lay_badlands(rng: RandomNumberGenerator) -> void:
-	var spots := _field_spots(MOUTH_ROWS, _hi())
-	for g in range(maxi(2, spots.size() / 15)):
-		_grow(rng, spots, rng.randi_range(3, 5), "mesas", 1)
+	var spots := _field_spots(mouth_rows(), _hi())
 	var ponds := 0
 	for p in range(rng.randi_range(2, 3)):
-		if not _grow(rng, spots, rng.randi_range(2, 3), "", 1).is_empty():
+		if not _grow(rng, spots, rng.randi_range(2, 4), "", 1).is_empty():
 			ponds += 1
+	for g in range(maxi(3, spots.size() / BADLANDS_PER)):
+		_grow(rng, spots, int(BADLANDS_SIZES[rng.randi_range(0, BADLANDS_SIZES.size() - 1)]), "mesas", 1)
 	water_feature = "ponds" if ponds > 1 else ("a pond" if ponds == 1 else "")
 	var scenery := _scenery()
-	for g in range(rng.randi_range(5, 8)):
-		_grow(rng, scenery, rng.randi_range(2, 4), "mesas", 1)
+	for g in range(rng.randi_range(6, 10)):
+		_grow(rng, scenery, rng.randi_range(1, 3), "mesas", 1)
 	for hx in scenery:
 		_dress_ground(hx, Terrain.ROUGH)
 	for hx in wall_look.keys():
@@ -499,98 +687,317 @@ func _lay_badlands(rng: RandomNumberGenerator) -> void:
 			_dress_ground(nb, Terrain.ROUGH)
 
 
-## OPEN STEPPE: relatively clear, the baseline the others are read against: a lone crag at
-## most and a pond at most, and the odd crag out in the scenery.
-const STEPPE_CRAG := 0.5
+## OPEN STEPPE: relatively clear, the baseline the others are read against, but never bare
+## (Ryan, 10 November: "Steppe is VERY barren"): a crag of one or two hexes at most for every
+## seven hexes of wall and a pond at most for every ten, scrub in belts from a seeded noise
+## over about a sixth of the field, the one rise, grass on the open field (the dress) and the
+## odd crag out in the scenery.
+const STEPPE_CRAG := 0.6
 const STEPPE_POND := 0.5
+const STEPPE_PER := 10        # hexes of wall a pond at most
+const STEPPE_CRAG_PER := 7    # hexes of wall a crag at most
+const STEPPE_SCRUB := 0.17    # the share of the field in scrub belts
+
+
+## How many ponds the steppe may take: one for every STEPPE_PER hexes of wall, one at least.
+func _steppe_count() -> int:
+	return maxi(1, width / STEPPE_PER)
 
 
 func _lay_steppe(rng: RandomNumberGenerator) -> void:
-	var spots := _field_spots(MOUTH_ROWS + 1, _hi() - 1, 1, width - 2)
-	if rng.randf() < STEPPE_CRAG:
-		_grow(rng, spots, 1, "crags", 2)
-	if rng.randf() < STEPPE_POND and not _grow(rng, spots, rng.randi_range(2, 3), "", 2).is_empty():
-		water_feature = "a pond"
+	var spots := _field_spots(mouth_rows() + 1, _hi() - 1, 1, width - 2)
+	var ponds := 0
+	for i in range(_steppe_count()):
+		if rng.randf() < STEPPE_POND and not _grow(rng, spots, rng.randi_range(2, 3), "", 2).is_empty():
+			ponds += 1
+	for i in range(maxi(1, width / STEPPE_CRAG_PER)):
+		if rng.randf() < STEPPE_CRAG:
+			_grow(rng, spots, rng.randi_range(1, 2), "crags", 2)
+	water_feature = "ponds" if ponds > 1 else ("a pond" if ponds == 1 else "")
+	# Scrub in belts: a low-frequency noise over the field, rough on the share of the field
+	# where it runs highest (the threshold the share's quantile, so the share holds at any size).
+	var noise := FastNoiseLite.new()
+	noise.seed = map_seed + 606
+	noise.frequency = 0.18
+	noise.fractal_type = FastNoiseLite.FRACTAL_NONE
+	var band := _field_spots(mouth_rows(), _hi())
+	var values: Array[float] = []
+	for hx in band:
+		var p := Hex.to_pixel(hx, 1.0)
+		values.append(noise.get_noise_2d(p.x, p.y))
+	var sorted := values.duplicate()
+	sorted.sort()
+	var threshold: float = sorted[clampi(int(float(sorted.size()) * (1.0 - STEPPE_SCRUB)), 0, sorted.size() - 1)]
+	for i in range(band.size()):
+		if values[i] >= threshold:
+			_dress_ground(band[i], Terrain.ROUGH)
 	var scenery := _scenery()
 	for g in range(rng.randi_range(1, 3)):
 		_grow(rng, scenery, rng.randi_range(1, 2), "crags", 2)
 
 
-## RUINED CITY: bands of towers across the field and on past both edges, one or two hexes
-## thick, two bands on a long field and one on a short, each with streets through it three or
-## four hexes wide in all, one to four of them (_crossing_runs); rubble everywhere else, and
-## towers standing in the scenery as the city goes on. Tests the streets held, a machine to a
-## street and the team fighting apart, and the flyer's one crossing of its own.
-const CITY_SCENERY_TOWERS := 0.22   # the share of the scenery a tower stands on
+## RUINED CITY (Ryan, 9 November: "channels broken by side streets, larger groups of impassible
+## terrain", the future's cities "towering massive entities, so dense sections of skyscrapers"):
+## a grid of streets between large blocks of towers. Avenues run from the wall toward the rift
+## one hex wide, four to five columns apart with the gate's column always one of them (two wide,
+## the main avenue the roads start on); side streets run along the wall mid the blocks, each
+## segment between two avenues there or not, so a channel is broken by a side street here and
+## walled there; an avenue segment may be fallen in (a collapsed tower), so the way round is the
+## side street. A block or two is a plaza, open ground with a fountain (water) in some; a street
+## segment or two is flooded. Rubble everywhere else, towers thick in the scenery as the city
+## goes on. The streets are the city's roads (_lay_roads). Tests the streets held and the team
+## fighting apart, the channel a pack must take and the flyer's crossing of its own.
+const CITY_SCENERY_TOWERS := 0.5   # the share of the scenery a tower stands on
+const CITY_SIDE_SEGMENT := 0.65    # the chance a side street's segment between two avenues is open
+const CITY_FALLEN := 0.15          # the chance an avenue's segment between two side streets has fallen in
+const CITY_PLAZAS := [1, 2]        # how many blocks are plazas
+const CITY_FOUNTAIN := 0.5         # the chance a plaza has a fountain
+const CITY_FLOODED := 0.4          # the chance a street segment is flooded, twice
 
 
 func _lay_city(rng: RandomNumberGenerator) -> void:
-	var lo := MOUTH_ROWS
+	var lo := mouth_rows()
 	var hi := _hi()
-	var bands: Array = []   # [the band's northmost row, its thickness]
-	var t1 := rng.randi_range(1, 2)
-	if hi - lo >= 9:
-		var r1 := rng.randi_range(lo + 1, lo + 3)
-		var t2 := rng.randi_range(1, 2)
-		var first := r1 + t1 + 3   # three rows of street between the bands at least
-		var r2 := rng.randi_range(first, maxi(first, hi - t2))   # and a row clear before the team's ground
-		bands = [[r1, t1], [r2, t2]]
-	else:
-		var top := maxi(lo, hi - t1)
-		bands = [[rng.randi_range(mini(lo + 1, top), top), t1]]
-	for band in bands:
-		var open := {}
-		for run in _crossing_runs(rng, width, STREETS_MOST):
-			var gap: Array[Vector2i] = []
-			for c in run:
-				open[c] = true
-				for row in range(int(band[0]), int(band[0]) + int(band[1])):
-					gap.append(Hex.offset_to_axial(c, row))
-			gaps.append(gap)
-			gap_widths.append((run as Array).size())
-		for row in range(int(band[0]), int(band[0]) + int(band[1])):
-			for col in range(-MARGIN_COLS, width + MARGIN_COLS):
-				if not open.has(col):
-					_wall(Hex.offset_to_axial(col, row), "towers")
+	var open := _open_rows()
+	# The mass: towers on every open hex of the field, then the streets cut through them.
+	for hx in _field_spots(lo, hi):
+		_wall(hx, "towers")
+	var gate_col := Hex.axial_to_offset(gate).x
+	var k := rng.randi_range(4, 5)   # columns between avenues
+	var avenues: Array[int] = []
+	var c := gate_col % k
+	while c < width:
+		if c >= 1 and c <= width - 2:
+			avenues.append(c)
+		c += k
+	# The side streets: one mid the open rows; two where there is room for blocks between.
+	var side_rows: Array[int] = []
+	if open >= 7:
+		side_rows = [lo + open / 3, lo + (2 * open) / 3]
+	elif open >= 3:
+		side_rows = [lo + open / 2]
+	var street_hexes := {}   # hex -> true
+	var paths: Array = []
+	for a in avenues:
+		var path: Array = []
+		var cols: Array[int] = [a]
+		if a == gate_col:
+			cols.append(a + 1)   # the main avenue two wide: the gate's column and the one beside
+		# The avenue's segments between side streets, each standing or fallen in.
+		var cuts: Array[int] = [lo - 1]
+		cuts.append_array(side_rows)
+		cuts.append(hi + 1)
+		for i in range(cuts.size() - 1):
+			var fallen := a != gate_col and rng.randf() < CITY_FALLEN
+			for row in range(int(cuts[i]) + 1, int(cuts[i + 1])):
+				for col in cols:
+					var hx := Hex.offset_to_axial(col, row)
+					if not fallen and has(hx):
+						_cut(hx)
+						street_hexes[hx] = true
+					if not fallen and col == a:
+						path.append(hx)
+		for row in side_rows:
+			for col in cols:
+				var hx := Hex.offset_to_axial(col, row)
+				if has(hx):
+					_cut(hx)
+					street_hexes[hx] = true
+				if col == a:
+					path.append(hx)
+		path.sort_custom(func(x: Vector2i, y: Vector2i) -> bool: return x.y > y.y)   # from the wall's end
+		paths.append(path)
+	for row in side_rows:
+		var stops: Array[int] = [-1]
+		stops.append_array(avenues)
+		stops.append(width)
+		for i in range(stops.size() - 1):
+			if rng.randf() >= CITY_SIDE_SEGMENT:
+				continue
+			var seg: Array = []
+			for col in range(int(stops[i]) + 1, int(stops[i + 1])):
+				var hx := Hex.offset_to_axial(col, row)
+				if has(hx):
+					_cut(hx)
+					street_hexes[hx] = true
+					seg.append(hx)
+			if not seg.is_empty():
+				paths.append(seg)
+	# The plazas: a block or two opened whole, a fountain in some.
+	var blocks: Array = _city_blocks(avenues, side_rows)
+	var fountains := 0
+	for n in range(int(CITY_PLAZAS[rng.randi_range(0, CITY_PLAZAS.size() - 1)])):
+		if blocks.is_empty():
+			break
+		var block: Array = blocks.pop_at(rng.randi_range(0, blocks.size() - 1))
+		for hx in block:
+			_cut(hx)
+		if rng.randf() < CITY_FOUNTAIN and block.size() >= 3:
+			var mid: Vector2i = block[block.size() / 2]
+			_flood(mid)
+			fountains += 1
+	# The flooded streets: a segment or two under water, never the main avenue.
+	var flooded := 0
+	for n in range(2):
+		if rng.randf() < CITY_FLOODED and paths.size() > 1:
+			var path: Array = paths[rng.randi_range(1, paths.size() - 1)]
+			if path.size() >= 3:
+				var at := rng.randi_range(0, path.size() - 3)
+				for j in range(at, at + rng.randi_range(2, 3)):
+					if j < path.size() and has(path[j]) and terrain[path[j]] != Terrain.WATER:
+						_flood(path[j])
+						flooded += 1
+	water_feature = ""
+	if flooded > 0:
+		water_feature = "flooded streets"
+	if fountains > 0:
+		water_feature += (" + " if not water_feature.is_empty() else "") + ("fountains" if fountains > 1 else "a fountain")
+	streets = paths
 	for hx in _scenery():
 		if rng.randf() < CITY_SCENERY_TOWERS:
 			_wall(hx, "towers")
 
 
-## GORGE: cliff walls down the field from the rift's mouth to the team's ground, one hex
-## thick, two on a wide field and one on a narrow, drifting a column at most a row (a hex
-## below another is beside it only one way at each row's parity, odd rows sitting half a hex
-## east), with lanes two hexes wide at least between and beside them; the gorge's own sides
-## stand in the scenery past both edges. Tests the hardest commitment to a lane, changed only
-## round a wall's ends.
-const GORGE_DRIFT := 0.3
+## The city's blocks: the tower hexes between two avenues and two side streets, each as an
+## Array, the blocks of fewer than three hexes aside.
+func _city_blocks(avenues: Array[int], side_rows: Array[int]) -> Array:
+	var out: Array = []
+	var col_stops: Array[int] = [-1]
+	col_stops.append_array(avenues)
+	col_stops.append(width)
+	var row_stops: Array[int] = [mouth_rows() - 1]
+	row_stops.append_array(side_rows)
+	row_stops.append(_hi() + 1)
+	for i in range(col_stops.size() - 1):
+		for j in range(row_stops.size() - 1):
+			var block: Array = []
+			for col in range(int(col_stops[i]) + 1, int(col_stops[i + 1])):
+				for row in range(int(row_stops[j]) + 1, int(row_stops[j + 1])):
+					var hx := Hex.offset_to_axial(col, row)
+					if has(hx) and terrain[hx] == Terrain.MOUNTAIN:
+						block.append(hx)
+			if block.size() >= 3:
+				out.append(block)
+	return out
+
+
+## A hex of the field cut back to the shape's ground: a channel through the gorge's cliffs, a
+## street through the city's towers.
+func _cut(hx: Vector2i) -> void:
+	if not has(hx) or is_structure(hx):
+		return
+	terrain[hx] = int(KINDS[kind]["ground"])
+	crag_base.erase(hx)
+	wall_look.erase(hx)
+	elevation[hx] = 0
+
+
+## GORGE (Ryan, 9 November: "winding, branching channels"; 10 November: "more winding lanes
+## between walls, with junctions and branches"): cliff mass over the whole open band, the field
+## and the scenery beside it, cut by channels (_carve_lanes). Trunks run from the rift's row to
+## the team's ground, one for every five hexes of wall, each wandering a column or so a row and
+## one or two hexes wide; three or four branches leave each trunk sideways toward the next and
+## wander, meeting another channel at a junction or ending blind; a stretch or two of channel
+## lies flooded, a wade. The gorge's own sides stand in the scenery past both edges, and scree
+## lies at the cliffs' feet. Tests the pack that must come the long way and the channel held at
+## its mouth.
+const GORGE_PER := 5          # hexes of wall a trunk
+const GORGE_MOST := 5
+const GORGE_WIDEN := 0.75     # the chance a trunk's step is two hexes wide (a pinch otherwise)
+const GORGE_SIDEWAYS := 0.4   # the chance a trunk's step runs along the row rather than toward the wall
+const GORGE_BRANCHES := [3, 4]
+const GORGE_FLOODED := 0.5    # the chance a stretch of channel is flooded, twice
+const GORGE_SCREE := 0.3      # the share of the channels' edges in scree
+
+
+## How many trunks the width takes: one for every GORGE_PER hexes of wall, one at least.
+func _cliff_count() -> int:
+	return clampi(roundi(float(width) / float(GORGE_PER)), 1, GORGE_MOST)
 
 
 func _lay_gorge(rng: RandomNumberGenerator) -> void:
-	var cols: Array[int] = []
-	if width >= 8:
-		var a := rng.randi_range(2, 3)
-		cols = [a, rng.randi_range(a + 3, width - 3)]
-	else:
-		cols = [rng.randi_range(2, width - 3)]
-	for row in range(MOUTH_ROWS, _hi() + 1):
-		for i in range(cols.size()):
-			if row > MOUTH_ROWS and rng.randf() < GORGE_DRIFT:
-				var c: int = cols[i] + (-1 if (row - 1) % 2 == 0 else 1)
-				var ok := c >= 2 and c <= width - 3
-				if cols.size() == 2:
-					ok = ok and (cols[1] - c if i == 0 else c - cols[0]) >= 3
-				if ok:
-					cols[i] = c
-			_wall(Hex.offset_to_axial(cols[i], row), "cliffs")
-	for row in range(0, _hi() + 1):
+	var lo := mouth_rows()
+	var hi := _hi()
+	for hx in _field_spots(lo, hi):
+		_wall(hx, "cliffs")
+	for hx in _scenery():
+		var row := Hex.axial_to_offset(hx).y
+		if row >= lo and row <= hi:
+			_wall(hx, "cliffs")
+	for row in range(0, hi + 1):
 		_wall(Hex.offset_to_axial(-1, row), "cliffs")
 		_wall(Hex.offset_to_axial(width, row), "cliffs")
+	var channel := _carve_lanes(rng, _cliff_count(), GORGE_WIDEN, GORGE_SIDEWAYS, GORGE_BRANCHES, 0.5)
+	# The flooded stretches: a run of channel under water, a wade for everyone.
+	var flooded := 0
+	for n2 in range(2):
+		if rng.randf() < GORGE_FLOODED and channel.size() >= 4:
+			var at := rng.randi_range(0, channel.size() - 3)
+			for j in range(at, mini(channel.size(), at + rng.randi_range(2, 3))):
+				if terrain[channel[j]] != Terrain.WATER:
+					_flood(channel[j])
+					flooded += 1
+	water_feature = "flooded channels" if flooded > 0 else ""
 
 
-## The gate, the rift and the ground right in front of each are always open and bare; the
-## rift's mouth (rows 0 to 3, the boss's patrol) and the team's two rows above the gate's
-## apron hold no water and no wall, so a deployed machine always has somewhere to go.
+## Rough ground in stretches along the water's edge or at a wall's foot: a river's gravel bars,
+## a fjord's shingle, a gorge's scree, the shape's second decorative ground (the bible's shapes
+## row: one or two a shape, laid to be read). From a seeded noise, so it comes in runs rather
+## than per-hex rolls (Ryan, 21 September: a believable landscape), on about `share` of the
+## plain hexes of the field and the scenery beside `beside` (water or a wall); never over a
+## road, water or a wall, and the ground in front of a structure is bared after (_clear_ends).
+const SHORE_SHARE := 0.45
+
+
+## A narrow is what is left of it once the structures' fronts are bared: its hexes still water,
+## and a narrow with none gone.
+func _prune_narrows() -> void:
+	var kept: Array = []
+	var widths: Array = []
+	for i in range(narrows.size()):
+		var hexes: Array = []
+		for hx in narrows[i]:
+			if has(hx) and terrain[hx] == Terrain.WATER:
+				hexes.append(hx)
+		if not hexes.is_empty():
+			kept.append(hexes)
+			widths.append(hexes.size())
+	narrows = kept
+	narrow_widths = widths
+
+
+## Each shape's second ground, laid once the horde's guarantee has opened what it opens and the
+## structures' fronts are bared, so no bar or scree outlives the water or the cliff it lay by.
+func _dress_shores() -> void:
+	match kind:
+		"river", "fjord":
+			_shore(Terrain.WATER, SHORE_SHARE)
+		"gorge":
+			_shore(Terrain.MOUNTAIN, GORGE_SCREE)
+
+
+func _shore(beside: int, share: float) -> void:
+	var noise := FastNoiseLite.new()
+	noise.seed = map_seed + 505
+	noise.frequency = 0.3
+	noise.fractal_type = FastNoiseLite.FRACTAL_NONE
+	var threshold := 1.0 - 2.0 * share
+	for hx in terrain.keys() + _scenery():
+		if terrain_of(hx) != Terrain.PLAIN:
+			continue
+		var by := false
+		for n in Hex.neighbors(hx):
+			by = by or ((has(n) or margin.has(n)) and terrain_of(n) == beside)
+		if not by:
+			continue
+		var p := Hex.to_pixel(hx, 1.0)
+		if noise.get_noise_2d(p.x, p.y) > threshold:
+			_dress_ground(hx, Terrain.ROUGH)
+
+
+## The gate, the rift and the ground right in front of each are always open and bare (the rift's
+## ring is its mouth, where the packs land); the team's two rows above the gate's apron hold no
+## water and no wall, so a deployed machine always has somewhere to go.
 func _clear_ends() -> void:
 	var base: int = int(KINDS[kind]["ground"])
 	for hx in terrain.keys():
@@ -603,7 +1010,7 @@ func _clear_ends() -> void:
 		var t: int = terrain[hx]
 		if near:
 			terrain[hx] = Terrain.PLAIN
-		elif (row < MOUTH_ROWS or row > _hi()) and (t == Terrain.WATER or t == Terrain.MOUNTAIN):
+		elif (row < mouth_rows() or row > _hi()) and (t == Terrain.WATER or t == Terrain.MOUNTAIN):
 			terrain[hx] = base
 		else:
 			continue
@@ -611,10 +1018,10 @@ func _clear_ends() -> void:
 		wall_look.erase(hx)
 
 
-## The roads lead somewhere (Ryan, 29 October): the river's from the gate to each ford two
-## hexes wide or more (to the nearest ford when none is) and on across it, the steppe's one road
-## north from the gate, the city's streets from the gate through a gap of every band and on
-## toward the rift, its other gaps joined to them. The fjord, the badlands and the gorge lay
+## The roads lead somewhere (Ryan, 29 October): the river's from the gate to each narrow (the
+## water fords) and on across it, the steppe's one road
+## north from the gate, the city's streets (its avenues from the wall's end toward the rift, the
+## main one from the gate, and its side streets). The fjord, the badlands and the gorge lay
 ## none. A road keeps its gaps (nobody paves between attacks) but for its first slabs off the
 ## gate, never routes through or paves water or a wall, and is never a lone slab.
 func _lay_roads(rng: RandomNumberGenerator) -> void:
@@ -624,62 +1031,35 @@ func _lay_roads(rng: RandomNumberGenerator) -> void:
 	var paths: Array = []
 	match kind:
 		"river":
-			var roaded: Array = []
-			for i in range(fords.size()):
-				if int(ford_widths[i]) >= 2:
-					roaded.append(i)
-			if roaded.is_empty() and not fords.is_empty():
-				var near := 0
-				for i in range(fords.size()):
-					if Hex.distance(front, _ends_of(fords[i])[0]) < Hex.distance(front, _ends_of(fords[near])[0]):
-						near = i
-				roaded.append(near)
-			for i in roaded:
-				var ends := _ends_of(fords[i])
+			for i in range(narrows.size()):
+				# To the narrow's middle hex by dry ground, or to whichever of its hexes dry ground
+				# reaches, and on past it.
+				var ends := _ends_of(narrows[i])
+				var there: Array = find_path(front, ends[0], [], wet)
+				var at: Vector2i = ends[0]
+				if there.is_empty():
+					for hx in narrows[i]:
+						there = find_path(front, hx, [], wet)
+						if not there.is_empty():
+							at = hx
+							break
+				if there.is_empty():
+					continue
 				var path: Array = [front]
-				path.append_array(find_path(front, ends[0], [], wet))
-				path.append_array(find_path(ends[0], ends[1], [], wet))
-				path.append_array(find_path(ends[1], _north_of(ends[1], rng.randi_range(3, 5)), [], wet))
+				path.append_array(there)
+				path.append_array(find_path(at, _north_of(at, rng.randi_range(3, 5)), [], wet))
 				paths.append(path)
+			if paths.is_empty():
+				paths.append(_trunk(front, rng))   # no narrow dry ground reaches: the road runs for the water as the steppe's does
 		"steppe":
 			paths.append(_trunk(front, rng))
 		"city":
-			var bands := {}   # a band's northmost row -> its gaps by index, so the street meets the bands south to north
-			for i in range(gaps.size()):
-				var row := (_ends_of(gaps[i])[1] as Vector2i).y
-				if not bands.has(row):
-					bands[row] = []
-				bands[row].append(i)
-			var rows: Array = bands.keys()
-			rows.sort()
-			rows.reverse()
-			var street: Array = [front]
-			var cur := front
-			var joined := {}
-			for row in rows:
-				var best: int = bands[row][0]
-				for i in bands[row]:
-					if Hex.distance(cur, _ends_of(gaps[i])[0]) < Hex.distance(cur, _ends_of(gaps[best])[0]):
-						best = i
-				var ends := _ends_of(gaps[best])
-				street.append_array(find_path(cur, ends[0], [], wet))
-				street.append_array(find_path(ends[0], ends[1], [], wet))
-				cur = ends[1]
-				joined[best] = true
-			street.append_array(find_path(cur, _north_of(cur, height), [], wet))
-			paths.append(street)
-			for i in range(gaps.size()):
-				if joined.has(i):
-					continue
-				var ends := _ends_of(gaps[i])
-				var near: Vector2i = street[0]
-				for hx in street:
-					if Hex.distance(ends[0], hx) < Hex.distance(ends[0], near):
-						near = hx
-				var branch: Array = [near]
-				branch.append_array(find_path(near, ends[0], [], wet))
-				branch.append_array(find_path(ends[0], ends[1], [], wet))
-				paths.append(branch)
+			for street in streets:
+				var path: Array = []
+				if not street.is_empty() and Hex.axial_to_offset(street[0]).x == o.x:
+					path.append(front)   # the main avenue starts in front of the gate
+				path.append_array(street)
+				paths.append(path)
 	for path in paths:
 		for i in range(path.size()):
 			var h: Vector2i = path[i]
@@ -740,8 +1120,8 @@ func _wet() -> Dictionary:
 	return out
 
 
-## Where a road enters a ford or a gap from the south and leaves it to the north: the middle
-## hex of its southmost row and of its northmost.
+## Where a road meets a narrow from the south and leaves it to the north: the middle hex of its
+## southmost row and of its northmost (one and the same for a narrow on one row).
 func _ends_of(hexes: Array) -> Array:
 	var rows := {}
 	for hx in hexes:
@@ -760,7 +1140,7 @@ func _ends_of(hexes: Array) -> Array:
 ## A hex `rows` rows north of `hx` in its column, short of the rift's mouth.
 func _north_of(hx: Vector2i, rows: int) -> Vector2i:
 	var o := Hex.axial_to_offset(hx)
-	return Hex.offset_to_axial(o.x, maxi(MOUTH_ROWS, o.y - rows))
+	return Hex.offset_to_axial(o.x, maxi(mouth_rows(), o.y - rows))
 
 
 ## The relief is the shape's (Ryan, 29 October, of the 3D: "I like the look but maybe it's a
@@ -815,7 +1195,7 @@ func _steppe_rise(rng: RandomNumberGenerator, want: Dictionary) -> void:
 	if rng.randf() >= STEPPE_RISE:
 		return
 	var options: Array = []
-	for hx in _field_spots(MOUTH_ROWS + 2, _hi() - 2, 2, width - 3):
+	for hx in _field_spots(mouth_rows() + 1, _hi() - 1, 2, width - 3):
 		var clear := true
 		for n in _within(hx, 2):
 			var t := terrain_of(n)
@@ -851,7 +1231,10 @@ func _water_distance() -> Dictionary:
 
 ## The ground that stays level whatever the shape wants: the structures and the ground in
 ## front of them, the team's rows and the gate's, the roads, the city and the wall's rows in
-## the scenery (the scenery beside the team's rows eases down to them, _scenery_cap).
+## the scenery (the scenery beside the team's rows eases down to them, _scenery_cap), and the
+## whole field of every shape but the badlands and the steppe (the rule: the field is level but
+## for the mesas' shoulders and the steppe's one rise, so no settling lifts a channel's hex at
+## the field's edge to its scenery neighbours' height).
 func _level(hx: Vector2i) -> bool:
 	var row := Hex.axial_to_offset(hx).y
 	if city.has(hx) or is_structure(hx):
@@ -860,14 +1243,18 @@ func _level(hx: Vector2i) -> bool:
 		return row >= height - GATE_ROWS
 	if row > _hi() or terrain[hx] == Terrain.ROAD:
 		return true
+	if kind != "badlands" and kind != "steppe":
+		return true
 	for n in Hex.neighbors(hx):
 		if gate_hexes.has(n) or rift_hexes.has(n):
 			return true
 	return false
 
 
-## How high the scenery may rise at a hex: a step a column (or a row) past the field's edge,
-## and a step a row less toward the wall's rows, so the scenery eases down to the wall.
+## How high the scenery may rise at a hex: level in the ring beside the field, then a step a
+## column (or a row) further out, and a step a row less toward the wall's rows, so the scenery
+## eases up from the field's edge and down to the wall (the ring level since 9 November: a
+## channel's hex at a gorge's edge stood alone between its flooded neighbour and a raised side).
 func _scenery_cap(hx: Vector2i) -> int:
 	var o := Hex.axial_to_offset(hx)
 	var d := 0
@@ -877,7 +1264,7 @@ func _scenery_cap(hx: Vector2i) -> int:
 		d = o.x - width + 1
 	if o.y < 0:
 		d = maxi(d, -o.y)
-	return clampi(mini(d, height - GATE_ROWS - 1 - o.y), 0, 3)
+	return clampi(mini(d - 1, height - GATE_ROWS - 1 - o.y), 0, 3)
 
 
 ## Never a lone hex: a land hex whose every land neighbour, three at least, stands at another
@@ -1049,8 +1436,11 @@ func find_path(from: Vector2i, to: Vector2i, traits: Array, blocked: Dictionary 
 	var prev := {}
 	var frontier: Array = [[0, from]]
 	# A path that starts inside the gate may cross the rest of the gate (its apron) to get
-	# out; that is how the gate-to-rift guarantee is checked. Nothing else crosses a structure.
+	# out, and one that ends inside the rift the rest of the rift to get in (its middle lies
+	# behind the two hexes in front of it); that is how the gate-to-rift guarantee is checked.
+	# Nothing else crosses a structure.
 	var own_gate := gate_hexes.has(from)
+	var own_rift := rift_hexes.has(to)
 	while not frontier.is_empty():
 		var best := 0
 		for i in range(1, frontier.size()):
@@ -1066,7 +1456,7 @@ func find_path(from: Vector2i, to: Vector2i, traits: Array, blocked: Dictionary 
 		for n in Hex.neighbors(h):
 			if not has(n):
 				continue
-			if n != to and (blocked.has(n) or (is_structure(n) and not (own_gate and gate_hexes.has(n)))):
+			if n != to and (blocked.has(n) or (is_structure(n) and not (own_gate and gate_hexes.has(n)) and not (own_rift and rift_hexes.has(n)))):
 				continue
 			var t: int = terrain[n]
 			if not passable(t, traits):

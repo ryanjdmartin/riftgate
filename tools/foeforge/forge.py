@@ -6,6 +6,8 @@ the same place as the codex text:
 
     generate   render candidate images for a foe with mflux (FLUX on Apple silicon)
     cut        turn one chosen candidate into art/foes/<id>_combat.png and <id>_map.png
+    boss       the boss's picture on the map, art/foes/<id>_boss.png, from each boss's combat
+               sprite (no model: Pillow and numpy alone, on any machine)
 
     tools/foeforge/.venv/bin/python tools/foeforge/forge.py generate ghoul --n 4
     tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut tools/foeforge/out/ghoul/ghoul_3.png ghoul
@@ -94,7 +96,15 @@ PALETTE_FOR = {"meadow": "UND", "waste": "DEM", "marsh": "UND", "peak": "DEM"}
 # phone; 48x64 lost the art's detail and 96x128 went uneven and thin-outlined at 1.5.
 COMBAT_SIZE = {1: (72, 96), 2: (96, 144)}
 MAP_SIZE = {1: (16, 16), 2: (16, 16)}
-BIG_MAP = {"bone_dragon": (40, 40)}   # the old three-hex colossus's token; the other bosses take MAP_SIZE until the multi-hex boss returns
+BIG_MAP = {"bone_wyvern": (40, 40)}   # the old three-hex colossus's token; the other bosses take MAP_SIZE until the multi-hex boss returns
+# The boss's picture on the map (Ryan, 10 November: the 16-pixel token drawn eight times its
+# size "is good but now it's just a giant blob. Probably needs to be actually regenerated for a
+# sensible size"): a frame of its own, three times a token's, which the map draws at the height
+# it drew the token blown up to, so a texel of it is a pack's token's texel (four device pixels
+# on the 1080 phone) and the boss is drawn in the same hand as its packs, with the detail its
+# size asks for. The 16-pixel token stays for the small faces (an edge tag, a hunter's plate).
+BOSS_FRAME = (48, 48)
+FACTIONS = ROOT / "content" / "factions.json"
 
 
 DRAFTS = ROOT / "tools" / "foeforge" / "drafts.json"
@@ -748,11 +758,12 @@ def outline(img, colour=(20, 22, 28, 255)):
     return out
 
 
-def fit(img, frame, height_px=0):
+def fit(img, frame, height_px=0, grow=True):
     """Scale the cropped figure into the frame, keeping aspect, feet on the floor, with a
     one-pixel margin for the outline. Transparent pixels are painted the figure's mean
     colour before scaling so edge pixels blend with the figure rather than with black, and
-    alpha is hard-thresholded afterwards so nothing is half there."""
+    alpha is hard-thresholded afterwards so nothing is half there. With `grow` off a figure
+    smaller than the frame keeps its pixels (a sprite is never enlarged: it would smear)."""
     fw, fh = frame
     bbox = img.getbbox()
     fig = np.array(img.crop(bbox)).astype(np.float32)
@@ -764,6 +775,8 @@ def fit(img, frame, height_px=0):
     fig_img = Image.fromarray(fig.astype(np.uint8), "RGBA")
     inner = (fw - 2, fh - 2)
     scale = min(inner[0] / fig_img.width, inner[1] / fig_img.height)
+    if not grow:
+        scale = min(scale, 1.0)
     if height_px:
         # A shared scale across a register (the chibis, 14 October): the body's height maps
         # to height_px, so the party stands at one scale whatever each one holds. The body
@@ -776,7 +789,7 @@ def fit(img, frame, height_px=0):
         body = fig_img.height - body_top
         scale = min(scale, height_px / body)
     size = (max(1, round(fig_img.width * scale)), max(1, round(fig_img.height * scale)))
-    small = np.array(fig_img.resize(size, Image.LANCZOS))
+    small = np.array(fig_img if size == fig_img.size else fig_img.resize(size, Image.LANCZOS))
     small[..., 3] = np.where(small[..., 3] >= 128, 255, 0)
     small[small[..., 3] == 0] = 0
     canvas = Image.new("RGBA", frame, (0, 0, 0, 0))
@@ -808,6 +821,9 @@ def cut(args):
     map_frame = BIG_MAP.get(args.foe, MAP_SIZE[size])
     token = outline(quantize(fit(src, map_frame), pal, min(args.colours, 8)))
     token.save(ART / f"{args.foe}_map.png")
+    if args.foe in boss_ids():
+        boss_picture(args.foe).save(ART / f"{args.foe}_boss.png")
+        print(f"wrote {args.foe}_boss.png {BOSS_FRAME}: it can stand as the boss on the map")
     preview = Image.new("RGBA", (combat.width * 4 + token.width * 4 + 24, max(combat.height, token.height) * 4), (27, 31, 38, 255))
     preview.paste(combat.resize((combat.width * 4, combat.height * 4), Image.NEAREST), (0, 0))
     preview.paste(token.resize((token.width * 4, token.height * 4), Image.NEAREST), (combat.width * 4 + 24, 0))
@@ -815,6 +831,56 @@ def cut(args):
     pv.parent.mkdir(parents=True, exist_ok=True)
     preview.save(pv)
     print(f"wrote {args.foe}_combat.png {combat.size} and {args.foe}_map.png {token.size}; preview {pv.relative_to(ROOT)}")
+
+
+# ---------------------------------------------------------------- the boss on the map
+
+def boss_ids():
+    """Every foe that can stand as the boss on the map, from content: each domain's bosses and
+    its bench (the hero a domain's final is led by), in content order."""
+    out = []
+    for f in json.loads(FACTIONS.read_text())["entries"]:
+        b = f.get("boss") or []
+        for fid in (b if isinstance(b, list) else [b]) + list(f.get("bench") or []):
+            if fid not in out:
+                out.append(fid)
+    return out
+
+
+def _without_stamp(combat):
+    """A placeholder's combat sprite without its reminder (tools/placeholder_art.py's yellow "?"
+    on a dark tag in the top right corner): the stamp is the combat sprite's, never a token's."""
+    w = combat.width
+    box = (w - 11, 1, w - 1, 13)
+    tag = np.array(combat.crop(box))
+    if (tag[..., :3] == (255, 220, 40)).all(-1).sum() < 5:
+        return combat
+    out = combat.copy()
+    out.paste((0, 0, 0, 0), box)
+    return out
+
+
+def boss_picture(foe_id, frame=BOSS_FRAME, colours=16):
+    """A boss's picture for the map from its combat sprite, whichever tool made that (a cut, a
+    placeholder): the figure shrunk into `frame`, feet on the floor, never enlarged (a hero's
+    chibi is smaller than the frame and keeps its pixels), then the cut's own finish: the gentle
+    sharpen, the sprite's own colours, the one-pixel outline."""
+    combat = _without_stamp(Image.open(ART / f"{foe_id}_combat.png").convert("RGBA"))
+    small = fit(combat, frame, grow=False)
+    return outline(sharpen_quantize(small, combat, colours, 60))
+
+
+def boss(args):
+    known = boss_ids()
+    for foe_id in args.foes or known:
+        if foe_id not in known:
+            sys.exit(f"{foe_id} is no domain's boss and on no bench (content/factions.json)")
+        if not (ART / f"{foe_id}_combat.png").exists():
+            print(f"skipped {foe_id}: no combat sprite to cut it from")
+            continue
+        pic = boss_picture(foe_id, (args.frame, args.frame), args.colours)
+        pic.save(ART / f"{foe_id}_boss.png")
+        print(f"wrote {foe_id}_boss.png {pic.size}")
 
 
 # ---------------------------------------------------------------- the rift
@@ -1200,6 +1266,11 @@ def main():
     c.add_argument("--keep-glow", nargs=4, type=int, action="append", default=[], metavar=("X0", "Y0", "X1", "Y1"), help="white-hot light inside the figure, in this box of the render (repeatable): every pocket of keyed white centred in it comes back, white the edge fill reached through gaps under 16 pixels counting as a pocket (Surtr's blade and the blaze round his face)")
     c.add_argument("--faction-palette", action="store_true", help="snap to the faction palette from the enemy sheet instead of keeping the model's colours")
     c.set_defaults(func=cut)
+    bo = sub.add_parser("boss", help="the boss's picture on the map, art/foes/<id>_boss.png, from each boss's combat sprite (no model needed)")
+    bo.add_argument("foes", nargs="*", help="foe ids; none for every domain's bosses and bench")
+    bo.add_argument("--frame", type=int, default=BOSS_FRAME[0], help="the square frame's side in pixels (default 48: a texel the size of a pack's token's on the map)")
+    bo.add_argument("--colours", type=int, default=16)
+    bo.set_defaults(func=boss)
     r = sub.add_parser("rift", help="candidates for the rift: a vortex tearing a hole in reality")
     r.add_argument("--n", type=int, default=4)
     r.add_argument("--seed", type=int, default=1)

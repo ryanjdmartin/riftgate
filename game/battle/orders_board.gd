@@ -5,10 +5,12 @@ extends Control
 ## strip of its own so that, held, it never covers a hex someone wants to tap (Ryan, 28
 ## September: an overlay on the map would make selecting under it annoying); empty, the
 ## strip read as a black gap on a tall phone, so it carries the orders board while it
-## waits. What a player wants at a glance (Ryan, 29 September): every machine's shield
-## and hull, what it can still do this turn, and whether a hunter is after it; the enemy on
-## the field as a count; what the enemy's turn will do to the gate. Not the rift's count
-## (the top bar and the rift's own bar say it), not the nearest pack (the map is faster). The display dresses it: a bytes readout ticking in the corner, and a
+## waits. What a player wants at a glance (Ryan, 29 September): every machine's hull (no
+## shield: the fight's, full as every fight opens), what it can still do this turn (the only
+## place that says so: Ryan, 9 November, the pip on the map retired as clutter), and whether a
+## hunter is after it; the turn; the enemy on the field as a count; what the enemy's turn will do
+## to the gate. Not the gate's integrity, the rift's count or the Fractures (the top bar's
+## gauges), not the nearest pack (the map is faster). The display dresses it: a bytes readout ticking in the corner, and a
 ## line whose text changed settles from a scramble. Covered (drawn blank) while the
 ## readout is up. The LOG button at its corner belongs to the screen and opens the full log.
 
@@ -20,7 +22,7 @@ var playing: Callable = Callable()   # -> bool: the movement phase is playing
 const ROW_H := 24.0
 const SETTLE := 0.45   # seconds a changed line spends scrambled
 const BAR_W := 54.0
-const BAR_H := 6.0
+const BAR_H := 10.0   # one gauge, the hull, so a little heavier than the two it replaced
 
 var _t := 0.0
 var _last: Dictionary = {}    # line key -> text last drawn, to see a change
@@ -50,7 +52,7 @@ func _draw() -> void:
 	draw_string(mono, Vector2(0.0, y), Hud.hex_bytes(4, frame, 3), HORIZONTAL_ALIGNMENT_RIGHT, size.x - 76.0, 12, Color(hud, 0.45))
 	draw_line(Vector2(10.0, y + 6.0), Vector2(size.x - 10.0, y + 6.0), Color(hud, 0.22), 1.0)
 	y += ROW_H
-	# The machines, one row each, in the team's order: name, shield and hull, order, contact.
+	# The machines, one row each, in the team's order: name, hull, order, contact.
 	var split := size.x * 0.64   # the field column starts here
 	var rows := _rows()
 	for i in range(rows.size()):
@@ -60,8 +62,9 @@ func _draw() -> void:
 		_text(mono, Vector2(x, y), _settled(key + "n", r["name"], frame), 13, Color(hud, 0.95), 118.0)
 		x += 124.0
 		var u: Unit = r["unit"]
-		_bar(Rect2(x, y - 9.0, BAR_W, BAR_H), float(u.shield) / maxf(1.0, float(u.shield_max)), Palette.SHIELD)
-		_bar(Rect2(x, y - 1.0, BAR_W, BAR_H), float(u.hull) / maxf(1.0, float(u.hull_max)), Palette.HULL)
+		# The hull alone: the shield is the fight's, full as every fight opens (the long wall brief
+		# 7.5; Ryan, 9 November: "Lower panel shows shield still").
+		_bar(Rect2(x, y - 10.0, BAR_W, BAR_H), u.hull, u.hull_max, Palette.HULL)
 		x += BAR_W + 12.0
 		_text(mono, Vector2(x, y), _settled(key + "o", r["order"], frame), 13, r["colour"], 90.0)
 		if not str(r["meets"]).is_empty():
@@ -81,11 +84,12 @@ func _text(font: Font, at: Vector2, s: String, px: int, col: Color, width: float
 	draw_string(font, at, s, HORIZONTAL_ALIGNMENT_LEFT, maxf(20.0, width), px, col)
 
 
-## A thin gauge on a dark ground, the colour of what it measures.
-func _bar(r: Rect2, frac: float, col: Color) -> void:
+## A thin gauge on a dark ground, the colour of what it measures, wearing its scale (Hud.ticks).
+func _bar(r: Rect2, now: int, top: int, col: Color) -> void:
 	draw_rect(r.grow(1.0), Color(Palette.BG, 0.9))
 	draw_rect(r, Color(col, 0.25))
-	draw_rect(Rect2(r.position, Vector2(r.size.x * clampf(frac, 0.0, 1.0), r.size.y)), col)
+	draw_rect(Rect2(r.position, Vector2(r.size.x * clampf(float(now) / maxf(1.0, float(top)), 0.0, 1.0), r.size.y)), col)
+	Hud.ticks(self, r, now, top, col)
 
 
 ## A line's text, scrambled for a moment after it changed, so a number is seen to settle.
@@ -110,15 +114,18 @@ func _title() -> String:
 
 
 ## One entry per machine: its unit (for the gauges), what it can still do this turn (READY,
-## MOVED, ONE MORE, SPENT, CAUGHT) and which hunter is after it: the one whose tag it wears on
-## the map, its prey or the machine it takes when its prey is sealed off.
+## MOVED, ONE MORE, SPENT, its order, CAUGHT) and which hunter is after it: the one whose tag it
+## wears on the map, its prey. A caught
+## machine names its fight there instead, as an order names its pack (Ryan, 2 November: the catch
+## reads as its attack order): CAUGHT > the hunter that caught it, +1 a hunter more.
 func _rows() -> Array:
 	var out: Array = []
 	var shown: Dictionary = walks.call() if walks.is_valid() else {}
 	for m in battle.mechs():
 		var order := "READY"
 		var col := Palette.HUD
-		if battle.is_pinned(m):
+		var caught := battle.catchers_of(m)
+		if not caught.is_empty():
 			order = "CAUGHT"
 			col = Palette.ENEMY
 		elif battle.actions_left(m) <= 0:
@@ -132,7 +139,9 @@ func _rows() -> Array:
 		elif battle.actions_left(m) < Battlefield.actions_for(m):
 			order = "ONE MORE"
 		var meets := ""
-		for p in battle.field.packs():
+		if not caught.is_empty():
+			meets = "> " + _short((caught[0] as Unit).display_name) + (" +%d" % (caught.size() - 1) if caught.size() > 1 else "")
+		for p in (battle.field.packs() if caught.is_empty() else []):
 			if p.behaviour != "hunt":
 				continue
 			var w: Battlefield.Walk = shown.get(p.id, null)

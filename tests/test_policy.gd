@@ -54,7 +54,7 @@ func test_greedy_shields_the_machine_about_to_die() -> void:
 	sk.begin()
 	sk.start_round()
 	sk.front[0].target = sk.mechs[1]   # its pick, set: the test is the shield's, not the aim's
-	assert_true(sk.forecast(sk.mechs[1], false)["destroyed"], "the ghoul would wreck the weak machine")
+	assert_true(sk.forecast(sk.mechs[1])["destroyed"], "the ghoul would wreck the weak machine")
 	Policy.make(Policy.GREEDY).play_round(sk)
 	assert_eq(weak.shield, 20, "the tank's shield went on the weak machine, not itself")
 	assert_eq(tank.shield, 40, "and the tank kept its own")
@@ -70,7 +70,7 @@ func test_greedy_vents_before_it_burns() -> void:
 	sk.begin()
 	sk.start_round()
 	sk.mechs[0].heat = 80   # twenty over a cap of sixty
-	assert_eq(int(sk.forecast(sk.mechs[0], false)["overheat"]), 20, "twenty would burn at the round's end")
+	assert_eq(int(sk.forecast(sk.mechs[0])["overheat"]), 20, "twenty would burn at the round's end")
 	Policy.make(Policy.GREEDY).play_round(sk)
 	assert_eq(sk.mechs[0].heat, 50, "vented")
 	sk.end_round()
@@ -88,7 +88,7 @@ func test_the_cautious_persona_prices_heat_above_its_line() -> void:
 	sk.start_round()
 	var ms: Skirmish.MechState = sk.mechs[0]
 	ms.heat = 45   # under the cap of sixty: no overheat looms
-	assert_eq(int(sk.forecast(ms, false)["overheat"]), 0, "nothing would burn")
+	assert_eq(int(sk.forecast(ms)["overheat"]), 0, "nothing would burn")
 	var plain := Policy.make(Policy.GREEDY)
 	var careful := Policy.make(Policy.GREEDY)
 	careful.cool_above = 50
@@ -235,20 +235,34 @@ func test_a_fight_nobody_can_finish_stalls() -> void:
 	assert_true(pol.stalled, "stalled, not looping forever")
 	assert_eq(pol.rounds, Policy.MAX_ROUNDS, "after the round cap")
 	assert_eq(sk.outcome, Skirmish.Outcome.NONE, "the skirmish itself is undecided")
+	assert_true(pol.stalemate, "and a stalemate: nothing changed for ten rounds running (the long wall brief, section 5)")
 
 
-func test_persona_withdraws_under_the_hull_line() -> void:
+## A fight that moves every round is no stalemate, however long (the long wall brief, section 5:
+## ten rounds running with no foe's HP, no machine's hull or shield changed).
+func test_a_fight_that_moves_is_no_stalemate() -> void:
+	var u := _mech("A", Die.single(Face.attack(1, L)), 0, 900)
+	var sk := Skirmish.new(1)
+	sk.add_mech(u)
+	sk.add_foes([_ghoul(40, 1)])
+	sk.begin()
+	var pol := Policy.make(Policy.GREEDY)
+	pol.play(sk)
+	assert_true(pol.rounds > Policy.STALEMATE_ROUNDS, "a long fight")
+	assert_false(pol.stalemate, "that moved every round")
+
+
+## The fight bot plays a losing fight to its end (the long wall brief 3.5: there is no
+## withdrawal, and the withdrawing persona went with it).
+func test_the_fight_bot_plays_a_losing_fight_to_its_end() -> void:
 	var sk := Skirmish.new(2)
 	sk.add_mech(_mech("A", Die.single(Face.attack(10, L)), 0, 100))
 	sk.add_foes([_ghoul(300, 30)])
 	sk.begin()
 	var pol := Policy.make(Policy.GREEDY)
-	pol.withdraw_below = 50
 	var outcome := pol.play(sk)
-	assert_eq(outcome, Skirmish.Outcome.WITHDRAWN, "pulled out rather than dying")
-	assert_true(pol.withdrew, "and says so")
-	assert_true(sk.mechs[0].unit.hull > 0, "alive")
-	assert_true(sk.mechs[0].unit.hull < 50, "having crossed the line first")
+	assert_eq(outcome, Skirmish.Outcome.DEFEAT, "fought to the wreck")
+	assert_true(sk.mechs[0].unit.hull <= 0, "nothing left of it")
 
 
 func test_hull_percent_counts_the_dead_at_zero() -> void:
@@ -537,7 +551,7 @@ func test_the_bot_weighs_a_blow_at_every_machine_on_each_and_no_lure_turns_it() 
 	assert_eq(Policy.disrupt_score(sk, storm), 20.0 * Policy.HULL_WEIGHT, "turning it to its roar saves the blow on both machines")
 	var pol := Policy.make(Policy.GREEDY)
 	assert_eq(pol.lure_score(sk, sk.mechs[0], [storm]), 0.0, "a lure saves nothing: the blow lands on both whoever it names")
-	assert_true(sk.forecast(sk.mechs[1], false)["destroyed"], "the glass is wrecked by it either way, the forecast says")
+	assert_true(sk.forecast(sk.mechs[1])["destroyed"], "the glass is wrecked by it either way, the forecast says")
 	assert_eq(sk.incoming_for(sk.mechs[0]), 10, "and the tank takes it too")
 
 
@@ -808,7 +822,7 @@ func test_the_bot_reads_a_foes_barrier_ward_priming_and_regrowth() -> void:
 
 
 ## The bot's worth of the player's Purge (the ladder's brief, C; 28 October; placeholders), by
-## what the foe carries: Getting Back Up its maximum HP whatever the blow does, a Barrier the
+## what the foe carries: Undying its maximum HP whatever the blow does, a Barrier the
 ## biggest weapon blow an ally still to act shows on it (nothing when its own weapon pops it),
 ## Armoured its stacks for each allied blow to come, Empowered its value, Primed 2 a stack,
 ## Regenerating its value for each action left, a Ward nothing, a bare foe nothing; the attack
@@ -830,7 +844,7 @@ func test_the_bot_prices_a_purge_by_what_the_foe_carries() -> void:
 	var a: Skirmish.MechState = sk.mechs[0]
 	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 0.0, "a bare foe: nothing")
 	Effects.stack(g, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:revenant", 1, Effects.DECAY_NONE)
-	assert_eq(pol.purge_worth(sk, a, null_field, g, 0.0), 100.0, "Getting Back Up: its maximum HP, whatever the blow")
+	assert_eq(pol.purge_worth(sk, a, null_field, g, 0.0), 100.0, "Undying: its maximum HP, whatever the blow")
 	Effects.remove(g, "risen")
 	Effects.stack(g, Effects.foe_barrier(), Effects.SKIRMISH, "foe:caster", 1, Effects.DECAY_TURN_ALL)
 	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 12.0, "a Barrier: the biggest weapon blow an ally still to act shows on it")
@@ -840,7 +854,7 @@ func test_the_bot_prices_a_purge_by_what_the_foe_carries() -> void:
 	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 2.0, "Armoured: its stacks for the one allied blow to come")
 	assert_eq(pol.purge_worth(sk, a, null1, g, 1.0), 1.0, "a Purge 1 takes one of the two (2 November)")
 	Effects.remove(g, "braced")
-	Effects.grant(g, Effects.make(Effects.kindled(3), Effects.SKIRMISH, "foe:caster"))
+	Effects.stack(g, Effects.STATUS["kindled"], Effects.SKIRMISH, "foe:caster", 3, Effects.DECAY_HALF)
 	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 3.0, "Empowered: its value")
 	Effects.remove(g, "kindled")
 	Effects.grant(g, Effects.primed_foe(2, "foe:caster"))
@@ -861,7 +875,8 @@ func test_the_bot_prices_a_purge_by_what_the_foe_carries() -> void:
 
 
 ## A printed cooldown costs its entry the rounds it stays dark after this one (21 October),
-## the share of the die's rolls it would have shown; Rapid's switch-off costs nothing.
+## the share of the die's rolls it would have shown; a cooldown of one, ending with the round,
+## costs nothing.
 func test_greedy_prices_a_printed_cooldown_by_the_rounds_it_stays_dark() -> void:
 	var pol := Policy.make(Policy.GREEDY)
 	var sk := Skirmish.new(1)
@@ -869,6 +884,7 @@ func test_greedy_prices_a_printed_cooldown_by_the_rounds_it_stays_dark() -> void
 	var slow := Face.attack(30, L)
 	slow.cooldown = 3
 	var zap := Face.attack(30, L, [K.RAPID])
+	zap.cooldown = 1
 	sk.add_mech(_mech("A", Die.of([plain, slow, Face.attack(10, L), Face.attack(10, L)]), 40, 100))
 	sk.add_foes([_ghoul(500, 1)])
 	sk.begin()
@@ -876,7 +892,7 @@ func test_greedy_prices_a_printed_cooldown_by_the_rounds_it_stays_dark() -> void
 	var ms: Skirmish.MechState = sk.mechs[0]
 	var base := pol.attack_score(sk, ms, plain, sk.front[0])
 	assert_true(absf(pol.attack_score(sk, ms, slow, sk.front[0]) - base * 0.5) < 0.01, "two rounds dark after this one on a four-entry die: half its worth")
-	assert_eq(Policy.cooldown_cost(ms, zap, base), 0.0, "Rapid's switch-off ends with the round")
+	assert_eq(Policy.cooldown_cost(ms, zap, base), 0.0, "a cooldown of one ends with the round")
 
 
 ## A stepping die's reroll is worth the entry it steps to, known in advance (the Cassowary's
@@ -895,7 +911,7 @@ func test_greedy_turns_a_stepping_die_toward_a_better_chamber() -> void:
 	assert_eq(pol.reroll_worth(sk, ms), pol.face_value(sk, ms, ms.die.faces[1]), "the next chamber's worth, not the die's mean")
 	pol._greedy_rerolls(sk)
 	assert_eq(ms.face_index, 1, "the ten turns to the forty, and the forty holds against a five")
-	assert_eq(sk.rerolls_left, 2, "one reroll spent")
+	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND - 1, "one reroll spent")
 
 
 ## A plain Rapid entry (4 November): spent, its machine acts again, so the bot values it at its
@@ -958,7 +974,7 @@ func test_greedy_holds_a_stepping_die_to_open_the_next_round_on_its_better_chamb
 	ms.face_index = 0
 	pol._greedy_rerolls(sk)
 	assert_eq(ms.face_index, 0, "the twenty holds: a step would spend the twenty-one now and open on a two")
-	assert_eq(sk.rerolls_left, 3, "no reroll spent")
+	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND, "no reroll spent")
 
 
 ## The cycle reaches past the next chamber: two steps through a weak one to the big gun.
@@ -970,7 +986,7 @@ func test_greedy_steps_a_stepping_die_through_a_weak_chamber_to_a_big_one() -> v
 	assert_eq(int(pol.cycle_plan(sk, ms, 3)["steps"]), 2, "two steps to the forty")
 	pol._greedy_rerolls(sk)
 	assert_eq(ms.face_index, 2, "the ten steps past the five to the forty")
-	assert_eq(sk.rerolls_left, 1, "two rerolls spent")
+	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND - 2, "two rerolls spent")
 
 
 ## A spinning chamber (the Spin-Up's) is worth its own spend and the spin after it, so the bot
@@ -1011,7 +1027,7 @@ func _stepper(powers: Array) -> Skirmish:
 	return sk
 
 
-## The seal (the Armadillo's Lockdown, valued 21 October): a shield a machine with a seal
+## The seal (the Polar Bear's Lockdown, valued 21 October): a shield a machine with a seal
 ## spends on itself is worth the armour it stands behind this round's blows, less its heat.
 func test_greedy_values_the_seal_by_the_blows_its_armour_turns() -> void:
 	var pol := Policy.make(Policy.GREEDY)
@@ -1139,9 +1155,9 @@ func test_greedy_reads_a_countdown_a_core_and_a_last_act() -> void:
 	# The last act.
 	var s3 := Skirmish.new(1, 3)
 	s3.add_mech(_mech("A", Die.single(Face.attack(40, I)), 0, 100))
-	var beast := Foe.make("behemoth", 30, 20)
+	var beast := Foe.make("gargantuan_king", 30, 20)
 	beast.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all"]})}
-	var calm := Foe.make("behemoth", 30, 20)
+	var calm := Foe.make("gargantuan_king", 30, 20)
 	s3.add_foes([beast, calm])
 	s3.begin()
 	s3.start_round()
@@ -1153,53 +1169,40 @@ func test_greedy_reads_a_countdown_a_core_and_a_last_act() -> void:
 	assert_true(pol.attack_score(s3, s3.mechs[0], f40, beast) < pol.attack_score(s3, s3.mechs[0], f40, calm), "the kill that sets off a Meteor is worth less")
 
 
-## The Lammergeier's mines for the bot (21 October), on a synthetic passive: a mine laid on a
-## slot a waiting foe will take is worth its blow there, and nothing with none waiting and no
-## pull on the team; the pull on a foe is worth the pile landing in laid order, a Shock shot
-## doubling the next; the drone is worth more on a foe already Exposed, its Rapid.
-func test_greedy_lays_a_mine_where_a_foe_will_step_in_and_weighs_the_pull_and_the_drone() -> void:
-	var bay := {"id": "bay", "name": "Bay", "description": "", "effects": [{"trigger": "static", "effect": "lay_mines"}]}
-	var sk := Skirmish.new(3, 2)
-	var m := _mech("Bomber", Die.single(Face.attack(20, I)), 40, 100)
+## The Lammergeier's Mines for the bot (9 November), on a synthetic passive: a spend that leaves a
+## Mine is worth more where neighbours stand to take its blast, a kill of a mined foe is worth its
+## blast at once, the drone is worth the Mine it sets off now, and the gather the bigger blast round
+## its target.
+func test_greedy_weighs_a_mine_its_blast_on_a_kill_the_detonation_and_the_gather() -> void:
+	var bay := {"id": "bay", "name": "Bay", "description": "", "effects": [{"trigger": "static", "effect": "mine_on_spend", "value": 2}]}
+	var sk := Skirmish.new(3, 3)
+	var gun := Face.attack(1, Face.Reach.INDIRECT)
+	var m := _mech("Bomber", Die.single(gun), 40, 100)
 	m.grant_passive(bay)
 	sk.add_mech(m)
-	var wall := _ghoul(500, 0)
-	sk.add_foes([wall])
+	var plain := _mech("Plain", Die.single(gun), 40, 100)
+	sk.add_mech(plain)
+	var a := _ghoul(100, 0)
+	var b := _ghoul(100, 0)
+	var c := _ghoul(100, 0)
+	sk.add_foes([a, b, c])
 	sk.begin()
-	var arrival := _ghoul(100, 10)
-	sk.reinforcements.append(arrival)
 	sk.start_round()
 	var pol := Policy.make(Policy.GREEDY)
-	var ms: Skirmish.MechState = sk.mechs[0]
-	var empty := Vector2i(0, 1) if sk.front[1] == null else Vector2i(0, 0)
-	assert_eq(Policy.arrival_odds(sk, empty), 1.0, "the waiting foe takes the empty front slot")
-	assert_eq(Policy.arrival_odds(sk, Vector2i(1, empty.y)), 0.0, "no back foe waits")
-	assert_true(pol.mine_score(sk, ms, ms.face(), empty) > 0.0, "a mine there is worth its blow")
-	var opts := pol.options_for(sk, 0)
-	var slots := opts.filter(func(o) -> bool: return o["target"] is Vector2i)
-	assert_true(not slots.is_empty(), "the slots are options")
-	sk.reinforcements.clear()
-	assert_true(pol.mine_score(sk, ms, ms.face(), empty) <= 0.0, "with none waiting and no pull, a mine is worth nothing")
-	# The pull on a foe: the pile, read as it will land.
-	var pull := Face.attack(0, I)
-	pull.pulls_mines = true
-	sk.reinforcements.append(arrival)
-	assert_true(sk.assign(0, empty), "a mine laid")
-	assert_eq(pol.pull_score(sk, wall), 20.0, "the pull on the wall cashes its 20")
-	var drone := Face.attack(0, I)
-	drone.drones = true
-	var s2 := Skirmish.new(3, 2)
-	s2.add_mech(_mech("Droner", Die.of([drone, Face.attack(30, L)]), 40, 100))
-	var foe := _ghoul(100, 10)
-	s2.add_foes([foe])
-	s2.begin()
-	s2.reinforcements.append(_ghoul(100, 10))
-	s2.start_round()
-	var d := s2.mechs[0]
-	var plain := pol.attack_score(s2, d, drone, foe)
-	assert_true(plain > 0.0, "the drone is worth its mine and its Exposed")
-	Effects.grant_for_rounds(foe, Effects.STATUS["exposure"], "test", s2.round + 1)
-	assert_true(pol.attack_score(s2, d, drone, foe) > 0.0, "and on a foe already Exposed, its Rapid")
+	var bomber: Skirmish.MechState = sk.mechs[0]
+	var other: Skirmish.MechState = sk.mechs[1]
+	assert_true(pol.mine_worth(sk, bomber, gun, b, 0.0) > pol.mine_worth(sk, bomber, gun, a, 0.0), "the middle foe has two neighbours to its blast, the end one one")
+	assert_eq(pol.mine_worth(sk, other, gun, b, 0.0), 0.0, "a machine that leaves none: nothing")
+	sk._add_mine(b, 10, {})
+	assert_true(pol.mine_worth(sk, other, gun, b, 1.0) > 15.0, "a sure kill of a mined foe blows its 10 on both neighbours")
+	var drone := Face.attack(1, Face.Reach.INDIRECT)
+	drone.detonates = true
+	assert_true(pol.mine_worth(sk, bomber, drone, b, 0.0) > pol.mine_worth(sk, bomber, gun, b, 0.0), "the drone sets the Mine off now")
+	var gather := Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.EXPOSE])
+	gather.gathers_mines = true
+	sk._add_mine(a, 6, {})
+	assert_true(pol.mine_worth(sk, bomber, gather, b, 0.0) > 0.0, "gathering the end foe's Mine onto the middle foe adds a neighbour to its blast")
+	assert_true(pol.mine_worth(sk, bomber, gather, c, 0.0) < pol.mine_worth(sk, bomber, gather, b, 0.0), "onto the other end, less")
 
 
 ## The Swallowtail for the bot (21 October; the charge never primed since 22 October), synthetic:

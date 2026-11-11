@@ -5,7 +5,7 @@ extends TestCase
 ## renderer, so the joints' nesting and the sidecars are checked against the real files;
 ## only the drawing needs a window.
 
-const MACHINES := ["badger", "sparrowhawk", "clydesdale", "baboon", "armadillo", "wild_boar", "prairie_dog", "dingo", "goshawk", "nemesis", "ammit", "stingray", "puffin", "funnel_web",
+const MACHINES := ["badger", "kite", "clydesdale", "baboon", "polar_bear", "wild_boar", "prairie_dog", "dingo", "buzzard", "nemesis", "ammit", "stingray", "puffin", "funnel_web",
 	"skua", "needletail", "storm_petrel", "giant_petrel", "lammergeier", "musk_ox",
 	"cassowary", "cottonmouth", "swallowtail", "whip_scorpion"]
 
@@ -263,7 +263,7 @@ func test_only_the_weapon_that_fired_kicks_after_its_aim() -> void:
 			checked += 1
 		pair[1].free()
 	assert_true(checked > 0, "some fixed gun rides a joint carrying no mount")
-	pair = _rig_for("armadillo")
+	pair = _rig_for("polar_bear")
 	rig = pair[0]
 	assert_eq(rig.aim_joint_over(rig.hardpoints[1]), "", "a quad's port guns never turn to aim (Ryan: don't bother)")
 	pair[1].free()
@@ -347,11 +347,11 @@ func test_the_nested_joints_the_bible_asked_for_are_in_the_models() -> void:
 		"badger": [["elbow_l", "shoulder_l"], ["wrist_l", "elbow_l"], ["jaw_upper", "wrist_l"], ["jaw_lower", "wrist_l"], ["elbow_r", "shoulder_r"], ["wrist_r", "elbow_r"]],
 		"clydesdale": [["head", ""], ["knee_fl", "hip_fl"], ["knee_hr", "hip_hr"], ["ankle_fl", "knee_fl"], ["ankle_hr", "knee_hr"], ["elev_mortar", "turret_mortar"], ["elev_howitzer", "turret_howitzer"]],
 		"baboon": [["waist", ""], ["shoulder_l", "waist"], ["elbow_l", "shoulder_l"], ["wrist_l", "elbow_l"], ["ankle_l", "knee_l"], ["knee_l", "hip_l"], ["elev_r", "waist"]],
-		"armadillo": [["knee_fl", "hip_fl"], ["ankle_fl", "knee_fl"], ["ankle_hl", "knee_hl"], ["run_l", ""], ["run_r", ""], ["run_fl", ""], ["run_rack", ""], ["shutter_rl", ""], ["louvre_l1", ""], ["louvre_r3", ""], ["louvre_cl1", ""], ["louvre_cr4", ""], ["vent_pop_l", ""]],
+		"polar_bear": [["knee_fl", "hip_fl"], ["ankle_fl", "knee_fl"], ["ankle_hl", "knee_hl"], ["run_l", ""], ["run_r", ""], ["run_fl", ""], ["run_rack", ""], ["shutter_rl", ""], ["louvre_l1", ""], ["louvre_r3", ""], ["louvre_cl1", ""], ["louvre_cr4", ""], ["vent_pop_l", ""]],
 		"wild_boar": [["elev", "turret"], ["plow", ""], ["elev_pod", ""]],
 		"prairie_dog": [["wheel_fl", "steer_fl"], ["wheel_rl", ""], ["sensor", "chassis"], ["turret", "chassis"]],
 		"dingo": [["wheel_fl", "caster_fl"], ["harpoon", "chassis"], ["turret_rack", "chassis"], ["elev_rack", "turret_rack"]],
-		"goshawk": [["nacelle_l", ""], ["nacelle_r", ""]],
+		"buzzard": [["nacelle_l", ""], ["nacelle_r", ""]],
 		"nemesis": [["waist", ""], ["shoulder_r", "waist"], ["elbow_r", "shoulder_r"], ["knee_l", "hip_l"], ["ankle_l", "knee_l"], ["ankle_r", "knee_r"], ["elev_shoulder", "waist"]],
 		"ammit": [["waist", ""], ["shoulder_l", "waist"], ["hand_l", "elbow_l"], ["talon_l_out", "hand_l"], ["talon_r_mid", "hand_r"], ["talon_r_in", "hand_r"], ["elbow_l", "shoulder_l"], ["ankle_r", "knee_r"],
 			["shoulder_low_r", ""], ["elbow_low_r", "shoulder_low_r"], ["hand_low_r", "elbow_low_r"], ["elev_l", "waist"]],
@@ -386,7 +386,7 @@ func test_the_nested_joints_the_bible_asked_for_are_in_the_models() -> void:
 
 func test_a_form_is_held_while_set_and_let_go_after() -> void:
 	# A pose a model holds while its machine carries the status of the same name (the
-	# Armadillo's seal: its guns sink and its irises shut): it turns in when set, no act
+	# Polar Bear's seal: its guns sink and its irises shut): it turns in when set, no act
 	# starts while it turns, held it plays its own acts if it has any and otherwise none that
 	# moves a joint it holds, and letting it go brings them home.
 	var with_form := ""
@@ -444,7 +444,7 @@ func test_a_form_is_held_while_set_and_let_go_after() -> void:
 
 
 func test_a_held_form_may_move_the_body_and_its_own_acts_play_over_it() -> void:
-	# The sealed Armadillo hunkers (Ryan, 29 October: "its base pose should be hunkered down
+	# The sealed Polar Bear hunkers (Ryan, 29 October: "its base pose should be hunkered down
 	# in a defensive position"): a form may carry the whole machine with it, and an act of
 	# its own plays as an offset over that pose and ends back on it, never on the rest.
 	var id := ""
@@ -478,7 +478,7 @@ func test_a_held_form_may_move_the_body_and_its_own_acts_play_over_it() -> void:
 
 
 func test_a_gun_that_runs_in_its_port_kicks_back_along_its_line_and_never_turns() -> void:
-	# Ryan, 29 October (the Armadillo's weapons: "they should only move along their axis of
+	# Ryan, 29 October (the Polar Bear's weapons: "they should only move along their axis of
 	# firing, in and out"): a joint given a line runs along it alone; every turn is held to
 	# nothing, and a shot kicks it back along the line instead of pitching it.
 	var checked := 0
@@ -508,7 +508,7 @@ func test_a_gun_that_runs_in_its_port_kicks_back_along_its_line_and_never_turns(
 			checked += 1
 		rig.tick(1.0)
 		for jn in lines.keys():
-			assert_true((rig.joints[jn] as Node3D).position.distance_to(rig._rest_pos[jn]) < 0.01, "%s: %s runs home after the kick" % [id, jn])
+			assert_true((rig.joints[jn] as Node3D).position.distance_to(rig.home_position(jn)) < 0.01, "%s: %s runs home after the kick (ajar, where it stands ajar)" % [id, jn])
 		pair[1].free()
 	assert_true(checked > 0, "a gun that runs in its port is checked")
 
@@ -683,7 +683,7 @@ func test_a_whole_turn_in_an_act_comes_home_without_unwinding() -> void:
 
 
 func test_an_act_may_be_for_one_place_and_may_carry_its_own_heft() -> void:
-	# Ryan, 5 October: the Sparrowhawk's loop and circle are for the map; a blow wants to be
+	# Ryan, 5 October: the Kite's loop and circle are for the map; a blow wants to be
 	# sharper than a heavy machine's weight allows.
 	var pair := _rig_for("clydesdale", 4)
 	var rig: MechRig = pair[0]
@@ -874,7 +874,7 @@ func test_a_walker_plants_its_feet_and_never_rolls() -> void:
 	# Ryan, 4 October, the third pass: stomp and plod; the weight believable, no weight shift
 	# side to side. A foot down on the ground stays where it was put while the body travels
 	# over it, and the body never rolls.
-	for id in ["clydesdale", "armadillo", "nemesis", "baboon", "ammit"]:
+	for id in ["clydesdale", "polar_bear", "nemesis", "baboon", "ammit"]:
 		var pair := _rig_for(id, 2)
 		var rig: MechRig = pair[0]
 		var model: Node3D = pair[1]
@@ -928,7 +928,7 @@ func test_the_debug_walk_runs_at_the_machine_s_own_pace_on_the_map() -> void:
 	assert_true(BattleMapView.mech_seconds_per_hex(4.0) < 0.69 and BattleMapView.mech_seconds_per_hex(5.0) < 0.55, "the 4s and 5s run faster")
 	assert_true(is_equal_approx(BattleMapView.mech_seconds_per_hex(3.5), lerpf(BattleMapView.mech_seconds_per_hex(3.0), BattleMapView.mech_seconds_per_hex(4.0), 0.5)), "straight between the keys")
 	assert_true(MechRig.map_speed(100.0, 5, Map3D.fit_for("light")) > MechRig.map_speed(100.0, 5, Map3D.fit_for("assault")), "a light machine is drawn smaller, so a hex is more of itself")
-	var pair := _rig_for("armadillo", 2)
+	var pair := _rig_for("polar_bear", 2)
 	var rig: MechRig = pair[0]
 	rig.top_speed = 64.0
 	rig.debug_move = true
@@ -977,7 +977,7 @@ func test_held_offsets_rock_and_bank() -> void:
 	_drive(rig, 0.0, 1.5)
 	assert_true(is_zero_approx(sh.rotation.x) and absf(model.rotation.x) < 0.001, "settled")
 	pair[1].free()
-	pair = _rig_for("goshawk", 2)
+	pair = _rig_for("buzzard", 2)
 	rig = pair[0]
 	model = pair[1]
 	_drive(rig, MechRig.MOVE_REF_SPEED, 1.5, 0.0, 1.0)   # a left turn
@@ -1150,7 +1150,7 @@ func test_turning_in_place_steps_the_legs_round_and_nothing_banks_standing() -> 
 		rig.drive(0.0, 0.0, 0.05, 1.0 / 60.0)
 	assert_true(not rig.moving, "a slow settle is not a step")
 	pair[1].free()
-	pair = _rig_for("goshawk", 2)
+	pair = _rig_for("buzzard", 2)
 	rig = pair[0]
 	for i in range(60):
 		rig.drive(0.0, 0.0, 1.5, 1.0 / 60.0)
@@ -1190,7 +1190,7 @@ func test_the_stingray_noses_into_its_travel() -> void:
 	assert_true(model.rotation.x > deg_to_rad(8.0), "backward: the nose comes up (%f)" % rad_to_deg(model.rotation.x))
 	_drive(rig, MechRig.MOVE_REF_SPEED, 1.5, deg_to_rad(90.0))   # slipping left
 	# The node's z points backward, so a positive turn about it drops the left side (the same
-	# sign the Goshawk's bank into a left turn reads).
+	# sign the Buzzard's bank into a left turn reads).
 	assert_true(model.rotation.z > deg_to_rad(4.0), "left: the left side drops (%f)" % rad_to_deg(model.rotation.z))
 	_drive(rig, 0.0, 3.0)
 	assert_true((model.rotation - rig._body_rest_rot).length() < deg_to_rad(0.3), "level again on station")
@@ -1494,6 +1494,39 @@ func test_a_spinner_turns_without_end_and_faster_under_way() -> void:
 	pair[1].free()
 
 
+## The Polar Bear's vents stand ajar while its shell is open (Ryan, 2 November: "When unsealed, the
+## vents should be open, and then more open during the vent animation"): at rest each louvre stands
+## its ajar share open, the seal turning in shuts it, and a vent act's swing takes the share's place
+## so the act still peaks where it was authored to.
+func test_the_vents_stand_ajar_while_open_and_shut_with_the_seal() -> void:
+	var with_ajar := ""
+	for id in MACHINES:
+		if not (MechRig.load_sidecar(id).get("ajar", {}) as Dictionary).is_empty():
+			with_ajar = id
+			break
+	assert_false(with_ajar.is_empty(), "a model stands ajar")
+	var pair := _rig_for(with_ajar)
+	var rig: MechRig = pair[0]
+	assert_false(rig.ajar.is_empty(), "%s: its ajar joints read" % with_ajar)
+	assert_eq(rig.ajar_open(), 1.0, "open at rest")
+	var jn := str(rig.ajar.keys()[0])
+	var off: Vector3 = rig.ajar[jn][0]
+	var j: Node3D = rig.joints[jn]
+	var built: Vector3 = rig._rest[jn]
+	if off != Vector3.ZERO:
+		assert_true(j.rotation.distance_to(built) > 0.1, "%s: %s stands open past its built rest" % [with_ajar, jn])
+	rig.set_form(rig.ajar_unless, true)
+	rig.tick(float(rig.forms[rig.ajar_unless]["duration"]) + 0.5)
+	assert_eq(rig.ajar_open(), 0.0, "sealed, the ajar pose is gone")
+	var span: Vector3 = rig._ajar_span[jn][0]
+	assert_eq(MechRig.ajar_share(off, span, Vector3.ZERO), off, "the whole share at rest")
+	assert_eq(MechRig.ajar_share(off, span, span), Vector3.ZERO, "none once an act has it at its furthest")
+	for k in range(3):
+		if span[k] != 0.0:
+			assert_true(absf(off[k]) < absf(span[k]) and signf(off[k]) == signf(span[k]), "%s: the share opens the way the act does, and less far" % jn)
+	pair[1].free()
+
+
 func _boxed_rig(lit: bool = false) -> Array:
 	var root := Node3D.new()
 	var body := Node3D.new()
@@ -1708,7 +1741,7 @@ func test_a_lost_machine_slumps_and_its_spins_run_down() -> void:
 	assert_true(rig._lowest_under(rig.model) > minf(0.0, low) - 0.3, "and its claw rests on the floor, never through it")
 	pair[1].free()
 	# A flyer comes down onto what hangs lowest once it has slumped (MechView3D lands it there).
-	pair = _rig_for("goshawk")
+	pair = _rig_for("buzzard")
 	rig = pair[0]
 	rig.airborne = true
 	rig.kill()

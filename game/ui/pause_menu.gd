@@ -140,6 +140,7 @@ func _show_page(page: String) -> void:
 			_toggle("SCAN BAR", "scan")
 			_choice_row("SKIRMISH CONTROLS", "skirmish_controls", Settings.SKIRMISH_CONTROLS)
 			_choice_row("AA MODE", "aa_mode", Settings.AA_MODES, Settings.AA_LABELS)   # the 3D's anti-aliasing (Hud.aa_mode)
+			_choice_row("MAP VIEW", "map_view", Settings.MAP_VIEWS, Settings.MAP_VIEW_LABELS)   # the battle map's orientation (MapOrient)
 			_slider("MUSIC", "music")
 			_slider("EFFECTS", "effects")
 			_slider("VOICE", "voice")
@@ -394,7 +395,11 @@ class BusyMask extends Control:
 ## The keywords list as data: each kind's heading and its terms, [name, codex, id] sorted by
 ## name; only what the engine runs (a planned term is never shown), and of the foes' words only the
 ## keywords their moves carry, those with an icon of their own (Terms), never the engine's (its aim,
-## its menace).
+## its menace). The statuses are filed by what each is to its unit (Ryan, 9 November: buffs and
+## debuffs "clearly labeled as such, so that it's clear what gets purged"): the words about them
+## first, then the buffs, the debuffs and the abilities, each under its own heading.
+const STATUS_GROUPS := [["", "STATUSES"], ["buff", "BUFFS // A PURGE TAKES THEM"], ["debuff", "DEBUFFS"], ["ability", "ABILITIES // NOTHING STRIPS THEM"]]
+
 static func glossary(db: ContentDB) -> Array:
 	var out: Array = []
 	for kind in GLOSSARY:
@@ -406,8 +411,19 @@ static func glossary(db: ContentDB) -> Array:
 					continue
 				entries.append([str(e.get("name", id)), str(e.get("codex", "")), str(id)])
 		entries.sort_custom(func(a: Array, b: Array) -> bool: return str(a[0]).naturalnocasecmp_to(str(b[0])) < 0)
-		if not entries.is_empty():
+		if entries.is_empty():
+			continue
+		if str(kind[0]) != "status":
 			out.append({"title": kind[1], "entries": entries})
+			continue
+		for g in STATUS_GROUPS:
+			var held: Array = []
+			for en in entries:
+				var what := Effects.status_kind(Terms.engine_status(str(en[2])))
+				if what == str(g[0]) or (str(g[0]).is_empty() and not ["buff", "debuff", "ability"].has(what)):
+					held.append(en)
+			if not held.is_empty():
+				out.append({"title": g[1], "entries": held})
 	return out
 
 

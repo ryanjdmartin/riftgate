@@ -34,15 +34,16 @@ COMPONENT_KEYWORDS = {"burn": [("burning", "foe")], "shock": [("shocked", "foe")
                       "web": [("webbed", "foe"), ("suppressed", "foe"), ("numbed", "foe")],
                       "cryo": [("cryoed", "foe")], "flak": [("flakked", "foe")], "expose": [("exposure", "foe")]}
 FACE_FIELDS = {"braces": "braced", "devours": "overcharged", "fills_hopper": "hopper", "heat_per_blow": "siphoning"}
-FACE_FIELDS_ON_FOES = {"drones": ["syrinx_drone", "exposure"]}   # the Syrinx Drone: its own status, and Exposed on a foe not yet Exposed
+FACE_FIELDS_ON_FOES = {}   # the Syrinx Drone's status went with the slot mines (9 November); the Contractor's Expose is its keyword
 PASSIVE_EFFECTS = {"shock_on_hull_strike": ("shocked", "foe"), "shock_on_block": ("shocked", "foe"), "seal_form": ("sealed", "machine"),
                    "paradox": ("paradox", "foe"), "muster": ("muster", "machine"),
-                   "fill_hopper": ("hopper", "machine"), "hopper_plate": ("ore_plate", "machine")}   # stack_status names its own, on the machine
+                   "fill_hopper": ("hopper", "machine"), "hopper_plate": ("braced", "machine"),
+                   "mine_on_spend": ("mine", "foe")}   # stack_status names its own, on the machine; the Reverberant Payload's Mine (9 November)
 FOE_KEYWORDS = {"scorch": "scorched", "burn": "burning", "disable": "disabled", "corrupt": "corrupted", "crush": "crushed", "steal": "disabled"}   # a silence is a special since 28 October, never a rider
 FOE_EFFECTS_ON_MACHINES = {"burn": "burning", "scorch_all": "scorched", "corrupt_all": "corrupted",
                            "disable": "disabled", "silence": "silenced", "swallow": "swallowed"}
 FOE_EFFECTS_ON_FOES = {"brace": "braced", "brace_all": "braced", "harden": "braced", "harden_all": "braced",
-                       "rally": "kindled", "enrage": "enraged", "revive_once": "risen", "revive_once_ally": "risen",
+                       "rally": "kindled", "revive_once": "risen", "revive_once_ally": "risen",
                        "prime": "primed", "barrier": "barrier", "ward_all": "ward", "regenerate": "regenerating", "golden": "golden"}   # the ladder's (28 October); golden the Thunder Ape's (4 November)
 # A special that is a rider's own mechanic, played as a whole move, counts under the rider.
 MOVE_AS_KEYWORD = {"burn": "burn", "disable": "disable", "scorch_all": "scorch", "corrupt_all": "corrupt", "swallow": "swallow", "merge": "merge", "dispel": "dispel", "silence": "silence", "golden": "golden_rage"}
@@ -61,8 +62,8 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("brace_property", "Braces", lambda f: int(f.get("braces", 0)) > 0),
            ("roll_again_property", "Rolls again", lambda f: bool(f.get("rolls_again_on"))),
            ("reset", "Reset", lambda f: bool(f.get("resets_on_kill"))),
-           ("pull", "Pull", lambda f: bool(f.get("pulls_mines"))),
-           ("drone", "Drone", lambda f: bool(f.get("drones"))),
+           ("gather", "Gather", lambda f: bool(f.get("gathers_mines"))),
+           ("detonate", "Detonate", lambda f: bool(f.get("detonates"))),
            # The Petrels' locked pieces (built 30 October).
            ("regenerates", "Regenerates", lambda f: bool(f.get("regenerates"))),
            ("ally_action", "An ally's action", lambda f: bool(f.get("ally_action"))),
@@ -75,7 +76,7 @@ FOE_ONLY_TEXT = {"burn": "Keyword with a number on a foe's attack: each blow tha
                  "breach": "The blow ignores the machine's shield and armour: the shield stands and the whole blow reaches the hull; a Ward turns it away.",
                  "dispel": "A foe's move of its own, never a rider on a blow and never a last act's: the machine it lands on loses every buff a die face bought, every stack, for good, and what a store, a form or a passive grants until the start of the player's turn; its stores stay; a Ward turns it away."}
 SHARED = ["burn", "breach", "dispel"]   # our keyword and the foes' word share it, each with a row (Purge on both sides, 28 October)
-KIND_ORDER = {"buff": 0, "debuff": 1, "store": 2}   # a store is a capped resource, its own kind (Ryan, 21 October)
+KIND_ORDER = {"buff": 0, "debuff": 1, "ability": 2, "store": 3}   # a store is a capped resource, its own kind (Ryan, 21 October); an ability a unit's own mechanic, no buff or debuff (8 November)
 ON_ORDER = {"machine": 0, "both": 1, "foe": 2}
 
 
@@ -223,6 +224,8 @@ def tally(words):
                 t.count("follow_up", "foe", planned, name)
             if int(a.get("per_kill", 0)) > 0:
                 t.count("grudge", "foe", planned, name)
+        if int(foe.get("rage", 0) or 0) > 0:
+            t.grant("enraged", "foe", "%s's rage" % whom, "foe", False, foe["id"], whom)   # its own from the start (8 November)
         if foe.get("parts"):
             t.grant("guarded", "foe", "%s's parts" % whom, "foe", False, foe["id"], whom)
             t.count("parts", "foe", False, name)

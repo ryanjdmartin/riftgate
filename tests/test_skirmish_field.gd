@@ -7,7 +7,7 @@ extends TestCase
 ## on their rank's line, what flies over its shadow, and the breathe planted at the feet.
 
 
-func _screen(controls: String, team: Array = ["badger", "clydesdale", "sparrowhawk"]) -> SkirmishScreen:
+func _screen(controls: String, team: Array = ["badger", "clydesdale", "kite"]) -> SkirmishScreen:
 	Settings.display["skirmish_controls"] = controls
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(3)
@@ -108,7 +108,7 @@ func test_the_controls_at_the_bottom_stand_the_machines_under_the_foes() -> void
 	assert_true(s.LOG_Y >= s.MECH_Y + SkirmishScreen.MECH_SIZE.y, "the log under the machines")
 	assert_true(s.DIE_Y >= s.LOG_Y + SkirmishScreen.LOG_H, "the dice under the log")
 	assert_true(s.REROLL_Y + SkirmishScreen.REROLL_SIZE.y <= s.BOTTOM_Y - 16.0, "Reroll clear of the bottom row")
-	assert_eq(s.MECH_Y + SkirmishScreen.MECH_SIZE.y + SkirmishScreen.MECH_LOG_GAP, s.LOG_Y, "the machines' row rests on the log")
+	assert_eq(s.MECH_Y + SkirmishScreen.MECH_SIZE.y + SkirmishScreen.MECH_LOG_GAP + SkirmishScreen.CHIP_ROOM, s.LOG_Y, "the machines' row rests on the log, room for three rows of chips between (Ryan, 2 November)")
 	var field: Rect2 = s._bg.grounds[0][0]
 	assert_true(s.LOG_Y - field.end.y <= 12.0, "the field reaches down to the log: no black over it (Ryan, 29 October)")
 	s.free()
@@ -137,7 +137,7 @@ func test_the_squad_stands_in_fixed_hexes() -> void:
 	var was: Variant = Settings.display.get("skirmish_controls", "middle")
 	var spots := {}
 	var four: Array = []
-	for team in [["badger"], ["badger", "clydesdale"], ["badger", "clydesdale", "sparrowhawk"], ["badger", "clydesdale", "sparrowhawk", "baboon"]]:
+	for team in [["badger"], ["badger", "clydesdale"], ["badger", "clydesdale", "kite"], ["badger", "clydesdale", "kite", "baboon"]]:
 		var s := _screen("middle", team)
 		var xs: Array = []
 		for i in range(team.size()):
@@ -169,7 +169,7 @@ func test_the_machines_turn_toward_the_middle() -> void:
 	# on the right can face slightly left". MechView3D's turn is positive to the machine's left: a
 	# yaw that swings the nose (away from the camera, -Z) toward -X, the screen's left.
 	var was: Variant = Settings.display.get("skirmish_controls", "middle")
-	var s := _screen("middle", ["badger", "clydesdale", "sparrowhawk", "baboon"])
+	var s := _screen("middle", ["badger", "clydesdale", "kite", "baboon"])
 	assert_eq([s._mech_turn(0), s._mech_turn(1)], [-SkirmishScreen.FIELD_TURN, -SkirmishScreen.FIELD_TURN], "the left two turn to their right")
 	assert_eq([s._mech_turn(2), s._mech_turn(3)], [SkirmishScreen.FIELD_TURN, SkirmishScreen.FIELD_TURN], "the right two to their left")
 	s.free()
@@ -260,3 +260,30 @@ func test_the_breathe_keeps_the_feet_planted() -> void:
 			leaned = true
 	assert_true(leaned, "while the top of it leans")
 	v.free()
+
+
+## Room for three rows of chips under the machines, clear of the controls in both layouts (Ryan, 2
+## November: "there needs to be space for 2-3 rows of chips under the player units specifically
+## without bumping into the UI"), and the rows wrap at a unit's width.
+func test_three_rows_of_chips_fit_under_the_machines() -> void:
+	var was: Variant = Settings.display.get("skirmish_controls", "middle")
+	for mode in ["middle", "bottom"]:
+		Settings.display["skirmish_controls"] = mode
+		var db := ContentDB.load_default()
+		var sk := Skirmish.new(3)
+		for id in ["badger", "polar_bear", "clydesdale", "wild_boar"]:
+			sk.add_mech(db.make_mech(id))
+		sk.add_foes([Foe.make("revenant", 30, 4)])
+		var s := SkirmishScreen.new()
+		s.setup(sk)
+		var below := (s.LOG_Y - 4.0) if mode == "bottom" else (s.BOTTOM_Y - 4.0)
+		for v in s._mech_views:
+			# The first row stands under the drawing, at most the view's own chip row; two more under it.
+			var first: float = v.position.y + v.size.y - UnitView.STATUS_H
+			var third_end := first + 3.0 * UnitView.CHIP_H + 2.0 * UnitView.ROW_GAP
+			assert_true(third_end <= below, "%s: the third row ends at %.0f, clear of the controls at %.0f" % [mode, third_end, below])
+		s.free()
+	Settings.display["skirmish_controls"] = was
+	var rows := UnitView.chip_rows([56.0, 56.0, 56.0, 56.0, 56.0], 176.0)
+	assert_eq(rows, [[0, 1], [2, 3], [4]], "chips wrap two to a machine's row, in order")
+	assert_eq(UnitView.chip_rows([200.0, 40.0], 150.0), [[0], [1]], "a chip wider than the row stands alone")

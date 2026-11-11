@@ -8,13 +8,30 @@ extends TestCase
 func _screen(seed_value: int = 3) -> BattleScreen:
 	var db := ContentDB.load_default()
 	var team: Array = []
-	for id in ["badger", "clydesdale", "sparrowhawk"]:
+	for id in ["badger", "clydesdale", "kite"]:
 		team.append(db.make_mech(id))
 	var b := Battle.new(seed_value)
+	# The ramp's field, the long wall's (its brief's Phase 2 lays the view for it), and the start
+	# quiet: these tests read the screen's rules, not the opening's (TestCase.quiet_start).
 	b.setup(team, "marsh")
+	quiet_start(b)
 	var s := BattleScreen.new()
 	s.setup(b)
 	return s
+
+
+## A pack's hold says its threat rating first, after its name (the long wall brief 3.7): "A fight
+## for one" to "four", the boss's included, and nothing else is added.
+func test_a_packs_hold_names_its_threat_rating_after_its_name() -> void:
+	var s := _screen()
+	var words := ["one", "two", "three", "four"]
+	var seen := 0
+	for sq in s.battle.field.packs():
+		var lines: Array = s.pack_lines(sq)
+		assert_eq(str((lines[1] as Dictionary).get("text", "")), "A fight for %s" % words[sq.squad - 1], "%s's hold" % sq.display_name)
+		seen += 1
+	assert_true(seen >= 2, "every pack read, the boss among them")
+	s.free()
 
 
 ## Park a pack beside a machine, rooted and pushing.
@@ -30,9 +47,10 @@ func _engage(b: Battle, sq: Unit, m: Unit) -> void:
 
 func test_screen_builds_on_the_players_turn() -> void:
 	var s := _screen()
-	assert_true(s._header.text.begins_with("TURN 01"), "turn one in the header")
-	assert_true(s._header.text.contains("NEXT SPAWN IN"), "and how long until the rift spawns")
-	assert_true(s._sub_label.text.begins_with("READY // 3 OF 3"), "every machine ready")
+	assert_eq(s._top.battle, s.battle, "the top bar reads the battle: the gate, the rift's spawn, the Fractures")
+	assert_true(s._board._title().ends_with("TURN 01"), "turn one on the board under the map, the top bar carrying no turn (Ryan, 9 November)")
+	for r in s._board._rows():
+		assert_eq(r["order"], "READY", "every machine ready, on the board")
 	assert_false(s._resolve_btn.disabled, "the turn can end")
 	assert_eq(s._resolve_btn.text, "END TURN", "nothing ordered: the button ends the turn")
 	assert_true(s._clear_btn.disabled, "nothing to undo yet")
@@ -69,6 +87,154 @@ func test_a_tap_selects_and_a_lit_hex_plans_the_move() -> void:
 	assert_true(s._map.plans.is_empty() and s._map.shown.is_empty(), "END TURN plays the plan")
 	assert_eq(m.pos, dest, "and it stands where it went")
 	s.free()
+
+
+## A move entered reads EXECUTE, and EXECUTE plays it with the turn going on (Ryan, 2 November:
+## "it shouldn't "end turn" when a command is entered. Movement should be able to be executed in
+## sequence if the player wants, and undone"): no enemy turn, the next moves planned and played
+## after it, and UNDO takes them back in order, each machine where it stood, nothing planned again.
+func test_a_planned_move_reads_execute_and_plays_with_the_turn_going_on() -> void:
+	var s := _screen()
+	var b := s.battle
+	var a: Unit = b.mechs()[0]
+	var c: Unit = b.mechs()[1]
+	var d: Unit = b.mechs()[2]
+	var a0 := a.pos
+	var c0 := c.pos
+	var d0 := d.pos
+	var packs := {}
+	for sq in b.field.packs():
+		packs[sq] = sq.pos
+	s._on_hex_tapped(a.pos)
+	var ha: Vector2i = s._map.destinations.keys()[0]
+	s._on_hex_tapped(ha)
+	assert_eq(s._resolve_btn.text, "EXECUTE", "a move entered: the button executes it")
+	s._on_main_button()
+	assert_true(s._map.plans.is_empty() and s._map.shown.is_empty(), "EXECUTE plays the plan")
+	assert_eq(a.pos, ha, "the machine stands where it went")
+	assert_eq(b.field.phase, 0, "and the turn goes on")
+	assert_eq(b.state, Battle.State.PLAN, "the player's still")
+	for sq in packs.keys():
+		assert_eq(sq.pos, packs[sq], "no pack walked")
+	assert_eq(s._resolve_btn.text, "END TURN", "nothing waiting: the button ends the turn")
+	assert_false(s._clear_btn.disabled, "and the move can still be undone")
+	# Two more planned, then one EXECUTE plays both.
+	var dests := {}
+	for m in [c, d]:
+		s._on_hex_tapped(m.pos)
+		for h in s._map.destinations.keys():
+			if h != ha and not dests.values().has(h):
+				dests[m] = h
+				break
+		s._on_hex_tapped(dests[m])
+	assert_eq(s._map.shown.get(c.id, [Vector2i.ZERO])[0], c0, "the next moves are planned from where their machines stand")
+	assert_false(s._map.shown.has(a.id), "and the played one is not planned again")
+	assert_eq(s._resolve_btn.text, "EXECUTE", "EXECUTE again")
+	s._on_main_button()
+	assert_eq([a.pos, c.pos, d.pos], [ha, dests[c], dests[d]], "all three played, in sequence")
+	s._on_undo()
+	assert_eq([a.pos, c.pos, d.pos], [ha, dests[c], d0], "UNDO takes the last back, the machine where it stood")
+	assert_true(s._map.plans.is_empty() and s._map.shown.is_empty(), "with the move played before it not planned again")
+	assert_eq(s._map.selected, d, "and back in hand to move again")
+	s._on_undo()
+	assert_eq(c.pos, c0, "then the one before")
+	assert_true(s._map.plans.is_empty() and s._map.shown.is_empty(), "nothing planned")
+	s._on_undo()
+	assert_eq(a.pos, a0, "then the first")
+	assert_true(s._clear_btn.disabled, "back to the turn's start")
+	assert_eq(s._resolve_btn.text, "END TURN", "and the button ends the turn")
+	s.free()
+
+
+## ENGAGE still comes first with a fight ready, a move waiting or not; a move entered with nothing
+## else left to do pulses EXECUTE, the next press.
+func test_engage_comes_before_execute_and_execute_pulses_when_it_is_all_that_is_left() -> void:
+	var s := _screen()
+	var b := s.battle
+	var a: Unit = b.mechs()[0]
+	var c: Unit = b.mechs()[1]
+	var sq: Unit = b.field.packs()[0]
+	var home := sq.pos
+	_engage(b, sq, a)
+	s._refresh()
+	s._on_hex_tapped(c.pos)
+	s._on_hex_tapped(s._map.destinations.keys()[0])
+	s._on_hex_tapped(a.pos)
+	s._on_hex_tapped(sq.pos)
+	assert_eq(b.order_of(a), sq, "one ordered")
+	assert_false(b.planned.is_empty(), "and another's move waiting")
+	assert_eq(s._resolve_btn.text, "ENGAGE", "the fight's button first")
+	s._on_undo()
+	assert_eq(s._resolve_btn.text, "EXECUTE", "the order taken back: the move's")
+	for m in b.mechs():
+		if m != c:
+			b.spent[m.id] = 1   # nothing else for anyone to do
+	sq.pos = home   # and the pack back where it spawned, out of reach of the one that moved
+	s._refresh()
+	assert_true(b.nothing_left(), "nothing left but the button")
+	assert_eq(s._resolve_btn.text, "EXECUTE", "which executes the move")
+	assert_true(s._resolve_btn.pulse, "and pulses")
+	s.free()
+
+
+## END TURN with a machine still able to move or fight asks first (Ryan, 2 November: "If end turn
+## is hit and there are movements/actions remaining, it should alert the player"); NO keeps the
+## turn, YES ends it; with nothing left it ends at once.
+func test_end_turn_asks_while_a_machine_can_still_act() -> void:
+	var s := _screen()
+	var b := s.battle
+	assert_eq(s._resolve_btn.text, "END TURN", "nothing entered")
+	s._on_main_button()
+	assert_true(s._confirm.visible and s._confirm_shade.visible, "END TURN asks first")
+	assert_eq(s._confirm_text.text, "%d machines can still move or fight. End the turn anyway?" % b.mechs().size(), "in plain words")
+	assert_eq(b.field.phase, 0, "and nothing has ended")
+	s._hide_confirm()
+	assert_false(s._confirm.visible, "NO puts it away")
+	assert_eq(b.field.phase, 0, "with the turn as it was")
+	s._on_main_button()
+	s._confirm_yes()
+	assert_false(s._confirm.visible, "YES puts it away")
+	assert_eq(b.field.phase, 1, "and ends the turn")
+	assert_true(s._board._title().ends_with("TURN 02"), "the next turn opens")
+	assert_true(b.forced.is_empty(), "with no catch to fight first")
+	for m in b.mechs():
+		b.spent[m.id] = 1
+	s._refresh()
+	assert_true(s._resolve_btn.pulse, "nothing left: the button pulses")
+	s._on_main_button()
+	assert_false(s._confirm.visible, "and ends the turn without asking")
+	assert_eq(b.field.phase, 2, "at once")
+	s.free()
+
+
+## A move played by EXECUTE is saved played: the save resumes with nothing planned, and its undo
+## sets the machine back where it stood.
+func test_an_executed_move_is_saved_played() -> void:
+	const TMP := "user://test_screen_execute.json"
+	SaveGame.clear(TMP)
+	var s := _screen(4)
+	s.autosave_enabled = true
+	s.save_path = TMP
+	var m: Unit = s.battle.mechs()[0]
+	var start := m.pos
+	s._on_hex_tapped(m.pos)
+	var dest: Vector2i = s._map.destinations.keys()[0]
+	s._on_hex_tapped(dest)
+	s._on_main_button()
+	var loaded := SaveGame.load(TMP)
+	assert_true(loaded.planned.is_empty(), "the save holds the move played, nothing planned")
+	assert_eq(loaded.field.unit_by_id(m.id).pos, dest, "the machine where it went")
+	var r := BattleScreen.new()
+	r.setup(loaded)
+	r._resume_where_it_was()
+	assert_true(r._map.shown.is_empty(), "resumed, the map shows it there")
+	assert_eq(r._resolve_btn.text, "END TURN", "with nothing to execute")
+	r._on_undo()
+	assert_eq(loaded.field.unit_by_id(m.id).pos, start, "and its undo sets it back where it stood")
+	assert_true(r._map.plans.is_empty(), "with nothing planned again")
+	r.free()
+	s.free()
+	SaveGame.clear(TMP)
 
 
 func test_undo_takes_back_an_order_and_the_moves_in_the_order_made() -> void:
@@ -113,7 +279,7 @@ func test_end_turn_walks_the_packs_and_opens_the_next_turn() -> void:
 	var shown: Battlefield.Walk = s._map.walks[sq.id]
 	s._on_end_turn()
 	assert_eq(sq.pos, shown.end, "the pack walked where the map showed")
-	assert_true(s._header.text.begins_with("TURN 02"), "next turn")
+	assert_true(s._board._title().ends_with("TURN 02"), "next turn")
 	assert_eq(s.battle.state, Battle.State.PLAN, "the player's turn again")
 	assert_eq(s._skirmish, null, "no fight on its own")
 	s.free()
@@ -141,7 +307,7 @@ func test_a_tap_on_a_pack_with_a_machine_in_hand_orders_it_and_engage_opens_the_
 	s._on_hex_tapped(sq.pos)
 	s._on_main_button()
 	assert_true(s._skirmish != null, "ENGAGE opens the skirmish screen")
-	assert_eq(s._sub_label.text, "FIGHT", "the readout says so")
+	assert_true(s._board._title().begins_with("FIGHT"), "the board says so")
 	var sk: Skirmish = s._skirmish.sk
 	assert_eq(sk.round, 1, "skirmish started")
 	sk.reinforcements.clear()
@@ -154,7 +320,71 @@ func test_a_tap_on_a_pack_with_a_machine_in_hand_orders_it_and_engage_opens_the_
 	assert_false(b.field.units.has(sq), "pack wiped")
 	assert_eq(b.state, Battle.State.PLAN, "back to the turn")
 	assert_eq(b.actions_left(m), 0, "the machine is spent")
-	assert_true(s._sub_label.text.contains("2 OF 3"), "the readout counts it out")
+	assert_eq(s._board._rows().filter(func(r: Dictionary) -> bool: return r["order"] == "READY").size(), 2, "the board counts it out")
+	s.free()
+
+
+## A Fracture a fight earns is announced as the map comes back (Ryan, 9 November: "Fractures need
+## to be announced. The fracture meter needs to be a prominent, always visible UI component"): the
+## top bar's gauge flashes, and the bar reads the count the battle holds.
+func test_a_fracture_earned_by_a_fight_is_announced_on_the_top_bar() -> void:
+	var s := _screen()
+	var b := s.battle
+	var m: Unit = b.mechs()[0]
+	var sq: Unit = b.field.packs()[0]
+	b.thresholds = [1, 100000, 200000]   # any kill earns the first
+	_engage(b, sq, m)
+	s._refresh()
+	s._on_hex_tapped(m.pos)
+	s._on_hex_tapped(sq.pos)
+	s._on_main_button()
+	var sk: Skirmish = s._skirmish.sk
+	sk.reinforcements.clear()
+	for f in sk.field_foes():
+		f.hp = 0
+	s._skirmish._end_turn_now()
+	assert_false(s._top._flash.has("fractures"), "nothing earned until the fight is back")
+	s._on_skirmish_back()
+	assert_eq(b.fractures, 1, "the fight earned the first Fracture")
+	assert_true(s._top._flash.has("fractures"), "the top bar's gauge flashes it")
+	assert_true(b.is_sealed(), "the seal holds until the last")
+	s.free()
+
+
+## A pack's whole way shows while it is tapped, and no other's: not a hunter's while the machine
+## it comes for is in hand (Ryan, 10 November: "When a machine is selected, don't need to see the
+## whole hunter path to them").
+func test_a_tapped_pack_alone_shows_its_whole_way() -> void:
+	var s := _screen()
+	var b := s.battle
+	var packs := b.field.packs().filter(func(p: Unit) -> bool: return not p.is_boss)
+	var sq: Unit = packs[0]
+	var other: Unit = packs[1] if packs.size() > 1 else null
+	var m: Unit = b.mechs()[0]
+	s._refresh()
+	s._on_hex_tapped(sq.pos)
+	var w: Battlefield.Walk = s._map.walks[sq.id]
+	assert_true(s._map.shows_whole_way(sq, w), "the tapped pack's way")
+	if other != null:
+		assert_false(s._map.shows_whole_way(other, s._map.walks[other.id]), "and no other's")
+	sq.behaviour = "hunt"
+	sq.prey = m.id
+	s._refresh()
+	s._on_hex_tapped(m.pos)
+	assert_eq(s._map.selected, m, "the hunted machine in hand")
+	assert_false(s._map.shows_whole_way(sq, s._map.walks[sq.id]), "its hunter's whole way stays put away")
+	s.free()
+
+
+## The boss stands far larger than a pack on the map (Ryan, 9 November: "enemy bosses need bigger
+## map sprites ... very big and ominous").
+func test_the_boss_draws_far_larger_than_a_pack() -> void:
+	var s := _screen()
+	var tex := ImageTexture.create_from_image(Image.create(16, 16, false, Image.FORMAT_RGBA8))
+	var boss_size := BattleMapView.sprite_size(s.battle.boss, tex)
+	var pack_size := BattleMapView.sprite_size(s.battle.field.packs()[0], tex)
+	assert_eq(boss_size.y, BattleMapView.BOSS_SPRITE_H, "the boss at its height")
+	assert_true(boss_size.y >= pack_size.y * 2.5, "far larger than a pack's")
 	s.free()
 
 
@@ -261,6 +491,104 @@ func test_a_pack_tapped_with_nothing_in_hand_shows_its_fight() -> void:
 	s.free()
 
 
+## What a pack comes for is the thing it attacks (Ryan, 10 November: "The "target" hexes for
+## pushers and hunters should be the thing they're attacking. So an actual wall segment, and the
+## actual machine"): a hunter's is the machine it hunts, where the map shows it; a pusher's is a
+## hex of the wall or the gate beside where its way ends. And a landing that attacks says so: a
+## walk that ends with a strike or a catch (attacks_on_landing), no other.
+func test_a_packs_target_is_the_thing_it_attacks() -> void:
+	var s := _screen()
+	var b := s.battle
+	var packs: Array = b.field.packs().filter(func(u: Unit) -> bool: return not u.is_boss)
+	for p in packs:
+		p.behaviour = "push"
+	var hunter: Unit = packs[0]
+	var pusher: Unit = packs[1]
+	var m: Unit = b.mechs()[0]
+	hunter.behaviour = "hunt"
+	hunter.prey = m.id
+	s._refresh()
+	var hw: Battlefield.Walk = s._map.walks[hunter.id]
+	assert_eq(s._map.target_hex(hunter, hw), m.pos, "the hunter's target is the machine it comes for")
+	var pw: Battlefield.Walk = s._map.walks[pusher.id]
+	var wall: Vector2i = s._map.target_hex(pusher, pw)
+	assert_true(wall != BattleMapView.NO_TARGET, "the pusher has a target")
+	assert_true(b.field.map.is_structure(wall), "a hex of the wall or the gate, the thing it strikes")
+	var from: Vector2i = pw.route[pw.route.size() - 1] if not pw.route.is_empty() else pw.end
+	assert_eq(Hex.distance(wall, from), 1, "beside where its way ends")
+	assert_false(BattleMapView.attacks_on_landing(pw) and not pw.strikes, "a landing warns only when it attacks")
+	var struck := Battlefield.Walk.new()
+	struck.strikes = true
+	var caught := Battlefield.Walk.new()
+	caught.catches = m.id
+	assert_true(BattleMapView.attacks_on_landing(struck), "a strike from the landing hex is an attack")
+	assert_true(BattleMapView.attacks_on_landing(caught), "a catch from it too")
+	assert_false(BattleMapView.attacks_on_landing(Battlefield.Walk.new()), "a plain walk is none")
+	s.free()
+
+
+## A machine's order can be given again (Ryan, 10 November: "If I order a unit to move or engage,
+## I should be able to re-order them by tapping on them again. Tapping on them when they are
+## selected should cancel the order"; "When I tap a unit to cancel its order, it should
+## deselect"; "The undo grows infinitely when I take back a move"): in hand it shows its reach
+## from where it started; a new move replaces the planned one, one step on the undo where there
+## was one; a tap on it takes its order back, lets it go and takes its step off the undo; and
+## another machine's step given since keeps its own, forgetting the plan taken back.
+func test_an_order_is_given_again_and_taken_back_by_a_tap() -> void:
+	var s := _screen()
+	var b := s.battle
+	var m: Unit = b.mechs()[0]
+	var other: Unit = b.mechs()[1]
+	var start := m.pos
+	s._on_hex_tapped(start)
+	var reach: Dictionary = s._map.destinations.duplicate()
+	assert_true(reach.size() >= 2, "a reach to move in")
+	var first: Vector2i = reach.keys()[0]
+	s._on_hex_tapped(first)
+	assert_eq(m.pos, first, "the move planned")
+	assert_true(b.has_plan(m), "it has a plan")
+	assert_eq(b.history.size(), 1, "one step on the undo")
+	assert_eq(s._map.selected, m, "still in hand")
+	assert_eq(s._map.destinations.keys().size(), reach.size(), "its reach from where it started, to give the move again")
+	var second: Vector2i = first
+	for h in reach.keys():
+		if h != first:
+			second = h
+			break
+	s._on_hex_tapped(second)
+	assert_eq(m.pos, second, "the new move in the old one's place")
+	assert_eq(b.plan_pieces().filter(func(p: Dictionary) -> bool: return int(p["unit"]) == m.id).size(), 1, "one move planned, not two")
+	assert_eq(b.plan_pieces()[0]["from"], start, "from where it started")
+	assert_eq(b.history.size(), 1, "still one step: the new move took the old one's place on the undo")
+	# Another machine moves after it; then the first's order is taken back by a tap.
+	s._on_hex_tapped(start)   # a tap on the machine in hand (drawn where it started) ...
+	assert_eq(m.pos, start, "... takes its order back")
+	assert_false(b.has_plan(m), "nothing planned")
+	assert_eq(s._map.selected, null, "and lets it go")
+	assert_eq(b.history.size(), 0, "its step is off the undo: nothing to take back")
+	s._on_hex_tapped(start)
+	s._on_hex_tapped(first)
+	var o_start := other.pos
+	s._on_hex_tapped(o_start)
+	var o_to: Vector2i = o_start
+	for h in s._map.destinations.keys():
+		if h != first:
+			o_to = h
+			break
+	s._on_hex_tapped(o_to)
+	assert_eq(b.history.size(), 2, "two machines moved: two steps")
+	s._select(m)
+	s._on_hex_tapped(start)
+	assert_eq(m.pos, start, "the first machine's move taken back out of order")
+	assert_eq(other.pos, o_to, "the other's stands")
+	assert_eq(b.history.size(), 1, "one step left, the other's")
+	b.undo()
+	assert_eq(other.pos, o_start, "UNDO takes the other's back")
+	assert_eq(m.pos, start, "and never puts the first's plan back")
+	assert_false(b.has_plan(m) or b.has_plan(other), "the turn as it opened")
+	s.free()
+
+
 func test_a_hunters_catch_is_fought_first() -> void:
 	var s := _screen()
 	var b := s.battle
@@ -269,12 +597,24 @@ func test_a_hunters_catch_is_fought_first() -> void:
 	_engage(b, hunter, m)
 	hunter.behaviour = "hunt"
 	hunter.prey = m.id
-	hunter.zone = 1
 	b._new_turn()
 	s._after_step()
 	assert_eq(s._resolve_btn.text, "ENGAGE", "the button reads ENGAGE with nobody ordered")
-	assert_true(s._sub_label.text.begins_with("CAUGHT"), "the readout says so")
+	assert_true(s._board._rows().any(func(r: Dictionary) -> bool: return r["order"] == "CAUGHT"), "the board says so")
 	assert_false(s._map.attack.is_empty(), "the catch's fight shows")
+	# The catch reads as the caught machine's attack order (Ryan, 2 November: "when caught, the
+	# unit should show the attack order on the enemy that caught it for clarity").
+	assert_true(s._map.order_pairs().has([m, hunter]), "the map draws its order onto the hunter")
+	var row: Dictionary = {}
+	for r in s._board._rows():
+		if r["unit"] == m:
+			row = r
+	assert_eq(str(row.get("order", "")), "CAUGHT", "the board says it is caught")
+	assert_eq(str(row.get("meets", "")), "> " + s._board._short(hunter.display_name), "and names its fight as an order does, in HUNTED BY's place")
+	s._on_hex_tapped(m.pos)
+	s._on_hex_tapped(hunter.pos)
+	assert_eq(b.order_of(m), hunter, "ordered onto its hunter as well")
+	assert_eq(s._map.order_pairs().filter(func(p: Array) -> bool: return p[0] == m).size(), 1, "it is still the one line")
 	var other: Unit = b.field.packs()[1]
 	s._on_hex_tapped(b.mechs()[1].pos)
 	s._on_hex_tapped(other.pos)
@@ -293,37 +633,6 @@ func test_a_hunters_catch_is_fought_first() -> void:
 	s.free()
 
 
-## A hunter whose prey is sealed off takes the machine nearest it (Ryan, 29 October: "It's just
-## punishing hiding"): its tag and the board follow the machine it comes for, and its readout
-## says whom it takes and why.
-func test_a_hunter_taking_a_machine_in_its_preys_place_says_so() -> void:
-	var s := _screen()
-	var b := s.battle
-	var hunter: Unit = b.field.packs()[0]
-	for p in b.field.packs():
-		p.behaviour = "push"
-	hunter.behaviour = "hunt"
-	var sealed: Unit = b.mechs()[0]
-	var taken: Unit = b.mechs()[1]
-	hunter.prey = sealed.id
-	var w := Battlefield.Walk.new()
-	w.end = hunter.pos
-	w.prey = taken.id
-	w.catches = taken.id
-	s._map.walks = {hunter.id: w}
-	var text := ""
-	for line in s.pack_lines(hunter):
-		text += str((line as Dictionary).get("text", "")) + " / "
-	assert_true(text.contains("Hunts"), "it still names its prey: %s" % text)
-	assert_true(text.contains("Takes %s in its place: %s is sealed off" % [taken.display_name, sealed.display_name]), "and whom it takes instead: %s" % text)
-	var meets := {}
-	for row in s._board._rows():
-		meets[(row["unit"] as Unit).id] = str(row["meets"])
-	assert_true(str(meets[taken.id]).begins_with("HUNTED BY"), "the board marks the machine it comes for")
-	assert_eq(str(meets[sealed.id]), "", "and not the one sealed off")
-	s.free()
-
-
 ## The boss's fight plays the family's theme when there is one (Ryan, 25 September).
 func test_the_boss_fight_plays_its_theme() -> void:
 	var s := _screen()
@@ -336,10 +645,9 @@ func test_the_boss_fight_plays_its_theme() -> void:
 	s._on_main_button()
 	assert_true(b.boss_fight, "the boss's fight")
 	assert_true(s._skirmish != null, "it opens")
-	assert_eq(s._sub_label.text, "BOSS // FIGHT", "the readout says so")
+	assert_true(s._board._title().begins_with("FIGHT"), "the board says so")
 	assert_eq(s._skirmish.sk.mechs.size(), b.mechs().size(), "with every machine in it")
-	assert_true(s._skirmish._withdraw_btn.disabled, "no withdrawing")
-	assert_eq(s._skirmish._withdraw_btn.text, "NO RETREAT", "and the button says why")
+	assert_false(has_button(s._skirmish, "WITHDRAW"), "no withdrawing: no button for it (the long wall brief 7.5)")
 	var want := Sound.boss_set(b.faction)
 	assert_eq(s._skirmish.music_set, want if not want.is_empty() else "skirmish", "the fight plays the family's theme, or the skirmish's pick without one")
 	s._on_skirmish_back()
@@ -347,27 +655,159 @@ func test_the_boss_fight_plays_its_theme() -> void:
 	s.free()
 
 
+## Every pack and machine past the view's edge gets a tag at the edge it lies past, in either
+## view (the long wall brief 7.1: a wall longer than a screen), inside the view and never
+## overlapping another.
 func test_offscreen_packs_get_edge_tags() -> void:
 	var s := _screen()
 	var tags: Array = s._map.offscreen_tags()
 	var hidden := 0
-	for sq in s.battle.field.packs():
-		if s._map.to_screen(s._map.center(sq.pos)).y < -BattleMapView.HEX_SIZE * 0.3:   # center is map space; tags are judged on screen
+	var m := BattleMapView.HEX_SIZE * 0.3
+	var view: Rect2 = Rect2(Vector2.ZERO, s._map.size).grow(m)
+	var things: Array = s.battle.field.packs() + s.battle.field.mechs()
+	for thing in things:
+		var c: Vector2 = s._map.to_screen(s._map.center(thing.pos))   # center is map space; tags are judged on screen
+		if not view.has_point(c):
 			hidden += 1
-	assert_true(hidden >= 2, "most packs start off-screen at the gate end")
-	assert_eq(tags.size(), hidden, "one tag per off-screen pack")
+	assert_true(hidden >= 1, "a long wall leaves packs off screen at the gate's end")
+	assert_eq(tags.size(), hidden, "one tag for each thing off screen")
 	for t in tags:
 		var rect: Rect2 = t[0]
-		assert_true(t[2], "tags sit at the top edge")
-		assert_true(rect.position.x >= 0.0 and rect.end.x <= s._map.size.x, "tag inside the view")
-	for i in range(1, tags.size()):
-		assert_true(tags[i][0].position.x >= tags[i - 1][0].end.x, "tags do not overlap")
+		assert_true(["top", "bottom", "left", "right"].has(str(t[2])), "a tag names its edge")
+		assert_true(Rect2(Vector2.ZERO, s._map.size).encloses(rect), "tag inside the view")
+	for i in range(tags.size()):
+		for j in range(i + 1, tags.size()):
+			assert_false((tags[i][0] as Rect2).intersects(tags[j][0] as Rect2), "tags do not overlap")
 	var sq: Unit = s.battle.field.packs()[0]
 	s._map.scroll_to_unit(sq)
 	var still: Array = s._map.offscreen_tags()
 	for t in still:
 		assert_true(t[1] != sq, "the pack scrolled to has no tag")
 	assert_eq(BattleMapView.foe_sprite_id(s.battle.boss), str(ContentDB.load_default().bosses_of("marsh")[0]), "boss uses its own art, the domain's first boss's")
+	s.free()
+
+
+## A tear has no edge tag, as the rift has none (Ryan, 10 November: "Tear doesn't need an edge
+## tag, same way the rift doesn't"): wherever the map looks, every tag is a unit's.
+func test_a_tear_has_no_edge_tag() -> void:
+	var s := _screen()
+	var f: Battlefield = s.battle.field
+	f.peak()
+	assert_false(f.tears.is_empty(), "a peak opens a tear")
+	for end in ["top", "bottom"]:
+		if end == "top":
+			s._map.scroll_to_top()
+		else:
+			s._map.scroll_to_bottom()
+		for t in s._map.offscreen_tags():
+			assert_true(t[1] is Unit, "a tag stands for a unit, never a tear")
+	s.free()
+
+
+## A peak is shown after the packs' walks, never under them (Ryan, 10 November: a tear "needs ...
+## an animation/cutscene when one opens. And an animation/cutscene when the seam moves, too"):
+## the map holds the seam where it stood and the new tear unseen until the cutscene plays, then
+## shows the field as it is and hands on. Headless nothing plays, so it hands on at once.
+func test_a_peak_is_held_until_its_cutscene_plays() -> void:
+	var s := _screen()
+	var f: Battlefield = s.battle.field
+	var seam := f.seam_row
+	var tears := f.tears.size()
+	s._map.hold_peak()
+	f.peak()
+	assert_eq(s._map.seam_shown, float(seam), "the seam drawn where it stood")
+	assert_eq(s._map.tears_shown, tears, "the new tear not drawn yet")
+	var grad_held: Vector2 = Bleed.gradient(f, Vector2.ZERO, 48.0, s._map.seam_shown)
+	var grad_now: Vector2 = Bleed.gradient(f, Vector2.ZERO, 48.0)
+	assert_true(grad_now.x > grad_held.x, "the painting's edge as held stands short of the field's")
+	var handed := [false]
+	s._map.play_peak(func() -> void: handed[0] = true)
+	assert_true(handed[0], "the cutscene hands on")
+	assert_false(s._map.cutscene_playing(), "and is over")
+	assert_eq(s._map.seam_shown, -1.0, "the seam drawn as the field has it")
+	assert_eq(s._map.tears_shown, -1, "and every tear")
+	# A turn with no peak hands on the same way.
+	s._map.hold_peak()
+	handed[0] = false
+	s._map.play_peak(func() -> void: handed[0] = true)
+	assert_true(handed[0], "nothing to show: at once")
+	s.free()
+
+
+## Every hunter that turns on a machine in a turn is declared, each in its turn (Ryan, 10
+## November: "We should pan and zoom to hunters when they acquire as well"; one a turn before,
+## the first lock's): the map hands each pair to the screen's declaration and then hands on.
+## Headless nothing glides, so all of it happens at once and the view is left as it was.
+func test_every_lock_of_a_turn_is_declared() -> void:
+	var s := _screen()
+	var packs: Array = s.battle.field.packs()
+	var m: Unit = s.battle.mechs()[0]
+	var locks := [[packs[0], m], [packs[1], m]]
+	var told: Array = []
+	var handed := [false]
+	var view := Vector3(s._map.scroll_x, s._map.scroll_y, s._map.zoom)
+	s._map.play_locks(locks, func(h: Unit, p: Unit) -> void: told.append([h, p]), func() -> void: handed[0] = true)
+	assert_eq(told.size(), 2, "both locks declared")
+	assert_true(told[0][0] == packs[0] and told[1][0] == packs[1] and told[1][1] == m, "each hunter with its prey, in order")
+	assert_true(handed[0], "then it hands on")
+	assert_false(s._map.cutscene_playing(), "nothing left playing")
+	assert_eq(Vector3(s._map.scroll_x, s._map.scroll_y, s._map.zoom), view, "the view where the player had it")
+	handed[0] = false
+	s._map.play_locks([], func(_h: Unit, _p: Unit) -> void: told.append([]), func() -> void: handed[0] = true)
+	assert_true(handed[0] and told.size() == 2, "no lock: it hands on and declares nothing")
+	s.free()
+
+
+## The painting's edge stands on the seam (Ryan, 10 November: "The point of the seam was to
+## visually represent where the tears can open"): the seam's own row is the painting's, where a
+## tear opens, and the row past it the reconstruction's, at the start and after every creep, in
+## either view.
+func test_the_paintings_edge_stands_on_the_seam() -> void:
+	var s := _screen()
+	var f: Battlefield = s.battle.field
+	var was := Bleed.everywhere
+	Bleed.everywhere = false
+	var none := PackedVector3Array()
+	for step in range(4):
+		var grad := Bleed.gradient(f, Vector2.ZERO, 48.0)
+		var col := Hex.axial_to_offset(f.map.gate).x
+		var on := MapOrient.to_pixel(Hex.offset_to_axial(col, f.seam_row), 48.0)
+		var past := MapOrient.to_pixel(Hex.offset_to_axial(col, f.seam_row + 1), 48.0)
+		assert_eq(Bleed.solid(on, grad, none), 0.0, "the seam's row %d is the painting's" % f.seam_row)
+		assert_eq(Bleed.solid(past, grad, none), 1.0, "the row past it is solid ground")
+		f.peak()
+	Bleed.everywhere = was
+	s.free()
+
+
+## The boss's picture on the map is its own, drawn for its size (10 November: its 16-pixel token
+## blown up to that size was a blob): every foe that can stand as the boss, a domain's bosses and
+## its bench, has one wherever it has a combat sprite to cut it from (tools/foeforge `boss`),
+## larger than its token, and every picture in art/foes names such a foe, so a renamed id or a
+## new boss's art fails here until the cut is run again.
+func test_every_boss_has_its_map_picture() -> void:
+	var db := ContentDB.load_default()
+	var can_lead := {}
+	for fid in db.factions.keys():
+		for id in db.bosses_of(str(fid)) + db.bench_of(str(fid)):
+			can_lead[str(id)] = true
+	assert_false(can_lead.is_empty(), "content names its bosses")
+	for id in can_lead.keys():
+		if not ResourceLoader.exists("res://art/foes/%s_combat.png" % id):
+			continue
+		assert_true(ResourceLoader.exists("res://art/foes/%s_boss.png" % id), "%s has its map picture (tools/foeforge/forge.py boss)" % id)
+		var pic := Sprites.map_boss(str(id))
+		var token := Sprites.map_foe(str(id))
+		if pic != null and token != null:
+			assert_true(pic.get_height() > token.get_height(), "%s's picture is drawn larger than its token" % id)
+	for f in DirAccess.get_files_at("res://art/foes"):
+		if f.ends_with("_boss.png"):
+			assert_true(can_lead.has(f.trim_suffix("_boss.png")), "%s is a boss or a bench hero content names" % f)
+	var s := _screen()
+	var boss: Unit = s.battle.boss
+	var tex := BattleMapView.foe_picture(boss)
+	assert_true(tex != null, "the battle's boss has a picture")
+	assert_eq(BattleMapView.sprite_size(boss, tex).y, BattleMapView.BOSS_SPRITE_H, "and stands at the boss's size")
 	s.free()
 
 
@@ -381,8 +821,9 @@ func test_hold_shows_a_readout() -> void:
 	var lines: Array = s._details_entry.lines
 	assert_eq(str(lines[0]["style"]), "title", "the name heads it")
 	assert_eq(str(lines[0]["text"]), m.display_name.to_upper(), "the machine's name")
-	assert_eq(str(lines[1]["style"]), "bar", "its shield a gauge")
-	assert_eq(str(lines[2]["text"]), "Hull %d/%d" % [m.hull, m.hull_max], "its hull a gauge with its numbers")
+	assert_eq(str(lines[1]["style"]), "bar", "its hull a gauge")
+	assert_eq(str(lines[1]["text"]), "Hull %d/%d" % [m.hull, m.hull_max], "with its numbers")
+	assert_false(s._details_entry.text().contains("Shield"), "no shield on the map: the shield is the fight's (the long wall brief 7.5)")
 	assert_true(s._details_entry.text().contains("action"), "and its actions")
 	assert_true(s._details_entry.text().contains("Move %d" % int(m.base["move"])), "and its move")
 	s._on_hold_released()
@@ -390,7 +831,7 @@ func test_hold_shows_a_readout() -> void:
 	var sq: Unit = s.battle.field.packs()[0]
 	s._on_unit_held(sq)
 	assert_true(s._details_entry.text().contains("×%d" % int(sq.member_list()[0][1])), "the pack's members, each at its count")
-	assert_true(s._details_entry.text().contains("Ring %d" % sq.zone), "and its ring")
+	assert_false(s._details_entry.text().contains("Ring"), "no ring line: a hunter catches at the engage range everyone shares (10 November)")
 	assert_true(s._details_entry.text().contains("Marches") or s._details_entry.text().contains("Hunts"), "and what it is doing")
 	s._on_unit_held(s.battle.boss)
 	assert_eq(str(s._details_entry.lines[0]["type"]), "Boss", "the boss says so beside its name")
@@ -459,18 +900,20 @@ func test_double_tap_opens_the_codex_for_a_machine_and_a_pack() -> void:
 	s.free()
 
 
-func test_the_gate_is_selectable_and_has_an_entry() -> void:
+## The gate and the rift are no selection on the map (Ryan, 9 November: "The rift and wall no
+## longer need to show their bars, nor be selectable"): a tap on either lets go of what was held
+## and opens nothing, a double-tap no entry; their numbers are the top bar's.
+func test_the_gate_and_the_rift_are_not_selectable() -> void:
 	var s := _screen()
-	var g: Vector2i = s.battle.field.map.gate
-	s._on_hex_tapped(g)
-	assert_true(s._map.gate_selected, "the gate is selected")
-	assert_true(s._details.visible and s._details_entry.text().contains("Integrity %d/%d" % [s.battle.field.gate_hp, s.battle.field.gate_hp_max]), "its integrity a gauge in the readout")
-	s._on_hex_tapped(s.battle.mechs()[0].pos)
-	assert_false(s._map.gate_selected, "another tap lets it go")
-	s._on_hex_double_tapped(g)
-	assert_true(s._codex.visible, "double-tap opens its entry")
-	assert_eq(s._codex._title.text, "“The Gate”", "titled as the gate")
-	s._codex.close()
+	var m: Unit = s.battle.mechs()[0]
+	for h in [s.battle.field.map.gate, s.battle.field.map.rift]:
+		s._on_hex_tapped(m.pos)
+		assert_eq(s._map.selected, m, "a machine in hand")
+		s._on_hex_tapped(h)
+		assert_eq(s._map.selected, null, "a tap on the structure lets it go")
+		assert_false(s._details.visible, "and opens no readout")
+		s._on_hex_double_tapped(h)
+		assert_false(s._codex.visible, "a double-tap opens no entry")
 	s.free()
 
 
@@ -560,7 +1003,6 @@ func test_the_battle_is_saved_as_it_goes_and_resumes() -> void:
 	_engage(b, hunter, m)
 	hunter.behaviour = "hunt"
 	hunter.prey = m.id
-	hunter.zone = 1
 	b._new_turn()
 	s._autosave()
 	var loaded := SaveGame.load(TMP)
@@ -587,7 +1029,7 @@ func test_the_battle_is_saved_as_it_goes_and_resumes() -> void:
 	r2._resume_where_it_was()
 	assert_true(r2._skirmish != null, "resumed straight into the skirmish screen")
 	assert_eq(r2._skirmish.sk, mid.current, "on the saved fight")
-	assert_eq(r2._sub_label.text, "FIGHT", "the field reads as in a fight")
+	assert_true(r2._board._title().begins_with("FIGHT"), "the field reads as in a fight")
 	r2.free()
 	# A decided battle clears the save.
 	sk.reinforcements.clear()
@@ -600,4 +1042,71 @@ func test_the_battle_is_saved_as_it_goes_and_resumes() -> void:
 	s._after_step()
 	assert_eq(b.state, Battle.State.DONE, "over")
 	assert_false(SaveGame.exists(TMP), "and the save is gone")
+	s.free()
+
+
+## The long wall's two views (the long wall brief 7.1): with the wall at the left or at the
+## bottom, the map opens on the gate's end with the gate in sight, the rift lies across the screen
+## from it the way the view says, and a finger on any hex of the field reads that hex.
+func test_either_view_opens_on_the_gate_and_reads_a_finger() -> void:
+	var s := _screen()
+	var map := s.battle.field.map
+	for left in [true, false]:
+		var view_name := "wall left" if left else "wall bottom"
+		MapOrient.wall_left = left
+		s._map.set_field(s.battle.field)
+		var m: BattleMapView = s._map
+		var view := Rect2(Vector2.ZERO, m.size)
+		var gate := m.to_screen(m.center(map.gate))
+		assert_true(view.has_point(gate), "%s: the gate opens in sight" % view_name)
+		var rift := m.to_screen(m.center(map.rift))
+		if left:
+			assert_true(rift.x > gate.x and absf(rift.y - gate.y) < m.size.y, "%s: the rift lies right of the gate" % view_name)
+		else:
+			assert_true(rift.y < gate.y, "%s: the rift lies above the gate" % view_name)
+		var read := 0
+		for h in map.all_hexes():
+			var c := m.center(h)
+			m.scroll_x = m.size.x * 0.5 - c.x * m.zoom
+			m.scroll_y = m.size.y * 0.5 - c.y * m.zoom
+			m._clamp_scroll()
+			var p := m.to_screen(c)
+			if view.has_point(p):
+				read += 1
+				assert_eq(m.hex_at(p), h, "%s: a finger on %s reads it" % [view_name, str(h)])
+		assert_eq(read, map.all_hexes().size(), "%s: every hex of the field can be scrolled to" % view_name)
+	MapOrient.apply_setting()
+	s.free()
+
+
+## The fight queue (the long wall brief 7.4): two machines ordered onto two packs are two fights;
+## the button reads ENGAGE 1 OF 2 and the map numbers both; once the first is fought the other
+## order stands, the button reads ENGAGE and pulses until the player does something else.
+func test_engage_counts_the_fights_waiting() -> void:
+	var s := _screen()
+	var b := s.battle
+	var ms := b.mechs()
+	var packs: Array = []
+	for sq in b.field.packs():
+		if not sq.is_boss:
+			packs.append(sq)
+	_engage(b, packs[0], ms[0])
+	_engage(b, packs[1], ms[1])
+	assert_true(b.order(ms[0], packs[0]), "the first machine ordered onto the first pack")
+	assert_true(b.order(ms[1], packs[1]), "the second onto the second")
+	s._refresh()
+	assert_eq(b.fights_waiting().size(), 2, "two fights wait")
+	assert_eq(b.fights_waiting()[0]["target"], packs[0], "the first order's first")
+	assert_eq(s._resolve_btn.text, "ENGAGE 1 OF 2", "the button counts them")
+	assert_eq(s._map.queue.size(), 2, "the map numbers both")
+	var sk := b.engage()
+	assert_true(sk != null and sk.packs.has(packs[0]), "ENGAGE opens the first")
+	win_fight(sk)
+	s._on_skirmish_back()
+	assert_eq(b.fights_waiting().size(), 1, "the other order stands")
+	assert_eq(b.order_of(ms[1]), packs[1], "intact")
+	assert_eq(s._resolve_btn.text, "ENGAGE", "one left: the button names no count")
+	assert_true(s._queue_pulse, "and it pulses: the next fight is waiting")
+	s._select(ms[2])
+	assert_false(s._queue_pulse, "until the player does something else")
 	s.free()

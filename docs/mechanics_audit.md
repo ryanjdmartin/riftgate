@@ -43,7 +43,7 @@ Start here, the ones that change play most:
 2. A resumed battle spawns its packs with no ring, move or hunt (22), and a resumed fight
    never splits or summons (31).
 3. A domain can field two finals at once and refight a hero already beaten (32).
-4. The runner's "random" start isn't (the Armadillo starts every run it's offered), and the
+4. The runner's "random" start isn't (the Polar Bear starts every run it's offered), and the
    tender predicts the first rifts (33).
 5. The Spin-Up chains into itself for free, against the premise of its limiter exemption (3).
 6. A rally's Kindled is multiplied by the move's factor: +0 on the Bomb's Flare Up, +6 on Holy
@@ -179,11 +179,11 @@ returns early on a Phased machine without recording a blow (sim/skirmish.gd:3107
 the last enemy turn, or out of range in a fight's first round; and its riders land on the
 Phased machine. No foe carries a last act today.
 
-### 11. Latent: a Silence switches off Phased, Ward, Barrier and the Armadillo's seal
+### 11. Latent: a Silence switches off Phased, Ward, Barrier and the Polar Bear's seal
 Silenced suppresses every modifier tagged `buff` (sim/effects.gd:265), and Phased, Ward,
 Barrier and Sealed all carry the tag. A silenced ally the charged Mooring Screens reach still
 stands its die down (`_phase`, sim/skirmish.gd:2376) but takes blows as if unphased, and the
-foes that re-pick may pick it again. A silenced Armadillo loses its +3 armour and also its
+foes that re-pick may pick it again. A silenced Polar Bear loses its +3 armour and also its
 seal's costs (its cooling runs, no 3 heat a turn), since both read `is_sealed`. All by the
 letter ("its buffs count for nothing"); the Phased case costs an action for nothing. No foe
 carries silence yet.
@@ -368,7 +368,7 @@ predates the stock pass's single digits.
 - The Thief "goes for the slowest machine you have": a hero only ever commands the boss unit,
   which never hunts and patrols a hex a turn whatever its move (sim/battlefield.gd:74, :373),
   so its `hunt`, `hunts` and `movespeed` are dead data, and in the fight it aims at the armed.
-  (Its "when it is hurt it leaves" waits on Flee, still planned.)
+  (Its "when it is hurt it leaves" is struck: no foe flees but a loot-runner, Ryan, 2 November.)
 - The Dire Wolf is "faster than anything you own but the cars": it moves 3, and ten machines
   that are no car move 4 or 5 (the Kite, the Buzzard, the Stingray, the Puffin, the
   Cassowary, the Cottonmouth, the Lammergeier, the Skua, the Needletail, the Storm Petrel);
@@ -414,13 +414,13 @@ takes finals first. Fix: decide the final at the battle, not at the rift.
 with the same number (sim/campaign.gd:147, :118), so both streams are one. The party's deal
 uses "a stream of its own" (sim/campaign.gd:161) for exactly this reason. Two effects, traced
 and reproduced with a model of Godot's PCG32 (it matches `docs/campaign_run.md`'s 22 October
-start table to the run: the Honey Badger 9, the Armadillo 20, the Puffin 28, the Prairie Dog
+start table to the run: the Honey Badger 9, the Polar Bear 20, the Puffin 28, the Prairie Dog
 12, the Cassowary 12, the Cottonmouth 7, the Baboon 18, the Stingray 14):
 - The runner's "random" pick of three isn't. The shuffle's first draw reuses Minerva's offer, so
-  over 4,000 seeds today the Armadillo starts every run it is offered (1,975 of 1,975), the
+  over 4,000 seeds today the Polar Bear starts every run it is offered (1,975 of 1,975), the
   Badger about half (1,010 of 2,025), every other machine about three in four. Whatever the
-  runs say about the Armadillo or the Badger rests on that coverage.
-- With the player's own pick, the first rifts reuse the tender's numbers: an Armadillo offered
+  runs say about the Polar Bear or the Badger rests on that coverage.
+- With the player's own pick, the first rifts reuse the tender's numbers: an Polar Bear offered
   means the first rift opens at Kestrel's or Aphelion's city, a Puffin that its lead is the
   Meadow or the Marsh, a Skua the Waste or the Peak.
 

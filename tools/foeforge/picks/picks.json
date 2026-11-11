@@ -161,12 +161,12 @@
     "tol": 90
    }
   },
-  "bone_dragon": {
-   "foe": "bone_dragon",
+  "bone_wyvern": {
+   "foe": "bone_wyvern",
    "role": "sprite",
    "candidate": 1,
    "source": "out/bone_dragon_c3/bone_dragon_1.png",
-   "kept": "picks/bone_dragon.png",
+   "kept": "picks/bone_wyvern.png",
    "prompt": "A towering dragon made of bones with rags of rotting hide on both its wings, which spread wide and match, one from each shoulder, a ribcage like a cathedral, its long bone tail sweeping round, skull head lowered. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Bone Dragon, a monster of the swamp and graveyard. A cathedral of ribs that walks: A towering elite, twice the height of a common foe. Light: dim and damp, rust and old bone, lantern light in fog.",
    "fix": {
     "from": "out/bone_dragon_takesJ/bone_dragon_8.png",
@@ -203,12 +203,12 @@
    "prompt": "A small winged red dragon with a crest of swept-back horns, crouched low on all fours with its wings half spread, smoke and embers curling from its open jaws. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Drake, a monster of the volcano. A small dragon that breathes over the front rank. Artillery with wings.  Light: lit from inside by heat, black rock and embers.",
    "image": "out/drake_hand/drake_1.png"
   },
-  "magma_golem": {
-   "foe": "magma_golem",
+  "magma_elemental": {
+   "foe": "magma_elemental",
    "role": "sprite",
    "candidate": 1,
    "source": "out/magma_golem_c5/magma_golem_1.png",
-   "kept": "picks/magma_golem.png",
+   "kept": "picks/magma_elemental.png",
    "prompt": "A hulking golem of black volcanic rock with molten lava glowing through every crack and broken iron shackles on its wrists, hunched forward like a gorilla, its long thick arms reaching forward in front of its legs, each ending in a huge open stone hand with thick blunt fingers, no face, only two blazing yellow eyes in a small head sunk low between massive shoulders. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Magma Golem, a monster of the volcano. The furnace with a body: rock on the outside, lava in the seams. A towering elite, twice the height of a common foe. Light: lit from inside by heat, black rock and embers.",
    "fix": {
     "from": "out/magma_golem_c3/magma_golem_3.png",
@@ -316,12 +316,12 @@
    "prompt": "A tall woman with dark brown skin in sharp dragon-themed blue armour and an open-faced helm with two small curved horns, holding a long ornate spear upright beside her in one gauntleted hand, its shaft one straight vertical pole from the blade at the top to the butt planted on the ground by her boot, her other hand a fist at her side. 16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, elaborate and over the top, in the style of Final Fantasy IV, V and VI boss art: ornate armour or robes with gold trim and flowing cloth, heroic and terrifying, a face that is not a recognisable character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The Lancer, a hero of the party who comes out of the desert. The one who jumps: A spear from a great height. Light: sun-bleached and dusty, hard desert light.",
    "note": "Upright spear and small horns, Ryan's pick of 14 October"
   },
-  "white_mage_chibi": {
-   "foe": "white_mage",
+  "cleric_chibi": {
+   "foe": "cleric",
    "role": "chibi",
    "candidate": 1,
    "source": "out/white_mage_chibi_c1/white_mage_1.png",
-   "kept": "picks/white_mage_chibi.png",
+   "kept": "picks/cleric_chibi.png",
    "prompt": "16-bit SNES JRPG party member battle sprite with small chibi proportions and a big head, the hero of a classic JRPG party, simple bold shapes, about twelve colours, one-pixel dark outline. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. A face that is not a recognisable character, played straight and determined, never comic. The hero: a plump young man with light brown skin and curly black hair, in layered white robes with red and gold trim and a high collar, holding a tall staff topped with a glowing crystal upright in both hands.",
    "fix": {
     "from": "out/white_mage_chibi_fix2/white_mage_1.png",
@@ -331,12 +331,12 @@
     "height": 42
    }
   },
-  "white_mage": {
-   "foe": "white_mage",
+  "cleric": {
+   "foe": "cleric",
    "role": "promoted",
    "candidate": 1,
    "source": "out/white_mage_fix2/white_mage_1.png",
-   "kept": "picks/white_mage_promoted.png",
+   "kept": "picks/cleric_promoted.png",
    "prompt": "A plump young man with light brown skin and curly black hair, in layered white robes with red and gold trim and a high collar, holding a tall staff topped with a glowing crystal upright in both hands. 16-bit SNES JRPG boss battle sprite: a hero of a classic JRPG party drawn as a final boss, elaborate and over the top, in the style of Final Fantasy IV, V and VI boss art: ornate armour or robes with gold trim and flowing cloth, heroic and terrifying, a face that is not a recognisable character, played straight, never cute or chibi. Up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. Full body, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: The White Mage, a hero of the party who comes out of the swamp and graveyard. The healer, in the white robe with the red trim, who heals the dead. The lesson every JRPG teaches: kill the healer first. Light: dim and damp, rust and old bone, lantern light in fog.",
    "fix": {
     "from": "out/white_mage_takesF/white_mage_2.png",
@@ -421,12 +421,12 @@
     "asked": "he has exactly two arms, one raised high and one held low, each with a deep violet rune circle in its palm; the third arm is gone."
    }
   },
-  "behemoth": {
-   "foe": "behemoth",
+  "gargantuan_king": {
+   "foe": "gargantuan_king",
    "role": "sprite",
    "candidate": 2,
    "source": "out/behemoth_bossart/behemoth_2.png",
-   "kept": "picks/behemoth.png",
+   "kept": "picks/gargantuan_king.png",
    "prompt": "behemoth_2.png: A colossal horned quadruped beast down on all fours, its long horizontal body built like a bull crossed with a lion, bellowing with its head raised, a mane of stone-grey quills, two great horns sweeping forward, cracks of molten light in its dark hide. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Behemoth, a monster of the volcano.  A towering elite, twice the height of a common foe. Light: lit from inside by heat, black rock and embers.\n\nbehemoth_3.png: A colossal horned quadruped beast down on all fours, its long horizontal body built like a bull crossed with a lion, roaring with a meteor of fire gathering above its horns, a mane of stone-grey quills, cracks of molten light in its dark hide. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Behemoth, a monster of the volcano.  A towering elite, twice the height of a common foe. Light: lit from inside by heat, black rock and embers.\n\nbehemoth_4.png: A colossal horned quadruped beast down on all fours, its long horizontal body built like a bull crossed with a lion, pawing the ground with one huge clawed foreleg and a long spiked tail lashing, a mane of stone-grey quills, cracks of molten light in its dark hide. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Behemoth, a monster of the volcano.  A towering elite, twice the height of a common foe. Light: lit from inside by heat, black rock and embers.",
    "note": "Ryan's pick of 18 October from the boss art round (drafts.json, art ahead of content): the Behemoth on all fours, bellowing"
   },
@@ -532,12 +532,12 @@
    },
    "note": "Ryan's pick of 26 October after seven rounds (a body made of fire, a head of flame in place of the skull, a sword in a fist with a hilt, then a blade on that grip): his sixth-round pick (bossart9 2, \"so close\") with its blade on the grip's line. His white-hot blade, chest and thigh and the blaze round his face are the background's white, so the cut keeps them by box (keep_glow); the white between his sword arm and his body stays keyed. The Summoner's summon in Ifrit's place, cut at the massive frame ahead of its moment on the skirmish screen"
   },
-  "bourgeon": {
-   "foe": "bourgeon",
+  "floraison": {
+   "foe": "floraison",
    "role": "sprite",
    "candidate": 1,
    "source": "out/bourgeon_bossart10/bourgeon_1.png",
-   "kept": "picks/bourgeon.png",
+   "kept": "picks/floraison.png",
    "prompt": "bourgeon_2.png: A tall gaunt humanoid plant creature of thin knotted vines and green bark, long spindly arms and legs with no muscles, a narrow chest and thin shoulders, its head a great flower bud whose peeled-back pink-and-green petals ring a round mouth rimmed with thorns and full of needle teeth, thin vines whipping from its shoulders, its arms spread, every limb thin as a sapling. 16-bit SNES JRPG battle sprite in the style of Final Fantasy IV, V and VI enemies: ornate, detailed, over-the-top high fantasy, menacing and played straight, never cute or comic, up to twenty colours, one-pixel dark outline. Its posture follows its own body plan, so it need not stand upright like a person. Its eyes are solid glowing or blank shapes without pupils. It carries only what the description names. The whole creature in frame, facing toward the viewer's left, centered, isolated on a solid flat pure white background, no text, no border, no ground shadow. Subject: Floraison, a monster of the grasslands.  A towering elite, twice the height of a common foe. Light: the bright, saturated light of a sunny overworld field.",
    "fix": {
     "from": "out/bourgeon_bossart6/bourgeon_2.png",

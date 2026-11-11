@@ -94,7 +94,7 @@ func test_the_tender_offers_one_tier_one_machine_from_each_city_maker() -> void:
 
 
 ## The mechanics audit (25 October): the tender drew on the run's own stream, so the runner's
-## random pick of three reread Minerva's offer and the Armadillo started every run it was
+## random pick of three reread Minerva's offer and the Polar Bear started every run it was
 ## offered. On a stream of its own, an offered machine sits a run out as often as any other.
 func test_the_runners_pick_never_rereads_the_offer() -> void:
 	var db := ContentDB.load_default()
@@ -240,6 +240,7 @@ func test_a_wipe_lets_the_horde_strike_and_the_city_holds_wounded() -> void:
 	var c := _run()
 	var front := str(c.fronts()[0])
 	var b := _battle(c)
+	quiet_start(b)   # the packs far off, so the wipe's strikes wound the gate and leave it standing
 	for u in b.mechs():
 		_wreck(b, u)
 	b.foes_killed = 4
@@ -314,6 +315,22 @@ func test_a_wreck_loses_what_was_destroyed_and_sits_out_a_battle() -> void:
 	assert_true(not c.ready_machines().has(m), "not ready")
 	c.pass_turn()
 	assert_eq(m.shop, 0, "back after a battle's time")
+
+
+## The finale is fought the turn it is due (Ryan, 8 November: "you can't pass a turn when the
+## finale is due ... the Council demands it"): a pass is refused, so the Convergence never runs
+## past the finale's; with nobody to field and no rush, the runner forfeits it and the capital falls.
+func test_the_finale_cannot_be_passed() -> void:
+	var c := _run()
+	assert_true(c.pass_turn(), "a turn may be passed before it")
+	c.convergence = Campaign.FINALE_AT
+	c._open_rifts()
+	assert_true(c.finale_due(), "due")
+	assert_false(c.pass_turn(), "and no turn passes now")
+	assert_eq(c.convergence, Campaign.FINALE_AT, "the Convergence stands at the finale's")
+	assert_eq(c.fronts(), [c.capital().id], "the capital the only front")
+	assert_true(c.forfeit_finale(), "forfeited with nobody to field it")
+	assert_true(c.capital().fallen and c.state == Campaign.OVER and not c.won, "the capital falls, the run over")
 
 
 func test_a_wreck_can_be_rushed_for_salvage() -> void:
@@ -593,10 +610,121 @@ func _park(b: Battle, sq: Unit, m: Unit, hunting: bool) -> void:
 	sq.behaviour = "hunt" if hunting else "push"
 
 
-## The withdrawing persona on the campaign bot (26 October, the foes' fresh start): a fight the
-## player picked is left once the fighters' hull is under the line, the pack keeping its
-## survivors, and the bot says so.
-func test_the_bots_persona_withdraws_from_a_fight_it_is_losing() -> void:
+## The defence rule (the long wall brief, section 5): a machine is sent at the pack it can stand
+## beside this turn that reaches the wall soonest (one on the apron first, then the turns its
+## planned walk needs), ties by the larger threat rating, then the nearer, never the sealed boss;
+## with none in reach, at the soonest of all.
+func test_the_defence_rule_sends_a_machine_at_the_pack_nearest_the_wall() -> void:
+	var b := Battle.new(3)
+	var m := Unit.mech(1, "M", Vector2i.ZERO, 5)
+	b.setup([m], "marsh", Battle.DEFAULT_WIDTH, Battle.DEFAULT_HEIGHT)
+	quiet_start(b)
+	var row := b.field.apron_row()
+	var col := Hex.axial_to_offset(m.pos).x
+	for sq in b.field.packs():
+		if not sq.is_boss:
+			b.field.units.erase(sq)
+	var mk := func(c: int, r: int, squad: int, name: String) -> Unit:
+		var p := b.field.add_unit(Unit.pack(0, name, Hex.offset_to_axial(c, r), "marsh", 2, 3, "revenant"))
+		p.behaviour = "push"
+		p.squad = squad
+		return p
+	var at_wall: Unit = mk.call(col - 2, row, 1, "at the wall")
+	var next_turn: Unit = mk.call(col + 2, row - 2, 3, "a move out")
+	var walks := b.field.plan_walks()
+	assert_eq(BattleBot.turns_to_wall(b, at_wall, walks[at_wall.id]), 0, "on the apron: none")
+	assert_eq(BattleBot.turns_to_wall(b, next_turn, walks[next_turn.id]), 1, "its walk ends there: one")
+	assert_eq(BattleBot.soonest(b, walks, m, true), at_wall, "the pack at the wall first, whatever its rating")
+	b.field.units.erase(at_wall)
+	var far: Unit = mk.call(col - 3, row - 2, 1, "a patrol a move out")
+	walks = b.field.plan_walks()
+	assert_eq(BattleBot.soonest(b, walks, m, true), next_turn, "a tie on the turns goes to the larger rating")
+	far.squad = 3
+	next_turn.pos = Hex.offset_to_axial(col + 4, row - 2)
+	walks = b.field.plan_walks()
+	assert_eq(BattleBot.soonest(b, walks, m, true), far if Battlefield.unit_distance(m, far) < Battlefield.unit_distance(m, next_turn) else next_turn, "and a tie on both to the nearer")
+	assert_false(BattleBot.soonest(b, walks, m, true) == b.boss, "never the sealed boss")
+	var deep: Unit = mk.call(col, 3, 4, "deep")
+	b.field.units.erase(far)
+	b.field.units.erase(next_turn)
+	walks = b.field.plan_walks()
+	assert_eq(BattleBot.soonest(b, walks, m, true), null, "nothing in reach this turn")
+	assert_eq(BattleBot.soonest(b, walks, m, false), deep, "so it walks toward the soonest of all")
+	assert_eq(BattleBot.turns_to_wall(b, deep, walks[deep.id]), 1 + int(ceil(float(row - Hex.axial_to_offset(walks[deep.id].end).y) / 2.0)), "the rows past its walk at its own pace")
+
+
+## The plain player takes the field's loot when it has nothing to fight (7 November): a machine with
+## no pack in reach this turn ends its move on a cache its move reaches, the nearest, the higher kind
+## on a tie, and claims it as the turn ends.
+func test_the_defence_rule_takes_a_cache_when_no_pack_is_in_reach() -> void:
+	var b := Battle.new(3)
+	var m := Unit.mech(1, "M", Vector2i.ZERO, 5)
+	b.setup([m], "marsh", Battle.DEFAULT_WIDTH, Battle.DEFAULT_HEIGHT)
+	quiet_start(b)
+	for sq in b.field.packs():
+		if not sq.is_boss:
+			b.field.units.erase(sq)
+	b.forced = []
+	b.field.caches.clear()
+	var by_d := {}
+	for h in b.destinations_for(m).keys():
+		var d := Hex.distance(m.pos, h)
+		if d >= 1:
+			if not by_d.has(d):
+				by_d[d] = []
+			(by_d[d] as Array).append(h)
+	var ds: Array = by_d.keys()
+	ds.sort()
+	assert_true(ds.size() >= 2 and (by_d[ds[0]] as Array).size() >= 2, "hexes at two distances in its reach")
+	var near_a: Vector2i = by_d[ds[0]][0]
+	var near_b: Vector2i = by_d[ds[0]][1]
+	var far: Vector2i = by_d[ds[ds.size() - 1]][0]
+	b.field.caches = [{"id": 1, "tier": 3, "pos": far, "flattened": false}, {"id": 2, "tier": 1, "pos": near_a, "flattened": false}]
+	assert_eq(BattleBot.cache_in_reach(b, m), near_a, "the nearest cache its move reaches, whatever the farther one's kind")
+	b.field.caches.append({"id": 3, "tier": 2, "pos": near_b, "flattened": false})
+	assert_eq(BattleBot.cache_in_reach(b, m), near_b, "between two as near, the higher kind")
+	var bot := BattleBot.make(Policy.GREEDY, 2)
+	bot.take_turn(b)
+	assert_eq(m.pos, near_b, "it ends its move there")
+	b.forced = []
+	b.end_turn()
+	assert_eq(b.loot.size(), 1, "and claims it as the turn ends")
+	assert_eq(int(b.loot[0]["tier"]), 2, "that one")
+
+
+## The pressure ratio (the long wall brief, section 5): the threat ratings of the packs at the wall
+## or reaching it this coming enemy turn, over the machines standing; a formation and a patrol
+## against four machines read 1.0, two formations 1.5, a pack far out nothing.
+func test_the_pressure_ratio_reads_what_reaches_the_wall_this_turn() -> void:
+	var b := Battle.new(3)
+	var team: Array = []
+	for n in range(4):
+		team.append(Unit.mech(n + 1, "M%d" % n, Vector2i.ZERO, 3))
+	b.setup(team, "marsh", Battle.DEFAULT_WIDTH, Battle.DEFAULT_HEIGHT)
+	quiet_start(b)
+	for sq in b.field.packs():
+		if not sq.is_boss:
+			b.field.units.erase(sq)
+	var row := b.field.apron_row()
+	var formation := b.field.add_unit(Unit.pack(0, "formation", Hex.offset_to_axial(0, row), "marsh", 2, 6, "revenant"))
+	formation.squad = 3
+	var patrol := b.field.add_unit(Unit.pack(0, "patrol", Hex.offset_to_axial(8, row - 2), "marsh", 2, 3, "revenant"))
+	patrol.squad = 1
+	var far := b.field.add_unit(Unit.pack(0, "far", Hex.offset_to_axial(4, 4), "marsh", 2, 3, "revenant"))
+	far.squad = 3
+	for p in [formation, patrol, far]:
+		p.behaviour = "push"
+	assert_eq(BattleBot.pressure(b), 1.0, "a formation at the wall and a patrol arriving, against four: the three and one")
+	patrol.squad = 3
+	assert_eq(BattleBot.pressure(b), 1.5, "two formations: a split short")
+	b.field.units.erase(b.mechs()[3])
+	assert_eq(BattleBot.pressure(b), 2.0, "over three machines")
+
+
+## The campaign bot fights every fight out (the long wall brief 3.5: there is no withdrawal, so
+## the withdrawing persona went with it): a fight it is losing ends in the machine's wreck or the
+## pack's fall, never withdrawn from.
+func test_the_bot_fights_every_fight_out() -> void:
 	var db := ContentDB.load_default()
 	var fac := db.default_faction()
 	var foe := str(db.spawn_foes(fac, 1)[0])
@@ -608,29 +736,24 @@ func test_the_bots_persona_withdraws_from_a_fight_it_is_losing() -> void:
 	var sq: Unit = b.field.packs()[0]
 	_park(b, sq, u, false)
 	var bot := BattleBot.make(Policy.GREEDY, 4)
-	bot.withdraw_below = 50
 	bot.take_turn(b)
 	assert_eq(bot.fights, 1, "one fight")
-	assert_eq(bot.withdrawals, 1, "withdrawn from, under the line")
-	assert_eq(bot.fights_won, 0, "so not won")
-	assert_true(u.hull > 0 and b.field.units.has(u), "the machine took the volley and stands")
-	assert_true(b.field.units.has(sq), "the pack keeps its survivors")
-	assert_eq(bot.fight_sizes[0][4], true, "and the fight is marked withdrawn")
+	var wrecked := u.hull <= 0 or not b.field.units.has(u)
+	var felled := not b.field.units.has(sq)
+	assert_true(wrecked != felled, "fought to its end: the machine wrecked or the pack fallen, one of them")
+	assert_eq(bot.fights_won == 1, felled, "won exactly when the pack fell")
 
 
-## A fight a hunter forced is never withdrawn from: the prey would stay caught and take the
-## volley for nothing, so the persona fights it out.
-func test_the_bots_persona_fights_out_a_hunters_catch() -> void:
+## A hunter's catch is fought first, and to its end, as every fight is.
+func test_the_bot_fights_out_a_hunters_catch() -> void:
 	var db := ContentDB.load_default()
 	var fac := db.default_faction()
-	var hunter := ""
-	for id in db.foes.keys():
-		var f: Dictionary = db.foes[id]
-		if str(f.get("behaviour", "push")) == "hunt" and not bool(f.get("hero", false)) and not f.has("promotes"):
-			hunter = str(id)
-			break
-	if hunter.is_empty():
-		return   # no hunter in content: nothing to force
+	var hunter := ""   # the lead of a composition that hunts (the composition says so, 8 November)
+	for fid in db.factions.keys():
+		for c in db.compositions(str(fid), 1, "patrol"):
+			if hunter.is_empty() and c.has("hunts"):
+				hunter = str(c["members"][0][0])
+	assert_false(hunter.is_empty(), "a hunting patrol in content")
 	var b := Battle.new(4)
 	b.with_boss = false
 	b.formation = [[hunter, 3]]
@@ -641,11 +764,9 @@ func test_the_bots_persona_fights_out_a_hunters_catch() -> void:
 	b.forced = b.field.forced_fights()
 	assert_eq(b.forced.size(), 1, "the hunter has caught the machine")
 	var bot := BattleBot.make(Policy.GREEDY, 4)
-	bot.withdraw_below = 50
 	bot.take_turn(b)
-	assert_eq(bot.fights, 1, "the catch was fought")
-	assert_eq(bot.withdrawals, 0, "and never withdrawn from")
-	assert_true(b.forced.is_empty(), "the catch is answered")
+	assert_true(bot.fights >= 1, "the catch was fought")
+	assert_true(b.forced.is_empty() or b.outcome != Battle.Outcome.NONE, "the catch is answered")
 
 
 func test_the_council_pays_favour_for_a_win_docked_for_gate_damage() -> void:
@@ -664,6 +785,7 @@ func test_the_council_pays_favour_for_a_win_docked_for_gate_damage() -> void:
 func test_a_battle_not_won_pays_no_favour() -> void:
 	var c := _run()
 	var b := _battle(c)
+	quiet_start(b)   # the packs far off, so the wipe's strikes leave the city standing
 	for u in b.mechs():
 		_wreck(b, u)
 	b.foes_killed = 3
@@ -751,7 +873,7 @@ func test_a_final_is_fought_against_the_dealt_hero_with_its_wildlife() -> void:
 	var b := _battle(c, front)
 	assert_eq(b.boss.lineup, [str(c.party[fid])], "the dealt hero commands the rift")
 	assert_eq(b.boss.foe_id, "", "its wildlife unnamed: the tier's own units (26 October)")
-	assert_eq(b.boss.strength, b.columns - 1 + ContentDB.escort_at(b.tier), "in the other columns, and the tier's escort")
+	assert_eq(b.boss.strength, b.columns - 1, "in the other columns, none grown by the tier (7 November)")
 	var wild := c.db.foes_for(b.boss).filter(func(f) -> bool: return f.escorts)
 	assert_eq(wild.size(), b.boss.strength, "unpacked beside the hero")
 	for f in wild:
@@ -889,57 +1011,69 @@ func test_the_finale_is_the_party_promoted_a_beaten_heros_column_to_a_standing_b
 
 
 ## Bosses scale to the battle's tier (Ryan, 25 and 26 October: "scaling stats and upgrading the
-## escort", "composed of units from the tier"; ContentDB.BOSS_TIERS): a boss unit's commanders
-## take the tier's HP and attack, and it brings more escort, its domain's units of the tier
-## round robin, unless the escort is named (a hand-tailored one).
+## escort"; ContentDB.BOSS_TIERS): a boss unit's commanders take the tier's HP and attack, and its
+## escort is the tier's curated composition, never grown by count (Ryan, 7 November: "packs don't
+## auto scale, so why would a bosses? Should be treated the same way"): with none written for the
+## tier it stands alone, and a named escort is kept as named.
 func test_a_boss_unit_stands_at_its_battles_tier() -> void:
-	# A copy of the content with the domain's hand-tailored escorts taken out, so the round robin
-	# reads (31 October: every boss has its own escort now); the shared content is never written to.
-	var db := ContentDB.new()
-	db.load_dir(ContentDB.DIR)
-	var faction := str(db.factions.keys()[0])
-	db.factions[faction]["compositions"] = Array(db.factions[faction].get("compositions", [])).filter(func(c) -> bool: return str(c.get("size", "")) != "escort")
-	var boss_id := str(db.bosses_of(faction)[0])
-	var units_at := func(t: int) -> Array:
-		var out: Array = []
-		for e in db.spawn_table(faction, t + 1):
-			if not out.has(str(e[0])) and int(db.foes[str(e[0])].get("size", 1)) == 1:
-				out.append(str(e[0]))
-		return out
-	var spawn_foes: Array = units_at.call(2)
+	var shared := ContentDB.load_default()
+	var faction := ""
+	var boss_id := ""
+	for fid in shared.factions.keys():
+		for bid in shared.bosses_of(str(fid)):
+			if not shared.escort_composition(str(fid), 3, str(bid)).is_empty() and boss_id.is_empty():
+				faction = str(fid)
+				boss_id = str(bid)
+	assert_false(boss_id.is_empty(), "a boss with a curated escort at tier three")
 	var hp: Array = []
 	for t in range(ContentDB.BOSS_TIERS.size()):
-		var units: Array = units_at.call(t)
 		var b := Battle.new(3)
-		b.db = db
 		b.tier = t
+		b.lineup = [boss_id]
 		b.setup([], faction)
 		assert_true(b.boss != null, "the boss takes the field")
 		assert_eq(b.boss.boss_tier, t, "the unit stands at the battle's tier")
-		assert_eq(b.boss.strength, ContentDB.escort_at(t), "tier %d's escort" % (t + 1))
-		var foes := db.foes_for(b.boss)
+		var foes := shared.foes_for(b.boss)
 		var cmd: Foe = foes.filter(func(f) -> bool: return f.commands)[0]
 		var s := ContentDB.boss_tier(t)
-		assert_eq(cmd.hp_max, roundi(int(db.foes[boss_id]["hp"]) * float(s["hp"])), "its HP at the tier")
+		assert_eq(cmd.hp_max, roundi(int(shared.foes[boss_id]["hp"]) * float(s["hp"])), "its HP at the tier")
 		assert_eq(cmd.hp, cmd.hp_max, "whole")
-		assert_eq(cmd.attack, int(db.foes[boss_id]["attack"]) + int(s["attack"]), "its attack at the tier")
+		assert_eq(cmd.attack, int(shared.foes[boss_id]["attack"]) + int(s["attack"]), "its attack at the tier")
 		hp.append(cmd.hp_max)
 		var escorts := foes.filter(func(f) -> bool: return f.escorts)
-		assert_eq(escorts.size(), ContentDB.escort_at(t), "unpacked beside the boss")
-		for i in range(escorts.size()):
-			assert_eq(escorts[i].content_id, units[i % units.size()], "its domain's units of the tier, round robin")
-			assert_eq(escorts[i].hp_max, int(db.foes[units[i % units.size()]]["hp"]), "the rank and file never inflated")
+		var curated := shared.escort_composition(faction, t + 1, boss_id)
+		var want := 0
+		for m in curated.get("members", []):
+			want += int(m[1])
+		assert_eq(escorts.size(), want, "tier %d's escort: its curated composition's members, no more" % (t + 1))
+		for f in escorts:
+			assert_eq(f.hp_max, int(shared.foes[f.content_id]["hp"]), "the rank and file never inflated")
 	assert_true(hp[0] < hp[1] and hp[1] < hp[2], "a harder boss each tier")
-	# A named escort is a hand-tailored one, kept whole.
+	# With no curated escort for its tier, a boss stands alone: nothing grows one (a copy of the
+	# content with the escorts taken out; the shared content is never written to).
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	db.factions[faction]["compositions"] = Array(db.factions[faction].get("compositions", [])).filter(func(c) -> bool: return str(c.get("size", "")) != "escort")
+	var bare := Battle.new(3)
+	bare.db = db
+	bare.tier = 2
+	bare.lineup = [boss_id]
+	bare.setup([], faction)
+	assert_eq(bare.boss.strength, 0, "no escort at tier three when none is written")
+	assert_true(db.foes_for(bare.boss).all(func(f) -> bool: return not f.escorts), "the boss alone")
+	# A named escort is a hand-tailored one, kept as named.
+	var spawn_foe := ""
+	for e in db.spawn_table(faction, 3):
+		if int(db.foes[str(e[0])].get("size", 1)) == 1 and spawn_foe.is_empty():
+			spawn_foe = str(e[0])
 	var named := Battle.new(3)
 	named.db = db
 	named.tier = 2
-	named.escort = [spawn_foes[0], 1]
+	named.escort = [spawn_foe, 1]
 	named.setup([], faction)
 	var kept := db.foes_for(named.boss).filter(func(f) -> bool: return f.escorts)
-	assert_eq(kept.size(), 1 + ContentDB.escort_at(2), "its own count and the tier's")
-	for f in kept:
-		assert_eq(f.content_id, spawn_foes[0], "all of the foe it names")
+	assert_eq(kept.size(), 1, "its own count, never grown by the tier")
+	assert_eq(kept[0].content_id, spawn_foe, "of the foe it names")
 	var c := Campaign.new(5)
 	c.convergence = Campaign.TIER_EVERY * 2
 	assert_eq(c.tier(), 2, "the Convergence at tier three")
@@ -990,11 +1124,11 @@ func test_an_escort_is_drawn_from_its_tiers_list() -> void:
 		assert_eq(drawn, units, "tier %d draws its own list, in spawn order" % (t + 1))
 	var tier_two: Array = db.spawn_table(faction, 2)
 	var comps: Array = db.factions[faction]["compositions"]
-	for c in comps:   # tier three's compositions dropped: the tier takes tier two's
+	for c in comps:   # tier three's compositions dropped: the tier has no list and nothing stands in (8 November)
 		c["tiers"] = (c.get("tiers", [1]) as Array).filter(func(t) -> bool: return int(t) != 3)
 	db.factions[faction]["compositions"] = comps.filter(func(c) -> bool: return not (c["tiers"] as Array).is_empty())
-	assert_eq(db.spawn_table(faction, 3), tier_two, "a tier with no list takes the highest under it")
-	assert_eq(db.escort_units(faction, 2, 1)[0].content_id, str(tier_two[0][0]), "and its escort with it")
+	assert_true(db.spawn_table(faction, 3).is_empty(), "a tier with no list has none: nothing stands in from the tier below")
+	assert_true(db.escort_units(faction, 2, 1).is_empty(), "and no escort is drawn from another tier's")
 	var first: Dictionary = db.foes[str(tier_two[0][0])]
 	first["tier"] = 3
 	assert_eq(db.escort_units(faction, 1, 1)[0].content_id, str(tier_two[0][0]), "a unit's own tier decides nothing")

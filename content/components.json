@@ -1,5 +1,5 @@
 {
- "_about": "Components: the kit a machine's die is made of. Each is exactly one entry on the die (its face: the engine's word for one entry). Nothing generic exists: every entry on a die is a component, or an empty hardpoint. A component a chassis lists under fixed is built in and is never bought or crafted, which is what makes it unique. Every number inside a fight is single digits or low tens since the stock pass's landing (22 October: a blow 1 to 6, big guns to 10; docs/rules.md, the fills set by tools/stock_fills.py, the brief retired: git show a550c2e:docs/briefs/stock_pass.md): magnitudes, not steps, any whole number. A rolled entry carries power and power_max and rolls between them; a flat entry is one number and involves no roll. There are no crits. Keywords are a list; authored entries should stay under the validator's cap, upgrades may push past it. passive is null or one object, same shape as a chassis passive. tags are build flavour from the working set (ballistic, missile, beam, plasma, flame, arc, blade, melee), shown in the codex and read only by a module or a passive (and melee by the screen's lunge); the validator holds them to the set, assigned by each piece's fantasy. A face's kind makes it a weapon (attack: spent on a foe, need not deal damage) or equipment (shield, vent: spent on a machine); equipment may carry targets, self_ally (the default), self or ally, and the die shows a chip for a narrowed one. design.stage is draft until Ryan signs the entry off as final; nothing is final yet. Shown to the player: codex (the inspect entry), flavour (a quote); both still to be written. design is internal and never shown: fantasy, niche, stage, and notes only where the engine still owes something. Numbers are placeholders. A component the engine cannot run yet carries \"status\": \"planned\": it is kept, its face is checked for shape, a keyword the vocabulary names but the engine lacks is allowed on it, and the die builds it without that keyword. tier (bible section 10): every component that is not locked carries its tier, 0 to 3. Tier zero is the basics, whose blueprints a run starts with, and the capital's maker makes none; tiers one to three are found, or brought by a bought chassis, and a chassis stocks only components below its own tier (the validator checks both). A component locked on a chassis has none. shape is the silhouette class the model wears when the component is fitted (hardpoints are gun mounts on the model, and a component with a shape takes the next mount in the die's order): barrel, twin_barrel, rack, blade (katar-style, every one points forward) or dish (a projector, for equipment that can look like a gun: shield projectors, a buff coil); none for what is applied to the whole machine and shows nowhere (armour panels, vents). Each class is built by tools/lowforge in every maker's metal (art/models/shapes); the validator holds it to that list.",
+ "_about": "Components: the kit a machine's die is made of. Each is exactly one entry on the die (its face: the engine's word for one entry). Nothing generic exists: every entry on a die is a component, or an empty hardpoint. A component a chassis lists under fixed is built in and is never bought or crafted, which is what makes it unique. Every number inside a fight is single digits or low tens since the stock pass's landing (22 October: a blow 1 to 6, big guns to 10; docs/rules.md, the fills set by tools/stock_fills.py, the brief retired: git show a550c2e:docs/briefs/stock_pass.md): magnitudes, not steps, any whole number. A rolled entry carries power and power_max and rolls between them; a flat entry is one number and involves no roll. There are no crits. Keywords are a list; authored entries should stay under the validator's cap, upgrades may push past it. passive is null or one object, same shape as a chassis passive. tags are build flavour from the working set (ballistic, missile, beam, plasma, flame, arc, blade, melee), shown in the codex and read only by a module or a passive (and melee by the screen's lunge); the validator holds them to the set, assigned by each piece's fantasy. A face's kind makes it a weapon (attack: spent on a foe, need not deal damage) or equipment (shield, vent: spent on a machine); equipment may carry targets, self_ally (the default), self or ally, and its main icon on the die holds three hexes (the middle its own machine, a filled one a machine it may be spent on); a reach over every foe or every ally is a keyword, every_foe or every_ally. design.stage is draft until Ryan signs the entry off as final; nothing is final yet. Shown to the player: codex (the inspect entry), flavour (a quote); both still to be written. design is internal and never shown: fantasy, niche, stage, and notes only where the engine still owes something. Numbers are placeholders. A component the engine cannot run yet carries \"status\": \"planned\": it is kept, its face is checked for shape, a keyword the vocabulary names but the engine lacks is allowed on it, and the die builds it without that keyword. tier (bible section 10): every component that is not locked carries its tier, 0 to 3. Tier zero is the basics, whose blueprints a run starts with, and the capital's maker makes none; tiers one to three are found, or brought by a bought chassis, and a chassis stocks only components below its own tier (the validator checks both). A component locked on a chassis has none. shape is the silhouette class the model wears when the component is fitted (hardpoints are gun mounts on the model, and a component with a shape takes the next mount in the die's order): barrel, twin_barrel, rack, blade (katar-style, every one points forward) or dish (a projector, for equipment that can look like a gun: shield projectors, a buff coil); none for what is applied to the whole machine and shows nowhere (armour panels, vents). Each class is built by tools/lowforge in every maker's metal (art/models/shapes); the validator holds it to that list.",
  "entries": [
   {
    "id": "chainsaw_claw",
@@ -415,6 +415,7 @@
     "niche": ""
    },
    "face": {
+    "cooldown": 1,
     "kind": "shield",
     "power": 6,
     "keywords": [
@@ -517,6 +518,7 @@
     "niche": "The tempo tool: a rapid entry so a control frame gets another look at its die."
    },
    "face": {
+    "cooldown": 1,
     "kind": "attack",
     "reach": "direct",
     "power": 2,
@@ -567,8 +569,8 @@
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "It launches a sticky cryo canister with a really annoying beep or something, for the lore reason (Ryan, 18 October). Whatever it sticks to comes for the Armadillo, and whoever hits the canister gets the cold out of it.",
-    "niche": "The Armadillo's locked pair: an Indirect debuff with Lure, Rapid and Cryo, heat its limiter. The foe it lures carries Cryo; any machine's hit with a weapon spends every stack and cools the hitter, so the tank's output is the team's cooling and the loop is seal, lure, open, cash, seal."
+    "fantasy": "It launches a sticky cryo canister with a really annoying beep or something, for the lore reason (Ryan, 18 October). Whatever it sticks to comes for the Polar Bear, and whoever hits the canister gets the cold out of it.",
+    "niche": "The Polar Bear's locked lure, one on its die (Ryan, 9 November: one Flinger and no Rapid, so the lure costs its action): an Indirect debuff with Lure and Cryo, gaining Spread while its machine is sealed (Lockdown's grant), so it turns one foe open and a rank's three sealed. The foe it lures carries Cryo; any machine's hit with a weapon spends every stack and cools the hitter, and the Polar Bear's own weapons hit a foe carrying Cryo 1 harder, so who cashes it is the round's call."
    },
    "face": {
     "kind": "attack",
@@ -576,12 +578,10 @@
     "power": 0,
     "keywords": [
      "lure",
-     "rapid",
      "cryo"
     ],
     "heat": 1,
-    "cryo": 1,
-    "cooldown": 0
+    "cryo": 1
    },
    "passive": null,
    "tags": [
@@ -709,7 +709,7 @@
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "The Goshawk's engines fire forward for one shot. The hotter the airframe, the bigger the shot, and the airframe is cold afterwards.",
+    "fantasy": "The Buzzard's engines fire forward for one shot. The hotter the airframe, the bigger the shot, and the airframe is cold afterwards.",
     "niche": "The Buzzard's burst: spend the heat the passive was living on."
    },
    "face": {
@@ -1277,7 +1277,7 @@
    ]
   },
   {
-   "id": "oblation_ward",
+   "id": "oblation_mantle",
    "name": "Oblation Mantle",
    "maker": "arsenal",
    "tier": 1,
@@ -1414,7 +1414,6 @@
     "keywords": [
      "rapid"
     ],
-    "cooldown": 0,
     "spins": true
    },
    "passive": null,
@@ -1434,14 +1433,13 @@
    },
    "face": {
     "kind": "attack",
-    "reach": "indirect",
+    "reach": "every_foe",
     "power": 0,
     "keywords": [
      "lure"
     ],
     "heat": 0,
     "braces": 1,
-    "reaches_all": true,
     "heat_per_blow": 2
    },
    "passive": null,
@@ -1489,12 +1487,10 @@
    "face": {
     "kind": "shield",
     "power": 2,
-    "targets": "ally",
-    "reaches_all": true,
+    "targets": "every_other_ally",
     "charged": {
      "muster": 1,
      "status": "phased",
-     "reaches_all": true,
      "not_acted": true
     }
    },
@@ -1658,6 +1654,7 @@
     "niche": "The Musk Ox's tempo piece, in for testing: Rapid, 2 ammo, and heat its low maximum feels, so with the foes' Burning and Scorched it threatens an overheat."
    },
    "face": {
+    "cooldown": 1,
     "kind": "vent",
     "power": 0,
     "targets": "self",
@@ -1679,16 +1676,18 @@
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "Length contraction shrinks the space between, so every mine on the field ends in one slot (Ryan, 21 October, on the pull's name: \"something about warping or teleporting\"; he picked this one that day).",
-    "niche": "The Lammergeier's first lock, the pull (Ryan, 17 October): every mine on the field gathers into the slot it is spent on, in laid order, and a foe standing there takes them now; spent on an empty slot it gathers them there and lands nothing. Mines laid in a quiet round are cashed on a chosen foe at a chosen moment (a Shock up, a boss stepped in), so nothing laid against reinforcements that never come is lost. Never Rapid and no cooldown, so a pull costs the turn; no damage of its own, a tool and not a gun, and with nothing laid the dead spend Ryan allows."
+    "fantasy": "Length contraction shrinks the space between, so every Mine on the field ends on one foe (Ryan, 21 October, on the pull's name: \"something about warping or teleporting\"; he picked this one that day).",
+    "niche": "The Lammergeier's gather (Ryan, 9 November: \"moves all mines to a single target, and Exposes that target. The Expose rider will effectively create an AoE expose mine, which we can try and see if it's dangerous.\"): a debuff that Exposes its target and, in the rider phase, moves every Mine the field's other foes carry onto it, so the team's Direct guns can finish the foe that holds them all and its blast Exposes its neighbours. Never Rapid and no damage of its own, a tool and not a gun. Retired: the pull of 17 October onto a slot, with the slot mines."
    },
    "face": {
     "kind": "attack",
     "reach": "indirect",
     "power": 0,
-    "keywords": [],
+    "keywords": [
+     "expose"
+    ],
     "heat": 2,
-    "pulls_mines": true
+    "gathers_mines": true
    },
    "passive": null,
    "tags": []
@@ -1702,16 +1701,16 @@
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "A syrinx is a bird's voice box, where a mimic copies any sound (Ryan named it 21 October): the drone copies the killing shot into the slot the foe empties.",
-    "niche": "The Lammergeier's second lock, the mark (Ryan, 17 and 21 October): the foe carries the Syrinx Drone, and the next weapon to kill it, any machine's, leaves its shot in the slot it empties, one mine a drone; if the foe already carries Exposed the drone is Rapid, and otherwise it gives the foe Exposed, never refreshing it. Its pair is the Needletail: the interceptor Exposes a foe on its die, the bomber drones it free on its own, and the team's kill leaves its shot for whoever steps in."
+    "fantasy": "A syrinx is a bird's voice box, where a mimic copies any sound (Ryan named it 21 October): the drone sings the note the Reverberant Payload holds, and the Mine answers it.",
+    "niche": "The Lammergeier's detonator (Ryan, 9 November: \"Deals a small amount of damage and detonates a foe's combined mine immediately (or mine stacks, whichever shape we end up with). The small chip damage makes it add a stack first. Try without a cooldown first.\"): a weapon of chip damage whose spend adds its own Mine first, then blows the target's Mine on it and every foe round it. Alone it is a small Splash gun; on a gathered Mine it is the cash-out. Its chip spends a Shock on the target, so a Shock doubles the chip, never the Mine. Retired: the mark of 21 October (the next weapon to kill the foe left its shot in the empty slot), with the slot mines."
    },
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 0,
+    "power": 1,
     "keywords": [],
     "heat": 0,
-    "drones": true
+    "detonates": true
    },
    "passive": null,
    "tags": []
@@ -1809,6 +1808,7 @@
     "notes": "Built 30 October: the self use is the Reveille Horn's Rallied; the ally use (ally_action, the Horn's charged act-again priced in rerolls) takes an ally whose die is spent while the team holds the price, and its Rapid gives the Petrel its turn back."
    },
    "face": {
+    "cooldown": 1,
     "kind": "buff",
     "status": "rallied",
     "stacks": 1,
@@ -2110,7 +2110,7 @@
     ],
     "dispel": 2
    },
-   "codex": "A debuff. Every buff the foe carries is unmade: a brace, a rally, a readied return, a primed claw, a barrier, a ward, a regrowth. Numbed shrugs it off, and a guarded core keeps its guard.",
+   "codex": "A debuff. Every buff the foe carries loses two stacks: a brace, a rally's Empowered, a readied return, a primed claw, a barrier, a regrowth, a stun's Numbed. Its abilities stay, a core's guard and a golden rage among them, and a Ward turns it away.",
    "flavour": "Decoherence is not destruction. The field simply declines to remember what the subject was doing.",
    "design": {
     "fantasy": "The Science Vessel's EMP, slottable: Aphelion's physics nonsense unwriting the enemy's state. The jellyfish's EMP, when it lands, carries the same keyword on a blow with Disrupt (the bible's Aphelion row).",

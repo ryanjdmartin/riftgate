@@ -39,6 +39,7 @@ var column: int = -1
 var target: RefCounted = null    # Skirmish.MechState, set when intents are telegraphed
 var action: Dictionary = {}      # this round's chosen action
 var modifiers: Array = []        # statuses on this foe (burning, suppressed, numbed...): Effects.Modifier list
+var recorder = null              # the round preview's copy alone (Skirmish.preview_round): an Array every grant and stack this foe gains is noted in (Effects._record); null in any fight that plays
 var recovering: bool = false     # lost its action to a stun this turn: its stun resist lands as Numbed at the round's end
 var die = null                   # foes have no die; the pipeline asks, so the field exists
 var stays_down: bool = false     # gone whole (a Bomb's burst): a foe that would get back up does not (Execute retired 10 October)
@@ -64,7 +65,7 @@ var grudge: int = 0              # foes the team has killed this fight, for a bl
 var spent_once: Array = []       # the moves marked `once` it has used this fight (30 October: the Vampire Lord readies its rise once)
 var swallow_mark: int = -1       # its HP as it swallowed a machine, -1 holding none: a quarter of its HP lost since lets it go (31 October)
 var wanders: bool = false        # an elite any domain's Fracture may send, drawn by chance (Gilgamesh, 31 October and 2 November)
-var rage: int = 0                # what every shield, vent or equipment entry the team spends adds to its blows, once it has bellowed (enrage, 3 November: the Goblin Nob); 0 until then
+var rage: int = 0                # what every shield, vent or equipment entry the team spends adds to its blows while it stands, its own from the fight's start (content's `rage`: the Goblin Nob, 3 November; innate since 8 November)
 var golden_mark: int = -1        # its HP as it went gold (golden, 4 November: the Thunder Ape), -1 while calm: a quarter of its HP lost since breaks the rage
 
 ## The aims a foe type or a move may name, and how the codex says each.
@@ -269,7 +270,7 @@ static func countdown_of(a: Dictionary) -> int:
 	return maxi(0, int(a.get("countdown", 0)))
 
 
-## A last act as an attack action (content `on_death.blow`, 15 October: the Behemoth's Meteor),
+## A last act as an attack action (content `on_death.blow`, 15 October: the Gargantuan King's Meteor),
 ## shaped like any move so the blow reads through the same rules.
 static func death_blow_from(b: Dictionary) -> Dictionary:
 	return {"id": "last_act", "name": str(b.get("name", "Last Act")), "kind": "attack", "factor": float(b.get("factor", 1.0)),
@@ -325,10 +326,6 @@ func strikes() -> int:
 ##           rally: every other foe on the field hits `value` harder next round (Kindle)
 ##           prime: Primed `value` on every other foe on the field, its next move's blows each
 ##           leaving that much Burning on the machine they hit (28 October)
-##           enrage: it rages at `value` (Foe.rage): while it stands, every shield, vent or
-##           equipment entry the team spends stacks Enraged on it by that much, a point of
-##           attack a stack for the rest of the fight, never spent by a move; the player's
-##           Purge clears the stacks and the rage goes on (3 November, the Goblin Nob's Bellow)
 ##           ward_all: a Ward on every foe on the field, itself included: no mark the team lays
 ##           lands, Suppressed excepted, until the end of the player's next turn (28 October)
 ##   debuff  drain_rerolls: the team has `value` fewer rerolls next round (Roar)
@@ -347,13 +344,13 @@ func strikes() -> int:
 ##           move hits `value` harder for each (the King Gel's, 30 October: thin the Gels first)
 const ACTION_EFFECTS := {
 	"defend": ["brace", "regrow", "regrow_ally", "brace_all", "cleanse", "barrier", "regenerate"],
-	"buff": ["revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "merge", "enrage", "golden"],
+	"buff": ["revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "merge", "golden"],
 	"debuff": ["drain_rerolls", "burn", "disable", "scorch_all", "corrupt_all", "silence", "dispel", "swallow"],
 }
 
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn and no machine
 ## is shown intent (the ambush read below).
-const UNTARGETED_EFFECTS := ["brace", "regrow", "regrow_ally", "brace_all", "cleanse", "barrier", "regenerate", "revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "drain_rerolls", "scorch_all", "corrupt_all", "merge", "enrage", "golden"]
+const UNTARGETED_EFFECTS := ["brace", "regrow", "regrow_ally", "brace_all", "cleanse", "barrier", "regenerate", "revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "drain_rerolls", "scorch_all", "corrupt_all", "merge", "golden"]
 
 
 ## Does this round's move act on nobody in particular (one of UNTARGETED_EFFECTS)? Its pick
