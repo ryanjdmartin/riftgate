@@ -1297,7 +1297,12 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 228 (11 November, main's `d2c024d`, on Ryan's word, "Merge in and republish"):
+  page's Version 229 (11 November, main's `da18614`, on Ryan's word, "Pull in main and
+  republish"): the page with the Models tab's mode note moved into its buttons' tooltips (his ask
+  that evening: the paragraph under the model window kept the controls out of reach) and the six
+  files the Dingo's pieces moved (`ccr-4d58b054-3lyj0a`: three content files, the Dingo's rig,
+  `designs.json` and `text.json`), every live copy matching 228's before it was replaced, and the
+  live copies match main's after. Version 228 (11 November, main's `d2c024d`, on Ryan's word, "Merge in and republish"):
   the 69 files that had moved or arrived since 227 and one retired render removed (the Nemesis's
   old roar), the page unchanged: the vocabulary (the glossary's Menace, Rupture meter and Seal
   lines, redrafted for menace as a pack's threat rating and the stall guard's end), `text.json`
@@ -1308,10 +1313,6 @@ commands are in `README.md`.
   square ports (two content files, its model, its renders with a second-battery view). Nobody had
   published since 227, every live copy matching `9fde357`'s build but for its stamp, and the
   live copies match main's after; `edits` and `text` empty, `designs` the two folded ideas.
-  Behind main since, held for Ryan's word on what goes up: the Models tab's mode note moved into
-  its buttons' tooltips (`df67c13`, his ask that evening), and the Dingo's pieces from
-  `ccr-4d58b054-3lyj0a` (three content files, the Dingo's rig, `designs.json` and `text.json`),
-  every live copy still matching 228's.
   Version 227 (11 November, published from `ccr-4d58b054-3lyj0a` at `9fde357`, ahead of main, on Ryan's word, "Can I see this in hangar?", and again for each of his four notes on its model: the gun slid back in its mount, the vents more upright, the gun forward by half the slide, then nudged back): the Whip Scorpion's rework, the eight files that had moved since 222 (three content files, `designs.json` without its retired brief, `text.json`, `renders.json`, its model and rig) and its three new renders; nobody had published since 222, and the live copies match the branch's after. Version 222 (11 November, main's `892d804`, on Ryan's word, "Everything else let's clean
   up and merge into main first before proceeding"): `designs.json` with the Whip Scorpion's brief
   after the Buzzard's settlement and `text.json` for its stamp, over Version 221 of minutes before
