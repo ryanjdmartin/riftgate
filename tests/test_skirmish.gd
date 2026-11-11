@@ -10501,9 +10501,10 @@ func test_a_pin_holds_its_targets_flak_through_the_rounds_end() -> void:
 
 ## The Combat Translocator's Shock (Ryan, 11 November: "not dead versus only frontliners and
 ## versus massives and bosses that can't be swapped"): both foes a Swap trades come out Shocked;
-## a foe it cannot move takes the entry alone, with no second target; a Swap carrying nothing
-## else still has no use for one. Synthetic pieces.
-func test_a_swap_that_shocks_marks_both_and_lands_alone_on_a_foe_it_cannot_move() -> void:
+## it takes two targets always ("Translocator should still target two, always"), a massive foe
+## among them staying where it stands while both are Shocked; a Swap carrying nothing else still
+## has no use for a foe it cannot move. Synthetic pieces.
+func test_a_swap_that_shocks_marks_both_and_a_massive_foe_named_stays_put() -> void:
 	var shocker := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["swap", "shock"]})
 	var sk := Skirmish.new(1)
 	sk.add_mech(_mech("A", Die.single(shocker), 40, 1000))
@@ -10513,7 +10514,7 @@ func test_a_swap_that_shocks_marks_both_and_lands_alone_on_a_foe_it_cannot_move(
 	sk.begin()
 	sk.start_round()
 	var at := [a.column, b.column]
-	assert_true(sk.needs_second(sk.mechs[0], a), "a foe that can move: a second target")
+	assert_true(sk.needs_second(sk.mechs[0]), "a second target, always")
 	assert_true(sk.assign(0, a, b), "the two trade")
 	assert_eq([a.column, b.column], [at[1], at[0]], "places traded")
 	assert_true(Effects.has(a, "shocked") and Effects.has(b, "shocked"), "both come out Shocked")
@@ -10521,13 +10522,19 @@ func test_a_swap_that_shocks_marks_both_and_lands_alone_on_a_foe_it_cannot_move(
 	boss.add_mech(_mech("A", Die.single(shocker), 40, 1000))
 	var big := _ghoul(500, 0)
 	big.size = 2
-	boss.add_foes([big])
+	var small := _ghoul(500, 0)
+	boss.add_foes([big, small])
 	boss.begin()
 	boss.start_round()
-	assert_false(boss.needs_second(boss.mechs[0], big), "a massive foe: nowhere to trade")
-	assert_true(boss.can_spend(0), "and still somewhere to be spent")
-	assert_true(boss.assign(0, big), "it lands alone")
-	assert_true(Effects.has(big, "shocked"), "Shocked where it stands")
+	assert_true(boss.needs_second(boss.mechs[0]), "a massive foe named: a second target still")
+	assert_false(boss.assign(0, big), "never alone")
+	var seconds := boss.swap_targets(big, true)
+	assert_true(seconds.has(small) and seconds.any(func(x) -> bool: return x is Vector2i), "its second: another foe or an empty slot")
+	var where := [big.column, small.column]
+	assert_true(boss.assign(0, big, small), "the two are named")
+	assert_eq([big.column, small.column], where, "nothing moves: a massive foe stays")
+	assert_true(Effects.has(big, "shocked") and Effects.has(small, "shocked"), "and both are Shocked")
+	assert_true("\n".join(boss.log).contains("holds its ground"), "the log says why")
 	var plain := Skirmish.new(1)
 	plain.add_mech(_mech("A", Die.single(Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["swap"]})), 40, 1000))
 	var huge := _ghoul(500, 0)

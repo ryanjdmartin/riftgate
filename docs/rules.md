@@ -493,9 +493,10 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   beside it (Webbed, below).
 - **Swap** (the Dingo's Combat Translocator): the spend takes two targets, a foe and then
   another foe or an empty slot, and they trade places; no damage; a massive foe does not move.
-  What the entry carries beside the Swap lands on both foes traded (the Translocator's Shock: both
-  come out Shocked), and such an entry still lands on a foe it cannot move, alone, with no
-  second target; a Swap that carries nothing else has no use for one.
+  What the entry carries beside the Swap lands on both foes named (the Translocator's Shock: both
+  come out Shocked), and such an entry may name a massive foe as either target: two targets
+  always, nothing moves, and the rider lands on both all the same. A Swap that carries nothing
+  else has no use for a massive foe.
   A Swap lands in the rider phase, before the death check, like every rider: one whose spend
   fells its first target moves the corpse, which dies in the slot it was moved to and gets back
   up or splits there. A Mine moves with its foe.

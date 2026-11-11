@@ -200,8 +200,8 @@ hardpoint and its sculpt that mount's stock part, a pin more on the model.
   or a tweak to the brace.
 - **The Dingo, settled 11 November** (the bible's Dingo row; built): the harpoon kept ("such a stupid
   and neat silhouette") as the Hollow-point Harpoon, a Flak and its target's Flak held through the
-  round, the maker's second Flak orbit; its Shock on the Translocator, both foes traded and a foe
-  it cannot move alone. Reading Flak twice is "a better upgrade for something". The round below
+  round, the maker's second Flak orbit; its Shock on the Translocator, two targets always, both Shocked,
+  a massive foe named staying put. Reading Flak twice is "a better upgrade for something". The round below
   is how it got there.
 - **The Harpoon**: the weakest (other pieces lay Shock, the Translocator took the winch). Offered:
   the foe stays Shocked through two strikes (against "never stacks"); or the foe that trades

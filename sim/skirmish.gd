@@ -1188,13 +1188,13 @@ func targets_for(mech_index: int) -> Array[Foe]:
 ## go of 19 October): every other foe on the field and every empty slot, the slot as
 ## Vector2i(rank, column); never a massive foe, which fills its column and stays, and nothing
 ## for a massive first.
-func swap_targets(first: Foe) -> Array:
+func swap_targets(first: Foe, carries: bool = false) -> Array:
 	var out: Array = []
-	if first == null or not first.alive() or first.is_massive():
+	if first == null or not first.alive() or (first.is_massive() and not carries):
 		return out
 	var pair := twin_of(first)
 	for foe in field_foes():
-		if foe != first and foe != pair and foe.alive() and not foe.is_massive():
+		if foe != first and foe != pair and foe.alive() and (carries or not foe.is_massive()):
 			out.append(foe)
 	for col in range(columns):
 		if front[col] == null and not corpses.has(Vector2i(0, col)):
@@ -1205,11 +1205,21 @@ func swap_targets(first: Foe) -> Array:
 
 
 ## Does this entry, spent now, take a second target (a Swap)?
-func needs_second(ms: MechState, target = null) -> bool:
+func needs_second(ms: MechState) -> bool:
 	var f := ms.face()
-	if f == null or not Effects.effective_face(ms.unit, f).has(Face.Keyword.SWAP):
+	return f != null and Effects.effective_face(ms.unit, f).has(Face.Keyword.SWAP)
+
+
+## Whether this machine's Swap carries a rider beside it (the Combat Translocator's Shock; Ryan,
+## 11 November: "Translocator should still target two, always ... maybe you want to target two
+## things and not have them move, just shock both of them"): such an entry may name a massive
+## foe as either target, which stays where it stands, the rider landing on both all the same.
+func swap_carries(ms: MechState) -> bool:
+	var f := ms.face()
+	if f == null:
 		return false
-	return not (target is Foe) or not swap_targets(target).is_empty()   # a foe with nowhere to trade takes the entry alone
+	var ef := Effects.effective_face(ms.unit, f)
+	return ef.has(Face.Keyword.SWAP) and ef.keywords.size() > 1
 
 
 func targets_for_face(ms: MechState, f: Face) -> Array[Foe]:
@@ -1232,9 +1242,9 @@ func targets_for_face(ms: MechState, f: Face) -> Array[Foe]:
 				out.append(foe)
 	var ef := Effects.effective_face(ms.unit, f)
 	# A Swap moves its target, and a massive foe fills its column and stays (the Dingo's row).
-	# A Swap that carries a rider beside it still lands on a foe it cannot move, alone (the Combat
+	# A Swap that carries a rider beside it may still name a foe it cannot move (the Combat
 	# Translocator's Shock, Ryan, 11 November: "not dead versus ... massives and bosses that can't
-	# be swapped").
+	# be swapped"), with its second target as ever.
 	if ef.has(Face.Keyword.SWAP) and ef.keywords.size() <= 1:
 		out = out.filter(func(foe: Foe) -> bool: return not foe.is_massive())
 	return out
@@ -1925,7 +1935,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 		return false
 	# A Swap takes its second target with it (Ryan, 21 October: drag to the first, drop, then
 	# tap the second): another foe or an empty slot, never a massive foe.
-	if f.has(Face.Keyword.SWAP) and not swap_targets(target).has(second) and not (second == null and swap_targets(target).is_empty()):
+	if f.has(Face.Keyword.SWAP) and not swap_targets(target, swap_carries(ms)).has(second):
 		return false
 	if f.on_machines() and not machine_targets_for(ms, f).has(target if target is MechState else ms):
 		return false
@@ -2583,6 +2593,11 @@ static func _rides(f: Foe) -> bool:
 ## back foe into an empty front slot is a pull). A foe keeps its pick and its move; the rank it
 ## stands in is the swap's, so a caster pulled forward stands exposed to Direct fire.
 func _swap(first: Foe, second) -> void:
+	# A massive foe fills its column and stays: named by a Swap that carries a rider, nothing
+	# moves, and the rider lands all the same.
+	if first.is_massive() or (second is Foe and (second as Foe).is_massive()):
+		log.append("%s holds its ground: nothing trades places" % (first.display_name if first.is_massive() else (second as Foe).display_name))
+		return
 	var from := Vector2i(first.rank, first.column)
 	var ours := _slot_contents(from)   # a twin slot's pair moves together, and a Mine with its foe
 	if second is Foe:

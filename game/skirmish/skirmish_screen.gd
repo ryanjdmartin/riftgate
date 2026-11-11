@@ -1085,7 +1085,7 @@ func _refresh(save: bool = true) -> void:
 	var support: Array[Skirmish.MechState] = []   # the machines a dragged shield, vent or buff may land on
 	var seconds: Array = []   # a pending Swap's second targets: foes and empty slots (Vector2i)
 	if not _pending.is_empty():
-		seconds = sk.swap_targets(_pending["primary"])
+		seconds = sk.swap_targets(_pending["primary"], sk.swap_carries(sk.mechs[int(_pending["mech"])]))
 		for x in seconds:
 			if x is Foe:
 				targets.append(x)
@@ -2616,7 +2616,7 @@ func _on_drag_ended(global_pos: Vector2) -> void:
 		return
 	var target = _drop_target_at(global_pos)
 	_ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if target is Foe and sk.needs_second(sk.mechs[i], target) and sk.can_assign(i, target):
+	if target is Foe and sk.needs_second(sk.mechs[i]) and sk.can_assign(i, target):
 		_begin_second(i, target)
 		return
 	if target == null or not _use_die(i, target):
@@ -2673,7 +2673,7 @@ func _on_slot_tapped(rank: int, col: int) -> void:
 		return
 	var foe := sk.foe_at(rank, col)
 	var second = foe if foe != null else Vector2i(rank, col)
-	if not sk.swap_targets(_pending["primary"]).has(second):
+	if not sk.swap_targets(_pending["primary"], sk.swap_carries(sk.mechs[int(_pending["mech"])])).has(second):
 		return
 	var i: int = _pending["mech"]
 	var primary: Foe = _pending["primary"]
