@@ -50,7 +50,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   times mean nothing). The hook imports only a checkout with no `.godot`, so a container that
   cached one keeps its old import: tests failing on a class name not declared (`MuzzleFlare`)
   mean run `--import` first (about fifteen seconds; 7 November). Models build with `BPY_PYTHON` set to a python3.11 venv holding
-  `bpy==5.0.1` (about twenty minutes to install). The first `--import` may rewrite four Prairie
+  `bpy==5.0.1` (about twenty seconds to install on 11 November). The first `--import` may rewrite four Prairie
   Dog textures and a model build the maker's review tiles: restore both
   (`git checkout -- art/models/prairie_dog_* tools/lowforge/tiles/`) rather than commit them.
 
@@ -127,7 +127,9 @@ one). Each merge commit says how its conflicts were settled.
 
 Still working (11 November): `claude/clydesdale-design-concept-cg6uyz`, the Clydesdale's review
 (Ryan's other session), cut from main at `2a9242e`: its brief, `docs/briefs/ws_clydesdale.md`, with
-his idea and his answers of the day (the to-do's line); docs only so far.
+his idea and his answers of the day (the to-do's line), and the hand-built stock guns gone on his word
+("There's no reason to keep hand build guns anywhere"): sixteen on seven models rebuilt in the cloud,
+each stock gun its class, the renders a round, 1116 tests green; the hangar not republished.
 `ccr-722ca9f0-yj8na3`, the formation and refit session; everything
 it had committed (to `4c8dbf1`) is on main with `ccr-4d58b054-3lyj0a`, below; it took main again
 at `0cb7313`, and its commits since are its own (its own records say where it stands: the refit
@@ -1058,8 +1060,6 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 
 The tasks are the to-do's; this is the index of what waits.
 
-- The hand-built stock guns' retirement (the bible's hardpoints row, 11 November): sixteen on seven models rebuilt
-  with every stock gun as its class (the to-do's Art line).
 - The Fracture's prize (section 12); the escorts' marks (`docs/bosses_proposal.md`) and the
   promoted forms' one move more for seven of them (`docs/heroes_proposal.md`).
 - The planned foe moves (the Lich's Dark Rite among them); a silence carrier and a purge

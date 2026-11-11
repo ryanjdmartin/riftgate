@@ -2,9 +2,9 @@ class_name MuzzleFlare
 extends RefCounted
 
 ## A weapon's muzzle flare (Ryan, 31 October: "If the flare colour of the weapons can follow
-## their tags, that would be really cool"): a soft star where its gun's business end is (a class's
-## places in art/models/shapes/muzzles.json, lowforge's MUZZLES; a hand-built gun's in its model's
-## sidecar), drawn toward the eye over the gun, its colour laid over the hull and past the
+## their tags, that would be really cool"): a soft star where its gun's business end is (its
+## class's places in art/models/shapes/muzzles.json, lowforge's MUZZLES, a stock gun's as a fitted
+## one's), drawn toward the eye over the gun, its colour laid over the hull and past the
 ## machine's outline, its middle hot (flare.gdshader). Each tag a component carries has its look,
 ## a colour and a beat; a component with two blooms both at once, the way it delivers its blow
 ## first (a shell, a rocket, a beam, an edge) and what the blow carries over it, smaller and a

@@ -96,8 +96,8 @@
    }
   },
   "clydesdale": {
-   "when": "The stock rebuild, 28 October.",
-   "note": "Ryan's go, 28 October: the stations keep their kinds and each mount its stock part in order: the Maxigun as its class on the left turret where the autoguns were, the cheek bracket's left mount the Incendiary Shells' rack, the right bare; the lance, the mortar, the howitzer and the deck rack (the Airburst Shell's) as before. Since 31 October its stock Incendiary Shells wear a burn weapon's fire over their rack, glowing shells dim at rest and flaring as they fire.",
+   "when": "The hand-built guns gone, 11 November.",
+   "note": "Ryan, 11 November: “There's no reason to keep hand build guns anywhere”: every stock gun wears its class, as a fitted one does, in its pin's fit, and what it sat in or on stays the chassis's. The lance's rail, collar and emitter went with it: the spine mount on its breech wears the Enfilade Beam's barrel, the right turret the Twin Autoguns' twin barrel, the gimbals the Ankle Mortar's rack and the Howitzer's barrel. Its rework (docs/briefs/ws_clydesdale.md) rebuilds the deck.",
    "images": [
     {
      "file": "clydesdale/clydesdale_front.png",
@@ -113,7 +113,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the fifteenth notes, 6 October (the second pair of autoguns and the bare cheeks)",
+    "summary": "Before: The stock rebuild, 28 October (the hand-built stock guns)",
     "images": [
      {
       "file": "clydesdale/before_clydesdale_front.png",
@@ -185,8 +185,8 @@
    }
   },
   "polar_bear": {
-   "when": "Ryan's swap notes, 2 November.",
-   "note": "Ryan, 2 November: “what happens if they get swapped out, like putting a missile rack on the armadillo gun port”, then “maybe some hardpoints want circular missile racks, that fixes the armadillo” and “Hardpoint just needs to declare shape (if offered) and scaling”. A class fitted in a port now wears the port's own fit: a rack is the round launcher (a drum with seven tubes, the square rack's missile tile one tube at a time), and every class is sized to pass the port's bore whole, so it rises out of the port as the guns do and sinks under the iris when the shell seals; a rack had been a square box half again as wide as the port, jammed in its mouth. The fore ports are wider (11 across, from 9) and a little lower, so a launcher or a dish fitted there reads; stock, they are bare as before. The shots: the stock (front, rear, side, sealed, venting from behind and from the front), then a round launcher in every port, then a launcher, the Twin Autoguns, a barrel and a dish. Fit any mount on the Models tab to try the rest.",
+   "when": "The hand-built guns gone, 11 November.",
+   "note": "Ryan, 11 November: “There's no reason to keep hand build guns anywhere”: every stock gun wears its class, as a fitted one does, in its pin's fit, and what it sat in or on stays the chassis's. Its rear ports' Rivet Gun and Twin Autoguns are a barrel and a twin barrel, standing longer out of the ports than the old guns (the class's length at the port's fit, the lever if they read too long), and the seal sinks them 31 along their lines where it sank 23, so nothing passes the iris; the swapped studies are 2 November's.",
    "images": [
     {
      "file": "polar_bear/polar_bear_front.png",
@@ -222,7 +222,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the tenth notes of 30 October (every class one size in the ports, the fore ports 9 across)",
+    "summary": "Before: Ryan's swap notes, 2 November (the hand-built stock guns)",
     "images": [
      {
       "file": "polar_bear/before_polar_bear_front.png",
@@ -246,14 +246,14 @@
      },
      {
       "file": "polar_bear/before_polar_bear_venting_front.png",
-      "alt": "Earlier: polar bear, venting, front"
+      "alt": "Earlier: polar bear, venting front"
      }
     ]
    }
   },
   "wild_boar": {
-   "when": "Twelfth round, 1 October.",
-   "note": "The tusks apart.",
+   "when": "The hand-built guns gone, 11 November.",
+   "note": "Ryan, 11 November: “There's no reason to keep hand build guns anywhere”: every stock gun wears its class, as a fitted one does, in its pin's fit, and what it sat in or on stays the chassis's. The turret's Slugthrowers are barrels and the deck pod's mount wears the Shotfire Rack's rack.",
    "images": [
     {
      "file": "wild_boar/wild_boar_front.png",
@@ -265,7 +265,7 @@
     }
    ],
    "before": {
-    "summary": "Before: Eleventh round, 1 October",
+    "summary": "Before: Twelfth round, 1 October (the hand-built stock guns)",
     "images": [
      {
       "file": "wild_boar/before_wild_boar_front.png",
@@ -353,8 +353,8 @@
    }
   },
   "buzzard": {
-   "when": "Ryan's swap notes, 2 November.",
-   "note": "Ryan's go of 2 November: a swap had taken a pod with its gun and hung the class under the wing, where the game's camera lost the inner pair. The pods are airframe now and stay; each mount is its pod's nose, so a fitted class rides ahead of the wing, a rack as the round launcher (a rocket pod), the wide classes a little smaller so they sit on a pod. The stock looks as before. The shots: the stock from the front and behind, a round launcher on every pod, then the Twin Autoguns, a launcher, a dish and a barrel.",
+   "when": "The hand-built guns gone, 11 November.",
+   "note": "Ryan, 11 November: “There's no reason to keep hand build guns anywhere”: every stock gun wears its class, as a fitted one does, in its pin's fit, and what it sat in or on stays the chassis's. Its pods' noses wear the Railgun's and the Rifle's barrels and the Arc Fault Cannon's twin barrel; the swapped studies are 2 November's.",
    "images": [
     {
      "file": "buzzard/buzzard_front.png",
@@ -374,7 +374,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the stock rebuild, 28 October (each pod part of its gun)",
+    "summary": "Before: Ryan's swap notes, 2 November (the hand-built stock guns)",
     "images": [
      {
       "file": "buzzard/before_buzzard_front.png",
@@ -388,8 +388,8 @@
    }
   },
   "nemesis": {
-   "when": "Ryan's next glow notes, 31 October.",
-   "note": "Hot at rest, really hot as it acts (Ryan, 31 October: \"not burn crazy hot all the time. Just like, hot, then really hot\"): the chest furnace and the condenser on its back smoulder always and flare in its fierce acts, the vent toned down (\"still too much\"). The last picture is the fist pound's blow.",
+   "when": "The hand-built guns gone, 11 November.",
+   "note": "Ryan, 11 November: “There's no reason to keep hand build guns anywhere”: every stock gun wears its class, as a fitted one does, in its pin's fit, and what it sat in or on stays the chassis's. Its waist cannon is the Plasma Arquebus's barrel.",
    "images": [
     {
      "file": "nemesis/nemesis_front.png",
@@ -405,7 +405,7 @@
     }
    ],
    "before": {
-    "summary": "Before: Ryan's glow notes, 31 October",
+    "summary": "Before: Ryan's next glow notes, 31 October (the hand-built stock guns)",
     "images": [
      {
       "file": "nemesis/before_nemesis_front.png",
@@ -416,15 +416,15 @@
       "alt": "Earlier: nemesis, rear"
      },
      {
-      "file": "nemesis/before_nemesis_roar.png",
-      "alt": "Earlier: nemesis, roar"
+      "file": "nemesis/before_nemesis_pound.png",
+      "alt": "Earlier: nemesis, pound"
      }
     ]
    }
   },
   "ammit": {
-   "when": "Ryan's next glow notes, 31 October.",
-   "note": "The vent at its tail, the condenser's twin, always lit in the furnace's orange and flaring in its fierce acts (Ryan, 31 October: \"Ammit vents don't seem to be glowing\"; the glow had gone to the throat vent under the jaw, which no camera sees). The last picture is the threat.",
+   "when": "The hand-built guns gone, 11 November.",
+   "note": "Ryan, 11 November: “There's no reason to keep hand build guns anywhere”: every stock gun wears its class, as a fitted one does, in its pin's fit, and what it sat in or on stays the chassis's. Its shoulder cannons are barrels; the Blazethrower's fire is its class's, a burn weapon's, and its raise act no longer lights a carbine tip.",
    "images": [
     {
      "file": "ammit/ammit_front.png",
@@ -440,7 +440,7 @@
     }
    ],
    "before": {
-    "summary": "Before: Ryan's glow notes, 31 October",
+    "summary": "Before: Ryan's next glow notes, 31 October (the hand-built stock guns)",
     "images": [
      {
       "file": "ammit/before_ammit_front.png",
@@ -449,6 +449,10 @@
      {
       "file": "ammit/before_ammit_rear.png",
       "alt": "Earlier: ammit, rear"
+     },
+     {
+      "file": "ammit/before_ammit_threat.png",
+      "alt": "Earlier: ammit, threat"
      }
     ]
    }
@@ -485,8 +489,8 @@
    }
   },
   "puffin": {
-   "when": "Ryan's next glow notes, 31 October.",
-   "note": "The repulsors are pucks standing proud of the plates (Ryan, 31 October: \"if the solution is to give them geometry, then go ahead\"), in one even orange, always on as it hovers; a flat disc's halo stood off it as a copy, and the engine tile's metal rim flared white. The last picture is the amplify.",
+   "when": "The hand-built guns gone, 11 November.",
+   "note": "Ryan, 11 November: “There's no reason to keep hand build guns anywhere”: every stock gun wears its class, as a fitted one does, in its pin's fit, and what it sat in or on stays the chassis's. Its pods are the chassis's now and stay when a mount is fitted; the left one's nose wears the Halo Projector's dish.",
    "images": [
     {
      "file": "puffin/puffin_front.png",
@@ -502,7 +506,7 @@
     }
    ],
    "before": {
-    "summary": "Before: Ryan's glow notes, 31 October",
+    "summary": "Before: Ryan's next glow notes, 31 October (the hand-built stock guns)",
     "images": [
      {
       "file": "puffin/before_puffin_front.png",

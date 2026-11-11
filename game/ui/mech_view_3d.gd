@@ -480,9 +480,9 @@ static func burn_rows(model_name: String, rows: Array, db: ContentDB, stock_too:
 
 
 ## Every mount that shows a class and carries a component, as [pin, component, class, shape,
-## scale]: a swapped row's class, or the stock part's when lowforge built it as one (the sidecar's
-## `stock_shapes`; a hand-built weapon, the Ammit's flamer, is no class), with the shape and scale
-## the mount wears it in (fit_of: a variant, or the class itself).
+## scale]: a swapped row's class, or the stock part's, which lowforge built as its class (the
+## sidecar's `stock_shapes`), with the shape and scale the mount wears it in (fit_of: a variant,
+## or the class itself).
 static func shaped_rows(model_name: String, rows: Array, db: ContentDB, stock_too: bool = true) -> Array:
 	var out: Array = []
 	var swapped := {}
@@ -512,36 +512,15 @@ static func shaped_rows(model_name: String, rows: Array, db: ContentDB, stock_to
 
 
 ## Every mount that shows a gun and where its muzzle flares bloom, as [pin, component, class,
-## places]: a class's places on a swapped row or a stock class (shaped_rows), or for a stock gun
-## built by hand the places its model's sidecar names (lowforge found its business end), so every
-## gun that fires flares, a hand-built one as well as a class.
+## places]: its class's places, swapped or stock (shaped_rows), at the scale the mount wears it;
+## a stock gun is its class too (Ryan, 11 November: no stock gun is built by hand).
 static func flare_rows(model_name: String, rows: Array, db: ContentDB, stock_too: bool = true) -> Array:
 	var out: Array = []
-	var shown := {}
 	for row in shaped_rows(model_name, rows, db, stock_too):
 		var places: Array = []
 		for p in MuzzleFlare.places(str(row[3])):   # the shape the mount wears, at its scale there
 			places.append([(p[0] as Vector3) * float(row[4]), float(p[1]) * float(row[4])])
 		out.append([int(row[0]), str(row[1]), str(row[2]), places])
-		shown[int(row[0])] = true
-	for row in rows:
-		if row.size() >= 2:
-			shown[int(row[0])] = true   # a swapped mount shows its class, never the hand-built gun under it
-	var stock = pin_record(model_name) if stock_too else null
-	var built = MechRig.load_sidecar(model_name).get("muzzles", {})
-	if stock is Array and built is Dictionary:
-		for key in (built as Dictionary).keys():
-			var tag := MechRig.parse_tag(str(key))
-			if tag.is_empty() or str(tag[0]) != "hp":
-				continue
-			var n := int(tag[1])
-			if shown.has(n) or n > (stock as Array).size() or str(stock[n - 1]).is_empty():
-				continue
-			var places: Array = []
-			for p in built[key]:
-				if p is Array and (p as Array).size() == 2 and p[0] is Array and (p[0] as Array).size() == 3:
-					places.append([Vector3(float(p[0][0]), float(p[0][1]), float(p[0][2])), float(p[1])])
-			out.append([n, str(stock[n - 1]), "", places])
 	return out
 
 

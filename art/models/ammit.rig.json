@@ -6980,32 +6980,7 @@
      0.0
     ]
    ],
-   "glow": [
-    {
-     "parts": [
-      "carbine_tip",
-      "pilot_flame"
-     ],
-     "keys": [
-      [
-       2.4,
-       0.0
-      ],
-      [
-       3.0,
-       8.0
-      ],
-      [
-       6.4,
-       8.0
-      ],
-      [
-       7.1,
-       0.0
-      ]
-     ]
-    }
-   ]
+   "glow": []
   },
   {
    "name": "threat",
@@ -79544,9 +79519,7 @@
   "heft": 0.2
  },
  "glow_parts": [
-  "carbine_tip",
   "eye_strip",
-  "pilot_flame",
   "tail_slot",
   "throat_slot"
  ],
@@ -79557,8 +79530,7 @@
   "hp_4": ""
  },
  "halo": [
-  "tail_slot",
-  "pilot_flame"
+  "tail_slot"
  ],
  "standing": {
   "tail_slot": 5.0
@@ -79579,29 +79551,9 @@
    }
   ]
  },
- "muzzles": {
-  "hp_2": [
-   [
-    [
-     0.0,
-     0.0,
-     -22.028
-    ],
-    18.48
-   ]
-  ],
-  "hp_1": [
-   [
-    [
-     -0.0,
-     0.0,
-     -29.038
-    ],
-    15.6
-   ]
-  ]
- },
  "stock_shapes": {
+  "hp_1": "barrel",
+  "hp_2": "barrel",
   "hp_3": "dish"
  }
 }

@@ -157,7 +157,8 @@ a back-rank kit, the flip's first lesson in the stock.
 ## Open
 
 1. The ports: eight alternating (Claude's lean), a checkerboard or pairs by row.
-2. The lance: whether it goes (Claude's lean).
+2. The lance: settled, gone with the hand-built stock guns (11 November): the spine mount wears the
+   Enfilade Beam's barrel on its breech until the rework rebuilds the deck.
 3. What rides the ports: settled, classes on all eight, since the hand-built stock guns go
    everywhere (item 6).
 4. The stock split, and the Direct half first.

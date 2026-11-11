@@ -40949,19 +40949,8 @@
    }
   ]
  },
- "muzzles": {
-  "hp_1": [
-   [
-    [
-     0.0,
-     0.0,
-     -26.75
-    ],
-    20.4
-   ]
-  ]
- },
  "stock_shapes": {
+  "hp_1": "barrel",
   "hp_2": "barrel",
   "hp_3": "dish",
   "hp_4": "dish"

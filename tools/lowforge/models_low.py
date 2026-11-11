@@ -395,14 +395,16 @@ def clydesdale(b):
     riveted iron with chamfered shoulders, on four thick columnar legs that step fore and
     aft only (the notorious turning circle); a low armoured head on a short neck, a visor
     slit under a brow, lamps at the temples; on top a wagon bed in the maker's brown
-    carrying the whole payload: two twin-autogun turrets forward, the lance along the spine
-    running out past the head, the pocket mortar and the howitzer aft, a rack of shock
-    tubes, ablative slabs bolted on the left flank and a flak skirt hung on the right, the
-    heat sink and a stack at the tail. Bone-white flared skirts over the hooves, the
+    carrying the whole payload: two turrets forward, a mount on a breech along the spine,
+    the mortar's and the howitzer's gimbals aft, a rack of tubes, ablative slabs bolted on
+    the left flank and a flak skirt hung on the right, the heat sink and a stack at the tail. Bone-white flared skirts over the hooves, the
     namesake's feathering. First pass from the content's fantasy (22 September); the pins
     brought up to the d9 loadout 29 September (the howitzer and the shock barrage were new)
     and to the mount rule 30 September: six stock guns on hp_1 to hp_6, the plating and the
-    heat sink detail, three bare mounts (hp_7 to hp_9) on the bed rails and the neck."""
+    heat sink detail, three bare mounts (hp_7 to hp_9) on the bed rails and the neck. Every
+    stock gun wears its class since 11 November (Ryan: no stock gun is built by hand), the
+    lance's rail and emitter gone with it; the turrets, the breech and the gimbals are the
+    chassis's."""
     # Longer legs (Ryan, 5 October: "it is a horse after all", and the walk wanted them):
     # everything above the legs is built where it always was and raised one whole tile
     # (_Raised), so every seam stays on the world grid; the hips rise with it and the legs
@@ -496,20 +498,16 @@ def clydesdale(b):
             if s < 0:
                 b.stock("hp_1", (tx, 12.0, 58.0), "barrel", carries="maxigun")   # the stock's Maxigun as its class (Ryan's go, 28 October)
             else:
-                with b.socket("hp_2", (tx, 12.0, 58.0), carries="twin_autoguns"):
-                    for s2 in (-1.0, 1.0):
-                        b.prism("y", tx + s2 * 2.6, 28.0, 58.0, 1.8, 22.0, "steel.dark", 6, "autogun")
-    # The lance (hp_3): a breech block aft of centre, saddles along the deck, one long
-    # six-sided rail out past the head, a collar, a lit emitter at the point.
+                b.stock("hp_2", (tx, 12.0, 58.0), "twin_barrel", carries="twin_autoguns")   # the stock's Twin Autoguns as its class (Ryan, 11 November: no stock gun is built by hand)
+    # The spine mount (hp_3): a breech block aft of centre and a saddle along the deck, the
+    # stock's Enfilade Beam on the breech as its class (a hand-built lance out past the head
+    # until Ryan, 11 November: no stock gun is built by hand).
     b.box(-5.0, 5.0, -24.0, -6.0, 48.0, 61.0, "steel.panel", "breech")
     b.box(-3.5, 3.5, 6.0, 10.0, 48.0, 54.0, "steel.dark", "saddle")
-    with b.joint("lance", (0.0, -15.0, 57.0), limits=(-4.0, 18.0)):   # the lance pivots at the breech: it kicks on a shot, and lifts
-        with b.socket("hp_3", (0.0, -15.0, 57.0), carries="enfilade_beam"):
-            _beam(b, (0.0, -26.0, 57.0), (0.0, 64.0, 57.0), _poly(3.4, 6), _poly(2.8, 6), "steel.dark", "lance")
-            b.prism("y", 0.0, 24.0, 57.0, 4.8, 5.0, "steel.plate", 6, "guard")
-            _beam(b, (0.0, 64.0, 57.0), (0.0, 72.0, 57.0), _poly(2.8, 6), _poly(0.8, 6), "amber.light", "emitter")
-    # The pocket mortar (hp_4) aft on the deck's left, a stubby tube pitched up and forward
-    # on a base.
+    with b.joint("lance", (0.0, -15.0, 57.0), limits=(-4.0, 18.0)):   # the mount pivots at the breech: it kicks on a shot, and lifts
+        b.stock("hp_3", (0.0, -15.0, 57.0), "barrel", carries="enfilade_beam")
+    # The mortar's gimbal (hp_4) aft on the deck's left, its stock's Ankle Mortar pitched up
+    # and forward as its class.
     # Out toward the bed's edge, away from the lance's breech, and on a gimbal that
     # traverses (Ryan, 1 October).
     # On the deck, turning outward only like the turrets (Ryan, 1 October: the pedestals
@@ -517,18 +515,13 @@ def clydesdale(b):
     b.prism("z", -13.0, -24.0, 49.5, 5.0, 3.0, "steel.dark", 8, "mortar_base")
     with b.joint("turret_mortar", (-13.0, -24.0, 51.0), limits=(0.0, 150.0)):   # outward only, like the turrets
         with b.joint("elev_mortar", (-13.0, -24.0, 53.0), limits=(-12.0, 20.0)):   # the tube's elevation, inside the traverse (the joint pass)
-            with b.socket("hp_4", (-13.0, -24.0, 55.0), forward=(0.0, 0.5, 0.866), carries="ankle_mortar"):   # the same height as the howitzer's mount (Ryan, 1 October)
-                _beam(b, (-13.0, -24.0, 51.0), (-13.0, -16.0, 65.0), _poly(4.0, 6), _poly(4.4, 6), "steel.panel", "mortar")
-                _beam(b, (-13.0, -16.0, 65.0), (-13.0, -15.0, 66.8), _poly(4.4, 6), _poly(3.2, 6), "steel.dark", "muzzle")
-    # The howitzer (hp_5) on the deck's right: a fat short barrel pitched up out of a
-    # breech on a ring, the mortar's big brother; a bit further out, and on its gimbal.
+            b.stock("hp_4", (-13.0, -24.0, 55.0), "rack", forward=(0.0, 0.5, 0.866), carries="ankle_mortar")   # the same height as the howitzer's mount (Ryan, 1 October)
+    # The howitzer's gimbal (hp_5) on the deck's right, a bit further out on its ring, its
+    # stock's Howitzer pitched up as its class.
     b.prism("z", 12.5, -14.0, 49.5, 6.0, 3.0, "steel.dark", 8, "howitzer_base")
     with b.joint("turret_howitzer", (12.5, -14.0, 51.0), limits=(-150.0, 0.0)):
         with b.joint("elev_howitzer", (12.5, -14.0, 55.0), limits=(-15.0, 20.0)):   # the barrel's elevation at the breech
-            with b.socket("hp_5", (12.5, -14.0, 55.0), forward=(0.0, 0.866, 0.5), carries="howitzer"):
-                b.box(7.5, 17.5, -19.0, -9.0, 51.0, 59.0, "steel.panel", "howitzer_breech")
-                _beam(b, (12.5, -12.0, 55.0), (12.5, 6.0, 65.4), _poly(5.0, 6), _poly(4.4, 6), "steel.dark", "howitzer")
-                _beam(b, (12.5, 6.0, 65.4), (12.5, 8.6, 66.9), _poly(4.4, 6), _poly(5.2, 6), "steel.plate", "howitzer_muzzle")
+            b.stock("hp_5", (12.5, -14.0, 55.0), "barrel", forward=(0.0, 0.866, 0.5), carries="howitzer")
     # The Airburst Shell (hp_6; the shock barrage's mount until the stock pass of 22 October):
     # a rack of tubes on the deck's left between the turret and the breech, pitched up; the
     # class shape, since nothing was modelled there.
@@ -563,7 +556,7 @@ def clydesdale(b):
         "elev_mortar": [(4.4, 0.0), (5.4, 18.0), (6.4, 19.0), (7.4, 0.0)],
         "turret_howitzer": [(3.6, 0.0), (5.6, -65.0), (6.3, -65.0), (8.3, 0.0)],
         "elev_howitzer": [(4.8, 0.0), (5.8, 18.0), (6.6, 19.0), (7.6, 0.0)],
-    }, glow=[(["emitter"], [(3.4, 0.0), (4.0, 6.0), (6.6, 6.0), (7.4, 0.0)])])
+    })
     b.act("look_around", 6.0, {   # the head sweeps slowly one way, lamps up, then the other, staring
         "head": [(1.4, -6.0, 26.0, 0.0), (2.4, -7.0, 28.0, 0.0), (3.8, 5.0, -26.0, 0.0), (4.7, 6.0, -28.0, 0.0), (5.8, 0.0, 0.0, 0.0)],
     }, glow=[(["lamp"], [(0.4, 0.0), (1.0, 6.0), (5.0, 6.0), (5.8, 0.0)])])
@@ -972,23 +965,16 @@ def polar_bear(b):
         tag = "r" + ("l" if s < 0 else "r")
         shutters[tag] = _plug(b, tag, Vector((px, -0.9, Z0 + 29.1)) - Vector(D) * 0.5, D, 6.8, PLUG_DEEP)   # closes just under the rim; rests under the floor
         mount = Vector((px, -3.5, Z0 + 26.5))
-        DV = Vector(D)
-        # The barrels a fixed length from the mount (they had run to a fixed muzzle point
-        # and grew with every push back: Ryan, 1 October).
         # Each port gun runs in and out of its port along its line (Ryan, 29 October: it
         # pitched on a joint at the mount, and its barrels clipped the shell presenting): a
         # slide joint at the mount, the socket inside it.
         with b.joint("run_%s" % ("l" if s < 0 else "r"), tuple(mount), slide=D):
+            # Each stock gun is its class at the fit that passes the bore (Ryan, 11 November: no
+            # stock gun is built by hand).
             if kind == "rivet":
-                with b.socket("hp_1", tuple(mount), forward=D, scale=1.2, carries="rivet_gun", fits=REAR_FITS):
-                    _beam(b, tuple(mount), tuple(mount + DV * 16.0), _poly(3.4, 6), _poly(3.4, 6), "steel.dark", "rivet_barrel")
-                    _beam(b, tuple(mount + DV * 16.0), tuple(mount + DV * 18.5), _poly(4.0, 6), _poly(3.6, 6), "steel.plate", "rivet_muzzle")
+                b.stock("hp_1", tuple(mount), "barrel", forward=D, scale=1.2, carries="rivet_gun", fits=REAR_FITS)
             else:
-                with b.socket("hp_2", tuple(mount), forward=D, scale=1.2, carries="twin_autoguns", fits=REAR_FITS):
-                    for xo in (-2.4, 2.4):   # the pair inside the port's bore, no wider than a fitted pair
-                        off = Vector((xo, 0.0, 0.0))
-                        _beam(b, tuple(mount + off), tuple(mount + off + DV * 18.0), _poly(1.9, 6), _poly(1.9, 6), "steel.dark", "autogun_barrel")
-                        _beam(b, tuple(mount + off + DV * 18.0), tuple(mount + off + DV * 20.0), _poly(2.3, 6), _poly(2.1, 6), "steel.plate", "autogun_muzzle")
+                b.stock("hp_2", tuple(mount), "twin_barrel", forward=D, scale=1.2, carries="twin_autoguns", fits=REAR_FITS)
     # The hatch behind the ports: a rack in a stripe frame, pitched forward with the ports,
     # the Cryo Flingers' (no pin since the rework: the four ports are the hardpoints).
     # Up and back a little, so a cannon fitted there clears the shell's crown ahead of it
@@ -1249,7 +1235,10 @@ def polar_bear(b):
     # dipped: the defensive base pose (Ryan, 29 October). Opening runs it back, the plugs
     # dropping before the guns rise. RIFTGATE_SEAL_DEBUG=1 holds it and lets it go in turn,
     # as the hangar's Forms toggle does, to judge running.
-    SINK, SINK_F, T_SINK, T_PLUG0, T_PLUG1, T_ALL = 23.0, 32.0, 0.45, 0.45, 0.85, 1.2
+    # SINK takes the longest class a rear port wears (a barrel at its fit, 32.4 along its line)
+    # under the iris, which closes about 3.2 out from the mount (the stock's barrel since 11
+    # November; 23 cleared the hand-built guns).
+    SINK, SINK_F, T_SINK, T_PLUG0, T_PLUG1, T_ALL = 31.0, 32.0, 0.45, 0.45, 0.85, 1.2
     HUNK = (0.0, -11.0, -1.5)   # (dy, dz, pitch): low, the brow dipped
     FWD = (0.0, 1.0, 0.0)
     tracks = {jn: [along(0.0, 0.0), along(T_SINK, -SINK)] for jn in ("run_l", "run_r")}
@@ -1358,19 +1347,16 @@ def wild_boar(b):
         with b.joint("elev", (0.0, 8.0, 37.0), limits=(-6.0, 22.0)):   # the mantlet and both guns elevate together (the joint pass)
             b.box(-15.0, 15.0, 8.0, 14.0, 33.0, 41.0, "steel.plate", "mantlet")
             for s in (-1.0, 1.0):
-                with b.socket("hp_%d" % (1 if s < 0 else 2), (s * 9.0, 14.0, 37.0), carries="slugthrower"):
-                    b.prism("y", s * 9.0, 32.0, 37.0, 2.8, 40.0, "steel.dark", 6, "gun")
-                    b.prism("y", s * 9.0, 51.0, 37.0, 3.4, 4.0, "steel.plate", 6, "muzzle")
+                b.stock("hp_%d" % (1 if s < 0 else 2), (s * 9.0, 14.0, 37.0), "barrel", carries="slugthrower")   # the stock's Slugthrowers as their class (Ryan, 11 November: no stock gun is built by hand)
         b.box(-4.0, 4.0, -20.0, -14.0, 42.0, 44.0, "steel.plate", "hatch")
         b.box(13.0, 16.0, -6.0, 0.0, 42.0, 45.0, "amber.light", "sight")
         b.pad("hp_4", (0.0, 2.0, 44.0))
-    # The stock missile pod on the left rear quarter's deck (hp_3), its face forward.
+    # The pod's mount on the left rear quarter's deck (hp_3), the stock's Shotfire Rack on it
+    # as its class, its face forward.
     # Set back and out so the turret's drum and its guns sweep clear of it (Ryan, 1
     # October: the turret must look able to turn).
     with b.joint("elev_pod", (-TX - 1.0, -23.0, TH + 9.0), limits=(0.0, 16.0)):   # the pod tilts up on its deck
-        with b.socket("hp_3", (-TX - 1.0, -16.0, TH + 16.0), carries="shotfire_rack"):
-            b.box(-TX - 8.0, -TX + 6.0, -30.0, -16.2, TH + 9.0, TH + 23.0, "steel.panel", "missile_box")
-            _missile_face(b, (-TX - 8.0, -16.15, TH + 9.0), (0.0, 0.0, 1.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), 14.0)
+        b.stock("hp_3", (-TX - 1.0, -16.0, TH + 16.0), "rack", carries="shotfire_rack")
     # Ablative plating on the outer faces of the treads and the blowout stack at the hull's
     # tail with vents beside it: detail, no mounts.
     for s in (-1.0, 1.0):
@@ -3292,12 +3278,8 @@ def buzzard(b):
             if n == 4:
                 b.pin("hp_4", nose, scale=0.7, carries="", fits=POD_FITS)
                 continue
-            with b.socket("hp_%d" % n, nose, scale=0.7, carries={1: "overclocked_railgun", 2: "transonic_rifle", 3: "arc_fault_cannon"}[n], fits=POD_FITS):
-                if n == 3:
-                    for s2 in (-1.0, 1.0):   # the Arc-fault Cannon's prongs
-                        b.prism("y", s * px + s2 * 1.1, 14.0, pz, r * 0.3, 6.0, "steel.dark", 6, "prong")
-                else:
-                    b.prism("y", s * px, 14.0, pz, r * 0.55, 6.0, "steel.dark", 6, "pod_gun")
+            # Each stock gun is its class on the nose (Ryan, 11 November: no stock gun is built by hand).
+            b.stock("hp_%d" % n, nose, {1: "barrel", 2: "barrel", 3: "twin_barrel"}[n], scale=0.7, carries={1: "overclocked_railgun", 2: "transonic_rifle", 3: "arc_fault_cannon"}[n], fits=POD_FITS)
     # The nacelles: two boosters on the aft shoulders, their mouths dark, exhausts lit, and a
     # fin canted outward off each nacelle's top; a short ventral strake under the tail.
     for s in (-1.0, 1.0):
@@ -3981,12 +3963,11 @@ def nemesis(b):
                 _spike(b, (px, py, pz), (px - 7.0, py, pz + 5.0), 1.6, "steel.dark", "forearm_spike")
         el.__exit__(None, None, None)
         jt.__exit__(None, None, None)
-    # The waist cannon (hp_1): a mount on the right of the waist, the Plasma Carbine
-    # forward off it (Ryan, 30 September: on the waist, not the hip).
+    # The waist cannon (hp_1): a mount on the right of the waist, the stock's Plasma Arquebus
+    # forward off it as its class (Ryan, 30 September: on the waist, not the hip; 11 November:
+    # no stock gun is built by hand).
     b.box(13.0, 23.0, -7.0, 5.0, 51.0, 59.0, "steel.plate", "waist_mount")
-    with b.socket("hp_1", (18.0, 5.0, 55.0), carries="plasma_arquebus"):
-        b.prism("y", 18.0, 17.0, 55.0, 3.0, 24.0, "steel.dark", 6, "plasma_carbine")
-        b.prism("y", 18.0, 29.5, 55.0, 2.2, 1.5, "amber.engine", 6, "carbine_tip")
+    b.stock("hp_1", (18.0, 5.0, 55.0), "barrel", carries="plasma_arquebus")
     # The Entropy Condenser on the lower back, a dark block with lit slots (hp_4).
     b.box(-12.0, 12.0, -20.0, -10.0, 60.0, 74.0, "steel.dark", "condenser")   # detail: a vent takes no mount; up on the back (Ryan, 1 October)
     for z in (64.0, 68.0, 71.5):
@@ -4719,15 +4700,9 @@ def ammit(b):
         gun = base + U * 3.0 + N * 5.0
         # Each shoulder cannon elevates along the plate (the joint pass).
         with b.joint("elev_%s" % ("l" if s < 0 else "r"), tuple(gun), limits=(-12.0, 18.0)):
-            if s > 0:
-                with b.socket("hp_1", tuple(gun), forward=tuple(U), carries="plasma_arquebus"):
-                    _beam(b, gun, gun + U * 26.0, _poly(2.6, 6), _poly(2.6, 6), "steel.dark", "plasma_carbine")
-                    _beam(b, gun + U * 26.0, gun + U * 27.5, _poly(2.0, 6), _poly(2.0, 6), "amber.engine", "carbine_tip")
-            else:
-                with b.socket("hp_2", tuple(gun), forward=tuple(U), carries="blazethrower"):
-                    _beam(b, gun - U * 8.0, gun + U * 2.0, _poly(3.6, 8), _poly(3.6, 8), "steel.dark", "fuel_tank")
-                    _beam(b, gun + U * 2.0, gun + U * 19.0, _poly(2.0, 6), _poly(2.0, 6), "steel.dark", "nozzle")
-                    _beam(b, gun + U * 19.0, gun + U * 20.5, _poly(2.6, 6), _poly(2.6, 6), "amber.fire", "pilot_flame")   # a fire weapon's red, never white (Ryan, 31 October)
+            # Each stock gun is its class (Ryan, 11 November: no stock gun is built by hand); the
+            # Blazethrower's fire is its class's, a burn weapon's (31 October).
+            b.stock("hp_1" if s > 0 else "hp_2", tuple(gun), "barrel", forward=tuple(U), carries="plasma_arquebus" if s > 0 else "blazethrower")
     # The spines: a row down the panel's centre line, each rooted in the plate.
     for k in range(5):
         root = Vector((0.0, 0.0, 51.2)) - U * (5.0 * k) + N * 2.0
@@ -4911,8 +4886,7 @@ def ammit(b):
         # (Ryan, 6 October, the eighth notes: even more, unnaturally so), one after another.
         tracks.update({"talon_%s_%s" % (side, w): [(2.4 + 0.12 * k, 0.0, 0.0, 0.0), (3.1 + 0.12 * k, -74.0, 0.0, 0.0), (6.6, -76.0, 0.0, 0.0), (7.4, 0.0, 0.0, 0.0)]
                        for k, w in enumerate(("out", "mid", "in"))})
-    b.act("raise_cannons", 9.2, tracks, body=body,
-          glow=[(["carbine_tip", "pilot_flame"], [(2.4, 0.0), (3.0, 8.0), (6.4, 8.0), (7.1, 0.0)])])
+    b.act("raise_cannons", 9.2, tracks, body=body)
     # The threat: the snout drops, the throat vent breathes out its heat, long and hot, and the
     # upper claws strike in a one-two (Ryan, 6 October, the ninth notes): each cocked back
     # with its talons spread, the middle one hung low beneath them ready to grab, thrusts out
@@ -5012,7 +4986,7 @@ def ammit(b):
         limbs.append({"hip": "shoulder_low_" + side, "knee": "elbow_low_" + side, "ankle": "hand_low_" + side, "at": arms[side],
                       "phase": 0.25 if side == "r" else 0.75, "shift": -12.0, "cycles": 3})
     tracks, body, stride = _plant(limbs, sweep=60.0, lift=8.0, crouch=0.5, dip=1.5, nod=0.9, n=120)
-    b.halo = ["tail_slot", "pilot_flame"]   # the vent at its tail (the condenser's twin) and the Blazethrower's pilot flame, a burn weapon's, hot (Ryan, 31 October)
+    b.halo = ["tail_slot"]   # the vent at its tail (the condenser's twin), hot (Ryan, 31 October); the Blazethrower's fire is its class's
     b.standing = {"tail_slot": 5.0}   # the rear vent always lit, the Arsenal's creepy glowing exhaust, hot under its flares (Ryan, 31 October), brighter at rest on its own sickly amber (3 November, the second notes); the throat under the jaw is never seen
     b.gait(stride=stride, tracks=tracks, hold={"shoulder_l": 12.0, "shoulder_r": 12.0}, body=body, ease="linear")
     # Its talons fire with the threat's bite and the rear's rake in turn (Ryan, 3 November: it "can
@@ -5984,11 +5958,11 @@ def puffin(b):
     for s in (-1.0, 1.0):
         px = s * 12.0 * K
         b.box(min(px - 0.8, px + 0.8), max(px - 0.8, px + 0.8), 12.0, 18.0, 8.4, 10.2, "steel.plate", "pod_pylon")
-        with b.socket("hp_%d" % (1 if s < 0 else 4), (px, 20.0, 8.2), scale=0.5, carries="halo_projector" if s < 0 else ""):
-            b.prism("y", px, 15.0, 8.2, 1.5, 11.0, "steel.dark", 6, "pod")
-            if s < 0:
-                b.prism("y", px, 22.5, 8.2, 3.0, 1.2, "steel.plate", 8, "dish")
-                b.prism("y", px, 23.3, 8.2, 1.2, 0.8, "amber.engine", 8, "dish_core")
+        b.prism("y", px, 15.0, 8.2, 1.5, 11.0, "steel.dark", 6, "pod")   # the pod is the chassis's and stays when its mount is fitted, as the Buzzard's (2 November)
+        if s < 0:
+            b.stock("hp_1", (px, 20.0, 8.2), "dish", scale=0.5, carries="halo_projector")   # the stock's Halo Projector as its class (Ryan, 11 November: no stock gun is built by hand)
+        else:
+            b.pin("hp_4", (px, 20.0, 8.2), scale=0.5, carries="")
         rx, ry = s * 6.5, -22.0
         dz = deck(ry)
         b.loft([(ry - 6.0, rect(rx, 2.6, dz - 0.6, dz + 1.0)), (ry + 5.0, rect(rx, 3.8, dz - 0.6, dz + 2.0))], "steel.panel", "shoulder_fairing")

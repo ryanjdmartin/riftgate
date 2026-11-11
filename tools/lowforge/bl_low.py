@@ -1227,10 +1227,6 @@ class Build:
             out["aims"] = dict(self.aims)
         if self.pivots:
             out["pivots"] = True
-        # Where each hand-built stock gun's muzzle flare blooms (a class's are art/models/shapes/muzzles.json).
-        muzzles = self.muzzles()
-        if muzzles:
-            out["muzzles"] = muzzles
         if self.stock_shapes:
             out["stock_shapes"] = {n: self.stock_shapes[n] for n in sorted(self.stock_shapes, key=lambda n: int(n[3:]))}
         # Each booster's plume (plume()): the Empty at its mouth, the lit part it burns with, its size.
@@ -1247,58 +1243,6 @@ class Build:
         # How a class sits at a mount that declares it (pin()'s `fits`): its variant and scale.
         if self.fits:
             out["fits"] = {n: self.fits[n] for n in sorted(self.fits, key=lambda n: int(n[3:]))}
-        return out
-
-    def muzzles(self):
-        """Each hand-built stock gun's muzzle flare places, so it flares as a class does, found
-        from its parts: in the pin's own frame (the gun pointing down its +y), each part reaching
-        within a unit and a half of the gun's farthest reach is a barrel's end (its vertices there
-        make its middle and its width), and ends that overlap are one (a barrel and its muzzle
-        collar); a flare sits just past each, sized to its width. A class's places are its own
-        and a variant's its own (models_low.MUZZLES); a bare mount has none. In the models'
-        frame as the glTF carries it: a point at (x, y, z) here is at (x, z, -y) there."""
-        out = {}
-        for e in self.pins:
-            name = e.name
-            if not name.startswith("hp_") or name in self.stock_shapes or not self.carries.get(name):
-                continue
-            inv = e.matrix_world.inverted()
-            scale = e.matrix_world.to_scale()[1] or 1.0
-            parts = []
-            stack = list(e.children)
-            while stack:
-                ob = stack.pop()
-                stack.extend(ob.children)
-                if ob.type == "MESH" and ob.data.vertices:
-                    parts.append([inv @ (ob.matrix_world @ v.co) for v in ob.data.vertices])
-            if not parts:
-                continue
-            reach = max(p.y for pts in parts for p in pts)
-            ends = []
-            for pts in parts:
-                tip = [p for p in pts if p.y > reach - 1.5 / scale]
-                if tip:
-                    xs, zs = [p.x for p in tip], [p.z for p in tip]
-                    ends.append([min(xs), max(xs), min(zs), max(zs)])
-            merged = True
-            while merged:   # ends that overlap are one
-                merged = False
-                for a in range(len(ends)):
-                    for b in range(a + 1, len(ends)):
-                        A, B = ends[a], ends[b]
-                        if A[0] <= B[1] and B[0] <= A[1] and A[2] <= B[3] and B[2] <= A[3]:
-                            ends[a] = [min(A[0], B[0]), max(A[1], B[1]), min(A[2], B[2]), max(A[3], B[3])]
-                            del ends[b]
-                            merged = True
-                            break
-                    if merged:
-                        break
-            places = []
-            for x0, x1, z0, z1 in ends:
-                width = max(x1 - x0, z1 - z0, 1.0 / scale)
-                size = min(max(2.4 * width + 6.0 / scale, 8.0 / scale), 30.0 / scale)
-                places.append([[round((x0 + x1) / 2.0, 3), round((z0 + z1) / 2.0, 3), round(-(reach + 1.5 / scale), 3)], round(size, 2)])
-            out[name] = places
         return out
 
     def fx(self, cid, at, forward=(0.0, 1.0, 0.0), size=16.0):
@@ -1376,9 +1320,11 @@ class Build:
         return e
 
     def socket(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None, fits=None):
-        """`with b.socket("hp_1", at, forward, carries="rivet_gun"): ...` builds the stock
-        component inside the block and pins it: every object made in the block hangs under
-        the pin. `carries` names the component it is, `fits` how a class sits there (pin())."""
+        """`with b.socket("hp_1", at, forward): ...` builds a part inside the block and pins it:
+        every object made in the block hangs under the pin. For a proposal's look test alone
+        (tools/lowforge/looks/): a machine's stock gun is never built by hand, it is its class
+        (stock(); Ryan, 11 November), and tests/test_mech_rig.gd holds every model to that.
+        `carries` names the component, `fits` how a class sits there (pin())."""
         return _Socket(self, name, at, forward, scale, carries, fits)
 
     def pad(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, size=(8.0, 3.0), material="steel.panel", fits=None):
