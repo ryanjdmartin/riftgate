@@ -1129,18 +1129,15 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. The live page is v0.497, dated 9 November (the
-  page's Version 502, published from main at `2d489f7` on Ryan's word, "republish the hangar
-  page and the bible": main's file whole, since the live v0.496 matched `f048e67`'s byte for byte
-  and so needed no merge; it carries the Lammergeier's rework, its row, the Gel's and the
-  reinforcement row's slot-mine lines and the tables). Main's file is v0.522 since The Far Bank joined the fights' pool (its track row and the boss themes' Open row: the Marsh's theme it was, so no domain has one now), v0.521 since `ccr-4d58b054-3lyj0a` landed with the formation and refit session's branch whole (11 November: that session's rows, the locked, tiers and basic kit rows, and the Polar Bear, Buzzard and Nemesis rows, over the music session's), unpublished, its republish on Ryan's word; v0.508 since The Far Bank's pair shipped (its track row), v0.507 since the music session landed (11 November: its track rows since v0.469, Hold The Line's and Night Shift's pairs passed and shipped, the fills' lean and The Far Bank's pick of the lift, merged three-way on the v0.469 both files carried), unpublished, its republish on Ryan's word ("publish the bible"); v0.506 since the boss's hex landed (its patrol retired, the vortex lower with the wall at the bottom), v0.505 since the third map list landed (the rift's five hexes on the field row, the undo and marks rows), v0.504 with the second map list's rows (the marks row
-  rewritten, the pack, undo, gesture, Fracture, reconstruction and tears rows, the Badger's and
-  the store's) on the shapes' rework's v0.503 and the hangar's Bench tab's v0.502, unpublished; v0.501 since the map
-  playtest list landed (the boss's picture, the scenery under the painting, the tears row's
-  read of 10 November and the hunters' declaration, on the map session's v0.500 and v0.498's
-  Text tab rows: the hangar row's tabs and the shown-text row), unpublished, its republish on
-  Ryan's word. BASE for the next merge is `2d489f7`'s file. The live
-  page may carry rows ahead of main's code while a branch has not landed. Before
+  `docs/design-bible.html` after every change. The live page is v0.521, dated 11 November (the
+  page's Version 503, published from main at `9ebf74b` on Ryan's word, "republish the hangar and
+  the bible": main's file whole, since the live v0.497 matched `2d489f7`'s byte for byte and so
+  needed no merge; it carries everything to 11 November: the formation and refit session's
+  rows, the locked, tiers and basic kit rows, the Polar Bear, Buzzard and Nemesis rows, the music
+  session's track rows, the map lists' and the Bench's). Main's file is v0.522 since The Far Bank
+  joined the fights' pool (its track row and the boss themes' Open row: the Marsh's theme it was,
+  so no domain has one now), unpublished, its republish on Ryan's word. BASE for the next merge is
+  `9ebf74b`'s file. The live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
   this branch's file, THEIRS the saved live source with the tool's wrapper line and its trailing
@@ -1153,8 +1150,14 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 219 (10 November, main's `f49a90f`, on Ryan's word, "Ok merge into main and
-  republish the hangar"): the page with its Bench tab, his working sheet for a machine, the
+  page's Version 220 (11 November, main's `9ebf74b`, on Ryan's word, "republish the hangar and the
+  bible"): the fourteen files that had moved since 219 (the five content files with the refit's
+  model, the formation pass, the Polar Bear's seal, the Buzzard's regen and the Nemesis's rage;
+  `designs.json` and `text.json`; `foes.json`; six rig sidecars, their stock pins following the
+  Halo Projector) and the thirteen new foes' sprites (the four flanker lines and the Draugr), the
+  page itself unchanged; nobody had published since 219, and the live copies match main's after.
+  `edits` and `text` empty, `designs` the two folded ideas. Version 219 (10 November, main's
+  `f49a90f`, on Ryan's word, "Ok merge into main and republish the hangar") was the page with its Bench tab, his working sheet for a machine, the
   second tab (the roster by where each machine stands, one flat sheet a machine; no file and no
   collection of its own, every write an edit of the entry in `edits`, his notes, state and
   upgrade ideas under its `design.bench`), with the three files that had moved since: the
