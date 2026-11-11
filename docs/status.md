@@ -28,7 +28,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
 - Tests: 1123 tests, 362,685 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
-  with the Whip Scorpion's rework over the formation and refit session's landing). Before it,
+  with the Whip Scorpion's rework over the formation and refit session's landing); 1134 tests,
+  362,980 checks, green on `ccr-e3ddf00b-ilkwbi` over that main (the three fast flyers rebuilt,
+  not landed). Before it,
   1119 tests, 362,994 checks, green on main (11 November, as `ccr-722ca9f0-yj8na3`
   landed with the Rupture sized in beats, menace a pack's threat rating, the stall guard's end
   and the tide's and the strike's trial dials; Godot 4.8-beta2); one
@@ -301,7 +303,11 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   ("Yes build them with placeholder numbers"), each to be played (the to-do's Ryan list); the
   map is at the head of `kestrel_line.md`. Main's Whip Scorpion and Clydesdale work is merged in
   (11 November). His question of the same day, Sweep reworked or scrapped, is the bible's
-  section 12's, with Claude's lean; nothing of it is built. A probe of the old Kite's turns is in `docs/measurements.md` (its die opened
+  section 12's, with Claude's lean; nothing of it is built. A first direction on the placeholder
+  numbers is in `docs/measurements.md` (each alone on the patrols, 30 seeds, the old kit beside
+  the new): the Kite where it stood on its duels and a little dearer on packs rated for two, the
+  Skua's duels from five to fifteen rounds down to three or four, the Needletail alone a little
+  worse off without the Overcharge Coil. A probe of the old Kite's turns is in `docs/measurements.md` (its die opened
   dark a round in five, its own heat cost it as much hull as the foes did, its reset fired under
   once a fight). Where it stands:
   - The Kite: built as his "Burst glass cannon" (the bible's Kite row, v0.532 on this branch,

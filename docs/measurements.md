@@ -8281,3 +8281,39 @@ fights its team wins every time. One fight's log for the shape (`tools/balance.g
 itself and ended on 1, every blow the foes aimed at it stopped by its shield. Alone against a
 tier-two duelist it wins in two rounds with no hull lost (the duelists' read of 10 November,
 above). The Hot Streak figure is read as its turn ends, so a fight's last kill is not in it.
+
+## 11 November, the three fast flyers rebuilt: each alone against the patrols, the old kit beside the new
+
+The Needletail, the Kite and the Skua were rebuilt on 11 November on placeholder numbers (Ryan:
+"Yes build them with placeholder numbers"; the bible's Kite and Kestrel rows). A first look at
+where those numbers put each, the old kit beside the new: `tools/balance.gd -- --packs curve
+--team <flyer>,badger,clydesdale,baboon --tiers 1,2 --sizes patrol --seeds 30`, read at the cut
+of one (the flyer alone), on this branch at `4d70c47` and on main at `6cf3582` for the old kits.
+Twenty patrols, tiers one and two: eight duels rated for one machine and twelve packs rated for
+two, which a lone machine is over its rating against. The greedy rung's mean hull lost (percent
+of its own) and mean rounds; a wall is the greedy winning under half. 30 seeds: a direction. No
+decision reads it; it is the check that no placeholder is wildly off.
+
+| Alone, the greedy rung | The Kite, old | new | The Skua, old | new | The Needletail, old | new |
+|---|---|---|---|---|---|---|
+| The eight duels: hull lost, rounds | 0%, 1.5 | 2%, 1.6 | 46%, 8.8 | 4%, 3.3 | 5%, 3.1 | 8%, 3.3 |
+| The twelve packs rated for two: walls | 0 | 0 | 9 | 7 | 5 | 7 |
+| All twenty: hull lost, rounds | 12%, 2.4 | 18%, 2.6 | 70%, 6.5 | 42%, 3.7 | 44%, 4.0 | 51%, 4.2 |
+
+Read. The Kite stands where it stood on the duels made for one machine, a round and a half and
+no hull to speak of, and pays more on the packs made for two (the antlion trio 8% to 33% of its
+hull, the Cerberus pair 2% to 26%): the plain double it lost was worth more on a second and a
+third foe than the opener is. The Skua moves most: its duels took five to fifteen rounds under
+the Split-cycle Breech, a wall at tier two's lone Grave Dullahan, and take three to four now
+with little hull lost; two tier-one pairs go from a wall to a win and the Roc pair from a
+decision to one. It is slower than the Kite
+and level with the Needletail on the duels, so no placeholder reads as runaway there; the long
+fights it is built for are not in this read. The Needletail alone is a little worse off (five
+walls to seven): alone its second action is the Designator, a mark worth little without armour
+to strip or a squad to use it, where the old kit's free action was the Overcharge Coil it no
+longer stocks. With the Honey Badger beside them (the cut of two) all three win every patrol,
+old and new alike, the Pit pair the costliest (15% to 27% of the two machines' hull on the new
+kits). The bot knows nothing of
+holding the Kite's opener for a foe worth it or of keeping the Skua's hull clean, and a lone
+machine against a pack rated for two is no fight the battle deals, so the walls are a ceiling
+and no fault.
