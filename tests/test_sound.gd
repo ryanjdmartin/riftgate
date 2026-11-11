@@ -68,7 +68,6 @@ func test_every_loop_has_a_title_and_a_label() -> void:
 
 func test_boss_sets_name_a_family_and_wrap_into_their_groove() -> void:
 	var db := ContentDB.load_default()
-	var themed := 0
 	for set_name in Sound.SETS:
 		if not str(set_name).begins_with("boss_"):
 			continue
@@ -77,8 +76,8 @@ func test_boss_sets_name_a_family_and_wrap_into_their_groove() -> void:
 		assert_eq(Sound.SETS[set_name].size(), 1, "a boss theme is one loop, looped for the whole fight")
 		assert_eq(Sound.boss_set(fac), set_name, "boss_set finds it")
 		assert_false(Sound.PICK.has(set_name), "a boss set never picks")
-		themed += 1
-	assert_true(themed >= 1, "at least one family has a theme")
+	# No family has a theme since The Far Bank joined the skirmish's pick (Ryan, 11 November), so
+	# every boss fight takes the skirmish's pick until one is written (the to-do's boss themes).
 	assert_eq(Sound.boss_set("not_a_family"), "", "a family without a theme has no set: the fight takes the skirmish's pick")
 	for loop in Sound.LOOP_FROM:
 		assert_true(Sound.NAMES.has(loop), "%s wraps to a bar: it is a named loop" % loop)

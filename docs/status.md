@@ -141,8 +141,8 @@ file and the to-do the conflicts: the bible three-way on the v0.469 both files c
 v0.506 kept whole with the session's track rows over it as v0.507; this file and the to-do on
 main's trimmed form with the session's lines brought to it, the to-do's ticked lines pruned) and
 main took it as a fast-forward on Ryan's word ("I think this is a good spot to ship everything to
-main"), then again with The Far Bank's pair ("Oh I thought far bank was done?"); it is merged and
-to delete with the rest. Landed
+main"), then again with The Far Bank's pair ("Oh I thought far bank was done?") and its move off the
+Marsh's boss into the fights' pool; it is merged and to delete with the rest. Landed
 9 November: `ccr-a0b35006-od22d2`, the Lammergeier's rework (How things stand), on Ryan's word
 ("Merge this into main. Your reads are correct"), main taken as it landed twice (the Polar Bear,
 then every renamed id: the save versions stacked, battles 20, runs 19 and quick runs 4; the
@@ -1054,7 +1054,9 @@ The tasks are the to-do's; this is the index of what waits.
   November: "Full pair for HtL is good to ship"; "Keep 96. I think this is a good spot to ship
   everything to main"; "Oh I thought far bank was done?"), all three built into art/audio by the
   forge's SHIP from their sketches' `ship`: each track's shipped half where it played (Night Shift's
-  map half now at 96, Sound's TEMPO with it; The Far Bank's battle half the shipped track itself),
+  map half now at 96, Sound's TEMPO with it; The Far Bank's battle half the shipped track itself, in
+  the fights' pool since it came off the Marsh's boss, 11 November: "Take far bank off of the boss
+  and add it to the regular pool", so no domain has a boss theme now),
   its new half beside it (`music_hold_the_line_map`, `music_night_shift_battle`, `music_far_bank_map`),
   unplayed until the engine plays a pair (one synchronized stream, the map choosing the track, the
   3 s flip). The rest in a music session of Ryan's own (11 November: "I'll resume the remaining
@@ -1132,8 +1134,10 @@ commands are in `README.md`.
   the bible": main's file whole, since the live v0.497 matched `2d489f7`'s byte for byte and so
   needed no merge; it carries everything to 11 November: the formation and refit session's
   rows, the locked, tiers and basic kit rows, the Polar Bear, Buzzard and Nemesis rows, the music
-  session's track rows, the map lists' and the Bench's). BASE for the next merge is `9ebf74b`'s
-  file. The live page may carry rows ahead of main's code while a branch has not landed. Before
+  session's track rows, the map lists' and the Bench's). Main's file is v0.522 since The Far Bank
+  joined the fights' pool (its track row and the boss themes' Open row: the Marsh's theme it was,
+  so no domain has one now), unpublished, its republish on Ryan's word. BASE for the next merge is
+  `9ebf74b`'s file. The live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
   this branch's file, THEIRS the saved live source with the tool's wrapper line and its trailing
