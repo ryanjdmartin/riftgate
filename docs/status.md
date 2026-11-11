@@ -1151,8 +1151,14 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 219 (10 November, main's `f49a90f`, on Ryan's word, "Ok merge into main and
-  republish the hangar"): the page with its Bench tab, his working sheet for a machine, the
+  page's Version 220 (11 November, main's `9ebf74b`, on Ryan's word, "republish the hangar and the
+  bible"): the fourteen files that had moved since 219 (the five content files with the refit's
+  model, the formation pass, the Polar Bear's seal, the Buzzard's regen and the Nemesis's rage;
+  `designs.json` and `text.json`; `foes.json`; six rig sidecars, their stock pins following the
+  Halo Projector) and the thirteen new foes' sprites (the four flanker lines and the Draugr), the
+  page itself unchanged; nobody had published since 219, and the live copies match main's after.
+  `edits` and `text` empty, `designs` the two folded ideas. Version 219 (10 November, main's
+  `f49a90f`, on Ryan's word, "Ok merge into main and republish the hangar") was the page with its Bench tab, his working sheet for a machine, the
   second tab (the roster by where each machine stands, one flat sheet a machine; no file and no
   collection of its own, every write an edit of the entry in `edits`, his notes, state and
   upgrade ideas under its `design.bench`), with the three files that had moved since: the
