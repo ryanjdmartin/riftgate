@@ -2,6 +2,29 @@
 
 <!-- hangar: {"kind": "chassis", "maker": "kestrel", "tier": 1, "status": "rework", "slot": false, "name": "Puffin", "built": "puffin"} -->
 
+**Ryan's direction (11 November)**: "Puffin cooling allies is a solid direction but it needs a hook
+to make it interesting. My initial lean is actually that it MOVES heat around. Using an equipment on
+an ally moves some of its heat to the Puffin. A locked piece can transfer the Puffins heat to
+another unit along with a buff based on heat moved, so it gets along with the Buzzard and stingray,
+and other niche interactions like forcing an overheat for hull damage. I'd probably move it to tier
+two though."
+
+Holes raised in chat the same day (Claude's), for its session:
+
+- Where the dump may go: allies only (Ryan, 11 November: "just allies"). The Buzzard and the
+  Stingray want the heat; an overheat forced on the Nemesis banks its rage, which reads hull
+  damage, an overheat's included; no foe takes heat as Burning.
+- The pull rides any equipment it spends on an ally, every maker's buffs, so it is a rule over
+  other makers' pieces (the bible's identity test) and no entry is pure recovery (the refit's
+  principle holds): the cooling is what the buff carries, the dump a buff with a price.
+- Its own heat is the clock: pulled heat fills its gauge, its cooling and the dump are the only
+  ways down, and an overheat is its own hull, the risk Kestrel carries for the team.
+- The pair with the Storm Petrel's hook of the same day (shield as it gains heat): pull an ally's
+  heat, dump it on the Petrel for shield and a buff, priced only in the Puffin's actions. A pair
+  that feeds each other, a watch rather than a fault.
+- Tier two: the sort puts a support there; Kestrel's tier-one deal is then the Skua and the Storm
+  Petrel alone until the Snowy Owl or the Magpie lands at tier one.
+
 Kestrel's tier-one shield escort, built and fielded (the bible's Puffin row, Ryan's go of 21
 October: its shields read the ally's heat; the Slipstream Projector grows a shield spent on an
 ally by one for every two heat the ally carries, the Backwash Ionizer an overshield of three on an

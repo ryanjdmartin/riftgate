@@ -620,15 +620,15 @@
    "id": "sealed",
    "category": "status",
    "name": "Sealed",
-   "codex": "Ability, the Polar Bear's form. A shield it spends on itself seals it: armour up by its Lockdown's number, its own cooling stopped, its Cryo Flinger gaining Spread, and it runs hotter at the end of each turn. A vent or a weapon opens it; a shield on an ally and equipment leave it as it is; an entry that cools and shields at once does the one its form calls for. An ally's vent still cools it. No Purge touches it.",
+   "codex": "Ability, the Polar Bear's form. Equipment it spends on itself seals it: armour up by its Lockdown's number, its own cooling stopped, its Cryo Flinger gaining Spread, and it runs hotter at the end of each turn. A weapon it fires opens it; equipment on an ally and a debuff, its lure among them, leave it as it is. No Purge touches it.",
    "status": "implemented",
    "design": {
     "holes": "One chip, renewing, never stacking: the armour it grants is tied to the form. The numbers are placeholders.",
     "table": {
      "kind": "ability",
      "on": "machine",
-     "stacks": "Renews: one seal however many shields",
-     "lasts": "Until a vent or a weapon opens it, or the skirmish ends"
+     "stacks": "Renews: one seal however often it seals",
+     "lasts": "Until a weapon it fires opens it, or the skirmish ends"
     }
    }
   },
@@ -1372,6 +1372,26 @@
    }
   },
   {
+   "id": "on_shield_hit",
+   "category": "trigger",
+   "name": "On a hit on its shield",
+   "codex": "Passive trigger. Fires when a foe's blow lands on this machine's shield and puts nothing on its hull; a blow that wounds fires On hull damage alone.",
+   "status": "implemented",
+   "design": {
+    "holes": "The Nemesis's rage, one a hit on its shield (Ryan, 11 November: \"hull damage takes priority\")."
+   }
+  },
+  {
+   "id": "on_blocked",
+   "category": "trigger",
+   "name": "On a blow blocked",
+   "codex": "Passive trigger. Fires once for every blow of this machine's weapons that a living foe's armour or Barrier takes whole, each foe's of an area and each strike's.",
+   "status": "implemented",
+   "design": {
+    "holes": "The Nemesis's rage, two a blow blocked (Ryan, 11 November: per blow, \"that lets it scrap against the comp its supposed to\")."
+   }
+  },
+  {
    "id": "on_kill",
    "category": "trigger",
    "name": "On a kill",
@@ -1795,10 +1815,10 @@
    "id": "roll_again_property",
    "category": "component_property",
    "name": "Rolls again",
-   "codex": "A rule printed on a component (the Nemesis's Knuckle of Fury). Spending it with a stack of the status it names spends one, and the die rolls again, a plain roll as the round opens, itself included, so the machine acts again and the same component may show again: the one roll again that is no reroll. Unlike Rapid nothing switches off: the stacks are the limit.",
+   "codex": "A rule a component may print. Spending it with a stack of the status it names spends one, and the die rolls again, a plain roll as the round opens, itself included, so the machine acts again and the same component may show again: the one roll again that is no reroll. Unlike Rapid nothing switches off: the stacks are the limit. No piece prints it today: the Nemesis's Knuckle of Fury did until 11 November, and its roll again is one direction of its upgrades.",
    "status": "implemented",
    "design": {
-    "holes": "A rule on one carrier, not a keyword, until another piece wants it."
+    "holes": "A rule with no carrier since 11 November (the Nemesis's rework), kept in the engine for its upgrade direction."
    }
   },
   {
@@ -1835,14 +1855,14 @@
    "id": "rage",
    "category": "resource",
    "name": "Rage",
-   "codex": "Machine store, the Nemesis's: a rage for every time it takes hull damage (a blow, a bite of its own, an overheat), up to 5, kept for the skirmish. Its fists spend one when they strike, and the die rolls again. Never decays; no cleanse, Silence or Purge touches it.",
+   "codex": "Machine store, the Nemesis's: a foe's hit on its shield banks one, hull damage two (a blow, a bite of its own, an overheat; a blow that breaks its shield and wounds is hull damage), and every blow of its own weapons that a foe's armour or Barrier takes whole two, up to 10, kept for the skirmish. With five banked its Knuckles of Fury go out charged, unasked: they spend the five and breach. Never decays; no cleanse, Silence or Purge touches it.",
    "status": "implemented",
    "design": {
-    "holes": "Capped at 5 (the passive's stack_status cap).",
+    "holes": "Capped at 10 (the passive's stack_status cap), spent in fives (the Knuckle's charged price). The numbers are placeholders (Ryan, 11 November: \"These numbers are complete randomness anyway\").",
     "table": {
      "kind": "store",
      "on": "machine",
-     "stacks": "Yes: one a hull hit, up to 5; one spent a fist",
+     "stacks": "Yes: one a hit on its shield, two a hull hit or a blow blocked whole, up to 10; five a charged punch",
      "lasts": "The skirmish; never decays"
     }
    }

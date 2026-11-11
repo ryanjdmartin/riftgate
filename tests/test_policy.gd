@@ -1083,12 +1083,14 @@ func _stepper(powers: Array) -> Skirmish:
 	return sk
 
 
-## The seal (the Polar Bear's Lockdown, valued 21 October): a shield a machine with a seal
-## spends on itself is worth the armour it stands behind this round's blows, less its heat.
+## The seal (the Polar Bear's Lockdown, valued 21 October): a buff a machine with a seal spends
+## on itself (its trigger since 11 November) is worth the armour it stands behind this round's
+## blows, less its heat, on top of what the buff grants.
 func test_greedy_values_the_seal_by_the_blows_its_armour_turns() -> void:
 	var pol := Policy.make(Policy.GREEDY)
 	var sk := Skirmish.new(1)
-	var u := _mech("A", Die.of([Face.shield(10), Face.attack(10, L)]), 0, 200)
+	var buff := Face.buff("overcharged", 1)
+	var u := _mech("A", Die.of([buff, Face.attack(10, L)]), 0, 200)
 	u.grant_passive({"id": "test_seal", "name": "Seal", "description": "", "effects": [{"trigger": "static", "effect": "seal_form", "value": 20, "heat": 5}]})
 	sk.add_mech(u)
 	sk.add_foes([_ghoul(500, 30), _ghoul(500, 30)])
@@ -1096,6 +1098,8 @@ func test_greedy_values_the_seal_by_the_blows_its_armour_turns() -> void:
 	sk.start_round()
 	var ms: Skirmish.MechState = sk.mechs[0]
 	assert_true(pol.seal_score(sk, ms) > 0.0, "twenty armour against two blows of thirty is worth the forty it keeps off")
+	var on_self := pol.machine_spend_score(sk, ms, ms, buff)
+	assert_true(absf(on_self - (pol.buff_score(sk, ms, buff) + pol.seal_score(sk, ms))) < 0.001, "spent on itself, the buff is worth what it grants and the seal besides")
 	Effects.stack(u, Effects.sealed_status(20, 5), Effects.SKIRMISH, "seal", 1, Effects.DECAY_NONE)
 	assert_eq(pol.seal_score(sk, ms), 0.0, "and nothing once sealed")
 

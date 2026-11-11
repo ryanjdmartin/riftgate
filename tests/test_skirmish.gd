@@ -1205,6 +1205,38 @@ func test_the_shield_regen_comes_back_each_round_to_the_maximum_sealed_or_not() 
 	assert_eq(m.shield, 6, "the regen runs while sealed")
 
 
+## Shield regen from heat (the Buzzard's Thermal Recoupler as shield regen, Ryan, 11 November: "I
+## would reword its passive to explicitly say it gains shield regen"): the passive adds its value
+## to the regen for every step of heat the machine carries as the round opens, after the cooling,
+## in the regen's one log line, up to the maximum; nothing when it runs cold. Synthetic passive.
+func test_heat_adds_to_the_shield_regen_where_a_passive_says_so() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.attack(1, L)), 20, 100)
+	m.shield_regen = 1
+	m.cooling = 1
+	m.grant_passive({"id": "recoupler", "name": "Recoupler", "description": "", "effects": [
+		{"trigger": "static", "effect": "shield_regen_per_heat", "value": 1, "per_heat": 4}]})
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(500, 0)])
+	sk.begin()
+	var ms := sk.mechs[0]
+	m.shield = 5
+	ms.heat = 10
+	sk.start_round()
+	assert_eq(ms.heat, 9, "the cooling first")
+	assert_eq(Skirmish.shield_regen_of(ms), 3, "its regen of one and two for the nine it carries")
+	assert_eq(m.shield, 8, "three back as the round opens")
+	assert_true("\n".join(sk.log).contains("shield regen: A +3"), "in the regen's one line")
+	assert_eq(Effects.effect_text({"trigger": "static", "effect": "shield_regen_per_heat", "value": 1, "per_heat": 4}), "shield regen +1 for every 4 heat it carries", "its text says it is regen")
+	ms.heat = 0
+	assert_eq(Skirmish.shield_regen_of(ms), 1, "cold, its own regen alone")
+	m.shield = 19
+	ms.heat = 40
+	sk.end_round()
+	sk.start_round()
+	assert_eq(m.shield, 20, "never past the maximum")
+
+
 func test_a_shield_absorbs_its_number_and_the_excess_passes_to_the_hull() -> void:
 	Skirmish.injuries = true   # the rule read here is off in the game since 9 November (the refit pass); the runner resets it
 	# The honest shield (Ryan, 14 October): a shield is its number, never a whole block.
@@ -6382,17 +6414,20 @@ func test_an_attacker_status_condition_reads_the_foe_striking() -> void:
 
 
 ## The form-changing tank (the Polar Bear's Lockdown; Ryan's framework of 15 October, his go 20
-## October): a shield spent on itself seals the machine, one chip carrying the passive's armour;
-## sealed, its own cooling stops and it runs hotter at the end of each turn, before the overheat;
-## a vent or a weapon opens it; a shield on an ally and a debuff (its lures) leave the form
-## alone.
-func test_a_shield_on_itself_seals_the_machine_and_a_vent_or_a_weapon_opens_it() -> void:
+## October; its trigger since the refit pass, Ryan, 11 November: "target equipment at itself to
+## seal. And then the only way to open is with a weapon. Offensive equipment like it's lure remain
+## neutral"): a buff spent on itself seals the machine, one chip carrying the passive's armour;
+## sealed, its own cooling stops and it runs hotter at the end of each turn, before the overheat; a
+## weapon opens it; a buff on an ally, a debuff (its lure) and a shield or a vent, kinds no die is
+## dealt, leave the form alone. Synthetic pieces and passive, so content may move.
+func test_a_buff_on_itself_seals_the_machine_and_a_weapon_opens_it() -> void:
 	var sk := Skirmish.new(1)
-	var shield := Face.shield(20)
+	var buff := Face.buff("overcharged", 1)
 	var vent := Face.from_dict({"kind": "vent", "power": 20})
 	var gun := Face.attack(10, L)
 	var lure := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure", "cryo"], "heat": 5, "cryo": 1})
-	var m := _mech("A", Die.of([shield, vent, gun, lure]), 0, 200)
+	var shield := Face.shield(20)
+	var m := _mech("A", Die.of([buff, vent, gun, lure, shield]), 0, 200)
 	m.cooling = 5
 	m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
 		{"trigger": "static", "effect": "seal_form", "value": 10, "heat": 15}]})
@@ -6405,13 +6440,21 @@ func test_a_shield_on_itself_seals_the_machine_and_a_vent_or_a_weapon_opens_it()
 	var ms := sk.mechs[0]
 	assert_eq(Effects.seal_form(m), {"armour": 10, "heat": 15}, "the passive says what the seal grants")
 	assert_false(Effects.is_sealed(m), "open to begin with")
+	assert_eq(Skirmish.form_change(ms, buff), "seal", "a buff of its own on itself would seal it")
+	assert_eq(Skirmish.form_change(ms, buff, false), "", "the same buff on an ally would not")
+	assert_eq(Skirmish.form_change(ms, shield), "", "nor a shield on itself")
 	ms.face_index = 0
-	assert_true(sk.assign(0, sk.mechs[1]), "a shield on the ally")
+	assert_true(sk.assign(0, sk.mechs[1]), "a buff on the ally")
 	assert_false(Effects.is_sealed(m), "does not seal it")
 	sk.end_round()
 	sk.start_round()
-	ms.face_index = 0
+	ms.face_index = 4
 	assert_true(sk.assign(0, null), "a shield on itself")
+	assert_false(Effects.is_sealed(m), "seals nothing: no die is dealt one since the refit pass")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 0
+	assert_true(sk.assign(0, null), "a buff on itself")
 	assert_true(Effects.is_sealed(m), "seals it")
 	assert_eq(m.armour, 10, "the seal's armour, read through the stat")
 	assert_true("\n".join(sk.log).contains("A seals: armour +10"), "the log says so")
@@ -6430,58 +6473,25 @@ func test_a_shield_on_itself_seals_the_machine_and_a_vent_or_a_weapon_opens_it()
 	sk.start_round()
 	ms.face_index = 1
 	assert_true(sk.assign(0, null), "a vent on itself")
+	assert_true(Effects.is_sealed(m), "opens nothing")
+	assert_eq(ms.heat, 15, "though its 20 come off")
+	sk.end_round()
+	assert_eq(ms.heat, 30, "and the seal's 15 go back on")
+	sk.start_round()
+	ms.face_index = 2
+	assert_eq(Skirmish.form_change(ms, gun), "open", "sealed, a weapon would open it")
+	assert_true(sk.assign(0, sk.front[0]), "a weapon")
 	assert_false(Effects.is_sealed(m), "opens it")
 	assert_eq(m.armour, 0, "the seal's armour goes with it")
-	assert_eq(ms.heat, 15, "the vent's 20 off")
 	assert_true("\n".join(sk.log).contains("A opens"), "the log says so")
 	sk.end_round()
-	assert_eq(ms.heat, 15, "open, nothing more at the turn's end")
+	assert_eq(ms.heat, 28, "open, nothing more at the turn's end, and the Cryo its gun met cooled it 2")
 	sk.start_round()
-	assert_eq(ms.heat, 10, "and its cooling runs again")
+	assert_eq(ms.heat, 23, "and its cooling runs again")
 	ms.face_index = 0
 	assert_true(sk.assign(0, null), "sealed again")
 	assert_true(Effects.is_sealed(m), "one seal, renewed")
 	assert_eq(m.modifiers.filter(func(x): return x.id == "sealed").size(), 1, "one modifier however often it seals")
-	sk.end_round()
-	sk.start_round()
-	ms.face_index = 2
-	assert_true(sk.assign(0, sk.front[0]), "a weapon")
-	assert_false(Effects.is_sealed(m), "opens it too")
-
-
-## The combined entry is a shield and a vent at once (Ryan, 8 November: "The venting shield is both
-## types at once, but the trigger should be atomic based on the current game state. So it would
-## trigger sealing if unsealed, and unsealing if sealed, but not do both in sequence"): spent on
-## itself it seals an open machine and opens a sealed one, whichever way the entry is written (a
-## vent that shields, the Wake Diffuser; a shield that cools, the Sutler's Hoist); on an ally,
-## its vent opens the spender, as any vent does.
-func test_a_cool_and_shield_entry_seals_an_open_machine_and_opens_a_sealed_one() -> void:
-	var diffuser := Face.from_dict({"kind": "vent", "power": 3, "shields": 3})
-	var hoist := Face.from_dict({"kind": "shield", "power": 3, "vents": 2})
-	for entry in [diffuser, hoist]:
-		var sk := Skirmish.new(1)
-		var m := _mech("A", Die.of([entry]), 0, 200)
-		m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
-			{"trigger": "static", "effect": "seal_form", "value": 10, "heat": 15}]})
-		sk.add_mech(m)
-		sk.add_mech(_mech("B", Die.single(Face.attack(10, L)), 0, 100))
-		sk.add_foes([_ghoul(500, 0)])
-		sk.begin()
-		sk.start_round()
-		var kind := "a vent that shields" if entry == diffuser else "a shield that cools"
-		assert_true(sk.assign(0, null), "%s, on itself" % kind)
-		assert_true(Effects.is_sealed(m), "%s seals an open machine" % kind)
-		sk.end_round()
-		sk.start_round()
-		sk.mechs[0].face_index = 0
-		assert_true(sk.assign(0, null), "again, on itself")
-		assert_false(Effects.is_sealed(m), "%s opens a sealed one, never seals it again" % kind)
-		sk.end_round()
-		sk.start_round()
-		Effects.stack(m, Effects.sealed_status(10, 15), Effects.SKIRMISH, "seal", 1, Effects.DECAY_NONE)
-		sk.mechs[0].face_index = 0
-		assert_true(sk.assign(0, sk.mechs[1]), "%s, on the ally" % kind)
-		assert_false(Effects.is_sealed(m), "%s on an ally: its vent opens the spender, as any vent does" % kind)
 
 
 ## A passive's grant scoped to one of its machine's pieces and held while it is sealed (the
@@ -6493,10 +6503,10 @@ func test_a_grant_scoped_to_one_piece_holds_on_it_alone_while_sealed() -> void:
 	var sk := Skirmish.new(1)
 	var lure := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure", "cryo"], "heat": 1, "cryo": 1})
 	lure.component = "test_flinger"
-	var shield := Face.shield(20)
+	var buff := Face.buff("overcharged", 1)
 	var gun := Face.attack(10, I)
 	gun.component = "test_gun"
-	var m := _mech("A", Die.of([lure, shield, gun]), 0, 200)
+	var m := _mech("A", Die.of([lure, buff, gun]), 0, 200)
 	m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
 		{"trigger": "static", "effect": "seal_form", "value": 3, "heat": 3},
 		{"trigger": "static", "effect": "grant_keyword", "value": "cleave", "when": "sealed", "entry": "test_flinger"}]})
@@ -6517,7 +6527,7 @@ func test_a_grant_scoped_to_one_piece_holds_on_it_alone_while_sealed() -> void:
 	sk.end_round()
 	sk.start_round()
 	ms.face_index = 1
-	assert_true(sk.assign(0, null), "a shield on itself")
+	assert_true(sk.assign(0, null), "a buff on itself")
 	assert_true(Effects.is_sealed(m), "seals it")
 	assert_true(Effects.effective_face(m, lure, aim).has(K.CLEAVE), "sealed, the lure gains Spread")
 	assert_false(Effects.effective_face(m, gun, aim).has(K.CLEAVE), "and the gun does not: the grant names its piece")
@@ -7640,6 +7650,126 @@ func _purger() -> Foe:
 	return f
 
 
+## The rage bar's three feeds (the Nemesis's Crucible Capacitor, Ryan, 11 November: "Taking a hit
+## on shield gives 1 rage, hull damage gives 2 rage", "hull damage takes priority, so it would be 2
+## if the shield is broken and hull damaged", and "getting its attacks completely blocked gives 2
+## rage", per blow): a foe's blow its shield takes whole banks one; one that breaks the shield and
+## wounds banks two, never three; one its armour or its own Barrier takes whole banks nothing; up
+## to the cap. Synthetic passive.
+func _crucible(cap: int = 10) -> Dictionary:
+	return {"id": "crucible", "name": "Crucible", "description": "", "effects": [
+		{"trigger": "on_shield_hit", "effect": "stack_status", "value": "rage", "stacks": 1, "cap": cap},
+		{"trigger": "on_hull_damage", "effect": "stack_status", "value": "rage", "stacks": 2, "cap": cap},
+		{"trigger": "on_blocked", "effect": "stack_status", "value": "rage", "stacks": 2, "cap": cap}]}
+
+
+func test_a_hit_on_the_shield_banks_one_and_hull_damage_two_never_both() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.attack(1, L)), 5, 1000)
+	m.grant_passive(_crucible())
+	sk.add_mech(m)
+	var foe := _ghoul(500, 3)
+	sk.add_foes([foe])
+	sk.begin()
+	var ms := sk.mechs[0]
+	sk._damage_mech(ms, 3, foe)
+	assert_eq([m.shield, m.hull], [2, 1000], "the shield takes it whole")
+	assert_eq(Effects.stacks_of(m, "rage"), 1, "a hit on its shield: one")
+	assert_true("\n".join(sk.log).contains("from the hit on its shield"), "the log says why")
+	sk._damage_mech(ms, 3, foe)
+	assert_eq([m.shield, m.hull], [0, 999], "it breaks the shield and wounds")
+	assert_eq(Effects.stacks_of(m, "rage"), 3, "two for the hull, never three: hull first")
+	m.armour = 10
+	sk._damage_mech(ms, 3, foe)
+	assert_eq(Effects.stacks_of(m, "rage"), 3, "its armour takes the blow whole: nothing")
+	m.armour = 0
+	m.shield = 5
+	Effects.grant_buff(m, "barrier", 1, "test", sk.round)
+	sk._damage_mech(ms, 3, foe)
+	assert_eq(Effects.stacks_of(m, "rage"), 3, "its own Barrier takes it: nothing")
+	for k in range(6):
+		sk._damage_mech(ms, 50, foe)
+	assert_eq(Effects.stacks_of(m, "rage"), 10, "never past the cap")
+
+
+## A blow blocked whole, counted a blow (Ryan, 11 November: "I'd do per blow because that lets it
+## scrap against the comp its supposed to"): every blow of its weapon on a living foe that the
+## foe's armour or Barrier takes whole banks two, each foe's of an area and each strike's; a blow
+## that deals anything, a debuff's and one on a felled foe bank nothing. Synthetic passive and pieces.
+func test_every_blow_a_foes_armour_or_barrier_takes_whole_banks_two() -> void:
+	var sk := Skirmish.new(1, 3)
+	var spread := Face.from_dict({"kind": "attack", "reach": "direct", "power": 3, "keywords": ["cleave"], "cleave": 2})
+	var twice := Face.from_dict({"kind": "attack", "reach": "direct", "power": 3, "strikes": 2})
+	var probe := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["shock"]})
+	var m := _mech("A", Die.of([spread, twice, probe]), 40, 200)
+	m.grant_passive(_crucible(20))
+	sk.add_mech(m)
+	var left := _ghoul(500, 0)
+	var mid := _ghoul(500, 0)
+	var right := _ghoul(500, 0)
+	left.armour = 5
+	mid.armour = 5
+	sk.add_foes([left, mid, right])
+	sk.begin()
+	sk.start_round()
+	var ms := sk.mechs[0]
+	ms.face_index = 0
+	assert_true(sk.assign(0, mid), "a spread on the armoured middle")
+	assert_eq(Effects.stacks_of(m, "rage"), 4, "its blow and the armoured one beside it, two each; the bare one took damage")
+	assert_true("\n".join(sk.log).contains("2 blows blocked whole"), "one line for the spend")
+	sk.end_round()
+	sk.start_round()
+	Effects.stack(right, Effects.STATUS["barrier"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	ms.face_index = 1
+	assert_true(sk.assign(0, right), "two strikes on the Barrier")
+	assert_eq(Effects.stacks_of(m, "rage"), 6, "the Barrier takes the first whole, two; the second lands")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 2
+	assert_true(sk.assign(0, left), "a debuff on the armoured foe")
+	assert_eq(Effects.stacks_of(m, "rage"), 6, "equipment blocks nothing")
+
+
+## A charged form on another store than the Muster (the Nemesis's Knuckles, Ryan, 11 November: "its
+## rage is consumed in chunks of 5", "Rage is spent automatically", "consuming rage gives the punch
+## breach"): with the price banked the entry goes out charged, unasked, spends it and fires with
+## Breach, through the foe's armour; short of it, the plain form, the store untouched. The meter
+## reads the chunk. Synthetic piece.
+func test_a_piece_charged_on_rage_spends_five_unasked_and_breaches() -> void:
+	var sk := Skirmish.new(1)
+	var fist := Face.from_dict({"kind": "attack", "reach": "direct", "power": 5, "charged": {"store": "rage", "price": 5, "keywords": ["breach"]}})
+	var m := _mech("A", Die.single(fist), 40, 200)
+	m.grant_passive(_crucible())
+	sk.add_mech(m)
+	var plated := _ghoul(500, 0)
+	plated.armour = 4
+	sk.add_foes([plated])
+	sk.begin()
+	sk.start_round()
+	var ms := sk.mechs[0]
+	assert_eq([fist.charge_store(), fist.charge_price()], ["rage", 5], "the store it draws on and its price")
+	Effects.stack(m, Effects.STATUS["rage"], Effects.SKIRMISH, "test", 4, Effects.DECAY_NONE)
+	assert_false(sk.charge_lands(ms), "four banked: plain")
+	var hp := plated.hp
+	assert_true(sk.assign(0, plated), "the plain punch")
+	assert_eq(hp - plated.hp, 1, "its armour takes four of the five")
+	assert_eq(Effects.stacks_of(m, "rage"), 4, "the store untouched")
+	sk.end_round()
+	sk.start_round()
+	Effects.stack(m, Effects.STATUS["rage"], Effects.SKIRMISH, "test", 3, Effects.DECAY_NONE)
+	assert_true(sk.charge_lands(ms), "seven banked: it goes out charged")
+	assert_true(sk.spend_face(ms).has(K.BREACH), "the charged form breaches")
+	hp = plated.hp
+	assert_true(sk.assign(0, plated), "the charged punch, unasked")
+	assert_eq(hp - plated.hp, 5, "Breach: its armour takes nothing")
+	assert_eq(Effects.stacks_of(m, "rage"), 2, "five spent")
+	assert_true("\n".join(sk.log).contains("spends 5 rage"), "the log says so")
+	assert_true(fist.rule_phrases().any(func(p) -> bool: return str(p).begins_with("5 rage: ")), "its text names the store and the price")
+	var sms := Skirmish.MechState.new()
+	sms.unit = m
+	assert_eq(SkirmishScreen.charge_chunks(sms), {"rage": 5}, "the meter reads the chunk")
+
+
 ## Purge (Ryan, 17 and 21 October; by its number since 2 November; 8 November: "A stack is a
 ## stack, doesn't matter where it came from"): a foe's Purge N takes N stacks of every buff the
 ## machine carries, for good, whatever granted it, a die entry or a passive; an ability is no
@@ -7669,8 +7799,8 @@ func test_a_purge_takes_every_buffs_stacks_and_leaves_the_abilities() -> void:
 	assert_false(Effects.has(u, "overcharged") or Effects.has(u, "braced"), "and nothing comes back")
 	# The seal is the Polar Bear's form, an ability: the purge leaves it, its armour standing.
 	var s2 := Skirmish.new(1, 2)
-	var shield := Face.shield(20)
-	var m := _mech("D", Die.of([shield, Face.attack(10, L)]), 40, 200)
+	var buff := Face.buff("overcharged", 1)
+	var m := _mech("D", Die.of([buff, Face.attack(10, L)]), 40, 200)
 	m.cooling = 5
 	m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
 		{"trigger": "static", "effect": "seal_form", "value": 10, "heat": 15}]})
@@ -7681,13 +7811,13 @@ func test_a_purge_takes_every_buffs_stacks_and_leaves_the_abilities() -> void:
 	s2.start_round()
 	var ms: Skirmish.MechState = s2.mechs[0]
 	ms.face_index = 0
-	assert_true(s2.assign(0, null), "a shield on itself")
+	assert_true(s2.assign(0, null), "a buff on itself")
 	assert_true(Effects.is_sealed(m) and m.armour == 10, "seals it, armour 10")
 	m.shield = 0
 	s2.end_round()
 	assert_true(Effects.is_sealed(m) and m.armour == 10, "the purge left the seal and its armour")
 	assert_eq(m.hull, 200 - 2, "so the blow after it met the plate")
-	assert_true("\n".join(s2.log).contains("purges D ×9, and finds nothing to take"), "the log says the purge found no buff")
+	assert_true("\n".join(s2.log).contains("purges D ×9: Empowered gone"), "the log says the purge took the buff that sealed it, and nothing of the seal")
 	# A kept stack is the passive's own: it stays, and draws no purger.
 	var s3 := Skirmish.new(3, 1)
 	var keeper := _mech("K", Die.single(Face.attack(10, L)), 40, 200)

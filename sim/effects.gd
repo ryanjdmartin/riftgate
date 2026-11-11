@@ -51,9 +51,11 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords", "weapon_cooldown", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords", "weapon_cooldown", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
+	"on_shield_hit": ["stack_status", "add_shield", "vent_heat"],
+	"on_blocked": ["stack_status"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
 	"on_shield_gain": ["vent_heat", "stack_status"],
 	"on_shield_granted": ["vent_heat", "stack_status", "shield_per_ally_heat"],
@@ -96,7 +98,7 @@ const STATUS := {
 	# stack for every hull hit, its own included, for the skirmish (`decay` none overrides a
 	# passive's tick), and an entry that rolls again on it spends one to roll the die again.
 	# A store like the hopper: it does nothing by itself.
-	"rage": {"id": "rage", "name": "Rage", "description": "Banked for the skirmish; an entry that rolls again on rage spends one to roll the die again.", "decay": "none",
+	"rage": {"id": "rage", "name": "Rage", "description": "Banked for the skirmish, up to its cap; a piece charged on rage spends it for its charged form.", "decay": "none",
 		"tags": ["store"], "effects": []},
 	# A foe's fire on a machine (Ryan, 13 October: Burn and Scorch; direct heat retired). Burning
 	# is the player's word on the other body: metal does not burn, it heats, so a stack adds its
@@ -256,7 +258,7 @@ const STATUS := {
 	# with the passive's numbers), renewing, never stacking (Ryan: the granted armour is tied
 	# to the mode). Its own cooling stops and it runs hotter at the end of each turn
 	# (Skirmish); an ally's vent still cools it (Ryan, 20 October: allowed).
-	"sealed": {"id": "sealed", "name": "Sealed", "description": "Sealed: armour up, its own cooling stopped, hotter at the end of each turn. A vent or a weapon opens it.", "decay": "none", "stacking": "renew",
+	"sealed": {"id": "sealed", "name": "Sealed", "description": "Sealed: armour up, its own cooling stopped, hotter at the end of each turn. A weapon it fires opens it.", "decay": "none", "stacking": "renew",
 		"tags": ["ability", "form"], "effects": []},
 	# Cryo (Ryan, 20 October: the Polar Bear's Cryo Flinger, the debuff called Cryo too, marked
 	# for reuse as the healthier way to cool an ally): a foe mark that pays in cooling. Any
@@ -1464,11 +1466,23 @@ static func seal_form(u) -> Dictionary:
 	return {}
 
 
+## The shield regen a machine's heat adds (shield_regen_per_heat, static; the Buzzard's Thermal
+## Recoupler as shield regen since 11 November, Ryan: "I would reword its passive to explicitly say
+## it gains shield regen"): `value` for every `per_heat` it carries as the round opens, read where
+## the regen is, after the cooling, so whatever reads the regen reads this with it.
+static func regen_from_heat(u, heat: int) -> int:
+	var n := 0
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "shield_regen_per_heat":
+			n += int(pair[0].get("value", 0)) * int(pair[1].stacks) * int(heat / maxi(1, int(pair[0].get("per_heat", 10))))
+	return n
+
+
 ## The Sealed status with the seal's own numbers in it: the chip the machine wears while
 ## sealed, carrying the armour as its one effect (the stat pipeline reads it like any add).
 static func sealed_status(armour: int, heat: int) -> Dictionary:
 	var d: Dictionary = STATUS["sealed"].duplicate(true)
-	d["description"] = "Sealed: armour +%d, its own cooling stopped, %d hotter at the end of each turn. A vent or a weapon opens it." % [armour, heat]
+	d["description"] = "Sealed: armour +%d, its own cooling stopped, %d hotter at the end of each turn. A weapon it fires opens it." % [armour, heat]
 	d["effects"] = [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": armour}]
 	return d
 
@@ -1504,6 +1518,21 @@ static func extra_actions(u) -> int:
 ## statuses granted, for the log; shield and vent from it are the caller's to apply.
 static func hull_damaged(u) -> Dictionary:
 	return fire(u, "on_hull_damage")
+
+
+## A foe's blow its shield took with nothing on its hull (on_shield_hit; the Nemesis's rage, Ryan,
+## 11 November: "Taking a hit on shield gives 1 rage, hull damage gives 2", and "hull damage takes
+## priority"): a blow that wounds fires on_hull_damage alone.
+static func shield_hit(u) -> Dictionary:
+	return fire(u, "on_shield_hit")
+
+
+## A blow of the machine's weapon on a foe that the foe's armour or Barrier took whole (on_blocked;
+## the Nemesis's rage, Ryan, 11 November: "getting its attacks completely blocked gives 2 rage",
+## per blow: "every foe hit needs sufficient armour, or multiple barriers, to farm rage from every
+## hit"): fired once a blow.
+static func blow_blocked(u) -> Dictionary:
+	return fire(u, "on_blocked")
 
 
 ## An event on a machine (on_skirmish_start as the fight begins, on_round_start after the
@@ -2248,7 +2277,7 @@ static func effect_text(eff: Dictionary) -> String:
 				body += " %d" % int(eff["number"])   # a numbered grant says its number (the drum's Spread 2)
 		"add_armour_vs_rank": body = "armour +%s against %s-rank blows" % [vs, str(eff.get("rank", "front"))]
 		"keep_status": body = "%s never fades and lasts the battle" % str(STATUS.get(str(v), {}).get("name", str(v)))
-		"seal_form": body = "a shield spent on itself seals it: armour +%s, its own cooling stopped, %s hotter at the end of each turn; a vent or a weapon opens it" % [vs, str(eff.get("heat", 0))]
+		"seal_form": body = "equipment it spends on itself seals it: armour +%s, its own cooling stopped, %s hotter at the end of each turn; a weapon it fires opens it" % [vs, str(eff.get("heat", 0))]
 		"stack_status":
 			var nm := str(STATUS.get(str(v), {}).get("name", str(v)))
 			var k := maxi(1, int(eff.get("stacks", 1)))
@@ -2267,6 +2296,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"multiply_stacks": body = "the stacks it lays ×%s" % vs
 		"free_reroll": body = "%s free reroll%s of this die a round" % [vs, "" if int(v) == 1 else "s"]
 		"shield_per_heat": body = "+%s shield for every %d heat carried" % [vs, int(eff.get("per_heat", 10))]
+		"shield_regen_per_heat": body = "shield regen +%s for every %d heat it carries" % [vs, int(eff.get("per_heat", 10))]
 		"shield_per_ally_heat": body = "the shield grows by %s for every %d heat it carries" % [vs, int(eff.get("per_heat", 10))]
 		"add_shield": body = "+%s shield" % vs
 		"tick_hp": body = "%s damage per stack each turn" % vs
@@ -2291,6 +2321,8 @@ static func effect_text(eff: Dictionary) -> String:
 		"on_injury": lead = "on an injury: "
 		"on_round_start": lead = "at the start of the round: "
 		"on_hull_damage": lead = "on losing hull: "
+		"on_shield_hit": lead = "on a foe's blow its shield takes, none on its hull: "
+		"on_blocked": lead = "on each blow of its weapons a foe's armour or Barrier takes whole: "
 		"on_skirmish_start": lead = "as the fight begins: "
 		"on_shield_gain": lead = "on gaining shield: "
 		"on_shield_granted": lead = "an ally this machine shields: "

@@ -27,13 +27,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1094 tests, 325,124 checks, green on main (10 November, with the boss's hex, the third map list, the Text tab, the side session's work, the shapes reworked on Ryan's play, the second map list, the
-  map session's shapes laid to the rift's row, the passing and the catch at one, and the map
-  playtest list), and 1112 tests, 362,597 checks, green on `ccr-722ca9f0-yj8na3` (11 November, that
-  main with the refit pass's first build, the wall strike by the rating, the trial's regen row,
-  every machine one more move, the field's dials, the goblin's line on its straight knife and wall,
-  the model as content, the formation pass, the elites' and bosses' guess and the Rupture's dial; the
-  map suite now paints fourteen and sixteen deep too, which is most of the checks' rise); one
+- Tests: 1115 tests, 362,618 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
+  with the formation and refit session's branch whole and the music session's landing; Godot
+  4.8-beta2), and 1116 tests, 362,627 checks, green on `ccr-722ca9f0-yj8na3` (11 November, that
+  main with the Rupture's dial and its test); one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
   either map view on 6 November; about four minutes in a cloud session, twenty on a slow one;
   words after `--` run only the files whose names hold one (`-- loot rig`). A cloud
@@ -123,69 +120,29 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4` (a cloud session may not delete
 one). Each merge commit says how its conflicts were settled.
 
-Still working (11 November; every other branch on GitHub is merged): `ccr-722ca9f0-yj8na3`, the
-formation pass and the refit pass's opening (the proposal `docs/formation_proposal.md`, the
-brief `docs/briefs/refit_pass.md` and the briefs it sends machines back to; the curve read's
-`--team`, `--tiers`, `--sizes`, `--domains` and `--ids`, its rounds and stalls; the formation
-pass's reads in `docs/measurements.md`, 9 November, taken before it took main; and the refit
-pass's first build and reads, below: the injury rule off in the game, the model as a what-if
-and a trial, the fight bot's aggressor habit; and in `content/`, all of 10 November on his
-words: every chassis's move, one more; the refit pass's model (the stock dice, a regen by
-chassis, the basics, the drafts and four machines undealt); the goblin's line and the Marsh's;
-thirteen new foes (the Draugr and four flanker lines); the formation pass's patrols and
-formations in place of the old; the elites' and the bosses' numbers, a guess; and the Gate
-Integrity entry's strike). It took main at
-`2d489f7` on 9 November (Ryan: "merge main in here so that you're working on the latest engine
-and changes"): the bible, the measurements, this file and the to-do the conflicts, both sides'
-words kept (the bible's hunters row this branch's and its boss row main's, the measurements'
-sections main's four and then this branch's, the to-do's lines each by the side that moved it),
-and the proposal's tool following the one foe id it named that main renamed (`magma_elemental`).
-It took main again at `e67645f` on 10 November (Ryan: "can you pull main in first? Some
-complimentary side work went in that I want to look at in parallel": the map session's shapes
-laid to the rift's row, no body blocking and the catch at one, the map playtest list, the
-hangar's Text tab, the caches' pictures, the test runner's crash check): the bible, the
-measurements, this file, the to-do, `tests/run_tests.gd` and `tests/test_battle_screen.gd` the
-conflicts, both sides kept (the runner resets the injury switch and counts script errors; each
-side's new screen tests stand; the bible's wall row this branch's strike with main's field
-words, its version above both; the measurements' sections main's and then this branch's by
-date; this file's entries each side's), and the engine merged by itself, the wall strike by the
-rating beside main's walking with no body blocking. Two campaign tests' scene was thinned to
-one patrol: with the strike by rating and the packs walking straight to the wall, the horde
-takes a city gate's whole 200 in the six unopposed phases after a wipe at a quiet start (160
-by head count), so the gate they need standing fell. `docs/vocabulary.md` and
-`docs/campaign_run.md` were made again on the merged tree.
-It took main once more at `fda02f9` that evening (the shapes reworked on his play and the
-hangar's Bench tab, so his map points are answered on the latest map code): the bible's version,
-this file's tests line and the measurements' order the conflicts, both sides kept.
-And again at `a3b48c0` before the re-deal and the formation pass began (Ryan: "Make sure main is
-in here first before you begin": his second map list of 10 November, the stores' cells, the
-BLOCKED tag): the bible (its version above both, v0.509; the three clocks row this branch's,
-the names row main's, the Armoured table row rewritten from content by its tool), this file and
-the to-do the conflicts, both sides kept; `docs/vocabulary.md` made again.
-And at `944cd5e` as the formation pass and the elites' guess closed (his third map list of 10
-November: the rift's five hexes, the order's own undo, the planned route drawn again): the
-bible (its version above both, v0.513; the grid row both sides' sentences, the wall row this
-branch's), this file, the to-do and `sim/save.gd` the conflicts, both sides kept, the save
-versions stacked (a battle's 22, a run's 21, the model's landing and then the rift's five
-hexes with the formation pass's compositions; a quick run's 6 for the compositions).
-And at `5d14088` on 11 November (the boss holding its hex in front of the rift, never
-walking): the bible (v0.514, above both; the grid row main's sentences on the boss's hex set
-into this branch's), this file, the to-do and `sim/save.gd` the conflicts, both sides kept, the
-save versions stacked again (a battle's 23, a run's 22).
-And at `0182acd` later on 11 November (the music session landed: Hold The Line's, Night
-Shift's and The Far Bank's pairs in `art/audio`, the sound table and the soundforge tools):
-the bible's version and this file the conflicts, both sides kept (the bible v0.518, above
-both, main's track rows merging beside this branch's by themselves).
-The bible's file is v0.518, main's v0.508 with this branch's rows, its republish on Ryan's word
-(Pages below).
-Landed 11 November: `ccr-7effd31a-u5z4gw`, the music session (Hold The Line's, Night Shift's and
+Still working (11 November): `ccr-722ca9f0-yj8na3`, the formation and refit session; everything
+it had committed to `4c8dbf1` is on main with `ccr-4d58b054-3lyj0a`, below. Since then, on the
+branch alone: the Rupture meter's dial and the first battle read whole (How things stand; the
+refit brief's section 10). It took
+main at `0182acd` (the music session's landing) and at `ccdc705` on 11 November (Ryan: "merge
+main in and take a look at changes there": the locked pieces' footing, tier one down to the
+basics, the Polar Bear dealt again, the Buzzard's regen, the Nemesis's rage bar, The Far Bank's
+move, the Whip Scorpion's role map): the bible's version (v0.523, above both) and this file the
+conflicts, both sides kept, this file on main's trimmed form. Landed 11 November: `ccr-4d58b054-3lyj0a`, the chassis inventory and the locked pieces'
+footing of 10 November and Ryan's round on the busted machines of 11 November (the Polar Bear
+dealt again, the Buzzard's regen, the Nemesis's rage bar; How things stand), carrying
+`ccr-722ca9f0-yj8na3` whole to `4c8dbf1`, took main (the music session's landing: the bible's
+version, v0.521 above both, and this file the conflicts, both sides kept) and main took it as a
+fast-forward on Ryan's word ("Merge this all to main. I'll move it from there"); it is merged
+and to delete with the rest. The formation and refit session's merges of main before it are in
+its branch's commits. Landed 11 November: `ccr-7effd31a-u5z4gw`, the music session (Hold The Line's, Night Shift's and
 The Far Bank's pairs passed and built into art/audio, How things stand), took main in a merge (the bible, this
 file and the to-do the conflicts: the bible three-way on the v0.469 both files carried, main's
 v0.506 kept whole with the session's track rows over it as v0.507; this file and the to-do on
 main's trimmed form with the session's lines brought to it, the to-do's ticked lines pruned) and
 main took it as a fast-forward on Ryan's word ("I think this is a good spot to ship everything to
-main"), then again with The Far Bank's pair ("Oh I thought far bank was done?"); it is merged and
-to delete with the rest. Landed
+main"), then again with The Far Bank's pair ("Oh I thought far bank was done?") and its move off the
+Marsh's boss into the fights' pool; it is merged and to delete with the rest. Landed
 9 November: `ccr-a0b35006-od22d2`, the Lammergeier's rework (How things stand), on Ryan's word
 ("Merge this into main. Your reads are correct"), main taken as it landed twice (the Polar Bear,
 then every renamed id: the save versions stacked, battles 20, runs 19 and quick runs 4; the
@@ -220,11 +177,45 @@ rerolls row is the long wall's two with the audit's kept rolls.
 Each resumes from its brief; `docs/briefs/README.md`'s table says what each waits on.
 
 - The inventory of 9 November (every chassis, built or briefed, with its state): 24 built, 23 in
-  briefs, three slots open. Of the built, four are back in design from the refit pass (the Polar
-  Bear's seal, the Whip Scorpion whole, the Swallowtail, the Puffin; a brief each), three are
-  unfinished by Ryan's own notes (the Needletail, the Giant Petrel, the Musk Ox) and seventeen
-  stand, six of them read again with the pass's content (the refit brief's section 6). The to-do's
-  roster is grouped by what each waits on, in the order he took (Next, in order, item 1).
+  briefs, three slots open. Of the built, four went back to design with the refit pass and three
+  are there still (the Whip Scorpion whole, the Swallowtail, the Puffin; a brief each), three are
+  unfinished by Ryan's own notes (the Needletail, the Giant Petrel, the Musk Ox) and the rest
+  stand. The to-do's roster is grouped by what each waits on, in the order he took (Next, in
+  order, item 1).
+- Ryan's round on the busted machines, 11 November (`ccr-4d58b054-3lyj0a`): the Polar Bear dealt again,
+  equipment it spends on itself sealing it and a weapon it fires opening it, its lure neutral
+  (his words; the armour kept for his play, a regen seal his first change), the brief retired;
+  the Buzzard's Thermal Recoupler made shield regen, read where every machine's regen is (his
+  word, on its base regen of one). His directions are at each brief's head: the Whip Scorpion's
+  role first, from a role map of the roster; the Swallowtail punted until its niche is carved;
+  the Puffin a heat mover, tier two his lean; and two reworks with briefs of their own, still
+  dealt: the Storm Petrel (shield as it gains heat, after the heat pass) and the Nemesis (a rage
+  bar that breaches, a tank buster). The Ammit's stock wants a Ward piece (the to-do). The holes
+  raised on each are in its brief with his answers of the same day (the Puffin's dump allies
+  only; the Petrel's hook from any source, its zap a piece that spends shield into a blow; the
+  Nemesis's blow on shield and hull two, its rage spent automatically, a Barrier left whole his
+  lean), and the Buzzard is the one to change if it reads too close to the Petrel (the bible's
+  Buzzard row). The Nemesis's rework is built on his answers (the same day): its Crucible
+  Capacitor banks rage from a hit on its shield (1), hull damage (2, hull first) and every blow
+  of its own weapons a foe's armour or Barrier takes whole (2 a blow, his "per blow"), up to 10,
+  and its Knuckles of Fury go out charged on five rage, unasked, and breach (a charged form may
+  now draw on another store than the Muster: `charged.store` and `price`); the roll again is
+  gone from its die, one direction of its upgrades; its rage reads as a meter with a notch at
+  five (`RIFTGATE_RAGE_DEBUG=1` fills it). 1115 tests green.
+- The locked pieces' footing, decided 10 November (the bible's locked row, section 7, and tiers
+  row, section 10; `docs/locked_pieces_proposal.md` holds what follows and the order; nothing
+  built): a locked piece earns its lock as glue for its chassis's identity or as an exclusive,
+  its number even with the kit beside it, a tier-N piece at its machine's level N. A machine
+  holds a level, bought in the hangar, cheap and gated by the Convergence, that lifts its stats
+  and its locked pieces together, with a branch that tweaks a locked piece, never a stat and
+  not the passive (its number may rise with the plain lift); a higher chassis arrives at its level, a wreck keeps it. One ladder of three:
+  tier zero is tier one's power, a basic a plain tier-one piece owned from the start, a machine
+  stocking up to its own tier at one and two; the two meet at the basics' numbers, tier one's
+  coming down (his lean, so the refit's reads stand). Six pieces that are neither glue nor an exclusive yet (the
+  Lance, the Flechette Pod, the Solar Flare Array, the Flakshot Repeater, the Plow, the Harpoon)
+  get a tweak before any cut: Claude's first round and his first answers are the proposal's
+  section 4; open with him there, the Pod's lock and the Dingo's identity. A branch's shape is settled
+  (two directions two steps deep, the second pick the deeper step or the one skipped). Every rework in design sorts its pieces on this footing.
 - Kestrel: ten machines, eight decided, in content and fielded (the bible's Kestrel row; the hub
   `docs/briefs/kestrel_line.md`); the Puffin back in design (`kestrel_puffin.md`). The Magpie (a
   working name, a support engine) and the Snowy Owl (a stealth unit, leaning to Cryo: Ryan,
@@ -242,8 +233,8 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   Polar Bear's move to tier two lands with), the immune one, the mole (its hook later), and the
   shield bash (the shield-basher cut as a unit, a tier-three piece). The Cryo party defence took
   his new direction of 5 November (no free Cryo, a locked piece that detonates it, the Arsenal's
-  frost figure merged in), a first round on it owed. The Polar Bear's seal is back in design
-  (`minerva_polar_bear.md`), the first of the four.
+  frost figure merged in), a first round on it owed. The Polar Bear is dealt again with its new
+  seal trigger (11 November), its play his.
 - Aphelion: the line frame and the Baboon first (the pair that keeps its tier-one deal varied),
   then the jellyfish; the Carrier on its own. Ryan's ideas of 4 November wait on his marks, each
   in its brief: Static, the Barrier and Ward support (the defensive tier one), the Macross
@@ -390,7 +381,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   formation 30, an elite 40; a pack a fight has worn by the share of its heads still standing,
   on his "Your lean for the pack survival is fine"; the pack's panel and the orders board say
   what the gate takes; the rules, the bible's wall row; the wall takes about a tenth more a
-  battle for it, `docs/measurements.md`, and `docs/campaign_run.md` is this branch's run of 10
+  battle for it, `docs/measurements.md`, and `docs/campaign_run.md` the refit session's run of 10
   November, the injury rule off and the strike by rating); breach
   parked ("Let's ignore breach for now, it's useless to evaluate at this junction"); a team Ward
   or a team Barrier "probably ok" where the two cannot be cast back to back, the Swallowtail a
@@ -484,8 +475,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   one to three, the faster on the smaller gauge ("a smaller shield that regens fast, a fatter
   shield that regens slow, some variation of the middle"; the Nemesis and the Buzzard one by
   role); the Stingray cools one; the ten slottable shields and vents are planned drafts nothing
-  deals; the four machines back in design are undealt by `"status": "planned"` on their own
-  entries, their kits still built. Saves from before are refused (the three save versions).
+  deals; the machines back in design are undealt by `"status": "planned"` on their own
+  entries, their kits still built (three since the Polar Bear came back on 11 November). Saves from before are refused (the three save versions).
   The trial's rows are gone but one: SETTINGS → TRIALS → SHIELD REGEN (BUILT, 0, 1, 2, 3), a
   flat regen in place of each chassis's own; `--refit` and `RIFTGATE_REFIT` keep the what-ifs
   that still mean something (regen, cooling, hotter, a price on the Barrier basic). The
@@ -577,7 +568,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   0% to 15% in the Waste, 0% to 5% on the Peak), the boss's first block alone moving it
   little, since that player loses before the boss. Built: a dial, SETTINGS → TRIALS → RUPTURE
   (1X, 1.25X, 1.5X, 2X; `Battle.rupture_trial`, `RIFTGATE_RUPTURE`), the rule unmoved. Open,
-  his (the brief's section 10; the bible's pacing row and section 12, v0.518): whether the
+  his (the brief's section 10; the bible's pacing row and section 12, v0.523): whether the
   count of fights stays flat across tiers, the share's size by tier (Claude's lean if the row
   holds: about five sixths, two thirds and four sevenths, which is his step down at each tier
   in numbers), the stall guard as the cap, and whether the first wave goes on repeating the
@@ -621,7 +612,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   leans are the brief's, for his answers; nothing of the tuning is built. The regen was
   assigned by the gauge's bands alone, which he asked and the brief now says. This session had
   not read the locked pieces' session (`ccr-4d58b054-3lyj0a`, `docs/locked_pieces_proposal.md`,
-  not on main: a machine holds a level, bought, lifting its stats and locked pieces; tier one
+  on main since 11 November: a machine holds a level, bought, lifting its stats and locked pieces; tier one
   comes down to the basics) when it guessed the elites and bosses: the tier-two and tier-three
   reads of 10 November are stock machines that plan will not field, and are tuned no further.
 - **Ryan's play of Phase 2** (9 November, his read of the long wall as built, on the phone): hard
@@ -1091,7 +1082,9 @@ The tasks are the to-do's; this is the index of what waits.
   November: "Full pair for HtL is good to ship"; "Keep 96. I think this is a good spot to ship
   everything to main"; "Oh I thought far bank was done?"), all three built into art/audio by the
   forge's SHIP from their sketches' `ship`: each track's shipped half where it played (Night Shift's
-  map half now at 96, Sound's TEMPO with it; The Far Bank's battle half the shipped track itself),
+  map half now at 96, Sound's TEMPO with it; The Far Bank's battle half the shipped track itself, in
+  the fights' pool since it came off the Marsh's boss, 11 November: "Take far bank off of the boss
+  and add it to the regular pool", so no domain has a boss theme now),
   its new half beside it (`music_hold_the_line_map`, `music_night_shift_battle`, `music_far_bank_map`),
   unplayed until the engine plays a pair (one synchronized stream, the map choosing the track, the
   3 s flip). The rest in a music session of Ryan's own (11 November: "I'll resume the remaining
@@ -1128,7 +1121,9 @@ engine line), since the matrix on file predates everything since 27 October.
 1. **The design sessions, from the briefs** (above): each decision a bible row, each brief
    retired once its decisions are rows and content. The chassis in this order (Ryan, on the
    inventory of 9 November: "Yes, go ahead"), the to-do's roster grouped to match: the locked
-   pieces' footing first (section 12), since every rework designs locked pieces; the four back in
+   pieces' footing first, since every rework designs locked pieces (his direction of 10 November
+   is the bible's locked and tiers rows, `docs/locked_pieces_proposal.md` the detail, and a
+   tweak round on six pieces is with him); the four back in
    design from the refit pass, the Polar Bear, the Whip Scorpion, the Swallowtail, then the
    Puffin after the heat prices; the built but unfinished (the Needletail, the Giant Petrel, the
    Musk Ox) and the gunship; the tier-one fronts (Minerva's lure tank, an Aphelion tier one);
@@ -1162,30 +1157,17 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. The live page is v0.497, dated 9 November (the
-  page's Version 502, published from main at `2d489f7` on Ryan's word, "republish the hangar
-  page and the bible": main's file whole, since the live v0.496 matched `f048e67`'s byte for byte
-  and so needed no merge; it carries the Lammergeier's rework, its row, the Gel's and the
-  reinforcement row's slot-mine lines and the tables). Main's file is v0.508 since The Far Bank's pair shipped (its track row), v0.507 since the music session landed (11 November: its track rows since v0.469, Hold The Line's and Night Shift's pairs passed and shipped, the fills' lean and The Far Bank's pick of the lift, merged three-way on the v0.469 both files carried), unpublished, its republish on Ryan's word ("publish the bible"); v0.506 since the boss's hex landed (its patrol retired, the vortex lower with the wall at the bottom), v0.505 since the third map list landed (the rift's five hexes on the field row, the undo and marks rows), v0.504 with the second map list's rows (the marks row
-  rewritten, the pack, undo, gesture, Fracture, reconstruction and tears rows, the Badger's and
-  the store's) on the shapes' rework's v0.503 and the hangar's Bench tab's v0.502, unpublished; v0.501 since the map
-  playtest list landed (the boss's picture, the scenery under the painting, the tears row's
-  read of 10 November and the hunters' declaration, on the map session's v0.500 and v0.498's
-  Text tab rows: the hangar row's tabs and the shown-text row), unpublished, its republish on
-  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.518, main's v0.508 with the formation and refit
-  session's rows (the hunters row's who-may-hunt and its settled hunting packs, the Foe roles row
-  Decided with the flanker lines, the goblin's
-  lesson, his call on its form and the pusher's yardstick, the recolour row's two rungs that
-  changed their archetype, his calls on each and the Draugr, the scale row's guess for the
-  elites and the bosses with the meter row's and the boss row's lines on it,
-  the wall row's strike by the rating, the kit, shield, triangle, redirection, injury,
-  command-die, Barrier and Ward, Puffin, Whip Scorpion, Polar Bear, Swallowtail and Musk Ox
-  rows' refit lines, section 12's items, and from his second read the move row's 3 to 6, the
-  grid row's and the three clocks row's lines on the depth and the fodder on trial, and from
-  11 November the squad row's first battle, the pacing row's line on the meter's size and
-  section 12's first battle and tier counts),
-  unpublished too. BASE for the next merge is `2d489f7`'s file. The live
-  page may carry rows ahead of main's code while a branch has not landed. Before
+  `docs/design-bible.html` after every change. The live page is v0.521, dated 11 November (the
+  page's Version 503, published from main at `9ebf74b` on Ryan's word, "republish the hangar and
+  the bible": main's file whole, since the live v0.497 matched `2d489f7`'s byte for byte and so
+  needed no merge; it carries everything to 11 November: the formation and refit session's
+  rows, the locked, tiers and basic kit rows, the Polar Bear, Buzzard and Nemesis rows, the music
+  session's track rows, the map lists' and the Bench's). Main's file is v0.522 since The Far Bank
+  joined the fights' pool (its track row and the boss themes' Open row: the Marsh's theme it was,
+  so no domain has one now), unpublished, its republish on Ryan's word; `ccr-722ca9f0-yj8na3`'s
+  file is v0.523, main's with the meter's lines (the pacing, clocks and roster rows, section
+  12's first battle and tier counts), unpublished too.
+  BASE for the next merge is `9ebf74b`'s file. The live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
   this branch's file, THEIRS the saved live source with the tool's wrapper line and its trailing
@@ -1198,8 +1180,14 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 219 (10 November, main's `f49a90f`, on Ryan's word, "Ok merge into main and
-  republish the hangar"): the page with its Bench tab, his working sheet for a machine, the
+  page's Version 220 (11 November, main's `9ebf74b`, on Ryan's word, "republish the hangar and the
+  bible"): the fourteen files that had moved since 219 (the five content files with the refit's
+  model, the formation pass, the Polar Bear's seal, the Buzzard's regen and the Nemesis's rage;
+  `designs.json` and `text.json`; `foes.json`; six rig sidecars, their stock pins following the
+  Halo Projector) and the thirteen new foes' sprites (the four flanker lines and the Draugr), the
+  page itself unchanged; nobody had published since 219, and the live copies match main's after.
+  `edits` and `text` empty, `designs` the two folded ideas. Version 219 (10 November, main's
+  `f49a90f`, on Ryan's word, "Ok merge into main and republish the hangar") was the page with its Bench tab, his working sheet for a machine, the
   second tab (the roster by where each machine stands, one flat sheet a machine; no file and no
   collection of its own, every write an edit of the entry in `edits`, his notes, state and
   upgrade ideas under its `design.bench`), with the three files that had moved since: the

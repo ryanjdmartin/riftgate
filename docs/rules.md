@@ -19,9 +19,9 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 - **Chassis**: hull, shield, shield regen (shield regained as each round opens: one to three
   by chassis, the faster on the smaller gauge), heat maximum, cooling (one at least on every chassis that is dealt), armour, move, size class, one way of moving, hardpoints, fixed components, module
   slots (two; the Clydesdale three) and one passive. Twenty-four chassis from five makers
-  (`content/chassis.json`), four of them back in design and dealt by nothing until their
-  sessions hand them back (the Polar Bear, the Puffin, the Whip Scorpion, the Swallowtail: a
-  chassis whose entry says `"status": "planned"`). A run has four squad slots and starts with three
+  (`content/chassis.json`), three of them back in design and dealt by nothing until their
+  sessions hand them back (the Puffin, the Whip Scorpion, the Swallowtail: a chassis whose entry
+  says `"status": "planned"`). A run has four squad slots and starts with three
   machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
   order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die,
@@ -107,7 +107,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 
 ### The round
 1. Rerolls reset to two (less any a foe drained). Every machine sheds heat by its cooling,
-   then regains its shield regen up to its maximum (a shield gain like any). Every die rolls;
+   then regains its shield regen up to its maximum (a shield gain like any; a passive that adds
+   to the regen by heat, the Buzzard's Thermal Recoupler, reads the heat the cooling left). Every die rolls;
    entries are equally likely. Round-start passives fire, and a store that grants a buff
    grants it for the round (the Honey Badger's hopper its Armoured), before the foes pick.
 2. Every foe picks its move, then its target; both show, exact, before the player acts, its
@@ -142,9 +143,9 @@ every machine is wrecked. There is no round limit.
   unspent die, before or after attacking, and lands on any other entry, never the one
   showing; a copy of it may come up, at the odds its copies give it. Every roll inside the round
   follows the same rule (Rapid's free reroll, the Kite's reset, the Booster, the Uplink, the
-  Reveille Horn), but two, kept on purpose and each saying "itself included" on the die: the
-  Nemesis's Knuckle of Fury rolls again as the round's opening roll does, and the Cassowary's
-  Spin-Up spins every chamber. Double-tap or hold a die to lock it, and again to unlock it; spending
+  Reveille Horn), but two, kept on purpose and each saying "itself included" on the die: an
+  entry that rolls again (no piece prints one today) rolls as the round's opening roll does, and
+  the Cassowary's Spin-Up spins every chamber. Double-tap or hold a die to lock it, and again to unlock it; spending
   unlocks it; locks clear each round.
 - **A stepping die** (the Cassowary's): it never rolls. Each fight opens on a random entry,
   and every roll or reroll steps it to the next entry in order, Rapid's free reroll too; a
@@ -349,9 +350,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   violet for what only a foe does, the red-red for harm (Exposed, a destroyed component), the
   hull's colour for a price in hull, and ink for a shape, a reach or a rule; never the HUD
   colour.
-  A piece that changes its machine's form wears that form's chip: on the Polar Bear, a shield it
-  may spend on itself the seal's while its shell is open, and a weapon or a vent the opening's
-  while it is sealed; the sealed machine wears a shell round it, a burst as it seals or opens.
+  A piece that changes its machine's form wears that form's chip: on the Polar Bear, a buff it
+  may spend on itself the seal's while its shell is open, and a weapon the opening's while it is
+  sealed; the sealed machine wears a shell round it, a burst as it seals or opens.
   A vent on a machine whose vents blast shows the blast beside it (its mark and the blow the
   heat it would take off makes), and read or dragged anywhere but over an ally, every foe the
   blast may land on wears a turning dashed ring with the number it would deal there.
@@ -546,7 +547,7 @@ Honey Badger's Chainsaw Claw, two); a weapon that fires it takes up to its most 
 each adding its bonus to the blow, and spends them (its Bullion Fragmenter fires two at +2),
 the armour they stood for going with them. **Braces**:
 spending it Armours its owner, the stacks it says, an armour point each, until the round's
-end (the Wild Boar's Breaching Plow, two). **Rolls again** (the Nemesis's Knuckle of Fury, on rage): spending it
+end (the Wild Boar's Breaching Plow, two). **Rolls again** (no piece prints it today; the Nemesis's Knuckle of Fury did, and it is one direction of its upgrades): spending it
 with a stack of its status spends one, and the die rolls again, a plain roll as the round
 opens, so the machine acts again and the same entry may show again; nothing switches off,
 the stacks being the limit, and the fight's last blow rolls nothing. **The gather** (the
@@ -577,9 +578,10 @@ weapons wears the star, the die's readout reading the passive's line, and no key
 A **store** is a capped resource a machine fills and spends (the Muster, the rage, the
 hopper, the Cassowary's shot count; the Musk Ox's magazine works the same way), its own kind
 and never a buff: each shows as a row under the heat in the heat bar's shape, by how it fills:
-one that comes in whole units (the hopper's loads, the rage, the magazine's ammo) as separate
+one that comes in whole units (the hopper's loads, the magazine's ammo) as separate
 cells, each with its own border and a hairline of ground between them, the lit ones filled; one that
-fills by degrees (the Muster) as a meter with a notch a charge; the shot count as cells too,
+fills by degrees (the Muster) or is spent in chunks by a charged piece (the rage) as a meter
+with a notch a charge or a chunk, a dragged charged piece's price pending on it; the shot count as cells too,
 its last marked as the shot that counts; and no Silence or Purge touches it, its filling or its use. An **Ability** is a
 unit's own mechanic, the rule it plays by, and never a buff or a debuff, so no Purge, Silence
 or Cleanse touches it; its chip shows its mark cut out of a solid tile, ahead of the unit's
@@ -669,10 +671,15 @@ On a machine:
   a Mine), nor a stun, nor a Purge, so a turned mark feeds no Paradox; the damage
   lands; until the end of the player's next turn. On either side a Ward turns the whole thing
   and stands.
-- **Rage** (store, the Nemesis's): a stack each time it takes hull damage (a blow, a bite
-  of its own, an overheat), up to 5, spent by its fists to roll again; lasts the skirmish,
-  never decays, and nothing cleanses it. It shows as a bar under the heat, in the heat bar's
-  shape, five segments, one lit a stack.
+- **Rage** (store, the Nemesis's): its Crucible Capacitor banks one for each foe's blow its
+  shield takes with nothing on its hull, two for hull damage (a blow, a bite of its own, an
+  overheat; a blow that breaks the shield and wounds is hull damage alone), and two for every
+  blow of its own weapons a foe's armour or Barrier takes whole, each foe's and each strike's
+  (a corpse's and a debuff's never), up to 10. A bite of its own on its shield and a blow its
+  own Barrier or armour takes whole bank nothing. With five banked its Knuckles of Fury go out
+  charged, unasked: they spend the five and fire with Breach, which passes a foe's armour and
+  never its Barrier. Lasts the skirmish, never decays, and nothing cleanses it. It shows as a
+  meter under the heat in its chip's colour, a notch at five.
 - **Hopper** (store, the Honey Badger's): its Ore Hopper puts a load in for each foe a spend
   of its weapons damages, after the blow (a weapon that prints its own number puts that in
   instead), up to four; a weapon that fires
@@ -684,13 +691,13 @@ On a machine:
   their stacks back, off the hopper's own grant and no other). It is a buff like any Armoured:
   it goes at the round's end, and a Purge strips it and leaves the loads, so what a Purge took
   comes back at the machine's next turn and no sooner.
-- **Sealed** (Ability, the Polar Bear's form): a shield it spends on itself seals it: armour +3,
-  its own cooling stopped, 3 heat more at the end of each turn before the overheat, and its Cryo
-  Flinger gains Spread (one foe open, its rank's three sealed); a vent or a weapon opens it; a
-  shield on an ally and equipment leave the form as it is. An entry that
-  is a shield and a vent at once (a vent that shields, a shield that cools) does the one the
-  form calls for, never both: spent on itself it seals an open machine and opens a sealed one;
-  on an ally its vent opens it. An ally's vent still cools it. One seal, however many shields.
+- **Sealed** (Ability, the Polar Bear's form): equipment it spends on itself (a buff dropped on
+  itself) seals it: armour +3, its own cooling stopped, 3 heat more at the end of each turn
+  before the overheat, and its Cryo Flinger gains Spread (one foe open, its rank's three sealed);
+  a weapon it fires opens it. Equipment on an ally and a debuff (the Flinger's lure) leave the
+  form as it is, so the sealed shell lures and stays shut; an ally's buff on it seals nothing. Its
+  heat has one way down while it is sealed, opening, and an overheat leaves it sealed. One seal,
+  however often it seals.
   Its Lockdown also lands its weapons 1 harder on a foe carrying Cryo, open or sealed, read as
   each strike lands: the strike that meets the stacks takes the 1 and its hit spends them, so a
   later strike of the same spend lands plain.
@@ -809,7 +816,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or a
   breaching weapon. Base armour is set by role (a tank 2, a heavy worker 1, the rest 0; the
   Polar Bear, a tank in its sealed form, 1 open and 4 sealed), and
   Armoured adds to it (a brace: a buff, the Breaching Plow, the Siphon) until the
-  round's end, the Polar Bear's seal until a vent or a weapon opens it.
+  round's end, the Polar Bear's seal until a weapon opens it.
   Damage-taken effects apply before armour.
 - The shield is the fight's, as the heat is: full as every fight opens, and nothing returns on
   the map. In a fight it comes from components, modules, passives and the shield regen. Hull

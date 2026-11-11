@@ -186,7 +186,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   design-session briefs (`briefs/`, with a README that says what each waits on), the economy
   pass (`economy_pass.md`), the formation pass (`formation_proposal.md`: its grids landed in `content/factions.json` on
   10 November, re-cut to the roles, and its tool retired with them; kept for the bosses' stat
-  blocks, its section 6, and the flankers' slate and bench, its section 13), the refit pass's brief (`briefs/refit_pass.md`: the resource model Ryan set on 9 November, the formation pass folded into it), the bosses' and elites' slate (`bosses_proposal.md`), the heroes'
+  blocks, its section 6, and the flankers' slate and bench, its section 13), the refit pass's brief (`briefs/refit_pass.md`: the resource model Ryan set on 9 November, the formation pass folded into it), the locked pieces' footing (`locked_pieces_proposal.md`: Ryan's direction of 10 November, glue kept locked and a bought level that lifts the whole machine, waiting on his marks), the bosses' and elites' slate (`bosses_proposal.md`), the heroes'
   pass beyond Final Fantasy (`heroes_proposal.md`), the mechanics audit (`mechanics_audit.md`),
   the skirmish code audit (`skirmish_audit.md`: exceptions, duplicates and dead code, its
   questions and its order of work) and the roster analysis (`roster_analysis.md`, published as a page by
@@ -481,8 +481,8 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # Polar Bear stands with its vents ajar.
 # RIFTGATE_ACT_DEBUG=1 (any skirmish) lights one foe after another as the acting foe is lit in the
 # enemy's turn (its violet glow and breathing corners), a beat each, to judge it running.
-# RIFTGATE_RAGE_DEBUG=1 (any skirmish) plays the rage's roll again over and over on the machine
-# that spends rage: its chip bursts, then its die flips back with the reroll's sound.
+# RIFTGATE_RAGE_DEBUG=1 (any skirmish) fills the rage meter two a beat on the machine that banks
+# rage (the Nemesis) and empties it at its cap: its notch at five and the die's charged mark.
 # RIFTGATE_PREY_DEBUG=1 (any skirmish) keeps the predator sense on: the foes' ground dims and the foes
 # the first ambusher's entry can reach that show no intent on it wear pulsing eyes (with no ambusher
 # on the team, the first machine's, the read forced), to judge it running.

@@ -453,7 +453,7 @@ deal written into `content/`, with the regen by chassis.
   Radiator Sail retired; the Laminar Deflector, the Corona Shield and the Phased Sublimator to
   be made equipment by the component pass (the engine's Cleanse rides only a shield or a vent
   today); the Wake Diffuser, the Oblation Mantle and the Entropy Condenser back in design.
-- **The four machines back in design** are undealt by a status on their own entries
+- **The machines back in design** (four sent, three since the Polar Bear came back on 11 November) are undealt by a status on their own entries
   (`ContentDB.chassis_runnable`): the tender, the harness and the runners skip them, and their
   kits still build, so their sessions and their tests have them.
 - **The injury rule is off in the game** (`Skirmish.injuries`, false): no break in a fight and
@@ -563,7 +563,7 @@ its session hands it back):
 | Machine | What breaks | Its brief |
 |---|---|---|
 | The Whip Scorpion (tier two) | "Its vents blast a random foe for the heat they take off it. Nothing else cools it": no vent to spend, so no guns and no way down; his tabled shapes stood on vents too | `ws_whip_scorpion.md` |
-| The Polar Bear (tier one) | Lockdown seals on a shield it spends on itself and opens on a vent or a weapon: nothing seals it; his kit of 9 November stands, the seal's trigger is the question | `minerva_polar_bear.md` |
+| The Polar Bear (tier one) | Lockdown seals on a shield it spends on itself and opens on a vent or a weapon: nothing seals it; his kit of 9 November stands, the seal's trigger is the question | back on 11 November: equipment it spends on itself seals it, a weapon opens it (the bible's Polar Bear row) |
 | The Puffin (tier one) | a shield escort with no shield to spend; his direction, the one unit that cools its allies | `kestrel_puffin.md` |
 | The Swallowtail (tier three) | the Mooring Screens and the Sutler's Hoist are shields, the Hoist a vent too; with the Horn already to be replaced, three of its four locked pieces are open | `ws_swallowtail.md` |
 
@@ -733,7 +733,10 @@ word:
    over it, so the price pass moves the three together (the heat session's list: the prices on
    every face, the basics included, with the cooling and the gauge).
 6. The four machines' sessions and their order (the Polar Bear first, since Minerva's tier-one
-   front and his own try of 9 November ride on it).
+   front and his own try of 9 November ride on it): the Polar Bear back on 11 November (equipment
+   it spends on itself seals it, a weapon opens it); the Whip Scorpion's role first, the
+   Swallowtail punted until its niche is carved, the Puffin's heat mover after the heat prices
+   (his directions at each brief's head).
 7. The roles (section 4), built 10 November on his words: a role on every rank-and-file unit,
    the strike at the wall by the rating, the goblin's line (a straight knife and the Shield Wall
    at every rung, the Captain in front with his Warcry), the Marsh's (the claw flat, the Draugr,
@@ -933,8 +936,8 @@ is a bench against a wreck. Two bands are left in tier one, the first battle at 
 everything after at four. Unmarked, Claude's lean: a first battle lost, or a maker with no
 tier one the roster lacks, sends the machine left on the tender. One thing it shows about
 content: the choice is as wide as a maker's tier-one line, which today is three for
-Wainwright & Sutler, two for Aphelion and for Kestrel, and one for Minerva, less whatever the
-tender dealt.
+Wainwright & Sutler and two each for Aphelion, Kestrel and Minerva (the Polar Bear dealt
+again since 11 November), less whatever the tender dealt.
 
 **His lean for the first battle, the same day**: "It seems to me like battle one should be
 relatively easy, even considering the party of 3. It's more of an opportunity to gain

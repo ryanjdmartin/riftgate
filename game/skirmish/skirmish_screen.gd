@@ -96,8 +96,9 @@ static var ACT_DEBUG := OS.get_environment("RIFTGATE_ACT_DEBUG") == "1"
 ## machine's shell and its burst follow the model, to judge them running together.
 static var SEAL_DEBUG := OS.get_environment("RIFTGATE_SEAL_DEBUG") == "1"
 var _act_debug_at := 0.0
-## RIFTGATE_RAGE_DEBUG=1: the rage's roll again plays over and over on the machine that
-## spends rage (its chip bursts, its die flips back with the reroll's sound), to judge running.
+## RIFTGATE_RAGE_DEBUG=1: the rage bar fills two a beat on the machine that banks rage (the
+## Nemesis's since 11 November) and empties at its cap, so its notches, the die's charged mark
+## at five and the bar's colour are judged running.
 static var RAGE_DEBUG := OS.get_environment("RIFTGATE_RAGE_DEBUG") == "1"
 ## RIFTGATE_PREY_DEBUG=1: the predator sense stays on, over the foes the first ambusher's entry
 ## showing marks (or, with no ambusher on the team, the first machine's, the read forced), to
@@ -1266,13 +1267,24 @@ func _refresh(save: bool = true) -> void:
 		v.pips = [Effects.stacks_of(ms.unit, "shots"), every] if every > 0 else []
 		# A capped store as a bar under the heat (Ryan, 21 and 22 October: every store a bar;
 		# 10 November: in the heat bar's shape, a segment a stack up to its cap), in its chip's
-		# colour and place.
+		# colour and place. A store a charged piece spends in chunks (the Nemesis's rage, Ryan, 11
+		# November: "a smooth resource bar like the swallowtail") fills as the Muster does, a
+		# notch a chunk, the dragged piece's price pending on it.
 		v.store = []
+		var chunks := charge_chunks(ms)
 		for id in Effects.STATUS.keys():
 			var cap := Effects.store_cap(ms.unit, str(id)) if (Effects.STATUS[id].get("tags", []) as Array).has("store") else 0
-			if cap > 0:
-				v.store = [Effects.banked(ms.unit, str(id)), cap, _chip_colour(str(id)), status_glyph(str(id))]
-				break
+			if cap <= 0:
+				continue
+			var held := Effects.banked(ms.unit, str(id))
+			if chunks.has(str(id)):
+				var after := held
+				if _drag_from == i and sk.charge_lands(ms) and ms.face().charge_store() == str(id):
+					after = maxi(0, held - ms.face().charge_price())
+				v.bars.append([held, cap, _chip_colour(str(id)), after, int(chunks[str(id)])])
+				continue
+			v.store = [held, cap, _chip_colour(str(id)), status_glyph(str(id))]
+			break
 		v.highlight = support.has(ms)
 		v.statuses = []
 		for r in _mech_rows(i):
@@ -1519,10 +1531,22 @@ static func pair_halves() -> Dictionary:
 	return _pair_halves
 
 
+## The stores this machine's charged pieces spend in chunks (the Nemesis's rage since 11 November):
+## store -> its price, the largest when two pieces differ; the Muster draws its own gauge.
+static func charge_chunks(ms: Skirmish.MechState) -> Dictionary:
+	var out := {}
+	if ms == null or ms.unit == null or ms.unit.die == null:
+		return out
+	for f in ms.unit.die.faces:
+		if f != null and not f.charged.is_empty() and f.charge_store() != "muster":
+			out[f.charge_store()] = maxi(int(out.get(f.charge_store(), 0)), f.charge_price())
+	return out
+
+
 ## Whether spending entry `f` changes its machine's form (Ryan, 2 November: "armadillo needs
-## indication when a die face will transform it"): "seal" for a shield it may spend on itself while
-## its shell is open (the Polar Bear's Lockdown seals it so), "unseal" for a vent or a weapon while
-## it is sealed (either opens it), "" for anything else or a machine with no form.
+## indication when a die face will transform it"): "seal" for a buff it may spend on itself while
+## its shell is open (the Polar Bear's Lockdown seals it so), "unseal" for a weapon while it is
+## sealed (it opens it), "" for anything else or a machine with no form.
 static func form_mark(ms: Skirmish.MechState, f: Face) -> String:
 	match Skirmish.form_change(ms, f, f != null and f.targets != Face.Target.ALLY):
 		"seal":
@@ -3943,22 +3967,23 @@ func _roll_again(i: int, status: String) -> void:
 	tw.tween_property(d, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
-## RIFTGATE_RAGE_DEBUG: the roll again's look and sound on the machine that spends rage (the
-## first machine when none does), a stack kept on it so its chip is there to burst. Nothing
-## is spent and the die keeps its face.
+## RIFTGATE_RAGE_DEBUG: the rage bar on the machine that banks rage (the first machine when none
+## does) fills two a beat and empties at its cap, so the bar's notches and the die's charged
+## mark at five are seen to come and go. Nothing is spent by a spend.
 func _rage_debug() -> void:
 	var at := 0
 	for k in range(sk.mechs.size()):
-		for f in sk.mechs[k].die.faces:
-			if f.rolls_again_on == "rage":
-				at = k
+		if Effects.store_cap(sk.mechs[k].unit, "rage") > 0:
+			at = k
 	if sk.mechs.is_empty() or not sk.mechs[at].alive():
 		return
-	if Effects.stacks_of(sk.mechs[at].unit, "rage") < 3:
-		Effects.stack(sk.mechs[at].unit, Effects.STATUS["rage"], Effects.SKIRMISH, "debug", 3, Effects.DECAY_NONE)
-	Effects.spend_stacks(sk.mechs[at].unit, "rage", 1)   # spent as a fist spends it, so the burst is on the stack that went
+	var u := sk.mechs[at].unit
+	var cap := maxi(1, Effects.store_cap(u, "rage"))
+	if Effects.stacks_of(u, "rage") >= cap:
+		Effects.spend_stacks(u, "rage", Effects.stacks_of(u, "rage"))
+	else:
+		Effects.stack(u, Effects.STATUS["rage"], Effects.SKIRMISH, "debug", mini(2, cap - Effects.stacks_of(u, "rage")), Effects.DECAY_NONE)
 	_refresh()
-	_roll_again(at, "rage")
 
 
 ## Live dice that still hold a usable face.

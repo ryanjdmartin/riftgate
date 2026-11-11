@@ -1121,11 +1121,20 @@ func reached_machines(ms: MechState, f: Face) -> Array[MechState]:
 	return out
 
 
-## Can this machine spend its entry charged (the Swallowtail's locked pieces): the entry has a
-## charged form and the Muster holds its price.
+## Can this machine spend its entry charged (the Swallowtail's locked pieces; the Nemesis's
+## Knuckles on its rage since 11 November): the entry has a charged form and its store holds the
+## price.
 func can_charge(ms: MechState) -> bool:
 	var f := ms.face() if ms != null else null
-	return f != null and not f.charged.is_empty() and Effects.muster_charges(ms.unit) >= f.muster_price()
+	return f != null and not f.charged.is_empty() and charge_held(ms, f) >= f.charge_price()
+
+
+## What the entry's charged store holds toward its price: the Muster's charges, or the stacks of
+## any other store (the Nemesis's rage).
+static func charge_held(ms: MechState, f: Face) -> int:
+	if f.charge_store() == "muster":
+		return Effects.muster_charges(ms.unit)
+	return Effects.stacks_of(ms.unit, f.charge_store())
 
 
 ## Whether the entry goes out charged now (Ryan, 22 October: never primed, "it just gets used
@@ -1298,8 +1307,8 @@ func start_round() -> void:
 		ms.assigned = is_swallowed(ms)
 		if not ms.alive():
 			continue
-		# A sealed machine's own cooling stops (the Polar Bear's Lockdown, 20 October); an ally's
-		# vent still cools it.
+		# A sealed machine's own cooling stops (the Polar Bear's Lockdown, 20 October): opening
+		# is its one way down, since no die is dealt a vent.
 		var drop := 0 if Effects.is_sealed(ms.unit) else mini(ms.heat, ms.unit.cooling)
 		if drop > 0:
 			ms.heat -= drop
@@ -1321,10 +1330,11 @@ func start_round() -> void:
 	# cooling returning, as a build-strategy buffer"): every machine regains its shield_regen up
 	# to its maximum, after the cooling and before the round-start passives, a shield gain like
 	# any other (on_shield_gain fires), one log line for all. A sealed machine's regen runs:
-	# nothing stops it, where the seal stops its own cooling.
+	# nothing stops it, where the seal stops its own cooling. What its heat adds to the regen (the
+	# Buzzard's Thermal Recoupler) is read here with it, the heat as the cooling left it.
 	var regened: Array[String] = []
 	for ms in live_mechs():
-		var gained := _gain_shield(ms, ms.unit.shield_regen)
+		var gained := _gain_shield(ms, shield_regen_of(ms))
 		if gained > 0:
 			regened.append("%s +%d" % [ms.unit.display_name, gained])
 	if not regened.is_empty():
@@ -1893,7 +1903,8 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 	var f := ms.face()
 	if f == null:
 		return false
-	var price := f.muster_price()
+	var store := f.charge_store()
+	var price := f.charge_price()
 	var charged := charge_lands(ms)
 	var raw := spend_face(ms)   # the entry as spent, its charged form when a muster pays for it
 	f = raw
@@ -1947,10 +1958,15 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 			ms.assigned = true
 			_check_outcome()
 			return true
-	if charged:
+	if charged and store == "muster":
 		# The muster spent (the Swallowtail's): the charged form's price, a charge a muster.
 		Effects.spend_stacks(ms.unit, "muster", price * maxi(1, int(Effects.muster_rule(ms.unit).get("value", 30))))
 		log.append("%s spends a muster: %s" % [ms.unit.display_name, f.describe()])
+	elif charged:
+		# Another store (the Nemesis's rage, Ryan, 11 November: "its rage is consumed in chunks of
+		# 5", "spent automatically"): its price in stacks, taken as the charged form goes out.
+		Effects.spend_stacks(ms.unit, store, price)
+		log.append("%s spends %d %s: %s" % [ms.unit.display_name, price, str(Effects.STATUS.get(store, {}).get("name", store)).to_lower(), f.describe()])
 	var blasted := false   # a vent that blasted deals damage, for the Sponsorship tally
 	var killed := 0        # the foes a weapon spend or a vent's blast felled, arcs and spills included (a kill trigger, the reset gun)
 	if f.kind != Face.Kind.BLANK and not f.is_weapon():
@@ -2580,6 +2596,12 @@ func _tick_mechs() -> void:
 ## The end of the player's turn, before the overheat (Ryan, 13 October): each machine's
 ## Burning adds its heat, so a vent made room for it or a cleanse took it off; Burning loses a
 ## stack and Scorched goes.
+## A machine's shield regen as the round opens: the stat, and what its heat adds to it (the
+## Buzzard's Thermal Recoupler).
+static func shield_regen_of(ms: MechState) -> int:
+	return maxi(0, ms.unit.shield_regen + Effects.regen_from_heat(ms.unit, ms.heat))
+
+
 ## The heat a sealed machine runs at the end of its turn (the Polar Bear's Lockdown): the
 ## seal's own number, or nothing.
 func seal_heat(ms: MechState) -> int:
@@ -2599,13 +2621,12 @@ func _seal_heat() -> void:
 
 
 ## The form change (the Polar Bear's Lockdown, Ryan's framework of 15 October, his go 20
-## October): a shield spent on itself seals the machine, a vent or a weapon opens it; a shield
-## on an ally and equipment (a buff, a debuff: its lures) leave the form as it is. An entry that
-## is a shield and a vent at once (a vent that shields, the Wake Diffuser; a shield that cools,
-## the Sutler's Hoist) is both, and its trigger one, read off the form as it stands (Ryan, 8
-## November: "it would trigger sealing if unsealed, and unsealing if sealed, but not do both in
-## sequence"). The seal is one chip carrying the passive's armour; the heat clock and the stopped
-## cooling read it.
+## October; its trigger since the refit pass took the shields off the die, Ryan, 11 November:
+## "target equipment at itself to seal. And then the only way to open is with a weapon. Offensive
+## equipment like it's lure remain neutral"): equipment it spends on itself seals the machine, a
+## weapon it fires opens it; equipment on an ally and a debuff (its lures) leave the form as it
+## is, and so does a shield or a vent, kinds no die is dealt. The seal is one chip carrying the
+## passive's armour; the heat clock and the stopped cooling read it.
 func _shift_form(ms: MechState, f: Face, target) -> void:
 	if not ms.alive():
 		return
@@ -2620,14 +2641,15 @@ func _shift_form(ms: MechState, f: Face, target) -> void:
 
 
 ## What a spend does to its machine's form (_shift_form), read off the form as it stands: "seal"
-## for a shield on itself while open, "open" for a vent or a weapon while sealed, "" for nothing;
-## an entry both at once does the one the form calls for. The die's mark reads it too.
+## for a buff spent on itself while open, "open" for a weapon while sealed, "" for nothing. The
+## die's mark reads it too. `on_self` says the spend lands on its own machine: a buff dropped on
+## itself, or one written for itself alone.
 static func form_change(ms: MechState, f: Face, on_self: bool = true) -> String:
 	if ms == null or f == null or Effects.seal_form(ms.unit).is_empty():
 		return ""
 	if Effects.is_sealed(ms.unit):
-		return "open" if f.cools_machine() or (f.is_attack() and f.power > 0) else ""
-	return "seal" if f.shields_machine() and on_self else ""
+		return "open" if f.is_weapon() else ""
+	return "seal" if f.kind == Face.Kind.BUFF and on_self else ""
 
 
 func _burn_mechs() -> void:
@@ -2727,6 +2749,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	var spots: Array = sweep_spots(h.sweep_rank) if sweep else []   # queued as the spend begins (Ryan, 8 November)
 	var aimed := target              # the hit's own foe: the target, or the foe in a shot's column
 	var struck_once := {}            # every foe a blow of the spend has met, for what a foe reads on its first
+	var blocked := 0                 # the weapon's blows a living foe's armour or Barrier took whole (on_blocked)
 	if sweep:
 		h.heat += int(Effects.attack(ms.unit, f, 0, f.heat, target)["heat"])   # a sweep's heat, once, wherever its first shot falls
 	for s in range(maxi(1, f.strikes)):
@@ -2818,6 +2841,8 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				taken = int(landing["taken"])
 				var foe_armoured := int(landing["armoured"])
 				var barred := bool(landing["barred"])
+				if was_alive and not f.is_debuff() and taken == 0 and (barred or foe_armoured > 0):
+					blocked += 1   # a blow its armour or its Barrier took whole, every foe's and every strike's
 				if was_alive and taken > 0 and not damaged.has(foe):
 					damaged.append(foe)
 				var eaten := int(reads.get(foe, [0, 0])[1]) if first else 0   # each foe struck eats its own, on its first blow
@@ -2948,6 +2973,8 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			log.append("%s fills the hopper: +%d (%d)" % [ms.unit.display_name, n, Effects.stacks_of(ms.unit, "hopper")])
 	if not sweep:
 		_after_blow(ms, f, touched, gained, turned)
+	if blocked > 0:
+		_blows_blocked(ms, blocked)
 	# What lands after the blow, and Breach on it, ride a Mine once.
 	for k in [Face.Keyword.SHOCK, Face.Keyword.EXPOSE, Face.Keyword.DISRUPT, Face.Keyword.BREACH]:
 		if f.has(k):
@@ -4357,6 +4384,27 @@ func _hull_damaged(ms: MechState) -> void:
 		log.append("%s: %s from the hit" % [ms.unit.display_name, ", ".join(parts)])
 
 
+## A foe's blow its shield took, nothing of it on the hull (Ryan, 11 November, the Nemesis: "hull
+## damage takes priority"): the on_shield_hit passives fire. A bite of its own and a Barrier's
+## block are no hit on its shield.
+func _shield_hit(ms: MechState) -> void:
+	var parts := _apply(ms, Effects.shield_hit(ms.unit))
+	if not parts.is_empty():
+		log.append("%s: %s from the hit on its shield" % [ms.unit.display_name, ", ".join(parts)])
+
+
+## The blows of a spend that a foe's armour or Barrier took whole (the Nemesis's rage, Ryan, 11
+## November, per blow): the on_blocked passives fire once a blow, one log line for the spend.
+func _blows_blocked(ms: MechState, n: int) -> void:
+	var parts: Array[String] = []
+	for i in range(n):
+		for p in _apply(ms, Effects.blow_blocked(ms.unit)):
+			if not parts.has(p):
+				parts.append(p)
+	if not parts.is_empty():
+		log.append("%s: %s, %d blow%s blocked whole" % [ms.unit.display_name, ", ".join(parts), n, "" if n == 1 else "s"])
+
+
 ## Shocked (the Polar Bear's retaliation, 28 September; built 29 September): the foe that struck
 ## carries one shock, never more, until a weapon's strike aimed at it spends it double. A machine's loop passive
 ## may catch the status like any other.
@@ -4840,6 +4888,8 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 		log.append("%s siphons the blow: +%d heat" % [ms.unit.display_name, siphoned])
 	if int(r["through"]) > 0:
 		_hull_damaged(ms)
+	elif int(r["absorbed"]) > 0:
+		_shield_hit(ms)   # a blow its shield took, none of it on the hull (the Nemesis's rage: hull first)
 	if r["injures"]:
 		# What the injury did rides on the event too: the console says a component was
 		# damaged or destroyed (Jenny's information lines, 8 October).

@@ -770,6 +770,20 @@ func muster_price() -> int:
 	return maxi(1, int(charged.get("muster", 1)))
 
 
+## The store a charged spend draws on (the Nemesis's rage since 11 November, Ryan: "its rage is
+## consumed in chunks of 5"): the Muster unless the draft names another store, a status tagged one.
+func charge_store() -> String:
+	return str(charged.get("store", "muster"))
+
+
+## What a charged spend costs from its store: musters for the Muster (each its rule's points),
+## stacks for any other store (`price`, one unless the draft says more).
+func charge_price() -> int:
+	if charge_store() == "muster":
+		return muster_price()
+	return maxi(1, int(charged.get("price", 1)))
+
+
 ## The entry's costs past heat as its text says them (Ryan, 26 October: Volatile a cost like
 ## heat, and a cost may be shield): the hull a spend bites, the shield it takes first.
 func cost_text() -> String:
@@ -846,7 +860,7 @@ func rule_phrases() -> Array[String]:
 			out.append("its die rolls again")
 	out.append_array(_spin_phrases())
 	if not charged.is_empty():
-		out.append("%s: %s" % ["a muster" if muster_price() == 1 else "%d musters" % muster_price(), charged_form().describe()])
+		out.append("%s: %s" % [charge_cost_text(), charged_form().describe()])
 	return out
 
 
@@ -988,7 +1002,16 @@ func describe() -> String:
 				s += " (+%d heat)" % heat
 			s += cost_text()
 	if not charged.is_empty():
-		# What a muster buys (the Swallowtail's locked pieces): the charged form, after the plain.
+		# What a store buys (a muster, the Swallowtail's locked pieces; rage, the Nemesis's): the
+		# charged form, after the plain.
 		var cf := charged_form()
-		s += " · %s: %s" % ["a muster" if muster_price() == 1 else "%d musters" % muster_price(), cf.describe()]
+		s += " · %s: %s" % [charge_cost_text(), cf.describe()]
 	return s.strip_edges()
+
+
+## What a charged spend costs, as the entry prints it: "a muster" (or "N musters"), or the
+## store's stacks by name ("5 rage").
+func charge_cost_text() -> String:
+	if charge_store() == "muster":
+		return "a muster" if muster_price() == 1 else "%d musters" % muster_price()
+	return "%d %s" % [charge_price(), str(Effects.STATUS.get(charge_store(), {}).get("name", charge_store())).to_lower()]
