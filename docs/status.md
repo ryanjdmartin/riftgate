@@ -1269,28 +1269,22 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. The live page is v0.524, dated 11 November (the
-  page's Version 504, published from main at `60a0e4d` on Ryan's word, "Everything else let's
-  clean up and merge into main first before proceeding": main's file whole, since the live v0.521
-  (Version 503, main's `9ebf74b`) matched that commit's file byte for byte and so needed no merge;
-  it carries everything to 11 November, new since 503 the pairs' row, The Far Bank's track row,
-  the boss themes' Open row and the design test of no extra controls). Main's file is v0.529
-  since `ccr-722ca9f0-yj8na3` landed on 11 November: the pacing row rewritten (the count and the
-  stall guard retired, two beats, the cleared field, ten to thirty minutes, his lean for more
-  spawns), menace a pack's threat rating (the tally row, the sum retired) and the meter's lines
-  with them (the clocks, stall, boss, roster, Anathema and kill rows, section 12's first battle,
-  pacing, menace and tier counts), and v0.533 since the Whip Scorpion's rework and the Clydesdale's
-  review landed the same day (its rows; the hardpoints row: every stock gun its class, a mount's depth
-  by class; the flare row; the Clydesdale's batteries row, its square ports, and the lines it retired), unpublished,
-  its republish on Ryan's word. BASE for the next merge is `60a0e4d`'s file. The live page may carry rows ahead of main's code while a branch has not landed. Before
+  `docs/design-bible.html` after every change. The live page is v0.533, dated 11 November (the
+  page's Version 505, published from main at `d2c024d` on Ryan's word, "Merge in and republish":
+  main's file whole, since the live v0.524 (Version 504, main's `60a0e4d`) matched that commit's
+  file byte for byte and so needed no merge; new since 504 the pacing row in beats of the tide,
+  menace a pack's threat rating and the rows that follow it, the Whip Scorpion's rework, the
+  hardpoints row with every stock gun its class, the Clydesdale's batteries row and its square
+  ports, and Changed Over in the buff table). BASE for the next merge is `d2c024d`'s file. The
+  live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
   this branch's file, THEIRS the saved live source with the tool's wrapper line and its trailing
-  newline and `</body></html>` stripped, so it matches the file byte for byte). A page that size
-  counts as read only once every line of its saved
-  copy is read, so a subagent reads it and publishes the merge. After main merges in, check the
-  tables script's run against the file's tables before keeping it: a row it reverts belongs to a
-  branch not yet landed.
+  newline and `</body></html>` stripped, so it matches the file byte for byte). The tool's read
+  counts as viewing the page, its saved copy needing no whole Read (it said so on 11 November);
+  the saved copy is 666 KB, so a subagent still does the comparing and the merge. After main
+  merges in, check the tables script's run against the file's tables before keeping it: a row it
+  reverts belongs to a branch not yet landed.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
