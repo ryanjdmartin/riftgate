@@ -511,38 +511,78 @@ def clydesdale(b):
     for s in (-1.0, 1.0):
         for y0, y1 in ((-30.0, -9.0), (-6.0, 15.0)):
             b.box(min(s * 18.0, s * 21.5), max(s * 18.0, s * 21.5), y0, y1, 28.0, 44.0, "steel.plate", "ablative")
-    b.box(-13.0, 13.0, -40.0, -36.0, 28.0, 44.0, "steel.vent", "heat_sink")
+    # The heat sink a radiator since 11 November (the breather's exhale glows in it): a vent block
+    # across the tail, its back a frame round a core banked in its heat (heat_glow, near black at
+    # rest) behind seven dark fins, so the heat shows between them.
+    b.box(-13.0, 13.0, -39.0, -36.0, 28.0, 44.0, "steel.vent", "heat_sink")
+    for z0, z1 in ((28.0, 29.0), (43.0, 44.0)):
+        b.box(-13.0, 13.0, -40.0, -39.0, z0, z1, "steel.vent", "heat_sink")
+    for s in (-1.0, 1.0):
+        b.box(min(s * 12.0, s * 13.0), max(s * 12.0, s * 13.0), -40.0, -39.0, 29.0, 43.0, "steel.vent", "heat_sink")
+    b.box(-12.0, 12.0, -39.15, -39.0, 29.0, 43.0, "amber.heat", "heat_glow")
+    for k in range(7):
+        b.box(-12.0, 12.0, -39.9, -39.15, 29.5 + 2.0 * k, 30.5 + 2.0 * k, "steel.dark", "heat_fin")
     b.prism("z", 0.0, -38.0, 52.0, 2.8, 16.0, "steel.dark", 6, "stack")
     raised.__exit__(None, None, None)
 
-    # Idle acts, third pass (Ryan, 4 October: some stilted, turrets too fast and wild, the
-    # weight thrown side to side; heavy, with inertia): curves a part runs on through, the
-    # servos' heft (b.move), held poses that drift, every gun turning slowly and not far with
-    # a pause before it turns back (the builder's rule), and the hooves planted while the
-    # body settles over them (_planted). Degrees and seconds; a key is (t, value) on the
-    # joint's own axis or (t, pitch, yaw, roll); a body key is (t, dx, dy, dz) or (t, dx, dy,
-    # dz, yaw, pitch, roll); a glow key is (t, k), k the light added over rest.
+    # Idle acts, the fourth pass (Ryan, 11 November: its animations "showing their age, honestly",
+    # the idle acts; "Everything else is fine"; of five for the machine as it now stands, "Those all
+    # sound good. Don't need the old ones"): the battery on deck ranging where the head looks, the
+    # battery's drill, a fore hoof pawing, a breath with the heat sink glowing on the exhale, and a
+    # stowed port's hatch checked. At rest the first battery is on deck; Changed Over plays its own
+    # copies for the second (b.act's form), its hatch check on a port of the first, so the acts
+    # always work the battery on deck. Heavy throughout (b.move's heft); every gun turning slowly
+    # and not far with a pause before it turns back (the builder's rule). Degrees and seconds; a
+    # key is (t, value) on the joint's own axis or (t, pitch, yaw, roll); a body key is (t, dx, dy,
+    # dz) or (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k), k the light added over rest.
     limb = lambda leg: {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg]}
-    swivel = {}
-    for n, px, py, up in ports:   # each battery's guns in turn, front to back, each column swinging outboard
-        k = (n - 1) % 4
-        out = 28.0 if px < 0.0 else -28.0
-        t0 = 0.4 + 1.1 * k
-        swivel["turret_%d" % n] = [(t0, 0.0), (t0 + 1.6, out), (t0 + 2.4, out), (t0 + 4.0, 0.0)]
-    b.act("swivel_weapons", 8.4, swivel)
-    b.act("look_around", 6.0, {   # the head sweeps slowly one way, lamps up, then the other, staring
-        "head": [(1.4, -6.0, 26.0, 0.0), (2.4, -7.0, 28.0, 0.0), (3.8, 5.0, -26.0, 0.0), (4.7, 6.0, -28.0, 0.0), (5.8, 0.0, 0.0, 0.0)],
-    }, glow=[(["lamp"], [(0.4, 0.0), (1.0, 6.0), (5.0, 6.0), (5.8, 0.0)])])
-    b.act("stamp", 5.0, {   # the fore-left hoof lifts high and stamps, the body dropping onto it
-        "hip_fl": [(0.9, 26.0), (1.8, 28.0), (2.05, 0.0)],
-        "knee_fl": [(0.9, -44.0), (1.8, -46.0), (2.05, 0.0)],
-        "ankle_fl": [(0.9, 18.0), (1.8, 18.0), (2.05, 0.0)],
-        "head": [(0.9, -8.0, 12.0, 0.0), (2.05, 6.0, 0.0, 0.0), (3.4, 0.0, 0.0, 0.0)],
-    }, body=[(0.9, 0.0, 0.0, 0.8, 0.0, 2.5, 1.0), (1.8, 0.0, 0.0, 0.9, 0.0, 2.8, 1.1), (2.05, 0.0, 0.0, -1.6, 0.0, -2.0, -0.3), (2.6, 0.0, 0.0, 0.2), (3.4, 0.0, 0.0, 0.0)])
-    tracks, body = _planted([limb(leg) for leg in ("fl", "fr", "hl", "hr")],
-                            [(1.6, 0.0, -4.0, 0.0), (3.8, 0.0, -4.5, 0.0), (5.4, 0.0, 0.0, 0.0)])
-    tracks["head"] = [(1.6, -6.0, 0.0, 0.0), (3.8, -7.0, 0.0, 0.0), (5.4, 0.0, 0.0, 0.0)]
-    b.act("settle", 5.8, tracks, body=body)   # the hydraulics let the body down onto its hooves, the head dropping, and heave it up again
+    HEAT = 196.0   # the heat tile's light at its height: near black at rest, #ff7800 under the phone's eased light (the Polar Bear's vents)
+    # The paw: the fore-right hoof (the side the codex's and the skirmish's views see) lifted,
+    # set down ahead toe first and dragged back along the ground, twice, the head dipped to it;
+    # each key the ankle's place (y, z) and the toe's tip (down negative), the hoof's toe at the
+    # ground through each drag and the leg within reach.
+    paw = {"hip_fr": [], "knee_fr": [], "ankle_fr": []}
+    for t, y, z, toe in ((0.3, 19.0, 6.0, 0.0), (0.9, 22.0, 11.5, -15.0), (1.35, 25.0, 8.0, -6.0), (1.55, 24.0, 6.85, -6.0),
+                         (1.85, 19.0, 6.85, -6.0), (2.15, 14.0, 6.85, -6.0), (2.6, 20.0, 11.5, -15.0), (3.05, 25.0, 8.0, -6.0),
+                         (3.25, 24.0, 6.85, -6.0), (3.55, 19.0, 6.85, -6.0), (3.85, 14.0, 6.85, -6.0), (4.4, 19.0, 6.0, 0.0)):
+        a, kn, c = _limb_angles(limb("fr"), (y, z), 0.0)
+        paw["hip_fr"].append((t, round(a, 3)))
+        paw["knee_fr"].append((t, round(kn, 3)))
+        paw["ankle_fr"].append((t, round(c + toe, 3)))
+    paw["head"] = [(0.5, 0.0, 0.0, 0.0), (1.0, -7.0, -10.0, 0.0), (4.4, -7.0, -10.0, 0.0), (5.0, 0.0, 0.0, 0.0)]
+    # The breath: the hydraulics let the body down onto its hooves as it breathes out, the heat
+    # sink flaring, and heave it back up to its rest (no higher: the legs stand near straight).
+    breath, breath_body = _planted([limb(leg) for leg in ("fl", "fr", "hl", "hr")],
+                                   [(0.4, 0.0, 0.0, 0.0), (1.5, 0.0, -3.2, 0.0), (3.3, 0.0, -3.6, 0.0), (4.4, 0.0, 0.0, 0.0)])
+    breath["head"] = [(0.4, 0.0, 0.0, 0.0), (1.6, -6.0, 0.0, 0.0), (3.3, -7.0, 0.0, 0.0), (4.2, 3.0, 0.0, 0.0), (5.0, 0.0, 0.0, 0.0)]
+
+    def idles(guns, hatch, form=None):
+        """The five for the battery on deck, `guns` its ports front to back, and a stowed port
+        `hatch`, as the machine's own acts or, with `form`, as that form's."""
+        # Ranging: the head turns to a bearing, lamps up, and the battery follows its look, the
+        # guns slewing together a beat apart and lifting to a range; then a second bearing on
+        # the other side, a shorter range; then home.
+        ranging = {"head": [(0.4, 0.0, 0.0, 0.0), (1.4, 3.0, 24.0, 0.0), (3.2, 3.0, 24.0, 0.0), (4.6, 2.0, -22.0, 0.0), (6.2, 2.0, -22.0, 0.0), (7.2, 0.0, 0.0, 0.0)]}
+        # The drill: each gun in turn, front to back, lifts and traverses outboard, kicks once
+        # as if it fired, holds and comes home.
+        drill = {}
+        for k, (n, px, py, up) in enumerate(guns):
+            d = 0.1 * k
+            ranging["turret_%d" % n] = [(0.9 + d, 0.0), (2.1 + d, 24.0), (3.6 + d, 24.0), (5.4 + d, -20.0), (6.6 + d, -20.0), (7.6 + d, 0.0)]
+            ranging["elev_%d" % n] = [(1.4 + d, 0.0), (2.4 + d, 10.0), (3.6 + d, 10.0), (5.4 + d, 5.0), (6.6 + d, 5.0), (7.6 + d, 0.0)]
+            t0, out = 0.4 + 1.6 * k, (20.0 if px < 0.0 else -20.0)
+            drill["turret_%d" % n] = [(t0 + 0.2, 0.0), (t0 + 1.0, out), (t0 + 2.2, out), (t0 + 3.0, 0.0)]
+            drill["elev_%d" % n] = [(t0, 0.0), (t0 + 0.8, 16.0), (t0 + 1.35, 16.0), (t0 + 1.41, 26.0), (t0 + 1.75, 16.0), (t0 + 2.3, 16.0), (t0 + 3.1, 0.0)]
+        b.act("ranging", 8.2, ranging, glow=[(["lamp"], [(0.3, 0.0), (0.8, 6.0), (7.0, 6.0), (7.6, 0.0)])], form=form)
+        b.act("battery_drill", 9.0, drill, form=form)
+        b.act("paw", 5.2, paw, form=form)
+        b.act("breather", 5.4, breath, body=breath_body, glow=[(["heat_glow"], [(0.5, 0.0), (1.5, HEAT), (3.0, HEAT), (4.0, 0.2 * HEAT), (4.8, 0.0)])], form=form)
+        # The hatch check: a stowed port's trapdoors crack open, hang a moment and drop shut.
+        b.act("hatch_check", 3.0, {"shutter_%df" % hatch: [(0.4, 0.0), (0.8, 40.0), (1.7, 40.0), (1.84, 0.0)],
+                                   "shutter_%db" % hatch: [(0.45, 0.0), (0.85, -40.0), (1.75, -40.0), (1.89, 0.0)]}, heft=0.12, form=form)
+    idles([p for p in ports if p[3]], 7)   # at rest: the first battery on deck, the second's port 7 checked (the right column, as the views see it)
+    idles([p for p in ports if not p[3]], 2, form="changed_over")   # Changed Over: the second on deck, the first's port 2 checked
+    b.halo = ["heat_glow"]   # the heat sink, hot
     # Movement (Ryan, 4 October, the third pass: stomp and plod, no weight thrown side to
     # side): each hoof planted flat while the body passes over it, then lifted high and
     # stamped down.
@@ -6564,7 +6604,7 @@ def _hatch(b, tag, centre, inner, wall, proud, leaf=0.4, recess=0.25, well=1.25,
         if built_open:
             turn = Matrix.Translation(hinge) @ Matrix.Rotation(math.radians(opens), 4, "X") @ Matrix.Translation(tuple(-v for v in hinge))
         name = "shutter_%s%s" % (tag, end)
-        with b.joint(name, hinge, axis="pitch", limits=(min(0.0, swing), max(0.0, swing))):
+        with b.joint(name, hinge, axis="pitch", limits=(-90.0, 90.0)):   # both ways from either state, so an act can crack a leaf open shut or not (the hatch check)
             y_seam = cy + s * seam / 2.0
             b.box(cx - inner + 0.1, cx + inner - 0.1, min(y_seam, hinge[1]), max(y_seam, hinge[1]), z0, z1, leaf_material, "shutter", transform=turn)
         out.append((name, swing))
