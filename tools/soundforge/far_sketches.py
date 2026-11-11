@@ -327,6 +327,18 @@ PAIR_JOB = (BASS7, SWELL, CHOIR_LIFT, LIFT_DB)
 SETS = []   # the lift settled on the seventh round's pair (Ryan, 6 November: "the half as far, choir level from the full pair is good")
 
 
+def ship(half):
+    """The Far Bank's map half as Ryan passed it (11 November: "Oh I thought far bank was done?"), its eighth round:
+    the seventh round's pair, his pick of the lift, with the plucked string in tune; the pair's own render, from its
+    seed at the map's level, unlimited: what the forge's SHIP builds into art/audio as music_far_bank_map, beside the
+    battle half, which is the shipped track itself (forge.py's music_far_bank)."""
+    if half != "map":
+        raise ValueError("The Far Bank's battle half is the shipped track, music_far_bank")
+    _job, raw = render_seven(PAIR_JOB)
+    (x,) = master_together([raw])
+    return x * 10.0 ** ((MAP_LEVEL - F.mean_level(x)) / 20.0)
+
+
 def main():
     os.makedirs(P.OUT, exist_ok=True)
     jobs = list(dict.fromkeys([PAIR_JOB] + [job for _s, _t, _n, _c, rows in SETS for job, _rt, _rn in rows]))
