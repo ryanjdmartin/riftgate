@@ -3597,11 +3597,14 @@ def _pair_half(module, half):
 # for HtL is good to ship"), hold_sketches.py's twenty-seventh round: the battle half where the track played, the map
 # half beside it. Night Shift's (11 November: "Keep 96. I think this is a good spot to ship everything to main"),
 # night_sketches.py's thirty-fifth round: the map half where the track played, at 96 where MUSIC's recipe runs at 94,
-# the battle half beside it. music_hold_the_line() and music_night_shift() above stay the recipes the pairs build on.
+# the battle half beside it. The Far Bank's (11 November: "Oh I thought far bank was done?"), far_sketches.py's eighth
+# round: its map half beside the battle half, which is the shipped track itself. music_hold_the_line(),
+# music_night_shift() and music_far_bank() above stay the recipes the pairs build on.
 SHIP["music_hold_the_line"] = _pair_half("hold_sketches", "battle")
 SHIP["music_hold_the_line_map"] = _pair_half("hold_sketches", "map")
 SHIP["music_night_shift"] = _pair_half("night_sketches", "map")
 SHIP["music_night_shift_battle"] = _pair_half("night_sketches", "battle")
+SHIP["music_far_bank_map"] = _pair_half("far_sketches", "map")
 
 
 def write_level(x, name, level):
