@@ -237,10 +237,9 @@ func _scroll_rect() -> Rect2:
 	var r := _hex_bounds(field.map.all_hexes())
 	r.position += _origin
 	var t := MapOrient.toward_rift()
-	# Past the rift: the vortex's height with the wall at the bottom, where it stands tall over its
-	# row; with the wall at the left it stands across its hexes, and its far side and one row of
-	# scenery are all the scroll shows behind it.
-	r = r.expand(base(field.map.rift) + t * HEX_SIZE * (2.3 if MapOrient.wall_left else 3.6))
+	# Past the rift: the vortex's far edge, standing over its five hexes in either view, and no
+	# more scenery than that behind it.
+	r = r.expand(base(field.map.rift) + t * HEX_SIZE * (2.3 if MapOrient.wall_left else 2.9))
 	r = r.expand(base(field.map.gate) - t * HEX_SIZE * 2.6)
 	return r
 
@@ -1301,14 +1300,17 @@ func rift_foot(map: BattleMap) -> Vector2i:
 	return foot
 
 
-## How far below its foot hex's centre the vortex's picture ends, in hexes. With the wall at the
-## bottom its foot hex is pointy-top, a whole radius from centre to its lowest point, and the
-## picture ends a little inside it; with the wall at the left the hex is flat-top, 0.87 of a
-## radius from centre to its lower edge, so the same drop hung the roots past the hex into the
-## one below: there it ends as far inside its hex as the other view's does, a little higher
-## (Ryan, 10 November: "wall-left, rift sprite needs to move up a tiny bit").
+## How far below its foot hex's centre the vortex's picture ends, in hexes: so it stands over the
+## rift's five hexes, its home, in either view. With the wall at the left its foot is the lowest of
+## its row's three and the picture is shifted half a hex toward the field (rift_shift), its eye
+## over the middle of the five and the boss beside it. With the wall at the bottom its foot is the
+## middle one and the picture stands a row lower than it did, where it hung up in the scenery past
+## its row until the five were the rift's (Ryan, 10 November: "On wall-bottom, we can move the gate
+## sprite down now that there's a home for it"): it ends at the five's lower edge and its eye stays
+## over the rift's own row, so the boss standing in front of it, whose picture rises toward it in
+## this view, never covers the eye (with the eye over the middle of the five, it did).
 static func rift_drop() -> float:
-	return 0.62 if MapOrient.wall_left else 0.9   # the left view's 0.78 at first, then up again (Ryan, 10 November: "Rift sprite can come up a bit more")
+	return 0.62 if MapOrient.wall_left else 2.56
 
 
 ## How far the vortex's picture stands off its foot hex's middle, in map pixels: with the wall at

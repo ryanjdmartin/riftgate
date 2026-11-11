@@ -27,9 +27,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1094 tests, 325,125 checks, green on main (10 November, with the third map list, the Text tab, the side session's work, the shapes reworked on Ryan's play, the second map list, the
+- Tests: 1094 tests, 325,124 checks, green on main (10 November, with the boss's hex, the third map list, the Text tab, the side session's work, the shapes reworked on Ryan's play, the second map list, the
   map session's shapes laid to the rift's row, the passing and the catch at one, and the map
-  playtest list), and 1111 tests, 362,584 checks, green on `ccr-722ca9f0-yj8na3` (10 November, that
+  playtest list), and 1111 tests, 362,583 checks, green on `ccr-722ca9f0-yj8na3` (11 November, that
   main with the refit pass's first build, the wall strike by the rating, the trial's regen row,
   every machine one more move, the field's dials, the goblin's line on its straight knife and wall,
   the model as content, the formation pass and the elites' and bosses' guess; the
@@ -59,13 +59,14 @@ the music session's, both below.
 `ccr-c71bc17f-hclj2c`, Ryan's map playtest list of 10 November, his answers to it and his second
 and third map lists the same day (How things stand below), cut from main at `aa40832`, landed on
 main as fast-forwards on his word each time ("Ok, merge this into main so I can try it"; "yeah,
-merge into main"; "Ok, merge to main"): the first after taking the map session's main in a merge
+merge into main"; "Ok, merge to main"; "Yeah that will do. Merge into main"): the first after taking
+the map session's main in a merge
 (the shapes laid to the rift's row, no body blocking, the catch at one: the bible, the rules, this
 file and `game/battle/bleed.gd` the conflicts, both sides kept, the bible's version main's plus
-one), the second after taking the shapes' rework (this file the one conflict), the third with main
-unmoved; it is merged and to delete with the rest (the formation and refit session meets its
+one), the second after taking the shapes' rework (this file the one conflict), the third and the
+fourth (the boss's hex) with main unmoved; it is merged and to delete with the rest (the formation and refit session meets its
 edits in `game/battle/battle_map_view.gd`, `game/battle/battle_screen.gd`, `sim/battle.gd`,
-`sim/battle_map.gd`, `sim/save.gd`'s versions (the battle's 21, the run's 20), the bible and these
+`sim/battle_map.gd`, `sim/save.gd`'s versions (the battle's 22, the run's 21), the bible and these
 records when it takes main).
 `ccr-df879779-uf9076`, the side session of 9 and 10 November (How things stand below: the test
 runner's crash check, the caches' pictures, the screen's half of the audit's mirrors, the enemy
@@ -168,7 +169,11 @@ bible (its version above both, v0.513; the grid row both sides' sentences, the w
 branch's), this file, the to-do and `sim/save.gd` the conflicts, both sides kept, the save
 versions stacked (a battle's 22, a run's 21, the model's landing and then the rift's five
 hexes with the formation pass's compositions; a quick run's 6 for the compositions).
-The bible's file is v0.513, main's v0.505 with this branch's rows, its republish on Ryan's word
+And at `5d14088` on 11 November (the boss holding its hex in front of the rift, never
+walking): the bible (v0.514, above both; the grid row main's sentences on the boss's hex set
+into this branch's), this file, the to-do and `sim/save.gd` the conflicts, both sides kept, the
+save versions stacked again (a battle's 23, a run's 22).
+The bible's file is v0.514, main's v0.506 with this branch's rows, its republish on Ryan's word
 (Pages below); and `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
@@ -253,6 +258,16 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
+- **The boss holds its hex** (`ccr-c71bc17f-hclj2c` from main at `944cd5e`, on main the same day on
+  his word, "Yeah that will do. Merge into main"; Ryan, 10 November). The boss stands on the one hex touching both of the rift's front hexes, on its
+  middle line, and never walks ("Put him on the single hex in front of the two new out of play
+  ones"; `Battle.boss_home`): its patrol of 22 September is gone ("I feel like the boss no longer
+  should patrol"), `_patrol_step` and `BOSS_ZONE` with it. Shown first as a still and set aside: the
+  boss on the rift's front hexes, centred across both or on the one in line with the gate ("it
+  looks silly on wall-left no matter what"). With the wall at the bottom the vortex stands a row
+  lower, over its five hexes ("we can move the gate sprite down now that there's a home for it",
+  read as the rift's vortex, nothing having changed at the gate), its eye kept over the rift's own
+  row so the boss in front never covers it. The battle's save is 22 and the run's 21.
 - **Ryan's third map list of 10 November** (`ccr-c71bc17f-hclj2c`, cut from main at `a3b48c0`,
   on main the same day on his word, "Ok, merge to main"; his words in the commit and the bible's
   rows). The bug first: the block that
@@ -1064,13 +1079,13 @@ commands are in `README.md`.
   page's Version 502, published from main at `2d489f7` on Ryan's word, "republish the hangar
   page and the bible": main's file whole, since the live v0.496 matched `f048e67`'s byte for byte
   and so needed no merge; it carries the Lammergeier's rework, its row, the Gel's and the
-  reinforcement row's slot-mine lines and the tables). Main's file is v0.505 since the third map list landed (the rift's five hexes on the field row, the undo and marks rows), v0.504 with the second map list's rows (the marks row
+  reinforcement row's slot-mine lines and the tables). Main's file is v0.506 since the boss's hex landed (its patrol retired, the vortex lower with the wall at the bottom), v0.505 since the third map list landed (the rift's five hexes on the field row, the undo and marks rows), v0.504 with the second map list's rows (the marks row
   rewritten, the pack, undo, gesture, Fracture, reconstruction and tears rows, the Badger's and
   the store's) on the shapes' rework's v0.503 and the hangar's Bench tab's v0.502, unpublished; v0.501 since the map
   playtest list landed (the boss's picture, the scenery under the painting, the tears row's
   read of 10 November and the hunters' declaration, on the map session's v0.500 and v0.498's
   Text tab rows: the hangar row's tabs and the shown-text row), unpublished, its republish on
-  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.513, main's with the formation and refit
+  Ryan's word; `ccr-722ca9f0-yj8na3`'s file is v0.514, main's with the formation and refit
   session's rows (the hunters row's who-may-hunt and its settled hunting packs, the Foe roles row
   Decided with the flanker lines, the goblin's
   lesson, his call on its form and the pusher's yardstick, the recolour row's two rungs that
