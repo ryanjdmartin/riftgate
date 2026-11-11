@@ -1702,7 +1702,7 @@ static func _same_kind(a: Foe, b: Foe) -> bool:
 
 
 ## Reroll the dice named. One die alone, on a machine with a free reroll of its own left
-## (the Clydesdale's Battery Director), spends that instead of the team's; anything else
+## (the Trim Tabs module's), spends that instead of the team's; anything else
 ## spends one of the team's.
 func reroll(mech_indices: Array) -> bool:
 	if state != State.ASSIGN:
@@ -1744,10 +1744,11 @@ func _reroll(mech_indices: Array) -> bool:
 	return true
 
 
-## One die rerolled: never the same entry. A stepping die steps (a reroll is a roll).
+## One die rerolled: never the same entry. A stepping die steps (a reroll is a roll); a folded
+## die (the Clydesdale's) rerolls among its live entries, the battery up and its fixed pieces.
 func _reroll_die(ms: MechState) -> void:
 	_rolled()
-	ms.face_index = _step(ms) if Effects.steps_die(ms.unit) else ms.die.reroll(rng, ms.face_index)
+	ms.face_index = _step(ms) if Effects.steps_die(ms.unit) else ms.die.reroll_among(rng, Effects.live_entries(ms.unit, ms.die), ms.face_index)
 
 
 ## A die rolling (Ryan's wording for the Cassowary, 12 October: "Whenever its die rolls, it
@@ -1760,7 +1761,7 @@ func _roll(ms: MechState) -> int:
 	_rolled()
 	if ms.face_index >= 0 and Effects.steps_die(ms.unit):
 		return _step(ms)
-	return ms.die.roll(rng)
+	return ms.die.roll_among(rng, Effects.live_entries(ms.unit, ms.die))
 
 
 ## The entry after the one showing, past the last back to the first.
@@ -2039,6 +2040,12 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 				# again.
 				_act_again(who, f)
 				log.append("%s rallies %s: its die rolls again, and it acts again" % [ms.unit.display_name, who.unit.display_name])
+			elif f.turns_die:
+				# The Changeover (the Clydesdale's, Ryan, 11 November): its die turns to its other
+				# battery, which stays up from fight to fight; Rapid's free roll lands on it below.
+				if Effects.folds_die(ms.unit) > 0:
+					var raised := Effects.turn_die(ms.unit)
+					log.append("%s changes over: its %s battery is up" % [ms.unit.display_name, "second" if raised else "first"])
 			elif f.action_price > 0 and who != ms:
 				# The Immelmann Booster's ally use (the Giant Petrel's, Ryan's go of 21 October; built
 				# 30 October): on an ally whose die is spent, the team's rerolls pay its price, banked
@@ -3713,18 +3720,20 @@ func _roll_again(ms: MechState) -> void:
 
 
 ## The machine acts again through Rapid's path: the die rolls for free, never onto the entry
-## just spent (a copy of it may come up), a spin over every entry, a stepping die stepping.
+## just spent (a copy of it may come up), a spin over every entry, a stepping die stepping; a folded
+## die among its live entries, so a Changeover's roll lands on the battery it raised.
 func _act_again(ms: MechState, f: Face) -> void:
 	if previewing:
 		ms.assigned = false   # it acts again; the copy's die keeps its entry, a roll never promised
 		return
 	_rolled()
+	var live := Effects.live_entries(ms.unit, ms.die)
 	if f.spins:
-		ms.face_index = ms.die.roll(rng)
+		ms.face_index = ms.die.roll_among(rng, live)
 	elif Effects.steps_die(ms.unit):
 		ms.face_index = _step(ms)
 	else:
-		ms.face_index = ms.die.reroll(rng, ms.face_index)
+		ms.face_index = ms.die.reroll_among(rng, live, ms.face_index)
 	ms.assigned = false
 
 

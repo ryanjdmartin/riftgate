@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 187 implemented, 5 planned, 0 idea.
+Status: 188 implemented, 5 planned, 0 idea.
 
 ## Resource
 
@@ -121,6 +121,7 @@ Status: 187 implemented, 5 planned, 0 idea.
 | **Exposed** | Foe status. In Direct reach of every machine as if its column's front were empty, and its armour counts for nothing, its own and any Armoured. Through the next round; refreshed, never added. | implemented |
 | **Empowered** | Machine status. Each stack is +1 damage on this machine's attacks, flat, so the count is the bonus. At the end of each round it halves, rounded down, whatever granted it, until it is gone. On the Ammit nothing of it fades: its Quintessence Tap keeps every stack for the battle. | implemented |
 | **Sealed** | Ability, the Polar Bear's form. Equipment it spends on itself seals it: armour up by its Lockdown's number, its own cooling stopped, its Cryo Flinger gaining Spread, and it runs hotter at the end of each turn. A weapon it fires opens it; equipment on an ally and a debuff, its lure among them, leave it as it is. No Purge touches it. | implemented |
+| **Changed Over** | Ability, the Clydesdale's batteries. Its second battery is up and its first stowed, so its die rolls the second battery and its Changeover; with no chip, the first battery is up. It stays from fight to fight through a battle, and no Purge touches it. | implemented |
 | **Cryo** | Foe status, the mark the Cryo keyword leaves. Any machine's hit on it with a weapon spends every stack and cools the hitter 2 a stack; equipment spends none. It never fades on its own. | implemented |
 | **Armoured** | Status, on either side. Armour +1 a stack: that much off every blow that reaches it, flat, every stack at once, whatever granted it, so the count is the armour. On a machine (a buff, an armouring component, a passive) it lasts until the round's end and comes off blows on bare hull; on a foe, from its brace, it lasts until its next action. | implemented |
 | **Primed** | Status, on either side. Every blow it lands leaves a stack of Burning per stack of Primed. On a machine, a buff grants it for the rounds it says. On a foe, a stoker's move primes every other foe on the field at its value, and its next move spends it, whatever it is: a foe acting after the stoker spends it this turn, one that has acted carries it to its next move. A machine's Ward turns its Burning away, as it does any rider. | implemented |
@@ -320,6 +321,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Exposed** (implemented): The id is exposure, since exposed names the formation word and the foes' default aim.
 - **Empowered** (implemented): Every grant is one status on the machine and the stacks add up. A halving rule has no duration, so a buff component grants stacks and no rounds. The name is a placeholder.
 - **Sealed** (implemented): One chip, renewing, never stacking: the armour it grants is tied to the form. The numbers are placeholders.
+- **Changed Over** (implemented): A working name and text, Claude's drafts of 11 November for Ryan to rewrite. One chip for the second battery, none for the first.
 - **Cryo** (implemented): Engine id cryoed, since the keyword holds cryo; the player reads Cryo on both.
 - **Armoured** (implemented): The engine id stays braced.
 - **Primed** (implemented): A placeholder name.

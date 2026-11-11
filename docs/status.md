@@ -130,8 +130,11 @@ how deep each class sits (the Polar Bear's port guns deeper and a round rack flu
 perfect for bear"), the renders a round. It took main at `e286f8d` and again at `45b3190` (the
 Whip Scorpion's rework; the bible's version, v0.531 above both, and this file's lines, both sides
 kept) and main took it as a fast-forward on
-Ryan's word ("Clean up and merge in"); the Clydesdale's model is its next, and the hangar's
-republish waits for it so the page goes up once. And `ccr-722ca9f0-yj8na3`, the formation and
+Ryan's word ("Clean up and merge in"). Then the Clydesdale's batteries on his picks ("Checkerboard,
+and the stock split is fine"): its die folded into two batteries of four with a shared Changeover,
+the battery up kept from fight to fight (Changed Over), Battery Director retired, its model eight
+ports in a checkerboard, the brief retired (the bible's Clydesdale row, the to-do's play line),
+1129 tests green; on this branch ahead of main, its landing and the hangar's republish his word. And `ccr-722ca9f0-yj8na3`, the formation and
 refit session. Everything it had committed to `4c8dbf1` went to main with `ccr-4d58b054-3lyj0a`,
 below; its work since landed on Ryan's word of 11 November ("I think it's safe to start sending
 our code here out to main and having me test there in context"), the branch taking main at
@@ -1276,9 +1279,9 @@ commands are in `README.md`.
   stall guard retired, two beats, the cleared field, ten to thirty minutes, his lean for more
   spawns), menace a pack's threat rating (the tally row, the sum retired) and the meter's lines
   with them (the clocks, stall, boss, roster, Anathema and kill rows, section 12's first battle,
-  pacing, menace and tier counts), and v0.531 since the Whip Scorpion's rework and the Clydesdale's
+  pacing, menace and tier counts), and v0.532 since the Whip Scorpion's rework and the Clydesdale's
   review landed the same day (its rows; the hardpoints row: every stock gun its class, a mount's depth
-  by class; the flare row), unpublished,
+  by class; the flare row; the Clydesdale's batteries row and the lines it retired), unpublished,
   its republish on Ryan's word. BASE for the next merge is `60a0e4d`'s file. The live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
@@ -1305,8 +1308,9 @@ commands are in `README.md`.
   for them and `designs.json` for the refit brief; and since the Clydesdale's review landed, the
   seven models rebuilt with their stock guns as classes (their glTFs and rig sidecars, the Polar
   Bear's fits with depths), their renders and `renders.json`, the page's hangar_motion.js (a fit's
-  depth, no hand-built flares), `designs.json` for the Clydesdale's brief, held for the Clydesdale's
-  model so the page goes up once. Version 220 (11 November, main's `9ebf74b`,
+  depth, no hand-built flares), `designs.json` for the Clydesdale's brief and its retirement, the
+  Clydesdale's batteries (its content, its model, its renders with a second-battery view), held for
+  his word. Version 220 (11 November, main's `9ebf74b`,
   on Ryan's word, "republish the hangar and the bible") was the fourteen files that had moved since 219 (the five content files with the refit's
   model, the formation pass, the Polar Bear's seal, the Buzzard's regen and the Nemesis's rage;
   `designs.json` and `text.json`; `foes.json`; six rig sidecars, their stock pins following the

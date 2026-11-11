@@ -148,6 +148,8 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 		Face.Kind.BUFF:
 			if f.act_again:
 				out.append(marked(text_line("effect", "An ally whose die is spent acts again", "attr"), [main, star]))
+			elif f.turns_die:
+				out.append(marked(text_line("effect", "Turns its die to its other battery", "attr"), [main, star]))
 			else:
 				var st: Dictionary = Effects.STATUS.get(f.buff_status, {})
 				var line := [word("Grants %s" % str(st.get("name", f.buff_status))), num("×%d" % f.buff_stacks, f.buff_stacks, base.buff_stacks)]

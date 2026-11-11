@@ -26,7 +26,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
   order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die,
   beside its name in its readout, and down the codex. An empty hardpoint is a blank entry; nothing fills it. A full,
-  undamaged machine is reliable.
+  undamaged machine is reliable. A folded die (the Clydesdale's, below) rolls among some of
+  its entries alone.
 - **Components** come in four kinds, as the die's main mark shows them: a **weapon** deals
   damage and is spent on a foe in its reach; **equipment** is a buff or a debuff and deals
   none, a buff spent on a machine and a debuff on a foe in its reach; a **shield** and a
@@ -139,8 +140,8 @@ every machine is wrecked. There is no round limit.
 ### Dice
 - **Rerolls**: two a round for the team, never banked (Maverick's Playbook, the Giant
   Petrel's passive, below, the one exception). A reroll of one die alone spends that machine's
-  own free reroll first, where it has one left (the Clydesdale's Battery Director, the Trim Tabs
-  module: one a round each, on top of the team's). A reroll rerolls every unlocked,
+  own free reroll first, where it has one left (the Trim Tabs module: one a round, on top of
+  the team's). A reroll rerolls every unlocked,
   unspent die, before or after attacking, and lands on any other entry, never the one
   showing; a copy of it may come up, at the odds its copies give it. Every roll inside the round
   follows the same rule (Rapid's free reroll, the Kite's reset, the Booster, the Uplink, the
@@ -148,6 +149,15 @@ every machine is wrecked. There is no round limit.
   entry that rolls again (no piece prints one today) rolls as the round's opening roll does, and
   the Cassowary's Spin-Up spins every chamber. Double-tap or hold a die to lock it, and again to unlock it; spending
   unlocks it; locks clear each round.
+- **A folded die** (the Clydesdale's Disappearing Carriages): its hardpoints are two batteries
+  of four, one up at a time, and every roll and reroll lands among the battery up and its fixed
+  pieces, the Changeover live on both. The Changeover (Rapid, cooldown 1, spent on itself) turns
+  the die to its other battery, and Rapid's free roll lands there, never on the Changeover, so it
+  turns once a round. The second battery up is its Ability, Changed Over, kept from fight to
+  fight through the battle and gone as the battle ends, so a battle opens on the first; no chip
+  is the first. The codex dims the battery down; on the model the battery down is sunk in the
+  hull under shut irises, the battery up on the deck, and each battery's components take its
+  own mounts in order, so one that shows nowhere leaves its own battery's mount bare.
 - **A stepping die** (the Cassowary's): it never rolls. Each fight opens on a random entry,
   and every roll or reroll steps it to the next entry in order, Rapid's free reroll too; a
   lock holds it. The die shows its next entry in its passive box, its mark and the number it
@@ -467,7 +477,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   Barrier the blow pops is gone already; a Ward turns it away and stands; a Mine's purges every
   foe its blast meets.
 - **Rapid** (any component): the die rerolls free onto any other entry, a copy of the same
-  component included, and the machine acts again, so copies of one Rapid component chain.
+  component included (a folded die among its live entries), and the machine acts again, so
+  copies of one Rapid component chain.
   Rapid carries no cooldown of its own: a Rapid component prints its cooldown (most print one,
   dark for the rest of the round), shown on the die by its clock like any cooldown, or pays
   heat, hull or shield every spend instead. A Rapid component always

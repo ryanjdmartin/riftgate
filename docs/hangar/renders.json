@@ -96,12 +96,16 @@
    }
   },
   "clydesdale": {
-   "when": "The hand-built guns gone, 11 November.",
-   "note": "Ryan, 11 November: “There's no reason to keep hand build guns anywhere”: every stock gun wears its class, as a fitted one does, in its pin's fit, and what it sat in or on stays the chassis's. The lance's rail, collar and emitter went with it: the spine mount on its breech wears the Enfilade Beam's barrel, the right turret the Twin Autoguns' twin barrel, the gimbals the Ankle Mortar's rack and the Howitzer's barrel. Its rework (docs/briefs/ws_clydesdale.md) rebuilds the deck.",
+   "when": "Its batteries, 11 November.",
+   "note": "Ryan, 11 November: “It has two dice, each with 5 sides ... if we put all 8 hardpoints back on its back, flipping dice would cause 4 to retreat into its hull ... and the other 4 to emerge ... the 4 pivoting vertical, then retreating downward vertically”; the checkerboard his pick. Eight ports on the deck in two alternating batteries, each a stripe collar, a bore and an iris, its gun on a drum that lifts, turns and pivots; the first battery up at rest (the Maxigun, the Twin Autoguns and the Enfilade Beam, the Shoring Jack's mount bare), the second (the Ankle Mortar, the Howitzer, the Airburst Shell, the Incendiary Shells) up while it carries Changed Over. The Changeover pivots the battery up upright, sinks it and shuts its irises as the other's open, rise and pivot down, in 1.4 s (RIFTGATE_SEAL_DEBUG=1 turns it constantly, to judge running). Every stock gun its class at 0.62, the hull 3 deeper to stow a battery upright, the bed's boards lower, the stack behind the bed; the turrets, the lance, the gimbals and the cheek mounts gone.",
    "images": [
     {
      "file": "clydesdale/clydesdale_front.png",
-     "alt": "clydesdale, front"
+     "alt": "clydesdale, front, the first battery up"
+    },
+    {
+     "file": "clydesdale/clydesdale_changed_over.png",
+     "alt": "clydesdale, front, the second battery up"
     },
     {
      "file": "clydesdale/clydesdale_rear.png",

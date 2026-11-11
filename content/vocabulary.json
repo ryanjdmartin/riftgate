@@ -633,6 +633,22 @@
    }
   },
   {
+   "id": "changed_over",
+   "category": "status",
+   "name": "Changed Over",
+   "codex": "Ability, the Clydesdale's batteries. Its second battery is up and its first stowed, so its die rolls the second battery and its Changeover; with no chip, the first battery is up. It stays from fight to fight through a battle, and no Purge touches it.",
+   "status": "implemented",
+   "design": {
+    "holes": "A working name and text, Claude's drafts of 11 November for Ryan to rewrite. One chip for the second battery, none for the first.",
+    "table": {
+     "kind": "ability",
+     "on": "machine",
+     "stacks": "Renews: one chip",
+     "lasts": "Until the Changeover turns the die back, or the battle ends"
+    }
+   }
+  },
+  {
    "id": "cryoed",
    "category": "status",
    "name": "Cryo",

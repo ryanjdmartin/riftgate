@@ -42,6 +42,28 @@ func reroll(rng: RandomNumberGenerator, current: int) -> int:
 	return pick if pick < current else pick + 1
 
 
+## A roll among some of its entries alone, each as likely (a folded die's live ones: the
+## Clydesdale's battery up and its fixed pieces); the whole die when the list is empty.
+func roll_among(rng: RandomNumberGenerator, live: Array) -> int:
+	if live.is_empty():
+		return roll(rng)
+	return int(live[rng.randi_range(0, live.size() - 1)])
+
+
+## A reroll among some of its entries alone, by the reroll rule: never onto the entry showing, a
+## copy of it may come up; the whole die's reroll when the list is empty.
+func reroll_among(rng: RandomNumberGenerator, live: Array, current: int) -> int:
+	if live.is_empty():
+		return reroll(rng, current)
+	var others: Array = []
+	for i in live:
+		if int(i) != current:
+			others.append(int(i))
+	if others.is_empty():
+		return current
+	return int(others[rng.randi_range(0, others.size() - 1)])
+
+
 ## Chance of any given face, for the builder's odds display.
 func odds() -> float:
 	return 1.0 / float(maxi(1, faces.size()))
