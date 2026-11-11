@@ -29,8 +29,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   after each.
 - Tests: 1115 tests, 362,618 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
   with the formation and refit session's branch whole and the music session's landing; Godot
-  4.8-beta2), and 1117 tests, 362,664 checks, green on `ccr-722ca9f0-yj8na3` (11 November, that
-  main with the Rupture sized in beats, the elite's chunk and the stall guard's end); one
+  4.8-beta2), and 1118 tests, 362,705 checks, green on `ccr-722ca9f0-yj8na3` (11 November, main
+  at `60a0e4d` with the Rupture sized in beats, the elite's chunk and the stall guard's end); one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
   either map view on 6 November; about four minutes in a cloud session, twenty on a slow one;
   words after `--` run only the files whose names hold one (`-- loot rig`). A cloud
@@ -128,7 +128,9 @@ main at `0182acd` (the music session's landing) and at `ccdc705` on 11 November 
 main in and take a look at changes there": the locked pieces' footing, tier one down to the
 basics, the Polar Bear dealt again, the Buzzard's regen, the Nemesis's rage bar, The Far Bank's
 move, the Whip Scorpion's role map): the bible's version (v0.523, above both) and this file the
-conflicts, both sides kept, this file on main's trimmed form. Landed 11 November: `ccr-4d58b054-3lyj0a`, the chassis inventory and the locked pieces'
+conflicts, both sides kept, this file on main's trimmed form; and at `60a0e4d` the same day
+(the pairs playing in the game, the Buzzard's zap settled with its brief, the Whip Scorpion's
+brief): the bible's version the one conflict (v0.527, above both). Landed 11 November: `ccr-4d58b054-3lyj0a`, the chassis inventory and the locked pieces'
 footing of 10 November and Ryan's round on the busted machines of 11 November (the Polar Bear
 dealt again, the Buzzard's regen, the Nemesis's rage bar; How things stand), carrying
 `ccr-722ca9f0-yj8na3` whole to `4c8dbf1`, took main (the music session's landing: the bible's
@@ -582,7 +584,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   the same day: "I'd hope that the elites menace should match between elites ... probably it
   should be standardized so all domains are equivalent"; Claude's form in the brief, a pack's
   worth its threat rating and a kill its share of its pack, read by the meter, salvage and
-  Anathema alike, nothing built until he marks it; the bible's section 12, v0.526).
+  Anathema alike, nothing built until he marks it; the bible's section 12, v0.527).
 - **One elite, the first battle read whole, and 4-4-2** (Ryan, 11 November, before the restart
   above: "the 3 fractures, with the current rate of fill, felt short to me"; "battle one
   should only serve one elite"; "we restructure the tier list from 3-5-2 to 4-4-2 ... I'll
@@ -1098,19 +1100,24 @@ The tasks are the to-do's; this is the index of what waits.
 - The commander layer, the screens, the economy's verbs and loot (sections 8 and 10).
 - The long wall's view (`git show 68381ff:docs/briefs/long_wall_build.md`, section 7: the two orientations, the
   threat rating's pips, the field scrolled along the wall), on Ryan's word after the hand-back.
-- The pairs in the game (the bible's pair row): Hold The Line's pair passed on its twenty-seventh
-  round, Night Shift's on its thirty-fifth, at 96, and The Far Bank's on its eighth (10 and 11
-  November: "Full pair for HtL is good to ship"; "Keep 96. I think this is a good spot to ship
-  everything to main"; "Oh I thought far bank was done?"), all three built into art/audio by the
-  forge's SHIP from their sketches' `ship`: each track's shipped half where it played (Night Shift's
-  map half now at 96, Sound's TEMPO with it; The Far Bank's battle half the shipped track itself, in
-  the fights' pool since it came off the Marsh's boss, 11 November: "Take far bank off of the boss
-  and add it to the regular pool", so no domain has a boss theme now),
-  its new half beside it (`music_hold_the_line_map`, `music_night_shift_battle`, `music_far_bank_map`),
-  unplayed until the engine plays a pair (one synchronized stream, the map choosing the track, the
-  3 s flip). The rest in a music session of Ryan's own (11 November: "I'll resume the remaining
-  tracks in another session"): the map halves of Full Bore and The Crossing and Low Ground's battle
-  half, each on the pair page at its first round.
+- The pairs in the game (the bible's pair row): Hold The Line's pair passed on its twenty-seventh round,
+  Night Shift's on its thirty-fifth, at 96, and The Far Bank's on its eighth (10 and 11 November: "Full
+  pair for HtL is good to ship"; "Keep 96. I think this is a good spot to ship everything to main"; "Oh
+  I thought far bank was done?"), all three built into art/audio by the forge's SHIP from their
+  sketches' `ship`: each track's shipped half where it played (Night Shift's map half now at 96, Sound's
+  TEMPO with it; The Far Bank's battle half the shipped track itself, in the fights' pool since it came
+  off the Marsh's boss, 11 November: "Take far bank off of the boss and add it to the regular pool", so
+  no domain has a boss theme now), its new half beside it (`music_hold_the_line_map`,
+  `music_night_shift_battle`, `music_far_bank_map`), all six halves played in the game since 11 November
+  (Ryan: "let's pick the track when the battle starts and loop it. The player can change the track in
+  the menu easily. Only put in the three finished ones for now"): each pair one
+  `AudioStreamSynchronized` (`Sound.PAIRS`), a battle picking its pair as it starts (the next of the
+  three after the last battle's, the first at random) and looping it, the field on the map half, a fight
+  flipping to the battle half in place over 3 s from ENGAGE and back on the field, the pause menu
+  changing the pair on the half the screen plays; Low Ground, The Crossing and Full Bore play nowhere
+  until their pairs pass. The rest in a music session of Ryan's own (11 November: "I'll resume the
+  remaining tracks in another session"): the map halves of Full Bore and The Crossing and Low Ground's
+  battle half, each on the pair page at its first round.
 
 ## Next, in order
 
@@ -1185,10 +1192,11 @@ commands are in `README.md`.
   the bible": main's file whole, since the live v0.497 matched `2d489f7`'s byte for byte and so
   needed no merge; it carries everything to 11 November: the formation and refit session's
   rows, the locked, tiers and basic kit rows, the Polar Bear, Buzzard and Nemesis rows, the music
-  session's track rows, the map lists' and the Bench's). Main's file is v0.522 since The Far Bank
+  session's track rows, the map lists' and the Bench's). Main's file is v0.523 since the pairs play in the game (the pair row: a battle
+  picks its pair and loops it), v0.522 since The Far Bank
   joined the fights' pool (its track row and the boss themes' Open row: the Marsh's theme it was,
   so no domain has one now), unpublished, its republish on Ryan's word; `ccr-722ca9f0-yj8na3`'s
-  file is v0.526, main's with the pacing row rewritten (the count and the stall guard retired,
+  file is v0.527, main's with the pacing row rewritten (the count and the stall guard retired,
   two beats, the elite's chunk, the cleared field, ten to thirty minutes) and the meter's lines
   with it (the clocks, tally, boss and roster rows, section 12's first battle, pacing and tier
   counts), unpublished too.

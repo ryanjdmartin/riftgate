@@ -41,9 +41,37 @@ func test_metal_family_and_footfall_names_are_files() -> void:
 	assert_eq(Sound.step_for([]), "step_legged", "no way is legs")
 
 
+## Every pair is two named halves on one timeline (the bible's pair row): one length, one tempo,
+## one bar to wrap to and one title, each half in one pair, so a flip lands on the same beat.
+func test_every_pair_is_two_halves_on_one_timeline() -> void:
+	assert_true(Sound.PAIRS.size() >= 1, "the pool holds a pair")
+	var seen := {}
+	for pair in Sound.PAIRS:
+		assert_eq(pair.size(), 2, "a pair is a map half and a battle half")
+		for half in pair:
+			assert_true(Sound.NAMES.has(half), "%s is a named loop" % half)
+			assert_true(Sound.TEMPO.has(half), "%s has a tempo" % half)
+			assert_false(Sound.title(half).is_empty(), "%s has its track's title" % half)
+			assert_false(seen.has(half), "%s is in one pair" % half)
+			seen[half] = true
+		var a: AudioStream = load(Sound.DIR + str(pair[0]) + ".wav")
+		var b: AudioStream = load(Sound.DIR + str(pair[1]) + ".wav")
+		assert_true(a != null and b != null, "%s's halves load" % pair[1])
+		if a != null and b != null:
+			assert_true(absf(a.get_length() - b.get_length()) < 0.001, "%s's halves are one length" % pair[1])
+		assert_eq(Sound.TEMPO.get(pair[0]), Sound.TEMPO.get(pair[1]), "%s's halves keep one tempo" % pair[1])
+		assert_eq(int(Sound.LOOP_FROM.get(pair[0], 0)), int(Sound.LOOP_FROM.get(pair[1], 0)), "%s's halves wrap to one bar" % pair[1])
+		assert_eq(Sound.title(pair[0]), Sound.title(pair[1]), "%s's halves share a title" % pair[1])
+		assert_eq(Sound.label(pair[0]), Sound.label(pair[1]), "%s's halves share a label" % pair[1])
+	assert_eq(Sound.HALVES.size(), 2, "the field and a fight each play a half")
+	for screen in Sound.HALVES:
+		assert_true([0, 1].has(int(Sound.HALVES[screen])), "%s plays a half of the pair" % screen)
+		assert_false(Sound.SETS.has(screen), "%s plays the battle's pair, not a set" % screen)
+
+
 func test_every_set_names_known_loops() -> void:
-	for picked in Sound.PICK:
-		assert_true(Sound.SETS.has(picked), "picking set %s is a set" % picked)
+	var not_boss: Array = Sound.SETS.keys().filter(func(k: Variant) -> bool: return not str(k).begins_with("boss_"))
+	assert_eq(not_boss, [], "every set is a boss theme: the field and a fight play the battle's pair")
 	for set_name in Sound.SETS:
 		assert_true(Sound.SETS[set_name].size() >= 1, "set %s has a loop" % set_name)
 		for loop in Sound.SETS[set_name]:
@@ -75,10 +103,9 @@ func test_boss_sets_name_a_family_and_wrap_into_their_groove() -> void:
 		assert_true(db.factions.has(fac), "boss set %s names a family in content" % set_name)
 		assert_eq(Sound.SETS[set_name].size(), 1, "a boss theme is one loop, looped for the whole fight")
 		assert_eq(Sound.boss_set(fac), set_name, "boss_set finds it")
-		assert_false(Sound.PICK.has(set_name), "a boss set never picks")
-	# No family has a theme since The Far Bank joined the skirmish's pick (Ryan, 11 November), so
-	# every boss fight takes the skirmish's pick until one is written (the to-do's boss themes).
-	assert_eq(Sound.boss_set("not_a_family"), "", "a family without a theme has no set: the fight takes the skirmish's pick")
+	# No family has a theme since The Far Bank joined the pool (Ryan, 11 November), so every boss
+	# fight flips the battle's pair like any fight until one is written (the to-do's boss themes).
+	assert_eq(Sound.boss_set("not_a_family"), "", "a family without a theme has no set: the fight flips the battle's pair")
 	for loop in Sound.LOOP_FROM:
 		assert_true(Sound.NAMES.has(loop), "%s wraps to a bar: it is a named loop" % loop)
 		assert_true(Sound.TEMPO.has(loop), "%s has a tempo to turn bars into seconds" % loop)
@@ -95,6 +122,7 @@ func test_headless_calls_are_no_ops() -> void:
 	assert_eq(Sound._node, null, "no node is made without a display")
 	assert_eq(Sound.track(), "", "nothing plays without a display")
 	assert_eq(Sound.set_playing(), "", "no set plays without a display")
+	assert_false(Sound.can_skip(), "and the menu has nothing to skip to")
 
 
 func test_volume_knobs_are_settings() -> void:

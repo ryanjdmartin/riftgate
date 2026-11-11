@@ -1510,6 +1510,7 @@ func _play_handover(group: Array, screen: SkirmishScreen) -> void:
 	scrim.modulate = Color(1, 1, 1, 0)
 	add_child(scrim)
 	Sound.play("engage")
+	Sound.music(screen.music_set)   # the pair flips to the fight's half from ENGAGE, in place (a boss theme already playing carries on)
 	if not battle.boss_fight:   # the boss has its reveal and its own line
 		Sound.say("engage")
 	var tw := create_tween().set_parallel(true)
