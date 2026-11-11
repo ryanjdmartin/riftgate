@@ -1168,11 +1168,54 @@ stakes); the Cockatrice (its Stone is the Whisker Cat's question again, and cost
 the Zombie Knight (the Dullahan's own question, and a wall alone); three Needlers (28% of a
 lone machine's hull).
 
+**Menace, standardized: his question of 11 November, Claude's form for his marks** (nothing
+built). His words: "I'd hope that the elites menace should match between elites, since they
+should all be the same difficulty. I assume this means that your menace is empirically
+calculated, when probably it should be standardized so all domains are equivalent, yes?"
+Menace is calculated from each foe's own numbers and assigned to none: its heaviest blow
+(damage by strikes, a breach one more) and a quarter of its hit points, summed over a pack.
+So it moves with every stat block: an elite's pack is 22 to 49 at tier one, a formation 34 in
+the Marsh and 54 on the Peak, a lone patrol a sixth of a formation on the Peak and a quarter
+in the Waste. The Rupture meter is level already, sized from each domain's own tide with an
+elite's fall a set chunk. Salvage and Anathema are not: they count the raw sum, so the same
+first battle is 191 menace on the Peak and 123 in the Marsh before its boss, half again as
+much; and inside a domain the flank's share of the meter is its stat blocks'.
+
+The form: a pack's worth is its threat rating, his number, which already says how many
+machines it is for and how hard it strikes the wall.
+
+| The pack | Its worth |
+|---|---|
+| A lone patrol | 1 |
+| A heavier patrol, a pair or a hunting pack | 2 |
+| A formation | 3 |
+| An elite | 4.5, his formation and a half (its rating is 4) |
+
+A kill pays its share of its pack's worth by its own menace inside the pack, so a kill is
+still a kill however a fight ends and a Treant weighs more than a Goblin. The meter, salvage
+and Anathema all read it, so an elite is worth the same whichever came and wherever it is
+counted, and a domain's kills are worth what another's are. What it leaves as it is: a first
+battle's ask, both formations, the elite and three of the four lone patrols in every domain
+(13.5 of the rating: 9 of the field's 10 and the elite's 4.5). What it moves: a lone patrol
+is a third of a formation everywhere and a hunting pack two thirds, so the flanks count for
+more; a summons or a split pays nothing past its pack's worth, where each of a Gel's halves
+and a Ghost's raised Revenants is a kill today; and salvage's rate is set again so a battle
+banks about what it banked.
+
+Its holes, his: whether the worth rises with the tier (Claude's lean: flat, since the meter
+is in beats and salvage's growth is the economy pass's to say as a number of its own, where
+today it is a side effect of hit points, about two fifths more at tier three); the boss's
+worth (its own menace today; Claude's lean, a set two formations); and equal worth is not
+equal difficulty, the elites being a guess whose cost to a trio runs from nothing to half its
+hull by which came (11 November's reads), which is their own session's and is left alone.
+
 **Open, his.**
 
 1. His play of the two beats and of the chunk, on the phone; the RUPTURE dial sets one beat
    or three beside them.
-2. Whether the chunk is the meter's alone, as built, or salvage's and Anathema's too.
+2. The form for a standardized menace, above, with the tier's step and the boss's worth. It
+   answers whether the chunk is the meter's alone: the elites are to match wherever they are
+   counted, so salvage and Anathema take it with the form.
 3. The pickets above, and the Peak's: a tougher Salamander alone, a pair gated to the ramp's
    later steps as the duelists' pairs are, or a body the Peak does not have yet.
 4. The first wave repeating the opening's formation (a domain's first two formations are one

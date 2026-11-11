@@ -577,8 +577,12 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   domain, a picket of its own front-rank pushers beside its duelist ("Different enough that
   the same strategy doesn't strictly work on both ... We can make flankers out of pusher
   units if it makes sense"): three Goblins, two Needlers, three Revenants, the Peak open.
-  Still his: his play of the beats and the chunk, the chunk in salvage and Anathema, the
-  first wave repeating the opening's formation, and what measures a battle's minutes.
+  Still his: his play of the beats and the chunk, the first wave repeating the opening's
+  formation, what measures a battle's minutes, and the form for a standardized menace (his
+  the same day: "I'd hope that the elites menace should match between elites ... probably it
+  should be standardized so all domains are equivalent"; Claude's form in the brief, a pack's
+  worth its threat rating and a kill its share of its pack, read by the meter, salvage and
+  Anathema alike, nothing built until he marks it; the bible's section 12, v0.526).
 - **One elite, the first battle read whole, and 4-4-2** (Ryan, 11 November, before the restart
   above: "the 3 fractures, with the current rate of fill, felt short to me"; "battle one
   should only serve one elite"; "we restructure the tier list from 3-5-2 to 4-4-2 ... I'll
@@ -1184,7 +1188,7 @@ commands are in `README.md`.
   session's track rows, the map lists' and the Bench's). Main's file is v0.522 since The Far Bank
   joined the fights' pool (its track row and the boss themes' Open row: the Marsh's theme it was,
   so no domain has one now), unpublished, its republish on Ryan's word; `ccr-722ca9f0-yj8na3`'s
-  file is v0.525, main's with the pacing row rewritten (the count and the stall guard retired,
+  file is v0.526, main's with the pacing row rewritten (the count and the stall guard retired,
   two beats, the elite's chunk, the cleared field, ten to thirty minutes) and the meter's lines
   with it (the clocks, tally, boss and roster rows, section 12's first battle, pacing and tier
   counts), unpublished too.
