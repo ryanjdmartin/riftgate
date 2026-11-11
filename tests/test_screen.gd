@@ -2804,3 +2804,26 @@ func test_a_sweep_die_over_a_foe_lights_and_brackets_its_rank() -> void:
 	s._drag_from = -1
 	s._drag_over = null
 	s.free()
+
+
+## A release plays on the screen (the Whip Scorpion's valves, 11 November): a machine that ends
+## its turn with an entry it could have spent fires its heat once the enemy's turn has played, and
+## the screen takes the fight as it stands after. Synthetic passive.
+func test_a_passed_turns_release_plays_after_the_enemy_turn() -> void:
+	var s := _screen(5)
+	var ms: Skirmish.MechState = s.sk.mechs[0]
+	ms.unit.grant_passive({"id": "boiler", "name": "Boiler", "description": "", "effects": [{"trigger": "static", "effect": "pass_sweep", "value": 2}]})
+	ms.heat = 6
+	assert_true(s.sk.can_spend(0), "its die has somewhere to go, and is left")
+	var hp := 0
+	for foe in s.sk.field_foes():
+		hp += foe.hp
+	s._end_turn_now()
+	assert_eq(s.sk.releases.size(), 1, "it released")
+	assert_true((s.sk.releases[0]["blows"] as Array).size() >= 6, "a blow or a wasted shot for every heat")
+	var after := 0
+	for foe in s.sk.field_foes():
+		after += foe.hp
+	assert_true(after < hp, "the rank took its shots")
+	assert_true(s._shown_hp.is_empty(), "no gauge is left held off the tree")
+	s.free()

@@ -56,9 +56,10 @@ func test_every_chassis_regains_its_own_regen_cools_and_the_basics_make_heat() -
 		if not by_regen.has(regen):
 			by_regen[regen] = []
 		by_regen[regen].append(int(c.get("shield", 0)))
-		if db.chassis_runnable(str(id)):
-			assert_true(int(c.get("cooling", 0)) >= 1, "%s cools: with no vent on the die, cooling is its way down" % id)
 		var u := db.make_mech(str(id), 1)
+		if db.chassis_runnable(str(id)):
+			# A machine whose pass releases its heat has that as its way down (the boiler's rule).
+			assert_true(int(c.get("cooling", 0)) >= 1 or Effects.pass_sweep(u) > 0, "%s cools: with no vent on the die, cooling or a release is its way down" % id)
 		assert_eq(u.shield_regen, regen, "%s: the machine carries its chassis's regen" % id)
 	assert_eq(by_regen.size(), 3, "all three speeds are in use")
 	var mean := func(a: Array) -> float:
