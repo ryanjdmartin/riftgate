@@ -1,4 +1,8 @@
-"""Night Shift's thirty-fourth round as a pair (Ryan, 11 November: "Keep the synth and the swap. Keep the arpeggio from
+"""Night Shift's thirty-fifth round as a pair (Ryan, 11 November: "Lock in 'The hook cut.' Then the last thing is I want is
+another listen at 98"): the thirty-fourth's with the FM synth's arpeggio through all of the head, alone in its first
+half with the hook cut and the chime's doubling resting there (TURNS_DRIVE's A, CHIME_REST), the hook on the synth
+lead over it in the second; the plucked string no longer carried in (A_CARRY); and a set of each half whole at 96 and
+98. Before it, the thirty-fourth as a pair (Ryan, 11 November: "Keep the synth and the swap. Keep the arpeggio from
 the intro going into A, still on the plucked string, but drop it like 6 db when A hits"): the thirty-third's with the
 crunch synth's eighths kept, the head's halves swapped (TURNS_DRIVE's A: the hook alone, then the hook over the
 arpeggio into the breakdown), and the intro's plucked arpeggio carried into the head 6 dB down (A_CARRY, battle_half's
@@ -358,9 +362,10 @@ TURNS_WRITTEN = {
 TURNS_DRIVE = {   # on his core pairs since the twenty-eighth round
     "I": [("n11.root|n12.root", "")] * 2 + [("n11.root|n12.root", "arp:high")] * 2,
     # the head on a core pair throughout, the eighths the synth's (10 November: "section A should be a core, not straight eighths, yes. The straight 8s are the synth bass's job")
-    # the head's halves swapped (10 November: "a version with A2 and A1 swapped in position"; 11 November: "Keep the synth and the swap"):
-    # the hook alone on the FM synth, then the hook on the synth lead over the FM synth's arpeggio into the breakdown
-    "A": [("n1.lean|n3.lean", "hook:back")] * 4 + [("n1.lean|n3.lean", "both:push")] * 4,
+    # the head's halves swapped (10 November: "a version with A2 and A1 swapped in position"; 11 November: "Keep the synth and the swap"),
+    # the FM synth's arpeggio through it ("Try doing the FM synth through all of A instead"), its first half with the hook cut
+    # ("Lock in 'The hook cut.'"; the chime's doubling rests there too, CHIME_REST), then the hook on the synth lead over it
+    "A": [("n1.lean|n3.lean", "arp:push")] * 4 + [("n1.lean|n3.lean", "both:push")] * 4,
     "C": [("n9.lean|n14.lean", "")] * 4 + [("n5.lean|n6.lean", "arp:back")] * 4,
     "D": [("332.home", "")] * 4,
     "R": [("rest", "")] * (R_BARS // 2),
@@ -405,8 +410,13 @@ DRIVE_ON = True   # the full pair's
 # the plucked string, but drop it like 6 db when A hits"): the plucked string's arpeggio of the intro's last four bars
 # plays on from the head's first bar CARRY_DB under its level there, until the head's own arpeggio comes in ("half",
 # the full pair's: the FM synth's at the head's ninth bar, so two arpeggios never play at once), or through all of the
-# head in place of the FM synth's ("all"); False, it stops as the head comes in.
-A_CARRY, CARRY_DB = "half", -6.0
+# head in place of the FM synth's ("all"); False, it stops as the head comes in (the full pair's since the FM synth's
+# arpeggio starts on the head's first bar: "Hm. Try doing the FM synth through all of A instead").
+A_CARRY, CARRY_DB = False, -6.0
+# The chime's doubling of the hook resting through the head's first half, where the hook is cut (Ryan, 11 November: "Lock
+# in 'The hook cut.'"): the recipe's metal chime plays the hook an octave up all through the head, 6 dB under the FM
+# synth's hook on a phone; battle_half's `chime_rest`, in bars.
+CHIME_REST = 8
 PIANO_OUT = "A"   # the off-beat piano's sections out of the battle half (Ryan, 10 November: "Remove the piano from A, keep in C and R")
 # The kit dressed a bit (Ryan, 10 November: "a version where we dress up the drums a bit"), over the drive's plain kit
 # (the hat on eighths, the snare on two and four) wherever a bar is that plain bar, so the fills and D stay as they
@@ -475,8 +485,8 @@ PUSHER_FINGERS = 0.7   # the fingers on the eighths against the riffer's level, 
 DRIVE_PULSE = {"inst": "bass", "mode": "riff", "gain": 0.3, "hold": 0.8, "params": {"drive": 2.5, "cutoff": 700.0}}
 K13, K332, KGAL, SN24, HATQ = "x.......x.......", "x..x..x.x..x..x.", "x.xx..x.x.xx..x.", "....x.......x...", "x.x.x.x.x.x.x.x."   # the hat on eighths (10 November: "Hats should be on 8s for the whole track, not quarters")
 VOICINGS = {"back": ("lead", "fm"), "push": ("fm", "lead"), "high": ("pluck", "fm"),
-            "fm": ("fm", "fm"),
-            "plucked": ("fm", "pluck")}   # the FM synth's arpeggio under the hook on the plucked string (A_PLUCK)   # both lines on the FM synth: the head's first half with the FM synth's arpeggio through it (A_FM)
+            "fm": ("fm", "fm"),   # both lines on the FM synth (A_FM, heard 11 November)
+            "plucked": ("fm", "pluck")}   # the FM synth's arpeggio under the hook on the plucked string (A_PLUCK)
 UP = "R"   # the later spot where the guitar leaves the bass's octave ("save the octave-up for a later spot")
 
 # D, the dark synth's section, plays Hold The Line's first riff, which the map half voices as a nod
@@ -1279,7 +1289,7 @@ def arp_bars(pat, keep):
 def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=BASS_DB, bass=BASS, guitar=GUITAR,
                 d_bass=D_BASS, pluck_db=PLUCK_DB, lead=LEAD, duel_b2=DUEL_UPPER, duel_backing=DUEL_BACKING,
                 duel_break=True, duel_chords=False, duel_octaves=False, dark_notes=DARK_NOTES, dark_colours=DARK_COLOURS,
-                written=WRITTEN_ON, cut=(), drive=DRIVE_ON, duel=DUEL_WAY, duel_riffer=None, duel_pusher="synth", d_riff=D_RIFF, d_fill=True, dress=None, fills=True, i_kick=None, kick=None, pulse=True, carry=None, fm_arp_db=0.0, chime_rest=0):
+                written=WRITTEN_ON, cut=(), drive=DRIVE_ON, duel=DUEL_WAY, duel_riffer=None, duel_pusher="synth", d_riff=D_RIFF, d_fill=True, dress=None, fills=True, i_kick=None, kick=None, pulse=True, carry=None, fm_arp_db=0.0, chime_rest=None):
     """Night Shift's battle half: see the module's notes. `hold` is what the guitar and the bass play
     under the hook and the arpeggio together; `split` the guitar's interval over the bass in the
     later spot (SPLITS); `d` D's turn; `bass_db` the bass's level, wherever it plays; `bass` its
@@ -1293,6 +1303,7 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
     up_octave, by = SPLITS[split]
     one, out = GUITARS[guitar]
     carry = A_CARRY if carry is None else carry
+    chime_rest = CHIME_REST if chime_rest is None else chime_rest
     if drive:
         cut = tuple(cut) + ("opens",)   # the off-beat piano back since the twenty-ninth round (Ryan, 10 November: "I think I hear it missing now in the battle version, so lets put it back there"); cut=("piano",) takes it out
         turns = dict(TURNS_DRIVE, **(turns or {}))
@@ -1601,22 +1612,23 @@ def drive_set(sid, title, form, note):
 # was; the plucked string's carry stops itself where the head's own arpeggio starts, here its first bar. The FM synth's
 # arpeggio plays only in the head, so battle_half's `fm_arp_db` moves it there alone.
 A_FM = [("n1.lean|n3.lean", "both:fm")] * 4 + TURNS_DRIVE["A"][4:]
-# The head's first half over the FM synth's arpeggio (Ryan, 11 November: "Let's try cutting the hook from the first half of
-# A, and try moving the hook in the first half to the plucked string"): the arpeggio alone there, the chime's doubling of
-# the hook resting with it (battle_half's `chime_rest`), or the hook on the plucked string with the chime doubling it as
-# it doubles every hook in the head; each with the arpeggio at its level and 3 dB up, since that question is open too.
-A_CUT = [("n1.lean|n3.lean", "arp:push")] * 4 + TURNS_DRIVE["A"][4:]
+# The head's first half with the hook on the plucked string over the FM synth's arpeggio (11 November, heard beside the
+# hook cut, which won): kept as an option, the chime doubling it.
 A_PLUCK = [("n1.lean|n3.lean", "both:plucked")] * 4 + TURNS_DRIVE["A"][4:]
+# Another listen at 98 (Ryan, 11 November: "the last thing is I want is another listen at 98"; of the first, 10 November:
+# "98 is ok but the arpeggios start to muddy", since when every arpeggio is 3 dB down): each half whole, at 96 and 98.
+TEMPO_NOTE = "The rows run at different speeds, so start each from its top."
 SETS = [
-    {"id": "nh", "half": "battle", "title": "The head's first half", "form": "I" * 8 + " " + "A" * 16 + " " + "B" * 8, "seed": NAME + "_battle",
-     "note": "The intro, the head and the breakdown, the FM synth's arpeggio through all of the head (Ryan, 11 November: \"Let's try cutting the hook from the first half of A, and try moving the hook in the first half to the plucked string\"). Switch rows anywhere: each carries on from the same beat.",
-     "rows": [("nh0", "The hook cut", "The first half on the FM synth's arpeggio alone, the chime's doubling of the hook out with it; the arpeggio at its level.", {"turns": {"A": A_CUT}, "chime_rest": 8}),
-              ("nh1", "The hook cut, the arpeggio 3 dB up", "The same, the FM synth's arpeggio 3 dB louder through the head.", {"turns": {"A": A_CUT}, "chime_rest": 8, "fm_arp_db": 3.0}),
-              ("nh2", "The hook on the plucked string", "Over the FM synth's arpeggio, the chime doubling it an octave up as it does every hook in the head; the arpeggio at its level.", {"turns": {"A": A_PLUCK}}),
-              ("nh3", "On the plucked string, the arpeggio 3 dB up", "The same, the FM synth's arpeggio 3 dB louder through the head.", {"turns": {"A": A_PLUCK}, "fm_arp_db": 3.0}),
-              ("nh4", "The hook on the FM synth", "As you heard it last: both lines on the FM synth in the first half, the arpeggio at its level.", {"turns": {"A": A_FM}})]},
+    {"id": "nb", "half": "battle", "title": "The battle half at 98", "form": FORM10, "seed": NAME + "_battle",
+     "note": "The whole battle half (Ryan, 11 November: \"the last thing is I want is another listen at 98\"). " + TEMPO_NOTE,
+     "rows": [("nb0", "At 96", "The full pair's.", {}),
+              ("nb1", "At 98", "Two beats a minute faster.", {"bpm": 98})]},
+    {"id": "nq", "half": "map", "title": "The map half at 98", "form": FORM10, "seed": NAME,
+     "note": "The whole map half, which moves with the battle half since the two keep one timeline. " + TEMPO_NOTE,
+     "rows": [("nq0", "At 96", "The full pair's.", {}),
+              ("nq1", "At 98", "Two beats a minute faster.", {"bpm": 98})]},
 ]
-PAIR = {"id": "night_shift_r34", "title": "Night Shift, round thirty-four"}
+PAIR = {"id": "night_shift_r35", "title": "Night Shift, round thirty-five"}
 INTRO = "intro: the kick on every beat and the hats, the pad fading in through the fourth bar and swelling from 0:10, the sub from the fifth"
 MAP_SAID = dict(F.MUSIC[NAME]["names"], I=INTRO,   # each section on the map, without its muted guitar
                 A="groove: the piano off the beat, the chime's hook, a soft clap, the sub, knocks and ticks",
@@ -1748,7 +1760,7 @@ def main(argv):
         raw = {(si, ri): x for si, ri, x in pool.map(render_row, jobs)}
         for f in fulls:
             f.result()
-    path = os.path.join(P.OUT, "night34.json")
+    path = os.path.join(P.OUT, "night35.json")
     manifest = json.load(open(path)) if os.path.exists(path) else {"sets": [], "tracks": [], "seams": []}
     for si, s in enumerate(SETS):
         if s["id"] not in wanted:
@@ -1760,7 +1772,7 @@ def main(argv):
         rows = []
         for ri, (rid, title, note, _opts) in enumerate(s["rows"]):
             x = F.limit(mastered[ri] * gain)
-            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night34_" + rid, x)),
+            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night35_" + rid, x)),
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         manifest["sets"] = [e for e in manifest["sets"] if e["id"] != s["id"]] + [{"id": s["id"], "half": s["half"], "title": s["title"], "note": s["note"], "rows": rows}]
         print("%-2s %s" % (s["id"], "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))
