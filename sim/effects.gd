@@ -176,8 +176,13 @@ const STATUS := {
 	# Pinned (the Hollow-point Harpoon's, Ryan, 11 November): a status of its own for the round,
 	# holding the foe's Flak from halving at the round's end. HOLDERS names the holder of each
 	# status a piece may hold, so a like one for Burning is a row there and a status here.
-	"pinned": {"id": "pinned", "name": "Pinned", "description": "Its Flak does not decay this round.", "stacking": "renew",
+	"pinned": {"id": "pinned", "name": "Pinned Flak", "description": "Its Flak does not decay this round.", "stacking": "renew",
 		"tags": ["pin"], "effects": [{"trigger": "static", "effect": "hold_status", "value": "flakked"}]},
+	# Burning's pin (Ryan, 11 November: "Might as well code it in since the Mastema will want it as
+	# a fitted piece, if nothing else"): its Burning burns and loses no stack this round. No piece
+	# lays it yet.
+	"pinned_burning": {"id": "pinned_burning", "name": "Pinned Burning", "description": "Its Burning loses no stack this round.", "stacking": "renew",
+		"tags": ["pin"], "effects": [{"trigger": "static", "effect": "hold_status", "value": "burning"}]},
 	"exposure": {"id": "exposure", "name": "Exposed", "description": "In Direct reach of every machine, and its armour counts for nothing. Through the next round.", "stacking": "renew",
 		"tags": ["expose"], "effects": []},
 	# The Mine (the Lammergeier's Reverberant Payload, Ryan, 9 November: "the lammergeier basically
@@ -475,9 +480,9 @@ static func brace_stacks(value: int) -> int:
 ## What a foe carrying a status means (target_status, the Susceptibility Tensor; 10 October):
 ## what the team put on it. Never Numbed (a buff only a Purge lowers, 2 November), and never the foe's
 ## own buffs (Braced, Empowered, Undying).
-const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed", "flakked", "exposure", "mine", "pinned"]
+const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed", "flakked", "exposure", "mine", "pinned", "pinned_burning"]
 ## The status that holds each status a piece may hold on its target (Face.holds).
-const HOLDERS := {"flakked": "pinned"}
+const HOLDERS := {"flakked": "pinned", "burning": "pinned_burning"}
 ## target_status: the foe struck carries any of FOE_STATUSES (Numbed and its own buffs never count).
 ## ally_present: another live machine is in the fight (the unit's `allies`, kept by the skirmish).
 ## A `tag_<tag>` condition reads the component's tags (10 October: a tag never carries a rule of
@@ -832,11 +837,14 @@ static func turn_tick(u) -> Dictionary:
 ## Empowered's clock, 21 October).
 static func tick(u, halving: bool = true) -> Dictionary:
 	var out := tick_preview(u)
+	var held := held_statuses(u)   # a pin's: the status ticks and loses no stack (Pinned Burning)
 	var keep: Array = []
 	for m in u.modifiers:
 		if m.decay == DECAY_ROUND:
 			continue
-		if m.decay == DECAY_TICK:
+		if m.decay == DECAY_TICK and held.has(m.id):
+			pass
+		elif m.decay == DECAY_TICK:
 			m.stacks -= 1
 			if m.stacks <= 0:
 				continue
@@ -1947,7 +1955,7 @@ static func purge(u, n: int = 1) -> Array[String]:
 ## The marks the team lays on foes (28 October), what a foe's cleanse takes off its own: never
 ## Numbed (the buff nothing removes), never Suppressed (so a stun stays sure), never Guarded or a
 ## buff.
-const TEAM_MARKS := ["burning", "flakked", "cryoed", "vitriol", "shocked", "exposure", "webbed", "paradox", "mine", "pinned"]
+const TEAM_MARKS := ["burning", "flakked", "cryoed", "vitriol", "shocked", "exposure", "webbed", "paradox", "mine", "pinned", "pinned_burning"]
 
 
 ## How many of the team's marks a foe carries, each status one mark.

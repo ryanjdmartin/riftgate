@@ -1723,8 +1723,9 @@ func _foe_rows(foe: Foe) -> Array:
 		# instead of the stacks, with the tooltip showing the riders"): the sea mine's glyph with its
 		# damage, its readout its keywords and what its fall does.
 		rows.append(status_row("mine", "mine", str(int(mine["damage"])), "%s; blows on every foe round its slot when it falls" % Skirmish.mine_text(mine), _foe_chip_colour("mine")))
-	if Effects.has(foe, "pinned"):
-		rows.append(status_row("pinned", "lock", "", "Pinned", _foe_chip_colour("pinned")))
+	for pin in Effects.HOLDERS.values():   # a pin's chip: the lock on the status it holds
+		if Effects.has(foe, pin):
+			rows.append(status_row(pin, Terms.glyph(pin), "", str(Effects.STATUS[pin]["name"]), _foe_chip_colour(pin)))
 	if Effects.has(foe, "exposure"):
 		# Exposed, the debuff (21 October): the formation's reticle with its armour zeroed. The
 		# chip is the debuff's alone: a back-rank foe with nothing in front wears none (Ryan, 26

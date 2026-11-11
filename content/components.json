@@ -634,7 +634,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A drum-fed scattergun on a pintle, its shells bursting into a rank of foes. Fire, and the car is already moving. Ryan, 19 October: \"a low damage, spread, maybe rapid, weapon with a new debuff: flak\".",
-    "niche": "The Prairie Dog's locked gun and the maker's first Flak piece: a flat low blow that sprays the target's rank and lays Flak on each foe hit, so the team's many small blows land harder and the car takes less from the foes it has flakked (its passive). The softener's round: spray, then the four cash."
+    "niche": "The Prairie Dog's locked gun and the maker's first Flak piece: a flat low blow that sprays the target's rank and lays Flak on each foe hit, so the team's many small blows land harder and the car takes less from the foes it has flakked (its passive). The softener's round: spray, then the four cash. Ryan, 11 November: \"turn the Flak repeater into a Flak weapon and not a bad spread weapon\"; \"1 damage, Flak 2, cooldown 1. Heat not sure. But that prevents it from being the chase every round and stacking on itself.\" Its Spread kept as it stood, his to cut."
    },
    "face": {
     "kind": "attack",
@@ -645,8 +645,9 @@
      "flak"
     ],
     "cleave": 1,
-    "flak": 1,
-    "heat": 0
+    "flak": 2,
+    "heat": 0,
+    "cooldown": 1
    },
    "passive": null,
    "tags": [

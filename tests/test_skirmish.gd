@@ -10544,3 +10544,28 @@ func test_a_swap_that_shocks_marks_both_and_a_massive_foe_named_stays_put() -> v
 	plain.begin()
 	plain.start_round()
 	assert_false(plain.can_spend(0), "a Swap that carries nothing else has no use for a foe it cannot move")
+
+
+## Burning's pin (Ryan, 11 November: "a similar one for burning as well ... Might as well code it
+## in"): a foe under it burns for every stack at its action and loses none; the pin is the round's,
+## and its Burning fades again the round after. No piece lays it yet: granted here.
+func test_pinned_burning_burns_and_loses_no_stack_this_round() -> void:
+	var sk := Skirmish.new(1)
+	sk.add_mech(_mech("A", Die.single(Face.blank()), 40, 1000))
+	var a := _ghoul(500, 0)
+	var b := _ghoul(500, 0)
+	sk.add_foes([a, b])
+	sk.begin()
+	sk.start_round()
+	for foe in [a, b]:
+		Effects.stack(foe, Effects.STATUS["burning"], Effects.SKIRMISH, "test", 3, Effects.DECAY_TICK)
+	assert_eq(str(Effects.HOLDERS["burning"]), "pinned_burning", "Burning has a holder of its own")
+	Effects.grant_for_rounds(a, Effects.STATUS["pinned_burning"], "test", sk.round)
+	sk.end_round()
+	assert_eq(Effects.stacks_of(a, "burning"), 3, "pinned: it burned and lost no stack")
+	assert_eq(Effects.stacks_of(b, "burning"), 2, "the other's fades a stack as ever")
+	assert_eq(a.hp, b.hp, "both burned alike this round")
+	assert_false(Effects.has(a, "pinned_burning"), "the pin is the round's")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(Effects.stacks_of(a, "burning"), 2, "and it fades the round after")
