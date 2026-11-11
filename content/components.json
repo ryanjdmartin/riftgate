@@ -1449,15 +1449,44 @@
   },
   {
    "id": "heliographic_siphon",
-   "name": "Heliographic Siphon",
+   "name": "Heliographic Death Ray",
    "maker": "wainwright_sutler",
    "shape": "dish",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "A signal mirror on a mast that every foe on the field turns to face, and a siphon that drinks the blows they land into the pressure vessel. Ryan, 19 October: \"An aoe lure that grants armour, and heat rises for every hit taken\"; 20 October: a lure-all, riskier and more rewarding; the name his (\"Keep heliographic cause its dumber\").",
-    "niche": "The Whip Scorpion's locked fuel decision: no damage; every foe in the fight turns on it for the round, it is Armoured for the round, and every blow landed on it that round adds heat its vents blast next round. Bad against a boss (one blow, little heat) and good against a swarm (many small blows that bounce off armour), so the decision is whistle at the swarm, never at the brutes; the reward is capped by the heat maximum and one vent a round, the risk is the whole formation's blows and the overflow burning at the next turn's end."
+    "fantasy": "The signal mirror on its mast, turned on one foe with the whole boiler behind it. Ryan, 11 November: the locked piece \"takes the buzzards old form. Cools completely, damage per heat spent. Low base damage\"; \"The heliograph term can go on the new locked piece\" (his name of 20 October: \"Keep heliographic cause its dumber\"). The name is a session's draft, his to change; the id keeps the old piece's until he names it.",
+    "niche": "The Whip Scorpion's answer to one big foe: it fires every point of heat the machine holds as one blow and leaves it cold, a low base and a point for every 2 heat. The same gauge feeds its passive's Sweep, which is the stronger spend against a rank (Ryan: \"I'd keep the sweep the more attractive option in terms of raw power\"), so each round is the ray on one foe now or the valves on a rank after the enemy's turn. The Buzzard's Afterburner Cannon held this form until its rework of 11 November."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "direct",
+    "power": 2,
+    "keywords": [],
+    "heat": 0,
+    "vents_all": true,
+    "power_per_heat": 1,
+    "per_heat": 2
+   },
+   "passive": null,
+   "tags": [
+    "beam"
+   ]
+  },
+  {
+   "id": "shift_whistle",
+   "name": "Shift Whistle",
+   "maker": "minerva",
+   "tier": 3,
+   "status": "planned",
+   "shape": "dish",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "Every foe on the field turns to face it, and it braces. The Whip Scorpion's Heliographic Siphon of 20 October with its heat left behind. The name is a session's working one, his to give.",
+    "niche": "Ryan, 11 November: \"Lure every foe, gain armour is a massive premium component for Minerva chassis. If that's allowed to exist as a component, it needs to be tier 3 Minerva, not random W&S. And the name needs to change if it's no longer gaining heat on the component.\" A draft nothing deals until he says it exists."
    },
    "face": {
     "kind": "attack",
@@ -1467,8 +1496,7 @@
      "lure"
     ],
     "heat": 0,
-    "braces": 1,
-    "heat_per_blow": 2
+    "braces": 1
    },
    "passive": null,
    "tags": [

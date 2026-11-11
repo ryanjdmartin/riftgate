@@ -27,7 +27,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1115 tests, 362,618 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
+- Tests: 1120 tests, 362,688 checks, green on `ccr-4d58b054-3lyj0a` (11 November, the Whip
+  Scorpion's rework). Before it, 1115 tests, 362,618 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
   with the formation and refit session's branch whole and the music session's landing; Godot
   4.8-beta2). Before it, 1094 tests, 325,124 checks, green on main (10 November, with the boss's hex, the third map list, the Text tab, the side session's work, the shapes reworked on Ryan's play, the second map list, the
   map session's shapes laid to the rift's row, the passing and the catch at one, and the map
@@ -181,8 +182,9 @@ rerolls row is the long wall's two with the audit's kept rolls.
 Each resumes from its brief; `docs/briefs/README.md`'s table says what each waits on.
 
 - The inventory of 9 November (every chassis, built or briefed, with its state): 24 built, 23 in
-  briefs, three slots open. Of the built, four went back to design with the refit pass and three
-  are there still (the Whip Scorpion whole, the Swallowtail, the Puffin; a brief each), three are
+  briefs, three slots open. Of the built, four went back to design with the refit pass and two
+  are there still (the Swallowtail and the Puffin, a brief each; the Polar Bear and the Whip
+  Scorpion handed back 11 November), three are
   unfinished by Ryan's own notes (the Needletail, the Giant Petrel, the Musk Ox) and the rest
   stand. The to-do's roster is grouped by what each waits on, in the order he took (Next, in
   order, item 1).
@@ -211,10 +213,15 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   fires its whole field; heat still raises its regen; Chain a candidate branch. With it the
   bible's design test "What a machine does, it does unasked: no extra controls" (his words:
   "Everything should be automatic in this game, I don't want extra controls"). The Whip
-  Scorpion's direction is his of the same day (the bible's Whip Scorpion row, v0.525: the
-  tier-two formation breaker, a pass Sweeping the rank with the most foes for its heat as the
-  enemy's turn ends, its locked piece the Buzzard's old form; three points open in its brief,
-  the build after the heat pass); the Dingo and the Prairie Dog are this branch's next (11 November), the
+  Scorpion's rework is his of the same day and built (the bible's Whip Scorpion row, v0.526: the
+  tier-two formation breaker; nothing cools it; a pass, a turn it ends with an entry it could
+  have spent, Sweeps the rank with the most foes as the enemy's turn ends, a shot of 2 for every
+  heat, the back on a tie, the blows it took banked on top; its locked ray the Buzzard's old
+  form on one foe), dealt again, its brief retired: `pass_sweep` a passive's rule, the release
+  after the enemy's turn in the round and its forecast, the bot holding its die when the
+  release beats its best spend, the screen playing the shots once the enemy's turn has (a first
+  cut). Its leavings are the to-do's line (two names his to give, the old vent blast and
+  Siphoning unused in the engine, its runner row unread). On this branch, not on main. The Dingo and the Prairie Dog are this branch's next (11 November), the
   Clydesdale's review and the Skua his other sessions'.
 - The locked pieces' footing, decided 10 November (the bible's locked row, section 7, and tiers
   row, section 10; `docs/locked_pieces_proposal.md` holds what follows and the order; nothing
@@ -236,9 +243,9 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   working name, a support engine) and the Snowy Owl (a stealth unit, leaning to Cryo: Ryan,
   5 November) are Ryan's next session, their briefs' first rounds unanswered. The
   Needletail's two modes and the Giant Petrel's catamaran hull are his to pick (the to-do).
-- Wainwright & Sutler: ten decided, 3-5-2, nine built (the bible's roster row). The Whip Scorpion
-  and the Swallowtail are back in design (`ws_whip_scorpion.md`, `ws_swallowtail.md`; the
-  Scorpion's session under way, 11 November, the Swallowtail punted); they, the
+- Wainwright & Sutler: ten decided, 3-5-2, nine built (the bible's roster row). The Swallowtail
+  is back in design (`ws_swallowtail.md`, punted); the Whip Scorpion's rework is built (11
+  November). The Swallowtail, the
   Musk Ox and the gunship (very rough; Claude's first round in `docs/briefs/ws_gunship.md`) each
   need a design session for kit and visual design, which Ryan starts himself (4 November; the
   Needletail likewise).
@@ -1117,8 +1124,8 @@ engine line), since the matrix on file predates everything since 27 October.
    pieces' footing first, since every rework designs locked pieces (his direction of 10 November
    is the bible's locked and tiers rows, `docs/locked_pieces_proposal.md` the detail, and a
    tweak round on six pieces is with him); the four back in
-   design from the refit pass, the Polar Bear, the Whip Scorpion, the Swallowtail, then the
-   Puffin after the heat prices; the built but unfinished (the Needletail, the Giant Petrel, the
+   design from the refit pass (the Polar Bear and the Whip Scorpion handed back 11 November),
+   the Swallowtail, then the Puffin after the heat prices; the built but unfinished (the Needletail, the Giant Petrel, the
    Musk Ox) and the gunship; the tier-one fronts (Minerva's lure tank, an Aphelion tier one);
    Claude's first rounds on his directions of 5 and 6 November; the rest as its session comes.
 2. **The stock pass's tail**: Ryan's name pass; the Lammergeier's stock; the pricing pass's next

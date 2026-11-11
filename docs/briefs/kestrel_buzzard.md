@@ -6,8 +6,8 @@
 that sweet cannon on the model?" The zap is the Storm Petrel's, homeless since its rework
 (`kestrel_storm_petrel.md`), in his form of the same day: "spend X shield and add it to the
 attack". With it the Buzzard gives up firing all its heat as one blow, which becomes the Whip
-Scorpion's shape alone (his first thought for it: a passed turn releases its heat,
-`ws_whip_scorpion.md`).
+Scorpion's shape alone (built the same day: a passed turn releases its heat as a Sweep, and its
+locked ray takes this cannon's old form; the bible's Whip Scorpion row).
 
 Kestrel's tier-two medium flyer, built and dealt, one of the original designs with no review pass
 (the bible's Buzzard row: "splits sustain from burst"; its fantasy, the Kite's larger cousin that
