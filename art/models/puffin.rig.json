@@ -958,19 +958,8 @@
    "to": 3.0
   }
  },
- "muzzles": {
-  "hp_1": [
-   [
-    [
-     0.0,
-     0.0,
-     -10.4
-    ],
-    40.8
-   ]
-  ]
- },
  "stock_shapes": {
+  "hp_1": "dish",
   "hp_2": "twin_barrel",
   "hp_3": "barrel"
  }

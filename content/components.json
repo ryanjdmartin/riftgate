@@ -1451,6 +1451,30 @@
    "tags": []
   },
   {
+   "id": "changeover",
+   "name": "Changeover",
+   "maker": "wainwright_sutler",
+   "shape": "none",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "The Clydesdale's battery lever. Ryan, 11 November: \"Each die has the same locked component on it, that flips its die to the other on Rapid, cooldown 1, so it can only flip once a turn\": four of its hardpoints stand on the deck and four ride below, and the lever swaps them, the four up pivoting upright and sinking as the four below rise.",
+    "niche": "The Clydesdale's locked piece: no damage, Rapid with a cooldown of 1. Spent on itself it turns the die to its other battery, which stays up from fight to fight, and Rapid's free roll lands on the battery it raised. One entry live on both batteries, so one cooldown and once a round (his \"the same piece with one cooldown\")."
+   },
+   "face": {
+    "kind": "buff",
+    "targets": "self",
+    "keywords": [
+     "rapid"
+    ],
+    "cooldown": 1,
+    "turns_die": true
+   },
+   "passive": null,
+   "tags": []
+  },
+  {
    "id": "heliographic_death_ray",
    "name": "Heliographic Death Ray",
    "maker": "wainwright_sutler",

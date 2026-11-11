@@ -27,7 +27,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1123 tests, 362,685 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
+- Tests: 1132 tests, 363,473 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
+  with the Dingo's pieces, the pins and the Flakshot Repeater over the Clydesdale's review). Before it,
+  1123 tests, 362,685 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
   with the Whip Scorpion's rework over the formation and refit session's landing). Before it,
   1119 tests, 362,994 checks, green on main (11 November, as `ccr-722ca9f0-yj8na3`
   landed with the Rupture sized in beats, menace a pack's threat rating, the stall guard's end
@@ -46,7 +48,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   times mean nothing). The hook imports only a checkout with no `.godot`, so a container that
   cached one keeps its old import: tests failing on a class name not declared (`MuzzleFlare`)
   mean run `--import` first (about fifteen seconds; 7 November). Models build with `BPY_PYTHON` set to a python3.11 venv holding
-  `bpy==5.0.1` (about twenty minutes to install). The first `--import` may rewrite four Prairie
+  `bpy==5.0.1` (about twenty seconds to install on 11 November). The first `--import` may rewrite four Prairie
   Dog textures and a model build the maker's review tiles: restore both
   (`git checkout -- art/models/prairie_dog_* tools/lowforge/tiles/`) rather than commit them.
 
@@ -121,7 +123,20 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4` (a cloud session may not delete
 one). Each merge commit says how its conflicts were settled.
 
-Still working, and landing as it goes (11 November): `ccr-722ca9f0-yj8na3`, the formation and
+Still working, and landing as it goes (11 November): `claude/clydesdale-design-concept-cg6uyz`,
+the Clydesdale's review (Ryan's other session), cut from main at `2a9242e`: its brief
+(`docs/briefs/ws_clydesdale.md`, his idea and his answers of the day; the to-do's line) and the
+hand-built stock guns gone on his word ("There's no reason to keep hand build guns anywhere"):
+sixteen on seven models rebuilt in the cloud, each stock gun its class, a mount's fits saying
+how deep each class sits (the Polar Bear's port guns deeper and a round rack flush, "that's
+perfect for bear"), the renders a round. It took main at `e286f8d` and again at `45b3190` (the
+Whip Scorpion's rework; the bible's version, v0.531 above both, and this file's lines, both sides
+kept) and main took it as a fast-forward on
+Ryan's word ("Clean up and merge in"). Then the Clydesdale's batteries on his picks ("Checkerboard,
+and the stock split is fine"): its die folded into two batteries of four with a shared Changeover,
+the battery up kept from fight to fight (Changed Over), Battery Director retired, its model eight
+ports in a checkerboard, square under trapdoors since his "Sure, square ports", the brief retired (the bible's Clydesdale row, the to-do's play line),
+1129 tests green; main took it as a fast-forward at `d2c024d` on his word ("Merge in and republish"), the hangar and the bible republished with it (Pages). And `ccr-722ca9f0-yj8na3`, the formation and
 refit session. Everything it had committed to `4c8dbf1` went to main with `ccr-4d58b054-3lyj0a`,
 below; its work since landed on Ryan's word of 11 November ("I think it's safe to start sending
 our code here out to main and having me test there in context"), the branch taking main at
@@ -1259,41 +1274,45 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. The live page is v0.524, dated 11 November (the
-  page's Version 504, published from main at `60a0e4d` on Ryan's word, "Everything else let's
-  clean up and merge into main first before proceeding": main's file whole, since the live v0.521
-  (Version 503, main's `9ebf74b`) matched that commit's file byte for byte and so needed no merge;
-  it carries everything to 11 November, new since 503 the pairs' row, The Far Bank's track row,
-  the boss themes' Open row and the design test of no extra controls). Main's file is v0.529
-  since `ccr-722ca9f0-yj8na3` landed on 11 November: the pacing row rewritten (the count and the
-  stall guard retired, two beats, the cleared field, ten to thirty minutes, his lean for more
-  spawns), menace a pack's threat rating (the tally row, the sum retired) and the meter's lines
-  with them (the clocks, stall, boss, roster, Anathema and kill rows, section 12's first battle,
-  pacing, menace and tier counts), unpublished, its republish on Ryan's word. BASE for the next
-  merge is `60a0e4d`'s file. The live page may carry rows ahead of main's code while a branch has not landed. Before
+  `docs/design-bible.html` after every change. The live page is v0.533, dated 11 November (the
+  page's Version 505, published from main at `d2c024d` on Ryan's word, "Merge in and republish":
+  main's file whole, since the live v0.524 (Version 504, main's `60a0e4d`) matched that commit's
+  file byte for byte and so needed no merge; new since 504 the pacing row in beats of the tide,
+  menace a pack's threat rating and the rows that follow it, the Whip Scorpion's rework, the
+  hardpoints row with every stock gun its class, the Clydesdale's batteries row and its square
+  ports, and Changed Over in the buff table). BASE for the next merge is `d2c024d`'s file. The
+  live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
   this branch's file, THEIRS the saved live source with the tool's wrapper line and its trailing
-  newline and `</body></html>` stripped, so it matches the file byte for byte). A page that size
-  counts as read only once every line of its saved
-  copy is read, so a subagent reads it and publishes the merge. After main merges in, check the
-  tables script's run against the file's tables before keeping it: a row it reverts belongs to a
-  branch not yet landed.
+  newline and `</body></html>` stripped, so it matches the file byte for byte). The tool's read
+  counts as viewing the page, its saved copy needing no whole Read (it said so on 11 November);
+  the saved copy is 666 KB, so a subagent still does the comparing and the merge. After main
+  merges in, check the tables script's run against the file's tables before keeping it: a row it
+  reverts belongs to a branch not yet landed.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 227 (11 November, published from `ccr-4d58b054-3lyj0a` at `9fde357`, ahead of main, on Ryan's word, "Can I see this in hangar?", and again for each of his four notes on its model: the gun slid back in its mount, the vents more upright, the gun forward by half the slide, then nudged back): the Whip Scorpion's rework, the eight files that had moved since 222 (three content files, `designs.json` without its retired brief, `text.json`, `renders.json`, its model and rig) and its three new renders; nobody had published since 222, and the live copies match the branch's after. Version 222 (11 November, main's `892d804`, on Ryan's word, "Everything else let's clean
+  page's Version 228 (11 November, main's `d2c024d`, on Ryan's word, "Merge in and republish"):
+  the 69 files that had moved or arrived since 227 and one retired render removed (the Nemesis's
+  old roar), the page unchanged: the vocabulary (the glossary's Menace, Rupture meter and Seal
+  lines, redrafted for menace as a pack's threat rating and the stall guard's end), `text.json`
+  and `designs.json` (the refit brief, the Clydesdale's brief retired), the seven models rebuilt
+  with their stock guns as classes (their model and rig files, the Polar Bear's fits with depths)
+  and their renders with the old as Before, `renders.json`, `pins.json` (the Clydesdale's eight),
+  the page's motion.js (a fit's depth, no hand-built flares), and the Clydesdale's batteries and
+  square ports (two content files, its model, its renders with a second-battery view). Nobody had
+  published since 227, every live copy matching `9fde357`'s build but for its stamp, and the
+  live copies match main's after; `edits` and `text` empty, `designs` the two folded ideas.
+  Version 227 (11 November, published from `ccr-4d58b054-3lyj0a` at `9fde357`, ahead of main, on Ryan's word, "Can I see this in hangar?", and again for each of his four notes on its model: the gun slid back in its mount, the vents more upright, the gun forward by half the slide, then nudged back): the Whip Scorpion's rework, the eight files that had moved since 222 (three content files, `designs.json` without its retired brief, `text.json`, `renders.json`, its model and rig) and its three new renders; nobody had published since 222, and the live copies match the branch's after. Version 222 (11 November, main's `892d804`, on Ryan's word, "Everything else let's clean
   up and merge into main first before proceeding"): `designs.json` with the Whip Scorpion's brief
   after the Buzzard's settlement and `text.json` for its stamp, over Version 221 of minutes before
   (main's `60a0e4d`: the two files that had moved since 220, `designs.json` with the Buzzard's new
   brief, the Whip Scorpion's role map and the briefs' table, `text.json` its stamp alone; nobody
   had published since 220, the live copies matching its build but for the stamp); the page
   unchanged, and the live copies match main's after. `edits` and `text` empty, `designs` the two
-  folded ideas. Behind main since `ccr-722ca9f0-yj8na3` landed the same day, its republish on
-  Ryan's word: the vocabulary (the glossary's Menace, Rupture meter and Seal lines, drafts
-  redrafted for menace as a pack's threat rating and the stall guard's end), with `text.json`
-  for them and `designs.json` for the refit brief. Version 220 (11 November, main's `9ebf74b`,
+  folded ideas. Version 220 (11 November, main's `9ebf74b`,
   on Ryan's word, "republish the hangar and the bible") was the fourteen files that had moved since 219 (the five content files with the refit's
   model, the formation pass, the Polar Bear's seal, the Buzzard's regen and the Nemesis's rage;
   `designs.json` and `text.json`; `foes.json`; six rig sidecars, their stock pins following the

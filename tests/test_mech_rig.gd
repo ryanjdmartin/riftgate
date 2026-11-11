@@ -318,24 +318,26 @@ func test_a_fixed_weapon_fires_with_a_slice_of_its_own_act() -> void:
 	pair[1].free()
 
 
-func test_every_hand_built_stock_gun_has_a_muzzle_and_every_aim_joint_turns() -> void:
-	# A stock gun built by hand rather than as a class flares where lowforge found its business
-	# end (Ryan, 2 November); a fixed weapon's named aim joint turns about its up axis. A shield
-	# built by hand never fires, so it needs no muzzle, and a hidden mount shows and flares nothing
-	# (the Cottonmouth's guns inside its drum).
+func test_no_stock_gun_is_built_by_hand_and_every_aim_joint_turns() -> void:
+	# Every stock component a mount carries wears its class, as a fitted one does (Ryan, 11
+	# November: "There's no reason to keep hand build guns anywhere"), the class content gives
+	# it, so it flares at its class's muzzles; a hidden mount shows nothing (the Cottonmouth's
+	# guns inside its drum). A fixed weapon's named aim joint turns about its up axis.
 	var db := ContentDB.load_default()
 	for id in MACHINES:
 		var side := MechRig.load_sidecar(id)
 		var pins: Dictionary = side.get("pins", {})
 		var shapes: Dictionary = side.get("stock_shapes", {})
-		var muzzles: Dictionary = side.get("muzzles", {})
 		var hidden = side.get("hidden_pins", [])
+		assert_false(side.has("muzzles"), "%s: no stock gun of its carries muzzles of its own" % id)
 		for pin in pins.keys():
-			if str(pins[pin]).is_empty() or shapes.has(pin) or str(db.components.get(str(pins[pin]), {}).get("face", {}).get("kind", "")) != "attack":
+			var cid := str(pins[pin])
+			if cid.is_empty() or (hidden is Array and (hidden as Array).has(pin)):
 				continue
-			if hidden is Array and (hidden as Array).has(pin):
+			var shape := str(db.components.get(cid, {}).get("shape", ContentDB.SHAPE_NONE))
+			if shape.is_empty() or shape == ContentDB.SHAPE_NONE:
 				continue
-			assert_true(muzzles.has(pin) and not (muzzles[pin] as Array).is_empty(), "%s: the hand-built %s on %s flares somewhere" % [id, pins[pin], pin])
+			assert_eq(str(shapes.get(pin, "")), shape, "%s: the stock %s on %s wears its class, never a part built by hand" % [id, cid, pin])
 		var joints: Dictionary = side.get("joints", {})
 		var aims: Dictionary = side.get("aims", {})
 		for cid in aims.keys():
@@ -345,7 +347,7 @@ func test_every_hand_built_stock_gun_has_a_muzzle_and_every_aim_joint_turns() ->
 func test_the_nested_joints_the_bible_asked_for_are_in_the_models() -> void:
 	var want := {
 		"badger": [["elbow_l", "shoulder_l"], ["wrist_l", "elbow_l"], ["jaw_upper", "wrist_l"], ["jaw_lower", "wrist_l"], ["elbow_r", "shoulder_r"], ["wrist_r", "elbow_r"]],
-		"clydesdale": [["head", ""], ["knee_fl", "hip_fl"], ["knee_hr", "hip_hr"], ["ankle_fl", "knee_fl"], ["ankle_hr", "knee_hr"], ["elev_mortar", "turret_mortar"], ["elev_howitzer", "turret_howitzer"]],
+		"clydesdale": [["head", ""], ["knee_fl", "hip_fl"], ["knee_hr", "hip_hr"], ["ankle_fl", "knee_fl"], ["ankle_hr", "knee_hr"], ["turret_1", "lift_1"], ["elev_1", "turret_1"], ["turret_5", "lift_5"], ["elev_5", "turret_5"]],
 		"baboon": [["waist", ""], ["shoulder_l", "waist"], ["elbow_l", "shoulder_l"], ["wrist_l", "elbow_l"], ["ankle_l", "knee_l"], ["knee_l", "hip_l"], ["elev_r", "waist"]],
 		"polar_bear": [["knee_fl", "hip_fl"], ["ankle_fl", "knee_fl"], ["ankle_hl", "knee_hl"], ["run_l", ""], ["run_r", ""], ["run_fl", ""], ["run_rack", ""], ["shutter_rl", ""], ["louvre_l1", ""], ["louvre_r3", ""], ["louvre_cl1", ""], ["louvre_cr4", ""], ["vent_pop_l", ""]],
 		"wild_boar": [["elev", "turret"], ["plow", ""], ["elev_pod", ""]],
@@ -364,12 +366,14 @@ func test_the_nested_joints_the_bible_asked_for_are_in_the_models() -> void:
 			if rig.joints.has(row[0]):
 				assert_eq(rig.joint_of(rig.joints[row[0]]), row[1], "%s: %s hangs under '%s'" % [id, row[0], row[1]])
 		pair[1].free()
-	# The Clydesdale's cheek mounts ride its head; its hoof is under the knee under the hip.
+	# The Clydesdale's batteries (Ryan, 11 November): each gun on its elevation, in its turret, on
+	# the lift that sinks it, the first battery's and the second's alike.
 	var pair := _rig_for("clydesdale")
 	var rig: MechRig = pair[0]
-	assert_eq(rig.joint_of(rig.hardpoints[7]), "head", "the left cheek mount turns with the head")
-	assert_eq(rig.joint_of(rig.hardpoints[4]), "elev_mortar", "the mortar's socket is on its elevation, inside the traverse")
-	assert_eq(rig.joint_of(rig.joints["elev_mortar"]), "turret_mortar", "which nests in the turret")
+	assert_eq(rig.joint_of(rig.hardpoints[1]), "elev_1", "a first-battery gun is on its elevation")
+	assert_eq(rig.joint_of(rig.hardpoints[5]), "elev_5", "and a second-battery gun on its own")
+	assert_eq(rig.joint_of(rig.joints["elev_1"]), "turret_1", "which nests in the turret")
+	assert_eq(rig.joint_of(rig.joints["turret_1"]), "lift_1", "which rides the lift")
 	pair[1].free()
 	# The Dingo's launcher rides its roof gimbal (Ryan, 29 October): the socket on the elevation, in the yoke that turns.
 	pair = _rig_for("dingo")
@@ -587,11 +591,11 @@ func test_a_part_carries_its_weight_toward_what_the_act_asks() -> void:
 		var pair := _rig_for("clydesdale", 3)
 		var rig: MechRig = pair[0]
 		rig.heft = heft
-		rig.acts = [{"name": "probe", "duration": 3.0, "ease": "smooth", "tracks": {"turret_l": [[0.6, 0.0, 30.0, 0.0, 0.0, 0.0, 0.0], [2.0, 0.0, 30.0, 0.0, 0.0, 0.0, 0.0]]}, "body": [], "glow": []}]
-		var tr: Node3D = rig.joints["turret_l"]
+		rig.acts = [{"name": "probe", "duration": 3.0, "ease": "smooth", "tracks": {"turret_1": [[0.6, 0.0, 30.0, 0.0, 0.0, 0.0, 0.0], [2.0, 0.0, 30.0, 0.0, 0.0, 0.0, 0.0]]}, "body": [], "glow": []}]
+		var tr: Node3D = rig.joints["turret_1"]
 		assert_true(rig.play("probe"), "a probe act")
 		rig.tick(0.3)
-		var wanted := float(MechRig.sample(rig.acts[0]["tracks"]["turret_l"], 0.3, 3.0)[1])
+		var wanted := float(MechRig.sample(rig.acts[0]["tracks"]["turret_1"], 0.3, 3.0)[1])
 		var got := rad_to_deg(tr.rotation.y)
 		assert_true(got < wanted and got > 0.0, "halfway up the ramp it is on its way but behind (%f of %f)" % [got, wanted])
 		lags.append(wanted - got)
@@ -701,34 +705,39 @@ func test_an_act_may_be_for_one_place_and_may_carry_its_own_heft() -> void:
 	assert_true(seen.has("map_only") and seen.has("anywhere"), "the map picks either")
 	var lags := []
 	for h in [-1.0, 0.05]:
-		rig.acts = [{"name": "probe", "duration": 3.0, "ease": "smooth", "tracks": {"turret_l": [[0.6, 0.0, 30.0, 0.0, 0.0, 0.0, 0.0], [2.0, 0.0, 30.0, 0.0, 0.0, 0.0, 0.0]]}, "body": [], "glow": []}]
+		rig.acts = [{"name": "probe", "duration": 3.0, "ease": "smooth", "tracks": {"turret_1": [[0.6, 0.0, 30.0, 0.0, 0.0, 0.0, 0.0], [2.0, 0.0, 30.0, 0.0, 0.0, 0.0, 0.0]]}, "body": [], "glow": []}]
 		if h > 0.0:
 			rig.acts[0]["heft"] = h
 		rig.tick(5.0)
 		assert_true(rig.play("probe"), "a probe")
 		rig.tick(0.4)
-		lags.append(30.0 * 0.4 / 0.6 - rad_to_deg((rig.joints["turret_l"] as Node3D).rotation.y))
+		lags.append(30.0 * 0.4 / 0.6 - rad_to_deg((rig.joints["turret_1"] as Node3D).rotation.y))
 		rig.tick(3.0)
 	assert_true(float(lags[1]) < float(lags[0]) * 0.5, "an act with its own light heft follows its keys more closely (%f against %f)" % [lags[1], lags[0]])
 	pair[1].free()
 
 
-func test_limits_hold_an_outward_only_turret_and_the_strike_flinches_outward() -> void:
+func test_limits_hold_a_one_way_mount_and_the_strike_kicks_the_way_it_may() -> void:
 	var pair := _rig_for("clydesdale", 4)
 	var rig: MechRig = pair[0]
-	var tr: Node3D = rig.joints["turret_r"]
+	# A shot kicks the joint carrying its gun (the Clydesdale's elevations since its batteries, 11
+	# November), toward the side its limits allow; no model's mount turns one way alone since its
+	# outward-only turrets went, so two elevations are held to one side here.
+	rig.meta["elev_1"]["limits"] = {"pitch": [0.0, 110.0]}
+	rig.meta["elev_2"]["limits"] = {"pitch": [-110.0, 0.0]}
+	var tr: Node3D = rig.joints["elev_2"]
 	rig.strike(true)
 	rig.tick(0.05)
-	assert_true(tr.rotation.y < 0.0, "the right turret, which turns only right, flinches right on a shot (%f)" % tr.rotation.y)
-	var tl: Node3D = rig.joints["turret_l"]
-	assert_true(tl.rotation.y > 0.0, "and the left one left")
-	assert_true((rig.joints["lance"] as Node3D).rotation.x != 0.0, "the lance kicks")
+	assert_true(tr.rotation.x < 0.0, "a mount that turns only down kicks down on a shot (%f)" % tr.rotation.x)
+	var tl: Node3D = rig.joints["elev_1"]
+	assert_true(tl.rotation.x > 0.0, "and one that turns only up, up")
+	assert_true((rig.joints["elev_3"] as Node3D).rotation.x != 0.0, "a gun's elevation kicks")
 	assert_true(is_zero_approx((rig.joints["hip_fl"] as Node3D).rotation.x), "a leg does not")
 	rig.tick(1.0)
-	assert_true(is_zero_approx(tr.rotation.y), "settled")
+	assert_true(is_zero_approx(tr.rotation.x), "settled")
 	rig.strike(false)
 	rig.tick(0.1)
-	assert_true(is_zero_approx(tr.rotation.y), "a melee blow leaves turrets alone")
+	assert_true(is_zero_approx(tr.rotation.x), "a melee blow leaves a gun's mount alone")
 	assert_true(is_zero_approx((rig.joints["knee_fl"] as Node3D).rotation.x), "and the legs")
 	pair[1].free()
 	pair = _rig_for("badger", 4)

@@ -324,12 +324,12 @@ once a round) the Paradox's shape. The stun row's cure applies: price by a gate,
 
 Homes for each want other than more Rapid pieces, with the engine's state:
 
-- **Own rerolls as a number** (another look). The engine runs it: the Clydesdale's Battery
-  Director is one free reroll of its own die a round, a static effect a module may carry
-  today. Give it to the machines whose identity reads its die (the Cassowary, the platform,
-  the Polar Bear), as a passive clause or a priced module (its stat line paid elsewhere, so it
-  is no universal must-pick). A look without an action. Hole: the Clydesdale's identity thins;
-  the number is the lever (one on a d9 is not one on a d3).
+- **Own rerolls as a number** (another look). The engine runs it: one free reroll of its own
+  die a round, a static effect the Trim Tabs module carries today (the Clydesdale's Battery
+  Director until its batteries, 11 November). Give it to the machines whose identity reads its
+  die (the Cassowary, the platform, the Polar Bear), as a passive clause or a priced module (its
+  stat line paid elsewhere, so it is no universal must-pick). A look without an action. The
+  number is the lever (one on a d9 is not one on a d3).
 - **The team's order instead of self-sequencing** (the second action). A passive that needs
   Rapid pieces to work wants a second action; ask first whether an ally's action is the better
   pair (the Dingo's Shock to the Kite's cash, the off-tank's lure for the team). Where
@@ -389,6 +389,7 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `ws_swallowtail.md` | the Swallowtail's rework (9 November): its Screens and Hoist are shields, its Horn already to be replaced, so three of its four locked pieces are open; the team Ward Claude offered withdrawn against the Barrier and Ward row; a bench; punted on 11 November until its skirmish niche is carved (his direction at its head) | Wainwright & Sutler | 3 | parked: Ryan's session, the niche first |
 | `kestrel_puffin.md` | the Puffin's rework (9 November): sent back to the drawing board by the refit pass, since shield faces leave the die; his direction of 11 November at its head (it moves heat: equipment on an ally pulls heat onto it, a locked piece dumps it on another unit with a buff; tier two his lean) and the holes raised on it | Kestrel | 1 (two his lean) | Ryan's session, after the heat prices land |
 | `kestrel_buzzard.md` | the Buzzard's rework (11 November, his direction): it takes the Storm Petrel's zap, shield spent into its blow, and gives up firing its heat; the Afterburner Cannon the zap's home, two forms | Kestrel | 2 | his pick of the cannon's form, then with the Storm Petrel's after the heat pass; dealt meanwhile |
+| `ws_clydesdale.md` | landed 11 November on his answers (its die folded into two batteries of four with one shared Changeover, the battery up carried from fight to fight, Battery Director retired; its model eight ports in a checkerboard, every stock gun its class), retired (`git show a2a2b29:docs/briefs/ws_clydesdale.md`; the bible's Clydesdale row) | Wainwright & Sutler | 2 | his play and its texts (the to-do) |
 | `kestrel_storm_petrel.md` | the Storm Petrel's rework (11 November, his direction): keep the shield armour, gain shield as it gains heat, the zap to another unit or a module; the holes (the Boundary-layer Bleed has the hook, the Buzzard's heat into shield, the zap's payment) | Kestrel | 1 | after the heat pass; dealt meanwhile |
 | `arsenal_nemesis.md` | landed 11 November on his answers (a rage bar: a hit on its shield 1, hull 2, a blow of its own blocked whole 2 a blow, up to 10; spent automatically in fives to make the Knuckle breach; a Barrier left whole his lean; the roll again an upgrade direction), retired (`git show d264c85:docs/briefs/arsenal_nemesis.md`; the bible's Nemesis rows) | the Arsenal | 2 | his play of the rage bar |
 | `refit_pass.md` | the refit pass's brief (9 November): Ryan's direction from his play of Phase 2, the resource model (an innate shield that regenerates, passive cooling, no shield or vent faces, a component a weapon or equipment, the hold as the heat decision), component destruction off to test, the cover withdrawn, the formation pass folded in, the what-if built and what its first reads say (9 November), the rework list and the open questions | the battle and the kit | rule | Ryan's play of the trial and his answers to its section 7, then the content |

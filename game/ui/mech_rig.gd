@@ -2304,7 +2304,7 @@ static func _strike_envelope(st: Dictionary) -> float:
 
 ## A blow. Melee: the joints that swing (the shoulders, by the sidecar or by name) throw the
 ## arms forward. Ranged: every joint that carries a weapon socket kicks about its own axis,
-## a recoil, toward whichever side its limits allow (a Clydesdale turret flinches outward).
+## a recoil, toward whichever side its limits allow (a mount held to one side kicks to it).
 ## `only` names the joints of the weapon that fired, and only they kick (Ryan, 31 October: "It
 ## would obviously be really cool if the actual weapon from the die fired"), a joint named that
 ## carries no socket included (a fixed gun's business end on a wrist: the Badger's fragmenter);

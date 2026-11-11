@@ -122,7 +122,10 @@ whole-block shield rule. Under the honest shield rule (decided 14 October) a shi
 points, so the Beam row's worth wants re-reading; every cell ran under the old rule, and a
 rerun before the honest rule is built still measures it. Ryan, 15 October, wants the
 Polar Bear's base armour down for its form changer (`minerva_armadillo.md`), which would move
-the Ballistic row's anchor (five at 3 a weapon tie the Polar Bear's armour 15 today).
+the Ballistic row's anchor (five at 3 a weapon tie the Polar Bear's armour 15 today). Since 11
+November the Clydesdale locks a piece, its Changeover, its die two batteries of four (the bible's
+Clydesdale row), so "like the Clydesdale, locks nothing" no longer holds and the overlap's
+sharpening has a form, for this session to read.
 
 ## Open for the session
 

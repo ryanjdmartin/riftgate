@@ -283,11 +283,12 @@ static func shape_model(shape: String, maker: String) -> String:
 	return "shapes/%s_%s" % [shape, maker]
 
 
-## How a class sits at a mount, [shape, scale]: the variant and the scale on the pin's own that
-## the model's sidecar declares for it there (lowforge's `fits`; Ryan, 2 November: "Hardpoint
-## just needs to declare shape (if offered) and scaling"), else the class itself at the pin's
-## scale. A round port takes a round launcher (the variant rack_round) and a dish small enough
-## to pass its bore.
+## How a class sits at a mount, [shape, scale, sink]: the variant, the scale on the pin's own and
+## how far back along the pin's line it sits (in the pin's units) that the model's sidecar
+## declares for it there (lowforge's `fits`; Ryan, 2 November: "Hardpoint just needs to declare
+## shape (if offered) and scaling"; 11 November, of the Polar Bear's ports: its guns "start
+## deeper", a round rack flush), else the class itself at the pin's scale and at the pin. A round
+## port takes a round launcher (the variant rack_round) and a dish small enough to pass its bore.
 static func fit_of(model_name: String, n: int, shape: String) -> Array:
 	return fit_in(MechRig.load_sidecar(model_name) if not model_name.is_empty() else {}, n, shape)
 
@@ -298,9 +299,15 @@ static func fit_in(side: Dictionary, n: int, shape: String) -> Array:
 	var pin = fits.get("hp_%d" % n, {}) if fits is Dictionary else {}
 	var how = pin.get(shape, {}) if pin is Dictionary else {}
 	if not (how is Dictionary):
-		return [shape, 1.0]
+		return [shape, 1.0, 0.0]
 	var variant := str(how.get("shape", shape))
-	return [shape if variant.is_empty() else variant, maxf(0.01, float(how.get("scale", 1.0)))]
+	return [shape if variant.is_empty() else variant, maxf(0.01, float(how.get("scale", 1.0))), float(how.get("sink", 0.0))]
+
+
+## Where a class hung on a pin stands for its fit's sink: back along the pin's line, which the
+## glTF carries as the pin's +z (lowforge builds a pin's line along its +y).
+static func sink_offset(sink: float) -> Vector3:
+	return Vector3(0.0, 0.0, sink)
 
 
 ## What a machine's mounts must change to show its fitted die instead of a stock loadout
@@ -324,16 +331,32 @@ static func mount_plan(die: Die, stock: Array, db: ContentDB) -> Array:
 ## the model was built shows its own class shapes, never the parts of the old one (Ryan's go,
 ## 28 October), and a model that numbers a bare mount among its guns still mounts the die in
 ## the die's order.
-static func pins_plan(die: Die, pins: Array, db: ContentDB) -> Array:
+static func pins_plan(die: Die, pins: Array, db: ContentDB, fold: int = 0) -> Array:
 	var out: Array = []
 	if die == null:
 		return out
 	var fitted: Array = []
-	for f in die.faces:
-		if f.fixed or f.component.is_empty():
-			continue
-		if _shaped(f.component, db):
-			fitted.append(f.component)
+	if fold > 0:
+		# A folded die (the Clydesdale's batteries): each battery's shaped components take its own
+		# mounts in order, hp_1 on for the first and the next `fold` for the second, so a piece that
+		# shows nowhere leaves its own battery's last mount bare, never another battery's gun on it.
+		var batteries: Array = [[], []]
+		var k := 0
+		for f in die.faces:
+			if f.fixed:
+				continue
+			if k < 2 * fold and not f.component.is_empty() and _shaped(f.component, db):
+				(batteries[0 if k < fold else 1] as Array).append(f.component)
+			k += 1
+		for battery in batteries:
+			for j in range(fold):
+				fitted.append(str(battery[j]) if j < (battery as Array).size() else "")
+	else:
+		for f in die.faces:
+			if f.fixed or f.component.is_empty():
+				continue
+			if _shaped(f.component, db):
+				fitted.append(f.component)
 	for k in range(maxi(fitted.size(), pins.size())):
 		var want := str(fitted[k]) if k < fitted.size() else ""
 		var have := str(pins[k]) if k < pins.size() else ""
@@ -396,7 +419,7 @@ static func plan_for(u: Unit, db: ContentDB) -> Array:
 		return []
 	var pins = pin_record(u.chassis_id)
 	if pins != null:
-		return pins_plan(u.die, pins, db)
+		return pins_plan(u.die, pins, db, Effects.folds_die(u))
 	var stock: Array = db.chassis.get(u.chassis_id, {}).get("loadout", [])
 	return mount_plan(u.die, stock, db)
 
@@ -480,9 +503,9 @@ static func burn_rows(model_name: String, rows: Array, db: ContentDB, stock_too:
 
 
 ## Every mount that shows a class and carries a component, as [pin, component, class, shape,
-## scale]: a swapped row's class, or the stock part's when lowforge built it as one (the sidecar's
-## `stock_shapes`; a hand-built weapon, the Ammit's flamer, is no class), with the shape and scale
-## the mount wears it in (fit_of: a variant, or the class itself).
+## scale, sink]: a swapped row's class, or the stock part's, which lowforge built as its class (the
+## sidecar's `stock_shapes`), with the shape, scale and sink the mount wears it in (fit_of: a
+## variant, or the class itself).
 static func shaped_rows(model_name: String, rows: Array, db: ContentDB, stock_too: bool = true) -> Array:
 	var out: Array = []
 	var swapped := {}
@@ -507,41 +530,20 @@ static func shaped_rows(model_name: String, rows: Array, db: ContentDB, stock_to
 		if cid.is_empty() or shape.is_empty():
 			continue
 		var fit := fit_in(side, n, shape)
-		out.append([n, cid, shape, str(fit[0]), float(fit[1])])
+		out.append([n, cid, shape, str(fit[0]), float(fit[1]), float(fit[2])])
 	return out
 
 
 ## Every mount that shows a gun and where its muzzle flares bloom, as [pin, component, class,
-## places]: a class's places on a swapped row or a stock class (shaped_rows), or for a stock gun
-## built by hand the places its model's sidecar names (lowforge found its business end), so every
-## gun that fires flares, a hand-built one as well as a class.
+## places]: its class's places, swapped or stock (shaped_rows), at the scale the mount wears it;
+## a stock gun is its class too (Ryan, 11 November: no stock gun is built by hand).
 static func flare_rows(model_name: String, rows: Array, db: ContentDB, stock_too: bool = true) -> Array:
 	var out: Array = []
-	var shown := {}
 	for row in shaped_rows(model_name, rows, db, stock_too):
 		var places: Array = []
-		for p in MuzzleFlare.places(str(row[3])):   # the shape the mount wears, at its scale there
-			places.append([(p[0] as Vector3) * float(row[4]), float(p[1]) * float(row[4])])
+		for p in MuzzleFlare.places(str(row[3])):   # the shape the mount wears, at its scale and its depth there
+			places.append([(p[0] as Vector3) * float(row[4]) + sink_offset(float(row[5])), float(p[1]) * float(row[4])])
 		out.append([int(row[0]), str(row[1]), str(row[2]), places])
-		shown[int(row[0])] = true
-	for row in rows:
-		if row.size() >= 2:
-			shown[int(row[0])] = true   # a swapped mount shows its class, never the hand-built gun under it
-	var stock = pin_record(model_name) if stock_too else null
-	var built = MechRig.load_sidecar(model_name).get("muzzles", {})
-	if stock is Array and built is Dictionary:
-		for key in (built as Dictionary).keys():
-			var tag := MechRig.parse_tag(str(key))
-			if tag.is_empty() or str(tag[0]) != "hp":
-				continue
-			var n := int(tag[1])
-			if shown.has(n) or n > (stock as Array).size() or str(stock[n - 1]).is_empty():
-				continue
-			var places: Array = []
-			for p in built[key]:
-				if p is Array and (p as Array).size() == 2 and p[0] is Array and (p[0] as Array).size() == 3:
-					places.append([Vector3(float(p[0][0]), float(p[0][1]), float(p[0][2])), float(p[1])])
-			out.append([n, str(stock[n - 1]), "", places])
 	return out
 
 
@@ -862,6 +864,7 @@ static func wear_burns(pins: Dictionary, burns: Array, look: String, paint_arg: 
 		var worn := str(row[3]) if row.size() >= 5 else str(row[2])
 		var part: Node3D = (load("res://art/models/shapes/burn_%s.glb" % worn) as PackedScene).instantiate()
 		part.scale = Vector3.ONE * (float(row[4]) if row.size() >= 5 else 1.0)
+		part.position = sink_offset(float(row[5]) if row.size() >= 6 else 0.0)
 		part.set_meta("mounted", true)
 		part.set_meta("burn", str(row[1]))
 		(pins[int(row[0])] as Node3D).add_child(part)
@@ -906,6 +909,7 @@ static func wear(pins: Dictionary, rows: Array, look: String, paint_arg: Diction
 			continue
 		var part: Node3D = (load("res://art/models/%s.glb" % id) as PackedScene).instantiate()
 		part.scale = Vector3.ONE * float(fit[1])
+		part.position = sink_offset(float(fit[2]))
 		part.set_meta("mounted", true)
 		pin.add_child(part)
 		toon(part, str(row[3]), look, paint_arg, as_token, drop_detail)

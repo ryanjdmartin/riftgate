@@ -476,7 +476,7 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # RIFTGATE_SHOT_FRAME=<n> picks the capture frame, to catch an animation mid-flight.
 # RIFTGATE_FEED_DEBUG=1 (any run) fires the skirmish feed's analysis events every half
 # second and the ground tears every couple of seconds, to judge them by eye.
-# RIFTGATE_SEAL_DEBUG=1 (any run with a model that holds a form, the Polar Bear) holds the seal and lets it go in
+# RIFTGATE_SEAL_DEBUG=1 (any run with a model that holds a form: the Polar Bear's seal, the Clydesdale's batteries) holds the seal and lets it go in
 # turn, and in a skirmish the sealed shell and its burst follow it, to judge them running; the open
 # Polar Bear stands with its vents ajar.
 # RIFTGATE_ACT_DEBUG=1 (any skirmish) lights one foe after another as the acting foe is lit in the
@@ -644,7 +644,7 @@ godot --path . --resolution 360x640 -s tools/gait_clip.gd -- clydesdale wainwrig
 BPY_PYTHON=.bpy/bin/python tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger
 tools/spriter/.venv/bin/python tools/lowforge/glbcmp.py art/models/badger.glb /tmp/badger.glb   # a rebuild's geometry against the committed file
 # the silhouette classes a swapped component wears at a gun mount (models_low.SHAPES) and their variants (VARIANTS: the round
-# launcher, which a mount's `fits` may declare for its class), every maker's metal, then re-import
+# launcher, which a mount's `fits` may declare for its class, with its scale and its sink back along the mount's line), every maker's metal, then re-import
 tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes
 # one machine wearing swapped components on its mounts ("2:" bares a mount; armour and vents show nowhere); a class alone: <chassis> shapes/barrel_minerva; rendered bare
 RIFTGATE_FIT="1:photosphere_lance,4:blazethrower" godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva fit.png front 480 480

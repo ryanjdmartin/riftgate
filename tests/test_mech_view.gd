@@ -58,11 +58,11 @@ func test_a_hardpoint_wears_the_variant_and_scale_it_declares_for_a_class() -> v
 	# own (lowforge's `fits`; Ryan, 2 November: "Hardpoint just needs to declare shape (if
 	# offered) and scaling"); every other class wears itself at the pin's scale.
 	var side := {"fits": {"hp_2": {"rack": {"shape": "rack_round", "scale": 0.8}, "dish": {"shape": "dish", "scale": 0.5}}}}
-	assert_eq(MechView3D.fit_in(side, 2, "rack"), ["rack_round", 0.8], "the declared variant at its scale")
-	assert_eq(MechView3D.fit_in(side, 2, "dish"), ["dish", 0.5], "the class itself, smaller")
-	assert_eq(MechView3D.fit_in(side, 2, "barrel"), ["barrel", 1.0], "an undeclared class wears itself")
-	assert_eq(MechView3D.fit_in(side, 1, "rack"), ["rack", 1.0], "and so does every class on an undeclared mount")
-	assert_eq(MechView3D.fit_in({}, 1, "blade"), ["blade", 1.0], "a sidecar with no fits changes nothing")
+	assert_eq(MechView3D.fit_in(side, 2, "rack"), ["rack_round", 0.8, 0.0], "the declared variant at its scale")
+	assert_eq(MechView3D.fit_in(side, 2, "dish"), ["dish", 0.5, 0.0], "the class itself, smaller")
+	assert_eq(MechView3D.fit_in(side, 2, "barrel"), ["barrel", 1.0, 0.0], "an undeclared class wears itself")
+	assert_eq(MechView3D.fit_in(side, 1, "rack"), ["rack", 1.0, 0.0], "and so does every class on an undeclared mount")
+	assert_eq(MechView3D.fit_in({}, 1, "blade"), ["blade", 1.0, 0.0], "a sidecar with no fits changes nothing")
 
 
 func test_every_declared_fit_names_a_built_variant_of_its_class() -> void:
@@ -135,6 +135,7 @@ func test_a_swap_wears_the_mounts_variant_at_its_scale() -> void:
 				if worn != null:
 					assert_eq(worn.scene_file_path, "res://art/models/%s.glb" % MechView3D.shape_model(str(how.get("shape", cls)), maker), "%s %s wears its %s's variant" % [model, pin, cls])
 					assert_true(absf(worn.scale.x - float(how.get("scale", 1.0))) < 0.001, "%s %s wears its %s at its scale" % [model, pin, cls])
+					assert_true(worn.position.distance_to(MechView3D.sink_offset(float(how.get("sink", 0.0)))) < 0.001, "%s %s wears its %s at its depth" % [model, pin, cls])
 					(pins[n] as Node3D).remove_child(worn)
 					worn.free()
 				var flares := MechView3D.flare_rows(model, [[n, cid, cls, maker]], db, false)
@@ -364,7 +365,7 @@ func test_a_burn_weapon_wears_its_fire_on_its_class_and_nothing_else_does() -> v
 	assert_false(MechView3D.burning("cold_gun", db), "one without burn does not")
 	assert_false(MechView3D.burning("bare_gun", db), "nor one whose entry names no keywords")
 	var rows := [[1, "fire_gun", "barrel", "minerva"], [2, "cold_gun", "barrel", "minerva"]]
-	assert_eq(MechView3D.burn_rows("", rows, db), [[1, "fire_gun", "barrel", "barrel", 1.0]], "a swapped burn weapon's mount takes its class's fire, and only it")
+	assert_eq(MechView3D.burn_rows("", rows, db), [[1, "fire_gun", "barrel", "barrel", 1.0, 0.0]], "a swapped burn weapon's mount takes its class's fire, and only it")
 
 
 func test_a_flash_rises_holds_and_settles_back_to_rest() -> void:

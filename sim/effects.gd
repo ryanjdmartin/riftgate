@@ -51,7 +51,7 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "pass_sweep", "hold_status", "mute_keywords", "weapon_cooldown", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "fold_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "pass_sweep", "mute_keywords", "weapon_cooldown", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_shield_hit": ["stack_status", "add_shield", "vent_heat"],
@@ -268,6 +268,12 @@ const STATUS := {
 	# with the passive's numbers), renewing, never stacking (Ryan: the granted armour is tied
 	# to the mode). Its own cooling stops and it runs hotter at the end of each turn
 	# (Skirmish); an ally's vent still cools it (Ryan, 20 October: allowed).
+	# The Clydesdale's batteries (Ryan, 11 November: "One half at a time ... The active half should
+	# persist between skirmishes"): its die folds in two, a battery up and one stowed, and this
+	# chip says the second is up; with none the first is. Held for the battle (fold_die), never a
+	# buff, so nothing purges it; the model holds the form of the same name (the second battery up).
+	"changed_over": {"id": "changed_over", "name": "Changed Over", "description": "Its second battery is up and its first stowed: its die rolls the second battery and its fixed pieces.", "decay": "none", "stacking": "renew",
+		"tags": ["ability", "form"], "effects": []},
 	"sealed": {"id": "sealed", "name": "Sealed", "description": "Sealed: armour up, its own cooling stopped, hotter at the end of each turn. A weapon it fires opens it.", "decay": "none", "stacking": "renew",
 		"tags": ["ability", "form"], "effects": []},
 	# Cryo (Ryan, 20 October: the Polar Bear's Cryo Flinger, the debuff called Cryo too, marked
@@ -1730,7 +1736,7 @@ static func _plate(u, change: int) -> void:
 
 
 ## Free rerolls of this machine's own die each round, on top of the team's (free_reroll,
-## static; the Clydesdale's Battery Director).
+## static; the Trim Tabs module's, the Clydesdale's Battery Director's until its batteries).
 static func free_rerolls(u) -> int:
 	var n := 0
 	for pair in _taking_part(u, "static", null):
@@ -1827,6 +1833,58 @@ static func no_destroy(u, face: Face) -> bool:
 		if str(pair[0].get("effect", "")) == "no_destroy":
 			return true
 	return false
+
+
+## How many hardpoints a battery of this machine's folded die holds (fold_die, static; the
+## Clydesdale's, Ryan, 11 November): its die is two batteries of that many, one up at a time; 0
+## for a die that does not fold.
+static func folds_die(u) -> int:
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "fold_die":
+			return maxi(0, int(pair[0].get("value", 0)))
+	return 0
+
+
+## The entries a folded die rolls among: its fixed pieces, up on either battery, and the battery
+## up (the first, or the second while it carries Changed Over); empty for a die that does not fold,
+## which rolls among all of them.
+static func live_entries(u, die) -> Array:
+	var h := folds_die(u)
+	if h <= 0 or die == null:
+		return []
+	var second := has(u, "changed_over")
+	var out: Array = []
+	var k := 0
+	for i in range(die.faces.size()):
+		if die.faces[i].fixed:
+			out.append(i)
+			continue
+		if k < 2 * h and (k >= h) == second:
+			out.append(i)
+		k += 1
+	return out
+
+
+## The entries a folded die's stowed battery holds (the codex dims them); empty for a die that
+## does not fold.
+static func stowed_entries(u, die) -> Array:
+	var live := live_entries(u, die)
+	if live.is_empty():
+		return []
+	var out: Array = []
+	for i in range(die.faces.size()):
+		if not live.has(i):
+			out.append(i)
+	return out
+
+
+## Turn a folded die to its other battery (the Changeover's spend): the second battery up carries
+## Changed Over for the battle, the first carries nothing. True when the second is up after.
+static func turn_die(u) -> bool:
+	if remove(u, "changed_over"):
+		return false
+	stack(u, STATUS["changed_over"], BATTLE, "changeover", 1, DECAY_NONE)
+	return true
 
 
 ## Does this machine's die step instead of rolling (the Cassowary's Indexed Cylinder, Ryan's
@@ -2326,6 +2384,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"extra_action": body = "%s more action%s a turn: move and fight again" % [vs, "" if int(v) == 1 else "s"]
 		"hull_per_spend": body = "every component it spends costs %s hull" % vs
 		"step_die": body = "its die never rolls: each fight opens on a random entry, and every roll steps it to the next in order"
+		"fold_die": body = "its die is two batteries of %s, one up at a time with its fixed pieces; the battery up stays up from fight to fight, and a battle opens on the first" % vs
 		"rewrite_weapon": body = "every weapon and equipment it aims at a foe fires as one %s %s blow, heat %s, its keywords and rules kept" % [str(eff.get("reach", "direct")), vs, str(eff.get("heat", 0))]
 		"vent_blast": body = "a vent it spends on itself blasts a random foe for %s the heat it takes off" % ("the whole of" if is_equal_approx(float(v), 1.0) else "%s×" % vs)
 		"pass_sweep": body = "a turn it ends with an entry it could have spent releases its heat once the enemy has acted: a Sweep of the rank with the most foes, a shot of %s for every heat" % vs
