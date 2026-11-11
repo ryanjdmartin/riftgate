@@ -8109,10 +8109,55 @@ Read.
   and two are a wall for three machines of nine (the Polar Bear never wins, the Prairie Dog
   one fight in three), its bite's scorch and its hide's heat ending slow machines; a Drake
   behind one is the same wall, and a Bomb alone dies before it acts.
-- Set aside by the reads: the Gel (two take seven to ten rounds for a twentieth of the hull), the
-  Cockatrice and the Antlion alone (nothing lost), a Ghost behind a Revenant (the Prairie Dog
-  loses three fights in twenty to the raise, and with two revenants half of them), the Zombie
-  Knight (won one fight in two), three Needlers (28% of the hull).
+- Tried as a picket and not picked, each staying in its formations as it is: the Gel (two
+  take seven to ten rounds for a twentieth of the hull), the Cockatrice and the Antlion alone
+  (nothing lost), a Ghost behind a Revenant (the Prairie Dog loses three fights in twenty to
+  the raise, and with two revenants half of them), the Zombie Knight (won one fight in two),
+  three Needlers (28% of the hull).
 - The Cottonmouth takes every patrol here but the Zombie Knight in one to three rounds for
   next to nothing: it is the flanker this bot would always send, which is the machine's
   question and none of the patrols'.
+
+## 11 November, menace a pack's threat rating: the thresholds in pips and the salvage rate
+
+Ryan, 11 November: "Maybe just 1-2-3-4 for now to keep math simple. But yes this direction
+makes way more sense. We can tune difficulty to the value, within an acceptable band. It
+gives us an absolute unbiased benchmark. I think the value can stay unchanged by tier, as
+only salvage needs to scale, right." Built the same day: menace is a pack's threat rating, a
+pip a hundred in the engine, read by the Rupture meter, salvage and Anathema (the bible's
+tally row; `ContentDB.worth_of`).
+
+The Rupture's Fractures in pips, as the game sets them (two beats, the tide's lightest patrol
+left, four for each elite the tier calls), a battle set up in each domain:
+
+| Tier | Convergence | The field's part | The Fractures, in pips |
+|---|---|---|---|
+| 1 | 0 | 10 | 2.9, 7.2, 13 |
+| 1 | 3 | 14 | 3.8, 9.4, 17 |
+| 2 | 4 | 13 | 2.9, 7.1, 12.9, 20 |
+| 2 | 8 | 17 | 3.4, 8.6, 15.4, 24 |
+| 3 | 8 | 16 or 17 | 2.8, 7.0, 12.6, 19.6, 28 at 17 |
+| 3 | 12 | 17 | 2.8, 7.0, 12.6, 19.6, 28 |
+
+Every domain reads the same but for tier three at Convergence 8, where the Marsh's and the
+Peak's tide is a pip lighter than the Meadow's and the Waste's (a patrol of one rating in
+the place of another's in the tears' order). By the sum of each foe's own numbers the same
+first battle's Rupture was 123 in the Marsh and 191 on the Peak before its boss.
+
+The salvage rate. The campaign runner on the same forty runs (`tools/campaign_run.gd -- --runs
+40`, the floor player, its report `docs/campaign_run.md`), before and after:
+
+| Measure | The sum, two salvage a point | The rating, eighteen a pip |
+|---|---|---|
+| Salvage banked a won battle | 369 (302 to 485) | 372 (344 to 397) |
+| Menace killed a battle | 62 points | 6.1 pips |
+| Battles reaching the Rupture | 18% of 180 | 18% of 179 |
+| The turn the seal broke, where it did | 5.0 (2 to 12) | 5.6 (4 to 11) |
+| Fractures reached a battle | 0.99 | 1.01 |
+| Battles won | 6% | 4% |
+
+Read. Eighteen a pip banks what a won battle banked, and the band is a third as wide, since
+a domain's kills are worth what another's are. The floor player reaches the Rupture as
+often; its wins, eleven and eight of some 180, are one direction's noise. Forty runs: a
+direction.
+

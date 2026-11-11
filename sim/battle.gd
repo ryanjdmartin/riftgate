@@ -110,18 +110,22 @@ var ramp: int = 0
 ## battle's end and never shows while it is fought. The battle only counts; the campaign
 ## decides what is kept.
 var foes_killed: int = 0
-## The menace of every foe killed this battle (ContentDB.menace, the one weight for the Rupture
-## meter, Anathema and salvage, 30 October), tallied as each fight ends like the kills.
+## The menace killed this battle, the one weight for the Rupture meter, Anathema and salvage (30
+## October), tallied as each fight ends like the kills. Menace is a pack's threat rating since 11
+## November (ContentDB.worth_of, in hundredths of a pip): a pack a fight has worn has paid the
+## share of its rating its strike at the wall has lost, the heads gone of the heads it took the
+## field with; its fall makes it whole; and nothing pays past it or twice (pack_paid).
 var menace_killed: int = 0
+var pack_paid: Dictionary = {}    # a standing pack's id -> what the tally holds of its rating so far, made whole as it falls
 ## The Rupture meter (the pacing session, 30 October; sized in beats since 11 November, the
 ## bible's pacing row): the tally above against the Fractures' thresholds, set at setup. The
-## Rupture's size is the field's part and the elites' chunks. The field's part is the menace
+## Rupture's size is the field's part and the elites'. The field's part is the menace
 ## the opening places (the boss unit aside) and the tide sends through the ramp's beats
 ## (Ramp.beats_at: the rift's compositions and the tears' patrols, peak by peak), less the
-## lightest patrol the tide deals, which the squad may leave (RUPTURE_LEAVE); so it follows the
-## tier's numbers and the ramp's counts without a table of its own, and the seal is earned by
-## fighting the tide, never the opening alone. Each elite the tier's Fractures call adds a chunk
-## (elite_chunk), and its fall fills that chunk whichever elite came. The Fractures split the
+## lightest patrol the tide deals, which the squad may leave (RUPTURE_LEAVE); so it follows
+## the ramp's counts without a table of its own, level across the domains, and the seal is
+## earned by fighting the tide, never the opening alone. Each elite the tier's Fractures call
+## adds its rating's worth, four pips, whichever elite comes. The Fractures split the
 ## size at growing steps (later ones cost more). A Fracture pays out as a fight ends: the log
 ## names it, and at the Fractures the tier names the next elite composition of the lead's
 ## domain not yet fought this battle spawns at the rift. The last Fracture is the Rupture: the
@@ -136,11 +140,6 @@ var fractures: int = 0            # Fractures earned so far
 var rupture_turn: int = -1        # the phase the seal broke at; -1 while it holds (or with no seal)
 var elites_spawned: Array = []    # the elite compositions spawned this battle, by id
 var field_menace: int = 0         # the menace of the opening and the tide through the beats, the thresholds' base
-## What an elite's fall fills of the meter this battle (Ramp.ELITE_CHUNK formations of the tier
-## and ramp, set at setup); 0 where no formation gives it a measure, an elite then its own menace.
-var elite_chunk: int = 0
-var meter_elites: int = 0         # menace the elites' falls have added to the meter over their packs' own kills (under, if a pack's own is more)
-var elite_paid: Dictionary = {}   # a standing elite pack's id -> the menace of its kills the tally holds so far, topped up to the chunk as it falls
 ## The fodder's trial (Ryan, 10 November, after his play: "If fracture rewards were a little lower
 ## for fodder, then it becomes a bit more of a quantity game for non-elites and I'll feel more
 ## like sending my flankers out"): the share, in hundredths, of a kill's menace the Rupture meter
@@ -269,7 +268,7 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 	# field to earn it against. The field's part: the compositions placed and the tide through the
 	# ramp's beats, as Battlefield.peak sends it (the rift's cycle in order; a patrol from every
 	# tear open before a peak, in the tears' cycle's order; the ramp's tears opening after it),
-	# each as content writes it, so a layout's draw moves no threshold. Placeholders.
+	# each at its threat rating's worth, so a layout's draw moves no threshold. Placeholders.
 	field_menace = 0
 	for p in placed:
 		field_menace += db.composition_menace(p[0])
@@ -284,26 +283,17 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 			field_menace += db.composition_menace(field.patrol_cycle[patrol_at % field.patrol_cycle.size()])
 			patrol_at += 1
 		tears_open += Ramp.tears_at(ramp)
-	# The lightest patrol the tide deals is the squad's to leave; an elite's fall is so many of
-	# the cycle's formations, their mean (any composition's where the cycle holds no formation).
+	# The lightest patrol the tide deals is the squad's to leave; an elite the tier calls is
+	# its size's rating, whichever comes.
 	var lightest := 0
 	for c in field.patrol_cycle:
 		var m := db.composition_menace(c)
 		lightest = m if lightest == 0 else mini(lightest, m)
-	var forms_menace := 0
-	var forms_n := 0
-	var any_menace := 0
-	for c in field.cycle:
-		any_menace += db.composition_menace(c)
-		if str(c.get("size", "")) == "formation":
-			forms_menace += db.composition_menace(c)
-			forms_n += 1
-	var formation := (float(forms_menace) / float(forms_n)) if forms_n > 0 else ((float(any_menace) / float(field.cycle.size())) if not field.cycle.is_empty() else 0.0)
-	elite_chunk = roundi(Ramp.ELITE_CHUNK * formation)
+	var elite := ContentDB.worth_of(int(ContentDB.SQUAD_BY_SIZE["elite"]))
 	thresholds = []
 	var n := Ramp.fractures_at(tier)
 	if field_menace > 0 and n > 0:
-		var size := maxi(1, field_menace - RUPTURE_LEAVE * lightest) + Ramp.elite_fractures_at(tier).size() * elite_chunk
+		var size := maxi(1, field_menace - RUPTURE_LEAVE * lightest) + Ramp.elite_fractures_at(tier).size() * elite
 		var steps: Array = []
 		var total := 0.0
 		for k in range(n):
@@ -384,10 +374,9 @@ func is_sealed() -> bool:
 	return boss != null and boss.sealed
 
 
-## What the Rupture meter reads: the menace killed, less what the fodder's trial held back, and
-## each fallen elite's pack counted as its chunk in place of its own menace.
+## What the Rupture meter reads: the menace killed, less what the fodder's trial held back.
 func meter() -> int:
-	return (menace_killed * 100 - meter_held) / 100 + meter_elites
+	return (menace_killed * 100 - meter_held) / 100
 
 
 ## The Rupture: the seal breaks, by the last Fracture. Engaging the boss is the battle's last
@@ -1515,29 +1504,35 @@ func finish_skirmish() -> void:
 		fought[ms.unit.id] = true
 		moved.erase(ms.unit.id)
 		action_hexes.erase(ms.unit.id)
-	var elites_fought: Array[Unit] = []
+	var tallied: Array[Unit] = []
 	for sq in current.packs:
 		var by_type := current.kills_by_type(sq)
-		var whole := 0
 		for cid in by_type.keys():
 			foes_killed += int(by_type[cid])
-			whole += db.menace(str(cid)) * int(by_type[cid])
-		menace_killed += whole
-		if sq.composition_size == "elite" and not sq.is_boss:
-			elite_paid[sq.id] = int(elite_paid.get(sq.id, 0)) + whole
-			elites_fought.append(sq)
-		elif fodder_trial < 100:
-			meter_held += whole * (100 - clampi(fodder_trial, 0, 100))
+		tallied.append(sq)
 	for k in current.sponsorship.keys():
 		sponsorship[k] = int(sponsorship.get(k, 0)) + int(current.sponsorship[k])
 	field.apply_skirmish_result(current)
-	# An elite's fall fills its chunk whichever elite came (Ramp.ELITE_CHUNK): once its pack is
-	# gone the meter counts the chunk in place of the pack's own menace. The tally keeps the kills.
-	for sq in elites_fought:
-		if not field.units.has(sq):
-			if elite_chunk > 0:
-				meter_elites += elite_chunk - int(elite_paid.get(sq.id, 0))
-			elite_paid.erase(sq.id)
+	# Menace: a pack is worth its threat rating (ContentDB.worth_of), and a pack a fight has
+	# worn has paid the share of it its strike at the wall has lost (Battlefield.strike_of: the
+	# heads gone of the heads it took the field with). Its fall makes it whole, and nothing
+	# pays past it or twice, so a head raised, split off or grown back adds none.
+	for sq in tallied:
+		var worth := ContentDB.worth_of(sq.squad)
+		var owed := worth
+		var stands := field.units.has(sq)
+		if stands:
+			var full := maxi(1, sq.full_strength)
+			owed = (worth * clampi(full - Battlefield.heads(sq), 0, full)) / full
+		var paid := int(pack_paid.get(sq.id, 0))
+		var pay := maxi(0, owed - paid)
+		if not stands:
+			pack_paid.erase(sq.id)
+		elif pay > 0:
+			pack_paid[sq.id] = paid + pay
+		menace_killed += pay
+		if fodder_trial < 100 and sq.composition_size != "elite":
+			meter_held += pay * (100 - clampi(fodder_trial, 0, 100))
 	current = null
 	boss_fight = false
 	state = State.PLAN

@@ -381,11 +381,11 @@ func report() -> String:
 		tear_sent.append(float(b.get("tear_spawns", 0)))
 		tears_open.append(float(b.get("tears", 0)))
 		elites.append(float(b.get("elites", 0)))
-		menace.append(float(b.get("menace", 0)))
+		menace.append(float(b.get("menace", 0)) / float(ContentDB.MENACE_PER_PIP))
 		gate_dmg.append(float(b.get("gate_damage", 0)))
 	L.append("## The Rupture meter and the mouths")
 	L.append("")
-	L.append("The meter fills by the menace of the kills against the tier's Fractures (three, four, five), the last the Rupture, which breaks the boss's seal; it is sized in beats, what the opening places and the tide sends through its second peak, with a chunk for each elite, whose fall fills it whichever elite came. A peak of Rift Pressure sends a composition from the rift and a patrol from every tear open before it, and opens the ramp's count of tears on the seam. Every number a placeholder (`sim/ramp.gd`, `sim/battle.gd`).")
+	L.append("The meter fills by the menace of the kills against the tier's Fractures (three, four, five), the last the Rupture, which breaks the boss's seal; it is sized in beats, what the opening places and the tide sends through its second peak, with four pips for each elite; menace is a pack's threat rating, a lone patrol one and a formation three. A peak of Rift Pressure sends a composition from the rift and a patrol from every tear open before it, and opens the ramp's count of tears on the seam. Every number a placeholder (`sim/ramp.gd`, `sim/battle.gd`).")
 	L.append("")
 	L.append("| Measure | Mean | Range |")
 	L.append("|---|---|---|")
@@ -398,7 +398,7 @@ func report() -> String:
 	L.append("| Patrols the tears sent a battle | %s |" % _band(tear_sent))
 	L.append("| Tears open at the battle's end | %s |" % _band(tears_open))
 	L.append("| Elites spawned a battle | %s |" % _band(elites))
-	L.append("| Menace killed a battle | %s |" % _band(menace))
+	L.append("| Menace killed a battle, in pips of threat rating | %s |" % _band(menace, true))
 	L.append("| Gate damage a battle | %s |" % _band(gate_dmg))
 	L.append("")
 	# The pressure ratio (the long wall brief, section 5): as each player's turn opens, the threat
@@ -531,9 +531,9 @@ func report() -> String:
 	L.append("")
 	L.append("## The placeholders measured")
 	L.append("")
-	L.append("City gate %d, capital %d, bleed %d a turn, drain %d a fallen city a turn, %d phases of unopposed strikes after a wipe, %d salvage a point of menace killed in any fight, %d to start, %d Favour a won battle less %d a point of gate damage, %d Favour to start, a rush %d Favour, %d salvage a point of the capital's gate, the finale at Convergence %d (one sooner a fallen city), %d rifts open at tier 0 and one more every %d of the Convergence, a guest from tier %d, a squad of %d." % [
+	L.append("City gate %d, capital %d, bleed %d a turn, drain %d a fallen city a turn, %d phases of unopposed strikes after a wipe, %d salvage a pip of menace killed in any fight (a pack's threat rating), %d to start, %d Favour a won battle less %d a point of gate damage, %d Favour to start, a rush %d Favour, %d salvage a point of the capital's gate, the finale at Convergence %d (one sooner a fallen city), %d rifts open at tier 0 and one more every %d of the Convergence, a guest from tier %d, a squad of %d." % [
 		Campaign.CITY_GATE, Campaign.CAPITAL_GATE, Campaign.BLEED, Campaign.DRAIN, Campaign.WIPE_PHASES,
-		Campaign.SALVAGE_PER_MENACE, Campaign.START_SALVAGE, Campaign.FAVOUR_PER_WIN, Campaign.FAVOUR_DOCK, Campaign.START_FAVOUR, Campaign.RUSH_PRICE, Campaign.REPAIR_COST,
+		Campaign.SALVAGE_PER_PIP, Campaign.START_SALVAGE, Campaign.FAVOUR_PER_WIN, Campaign.FAVOUR_DOCK, Campaign.START_FAVOUR, Campaign.RUSH_PRICE, Campaign.REPAIR_COST,
 		Campaign.FINALE_AT, Campaign.RIFTS_BASE, Campaign.TIER_EVERY, Campaign.GUEST_TIER, Campaign.SQUAD])
 	L.append("")
 	return "\n".join(L)

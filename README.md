@@ -300,7 +300,7 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # hull lost; printed, and written to --out when one is given (about forty minutes at 30 seeds).
 # --packs curve runs the curve read for the formation pass (7 November): every such composition
 # against the four cut to every size from one to four, random and greedy, each cell's band (free,
-# a decision, a wall) and greedy's hull lost, its menace, ramp gate and rating, the sizes it is a
+# a decision, a wall) and greedy's hull lost, its weight, ramp gate and rating, the sizes it is a
 # decision for and the peers whose bands it matches at every size, candidates for pruning;
 # printed, and written to --out (about two minutes a seed, so an hour at 30). With it --team
 # id,id,id,id reads another team in that cut order (a light machine first for the rating of one, a
@@ -524,7 +524,7 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # first packs stand, 0 to 3. The opening is measured from the wall, so depth alone leaves the
 # first strike where it was and the opening's distance is what buys the turns; the seam's first
 # row follows the depth by its own rule. RIFTGATE_FODDER=50 (any battle) fills the Rupture meter
-# by that share, in hundredths, of a kill's menace when its pack came as no elite (his "If
+# by that share, in hundredths, of a pack's menace when it came as no elite (his "If
 # fracture rewards were a little lower for fodder"; salvage and Anathema read the whole tally
 # as before). RIFTGATE_BEATS=3 (any battle) sizes the Rupture meter in beats of the tide, the
 # peaks of Rift Pressure its field part runs through, 1 to 6 and 2 the game's (his "Try your

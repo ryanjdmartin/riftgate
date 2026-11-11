@@ -53,7 +53,7 @@ const BLEED := 50             # a city under an open rift it was not defended at
 const DRAIN := 25             # each fallen city's horde takes this from the capital a turn
 const SQUAD := 4              # machines a battle takes at most (four columns, section 5)
 const WIPE_PHASES := 6        # phases the horde strikes the gate unopposed after a team wipe
-const SALVAGE_PER_MENACE := 2  # salvage a point of menace killed, in any fight however it ended (7 October: a kill is a kill; 30 October: weighted by danger, the reinforcements light, so the farm pays a trickle and the rift's bounty is where the salvage is); set so a battle banks about what it banked at ten a kill
+const SALVAGE_PER_PIP := 18  # salvage a pip of menace killed, in any fight however it ended (7 October: a kill is a kill; 30 October: weighted by danger; 11 November: menace a pack's threat rating, so a pip is a lone patrol and a formation three, the same in every domain and at every tier); set so a battle banks about what it banked at two a point of the old sum; salvage's growth by tier is the economy pass's to add ("only salvage needs to scale")
 const START_SALVAGE := 0      # salvage builds; a run starts with nothing to build with but its blueprints
 const FAVOUR_PER_WIN := 100   # the Council's Favour for a won battle (7 October: the second currency, earned by results, spent on purchases and services)
 const FAVOUR_DOCK := 1        # Favour docked per point of gate damage the city took in that battle; never below nothing
@@ -310,6 +310,12 @@ func turns_to_fall(city_id: String) -> int:
 
 # ---------------------------------------------------------------- a battle
 
+## The salvage a battle's kills bank: SALVAGE_PER_PIP a pip of the menace killed (a battle
+## tallies menace in hundredths of a pip, ContentDB.MENACE_PER_PIP).
+static func salvage_for(menace_killed: int) -> int:
+	return (menace_killed * SALVAGE_PER_PIP) / ContentDB.MENACE_PER_PIP
+
+
 ## Open a battle at `city_id` with the ready machines `uids` (one to SQUAD). Null when the
 ## run is not between battles, the city is no front, or the squad is not ready.
 func start_battle(city_id: String, uids: Array) -> Battle:
@@ -406,7 +412,7 @@ func finish_battle() -> Dictionary:
 		var final := bool(c.rift.get("final", false))
 		c.rift = {}
 		c.quiet = QUIET_TURNS
-		var banked := b.menace_killed * SALVAGE_PER_MENACE + _bank_loot(b, report)
+		var banked := salvage_for(b.menace_killed) + _bank_loot(b, report)
 		salvage += banked
 		report["salvage"] = banked
 		# The Council pays for results: its Favour for the win, docked for the gate damage the
@@ -433,7 +439,7 @@ func finish_battle() -> Dictionary:
 		_fall(c)
 	else:
 		report["result"] = "held"
-		var banked := b.menace_killed * SALVAGE_PER_MENACE + _bank_loot(b, report)
+		var banked := salvage_for(b.menace_killed) + _bank_loot(b, report)
 		salvage += banked
 		report["salvage"] = banked
 	report["gate_left"] = c.gate

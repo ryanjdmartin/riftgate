@@ -20,35 +20,29 @@ func _battle(seed_value: int = 3) -> Battle:
 
 
 ## The Rupture's size as the rule has it (11 November), worked out here apart from the battle's
-## own sum: [the field's part before the patrol left, the size]. The field's part is what stands
-## at the start and what the tide sends through the ramp's beats, a peak the rift's next
-## composition and a patrol from every tear open before it, the ramp's tears opening after.
+## own sum: [the field's part before the patrol left, the size]. Every pack counts at its threat
+## rating, a pip a hundred. The field's part is what stands at the start and what the tide sends
+## through the ramp's beats, a peak the rift's next composition and a patrol from every tear
+## open before it, the ramp's tears opening after; the size leaves the tide's lightest patrol
+## and adds an elite's four pips for each the tier's Fractures call.
 func _rupture_size(b: Battle) -> Array:
-	var db := b.db
+	var pip := ContentDB.MENACE_PER_PIP
 	var field_part := 0
 	for sq in b.field.packs():
 		if not sq.is_boss:
-			for m in sq.member_list():
-				field_part += db.menace(str(m[0])) * int(m[1])
+			field_part += sq.squad * pip
 	var tears := 0
 	var at := 0
 	for j in range(Ramp.beats_at(b.tier)):
-		field_part += db.composition_menace(b.field.cycle[j % b.field.cycle.size()])
+		field_part += ContentDB.squad_of(b.field.cycle[j % b.field.cycle.size()]) * pip
 		for i in range(tears):
-			field_part += db.composition_menace(b.field.patrol_cycle[at % b.field.patrol_cycle.size()])
+			field_part += ContentDB.squad_of(b.field.patrol_cycle[at % b.field.patrol_cycle.size()]) * pip
 			at += 1
 		tears += Ramp.tears_at(b.ramp)
 	var lightest := 1 << 30
 	for c in b.field.patrol_cycle:
-		lightest = mini(lightest, db.composition_menace(c))
-	var forms := 0.0
-	var forms_n := 0
-	for c in b.field.cycle:
-		if str(c.get("size", "")) == "formation":
-			forms += float(db.composition_menace(c))
-			forms_n += 1
-	var chunk := roundi(Ramp.ELITE_CHUNK * forms / float(maxi(1, forms_n)))
-	return [field_part, field_part - Battle.RUPTURE_LEAVE * lightest + Ramp.elite_fractures_at(b.tier).size() * chunk, chunk]
+		lightest = mini(lightest, ContentDB.squad_of(c) * pip)
+	return [field_part, field_part - Battle.RUPTURE_LEAVE * lightest + Ramp.elite_fractures_at(b.tier).size() * 4 * pip]
 
 
 ## Park a pack beside a machine, rooted and pushing, so it can be attacked and does not hunt.
@@ -403,8 +397,8 @@ func test_a_composed_formation_replaces_the_spawn_list_and_the_boss_can_stay_hom
 
 ## A pack as a composition (the foes' fresh start, 30 October): one hex, one sprite (its lead's),
 ## every member unpacked into the fight, the survivors kept by member, pushing unless a composition
-## says it hunts (8 November), its pace the slowest, winged only when every member is, and each
-## kill worth its type's menace.
+## says it hunts (8 November), its pace the slowest, winged only when every member is, and a pack
+## a fight has worn paying the share of its rating its strike has lost (11 November).
 func test_a_composition_unpacks_its_members_and_keeps_its_survivors_by_member() -> void:
 	var b := _battle()
 	var db := b.db
@@ -451,7 +445,9 @@ func test_a_composition_unpacks_its_members_and_keeps_its_survivors_by_member() 
 	assert_eq(host.members, [["revenant", 1], ["ghost", 1]], "the map keeps the survivors by member")
 	assert_eq(host.strength, 2, "and the badge their count")
 	assert_eq(b.foes_killed, 3, "the battle counts the kills")
-	assert_eq(b.menace_killed - before, 2 * db.menace("revenant") + db.menace("ghost"), "each at its type's menace")
+	var paid := b.menace_killed - before
+	assert_eq(paid, (ContentDB.worth_of(host.squad) * 3) / 5, "three of its five heads gone: three fifths of its rating's worth")
+	assert_eq(ContentDB.worth_of(host.squad) - paid, Battlefield.strike_of(host) * ContentDB.MENACE_PER_PIP / Battlefield.STRIKE_PER_PIP, "what it has yet to pay is what it still strikes the wall for")
 
 
 ## The field at the start follows the tier and the ramp (the pacing session, 30 October): the
@@ -502,10 +498,10 @@ func test_the_field_at_the_start_follows_the_tier_and_the_ramp() -> void:
 
 
 ## The Rupture meter (the pacing session, 30 October; sized in beats, 11 November): the last
-## threshold the opening and the tide through the ramp's beats, a patrol's worth left, and a
-## chunk for the tier's elite; a Fracture pays out as a fight ends, the elite the tier names
-## spawning at the rift; the last breaks the seal; a sealed boss cannot be ordered onto and
-## joins no fight.
+## threshold the opening and the tide through the ramp's beats, a patrol's worth left, and an
+## elite's rating for the tier's elite; a Fracture pays out as a fight ends, the elite the tier
+## names spawning at the rift; the last breaks the seal; a sealed boss cannot be ordered onto
+## and joins no fight.
 func test_the_meter_fills_by_menace_and_the_fractures_pay_out_as_fights_end() -> void:
 	var b := _battle()   # the Marsh at tier 0: three Fractures, the Reaper at the first
 	var db := b.db
@@ -513,9 +509,9 @@ func test_the_meter_fills_by_menace_and_the_fractures_pay_out_as_fights_end() ->
 	var size := _rupture_size(b)
 	assert_true(b.field_menace > 0, "the field's part weighs something")
 	assert_eq(b.field_menace, int(size[0]), "the field's part: the opening and the tide through the ramp's beats")
-	assert_eq(int(b.thresholds[b.thresholds.size() - 1]), int(size[1]), "the Rupture: that, the tide's lightest patrol left, and a chunk for the tier's elite")
-	assert_eq(b.elite_chunk, int(size[2]), "the chunk a formation and a half of the tier's")
-	assert_true(b.elite_chunk > 0 and Ramp.beats_at(0) == Ramp.BEATS, "on the game's own beats")
+	assert_eq(int(b.thresholds[b.thresholds.size() - 1]), int(size[1]), "the Rupture: that, the tide's lightest patrol left, and four pips for the tier's elite")
+	assert_eq(Ramp.beats_at(0), Ramp.BEATS, "on the game's own beats")
+	assert_eq(int(b.thresholds[b.thresholds.size() - 1]) % ContentDB.MENACE_PER_PIP, 0, "a whole count of pips, whatever the domain's numbers")
 	for k in range(1, b.thresholds.size()):
 		assert_true(int(b.thresholds[k]) - int(b.thresholds[k - 1]) >= int(b.thresholds[k - 1]) - (int(b.thresholds[k - 2]) if k >= 2 else 0), "later Fractures cost more (%s)" % str(b.thresholds))
 	assert_true(b.is_sealed() and b.boss.sealed, "the boss is sealed while there is a field to earn the Rupture against")
@@ -532,11 +528,12 @@ func test_the_meter_fills_by_menace_and_the_fractures_pay_out_as_fights_end() ->
 	assert_false((r["joins"] as Array).has(b.boss), "a sealed boss's ring is inert: it joins no fight")
 	assert_false(bool(r["all_in"]), "so the fight is an ordinary one")
 	# Kill the first pack outright: its menace is the first Fracture's worth or more.
+	var worth := ContentDB.worth_of(sq.squad)
 	var sk := b.attack(sq, [m])
 	_win(sk)
 	b.finish_skirmish()
 	var packs_before := b.field.packs().size()
-	assert_true(b.menace_killed > 0, "the tally counts the kills' menace")
+	assert_eq(b.menace_killed, worth, "the tally counts the pack's fall at its threat rating's worth")
 	if b.menace_killed >= int(b.thresholds[0]):
 		assert_true(b.fractures >= 1, "a Fracture is earned once the tally crosses its threshold")
 		assert_eq(b.elites_spawned, [str(db.elite_compositions("marsh", 1)[0]["id"])], "and the Marsh's first own elite emerges at it (the roll at this seed is above the wanderers' chance)")
@@ -559,9 +556,9 @@ func test_the_meter_fills_by_menace_and_the_fractures_pay_out_as_fights_end() ->
 
 ## The fodder's trial (Ryan, 10 November: "If fracture rewards were a little lower for fodder,
 ## then it becomes a bit more of a quantity game for non-elites"): a kill fills the Rupture meter
-## by the trial's share when its pack came as no elite, an elite's pack by its chunk as ever;
-## the tally that salvage and Anathema read is never touched; and with no trial and no elite
-## fallen the meter is the tally.
+## by the trial's share when its pack came as no elite, an elite's pack whole as ever; the
+## tally that salvage and Anathema read is never touched; and with no trial the meter is the
+## tally.
 func test_the_fodders_trial_fills_the_meter_by_a_share_and_leaves_the_tally_whole() -> void:
 	var whole := _battle()
 	var m0: Unit = whole.mechs()[0]
@@ -591,9 +588,9 @@ func test_the_fodders_trial_fills_the_meter_by_a_share_and_leaves_the_tally_whol
 	_engage(e, sqe, me)
 	_win(e.attack(sqe, [me]))
 	e.finish_skirmish()
-	assert_eq(e.meter(), e.elite_chunk, "an elite's pack fills the meter by its chunk under the trial, nothing of it held")
+	assert_eq(e.meter(), e.menace_killed, "an elite's pack fills the meter whole under the trial, nothing of it held")
 	assert_eq(e.meter_held, 0, "the trial holds none of an elite's")
-	assert_eq(e.menace_killed, whole.menace_killed, "by the same kills")
+	assert_eq(e.menace_killed, whole.menace_killed, "by the same pack's fall")
 	# The held share survives a save, so a resumed battle's meter stands where it stood.
 	var back := SaveGame.from_dict(SaveGame.to_dict(b))
 	assert_eq([back.meter(), back.menace_killed], [b.meter(), b.menace_killed], "a saved battle keeps its meter and its tally")
@@ -602,11 +599,12 @@ func test_the_fodders_trial_fills_the_meter_by_a_share_and_leaves_the_tally_whol
 
 ## The Rupture's beats on trial (Ryan, 11 November: "Try your lean first", two beats): the dial
 ## moves how many peaks of the tide the field's part runs through, one or three beside the
-## game's two, and nothing else, the Fractures' count, their growing steps and the elite's chunk
+## game's two, and nothing else, the Fractures' count, their growing steps and the elite's part
 ## as they were; and a battle under way keeps the thresholds it opened on.
 func test_the_beats_trial_moves_the_fields_part_and_nothing_else() -> void:
 	var two := _battle()
 	assert_eq(int(two.thresholds[-1]), int(_rupture_size(two)[1]), "the game's own: two beats")
+	var over := int(two.thresholds[-1]) - int(_rupture_size(two)[0])   # the elite's part less the patrol left, read before the dial moves
 	var sizes := {}
 	for beats in [1, 3]:
 		Ramp.beats_trial = beats
@@ -615,7 +613,7 @@ func test_the_beats_trial_moves_the_fields_part_and_nothing_else() -> void:
 		assert_eq(b.field_menace, int(size[0]), "%d beats: the opening and the tide through that many peaks" % beats)
 		assert_eq(int(b.thresholds[-1]), int(size[1]), "and the Rupture with it")
 		assert_eq(b.thresholds.size(), two.thresholds.size(), "the tier's count of Fractures stands")
-		assert_eq(b.elite_chunk, two.elite_chunk, "the elite's chunk is the tier's, whatever the beats")
+		assert_eq(int(b.thresholds[-1]) - int(size[0]), over, "the elite's part and the patrol left are the tier's, whatever the beats")
 		for k in range(1, b.thresholds.size()):
 			assert_true(int(b.thresholds[k]) - int(b.thresholds[k - 1]) >= int(b.thresholds[k - 1]) - (int(b.thresholds[k - 2]) if k >= 2 else 0), "later Fractures still cost more (%s)" % str(b.thresholds))
 		sizes[beats] = int(b.thresholds[-1])
@@ -624,18 +622,21 @@ func test_the_beats_trial_moves_the_fields_part_and_nothing_else() -> void:
 			Ramp.beats_trial = 0
 			var back := SaveGame.from_dict(SaveGame.to_dict(b))
 			assert_eq(back.thresholds, b.thresholds, "a saved battle keeps the thresholds it opened on, whatever the dial says since")
-			assert_eq(back.elite_chunk, b.elite_chunk, "and its elite's chunk")
 	assert_true(int(sizes[1]) < int(two.thresholds[-1]) and int(two.thresholds[-1]) < int(sizes[3]), "a beat more is a bigger Rupture (%s, %d)" % [str(sizes), int(two.thresholds[-1])])
 	Ramp.beats_trial = 0
 
 
-## An elite's fall fills its chunk (Ryan, 11 November: "the elite needs to be worth a good
-## chunk"; "Let's go 1.5"): the meter counts a formation and a half of the tier's for the pack
-## once it is gone, whichever elite came and whatever of it an earlier fight had killed; the
-## tally that salvage and Anathema read keeps the pack's own menace; a save carries both.
-func test_an_elites_fall_fills_its_chunk_whichever_elite_came() -> void:
+## Menace is a pack's threat rating (Ryan, 11 November: "Maybe just 1-2-3-4 for now to keep math
+## simple ... It gives us an absolute unbiased benchmark"): a pack's fall pays its rating's
+## worth, a pip a hundred, whoever is in it, so every elite pays four and the meter is the
+## tally; a pack a fight has worn has paid the share its strike has lost, the fall makes it
+## whole, once; and a save carries the books.
+func test_menace_is_a_packs_threat_rating_whoever_is_in_it() -> void:
 	var db := ContentDB.load_default()
+	var pip := ContentDB.MENACE_PER_PIP
+	assert_eq([ContentDB.worth_of(1), ContentDB.worth_of(2), ContentDB.worth_of(3), ContentDB.worth_of(4)], [pip, 2 * pip, 3 * pip, 4 * pip], "one, two, three, four")
 	var falls: Array = []
+	var weights: Array = []
 	for c in db.compositions("marsh", 1, "elite"):   # its own and the wanderers its list holds
 		var b := _battle()
 		var m: Unit = b.mechs()[0]
@@ -645,36 +646,53 @@ func test_an_elites_fall_fills_its_chunk_whichever_elite_came() -> void:
 		_win(b.attack(sq, [m]))
 		b.finish_skirmish()
 		assert_false(b.field.units.has(sq), "the pack is gone")
-		assert_eq(b.menace_killed, db.composition_menace(c), "the tally holds the pack's own menace (%s)" % str(c["id"]))
-		assert_eq(b.meter(), b.elite_chunk, "the meter its chunk, a formation and a half")
-		assert_true(b.elite_paid.is_empty(), "and nothing of the pack is left on the books")
+		assert_eq(b.menace_killed, 4 * pip, "an elite's fall is four pips (%s)" % str(c["id"]))
+		assert_eq(b.meter(), b.menace_killed, "and the meter is the tally")
+		assert_true(b.pack_paid.is_empty(), "nothing of the pack is left on the books")
 		falls.append(b.menace_killed)
-	assert_true(falls.size() >= 2 and falls.min() != falls.max(), "elites of different menace filled the same chunk (%s)" % str(falls))
-	# A pack an earlier fight had worn: the fall tops the whole of its kills up to the chunk, once.
+		weights.append(db.composition_weight(c))
+	assert_true(falls.size() >= 2 and falls.min() == falls.max(), "every elite paid the same (%s)" % str(falls))
+	assert_true(weights.min() != weights.max(), "whatever their own numbers add up to (%s)" % str(weights))
+	# A pack worn over two fights: the share its strike has lost, then the rest at its fall.
 	var w := _battle()
-	var mw: Unit = w.mechs()[0]
-	var c0: Dictionary = db.elite_compositions("marsh", 1)[0]
-	var sqw := w.field.emerge(c0, w.map.rift)
-	w.menace_killed = 5   # as an earlier fight that killed five menace of it and lost would leave the books
-	w.elite_paid[sqw.id] = 5
-	var back := SaveGame.from_dict(SaveGame.to_dict(w))
-	assert_eq(int(back.elite_paid.get(sqw.id, 0)), 5, "a save keeps what a standing elite has been counted for")
-	assert_eq(back.meter(), 5, "its kills so far at their own menace until it falls")
-	_engage(w, sqw, mw)
-	_win(w.attack(sqw, [mw]))
+	var m1: Unit = w.mechs()[0]
+	var m2: Unit = w.mechs()[1]
+	var m3: Unit = w.mechs()[2]
+	var sqw: Unit = w.field.packs()[0]
+	var worth := ContentDB.worth_of(sqw.squad)
+	var full := sqw.full_strength
+	assert_true(full >= 2 and full == Battlefield.heads(sqw), "it took the field with its heads (%d)" % full)
+	_engage(w, sqw, m1)
+	var sk := w.attack(sqw, [m1])
+	sk.begin()
+	sk.start_round()
+	for f in sk.field_foes():
+		if f.pack_id == sqw.id:
+			f.hp = 0
+			break
+	sk.end_round()
 	w.finish_skirmish()
-	assert_eq(w.meter(), w.elite_chunk, "the fall counts the chunk in all, the earlier kills inside it")
-	var after := SaveGame.from_dict(SaveGame.to_dict(w))
-	assert_eq([after.meter(), after.menace_killed, after.meter_elites], [w.meter(), w.menace_killed, w.meter_elites], "a saved battle keeps the meter, the tally and the elites' part")
-	# A rank-and-file pack fills its own menace, as ever.
-	var r := _battle()
-	var mr: Unit = r.mechs()[0]
-	var sqr: Unit = r.field.packs()[0]
-	_engage(r, sqr, mr)
-	_win(r.attack(sqr, [mr]))
-	r.finish_skirmish()
-	assert_eq(r.meter(), r.menace_killed, "a formation's kills are their own menace on the meter")
-	assert_eq(r.meter_elites, 0, "nothing topped up")
+	var gone := full - Battlefield.heads(sqw)
+	assert_true(gone >= 1 and w.field.units.has(sqw), "a head of it gone, the pack standing")
+	assert_eq(w.menace_killed, (worth * gone) / full, "it has paid the share of its rating its heads gone are")
+	assert_eq(int(w.pack_paid.get(sqw.id, 0)), w.menace_killed, "and the books say so")
+	var back := SaveGame.from_dict(SaveGame.to_dict(w))
+	assert_eq([back.menace_killed, int(back.pack_paid.get(sqw.id, 0)), back.meter()], [w.menace_killed, w.menace_killed, w.meter()], "a save keeps the tally, the books and the meter")
+	# A fight that fells none of it pays nothing.
+	var paid := w.menace_killed
+	_engage(w, sqw, m2)
+	var idle := w.attack(sqw, [m2])
+	idle.begin()
+	idle.start_round()
+	idle.end_round()
+	w.finish_skirmish()
+	assert_eq(w.menace_killed, paid, "a fight that fells none of it pays nothing")
+	_engage(w, sqw, m3)
+	_win(w.attack(sqw, [m3]))
+	w.finish_skirmish()
+	assert_false(w.field.units.has(sqw), "the pack falls")
+	assert_eq(w.menace_killed, worth, "and its fall makes its rating whole, once")
+	assert_true(w.pack_paid.is_empty(), "the books clear")
 
 
 ## The thresholds read the tide (the long wall brief 3.8; in beats since 11 November): the menace
@@ -688,8 +706,7 @@ func test_the_thresholds_read_the_first_waves_and_the_rupture_halves_the_beat() 
 	var placed := 0
 	for sq in b.field.packs():
 		if not sq.is_boss:
-			for m in sq.member_list():
-				placed += db.menace(str(m[0])) * int(m[1])
+			placed += ContentDB.worth_of(sq.squad)
 	var size := _rupture_size(b)
 	assert_true(int(size[0]) > placed, "the tide's beats weigh something past the opening")
 	assert_eq(b.field_menace, int(size[0]), "the field's part: the opening and the tide through the beats")
@@ -701,8 +718,7 @@ func test_the_thresholds_read_the_first_waves_and_the_rupture_halves_the_beat() 
 		for sq in b.field.packs():
 			if not seen.has(sq):
 				seen.append(sq)
-				for m in sq.member_list():
-					sent += db.menace(str(m[0])) * int(m[1])
+				sent += ContentDB.worth_of(sq.squad)
 	assert_eq(sent, b.field_menace, "and it is what the rift and the tears send through those peaks")
 	b.field.rift_pressure_max = 3
 	b.rupture()

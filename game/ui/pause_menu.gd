@@ -166,9 +166,9 @@ func _show_page(page: String) -> void:
 			_choice_row("OPENING", "field_opening", Settings.FIELD_OPENINGS, Settings.FIELD_OPENING_LABELS)   # how many moves farther from the wall the opening's packs stand (Battle.opening_trial): depth alone leaves their first walk on the wall
 			_credit("Rows from rift to wall; moves farther out the first packs stand. Next battle.")
 			_choice_row("FODDER", "fodder_worth", Settings.FODDER_WORTHS, Settings.FODDER_WORTH_LABELS)   # what a rank-and-file kill fills of the Rupture meter (Battle.fodder_trial; Ryan, 10 November: "If fracture rewards were a little lower for fodder")
-			_credit("A kill's worth on the Rupture meter, an elite's fall untouched. Next battle.")
+			_credit("A pack's worth on the Rupture meter, an elite's untouched. Next battle.")
 			_choice_row("RUPTURE", "rupture_beats", Settings.RUPTURE_BEATS, Settings.RUPTURE_BEATS_LABELS)   # how many peaks of the tide the Rupture's field part runs through, two the game's (Ramp.beats_trial; Ryan, 11 November: "Try your lean first")
-			_credit("Waves of the tide the Rupture takes, the elite's fall on top. Next battle.")
+			_credit("Waves of the tide the Rupture takes, an elite's four on top. Next battle.")
 			_button("BACK", func() -> void: _show_page("settings"), false, "ui_back")
 		"colours":
 			_title("COLOURS")

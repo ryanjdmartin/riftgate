@@ -80,13 +80,6 @@ static func beats_at(_tier: int) -> int:
 	return beats_trial if beats_trial > 0 else BEATS
 
 
-## What an elite's fall fills of the Rupture meter, in formations of its battle's tier and ramp,
-## whichever elite the Fracture sent (Ryan, 11 November: "the elite needs to be worth a good
-## chunk"; "Let's go 1.5 and I'll see how it feels"). Its own menace, 22 to 49 at tier one by
-## the roll, is still what salvage and Anathema count. Placeholder.
-const ELITE_CHUNK := 1.5
-
-
 static func elite_fractures_at(tier: int) -> Array:
 	return Array(ELITE_FRACTURES[clampi(tier, 0, ELITE_FRACTURES.size() - 1)])
 

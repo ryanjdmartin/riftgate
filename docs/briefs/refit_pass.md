@@ -1076,8 +1076,9 @@ hunting packs.
    leave. His: "Try your lean first." Built (`Ramp.BEATS`, `Battle.setup`).
 2. An elite's fall a formation and a half of its tier, whichever elite, on top of the
    field's part: over a third of the bar in one kill at tier one. His: "Let's go 1.5 and I'll
-   see how it feels." Built (`Ramp.ELITE_CHUNK`); the chunk is the meter's alone, salvage and
-   Anathema counting the pack's own menace, Claude's lean and unmarked.
+   see how it feels." Built that morning as a chunk on the meter alone, and replaced the
+   same day by the elite's rating, four against a formation's three, once menace became the
+   rating (below: menace, standardized).
 3. The cleared field. The shape had it bring the next peak at once, in place of the stall
    guard's breaking of the seal. His: "I didn't know this was a thing. Why does a cleared
    field mean anything? If field clears are a norm, I would think that indicates it's
@@ -1158,7 +1159,8 @@ of them, the greedy rung, 20 seeds, a direction (`docs/measurements.md`, 11 Nove
 | The Marsh | the Dullahan: the big die kept for the second life | three Revenants | volume, nine a round until they thin | 4.2 rounds, 8% (none to 23%, the Skua losing one fight in twenty); the Dullahan 4.7 and 1% | the Stingray takes the Dullahan in 2.9 rounds for nothing and the revenants in 4.1 for 5% |
 | The Peak | Cerberus: a shield that takes three bites | open | heat: its bite scorches and its hide runs the striker hot | one Salamander is no fight (2.4 rounds, nothing lost) and two are a wall for three machines of nine (won 78%, 41% of the hull, the Polar Bear never) | |
 
-Set aside, each with what set it aside: the Mandragora, the Drake and the Magma Elemental
+Tried as a second flank patrol and not picked, each with why, and each staying in its
+formations as it is: the Mandragora, the Drake and the Magma Elemental
 (his rule: a scream that costs the whole team a reroll, a breath over a rank, an eruption);
 the Bomb (a burst that decides a lone machine's fight, his word on hunters of 9 November,
 and its own call still held); a Ghost behind a Revenant (its raise snowballs on a slow
@@ -1168,54 +1170,57 @@ stakes); the Cockatrice (its Stone is the Whisker Cat's question again, and cost
 the Zombie Knight (the Dullahan's own question, and a wall alone); three Needlers (28% of a
 lone machine's hull).
 
-**Menace, standardized: his question of 11 November, Claude's form for his marks** (nothing
-built). His words: "I'd hope that the elites menace should match between elites, since they
-should all be the same difficulty. I assume this means that your menace is empirically
-calculated, when probably it should be standardized so all domains are equivalent, yes?"
-Menace is calculated from each foe's own numbers and assigned to none: its heaviest blow
-(damage by strikes, a breach one more) and a quarter of its hit points, summed over a pack.
-So it moves with every stat block: an elite's pack is 22 to 49 at tier one, a formation 34 in
-the Marsh and 54 on the Peak, a lone patrol a sixth of a formation on the Peak and a quarter
-in the Waste. The Rupture meter is level already, sized from each domain's own tide with an
-elite's fall a set chunk. Salvage and Anathema are not: they count the raw sum, so the same
-first battle is 191 menace on the Peak and 123 in the Marsh before its boss, half again as
-much; and inside a domain the flank's share of the meter is its stat blocks'.
+**Menace, standardized: settled and built (11 November).** His question: "I'd hope that the
+elites menace should match between elites, since they should all be the same difficulty. I
+assume this means that your menace is empirically calculated, when probably it should be
+standardized so all domains are equivalent, yes?" It was calculated: each foe's heaviest blow
+and a quarter of its hit points, summed over a pack, so an elite's pack ran 22 to 49 at tier
+one, a formation 34 in the Marsh and 54 on the Peak, and the same first battle paid half
+again as much salvage on the Peak as in the Marsh. His marks on the form: "Maybe just 1-2-3-4
+for now to keep math simple. But yes this direction makes way more sense. We can tune
+difficulty to the value, within an acceptable band. It gives us an absolute unbiased
+benchmark. I think the value can stay unchanged by tier, as only salvage needs to scale,
+right." And of the boss: "Boss' menace rewards for salvage and anathema can be completely
+whatever we need to make the economy work, so the placeholder doesn't really matter now."
 
-The form: a pack's worth is its threat rating, his number, which already says how many
-machines it is for and how hard it strikes the wall.
-
-| The pack | Its worth |
+| The pack | Its menace, in pips |
 |---|---|
 | A lone patrol | 1 |
 | A heavier patrol, a pair or a hunting pack | 2 |
 | A formation | 3 |
-| An elite | 4.5, his formation and a half (its rating is 4) |
+| An elite | 4 |
+| A boss's unit | 4, a placeholder |
 
-A kill pays its share of its pack's worth by its own menace inside the pack, so a kill is
-still a kill however a fight ends and a Treant weighs more than a Goblin. The meter, salvage
-and Anathema all read it, so an elite is worth the same whichever came and wherever it is
-counted, and a domain's kills are worth what another's are. What it leaves as it is: a first
-battle's ask, both formations, the elite and three of the four lone patrols in every domain
-(13.5 of the rating: 9 of the field's 10 and the elite's 4.5). What it moves: a lone patrol
-is a third of a formation everywhere and a hunting pack two thirds, so the flanks count for
-more; a summons or a split pays nothing past its pack's worth, where each of a Gel's halves
-and a Ghost's raised Revenants is a kill today; and salvage's rate is set again so a battle
-banks about what it banked.
+As built: menace is a pack's threat rating, the same at every tier and in every domain, and
+the meter, salvage and Anathema all read it. A pack's fall pays its rating whole. A pack a
+fight wore down and left standing has paid the share of its rating its strike at the wall
+has lost, the heads gone of the heads it took the field with, and its fall pays the rest;
+nothing pays past the rating or twice, so a Gel's halves and a Ghost's raised Revenants add
+none. That is simpler than the form put to him, which shared a pack's worth among its kills
+by each foe's own numbers: the wall strike already wears by the head, so the two are one
+number read from both ends, and a pack is only left standing by a fight the machines lost.
+The sum of a foe's own numbers stays as its weight, the balance report's column beside the
+rating: the benchmark's other side, what a composition's stat blocks come to against the
+rating its difficulty is tuned to.
 
-Its holes, his: whether the worth rises with the tier (Claude's lean: flat, since the meter
-is in beats and salvage's growth is the economy pass's to say as a number of its own, where
-today it is a side effect of hit points, about two fifths more at tier three); the boss's
-worth (its own menace today; Claude's lean, a set two formations); and equal worth is not
-equal difficulty, the elites being a guess whose cost to a trio runs from nothing to half its
-hull by which came (11 November's reads), which is their own session's and is left alone.
+What moved with it. The elite is four against a formation's three, a formation and a third,
+where the chunk built that morning was a formation and a half on the meter alone; it is now
+the same in the meter, salvage and Anathema. A first battle's Rupture is 13 pips in every
+domain, nine of the field's ten and the elite's four, with Fractures at about 3, 7 and 13,
+so the first formation's fall brings the elite. Salvage is 18 a pip, a placeholder set to
+bank what a battle banked: the runner's won battle banks 372 where it banked 369
+(`docs/measurements.md`, 11 November). Saves from before the change are set aside.
+
+What it leaves, the economy pass's: what a boss pays, and salvage's growth by tier. And
+equal worth is not equal difficulty: the elites are a guess whose cost to a trio runs from
+nothing to half its hull by which came, and tuning each composition to its rating within a
+band is its own session's.
 
 **Open, his.**
 
-1. His play of the two beats and of the chunk, on the phone; the RUPTURE dial sets one beat
-   or three beside them.
-2. The form for a standardized menace, above, with the tier's step and the boss's worth. It
-   answers whether the chunk is the meter's alone: the elites are to match wherever they are
-   counted, so salvage and Anathema take it with the form.
+1. His play of the two beats and of the elite's four, on the phone; the RUPTURE dial sets
+   one beat or three beside them.
+2. More spawns than the Rupture needs (below).
 3. The pickets above, and the Peak's: a tougher Salamander alone, a pair gated to the ramp's
    later steps as the duelists' pairs are, or a body the Peak does not have yet.
 4. The first wave repeating the opening's formation (a domain's first two formations are one

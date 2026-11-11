@@ -29,8 +29,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   after each.
 - Tests: 1115 tests, 362,618 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
   with the formation and refit session's branch whole and the music session's landing; Godot
-  4.8-beta2), and 1118 tests, 362,705 checks, green on `ccr-722ca9f0-yj8na3` (11 November, main
-  at `60a0e4d` with the Rupture sized in beats, the elite's chunk and the stall guard's end); one
+  4.8-beta2), and 1118 tests, 362,959 checks, green on `ccr-722ca9f0-yj8na3` (11 November, main
+  at `60a0e4d` with the Rupture sized in beats, menace a pack's threat rating and the stall
+  guard's end); one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
   either map view on 6 November; about four minutes in a cloud session, twenty on a slow one;
   words after `--` run only the files whose names hold one (`-- loot rig`). A cloud
@@ -122,8 +123,9 @@ one). Each merge commit says how its conflicts were settled.
 
 Still working (11 November): `ccr-722ca9f0-yj8na3`, the formation and refit session; everything
 it had committed to `4c8dbf1` is on main with `ccr-4d58b054-3lyj0a`, below. Since then, on the
-branch alone: the first battle read whole and the Rupture meter sized in beats, the elite's
-chunk and the stall guard's end (How things stand; the refit brief's sections 10 and 11). It took
+branch alone: the first battle read whole, the Rupture meter sized in beats, menace a pack's
+threat rating and the stall guard's end (How things stand; the refit brief's sections 10 and
+11). It took
 main at `0182acd` (the music session's landing) and at `ccdc705` on 11 November (Ryan: "merge
 main in and take a look at changes there": the locked pieces' footing, tier one down to the
 basics, the Polar Bear dealt again, the Buzzard's regen, the Nemesis's rage bar, The Far Bank's
@@ -557,10 +559,10 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   the middle ... the only reason to have more fractures is to send more elites, not
   necessarily to make it significantly longer"). Built: the Rupture is sized in beats of the
   tide, a beat a peak of Rift Pressure, two at every tier (`Ramp.BEATS`): what the opening
-  places and the tide sends through its second peak, the tide's lightest patrol left, and a
-  chunk for each elite the tier calls; an elite's fall fills its chunk, a formation and a half
-  of its tier whichever elite (`Ramp.ELITE_CHUNK`; the meter's alone, salvage and Anathema its
-  own menace, Claude's lean); and a field cleared with the seal standing does nothing, the
+  places and the tide sends through its second peak, the tide's lightest patrol left, and an
+  elite's part for each the tier calls (a chunk of a formation and a half on the meter alone
+  that morning, its rating's four since menace became the rating, below); and a field
+  cleared with the seal standing does nothing, the
   stall guard gone from the battle, its save, the screen's band and the runner. The
   multiplier's dial of the morning is the beats': SETTINGS → TRIALS → RUPTURE, 1 BEAT, 2 BEATS,
   3 BEATS (`Ramp.beats_trial`, `RIFTGATE_BEATS`). The bible's pacing row holds his calls, the
@@ -579,12 +581,33 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   domain, a picket of its own front-rank pushers beside its duelist ("Different enough that
   the same strategy doesn't strictly work on both ... We can make flankers out of pusher
   units if it makes sense"): three Goblins, two Needlers, three Revenants, the Peak open.
-  Still his: his play of the beats and the chunk, the first wave repeating the opening's
-  formation, what measures a battle's minutes, and the form for a standardized menace (his
-  the same day: "I'd hope that the elites menace should match between elites ... probably it
-  should be standardized so all domains are equivalent"; Claude's form in the brief, a pack's
-  worth its threat rating and a kill its share of its pack, read by the meter, salvage and
-  Anathema alike, nothing built until he marks it; the bible's section 12, v0.527).
+  Still his: his play of the beats and the elite's four, the first wave repeating the
+  opening's formation, and what measures a battle's minutes.
+- **Menace is a pack's threat rating** (Ryan, 11 November, on his "I'd hope that the elites
+  menace should match between elites ... probably it should be standardized so all domains
+  are equivalent": "Maybe just 1-2-3-4 for now to keep math simple. But yes this direction
+  makes way more sense. We can tune difficulty to the value, within an acceptable band. It
+  gives us an absolute unbiased benchmark. I think the value can stay unchanged by tier, as
+  only salvage needs to scale"; and "Boss' menace rewards for salvage and anathema can be
+  completely whatever we need to make the economy work, so the placeholder doesn't really
+  matter now"). Built: a lone patrol one, a heavier patrol two, a formation three, an elite
+  four and a boss's unit four as a placeholder, flat by tier (`ContentDB.worth_of`, a pip a
+  hundred in the engine), read by the Rupture meter, salvage and Anathema alike. A pack's
+  fall pays its rating; a pack a fight wore down has paid the share its strike at the wall
+  has lost, the heads gone of the heads it took the field with, and its fall pays the rest,
+  nothing past the rating or twice (`Battle.pack_paid`). Named, since they follow from his
+  rule and were no question: the elite's fall is four against a formation's three, a
+  formation and a third where the morning's chunk was a formation and a half, and it is the
+  same in salvage and Anathema; a worn pack pays by the head, as its strike wears, simpler
+  than the form put to him (a share by each foe's own numbers); salvage is eighteen a pip,
+  set to bank what a battle banked (the runner's won battle 372 where it was 369); a first
+  battle's Rupture is 13 pips in every domain; and saves from before it are set aside
+  (battle 24, run 23). The sum of a foe's own numbers stays as its weight, the balance
+  report's column beside the rating. The bible's tally row holds it, the sum retired with the
+  test it failed (v0.528); the pacing, stall, Anathema and kill rows follow, the stall row
+  saying that the yield prices no stall now, a pack the tide sends paying what the opening's
+  does; the rules and the glossary's Menace, Rupture meter and Seal lines follow, drafts
+  redrafted. Left to the economy pass: what a boss pays and salvage's growth by tier.
 - **One elite, the first battle read whole, and 4-4-2** (Ryan, 11 November, before the restart
   above: "the 3 fractures, with the current rate of fill, felt short to me"; "battle one
   should only serve one elite"; "we restructure the tier list from 3-5-2 to 4-4-2 ... I'll
@@ -1196,10 +1219,11 @@ commands are in `README.md`.
   picks its pair and loops it), v0.522 since The Far Bank
   joined the fights' pool (its track row and the boss themes' Open row: the Marsh's theme it was,
   so no domain has one now), unpublished, its republish on Ryan's word; `ccr-722ca9f0-yj8na3`'s
-  file is v0.527, main's with the pacing row rewritten (the count and the stall guard retired,
-  two beats, the elite's chunk, the cleared field, ten to thirty minutes) and the meter's lines
-  with it (the clocks, tally, boss and roster rows, section 12's first battle, pacing and tier
-  counts), unpublished too.
+  file is v0.528, main's with the pacing row rewritten (the count and the stall guard retired,
+  two beats, the cleared field, ten to thirty minutes), menace a pack's threat rating (the
+  tally row, the sum retired) and the meter's lines with them (the clocks, stall, boss,
+  roster, Anathema and kill rows, section 12's first battle, pacing, menace and tier counts),
+  unpublished too.
   BASE for the next merge is `9ebf74b`'s file. The live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
