@@ -3104,13 +3104,14 @@ def whip_scorpion(b):
         _beam(b, (s * 6.0, -23.0, BZ + 15.2), (s * 6.0, -17.6, 56.5), _poly(2.5, 6), _poly(2.5, 6), "livery.livery2", "ray_main")
         b.prism("y", s * 6.0, -17.6, 56.5, 3.2, 1.2, "steel.dark", 6, "ray_main_flange")
     vents = []
+    VENT_UP = 47.0   # the vents' lift off the level: 35 until 11 November (Ryan: "a teeny bit more vertical, to better clear the knees")
     for s in (-1.0, 1.0):
         side = "l" if s < 0 else "r"
         b.prism("y", s * 25.3, -34.0, BZ, 2.0, 28.0, "steel.dark", 6, "manifold")
         for k, y in ((1, -30.25), (2, -42.75)):
             base = (s * 17.0, y, 62.1)
             _beam(b, (s * 25.3, y, BZ), (s * 19.6, y, 59.6), _poly(1.6, 6), _poly(1.6, 6), "steel.dark", "manifold_feed")
-            d = (s * math.cos(math.radians(35.0)) * math.sin(math.radians(55.0)), math.cos(math.radians(35.0)) * math.cos(math.radians(55.0)), math.sin(math.radians(35.0)))
+            d = (s * math.cos(math.radians(VENT_UP)) * math.sin(math.radians(55.0)), math.cos(math.radians(VENT_UP)) * math.cos(math.radians(55.0)), math.sin(math.radians(VENT_UP)))
             vents.append((side + str(k), _whip_scorpion_vent(b, side + str(k), base, d), d))
     abdomen.__exit__(None, None, None)
 
