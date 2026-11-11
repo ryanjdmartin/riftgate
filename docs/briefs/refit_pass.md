@@ -1084,10 +1084,11 @@ hunting packs.
    probably too easy, right? To me a clear field is its own reward, it's breathing room to
    reposition or get loot." So neither: a cleared field does nothing, the seal is the meter's
    alone and the tide comes on its beat. Built: the stall guard is gone. Why it was there:
-   on 30 October the field stood whole at the start and nothing came after it, so a squad
-   that killed everything under a meter it could not fill would have sat sealed for good;
-   the tide since the long wall sends a wave every beat for ever, so that lock cannot happen
-   and all the guard still did was end the lull.
+   it came with the meter on 30 October, when the rift sent a pack every twelve turns, so a
+   squad that cleared the field short of the Rupture would have waited a dozen turns on the
+   clock with nothing to fight. The beat is three since the long wall, so the wait it guarded
+   is a lull of three turns at most, which is the breathing room he names, and all the guard
+   still did was cut a battle short.
 4. What the count guarded. His: "A duel doesn't have to be two rounds, who said that? And
    really, the types of mobile units that flank probably are bursty anyway." Nobody ruled it:
    two to nine rounds is what the four duelists' placeholder numbers give the bot. The reason
