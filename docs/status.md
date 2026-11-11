@@ -1289,22 +1289,25 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 227 (11 November, published from `ccr-4d58b054-3lyj0a` at `9fde357`, ahead of main, on Ryan's word, "Can I see this in hangar?", and again for each of his four notes on its model: the gun slid back in its mount, the vents more upright, the gun forward by half the slide, then nudged back): the Whip Scorpion's rework, the eight files that had moved since 222 (three content files, `designs.json` without its retired brief, `text.json`, `renders.json`, its model and rig) and its three new renders; nobody had published since 222, and the live copies match the branch's after. Version 222 (11 November, main's `892d804`, on Ryan's word, "Everything else let's clean
+  page's Version 228 (11 November, main's `d2c024d`, on Ryan's word, "Merge in and republish"):
+  the 69 files that had moved or arrived since 227 and one retired render removed (the Nemesis's
+  old roar), the page unchanged: the vocabulary (the glossary's Menace, Rupture meter and Seal
+  lines, redrafted for menace as a pack's threat rating and the stall guard's end), `text.json`
+  and `designs.json` (the refit brief, the Clydesdale's brief retired), the seven models rebuilt
+  with their stock guns as classes (their model and rig files, the Polar Bear's fits with depths)
+  and their renders with the old as Before, `renders.json`, `pins.json` (the Clydesdale's eight),
+  the page's motion.js (a fit's depth, no hand-built flares), and the Clydesdale's batteries and
+  square ports (two content files, its model, its renders with a second-battery view). Nobody had
+  published since 227, every live copy matching `9fde357`'s build but for its stamp, and the
+  live copies match main's after; `edits` and `text` empty, `designs` the two folded ideas.
+  Version 227 (11 November, published from `ccr-4d58b054-3lyj0a` at `9fde357`, ahead of main, on Ryan's word, "Can I see this in hangar?", and again for each of his four notes on its model: the gun slid back in its mount, the vents more upright, the gun forward by half the slide, then nudged back): the Whip Scorpion's rework, the eight files that had moved since 222 (three content files, `designs.json` without its retired brief, `text.json`, `renders.json`, its model and rig) and its three new renders; nobody had published since 222, and the live copies match the branch's after. Version 222 (11 November, main's `892d804`, on Ryan's word, "Everything else let's clean
   up and merge into main first before proceeding"): `designs.json` with the Whip Scorpion's brief
   after the Buzzard's settlement and `text.json` for its stamp, over Version 221 of minutes before
   (main's `60a0e4d`: the two files that had moved since 220, `designs.json` with the Buzzard's new
   brief, the Whip Scorpion's role map and the briefs' table, `text.json` its stamp alone; nobody
   had published since 220, the live copies matching its build but for the stamp); the page
   unchanged, and the live copies match main's after. `edits` and `text` empty, `designs` the two
-  folded ideas. Behind main since `ccr-722ca9f0-yj8na3` landed the same day, its republish on
-  Ryan's word: the vocabulary (the glossary's Menace, Rupture meter and Seal lines, drafts
-  redrafted for menace as a pack's threat rating and the stall guard's end), with `text.json`
-  for them and `designs.json` for the refit brief; and since the Clydesdale's review landed, the
-  seven models rebuilt with their stock guns as classes (their glTFs and rig sidecars, the Polar
-  Bear's fits with depths), their renders and `renders.json`, the page's hangar_motion.js (a fit's
-  depth, no hand-built flares), `designs.json` for the Clydesdale's brief and its retirement, the
-  Clydesdale's batteries (its content, its model, its renders with a second-battery view), held for
-  his word. Version 220 (11 November, main's `9ebf74b`,
+  folded ideas. Version 220 (11 November, main's `9ebf74b`,
   on Ryan's word, "republish the hangar and the bible") was the fourteen files that had moved since 219 (the five content files with the refit's
   model, the formation pass, the Polar Bear's seal, the Buzzard's regen and the Nemesis's rage;
   `designs.json` and `text.json`; `foes.json`; six rig sidecars, their stock pins following the
