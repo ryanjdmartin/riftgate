@@ -118,7 +118,14 @@ rerolls or module slots (the tiers row).
   swapped render shows round launchers in all four ports, the class look a refit has worn since
   2 November. The record of 2 November: commit `6638c07` quotes his "replace or fix those hand
   built stock guns", the session taking "fix" (their muzzle flares), and commit `ac16ef2`, the
-  same day, wrote the hardpoints row's "Yes to keeping hand built guns". Asked: whether a change
+  same day, wrote the hardpoints row's "Yes to keeping hand built guns". His next word: "There
+  must be a session or branch that didn't push. The work done created different model shapes
+  that hardpoints could request. First one was a round missile rack that fit inside the polar
+  bears ports." That work is `ac16ef2` on main (the round launcher, `models_low.VARIANTS`'
+  `rack_round`, and every mount's fits; its session, "Ready chassis for modeling", merged at
+  `a3ef10d`, and every session since that touched a model reports merged): a variant is what a
+  fitted class wears at a mount, and the same commit's renders kept the Polar Bear's hand-built
+  stock guns beside its new swapped render. Asked: whether a change
   lives somewhere the repository does not (the desk's folder, a session that never pushed), and
   whether the hand-built stock guns go everywhere, every hardpoint then wearing its class in its
   maker's metal, stock or fitted, the fixed pieces still modelled in.
