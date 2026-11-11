@@ -7755,7 +7755,8 @@ Read.
   cycle starts at its head whatever the opening placed): two goblin hordes in the Meadow, two
   needler thickets in the Waste, two grave throngs in the Marsh, two ember pyres on the Peak,
   the second composition coming with the third wave. On the Peak that first formation is led
-  by a breach, which is most of why a trio seldom reaches the Rupture there (below).
+  by a breach, and a trio reaches the Rupture there in 5% to 30% of its battles (below); the
+  two are not told apart by any read here.
 
 ### The first battle whole, and the meter's size
 

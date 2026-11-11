@@ -1050,7 +1050,8 @@ The holes, each with what settles it:
    goblin hordes, two needler thickets, two grave throngs, two ember pyres, the second
    composition with the third wave, by which turn the meter as it is has broken the seal. So
    a domain's first battle asks one formation's question twice, and on the Peak the one
-   asked is led by a breach. What settles it, his: left as it is; the first wave starting on
+   asked is led by a breach (a trio reaches the Rupture there in 5% to 30% of its battles).
+   What settles it, his: left as it is; the first wave starting on
    the list's second (the same pace and a second question, with the Waste's sandworm ambush
    and the Peak's magma vent six turns sooner); or the opening's formation drawn by the seed.
 
@@ -1063,9 +1064,15 @@ Claude's leans, for his marks (nothing built):
 - The form: the Rupture's share becomes the ramp's number, one a tier, beside the Fractures'
   count in `Ramp`, so a tier can step it; the field's menace keeps doing the Convergence's
   part.
-- The size, if his row holds: tier one's share up by a quarter to a half (the dial's 1.25X
-  and 1.5X, three to three and three quarters formations' worth), tier three's left or
-  trimmed.
+- The size, if his row holds: a share of about five sixths at tier one, two thirds at tier
+  two as now and four sevenths at tier three (the dial's 1.25X, 1X and a little under it).
+  That puts the Rupture at 4.1 to 4.5 big fights' worth at tier one from Convergence 3, 4.1
+  to 4.6 at tier two and 4.5 to 5.7 at tier three, and it is his step down at each tier in
+  numbers: a Fracture 1.3 to 1.4 of a formation, then 0.9 to 1.0, then 0.7 to 0.85. Tier
+  one's first three Convergences stay a fight short of the row (3.0 to 3.3), since the
+  opening places one formation there, and for the first battle that is the side to err on:
+  at half again it nears the row (3.6 to 3.9) and the floor player's gate has lost a third
+  by the Rupture.
 - On the bench, each with its price. Counting the Fractures' elites in the base at their
   mean: it mends the omission and is a fifth to a third more at every tier (2.9 to 3.1
   formations' worth at tier one's start, 4.5 to 4.8 at tier two, 5.3 to 6.1 at tier three),

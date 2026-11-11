@@ -578,8 +578,11 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   little, since that player loses before the boss. Built: a dial, SETTINGS → TRIALS → RUPTURE
   (1X, 1.25X, 1.5X, 2X; `Battle.rupture_trial`, `RIFTGATE_RUPTURE`), the rule unmoved. Open,
   his (the brief's section 10; the bible's pacing row and section 12, v0.518): whether the
-  count of fights stays flat across tiers, the share's size by tier, the stall guard as the
-  cap. 4-4-2 is his lean and his to pose in the chassis session (the briefs README's Tiers).
+  count of fights stays flat across tiers, the share's size by tier (Claude's lean if the row
+  holds: about five sixths, two thirds and four sevenths, which is his step down at each tier
+  in numbers), the stall guard as the cap, and whether the first wave goes on repeating the
+  opening's formation. 4-4-2 is his lean and his to pose in the chassis session (the briefs
+  README's Tiers).
 - **The fourth machine is the first battle's** (Ryan, 11 November, in the discussion that
   followed: "the only reason to leave it up to the player was to put them fully in control.
   But if the choice is in which city to defend in order to get a guaranteed choice from that
