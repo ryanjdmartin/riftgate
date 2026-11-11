@@ -126,15 +126,19 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 one). Each merge commit says how its conflicts were settled.
 
 Still working (11 November): `ccr-722ca9f0-yj8na3`, the formation and refit session; everything
-it had committed (to `4c8dbf1`) is on main with `ccr-4d58b054-3lyj0a`, below, and it takes main
-when it next commits (its own records say where it stands: the refit brief, the to-do, How things
-stand). Landed 11 November: `ccr-4d58b054-3lyj0a`, the chassis inventory and the locked pieces'
+it had committed (to `4c8dbf1`) is on main with `ccr-4d58b054-3lyj0a`, below; it took main again
+at `0cb7313`, and its commits since are its own (its own records say where it stands: the refit
+brief, the to-do, How things stand). Landed 11 November: `ccr-4d58b054-3lyj0a`, the chassis inventory and the locked pieces'
 footing of 10 November and Ryan's round on the busted machines of 11 November (the Polar Bear
 dealt again, the Buzzard's regen, the Nemesis's rage bar; How things stand), carrying
 `ccr-722ca9f0-yj8na3` whole to `4c8dbf1`, took main (the music session's landing: the bible's
 version, v0.521 above both, and this file the conflicts, both sides kept) and main took it as a
-fast-forward on Ryan's word ("Merge this all to main. I'll move it from there"); it is merged
-and to delete with the rest. The formation and refit session's merges of main before it are in
+fast-forward on Ryan's word ("Merge this all to main. I'll move it from there"), again with the
+Buzzard's zap settled and the Whip Scorpion's role map, and with the records' clean-up and the
+pages' republish ("Everything else let's clean up and merge into main first before
+proceeding"). It goes on with the Whip Scorpion, then the Dingo and the Prairie Dog (Ryan,
+11 November), and is to delete once its session ends; the Clydesdale's review and the Skua are
+his other sessions'. The formation and refit session's merges of main before it are in
 its branch's commits. Landed 11 November: `ccr-7effd31a-u5z4gw`, the music session (Hold The Line's, Night Shift's and
 The Far Bank's pairs passed and built into art/audio, How things stand), took main in a merge (the bible, this
 file and the to-do the conflicts: the bible three-way on the v0.469 both files carried, main's
@@ -201,7 +205,15 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   and its Knuckles of Fury go out charged on five rage, unasked, and breach (a charged form may
   now draw on another store than the Muster: `charged.store` and `price`); the roll again is
   gone from its die, one direction of its upgrades; its rage reads as a meter with a notch at
-  five (`RIFTGATE_RAGE_DEBUG=1` fills it). 1115 tests green.
+  five (`RIFTGATE_RAGE_DEBUG=1` fills it). 1115 tests green. The Buzzard's rework settled the
+  same day (`kestrel_buzzard.md`, built after the heat pass with the Petrel's): its passive pays
+  a flat shield cost on each weapon, unasked, for flat damage, plain when short; its cannon
+  fires its whole field; heat still raises its regen; Chain a candidate branch. With it the
+  bible's design test "What a machine does, it does unasked: no extra controls" (his words:
+  "Everything should be automatic in this game, I don't want extra controls"). The Whip
+  Scorpion's role map is in its brief, with the heat dump the Buzzard gave up for it; the
+  Scorpion, then the Dingo and the Prairie Dog, are this branch's next (11 November), the
+  Clydesdale's review and the Skua his other sessions'.
 - The locked pieces' footing, decided 10 November (the bible's locked row, section 7, and tiers
   row, section 10; `docs/locked_pieces_proposal.md` holds what follows and the order; nothing
   built): a locked piece earns its lock as glue for its chassis's identity or as an exclusive,
@@ -214,7 +226,8 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   coming down (his lean, so the refit's reads stand). Six pieces that are neither glue nor an exclusive yet (the
   Lance, the Flechette Pod, the Solar Flare Array, the Flakshot Repeater, the Plow, the Harpoon)
   get a tweak before any cut: Claude's first round and his first answers are the proposal's
-  section 4; open with him there, the Pod's lock and the Dingo's identity. A branch's shape is settled
+  section 4; open with him there, the Dingo's identity and the Prairie Dog's tweak (next, after
+  the Whip Scorpion), the Skua with the Pod's lock in a session of his own (11 November). A branch's shape is settled
   (two directions two steps deep, the second pick the deeper step or the one skipped). Every rework in design sorts its pieces on this footing.
 - Kestrel: ten machines, eight decided, in content and fielded (the bible's Kestrel row; the hub
   `docs/briefs/kestrel_line.md`); the Puffin back in design (`kestrel_puffin.md`). The Magpie (a
@@ -222,7 +235,8 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   5 November) are Ryan's next session, their briefs' first rounds unanswered. The
   Needletail's two modes and the Giant Petrel's catamaran hull are his to pick (the to-do).
 - Wainwright & Sutler: ten decided, 3-5-2, nine built (the bible's roster row). The Whip Scorpion
-  and the Swallowtail are back in design (`ws_whip_scorpion.md`, `ws_swallowtail.md`); they, the
+  and the Swallowtail are back in design (`ws_whip_scorpion.md`, `ws_swallowtail.md`; the
+  Scorpion's session under way, 11 November, the Swallowtail punted); they, the
   Musk Ox and the gunship (very rough; Claude's first round in `docs/briefs/ws_gunship.md`) each
   need a design session for kit and visual design, which Ryan starts himself (4 November; the
   Needletail likewise).
@@ -1156,13 +1170,17 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 220 (11 November, main's `9ebf74b`, on Ryan's word, "republish the hangar and the
-  bible"): the fourteen files that had moved since 219 (the five content files with the refit's
+  page's Version 221 (11 November, main's `60a0e4d`, on Ryan's word, "Everything else let's clean
+  up and merge into main first before proceeding"): the two files that had moved since 220,
+  `designs.json` (the Buzzard's new brief, the Whip Scorpion's role map, the briefs' table) and
+  `text.json` (its stamp alone), the page unchanged; nobody had published since 220 (the live
+  copies matched its build but for the stamp), and the live copies match main's after. `edits`
+  and `text` empty, `designs` the two folded ideas. Version 220 (11 November, main's `9ebf74b`,
+  on Ryan's word, "republish the hangar and the bible") was the fourteen files that had moved since 219 (the five content files with the refit's
   model, the formation pass, the Polar Bear's seal, the Buzzard's regen and the Nemesis's rage;
   `designs.json` and `text.json`; `foes.json`; six rig sidecars, their stock pins following the
   Halo Projector) and the thirteen new foes' sprites (the four flanker lines and the Draugr), the
-  page itself unchanged; nobody had published since 219, and the live copies match main's after.
-  `edits` and `text` empty, `designs` the two folded ideas. Version 219 (10 November, main's
+  page itself unchanged. Version 219 (10 November, main's
   `f49a90f`, on Ryan's word, "Ok merge into main and republish the hangar") was the page with its Bench tab, his working sheet for a machine, the
   second tab (the roster by where each machine stands, one flat sheet a machine; no file and no
   collection of its own, every write an edit of the entry in `edits`, his notes, state and
