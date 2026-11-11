@@ -107,6 +107,21 @@ rerolls or module slots (the tiers row).
   eight ports is open: hand-built guns rebuilt to fold and sink, as the Polar Bear's sink into
   theirs, or classes on all eight (Claude's lean: on this machine the ports and the flip are the
   look, a refit then looks exactly like the stock, and every class must fit the ports anyway).
+- **His doubt, the same day**: "Yeah I though all hand built models went away already. What are
+  left? I don't remember agreeing to keeping them, I thought the opposite. Polar bears guns are no
+  longer hand built, that's certain. Something you're reading is out of date, regarding the polar
+  bear if nothing else." What the repository holds: main and all seventeen other branches on
+  GitHub agree, none changing the Polar Bear's guns. Its Rivet Gun and Twin
+  Autoguns are built by hand in their ports' slide joints (`tools/lowforge/models_low.py`, the
+  `polar_bear` build's two sockets), they are in `art/models/polar_bear.glb` (`rivet_barrel`,
+  `autogun_barrel`), today's stock die shows both, and the hangar's rear render shows them; its
+  swapped render shows round launchers in all four ports, the class look a refit has worn since
+  2 November. The record of 2 November: commit `6638c07` quotes his "replace or fix those hand
+  built stock guns", the session taking "fix" (their muzzle flares), and commit `ac16ef2`, the
+  same day, wrote the hardpoints row's "Yes to keeping hand built guns". Asked: whether a change
+  lives somewhere the repository does not (the desk's folder, a session that never pushed), and
+  whether the hand-built stock guns go everywhere, every hardpoint then wearing its class in its
+  maker's metal, stock or fitted, the fixed pieces still modelled in.
 - **Depth**: a full-size barrel is about 34 long against 22 from the deck to the belly, so the
   vertical sink wants the mounts at about two thirds or a deeper body; failing both, guns that tip
   back flat into troughs need almost none (the old disappearing-gun carriages).
@@ -136,6 +151,14 @@ a back-rank kit, the flip's first lesson in the stock.
 
 1. The ports: eight alternating (Claude's lean), a checkerboard or pairs by row.
 2. The lance: whether it goes (Claude's lean).
-3. What rides the ports: hand-built stock guns or classes on all eight (Claude's lean classes).
+3. What rides the ports: hand-built stock guns or classes on all eight (Claude's lean classes);
+   settled with item 6 if the hand-built guns go everywhere.
 4. The stock split, and the Direct half first.
 5. The names and texts.
+6. The hand-built stock guns across the roster (his doubt of 11 November): sixteen on seven
+   machines (the Ammit's Plasma Arquebus and Blazethrower; the Buzzard's Overclocked Railgun,
+   Transonic Rifle and Arc Fault Cannon; the Clydesdale's four; the Nemesis's Plasma Arquebus; the
+   Polar Bear's Rivet Gun and Twin Autoguns; the Puffin's Halo Projector; the Wild Boar's two
+   Slugthrowers and Shotfire Rack). If they go: seven models rebuilt in lowforge (the desk's
+   bpy), their renders and the fit sheet, the hand-built guns' muzzle records and their test gone
+   as dead code, and the hardpoints row rewritten to his call.
