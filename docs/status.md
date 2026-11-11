@@ -27,7 +27,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1094 tests, 325,124 checks, green on main (10 November, with the boss's hex, the third map list, the Text tab, the side session's work, the shapes reworked on Ryan's play, the second map list, the
+- Tests: 1115 tests, 362,618 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
+  with the formation and refit session's branch whole and the music session's landing; Godot
+  4.8-beta2). Before it, 1094 tests, 325,124 checks, green on main (10 November, with the boss's hex, the third map list, the Text tab, the side session's work, the shapes reworked on Ryan's play, the second map list, the
   map session's shapes laid to the rift's row, the passing and the catch at one, and the map
   playtest list), and 1111 tests, 362,582 checks, green on `ccr-722ca9f0-yj8na3` (11 November, that
   main with the refit pass's first build, the wall strike by the rating, the trial's regen row,
