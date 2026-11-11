@@ -158,10 +158,10 @@
 <h2>Hold The Line: passed</h2>
 <p>You passed the full pair. Both halves are built into the game's files as you heard them here: the battle half plays wherever Hold The Line played, and the map half sits beside it until the game can play a pair (the map choosing the track, a fight flipping to the battle half in place). The full pair on the switch is still <strong>Hold The Line, round twenty-seven</strong>. X's riff stays in <a href="https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV">the Melody Desk</a> as Hold The Line, round twenty-two.</p>
 
-<h2>Round thirty-three: Night Shift, the last variations</h2>
-<p>The pair is unchanged: round thirty-three, at 96, with the rewritten kick. The full pair on the switch is <strong>Night Shift, round thirty-three</strong>.</p>
-<p><strong>A's halves swapped.</strong> A2, the hook alone on the FM synth, now opens the head, and A1, the hook on the synth lead over the FM synth's arpeggio, closes it into the breakdown. The two halves play the same eight bars of chords, and the bass, the kick and the drum fills stay where they are, so only the synths' parts move. One thing to listen for: the intro's last four bars carry the plucked string's arpeggio, so with the swap the arpeggio stops when the head comes in and returns at the head's ninth bar on the FM synth.</p>
-<p><strong>The set.</strong> The whole battle half six ways: as the pair has it, without the crunch synth's straight eighths, and without them at 98, each with A as it is and with its halves swapped. The four rows at 96 switch anywhere, and so do the two at 98. Going between 96 and 98, start the row from its top.</p>
+<h2>Round thirty-four: Night Shift</h2>
+<p>Your picks are in the pair: the crunch synth's eighths kept, and A's halves swapped. The head now opens on the hook alone on the FM synth and closes on the hook on the synth lead over the FM synth's arpeggio, going into the breakdown. It is at 96, with the rewritten kick. The full pair on the switch is <strong>Night Shift, round thirty-four</strong>.</p>
+<p><strong>The intro's arpeggio into A.</strong> The plucked string's arpeggio from the intro's last four bars now plays on into the head, 6 dB down from the head's first bar. It stops where the FM synth's arpeggio comes in at the head's ninth bar, so two arpeggios never play at once.</p>
+<p><strong>The set.</strong> Your note reads two ways, so the set has both: the plucked arpeggio carried into A's first half (the pair's), or carried through all of A in place of the FM synth's arpeggio. A third row has it not carried, as you heard it last. Each row plays the intro, the head and the breakdown.</p>
 <div class="how"><p>Every row of a set is the same bars from the same seed at one gain. Tap another row partway through and it carries on from the same beat; a row that adds a voice is louder by what it adds. The number by a row is its loudness on a phone's speaker; by a seam, its length.</p>
   <label class="keep"><input type="checkbox" id="keep" checked> keep my place</label></div>
 <div id="sets-night"><p class="setnote">Loading the sets&hellip;</p></div>
@@ -513,12 +513,12 @@
   function none() { return null; }
 
   var RUN_LABELS = {engage: 'ENGAGE', victory: 'victory', field: 'back to the field', contact: 'a hunter catches'};
-  Promise.all([getJSON('manifest.json'), getJSON('hold27.json').catch(none), getJSON('night33.json').catch(none), getJSON('far8.json').catch(none)]).then(function (all) {
+  Promise.all([getJSON('manifest.json'), getJSON('hold27.json').catch(none), getJSON('night34.json').catch(none), getJSON('far8.json').catch(none)]).then(function (all) {
     var m = all[0], hold = all[1], night = all[2], far = all[3];
     man = m;
     // Each later round's pairs after its first-round track.
     if (hold) hold.tracks.forEach(function (t) { t.round = 'twenty-seven'; });
-    if (night) night.tracks.forEach(function (t) { t.round = 'thirty-three'; });
+    if (night) night.tracks.forEach(function (t) { t.round = 'thirty-four'; });
     if (far) far.tracks.forEach(function (t) { t.round = 'eight'; });
     var later = [].concat(hold ? hold.tracks : [], night ? night.tracks : [], far ? far.tracks : []);
     var tracks = [];
@@ -538,7 +538,7 @@
       pick.appendChild(b);
     });
     choose(later[0] || tracks[0]);
-    if (night) buildSets(document.getElementById('sets-night'), night.sets.concat(night.seams || []), ['nv']);
+    if (night) buildSets(document.getElementById('sets-night'), night.sets.concat(night.seams || []), ['nc']);
     else document.getElementById('sets-night').innerHTML = '';
     var runBox = document.getElementById('run-marks');
     [{at: 0, what: 'map'}].concat(m.run.events).forEach(function (e) {

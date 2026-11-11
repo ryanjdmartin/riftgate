@@ -909,53 +909,26 @@ The tasks are the to-do's; this is the index of what waits.
   full pair"), its W six beats.
   A mixing desk on pre-rendered stems was proposed for picking voices without a round and tabled (5
   November: "Tough if it's not completely flexible. That's ok, let's table it for now").
-  Night Shift on its thirty-third (10 November: the kick rewritten for the flow, two or three a bar and never on the snare's beats, "Don't overdo the kick for this track, since its already bass-driven", passed, "Ok, good, almost there"; waiting on his ear, the battle half without the crunch synth's eighths, at 96 and at 98, each with A's halves as they are or swapped, "I think before I choose I need to hear a version with A2 and A1 swapped in position"; both halves at 96 where the track ships at 94, "Go with 96. 98 is ok but the arpeggios start to muddy"; every arpeggio and the battle half's snare 3 dB down; the intro's own fill kept, "I liked the original fill from I into A more";  the kit dressed, "the amount of dressing is good in your sample", with fills at the transitions, "Can use a few more fills and such, especially during transitions. Almost there"; its tunes locked, "Like the new R. I think that locks the tunes for now"; the head and the lead's section closed; the off-beat piano in the battle half's lead's section and R and out of its head, "Remove the piano from A, keep in C and R"; D's riff on the crunch synth 6 dB down; R's lead a tune that grows, not busier;  the bass on four core pairs of his rhythms, a bar each
-  in turn, 4 and 7 sparingly, four cut; R a lead over the grooves, "no unisons", the stop-time out, the
-  fingers walking and the top Omnific's lead fancier each pass; the synths' arpeggios between octaves;
-  before it the duel on three basses, none trading, a pusher on the
-  eighths, a riffer and the top Omnific, "trading was the mistake"; the drive on trial over round twenty-one's half, the
-  turns of two bars gone ("the turn taking was a mistake"), a rhythm held eight bars, the bass or the
-  crunch synth always on the eighths, the hat on eighths, the kick on the bass's rhythm or one and
-  three, no off-beat piano or open hat; 9 November: the dark
-  pass and the written bass lines at 96 both retired, "take a step back to the previous version, before both 'darkening' passes, and look
-  at the root cause ... more intense, more driving, less chipper"; a set takes the off-beat piano,
-  the open hat, the arpeggio and the bouncing bass out of the head one at a time; the map's
-  intro without its front and its muted guitar out, his
-  call of 4 November: "Map groove sounds better without the muted guitar", its drums 3 dB down in C
-  and R, 6 November: "-3db solves it"; the battle half's parts named on the page for his notes, "is
-  there a way to subdivide this so I can give you notes on each particular section?"; the battle half a whole
-  jam in turns of two bars, 30 October, a bass jam, 4 November: the bass walking on his rhythms with
-  the arpeggio or the FM hook, never both, holding three-three-two 6 dB down under the two together,
-  the intro on three-three-two, D the piano's turn and the factory's blended over Hold The Line's
-  riff as the map's nod with no bass under them ("The bass 3-3-2s in D don't make sense"), R a duel
-  between two basses (5 November: "into more of a dueling basses type jam") three times through its
-  chords (6 November: "I'm not worried about making this section longer since it's like the climax
-  of this track"), the track's and a second an octave over it on the active bass trading two bars,
-  a bar, half a bar, a beat, the second's first answer climbing from its root and its falling line
-  the second time through ("that line coming from such a high note as the first time it appears is
-  jarring"), through two bars of stop-time ("The stop time was cool, we can do more of that
-  unexpected kind of thing") and a break where both basses fill in octaves, the hole retired
-  ("sounds like a glitch or mistake instead of a stop time"), then together on three-three-two; the
-  lower playing on under the upper's answers 3 dB under its own ("don't cut out the lower one when
-  the upper comes in"), by the bar in unison or on three-three-two, holding the root under a stop's
-  fill and out of the quickest trades ("both have a place"; "keeping the upper exposed on its own
-  sometimes is good too"), the upper in chords where the lower doubles it and the end without the
-  break on trial; the backing trading the tune under them at one level 3 dB under the basses ("keep
-  their volumes consistent so they don't overshadow the basses"; "Keep the backing voices at the
-  3db under, that works"), the FM synth out of R and the outro ("sounds like a glitch or alarm going
-  off"; "It sounds good when it's being highlighted, if it's just plucking notes in the background
-  it just sounds like weird boops"), the lower's unison in one octave or in two both working ("it was
-  whether the lower line kept its lower octave unison as well"), the upper on the dirtier Omnific
-  ("'upper on the dirtier Omnific' yes"), the two octaves, the upper's chords and both together on
-  trial, the plucked string in tune (forge.py's pluck had played every note flat, B5 by 32 cents:
-  "it comes across as sounding like the note is flat"), the rhythm guitar in the breakdown's ringing chords alone
-  and the lead guitar's lines kept ("Yes, keep the lead guitar. Put the the rhythm guitar back in on
-  B"), the plucked string 3 dB down wherever it plays ("Plucked string -3Db is good"), the bass 3 dB
-  down everywhere on the fingers into a modern prog drive (`real_bass.py`: "go with the
-  fingers-into-a-modern-drive-prog bass you built"), since the modelled basses read as guitars, C's
-  long notes, the lead guitar's line, on that bass an octave under the guitar ("wherever there's a
-  lead guitar, I want that bass instead playing the high lines"), the synth lines voiced for each
-  turn's job, no drone, Hold The Line's drum energy); The Far Bank's map half on its eighth round,
+  Night Shift on its thirty-fourth (11 November: both halves at 96 where the track ships at 94 ("Go
+  with 96. 98 is ok but the arpeggios start to muddy"), its tunes locked ("Like the new R. I think that
+  locks the tunes for now") and its head and lead's section closed: the bass (the fingers into a modern
+  prog drive, `real_bass.py`, 3 dB down) on four core pairs of his rhythms, a bar each in turn, 4 and 7
+  sparingly, the crunch synth on the eighths wherever it plays a rhythm ("Keep the synth"); the hat on
+  eighths, the kit dressed with fills at the transitions and the intro's own fill into the head, the
+  kick two or three a bar and never on the snare's beats ("Don't overdo the kick for this track, since
+  its already bass-driven"), the snare and every arpeggio 3 dB down; the head's halves swapped, the hook
+  alone and then over the arpeggio, the intro's plucked arpeggio carried into it 6 dB down ("Keep the
+  synth and the swap. Keep the arpeggio from the intro going into A"), how far, the head's first half or
+  all of it, waiting on his ear; the off-beat piano in the lead's section and R, the open hat out; D the
+  piano and the factory blended over Hold The Line's riff on the crunch synth 6 dB down, a toms' fill
+  into R; R a lead over the grooves building in from D, the top Omnific's lead a tune that grows, the
+  arpeggio, the hook and the chime joining by pass, a crash on each pass's one; the FM synth out of R
+  and the outro, the plucked string in tune and 3 dB down, no drone; retired by ear, the turns of two
+  bars ("the turn taking was a mistake"), the duels that traded ("trading was the mistake"), the gallop
+  and three-three-two in the bass ("too bouncy"), the dark pass and the written bass lines (9 November:
+  "more intense, more driving, less chipper"); the map half without its intro's front and its muted
+  guitar ("Map groove sounds better without the muted guitar"), its drums 3 dB down in C and R ("-3db
+  solves it"); the battle half's parts named on the page for his notes); The Far Bank's map half on its eighth round,
   its flip retired (31 October: the bells calm in the groove and the lift alone, the strings section
   and the climax off the battle's orchestra; 4 November: the tune on the plucked string one note at
   a time in both, 6 dB under the violins' level in the strings section ("6db under good") and at it
@@ -1080,7 +1053,7 @@ into this file in the same commit as its first publish; the procedures are in `R
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
   `docs/design-bible.html` after every change. This file is v0.470 (the track table's rows on Night Shift's
-  nineteenth to twenty-third rounds, Hold The Line's seventeenth to twenty-seventh, the fills' lean and The Far Bank's pick of the lift),
+  nineteenth to thirty-fourth rounds, Hold The Line's seventeenth to twenty-seventh and its ship, the fills' lean and The Far Bank's pick of the lift),
   not yet published: a permission check blocked the publish on 6 November as unrequested, so it
   waits on Ryan's go; the live page had not moved. The live page is v0.469 (the
   page's version 482, published 6 November from `ccr-7effd31a-u5z4gw` by a subagent that read the
@@ -1214,8 +1187,8 @@ into this file in the same commit as its first publish; the procedures are in `R
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW (`tools/soundforge/out/pairs/`,
   built by `pair_sketches.py`, the page `pair_page.html`): each pair on a live switch, Hold The
   Line's run as the game plays it, and the later rounds' pairs and A/B sets (Hold The Line's
-  twenty-seventh, the new hats in, the fingers bass's eighths under X, L's instruments on M, passed and shipped, `hold_sketches.py`; Night Shift's thirty-third, at 96, the tunes locked, the kit dressed, the synth's eighths out, 98 and A's halves swapped to hear, `night_sketches.py`;
-  The Far Bank's map half's eighth, its lift settled, `far_sketches.py`; the real basses, `real_bass.py`), every pair on the shipped tracks as built in tune on 6 November, at the page's version 82. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
+  twenty-seventh, the new hats in, the fingers bass's eighths under X, L's instruments on M, passed and shipped, `hold_sketches.py`; Night Shift's thirty-fourth, at 96, the tunes locked, the head's halves swapped, the intro's arpeggio carried into it, `night_sketches.py`;
+  The Far Bank's map half's eighth, its lift settled, `far_sketches.py`; the real basses, `real_bass.py`), every pair on the shipped tracks as built in tune on 6 November, at the page's version 83. The page's version is capped at 256 MiB of files, so a round's new files go up with the old rounds' removals beside them. A round whose files pass a
   publish's 64 MB goes up in two publishes: the new files first under the live page, then the
   new page with the rest, the old round's files removed.
 - The engagement sandbox, personal account only: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg

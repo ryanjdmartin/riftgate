@@ -1,4 +1,8 @@
-"""Night Shift's thirty-third round as a pair (Ryan, 10 November: "redo the kicks in the whole track so they are more
+"""Night Shift's thirty-fourth round as a pair (Ryan, 11 November: "Keep the synth and the swap. Keep the arpeggio from
+the intro going into A, still on the plucked string, but drop it like 6 db when A hits"): the thirty-third's with the
+crunch synth's eighths kept, the head's halves swapped (TURNS_DRIVE's A: the hook alone, then the hook over the
+arpeggio into the breakdown), and the intro's plucked arpeggio carried into the head 6 dB down (A_CARRY, battle_half's
+`carry`). Before it, the thirty-third as a pair (Ryan, 10 November: "redo the kicks in the whole track so they are more
 natural for the flow, now that the bass riffs and backing 8s are in and working. Don't overdo the kick for this track,
 since its already bass-driven"): the thirty-second's with the kick on a plain backbone (KICK_FLOW, battle_half's
 `kick`), never on the snare's beats. Before it, the thirty-second as a pair (Ryan, 10 November: "Go with 96. 98 is ok but the arpeggios start to
@@ -354,7 +358,9 @@ TURNS_WRITTEN = {
 TURNS_DRIVE = {   # on his core pairs since the twenty-eighth round
     "I": [("n11.root|n12.root", "")] * 2 + [("n11.root|n12.root", "arp:high")] * 2,
     # the head on a core pair throughout, the eighths the synth's (10 November: "section A should be a core, not straight eighths, yes. The straight 8s are the synth bass's job")
-    "A": [("n1.lean|n3.lean", "both:push")] * 4 + [("n1.lean|n3.lean", "hook:back")] * 4,
+    # the head's halves swapped (10 November: "a version with A2 and A1 swapped in position"; 11 November: "Keep the synth and the swap"):
+    # the hook alone on the FM synth, then the hook on the synth lead over the FM synth's arpeggio into the breakdown
+    "A": [("n1.lean|n3.lean", "hook:back")] * 4 + [("n1.lean|n3.lean", "both:push")] * 4,
     "C": [("n9.lean|n14.lean", "")] * 4 + [("n5.lean|n6.lean", "arp:back")] * 4,
     "D": [("332.home", "")] * 4,
     "R": [("rest", "")] * (R_BARS // 2),
@@ -395,6 +401,12 @@ def turns_kick(turns, fill=True, way=None):
 
 
 DRIVE_ON = True   # the full pair's
+# The intro's arpeggio carried into the head (Ryan, 11 November: "Keep the arpeggio from the intro going into A, still on
+# the plucked string, but drop it like 6 db when A hits"): the plucked string's arpeggio of the intro's last four bars
+# plays on from the head's first bar CARRY_DB under its level there, until the head's own arpeggio comes in ("half",
+# the full pair's: the FM synth's at the head's ninth bar, so two arpeggios never play at once), or through all of the
+# head in place of the FM synth's ("all"); False, it stops as the head comes in.
+A_CARRY, CARRY_DB = "half", -6.0
 PIANO_OUT = "A"   # the off-beat piano's sections out of the battle half (Ryan, 10 November: "Remove the piano from A, keep in C and R")
 # The kit dressed a bit (Ryan, 10 November: "a version where we dress up the drums a bit"), over the drive's plain kit
 # (the hat on eighths, the snare on two and four) wherever a bar is that plain bar, so the fills and D stay as they
@@ -1259,7 +1271,7 @@ def arp_bars(pat, keep):
 def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=BASS_DB, bass=BASS, guitar=GUITAR,
                 d_bass=D_BASS, pluck_db=PLUCK_DB, lead=LEAD, duel_b2=DUEL_UPPER, duel_backing=DUEL_BACKING,
                 duel_break=True, duel_chords=False, duel_octaves=False, dark_notes=DARK_NOTES, dark_colours=DARK_COLOURS,
-                written=WRITTEN_ON, cut=(), drive=DRIVE_ON, duel=DUEL_WAY, duel_riffer=None, duel_pusher="synth", d_riff=D_RIFF, d_fill=True, dress=None, fills=True, i_kick=None, kick=None, pulse=True):
+                written=WRITTEN_ON, cut=(), drive=DRIVE_ON, duel=DUEL_WAY, duel_riffer=None, duel_pusher="synth", d_riff=D_RIFF, d_fill=True, dress=None, fills=True, i_kick=None, kick=None, pulse=True, carry=None):
     """Night Shift's battle half: see the module's notes. `hold` is what the guitar and the bass play
     under the hook and the arpeggio together; `split` the guitar's interval over the bass in the
     later spot (SPLITS); `d` D's turn; `bass_db` the bass's level, wherever it plays; `bass` its
@@ -1272,9 +1284,12 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
     (LEAD_LEVEL's ways); `dark_notes` and `dark_colours` the dark pass's two halves (DARK_CHORDS)."""
     up_octave, by = SPLITS[split]
     one, out = GUITARS[guitar]
+    carry = A_CARRY if carry is None else carry
     if drive:
         cut = tuple(cut) + ("opens",)   # the off-beat piano back since the twenty-ninth round (Ryan, 10 November: "I think I hear it missing now in the battle version, so lets put it back there"); cut=("piano",) takes it out
         turns = dict(TURNS_DRIVE, **(turns or {}))
+        if carry == "all":   # the plucked string's arpeggio carried through the head in place of the FM synth's
+            turns["A"] = [(c, "hook:" + v.partition(":")[2] if v.startswith("both:") else v) for c, v in turns["A"]]
 
     def strings(part, v):
         # The guitar's part on one string where `guitar` says so: the voice stays in its place in
@@ -1455,6 +1470,13 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
         if d_fill:   # the toms' fill closing D into R
             drums["tom"]["D"], drums["tom2"]["D"] = "." * 112 + FILL_TOM, "." * 112 + FILL_TOM2
             drums["hat"]["D"] = HATQ * 7 + "x.x.x.x........."
+    # The intro's arpeggio carried into the head (A_CARRY), its voice last so every other voice keeps its seed.
+    n_a = len(parts["walk"].get("A", "")) // 16
+    own = [any(parts["arp:" + v].get("A", "")[16 * b:16 * b + 16].strip(".") for v in ARP_VOICES) for b in range(n_a)]
+    reach = own.index(True) if True in own else n_a
+    pluck = ARP_VOICES["pluck"]
+    voices.append(dict(pluck, gain=pluck["gain"] * 10.0 ** ((pluck_db + CARRY_DB) / 20.0), mode="chord", octave=1 if drive else arp_octave,
+                       dur=1.4, pat={"A": ARP * reach + "." * 16 * (n_a - reach)} if carry and reach else {}))
     if i_kick:   # the intro's kick on a bar's pattern in place of the bass's rhythm, its fill's bar kept
         drums["kick"]["I"] = i_kick * 7 + drums["kick"]["I"][112:128]
     dress = DRESS_ON if dress is None else dress
@@ -1560,22 +1582,14 @@ def drive_set(sid, title, form, note):
             "rows": [("%s%d" % (sid, k), t, n, opts) for k, (t, n, opts) in enumerate(DRIVE_ROWS)]}
 
 
-# A's halves swapped (Ryan, 10 November: "I think before I choose I need to hear a version with A2 and A1 swapped in
-# position"): the hook alone on the FM synth opening the head, the hook on the synth lead over the FM synth's arpeggio
-# closing it into the breakdown. The halves share A's eight bars of chords, the bass's rhythms and the kick, and the
-# drums keep their places, so only the synths' parts move.
-A_SWAPPED = TURNS_DRIVE["A"][4:] + TURNS_DRIVE["A"][:4]
 SETS = [
-    {"id": "nv", "half": "battle", "title": "Without the synth's eighths, and A's halves swapped", "form": FORM10, "seed": NAME + "_battle",
-     "note": "The whole battle half (Ryan, 10 November: \"Drop the 8th note drive from the synth in the background, everywhere. The same, but also back up to 98\"; \"I think before I choose I need to hear a version with A2 and A1 swapped in position\"). The four rows at 96 switch anywhere, each carrying on from the same beat, and so do the two at 98; going between 96 and 98, start the row from its top.",
-     "rows": [("nv0", "As the pair has it", "A1 then A2; the crunch synth on straight eighths under the head, the lead's section and R; at 96.", {}),
-              ("nv1", "Without the synth's eighths", "The crunch synth's eighths out everywhere, at 96.", {"pulse": False}),
-              ("nv2", "Without them, at 98", "The same, two beats a minute faster.", {"pulse": False, "bpm": 98}),
-              ("nv3", "A's halves swapped", "A2 then A1, with the synth's eighths, at 96.", {"turns": {"A": A_SWAPPED}}),
-              ("nv4", "Swapped, without the synth's eighths", "A2 then A1, the synth's eighths out, at 96.", {"turns": {"A": A_SWAPPED}, "pulse": False}),
-              ("nv5", "Swapped, without them, at 98", "The same, two beats a minute faster.", {"turns": {"A": A_SWAPPED}, "pulse": False, "bpm": 98})]},
+    {"id": "nc", "half": "battle", "title": "The intro's arpeggio into A", "form": "I" * 8 + " " + "A" * 16 + " " + "B" * 8, "seed": NAME + "_battle",
+     "note": "The intro, the head and the breakdown (Ryan, 11 November: \"Keep the arpeggio from the intro going into A, still on the plucked string, but drop it like 6 db when A hits\"). Switch rows anywhere: each carries on from the same beat.",
+     "rows": [("nc0", "Into A's first half", "The plucked string's arpeggio carried on from the intro, 6 dB down from the head's first bar, until the FM synth's arpeggio comes in at its ninth (the full pair's).", {}),
+              ("nc1", "Through all of A", "The plucked string's arpeggio, 6 dB down, through all sixteen bars of the head, in place of the FM synth's.", {"carry": "all"}),
+              ("nc2", "Not carried", "The arpeggio stopping as the head comes in, as you heard it last.", {"carry": False})]},
 ]
-PAIR = {"id": "night_shift_r33", "title": "Night Shift, round thirty-three"}
+PAIR = {"id": "night_shift_r34", "title": "Night Shift, round thirty-four"}
 INTRO = "intro: the kick on every beat and the hats, the pad fading in through the fourth bar and swelling from 0:10, the sub from the fifth"
 MAP_SAID = dict(F.MUSIC[NAME]["names"], I=INTRO,   # each section on the map, without its muted guitar
                 A="groove: the piano off the beat, the chime's hook, a soft clap, the sub, knocks and ticks",
@@ -1653,6 +1667,8 @@ def parts_on(form):
                     groups.append((2, said))
         else:
             groups = [(n, TURNS_SAID[sec])]
+        if sec == "A" and A_CARRY == "half":
+            groups[0] = (groups[0][0], groups[0][1] + ", the intro's arpeggio carried on the plucked string, 6 dB down")
         if sum(bars for bars, _said in groups) != n:
             raise ValueError("%s's parts run %d bars of its %d" % (sec, sum(bars for bars, _said in groups), n))
         b = b0
@@ -1705,7 +1721,7 @@ def main(argv):
         raw = {(si, ri): x for si, ri, x in pool.map(render_row, jobs)}
         for f in fulls:
             f.result()
-    path = os.path.join(P.OUT, "night33.json")
+    path = os.path.join(P.OUT, "night34.json")
     manifest = json.load(open(path)) if os.path.exists(path) else {"sets": [], "tracks": [], "seams": []}
     for si, s in enumerate(SETS):
         if s["id"] not in wanted:
@@ -1717,7 +1733,7 @@ def main(argv):
         rows = []
         for ri, (rid, title, note, _opts) in enumerate(s["rows"]):
             x = F.limit(mastered[ri] * gain)
-            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night33_" + rid, x)),
+            rows.append({"id": rid, "title": title, "note": note, "file": os.path.basename(P.write("night34_" + rid, x)),
                          "seconds": round(len(x) / F.SR, 2), "phone_db": P.measure(rid, x)["phone_db"]})
         manifest["sets"] = [e for e in manifest["sets"] if e["id"] != s["id"]] + [{"id": s["id"], "half": s["half"], "title": s["title"], "note": s["note"], "rows": rows}]
         print("%-2s %s" % (s["id"], "  ".join("%s %.1f" % (r["id"], r["phone_db"]) for r in rows)))
