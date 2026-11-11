@@ -125,7 +125,10 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4` (a cloud session may not delete
 one). Each merge commit says how its conflicts were settled.
 
-Still working (11 November): `ccr-722ca9f0-yj8na3`, the formation and refit session; everything
+Still working (11 November): `claude/clydesdale-design-concept-cg6uyz`, the Clydesdale's review
+(Ryan's other session), cut from main at `2a9242e`: its brief, `docs/briefs/ws_clydesdale.md`, with
+his idea and his answers of the day (the to-do's line); docs only so far.
+`ccr-722ca9f0-yj8na3`, the formation and refit session; everything
 it had committed (to `4c8dbf1`) is on main with `ccr-4d58b054-3lyj0a`, below; it took main again
 at `0cb7313`, and its commits since are its own (its own records say where it stands: the refit
 brief, the to-do, How things stand). Landed 11 November: `ccr-4d58b054-3lyj0a`, the chassis inventory and the locked pieces'
