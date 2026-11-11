@@ -45,6 +45,26 @@ forward, fed by the field instead of the airframe's heat. Two forms:
 Claude's lean: the whole field, on the cannon alone, so the zap is its signature and its other
 guns stay ordinary; a module may borrow the priced form (his word, of modules borrowing a passive).
 
+## His second thought (11 November)
+
+"I wonder if the passive should still keep a flat shield cost for a zap, either as a base damage
+increase or as a rider on hit. Or, it spends shield to add something like Chain. The choice could
+be when to keep sustained DPS, and when to burst. That might give it too much flexibility but if
+it's paying in safety, probably well earned." So two spends on one pool: the passive's flat cost
+on its weapons, the sustained line, and the cannon's whole field, the burst; its heat refills the
+pool through its regen. Holes raised in chat (Claude's):
+
+- Short of the cost, the weapon fires plain: a printed shield cost locks an entry that cannot pay,
+  and a passive that locked every gun on an empty field would leave it nothing to do.
+- Paid whenever it can, or chosen: paid unasked (as the Nemesis's rage is) every shot thins the
+  field the cannon wants, so the choice lives in what it fires and when; chosen a shot wants a
+  control the die has not got.
+- Damage or Chain, one: flat damage works with any gun; Chain lands only on Shocked foes, so it
+  asks the team for Shock and gives the Buzzard reach on many foes where its tier lacks it.
+  Claude's lean: damage on the passive, Chain a branch of its upgrades.
+- With every weapon paying shield it is the old Storm Petrel's rule again, beside heat instead of
+  in its place.
+
 ## Holes
 
 - The old Storm Petrel burned shield through every weapon; the Buzzard inherits the idea as the
