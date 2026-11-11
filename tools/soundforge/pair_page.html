@@ -161,8 +161,9 @@
 <h2>Round thirty-four: Night Shift</h2>
 <p>Your picks are in the pair: the crunch synth's eighths kept, and A's halves swapped. The head now opens on the hook alone on the FM synth and closes on the hook on the synth lead over the FM synth's arpeggio, going into the breakdown. It is at 96, with the rewritten kick. The full pair on the switch is <strong>Night Shift, round thirty-four</strong>.</p>
 <p><strong>The intro's arpeggio into A.</strong> In the pair, the plucked string's arpeggio from the intro's last four bars plays on into the head, 6 dB down, until the FM synth's arpeggio comes in at the head's ninth bar.</p>
-<p><strong>The FM synth through all of A.</strong> The set tries the FM synth's arpeggio from the head's first bar instead, at its level and 3 dB louder. It plays only in the head, so that is the only place the 3 dB moves. In the head's first half the hook is on the FM synth too, as the swap has it, so one synth plays both lines there. The hook sits about 9 dB over the arpeggio (6 dB in the louder row), and its long notes stand apart from the arpeggio's sixteenths, but that is the thing to listen for. If the two blur, the first half's hook could move to the synth lead, though that would make the head's two halves alike.</p>
-<p><strong>The set.</strong> The intro, the head and the breakdown three ways: the FM synth through all of A at its level, the same 3 dB louder, and the pair's carried plucked arpeggio. The pair stays as it is until you pick.</p>
+<p><strong>The head's first half.</strong> Every row has the FM synth's arpeggio through all of the head, from its first bar. In the first half the hook is either cut or moved to the plucked string; in the second half it stays on the synth lead over the arpeggio. One thing turned up: the recipe's metal chime has been doubling the hook an octave up all through the head, about 6 dB under the FM synth's hook on a phone. Where the hook is cut, the chime rests through the first half too, so no hook plays there. On the plucked string, the chime doubles it, as it doubles every hook in the head.</p>
+<p><strong>The plucked hook's level.</strong> It is matched to the FM synth's hook it replaces, on a phone and in full, then 3 dB down as the plucked string is wherever it plays.</p>
+<p><strong>The set.</strong> The intro, the head and the breakdown five ways: the hook cut, and the hook on the plucked string, each with the FM synth's arpeggio at its level and 3 dB up, since that question is still open; and the hook on the FM synth, as you heard it last. The pair stays as it is until you pick.</p>
 <div class="how"><p>Every row of a set is the same bars from the same seed at one gain. Tap another row partway through and it carries on from the same beat; a row that adds a voice is louder by what it adds. The number by a row is its loudness on a phone's speaker; by a seam, its length.</p>
   <label class="keep"><input type="checkbox" id="keep" checked> keep my place</label></div>
 <div id="sets-night"><p class="setnote">Loading the sets&hellip;</p></div>
@@ -539,7 +540,7 @@
       pick.appendChild(b);
     });
     choose(later[0] || tracks[0]);
-    if (night) buildSets(document.getElementById('sets-night'), night.sets.concat(night.seams || []), ['na']);
+    if (night) buildSets(document.getElementById('sets-night'), night.sets.concat(night.seams || []), ['nh']);
     else document.getElementById('sets-night').innerHTML = '';
     var runBox = document.getElementById('run-marks');
     [{at: 0, what: 'map'}].concat(m.run.events).forEach(function (e) {
