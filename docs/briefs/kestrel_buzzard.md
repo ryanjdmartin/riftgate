@@ -65,6 +65,18 @@ pool through its regen. Holes raised in chat (Claude's):
 - With every weapon paying shield it is the old Storm Petrel's rule again, beside heat instead of
   in its place.
 
+## Settled (Ryan, 11 November)
+
+"Yes, when it can't pay it doesn't zap, same as the old Petrel. It's taking over the shield payer
+identity while the petrel now goes more defensive. Automatically paid. Everything should be
+automatic in this game, I don't want extra controls." And of Chain: "My thought about chain over
+flat damage was just to offer another shock/chain chassis. But that might be overloaded."
+
+So: its passive pays a flat shield cost on each weapon it fires, unasked, for flat damage, and
+fires plain when the field is short; its cannon fires the whole field; its heat raises its regen.
+Chain stays a candidate for an upgrade branch, his worry noted (overloaded). Numbers and the
+cannon's rate are its session's, with the Storm Petrel's, after the heat pass.
+
 ## Holes
 
 - The old Storm Petrel burned shield through every weapon; the Buzzard inherits the idea as the
