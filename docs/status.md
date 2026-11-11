@@ -122,8 +122,8 @@ one). Each merge commit says how its conflicts were settled.
 
 Still working (11 November): `ccr-722ca9f0-yj8na3`, the formation and refit session; everything
 it had committed to `4c8dbf1` is on main with `ccr-4d58b054-3lyj0a`, below. Since then, on the
-branch alone: the Rupture meter's dial and the first battle read whole (How things stand; the
-refit brief's section 10). It took
+branch alone: the Rupture meter's dial, the first battle read whole and the pacing discussion
+restarted from scratch (How things stand; the refit brief's sections 10 and 11). It took
 main at `0182acd` (the music session's landing) and at `ccdc705` on 11 November (Ryan: "merge
 main in and take a look at changes there": the locked pieces' footing, tier one down to the
 basics, the Polar Bear dealt again, the Buzzard's regen, the Nemesis's rage bar, The Far Bank's
@@ -546,34 +546,47 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   runner's plain player, which never gathers, wins 8% of its battles where it won 19%: a
   fight for four with one machine in it is won one time in four where it was one in two. The
   bible's scale row holds it (v0.512, v0.513 since the branch took main's third map list).
-- **The Rupture meter's size on trial, one elite, and 4-4-2** (Ryan, 11 November: "the 3
-  fractures, with the current rate of fill, felt short to me. I assume that needs to be tuned
-  still, though. The answer could be that the amount to reach a fracture probably scales by
-  Convergence, with a step down at each tier when we add another fracture step"; "battle one
-  should only serve one elite"; "we restructure the tier list from 3-5-2 to 4-4-2 ... I'll
-  pose that in the chassis session"). Tier one sends one elite already, at its first Fracture.
-  The shape he names is the meter's own, a share of a field the ramp grows, split over the
-  tier's Fractures: the Rupture is 2.4 to 2.5 formations' worth before Convergence 3, 3.1 to
-  3.4 after, 3.7 to 4.2 at tier two and 4.0 to 5.0 at tier three, about three big fights
-  rising to five or six where the pacing row says four to five, flat. The short end is tier
-  one's start: the opening's formation, the first wave's and the elite fill the meter, the
-  floor player's fourth turn, since the Fractures' elites are not in the meter's base and the
-  rift's first three waves are a formation, a patrol and a formation (the first wave's the
-  opening's own composition again, on every seed). The first battle read whole
-  (`docs/measurements.md`, 11 November; three trios and a four, the runner's player, 20 seeds
-  a cell): a longer meter is more turns and more patrols, never more formations, and the gate
-  pays (a tenth of its bar gone by the Rupture as it is, a third at half again, a half
-  doubled); the stall guard caps it from about half again; and the first battle is no gift
-  for the floor player in any domain (won 40% to 60% in the Meadow, 15% to 55% in the Marsh,
-  0% to 15% in the Waste, 0% to 5% on the Peak), the boss's first block alone moving it
-  little, since that player loses before the boss. Built: a dial, SETTINGS → TRIALS → RUPTURE
-  (1X, 1.25X, 1.5X, 2X; `Battle.rupture_trial`, `RIFTGATE_RUPTURE`), the rule unmoved. Open,
-  his (the brief's section 10; the bible's pacing row and section 12, v0.523): whether the
-  count of fights stays flat across tiers, the share's size by tier (Claude's lean if the row
-  holds: about five sixths, two thirds and four sevenths, which is his step down at each tier
-  in numbers), the stall guard as the cap, and whether the first wave goes on repeating the
-  opening's formation. 4-4-2 is his lean and his to pose in the chassis session (the briefs
-  README's Tiers).
+- **Pacing and length, from scratch** (Ryan, 11 November: "I don't think the 4 to 5 guideline
+  holds anything anymore. This is a different game now. I think start this pacing and length
+  discussion from scratch. We know the elite needs to be worth a good chunk of malice, so work
+  that in. And the fact that flanker fights are faster, so we have more buffer for more
+  fights. And that formation size goes up with convergence, so scaling fracture cost at the
+  same rate doesn't actually change anything"). The bible's pacing row retires the count with
+  the test it failed (a count of fights measures neither length nor cost now that a duel, a
+  formation and an elite are three lengths), Claude's targets beside it with it, and section
+  12 holds the discussion (v0.524); the refit brief's section 11 is its home, nothing built.
+  What the reads say (`docs/measurements.md`, 11 November, pacing from scratch): as built the
+  meter asks nothing of the tide, the opening's packs and the elites filling it at every tier
+  by about the fourth turn; a lone duel is 4 machine-turns of the player's time against a
+  formation's 20, an elite's 21 and a boss's 36; an elite's fall is worth a third to one and a
+  third of a formation by which elite rolls; and at a fixed number of beats (a beat a peak of
+  Rift Pressure) a battle grows by itself, 7 fights before the boss through the second peak
+  where tier one starts and 11 at tier three. Claude's first shape, for his marks: the Rupture
+  sized in beats, two at every tier (the opening and the tide through its second peak, a lone
+  patrol's worth left); an elite's fall a formation and a half of its tier, whichever elite; a
+  field cleared while the meter owes a beat bringing the next peak in place of breaking the
+  seal. The bot's first battle in the Meadow at two beats breaks the seal on about its sixth
+  turn after six fights, the gate at 140 to 154 of 200; at three, its tenth or eleventh after
+  ten, the gate at 73 to 98. His: how many beats and whether the number rises, the chunk's
+  size and whether it is the meter's alone, the cleared field, whether the count's reason
+  (never many short fights, which make every build burst) still binds, the minutes he wants,
+  and the first wave repeating the opening's formation.
+- **The Rupture meter's dial, one elite, and 4-4-2** (Ryan, 11 November, before the restart
+  above: "the 3 fractures, with the current rate of fill, felt short to me. I assume that
+  needs to be tuned still"; "battle one should only serve one elite"; "we restructure the
+  tier list from 3-5-2 to 4-4-2 ... I'll pose that in the chassis session"). Tier one sends
+  one elite already, at its first Fracture. Built: a dial, SETTINGS → TRIALS → RUPTURE (1X,
+  1.25X, 1.5X, 2X; `Battle.rupture_trial`, `RIFTGATE_RUPTURE`), the rule unmoved; with the
+  elite's own menace 1.25X is about the first peak at tier one's start, 1.5X the second and 2X
+  nearly the third. The first battle read whole (`docs/measurements.md`, 11 November; three
+  trios and a four, the runner's player, 20 seeds a cell): a longer meter is more turns and
+  more patrols, never more formations, and the gate pays (a tenth of its bar gone by the
+  Rupture as it is, a third at half again, a half doubled); the first battle is no gift for
+  the floor player in any domain (won 40% to 60% in the Meadow, 15% to 55% in the Marsh, 0% to
+  15% in the Waste, 0% to 5% on the Peak), the boss's first block alone moving it little,
+  since that player loses before the boss; and a domain's first two formations are one
+  composition on every seed, the first wave sending the opening's again. 4-4-2 is his lean and
+  his to pose in the chassis session (the briefs README's Tiers).
 - **The fourth machine is the first battle's** (Ryan, 11 November, in the discussion that
   followed: "the only reason to leave it up to the player was to put them fully in control.
   But if the choice is in which city to defend in order to get a guaranteed choice from that
@@ -1102,8 +1115,10 @@ its proposal's grids re-cut under the new model and read by hull lost), in its b
 what-if and its first reads are in (9 November), his two reads of the trial, the model as
 content, the formation pass and a guess at the elites' and bosses' numbers (10 November: the
 brief's sections 5, 8 and 9); tier one only for now (his word, 11 November), and next his
-answers on the first battle (the brief's section 10: the fourth machine's route is settled,
-the first battle's shape, the Rupture meter's size and the boss's numbers by ramp band wait on him), beside his play of what landed, with the field's
+answers on pacing and length, discussed from scratch (the brief's section 11: how many beats of
+the tide a battle runs, the elite's chunk, the cleared field), and on the first battle (section
+10: the fourth machine's route is settled, the first battle's shape and the boss's numbers by
+ramp band wait on him), beside his play of what landed, with the field's
 dials (the to-do's Ryan list), and his answers to the brief's section 7, then the content still to come (the stock re-deal proper as a table in chat first,
 the component pass, the heat prices, the foes' numbers after his play, the bosses' stat
 blocks, what prices a round), the vocabulary, the rules and the rows. Then the long wall's other open item (the bible's section 12: the shell). Beside them, the rest of the skirmish code audit
@@ -1165,8 +1180,8 @@ commands are in `README.md`.
   session's track rows, the map lists' and the Bench's). Main's file is v0.522 since The Far Bank
   joined the fights' pool (its track row and the boss themes' Open row: the Marsh's theme it was,
   so no domain has one now), unpublished, its republish on Ryan's word; `ccr-722ca9f0-yj8na3`'s
-  file is v0.523, main's with the meter's lines (the pacing, clocks and roster rows, section
-  12's first battle and tier counts), unpublished too.
+  file is v0.524, main's with the pacing row's count retired and the meter's lines (the pacing,
+  clocks and roster rows, section 12's first battle, pacing and tier counts), unpublished too.
   BASE for the next merge is `9ebf74b`'s file. The live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS

@@ -982,114 +982,156 @@ his to settle:
 4. What a rich, near-certain first battle is. Claude's read: the second half of the draft,
    played, its choices the front (the maker), the boss's token and the machine.
 
-**The Rupture meter's size (11 November).** His words: "I was going to say that the 3
-fractures, with the current rate of fill, felt short to me. I assume that needs to be tuned
-still, though. The answer could be that the amount to reach a fracture probably scales by
-Convergence, with a step down at each tier when we add another fracture step. Makes sense, or
-no? Either way, I think battle one should only serve one elite." What the records and the
-reads say (`docs/measurements.md`, 11 November):
-
-- Tier one sends one elite, at its first Fracture, in every domain on every seed; two is tier
-  two's rule. Nothing moves for the first battle.
-- The shape he names is the meter's own. The Rupture is two thirds of the field's menace, so
-  it grows where the ramp grows the opening (Convergences 3 and 8), and the tier splits it
-  over its Fractures, so a Fracture is cheaper at each tier that adds one.
-
-| The rift | The Rupture, in formations' worth | A Fracture, on average | Elites sent | Big fights' worth to the Rupture |
-|---|---|---|---|---|
-| Tier one, Convergences 0 to 2 | 2.4 to 2.5 | 0.78 to 0.83 | 1 | 2.4 to 2.7 |
-| Tier one, from Convergence 3 | 3.1 to 3.4 | 1.04 to 1.14 | 1 | 3.3 to 3.6 |
-| Tier two | 3.7 to 4.2 | 0.91 to 1.04 | 2 | 4.1 to 4.6 |
-| Tier three | 4.0 to 5.0 | 0.81 to 1.00 | 3 | 5.1 to 6.4 |
-
-- What is short is tier one before Convergence 3: the opening's formation, the first wave's
-  and the elite fill the meter, on the floor player's fourth turn. Two things in the build
-  make it so: the Fractures' elites fill the meter and are not in its base (one is a third of
-  tier one's Rupture), and the rift's first three waves are a formation, a patrol and a
-  formation (the player's turns 2, 5 and 8), so past those three fights the tide supplies
-  patrols until the eighth turn.
-- A longer meter is more turns and more patrols, and the gate pays. The floor player's first
-  battle in the Meadow, three machines:
-
-| The meter | The Rupture's turn | Patrol fights before it | The gate has lost, of 200 | Ruptures by the stall guard | Won |
-|---|---|---|---|---|---|
-| As it is | 3.3 to 4.8 | 0.4 to 1.2 | 11 to 33 | none | 40% to 60% |
-| Half again | 7.5 to 7.6 | 3.4 to 3.9 | 63 to 71 | 30% to 41% | 15% to 20% |
-| Doubled | 9.5 to 10.6 | 5.3 to 6.5 | 97 to 108 | 25% to 40% | 5% to 15% |
-
-The holes, each with what settles it:
-
-1. Menace or fights. In menace the amount scales with the field already. In fights the
-   Rupture climbs from about three big fights to five or six across the tiers, and the
-   pacing row (13 October) says four to five, "the count flat across tiers and the threat
-   rising with them". His to say which holds: flat, which lifts tier one and trims tier
-   three, or climbing, which rewrites that row.
-2. The step down is the rift's tier's, and it has a floor. A rift keeps the tier it opened
-   at while the ramp it reads is the live Convergence, so the amount reads both: the
-   Convergence for the size, the rift's tier for the split. A Fracture cheaper by more than a
-   quarter at tier two, or a fifth at tier three, makes a rift's Rupture smaller than that of
-   a rift a tier under it at the same Convergence. Written on the total (a size that rises
-   with the Convergence and never falls, split over the tier's Fractures), the step down
-   comes with the added Fracture and needs no number of its own.
-3. A share of the field, never a table of menace. A formation is worth 34 in the Marsh and
-   54 on the Peak: a table would make the Peak's battles two thirds the length of the
-   Marsh's and move with every retune of a foe.
-4. The stall guard caps it. A field cleared breaks the seal whatever the meter reads, and
-   from about half again a squad ahead of the tide ends there (71% of a four's Ruptures in
-   the Meadow at half again). Left as it is, the meter's size is a ceiling only a squad
-   behind the tide meets, which suits a first battle every run replays. On the bench: a
-   cleared field brings the next peak at once and the seal waits on the meter (longer for
-   everyone and never a dead turn; the seam and the tears come sooner for the player who
-   clears fast).
-5. Longer is the gate's cost and the flanks' work, which is what three machines are short of
-   (his own point about the fourth). A longer first battle and an easy one pull apart unless
-   the opening at Convergence 0 is a field three machines can cover (hole 4 of the first
-   list).
-6. The fodder's dial is the same length from the other side: it lowers what a rank-and-file
-   kill fills, this raises what the Rupture takes. One at a time on the phone. The size
-   leaves a kill's worth alone, and salvage and Anathema with it.
-7. The first battle's two formations are one composition. The opening places the domain's
-   first formation in content order and the first wave sends it again, on every seed: two
-   goblin hordes, two needler thickets, two grave throngs, two ember pyres, the second
-   composition with the third wave, by which turn the meter as it is has broken the seal. So
-   a domain's first battle asks one formation's question twice, and on the Peak the one
-   asked is led by a breach (a trio reaches the Rupture there in 5% to 30% of its battles).
-   What settles it, his: left as it is; the first wave starting on
-   the list's second (the same pace and a second question, with the Waste's sandworm ambush
-   and the Peak's magma vent six turns sooner); or the opening's formation drawn by the seed.
-
-Built, a dial and nothing of the rule: a debug build's SETTINGS → TRIALS → RUPTURE (1X, 1.25X,
+**The Rupture meter's size (11 November).** His first words on it: "I was going to say that
+the 3 fractures, with the current rate of fill, felt short to me. I assume that needs to be
+tuned still, though. The answer could be that the amount to reach a fracture probably scales
+by Convergence, with a step down at each tier when we add another fracture step ... Either
+way, I think battle one should only serve one elite." Tier one sends one elite already, at
+its first Fracture, in every domain on every seed; two is tier two's rule. Built for the
+size, a dial and nothing of the rule: a debug build's SETTINGS → TRIALS → RUPTURE (1X, 1.25X,
 1.5X, 2X; `Battle.rupture_trial`, `RIFTGATE_RUPTURE` on the desk), every threshold by the
-factor as a battle starts.
-
-Claude's leans, for his marks (nothing built):
-
-- The form: the Rupture's share becomes the ramp's number, one a tier, beside the Fractures'
-  count in `Ramp`, so a tier can step it; the field's menace keeps doing the Convergence's
-  part.
-- The size, if his row holds: a share of about five sixths at tier one, two thirds at tier
-  two as now and four sevenths at tier three (the dial's 1.25X, 1X and a little under it).
-  That puts the Rupture at 4.1 to 4.5 big fights' worth at tier one from Convergence 3, 4.1
-  to 4.6 at tier two and 4.5 to 5.7 at tier three, and it is his step down at each tier in
-  numbers: a Fracture 1.3 to 1.4 of a formation, then 0.9 to 1.0, then 0.7 to 0.85. Tier
-  one's first three Convergences stay a fight short of the row (3.0 to 3.3), since the
-  opening places one formation there, and for the first battle that is the side to err on:
-  at half again it nears the row (3.6 to 3.9) and the floor player's gate has lost a third
-  by the Rupture.
-- On the bench, each with its price. Counting the Fractures' elites in the base at their
-  mean: it mends the omission and is a fifth to a third more at every tier (2.9 to 3.1
-  formations' worth at tier one's start, 4.5 to 4.8 at tier two, 5.3 to 6.1 at tier three),
-  so it lengthens the top tiers past the row. The rift sending a formation on every peak:
-  more big fights where the meter adds only patrols, and a heavier tide down the middle, the
-  wall's to pay.
+factor as a battle starts. The first read of it measured the meter against the pacing row's
+four to five fights; he retired that guideline the same day and restarted the discussion, so
+the size, its scaling and the stall guard are section 11's, from scratch. What the reads of
+this part found stands there (`docs/measurements.md`, 11 November): a longer meter is more
+turns and more patrols, never more formations, and the gate pays for the turns.
 
 **The scope.** Tier one only (his word). The tier-two and tier-three reads of 10 November are
 stock machines, which the levels' plan will not field: a machine holds a level, bought in the
 hangar once the Convergence reaches it, that lifts its stat line and its locked pieces, and
-tier one comes down to the basics (`docs/locked_pieces_proposal.md` on `ccr-4d58b054-3lyj0a`,
-his calls of 10 November, not on main yet; this session read it on 11 November, after the
-guess). So the tier's hit-point step guessed on 10 November stands as a placeholder and is
+tier one comes down to the basics (`docs/locked_pieces_proposal.md`, his calls of 10
+November, on main and in this branch since 11 November: the bible's locked row and tiers
+row; this session read it that day, after the guess). So the tier's hit-point step guessed on 10 November stands as a placeholder and is
 tuned no further, a machine's regen is level one's number, and the guess's tier-one reads
 were taken with locked pieces that proposal brings down (the Photosphere Lance, the Flechette
 Pod), so the squads here hit a little harder than they will.
 
+## 11. Pacing and length, from scratch (11 November)
+
+His words: "I don't think the 4 to 5 guideline holds anything anymore. This is a different
+game now. I think start this pacing and length discussion from scratch. We know the elite
+needs to be worth a good chunk of malice, so work that in. And the fact that flanker fights
+are faster, so we have more buffer for more fights. And that formation size goes up with
+convergence, so scaling fracture cost at the same rate doesn't actually change anything."
+So the count is retired (the bible's pacing row) and three things are given: the elite's kill
+is a good chunk of the meter, a battle has room for more fights because the flank's are
+quick, and a threshold that scales with the formations' size scales nothing. Everything below
+is for his marks and nothing of it is built; the reads are `docs/measurements.md`, 11
+November, pacing from scratch.
+
+**The frame: a battle is counted in beats.** The clock already cuts a battle into beats: a
+peak of Rift Pressure every three turns (two from Convergence 8), the first at the end of the
+first turn, each sending the rift's next composition and a patrol from every tear, and
+opening a tear. A beat is the one unit that means the same at every tier. Menace is not: a
+formation's grows with the tier and the opening's count with the Convergence, which is his
+third point. A count of fights is not: a lone duel is a fifth of a formation's fight in the
+player's time, which is his second. So the question "how long is a battle" becomes "how many
+beats of the tide does the squad fight through before the seal breaks", and the ramp does
+the rest.
+
+**Where the meter stands: no beat at all.** At every tier the field's part of the Rupture is
+about what the opening places, and the elites it calls fill the rest: a squad that kills what
+stood at the start and the elites has broken the seal, by its fourth turn or so.
+
+| The rift | The Rupture | Its elites' kills | Left for the field | The opening holds | The first wave adds | The field's part, of the opening |
+|---|---|---|---|---|---|---|
+| Tier one, Convergence 0 | 80 to 129 | 29 to 39 | 49 to 90 | 46 to 76 | 32 to 58 | 106% to 121% |
+| Tier one, Convergence 3 | 109 to 168 | 29 to 39 | 78 to 129 | 88 to 134 | 32 to 58 | 88% to 96% |
+| Tier two, Convergence 4 | 160 to 214 | 60 to 72 | 90 to 142 | 107 to 136 | 39 to 58 | 77% to 104% |
+| Tier three, Convergence 8 | 186 to 344 | 90 to 108 | 96 to 236 | 128 to 224 | 35 to 82 | 75% to 105% |
+
+**What the tide holds, beat by beat.** The elites counted in, every domain's range:
+
+| The rift | The beat, turns | Elites | Through the first peak | Through the second | Through the third |
+|---|---|---|---|---|---|
+| Tier one, Convergences 0 to 2 | 3 | 1 | 5 fights: 2 formations, 2 patrols, by turn 2 | 7 fights: 2 formations, 4 patrols, by turn 5 | 10 fights: 3 formations, 6 patrols, by turn 8 |
+| Tier one, from Convergence 3 | 3 | 1 | 6 fights: 3 formations, 2 patrols, by turn 2 | 8 fights: 3 formations, 4 patrols, by turn 5 | 11 fights: 4 formations, 6 patrols, by turn 8 |
+| Tier two, Convergences 4 to 7 | 3 | 2 | 7 fights: 3 formations, 2 patrols, by turn 2 | 9 fights: 3 formations, 4 patrols, by turn 5 | 12 fights: 4 formations, 6 patrols, by turn 8 |
+| Tier two, from Convergence 8 | 2 | 2 | 7 fights: 4 formations, 1 patrols, by turn 2 | 10 fights: 4 formations, 4 patrols, by turn 4 | 15 fights: 4 to 5 formations, 8 to 9 patrols, by turn 6 |
+| Tier three | 2 | 3 | 8 fights: 4 formations, 1 patrols, by turn 2 | 11 fights: 4 formations, 4 patrols, by turn 4 | 16 fights: 5 formations, 8 patrols, by turn 6 |
+
+At tier one's start the first wave is the opening's formation again, the second peak is two
+lone duelists, and the third brings the second composition, two patrols and the first
+hunting packs.
+
+**His three givens, in numbers.**
+
+- The elite's chunk. Today an elite's fall is worth its own menace, 22 to 49 at tier one by
+  which elite the roll sends: 0.57 to 1.34 of a formation there and 0.35 to 0.82 at tier
+  three, since its menace is the same at every tier while a formation's grows. Its fight is as
+  long as a formation's, so the meter pays it the least for the time.
+- The flank's fights. In machine-turns, one machine acting once: a lone duel 4, a formation
+  20 for three machines, an elite 21, a boss 36. The second beat of a first battle is two
+  lone duels: two fights more for 8 machine-turns on about a hundred. The third beat is a
+  formation and two or three patrols: 24 to 28 more.
+- What scales by itself. Through the second peak a battle is 7 fights before its boss at tier
+  one's start, 8 from Convergence 3, 9 at tier two, 10 from Convergence 8 and 11 at tier
+  three, with no number moved.
+
+**A first shape, for his marks.**
+
+1. The Rupture is sized in beats, two to start and the same at every tier: the field's part
+   is everything the opening places and the tide sends through its second peak, one lone
+   patrol's worth left to leave.
+2. An elite's fall fills a formation and a half of its tier, whichever elite, on top of the
+   field's part. At tier one that is over a third of the bar in one kill, and with the
+   field's part nearly done it is the kill that breaks the seal or the one before it.
+3. A field cleared while the meter still owes a beat brings the next peak at once, in place
+   of breaking the seal. Without it a squad ahead of the tide still ends on the opening,
+   whatever the meter's size: the stall guard broke the seal for the bot's four in two
+   Ruptures of three at three beats.
+
+What it gives a first battle, three machines: 2 formations, 4 lone duels and the elite
+before the boss, about six turns, a tenth more play than today for three fights more. The
+bot's read, the Meadow, three trios (a floor: it leaves its flanks):
+
+| The Rupture | Its turn | Fights before it | Of them patrols | The gate then, of 200 |
+|---|---|---|---|---|
+| As it is | 3.3 to 4.8 | 3.5 to 4.7 | 0.4 to 1.2 | 167 to 189 |
+| Two beats, the elite a formation and a half | 5.8 to 6.5 | 5.9 to 6.4 | 2.5 to 2.9 | 140 to 154 |
+| Three beats | 10.2 to 11.0 | 10.0 to 10.8 | 6.0 to 6.7 | 73 to 98 |
+
+**The bench**, each with the rule or the read that set it aside, for him to overrule:
+
+- A count of meaningful fights, flat across tiers (the row of 13 October): his retiring of
+  it; a duel, a formation and an elite are three lengths.
+- A share of the field's menace (the meter as built): it hides the beats, and at two thirds
+  it sits on the opening.
+- A table of menace by Convergence: it moves with every retune of a foe, and a formation is
+  34 in the Marsh and 54 on the Peak.
+- The elite's own menace doubled (the rule to 10 November): it still swings by which elite,
+  44 to 98 at tier one.
+- An elite's fall as the next Fracture outright: at tier three the last elite's fall would
+  be the Rupture.
+- More beats later in the campaign (three from tier two or from Convergence 8): from
+  Convergence 8 the third peak alone is five fights more, the tears opening two a peak.
+- The fodder's worth lowered (the FODDER dial): the same length from the other side; with
+  the size in beats the flank's quantity is in the size and the dial has no job.
+
+**Open, his.**
+
+1. How many beats, and whether the number ever rises. Claude's lean: two, flat, until the
+   higher tiers are played; the dial's 1.5X is two beats at tier one's start and 2X nearly
+   three.
+2. The elite's chunk: a formation and a half, or two as the old double was; and whether it
+   is said in formations or as a share of the bar (a third at tier one, the elites together
+   two fifths at tier two and a half at tier three), which holds whatever the beats.
+3. The cleared field: the next peak at once (Claude's lean), or the seal breaking as now.
+4. Whether the chunk is the meter's alone. Salvage and Anathema read the same tally today;
+   Claude's lean is the meter alone, an elite's salvage its own numbers'.
+5. What the count guarded. The row's reason was "never twenty two-round fights, which would
+   make every build burst". A lone duel is two to nine rounds, and from Convergence 8 three
+   beats are sixteen fights. The duels are one machine's and each has a sequence to play
+   against (the lash, the stoop, the rise, the bites), and the core's fights stay long; his
+   to say whether that reason still binds.
+6. The play time he wants for a first battle and a late one, in minutes. Nothing here
+   measures a minute; a machine-turn is the unit until he says what one should cost.
+7. The first wave repeating the opening's formation (a domain's first two formations are one
+   composition on every seed): left, the first wave starting on the list's second, or the
+   opening's formation drawn by the seed.
+8. The flank's variety. Each domain has one flanker line, so two beats put the same lone
+   duel on the field four times in a first battle (four Whisker Cats in the Meadow; the
+   Meadow and the Waste add a hunting pack from the third peak, the Marsh and the Peak
+   nothing). If the flanks are to carry more of a battle they want a second lone patrol a
+   domain or a guest domain's line taking turns; his, with his play of whether one line goes
+   stale (the to-do).
