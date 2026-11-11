@@ -228,8 +228,7 @@ func _process(_delta: float) -> void:
 		_music_label.text = "NOW PLAYING // %s" % Sound.label(loop).to_upper()
 		_music_title.text = Sound.title(loop).to_upper()
 		_music_title.add_theme_color_override("font_color", Palette.HUD)
-	var loops: Array = Sound.SETS.get(Sound.set_playing(), [])
-	var can_skip := loops.size() > 1
+	var can_skip := Sound.can_skip()
 	_music_prev.set_enabled(can_skip)
 	_music_next.set_enabled(can_skip)
 
