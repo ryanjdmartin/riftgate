@@ -173,7 +173,7 @@ And at `5d14088` on 11 November (the boss holding its hex in front of the rift, 
 walking): the bible (v0.514, above both; the grid row main's sentences on the boss's hex set
 into this branch's), this file, the to-do and `sim/save.gd` the conflicts, both sides kept, the
 save versions stacked again (a battle's 23, a run's 22).
-The bible's file is v0.517 (with `ccr-4d58b054-3lyj0a`'s locked row, tiers row and basic kit row of 10 November and its Polar Bear and Buzzard rows of 11 November), main's v0.506 with this branch's rows, its republish on Ryan's word
+The bible's file is v0.518 (with `ccr-4d58b054-3lyj0a`'s locked row, tiers row and basic kit row of 10 November and its Polar Bear and Buzzard rows of 11 November), main's v0.506 with this branch's rows, its republish on Ryan's word
 (Pages below); and `ccr-7effd31a-u5z4gw`, the
 music session (Night Shift's and The Far Bank's rounds on the pair page), whose bible rows land
 on the live page ahead of its branch, so a republish merges onto the live page (Pages). Landed
@@ -229,7 +229,13 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   only; the Petrel's hook from any source, its zap a piece that spends shield into a blow; the
   Nemesis's blow on shield and hull two, its rage spent automatically, a Barrier left whole his
   lean), and the Buzzard is the one to change if it reads too close to the Petrel (the bible's
-  Buzzard row). The Nemesis waits on his go to build. 1111 tests green.
+  Buzzard row). The Nemesis's rework is built on his answers (the same day): its Crucible
+  Capacitor banks rage from a hit on its shield (1), hull damage (2, hull first) and every blow
+  of its own weapons a foe's armour or Barrier takes whole (2 a blow, his "per blow"), up to 10,
+  and its Knuckles of Fury go out charged on five rage, unasked, and breach (a charged form may
+  now draw on another store than the Muster: `charged.store` and `price`); the roll again is
+  gone from its die, one direction of its upgrades; its rage reads as a meter with a notch at
+  five (`RIFTGATE_RAGE_DEBUG=1` fills it). 1115 tests green.
 - The locked pieces' footing, decided 10 November (the bible's locked row, section 7, and tiers
   row, section 10; `docs/locked_pieces_proposal.md` holds what follows and the order; nothing
   built): a locked piece earns its lock as glue for its chassis's identity or as an exclusive,

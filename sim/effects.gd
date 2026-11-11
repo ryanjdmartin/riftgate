@@ -54,6 +54,8 @@ const SUPPORTED_EFFECTS := {
 	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "mute_keywords", "weapon_cooldown", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
+	"on_shield_hit": ["stack_status", "add_shield", "vent_heat"],
+	"on_blocked": ["stack_status"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
 	"on_shield_gain": ["vent_heat", "stack_status"],
 	"on_shield_granted": ["vent_heat", "stack_status", "shield_per_ally_heat"],
@@ -96,7 +98,7 @@ const STATUS := {
 	# stack for every hull hit, its own included, for the skirmish (`decay` none overrides a
 	# passive's tick), and an entry that rolls again on it spends one to roll the die again.
 	# A store like the hopper: it does nothing by itself.
-	"rage": {"id": "rage", "name": "Rage", "description": "Banked for the skirmish; an entry that rolls again on rage spends one to roll the die again.", "decay": "none",
+	"rage": {"id": "rage", "name": "Rage", "description": "Banked for the skirmish, up to its cap; a piece charged on rage spends it for its charged form.", "decay": "none",
 		"tags": ["store"], "effects": []},
 	# A foe's fire on a machine (Ryan, 13 October: Burn and Scorch; direct heat retired). Burning
 	# is the player's word on the other body: metal does not burn, it heats, so a stack adds its
@@ -1518,6 +1520,21 @@ static func hull_damaged(u) -> Dictionary:
 	return fire(u, "on_hull_damage")
 
 
+## A foe's blow its shield took with nothing on its hull (on_shield_hit; the Nemesis's rage, Ryan,
+## 11 November: "Taking a hit on shield gives 1 rage, hull damage gives 2", and "hull damage takes
+## priority"): a blow that wounds fires on_hull_damage alone.
+static func shield_hit(u) -> Dictionary:
+	return fire(u, "on_shield_hit")
+
+
+## A blow of the machine's weapon on a foe that the foe's armour or Barrier took whole (on_blocked;
+## the Nemesis's rage, Ryan, 11 November: "getting its attacks completely blocked gives 2 rage",
+## per blow: "every foe hit needs sufficient armour, or multiple barriers, to farm rage from every
+## hit"): fired once a blow.
+static func blow_blocked(u) -> Dictionary:
+	return fire(u, "on_blocked")
+
+
 ## An event on a machine (on_skirmish_start as the fight begins, on_round_start after the
 ## roll, on_shield_gain and on_heat_gain as the gauges move, on_hull_damage on a hit,
 ## out_of_combat at the end of a phase spent out of a fight, which nothing may ride since the
@@ -2304,6 +2321,8 @@ static func effect_text(eff: Dictionary) -> String:
 		"on_injury": lead = "on an injury: "
 		"on_round_start": lead = "at the start of the round: "
 		"on_hull_damage": lead = "on losing hull: "
+		"on_shield_hit": lead = "on a foe's blow its shield takes, none on its hull: "
+		"on_blocked": lead = "on each blow of its weapons a foe's armour or Barrier takes whole: "
 		"on_skirmish_start": lead = "as the fight begins: "
 		"on_shield_gain": lead = "on gaining shield: "
 		"on_shield_granted": lead = "an ally this machine shields: "

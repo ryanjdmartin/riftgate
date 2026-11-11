@@ -7650,6 +7650,126 @@ func _purger() -> Foe:
 	return f
 
 
+## The rage bar's three feeds (the Nemesis's Crucible Capacitor, Ryan, 11 November: "Taking a hit
+## on shield gives 1 rage, hull damage gives 2 rage", "hull damage takes priority, so it would be 2
+## if the shield is broken and hull damaged", and "getting its attacks completely blocked gives 2
+## rage", per blow): a foe's blow its shield takes whole banks one; one that breaks the shield and
+## wounds banks two, never three; one its armour or its own Barrier takes whole banks nothing; up
+## to the cap. Synthetic passive.
+func _crucible(cap: int = 10) -> Dictionary:
+	return {"id": "crucible", "name": "Crucible", "description": "", "effects": [
+		{"trigger": "on_shield_hit", "effect": "stack_status", "value": "rage", "stacks": 1, "cap": cap},
+		{"trigger": "on_hull_damage", "effect": "stack_status", "value": "rage", "stacks": 2, "cap": cap},
+		{"trigger": "on_blocked", "effect": "stack_status", "value": "rage", "stacks": 2, "cap": cap}]}
+
+
+func test_a_hit_on_the_shield_banks_one_and_hull_damage_two_never_both() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.attack(1, L)), 5, 1000)
+	m.grant_passive(_crucible())
+	sk.add_mech(m)
+	var foe := _ghoul(500, 3)
+	sk.add_foes([foe])
+	sk.begin()
+	var ms := sk.mechs[0]
+	sk._damage_mech(ms, 3, foe)
+	assert_eq([m.shield, m.hull], [2, 1000], "the shield takes it whole")
+	assert_eq(Effects.stacks_of(m, "rage"), 1, "a hit on its shield: one")
+	assert_true("\n".join(sk.log).contains("from the hit on its shield"), "the log says why")
+	sk._damage_mech(ms, 3, foe)
+	assert_eq([m.shield, m.hull], [0, 999], "it breaks the shield and wounds")
+	assert_eq(Effects.stacks_of(m, "rage"), 3, "two for the hull, never three: hull first")
+	m.armour = 10
+	sk._damage_mech(ms, 3, foe)
+	assert_eq(Effects.stacks_of(m, "rage"), 3, "its armour takes the blow whole: nothing")
+	m.armour = 0
+	m.shield = 5
+	Effects.grant_buff(m, "barrier", 1, "test", sk.round)
+	sk._damage_mech(ms, 3, foe)
+	assert_eq(Effects.stacks_of(m, "rage"), 3, "its own Barrier takes it: nothing")
+	for k in range(6):
+		sk._damage_mech(ms, 50, foe)
+	assert_eq(Effects.stacks_of(m, "rage"), 10, "never past the cap")
+
+
+## A blow blocked whole, counted a blow (Ryan, 11 November: "I'd do per blow because that lets it
+## scrap against the comp its supposed to"): every blow of its weapon on a living foe that the
+## foe's armour or Barrier takes whole banks two, each foe's of an area and each strike's; a blow
+## that deals anything, a debuff's and one on a felled foe bank nothing. Synthetic passive and pieces.
+func test_every_blow_a_foes_armour_or_barrier_takes_whole_banks_two() -> void:
+	var sk := Skirmish.new(1, 3)
+	var spread := Face.from_dict({"kind": "attack", "reach": "direct", "power": 3, "keywords": ["cleave"], "cleave": 2})
+	var twice := Face.from_dict({"kind": "attack", "reach": "direct", "power": 3, "strikes": 2})
+	var probe := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["shock"]})
+	var m := _mech("A", Die.of([spread, twice, probe]), 40, 200)
+	m.grant_passive(_crucible(20))
+	sk.add_mech(m)
+	var left := _ghoul(500, 0)
+	var mid := _ghoul(500, 0)
+	var right := _ghoul(500, 0)
+	left.armour = 5
+	mid.armour = 5
+	sk.add_foes([left, mid, right])
+	sk.begin()
+	sk.start_round()
+	var ms := sk.mechs[0]
+	ms.face_index = 0
+	assert_true(sk.assign(0, mid), "a spread on the armoured middle")
+	assert_eq(Effects.stacks_of(m, "rage"), 4, "its blow and the armoured one beside it, two each; the bare one took damage")
+	assert_true("\n".join(sk.log).contains("2 blows blocked whole"), "one line for the spend")
+	sk.end_round()
+	sk.start_round()
+	Effects.stack(right, Effects.STATUS["barrier"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	ms.face_index = 1
+	assert_true(sk.assign(0, right), "two strikes on the Barrier")
+	assert_eq(Effects.stacks_of(m, "rage"), 6, "the Barrier takes the first whole, two; the second lands")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 2
+	assert_true(sk.assign(0, left), "a debuff on the armoured foe")
+	assert_eq(Effects.stacks_of(m, "rage"), 6, "equipment blocks nothing")
+
+
+## A charged form on another store than the Muster (the Nemesis's Knuckles, Ryan, 11 November: "its
+## rage is consumed in chunks of 5", "Rage is spent automatically", "consuming rage gives the punch
+## breach"): with the price banked the entry goes out charged, unasked, spends it and fires with
+## Breach, through the foe's armour; short of it, the plain form, the store untouched. The meter
+## reads the chunk. Synthetic piece.
+func test_a_piece_charged_on_rage_spends_five_unasked_and_breaches() -> void:
+	var sk := Skirmish.new(1)
+	var fist := Face.from_dict({"kind": "attack", "reach": "direct", "power": 5, "charged": {"store": "rage", "price": 5, "keywords": ["breach"]}})
+	var m := _mech("A", Die.single(fist), 40, 200)
+	m.grant_passive(_crucible())
+	sk.add_mech(m)
+	var plated := _ghoul(500, 0)
+	plated.armour = 4
+	sk.add_foes([plated])
+	sk.begin()
+	sk.start_round()
+	var ms := sk.mechs[0]
+	assert_eq([fist.charge_store(), fist.charge_price()], ["rage", 5], "the store it draws on and its price")
+	Effects.stack(m, Effects.STATUS["rage"], Effects.SKIRMISH, "test", 4, Effects.DECAY_NONE)
+	assert_false(sk.charge_lands(ms), "four banked: plain")
+	var hp := plated.hp
+	assert_true(sk.assign(0, plated), "the plain punch")
+	assert_eq(hp - plated.hp, 1, "its armour takes four of the five")
+	assert_eq(Effects.stacks_of(m, "rage"), 4, "the store untouched")
+	sk.end_round()
+	sk.start_round()
+	Effects.stack(m, Effects.STATUS["rage"], Effects.SKIRMISH, "test", 3, Effects.DECAY_NONE)
+	assert_true(sk.charge_lands(ms), "seven banked: it goes out charged")
+	assert_true(sk.spend_face(ms).has(K.BREACH), "the charged form breaches")
+	hp = plated.hp
+	assert_true(sk.assign(0, plated), "the charged punch, unasked")
+	assert_eq(hp - plated.hp, 5, "Breach: its armour takes nothing")
+	assert_eq(Effects.stacks_of(m, "rage"), 2, "five spent")
+	assert_true("\n".join(sk.log).contains("spends 5 rage"), "the log says so")
+	assert_true(fist.rule_phrases().any(func(p) -> bool: return str(p).begins_with("5 rage: ")), "its text names the store and the price")
+	var sms := Skirmish.MechState.new()
+	sms.unit = m
+	assert_eq(SkirmishScreen.charge_chunks(sms), {"rage": 5}, "the meter reads the chunk")
+
+
 ## Purge (Ryan, 17 and 21 October; by its number since 2 November; 8 November: "A stack is a
 ## stack, doesn't matter where it came from"): a foe's Purge N takes N stacks of every buff the
 ## machine carries, for good, whatever granted it, a die entry or a passive; an ability is no

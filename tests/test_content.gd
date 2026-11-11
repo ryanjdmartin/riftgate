@@ -2369,6 +2369,34 @@ func test_a_passive_may_read_the_striker_for_a_status_the_vocabulary_drafts() ->
 	assert_true(hit, "a status nobody knows is refused")
 
 
+## A charged form may draw on another store than the Muster (the Nemesis's rage, 11 November):
+## a status tagged a store, priced in its stacks, never beside a muster price; a price needs its
+## store.
+func test_a_charged_form_on_a_store_names_a_store_and_its_price() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var base: Dictionary = db.components["slugthrower"].duplicate(true)
+	var cases := {
+		"store_ok": [{"store": "rage", "price": 5, "keywords": ["breach"]}, ""],
+		"store_not_one": [{"store": "overcharged", "price": 5}, "tagged a store"],
+		"store_and_muster": [{"store": "rage", "muster": 1}, "never in musters"],
+		"price_alone": [{"price": 3, "keywords": ["breach"]}, "needs the store"],
+		"price_nothing": [{"store": "rage", "price": 0}, "at least one stack"],
+	}
+	for id in cases.keys():
+		var c: Dictionary = base.duplicate(true)
+		c["face"]["charged"] = cases[id][0]
+		db.components["probe_" + id] = c
+	var errs := db.validate()
+	for id in cases.keys():
+		var want := str(cases[id][1])
+		var hit := errs.filter(func(e: String) -> bool: return e.begins_with("component probe_" + id + " ") and e.contains("charged"))
+		if want.is_empty():
+			assert_true(hit.is_empty(), "%s passes: %s" % [id, hit])
+		else:
+			assert_true(hit.any(func(e: String) -> bool: return e.contains(want)), "%s is refused (%s): %s" % [id, want, hit])
+
+
 ## Cryo is a numbered keyword like Burn (20 October), and the Polar Bear's content runs: its
 ## Lockdown passive carries the seal, its die its fixed Cryo Flinger before its hardpoints (one
 ## since 9 November, Ryan: a five-entry die).

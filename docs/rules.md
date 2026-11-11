@@ -143,9 +143,9 @@ every machine is wrecked. There is no round limit.
   unspent die, before or after attacking, and lands on any other entry, never the one
   showing; a copy of it may come up, at the odds its copies give it. Every roll inside the round
   follows the same rule (Rapid's free reroll, the Kite's reset, the Booster, the Uplink, the
-  Reveille Horn), but two, kept on purpose and each saying "itself included" on the die: the
-  Nemesis's Knuckle of Fury rolls again as the round's opening roll does, and the Cassowary's
-  Spin-Up spins every chamber. Double-tap or hold a die to lock it, and again to unlock it; spending
+  Reveille Horn), but two, kept on purpose and each saying "itself included" on the die: an
+  entry that rolls again (no piece prints one today) rolls as the round's opening roll does, and
+  the Cassowary's Spin-Up spins every chamber. Double-tap or hold a die to lock it, and again to unlock it; spending
   unlocks it; locks clear each round.
 - **A stepping die** (the Cassowary's): it never rolls. Each fight opens on a random entry,
   and every roll or reroll steps it to the next entry in order, Rapid's free reroll too; a
@@ -547,7 +547,7 @@ Honey Badger's Chainsaw Claw, two); a weapon that fires it takes up to its most 
 each adding its bonus to the blow, and spends them (its Bullion Fragmenter fires two at +2),
 the armour they stood for going with them. **Braces**:
 spending it Armours its owner, the stacks it says, an armour point each, until the round's
-end (the Wild Boar's Breaching Plow, two). **Rolls again** (the Nemesis's Knuckle of Fury, on rage): spending it
+end (the Wild Boar's Breaching Plow, two). **Rolls again** (no piece prints it today; the Nemesis's Knuckle of Fury did, and it is one direction of its upgrades): spending it
 with a stack of its status spends one, and the die rolls again, a plain roll as the round
 opens, so the machine acts again and the same entry may show again; nothing switches off,
 the stacks being the limit, and the fight's last blow rolls nothing. **The gather** (the
@@ -578,9 +578,10 @@ weapons wears the star, the die's readout reading the passive's line, and no key
 A **store** is a capped resource a machine fills and spends (the Muster, the rage, the
 hopper, the Cassowary's shot count; the Musk Ox's magazine works the same way), its own kind
 and never a buff: each shows as a row under the heat in the heat bar's shape, by how it fills:
-one that comes in whole units (the hopper's loads, the rage, the magazine's ammo) as separate
+one that comes in whole units (the hopper's loads, the magazine's ammo) as separate
 cells, each with its own border and a hairline of ground between them, the lit ones filled; one that
-fills by degrees (the Muster) as a meter with a notch a charge; the shot count as cells too,
+fills by degrees (the Muster) or is spent in chunks by a charged piece (the rage) as a meter
+with a notch a charge or a chunk, a dragged charged piece's price pending on it; the shot count as cells too,
 its last marked as the shot that counts; and no Silence or Purge touches it, its filling or its use. An **Ability** is a
 unit's own mechanic, the rule it plays by, and never a buff or a debuff, so no Purge, Silence
 or Cleanse touches it; its chip shows its mark cut out of a solid tile, ahead of the unit's
@@ -670,10 +671,15 @@ On a machine:
   a Mine), nor a stun, nor a Purge, so a turned mark feeds no Paradox; the damage
   lands; until the end of the player's next turn. On either side a Ward turns the whole thing
   and stands.
-- **Rage** (store, the Nemesis's): a stack each time it takes hull damage (a blow, a bite
-  of its own, an overheat), up to 5, spent by its fists to roll again; lasts the skirmish,
-  never decays, and nothing cleanses it. It shows as a bar under the heat, in the heat bar's
-  shape, five segments, one lit a stack.
+- **Rage** (store, the Nemesis's): its Crucible Capacitor banks one for each foe's blow its
+  shield takes with nothing on its hull, two for hull damage (a blow, a bite of its own, an
+  overheat; a blow that breaks the shield and wounds is hull damage alone), and two for every
+  blow of its own weapons a foe's armour or Barrier takes whole, each foe's and each strike's
+  (a corpse's and a debuff's never), up to 10. A bite of its own on its shield and a blow its
+  own Barrier or armour takes whole bank nothing. With five banked its Knuckles of Fury go out
+  charged, unasked: they spend the five and fire with Breach, which passes a foe's armour and
+  never its Barrier. Lasts the skirmish, never decays, and nothing cleanses it. It shows as a
+  meter under the heat in its chip's colour, a notch at five.
 - **Hopper** (store, the Honey Badger's): its Ore Hopper puts a load in for each foe a spend
   of its weapons damages, after the blow (a weapon that prints its own number puts that in
   instead), up to four; a weapon that fires

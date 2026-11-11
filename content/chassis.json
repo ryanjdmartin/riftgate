@@ -554,13 +554,28 @@
    "passive": {
     "id": "crucible_capacitor",
     "name": "Crucible Capacitor",
-    "description": "Taking hull damage banks a rage, up to 5, for the duration of the skirmish.",
+    "description": "A foe's hit on its shield banks a rage; hull damage, or a blow of its own that a foe's armour or Barrier takes whole, banks two. Up to 10, for the skirmish.",
     "effects": [
+     {
+      "trigger": "on_shield_hit",
+      "effect": "stack_status",
+      "value": "rage",
+      "stacks": 1,
+      "cap": 10
+     },
      {
       "trigger": "on_hull_damage",
       "effect": "stack_status",
       "value": "rage",
-      "cap": 5
+      "stacks": 2,
+      "cap": 10
+     },
+     {
+      "trigger": "on_blocked",
+      "effect": "stack_status",
+      "value": "rage",
+      "stacks": 2,
+      "cap": 10
      }
     ]
    },

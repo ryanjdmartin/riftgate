@@ -747,7 +747,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "Fists, and a temper: every hit the Nemesis takes, its own included, is another swing it gets to throw.",
-    "niche": "The Nemesis's locked melee and its rage's outlet: spent with rage banked, it spends one and the die rolls again, and nothing switches off, so a long rage chains the fists."
+    "niche": "The Nemesis's locked melee and its rage's outlet: with five rage banked it goes out charged, unasked, spends them and breaches, the tank buster's punch (Ryan, 11 November). Its roll again on rage, its signature from 12 October to 11 November, is one direction of its upgrades."
    },
    "face": {
     "kind": "attack",
@@ -755,7 +755,13 @@
     "power": 5,
     "keywords": [],
     "heat": 3,
-    "rolls_again_on": "rage"
+    "charged": {
+     "store": "rage",
+     "price": 5,
+     "keywords": [
+      "breach"
+     ]
+    }
    },
    "passive": null,
    "tags": [

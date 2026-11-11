@@ -480,8 +480,8 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # Polar Bear stands with its vents ajar.
 # RIFTGATE_ACT_DEBUG=1 (any skirmish) lights one foe after another as the acting foe is lit in the
 # enemy's turn (its violet glow and breathing corners), a beat each, to judge it running.
-# RIFTGATE_RAGE_DEBUG=1 (any skirmish) plays the rage's roll again over and over on the machine
-# that spends rage: its chip bursts, then its die flips back with the reroll's sound.
+# RIFTGATE_RAGE_DEBUG=1 (any skirmish) fills the rage meter two a beat on the machine that banks
+# rage (the Nemesis) and empties it at its cap: its notch at five and the die's charged mark.
 # RIFTGATE_PREY_DEBUG=1 (any skirmish) keeps the predator sense on: the foes' ground dims and the foes
 # the first ambusher's entry can reach that show no intent on it wear pulsing eyes (with no ambusher
 # on the team, the first machine's, the read forced), to judge it running.

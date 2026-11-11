@@ -1328,7 +1328,7 @@ func _validate_vocabulary(errs: Array[String]) -> void:
 
 ## A charged form (the Swallowtail's locked pieces, 21 October): what a muster buys, its keys the
 ## engine reads (Face.charged_form) and nothing else.
-const CHARGED_KEYS := ["muster", "status", "stacks", "rounds", "not_acted", "keywords", "shield", "vents", "cleanse", "act_again"]
+const CHARGED_KEYS := ["muster", "store", "price", "status", "stacks", "rounds", "not_acted", "keywords", "shield", "vents", "cleanse", "act_again"]
 
 
 func _validate_charged(where: String, kind: String, cd, errs: Array[String]) -> void:
@@ -1340,6 +1340,18 @@ func _validate_charged(where: String, kind: String, cd, errs: Array[String]) -> 
 			errs.append("%s: charged has no '%s' (it knows %s)" % [where, key, ", ".join(CHARGED_KEYS)])
 	if int(cd.get("muster", 1)) < 1:
 		errs.append("%s: a charged form costs at least one muster" % where)
+	# Another store than the Muster (the Nemesis's rage, 11 November): a status tagged a store,
+	# priced in its stacks, never beside a muster price.
+	if cd.has("store"):
+		var store := str(cd["store"])
+		if not Effects.STATUS.has(store) or not (Effects.STATUS[store].get("tags", []) as Array).has("store") or store == "muster":
+			errs.append("%s: a charged store is a status tagged a store, other than the Muster ('%s' is not)" % [where, store])
+		if cd.has("muster"):
+			errs.append("%s: a charged form on a store is priced in its stacks (price), never in musters" % where)
+		if int(cd.get("price", 1)) < 1:
+			errs.append("%s: a charged form costs at least one stack of its store" % where)
+	elif cd.has("price"):
+		errs.append("%s: a charged price is a store's stacks: it needs the store it draws on" % where)
 	if cd.has("status") and not Effects.MECH_STATUSES.has(str(cd["status"])):
 		errs.append("%s: a charged status is one of the machines' (%s)" % [where, ", ".join(Effects.MECH_STATUSES)])
 	if cd.has("shield") and (str(cd["shield"]) != "full" or kind != "shield"):
