@@ -160,8 +160,9 @@
 
 <h2>Round thirty-four: Night Shift</h2>
 <p>Your picks are in the pair: the crunch synth's eighths kept, and A's halves swapped. The head now opens on the hook alone on the FM synth and closes on the hook on the synth lead over the FM synth's arpeggio, going into the breakdown. It is at 96, with the rewritten kick. The full pair on the switch is <strong>Night Shift, round thirty-four</strong>.</p>
-<p><strong>The intro's arpeggio into A.</strong> The plucked string's arpeggio from the intro's last four bars now plays on into the head, 6 dB down from the head's first bar. It stops where the FM synth's arpeggio comes in at the head's ninth bar, so two arpeggios never play at once.</p>
-<p><strong>The set.</strong> Your note reads two ways, so the set has both: the plucked arpeggio carried into A's first half (the pair's), or carried through all of A in place of the FM synth's arpeggio. A third row has it not carried, as you heard it last. Each row plays the intro, the head and the breakdown.</p>
+<p><strong>The intro's arpeggio into A.</strong> In the pair, the plucked string's arpeggio from the intro's last four bars plays on into the head, 6 dB down, until the FM synth's arpeggio comes in at the head's ninth bar.</p>
+<p><strong>The FM synth through all of A.</strong> The set tries the FM synth's arpeggio from the head's first bar instead, at its level and 3 dB louder. It plays only in the head, so that is the only place the 3 dB moves. In the head's first half the hook is on the FM synth too, as the swap has it, so one synth plays both lines there. The hook sits about 9 dB over the arpeggio (6 dB in the louder row), and its long notes stand apart from the arpeggio's sixteenths, but that is the thing to listen for. If the two blur, the first half's hook could move to the synth lead, though that would make the head's two halves alike.</p>
+<p><strong>The set.</strong> The intro, the head and the breakdown three ways: the FM synth through all of A at its level, the same 3 dB louder, and the pair's carried plucked arpeggio. The pair stays as it is until you pick.</p>
 <div class="how"><p>Every row of a set is the same bars from the same seed at one gain. Tap another row partway through and it carries on from the same beat; a row that adds a voice is louder by what it adds. The number by a row is its loudness on a phone's speaker; by a seam, its length.</p>
   <label class="keep"><input type="checkbox" id="keep" checked> keep my place</label></div>
 <div id="sets-night"><p class="setnote">Loading the sets&hellip;</p></div>
@@ -538,7 +539,7 @@
       pick.appendChild(b);
     });
     choose(later[0] || tracks[0]);
-    if (night) buildSets(document.getElementById('sets-night'), night.sets.concat(night.seams || []), ['nc']);
+    if (night) buildSets(document.getElementById('sets-night'), night.sets.concat(night.seams || []), ['na']);
     else document.getElementById('sets-night').innerHTML = '';
     var runBox = document.getElementById('run-marks');
     [{at: 0, what: 'map'}].concat(m.run.events).forEach(function (e) {

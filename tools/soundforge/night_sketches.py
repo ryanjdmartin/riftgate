@@ -474,7 +474,8 @@ DUEL_WAY = "lead"   # the duel as a lead over the grooves (the full pair's); "th
 PUSHER_FINGERS = 0.7   # the fingers on the eighths against the riffer's level, 3 dB under it
 DRIVE_PULSE = {"inst": "bass", "mode": "riff", "gain": 0.3, "hold": 0.8, "params": {"drive": 2.5, "cutoff": 700.0}}
 K13, K332, KGAL, SN24, HATQ = "x.......x.......", "x..x..x.x..x..x.", "x.xx..x.x.xx..x.", "....x.......x...", "x.x.x.x.x.x.x.x."   # the hat on eighths (10 November: "Hats should be on 8s for the whole track, not quarters")
-VOICINGS = {"back": ("lead", "fm"), "push": ("fm", "lead"), "high": ("pluck", "fm")}
+VOICINGS = {"back": ("lead", "fm"), "push": ("fm", "lead"), "high": ("pluck", "fm"),
+            "fm": ("fm", "fm")}   # both lines on the FM synth: the head's first half with the FM synth's arpeggio through it (A_FM)
 UP = "R"   # the later spot where the guitar leaves the bass's octave ("save the octave-up for a later spot")
 
 # D, the dark synth's section, plays Hold The Line's first riff, which the map half voices as a nod
@@ -1271,7 +1272,7 @@ def arp_bars(pat, keep):
 def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=BASS_DB, bass=BASS, guitar=GUITAR,
                 d_bass=D_BASS, pluck_db=PLUCK_DB, lead=LEAD, duel_b2=DUEL_UPPER, duel_backing=DUEL_BACKING,
                 duel_break=True, duel_chords=False, duel_octaves=False, dark_notes=DARK_NOTES, dark_colours=DARK_COLOURS,
-                written=WRITTEN_ON, cut=(), drive=DRIVE_ON, duel=DUEL_WAY, duel_riffer=None, duel_pusher="synth", d_riff=D_RIFF, d_fill=True, dress=None, fills=True, i_kick=None, kick=None, pulse=True, carry=None):
+                written=WRITTEN_ON, cut=(), drive=DRIVE_ON, duel=DUEL_WAY, duel_riffer=None, duel_pusher="synth", d_riff=D_RIFF, d_fill=True, dress=None, fills=True, i_kick=None, kick=None, pulse=True, carry=None, fm_arp_db=0.0):
     """Night Shift's battle half: see the module's notes. `hold` is what the guitar and the bass play
     under the hook and the arpeggio together; `split` the guitar's interval over the bass in the
     later spot (SPLITS); `d` D's turn; `bass_db` the bass's level, wherever it plays; `bass` its
@@ -1365,12 +1366,12 @@ def battle_half(call, turns=None, hold="332", split=UP_SPLIT, d=D_PLAN, bass_db=
         strings("ring", {"inst": "guitar_hold", "mode": "stab", "gain": 0.55, "dur": 16, "pat": {"B": "x..............."}}),
         # The synth lines by turns, each voice in the bars its voicing gives it: the arpeggio, up
         # and down two octaves of each chord in sixteenths, and the chime's hook an octave under it.
-    ] + [dict(ARP_VOICES[v], gain=ARP_VOICES[v]["gain"] * (10.0 ** (pluck_db / 20.0) if v == "pluck" else 1.0),
+    ] + [dict(ARP_VOICES[v], gain=ARP_VOICES[v]["gain"] * (10.0 ** (pluck_db / 20.0) if v == "pluck" else 10.0 ** (fm_arp_db / 20.0) if v == "fm" else 1.0),
               mode="chord", octave=1 if drive and v == "pluck" else arp_octave, dur=1.4,
               pat={sec: arp_bars(x, lambda b: b // 2 % 2 == 1) for sec, x in parts["arp:" + v].items()} if drive and v != "pluck" else parts["arp:" + v])
          for v in ARP_VOICES] + [
         # the synths' arpeggios an octave down every other two bars (the drive: "Arpeggios can probably try going between octaves")
-        dict(ARP_VOICES[v], mode="chord", octave=arp_octave - 1, dur=1.4,
+        dict(ARP_VOICES[v], gain=ARP_VOICES[v]["gain"] * (10.0 ** (fm_arp_db / 20.0) if v == "fm" else 1.0), mode="chord", octave=arp_octave - 1, dur=1.4,
              pat={sec: arp_bars(x, lambda b: b // 2 % 2 == 0) for sec, x in parts["arp:" + v].items()} if drive else {})
         for v in ARP_VOICES if v != "pluck"] + [
         dict(HOOK_VOICES[v], mode="chord", octave=1, dur=3.0, pat=parts["hook:" + v]) for v in HOOK_VOICES]
@@ -1582,12 +1583,18 @@ def drive_set(sid, title, form, note):
             "rows": [("%s%d" % (sid, k), t, n, opts) for k, (t, n, opts) in enumerate(DRIVE_ROWS)]}
 
 
+# The FM synth's arpeggio through all of the head (Ryan, 11 November, of the plucked string's carried in: "Hm. Try doing
+# the FM synth through all of A instead. At the FM synth current level, and like 3 db louder"): the head's first half on
+# the "fm" voicing, the hook staying on the FM synth over its own arpeggio as the swap has it, the second half as it
+# was; the plucked string's carry stops itself where the head's own arpeggio starts, here its first bar. The FM synth's
+# arpeggio plays only in the head, so battle_half's `fm_arp_db` moves it there alone.
+A_FM = [("n1.lean|n3.lean", "both:fm")] * 4 + TURNS_DRIVE["A"][4:]
 SETS = [
-    {"id": "nc", "half": "battle", "title": "The intro's arpeggio into A", "form": "I" * 8 + " " + "A" * 16 + " " + "B" * 8, "seed": NAME + "_battle",
-     "note": "The intro, the head and the breakdown (Ryan, 11 November: \"Keep the arpeggio from the intro going into A, still on the plucked string, but drop it like 6 db when A hits\"). Switch rows anywhere: each carries on from the same beat.",
-     "rows": [("nc0", "Into A's first half", "The plucked string's arpeggio carried on from the intro, 6 dB down from the head's first bar, until the FM synth's arpeggio comes in at its ninth (the full pair's).", {}),
-              ("nc1", "Through all of A", "The plucked string's arpeggio, 6 dB down, through all sixteen bars of the head, in place of the FM synth's.", {"carry": "all"}),
-              ("nc2", "Not carried", "The arpeggio stopping as the head comes in, as you heard it last.", {"carry": False})]},
+    {"id": "na", "half": "battle", "title": "The FM synth's arpeggio through A", "form": "I" * 8 + " " + "A" * 16 + " " + "B" * 8, "seed": NAME + "_battle",
+     "note": "The intro, the head and the breakdown (Ryan, 11 November: \"Try doing the FM synth through all of A instead. At the FM synth current level, and like 3 db louder\"). Switch rows anywhere: each carries on from the same beat.",
+     "rows": [("na0", "The FM synth through all of A", "Its arpeggio from the head's first bar at its level, the hook on the FM synth over it in the first half and on the synth lead in the second.", {"turns": {"A": A_FM}}),
+              ("na1", "The same, 3 dB louder", "The FM synth's arpeggio 3 dB up through the head.", {"turns": {"A": A_FM}, "fm_arp_db": 3.0}),
+              ("na2", "As the pair has it", "The plucked string's arpeggio carried into the head's first half 6 dB down, the FM synth's from its ninth bar.", {})]},
 ]
 PAIR = {"id": "night_shift_r34", "title": "Night Shift, round thirty-four"}
 INTRO = "intro: the kick on every beat and the hats, the pad fading in through the fourth bar and swelling from 0:10, the sub from the fifth"
