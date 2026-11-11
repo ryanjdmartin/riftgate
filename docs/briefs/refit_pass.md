@@ -920,6 +920,57 @@ three machines what the whole boss costs four, with no machine wrecked.
 - The runner: its player takes the chassis from a won battle's offer, so its battles from the
   second read a squad of four.
 
+**Settled, 11 November: the fourth machine is the first battle's.** Asked for his reason to
+leave it to the player: "No, the only reason to leave it up to the player was to put them
+fully in control. But if the choice is in which city to defend in order to get a guaranteed
+choice from that maker, then that works." So the fourth is owed after the first battle, a
+choice from the catalogue of the maker whose city was defended (the bible's squad row; the
+rules and `docs/economy_pass.md` follow; not built). It closes holes 1 to 3: nobody waits,
+no half machine, and the offer's three-way pick begins at the fifth machine, where a chassis
+is a bench against a wreck. Two bands are left in tier one, the first battle at three and
+everything after at four. Unmarked, Claude's lean: a first battle lost, or a maker with no
+tier one the roster lacks, sends the machine left on the tender. One thing it shows about
+content: the choice is as wide as a maker's tier-one line, which today is three for
+Wainwright & Sutler, two for Aphelion and for Kestrel, and one for Minerva, less whatever the
+tender dealt.
+
+**His lean for the first battle, the same day**: "It seems to me like battle one should be
+relatively easy, even considering the party of 3. It's more of an opportunity to gain
+resources, win, get your party in order, then the real game starts from battle 2." It goes a
+step past Claude's lean above, which sized the first boss so three pay what four pay later;
+his is cheaper than that, and the better for it: a machine wrecked in the first battle is
+the dearest of the run, with no bench behind it, and the battle's point is the choice it
+ends on. What the reads say it takes, a starting trio against each fight of the first
+Convergence (`docs/measurements.md`, 11 November):
+
+| The first battle's fights, for three | Hull lost | Easy as it stands |
+|---|---|---|
+| The six fodder formations | 0% to 8% | yes |
+| The four formations led by a breach | 7% to 55% | no |
+| The light elites (the shaman's warband, the Reaper, the Fell Rider, the Rust Monster, the Pilgrim) | 0% to 15% | yes |
+| The heavy elites (the Nob, the Tortoise, Gilgamesh, the Thunder Ape, the Old Man, the Wild Hunt) | 4% to 59% | no |
+| A boss, whole | 4% to 100% | no |
+| A boss at three quarters of both, on three of the trios: the Meadow's three, the Matador, the Vampire Lord, the Marsh Serpent, the Gargantuan King | 0% to 12% | yes |
+| A boss at three quarters of both, on three of the trios: the Waste's three, the Phantom Train, the Obsidian Tyrant, the Fiend of Fire | 8% to 33% | no |
+
+So a flat cut does not make every first battle easy: it does in the Meadow, whose formations
+are all fodder and whose bosses are the gentle ones, and it does not in the Waste, whose
+bosses' parts breach, nor in the Peak, which has no formation a trio takes cheaply. The holes,
+his to settle:
+
+1. What easy is read as. Claude's lean: no fight of the first battle costs the worst trio
+   more than a tenth of its hull, and none wrecks a machine, the bot playing.
+2. Whether it is short as well. Every run replays it, and an easy battle that runs its three
+   Fractures, an elite and a boss is the stretch a player resents by the fifth run.
+3. How it is made easy. On the bench, each with what it costs: the first rifts are the
+   Meadow's, the domain already easy for three, and only the boss's first block is needed
+   (every run then opens on the same domain); a cut for each domain at the first Convergence,
+   the boss's block with gates on the breach-led formations and the heavy elites (the Waste's
+   bosses and the Peak's formations want numbers of their own even so); a first battle
+   written by hand (the most content, and a second code path).
+4. What a rich, near-certain first battle is. Claude's read: the second half of the draft,
+   played, its choices the front (the maker), the boss's token and the machine.
+
 **The scope.** Tier one only (his word). The tier-two and tier-three reads of 10 November are
 stock machines, which the levels' plan will not field: a machine holds a level, bought in the
 hangar once the Convergence reaches it, that lifts its stat line and its locked pieces, and
