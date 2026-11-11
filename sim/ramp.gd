@@ -64,6 +64,29 @@ static func fractures_at(tier: int) -> int:
 	return int(FRACTURES[clampi(tier, 0, FRACTURES.size() - 1)])
 
 
+## The Rupture's size, in beats of the tide (the pacing discussion of 11 November; Ryan: "Try
+## your lean first"): a beat is a peak of Rift Pressure, and the meter's field part is what the
+## opening places and the tide sends through this many peaks (Battle.setup). Two at every tier:
+## the ramp grows what a beat holds by itself (the opening's formations, the tears a peak, the
+## beat's length), and more Fractures at a higher tier are for more elites, never to make the
+## battle much longer (his word the same day). Placeholder.
+const BEATS := 2
+## A trial count of beats, 0 for the game's: a debug build's SETTINGS → TRIALS → RUPTURE and
+## RIFTGATE_BEATS set it (Settings.field_trial), so he feels one beat or three beside the two.
+static var beats_trial: int = 0
+
+
+static func beats_at(_tier: int) -> int:
+	return beats_trial if beats_trial > 0 else BEATS
+
+
+## What an elite's fall fills of the Rupture meter, in formations of its battle's tier and ramp,
+## whichever elite the Fracture sent (Ryan, 11 November: "the elite needs to be worth a good
+## chunk"; "Let's go 1.5 and I'll see how it feels"). Its own menace, 22 to 49 at tier one by
+## the roll, is still what salvage and Anathema count. Placeholder.
+const ELITE_CHUNK := 1.5
+
+
 static func elite_fractures_at(tier: int) -> Array:
 	return Array(ELITE_FRACTURES[clampi(tier, 0, ELITE_FRACTURES.size() - 1)])
 

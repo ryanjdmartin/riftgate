@@ -377,7 +377,7 @@ func finish_battle() -> Dictionary:
 		"phases": b.field.phase, "lost": [], "wrecked": [], "salvage": 0,
 		"final": bool(c.rift.get("final", false)) and not c.capital, "finale": c.capital, "closed": [], "finals": [],
 		"menace": b.menace_killed, "kills": b.foes_killed, "fractures": b.fractures, "fractures_of": b.thresholds.size(),
-		"rupture_turn": b.rupture_turn, "stall_guard": b.stall_guard, "elites": b.elites_spawned.size(),
+		"rupture_turn": b.rupture_turn, "elites": b.elites_spawned.size(),
 		"peaks": b.field.peaks, "rift_spawns": b.field.rift_spawns, "tear_spawns": b.field.tear_spawns, "tears": b.field.tears.size()}
 	anathema[b.faction] = int(anathema.get(b.faction, 0)) + b.menace_killed
 	# The machines. (Salvage is the kills of every fight however it ended, tallied here at the

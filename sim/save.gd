@@ -68,8 +68,9 @@ static func to_dict(b: Battle) -> Dictionary:
 		"foes_killed": b.foes_killed,
 		"menace_killed": b.menace_killed,
 		"meter_held": b.meter_held,
+		"elite_chunk": b.elite_chunk, "meter_elites": b.meter_elites, "elite_paid": _int_keys(b.elite_paid),   # the elites' part of the meter (11 November)
 		"tier": b.tier, "ramp": b.ramp,
-		"thresholds": b.thresholds, "fractures": b.fractures, "rupture_turn": b.rupture_turn, "stall_guard": b.stall_guard,
+		"thresholds": b.thresholds, "fractures": b.fractures, "rupture_turn": b.rupture_turn,
 		"elites_spawned": b.elites_spawned, "field_menace": b.field_menace,
 		"sponsorship": b.sponsorship,
 		"loot": b.loot, "blueprints_known": b.blueprints_known,   # the caches claimed and the run's blueprints (7 November)
@@ -126,13 +127,18 @@ static func from_dict(d: Dictionary) -> Battle:
 	b.foes_killed = int(d.get("foes_killed", 0))
 	b.menace_killed = int(d.get("menace_killed", 0))
 	b.meter_held = int(d.get("meter_held", 0))
+	# A battle saved before the elites' chunk keeps the thresholds it opened on and pays an elite
+	# its own menace, as it did (no chunk, nothing topped up).
+	b.elite_chunk = int(d.get("elite_chunk", 0))
+	b.meter_elites = int(d.get("meter_elites", 0))
+	for uid in d.get("elite_paid", {}).keys():
+		b.elite_paid[int(str(uid))] = int(d["elite_paid"][uid])
 	b.tier = int(d.get("tier", 0))
 	b.ramp = int(d.get("ramp", 0))
 	for t in d.get("thresholds", []):
 		b.thresholds.append(int(t))
 	b.fractures = int(d.get("fractures", 0))
 	b.rupture_turn = int(d.get("rupture_turn", -1))
-	b.stall_guard = bool(d.get("stall_guard", false))
 	b.elites_spawned = _strings(d.get("elites_spawned", []))
 	b.field_menace = int(d.get("field_menace", 0))
 	for ld in d.get("loot", []):

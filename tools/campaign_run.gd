@@ -362,7 +362,6 @@ func report() -> String:
 	var fr: Array[float] = []
 	var fr_of: Array[float] = []
 	var ruptured := 0
-	var by_guard := 0
 	var rupture_turns: Array[float] = []
 	var peaks: Array[float] = []
 	var rift_sent: Array[float] = []
@@ -377,8 +376,6 @@ func report() -> String:
 		if int(b.get("rupture_turn", -1)) >= 0:
 			ruptured += 1
 			rupture_turns.append(float(b["rupture_turn"]))
-			if bool(b.get("stall_guard", false)):
-				by_guard += 1
 		peaks.append(float(b.get("peaks", 0)))
 		rift_sent.append(float(b.get("rift_spawns", 0)))
 		tear_sent.append(float(b.get("tear_spawns", 0)))
@@ -388,14 +385,13 @@ func report() -> String:
 		gate_dmg.append(float(b.get("gate_damage", 0)))
 	L.append("## The Rupture meter and the mouths")
 	L.append("")
-	L.append("The meter fills by the menace of the kills against the tier's Fractures (three, four, five), the last the Rupture, which breaks the boss's seal; the stall guard breaks it once the field is clear. A peak of Rift Pressure sends a composition from the rift and a patrol from every tear open before it, and opens the ramp's count of tears on the seam. Every number a placeholder (`sim/ramp.gd`, `sim/battle.gd`).")
+	L.append("The meter fills by the menace of the kills against the tier's Fractures (three, four, five), the last the Rupture, which breaks the boss's seal; it is sized in beats, what the opening places and the tide sends through its second peak, with a chunk for each elite, whose fall fills it whichever elite came. A peak of Rift Pressure sends a composition from the rift and a patrol from every tear open before it, and opens the ramp's count of tears on the seam. Every number a placeholder (`sim/ramp.gd`, `sim/battle.gd`).")
 	L.append("")
 	L.append("| Measure | Mean | Range |")
 	L.append("|---|---|---|")
 	L.append("| Fractures reached a battle | %s |" % _band(fr))
 	L.append("| Fractures a battle holds | %s |" % _band(fr_of))
 	L.append("| Battles reaching the Rupture | %d%% of %d | |" % [100 * ruptured / n, battles.size()])
-	L.append("| Of those, by the stall guard | %d%% | |" % (100 * by_guard / maxi(1, ruptured)))
 	L.append("| The turn the seal broke, where it did | %s |" % _band(rupture_turns))
 	L.append("| Peaks of Rift Pressure a battle | %s |" % _band(peaks))
 	L.append("| Compositions the rift sent a battle | %s |" % _band(rift_sent))

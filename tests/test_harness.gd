@@ -406,32 +406,33 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 	var depth_was = Settings.display.get("field_depth", "12")
 	var opening_was = Settings.display.get("field_opening", "0")
 	var fodder_was = Settings.display.get("fodder_worth", "100")
-	var rupture_was = Settings.display.get("rupture_size", "100")
+	var beats_was = Settings.display.get("rupture_beats", "2")
 	Settings.display["field_depth"] = "16"
 	Settings.display["field_opening"] = "2"
 	Settings.display["fodder_worth"] = "50"
-	Settings.display["rupture_size"] = "150"
+	Settings.display["rupture_beats"] = "3"
 	Settings.field_trial()
-	assert_eq([Ramp.depth_trial, Battle.opening_trial, Battle.fodder_trial, Battle.rupture_trial], [0, 0, 100, 100], "run alone, the saved settings move nothing")
+	assert_eq([Ramp.depth_trial, Battle.opening_trial, Battle.fodder_trial, Ramp.beats_trial], [0, 0, 100, 0], "run alone, the saved settings move nothing")
 	Settings.field_trial(true)
-	assert_eq([Ramp.depth_trial, Battle.opening_trial, Battle.fodder_trial, Battle.rupture_trial], [16, 2, 50, 150] if OS.is_debug_build() else [0, 0, 100, 100], "where the game starts a battle, a debug build's settings are the trial")
+	assert_eq([Ramp.depth_trial, Battle.opening_trial, Battle.fodder_trial, Ramp.beats_trial], [16, 2, 50, 3] if OS.is_debug_build() else [0, 0, 100, 0], "where the game starts a battle, a debug build's settings are the trial")
+	assert_eq(Ramp.beats_at(0), 3 if OS.is_debug_build() else Ramp.BEATS, "and the ramp answers with the beats")
 	assert_eq(Ramp.depth_at(0), 16 if OS.is_debug_build() else 12, "and the ramp answers with it")
 	Settings.display["field_depth"] = "a mile"
 	Settings.display["field_opening"] = "far"
 	Settings.display["fodder_worth"] = "a pittance"
-	Settings.display["rupture_size"] = "an age"
+	Settings.display["rupture_beats"] = "an age"
 	Settings.field_trial(true)
-	assert_eq([Ramp.depth_trial, Battle.opening_trial, Battle.fodder_trial, Battle.rupture_trial], [0, 0, 100, 100], "a value that is no option asks for nothing")
+	assert_eq([Ramp.depth_trial, Battle.opening_trial, Battle.fodder_trial, Ramp.beats_trial], [0, 0, 100, 0], "a value that is no option asks for nothing")
 	Settings.display["field_depth"] = depth_was
 	Settings.display["field_opening"] = opening_was
 	Settings.display["fodder_worth"] = fodder_was
-	Settings.display["rupture_size"] = rupture_was
-	assert_eq([str(Settings.DISPLAY_DEFAULTS["field_depth"]), str(Settings.DISPLAY_DEFAULTS["field_opening"]), str(Settings.DISPLAY_DEFAULTS["fodder_worth"]), str(Settings.DISPLAY_DEFAULTS["rupture_size"])], ["12", "0", "100", "100"], "all four ship on the game's own field and meter")
-	assert_true(Settings.FIELD_DEPTHS.has("12") and Settings.FIELD_OPENINGS.has("0") and Settings.FODDER_WORTHS.has("100") and Settings.RUPTURE_SIZES.has("100"), "and the game's own is among the options")
+	Settings.display["rupture_beats"] = beats_was
+	assert_eq([str(Settings.DISPLAY_DEFAULTS["field_depth"]), str(Settings.DISPLAY_DEFAULTS["field_opening"]), str(Settings.DISPLAY_DEFAULTS["fodder_worth"]), str(Settings.DISPLAY_DEFAULTS["rupture_beats"])], ["12", "0", "100", str(Ramp.BEATS)], "all four ship on the game's own field and meter")
+	assert_true(Settings.FIELD_DEPTHS.has("12") and Settings.FIELD_OPENINGS.has("0") and Settings.FODDER_WORTHS.has("100") and Settings.RUPTURE_BEATS.has(str(Ramp.BEATS)), "and the game's own is among the options")
 	Ramp.depth_trial = 0
 	Battle.opening_trial = 0
 	Battle.fodder_trial = 100
-	Battle.rupture_trial = 100
+	Ramp.beats_trial = 0
 	if OS.is_debug_build():
 		var menu := PauseMenu.new()
 		menu._show_page("settings")
@@ -446,8 +447,8 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 			assert_true(labels.has(str(Settings.FIELD_OPENING_LABELS[o])), "the opening %s" % Settings.FIELD_OPENING_LABELS[o])
 		for f in Settings.FODDER_WORTHS:
 			assert_true(labels.has(str(Settings.FODDER_WORTH_LABELS[f])), "and the fodder's worth %s" % Settings.FODDER_WORTH_LABELS[f])
-		for r in Settings.RUPTURE_SIZES:
-			assert_true(labels.has(str(Settings.RUPTURE_SIZE_LABELS[r])), "and the Rupture's size %s" % Settings.RUPTURE_SIZE_LABELS[r])
+		for r in Settings.RUPTURE_BEATS:
+			assert_true(labels.has(str(Settings.RUPTURE_BEATS_LABELS[r])), "and the Rupture's beats %s" % Settings.RUPTURE_BEATS_LABELS[r])
 		assert_true(labels.has("BACK"), "with its way back")
 		menu.free()
 

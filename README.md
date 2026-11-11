@@ -41,7 +41,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   - `battle.gd` one battle end to end: the player's turn (moves at once, one fight at a time,
     a fight spends a machine's action, the Dingo's first of two, a hunter's catch first), the enemy's turn, until the gate
     falls, the team is wrecked, or the boss dies; the Rupture meter's tally by menace, its
-    Fractures, the elites at them, the boss's seal and the stall guard
+    size in beats of the tide, its Fractures, the elites at them and their chunk, the boss's seal
   - `campaign.gd` the run: five cities and their gates, rifts rolled as fronts, the roster
     and its shop, salvage by menace and Anathema, the between-battle rules, the turn's bleed
     and drain, the rift's tier locked as it opens and the ramp, the finale
@@ -350,7 +350,7 @@ perl -e 'alarm 2400; exec @ARGV' godot --headless --path . -s tools/map_survey.g
 # with no pack in reach taking a cache its move reaches (the nearest, the higher kind on a tie),
 # the rest walking toward the soonest, never the sealed boss; every fight fought out (there is no
 # withdrawal). The report reads the field's size, the Rupture meter and the mouths (Fractures,
-# the Rupture and the stall guard, peaks, what the rift and the tears sent, elites, menace
+# the Rupture, peaks, what the rift and the tears sent, elites, menace
 # killed, gate damage), the pressure ratio (the threat ratings at the wall or reaching it this
 # turn over the machines standing: a run's mean, its turns above one, its battles' highest) and
 # the fights by the pack's threat rating and the machines in them, with the stalemates (ten
@@ -526,13 +526,14 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # row follows the depth by its own rule. RIFTGATE_FODDER=50 (any battle) fills the Rupture meter
 # by that share, in hundredths, of a kill's menace when its pack came as no elite (his "If
 # fracture rewards were a little lower for fodder"; salvage and Anathema read the whole tally
-# as before). RIFTGATE_RUPTURE=150 (any battle) sizes the Rupture meter, every Fracture with it,
-# in hundredths of the game's own, 50 to 400 (his "the 3 fractures, with the current rate of
-# fill, felt short to me"); a kill's worth is untouched, and a field cleared still breaks the
-# seal at any size. On the phone a debug build's SETTINGS → TRIALS has FIELD DEPTH (12, 14, 16),
-# OPENING (+0, +1, +2), FODDER (FULL, 3/4, HALF) and RUPTURE (1X, 1.25X, 1.5X, 2X), read as the
-# harness or the quick run starts a battle, with no relaunch; a saved battle keeps the field
-# and the thresholds it was saved with.
+# as before). RIFTGATE_BEATS=3 (any battle) sizes the Rupture meter in beats of the tide, the
+# peaks of Rift Pressure its field part runs through, 1 to 6 and 2 the game's (his "Try your
+# lean first"; one beat is the opening and the first wave, three brings the second composition
+# and the first hunting packs); an elite's fall stays a formation and a half on top. On the
+# phone a debug build's SETTINGS → TRIALS has FIELD DEPTH (12, 14, 16), OPENING (+0, +1, +2),
+# FODDER (FULL, 3/4, HALF) and RUPTURE (1 BEAT, 2 BEATS, 3 BEATS), read as the harness or the
+# quick run starts a battle, with no relaunch; a saved battle keeps the field and the
+# thresholds it was saved with.
 # RIFTGATE_HALO=off|all (any run) draws no halo round the lit parts, or one round every lit part, to compare
 # with the vetted set (31 October).
 # RIFTGATE_PLUME=off (any run) draws a booster's ring in place of its plume (the Stingray's, on

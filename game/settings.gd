@@ -39,7 +39,7 @@ const DISPLAY_DEFAULTS := {
 	"field_depth": "12",   # FIELD_DEPTHS: a debug build's trial of the field's depth in rows (Ramp.depth_trial), read as a battle starts
 	"field_opening": "0",   # FIELD_OPENINGS: a debug build's trial of how many moves farther from the wall the opening's packs stand (Battle.opening_trial), read as a battle starts
 	"fodder_worth": "100",   # FODDER_WORTHS: a debug build's trial of what a rank-and-file kill fills of the Rupture meter, in hundredths (Battle.fodder_trial), read as a battle starts
-	"rupture_size": "100",   # RUPTURE_SIZES: a debug build's trial of the Rupture meter's size, in hundredths of the game's own (Battle.rupture_trial), read as a battle starts
+	"rupture_beats": "2",   # RUPTURE_BEATS: a debug build's trial of the Rupture meter's size in beats of the tide (Ramp.beats_trial), read as a battle starts
 }
 const DISPLAY_RANGES := {
 	"brightness": Vector2(0.5, 1.5), "pace": Vector2(0.5, 2.0), "enemy_pace": Vector2(0.5, 3.75),
@@ -83,22 +83,24 @@ const FIELD_OPENING_LABELS := {"0": "+0", "1": "+1", "2": "+2"}
 ## The fodder's trial beside them (the same play: "If fracture rewards were a little lower for
 ## fodder, then it becomes a bit more of a quantity game for non-elites and I'll feel more like
 ## sending my flankers out"): what a kill fills of the Rupture meter when its pack came as no
-## elite, in hundredths, the whole the game's. At tier one the middle formation alone earns the
-## first Fracture and three fights the Rupture (docs/measurements.md, 10 and 11 November).
+## elite, in hundredths, the whole the game's; an elite's fall fills its chunk whatever the dial.
+## As the meter was first built the middle formation alone earned the first Fracture and three
+## fights the Rupture; sized in beats since, the flank's patrols are part of it
+## (docs/measurements.md, 10 and 11 November).
 const FODDER_WORTHS := ["100", "75", "50"]
 const FODDER_WORTH_LABELS := {"100": "FULL", "75": "3/4", "50": "HALF"}
-## The meter's size beside it (Ryan, 11 November: "the 3 fractures, with the current rate of fill,
-## felt short to me. I assume that needs to be tuned still"): the menace the Rupture takes, every
-## Fracture with it, in hundredths of the game's own. At tier one's first Convergences the Rupture
-## is two and a half formations' worth, a formation, the elite and one formation more, and the
-## runner's player breaks the seal on about its fourth turn (docs/measurements.md, 11
-## November). The two dials lengthen a battle from two sides: this one leaves a kill's worth alone.
-const RUPTURE_SIZES := ["100", "125", "150", "200"]
-const RUPTURE_SIZE_LABELS := {"100": "1X", "125": "1.25X", "150": "1.5X", "200": "2X"}
+## The meter's size beside it, in beats of the tide (Ryan, 11 November: "the 3 fractures, with
+## the current rate of fill, felt short to me", then "Try your lean first" of two beats): how many
+## peaks of Rift Pressure the Rupture's field part runs through, two the game's (Ramp.BEATS). One
+## beat is the opening and the first wave; three brings the second composition and the first
+## hunting packs, the runner's player's tenth turn (docs/measurements.md, 11 November). The two
+## dials lengthen a battle from two sides: this one leaves a kill's worth alone.
+const RUPTURE_BEATS := ["1", "2", "3"]
+const RUPTURE_BEATS_LABELS := {"1": "1 BEAT", "2": "2 BEATS", "3": "3 BEATS"}
 
 
 ## Set the field's trial for the battles that start after this: RIFTGATE_FIELD_DEPTH,
-## RIFTGATE_OPENING, RIFTGATE_FODDER and RIFTGATE_RUPTURE on any run, else a debug build's four settings when
+## RIFTGATE_OPENING, RIFTGATE_FODDER and RIFTGATE_BEATS on any run, else a debug build's four settings when
 ## `saved` (the game's own entry points pass it; a scene run alone and the tests read the
 ## environment only, so no machine's saved settings move a test's field). Nothing set is the
 ## game's own field and meter.
@@ -106,7 +108,7 @@ static func field_trial(saved: bool = false) -> void:
 	var depth := OS.get_environment("RIFTGATE_FIELD_DEPTH")
 	var opening := OS.get_environment("RIFTGATE_OPENING")
 	var fodder := OS.get_environment("RIFTGATE_FODDER")
-	var rupture := OS.get_environment("RIFTGATE_RUPTURE")
+	var beats := OS.get_environment("RIFTGATE_BEATS")
 	if saved and OS.is_debug_build():
 		if depth.is_empty() and FIELD_DEPTHS.has(str(display.get("field_depth", ""))):
 			depth = str(display["field_depth"])
@@ -114,12 +116,12 @@ static func field_trial(saved: bool = false) -> void:
 			opening = str(display["field_opening"])
 		if fodder.is_empty() and FODDER_WORTHS.has(str(display.get("fodder_worth", ""))):
 			fodder = str(display["fodder_worth"])
-		if rupture.is_empty() and RUPTURE_SIZES.has(str(display.get("rupture_size", ""))):
-			rupture = str(display["rupture_size"])
+		if beats.is_empty() and RUPTURE_BEATS.has(str(display.get("rupture_beats", ""))):
+			beats = str(display["rupture_beats"])
 	Ramp.depth_trial = clampi(int(depth), 10, 24) if depth.is_valid_int() else 0
 	Battle.opening_trial = clampi(int(opening), 0, 3) if opening.is_valid_int() else 0
 	Battle.fodder_trial = clampi(int(fodder), 10, 100) if fodder.is_valid_int() else 100
-	Battle.rupture_trial = clampi(int(rupture), 50, 400) if rupture.is_valid_int() else 100
+	Ramp.beats_trial = clampi(int(beats), 1, 6) if beats.is_valid_int() else 0
 
 
 ## Load once and push the choices into the palette. Safe to call repeatedly.

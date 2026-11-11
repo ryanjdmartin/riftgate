@@ -8019,3 +8019,100 @@ Read.
 - The wins are the floor's and measure the bot, not the shape: at Convergence 3 this player
   loses with four machines as it is (won 0% to 20%, the Peak a wipe on every seed), the wall
   it leaves and the machines it sends in alone.
+
+## 11 November, the Rupture in beats as built, and a second flank patrol
+
+Ryan's marks on the first shape, 11 November: "Try your lean first" (two beats), "Let's go 1.5
+and I'll see how it feels" (the elite's chunk), "To me a clear field is its own reward, it's
+breathing room to reposition or get loot" (so the stall guard goes and nothing takes its
+place), and of the flank's variety, "Another would probably be smart, yeah. Different enough
+that the same strategy doesn't strictly work on both would be ideal ... We can make flankers
+out of pusher units if it makes sense ... just not sending pushers that are designed to
+counter multiple mechs to the flanks (i.e., does area damage, buffs the whole field, that
+kind of thing)." The decisions these inform: the meter as built that day (the bible's pacing
+row), and a second flank patrol a domain, proposed and his to mark (the refit brief's section
+11). Each a direction.
+
+### The built rule against the what-if
+
+The probe of the section above with no what-if, so the game's own rule (two beats, the
+elite's fall a formation and a half, no stall guard), tier one at Convergence 0, the three
+trios, 20 seeds a cell:
+
+| Domain | The Rupture | In menace | Reached | By the guard | Its turn | Fights before it | Of them formations; patrols; the elite's | Hull then | The gate then, of 200 | The bar as the elite falls | Won |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| The Meadow | as built | 151 | 60% to 85% | 0% | 6.0 to 6.9 | 6.1 to 6.8 | 2.0 to 2.6; 2.8 to 3.0; 1.1 to 1.3 | 58% to 84% | 133 to 150 | 61% to 64% | 20% to 40% |
+| The Marsh | as built | 136 | 45% to 80% | 0% | 4.5 to 5.7 | 4.6 to 5.6 | 2.0 to 2.2; 1.4 to 1.7; 1.0 to 1.7 | 59% to 76% | 160 to 169 | 65% to 68% | 15% to 45% |
+
+Read. It is the what-if's two beats with the stall guard gone. The Marsh's rows are the
+what-if's to the digit, the guard having broken no seal there; in the Meadow the 6% to 8% of
+Ruptures the guard had given now wait on the meter, so the seal breaks on the sixth or
+seventh turn (6.0 to 6.9 where the what-if read 5.8 to 6.5) after six or seven fights, the
+gate at 133 to 150.
+
+The campaign runner's 40 runs on the built rule (`docs/campaign_run.md`), against the 40 on
+the meter as first built: battles won 6% against 5%, ended in a wipe 80% against 82%; the
+Rupture reached in 18% of battles against 25%, the seal breaking a turn and a half later
+where it broke (its sixth turn against its fourth or fifth); Fractures reached a battle 0.99
+against 1.33, an elite spawned in 53% of battles against 65%, phases a battle 5.9 against
+5.5. The plain player loses its battles before the meter matters, so the runs say the seal
+comes later for it and little else.
+
+### A lone machine against a picket of a domain's own units
+
+Method: a scratch probe over `Skirmish` and `Policy`, a hand-made patrol built by
+`Battlefield.pack_of` from a front and a back rank of units as content has them (nothing in
+content), one stock tier-one machine against it, each of the nine dealt, the greedy rung, 20
+seeds. Each cell: won, mean rounds, mean hull lost. The built duelist of each domain is its
+first row.
+
+| Domain | Patrol | Menace | Honey Badger | Baboon | Polar Bear | Prairie Dog | Stingray | Cassowary | Cottonmouth | Skua | Storm Petrel | Mean |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| The Meadow | the Whisker Cat (built) | 8 | 100% · 2.2 · 0% | 100% · 3.5 · 0% | 100% · 5.4 · 1% | 100% · 5.8 · 5% | 100% · 2.9 · 0% | 100% · 3.6 · 1% | 100% · 3.0 · 0% | 100% · 5.2 · 3% | 100% · 3.7 · 0% | 100% · 3.9 · 1% |
+| The Meadow | two Goblins | 10 | 100% · 2.4 · 0% | 100% · 2.8 · 0% | 100% · 4.1 · 0% | 100% · 4.1 · 0% | 100% · 2.8 · 0% | 100% · 3.0 · 0% | 100% · 2.0 · 0% | 100% · 3.5 · 0% | 100% · 2.2 · 0% | 100% · 3.0 · 0% |
+| The Meadow | three Goblins | 15 | 100% · 3.5 · 3% | 100% · 4.1 · 8% | 100% · 6.8 · 6% | 100% · 6.0 · 18% | 100% · 3.9 · 2% | 100% · 4.5 · 5% | 100% · 3.0 · 1% | 100% · 3.2 · 7% | 100% · 3.2 · 0% | 100% · 4.2 · 5% |
+| The Meadow | a Gel | 5 | 100% · 3.4 · 0% | 100% · 3.6 · 0% | 100% · 5.2 · 0% | 100% · 5.3 · 0% | 100% · 3.8 · 0% | 100% · 4.2 · 0% | 100% · 3.0 · 0% | 100% · 4.5 · 0% | 100% · 4.1 · 0% | 100% · 4.1 · 0% |
+| The Meadow | two Gels | 10 | 100% · 6.4 · 0% | 100% · 7.5 · 4% | 100% · 10.3 · 3% | 100% · 10.1 · 25% | 100% · 7.5 · 3% | 100% · 8.2 · 3% | 100% · 3.0 · 0% | 100% · 7.2 · 7% | 100% · 7.6 · 0% | 100% · 7.5 · 5% |
+| The Waste | the Roc (built) | 10 | 100% · 2.2 · 2% | 100% · 3.5 · 7% | 100% · 5.1 · 11% | 100% · 5.8 · 11% | 100% · 3.1 · 1% | 100% · 3.6 · 4% | 100% · 3.2 · 2% | 100% · 5.0 · 29% | 100% · 3.6 · 9% | 100% · 3.9 · 8% |
+| The Waste | two Needlers | 10 | 100% · 2.0 · 8% | 100% · 2.0 · 11% | 100% · 2.0 · 8% | 100% · 2.1 · 17% | 100% · 2.0 · 13% | 100% · 2.2 · 14% | 100% · 1.0 · 0% | 100% · 1.8 · 11% | 100% · 2.0 · 8% | 100% · 1.9 · 10% |
+| The Waste | three Needlers | 15 | 100% · 3.0 · 25% | 100% · 3.0 · 32% | 100% · 3.1 · 24% | 100% · 3.1 · 48% | 100% · 3.0 · 38% | 100% · 3.2 · 42% | 100% · 1.0 · 0% | 95% · 1.7 · 21% | 100% · 3.0 · 25% | 99% · 2.7 · 28% |
+| The Waste | two Cockatrices | 8 | 100% · 2.4 · 0% | 100% · 3.5 · 0% | 100% · 4.4 · 0% | 100% · 4.5 · 0% | 100% · 3.2 · 0% | 100% · 3.0 · 0% | 100% · 2.0 · 0% | 100% · 3.4 · 0% | 100% · 4.1 · 0% | 100% · 3.4 · 0% |
+| The Waste | a Needler before a Cockatrice | 9 | 100% · 2.2 · 0% | 100% · 2.8 · 0% | 100% · 3.1 · 0% | 100% · 3.2 · 0% | 100% · 2.5 · 0% | 100% · 2.7 · 2% | 100% · 1.2 · 0% | 100% · 3.0 · 0% | 100% · 3.0 · 0% | 100% · 2.6 · 0% |
+| The Waste | an Antlion | 8 | 100% · 1.4 · 0% | 100% · 2.2 · 0% | 100% · 3.0 · 0% | 100% · 3.3 · 0% | 100% · 1.9 · 0% | 100% · 2.1 · 0% | 100% · 2.0 · 0% | 100% · 3.0 · 0% | 100% · 3.0 · 0% | 100% · 2.4 · 0% |
+| The Marsh | the Dullahan (built) | 7 | 100% · 2.3 · 0% | 100% · 3.9 · 0% | 100% · 7.2 · 0% | 100% · 9.1 · 8% | 100% · 2.9 · 0% | 100% · 3.8 · 0% | 100% · 2.0 · 0% | 100% · 7.8 · 5% | 100% · 3.4 · 0% | 100% · 4.7 · 1% |
+| The Marsh | three Revenants | 12 | 100% · 3.4 · 1% | 100% · 3.9 · 4% | 100% · 7.3 · 10% | 100% · 5.5 · 23% | 100% · 4.1 · 5% | 100% · 4.5 · 9% | 100% · 3.0 · 0% | 95% · 3.5 · 17% | 100% · 3.0 · 0% | 99% · 4.2 · 8% |
+| The Marsh | a Revenant before a Ghost | 8 | 100% · 2.5 · 0% | 100% · 3.8 · 0% | 95% · 7.0 · 6% | 85% · 7.7 · 26% | 100% · 3.6 · 0% | 100% · 4.3 · 0% | 100% · 2.2 · 0% | 100% · 6.3 · 4% | 100% · 3.6 · 0% | 98% · 4.6 · 4% |
+| The Marsh | two Revenants before a Ghost | 12 | 100% · 4.4 · 1% | 100% · 5.5 · 11% | 85% · 11.2 · 39% | 55% · 8.2 · 70% | 100% · 5.2 · 6% | 95% · 5.8 · 17% | 100% · 2.2 · 0% | 80% · 9.2 · 58% | 100% · 4.7 · 0% | 91% · 6.3 · 22% |
+| The Marsh | a Zombie Knight | 9 | 100% · 3.0 · 25% | 95% · 5.2 · 50% | 0% · 10.2 · 100% | 0% · 15.7 · 100% | 95% · 4.3 · 43% | 80% · 8.2 · 55% | 60% · 14.2 · 85% | 0% · 4.7 · 100% | 20% · 6.3 · 93% | 50% · 8.0 · 72% |
+| The Peak | Cerberus (built) | 9 | 100% · 2.2 · 0% | 100% · 3.4 · 4% | 100% · 5.5 · 5% | 100% · 6.5 · 33% | 100% · 2.9 · 0% | 100% · 3.5 · 5% | 100% · 3.0 · 3% | 100% · 8.4 · 31% | 100% · 3.5 · 0% | 100% · 4.3 · 9% |
+| The Peak | a Salamander | 7 | 100% · 1.4 · 0% | 100% · 2.2 · 0% | 100% · 3.1 · 0% | 100% · 3.1 · 0% | 100% · 1.9 · 0% | 100% · 2.1 · 0% | 100% · 2.0 · 0% | 100% · 3.0 · 0% | 100% · 3.0 · 0% | 100% · 2.4 · 0% |
+| The Peak | two Salamanders | 14 | 100% · 2.5 · 4% | 100% · 5.2 · 26% | 0% · 15.8 · 100% | 35% · 7.9 · 94% | 100% · 4.5 · 18% | 100% · 4.2 · 19% | 100% · 2.0 · 10% | 75% · 6.2 · 76% | 90% · 6.7 · 25% | 78% · 6.1 · 41% |
+| The Peak | a Bomb | 10 | 100% · 1.1 · 0% | 100% · 1.6 · 0% | 100% · 2.0 · 0% | 100% · 2.1 · 0% | 100% · 1.6 · 0% | 100% · 1.6 · 0% | 100% · 1.0 · 0% | 100% · 2.0 · 0% | 100% · 2.1 · 0% | 100% · 1.7 · 0% |
+| The Peak | a Salamander before a Drake | 13 | 100% · 2.7 · 4% | 95% · 5.2 · 22% | 35% · 8.7 · 77% | 15% · 8.1 · 96% | 100% · 3.9 · 8% | 100% · 3.7 · 8% | 100% · 2.0 · 0% | 20% · 7.4 · 94% | 100% · 4.5 · 5% | 74% · 5.1 · 35% |
+
+Read.
+
+- Three Goblins, two Needlers and three Revenants each stand where a lone duelist stands:
+  every machine wins every fight against the goblins and the needlers and all but one in a
+  hundred and eighty against the revenants, in one to seven rounds, for a mean of 5%, 10% and
+  8% of its hull against the duelists' 1% to 9%. The Prairie Dog pays the most to each (17%
+  to 23%), as it does to the duelists.
+- They turn the machines round. The Skua takes the goblins in 3.2 rounds and the Whisker Cat
+  in 5.2, the Stingray the Cat in 2.9 and the goblins in 3.9; the Stingray pays the Roc 1% and
+  two needlers 13%, the Skua 29% and 11%; the Stingray takes the Dullahan in 2.9 rounds for
+  nothing and three revenants in 4.1 for 5%. A machine that sweeps is the picket's answer and
+  a machine with one big die the duelist's.
+- The needlers are a fight of two rounds that costs a tenth whoever comes, since no shield
+  stops a needle: a toll more than a duel, unless the machine kills both before they loose
+  (the Cottonmouth alone does).
+- The Peak has no picket in what it holds. One Salamander is dead in two rounds for nothing
+  and two are a wall for three machines of nine (the Polar Bear never wins, the Prairie Dog
+  one fight in three), its bite's scorch and its hide's heat ending slow machines; a Drake
+  behind one is the same wall, and a Bomb alone dies before it acts.
+- Set aside by the reads: the Gel (two take seven to ten rounds for a twentieth of the hull), the
+  Cockatrice and the Antlion alone (nothing lost), a Ghost behind a Revenant (the Prairie Dog
+  loses three fights in twenty to the raise, and with two revenants half of them), the Zombie
+  Knight (won one fight in two), three Needlers (28% of the hull).
+- The Cottonmouth takes every patrol here but the Zombie Knight in one to three rounds for
+  next to nothing: it is the flanker this bot would always send, which is the machine's
+  question and none of the patrols'.
