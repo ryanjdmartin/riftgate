@@ -452,8 +452,9 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   his mix ("The engines and rear spoiler of the racer, on the command ship body of the Navy SES
   take", the SES as reviewed): the look tests of 31 October brought into the model, the two Twin
   Autoguns on the hulls' foredecks since the engines take the quarterdeck (Claude's placement).
-  Both first cuts with a render round in the hangar's Models tab (the old as Before), unpublished;
-  1154 tests green.
+  Both first cuts with a render round in the hangar's Models tab (the old as Before), published as
+  the page's Version 245 on his word ("Yes, republish the hangar so I can see them"); 1154 tests
+  green.
 
 - **The Ammit's rework** (`ccr-8af28d03-re9kz4`, Ryan's own design, 12 November; on main): "The 4
   claws are combined into one weapon that deals 1x4 instead, with Breach. They no longer gain
@@ -1624,7 +1625,18 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 240 (12 November, main's `f3e4841`, on Ryan's word, "Ok, republish the hangar on
+  page's Version 245 (12 November, from `ccr-b7d5164e-1wtzzm` at `0351e7e`, ahead of main, on
+  Ryan's word, "Yes, republish the hangar so I can see them"): the twenty-nine files the
+  Needletail's and the Giant Petrel's models moved since 240 (the two content files with main's own
+  since; both models, rigs and renders, the first cuts as Before and the old transition picture
+  removed; `pins.json`, `designs.json`, `text.json` and `renders.json`), the page unchanged.
+  Versions 241 to 244 were another session's, from a branch not on main (the Kite's port forms:
+  its model, rig and pictures, the port classes, `shapes.json`, a newer Kite entry and a class
+  block in `renders.json`): every live copy this publish replaced matched 240's build but
+  `renders.json` (and the stamps of `designs.json` and `text.json`), so the live `renders.json`
+  went up again whole with only the two machines' entries replaced; this branch's file lacks that
+  session's entries until both land. `edits` and `text` empty, `designs` the two folded ideas. At
+  the page's Version 240 (12 November, main's `f3e4841`, on Ryan's word, "Ok, republish the hangar on
   main"): the nine files moved since 233 (the five content files with the Ammit's rework, the
   dead-code pass, the four formations' numbers, the Overrun Gearing and the dealt Shift Whistle;
   the Ammit's rig sidecar with its Siphon's firing slice; the Whip Scorpion's, its broadside the
