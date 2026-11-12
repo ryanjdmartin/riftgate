@@ -1316,13 +1316,16 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. The live page is v0.536 (the page's Version 508,
-  published from main at `fbce698` on Ryan's word, "Yes please": main's file whole, the live v0.535
-  matching `3d5f98f`'s file byte for byte; new since 507 the batteries row's wells and the acts
-  table's broadside drill and hatch wave), its Date line still 11 November, which main's file has
-  since set to 12 November, the next republish carrying it with `ccr-63a1309a-caa9mw`'s rows (the
-  Rapid, cooldown, rerolls and Nemesis rows, the Prairie Dog's, Clydesdale's and Cassowary's lines,
-  and the keyword table's Instant, Rapid and Cooldown, Rolls again gone). Version 507 (main's `3d5f98f`, on his
+  `docs/design-bible.html` after every change. The live page is v0.538, dated 12 November (the
+  page's Version 509, published from main at `0d992f3` on Ryan's word, "Yes", to "The hangar and
+  the bible are both behind main now. Want me to republish them?": main's file whole, the live
+  v0.536 matching `fbce698`'s file byte for byte, and the page after matching the file; new since
+  508 `ccr-63a1309a-caa9mw`'s rows (the cooldown counted after its spend, Rapid's own switch-off,
+  Instant) and `ccr-4d58b054-3lyj0a`'s (the Stingray's Lance and Sapped, the Wild Boar's row in
+  place of its spill's, the Baboon's row Decided, the debuff and keyword tables' Sapped, Sap and
+  Juggernaut Breach). Version 508 (main's `fbce698`, on his "Yes please") was main's file whole
+  over the live v0.535: the batteries row's wells and the acts table's broadside drill and hatch
+  wave. Version 507 (main's `3d5f98f`, on his
   "Republish please") was main's file whole over the live v0.534: the Clydesdale's cell in the acts
   table, its five idle acts. Version 506 (main's `da18614`, on his "Pull in main
   and republish") was main's file whole over the live v0.533 (`d2c024d`'s): the Prairie Dog's and
@@ -1332,7 +1335,7 @@ commands are in `README.md`.
   (Version 504, main's `60a0e4d`), which matched that commit's file; new since 504 the pacing row in beats of the tide,
   menace a pack's threat rating and the rows that follow it, the Whip Scorpion's rework, the
   hardpoints row with every stock gun its class, the Clydesdale's batteries row and its square
-  ports, and Changed Over in the buff table). BASE for the next merge is `fbce698`'s file. The
+  ports, and Changed Over in the buff table). BASE for the next merge is `0d992f3`'s file. The
   live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
@@ -1346,12 +1349,17 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 231 (12 November, main's `fbce698`, on Ryan's word, "Yes please"): the same nine
+  page's Version 232 (12 November, main's `3e6912e`, on Ryan's word, "Yes"): the thirteen files
+  moved since 231 (the three content files with the cooldown's count, Instant, Sapped, the Lance,
+  the Wild Boar's and the Baboon's reworks; the Baboon's model, rig and pins, its four mounts and
+  the backpack's two locked pieces; its renders, the stock rebuild's its before, and
+  `renders.json`; `designs.json` without the Baboon's brief; `text.json`), the page unchanged,
+  every live copy matching 231's build before it was replaced and main's after. `edits` and `text`
+  empty, `designs` the two folded ideas. Version 231 (12 November, main's `fbce698`, on Ryan's
+  word, "Yes please") was the same nine
   for the Clydesdale's wells, broadside drill and hatch wave (its model with the wells' linings, its
   rig, its four renders, `renders.json`, and `designs.json` and `text.json` for their stamp), the page
-  unchanged, every live copy matching 230's before it was replaced, and the live copies matched
-  main's after, until `ccr-63a1309a-caa9mw` landed (12 November): `content/components.json`,
-  `content/chassis.json` and `content/vocabulary.json` have moved since, the next republish's. Version 230 (11 November, main's `3d5f98f`, on Ryan's word, "Republish please"): the nine
+  unchanged, every live copy matching 230's before it was replaced. Version 230 (11 November, main's `3d5f98f`, on Ryan's word, "Republish please"): the nine
   files the Clydesdale's idle acts moved (its model with the radiator and its heat texture, its rig
   with the five acts and Changed Over's copies, its four renders, `renders.json`, and `designs.json`
   and `text.json` for their stamp), the page unchanged, every live copy matching 229's before it was
