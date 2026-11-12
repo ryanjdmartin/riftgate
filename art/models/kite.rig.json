@@ -2045,7 +2045,7 @@
    "twin_barrel": {
     "shape": "twin_barrel",
     "scale": 0.84,
-    "sink": 5.2
+    "sink": 13.0
    },
    "dish": {
     "shape": "dish",

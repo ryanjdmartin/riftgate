@@ -255,15 +255,16 @@ def kite(b):
     gear teeth (the pinion, a wing's flight feathers and a gear) whose backs run aft as strakes
     tapering into the drum, the barrel out of the inlet's centre, its muzzle lit; each fires one of the Driver's two shots. The nose mounts either
     side of the nosecone, hp_1 the stock's Transonic Rifle as its class, hp_2 bare, at half scale,
-    the machine being small; hp_3, bare, ahead of the canopy on the centreline, inset: a port at
-    the canopy's nose and a trough cut into the spine ahead of it, the gun's barrel out of the
+    the machine being small; hp_3, bare, ahead of the canopy on the centreline, inset: a port a
+    little ahead of the canopy and a trough cut into the spine ahead of it, the gun's barrel out of the
     port (the port variant: no block to show) and lying clear in the trough, whose floor ramps
     up to the nose's surface past the muzzle; a launcher there is the round one
     (Ryan, 12 November: "in front of the canopy, but inset, like the polar bear - so some of the
     barrel pokes out through a cut channel. Doesn't retract or anything"; then "sink it
     horizontally into the hull more, so the actual mount block is hidden, and don't cut a
     channel all the way down the nose"; "let it poke out more and cut the trough a little
-    deeper vertically"; "a round rack would be warranted when a missile is slotted there").
+    deeper vertically"; "a round rack would be warranted when a missile is slotted there"; "Push
+    the whole mount forward a bit and start the cut farther away from the canopy").
     The tail segment's flat face behind the canopy is an air intake, a dark mouth in a steel lip
     (the same day: "Can the flat face behind the canopy also get an intake treatment?")."""
     # Fuselage: one piece, a six-sided section lofted from a needle nose to a broad rear.
@@ -286,8 +287,9 @@ def kite(b):
     # through a cut channel"; "sink it horizontally into the hull more, so the actual mount
     # block is hidden, and don't cut a channel all the way down the nose"; "Raise the gun's line
     # a little"; "let it poke out more and cut the trough a little deeper vertically so the
-    # barrel isn't covered"): a port, the back wall of a trough cut into the spine at the
-    # canopy's nose (a real hollow, b.cut_hull), and the gun through it is the port variant, its
+    # barrel isn't covered"; "Push the whole mount forward a bit and start the cut farther away
+    # from the canopy"): a port, the back wall of a trough cut into the spine a little ahead of
+    # the canopy, plain spine between them (a real hollow, b.cut_hull), and the gun through it is the port variant, its
     # barrel and muzzle alone, the receiver being inside the hull, so nothing of the block can
     # show and the barrel's whole length lies in the open. It comes out level with the spine
     # and runs clear of the trough's walls and floor, the floor flat to just past the muzzle
@@ -295,10 +297,10 @@ def kite(b):
     # is the round one, a drum against the port's wall (his: "a round rack would be warranted
     # when a missile is slotted there"); the other classes' places are guesses nobody has judged.
     GZ = 5.0                  # the gun's line
-    PORT, FLAT, RUN = -1.0, 11.4, 13.4  # the port's wall at the canopy's nose; the floor flat to here; ramped up to the surface here
-    NOSE_FITS = {"barrel": "barrel_port", "rack": ("rack_round", 0.7, -1.8), "twin_barrel": ("twin_barrel", 0.84, 5.2), "dish": ("dish", 0.6, -3.0), "blade": ("blade", 0.7)}
-    b.cut_hull([fuselage], [(x, y, z) for x in (-2.2, 2.2) for (y, z) in ((PORT, GZ - 2.4), (FLAT, GZ - 2.4), (RUN, 4.4), (RUN, 9.0), (PORT, 9.0))])
-    b.pin("hp_3", (0.0, PORT - 0.2, GZ), scale=0.5, carries="", fits=NOSE_FITS)
+    PORT, FLAT, RUN = 2.0, 14.6, 16.6  # the port's wall, four ahead of the canopy's nose; the floor flat to here; ramped up to the surface here
+    NOSE_FITS = {"barrel": "barrel_port", "rack": ("rack_round", 0.7, -1.8), "twin_barrel": ("twin_barrel", 0.84, 13.0), "dish": ("dish", 0.6, -3.0), "blade": ("blade", 0.7)}
+    b.cut_hull([fuselage], [(x, y, z) for x in (-2.2, 2.2) for (y, z) in ((PORT, GZ - 2.4), (FLAT, GZ - 2.4), (RUN, 3.94), (RUN, 9.0), (PORT, 9.0))])
+    b.pin("hp_3", (0.0, PORT, GZ), scale=0.5, carries="", fits=NOSE_FITS)
     # Canopy: far back, low, faired into the spine rather than a bubble.
     b.loft([(-2.0, hexagon(0.0, 6.2, 7.0, 0.5)), (-10.0, hexagon(0.0, 7.4, 9.0, 3.0)),
             (-18.0, hexagon(0.0, 7.5, 9.0, 3.2)), (-26.0, hexagon(0.0, 7.2, 9.0, 3.0))], "glass.glass", "canopy")
