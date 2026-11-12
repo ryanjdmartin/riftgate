@@ -423,8 +423,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   not steps: any whole number may be used, and content sits a little past them where its
   loops moved it (the promoted forms' 32 to 48, a hero's finisher, a
   multiple of its blow, to 16). A move is a count of hexes, 1 to 6 (the machines' 3 to 6, the foes' 1 to 4).
-  The content's numbers are the stock pass's fills as its loops moved them
-  (`docs/measurements.md`; set by `tools/stock_fills.py`), the four Kestrel machines' by hand at the same scale; placeholders until play.
+  The content's numbers are set by hand in the content, on these scales (the stock pass's loops,
+  `docs/measurements.md`, the first of them); placeholders until play.
 
 ### Player keywords
 - **Spread N** (id `cleave`): also hits the foes beside the target in its rank, each taking N

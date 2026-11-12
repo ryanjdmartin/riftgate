@@ -507,10 +507,13 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   pipeline's steps and the trigger table's plain cells (the general path: the Ammit's flare took
   two such cells off the audit's unused list five days after it named them), the shield cost
   the Buzzard's and the Storm Petrel's settled briefs pay, and two fields a charged form sets.
-  Two calls were his: Reset, which he had told the Kite's session that day "might come back,
-  sure" (found after the cut; the to-do had left the call to this pass; it returns from git on
-  his word), still on the to-do's Ryan list; and Spillover the keyword, settled the same day as a
-  module, the Overrun Gearing (his "Spillover can be a module"). The saves' versions, moved for the Ammit's two, cover the cut fields. The keyword
+  Two calls were his, both settled the same day: Reset let go ("Let it go I think, I'm fairly
+  certain there was a better way of building it anyway"; git keeps it at `90feac1`), and Spillover
+  the keyword kept as a module, the Overrun Gearing (his "Spillover can be a module"). The stock
+  pass's fills script, `tools/stock_fills.py`, retired the same day, its tables a second copy of
+  the content's numbers that no longer ran (his "Retire the loop thing"); the balance loop,
+  `tools/stock_loop.py`, stays, `tools/endgame_fours.py` and the measurements' runs on it, a lever
+  kept landing in the content by hand. The saves' versions, moved for the Ammit's two, cover the cut fields. The keyword
   list lost three entries no piece carried (Empowered a kill, Reset, Siphoning). Still to do,
   the audit's Structure 11: each one-piece rule is written out by hand in five places.
 - **The cooldown counts after its round; Rapid's own switch-off; Instant** (`ccr-63a1309a-caa9mw`

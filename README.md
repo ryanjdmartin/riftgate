@@ -365,9 +365,6 @@ perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run
 for i in 0 1 2 3; do perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/quick_run.gd -- --runs 40 --part $i/4 --json build/quick_$i.json & done; wait
 perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/quick_run.gd -- --merge build/quick_0.json,build/quick_1.json,build/quick_2.json,build/quick_3.json
 
-# the stock pass's fills (22 October): the brief's numbers as the loops moved them, onto a checkout's content
-# and the engine's rule numbers; idempotent on the branch, so a kept lever lands by editing its tables and running it
-python3 tools/stock_fills.py .
 # a balance loop (the stock pass's method): a copy of the project under build/loops/<name> with one lever moved in
 # its content (`levers` lists them: the foes' blows, our durability, cooling, the maxima, a foe's armour, HP or move,
 # every foe's aim, Flak's clock, any one value), the balance runner on the team rows at 30 seeds with every rung in four processes

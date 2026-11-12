@@ -663,8 +663,8 @@ levers moved in the copy's content, the balance runner at 30 seeds a cell on the
 Works', Kestrel Dynamics' and Wainwright & Sutler's) against the twenty-nine packs, and the
 campaign report at 40 runs where the lever reaches the campaign. Each loop carries the levers
 kept before it, and a lever that touches only its own foes is read on their packs alone
-(`--packs`; the bosses fight in no other cell). The kept levers are `tools/stock_fills.py`'s
-fills since. Directions, read as bands against the tests (the bible's section 2).
+(`--packs`; the bosses fight in no other cell). The kept levers were `tools/stock_fills.py`'s
+fills since (the script retired 12 November: `git show 27956e7:tools/stock_fills.py`). Directions, read as bands against the tests (the bible's section 2).
 
 **Loop 0, the landed fills**, every rung, and every chassis alone, greedy, without the party:
 
