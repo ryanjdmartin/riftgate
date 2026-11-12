@@ -1431,7 +1431,10 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 247 (12 November, from `ccr-e3ddf00b-ilkwbi` at `18b43cf`, ahead of main, the live
+  page's Version 248 (12 November, from `ccr-e3ddf00b-ilkwbi` at `2b69106`, ahead of main, the live
+  page still 247 when read: the Kite's tail a bit longer still and its vents real and glowing;
+  its model, rig and four renders, and `renders.json` built from the live copy again, the
+  Needletail's and the Giant Petrel's from 245 kept). Version 247 (from `18b43cf`, ahead of main, the live
   page still 246 when read: the Kite's hood drilled along a smaller cut, its back end's joins
   cleaned up with raked vents and its tail a little longer; its model and four renders, and
   `renders.json` built again from the live copy with the Kite's entry, the Needletail's and the
