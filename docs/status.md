@@ -489,7 +489,11 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   returns from git on his word), and Spillover the keyword, which no piece prints and its bible
   row keeps. The saves' versions, moved for the Ammit's two, cover the cut fields. The keyword
   list lost three entries no piece carried (Empowered a kill, Reset, Siphoning). Still to do,
-  the audit's Structure 11: each one-piece rule is written out by hand in five places.
+  the audit's Structure 11: each one-piece rule is written out by hand in five places. Read
+  again once landed (his "then reassess"): the check does not yet hold a passive's conditions,
+  the foes' moves or a status to what lays it, and four conditions, two foe moves and seven
+  test-only helpers are unused there (the audit's Unused list; the to-do's Engine line is the
+  next step); a die entry's 73 fields show no drift between their hand-written copies today.
 - **The cooldown counts after its round; Rapid's own switch-off; Instant** (`ccr-63a1309a-caa9mw`
   from main at `fbce698`, on main the same day on his word, "All good. Clean up and merge into
   main"; Ryan, 12 November, on "So rapid cooldown 1 and a weapon cooldown 1 are

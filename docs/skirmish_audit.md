@@ -386,6 +386,29 @@ a piece, and cut that day on his word ("Yeah go ahead and fix it"):
   Structure 11, still to do: Empowered a kill had reached a dozen files.
 - Left on this list: the engine's and the bot's helpers and parameters above, to check again.
 
+Read again once it had landed (Ryan, 12 November: "Merge in main and then reassess"), for what
+the check does not hold yet:
+
+- A passive's conditions. Twelve are supported and four are used by nothing: `reach_direct`,
+  `reach_indirect` and `ally_present` (on this list since 7 November; the last keeps
+  `Unit.allies` and `_refresh_allies` alive), and `target_half`, built with the Kite's second kit
+  on 11 November and printed by no piece, with no test of its own. The `tag_` family has no user
+  either.
+- The foes' moves. Of the 23 effects a move may name, two belong to no foe: `ward_all`, and
+  `silence`, which waits on Ryan's mark for its carrier (the to-do's line, the shaman). Of the ten
+  conditions, `back_behind` is unused. Every aim is used.
+- Chains. The check counts a kind as used when one of the engine's own statuses uses it, and
+  does not ask whether anything lays that status: `mute_keywords` is held up by Silenced, which
+  only the foes' silence lays. The check should follow a status to what lays it.
+- Helpers nothing calls but tests, still: `any_assigned`, `kills_for`, `Effects.explain`,
+  `Foe.text_of`, `Foe.choose_action`, `Foe.on_field`, the bot's `hull_percent`.
+- The keyword list still shows two rules no piece carries, Spillover and Shield cost.
+- Structure 11, measured. A die entry declares 73 fields. `from_dict`, `to_dict` and
+  `duplicate_face` are 280 lines that name each by hand, and a rule of its own adds
+  `has_unique_rule`, `rule_phrases` and `describe`, then the validator, the readout, the die's
+  view, the bot and two tools. No drift today: every field is copied, and every field that is
+  not a shown-only one is saved and read back. Nothing holds that but care.
+
 ## Text and records
 
 - Done 8 November: the rules' zap "lost if the strikes killed it" and a passive's lay "on a foe
