@@ -9199,3 +9199,45 @@ Read.
 Method: the fight-at-its-rating probe and the ledger of the sections above, with one
 component's entry replaced whole in memory; the blows are counted from each fight's log.
 
+**The base shield's worth, the same day.** His follow-up: "I guess my point is, if we're making
+temp shield ubiquitous, then why even have base shield?" The same reads with Overshield 6 in
+the Halo's slot throughout, and the six machines' own shield in three forms: as content has
+it, a gauge of 6 to 12 with a regen of 1 or 2; the gauge with no regen; and no shield at all,
+nothing in its place. A share of a four's hull.
+
+| The fight at its rating | Gauge and regen | Gauge, no regen | No base shield |
+|---|---|---|---|
+| A lone flanker | 2.0% | 3.8% | 13.2%, a quarter of the duels lost |
+| A hunter's pack | 5.4% | 7.8% | 26.5% |
+| A formation | 5.7% | 7.5% | 27.3% |
+| An elite | 15.4% | 18.6% | 38.6%, one fight in sixteen lost |
+| A boss | 27.2% | 34.9% | 63.7%, a quarter of the fights lost |
+
+By formation with no base shield: the goblin horde 23%, the grave throng 29%, the gel wall 36%,
+the ember pyre 38%, the treant grove 40%; the two led by a breach move least (the sandworm
+ambush 10% to 14%), since a breach passes a shield already.
+
+The second battle whole, the mustering player, three squads, on the anchor's foe numbers; won.
+
+| The machines' own shield | The Meadow | The Marsh | The Waste | The Peak |
+|---|---|---|---|---|
+| Gauge and regen | 75 to 80% | 35 to 75% | 15 to 25% | 40 to 60% |
+| Gauge, no regen | 50 to 75% | 20 to 50% | 5 to 25% | 20 to 25% |
+
+Read.
+
+- The gauge is what a round's shield cannot be. With no base shield a formation costs a
+  quarter of a four's hull where it costs a twentieth, and a squad is spent after two of
+  them. A shield for the round covers one machine against one blow when its entry shows; the
+  gauge covers every machine against the opening volley with no entry spent. To hold the
+  budget without it the rank and file's blows would be a fifth of what they are, under one,
+  or the hull five times its size, either of them off the scale's numbers.
+- The three stand on three clocks: the hull is the battle's, the gauge is the fight's, a
+  shield for the round is the round's. The fight's layer is what lets an ordinary fight end
+  clean and a bad one leave a mark that carries.
+- The regen is the part a round's shield overlaps: both are shield every round, one free and
+  one chosen. It is worth two points of hull in a formation, three in an elite's fight and
+  seven in a boss's, since it is paid by the round.
+- These foe numbers were set with the regen and the Barrier both in place, so the whole
+  battle without either is too dear and says only which way each moves it.
+

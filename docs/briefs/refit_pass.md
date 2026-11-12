@@ -1607,3 +1607,39 @@ the Waste's first.
   equipment; how the bar shows shield past the gauge, which only locked pieces raise today; the Nob's and
   the Storm Petrel's rules that read a shield raised; the re-read of every elite and boss.
 
+**His follow-up, and the answer** (12 November): "I guess my point is, if we're making temp
+shield ubiquitous, then why even have base shield?"
+
+The reads (`docs/measurements.md`, the same section; Overshield 6 in the Halo's slot
+throughout): with no base shield a formation costs a four 27% of its hull where it costs 6%,
+a lone flanker 13% with a quarter of its duels lost, a boss 64% with a quarter of its fights
+lost. With the gauge and no regen the same fights cost 7.5%, 3.8% and 35%.
+
+Claude's answer, his to take or leave:
+
+- The gauge is not the redundant part. It covers every machine against the opening volley
+  with no entry spent; a shield for the round covers one machine against one blow when its
+  entry shows. They stand on different clocks, the hull the battle's, the gauge the fight's,
+  the round's shield the round's, and the fight's layer is what keeps an ordinary fight
+  clean (his test: danger for hunters, elites and bosses). Without it the scale's numbers
+  do not hold: blows under one, or five times the hull.
+- The regen is. A shield every round for nothing beside a shield every round for an entry:
+  the free one makes the chosen one idle, which is his own read of 10 November ("Even with
+  regen 2, I don't find myself feeling like I need to use defensive tools ... I feel like
+  even with zero regen I would be fine"). It is also most of what makes a round free.
+- So there are two whole packages, each without the Barrier as a basic:
+  1. The gauge and the regen as they are, no shield on the basics (the Jack or a gun in the
+     Halo's slot). The fewest rules. The one active defence on a starting die is Armoured,
+     and the answer to a single big blow is to kill faster.
+  2. The gauge with no regen by default, a shield for the round on the basics. One keyword
+     more on equipment, an active answer to the big blow, and a round that costs something,
+     since a gauge only goes down. Regen stays as an identity where a chassis is built on it
+     (the Buzzard's Thermal Recoupler, St. Elmo's Regenerator, perhaps the small gauges).
+  Claude's lean: the second, since it trades a system that asks nothing for one that asks a
+  question each round.
+- The holes in the second: his reason for the regen of 5 November, a buffer for bad rolls
+  and a tank not held to one pattern. The gauge is still the buffer for a fight's opening
+  and the cover can come from any machine, but past the third round a tank wants it every
+  round. And his pairing of 10 November, a small gauge that comes back fast and a fat one
+  that comes back slow, loses its second half unless the regen is kept for the small ones.
+
