@@ -96,8 +96,9 @@ here.
 - No reward for being struck that scales with the enemy's blows (the old discharge). A thorns
   tank is balanceable only if the thorns carry a drawback of their own, and rewarding a tank
   for doing its job (being struck under a draw) is dangerous. The condition that reopens it
-  (Ryan, 20 October, the Whip Scorpion's Siphon): a machine that spends its own turn to be
-  struck, deals nothing that turn and is paid later and at random is not a tank doing its job.
+  (Ryan, 20 October, of the Whip Scorpion's Siphon, cut 12 November): a machine that spends its
+  own turn to be struck, deals nothing that turn and is paid later and at random is not a tank
+  doing its job.
 - Niches can and should overlap across a larger roster so a player finds something that fits;
   mechanics should not repeat, and a mechanic is its pattern in its context, never one trait it
   shares (Ryan, 16 October: a random target in two pieces is no repeat; "if you say 'can't do

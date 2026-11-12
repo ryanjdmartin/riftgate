@@ -536,7 +536,7 @@ static func status_chip(f: Face) -> String:
 ## The annotation chips hugging the right edge, top down: one per keyword, the star for a unique
 ## effect, the shell's seal or opening, a corruption last. Each is a term's id or a glyph's
 ## (chip_glyph). What equipment grants or lays sits inside its gear (inside_effect), never here
-## too; a keyword a passive grants written out (the Boar's spill) is the star, never its own chip;
+## too; a keyword a passive or a module grants written out (the Overrun Gearing's spill) is the star, never its own chip;
 ## whom it reaches is no chip (the targeting mark under the main mark, Glyphs.aim_for).
 func rail_tags() -> Array[String]:
 	var tags: Array[String] = []

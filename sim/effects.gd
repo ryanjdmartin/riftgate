@@ -1274,10 +1274,10 @@ static func effective_reach(u, face: Face) -> int:
 
 
 ## Keywords a live passive grants this component beyond its own (grant_keyword, static, its
-## `when` honoured; the Wild Boar's Juggernaut Drive puts spillover on every attack). An
+## `when` honoured; the Overrun Gearing, a module, puts Spillover on every attack). An
 ## attack keyword lands on attacks only, a support keyword on a shield, vent or buff only, a spend
 ## keyword on anything; a keyword the component already carries is not granted twice.
-## `printed_only`: just the grants written out (`printed`, the Boar's spill), which the die
+## `printed_only`: just the grants written out (`printed`, the Gearing's spill), which the die
 ## draws as the star with the hold reading the passive's line, never a keyword chip.
 static func granted_keywords(u, face: Face, target = null, printed_only: bool = false) -> Array[int]:
 	var out: Array[int] = []
@@ -2119,7 +2119,7 @@ static func status_kind(status_id: String) -> String:
 		return "buff"
 	if tags.has("store") or tags.has("count"):
 		return "store"
-	if tags.has("marker") or tags.has("fuel"):
+	if tags.has("marker"):
 		return ""
 	return "debuff"
 
@@ -2205,13 +2205,14 @@ static func heat_per_blow(u) -> int:
 
 ## What a machine's passed turn releases (pass_release, static; the Whip Scorpion's Thermal
 ## Ejection Manifold, Ryan, 12 November: "1 damage to each enemy, increased by 1 for each heat
-## over 8"): {value: what every foe takes at the gate, gate: the heat it needs to fire}, a point
+## over 8"): {value: what every foe takes at the gate, gate: the heat it needs to fire, id: the
+## passive's, which its model's firing is keyed by (the broadside, MechRig.fire_act)}, a point
 ## more for each heat past the gate (Skirmish.release_shot). Empty for a machine whose pass
 ## releases nothing.
 static func pass_release(u) -> Dictionary:
 	for pair in _taking_part(u, "static", null):
 		if str(pair[0].get("effect", "")) == "pass_release":
-			return {"value": int(pair[0].get("value", 1)), "gate": int(pair[0].get("gate", 1))}
+			return {"value": int(pair[0].get("value", 1)), "gate": int(pair[0].get("gate", 1)), "id": str(pair[1].id)}
 	return {}
 
 
@@ -2597,9 +2598,9 @@ static func explain(u, face: Face) -> Array[String]:
 			elif trig == "static" and name == "grant_keyword":
 				var kw := Face.keyword_from_name(str(eff.get("value", "")))
 				if kw > 0 and not face.has(kw) and granted_keywords(u, face).has(kw):
-					# A grant written out (the Boar's spill) reads the passive's own line, the
+					# A grant written out (the Gearing's spill) reads the passive's own line, the
 					# star's text, since the player learns no keyword for it.
-					out.append("%s (%s)" % [m.description if bool(eff.get("printed", false)) and not m.description.is_empty() else effect_text(eff), m.name])
+					out.append("%s (%s)" % [written_out(m, eff) if bool(eff.get("printed", false)) else effect_text(eff), m.name])
 			elif trig == "on_attack":
 				# A condition on the target is shown as a rule (its lead says when), since
 				# the row has no target in hand.
@@ -2612,7 +2613,7 @@ static func explain(u, face: Face) -> Array[String]:
 	return out
 
 
-## The written-out grants on this entry (the Boar's spill): the granting passive's own line
+## The written-out grants on this entry (the Gearing's spill): the granting passive's own line
 ## each, the text of the star the die draws for it, as the hold prints it.
 static func printed_grants(u, face: Face) -> Array[String]:
 	var out: Array[String] = []
@@ -2624,10 +2625,18 @@ static func printed_grants(u, face: Face) -> Array[String]:
 			if str(eff.get("trigger", "")) != "static" or str(eff.get("effect", "")) != "grant_keyword" or not bool(eff.get("printed", false)):
 				continue
 			if printed.has(Face.keyword_from_name(str(eff.get("value", "")))):
-				var line: String = m.description if not m.description.is_empty() else effect_text(eff)
+				var line := written_out(m, eff)
 				if not out.has(line):
 					out.append(line)
 	return out
+
+
+## The line a grant written out reads, the star's text: a module's rule (its `line`, the text's
+## own, never the stat lines the module's description leads with), else the granting passive's
+## description, else the effect's own words.
+static func written_out(m, eff: Dictionary) -> String:
+	var line := str(eff.get("line", m.description))
+	return line if not line.is_empty() else effect_text(eff)
 
 
 ## Every live modifier as [name, description, source, scope, stacks, id]: the codex lists

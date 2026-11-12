@@ -469,7 +469,7 @@ class Build:
         self.form_acts = {}    # form name -> the acts it plays while held (act()'s `form`)
         self.halo = []         # the lit parts a glow names that wear a soft halo when they flare, the hot ones; (part, scale) for one larger, (part, scale, ahead) for one drawn its own way toward the eye (MechRig's halos)
         self.standing = {}     # lit part -> the glow it holds always, over its rest, an act's flare rising past it (MechRig's standing glow)
-        self.fires = {}        # a fixed component -> (act, from, to[, blow]) or a list of them taking turns: the slices of acts that are its firing, played on the spend (MechRig.fire_act)
+        self.fires = {}        # a fixed component (or the chassis's passive, for what it fires: the Whip Scorpion's release) -> (act, from, to[, blow]) or a list of them taking turns: the slices of acts that are its firing, played on the spend (MechRig.fire_act)
         self.aims = {}         # a fixed component -> the joint that turns to aim it, when it is no waist (MechView3D.aim_joint_for)
         self.pivots = False    # whether the whole machine turns on the spot to aim (a tank's tracks, a castered chassis), as a hover does
         self.fx_sizes = {}     # a fixed weapon -> its muzzle flare's size: an fx_<component> Empty at its business end (fx())
@@ -1217,7 +1217,8 @@ class Build:
         # A slice is (act, from, to), or (act, from, to, blow) when it winds up before its blow (the
         # act's second the blow lands: the engine holds the blow's sound and landing till then); a
         # list of slices takes turns (Ryan, 3 November: the Ammit "can also afford two different
-        # Claw animations since it's got 4 and will use them often").
+        # Claw animations since it's got 4 and will use them often"). A key is a fixed component's
+        # id, or the chassis's passive's for what the passive fires (the Whip Scorpion's release).
         fires = {}
         for cid, spec in self.fires.items():
             out_slices = []

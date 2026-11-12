@@ -663,8 +663,8 @@ levers moved in the copy's content, the balance runner at 30 seeds a cell on the
 Works', Kestrel Dynamics' and Wainwright & Sutler's) against the twenty-nine packs, and the
 campaign report at 40 runs where the lever reaches the campaign. Each loop carries the levers
 kept before it, and a lever that touches only its own foes is read on their packs alone
-(`--packs`; the bosses fight in no other cell). The kept levers are `tools/stock_fills.py`'s
-fills since. Directions, read as bands against the tests (the bible's section 2).
+(`--packs`; the bosses fight in no other cell). The kept levers were `tools/stock_fills.py`'s
+fills since (the script retired 12 November: `git show 27956e7:tools/stock_fills.py`). Directions, read as bands against the tests (the bible's section 2).
 
 **Loop 0, the landed fills**, every rung, and every chassis alone, greedy, without the party:
 
@@ -8818,7 +8818,9 @@ Read.
 
 Method: scratch probes of this session (a ledger over `BattleBot`, and a fight-at-its-rating
 probe over the battle's own builders); the engine's own `Policy` for every fight. The squads
-are an even sample of the six's combinations.
+are an even sample of the six's combinations. Read on the branch over `bf5158e`; main's
+`6112939`, taken before the landing, moves none of it (the second battle's read for one
+squad is the same to the digit on the merged engine).
 
 **The foes' side, the same day.** On the landed lines, each fight at its rating as above,
 before and after the foes' numbers moved.

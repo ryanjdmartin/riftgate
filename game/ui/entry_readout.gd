@@ -75,7 +75,7 @@ static func hint_ink() -> Color:
 ## its machine (face_types), beside its name; its tags are the shown entry's, a passive's
 ## change in. A state is its words, or [words, mark()] when the die shows a mark for it (the
 ## lock, the corruption); `extra` is what the screen adds for a mark the die prints from its
-## machine (a vent's blast), each a line with its mark, after the entry's own.
+## machine (a stepping die's next chamber), each a line with its mark, after the entry's own.
 static func lines_for(f: Face, place: int, shown: int, base: Face, states: Array, grants: Array, db: ContentDB, types: Array = [], extra: Array = [], cooldown: int = -1) -> Array:
 	var out: Array = []
 	if f == null:

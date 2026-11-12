@@ -235,7 +235,8 @@ func fit_module(u: Unit, module_id: String) -> void:
 
 
 ## A module as the passive the engine runs: an add_stat per stat line, then the text's
-## effects (none while the text is planned).
+## effects (none while the text is planned). A grant its text writes out (the Overrun Gearing's
+## spill) carries the text's own line, so the star reads the rule and never the stat lines.
 func module_passive(module_id: String) -> Dictionary:
 	var m: Dictionary = modules.get(module_id, {})
 	var effects: Array = []
@@ -244,7 +245,11 @@ func module_passive(module_id: String) -> Dictionary:
 		effects.append({"trigger": "static", "effect": "add_stat", "stat": str(k), "value": int(stats[k])})
 	var text = m.get("text", null)
 	if text is Dictionary and str(text.get("status", "implemented")) == "implemented":
-		effects.append_array(text.get("effects", []))
+		for e in text.get("effects", []):
+			var eff: Dictionary = (e as Dictionary).duplicate(true)
+			if bool(eff.get("printed", false)):
+				eff["line"] = str(text.get("description", ""))
+			effects.append(eff)
 	return {"id": "module:" + module_id, "name": str(m.get("name", module_id)), "description": module_description(module_id), "effects": effects}
 
 
@@ -1417,6 +1422,8 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: only attacks strike more than once" % where)
 	if fd.has("power_max"):
 		errs.append("%s: power_max is gone (2 November): a weapon is one number" % where)
+	if fd.has("heat_per_blow"):
+		errs.append("%s: heat_per_blow left the entry with the Siphon (12 November): a heat a blow taken is a passive's static heat_per_blow" % where)
 	# No crits since 10 October (bible section 5, the damage ranges row): chances live on
 	# riders, so a face that still carries one is stale content.
 	if fd.has("crit") or fd.has("crit_bonus"):
@@ -1614,7 +1621,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: an Instant entry with no cooldown carries another limiter, heat, Volatile or a shield cost (the bible's Rapid row)" % where)
 	# A reach over every foe or every ally is a targeting mode since 4 November (Ryan: "Silence
 	# should not narrow targeting modes, that's why I'm switching them to targeting modes"; a
-	# keyword from 2 November, a flag before): Every Foe a debuff's reach (the Siphon's), Every Ally
+	# keyword from 2 November, a flag before): Every Foe a debuff's reach (the Shift Whistle's), Every Ally
 	# a shield's or a buff's targets (the whole team, Every Ally, or every machine but its own, Every
 	# Other Ally: the Swallowtail's team shield), never a vent's.
 	if fd.has("reaches_all"):

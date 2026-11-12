@@ -136,7 +136,7 @@ func _kinds() -> Array:
 		["Weapon, over a foe", "its passive's box: the Storm\nPetrel's blow after it", zap],
 		["Debuff, direct", "gear, what it lays inside\n(Suppress): no number", _die(Face.attack(0, Face.Reach.DIRECT, [Face.Keyword.SUPPRESS]))],
 		["Debuff, indirect", "the gear holding Lure,\nthe line lobbed", _die(Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.LURE]))],
-		["Debuff, every foe", "the enemy's formation lit:\nevery foe (the Siphon)", _die(Face.attack(0, Face.Reach.EVERY_FOE, [Face.Keyword.LURE]))],
+		["Debuff, every foe", "the enemy's formation lit:\nevery foe (the Shift Whistle)", _die(Face.attack(0, Face.Reach.EVERY_FOE, [Face.Keyword.LURE]))],
 		["Buff", "spent on a machine: its\nstatus inside, its stacks", _die(Face.buff("overcharged", 2))],
 		["Shield", "spent on a machine:\nshield", _die(Face.shield(4))],
 		["Shield, every ally", "the arch, its own cell\nlit: the whole team", _die(team)],
@@ -187,8 +187,6 @@ func _rest() -> Array:
 	spender.buff_stacks = 3
 	var burn := Face.attack(4)
 	burn.burns = 2
-	var blast_vent := _die(Face.vent(3))
-	blast_vent.blast = 4
 	var locked := _die(Face.attack(4))
 	locked.locked = true
 	var charged := _die(Face.shield(4))
@@ -218,7 +216,6 @@ func _rest() -> Array:
 		["Ammo, dry", "a forging gun's price;\nthe magazine cannot pay", _die(dry)],
 		["A count spent", "the Souls it would take\nnow, a stack each", _die(spender)],
 		["Burn", "the Storm Petrel's: its box\nthe shield paid, no cost", _die(burn)],
-		["Blast", "its passive's box: a blast\nat a random foe", blast_vent],
 		["LOCKED", "a reroll skips it", locked],
 		["CHARGED", "armed for its charged\nform (the Swallowtail)", charged],
 		["Dark", "a cooldown or a switch-\noff: the clock, its turns", dark],

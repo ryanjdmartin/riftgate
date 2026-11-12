@@ -552,7 +552,7 @@ static func snapshot_skirmish(sk: Skirmish) -> Dictionary:
 ## The fight put back as a snapshot had it, in place: the machines' units are the field's own,
 ## their numbers written back; the machines, the foes, the ranks, the queue, the
 ## stream and the log as they were; the packs' units, the callables and the undo stack stand.
-## The last blow, blast and acts, the screen's, are cleared: they were the spend's.
+## The last blow and acts, the screen's, are cleared: they were the spend's.
 static func restore_skirmish(sk: Skirmish, d: Dictionary) -> void:
 	var units: Array[Unit] = []
 	for ms in sk.mechs:

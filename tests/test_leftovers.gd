@@ -36,9 +36,7 @@ const KEPT_KEYS := {
 	"fills_shield": "set by the engine: a charged form's shield full (the Sutler's Hoist), read back from a save",
 }
 ## Keywords the engine names that no piece prints.
-const KEPT_KEYWORDS := {
-	"spillover": "the bible's Wild Boar row took it off the Boar and says the engine keeps the keyword (11 November); put to Ryan on 12 November to cut or keep",
-}
+const KEPT_KEYWORDS := {}   # Spillover, the last, is the Overrun Gearing's since 12 November (Ryan: "Spillover can be a module")
 
 var _effects := {}    # effect kind -> true: printed by a piece, or by one of the engine's statuses
 var _triggers := {}

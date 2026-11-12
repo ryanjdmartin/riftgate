@@ -30,7 +30,8 @@ enum Reach { NONE, DIRECT, INDIRECT, EVERY_FOE }   # Every Foe (4 November), bel
 ## Every Foe and Every Ally are targeting modes (Ryan, 4 November: "Silence should not narrow
 ## targeting modes, that's why I'm switching them to targeting modes"; keywords from 2 November):
 ## Every Foe a reach (dropped on any foe, it lands on every foe in the fight: a debuff's riders,
-## a weapon's number whole on each, the two gated specials' since 12 November); Every Ally and Every Other Ally `targets` (a shield's or a buff's: the whole
+## the Shift Whistle's lure-all's among them, a weapon's number whole on each, the two gated
+## specials' since 12 November); Every Ally and Every Other Ally `targets` (a shield's or a buff's: the whole
 ## team, its own machine among them, or every machine but its own, the Mooring Screens'; Ryan:
 ## "the difference is whether the center one is lit or not, its two modes"). `reaches_all` reads
 ## any of them.
@@ -115,7 +116,7 @@ var kind: int = Kind.ATTACK
 var reach: int = Reach.DIRECT
 var power: int = 20
 var keywords: Array[int] = []
-var printed: Array[int] = []  # of those, the ones a passive grants written out (the Boar's spill): drawn as the star, never a keyword chip (the stock pass, 22 October)
+var printed: Array[int] = []  # of those, the ones a passive grants written out (the Overrun Gearing's spill): drawn as the star, never a keyword chip (the stock pass, 22 October)
 var heat: int = 0
 var strikes: int = 1          # blows per use: a rapid-fire weapon lands many small hits (each rolls and procs on its own)
 var burn: int = 0             # an attack with Burn: the stacks of Burning each blow leaves (Ryan, 18 October: a numbered keyword, never read off the damage)
@@ -162,8 +163,7 @@ var power_per_load: int = 0   # ...each adding this to the blow (the Bullion Fra
 var braces: int = 0           # any entry: spending it Braces its owner, this many stacks, until the round's end (the Breaching Plow, 12 October)
 var cooldown: int = -1        # any entry: the rounds it sits out once spent, after the round of the spend (Ryan, 14 October; counted so since 12 November: "change the count so 1 is how I intended"), printed on it; -1 or 0, none (Rapid's own switch-off is the keyword's, never printed)
 var turns_die: bool = false   # a Rapid buff on itself that turns a folded die to its other battery, its free roll landing there (the Clydesdale's Changeover, Ryan, 11 November)
-## Reaches every foe in the fight (an attack: the Whip Scorpion's Heliographic Siphon, a
-## lure-all, 20 October), or the whole team or every machine but its own (a shield or a buff: the
+## Reaches every foe in the fight (an attack: the Shift Whistle's lure-all), or the whole team or every machine but its own (a shield or a buff: the
 ## Swallowtail's Mooring Screens the latter): its targeting mode, Every Foe, Every Ally or Every
 ## Other Ally (4 November), so a Silence, which mutes keywords, leaves it whole. Setting it on
 ## gives the entry the mode that reaches all it may be spent on (any foe; itself and its allies the
@@ -836,20 +836,6 @@ func cost_text() -> String:
 	return (" (-%d hull)" % volatile if volatile > 0 else "") + (" (-%d shield)" % shield_cost if shield_cost > 0 else "")
 
 
-## The Siphon's two rules as the entry's text says them. Equipment that reaches every ally says
-## so in its own words ("on every ally"), never "reaches every foe".
-func spin_text() -> String:
-	var out := ""
-	for p in _spin_phrases():
-		out += " " + p
-	return out
-
-
-func _spin_phrases() -> Array[String]:
-	var out: Array[String] = []
-	return out
-
-
 ## The rules an entry prints past its number, its reach, whom it is spent on and its keywords,
 ## one phrase each in describe()'s own words (a test holds every phrase to describe()): the
 ## die's hold lists them a line each, last (Ryan, 25 October: "unique effects last"). A reload
@@ -906,7 +892,6 @@ func rule_phrases() -> Array[String]:
 			out.append(_spends_text())
 	if not holds_all.is_empty():
 		out.append(_holds_all_text())
-	out.append_array(_spin_phrases())
 	if not charged.is_empty():
 		out.append("%s: %s" % [charge_cost_text(), charged_form().describe()])
 	return out
@@ -1016,7 +1001,7 @@ func describe() -> String:
 				s += " braces" + ("" if braces == 1 else " ×%d" % braces)
 			if not holds_all.is_empty():
 				s += " " + _holds_all_text()
-			s += cooldown_text() + spin_text() + cost_text()
+			s += cooldown_text() + cost_text()
 			if targets == Target.SELF:
 				s += " (self only)"
 			elif targets == Target.ALLY and not reaches_all and not act_again:
@@ -1077,7 +1062,7 @@ func describe() -> String:
 				s += " " + _regen_text()   # the St. Elmo's Regenerator's rider on its own spender
 			if not holds_all.is_empty():
 				s += " " + _holds_all_text()
-			s += cooldown_text() + spin_text()
+			s += cooldown_text()
 			if heat > 0:
 				s += " (+%d heat)" % heat
 			s += cost_text()

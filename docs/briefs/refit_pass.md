@@ -1421,7 +1421,7 @@ rift at Convergence 1, the fight bot):
   is announced, and the squad lays the Barrier on the machine named. With heat real the
   squad's cool play is that same Barrier, so it holds behind one and waits.
 
-**What landed, each a placeholder** (the bible's triangle, scale and shield rows, v0.555):
+**What landed, each a placeholder** (the bible's triangle, scale and shield rows, v0.557):
 
 - Heat's shape as content: every weapon three hotter, every chassis that cools cooling one
   more, the gauges kept. The dial moves it a point either side.
