@@ -186,7 +186,8 @@ branch alone. On 12 November ("Pull in main ... You can proceed with the steps a
 fit") it took main at `8d936cf` and at `c717e69` as fast-forwards and landed the tier-one
 baseline's read and heat's and the overheat's dials, no content moved, then took main at
 `ea2f143` and landed the four breach or burn formations' cut ("Yes go ahead with 2"), 4-4-2
-from the records and the second battle's read (How things stand). Landed 11 November: `ccr-4d58b054-3lyj0a`, the chassis inventory and the locked pieces'
+from the records and the second battle's read, and then the anchor (heat's prices, tier
+one's shields and its foes' numbers: How things stand). Landed 11 November: `ccr-4d58b054-3lyj0a`, the chassis inventory and the locked pieces'
 footing of 10 November and Ryan's round on the busted machines of 11 November (the Polar Bear
 dealt again, the Buzzard's regen, the Nemesis's rage bar; How things stand), carrying
 `ccr-722ca9f0-yj8na3` whole to `4c8dbf1`, took main (the music session's landing: the bible's
@@ -863,6 +864,48 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   saying that the yield prices no stall now, a pack the tide sends paying what the opening's
   does; the rules and the glossary's Menace, Rupture meter and Seal lines follow, drafts
   redrafted. Left to the economy pass: what a boss pays and salvage's growth by tier.
+- **The anchor: tier one's real lines, its foes in the budget's band, and the Barrier left
+  open** (Ryan, 12 November: "Remember that all the chassis numbers are on the table,
+  including hull and shield. Important to get the convergence 2 fight tuned around real tier
+  1s with real tier 1 numbers for damage, defense and heat, and then move on to the scaling
+  for everything from there"; Claude's reading of "the convergence 2 fight", his to correct:
+  the second battle, four machines at Convergence 1). Read first
+  (`docs/measurements.md`, 12 November, the six built and certain tier ones): the runner's
+  player meets the elite with one or two machines and loses it, so its battle measures its
+  orders; every fight was read at its rating instead, and the battle whole by a scratch
+  player that musters. At its rating nothing in tier one cost a real squad its budget but
+  the formations once heat was real. Landed, each a placeholder. The player's side: heat's
+  prices are content (every weapon three hotter, every chassis that cools cooling one more,
+  the gauges kept; the HEAT dial now a point either side, COOLER, BUILT, HOTTER), and tier
+  one's ten chassis take the low end of the shield scale, three quarters of the gauge and
+  one less regen, never under one (6 to 12 and 1 or 2), since a level lifts hull, shield,
+  regen and cooling from level one; hull untouched. The foes at tier one: the lone flankers
+  a duel of three or four rounds (the whisker cat 12 hit points, the roc 14, the dullahan
+  10), the wolf 7 and a bite of 4, the goblin 4, the treant 16 and the barrow giant 20 so
+  their fights are six rounds, the gel's blow 2, the Peak's rank and file scorching 1 and
+  the drake's stoke burning 2; the elites a number could move (the shaman 28 and 10, the
+  Nob 60 and 18, the Old Man's maw 12, the Rust Monster 48 and 16, the Fell Rider 48 and 16,
+  the Reaper 44); the Emperor Scorpion 60 and 14 and the Phantom Train's blow 16. At its
+  rating a lone flanker now costs 2 to 4% of a four's hull, a hunter's pack 5 to 7%, a
+  formation 2 to 9% with 5 the mean, an elite 0 to 13%, a boss 5 to 32%. The second battle
+  for the mustering player: the Meadow and the Marsh won 65 to 85% with half to two thirds
+  of the hull left at the end (80 to 90% with four fifths before), the Waste 45 to 70% with
+  a third left (its bosses), the Peak 40 to 60%, its losses the gate's before and after.
+  Consequences, named: the machines that read heat moved under the prices and follow in
+  their own sessions (the bible's section 12 lists each); every foe a higher tier shares
+  with tier one moved and stands unread there, and the elites moved at every tier; the
+  runner's own player wins far less on the lower shields (the Meadow 45% where it won 70%),
+  since it fights alone; and the first battle is harder for three machines than it was (a
+  mustering trio with the Honey Badger won 40% of the Meadow's and wins 10%; it lost to the
+  gate before, 40 to 85% of the time), so it is the first thing to scale from the anchor.
+  Open, his, the refit brief's section 13: the Barrier's price, which is what stands
+  between the elites and their budget (a free Barrier takes an announced blow every round,
+  and with heat real a squad holds behind one; the basic dark a round once spent reads two
+  or three times dearer on the single-blow fights, unbuilt); the first battle's rule; his
+  marks on 4-4-2; the Waste's bosses and the Peak's clock; the Prairie Dog alone. The
+  muster rule and the fight-at-its-rating read are scratch probes; the runner still plays
+  the defence rule. The bible's triangle, scale and shield rows and section 12 (v0.555);
+  the rules' chassis, basics, heat and scale lines.
 - **Four formations cut toward the budget, 4-4-2 to work with, and the anchor** (Ryan, 12
   November: "Yes go ahead with 2. Also, let's look at 4-4-2 right now so that you're working
   with correct tier 1 chassis for testing. Remember that all the chassis numbers are on the
@@ -890,11 +933,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   against a tier-one rift at Convergence 1. The runner's player wins the Meadow and the
   Marsh seven times in ten there with nine tenths of its hull when the seal breaks, where
   the budget spends about half by then, and the Waste and the Peak one time in six, the
-  formations not why (the Waste's rows did not move with the cut). Next in it, the brief's
-  plan: heat for tier one, the plain formations up to the budget and their giants down to
-  a formation's length, the lone machine's fights, the elites and the bosses by domain,
-  then hull, shield and regen, then tiers two and three scaled from it. The bible's scale
-  row and section 12 (v0.553); the rules' scale line.
+  formations not why (the Waste's rows did not move with the cut). What followed is the
+  bullet above. The bible's scale row and section 12; the rules' scale line.
 - **The player's side at tier one: the baseline, and heat on a dial** (Ryan, 12 November:
   "Pull in main. Many of the machine reworks are done, so they can be included in the pass
   ... You can proceed with the steps as you see fit"; the order agreed the day before, the
@@ -918,11 +958,10 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   (BUILT, +2, +3, +4; the next launch; `Settings.HEAT_SPECS` over the what-if's `hotter` and
   `cooling`, which now leaves a chassis that cools nothing alone and moves a rewritten
   shot's heat with the guns) and OVERHEAT (×1, ×2, ×3; `RIFTGATE_OVERHEAT`; the skirmish's
-  forecast row shows the hull it burns). Open, his: the shape by his play, what an overheat
+  forecast row shows the hull it burns). The shape went into content the same day with the anchor (the bullet above), the dial
+  re-based a point either side of it. Open, his: the shape by his play, what an overheat
   should burn (the bot overheats rather than holds and plays no better at two), whether
-  equipment carries a price, and the heat-reading machines' numbers as the prices land.
-  The foes' numbers wait on the prices: tuned first, they are tuned twice. The bible's
-  triangle row and section 12 hold it (v0.549).
+  equipment carries a price, and the heat-reading machines' numbers.
 - **More spawns than the Rupture needs, on trial** (Ryan, 11 November: "I think we should try
   to lean for noticeably more spawns then the minimum number required for our target
   completion speed. When I was playing I felt the need to chase every pack down, since that
@@ -1492,7 +1531,9 @@ what-if and its first reads are in (9 November), his two reads of the trial, the
 content, the formation pass and a guess at the elites' and bosses' numbers (10 November: the
 brief's sections 5, 8 and 9); tier one only for now (his word, 11 November), tuned on the
 second battle with real tier ones before anything is scaled from it (his word, 12 November;
-the brief's section 13 has the plan and 4-4-2 for his marks), and next his
+landed the same day: the brief's section 13 has what landed, what is open and 4-4-2 for his
+marks), next his play of the anchor and his word on the Barrier's price, then the first
+battle scaled down from it and tiers two and three scaled up, and his
 play of the Rupture in beats and of the tide's and the strike's dials, and his marks on the
 flanks' second patrols (the brief's section 11), and his answers on the first battle (section
 10: the fourth machine's route is settled, the first battle's shape and the boss's numbers by
@@ -1582,9 +1623,10 @@ commands are in `README.md`.
   tables), and main's v0.552 since `ccr-8af28d03-re9kz4` landed again (the Ammit row's flare once an
   attack and the cut of its two old rules, the Empowered row's mark, and the rows that said the
   engine kept a rule the dead-code pass cut: the Kite's, a piece of two kinds, a rider's limit,
-  Chain's targeting, the Whip Scorpion's), and main's v0.553 since `ccr-722ca9f0-yj8na3` landed
-  again (the scale row's breaching massives and section 12's 4-4-2 to work with and the
-  anchor); each goes up on Ryan's word. The
+  Chain's targeting, the Whip Scorpion's), and main's v0.555 since `ccr-722ca9f0-yj8na3` landed
+  again (the scale row's tier-one foes, the triangle row's prices as content, the shield
+  row's tier-one lines, and section 12's 4-4-2 to work with, the anchor, the heat-reading
+  machines and the Barrier's price); each goes up on Ryan's word. The
   live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS

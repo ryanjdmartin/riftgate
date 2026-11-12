@@ -1406,20 +1406,73 @@ fist of 4, each keeping its plate; the bomb 4, the salamander and the drake 4. T
 trio 5 to 15% of its hull where they cost 25 to 57%, about twice a plain formation. A breach
 every round cannot go lower on numbers; a blow on a count would, and that is a kit.
 
-**Where the second battle stands**, four of the six against a tier-one rift, the bot: the
-Meadow and the Marsh are won seven times in ten with nine tenths of the hull left when the
-seal breaks, where the budget spends half by then; the Waste and the Peak are won one time
-in six, and the formations were not why.
+**What the anchor's reads found** (`docs/measurements.md`, 12 November; the six, a tier-one
+rift at Convergence 1, the fight bot):
 
-**The plan from here**, in the order the numbers depend on each other:
+- The runner's player is no measure of the numbers. It meets the elite with one or two
+  machines and loses a third to four fifths of those fights; a battle of its that ends at
+  the gate is a lost elite fight standing at the wall. So every fight was read at its
+  rating (a lone flanker by one machine, a hunter by two, a formation by three, an elite and
+  a boss by four), and the battle whole by a scratch player that musters.
+- At its rating nothing in tier one cost a real squad its budget but the formations once
+  heat was real: a lone flanker, a hunter and an elite each about a seventh of theirs. A
+  four soaked about 76 points over a five-round fight beside 96 of hull.
+- A single blow a round costs a gathered four nothing: the Barrier basic is free, the blow
+  is announced, and the squad lays the Barrier on the machine named. With heat real the
+  squad's cool play is that same Barrier, so it holds behind one and waits.
 
-1. His marks on 4-4-2, so the tier-one set is fixed and the machines coming down get
-   tier-one numbers.
-2. Heat for tier one. Claude's lean for landing it without moving tiers two and three: the
-   four basic guns one hotter and the tier-one gauges cut to about half, which reads like the
-   dial's +3 in bite. His play of the dial comes first if he would rather pick.
-3. The plain formations up to the budget and their giants down to a formation's length; the
-   lone machine's fights; then the elites and the bosses by domain.
-4. Hull, shield and regen read against that, and moved where a role is off.
-5. Scale tiers two and three from the anchor.
+**What landed, each a placeholder** (the bible's triangle, scale and shield rows, v0.555):
 
+- Heat's shape as content: every weapon three hotter, every chassis that cools cooling one
+  more, the gauges kept. The dial moves it a point either side.
+- Tier one's shields at the low end of the scale: three quarters of the gauge and one less
+  regen, never under one (6 to 12 and 1 or 2). The levels lift hull, shield, regen and
+  cooling, so level one is the low end; hull is untouched; and the locked pieces' numbers,
+  which their own footing brings to the basics', are not moved here.
+- The foes at tier one: the lone flankers to a duel of three or four rounds (the whisker
+  cat 12 hit points, the roc 14, the dullahan 10), the wolf 7 and a bite of 4, the goblin 4,
+  the treant 16 and the barrow giant 20 so their fights are six rounds, the gel's blow 2,
+  the Peak's rank and file scorching 1 and the drake's stoke burning 2. The elites a number
+  could move (the shaman, the Nob, the Old Man, the Rust Monster, the Fell Rider, the
+  Reaper), and the two bosses furthest over (the Emperor Scorpion 60 hit points and 14, the
+  Phantom Train 16).
+
+**Where it leaves the second battle**, a player that musters, three squads of four:
+
+| Domain | Won, before | Won, landed | Hull at the end, before | Landed |
+|---|---|---|---|---|
+| The Meadow | 85 to 90% | 75 to 85% | 87 to 91% | 53 to 67% |
+| The Marsh | 80 to 90% | 65 to 75% | 77 to 83% | 50 to 58% |
+| The Waste | 60 to 75% | 45 to 70% | 45 to 55% | 29 to 40% |
+| The Peak | 35 to 55% | 40 to 60% | 40 to 64% | 37 to 44% |
+
+At its rating a lone flanker costs 2 to 4% of a four's hull, a hunter's pack 5 to 7%, a
+formation 2 to 9% with 5 the mean, an elite 0 to 13% with 7 the mean, a boss 5 to 32% with
+19 the mean.
+
+**Open, his**:
+
+1. The Barrier's price. It is what stands between the elites and their budget and what
+   makes the hold free. Read, not built: the Barrier basic dark for a round once spent
+   brings the single-blow elites and bosses up two or three times and ends the King's
+   stall; it sends the many-strike bosses over, so their numbers come down with it; a
+   mustering player wins up to 25 points fewer battles on today's numbers. A price in heat
+   does little for the bot. On the bench beside it: the Barrier a tier-one piece and no
+   basic; a second announced blow on every elite; a blow no Barrier takes (which is breach
+   by another name, and breach is parked).
+2. The first battle. With tier one's shields at their real numbers it is harder for three
+   machines than it was, and it was not easy for a mustering player before. It is the first
+   thing to scale from the anchor: section 10's bench (the boss's block by Convergence, the
+   gates, the Meadow first) and his pick.
+3. His marks on 4-4-2, above: the machines coming down take tier one's lines as they do.
+4. The Waste's bosses and the Peak's clock, the two things that keep those domains under the
+   others: the bosses' session, and the pacing dials.
+5. The elites a number cannot move (the Pilgrim, the Reaper, Gilgamesh), their sessions'.
+6. The Prairie Dog alone: it loses a third of its duels with the cerberus and takes six to
+   twelve rounds over the others' two or three. Its hunter rule keeps it out of a catch, not
+   out of an order.
+
+**The plan from here**: his play of the anchor and his word on the Barrier; then the first
+battle scaled down from it; then tiers two and three scaled up, the levels' ladder with
+them (a machine's stat line by level, the foes' by tier), since every foe a higher tier
+shares with tier one moved today and stands unread there.
