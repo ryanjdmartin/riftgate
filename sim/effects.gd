@@ -51,7 +51,7 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "one_of_each", "add_armour_vs_rank", "keep_status", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "pass_sweep", "mute_keywords", "weapon_cooldown", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "one_of_each", "add_armour_vs_rank", "keep_status", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "fold_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "pass_sweep", "mute_keywords", "weapon_cooldown", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_shield_hit": ["stack_status", "add_shield", "vent_heat"],
@@ -174,6 +174,16 @@ const STATUS := {
 	# armour counts for nothing, its own and any Armoured (Foe.armour_total), through the next
 	# round, refreshed and never added. The formation's exposed back rank is reach only, and the
 	# id is "exposure" since "exposed" names that formation word and the foes' default aim.
+	# Pinned (the Hollow-point Harpoon's, Ryan, 11 November): a status of its own for the round,
+	# holding the foe's Flak from halving at the round's end. HOLDERS names the holder of each
+	# status a piece may hold, so a like one for Burning is a row there and a status here.
+	"pinned": {"id": "pinned", "name": "Pinned Flak", "description": "Its Flak does not decay this round.", "stacking": "renew",
+		"tags": ["pin"], "effects": [{"trigger": "static", "effect": "hold_status", "value": "flakked"}]},
+	# Burning's pin (Ryan, 11 November: "Might as well code it in since the Mastema will want it as
+	# a fitted piece, if nothing else"): its Burning burns and loses no stack this round. No piece
+	# lays it yet.
+	"pinned_burning": {"id": "pinned_burning", "name": "Pinned Burning", "description": "Its Burning loses no stack this round.", "stacking": "renew",
+		"tags": ["pin"], "effects": [{"trigger": "static", "effect": "hold_status", "value": "burning"}]},
 	"exposure": {"id": "exposure", "name": "Exposed", "description": "In Direct reach of every machine, and its armour counts for nothing. Through the next round.", "stacking": "renew",
 		"tags": ["expose"], "effects": []},
 	# The Mine (the Lammergeier's Reverberant Payload, Ryan, 9 November: "the lammergeier basically
@@ -259,6 +269,12 @@ const STATUS := {
 	# with the passive's numbers), renewing, never stacking (Ryan: the granted armour is tied
 	# to the mode). Its own cooling stops and it runs hotter at the end of each turn
 	# (Skirmish); an ally's vent still cools it (Ryan, 20 October: allowed).
+	# The Clydesdale's batteries (Ryan, 11 November: "One half at a time ... The active half should
+	# persist between skirmishes"): its die folds in two, a battery up and one stowed, and this
+	# chip says the second is up; with none the first is. Held for the battle (fold_die), never a
+	# buff, so nothing purges it; the model holds the form of the same name (the second battery up).
+	"changed_over": {"id": "changed_over", "name": "Changed Over", "description": "Its second battery is up and its first stowed: its die rolls the second battery and its fixed pieces.", "decay": "none", "stacking": "renew",
+		"tags": ["ability", "form"], "effects": []},
 	"sealed": {"id": "sealed", "name": "Sealed", "description": "Sealed: armour up, its own cooling stopped, hotter at the end of each turn. A weapon it fires opens it.", "decay": "none", "stacking": "renew",
 		"tags": ["ability", "form"], "effects": []},
 	# Cryo (Ryan, 20 October: the Polar Bear's Cryo Flinger, the debuff called Cryo too, marked
@@ -473,7 +489,9 @@ static func brace_stacks(value: int) -> int:
 ## What a foe carrying a status means (target_status, the Susceptibility Tensor; 10 October):
 ## what the team put on it. Never Numbed (a buff only a Purge lowers, 2 November), and never the foe's
 ## own buffs (Braced, Empowered, Undying).
-const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed", "flakked", "exposure", "mine"]
+const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed", "flakked", "exposure", "mine", "pinned", "pinned_burning"]
+## The status that holds each status a piece may hold on its target (Face.holds).
+const HOLDERS := {"flakked": "pinned", "burning": "pinned_burning"}
 ## target_status: the foe struck carries any of FOE_STATUSES (Numbed and its own buffs never count).
 ## ally_present: another live machine is in the fight (the unit's `allies`, kept by the skirmish).
 ## A `tag_<tag>` condition reads the component's tags (10 October: a tag never carries a rule of
@@ -830,11 +848,14 @@ static func turn_tick(u) -> Dictionary:
 ## Empowered's clock, 21 October).
 static func tick(u, halving: bool = true) -> Dictionary:
 	var out := tick_preview(u)
+	var held := held_statuses(u)   # a pin's: the status ticks and loses no stack (Pinned Burning)
 	var keep: Array = []
 	for m in u.modifiers:
 		if m.decay == DECAY_ROUND:
 			continue
-		if m.decay == DECAY_TICK:
+		if m.decay == DECAY_TICK and held.has(m.id):
+			pass
+		elif m.decay == DECAY_TICK:
 			m.stacks -= 1
 			if m.stacks <= 0:
 				continue
@@ -852,15 +873,26 @@ static func tick(u, halving: bool = true) -> Dictionary:
 ## The round's end for a foe (Flak, 21 October: it halves at the end of each round, rounded
 ## down, Empowered's clock): every halving status halves and the empty ones go. Its other
 ## statuses tick at its action (tick).
-static func halve(u) -> void:
+static func halve(u, held: Array = []) -> void:
 	var keep: Array = []
 	for m in u.modifiers:
-		if m.decay == DECAY_HALF:
+		if m.decay == DECAY_HALF and not held.has(m.id):
 			m.stacks = int(m.stacks / 2.0)
 			if m.stacks <= 0:
 				continue
 		keep.append(m)
 	u.modifiers = keep
+
+
+## The statuses `u` holds from decaying right now (Pinned holds Flak; Ryan, 11 November: "The
+## Flak pin should be its own status that gets applied for one turn. I assume we're going to want
+## a similar one for burning as well"): every status id a live hold_status names.
+static func held_statuses(u) -> Array:
+	var out: Array = []
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "hold_status" and not out.has(str(pair[0].get("value", ""))):
+			out.append(str(pair[0].get("value", "")))
+	return out
 
 
 static func supports(trigger: String, effect: String) -> bool:
@@ -1766,7 +1798,7 @@ static func _plate(u, change: int) -> void:
 
 
 ## Free rerolls of this machine's own die each round, on top of the team's (free_reroll,
-## static; the Clydesdale's Battery Director).
+## static; the Trim Tabs module's, the Clydesdale's Battery Director's until its batteries).
 static func free_rerolls(u) -> int:
 	var n := 0
 	for pair in _taking_part(u, "static", null):
@@ -1863,6 +1895,58 @@ static func no_destroy(u, face: Face) -> bool:
 		if str(pair[0].get("effect", "")) == "no_destroy":
 			return true
 	return false
+
+
+## How many hardpoints a battery of this machine's folded die holds (fold_die, static; the
+## Clydesdale's, Ryan, 11 November): its die is two batteries of that many, one up at a time; 0
+## for a die that does not fold.
+static func folds_die(u) -> int:
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "fold_die":
+			return maxi(0, int(pair[0].get("value", 0)))
+	return 0
+
+
+## The entries a folded die rolls among: its fixed pieces, up on either battery, and the battery
+## up (the first, or the second while it carries Changed Over); empty for a die that does not fold,
+## which rolls among all of them.
+static func live_entries(u, die) -> Array:
+	var h := folds_die(u)
+	if h <= 0 or die == null:
+		return []
+	var second := has(u, "changed_over")
+	var out: Array = []
+	var k := 0
+	for i in range(die.faces.size()):
+		if die.faces[i].fixed:
+			out.append(i)
+			continue
+		if k < 2 * h and (k >= h) == second:
+			out.append(i)
+		k += 1
+	return out
+
+
+## The entries a folded die's stowed battery holds (the codex dims them); empty for a die that
+## does not fold.
+static func stowed_entries(u, die) -> Array:
+	var live := live_entries(u, die)
+	if live.is_empty():
+		return []
+	var out: Array = []
+	for i in range(die.faces.size()):
+		if not live.has(i):
+			out.append(i)
+	return out
+
+
+## Turn a folded die to its other battery (the Changeover's spend): the second battery up carries
+## Changed Over for the battle, the first carries nothing. True when the second is up after.
+static func turn_die(u) -> bool:
+	if remove(u, "changed_over"):
+		return false
+	stack(u, STATUS["changed_over"], BATTLE, "changeover", 1, DECAY_NONE)
+	return true
 
 
 ## Does this machine's die step instead of rolling (the Cassowary's Indexed Cylinder, Ryan's
@@ -1991,7 +2075,7 @@ static func purge(u, n: int = 1) -> Array[String]:
 ## The marks the team lays on foes (28 October), what a foe's cleanse takes off its own: never
 ## Numbed (the buff nothing removes), never Suppressed (so a stun stays sure), never Guarded or a
 ## buff.
-const TEAM_MARKS := ["burning", "flakked", "cryoed", "vitriol", "shocked", "exposure", "webbed", "paradox", "mine"]
+const TEAM_MARKS := ["burning", "flakked", "cryoed", "vitriol", "shocked", "exposure", "webbed", "paradox", "mine", "pinned", "pinned_burning"]
 
 
 ## How many of the team's marks a foe carries, each status one mark.
@@ -2375,9 +2459,11 @@ static func effect_text(eff: Dictionary) -> String:
 		"extra_action": body = "%s more action%s a turn: move and fight again" % [vs, "" if int(v) == 1 else "s"]
 		"hull_per_spend": body = "every component it spends costs %s hull" % vs
 		"step_die": body = "its die never rolls: each fight opens on a random entry, and every roll steps it to the next in order"
+		"fold_die": body = "its die is two batteries of %s, one up at a time with its fixed pieces; the battery up stays up from fight to fight, and a battle opens on the first" % vs
 		"rewrite_weapon": body = "every weapon and equipment it aims at a foe fires as one %s %s blow, heat %s, its keywords and rules kept" % [str(eff.get("reach", "direct")), vs, str(eff.get("heat", 0))]
 		"vent_blast": body = "a vent it spends on itself blasts a random foe for %s the heat it takes off" % ("the whole of" if is_equal_approx(float(v), 1.0) else "%s×" % vs)
 		"pass_sweep": body = "a turn it ends with an entry it could have spent releases its heat once the enemy has acted: a Sweep of the rank with the most foes, a shot of %s for every heat" % vs
+		"hold_status": body = "its %s does not decay" % str(STATUS.get(str(v), {}).get("name", v))
 		"heat_per_blow": body = "every blow a foe lands on it adds %s heat" % vs
 		"mute_keywords": body = "its components' keywords are muted"
 		"multiply_stacks": body = "the stacks it lays ×%s" % vs

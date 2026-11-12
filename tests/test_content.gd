@@ -1386,6 +1386,7 @@ func test_a_component_passive_from_content_lands_on_the_mech() -> void:
 		"effects": [{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 5}]}
 	db.components["fins_pack"] = fins   # the jacket's own tier, a basic, below the chassis that stocks it
 	var c: Dictionary = db.chassis["clydesdale"].duplicate(true)
+	c["fixed"] = []   # nothing built in, so the component is the die's first entry
 	c["loadout"] = ["fins_pack"]
 	c["passive"] = null
 	c["cooling"] = 10

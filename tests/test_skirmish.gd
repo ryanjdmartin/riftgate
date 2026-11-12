@@ -10889,3 +10889,100 @@ func test_a_tie_sweeps_the_back_and_blows_taken_fire_over_the_maximum() -> void:
 	assert_eq(int(foes[0].hp), 500, "the front untouched")
 	assert_true(int(foes[1].hp) < 500, "the back rank swept")
 	assert_eq(ms.heat, 0, "left cold")
+
+
+## The Hollow-point Harpoon's pin (Ryan, 11 November: "Applies 1 flak and the target's flak does
+## not decay this round"): the Flak on its target, its own and what stood there, skips this
+## round's halving and halves again the round after. Synthetic piece.
+func test_a_pin_holds_its_targets_flak_through_the_rounds_end() -> void:
+	var sk := Skirmish.new(1)
+	var pin := Face.from_dict({"kind": "attack", "reach": "direct", "power": 1, "keywords": ["flak"], "flak": 1, "holds": "flakked"})
+	sk.add_mech(_mech("A", Die.single(pin), 40, 1000))
+	var a := _ghoul(500, 0)
+	var b := _ghoul(500, 0)
+	sk.add_foes([a, b])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(a, Effects.STATUS["flakked"], Effects.SKIRMISH, "test", 4, Effects.DECAY_HALF)
+	Effects.stack(b, Effects.STATUS["flakked"], Effects.SKIRMISH, "test", 4, Effects.DECAY_HALF)
+	assert_true(sk.assign(0, a), "the harpoon on the first")
+	assert_eq(Effects.stacks_of(a, "flakked"), 5, "it lays its own")
+	assert_true(Effects.has(a, "pinned"), "and leaves it Pinned, a status of its own")
+	sk.end_round()
+	assert_eq(Effects.stacks_of(a, "flakked"), 5, "pinned: no halving this round")
+	assert_false(Effects.has(a, "pinned"), "the pin is the round's: gone with it")
+	assert_eq(Effects.stacks_of(b, "flakked"), 2, "the other's halves as ever")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(Effects.stacks_of(a, "flakked"), 2, "and it halves the round after")
+
+
+## The Combat Translocator's Shock (Ryan, 11 November: "not dead versus only frontliners and
+## versus massives and bosses that can't be swapped"): both foes a Swap trades come out Shocked;
+## it takes two targets always ("Translocator should still target two, always"), a massive foe
+## among them staying where it stands while both are Shocked; a Swap carrying nothing else still
+## has no use for a foe it cannot move. Synthetic pieces.
+func test_a_swap_that_shocks_marks_both_and_a_massive_foe_named_stays_put() -> void:
+	var shocker := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["swap", "shock"]})
+	var sk := Skirmish.new(1)
+	sk.add_mech(_mech("A", Die.single(shocker), 40, 1000))
+	var a := _ghoul(500, 0)
+	var b := _ghoul(500, 0)
+	sk.add_foes([a, b])
+	sk.begin()
+	sk.start_round()
+	var at := [a.column, b.column]
+	assert_true(sk.needs_second(sk.mechs[0]), "a second target, always")
+	assert_true(sk.assign(0, a, b), "the two trade")
+	assert_eq([a.column, b.column], [at[1], at[0]], "places traded")
+	assert_true(Effects.has(a, "shocked") and Effects.has(b, "shocked"), "both come out Shocked")
+	var boss := Skirmish.new(1)
+	boss.add_mech(_mech("A", Die.single(shocker), 40, 1000))
+	var big := _ghoul(500, 0)
+	big.size = 2
+	var small := _ghoul(500, 0)
+	boss.add_foes([big, small])
+	boss.begin()
+	boss.start_round()
+	assert_true(boss.needs_second(boss.mechs[0]), "a massive foe named: a second target still")
+	assert_false(boss.assign(0, big), "never alone")
+	var seconds := boss.swap_targets(big, true)
+	assert_true(seconds.has(small) and seconds.any(func(x) -> bool: return x is Vector2i), "its second: another foe or an empty slot")
+	var where := [big.column, small.column]
+	assert_true(boss.assign(0, big, small), "the two are named")
+	assert_eq([big.column, small.column], where, "nothing moves: a massive foe stays")
+	assert_true(Effects.has(big, "shocked") and Effects.has(small, "shocked"), "and both are Shocked")
+	assert_true("\n".join(boss.log).contains("holds its ground"), "the log says why")
+	var plain := Skirmish.new(1)
+	plain.add_mech(_mech("A", Die.single(Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["swap"]})), 40, 1000))
+	var huge := _ghoul(500, 0)
+	huge.size = 2
+	plain.add_foes([huge])
+	plain.begin()
+	plain.start_round()
+	assert_false(plain.can_spend(0), "a Swap that carries nothing else has no use for a foe it cannot move")
+
+
+## Burning's pin (Ryan, 11 November: "a similar one for burning as well ... Might as well code it
+## in"): a foe under it burns for every stack at its action and loses none; the pin is the round's,
+## and its Burning fades again the round after. No piece lays it yet: granted here.
+func test_pinned_burning_burns_and_loses_no_stack_this_round() -> void:
+	var sk := Skirmish.new(1)
+	sk.add_mech(_mech("A", Die.single(Face.blank()), 40, 1000))
+	var a := _ghoul(500, 0)
+	var b := _ghoul(500, 0)
+	sk.add_foes([a, b])
+	sk.begin()
+	sk.start_round()
+	for foe in [a, b]:
+		Effects.stack(foe, Effects.STATUS["burning"], Effects.SKIRMISH, "test", 3, Effects.DECAY_TICK)
+	assert_eq(str(Effects.HOLDERS["burning"]), "pinned_burning", "Burning has a holder of its own")
+	Effects.grant_for_rounds(a, Effects.STATUS["pinned_burning"], "test", sk.round)
+	sk.end_round()
+	assert_eq(Effects.stacks_of(a, "burning"), 3, "pinned: it burned and lost no stack")
+	assert_eq(Effects.stacks_of(b, "burning"), 2, "the other's fades a stack as ever")
+	assert_eq(a.hp, b.hp, "both burned alike this round")
+	assert_false(Effects.has(a, "pinned_burning"), "the pin is the round's")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(Effects.stacks_of(a, "burning"), 2, "and it fades the round after")

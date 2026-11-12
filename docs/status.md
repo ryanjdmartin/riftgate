@@ -27,10 +27,12 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1123 tests, 362,685 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
-  with the Whip Scorpion's rework over the formation and refit session's landing); 1134 tests,
-  362,980 checks, green on `ccr-e3ddf00b-ilkwbi` over that main (the three fast flyers rebuilt,
+- Tests: 1132 tests, 363,473 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
+  with the Dingo's pieces, the pins and the Flakshot Repeater over the Clydesdale's review); 1143 tests,
+  364,454 checks, green on `ccr-e3ddf00b-ilkwbi` over main's `fbce698` (the three fast flyers rebuilt,
   not landed). Before it,
+  1123 tests, 362,685 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
+  with the Whip Scorpion's rework over the formation and refit session's landing). Before it,
   1119 tests, 362,994 checks, green on main (11 November, as `ccr-722ca9f0-yj8na3`
   landed with the Rupture sized in beats, menace a pack's threat rating, the stall guard's end
   and the tide's and the strike's trial dials; Godot 4.8-beta2); one
@@ -139,8 +141,11 @@ how deep each class sits (the Polar Bear's port guns deeper and a round rack flu
 perfect for bear"), the renders a round. It took main at `e286f8d` and again at `45b3190` (the
 Whip Scorpion's rework; the bible's version, v0.531 above both, and this file's lines, both sides
 kept) and main took it as a fast-forward on
-Ryan's word ("Clean up and merge in"); the Clydesdale's model is its next, and the hangar's
-republish waits for it so the page goes up once. And `ccr-722ca9f0-yj8na3`, the formation and
+Ryan's word ("Clean up and merge in"). Then the Clydesdale's batteries on his picks ("Checkerboard,
+and the stock split is fine"): its die folded into two batteries of four with a shared Changeover,
+the battery up kept from fight to fight (Changed Over), Battery Director retired, its model eight
+ports in a checkerboard, square under trapdoors since his "Sure, square ports", the brief retired (the bible's Clydesdale row, the to-do's play line),
+1129 tests green; main took it as a fast-forward at `d2c024d` on his word ("Merge in and republish"), the hangar and the bible republished with it (Pages). Then its five idle acts on his picks ("Those all sound good. Don't need the old ones"; the swap judged good, "the change over animation looks good to me"): the old four retired, the heat sink a radiator for the breather, Changed Over playing the second battery's own, 1132 tests green; landed on main at `3d5f98f`, the hangar (Version 230) and the bible (v0.535) republished with it on his word ("Republish please"). On his notes of 12 November each port a real well the leaves hang in ("Should it be a hole?"), the drill a broadside and the hatch check a wave down the deck; the pages behind main by them, their republish his word. And `ccr-722ca9f0-yj8na3`, the formation and
 refit session. Everything it had committed to `4c8dbf1` went to main with `ccr-4d58b054-3lyj0a`,
 below; its work since landed on Ryan's word of 11 November ("I think it's safe to start sending
 our code here out to main and having me test there in context"), the branch taking main at
@@ -259,8 +264,11 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   coming down (his lean, so the refit's reads stand). Six pieces that are neither glue nor an exclusive yet (the
   Lance, the Flechette Pod, the Solar Flare Array, the Flakshot Repeater, the Plow, the Harpoon)
   get a tweak before any cut: Claude's first round and his first answers are the proposal's
-  section 4; open with him there, the Dingo's identity and the Prairie Dog's tweak (next, after
-  the Whip Scorpion), the Skua with the Pod's lock in a session of his own (11 November). A branch's shape is settled
+  section 4. The Dingo's is settled and built (11 November, the bible's Dingo row: Shock on the
+  Translocator, the harpoon the Hollow-point Harpoon, a Flak and a pin on its target's Flak for
+  the round, Pinned a status of its own with Burning's beside it), and the Prairie Dog's
+  Flakshot Repeater (Flak 2 on a cooldown of 1); the Skua with the Pod's lock is a session of
+  his own, and the Lance, the Solar Flare Array and the Plow are the three left. A branch's shape is settled
   (two directions two steps deep, the second pick the deeper step or the one skipped). Every rework in design sorts its pieces on this footing.
 - Kestrel: ten machines, eight decided, in content and fielded (the bible's Kestrel row; the hub
   `docs/briefs/kestrel_line.md`); the Puffin back in design (`kestrel_puffin.md`). The Magpie (a
@@ -1321,50 +1329,59 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. The live page is v0.524, dated 11 November (the
-  page's Version 504, published from main at `60a0e4d` on Ryan's word, "Everything else let's
-  clean up and merge into main first before proceeding": main's file whole, since the live v0.521
-  (Version 503, main's `9ebf74b`) matched that commit's file byte for byte and so needed no merge;
-  it carries everything to 11 November, new since 503 the pairs' row, The Far Bank's track row,
-  the boss themes' Open row and the design test of no extra controls). Main's file is v0.529
-  since `ccr-722ca9f0-yj8na3` landed on 11 November: the pacing row rewritten (the count and the
-  stall guard retired, two beats, the cleared field, ten to thirty minutes, his lean for more
-  spawns), menace a pack's threat rating (the tally row, the sum retired) and the meter's lines
-  with them (the clocks, stall, boss, roster, Anathema and kill rows, section 12's first battle,
-  pacing, menace and tier counts), and v0.531 since the Whip Scorpion's rework and the Clydesdale's
-  review landed the same day (its rows; the hardpoints row: every stock gun its class, a mount's depth
-  by class; the flare row), unpublished,
-  its republish on Ryan's word. `ccr-e3ddf00b-ilkwbi`'s file is v0.535 (main's v0.531, the
-  withdrawal row with Ryan's call of 11 November on a break-off for one machine, the Kite's row
-  rewritten, the Kestrel row's Needletail and Skua, the tiers row's stock rule, section 12's
-  Sweep question), unpublished too. BASE for the next merge is `60a0e4d`'s file. The live page may carry rows ahead of main's code while a branch has not landed. Before
+  `docs/design-bible.html` after every change. The live page is v0.535, dated 11 November (the
+  page's Version 507, published from main at `3d5f98f` on Ryan's word, "Republish please": main's
+  file whole, the live v0.534 matching `da18614`'s file byte for byte; new since 506 the Clydesdale's
+  cell in the acts table, its five idle acts). Version 506 (main's `da18614`, on his "Pull in main
+  and republish") was main's file whole over the live v0.533 (`d2c024d`'s): the Prairie Dog's and
+  the Dingo's rows from `ccr-4d58b054-3lyj0a`, the Flakshot Repeater, the Hollow-point Harpoon, the
+  Translocator's Shock and the two pins in the debuff table. Version 505
+  (main's `d2c024d`, on his "Merge in and republish") was main's file whole over the live v0.524
+  (Version 504, main's `60a0e4d`), which matched that commit's file; new since 504 the pacing row in beats of the tide,
+  menace a pack's threat rating and the rows that follow it, the Whip Scorpion's rework, the
+  hardpoints row with every stock gun its class, the Clydesdale's batteries row and its square
+  ports, and Changed Over in the buff table). `ccr-e3ddf00b-ilkwbi`'s file is v0.537 over that (the withdrawal row with Ryan's call of 11 November on a break-off for one machine, the Kite's row rewritten, the Kestrel row's Needletail and Skua, the tiers row's stock rule, section 12's Sweep question), unpublished. BASE for the next merge is `3d5f98f`'s file. The
+  live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
   this branch's file, THEIRS the saved live source with the tool's wrapper line and its trailing
-  newline and `</body></html>` stripped, so it matches the file byte for byte). A page that size
-  counts as read only once every line of its saved
-  copy is read, so a subagent reads it and publishes the merge. After main merges in, check the
-  tables script's run against the file's tables before keeping it: a row it reverts belongs to a
-  branch not yet landed.
+  newline and `</body></html>` stripped, so it matches the file byte for byte). The tool's read
+  counts as viewing the page, its saved copy needing no whole Read (it said so on 11 November);
+  the saved copy is 666 KB, so a subagent still does the comparing and the merge. After main
+  merges in, check the tables script's run against the file's tables before keeping it: a row it
+  reverts belongs to a branch not yet landed.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 227 (11 November, published from `ccr-4d58b054-3lyj0a` at `9fde357`, ahead of main, on Ryan's word, "Can I see this in hangar?", and again for each of his four notes on its model: the gun slid back in its mount, the vents more upright, the gun forward by half the slide, then nudged back): the Whip Scorpion's rework, the eight files that had moved since 222 (three content files, `designs.json` without its retired brief, `text.json`, `renders.json`, its model and rig) and its three new renders; nobody had published since 222, and the live copies match the branch's after. Version 222 (11 November, main's `892d804`, on Ryan's word, "Everything else let's clean
+  page's Version 230 (11 November, main's `3d5f98f`, on Ryan's word, "Republish please"): the nine
+  files the Clydesdale's idle acts moved (its model with the radiator and its heat texture, its rig
+  with the five acts and Changed Over's copies, its four renders, `renders.json`, and `designs.json`
+  and `text.json` for their stamp), the page unchanged, every live copy matching 229's before it was
+  replaced, and the live copies match main's after. Version 229 (11 November, main's `da18614`, on
+  Ryan's word, "Pull in main and republish"): the page with the Models tab's mode note moved into its buttons' tooltips (his ask
+  that evening: the paragraph under the model window kept the controls out of reach) and the six
+  files the Dingo's pieces moved (`ccr-4d58b054-3lyj0a`: three content files, the Dingo's rig,
+  `designs.json` and `text.json`), every live copy matching 228's before it was replaced, and the
+  live copies match main's after. Version 228 (11 November, main's `d2c024d`, on Ryan's word, "Merge in and republish"):
+  the 69 files that had moved or arrived since 227 and one retired render removed (the Nemesis's
+  old roar), the page unchanged: the vocabulary (the glossary's Menace, Rupture meter and Seal
+  lines, redrafted for menace as a pack's threat rating and the stall guard's end), `text.json`
+  and `designs.json` (the refit brief, the Clydesdale's brief retired), the seven models rebuilt
+  with their stock guns as classes (their model and rig files, the Polar Bear's fits with depths)
+  and their renders with the old as Before, `renders.json`, `pins.json` (the Clydesdale's eight),
+  the page's motion.js (a fit's depth, no hand-built flares), and the Clydesdale's batteries and
+  square ports (two content files, its model, its renders with a second-battery view). Nobody had
+  published since 227, every live copy matching `9fde357`'s build but for its stamp, and the
+  live copies match main's after; `edits` and `text` empty, `designs` the two folded ideas.
+  Version 227 (11 November, published from `ccr-4d58b054-3lyj0a` at `9fde357`, ahead of main, on Ryan's word, "Can I see this in hangar?", and again for each of his four notes on its model: the gun slid back in its mount, the vents more upright, the gun forward by half the slide, then nudged back): the Whip Scorpion's rework, the eight files that had moved since 222 (three content files, `designs.json` without its retired brief, `text.json`, `renders.json`, its model and rig) and its three new renders; nobody had published since 222, and the live copies match the branch's after. Version 222 (11 November, main's `892d804`, on Ryan's word, "Everything else let's clean
   up and merge into main first before proceeding"): `designs.json` with the Whip Scorpion's brief
   after the Buzzard's settlement and `text.json` for its stamp, over Version 221 of minutes before
   (main's `60a0e4d`: the two files that had moved since 220, `designs.json` with the Buzzard's new
   brief, the Whip Scorpion's role map and the briefs' table, `text.json` its stamp alone; nobody
   had published since 220, the live copies matching its build but for the stamp); the page
   unchanged, and the live copies match main's after. `edits` and `text` empty, `designs` the two
-  folded ideas. Behind main since `ccr-722ca9f0-yj8na3` landed the same day, its republish on
-  Ryan's word: the vocabulary (the glossary's Menace, Rupture meter and Seal lines, drafts
-  redrafted for menace as a pack's threat rating and the stall guard's end), with `text.json`
-  for them and `designs.json` for the refit brief; and since the Clydesdale's review landed, the
-  seven models rebuilt with their stock guns as classes (their glTFs and rig sidecars, the Polar
-  Bear's fits with depths), their renders and `renders.json`, the page's hangar_motion.js (a fit's
-  depth, no hand-built flares), `designs.json` for the Clydesdale's brief, held for the Clydesdale's
-  model so the page goes up once. Version 220 (11 November, main's `9ebf74b`,
+  folded ideas. Version 220 (11 November, main's `9ebf74b`,
   on Ryan's word, "republish the hangar and the bible") was the fourteen files that had moved since 219 (the five content files with the refit's
   model, the formation pass, the Polar Bear's seal, the Buzzard's regen and the Nemesis's rage;
   `designs.json` and `text.json`; `foes.json`; six rig sidecars, their stock pins following the

@@ -634,7 +634,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A drum-fed scattergun on a pintle, its shells bursting into a rank of foes. Fire, and the car is already moving. Ryan, 19 October: \"a low damage, spread, maybe rapid, weapon with a new debuff: flak\".",
-    "niche": "The Prairie Dog's locked gun and the maker's first Flak piece: a flat low blow that sprays the target's rank and lays Flak on each foe hit, so the team's many small blows land harder and the car takes less from the foes it has flakked (its passive). The softener's round: spray, then the four cash."
+    "niche": "The Prairie Dog's locked gun and the maker's first Flak piece: a flat low blow that sprays the target's rank and lays Flak on each foe hit, so the team's many small blows land harder and the car takes less from the foes it has flakked (its passive). The softener's round: spray, then the four cash. Ryan, 11 November: \"turn the Flak repeater into a Flak weapon and not a bad spread weapon\"; \"1 damage, Flak 2, cooldown 1. Heat not sure. But that prevents it from being the chase every round and stacking on itself.\" Its Spread kept as it stood, his to cut."
    },
    "face": {
     "kind": "attack",
@@ -645,8 +645,9 @@
      "flak"
     ],
     "cleave": 1,
-    "flak": 1,
-    "heat": 0
+    "flak": 2,
+    "heat": 0,
+    "cooldown": 1
    },
    "passive": null,
    "tags": [
@@ -654,30 +655,31 @@
    ]
   },
   {
-   "id": "megataser_harpoon",
-   "name": "Megataser Harpoon",
+   "id": "hollow_point_harpoon",
+   "name": "Hollow-point Harpoon",
    "maker": "wainwright_sutler",
    "shape": "barrel",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "A barbed dart on a cable and a capacitor the size of the car. Whatever it pins takes the next blow double.",
-    "niche": "The Dingo's locked support: a cheap Shock on the foe an ally is about to eat, so the ally's blow lands double."
+    "fantasy": "A barbed dart on a cable that opens inside whatever it pins and keeps the wound open. Ryan, 11 November: kept \"since it's such a stupid and neat silhouette\", and named by him (the Megataser Harpoon until then, its Shock gone to the Translocator).",
+    "niche": "The Dingo's Flak piece (Ryan, 11 November: \"the obvious hole I see in the W&S lineup ... is another Flak orbit. The harpoon could be that synergy\"; \"Applies 1 flak and the target's flak does not decay this round\", the pin \"the better shape\"): it lays a Flak and holds every stack on its target through the round's end, so the team's Flak builds on one foe, a boss most of all. Reading Flak twice is \"a better upgrade for something\"."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
     "power": 2,
     "keywords": [
-     "shock"
+     "flak"
     ],
-    "heat": 2
+    "flak": 1,
+    "heat": 2,
+    "holds": "flakked"
    },
    "passive": null,
    "tags": [
-    "ballistic",
-    "arc"
+    "ballistic"
    ]
   },
   {
@@ -690,14 +692,15 @@
    "design": {
     "stage": "draft",
     "fantasy": "Not a winch (Ryan, 19 October: a cable cannot swap two things, and the maker cannot go that low-tech) but a teleporter in the maker's register, \"guys this totally isn't just a teleporter\". The name is his working one.",
-    "niche": "The Dingo's second locked piece (Ryan's go, 19 October; the bible's Dingo row): pick two foes, or a foe and an empty slot, and they trade places; no damage. It exposes a caster to Direct fire, sets the acting order and bunches foes for every area piece, a cross-maker combo in one locked piece; a massive foe fills its column and stays, so bosses are out by rule; a swap with an empty front slot is a pull."
+    "niche": "The Dingo's second locked piece (Ryan's go, 19 October; the bible's Dingo row): pick two foes, or a foe and an empty slot, and they trade places; no damage. It exposes a caster to Direct fire, sets the acting order and bunches foes for every area piece, a cross-maker combo in one locked piece; a massive foe fills its column and stays, so bosses are out by rule; a swap with an empty front slot is a pull. Shock since 11 November (Ryan: \"I like putting Shock on the translocator since that makes it not dead versus only frontliners and versus massives and bosses that can't be swapped\"): it takes two targets always, both come out Shocked, and a massive foe named stays where it stands (\"Translocator should still target two, always. Confusing UX otherwise\")."
    },
    "face": {
     "kind": "attack",
     "reach": "indirect",
     "power": 0,
     "keywords": [
-     "swap"
+     "swap",
+     "shock"
     ],
     "heat": 1
    },
@@ -1443,6 +1446,30 @@
      "rapid"
     ],
     "spins": true
+   },
+   "passive": null,
+   "tags": []
+  },
+  {
+   "id": "changeover",
+   "name": "Changeover",
+   "maker": "wainwright_sutler",
+   "shape": "none",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "The Clydesdale's battery lever. Ryan, 11 November: \"Each die has the same locked component on it, that flips its die to the other on Rapid, cooldown 1, so it can only flip once a turn\": four of its hardpoints stand on the deck and four ride below, and the lever swaps them, the four up pivoting upright and sinking as the four below rise.",
+    "niche": "The Clydesdale's locked piece: no damage, Rapid with a cooldown of 1. Spent on itself it turns the die to its other battery, which stays up from fight to fight, and Rapid's free roll lands on the battery it raised. One entry live on both batteries, so one cooldown and once a round (his \"the same piece with one cooldown\")."
+   },
+   "face": {
+    "kind": "buff",
+    "targets": "self",
+    "keywords": [
+     "rapid"
+    ],
+    "cooldown": 1,
+    "turns_die": true
    },
    "passive": null,
    "tags": []

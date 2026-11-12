@@ -154,7 +154,7 @@ kit beside it. Claude's first cut, moved by his words where they stand above:
 | **Glue** | the Honey Badger's Chainsaw Claw and Bullion Fragmenter (his word); the Cassowary's Spin-Up (his word); the Kite's Pinion Driver; the Nemesis's Knuckle of Fury; the Ammit's Soulcutter Talons; the Buzzard's Afterburner Cannon; the Funnel-web's Web Bomb; the Storm Petrel's St. Elmo's Regenerator; the Dingo's Combat Translocator; the Lammergeier's Lorentz Contractor and Syrinx Drone | stay locked, and ride their machine's level (section 5) |
 | **Kept locked, a tweak before any cut** | the Stingray's Photosphere Lance; the Skua's Flechette Pod; the Baboon's Solar Flare Array; the Prairie Dog's Flakshot Repeater; the Wild Boar's Breaching Plow; the Dingo's Megataser Harpoon | each a round in chat toward something nobody else has (section 4); a piece that finds none becomes an ordinary weapon |
 | **Their own sessions'** | the Polar Bear's, the Puffin's, the Whip Scorpion's, the Swallowtail's, the Musk Ox's, the Needletail's and the Giant Petrel's | sorted when each session designs them, on this footing |
-| **None, as it stands** | the Clydesdale (a sandbox, its point); the Cottonmouth (hard to make one for, not counted out) | nothing owed |
+| **None, as it stands** | the Cottonmouth (hard to make one for, not counted out); the Clydesdale held none until its batteries (11 November: its Changeover, glue for its identity, the bible's Clydesdale row) | nothing owed |
 
 ## 4. The six that get a tweak before any cut
 
@@ -198,6 +198,11 @@ hardpoint and its sculpt that mount's stock part, a pin more on the model.
 - **The Plow**: no other weapon braces, so not generic; glue by one line, a kill by the Plow
   spilling its whole number. Its one branch: the spill reaching the foes beside the one behind,
   or a tweak to the brace.
+- **The Dingo, settled 11 November** (the bible's Dingo row; built): the harpoon kept ("such a stupid
+  and neat silhouette") as the Hollow-point Harpoon, a Flak and its target's Flak held through the
+  round, the maker's second Flak orbit; its Shock on the Translocator, two targets always, both Shocked,
+  a massive foe named staying put. Reading Flak twice is "a better upgrade for something". The round below
+  is how it got there.
 - **The Harpoon**: the weakest (other pieces lay Shock, the Translocator took the winch). Offered:
   the foe stays Shocked through two strikes (against "never stacks"); or the foe that trades
   places with a harpooned one is Shocked too. He agrees it is weak; the Dingo's question above

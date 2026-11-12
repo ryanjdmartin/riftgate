@@ -21,6 +21,7 @@ extends Control
 ## cylinder above them), moves and foe (a foe's moves), flavour, sprite_id (a chassis or foe
 ## id), paint and unit (the machine, so the model can wear its fitted loadout).
 
+const STOWED_ALPHA := 0.4   # a folded die's stowed battery in the die's rows: there, and out of the roll
 const WIDTH := 640.0
 const TOP := 150.0
 const BOTTOM := 40.0        # air under the panel at the screen's foot
@@ -233,8 +234,12 @@ func open(entry: Dictionary) -> void:
 	var faces: Array = entry.get("faces", [])
 	var rules: Array = entry.get("face_rules", [])
 	var current := int(entry.get("current", -1))
+	var stowed: Array = entry.get("stowed", [])
 	for i in range(faces.size()):
-		_faces.add_child(_face_row(faces[i], i, i == current, rules[i] if i < rules.size() else [], db))
+		var row := _face_row(faces[i], i, i == current, rules[i] if i < rules.size() else [], db)
+		if stowed.has(i):
+			row.modulate.a = STOWED_ALPHA   # the battery down (the Clydesdale's): on the die, out of the roll
+		_faces.add_child(row)
 	_faces.visible = not faces.is_empty()
 	# A die that steps prints its order (the Cassowary's): its chambers round a cylinder, every gap
 	# a faint arrow, the way the die turns.

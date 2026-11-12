@@ -435,7 +435,7 @@ func _blind_pick(sk: Skirmish, i: int) -> Dictionary:
 				if n.rank < t.rank or (n.rank == t.rank and n.column < t.column):
 					t = n
 			if sk.needs_second(ms):
-				var seconds: Array = sk.swap_targets(t)
+				var seconds: Array = sk.swap_targets(t, sk.swap_carries(ms))
 				return {} if seconds.is_empty() else {"target": t, "second": seconds[0]}
 			return {"target": t}
 		_:
@@ -468,8 +468,9 @@ func options_for(sk: Skirmish, i: int) -> Array:
 				# A Swap takes the second target worth the most beside this first.
 				var best_second = null
 				var best := -INF
-				for second in sk.swap_targets(t):
-					var v := swap_score(sk, t, second) + bunching_score(sk, ms, t, second)
+				for second in sk.swap_targets(t, sk.swap_carries(ms)):
+					var stays: bool = t.is_massive() or (second is Foe and (second as Foe).is_massive())   # nothing moves: the rider alone
+					var v := 0.0 if stays else swap_score(sk, t, second) + bunching_score(sk, ms, t, second)
 					if v > best:
 						best = v
 						best_second = second
@@ -1152,13 +1153,38 @@ static func _stack_damage_gain(status_id: String, mean: float) -> float:
 ## strikes, blanks and everything else at zero: a plain read with no scoring under it, so a
 ## keyword that pays out on later attacks can be valued without asking the scorer again.
 static func _raw_attack_mean(ms: Skirmish.MechState) -> float:
-	if ms.die.faces.is_empty():
+	return _raw_mean_of(_rolled_faces(ms))
+
+
+## The plain mean blow of some entries (an attack's power times its strikes, the rest nothing).
+static func _raw_mean_of(faces: Array) -> float:
+	if faces.is_empty():
 		return 0.0
 	var total := 0.0
-	for f in ms.die.faces:
+	for f in faces:
 		if f.is_attack():
 			total += float(f.power * maxi(1, f.strikes))
-	return total / float(ms.die.faces.size())
+	return total / float(faces.size())
+
+
+## The entries a die rolls among now: a folded die's live ones (the Clydesdale's battery up and
+## its fixed pieces, Effects.live_entries), else every entry.
+static func _rolled_faces(ms: Skirmish.MechState) -> Array:
+	var live := Effects.live_entries(ms.unit, ms.die)
+	if live.is_empty():
+		return ms.die.faces
+	var out: Array = []
+	for i in live:
+		out.append(ms.die.faces[int(i)])
+	return out
+
+
+## The entries a folded die's Changeover raises: the battery down, its roll's landing.
+static func _stowed_faces(ms: Skirmish.MechState) -> Array:
+	var out: Array = []
+	for i in Effects.stowed_entries(ms.unit, ms.die):
+		out.append(ms.die.faces[int(i)])
+	return out
 
 
 ## The heat one use of an attack entry adds, through the pipeline; negative for one that
@@ -1345,6 +1371,8 @@ func second_action(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> bool:
 static func rapid_worth(ms: Skirmish.MechState, f: Face, quick: bool) -> float:
 	if f == null or quick or not f.has(Face.Keyword.RAPID) or Effects.steps_die(ms.unit):
 		return 0.0
+	if f.turns_die and Effects.folds_die(ms.unit) > 0:
+		return ROLL_AGAIN_WEIGHT * _raw_mean_of(_stowed_faces(ms))   # the Changeover's roll lands on the battery it raises
 	return ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)
 
 
@@ -1894,17 +1922,18 @@ static func _team_raw_attack_mean(sk: Skirmish) -> float:
 
 ## The mean of a machine's attack entries, each spent as well as it can be, over its die.
 func _attack_mean(sk: Skirmish, who: Skirmish.MechState) -> float:
-	if who.die.faces.is_empty():
+	var faces := _rolled_faces(who)
+	if faces.is_empty():
 		return 0.0
 	var total := 0.0
-	for f in who.die.faces:
+	for f in faces:
 		if not f.is_attack():
 			continue
 		var best := 0.0
 		for t in sk.targets_for_face(who, f):
 			best = maxf(best, attack_score(sk, who, f, t))
 		total += best
-	return total / float(who.die.faces.size())
+	return total / float(faces.size())
 
 
 ## What `apps` statuses landing on a foe move toward a Paradox knock-out: the share of the
@@ -2091,12 +2120,14 @@ func face_value(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
 func die_mean(sk: Skirmish, ms: Skirmish.MechState) -> float:
 	if ms.die.faces.is_empty():
 		return 0.0
+	var live := Effects.live_entries(ms.unit, ms.die)   # a folded die's battery up and its fixed pieces
+	var rolled: Array = live if not live.is_empty() else range(ms.die.faces.size())
 	var total := 0.0
-	for i in range(ms.die.faces.size()):
-		if Effects.is_entry_disabled(ms.unit, i):
+	for i in rolled:
+		if Effects.is_entry_disabled(ms.unit, int(i)):
 			continue
-		total += face_value(sk, ms, ms.die.faces[i])
-	return total / float(ms.die.faces.size())
+		total += face_value(sk, ms, ms.die.faces[int(i)])
+	return total / float(rolled.size())
 
 
 ## What a reroll of this die is worth, the bar a greedy reroll clears: the die's mean, or for

@@ -110,7 +110,7 @@
    "shield_regen": 2,
    "movespeed": 4,
    "heat_max": 12,
-   "hardpoints": 9,
+   "hardpoints": 8,
    "module_slots": 3,
    "armour": 1,
    "cooling": 1,
@@ -118,27 +118,28 @@
     "walker"
    ],
    "size": "assault",
-   "fixed": [],
+   "fixed": [
+    "changeover"
+   ],
    "loadout": [
     "maxigun",
     "twin_autoguns",
     "enfilade_beam",
+    "shoring_jack",
     "ankle_mortar",
     "howitzer",
     "airburst_shell",
-    "shoring_jack",
-    "incendiary_shells",
-    "twin_autoguns"
+    "incendiary_shells"
    ],
    "passive": {
-    "id": "battery_director",
-    "name": "Battery Director",
-    "description": "Rerolling only the Clydesdale's die is free once a round, on top of the team's rerolls.",
+    "id": "disappearing_carriages",
+    "name": "Disappearing Carriages",
+    "description": "Its hardpoints ride two batteries of four, one up at a time: its die rolls the battery up and the Changeover. The battery up stays up from fight to fight; each battle opens on the first.",
     "effects": [
      {
       "trigger": "static",
-      "effect": "free_reroll",
-      "value": 1
+      "effect": "fold_die",
+      "value": 4
      }
     ]
    },
@@ -437,7 +438,7 @@
    ],
    "size": "light",
    "fixed": [
-    "megataser_harpoon",
+    "hollow_point_harpoon",
     "combat_translocator"
    ],
    "loadout": [

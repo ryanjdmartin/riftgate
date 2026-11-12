@@ -535,6 +535,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		"face_rules": face_rules,
 		"current": -1,
 		"steps": Effects.steps_die(u),   # a die that steps (the Cassowary's) shows its chambers as a cylinder
+		"stowed": Effects.stowed_entries(u, u.die),   # a folded die's battery down (the Clydesdale's): its rows dimmed
 		"flavour": str(c.get("flavour", "")),
 		"sprite_id": u.chassis_id,
 		"paint": u.paint,
@@ -1524,6 +1525,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 			errs.append("%s: gates belong to an attack, spent on a foe" % where)
 	# A consumer (the Backdraft Charge's, 22 October): one blow on one foe, eating every stack of
 	# a status the team puts on foes, a point more a stack (per_consumed).
+	# A pin (the Hollow-point Harpoon's, 11 November): a status that halves, held on the target
+	# through the round's end.
+	if fd.has("holds") and (kind != "attack" or not Effects.HOLDERS.has(str(fd["holds"]))):
+		errs.append("%s: holds names a status a pin can hold (%s), on an attack" % [where, ", ".join(Effects.HOLDERS.keys())])
 	if fd.has("consumes"):
 		if kind != "attack" or not Effects.FOE_STATUSES.has(str(fd["consumes"])):
 			errs.append("%s: consumes names a status the team puts on a foe (%s), on an attack" % [where, ", ".join(Effects.FOE_STATUSES)])
@@ -1630,6 +1635,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	# The spin (the Spin-Up's, 19 October): Rapid's free reroll as a true roll over every entry.
 	if fd.has("spins") and (not (fd["spins"] is bool) or not rapid):
 		errs.append("%s: spins (true) makes Rapid's free reroll a true spin, so it rides with Rapid" % where)
+	# The Changeover (the Clydesdale's, 11 November): turning a folded die to its other battery is a
+	# Rapid buff on itself, its free roll landing on the battery it raised.
+	if fd.has("turns_die") and (not (fd["turns_die"] is bool) or kind != "buff" or not rapid or str(fd.get("targets", "")) != "self"):
+		errs.append("%s: turns_die (true) is a Rapid buff on itself that turns a folded die" % where)
 	# The Petrels' locked pieces (Ryan's go, 21 October; built 30 October): the rider on its own
 	# spender (the St. Elmo's Regenerator), an ally's action bought with the team's rerolls (the
 	# Immelmann Booster), a roll on the machine a buff lands on (the Reheat Uplink), and the rerolls
@@ -1651,8 +1660,9 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: rolls_target (true) is a buff's: the die of the machine it lands on rolls again" % where)
 	if fd.has("kill_rerolls") and (kind != "attack" or int(fd["kill_rerolls"]) <= 0):
 		errs.append("%s: kill_rerolls is an attack's: the rerolls a kill brings the team, a positive number" % where)
-	if kind == "buff":
-		# A buff grants one of the machines' statuses: it must exist and be theirs. A planned
+	if kind == "buff" and not bool(fd.get("turns_die", false)):
+		# A buff grants one of the machines' statuses (the Changeover grants none: its rule is the
+		# turn of a folded die): it must exist and be theirs. A planned
 		# component may grant a machine status the vocabulary names but the engine lacks (the
 		# Spin-Up's Spun Up, 19 October), as it may carry a planned keyword: spent, it grants
 		# nothing until the engine has the status.
@@ -2183,6 +2193,23 @@ func _validate_chassis(errs: Array[String]) -> void:
 				errs.append("%s: %s is fixed and cannot also be in the loadout" % [where, cid])
 		if loadout.size() > hp:
 			errs.append("%s: loadout fits %d components into %d hardpoints" % [where, loadout.size(), hp])
+		# A folded die (the Clydesdale's batteries, 11 November): two batteries of the passive's
+		# number fill its hardpoints, and a fixed piece turns it, or it could never turn.
+		var passive_c = c.get("passive", null)
+		var fold := 0
+		if passive_c is Dictionary:
+			for eff in passive_c.get("effects", []):
+				if eff is Dictionary and str(eff.get("effect", "")) == "fold_die":
+					fold = int(eff.get("value", 0))
+		if fold > 0:
+			if hp != 2 * fold:
+				errs.append("%s: a die folded into batteries of %d takes %d hardpoints, not %d" % [where, fold, 2 * fold, hp])
+			var turns := false
+			for cid in fixed:
+				if bool(components.get(cid, {}).get("face", {}).get("turns_die", false)):
+					turns = true
+			if not turns:
+				errs.append("%s: a folded die needs a fixed piece that turns it (turns_die)" % where)
 		var ways := 0
 		for t in c.get("traits", []):
 			if not vocabulary.has(str(t)) or vocabulary[str(t)].get("category") != "trait":

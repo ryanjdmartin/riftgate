@@ -124,6 +124,7 @@ var shield_cost: int = 0      # a cost (Ryan, 26 October): the shield a spend ta
 var short: bool = false       # shown only: the shield cannot pay the entry's shield cost now (Skirmish.shown_face), struck through on the die like a dry gun
 var volatile: int = 0         # a cost (Ryan, 26 October, a keyword with a chip until then): the hull a spend bites its owner, past shield and armour, before the component acts; it may wreck it (a numbered keyword since the stock pass's engine, 22 October; a constant of 10 before)
 var gates: Dictionary = {}    # an attack: keyword name -> the condition it lands under, read against each foe at the spend before its own riders (the Suppression Battery's Suppress on a foe carrying Flak; the stock pass's engine, 22 October)
+var holds: String = ""        # an attack: the status its target keeps through this round's end, its halving skipped (the Hollow-point Harpoon's pin on Flak)
 var consumes: String = ""     # an attack: the status it consumes on its target, every stack, a point more a stack before the multiplies (the Backdraft Charge's Burning, 22 October)...
 var per_consumed: int = 1     # ...the damage a stack consumed adds
 var self_burn: int = 0        # an attack: spending it sets its own machine Burning, this many stacks (the Stoker's slow fuel by decision, the stock pass's landing, 22 October)
@@ -150,6 +151,7 @@ var braces: int = 0           # any entry: spending it Braces its owner, this ma
 var rolls_again_on: String = ""   # any entry: spending it spends a stack of this status, if its owner has one, and the die rolls again (the Nemesis's fists on rage, 12 October)
 var cooldown: int = -1        # any entry: the rounds it goes dark once spent, this one included (Ryan, 14 October), printed on it; -1 or 0, none (Rapid carries none of its own, 2 November)
 var spins: bool = false       # a Rapid entry whose free reroll is a true spin over every entry, itself included (the Cassowary's Spin-Up: Ryan's exception to the reroll rule, 19 October)
+var turns_die: bool = false   # a Rapid buff on itself that turns a folded die to its other battery, its free roll landing there (the Clydesdale's Changeover, Ryan, 11 November)
 ## Reaches every foe in the fight (an attack: the Whip Scorpion's Heliographic Siphon, a
 ## lure-all, 20 October), or the whole team or every machine but its own (a shield or a buff: the
 ## Swallowtail's Mooring Screens the latter): its targeting mode, Every Foe, Every Ally or Every
@@ -352,6 +354,7 @@ static func from_dict(d: Dictionary) -> Face:
 		var g = d.get("gates", {})
 		f.gates = (g as Dictionary).duplicate(true) if g is Dictionary else {}
 		f.consumes = str(d.get("consumes", ""))
+		f.holds = str(d.get("holds", ""))
 		f.per_consumed = maxi(1, int(d.get("per_consumed", 1)))
 		f.self_burn = maxi(0, int(d.get("self_burn", 0)))
 		f.fires_hopper = maxi(0, int(d.get("fires_hopper", 0)))
@@ -362,6 +365,7 @@ static func from_dict(d: Dictionary) -> Face:
 	f.rolls_again_on = str(d.get("rolls_again_on", ""))
 	f.cooldown = maxi(0, int(d["cooldown"])) if d.has("cooldown") else -1
 	f.spins = bool(d.get("spins", false))
+	f.turns_die = bool(d.get("turns_die", false)) and f.kind == Kind.BUFF
 	f.heat_per_blow = maxi(0, int(d.get("heat_per_blow", 0)))
 	f.shields = maxi(0, int(d.get("shields", 0))) if f.kind == Kind.VENT else 0
 	f.resets_on_kill = bool(d.get("resets_on_kill", false)) and f.kind == Kind.ATTACK
@@ -446,6 +450,8 @@ func to_dict() -> Dictionary:
 		d["shield_cost"] = shield_cost
 	if not gates.is_empty():
 		d["gates"] = gates.duplicate(true)
+	if not holds.is_empty():
+		d["holds"] = holds
 	if not consumes.is_empty():
 		d["consumes"] = consumes
 		d["per_consumed"] = per_consumed
@@ -464,6 +470,8 @@ func to_dict() -> Dictionary:
 		d["cooldown"] = cooldown
 	if spins:
 		d["spins"] = true
+	if turns_die:
+		d["turns_die"] = true
 	if heat_per_blow > 0:
 		d["heat_per_blow"] = heat_per_blow
 	if shields > 0:
@@ -575,8 +583,8 @@ func cooldown_rounds() -> int:
 ## prints with its shells (Ryan, 2 November), and a shield's cooling the number under its steam
 ## (3 November), so none of them is.
 func has_unique_rule() -> bool:
-	return vents_all or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or self_burn > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() or not printed.is_empty() \
-		or spins or heat_per_blow > 0 or resets_on_kill or gathers_mines or detonates \
+	return vents_all or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or self_burn > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() or not printed.is_empty() \
+		or spins or turns_die or heat_per_blow > 0 or resets_on_kill or gathers_mines or detonates \
 		or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine \
 		or regen_shield > 0 or action_price > 0 or rolls_target or kill_rerolls > 0
@@ -702,6 +710,7 @@ func duplicate_face() -> Face:
 	f.short = short
 	f.gates = gates.duplicate(true)
 	f.consumes = consumes
+	f.holds = holds
 	f.per_consumed = per_consumed
 	f.self_burn = self_burn
 	f.fills_hopper = fills_hopper
@@ -711,6 +720,7 @@ func duplicate_face() -> Face:
 	f.rolls_again_on = rolls_again_on
 	f.cooldown = cooldown
 	f.spins = spins
+	f.turns_die = turns_die
 	f.heat_per_blow = heat_per_blow
 	f.shields = shields
 	f.resets_on_kill = resets_on_kill
@@ -840,6 +850,8 @@ func rule_phrases() -> Array[String]:
 			out.append("×%d on a foe at half its HP or less" % finisher)
 		if not consumes.is_empty():
 			out.append("consumes %s, +%d a stack" % [str(Effects.STATUS.get(consumes, {}).get("name", consumes)), per_consumed])
+		if not holds.is_empty():
+			out.append("its target's %s does not decay this round" % str(Effects.STATUS.get(holds, {}).get("name", holds)))
 		if self_burn > 0:
 			out.append("Burning %d on itself" % self_burn)
 		if devours > 0:
@@ -903,7 +915,7 @@ func number_text() -> String:
 	if kind == Kind.BLANK or is_debuff():
 		return ""
 	if kind == Kind.BUFF:
-		return "×%d" % buff_stacks
+		return "" if buff_status.is_empty() else "×%d" % buff_stacks   # a buff that grants nothing (the Changeover) has no stacks to say
 	if power <= 0 and reloads_ammo > 0:
 		return "+%d" % reloads_ammo   # a reload (the Musk Ox's quick reload): the ammo it adds
 	if split > 1:
@@ -924,6 +936,8 @@ func describe() -> String:
 		Kind.SHIELD, Kind.VENT, Kind.BUFF:
 			if kind == Kind.BUFF and act_again:
 				s = "an ally whose die is spent acts again"
+			elif kind == Kind.BUFF and turns_die:
+				s = "turns its die to its other battery"   # the Changeover's: a buff that grants nothing, its turn its whole effect
 			elif kind == Kind.BUFF:
 				var status_name := str(Effects.STATUS.get(buff_status, {}).get("name", buff_status))
 				s = "%s ×%d" % [status_name, buff_stacks]
@@ -989,6 +1003,8 @@ func describe() -> String:
 				s += " ×%d on a foe at half its HP or less" % finisher
 			if not consumes.is_empty():
 				s += " consumes %s, +%d a stack" % [str(Effects.STATUS.get(consumes, {}).get("name", consumes)), per_consumed]
+			if not holds.is_empty():
+				s += " its target's %s does not decay this round" % str(Effects.STATUS.get(holds, {}).get("name", holds))
 			if self_burn > 0:
 				s += " Burning %d on itself" % self_burn   # the Stoker's: its own machine set burning as it fires
 			if devours > 0:

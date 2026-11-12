@@ -66,7 +66,7 @@ BENCHES = OrderedDict([
     ('puffin', ('puffin', 3, ['kite', 'buzzard', 'puffin'])),              # a light escort's gun slot (the Laser Carbine) beside two hot kits, in Kestrel's team: equipment reads here
     ('buzzard', ('buzzard', 2, ['kite', 'buzzard', 'puffin'])),            # a hot flyer's gun slot (the Arc Fault Cannon): a gun's heat is priced where heat bites
     ('nemesis', ('nemesis', 0, ['nemesis', 'ammit', 'puffin'])),                  # an Arsenal bruiser's slot (the Plasma Arquebus) beside the Ammit: the hull-damage loops read here
-    ('clydesdale', ('clydesdale', 4, ['clydesdale', 'prairie_dog', 'dingo'])),     # the warm nine-piece die's Howitzer slot: the Indirect bench (the Rangefinder, the shells) and the heat knee's warm check (28 October)
+    ('clydesdale', ('clydesdale', 5, ['clydesdale', 'prairie_dog', 'dingo'])),     # the Howitzer's slot: the Indirect bench (the Rangefinder, the shells) and the heat knee's warm check (28 October); on the second battery of the folded die since 11 November, so it rolls after a Changeover, where the 28 October reads had it on the nine-piece die
 ])
 # The vanilla ladder (Ryan, 28 October: vanillas exist in the pool, "sometimes you just need a
 # big stick"; the baseline is heatless, heat priced from it): a flat

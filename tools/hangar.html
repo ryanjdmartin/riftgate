@@ -2711,6 +2711,9 @@ try {
 if (location.hash.startsWith("#md-")) MOTION.id = location.hash.slice(4);   // a link to one machine, or #md-classes
 function rememberMotion() { try { localStorage.setItem("hangar.motion", JSON.stringify({id: MOTION.id, shape: MOTION.shape, maker: MOTION.maker})); } catch (e) {} }
 const ensureShapes = () => ensure("shapes", "hangar/shapes.json", j => { state.shapes = j; });
+// What each mode shows, as its button's tooltip: a paragraph of it under the stage pushed the
+// controls out of reach on a narrow screen, so they could not be worked with the machine in view
+// (Ryan, 11 November).
 const MODE_HELP = {
   acts: "Every act in turn, back to back, as RIFTGATE_ACTS_DEBUG=1 plays them. Tap one to loop it; drag the bar to hold a moment. The blows layer over whatever is showing, playing or paused. A hovercraft balances on its cushion all the while, tipping every way as the currents and the gusts take it, as the map and the skirmish draw it.",
   walk: "Driven straight ahead at its own full speed on the map, as RIFTGATE_MOVE_DEBUG=1 does: the stride at the pace the map gives its move (a 2 or a 3 plods, a 4 or a 5 runs), the wheels, the treads and the held poses.",
@@ -2822,8 +2825,8 @@ function paintMotion(force) {
   const entry = liveEntries("chassis.entries").map(x => x.entry).find(e => e.id === MOTION.id) || {};
   const mk = ctx().makers.get(entry.maker || "") || {};
   panel.append(el("div", {}, el("h2", {}, entry.name || MOTION.id), el("p", {class: "plate2"}, [mk.name, ...(entry.traits || []).map(vocabName)].filter(Boolean).join(" · "))));
-  const mode = (id, label) => el("button", {class: "btn", id: "mo-mode-" + id, "aria-pressed": String(st.mode === id), onclick: () => { st.setMode(id); }}, label);
-  panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Show"), el("div", {class: "seg"}, mode("acts", "Acts"), mode("walk", "Walk"), mode("route", "Route")), el("p", {class: "mhelp"}, MODE_HELP[st.mode])));
+  const mode = (id, label) => el("button", {class: "btn", id: "mo-mode-" + id, "aria-pressed": String(st.mode === id), title: MODE_HELP[id], onclick: () => { st.setMode(id); }}, label);
+  panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Show"), el("div", {class: "seg"}, mode("acts", "Acts"), mode("walk", "Walk"), mode("route", "Route"))));
   const speed = el("select", {id: "mo-speed", "aria-label": "Playback speed"});
   for (const k of [0.25, 0.5, 1]) { const o = el("option", {value: String(k)}, k === 1 ? "Full speed" : k + "×"); if (k === st.speedK) o.selected = true; speed.append(o); }
   speed.addEventListener("change", () => { st.speedK = Number(speed.value); st.emit(); });

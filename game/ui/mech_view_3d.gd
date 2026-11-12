@@ -331,16 +331,32 @@ static func mount_plan(die: Die, stock: Array, db: ContentDB) -> Array:
 ## the model was built shows its own class shapes, never the parts of the old one (Ryan's go,
 ## 28 October), and a model that numbers a bare mount among its guns still mounts the die in
 ## the die's order.
-static func pins_plan(die: Die, pins: Array, db: ContentDB) -> Array:
+static func pins_plan(die: Die, pins: Array, db: ContentDB, fold: int = 0) -> Array:
 	var out: Array = []
 	if die == null:
 		return out
 	var fitted: Array = []
-	for f in die.faces:
-		if f.fixed or f.component.is_empty():
-			continue
-		if _shaped(f.component, db):
-			fitted.append(f.component)
+	if fold > 0:
+		# A folded die (the Clydesdale's batteries): each battery's shaped components take its own
+		# mounts in order, hp_1 on for the first and the next `fold` for the second, so a piece that
+		# shows nowhere leaves its own battery's last mount bare, never another battery's gun on it.
+		var batteries: Array = [[], []]
+		var k := 0
+		for f in die.faces:
+			if f.fixed:
+				continue
+			if k < 2 * fold and not f.component.is_empty() and _shaped(f.component, db):
+				(batteries[0 if k < fold else 1] as Array).append(f.component)
+			k += 1
+		for battery in batteries:
+			for j in range(fold):
+				fitted.append(str(battery[j]) if j < (battery as Array).size() else "")
+	else:
+		for f in die.faces:
+			if f.fixed or f.component.is_empty():
+				continue
+			if _shaped(f.component, db):
+				fitted.append(f.component)
 	for k in range(maxi(fitted.size(), pins.size())):
 		var want := str(fitted[k]) if k < fitted.size() else ""
 		var have := str(pins[k]) if k < pins.size() else ""
@@ -403,7 +419,7 @@ static func plan_for(u: Unit, db: ContentDB) -> Array:
 		return []
 	var pins = pin_record(u.chassis_id)
 	if pins != null:
-		return pins_plan(u.die, pins, db)
+		return pins_plan(u.die, pins, db, Effects.folds_die(u))
 	var stock: Array = db.chassis.get(u.chassis_id, {}).get("loadout", [])
 	return mount_plan(u.die, stock, db)
 
