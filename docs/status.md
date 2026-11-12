@@ -1423,8 +1423,11 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 236 (12 November, published from `ccr-e3ddf00b-ilkwbi` at `f8a73fa`, ahead of
-  main, after his fourth note on the Kite's mount, "like 2 units more, same thing"; Version 235,
+  page's Version 237 (12 November, published from `ccr-e3ddf00b-ilkwbi` at `26af248`, ahead of
+  main: on trial, the Kite's inset mount wearing the standard shape for every class but the rack,
+  his "Just for fun, can you change the model type on this mount back to standard for everything
+  except rack?"; its rig, the gun's picture, `renders.json` and the two stamps moved). Version 236
+  (from `f8a73fa`) was his fourth note on the Kite's mount, "like 2 units more, same thing"; Version 235,
   from `7690cff`, was his third, the gun pushed forward with the cut's back and the cut's front
   unmoved): the same nine files each time, every live copy matching the version before's when it
   was replaced and the branch's after, `edits` and `text` empty. Version 234 (12 November, from the
