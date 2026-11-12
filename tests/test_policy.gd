@@ -427,16 +427,14 @@ func test_greedy_values_a_gated_stun_where_it_lands_and_prices_what_a_consumer_e
 	assert_true(eat < keep, "and gives up the ticks the stacks would have dealt (%s against %s)" % [eat, keep])
 
 
-## The Nemesis's rage (12 October): a stack to spend is another roll of the die, worth about
-## the die's own average blow, and a bite of its own costs less when the hull it takes banks
-## a stack the die can spend.
-func test_greedy_values_rage_as_another_roll() -> void:
+## Instant (12 November): a spend that gives its machine its turn back, Rapid's or Instant's, is
+## worth about the die's own average blow more; the Nemesis's fists are the charged form five rage
+## buys, read by the bot as the entry goes out (Skirmish.spend_face), so it counts only once the
+## rage is banked.
+func test_greedy_values_an_instant_spend_as_another_roll() -> void:
 	var fist := Face.attack(10, L)
-	fist.rolls_again_on = "rage"
+	fist.charged = {"store": "rage", "price": 5, "keywords": ["instant"]}
 	var gun := Face.attack(20, L)
-	gun.volatile = 10
-	var core := {"id": "rage_core", "name": "Rage Core", "description": "", "effects": [
-		{"trigger": "on_hull_damage", "effect": "stack_status", "value": "rage"}]}
 	var sk := Skirmish.new(3)
 	var m := _mech("A", Die.of([fist, gun]), 0, 200)
 	sk.add_mech(m)
@@ -446,15 +444,14 @@ func test_greedy_values_rage_as_another_roll() -> void:
 	var pol := Policy.make(Policy.GREEDY)
 	var ms: Skirmish.MechState = sk.mechs[0]
 	var g: Foe = sk.front[0]
-	var bare := pol.attack_score(sk, ms, fist, g)
-	var plain_bite := Policy.volatile_cost(sk, ms, gun)
-	m.grant_passive(core)
-	assert_eq(Policy.banked_on_hull(ms), "rage", "its hull banks the rage its fist spends")
-	assert_true(Policy.volatile_cost(sk, ms, gun) < plain_bite, "so the bite costs less")
-	assert_eq(pol.attack_score(sk, ms, fist, g), bare, "no rage yet: nothing more")
-	Effects.stack(m, Effects.STATUS["rage"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
-	assert_eq(snappedf(pol.attack_score(sk, ms, fist, g) - bare, 0.01), snappedf(Policy.ROLL_AGAIN_WEIGHT * 15.0, 0.01),
-		"a rage to spend: another roll, the die's average blow (10 and 20 over two entries)")
+	ms.face_index = 0
+	assert_false(sk.spend_face(ms).has(Face.Keyword.INSTANT), "no rage yet: the plain fist goes out")
+	var bare := pol.attack_score(sk, ms, sk.spend_face(ms), g)
+	Effects.stack(m, Effects.STATUS["rage"], Effects.SKIRMISH, "test", 5, Effects.DECAY_NONE)
+	var out := sk.spend_face(ms)
+	assert_true(out.has(Face.Keyword.INSTANT), "five banked: it goes out charged, Instant")
+	assert_eq(snappedf(pol.attack_score(sk, ms, out, g) - bare, 0.01), snappedf(Policy.ROLL_AGAIN_WEIGHT * 15.0, 0.01),
+		"Instant: another roll, the die's average blow (10 and 20 over two entries)")
 
 
 func test_greedy_values_the_kill_that_feeds_it() -> void:
@@ -904,25 +901,27 @@ func test_the_bot_prices_a_purge_by_what_the_foe_carries() -> void:
 	assert_eq(pol.attack_score(sk, a, null_field, g), bare + 10.0, "the attack score carries it")
 
 
-## A printed cooldown costs its entry the rounds it stays dark after this one (21 October),
-## the share of the die's rolls it would have shown; a cooldown of one, ending with the round,
-## costs nothing.
+## A printed cooldown costs its entry the rounds it sits out after this one (21 October; the count
+## since 12 November), the share of the die's rolls it would have shown; Rapid's own switch-off,
+## ending with the round, costs nothing.
 func test_greedy_prices_a_printed_cooldown_by_the_rounds_it_stays_dark() -> void:
 	var pol := Policy.make(Policy.GREEDY)
 	var sk := Skirmish.new(1)
 	var plain := Face.attack(30, L)
 	var slow := Face.attack(30, L)
-	slow.cooldown = 3
+	slow.cooldown = 2
 	var zap := Face.attack(30, L, [K.RAPID])
-	zap.cooldown = 1
+	var once := Face.attack(30, L)
+	once.cooldown = 1
 	sk.add_mech(_mech("A", Die.of([plain, slow, Face.attack(10, L), Face.attack(10, L)]), 40, 100))
 	sk.add_foes([_ghoul(500, 1)])
 	sk.begin()
 	sk.start_round()
 	var ms: Skirmish.MechState = sk.mechs[0]
 	var base := pol.attack_score(sk, ms, plain, sk.front[0])
-	assert_true(absf(pol.attack_score(sk, ms, slow, sk.front[0]) - base * 0.5) < 0.01, "two rounds dark after this one on a four-entry die: half its worth")
-	assert_eq(Policy.cooldown_cost(ms, zap, base), 0.0, "a cooldown of one ends with the round")
+	assert_true(absf(pol.attack_score(sk, ms, slow, sk.front[0]) - base * 0.5) < 0.01, "two rounds sat out after this one on a four-entry die: half its worth")
+	assert_true(absf(Policy.cooldown_cost(ms, once, base) - base * 0.25) < 0.01, "a cooldown of one sits out the next round: a quarter")
+	assert_eq(Policy.cooldown_cost(ms, zap, base), 0.0, "Rapid's own switch-off ends with the round: nothing")
 
 
 ## A stepping die's reroll is worth the entry it steps to, known in advance (the Cassowary's
@@ -1019,13 +1018,13 @@ func test_greedy_steps_a_stepping_die_through_a_weak_chamber_to_a_big_one() -> v
 	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND - 2, "two rerolls spent")
 
 
-## A spinning chamber (the Spin-Up's) is worth its own spend and the spin after it, so the bot
-## does not step away from it toward a chamber worth only a little more than its stack.
+## A spinning chamber (the Spin-Up's, Instant on a stepping die) is worth its own spend and the
+## spin after it, so the bot does not step away from it toward a chamber worth only a little more
+## than its stack.
 func test_greedy_keeps_a_spinning_chamber_for_the_spin_after_it() -> void:
 	var pol := Policy.make(Policy.GREEDY)
 	var spin := Face.buff("spun_up", 1, 1)
-	spin.keywords = [Face.Keyword.RAPID]
-	spin.spins = true
+	spin.keywords = [Face.Keyword.INSTANT]
 	var sk := Skirmish.new(1)
 	var u := _mech("A", Die.of([spin, Face.attack(6, L), Face.attack(6, L), Face.attack(6, L)]), 40, 100)
 	u.grant_passive({"id": "test_step", "name": "Step", "description": "", "effects": [{"trigger": "static", "effect": "step_die", "value": 1}]})

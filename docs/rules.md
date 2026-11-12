@@ -101,6 +101,11 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   holds one pack, a boss's with its escort, so no fight is given more than its slots hold.
 - At the start, foes take their ranks heaviest hitters first from the left (its heaviest
   move's damage times strikes, a breach 1 more; ties in arrival order).
+- The squad stands in four spots across the floor, one under each of the foes' columns: a squad
+  of three from the left, a squad of one or two in the middle spots, the outer ones empty; a
+  wrecked machine keeps its spot. A machine faces the column of its spot, and the foe in front of
+  it is that column's front rank, then its back; with neither standing, the next column left,
+  then right, then two left, two right. The Photosphere Lance lays its Sapped there.
 - A pack is its composition's grid (Content conventions): the count the map shows is the count the
   grid holds. Its fight, holding it alone, stands its foes as the grid has them: each cell, front
   then back, left to right, a foe of its kind, a massive one filling its column; a cell that
@@ -119,7 +124,7 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 3. The player's turn: spend, lock and reroll in any order. Each spend resolves fully before
    the next. UNDO takes back the last spend or reroll, in the order made, back to the last
    roll, its floor: the round's roll, a reroll that draws, or a spend that draws inside itself
-   (Rapid's reroll, a roll again, a vent's blast); a stepping die's step draws nothing,
+   (Rapid's or Instant's reroll, a vent's blast); a stepping die's step draws nothing,
    so it is taken back like a spend. The trail shows a bar at every roll, every line of it at
    full strength, and UNDO's badge says how many spends it reaches; UNDO opens once a spend's
    last blow has played. END TURN sits bottom-left and UNDO bottom-right, and UNDO reads on or
@@ -145,15 +150,15 @@ every machine is wrecked. There is no round limit.
   unspent die, before or after attacking, and lands on any other entry, never the one
   showing; a copy of it may come up, at the odds its copies give it. Every roll inside the round
   follows the same rule (Rapid's free reroll, a Reset's, the Booster, the Uplink, the
-  Reveille Horn), but two, kept on purpose and each saying "itself included" on the die: an
-  entry that rolls again (no piece prints one today) rolls as the round's opening roll does, and
-  the Cassowary's Spin-Up spins every chamber. Double-tap or hold a die to lock it, and again to unlock it; spending
+  Reveille Horn), but Instant's, kept on purpose and shown on the die by its keyword: it rolls as
+  the round's opening roll does, itself included, and spins every chamber on the Cassowary's
+  die. Double-tap or hold a die to lock it, and again to unlock it; spending
   unlocks it; locks clear each round.
 - **A folded die** (the Clydesdale's Disappearing Carriages): its hardpoints are two batteries
   of four, one up at a time, and every roll and reroll lands among the battery up and its fixed
-  pieces, the Changeover live on both. The Changeover (Rapid, cooldown 1, spent on itself) turns
-  the die to its other battery, and Rapid's free roll lands there, never on the Changeover, so it
-  turns once a round. The second battery up is its Ability, Changed Over, kept from fight to
+  pieces, the Changeover live on both. The Changeover (Rapid, spent on itself) turns
+  the die to its other battery, and Rapid's free roll lands there, never on the Changeover, which
+  Rapid darkens for the rest of the round, so it turns once a round. The second battery up is its Ability, Changed Over, kept from fight to
   fight through the battle and gone as the battle ends, so a battle opens on the first; no chip
   is the first. The codex dims the battery down; on the model the battery down is sunk in the
   hull under shut trapdoors, the battery up on the deck, and each battery's components take its
@@ -162,8 +167,8 @@ every machine is wrecked. There is no round limit.
   and every roll or reroll steps it to the next entry in order, Rapid's free reroll too; a
   lock holds it. The die shows its next entry in its passive box, its mark and the number it
   will show, and its readout and codex show its entries as a
-  cylinder, in order (the one showing lit and an arrow to the next, in the readout). Its Spin-Up spins the whole die, the entry
-  showing included, one of the two rolls kept on purpose (Rerolls, above), so it may land on itself and
+  cylinder, in order (the one showing lit and an arrow to the next, in the readout). Its Spin-Up, Instant, spins the whole die, the
+  entry showing included, the roll kept on purpose (Rerolls, above), so it may land on itself and
   be spent again. Every sixth weapon or equipment it aims at a foe in the fight counts double,
   its damage and the stacks it lays; the count shows as six cells under the heat bar, as a
   store's are, the sixth apart by its shape (a heavier border, a diamond set in it) and
@@ -173,15 +178,15 @@ every machine is wrecked. There is no round limit.
   kind its die turns to a lit entry of the other kind and it acts again, once a round. One entry
   to turn to is no draw: the die shows it in its passive box beforehand, and an undo reaches
   past the turn; several are a draw among them. With no lit entry of the other kind it has no
-  second action, and a spend that is neither kind (a blank) gives none. A piece Rapid of its own
-  acts again by its own rule and leaves the turn for the next spend. It is the machine's own
+  second action, and a spend that is neither kind (a blank) gives none. A piece that acts
+  again of its own, Rapid or Instant, does so by its own rule and leaves the turn for the next spend. It is the machine's own
   rule and no keyword, so a Silence leaves it.
 - **Maverick's Playbook** (the Giant Petrel's passive): the team's rerolls unspent as the
   player's turn ends are banked, up to three, and come back at the next round's start beside
   its two, spent like any reroll; a roar's cost comes off the whole. It banks while the
   Giant Petrel fights: wrecked by the next round's start, it carries nothing.
 - **Spending**: drag a die onto a target: a weapon or a debuff onto a foe in reach, a shield, a
-  vent or a buff onto a machine it may reach. Each die is spent once a round (Rapid excepted). A blank does
+  vent or a buff onto a machine it may reach. Each die is spent once a round (Rapid and Instant excepted). A blank does
   nothing; an unspent die is lost. On screen a spend's hits and shots land one at a time, a beat
   apart, every one of them: each foe a hit reaches flashes, its gauge steps down to what the blow
   left and the blow's number rises off it, a hit on a foe an earlier one felled landing on it all
@@ -203,7 +208,7 @@ every machine is wrecked. There is no round limit.
   delivers: a weapon's sight holds a strike's blow, its strikes beside it (×4); equipment's gear
   holds what it grants or lays and no number (a buff's status with its stacks beside it, a
   debuff's first keyword that does something to a foe in content's order, or the star for a rule
-  of its own; a reach, an area and Rapid stay on the edge, which never shows a thing twice); a
+  of its own; a reach, an area, Rapid and Instant stay on the edge, which never shows a thing twice); a
   shield its number in the shield's colour; a vent its number in heat's colour; an entry that
   shields and cools (the Wake Diffuser, the Sutler's Hoist) both numbers in one mark; a reload
   (the Musk Ox's Quick Reload) its shells and the ammo it loads. Whom it reaches stands under
@@ -298,7 +303,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   a condition read as the die was spent), its Purge and Chain at every hit's number, the rest
   once each (Shock, Suppress, Web, Expose, Breach, Disrupt), a gated keyword where its gate held.
   The numbered ones add up across the spends that feed it. Spread, Penetrate, Splash and
-  Spillover, the Swap, Rapid and Lure stay with the spend, and what a hit reads off its foe for
+  Spillover, the Swap, Rapid, Instant and Lure stay with the spend, and what a hit reads off its foe for
   damage (missing hull, a consumer's stacks) means nothing to a flat Mine; each foe its blast
   meets takes it with its own defences (a Ward, its Numbed). When the foe falls, one
   that gets back up or splits included, a tick's fall and a part's too, the Mine blows once the
@@ -330,7 +335,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   chip, the star, equipment's status chip, each cost's mark, the lock, a corruption): its place and name,
   what holds on it (on cooldown with its turns left, a foe's switch-off, corruption), its
   codex, then a line a mark: its number as the die prints it, its heat, its target, then its
-  keywords (how it lands, Volatile, what it applies on hit, Rapid), its own rules and a
+  keywords (how it lands, Volatile, what it applies on hit, Rapid or Instant), its own rules and a
   written-out grant's line last, then its tags. A number the live sources moved off the
   component's own is coloured, green where the change is good for its unit and red where it
   is bad (more heat, a smaller blow), always relative to the unit and never the player, with
@@ -454,7 +459,10 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - **Disrupt**: every foe reached takes the next move in its list that its
   conditions allow, keeping its pick while the machine stands and is in the fight; a new one
   otherwise, and when the move it leaves aimed at no one machine (a brace, a blow at every
-  machine), since the pick it carried was never shown. Disrupt resolves before Lure.
+  machine), since the pick it carried was never shown. Disrupt resolves before Lure. The Baboon's
+  Retrocausal Shroud, spent on itself or an ally, Cleanses it and gives Disrupt to every foe
+  showing intent on it, its pick or a blow at every machine: they change their move, not their
+  pick.
 - **Purge N** (id `dispel`, the foes' word too; Aphelion's Null Field Emitter, Purge 2): every
   foe the entry reaches loses N stacks of every buff it carries (Armoured, Empowered, Enraged,
   Undying, Primed, Barrier, Regenerating, Numbed; an unstackable buff is one stack; its
@@ -464,23 +472,26 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   foe its blast meets.
 - **Rapid** (any component): the die rerolls free onto any other entry, a copy of the same
   component included (a folded die among its live entries), and the machine acts again, so
-  copies of one Rapid component chain.
-  Rapid carries no cooldown of its own: a Rapid component prints its cooldown (most print one,
-  dark for the rest of the round), shown on the die by its clock like any cooldown, or pays
-  heat, hull or shield every spend instead. A Rapid component always
-  carries a limiter, a cooldown, heat or a cost; a piece locked on a stepping die (the
-  Cassowary's Spin-Up) needs none: its spin
-  is a true roll over every chamber, so it lands on itself one time in six, to be spent again,
-  a fifth of a spin more a spend on average, and every other way back to it in a round runs
-  through the other chambers' cooldowns or the team's rerolls.
+  copies of one Rapid component chain. The entry spent stays dark for the rest of the round,
+  Rapid's own cooldown, never printed, so each copy acts once a round; no cleanse lifts it,
+  and a reset brings it back (Reset, below).
   A Rapid vent is never below tier three (the one is the Musk Ox's quick reload, locked on a
   tier three, which cools nothing), and a Rapid shield never below tier two (the Laminar
   Deflector's two).
+- **Instant** (any component): the die rolls again free, as the round's opening roll does,
+  itself included, so the same entry may show again and be spent again, and the machine acts
+  again; on a stepping die the roll spins every chamber. Nothing goes dark, so an Instant
+  component always carries a limiter: a cooldown, heat or a cost, or the store a charged form
+  spends (the Knuckle of Fury's five rage). A piece locked on a stepping die (the Cassowary's
+  Spin-Up) needs none: its spin is a true roll over every chamber, so it lands on itself one
+  time in six, to be spent again, a fifth of a spin more a spend on average, and every other way
+  back to it in a round runs through the other chambers' switch-offs or the team's rerolls. An
+  entry is Rapid or Instant, never both.
 - **Cooldown** (a printed property on specific pieces; a passive may grant one to every weapon
   and equipment its machine aims at a foe, none does today, and the longer stands), a cost printed
-  along the entry's foot by its clock: once spent, the entry is dark for that many rounds, this
-  one included, shown on the die with the turns left; the die may land on it, and a dark entry
-  does nothing. No cleanse lifts it.
+  along the entry's foot by its clock: once spent, the entry is dark for the rest of the round
+  and for that many rounds after it, shown on the die with the rounds left, this one included;
+  the die may land on it, and a dark entry does nothing. No cleanse lifts it.
 - **Reset** (no piece prints it today): if its spend kills, every entry dark from a cooldown
   comes back, itself included, and the machine acts again, the free roll never landing on the
   entry just spent; a team reroll may bring it back up, and every kill resets it again, with
@@ -507,6 +518,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   drop it; the second targets light; tap one to spend it; a tap or a hold on the die reads it; drag the die
   again to move it or set it back. A tap on the ground sets it back too, the die flying home,
   once no readout is open: the first such tap closes the open readout.
+- **Sap** (with a number; the Baboon's Redshift Emitter, beside a Purge 1): each foe hit gains
+  that many stacks of Sapped a strike, laid once the strikes are done.
 - **Flak** (with a number, Wainwright & Sutler's on-hit): each foe hit gains that many stacks
   of Flak a strike (Flak 2: two stacks), laid once the strikes are done, so no strike of the
   spend feeds on what it lays.
@@ -557,10 +570,7 @@ Honey Badger's Chainsaw Claw, two); a weapon that fires it takes up to its most 
 each adding its bonus to the blow, and spends them (its Bullion Fragmenter fires two at +2),
 the armour they stood for going with them. **Braces**:
 spending it Armours its owner, the stacks it says, an armour point each, until the round's
-end (the Wild Boar's Breaching Plow, two). **Rolls again** (no piece prints it today; the Nemesis's Knuckle of Fury did, and it is one direction of its upgrades): spending it
-with a stack of its status spends one, and the die rolls again, a plain roll as the round
-opens, so the machine acts again and the same entry may show again; nothing switches off,
-the stacks being the limit, and the fight's last blow rolls nothing. **The gather** (the
+end (no dealt piece prints it today; the Wild Boar's Breaching Plow did until 11 November). **The gather** (the
 Lammergeier's Lorentz Contractor, a debuff with Expose): every Mine the field's other foes carry
 joins its target's, their damage added and their keywords as one, in the rider phase after the
 spend's own Mine joined it; a Ward on the target turns the gather away, the Mines staying where
@@ -577,12 +587,18 @@ many fell, banked if unspent. **The Reheat Uplink** (the Giant Petrel's, allies 
 gains Empowered 2 and its die rolls again, never onto the entry showing; a spent die rolls
 nothing. **Regenerates** (the Storm Petrel's St. Elmo's Regenerator, a lure): spent on a
 foe, its own machine gains Regenerating, the shield it prints at the start of each of the
-rounds it prints after this one. **Spillover** (the Wild
-Boar's Juggernaut Drive, on every weapon it fires): damage past the kill of a front-rank foe
+rounds it prints after this one. **Spillover** (no machine carries it since 11 November; the
+Wild Boar's Juggernaut Drive did, on every weapon it fired): damage past the kill of a front-rank foe
 carries into the foe behind it as plain damage, the killing strike's excess and every later
 strike of the spend whole, aimed at nobody, so a Shock behind neither doubles it nor is
-spent; the engine runs it as a keyword the passive grants written out, so each of the Boar's
-weapons wears the star, the die's readout reading the passive's line, and no keyword chip.
+spent; the engine runs it as a keyword a passive grants written out, so each weapon wears the
+star, the die's readout reading the passive's line, and no keyword chip.
+**The Juggernaut Drive** (the Wild Boar's, since 11 November): once a spend's hits land, every
+front-rank foe a blow of it damaged, felled or not, drives a quarter of its maximum HP, rounded
+up, into the foe standing behind it, once a spend, a plain blow as the Storm Petrel's zap was (no
+keyword and no Shock read, through what that foe takes, its armour and its Barrier); a massive foe
+has nothing behind it. As the Boar gains a Barrier, from its own Breaching Plow (Cleanse and a
+Barrier on itself, a cooldown of 1) or an ally's piece, it gains Juggernaut Breach.
 
 ### Buffs, debuffs and resistance
 A **store** is a capped resource a machine fills and spends (the Muster, the rage, the
@@ -652,7 +668,7 @@ On a machine:
 - **Rallied** (buff): the team has one reroll more this round.
 - **Charged** (buff): while it lasts the machine's weapons fire with Shock, shown on the die
   and landing as the keyword does, after the blows; a weapon fired spends a stack (a Rapid's
-  second fire is a second fire, a salvo one, a blast none; equipment carries it not and spends
+  or an Instant's second fire is a second fire, a salvo one, a blast none; equipment carries it not and spends
   nothing); a Mine the fire leaves carries the Shock.
 - **Supercooled** (buff): the same with Cryo, one more stack a strike on each foe hit (Cryo 1
   on a gun without it), laid after the hits.
@@ -699,8 +715,8 @@ On a machine:
   blow of its own weapons a foe's armour or Barrier takes whole, each foe's and each strike's
   (a corpse's and a debuff's never), up to 10. A bite of its own on its shield and a blow its
   own Barrier or armour takes whole bank nothing. With five banked its Knuckles of Fury go out
-  charged, unasked: they spend the five and fire with Breach, which passes a foe's armour and
-  never its Barrier. Lasts the skirmish, never decays, and nothing cleanses it. It shows as a
+  charged, unasked: they spend the five and are Instant, the die rolling again, itself included,
+  so a fist may show again. Lasts the skirmish, never decays, and nothing cleanses it. It shows as a
   meter under the heat in its chip's colour, a notch at five.
 - **Hopper** (store, the Honey Badger's): its Ore Hopper puts a load in for each foe a spend
   of its weapons damages, after the blow (a weapon that prints its own number puts that in
@@ -736,7 +752,7 @@ On a machine:
   deals a point more a stack, the shield taking the extra first as it takes any blow, through
   the next round, when every stack goes; a Ward turns the crush away. Cleansable.
 - **Silenced** (debuff, a foe's silence): its components' keywords are muted through its next
-  round, printed and granted alike (a Rapid entry acts once, a Spread lands one blow, a
+  round, printed and granted alike (a Rapid or Instant entry acts once, a Spread lands one blow, a
   Suppress suppresses nothing, its own Cleanse is a plain shield), then wake; its buffs count,
   its stores fill and spend as ever, and its targeting modes stand (Every Foe, Every Ally, Every
   Other Ally). Cleansable, an ally's Cleanse the way; a Ward turns
@@ -762,10 +778,11 @@ On a foe:
 - **Mine** (debuff, the Lammergeier's): its damage, the spends that fed it added, and their
   keywords, one Mine a foe; when the foe falls it blows on every foe round its slot (A Mine,
   under A blow). It lasts the skirmish, until its foe falls or the Syrinx Drone detonates it.
-- **Paradox** (debuff, while the Baboon fights): a stack each time the foe gains any other
-  debuff, once a hit per debuff however many strikes or stacks; at three it is Suppressed
+- **Paradox** (debuff, while the Baboon fights): a stack for every stack of another debuff the
+  foe gains, a debuff that never stacks one (Shocked, Exposed, a Suppress, a pin), a buff none;
+  at five or more every stack is consumed and it is Suppressed
   (a stun like any other: a Numbed foe strips a stack instead, a Warded one turns it, and a foe
-  already suppressed gains nothing) and the Paradox clears either way. It never decays. The Suppressed a Paradox causes adds none; a Suppress
+  already suppressed gains nothing), the stacks spent either way. It never decays. The Suppressed a Paradox causes adds none; a Suppress
   keyword's does.
 - **Vitriol** (debuff): at its action it loses 10% of its current HP a stack, past armour,
   after Burning on what it leaves, the whole share rounded down and never the last hit point,
@@ -784,6 +801,12 @@ On a foe:
 - **Flak** (debuff): every blow of a weapon it takes deals a point more a stack, before its
   multiplies and its armour (a Shocked foe takes a strike aimed at it plus Flak, doubled); a
   debuff's blow stays nothing. The stacks halve at the end of each round, rounded down.
+- **Sapped** (debuff, on either side): its attacks deal 1 less a stack, an add before the
+  multiplies, never below nothing: a foe's blow, its intent showing it, or a machine's weapon.
+  Every stack goes after its next turn: a foe's at the end of its next action, a machine's at the
+  end of the player's turn. A foe's Ward turns it away; a Cleanse clears it from a machine.
+- **Juggernaut Breach** (buff, the Wild Boar's): gained as it gains a Barrier, one at a time; its
+  next weapon attack gains Breach and lifts it, equipment leaving it standing. A purge takes it.
 - **Empowered** (buff, Rally): lands on every other foe on the field the moment the rally does,
   the rally's value in stacks, and every blow the foe lands hits a point harder a stack, an add
   before the move's factor as every add is. It halves at the end of each round, rounded down,
@@ -834,7 +857,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or a
   off. A foe's armour comes off every blow on it the same way, never off Burning, Vitriol or a
   breaching weapon. Base armour is set by role (a tank 2, a heavy worker 1, the rest 0; the
   Polar Bear, a tank in its sealed form, 1 open and 4 sealed), and
-  Armoured adds to it (a brace: a buff, the Breaching Plow) until the
+  Armoured adds to it (a brace: a buff) until the
   round's end, the Polar Bear's seal until a weapon opens it.
   Damage-taken effects apply before armour.
 - The shield is the fight's, as the heat is: full as every fight opens, and nothing returns on
@@ -1088,7 +1111,7 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   it is dragged to. The Whip Scorpion's Thermal Ejection Manifold is its boiler: nothing cools
   it, every blow a foe lands on it adds 2 heat (in the enemy's turn, after the overheat, so the
   gauge may stand past its maximum), and a pass releases the lot. A pass is a turn it ends with
-  an entry it could have spent: a die never spent or locked and left, an entry Rapid rolled or
+  an entry it could have spent: a die never spent or locked and left, an entry Rapid or Instant rolled or
   an action granted and not used; a blank, or an entry with nowhere to land, is none. As the
   enemy's turn ends a machine that passed and holds 8 heat or more opens its valves on every
   foe, front rank and back: 1 each, and 1 more for each heat over 8, and it is left cold; under

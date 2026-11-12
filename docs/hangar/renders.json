@@ -64,6 +64,17 @@
       "alt": "round rack, Wainwright & Sutler"
      }
     ]
+   },
+   {
+    "when": "The port gun, 12 November.",
+    "note": "A second variant, of the barrel: the standard gun's barrel and muzzle alone, starting at the socket, for a mount whose receiver is inside the hull behind a port's wall (the Kite's inset mount, Ryan, 12 November: \"the actual mount block is hidden\", then \"let it poke out more\"). Shown in Kestrel's metal; the Kite's pictures show it worn.",
+    "small": true,
+    "images": [
+     {
+      "file": "shapes/barrel_port_kestrel.png",
+      "alt": "port gun, Kestrel"
+     }
+    ]
    }
   ]
  },
@@ -135,8 +146,8 @@
    }
   },
   "kite": {
-   "when": "Ryan's second notes, 29 October.",
-   "note": "Ryan, 29 October, the second notes: each tooth round a driver's inlet runs its back face aft as a strake, tapering down the drum until it meets it. The rest as the first notes left it: each Pinion Driver a ramjet-gun, a chrome drum with a lit ring tapering to a lit exhaust, the barrel out of the inlet's centre; two shots at half, one from each tip.",
+   "when": "The third mount and the intake, 12 November.",
+   "note": "Ryan, 12 November: a third mount \"in front of the canopy, but inset, like the polar bear - so some of the barrel pokes out through a cut channel. Doesn't retract or anything\"; \"sink it horizontally into the hull more, so the actual mount block is hidden, and don't cut a channel all the way down the nose\"; \"Raise the gun's line a little\"; \"let it poke out more and cut the trough a little deeper vertically so the barrel isn't covered\"; \"a round rack would be warranted when a missile is slotted there\". A port at the canopy's nose and a trough cut into the spine ahead of it, bare on the stock machine; a gun there is the port gun, its barrel alone out of the port, and a launcher the round rack against the port's wall (the third and fourth pictures: a Laser Carbine, a Shotfire Rack). The tail segment's flat face behind the canopy is an air intake (\"Can the flat face behind the canopy also get an intake treatment?\"). First cuts; how a dish, a blade or twin barrels sit in the port is a guess.",
    "images": [
     {
      "file": "kite/kite_front.png",
@@ -145,10 +156,18 @@
     {
      "file": "kite/kite_rear.png",
      "alt": "kite, rear"
+    },
+    {
+     "file": "kite/kite_port_gun.png",
+     "alt": "kite, a gun in the inset mount"
+    },
+    {
+     "file": "kite/kite_port_rack.png",
+     "alt": "kite, a round rack in the inset mount"
     }
    ],
    "before": {
-    "summary": "Before: the first notes of 29 October (the teeth a ring round the lip)",
+    "summary": "Before: Ryan's second notes, 29 October (two nose mounts, the tail's face plain)",
     "images": [
      {
       "file": "kite/before_kite_front.png",
@@ -162,8 +181,8 @@
    }
   },
   "baboon": {
-   "when": "The stock rebuild, 28 October.",
-   "note": "Ryan's go, 28 October: every station keeps its kind, the pins renumbered to the stock's order and each part its class: the shoulders' elevating mounts carry the Halo Shield's dish (left) and the Ankle Mortar's rack (right) where the Umbra Projectors rode; the fists' outer sides the Twin Autoguns (right) and the Rivet Gun (left) where the Pulse Repeaters were; the right fist's top the Laser Carbine where the Zenith Emitter was; the left fist's top bare.",
+   "when": "The rework, 11 November.",
+   "note": "Ryan, 11 November: \"down to 4 slotted pieces, by removing the outer hand mounts (they don't make sense with the hand shape anyway)\", and \"The backpack are the two locked bits, maybe just need a little something on top, a little asymmetry\": the fists' tops and the shoulders keep their mounts, the left pod wears the Retrocausal Shroud's tilted ring and the right the Redshift Emitter's raked lens. A first cut.",
    "images": [
     {
      "file": "baboon/baboon_front.png",
@@ -175,7 +194,7 @@
     }
    ],
    "before": {
-    "summary": "Before: fourth round, 30 September (the Umbra Projectors, the Pulse Repeaters and the Zenith Emitter)",
+    "summary": "Before: the stock rebuild, 28 October (the fists' outer mounts and the Solar Flare Array's two pods)",
     "images": [
      {
       "file": "baboon/before_baboon_front.png",
@@ -563,8 +582,8 @@
    }
   },
   "skua": {
-   "when": "Ryan's glow notes, 31 October.",
-   "note": "The round hinges at the wings' wrists gone (Ryan, 31 October: \"they look cheap\").",
+   "when": "Ramping Dakka, 12 November.",
+   "note": "Ryan, 12 November: \"Can we turn the skua's spine pods into intakes? And remove the pod burst animation.\" The two spine pods are air intakes, a dark mouth in a steel lip, and the burst is gone with the Flechette Pod's lock; the Pod is an ordinary gun in its stock now, a rack under the belly. A first cut.",
    "images": [
     {
      "file": "skua/skua_front.png",
@@ -576,7 +595,7 @@
     }
    ],
    "before": {
-    "summary": "Before: Second round, the jaeger; its run a flown circle, 28 October",
+    "summary": "Before: Ryan's glow notes, 31 October (the spine pods and their burst)",
     "images": [
      {
       "file": "skua/before_skua_front.png",
@@ -585,14 +604,6 @@
      {
       "file": "skua/before_skua_rear.png",
       "alt": "Earlier: skua, rear"
-     },
-     {
-      "file": "skua/before_skua_above.png",
-      "alt": "Earlier: skua, from above"
-     },
-     {
-      "file": "skua/before_skua_strafing_run.png",
-      "alt": "Earlier: skua, the strafing run"
      }
     ]
    }

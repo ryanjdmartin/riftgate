@@ -48,6 +48,11 @@ func _init() -> void:
 	y = _section(y, "WHAT AN ENTRY IS: ITS MAIN MARK HOLDING WHAT IT DELIVERS, WHOM IT IS AIMED AT UNDER IT", _kinds())
 	y = _section(y, "A PIECE SPENT ON MACHINES: THREE HEXES UNDER ITS MARK, THE MIDDLE ITS OWN, A FILLED ONE A MACHINE IT REACHES", _targets(), 6)
 	y = _section(y, "THE REST OF A FACE: COSTS ALONG THE FOOT (A MARK AND A NUMBER), STATES, THE CHIPS", _rest())
+	# The sheet grows to hold every row: a fixed height cut the last row off once the set grew.
+	var tall := maxi(SHEET.y, ceili(y + MARGIN))
+	_sheet.size = Vector2(SHEET.x, tall)
+	_vp.size_2d_override = Vector2i(SHEET.x, tall)
+	_vp.size = Vector2i(roundi(SHEET.x * _scale), roundi(tall * _scale))
 	process_frame.connect(_tick)
 
 
@@ -187,6 +192,10 @@ func _rest() -> Array:
 	charged.charged = true
 	var dark := _die(Face.disabled_stand_in(Face.attack(4)))
 	dark.dark = 2
+	var rapid := Face.attack(4)
+	rapid.add_keyword(Face.Keyword.RAPID)
+	var instant := Face.attack(4)
+	instant.add_keyword(Face.Keyword.INSTANT)
 	var chips := Face.attack(4)
 	chips.add_keyword(Face.Keyword.BURN)
 	chips.add_keyword(Face.Keyword.CLEAVE)
@@ -210,6 +219,8 @@ func _rest() -> Array:
 		["CHARGED", "armed for its charged\nform (the Swallowtail)", charged],
 		["Dark", "a cooldown or a switch-\noff: the clock, its turns", dark],
 		["Chips", "keywords, the star for a\nrule, a corruption", chipped],
+		["Rapid", "acts again, the die\nrerolled elsewhere", _die(rapid)],
+		["Instant", "acts again, the roll\nmay land on itself", _die(instant)],
 		["Next chamber", "its passive's box: the\nnext entry (the Cassowary)", stepping],
 		["Seals", "spent on itself, the\nPolar Bear shuts", seal],
 		["Opens", "spent, the Polar Bear's\nshell opens", unseal],

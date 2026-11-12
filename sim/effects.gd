@@ -51,11 +51,12 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "one_of_each", "add_armour_vs_rank", "keep_status", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "fold_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "pass_release", "mute_keywords", "weapon_cooldown", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "one_of_each", "add_armour_vs_rank", "keep_status", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "fold_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "pass_release", "shove_behind", "mute_keywords", "weapon_cooldown", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_shield_hit": ["stack_status", "add_shield", "vent_heat"],
 	"on_blocked": ["stack_status"],
+	"on_barrier": ["stack_status"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
 	"on_shield_gain": ["vent_heat", "stack_status"],
 	"on_shield_granted": ["vent_heat", "stack_status", "shield_per_ally_heat"],
@@ -73,6 +74,7 @@ const DECAY_ROUND := 2   # gone at its owner's next tick, every stack at once (B
 const DECAY_TURN := 3    # ticks at the end of its owner's turn and loses a stack there, not at the round's end (a machine's Burning, 13 October)
 const DECAY_TURN_ALL := 4    # lasts until the end of its owner's turn, every stack going there at once (a machine's Scorched, 13 October: it never piles up)
 const DECAY_HALF := 5    # halves at its owner's tick, rounded down, gone at zero (Empowered, 18 October: a halving rule has no duration)
+const DECAY_AFTER_TURN := 6    # gone after its owner's next turn, every stack at once: a foe's at the end of its next action, a machine's at the end of the player's turn (Sapped, 11 November)
 
 ## The tag a cleanse clears (decided 25 September): what a foe did to a machine, never what
 ## the machine did to itself (a component's own cooldown, the price a Rapid piece pays).
@@ -121,7 +123,7 @@ const STATUS := {
 		"tags": ["buff"], "effects": []},
 	# The Baboon's Pocket Paradox as a meter (Ryan, 10 October): a status like any other, and
 	# it never decays; at the machine's count the foe is Suppressed and the Paradox clears.
-	"paradox": {"id": "paradox", "name": "Paradox", "description": "A paradox building: at the count it is Suppressed, and the Paradox clears.",
+	"paradox": {"id": "paradox", "name": "Paradox", "description": "A paradox building, a stack for every debuff stack it gains: at the count every stack is consumed and it is Suppressed.",
 		"effects": []},
 	# The funnel-web's acid (Ryan's go, 18 October; Vitriol his word): a share of the foe's
 	# current hull a stack at its action, past armour, after Burning's flat tick, rounded down
@@ -296,6 +298,19 @@ const STATUS := {
 	# loop); Flak's shape on the other body, so the chip is a number and every machine feels it,
 	# the shield taking the extra first as it takes any blow. An ally's Cleanse lifts it; a Ward
 	# turns the crush away as it turns any rider.
+	# Sapped (Ryan, 11 November: "Deals 1 less damage per stack with attacks"; "Weaken can apply to
+	# both sides"; "Weaken can change till after it's next turn then, instead of round end. Let's
+	# use Sapped"): a machine's attacks through its pipeline's add (never below nothing), a foe's
+	# blow through its attack's; every stack goes after its owner's next turn (after_turn): a
+	# foe's at the end of its next action, a machine's at the end of the player's turn.
+	# Juggernaut Breach (the Wild Boar's, Ryan, 11 November: "After gaining Barrier, its next weapon
+	# attack gains Breach"; "The next attack breach will need to be represented by a purgeable buff,
+	# I'd just call it 'Juggernaut Breach'"): one whoever grants it, lifted by the next weapon the
+	# machine spends, equipment leaving it standing; a buff, so a purge takes it.
+	"juggernaut_breach": {"id": "juggernaut_breach", "name": "Juggernaut Breach", "description": "Its next weapon attack gains Breach.", "decay": "none", "spent_by": "weapon", "single": true, "stacking": "renew",
+		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "grant_keyword", "value": "breach"}]},
+	"sapped": {"id": "sapped", "name": "Sapped", "description": "Its attacks deal 1 less damage a stack. Every stack goes after its next turn.", "decay": "after_turn",
+		"tags": ["sap", CLEANSABLE], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": -1}, {"trigger": "static", "effect": "add_attack", "value": -1}]},
 	"crushed": {"id": "crushed", "name": "Crushed", "description": "Every blow it takes deals a point more a stack, through the next round.", "decay": "none",
 		"tags": [CLEANSABLE], "effects": [{"trigger": "static", "effect": "add_damage_taken", "value": 1}]},
 	# Flak (Ryan's go, 19 October; built 21 October): Wainwright & Sutler's on-hit, laid by the
@@ -489,7 +504,7 @@ static func brace_stacks(value: int) -> int:
 ## What a foe carrying a status means (target_status, the Susceptibility Tensor; 10 October):
 ## what the team put on it. Never Numbed (a buff only a Purge lowers, 2 November), and never the foe's
 ## own buffs (Braced, Empowered, Undying).
-const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed", "flakked", "exposure", "mine", "pinned", "pinned_burning"]
+const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed", "flakked", "exposure", "mine", "pinned", "pinned_burning", "sapped"]
 ## The status that holds each status a piece may hold on its target (Face.holds).
 const HOLDERS := {"flakked": "pinned", "burning": "pinned_burning"}
 ## target_status: the foe struck carries any of FOE_STATUSES (Numbed and its own buffs never count).
@@ -797,7 +812,7 @@ static func ends_with_turn(m) -> bool:
 ## The decay a status names in its definition ("none", "round", "turn", "turn_all", "half"),
 ## a stack a tick when it names none.
 static func status_decay(def: Dictionary) -> int:
-	return {"none": DECAY_NONE, "round": DECAY_ROUND, "turn": DECAY_TURN, "turn_all": DECAY_TURN_ALL, "half": DECAY_HALF}.get(str(def.get("decay", "")), DECAY_TICK)
+	return {"none": DECAY_NONE, "round": DECAY_ROUND, "turn": DECAY_TURN, "turn_all": DECAY_TURN_ALL, "half": DECAY_HALF, "after_turn": DECAY_AFTER_TURN}.get(str(def.get("decay", "")), DECAY_TICK)
 
 
 ## What a foe's status keeps into the next round on the clock its definition names (the bot's
@@ -809,7 +824,7 @@ static func stacks_next_round(def: Dictionary, n: int) -> int:
 			return int(n / 2.0)
 		DECAY_TICK, DECAY_TURN:
 			return maxi(0, n - 1)
-		DECAY_ROUND, DECAY_TURN_ALL:
+		DECAY_ROUND, DECAY_TURN_ALL, DECAY_AFTER_TURN:
 			return 0
 	return n
 
@@ -830,7 +845,7 @@ static func turn_tick(u) -> Dictionary:
 	var out := tick_preview(u, true)
 	var keep: Array = []
 	for m in u.modifiers:
-		if m.decay == DECAY_TURN_ALL:
+		if m.decay == DECAY_TURN_ALL or m.decay == DECAY_AFTER_TURN:
 			continue
 		if m.decay == DECAY_TURN:
 			m.stacks -= 1
@@ -893,6 +908,23 @@ static func held_statuses(u) -> Array:
 		if str(pair[0].get("effect", "")) == "hold_status" and not out.has(str(pair[0].get("value", ""))):
 			out.append(str(pair[0].get("value", "")))
 	return out
+
+
+## The share of a front-rank foe's maximum HP, in percent, a machine's damaging blow drives into
+## the foe behind it (the Wild Boar's Juggernaut Drive, Ryan, 11 November: "Damaging an enemy in
+## the front rank deals 25% of its maximum HP, rounded up, to the enemy immediately behind"); 0 for
+## a machine whose blows drive nothing.
+static func shove_share(u) -> int:
+	var n := 0
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "shove_behind":
+			n += int(pair[0].get("value", 0))
+	return n
+
+
+## The end of a foe's action (Sapped, 11 November): what lasts until after its next turn goes.
+static func foe_turn_end(u) -> void:
+	u.modifiers = u.modifiers.filter(func(m) -> bool: return m.decay != DECAY_AFTER_TURN)
 
 
 static func supports(trigger: String, effect: String) -> bool:
@@ -2074,7 +2106,7 @@ static func purge(u, n: int = 1) -> Array[String]:
 ## The marks the team lays on foes (28 October), what a foe's cleanse takes off its own: never
 ## Numbed (the buff nothing removes), never Suppressed (so a stun stays sure), never Guarded or a
 ## buff.
-const TEAM_MARKS := ["burning", "flakked", "cryoed", "vitriol", "shocked", "exposure", "webbed", "paradox", "mine", "pinned", "pinned_burning"]
+const TEAM_MARKS := ["burning", "flakked", "cryoed", "vitriol", "shocked", "exposure", "webbed", "paradox", "mine", "pinned", "pinned_burning", "sapped"]
 
 
 ## How many of the team's marks a foe carries, each status one mark.
@@ -2180,10 +2212,10 @@ static func ordinal(n: int) -> String:
 
 ## Switch one die entry off until the end of `until_round`: the entry shows dark, the
 ## component itself is untouched. Applied to the target's showing entry by a foe's disable
-## (through the mech's next turn) and by a spent entry's own cooldown (`source` "cooldown":
-## the rounds it prints, this one included). A foe's disable can be cleansed; a cooldown
-## cannot (it is the piece's price, and a cleanse that lifted a Rapid piece's would start an
-## infinite turn).
+## (through the mech's next turn) and by a spent entry's own cooldown (`source` "cooldown": the
+## rest of the round of the spend and the rounds it prints after it; Rapid's own switch-off, the
+## rest of the round alone). A foe's disable can be cleansed; a cooldown cannot (it is the
+## piece's price, and a cleanse that lifted a Rapid piece's would start an infinite turn).
 static func disable_entry(u, index: int, source: String, until_round: int) -> Modifier:
 	var cooldown := source == "cooldown"
 	var status := {"id": "disabled_%d" % index, "name": "Cooldown" if cooldown else "Disabled",
@@ -2193,9 +2225,9 @@ static func disable_entry(u, index: int, source: String, until_round: int) -> Mo
 	return grant_for_rounds(u, status, source, until_round)
 
 
-## The rounds every weapon this machine spends goes dark, granted by its passives (static
-## weapon_cooldown; the Kite's Disabled Weapon Regulators, 21 October: the cooldown property
-## granted), the longest live one, on a weapon or a debuff alike; 0 for none or for a piece spent on machines. An entry's own cooldown stands
+## The rounds every weapon this machine spends sits out after the round of the spend, granted by
+## its passives (static weapon_cooldown; the Kite's Disabled Weapon Regulators, 21 October: the
+## cooldown property granted), the longest live one, on a weapon or a debuff alike; 0 for none or for a piece spent on machines. An entry's own cooldown stands
 ## beside it and the longer wins (Skirmish.cooldown_of).
 static func granted_cooldown(u, face: Face) -> int:
 	if face == null or not face.is_attack():
@@ -2412,7 +2444,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"multiply_damage": body = "damage ×%s" % vs
 		"multiply_printed": body = "the printed number ×%s, before any buff" % vs
 		"split_strikes": body = "hits twice, its base weapon damage halved, rounded down, never below one" if vs == "2" else "hits ×%s, its base weapon damage divided by %s, rounded down, never below one" % [vs, vs]
-		"weapon_cooldown": body = "every weapon and equipment it aims at a foe goes dark for %s rounds" % vs
+		"weapon_cooldown": body = "every weapon and equipment it aims at a foe sits out the next %s" % ("round" if vs == "1" else vs + " rounds")
 		"one_of_each": body = "acts twice a round, once with a weapon and once with equipment: after its first spend the die turns to an entry of the other kind"
 		"mine_on_spend": body = "every weapon and equipment it aims at a foe leaves a Mine of %s on it with the spend's keywords, one Mine a foe however many spends feed it; when the foe falls the Mine blows on every foe round its slot" % vs
 		"carry": body = "the machines beside it on the map travel with it when it moves"
@@ -2463,6 +2495,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"rewrite_weapon": body = "every weapon and equipment it aims at a foe fires as one %s %s blow, heat %s, its keywords and rules kept" % [str(eff.get("reach", "direct")), vs, str(eff.get("heat", 0))]
 		"vent_blast": body = "a vent it spends on itself blasts a random foe for %s the heat it takes off" % ("the whole of" if is_equal_approx(float(v), 1.0) else "%s×" % vs)
 		"pass_release": body = "a turn it ends with an entry it could have spent and %d heat or more releases its heat once the enemy has acted: %s on every foe, 1 more for each heat over %d" % [int(eff.get("gate", 1)), vs, int(eff.get("gate", 1))]
+		"shove_behind": body = "damaging a foe in the front rank deals %s%% of its maximum HP, rounded up, to the foe behind it" % vs
 		"hold_status": body = "its %s does not decay" % str(STATUS.get(str(v), {}).get("name", v))
 		"heat_per_blow": body = "every blow a foe lands on it adds %s heat" % vs
 		"mute_keywords": body = "its components' keywords are muted"
@@ -2482,7 +2515,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"corrupt_bite": body = "bites its owner %s a stack when its entry is spent" % vs
 		"cool_hitter": body = "a weapon's hit on it cools the hitter %s heat a stack" % vs
 		"paradox":
-			body = "a foe gaining any other status gains Paradox; at %s it is suppressed and the Paradox clears" % vs
+			body = "a foe gains a Paradox stack for every stack of another debuff it gains; at %s or more every stack is consumed and it is Suppressed" % vs
 		"add_stacks":
 			body = "every stack this machine applies is %s deeper" % vs
 			if int(eff.get("per_heat", 0)) > 0:
@@ -2497,6 +2530,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"on_hull_damage": lead = "on losing hull: "
 		"on_shield_hit": lead = "on a foe's blow its shield takes, none on its hull: "
 		"on_blocked": lead = "on each blow of its weapons a foe's armour or Barrier takes whole: "
+		"on_barrier": lead = "as it gains a Barrier: "
 		"on_skirmish_start": lead = "as the fight begins: "
 		"on_shield_gain": lead = "on gaining shield: "
 		"on_shield_granted": lead = "an ally this machine shields: "

@@ -759,12 +759,14 @@ def baboon(b):
     hp_6 bare on the left), the shoulders hp_1 and hp_2 (Umbra Projectors); the Radiator
     Sail is the vent block on the backpack, no mount; a d7. Every number is a proportion
     Ryan may change. Since the stock pass (22 October) every station keeps its kind, the pins
-    renumbered to the stock's order and each part its class (Ryan's go, 28 October): the
-    shoulders' elevating mounts carry the Halo Shield's dish (hp_3, left) and the Ankle
-    Mortar's rack (hp_5, right) where the projectors rode; the fists' outer sides the Twin
-    Autoguns (hp_1, right) and the Rivet Gun (hp_4, left); the right fist's top the Laser
-    Carbine (hp_2) where the Zenith Emitter was; the left fist's top bare (hp_6); the vent
-    block on the backpack is detail (the Coolant Jacket shows nowhere)."""
+    renumbered to the stock's order and each part its class (Ryan's go, 28 October). Since its
+    rework (Ryan, 11 November) four mounts, the fists' outer sides gone ("they don't make sense
+    with the hand shape anyway"): the right fist's top the Laser Carbine (hp_1) where the Zenith
+    Emitter was; the shoulders' elevating mounts the Halo Projector's dish (hp_2, left) and the
+    Ankle Mortar's rack (hp_3, right) where the projectors rode; the left fist's top bare (hp_4,
+    the stock's Rivet Gun fitted there). The backpack's two pods are its two locked pieces, the
+    Retrocausal Shroud (left) and the Redshift Emitter (right); the vent block on the backpack is
+    detail (the Coolant Jacket shows nowhere)."""
     OCT = lambda r: _poly(r, 8, math.pi / 8)
     Z0 = -5.0   # the upper body rides this much lower than the third pass: the legs got shorter
     # Feet and legs: plantigrade, the whole sole on the ground; knee forward of the ankle,
@@ -816,7 +818,7 @@ def baboon(b):
         b.box(px - 4.0, px + 4.0, -2.0, 6.0, 60.0 + Z0, 65.0 + Z0, "steel.plate", "projector_mount")
         side = "l" if s < 0 else "r"
         with b.joint("elev_%s" % side, (px, 2.0, 63.0 + Z0), limits=(-6.0, 50.0)):   # the shoulder piece elevates on its mount
-            b.stock("hp_%d" % (3 if s < 0 else 5), (px, 6.0, 64.0 + Z0), "dish" if s < 0 else "rack", scale=0.6, carries="halo_projector" if s < 0 else "ankle_mortar")
+            b.stock("hp_%d" % (2 if s < 0 else 3), (px, 6.0, 64.0 + Z0), "dish" if s < 0 else "rack", scale=0.6, carries="halo_projector" if s < 0 else "ankle_mortar")
         # The arm: the elbow back and out behind the shoulder, the forearm forward and
         # down to a wrist drum, the fist hanging from it to rest on the ground, knuckles
         # forward (Ryan, 30 September: back on the ground, and loaded).
@@ -842,30 +844,41 @@ def baboon(b):
         wr = b.joint("wrist_%s" % side, wrist, limits=(-60.0, 60.0))
         wr.__enter__()
         _fist(b, wrist[0], wrist[1] - 7.0, wrist[1] + 7.0, wrist[2] - 16.5, wrist[2] - 3.5, 14.0, -s)   # the inner side faces the body
-        # Two mounts a hand. On the outside of each fist a gun, the Twin Autoguns on the
-        # right (hp_1) and the Rivet Gun on the left (hp_4); on the fist's top the Laser
-        # Carbine on the right (hp_2) and a bare mount on the left (hp_6).
-        gx = wrist[0] + s * 9.5
-        b.box(min(gx - 2.5, gx + 2.5), max(gx - 2.5, gx + 2.5), wrist[1] - 5.0, wrist[1] + 5.0, wrist[2] - 13.0, wrist[2] - 7.0, "steel.plate", "repeater_mount")
-        b.stock("hp_%d" % (1 if s > 0 else 4), (gx, wrist[1] + 1.0, wrist[2] - 10.0), "twin_barrel" if s > 0 else "barrel", scale=0.5, carries="twin_autoguns" if s > 0 else "rivet_gun")
+        # A mount a hand, on the fist's top (Ryan, 11 November: the outer hand mounts go, "they
+        # don't make sense with the hand shape anyway"): the Laser Carbine on the right (hp_1)
+        # and a bare mount on the left (hp_4).
         top = (wrist[0], wrist[1] + 1.0, wrist[2] - 3.5)
         if s > 0:
             b.box(top[0] - 3.5, top[0] + 3.5, top[1] - 5.0, top[1] + 3.0, top[2], top[2] + 3.0, "steel.plate", "emitter_mount")
-            b.stock("hp_2", (top[0], top[1] + 1.0, top[2] + 5.0), "barrel", scale=0.5, carries="laser_carbine")
+            b.stock("hp_1", (top[0], top[1] + 1.0, top[2] + 5.0), "barrel", scale=0.5, carries="laser_carbine")
         else:
-            b.pad("hp_6", (top[0], top[1] + 1.0, top[2] + 3.0), size=(7.0, 3.0))
+            b.pad("hp_4", (top[0], top[1] + 1.0, top[2] + 3.0), size=(7.0, 3.0))
         wr.__exit__(None, None, None)
         el.__exit__(None, None, None)
         jt.__exit__(None, None, None)
-    # The backpack: a tall rack, red stripes down its sides, two flare pods on top (the
-    # fixed component, the Solar Flare Array: built in, so no pin), the Radiator Sail's
-    # vent block on its rear (a vent: detail, no mount), a mast with a red light between
-    # the pods, and a row of small lit ports across the rack's back.
+    # The backpack: a tall rack, red stripes down its sides, two pods on top, the Radiator
+    # Sail's vent block on its rear (a vent: detail, no mount), a mast with a red light
+    # between the pods, and a row of small lit ports across the rack's back. The pods are
+    # the two locked pieces since 11 November (Ryan: "The backpack are the two locked bits,
+    # maybe just need a little something on top, a little asymmetry"), built in, so no pin:
+    # the left the Retrocausal Shroud, a ring of lit glass tilted over its cap on a post; the
+    # right the Redshift Emitter, a short barrel raked forward off its cap with a lit lens.
     b.box(-17.0, 17.0, -26.0, -14.0, 34.0 + Z0, 68.0 + Z0, "steel.panel", "rack")
     for s in (-1.0, 1.0):
         b.box(min(s * 17.0, s * 18.5), max(s * 17.0, s * 18.5), -25.0, -15.0, 38.0 + Z0, 64.0 + Z0, "livery.livery", "rack_stripe")
         b.prism("z", s * 10.0, -20.0, 74.0 + Z0, 5.0, 14.0, "steel.dark", 6, "flare_pod")
         b.prism("z", s * 10.0, -20.0, 81.5 + Z0, 5.5, 1.5, "steel.plate", 6, "pod_cap")
+    # The left pod's ring (the Retrocausal Shroud), tilted toward the front and out.
+    rc = Vector((-10.0, -20.0, 87.5 + Z0))
+    rn = Vector((-0.35, 0.45, 1.0)).normalized()
+    b.prism("z", -10.0, -20.0, 84.6 + Z0, 0.8, 4.6, "steel.dark", 6, "shroud_post")
+    _tube(b, tuple(rc - rn * 0.6), tuple(rc + rn * 0.6), 5.4, 4.2, 8, "amber.spark", "shroud_ring", floor=False, phase=math.pi / 8)
+    # The right pod's barrel (the Redshift Emitter), raked forward and up, its lens lit.
+    eb = Vector((10.0, -20.0, 82.4 + Z0))
+    ed = Vector((0.18, 0.75, 0.62)).normalized()
+    _tube(b, tuple(eb), tuple(eb + ed * 7.5), 2.8, 2.1, 6, "steel.dark", "emitter_barrel", floor=False)
+    b.prism("z", 10.0, -20.0, 82.9 + Z0, 3.2, 1.0, "steel.plate", 6, "emitter_collar")
+    _disc(b, tuple(eb + ed * 7.0), tuple(ed), 2.05, 6, "amber.heat", "emitter_lens")
     b.box(-14.0, 14.0, -28.5, -26.0, 38.0 + Z0, 52.0 + Z0, "steel.vent", "vent_block")
     for i in range(3):
         b.box(-12.0 + i * 8.0, -8.0 + i * 8.0, -27.0, -26.0, 60.0 + Z0, 62.0 + Z0, "amber.engine", "rack_port")
@@ -950,7 +963,10 @@ def baboon(b):
                       "phase": 0.0 if side == "r" else 0.5})
     tracks, body, stride = _plant(limbs, sweep=26.0, lift=6.0, crouch=0.5, dip=1.2, nod=1.0)
     b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
-    b.fires = {"solar_flare_array": ("charge_projectors", 1.8, 3.4)}   # its fixed weapon fires with a slice of its act: the projectors' charge and blaze (Ryan, 31 October: "go for ones that are cheapest to do first")
+    # Its locked pieces play a slice of its act as they are used: the projectors' charge and blaze
+    # (Ryan, 31 October: "go for ones that are cheapest to do first"; the Solar Flare Array's until
+    # 11 November).
+    b.fires = {"retrocausal_shroud": ("charge_projectors", 1.8, 3.4), "redshift_emitter": ("charge_projectors", 1.8, 3.4)}
     b.move(accel=1.1, heft=0.2)
 
 baboon.maker = "aphelion"

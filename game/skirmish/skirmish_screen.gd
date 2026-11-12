@@ -71,7 +71,7 @@ const ROWS_BOTTOM := {"BACK_Y": 72.0, "FRONT_Y": 266.0, "MECH_Y": 480.0, "LOG_Y"
 ## FIELD_THETA down there; the squad stands in SLOTS hexes of it, a smaller one leaving its
 ## spots empty, so the floor never changes with the squad.
 const FIELD_THETA := 30.0
-const SLOTS := 4
+const SLOTS := Skirmish.SQUAD_SPOTS
 const MECH_FOOT := 214.0    # a machine's hex centre below the top of its row
 const MECH_WINDOW := Rect2(-22.0, 14.0, 220.0, 256.0)   # a machine's view in its row: the floor camera's window it is drawn through
 const MECH_FILL := 0.96     # a machine's size in hexes at its class's full share (MechView3D.SIZE_FILL)
@@ -791,7 +791,7 @@ func _slot_count() -> int:
 ## The spot machine `i` stands in: a squad of one or two in the middle hexes, the outer ones
 ## left empty (Ryan, 29 October), a squad of three from the left.
 func _mech_slot(i: int) -> int:
-	return i + floori((_slot_count() - sk.mechs.size()) * 0.5)
+	return sk.mech_spot(i)   # the sim's rule, so the foe a machine faces is the one drawn in front of it
 
 
 ## How far machine `i` turns from facing the foes, toward the middle (Ryan, 29 October: "player
@@ -1696,6 +1696,9 @@ func _foe_rows(foe: Foe) -> Array:
 		# instead of the stacks, with the tooltip showing the riders"): the sea mine's glyph with its
 		# damage, its readout its keywords and what its fall does.
 		rows.append(status_row("mine", "mine", str(int(mine["damage"])), "%s; blows on every foe round its slot when it falls" % Skirmish.mine_text(mine), _foe_chip_colour("mine")))
+	var sap := Effects.stacks_of(foe, "sapped")
+	if sap > 0:
+		rows.append(status_row("sapped", "sap", "-%d" % sap, "Sapped ×%d: its blows %d lower until after its next turn" % [sap, sap], _foe_chip_colour("sapped")))
 	for pin in Effects.HOLDERS.values():   # a pin's chip: the lock on the status it holds
 		if Effects.has(foe, pin):
 			rows.append(status_row(pin, Terms.glyph(pin), "", str(Effects.STATUS[pin]["name"]), _foe_chip_colour(pin)))
@@ -1754,6 +1757,8 @@ static func _foe_glyph(id: String) -> String:
 			return "burn"
 		"flakked":
 			return "flak"
+		"sapped":
+			return "sap"
 		"cryoed":
 			return "cryo"
 		"webbed":
@@ -2899,7 +2904,11 @@ func _use_die(i: int, target, second = null) -> bool:
 	var spent: Face = sk.mechs[i].face()
 	var sealed_before := Effects.is_sealed(sk.mechs[i].unit)
 	var heat_before := _heats()
-	var fuel := spent.rolls_again_on if spent != null else ""
+	# The store a charged Instant spends (the Knuckle of Fury's five rage, 12 November): its chip
+	# bursts and the die flips back with its roll.
+	var fuel := ""
+	if spent != null and spent.charge_store() != "muster" and spent.charged_form().has(Face.Keyword.INSTANT) and sk.charge_lands(sk.mechs[i]):
+		fuel = spent.charge_store()
 	var fuel_before := Effects.stacks_of(sk.mechs[i].unit, fuel) if not fuel.is_empty() else 0
 	var ok := sk.assign(i, target, second)
 	if ok:
@@ -3081,7 +3090,7 @@ func _form_shift_at(t: float, i: int, sealing: bool) -> void:
 static func _strikes_of(blows: Array) -> int:
 	var n := 1
 	for b in blows:
-		if str(b["kind"]) != "zap" and str(b["kind"]) != "mine":
+		if str(b["kind"]) != "zap" and str(b["kind"]) != "mine" and str(b["kind"]) != "shove":
 			n = maxi(n, int(b["strike"]) + 1)
 	return n
 
@@ -3912,8 +3921,9 @@ func _on_undo() -> void:
 	_refresh()
 
 
-## A die rolled again by a stack it spent (the Nemesis's rage, Ryan, 13 October): the stack's
-## chip bursts as it goes, then the die flips back with the reroll's own flip and sound. The
+## A die rolled again by a store it spent (the Nemesis's rage, Ryan, 13 October: a stack a roll
+## until 11 November; the Knuckle of Fury's charged Instant, five rage, since 12 November): the
+## store's chip bursts as it goes, then the die flips back with the reroll's own flip and sound. The
 ## die waits folded until then, so its new face is never seen before the roll.
 func _roll_again(i: int, status: String) -> void:
 	_mech_views[i].spend_chip(status_glyph(status))
