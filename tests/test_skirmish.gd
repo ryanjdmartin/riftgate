@@ -10647,3 +10647,22 @@ func _regrid(sk: Skirmish, cells: Array) -> void:
 		sk.back[col] = null
 	for cell in cells:
 		sk._place(cell[0], cell[1], cell[2])
+
+
+## The round's forecast shows the Lance's rider coming (11 November): dragged over a machine, the
+## foe in front of it shows Weakened among what the round lands on it.
+func test_the_forecast_shows_the_rider_coming_on_the_foe_in_front() -> void:
+	var lance := Face.from_dict({"kind": "buff", "status": "overcharged", "stacks": 2, "in_front": {"status": "weakened", "stacks": 2}})
+	var sk := Skirmish.new(1)
+	sk.add_mech(_mech("A", Die.single(lance), 40, 1000))
+	sk.add_mech(_mech("B", Die.single(Face.attack(3, L)), 40, 1000))
+	var a := _ghoul(500, 3)
+	var b := _ghoul(500, 3)
+	sk.add_foes([a, b])
+	sk.begin()
+	_regrid(sk, [[a, 0, 1], [b, 0, 2]])
+	sk.start_round()
+	var front := sk.foe_in_front(sk.mechs[1])
+	var pv := sk.preview_round(0, sk.mechs[1])
+	assert_true((pv["foes"][front]["coming"] as Dictionary).has("weakened"), "Weakened coming on the foe in front")
+	assert_false(Effects.has(front, "weakened"), "and nothing landed yet")
