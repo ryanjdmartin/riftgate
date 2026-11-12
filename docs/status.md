@@ -27,8 +27,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1154 tests, 371,540 checks, green on `ccr-b7d5164e-1wtzzm` (12 November, the Needletail's
-  two modes and the Giant Petrel's hull over main at `6112939`). Before it, 1154 tests, 371,076
+- Tests: 1155 tests, 371,639 checks, green on `ccr-b7d5164e-1wtzzm` (12 November, the Needletail
+  and the Giant Petrel reworked on Ryan's notes over main at `6112939`). Before it, 1154 tests, 371,076
   checks, green on main (12 November, as `ccr-4d58b054-3lyj0a` landed
   with the vent blast's and Siphoning's cut, the Overrun Gearing, the Shift Whistle dealt, the
   Whip Scorpion's broadside and its two new idle acts, over the dead-code pass and the four
@@ -70,7 +70,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 Everything is on main as of 12 November 2026; the formation and refit session's branch lands as it goes, below.
 `ccr-b7d5164e-1wtzzm`, this session's (12 November), cut from main at `6112939`: the to-do's
 roster pruned, then the Needletail's two modes and the Giant Petrel's hull on Ryan's design and
-mix (How things stand, below); not landed, main takes it on his word.
+mix, reworked that evening on his notes (How things stand, below); not landed, main takes it on
+his word (main has moved since: the refit session's content and its brief).
 `ccr-8af28d03-re9kz4`, the Ammit's rework of 12 November and what followed it that day (How
 things stand, below), cut from main at `87da46f`, landed three times as fast-forwards on Ryan's
 word: the rework, after taking main twice in merges ("Merge into main when you're done"); the
@@ -342,8 +343,8 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   working name, a support engine) and the Snowy Owl (a stealth unit, leaning to Cryo: Ryan,
   5 November) are Ryan's next session, their briefs' first rounds unanswered. The
   Needletail's two modes (his own design) and the Giant Petrel's catamaran hull (his mix of the
-  second round's two) are built since 12 November, first cuts for him to judge running (the
-  to-do); the Giant Petrel's kit is still his to start.
+  second round's two) are built since 12 November and reworked that evening on his notes, for him
+  to judge running (the to-do); the Giant Petrel's kit is still his to start.
 - Wainwright & Sutler: ten decided, 3-5-2, nine built (the bible's roster row). The Swallowtail
   is back in design (`ws_swallowtail.md`, punted); the Whip Scorpion's rework is built (11
   November). The Swallowtail, the
@@ -441,20 +442,22 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
 - **The Needletail's two modes and the Giant Petrel's hull** (`ccr-b7d5164e-1wtzzm`, 12 November;
-  not on main): the Needletail on Ryan's own design of that day (the bible's Kestrel row): it
-  stands and fights in hover mode, four boosters upright on swivels on short canards and
-  tailplanes, two pods out of the upper diagonals behind the canopy and two guns run out of round
-  ports ahead of it, the Fovea Designator a pop-up on the nose; on the map its gait changes it
-  into flight mode as it gathers speed (the weapons in, the ports' irises shut, the boosters level
-  and tight to the body on slides, the deltas swung out of the middle fuselage) and back as it
-  slows, its transition act the same change on the spot. Four hardpoints in content ("That means
-  4 hardpoints and one locked"), the fourth a second Laser Carbine, his pick. The Giant Petrel on
-  his mix ("The engines and rear spoiler of the racer, on the command ship body of the Navy SES
-  take", the SES as reviewed): the look tests of 31 October brought into the model, the two Twin
-  Autoguns on the hulls' foredecks since the engines take the quarterdeck (Claude's placement).
-  Both first cuts with a render round in the hangar's Models tab (the old as Before), published as
-  the page's Version 245 on his word ("Yes, republish the hangar so I can see them"); 1154 tests
-  green.
+  not on main): built that day on Ryan's design and his mix, then reworked that evening on his
+  notes (the bible's Kestrel row). The Needletail: a round body, a rocket about two fifths
+  shorter, the canopy amidships; it stands and fights in hover mode, four shorter boosters upright
+  on swivels (the front pair on short canards, the rear on tailplanes among the X fins, six fins
+  in all), two pods raised out of dark slots in the upper diagonals behind the canopy, two guns
+  run out of the cheeks ahead of it, the Fovea Designator a pop-up on the nose; on the map its
+  gait changes it into flight mode as it gathers speed (the guns in and a clamshell shut over
+  each cheek, the pods sunk flush, the boosters level and run in along their fins, the swept
+  wings out) and back as it slows, its transition act the same change on the spot. Four
+  hardpoints in content, the fourth a second Laser Carbine, his pick. The Giant Petrel: the
+  railgun alone on the centre bow and a Twin Autoguns on each hull's afterdeck, its gun house
+  built facing out to its side (the skirmish now turns a gun from where it points as built,
+  `MechView3D.aim_rest`, the bible's aiming row; only these two mounts rest off ahead); the
+  salvo's box ahead of the mast; the racer's boosters on plinths either side of a raised aft
+  deckhouse, the navy's two back at the hulls' sterns; windows down the deckhouse's flanks. A
+  render round in the hangar's Models tab each (the first cuts as Before); 1155 tests green.
 
 - **The Ammit's rework** (`ccr-8af28d03-re9kz4`, Ryan's own design, 12 November; on main): "The 4
   claws are combined into one weapon that deals 1x4 instead, with Breach. They no longer gain
