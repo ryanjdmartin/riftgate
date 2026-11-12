@@ -27,9 +27,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1152 tests, 364,655 checks, green on `ccr-8af28d03-re9kz4` (12 November, main at `366b10e`
-  with the kill's flare once an attack, no per-foe flag, Empowered's up sword and the dead-code
-  pass, the rules it cut gone with the tests of their own, not on main yet). Before it,
+- Tests: 1152 tests, 364,655 checks, green on main (12 November, as `ccr-8af28d03-re9kz4` landed
+  a second time with the kill's flare once an attack, no per-foe flag, Empowered's up sword and
+  the dead-code pass, the rules it cut gone with the tests of their own). Before it,
   1158 tests, 364,864 checks, green on `ccr-722ca9f0-yj8na3` (12 November, main at `c717e69`
   with the HEAT and OVERHEAT dials). Before it, 1158 tests, 364,834 checks,
   green on main (12 November, as `ccr-8af28d03-re9kz4` landed with the
@@ -63,17 +63,18 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 ## Branches
 
-Everything is on main as of 12 November 2026 but the Ammit branch's two follow-ups of that day (its line, next); the formation and refit session's branch lands as it goes, below.
+Everything is on main as of 12 November 2026; the formation and refit session's branch lands as it goes, below.
 `ccr-8af28d03-re9kz4`, the Ammit's rework of 12 November (How things stand below), cut from main at
 `87da46f`, took main twice in merges, at `8d936cf` and at `84b3835` (the bible, the rules, this
 file, the measurements, the vocabulary, the die entry's fields, the effects' helpers, the
 validator, the glyphs and their table the conflicts, both sides kept; Hot Streak, gone with the
 Kite's rebuild, out of the Ammit's lines; the bible's version main's plus one, the generated
 documents run again) and main took it as a fast-forward on Ryan's word ("Merge into main when
-you're done"). Since then, brought up to main at `366b10e`, it carries his later words of the
-same day that main does not have: the kill's flare once an attack, the per-foe flag gone,
-Empowered's up sword, and the dead-code pass with its standing rule and its build check (How
-things stand, below). They land on his word; the branch is to delete once they have.
+you're done"). Brought up to main at `366b10e`, it then took his later words of the same day:
+the kill's flare once an attack, the per-foe flag gone, Empowered's up sword, and the dead-code
+pass with its standing rule and its build check (How things stand, below). Main had not moved,
+and took those six commits as a fast-forward on his word ("Merge in main and then reassess");
+it is merged and to delete with the rest.
 `ccr-e3ddf00b-ilkwbi`, the Kestrel fast flyers' session of 11 and 12 November (The design sessions, below),
 cut from main at `209112b`, took main four times in merges, the last at `8d936cf` (the cooldown's
 count, Instant, Sapped, the Wild Boar's and the Baboon's reworks: the engine's Rapid and Instant
@@ -439,8 +440,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   in `models_low.py` by hand to the forge's own shape; no model was rebuilt). The first read is in
   `docs/measurements.md` (12 November: a tier-three battle's chain, before against after, a
   direction at 30 seeds). His three lines are the to-do's: play it, judge its marks, write or
-  pass its text. Four changes of his after it landed, the same day, on the branch and not on main
-  yet. The kill's flare comes once an attack that kills, however many fall to it ("Flaring twice
+  pass its text. Four changes of his after it landed, the same day, on main since that evening
+  (the branch's line, above). The kill's flare comes once an attack that kills, however many fall to it ("Flaring twice
   for an AoE is probably wrong, let's make it 'one of more killed' by an attack"): the first
   build flared once for each foe a spend killed, by a flag on the effect that chose between once
   an attack and once a foe. The flag is gone whole (his, of its second cut, kept for the Souls
@@ -467,7 +468,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   written out in five places (the audit's Structure 11). Put to him: a rework that takes a
   rule's last piece cuts the rule in the same pass, and the audit's dead-code pass next. He took
   both ("Yeah go ahead and fix it"): the next bullet.
-- **The dead-code pass** (`ccr-8af28d03-re9kz4`, 12 November, on that word; not on main yet).
+- **The dead-code pass** (`ccr-8af28d03-re9kz4`, 12 November, on that word; on main the same day).
   The standing rule is CLAUDE.md's: a rule leaves the engine with its last piece, nothing parked
   as a rework's leavings. `tests/test_leftovers.gd` holds it: an effect kind, a trigger, a die
   entry's key or a keyword that no piece prints fails the build until it is cut or listed there
@@ -1541,7 +1542,7 @@ commands are in `README.md`.
   ports, and Changed Over in the buff table). BASE for the next merge is `aac6bfc`'s file. Also
   unpublished: main's v0.548, the Ammit's rework (its Ammit row, the Empowered, purge, store and
   Ability rows, section 12 without the Tap's question, and Souls and Pinned Empowered in the
-  tables), and v0.552 on `ccr-8af28d03-re9kz4`, not on main yet (the Ammit row's flare once an
+  tables), and main's v0.552 since `ccr-8af28d03-re9kz4` landed again (the Ammit row's flare once an
   attack and the cut of its two old rules, the Empowered row's mark, and the rows that said the
   engine kept a rule the dead-code pass cut: the Kite's, a piece of two kinds, a rider's limit,
   Chain's targeting, the Whip Scorpion's); each goes up on Ryan's word. The
