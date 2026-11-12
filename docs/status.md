@@ -145,7 +145,7 @@ Ryan's word ("Clean up and merge in"). Then the Clydesdale's batteries on his pi
 and the stock split is fine"): its die folded into two batteries of four with a shared Changeover,
 the battery up kept from fight to fight (Changed Over), Battery Director retired, its model eight
 ports in a checkerboard, square under trapdoors since his "Sure, square ports", the brief retired (the bible's Clydesdale row, the to-do's play line),
-1129 tests green; main took it as a fast-forward at `d2c024d` on his word ("Merge in and republish"), the hangar and the bible republished with it (Pages). Then its five idle acts on his picks ("Those all sound good. Don't need the old ones"; the swap judged good, "the change over animation looks good to me"): the old four retired, the heat sink a radiator for the breather, Changed Over playing the second battery's own, 1132 tests green; landed on main at `3d5f98f`, the hangar (Version 230) and the bible (v0.535) republished with it on his word ("Republish please"). On his notes of 12 November each port a real well the leaves hang in ("Should it be a hole?"), the drill a broadside and the hatch check a wave down the deck; the pages behind main by them, their republish his word. And `ccr-722ca9f0-yj8na3`, the formation and
+1129 tests green; main took it as a fast-forward at `d2c024d` on his word ("Merge in and republish"), the hangar and the bible republished with it (Pages). Then its five idle acts on his picks ("Those all sound good. Don't need the old ones"; the swap judged good, "the change over animation looks good to me"): the old four retired, the heat sink a radiator for the breather, Changed Over playing the second battery's own, 1132 tests green; landed on main at `3d5f98f`, the hangar (Version 230) and the bible (v0.535) republished with it on his word ("Republish please"). On his notes of 12 November each port a real well the leaves hang in ("Should it be a hole?"), the drill a broadside and the hatch check a wave down the deck, at `fbce698`, the hangar (Version 231) and the bible (v0.536) republished with them on his word ("Yes please"). And `ccr-722ca9f0-yj8na3`, the formation and
 refit session. Everything it had committed to `4c8dbf1` went to main with `ccr-4d58b054-3lyj0a`,
 below; its work since landed on Ryan's word of 11 November ("I think it's safe to start sending
 our code here out to main and having me test there in context"), the branch taking main at
@@ -312,7 +312,7 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   ("Yes build them with placeholder numbers"), each to be played (the to-do's Ryan list); the
   map is at the head of `kestrel_line.md`. Main's Whip Scorpion and Clydesdale work is merged in
   (11 and 12 November). Sweep is gone on his word of 12 November ("let's remove it and clean up
-  all those exceptions and code branches that it caused"; the bible's Sweep row, v0.540 here):
+  all those exceptions and code branches that it caused"; the bible's Sweep row, v0.541 here):
   the reach, its spots and per-shot rules, the wasted shot and the rank's bracket, the bot's two
   special paths and the salvo's routine; every weapon is one shape. Every Foe is a weapon's mode
   too, for the Whip Scorpion's release (1 on every foe at 8 heat, 1 more for each heat over) and
@@ -335,7 +335,7 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
     declined (the bible's withdrawal row); Phased on a kill he kept for the shadow panther. The
     model's third mount is a bare pad on the nose's spine. Its brief is retired; his play is the
     to-do's.
-  - The Skua: built as his "Ramping Dakka" (the bible's Kestrel row, v0.540 on this branch,
+  - The Skua: built as his "Ramping Dakka" (the bible's Kestrel row, v0.541 on this branch,
     unpublished). Its passive gains a stack of Ricochet the first time each round one of its
     weapons damages a foe (the trigger `on_damage`; an effect's `once: round`, open to any effect
     an event fires). Ricochet is a buff that lasts the fight: after each shot of a weapon a
@@ -1336,10 +1336,13 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. The live page is v0.535, dated 11 November (the
-  page's Version 507, published from main at `3d5f98f` on Ryan's word, "Republish please": main's
-  file whole, the live v0.534 matching `da18614`'s file byte for byte; new since 506 the Clydesdale's
-  cell in the acts table, its five idle acts). Version 506 (main's `da18614`, on his "Pull in main
+  `docs/design-bible.html` after every change. The live page is v0.536 (the page's Version 508,
+  published from main at `fbce698` on Ryan's word, "Yes please": main's file whole, the live v0.535
+  matching `3d5f98f`'s file byte for byte; new since 507 the batteries row's wells and the acts
+  table's broadside drill and hatch wave), its Date line still 11 November, which main's file has
+  since set to 12 November, the next republish carrying it. Version 507 (main's `3d5f98f`, on his
+  "Republish please") was main's file whole over the live v0.534: the Clydesdale's cell in the acts
+  table, its five idle acts. Version 506 (main's `da18614`, on his "Pull in main
   and republish") was main's file whole over the live v0.533 (`d2c024d`'s): the Prairie Dog's and
   the Dingo's rows from `ccr-4d58b054-3lyj0a`, the Flakshot Repeater, the Hollow-point Harpoon, the
   Translocator's Shock and the two pins in the debuff table. Version 505
@@ -1347,7 +1350,7 @@ commands are in `README.md`.
   (Version 504, main's `60a0e4d`), which matched that commit's file; new since 504 the pacing row in beats of the tide,
   menace a pack's threat rating and the rows that follow it, the Whip Scorpion's rework, the
   hardpoints row with every stock gun its class, the Clydesdale's batteries row and its square
-  ports, and Changed Over in the buff table). `ccr-e3ddf00b-ilkwbi`'s file is v0.540 over that (the withdrawal row with Ryan's call of 11 November on a break-off for one machine, the Kite's row rewritten, the Kestrel row's Needletail and Skua, the tiers row's stock rule, the Sweep row rewritten as its removal with the rows that leaned on it, the Whip Scorpion's and the Musk Ox's rows), unpublished. BASE for the next merge is `3d5f98f`'s file. The
+  ports, and Changed Over in the buff table). `ccr-e3ddf00b-ilkwbi`'s file is v0.541 over that (the withdrawal row with Ryan's call of 11 November on a break-off for one machine, the Kite's row rewritten, the Kestrel row's Needletail and Skua, the tiers row's stock rule, the Sweep row rewritten as its removal with the rows that leaned on it, the Whip Scorpion's and the Musk Ox's rows), unpublished. BASE for the next merge is `fbce698`'s file. The
   live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
@@ -1361,7 +1364,11 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 230 (11 November, main's `3d5f98f`, on Ryan's word, "Republish please"): the nine
+  page's Version 231 (12 November, main's `fbce698`, on Ryan's word, "Yes please"): the same nine
+  for the Clydesdale's wells, broadside drill and hatch wave (its model with the wells' linings, its
+  rig, its four renders, `renders.json`, and `designs.json` and `text.json` for their stamp), the page
+  unchanged, every live copy matching 230's before it was replaced, and the live copies match
+  main's after. Version 230 (11 November, main's `3d5f98f`, on Ryan's word, "Republish please"): the nine
   files the Clydesdale's idle acts moved (its model with the radiator and its heat texture, its rig
   with the five acts and Changed Over's copies, its four renders, `renders.json`, and `designs.json`
   and `text.json` for their stamp), the page unchanged, every live copy matching 229's before it was
