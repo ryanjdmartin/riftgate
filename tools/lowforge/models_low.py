@@ -334,7 +334,7 @@ def kite(b):
     # The third mount (its fourth entry, Ryan, 11 November: "giving it 4 faces again"; the 12th:
     # "on top of the tail segment"): bare, on the tail segment's top behind the intake, on the
     # centreline, its gun firing forward over the canopy.
-    b.pad("hp_3", (0.0, -25.0, 12.3), scale=0.5, size=(3.0, 1.0))
+    b.pad("hp_3", (0.0, -34.0, 12.5), scale=0.5, size=(3.0, 1.0))   # back so its barrel ends at the intake's lip, clear of the canopy (Ryan, 12 November: "Move the barrel back a bit")
     for s in (-1.0, 1.0):
         a = math.radians(s * 38.0)
         root = [(s * 1.5, -60.0, 10.5), (s * 1.5, -48.0, 10.5), (s * 1.5, -48.0, 11.5), (s * 1.5, -60.0, 11.5)]

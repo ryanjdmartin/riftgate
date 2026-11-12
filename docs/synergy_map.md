@@ -31,7 +31,7 @@ or briefs; the pricing run of 27 and 28 October read the first set (the bible's 
 | Barrier | on a machine | Halo Projector (tier 0), stocked; Blast Door (tier 1) | the next blow deals nothing |
 | Ward | on a machine | Decoherence Veil (tier 1) | no rider lands this round |
 | Spun Up | on a machine | Spin-Up (locked, Cassowary) | the next weapon spend +2 a stack |
-| Ricochet | on a machine | Hypersonic Swoop (locked, Skua); Skua's Skip-fire Breech | a strike of 1 more a stack at the target once a weapon has fired: most on riders a strike and on flat buffs; hull damage halves it |
+| Ricochet | on a machine | Hypersonic Swoop (locked, Skua); Skua's Carom Field | a strike of 1 more a stack at the target once a weapon has fired: most on riders a strike and on flat buffs; hull damage halves it |
 | Rallied | on a machine | Reveille Horn (locked, Swallowtail); Immelmann Booster (locked, Giant Petrel) | one reroll more this round |
 | Phased | on a machine | Mooring Screens (locked, Swallowtail): charged | untouchable until the round's end |
 | Sealed | on a machine | Polar Bear's Lockdown | armour +3, cooling stopped, 3 heat a turn |

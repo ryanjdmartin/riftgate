@@ -1119,7 +1119,7 @@
    "design": {
     "fantasy": "The strafer (Ryan, 14 October: \"Love the [strafer], lock that in\"), a swing-wing since 21 October, the strafing jet by trade; the Skua, the seabird that harries others in repeated dives until they drop what they carry. Since 11 November, in his words, Ramping Dakka.",
     "niche": "Ramping Dakka (Ryan, 11 November, a complete rewrite): the first weapon it damages a foe with each round gains it a stack of Ricochet, and after a weapon fires it hits its target again for 1 a stack, so it is the long fight's hitter, weak in its first round and a storm by its fifth, on one foe at a time. Hull damage halves the stacks, so it ramps only while its shield holds: Kestrel's risk. Its lock, the Hypersonic Swoop, is the one way to a second stack in a round. Every bounce pays the foe's armour, so plate stops it and an Exposed foe does not; its payoffs are riders laid a strike and flat buffs counted on each strike.",
-    "notes": "Rewritten 11 November on his words (the fast flyers' round: the bible's Kestrel row; its brief, git show e5638e2:docs/briefs/kestrel_skua.md). The stack is the passive's (on_damage, once a round) and the Swoop's; Ricochet is a buff that lasts the fight, read by the hit, halved on hull damage. Retired with it: the Split-cycle Breech (every weapon hitting twice at half; the engine keeps split_strikes, which no passive uses) and the Flechette Pod as its lock, now an ordinary weapon in its stock. Every number a placeholder. Its stock is three guns, the Pod in the Shoring Jack's place (his to move); the Pod four strikes of 1 since Sweep went on 12 November. Its model is the jaeger of 26 and 27 October (tools/lowforge/models_low.py, skua): the Pod hangs as a rack on the belly mount, and the twin pods on its spine, the old lock's, are housings nothing fires until its look is revisited."
+    "notes": "Rewritten 11 November on his words (the fast flyers' round: the bible's Kestrel row; its brief, git show e5638e2:docs/briefs/kestrel_skua.md). The stack is the passive's (on_damage, once a round) and the Swoop's; Ricochet is a buff that lasts the fight, read by the hit, halved on hull damage. Retired with it: the Split-cycle Breech (every weapon hitting twice at half; the engine keeps split_strikes, which no passive uses) and the Flechette Pod as its lock, now an ordinary weapon in its stock. Every number a placeholder. Its stock is three guns, the Pod in the Shoring Jack's place (his to move); the Pod four strikes of 1 since Sweep went on 12 November. Its model is the jaeger of 26 and 27 October (tools/lowforge/models_low.py, skua): the Pod hangs as a rack on the belly mount, and the twin pods on its spine, the old lock's, are housings nothing fires until its look is revisited. Its passive's name is his (12 November: \"Carom field or rebound field?\", then \"go for the rename\"; Skip-fire Breech was a session's working name)."
    },
    "codex": "",
    "hull": 20,
@@ -1144,8 +1144,8 @@
     "flechette_pod"
    ],
    "passive": {
-    "id": "skip_fire_breech",
-    "name": "Skip-fire Breech",
+    "id": "carom_field",
+    "name": "Carom Field",
     "description": "Once a round, damaging a foe with a weapon gains it a stack of Ricochet.",
     "effects": [
      {

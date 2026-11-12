@@ -312,7 +312,7 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   ("Yes build them with placeholder numbers"), each to be played (the to-do's Ryan list); the
   map is at the head of `kestrel_line.md`. Main's Whip Scorpion and Clydesdale work is merged in
   (11 and 12 November). Sweep is gone on his word of 12 November ("let's remove it and clean up
-  all those exceptions and code branches that it caused"; the bible's Sweep row, v0.543 here):
+  all those exceptions and code branches that it caused"; the bible's Sweep row, v0.544 here):
   the reach, its spots and per-shot rules, the wasted shot and the rank's bracket, the bot's two
   special paths and the salvo's routine; every weapon is one shape. Every Foe is a weapon's mode
   too, for the Whip Scorpion's release (1 on every foe at 8 heat, 1 more for each heat over) and
@@ -336,7 +336,7 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
     model's third mount is a bare pad on top of the tail segment, and the tail segment's face
     behind the canopy is an air intake (his, 12 November). Its brief is retired; his play is the
     to-do's.
-  - The Skua: built as his "Ramping Dakka" (the bible's Kestrel row, v0.543 on this branch,
+  - The Skua: built as his "Ramping Dakka" (the bible's Kestrel row, v0.544 on this branch,
     unpublished). Its passive gains a stack of Ricochet the first time each round one of its
     weapons damages a foe (the trigger `on_damage`; an effect's `once: round`, open to any effect
     an event fires). Ricochet is a buff that lasts the fight: after each shot of a weapon a
@@ -1353,7 +1353,7 @@ commands are in `README.md`.
   (Version 504, main's `60a0e4d`), which matched that commit's file; new since 504 the pacing row in beats of the tide,
   menace a pack's threat rating and the rows that follow it, the Whip Scorpion's rework, the
   hardpoints row with every stock gun its class, the Clydesdale's batteries row and its square
-  ports, and Changed Over in the buff table). `ccr-e3ddf00b-ilkwbi`'s file is v0.543 over that (the withdrawal row with Ryan's call of 11 November on a break-off for one machine, the Kite's row rewritten, the Kestrel row's Needletail and Skua, the tiers row's stock rule, the Sweep row rewritten as its removal with the rows that leaned on it, the Whip Scorpion's and the Musk Ox's rows), unpublished. BASE for the next merge is `fbce698`'s file. The
+  ports, and Changed Over in the buff table). `ccr-e3ddf00b-ilkwbi`'s file is v0.544 over that (the withdrawal row with Ryan's call of 11 November on a break-off for one machine, the Kite's row rewritten, the Kestrel row's Needletail and Skua, the tiers row's stock rule, the Sweep row rewritten as its removal with the rows that leaned on it, the Whip Scorpion's and the Musk Ox's rows), unpublished. BASE for the next merge is `fbce698`'s file. The
   live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
