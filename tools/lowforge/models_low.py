@@ -5607,72 +5607,142 @@ def _fin_section(x, y_le, y_te, z, t, lead=0.35):
 
 
 def needletail(b):
-    """Kestrel "Needletail" (K-17 Mk I Tilt-Jet Spotter): a debuff or a buff is Rapid on it once
-    a round, and its Fovea Designator Exposes a foe (Ryan's go, 21 October: a tilt-jet, agile and
-    omnidirectional). First cut, 23 October, parted from above from the Buzzard, whose nacelles
-    tilt on the shoulders of a broad-winged airframe: a slim needle of a fuselage on a short
-    straight stub wing with a big booster nacelle on each tip, standing upright at rest so it
-    hovers on them, exhausts down (joints nacelle_l and nacelle_r, from upright through level
-    forward, and a little past upright back for flying backward); a long thin tail boom ending in
-    a dark needle with four small fins in an X (the Kite flies a V, the Buzzard none); a wide
-    spotter's canopy; and the Fovea Designator (fixed, no pin) a sensor ball on a short mast
-    behind the canopy, its lens lit, turning and nodding on its joints (sensor, eye). On the move
-    the nacelles tilt forward as it gathers speed and come upright as it slows. Mounts in the
-    die's order: hp_1 under the left stub (the Transonic Rifle), hp_2 under the right (the
-    Overcharge Coil, a dish), hp_3 bare under the belly (the vent shows nowhere). Centred on
-    z = 0 like the Kite."""
-    FUSE = [(46.0, 1.2, 0.5, 0.5), (38.0, 6.0, 2.6, 2.4), (28.0, 11.0, 4.4, 4.0), (14.0, 13.0, 5.0, 4.6), (0.0, 12.0, 5.0, 4.4),
-            (-12.0, 8.0, 4.0, 3.4), (-22.0, 4.4, 2.4, 2.2), (-30.0, 3.2, 1.8, 1.6), (-58.0, 2.2, 1.2, 1.0)]   # (y, w, top, bottom)
+    """Kestrel "Needletail" (K-17 Mk I Tilt-Jet Spotter): each round a weapon and an equipment,
+    the Fovea Designator its one equipment, so it marks every round. Ryan's design of 12 November,
+    in his words: "In hover mode, two sets of vertical boosters on swivels. Front boosters are
+    smaller, on the ends of short canards. Rear boosters are larger, and sit at the tip of
+    horizontal tailfins. Four other tailfins are arranged in an X pattern. No apparent main
+    wings. When changed into flight mode, all four boosters rotate to horizontal and the wings
+    they are on retract so the boosters are tight to the body. Triangular wings swing out of the
+    middle fuselage. In flight mode, no weapons are visible. In hover mode, weapons appear: two
+    weapon pods extrude out, mounted on the diagonals of the fuselage, one on either side, both
+    behind the canopy. In front of the canopy, two round ports open, and weapons slide out, just
+    like the Polar Bear. The locked piece sits on top of the nose, flipped up like a hidden
+    headlight on a sports car. That means 4 hardpoints and one locked." The pods on the upper
+    diagonals (his pick, the same day). It replaces the first cut of 23 October and the look
+    tests of 27 October (the Fox and the tail-sitter, docs/looks/kestrel_needletail4.png).
 
-    def top(y):
-        for (y0, w0, t0, b0), (y1, w1, t1, b1) in zip(FUSE, FUSE[1:]):
-            if y1 <= y <= y0:
-                return t0 + (t1 - t0) * (y0 - y) / (y0 - y1)
-        return FUSE[-1][2]
-    b.loft([(y, _fuse(w, t, bt)) for (y, w, t, bt) in FUSE], "steel.plate", "fuselage")
-    b.loft([(38.0, diamond(0.0, 0.0, 2.0, 1.8)), (47.0, diamond(0.0, 0.0, 0.8, 0.6))], "steel.dark", "nose_tip")
-    b.loft([(-57.0, diamond(0.0, 0.1, 2.0, 1.8)), (-75.0, diamond(0.0, 0.1, 0.3, 0.3))], "steel.dark", "needle")
-    # The spotter's canopy: wide and tall on the nose's flat top, a frame band across it.
-    CAN = [(33.0, 1.2, 0.8), (28.0, 2.8, 3.2), (20.0, 3.2, 4.0), (12.0, 3.0, 3.4), (6.0, 2.0, 1.4)]   # (y, half width, height)
+    Built at rest in hover mode, the pose it holds standing and in every fight: a long thin nose
+    (the needle) out of a forward-facing step, the two round ports in the step either side of it
+    with the guns run out, the wide spotter's canopy behind, the middle fuselage widening into a
+    flat chined body whose upper chamfers carry the two pods, the tail narrowing to a dark needle
+    behind the X fins; the front boosters (joints booster_fl, booster_fr) upright at the tips of
+    the canards (canard_l, canard_r), the rear ones (booster_rl, booster_rr) at the tips of the
+    tailplanes (tailplane_l, tailplane_r); the delta wings (wing_l, wing_r) stowed inside the
+    middle fuselage; the Designator a pop-up on the nose's top (lamp, hinged at its back), up, its
+    lens forward, turning on its own joint (sensor). Flight mode is the gait (MechRig.drive): as it
+    gathers speed the boosters swivel level, the canards and tailplanes run into the body (slides)
+    so the boosters sit tight to it, the deltas swing out, the pods sink into the chamfers
+    (pod_l, pod_r, along the diagonals), the port guns run back into the nose (run_l, run_r) and
+    the ports' irises close over them (shutter_l, shutter_r), and the lamp folds flush; slowing,
+    it all comes back. Mounts in the die's order: hp_1 the left port (the Transonic Rifle), hp_2
+    the right port (the Laser Carbine), hp_3 the left pod (the Twin Autoguns), hp_4 the right pod
+    (the second Laser Carbine, Ryan's pick of 12 November); each pod gun recoils on its own run
+    (run_pod_l, run_pod_r). Centred on z = 0 like the Kite."""
+    # The fuselage behind the step, (y, w, top, bottom): the step's face at its front, the
+    # middle widest and flat for the stowed deltas, the tail narrowing to the needle.
+    BODY = [(37.0, 20.0, 5.0, 4.0), (30.0, 20.0, 5.4, 4.0), (20.0, 20.0, 5.6, 4.0), (10.0, 21.0, 5.9, 4.0),
+            (2.0, 22.0, 6.4, 4.0), (-16.0, 22.0, 6.4, 4.0), (-28.0, 20.0, 5.6, 3.8), (-36.0, 13.0, 4.4, 3.2),
+            (-46.0, 9.0, 3.4, 2.6), (-56.0, 5.0, 2.0, 1.6), (-62.0, 2.6, 1.0, 0.9)]
+    # The nose, the needle, run back into the body through the step.
+    NOSE = [(64.0, 1.0, 0.5, 0.5), (58.0, 2.6, 1.3, 1.1), (50.0, 4.6, 2.2, 1.8), (45.0, 6.4, 2.75, 2.1), (41.0, 7.2, 3.05, 2.3), (37.5, 6.2, 3.05, 2.3), (33.0, 6.0, 3.0, 2.3)]   # a short hood behind the needle for the pop-up, pinched at the step clear of the ports
 
-    def cab(y, hw, h, grow=0.0):
-        z, hw = top(y), hw + grow
-        return [(-hw, z - 0.6), (hw, z - 0.6), (hw, z + h * 0.55 + grow), (hw * 0.6, z + h + grow), (-hw * 0.6, z + h + grow), (-hw, z + h * 0.55 + grow)]
-    b.loft([(y, cab(y, hw, h)) for (y, hw, h) in CAN], "glass.glass", "canopy")
-    b.loft([(21.0, cab(21.0, 3.2, 3.9, 0.3)), (19.8, cab(19.8, 3.2, 4.0, 0.3))], "steel.dark", "canopy_frame")
-    # The Fovea Designator (fixed): a sensor ball on a short mast, turning (sensor) and nodding
-    # (eye), its lens a glass ring round a lit core.
-    mz = top(-1.0)
-    b.prism("z", 0.0, -1.0, mz + 2.2, 1.0, 4.4, "steel.dark", 6, "sight_mast")
-    sz = mz + 6.8
-    with b.joint("sensor", (0.0, -1.0, sz), axis="yaw", limits=(-80.0, 80.0)):
-        with b.joint("eye", (0.0, -1.0, sz), axis="pitch", limits=(-30.0, 20.0)):
-            BALL = [(-4.2, 1.0), (-3.2, 2.6), (-1.0, 3.4), (1.2, 2.8), (2.2, 1.8)]   # (y off the mast, radius)
-            b.loft([(-1.0 + dy, _oct(sz, 2.0 * r, 2.0 * r, 0.0, 10)) for (dy, r) in BALL], "steel.plate", "sensor_ball")
-            b.prism("y", 0.0, 1.5, sz, 1.9, 0.8, "glass.glass", 10, "lens")
-            b.prism("y", 0.0, 1.95, sz, 0.95, 0.6, "amber.lit", 10, "fovea")
-            for s in (-1.0, 1.0):
-                b.box(s * 3.2 - 0.4, s * 3.2 + 0.4, -2.6, 0.6, sz - 1.0, sz + 1.0, "steel.dark", "sensor_cheek")
-    # The stub wings, straight and short, and on each tip a booster nacelle standing upright on
-    # a pivot drum: its intake up, its exhaust lit underneath.
+    def width(y):
+        return _lerp_at(BODY, y)[0]
+    body = b.loft([(y, _fuse(w, t, bt)) for (y, w, t, bt) in BODY], "steel.plate", "fuselage")
+    nose = b.loft([(y, _fuse(w, t, bt)) for (y, w, t, bt) in NOSE], "steel.plate", "nose")
+    b.loft([(63.0, diamond(0.0, 0.0, 1.6, 1.4)), (72.0, diamond(0.0, 0.0, 0.3, 0.3))], "steel.dark", "nose_tip")
+    b.loft([(-61.0, diamond(0.0, 0.05, 2.2, 1.8)), (-72.0, diamond(0.0, 0.05, 0.3, 0.3))], "steel.dark", "needle")
+    # The wide spotter's canopy behind the step, a frame band across it.
+    _jet_canopy(b, BODY, [(35.0, 1.4, 0.6), (31.0, 4.2, 3.0), (25.0, 5.0, 4.0), (18.0, 4.6, 3.4), (12.0, 3.0, 1.6), (9.0, 1.2, 0.4)], 22.0)
+
+    # The two round ports in the step's face either side of the needle, cut through the body,
+    # lined, a stripe rim at each mouth; an iris in each that closes over its gun in flight; the
+    # guns run out along their lines at rest and back into the nose in flight, as the Polar
+    # Bear's do when it seals. Every class passes the bore whole and goes all the way in.
+    PX, PZ, MOUTH = 6.2, 0.4, 37.0
+    PORT_FITS = {"rack": ("rack_round", 0.95, 4.0), "dish": 0.85, "blade": ("blade", 1.0), "twin_barrel": ("twin_barrel", 0.9), "barrel": ("barrel", 1.0)}
+    RUN, IRIS = 15.0, 13.0   # how far a port gun runs back into the nose in flight; how deep its iris rests
+    for s, n, carries in ((-1.0, 1, "transonic_rifle"), (1.0, 2, "laser_carbine")):
+        side = "l" if s < 0 else "r"
+        px = s * PX
+        b.cut([body], (px, 15.5, PZ), (px, MOUTH, PZ), 3.0)
+        _tube(b, (px, 15.5, PZ), (px, MOUTH - 0.1, PZ), 3.6, 2.85, 8, "steel.plate", "port", floor_depth=0.8, phase=math.pi / 8)
+        _tube(b, (px, MOUTH - 0.4, PZ), (px, MOUTH + 0.5, PZ), 3.5, 2.85, 8, "steel.stripe", "port_rim", floor=False, phase=math.pi / 8)
+        _plug(b, side, (px, MOUTH - 0.3, PZ), (0.0, 1.0, 0.0), 3.15, IRIS)
+        with b.joint("run_" + side, (px, MOUTH - 2.7, PZ), slide=(0.0, 1.0, 0.0)):
+            b.stock("hp_%d" % n, (px, MOUTH - 2.7, PZ), "barrel", scale=0.42, carries=carries, fits=PORT_FITS)
+
+    # The Fovea Designator (fixed): a pop-up on the nose's top, hinged at its back. Built up, its
+    # lens forward; folded flat its back is the nose's plating and the lens faces down into its
+    # recess. The sensor joint inside turns it onto a mark.
+    HY, HZ = 38.6, 3.05
+    b.cut_box([nose], -1.75, 1.75, HY - 0.2, HY + 4.7, HZ - 1.6, HZ + 1.5)
+    b.box(-1.75, 1.75, HY - 0.2, HY + 4.7, HZ - 1.7, HZ - 1.5, "bore.dark", "lamp_well")
+    with b.joint("lamp", (0.0, HY, HZ), limits=(-98.0, 6.0)):
+        with b.joint("sensor", (0.0, HY + 0.7, HZ + 2.25), limits=(-60.0, 60.0)):
+            b.box(-1.55, 1.55, HY, HY + 1.4, HZ, HZ + 4.5, "steel.plate", "lamp_pod")
+            b.box(-1.25, 1.25, HY + 1.4, HY + 1.65, HZ + 0.6, HZ + 3.9, "glass.glass", "lens")
+            _disc(b, (0.0, HY + 1.7, HZ + 2.25), (0.0, 1.0, 0.0), 1.05, 8, "amber.lit", "fovea")
+
+    # The boosters: each a hexagonal drum, intake up and exhaust down in hover, on a pivot drum.
+    def booster(tag, nx, ny, nz, k):
+        b.prism("x", nx - math.copysign(3.9 * k, nx), ny, nz, 1.9 * k, 2.4 * k, "steel.dark", 8, "booster_pivot", phase=math.pi / 8)   # the swivel's hub
+        with b.joint("booster_" + tag, (nx, ny, nz), limits=(-95.0, 22.0)):
+            b.prism("z", nx, ny, nz - 2.5 * k, 4.4 * k, 17.0 * k, "steel.dark", 6, "booster", phase=math.pi / 6)
+            b.prism("z", nx, ny, nz + 8.0 * k, 4.7 * k, 6.0 * k, "steel.plate", 6, "booster_cowl", phase=math.pi / 6)
+            b.prism("z", nx, ny, nz + 1.5 * k, 4.6 * k, 3.0 * k, "livery.livery", 6, "booster_band", phase=math.pi / 6)
+            b.prism("z", nx, ny, nz + 11.4 * k, 5.1 * k, 1.0 * k, "steel.plate", 6, "intake_lip", phase=math.pi / 6)
+            _disc(b, (nx, ny, nz + 11.95 * k), (0.0, 0.0, 1.0), 4.3 * k, 6, "bore.dark", "intake", phase=math.pi / 6)
+            b.prism("z", nx, ny, nz - 11.6 * k, 4.9 * k, 1.6 * k, "amber.engine", 6, "booster_ring", phase=math.pi / 6)
+            _disc(b, (nx, ny, nz - 12.5 * k), (0.0, 0.0, -1.0), 4.5 * k, 6, "amber.exhaust", "exhaust", phase=math.pi / 6)
+
+    # The canards and the front boosters, the tailplanes and the rear: each a blade running out
+    # of the body on a slide, its booster at the tip; in flight it runs in until the booster sits
+    # against the body.
+    KF, KR = 0.68, 1.0                     # the front boosters' size on the rear's
+    CY, CX, CIN = 20.0, 18.0, 4.7          # the canards' station, their boosters' pivot, how far they run in
+    TY, TX, TIN = -38.0, 17.5, 6.7         # the tailplanes'
     for s in (-1.0, 1.0):
         side = "l" if s < 0 else "r"
-        _rings(b, [_blade_section(s * 4.0, 1.0, -12.0, 0.4, 1.1), _blade_section(s * 24.0, -1.0, -10.0, -0.4, 0.8)], "livery.livery", "stub_wing")
-        b.prism("x", s * 25.0, -5.5, -0.4, 3.0, 3.0, "steel.dark", 8, "nacelle_root", phase=math.pi / 8)
-        nx, ny, nz = s * 28.0, -5.5, -0.4
-        with b.joint("nacelle_" + side, (nx, ny, nz), axis="pitch", limits=(-95.0, 22.0)):
-            b.prism("z", nx, ny, nz - 2.5, 4.4, 17.0, "steel.dark", 6, "nacelle", phase=math.pi / 6)
-            b.prism("z", nx, ny, nz + 8.0, 4.7, 6.0, "steel.plate", 6, "nacelle_cowl", phase=math.pi / 6)
-            b.prism("z", nx, ny, nz + 1.5, 4.6, 3.0, "livery.livery", 6, "nacelle_band", phase=math.pi / 6)
-            b.prism("z", nx, ny, nz + 11.4, 5.1, 1.0, "steel.plate", 6, "intake_lip", phase=math.pi / 6)
-            _disc(b, (nx, ny, nz + 11.95), (0.0, 0.0, 1.0), 4.3, 6, "bore.dark", "intake", phase=math.pi / 6)
-            b.prism("z", nx, ny, nz - 11.6, 4.9, 1.6, "amber.engine", 6, "booster_ring", phase=math.pi / 6)
-            _disc(b, (nx, ny, nz - 12.5), (0.0, 0.0, -1.0), 4.5, 6, "amber.exhaust", "exhaust", phase=math.pi / 6)
-        # The mounts under the stubs, the gun's barrel and the dish out ahead of the leading edge.
-        b.box(s * 12.5 - 0.7, s * 12.5 + 0.7, -8.0, 2.0, -2.2, -0.6, "steel.plate", "pylon")
-        b.stock("hp_%d" % (1 if s < 0 else 2), (s * 12.5, 1.0, -3.0), "barrel" if s < 0 else "dish", scale=0.5, carries="transonic_rifle" if s < 0 else "overcharge_coil")
-    b.pad("hp_3", (0.0, -10.0, -3.8), scale=0.5, size=(4.0, 1.2))
-    # The X tail: four small cobalt fins on the boom ahead of the needle.
+        with b.joint("canard_" + side, (s * CX, CY, 0.0), slide=(1.0, 0.0, 0.0)):
+            _rings(b, [_blade_section(s * 9.4, CY + 4.2, CY - 4.4, 0.0, 0.8), _blade_section(s * (CX - 2.2), CY + 3.0, CY - 2.6, 0.0, 0.55)], "livery.livery", "canard")
+            booster("f" + side, s * CX, CY, 0.0, KF)
+        with b.joint("tailplane_" + side, (s * TX, TY, 0.0), slide=(1.0, 0.0, 0.0)):
+            _rings(b, [_blade_section(s * 3.0, TY + 6.0, TY - 6.0, 0.0, 0.9), _blade_section(s * (TX - 3.2), TY + 4.2, TY - 4.0, 0.0, 0.6)], "livery.livery", "tailplane")
+            booster("r" + side, s * TX, TY, 0.0, KR)
+
+    # The delta wings, stowed inside the middle fuselage: each a flat cobalt triangle built
+    # swung in about its pivot at the leading root, so in flight it swings out 40 degrees to a
+    # delta whose root lies along the body's flank (the left wing a hair above the right, where
+    # the two lie across each other inside).
+    SWING = 40.0
+    for s in (-1.0, 1.0):
+        side = "l" if s < 0 else "r"
+        zw = 0.7 if s < 0 else -0.7
+        piv = Vector((s * 10.0, 6.0, zw))
+        out = [piv, Vector((s * 32.0, -24.0, zw)), Vector((s * 10.0, -24.0, zw))]   # the deployed planform
+        turn = Matrix.Rotation(math.radians(SWING if s < 0 else -SWING), 3, "Z")
+        stowed = [tuple(piv + turn @ (p - piv)) for p in out]
+        with b.joint("wing_" + side, tuple(piv), axis="yaw", limits=(-SWING - 5.0, 0.0) if s < 0 else (0.0, SWING + 5.0)):
+            _slab(b, list(reversed(stowed)) if s > 0 else stowed, (0.0, 0.0, 1.0), 0.8, "livery.livery", "wing")
+
+    # The pods on the upper diagonals behind the canopy: each a long octagonal fairing proud of
+    # the chamfer, its gun out of its nose; in flight it sinks along the diagonal into the body.
+    POD_Y0, POD_Y1, POD_R, POD_IN = 3.6, -13.0, 2.8, 6.4
+    POD_FITS = {"rack": ("rack_round", 0.9), "dish": 0.8, "barrel": "barrel_port"}
+    for s, n, shape, carries in ((-1.0, 3, "twin_barrel", "twin_autoguns"), (1.0, 4, "barrel", "laser_carbine")):
+        side = "l" if s < 0 else "r"
+        d = Vector((s * 0.758, 0.0, 0.652))
+        c = Vector((s * 8.25, 0.0, 3.2)) + d * (POD_R + 0.5)   # its axis, the chamfer's middle stood off
+        with b.joint("pod_" + side, (c.x, (POD_Y0 + POD_Y1) / 2.0, c.z), slide=tuple(d)):
+            b.loft([(POD_Y0, _oct(c.z, 4.6, 4.6, c.x, 8)), (POD_Y0 - 1.6, _oct(c.z, 2 * POD_R, 2 * POD_R, c.x, 8)), (POD_Y1 + 4.0, _oct(c.z, 2 * POD_R, 2 * POD_R, c.x, 8)),
+                    (POD_Y1, _oct(c.z, 1.6, 1.6, c.x, 8))], "steel.plate", "pod")
+            b.loft([(POD_Y0 - 3.0, _oct(c.z, 2 * POD_R + 0.2, 2 * POD_R + 0.2, c.x, 8)), (POD_Y0 - 5.0, _oct(c.z, 2 * POD_R + 0.2, 2 * POD_R + 0.2, c.x, 8))], "livery.livery", "pod_band")
+            with b.joint("run_pod_" + side, (c.x, POD_Y0, c.z), slide=(0.0, 1.0, 0.0)):
+                b.stock("hp_%d" % n, (c.x, POD_Y0, c.z), shape, scale=0.42, carries=carries, fits=POD_FITS)
+
+    # The X tail: four cobalt fins on the tail's diagonals, ahead of the needle.
     for k in range(4):
         a = math.radians(45.0 + 90.0 * k)
         dx, dz = math.cos(a), math.sin(a)
@@ -5680,194 +5750,267 @@ def needletail(b):
 
         def sec(rad, y_le, y_te, dx=dx, dz=dz, tx=tx, tz=tz):
             ym = y_le - (y_le - y_te) * 0.35
-            cx, cz = dx * rad, 0.1 + dz * rad
+            cx, cz = dx * rad, dz * rad
             return [(cx, y_te, cz), (cx + tx, ym, cz + tz), (cx, y_le, cz), (cx - tx, ym, cz - tz)]
-        _rings(b, [sec(0.8, -48.0, -58.0), sec(7.5, -55.0, -60.0)], "livery.livery", "tail_fin")
+        _rings(b, [sec(1.2, -50.0, -62.0), sec(9.0, -57.0, -64.0)], "livery.livery", "tail_fin")
+
+    # Flight mode, the joints' pose at full speed (the gait below) and in the transition act.
+    BOOST = ["booster_fl", "booster_fr", "booster_rl", "booster_rr"]
+    LEVEL = -88.0
+    FLIGHT = {j: (LEVEL, 0.0, 0.0, 0.0, 0.0, 0.0) for j in BOOST}
+    FLIGHT.update({"canard_l": (0.0, 0.0, 0.0, CIN, 0.0, 0.0), "canard_r": (0.0, 0.0, 0.0, -CIN, 0.0, 0.0),
+                   "tailplane_l": (0.0, 0.0, 0.0, TIN, 0.0, 0.0), "tailplane_r": (0.0, 0.0, 0.0, -TIN, 0.0, 0.0),
+                   "wing_l": (0.0, -SWING, 0.0, 0.0, 0.0, 0.0), "wing_r": (0.0, SWING, 0.0, 0.0, 0.0, 0.0),
+                   "pod_l": (0.0, 0.0, 0.0, 0.758 * POD_IN, 0.0, -0.652 * POD_IN), "pod_r": (0.0, 0.0, 0.0, -0.758 * POD_IN, 0.0, -0.652 * POD_IN),
+                   "run_l": (0.0, 0.0, 0.0, 0.0, -RUN, 0.0), "run_r": (0.0, 0.0, 0.0, 0.0, -RUN, 0.0),
+                   "shutter_l": (0.0, 0.0, 0.0, 0.0, IRIS, 0.0), "shutter_r": (0.0, 0.0, 0.0, 0.0, IRIS, 0.0),
+                   "lamp": (-92.0, 0.0, 0.0, 0.0, 0.0, 0.0)})   # flat along the hood, which falls a little toward the needle
+
+    def held(pose):
+        return {j: [(0.0,) + tuple(v), (1.0,) + tuple(v)] for j, v in pose.items()}
+
+    # The transformation as keys, in order (weapons in and the lamp down first, then the
+    # boosters swivel, the canards and tailplanes run in and the deltas swing out; back the other
+    # way round), from `t0` over `span` seconds, or from flight back to hover when `back`.
+    STAGE = {"run_l": 0.0, "run_r": 0.0, "shutter_l": 0.25, "shutter_r": 0.25, "pod_l": 0.05, "pod_r": 0.05, "lamp": 0.1,
+             "booster_fl": 0.4, "booster_fr": 0.4, "booster_rl": 0.4, "booster_rr": 0.4,
+             "canard_l": 0.5, "canard_r": 0.5, "tailplane_l": 0.5, "tailplane_r": 0.5, "wing_l": 0.55, "wing_r": 0.55}
+
+    def change(t0, span, back=False):
+        out = {}
+        for j, v in FLIGHT.items():
+            k0 = STAGE[j] if not back else 0.55 - STAGE[j]
+            a, z = (0.0,) * 6, tuple(v)
+            ta, tb = t0 + span * k0, t0 + span * (k0 + 0.45)
+            out[j] = [(ta,) + (z if back else a), (tb,) + (a if back else z)]
+        return out
 
     # Idle acts (four, loud, never in step; a light airframe's servos). Degrees and seconds; a
     # body key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k).
     boosters = ["booster_ring", "exhaust"]
-    # The transition: the nacelles come down from upright to level, it surges forward nose down
-    # as a jet, holds, and brings them up again as it flares back onto its station.
-    b.act("transition", 5.2, {
-        "nacelle_l": [(0.4, 0.0), (1.4, -88.0), (3.2, -88.0), (4.2, 0.0)],
-        "nacelle_r": [(0.4, 0.0), (1.4, -88.0), (3.2, -88.0), (4.2, 0.0)],
-    }, body=[(0.6, 0.0, 0.0, 0.0), (1.4, 0.0, 8.0, -1.0, 0.0, -6.0, 0.0), (2.4, 0.0, 14.0, -0.5, 0.0, -5.0, 0.0), (3.2, 0.0, 12.0, 0.5, 0.0, 2.0, 0.0),
-             (4.0, 0.0, 4.0, 1.0, 0.0, 6.0, 0.0), (5.2, 0.0, 0.0, 0.0)],
-       glow=[(boosters, [(0.3, 0.0), (0.9, 6.0), (3.2, 6.0), (4.0, 1.0), (4.8, 0.0)])])
+    # The transition: it changes into flight mode on the spot, surges forward nose down as a jet,
+    # holds, and changes back as it flares onto its station.
+    tracks = change(0.3, 1.4)
+    back = change(3.4, 1.4, back=True)
+    for j in tracks:
+        tracks[j] = tracks[j] + back[j]
+    b.act("transition", 5.4, tracks,
+          body=[(1.2, 0.0, 0.0, 0.0), (1.9, 0.0, 8.0, -1.0, 0.0, -6.0, 0.0), (2.7, 0.0, 14.0, -0.5, 0.0, -5.0, 0.0), (3.4, 0.0, 12.0, 0.5, 0.0, 2.0, 0.0),
+                (4.2, 0.0, 4.0, 1.0, 0.0, 6.0, 0.0), (5.4, 0.0, 0.0, 0.0)],
+          glow=[(boosters, [(0.6, 0.0), (1.4, 6.0), (3.4, 6.0), (4.4, 1.0), (5.0, 0.0)])])
     # The sidestep: omnidirectional, it slides a step to one side rolling into it and straight on
-    # across to the other, the nacelles leaning a touch forward through it.
-    b.act("sidestep", 4.6, {
-        "nacelle_l": [(0.4, 0.0), (0.9, -12.0), (3.4, -12.0), (4.0, 0.0)],
-        "nacelle_r": [(0.4, 0.0), (0.9, -12.0), (3.4, -12.0), (4.0, 0.0)],
-    }, body=[(0.6, -7.0, 0.0, 0.0, 0.0, 0.0, -12.0), (1.3, -14.0, 0.0, 0.5, 0.0, 0.0, 3.0), (2.4, 1.0, 0.0, 0.0, 0.0, 0.0, 12.0),
-             (3.2, 14.0, 0.0, 0.5, 0.0, 0.0, -3.0), (4.6, 0.0, 0.0, 0.0)],
-       glow=[(boosters, [(0.4, 0.0), (0.8, 4.0), (3.4, 4.0), (4.0, 0.0)])])
-    # Designating: the sensor turns onto a foe and nods down, the machine yawing a little after it,
-    # and the lens flickers and burns as it paints; then home.
+    # across to the other, the boosters leaning a touch forward through it.
+    lean = [(0.4, 0.0), (0.9, -12.0), (3.4, -12.0), (4.0, 0.0)]
+    b.act("sidestep", 4.6, {j: lean for j in BOOST},
+          body=[(0.6, -7.0, 0.0, 0.0, 0.0, 0.0, -12.0), (1.3, -14.0, 0.0, 0.5, 0.0, 0.0, 3.0), (2.4, 1.0, 0.0, 0.0, 0.0, 0.0, 12.0),
+                (3.2, 14.0, 0.0, 0.5, 0.0, 0.0, -3.0), (4.6, 0.0, 0.0, 0.0)],
+          glow=[(boosters, [(0.4, 0.0), (0.8, 4.0), (3.4, 4.0), (4.0, 0.0)])])
+    # Designating: the pop-up turns onto a foe and tips down onto it, the machine yawing a little
+    # after it, and the lens flickers and burns as it paints; then home.
     b.act("designate", 5.6, {
         "sensor": [(0.5, 0.0), (1.6, 42.0), (3.6, 42.0), (4.6, 0.0)],
-        "eye": [(1.2, 0.0), (1.8, -14.0), (3.6, -14.0), (4.4, 0.0)],
+        "lamp": [(1.2, 0.0), (1.8, -14.0), (3.6, -14.0), (4.4, 0.0)],
     }, body=[(1.0, 0.0, 0.0, 0.0), (1.8, 0.0, -2.0, 0.5, 8.0, -2.0, 0.0), (3.6, 0.0, -2.0, 0.5, 8.0, -2.0, 0.0), (4.8, 0.0, 0.0, 0.0)],
        glow=[(["fovea"], [(1.6, 0.0), (1.9, 9.0), (2.1, 3.0), (2.4, 12.0), (3.6, 12.0), (4.2, 0.0)])])
-    # Backpedalling: the nacelles tip past upright and it flies backward nose up, then they swing
+    # Backpedalling: the boosters tip past upright and it flies backward nose up, then they swing
     # forward and it runs back onto its station: a jet that can reverse.
-    b.act("backpedal", 4.8, {
-        "nacelle_l": [(0.4, 0.0), (1.0, 18.0), (2.0, 18.0), (2.6, -40.0), (3.4, -40.0), (4.0, 0.0)],
-        "nacelle_r": [(0.4, 0.0), (1.0, 18.0), (2.0, 18.0), (2.6, -40.0), (3.4, -40.0), (4.0, 0.0)],
-    }, body=[(0.6, 0.0, 0.0, 0.0), (1.6, 0.0, -14.0, 0.5, 0.0, 6.0, 0.0), (2.2, 0.0, -15.0, 0.5, 0.0, 5.0, 0.0), (3.2, 0.0, -2.0, 0.0, 0.0, -6.0, 0.0), (4.8, 0.0, 0.0, 0.0)],
-       glow=[(boosters, [(0.5, 0.0), (1.0, 5.0), (2.0, 4.0), (2.6, 7.0), (3.4, 6.0), (4.2, 0.0)])])
-    # Movement: it sets off on its nacelles nearly upright and tilts them level as it gathers
-    # speed, a jet at full pace, coming upright again as it slows (crossfaded by speed); the
-    # boosters brighten and it banks through its corners.
+    tip = [(0.4, 0.0), (1.0, 18.0), (2.0, 18.0), (2.6, -40.0), (3.4, -40.0), (4.0, 0.0)]
+    b.act("backpedal", 4.8, {j: tip for j in BOOST},
+          body=[(0.6, 0.0, 0.0, 0.0), (1.6, 0.0, -14.0, 0.5, 0.0, 6.0, 0.0), (2.2, 0.0, -15.0, 0.5, 0.0, 5.0, 0.0), (3.2, 0.0, -2.0, 0.0, 0.0, -6.0, 0.0), (4.8, 0.0, 0.0, 0.0)],
+          glow=[(boosters, [(0.5, 0.0), (1.0, 5.0), (2.0, 4.0), (2.6, 7.0), (3.4, 6.0), (4.2, 0.0)])])
+    # Movement: it sets off in hover, the boosters leaning forward, and changes into flight mode
+    # as it gathers speed, a jet at full pace (crossfaded by speed); slowing, it changes back.
     glow = {"parts": boosters, "k": KESTREL_BURN}
-    b.gait_option("hover", tracks={"nacelle_l": [(0.0, -12.0), (1.0, -12.0)], "nacelle_r": [(0.0, -12.0), (1.0, -12.0)]}, glow=glow)
+    b.gait_option("hover", tracks=held({j: (-15.0, 0.0, 0.0, 0.0, 0.0, 0.0) for j in BOOST}), glow=glow)
     b.halo = [("booster_ring", KESTREL_HALO), ("exhaust", KESTREL_HALO)]   # its boosters, hot
-    b.gait(tracks={"nacelle_l": [(0.0, -86.0), (1.0, -86.0)], "nacelle_r": [(0.0, -86.0), (1.0, -86.0)]}, glow=glow,
-           body_hold=(0.0, 0.0, 0.0, 0.0, -4.0, 0.0), start=("hover", 0.25, 0.85))
-    b.fires = {"fovea_designator": ("designate", 1.4, 2.9)}   # its fixed weapon fires with a slice of its act: the sensor's turn and the fovea's flare (Ryan, 31 October: "go for ones that are cheapest to do first")
+    b.gait(tracks=held(FLIGHT), glow=glow, body_hold=(0.0, 0.0, 0.0, 0.0, -4.0, 0.0), start=("hover", 0.25, 0.85))
+    b.fires = {"fovea_designator": ("designate", 1.4, 2.9)}   # its fixed weapon fires with a slice of its act: the pop-up's turn and the fovea's flare (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.move(slide=0.35, bank=32.0, accel=0.7, heft=0.1, oversteer=0.4)
 
 needletail.maker = "kestrel"
 
 
 
+def _gp_gun_house(b, name, pin, shape, carries, cx, ty, tz, w, l, h):
+    """A faceted gun house on a yaw joint over a dark ring: its face raked, its flanks leaning
+    in, its back stepped down; the stock gun its class out of its face (the Giant Petrel's look
+    test of 31 October, tools/lowforge/looks/kestrel_looks6.py)."""
+    b.prism("z", cx, ty, tz + 0.4, w * 0.55, 1.0, "steel.dark", 8, "turret_ring", phase=math.pi / 8)
+    with b.joint(name, (cx, ty, tz + 0.9), axis="yaw", limits=(-75.0, 75.0)):
+        a = w / 2.0
+        secs = [(ty + l * 0.55, a * 0.6, tz + h * 0.4), (ty + l * 0.2, a, tz + h), (ty - l * 0.3, a, tz + h), (ty - l * 0.5, a * 0.8, tz + h * 0.7)]
+        b.loft([(y, [(cx - aa, tz + 0.8), (cx + aa, tz + 0.8), (cx + aa * 0.7, z1), (cx - aa * 0.7, z1)]) for (y, aa, z1) in secs],
+               "steel.plate", "turret_house")
+        b.stock(pin, (cx, ty + l * 0.3, tz + h * 0.62), shape, scale=0.8, carries=carries)
+
+
+def _gp_salvo_box(b, y_front, y_back, z_roof, w):
+    """The Spindrift Salvo: a box of six tubes (three pairs, a column each, fired left to right)
+    sunk in the roof with only its lid proud, hinged at its back (joint salvo) so its face rises
+    out of the roof to fire; each tube's floor and its back-blast vent banked dark at rest and
+    lit as its pair fires."""
+    zl = z_roof + 0.4
+    hinge = (0.0, y_back, z_roof - 2.0)
+    with b.joint("salvo", hinge, axis="pitch", limits=(-2.0, 34.0)):
+        sec = [(-w / 2.0, z_roof - 5.4), (w / 2.0, z_roof - 5.4), (w / 2.0, zl - 0.6), (w / 2.0 - 0.6, zl), (-w / 2.0 + 0.6, zl), (-w / 2.0, zl - 0.6)]
+        b.loft([(y_front, sec), (y_back, sec)], "steel.plate", "salvo_box")
+        b.loft([(y_front - 0.6, rect(0.0, w - 2.4, zl - 0.1, zl + 0.15)), (y_back + 0.6, rect(0.0, w - 2.4, zl - 0.1, zl + 0.15))], "livery.livery", "salvo_lid")
+        for k, tag in enumerate("abc"):
+            x = (k - 1) * (w / 3.0)
+            for z in (z_roof - 1.3, z_roof - 3.8):
+                _tube(b, (x, y_front - 6.0, z), (x, y_front + 0.3, z), 1.1, 0.8, 8, "steel.dark", "salvo_" + tag, floor_material="amber.ember", floor_depth=0.8)
+                _disc(b, (x, y_back - 0.15, z), (0.0, -1.0, 0.0), 1.0, 8, "amber.ember", "salvo_%s_blast" % tag)
+
+
+def _gp_uplink(b, uy, uz, panel=5.6):
+    """The Reheat Uplink: a flat hexagonal array on a yaw joint over a short drum, facing forward
+    and a little up, its core lit."""
+    b.prism("z", 0.0, uy, uz + 0.8, 2.0, 1.6, "steel.dark", 6, "uplink_mast")
+    with b.joint("sensor_uplink", (0.0, uy, uz + 1.6), axis="yaw", limits=(-150.0, 150.0)):
+        b.box(-0.9, 0.9, -1.0, 1.0, uz + 1.4, uz + panel + 1.2, "steel.dark", "uplink_yoke", Matrix.Translation((0.0, uy, 0.0)))
+        tilt = Matrix.Translation((0.0, uy + 1.2, uz + panel + 1.4)) @ Matrix.Rotation(math.radians(15.0), 4, "X")
+        b.loft([(-0.6, _poly(panel, 6, math.pi / 6)), (0.6, _poly(panel, 6, math.pi / 6))], "steel.plate", "uplink_dish", tilt)
+        b.loft([(0.55, _poly(panel * 0.82, 6, math.pi / 6)), (0.75, _poly(panel * 0.78, 6, math.pi / 6))], "livery.livery", "uplink_face", tilt)
+        b.loft([(0.7, _poly(1.8, 6, math.pi / 6)), (1.3, _poly(1.3, 6, math.pi / 6))], "amber.lit", "uplink_core", tilt)
+
+
+def _gp_giant_booster(b, cx, cz, y_front, y_back, r, band=(1.2, 4.8)):
+    """One of the line's giant boosters: a hexagonal drum, a vertex at its top, from `y_front`
+    back to `y_back`; a cobalt band round it near its front, painted on rather than proud; the
+    lit ring at its end and the exhaust's mouth inside the ring."""
+    ph = math.pi / 6
+    b.prism("y", cx, (y_front + y_back) / 2.0, cz, r, y_front - y_back, "steel.dark", 6, "booster", phase=ph)
+    b.prism("y", cx, y_front - (band[0] + band[1]) / 2.0, cz, r + 0.1, band[1] - band[0], "livery.livery", 6, "booster_band", phase=ph)
+    b.prism("y", cx, y_back, cz, r + 0.4, 1.6, "amber.engine", 6, "booster_ring", phase=ph)
+    b.loft([(y_back - 0.8, _hexr(cx, cz, r + 0.2)), (y_back - 1.3, _hexr(cx, cz, r - 0.6))], "amber.exhaust", "exhaust")
+
+
 def giant_petrel(b):
     """Kestrel "Giant Petrel" (K-21 Mk I Ground-Effect Flagship): the formation leader, banking
     the team's rerolls and selling them as actions (Ryan's go, 21 October: Kestrel's capital, an
-    ekranoplan, an assault hover at move 20, aggressive where the Swallowtail is the supportive
-    mobile HQ). First cut, 23 October, after the Lun: a long flying-boat hull, the longest thing
-    Kestrel builds; eight boosters in two banks of four on canards over the bow (the Immelmann
-    Booster, fixed, no pin; joints canard_l and canard_r pitch the banks so their exhausts blow
-    down under the wings); short cobalt wings low on the hull, float pontoons and endplates at
-    their tips; a tall cobalt T-tail; the Spindrift Salvo (fixed, no pin) three pairs of launch
-    tubes along the spine on a plinth that elevates (joint salvo), each tube's back-blast lit as
-    it fires; the Reheat Uplink (fixed, no pin) a dish behind the cockpit on a yaw joint
-    (sensor_uplink), its core lit. Parted from the Puffin (short and wide, its boosters astern)
-    and from the Lammergeier's flying wing by its length, its engines forward and its
-    tail. Mounts in the die's order: hp_1 the fore turret (the Overclocked Railgun), hp_2 the aft
-    turret (the Twin Autoguns), hp_3 bare on the right of the deck (the vent shows nowhere).
-    Floats: the lip at z = 6."""
-    HULL = [(66.0, 6.0, 14.0, 18.6, 1.0), (58.0, 14.0, 10.0, 22.0, 2.4), (44.0, 22.0, 7.4, 24.6, 3.4), (20.0, 26.0, 6.4, 25.6, 4.0),
-            (-14.0, 26.0, 6.4, 25.6, 4.0), (-40.0, 22.0, 7.0, 24.6, 3.4), (-56.0, 14.0, 9.0, 23.4, 2.4), (-66.0, 6.0, 12.4, 22.0, 1.2)]   # (y, w, z0, z1, c), bow to stern
+    assault hover, aggressive where the Swallowtail is the supportive mobile HQ). Its hull from
+    the look tests of 31 October (Ryan: "Something more like a military catamaran"; the second
+    round's sheet, docs/looks/kestrel_giant3.png), mixed on his word of 12 November: "The engines
+    and rear spoiler of the racer, on the command ship body of the Navy SES take", the Navy SES as
+    reviewed for its topside (his pick, the same day). It replaces the first cut of 23 October,
+    the flying boat after the Lun.
 
-    def at(y):
-        for (y0, w0, a0, z0, c0), (y1, w1, a1, z1, c1) in zip(HULL, HULL[1:]):
-            if y1 <= y <= y0:
-                t = (y0 - y) / (y0 - y1)
-                return w0 + (w1 - w0) * t, a0 + (a1 - a0) * t, z0 + (z1 - z0) * t
-        return HULL[0][1:4] if y > HULL[0][0] else HULL[-1][1:4]
+    The Navy SES's body: two knife hulls, their stems raked back as a wave piercer's, dark below
+    the chine and chrome above, a cobalt chine stripe and straight deck stripes; the cross deck
+    between them over the air cushion, sealed by skirt fingers at the bow and bags astern, lift
+    glowing under it; a raised centre bow between the knives carrying the fore gun house; the
+    deckhouse spanning the deck, every face leaning in, the bridge's glass a band across its raked
+    face; the integrated mast, an upright faceted pyramid, carrying the Reheat Uplink's array
+    (fixed, no pin; sensor_uplink); the Spindrift Salvo's box flush in the roof behind it (fixed,
+    no pin; salvo, its face rising out of the roof to fire). The racer's stern: two of the line's
+    giant boosters (the Immelmann Booster, fixed, no pin) between the hulls, rising out of the
+    deckhouse's aft end over the quarterdeck, and over them a swept cobalt aerofoil spanning the
+    hulls on the tips of two canted fins standing on the hulls' sterns. The engines take the
+    quarterdeck where the navy's aft gun house stood, so the two Twin Autoguns ride the hulls'
+    foredecks, a gun house on each (Claude's placement, his to move). Mounts in the die's order:
+    hp_1 the fore gun house on the centre bow (the Overclocked Railgun), hp_2 the left hull's
+    (the Twin Autoguns), hp_3 the right hull's (the Twin Autoguns, a placeholder in the vent's
+    old slot since the refit pass). Floats: the keels at z = 6."""
+    HX = 22.0
+    HULL = [(78.0, 0.8, 7.6, 8.6), (72.0, 3.2, 6.8, 12.4), (62.0, 7.6, 6.2, 17.8), (48.0, 11.4, 6.0, 20.0),
+            (20.0, 13.0, 6.0, 20.0), (-40.0, 13.0, 6.0, 20.0), (-56.0, 12.4, 6.4, 20.0), (-62.0, 11.4, 7.0, 19.4)]   # (y, w, keel, deck), bow to stern
 
     def deck(y):
-        return at(y)[2]
-    b.loft([(y, _chine_section(z0, z1, w, c)) for (y, w, z0, z1, c) in HULL], "steel.plate", "hull")
-    SKIRT = [(y, w + 1.0, z0 - 0.6, z0 + 1.6, 0.8) for (y, w, z0, z1, c) in HULL[1:-1]]
-    b.loft([(y, _hull_section(z0, z1, w, c, belly=0.3)) for (y, w, z0, z1, c) in SKIRT], "steel.dark", "lip")
-    # The cockpit: a band of glass across the bow's top, a frame round it.
-    CAB = [(62.0, 4.0, 0.6), (58.0, 9.0, 2.6), (52.0, 12.0, 3.4), (46.0, 12.0, 3.0), (42.0, 9.0, 1.6)]   # (y, width at the deck, height)
+        return _lerp_at(HULL, y)[2]
 
-    def cab_at(y):
-        for (y0, w0, h0), (y1, w1, h1) in zip(CAB, CAB[1:]):
-            if y1 <= y <= y0:
-                t = (y0 - y) / (y0 - y1)
-                return w0 + (w1 - w0) * t, h0 + (h1 - h0) * t
-        return CAB[-1][1:]
+    def side(w, z0, z1, s, upper):
+        zc = z0 + (z1 - z0) * 0.38
+        pts = ([(HX - w * 0.46, zc), (HX + w * 0.5, zc), (HX + w * 0.34, z1), (HX - w * 0.36, z1)] if upper else
+               [(HX - w * 0.12, z0), (HX + w * 0.12, z0), (HX + w * 0.5, zc), (HX - w * 0.46, zc)])
+        return pts if s > 0 else [(-x, z) for (x, z) in reversed(pts)]
 
-    def cab(y, grow=0.0):
-        w, h = cab_at(y)
-        z, hw = deck(y), w / 2.0 + grow
-        return [(-hw, z - 0.8), (hw, z - 0.8), (hw, z + h * 0.45 + grow), (hw * 0.5, z + h + grow), (-hw * 0.5, z + h + grow), (-hw, z + h * 0.45 + grow)]
-    b.loft([(y, cab(y)) for (y, w, h) in CAB], "glass.glass", "canopy")
-    b.loft([(53.0, cab(53.0, 0.35)), (51.8, cab(51.8, 0.35))], "steel.dark", "canopy_frame")
-    # The canards over the bow, and on each a bank of four boosters (the Immelmann Booster):
-    # the bank pitches on its canard, nose up, to blow its exhausts down under the wings.
     for s in (-1.0, 1.0):
-        side = "l" if s < 0 else "r"
-        _rings(b, [_blade_section(s * 10.0, 46.0, 28.0, 22.4, 1.0), _blade_section(s * 40.0, 44.0, 32.0, 21.8, 0.6)], "steel.plate", "canard")
-        with b.joint("canard_" + side, (s * 25.0, 36.0, 24.6), axis="pitch", limits=(-8.0, 14.0)):
-            for k in range(4):
-                x = s * (14.5 + 7.6 * k)
-                b.box(x - 1.0, x + 1.0, 30.0, 42.0, 22.6, 25.2, "steel.plate", "bank_pylon")
-                b.prism("y", x, 36.0, 28.4, 3.5, 20.0, "steel.dark", 6, "booster", phase=math.pi / 6)
-                b.prism("y", x, 46.4, 28.4, 3.9, 1.0, "steel.plate", 6, "intake_lip", phase=math.pi / 6)
-                b.loft([(46.9, _hexr(x, 28.4, 3.4)), (47.1, _hexr(x, 28.4, 2.9))], "bore.dark", "intake")
-                b.prism("y", x, 25.4, 28.4, 3.8, 1.4, "amber.engine", 6, "booster_ring", phase=math.pi / 6)
-                b.loft([(24.6, _hexr(x, 28.4, 3.7)), (24.2, _hexr(x, 28.4, 3.2))], "amber.exhaust", "exhaust")
-    # The wings: short, broad and cobalt, low on the hull, a pontoon under each tip and an
-    # endplate over it.
+        b.loft([(y, side(w, z0, z1, s, False)) for (y, w, z0, z1) in HULL], "steel.dark", "hull_low")
+        b.loft([(y, side(w, z0, z1, s, True)) for (y, w, z0, z1) in HULL], "steel.plate", "hull")
+        secs = []
+        for (y, w, z0, z1) in HULL[2:-1]:
+            zc, x = z0 + (z1 - z0) * 0.38, HX + w * 0.5
+            pts = [(x + 0.4, zc), (x - 0.3, zc + 0.8), (x - 1.2, zc), (x - 0.3, zc - 0.8)]
+            secs.append((y, pts if s > 0 else [(-xx, z) for (xx, z) in reversed(pts)]))
+        b.loft(secs, "livery.livery", "chine_stripe")
+        # The deck stripes, laid on the deck: the foredeck's short of its gun house, the afterdeck's
+        # under the spoiler's fin.
+        for (ya, yb) in ((60.0, 52.0), (-34.0, -54.0)):
+            b.loft([(y, rect(s * HX, 3.6, deck(y) - 0.4, deck(y) + 0.3)) for y in (ya, (ya + yb) / 2.0, yb)], "livery.livery", "deck_stripe")
+    # The cross deck over the cushion, its seals and the lift under it.
+    b.loft([(45.0, rect(0.0, 2 * HX - 4.0, 13.0, 20.0)), (-57.0, rect(0.0, 2 * HX - 4.0, 13.0, 20.0))], "steel.plate", "cross_deck")
+    for k in range(13):
+        x = (k - 6) * 2.6
+        b.box(x - 1.1, x + 1.1, 42.6, 44.6, 6.8, 13.2, "steel.dark", "bow_seal")
+    for z in (8.2, 10.6):
+        b.prism("x", 0.0, -55.8, z, 1.5, 2 * HX - 9.0, "steel.dark", 8, "stern_seal")
+    for (x, y) in ((-8.0, 24.0), (8.0, 24.0), (0.0, 0.0), (-8.0, -26.0), (8.0, -26.0)):
+        _disc(b, (x, y, 12.9), (0.0, 0.0, -1.0), 2.8, 6, "amber.engine", "lift_nozzle")
+    # The centre bow between the knives: a raised wedge, the fore gun house on it (hp_1), and a
+    # gun house on each hull's foredeck (hp_2, hp_3).
+    CB = [(62.0, 1.2, 17.6, 19.4), (55.0, 12.0, 15.0, 20.0), (45.0, 2 * HX - 5.0, 13.0, 20.0)]
+    b.loft([(y, [(-w * 0.2, z0), (w * 0.2, z0), (w * 0.5, (z0 + z1) / 2.0), (w * 0.44, z1), (-w * 0.44, z1), (-w * 0.5, (z0 + z1) / 2.0)]) for (y, w, z0, z1) in CB],
+           "steel.plate", "centre_bow")
+    _gp_gun_house(b, "turret_fore", "hp_1", "barrel", "overclocked_railgun", 0.0, 51.0, 20.0, 9.0, 12.0, 5.0)
+    for s, pin in ((-1.0, "hp_2"), (1.0, "hp_3")):
+        _gp_gun_house(b, "turret_" + ("l" if s < 0 else "r"), pin, "twin_barrel", "twin_autoguns", s * HX, 45.0, deck(45.0), 7.0, 10.0, 4.2)
+    # The deckhouse: every face leaning in, the bridge's glass a band across its raked face.
+    DZ = 20.0
+    DH = [(39.0, 25.6, 11.0, 23.0), (31.0, 26.2, 15.0, 31.0), (4.0, 26.4, 16.0, 31.6), (-26.0, 26.4, 16.0, 31.6), (-33.0, 26.2, 12.0, 25.0)]   # (y, base half width, roof half width, roof)
+    b.loft([(y, [(-a, DZ), (a, DZ), (t, zt), (-t, zt)]) for (y, a, t, zt) in DH], "steel.panel", "deckhouse")
+    n = Vector((0.0, 8.0, 8.0)).normalized()
+
+    def face(t, s):
+        p = Vector((s * 11.0, 39.0, 23.0)).lerp(Vector((s * 15.0, 31.0, 31.0)), t)
+        return p.x * 0.8, p.y, p.z
+    _slab(b, [face(0.38, -1.0), face(0.38, 1.0), face(0.78, 1.0), face(0.78, -1.0)], tuple(n), 0.3, "glass.glass", "bridge_glass")
     for s in (-1.0, 1.0):
-        _rings(b, [_blade_section(s * 12.0, -2.0, -40.0, 9.4, 1.8), _blade_section(s * 46.0, -16.0, -38.0, 7.4, 1.0)], "livery.livery", "wing")
-        cx = s * 46.0
-        b.loft([(-10.0, hexagon(cx, 6.0, 1.2, 1.2)), (-16.0, hexagon(cx, 5.6, 3.8, 3.8)), (-36.0, hexagon(cx, 5.6, 3.8, 3.8)), (-44.0, hexagon(cx, 6.0, 1.4, 1.4))],
-               "steel.dark", "float")
-        _rings(b, [_fin_section(cx, -14.0, -40.0, 5.0, 0.6), _fin_section(cx, -18.0, -39.0, 13.0, 0.4)], "livery.livery", "endplate")
-    # The T-tail: a tall swept fin, a broad tailplane across its top and a bullet at the joint.
-    FT = 56.0
-    _rings(b, [_fin_section(0.0, -42.0, -66.0, 22.0, 1.3), _fin_section(0.0, -54.0, -68.0, FT, 0.7)], "livery.livery", "fin")
+        b.loft([(30.0, rect(s * 13.4, 2.0, 31.4, 31.9)), (-25.0, rect(s * 13.4, 2.0, 31.4, 31.9))], "livery.livery", "roof_stripe")
+    # The integrated mast, an upright faceted pyramid on the roof, and the uplink's array on it;
+    # the salvo's box sunk in the roof behind it.
+    MZ = 31.4
+    _rings(b, [[(-7.0, -14.0, MZ), (7.0, -14.0, MZ), (7.0, 4.0, MZ), (-7.0, 4.0, MZ)],
+               [(-2.8, -8.0, MZ + 11.0), (2.8, -8.0, MZ + 11.0), (2.8, -3.0, MZ + 11.0), (-2.8, -3.0, MZ + 11.0)]], "steel.panel", "mast")
+    _gp_uplink(b, -5.5, MZ + 11.0)
+    _gp_salvo_box(b, -16.5, -25.5, 31.6, 13.0)
+    # The racer's stern: two giant boosters between the hulls (the Immelmann Booster), rising out
+    # of the deckhouse's aft end over the quarterdeck; over them the swept aerofoil spanning the
+    # hulls on the tips of two canted fins standing on the hulls' sterns.
+    BX, BZ, BR = 11.5, 21.5, 6.4
     for s in (-1.0, 1.0):
-        _rings(b, [_blade_section(s * 0.5, -52.0, -68.0, FT - 0.4, 0.8), _blade_section(s * 30.0, -62.0, -70.0, FT + 0.6, 0.35)], "livery.livery", "stabiliser")
-    b.loft([(-48.0, _oct(FT, 1.0, 1.0, 0.0, 8)), (-52.0, _oct(FT, 3.4, 3.4, 0.0, 8)), (-68.0, _oct(FT, 3.4, 3.4, 0.0, 8)), (-72.0, _oct(FT, 1.4, 1.4, 0.0, 8))],
-           "steel.plate", "tail_bullet")
-    # The Spindrift Salvo (fixed): three pairs of launch tubes on a plinth along the spine, the
-    # plinth hinged at its tail so the battery elevates; each tube's floor and back-blast banked
-    # dark at rest and lit as its pair fires.
-    sz0 = deck(-8.0)
-    with b.joint("salvo", (0.0, -26.0, sz0 + 1.0), axis="pitch", limits=(-2.0, 28.0)):
-        b.loft([(-27.0, _case(15.0, sz0 - 0.4, sz0 + 1.8, 0.8)), (11.0, _case(15.0, sz0 - 0.4, sz0 + 1.8, 0.8))], "steel.panel", "salvo_plinth")
-        for (py, tag) in ((3.0, "a"), (-9.0, "b"), (-21.0, "c")):
-            for s in (-1.0, 1.0):
-                p0, p1 = Vector((s * 4.0, py - 5.5, sz0 + 4.2)), Vector((s * 4.0, py + 5.5, sz0 + 5.8))
-                _tube(b, tuple(p0), tuple(p1), 2.6, 2.0, 8, "steel.dark", "salvo_" + tag, floor_material="amber.ember", floor_depth=1.2)
-                dv = (p1 - p0).normalized()
-                _disc(b, tuple(p0 - dv * 0.15), tuple(-dv), 2.2, 8, "amber.ember", "salvo_%s_blast" % tag)
-                b.box(s * 4.0 - 1.2, s * 4.0 + 1.2, py - 3.0, py + 3.0, sz0 + 1.6, sz0 + 3.4, "steel.dark", "salvo_cradle")
-    # The Reheat Uplink (fixed): a dish behind the cockpit on a yaw joint, tilted up and forward,
-    # its core lit and a feed horn before it.
-    uy, uz = 36.0, deck(36.0)
-    b.prism("z", 0.0, uy, uz + 1.6, 2.2, 3.2, "steel.dark", 8, "uplink_mast")
-    with b.joint("sensor_uplink", (0.0, uy, uz + 3.2), axis="yaw", limits=(-120.0, 120.0)):
-        tilt = Matrix.Translation((0.0, uy, uz + 5.6)) @ Matrix.Rotation(math.radians(50.0), 4, "X")
-        b.loft([(0.0, _poly(1.0, 8)), (1.2, _poly(6.4, 8)), (2.2, _poly(6.8, 8))], "steel.plate", "uplink_dish", tilt)
-        b.loft([(1.0, _poly(1.3, 8)), (2.0, _poly(1.3, 8))], "amber.lit", "uplink_core", tilt)
-        _beam(b, tuple(tilt @ Vector((0.0, 0.8, 0.0))), tuple(tilt @ Vector((0.0, 5.2, 0.0))), _poly(0.35, 6), _poly(0.35, 6), "steel.dark", "uplink_horn")
-    # The turrets: the fore one behind the canards (hp_1), the aft one before the fin (hp_2), each
-    # a low eight-sided house on a dark ring, the gun out of its face; the third mount bare.
-    for (name, pin, ty, kind) in (("turret_fore", "hp_1", 20.0, "barrel"), ("turret_aft", "hp_2", -34.0, "twin_barrel")):
-        tz = deck(ty)
-        b.prism("z", 0.0, ty, tz + 0.4, 6.2, 1.2, "steel.dark", 8, "turret_ring", phase=math.pi / 8)
-        with b.joint(name, (0.0, ty, tz + 1.0), axis="yaw", limits=(-75.0, 75.0)):
-            b.loft([(tz + 0.8, _poly(5.8, 8, math.pi / 8)), (tz + 3.6, _poly(5.4, 8, math.pi / 8)), (tz + 5.4, _poly(3.6, 8, math.pi / 8))],
-                   "steel.plate", "turret_house", Matrix.Translation((0.0, ty, 0.0)) @ Matrix.Rotation(math.pi / 2, 4, "X"))
-            b.stock(pin, (0.0, ty + 2.0, tz + 3.2), kind, scale=0.8, carries={"hp_1": "overclocked_railgun", "hp_2": "twin_autoguns"}[pin])
-    b.pad("hp_3", (8.5, 6.0, deck(6.0) + 1.0), scale=0.8, size=(4.4, 1.4))
+        _gp_giant_booster(b, s * BX, BZ, -30.0, -62.0, BR)
+    WZ2, FX = 34.0, 6.0   # the aerofoil's height, and the fins' cant outward at it
+    for s in (-1.0, 1.0):
+        _rings(b, [_fin_section(s * HX, -38.0, -62.0, deck(-50.0) - 0.5, 0.9), _fin_section(s * (HX + FX), -52.0, -63.0, WZ2, 0.5)], "livery.livery", "fin")
+    WING = [(-(HX + FX), -52.5, -61.0, 0.4), (-12.0, -47.0, -56.6, 0.7), (0.0, -43.0, -53.4, 0.85), (12.0, -47.0, -56.6, 0.7), (HX + FX, -52.5, -61.0, 0.4)]
+    _rings(b, [_blade_section(x, le, te, WZ2, t) for (x, le, te, t) in WING], "livery.livery", "stern_wing")
 
     # Idle acts (four, loud, never in step; a capital's heavy servos). Degrees and seconds; a body
     # key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k).
     boosters = ["booster_ring", "exhaust"]
-    # The salvo: the battery elevates, the pairs fire fore to aft, each back-blast flaring as the
-    # hull shrugs back from it; the battery comes down again.
-    b.act("salvo", 6.2, {"salvo": [(0.5, 0.0), (1.8, 24.0), (4.6, 24.0), (5.8, 0.0)]},
+    # The salvo: the box's face rises out of the roof, the pairs fire left to right, each
+    # back-blast flaring as the hull shrugs back from it; the box comes down again.
+    b.act("salvo", 6.4, {"salvo": [(0.4, 0.0), (1.6, 30.0), (4.6, 30.0), (5.8, 0.0)]},
           body=[(1.8, 0.0, 0.0, 0.0), (2.2, 0.0, -0.6, 0.0, 0.0, 0.8, 0.0), (2.7, 0.0, -1.0, 0.0, 0.0, 1.0, 0.0), (3.2, 0.0, -1.3, 0.0, 0.0, 1.0, 0.0),
-                (4.0, 0.0, -0.5, 0.0), (6.2, 0.0, 0.0, 0.0)],
+                (4.0, 0.0, -0.5, 0.0), (6.4, 0.0, 0.0, 0.0)],
           glow=[(["salvo_a_floor", "salvo_a_blast"], [(2.0, 0.0), (2.15, 16.0), (2.6, 2.0), (3.4, 0.0)]),
                 (["salvo_b_floor", "salvo_b_blast"], [(2.5, 0.0), (2.65, 16.0), (3.1, 2.0), (3.9, 0.0)]),
                 (["salvo_c_floor", "salvo_c_blast"], [(3.0, 0.0), (3.15, 16.0), (3.6, 2.0), (4.4, 0.0)])])
-    # The Immelmann: the booster banks pitch to blow under the wings and burn hot, and the hull
-    # lifts on the blast, nose up; then they level and it settles with a heave.
-    b.act("immelmann", 6.0, {
-        "canard_l": [(0.6, 0.0), (1.6, 12.0), (3.8, 12.0), (4.8, 0.0)],
-        "canard_r": [(0.6, 0.0), (1.6, 12.0), (3.8, 12.0), (4.8, 0.0)],
-    }, body=[(0.8, 0.0, 0.0, 0.0), (2.0, 0.0, 2.0, 4.0, 0.0, 3.0, 0.0), (3.8, 0.0, 3.0, 4.5, 0.0, 2.0, 0.0), (4.8, 0.0, 1.0, -1.0, 0.0, -1.0, 0.0), (6.0, 0.0, 0.0, 0.0)],
-       glow=[(boosters, [(0.5, 0.0), (1.2, 6.0), (1.8, 12.0), (3.8, 12.0), (4.6, 0.0)])])
-    # The uplink: the dish swings onto an ally and the reheat goes out, its core pulsing and
+    # The Immelmann: the giant boosters burn hot and the hull lifts on the blast and surges a
+    # little, nose up; then they settle and it comes down with a heave.
+    b.act("immelmann", 6.0, body=[(0.8, 0.0, 0.0, 0.0), (2.0, 0.0, 4.0, 3.0, 0.0, 2.0, 0.0), (3.8, 0.0, 6.0, 3.5, 0.0, 1.5, 0.0), (4.8, 0.0, 1.0, -1.0, 0.0, -1.0, 0.0), (6.0, 0.0, 0.0, 0.0)],
+          glow=[(boosters, [(0.5, 0.0), (1.2, 6.0), (1.8, 12.0), (3.8, 12.0), (4.6, 0.0)])])
+    # The uplink: the array swings onto an ally and the reheat goes out, its core pulsing and
     # burning; then it swings home.
-    b.act("uplink", 5.6, {"sensor_uplink": [(0.5, 0.0), (1.9, 60.0), (3.6, 60.0), (5.0, 0.0)]},
+    b.act("uplink", 5.6, {"sensor_uplink": [(0.5, 0.0), (1.9, 70.0), (3.6, 70.0), (5.0, 0.0)]},
           glow=[(["uplink_core"], [(1.8, 0.0), (2.1, 10.0), (2.4, 2.0), (2.7, 12.0), (3.6, 12.0), (4.4, 0.0)])])
-    # The traverse: the fore turret slews out one way and the aft one the other, each pausing
-    # before it turns back (the builder's turret rule), and home.
+    # The traverse: the three gun houses slew out to one side together and back to the other,
+    # a beat apart and never across each other's line, each pausing before it turns back (the
+    # builder's turret rule).
     b.act("traverse", 7.4, {
         "turret_fore": [(0.6, 0.0), (2.0, 46.0), (2.8, 46.0), (5.2, -34.0), (6.0, -34.0), (7.2, 0.0)],
-        "turret_aft": [(1.0, 0.0), (2.4, -40.0), (3.2, -40.0), (5.4, 30.0), (6.2, 30.0), (7.2, 0.0)],
+        "turret_l": [(0.8, 0.0), (2.2, 40.0), (3.0, 40.0), (5.4, -30.0), (6.2, -30.0), (7.2, 0.0)],
+        "turret_r": [(0.7, 0.0), (2.1, 40.0), (2.9, 40.0), (5.3, -30.0), (6.1, -30.0), (7.2, 0.0)],
     })
     # Movement: slow and heavy, its boosters brightening, its nose a touch up as a ground-effect
     # craft runs; it drifts through its corners and never banks (a hovercraft keeps flat).
@@ -5875,8 +6018,8 @@ def giant_petrel(b):
     b.gait(body_hold=(0.0, 0.0, 0.0, 0.0, 2.0, 0.0), glow={"parts": boosters, "k": KESTREL_HEAVY}, rock=2.0)
     # Its fixed weapon fires with a slice of its act, the three launches (Ryan, 31 October: "go for
     # ones that are cheapest to do first"), and its fixed equipment with theirs as it is used (Ryan's
-    # go of 3 November): the booster banks pitching and burning for the Immelmann, the dish swinging
-    # onto an ally for the uplink.
+    # go of 3 November): the boosters burning for the Immelmann, the array swinging onto an ally for
+    # the uplink.
     b.fires = {"spindrift_salvo": ("salvo", 1.8, 3.6), "immelmann_booster": ("immelmann", 1.0, 3.8), "reheat_uplink": ("uplink", 1.2, 3.6)}
     b.move(slide=0.3, bank=0.0, accel=1.6, heft=0.25, oversteer=0.5)
 

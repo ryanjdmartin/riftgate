@@ -609,26 +609,55 @@
    }
   },
   "needletail": {
-   "when": "First cut, 23 October.",
-   "note": "Claude's first cut, 23 October (Ryan: models for every chassis ready to build, their silhouettes apart from the Kestrel roster's). From above, the view the player reads, the roster is the Kite's dart on forward-swept wings with a V tail, the Buzzard's tailless plank, the Puffin's blunt hull on stubs, and the Lammergeier's two wing pairs to come. The Needletail is a needle of a fuselage on a short straight stub wing with a big booster nacelle on each tip, standing upright at rest so it hovers on them, exhausts down, where the Buzzard's nacelles tilt on the shoulders of a broad-winged airframe; a long thin tail ending in a dark needle with an X of small fins; a wide spotter's canopy; the Fovea Designator a sensor ball on a mast behind it, turning and nodding, its lens lit as it paints. Its acts: the transition to level flight and back, a sidestep, designating, backpedalling on its nacelles tipped back. On the move its nacelles tilt level as it gathers speed and come upright as it slows. Ryan's to judge running.",
+   "when": "Ryan's design of its two modes, 12 November.",
+   "note": "Ryan, 12 November, his design: “In hover mode, two sets of vertical boosters on swivels. Front boosters are smaller, on the ends of short canards. Rear boosters are larger, and sit at the tip of horizontal tailfins. Four other tailfins are arranged in an X pattern. No apparent main wings. When changed into flight mode, all four boosters rotate to horizontal and the wings they are on retract so the boosters are tight to the body. Triangular wings swing out of the middle fuselage. In flight mode, no weapons are visible. In hover mode, weapons appear: two weapon pods extrude out, mounted on the diagonals of the fuselage, one on either side, both behind the canopy. In front of the canopy, two round ports open, and weapons slide out, just like the Polar Bear. The locked piece sits on top of the nose, flipped up like a hidden headlight on a sports car. That means 4 hardpoints and one locked.” The pods on the upper diagonals and the fourth mount a second Laser Carbine, his picks the same day. A first cut: it stands and fights in hover mode, the guns run out of the two round ports in the step behind the needle and the pods out of the chamfers behind the canopy, the Designator a pop-up on the nose's hood, up, its lens lit; on the map it changes into flight mode as it gathers speed (the weapons in and the ports' irises shut, the pop-up folded flush, the boosters swivelling level as the canards and tailplanes run in, the deltas swinging out) and back as it slows. Its acts: the transition (the change on the spot, a surge forward as a jet, and back), a sidestep, designating (the pop-up turning onto a mark and tipping down onto it), backpedalling on its boosters tipped back. Ryan's to judge running: the hangar's Walk for the change by speed, Acts for the transition.",
    "images": [
     {
      "file": "needletail/needletail_front.png",
-     "alt": "needletail, front"
+     "alt": "needletail, hover mode, front"
     },
     {
      "file": "needletail/needletail_rear.png",
-     "alt": "needletail, rear"
+     "alt": "needletail, hover mode, rear"
     },
     {
      "file": "needletail/needletail_above.png",
-     "alt": "needletail, from above"
+     "alt": "needletail, hover mode, from above"
     },
     {
-     "file": "needletail/needletail_transition.png",
-     "alt": "needletail, the transition, nacelles level"
+     "file": "needletail/needletail_flight.png",
+     "alt": "needletail, flight mode, front"
+    },
+    {
+     "file": "needletail/needletail_flight_above.png",
+     "alt": "needletail, flight mode, from above"
+    },
+    {
+     "file": "needletail/needletail_changing.png",
+     "alt": "needletail, changing: the weapons in, the boosters swivelling"
     }
-   ]
+   ],
+   "before": {
+    "summary": "Before: the first cut, 23 October (a needle on a stub wing, a nacelle on each tip)",
+    "images": [
+     {
+      "file": "needletail/before_needletail_front.png",
+      "alt": "Earlier: needletail, front"
+     },
+     {
+      "file": "needletail/before_needletail_rear.png",
+      "alt": "Earlier: needletail, rear"
+     },
+     {
+      "file": "needletail/before_needletail_above.png",
+      "alt": "Earlier: needletail, from above"
+     },
+     {
+      "file": "needletail/before_needletail_transition.png",
+      "alt": "Earlier: needletail, the transition, nacelles level"
+     }
+    ]
+   }
   },
   "storm_petrel": {
    "when": "Ryan's glow notes, 31 October.",
@@ -670,8 +699,8 @@
    }
   },
   "giant_petrel": {
-   "when": "First cut, 23 October.",
-   "note": "Claude's first cut, 23 October (Ryan: models for every chassis ready to build, their silhouettes apart from the Kestrel roster's). From above, the view the player reads, the roster is the Kite's dart on forward-swept wings with a V tail, the Buzzard's tailless plank, the Puffin's blunt hull on stubs, and the Lammergeier's two wing pairs to come. The Giant Petrel is after the Lun: a long flying-boat hull, the longest thing Kestrel builds; eight boosters in two banks of four on canards over the bow (the Immelmann Booster), pitching to blow under the wings; short cobalt wings low on the hull with float pontoons and endplates; a tall T-tail; the Spindrift Salvo's three pairs of tubes along the spine on a plinth that elevates, each back-blast lit; the Reheat Uplink's dish behind the cockpit; two turrets. Its acts: the salvo, the Immelmann, the uplink, a traverse. On the move it runs heavy and slow, nose a touch up. Ryan's to judge running.",
+   "when": "The catamaran, Ryan's mix of 12 November.",
+   "note": "Ryan, 31 October, of the first cut: “try a scratch version, but not a traditional catamaran. Something more like a military catamaran”; the second round's sheet the Navy SES as reviewed, with Kestrel's flair, and the racer. Ryan, 12 November: “The engines and rear spoiler of the racer, on the command ship body of the Navy SES take”, the SES as reviewed for its topside, his pick the same day. The SES's body whole: two knife hulls with raked stems, the cushion and its seals, the raised centre bow and its gun house, the full-beam deckhouse leaning in with the bridge's glass a band across its raked face, the upright faceted mast carrying the Reheat Uplink's array, the Spindrift Salvo's box flush in the roof behind it. The racer's stern: two giant boosters (the Immelmann Booster) between the hulls rising out of the deckhouse's aft end, and the swept cobalt aerofoil on two canted fins standing on the hulls' sterns. The engines take the quarterdeck where the SES's aft gun house stood, and the refit pass's placeholder in the vent's old slot makes a third gun, so the two Twin Autoguns ride the hulls' foredecks, a gun house on each (Claude's placement, his to move). Its acts: the salvo (the box's face rising out of the roof, its pairs firing), the Immelmann (the boosters burning, the hull lifting on the blast), the uplink, a traverse of the three gun houses together. A first cut, Ryan's to judge running.",
    "images": [
     {
      "file": "giant_petrel/giant_petrel_front.png",
@@ -679,7 +708,7 @@
     },
     {
      "file": "giant_petrel/giant_petrel_rear.png",
-     "alt": "giant petrel, rear"
+     "alt": "giant petrel, rear: the racer's boosters and aerofoil"
     },
     {
      "file": "giant_petrel/giant_petrel_above.png",
@@ -687,9 +716,30 @@
     },
     {
      "file": "giant_petrel/giant_petrel_salvo.png",
-     "alt": "giant petrel, the salvo, its battery raised"
+     "alt": "giant petrel, the salvo, its box raised"
     }
-   ]
+   ],
+   "before": {
+    "summary": "Before: the first cut, 23 October (a flying boat after the Lun, its boosters on canards over the bow)",
+    "images": [
+     {
+      "file": "giant_petrel/before_giant_petrel_front.png",
+      "alt": "Earlier: giant petrel, front"
+     },
+     {
+      "file": "giant_petrel/before_giant_petrel_rear.png",
+      "alt": "Earlier: giant petrel, rear"
+     },
+     {
+      "file": "giant_petrel/before_giant_petrel_above.png",
+      "alt": "Earlier: giant petrel, from above"
+     },
+     {
+      "file": "giant_petrel/before_giant_petrel_salvo.png",
+      "alt": "Earlier: giant petrel, the salvo, its battery raised"
+     }
+    ]
+   }
   },
   "lammergeier": {
    "when": "First model, the flying wing, the launcher nacelles on the skin, 28 October.",

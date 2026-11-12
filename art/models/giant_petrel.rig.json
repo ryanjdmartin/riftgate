@@ -1,50 +1,6 @@
 {
  "_about": "the rig of art/models/giant_petrel.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers, and what each hardpoint's stock part is; MechRig reads it",
  "joints": {
-  "canard_l": {
-   "axis": "pitch",
-   "limits": {
-    "pitch": [
-     -8.0,
-     14.0
-    ]
-   },
-   "swing": false,
-   "parent": ""
-  },
-  "canard_r": {
-   "axis": "pitch",
-   "limits": {
-    "pitch": [
-     -8.0,
-     14.0
-    ]
-   },
-   "swing": false,
-   "parent": ""
-  },
-  "salvo": {
-   "axis": "pitch",
-   "limits": {
-    "pitch": [
-     -2.0,
-     28.0
-    ]
-   },
-   "swing": false,
-   "parent": ""
-  },
-  "sensor_uplink": {
-   "axis": "yaw",
-   "limits": {
-    "yaw": [
-     -120.0,
-     120.0
-    ]
-   },
-   "swing": false,
-   "parent": ""
-  },
   "turret_fore": {
    "axis": "yaw",
    "limits": {
@@ -56,7 +12,7 @@
    "swing": false,
    "parent": ""
   },
-  "turret_aft": {
+  "turret_l": {
    "axis": "yaw",
    "limits": {
     "yaw": [
@@ -66,17 +22,50 @@
    },
    "swing": false,
    "parent": ""
+  },
+  "turret_r": {
+   "axis": "yaw",
+   "limits": {
+    "yaw": [
+     -75.0,
+     75.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "sensor_uplink": {
+   "axis": "yaw",
+   "limits": {
+    "yaw": [
+     -150.0,
+     150.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "salvo": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -2.0,
+     34.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
   }
  },
  "acts": [
   {
    "name": "salvo",
-   "duration": 6.2,
+   "duration": 6.4,
    "ease": "smooth",
    "tracks": {
     "salvo": [
      [
-      0.5,
+      0.4,
       0.0,
       0.0,
       0.0,
@@ -85,8 +74,8 @@
       0.0
      ],
      [
-      1.8,
-      24.0,
+      1.6,
+      30.0,
       0.0,
       0.0,
       0.0,
@@ -95,7 +84,7 @@
      ],
      [
       4.6,
-      24.0,
+      30.0,
       0.0,
       0.0,
       0.0,
@@ -160,7 +149,7 @@
      0.0
     ],
     [
-     6.2,
+     6.4,
      0.0,
      0.0,
      0.0,
@@ -248,84 +237,7 @@
    "name": "immelmann",
    "duration": 6.0,
    "ease": "smooth",
-   "tracks": {
-    "canard_l": [
-     [
-      0.6,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0
-     ],
-     [
-      1.6,
-      12.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0
-     ],
-     [
-      3.8,
-      12.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0
-     ],
-     [
-      4.8,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0
-     ]
-    ],
-    "canard_r": [
-     [
-      0.6,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0
-     ],
-     [
-      1.6,
-      12.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0
-     ],
-     [
-      3.8,
-      12.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0
-     ],
-     [
-      4.8,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0
-     ]
-    ]
-   },
+   "tracks": {},
    "body": [
     [
      0.8,
@@ -339,19 +251,19 @@
     [
      2.0,
      0.0,
-     2.0,
      4.0,
-     0.0,
      3.0,
+     0.0,
+     2.0,
      0.0
     ],
     [
      3.8,
      0.0,
-     3.0,
-     4.5,
+     6.0,
+     3.5,
      0.0,
-     2.0,
+     1.5,
      0.0
     ],
     [
@@ -422,7 +334,7 @@
      [
       1.9,
       0.0,
-      60.0,
+      70.0,
       0.0,
       0.0,
       0.0,
@@ -431,7 +343,7 @@
      [
       3.6,
       0.0,
-      60.0,
+      70.0,
       0.0,
       0.0,
       0.0,
@@ -544,9 +456,9 @@
       0.0
      ]
     ],
-    "turret_aft": [
+    "turret_l": [
      [
-      1.0,
+      0.8,
       0.0,
       0.0,
       0.0,
@@ -555,18 +467,18 @@
       0.0
      ],
      [
-      2.4,
+      2.2,
       0.0,
-      -40.0,
+      40.0,
       0.0,
       0.0,
       0.0,
       0.0
      ],
      [
-      3.2,
+      3.0,
       0.0,
-      -40.0,
+      40.0,
       0.0,
       0.0,
       0.0,
@@ -575,7 +487,7 @@
      [
       5.4,
       0.0,
-      30.0,
+      -30.0,
       0.0,
       0.0,
       0.0,
@@ -584,7 +496,63 @@
      [
       6.2,
       0.0,
-      30.0,
+      -30.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      7.2,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "turret_r": [
+     [
+      0.7,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.1,
+      0.0,
+      40.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      2.9,
+      0.0,
+      40.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      5.3,
+      0.0,
+      -30.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      6.1,
+      0.0,
+      -30.0,
       0.0,
       0.0,
       0.0,
@@ -654,7 +622,7 @@
  "pins": {
   "hp_1": "overclocked_railgun",
   "hp_2": "twin_autoguns",
-  "hp_3": ""
+  "hp_3": "twin_autoguns"
  },
  "halo": [
   [
@@ -685,6 +653,7 @@
  },
  "stock_shapes": {
   "hp_1": "barrel",
-  "hp_2": "twin_barrel"
+  "hp_2": "twin_barrel",
+  "hp_3": "twin_barrel"
  }
 }
