@@ -646,11 +646,12 @@ On a machine:
   the Ammit stands in, whoever or whatever fells it (its own blow, an ally's, a burn's tick, a
   Mine's blast: a kill as the death check counts it, so a foe getting back up, a split and a
   part bank none), with no cap, kept from fight to fight through the battle and gone as the
-  battle ends. The Souls flare as each fight opens, and at each foe a spend of the Ammit's own
-  kills (its weapon's blow, an arc, a spill): it gains a stack of Empowered for every 5 Souls it
-  holds, nothing under 5, and no Soul is spent by it. A death check banks its Souls first, so a
-  spend that kills two flares twice at the count with both in. What a flare grants is Empowered
-  like any: it halves at the round's end and a Purge takes it. Its Soul Siphon consumes Souls.
+  battle ends. The Souls flare as each fight opens, and once after each attack of the Ammit's
+  own that kills, however many fall to it (its weapon's blow, an arc, a spill): it gains a stack
+  of Empowered for every 5 Souls it holds, nothing under 5, and no Soul is spent by it. A death
+  check banks its Souls first, so an attack that kills two flares once at the count with both
+  in. What a flare grants is Empowered like any: it halves at the round's end and a Purge takes
+  it. Its Soul Siphon consumes Souls.
   An Ability, so no Purge, Silence or Cleanse touches them; its chip says the count, and the
   codex lists it among what the battle keeps.
 - **Armoured** (buff, on either side): armour +1 a stack, every stack at once, whatever
@@ -1086,9 +1087,9 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   on hull damage (any hull lost: a blow, a bite or an overheat), on shield gain, on shield
   granted (an ally this machine shields), on heat gain, out of combat, on foe status (a foe
   gains a debuff), on stack (this machine applies stacks), on a kill (once after an attack of
-  this machine's that killed, arcs, spills and a vent's blast included, or once for each foe it
-  killed where the effect says so: the Ammit's flare), on a foe killed (every kill the death
-  check counts in this machine's fight, whoever made it, once for each: the Ammit's Souls), on
+  this machine's that killed, however many fell to it, arcs, spills and a vent's blast included:
+  the Ammit's flare, the Kite's shield), on a foe killed (every kill the death check counts in
+  this machine's fight, whoever made it, once for each: the Ammit's Souls), on
   damaging a foe (after a spend of its weapons that took HP off a foe, once however many it
   hurt; what it grants lands after the spend, so the Skua's stack bounces none of the shots
   that earned it). An effect an event fires may fire once a round only (the Skua's). No trigger

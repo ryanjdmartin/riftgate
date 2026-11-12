@@ -1818,12 +1818,14 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 		if effect == "stack_status" and eff.has("cap") and int(eff["cap"]) < 1:
 			errs.append("%s: stack_status's cap is the most stacks it banks, at least 1" % where)
 		# An effect scaled by a status the machine carries may count it in steps (the Ammit's flare,
-		# 12 November: an Empowered for every five Souls), and a grant may come once for each thing
-		# its event counts.
+		# 12 November: an Empowered for every five Souls), and a count of fallen foes may grant once
+		# for each (its Souls). A kill trigger never does: it fires once an attack that killed,
+		# however many fell (Ryan, 12 November, of a flare for each foe: "Flaring twice for an AoE is
+		# probably wrong, let's make it 'one of more killed' by an attack").
 		if eff.has("stack_step") and (not eff.has("per_stack") or int(eff["stack_step"]) < 1):
 			errs.append("%s: stack_step is the stacks of per_stack's status a step takes: 1 or more, beside per_stack" % where)
-		if eff.has("each") and (effect != "stack_status" or not (eff["each"] is bool) or not ["on_kill", "on_foe_killed"].has(trig)):
-			errs.append("%s: each (true) grants a stack_status once for every foe its event counts: on_kill's or on_foe_killed's" % where)
+		if eff.has("each") and (effect != "stack_status" or not (eff["each"] is bool) or trig != "on_foe_killed"):
+			errs.append("%s: each (true) grants a stack_status once for every foe that fell, on_foe_killed's alone (a kill trigger fires once an attack)" % where)
 		# An effect that fires once a round (the Skua's stack of Ricochet for damaging a foe, Ryan,
 		# 11 November: "once per turn"): a gate on what an event fires (Effects.fire), which the
 		# pipeline's effects (static, on_attack, on_injury) never pass through.

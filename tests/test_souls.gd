@@ -3,8 +3,10 @@ extends TestCase
 ## The Ammit's rework (Ryan, 12 November), held on synthetic passives and entries, never on the
 ## chassis's own: Souls, a count kept for the battle that every kill in its fight banks ("Souls
 ## granted by any kill"; "The souls last the battle"; no cap, "as part of the fantasy"); the
-## flare, a stack of Empowered for every five Souls as a fight opens and on each of its own kills
-## ("the flare should be the Ammit kill only"); the Soul Siphon, which consumes up to five Souls
+## flare, a stack of Empowered for every five Souls as a fight opens and once after each attack
+## of its own that kills, however many fall to it ("the flare should be the Ammit kill only";
+## "Flaring twice for an AoE is probably wrong, let's make it 'one of more killed' by an
+## attack"); the Soul Siphon, which consumes up to five Souls
 ## for a stack each ("Consume up to 5 souls, granting 1 Empowered per soul. Cooldown 3") and holds
 ## every Empowered on the field through the round's end ("No Empowered decays this round. And I
 ## mean none, not ally or enemy").
@@ -14,7 +16,7 @@ const L := Face.Reach.DIRECT
 const EATER := {"id": "eater", "name": "Eater", "description": "", "effects": [
 	{"trigger": "on_foe_killed", "effect": "stack_status", "value": "souls", "each": true},
 	{"trigger": "on_skirmish_start", "effect": "stack_status", "value": "overcharged", "per_stack": "souls", "stack_step": 5},
-	{"trigger": "on_kill", "effect": "stack_status", "value": "overcharged", "per_stack": "souls", "stack_step": 5, "each": true}]}
+	{"trigger": "on_kill", "effect": "stack_status", "value": "overcharged", "per_stack": "souls", "stack_step": 5}]}
 const SIPHON := {"kind": "buff", "status": "overcharged", "targets": "self", "spends": "souls", "spends_up_to": 5, "holds_all": "overcharged", "cooldown": 3}
 
 
@@ -73,7 +75,7 @@ func test_every_kill_in_its_fight_banks_a_soul_whoever_made_it() -> void:
 	assert_eq(Effects.stacks_of(eater, "souls"), 2, "no kill, no Soul")
 
 
-func test_the_souls_flare_as_a_fight_opens_and_on_each_of_its_own_kills() -> void:
+func test_the_souls_flare_as_a_fight_opens_and_once_an_attack_of_its_own_that_kills() -> void:
 	var sk := Skirmish.new(1, 4)
 	var wide := Face.from_dict({"kind": "attack", "reach": "direct", "power": 30, "keywords": ["cleave"], "cleave": 30})
 	var eater := _mech("Eater", Die.single(wide))
@@ -92,9 +94,9 @@ func test_the_souls_flare_as_a_fight_opens_and_on_each_of_its_own_kills() -> voi
 	assert_true(sk.assign(0, target), "its spread fells two")
 	assert_false(a.alive() or b.alive(), "both down")
 	assert_eq(Effects.stacks_of(eater, "souls"), 14, "the death check banks both Souls first")
-	assert_eq(Effects.stacks_of(eater, "overcharged"), 2 + 2 * 2, "then a flare for each foe it killed, at the count as it stands (fourteen: two stacks)")
+	assert_eq(Effects.stacks_of(eater, "overcharged"), 2 + 2, "then one flare for the attack, two foes killed or one, at the count as it stands (fourteen: two stacks)")
 	sk.end_round()
-	assert_eq(Effects.stacks_of(eater, "overcharged"), 3, "and what it grants is Empowered like any: it halves at the round's end")
+	assert_eq(Effects.stacks_of(eater, "overcharged"), 2, "and what it grants is Empowered like any: it halves at the round's end")
 
 
 func test_a_flare_under_five_souls_grants_nothing() -> void:
@@ -254,6 +256,7 @@ func test_the_entry_says_its_two_rules_and_round_trips() -> void:
 	assert_eq(Effects.named_like("overcharged"), ["overcharged", "kindled"], "Empowered is one word on both sides")
 	assert_eq(Effects.effect_text(EATER["effects"][1]), "as the fight begins: gains a stack of Empowered for every 5 Souls it holds", "the flare reads as a sentence")
 	assert_eq(Effects.effect_text(EATER["effects"][0]), "for each foe that falls in its fight: gains a stack of Souls", "and the banking")
+	assert_eq(Effects.effect_text(EATER["effects"][2]), "after an attack that killed: gains a stack of Empowered for every 5 Souls it holds", "and the kill's flare, once an attack")
 
 
 func test_the_validator_holds_the_new_keys() -> void:
@@ -284,6 +287,12 @@ func test_the_validator_holds_the_new_keys() -> void:
 		{"trigger": "on_round_start", "effect": "stack_status", "value": "overcharged", "each": true},
 		{"trigger": "on_foe_killed", "effect": "add_shield", "value": 2}]}
 	db.chassis["odd"] = c2
+	var c3: Dictionary = db.chassis["badger"].duplicate(true)
+	c3["id"] = "per_kill"
+	c3["name"] = "Per Kill Test"
+	c3["passive"] = {"id": "per_kill", "name": "Per Kill", "description": "", "effects": [
+		{"trigger": "on_kill", "effect": "stack_status", "value": "overcharged", "each": true}]}
+	db.chassis["per_kill"] = c3
 	var errs := db.validate()
 	var said := func(where: String, what: String) -> bool:
 		return errs.any(func(e: String) -> bool: return e.begins_with(where) and e.contains(what))
@@ -294,7 +303,8 @@ func test_the_validator_holds_the_new_keys() -> void:
 	assert_true(said.call("component odd_hold", "holds_all names a status that halves"), "a hold on a status that does not halve is refused")
 	assert_false(errs.any(func(e: String) -> bool: return e.begins_with("component fine_siphon")), "and the entry as built is clean")
 	assert_true(said.call("chassis odd", "stack_step"), "a step with no status to count is refused")
-	assert_true(said.call("chassis odd", "each (true)"), "each belongs to the kill triggers")
+	assert_true(said.call("chassis odd", "each (true)"), "each belongs to the count of fallen foes")
+	assert_true(said.call("chassis per_kill", "each (true)"), "and never to a kill trigger, which fires once an attack that killed, however many fell")
 	assert_true(said.call("chassis odd", "'add_shield' on 'on_foe_killed'"), "and the new trigger banks a status, nothing else")
 
 

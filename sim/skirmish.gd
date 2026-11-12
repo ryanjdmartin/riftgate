@@ -3459,9 +3459,11 @@ static func blast_shot(amount: int) -> Face:
 
 ## A spend's kills, its weapon's or its vent's blast's, counted at its death check (is_kill):
 ## Empowered a kill where an entry prints it (no piece does today), the muster its guns earn (the
-## Swallowtail's) and the kill trigger, once however many fell (the Kite's shield back whole) or
-## once for each (an effect that says `each`: the Ammit's flare, Ryan, 12 November: "the flare
-## should be the Ammit kill only"; the Souls its kills banked are in already, the death check's).
+## Swallowtail's) and the kill trigger, once however many fell (the Kite's shield back whole;
+## the Ammit's flare, Ryan, 12 November: "the flare should be the Ammit kill only", and of a
+## flare for each foe, built first: "Flaring twice for an AoE is probably wrong, let's make it
+## 'one of more killed' by an attack"; the Souls its kills banked are in already, the death
+## check's).
 func _after_kills(ms: MechState, killed: int, f: Face = null) -> void:
 	if killed <= 0:
 		return
@@ -3469,7 +3471,7 @@ func _after_kills(ms: MechState, killed: int, f: Face = null) -> void:
 		_overcharge_on_kill(ms, killed, f.devours)
 	_muster(ms, killed * int(Effects.muster_rule(ms.unit).get("kill", 0)))
 	if ms.alive():
-		var got := Effects.fire(ms.unit, "on_kill", killed)
+		var got := Effects.fire(ms.unit, "on_kill")
 		var parts := _apply(ms, got)
 		if not parts.is_empty():
 			log.append("%s: after the kill, %s" % [ms.unit.display_name, ", ".join(_with_counts(ms, parts, got))])

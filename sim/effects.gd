@@ -1680,8 +1680,8 @@ static func blow_blocked(u) -> Dictionary:
 ## otherwise. A stack_status may count its grant off another status the machine carries
 ## (`per_stack`, in steps of `stack_step`: the Ammit's flare, an Empowered for every five Souls,
 ## nothing under five), and may grant once for each thing the event counted (`each`, with
-## `amount` the count: a Soul for each foe a death check cleared, a flare for each foe a spend
-## killed).
+## `amount` the count: a Soul for each foe a death check cleared; a kill trigger carries no
+## count, firing once an attack that killed).
 ## Nothing here can fire itself: a shield gained here grants no more shield, heat shed here
 ## grants no heat.
 static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary:
@@ -1714,7 +1714,7 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 					# its stacks for every `stack_step` of `per_stack` held, rounded down.
 					if eff.has("per_stack"):
 						n *= stack_steps(u, eff)
-					# Once for each thing the event counted (a Soul a foe felled, a flare a foe killed).
+					# Once for each thing the event counted (a Soul a foe felled).
 					if bool(eff.get("each", false)):
 						n *= maxi(0, amount)
 					# A store's cap (the Nemesis's rage, five; Ryan, 22 October): it banks no more.
@@ -2643,7 +2643,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"on_shield_granted": lead = "an ally this machine shields: "
 		"on_heat_gain": lead = "on gaining heat: "
 		"out_of_combat": lead = "each phase out of combat: "
-		"on_kill": lead = "for each foe its attack killed: " if bool(eff.get("each", false)) else "after an attack that killed: "
+		"on_kill": lead = "after an attack that killed: "
 		"on_foe_killed": lead = "for each foe that falls in its fight: " if bool(eff.get("each", false)) else "when a foe falls in its fight: "
 		"on_damage": lead = "after a spend of its weapons that damaged a foe: "
 	match str(eff.get("when", "")):

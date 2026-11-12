@@ -944,10 +944,10 @@
    "id": "souls",
    "category": "status",
    "name": "Souls",
-   "codex": "Ability, the Ammit's. A Soul for every foe that falls in a fight it is in, whoever fells it, kept from fight to fight through the battle, with no limit. As each fight opens, and each time the Ammit kills, it gains 1 Empowered for every 5 Souls it holds; its Soul Siphon consumes them. No Purge, Silence or Cleanse touches it.",
+   "codex": "Ability, the Ammit's. A Soul for every foe that falls in a fight it is in, whoever fells it, kept from fight to fight through the battle, with no limit. As each fight opens, and after each attack of the Ammit's that kills, it gains 1 Empowered for every 5 Souls it holds; its Soul Siphon consumes them. No Purge, Silence or Cleanse touches it.",
    "status": "implemented",
    "design": {
-    "holes": "Ryan's rework of 12 November, the name his. No cap by his call (\"as part of the fantasy\"), so it is no store, which is capped and wears a bar: an Ability, a chip with its count. The text is a session's draft.",
+    "holes": "Ryan's rework of 12 November, the name his. No cap by his call (\"as part of the fantasy\"), so it is no store, which is capped and wears a bar: an Ability, a chip with its count. The kill's flare is once an attack that kills, however many fall to it (Ryan, 12 November: \"Flaring twice for an AoE is probably wrong, let's make it 'one of more killed' by an attack\"); the first build flared once for each foe. The text is a session's draft.",
     "table": {
      "kind": "ability",
      "on": "machine",
@@ -1537,7 +1537,7 @@
    "id": "on_kill",
    "category": "trigger",
    "name": "On a kill",
-   "codex": "Passive trigger. Fires once after an attack of this machine's that killed, however many foes fell to it, chains, spills and a vent's blast included: a status, a shield (the Kite's, recharged whole) or a vent. A status may ask for each foe the attack killed instead (the Ammit's flare).",
+   "codex": "Passive trigger. Fires once after an attack of this machine's that killed, however many foes fell to it, chains, spills and a vent's blast included: a status (the Ammit's flare), a shield (the Kite's, recharged whole) or a vent.",
    "status": "implemented",
    "design": {
     "holes": ""
