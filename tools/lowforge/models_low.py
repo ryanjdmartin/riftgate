@@ -243,7 +243,7 @@ def kite(b):
     """Kestrel "Kite": a small hit-and-run interceptor. Sleek, speed over defence;
     reverse-swept wings whose rear faces run back into the boosters, a faired canopy far
     back, twin nose guns, two big boosters, a tail rooted into the fuselage and riding over
-    the boosters, ending in two angled stabilisers. Small but deadly. Reskinned 22 September
+    the boosters, its top edges chamfered (12 November), ending in two angled stabilisers. Small but deadly. Reskinned 22 September
     to Kestrel's metals: the body in chrome plate, the wings cobalt, the boosters dark (the
     bone body predated the palettes). Since its rework (21 October) it carries the Pinion
     Driver locked and two hardpoints, three since 11 November, and Ryan, 28 October: "both wingtips be the 'Pinion
@@ -268,7 +268,8 @@ def kite(b):
     the gun pushed forward with the cut's back, its front kept; "slap a gentle curved fairing
     overtop of the back of the mount point, to hide the poking-out edge").
     The tail segment's flat face behind the canopy is an air intake, a dark mouth in a steel lip
-    (the same day: "Can the flat face behind the canopy also get an intake treatment?")."""
+    (the same day: "Can the flat face behind the canopy also get an intake treatment?"), both
+    taking the face's shape once its top corners were chamfered."""
     # Fuselage: one piece, a six-sided section lofted from a needle nose to a broad rear.
     # The top tapers sharply toward the nose, the belly shallowly, and the belly carries
     # forward under the wing roots (Ryan, 21 September).
@@ -341,6 +342,17 @@ def kite(b):
     b.loft(hood, "steel.plate", "port_hood")
     y, mouth = hood[-1]
     _face(b, [(x, y + 0.02, z) for x, z in mouth], "bore.dark", "port_hood_mouth")
+    # With the trough filled, a little round cut under the weapon (his: "Can we make a little
+    # round cut under, just long enough that the rack isn't covered?"): a channel round the line
+    # a little wider than the launcher's drum, from just inside the hood's mouth to just past the
+    # launcher's face (5.6 past the mount at its fit), its floor ramped up to the surface beyond,
+    # so the nose no longer covers the launcher's underside. Sized to the launcher alone: a dish
+    # and twin barrels are wider and still touch the nose at their sides.
+    if not TROUGH:
+        CUT_R, CUT_END = 1.65, PORT + 5.9
+        def ring(y, z):
+            return [(CUT_R * math.cos(math.pi * i / 8.0), y, z + CUT_R * math.sin(math.pi * i / 8.0)) for i in range(16)]
+        b.cut_hull([fuselage], ring(HOOD_LIP - 0.4, GZ) + ring(CUT_END, GZ) + ring(CUT_END + 1.6, spine(CUT_END + 1.6) + CUT_R))
     # Canopy: far back, low, faired into the spine rather than a bubble.
     b.loft([(-2.0, hexagon(0.0, 6.2, 7.0, 0.5)), (-10.0, hexagon(0.0, 7.4, 9.0, 3.0)),
             (-18.0, hexagon(0.0, 7.5, 9.0, 3.2)), (-26.0, hexagon(0.0, 7.2, 9.0, 3.0))], "glass.glass", "canopy")
@@ -387,20 +399,27 @@ def kite(b):
         b.prism("y", s * 7.5, -47.0, -1.0, 6.5, 2.0, "amber.engine", 6, "booster_ring", phase=math.pi / 6)   # lit: the amber role glows
         b.loft([(-48.0, hexagon(s * 7.5, -1.0, 11.0, 9.5)), (-48.5, hexagon(s * 7.5, -1.0, 10.0, 8.5))], "amber.exhaust", "exhaust")
     # Tail: rooted into the fuselage with a keel, riding over the boosters, two angled
-    # stabilisers at the end.
-    b.loft([(-18.0, rect(0.0, 12.0, 4.0, 12.0)), (-32.0, rect(0.0, 8.0, 7.0, 12.5)),
-            (-46.0, rect(0.0, 5.0, 9.0, 12.5)), (-60.0, rect(0.0, 3.0, 9.5, 11.5))], "steel.plate", "tail_boom")
+    # stabilisers at the end. Its top edges chamfered, a little at its face, where the intake
+    # needs the room, and more aft (Ryan, 12 November: "the tail is kind of boring next to the new
+    # designs. Can we chamfer the top edges of it, make it a bit more streamlined?").
+    b.loft([(-18.0, _chamfered(0.0, 12.0, 4.0, 12.0, 1.6)), (-32.0, _chamfered(0.0, 8.0, 7.0, 12.5, 1.8)),
+            (-46.0, _chamfered(0.0, 5.0, 9.0, 12.5, 1.2)), (-60.0, _chamfered(0.0, 3.0, 9.5, 11.5, 0.7))], "steel.plate", "tail_boom")
     b.loft([(-30.0, rect(0.0, 4.0, 4.5, 8.0)), (-44.0, rect(0.0, 3.0, 5.5, 9.0))], "steel.dark", "keel")
     # The tail segment's front face, over the canopy, is an air intake (Ryan, 12 November): a dark
-    # mouth across it inside a steel lip, a splitter down its middle.
-    _quad(b, [(-5.0, -17.9, 9.3), (5.0, -17.9, 9.3), (5.0, -17.9, 11.4), (-5.0, -17.9, 11.4)], "bore.dark", "intake_mouth")
-    for (za, zb) in ((11.4, 12.0), (8.9, 9.3)):
-        b.box(-5.6, 5.6, -18.2, -17.2, za, zb, "steel.plate", "intake_lip")
-    for (xa, xb) in ((-5.6, -5.0), (5.0, 5.6), (-0.3, 0.3)):
-        b.box(xa, xb, -18.2, -17.2, 9.3, 11.4, "steel.plate", "intake_lip")
+    # mouth across it inside a steel lip, a splitter down its middle. Mouth and lip take the
+    # face's shape since its top corners were chamfered: the face's sides run up to 10.4 and its
+    # chamfers to (4.4, 12), the line x + z = 16.4 on the right; the lip stands 0.4 inside the
+    # face's edges and the mouth 0.45 inside the lip.
+    def outline(side, top, chamfer, bottom):
+        return [(-side, bottom), (side, bottom), (side, chamfer - side), (chamfer - top, top), (top - chamfer, top), (-side, chamfer - side)]
+    lip = outline(5.6, 11.6, 16.4 - 0.4 * math.sqrt(2.0), 8.9)
+    mouth = outline(5.15, 11.15, 16.4 - 0.85 * math.sqrt(2.0), 9.35)
+    _face(b, [(x, -17.9, z) for x, z in mouth], "bore.dark", "intake_mouth")
+    _frame(b, lip, mouth, -18.2, -17.2, "steel.plate", "intake_lip")
+    b.box(-0.3, 0.3, -18.2, -17.2, 9.35, 11.15, "steel.plate", "intake_lip")
     for s in (-1.0, 1.0):
         a = math.radians(s * 38.0)
-        root = [(s * 1.5, -60.0, 10.5), (s * 1.5, -48.0, 10.5), (s * 1.5, -48.0, 11.5), (s * 1.5, -60.0, 11.5)]
+        root = [(s * 0.9, -60.0, 10.5), (s * 0.9, -48.0, 10.5), (s * 0.9, -48.0, 11.5), (s * 0.9, -60.0, 11.5)]   # inside the chamfered end, so no corner stands off it
         tip = [(s * 1.5 + 14.0 * math.sin(a), -62.0, 10.5 + 14.0 * math.cos(a)), (s * 1.5 + 14.0 * math.sin(a), -55.0, 10.5 + 14.0 * math.cos(a)),
                (s * 1.5 + 14.0 * math.sin(a), -55.0, 10.9 + 14.0 * math.cos(a)), (s * 1.5 + 14.0 * math.sin(a), -62.0, 10.9 + 14.0 * math.cos(a))]
         _wing(b, root, tip, "livery.livery", "stabiliser")
@@ -6892,6 +6911,30 @@ def _missile_face(b, corner, up, right, fwd, size, label="missile_face"):
     o, up, right = Vector(corner), Vector(up), Vector(right)
     return _quad(b, [tuple(o), tuple(o + right * size), tuple(o + right * size + up * size), tuple(o + up * size)],
                  "steel.missile", label, (o, up, right, Vector(fwd), (size, size)))
+
+
+def _chamfered(cx, w, z0, z1, c):
+    """A rectangle cross-section with its two top corners cut off by `c` across and down, as
+    (x, z) points counter-clockwise seen from +y (rect()'s order with the corners cut): a box
+    section made a little more streamlined (the Kite's tail)."""
+    return [(cx - w / 2, z0), (cx + w / 2, z0), (cx + w / 2, z1 - c), (cx + w / 2 - c, z1), (cx - w / 2 + c, z1), (cx - w / 2, z1 - c)]
+
+
+def _frame(b, outer, inner, y0, y1, material, label):
+    """A rim round a mouth: the band between two outlines in the x-z plane with the same count
+    of points, `outer` round `inner`, from `y0` to `y1` along y, so a mouth of any convex shape
+    has a lip of its own shape (the Kite's intake on its chamfered tail)."""
+    bm = bmesh.new()
+    rings = [[bm.verts.new((x, y, z)) for x, z in pts] for pts in (outer, inner) for y in (y0, y1)]
+    o0, o1, i0, i1 = rings
+    n = len(outer)
+    for k in range(n):
+        j = (k + 1) % n
+        bm.faces.new([o0[k], o0[j], i0[j], i0[k]])   # the band at y0
+        bm.faces.new([o1[k], i1[k], i1[j], o1[j]])   # the band at y1
+        bm.faces.new([o0[k], o1[k], o1[j], o0[j]])   # outside
+        bm.faces.new([i0[k], i0[j], i1[j], i1[k]])   # inside the mouth
+    return b._finish(bm, material, label)
 
 
 def _quad(b, pts, material, label, frame=None):
