@@ -1617,11 +1617,14 @@ commands are in `README.md`.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
-  the last publish's before it is replaced, and `edits`, `designs` and `text` read first. Behind
-  main since the Ammit's rework landed (12 November, not published; its `text` collection read
-  that day and empty) by the three content files, the Ammit's rig sidecar (the Siphon's firing
-  slice) and `text.json`, where its drafts wait to be seen; they go up on Ryan's word. At the
-  page's Version 233 (12 November, main's `aac6bfc`, on Ryan's word, "Merge into main and
+  the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
+  page's Version 240 (12 November, main's `f3e4841`, on Ryan's word, "Ok, republish the hangar on
+  main"): the nine files moved since 233 (the five content files with the Ammit's rework, the
+  dead-code pass, the four formations' numbers, the Overrun Gearing and the dealt Shift Whistle;
+  the Ammit's rig sidecar with its Siphon's firing slice; the Whip Scorpion's, its broadside the
+  release's and its two new idle acts; `designs.json` and `text.json`), the page unchanged, every
+  live copy matching 233's build before it was replaced; `edits` and `text` empty, `designs` the
+  two folded ideas. At the page's Version 233 (12 November, main's `aac6bfc`, on Ryan's word, "Merge into main and
   republish"): the twenty-two files moved since 232 (four content files with the three fast
   flyers, Ricochet, the Breech and Sweep's removal; the Kite's and the Skua's models and rigs;
   `pins.json`, `shapes.json` and `muzzles.json` with the Kite's third mount and the port gun; the
