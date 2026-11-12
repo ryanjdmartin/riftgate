@@ -5619,120 +5619,141 @@ def needletail(b):
     behind the canopy. In front of the canopy, two round ports open, and weapons slide out, just
     like the Polar Bear. The locked piece sits on top of the nose, flipped up like a hidden
     headlight on a sports car. That means 4 hardpoints and one locked." The pods on the upper
-    diagonals (his pick, the same day). His second notes on the first cut, the same evening: the
-    canopy amidships and the whole body much shorter; the pods "actually connect and look like
-    part of it, with a clear slot/opening/recess for them to retract into. They don't have to be
-    round, since they need to follow the shape of the fuselage where they retract"; in flight "the
-    fuselage should be streamlined like a rocket", the irised ports given up for "a rounded
-    clamshell covering the muzzle. The clamshell splits down the middle, with the seam horizontal
-    and curving from the outer sides to the front where it meets the nose. Then the clamshell would
-    split apart both top and bottom halves, rotating so that each half retracts into the fuselage,
-    exposing the muzzle, which then slides out a bit"; wings that need not be full deltas ("The
-    inner face can taper up"); all four boosters shorter; the rear boosters back, so the fins they
-    sit on are "with the other tailfins, appearing like 6 tailfins essentially", and settling
-    "between the upper and lower sets of tailfins" when retracted.
+    diagonals (his pick, the same day). His notes on the first cut, the same evening: the canopy
+    amidships and the whole body much shorter; the pods with "a clear slot/opening/recess for them
+    to retract into", following "the shape of the fuselage where they retract"; in flight the
+    fuselage "streamlined like a rocket" behind "a rounded clamshell covering the muzzle", the
+    halves splitting top and bottom on a horizontal seam to let the muzzle slide out; wings whose
+    inner face tapers up; shorter boosters; the rear pair on fins among the X fins ("like 6
+    tailfins"), settling between the upper and lower sets when retracted. And on the second cut's
+    round body: "I didn't literally mean round like a rocket, I just meant no exposed weapons or
+    ports"; the clamshells "the only part of the weapon port be visible, i.e. no visible tube",
+    "the hinge on the axis parallel to the line of the weapons, folding into the sides of the
+    fuselage instead of the front", the halves "like teardrop shaped, with the point facing the
+    nose. The whole effect being an aerodynamic profile when closed, just a little bulge coming
+    out of each side of the nose."
 
-    Built at rest in hover mode, the pose it holds standing and in every fight: a round body, a
-    rocket, from a point at the nose to a short dark needle at the tail, straight round the six
-    fins; a cheek either side of the nose, its gun run out of the open mouth (run_l, run_r), the
-    clamshell's halves swung back inside it (shell_lt, shell_lb, shell_rt, shell_rb); the
-    Designator a pop-up on the nose's top (lamp, hinged at its back), up, its lens forward,
-    turning on its own joint (sensor); the canopy amidships; the two pods on the upper diagonals
-    behind it, each a slice of the body's own skin raised out of its dark slot (pod_l, pod_r),
-    its gun out of its face (run_pod_l, run_pod_r); the front boosters (booster_fl, booster_fr)
-    upright at the tips of the canards, the rear (booster_rl, booster_rr) at the tips of the
-    tailplanes, each on a slide (slide_fl, slide_fr, slide_rl, slide_rr); the wings (wing_l,
-    wing_r) stowed inside the middle. Flight mode is the gait (MechRig.drive): as it gathers
-    speed the guns run back into the cheeks and the clamshells shut over them, the pods' guns run
-    back into the pods and the pods sink flush into their slots, the pop-up folds flat, the
-    boosters swivel level and run in along their fins to sit against the body (the rear pair
-    between the upper and lower X fins), and the wings swing out; slowing, it all comes back.
+    Built at rest in hover mode, the pose it holds standing and in every fight: a jet's chined
+    fuselage, eight-sided (a flat top and belly, chamfers, a short upright band at the chine),
+    a radome tapering to a dark point ahead and a short dark needle astern; on each side of the
+    nose a teardrop blister's recess, its halves rolled up and down into the fuselage's side on
+    the gun's own line (shell_lt, shell_lb, shell_rt, shell_rb), the gun in it run out past its
+    point (run_l, run_r); the Designator a pop-up on the nose's top (lamp, hinged at its back), up,
+    its lens forward, turning on its own joint (sensor); the canopy amidships; the two pods on the
+    upper chamfers behind it, each a slab of the chamfer raised out of its dark slot (pod_l,
+    pod_r), its gun out of its face (run_pod_l, run_pod_r); the front boosters (booster_fl,
+    booster_fr) upright at the tips of the canards, the rear (booster_rl, booster_rr) at the tips
+    of the tailplanes among the X fins, each on a slide (slide_fl, slide_fr, slide_rl, slide_rr);
+    the wings (wing_l, wing_r) stowed inside the middle. Flight mode is the gait (MechRig.drive):
+    as it gathers speed the cheek guns run back and the blisters' halves roll shut over them, the
+    pods' guns run back into the pods and the pods sink flush into their slots, the pop-up folds
+    flat, the boosters swivel level and run in along their fins to sit against the body (the rear
+    pair between the upper and lower X fins), and the wings swing out; slowing, it all comes back.
     Mounts in the die's order: hp_1 the left cheek (the Transonic Rifle), hp_2 the right (the
     Laser Carbine), hp_3 the left pod (the Twin Autoguns), hp_4 the right pod (the second Laser
     Carbine). Centred on z = 0 like the Kite."""
-    # The body: a rocket, twelve-sided, (y, radius) nose to tail; straight round the fins.
-    PROF = [(28.0, 0.25), (25.0, 1.0), (21.0, 2.2), (17.0, 3.4), (13.0, 4.6), (9.0, 5.7), (5.0, 6.6), (0.0, 7.4), (-4.0, 7.6),
-            (-20.0, 7.6), (-24.0, 6.9), (-27.0, 6.0), (-29.0, 5.5), (-41.0, 5.5), (-44.0, 4.2), (-47.0, 2.5)]   # full round the pods, so each pod's gun runs back under a full skin
-    N = 12
-    FLAT = math.cos(math.pi / N)   # a face's middle on a vertex's radius
+    # The body: a jet's chined fuselage, (y, width, top, belly, the upright band's half height at
+    # the chine) nose to tail; the radome's sides upright under the cheeks.
+    BODY = [(45.0, 0.8, 0.35, 0.3, 0.05), (41.0, 3.4, 1.25, 1.0, 0.4), (36.0, 7.4, 2.45, 1.9, 1.0), (31.5, 11.4, 3.5, 2.7, 1.8),
+            (29.5, 13.3, 3.95, 3.0, 2.2), (28.5, 14.0, 4.1, 3.1, 2.4), (9.0, 14.0, 5.2, 3.6, 2.4), (4.0, 15.6, 6.2, 3.9, 1.6),
+            (-4.0, 17.0, 7.2, 4.2, 0.8), (-26.0, 17.0, 7.2, 4.2, 0.8), (-31.0, 12.0, 5.2, 3.5, 0.4), (-43.0, 12.0, 5.0, 3.4, 0.4),
+            (-47.5, 7.0, 3.0, 2.4, 0.2)]   # straight the pods' whole length, so each pod's gun runs back under a full face
 
-    def rad(y):
-        return _lerp_at(PROF, y)[0]
+    def sec(w, top, bottom, s):
+        return [(w / 2, -s), (w / 2, s), (w / 4, top), (-w / 4, top), (-w / 2, s), (-w / 2, -s), (-w / 4, -bottom), (w / 4, -bottom)]
+
+    def at(y):
+        """The body at `y`: [width, top, belly, band]."""
+        return _lerp_at(BODY, y)
 
     def face(y):
-        """The body's flat side at `y`, square to x (and its top, square to z)."""
-        return rad(y) * FLAT
+        """The body's chine at `y`, its widest."""
+        return at(y)[0] / 2.0
+    body = b.loft([(y, sec(w, t, bt, s)) for (y, w, t, bt, s) in BODY], "steel.plate", "fuselage")
+    b.loft([(44.5, diamond(0.0, 0.0, 1.2, 0.9)), (50.0, diamond(0.0, 0.0, 0.1, 0.1))], "steel.dark", "nose_tip")
+    b.loft([(-47.0, diamond(0.0, 0.0, 3.0, 2.4)), (-52.5, diamond(0.0, 0.0, 0.3, 0.3))], "steel.dark", "needle")
+    # The canopy amidships, a frame band across it.
+    _jet_canopy(b, [(y, w, t, bt) for (y, w, t, bt, s) in BODY],
+                [(6.0, 0.8, 0.5), (3.0, 2.6, 2.4), (-2.0, 3.2, 3.2), (-6.0, 3.1, 2.9), (-9.0, 2.0, 1.4), (-10.5, 0.8, 0.4)], -2.5)
 
-    def poly_r(r, theta):
-        """The twelve-gon's edge at `theta` (from +x, towards +z), its vertex radius `r`: the
-        faces' middles lie at whole steps, the vertices half-way between."""
-        step = 2.0 * math.pi / N
-        return r * FLAT / math.cos(theta - round(theta / step) * step)
-    body = b.loft([(y, _oct(0.0, 2.0 * r, 2.0 * r, 0.0, N)) for (y, r) in PROF], "steel.plate", "fuselage")
-    b.loft([(26.5, diamond(0.0, 0.0, 1.0, 1.0)), (32.0, diamond(0.0, 0.0, 0.1, 0.1))], "steel.dark", "nose_tip")
-    b.loft([(-46.0, diamond(0.0, 0.0, 2.6, 2.6)), (-52.0, diamond(0.0, 0.0, 0.3, 0.3))], "steel.dark", "needle")
-    # The canopy amidships, its base sunk into the round body, a frame band across it.
-    SINK = 1.2
-    _jet_canopy(b, [(y, 2.0 * r, r * FLAT - SINK, r * FLAT) for (y, r) in PROF],
-                [(y, hw, h + SINK) for (y, hw, h) in ((7.0, 0.8, 0.5), (4.0, 2.8, 2.6), (-1.0, 3.4, 3.4), (-5.0, 3.3, 3.1), (-8.0, 2.2, 1.6), (-10.0, 0.8, 0.4))], -1.5)
+    # The cheeks: a teardrop blister either side of the nose, its point forward, its gun inside on
+    # a run. Shut (in flight) it is the outer half of a teardrop of revolution about the gun's line,
+    # which runs a hair outboard of the radome's upright side, split on a horizontal seam; each half
+    # hinges on that line (a roll joint) and in hover is rolled up (or down) and in, into the
+    # fuselage's side behind the recess's dark lining, baring the gun, which runs out past the point.
+    CX = 7.0                       # the radome's upright side under the cheeks
+    AX = CX + 0.3                  # the gun's line, a hair outboard of it
+    TIP_B, WIDE, NARROW, TIP_F = 11.0, 17.0, 28.0, 29.05   # the blister's back tip, its widest, its narrow end, its point
+    RM, RN = 2.0, 1.05             # its radius at its widest and at its narrow end
+    TH, OPEN = 0.22, 112.0         # the halves' thickness, and how far each rolls in to open
+    PIN, RUN = 24.0, 6.5           # the gun's mount at rest (run out), and how far it runs back in flight
+    CHEEK_FITS = {"barrel": ("barrel_port", 1.0), "twin_barrel": ("twin_barrel", 0.7), "rack": ("rack_round", 0.75, 7.8),
+                  "dish": ("dish", 0.6, 4.7), "blade": ("blade", 0.7)}
 
-    # The cheeks either side of the nose: a blister faired into the body behind, open at the
-    # front, its gun on a run inside; in flight the gun runs back and the clamshell shuts over the
-    # mouth, its halves meeting on a horizontal seam that curves round from the outer side to the
-    # front where it meets the nose. Each half is a quarter of a sphere on a joint at the sphere's
-    # centre, built swung back inside the cheek (hover) and swung forward to shut.
-    CX, CZ, CY, RS = 4.6, 0.2, 17.0, 2.6   # the cheek's axis, its mouth's station (the shells' centre), the shells' radius
-    RUN = 6.5   # how far a cheek gun runs back in flight
-    TH = 0.22   # the shells' thickness
-    CHEEK_FITS = {"barrel": ("barrel", 1.0), "twin_barrel": ("twin_barrel", 0.8, -6.0), "rack": ("rack_round", 0.9, -7.4),
-                  "dish": ("dish", 0.75, -12.1), "blade": ("blade", 0.85, -6.0)}
+    def drop(y):
+        """The blister's radius at `y`: a round back, swelling to its widest, then a long taper
+        to a narrow end and a round point."""
+        if y <= TIP_B or y >= TIP_F:
+            return 0.04
+        if y <= WIDE:
+            return max(0.04, RM * math.sqrt(max(0.0, 1.0 - ((WIDE - y) / (WIDE - TIP_B)) ** 2)))
+        if y <= NARROW:
+            return RM - (RM - RN) * ((y - WIDE) / (NARROW - WIDE)) ** 1.3
+        return max(0.04, RN * math.sqrt(max(0.0, 1.0 - ((y - NARROW) / (TIP_F - NARROW)) ** 2)))
+    STATIONS = [TIP_B, 11.12, 11.45, 12.1, 13.0, 14.2, 15.6, WIDE, 19.0, 21.5, 24.0, 26.2, NARROW, 28.45, 28.75, 28.95, TIP_F]
 
-    def shell(c, beta0, beta1, open_deg):
-        """A quarter-sphere shell at `c`, the cap's tip to its rim, over the azimuth beta0..beta1
-        (degrees from +z towards +x), swung `open_deg` of pitch about c."""
-        rows = []
-        for a in (3.0, 12.0, 24.0, 38.0, 52.0, 66.0, 79.0, 90.0):
-            al = math.radians(a)
-            outer, inner = [], []
-            for k in range(9):
-                be = math.radians(beta0 + (beta1 - beta0) * k / 8.0)
-                d = Vector((math.sin(al) * math.sin(be), math.cos(al), math.sin(al) * math.cos(be)))
-                outer.append(d * RS)
-                inner.append(d * (RS - TH))
-            rows.append(outer + list(reversed(inner)))
-        turn = Matrix.Rotation(math.radians(open_deg), 3, "X")
-        _rings(b, [[tuple(Vector(c) + turn @ p) for p in ring] for ring in rows], "steel.plate", "shell")
+    def edge(r):
+        """How far round from the outboard side (degrees) the blister's surface meets the
+        upright side: past a right angle by the gun line's offset."""
+        return 90.0 + math.degrees(math.asin(min(1.0, (AX - CX) / max(r, 1e-6))))
+
+    def arc(s, y, r, a0, a1, n=8):
+        """Points on the circle of radius `r` about the gun's line at `y`, from a0 to a1 degrees
+        (from the outboard side, positive up), on side `s`."""
+        return [(s * (AX + r * math.cos(math.radians(a0 + (a1 - a0) * k / n))), y, r * math.sin(math.radians(a0 + (a1 - a0) * k / n))) for k in range(n + 1)]
     for s, n, carries in ((-1.0, 1, "transonic_rifle"), (1.0, 2, "laser_carbine")):
         side = "l" if s < 0 else "r"
-        cx = s * CX
-        b.loft([(3.0, _oct(CZ, 2.0, 2.0, cx, N)), (7.0, _oct(CZ, 4.6, 4.6, cx, N)), (10.0, _oct(CZ, 5.5, 5.5, cx, N))], "steel.plate", "cheek")
-        bore = []
-        for y in (10.3, CY):
-            bore += [(cx + 2.64 * math.cos(math.pi / N + i * 2.0 * math.pi / N), y, CZ + 2.64 * math.sin(math.pi / N + i * 2.0 * math.pi / N)) for i in range(N)]
-        b.cut_hull([body], bore)   # the nose's skin cleared out of the bore, up to the mouth
-        _tube(b, (cx, 10.0, CZ), (cx, CY, CZ), 2.75, 2.62, N, "steel.plate", "cheek_tube", floor_depth=0.5, phase=math.pi / N)
-        _tube(b, (cx, CY - 0.35, CZ), (cx, CY + 0.05, CZ), 2.9, 2.62, N, "steel.dark", "cheek_lip", floor=False, phase=math.pi / N)
-        c = (cx, CY, CZ)
-        with b.joint("shell_%st" % side, c, limits=(-95.0, 5.0)):
-            shell(c, -90.0, 90.0, 90.0)
-        with b.joint("shell_%sb" % side, c, limits=(-5.0, 95.0)):
-            shell(c, 90.0, 270.0, -90.0)
-        with b.joint("run_" + side, (cx, CY - 7.0, CZ), slide=(0.0, 1.0, 0.0)):
-            b.stock("hp_%d" % n, (cx, CY - 7.0, CZ), "barrel", scale=0.42, carries=carries, fits=CHEEK_FITS)
+        axis_at = Vector((s * AX, 0.0, 0.0))
+        # The recess: the blister's whole teardrop cut out of the body, its inboard part lined dark.
+        hull = []
+        for y in STATIONS:
+            hull += arc(s, y, drop(y) + 0.05, 0.0, 360.0, 15)[:-1]
+        b.cut_hull([body], hull)
+        _rings(b, [arc(s, y, max(0.02, drop(y) - 0.3), edge(drop(y)), 360.0 - edge(drop(y)))
+                   + list(reversed(arc(s, y, max(0.01, drop(y) - 0.36), edge(drop(y)), 360.0 - edge(drop(y))))) for y in STATIONS],
+               "bore.void", "cheek_bay")
+        # The two halves, each built rolled open into the side (hover).
+        for half, sign in (("t", 1.0), ("b", -1.0)):
+            roll = -s * sign * OPEN   # the roll that opens it: up and in for the top, down and in for the bottom
+            turn = Matrix.Rotation(math.radians(roll), 3, "Y")
+            rings = []
+            for y in STATIONS:
+                r = drop(y)
+                e = edge(r)
+                a0, a1 = (0.0, e) if sign > 0 else (-e, 0.0)
+                ring = arc(s, y, r, a0, a1) + list(reversed(arc(s, y, max(0.01, r - TH), a0, a1)))
+                rings.append([tuple(axis_at + turn @ (Vector(p) - axis_at) + Vector((0.0, 0.0, 0.0))) for p in ring])
+            close = -roll
+            with b.joint("shell_%s%s" % (side, half), (s * AX, (TIP_B + TIP_F) / 2.0, 0.0), axis="roll",
+                         limits=(min(0.0, close) - 5.0, max(0.0, close) + 5.0)):
+                _rings(b, rings, "steel.plate", "shell")
+        with b.joint("run_" + side, (s * AX, PIN, 0.0), slide=(0.0, 1.0, 0.0)):
+            b.stock("hp_%d" % n, (s * AX, PIN, 0.0), "barrel", scale=0.32, carries=carries, fits=CHEEK_FITS)
 
     # The Fovea Designator (fixed): a pop-up on the nose's top between the cheeks, hinged at its
     # back. Built up, its lens forward; folded flat its back lies along the falling nose and the
     # lens faces down into its well. The sensor joint inside turns it onto a mark.
-    HY, LEN, HW = 9.5, 4.0, 1.3
-    HZ = face(HY)
-    LAMP_FOLD = -90.0 - math.degrees(math.atan((face(HY) - face(HY + LEN)) / LEN))
+    HY, LEN, HW = 12.0, 4.0, 1.3
+    top = lambda y: at(y)[1]
+    HZ = top(HY)
+    LAMP_FOLD = -90.0 - math.degrees(math.atan((top(HY) - top(HY + LEN)) / LEN))
     well = []
     for y in (HY - 0.25, HY + LEN + 0.3):
         for x in (-HW - 0.15, HW + 0.15):
-            well += [(x, y, face(y) - 1.6), (x, y, face(y) + 1.2)]
+            well += [(x, y, top(y) - 1.6), (x, y, top(y) + 1.2)]
     b.cut_hull([body], well)
-    _slab(b, [(-HW - 0.15, HY - 0.25, face(HY - 0.25) - 1.5), (HW + 0.15, HY - 0.25, face(HY - 0.25) - 1.5),
-              (HW + 0.15, HY + LEN + 0.3, face(HY + LEN + 0.3) - 1.5), (-HW - 0.15, HY + LEN + 0.3, face(HY + LEN + 0.3) - 1.5)],
+    _slab(b, [(-HW - 0.15, HY - 0.25, top(HY - 0.25) - 1.5), (HW + 0.15, HY - 0.25, top(HY - 0.25) - 1.5),
+              (HW + 0.15, HY + LEN + 0.3, top(HY + LEN + 0.3) - 1.5), (-HW - 0.15, HY + LEN + 0.3, top(HY + LEN + 0.3) - 1.5)],
           (0.0, 0.0, 1.0), 0.15, "bore.dark", "lamp_well")
     with b.joint("lamp", (0.0, HY, HZ), limits=(LAMP_FOLD - 4.0, 6.0)):
         with b.joint("sensor", (0.0, HY + 0.7, HZ + LEN / 2.0), limits=(-60.0, 60.0)):
@@ -5755,7 +5776,7 @@ def needletail(b):
     def tucked(k, L, y_pivot):
         """Where a booster's axis sits level and run in against the body (its intake leading):
         each hexagon's flat side (the lip at the intake's end, the ring at the exhaust's) clear of
-        the body wherever along its length it lies."""
+        the chine wherever along its length it lies."""
         out = 0.0
         for (dy, r) in ((11.0 * L + 0.8 * k, 5.1 * k), (8.0 * L, 4.7 * k), (0.0, 4.4 * k), (-11.0 * L - 1.3 * k, 4.9 * k)):
             out = max(out, face(y_pivot + dy) + r * math.cos(math.pi / 6) + 0.05)
@@ -5765,110 +5786,114 @@ def needletail(b):
     # so the tail reads as six fins.
     KF, LF = 0.62, 0.45          # the front boosters' girth and length
     KR, LR = 0.85, 0.61          # the rear's
-    FY, FX = 1.0, 13.5           # the canards' station and their boosters' pivot
-    RY, RX = -40.0, 15.5         # the tailplanes'
+    FY, FX = 0.0, 13.8           # the canards' station and their boosters' pivot
+    RY, RX = -40.0, 15.0         # the tailplanes'
     FIN = FX - tucked(KF, LF, FY)
     RIN = RX - tucked(KR, LR, RY)
+    ROOT_LE, ROOT_TE, TIP_LE, TIP_TE, SPAN = -31.0, -43.0, -37.0, -44.5, 6.0   # the six fins' planform: root chord, tip chord, span
     for s in (-1.0, 1.0):
         side = "l" if s < 0 else "r"
         tip = FX - 4.4 * KF * math.cos(math.pi / 6) + 0.4
-        _rings(b, [_blade_section(s * (rad(FY) - 0.3), FY + 3.5, FY - 3.5, 0.0, 0.7), _blade_section(s * tip, FY + 2.0, FY - 2.0, 0.0, 0.5)],
+        _rings(b, [_blade_section(s * (face(FY) - 0.2), FY + 3.5, FY - 3.5, 0.0, 0.7), _blade_section(s * tip, FY + 2.0, FY - 2.0, 0.0, 0.5)],
                "livery.livery", "canard")
         with b.joint("slide_f" + side, (s * FX, FY, 0.0), slide=(1.0, 0.0, 0.0)):
             booster("f" + side, s * FX, FY, 0.0, KF, LF)
         tip = RX - 4.4 * KR * math.cos(math.pi / 6) + 0.35
-        f = (tip - 5.25) / (11.5 - 5.25)   # the X fins' edges carried out to the tip
-        le, te = -29.0 - 7.0 * f, -41.0 - 1.5 * f
-        _rings(b, [_blade_section(s * (face(-35.0) - 0.06), -29.0, -41.0, 0.0, 0.85), _blade_section(s * tip, le, te, 0.0, 0.5)], "livery.livery", "tailplane")
+        root = face(-37.0) - 0.06
+        f = (tip - root) / SPAN   # the X fins' edges carried out to the tip
+        _rings(b, [_blade_section(s * root, ROOT_LE, ROOT_TE, 0.0, 0.85), _blade_section(s * tip, ROOT_LE + (TIP_LE - ROOT_LE) * f, ROOT_TE + (TIP_TE - ROOT_TE) * f, 0.0, 0.5)],
+               "livery.livery", "tailplane")
         with b.joint("slide_r" + side, (s * RX, RY, 0.0), slide=(1.0, 0.0, 0.0)):
             booster("r" + side, s * RX, RY, 0.0, KR, LR)
 
-    # The X fins round the base with the tailplanes: six fins, the rear boosters settling between
-    # the upper and the lower pair in flight.
-    for k in range(4):
-        a = math.radians(45.0 + 90.0 * k)
-        dx, dz = math.cos(a), math.sin(a)
-        tx, tz = -dz * 0.3, dx * 0.3   # the fin's thickness, across its span
+    # The X fins off the tail's chamfers with the tailplanes: six fins, the rear boosters settling
+    # between the upper and the lower pair in flight.
+    for sx in (-1.0, 1.0):
+        for sz in (-1.0, 1.0):
+            d = Vector((sx * math.cos(math.radians(40.0)), 0.0, sz * math.sin(math.radians(40.0))))
+            t = Vector((-d.z, 0.0, d.x)) * 0.3   # the fin's thickness, across its span
 
-        def sec(r, y_le, y_te, dx=dx, dz=dz, tx=tx, tz=tz):
-            ym = y_le - (y_le - y_te) * 0.35
-            cx, cz = dx * r, dz * r
-            return [(cx, y_te, cz), (cx + tx, ym, cz + tz), (cx, y_le, cz), (cx - tx, ym, cz - tz)]
-        _rings(b, [sec(5.25, -29.0, -41.0), sec(11.5, -36.0, -42.5)], "livery.livery", "tail_fin")
+            def fin(y_le, y_te, out, d=d, t=t, sx=sx, sz=sz):
+                w, tp, bt, s = at((y_le + y_te) / 2.0)
+                c = Vector((sx * w * 3.0 / 8.0, 0.0, sz * ((s + tp) / 2.0 if sz > 0 else (s + bt) / 2.0))) + d * out
+                ym = y_le - (y_le - y_te) * 0.35
+                return [(c.x, y_te, c.z), (c.x + t.x, ym, c.z + t.z), (c.x, y_le, c.z), (c.x - t.x, ym, c.z - t.z)]
+            _rings(b, [fin(ROOT_LE, ROOT_TE, -0.3), fin(TIP_LE, TIP_TE, SPAN)], "livery.livery", "tail_fin")
 
     # The wings, stowed inside the middle: each a flat cobalt quadrilateral, swept, its inner edge
     # tapering up to the pivot at the leading root (Ryan: "The inner face can taper up"), built
-    # swung in about the pivot, so in flight it swings out 58 degrees (the left a hair above the
-    # right, where the two lie across each other inside).
+    # swung in about the pivot, so in flight it swings out 58 degrees (the left a little above the
+    # right, where the two lie across each other inside, both under the pods' slots).
     SWING = 58.0
     for s in (-1.0, 1.0):
         side = "l" if s < 0 else "r"
-        zw = 0.6 if s < 0 else -0.6
-        piv = Vector((s * 6.6, -5.0, zw))
-        out = [piv, Vector((s * 19.5, -14.5, zw)), Vector((s * 19.5, -18.5, zw)), Vector((s * 8.4, -17.5, zw))]   # the deployed planform
+        zw = -0.55 if s < 0 else -1.25
+        piv = Vector((s * 7.4, -6.0, zw))
+        out = [piv, Vector((s * 20.0, -16.0, zw)), Vector((s * 20.0, -20.5, zw)), Vector((s * 9.4, -19.5, zw))]   # the deployed planform
         turn = Matrix.Rotation(math.radians(SWING if s < 0 else -SWING), 3, "Z")
         stowed = [tuple(piv + turn @ (p - piv)) for p in out]
         with b.joint("wing_" + side, tuple(piv), axis="yaw", limits=(-SWING - 5.0, 0.0) if s < 0 else (0.0, SWING + 5.0)):
             _slab(b, list(reversed(stowed)) if s > 0 else stowed, (0.0, 0.0, 1.0), 0.6, "livery.livery", "wing")
 
-    # The pods on the upper diagonals behind the canopy: each a slice of the body's own skin (the
-    # forty degrees round the diagonal and PT deep) lofted along the body so it follows the skin,
-    # raised out of its slot (cut into the body and lined dark) at rest, its gun out of its face;
-    # in flight the gun runs back into the pod and the pod sinks flush, a dark seam round it.
-    PY0, PY1, PT, OUT = -10.5, -23.5, 3.8, 3.3   # the pod's front and back, its depth, how far it stands out at rest
-    GUN = 2.1                                    # the gun's axis under the pod's top, every class inside the pod
+    # The pods on the upper chamfers behind the canopy: each a slab of the chamfer itself (a band
+    # across it, PT deep) lofted along the body so it follows the chamfer where it lies, raised out
+    # of its slot (cut into the body and lined dark) along the chamfer's normal at rest, its gun out
+    # of its face; in flight the gun runs back into the pod and the pod sinks flush, a dark seam
+    # round it.
+    PY0, PY1, PT, OUT = -12.0, -25.0, 3.4, 3.0   # the pod's front and back, its depth, how far it stands out at rest
+    F0, F1 = 0.22, 0.84                          # the band of the chamfer it is, from the chine's band up
+    GUN = 1.7                                    # the gun's line under the pod's face, every class inside the pod
     RUNP = 8.0                                   # how far a pod's gun runs back into it in flight
     POD_FITS = {"barrel": "barrel_port", "twin_barrel": ("twin_barrel", 0.65), "rack": ("rack_round", 0.7, 8.1),
-                "dish": ("dish", 0.6, 4.2), "blade": ("blade", 0.8)}
-    ANG = [65.0, 55.0, 45.0, 35.0, 25.0]   # degrees from +x, the right pod's span round the diagonal
-    A0, A1 = ANG[-1], ANG[0]
+                "dish": ("dish", 0.6, 4.2), "blade": ("blade", 0.75)}
 
-    def ring_at(s, y, angles, dr, out=0.0):
-        """Points round the skin at `y` over `angles` (degrees, the right side's), `dr` off the
-        skin, `out` along the diagonal, as (x, z) for side `s`."""
-        r = rad(y)
-        pts = []
-        for a in angles:
-            t = math.radians(a)
-            rr = poly_r(r, t) + dr
-            pts.append((s * (rr * math.cos(t) + out * 0.7071), rr * math.sin(t) + out * 0.7071))
-        return pts
+    def chamfer(y):
+        """The right upper chamfer at `y`: its foot (the band's top), its unit run up it, its
+        length and its outward normal, in (x, z)."""
+        w, tp, bt, s = at(y)
+        p0 = Vector((w / 2.0, s))
+        run = Vector((w / 4.0, tp)) - p0
+        length = run.length
+        u = run / length
+        return p0, u, length, Vector((u.y, -u.x))
 
-    def section(s, y, angles, dr0, dr1, out=0.0, inset=0.0):
-        """A slice of the skin at `y` from `dr1` (outside) down to `dr0`, `inset` drawn in round
-        its middle, wound the same way on both sides."""
-        pts = ring_at(s, y, angles, dr1, out) + ring_at(s, y, list(reversed(angles)), dr0, out)
+    def band(s, y, f0, f1, d0, d1, out=0.0, inset=0.0):
+        """A slab of the chamfer at `y`, from f0 to f1 up it and from d1 (outside) down to d0
+        along its normal, `out` along the normal, `inset` drawn in round its middle, as (x, z)
+        for side `s`, wound the same way on both sides."""
+        p0, u, length, n = chamfer(y)
+        pts = [p0 + u * length * f0 + n * (d1 + out), p0 + u * length * f1 + n * (d1 + out),
+               p0 + u * length * f1 + n * (d0 + out), p0 + u * length * f0 + n * (d0 + out)]
         if inset:
-            mx, mz = sum(p[0] for p in pts) / len(pts), sum(p[1] for p in pts) / len(pts)
-            pts = [(mx + (p[0] - mx) * (1.0 - inset), mz + (p[1] - mz) * (1.0 - inset)) for p in pts]
+            m = sum(pts, Vector((0.0, 0.0))) / 4.0
+            pts = [m + (p - m) * (1.0 - inset) for p in pts]
+        pts = [(s * p.x, p.y) for p in pts]
         return pts if s > 0 else list(reversed(pts))
     for s, n, shape, carries in ((-1.0, 3, "twin_barrel", "twin_autoguns"), (1.0, 4, "barrel", "laser_carbine")):
         side = "l" if s < 0 else "r"
         # The slot: a cut a hair wider, longer and deeper than the pod; its lining a hair inside.
         cut = []
         for y in (PY0 + 0.4, PY1 - 0.4):
-            r = rad(y)
-            for a in (A1 + 2.4, 45.0, A0 - 2.4):
-                t = math.radians(a)
-                for rr in (poly_r(r, t) + 1.4, poly_r(r, t) - PT - 0.4):
-                    cut.append((s * rr * math.cos(t), y, rr * math.sin(t)))
+            cut += [(x, y, z) for (x, z) in band(s, y, F0 - 0.035, F1 + 0.035, -PT - 0.4, 1.4)]
         b.cut_hull([body], cut)
         ya, yb = PY0 + 0.25, PY1 - 0.25
-        for (angles, dr0, dr1, y0, y1) in (([A1 + 2.0, A0 - 2.0], -PT - 0.25, -PT - 0.1, ya, yb),       # the floor
-                                           ([A1 + 2.0, A1 + 1.6], -PT - 0.25, 0.2, ya, yb),            # the walls
-                                           ([A0 - 1.6, A0 - 2.0], -PT - 0.25, 0.2, ya, yb),
-                                           ([A1 + 2.0, A0 - 2.0], -PT - 0.25, 0.2, ya, ya - 0.15),     # the ends
-                                           ([A1 + 2.0, A0 - 2.0], -PT - 0.25, 0.2, yb + 0.15, yb)):
-            b.loft([(y0, section(s, y0, angles, dr0, dr1)), (y1, section(s, y1, angles, dr0, dr1))], "bore.dark", "pod_well")
-        gr = rad(PY0) + OUT - GUN   # the gun's axis along the diagonal
-        gx, gz = s * gr * 0.7071, gr * 0.7071
-        with b.joint("pod_" + side, (gx, (PY0 + PY1) / 2.0, gz), slide=(s * 0.7071, 0.0, 0.7071)):
-            b.loft([(PY0, section(s, PY0, ANG, -PT, 0.0, OUT, inset=0.12)), (PY0 - 1.2, section(s, PY0 - 1.2, ANG, -PT, 0.0, OUT)),
-                    (PY1 + 1.0, section(s, PY1 + 1.0, ANG, -PT, 0.0, OUT)), (PY1, section(s, PY1, ANG, -PT, 0.0, OUT, inset=0.08))], "steel.plate", "pod")
-            b.loft([(y, section(s, y, ANG, -PT - 0.05, 0.08, OUT)) for y in (PY0 - 3.0, PY0 - 4.6)], "livery.livery", "pod_band")
+        for (f0, f1, d0, d1, y0, y1) in ((F0 - 0.03, F1 + 0.03, -PT - 0.25, -PT - 0.1, ya, yb),       # the floor
+                                         (F0 - 0.03, F0 - 0.012, -PT - 0.25, 0.2, ya, yb),            # the walls
+                                         (F1 + 0.012, F1 + 0.03, -PT - 0.25, 0.2, ya, yb),
+                                         (F0 - 0.03, F1 + 0.03, -PT - 0.25, 0.2, ya, ya - 0.15),     # the ends
+                                         (F0 - 0.03, F1 + 0.03, -PT - 0.25, 0.2, yb + 0.15, yb)):
+            b.loft([(y0, band(s, y0, f0, f1, d0, d1)), (y1, band(s, y1, f0, f1, d0, d1))], "bore.dark", "pod_well")
+        p0, u, length, nrm = chamfer(PY0)
+        g = p0 + u * length * (F0 + F1) / 2.0 + nrm * (OUT - GUN)   # the gun's line, the pod's face's middle
+        gx, gz = s * g.x, g.y
+        with b.joint("pod_" + side, (gx, (PY0 + PY1) / 2.0, gz), slide=(s * nrm.x, 0.0, nrm.y)):
+            b.loft([(PY0, band(s, PY0, F0, F1, -PT, 0.0, OUT, inset=0.1)), (PY0 - 1.2, band(s, PY0 - 1.2, F0, F1, -PT, 0.0, OUT)),
+                    (PY1 + 1.0, band(s, PY1 + 1.0, F0, F1, -PT, 0.0, OUT)), (PY1, band(s, PY1, F0, F1, -PT, 0.0, OUT, inset=0.07))], "steel.plate", "pod")
+            b.loft([(y, band(s, y, F0 - 0.006, F1 + 0.006, -PT - 0.05, 0.08, OUT)) for y in (PY0 - 3.0, PY0 - 4.6)], "livery.livery", "pod_band")
             _disc(b, (gx, PY0 + 0.05, gz), (0.0, 1.0, 0.0), 1.15, 8, "bore.dark", "pod_muzzle")
             with b.joint("run_pod_" + side, (gx, PY0 + 0.2, gz), slide=(0.0, 1.0, 0.0)):
                 b.stock("hp_%d" % n, (gx, PY0 + 0.2, gz), shape, scale=0.36, carries=carries, fits=POD_FITS)
+    PN = chamfer(PY0)[3]   # the pods' line out, the right one's
 
     # Flight mode, the joints' pose at full speed (the gait below) and in the transition act.
     BOOST = ["booster_fl", "booster_fr", "booster_rl", "booster_rr"]
@@ -5877,20 +5902,20 @@ def needletail(b):
     FLIGHT.update({"slide_fl": (0.0, 0.0, 0.0, FIN, 0.0, 0.0), "slide_fr": (0.0, 0.0, 0.0, -FIN, 0.0, 0.0),
                    "slide_rl": (0.0, 0.0, 0.0, RIN, 0.0, 0.0), "slide_rr": (0.0, 0.0, 0.0, -RIN, 0.0, 0.0),
                    "wing_l": (0.0, -SWING, 0.0, 0.0, 0.0, 0.0), "wing_r": (0.0, SWING, 0.0, 0.0, 0.0, 0.0),
-                   "pod_l": (0.0, 0.0, 0.0, 0.7071 * OUT, 0.0, -0.7071 * OUT), "pod_r": (0.0, 0.0, 0.0, -0.7071 * OUT, 0.0, -0.7071 * OUT),
+                   "pod_l": (0.0, 0.0, 0.0, PN.x * OUT, 0.0, -PN.y * OUT), "pod_r": (0.0, 0.0, 0.0, -PN.x * OUT, 0.0, -PN.y * OUT),
                    "run_pod_l": (0.0, 0.0, 0.0, 0.0, -RUNP, 0.0), "run_pod_r": (0.0, 0.0, 0.0, 0.0, -RUNP, 0.0),
                    "run_l": (0.0, 0.0, 0.0, 0.0, -RUN, 0.0), "run_r": (0.0, 0.0, 0.0, 0.0, -RUN, 0.0),
-                   "shell_lt": (-90.0, 0.0, 0.0, 0.0, 0.0, 0.0), "shell_rt": (-90.0, 0.0, 0.0, 0.0, 0.0, 0.0),
-                   "shell_lb": (90.0, 0.0, 0.0, 0.0, 0.0, 0.0), "shell_rb": (90.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+                   "shell_lt": (0.0, 0.0, -OPEN, 0.0, 0.0, 0.0), "shell_rt": (0.0, 0.0, OPEN, 0.0, 0.0, 0.0),
+                   "shell_lb": (0.0, 0.0, OPEN, 0.0, 0.0, 0.0), "shell_rb": (0.0, 0.0, -OPEN, 0.0, 0.0, 0.0),
                    "lamp": (LAMP_FOLD, 0.0, 0.0, 0.0, 0.0, 0.0)})
 
     def held(pose):
         return {j: [(0.0,) + tuple(v), (1.0,) + tuple(v)] for j, v in pose.items()}
 
-    # The change as keys, in order (the guns in and the lamp down first, then the clamshells shut
-    # and the pods sink; then the boosters swivel, run in along their fins and the wings swing
-    # out; back the other way round), from `t0` over `span` seconds, or from flight back to hover
-    # when `back`.
+    # The change as keys, in order (the guns in and the lamp down first, then the blisters' halves
+    # roll shut and the pods sink; then the boosters swivel, run in along their fins and the wings
+    # swing out; back the other way round), from `t0` over `span` seconds, or from flight back to
+    # hover when `back`.
     STAGE = {"run_l": 0.0, "run_r": 0.0, "run_pod_l": 0.0, "run_pod_r": 0.0, "lamp": 0.1,
              "shell_lt": 0.4, "shell_lb": 0.4, "shell_rt": 0.4, "shell_rb": 0.4, "pod_l": 0.3, "pod_r": 0.3,
              "booster_fl": 0.4, "booster_fr": 0.4, "booster_rl": 0.4, "booster_rr": 0.4,

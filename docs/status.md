@@ -27,8 +27,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1155 tests, 371,639 checks, green on `ccr-b7d5164e-1wtzzm` (12 November, the Needletail
-  and the Giant Petrel reworked on Ryan's notes over main at `6112939`). Before it, 1154 tests, 371,076
+- Tests: 1155 tests, 371,639 checks, green on `ccr-b7d5164e-1wtzzm` (12 November, the Needletail's
+  third cut and the Giant Petrel's second on Ryan's notes over main at `6112939`). Before it, 1154 tests, 371,076
   checks, green on main (12 November, as `ccr-4d58b054-3lyj0a` landed
   with the vent blast's and Siphoning's cut, the Overrun Gearing, the Shift Whistle dealt, the
   Whip Scorpion's broadside and its two new idle acts, over the dead-code pass and the four
@@ -443,14 +443,17 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 
 - **The Needletail's two modes and the Giant Petrel's hull** (`ccr-b7d5164e-1wtzzm`, 12 November;
   not on main): built that day on Ryan's design and his mix, then reworked that evening on his
-  notes (the bible's Kestrel row). The Needletail: a round body, a rocket about two fifths
-  shorter, the canopy amidships; it stands and fights in hover mode, four shorter boosters upright
-  on swivels (the front pair on short canards, the rear on tailplanes among the X fins, six fins
-  in all), two pods raised out of dark slots in the upper diagonals behind the canopy, two guns
-  run out of the cheeks ahead of it, the Fovea Designator a pop-up on the nose; on the map its
-  gait changes it into flight mode as it gathers speed (the guns in and a clamshell shut over
-  each cheek, the pods sunk flush, the boosters level and run in along their fins, the swept
-  wings out) and back as it slows, its transition act the same change on the spot. Four
+  notes (the bible's Kestrel row), the Needletail twice: its round body of the second cut back to
+  a jet's chined fuselage ("I didn't literally mean round like a rocket, I just meant no exposed
+  weapons or ports"), shorter than the first cut, the canopy amidships; it stands and fights in
+  hover mode, four shorter boosters upright on swivels (the front pair on short canards, the rear
+  on tailplanes among the X fins, six fins in all), two pods raised out of dark slots in the upper
+  chamfers behind the canopy, a gun run out of a teardrop recess on each side of the nose, the
+  Fovea Designator a pop-up on the nose; on the map its gait changes it into flight mode as it
+  gathers speed (the cheek guns in and each teardrop blister's halves rolling shut on the gun's
+  own line, the pods sunk flush, the boosters level and run in along their fins, the swept wings
+  out) and back as it slows, its transition act the same change on the spot. A near-black tile
+  (`void`) lines the recesses, Kestrel's "dark" tile being a mid grey its chrome lights. Four
   hardpoints in content, the fourth a second Laser Carbine, his pick. The Giant Petrel: the
   railgun alone on the centre bow and a Twin Autoguns on each hull's afterdeck, its gun house
   built facing out to its side (the skirmish now turns a gun from where it points as built,

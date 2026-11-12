@@ -609,12 +609,12 @@
    }
   },
   "needletail": {
-   "when": "Ryan's second notes on its two modes, 12 November.",
-   "note": "Ryan, 12 November, his notes on the first cut: “Put the canopy amidships. Whole body can be much shorter.” The pods “just kind of...disappear into the fuselage. There's no place for them to actually “go”. Make them actually connect and look like part of it, with a clear slot/opening/recess for them to retract into. They don't have to be round, since they need to follow the shape of the fuselage where they retract.” In flight mode “the fuselage should be streamlined like a rocket”, the irised ports given up for “a rounded clamshell covering the muzzle. The clamshell splits down the middle, with the seam horizontal and curving from the outer sides to the front where it meets the nose. Then the clamshell would split apart both top and bottom halves, rotating so that each half retracts into the fuselage, exposing the muzzle, which then slides out a bit.” “The wings don't need to be full delta shape. The inner face can taper up”; “All 4 boosters can be shorter”; “Move the rear boosters back so that the wings they're mounted on are with the other tailfins, appearing like 6 tailfins essentially. When retracted, the boosters should naturally settle between the upper and lower sets of tailfins.” A second cut: a round twelve-sided body, a rocket from a point at the nose to a short dark needle, about two fifths shorter, the canopy amidships; a cheek either side of the nose, each mouth shut in flight by two quarter-sphere shells meeting on a horizontal seam that curves round the front to the nose, swung back inside the cheek in hover as the gun runs out; the pods slices of the body's own skin over the upper diagonals, raised out of slots lined dark and sunk flush in flight, a dark seam round each; the wings swept, their inner edges tapering up to the pivot; the boosters shorter and stubbier, the front pair on the canards beside the canopy, the rear pair on tailplanes of the X fins' planform among them, running in along their fins in flight to sit against the body, the rear pair between the upper and lower X fins. Every class goes all the way in at all four mounts. Ryan's to judge running: the hangar's Walk for the change by speed, Acts for the transition.",
+   "when": "Ryan's third notes on its two modes, 12 November.",
+   "note": "Ryan, 12 November, on the second cut: “I didn't literally mean round like a rocket, I just meant no exposed weapons or ports, that's all. It looks silly like this.” “The clamshells are correct but my intent was to have the clamshells be the only part of the weapon port be visible, i.e. no visible tube. So the clamshell itself would have the hinge on the axis parallel to the line of the weapons, folding into the sides of the fuselage instead of the front. So the clamshell halves wouldn't be spherical, they would be like teardrop shaped, with the point facing the nose. The whole effect being an aerodynamic profile when closed, just a little bulge coming out of each side of the nose.” A third cut: a jet's chined fuselage again, eight-sided, the canopy amidships and the length kept short, a radome tapering to a dark point; on each side of the nose a teardrop blister, its point forward, the outer half of a teardrop round the gun's line split on a horizontal seam. In hover each half rolls on the gun's own line up (or down) and in, into the fuselage's side, baring the gun in a dark teardrop recess, and the gun runs out past the point; in flight the halves roll shut, a little bulge on each side and nothing else. The pods slabs of the upper chamfers, raised out of dark slots and sunk flush in flight; the six fins, the boosters and the wings as before. Every class goes all the way in at all four mounts. Ryan's to judge running: the hangar's Walk for the change by speed, Acts for the transition.",
    "images": [
     {
      "file": "needletail/needletail_front.png",
-     "alt": "needletail, hover mode, front: the cheeks open, the pods raised, the pop-up up"
+     "alt": "needletail, hover mode, front: the cheek bays open, the pods raised, the pop-up up"
     },
     {
      "file": "needletail/needletail_rear.png",
@@ -626,7 +626,7 @@
     },
     {
      "file": "needletail/needletail_flight.png",
-     "alt": "needletail, flight mode, front: the clamshells shut, the pods flush, the boosters in"
+     "alt": "needletail, flight mode, front: a teardrop blister shut on each side of the nose, the pods flush, the boosters in"
     },
     {
      "file": "needletail/needletail_flight_above.png",
@@ -634,11 +634,11 @@
     },
     {
      "file": "needletail/needletail_changing.png",
-     "alt": "needletail, changing: the guns in, the clamshells shutting, the boosters swivelling"
+     "alt": "needletail, changing: the cheek guns in, the blisters' halves rolling shut, the boosters swivelling"
     }
    ],
    "before": {
-    "summary": "Before: the first cut of his design, 12 November (the guns in round ports in a step behind a long needle, their irises, the deltas, the pods sinking into chamfers)",
+    "summary": "Before: the second cut, 12 November (a round twelve-sided body, the cheek guns in tubes under quarter-sphere clamshells)",
     "images": [
      {
       "file": "needletail/before_needletail_front.png",

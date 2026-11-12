@@ -97,8 +97,8 @@ Where each stands:
   artillery, not necessarily"). Its brief is retired (`git show
   bf6bd1e:docs/briefs/kestrel_needletail.md`); the bible's Kestrel row carries it. Its look is
   his own design of 12 November in place of the fifth round's Fox and tail-sitter
-  (`docs/looks/kestrel_needletail4.png`), built that day with four hardpoints and reworked that
-  evening on his notes (the bible's Kestrel row).
+  (`docs/looks/kestrel_needletail4.png`), built that day with four hardpoints and reworked twice
+  that evening on his notes (the bible's Kestrel row).
 - **A chassis that orbits Exposed** ("Exposed being Kestrels primary keyword means we need at
   least one chassis that orbits it"): one of the two unspecced mediums, the payoff the three
   setters lack; that slot's session's to design.
@@ -545,8 +545,8 @@ folded 7 November):
   its session his to start.
 - **The Needletail**: "marked built, but it is far from completed. Placeholder model,
   unrefined, dull, kit, not worthy of tier 2." Its kit was settled and rebuilt on 11 November
-  (The fast flyers, above), its model on his own design of 12 November, reworked that evening
-  on his notes.
+  (The fast flyers, above), its model on his own design of 12 November, reworked twice that
+  evening on his notes.
 
 The last two slots are their briefs' (`kestrel_magpie.md`, `kestrel_owl.md`), taken up in
 another session (Ryan, 21 October: "I'll take up the last 2 chassis in another session").

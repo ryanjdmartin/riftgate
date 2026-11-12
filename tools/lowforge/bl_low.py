@@ -198,6 +198,11 @@ class Tiles:
             img = self._seam(self.metal(g * 1.08, self.p["streak"] * 0.6))
         elif kind == "dark":
             img = self.metal(g * 0.55, 0.05)
+        elif kind == "void":
+            # The dark inside a recess, near black under any maker's finish: Kestrel's light grey
+            # makes its "dark" tile a mid grey that its chrome lights, so a deep curved bay read as
+            # bright metal (the Needletail's cheek bays, 12 November).
+            img = self.metal(0.08, 0.01, mottle=0.006)
         elif kind == "vent":
             # Grilles read by contrast, not grain: a calm base and deep slits.
             img = self.metal(g * 0.85, 0.03, mottle=0.015)
