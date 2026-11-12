@@ -307,7 +307,13 @@ def kite(b):
     # over the front's lip and past it, its underside into the nose where the cut has ended.
     PORT, FLAT, RUN = 4.0, 12.6, 13.4  # the port's wall, six ahead of the canopy's nose; the floor flat to here; ramped up to the surface here
     FLOOR = GZ - 1.9
-    NOSE_FITS = {"barrel": "barrel_port", "rack": ("rack_round", 0.63, -1.26), "twin_barrel": ("twin_barrel", 0.84, 17.04), "dish": ("dish", 0.6, -3.0), "blade": ("blade", 0.7)}
+    # On trial (his, the same day: "Just for fun, can you change the model type on this mount
+    # back to standard for everything except rack?"): every class but the launcher wears its
+    # standard shape at the pin's own scale and place, its block in the open at the cut's back,
+    # so the port gun (barrel_port) is worn nowhere for now. The fits before it, for the way
+    # back: the barrel as "barrel_port", twin barrels sunk under the canopy (0.84, 17.04), the
+    # dish small and forward (0.6, -3.0), the blade at 0.7.
+    NOSE_FITS = {"rack": ("rack_round", 0.63, -1.26)}
     b.cut_hull([fuselage], [(x, y, z) for x in (-2.2, 2.2) for (y, z) in ((PORT, FLOOR), (FLAT, FLOOR), (RUN, 4.4), (RUN, 9.0), (PORT, 9.0))])
     b.pin("hp_3", (0.0, PORT, GZ), scale=0.5, carries="", fits=NOSE_FITS)
     # Canopy: far back, low, faired into the spine rather than a bubble.
