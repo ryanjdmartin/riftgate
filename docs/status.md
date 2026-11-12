@@ -1424,8 +1424,13 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 238 (12 November, published from `ccr-e3ddf00b-ilkwbi` at `d170d2b`, ahead of
-  main, on his "Ok go back to port gun ... Fix the twin and dish issues": the Kite's inset mount
+  page's Version 239 (12 November, published from `ccr-e3ddf00b-ilkwbi` at `16d45f6`, ahead of
+  main, the live page still Version 238 when read): the Kite's port a unit forward under its hood,
+  the port rack and the port dish, two more variants new in five metals with the rack's fire, and
+  the three port forms' pictures; the Kite's model, rig and four renders, `renders.json`,
+  `shapes.json`, `muzzles.json` and the two stamps moved, the live copies matching the branch's
+  after. Version 238 (from `d170d2b`, on his "Ok go back to port gun ... Fix the twin and dish
+  issues") was the Kite's inset mount
   on the port gun again, twin barrels the port pair, a third variant, new in five metals with its
   fire, the dish on the port's wall; its rig, the gun's picture, `renders.json`, `shapes.json`,
   `muzzles.json` and the two stamps moved, the live copies read matching 237's before and the
