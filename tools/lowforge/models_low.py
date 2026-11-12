@@ -370,8 +370,12 @@ def kite(b):
     # the boosters; a Pinion Driver at each tip. The root sits inside the fuselage
     # (Ryan, 6 October, the ninth notes: the wings did not quite meet the fuselage at the
     # front, where it narrows to 7.3 either side of the centreline and the root stood at 8).
+    # The leading edge angled more (Ryan, 12 November: "can we angle the forward face of the
+    # wings a bit more, to make it a bit more aggressive?"): its root drawn back from 6 to 2,
+    # the tip on its driver where it was, so the edge runs out at about 25 degrees off square
+    # where it ran at 17.
     for s in (-1.0, 1.0):
-        root = [(s * 6.5, -32.0, -1.0), (s * 6.5, -32.0, 1.4), (s * 6.5, 6.0, 0.2)]
+        root = [(s * 6.5, -32.0, -1.0), (s * 6.5, -32.0, 1.4), (s * 6.5, 2.0, 0.2)]
         tip = [(s * 32.0, 6.0, -5.4), (s * 32.0, 6.0, -4.6), (s * 32.0, 14.0, -5.0)]
         _wing(b, root, tip, "livery.livery", "wing")
         # The Pinion Driver at the tip, the same both sides (fixed, no pin), a ramjet-gun
