@@ -347,26 +347,24 @@ def kite(b):
     # round cut under, just long enough that the rack isn't covered?"): a channel round the line
     # a little wider than the launcher's drum, from just inside the hood's mouth to just past the
     # launcher's face (5.6 past the mount at its fit), its floor ramped up to the surface beyond,
-    # so the nose no longer covers the launcher's underside. Sized to the launcher alone: twin
-    # barrels are wider and still touch the nose at their sides. It runs back two under the hood,
-    # and the hood's front is cut away round the same line (his, the same day: "The cut at the
-    # front is good. Can we cut out some of the fairing, too?"): the same round section raised
-    # 0.35, so it opens the hood's crown in a slot and leaves its front as two cheeks either side
-    # of the weapon, the weapon coming out from under its hood two sooner.
+    # so the nose no longer covers the launcher's underside. Sized to the launcher alone, as
+    # close as clears its drum (his, the same day: "shrink the diameter of the hood cut too, as
+    # it's a bit big right now anyway"): twin barrels are wider and still touch the nose at their
+    # sides. The same bore drills two back into the hood along the line, through its mouth and
+    # under its crown, never through its top ("I didn't mean right through the top. I meant drill
+    # it out a bit following the hood cut"), the weapon coming out of a round hole in it two
+    # sooner, the hole lined dark to its floor.
     if not TROUGH:
-        CUT_R, CUT_END, CUT_BACK = 1.65, PORT + 5.9, PORT + 2.0
+        CUT_R, CUT_END, CUT_BACK = 1.53, PORT + 5.9, PORT + 2.0
         def ring(y, z):
             return [(CUT_R * math.cos(math.pi * i / 8.0), y, z + CUT_R * math.sin(math.pi * i / 8.0)) for i in range(16)]
-        b.cut_hull([fuselage], ring(CUT_BACK, GZ) + ring(CUT_END, GZ) + ring(CUT_END + 1.6, spine(CUT_END + 1.6) + CUT_R))
-        b.cut_hull([hood_part, hood_mouth], ring(CUT_BACK, GZ + 0.35) + ring(HOOD_LIP + 0.5, GZ + 0.35))
+        b.cut_hull([fuselage, hood_part, hood_mouth], ring(CUT_BACK, GZ) + ring(CUT_END, GZ) + ring(CUT_END + 1.6, spine(CUT_END + 1.6) + CUT_R))
+        _tube(b, (0.0, CUT_BACK, GZ), (0.0, HOOD_LIP + 0.04, GZ), CUT_R - 0.02, CUT_R - 0.1, 16, "bore.dark", "port_bore", floor_material="bore.dark", floor_depth=0.05)
     # Canopy: far back, low, faired into the spine rather than a bubble.
     b.loft([(-2.0, hexagon(0.0, 6.2, 7.0, 0.5)), (-10.0, hexagon(0.0, 7.4, 9.0, 3.0)),
             (-18.0, hexagon(0.0, 7.5, 9.0, 3.2)), (-26.0, hexagon(0.0, 7.2, 9.0, 3.0))], "glass.glass", "canopy")
-    # Behind it the raised spine is an air intake: a scoop with a dark mouth facing forward
-    # and slits down its sides.
-    b.loft([(-24.0, hexagon(0.0, 7.6, 9.4, 3.6)), (-28.0, hexagon(0.0, 8.4, 10.0, 5.0)), (-36.0, hexagon(0.0, 7.4, 9.4, 3.6))], "steel.panel", "intake")
-    for s in (-1.0, 1.0):
-        b.box(s * 4.6, s * 5.2, -34.0, -29.0, 7.0, 9.6, "steel.vent", "intake_slits")
+    # (The old scoop behind it, run through the tail with slits standing out of its flanks, is
+    # gone, Ryan, 12 November: "The weird vent jammed through the middle can get taken out".)
     # Reverse-swept wings with a little anhedral, knife-edged at the front (a three-point
     # section: the leading edge is one line), the root's trailing edge running back into
     # the boosters; a Pinion Driver at each tip. The root sits inside the fuselage
@@ -408,34 +406,59 @@ def kite(b):
     # stabilisers at the end. Its top edges chamfered, a little at its face, where the intake
     # needs the room, and more aft (Ryan, 12 November: "the tail is kind of boring next to the new
     # designs. Can we chamfer the top edges of it, make it a bit more streamlined?").
+    # Three longer aft than it was (his, the same day: "the tail itself could be a smidge
+    # longer"), its back half stretched and its fins carried back with its end.
+    TAIL_END = -63.0
     b.loft([(-18.0, _chamfered(0.0, 12.0, 4.0, 12.0, 1.6)), (-32.0, _chamfered(0.0, 8.0, 7.0, 12.5, 1.8)),
-            (-46.0, _chamfered(0.0, 5.0, 9.0, 12.5, 1.2)), (-60.0, _chamfered(0.0, 3.0, 9.5, 11.5, 0.7))], "steel.plate", "tail_boom")
+            (-47.5, _chamfered(0.0, 5.0, 9.0, 12.5, 1.2)), (TAIL_END, _chamfered(0.0, 3.0, 9.5, 11.5, 0.7))], "steel.plate", "tail_boom")
     # The tail made part of the body (Ryan, 12 November: "we need to do something about the back
     # end so it doesn't look so much like a tail slapped on. I like the floating tail, maybe we can
-    # get it to make more sense as part of the body"), in place of the dark keel it rode on: the
-    # fuselage's blunt end closed by a tail cone of its own six-sided section, in its metal,
-    # narrowing between the boosters and sweeping up and back into the tail's underside, its
-    # lower edge meeting the tail a few ahead of the exhausts, so the tail is carried on the body
-    # and floats free over the boosters either side of it and behind them; and a fillet down each
-    # flank where the tail stands on the fuselage, easing its side into the body's shoulder.
-    def body_section(y, hw, zc, top, bottom):
-        return (y, [(hw, zc), (hw * 0.5, top), (-hw * 0.5, top), (-hw, zc), (-hw * 0.5, bottom), (hw * 0.5, bottom)])
-    b.loft([body_section(-28.0, 5.4, 0.6, 6.4, -3.4), body_section(-34.0, 3.6, 3.6, 7.8, 0.6),
-            body_section(-39.0, 2.4, 6.4, 8.7, 4.6), body_section(-43.5, 1.3, 8.6, 9.3, 8.2)], "steel.plate", "tail_cone")
-    def boom_at(y):   # the tail's half-width and underside between its sections at -18 and -32
-        t = (-18.0 - y) / 14.0
-        return 6.0 - 2.0 * t, 4.0 + 3.0 * t
+    # get it to make more sense as part of the body"), in place of the dark keel it rode on, and
+    # then the joins cleaned up ("it was already messy where things connected"): one root, in the
+    # body's metal, whose six-sided section keeps its upper corners on the tail's flanks just over
+    # its underside the whole way. Where the tail stands on the fuselage its flanks run out and
+    # down onto the body's shoulders, a fillet each side; behind the fuselage's blunt end they come
+    # in between the boosters and the root sweeps up and back into the tail's underside, its lower
+    # edge meeting the tail a few ahead of the exhausts, so the tail is carried on the body and
+    # floats free over the boosters either side of it and behind them.
+    def boom_at(y):   # the tail's half-width and underside, between its sections
+        if y >= -32.0:
+            t = (-18.0 - y) / 14.0
+            return 6.0 - 2.0 * t, 4.0 + 3.0 * t
+        t = (-32.0 - y) / 15.5
+        return 4.0 - 1.5 * t, 7.0 + 2.0 * t
     def shoulder(y, x):   # the fuselage's top at x, on its shoulder between its sections at -16 and -30
         u = (-16.0 - y) / 14.0
         w, top = 18.0 - 3.0 * u, 7.0 - 1.6 * u
         return top * min(1.0, max(0.0, (w / 2.0 - x) / (w / 4.0)))
+    def flank(y, k, up=0.9):   # the root's upper corner, on the tail's flank just over its underside
+        xb, zb = boom_at(y)
+        return xb - 0.05, zb + up * k
+    root = []
+    for y, k in ((-18.4, 0.08), (-20.0, 0.6), (-22.5, 1.0), (-26.0, 1.0), (-29.5, 1.0)):   # the fillets, on the fuselage
+        xt, zt = flank(y, k, 1.4)
+        xs = boom_at(y)[0] + 1.8 * k
+        root.append((y, (xt, zt), (xs, shoulder(y, xs) - 0.05), (2.4, -(4.8 - 0.8 * (-16.0 - y) / 14.0) + 0.25)))   # its lower corners just inside the belly
+    for y, side, bottom in ((-31.0, (4.6, 2.9), (2.2, -3.4)), (-34.0, (3.6, 3.6), (1.8, 0.6)),
+                            (-39.0, (2.4, 6.4), (1.2, 4.6)), (-43.5, (1.3, 8.4), (0.65, 8.2))):   # the cone, behind it
+        root.append((y, flank(y, 1.0, 0.6), side, bottom))
+    b.loft([(y, [side, top, (-top[0], top[1]), (-side[0], side[1]), (-bot[0], bot[1]), bot]) for y, top, side, bot in root], "steel.plate", "tail_root")
+    # Raked vents on the root's flanks just over the boosters (his: "I like the idea of angled
+    # vents around the lower connection area, since the boosters are there and we remade the tail
+    # front face into intakes"): three dark slots each side laid on the flank, each raked back as
+    # it rises.
+    def root_x(y, z):   # the root's flank, between its upper corner and its side, at (y, z)
+        for (y0, t0, s0, _), (y1, t1, s1, _) in zip(root, root[1:]):
+            if y1 <= y <= y0:
+                f = (y0 - y) / (y0 - y1)
+                t = (t0[0] + (t1[0] - t0[0]) * f, t0[1] + (t1[1] - t0[1]) * f)
+                sd = (s0[0] + (s1[0] - s0[0]) * f, s0[1] + (s1[1] - s0[1]) * f)
+                return sd[0] + (t[0] - sd[0]) * (z - sd[1]) / (t[1] - sd[1])
+        raise ValueError(y)
     for s in (-1.0, 1.0):
-        fillet = []
-        for y, k in ((-18.3, 0.08), (-20.0, 0.6), (-22.5, 1.0), (-26.0, 1.0), (-29.0, 0.7), (-29.9, 0.45)):
-            xb, zb = boom_at(y)
-            out, up = 1.8 * k, 1.4 * k
-            fillet.append((y, [(s * (xb - 0.05), zb + up), (s * (xb + out), shoulder(y, xb + out) - 0.05), (s * (xb - 0.6), shoulder(y, xb) - 0.5)]))
-        b.loft(fillet, "steel.plate", "tail_fillet")
+        for y0 in (-31.2, -32.6, -34.0):   # all on the flank's upper face, which rises off the boosters aft
+            slot = [(y0, 4.4), (y0 - 0.9, 4.4), (y0 - 2.3, 6.7), (y0 - 1.4, 6.7)]   # raked back 1.4 over its 2.3 of rise
+            _face(b, [(s * (root_x(y, z) + 0.06), y, z) for y, z in slot], "bore.dark", "tail_vent")
     # The tail segment's front face, over the canopy, is an air intake (Ryan, 12 November): a dark
     # mouth across it inside a steel lip, a splitter down its middle. Mouth and lip take the
     # face's shape since its top corners were chamfered: the face's sides run up to 10.4 and its
@@ -450,9 +473,10 @@ def kite(b):
     b.box(-0.3, 0.3, -18.2, -17.2, 9.35, 11.15, "steel.plate", "intake_lip")
     for s in (-1.0, 1.0):
         a = math.radians(s * 38.0)
-        root = [(s * 0.9, -60.0, 10.5), (s * 0.9, -48.0, 10.5), (s * 0.9, -48.0, 11.5), (s * 0.9, -60.0, 11.5)]   # inside the chamfered end, so no corner stands off it
-        tip = [(s * 1.5 + 14.0 * math.sin(a), -62.0, 10.5 + 14.0 * math.cos(a)), (s * 1.5 + 14.0 * math.sin(a), -55.0, 10.5 + 14.0 * math.cos(a)),
-               (s * 1.5 + 14.0 * math.sin(a), -55.0, 10.9 + 14.0 * math.cos(a)), (s * 1.5 + 14.0 * math.sin(a), -62.0, 10.9 + 14.0 * math.cos(a))]
+        e = TAIL_END + 60.0   # the fins carried back with the tail's end
+        root = [(s * 0.9, -60.0 + e, 10.5), (s * 0.9, -48.0 + e, 10.5), (s * 0.9, -48.0 + e, 11.5), (s * 0.9, -60.0 + e, 11.5)]   # inside the chamfered end, so no corner stands off it
+        tip = [(s * 1.5 + 14.0 * math.sin(a), -62.0 + e, 10.5 + 14.0 * math.cos(a)), (s * 1.5 + 14.0 * math.sin(a), -55.0 + e, 10.5 + 14.0 * math.cos(a)),
+               (s * 1.5 + 14.0 * math.sin(a), -55.0 + e, 10.9 + 14.0 * math.cos(a)), (s * 1.5 + 14.0 * math.sin(a), -62.0 + e, 10.9 + 14.0 * math.cos(a))]
         _wing(b, root, tip, "livery.livery", "stabiliser")
 
     # Idle acts, third pass (Ryan, 4 October: the wing dip was bank, hard stop, bank, hard
