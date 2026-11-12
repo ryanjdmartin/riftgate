@@ -162,9 +162,11 @@ version, v0.521 above both, and this file the conflicts, both sides kept) and ma
 fast-forward on Ryan's word ("Merge this all to main. I'll move it from there"), again with the
 Buzzard's zap settled and the Whip Scorpion's role map, and with the records' clean-up and the
 pages' republish ("Everything else let's clean up and merge into main first before
-proceeding"). It goes on with the Whip Scorpion, then the Dingo and the Prairie Dog (Ryan,
-11 November), and is to delete once its session ends; the Skua is his other session's (the
-Clydesdale's review landed 12 November). The formation and refit session's merges of main before it are in
+proceeding"), and again on 12 November with the rest of its locked pieces' round (the Whip
+Scorpion's rework and its Heliographic Death Ray, the Dingo's pieces, the pins, the Flakshot
+Repeater, Sapped and the Lance, the Wild Boar's and the Baboon's reworks) over main's cooldown
+count ("Your names are fine. Clean up and merge into main"); it is merged and to delete with the
+rest. The Skua is his other session's (the Clydesdale's review landed 12 November). The formation and refit session's merges of main before it are in
 its branch's commits. Landed 11 November: `ccr-7effd31a-u5z4gw`, the music session (Hold The Line's, Night Shift's and
 The Far Bank's pairs passed and built into art/audio, How things stand), took main in a merge (the bible, this
 file and the to-do the conflicts: the bible three-way on the v0.469 both files carried, main's
