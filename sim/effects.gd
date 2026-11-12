@@ -2143,13 +2143,14 @@ static func heat_per_blow(u) -> int:
 
 ## What a machine's passed turn releases (pass_release, static; the Whip Scorpion's Thermal
 ## Ejection Manifold, Ryan, 12 November: "1 damage to each enemy, increased by 1 for each heat
-## over 8"): {value: what every foe takes at the gate, gate: the heat it needs to fire}, a point
+## over 8"): {value: what every foe takes at the gate, gate: the heat it needs to fire, id: the
+## passive's, which its model's firing is keyed by (the broadside, MechRig.fire_act)}, a point
 ## more for each heat past the gate (Skirmish.release_shot). Empty for a machine whose pass
 ## releases nothing.
 static func pass_release(u) -> Dictionary:
 	for pair in _taking_part(u, "static", null):
 		if str(pair[0].get("effect", "")) == "pass_release":
-			return {"value": int(pair[0].get("value", 1)), "gate": int(pair[0].get("gate", 1))}
+			return {"value": int(pair[0].get("value", 1)), "gate": int(pair[0].get("gate", 1)), "id": str(pair[1].id)}
 	return {}
 
 

@@ -27,7 +27,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1142 tests, 364,566 checks, green on `ccr-4d58b054-3lyj0a` (12 November, as it took main with the fast
+- Tests: 1142 tests, 364,572 checks, green on `ccr-4d58b054-3lyj0a` (12 November, the release's
+  broadside hooked up). Before it, 1142 tests, 364,566 checks, green on it (12 November, as it took main with the fast
   flyers and Sweep's removal: the vent blast's and Siphoning's code cut, the Overrun Gearing and
   the Shift Whistle dealt). Before it, 1145 tests, 364,692 checks, green on main (12 November, as
   `ccr-e3ddf00b-ilkwbi` landed with the three fast flyers rebuilt, Sweep removed and the Kite's
@@ -271,6 +272,10 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   mast's place, with a firing act of its own (the model rebuilt in a cloud session: a python3.11
   venv with `bpy==5.0.1` as `BPY_PYTHON`, renders under `xvfb-run`). Its leavings are the to-do's
   line (its bot's first heuristic, its runner row unread, its release on screen a first cut). The
+  release fires the model's broadside since 12 November (the blast act, keyed by the passive's
+  id in the sidecar's `fires`, a firing alone: `Effects.pass_release` gives the id and the screen
+  winds the slice up before the blow), so three acts play at rest; new idle acts are Ryan's pick
+  of the round in chat. The
   lure on every foe it left is the Shift Whistle, dealt at Minerva tier three on Ryan's word of
   12 November ("The Minervan lure all can exist in tier 3, sure"), and the vent blast's code,
   Siphoning and an entry's heat a blow are cut ("Siphoning can get cut along with the old vent

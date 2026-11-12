@@ -4012,7 +4012,10 @@ func _hold_releases(released: Array) -> Dictionary:
 
 ## The releases played, once the enemy's turn has (a first cut, to judge running): each machine
 ## fires once and its blow lands on every foe at a beat, each its own flash and number, and the
-## foes it felled die after it. Returns the seconds it takes.
+## foes it felled die after it. A machine whose model fires its release with an act (the Whip
+## Scorpion's broadside, keyed by the passive's id: Ryan, 12 November, "the blast should be hooked
+## up, same as the ray animation") winds it up first, the blow and its sound waiting on it, as a
+## fixed weapon's spend does (_fire_wind). Returns the seconds it takes.
 func _play_releases(released: Array, was: Dictionary, hp_before: Dictionary) -> float:
 	var ends := 0.0
 	for r in released:
@@ -4025,11 +4028,15 @@ func _play_releases(released: Array, was: Dictionary, hp_before: Dictionary) -> 
 			var foe: Foe = bl.get("foe", null)
 			if foe != null and not foe.alive() and not dead.has(foe):
 				dead.append(foe)
-		var fire_at := ends + BLOW_AT
+		var key := release_key(sk.mechs[i]) if i < sk.mechs.size() else ""
+		var wind := _mech_3d[i].fire_wind(key) if not key.is_empty() and i < _mech_3d.size() and _mech_3d[i] != null else 0.0
+		var fire_at := ends + BLOW_AT + wind
+		if wind > 0.0:
+			_wind_up(i, true, key, ends)
 		var landed := fire_at + Sound.lands("vent")
 		var beats := _beats(blows)
 		for k in range(_strikes_of(blows)):
-			_attack_at(fire_at - BLOW_AT + _beat(beats, k), _mech_views[i], _view_struck(blows, k, was, null), true, BLOW_AT + Sound.lands("vent"))
+			_attack_at(fire_at - BLOW_AT + _beat(beats, k), _mech_views[i], _view_struck(blows, k, was, null), true, BLOW_AT + Sound.lands("vent"), key if wind > 0.0 else "", wind > 0.0)
 			Sound.play_after(fire_at + _beat(beats, k), "vent", -2.0 if k == 0 else -6.0)
 		var deaths := _land_blows(blows, landed, was, dead, hp_before)
 		ends = landed
@@ -4040,6 +4047,14 @@ func _play_releases(released: Array, was: Dictionary, hp_before: Dictionary) -> 
 			ends = maxf(ends, at)
 			Sound.play_after(at + 0.07 * k, "kill", -2.0 * k)
 	return ends
+
+
+## What a machine's release fires with on its model: its releasing passive's id (Effects.pass_release),
+## the key its sidecar's `fires` names the act's slice by; "" for a machine whose pass releases nothing.
+static func release_key(ms: Skirmish.MechState) -> String:
+	if ms == null or ms.unit == null:
+		return ""
+	return str(Effects.pass_release(ms.unit).get("id", ""))
 
 
 func _show_outcome(outcome: int) -> void:
