@@ -1385,14 +1385,19 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. The live page is v0.538, dated 12 November (the
-  page's Version 509, published from main at `0d992f3` on Ryan's word, "Yes", to "The hangar and
-  the bible are both behind main now. Want me to republish them?": main's file whole, the live
-  v0.536 matching `fbce698`'s file byte for byte, and the page after matching the file; new since
-  508 `ccr-63a1309a-caa9mw`'s rows (the cooldown counted after its spend, Rapid's own switch-off,
+  `docs/design-bible.html` after every change. The live page is v0.547, dated 12 November (the
+  page's Version 510, published from main at `aac6bfc` on Ryan's word, "Merge into main and
+  republish": main's file whole, the live v0.538 matching `0d992f3`'s file byte for byte; new since
+  509 `ccr-e3ddf00b-ilkwbi`'s rows: the withdrawal row's call on a break-off for one machine, the
+  Kite's row rewritten, the Kestrel row's Needletail and Skua with Ricochet and the Split-cycle
+  Breech, the tiers row's stock rule, the Sweep row rewritten as its removal with the rows that
+  leaned on it, the Whip Scorpion's and the Musk Ox's rows, the looks row's Kite mount and intake,
+  and Ricochet and Finisher in the tables). Version 509 (main's `0d992f3`, on his "Yes" to "The
+  hangar and the bible are both behind main now. Want me to republish them?") was main's file
+  whole over the live v0.536: `ccr-63a1309a-caa9mw`'s rows (the cooldown counted after its spend, Rapid's own switch-off,
   Instant) and `ccr-4d58b054-3lyj0a`'s (the Stingray's Lance and Sapped, the Wild Boar's row in
   place of its spill's, the Baboon's row Decided, the debuff and keyword tables' Sapped, Sap and
-  Juggernaut Breach). Version 508 (main's `fbce698`, on his "Yes please") was main's file whole
+  Juggernaut Breach. Version 508 (main's `fbce698`, on his "Yes please") was main's file whole
   over the live v0.535: the batteries row's wells and the acts table's broadside drill and hatch
   wave. Version 507 (main's `3d5f98f`, on his
   "Republish please") was main's file whole over the live v0.534: the Clydesdale's cell in the acts
@@ -1404,7 +1409,7 @@ commands are in `README.md`.
   (Version 504, main's `60a0e4d`), which matched that commit's file; new since 504 the pacing row in beats of the tide,
   menace a pack's threat rating and the rows that follow it, the Whip Scorpion's rework, the
   hardpoints row with every stock gun its class, the Clydesdale's batteries row and its square
-  ports, and Changed Over in the buff table). BASE for the next merge is `0d992f3`'s file. The
+  ports, and Changed Over in the buff table). BASE for the next merge is `aac6bfc`'s file. The
   live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
@@ -1418,7 +1423,17 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 232 (12 November, main's `3e6912e`, on Ryan's word, "Yes"): the thirteen files
+  page's Version 233 (12 November, main's `aac6bfc`, on Ryan's word, "Merge into main and
+  republish"): the twenty-two files moved since 232 (four content files with the three fast
+  flyers, Ricochet, the Breech and Sweep's removal; the Kite's and the Skua's models and rigs;
+  `pins.json`, `shapes.json` and `muzzles.json` with the Kite's third mount and the port gun; the
+  Kite's and the Skua's renders, the old ones their before, and `renders.json`; `designs.json`
+  without the three flyers' briefs; `text.json`), nine new (the port gun in five metals and its
+  fire, its picture, the Kite's port with a gun and with a round rack) and two removed (the Skua's
+  old pictures from above and of its strafing run), the page unchanged, every live copy matching
+  232's build before it was replaced (`designs.json` and `text.json` but for their stamp) and
+  main's after. `edits` and `text` empty, `designs` the two folded ideas. Version 232 (12
+  November, main's `3e6912e`, on Ryan's word, "Yes") was the thirteen files
   moved since 231 (the three content files with the cooldown's count, Instant, Sapped, the Lance,
   the Wild Boar's and the Baboon's reworks; the Baboon's model, rig and pins, its four mounts and
   the backpack's two locked pieces; its renders, the stock rebuild's its before, and
