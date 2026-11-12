@@ -1425,7 +1425,12 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 239 (12 November, published from `ccr-e3ddf00b-ilkwbi` at `16d45f6`, ahead of
+  page's Version 241 (12 November, from `ccr-e3ddf00b-ilkwbi` at `268d443`, ahead of main: on trial,
+  the Kite's mount 0.6 higher, its hood with it and its trough filled in): the six Kite files that
+  moved, its model, four renders and `renders.json`, over main's Version 240 (published from
+  `f3e4841` by `ccr-4d58b054-3lyj0a`'s landing in between), its every Kite file read as 239's;
+  `designs.json` and `text.json` left as 240 published them, main's being newer than this
+  branch's. Version 239 (from `16d45f6`, ahead of
   main, the live page still Version 238 when read): the Kite's port a unit forward under its hood,
   the port rack and the port dish, two more variants new in five metals with the rack's fire, and
   the three port forms' pictures; the Kite's model, rig and four renders, `renders.json`,
