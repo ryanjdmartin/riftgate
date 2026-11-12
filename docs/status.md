@@ -1423,10 +1423,11 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 235 (12 November, published from `ccr-e3ddf00b-ilkwbi` at `7690cff`, ahead of
-  main, after his third note on the Kite's mount, the gun pushed forward with the cut's back and
-  the cut's front unmoved): the same nine files, every live copy matching 234's before it was
-  replaced and the branch's after, `edits` and `text` empty. Version 234 (12 November, from the
+  page's Version 236 (12 November, published from `ccr-e3ddf00b-ilkwbi` at `f8a73fa`, ahead of
+  main, after his fourth note on the Kite's mount, "like 2 units more, same thing"; Version 235,
+  from `7690cff`, was his third, the gun pushed forward with the cut's back and the cut's front
+  unmoved): the same nine files each time, every live copy matching the version before's when it
+  was replaced and the branch's after, `edits` and `text` empty. Version 234 (12 November, from the
   branch at `75cc6b3`, on Ryan's word, "Ok update the hangar") was the nine files the Kite's
   mount moved after his two notes on it (the cut shortened from its back alone, its floor raised: its model
   and rig, its four renders, `renders.json`, and `designs.json` and `text.json` for their stamp),
