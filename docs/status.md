@@ -136,7 +136,7 @@ Ryan's word ("Clean up and merge in"). Then the Clydesdale's batteries on his pi
 and the stock split is fine"): its die folded into two batteries of four with a shared Changeover,
 the battery up kept from fight to fight (Changed Over), Battery Director retired, its model eight
 ports in a checkerboard, square under trapdoors since his "Sure, square ports", the brief retired (the bible's Clydesdale row, the to-do's play line),
-1129 tests green; main took it as a fast-forward at `d2c024d` on his word ("Merge in and republish"), the hangar and the bible republished with it (Pages). Then its five idle acts on his picks ("Those all sound good. Don't need the old ones"; the swap judged good, "the change over animation looks good to me"): the old four retired, the heat sink a radiator for the breather, Changed Over playing the second battery's own, 1132 tests green; landed on main at `3d5f98f`, the hangar (Version 230) and the bible (v0.535) republished with it on his word ("Republish please"). On his notes of 12 November each port a real well the leaves hang in ("Should it be a hole?"), the drill a broadside and the hatch check a wave down the deck; the pages behind main by them, their republish his word. And `ccr-722ca9f0-yj8na3`, the formation and
+1129 tests green; main took it as a fast-forward at `d2c024d` on his word ("Merge in and republish"), the hangar and the bible republished with it (Pages). Then its five idle acts on his picks ("Those all sound good. Don't need the old ones"; the swap judged good, "the change over animation looks good to me"): the old four retired, the heat sink a radiator for the breather, Changed Over playing the second battery's own, 1132 tests green; landed on main at `3d5f98f`, the hangar (Version 230) and the bible (v0.535) republished with it on his word ("Republish please"). On his notes of 12 November each port a real well the leaves hang in ("Should it be a hole?"), the drill a broadside and the hatch check a wave down the deck, at `fbce698`, the hangar (Version 231) and the bible (v0.536) republished with them on his word ("Yes please"). And `ccr-722ca9f0-yj8na3`, the formation and
 refit session. Everything it had committed to `4c8dbf1` went to main with `ccr-4d58b054-3lyj0a`,
 below; its work since landed on Ryan's word of 11 November ("I think it's safe to start sending
 our code here out to main and having me test there in context"), the branch taking main at
@@ -1302,7 +1302,11 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 230 (11 November, main's `3d5f98f`, on Ryan's word, "Republish please"): the nine
+  page's Version 231 (12 November, main's `fbce698`, on Ryan's word, "Yes please"): the same nine
+  for the Clydesdale's wells, broadside drill and hatch wave (its model with the wells' linings, its
+  rig, its four renders, `renders.json`, and `designs.json` and `text.json` for their stamp), the page
+  unchanged, every live copy matching 230's before it was replaced, and the live copies match
+  main's after. Version 230 (11 November, main's `3d5f98f`, on Ryan's word, "Republish please"): the nine
   files the Clydesdale's idle acts moved (its model with the radiator and its heat texture, its rig
   with the five acts and Changed Over's copies, its four renders, `renders.json`, and `designs.json`
   and `text.json` for their stamp), the page unchanged, every live copy matching 229's before it was
