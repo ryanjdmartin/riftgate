@@ -27,7 +27,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1155 tests, 364,744 checks, green on `ccr-4d58b054-3lyj0a` (12 November, as it took main with the
+- Tests: 1155 tests, 371,132 checks, green on `ccr-4d58b054-3lyj0a` (12 November, the Whip
+  Scorpion's two new idle acts). Before it, 1155 tests, 364,744 checks, green on it (12 November, as it took main with the
   Ammit's rework and the HEAT and OVERHEAT dials, over the release's broadside hooked up). Before
   it, 1158 tests, 364,864 checks, green on `ccr-722ca9f0-yj8na3` (12 November, main at `c717e69`
   with the HEAT and OVERHEAT dials). Before it, 1158 tests, 364,834 checks, green on main (12
@@ -292,8 +293,8 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   line (its bot's first heuristic, its runner row unread, its release on screen a first cut). The
   release fires the model's broadside since 12 November (the blast act, keyed by the passive's
   id in the sidecar's `fires`, a firing alone: `Effects.pass_release` gives the id and the screen
-  winds the slice up before the blow), so three acts play at rest; new idle acts are Ryan's pick
-  of the round in chat. The
+  winds the slice up before the blow), and two idle acts came in its place on Ryan's pick ("1 and 2,
+  sure"): a pressure check and a heliograph sighting, first cuts, five at rest in all. The
   lure on every foe it left is the Shift Whistle, dealt at Minerva tier three on Ryan's word of
   12 November ("The Minervan lure all can exist in tier 3, sure"), and the vent blast's code,
   Siphoning and an entry's heat a blow are cut ("Siphoning can get cut along with the old vent
