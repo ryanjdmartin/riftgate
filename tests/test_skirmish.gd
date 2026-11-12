@@ -2556,7 +2556,7 @@ func test_a_vent_under_the_maximum_clears_the_overheats_culprit() -> void:
 		if vented:
 			assert_true(sk.assign(1, ms), "the ally vents it")
 			assert_eq([ms.heat, ms.hot_entry], [50, -1], "back under the maximum, nothing stands accused")
-		ms.heat += 20   # a status's heat (a seal, Siphoning) through the gauge: 70, or 100 unvented
+		ms.heat += 20   # a status's heat (a seal's) through the gauge: 70, or 100 unvented
 		sk.end_round()
 		Skirmish.overheat_corrupt = 0
 		assert_eq(Effects.corrupt_stacks(hot, 0), 0 if vented else 1, "vented %s: the overheat corrupts the entry only while its own excess stands" % str(vented))
@@ -3773,7 +3773,7 @@ func test_a_passive_may_grant_a_keyword_and_the_entry_wears_it() -> void:
 	assert_false(Effects.effective_face(m, plate).has(K.SPILLOVER), "spillover stays off the shield")
 
 
-## A grant written out (the Boar's spill; the stock pass, 22 October): the entry carries the
+## A grant written out (the Overrun Gearing's spill, the Boar's first; the stock pass, 22 October): the entry carries the
 ## keyword for the engine, the die draws it as the star rather than a chip on every entry, and
 ## the hold reads the passive's own line; a plain grant keeps its chip and its effect text.
 func test_a_printed_grant_is_the_star_and_the_hold_reads_the_passive() -> void:
@@ -7152,12 +7152,12 @@ func test_a_lure_over_every_foe_turns_them_all_and_braces() -> void:
 	sk.start_round()
 	for f in sk.field_foes():
 		f.target = sk.mechs[1]
-	assert_true(sk.assign(0, sk.front[0]), "the Siphon is spent")
+	assert_true(sk.assign(0, sk.front[0]), "the lure is spent")
 	for f in sk.field_foes():
 		assert_eq(f.target, sk.mechs[0], "every foe in the fight turns on it, the back rank too")
 	assert_eq(Effects.stacks_of(u, "braced"), 2, "it braces")
 	var fc := sk.forecast(sk.mechs[0])
-	assert_eq(int(fc["heat_after"]), 30, "the forecast counts ten a blow, three blows")
+	assert_eq(int(fc["heat_after"]), 30, "the forecast counts the passive's ten a blow, three blows")
 	sk.end_round()
 	assert_eq(sk.mechs[0].heat, 30, "three blows, ten heat each, after the overheat")
 
@@ -7191,10 +7191,23 @@ func test_a_silence_leaves_every_foe_and_every_ally_whole() -> void:
 	assert_eq([acting.reach, acting.keywords.size()], [Face.Reach.EVERY_FOE, 0], "Every Foe stands under a Silence too, its Lure, a keyword, quiet")
 
 
-## The round preview over a Lure (the Siphon's, 22 October; on the one round model since 9
+## The kinds a piece is (Ryan, 26 October: "Face type is either Weapon, Shield, Vent, or
+## Equipment"), the engine's one reading (Effects.kinds_of): its own, on a machine or as built.
+func test_a_piece_is_its_own_kind_on_a_machine_and_as_built() -> void:
+	var vent := Face.vent(30)
+	var plain := _mech("P", Die.single(vent), 40, 100)
+	assert_eq(Effects.kinds_of(plain, vent), ["vent"] as Array[String], "a vent is a vent")
+	assert_eq(Effects.kinds_of(null, vent), ["vent"] as Array[String], "as built, a vent")
+	assert_eq(Effects.kinds_of(plain, Face.attack(10, L)), ["weapon"] as Array[String], "a gun is a weapon")
+	assert_eq(Effects.kinds_of(plain, Face.shield(5)), ["shield"] as Array[String], "a shield is a shield")
+	assert_eq(Effects.kinds_of(plain, Face.attack(0, L, [K.LURE])), ["equipment"] as Array[String], "a debuff is equipment")
+	assert_eq(Effects.kinds_of(plain, Face.blank()), [] as Array[String], "a blank is none")
+
+
+## The round preview over a Lure (the lure-all's, 22 October; on the one round model since 9
 ## November): a Lure entry's turn read before it is spent, every foe it reaches turned on its
 ## machine in the copy and the fight untouched; the spender takes the lured blows behind its
-## brace and drinks their heat, the machine they left takes nothing; a targeted lure needs its
+## brace and banks their heat (its passive's), the machine they left takes nothing; a targeted lure needs its
 ## aim, and an entry without Lure turns nobody (lure_turns, the arrows').
 func test_the_round_preview_over_a_lure_reads_the_turned_round_and_leaves_the_fight_untouched() -> void:
 	var siphon := Face.from_dict({"kind": "attack", "reach": "every_foe", "power": 0, "keywords": ["lure"], "braces": 2})
@@ -7212,7 +7225,7 @@ func test_the_round_preview_over_a_lure_reads_the_turned_round_and_leaves_the_fi
 	var pv: Array = sk.preview_round(0, sk.front[0])["mechs"]   # the lure spent on the copy, aimed at any foe it reaches
 	assert_eq(int(pv[0]["incoming"]), 30, "the three blows come at it")
 	assert_eq(int(pv[0]["hull_after"]), 200 - 3 * (10 - 2), "behind the brace's two a blow")
-	assert_eq(int(pv[0]["heat_after"]), 30, "and each adds ten heat")
+	assert_eq(int(pv[0]["heat_after"]), 30, "and its passive banks ten heat from each")
 	assert_eq(int(pv[1]["incoming"]), 0, "the machine they left takes nothing")
 	for f in sk.field_foes():
 		assert_eq(f.target, sk.mechs[1], "every foe still on the machine it picked: the fight is untouched")

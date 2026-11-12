@@ -3265,8 +3265,10 @@ def whip_scorpion(b):
         t = 2.62 + 0.15 * k
         glow.append((["ray_relay_%d" % (k + 1)], [(t - 0.1, 0.0)] + blink(t, FIRE + 0.5 - t) + [(4.2, 0.0)]))
     b.act("ray", 6.8, tracks, body=body, ease="linear", heft=0.08, glow=glow)
-    # The blast (the Thermal Ejection Manifold): the pilot spins the valve wheel open a whole turn
-    # as the machine squats and braces, the boiler's end pumping up and its pressure building in
+    # The blast (the Thermal Ejection Manifold's release, a firing alone since 12 November, never
+    # played at rest: a broadside at rest would read as a release that never came; Ryan, 12
+    # November: "the blast should be hooked up, same as the ray animation"): the pilot spins the
+    # valve wheel open a whole turn as the machine squats and braces, the boiler's end pumping up and its pressure building in
     # the sight glass and every bore; then the broadside fires, the right pair and then the left,
     # each barrel kicking back into its boss as its bore and collar flare from a dull ember, the
     # whole machine jolting off each shot on its planted feet and the boiler's end swinging away
@@ -3298,7 +3300,7 @@ def whip_scorpion(b):
     for tag, t in SHOTS:
         glow.append((["vent_bore_%s_floor" % tag, "vent_heat_%s" % tag], [(0.4, 0.0), (1.6, BANKED), (round(t - 0.02, 3), BANKED), (round(t + 0.04, 3), HEAT), (round(t + 0.45, 3), HEAT),
                                                                          (round(t + 1.1, 3), BANKED), (5.7, BANKED), (6.9, 0.0)]))
-    b.act("blast", 7.4, tracks, body=body, ease="linear", heft=0.06, glow=glow)
+    b.act("blast", 7.4, tracks, body=body, ease="linear", heft=0.06, glow=glow, idle=False)
     # The stamp: it rocks its weight back onto its other legs, lifts its fore-left foot high and
     # holds it, then stamps it down hard, the whole body dropping onto it and the boiler's end
     # slamming down on its waist, the lamps and floodlights flaring and the heat jolted up the
@@ -3357,6 +3359,43 @@ def whip_scorpion(b):
     })
     b.act("survey", 10.4, tracks, body=body, ease="linear", heft=0.08,
           glow=[(["lamp", "floodlight"], [(0.4, 0.0), (1.0, 6.0), (9.2, 6.0), (9.9, 0.0)])])
+    # The pressure check (Ryan's pick of 12 November, one of two idle acts added once the broadside
+    # became the release's alone): the pilot cracks the valve wheel a quarter turn and back, twice;
+    # the boiler's end shudders on its waist while it stands open, the machine settling a little on
+    # its legs as the pressure comes off, the sight glass bobbing up and settling and the gauge's
+    # face flickering. No vent kicks and no bore glows, so it never reads as a release.
+    CRACKS = ((0.6, 1.1, 1.7, 2.1), (3.0, 3.5, 4.1, 4.5))   # each: turning, open, held to, shut
+    shudder = [(0.4, 0.0, 0.0, 0.0)]
+    for t_turn, t_open, t_held, t_shut in CRACKS:
+        shudder.append((t_turn, 0.0, 0.0, 0.0))
+        n = int(round((t_held - t_open) / 0.08))
+        for k in range(n):
+            s_ = 1.0 if k % 2 == 0 else -1.0
+            shudder.append((round(t_open + k * 0.08, 3), round(-1.4 + 0.5 * s_, 3), round(1.6 * s_, 3), 0.0))
+        shudder += [(round(t_held + 0.1, 3), -0.8, 0.0, 0.0), (t_shut, 0.0, 0.0, 0.0)]
+    shudder.append((6.2, 0.0, 0.0, 0.0))
+    tracks, body = _planted(limbs, _dense([(0.3, 0.0, 0.0, 0.0), (1.1, 0.0, 0.0, 0.0), (1.7, 0.0, -0.7, 0.0), (2.4, 0.0, 0.0, 0.0), (3.5, 0.0, 0.0, 0.0),
+                                           (4.1, 0.0, -0.9, 0.0), (4.9, 0.0, 0.0, 0.0), (6.2, 0.0, 0.0, 0.0)], 10.0))   # (t, dy, dz, pitch)
+    tracks.update({
+        "valve": _dense([(0.3, 0.0), (0.6, 0.0), (1.1, 90.0), (1.7, 90.0), (2.1, 0.0), (3.0, 0.0), (3.5, 90.0), (4.1, 90.0), (4.5, 0.0), (6.0, 0.0)]),
+        "abdomen": _dense(shudder),
+    })
+    flicker = lambda t: [(round(t, 3), 0.0), (round(t + 0.1, 3), 4.0), (round(t + 0.2, 3), 0.5), (round(t + 0.35, 3), 4.0), (round(t + 0.6, 3), 0.0)]
+    b.act("pressure_check", 6.6, tracks, body=body, ease="linear", heft=0.08,
+          glow=[(["gauge_glass"], [(0.5, 0.0), (1.1, 0.0), (1.5, 40.0), (2.0, 10.0), (2.6, 0.0), (3.5, 0.0), (3.9, 48.0), (4.4, 12.0), (5.2, 0.0)]),
+                (["gauge_face"], [(0.5, 0.0)] + flicker(1.1) + flicker(3.5) + [(5.0, 0.0)])])
+    # The heliograph sighting (Ryan's pick of 12 November): the ray's head swings slowly round to
+    # the left with the gun lifted as far as it goes, then across the sky to the right, stopping
+    # where the sun stands for the collector to catch it in one bright glint, and on round; it
+    # holds there and comes home, standing a little taller while it sights. The relays and the lens
+    # stay dark, so it never reads as the ray charging.
+    tracks, body = _planted(limbs, _dense([(0.4, 0.0, 0.0, 0.0), (1.8, 0.0, 1.0, 0.0), (7.2, 0.0, 1.0, 0.0), (8.6, 0.0, 0.0, 0.0)], 10.0))   # (t, dy, dz, pitch)
+    tracks.update({
+        "turret_ray": [(0.6, 0.0), (2.0, -40.0), (2.8, -40.0), (4.2, 5.0), (5.0, 5.0), (6.2, 45.0), (7.0, 45.0), (8.4, 0.0)],
+        "ray": _dense([(0.6, 0.0), (1.8, 10.0), (7.2, 10.0), (8.4, 0.0)]),
+    })
+    b.act("heliograph_sighting", 8.8, tracks, body=body, ease="linear", heft=0.08,
+          glow=[(["mirror_face"], [(4.3, 0.0), (4.45, FLASH), (4.62, round(FLASH * 0.7, 1)), (4.95, 0.0)])])
     # Movement: a heavy creep on six legs, one foot at a time on each side from the hind to the
     # fore, the two sides half a stride apart, so four feet or more stand at once, each planted
     # while the body passes over it, lifted, carried and stamped down; the body level but for its
@@ -3370,8 +3409,12 @@ def whip_scorpion(b):
     b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
     b.move(accel=1.4, heft=0.22)
     # Its Heliographic Death Ray fires with a slice of its ray: the collector's last flash, the
-    # light down the relays, the blow as the lens fires, the gun kicked back and running out.
-    b.fires = {"heliographic_death_ray": ("ray", 2.3, 5.0, FIRE)}
+    # light down the relays, the blow as the lens fires, the gun kicked back and running out. Its
+    # passive's release fires the broadside, keyed by the passive's id: the valve wheel's last
+    # quarter turn and the squat, the blow on every foe as the first gun fires, the other three
+    # after it, and the bores flaring until the last gun's kick has run out.
+    b.fires = {"heliographic_death_ray": ("ray", 2.3, 5.0, FIRE),
+               "thermal_ejection_manifold": ("blast", 1.2, 5.3, SHOTS[0][1])}
     # Its manifold's four vents wear the halo every glowing vent does (Ryan, 31 October: "applied to all
     # 'hot' things - so all glowing boosters and vents"; found bare on 3 November), the collar and the
     # bore's floor lit together as its blast flares them.

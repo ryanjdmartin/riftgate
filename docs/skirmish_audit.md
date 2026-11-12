@@ -377,8 +377,10 @@ a piece, and cut that day on his word ("Yeah go ahead and fix it"):
   `multiply_stat`, `min_damage`, `set_reach`) and the trigger table's plain cells (`vent_heat`,
   `on_shield_gain`), the general path and no piece's rule (the Ammit's flare took two such cells,
   `on_skirmish_start` and `per_stack`, off this list five days after it named them); `shield_cost`,
-  which the Buzzard's and the Storm Petrel's settled briefs pay; two fields a charged form sets;
-  and Spillover the keyword, which its bible row keeps, put to Ryan.
+  which the Buzzard's and the Storm Petrel's settled briefs pay; and two fields a charged form
+  sets. Spillover the keyword was listed too, with no piece on the tree the pass read; it had
+  one the same day, a module, the Overrun Gearing (Ryan: "Spillover can be a module"), and left
+  the list.
 - After it the table runs 18 triggers and 57 effect kinds, and a die entry reads 60 keys. Of the
   rules a chassis prints, most static ones belong to one chassis, and about half the entry's keys
   to one piece: one-piece rules are the design (a unique passive a machine, a rule of its own a
@@ -402,7 +404,9 @@ the check does not hold yet:
   only the foes' silence lays. The check should follow a status to what lays it.
 - Helpers nothing calls but tests, still: `any_assigned`, `kills_for`, `Effects.explain`,
   `Foe.text_of`, `Foe.choose_action`, `Foe.on_field`, the bot's `hull_percent`.
-- The keyword list still shows two rules no piece carries, Spillover and Shield cost.
+- The keyword list still shows one rule no piece carries, Shield cost. (Spillover was named
+  here too: this read was made before the branch had taken main, where a module carried it by
+  then. Checked again on main at `f3e4841`, every other line of this read stands.)
 - Structure 11, measured. A die entry declares 73 fields. `from_dict`, `to_dict` and
   `duplicate_face` are 280 lines that name each by hand, and a rule of its own adds
   `has_unique_rule`, `rule_phrases` and `describe`, then the validator, the readout, the die's

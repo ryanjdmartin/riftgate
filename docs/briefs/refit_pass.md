@@ -1374,3 +1374,52 @@ the heat-reading machines' numbers; the tier-one slottable pieces brought to the
 (the locked pieces' footing: a plain tier-one gun is 4 beside a basic's 2 or 3), as one
 table with their heat; the stock rule and the basic property in the validator.
 
+## 13. The anchor: the second battle on real tier ones (12 November)
+
+His words: "Yes go ahead with 2. Also, let's look at 4-4-2 right now so that you're working
+with correct tier 1 chassis for testing. Remember that all the chassis numbers are on the
+table, including hull and shield. Important to get the convergence 2 fight tuned around real
+tier 1s with real tier 1 numbers for damage, defense and heat, and then move on to the
+scaling for everything from there."
+
+Claude's reading, his to correct: the convergence 2 fight is the second battle, the first
+with four machines and the one he called where "the real game starts"; real tier ones are
+the chassis that are tier one under 4-4-2, with tier-one numbers; and every chassis number
+may move, hull and shield with the rest.
+
+**4-4-2, from the records.** Four tier ones a city maker, none for the Arsenal by its rule.
+
+| Maker | Tier one under 4-4-2 | Built today | What the records leave open |
+|---|---|---|---|
+| Minerva | the Honey Badger, the lure tank, the Wild Boar, the mole | the Honey Badger; the Wild Boar at tier two | His word was "either Boar or Mole will move down", and four takes both. The Polar Bear goes up as the lure tank lands and is dealt at tier one until then. |
+| Kestrel | the Skua, the Storm Petrel, and two of the Puffin, the Magpie and the Snowy Owl | the Skua, the Storm Petrel | The Puffin leans to tier two since 11 November, which makes it the Magpie and the Owl; its brief has the Magpie at tier one under 4-4-2 and the Owl "may" be. |
+| Wainwright & Sutler | the Prairie Dog, the Cassowary, the Cottonmouth, the Dingo | all four; the Dingo at tier two | The Dingo is his move down of 19 October. It has two actions a turn and two locked pieces, so its numbers come down with it. |
+| Aphelion | the line frame, Static, the Barrier and Ward support, and the Stingray or a fourth | none certain | "I never actually intended for the stingray or baboon to be tier 1." Its three certain tier ones are briefs. |
+
+Built and tier one under any reading: the Honey Badger, the Skua, the Storm Petrel, the
+Prairie Dog, the Cassowary and the Cottonmouth. The tuning uses those six until he marks the
+rest.
+
+**The four formations, landed** (`docs/measurements.md`, 12 November): the sandworm 14 hit
+points and a maw of 3, the zombie knight 4 and a cleaver of 3, the magma elemental 14 and a
+fist of 4, each keeping its plate; the bomb 4, the salamander and the drake 4. They cost a
+trio 5 to 15% of its hull where they cost 25 to 57%, about twice a plain formation. A breach
+every round cannot go lower on numbers; a blow on a count would, and that is a kit.
+
+**Where the second battle stands**, four of the six against a tier-one rift, the bot: the
+Meadow and the Marsh are won seven times in ten with nine tenths of the hull left when the
+seal breaks, where the budget spends half by then; the Waste and the Peak are won one time
+in six, and the formations were not why.
+
+**The plan from here**, in the order the numbers depend on each other:
+
+1. His marks on 4-4-2, so the tier-one set is fixed and the machines coming down get
+   tier-one numbers.
+2. Heat for tier one. Claude's lean for landing it without moving tiers two and three: the
+   four basic guns one hotter and the tier-one gauges cut to about half, which reads like the
+   dial's +3 in bite. His play of the dial comes first if he would rather pick.
+3. The plain formations up to the budget and their giants down to a formation's length; the
+   lone machine's fights; then the elites and the bosses by domain.
+4. Hull, shield and regen read against that, and moved where a role is off.
+5. Scale tiers two and three from the anchor.
+

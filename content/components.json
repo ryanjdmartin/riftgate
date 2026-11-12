@@ -1581,14 +1581,13 @@
    "name": "Shift Whistle",
    "maker": "minerva",
    "tier": 3,
-   "status": "planned",
    "shape": "dish",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "Every foe on the field turns to face it, and it braces. The Whip Scorpion's Heliographic Siphon of 20 October with its heat left behind. The name is a session's working one, his to give.",
-    "niche": "Ryan, 11 November: \"Lure every foe, gain armour is a massive premium component for Minerva chassis. If that's allowed to exist as a component, it needs to be tier 3 Minerva, not random W&S. And the name needs to change if it's no longer gaining heat on the component.\" A draft nothing deals until he says it exists."
+    "fantasy": "Every foe on the field turns to face it, and it braces. The Whip Scorpion's Heliographic Siphon of 20 October with its heat left behind. A session's name, kept on his word of 12 November (\"The working names are fine\").",
+    "niche": "Ryan, 11 November: \"Lure every foe, gain armour is a massive premium component for Minerva chassis. If that's allowed to exist as a component, it needs to be tier 3 Minerva, not random W&S. And the name needs to change if it's no longer gaining heat on the component.\" Dealt on his word of 12 November: \"The Minervan lure all can exist in tier 3, sure.\""
    },
    "face": {
     "kind": "attack",
@@ -1616,7 +1615,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A heat ray in the old sense, the one that walks across a field on three legs (Ryan, 20 October: \"Thermal Ray gives me war-of-the-worlds vibes\"). The hottest shot a spend can make, and the pressure it leaves is the point.",
-    "niche": "The Whip Scorpion's stock gun and fuel: Direct, flat and hot, so one shot fills the next vent's blast. A hot slot-in for any machine that can vent."
+    "niche": "The Whip Scorpion's stock gun and fuel: Direct, flat and hot, so one shot banks the heat its passed turn's release fires. A hot slot-in for any machine that runs hot on purpose."
    },
    "face": {
     "kind": "attack",

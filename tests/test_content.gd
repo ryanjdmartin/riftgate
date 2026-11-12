@@ -2153,6 +2153,27 @@ func test_a_module_is_its_stat_lines_and_its_text_on_the_machine() -> void:
 	assert_eq(read["move"], "%d (-1▼)" % int(plain.base["move"]), "and a drawback down")
 
 
+## A grant a module's text writes out (the Overrun Gearing's spill, 12 November): its weapons
+## carry the keyword for the engine, and the star and the hold read the module's rule, never the
+## stat lines its own description leads with.
+func test_a_modules_written_out_grant_reads_its_rule_and_never_its_stat_lines() -> void:
+	var db := _fresh()
+	var maker := str(db.chassis["badger"]["maker"])
+	db.modules["test_module"] = _module(maker, 1, {"hull": 8},
+		{"description": "Damage past a kill spills behind.", "effects": [{"trigger": "static", "effect": "grant_keyword", "value": "spillover", "printed": true}]})
+	var u := db.make_mech("badger", 0, Vector2i.ZERO, null, ["test_module"])
+	var gun: Face = null
+	for f in u.die.faces:
+		if f.is_weapon() and not f.has(Face.Keyword.SPILLOVER):
+			gun = f
+			break
+	assert_true(gun != null, "the machine has a weapon to wear it")
+	assert_true(Effects.effective_face(u, gun).has(Face.Keyword.SPILLOVER), "its weapons carry the keyword for the engine")
+	assert_eq(Effects.printed_grants(u, gun), ["Damage past a kill spills behind."] as Array[String], "the star reads the rule alone")
+	assert_true(Effects.explain(u, gun).has("Damage past a kill spills behind. (Test Module)"), "and so does the hold: %s" % str(Effects.explain(u, gun)))
+	assert_eq(db.module_description("test_module"), "Hull +8. Damage past a kill spills behind.", "where the module reads its stat line first")
+
+
 func test_a_machine_wears_no_more_modules_than_its_slots() -> void:
 	var db := _fresh()
 	var maker := str(db.chassis["badger"]["maker"])
@@ -2593,22 +2614,28 @@ func test_a_rewrite_says_its_shot_and_a_rank_condition_its_rank() -> void:
 	assert_true(errs.any(func(e: String) -> bool: return e.contains("test_rank_bad") and e.contains("target_rank needs rank")), "a rank that is neither is refused")
 
 
-## A reach over every machine is never a vent's, and the old reach key is a targeting mode's now
-## (4 November). The Siphon's heat a blow and the vent blast it stood beside left the engine on
-## 12 November.
-func test_a_vent_reaches_no_whole_team_and_the_old_reach_key_is_refused() -> void:
+## A reach over every machine is never a vent's, the old reach key is a targeting mode's now (4
+## November), and the Siphon's leavings are refused (12 November): a heat a blow on an entry (a
+## passive's now) and the vent blast, an effect the engine no longer runs.
+func test_a_vent_never_reaches_every_ally_and_the_siphons_leavings_are_refused() -> void:
 	var db := _fresh()
 	var plate: Dictionary = _piece(db, "coolant_jacket")
 	plate["tier"] = 1
 	plate["face"]["targets"] = "every_ally"
+	plate["face"]["heat_per_blow"] = 2
 	db.components["test_vent_all"] = plate
 	var old: Dictionary = db.components["heliographic_death_ray"].duplicate(true)
 	old["face"]["keywords"] = ["lure"]
 	old["face"]["reaches_all"] = true
 	db.components["test_old_reach"] = old
+	var boiler: Dictionary = db.chassis["whip_scorpion"].duplicate(true)
+	boiler["passive"]["effects"] = [{"trigger": "static", "effect": "vent_blast", "value": 1}]
+	db.chassis["test_boiler"] = boiler
 	var errs := db.validate()
 	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_vent_all") and e.contains("Every Ally and Every Other Ally are a shield's or a buff's")), "a vent never reaches every ally")
 	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_old_reach") and e.contains("reaches_all is a targeting mode now")), "the old reach key is refused for the targeting mode")
+	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_vent_all") and e.contains("heat_per_blow left the entry")), "a heat a blow on an entry is refused: a passive's now")
+	assert_true(errs.any(func(e: String) -> bool: return e.contains("test_boiler") and e.contains("'vent_blast'") and e.contains("not implemented")), "and the vent blast, which the engine no longer runs")
 
 
 ## A promoted form (the bible's section 9): its entry holds what the class change adds and

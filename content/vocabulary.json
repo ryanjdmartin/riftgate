@@ -243,7 +243,7 @@
    "id": "spillover",
    "category": "keyword",
    "name": "Spillover",
-   "codex": "The Wild Boar's rule, granted to every weapon it fires by its Juggernaut Drive and run by the engine as a keyword: when a blow kills a front-rank foe, what it had past the kill carries into the foe behind it in the same column. Nothing stands behind a massive foe. No component carries it; it becomes a keyword the player learns on its own if a second source ever grants it.",
+   "codex": "The Overrun Gearing's rule, a module's, granted to every weapon its machine fires and run by the engine as a keyword: when a blow kills a front-rank foe, what it had past the kill carries into the foe behind it in the same column. Nothing stands behind a massive foe. No component carries it; it becomes a keyword the player learns on its own if a second source ever grants it.",
    "status": "implemented",
    "design": {
     "holes": "The spill is plain damage: it spends a Shock and its kills are its spend's (a kill trigger, the Ammit's flare), and it carries no other keyword of the blow."
@@ -2245,7 +2245,7 @@
    "id": "charged",
    "category": "status",
    "name": "Charged",
-   "codex": "Machine buff. While it lasts the machine's weapons fire with Shock, shown on the die: every foe a fire reaches is Shocked after the blows, a felled one too. A weapon fired spends a stack: a Rapid's second fire is a second fire, a salvo one, a blast none, and equipment carries it not and spends nothing. A laid shot spends the stack as it is laid and carries the Shock. A Purge lowers it.",
+   "codex": "Machine buff. While it lasts the machine's weapons fire with Shock, shown on the die: every foe a fire reaches is Shocked after the blows, a felled one too. A weapon fired spends a stack: a Rapid's second fire is a second fire, a salvo one, a passive's own fire none, and equipment carries it not and spends nothing. A laid shot spends the stack as it is laid and carries the Shock. A Purge lowers it.",
    "status": "implemented",
    "design": {
     "holes": "The Shock primer (Ryan, 2 November), Primed's cousin, so Chain is the arcs alone and the Shock supply is a kit choice; a keyword on the weapon fired, never a mark per hit (3 November: \"a multi-hit weapon with Shock would apply it after both hits\"), so a strikes gun never cashes what it just laid. No piece grants it yet: capacitor pieces are content to propose.",
@@ -2261,7 +2261,7 @@
    "id": "supercooled",
    "category": "status",
    "name": "Supercooled",
-   "codex": "Machine buff. While it lasts the machine's weapons fire with Cryo, one more stack a strike on each foe hit (Cryo 1 on a gun without it), shown on the die and laid after the hits, so a fire never cashes its own frost. A weapon fired spends a stack: a Rapid's second fire is a second fire, a salvo one, a blast none, and equipment carries it not and spends nothing. A laid shot spends the stack as it is laid and carries the frost. A Purge lowers it.",
+   "codex": "Machine buff. While it lasts the machine's weapons fire with Cryo, one more stack a strike on each foe hit (Cryo 1 on a gun without it), shown on the die and laid after the hits, so a fire never cashes its own frost. A weapon fired spends a stack: a Rapid's second fire is a second fire, a salvo one, a passive's own fire none, and equipment carries it not and spends nothing. A laid shot spends the stack as it is laid and carries the frost. A Purge lowers it.",
    "status": "implemented",
    "design": {
     "holes": "The Cryo primer (Ryan, 2 November: \"laying 1 cryo at a time makes sense, keeps it a little unique, and avoids massive cooling spikes\"; the name his pick), so any gun is a Cryo setter for a turn and the Cryo synergies open past the Cryo Flinger; a stack a strike after the hits (3 November: \"resulting in 2 applications, not apply-cash-apply-cash, and not hit-hit-apply once\"). No piece grants it yet.",

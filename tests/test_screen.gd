@@ -235,8 +235,8 @@ func test_the_main_mark_holds_what_an_entry_delivers() -> void:
 ## What a machine's passive adds to an entry stands in its passive box at the rail's foot (Ryan, 4
 ## November: "Can't we just put the number in the cassowary-type box, call that the 'passive helper
 ## box' for all these types of effects?"): a blow added after the strikes as "+N", no mark (the
-## Storm Petrel's), a vent's blast by its mark (the Whip Scorpion's), a stepping die's next entry by
-## its main mark (the Cassowary's); never beside the main mark, never joined to its number.
+## Storm Petrel's), a stepping die's next entry by its main mark (the Cassowary's); never beside the
+## main mark, never joined to its number.
 func test_a_passive_adds_its_box_at_the_rails_foot() -> void:
 	var picked := func(d: DieFaceView) -> Array:
 		return d.passive_marks().map(func(m: Array) -> Array: return [m[0], DieFaceView.passive_plain(m[1])])
@@ -1842,9 +1842,10 @@ func test_the_predator_sense_marks_the_foes_looking_away_while_the_die_is_read_o
 	s.free()
 
 
-## The lure preview (the Siphon's forecast, 22 October): while a die whose entry Lures every foe
+## The lure preview (the lure-all's forecast, 22 October): while a die whose entry Lures every foe
 ## is read or dragged, the foes it would turn draw dashed arrows to its machine, its gauges read
-## the lured blows and their heat, and the machine they left reads none; closed, all goes back.
+## the lured blows and the heat its passive banks from them, and the machine they left reads none;
+## closed, all goes back.
 func test_a_lure_in_hand_previews_its_turn_with_dashed_arrows_and_the_gauges() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
@@ -1864,7 +1865,7 @@ func test_a_lure_in_hand_previews_its_turn_with_dashed_arrows_and_the_gauges() -
 	s._on_die_tapped(0)
 	var dashed := s._arrows.arrows.filter(func(x: Array) -> bool: return x.size() > 3 and bool(x[3]))
 	assert_eq(dashed.size(), 2, "both foes' arrows dashed to the lure, unasked")
-	assert_eq(int(s._mech_views[0].bars[2][3]), sk.mechs[0].heat + 20, "its heat gauge drinks ten a lured blow")
+	assert_eq(int(s._mech_views[0].bars[2][3]), sk.mechs[0].heat + 20, "its heat gauge banks its passive's ten a lured blow")
 	assert_eq(int(s._mech_views[1].bars[1][3]), sk.mechs[1].unit.hull, "the machine they left keeps its hull")
 	s._on_die_tapped(0)
 	assert_eq(int(s._mech_views[0].bars[2][3]), heat_before, "its readout closed, the gauge goes back")
@@ -2725,12 +2726,15 @@ func test_a_status_row_says_buff_or_debuff_and_its_chip_carries_it() -> void:
 
 ## A release plays on the screen (the Whip Scorpion's valves, 11 November): a machine that ends
 ## its turn with an entry it could have spent fires its heat once the enemy's turn has played, and
-## the screen takes the fight as it stands after. Synthetic passive.
+## the screen takes the fight as it stands after; its model fires it with the act keyed by the
+## passive (release_key). Synthetic passive.
 func test_a_passed_turns_release_plays_after_the_enemy_turn() -> void:
 	var s := _screen(5)
 	var ms: Skirmish.MechState = s.sk.mechs[0]
 	ms.unit.grant_passive({"id": "boiler", "name": "Boiler", "description": "", "effects": [{"trigger": "static", "effect": "pass_release", "value": 1, "gate": 4}]})
 	ms.heat = 6
+	assert_eq(SkirmishScreen.release_key(ms), "boiler", "its model's firing for the release is keyed by the passive (the broadside, 12 November)")
+	assert_eq(SkirmishScreen.release_key(s.sk.mechs[1]), "", "a machine whose pass releases nothing has none")
 	assert_true(s.sk.can_spend(0), "its die has somewhere to go, and is left")
 	var hp := 0
 	for foe in s.sk.field_foes():
