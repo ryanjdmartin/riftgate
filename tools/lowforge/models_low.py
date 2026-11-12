@@ -288,11 +288,15 @@ def kite(b):
     # floor ramps up to meet the surface a little past the muzzle, so the bore's line runs clear.
     # Fixed: no joint. A class that is no barrel sits smaller and forward so it shows in the
     # trough (NOSE_FITS; guesses nobody has judged fitted).
-    GZ = 3.6               # the gun's line: its block and sight under the hull's top back here
-    PORT, RUN = 3.0, 18.0  # the port's wall, and where the trough's floor meets the surface
-    NOSE_FITS = {"twin_barrel": 0.7, "rack": ("rack", 0.5, -7.6), "dish": ("dish", 0.6, -6.0), "blade": 0.7}
-    b.cut_hull([fuselage], [(x, y, z) for x in (-1.8, 1.8) for (y, z) in ((PORT, GZ - 1.8), (PORT, 9.0), (RUN, 9.0), (RUN, 3.75))])
-    b.pin("hp_3", (0.0, -2.0, GZ), scale=0.5, carries="", fits=NOSE_FITS)
+    # Raised and drawn back under the canopy (Ryan, 12 November: "Raise the gun's line a little.
+    # Should let you shorten the trough too"): the block and its sight lie inside the canopy's
+    # volume, the barrel's top comes out level with the spine at the canopy's nose, and the
+    # bore clears the falling nose sooner, so the trough is shorter.
+    GZ = 5.0                # the gun's line
+    PORT, RUN = -1.0, 10.0  # the port's wall, at the canopy's nose, and where the trough's floor meets the surface
+    NOSE_FITS = {"twin_barrel": ("twin_barrel", 0.7, -8.0), "rack": ("rack", 0.5, -12.6), "dish": ("dish", 0.6, -11.0), "blade": ("blade", 0.7, -6.0)}
+    b.cut_hull([fuselage], [(x, y, z) for x in (-1.8, 1.8) for (y, z) in ((PORT, GZ - 1.8), (PORT, 9.0), (RUN, 9.0), (RUN, 4.9))])
+    b.pin("hp_3", (0.0, -8.5, GZ), scale=0.5, carries="", fits=NOSE_FITS)
     # Canopy: far back, low, faired into the spine rather than a bubble.
     b.loft([(-2.0, hexagon(0.0, 6.2, 7.0, 0.5)), (-10.0, hexagon(0.0, 7.4, 9.0, 3.0)),
             (-18.0, hexagon(0.0, 7.5, 9.0, 3.2)), (-26.0, hexagon(0.0, 7.2, 9.0, 3.0))], "glass.glass", "canopy")

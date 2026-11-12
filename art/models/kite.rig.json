@@ -2035,21 +2035,23 @@
   "hp_3": {
    "twin_barrel": {
     "shape": "twin_barrel",
-    "scale": 0.7
+    "scale": 0.7,
+    "sink": -8.0
    },
    "rack": {
     "shape": "rack",
     "scale": 0.5,
-    "sink": -7.6
+    "sink": -12.6
    },
    "dish": {
     "shape": "dish",
     "scale": 0.6,
-    "sink": -6.0
+    "sink": -11.0
    },
    "blade": {
     "shape": "blade",
-    "scale": 0.7
+    "scale": 0.7,
+    "sink": -6.0
    }
   }
  }
