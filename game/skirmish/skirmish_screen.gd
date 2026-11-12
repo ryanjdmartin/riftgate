@@ -1946,7 +1946,8 @@ func _mech_rows(i: int) -> Array:
 		# the skull "is just another predicted chip, like any other. It just symbolizes death").
 		if int(fc["overheat"]) > 0:
 			# The heat burns as the turn ends, so there is still time to vent.
-			rows.append(["heat", "-%d" % int(fc["overheat"]), "Overheating: hull -%d at the turn's end" % int(fc["overheat"]), Palette.HEAT, "preview"])
+			var burn := int(fc["overheat"]) * Skirmish.overheat_scale   # the hull the excess burns: one a point, but under the overheat's trial
+			rows.append(["heat", "-%d" % burn, "Overheating: hull -%d at the turn's end" % burn, Palette.HEAT, "preview"])
 		if bool(fc["destroyed"]):
 			rows.append(["skull", "", "Wrecked this round: %d incoming" % int(fc["incoming"]), Palette.LOSS, "preview"])
 		elif bool(fc["component_risk"]):

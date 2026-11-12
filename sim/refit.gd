@@ -15,9 +15,11 @@ extends RefCounted
 ##   regen=N    every chassis regains a flat N a round, 0 to 9, in place of its own number
 ##   regen=half every chassis regains half its shield a round, rounded up (the pass's first lean,
 ##              far too much by Ryan's first read of 10 November)
-##   cooling=N  every chassis cools N more a round (a read of the offset; may be negative)
-##   hotter=N   every weapon makes N more heat, fixed pieces too (a read of how much hotter the
-##              guns must run before heat is a pace; Ryan, 10 November: "Heat generation is too low")
+##   cooling=N  every chassis that cools at all cools N more a round (a read of the offset; may
+##              be negative); one that cools nothing keeps its rule
+##   hotter=N   every weapon makes N more heat, fixed pieces too, and a passive that rewrites
+##              its machine's weapons its shot's (a read of how much hotter the guns must run
+##              before heat is a pace; Ryan, 10 November: "Heat generation is too low")
 ##   barrier=cooldown   the Barrier basic goes dark for the next round once spent
 ##   barrier=heatN      the Barrier basic makes N heat
 
@@ -57,8 +59,10 @@ static func apply(db: ContentDB, spec: Dictionary) -> Array[String]:
 	var cooling := int(spec.get("cooling", 0))
 	if cooling != 0:
 		for id in db.chassis.keys():
-			db.chassis[id]["cooling"] = maxi(0, int(db.chassis[id].get("cooling", 0)) + cooling)
-		notes.append("cooling: every chassis %+d a round" % cooling)
+			var cools := int(db.chassis[id].get("cooling", 0))
+			if cools > 0:   # a chassis that cools nothing is so by its rule, and no offset moves it
+				db.chassis[id]["cooling"] = maxi(0, cools + cooling)
+		notes.append("cooling: every chassis that cools %+d a round" % cooling)
 	var hotter := int(spec.get("hotter", 0))
 	if hotter != 0:
 		var n := 0
@@ -67,6 +71,12 @@ static func apply(db: ContentDB, spec: Dictionary) -> Array[String]:
 			if face is Dictionary and str(face.get("kind", "")) == "attack" and int(face.get("power", 0)) > 0:
 				face["heat"] = maxi(0, int(face.get("heat", 0)) + hotter)
 				n += 1
+		# A machine whose passive rewrites every weapon it fires into one shot: that shot is its
+		# weapons' heat, so it moves with them.
+		for id in db.chassis.keys():
+			for e in (db.chassis[id].get("passive", {}) as Dictionary).get("effects", []):
+				if e is Dictionary and str(e.get("effect", "")) == "rewrite_weapon" and e.has("heat"):
+					e["heat"] = maxi(0, int(e["heat"]) + hotter)
 		notes.append("every weapon makes %+d heat (%d weapons)" % [hotter, n])
 	# The Barrier basic's price, a question the first reads raised (a free Barrier is spent every
 	# round it is rolled): a round dark once spent, or so much heat.

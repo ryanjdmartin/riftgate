@@ -474,7 +474,8 @@ the field's dials. `--guard W` is the aggressor's habit for the fight bot
   the Blast Door, a Barrier at tier one that must be more than the basic or retire; the two
   modules whose rules stop firing (the Reinforced Skeleton, the Phase Conjugator).
 - **The numbers.** The heat prices on every other entry, with the cooling and the gauges (the
-  heat session's); the regen read again once the foes' numbers move.
+  heat session's; a first shape on trial since 12 November, section 12); the regen read again
+  once the foes' numbers move.
 - **The four reworks**, and the lines on fielded machines that name a shield or a vent (the Musk
   Ox's forge reads neither; the Storm Petrel's and the Buzzard's shields run as written,
   cheaper under a regen).
@@ -712,7 +713,10 @@ word:
    a validator check) is what the reads say prices it; it is a rule over every pusher, his to
    set, and the Marsh's giants are its first defect. The other levers on the bench: a pack's
    strike at the wall while a fight runs (the wall has no clock inside a fight today), heat that
-   bites (item 5).
+   bites (item 5). Parked again, 12 November, behind the dice, heat and the foes' numbers:
+   "Yes park for now, right. Slice and Dice doesn't escalate mid fight, slay the Spire does. We
+   have to see what fits after the other pieces are in place." So both answers are open, a
+   fight that never escalates and one that does, and nothing is proposed on it until then.
 3. **The regen's size.** Half the gauge lets a lone tank beat a plain-blow formation rated for
    three, slowly; 2 a round leaves it a decision at four fifths of its hull. His first read (10
    November) is that half is far too much: two lights "nigh unkillable" against a formation for
@@ -731,7 +735,8 @@ word:
    stalls the long one, since a machine sustains one shot of N heat every N rounds once its
    gauge is full. The sustained rate is the cooling over a shot's heat and the burst the gauge
    over it, so the price pass moves the three together (the heat session's list: the prices on
-   every face, the basics included, with the cooling and the gauge).
+   every face, the basics included, with the cooling and the gauge). On trial since 12 November
+   (section 12): every weapon three hotter, every chassis cooling one more.
 6. The four machines' sessions and their order (the Polar Bear first, since Minerva's tier-one
    front and his own try of 9 November ride on it): the Polar Bear back on 11 November (equipment
    it spends on itself seals it, a weapon opens it); the Whip Scorpion's role first, the
@@ -1298,3 +1303,74 @@ Its holes, his:
    composition on every seed): left, the first wave starting on the list's second, or the
    opening's formation drawn by the seed.
 5. What measures a battle's minutes against his ten to thirty: nothing does yet.
+
+## 12. The player's side at tier one (12 November)
+
+His word: "Pull in main. Many of the machine reworks are done, so they can be included in
+the pass. If they're not on main right now, they will be shortly. You can proceed with the
+steps as you see fit." The order agreed the day before: the machines' dice, heat, the foes'
+numbers, then the machines' hull and shield; what prices a round parked (section 7).
+
+**What main had already settled.** Every tier-one stock die is basics beside its locked
+pieces: four guns (the Twin Autoguns, the Rivet Gun and the Ankle Mortar at 2, the Laser
+Carbine at 3), the Halo Projector and the Shoring Jack. So the re-deal proper is small, and
+the squad's damage a round is the basics' and the locked pieces', which are their sessions'.
+
+**The slots still holding a placeholder gun** (a second Twin Autoguns where a vent stood).
+Claude's leans, nothing landed; each is the machine's own content and his to mark:
+
+| The machine | Lean | Why |
+|---|---|---|
+| The Cassowary | A Laser Carbine in the chamber after the Halo Projector | Its plan is adjacency, the shield before the big gun, and its stock holds no big gun to line the doubled sixth shot up on |
+| The Cottonmouth | A keyword shell of its maker's, the Incendiary Shells | Every gun it stocks leaves the drum as the same shot, so three guns are one entry three times; a shell with a keyword shows what the drum does |
+| The Stingray | Left, both | Its tier is to be placed later, and its stock with it |
+| The Polar Bear | Left | His kit, in his play |
+| The Prairie Dog | Left | Two guns to cash the Flak its Repeater lays |
+| The Puffin | Left, both | In design |
+
+**Where tier one stands against the hull budget**, on the reworked machines and before the
+heat prices (`docs/measurements.md`, 12 November): the formations with no breach cost 1 to 6%
+of a trio's hull against the budget's 5%; the four that breach or burn cost 20 to 46%, both
+of the Peak's among them; the elites run from nothing to twice their quarter; the Waste's
+three bosses and the Phantom Train are walls for a trio. This is the foes' step's input.
+
+**Heat, on trial.** The shape the reads chose: every weapon three hotter and every chassis
+that cools cooling one more, the gauges and the overheat as they are. The basic guns would
+make 4 and 5 against a cooling of 2 on a gauge of 12 or 14: five cold shots or three warm
+from cold, then one shot in two. Equipment keeps its own price, a buff none and a debuff
+device one or two, so the cool plays at the limit are equipment and the pass. The reads: a
+machine meets its limit about once in a formation fight where it met it once in ten, the
+fights run no longer, and a lone duel rarely meets it; prices with no more cooling starve
+the long fight.
+
+It is a dial and no content. Main moved while it was read: another session rebuilt the fast
+flyers and set the Whip Scorpion's release against its gauge the same day, on today's
+prices, and a price on every weapon moves every machine that reads heat. So content keeps
+its prices and a debug build's SETTINGS → TRIALS has HEAT (BUILT, +2, +3, +4; the next
+launch; the what-if's `hotter` and `cooling`, which now leaves a chassis that cools nothing
+alone and moves the Cottonmouth's drum shot with the guns) and OVERHEAT (the hull a point of
+excess burns, one the game's, two or three; the next battle).
+
+Its holes, his:
+
+1. The bot never holds. It overheats rather than hold at one hull a point, and a harsher
+   burn makes it hold more, in longer fights it loses as often. So the reads say the limit
+   arrives; they cannot say a hold is right. His play of the two dials is that read.
+2. Equipment's price. The triangle row says every component carries one; the hold wants a
+   cool play. The Halo Projector and the Shoring Jack carry none today.
+3. The machines that read heat are tuned on today's prices: the Storm Petrel (its guns burn
+   shield for heat and zap for what they burnt: three more a shot, the shield gone in
+   three), the Whip Scorpion (its release at 8 heat comes after two shots), the Musk Ox (two
+   ammo a basic shot where it is one), the Buzzard and the Stingray (heat held fills
+   sooner). Landing the prices means re-setting each in the same pass, with their sessions.
+4. Tiers two and three are unread on the shape. Their hot guns would sustain better than
+   they do (an 8 against a cooling of 1 is a shot in eight rounds, an 11 against 2 one in
+   six) and their cold ones worse.
+5. The foes' numbers wait on it. A formation costs the bot four to six points more of its
+   hull under the shape, so tuning them first means tuning them twice.
+
+**Still to come in this step**: the heat prices as content once he has felt the dial, with
+the heat-reading machines' numbers; the tier-one slottable pieces brought to the basics' band
+(the locked pieces' footing: a plain tier-one gun is 4 beside a basic's 2 or 3), as one
+table with their heat; the stock rule and the basic property in the validator.
+

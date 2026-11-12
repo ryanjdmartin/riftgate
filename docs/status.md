@@ -27,7 +27,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1158 tests, 364,834 checks, green on main (12 November, as `ccr-8af28d03-re9kz4` landed with the
+- Tests: 1158 tests, 364,864 checks, green on `ccr-722ca9f0-yj8na3` (12 November, main at `c717e69`
+  with the HEAT and OVERHEAT dials). Before it, 1158 tests, 364,834 checks,
+  green on main (12 November, as `ccr-8af28d03-re9kz4` landed with the
   Ammit's rework over the three fast flyers rebuilt, Sweep removed, the cooldown's count, Instant,
   Sapped and the Wild Boar's and the Baboon's reworks).
   Before it, 1142 tests, 364,574 checks, green on `ccr-4d58b054-3lyj0a` (12 November, Sapped, the Lance,
@@ -172,7 +174,9 @@ it as a fast-forward: the first battle read whole, the Rupture meter sized in be
 pack's threat rating, the stall guard's end and the tide's and the strike's trial dials (the
 refit brief's sections 10 and 11, the to-do, How things stand). Claude's reading of "start
 sending", his to correct: this session's later chunks land the same way once verified, this
-branch alone. Landed 11 November: `ccr-4d58b054-3lyj0a`, the chassis inventory and the locked pieces'
+branch alone. On 12 November ("Pull in main ... You can proceed with the steps as you see
+fit") it took main at `8d936cf` and at `c717e69` as fast-forwards and landed the tier-one
+baseline's read and heat's and the overheat's dials, no content moved (How things stand). Landed 11 November: `ccr-4d58b054-3lyj0a`, the chassis inventory and the locked pieces'
 footing of 10 November and Ryan's round on the busted machines of 11 November (the Polar Bear
 dealt again, the Buzzard's regen, the Nemesis's rage bar; How things stand), carrying
 `ccr-722ca9f0-yj8na3` whole to `4c8dbf1`, took main (the music session's landing: the bible's
@@ -798,6 +802,34 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   saying that the yield prices no stall now, a pack the tide sends paying what the opening's
   does; the rules and the glossary's Menace, Rupture meter and Seal lines follow, drafts
   redrafted. Left to the economy pass: what a boss pays and salvage's growth by tier.
+- **The player's side at tier one: the baseline, and heat on a dial** (Ryan, 12 November:
+  "Pull in main. Many of the machine reworks are done, so they can be included in the pass
+  ... You can proceed with the steps as you see fit"; the order agreed the day before, the
+  machines' dice, heat, the foes' numbers, then hull and shield; what prices a round parked
+  again, "Slice and Dice doesn't escalate mid fight, slay the Spire does. We have to see
+  what fits after the other pieces are in place"). The branch took main at `8d936cf` and
+  again at `c717e69` (the fast flyers rebuilt, Sweep removed, the Ammit's rework). Main had
+  settled most of the dice: every tier-one stock die is basics beside its locked pieces, so
+  what is left of the re-deal is a handful of placeholder slots (leans in the refit brief's
+  section 12, nothing landed) and the tier-one slottable pieces' numbers. Read first, tier
+  one against the hull budget (`docs/measurements.md`, 12 November, at `8d936cf`): the
+  formations with no breach cost 1 to 6% of a trio's hull against 5%, the four that breach
+  or burn 20 to 46% (both of the Peak's), the elites nothing to twice their quarter, the
+  Waste's bosses and the Phantom Train walls for a trio. Heat as a pace, read and on a
+  dial: every weapon three hotter with every chassis that cools cooling one more brings
+  the bot to its limit about once a machine in a formation fight where it met it once in
+  ten, in fights no longer; prices with no more cooling starve the long fight. It is no
+  content yet: main moved under the read with another session tuning heat-reading machines
+  on today's prices (the Whip Scorpion's release against its gauge the same day), and a
+  price on every weapon moves each of them. So a debug build's SETTINGS → TRIALS has HEAT
+  (BUILT, +2, +3, +4; the next launch; `Settings.HEAT_SPECS` over the what-if's `hotter` and
+  `cooling`, which now leaves a chassis that cools nothing alone and moves a rewritten
+  shot's heat with the guns) and OVERHEAT (×1, ×2, ×3; `RIFTGATE_OVERHEAT`; the skirmish's
+  forecast row shows the hull it burns). Open, his: the shape by his play, what an overheat
+  should burn (the bot overheats rather than holds and plays no better at two), whether
+  equipment carries a price, and the heat-reading machines' numbers as the prices land.
+  The foes' numbers wait on the prices: tuned first, they are tuned twice. The bible's
+  triangle row and section 12 hold it (v0.549).
 - **More spawns than the Rupture needs, on trial** (Ryan, 11 November: "I think we should try
   to lean for noticeably more spawns then the minimum number required for our target
   completion speed. When I was playing I felt the need to chase every pack down, since that
@@ -1430,7 +1462,9 @@ commands are in `README.md`.
   Kite's row rewritten, the Kestrel row's Needletail and Skua with Ricochet and the Split-cycle
   Breech, the tiers row's stock rule, the Sweep row rewritten as its removal with the rows that
   leaned on it, the Whip Scorpion's and the Musk Ox's rows, the looks row's Kite mount and intake,
-  and Ricochet and Finisher in the tables). Version 509 (main's `0d992f3`, on his "Yes" to "The
+  and Ricochet and Finisher in the tables). Main's file is v0.549 since `ccr-722ca9f0-yj8na3`
+  landed the same day: the triangle row's heat shape on trial, section 12's heat item and
+  the parking of what prices a round, unpublished, its republish on Ryan's word. Version 509 (main's `0d992f3`, on his "Yes" to "The
   hangar and the bible are both behind main now. Want me to republish them?") was main's file
   whole over the live v0.536: `ccr-63a1309a-caa9mw`'s rows (the cooldown counted after its spend, Rapid's own switch-off,
   Instant) and `ccr-4d58b054-3lyj0a`'s (the Stingray's Lance and Sapped, the Wild Boar's row in

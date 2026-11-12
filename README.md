@@ -516,8 +516,12 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # the refit pass's model, which is content since 10 November: a flat shield regen in place of
 # each chassis's own, a cooling offset, hotter weapons, a price on the Barrier basic.
 # On the phone a debug build's SETTINGS → TRIALS has SHIELD REGEN (BUILT, 0, 1, 2, 3: each
-# chassis its own number, or a flat one on all): pick, close the app, open it, and start a new
-# battle or run, since a saved one keeps the numbers it was saved with.
+# chassis its own number, or a flat one on all) and HEAT (BUILT, +2, +3, +4: every weapon so
+# much hotter than content prices it and every chassis that cools cooling one more, two more
+# at +4; the what-if's hotter and cooling): pick, close the app, open it, and start a new
+# battle or run, since a saved one keeps the numbers it was saved with. RIFTGATE_OVERHEAT=2 (any battle) sets the hull an overheat burns a point of heat past
+# the gauge, 1 the game's; the same page's OVERHEAT (×1, ×2, ×3) sets it on the phone, read
+# as a battle starts.
 # RIFTGATE_FIELD_DEPTH=14 and RIFTGATE_OPENING=1 (any battle) try a deeper field and a farther
 # opening (Ryan, 10 November: "I think the map is a bit too shallow"): the rows from the rift to
 # the wall, 10 to 24 and 12 the game's, and how many more of their own moves from the wall the

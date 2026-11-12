@@ -95,6 +95,7 @@ func _run(f: String, inst, method: String) -> void:
 	Ramp.beats_trial = 0
 	Ramp.tide_trial = 100
 	Battlefield.strike_trial = 0
+	Skirmish.overheat_scale = 1
 	inst.script_errors_expected = 0
 	_errors.take()
 	inst.call(method)

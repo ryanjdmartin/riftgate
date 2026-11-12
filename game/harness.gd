@@ -64,13 +64,18 @@ static func refit_trial() -> void:
 
 
 ## The what-if's spec, "" for the game as built: the environment's as written, else a debug
-## build's flat shield regen (Settings.SHIELD_REGENS).
+## build's flat shield regen (Settings.SHIELD_REGENS) and its heat prices (Settings.HEAT_SPECS).
 static func refit_spec() -> String:
 	var spec := OS.get_environment("RIFTGATE_REFIT")
 	if spec.is_empty() and OS.is_debug_build():
+		var parts: Array[String] = []
 		var regen := str(Settings.display.get("shield_regen", "built"))
 		if regen != "built" and Settings.SHIELD_REGENS.has(regen):
-			spec = "regen=" + regen
+			parts.append("regen=" + regen)
+		var heat := str(Settings.display.get("heat_trial", "0"))
+		if Settings.HEAT_SPECS.has(heat):
+			parts.append(str(Settings.HEAT_SPECS[heat]))
+		spec = ",".join(parts)
 	return spec
 
 
