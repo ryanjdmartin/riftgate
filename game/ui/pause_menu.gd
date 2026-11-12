@@ -163,8 +163,8 @@ func _show_page(page: String) -> void:
 			_title("TRIALS")
 			_choice_row("SHIELD REGEN", "shield_regen", Settings.SHIELD_REGENS, Settings.SHIELD_REGEN_LABELS)   # a flat shield regen on every chassis in place of each one's own (game/harness.gd, refit_trial): the refit pass's model is content since 10 November, and this is the one what-if left on the phone
 			_credit("Shield back each round: as built by chassis, or flat on all. Next launch.")
-			_choice_row("HEAT", "heat_trial", Settings.HEATS, Settings.HEAT_LABELS)   # every weapon so much hotter than content prices it, with more cooling to sustain it (Settings.HEAT_SPECS; Ryan, 10 November: "Heat generation is too low")
-			_credit("Every weapon hotter, every machine cooling one more. Next launch.")
+			_choice_row("HEAT", "heat_trial", Settings.HEATS, Settings.HEAT_LABELS)   # every weapon a point cooler or hotter than content prices it, the hotter with one more cooling (Settings.HEAT_SPECS; the prices themselves are content since 12 November)
+			_credit("Every weapon a point cooler or hotter than built. Next launch.")
 			_choice_row("OVERHEAT", "overheat_burn", Settings.OVERHEATS, Settings.OVERHEAT_LABELS)   # the hull a point of heat past the gauge burns as the turn ends, one the game's (Skirmish.overheat_scale)
 			_credit("Hull an overheat burns a point past the gauge. Next battle.")
 			_choice_row("FIELD DEPTH", "field_depth", Settings.FIELD_DEPTHS)   # the field's depth in rows, twelve the game's (Ramp.depth_trial; Ryan, 10 November: "I think the map is a bit too shallow")

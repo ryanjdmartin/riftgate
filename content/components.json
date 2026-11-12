@@ -19,7 +19,7 @@
     "power": 3,
     "strikes": 2,
     "keywords": [],
-    "heat": 0,
+    "heat": 3,
     "fills_hopper": 2
    },
    "passive": null,
@@ -46,7 +46,7 @@
     "reach": "indirect",
     "power": 4,
     "keywords": [],
-    "heat": 2
+    "heat": 5
    },
    "passive": null,
    "tags": [
@@ -70,7 +70,7 @@
     "reach": "direct",
     "power": 4,
     "keywords": [],
-    "heat": 2,
+    "heat": 5,
     "fires_hopper": 2,
     "power_per_load": 2
    },
@@ -98,7 +98,7 @@
     "reach": "direct",
     "power": 4,
     "keywords": [],
-    "heat": 1
+    "heat": 4
    },
    "passive": null,
    "tags": [
@@ -123,7 +123,7 @@
     "reach": "direct",
     "power": 2,
     "keywords": [],
-    "heat": 1
+    "heat": 4
    },
    "passive": null,
    "tags": [
@@ -151,7 +151,7 @@
      "penetrate"
     ],
     "penetrate": 3,
-    "heat": 2
+    "heat": 5
    },
    "passive": null,
    "tags": [
@@ -176,7 +176,7 @@
     "reach": "indirect",
     "power": 2,
     "keywords": [],
-    "heat": 1
+    "heat": 4
    },
    "passive": null,
    "tags": [
@@ -225,7 +225,7 @@
     "keywords": [
      "splash"
     ],
-    "heat": 1,
+    "heat": 4,
     "splash": 1
    },
    "passive": null,
@@ -254,7 +254,7 @@
      "burn"
     ],
     "burn": 2,
-    "heat": 1
+    "heat": 4
    },
    "passive": null,
    "tags": [
@@ -282,7 +282,7 @@
     "keywords": [
      "suppress"
     ],
-    "heat": 2,
+    "heat": 5,
     "gates": {
      "suppress": {
       "when": "target_status",
@@ -315,7 +315,7 @@
     "keywords": [
      "breach"
     ],
-    "heat": 8
+    "heat": 11
    },
    "passive": null,
    "tags": [
@@ -341,7 +341,7 @@
     "reach": "direct",
     "power": 4,
     "keywords": [],
-    "heat": 1,
+    "heat": 4,
     "power_per_missing": 1,
     "per_missing": 5
    },
@@ -369,7 +369,7 @@
     "power": 2,
     "strikes": 2,
     "keywords": [],
-    "heat": 0,
+    "heat": 3,
     "finisher": 2
    },
    "passive": null,
@@ -395,7 +395,7 @@
     "keywords": [
      "chain"
     ],
-    "heat": 2,
+    "heat": 5,
     "chain": 2
    },
    "passive": null,
@@ -448,7 +448,7 @@
     "keywords": [
      "suppress"
     ],
-    "heat": 0,
+    "heat": 3,
     "volatile": 3
    },
    "passive": null,
@@ -530,7 +530,7 @@
      "burn"
     ],
     "burn": 2,
-    "heat": 3
+    "heat": 6
    },
    "passive": null,
    "tags": [
@@ -583,7 +583,7 @@
     "keywords": [
      "rapid"
     ],
-    "heat": 2
+    "heat": 5
    },
    "passive": null,
    "tags": [
@@ -698,7 +698,7 @@
     ],
     "cleave": 1,
     "flak": 2,
-    "heat": 0,
+    "heat": 3,
     "cooldown": 1
    },
    "passive": null,
@@ -726,7 +726,7 @@
      "flak"
     ],
     "flak": 1,
-    "heat": 2,
+    "heat": 5,
     "holds": "flakked"
    },
    "passive": null,
@@ -778,7 +778,7 @@
     "reach": "direct",
     "power": 2,
     "keywords": [],
-    "heat": 0,
+    "heat": 3,
     "vents_all": true,
     "power_per_heat": 1,
     "per_heat": 2
@@ -809,7 +809,7 @@
     "reach": "direct",
     "power": 5,
     "keywords": [],
-    "heat": 3,
+    "heat": 6,
     "charged": {
      "store": "rage",
      "price": 5,
@@ -849,7 +849,7 @@
      "burn"
     ],
     "burn": 3,
-    "heat": 4
+    "heat": 7
    },
    "passive": null,
    "tags": [
@@ -877,7 +877,7 @@
     "keywords": [
      "breach"
     ],
-    "heat": 1
+    "heat": 4
    },
    "passive": null,
    "tags": [
@@ -927,7 +927,7 @@
     "reach": "direct",
     "power": 2,
     "keywords": [],
-    "heat": 1
+    "heat": 4
    },
    "passive": null,
    "tags": [
@@ -952,7 +952,7 @@
     "reach": "direct",
     "power": 3,
     "keywords": [],
-    "heat": 2
+    "heat": 5
    },
    "passive": null,
    "tags": [
@@ -1066,7 +1066,7 @@
     "reach": "direct",
     "power": 4,
     "keywords": [],
-    "heat": 2
+    "heat": 5
    },
    "passive": null,
    "tags": [
@@ -1095,7 +1095,7 @@
      "burn"
     ],
     "burn": 2,
-    "heat": 3
+    "heat": 6
    },
    "passive": null,
    "tags": [
@@ -1124,7 +1124,7 @@
      "burn"
     ],
     "burn": 3,
-    "heat": 6
+    "heat": 9
    },
    "passive": null,
    "tags": [
@@ -1372,7 +1372,7 @@
     "keywords": [
      "shock"
     ],
-    "heat": 3
+    "heat": 6
    },
    "passive": null,
    "tags": [
@@ -1445,7 +1445,7 @@
     "power": 2,
     "strikes": 3,
     "keywords": [],
-    "heat": 1
+    "heat": 4
    },
    "passive": null,
    "tags": [
@@ -1566,7 +1566,7 @@
     "reach": "direct",
     "power": 2,
     "keywords": [],
-    "heat": 0,
+    "heat": 3,
     "vents_all": true,
     "power_per_heat": 1,
     "per_heat": 2
@@ -1623,7 +1623,7 @@
     "reach": "direct",
     "power": 6,
     "keywords": [],
-    "heat": 6
+    "heat": 9
    },
    "passive": null,
    "tags": [
@@ -1762,7 +1762,7 @@
     ],
     "splash": 1,
     "flak": 1,
-    "heat": 2,
+    "heat": 5,
     "ammo_per_foe_hit": 1
    },
    "passive": null,
@@ -1787,7 +1787,7 @@
     "reach": "every_foe",
     "power": 2,
     "keywords": [],
-    "heat": 0,
+    "heat": 3,
     "spends_magazine": true,
     "magazine_min": 8
    },
@@ -1864,7 +1864,7 @@
     "reach": "indirect",
     "power": 1,
     "keywords": [],
-    "heat": 0,
+    "heat": 3,
     "detonates": true
    },
    "passive": null,
@@ -1913,7 +1913,7 @@
     "power": 1,
     "strikes": 4,
     "keywords": [],
-    "heat": 1
+    "heat": 4
    },
    "passive": null,
    "tags": [
@@ -2020,7 +2020,7 @@
     "reach": "indirect",
     "power": 4,
     "keywords": [],
-    "heat": 4,
+    "heat": 7,
     "kill_rerolls": 2
    },
    "passive": null,
@@ -2069,7 +2069,7 @@
     "reach": "direct",
     "power": 5,
     "keywords": [],
-    "heat": 4
+    "heat": 7
    },
    "passive": null,
    "tags": [
@@ -2099,7 +2099,7 @@
     ],
     "cleave": 1,
     "flak": 1,
-    "heat": 1
+    "heat": 4
    },
    "passive": null,
    "tags": [
@@ -2125,7 +2125,7 @@
     "power": 2,
     "strikes": 4,
     "keywords": [],
-    "heat": 3
+    "heat": 6
    },
    "passive": null,
    "tags": [
@@ -2153,7 +2153,7 @@
      "flak"
     ],
     "flak": 2,
-    "heat": 2
+    "heat": 5
    },
    "passive": null,
    "tags": [
@@ -2181,7 +2181,7 @@
      "burn"
     ],
     "burn": 2,
-    "heat": 1,
+    "heat": 4,
     "self_burn": 1
    },
    "passive": null,
@@ -2210,7 +2210,7 @@
     "keywords": [
      "suppress"
     ],
-    "heat": 2,
+    "heat": 5,
     "gates": {
      "suppress": {
       "when": "target_status",

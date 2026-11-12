@@ -42,7 +42,7 @@ const DISPLAY_DEFAULTS := {
 	"rupture_beats": "2",   # RUPTURE_BEATS: a debug build's trial of the Rupture meter's size in beats of the tide (Ramp.beats_trial), read as a battle starts
 	"tide_density": "100",   # TIDES: a debug build's trial of how many packs the opening places and the tide sends, in hundredths of the game's (Ramp.tide_trial), read as a battle starts
 	"wall_strike": "10",   # STRIKES: a debug build's trial of what a pip of threat rating strikes the wall for (Battlefield.strike_trial), read as a battle starts
-	"heat_trial": "0",   # HEATS: a debug build's what-if, every weapon so much hotter than content prices it with more cooling to sustain it (HEAT_SPECS, Refit's hotter and cooling), read at the next launch
+	"heat_trial": "0",   # HEATS: a debug build's what-if, every weapon a point cooler or hotter than content prices it (HEAT_SPECS, Refit's hotter and cooling), read at the next launch
 	"overheat_burn": "1",   # OVERHEATS: a debug build's trial of the hull an overheat burns a point of excess (Skirmish.overheat_scale), read as a battle starts
 }
 const DISPLAY_RANGES := {
@@ -75,19 +75,21 @@ const MAP_VIEW_LABELS := {"wall_left": "WALL LEFT", "wall_bottom": "WALL BOTTOM"
 const SHIELD_REGENS := ["built", "0", "1", "2", "3"]
 const SHIELD_REGEN_LABELS := {"built": "BUILT", "0": "0", "1": "1", "2": "2", "3": "3"}
 ## Heat's two dials, a debug build's (Ryan, 10 November: "Heat generation is too low"; 9 November:
-## "run hot, and you're forced to wait and think about your decisions while you cool off"). HEAT
-## prices every weapon two, three or four hotter than content does, with one more cooling on
-## every chassis that cools (two more at four): the same what-if the runners read (Refit's
-## hotter and cooling), so read at the next launch. Content keeps its prices while other
-## sessions tune the machines that read heat. The fight bot's reads (docs/measurements.md, 12
-## November): at three hotter a formation fight brings a machine to its limit about once, in
-## fights no longer; two is mild; four bites as three does and sustains a little better.
+## "run hot, and you're forced to wait and think about your decisions while you cool off"). The
+## prices are content since 12 November, on his word for the anchor ("real tier 1 numbers for
+## damage, defense and heat"): every weapon three hotter than it was and every chassis that
+## cools cooling one more, the shape the fight bot's reads chose (docs/measurements.md, 12
+## November: a formation fight brings a machine to its limit about once, in fights no longer).
+## HEAT moves every weapon a point either side of that, the two shapes that read like it:
+## COOLER a point cooler on the same cooling (the mild one), HOTTER a point hotter with one more
+## cooling (it bites the same and sustains a little better). The same what-if the runners read
+## (Refit's hotter and cooling), so read at the next launch.
 ## OVERHEAT is the hull a point of excess burns as the turn ends, one the game's: the bot
 ## overheats rather than holds at one and holds more at two, in longer fights, so what a hold
 ## is worth is his play's to find.
-const HEATS := ["0", "2", "3", "4"]
-const HEAT_LABELS := {"0": "BUILT", "2": "+2", "3": "+3", "4": "+4"}
-const HEAT_SPECS := {"2": "hotter=2,cooling=1", "3": "hotter=3,cooling=1", "4": "hotter=4,cooling=2"}
+const HEATS := ["-1", "0", "1"]
+const HEAT_LABELS := {"-1": "COOLER", "0": "BUILT", "1": "HOTTER"}
+const HEAT_SPECS := {"-1": "hotter=-1", "1": "hotter=1,cooling=1"}
 const OVERHEATS := ["1", "2", "3"]
 const OVERHEAT_LABELS := {"1": "×1", "2": "×2", "3": "×3"}
 ## The field's trial, a debug build's (Ryan, 10 November, after his play of the long wall: "I think

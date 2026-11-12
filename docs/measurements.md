@@ -8688,3 +8688,135 @@ Read.
 - So the anchor is two different problems by domain, and neither is a formation's number
   alone.
 
+## 12 November, the anchor: the second battle's ledger, every fight at its rating, and tier one's own lines
+
+Ryan, 12 November: "Remember that all the chassis numbers are on the table, including hull
+and shield. Important to get the convergence 2 fight tuned around real tier 1s with real tier
+1 numbers for damage, defense and heat, and then move on to the scaling for everything from
+there." Main at `bf5158e`. The six machines that are built and tier one under any reading of
+4-4-2 (the Honey Badger, the Skua, the Storm Petrel, the Prairie Dog, the Cassowary, the
+Cottonmouth), a tier-one rift at Convergence 1, the fight bot (greedy) throughout. Each a
+direction.
+
+**The ledger: where the runner's player spends its hull.** The second battle whole, twenty
+seeds a domain, three squads of four (as the section above), the race for the boss; every
+fight written down by what it held and how many machines stood in it. A cell is the range
+over the three squads; hull is a share of the squad's full hull.
+
+| Domain | The fight | A battle | Machines in it | Rounds | Hull a fight | Lost | Wrecks a fight |
+|---|---|---|---|---|---|---|---|
+| The Meadow | a lone flanker | 3.0 | 1.3 to 1.6 | 2.7 to 2.9 | 0 to 0.1% | 0% | 0 |
+| | a formation | 2.2 | 2.8 to 3.0 | 3.4 to 4.0 | 3 to 5% | 11 to 16% | 0.1 to 0.2 |
+| | the elite | 1.2 to 1.4 | 1.7 to 1.9 | 5.9 to 9.3 | 12% | 33 to 41% | 0.4 to 0.5 |
+| | the boss | 0.7 | 3.9 | 5.8 to 7.7 | 4 to 9% | 0% | 0 |
+| The Marsh | a lone flanker | 3.0 | 1.4 to 1.7 | 2.1 to 2.8 | 0 to 0.1% | 0% | 0 |
+| | a formation | 2.3 | 2.8 to 3.0 | 3.6 to 4.1 | 5 to 7% | 15 to 19% | 0.2 |
+| | the elite | 1.2 to 1.4 | 2.0 to 2.2 | 5.4 to 7.0 | 13% | 33 to 43% | 0.4 to 0.5 |
+| | the boss | 0.7 | 3.8 | 6.7 to 8.1 | 10 to 13% | 0% | 0.1 to 0.2 |
+| The Waste | a lone flanker | 3.1 to 3.5 | 1.1 to 1.4 | 2.8 to 3.1 | 0.4 to 1.5% | 0% | 0 |
+| | a formation | 2.2 to 2.4 | 2.3 to 2.6 | 3.3 to 3.9 | 7 to 10% | 16 to 24% | 0.2 |
+| | the elite | 1.9 to 2.2 | 1.3 to 1.4 | 5.3 to 9.9 | 21 to 23% | 73 to 82% | 0.8 to 1.1 |
+| | the boss | 0.3 to 0.5 | 2.8 to 3.3 | 6.6 to 10.6 | 29 to 46% | 50 to 80% | 1.3 to 2.2 |
+| The Peak | a lone flanker | 2.8 to 3.0 | 1.2 to 1.4 | 2.6 to 2.9 | 0.2 to 0.7% | 0% | 0 |
+| | a formation | 2.7 to 2.9 | 2.2 to 2.3 | 3.2 to 4.0 | 14 to 17% | 48% | 0.6 |
+| | the elite | 1.2 to 1.5 | 1.3 to 1.4 | 7.7 to 9.9 | 22% | 71 to 83% | 0.9 |
+| | the boss | 0.3 | 2.8 | 8.0 to 10.4 | 18 to 33% | 17 to 50% | 0.6 to 1.7 |
+
+Read.
+
+- The runner's player meets the elite, a fight rated for four, with one or two machines, and
+  loses a third of those fights in the Meadow and the Marsh and four in five in the Waste and
+  the Peak, a machine wrecked in most. A battle of its that ends at the gate (15 to 35% of
+  them) is a lost elite fight standing at the wall. So its battle measures its own orders
+  before it measures a number, and the costs have to be read with each fight at its rating.
+- In the Peak its formation fights burn 8 to 10 points of hull in overheats each: the
+  salamander, the bomb and the drake scorch, and the bot fires through it.
+
+**Every fight at its rating.** Each composition and each boss fought by squads of the six, as
+many machines as the fight is rated: a lone flanker by each of the six, a hunter's pack by
+six pairs, a formation by six trios, an elite and a boss by five fours, five seeds a squad
+(four for an elite and a boss). Hull lost is a share of a four's hull, 96 points, which is the
+budget's measure: a lone flanker a thirtieth or less, a hunter a tenth, a pusher's formation
+a twentieth, an elite a quarter. Three columns: content at `bf5158e`; that with heat's shape
+(every weapon three hotter, every chassis that cools cooling one more); and that with tier
+one's shields at three quarters and its regen one less, never under one, which is what
+landed.
+
+| The fight | Rated | Content at `bf5158e` | With heat's shape | With tier one's shields too (landed) | Rounds, landed |
+|---|---|---|---|---|---|
+| The Meadow: the lone whisker cat | 1 | 0.2% | 0.2% | 1.6% | 3.3 |
+| the wolf pack | 2 | 0.0% | 0.0% | 0.1% | 3.0 |
+| the goblin horde | 3 | 0.3% | 0.6% | 2.0% | 3.8 |
+| the treant grove | 3 | 1.8% | 3.6% | 8.3% | 9.0 |
+| the gel wall | 3 | 2.1% | 5.0% | 11.2% | 5.7 |
+| The Waste: the lone roc | 1 | 0.7% | 0.5% | 0.8% | 3.3 |
+| the antlion trio | 2 | 3.2% | 3.5% | 7.2% | 3.5 |
+| the needler thicket | 3 | | 5.5% | 5.5% | 3.1 |
+| the sandworm ambush | 3 | | 8.6% | 8.6% | 4.2 |
+| The Marsh: the lone dullahan | 1 | | 0.0% | 1.1% | 3.7 |
+| the grave throng | 3 | | 0.7% | 3.9% | 4.5 |
+| the barrow mound | 3 | | 2.9% | 6.9% | 8.6 |
+| the knights' vigil | 3 | | 2.7% | 2.7% | 3.1 |
+| The Peak: the lone cerberus | 1 | | 1.1% | 4.3% | 3.7 |
+| the ember pyre | 3 | | 8.1% | 12.5% | 4.2 |
+| the magma vent | 3 | | 8.4% | 8.4% | 5.1 |
+| The elites, the eleven: least to most | 4 | | 0.0% to 8.9% | 0.0% to 13.1% | 2.2 to 8.0 |
+| their mean | 4 | | 3.7% | 5.5% | 4.5 |
+| The bosses, the thirteen: least to most | 4 | | 2.2% to 40% | 5.0% to 56% | 5.2 to 25 |
+| their mean | 4 | | 16.6% | 23.1% | 8.7 |
+
+(The first column was stopped after the Waste's hunter, on every squad of the six: enough to
+see it.) The means by kind, with two more what-ifs beside the landed lines: the rank and
+file's blows one harder on the old shields, and both.
+
+| Kind | Budget | Heat's shape alone | Shields down (landed) | Blows one harder | Both |
+|---|---|---|---|---|---|
+| A lone flanker | 3.3% or less | 0.5% | 2.0% | 0.9% | 2.5% |
+| A hunter's pack | 10% | 1.7% | 3.6% | 3.3% | 5.5% |
+| A formation | 5% | 4.6% | 7.0% | 8.3% | 12.5% |
+
+Each machine alone against the four lone flankers, twelve seeds, the landed lines:
+
+| The machine | Rounds | Hull lost (points) | Against the antlion trio alone |
+|---|---|---|---|
+| The Honey Badger | 2.2 to 2.3 | 0.1 to 1.0 | wins, 12 points |
+| The Skua | 2.0 to 2.7 | 0 to 1.0 | wrecked |
+| The Storm Petrel | 1.4 to 2.3 | 0 | wrecked |
+| The Cottonmouth | 2.0 to 3.2 | 0 to 3.2 | wrecked five times in six |
+| The Cassowary | 3.8 to 4.6 | 0.8 to 3.3 | wrecked |
+| The Prairie Dog | 5.8 to 12.8 | 3.4 to 14.6, losing a third of its fights with the cerberus | wrecked |
+
+Read.
+
+- At its rating nothing in tier one cost a real squad its budget but the formations once
+  heat was real: a lone flanker a seventh of it, a hunter a sixth, an elite a seventh.
+  Ryan's read of 10 November in numbers ("Enemy fodder damage might just be too low"), and
+  the reason the runner's player loses is its orders.
+- A fight's cost is what the opening rounds deal past the gauges. On the old lines a four
+  soaked about 76 points over a five-round fight (41 of gauge, 9 a round of regen) beside 96
+  of hull, so a cost was the thin edge of a large number: nothing, or a lot. On the landed
+  lines it soaks about 52 (31 and 5 a round).
+- The shields move the duels most, which is where the gap was widest; the rank and file's
+  blows move the formations most, which were on budget. So the shields came down and the
+  blows stayed.
+- The landed lines, tier one's ten: the Honey Badger 6 and 1 (8 and 1), the Storm Petrel 12
+  and 1 (16 and 1), the Skua and the Stingray 9 and 1 (12 and 2), the Prairie Dog and the
+  Baboon 8 and 1 (10 and 2), the Cassowary, the Cottonmouth, the Polar Bear and the Puffin 6
+  and 2 (8 and 3). Hull is untouched. The reason beyond the reads is the levels: a level
+  lifts hull, shield, regen and cooling, so level one is the low end of each scale, and
+  every tier stood on one line.
+- Heat's shape is content with them, the dial's of the section above: 43 weapons three
+  hotter, 23 chassis cooling one more, the Cottonmouth's drum shot 6. The Storm Petrel burns
+  4 or 5 of its 12 shield a shot and zaps for it, by its rule; as a duelist it reads level
+  with the Honey Badger.
+- A duel's cost is the machine's kill speed: the three that kill in two rounds pay nothing,
+  the Prairie Dog pays a seventh of its hull or the fight. The lone flankers die before they
+  act twice.
+- Left for the foes' pass below: the lone flankers and the wolves under budget, the giants'
+  fights nine rounds, the gel wall and the pyre over, the elites a fifth of theirs, the
+  bosses from a twentieth to a half.
+
+Method: scratch probes of this session (a ledger over `BattleBot`, and a fight-at-its-rating
+probe over the battle's own builders); the engine's own `Policy` for every fight. The squads
+are an even sample of the six's combinations.
+

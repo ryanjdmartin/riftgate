@@ -565,8 +565,9 @@ func test_the_refit_what_if_is_off_until_the_setting_or_the_environment_asks() -
 		assert_true(Settings.SHIELD_REGEN_LABELS.has(regen), "%s has its button's label" % regen)
 	Settings.display["shield_regen"] = "plenty"
 	assert_eq(HARNESS.refit_spec(), "", "a value that is no option asks for nothing")
-	# The heat's dial beside it (12 November): every weapon so much hotter than content prices
-	# it with more cooling to sustain it, the same what-if, alone or with the regen's.
+	# The heat's dial beside it (12 November): every weapon a point cooler or hotter than content
+	# prices it, the hotter with more cooling to sustain it, the same what-if, alone or with the
+	# regen's.
 	Settings.display["shield_regen"] = "built"
 	for heat in Settings.HEATS:
 		Settings.display["heat_trial"] = heat
@@ -575,13 +576,13 @@ func test_the_refit_what_if_is_off_until_the_setting_or_the_environment_asks() -
 		if not want_heat.is_empty():
 			var priced := Refit.parse(want_heat)
 			assert_eq(int(priced["hotter"]), int(heat), "the what-if takes the price")
-			assert_true(int(priced["cooling"]) >= 1, "with more cooling to sustain it")
+			assert_eq(int(priced["cooling"]) >= 1, int(heat) > 0, "a hotter price with more cooling to sustain it, a cooler one on the cooling as built")
 		assert_true(Settings.HEAT_LABELS.has(heat), "%s has its button's label" % heat)
 	Settings.display["shield_regen"] = "2"
-	Settings.display["heat_trial"] = "3"
+	Settings.display["heat_trial"] = "1"
 	if OS.is_debug_build():
 		var both := Refit.parse(HARNESS.refit_spec())
-		assert_eq([str(both["regen"]), int(both["hotter"]), int(both["cooling"])], ["2", 3, 1], "the two dials make one spec")
+		assert_eq([str(both["regen"]), int(both["hotter"]), int(both["cooling"])], ["2", 1, 1], "the two dials make one spec")
 	Settings.display["heat_trial"] = "scalding"
 	Settings.display["shield_regen"] = "built"
 	assert_eq(HARNESS.refit_spec(), "", "a heat that is no option asks for nothing")
