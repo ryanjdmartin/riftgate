@@ -406,11 +406,12 @@ def kite(b):
     # stabilisers at the end. Its top edges chamfered, a little at its face, where the intake
     # needs the room, and more aft (Ryan, 12 November: "the tail is kind of boring next to the new
     # designs. Can we chamfer the top edges of it, make it a bit more streamlined?").
-    # Three longer aft than it was (his, the same day: "the tail itself could be a smidge
-    # longer"), its back half stretched and its fins carried back with its end.
-    TAIL_END = -63.0
+    # Six longer aft than it was (his, the same day: "the tail itself could be a smidge longer",
+    # then "Maybe a bit longer still"), its back half stretched and its fins carried back with
+    # its end.
+    TAIL_MID, TAIL_END = -49.0, -66.0
     b.loft([(-18.0, _chamfered(0.0, 12.0, 4.0, 12.0, 1.6)), (-32.0, _chamfered(0.0, 8.0, 7.0, 12.5, 1.8)),
-            (-47.5, _chamfered(0.0, 5.0, 9.0, 12.5, 1.2)), (TAIL_END, _chamfered(0.0, 3.0, 9.5, 11.5, 0.7))], "steel.plate", "tail_boom")
+            (TAIL_MID, _chamfered(0.0, 5.0, 9.0, 12.5, 1.2)), (TAIL_END, _chamfered(0.0, 3.0, 9.5, 11.5, 0.7))], "steel.plate", "tail_boom")
     # The tail made part of the body (Ryan, 12 November: "we need to do something about the back
     # end so it doesn't look so much like a tail slapped on. I like the floating tail, maybe we can
     # get it to make more sense as part of the body"), in place of the dark keel it rode on, and
@@ -425,7 +426,7 @@ def kite(b):
         if y >= -32.0:
             t = (-18.0 - y) / 14.0
             return 6.0 - 2.0 * t, 4.0 + 3.0 * t
-        t = (-32.0 - y) / 15.5
+        t = (-32.0 - y) / (-32.0 - TAIL_MID)
         return 4.0 - 1.5 * t, 7.0 + 2.0 * t
     def shoulder(y, x):   # the fuselage's top at x, on its shoulder between its sections at -16 and -30
         u = (-16.0 - y) / 14.0
@@ -442,11 +443,25 @@ def kite(b):
     for y, side, bottom in ((-31.0, (4.6, 2.9), (2.2, -3.4)), (-34.0, (3.6, 3.6), (1.8, 0.6)),
                             (-39.0, (2.4, 6.4), (1.2, 4.6)), (-43.5, (1.3, 8.4), (0.65, 8.2))):   # the cone, behind it
         root.append((y, flank(y, 1.0, 0.6), side, bottom))
-    b.loft([(y, [side, top, (-top[0], top[1]), (-side[0], side[1]), (-bot[0], bot[1]), bot]) for y, top, side, bot in root], "steel.plate", "tail_root")
+    # The faces the vents sit on halved, so each bows less across its corners (the loft's quads
+    # are split in two triangles, one way on one flank and the mirror way on the other).
+    def mid(p, q):
+        return tuple((u + v) / 2.0 for u, v in zip(p, q))
+    fine = []
+    for i, sec in enumerate(root):
+        fine.append(sec)
+        if i + 1 < len(root) and sec[0] <= -30.9 and root[i + 1][0] >= -39.5:
+            nxt = root[i + 1]
+            fine.append(((sec[0] + nxt[0]) / 2.0, mid(sec[1], nxt[1]), mid(sec[2], nxt[2]), mid(sec[3], nxt[3])))
+    root = fine
+    root_part = b.loft([(y, [side, top, (-top[0], top[1]), (-side[0], side[1]), (-bot[0], bot[1]), bot]) for y, top, side, bot in root], "steel.plate", "tail_root")
     # Raked vents on the root's flanks just over the boosters (his: "I like the idea of angled
     # vents around the lower connection area, since the boosters are there and we remade the tail
-    # front face into intakes"): three dark slots each side laid on the flank, each raked back as
-    # it rises.
+    # front face into intakes"; then "Can we add some actual glowing vent parts too?"): three
+    # slots each side, each raked back as it rises, cut into the flank as a real pocket (a decal
+    # laid on it clipped through one side's flank, whose faces bow out where the other's bow in:
+    # "looks good on one side and messed up on the other"), a fire glowing at its floor behind
+    # two dark slats across it. The glow is the boosters' burn: it flares with theirs.
     def root_x(y, z):   # the root's flank, between its upper corner and its side, at (y, z)
         for (y0, t0, s0, _), (y1, t1, s1, _) in zip(root, root[1:]):
             if y1 <= y <= y0:
@@ -457,8 +472,19 @@ def kite(b):
         raise ValueError(y)
     for s in (-1.0, 1.0):
         for y0 in (-31.2, -32.6, -34.0):   # all on the flank's upper face, which rises off the boosters aft
-            slot = [(y0, 4.4), (y0 - 0.9, 4.4), (y0 - 2.3, 6.7), (y0 - 1.4, 6.7)]   # raked back 1.4 over its 2.3 of rise
-            _face(b, [(s * (root_x(y, z) + 0.06), y, z) for y, z in slot], "bore.dark", "tail_vent")
+            zb, zt, wide, rake = 4.4, 6.7, 0.9, 1.4
+            def slot(d, inset=0.0, z0=zb, z1=zt):   # the raked slot, `d` out from the flank, `inset` in from its edges
+                pts = []
+                for y, z in ((y0 - inset, z0 + inset), (y0 - wide + inset, z0 + inset), (y0 - wide - rake + inset, z1 - inset), (y0 - rake - inset, z1 - inset)):
+                    pts.append((s * (root_x(y, z) + d), y, z))
+                return pts
+            b.cut_hull([root_part], slot(-0.45) + slot(0.9))
+            _rings(b, [slot(-0.42, 0.04), slot(-0.38, 0.04)], "amber.glow", "tail_vent_glow")
+            for k in (1, 2):   # the slats, a third and two thirds up, raked with the slot
+                zk = zb + (zt - zb) * k / 3.0
+                yk = y0 - rake * k / 3.0
+                bar = lambda d: [(s * (root_x(y, z) + d), y, z) for y, z in ((yk, zk - 0.08), (yk - wide, zk - 0.08), (yk - wide, zk + 0.08), (yk, zk + 0.08))]
+                _rings(b, [bar(-0.25), bar(-0.12)], "steel.dark", "tail_vent_slat")
     # The tail segment's front face, over the canopy, is an air intake (Ryan, 12 November): a dark
     # mouth across it inside a steel lip, a splitter down its middle. Mouth and lip take the
     # face's shape since its top corners were chamfered: the face's sides run up to 10.4 and its
@@ -488,7 +514,7 @@ def kite(b):
     # sixth: quicker, with inertia, and about the fuselage): a dip and a kick the other way to
     # gather, then once round its own length fast, a little past and back, level where it began.
     b.act("barrel_roll", 3.0, body=_barrel_roll(t0=0.35, t1=1.55, over=24.0, duration=3.0),   # once round in a second and a quarter (the seventh notes: slower)
-          glow=[(["booster_ring", "exhaust", "driver_ring", "driver_exhaust"], [(0.2, 0.0), (0.45, 7.0), (1.6, 7.0), (2.3, 0.0)])])
+          glow=[(["booster_ring", "exhaust", "driver_ring", "driver_exhaust", "tail_vent_glow"], [(0.2, 0.0), (0.45, 7.0), (1.6, 7.0), (2.3, 0.0)])])
     # A loop (Ryan, 5 October: the nose dip was the weakest; it needs to do a loop): it backs
     # off, runs in and pulls up through a full circle, over on its back and down, the nose
     # along the path, the boosters hot, and brakes onto its hex a whole turn on, the pose it
@@ -497,9 +523,9 @@ def kite(b):
     # only: the skirmish's frame has no room for it, nor any reason.
     # Bigger again (the eighth notes: the map has the room), at the same pace round it.
     b.act("loop", 5.2, body=_loop(r=46.0, t0=1.4, t1=4.1, duration=5.2, back=34.0, run=22.0), places=("map",),
-          glow=[(["booster_ring", "exhaust", "driver_ring", "driver_exhaust"], [(0.6, 0.0), (1.1, 8.0), (4.2, 8.0), (4.9, 0.0)])])
+          glow=[(["booster_ring", "exhaust", "driver_ring", "driver_exhaust", "tail_vent_glow"], [(0.6, 0.0), (1.1, 8.0), (4.2, 8.0), (4.9, 0.0)])])
     b.act("flare_boosters", 3.8, body=[(0.5, 0.0, 0.0, 0.0), (1.1, 0.0, 9.0, 0.0, 0.0, -6.0, 0.0), (2.5, 0.0, 12.0, 0.5, 0.0, -7.0, 0.0), (3.8, 0.0, 0.0, 0.0)],
-          glow=[(["booster_ring", "exhaust", "driver_ring", "driver_exhaust"], [(0.3, 0.0), (0.8, 8.0), (1.2, 4.0), (1.6, 8.0), (2.6, 8.0), (3.4, 0.0)])])
+          glow=[(["booster_ring", "exhaust", "driver_ring", "driver_exhaust", "tail_vent_glow"], [(0.3, 0.0), (0.8, 8.0), (1.2, 4.0), (1.6, 8.0), (2.6, 8.0), (3.4, 0.0)])])
     # A banked circle (Ryan, 5 October, in place of the slow pirouette): wide, out over the next
     # hexes, and on the map only, as the loop (the fifth notes). A circling predator surveying
     # the ground, slow and smooth (the seventh notes). After the eighth (Ryan, 6 October: no
@@ -512,7 +538,7 @@ def kite(b):
     # from rest to rest at an even rate, where it had slid into its finish.
     circle = _survey_circle()
     b.act("banked_circle", circle[-1][0], body=circle, places=("map",),
-          glow=[(["booster_ring", "exhaust", "driver_ring", "driver_exhaust"], [(0.2, 0.0), (0.8, 7.0), (circle[-2][0] - 0.6, 6.0), (circle[-1][0] - 0.1, 0.0)])])
+          glow=[(["booster_ring", "exhaust", "driver_ring", "driver_exhaust", "tail_vent_glow"], [(0.2, 0.0), (0.8, 7.0), (circle[-2][0] - 0.6, 6.0), (circle[-1][0] - 0.1, 0.0)])])
     # A figure eight beside it, to judge against the circle (Ryan, 6 October, the ninth notes:
     # "I'd like to see what a figure 8 looks like"; the tenth: a smooth bank change, crossing the
     # hex on a diagonal, larger, quicker): a lobe to the left and one to the right, crossing its
@@ -522,7 +548,7 @@ def kite(b):
     eight = _figure_eight(vmax=145.0)
     mid = round((eight[0][0] + eight[-2][0]) * 0.5, 3)   # the crossing, halfway in time (the pace is symmetric)
     b.act("figure_eight", eight[-1][0], body=eight, places=("map",),
-          glow=[(["booster_ring", "exhaust", "driver_ring", "driver_exhaust"], [(0.2, 0.0), (0.6, 7.0), (mid - 0.3, 6.0), (mid, 8.0), (mid + 0.3, 6.0), (eight[-2][0] - 0.6, 6.0), (eight[-1][0] - 0.1, 0.0)])])
+          glow=[(["booster_ring", "exhaust", "driver_ring", "driver_exhaust", "tail_vent_glow"], [(0.2, 0.0), (0.6, 7.0), (mid - 0.3, 6.0), (mid, 8.0), (mid + 0.3, 6.0), (eight[-2][0] - 0.6, 6.0), (eight[-1][0] - 0.1, 0.0)])])
     # Movement: the boosters brighten, the drivers' with them, the nose drops; it banks and slides through corners
     # (b.move) at full speed.
     b.halo = [("booster_ring", KESTREL_HALO), ("exhaust", KESTREL_HALO)]   # its boosters, hot; the drivers burn as plumes (below)
@@ -532,7 +558,7 @@ def kite(b):
     # day ("Kite plumes are in the right spot but a tiny bit too subtle").
     for s in (-1.0, 1.0):
         b.plume("driver_ring", (s * 32.0, -1.4, -4.8), (0.0, -1.0, 0.0), reach=25.0, breadth=9.5)
-    b.gait(glow={"parts": ["booster_ring", "exhaust", "driver_ring", "driver_exhaust"], "k": KESTREL_BURN}, body_hold=(0.0, 0.0, 0.0, 0.0, -6.0, 0.0))
+    b.gait(glow={"parts": ["booster_ring", "exhaust", "driver_ring", "driver_exhaust", "tail_vent_glow"], "k": KESTREL_BURN}, body_hold=(0.0, 0.0, 0.0, 0.0, -6.0, 0.0))
     b.fires = {"pinion_driver": ("flare_boosters", 0.4, 1.8)}   # its fixed weapon fires with a slice of its act: the drivers flaring (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.move(slide=0.6, bank=50.0, accel=0.7, heft=0.08, oversteer=0.35)   # strafes most of the aircraft, banks hardest (Ryan, 5 October: more); the lightest in its acts; the nose a little into its corners (the fifth notes: the jets oversteer too, a bit)
 
