@@ -359,8 +359,11 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
     port gun, the port pair, the port rack and the port dish on its telescoping mast; the blade
     standard); on trial, the trough filled in (`TROUGH` in the builder brings it back), the line
     0.6 higher (a unit's drop from there tried and taken back), the hood carried forward over
-    the mount to four past it and a little round cut under the weapon that frees the launcher;
-    the tail's top edges chamfered, the intake taking the face's new shape,
+    the mount to four past it and a little round cut under the weapon that frees the launcher,
+    carried back into the hood's front; the dish the launcher's diameter; the tail's top edges
+    chamfered, the intake taking the face's new shape, and the tail carried on a tail cone of the
+    body's section in place of its dark keel, floating over the boosters behind it, its flanks
+    filleted,
     and the tail segment's face behind the canopy is an air intake (his, 12 November). Its brief is retired; his play is the
     to-do's.
   - The Skua: built as his "Ramping Dakka" (the bible's Kestrel row). Its passive gains a stack of Ricochet the first time each round one of its

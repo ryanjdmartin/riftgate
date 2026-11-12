@@ -313,9 +313,10 @@ def kite(b):
     # stands clear of the hood below ("The dish will need an extension of some kind so it's not
     # just covered"). The standard shapes were tried here and taken back the same day ("Just for
     # fun ..."; "Ok go back to port gun"). The blade's place is a guess.
-    # The dish sits forward of the mount by 1.35 so it stands clear of the hood's lip, its sleeve's
-    # root still under the hood.
-    NOSE_FITS = {"barrel": "barrel_port", "rack": ("rack_port", 0.6), "twin_barrel": ("twin_barrel_port", 0.92), "dish": ("dish_port", 0.55, -2.7), "blade": ("blade", 0.7)}
+    # The dish wears the launcher's scale, so it is the launcher's diameter (his: "the dish model
+    # needs to be a bit smaller, same diameter as the rack"), a unit forward of the mount so it
+    # stands clear of the hood's lip, its sleeve's root still under the hood.
+    NOSE_FITS = {"barrel": "barrel_port", "rack": ("rack_port", 0.6), "twin_barrel": ("twin_barrel_port", 0.92), "dish": ("dish_port", 0.6, -2.0), "blade": ("blade", 0.7)}
     if TROUGH:
         b.cut_hull([fuselage], [(x, y, z) for x in (-2.2, 2.2) for (y, z) in ((PORT, FLOOR), (FLAT, FLOOR), (RUN, 4.4), (RUN, 9.0), (PORT, 9.0))])
     b.pin("hp_3", (0.0, PORT, GZ), scale=0.5, carries="", fits=NOSE_FITS)
@@ -339,20 +340,25 @@ def kite(b):
         rise = max(0.0, crown - spine(y)) + HOOD_SUNK
         hw = HOOD_W * (0.35 + 0.65 * math.sqrt(min(1.0, (y - HOOD_TAIL) / (PORT + 1.0 - HOOD_TAIL))))
         hood.append((y, [(hw * math.cos(math.pi * i / 8.0), spine(y) - HOOD_SUNK + rise * math.sin(math.pi * i / 8.0)) for i in range(9)]))
-    b.loft(hood, "steel.plate", "port_hood")
+    hood_part = b.loft(hood, "steel.plate", "port_hood")
     y, mouth = hood[-1]
-    _face(b, [(x, y + 0.02, z) for x, z in mouth], "bore.dark", "port_hood_mouth")
+    hood_mouth = b.loft([(y + 0.02, mouth), (y + 0.06, mouth)], "bore.dark", "port_hood_mouth")
     # With the trough filled, a little round cut under the weapon (his: "Can we make a little
     # round cut under, just long enough that the rack isn't covered?"): a channel round the line
     # a little wider than the launcher's drum, from just inside the hood's mouth to just past the
     # launcher's face (5.6 past the mount at its fit), its floor ramped up to the surface beyond,
-    # so the nose no longer covers the launcher's underside. Sized to the launcher alone: a dish
-    # and twin barrels are wider and still touch the nose at their sides.
+    # so the nose no longer covers the launcher's underside. Sized to the launcher alone: twin
+    # barrels are wider and still touch the nose at their sides. It runs back two under the hood,
+    # and the hood's front is cut away round the same line (his, the same day: "The cut at the
+    # front is good. Can we cut out some of the fairing, too?"): the same round section raised
+    # 0.35, so it opens the hood's crown in a slot and leaves its front as two cheeks either side
+    # of the weapon, the weapon coming out from under its hood two sooner.
     if not TROUGH:
-        CUT_R, CUT_END = 1.65, PORT + 5.9
+        CUT_R, CUT_END, CUT_BACK = 1.65, PORT + 5.9, PORT + 2.0
         def ring(y, z):
             return [(CUT_R * math.cos(math.pi * i / 8.0), y, z + CUT_R * math.sin(math.pi * i / 8.0)) for i in range(16)]
-        b.cut_hull([fuselage], ring(HOOD_LIP - 0.4, GZ) + ring(CUT_END, GZ) + ring(CUT_END + 1.6, spine(CUT_END + 1.6) + CUT_R))
+        b.cut_hull([fuselage], ring(CUT_BACK, GZ) + ring(CUT_END, GZ) + ring(CUT_END + 1.6, spine(CUT_END + 1.6) + CUT_R))
+        b.cut_hull([hood_part, hood_mouth], ring(CUT_BACK, GZ + 0.35) + ring(HOOD_LIP + 0.5, GZ + 0.35))
     # Canopy: far back, low, faired into the spine rather than a bubble.
     b.loft([(-2.0, hexagon(0.0, 6.2, 7.0, 0.5)), (-10.0, hexagon(0.0, 7.4, 9.0, 3.0)),
             (-18.0, hexagon(0.0, 7.5, 9.0, 3.2)), (-26.0, hexagon(0.0, 7.2, 9.0, 3.0))], "glass.glass", "canopy")
@@ -404,7 +410,32 @@ def kite(b):
     # designs. Can we chamfer the top edges of it, make it a bit more streamlined?").
     b.loft([(-18.0, _chamfered(0.0, 12.0, 4.0, 12.0, 1.6)), (-32.0, _chamfered(0.0, 8.0, 7.0, 12.5, 1.8)),
             (-46.0, _chamfered(0.0, 5.0, 9.0, 12.5, 1.2)), (-60.0, _chamfered(0.0, 3.0, 9.5, 11.5, 0.7))], "steel.plate", "tail_boom")
-    b.loft([(-30.0, rect(0.0, 4.0, 4.5, 8.0)), (-44.0, rect(0.0, 3.0, 5.5, 9.0))], "steel.dark", "keel")
+    # The tail made part of the body (Ryan, 12 November: "we need to do something about the back
+    # end so it doesn't look so much like a tail slapped on. I like the floating tail, maybe we can
+    # get it to make more sense as part of the body"), in place of the dark keel it rode on: the
+    # fuselage's blunt end closed by a tail cone of its own six-sided section, in its metal,
+    # narrowing between the boosters and sweeping up and back into the tail's underside, its
+    # lower edge meeting the tail a few ahead of the exhausts, so the tail is carried on the body
+    # and floats free over the boosters either side of it and behind them; and a fillet down each
+    # flank where the tail stands on the fuselage, easing its side into the body's shoulder.
+    def body_section(y, hw, zc, top, bottom):
+        return (y, [(hw, zc), (hw * 0.5, top), (-hw * 0.5, top), (-hw, zc), (-hw * 0.5, bottom), (hw * 0.5, bottom)])
+    b.loft([body_section(-28.0, 5.4, 0.6, 6.4, -3.4), body_section(-34.0, 3.6, 3.6, 7.8, 0.6),
+            body_section(-39.0, 2.4, 6.4, 8.7, 4.6), body_section(-43.5, 1.3, 8.6, 9.3, 8.2)], "steel.plate", "tail_cone")
+    def boom_at(y):   # the tail's half-width and underside between its sections at -18 and -32
+        t = (-18.0 - y) / 14.0
+        return 6.0 - 2.0 * t, 4.0 + 3.0 * t
+    def shoulder(y, x):   # the fuselage's top at x, on its shoulder between its sections at -16 and -30
+        u = (-16.0 - y) / 14.0
+        w, top = 18.0 - 3.0 * u, 7.0 - 1.6 * u
+        return top * min(1.0, max(0.0, (w / 2.0 - x) / (w / 4.0)))
+    for s in (-1.0, 1.0):
+        fillet = []
+        for y, k in ((-18.3, 0.08), (-20.0, 0.6), (-22.5, 1.0), (-26.0, 1.0), (-29.0, 0.7), (-29.9, 0.45)):
+            xb, zb = boom_at(y)
+            out, up = 1.8 * k, 1.4 * k
+            fillet.append((y, [(s * (xb - 0.05), zb + up), (s * (xb + out), shoulder(y, xb + out) - 0.05), (s * (xb - 0.6), shoulder(y, xb) - 0.5)]))
+        b.loft(fillet, "steel.plate", "tail_fillet")
     # The tail segment's front face, over the canopy, is an air intake (Ryan, 12 November): a dark
     # mouth across it inside a steel lip, a splitter down its middle. Mouth and lip take the
     # face's shape since its top corners were chamfered: the face's sides run up to 10.4 and its
@@ -8422,10 +8453,13 @@ def shape_dish_port(b, s=1.0):
     mouth with its support in sight (Ryan, 12 November: "The dish will need an extension of
     some kind so it's not just covered"; of a dish set forward off nothing, "Dish also floats
     too far forward from the mount point")."""
+    # The dish the port rack's diameter, its drum's 4.8 (Ryan, 12 November: "the dish model needs
+    # to be a bit smaller, same diameter as the rack"), the standard dish's sections at that ratio.
+    k = 4.8 / 7.0
     b.prism("y", 0.0, 3.0 * s, 0.0, 1.7 * s, 6.0 * s, "steel.plate", 6, "dish_sleeve")
     b.prism("y", 0.0, 9.5 * s, 0.0, 1.2 * s, 9.0 * s, "steel.dark", 6, "dish_mast")
-    b.loft([(14.0 * s, _poly(7.0 * s, 8, math.pi / 8)), (16.0 * s, _poly(2.5 * s, 8, math.pi / 8))], "steel.plate", "dish")
-    b.prism("y", 0.0, 16.5 * s, 0.0, 2.0 * s, 1.0 * s, "amber.engine", 8, "dish_core")
+    b.loft([(14.0 * s, _poly(7.0 * k * s, 8, math.pi / 8)), (16.0 * s, _poly(2.5 * k * s, 8, math.pi / 8))], "steel.plate", "dish")
+    b.prism("y", 0.0, 16.5 * s, 0.0, 2.0 * k * s, 1.0 * s, "amber.engine", 8, "dish_core")
 
 
 ## Each variant by name: (its class, its builder).
@@ -8521,7 +8555,7 @@ MUZZLES = {
     "barrel_port": [((0.0, 27.0, 0.0), 24.0)],
     "twin_barrel_port": [((-2.8, 25.0, 0.0), 17.0), ((2.8, 25.0, 0.0), 17.0)],
     "rack_port": [((0.0, 20.4, 0.0), 21.0)],
-    "dish_port": [((0.0, 19.0, 0.0), 26.0)],
+    "dish_port": [((0.0, 19.0, 0.0), 18.0)],
 }
 
 
