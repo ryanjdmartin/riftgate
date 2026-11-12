@@ -2552,7 +2552,7 @@ func test_a_vent_under_the_maximum_clears_the_overheats_culprit() -> void:
 		if vented:
 			assert_true(sk.assign(1, ms), "the ally vents it")
 			assert_eq([ms.heat, ms.hot_entry], [50, -1], "back under the maximum, nothing stands accused")
-		ms.heat += 20   # a status's heat (a seal, Siphoning) through the gauge: 70, or 100 unvented
+		ms.heat += 20   # a status's heat (a seal's) through the gauge: 70, or 100 unvented
 		sk.end_round()
 		Skirmish.overheat_corrupt = 0
 		assert_eq(Effects.corrupt_stacks(hot, 0), 0 if vented else 1, "vented %s: the overheat corrupts the entry only while its own excess stands" % str(vented))
@@ -3804,7 +3804,7 @@ func test_a_passive_may_grant_a_keyword_and_the_entry_wears_it() -> void:
 	assert_false(Effects.effective_face(m, plate).has(K.SPILLOVER), "spillover stays off the shield")
 
 
-## A grant written out (the Boar's spill; the stock pass, 22 October): the entry carries the
+## A grant written out (the Overrun Gearing's spill, the Boar's first; the stock pass, 22 October): the entry carries the
 ## keyword for the engine, the die draws it as the star rather than a chip on every entry, and
 ## the hold reads the passive's own line; a plain grant keeps its chip and its effect text.
 func test_a_printed_grant_is_the_star_and_the_hold_reads_the_passive() -> void:
@@ -7218,80 +7218,29 @@ func test_a_drum_fires_every_weapon_as_its_shot_by_the_rank_it_is_aimed_at() -> 
 	assert_eq(sk.shown_face(ms, ms.face()).power, 20, "a shield fires as itself")
 
 
-const BLAST_PASSIVE := {"id": "test_blast", "name": "Blast", "description": "", "effects": [{"trigger": "static", "effect": "vent_blast", "value": 1}]}
+## A machine whose passive banks ten heat a blow it takes (the Whip Scorpion's Thermal Ejection
+## Manifold's rule, on a synthetic passive).
+const BANK_PASSIVE := {"id": "test_bank", "name": "Bank", "description": "", "effects": [{"trigger": "static", "effect": "heat_per_blow", "value": 10}]}
 
 
-## The vent blast (the Whip Scorpion's Thermal Ejection Manifold, 12 and 13 October; built 21
-## October): a vent it spends on itself blasts a random live foe for the heat it took off, back
-## rank included, through the pipeline (the foe's Flak and armour apply); a vent on an ally
-## blasts nothing, nor an ally's vent on it, nor a vent with nothing to take off.
-func test_a_vent_spent_on_itself_blasts_a_random_foe_for_the_heat_it_took_off() -> void:
-	var struck := {}
-	for seed_value in range(30):
-		var sk := Skirmish.new(seed_value, 1)
-		var u := _mech("A", Die.single(Face.vent(30)), 40, 100)
-		u.grant_passive(BLAST_PASSIVE)
-		sk.add_mech(u)
-		var front := _ghoul(100, 1)
-		var back := _archer(100, 1)
-		sk.add_foes([front, back])
-		sk.begin()
-		sk.start_round()
-		var ms: Skirmish.MechState = sk.mechs[0]
-		ms.heat = 20
-		assert_true(sk.assign(0, ms), "the vent is spent on itself")
-		assert_eq(ms.heat, 0, "it vents")
-		assert_eq((100 - front.hp) + (100 - back.hp), 20, "and one foe takes the twenty it took off")
-		struck[front.hp < 100] = true
-	assert_eq(struck.size(), 2, "drawn at random, the back rank included")
-	var s2 := Skirmish.new(1, 1)
-	var a := _mech("A", Die.single(Face.vent(30)), 40, 100)
-	a.grant_passive(BLAST_PASSIVE)
-	var b := _mech("B", Die.single(Face.vent(30)), 40, 100)
-	s2.add_mech(a)
-	s2.add_mech(b)
-	var g := _ghoul(100, 1)
-	g.armour = 5
-	s2.add_foes([g])
-	s2.begin()
-	s2.start_round()
-	Effects.stack(g, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_HALF)
-	s2.mechs[0].heat = 10
-	s2.mechs[1].heat = 10
-	assert_true(s2.assign(0, s2.mechs[1]), "a vent on an ally")
-	assert_eq(g.hp, 100, "blasts nothing")
-	assert_true(s2.assign(1, s2.mechs[0]), "an ally's vent on it")
-	assert_eq(g.hp, 100, "blasts nothing either")
-	s2.end_round()
-	s2.start_round()
-	s2.mechs[0].heat = 10
-	assert_true(s2.assign(0, s2.mechs[0]), "its own vent on itself")
-	assert_eq(g.hp, 100 - (10 + 1 - 5), "ten, the Flak's point a stack halved to one, less the armour's five")
-	assert_true("\n".join(s2.log).contains("vent blasts"), "the log says so")
-	s2.end_round()
-	s2.start_round()
-	s2.mechs[0].heat = 0
-	var hp := g.hp
-	assert_true(s2.assign(0, s2.mechs[0]), "a vent with nothing to take off")
-	assert_eq(g.hp, hp, "blasts nothing")
-
-
-## The Siphon (the Whip Scorpion's Heliographic Siphon, 20 October; built 21 October): no
-## damage, every foe in the fight turns on it for the round, it braces, and every blow a foe
-## lands on it that round adds the entry's heat, next round's fuel, after the overheat.
-func test_the_siphon_lures_every_foe_braces_and_fuels_on_every_blow() -> void:
-	var siphon := Face.from_dict({"kind": "attack", "reach": "every_foe", "power": 0, "keywords": ["lure"], "braces": 2, "heat_per_blow": 10})
-	assert_eq(siphon.describe(), "every foe lure braces ×2 +10 heat a blow taken this round", "the entry says its rules, Every Foe its targeting mode (4 November)")
+## A lure over every foe (the Shift Whistle's; the Whip Scorpion's Siphon first, 20 October): no
+## damage, every foe in the fight turns on it for the round and it braces; on a machine whose
+## passive banks a heat a blow (the Whip Scorpion's), every blow a foe lands on it adds that heat,
+## next round's fuel, after the overheat.
+func test_a_lure_over_every_foe_turns_them_all_and_braces_and_a_banking_passive_takes_their_heat() -> void:
+	var whistle := Face.from_dict({"kind": "attack", "reach": "every_foe", "power": 0, "keywords": ["lure"], "braces": 2})
+	assert_eq(whistle.describe(), "every foe lure braces ×2", "the entry says its rules, Every Foe its targeting mode (4 November)")
 	for saved in [
-		{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure", "every_foe"], "braces": 2, "heat_per_blow": 10},   # 2 to 4 November: a keyword
-		{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "braces": 2, "reaches_all": true, "heat_per_blow": 10},   # before: a flag
+		{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure", "every_foe"], "braces": 2},   # 2 to 4 November: a keyword
+		{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "braces": 2, "reaches_all": true},   # before: a flag
 	]:
 		var old := Face.from_dict(saved)
-		assert_eq([old.reach, old.keywords], [Face.Reach.EVERY_FOE, siphon.keywords], "a save from before the targeting mode reads the same")
+		assert_eq([old.reach, old.keywords], [Face.Reach.EVERY_FOE, whistle.keywords], "a save from before the targeting mode reads the same")
 		var back := old.to_dict()
 		assert_true(back["reach"] == "every_foe" and not back.has("reaches_all") and not (back["keywords"] as Array).has("every_foe"), "written back as its reach, never a keyword or the flag")
 	var sk := Skirmish.new(1, 2)
-	var u := _mech("A", Die.single(siphon), 40, 200)
+	var u := _mech("A", Die.single(whistle), 40, 200)
+	u.grant_passive(BANK_PASSIVE)
 	var other := _mech("B", Die.single(Face.attack(10, L)), 40, 200)
 	sk.add_mech(u)
 	sk.add_mech(other)
@@ -7301,16 +7250,14 @@ func test_the_siphon_lures_every_foe_braces_and_fuels_on_every_blow() -> void:
 	sk.start_round()
 	for f in sk.field_foes():
 		f.target = sk.mechs[1]
-	assert_true(sk.assign(0, sk.front[0]), "the Siphon is spent")
+	assert_true(sk.assign(0, sk.front[0]), "the lure is spent")
 	for f in sk.field_foes():
 		assert_eq(f.target, sk.mechs[0], "every foe in the fight turns on it, the back rank too")
 	assert_eq(Effects.stacks_of(u, "braced"), 2, "it braces")
-	assert_true(Effects.has(u, "siphoning"), "and siphons for the round")
 	var fc := sk.forecast(sk.mechs[0])
-	assert_eq(int(fc["heat_after"]), 30, "the forecast counts ten a blow, three blows")
+	assert_eq(int(fc["heat_after"]), 30, "the forecast counts the passive's ten a blow, three blows")
 	sk.end_round()
 	assert_eq(sk.mechs[0].heat, 30, "three blows, ten heat each, after the overheat")
-	assert_false(Effects.has(u, "siphoning"), "gone at the round's end")
 
 
 ## A Silence leaves a targeting mode whole (Ryan, 4 November: "Silence should not narrow targeting
@@ -7342,110 +7289,30 @@ func test_a_silence_leaves_every_foe_and_every_ally_whole() -> void:
 	assert_eq([acting.reach, acting.keywords.size()], [Face.Reach.EVERY_FOE, 0], "Every Foe stands under a Silence too, its Lure, a keyword, quiet")
 
 
-## The blast read in one place (the Whip Scorpion's forecast, 22 October): the heat a vent would
-## take off its own machine at the passive's share, nothing spent on an ally or from a machine
-## whose vents blast nothing; every live foe a target; and the number on a foe, its Flak and
-## armour in, is what the spend deals there.
-func test_the_blast_is_read_in_one_place_and_its_number_is_what_lands() -> void:
-	var sk := Skirmish.new(1, 1)
+## The kinds a piece is (Ryan, 26 October: "Face type is either Weapon, Shield, Vent, or
+## Equipment"), the engine's one reading (Effects.kinds_of): its own, on a machine or as built.
+func test_a_piece_is_its_own_kind_on_a_machine_and_as_built() -> void:
 	var vent := Face.vent(30)
-	var a := _mech("A", Die.single(vent), 40, 100)
-	a.grant_passive(BLAST_PASSIVE)
-	sk.add_mech(a)
-	sk.add_mech(_mech("B", Die.single(Face.vent(30)), 40, 100))
-	var g := _ghoul(100, 1)
-	g.armour = 5
-	sk.add_foes([g])
-	sk.begin()
-	sk.start_round()
-	var ms: Skirmish.MechState = sk.mechs[0]
-	ms.heat = 50
-	assert_eq(sk.blast_amount(ms, vent, ms), 30, "a full vent's worth when it runs hotter than the vent takes")
-	ms.heat = 10
-	assert_eq(sk.blast_amount(ms, vent), 10, "what it carries when it runs cooler; on itself unless told")
-	assert_eq(sk.blast_amount(ms, vent, sk.mechs[1]), 0, "nothing spent on an ally")
-	sk.mechs[1].heat = 20
-	assert_eq(sk.blast_amount(sk.mechs[1], sk.mechs[1].face(), sk.mechs[1]), 0, "nothing from a machine whose vents blast nothing")
-	assert_eq(sk.blast_targets().size(), 1, "every live foe a target")
-	Effects.stack(g, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_HALF)
-	assert_eq(sk.blast_number(ms, 10), 10, "before any foe, the machine's pipeline alone")
-	assert_eq(sk.blast_number(ms, 10, g), 10 + 2 - 5, "on the ghoul: its two Flak in, its armour off")
-	assert_true(sk.assign(0, ms), "the vent spent on itself")
-	assert_eq(g.hp, 100 - (10 + 2 - 5), "and that is what the blast deals there")
-	var s2 := Skirmish.new(1, 1)
-	var half := _mech("H", Die.single(Face.vent(30)), 40, 100)
-	half.grant_passive({"id": "test_half_blast", "name": "Half", "description": "", "effects": [{"trigger": "static", "effect": "vent_blast", "value": 0.5}]})
-	s2.add_mech(half)
-	s2.add_foes([_ghoul(100, 1)])
-	s2.begin()
-	s2.start_round()
-	s2.mechs[0].heat = 15
-	assert_eq(s2.blast_amount(s2.mechs[0], s2.mechs[0].face()), 8, "half of fifteen, rounded")
-
-
-## The blast is a weapon's hit (Ryan, 26 October: "Vent blast should obviously proc cryo, that's
-## the point of tagging it with weapon. It shouldn't need exceptions in code"): the vent is a
-## weapon too on its machine, and its blast resolves as every weapon's hit does, so the foe's
-## Cryo is cashed for the machine's cooling and a Primed machine's blow leaves Burning; the
-## vent's spend pays its own heat once, the blast nothing more, even under Scorched.
-func test_the_blast_is_a_weapons_hit_cryo_and_primed_included() -> void:
-	var vent := Face.vent(30)
-	var plain := _mech("P", Die.single(Face.vent(30)), 40, 100)
-	var a := _mech("A", Die.single(vent), 40, 100)
-	a.grant_passive(BLAST_PASSIVE)
-	assert_eq(Effects.kinds_of(a, vent), ["vent", "weapon"] as Array[String], "a vent on a machine whose vents blast is a weapon too")
-	assert_eq(Effects.kinds_of(plain, vent), ["vent"] as Array[String], "a plain vent is a vent")
+	var plain := _mech("P", Die.single(vent), 40, 100)
+	assert_eq(Effects.kinds_of(plain, vent), ["vent"] as Array[String], "a vent is a vent")
 	assert_eq(Effects.kinds_of(null, vent), ["vent"] as Array[String], "as built, a vent")
-	assert_eq(Effects.kinds_of(a, Face.attack(0, L, [K.LURE])), ["equipment"] as Array[String], "a debuff is equipment")
-	var sk := Skirmish.new(1, 1)
-	sk.add_mech(a)
-	var g := _ghoul(100, 1)
-	sk.add_foes([g])
-	sk.begin()
-	sk.start_round()
-	var ms: Skirmish.MechState = sk.mechs[0]
-	Effects.stack(g, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_NONE)
-	Effects.grant_buff(a, "primed", 1, "test", sk.round)
-	Effects.stack(a, Effects.STATUS["scorched"], Effects.SKIRMISH, "foe:x", 3, Effects.DECAY_TURN_ALL)
-	ms.heat = 30 + 2 * Skirmish.cryo_cool()
-	assert_true(sk.assign(0, ms), "the vent spent on itself")
-	assert_eq(g.hp, 100 - 30, "it blasts the ghoul for the thirty it took off")
-	assert_false(Effects.has(g, "cryoed"), "the blast cashes the ghoul's Cryo, every stack")
-	assert_eq(ms.heat, 0, "and the machine cools for it, the vent's spend paying no heat of its own, Scorched or not")
-	assert_true(Effects.stacks_of(g, "burning") >= 1, "a Primed machine's blast leaves Burning")
-	assert_true("\n".join(sk.log).contains("cashes Cryo"), "the log says so")
+	assert_eq(Effects.kinds_of(plain, Face.attack(10, L)), ["weapon"] as Array[String], "a gun is a weapon")
+	assert_eq(Effects.kinds_of(plain, Face.shield(5)), ["shield"] as Array[String], "a shield is a shield")
+	assert_eq(Effects.kinds_of(plain, Face.attack(0, L, [K.LURE])), ["equipment"] as Array[String], "a debuff is equipment")
+	assert_eq(Effects.kinds_of(plain, Face.blank()), [] as Array[String], "a blank is none")
 
 
-## A blast that kills fires the machine's kill trigger, as any weapon's hit does (Ryan, 26
-## October: "It shouldn't need exceptions in code, it should just work now"), on a synthetic
-## passive; two weak foes, so whichever the blast draws falls and the fight goes on.
-func test_a_blast_that_kills_fires_the_kill_trigger() -> void:
-	var a := _mech("A", Die.single(Face.vent(30)), 40, 100)
-	a.grant_passive({"id": "test_blast_streak", "name": "Blast", "description": "", "effects": [
-		{"trigger": "static", "effect": "vent_blast", "value": 1},
-		{"trigger": "on_kill", "effect": "stack_status", "value": "hot_streak"}]})
-	var sk := Skirmish.new(1, 2)
-	sk.add_mech(a)
-	sk.add_foes([_ghoul(10, 1), _ghoul(10, 1)])
-	sk.begin()
-	sk.start_round()
-	var ms: Skirmish.MechState = sk.mechs[0]
-	ms.heat = 30
-	assert_true(sk.assign(0, ms), "the vent spent on itself")
-	assert_eq(sk.field_foes().size(), 1, "the blast kills the foe it draws")
-	assert_eq(Effects.stacks_of(a, "hot_streak"), 1, "and the kill fires the kill trigger, once")
-	assert_true("\n".join(sk.log).contains("after the kill"), "the log says so")
-
-
-## The round preview over a Lure (the Siphon's, 22 October; on the one round model since 9
+## The round preview over a Lure (the lure-all's, 22 October; on the one round model since 9
 ## November): a Lure entry's turn read before it is spent, every foe it reaches turned on its
 ## machine in the copy and the fight untouched; the spender takes the lured blows behind its
-## brace and drinks their heat, the machine they left takes nothing; a targeted lure needs its
+## brace and banks their heat (its passive's), the machine they left takes nothing; a targeted lure needs its
 ## aim, and an entry without Lure turns nobody (lure_turns, the arrows').
 func test_the_round_preview_over_a_lure_reads_the_turned_round_and_leaves_the_fight_untouched() -> void:
-	var siphon := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "braces": 2, "reaches_all": true, "heat_per_blow": 10})
+	var whistle := Face.from_dict({"kind": "attack", "reach": "every_foe", "power": 0, "keywords": ["lure"], "braces": 2})
 	var sk := Skirmish.new(1, 2)
-	sk.add_mech(_mech("A", Die.single(siphon), 0, 200))
+	var banker := _mech("A", Die.single(whistle), 0, 200)
+	banker.grant_passive(BANK_PASSIVE)
+	sk.add_mech(banker)
 	sk.add_mech(_mech("B", Die.single(Face.attack(10, L)), 0, 200))
 	sk.add_foes([_ghoul(100, 10), _ghoul(100, 10), _archer(100, 10)])
 	sk.begin()
@@ -7456,7 +7323,7 @@ func test_the_round_preview_over_a_lure_reads_the_turned_round_and_leaves_the_fi
 	var pv: Array = sk.preview_round(0, sk.front[0])["mechs"]   # the lure spent on the copy, aimed at any foe it reaches
 	assert_eq(int(pv[0]["incoming"]), 30, "the three blows come at it")
 	assert_eq(int(pv[0]["hull_after"]), 200 - 3 * (10 - 2), "behind the brace's two a blow")
-	assert_eq(int(pv[0]["heat_after"]), 30, "and each adds ten heat")
+	assert_eq(int(pv[0]["heat_after"]), 30, "and its passive banks ten heat from each")
 	assert_eq(int(pv[1]["incoming"]), 0, "the machine they left takes nothing")
 	for f in sk.field_foes():
 		assert_eq(f.target, sk.mechs[1], "every foe still on the machine it picked: the fight is untouched")
@@ -7519,8 +7386,8 @@ func test_the_round_preview_over_a_cryo_foe_reads_the_net_heat() -> void:
 
 
 ## A fight's share of the Sponsorship measures (the bible's row): damage taken on shield and
-## armour, dice spent on entries that deal damage (a vent that blasts among them) and on
-## entries that deal none; a blank is no spend.
+## armour, dice spent on entries that deal damage and on entries that deal none; a blank is no
+## spend.
 func test_a_fight_tallies_its_sponsorship_measures() -> void:
 	var sk := Skirmish.new(1, 1)
 	var u := _mech("A", Die.of([Face.attack(10, L), Face.vent(10), Face.attack(0, I, [K.LURE]), Face.blank()]), 10, 1000)   # a hull no blow here can injure
@@ -7541,12 +7408,6 @@ func test_a_fight_tallies_its_sponsorship_measures() -> void:
 		sk.assign(0, ms if k == 1 else (sk.front[0] if k == 2 else null))
 		sk.end_round()
 	assert_eq(int(sk.sponsorship["quiet_spends"]), 2, "a vent and a lure deal none; a blank is no spend")
-	u.grant_passive(BLAST_PASSIVE)
-	sk.start_round()
-	ms.heat = 10
-	ms.face_index = 1
-	sk.assign(0, ms)
-	assert_eq(int(sk.sponsorship["damaging_spends"]), 2, "a vent that blasts deals damage")
 
 
 ## A foe whose one move is a special of no blow: a silence, a purge or a cleanse (28 October:
@@ -9959,24 +9820,25 @@ func test_the_enemy_turn_goes_on_when_no_machine_can_be_struck() -> void:
 	assert_true("\n".join(sk.log).contains("no machine to strike"), "the log says the first had nobody to strike")
 
 
-## The Siphon's heat goes through the heat path every other heat takes (the audit's 17, 27
-## October), so a passive that answers heat gained answers it.
-func test_the_siphons_heat_fires_the_on_heat_gain_passives() -> void:
-	var siphon := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "reaches_all": true, "heat_per_blow": 10})
+## The heat a passive banks from a blow goes through the heat path every other heat takes (the
+## audit's 17, 27 October, of the Siphon's), so a passive that answers heat gained answers it.
+func test_a_blows_banked_heat_fires_the_on_heat_gain_passives() -> void:
+	var whistle := Face.from_dict({"kind": "attack", "reach": "every_foe", "power": 0, "keywords": ["lure"]})
 	var flywheel := {"id": "flywheel", "name": "Flywheel", "description": "", "effects": [
 		{"trigger": "on_heat_gain", "effect": "add_shield", "value": 5}]}
 	var sk := Skirmish.new(1, 2)
-	var u := _mech("A", Die.single(siphon), 40, 200)
+	var u := _mech("A", Die.single(whistle), 40, 200)
 	u.shield = 10
 	u.grant_passive(flywheel)
+	u.grant_passive(BANK_PASSIVE)
 	sk.add_mech(u)
 	sk.add_foes([_ghoul(100, 0), _ghoul(100, 0), _archer(100, 0)])
 	sk.begin()
 	sk.start_round()
-	assert_true(sk.assign(0, sk.front[0]), "the Siphon is spent")
+	assert_true(sk.assign(0, sk.front[0]), "the lure is spent")
 	sk.end_round()
 	assert_eq(sk.mechs[0].heat, 30, "three blows, ten heat each")
-	assert_eq(u.shield, 25, "and each siphoned blow stood up the flywheel's 5 shield")
+	assert_eq(u.shield, 25, "and each banked blow stood up the flywheel's 5 shield")
 
 
 ## Area by shape, numbered, and the blow's order (Ryan, 28 October): every foe past the target

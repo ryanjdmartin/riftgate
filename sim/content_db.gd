@@ -235,7 +235,8 @@ func fit_module(u: Unit, module_id: String) -> void:
 
 
 ## A module as the passive the engine runs: an add_stat per stat line, then the text's
-## effects (none while the text is planned).
+## effects (none while the text is planned). A grant its text writes out (the Overrun Gearing's
+## spill) carries the text's own line, so the star reads the rule and never the stat lines.
 func module_passive(module_id: String) -> Dictionary:
 	var m: Dictionary = modules.get(module_id, {})
 	var effects: Array = []
@@ -244,7 +245,11 @@ func module_passive(module_id: String) -> Dictionary:
 		effects.append({"trigger": "static", "effect": "add_stat", "stat": str(k), "value": int(stats[k])})
 	var text = m.get("text", null)
 	if text is Dictionary and str(text.get("status", "implemented")) == "implemented":
-		effects.append_array(text.get("effects", []))
+		for e in text.get("effects", []):
+			var eff: Dictionary = (e as Dictionary).duplicate(true)
+			if bool(eff.get("printed", false)):
+				eff["line"] = str(text.get("description", ""))
+			effects.append(eff)
 	return {"id": "module:" + module_id, "name": str(m.get("name", module_id)), "description": module_description(module_id), "effects": effects}
 
 
@@ -1403,6 +1408,8 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: only attacks strike more than once" % where)
 	if fd.has("power_max"):
 		errs.append("%s: power_max is gone (2 November): a weapon is one number" % where)
+	if fd.has("heat_per_blow"):
+		errs.append("%s: heat_per_blow left the entry with the Siphon (12 November): a heat a blow taken is a passive's static heat_per_blow" % where)
 	# No crits since 10 October (bible section 5, the damage ranges row): chances live on
 	# riders, so a face that still carries one is stale content.
 	if fd.has("crit") or fd.has("crit_bonus"):
@@ -1488,7 +1495,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: chain (the number) rides with the Chain keyword" % where)
 	if kw_names.has("cleave") and kw_names.has("penetrate") and int(fd.get("cleave", 0)) == int(fd.get("penetrate", 0)):
 		errs.append("%s: Spread and Penetrate at one number are Splash: write splash" % where)
-	# Every Foe is equipment's (the Siphon's lure-all): the foes past the target take no number,
+	# Every Foe is equipment's (the Shift Whistle's lure-all): the foes past the target take no number,
 	# so a weapon reaches wide by Spread, Penetrate or Splash instead.
 	if str(fd.get("reach", "")) == "every_foe" and kind == "attack" and not debuff:
 		errs.append("%s: Every Foe is a debuff's; a weapon's area is Spread, Penetrate or Splash with its number" % where)
@@ -1586,7 +1593,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: an Instant entry with no cooldown carries another limiter, heat, Volatile or a shield cost (the bible's Rapid row)" % where)
 	# A reach over every foe or every ally is a targeting mode since 4 November (Ryan: "Silence
 	# should not narrow targeting modes, that's why I'm switching them to targeting modes"; a
-	# keyword from 2 November, a flag before): Every Foe a debuff's reach (the Siphon's), Every Ally
+	# keyword from 2 November, a flag before): Every Foe a debuff's reach (the Shift Whistle's), Every Ally
 	# a shield's or a buff's targets (the whole team, Every Ally, or every machine but its own, Every
 	# Other Ally: the Swallowtail's team shield), never a vent's.
 	if fd.has("reaches_all"):
@@ -1616,8 +1623,6 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 			errs.append("%s: %s (true) is an attack's, a weapon's or a debuff's" % [where, key])
 	if fd.has("reloads_ammo") and (kind == "attack" or kind == "blank" or int(fd["reloads_ammo"]) <= 0):
 		errs.append("%s: reloads_ammo is a machine piece's: the ammo it adds to its forging machine, a positive number" % where)
-	if fd.has("heat_per_blow") and int(fd["heat_per_blow"]) <= 0:
-		errs.append("%s: heat_per_blow is the heat every blow taken this round adds: a positive number" % where)
 	if fd.has("shields") and (kind != "vent" or int(fd["shields"]) <= 0):
 		errs.append("%s: shields is a vent's shield half (the combined entry): the shield it gives after its vent, a positive number" % where)
 	if fd.has("resets_on_kill") and (kind != "attack" or not (fd["resets_on_kill"] is bool)):
@@ -1818,8 +1823,6 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: shove_behind is the share of a front foe's maximum HP its damaging blow drives into the foe behind, in percent: a whole number, 1 to 100" % where)
 		if effect == "pass_sweep" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 1 or float(eff["value"]) != floorf(float(eff["value"]))):
 			errs.append("%s: pass_sweep is the damage of each shot a passed turn fires for its heat: a whole number, 1 or more" % where)
-		if effect == "vent_blast" and float(eff.get("value", 0)) <= 0.0:
-			errs.append("%s: vent_blast is the share of the heat a vent takes off that it blasts: a positive number" % where)
 		# The Petrels' passives (built 30 October): the shield paying a weapon's heat point for
 		# point (the Storm Petrel's), and the most rerolls a bank carries (the Giant Petrel's).
 		if effect == "burn_shield" and int(eff.get("value", 0)) != 1:

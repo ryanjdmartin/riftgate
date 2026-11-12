@@ -94,7 +94,7 @@ func test_the_machines_back_in_design_are_undealt_and_still_build() -> void:
 		var p = db.chassis[id].get("passive", null)
 		if p is Dictionary:
 			for e in p.get("effects", []):
-				if str(e.get("effect", "")) == "vent_blast" or str(e.get("trigger", "")) == "on_shield_granted":
+				if str(e.get("trigger", "")) == "on_shield_granted":
 					dead = true
 		for cid in db.chassis[id].get("fixed", []):
 			var face: Dictionary = db.components.get(cid, {}).get("face", {})

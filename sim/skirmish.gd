@@ -29,9 +29,9 @@ enum Outcome { NONE, VICTORY, DEFEAT, WITHDRAWN }   # WITHDRAWN is never produce
 ## How a spend at a foe pays for its hits (_pay_hits), the caller's to say: the firer's gauge takes
 ## the heat the pipeline makes of them (HEAT); a forging machine's gun paid ammo before it fired,
 ## and only a foe's debuff still heats it (AMMO: the Musk Ox's Desublimation Forge, the salvo's
-## magazine); a vent's blast is one hit inside the vent's spend, which paid its own heat (VENT).
-## Passed as an `int`, as every enum here is (CLAUDE.md).
-enum Pays { HEAT, AMMO, VENT }
+## magazine); a passed turn's release fires its heat as its shots and pays none of its own (FREE:
+## the Whip Scorpion's). Passed as an `int`, as every enum here is (CLAUDE.md).
+enum Pays { HEAT, AMMO, FREE }
 
 const SQUAD_SPOTS := 4   # the squad's spots across the floor, one under each of the foes' columns (the screen draws them)
 const DEFAULT_COLUMNS := 4   # the formation's width (Ryan, 23 September: four plays better than three)
@@ -157,10 +157,9 @@ var last_roll: Dictionary = {}
 var releases: Array = []
 var _shoved: Dictionary = {}   # Foe -> true: the front-rank foes this spend has driven into the rank behind (the Juggernaut Drive), once a spend
 var _held: Dictionary = {}   # Foe -> the status ids a pin holds from this round's halving, read as the round's statuses run out
-var last_blast: Dictionary = {}   # the last vent blast, {mech, foe, dealt}, for the screen; cleared each round
 ## The fight's share of the run's Sponsorship measures (the bible's Sponsorship row; tallied 21
 ## October, never shown live): damage the team took on shield and armour, dice spent on
-## entries that deal damage (a vent that blasts among them) and on entries that deal none.
+## entries that deal damage and on entries that deal none.
 ## The battle adds them up with the hexes its machines move; each maker's content names its own.
 var sponsorship := {"guarded": 0, "damaging_spends": 0, "quiet_spends": 0}
 ## What each reach did this fight, for the balance runner's reach table (tools/balance.gd):
@@ -275,7 +274,7 @@ var _focus: Dictionary = {}
 ## reroll since the last draw from the stream can be taken back, in the order made, the fight
 ## put back as it was before each. A draw is the floor, since a draw taken back would show its
 ## result for free: the round's roll, a reroll that draws, a spend that draws inside itself
-## (Rapid's reroll, a roll again, the Scorpion's blast's pick). A stepping die draws nothing, so
+## (Rapid's reroll, a roll again). A stepping die draws nothing, so
 ## its step is no floor. The screen's fight keeps the snapshots (the save's own dictionaries,
 ## SaveGame.snapshot_skirmish); the runners and the preview's copy keep none, and the bars are
 ## kept whoever plays.
@@ -1033,7 +1032,7 @@ static func spend_bite(u, f: Face) -> int:
 ## would. Each foe's blows walk the shield they meet (blows_on, the blow that lands' own
 ## arithmetic); heat is what the gauge holds, Burning's tick at the end of the player's turn and
 ## a seal's, before the enemy acts (11 and 13 October), the foes adding none outright (their fire
-## leaves Burning and Scorched, which land on later turns), then a Siphon's heat with their blows.
+## leaves Burning and Scorched, which land on later turns), then the heat a passive banks with their blows (the Whip Scorpion's).
 func forecast(ms: MechState, extra_shield: int = 0, overshield: bool = false) -> Dictionary:
 	var shield := ms.unit.shield + extra_shield if overshield else mini(maxi(ms.unit.shield_max, ms.unit.shield), ms.unit.shield + extra_shield)
 	var hull := ms.unit.hull
@@ -1322,7 +1321,6 @@ func start_round() -> void:
 		log.append("the roar costs the team %d reroll%s" % [reroll_debt, "" if reroll_debt == 1 else "s"])
 	reroll_debt = 0
 	last_roll.clear()
-	last_blast.clear()
 	# The turn begins with passive cooling (Ryan, 22 September: cool at the start, heat at
 	# the end): every machine sheds its chassis's cooling rating, one log line for all.
 	var cooled: Array[String] = []
@@ -1955,8 +1953,8 @@ func can_spend(mech_index: int) -> bool:
 ## and it has somewhere to land (charge_lands), the muster spent with it.
 ## Spend a mech's face. `target` is a Foe for attacks, a MechState (or null for self) for
 ## shield and vent. Returns false if the assignment is not legal. The undo's snapshot is taken
-## before it; a spend that draws from the stream (Rapid's reroll, a roll again, the Scorpion's
-## blast's pick) is the undo's floor instead.
+## before it; a spend that draws from the stream (Rapid's reroll, a roll again) is the undo's
+## floor instead.
 func assign(mech_index: int, target = null, second = null) -> bool:
 	if state != State.ASSIGN:
 		return false
@@ -2047,8 +2045,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 		# 5", "spent automatically"): its price in stacks, taken as the charged form goes out.
 		Effects.spend_stacks(ms.unit, store, price)
 		log.append("%s spends %d %s: %s" % [ms.unit.display_name, price, str(Effects.STATUS.get(store, {}).get("name", store)).to_lower(), f.describe()])
-	var blasted := false   # a vent that blasted deals damage, for the Sponsorship tally
-	var killed := 0        # the foes a weapon spend or a vent's blast felled, arcs and spills included (a kill trigger, the reset gun)
+	var killed := 0        # the foes a weapon spend felled, arcs and spills included (a kill trigger, the reset gun)
 	if f.kind != Face.Kind.BLANK and not f.is_weapon():
 		_feed_rage(ms, f)   # a shield, a vent or equipment feeds every raging foe on the field, before it acts, so a Purge clears its own feed (3 November)
 	# The spend's order (Ryan, 7 November): its hits, their riders, the death check, the spend's
@@ -2081,18 +2078,8 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 		Face.Kind.VENT:
 			var who: MechState = target if target is MechState else ms
 			var shield_half := shield_amount(ms, f, who)   # sized at the spend, on what the vent will leave
-			var blast := blast_amount(ms, f, who)            # read before the heat it fires comes off
 			who.heat = maxi(0, who.heat - f.power)
 			log.append("%s vents %s by %d" % [ms.unit.display_name, who.unit.display_name, f.power])
-			# The Thermal Ejection Manifold (the Whip Scorpion's, 12 and 13 October): a vent it
-			# spends on itself blasts a random foe for the heat it took off; a vent on an ally
-			# blasts nothing, and so does an ally's vent on it.
-			if blast > 0:
-				var kills_before := team_kills
-				_blast(mech_index, ms, blast)
-				blasted = true
-				killed = team_kills - kills_before
-				_after_kills(ms, killed)
 			# The combined entry (Ryan's go, 20 October, the Wake Diffuser): the vent, then the
 			# shield on the same machine, through its shield gain and the spender's passives
 			# for an ally it shields, sized on the heat the vent left.
@@ -2228,14 +2215,9 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 		log.append("%s: its own fire, %s ×%d" % [ms.unit.display_name, Effects.STATUS["burning_mech"]["name"], f.self_burn])
 	_shift_form(ms, f, target)
 	if f.kind != Face.Kind.BLANK:
-		var deals := blasted or (f.is_attack() and f.power > 0)
+		var deals := f.is_attack() and f.power > 0
 		var measure := "damaging_spends" if deals else "quiet_spends"
 		sponsorship[measure] = int(sponsorship[measure]) + 1
-	# The Siphon (the Whip Scorpion's, 20 October): every blow a foe lands on its owner this
-	# round adds the entry's heat, next round's fuel (Siphoning, until the round's end).
-	if f.heat_per_blow > 0 and ms.alive():
-		Effects.grant_for_rounds(ms.unit, Effects.siphon_status(f.heat_per_blow), "siphon:" + f.component, round)
-		log.append("%s siphons: +%d heat for every blow it takes this round" % [ms.unit.display_name, f.heat_per_blow])
 	ms.assigned = true
 	# A cooldown (Ryan, 14 October; counted after the round of the spend since 12 November:
 	# "change the count so 1 is how I intended"): the entry is dark for the rest of this round and
@@ -2352,7 +2334,7 @@ func _release_passes() -> void:
 		spend_blows.clear()
 		_shoved.clear()
 		var h := _hit(ms, shot, target)
-		_finish_hits(i, ms, shot, target, h, Pays.VENT)
+		_finish_hits(i, ms, shot, target, h, Pays.FREE)
 		ms.heat = 0   # cold after it, whatever the shots cashed
 		releases.append({"mech": i, "rank": rank, "shots": fired, "blows": spend_blows.duplicate()})
 		_refresh_guards()
@@ -2852,8 +2834,8 @@ func withdraw() -> bool:
 
 # ---------------------------------------------------------------- resolution
 
-## A weapon's or a debuff's spend at a foe, the plain one (the salvo and a vent's blast fire their
-## own: _salvo, _blast). A forging machine's gun pays ammo first for the heat its own spend would
+## A weapon's or a debuff's spend at a foe, the plain one (the salvo and a pass's release fire
+## their own: _salvo, _release_passes). A forging machine's gun pays ammo first for the heat its own spend would
 ## make (the Musk Ox's Desublimation Forge), a dry magazine firing nothing; then its hits (_hit);
 ## then, in the rider phase before the death check, on a target the hit felled too: the Mine its
 ## machine leaves on the target (_lay_mine, what the hits fired at it) and what the entry does
@@ -2876,7 +2858,7 @@ func _spend_at(mech_index: int, ms: MechState, f: Face, target: Foe, second = nu
 
 
 ## One weapon's or debuff's hits on its target, shared by every spend at a foe (the plain one, the
-## salvo, a vent's blast) and paying for none of it: every strike is its own blow (its own number,
+## salvo, a pass's release) and paying for none of it: every strike is its own blow (its own number,
 ## its keywords and passives), landing on every foe the component reaches; then the riders, the
 ## hopper's loads and what lands after the blow (_after_blow). The death check and what the spend
 ## pays are its caller's (_finish_hits).
@@ -3242,16 +3224,14 @@ func _shove(ms: MechState, f: Face, h: Hits) -> void:
 		log.append("%s drives %s into %s for %d" % [ms.unit.display_name, front.display_name, back.display_name, dealt])
 
 
-## The hits told: the screen's last roll and the log's line (a Sweep's shots, a vent's blast or a
-## hit), then the heat Vents all fired into them.
+## The hits told: the screen's last roll and the log's line (a Sweep's shots or a hit), then the
+## heat Vents all fired into them.
 func _tell_hits(mech_index: int, ms: MechState, f: Face, target: Foe, h: Hits, pays: int) -> void:
 	last_roll = {"mech": mech_index, "target": target, "base": h.base, "final": h.total, "tags": f.tags.duplicate()}
 	var how := f.describe()
 	var armour := " (armour -%d)" % h.armoured if h.armoured > 0 else ""
 	if f.reach == Face.Reach.SWEEP:
 		log.append("%s sweeps the %s: %s (%s)%s" % [ms.unit.display_name, "front" if h.sweep_rank == 0 else "back", ", ".join(h.swept), how, armour])
-	elif pays == Pays.VENT:
-		log.append("%s's vent blasts %s for %d%s" % [ms.unit.display_name, target.display_name, h.total, armour])
 	else:
 		log.append("%s hits %s for %d (%s)%s" % [ms.unit.display_name, target.display_name, h.total, how, armour])
 	if h.vented_all > 0:
@@ -3283,21 +3263,21 @@ func _zap(ms: MechState, f: Face, target: Foe, h: Hits) -> void:
 
 
 ## What a spend pays for its hits once its death check is done, in order: the runner's reach tally
-## (a lure or a probe deals nothing and is no spend of damage; a vent's blast is no spend of its
-## own), the heat the firer's modifiers vent, the spend's heat as `pays` says (Pays: the gauge takes
+## (a lure or a probe deals nothing and is no spend of damage; a pass's release is no spend of
+## its own, FREE), the heat the firer's modifiers vent, the spend's heat as `pays` says (Pays: the gauge takes
 ## the hits'; the forge took the gun's own in ammo, the salvo's included, a foe's debuff still
 ## heating it, Ryan, 8 November: "scorch affects the actual heat bar, not the ammo cost"; the
-## vent's spend paid a blast's, once), the Shrapnel Recuperator's casings (ammo back for every foe
+## release pays none), the Shrapnel Recuperator's casings (ammo back for every foe
 ## its blows reached), and the Cryo its hits spent, cooling the hitter once its heat has landed.
 func _pay_hits(ms: MechState, f: Face, h: Hits, pays: int) -> void:
-	if f.power > 0 and pays != Pays.VENT:
+	if f.power > 0 and pays != Pays.FREE:
 		_tally_reach(h.reach, h.dealt, h.aimed_back, h.heat)
 	if h.vent > 0:
 		ms.heat = maxi(0, ms.heat - h.vent)
 	var heat := h.heat
 	if pays == Pays.AMMO:
 		heat = Effects.debuff_heat(ms.unit, f)
-	elif pays == Pays.VENT:
+	elif pays == Pays.FREE:
 		heat = 0
 	_add_heat(ms, heat, ms.face_index)
 	if f.ammo_per_foe_hit > 0 and ms.ammo_max > 0 and not h.reached.is_empty():
@@ -3398,37 +3378,7 @@ func _after_blow(ms: MechState, f: Face, touched: Array, gained: Dictionary, tur
 	turned.clear()
 
 
-## A vent's blast (the Whip Scorpion's Thermal Ejection Manifold): the heat it took off, as
-## one flat blow of the machine's on a live foe drawn from the seeded stream, back rank
-## included. The vent is a weapon too on that machine (Effects.kinds_of; Ryan, 26 October:
-## "Vent blast should obviously proc cryo, that's the point of tagging it with weapon. It
-## shouldn't need exceptions in code"), so the blow is a weapon's hit and resolves as every
-## weapon's does (_hit): the machine's pipeline, the foe's Flak, a Shocked doubling spent, its
-## Cryo cashed for the machine's cooling, its armour, a Primed machine's Burning, and its kills fire the machine's kill rules (_after_kills). It is one hit inside the vent's
-## spend, so the spend's heat, ammo and tallies stay the vent's, paid once (Pays.VENT). A kill
-## clears its slot as any blow's does. The round preview's copy draws nothing: a lone foe takes
-## it for sure, else the blast is held back and noted.
-func _blast(mech_index: int, ms: MechState, amount: int) -> void:
-	var live := blast_targets()
-	if live.is_empty() or amount <= 0:
-		return
-	if previewing and live.size() > 1:
-		preview_notes.append({"kind": "blast", "mech": mech_index})
-		return
-	var foe: Foe = live[0] if previewing else live[rng.randi_range(0, live.size() - 1)]
-	var shot := blast_shot(amount)
-	var hp_before := foe.hp
-	var h := _hit(ms, shot, foe)
-	_finish_hits(mech_index, ms, shot, foe, h, Pays.VENT)
-	last_blast = {"mech": mech_index, "foe": foe, "dealt": hp_before - foe.hp}
-
-
-## The blast as the blow it is: flat, Indirect, the heat the vent took off.
-static func blast_shot(amount: int) -> Face:
-	return Face.attack(amount, Face.Reach.INDIRECT)
-
-
-## A spend's kills, its weapon's or its vent's blast's, counted at its death check (is_kill): the
+## A spend's kills, its weapon's, counted at its death check (is_kill): the
 ## talons' Empowered a kill (the entry's own rule), the muster its guns earn (the Swallowtail's)
 ## and the kill trigger (the Kite's heat tax, 21 October), once however many fell.
 func _after_kills(ms: MechState, killed: int, f: Face = null) -> void:
@@ -3441,41 +3391,10 @@ func _after_kills(ms: MechState, killed: int, f: Face = null) -> void:
 		_fired(ms, Effects.fire(ms.unit, "on_kill"), "after the kill")
 
 
-## What a vent spent on `who` blasts (the Whip Scorpion's Thermal Ejection Manifold, 12 and 13
-## October): the heat it would take off its own machine, at the passive's share, rounded;
-## nothing for a vent on an ally, an ally's vent, or a machine whose vents blast nothing. The
-## spend, the die and the forecast's marks read it here.
-func blast_amount(ms: MechState, f: Face, who: MechState = null) -> int:
-	if ms == null or f == null or f.kind != Face.Kind.VENT or (who != null and who != ms):
-		return 0
-	var share := Effects.vent_blast(ms.unit)
-	if share <= 0.0:
-		return 0
-	return int(roundf(float(mini(ms.heat, f.power)) * share))
-
-
-## The foes a blast may land on: every live foe on the field, the draw being over them all.
-func blast_targets() -> Array[Foe]:
-	var live: Array[Foe] = []
-	for foe in field_foes():
-		if foe.alive():
-			live.append(foe)
-	return live
-
-
-## A blast's number as the die prints a blow (shown_number's convention): through the machine's
-## pipeline, then on `foe` its flat adds and its armour, a Shocked foe's doubling left to its
-## chip; before any foe with none. The die over its own machine and the foes' marks read it.
-func blast_number(ms: MechState, amount: int, foe: Foe = null) -> int:
-	if amount <= 0:
-		return 0
-	return shown_number(ms, blast_shot(amount), foe)
-
-
 ## The foes a Lure entry spent on `aimed` would turn on this machine, as the arrows show them:
 ## every foe it reaches, alive, not suppressed, with an arrow to move (a blow at every machine
 ## and a special that acts on nobody keep theirs), and not on it already. A reach over every
-## foe (the Whip Scorpion's Siphon) needs no aim. Empty for an entry without Lure.
+## foe (the Shift Whistle) needs no aim. Empty for an entry without Lure.
 func lure_turns(ms: MechState, aimed: Foe = null) -> Array[Foe]:
 	var out: Array[Foe] = []
 	for foe in _lured(ms, aimed):
@@ -3513,7 +3432,7 @@ func _lured(ms: MechState, aimed: Foe) -> Array[Foe]:
 ## the same list.
 func reached_by(f: Face, target: Foe) -> Array[Foe]:
 	var hit: Array[Foe] = [target]
-	# A reach over every foe in the fight (the Whip Scorpion's Siphon, a lure-all), front and back.
+	# A reach over every foe in the fight (the Shift Whistle, a lure-all), front and back.
 	if f.reaches_all:
 		for foe in field_foes():
 			if not hit.has(foe):
@@ -3602,7 +3521,7 @@ func area_shapes(f: Face, target: Foe) -> Dictionary:
 
 ## The number a foe in a shape takes in place of the roll: the row's (Spread's or Splash's),
 ## the column's (Penetrate's or Splash's), Chain's on a conductor, nothing for a foe a reach over
-## every foe adds (the Siphon's lure-all, equipment, whose blow is nothing).
+## every foe adds (the Shift Whistle's lure-all, equipment, whose blow is nothing).
 static func area_number(f: Face, shape: int) -> int:
 	match shape:
 		AREA_ROW:
@@ -4666,7 +4585,7 @@ func _shock(foe: Foe, by: MechState, turned = null) -> void:
 ## The primers (Ryan, 2 November; keywords since 3 November): Charged and Supercooled ride the
 ## weapons a machine fires as Shock and as Cryo, one more a strike (Effects.effective_face), and
 ## a weapon fired or laid spends a stack of each: a Rapid's second fire is a second fire, a salvo
-## one, a blast none, and equipment spends nothing.
+## one, a passed turn's release none, and equipment spends nothing.
 func _spend_primers(ms: MechState) -> void:
 	for id in ["charged", "supercooled"]:
 		if Effects.stacks_of(ms.unit, id) <= 0:
@@ -5119,7 +5038,7 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 		log.append("%s hits %s: shield -%d, hull -%d%s" % [source.display_name, ms.unit.display_name, r["absorbed"], r["through"], armoured])
 	else:
 		log.append("%s %s %s: hull -%d%s" % [source.display_name, verb, ms.unit.display_name, r["through"], armoured])
-	# Siphoning: every blow a foe lands adds heat, whatever it dealt, in the enemy's turn, after
+	# A heat a blow (the Whip Scorpion's Thermal Ejection Manifold): every blow a foe lands adds heat, whatever it dealt, in the enemy's turn, after
 	# the overheat has settled, so it is next round's fuel or next turn's burn.
 	var siphoned := Effects.heat_per_blow(ms.unit)
 	if siphoned > 0 and ms.alive():

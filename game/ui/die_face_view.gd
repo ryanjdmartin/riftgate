@@ -67,7 +67,7 @@ const VENT_W := 60.0       # the vent's plate and its steam, its number in the p
 const LINING := 4.0        # the frame's lining, this far inside its border (Ryan, 3 November: "The actual chamfered outer box of the die can be adjusted too")
 const ACCENT := 9.0        # the arms of the accents outside the frame's square corners
 const ACCENT_OUT := 3.5    # how far outside the border the accents stand
-const BESIDE := Vector2(28.0, 30.0)   # what else a spend does, from the main mark's centre: its strikes, a status's stacks, a blast
+const BESIDE := Vector2(28.0, 30.0)   # what else a spend does, from the main mark's centre: its strikes, a status's stacks
 const BESIDE_SIZE := 18    # its text, a size up so it reads (Ryan, 4 November: equipment's "X2 ... a bit hard to see")
 const BESIDE_STEP := 19.0  # one above another
 const PASSIVE_SIZE := 17   # a number in the passive's box at the rail's foot (passive_marks)
@@ -87,7 +87,6 @@ var after_blow: int = -1     # the blow its machine's passive adds after the str
 var slot: int = 0            # the entry's place on its die, from one; 0 draws none
 var locked: bool = false
 var charged: bool = false      # armed for its charged form, a muster paid at the spend (the Swallowtail's): a double frame and the word above
-var blast: int = 0             # a vent's blast on its own machine (the Whip Scorpion's): the blow it fires at a random foe, its mark and number in the passive box
 var form_mark: String = ""     # "seal" or "unseal": spending the entry shuts its machine's shell or opens it (the Polar Bear's Lockdown), a chip on the rail
 var shut: Array[int] = []      # keywords whose gate is shut over the foe in hand (the gated stuns, 22 October): their chips struck through and dimmed
 var spent: bool = false
@@ -536,7 +535,7 @@ static func status_chip(f: Face) -> String:
 ## The annotation chips hugging the right edge, top down: one per keyword, the star for a unique
 ## effect, the shell's seal or opening, a corruption last. Each is a term's id or a glyph's
 ## (chip_glyph). What equipment grants or lays sits inside its gear (inside_effect), never here
-## too; a keyword a passive grants written out (the Boar's spill) is the star, never its own chip;
+## too; a keyword a passive or a module grants written out (the Overrun Gearing's spill) is the star, never its own chip;
 ## whom it reaches is no chip (the targeting mark under the main mark, Glyphs.aim_for).
 func rail_tags() -> Array[String]:
 	var tags: Array[String] = []
@@ -599,10 +598,8 @@ func cost_marks() -> Array:
 ## in the shield's colour, since the shield pays it, no sign (the Storm Petrel's: "that's not a
 ## mechanic term, it doesn't need an icon nor should it be using the shock icon", then "next to, a
 ## shield icon ... or at least colour the number shield colour"; "the tap popup will clarify");
-## over a foe the blow's share with that foe's armour off, as the main number is; a vent's blast at a random
-## foe, its mark and number in heat's colour, since a bare number beside a vent would read as
-## more cooling (the Whip Scorpion's). The readout heads its line for each with the same box
-## (EntryReadout.passive_mark).
+## over a foe the blow's share with that foe's armour off, as the main number is. The readout
+## heads its line for each with the same box (EntryReadout.passive_mark).
 func passive_marks() -> Array:
 	var out: Array = []
 	if face == null or dead:
@@ -612,8 +609,6 @@ func passive_marks() -> Array:
 		var after := after_blow if after_blow >= 0 else Skirmish.after_blow(null, face)
 		if after > 0 and face.is_weapon():
 			out.append(["shield", str(after), Palette.SHIELD])   # by the shield's mark, in its colour, no sign (Ryan, 4 November: "can we fit the number inside, or next to, a shield icon in the helper box? or at least colour the number shield colour?")
-		if blast > 0 and face.kind == Face.Kind.VENT:
-			out.append(["blast", str(blast), Palette.HEAT])
 	if next_face != null:
 		out.append(next_mark(next_face, next_number))
 	return out

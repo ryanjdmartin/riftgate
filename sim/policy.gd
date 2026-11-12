@@ -57,7 +57,6 @@ const PLATE_ROUNDS := 2.0        # rounds a held load's Armoured is likely to st
 const ROLL_AGAIN_WEIGHT := 1.0   # another action of the die (Rapid, Instant, the reset gun, the Horn's), as the die's own average blow
 const VITRIOL_WEIGHT := 0.5      # a status a passive lays (the funnel-web's acid) pays out over the actions to come, as Burn's does
 const FLAK_WEIGHT := 0.5         # a stack of Flak, as the point it adds to each team blow the foe is likely to take while it lasts
-const FUEL_WEIGHT := 0.5         # a point of heat banked by a machine whose vents blast, as a share of next round's blast it fuels
 const SWAP_WEIGHT := 0.25        # a foe brought into the front rank by a swap, as a share of its kill and its threat: it stands exposed to Direct fire
 const BUNCH_WEIGHT := 0.75       # what a swap adds to an ally's area entry this round, as a share: the ally may still spend elsewhere
 const COUNTDOWN_DISCOUNT := 0.75 # a gathering blow's worth now, for each round it still gathers: it lands later, and the fight may end first
@@ -635,8 +634,6 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	score += hopper_score(sk, ms, f, target)
 	if f.braces > 0:
 		score += brace_score(sk, ms, f.braces)
-	if f.heat_per_blow > 0:
-		score += siphon_score(sk, ms, f.heat_per_blow)
 	if f.has(Face.Keyword.EXPOSE):
 		score += (1.0 - p_kill) * expose_score(sk, target)
 	if f.resets_on_kill:
@@ -1284,8 +1281,6 @@ func machine_spend_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.Mec
 				score += vent_score(sk, who, who.heat if f.cools_all else f.vents)   # the Hoist's cooling half
 		Face.Kind.VENT:
 			score = vent_score(sk, who, f.power)
-			if who == ms:
-				score += blast_score(sk, ms, mini(f.power, ms.heat))
 			if f.shields > 0:
 				score += shield_score(sk, who, sk.shield_amount(ms, f, who), false, ms)   # the combined entry's shield half
 		Face.Kind.BUFF:
@@ -1934,26 +1929,6 @@ static func _paradox_share(sk: Skirmish, target: Foe, apps: int) -> float:
 	return minf(1.0, float(apps * adds) / float(need)) / float(Effects.stacks_of(target, "numbed") + 1)
 
 
-## What a vent's blast is worth (the Whip Scorpion's, 21 October): the heat it takes off, as
-## one blow on a random live foe, each foe's share of it: what it deals past the foe's own
-## modifiers and armour, capped at what the foe has left, and the kill when it finishes one.
-func blast_score(sk: Skirmish, ms: Skirmish.MechState, vented: int) -> float:
-	var share := Effects.vent_blast(ms.unit)
-	if share <= 0.0 or vented <= 0:
-		return 0.0
-	var amount := int(roundf(float(vented) * share))
-	var live: Array = sk.field_foes().filter(func(foe: Foe) -> bool: return foe.alive())
-	if live.is_empty():
-		return 0.0
-	var total := 0.0
-	for foe in live:
-		var taken := maxi(0, Effects.damage_taken(foe, amount, ms.unit, true) - foe.armour_total())
-		total += minf(float(taken), float(foe.hp))
-		if taken >= foe.hp:
-			total += KILL_BONUS + _threat_now(foe, sk) * HULL_WEIGHT
-	return total / float(live.size())
-
-
 ## What a swap is worth (the Dingo's Combat Translocator, a first reading of 21 October): a foe
 ## the swap brings into the front rank stands exposed to the team's Direct fire, worth a share
 ## of its kill and its threat; one it sends to the back hides by the same. Bunching foes for an
@@ -2037,22 +2012,6 @@ func seal_score(sk: Skirmish, ms: Skirmish.MechState) -> float:
 	var kept := _armour_saved(sk, ms, int(seal["armour"])) * HULL_WEIGHT
 	var cost := float(int(seal["heat"]) + ms.unit.cooling) * BANK_WEIGHT
 	return kept - cost
-
-
-## What a Siphon is worth to a machine whose vents blast (the Whip Scorpion's, 21 October): the
-## heat every blow this round adds, the formation's blows once the lure has turned it, up to the
-## room left under the maximum, as next round's blast at FUEL_WEIGHT. To a machine whose vents
-## blast nothing the heat is no fuel, and the brace and the lure carry the spend.
-func siphon_score(sk: Skirmish, ms: Skirmish.MechState, per_blow: int) -> float:
-	var share := Effects.vent_blast(ms.unit)
-	if share <= 0.0:
-		return 0.0
-	var blows := 0
-	for foe in sk.field_foes():
-		if foe.alive() and foe.attacks() and not foe.is_suppressed():
-			blows += foe.strikes()
-	var room := maxi(0, ms.heat_max - ms.heat)
-	return float(mini(blows * per_blow, room)) * share * FUEL_WEIGHT
 
 
 ## A vent on a machine: the hull its overheat would burn this round, and a little for the

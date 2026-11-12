@@ -39,9 +39,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   modes of their own: the entry lands on the whole team, its own machine among them, or on every
   machine but its own, each taking all of it. They and Every Foe (Reach, below) are targeting
   modes, never keywords, so a Silence leaves them whole. A passive may make a piece count as
-  a second kind on its machine (a vent that blasts a foe is a weapon too there, and the blast
-  a weapon's hit; no chassis's does since the Whip Scorpion's rework, the engine's rule kept): the die's readout shows the kind on the machine, the
-  codex the piece as built. A rule over the pieces a machine aims at foes reads every weapon
+  a second kind on its machine (none does now): the die's readout shows the kind on the
+  machine, the codex the piece as built. A rule over the pieces a machine aims at foes reads every weapon
   and equipment aimed at a foe, so a buff, a shield and a vent stay out of it. A
   component has a number (or none), heat, strikes, up to three authored keywords, and may
   carry a passive. A **fixed** component is built into its chassis, uses no hardpoint, is
@@ -124,7 +123,7 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 3. The player's turn: spend, lock and reroll in any order. Each spend resolves fully before
    the next. UNDO takes back the last spend or reroll, in the order made, back to the last
    roll, its floor: the round's roll, a reroll that draws, or a spend that draws inside itself
-   (Rapid's or Instant's reroll, a vent's blast); a stepping die's step draws nothing,
+   (Rapid's or Instant's reroll); a stepping die's step draws nothing,
    so it is taken back like a spend. The trail shows a bar at every roll, every line of it at
    full strength, and UNDO's badge says how many spends it reaches; UNDO opens once a spend's
    last blow has played. END TURN sits bottom-left and UNDO bottom-right, and UNDO reads on or
@@ -216,8 +215,8 @@ every machine is wrecked. There is no round limit.
   lit for the whole team and dark for every other ally. Its costs run along the foot (Costs, below) and its keywords
   down the edge. What the machine's passive adds sits in its passive box at the foot of the
   edge, never joined to the blow: a blow added after the strikes by the mark of what pays it
-  (the Storm Petrel's zap by the shield's, in the shield's colour), a vent's blast at a random
-  foe by the blast's mark, a stepping die's next entry by its mark and the
+  (the Storm Petrel's zap by the shield's, in the shield's colour), a stepping die's next entry
+  by its mark and the
   number it will show (the Cassowary's). The readout says each on a line of its own, headed by
   the same box. A dark entry is blank, its clock and its turns left along the foot. How each
   mark is drawn is `tools/die_sheet.gd`'s sheet and the bible's section 6.
@@ -243,7 +242,7 @@ every machine is wrecked. There is no round limit.
 - **Every Foe** (a debuff's) reaches any foe and lands on every foe in the fight, front rank and
   back, as on its target. A weapon reaches wide by Spread, Penetrate or Splash instead. Like
   Sweep it is a targeting mode of its own: no passive turns it into Direct or Indirect, and a
-  Silence, which mutes keywords, leaves it whole. No dealt piece carries it (the Shift Whistle, a draft).
+  Silence, which mutes keywords, leaves it whole. The Shift Whistle (Minerva, tier three) carries it.
 - Chain's arcs read no reach: they land on every Shocked foe on the field, front or back,
   whatever the gun's reach.
 - A kill clears its slot at its spend's death check, so a hole in the front opens that
@@ -369,9 +368,6 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   A piece that changes its machine's form wears that form's chip: on the Polar Bear, a buff it
   may spend on itself the seal's while its shell is open, and a weapon the opening's while it is
   sealed; the sealed machine wears a shell round it, a burst as it seals or opens.
-  A vent on a machine whose vents blast shows the blast beside it (its mark and the blow the
-  heat it would take off makes), and read or dragged anywhere but over an ally, every foe the
-  blast may land on wears a turning dashed ring with the number it would deal there.
 - **Tapping a machine or a foe** opens its readout, the way a die's shows an entry, and
   tapping it again closes it; one readout is open at a time, a tap on another unit or a die
   moves it, a tap on nothing or ending the turn closes it, and a hold opens it too; a tap on an
@@ -596,12 +592,12 @@ many fell, banked if unspent. **The Reheat Uplink** (the Giant Petrel's, allies 
 gains Empowered 2 and its die rolls again, never onto the entry showing; a spent die rolls
 nothing. **Regenerates** (the Storm Petrel's St. Elmo's Regenerator, a lure): spent on a
 foe, its own machine gains Regenerating, the shield it prints at the start of each of the
-rounds it prints after this one. **Spillover** (no machine carries it since 11 November; the
-Wild Boar's Juggernaut Drive did, on every weapon it fired): damage past the kill of a front-rank foe
+rounds it prints after this one. **Spillover** (the Overrun Gearing's, a Minerva module, on
+every weapon its machine fires): damage past the kill of a front-rank foe
 carries into the foe behind it as plain damage, the killing strike's excess and every later
 strike of the spend whole, aimed at nobody, so a Shock behind neither doubles it nor is
-spent; the engine runs it as a keyword a passive grants written out, so each weapon wears the
-star, the die's readout reading the passive's line, and no keyword chip.
+spent; the engine runs it as a keyword the module grants written out, so each weapon wears the
+star, the die's readout reading the module's line, and no keyword chip.
 **The Juggernaut Drive** (the Wild Boar's, since 11 November): once a spend's hits land, every
 front-rank foe a blow of it damaged, felled or not, drives a quarter of its maximum HP, rounded
 up, into the foe standing behind it, once a spend, a plain blow as the Storm Petrel's zap was (no
@@ -677,7 +673,7 @@ On a machine:
 - **Rallied** (buff): the team has one reroll more this round.
 - **Charged** (buff): while it lasts the machine's weapons fire with Shock, shown on the die
   and landing as the keyword does, after the blows; a weapon fired spends a stack (a Rapid's
-  or an Instant's second fire is a second fire, a salvo one, a blast none; equipment carries it not and spends
+  or an Instant's second fire is a second fire, a salvo one, a passed turn's release none; equipment carries it not and spends
   nothing); a Mine the fire leaves carries the Shock.
 - **Supercooled** (buff): the same with Cryo, one more stack a strike on each foe hit (Cryo 1
   on a gun without it), laid after the hits.
@@ -768,8 +764,8 @@ On a foe:
   foe already suppressed, a Paradox's included, does nothing. As the foe recovers it gains its
   stun resist in Numbed, after the round's decay.
 - **Shocked** (debuff): when a weapon's strike aimed at it lands, the blow deals double and the
-  shock is spent. A strike is aimed at the foe it resolves on: the player's pick, or the draw of
-  a vent's blast or a sweep's shot, which the game targets rather than the player. A blow that
+  shock is spent. A strike is aimed at the foe it resolves on: the player's pick, or a sweep's shot, which
+  the game targets rather than the player. A blow that
   only reaches it (an area's, a Chain's arc, a spill, a Mine's blast) neither doubles nor spends it, and equipment leaves it standing; it never stacks.
 - **Exposed** (debuff): it stands in Direct reach of every machine as if its
   column's front were empty, and its armour counts for nothing, its own and any Armoured.
@@ -1062,7 +1058,7 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   on hull damage (any hull lost: a blow, a bite or an overheat), on shield gain, on shield
   granted (an ally this machine shields), on heat gain, out of combat, on foe status (a foe
   gains a debuff), on stack (this machine applies stacks), on a kill (once after an attack of
-  this machine's that killed, arcs, spills and a vent's blast included). No trigger feeds itself.
+  this machine's that killed, arcs and spills included). No trigger feeds itself.
 - A passive may double a weapon's printed number before its buffs, on every blow, what the
   entry prints from its firer included (an area's number, heat fired, hopper loads), the buffs
   added once after it and the struck foe's own reads (its missing HP, the stacks consumed on

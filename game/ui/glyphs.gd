@@ -389,9 +389,9 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				ci.draw_line(fork, fork + (dir + side) * s * 0.28, color, width * 0.8)
 				ci.draw_line(fork, fork + (dir - side) * s * 0.28, color, width * 0.8)
 		"blast":
-			# A vent's blast (the Whip Scorpion's, 22 October): Indirect's arc, lobbed over and
-			# landing in a burst where Indirect lands on a dot, so it reads as a blow at a foe and
-			# never as the heat it came from.
+			# A blast (drawn for the Whip Scorpion's vent blast, 22 October; a foe's self-destruct
+			# now): Indirect's arc, lobbed over and landing in a burst where Indirect lands on a
+			# dot, so it reads as a blow landing.
 			ci.draw_arc(c + Vector2(-s * 0.15, s * 0.55), s * 0.8, PI, TAU, 18, color, width)
 			var hit := c + Vector2(s * 0.65, s * 0.55)
 			for i in range(6):

@@ -27,9 +27,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1142 tests, 364,574 checks, green on `ccr-4d58b054-3lyj0a` (12 November, Sapped, the Lance,
-  the Wild Boar's and the Baboon's reworks, with main's cooldown count, Rapid's switch-off and
-  Instant taken in). 1132 tests, 364,475 checks, green on main (12 November, as `ccr-63a1309a-caa9mw` landed
+- Tests: 1139 tests, 364,448 checks, green on `ccr-4d58b054-3lyj0a` (12 November, the vent
+  blast's and Siphoning's code cut, the Overrun Gearing and the Shift Whistle dealt). 1142 tests,
+  364,574 checks, green on it before (12 November, Sapped, the Lance, the Wild Boar's and the
+  Baboon's reworks, with main's cooldown count, Rapid's switch-off and Instant taken in). 1132 tests, 364,475 checks, green on main (12 November, as `ccr-63a1309a-caa9mw` landed
   with the cooldown's count, Rapid's own switch-off and Instant over the Clydesdale's review).
   Before it, 1132 tests, 364,286 checks, green on main (12 November, as the Clydesdale's review
   landed with its wells, broadside drill and hatch wave; Godot 4.8-beta2). Before it, 1132 tests,
@@ -165,8 +166,9 @@ pages' republish ("Everything else let's clean up and merge into main first befo
 proceeding"), and again on 12 November with the rest of its locked pieces' round (the Whip
 Scorpion's rework and its Heliographic Death Ray, the Dingo's pieces, the pins, the Flakshot
 Repeater, Sapped and the Lance, the Wild Boar's and the Baboon's reworks) over main's cooldown
-count ("Your names are fine. Clean up and merge into main"); it is merged and to delete with the
-rest. The Skua is his other session's (the Clydesdale's review landed 12 November). The formation and refit session's merges of main before it are in
+count ("Your names are fine. Clean up and merge into main"). Since then, on the branch and not on
+main until his word: the vent blast's and Siphoning's code cut, Spillover a module (the Overrun
+Gearing), the Shift Whistle dealt and the machine's level named tier (12 November). The Skua is his other session's (the Clydesdale's review landed 12 November). The formation and refit session's merges of main before it are in
 its branch's commits. Landed 11 November: `ccr-7effd31a-u5z4gw`, the music session (Hold The Line's, Night Shift's and
 The Far Bank's pairs passed and built into art/audio, How things stand), took main in a merge (the bible, this
 file and the to-do the conflicts: the bible three-way on the v0.469 both files carried, main's
@@ -251,16 +253,20 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   `heliographic_death_ray`), remodelled the same day as a steam-fed mirrored railgun in the
   mast's place, with a firing act of its own (the model rebuilt in a cloud session: a python3.11
   venv with `bpy==5.0.1` as `BPY_PYTHON`, renders under `xvfb-run`). Its leavings are the to-do's
-  line (the Minerva draft's name, the old vent blast and Siphoning unused in the engine, its
-  runner row unread). On main since the same day ("Yes that's perfect. Merge that into main"). The Dingo and the Prairie Dog are this branch's next (11 November), the
+  line (its bot's first heuristic, its runner row unread, its release on screen a first cut). The
+  lure on every foe it left is the Shift Whistle, dealt at Minerva tier three on Ryan's word of
+  12 November ("The Minervan lure all can exist in tier 3, sure"), and the vent blast's code,
+  Siphoning and an entry's heat a blow are cut ("Siphoning can get cut along with the old vent
+  code"; the heat a blow is the passive's). On main since the same day ("Yes that's perfect. Merge that into main"). The Dingo and the Prairie Dog are this branch's next (11 November), the
   Skua his other session's (the Clydesdale's review landed 12 November).
 - The locked pieces' footing, decided 10 November (the bible's locked row, section 7, and tiers
   row, section 10; `docs/locked_pieces_proposal.md` holds what follows and the order; nothing
   built): a locked piece earns its lock as glue for its chassis's identity or as an exclusive,
-  its number even with the kit beside it, a tier-N piece at its machine's level N. A machine
-  holds a level, bought in the hangar, cheap and gated by the Convergence, that lifts its stats
+  its number even with the kit beside it, a tier-N piece on a machine of tier N. A machine
+  holds a tier (his name, 12 November: "Machines level is tier. Everything is tier."), bought
+  in the hangar, cheap and gated by the Convergence, that lifts its stats
   and its locked pieces together, with a branch that tweaks a locked piece, never a stat and
-  not the passive (its number may rise with the plain lift); a higher chassis arrives at its level, a wreck keeps it. One ladder of three:
+  not the passive (its number may rise with the plain lift); a higher chassis arrives at its own tier, a wreck keeps it. One ladder of three:
   tier zero is tier one's power, a basic a plain tier-one piece owned from the start, a machine
   stocking up to its own tier at one and two; the two meet at the basics' numbers, tier one's
   coming down (his lean, so the refit's reads stand). Six pieces that are neither glue nor an exclusive yet (the
@@ -274,7 +280,9 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   spots one rule in the sim the screen draws by; Sapped coded in for either side, until after its
   carrier's next turn), the Wild Boar's (the Plow a Cleanse and a Barrier on itself; its
   Juggernaut Drive a quarter of each damaged front foe's maximum HP into the foe behind, and
-  Juggernaut Breach after a Barrier) and the Baboon's rework (a Paradox for every debuff stack,
+  Juggernaut Breach after a Barrier; Spillover, retired from it, a Minerva module since 12
+  November on his "Spillover can be a module", the Overrun Gearing, its name a working one) and
+  the Baboon's rework (a Paradox for every debuff stack,
   five Suppressing; the Retrocausal Shroud and the Redshift Emitter, Sap a new keyword, on its
   backpack's pods; four hardpoints; the Solar Flare Array parked), all built 11 November; the
   Skua with the Pod's lock is a session of his own. A branch's shape is settled
@@ -764,7 +772,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   leans are the brief's, for his answers; nothing of the tuning is built. The regen was
   assigned by the gauge's bands alone, which he asked and the brief now says. This session had
   not read the locked pieces' session (`ccr-4d58b054-3lyj0a`, `docs/locked_pieces_proposal.md`,
-  on main since 11 November: a machine holds a level, bought, lifting its stats and locked pieces; tier one
+  on main since 11 November: a machine holds a tier, bought, lifting its stats and locked pieces; tier one
   comes down to the basics) when it guessed the elites and bosses: the tier-two and tier-three
   reads of 10 November are stock machines that plan will not field, and are tuned no further.
 - **Ryan's play of Phase 2** (9 November, his read of the long wall as built, on the phone): hard

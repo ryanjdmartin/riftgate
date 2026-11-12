@@ -51,7 +51,7 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "fold_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "pass_sweep", "shove_behind", "mute_keywords", "weapon_cooldown", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "fold_die", "rewrite_weapon", "heat_per_blow", "pass_sweep", "shove_behind", "mute_keywords", "weapon_cooldown", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_shield_hit": ["stack_status", "add_shield", "vent_heat"],
@@ -335,11 +335,6 @@ const STATUS := {
 	# store with no effect of its own; the screen draws it as pips under the heat bar.
 	"shots": {"id": "shots", "name": "Shots", "description": "Every weapon and equipment it aims at a foe this fight, counted for a rule that lands on a number of them.", "decay": "none",
 		"tags": ["store", "count"], "effects": []},
-	# The Whip Scorpion's Siphon (Ryan's go, 20 October; built 21 October): spending it, every
-	# blow a foe lands on the machine that round adds heat, next round's fuel for its vents; the
-	# blows land in the enemy's turn, after the overheat, so it is never a same-turn burn. The
-	# value is the entry's own (siphon_status builds it); 10 here is the default a bare grant
-	# would carry. Renewing, the machine's own doing, so no cleanse lifts it.
 	# The enemy's question to the keyword build (Ryan, 27 and 28 October: silence "makes sense
 	# to only disable (positive) keywords, and not touch buffs"; built with the ladder): a foe's
 	# silence leaves the machine Silenced through its next round, its components' keywords
@@ -350,8 +345,6 @@ const STATUS := {
 	# (25 and 26 October), a one-round purge that returns.
 	"silenced": {"id": "silenced", "name": "Silenced", "description": "Its components' keywords are muted through its next round.", "stacking": "renew",
 		"tags": [CLEANSABLE, "silence"], "effects": [{"trigger": "static", "effect": "mute_keywords", "value": 1}]},
-	"siphoning": {"id": "siphoning", "name": "Siphoning", "description": "Every blow a foe lands on it this round adds {value} heat.", "stacking": "renew",
-		"tags": ["fuel"], "effects": [{"trigger": "static", "effect": "heat_per_blow", "value": 2}]},
 	# The block as a buff (Ryan, 14 October, the honest shield's upside; built 21 October), one
 	# machine at a time. A Barrier is Shocked's mirror on the machines' side: the next blow a
 	# foe lands on it deals nothing, so it never injures, its riders landing, and a blow of
@@ -1224,10 +1217,10 @@ static func effective_reach(u, face: Face) -> int:
 
 
 ## Keywords a live passive grants this component beyond its own (grant_keyword, static, its
-## `when` honoured; the Wild Boar's Juggernaut Drive puts spillover on every attack). An
+## `when` honoured; the Overrun Gearing, a module, puts Spillover on every attack). An
 ## attack keyword lands on attacks only, a support keyword on a shield, vent or buff only, a spend
 ## keyword on anything; a keyword the component already carries is not granted twice.
-## `printed_only`: just the grants written out (`printed`, the Boar's spill), which the die
+## `printed_only`: just the grants written out (`printed`, the Gearing's spill), which the die
 ## draws as the star with the hold reading the passive's line, never a keyword chip.
 static func granted_keywords(u, face: Face, target = null, printed_only: bool = false) -> Array[int]:
 	var out: Array[int] = []
@@ -1988,8 +1981,7 @@ static func is_ability(status_id: String) -> bool:
 ## "debuff" (laid by the other side to hinder it: a mark the team lays on a foe, a foe's rider on a
 ## machine, each component's Disabled and Corrupted), "ability" (the unit's own mechanic, which
 ## nothing strips), "store" (a capped resource, and a count a rule reads), or "" for one that is
-## none of them: a marker no chip shows, and the Whip Scorpion's Siphoning, its own doing that no
-## Purge and no Cleanse touches. The chip and the readout line wear the label; the keywords list
+## none of them: a marker no chip shows. The chip and the readout line wear the label; the keywords list
 ## files the term under it.
 static func status_kind(status_id: String) -> String:
 	if status_id.begins_with("disabled") or status_id.begins_with("corrupted"):
@@ -2003,7 +1995,7 @@ static func status_kind(status_id: String) -> String:
 		return "buff"
 	if tags.has("store") or tags.has("count"):
 		return "store"
-	if tags.has("marker") or tags.has("fuel"):
+	if tags.has("marker"):
 		return ""
 	return "debuff"
 
@@ -2079,16 +2071,8 @@ static func buff_stacks(u) -> int:
 	return n
 
 
-## The Siphoning status with an entry's own heat a blow (the Whip Scorpion's Heliographic
-## Siphon), as kindled() carries a rally's value.
-static func siphon_status(per_blow: int) -> Dictionary:
-	var s: Dictionary = STATUS["siphoning"].duplicate(true)
-	s["description"] = "Every blow a foe lands on it this round adds %d heat." % per_blow
-	s["effects"] = [{"trigger": "static", "effect": "heat_per_blow", "value": per_blow}]
-	return s
-
-
-## The heat every blow a foe lands on this machine adds this round (Siphoning), 0 for none.
+## The heat every blow a foe lands on this machine adds (the Whip Scorpion's Thermal Ejection
+## Manifold, a passive's), 0 for none.
 static func heat_per_blow(u) -> int:
 	var n := 0
 	for pair in _taking_part(u, "static", null):
@@ -2108,24 +2092,12 @@ static func pass_sweep(u) -> int:
 	return n
 
 
-## What this machine's vents spent on itself blast a random foe for, as a share of the heat
-## they take off it (the Whip Scorpion's Thermal Ejection Manifold, 12 and 13 October; built
-## 21 October): 1 for the whole heat, 0 when nothing blasts.
-static func vent_blast(u) -> float:
-	var share := 0.0
-	for pair in _taking_part(u, "static", null):
-		if str(pair[0].get("effect", "")) == "vent_blast":
-			share += float(pair[0].get("value", 1))
-	return share
-
-
 ## The kinds a piece is on this machine, in the engine's words (Ryan, 26 October: "Face type is
 ## either Weapon, Shield, Vent, or Equipment"): its own (equipment a buff or a debuff, a blank
-## none), then any a live passive adds. A vent on a machine whose vents blast a foe is a weapon
-## too ("Hybrid cases can exist. Such as the steam vents"): its blast is a weapon's hit and
-## resolves as one (Skirmish._blast), and the die's hold names both. With no machine, the piece
-## as built, as the codex shows it.
-static func kinds_of(u, f: Face) -> Array[String]:
+## none). A passive that makes a piece a second kind on its machine adds it here, the machine
+## passed in ("Hybrid cases can exist", Ryan, 26 October, of the steam vents, cut 12 November
+## with the Whip Scorpion's blast: none runs now, and the call stands for the next).
+static func kinds_of(_u, f: Face) -> Array[String]:
 	var out: Array[String] = []
 	if f == null:
 		return out
@@ -2136,8 +2108,6 @@ static func kinds_of(u, f: Face) -> Array[String]:
 			out.append("shield")
 		Face.Kind.VENT:
 			out.append("vent")
-			if u != null and vent_blast(u) > 0.0:
-				out.append("weapon")
 		Face.Kind.BUFF:
 			out.append("equipment")
 	return out
@@ -2419,7 +2389,6 @@ static func effect_text(eff: Dictionary) -> String:
 		"step_die": body = "its die never rolls: each fight opens on a random entry, and every roll steps it to the next in order"
 		"fold_die": body = "its die is two batteries of %s, one up at a time with its fixed pieces; the battery up stays up from fight to fight, and a battle opens on the first" % vs
 		"rewrite_weapon": body = "every weapon and equipment it aims at a foe fires as one %s %s blow, heat %s, its keywords and rules kept" % [str(eff.get("reach", "direct")), vs, str(eff.get("heat", 0))]
-		"vent_blast": body = "a vent it spends on itself blasts a random foe for %s the heat it takes off" % ("the whole of" if is_equal_approx(float(v), 1.0) else "%s×" % vs)
 		"pass_sweep": body = "a turn it ends with an entry it could have spent releases its heat once the enemy has acted: a Sweep of the rank with the most foes, a shot of %s for every heat" % vs
 		"shove_behind": body = "damaging a foe in the front rank deals %s%% of its maximum HP, rounded up, to the foe behind it" % vs
 		"hold_status": body = "its %s does not decay" % str(STATUS.get(str(v), {}).get("name", v))
@@ -2514,9 +2483,9 @@ static func explain(u, face: Face) -> Array[String]:
 			elif trig == "static" and name == "grant_keyword":
 				var kw := Face.keyword_from_name(str(eff.get("value", "")))
 				if kw > 0 and not face.has(kw) and granted_keywords(u, face).has(kw):
-					# A grant written out (the Boar's spill) reads the passive's own line, the
+					# A grant written out (the Gearing's spill) reads the passive's own line, the
 					# star's text, since the player learns no keyword for it.
-					out.append("%s (%s)" % [m.description if bool(eff.get("printed", false)) and not m.description.is_empty() else effect_text(eff), m.name])
+					out.append("%s (%s)" % [written_out(m, eff) if bool(eff.get("printed", false)) else effect_text(eff), m.name])
 			elif trig == "on_attack":
 				# A condition on the target is shown as a rule (its lead says when), since
 				# the row has no target in hand.
@@ -2529,7 +2498,7 @@ static func explain(u, face: Face) -> Array[String]:
 	return out
 
 
-## The written-out grants on this entry (the Boar's spill): the granting passive's own line
+## The written-out grants on this entry (the Gearing's spill): the granting passive's own line
 ## each, the text of the star the die draws for it, as the hold prints it.
 static func printed_grants(u, face: Face) -> Array[String]:
 	var out: Array[String] = []
@@ -2541,10 +2510,18 @@ static func printed_grants(u, face: Face) -> Array[String]:
 			if str(eff.get("trigger", "")) != "static" or str(eff.get("effect", "")) != "grant_keyword" or not bool(eff.get("printed", false)):
 				continue
 			if printed.has(Face.keyword_from_name(str(eff.get("value", "")))):
-				var line: String = m.description if not m.description.is_empty() else effect_text(eff)
+				var line := written_out(m, eff)
 				if not out.has(line):
 					out.append(line)
 	return out
+
+
+## The line a grant written out reads, the star's text: a module's rule (its `line`, the text's
+## own, never the stat lines the module's description leads with), else the granting passive's
+## description, else the effect's own words.
+static func written_out(m, eff: Dictionary) -> String:
+	var line := str(eff.get("line", m.description))
+	return line if not line.is_empty() else effect_text(eff)
 
 
 ## Every live modifier as [name, description, source, scope, stacks, id]: the codex lists

@@ -104,9 +104,6 @@ static var RAGE_DEBUG := OS.get_environment("RIFTGATE_RAGE_DEBUG") == "1"
 ## showing marks (or, with no ambusher on the team, the first machine's, the read forced), to
 ## judge it running.
 static var PREY_DEBUG := OS.get_environment("RIFTGATE_PREY_DEBUG") == "1"
-## RIFTGATE_BLAST_DEBUG=1: the blast's marks stay on, over every foe the first machine whose vents
-## blast would fire at with its die's vent (its heat raised to fire it), to judge them running.
-static var BLAST_DEBUG := OS.get_environment("RIFTGATE_BLAST_DEBUG") == "1"
 ## RIFTGATE_PREVIEW_DEBUG=1: every foe showing a blow wears the pulsing preview chip of a rally on
 ## its way (+1 where none is coming, its number unchanged), to judge the pulse running.
 static var PREVIEW_DEBUG := OS.get_environment("RIFTGATE_PREVIEW_DEBUG") == "1"
@@ -1296,7 +1293,6 @@ func _refresh(save: bool = true) -> void:
 		d.charged = not ms.assigned and sk.charge_lands(ms)
 		var sf := sk.shown_face(ms, sk.spend_face(ms))   # reach as the passive reads it now, the charged form when it goes out charged
 		d.set_face(sf, sk.shown_number_text(ms, sf))   # and the number the blow will deal
-		d.blast = sk.blast_number(ms, sk.blast_amount(ms, sf, ms)) if not ms.assigned and ms.alive() else 0   # a vent's blast on its own machine
 		d.after_blow = -1   # the blow its passive adds after the strikes, as the entry carries it (no foe in hand)
 		d.form_mark = form_mark(ms, sf) if not ms.assigned and ms.alive() else ""   # it seals its machine or opens it
 		d.corrupted = Effects.corrupt_stacks(ms.unit, ms.face_index) if ms.face_index >= 0 else 0
@@ -1345,11 +1341,11 @@ func _forecast_for(i: int) -> Dictionary:
 	return all[i] if i < all.size() else {}
 
 
-## The lure preview (the Whip Scorpion's Siphon, 22 October): while a die whose entry Lures is
-## dragged over a foe it may be spent on, or read or dragged anywhere when it reaches every foe,
-## the foes it would turn draw their arrows dashed to its machine, and the round preview reads the
-## round as the lure would leave it (_update_round): the lured blows, the brace, the heat a
-## Siphon drinks from them.
+## The lure preview (22 October): while a die whose entry Lures is dragged over a foe it may be
+## spent on, or read or dragged anywhere when it reaches every foe (the Shift Whistle's), the foes
+## it would turn draw their arrows dashed to its machine, and the round preview reads the round as
+## the lure would leave it (_update_round): the lured blows, the brace, the heat a passive banks
+## from them (the Whip Scorpion's).
 func _update_preview() -> void:
 	_turns = []
 	if sk.state != Skirmish.State.ASSIGN or not _pending.is_empty():
@@ -1852,8 +1848,6 @@ static func status_glyph(id: String) -> String:
 			return "ward"
 		"spun_up":
 			return "spin"
-		"siphoning":
-			return "heat"
 		"silenced":
 			return "silence"
 		"cryoed":
@@ -2163,12 +2157,9 @@ func _show_die(i: int) -> bool:
 	if f != null:
 		var sf := sk.shown_face(ms, f)
 		var shown: int = sk.shown_number(ms, sf) if sf.is_attack() and not sf.is_debuff() else -1
-		# A vent's blast (the Whip Scorpion's): the die prints it in its passive's box, so the readout
-		# heads its line with that box (Ryan, 2 November: every icon on a die face in the popup).
+		# What the die prints in its passive's box from its machine heads a line with that box
+		# (Ryan, 2 November: every icon on a die face in the popup).
 		var extra: Array = []
-		var blast := _dice[i].blast if i < _dice.size() else 0
-		if blast > 0 and sf.kind == Face.Kind.VENT:
-			extra.append(EntryReadout.marked(EntryReadout.parts_line("effect", [EntryReadout.word("Blasts a random foe for"), EntryReadout.word(str(blast))], "attr"), [EntryReadout.passive_mark("blast", str(blast), Palette.HEAT)]))
 		# A stepping die's next chamber (the Cassowary's), by the passive box the die shows it in
 		# (Ryan, 4 November: "should also explain its next-chamber chip in the tap popup").
 		var next_at := sk.next_index(ms)
@@ -2460,10 +2451,6 @@ func _switch_controls() -> void:
 func _refresh_prey() -> void:
 	if _prey == null:
 		return
-	var blast := _blast_marks()
-	if not blast.is_empty():
-		_prey.show_marks(blast["rects"], "blast", blast["labels"])
-		return
 	var i := _drag_from if _drag_from >= 0 else _read_die()
 	var force := false
 	if i < 0 and PREY_DEBUG:
@@ -2490,45 +2477,6 @@ func _refresh_prey() -> void:
 		var xf := fv.get_global_transform()
 		rects.append(Rect2(xf * r.position, xf.get_scale() * r.size))
 	_prey.show_marks(rects)
-
-
-## The blast's marks (the Whip Scorpion's, 22 October): while a vent die on a machine whose vents
-## blast is read, or dragged anywhere but over an ally, every foe the blast may land on (the draw
-## is over every live foe) is marked with what it would deal there. Nothing for any other die,
-## or a vent with nothing to fire. RIFTGATE_BLAST_DEBUG=1 keeps them on.
-func _blast_marks() -> Dictionary:
-	var i := _drag_from if _drag_from >= 0 else _read_die()
-	var forced := false
-	if i < 0 and BLAST_DEBUG:
-		for j in range(sk.mechs.size()):
-			var dm: Skirmish.MechState = sk.mechs[j]
-			if dm.alive() and not dm.assigned and Effects.vent_blast(dm.unit) > 0.0 and dm.face() != null and dm.face().kind == Face.Kind.VENT:
-				i = j
-				forced = true
-				break
-	if i < 0 or i >= sk.mechs.size() or sk.state != Skirmish.State.ASSIGN:
-		return {}
-	var ms: Skirmish.MechState = sk.mechs[i]
-	if not ms.alive() or ms.assigned or ms.face() == null:
-		return {}
-	var who: Skirmish.MechState = _drag_over if _drag_from == i and _drag_over is Skirmish.MechState else null
-	var vent := sk.shown_face(ms, sk.spend_face(ms))
-	var amount := sk.blast_amount(ms, vent, who)
-	if amount <= 0 and forced:
-		amount = int(roundf(float(vent.power) * Effects.vent_blast(ms.unit)))   # the switch fires a full vent, cold or not
-	if amount <= 0:
-		return {}
-	var rects: Array = []
-	var labels: Array = []
-	for foe in sk.blast_targets():
-		var fv := _foe_view_for(foe)
-		if fv == null or not fv.visible:
-			continue
-		var r := fv.drawing_rect()
-		var xf := fv.get_global_transform()
-		rects.append(Rect2(xf * r.position, xf.get_scale() * r.size))
-		labels.append(str(sk.blast_number(ms, amount, foe)))
-	return {"rects": rects, "labels": labels}
 
 
 ## The foes an ambusher's entry showing marks: those it can reach that show no intent on the
@@ -2559,7 +2507,6 @@ func _on_drag_started(i: int) -> void:
 	var sf := sk.shown_face(sk.mechs[i], sk.spend_face(sk.mechs[i]))
 	_ghost.shut = []   # no foe in hand yet: every chip as printed
 	_ghost.set_face(sf, sk.shown_number_text(sk.mechs[i], sf))
-	_ghost.blast = sk.blast_number(sk.mechs[i], sk.blast_amount(sk.mechs[i], sf))
 	_ghost.after_blow = -1
 	_ghost.form_mark = form_mark(sk.mechs[i], sf)
 	_ghost.cooldown = sk.cooldown_of(sk.mechs[i], sf)
@@ -2585,8 +2532,9 @@ func _on_drag_moved(global_pos: Vector2) -> void:
 	var target = _drop_target_at(global_pos)
 	var can := target != null and _drag_from >= 0 and sk.can_assign(_drag_from, target)
 	Sound.hover(can)
-	# What the die is over decides what the gauges forecast (a lure's turn, a Cryo cash) and where
-	# the blast's marks go: read again only when it changes, never saved mid-drag.
+	# What the die is over decides what the gauges forecast (a lure's turn, a Cryo cash, the heat
+	# bar's net over a Cryo foe: on the bar, never the die, Ryan, 16 October): read again only
+	# when it changes, never saved mid-drag.
 	var over = target if can else null
 	if not _same_target(over, _drag_over):
 		_drag_over = over
@@ -2607,10 +2555,6 @@ func _on_drag_moved(global_pos: Vector2) -> void:
 		# The blow its passive adds after the strikes, over the foe through its armour, in the
 		# passive's box (the Storm Petrel's; Ryan, 4 November).
 		_ghost.after_blow = Skirmish.after_blow(ms, sf, over_foe) if over_foe != null else -1
-		# A vent's blast fires only on its own machine: over an ally the die prints none. The heat
-		# bar reads the net over a Cryo foe (Ryan, 16 October: on the bar, never the die) through
-		# the forecast the refresh above reads (_forecast_for).
-		_ghost.blast = sk.blast_number(ms, sk.blast_amount(ms, sf, target if can and target is Skirmish.MechState else null))
 
 
 func _on_drag_ended(global_pos: Vector2) -> void:
@@ -2740,7 +2684,6 @@ func _send_second_home() -> void:
 	fly.set_face(d.face, d.shown_number)
 	fly.slot = d.slot
 	fly.corrupted = d.corrupted
-	fly.blast = d.blast
 	fly.after_blow = d.after_blow
 	fly.charged = d.charged
 	fly.dark = d.dark
@@ -3029,7 +2972,7 @@ func _use_die(i: int, target, second = null) -> bool:
 					uw.tween_interval(fire_at)
 					uw.tween_callback(_use_view.bind(_mech_3d[i], spent.component))
 		if not blows.is_empty():
-			_attack_at(maxf(0.0, fire_at - BLOW_AT), _mech_views[i], _view_struck(blows, 0, was, null), true)   # a vent's blast
+			_attack_at(maxf(0.0, fire_at - BLOW_AT), _mech_views[i], _view_struck(blows, 0, was, null), true)   # a blow a passive lands on the spend
 	if ok and Effects.is_sealed(sk.mechs[i].unit) != sealed_before:
 		# Its form shifts as the spend lands (Ryan, 2 November: "It also needs some highlight or
 		# something when it is transforming").
@@ -3951,7 +3894,7 @@ func _refresh_undo() -> void:
 
 ## UNDO (Ryan, 2 November: "undo to your last roll"): the last spend or reroll taken back, in
 ## the order made, the fight as it was before it, never past a roll (the round's, a reroll's
-## draw, a spend's own: Rapid's reroll, a roll again, the Scorpion's blast). A reading or a
+## draw, a spend's own: Rapid's reroll, a roll again). A reading or a
 ## pending Swap is put away first.
 func _on_undo() -> void:
 	if _replay_shade.visible or not sk.can_undo() or Time.get_ticks_msec() < _undo_from:

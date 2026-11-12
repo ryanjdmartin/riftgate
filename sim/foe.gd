@@ -144,7 +144,7 @@ func armour_total() -> int:
 
 ## The armour a blow of this entry meets: none when it breaches (one breach, 22 October: a
 ## breaching weapon ignores a foe's armour as a foe's breach ignores a machine's shield and
-## armour), else the armour standing. A spill and a vent's blast are plain damage and meet it.
+## armour), else the armour standing. A spill is plain damage and meets it.
 func armour_for(f: Face) -> int:
 	return 0 if f != null and f.has(Face.Keyword.BREACH) else armour_total()
 
