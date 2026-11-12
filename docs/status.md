@@ -27,8 +27,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1154 tests, 371,080 checks, green on `ccr-722ca9f0-yj8na3` over main at `6112939` (12
-  November, the anchor: heat's prices, tier one's shields and its foes' numbers). Before it,
+- Tests: 1154 tests, 371,084 checks, green on `ccr-722ca9f0-yj8na3` (12 November, the Barrier's
+  cooldown over the anchor). Before it, 1154 tests, 371,080 checks, green on main at `4c29e09`
+  (12 November, the anchor: heat's prices, tier one's shields and its foes' numbers). Before it,
   1154 tests, 371,076 checks, green on main (12 November, as `ccr-4d58b054-3lyj0a` landed
   with the vent blast's and Siphoning's cut, the Overrun Gearing, the Shift Whistle dealt, the
   Whip Scorpion's broadside and its two new idle acts, over the dead-code pass and the four
@@ -905,13 +906,30 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   since it fights alone; and the first battle is harder for three machines than it was (a
   mustering trio with the Honey Badger won 40% of the Meadow's and wins 10%; it lost to the
   gate before, 40 to 85% of the time), so it is the first thing to scale from the anchor.
-  Open, his, the refit brief's section 13: the Barrier's price, which is what stands
-  between the elites and their budget (a free Barrier takes an announced blow every round,
-  and with heat real a squad holds behind one; the basic dark a round once spent reads two
-  or three times dearer on the single-blow fights, unbuilt); the first battle's rule; his
-  marks on 4-4-2; the Waste's bosses and the Peak's clock; the Prairie Dog alone. The
+  The Barrier's cooldown followed the same day (Ryan: "Barrier can have a cooldown, yeah. I
+  gave it a cooldown on the Boar's locked and that's a tier 2 piece ... you can't just
+  protect forever"): every piece that grants one carries a cooldown of 1, the Halo Projector
+  and the Blast Door as the Breaching Plow did, and the Fallen Weapon's haft is 16 and its
+  eyes' gaze 8 with it, since the cooldown took the Waste out of the others' band. With it
+  the second battle reads the Meadow 75 to 85% won, the Marsh 60 to 65%, the Waste 45 to
+  55%, the Peak 40 to 60%, and the elites' mean 9.5% of a four's hull where it was 7.
+  Two corrections to what this session first wrote, both in `docs/measurements.md`: the
+  what-if it cited for the cooldown was two rounds dark, not one (the cooldown's count had
+  changed on main the same day), and the Gargantuan King's twenty-round fight is no matter
+  of heat, the squad blocking and bracing where it could fire because a round costs it
+  nothing. The Storm Petrel in these reads is the machine as built, zap and all; his
+  direction of 11 November takes the zap off it, and that session waited on the heat pass,
+  which has landed. Open, his, the refit brief's section 13: the Barrier on the machine,
+  his "more dramatic version ... apply the cooldown to the unit, similar to Numbed", read
+  as a what-if (it bites where one machine is named two rounds running; with the piece's
+  cooldown the elites' mean is 11%), with its holes; the first battle's block (not scaled:
+  on the anchor's numbers a mustering trio with the Honey Badger wins 0 to 5% of the
+  Meadow's first battles where it won 40%; at three fifths for its elite and boss and three
+  quarters for its rank and file a trio keeps its hull, and the trios with the Badger still
+  lose the wall); his marks on 4-4-2; the Waste's bosses and the Peak's clock; the Prairie
+  Dog alone. The
   muster rule and the fight-at-its-rating read are scratch probes; the runner still plays
-  the defence rule. The bible's triangle, scale and shield rows and section 12 (v0.557);
+  the defence rule. The bible's triangle, scale, shield and Barrier rows and section 12 (v0.558);
   the rules' chassis, basics, heat and scale lines.
 - **Four formations cut toward the budget, 4-4-2 to work with, and the anchor** (Ryan, 12
   November: "Yes go ahead with 2. Also, let's look at 4-4-2 right now so that you're working
@@ -1538,9 +1556,10 @@ what-if and its first reads are in (9 November), his two reads of the trial, the
 content, the formation pass and a guess at the elites' and bosses' numbers (10 November: the
 brief's sections 5, 8 and 9); tier one only for now (his word, 11 November), tuned on the
 second battle with real tier ones before anything is scaled from it (his word, 12 November;
-landed the same day: the brief's section 13 has what landed, what is open and 4-4-2 for his
-marks), next his play of the anchor and his word on the Barrier's price, then the first
-battle scaled down from it and tiers two and three scaled up, and his
+landed the same day with the Barrier's cooldown: the brief's section 13 has what landed, what
+is open and 4-4-2 for his marks), next his play of the anchor and his word on the Barrier on
+the machine and on the first battle's block, then the first battle scaled down from the
+anchor and tiers two and three scaled up, and his
 play of the Rupture in beats and of the tide's and the strike's dials, and his marks on the
 flanks' second patrols (the brief's section 11), and his answers on the first battle (section
 10: the fourth machine's route is settled, the first battle's shape and the boss's numbers by
@@ -1630,10 +1649,10 @@ commands are in `README.md`.
   tables), and main's v0.552 since `ccr-8af28d03-re9kz4` landed again (the Ammit row's flare once an
   attack and the cut of its two old rules, the Empowered row's mark, and the rows that said the
   engine kept a rule the dead-code pass cut: the Kite's, a piece of two kinds, a rider's limit,
-  Chain's targeting, the Whip Scorpion's), and main's v0.557 since `ccr-722ca9f0-yj8na3` landed
+  Chain's targeting, the Whip Scorpion's), and main's v0.558 since `ccr-722ca9f0-yj8na3` landed
   again (the scale row's tier-one foes, the triangle row's prices as content, the shield
-  row's tier-one lines, and section 12's 4-4-2 to work with, the anchor, the heat-reading
-  machines and the Barrier's price); each goes up on Ryan's word. The
+  row's tier-one lines, the Barrier row's cooldown, and section 12's 4-4-2 to work with, the
+  anchor, the heat-reading machines and the Barrier on the machine); each goes up on Ryan's word. The
   live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS

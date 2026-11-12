@@ -49,7 +49,7 @@ func _ready() -> void:
 
 ## The refit pass's what-ifs (docs/briefs/refit_pass.md; sim/refit.gd), laid over the content
 ## once, as the game starts and before anything is built from it: RIFTGATE_REFIT names a spec (its
-## parts: regen=half|N, cooling=N, hotter=N, barrier=cooldown|heatN), or a debug build's SETTINGS →
+## parts: regen=half|N, cooling=N, hotter=N, barrier=cooldownN|heatN), or a debug build's SETTINGS →
 ## TRIALS has SHIELD REGEN on a flat number (the phone's way, read at the next launch;
 ## Settings.SHIELD_REGENS). The model itself is content since 10 November. A battle or a run saved
 ## before a switch keeps the numbers it was saved with, so judge it on a new one.

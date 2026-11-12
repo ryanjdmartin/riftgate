@@ -77,7 +77,7 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   and its tier-two chassis stock them. The basic kit is six pieces, each a maker's: four
   guns, each making 4 heat (the Twin Autoguns and the Rivet Gun, Direct; the Ankle Mortar, Indirect; the Laser
   Carbine, Direct and warm, 5), and two defensive pieces, each spent on itself or an ally (the
-  Halo Projector, a Barrier; the Shoring Jack, Armoured 2 for the round).
+  Halo Projector, a Barrier, cooldown 1; the Shoring Jack, Armoured 2 for the round).
 - **No recovery on the die**: a component is a weapon or equipment. No stock die holds a
   shield or a vent and no slottable one is dealt: the shield is the chassis's and comes back
   by its regen, heat goes by its cooling, and the decision heat leaves is the hold (fire the
@@ -712,7 +712,9 @@ On a machine:
   injures; its riders land, and a blow of nothing leaves it standing. One at a time and one
   stack whoever grants it (a passive that deepens the stacks its machine applies leaves it at
   one, and a Purge of one takes it whole); until the round's end. No piece grants it to every
-  ally at once. The Blast Door grants it, self or ally.
+  ally at once, and every piece that grants one carries a cooldown of 1, so it sits out the
+  round after its spend: the Halo Projector and the Blast Door, self or ally, and the Wild
+  Boar's Breaching Plow, on itself.
   A foe's, from its own special: the next blow of a weapon the team lands on it deals no damage,
   the blow's riders landing and a Shock it carried spent; equipment pops nothing; until it pops
   or the end of the player's next turn.

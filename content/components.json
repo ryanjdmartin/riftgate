@@ -999,7 +999,8 @@
     "kind": "buff",
     "status": "barrier",
     "stacks": 1,
-    "rounds": 1
+    "rounds": 1,
+    "cooldown": 1
    },
    "passive": null,
    "tags": []
@@ -2243,7 +2244,8 @@
     "kind": "buff",
     "status": "barrier",
     "stacks": 1,
-    "rounds": 1
+    "rounds": 1,
+    "cooldown": 1
    },
    "passive": null,
    "tags": []

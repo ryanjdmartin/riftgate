@@ -1450,20 +1450,55 @@ At its rating a lone flanker costs 2 to 4% of a four's hull, a hunter's pack 5 t
 formation 2 to 9% with 5 the mean, an elite 0 to 13% with 7 the mean, a boss 5 to 32% with
 19 the mean.
 
+**The Barrier's cooldown, settled 12 November.** His words: "Barrier can have a cooldown,
+yeah. I gave it a cooldown on the Boar's locked and that's a tier 2 piece. This makes sense
+regardless of the reasoning, you can't just protect forever." Every piece that grants a
+Barrier carries a cooldown of 1: the Halo Projector and the Blast Door, as the Breaching Plow
+did. The Blast Door takes it as a consequence of his reason, named: a free Barrier at tier
+one beside a basic with a cooldown would be the way to protect forever, and a bigger number
+on a tier-one find. With it the Fallen Weapon's haft is 16 and its eyes' gaze 8, since the
+cooldown took it from 27% of a four's hull to 36% and the Waste out of the others' band
+(`docs/measurements.md`, 12 November, which also corrects the read above it: the what-if
+cited there was two rounds dark, not one).
+
 **Open, his**:
 
-1. The Barrier's price. It is what stands between the elites and their budget and what
-   makes the hold free. Read, not built: the Barrier basic dark for a round once spent
-   brings the single-blow elites and bosses up two or three times and ends the King's
-   stall; it sends the many-strike bosses over, so their numbers come down with it; a
-   mustering player wins up to 25 points fewer battles on today's numbers. A price in heat
-   does little for the bot. On the bench beside it: the Barrier a tier-one piece and no
-   basic; a second announced blow on every elite; a blow no Barrier takes (which is breach
-   by another name, and breach is parked).
-2. The first battle. With tier one's shields at their real numbers it is harder for three
-   machines than it was, and it was not easy for a mustering player before. It is the first
-   thing to scale from the anchor: section 10's bench (the boss's block by Convergence, the
-   gates, the Meadow first) and his pick.
+1. The Barrier on the machine. His words: "The more dramatic version would actually apply
+   the cooldown to the unit, similar to Numbed, where they can't get barrier twice in a
+   row." Read as a what-if with the engine untouched (the same section): the elites' mean
+   7% of a four's hull with no cooldown, 9.5% with the piece's, 9% with the machine's rest
+   alone, 11% with both; the bosses' 19, 22, 23 and 24%. The holes, each with what settles
+   it:
+   - It bites only where the same machine is named two rounds running, so it is a rule
+     about the tank and the lure: the Storm Petrel's, the Polar Bear's, a Honey Badger at
+     the front. A foe that moves its blow is covered every round as before.
+   - The two limit different things. The piece's cooldown limits supply and fades as a
+     squad carries more pieces; the rest limits one machine's cover and holds however many.
+     Each alone leaves a way to cover every round; both leave none. Claude's lean: both.
+   - What starts the rest: the Barrier gained, or the blow it took. Numbed comes as the
+     stun is served, which is the second; the first is the simpler to read and the harder
+     rule, since a Barrier nothing struck still rests its machine.
+   - The Wild Boar: under a rest its Plow's own cooldown says nothing more, and an ally's
+     Barrier no longer feeds its Juggernaut Breach in the Plow's dark round.
+   - A foe's own Barrier (two foes raise one, a burrow and a mirage): the same rule on the
+     other body, or machines alone.
+   - It is a status the player must see: a word, a chip on the machine, a refusal in the
+     target picker. The word is his.
+   - Neither form answers the Gargantuan King's fight, which runs twenty rounds and more
+     with no machine hot: the squad blocks and braces where it could fire, because a round
+     costs it nothing. That is the parked question of what prices a round.
+   On the bench beside them: a second announced blow on every elite; a blow no Barrier
+   takes (which is breach by another name, and breach is parked).
+2. The first battle. It was not scaled: it fights tier one's foes with three machines on
+   tier one's lines, so the anchor's numbers made it harder (a mustering trio with the
+   Honey Badger won 40% of the Meadow's and wins 0 to 5%). The reads part two things. Hull:
+   with its elite and boss at three fifths of their hit points and blow and its rank and
+   file at three quarters, almost nobody is wiped and a trio keeps 45 to 90% of its hull.
+   The wall: the trios with the Honey Badger still lose the gate in 30 to 90% of them, as
+   they did before the anchor, since the opening asks three machines for a formation and
+   two flank patrols at once. Claude's lean, for his marks: a block at Convergence 0, the
+   first rift's foes at those shares, and one flank patrol at its opening where there are
+   two; section 10's bench has the other forms.
 3. His marks on 4-4-2, above: the machines coming down take tier one's lines as they do.
 4. The Waste's bosses and the Peak's clock, the two things that keep those domains under the
    others: the bosses' session, and the pacing dials.
@@ -1471,8 +1506,15 @@ formation 2 to 9% with 5 the mean, an elite 0 to 13% with 7 the mean, a boss 5 t
 6. The Prairie Dog alone: it loses a third of its duels with the cerberus and takes six to
    twelve rounds over the others' two or three. Its hunter rule keeps it out of a catch, not
    out of an order.
+7. The Storm Petrel. The reads used it as it is built, zapping for the shield its guns burn,
+   4 or 5 a shot under heat's prices. His direction of 11 November takes the zap off it and
+   gives it shield for heat gained (`kestrel_storm_petrel.md`), and that session waited on
+   the heat pass, which has landed. Two of the three squads in the whole-battle reads carry
+   it; the third, without it, reads the same band.
 
-**The plan from here**: his play of the anchor and his word on the Barrier; then the first
-battle scaled down from it; then tiers two and three scaled up, the levels' ladder with
-them (a machine's stat line by level, the foes' by tier), since every foe a higher tier
-shares with tier one moved today and stands unread there.
+**The plan from here**: his word on the machine's rest and on the first battle's block; then
+the first battle scaled down from the anchor; then tiers two and three scaled up, the
+levels' ladder with them (a machine's stat line by level, the foes' by tier), since the foes
+a higher tier shares with tier one moved today and stand unread there (the goblin, the
+wolf, the gel, the zombie knight, the bomb and the salamander, with the elites and the
+bosses, which stand at every tier).

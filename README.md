@@ -312,8 +312,8 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # shield or a vent, every chassis regains its own shield regen, the basics make heat), so what is
 # left are the numbers a read may still ask about: "regen=N" (a flat regen on every chassis in
 # place of its own) or "regen=half", "cooling=N" (an offset), "hotter=N" (every weapon N heat
-# more, a read for the heat prices), "barrier=cooldown" (the Barrier basic dark the round after
-# it is spent) or "barrier=heatN" (it costs N heat); comma-separated; tools/campaign_run.gd takes
+# more, a read for the heat prices), "barrier=cooldownN" (the Barrier basic sits out N rounds
+# once spent, 0 for none, where content gives it 1) or "barrier=heatN" (it costs N heat); comma-separated; tools/campaign_run.gd takes
 # it too.
 # --guard 0.05 is the aggressor's habit (a block, a Barrier, Armoured or a Ward, at a twentieth of
 # its worth to the bot, so it never rerolls for one and spends one only when its die is stuck
