@@ -1645,8 +1645,6 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: magazine_min is the ammo a piece that spends the magazine needs to fire: 1 or more, beside spends_magazine" % where)
 	if fd.has("reloads_ammo") and (kind == "attack" or kind == "blank" or int(fd["reloads_ammo"]) <= 0):
 		errs.append("%s: reloads_ammo is a machine piece's: the ammo it adds to its forging machine, a positive number" % where)
-	if fd.has("heat_per_blow") and int(fd["heat_per_blow"]) <= 0:
-		errs.append("%s: heat_per_blow is the heat every blow taken this round adds: a positive number" % where)
 	if fd.has("shields") and (kind != "vent" or int(fd["shields"]) <= 0):
 		errs.append("%s: shields is a vent's shield half (the combined entry): the shield it gives after its vent, a positive number" % where)
 	if fd.has("gathers_mines") and (kind != "attack" or not (fd["gathers_mines"] is bool)):
@@ -1849,8 +1847,6 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: pass_release is what every foe takes from a passed turn at its gate: value and gate (the heat it needs), whole numbers, 1 or more" % where)
 		if effect == "shove_behind" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 1 or int(eff["value"]) > 100 or float(eff["value"]) != floorf(float(eff["value"]))):
 			errs.append("%s: shove_behind is the share of a front foe's maximum HP its damaging blow drives into the foe behind, in percent: a whole number, 1 to 100" % where)
-		if effect == "vent_blast" and float(eff.get("value", 0)) <= 0.0:
-			errs.append("%s: vent_blast is the share of the heat a vent takes off that it blasts: a positive number" % where)
 		# The Petrels' passives (built 30 October): the shield paying a weapon's heat point for
 		# point (the Storm Petrel's), and the most rerolls a bank carries (the Giant Petrel's).
 		if effect == "burn_shield" and int(eff.get("value", 0)) != 1:

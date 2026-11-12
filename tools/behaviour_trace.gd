@@ -80,7 +80,7 @@ class TraceSkirmish extends Skirmish:
 	func assign(mech_index: int, target = null, second = null) -> bool:
 		_emit("reads", _reads(mech_index, target))
 		var ok := super.assign(mech_index, target, second)
-		var after := [str(ok), tr.ser(spend_blows), tr.ser(last_roll), tr.ser(last_acts), tr.ser(returned), tr.ser(last_blast), tr.ser(reach_tally), tr.ser(mine_tally), tr.ser(sponsorship), str(team_kills)]
+		var after := [str(ok), tr.ser(spend_blows), tr.ser(last_roll), tr.ser(last_acts), tr.ser(returned), tr.ser(reach_tally), tr.ser(mine_tally), tr.ser(sponsorship), str(team_kills)]
 		_emit("assign %d %s %s" % [mech_index, tr.ser(target), tr.ser(second)], _new_log() + "\n" + "\n".join(after) + "\n" + _state())
 		return ok
 

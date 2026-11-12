@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 195 implemented, 5 planned, 0 idea.
+Status: 194 implemented, 5 planned, 0 idea.
 
 ## Resource
 
@@ -38,7 +38,7 @@ Status: 195 implemented, 5 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Weapon** | A component that deals damage: spent on a foe within its reach, it deals its number in damage, then its keywords act and its heat lands. One that deals none is equipment. A passive may make another kind a weapon on its machine too (a vent that blasts a foe): its hold reads both, Vent, Weapon. | implemented |
+| **Weapon** | A component that deals damage: spent on a foe within its reach, it deals its number in damage, then its keywords act and its heat lands. One that deals none is equipment. | implemented |
 | **Shield component** | Spend on self or an ally to add its power in shield, capped at that machine's shield maximum. | implemented |
 | **Vent component** | Spend on self or an ally to remove its power in heat. | implemented |
 | **Equipment** | A buff or a debuff: a component that deals no damage. A buff is spent on a machine (itself, an ally, or either, as it says) and grants it a status; a debuff is spent on a foe within its reach, its keywords its whole effect. Shields and vents are kinds of their own. | implemented |
@@ -141,7 +141,6 @@ Status: 195 implemented, 5 planned, 0 idea.
 | **Souls** | Ability, the Ammit's. A Soul for every foe that falls in a fight it is in, whoever fells it, kept from fight to fight through the battle, with no limit. As each fight opens, and after each attack of the Ammit's that kills, it gains 1 Empowered for every 5 Souls it holds; its Soul Siphon consumes them. No Purge, Silence or Cleanse touches it. | implemented |
 | **Pinned Empowered** | From the Ammit's Soul Siphon, on every unit in the fight, machine and foe: its Empowered does not halve at this round's end, what it holds and what it gains before then. Until the round's end. It is the round's rule and no mark on anyone, so a Ward turns nothing away. | implemented |
 | **Quick turn spent** | Machine marker, the Needletail's: its die has turned once this round, so the spend it holds is its last. Never a chip: the die shows the turn it still has in its passive box. Gone at the round's end. | implemented |
-| **Siphoning** | Machine status: every blow a foe lands on it this round adds heat, 2 a blow, whatever the blow dealt. The blows land in the enemy's turn, after the overheat, so it is next round's fuel, or next turn's burn. Until the round's end; nothing cleanses it. | implemented |
 | **Flak** | Foe status, Wainwright & Sutler's on-hit. Every blow of a weapon it takes deals a point more a stack. At the end of each round the stacks halve, rounded down. | implemented |
 | **Destroyed component** | Machine status, global rule. When what one blow puts on the hull, past shield and armour, is at least a quarter of its maximum hull, the entry the die shows is destroyed: blank, it does nothing when it comes up, and provides its passive bonuses but not passive abilities, for the rest of the battle; after it, a hardpoint's is gone for good and a built-in one is rebuilt. A shield prevents it only by absorbing enough of the blow, and a blow a Barrier takes never injures. An injury that lands on a destroyed component or an empty hardpoint finds nothing to break, so a machine showing a broken entry shrugs it off, and what faces the enemy is the player's choice. | implemented |
 | **Mine** | Foe status, the Lammergeier's: every weapon and equipment it aims at a foe adds its flat damage to a Mine on that foe, with what the spend fired at it: every hit's stacks and its other keywords, one Mine a foe however many spends feed it. When the foe falls, even one that gets back up or splits, the Mine blows: its damage on every foe round its slot, each through its own Flak and armour (none under Breach), then its keywords as on a blow. Spread, Penetrate, Splash, Spillover and Lure stay with the spend, and its damage never grows with the spend's. The chip shows its damage; its readout, its keywords. | implemented |
@@ -233,7 +232,7 @@ Status: 195 implemented, 5 planned, 0 idea.
 | **On a hit on its shield** | Passive trigger. Fires when a foe's blow lands on this machine's shield and puts nothing on its hull; a blow that wounds fires On hull damage alone. | implemented |
 | **On a blow blocked** | Passive trigger. Fires once for every blow of this machine's weapons that a living foe's armour or Barrier takes whole, each foe's of an area and each strike's. | implemented |
 | **On gaining a Barrier** | Passive trigger. Fires as this machine gains a Barrier, from its own equipment or an ally's. | implemented |
-| **On a kill** | Passive trigger. Fires once after an attack of this machine's that killed, however many foes fell to it, chains, spills and a vent's blast included: a status (the Ammit's flare), a shield (the Kite's, recharged whole) or a vent. | implemented |
+| **On a kill** | Passive trigger. Fires once after an attack of this machine's that killed, however many foes fell to it, chains and spills included: a status (the Ammit's flare), a shield (the Kite's, recharged whole) or a vent. | implemented |
 | **On a foe killed** | Passive trigger. Fires as a death check counts a kill in this machine's fight, whoever or whatever made it, an ally's blow, a burn's tick and a Mine's blast among them: a status, once for each foe that fell (the Ammit's Souls). | implemented |
 | **On damaging a foe** | Passive trigger. Fires after a spend of this machine's weapons that took HP off a foe, however many foes it hurt: a status, a shield or a vent. An effect may fire once a round only (the Skua's stack of Ricochet). | implemented |
 | **On injury** | Passive trigger. Fires when an injury lands on a component. Effects: no_destroy (the component holds instead of being destroyed). | implemented |
@@ -349,7 +348,6 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Pinned Empowered** (implemented): Ryan, 12 November: "No Empowered decays this round. And I mean none, not ally or enemy." The third pin and the first over the whole field; held by the round (Skirmish.round_holds), never a status a unit carries. The name follows the two pins' and is a session's draft.
 - **Shots** (implemented): Kept only for a machine whose rule counts (an nth_shot condition).
 - **Quick turn spent** (implemented): Set by the static one_of_each (the Needletail's relay): two things a round, a weapon and an equipment.
-- **Siphoning** (implemented): The number is the entry's own (heat_per_blow), the lever.
 - **Flak** (implemented): Adds before multiplies and before armour, to a weapon's blow of 0 too (Ryan, 25 October: "Flak and overcharge exist in part to get past armour"), so a Shocked foe carrying Flak takes blow plus Flak, doubled. The id follows the participle habit (Burning, Webbed). Numbers are placeholders; Flak beside Empowered at a point a stack each may read too strong, the two read together on the Prairie Dog's rows.
 - **Destroyed component** (implemented): The threshold is a placeholder, set by what it asks of the player, never by a loss or win rate (Ryan, 25 October). The campaign's hangar screen is not built.
 - **Mine** (implemented): Ryan, 9 November: "the lammergeier basically converts all hits to AoE hits, at the cost of a delay until Death". One Mine a spend at a flat 2 ("then look at per hit later if it's weak"); its riders the spend's whole result on the foe ("the mine should take the entire result of the spend, then apply it. So a 3-hit flak that burns 1 per hit if the target is under 50% HP, would result in adding a 2 damage mine with 3 flak, and 0-3 burn"), every hit's stacks as its machine deepened and doubled them and a gated keyword where its gate held ("if a gate is met when fired only, then apply it"); the numbered ones add up and the rest ride once; Chain rides as its arcs (Claude's lean, which he took); in the enemy's turn a Mine's Disrupt does nothing; a Suppress rides as fired, each foe the blast meets judging its own Numbed (Claude's read; Ryan: "Your reads are correct"). A mark the team laid: a Ward turns it away, a foe's cleanse takes it, the Paradox counts it. A foe taken into a merge hands its Mine to the merger.

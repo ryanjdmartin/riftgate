@@ -256,10 +256,6 @@ func test_a_passive_adds_its_box_at_the_rails_foot() -> void:
 	d.after_blow = 2
 	assert_eq(picked.call(d), [["shield", "2"]], "over a foe, that foe's share")
 	d.after_blow = -1
-	d.set_face(Face.vent(3))
-	d.blast = 4
-	assert_eq(picked.call(d), [["blast", "4"]], "a vent's blast by its mark, a bare +4 beside a vent reading as cooling")
-	d.blast = 0
 	d.set_face(Face.attack(3))
 	d.next_face = Face.shield(5)
 	assert_eq(picked.call(d), [["shield", "5"]], "a stepping die's next entry by its mark and its number (Ryan, 4 November: \"Maybe icon+face number?\")")
@@ -679,10 +675,10 @@ func test_a_dies_readout_shows_the_entry_showing_with_its_effects_listed() -> vo
 	s.free()
 
 
-## The readout says what kind of piece the entry is on its machine, a passive's hybrid in (Ryan, 26
-## October: the Whip Scorpion's vents are "vent, weapon" on that machine, shown on the readout and
-## never in the codex, which shows the component as built).
-func test_the_readout_names_the_entrys_type_with_a_passives_hybrid() -> void:
+## The readout says what kind of piece the entry is on its machine, as the codex says the
+## component as built (Ryan, 26 October; the one hybrid, the Whip Scorpion's vents as "vent,
+## weapon", left with the vent blast on 12 November).
+func test_the_readout_names_the_entrys_type() -> void:
 	var s := _screen()
 	var ms: Skirmish.MechState = s.sk.mechs[1]
 	var vent := Face.vent(4)
@@ -692,10 +688,6 @@ func test_the_readout_names_the_entrys_type_with_a_passives_hybrid() -> void:
 	s._refresh()
 	s._on_die_tapped(1)
 	assert_eq(str(s._details_entry.lines[0]["type"]), "Vent", "a vent is a vent")
-	s._on_die_tapped(1)
-	ms.unit.grant_passive({"id": "t_blast", "name": "Test Blast", "description": "", "effects": [{"trigger": "static", "effect": "vent_blast", "value": 1.0}]})
-	s._on_die_tapped(1)
-	assert_eq(str(s._details_entry.lines[0]["type"]), "Vent, Weapon", "on a machine whose vents blast, a weapon too")
 	s._on_die_tapped(1)
 	var rows := EntryReadout.codex_lines(vent, ContentDB.load_default())
 	assert_eq(str(rows[0]["type"]), "Vent", "the codex keeps the component as built")
@@ -1850,45 +1842,6 @@ func test_the_predator_sense_marks_the_foes_looking_away_while_the_die_is_read_o
 	s.free()
 
 
-## The blast's marks (the Whip Scorpion's forecast, 22 October): a vent die on a machine whose
-## vents blast prints its blast and, held or dragged, rings every live foe with what it would
-## deal there; over an ally the vent blasts nothing, so the print and the rings go.
-func test_a_blasting_vent_rings_every_foe_with_its_number_until_it_is_over_an_ally() -> void:
-	var db := ContentDB.load_default()
-	var sk := Skirmish.new(1)
-	var a := db.make_mech("badger")
-	a.grant_passive({"id": "blast_t", "name": "Blast", "description": "", "effects": [{"trigger": "static", "effect": "vent_blast", "value": 1}]})
-	a.die = Die.single(Face.vent(20))
-	sk.add_mech(a)
-	sk.add_mech(db.make_mech("clydesdale"))
-	var plated := Foe.make("revenant", 300, 10)
-	plated.armour = 5
-	sk.add_foes([Foe.make("revenant", 300, 10), plated])
-	var s := SkirmishScreen.new()
-	s.setup(sk)
-	sk.mechs[0].heat = 30
-	s._refresh()
-	assert_eq(s._dice[0].blast, 20, "the die prints the blow its vent would fire")
-	assert_false(s._prey.on, "no rings until the die is in hand")
-	s._on_die_tapped(0)
-	assert_true(s._prey.on and s._prey.style == "blast", "read: the blast's rings")
-	assert_eq(s._prey.marks.size(), 2, "on every live foe")
-	assert_true(s._prey.labels.has("20") and s._prey.labels.has("15"), "each with what it would deal there, armour off: %s" % str(s._prey.labels))
-	s._on_die_tapped(0)
-	assert_false(s._prey.on, "gone when its readout closes")
-	s._on_drag_started(0)
-	assert_true(s._prey.on, "dragged: the rings")
-	assert_eq(s._ghost.blast, 20, "and the die under the finger prints it")
-	s._on_drag_moved(s._mech_views[1].get_global_rect().get_center())
-	assert_false(s._prey.on, "over an ally the vent blasts nothing: no rings")
-	assert_eq(s._ghost.blast, 0, "and no print")
-	s._on_drag_moved(s._mech_views[0].get_global_rect().get_center())
-	assert_true(s._prey.on, "back over itself, the rings return")
-	s._on_drag_ended(Vector2(-100, -100))
-	assert_false(s._prey.on, "gone when the drag ends")
-	s.free()
-
-
 ## The lure preview (the Siphon's forecast, 22 October): while a die whose entry Lures every foe
 ## is read or dragged, the foes it would turn draw dashed arrows to its machine, its gauges read
 ## the lured blows and their heat, and the machine they left reads none; closed, all goes back.
@@ -1896,7 +1849,8 @@ func test_a_lure_in_hand_previews_its_turn_with_dashed_arrows_and_the_gauges() -
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
 	var a := db.make_mech("badger")
-	a.die = Die.single(Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "braces": 2, "reaches_all": true, "heat_per_blow": 10}))
+	a.die = Die.single(Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "braces": 2, "reaches_all": true}))
+	a.grant_passive({"id": "boiler", "name": "Boiler", "description": "", "effects": [{"trigger": "static", "effect": "heat_per_blow", "value": 10}]})
 	sk.add_mech(a)
 	sk.add_mech(db.make_mech("clydesdale"))
 	sk.add_foes([Foe.make("revenant", 300, 10), Foe.make("revenant", 300, 10)])

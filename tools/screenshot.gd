@@ -180,23 +180,22 @@ func _apply_pose() -> void:
 			# The other world's window announcing a foe's named move (RIFTGATE_SHOT_FRAME=20,
 			# past its fade-in).
 			s._announce("Self-Destruct")
-		"blast", "siphon":
-			# The Whip Scorpion's forecasts (22 October): the first machine whose die carries a vent
-			# that blasts (blast) or a Lure over every foe (siphon) shows that entry, hot enough to
-			# fire, dragged: over its own machine for the blast's rings, over a foe for the lure's
-			# dashed arrows and gauges. RIFTGATE_TEAM puts the Whip Scorpion on the team.
+		"siphon":
+			# A lure's forecast (22 October): the first machine whose die carries a Lure over every
+			# foe shows that entry dragged over a foe, for the lure's dashed arrows and gauges. No
+			# dealt piece carries one since the Whip Scorpion's rework, so it wants a die built for
+			# it (the vent blast's pose went with the blast, 12 November).
 			for i in range(s.sk.mechs.size()):
 				var ms: Skirmish.MechState = s.sk.mechs[i]
 				for k in range(ms.die.faces.size()):
 					var f: Face = ms.die.faces[k]
-					var want: bool = (f.kind == Face.Kind.VENT and Effects.vent_blast(ms.unit) > 0.0) if _pose == "blast" else (f.reaches_all and f.has(Face.Keyword.LURE))
-					if not want:
+					if not (f.reaches_all and f.has(Face.Keyword.LURE)):
 						continue
 					ms.face_index = k
 					ms.heat = maxi(ms.heat, 40)
 					s._refresh()
 					s._on_drag_started(i)
-					var over: Control = s._mech_views[i] if _pose == "blast" else s._foe_view_for(s.sk.front[0])
+					var over: Control = s._foe_view_for(s.sk.front[0])
 					var at := over.get_global_rect().get_center()
 					s._on_drag_moved(at)
 					return

@@ -2595,28 +2595,22 @@ func test_a_rewrite_says_its_shot_and_a_rank_condition_its_rank() -> void:
 	assert_true(errs.any(func(e: String) -> bool: return e.contains("test_rank_bad") and e.contains("target_rank needs rank")), "a rank that is neither is refused")
 
 
-## The Siphon's rules and the vent blast (the Whip Scorpion's, 20 October): a reach over every
-## machine is never a vent's, the old reach key a targeting mode's now (4 November), a heat a blow
-## taken is a positive number, and a blast a positive share.
-func test_the_siphons_rules_and_the_vent_blast_say_their_numbers() -> void:
+## A reach over every machine is never a vent's, and the old reach key is a targeting mode's now
+## (4 November). The Siphon's heat a blow and the vent blast it stood beside left the engine on
+## 12 November.
+func test_a_vent_reaches_no_whole_team_and_the_old_reach_key_is_refused() -> void:
 	var db := _fresh()
 	var plate: Dictionary = _piece(db, "coolant_jacket")
 	plate["tier"] = 1
 	plate["face"]["targets"] = "every_ally"
-	plate["face"]["heat_per_blow"] = 0
 	db.components["test_vent_all"] = plate
 	var old: Dictionary = db.components["heliographic_death_ray"].duplicate(true)
 	old["face"]["keywords"] = ["lure"]
 	old["face"]["reaches_all"] = true
 	db.components["test_old_reach"] = old
-	var boiler: Dictionary = db.chassis["whip_scorpion"].duplicate(true)
-	boiler["passive"]["effects"] = [{"trigger": "static", "effect": "vent_blast", "value": 0}]
-	db.chassis["test_boiler"] = boiler
 	var errs := db.validate()
 	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_vent_all") and e.contains("Every Ally and Every Other Ally are a shield's or a buff's")), "a vent never reaches every ally")
 	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_old_reach") and e.contains("reaches_all is a targeting mode now")), "the old reach key is refused for the targeting mode")
-	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_vent_all") and e.contains("heat_per_blow")), "a heat a blow is positive")
-	assert_true(errs.any(func(e: String) -> bool: return e.contains("test_boiler") and e.contains("vent_blast")), "and a blast's share")
 
 
 ## A promoted form (the bible's section 9): its entry holds what the class change adds and

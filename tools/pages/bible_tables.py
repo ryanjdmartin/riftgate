@@ -33,7 +33,7 @@ COMPONENT_KEYWORDS = {"burn": [("burning", "foe")], "shock": [("shocked", "foe")
                       "suppress": [("suppressed", "foe"), ("numbed", "foe")],
                       "web": [("webbed", "foe"), ("suppressed", "foe"), ("numbed", "foe")],
                       "cryo": [("cryoed", "foe")], "flak": [("flakked", "foe")], "expose": [("exposure", "foe")]}
-FACE_FIELDS = {"braces": "braced", "fills_hopper": "hopper", "heat_per_blow": "siphoning",
+FACE_FIELDS = {"braces": "braced", "fills_hopper": "hopper",
                "holds_all": "pinned_empowered"}   # the Soul Siphon's hold on Empowered, the round's own (12 November), on its machine and...
 FACE_FIELDS_ON_FOES = {"holds_all": ["pinned_empowered"]}   # ...on every foe; the Syrinx Drone's status went with the slot mines (9 November), the Contractor's Expose is its keyword
 PASSIVE_EFFECTS = {"shock_on_hull_strike": ("shocked", "foe"), "seal_form": ("sealed", "machine"),

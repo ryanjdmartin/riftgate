@@ -573,7 +573,6 @@ static func restore_skirmish(sk: Skirmish, d: Dictionary) -> void:
 		for k in sp.keys():
 			sk.sponsorship[str(k)] = int(sp[k])
 	sk.last_roll.clear()
-	sk.last_blast.clear()
 	sk.last_acts.clear()
 
 

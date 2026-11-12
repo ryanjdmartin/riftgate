@@ -95,7 +95,7 @@ KEYWORDS = {
 # A face field and what it sets or reads.
 FACE_FIELDS = {
     "braces": [("braced", "sets")], "fills_hopper": [("hopper", "sets")],
-    "fires_hopper": [("hopper", "reads")], "heat_per_blow": [("heat", "sets")], "detonates": [("mine", "reads")],
+    "fires_hopper": [("hopper", "reads")], "detonates": [("mine", "reads")],
     "gathers_mines": [("mine", "reads")], "vents_all": [("heat", "reads")], "power_per_heat": [("heat", "reads")],
     "power_per_missing": [("missing_hp", "reads")], "finisher": [("missing_hp", "reads")],
     "kill_rerolls": [("kill", "reads"), ("reroll", "sets")], "ally_action": [("reroll", "reads")], "regenerates": [("regenerating", "sets")],
@@ -112,7 +112,7 @@ EFFECTS = {
     "shock_on_hull_strike": [("shocked", "sets"), ("hull_damage", "reads")], "seal_form": [("sealed", "sets"), ("braced", "sets"), ("heat", "sets")],
     "paradox": [("paradox", "sets"), ("suppressed", "sets")], "muster": [("muster", "sets"), ("reroll", "reads")],
     "shield_per_ally_heat": [("ally_heat", "reads"), ("shield_granted", "reads")],
-    "add_stacks": [], "vent_blast": [("heat", "reads")], "pass_release": [("heat", "reads")], "forge": [("ammo", "sets"), ("heat", "reads")], "mine_on_spend": [("mine", "sets")],
+    "add_stacks": [], "pass_release": [("heat", "reads")], "forge": [("ammo", "sets"), ("heat", "reads")], "mine_on_spend": [("mine", "sets")],
     "step_die": [("reroll", "reads")], "split_strikes": [("strikes", "sets")], "multiply_printed": [], "free_reroll": [("reroll", "sets")],
     "extra_action": [], "never_hunted": [], "no_destroy": [], "carry": [], "rewrite_weapon": [], "grant_keyword": [],
     "add_shield": [], "refill_shield": [], "vent_heat": [], "stack_status": [], "lay_status": [],

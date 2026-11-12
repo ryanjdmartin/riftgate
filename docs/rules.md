@@ -124,7 +124,7 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 3. The player's turn: spend, lock and reroll in any order. Each spend resolves fully before
    the next. UNDO takes back the last spend or reroll, in the order made, back to the last
    roll, its floor: the round's roll, a reroll that draws, or a spend that draws inside itself
-   (Rapid's or Instant's reroll, a vent's blast); a stepping die's step draws nothing,
+   (Rapid's or Instant's reroll); a stepping die's step draws nothing,
    so it is taken back like a spend. The trail shows a bar at every roll, every line of it at
    full strength, and UNDO's badge says how many spends it reaches; UNDO opens once a spend's
    last blow has played. END TURN sits bottom-left and UNDO bottom-right, and UNDO reads on or
@@ -219,8 +219,8 @@ every machine is wrecked. There is no round limit.
   lit for the whole team and dark for every other ally. Its costs run along the foot (Costs, below) and its keywords
   down the edge. What the machine's passive adds sits in its passive box at the foot of the
   edge, never joined to the blow: a blow added after the strikes by the mark of what pays it
-  (the Storm Petrel's zap by the shield's, in the shield's colour), a vent's blast at a random
-  foe by the blast's mark, a stepping die's next entry by its mark and the
+  (the Storm Petrel's zap by the shield's, in the shield's colour), a stepping die's next entry
+  by its mark and the
   number it will show (the Cassowary's). The readout says each on a line of its own, headed by
   the same box. A dark entry is blank, its clock and its turns left along the foot. How each
   mark is drawn is `tools/die_sheet.gd`'s sheet and the bible's section 6.
@@ -358,9 +358,6 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   A piece that changes its machine's form wears that form's chip: on the Polar Bear, a buff it
   may spend on itself the seal's while its shell is open, and a weapon the opening's while it is
   sealed; the sealed machine wears a shell round it, a burst as it seals or opens.
-  A vent on a machine whose vents blast shows the blast beside it (its mark and the blow the
-  heat it would take off makes), and read or dragged anywhere but over an ally, every foe the
-  blast may land on wears a turning dashed ring with the number it would deal there.
 - **Tapping a machine or a foe** opens its readout, the way a die's shows an entry, and
   tapping it again closes it; one readout is open at a time, a tap on another unit or a die
   moves it, a tap on nothing or ending the turn closes it, and a hold opens it too; a tap on an
@@ -785,8 +782,7 @@ On a foe:
   foe already suppressed, a Paradox's included, does nothing. As the foe recovers it gains its
   stun resist in Numbed, after the round's decay.
 - **Shocked** (debuff): when a weapon's strike aimed at it lands, the blow deals double and the
-  shock is spent. A strike is aimed at the foe it resolves on: the player's pick, or the draw of
-  a vent's blast, which the game targets rather than the player. A blow that
+  shock is spent. A strike is aimed at the foe it resolves on, the player's pick. A blow that
   only reaches it (an area's, a Chain's arc, a spill, a Mine's blast) neither doubles nor spends it, and equipment leaves it standing; it never stacks.
 - **Exposed** (debuff): it stands in Direct reach of every machine as if its
   column's front were empty, and its armour counts for nothing, its own and any Armoured.
@@ -1080,7 +1076,7 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   on hull damage (any hull lost: a blow, a bite or an overheat), on shield gain, on shield
   granted (an ally this machine shields), on heat gain, on foe status (a foe
   gains a debuff), on stack (this machine applies stacks), on a kill (once after an attack of
-  this machine's that killed, however many fell to it, arcs, spills and a vent's blast included:
+  this machine's that killed, however many fell to it, arcs and spills included:
   the Ammit's flare, the Kite's shield), on a foe killed (every kill the death check counts in
   this machine's fight, whoever made it, once for each: the Ammit's Souls), on
   damaging a foe (after a spend of its weapons that took HP off a foe, once however many it

@@ -51,7 +51,7 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "grant_keyword", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "fold_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "pass_release", "shove_behind", "mute_keywords", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "grant_keyword", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "fold_die", "rewrite_weapon", "heat_per_blow", "pass_release", "shove_behind", "mute_keywords", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status"],
 	"on_round_start": ["add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_shield_hit": ["stack_status", "add_shield", "vent_heat"],
@@ -346,11 +346,6 @@ const STATUS := {
 	# store with no effect of its own; the screen draws it as pips under the heat bar.
 	"shots": {"id": "shots", "name": "Shots", "description": "Every weapon and equipment it aims at a foe this fight, counted for a rule that lands on a number of them.", "decay": "none",
 		"tags": ["store", "count"], "effects": []},
-	# The Whip Scorpion's Siphon (Ryan's go, 20 October; built 21 October): spending it, every
-	# blow a foe lands on the machine that round adds heat, next round's fuel for its vents; the
-	# blows land in the enemy's turn, after the overheat, so it is never a same-turn burn. The
-	# value is the entry's own (siphon_status builds it); 10 here is the default a bare grant
-	# would carry. Renewing, the machine's own doing, so no cleanse lifts it.
 	# The enemy's question to the keyword build (Ryan, 27 and 28 October: silence "makes sense
 	# to only disable (positive) keywords, and not touch buffs"; built with the ladder): a foe's
 	# silence leaves the machine Silenced through its next round, its components' keywords
@@ -361,8 +356,6 @@ const STATUS := {
 	# (25 and 26 October), a one-round purge that returns.
 	"silenced": {"id": "silenced", "name": "Silenced", "description": "Its components' keywords are muted through its next round.", "stacking": "renew",
 		"tags": [CLEANSABLE, "silence"], "effects": [{"trigger": "static", "effect": "mute_keywords", "value": 1}]},
-	"siphoning": {"id": "siphoning", "name": "Siphoning", "description": "Every blow a foe lands on it this round adds {value} heat.", "stacking": "renew",
-		"tags": ["fuel"], "effects": [{"trigger": "static", "effect": "heat_per_blow", "value": 2}]},
 	# The block as a buff (Ryan, 14 October, the honest shield's upside; built 21 October), one
 	# machine at a time. A Barrier is Shocked's mirror on the machines' side: the next blow a
 	# foe lands on it deals nothing, so it never injures, its riders landing, and a blow of
@@ -2112,9 +2105,8 @@ static func is_ability(status_id: String) -> bool:
 ## "debuff" (laid by the other side to hinder it: a mark the team lays on a foe, a foe's rider on a
 ## machine, each component's Disabled and Corrupted), "ability" (the unit's own mechanic, which
 ## nothing strips), "store" (a capped resource, and a count a rule reads), or "" for one that is
-## none of them: a marker no chip shows, and the Whip Scorpion's Siphoning, its own doing that no
-## Purge and no Cleanse touches. The chip and the readout line wear the label; the keywords list
-## files the term under it.
+## none of them: a marker no chip shows. The chip and the readout line wear the label; the
+## keywords list files the term under it.
 static func status_kind(status_id: String) -> String:
 	if status_id.begins_with("disabled") or status_id.begins_with("corrupted"):
 		return "debuff"
@@ -2201,16 +2193,8 @@ static func buff_stacks(u) -> int:
 	return n
 
 
-## The Siphoning status with an entry's own heat a blow (the Whip Scorpion's Heliographic
-## Siphon), as kindled() carries a rally's value.
-static func siphon_status(per_blow: int) -> Dictionary:
-	var s: Dictionary = STATUS["siphoning"].duplicate(true)
-	s["description"] = "Every blow a foe lands on it this round adds %d heat." % per_blow
-	s["effects"] = [{"trigger": "static", "effect": "heat_per_blow", "value": per_blow}]
-	return s
-
-
-## The heat every blow a foe lands on this machine adds this round (Siphoning), 0 for none.
+## The heat every blow a foe lands on this machine adds (heat_per_blow, static: the Whip
+## Scorpion's passive), 0 for none.
 static func heat_per_blow(u) -> int:
 	var n := 0
 	for pair in _taking_part(u, "static", null):
@@ -2231,24 +2215,12 @@ static func pass_release(u) -> Dictionary:
 	return {}
 
 
-## What this machine's vents spent on itself blast a random foe for, as a share of the heat
-## they take off it (the Whip Scorpion's Thermal Ejection Manifold, 12 and 13 October; built
-## 21 October): 1 for the whole heat, 0 when nothing blasts.
-static func vent_blast(u) -> float:
-	var share := 0.0
-	for pair in _taking_part(u, "static", null):
-		if str(pair[0].get("effect", "")) == "vent_blast":
-			share += float(pair[0].get("value", 1))
-	return share
-
-
 ## The kinds a piece is on this machine, in the engine's words (Ryan, 26 October: "Face type is
 ## either Weapon, Shield, Vent, or Equipment"): its own (equipment a buff or a debuff, a blank
-## none), then any a live passive adds. A vent on a machine whose vents blast a foe is a weapon
-## too ("Hybrid cases can exist. Such as the steam vents"): its blast is a weapon's hit and
-## resolves as one (Skirmish._blast), and the die's hold names both. With no machine, the piece
-## as built, as the codex shows it.
-static func kinds_of(u, f: Face) -> Array[String]:
+## none). One kind a piece today: the hybrid he allowed ("Hybrid cases can exist. Such as the
+## steam vents") was the vent that blasted, a weapon too, which left with the Whip Scorpion's
+## rework; a passive that makes a piece a second kind adds it here. `_u` is the machine it is on.
+static func kinds_of(_u, f: Face) -> Array[String]:
 	var out: Array[String] = []
 	if f == null:
 		return out
@@ -2259,8 +2231,6 @@ static func kinds_of(u, f: Face) -> Array[String]:
 			out.append("shield")
 		Face.Kind.VENT:
 			out.append("vent")
-			if u != null and vent_blast(u) > 0.0:
-				out.append("weapon")
 		Face.Kind.BUFF:
 			out.append("equipment")
 	return out
@@ -2526,7 +2496,6 @@ static func effect_text(eff: Dictionary) -> String:
 		"step_die": body = "its die never rolls: each fight opens on a random entry, and every roll steps it to the next in order"
 		"fold_die": body = "its die is two batteries of %s, one up at a time with its fixed pieces; the battery up stays up from fight to fight, and a battle opens on the first" % vs
 		"rewrite_weapon": body = "every weapon and equipment it aims at a foe fires as one %s %s blow, heat %s, its keywords and rules kept" % [str(eff.get("reach", "direct")), vs, str(eff.get("heat", 0))]
-		"vent_blast": body = "a vent it spends on itself blasts a random foe for %s the heat it takes off" % ("the whole of" if is_equal_approx(float(v), 1.0) else "%s×" % vs)
 		"pass_release": body = "a turn it ends with an entry it could have spent and %d heat or more releases its heat once the enemy has acted: %s on every foe, 1 more for each heat over %d" % [int(eff.get("gate", 1)), vs, int(eff.get("gate", 1))]
 		"shove_behind": body = "damaging a foe in the front rank deals %s%% of its maximum HP, rounded up, to the foe behind it" % vs
 		"hold_status": body = "its %s does not decay" % str(STATUS.get(str(v), {}).get("name", v))

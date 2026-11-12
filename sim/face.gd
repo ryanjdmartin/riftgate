@@ -187,7 +187,6 @@ var reaches_all: bool:
 				targets = Target.SELF_ALLY
 			elif not on and targets == Target.EVERY_OTHER_ALLY:
 				targets = Target.ALLY
-var heat_per_blow: int = 0    # any entry: spending it, every blow a foe lands on its owner this round adds this much heat (the Siphon's, next round's fuel)
 var shields: int = 0          # a vent: the shield it also gives the machine it cools, after the vent (the combined entry, Ryan's go of 20 October: the Wake Diffuser)
 var gathers_mines: bool = false   # an attack: every Mine on the field's other foes joins its target's (the Lammergeier's Lorentz Contractor, Ryan, 9 November)
 var detonates: bool = false   # an attack: its target's Mine blows now, on it and every foe round it, after the spend's own Mine joined it (the Lammergeier's Syrinx Drone, Ryan, 9 November)
@@ -383,7 +382,6 @@ static func from_dict(d: Dictionary) -> Face:
 	f.shield_cost = maxi(0, int(d.get("shield_cost", 0)))
 	f.cooldown = maxi(0, int(d["cooldown"])) if d.has("cooldown") else -1
 	f.turns_die = bool(d.get("turns_die", false)) and f.kind == Kind.BUFF
-	f.heat_per_blow = maxi(0, int(d.get("heat_per_blow", 0)))
 	f.shields = maxi(0, int(d.get("shields", 0))) if f.kind == Kind.VENT else 0
 	f.gathers_mines = bool(d.get("gathers_mines", false)) and f.kind == Kind.ATTACK
 	f.detonates = bool(d.get("detonates", false)) and f.kind == Kind.ATTACK
@@ -494,8 +492,6 @@ func to_dict() -> Dictionary:
 		d["cooldown"] = cooldown
 	if turns_die:
 		d["turns_die"] = true
-	if heat_per_blow > 0:
-		d["heat_per_blow"] = heat_per_blow
 	if shields > 0:
 		d["shields"] = shields
 	if gathers_mines:
@@ -609,15 +605,14 @@ func acts_again() -> bool:
 
 
 ## A rule printed on the entry rather than a keyword (bible section 6: the die's star chip):
-## Vents all, the missing-hull bonus, the hopper, the brace, the
-## Siphon's heat a blow, a count it spends for its stacks or a status it holds on every unit (the
-## Soul Siphon's), or a labelled effect. A roll that may land on itself is Instant's, a
+## Vents all, the missing-hull bonus, the hopper, the brace, a count it spends for its stacks or
+## a status it holds on every unit (the Soul Siphon's), or a labelled effect. A roll that may land on itself is Instant's, a
 ## keyword since 12 November, never the star. A cooldown is a cost the die prints with its clock, a reload the ammo the die
 ## prints with its shells (Ryan, 2 November), and a shield's cooling the number under its steam
 ## (3 November), so none of them is.
 func has_unique_rule() -> bool:
 	return vents_all or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_burn > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not label.is_empty() or not printed.is_empty() \
-		or turns_die or heat_per_blow > 0 or gathers_mines or detonates \
+		or turns_die or gathers_mines or detonates \
 		or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine \
 		or regen_shield > 0 or action_price > 0 or rolls_target or kill_rerolls > 0 \
@@ -759,7 +754,6 @@ func duplicate_face() -> Face:
 	f.braces = braces
 	f.cooldown = cooldown
 	f.turns_die = turns_die
-	f.heat_per_blow = heat_per_blow
 	f.shields = shields
 	f.gathers_mines = gathers_mines
 	f.detonates = detonates
@@ -863,8 +857,6 @@ func spin_text() -> String:
 
 func _spin_phrases() -> Array[String]:
 	var out: Array[String] = []
-	if heat_per_blow > 0:
-		out.append("+%d heat a blow taken this round" % heat_per_blow)
 	return out
 
 

@@ -113,7 +113,7 @@
    "id": "weapon",
    "category": "component_kind",
    "name": "Weapon",
-   "codex": "A component that deals damage: spent on a foe within its reach, it deals its number in damage, then its keywords act and its heat lands. One that deals none is equipment. A passive may make another kind a weapon on its machine too (a vent that blasts a foe): its hold reads both, Vent, Weapon.",
+   "codex": "A component that deals damage: spent on a foe within its reach, it deals its number in damage, then its keywords act and its heat lands. One that deals none is equipment.",
    "status": "implemented",
    "design": {
     "holes": "The engine's kind is attack for a weapon and a debuff alike: a debuff is an attack of no damage (Face.is_debuff), so code asks is_weapon() for this word and is_attack() for both."
@@ -995,22 +995,6 @@
    }
   },
   {
-   "id": "siphoning",
-   "category": "status",
-   "name": "Siphoning",
-   "codex": "Machine status: every blow a foe lands on it this round adds heat, 2 a blow, whatever the blow dealt. The blows land in the enemy's turn, after the overheat, so it is next round's fuel, or next turn's burn. Until the round's end; nothing cleanses it.",
-   "status": "implemented",
-   "design": {
-    "holes": "The number is the entry's own (heat_per_blow), the lever.",
-    "table": {
-     "kind": "buff",
-     "on": "machine",
-     "stacks": "No: its entry's heat a blow",
-     "lasts": "Until the round's end"
-    }
-   }
-  },
-  {
    "id": "flakked",
    "category": "status",
    "name": "Flak",
@@ -1527,7 +1511,7 @@
    "id": "on_kill",
    "category": "trigger",
    "name": "On a kill",
-   "codex": "Passive trigger. Fires once after an attack of this machine's that killed, however many foes fell to it, chains, spills and a vent's blast included: a status (the Ammit's flare), a shield (the Kite's, recharged whole) or a vent.",
+   "codex": "Passive trigger. Fires once after an attack of this machine's that killed, however many foes fell to it, chains and spills included: a status (the Ammit's flare), a shield (the Kite's, recharged whole) or a vent.",
    "status": "implemented",
    "design": {
     "holes": ""
