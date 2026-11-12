@@ -2030,5 +2030,25 @@
    "reach": 25.0,
    "breadth": 9.5
   }
- ]
+ ],
+ "fits": {
+  "hp_3": {
+   "twin_barrel": {
+    "shape": "twin_barrel",
+    "scale": 0.6
+   },
+   "rack": {
+    "shape": "rack",
+    "scale": 0.5
+   },
+   "dish": {
+    "shape": "dish",
+    "scale": 0.6
+   },
+   "blade": {
+    "shape": "blade",
+    "scale": 0.7
+   }
+  }
+ }
 }

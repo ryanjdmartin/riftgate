@@ -255,15 +255,17 @@ def kite(b):
     gear teeth (the pinion, a wing's flight feathers and a gear) whose backs run aft as strakes
     tapering into the drum, the barrel out of the inlet's centre, its muzzle lit; each fires one of the Driver's two shots. The nose mounts either
     side of the nosecone, hp_1 the stock's Transonic Rifle as its class, hp_2 bare, at half scale,
-    the machine being small; hp_3, bare, on top of the tail segment behind the canopy, its gun
-    firing forward over it (Ryan, 12 November: "move the new mount on top of the tail segment").
+    the machine being small; hp_3, bare, ahead of the canopy on the centreline, inset: its gun
+    lies sunk in a trough cut down the nose's spine, the barrel showing as the nose falls away
+    (Ryan, 12 November: "in front of the canopy, but inset, like the polar bear - so some of the
+    barrel pokes out through a cut channel. Doesn't retract or anything").
     The tail segment's flat face behind the canopy is an air intake, a dark mouth in a steel lip
     (the same day: "Can the flat face behind the canopy also get an intake treatment?")."""
     # Fuselage: one piece, a six-sided section lofted from a needle nose to a broad rear.
     # The top tapers sharply toward the nose, the belly shallowly, and the belly carries
     # forward under the wing roots (Ryan, 21 September).
-    b.loft([(46.0, _fuse(1.2, 0.6, 0.5)), (36.0, _fuse(6.0, 2.2, 2.0)), (18.0, _fuse(12.0, 3.8, 3.4)),
-            (0.0, _fuse(16.0, 6.4, 4.6)), (-16.0, _fuse(18.0, 7.0, 4.8)), (-30.0, _fuse(15.0, 5.4, 4.0))], "steel.plate", "fuselage")
+    fuselage = b.loft([(46.0, _fuse(1.2, 0.6, 0.5)), (36.0, _fuse(6.0, 2.2, 2.0)), (18.0, _fuse(12.0, 3.8, 3.4)),
+                       (0.0, _fuse(16.0, 6.4, 4.6)), (-16.0, _fuse(18.0, 7.0, 4.8)), (-30.0, _fuse(15.0, 5.4, 4.0))], "steel.plate", "fuselage")
     b.loft([(38.0, diamond(0.0, 0.5, 2.0, 1.5)), (46.0, diamond(0.0, 0.5, 1.0, 0.7))], "steel.dark", "nose_tip")
     # The nose mounts, one either side of the nosecone on its fairing (Ryan, 30 September:
     # two nose hardpoints, sleeker than one; 28 October: the nose mounts are the hardpoints):
@@ -274,6 +276,17 @@ def kite(b):
             b.stock("hp_1", (s * 4.5, 28.0, -1.0), "barrel", scale=0.5, carries="transonic_rifle")
         else:
             b.pad("hp_2", (s * 4.5, 30.0, -1.0), scale=0.5, size=(3.0, 1.0))
+    # The third mount (its fourth entry, Ryan, 11 November: "giving it 4 faces again"), ahead of
+    # the canopy and inset (the 12th: "like the polar bear - so some of the barrel pokes out
+    # through a cut channel. Doesn't retract or anything"): a well for the breech cut into the
+    # nose's spine and a trough running forward from it, real hollows (b.cut_box), a level gun
+    # lying in them so its barrel rises out of the hull as the nose tapers. A class wider than
+    # the stock gun sits smaller to pass the well (NOSE_FITS).
+    GZ = 3.8   # the gun's line, level, under the spine at the canopy and over it by the muzzle
+    NOSE_FITS = {"twin_barrel": 0.6, "rack": 0.5, "dish": 0.6, "blade": 0.7}
+    b.cut_box([fuselage], -2.3, 2.3, 3.6, 9.8, GZ - 2.3, 9.0)
+    b.cut_box([fuselage], -1.8, 1.8, 9.6, 34.0, GZ - 1.8, 9.0)
+    b.pin("hp_3", (0.0, 6.0, GZ), scale=0.5, carries="", fits=NOSE_FITS)
     # Canopy: far back, low, faired into the spine rather than a bubble.
     b.loft([(-2.0, hexagon(0.0, 6.2, 7.0, 0.5)), (-10.0, hexagon(0.0, 7.4, 9.0, 3.0)),
             (-18.0, hexagon(0.0, 7.5, 9.0, 3.2)), (-26.0, hexagon(0.0, 7.2, 9.0, 3.0))], "glass.glass", "canopy")
@@ -331,10 +344,6 @@ def kite(b):
         b.box(-5.6, 5.6, -18.2, -17.2, za, zb, "steel.plate", "intake_lip")
     for (xa, xb) in ((-5.6, -5.0), (5.0, 5.6), (-0.3, 0.3)):
         b.box(xa, xb, -18.2, -17.2, 9.3, 11.4, "steel.plate", "intake_lip")
-    # The third mount (its fourth entry, Ryan, 11 November: "giving it 4 faces again"; the 12th:
-    # "on top of the tail segment"): bare, on the tail segment's top behind the intake, on the
-    # centreline, its gun firing forward over the canopy.
-    b.pad("hp_3", (0.0, -34.0, 12.5), scale=0.5, size=(3.0, 1.0))   # back so its barrel ends at the intake's lip, clear of the canopy (Ryan, 12 November: "Move the barrel back a bit")
     for s in (-1.0, 1.0):
         a = math.radians(s * 38.0)
         root = [(s * 1.5, -60.0, 10.5), (s * 1.5, -48.0, 10.5), (s * 1.5, -48.0, 11.5), (s * 1.5, -60.0, 11.5)]
