@@ -295,7 +295,12 @@ def kite(b):
     # then 1 more): a port, the back wall of a trough cut into the spine a little ahead of the
     # canopy (a real hollow, b.cut_hull), its floor flat to just short of its front and ramped
     # up to the surface there, the front where it has been since the first push. Fixed: no joint.
-    GZ = 5.0                  # the gun's line
+    # Then the line raised a little and, on trial, the trough filled in, the hood's mouth the
+    # port (his, the same day: "Move the mount vertically up a little bit, moving the fairing up
+    # if you need to, and then I want to see what filling in the cut looks like now"); TROUGH
+    # brings the cut back as it was, its floor kept 1.9 under the line.
+    GZ = 5.6                  # the gun's line
+    TROUGH = False
     PORT, FLAT, RUN = 5.0, 12.6, 13.4  # the port's wall, seven ahead of the canopy's nose; the floor flat to here; ramped up to the surface here
     FLOOR = GZ - 1.9
     # Every class here is its port form, starting at the wall, its root inside the hull: the
@@ -307,17 +312,19 @@ def kite(b):
     # just covered"). The standard shapes were tried here and taken back the same day ("Just for
     # fun ..."; "Ok go back to port gun"). The blade's place is a guess.
     NOSE_FITS = {"barrel": "barrel_port", "rack": ("rack_port", 0.6), "twin_barrel": ("twin_barrel_port", 0.92), "dish": ("dish_port", 0.55), "blade": ("blade", 0.7)}
-    b.cut_hull([fuselage], [(x, y, z) for x in (-2.2, 2.2) for (y, z) in ((PORT, FLOOR), (FLAT, FLOOR), (RUN, 4.4), (RUN, 9.0), (PORT, 9.0))])
+    if TROUGH:
+        b.cut_hull([fuselage], [(x, y, z) for x in (-2.2, 2.2) for (y, z) in ((PORT, FLOOR), (FLAT, FLOOR), (RUN, 4.4), (RUN, 9.0), (PORT, 9.0))])
     b.pin("hp_3", (0.0, PORT, GZ), scale=0.5, carries="", fits=NOSE_FITS)
     # The hood over the port (his: "we slap a gentle curved fairing overtop of the back of the
     # mount point, to hide the poking-out edge"): forward of the canopy the spine falls away
     # under the gun's level line, so the root of whatever the port wears stood proud of it. A
     # low arch on the spine rising gently from it toward the port and running a unit past the
     # wall, wider than the cut so its lip rests on the hull either side, the class coming out
-    # of its dark mouth. Its arch sinks into the hull, so it meets the spine with no seam.
+    # of its dark mouth. Its arch sinks into the hull, so it meets the spine with no seam. Its
+    # height rose with the gun's line, so it clears the root by as much as it did.
     def spine(y):
         return 6.4 - (6.4 - 3.8) * y / 18.0    # the fuselage's top between its sections at 0 and 18
-    HOOD_TAIL, HOOD_LIP, HOOD_H, HOOD_W, HOOD_SUNK = 1.5, PORT + 1.0, 1.0, 2.7, 0.4
+    HOOD_TAIL, HOOD_LIP, HOOD_H, HOOD_W, HOOD_SUNK = 1.5, PORT + 1.0, 1.0 + (GZ - 5.0), 2.7, 0.4
     hood = []
     for k in range(6):
         t = k / 5.0

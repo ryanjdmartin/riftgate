@@ -357,7 +357,8 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
     model's third mount is ahead of the canopy, a port at the back of a trough under a low curved
     hood, every class there in its port form, its root inside the hull (four new variants: the
     port gun, the port pair, the port rack and the port dish on its telescoping mast; the blade
-    standard),
+    standard); on trial since his last note, the line 0.6 higher, the hood with it, and the trough
+    filled in (`TROUGH` in the builder brings it back),
     and the tail segment's face behind the canopy is an air intake (his, 12 November). Its brief is retired; his play is the
     to-do's.
   - The Skua: built as his "Ramping Dakka" (the bible's Kestrel row). Its passive gains a stack of Ricochet the first time each round one of its
