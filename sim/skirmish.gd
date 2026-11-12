@@ -2251,7 +2251,7 @@ func release_shot(ms: MechState) -> Face:
 ## so the heat the foes' blows banked over its maximum fires with the rest ("end the turn right
 ## under the overheat, get hit a couple times to go over the threshold, and then release it
 ## all"): each machine that passed and holds its gate's heat lands its release on every foe and
-## is left cold; under the gate it keeps its heat. One hit, a weapon's, resolved as any (_hit),
+## is left cold; under the gate it keeps its heat. One hit, a weapon's, striking every foe (_hit),
 ## costing no heat of its own; the fight it decides ends there.
 func _release_passes() -> void:
 	for i in range(mechs.size()):
@@ -2843,7 +2843,11 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	# the entry reads: the firer's pipeline on it, the foe's Flak and armour, the weapon's riders
 	# a strike. Read as the spend begins, so a stack the spend earns bounces none of it.
 	var strikes := maxi(1, f.strikes)
-	var bounces := Effects.stacks_of(ms.unit, "ricochet") if f.is_weapon() else 0
+	# A reach over every foe has no one target (Ryan, 12 November: "Target all shouldn't need a
+	# target in the same way that sweep didn't"): every foe is struck, so a Shock on any of them
+	# is doubled and spent, and with no primary target no Ricochet follows it.
+	var everyone := f.reach == Face.Reach.EVERY_FOE
+	var bounces := Effects.stacks_of(ms.unit, "ricochet") if f.is_weapon() and not everyone else 0
 	h.steps = strikes + bounces
 	for at in range(strikes + bounces):
 		var bounce := at >= strikes
@@ -2884,6 +2888,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			var first := not struck_once.has(foe)   # the foe's first blow of the spend
 			struck_once[foe] = true
 			var into_mine := foe == target   # the blow on the spend's target: its riders are the Mine's too
+			var struck := foe == target or everyone   # a strike aimed at this foe, never a blow that only reaches it
 			if not h.reached.has(foe):
 				h.reached.append(foe)
 			if int(shapes.get(foe, 0)) == AREA_CHAIN:
@@ -2901,7 +2906,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				# counts the killing strike's excess. Its riders land on the corpse as any hit's do
 				# (the audit's eighth bug, 8 November: a Wild Boar's ×2 Flak 1 that kills with its
 				# first strike leaves Flak 2).
-				if foe == target:
+				if struck:
 					_note_blow(foe, at, 0, "ricochet" if bounce else "strike")   # the shot lands on the corpse before it spills
 				_spill(ms, f, foe, blow, hit, at, not f.is_debuff())
 				if foe == target:
@@ -2915,7 +2920,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				# breaching blow meets none (one breach, 22 October). Every blow is recorded, one on a
 				# foe an earlier hit of the spend felled included, so the screen shows every hit and
 				# shot land (Ryan, 7 November: "Anything truncated confuses the player").
-				var landing := _land_blow(foe, blow, ms.unit, not f.is_debuff(), foe == target, foe.armour_for(f), at, ("ricochet" if bounce else "strike") if foe == target else ("chain" if int(shapes.get(foe, 0)) == AREA_CHAIN else "area"))
+				var landing := _land_blow(foe, blow, ms.unit, not f.is_debuff(), struck, foe.armour_for(f), at, ("ricochet" if bounce else "strike") if struck else ("chain" if int(shapes.get(foe, 0)) == AREA_CHAIN else "area"))
 				taken = int(landing["taken"])
 				var foe_armoured := int(landing["armoured"])
 				var barred := bool(landing["barred"])
@@ -2936,7 +2941,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				# 25 October: "The important part is that it was a damaging weapon"; 29 October: "when
 				# targeted and struck by a weapon"); equipment (a lure, a probe) and a blow that only
 				# reaches the foe leave it standing.
-				if not f.is_debuff() and foe == target and Effects.remove(foe, "shocked"):
+				if not f.is_debuff() and struck and Effects.remove(foe, "shocked"):
 					log.append(("%s: the shock is spent on the Barrier" % foe.display_name) if barred else ("%s: the shock lands, %d doubled" % [foe.display_name, blow]))
 			# A hit lays what the passives lay on this foe, a stack per strike, a debuff's included,
 			# unless the passive asks for a weapon's hit (the Ambush's Vitriol, its text says so:
@@ -3454,7 +3459,7 @@ func area_shapes(f: Face, target: Foe) -> Dictionary:
 
 ## The number a foe in a shape takes in place of the roll: the row's (Spread's or Splash's),
 ## the column's (Penetrate's or Splash's), Chain's on a conductor, and the entry's own for a foe
-## a reach over every foe adds (a weapon's lands whole on each; equipment's blow is nothing).
+## a reach over every foe adds (a weapon's strikes each whole; equipment's blow is nothing).
 static func area_number(f: Face, shape: int) -> int:
 	match shape:
 		AREA_ROW:

@@ -213,10 +213,10 @@
    "id": "every_foe",
    "category": "reach",
    "name": "Every Foe",
-   "codex": "Targeting mode. Dropped on any foe, the entry lands on every foe in the fight, front rank and back, as it lands on its target: a debuff's effects, or a weapon's number whole on each. A Silence leaves it whole: it mutes keywords, never a targeting mode.",
+   "codex": "Targeting mode. Dropped on any foe, the entry lands on every foe in the fight, front rank and back, and none is its one target: a debuff's effects on each, or a weapon's strike on each for its whole number, so a Shock on any of them is doubled and spent. A Silence leaves it whole: it mutes keywords, never a targeting mode.",
    "status": "implemented",
    "design": {
-    "holes": "A keyword from 2 November (Ryan: 'Every foe is a targeting mode, just like spread, penetrate, and splash, it should be listed as such and given a keyword'), a targeting mode in its own right since 4 November ('Silence should not narrow targeting modes, that's why I'm switching them to targeting modes'), drawn in the die's targeting slot. A working name, the foes' Every Machine mirrored. A weapon's too since 12 November, when Sweep went (Ryan: the Whip Scorpion's and the Musk Ox's specials \"a 'target all'\"): its number lands whole on every foe, the foe it is dropped on its target and the rest reached, as an area's are, so a Shock is doubled and spent on the target alone. No area keyword rides it."
+    "holes": "A keyword from 2 November (Ryan: 'Every foe is a targeting mode, just like spread, penetrate, and splash, it should be listed as such and given a keyword'), a targeting mode in its own right since 4 November ('Silence should not narrow targeting modes, that's why I'm switching them to targeting modes'), drawn in the die's targeting slot. A working name, the foes' Every Machine mirrored. A weapon's too since 12 November, when Sweep went (Ryan: the Whip Scorpion's and the Musk Ox's specials \"a 'target all'\"): it strikes every foe for its whole number and none is its one target (Ryan, 12 November: \"Target all shouldn't need a target in the same way that sweep didn't. Why would only the first target pop shock? That's weird and useless\"), so a Shock is doubled and spent on each and, with no primary target, no Ricochet follows it. No area keyword rides it."
    }
   },
   {

@@ -226,10 +226,11 @@ every machine is wrecked. There is no round limit.
 - **Indirect** reaches any foe, at no cost to its firer: area belongs to the keywords (the Howitzer
   carries Splash 1 and the Musk Ox's two locked guns Splash; which other explosives carry
   which is open).
-- **Every Foe** reaches any foe and lands on every foe in the fight, front rank and back: a
-  debuff's effects as on its target, a weapon's number whole on each, every foe through its own
-  Flak and armour. The foe it is dropped on is its target and the rest are reached, as an area's
-  are, so a Shock is doubled and spent on the target alone, and no area keyword rides it. It is
+- **Every Foe** reaches any foe and lands on every foe in the fight, front rank and back, and
+  none is its one target: a debuff's effects on each, a weapon's strike on each for its whole
+  number, every foe through its own Flak and armour. A weapon's strike is aimed at each, so a
+  Shock on any of them is doubled and spent; with no primary target no Ricochet follows it, and
+  no area keyword rides it. It is
   a targeting mode of its own: no passive turns it into Direct or Indirect, and a Silence,
   which mutes keywords, leaves it whole. Two gated specials carry it, the Whip Scorpion's
   release and the Musk Ox's salvo; no debuff dealt does (the Shift Whistle, a draft). A
@@ -662,8 +663,8 @@ On a machine:
   the weapon but its area: its number 1 in place of the entry's and of what the entry reads off
   the foe, the firer's modifiers on it (Empowered adds), the foe's Flak, then its armour, so a
   point of plate stops every one and an Exposed foe's plate stops none; the weapon's riders
-  land with each, a stack a strike; an area, a Chain's arcs and a reach over every foe are the
-  weapon's own and no Ricochet carries them. The stacks are read as the spend begins, so one
+  land with each, a stack a strike; an area and a Chain's arcs are the weapon's own and no
+  Ricochet carries them, and a weapon over every foe has no target for one to hit. The stacks are read as the spend begins, so one
   the spend earns strikes nothing of it. Equipment strikes nothing again. Whenever the
   machine's hull is damaged (a blow, a bite or an overheat) half its stacks go, rounded down, so
   a lone stack is lost; a blow its shield takes whole costs none. It lasts the fight, with no
@@ -1091,8 +1092,8 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   an action granted and not used; a blank, or an entry with nowhere to land, is none. As the
   enemy's turn ends a machine that passed and holds 8 heat or more opens its valves on every
   foe, front rank and back: 1 each, and 1 more for each heat over 8, and it is left cold; under
-  8 it keeps its heat. One hit of its own, through its machine's adds and each foe's Flak and
-  armour, costing no heat. The round's
+  8 it keeps its heat. One hit of its own, a strike on each foe through its machine's adds and
+  the foe's Flak and armour (a Shocked one doubled), costing no heat. The round's
   forecast plays it. Its locked Heliographic Death Ray fires the same heat at one foe: 2, and 1
   more for every 2 heat, leaving it cold (the form the Buzzard's Afterburner Cannon also has
   until its rework).

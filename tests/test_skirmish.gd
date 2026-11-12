@@ -10500,9 +10500,10 @@ func test_a_foe_its_burn_kills_at_its_action_never_strikes_and_keeps_its_intent(
 
 
 ## Every Foe on a weapon (12 November, Sweep's place for the two gated specials): dropped on any
-## foe, its number lands whole on every foe in the fight, each through its own Flak and armour;
-## the foe it is dropped on is its target and the rest are reached, as an area's are, so a Shock
-## is doubled and spent on the target alone.
+## foe, it strikes every foe in the fight for its number, each through its own Flak and armour,
+## and none is its one target (Ryan: "Target all shouldn't need a target in the same way that
+## sweep didn't. Why would only the first target pop shock?"): a Shock on any foe is doubled and
+## spent, and no Ricochet follows it.
 func test_a_weapon_over_every_foe_lands_its_number_on_each() -> void:
 	var blast := Face.attack(3, E)
 	var sk := Skirmish.new(1, 2)
@@ -10520,10 +10521,12 @@ func test_a_weapon_over_every_foe_lands_its_number_on_each() -> void:
 	Effects.stack(a, Effects.STATUS["shocked"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
 	Effects.stack(c, Effects.STATUS["shocked"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
 	var bot := Policy.make(Policy.GREEDY, 1)
-	assert_true(bot.attack_score(sk, ms, blast, a) >= 6.0 + 2.0 + 3.0, "the bot counts every foe it lands on")
-	assert_true(sk.assign(0, a), "dropped on the first")
-	assert_eq([a.hp, b.hp, c.hp], [94, 98, 97], "its target's Shock doubled, the plated one its 3 less the plate, the back rank's whole")
-	assert_true(Effects.has(c, "shocked") and not Effects.has(a, "shocked"), "a Shock stands on a foe it only reached")
+	assert_true(bot.attack_score(sk, ms, blast, a) >= 6.0 + 2.0 + 6.0, "the bot counts every foe it strikes, each Shock doubled")
+	Effects.stack(m, Effects.STATUS["ricochet"], Effects.SKIRMISH, "test", 2, Effects.DECAY_NONE)
+	assert_true(sk.assign(0, b), "dropped on the plated one")
+	assert_eq([a.hp, b.hp, c.hp], [94, 98, 94], "each Shocked foe doubled wherever it was dropped, the plated one its 3 less the plate")
+	assert_false(Effects.has(a, "shocked") or Effects.has(c, "shocked"), "and every Shock is spent")
+	assert_eq(sk.spend_blows.filter(func(x): return str(x["kind"]) == "ricochet").size(), 0, "with no one target, no Ricochet follows")
 
 
 ## The boiler's release (the Whip Scorpion's Thermal Ejection Manifold; Ryan, 11 November, a pass

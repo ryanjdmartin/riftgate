@@ -29,7 +29,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   after each.
 - Tests: 1132 tests, 363,473 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
   with the Dingo's pieces, the pins and the Flakshot Repeater over the Clydesdale's review); 1135 tests,
-  364,369 checks, green on `ccr-e3ddf00b-ilkwbi` over main's `fbce698` (the three fast flyers rebuilt and
+  364,371 checks, green on `ccr-e3ddf00b-ilkwbi` over main's `fbce698` (the three fast flyers rebuilt and
   Sweep removed, not landed). Before it,
   1123 tests, 362,685 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
   with the Whip Scorpion's rework over the formation and refit session's landing). Before it,
@@ -312,12 +312,12 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   ("Yes build them with placeholder numbers"), each to be played (the to-do's Ryan list); the
   map is at the head of `kestrel_line.md`. Main's Whip Scorpion and Clydesdale work is merged in
   (11 and 12 November). Sweep is gone on his word of 12 November ("let's remove it and clean up
-  all those exceptions and code branches that it caused"; the bible's Sweep row, v0.538 here):
+  all those exceptions and code branches that it caused"; the bible's Sweep row, v0.539 here):
   the reach, its spots and per-shot rules, the wasted shot and the rank's bracket, the bot's two
   special paths and the salvo's routine; every weapon is one shape. Every Foe is a weapon's mode
   too, for the Whip Scorpion's release (1 on every foe at 8 heat, 1 more for each heat over) and
-  the Musk Ox's salvo (a stand-in behind 8 ammo, its own session's). The Flechette Pod is three
-  strikes of 1, cold; Ricochet hits its weapon's target alone, his text of that day. A first direction on the placeholder
+  the Musk Ox's salvo (a stand-in behind 8 ammo, its own session's), each foe struck as its own
+  target, so a Shock on any is doubled and spent. The Flechette Pod is four strikes of 1; Ricochet hits its weapon's target alone, his text of that day. A first direction on the placeholder
   numbers is in `docs/measurements.md` (each alone on the patrols, 30 seeds, the old kit beside
   the new): the Kite where it stood on its duels and a little dearer on packs rated for two, the
   Skua's duels from five to fifteen rounds down to three or four, the Needletail alone a little
@@ -335,14 +335,14 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
     declined (the bible's withdrawal row); Phased on a kill he kept for the shadow panther. The
     model's third mount is a bare pad on the nose's spine. Its brief is retired; his play is the
     to-do's.
-  - The Skua: built as his "Ramping Dakka" (the bible's Kestrel row, v0.538 on this branch,
+  - The Skua: built as his "Ramping Dakka" (the bible's Kestrel row, v0.539 on this branch,
     unpublished). Its passive gains a stack of Ricochet the first time each round one of its
     weapons damages a foe (the trigger `on_damage`; an effect's `once: round`, open to any effect
     an event fires). Ricochet is a buff that lasts the fight: after each shot of a weapon a
     strike of 1 more a stack at its target once the weapon's own strikes are done, with every
     effect but its area; hull damage halves it, rounded down. Its lock is the
     Hypersonic Swoop (a stack, Rapid, a cooldown of one). The Flechette Pod is an ordinary
-    tier-one weapon in its stock (three strikes of 1 since Sweep went), and the validator
+    tier-one weapon in its stock (four strikes of 1 since Sweep went), and the validator
     lets a machine stock up to its own tier at one and two (the bible's tiers row, its
     validator's half). The Split-cycle Breech is gone from content; the engine keeps the split.
     The bot counts the bounces and values a stack at a flat guess. On screen, unjudged: each
@@ -1347,7 +1347,7 @@ commands are in `README.md`.
   (Version 504, main's `60a0e4d`), which matched that commit's file; new since 504 the pacing row in beats of the tide,
   menace a pack's threat rating and the rows that follow it, the Whip Scorpion's rework, the
   hardpoints row with every stock gun its class, the Clydesdale's batteries row and its square
-  ports, and Changed Over in the buff table). `ccr-e3ddf00b-ilkwbi`'s file is v0.538 over that (the withdrawal row with Ryan's call of 11 November on a break-off for one machine, the Kite's row rewritten, the Kestrel row's Needletail and Skua, the tiers row's stock rule, the Sweep row rewritten as its removal with the rows that leaned on it, the Whip Scorpion's and the Musk Ox's rows), unpublished. BASE for the next merge is `3d5f98f`'s file. The
+  ports, and Changed Over in the buff table). `ccr-e3ddf00b-ilkwbi`'s file is v0.539 over that (the withdrawal row with Ryan's call of 11 November on a break-off for one machine, the Kite's row rewritten, the Kestrel row's Needletail and Skua, the tiers row's stock rule, the Sweep row rewritten as its removal with the rows that leaned on it, the Whip Scorpion's and the Musk Ox's rows), unpublished. BASE for the next merge is `3d5f98f`'s file. The
   live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS

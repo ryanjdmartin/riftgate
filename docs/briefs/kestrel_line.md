@@ -87,7 +87,7 @@ Where each stands:
   primary target 1 more time per stack, dealing 1 damage each time and applying all effects
   other than area keywords", what it applies his to dial back to keywords if it proves too
   much. Sweep went that day, so the Flechette Pod, an ordinary tier-one weapon in its stock, is
-  three strikes of 1 ("the simple tier 1 multi-hit, maybe 1x3?"). The Split-cycle Breech is gone
+  four strikes of 1 ("Flechette could be 1x4"). The Split-cycle Breech is gone
   from content. Its brief is retired (`git show e5638e2:docs/briefs/kestrel_skua.md`); the
   bible's Kestrel and Sweep rows carry it, and his play is the to-do's.
 - **The Needletail**: settled 11 November ("I agree with the Needletail, yes") and built the same

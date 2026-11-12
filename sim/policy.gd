@@ -495,7 +495,8 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	var shapes := sk.area_shapes(f, target)
 	for n in sk.reached_by(f, target):
 		if n != target and n.alive():
-			score += _capped(damage_outcomes(ms, f, n, int(shapes.get(n, Skirmish.AREA_ALL))), n.hp)
+			# A weapon over every foe strikes each as its own target (12 November), a Shock read on each.
+			score += _capped(damage_outcomes(ms, f, n) if f.reach == Face.Reach.EVERY_FOE else damage_outcomes(ms, f, n, int(shapes.get(n, Skirmish.AREA_ALL))), n.hp)
 	# A kill ends the countdown it gathers, opens the core its fall unguards, and sets off its
 	# last act (the boss mechanics of 15 October; valued 22 October).
 	score += p_kill * (KILL_BONUS + (_threat_now(target, sk) + countdown_threat(target, sk)) * HULL_WEIGHT + core_opening(sk, target) - last_act_cost(sk, target))
@@ -1224,7 +1225,7 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, area: 
 		# Ricochet (the Skua's, 12 November): once the weapon's strikes are done, a strike of 1 more
 		# a stack at its target, through the firer's pipeline, the foe's Flak and its armour.
 		var bounced := 0.0
-		var stacks := Effects.stacks_of(ms.unit, "ricochet") if f.is_weapon() and target != null else 0
+		var stacks := Effects.stacks_of(ms.unit, "ricochet") if f.is_weapon() and target != null and f.reach != Face.Reach.EVERY_FOE else 0
 		if stacks > 0:
 			var one := int(Effects.attack(ms.unit, f, 1, 0, target)["damage"])
 			bounced = float(maxi(0, Effects.damage_taken(target, one, ms.unit, true, false) - arm)) * stacks

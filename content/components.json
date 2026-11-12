@@ -1832,15 +1832,15 @@
    "design": {
     "stage": "draft",
     "fantasy": "A pod of darts (Ryan named it 21 October; 12 November: \"Flechette to me sounds like something that hits a bunch of times, like a machine gun\").",
-    "niche": "Reworked 12 November with Sweep's removal (Ryan: \"the flechette pod just needs a rework. Doesn't have to be tied to the skua ... It could be the simple tier 1 multi-hit, maybe 1x3?\"): three strikes of 1 at one foe. It carries riders and flat buffs three times and a point of armour stops it whole. Placeholder numbers: built cold, heat 0, Claude's, so it is not a smaller Maxigun (2 by 3 at heat 1, the pool's tier-one multi-hit already); his to move. Still in the Skua's stock."
+    "niche": "Reworked 12 November with Sweep's removal (Ryan: \"the flechette pod just needs a rework. Doesn't have to be tied to the skua ... It could be the simple tier 1 multi-hit, maybe 1x3?\"; then, the Maxigun being 2 by 3 at tier one already, \"Flechette could be 1x4\"): four strikes of 1 at one foe. It carries riders and flat buffs four times and a point of armour stops it whole. Its heat is the heat pass's (\"Not worried about heat till the heat pass\"), left at the 1 it had. Still in the Skua's stock."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
     "power": 1,
-    "strikes": 3,
+    "strikes": 4,
     "keywords": [],
-    "heat": 0
+    "heat": 1
    },
    "passive": null,
    "tags": [
