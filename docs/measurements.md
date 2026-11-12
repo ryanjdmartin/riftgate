@@ -8317,3 +8317,34 @@ kits). The bot knows nothing of
 holding the Kite's opener for a foe worth it or of keeping the Skua's hull clean, and a lone
 machine against a pack rated for two is no fight the battle deals, so the walls are a ceiling
 and no fault.
+
+## 12 November, Sweep removed: the Whip Scorpion's release on every foe beside its Sweep, and the Skua without the Pod's Sweep
+
+Sweep went on 12 November (the bible's Sweep row). Two reads of what took its place, the old
+beside the new, `tools/balance.gd -- --packs curve --seeds 30`, this branch at `728e823` against
+`a17339f` (the same tree with Sweep): a direction, the check on two placeholder calls. No
+decision reads it.
+
+The Whip Scorpion, `--team whip_scorpion,badger,clydesdale,baboon --tiers 2 --sizes
+patrol,formation`: its release was a Sweep of the fuller rank, a shot of 2 for every heat; it is
+1 on every foe at 8 heat and 1 more for each heat over (Ryan: "1 damage to each enemy, increased
+by 1 for each heat over 8"; built as the rule reads, 7 at 14). The greedy rung's mean hull lost
+and rounds, old then new:
+
+| Tier two | Alone | With the Badger | The three | The four |
+|---|---|---|---|---|
+| Fourteen formations, rated 3 | 94%, 4.7 to 84%, 4.1; walls 8 to 7 | 39%, 7.1 to 36%, 6.3 | 13%, 5.1 to 13%, 5.0 | 5%, 4.4 to 5%, 4.2 |
+| Six patrols rated 2 | 29%, 4.3 to 31%, 4.5 | 4%, 2.8 to 4%, 2.8 | 1%, 2.2 to 1%, 2.2 | 0%, 2.0 to 0%, 2.0 |
+| Four duels rated 1 | 2%, 2.9 to 2%, 3.0 | no change | no change | no change |
+
+Read. The new release sits where the Sweep sat: level in the squad of three the formations are
+rated for, a little better alone against a formation (both ranks take it), a shade worse on the
+small packs (nothing fires under 8 heat). The bot releases when the blow beats its best spend
+and does not hold a die to bank the foes' blows on purpose, so the play he describes, ending
+just under the maximum, is not in it.
+
+The Skua, `--team skua,badger,clydesdale,baboon --tiers 1,2 --sizes patrol`, alone: its eight
+duels are where they were (4% of its hull, 3.3 rounds, in the entry of 11 November above); on
+the twelve packs rated for two the walls stay at 7, and over all twenty it loses 48% of its
+hull in 4.2 rounds where it lost 42% in 3.7 with the Pod's Sweep: the Pod as three strikes of 1
+at one foe is worth less against a pair than four shots along a rank were.
