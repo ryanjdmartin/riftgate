@@ -255,13 +255,15 @@ def kite(b):
     gear teeth (the pinion, a wing's flight feathers and a gear) whose backs run aft as strakes
     tapering into the drum, the barrel out of the inlet's centre, its muzzle lit; each fires one of the Driver's two shots. The nose mounts either
     side of the nosecone, hp_1 the stock's Transonic Rifle as its class, hp_2 bare, at half scale,
-    the machine being small; hp_3, bare, ahead of the canopy on the centreline, inset: its gun
-    is sunk level into the hull under the canopy's front, its mount block hidden inside, and the
-    barrel comes out of a port into a short trough whose floor ramps up to the nose's surface
+    the machine being small; hp_3, bare, ahead of the canopy on the centreline, inset: a port at
+    the canopy's nose and a trough cut into the spine ahead of it, the gun's barrel out of the
+    port (the port variant: no block to show) and lying clear in the trough, whose floor ramps
+    up to the nose's surface past the muzzle; a launcher there is the round one
     (Ryan, 12 November: "in front of the canopy, but inset, like the polar bear - so some of the
     barrel pokes out through a cut channel. Doesn't retract or anything"; then "sink it
     horizontally into the hull more, so the actual mount block is hidden, and don't cut a
-    channel all the way down the nose").
+    channel all the way down the nose"; "let it poke out more and cut the trough a little
+    deeper vertically"; "a round rack would be warranted when a missile is slotted there").
     The tail segment's flat face behind the canopy is an air intake, a dark mouth in a steel lip
     (the same day: "Can the flat face behind the canopy also get an intake treatment?")."""
     # Fuselage: one piece, a six-sided section lofted from a needle nose to a broad rear.
@@ -282,21 +284,21 @@ def kite(b):
     # The third mount (its fourth entry, Ryan, 11 November: "giving it 4 faces again"), ahead of
     # the canopy and inset (the 12th: "like the polar bear - so some of the barrel pokes out
     # through a cut channel"; "sink it horizontally into the hull more, so the actual mount
-    # block is hidden, and don't cut a channel all the way down the nose"): the gun lies level
-    # with its block inside the hull under the canopy's front, and its barrel comes out of a
-    # port, the back wall of a short trough cut into the spine (a real hollow, b.cut_hull) whose
-    # floor ramps up to meet the surface a little past the muzzle, so the bore's line runs clear.
-    # Fixed: no joint. A class that is no barrel sits smaller and forward so it shows in the
-    # trough (NOSE_FITS; guesses nobody has judged fitted).
-    # Raised and drawn back under the canopy (Ryan, 12 November: "Raise the gun's line a little.
-    # Should let you shorten the trough too"): the block and its sight lie inside the canopy's
-    # volume, the barrel's top comes out level with the spine at the canopy's nose, and the
-    # bore clears the falling nose sooner, so the trough is shorter.
-    GZ = 5.0                # the gun's line
-    PORT, RUN = -1.0, 10.0  # the port's wall, at the canopy's nose, and where the trough's floor meets the surface
-    NOSE_FITS = {"twin_barrel": ("twin_barrel", 0.7, -8.0), "rack": ("rack", 0.5, -12.6), "dish": ("dish", 0.6, -11.0), "blade": ("blade", 0.7, -6.0)}
-    b.cut_hull([fuselage], [(x, y, z) for x in (-1.8, 1.8) for (y, z) in ((PORT, GZ - 1.8), (PORT, 9.0), (RUN, 9.0), (RUN, 4.9))])
-    b.pin("hp_3", (0.0, -8.5, GZ), scale=0.5, carries="", fits=NOSE_FITS)
+    # block is hidden, and don't cut a channel all the way down the nose"; "Raise the gun's line
+    # a little"; "let it poke out more and cut the trough a little deeper vertically so the
+    # barrel isn't covered"): a port, the back wall of a trough cut into the spine at the
+    # canopy's nose (a real hollow, b.cut_hull), and the gun through it is the port variant, its
+    # barrel and muzzle alone, the receiver being inside the hull, so nothing of the block can
+    # show and the barrel's whole length lies in the open. It comes out level with the spine
+    # and runs clear of the trough's walls and floor, the floor flat to just past the muzzle
+    # and then ramped up to the surface under the bore's line. Fixed: no joint. A launcher here
+    # is the round one, a drum against the port's wall (his: "a round rack would be warranted
+    # when a missile is slotted there"); the other classes' places are guesses nobody has judged.
+    GZ = 5.0                  # the gun's line
+    PORT, FLAT, RUN = -1.0, 11.4, 13.4  # the port's wall at the canopy's nose; the floor flat to here; ramped up to the surface here
+    NOSE_FITS = {"barrel": "barrel_port", "rack": ("rack_round", 0.7, -1.8), "twin_barrel": ("twin_barrel", 0.84, 5.2), "dish": ("dish", 0.6, -3.0), "blade": ("blade", 0.7)}
+    b.cut_hull([fuselage], [(x, y, z) for x in (-2.2, 2.2) for (y, z) in ((PORT, GZ - 2.4), (FLAT, GZ - 2.4), (RUN, 4.4), (RUN, 9.0), (PORT, 9.0))])
+    b.pin("hp_3", (0.0, PORT - 0.2, GZ), scale=0.5, carries="", fits=NOSE_FITS)
     # Canopy: far back, low, faired into the spine rather than a bubble.
     b.loft([(-2.0, hexagon(0.0, 6.2, 7.0, 0.5)), (-10.0, hexagon(0.0, 7.4, 9.0, 3.0)),
             (-18.0, hexagon(0.0, 7.5, 9.0, 3.2)), (-26.0, hexagon(0.0, 7.2, 9.0, 3.0))], "glass.glass", "canopy")
@@ -8279,8 +8281,17 @@ def _tile_cell(b, centre, radius, cell, material, label, sides=12, thick=0.1):
     o = c - right * (1.5 * cell) - up * (1.5 * cell)
     return b._finish(bm, material, label, None, (o, up, right, fwd, (3.0 * cell, 3.0 * cell)))
 
+def shape_barrel_port(b, s=1.0):
+    """A gun through a port: the standard gun's barrel and muzzle collar alone, starting at the
+    socket, its receiver and sight being inside the hull behind the port's wall (the Kite's
+    inset mount; Ryan, 12 November: "the actual mount block is hidden", then "let it poke out
+    more")."""
+    b.prism("y", 0.0, 11.0 * s, 0.0, 2.8 * s, 22.0 * s, "steel.dark", 6, "barrel")
+    b.prism("y", 0.0, 23.0 * s, 0.0, 3.3 * s, 2.0 * s, "steel.plate", 6, "muzzle")
+
+
 ## Each variant by name: (its class, its builder).
-VARIANTS = {"rack_round": ("rack", shape_rack_round)}
+VARIANTS = {"rack_round": ("rack", shape_rack_round), "barrel_port": ("barrel", shape_barrel_port)}
 
 
 def shape_builder(name):
@@ -8326,6 +8337,11 @@ def burn_blade(b, s=1.0):
                 (23.5 * s, rect(side * 0.6 * s, 0.4 * s, -0.15 * s, 0.15 * s))], "amber.fire", "burn_edge")
 
 
+def burn_barrel_port(b, s=1.0):
+    """A pilot flame in the port gun's muzzle."""
+    b.prism("y", 0.0, 24.7 * s, 0.0, 2.4 * s, 1.4 * s, "amber.fire", 6, "burn_flame")
+
+
 def burn_rack_round(b, s=1.0):
     """The round launcher's shells glowing: a lit tip down each of its seven tubes."""
     for x, z in _ROUND_TUBES:
@@ -8333,7 +8349,7 @@ def burn_rack_round(b, s=1.0):
 
 
 ## A class's fire and each variant's whose class burns (a variant of a dish takes none).
-BURNS = {"barrel": burn_barrel, "twin_barrel": burn_twin_barrel, "rack": burn_rack, "blade": burn_blade, "rack_round": burn_rack_round}
+BURNS = {"barrel": burn_barrel, "twin_barrel": burn_twin_barrel, "rack": burn_rack, "blade": burn_blade, "rack_round": burn_rack_round, "barrel_port": burn_barrel_port}
 
 
 # Where each class's muzzle flare blooms as its weapon fires (Ryan, 31 October: "If the flare
@@ -8350,6 +8366,7 @@ MUZZLES = {
     "dish": [((0.0, 10.0, 0.0), 26.0)],
     "blade": [((0.0, 25.0, 0.0), 16.0)],
     "rack_round": [((0.0, 13.2, 0.0), 26.0)],
+    "barrel_port": [((0.0, 27.0, 0.0), 24.0)],
 }
 
 

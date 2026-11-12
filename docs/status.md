@@ -334,7 +334,8 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
     a passive's cooldown, which no piece prints. A Kite leaving a fight at its heat maximum he
     declined (the bible's withdrawal row); Phased on a kill he kept for the shadow panther. The
     model's third mount is ahead of the canopy, its gun sunk into the hull, the barrel out of a port
-    into a short trough,
+    and clear in a trough (the port gun, a new variant of the barrel class: no block to show), a
+    launcher there the round rack,
     and the tail segment's face behind the canopy is an air intake (his, 12 November). Its brief is retired; his play is the
     to-do's.
   - The Skua: built as his "Ramping Dakka" (the bible's Kestrel row, v0.546 on this branch,
