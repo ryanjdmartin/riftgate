@@ -539,16 +539,26 @@ func _count_kill(f: Foe) -> void:
 
 ## Every kill a death check counts, whoever or whatever made it (on_foe_killed; the Ammit's Souls,
 ## Ryan, 12 November: "Souls granted by any kill"): each machine standing in the fight fires its
-## passives on the count, so an ally's kill, a burn's tick and a Mine's blast all feed it, and a
-## foe getting back up, a part or a Bomb's burst, no kill, feeds nothing.
+## passives once for each foe that fell, which is what the trigger is and no option of an
+## effect's, so an ally's kill, a burn's tick and a Mine's blast all feed it, and a foe getting
+## back up, a part or a Bomb's burst, no kill, feeds nothing. One line in the log a machine,
+## however many fell.
 func _foes_fell(n: int) -> void:
 	if n <= 0:
 		return
 	for ms in live_mechs():
-		var got := Effects.fire(ms.unit, "on_foe_killed", n)
-		var parts := _apply(ms, got)
+		var parts: Array[String] = []
+		var granted := {"statuses": [] as Array[String]}
+		for i in range(n):
+			var got := Effects.fire(ms.unit, "on_foe_killed")
+			for part in _apply(ms, got):
+				if not parts.has(part):
+					parts.append(part)
+			for status_name in got["statuses"]:
+				if not (granted["statuses"] as Array).has(status_name):
+					(granted["statuses"] as Array).append(status_name)
 		if not parts.is_empty():
-			log.append("%s: %s, %s" % [ms.unit.display_name, "a foe falls" if n == 1 else "%d foes fall" % n, ", ".join(_with_counts(ms, parts, got))])
+			log.append("%s: %s, %s" % [ms.unit.display_name, "a foe falls" if n == 1 else "%d foes fall" % n, ", ".join(_with_counts(ms, parts, granted))])
 
 
 ## A trigger's log pieces with each status it granted read at its count as it stands ("Souls ×7"):

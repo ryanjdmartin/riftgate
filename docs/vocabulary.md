@@ -381,7 +381,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **On a hit on its shield** (implemented): The Nemesis's rage, one a hit on its shield (Ryan, 11 November: "hull damage takes priority").
 - **On a blow blocked** (implemented): The Nemesis's rage, two a blow blocked (Ryan, 11 November: per blow, "that lets it scrap against the comp its supposed to").
 - **On gaining a Barrier** (implemented): The Wild Boar's Juggernaut Breach (Ryan, 11 November: "After gaining Barrier, its next weapon attack gains Breach").
-- **On a foe killed** (implemented): Built 12 November for the Ammit's Souls. A foe getting back up, a part and a Bomb's burst are no kill and fire nothing.
+- **On a foe killed** (implemented): Built 12 November for the Ammit's Souls. It fires once for each foe that falls, which is what the trigger is: no effect opts into the count. A foe getting back up, a part and a Bomb's burst are no kill and fire nothing.
 - **On damaging a foe** (implemented): Built for the Skua's rewrite (Ryan, 11 November: "Damaging an enemy grants it a stack of Ricochet (once per turn)"). The stack lands after the spend that earned it, so none of that spend's shots bounce off it. The once-a-round gate is the effect's own (once: round), open to any effect an event fires.
 - **Out of combat** (implemented): Heat does not persist between fights, so a vent here would be nothing. No content uses it yet.
 - **Command die** (planned): Open question: whether the command die exists at all, or one-shots only.

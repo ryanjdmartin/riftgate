@@ -1550,7 +1550,7 @@
    "codex": "Passive trigger. Fires as a death check counts a kill in this machine's fight, whoever or whatever made it, an ally's blow, a burn's tick and a Mine's blast among them: a status, once for each foe that fell (the Ammit's Souls).",
    "status": "implemented",
    "design": {
-    "holes": "Built 12 November for the Ammit's Souls. A foe getting back up, a part and a Bomb's burst are no kill and fire nothing."
+    "holes": "Built 12 November for the Ammit's Souls. It fires once for each foe that falls, which is what the trigger is: no effect opts into the count. A foe getting back up, a part and a Bomb's burst are no kill and fire nothing."
    }
   },
   {

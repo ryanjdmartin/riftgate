@@ -622,8 +622,7 @@
      {
       "trigger": "on_foe_killed",
       "effect": "stack_status",
-      "value": "souls",
-      "each": true
+      "value": "souls"
      },
      {
       "trigger": "on_skirmish_start",

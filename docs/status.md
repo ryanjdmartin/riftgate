@@ -27,8 +27,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1158 tests, 364,866 checks, green on `ccr-8af28d03-re9kz4` (12 November, main at `366b10e`
-  with the kill's flare once an attack and Empowered's up sword, not on main yet). Before it,
+- Tests: 1158 tests, 364,865 checks, green on `ccr-8af28d03-re9kz4` (12 November, main at `366b10e`
+  with the kill's flare once an attack, no per-foe flag and Empowered's up sword, not on main
+  yet). Before it,
   1158 tests, 364,864 checks, green on `ccr-722ca9f0-yj8na3` (12 November, main at `c717e69`
   with the HEAT and OVERHEAT dials). Before it, 1158 tests, 364,834 checks,
   green on main (12 November, as `ccr-8af28d03-re9kz4` landed with the
@@ -438,9 +439,13 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   pass its text. Two changes of his after it landed, the same day, on the branch and not on main
   yet. The kill's flare comes once an attack that kills, however many fall to it ("Flaring twice
   for an AoE is probably wrong, let's make it 'one of more killed' by an attack"): the first
-  build flared once for each foe a spend killed, and `each` is now the count of fallen foes'
-  alone, refused on a kill trigger, which fires once an attack as it always did; the Souls of a
-  double kill are both in before the one flare. And Empowered's mark is a blade with an arrow
+  build flared once for each foe a spend killed, by a flag on the effect that chose between once
+  an attack and once a foe. The flag is gone whole (his, of its second cut, kept for the Souls
+  and refused on a kill: "Why is the per for trigger refused, but still exists as an exception?
+  Makes no sense"): how often a trigger fires is the trigger's own, a kill's once an attack
+  that killed and a foe killed's once for each foe that falls, so nothing is refused and nothing
+  excepted; the Souls of a double kill are both in before the one flare. And Empowered's mark is
+  a blade with an arrow
   up, Sapped's pair ("Yes use the up sword for empowered", from a mock, after his "Does shock
   and empowered have the same glyph?": one bolt, Shock's in a ring and Empowered's bare), so the
   bolt is Shock's alone; Enraged, the golden rage and a foe's Empowered drew the same mark and

@@ -654,7 +654,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	# What the machine's passives grant it on its own kill (the Ammit's flare, 12 November: a
 	# stack of Empowered for every five Souls it holds): each stack on the blows its die deals
 	# from the next round, a strike a point (flare_gain), at the odds of the kill.
-	var flare := Effects.would_stack(ms.unit, "on_kill", "overcharged", 1) if f.is_weapon() else 0
+	var flare := Effects.would_stack(ms.unit, "on_kill", "overcharged") if f.is_weapon() else 0
 	if flare > 0:
 		score += p_kill * flare_gain(ms, "overcharged", flare) * FLARE_ROUNDS
 	if f.kill_rerolls > 0:

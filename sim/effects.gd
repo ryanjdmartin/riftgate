@@ -67,7 +67,7 @@ const SUPPORTED_EFFECTS := {
 	"on_stack": ["add_stacks"],
 	"on_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_kill": ["stack_status", "add_shield", "vent_heat", "refill_shield"],
-	"on_foe_killed": ["stack_status"],   # every kill in this machine's fight, whoever made it (the Ammit's Souls, 12 November)
+	"on_foe_killed": ["stack_status"],   # every kill in this machine's fight, whoever made it, once for each foe (the Ammit's Souls, 12 November)
 }
 const DECAY_NONE := 0    # lives until its scope ends
 const DECAY_TICK := 1    # loses a stack each tick, gone at zero
@@ -1679,9 +1679,10 @@ static func blow_blocked(u) -> Dictionary:
 ## when it is given (the ally an on_shield_granted passive shields) and on the machine itself
 ## otherwise. A stack_status may count its grant off another status the machine carries
 ## (`per_stack`, in steps of `stack_step`: the Ammit's flare, an Empowered for every five Souls,
-## nothing under five), and may grant once for each thing the event counted (`each`, with
-## `amount` the count: a Soul for each foe a death check cleared; a kill trigger carries no
-## count, firing once an attack that killed).
+## nothing under five). How often a trigger fires is the trigger's own and never an effect's
+## option: a kill's once an attack that killed, however many fell; a foe killed's once for each
+## foe that falls, its caller firing it a foe at a time (a flag that chose between the two stood
+## for a day, legal on one trigger only; Ryan, 12 November: "Makes no sense").
 ## Nothing here can fire itself: a shield gained here grants no more shield, heat shed here
 ## grants no heat.
 static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary:
@@ -1714,9 +1715,6 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 					# its stacks for every `stack_step` of `per_stack` held, rounded down.
 					if eff.has("per_stack"):
 						n *= stack_steps(u, eff)
-					# Once for each thing the event counted (a Soul a foe felled).
-					if bool(eff.get("each", false)):
-						n *= maxi(0, amount)
 					# A store's cap (the Nemesis's rage, five; Ryan, 22 October): it banks no more.
 					if int(eff.get("cap", 0)) > 0:
 						n = mini(n, int(eff["cap"]) - banked(who, id))
@@ -1737,8 +1735,8 @@ static func stack_steps(u, eff: Dictionary) -> int:
 
 ## What this machine's passives would grant it of `status_id` on `trigger` as it stands, a count
 ## read and nothing granted: the stacks a flare is worth now (the Ammit's, off its Souls), for the
-## die, the bot and the codex. `amount` is what the event counts, one by default.
-static func would_stack(u, trigger: String, status_id: String, amount: int = 1) -> int:
+## die, the bot and the codex: one firing of the trigger.
+static func would_stack(u, trigger: String, status_id: String) -> int:
 	var total := 0
 	for pair in _taking_part(u, trigger, null):
 		var eff: Dictionary = pair[0]
@@ -1747,8 +1745,6 @@ static func would_stack(u, trigger: String, status_id: String, amount: int = 1) 
 		var n := maxi(1, int(eff.get("stacks", 1))) * int(pair[1].stacks)
 		if eff.has("per_stack"):
 			n *= stack_steps(u, eff)
-		if bool(eff.get("each", false)):
-			n *= maxi(0, amount)
 		total += maxi(0, n)
 	return total
 
@@ -2644,7 +2640,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"on_heat_gain": lead = "on gaining heat: "
 		"out_of_combat": lead = "each phase out of combat: "
 		"on_kill": lead = "after an attack that killed: "
-		"on_foe_killed": lead = "for each foe that falls in its fight: " if bool(eff.get("each", false)) else "when a foe falls in its fight: "
+		"on_foe_killed": lead = "for each foe that falls in its fight: "
 		"on_damage": lead = "after a spend of its weapons that damaged a foe: "
 	match str(eff.get("when", "")):
 		"reach_direct": lead += "direct attacks: "

@@ -14,7 +14,7 @@ extends TestCase
 const L := Face.Reach.DIRECT
 
 const EATER := {"id": "eater", "name": "Eater", "description": "", "effects": [
-	{"trigger": "on_foe_killed", "effect": "stack_status", "value": "souls", "each": true},
+	{"trigger": "on_foe_killed", "effect": "stack_status", "value": "souls"},
 	{"trigger": "on_skirmish_start", "effect": "stack_status", "value": "overcharged", "per_stack": "souls", "stack_step": 5},
 	{"trigger": "on_kill", "effect": "stack_status", "value": "overcharged", "per_stack": "souls", "stack_step": 5}]}
 const SIPHON := {"kind": "buff", "status": "overcharged", "targets": "self", "spends": "souls", "spends_up_to": 5, "holds_all": "overcharged", "cooldown": 3}
@@ -93,7 +93,8 @@ func test_the_souls_flare_as_a_fight_opens_and_once_an_attack_of_its_own_that_ki
 	var target: Foe = sk.front[0] if sk.front[0] == a or sk.front[0] == b else sk.front[1]
 	assert_true(sk.assign(0, target), "its spread fells two")
 	assert_false(a.alive() or b.alive(), "both down")
-	assert_eq(Effects.stacks_of(eater, "souls"), 14, "the death check banks both Souls first")
+	assert_eq(Effects.stacks_of(eater, "souls"), 14, "the death check banks both Souls first, one for each foe that fell: the trigger's own count, which no effect opts into")
+	assert_true(sk.log.any(func(l: String) -> bool: return l.contains("Eater: 2 foes fall, Souls ×14")), "said once in the log, at the count with both in")
 	assert_eq(Effects.stacks_of(eater, "overcharged"), 2 + 2, "then one flare for the attack, two foes killed or one, at the count as it stands (fourteen: two stacks)")
 	sk.end_round()
 	assert_eq(Effects.stacks_of(eater, "overcharged"), 2, "and what it grants is Empowered like any: it halves at the round's end")
@@ -284,15 +285,8 @@ func test_the_validator_holds_the_new_keys() -> void:
 	c2["name"] = "Odd Test"
 	c2["passive"] = {"id": "odd", "name": "Odd", "description": "", "effects": [
 		{"trigger": "on_kill", "effect": "stack_status", "value": "overcharged", "stack_step": 5},
-		{"trigger": "on_round_start", "effect": "stack_status", "value": "overcharged", "each": true},
 		{"trigger": "on_foe_killed", "effect": "add_shield", "value": 2}]}
 	db.chassis["odd"] = c2
-	var c3: Dictionary = db.chassis["badger"].duplicate(true)
-	c3["id"] = "per_kill"
-	c3["name"] = "Per Kill Test"
-	c3["passive"] = {"id": "per_kill", "name": "Per Kill", "description": "", "effects": [
-		{"trigger": "on_kill", "effect": "stack_status", "value": "overcharged", "each": true}]}
-	db.chassis["per_kill"] = c3
 	var errs := db.validate()
 	var said := func(where: String, what: String) -> bool:
 		return errs.any(func(e: String) -> bool: return e.begins_with(where) and e.contains(what))
@@ -303,8 +297,6 @@ func test_the_validator_holds_the_new_keys() -> void:
 	assert_true(said.call("component odd_hold", "holds_all names a status that halves"), "a hold on a status that does not halve is refused")
 	assert_false(errs.any(func(e: String) -> bool: return e.begins_with("component fine_siphon")), "and the entry as built is clean")
 	assert_true(said.call("chassis odd", "stack_step"), "a step with no status to count is refused")
-	assert_true(said.call("chassis odd", "each (true)"), "each belongs to the count of fallen foes")
-	assert_true(said.call("chassis per_kill", "each (true)"), "and never to a kill trigger, which fires once an attack that killed, however many fell")
 	assert_true(said.call("chassis odd", "'add_shield' on 'on_foe_killed'"), "and the new trigger banks a status, nothing else")
 
 
