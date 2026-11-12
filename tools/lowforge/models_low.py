@@ -295,11 +295,12 @@ def kite(b):
     # then 1 more): a port, the back wall of a trough cut into the spine a little ahead of the
     # canopy (a real hollow, b.cut_hull), its floor flat to just short of its front and ramped
     # up to the surface there, the front where it has been since the first push. Fixed: no joint.
-    # Then, on trial, the trough filled in, the hood's mouth the port (his, the same day: "Move
-    # the mount vertically up a little bit, moving the fairing up if you need to, and then I want
-    # to see what filling in the cut looks like now"), and the line taken down again ("move the
-    # mount point down 1 unit"); TROUGH brings the cut back as it was, its floor 1.9 under the line.
-    GZ = 4.6                  # the gun's line
+    # Then the line raised a little and, on trial, the trough filled in, the hood's mouth the
+    # port (his, the same day: "Move the mount vertically up a little bit, moving the fairing up
+    # if you need to, and then I want to see what filling in the cut looks like now"); a unit's
+    # drop from there was tried and taken back ("I didn't think one unit would move it down so
+    # much. Maybe revert the drop"). TROUGH brings the cut back as it was, its floor 1.9 under the line.
+    GZ = 5.6                  # the gun's line
     TROUGH = False
     PORT, FLAT, RUN = 5.0, 12.6, 13.4  # the port's wall, seven ahead of the canopy's nose; the floor flat to here; ramped up to the surface here
     FLOOR = GZ - 1.9
@@ -320,21 +321,21 @@ def kite(b):
     # The hood over the port (his: "we slap a gentle curved fairing overtop of the back of the
     # mount point, to hide the poking-out edge"; then "carry the fairing forward more, over the
     # mount point, covering more of the weapon"): forward of the canopy the spine falls away
-    # under the weapon's level line, so its root stood proud of it. A low arch whose crown runs
-    # level over the weapon, carrying the spine's line forward from where the spine drops under
-    # it to four past the mount point, so it grows from nothing at its tail to its full height
-    # at its lip; wider than the cut, so its lip rests on the hull either side, the class coming
+    # under the weapon's level line, so its root stood proud of it. A low arch rising gently off
+    # the spine to clear the weapon's root at the mount point, its crown running level from there
+    # over the weapon to four past it while the nose falls away under it, so its mouth is the
+    # tallest of it; wider than the cut, so its lip rests on the hull either side, the class coming
     # out of its dark mouth. Its arch sinks into the hull, so it meets the spine with no seam.
     def spine(y):
         return 6.4 - (6.4 - 3.8) * y / 18.0    # the fuselage's top between its sections at 0 and 18
     HOOD_W, HOOD_SUNK = 2.7, 0.4
     HOOD_TOP = GZ + 1.65           # its crown: a barrel's flat top (1.2 over the line) and a little
-    HOOD_LIP = PORT + 4.0
-    HOOD_TAIL = min(PORT - 2.0, max(-1.0, (6.4 - HOOD_TOP) / ((6.4 - 3.8) / 18.0)))   # where the spine falls under the crown
+    HOOD_TAIL, HOOD_LIP = PORT - 3.5, PORT + 4.0
     hood = []
-    for k in range(9):
-        y = HOOD_TAIL + (HOOD_LIP - HOOD_TAIL) * k / 8.0
-        rise = max(0.0, HOOD_TOP - spine(y)) + HOOD_SUNK
+    for y in [HOOD_TAIL + (PORT - HOOD_TAIL) * u for u in (0.0, 0.2, 0.4, 0.6, 0.8, 1.0)] + [PORT + 1.0, PORT + 2.5, HOOD_LIP]:
+        u = min(1.0, (y - HOOD_TAIL) / (PORT - HOOD_TAIL))
+        crown = spine(HOOD_TAIL) + (HOOD_TOP - spine(HOOD_TAIL)) * (1.0 - (1.0 - u) ** 2)   # eased up off the spine, then level
+        rise = max(0.0, crown - spine(y)) + HOOD_SUNK
         hw = HOOD_W * (0.35 + 0.65 * math.sqrt(min(1.0, (y - HOOD_TAIL) / (PORT + 1.0 - HOOD_TAIL))))
         hood.append((y, [(hw * math.cos(math.pi * i / 8.0), spine(y) - HOOD_SUNK + rise * math.sin(math.pi * i / 8.0)) for i in range(9)]))
     b.loft(hood, "steel.plate", "port_hood")
