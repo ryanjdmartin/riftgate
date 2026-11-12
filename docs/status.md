@@ -1423,8 +1423,14 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 233 (12 November, main's `aac6bfc`, on Ryan's word, "Merge into main and
-  republish"): the twenty-two files moved since 232 (four content files with the three fast
+  page's Version 234 (12 November, published from `ccr-e3ddf00b-ilkwbi` at `75cc6b3`, two commits
+  ahead of main, on Ryan's word, "Ok update the hangar"): the nine files the Kite's mount moved
+  after his two notes on it (the cut shortened from its back alone, its floor raised: its model
+  and rig, its four renders, `renders.json`, and `designs.json` and `text.json` for their stamp),
+  the page unchanged, every live copy matching 233's before it was replaced and the branch's
+  after; `edits` and `text` empty, `designs` the two folded ideas. Main takes the branch on his
+  word. Version 233 (12 November, main's `aac6bfc`, on Ryan's word, "Merge into main and
+  republish") was the twenty-two files moved since 232 (four content files with the three fast
   flyers, Ricochet, the Breech and Sweep's removal; the Kite's and the Skua's models and rigs;
   `pins.json`, `shapes.json` and `muzzles.json` with the Kite's third mount and the port gun; the
   Kite's and the Skua's renders, the old ones their before, and `renders.json`; `designs.json`
