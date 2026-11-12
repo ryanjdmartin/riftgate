@@ -1423,9 +1423,12 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 234 (12 November, published from `ccr-e3ddf00b-ilkwbi` at `75cc6b3`, two commits
-  ahead of main, on Ryan's word, "Ok update the hangar"): the nine files the Kite's mount moved
-  after his two notes on it (the cut shortened from its back alone, its floor raised: its model
+  page's Version 235 (12 November, published from `ccr-e3ddf00b-ilkwbi` at `7690cff`, ahead of
+  main, after his third note on the Kite's mount, the gun pushed forward with the cut's back and
+  the cut's front unmoved): the same nine files, every live copy matching 234's before it was
+  replaced and the branch's after, `edits` and `text` empty. Version 234 (12 November, from the
+  branch at `75cc6b3`, on Ryan's word, "Ok update the hangar") was the nine files the Kite's
+  mount moved after his two notes on it (the cut shortened from its back alone, its floor raised: its model
   and rig, its four renders, `renders.json`, and `designs.json` and `text.json` for their stamp),
   the page unchanged, every live copy matching 233's before it was replaced and the branch's
   after; `edits` and `text` empty, `designs` the two folded ideas. Main takes the branch on his
