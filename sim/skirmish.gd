@@ -2831,7 +2831,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	var riders: Array[Callable] = []   # every rider the strikes earn, in order, landed once the strikes are done (Ryan, 3 November)
 	var doubled := Effects.stack_multiplier(ms.unit, f, target)   # the stacks this spend lays, multiplied (the sixth shot)
 	var told_shut := {}   # the foes a gate turned the keyword from, told once
-	var split := maxi(1, f.split)    # a passive's split: the hits it doubles, each base halved (Effects.split_of; none splits today)
+	var split := maxi(1, f.split)    # a split: the hits it doubles, each base halved (Effects.split_of; the Split-cycle Breech, a module)
 	# One shape of weapon (Sweep, the one multi-target mode, went on 12 November): its hits all on
 	# the target, an area's shape riding each, every hit's riders, then the death check.
 	var struck_once := {}            # every foe a blow of the spend has met, for what a foe reads on its first

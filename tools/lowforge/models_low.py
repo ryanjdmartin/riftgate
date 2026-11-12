@@ -5850,9 +5850,9 @@ def skua(b):
     for the run and spreads past square to brake, the bone-white flash a bar across the hand's
     root; a V tail of two canted stabilisers; two long streamers off the tail (the jaeger's
     central tail feathers); the fin from the fairing back over the booster, swept and tall; the
-    twin pods on the spine, honeycomb faces forward in dark collars: the housings of the Flechette
-    Pod while it was its lock, kept as they are and firing nothing since the Pod became an
-    ordinary weapon (11 November; theirs to settle with its look). On the move the hands sweep
+    twin air intakes on the spine, dark mouths forward in steel lips (Ryan, 12 November: "Can we
+    turn the skua's spine pods into intakes?"; they housed the Flechette Pod while it was its
+    lock). On the move the hands sweep
     back as it gathers speed and spread as it slows. Mounts in the die's order: hp_1 under the
     left arm's root (the Laser Carbine), hp_2 under the right (the Twin Autoguns), hp_3 under the
     belly (the Flechette Pod, a rack, a strafer's centreline pod). Centred on z = 0 like the
@@ -5899,13 +5899,15 @@ def skua(b):
         b.box(s * 1.6 - 0.6, s * 1.6 + 0.6, -41.0, -31.0, 4.6, 8.0, "steel.plate", "streamer_root")
     # The fin: its root from the fairing back over the booster, swept and tall.
     _rings(b, [_fin_section(0.0, -18.0, -44.0, 5.0, 0.8), _fin_section(0.0, -37.0, -47.0, 20.0, 0.3)], "livery.livery", "fin")
-    # The spine's twin pods, honeycomb faces forward (one missile tile each), collars banked dark:
-    # the Flechette Pod's housings while it was the lock, body detail since 11 November.
+    # The spine's twin intakes (Ryan, 12 November; the Flechette Pod's housings until then): each
+    # a scoop fairing back into the spine, a dark mouth facing forward inside a steel lip.
     for px in (-3.0, 3.0):
-        b.loft([(-16.0, rect(px, 1.8, 4.2, 6.5)), (-10.0, rect(px, 3.4, 4.4, 8.2)), (3.0, rect(px, 3.4, 4.4, 8.2))], "steel.panel", "flechette_pod")
-        _missile_face(b, (px - 1.7, 3.1, 4.4), (0.0, 0.0, 1.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), 3.4, "flechette_face")
-        for (za, zb) in ((8.1, 8.6), (4.0, 4.5)):
-            b.box(px - 2.1, px + 2.1, 2.2, 3.0, za, zb, "amber.ember", "pod_collar")
+        b.loft([(-16.0, rect(px, 1.8, 4.2, 6.5)), (-10.0, rect(px, 3.4, 4.4, 8.2)), (3.0, rect(px, 3.4, 4.4, 8.2))], "steel.panel", "intake")
+        _quad(b, [(px - 1.3, 3.05, 4.8), (px + 1.3, 3.05, 4.8), (px + 1.3, 3.05, 7.8), (px - 1.3, 3.05, 7.8)], "bore.dark", "intake_mouth")
+        for (za, zb) in ((7.9, 8.5), (4.1, 4.7)):
+            b.box(px - 2.0, px + 2.0, 2.4, 3.4, za, zb, "steel.plate", "intake_lip")
+        for (xa, xb) in ((px - 2.0, px - 1.4), (px + 1.4, px + 2.0)):
+            b.box(xa, xb, 2.4, 3.4, 4.1, 8.5, "steel.plate", "intake_lip")
     # The mounts: a pylon under each arm's root, the gun ahead of the arm's edge; the third under
     # the belly, the Flechette Pod's rack on the centreline.
     for s in (-1.0, 1.0):
@@ -5927,9 +5929,8 @@ def skua(b):
     # The strafing run, on the map (its travel leaves the hex, as the Kite's circle does; Ryan,
     # 28 October: the keyed run read as sudden changes of direction and a reverse back to its
     # start, and a flown path never reverses): one banked circle beside its hex, climbing over
-    # the first third, the hands sweeping back as it rolls into a dive on the far side, the pods
-    # firing twice at the bottom, climbing out and sinking back onto its hex as the hands
-    # spread to brake.
+    # the first third, the hands sweeping back as it rolls into a dive on the far side, climbing
+    # out and sinking back onto its hex as the hands spread to brake.
     run = _over_ground(_survey_circle(r=60.0, bank=42.0, vmax=130.0, rise=0.0),
                        [(0.0, 0.0), (0.08, 2.0), (0.2, 16.0), (0.34, 34.0), (0.46, 22.0), (0.6, -8.0), (0.76, 8.0), (0.9, 5.0), (1.0, 0.0)])
     at = lambda u: _time_at(run, u)
@@ -5938,8 +5939,7 @@ def skua(b):
     b.act("strafing_run", run[-1][0], {"wing_l": [(at(0.26), 0.0), (at(0.46), SW), (at(0.62), SW), (at(0.78), 0.0), (at(0.9), -8.0), (run[-1][0], 0.0)],
                                        "wing_r": [(at(0.26), 0.0), (at(0.46), -SW), (at(0.62), -SW), (at(0.78), 0.0), (at(0.9), 8.0), (run[-1][0], 0.0)]},
           body=run, places=("map",),
-          glow=[(["pod_collar"], [(at(0.5), 0.0), (at(0.53), 18.0), (at(0.56), 1.0), (at(0.59), 18.0), (at(0.62), 1.0), (at(0.68), 0.0)]),
-                (boosters, [(0.3, 0.0), (1.0, 9.0), (run[-2][0] - 0.5, 6.0), (run[-1][0] - 0.1, 0.0)])])
+          glow=[(boosters, [(0.3, 0.0), (1.0, 9.0), (run[-2][0] - 0.5, 6.0), (run[-1][0] - 0.1, 0.0)])])
     # The barrel roll, the Kite's, the hands spread (Ryan, 28 October: the wings stay extended
     # for a barrel roll): a dip and a kick to gather, once round on the fuselage and past, back
     # short of level and settled.
@@ -5947,16 +5947,15 @@ def skua(b):
           body=_barrel_roll(t0=0.4, t1=1.6, over=28.0, duration=3.2, surge=8.0),
           glow=[(boosters, [(0.2, 0.0), (0.5, 8.0), (1.7, 8.0), (2.5, 0.0)])])
     # Harrying, on the map: the jaeger's stoops flown as a figure eight over its hex, a lobe to
-    # each side, each lobe lifting and then stooping at its far end with the hands half swept
-    # and a burst from the pods at the bottom, crossing its hex at speed between them.
+    # each side, each lobe lifting and then stooping at its far end with the hands half swept,
+    # crossing its hex at speed between them.
     eight = _over_ground(_figure_eight(radius=44.0, bank=-44.0, vmax=140.0, rise=0.0),
                          [(0.0, 0.0), (0.1, 6.0), (0.18, 8.0), (0.25, -14.0), (0.32, -6.0), (0.4, 6.0), (0.5, 0.0), (0.6, 6.0), (0.68, 8.0), (0.75, -14.0), (0.82, -6.0), (0.9, 6.0), (1.0, 0.0)])
     et = lambda u: _time_at(eight, u)
     b.act("harry", eight[-1][0], {"wing_l": [(et(0.06), 0.0), (et(0.2), 34.0), (et(0.3), 34.0), (et(0.44), 0.0), (et(0.56), 0.0), (et(0.7), 34.0), (et(0.8), 34.0), (et(0.94), 0.0)],
                                   "wing_r": [(et(0.06), 0.0), (et(0.2), -34.0), (et(0.3), -34.0), (et(0.44), 0.0), (et(0.56), 0.0), (et(0.7), -34.0), (et(0.8), -34.0), (et(0.94), 0.0)]},
           body=eight, places=("map",),
-          glow=[(["pod_collar"], [(et(0.23), 0.0), (et(0.25), 14.0), (et(0.28), 0.0), (et(0.73), 0.0), (et(0.75), 14.0), (et(0.78), 0.0)]),
-                (boosters, [(0.3, 0.0), (0.9, 7.0), (eight[-2][0] - 0.5, 6.0), (eight[-1][0] - 0.1, 0.0)])])
+          glow=[(boosters, [(0.3, 0.0), (0.9, 7.0), (eight[-2][0] - 0.5, 6.0), (eight[-1][0] - 0.1, 0.0)])])
     # The loop, the Kite's, on the map only: it backs off, runs in with the hands swept and
     # pulls up through a full circle, over on its back and down, and brakes onto its hex a
     # whole turn on.
@@ -5978,21 +5977,6 @@ def skua(b):
     b.halo = [("booster_ring", KESTREL_HALO), ("exhaust", KESTREL_HALO)]   # its booster, hot
     b.gait(tracks={"wing_l": [(0.0, SW), (1.0, SW)], "wing_r": [(0.0, -SW), (1.0, -SW)]}, glow=glow,
            body_hold=(0.0, 0.0, 0.0, 0.0, -6.0, 0.0), start=("spread", 0.25, 0.85))
-    # The burst (Ryan, 3 November: the Fire button "sometimes makes it do a loop. Is that because
-    # it's attached to Strafing run? Its janky either way"): the strafing run is a flown path on
-    # the map, and its slice carried the machine round its circle in the fight's frame. Its pods
-    # fired on their own act instead, where it stands: the hands half swept, the nose dipped at its
-    # mark with a little surge, two bursts, each kicking it back, then level. A weapon's firing
-    # alone (idle=False), and no weapon's since 11 November: the Pod is an ordinary weapon on a
-    # mount and fires as its class does, so nothing plays this until its look is revisited (the
-    # Hypersonic Swoop, its lock, is equipment).
-    b.act("pod_burst", 1.8, {"wing_l": [(0.1, 0.0), (0.4, SW * 0.5), (1.0, SW * 0.5), (1.5, 0.0)],
-                             "wing_r": [(0.1, 0.0), (0.4, -SW * 0.5), (1.0, -SW * 0.5), (1.5, 0.0)]},
-          body=[(0.1, 0.0, 0.0, 0.0), (0.42, 0.0, 2.5, -1.0, 0.0, -7.0, 0.0), (0.5, 0.0, 0.8, -0.6, 0.0, -4.0, 0.0), (0.6, 0.0, 2.0, -0.9, 0.0, -6.0, 0.0),
-                (0.68, 0.0, 0.6, -0.5, 0.0, -3.5, 0.0), (0.9, 0.0, 1.2, -0.7, 0.0, -5.0, 0.0), (1.6, 0.0, 0.0, 0.0)],
-          heft=0.06, idle=False,
-          glow=[(["pod_collar"], [(0.44, 0.0), (0.48, 18.0), (0.54, 1.0), (0.62, 18.0), (0.68, 1.0), (0.76, 0.0)]),
-                (boosters, [(0.1, 0.0), (0.35, 6.0), (0.9, 6.0), (1.5, 0.0)])])
     b.move(slide=0.5, bank=44.0, accel=0.7, heft=0.08, oversteer=0.3)
 
 skua.maker = "kestrel"

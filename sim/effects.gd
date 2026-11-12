@@ -1078,7 +1078,7 @@ static func stat(u, name: String, upto: int = ROUNDS) -> int:
 
 
 ## How many times over an entry spent at a foe hits (split_strikes, on_attack; the Skua's
-## Split-cycle Breech from 25 October to 11 November, no passive's today; Ryan, 7 November:
+## Split-cycle Breech from 25 October to 11 November, a module of that name since the 12th; Ryan, 7 November:
 ## "Doubles the number of hits ... for Weapons and Equipment. Base weapon damage is halved (rounded
 ## down, minimum 1)"): an entry hits that many times as often, and each hit's base, the number and what the entry prints from its firer, is
 ## divided by it, rounded down and never below one (Skirmish.split_share); every buff, passive and

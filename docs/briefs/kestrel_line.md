@@ -75,7 +75,7 @@ Where each stands:
   declined ("it adds clunk to the battle. We ditched withdrawal and the game feels better for
   it"). The kit: four entries and no reset; every weapon doubled on an unhurt foe; the Pinion
   Driver the finisher, doubled on a foe at half its HP or less (Claude's form of his "simpler
-  but fill the same purpose", his to move), beside the Coriolis Accelerator, which keeps its
+  but fill the same purpose"; his word on it, 12 November: "Pinion Driver good"), beside the Coriolis Accelerator, which keeps its
   slope in the pool ("two execute pieces can exist"); a kill recharging a small shield whole.
   Phased on a kill he kept for the shadow panther ("It keeps the phased orbit, not the Kite").
   Its brief is retired (`git show eed817e:docs/briefs/kestrel_kite.md`); the bible's Kite row

@@ -316,7 +316,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   foe's cleanse takes it and the Paradox counts it. Its chip shows its damage, its readout its
   keywords.
 - Strikes are separate blows; each lands the number and carries the keywords. Heat is paid once a spend.
-  A split weapon (a passive's split; none splits today) hits twice as often, each hit's base (its number and what it prints from its firer) halved
+  A split weapon (the Split-cycle Breech, a module) hits twice as often, each hit's base (its number and what it prints from its firer) halved
   before the attacker's modifiers, rounded down and never below one (a number of nothing stays
   nothing); every modifier and the foe's own reads then count on each hit. A machine carrying
   Ricochet strikes again after each shot (Ricochet, below).
@@ -1051,7 +1051,7 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   it) after those, undoubled, and under a condition where it carries one (the Kite's, against
   an unhurt foe); it may grant a cooldown to every weapon and equipment its machine aims at a
   foe (none does today). On a kill a passive may recharge its machine's shield whole (the
-  Kite's), as any shield gained is. It may split every weapon and equipment aimed at a foe instead (none does today):
+  Kite's), as any shield gained is. A passive or a module may split every weapon and equipment aimed at a foe instead (the Split-cycle Breech, a module; a second adds nothing):
   each hits twice as often, and each hit's base weapon damage
   (its number and what the entry prints) is halved, rounded down and never below one, every
   buff and passive and the foe's conditions counting on each hit after it, its armour too; the
