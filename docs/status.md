@@ -27,7 +27,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1142 tests, 363,563 checks, green on `ccr-4d58b054-3lyj0a` (11 November, Sapped, the Lance,
+- Tests: 1142 tests, 363,572 checks, green on `ccr-4d58b054-3lyj0a` (11 November, Sapped, the Lance,
   the Wild Boar's and the Baboon's reworks). Before it, 1132 tests, 363,473 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
   with the Dingo's pieces, the pins and the Flakshot Repeater over the Clydesdale's review). Before it,
   1123 tests, 362,685 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
