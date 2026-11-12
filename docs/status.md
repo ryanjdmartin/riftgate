@@ -1274,10 +1274,13 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. The live page is v0.535, dated 11 November (the
-  page's Version 507, published from main at `3d5f98f` on Ryan's word, "Republish please": main's
-  file whole, the live v0.534 matching `da18614`'s file byte for byte; new since 506 the Clydesdale's
-  cell in the acts table, its five idle acts). Version 506 (main's `da18614`, on his "Pull in main
+  `docs/design-bible.html` after every change. The live page is v0.536 (the page's Version 508,
+  published from main at `fbce698` on Ryan's word, "Yes please": main's file whole, the live v0.535
+  matching `3d5f98f`'s file byte for byte; new since 507 the batteries row's wells and the acts
+  table's broadside drill and hatch wave), its Date line still 11 November, which main's file has
+  since set to 12 November, the next republish carrying it. Version 507 (main's `3d5f98f`, on his
+  "Republish please") was main's file whole over the live v0.534: the Clydesdale's cell in the acts
+  table, its five idle acts. Version 506 (main's `da18614`, on his "Pull in main
   and republish") was main's file whole over the live v0.533 (`d2c024d`'s): the Prairie Dog's and
   the Dingo's rows from `ccr-4d58b054-3lyj0a`, the Flakshot Repeater, the Hollow-point Harpoon, the
   Translocator's Shock and the two pins in the debuff table. Version 505
@@ -1285,7 +1288,7 @@ commands are in `README.md`.
   (Version 504, main's `60a0e4d`), which matched that commit's file; new since 504 the pacing row in beats of the tide,
   menace a pack's threat rating and the rows that follow it, the Whip Scorpion's rework, the
   hardpoints row with every stock gun its class, the Clydesdale's batteries row and its square
-  ports, and Changed Over in the buff table). BASE for the next merge is `3d5f98f`'s file. The
+  ports, and Changed Over in the buff table). BASE for the next merge is `fbce698`'s file. The
   live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
