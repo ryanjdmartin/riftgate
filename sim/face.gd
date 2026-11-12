@@ -14,8 +14,9 @@ enum Kind { ATTACK, SHIELD, VENT, BLANK, BUFF }
 enum Reach { NONE, DIRECT, INDIRECT, SWEEP, EVERY_FOE }   # Sweep (Ryan, 3 November): a targeting mode, a rank picked and its filled slots walked; Every Foe (4 November), below
 ## Execute and Steady are retired (10 October): a threshold doubling is a hard sum hidden in
 ## a keyword, and a rolled weapon dealing its average is simply a flat one.
-## The Soulcutter Talons' kill rule is a count printed on its one carrier (Ryan, 11 October: no
-## keyword to learn; 18 October: "devour is not a thing"): `devours`, the stacks a kill gives.
+## Empowered a kill is a count printed on its carrier (Ryan, 11 October: no keyword to learn; 18
+## October: "devour is not a thing"): `devours`, the stacks a kill gives. The Soulcutter Talons'
+## until the Ammit's rework of 12 November; no piece prints it today.
 ## Web (18 October, the funnel-web's Web Bomb): the foe hit is Webbed, and after its action the
 ## web bursts into a Suppress on it and the next foe to act beside it (Skirmish._web_burst).
 ## Flak (Ryan's go, 19 October; built 21 October): Wainwright & Sutler's on-hit, a numbered
@@ -121,7 +122,7 @@ var splash: int = 0           # an attack with Splash: the number each foe of th
 var chain: int = 0            # an attack with Chain: the number every other Shocked foe on the field takes as its blow's (Chain N, 28 October)
 var dispel: int = 0           # an attack or equipment with Purge: the stacks every buff of each foe it reaches loses (Purge N, 2 November)
 var shield_cost: int = 0      # a cost (Ryan, 26 October): the shield a spend takes from its owner first, overshield included; short of it the entry cannot be played
-var short: bool = false       # shown only: the shield cannot pay the entry's shield cost now (Skirmish.shown_face), struck through on the die like a dry gun
+var short: bool = false       # shown only: its machine cannot pay the entry's price now, a shield cost or the count it spends (Skirmish.shown_face), struck through on the die like a dry gun
 var volatile: int = 0         # a cost (Ryan, 26 October, a keyword with a chip until then): the hull a spend bites its owner, past shield and armour, before the component acts; it may wreck it (a numbered keyword since the stock pass's engine, 22 October; a constant of 10 before)
 var gates: Dictionary = {}    # an attack: keyword name -> the condition it lands under, read against each foe at the spend before its own riders (the Suppression Battery's Suppress on a foe carrying Flak; the stock pass's engine, 22 October)
 var holds: String = ""        # an attack: the status its target keeps through this round's end, its halving skipped (the Hollow-point Harpoon's pin on Flak)
@@ -142,7 +143,11 @@ var power_per_heat: int = 0   # ...and each `per_heat` heat it fired adds this t
 var per_heat: int = 10        # ...the heat a step of power_per_heat stands for (the stock pass, 22 October: a field, 10 until the content landing)
 var power_per_missing: int = 0   # an attack: added for every per_missing HP its target is missing (10 October; flat, shown on the hover)...
 var per_missing: int = 20     # ...the HP a step of power_per_missing stands for (the stock pass, 22 October: a field, 20 until the content landing)
-var devours: int = 0          # an attack: each kill gives its owner this many stacks of Empowered (the Soulcutter Talons' rule; a keyword until 11 October, a count since 18 October)
+var devours: int = 0          # an attack: each kill gives its owner this many stacks of Empowered (the Soulcutter Talons' rule until 12 November, no piece's since; a keyword until 11 October, a count since 18 October)
+# The Soul Siphon's (the Ammit's, Ryan, 12 November: "Consume up to 5 souls, granting 1 Empowered per soul"; "No Empowered decays this round. And I mean none, not ally or enemy"):
+var spends: String = ""       # a buff: the status of its own machine it spends for its stacks, a stack granted a stack spent (its Souls); with none to spend the entry cannot be played
+var spends_up_to: int = 0     # ...the most it spends, and so the most it grants (five); buff_stacks holds it as built, and what it would take now on the die as shown (Skirmish.shown_face)
+var holds_all: String = ""    # any entry: once it is spent, no unit's stacks of this status run down at this round's end, either side's (Skirmish.round_holds)
 var fills_hopper: int = 0     # an attack: loads it puts in its machine's hopper for each foe its blows reach (the Chainsaw Claw, 11 October)
 var fires_hopper: int = 0     # an attack: the most loads one shot fires from the hopper...
 var power_per_load: int = 0   # ...each adding this to the blow (the Bullion Fragmenter, 11 October)
@@ -329,6 +334,13 @@ static func from_dict(d: Dictionary) -> Face:
 		f.buff_status = str(d.get("status", ""))
 		f.buff_stacks = maxi(1, int(d.get("stacks", 1)))
 		f.buff_rounds = maxi(1, int(d.get("rounds", 1)))
+		# A buff that spends a count of its machine's for its stacks (the Soul Siphon): the most it
+		# spends is the most it grants, and a save's `stacks` beside it says no more than that.
+		f.spends = str(d.get("spends", ""))
+		if not f.spends.is_empty():
+			f.spends_up_to = maxi(1, int(d.get("spends_up_to", 1)))
+			f.buff_stacks = f.spends_up_to
+	f.holds_all = str(d.get("holds_all", ""))
 	if f.kind == Kind.ATTACK:
 		f.vents_all = bool(d.get("vents_all", false))
 		f.power_per_heat = maxi(0, int(d.get("power_per_heat", 0))) if f.vents_all else 0
@@ -416,6 +428,11 @@ func to_dict() -> Dictionary:
 		d["status"] = buff_status
 		d["stacks"] = buff_stacks
 		d["rounds"] = buff_rounds
+		if not spends.is_empty():
+			d["spends"] = spends
+			d["spends_up_to"] = spends_up_to
+	if not holds_all.is_empty():
+		d["holds_all"] = holds_all
 	if vents_all:
 		d["vents_all"] = true
 		if power_per_heat > 0:
@@ -573,8 +590,9 @@ func cooldown_rounds() -> int:
 
 
 ## A rule printed on the entry rather than a keyword (bible section 6: the die's star chip):
-## Vents all, the missing-hull bonus, the talons' kill rule, the hopper, the brace, rolling
-## again on a status (the Nemesis's rage), a spin (the Spin-Up's), the Siphon's heat a blow, or a
+## Vents all, the missing-hull bonus, Empowered a kill, the hopper, the brace, rolling
+## again on a status (the Nemesis's rage), a spin (the Spin-Up's), the Siphon's heat a blow, a
+## count it spends for its stacks or a status it holds on every unit (the Soul Siphon's), or a
 ## labelled effect. A cooldown is a cost the die prints with its clock, a reload the ammo the die
 ## prints with its shells (Ryan, 2 November), and a shield's cooling the number under its steam
 ## (3 November), so none of them is.
@@ -583,7 +601,8 @@ func has_unique_rule() -> bool:
 		or spins or turns_die or heat_per_blow > 0 or resets_on_kill or gathers_mines or detonates \
 		or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine \
-		or regen_shield > 0 or action_price > 0 or rolls_target or kill_rerolls > 0
+		or regen_shield > 0 or action_price > 0 or rolls_target or kill_rerolls > 0 \
+		or not spends.is_empty() or not holds_all.is_empty()
 
 
 ## Whether the entry prints a cooldown: one round or more.
@@ -683,6 +702,9 @@ func duplicate_face() -> Face:
 	f.power_per_missing = power_per_missing
 	f.per_missing = per_missing
 	f.devours = devours
+	f.spends = spends
+	f.spends_up_to = spends_up_to
+	f.holds_all = holds_all
 	f.burn = burn
 	f.cryo = cryo
 	f.flak = flak
@@ -870,6 +892,10 @@ func rule_phrases() -> Array[String]:
 			out.append(_action_text())
 		if rolls_target:
 			out.append("its die rolls again")
+		if not spends.is_empty():
+			out.append(_spends_text())
+	if not holds_all.is_empty():
+		out.append(_holds_all_text())
 	out.append_array(_spin_phrases())
 	if not charged.is_empty():
 		out.append("%s: %s" % [charge_cost_text(), charged_form().describe()])
@@ -888,6 +914,17 @@ func _regen_text() -> String:
 
 func _action_text() -> String:
 	return "on an ally whose die is spent, %d reroll%s: its die rolls again and it acts again" % [action_price, "" if action_price == 1 else "s"]
+
+
+## The Soul Siphon's two rules as the entry's text says them (Ryan, 12 November): the count it
+## spends for its stacks, the most it takes and a stack a one; and the status no unit's clock runs
+## down this round, either side's.
+func _spends_text() -> String:
+	return "consumes up to %d %s, 1 %s each" % [spends_up_to, str(Effects.STATUS.get(spends, {}).get("name", spends)), str(Effects.STATUS.get(buff_status, {}).get("name", buff_status))]
+
+
+func _holds_all_text() -> String:
+	return "no %s decays this round" % str(Effects.STATUS.get(holds_all, {}).get("name", holds_all))
 
 
 ## A printed cooldown as the entry's text says it, " cooldown 2"; nothing for an entry with none.
@@ -922,6 +959,8 @@ func describe() -> String:
 				s = "an ally whose die is spent acts again"
 			elif kind == Kind.BUFF and turns_die:
 				s = "turns its die to its other battery"   # the Changeover's: a buff that grants nothing, its turn its whole effect
+			elif kind == Kind.BUFF and not spends.is_empty():
+				s = _spends_text()   # the Soul Siphon's: what it grants is what it consumes, said once
 			elif kind == Kind.BUFF:
 				var status_name := str(Effects.STATUS.get(buff_status, {}).get("name", buff_status))
 				s = "%s ×%d" % [status_name, buff_stacks]
@@ -952,6 +991,8 @@ func describe() -> String:
 				s += " braces" + ("" if braces == 1 else " ×%d" % braces)
 			if not rolls_again_on.is_empty():
 				s += " spends a %s to roll again, itself included" % str(Effects.STATUS.get(rolls_again_on, {}).get("name", rolls_again_on))
+			if not holds_all.is_empty():
+				s += " " + _holds_all_text()
 			s += cooldown_text() + spin_text() + cost_text()
 			if targets == Target.SELF:
 				s += " (self only)"
@@ -1013,6 +1054,8 @@ func describe() -> String:
 				s += " " + _kill_rerolls_text()   # the Spindrift Salvo's kill rider
 			if regen_shield > 0 and regen_rounds > 0:
 				s += " " + _regen_text()   # the St. Elmo's Regenerator's rider on its own spender
+			if not holds_all.is_empty():
+				s += " " + _holds_all_text()
 			s += cooldown_text() + spin_text()
 			if heat > 0:
 				s += " (+%d heat)" % heat

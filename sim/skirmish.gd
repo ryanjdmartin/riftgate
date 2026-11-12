@@ -155,6 +155,12 @@ var last_roll: Dictionary = {}
 ## screen: {mech, rank, shots, blows (spend_blows' shape)} each. Cleared as a turn ends.
 var releases: Array = []
 var _held: Dictionary = {}   # Foe -> the status ids a pin holds from this round's halving, read as the round's statuses run out
+## The statuses no unit's clock runs down at this round's end, either side's (the Soul Siphon's
+## hold, Ryan, 12 November: "No Empowered decays this round. And I mean none, not ally or enemy"):
+## a rule of the round and no status on anyone, so a Ward turns nothing away and what a unit gains
+## of it later in the round is held too. Set by a spend whose entry holds one (Face.holds_all),
+## read as the round's statuses run down (_finish_round) and cleared there; saved with the fight.
+var round_holds: Array = []
 var last_blast: Dictionary = {}   # the last vent blast, {mech, foe, dealt}, for the screen; cleared each round
 ## The fight's share of the run's Sponsorship measures (the bible's Sponsorship row; tallied 21
 ## October, never shown live): damage the team took on shield and armour, dice spent on
@@ -528,6 +534,36 @@ func _count_kill(f: Foe) -> void:
 	var t: Dictionary = kills.get(f.pack_id, {})
 	t[f.content_id] = int(t.get(f.content_id, 0)) + 1
 	kills[f.pack_id] = t
+
+
+## Every kill a death check counts, whoever or whatever made it (on_foe_killed; the Ammit's Souls,
+## Ryan, 12 November: "Souls granted by any kill"): each machine standing in the fight fires its
+## passives on the count, so an ally's kill, a burn's tick and a Mine's blast all feed it, and a
+## foe getting back up, a part or a Bomb's burst, no kill, feeds nothing.
+func _foes_fell(n: int) -> void:
+	if n <= 0:
+		return
+	for ms in live_mechs():
+		var got := Effects.fire(ms.unit, "on_foe_killed", n)
+		var parts := _apply(ms, got)
+		if not parts.is_empty():
+			log.append("%s: %s, %s" % [ms.unit.display_name, "a foe falls" if n == 1 else "%d foes fall" % n, ", ".join(_with_counts(ms, parts, got))])
+
+
+## A trigger's log pieces with each status it granted read at its count as it stands ("Souls ×7"):
+## a count the machine banks says where it is, as its chip does.
+func _with_counts(ms: MechState, parts: Array[String], result: Dictionary) -> Array[String]:
+	var out: Array[String] = []
+	for p in parts:
+		if (result["statuses"] as Array).has(p):
+			var n := 0
+			for m in ms.unit.modifiers:
+				if m.name == p:
+					n += m.stacks
+			out.append("%s ×%d" % [p, n])
+		else:
+			out.append(p)
+	return out
 
 
 ## A boss unit's commanders still standing in this fight (Foe.commands: its boss, a final's
@@ -1103,7 +1139,7 @@ func _blow_on(ms: MechState, amount: int, source: Foe, shield: int, barrier: boo
 ## component says (Ryan, 26 September: not every shield reaches an ally). Live machines only.
 func machine_targets_for(ms: MechState, f: Face) -> Array[MechState]:
 	var out: Array[MechState] = []
-	if f == null or not f.on_machines() or shield_short(ms, f):
+	if f == null or not f.on_machines() or cannot_pay(ms, f):
 		return out
 	for who in live_mechs():
 		if who != ms and is_out(who):
@@ -1225,8 +1261,8 @@ func swap_carries(ms: MechState) -> bool:
 
 func targets_for_face(ms: MechState, f: Face) -> Array[Foe]:
 	var out: Array[Foe] = []
-	if f == null or not f.is_attack() or not can_fire(ms, f) or shield_short(ms, f):
-		return out   # a dry gun on a forging machine (the Musk Ox's), or an entry whose shield cost the shield cannot pay, has nothing it may be spent on
+	if f == null or not f.is_attack() or not can_fire(ms, f) or cannot_pay(ms, f):
+		return out   # a dry gun on a forging machine (the Musk Ox's), or an entry whose price its machine cannot pay (a shield cost, a count it spends), has nothing it may be spent on
 	# Reach: direct hits the front and any exposed column's back; indirect hits everyone; a
 	# sweep is dropped on any foe and walks that foe's rank (Ryan, 3 November: "You pick a rank
 	# and that's the rank it hits"). A foe already killed this round still stands until the dead
@@ -1268,10 +1304,16 @@ func reach_of(ms: MechState, f: Face) -> int:
 ## front, Penetrate at the back), as the spend will carry them.
 func shown_face(ms: MechState, f: Face, target: Foe = null) -> Face:
 	var sf := Effects.effective_face(ms.unit, f, target)
-	if sf != null and shield_short(ms, sf):
+	if sf != null and cannot_pay(ms, sf):
 		if sf == f:
 			sf = f.duplicate_face()
-		sf.short = true   # the shield cannot pay: the cost struck through, like a dry gun's ammo
+		sf.short = true   # its machine cannot pay: the cost struck through, like a dry gun's ammo
+	if sf != null and not sf.spends.is_empty() and not sf.short:
+		# An entry that spends a count for its stacks (the Soul Siphon): the die shows what it would
+		# take now, and so what it would grant; with none to take it shows its most, struck.
+		if sf == f:
+			sf = f.duplicate_face()
+		sf.buff_stacks = spend_take(ms, sf)
 	if sf == null or not sf.is_attack():
 		return sf
 	var heat := int(Effects.attack(ms.unit, sf, 0, sf.heat)["heat"])
@@ -1944,7 +1986,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 	# A shield cost (Ryan, 26 October: "if you don't have the shield, the face cannot be played,
 	# and overshield does cheat it out at the cost of using two actions for one effect"): taken
 	# first, from the shield as it stands, overshield included; short of it the entry is locked
-	# (shield_short) and never reaches here.
+	# (cannot_pay) and never reaches here.
 	var toll := f.shield_cost
 	if toll > 0:
 		if ms.unit.shield < toll:
@@ -2080,10 +2122,18 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 					whom = reached_machines(ms, f)
 				else:
 					whom.append(who)
+				# A buff that spends a count of its machine's for its stacks (the Soul Siphon, Ryan,
+				# 12 November: "Consume up to 5 souls, granting 1 Empowered per soul"): as many as it
+				# holds, up to its most, taken as it is spent, a stack granted a one.
+				var grants := f.buff_stacks
+				if not f.spends.is_empty():
+					grants = Effects.spend_stacks(ms.unit, f.spends, f.spends_up_to)
+					var spent_name := str(Effects.STATUS.get(f.spends, {}).get("name", f.spends))
+					log.append("%s consumes %d %s: %d left" % [ms.unit.display_name, grants, spent_name, Effects.stacks_of(ms.unit, f.spends)])
 				for w in whom:
 					if f.buff_status == "phased" and w.assigned:
 						continue   # Phased only before it acts (Ryan, 20 October)
-					var stacks := _stacks_from(ms, f.buff_status, f.buff_stacks)
+					var stacks := _stacks_from(ms, f.buff_status, grants)
 					var m := Effects.grant_buff(w.unit, f.buff_status, stacks, src, until)
 					if m == null:
 						continue
@@ -2140,6 +2190,14 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 	_release_returns()   # the spend is done with the field: what its kills bring back stands now
 	if f.on_machines():
 		_machine_spend_after(ms, f, target)
+	# A hold on the whole field (the Soul Siphon's, Ryan, 12 November: "No Empowered decays this
+	# round. And I mean none, not ally or enemy"): the status the entry names, on either side,
+	# skips this round's run-down on every unit (round_holds), what stands and what comes later.
+	if not f.holds_all.is_empty():
+		for held_id in Effects.named_like(f.holds_all):
+			if not round_holds.has(held_id):
+				round_holds.append(held_id)
+		log.append("%s: no %s decays this round" % [ms.unit.display_name, str(Effects.STATUS.get(f.holds_all, {}).get("name", f.holds_all))])
 	# The brace (Ryan, 12 October; the Breaching Plow's in place of the Glacis): spending the
 	# entry Braces its owner until the round's end, so the plate stands behind the charge
 	# through the enemy's turn and is gone when the next round opens.
@@ -2287,15 +2345,16 @@ func _release_passes() -> void:
 
 
 ## The round's end, once the enemy's turn is done and the fight undecided: the machines' statuses
-## tick, a foe's halving statuses halve (Flak, Empowered's clock), shield past the maximum fades
-## and the parts due grow back. The fight's own (end_round, which then refreshes its cores' guards
+## tick, a foe's halving statuses halve (Flak, Empowered's clock), each but what a pin or the
+## round holds (round_holds), shield past the maximum fades and the parts due grow back. The fight's own (end_round, which then refreshes its cores' guards
 ## and its machines' allies and reads the outcome) and the round preview's copy (preview_round)
 ## both run it, so the preview's round ends as the round will.
 func _finish_round() -> void:
 	_tick_mechs()
 	for f in field_foes():
-		Effects.halve(f, _held.get(f, []))
+		Effects.halve(f, (_held.get(f, []) as Array) + round_holds)
 	_held.clear()
+	round_holds = []   # the round's own hold (the Soul Siphon's) is over: everything halves again from the next
 	_trim_overshield()
 	_regrow_parts()
 
@@ -2691,7 +2750,7 @@ func _purge(t: MechState, f: Foe, n: int = 1) -> void:
 ## Scorched are not among them: they tick at the end of the player's turn (_burn_mechs).
 func _tick_mechs() -> void:
 	for ms in live_mechs():
-		var t := Effects.tick(ms.unit)
+		var t := Effects.tick(ms.unit, true, round_holds)
 		if int(t["heat"]) > 0:
 			log.append("%s: %d heat from its statuses" % [ms.unit.display_name, int(t["heat"])])
 			_add_heat(ms, int(t["heat"]))
@@ -3315,9 +3374,11 @@ static func blast_shot(amount: int) -> Face:
 	return Face.attack(amount, Face.Reach.INDIRECT)
 
 
-## A spend's kills, its weapon's or its vent's blast's, counted at its death check (is_kill): the
-## talons' Empowered a kill (the entry's own rule), the muster its guns earn (the Swallowtail's)
-## and the kill trigger (the Kite's heat tax, 21 October), once however many fell.
+## A spend's kills, its weapon's or its vent's blast's, counted at its death check (is_kill):
+## Empowered a kill where an entry prints it (no piece does today), the muster its guns earn (the
+## Swallowtail's) and the kill trigger, once however many fell (the Kite's heat tax, 21 October) or
+## once for each (an effect that says `each`: the Ammit's flare, Ryan, 12 November: "the flare
+## should be the Ammit kill only"; the Souls its kills banked are in already, the death check's).
 func _after_kills(ms: MechState, killed: int, f: Face = null) -> void:
 	if killed <= 0:
 		return
@@ -3325,7 +3386,10 @@ func _after_kills(ms: MechState, killed: int, f: Face = null) -> void:
 		_overcharge_on_kill(ms, killed, f.devours)
 	_muster(ms, killed * int(Effects.muster_rule(ms.unit).get("kill", 0)))
 	if ms.alive():
-		_fired(ms, Effects.fire(ms.unit, "on_kill"), "after the kill")
+		var got := Effects.fire(ms.unit, "on_kill", killed)
+		var parts := _apply(ms, got)
+		if not parts.is_empty():
+			log.append("%s: after the kill, %s" % [ms.unit.display_name, ", ".join(_with_counts(ms, parts, got))])
 
 
 ## What a vent spent on `who` blasts (the Whip Scorpion's Thermal Ejection Manifold, 12 and 13
@@ -3803,6 +3867,27 @@ func can_fire(ms: MechState, f: Face) -> bool:
 ## conditional entry to come.
 func shield_short(ms: MechState, f: Face) -> bool:
 	return f != null and f.shield_cost > 0 and ms.unit.shield < f.shield_cost
+
+
+## The second: an entry that spends a count of its machine's for what it grants (Face.spends, the
+## Soul Siphon's Souls) cannot be played while the machine holds none of it.
+func spend_short(ms: MechState, f: Face) -> bool:
+	return f != null and not f.spends.is_empty() and Effects.stacks_of(ms.unit, f.spends) <= 0
+
+
+## Whether its machine cannot pay an entry's price now, whichever it prints: every target list
+## and the die's shown entry read this, so each conditional entry behaves as the first did.
+func cannot_pay(ms: MechState, f: Face) -> bool:
+	return shield_short(ms, f) or spend_short(ms, f)
+
+
+## What an entry that spends a count would take from its machine now: what it holds, up to the
+## entry's most; its most when the machine holds none (the die prints that, struck).
+func spend_take(ms: MechState, f: Face) -> int:
+	if f == null or f.spends.is_empty():
+		return 0
+	var held := Effects.stacks_of(ms.unit, f.spends)
+	return mini(held, f.spends_up_to) if held > 0 else f.spends_up_to
 
 
 ## Ammo into the magazine, up to its size.
@@ -5430,9 +5515,12 @@ func _clear_dead_slots() -> void:
 func _clear_fallen() -> void:
 	# The kills first, every felled foe judged against the field as the death check finds it, so a
 	# core cleared before its part below still names it (is_part).
+	var fell := 0
 	for f in field_foes():
 		if not f.alive() and f.rank >= 0 and is_kill(f):
 			_count_kill(f)
+			fell += 1
+	_foes_fell(fell)
 	for col in range(columns):
 		for rank in [front, back]:
 			var key := Vector2i(0 if is_same(rank, front) else 1, col)
@@ -5604,5 +5692,6 @@ func _finish() -> void:
 	# included, never carried onto the map (the mechanics audit, 25 October: only the round's end
 	# trimmed it).
 	_trim_overshield()
+	round_holds = []
 	for ms in mechs:
 		Effects.end_skirmish(ms.unit)

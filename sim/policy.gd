@@ -49,7 +49,10 @@ const DEATH_WEIGHT := 20.0       # a machine kept alive through the round
 const BANK_WEIGHT := 0.2         # shield stood up or heat room made for a later round
 const BURN_WEIGHT := 0.5         # burn stacks pay out over the rounds to come
 const OPTION_GUARD := 64         # spends in one round, at most: rapid rerolls the die and acts again
-const DEVOUR_ROUNDS := 2.0       # rounds of damage a kill's Empowered stacks are worth: a halving stack pays about twice itself over the rounds to come; kept for the battle (the Ammit), more
+const DEVOUR_ROUNDS := 2.0       # rounds of damage a kill's Empowered stacks are worth: a halving stack pays about twice itself over the rounds to come (Empowered a kill, no piece's today)
+const FLARE_ROUNDS := 1.0        # rounds of damage a stack its own kill grants is worth (the Ammit's flare): it lands after the swing, so it pays from the next round at half, about once itself
+const HOLD_ROUNDS := 1.0         # rounds of damage a stack held whole into the next round is worth (the Soul Siphon's hold): whole next round and halving after, less the round's wait
+const SOUL_WEIGHT := 0.3         # a count spent for a buff (a Soul the Siphon consumes), in foe hit points: a fifth of a flare for the rest of the battle, which the bot's one fight cannot see; a placeholder
 const SHOCK_WEIGHT := 0.6        # a Shock cashed later (a mine's, a hull's): the doubled blow, as a share of the team's average; a blow's own reads the hitter in hand (shock_cash)
 const CLEANSE_ROUNDS := 2.0      # rounds a cleansed status would otherwise have cost (Corrupted lasts the fight, Burning fades)
 const HOPPER_WEIGHT := 0.6       # a load in the hopper, as a share of what it adds when a later shot fires it
@@ -663,6 +666,12 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		# A kill feeds stacks of Empowered: what the status adds to the die's own damage, a
 		# stack, for about the rounds the stacks last. Read from the status, never hardcoded.
 		score += p_kill * _stack_damage_gain("overcharged", _raw_attack_mean(ms)) * float(f.devours) * DEVOUR_ROUNDS
+	# What the machine's passives grant it on its own kill (the Ammit's flare, 12 November: a
+	# stack of Empowered for every five Souls it holds): each stack on the blows its die deals
+	# from the next round, a strike a point (flare_gain), at the odds of the kill.
+	var flare := Effects.would_stack(ms.unit, "on_kill", "overcharged", 1) if f.is_weapon() else 0
+	if flare > 0:
+		score += p_kill * flare_gain(ms, "overcharged", flare) * FLARE_ROUNDS
 	if f.kill_rerolls > 0:
 		# The Spindrift Salvo's kill rider (30 October): the team's rerolls it brings mid-round, at
 		# the odds of the kill, worth what the bank carries of them (bank_delta).
@@ -1143,6 +1152,56 @@ static func _stack_damage_gain(status_id: String, mean: float) -> float:
 	return gain
 
 
+## What `stacks` of a status that adds to every blow are worth on this machine's die for a round:
+## its add a stack, on the strikes its entries land on average (a weapon of four strikes counts a
+## stack four times, a blank and equipment none). A plain read off the die, so the scorer never
+## asks itself; the rounds it lasts are the caller's.
+static func flare_gain(ms: Skirmish.MechState, status_id: String, stacks: int) -> float:
+	var faces := _rolled_faces(ms)
+	if faces.is_empty() or stacks <= 0:
+		return 0.0
+	var strikes := 0.0
+	for f in faces:
+		if f.is_weapon():
+			strikes += float(maxi(1, f.strikes))
+	return _stack_damage_gain(status_id, _raw_attack_mean(ms)) * float(stacks) * strikes / float(faces.size())
+
+
+## A buff on itself that spends a count for its stacks and holds the round's run-down on every
+## unit (the Ammit's Soul Siphon, 12 November): the machine gives this round's action for it, so
+## nothing lands now. Next round it swings at what it consumed and at what it held, whole, where
+## what it held would have halved; an ally's stacks are held the same way, and so is every foe's
+## (a rally carries whole into its next blows), which is its price beside the count it spends.
+## A plain rule for the rungs that read one round: the planner's rollouts play the real thing.
+func hold_score(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
+	var grants := sk.spend_take(ms, f) if not f.spends.is_empty() else f.buff_stacks
+	if not f.spends.is_empty() and sk.spend_short(ms, f):
+		return 0.0
+	var held_ids: Array = Effects.named_like(f.holds_all) if not f.holds_all.is_empty() else []
+	# What the machine carries whole into the next round: its grant when the hold covers it (else
+	# half of it, the round's halving), and the half of what it held that the hold keeps.
+	var own := float(grants) if held_ids.has(f.buff_status) else float(grants) * 0.5
+	var score := 0.0
+	for who in sk.live_mechs():
+		var kept := 0.0
+		for id in held_ids:
+			var n := Effects.stacks_of(who.unit, str(id))
+			kept += float(n - int(n / 2.0))
+		if who == ms:
+			kept += own
+		score += flare_gain(who, f.buff_status, 1) * kept * HOLD_ROUNDS
+	# The foes' half of the hold: each stack a rally leaves standing is a point on its next blow.
+	for foe in sk.field_foes():
+		if not foe.alive():
+			continue
+		for id in held_ids:
+			var n := Effects.stacks_of(foe, str(id))
+			score -= float(n - int(n / 2.0)) * HULL_WEIGHT
+	if not f.spends.is_empty():
+		score -= float(grants) * SOUL_WEIGHT
+	return score
+
+
 ## The die's own average damage per entry, attack entries at their average times their
 ## strikes, blanks and everything else at zero: a plain read with no scoring under it, so a
 ## keyword that pays out on later attacks can be valued without asking the scorer again.
@@ -1304,6 +1363,8 @@ func machine_spend_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.Mec
 				# action bought, less its price, the rerolls it pays worth what the bank would have
 				# carried of them (bank_delta), since the looks were taken as the round opened.
 				score = action_value(who) - bank_delta(sk, -f.action_price)
+			elif not f.spends.is_empty() or not f.holds_all.is_empty():
+				score = hold_score(sk, ms, f)   # a buff that spends a count and holds the round (the Soul Siphon)
 			else:
 				score = buff_score(sk, who, f)
 				if guard_weight != 1.0 and is_block(f):

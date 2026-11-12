@@ -245,6 +245,20 @@ func _apply_pose() -> void:
 				for id in ["burning", "flakked", "shocked", "cryoed", "vitriol"]:
 					Effects.stack(foe, Effects.STATUS[id], Effects.SKIRMISH, "mech", 2, Effects.status_decay(Effects.STATUS[id]))
 			s._refresh()
+		"souls":
+			# The Ammit's count and its Siphon's hold (12 November; RIFTGATE_TEAM=ammit,...): every
+			# machine that banks a count as foes fall holds seven of it and two stacks of Empowered,
+			# the round holds Empowered, and the first foe carries three: the count's chip, and the
+			# pin beside each Empowered, a machine's and a foe's.
+			for ms in s.sk.mechs:
+				for count_id in Effects.kill_counts(ms.unit):
+					Effects.stack(ms.unit, Effects.STATUS[str(count_id)], Effects.status_scope(Effects.STATUS[str(count_id)]), "mech", 7, Effects.DECAY_NONE)
+					Effects.stack(ms.unit, Effects.STATUS["overcharged"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_HALF)
+			var foes := s.sk.field_foes()
+			if not foes.is_empty():
+				Effects.stack(foes[0], Effects.STATUS["kindled"], Effects.SKIRMISH, "foe", 3, Effects.DECAY_HALF)
+			s.sk.round_holds = Effects.named_like("overcharged")
+			s._refresh()
 		"stores":
 			# Every machine's own resource row part filled, to judge the rows beside the heat bar
 			# (10 November; RIFTGATE_TEAM=badger,nemesis,cassowary,swallowtail, then musk_ox): the

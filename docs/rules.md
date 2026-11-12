@@ -442,7 +442,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   number are written Splash. A weapon's area keyword carries its number; a debuff's carries
   none, its effects reaching those foes and its blow nothing.
 - **Breach**: the blow ignores the foe's armour (foes carry no shield), the same word as the
-  foes' rider below. The Overclocked Railgun carries it.
+  foes' rider below. The Overclocked Railgun carries it, and the Ammit's Soulcutter Talons, four
+  strikes of 1 that armour would otherwise take whole.
 - **Burn** (with a number): each foe hit gains that many stacks of Burning (Burn 3: three
   stacks).
 - **Cryo** (with a number): every foe the entry reaches gains that many stacks of Cryo a
@@ -523,7 +524,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   its own, and a Pinned foe's Flak, what the spend lays and what stood there, does not halve at
   this round's end; it halves again the round after. A Ward turns it away. Burning has a pin of
   its own, Pinned Burning: the foe burns for every stack at its action and loses none that
-  round (no piece lays it yet). Each wears the lock on the status it holds.
+  round (no piece lays it yet). Each wears the lock on the status it holds. Empowered's pin is
+  the round's, on every unit at once (the Soul Siphon, below).
 - **Costs** are printed along the entry's foot with its heat, each a mark and a number with no
   word and no sign (the heat's thermometer, the shield's, the hull's machine body, a forging
   gun's shells, the cooldown's clock), never a keyword and never a chip: a
@@ -533,7 +535,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   first from the shield as it stands, overshield included). An entry whose shield cost the
   shield cannot pay cannot be played: the die shows the cost struck through, it has nowhere
   to land, and END TURN pulses as if the die were spent. It is the first entry with a
-  condition on its play, and the pattern for any to come.
+  condition on its play, and the pattern for any to come; the second is a **count it spends**
+  (the Soul Siphon's Souls, by their mark, the number what it would take now), unplayable and
+  struck the same way while its machine holds none.
 - **Cleanse** (on a shield or a vent, today): the machine it lands on loses Burning, Scorched, Crushed,
   Silenced, a foe's Disabled and Corrupted (never a cooldown).
 - **Overshield** (shields): may pass the maximum; the excess fades at the round's end, and as
@@ -542,9 +546,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 Component properties, printed on the entry rather than learned as keywords (the die marks
 them with a star): **Vents all** fires the whole heat gauge into the shot, adding its
 bonus per step of heat fired, the step printed on the entry (the Afterburner Cannon: +1 per 2),
-then its own heat lands. **Empowered a kill** (the Soulcutter Talons'
-rule, no word of its own): each foe its spend kills gives its owner a stack of Empowered, at
-the spend's death check. **Missing HP** adds its bonus for every
+then its own heat lands. **Empowered a kill** (no word of its own, and no piece prints it
+today; the Soulcutter Talons did): each foe its spend kills gives its owner a stack of
+Empowered, at the spend's death check. **Missing HP** adds its bonus for every
 step of HP the foe struck is missing, each foe its own, on each blow after the attacker's
 modifiers (so a split weapon's two strikes each add it), both numbers on the entry (the
 Coriolis Accelerator: +1 per 5). **Gated**: a keyword printed with a condition on the foe (a Suppress on a foe carrying
@@ -566,7 +570,14 @@ Honey Badger's Chainsaw Claw, two); a weapon that fires it takes up to its most 
 each adding its bonus to the blow, and spends them (its Bullion Fragmenter fires two at +2),
 the armour they stood for going with them. **Braces**:
 spending it Armours its owner, the stacks it says, an armour point each, until the round's
-end (the Wild Boar's Breaching Plow, two). **Rolls again** (no piece prints it today; the Nemesis's Knuckle of Fury did, and it is one direction of its upgrades): spending it
+end (the Wild Boar's Breaching Plow, two). **The Soul Siphon** (the Ammit's, equipment spent on
+itself, cooldown 3): it consumes the Ammit's Souls, as many as it holds up to 5, and grants a
+stack of Empowered for each, the die showing what it would take now; and in the round it is spent
+no Empowered decays, on any unit, machine or foe: what each holds and what it gains before the
+round ends skips that round's halving, and halves again the round after. The round carries the
+hold and no unit a status, so a Ward turns nothing away and nothing counts it as a mark; every
+unit holding Empowered wears the pin's chip, Pinned Empowered, until the round's end. With no
+Soul it cannot be played (Costs, above). **Rolls again** (no piece prints it today; the Nemesis's Knuckle of Fury did, and it is one direction of its upgrades): spending it
 with a stack of its status spends one, and the die rolls again, a plain roll as the round
 opens, so the machine acts again and the same entry may show again; nothing switches off,
 the stacks being the limit, and the fight's last blow rolls nothing. **The gather** (the
@@ -606,7 +617,8 @@ unit's own mechanic, the rule it plays by, and never a buff or a debuff, so no P
 or Cleanse touches it; its chip shows its mark cut out of a solid tile, ahead of the unit's
 other chips, and its hold line names it an Ability and says what goes on. A foe's: the Goblin
 Nob's Enrage, a core's guard (Guarded), a Gel's split, a last act, a golden rage while it
-lasts. A machine's: the Polar Bear's seal (its form) and the Kite's Hot Streak. What an
+lasts. A machine's: the Polar Bear's seal (its form), the Kite's Hot Streak and the Ammit's
+Souls (a count with no cap, so no store: its chip says the number). What an
 ability, a passive or a store grants beyond itself is a buff like any (the Nob's gathered
 Enraged, a module's Empowered or Armoured, the Armoured the Honey Badger's hopper grants): a
 stack is a stack, whatever granted it.
@@ -621,8 +633,19 @@ ABILITIES.
 On a machine:
 - **Empowered** (buff): +1 damage a stack, so the count is the bonus. At the end of each
   round it halves, rounded down, whatever granted it, until it is gone; a buff component
-  grants it stacks and no rounds. On the Ammit nothing of it fades: its Quintessence Tap
-  keeps every stack for the battle, whatever granted it.
+  grants it stacks and no rounds. In a round the Soul Siphon is spent it does not halve, on any
+  unit (the Soul Siphon, above).
+- **Souls** (Ability, the Ammit's Quintessence Tap): a Soul for every foe that falls in a fight
+  the Ammit stands in, whoever or whatever fells it (its own blow, an ally's, a burn's tick, a
+  Mine's blast: a kill as the death check counts it, so a foe getting back up, a split and a
+  part bank none), with no cap, kept from fight to fight through the battle and gone as the
+  battle ends. The Souls flare as each fight opens, and at each foe a spend of the Ammit's own
+  kills (its weapon's blow, an arc, a spill): it gains a stack of Empowered for every 5 Souls it
+  holds, nothing under 5, and no Soul is spent by it. A death check banks its Souls first, so a
+  spend that kills two flares twice at the count with both in. What a flare grants is Empowered
+  like any: it halves at the round's end and a Purge takes it. Its Soul Siphon consumes Souls.
+  An Ability, so no Purge, Silence or Cleanse touches them; its chip says the count, and the
+  codex lists it among what the battle keeps.
 - **Armoured** (buff, on either side): armour +1 a stack, every stack at once, whatever
   granted it, so the count is the armour: a machine's until the round's end, a foe's (from
   its brace) until its next action.
@@ -738,9 +761,8 @@ On a machine:
   its stores fill and spend as ever, and its targeting modes stand (Every Foe, Every Ally, Every
   Other Ally). Cleansable, an ally's Cleanse the way; a Ward turns
   the silence away. A foe's purge is Purge N too: N stacks off every buff the machine carries,
-  for good, whatever granted it (a stack is a stack); its Abilities and its stores stay, and the
-  Ammit's Quintessence Tap keeps its Empowered from a Purge as from every clock, whatever granted
-  it; a Ward turns it away too.
+  for good, whatever granted it (a stack is a stack); its Abilities and its stores stay (the
+  Ammit's Souls among them, never the Empowered they grant); a Ward turns it away too.
 - **Hot Streak** (Ability, the Kite's, its passive's price): its shots run 1 hotter a stack this
   fight, a stack for each attack that killed; no cleanse, silence or purge lifts it.
 
@@ -787,7 +809,8 @@ On a foe:
 - **Empowered** (buff, Rally): lands on every other foe on the field the moment the rally does,
   the rally's value in stacks, and every blow the foe lands hits a point harder a stack, an add
   before the move's factor as every add is. It halves at the end of each round, rounded down,
-  the machine's clock: no move spends it, a special or a Suppress takes none of it, and a
+  the machine's clock, and skips the halving of a round the Soul Siphon is spent, as a machine's
+  does: no move spends it, a special or a Suppress takes none of it, and a
   countdown still gathering carries what stands to the blow it lands. A foe acting after the
   rallier hits harder this turn; one that has acted carries half to the next round; each rally's
   grant adds. An intent counts the rallies on their way to a blow this round, those of the ralliers acting
@@ -1040,7 +1063,13 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   on hull damage (any hull lost: a blow, a bite or an overheat), on shield gain, on shield
   granted (an ally this machine shields), on heat gain, out of combat, on foe status (a foe
   gains a debuff), on stack (this machine applies stacks), on a kill (once after an attack of
-  this machine's that killed, arcs, spills and a vent's blast included). No trigger feeds itself.
+  this machine's that killed, arcs, spills and a vent's blast included, or once for each foe it
+  killed where the effect says so: the Ammit's flare), on a foe killed (every kill the death
+  check counts in this machine's fight, whoever made it, once for each: the Ammit's Souls). No
+  trigger feeds itself.
+- A passive may count a grant off a status its machine carries, in steps (a stack of Empowered
+  for every 5 Souls), and a status may name the battle as its scope, kept from fight to fight
+  (Souls).
 - A passive may double a weapon's printed number before its buffs, on every blow, what the
   entry prints from its firer included (an area's number, heat fired, hopper loads), the buffs
   added once after it and the struck foe's own reads (its missing HP, the stacks consumed on

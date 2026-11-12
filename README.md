@@ -437,7 +437,7 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # first term its passive names opened, as a tap opens it), pair and pair_spread (a Gel's halves in its slot, and a
 # Spread held over them; RIFTGATE_FOES=gel:2,goblin:3), hold (the second die read, its readout; RIFTGATE_HOLD_ENTRY=<place>
 # picks the entry showing, with RIFTGATE_TEAM to choose the machine), mechhold and foehold (the first machine's
-# and the first foe's: gauges, chips, a foe's intent), stores (every machine's own resource row part filled, under its heat bar:
+# and the first foe's: gauges, chips, a foe's intent), souls (the Ammit's count and its Siphon's hold: seven Souls, two Empowered and the pin beside it, a foe's Empowered pinned too; RIFTGATE_TEAM=ammit,badger), stores (every machine's own resource row part filled, under its heat bar:
 # RIFTGATE_TEAM=badger,nemesis,cassowary,swallowtail, then musk_ox, to judge the hopper's and the rage's segmented bars beside the Muster, the magazine and the shot count's pips), confirm, lock, touch (the first die lit as its tap waits out the double-tap window), swaphome (a waiting Swap sent home by a tap on nothing; RIFTGATE_SHOT_FRAME=6 catches it in flight), repick (a foe whose machine falls first, a
 # second arrow dashed to the machine it will strike; RIFTGATE_FOES=wolf:3), strike,
 # enemyturn (RIFTGATE_SHOT_FRAME=8 catches the acting foe lit), chips (every unit crowded with chips, the rows wrapping:
@@ -512,6 +512,8 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # ability's chip (Enrage on a foe, Sealed on a machine), to judge the look beside the buffs and debuffs.
 # RIFTGATE_MINE_DEBUG=1 (any skirmish) opens the fight with a Mine of 3 (Burn 1, Shock) on every foe,
 # so any kill shows its blast land round the slot, to judge the Mine's chip and blast running.
+# RIFTGATE_SOULS_DEBUG=12 (any skirmish) opens the fight with that many Souls on every machine that
+# banks them (the Ammit), so its flare, its Soul Siphon and their chips show in a battle's first fight.
 # RIFTGATE_REFIT=regen=0 (any run; any spec tools/balance.gd's --refit takes) lays a what-if over
 # the refit pass's model, which is content since 10 November: a flat shield regen in place of
 # each chassis's own, a cooling offset, hotter weapons, a price on the Barrier basic.

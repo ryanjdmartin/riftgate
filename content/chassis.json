@@ -590,7 +590,8 @@
    "tier": 3,
    "design": {
     "fantasy": "A sinister digitigrade figure, with 4 clawed arms, the middle set which can be used as an additional pair of legs. A low-set snout like cockpit with burning \"eyes.\" Absorbs energy from units it defeats with its 4 signature locked claw weapons, granting permanent overcharge.",
-    "niche": "Scaling damage"
+    "niche": "Scaling damage",
+    "notes": "Reworked 12 November on Ryan's go, his own design (\"The 4 claws are combined into one weapon that deals 1x4 instead, with Breach. They no longer gain Empowered on kill\"; \"Passive: Kills grant one Soul. At the start of a skirmish, or on kill, the souls flare, granting 1 Empowered per 5 souls\"; \"new locked piece: Soul Siphon: Consume up to 5 souls, granting 1 Empowered per soul. Cooldown 3\"), with his calls on the holes: the Souls last the battle and carry no cap (\"as part of the fantasy\"), any kill in its fight banks one and only its own kill flares, and the Siphon's round holds every Empowered on the field (\"No Empowered decays this round. And I mean none, not ally or enemy\"). The Tap's kept Empowered, its form until then, went with it: the pitch above is his of that form. Every number a placeholder."
    },
    "codex": "",
    "hull": 32,
@@ -608,9 +609,7 @@
    "size": "medium",
    "fixed": [
     "soulcutter_talons",
-    "soulcutter_talons",
-    "soulcutter_talons",
-    "soulcutter_talons"
+    "soul_siphon"
    ],
    "loadout": [
     "plasma_arquebus",
@@ -621,12 +620,28 @@
    "passive": {
     "id": "quintessence_tap",
     "name": "Quintessence Tap",
-    "description": "Empowered never fades on this machine, whatever granted it, and lasts the battle.",
+    "description": "Every foe that falls in its fight is a Soul, kept for the battle. As each fight opens, and each time the Ammit kills, it gains 1 Empowered for every 5 Souls it holds.",
     "effects": [
      {
-      "trigger": "static",
-      "effect": "keep_status",
-      "value": "overcharged"
+      "trigger": "on_foe_killed",
+      "effect": "stack_status",
+      "value": "souls",
+      "each": true
+     },
+     {
+      "trigger": "on_skirmish_start",
+      "effect": "stack_status",
+      "value": "overcharged",
+      "per_stack": "souls",
+      "stack_step": 5
+     },
+     {
+      "trigger": "on_kill",
+      "effect": "stack_status",
+      "value": "overcharged",
+      "per_stack": "souls",
+      "stack_step": 5,
+      "each": true
      }
     ]
    },

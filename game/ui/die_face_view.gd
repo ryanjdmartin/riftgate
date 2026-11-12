@@ -586,6 +586,11 @@ func cost_marks() -> Array:
 		costs.append(["hull", face.volatile, Palette.HULL, false])
 	if face.shield_cost > 0:
 		costs.append(["shield", face.shield_cost, Palette.LOSS if face.short else Palette.SHIELD, face.short])
+	if not face.spends.is_empty():
+		# A count its machine spends for its stacks (the Soul Siphon's Souls, 12 November): the
+		# count's own mark and what the spend would take now, struck when it holds none.
+		var spent := Terms.of_status(face.spends)
+		costs.append([Terms.glyph(spent) if not spent.is_empty() else "star", face.buff_stacks, Palette.LOSS if face.short else Terms.status_colour(face.spends), face.short])
 	var cd := cooldown if cooldown >= 0 else face.cooldown_rounds()
 	if cd > 0:
 		costs.append(["cooldown", cd, Palette.INK, false])

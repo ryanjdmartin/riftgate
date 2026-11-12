@@ -495,6 +495,7 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 		"kills": _typed_tallies(sk.kills),
 		"roll_marks": sk.roll_marks, "history": sk.history,   # the trail's bars and the undo's snapshots (2 November)
 		"team_kills": sk.team_kills,
+		"round_holds": sk.round_holds.duplicate(),   # what the round holds from decaying on every unit (the Soul Siphon's, 12 November)
 	}
 
 
@@ -598,6 +599,9 @@ static func _skirmish_into(sk: Skirmish, d: Dictionary, lookup: Callable) -> voi
 	sk.round = int(d.get("round", 0))
 	sk.rerolls_left = int(d.get("rerolls_left", 0))
 	sk.banked = int(d.get("banked", 0))   # the rerolls Maverick's Playbook carries to the next round (30 October)
+	sk.round_holds = []
+	for held_id in d.get("round_holds", []):   # a save from before 12 November has none
+		sk.round_holds.append(str(held_id))
 	sk.committed = bool(d.get("committed", false))
 	sk.layout = []
 	for cell in d.get("layout", []):

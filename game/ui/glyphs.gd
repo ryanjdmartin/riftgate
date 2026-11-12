@@ -8,12 +8,24 @@ extends RefCounted
 static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Color, width: float = 2.0) -> void:
 	var s := size / 2.0
 	match id:
-		"pin_flak", "pin_burn":
+		"pin_flak", "pin_burn", "pin_empower":
 			# A pin (Ryan, 11 November: "Can we combine the lock and the flak/burn for these
 			# glyphs?"): the status it holds, drawn a little smaller up and to the left, with the
-			# lock at its lower right.
-			draw(ci, "flak" if id == "pin_flak" else "burn", c + Vector2(-s * 0.2, -s * 0.16), size * 0.8, color, width)
+			# lock at its lower right. Empowered's (the Soul Siphon's hold, 12 November) the same way.
+			draw(ci, {"pin_flak": "flak", "pin_burn": "burn", "pin_empower": "overcharge"}[id], c + Vector2(-s * 0.2, -s * 0.16), size * 0.8, color, width)
 			draw(ci, "lock", c + Vector2(s * 0.5, s * 0.48), size * 0.52, color, width)
+		"soul":
+			# A small ghost (the Ammit's Souls, 12 November; a first cut for Ryan's eye, a wisp with
+			# a tail having read as a letter at a chip's size): a domed head, straight sides, a hem
+			# in three points and two eyes, what it takes from a foe that falls.
+			var crown := c + Vector2(0.0, -s * 0.22)
+			ci.draw_arc(crown, s * 0.72, PI, TAU, 14, color, width)
+			ci.draw_polyline(PackedVector2Array([
+				crown + Vector2(s * 0.72, 0.0), c + Vector2(s * 0.72, s * 0.95), c + Vector2(s * 0.36, s * 0.58), c + Vector2(0.0, s * 0.95),
+				c + Vector2(-s * 0.36, s * 0.58), c + Vector2(-s * 0.72, s * 0.95), crown + Vector2(-s * 0.72, 0.0),
+			]), color, width)
+			ci.draw_circle(c + Vector2(-s * 0.27, -s * 0.2), maxf(1.0, s * 0.13), color)
+			ci.draw_circle(c + Vector2(s * 0.27, -s * 0.2), maxf(1.0, s * 0.13), color)
 		# ---- the die's targeting marks (Ryan, 2 November): one width, under the main mark
 		"aim_direct", "aim_indirect":
 			# Whom a weapon or a debuff reaches (Ryan, 3 November: "I think we had it right with

@@ -79549,7 +79549,12 @@
     "to": 3.3,
     "blow": 2.1
    }
-  ]
+  ],
+  "soul_siphon": {
+   "act": "threat",
+   "from": 0.4,
+   "to": 1.5
+  }
  },
  "stock_shapes": {
   "hp_1": "barrel",
