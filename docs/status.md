@@ -27,21 +27,23 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1154 tests, 371,076 checks, green on `ccr-4d58b054-3lyj0a` (12 November, as it took main with the
-  dead-code pass, over the Whip Scorpion's broadside and its two new idle acts). Before it, 1152
-  tests, 364,655 checks, green on main (12 November, as `ccr-8af28d03-re9kz4` landed a second time
-  with the kill's flare once an attack, no per-foe flag, Empowered's up sword and the dead-code
-  pass, the rules it cut gone with the tests of their own). Before it, 1155 tests, 371,132 checks,
-  green on `ccr-4d58b054-3lyj0a` (12 November, the Whip Scorpion's two new idle acts, its
-  broadside hooked up, the vent blast's and Siphoning's code cut, the Overrun Gearing and the
-  Shift Whistle dealt). Before it, 1158 tests, 364,864 checks, green on `ccr-722ca9f0-yj8na3` (12
-  November, main at `c717e69` with the HEAT and OVERHEAT dials). Before it, 1158 tests, 364,834
-  checks, green on main (12 November, as `ccr-8af28d03-re9kz4` landed with the Ammit's rework over
-  the three fast flyers rebuilt, Sweep removed, the cooldown's count, Instant, Sapped and the Wild
-  Boar's and the Baboon's reworks). Before it, 1142 tests, 364,574 checks, green on
-  `ccr-4d58b054-3lyj0a` (12 November, Sapped, the Lance, the Wild Boar's and the Baboon's reworks,
-  with main's cooldown count, Rapid's switch-off and Instant taken in). 1132 tests, 364,475
-  checks, green on main (12 November, as `ccr-63a1309a-caa9mw` landed
+- Tests: 1154 tests, 371,076 checks, green on `ccr-4d58b054-3lyj0a` (12 November, as it took main with the four
+  formations' numbers, over the dead-code pass taken in, the Whip Scorpion's broadside and its two
+  new idle acts). Before it, 1154 tests, 371,076 checks, green on it (as it took the dead-code
+  pass). Before it, 1152 tests, 364,655 checks, green on main (12 November, as
+  `ccr-8af28d03-re9kz4` landed a second time with the kill's flare once an attack, no per-foe flag,
+  Empowered's up sword and the dead-code pass, the rules it cut gone with the tests of their own),
+  and the same counts green on `ccr-722ca9f0-yj8na3` over it with the four formations' numbers.
+  Before it, 1155 tests, 371,132 checks, green on `ccr-4d58b054-3lyj0a` (12 November, the Whip
+  Scorpion's two new idle acts, its broadside hooked up, the vent blast's and Siphoning's code cut,
+  the Overrun Gearing and the Shift Whistle dealt). Before it, 1158 tests, 364,864 checks, green on
+  `ccr-722ca9f0-yj8na3` (12 November, main at `c717e69` with the HEAT and OVERHEAT dials). Before
+  it, 1158 tests, 364,834 checks, green on main (12 November, as `ccr-8af28d03-re9kz4` landed with
+  the Ammit's rework over the three fast flyers rebuilt, Sweep removed, the cooldown's count,
+  Instant, Sapped and the Wild Boar's and the Baboon's reworks). Before it, 1142 tests, 364,574
+  checks, green on `ccr-4d58b054-3lyj0a` (12 November, Sapped, the Lance, the Wild Boar's and the
+  Baboon's reworks, with main's cooldown count, Rapid's switch-off and Instant taken in). 1132
+  tests, 364,475 checks, green on main (12 November, as `ccr-63a1309a-caa9mw` landed
   with the cooldown's count, Rapid's own switch-off and Instant over the Clydesdale's review).
   Before it, 1132 tests, 364,286 checks, green on main (12 November, as the Clydesdale's review
   landed with its wells, broadside drill and hatch wave; Godot 4.8-beta2). Before it, 1132 tests,
@@ -187,7 +189,9 @@ refit brief's sections 10 and 11, the to-do, How things stand). Claude's reading
 sending", his to correct: this session's later chunks land the same way once verified, this
 branch alone. On 12 November ("Pull in main ... You can proceed with the steps as you see
 fit") it took main at `8d936cf` and at `c717e69` as fast-forwards and landed the tier-one
-baseline's read and heat's and the overheat's dials, no content moved (How things stand). Landed 11 November: `ccr-4d58b054-3lyj0a`, the chassis inventory and the locked pieces'
+baseline's read and heat's and the overheat's dials, no content moved, then took main at
+`ea2f143` and landed the four breach or burn formations' cut ("Yes go ahead with 2"), 4-4-2
+from the records and the second battle's read (How things stand). Landed 11 November: `ccr-4d58b054-3lyj0a`, the chassis inventory and the locked pieces'
 footing of 10 November and Ryan's round on the busted machines of 11 November (the Polar Bear
 dealt again, the Buzzard's regen, the Nemesis's rage bar; How things stand), carrying
 `ccr-722ca9f0-yj8na3` whole to `4c8dbf1`, took main (the music session's landing: the bible's
@@ -209,7 +213,9 @@ Souls kept without Siphoning, the heat a blow or the blast; the bible on main's 
 branch's edits over them, v0.550 above both sides' v0.549), and a third time at `ea2f143` (the
 dead-code pass, which cut the same vent blast and heat a blow on main: main's form kept, its
 `Pays.VENT` for the release and its own tests, with this branch's validator refusals, kinds test,
-Overrun Gearing, dealt Shift Whistle, broadside and idle acts over it; the bible v0.553).
+Overrun Gearing, dealt Shift Whistle, broadside and idle acts over it; the bible v0.553), and a
+fourth at `bf5158e` (the four formations' numbers: the bible's section 12 line on "a tier of their
+own", v0.554 above both sides' v0.553).
 The Skua is his other session's (the Clydesdale's review landed 12 November). The formation and refit session's merges of main before it are in
 its branch's commits. Landed 11 November: `ccr-7effd31a-u5z4gw`, the music session (Hold The Line's, Night Shift's and
 The Far Bank's pairs passed and built into art/audio, How things stand), took main in a merge (the bible, this
@@ -885,6 +891,38 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   saying that the yield prices no stall now, a pack the tide sends paying what the opening's
   does; the rules and the glossary's Menace, Rupture meter and Seal lines follow, drafts
   redrafted. Left to the economy pass: what a boss pays and salvage's growth by tier.
+- **Four formations cut toward the budget, 4-4-2 to work with, and the anchor** (Ryan, 12
+  November: "Yes go ahead with 2. Also, let's look at 4-4-2 right now so that you're working
+  with correct tier 1 chassis for testing. Remember that all the chassis numbers are on the
+  table, including hull and shield. Important to get the convergence 2 fight tuned around
+  real tier 1s with real tier 1 numbers for damage, defense and heat, and then move on to
+  the scaling for everything from there"). Landed in content, the breach rule untouched: the
+  sandworm 14 hit points and a maw of 3 (36 and 8), the zombie knight 4 and a cleaver of 3
+  (8 and 6), the magma elemental 14 and a fist of 4 (40 and 8), each keeping its plate, and
+  the Peak's bomb 4 (8), its salamander and drake 4 (5). The sandworm ambush, the knights'
+  vigil, the ember pyre and the magma vent cost a trio of real tier ones 5 to 15% of its
+  hull where they cost 8 to 57% (`docs/measurements.md`, 12 November; twenty seeds, four
+  trios, a direction), about twice a plain formation: a breach every round goes no lower
+  on numbers, a blow on a count would, and that is a kit. The plate was the multiplier (a
+  cold gun's 2 does 1 through it), so the hit points came down and the plate stayed.
+  Consequences, named: the same foes stand in tier-two compositions (the wyvern roost, the
+  grenade volley, the gargantuan king's herd, the skeleton king's court) and the salamander
+  in an elite's brood, lighter with them and unread, tier two being scaled from the anchor
+  after; the magma elemental's codex draft, unsigned, no longer calls its fist the biggest
+  hit on the Peak. 4-4-2 from the records is the refit brief's section 13 and the bible's
+  section 12: the six built and tier one under any reading (the Honey Badger, the Skua, the
+  Storm Petrel, the Prairie Dog, the Cassowary, the Cottonmouth) are what the tuning uses,
+  each maker's four his to mark (the Dingo down; both the Wild Boar and the mole; Kestrel's
+  two of the Puffin, the Magpie and the Snowy Owl; Aphelion's fourth). The anchor, Claude's
+  reading of "the convergence 2 fight", his to correct: the second battle, four tier ones
+  against a tier-one rift at Convergence 1. The runner's player wins the Meadow and the
+  Marsh seven times in ten there with nine tenths of its hull when the seal breaks, where
+  the budget spends about half by then, and the Waste and the Peak one time in six, the
+  formations not why (the Waste's rows did not move with the cut). Next in it, the brief's
+  plan: heat for tier one, the plain formations up to the budget and their giants down to
+  a formation's length, the lone machine's fights, the elites and the bosses by domain,
+  then hull, shield and regen, then tiers two and three scaled from it. The bible's scale
+  row and section 12 (v0.553); the rules' scale line.
 - **The player's side at tier one: the baseline, and heat on a dial** (Ryan, 12 November:
   "Pull in main. Many of the machine reworks are done, so they can be included in the pass
   ... You can proceed with the steps as you see fit"; the order agreed the day before, the
@@ -1480,7 +1518,9 @@ decision, component destruction off to test, two rerolls kept; the formation pas
 its proposal's grids re-cut under the new model and read by hull lost), in its brief's order: the
 what-if and its first reads are in (9 November), his two reads of the trial, the model as
 content, the formation pass and a guess at the elites' and bosses' numbers (10 November: the
-brief's sections 5, 8 and 9); tier one only for now (his word, 11 November), and next his
+brief's sections 5, 8 and 9); tier one only for now (his word, 11 November), tuned on the
+second battle with real tier ones before anything is scaled from it (his word, 12 November;
+the brief's section 13 has the plan and 4-4-2 for his marks), and next his
 play of the Rupture in beats and of the tide's and the strike's dials, and his marks on the
 flanks' second patrols (the brief's section 11), and his answers on the first battle (section
 10: the fourth machine's route is settled, the first battle's shape and the boss's numbers by
@@ -1570,7 +1610,9 @@ commands are in `README.md`.
   tables), and main's v0.552 since `ccr-8af28d03-re9kz4` landed again (the Ammit row's flare once an
   attack and the cut of its two old rules, the Empowered row's mark, and the rows that said the
   engine kept a rule the dead-code pass cut: the Kite's, a piece of two kinds, a rider's limit,
-  Chain's targeting, the Whip Scorpion's); each goes up on Ryan's word. The
+  Chain's targeting, the Whip Scorpion's), and main's v0.553 since `ccr-722ca9f0-yj8na3` landed
+  again (the scale row's breaching massives and section 12's 4-4-2 to work with and the
+  anchor); each goes up on Ryan's word. The
   live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
