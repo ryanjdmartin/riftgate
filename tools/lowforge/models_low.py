@@ -410,7 +410,7 @@ def clydesdale(b):
     raised.__enter__()
     # The body: an ironclad casemate, one loft from tail to shoulders with a short taper
     # to the neck. A keel under it, a hitch at the tail.
-    b.loft([(-36.0, _case(36.0, 23.0, 46.0, 5.0)), (22.0, _case(36.0, 23.0, 46.0, 5.0)), (30.0, _case(30.0, 24.0, 44.0, 4.0))], "steel.panel", "hull")   # 3 deeper since 11 November, to stow a battery upright
+    hull = b.loft([(-36.0, _case(36.0, 23.0, 46.0, 5.0)), (22.0, _case(36.0, 23.0, 46.0, 5.0)), (30.0, _case(30.0, 24.0, 44.0, 4.0))], "steel.panel", "hull")   # 3 deeper since 11 November, to stow a battery upright
     b.box(-10.0, 10.0, -30.0, 18.0, 20.0, 23.0, "steel.dark", "keel")
     b.box(-3.0, 3.0, -42.0, -36.0, 24.0, 28.0, "steel.dark", "hitch")
     # The neck and head: lower than the body, so it reads as an animal and not a tank.
@@ -465,7 +465,7 @@ def clydesdale(b):
     # boards down to a hand above the deck so the guns stand clear of them.
     raised = _Raised(b, H)
     raised.__enter__()
-    b.box(-19.0, 19.0, -34.0, 20.0, 46.0, 48.0, "steel.plate", "deck")
+    deck = b.box(-19.0, 19.0, -34.0, 20.0, 46.0, 48.0, "steel.plate", "deck")
     for s in (-1.0, 1.0):
         b.box(min(s * 19.0, s * 22.0), max(s * 19.0, s * 22.0), -35.0, 21.0, 46.0, 52.0, "livery.livery2", "bed_side")
     b.box(-22.0, 22.0, 18.0, 21.0, 46.0, 51.0, "livery.livery2", "bed_front")
@@ -494,7 +494,8 @@ def clydesdale(b):
     rest_fwd = (0.0, math.cos(math.radians(BATTERY_ELEVATION)), math.sin(math.radians(BATTERY_ELEVATION)))
     hatches = {}   # pin number -> [(leaf joint, its swing in the form)]
     for n, px, py, up in ports:
-        hatches[n] = _hatch(b, str(n), (px, py, 48.0), BATTERY_MOUTH, BATTERY_WALL, 1.5, built_open=up)   # the first battery's hanging open, the second's shut over its stowed guns
+        hatches[n] = _hatch(b, str(n), (px, py, 48.0), BATTERY_MOUTH, BATTERY_WALL, 1.5, well=BATTERY_WELL, cut=[hull, deck], cut_dz=H,
+                            built_open=up)   # the first battery's hanging open, the second's shut over its stowed guns
         dz = 0.0 if up else -BATTERY_SINK
         fwd = rest_fwd if up else (0.0, 0.0, 1.0)
         with b.joint("lift_%d" % n, (px, py, 49.0 + dz), slide=(0.0, 0.0, 1.0)):
@@ -511,38 +512,97 @@ def clydesdale(b):
     for s in (-1.0, 1.0):
         for y0, y1 in ((-30.0, -9.0), (-6.0, 15.0)):
             b.box(min(s * 18.0, s * 21.5), max(s * 18.0, s * 21.5), y0, y1, 28.0, 44.0, "steel.plate", "ablative")
-    b.box(-13.0, 13.0, -40.0, -36.0, 28.0, 44.0, "steel.vent", "heat_sink")
+    # The heat sink a radiator since 11 November (the breather's exhale glows in it): a vent block
+    # across the tail, its back a frame round a core banked in its heat (heat_glow, near black at
+    # rest) behind seven dark fins, so the heat shows between them.
+    b.box(-13.0, 13.0, -39.0, -36.0, 28.0, 44.0, "steel.vent", "heat_sink")
+    for z0, z1 in ((28.0, 29.0), (43.0, 44.0)):
+        b.box(-13.0, 13.0, -40.0, -39.0, z0, z1, "steel.vent", "heat_sink")
+    for s in (-1.0, 1.0):
+        b.box(min(s * 12.0, s * 13.0), max(s * 12.0, s * 13.0), -40.0, -39.0, 29.0, 43.0, "steel.vent", "heat_sink")
+    b.box(-12.0, 12.0, -39.15, -39.0, 29.0, 43.0, "amber.heat", "heat_glow")
+    for k in range(7):
+        b.box(-12.0, 12.0, -39.9, -39.15, 29.5 + 2.0 * k, 30.5 + 2.0 * k, "steel.dark", "heat_fin")
     b.prism("z", 0.0, -38.0, 52.0, 2.8, 16.0, "steel.dark", 6, "stack")
     raised.__exit__(None, None, None)
 
-    # Idle acts, third pass (Ryan, 4 October: some stilted, turrets too fast and wild, the
-    # weight thrown side to side; heavy, with inertia): curves a part runs on through, the
-    # servos' heft (b.move), held poses that drift, every gun turning slowly and not far with
-    # a pause before it turns back (the builder's rule), and the hooves planted while the
-    # body settles over them (_planted). Degrees and seconds; a key is (t, value) on the
-    # joint's own axis or (t, pitch, yaw, roll); a body key is (t, dx, dy, dz) or (t, dx, dy,
-    # dz, yaw, pitch, roll); a glow key is (t, k), k the light added over rest.
+    # Idle acts, the fourth pass (Ryan, 11 November: its animations "showing their age, honestly",
+    # the idle acts; "Everything else is fine"; of five for the machine as it now stands, "Those all
+    # sound good. Don't need the old ones"): the battery on deck ranging where the head looks, the
+    # battery's drill, a fore hoof pawing, a breath with the heat sink glowing on the exhale, and the
+    # stowed hatches checked in a wave down the deck. At rest the first battery is on deck; Changed
+    # Over plays its own copies for the second (b.act's form), its wave over the first's hatches, so
+    # the acts always work the battery on deck. Heavy throughout (b.move's heft); every gun turning slowly
+    # and not far with a pause before it turns back (the builder's rule). Degrees and seconds; a
+    # key is (t, value) on the joint's own axis or (t, pitch, yaw, roll); a body key is (t, dx, dy,
+    # dz) or (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k), k the light added over rest.
     limb = lambda leg: {"hip": "hip_" + leg, "knee": "knee_" + leg, "ankle": "ankle_" + leg, "at": legs[leg]}
-    swivel = {}
-    for n, px, py, up in ports:   # each battery's guns in turn, front to back, each column swinging outboard
-        k = (n - 1) % 4
-        out = 28.0 if px < 0.0 else -28.0
-        t0 = 0.4 + 1.1 * k
-        swivel["turret_%d" % n] = [(t0, 0.0), (t0 + 1.6, out), (t0 + 2.4, out), (t0 + 4.0, 0.0)]
-    b.act("swivel_weapons", 8.4, swivel)
-    b.act("look_around", 6.0, {   # the head sweeps slowly one way, lamps up, then the other, staring
-        "head": [(1.4, -6.0, 26.0, 0.0), (2.4, -7.0, 28.0, 0.0), (3.8, 5.0, -26.0, 0.0), (4.7, 6.0, -28.0, 0.0), (5.8, 0.0, 0.0, 0.0)],
-    }, glow=[(["lamp"], [(0.4, 0.0), (1.0, 6.0), (5.0, 6.0), (5.8, 0.0)])])
-    b.act("stamp", 5.0, {   # the fore-left hoof lifts high and stamps, the body dropping onto it
-        "hip_fl": [(0.9, 26.0), (1.8, 28.0), (2.05, 0.0)],
-        "knee_fl": [(0.9, -44.0), (1.8, -46.0), (2.05, 0.0)],
-        "ankle_fl": [(0.9, 18.0), (1.8, 18.0), (2.05, 0.0)],
-        "head": [(0.9, -8.0, 12.0, 0.0), (2.05, 6.0, 0.0, 0.0), (3.4, 0.0, 0.0, 0.0)],
-    }, body=[(0.9, 0.0, 0.0, 0.8, 0.0, 2.5, 1.0), (1.8, 0.0, 0.0, 0.9, 0.0, 2.8, 1.1), (2.05, 0.0, 0.0, -1.6, 0.0, -2.0, -0.3), (2.6, 0.0, 0.0, 0.2), (3.4, 0.0, 0.0, 0.0)])
-    tracks, body = _planted([limb(leg) for leg in ("fl", "fr", "hl", "hr")],
-                            [(1.6, 0.0, -4.0, 0.0), (3.8, 0.0, -4.5, 0.0), (5.4, 0.0, 0.0, 0.0)])
-    tracks["head"] = [(1.6, -6.0, 0.0, 0.0), (3.8, -7.0, 0.0, 0.0), (5.4, 0.0, 0.0, 0.0)]
-    b.act("settle", 5.8, tracks, body=body)   # the hydraulics let the body down onto its hooves, the head dropping, and heave it up again
+    HEAT = 196.0   # the heat tile's light at its height: near black at rest, #ff7800 under the phone's eased light (the Polar Bear's vents)
+    # The paw: the fore-right hoof (the side the codex's and the skirmish's views see) lifted,
+    # set down ahead toe first and dragged back along the ground, twice, the head dipped to it;
+    # each key the ankle's place (y, z) and the toe's tip (down negative), the hoof's toe at the
+    # ground through each drag and the leg within reach.
+    paw = {"hip_fr": [], "knee_fr": [], "ankle_fr": []}
+    for t, y, z, toe in ((0.3, 19.0, 6.0, 0.0), (0.9, 22.0, 11.5, -15.0), (1.35, 25.0, 8.0, -6.0), (1.55, 24.0, 6.85, -6.0),
+                         (1.85, 19.0, 6.85, -6.0), (2.15, 14.0, 6.85, -6.0), (2.6, 20.0, 11.5, -15.0), (3.05, 25.0, 8.0, -6.0),
+                         (3.25, 24.0, 6.85, -6.0), (3.55, 19.0, 6.85, -6.0), (3.85, 14.0, 6.85, -6.0), (4.4, 19.0, 6.0, 0.0)):
+        a, kn, c = _limb_angles(limb("fr"), (y, z), 0.0)
+        paw["hip_fr"].append((t, round(a, 3)))
+        paw["knee_fr"].append((t, round(kn, 3)))
+        paw["ankle_fr"].append((t, round(c + toe, 3)))
+    paw["head"] = [(0.5, 0.0, 0.0, 0.0), (1.0, -7.0, -10.0, 0.0), (4.4, -7.0, -10.0, 0.0), (5.0, 0.0, 0.0, 0.0)]
+    # The breath: the hydraulics let the body down onto its hooves as it breathes out, the heat
+    # sink flaring, and heave it back up to its rest (no higher: the legs stand near straight).
+    breath, breath_body = _planted([limb(leg) for leg in ("fl", "fr", "hl", "hr")],
+                                   [(0.4, 0.0, 0.0, 0.0), (1.5, 0.0, -3.2, 0.0), (3.3, 0.0, -3.6, 0.0), (4.4, 0.0, 0.0, 0.0)])
+    breath["head"] = [(0.4, 0.0, 0.0, 0.0), (1.6, -6.0, 0.0, 0.0), (3.3, -7.0, 0.0, 0.0), (4.2, 3.0, 0.0, 0.0), (5.0, 0.0, 0.0, 0.0)]
+
+    def idles(guns, closed, form=None):
+        """The five for the battery on deck, `guns` its ports front to back, and the stowed
+        battery's ports `closed`, front to back, as the machine's own acts or, with `form`, as that
+        form's."""
+        # Ranging: the head turns to a bearing, lamps up, and the battery follows its look, the
+        # guns slewing together a beat apart and lifting to a range; then a second bearing on
+        # the other side, a shorter range; then home.
+        ranging = {"head": [(0.4, 0.0, 0.0, 0.0), (1.4, 3.0, 24.0, 0.0), (3.2, 3.0, 24.0, 0.0), (4.6, 2.0, -22.0, 0.0), (6.2, 2.0, -22.0, 0.0), (7.2, 0.0, 0.0, 0.0)]}
+        # The drill, a broadside (Ryan, 12 November: the first cut, each gun in turn on its own,
+        # "a little dull"): the battery swings outboard together and ripple-fires front to back,
+        # each gun kicking hard and the hull jolting under it, its hooves planted; then it swings
+        # to the bow, lifts to a long range and ripples back to front; then home. On its own
+        # quicker servo, so the kicks snap.
+        drill, shots = {}, []
+        for k, (n, px, py, up) in enumerate(guns):
+            d = 0.1 * k
+            ranging["turret_%d" % n] = [(0.9 + d, 0.0), (2.1 + d, 24.0), (3.6 + d, 24.0), (5.4 + d, -20.0), (6.6 + d, -20.0), (7.6 + d, 0.0)]
+            ranging["elev_%d" % n] = [(1.4 + d, 0.0), (2.4 + d, 10.0), (3.6 + d, 10.0), (5.4 + d, 5.0), (6.6 + d, 5.0), (7.6 + d, 0.0)]
+            d, out = 0.08 * k, (22.0 if px < 0.0 else -22.0)
+            t1, t2 = 1.7 + 0.3 * k, 4.3 + 0.3 * (len(guns) - 1 - k)
+            drill["turret_%d" % n] = [(0.4 + d, 0.0), (1.3 + d, out), (3.1, out), (3.9, 0.0)]
+            drill["elev_%d" % n] = [(0.4 + d, 0.0), (1.3 + d, 12.0), (t1, 12.0), (t1 + 0.05, 24.0), (t1 + 0.35, 12.0), (3.1, 12.0),
+                                    (3.9, 22.0), (t2, 22.0), (t2 + 0.05, 34.0), (t2 + 0.35, 22.0), (5.9, 22.0), (6.8, 0.0)]
+            shots += [t1, t2]
+        jolt = [(0.4, 0.0, 0.0, 0.0)]
+        for ts in sorted(shots):
+            jolt += [(round(ts, 3), 0.0, 0.0, 0.0), (round(ts + 0.06, 3), -0.5, -0.35, 0.0), (round(ts + 0.24, 3), 0.0, 0.0, 0.0)]
+        legs_t, jolt_body = _planted([limb(leg) for leg in ("fl", "fr", "hl", "hr")], jolt + [(7.0, 0.0, 0.0, 0.0)])
+        drill.update(legs_t)
+        b.act("ranging", 8.2, ranging, glow=[(["lamp"], [(0.3, 0.0), (0.8, 6.0), (7.0, 6.0), (7.6, 0.0)])], form=form)
+        b.act("battery_drill", 7.4, drill, body=jolt_body, heft=0.14, form=form)
+        b.act("paw", 5.2, paw, form=form)
+        b.act("breather", 5.4, breath, body=breath_body, glow=[(["heat_glow"], [(0.5, 0.0), (1.5, HEAT), (3.0, HEAT), (4.0, 0.2 * HEAT), (4.8, 0.0)])], form=form)
+        # The hatch check, a wave (Ryan, 12 November: "cascaded and checked all the closed hatches
+        # in sequence, like a do the wave effect"): each stowed port's trapdoors crack open into
+        # its well and drop shut, front to back, a beat apart and overlapping, so the opening runs
+        # down the deck.
+        wave = {}
+        for k, n in enumerate(closed):
+            t0 = 0.4 + 0.25 * k
+            wave["shutter_%df" % n] = [(t0, 0.0), (t0 + 0.3, 45.0), (t0 + 0.6, 45.0), (t0 + 0.74, 0.0)]
+            wave["shutter_%db" % n] = [(t0 + 0.04, 0.0), (t0 + 0.34, -45.0), (t0 + 0.64, -45.0), (t0 + 0.78, 0.0)]
+        b.act("hatch_check", round(0.4 + 0.25 * len(closed) + 1.2, 2), wave, heft=0.12, form=form)
+    idles([p for p in ports if p[3]], [p[0] for p in ports if not p[3]])   # at rest: the first battery on deck, the second's hatches checked
+    idles([p for p in ports if not p[3]], [p[0] for p in ports if p[3]], form="changed_over")   # Changed Over: the second on deck, the first's hatches
+    b.halo = ["heat_glow"]   # the heat sink, hot
     # Movement (Ryan, 4 October, the third pass: stomp and plod, no weight thrown side to
     # side): each hoof planted flat while the body passes over it, then lifted high and
     # stamped down.
@@ -636,7 +696,7 @@ def clydesdale(b):
 # rest elevation and the pivot that stands them upright, the traverse, the mouth's half width and
 # the frame's wall (a rack at the mounts' scale stands 9.9 by 9.3 upright, so it rises square
 # between the hanging leaves, and a port's frame keeps a hand's gap to the next row's), the drum's
-# radius, and the mounts' scale (a barrel stands 18.6, so upright and sunk it clears the deck and
+# radius, the well's depth, and the mounts' scale (a barrel stands 18.6, so upright and sunk it clears the deck and
 # stays in the deepened hull).
 BATTERY_PORTS = [(-9.5, 11.75), (9.5, -0.75), (-9.5, -13.25), (9.5, -25.75)]
 BATTERY_SINK = 24.0
@@ -644,6 +704,7 @@ BATTERY_ELEVATION = 8.0
 BATTERY_PIVOT = 82.0
 BATTERY_TRAVERSE = 35.0
 BATTERY_MOUTH, BATTERY_WALL, BATTERY_DRUM = 5.2, 0.5, 4.0
+BATTERY_WELL = 4.5   # the well's floor under the rim (Ryan, 12 November: "Should it be a hole?"): as deep as the hull's shoulder lets the outer ports go
 BATTERY_SCALE = 0.62
 
 clydesdale.maker = "wainwright_sutler"
@@ -6549,7 +6610,7 @@ def _plug(b, tag, centre, axis, r, depth, n=3, thick=0.6, material="steel.stripe
 
 
 def _hatch(b, tag, centre, inner, wall, proud, leaf=0.4, recess=0.25, well=1.25, seam=0.3, built_open=False,
-           material="steel.stripe", leaf_material="steel.panel"):
+           material="steel.stripe", leaf_material="steel.panel", cut=None, cut_dz=0.0):
     """A square port shut by trapdoors (the Clydesdale's batteries; Ryan, 11 November: "Sure,
     square ports, and either trapdoors or split middle - slide open, both could work. Depends on
     geometry"): a stripe frame round a square mouth `inner` from `centre` to each side, `wall`
@@ -6559,8 +6620,12 @@ def _hatch(b, tag, centre, inner, wall, proud, leaf=0.4, recess=0.25, well=1.25,
     (`shutter_<tag>f`, `shutter_<tag>b`, pitch joints), so it drops open into the dark and hangs
     against its wall, out of a rising gun's way: trapdoors, since a deck with nothing cut out of
     it and its ports a hand apart has nowhere a sliding leaf could go. Built shut, or hanging
-    open if `built_open`. Returns [(joint, its swing to the other state)], the front leaf's
-    first, degrees on the joint's pitch."""
+    open if `built_open`. Given `cut` (the parts the deck is), the mouth is a real well, cut
+    through them down to its floor and lined dark, so the leaves hang in it where they can be seen
+    (Ryan, 12 November: they had dropped "into the hull right under it, not into a hole"); `cut_dz`
+    is the lift a raised block gives the parts after they are built, which a cutter does not
+    get. Returns [(joint, its swing to the other state)], the front leaf's first, degrees on the
+    joint's pitch."""
     cx, cy, cz = centre
     top = cz + proud
     outer = inner + wall
@@ -6568,7 +6633,16 @@ def _hatch(b, tag, centre, inner, wall, proud, leaf=0.4, recess=0.25, well=1.25,
     b.box(cx - outer, cx + outer, cy - outer, cy - inner, cz - 0.1, top, material, "port_rim")
     for s in (-1.0, 1.0):
         b.box(min(cx + s * inner, cx + s * outer), max(cx + s * inner, cx + s * outer), cy - inner, cy + inner, cz - 0.1, top, material, "port_rim")
-    b.box(cx - inner + 0.02, cx + inner - 0.02, cy - inner + 0.02, cy + inner - 0.02, cz - 0.05, top - well, "bore.dark", "port_floor")
+    floor = top - well
+    if cut:
+        lining = 0.3
+        for s in (-1.0, 1.0):
+            b.box(cx - inner - lining, cx + inner + lining, min(cy + s * inner, cy + s * (inner + lining)), max(cy + s * inner, cy + s * (inner + lining)),
+                  floor - 0.3, cz - 0.05, "steel.dark", "port_well")
+            b.box(min(cx + s * inner, cx + s * (inner + lining)), max(cx + s * inner, cx + s * (inner + lining)), cy - inner, cy + inner,
+                  floor - 0.3, cz - 0.05, "steel.dark", "port_well")
+        b.cut_box(cut, cx - inner - 0.15, cx + inner + 0.15, cy - inner - 0.15, cy + inner + 0.15, floor - 0.25 + cut_dz, cz + 0.3 + cut_dz)
+    b.box(cx - inner + 0.02, cx + inner - 0.02, cy - inner + 0.02, cy + inner - 0.02, min(cz - 0.05, floor - 0.3), floor, "bore.dark", "port_floor")
     z1 = top - recess
     z0 = z1 - leaf
     out = []
@@ -6580,7 +6654,7 @@ def _hatch(b, tag, centre, inner, wall, proud, leaf=0.4, recess=0.25, well=1.25,
         if built_open:
             turn = Matrix.Translation(hinge) @ Matrix.Rotation(math.radians(opens), 4, "X") @ Matrix.Translation(tuple(-v for v in hinge))
         name = "shutter_%s%s" % (tag, end)
-        with b.joint(name, hinge, axis="pitch", limits=(min(0.0, swing), max(0.0, swing))):
+        with b.joint(name, hinge, axis="pitch", limits=(-90.0, 90.0)):   # both ways from either state, so an act can crack a leaf open shut or not (the hatch check)
             y_seam = cy + s * seam / 2.0
             b.box(cx - inner + 0.1, cx + inner - 0.1, min(y_seam, hinge[1]), max(y_seam, hinge[1]), z0, z1, leaf_material, "shutter", transform=turn)
         out.append((name, swing))

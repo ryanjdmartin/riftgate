@@ -180,7 +180,7 @@
    "passive": {
     "id": "disabled_regulators",
     "name": "Disabled Weapon Regulators",
-    "description": "Premium Kestrel \"feature.\" Every weapon fires at double its printed number, and every weapon and equipment it aims at a foe runs 2 hotter and goes dark for two rounds. Each attack that kills makes its shots 1 hotter for the fight.",
+    "description": "Premium Kestrel \"feature.\" Every weapon fires at double its printed number, and every weapon and equipment it aims at a foe runs 2 hotter and sits out the next round. Each attack that kills makes its shots 1 hotter for the fight.",
     "effects": [
      {
       "trigger": "on_attack",
@@ -195,7 +195,7 @@
      {
       "trigger": "static",
       "effect": "weapon_cooldown",
-      "value": 2
+      "value": 1
      },
      {
       "trigger": "on_kill",

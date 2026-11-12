@@ -1689,28 +1689,23 @@ func test_a_brace_is_a_positive_number_of_stacks() -> void:
 	assert_true(long_refused, "a buff granting Braced for two rounds is refused")
 
 
-func test_rolling_again_names_a_status_and_never_rides_on_rapid() -> void:
-	# Rolling again on a status (12 October, the Nemesis's fists on rage): the status must be
-	# one of the engine's, and a rapid entry already rolls again on its own.
+## Rolling again on a status (the Nemesis's fists on rage, 12 October to 11 November) and the
+## Spin-Up's spin retired on 12 November: Instant is the roll that may land on itself, a spin on a
+## stepping die, and a charged form on a store prices it, so either key is refused.
+func test_rolling_again_and_the_spin_are_retired_for_instant() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var gun: Dictionary = db.components["incendiary_shells"].duplicate(true)
-	gun["face"] = {"kind": "attack", "reach": "direct", "power": 10, "rolls_again_on": "fury"}
+	gun["face"] = {"kind": "attack", "reach": "direct", "power": 10, "heat": 2, "rolls_again_on": "rage"}
 	gun["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["odd_gun"] = gun
 	var plate: Dictionary = db.components["incendiary_shells"].duplicate(true)
-	plate["face"] = {"kind": "shield", "power": 10, "keywords": ["rapid"], "rolls_again_on": "rage"}
+	plate["face"] = {"kind": "shield", "power": 10, "keywords": ["instant"], "heat": 2, "spins": true}
 	plate["tier"] = 1
 	db.components["odd_plate"] = plate
-	var no_status := false
-	var on_rapid := false
-	for e in db.validate():
-		if e.begins_with("component odd_gun") and e.contains("rolls_again_on names a status"):
-			no_status = true
-		if e.begins_with("component odd_plate") and e.contains("a rapid entry already rolls again"):
-			on_rapid = true
-	assert_true(no_status, "a status the engine lacks is refused")
-	assert_true(on_rapid, "rolling again on a rapid entry is refused")
+	var errs := db.validate()
+	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component odd_gun") and e.contains("rolls_again_on is retired")), "a roll again on a status is refused, Instant in its place")
+	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component odd_plate") and e.contains("spins is retired")), "a spin is refused, Instant's roll a spin on a stepping die")
 
 
 func test_the_new_passive_fields_are_checked() -> void:
@@ -2474,20 +2469,25 @@ func test_the_flakshot_lays_flak_and_the_validator_asks_for_its_stacks() -> void
 	assert_true(refused.has("stray"), "a number with no Flak keyword is refused")
 
 
-## The cooldown (Ryan, 14 October) and Rapid's limiter (15 October): a cooldown is a whole
-## number of rounds, one or more, printed on the piece, Rapid carrying none of its own (Ryan, 2
-## November: "Rapid does not have a native Cooldown, it needs to be displayed always"); a Rapid
-## entry that prints none pays heat, Volatile or a shield cost every spend.
-func test_a_cooldown_is_whole_rounds_and_every_rapid_entry_carries_a_limiter() -> void:
+## The cooldown (Ryan, 14 October; counted after the round of the spend since 12 November) and
+## the limiter (15 October: no chain is free): a cooldown is a whole number of rounds, one or more,
+## printed on the piece; Rapid's own switch-off is the keyword's, never printed (Ryan, 12 November:
+## "rapid gets its innate cooldown zero back without the explicit display"), so a cold Rapid piece
+## validates; an Instant entry that prints no cooldown pays heat, Volatile or a shield cost every
+## spend; and an entry is Rapid or Instant, never both, its charged form included.
+func test_a_cooldown_is_whole_rounds_and_every_instant_entry_carries_a_limiter() -> void:
 	var db := _fresh()
 	var base: Dictionary = _piece(db, "coolant_jacket")
 	base["tier"] = 1
 	var cases := {
-		"test_free": [{"keywords": ["rapid"]}, "carries another limiter"],
-		"test_hot": [{"keywords": ["rapid"], "heat": 5}, ""],
-		"test_bite": [{"keywords": ["rapid"], "volatile": 3}, ""],
-		"test_toll": [{"keywords": ["rapid"], "shield_cost": 2}, ""],
-		"test_switch": [{"keywords": ["rapid"], "cooldown": 1}, ""],
+		"test_rapid_cold": [{"keywords": ["rapid"]}, ""],
+		"test_free": [{"keywords": ["instant"]}, "carries another limiter"],
+		"test_hot": [{"keywords": ["instant"], "heat": 5}, ""],
+		"test_bite": [{"keywords": ["instant"], "volatile": 3}, ""],
+		"test_toll": [{"keywords": ["instant"], "shield_cost": 2}, ""],
+		"test_switch": [{"keywords": ["instant"], "cooldown": 1}, ""],
+		"test_both": [{"keywords": ["rapid", "instant"], "heat": 2}, "never both"],
+		"test_both_charged": [{"keywords": ["rapid"], "charged": {"store": "rage", "price": 5, "keywords": ["instant"]}}, "never both"],
 		"test_zero": [{"cooldown": 0}, "leaves it out"],
 		"test_negative": [{"cooldown": -1}, "whole number of rounds"],
 		"test_two": [{"cooldown": 2}, ""],
@@ -2506,32 +2506,28 @@ func test_a_cooldown_is_whole_rounds_and_every_rapid_entry_carries_a_limiter() -
 			assert_true(mine.is_empty(), "%s validates: %s" % [id, str(mine)])
 		else:
 			assert_true(mine.any(func(e: String) -> bool: return e.contains(want)), "%s is refused for '%s': %s" % [id, want, str(mine)])
-	# A Rapid entry whose heat is its limiter prints no cooldown, and the engine runs it so (the Cryo
-	# Flinger's form from 20 October to 9 November; synthetic since the Flinger lost its Rapid).
+	# Rapid's own switch-off is no printed cooldown: a Rapid entry counts none, whatever it pays.
 	var hot: Dictionary = {"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure", "rapid"], "heat": 1}
-	assert_eq(db.build_face(hot).cooldown_rounds(), 0, "a Rapid entry paying heat goes dark for no rounds")
+	assert_eq(db.build_face(hot).cooldown_rounds(), 0, "a Rapid entry prints no cooldown: its switch-off is the keyword's")
+	# No shipped piece prints a cooldown of 1 to stand in for Rapid's own switch-off any more: a
+	# Rapid piece that prints one sits out the next round too.
 	var shipped := ContentDB.load_default()
 	for cid in shipped.components.keys():
 		var fd: Dictionary = shipped.components[cid].get("face", {})
-		if Array(fd.get("keywords", [])).has("rapid") and int(fd.get("heat", 0)) <= 0 and int(fd.get("volatile", 0)) <= 0 and int(fd.get("shield_cost", 0)) <= 0 and not bool(fd.get("spins", false)):
-			assert_true(int(fd.get("cooldown", 0)) >= 1, "%s: a cold Rapid piece prints its cooldown" % cid)
+		if Array(fd.get("keywords", [])).has("rapid"):
+			assert_false(fd.has("cooldown"), "%s: Rapid's switch-off is its own, so a Rapid piece prints no cooldown today" % cid)
 
 
-## A piece locked on a stepping die has the cylinder for its Rapid's limiter (the Cassowary's
-## Spin-Up, Ryan, 19 October); anywhere else the same entry is refused, a spin rides with
-## Rapid, and a status a weapon spends (Spun Up) is granted with no rounds.
-func test_a_stepping_die_is_its_locked_rapid_pieces_limiter() -> void:
+## A piece locked on a stepping die has the cylinder for its Instant's limiter (the Cassowary's
+## Spin-Up, Ryan, 19 October; Instant since 12 November); anywhere else the same entry is refused,
+## and a status a weapon spends (Spun Up) is granted with no rounds.
+func test_a_stepping_die_is_its_locked_instant_pieces_limiter() -> void:
 	var db := _fresh()
 	assert_false(db.validate().any(func(e: String) -> bool: return e.begins_with("component spin_up")), "the Spin-Up validates where it is locked")
+	assert_true(db.build_face(db.components["spin_up"]["face"]).has(Face.Keyword.INSTANT), "the Spin-Up is Instant")
 	var loose: Dictionary = db.components["spin_up"].duplicate(true)
 	loose["tier"] = 1
 	db.components["test_loose_spin"] = loose
-	var plain: Dictionary = db.components["spin_up"].duplicate(true)
-	plain["tier"] = 1
-	plain["face"].erase("spins")
-	plain["face"]["keywords"] = []
-	plain["face"]["spins"] = true
-	db.components["test_spin_alone"] = plain
 	var timed: Dictionary = db.components["spin_up"].duplicate(true)
 	timed["tier"] = 1
 	timed["face"]["rounds"] = 1
@@ -2539,7 +2535,6 @@ func test_a_stepping_die_is_its_locked_rapid_pieces_limiter() -> void:
 	db.components["test_timed_spin"] = timed
 	var errs := db.validate()
 	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_loose_spin") and e.contains("carries another limiter")), "off the cylinder it needs a limiter of its own")
-	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_spin_alone") and e.contains("rides with Rapid")), "a spin rides with Rapid")
 	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_timed_spin") and e.contains("no rounds")), "Spun Up takes no rounds")
 
 

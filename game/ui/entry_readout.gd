@@ -6,7 +6,7 @@ extends Control
 ## what holds on it now (a cooldown with its turns left, a foe's switch-off, corruption), its
 ## codex, then a line for each mark the die carries: its number as the die prints it, its heat
 ## and its costs, its target, then its keywords (how it lands, what it leaves on each foe hit,
-## Rapid's turn after), then its own rules and a written-out grant's (the star; "unique effects
+## Rapid's or Instant's turn after), then its own rules and a written-out grant's (the star; "unique effects
 ## last"), then its tags. A number the live sources have moved off the component's own is
 ## coloured rather than its sources listed (Ryan, 26 October: listing them "reads to me like
 ## we're expecting the player to do math"; "just change the font colour and add the arrow"):
@@ -106,7 +106,7 @@ static func lines_for(f: Face, place: int, shown: int, base: Face, states: Array
 
 ## What the entry does, a line each: its number as the die prints it (`shown`), its heat (or its
 ## ammo) and its costs beside it, its target (Ryan, 26 October: "Swap heat and target places"), then its keywords below
-## them, how it lands, what it leaves on each foe hit, Rapid's turn after, then its own
+## them, how it lands, what it leaves on each foe hit, Rapid's or Instant's turn after, then its own
 ## rules (Face.rule_phrases). `base`, the component as built, is what each number is read
 ## against; null reads `f` as its own. Each line carries its group, for the codex's three lines:
 ## "attr" (its number, its heat and ammo, its target), "kw" (its keywords) and "rule" (its own
@@ -230,7 +230,7 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 	out.append(target)
 	var land: Array = []   # how it lands
 	var lays: Array = []   # what it leaves on each foe hit
-	var after: Array = []  # Rapid's turn
+	var after: Array = []  # Rapid's or Instant's turn
 	for k in f.keywords:
 		if f.printed.has(k):
 			continue   # a grant written out is its passive's line, with the rules
@@ -248,7 +248,7 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 				parts.append(num(str(f.get(field)), int(f.get(field)), int(base.get(field))))
 			parts.append(word(gate if not gate.is_empty() else "on hit"))
 			lays.append(marked(parts_line("effect", parts, "kw"), chip))
-		elif k == Face.Keyword.RAPID:
+		elif Face.ACT_AGAIN_KEYWORDS.has(k):
 			after.append(marked(parts_line("effect", [_bare(word(label))], "kw"), chip))
 		elif k in [Face.Keyword.LURE, Face.Keyword.DISRUPT, Face.Keyword.SWAP, Face.Keyword.DISPEL]:
 			lays.append(marked(parts_line("effect", [_bare(word(label))], "kw"), chip))

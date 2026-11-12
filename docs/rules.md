@@ -124,7 +124,7 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 3. The player's turn: spend, lock and reroll in any order. Each spend resolves fully before
    the next. UNDO takes back the last spend or reroll, in the order made, back to the last
    roll, its floor: the round's roll, a reroll that draws, or a spend that draws inside itself
-   (Rapid's reroll, a roll again, a vent's blast); a stepping die's step draws nothing,
+   (Rapid's or Instant's reroll, a vent's blast); a stepping die's step draws nothing,
    so it is taken back like a spend. The trail shows a bar at every roll, every line of it at
    full strength, and UNDO's badge says how many spends it reaches; UNDO opens once a spend's
    last blow has played. END TURN sits bottom-left and UNDO bottom-right, and UNDO reads on or
@@ -150,15 +150,15 @@ every machine is wrecked. There is no round limit.
   unspent die, before or after attacking, and lands on any other entry, never the one
   showing; a copy of it may come up, at the odds its copies give it. Every roll inside the round
   follows the same rule (Rapid's free reroll, the Kite's reset, the Booster, the Uplink, the
-  Reveille Horn), but two, kept on purpose and each saying "itself included" on the die: an
-  entry that rolls again (no piece prints one today) rolls as the round's opening roll does, and
-  the Cassowary's Spin-Up spins every chamber. Double-tap or hold a die to lock it, and again to unlock it; spending
+  Reveille Horn), but Instant's, kept on purpose and shown on the die by its keyword: it rolls as
+  the round's opening roll does, itself included, and spins every chamber on the Cassowary's
+  die. Double-tap or hold a die to lock it, and again to unlock it; spending
   unlocks it; locks clear each round.
 - **A folded die** (the Clydesdale's Disappearing Carriages): its hardpoints are two batteries
   of four, one up at a time, and every roll and reroll lands among the battery up and its fixed
-  pieces, the Changeover live on both. The Changeover (Rapid, cooldown 1, spent on itself) turns
-  the die to its other battery, and Rapid's free roll lands there, never on the Changeover, so it
-  turns once a round. The second battery up is its Ability, Changed Over, kept from fight to
+  pieces, the Changeover live on both. The Changeover (Rapid, spent on itself) turns
+  the die to its other battery, and Rapid's free roll lands there, never on the Changeover, which
+  Rapid darkens for the rest of the round, so it turns once a round. The second battery up is its Ability, Changed Over, kept from fight to
   fight through the battle and gone as the battle ends, so a battle opens on the first; no chip
   is the first. The codex dims the battery down; on the model the battery down is sunk in the
   hull under shut trapdoors, the battery up on the deck, and each battery's components take its
@@ -167,21 +167,21 @@ every machine is wrecked. There is no round limit.
   and every roll or reroll steps it to the next entry in order, Rapid's free reroll too; a
   lock holds it. The die shows its next entry in its passive box, its mark and the number it
   will show, and its readout and codex show its entries as a
-  cylinder, in order (the one showing lit and an arrow to the next, in the readout). Its Spin-Up spins the whole die, the entry
-  showing included, one of the two rolls kept on purpose (Rerolls, above), so it may land on itself and
+  cylinder, in order (the one showing lit and an arrow to the next, in the readout). Its Spin-Up, Instant, spins the whole die, the
+  entry showing included, the roll kept on purpose (Rerolls, above), so it may land on itself and
   be spent again. Every sixth weapon or equipment it aims at a foe in the fight counts double,
   its damage and the stacks it lays; the count shows as six cells under the heat bar, as a
   store's are, the sixth apart by its shape (a heavier border, a diamond set in it) and
   lit in the heat's colour when it is next, and a shield, a vent, a buff and a spin are no shots.
 - **The Quick-turn Avionics Relay** (the Needletail's passive): equipment, a buff or a debuff
   read on the entry as it is spent, is Rapid on it once a round, the entry dark for the rest of
-  the round as Rapid's is; the die shows the Rapid on every setup while the gate is open. A piece Rapid of its own spends no gate.
+  the round as Rapid's is; the die shows the Rapid on every setup while the gate is open. A piece that acts again of its own, Rapid or Instant, takes no gate.
 - **Maverick's Playbook** (the Giant Petrel's passive): the team's rerolls unspent as the
   player's turn ends are banked, up to three, and come back at the next round's start beside
   its two, spent like any reroll; a roar's cost comes off the whole. It banks while the
   Giant Petrel fights: wrecked by the next round's start, it carries nothing.
 - **Spending**: drag a die onto a target: a weapon or a debuff onto a foe in reach, a shield, a
-  vent or a buff onto a machine it may reach. Each die is spent once a round (Rapid excepted). A blank does
+  vent or a buff onto a machine it may reach. Each die is spent once a round (Rapid and Instant excepted). A blank does
   nothing; an unspent die is lost. On screen a spend's hits and shots land one at a time, a beat
   apart, every one of them: each foe a hit reaches flashes, its gauge steps down to what the blow
   left and the blow's number rises off it, a hit on a foe an earlier one felled landing on it all
@@ -204,7 +204,7 @@ every machine is wrecked. There is no round limit.
   delivers: a weapon's sight holds a strike's blow, its strikes beside it (×4); equipment's gear
   holds what it grants or lays and no number (a buff's status with its stacks beside it, a
   debuff's first keyword that does something to a foe in content's order, or the star for a rule
-  of its own; a reach, an area and Rapid stay on the edge, which never shows a thing twice); a
+  of its own; a reach, an area, Rapid and Instant stay on the edge, which never shows a thing twice); a
   shield its number in the shield's colour; a vent its number in heat's colour; an entry that
   shields and cools (the Wake Diffuser, the Sutler's Hoist) both numbers in one mark; a reload
   (the Musk Ox's Quick Reload) its shells and the ammo it loads. Whom it reaches stands under
@@ -314,7 +314,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   a condition read as the die was spent), its Purge and Chain at every hit's number, the rest
   once each (Shock, Suppress, Web, Expose, Breach, Disrupt), a gated keyword where its gate held.
   The numbered ones add up across the spends that feed it. Spread, Penetrate, Splash and
-  Spillover, the Swap, Rapid and Lure stay with the spend, and what a hit reads off its foe for
+  Spillover, the Swap, Rapid, Instant and Lure stay with the spend, and what a hit reads off its foe for
   damage (missing hull, a consumer's stacks) means nothing to a flat Mine; each foe its blast
   meets takes it with its own defences (a Ward, its Numbed). When the foe falls, one
   that gets back up or splits included, a tick's fall and a part's too, the Mine blows once the
@@ -346,7 +346,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   chip, the star, equipment's status chip, each cost's mark, the lock, a corruption): its place and name,
   what holds on it (on cooldown with its turns left, a foe's switch-off, corruption), its
   codex, then a line a mark: its number as the die prints it, its heat, its target, then its
-  keywords (how it lands, Volatile, what it applies on hit, Rapid), its own rules and a
+  keywords (how it lands, Volatile, what it applies on hit, Rapid or Instant), its own rules and a
   written-out grant's line last, then its tags. A number the live sources moved off the
   component's own is coloured, green where the change is good for its unit and red where it
   is bad (more heat, a smaller blow), always relative to the unit and never the player, with
@@ -486,23 +486,26 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   foe its blast meets.
 - **Rapid** (any component): the die rerolls free onto any other entry, a copy of the same
   component included (a folded die among its live entries), and the machine acts again, so
-  copies of one Rapid component chain.
-  Rapid carries no cooldown of its own: a Rapid component prints its cooldown (most print one,
-  dark for the rest of the round), shown on the die by its clock like any cooldown, or pays
-  heat, hull or shield every spend instead. A Rapid component always
-  carries a limiter, a cooldown, heat or a cost; a piece locked on a stepping die (the
-  Cassowary's Spin-Up) needs none: its spin
-  is a true roll over every chamber, so it lands on itself one time in six, to be spent again,
-  a fifth of a spin more a spend on average, and every other way back to it in a round runs
-  through the other chambers' cooldowns or the team's rerolls.
+  copies of one Rapid component chain. The entry spent stays dark for the rest of the round,
+  Rapid's own cooldown, never printed, so each copy acts once a round; no cleanse lifts it,
+  and a reset brings it back (Reset, below).
   A Rapid vent is never below tier three (the one is the Musk Ox's quick reload, locked on a
   tier three, which cools nothing), and a Rapid shield never below tier two (the Laminar
   Deflector's two).
+- **Instant** (any component): the die rolls again free, as the round's opening roll does,
+  itself included, so the same entry may show again and be spent again, and the machine acts
+  again; on a stepping die the roll spins every chamber. Nothing goes dark, so an Instant
+  component always carries a limiter: a cooldown, heat or a cost, or the store a charged form
+  spends (the Knuckle of Fury's five rage). A piece locked on a stepping die (the Cassowary's
+  Spin-Up) needs none: its spin is a true roll over every chamber, so it lands on itself one
+  time in six, to be spent again, a fifth of a spin more a spend on average, and every other way
+  back to it in a round runs through the other chambers' switch-offs or the team's rerolls. An
+  entry is Rapid or Instant, never both.
 - **Cooldown** (a printed property on specific pieces, or one a passive grants every weapon
-  and equipment its machine aims at a foe, the Kite's two; the longer stands), a cost printed
-  along the entry's foot by its clock: once spent, the entry is dark for that many rounds, this
-  one included, shown on the die with the turns left; the die may land on it, and a dark entry
-  does nothing. No cleanse lifts it.
+  and equipment its machine aims at a foe, the Kite's one; the longer stands), a cost printed
+  along the entry's foot by its clock: once spent, the entry is dark for the rest of the round
+  and for that many rounds after it, shown on the die with the rounds left, this one included;
+  the die may land on it, and a dark entry does nothing. No cleanse lifts it.
 - **Reset** (the Kite's Pinion Driver): if its spend kills, every entry dark from a cooldown
   comes back, itself included, and the machine acts again, the free roll never landing on the
   entry just spent; a team reroll may bring it back up, and every kill resets it again, with
@@ -576,10 +579,7 @@ Honey Badger's Chainsaw Claw, two); a weapon that fires it takes up to its most 
 each adding its bonus to the blow, and spends them (its Bullion Fragmenter fires two at +2),
 the armour they stood for going with them. **Braces**:
 spending it Armours its owner, the stacks it says, an armour point each, until the round's
-end (no dealt piece prints it today; the Wild Boar's Breaching Plow did until 11 November). **Rolls again** (no piece prints it today; the Nemesis's Knuckle of Fury did, and it is one direction of its upgrades): spending it
-with a stack of its status spends one, and the die rolls again, a plain roll as the round
-opens, so the machine acts again and the same entry may show again; nothing switches off,
-the stacks being the limit, and the fight's last blow rolls nothing. **The gather** (the
+end (no dealt piece prints it today; the Wild Boar's Breaching Plow did until 11 November). **The gather** (the
 Lammergeier's Lorentz Contractor, a debuff with Expose): every Mine the field's other foes carry
 joins its target's, their damage added and their keywords as one, in the rider phase after the
 spend's own Mine joined it; a Ward on the target turns the gather away, the Mines staying where
@@ -677,7 +677,7 @@ On a machine:
 - **Rallied** (buff): the team has one reroll more this round.
 - **Charged** (buff): while it lasts the machine's weapons fire with Shock, shown on the die
   and landing as the keyword does, after the blows; a weapon fired spends a stack (a Rapid's
-  second fire is a second fire, a salvo one, a blast none; equipment carries it not and spends
+  or an Instant's second fire is a second fire, a salvo one, a blast none; equipment carries it not and spends
   nothing); a Mine the fire leaves carries the Shock.
 - **Supercooled** (buff): the same with Cryo, one more stack a strike on each foe hit (Cryo 1
   on a gun without it), laid after the hits.
@@ -712,8 +712,8 @@ On a machine:
   blow of its own weapons a foe's armour or Barrier takes whole, each foe's and each strike's
   (a corpse's and a debuff's never), up to 10. A bite of its own on its shield and a blow its
   own Barrier or armour takes whole bank nothing. With five banked its Knuckles of Fury go out
-  charged, unasked: they spend the five and fire with Breach, which passes a foe's armour and
-  never its Barrier. Lasts the skirmish, never decays, and nothing cleanses it. It shows as a
+  charged, unasked: they spend the five and are Instant, the die rolling again, itself included,
+  so a fist may show again. Lasts the skirmish, never decays, and nothing cleanses it. It shows as a
   meter under the heat in its chip's colour, a notch at five.
 - **Hopper** (store, the Honey Badger's): its Ore Hopper puts a load in for each foe a spend
   of its weapons damages, after the blow (a weapon that prints its own number puts that in
@@ -749,7 +749,7 @@ On a machine:
   deals a point more a stack, the shield taking the extra first as it takes any blow, through
   the next round, when every stack goes; a Ward turns the crush away. Cleansable.
 - **Silenced** (debuff, a foe's silence): its components' keywords are muted through its next
-  round, printed and granted alike (a Rapid entry acts once, a Spread lands one blow, a
+  round, printed and granted alike (a Rapid or Instant entry acts once, a Spread lands one blow, a
   Suppress suppresses nothing, its own Cleanse is a plain shield), then wake; its buffs count,
   its stores fill and spend as ever, and its targeting modes stand (Every Foe, Every Ally, Every
   Other Ally). Cleansable, an ally's Cleanse the way; a Ward turns
@@ -1101,8 +1101,8 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   it is dragged to. The Whip Scorpion's Thermal Ejection Manifold is its boiler: nothing cools
   it, every blow a foe lands on it adds 2 heat (in the enemy's turn, after the overheat, so the
   gauge may stand past its maximum), and a pass releases the lot. A pass is a turn it ends with
-  an entry it could have spent: a die never spent or locked and left, an entry Rapid rolled or
-  an action granted and not used; a blank, or an entry with nowhere to land, is none. As the
+  an entry it could have spent: a die never spent or locked and left, an entry Rapid or Instant rolled
+  or an action granted and not used; a blank, or an entry with nowhere to land, is none. As the
   enemy's turn ends a machine that passed fires its heat as a Sweep of the rank with the most
   foes standing, the back on a tie, a shot of 2 for every heat, and is left cold: its own hits,
   each shot through its machine's adds and its foe's armour as any Sweep's, costing no heat; a

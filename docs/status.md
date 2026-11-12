@@ -27,14 +27,14 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1142 tests, 363,572 checks, green on `ccr-4d58b054-3lyj0a` (11 November, Sapped, the Lance,
-  the Wild Boar's and the Baboon's reworks). Before it, 1132 tests, 363,473 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
-  with the Dingo's pieces, the pins and the Flakshot Repeater over the Clydesdale's review). Before it,
-  1123 tests, 362,685 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
-  with the Whip Scorpion's rework over the formation and refit session's landing). Before it,
-  1119 tests, 362,994 checks, green on main (11 November, as `ccr-722ca9f0-yj8na3`
-  landed with the Rupture sized in beats, menace a pack's threat rating, the stall guard's end
-  and the tide's and the strike's trial dials; Godot 4.8-beta2); one
+- Tests: 1142 tests, 364,574 checks, green on `ccr-4d58b054-3lyj0a` (12 November, Sapped, the Lance,
+  the Wild Boar's and the Baboon's reworks, with main's cooldown count, Rapid's switch-off and
+  Instant taken in). 1132 tests, 364,475 checks, green on main (12 November, as `ccr-63a1309a-caa9mw` landed
+  with the cooldown's count, Rapid's own switch-off and Instant over the Clydesdale's review).
+  Before it, 1132 tests, 364,286 checks, green on main (12 November, as the Clydesdale's review
+  landed with its wells, broadside drill and hatch wave; Godot 4.8-beta2). Before it, 1132 tests,
+  363,473 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed with the Dingo's
+  pieces, the pins and the Flakshot Repeater over the Clydesdale's review); one
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
   either map view on 6 November; about four minutes in a cloud session, twenty on a slow one;
   words after `--` run only the files whose names hold one (`-- loot rig`). A cloud
@@ -55,7 +55,12 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 ## Branches
 
-Everything is on main as of 11 November 2026; the formation and refit session's branch lands as it goes, below.
+Everything is on main as of 12 November 2026; the formation and refit session's branch lands as it goes, below.
+`ccr-63a1309a-caa9mw`, the cooldown's count, Rapid's own switch-off and Instant (12 November, How
+things stand below), cut from main at `fbce698`, took main at `243737d` in a merge (this file's
+tests line the one conflict, both landings kept) and main took it as a fast-forward on Ryan's word
+("All good. Clean up and merge into main"); it is merged and to delete with the rest (it moved
+`sim/save.gd`'s three versions: the battle's 25, the run's 24, the quick run's 7).
 `ccr-c71bc17f-hclj2c`, Ryan's map playtest list of 10 November, his answers to it and his second
 and third map lists the same day (How things stand below), cut from main at `aa40832`, landed on
 main as fast-forwards on his word each time ("Ok, merge this into main so I can try it"; "yeah,
@@ -124,20 +129,23 @@ before it), `claude/chassis-runner-rows`, `ccr-7effd31a-u5z4gw` (the pairs),
 `claude/eager-newton-sf947u` and `claude/friendly-cannon-kyk9v4` (a cloud session may not delete
 one). Each merge commit says how its conflicts were settled.
 
-Still working, and landing as it goes (11 November): `claude/clydesdale-design-concept-cg6uyz`,
-the Clydesdale's review (Ryan's other session), cut from main at `2a9242e`: its brief
-(`docs/briefs/ws_clydesdale.md`, his idea and his answers of the day; the to-do's line) and the
-hand-built stock guns gone on his word ("There's no reason to keep hand build guns anywhere"):
-sixteen on seven models rebuilt in the cloud, each stock gun its class, a mount's fits saying
-how deep each class sits (the Polar Bear's port guns deeper and a round rack flush, "that's
-perfect for bear"), the renders a round. It took main at `e286f8d` and again at `45b3190` (the
-Whip Scorpion's rework; the bible's version, v0.531 above both, and this file's lines, both sides
-kept) and main took it as a fast-forward on
-Ryan's word ("Clean up and merge in"). Then the Clydesdale's batteries on his picks ("Checkerboard,
-and the stock split is fine"): its die folded into two batteries of four with a shared Changeover,
-the battery up kept from fight to fight (Changed Over), Battery Director retired, its model eight
-ports in a checkerboard, square under trapdoors since his "Sure, square ports", the brief retired (the bible's Clydesdale row, the to-do's play line),
-1129 tests green; main took it as a fast-forward at `d2c024d` on his word ("Merge in and republish"), the hangar and the bible republished with it (Pages). And `ccr-722ca9f0-yj8na3`, the formation and
+Landed 12 November: `claude/clydesdale-design-concept-cg6uyz`, the Clydesdale's review (Ryan's
+other session), cut from main at `2a9242e`. The hand-built stock guns gone on his word ("There's
+no reason to keep hand build guns anywhere"): sixteen on seven models rebuilt in the cloud, each
+stock gun its class, a mount's fits saying how deep each class sits (the Polar Bear's port guns
+deeper and a round rack flush, "that's perfect for bear"). The Clydesdale's batteries on his
+picks ("Checkerboard, and the stock split is fine"): its die folded into two batteries of four
+with one shared Changeover, the battery up kept from fight to fight (Changed Over), Battery
+Director retired, its model eight square ports in a checkerboard, each a real well under
+trapdoors ("Sure, square ports"; "Should it be a hole?"), its brief retired (the bible's
+Clydesdale row, the to-do's play line). Its five idle acts ("Those all sound good. Don't need the
+old ones"; the swap judged good, "the change over animation looks good to me"), the drill a
+broadside and the hatch check a wave on his notes of 12 November; the hangar's mode note moved
+into tooltips. Each chunk landed on main as a fast-forward on his word ("Clean up and merge in",
+"Merge in and republish", "Republish please", "Yes please"; it took main at `e286f8d`,
+`45b3190` and `6acc4d7` on the way, each merge commit saying how), the hangar to Version 231
+and the bible to v0.536 with them, 1132 tests green; wrapped on his "Yes, clean up, merge in
+and wrap up. All good." Still working, and landing as it goes (11 November): `ccr-722ca9f0-yj8na3`, the formation and
 refit session. Everything it had committed to `4c8dbf1` went to main with `ccr-4d58b054-3lyj0a`,
 below; its work since landed on Ryan's word of 11 November ("I think it's safe to start sending
 our code here out to main and having me test there in context"), the branch taking main at
@@ -155,8 +163,8 @@ fast-forward on Ryan's word ("Merge this all to main. I'll move it from there"),
 Buzzard's zap settled and the Whip Scorpion's role map, and with the records' clean-up and the
 pages' republish ("Everything else let's clean up and merge into main first before
 proceeding"). It goes on with the Whip Scorpion, then the Dingo and the Prairie Dog (Ryan,
-11 November), and is to delete once its session ends; the Clydesdale's review and the Skua are
-his other sessions'. The formation and refit session's merges of main before it are in
+11 November), and is to delete once its session ends; the Skua is his other session's (the
+Clydesdale's review landed 12 November). The formation and refit session's merges of main before it are in
 its branch's commits. Landed 11 November: `ccr-7effd31a-u5z4gw`, the music session (Hold The Line's, Night Shift's and
 The Far Bank's pairs passed and built into art/audio, How things stand), took main in a merge (the bible, this
 file and the to-do the conflicts: the bible three-way on the v0.469 both files carried, main's
@@ -243,7 +251,7 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   venv with `bpy==5.0.1` as `BPY_PYTHON`, renders under `xvfb-run`). Its leavings are the to-do's
   line (the Minerva draft's name, the old vent blast and Siphoning unused in the engine, its
   runner row unread). On main since the same day ("Yes that's perfect. Merge that into main"). The Dingo and the Prairie Dog are this branch's next (11 November), the
-  Clydesdale's review and the Skua his other sessions'.
+  Skua his other session's (the Clydesdale's review landed 12 November).
 - The locked pieces' footing, decided 10 November (the bible's locked row, section 7, and tiers
   row, section 10; `docs/locked_pieces_proposal.md` holds what follows and the order; nothing
   built): a locked piece earns its lock as glue for its chassis's identity or as an exclusive,
@@ -312,6 +320,30 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
+- **The cooldown counts after its round; Rapid's own switch-off; Instant** (`ccr-63a1309a-caa9mw`
+  from main at `fbce698`, on main the same day on his word, "All good. Clean up and merge into
+  main"; Ryan, 12 November, on "So rapid cooldown 1 and a weapon cooldown 1 are
+  different, right?", which they were not: one count, the round of the spend included, so a plain
+  weapon's 1 cost nothing). A printed cooldown is now the rounds an entry sits out after its spend
+  ("change the count so 1 is how I intended"), so the Flakshot Repeater's 1 sits out the next
+  round as he set it on 11 November, and the Kite's grant is 1, the same rounds dark as its old 2
+  (its text "sits out the next round", a session's draft). Rapid darkens its entry for the rest
+  of the round again, its own and never printed ("rapid gets its innate cooldown zero back
+  without the explicit display"): the printed 1 left the Pulse Vacillator, the Changeover, the
+  Quick Reload, the Immelmann Booster and the planned Laminar Deflector, each playing as before,
+  and the Needletail's gate's setup goes dark for the round as the rules had said. Instant is a
+  keyword ("the rapid no cooldown pieces change to a new keyword: Instant (reroll after use, can
+  land on itself)"): the die rolls again as the round opens, itself included, a spin on a
+  stepping die, nothing dark, so the validator holds an Instant piece to a limiter; the Spin-Up
+  is Instant (`spins` retired). The Nemesis's Knuckle of Fury goes out charged on five rage with
+  Instant in place of the Breach (his answer to the one question asked: "Each reroll costs 5
+  rage. Just swapping the Breach for Instant, everything else stays the same"), the Breach one
+  direction of its upgrades. Retired with it, no piece printing it since 11 November: the roll
+  again on a status (`rolls_again_on`, its vocabulary entry "Rolls again", the bot's rage-on-hull
+  credit), Instant the one roll that may land on itself. A spend that wins the fight rolls
+  nothing, Rapid's as the old roll again's. The die marks Instant on its edge with one chevron and
+  a loop back onto it, apart from Rapid's two chevrons by shape; his to judge on the phone. Saves
+  before it are set aside (the battle's 25, the run's 24, the quick run's 7).
 - **The boss holds its hex** (`ccr-c71bc17f-hclj2c` from main at `944cd5e`, on main the same day on
   his word, "Yeah that will do. Merge into main"; Ryan, 10 November). The boss stands on the one hex touching both of the rift's front hexes, on its
   middle line, and never walks ("Put him on the single hex in front of the two new out of play
@@ -1282,13 +1314,23 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. The live page is v0.533, dated 11 November (the
-  page's Version 505, published from main at `d2c024d` on Ryan's word, "Merge in and republish":
-  main's file whole, since the live v0.524 (Version 504, main's `60a0e4d`) matched that commit's
-  file byte for byte and so needed no merge; new since 504 the pacing row in beats of the tide,
+  `docs/design-bible.html` after every change. The live page is v0.536 (the page's Version 508,
+  published from main at `fbce698` on Ryan's word, "Yes please": main's file whole, the live v0.535
+  matching `3d5f98f`'s file byte for byte; new since 507 the batteries row's wells and the acts
+  table's broadside drill and hatch wave), its Date line still 11 November, which main's file has
+  since set to 12 November, the next republish carrying it with `ccr-63a1309a-caa9mw`'s rows (the
+  Rapid, cooldown, rerolls and Nemesis rows, the Prairie Dog's, Clydesdale's and Cassowary's lines,
+  and the keyword table's Instant, Rapid and Cooldown, Rolls again gone). Version 507 (main's `3d5f98f`, on his
+  "Republish please") was main's file whole over the live v0.534: the Clydesdale's cell in the acts
+  table, its five idle acts. Version 506 (main's `da18614`, on his "Pull in main
+  and republish") was main's file whole over the live v0.533 (`d2c024d`'s): the Prairie Dog's and
+  the Dingo's rows from `ccr-4d58b054-3lyj0a`, the Flakshot Repeater, the Hollow-point Harpoon, the
+  Translocator's Shock and the two pins in the debuff table. Version 505
+  (main's `d2c024d`, on his "Merge in and republish") was main's file whole over the live v0.524
+  (Version 504, main's `60a0e4d`), which matched that commit's file; new since 504 the pacing row in beats of the tide,
   menace a pack's threat rating and the rows that follow it, the Whip Scorpion's rework, the
   hardpoints row with every stock gun its class, the Clydesdale's batteries row and its square
-  ports, and Changed Over in the buff table). BASE for the next merge is `d2c024d`'s file. The
+  ports, and Changed Over in the buff table). BASE for the next merge is `fbce698`'s file. The
   live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
@@ -1302,7 +1344,21 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 228 (11 November, main's `d2c024d`, on Ryan's word, "Merge in and republish"):
+  page's Version 231 (12 November, main's `fbce698`, on Ryan's word, "Yes please"): the same nine
+  for the Clydesdale's wells, broadside drill and hatch wave (its model with the wells' linings, its
+  rig, its four renders, `renders.json`, and `designs.json` and `text.json` for their stamp), the page
+  unchanged, every live copy matching 230's before it was replaced, and the live copies matched
+  main's after, until `ccr-63a1309a-caa9mw` landed (12 November): `content/components.json`,
+  `content/chassis.json` and `content/vocabulary.json` have moved since, the next republish's. Version 230 (11 November, main's `3d5f98f`, on Ryan's word, "Republish please"): the nine
+  files the Clydesdale's idle acts moved (its model with the radiator and its heat texture, its rig
+  with the five acts and Changed Over's copies, its four renders, `renders.json`, and `designs.json`
+  and `text.json` for their stamp), the page unchanged, every live copy matching 229's before it was
+  replaced, and the live copies match main's after. Version 229 (11 November, main's `da18614`, on
+  Ryan's word, "Pull in main and republish"): the page with the Models tab's mode note moved into its buttons' tooltips (his ask
+  that evening: the paragraph under the model window kept the controls out of reach) and the six
+  files the Dingo's pieces moved (`ccr-4d58b054-3lyj0a`: three content files, the Dingo's rig,
+  `designs.json` and `text.json`), every live copy matching 228's before it was replaced, and the
+  live copies match main's after. Version 228 (11 November, main's `d2c024d`, on Ryan's word, "Merge in and republish"):
   the 69 files that had moved or arrived since 227 and one retired render removed (the Nemesis's
   old roar), the page unchanged: the vocabulary (the glossary's Menace, Rupture meter and Seal
   lines, redrafted for menace as a pack's threat rating and the stall guard's end), `text.json`

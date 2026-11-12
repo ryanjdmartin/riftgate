@@ -2918,7 +2918,11 @@ func _use_die(i: int, target, second = null) -> bool:
 	var spent: Face = sk.mechs[i].face()
 	var sealed_before := Effects.is_sealed(sk.mechs[i].unit)
 	var heat_before := _heats()
-	var fuel := spent.rolls_again_on if spent != null else ""
+	# The store a charged Instant spends (the Knuckle of Fury's five rage, 12 November): its chip
+	# bursts and the die flips back with its roll.
+	var fuel := ""
+	if spent != null and spent.charge_store() != "muster" and spent.charged_form().has(Face.Keyword.INSTANT) and sk.charge_lands(sk.mechs[i]):
+		fuel = spent.charge_store()
 	var fuel_before := Effects.stacks_of(sk.mechs[i].unit, fuel) if not fuel.is_empty() else 0
 	var ok := sk.assign(i, target, second)
 	if ok:
@@ -3961,8 +3965,9 @@ func _on_undo() -> void:
 	_refresh()
 
 
-## A die rolled again by a stack it spent (the Nemesis's rage, Ryan, 13 October): the stack's
-## chip bursts as it goes, then the die flips back with the reroll's own flip and sound. The
+## A die rolled again by a store it spent (the Nemesis's rage, Ryan, 13 October: a stack a roll
+## until 11 November; the Knuckle of Fury's charged Instant, five rage, since 12 November): the
+## store's chip bursts as it goes, then the die flips back with the reroll's own flip and sound. The
 ## die waits folded until then, so its new face is never seen before the roll.
 func _roll_again(i: int, status: String) -> void:
 	_mech_views[i].spend_chip(status_glyph(status))
