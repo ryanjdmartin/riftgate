@@ -5177,7 +5177,11 @@ def ammit(b):
     # Its talons fire with the threat's bite and the rear's rake in turn (Ryan, 3 November: it "can
     # also afford two different Claw animations since it's got 4 and will use them often"), each
     # holding its blow till the claw lands: the bite's first thrust, the rake's first cut.
-    b.fires = {"soulcutter_talons": [("threat", 1.1, 2.6, 1.55), ("rear", 1.75, 3.3, W1)]}
+    # Its Soul Siphon (12 November, a first cut for Ryan's eye: the piece fired with nothing) with
+    # the threat's coil alone, the body drawing down as the throat, the eyes and the tail vent
+    # light, cut before the bite.
+    b.fires = {"soulcutter_talons": [("threat", 1.1, 2.6, 1.55), ("rear", 1.75, 3.3, W1)],
+               "soul_siphon": ("threat", 0.4, 1.5)}
     _flare_scale(b, "tail_slot", VENT_FLARE)   # its rear vent's flares kept gold on its sickly amber (Ryan, 3 November, the second notes)
     b.move(accel=1.0, heft=0.2)
 

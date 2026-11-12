@@ -182,6 +182,9 @@ func _rest() -> Array:
 	var dry := Face.attack(6)
 	dry.ammo = 2
 	dry.dry = true
+	# A count it spends for its stacks (the Ammit's Soul Siphon, 12 November): three Souls held.
+	var spender := Face.from_dict({"kind": "buff", "status": "overcharged", "targets": "self", "spends": "souls", "spends_up_to": 5, "holds_all": "overcharged", "cooldown": 3})
+	spender.buff_stacks = 3
 	var burn := Face.attack(4)
 	burn.burns = 2
 	var locked := _die(Face.attack(4))
@@ -211,6 +214,7 @@ func _rest() -> Array:
 		["Hull and shield costs", "paid first, from its\nown machine", _die(costly)],
 		["Short", "the shield cannot pay:\nstruck through", _die(short)],
 		["Ammo, dry", "a forging gun's price;\nthe magazine cannot pay", _die(dry)],
+		["A count spent", "the Souls it would take\nnow, a stack each", _die(spender)],
 		["Burn", "the Storm Petrel's: its box\nthe shield paid, no cost", _die(burn)],
 		["LOCKED", "a reroll skips it", locked],
 		["CHARGED", "armed for its charged\nform (the Swallowtail)", charged],

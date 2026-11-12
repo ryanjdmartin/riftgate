@@ -273,7 +273,7 @@ fit touches it. `docs/synergy_map.md` is the built content's piece-level view. R
 - **Stuns (5):** the Baboon's Paradox, the funnel-web's web, the Swallowtail's charged flare, the
   Cryo party defence's gated Suppress (the frost figure's until its cut) and the time-shifter's delay. Numbed is the shared brake, and the
   time-shifter's stasis freezes Numbed, so it works against the other four.
-- **Kills (5):** the Kite's Reset, the Ammit's talons, the Giant Petrel's Salvo, the Wild Boar's
+- **Kills (5):** the Kite's Reset, the Ammit's Souls and flare, the Giant Petrel's Salvo, the Wild Boar's
   spill and Mastema's Bellows; the reason the Zoids walker should not get its old verb back.
 
 **Maker leans, crowded on purpose.**

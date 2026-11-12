@@ -8348,3 +8348,262 @@ duels are where they were (4% of its hull, 3.3 rounds, in the entry of 11 Novemb
 the twelve packs rated for two the walls stay at 7, and over all twenty it loses 48% of its
 hull in 4.2 rounds where it lost 42% in 3.7 with the Pod's Sweep: the Pod as three strikes of 1
 at one foe is worth less against a pair than four shots along a rank were.
+
+## 12 November, the Ammit's rework: a tier-three battle's chain, before against after
+
+Ryan's rework of the Ammit, built 12 November (the bible's Ammit row, section 7): one Soulcutter
+Talons entry of 1 ×4 with Breach where four talons of 3 stood, each of which Empowered a kill; a
+Soul for every foe that falls in its fight, kept for the battle with no cap; a flare of 1
+Empowered for every 5 Souls as a fight opens and on each of its own kills, where the Quintessence
+Tap kept every stack for the battle; and the Soul Siphon, which consumes up to 5 Souls for a
+stack each and holds every Empowered on the field for the round. The to-do's test of the Tap
+asked for "a battle's chain of fights, not one fight", since what the Ammit keeps carries from
+one to the next; the single-fight matrix opens every fight with nothing kept and cannot see
+either form.
+
+What was read: a squad through one tier-three battle's fights back to back, dealt by the
+battle's own builders at Convergence 8 (a formation, an elite's pack, a formation and two elites'
+packs, 21 foes on average, then the lead domain's boss with its escort or its final, 4.6 heads),
+the hull and whatever a machine keeps carried from fight to fight, the shields full and the heat
+at nothing as each opens. The dealer is the quick campaign's encounter list, used as a dealer
+alone: no run of the quick campaign is read. A scratch driver, not kept; the same seeds on main
+at `87da46f` (before) and on the rework's commit (after). Two squads under the greedy rung and
+one again under the planner, 30 seeds a row: a direction, never a band. The greedy reads the
+kill flare and the Siphon by plain rules (`Policy.flare_gain`, `Policy.hold_score`), so the
+Siphon's spends are a bot's.
+
+A table a row, a fight a line: the rounds of the fights won and the squad's hull left after
+them, what the Ammit holds as the fight opens where it still stands (before, the Empowered its
+Tap kept; after, the flare and the Souls behind it), the Siphon's spends a fight, and how many
+of the Ammit's spends killed and set off a flare (before, fed its talons).
+
+The tier-three four (the Musk Ox, the Ammit, the Giant Petrel, the Lammergeier), the greedy. Battles won: 21 of 30 before and 19 of 30 after.
+
+| Fight | Rounds, before | after | Hull left, before | after | Empowered as it opens, before (kept) | after (the flare) | Souls as it opens | Siphon spends | Its kills that flared |
+|---|---|---|---|---|---|---|---|---|---|
+| 1, formation | 4.7 | 3.5 | 96% | 97% | 0.0 | 0.0 | 0.0 | 0.07 | 0.9 |
+| 2, elite | 5.0 | 5.1 | 85% | 89% | 1.3 | 0.7 | 6.5 | 0.43 | 0.7 |
+| 3, formation | 4.5 | 4.3 | 82% | 84% | 1.9 | 1.1 | 7.9 | 0.37 | 1.9 |
+| 4, elite | 4.6 | 4.5 | 70% | 74% | 3.4 | 2.2 | 12.5 | 0.27 | 0.9 |
+| 5, elite | 4.4 | 5.4 | 63% | 66% | 4.4 | 2.6 | 14.6 | 0.33 | 1.0 |
+| 6, the boss or the final | 5.4 | 6.4 | 54% | 58% | 5.2 | 2.8 | 15.9 | 0.28 | 1.4 |
+
+The Ammit beside three tier ones (the Honey Badger, the Cassowary, the Storm Petrel), the greedy. Battles won: 21 of 30 before and 18 of 30 after.
+
+| Fight | Rounds, before | after | Hull left, before | after | Empowered as it opens, before (kept) | after (the flare) | Souls as it opens | Siphon spends | Its kills that flared |
+|---|---|---|---|---|---|---|---|---|---|
+| 1, formation | 5.4 | 6.0 | 94% | 93% | 0.0 | 0.0 | 0.0 | 0.20 | 0.6 |
+| 2, elite | 7.0 | 6.3 | 83% | 84% | 1.5 | 0.7 | 6.2 | 0.67 | 0.8 |
+| 3, formation | 5.8 | 5.7 | 78% | 77% | 2.2 | 0.8 | 6.5 | 0.30 | 2.0 |
+| 4, elite | 5.9 | 6.6 | 71% | 69% | 3.9 | 2.0 | 11.7 | 0.40 | 1.2 |
+| 5, elite | 5.4 | 6.1 | 63% | 61% | 4.9 | 2.2 | 12.9 | 0.33 | 1.2 |
+| 6, the boss or the final | 6.4 | 7.1 | 50% | 56% | 5.8 | 2.6 | 14.4 | 0.32 | 1.4 |
+
+The tier-three four again, the planner (two rounds rolled out a decision), the same 30 seeds. Battles won: 25 of 30 before and 27 of 30 after.
+
+| Fight | Rounds, before | after | Hull left, before | after | Empowered as it opens, before (kept) | after (the flare) | Souls as it opens | Siphon spends | Its kills that flared |
+|---|---|---|---|---|---|---|---|---|---|
+| 1, formation | 3.1 | 3.6 | 98% | 97% | 0.0 | 0.0 | 0.0 | 0.13 | 0.7 |
+| 2, elite | 4.6 | 4.6 | 87% | 90% | 1.5 | 0.7 | 6.2 | 0.37 | 0.7 |
+| 3, formation | 3.8 | 5.0 | 85% | 86% | 2.6 | 1.1 | 8.0 | 0.37 | 1.7 |
+| 4, elite | 4.2 | 4.4 | 78% | 77% | 4.0 | 2.2 | 12.7 | 0.20 | 0.8 |
+| 5, elite | 4.3 | 4.6 | 70% | 71% | 5.2 | 2.6 | 14.6 | 0.10 | 0.7 |
+| 6, the boss or the final | 5.6 | 6.6 | 60% | 52% | 6.1 | 3.0 | 17.0 | 0.27 | 1.5 |
+
+Read.
+
+- The ramp is lower, and it has to be relit. Before, the Ammit opened the boss's fight holding
+  5.2 to 6.1 stacks of Empowered kept from its talons' kills (1 to 10 by the seed), a point on
+  every blow of that fight and of every fight after the one that earned it. After, it opens
+  there on a flare of 2.6 to 3.0 from 14 to 17 Souls, which halves from the first round's end
+  unless a kill of its own relights it; its kills flared about 1.4 times in that fight.
+- The Souls come at the pace of the pack. Six after the first formation, 12 to 13 as the fourth
+  fight opens and 14 to 17 at the boss's, by the seed 2 to 32, with the Siphon's spends taken
+  out: the squad kills all 21 foes before the boss, so a count nothing spent stands at 21 to 26
+  there, a flare of 4 or 5. Uncapped, that is the scale a battle of this length reaches; a
+  longer battle on the map, or a summoner left alive, goes past it, and no player here tries.
+- The boss's fight is a round longer in every row: 5.4 to 6.4 rounds and 6.4 to 7.1 under the
+  greedy, 5.6 to 6.6 under the planner, where the kept stacks had been worth most. The five
+  fights before it stand within a round of where they were and trade direction from row to row
+  (the first fight 4.7 to 3.5 rounds for one squad, 5.4 to 6.0 for the other, 3.1 to 3.6 under
+  the planner): noise at this size.
+- The battle's result does not move at 30 seeds. Won, of 30: 21 to 19 and 21 to 18 under the
+  greedy, 25 to 27 under the planner. Hull left by a battle won: 54 to 58% and 50 to 56%, and
+  60 to 52%. One band, and no direction to name.
+- The Siphon is spent about once in three fights by either rung, 1.4 to 2.2 times a battle,
+  five Souls a time where it holds them, a quarter to a third of the time in the boss's fight.
+  The greedy's rule is a plain one and the planner looks two rounds on, so this says the piece
+  is spent, never that the spends were right, and nothing here says what a round given to it
+  feels like.
+- What this cannot read is his to play (the to-do's line): the kill flare at one stack, the
+  Siphon's round, the talons at one roll in six, and the numbers, each a placeholder.
+
+## 12 November, tier one on the reworked machines: the hull budget, and heat as a pace
+
+Ryan, 12 November: "Pull in main. Many of the machine reworks are done, so they can be
+included in the pass ... You can proceed with the steps as you see fit." Main at `8d936cf`:
+every tier-one stock die is basics beside its locked pieces (the Baboon's rework, the
+Photosphere Lance a support piece, the Flakshot Repeater, the Polar Bear's seal). Two reads,
+the fight bot (greedy) throughout, each a direction.
+
+**Where tier one stands against the hull budget.** Every tier-one patrol, formation, elite and
+boss, twenty seeds, fought by two trios (Honey Badger, Baboon, Skua; Stingray, Cassowary, Honey
+Badger) cut to the fight's threat rating, an elite and a boss by all three; a cell the range
+over the two. The budget is his of 9 November (a pusher's fight a twentieth of the squad's
+hull at its rating, a lone flanker's a thirtieth of the squad's, so a tenth of its own, a
+hunter's a tenth, an elite's a quarter, the boss what is left, taken here as half). On
+content's own heat.
+
+| Domain | Kind | Fight | Rated | Machines | Won | Rounds | Hull lost, of the machines in it | The budget |
+|---|---|---|---|---|---|---|---|---|
+| The Meadow | patrol | lone_whisker_cat | 1 | 1 | 100% | 2.2 to 5.2 | 0 to 1% | 10% |
+| The Meadow | patrol | wolf_pack | 2 | 2 | 100% | 3.8 to 4.2 | 0% | 10% |
+| The Meadow | formation | goblin_horde | 3 | 3 | 100% | 4.5 to 4.7 | 1% | 5% |
+| The Meadow | formation | treant_grove | 3 | 3 | 100% | 8.1 to 10.8 | 3 to 6% | 5% |
+| The Meadow | formation | gel_wall | 3 | 3 | 100% | 6.5 to 6.7 | 2 to 5% | 5% |
+| The Meadow | elite | shamans_warband | 4 | 3 | 100% | 4.1 to 4.3 | 0% | 25% |
+| The Meadow | elite | the_nob | 4 | 3 | 100% | 5.8 to 6.5 | 12 to 24% | 25% |
+| The Meadow | boss | floraison | 4 | 3 | 100% | 9.9 to 14.3 | 31 to 37% | 50% |
+| The Meadow | boss | king_gel | 4 | 3 | 100% | 9.7 to 11.6 | 21 to 36% | 50% |
+| The Meadow | boss | mantis_ant | 4 | 3 | 85 to 100% | 8.7 to 13.2 | 16 to 50% | 50% |
+| The Waste | patrol | lone_roc | 1 | 1 | 100% | 2.2 to 5.5 | 2 to 11% | 10% |
+| The Waste | patrol | antlion_trio | 2 | 2 | 100% | 3.6 to 5.0 | 6 to 13% | 10% |
+| The Waste | formation | needler_thicket | 3 | 3 | 100% | 3.2 to 3.9 | 2 to 5% | 5% |
+| The Waste | formation | sandworm_ambush | 3 | 3 | 100% | 7.8 to 10.9 | 24 to 31% | 5% |
+| The Waste | elite | old_mans_rising | 4 | 3 | 100% | 7.8 to 13.0 | 16 to 35% | 25% |
+| The Waste | elite | pilgrims_wake | 4 | 3 | 100% | 7.0 to 7.8 | 10 to 20% | 25% |
+| The Waste | elite | rust_monsters_scavenge | 4 | 3 | 100% | 5.2 to 6.5 | 1 to 4% | 25% |
+| The Waste | elite | gilgamesh_wanders | 4 | 3 | 100% | 8.3 to 11.3 | 6 to 10% | 25% |
+| The Waste | boss | ruby_colossus | 4 | 3 | 0 to 70% | 13.2 to 15.3 | 74 to 100% | 50% |
+| The Waste | boss | fallen_weapon | 4 | 3 | 35 to 80% | 10.9 to 13.6 | 47 to 87% | 50% |
+| The Waste | boss | emperor_scorpion | 4 | 3 | 20 to 100% | 11.2 to 15.3 | 51 to 96% | 50% |
+| The Marsh | patrol | lone_dullahan | 1 | 1 | 100% | 2.3 to 7.3 | 0% | 10% |
+| The Marsh | formation | grave_throng | 3 | 3 | 100% | 4.1 to 5.2 | 1 to 2% | 5% |
+| The Marsh | formation | barrow_mound | 3 | 3 | 100% | 7.2 to 12.2 | 3 to 4% | 5% |
+| The Marsh | formation | knights_vigil | 3 | 3 | 100% | 5.8 to 7.0 | 26 to 35% | 5% |
+| The Marsh | elite | fell_riders_hunt | 4 | 3 | 100% | 4.2 to 4.8 | 4% | 25% |
+| The Marsh | elite | the_reaper | 4 | 3 | 100% | 3.0 to 3.2 | 0 to 1% | 25% |
+| The Marsh | elite | the_wild_hunt | 4 | 3 | 95 to 100% | 7.9 to 8.8 | 32 to 50% | 25% |
+| The Marsh | boss | matador | 4 | 3 | 100% | 9.2 to 13.2 | 24 to 39% | 50% |
+| The Marsh | boss | phantom_train | 4 | 3 | 5 to 100% | 14.5 to 23.8 | 38 to 99% | 50% |
+| The Marsh | boss | vampire_lord | 4 | 3 | 100% | 8.6 to 10.2 | 9 to 17% | 50% |
+| The Marsh | boss | marsh_serpent | 4 | 3 | 100% | 8.0 to 9.8 | 13 to 39% | 50% |
+| The Peak | patrol | lone_cerberus | 1 | 1 | 100% | 2.2 to 6.0 | 0 to 12% | 10% |
+| The Peak | formation | ember_pyre | 3 | 3 | 100% | 4.7 to 5.8 | 20 to 29% | 5% |
+| The Peak | formation | magma_vent | 3 | 3 | 100% | 8.8 to 10.8 | 23 to 46% | 5% |
+| The Peak | elite | cinder_tortoises_brood | 4 | 3 | 100% | 9.4 to 13.9 | 13 to 30% | 25% |
+| The Peak | elite | thunder_apes_rampage | 4 | 3 | 95 to 100% | 6.5 to 9.2 | 22 to 35% | 25% |
+| The Peak | boss | gargantuan_king | 4 | 3 | 100% | 8.4 to 10.3 | 21 to 27% | 50% |
+| The Peak | boss | fiend_of_fire | 4 | 3 | 100% | 8.7 to 11.8 | 42 to 44% | 50% |
+| The Peak | boss | obsidian_tyrant | 4 | 3 | 80 to 100% | 11.3 to 23.2 | 44 to 74% | 50% |
+
+Read.
+
+- The formations with no breach sit at or under the budget: the goblin horde and the grave
+  throng at 1 to 2%, the rest at 2 to 6% against 5%. His read of 10 November stands for
+  them ("Enemy fodder damage might just be too low").
+- The four that breach or burn are five to nine times over it: the sandworm ambush 24 to 31%,
+  the knights' vigil 26 to 35%, the ember pyre 20 to 29%, the magma vent 23 to 46%. Both of
+  the Peak's formations are among them, so the Peak has no formation a first battle can
+  afford.
+- The elites spread from nothing to twice the budget: four cost under 5% (the shaman's
+  warband, the rust monster, the Reaper, the Fell Rider), five sit inside it, the Wild Hunt
+  is 32 to 50%.
+- The bosses: the Meadow's three, the Matador, the Marsh Serpent and the Peak's first two are
+  fights three machines win for a fifth to a half of their hull; the Vampire Lord is soft
+  (9 to 17%); the Waste's three and the Phantom Train are walls for one trio or both.
+- A lone flanker costs its machine a tenth or less. The Stingray alone takes five to seven
+  rounds over what the Honey Badger takes in two, since its Lance deals no damage now.
+
+**Heat as a pace.** His reads: "Heat generation is too low, but I think we knew that" (10
+November) and, of the model, "run hot, and you're forced to wait and think about your
+decisions while you cool off" (9 November). The bible's test: a hot build overheats by about
+its third round of firing, a formation fight forces a cooling turn or two, a short fight
+none. The read: every tier-one fight at its rating's cut, ten seeds a fight, under a price
+on every weapon, a cooling offset, a gauge offset and the hull an overheat burns a point. A
+heat moment is a damaging die held because it would cross the gauge, or an overheat; the
+table counts them a machine a formation fight, for two trios (Stingray, Cassowary, Honey
+Badger; Skua, Baboon, Honey Badger).
+
+| Weapons | Cooling | Gauge | An overheat burns | Formation: rounds | Hull lost | Heat moments a machine | Boss won |
+|---|---|---|---|---|---|---|---|
+| as they are | as it is | as it is | 1 | 6.5 to 7.4 | 11 to 14% | 0.1 to 0.2 | 76 to 98% |
+| +1 | as it is | as it is | 1 | 6.4 to 7.7 | 12 to 16% | 0.4 to 0.5 | 74 to 98% |
+| +2 | as it is | as it is | 1 | 6.6 to 8.8 | 15 to 20% | 0.9 to 1.7 | 68 to 91% |
+| +3 | as it is | as it is | 1 | 7.2 to 11.2 | 21 to 30% | 1.8 to 3.6 | 57 to 83% |
+| +2 | as it is | as it is | 2 | 7.1 to 12.4 | 18 to 27% | 1.0 to 3.0 | 64 to 83% |
+| +2 | as it is | as it is | 3 | 7.6 to 14.4 | 19 to 26% | 1.1 to 3.6 | 60 to 82% |
+| +2, the cautious player | as it is | as it is | 1 | 7.1 to 9.2 | 15 to 22% | 0.6 to 1.2 | 67 to 86% |
+| +2 | +1 | as it is | 1 | 6.4 | 12% | 0.4 | 97% |
+| +2 | +1 | 4 smaller | 1 | 6.6 to 7.8 | 14 to 20% | 0.7 to 1.0 | 72 to 95% |
+| +2 | +1 | 4 smaller | 2 | 6.8 to 8.3 | 17 to 23% | 0.7 to 0.9 | 71 to 92% |
+| +3 | +1 | as it is | 1 | 6.6 to 8.2 | 15 to 20% | 0.8 to 1.4 | 68 to 95% |
+| +4 | +2 | as it is | 1 | 6.6 to 8.3 | 14 to 20% | 0.7 to 1.4 | 68 to 94% |
+
+(The row at +2 with one more cooling is the first trio's alone.)
+
+Read.
+
+- At today's prices nothing binds: a tenth of a heat moment a machine a formation fight.
+- Prices alone starve the long fight. Cooling stays one, so a gun of three or four heat
+  fires once in three or four rounds at the gauge: the second trio's formation fights run
+  eleven rounds at three hotter and some never end.
+- A harsher overheat makes the bot hold more and the fights longer, with no fewer lost. The
+  cautious player, who holds a hot die under three quarters of the gauge, does no better
+  than the reckless one. So for this bot the overheat is a hull tax and a hold is a mistake,
+  the read of 30 October again; what a hold is worth to a player is his play's.
+- Prices with one more cooling keep the fights their length and bring the limit once a
+  machine in a formation fight. Three shapes land alike, as the ratios say they should (the
+  sustained rate is the cooling over a shot's heat, the burst the gauge over the heat a shot
+  leaves): two hotter with a gauge four smaller, three hotter on the gauge as it is, four
+  hotter with two more cooling.
+
+**The shape chosen, and on trial rather than in content**: every weapon three hotter, every
+chassis that cools cooling one more, the gauges as they are, an overheat one hull a point
+as it is. Debuff devices keep their own heat, since they are equipment; the Whip Scorpion
+still cools nothing; the Cottonmouth's drum shot moves with the guns, to 6. The basics would
+be 4 (the Twin Autoguns, the Rivet Gun, the Ankle Mortar) and 5 (the Laser Carbine) against a
+cooling of 2 and a gauge of 12 or 14: five cold shots or three warm ones from cold before
+the limit, then one shot in two. Chosen over the smaller gauge because the gauges carry
+other numbers (the Stingray's stacks by 5 heat, the Polar Bear's seal at 3 a turn, the
+Buzzard's regen by 4). It is a dial (a debug build's SETTINGS → TRIALS → HEAT) and no
+content: main moved under the read to `c717e69`, where another session had rebuilt the fast
+flyers and set the Whip Scorpion's release against its gauge the same day, on today's
+prices, and a price on every weapon moves every machine that reads heat. The four trios
+under the shape, a formation fight, read at `8d936cf` with the prices laid over the content:
+
+| The trio | Rounds, as it is | Rounds, the shape | Hull lost, as it is | Hull lost, the shape | Heat moments a machine, the shape | Boss won, as it is | Boss won, the shape |
+|---|---|---|---|---|---|---|---|
+| Stingray, Cassowary, Honey Badger | 6.5 | 6.6 | 11% | 15% | 0.8 | 98% | 95% |
+| Skua, Baboon, Honey Badger | 7.4 | 8.0 | 14% | 20% | 1.3 | 76% | 68% |
+| Cottonmouth, Storm Petrel, Polar Bear | 8.1 | 7.2 | 15% | 14% | 0.8 | 55% | 54% |
+| Prairie Dog, Cassowary, Stingray | 9.2 | 10.0 | 18% | 22% | 1.1 | 65% | 61% |
+
+Read again at `c717e69` on six seeds, with the Skua as rebuilt: the same picture (the first
+three trios 0.8, 1.7 and 0.8 heat moments a machine, their formation fights 6.7, 7.9 and
+7.2 rounds).
+
+A lone duel brings the limit under once in two fights. The greedy bot pays the prices in
+hull, four to six points a formation fight, because it overheats where a player would hold;
+the Storm Petrel's trio pays none, since its guns burn shield for heat and zap for what
+they burnt, three more a shot under the shape. The foes' numbers wait on the prices: tuned
+first, they are tuned twice.
+
+The campaign runner beside it (`tools/campaign_run.gd -- --runs 40`, the floor player, at
+`8d936cf`), to part the shape from the reworks main brought the same day:
+
+| The content | Battles reaching the Rupture | Battles won | With three machines: won | Wiped |
+|---|---|---|---|---|
+| Before the reworks, 11 November | 18% of 179 | 4% | 13% | 47% |
+| The reworked machines, as content has them | 14% of 178 | 2% | 9% | 56% |
+| The reworked machines under the shape | 10% of 174 | 1% | 6% | 66% |
+
+The reworks and the prices each cost the floor player about four points of battles reaching
+the Rupture. It overheats rather than holds, so the prices are hull to it; the campaign was
+a wall for it before either. Forty runs: a direction.
+
+Method: the scratch probes of this session (a tier-one fight probe at each rating's cut and
+a heat probe over the same fights, prices, cooling and gauge laid over the loaded content),
+the engine's own `Policy` counts for holds and overheats (`forced_holds`, `overheats`,
+`overheat_hull`). The grid priced the debuff devices with the weapons; the shape and its
+four-trio read do not.

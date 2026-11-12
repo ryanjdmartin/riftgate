@@ -866,22 +866,48 @@
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "Four blades that take something from what they kill. The Arsenal's manual calls it attunement.",
-    "niche": "The Ammit's locked melee: flat, and each kill Empowers the Ammit, its scaling threat for the battle and nothing more."
+    "fantasy": "Four blades on four arms, cutting as one. What they cut loose from the fallen the machine takes in; the Arsenal's manual calls it attunement.",
+    "niche": "The Ammit's locked melee, one entry since its rework (Ryan, 12 November: \"The 4 claws are combined into one weapon that deals 1x4 instead, with Breach. They no longer gain Empowered on kill\"): four strikes of 1 at one foe, past its armour, so every stack of Empowered counts four times on it. Four copies of a flat 3 that Empowered a kill until then."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 3,
-    "keywords": [],
-    "heat": 1,
-    "devours": 1
+    "power": 1,
+    "strikes": 4,
+    "keywords": [
+     "breach"
+    ],
+    "heat": 1
    },
    "passive": null,
    "tags": [
     "blade",
     "melee"
    ]
+  },
+  {
+   "id": "soul_siphon",
+   "name": "Soul Siphon",
+   "maker": "arsenal",
+   "shape": "none",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "The tap opened the other way: what the Ammit has taken in, burned for a round. Ryan's piece and his name, 12 November.",
+    "niche": "The Ammit's second lock, equipment spent on itself (Ryan, 12 November: \"Consume up to 5 souls, granting 1 Empowered per soul. Cooldown 3\"; \"No Empowered decays this round. And I mean none, not ally or enemy\"): the round it is spent the Ammit does nothing else, and the next it swings at everything it held and what it consumed, whole. Unplayable with no Soul. Its cooldown keeps the hold from chaining. The foes' Empowered is held too, its price against a rally."
+   },
+   "face": {
+    "kind": "buff",
+    "status": "overcharged",
+    "targets": "self",
+    "spends": "souls",
+    "spends_up_to": 5,
+    "holds_all": "overcharged",
+    "cooldown": 3
+   },
+   "passive": null,
+   "tags": []
   },
   {
    "id": "rivet_gun",

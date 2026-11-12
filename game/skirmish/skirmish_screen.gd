@@ -114,6 +114,10 @@ static var ABILITY_DEBUG := OS.get_environment("RIFTGATE_ABILITY_DEBUG") == "1"
 ## Lammergeier's, 9 November), so any kill shows its blast land round the slot and the chips, to
 ## judge them running.
 static var MINE_DEBUG := OS.get_environment("RIFTGATE_MINE_DEBUG") == "1"
+## RIFTGATE_SOULS_DEBUG=<n>: every machine that banks a count as foes fall (the Ammit's Souls, 12
+## November) opens the fight holding n of it, so its flare, its Siphon and their chips are judged
+## in the first fight of a battle, where it would hold none.
+static var SOULS_DEBUG := int(OS.get_environment("RIFTGATE_SOULS_DEBUG"))
 ## RIFTGATE_HIT_DEBUG=1: every second and a half a machine takes a blow, in turn a hull hit from the
 ## left, a blow its shield takes, a blow its armour turns and a hull hit from the right, and every
 ## fifth beat one is lost and comes back, to judge the hit reactions running (3 November).
@@ -335,6 +339,12 @@ func setup(skirmish: Skirmish) -> void:
 	locked.clear()
 	for m in sk.mechs:
 		locked.append(false)
+	if SOULS_DEBUG > 0 and sk.state == Skirmish.State.SETUP:
+		for ms in sk.mechs:
+			for count_id in Effects.kill_counts(ms.unit):
+				var short_by := SOULS_DEBUG - Effects.stacks_of(ms.unit, str(count_id))
+				if short_by > 0:
+					Effects.stack(ms.unit, Effects.STATUS[str(count_id)], Effects.status_scope(Effects.STATUS[str(count_id)]), "debug", short_by, Effects.DECAY_NONE)
 	if sk.state == Skirmish.State.SETUP:
 		sk.begin()
 	if sk.state == Skirmish.State.ROUND_START:
@@ -1640,6 +1650,7 @@ func _foe_rows(foe: Foe) -> Array:
 	if Effects.has(foe, "kindled"):
 		var kindled := Effects.foe_attack_bonus(foe)
 		rows.append(status_row("kindled", "overcharge", "+%d" % kindled, "Empowered +%d" % kindled, _foe_chip_colour("kindled")))
+		_pin_row(rows, "kindled")   # held by the round (the Soul Siphon's): it carries whole into the next
 	var raged := Effects.stacks_of(foe, "enraged")
 	if raged > 0:
 		# What the Nob's rage has gathered (3 November), a buff a Purge lowers; the rage itself is
@@ -1823,6 +1834,8 @@ static func status_glyph(id: String) -> String:
 			return "spin"
 		"ricochet":
 			return "ricochet"
+		"souls":
+			return "soul"
 		"silenced":
 			return "silence"
 		"cryoed":
@@ -1840,6 +1853,17 @@ static func _chip_colour(id: String) -> Color:
 	if id == "rage":
 		return Palette.HEAT
 	return Terms.status_colour(id)
+
+
+## The round's own pin beside the status it holds (the Soul Siphon's "No Empowered decays this
+## round", Ryan, 12 November): while the round holds `status_id` (Skirmish.round_holds), the
+## unit carrying it wears that pin's chip after it, the status's glyph with the lock, as a foe's
+## Pinned Flak does, until the round's end. The round's rule, so no unit carries the pin itself.
+func _pin_row(rows: Array, status_id: String) -> void:
+	if not sk.round_holds.has(status_id) or not Effects.ROUND_HOLDERS.has(status_id):
+		return
+	var pin := str(Effects.ROUND_HOLDERS[status_id])
+	rows.append(status_row(pin, Terms.glyph(pin), "", str(Effects.STATUS[pin]["name"]), Terms.status_colour(pin)))
 
 
 func _mech_rows(i: int) -> Array:
@@ -1896,11 +1920,16 @@ func _mech_rows(i: int) -> Array:
 		var glyph := status_glyph(id)
 		var colour := _chip_colour(id)
 		var stacks := int(total[id])
-		var named := str(d[0]) + ((" ×%d" % stacks) if stacks > 1 else "")
+		# A count says itself at one too (the Ammit's Souls, 12 November), bare as a count is; a
+		# buff or an ability of one stack is its glyph alone.
+		var counted := Effects.is_counted(id)
+		var count := str(stacks) if counted else (("×%d" % stacks) if stacks > 1 else "")
+		var named := str(d[0]) + ((" %d" % stacks) if counted else ((" ×%d" % stacks) if stacks > 1 else ""))
 		if Effects.is_ability(id):
-			abilities.append([glyph, ("×%d" % stacks) if stacks > 1 else "", "Ability, " + named, colour, "ability"])
+			abilities.append([glyph, count, "Ability, " + named, colour, "ability"])
 		else:
-			rows.append(status_row(id, glyph, ("×%d" % stacks) if stacks > 1 else "", named, colour))
+			rows.append(status_row(id, glyph, count, named, colour))
+			_pin_row(rows, id)
 	if ABILITY_DEBUG and abilities.is_empty():
 		abilities.append([status_glyph("sealed"), "", "Ability, Sealed (RIFTGATE_ABILITY_DEBUG)", _chip_colour("sealed"), "ability"])
 	for k in range(abilities.size()):
@@ -1911,7 +1940,8 @@ func _mech_rows(i: int) -> Array:
 		# the skull "is just another predicted chip, like any other. It just symbolizes death").
 		if int(fc["overheat"]) > 0:
 			# The heat burns as the turn ends, so there is still time to vent.
-			rows.append(["heat", "-%d" % int(fc["overheat"]), "Overheating: hull -%d at the turn's end" % int(fc["overheat"]), Palette.HEAT, "preview"])
+			var burn := int(fc["overheat"]) * Skirmish.overheat_scale   # the hull the excess burns: one a point, but under the overheat's trial
+			rows.append(["heat", "-%d" % burn, "Overheating: hull -%d at the turn's end" % burn, Palette.HEAT, "preview"])
 		if bool(fc["destroyed"]):
 			rows.append(["skull", "", "Wrecked this round: %d incoming" % int(fc["incoming"]), Palette.LOSS, "preview"])
 		elif bool(fc["component_risk"]):

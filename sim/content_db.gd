@@ -507,14 +507,17 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		elif d[2] == "module":
 			effects.append({"name": head, "text": str(d[1]), "kind": "module", "note": "MODULE"})
 		elif Effects.is_status(str(d[5])):
-			# A status the battle keeps (the Ammit's Empowered, 16 October): its count, kept for
-			# the battle, one row a status whatever granted each stack.
+			# A status the battle keeps (the Ammit's Souls; its Empowered from 16 October until its
+			# rework of 12 November): its count, kept for the battle, one row a status whatever
+			# granted each stack.
+			# A count says itself at one too (the Ammit's Souls), bare; a buff's stacks from two.
+			var counted := Effects.is_counted(str(d[5]))
 			if kept.has(str(d[5])):
 				var row: Dictionary = kept[str(d[5])]
 				row["stacks"] = int(row["stacks"]) + int(d[4])
-				row["name"] = head + (" ×%d" % int(row["stacks"]) if int(row["stacks"]) > 1 else "")
+				row["name"] = head + ((" %d" % int(row["stacks"])) if counted else (" ×%d" % int(row["stacks"]) if int(row["stacks"]) > 1 else ""))
 				continue
-			var kept_row := {"name": head + (" ×%d" % int(d[4]) if int(d[4]) > 1 else ""), "text": str(d[1]), "kind": "reward", "note": "KEPT FOR THE BATTLE", "stacks": int(d[4])}
+			var kept_row := {"name": head + ((" %d" % int(d[4])) if counted else (" ×%d" % int(d[4]) if int(d[4]) > 1 else "")), "text": str(d[1]), "kind": "reward", "note": "KEPT FOR THE BATTLE", "stacks": int(d[4])}
 			kept[str(d[5])] = kept_row
 			effects.append(kept_row)
 		else:
@@ -1454,6 +1457,22 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	# loads a shot for a bonus each.
 	if fd.has("devours") and (kind != "attack" or int(fd["devours"]) <= 0):
 		errs.append("%s: devours is the stacks of Empowered a kill gives its owner: a positive number on an attack" % where)
+	# A buff that spends a count of its own machine's for its stacks (the Soul Siphon, 12 November):
+	# the status it spends, one the engine knows, and the most it takes, which is the most it
+	# grants, so it says no stacks of its own.
+	if fd.has("spends") or fd.has("spends_up_to"):
+		if kind != "buff" or not Effects.STATUS.has(str(fd.get("spends", ""))):
+			errs.append("%s: spends is a buff's: the status of its own machine it spends for its stacks, one of the engine's" % where)
+		if int(fd.get("spends_up_to", 0)) < 1:
+			errs.append("%s: spends_up_to is the most a spend takes, and so the most it grants: 1 or more, beside spends" % where)
+		if fd.has("stacks"):
+			errs.append("%s: a buff that spends a count grants a stack for each one spent, so it says spends_up_to and no stacks" % where)
+		if str(fd.get("targets", "")) != "self":
+			errs.append("%s: a buff that spends its own machine's count lands on itself (targets self)" % where)
+	# A hold on the whole field (the Soul Siphon's "No Empowered decays this round"): a status that
+	# halves on its own clock, held on every unit through the round's end.
+	if fd.has("holds_all") and not Effects.decays_to_zero(Effects.STATUS.get(str(fd["holds_all"]), {})):
+		errs.append("%s: holds_all names a status that halves at the round's end (Empowered, Flak): no unit's stacks of it run down this round" % where)
 	if Array(fd.get("keywords", [])).has("devour"):
 		errs.append("%s: devour is no keyword since 11 October: write devours: <the stacks a kill gives>" % where)
 	# Burn is a numbered keyword (Ryan, 18 October): an entry says the stacks each hit leaves.
@@ -1803,6 +1822,13 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: lay_status lays at least one stack a hit" % where)
 		if effect == "stack_status" and eff.has("cap") and int(eff["cap"]) < 1:
 			errs.append("%s: stack_status's cap is the most stacks it banks, at least 1" % where)
+		# An effect scaled by a status the machine carries may count it in steps (the Ammit's flare,
+		# 12 November: an Empowered for every five Souls), and a grant may come once for each thing
+		# its event counts.
+		if eff.has("stack_step") and (not eff.has("per_stack") or int(eff["stack_step"]) < 1):
+			errs.append("%s: stack_step is the stacks of per_stack's status a step takes: 1 or more, beside per_stack" % where)
+		if eff.has("each") and (effect != "stack_status" or not (eff["each"] is bool) or not ["on_kill", "on_foe_killed"].has(trig)):
+			errs.append("%s: each (true) grants a stack_status once for every foe its event counts: on_kill's or on_foe_killed's" % where)
 		# An effect that fires once a round (the Skua's stack of Ricochet for damaging a foe, Ryan,
 		# 11 November: "once per turn"): a gate on what an event fires (Effects.fire), which the
 		# pipeline's effects (static, on_attack, on_injury) never pass through.

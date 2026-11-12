@@ -136,8 +136,15 @@ func test_the_what_ifs_move_the_regen_the_cooling_the_heat_and_the_barriers_pric
 		assert_eq(int(db.chassis[id]["shield_regen"]), int(ceil(float(int(db.chassis[id]["shield"])) / 2.0)), "%s: half its gauge, rounded up" % id)
 	db = _own()
 	Refit.apply(db, Refit.parse("cooling=1"))
+	var cooled := 0
 	for id in db.chassis.keys():
-		assert_eq(int(db.chassis[id].get("cooling", 0)), int(before.chassis[id].get("cooling", 0)) + 1, "%s cools one more" % id)
+		var own := int(before.chassis[id].get("cooling", 0))
+		if own > 0:
+			cooled += 1
+			assert_eq(int(db.chassis[id].get("cooling", 0)), own + 1, "%s cools one more" % id)
+		else:
+			assert_eq(int(db.chassis[id].get("cooling", 0)), 0, "%s cools nothing by its rule, and no offset moves it" % id)
+	assert_true(cooled > 0, "the chassis that cool cooled more")
 	db = _own()
 	Refit.apply(db, Refit.parse("hotter=2"))
 	var hot := 0
@@ -150,6 +157,13 @@ func test_the_what_ifs_move_the_regen_the_cooling_the_heat_and_the_barriers_pric
 		else:
 			assert_eq(int(face.get("heat", 0)), int(was.get("heat", 0)), "%s is no weapon and runs as it did" % cid)
 	assert_true(hot > 0, "the weapons ran hotter")
+	# A passive that rewrites its machine's weapons into one shot: the shot's heat moves with them.
+	for id in db.chassis.keys():
+		var effects: Array = (db.chassis[id].get("passive", {}) as Dictionary).get("effects", [])
+		var were: Array = (before.chassis[id].get("passive", {}) as Dictionary).get("effects", [])
+		for k in range(effects.size()):
+			if str(effects[k].get("effect", "")) == "rewrite_weapon" and effects[k].has("heat"):
+				assert_eq(int(effects[k]["heat"]), int(were[k]["heat"]) + 2, "%s's rewritten shot runs two hotter with the weapons" % id)
 	var barrier := Refit.basic_granting(before, "barrier")
 	db = _own()
 	Refit.apply(db, Refit.parse("barrier=cooldown"))

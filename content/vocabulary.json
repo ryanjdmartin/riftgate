@@ -246,7 +246,7 @@
    "codex": "The Overrun Gearing's rule, a module's, granted to every weapon its machine fires and run by the engine as a keyword: when a blow kills a front-rank foe, what it had past the kill carries into the foe behind it in the same column. Nothing stands behind a massive foe. No component carries it; it becomes a keyword the player learns on its own if a second source ever grants it.",
    "status": "implemented",
    "design": {
-    "holes": "The spill is plain damage: it spends a Shock and feeds the Ammit's kill rule, and carries no other keyword of the blow."
+    "holes": "The spill is plain damage: it spends a Shock and its kills are its spend's (a kill trigger, the Ammit's flare), and it carries no other keyword of the blow."
    }
   },
   {
@@ -432,10 +432,10 @@
    "id": "kill_overcharge",
    "category": "component_property",
    "name": "Empowered a kill",
-   "codex": "A rule printed on a weapon (the Soulcutter Talons', locked on the Ammit), with no word of its own: every foe it kills gives its owner a stack of Empowered, which the Ammit keeps for the battle.",
+   "codex": "A rule a weapon may print, with no word of its own: every foe its spend kills gives its owner a stack of Empowered. No piece prints it today: the Ammit's Soulcutter Talons did until 12 November.",
    "status": "implemented",
    "design": {
-    "holes": "A spread that kills two feeds twice; a chain feeds on every link."
+    "holes": "A rule with no carrier since 12 November (the Ammit's rework), kept in the engine. A spread that kills two feeds twice; a chain feeds on every link."
    }
   },
   {
@@ -688,7 +688,7 @@
    "id": "overcharged",
    "category": "status",
    "name": "Empowered",
-   "codex": "Machine status. Each stack is +1 damage on this machine's attacks, flat, so the count is the bonus. At the end of each round it halves, rounded down, whatever granted it, until it is gone. On the Ammit nothing of it fades: its Quintessence Tap keeps every stack for the battle.",
+   "codex": "Machine status. Each stack is +1 damage on this machine's attacks, flat, so the count is the bonus. At the end of each round it halves, rounded down, whatever granted it, until it is gone.",
    "status": "implemented",
    "design": {
     "holes": "Every grant is one status on the machine and the stacks add up. A halving rule has no duration, so a buff component grants stacks and no rounds. The name is a placeholder.",
@@ -696,7 +696,7 @@
      "kind": "buff",
      "on": "machine",
      "stacks": "Yes: a damage point a stack",
-     "lasts": "Halves at the end of each round, rounded down, until gone; on the Ammit the battle, nothing fading"
+     "lasts": "Halves at the end of each round, rounded down, until gone"
     }
    }
   },
@@ -937,6 +937,38 @@
      "on": "machine",
      "stacks": "Yes: a strike of 1 more a stack after each shot",
      "lasts": "The fight; hull damage halves it"
+    }
+   }
+  },
+  {
+   "id": "souls",
+   "category": "status",
+   "name": "Souls",
+   "codex": "Ability, the Ammit's. A Soul for every foe that falls in a fight it is in, whoever fells it, kept from fight to fight through the battle, with no limit. As each fight opens, and each time the Ammit kills, it gains 1 Empowered for every 5 Souls it holds; its Soul Siphon consumes them. No Purge, Silence or Cleanse touches it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan's rework of 12 November, the name his. No cap by his call (\"as part of the fantasy\"), so it is no store, which is capped and wears a bar: an Ability, a chip with its count. The text is a session's draft.",
+    "table": {
+     "kind": "ability",
+     "on": "machine",
+     "stacks": "Yes: one for every foe that falls in its fight, with no cap",
+     "lasts": "The battle"
+    }
+   }
+  },
+  {
+   "id": "pinned_empowered",
+   "category": "status",
+   "name": "Pinned Empowered",
+   "codex": "From the Ammit's Soul Siphon, on every unit in the fight, machine and foe: its Empowered does not halve at this round's end, what it holds and what it gains before then. Until the round's end. It is the round's rule and no mark on anyone, so a Ward turns nothing away.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 12 November: \"No Empowered decays this round. And I mean none, not ally or enemy.\" The third pin and the first over the whole field; held by the round (Skirmish.round_holds), never a status a unit carries. The name follows the two pins' and is a session's draft.",
+    "table": {
+     "kind": "buff",
+     "on": "both",
+     "stacks": "Never: the round holds it or does not",
+     "lasts": "Until the round's end"
     }
    }
   },
@@ -1489,10 +1521,20 @@
    "id": "on_kill",
    "category": "trigger",
    "name": "On a kill",
-   "codex": "Passive trigger. Fires once after an attack of this machine's that killed, however many foes fell to it, chains and spills included: a status, a shield (the Kite's, recharged whole) or a vent.",
+   "codex": "Passive trigger. Fires once after an attack of this machine's that killed, however many foes fell to it, chains and spills included: a status, a shield (the Kite's, recharged whole) or a vent. A status may ask for each foe the attack killed instead (the Ammit's flare).",
    "status": "implemented",
    "design": {
     "holes": ""
+   }
+  },
+  {
+   "id": "on_foe_killed",
+   "category": "trigger",
+   "name": "On a foe killed",
+   "codex": "Passive trigger. Fires as a death check counts a kill in this machine's fight, whoever or whatever made it, an ally's blow, a burn's tick and a Mine's blast among them: a status, once for each foe that fell (the Ammit's Souls).",
+   "status": "implemented",
+   "design": {
+    "holes": "Built 12 November for the Ammit's Souls. A foe getting back up, a part and a Bomb's burst are no kill and fire nothing."
    }
   },
   {
@@ -1879,10 +1921,10 @@
    "id": "consumes",
    "category": "component_property",
    "name": "Consumes",
-   "codex": "A rule printed on a weapon: its blow consumes every stack of the status it names on its target and deals a point more for each stack consumed, before the multiplies. The die held over the foe shows the number with the stacks in.",
+   "codex": "A rule printed on a component. A weapon's blow consumes every stack of the status it names on its target and deals a point more for each stack consumed, before the multiplies; the die held over the foe shows the number with the stacks in. Equipment consumes a count its own machine holds, up to the number it prints, and grants a stack for each one consumed (the Ammit's Soul Siphon and its Souls): the die shows what it would take now, and with nothing to consume it cannot be played.",
    "status": "implemented",
    "design": {
-    "holes": "A mine laid from it eats its arrival's stacks."
+    "holes": "A mine laid from it eats its arrival's stacks. The equipment's form is the Soul Siphon's (12 November), the engine's spends and spends_up_to; its text is a session's draft."
    }
   },
   {
@@ -2109,7 +2151,7 @@
    "id": "ability",
    "category": "status",
    "name": "Ability",
-   "codex": "A unit's own mechanic, the rule it plays by: never a buff or a debuff, so no Purge, Silence or Cleanse touches it. Its chip shows its mark cut out of a solid tile: the Goblin Nob's Enrage, a core's guard, a Gel's split, a last act, the Thunder Ape's golden rage; the Polar Bear's seal.",
+   "codex": "A unit's own mechanic, the rule it plays by: never a buff or a debuff, so no Purge, Silence or Cleanse touches it. Its chip shows its mark cut out of a solid tile: the Goblin Nob's Enrage, a core's guard, a Gel's split, a last act, the Thunder Ape's golden rage; the Polar Bear's seal, the Ammit's Souls.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 8 November, of the Nob's rage: \"Nob, and any other enemies with a passive ability, should have an unpurgable passive chip that points out what's going on. Plus, that's how slay the Spire works, where he comes from. It's not a Buff, it's not a Debuff, it's labelled as an Ability, so it doesn't get purged. Can use this for player units as well, like the armadillo's form. Golden rage should be an ability chip too.\" The tile is a placeholder look, to judge on the phone (RIFTGATE_ABILITY_DEBUG=1)."
