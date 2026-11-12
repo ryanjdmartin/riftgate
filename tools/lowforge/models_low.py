@@ -297,9 +297,15 @@ def kite(b):
     # is the round one, a drum against the port's wall (his: "a round rack would be warranted
     # when a missile is slotted there"); the other classes' places are guesses nobody has judged.
     GZ = 5.0                  # the gun's line
-    PORT, FLAT, RUN = 2.0, 14.6, 16.6  # the port's wall, four ahead of the canopy's nose; the floor flat to here; ramped up to the surface here
-    NOSE_FITS = {"barrel": "barrel_port", "rack": ("rack_round", 0.7, -1.8), "twin_barrel": ("twin_barrel", 0.84, 13.0), "dish": ("dish", 0.6, -3.0), "blade": ("blade", 0.7)}
-    b.cut_hull([fuselage], [(x, y, z) for x in (-2.2, 2.2) for (y, z) in ((PORT, GZ - 2.4), (FLAT, GZ - 2.4), (RUN, 3.94), (RUN, 9.0), (PORT, 9.0))])
+    # The cut is shortened from its back alone, its front where it was before the push (his, of
+    # a first cut that moved both: "I just wanted the cut shorter by removing from the back"), so
+    # the gun comes forward only as far as its muzzle still clears that front; and the floor is
+    # raised under the gun's unmoved line ("the floor of the cut can come up a bit, without
+    # moving the gun"), a launcher's drum a little smaller to sit on it.
+    PORT, FLAT, RUN = 0.4, 12.6, 13.4  # the port's wall, 2.4 ahead of the canopy's nose; the floor flat to here; ramped up to the surface here
+    FLOOR = GZ - 1.9
+    NOSE_FITS = {"barrel": "barrel_port", "rack": ("rack_round", 0.63, -1.26), "twin_barrel": ("twin_barrel", 0.84, 9.84), "dish": ("dish", 0.6, -3.0), "blade": ("blade", 0.7)}
+    b.cut_hull([fuselage], [(x, y, z) for x in (-2.2, 2.2) for (y, z) in ((PORT, FLOOR), (FLAT, FLOOR), (RUN, 4.4), (RUN, 9.0), (PORT, 9.0))])
     b.pin("hp_3", (0.0, PORT, GZ), scale=0.5, carries="", fits=NOSE_FITS)
     # Canopy: far back, low, faired into the spine rather than a bubble.
     b.loft([(-2.0, hexagon(0.0, 6.2, 7.0, 0.5)), (-10.0, hexagon(0.0, 7.4, 9.0, 3.0)),

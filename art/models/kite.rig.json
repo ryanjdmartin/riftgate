@@ -2039,13 +2039,13 @@
    },
    "rack": {
     "shape": "rack_round",
-    "scale": 0.7,
-    "sink": -1.8
+    "scale": 0.63,
+    "sink": -1.26
    },
    "twin_barrel": {
     "shape": "twin_barrel",
     "scale": 0.84,
-    "sink": 13.0
+    "sink": 9.84
    },
    "dish": {
     "shape": "dish",
