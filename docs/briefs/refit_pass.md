@@ -1547,8 +1547,8 @@ liked our simplification, but maybe we went too far. I'm really not sure. What d
 - 10 November, the minimal swaps: the Halo, a shield of 6 until then, became the Barrier
   basic, Claude's lean in section 3. That is the step that put a Barrier on eight stock dice
   and took its price away.
-- The rules already hold a temporary shield: Overshield, a shield that may pass the gauge and
-  fades at the round's end, on the Puffin's Backwash Ionizer.
+- The rules already hold the keyword: Overshield, a shield grant that may pass the gauge,
+  the excess fading at the round's end, on the Puffin's Backwash Ionizer.
 
 **What the reads say** (`docs/measurements.md`, 12 November; the Halo's slot holding each
 form, the foes untouched):
@@ -1571,7 +1571,7 @@ seven in ten from the ones whose kit is one blow a round.
    No foe's number tunes against it, and three machines turning it stall a single-blow boss.
 2. That, with the machine's rest (section 13). The same failure, milder: the elites' mean 11%
    where the piece's cooldown alone gives 9.5%.
-3. The Barrier rare or locked, and the Halo's slot a temporary shield, Overshield, on
+3. The Barrier rare or locked, and the Halo's slot a shield grant with Overshield, on
    equipment. Claude's lean. The elites come to 15 to 18% and the bosses to 27 to 34% on a
    number that tunes, the stall goes, and nothing of the refit's simplification moves: it is
    a buff for the round, as Armoured is, and no recovery.
@@ -1585,8 +1585,7 @@ seven in ten from the ones whose kit is one blow a round.
 **Claude's lean, in full**: the third. The Halo grants Overshield on itself or an ally, 4 to 6
 by the reads (it was a shield of 6). The Barrier keeps its cooldown and lives where a chassis
 is built round it, his tank's substitute: the Wild Boar's Plow, Aphelion's Barrier and Ward
-support when it is designed, and the Blast Door as the one find, as it was on 22 October. A
-plain shield grant stays off the die. The machine's rest is not needed. The numbers set
+support when it is designed, and the Blast Door as the one find, as it was on 22 October. A grant that cannot pass the maximum stays off the die. The machine's rest is not needed. The numbers set
 against the Barrier come back: the six elites raised for the anchor, and the bosses read again,
 the Waste's first.
 
@@ -1631,9 +1630,9 @@ Claude's answer, his to take or leave:
   1. The gauge and the regen as they are, no shield on the basics (the Jack or a gun in the
      Halo's slot). The fewest rules. The one active defence on a starting die is Armoured,
      and the answer to a single big blow is to kill faster.
-  2. The gauge with no regen by default, a shield for the round on the basics. One keyword
-     more on equipment, an active answer to the big blow, and a round that costs something,
-     since a gauge only goes down. Regen stays as an identity where a chassis is built on it
+  2. The gauge with no regen by default, a shield grant with Overshield on the basics. One
+     keyword more on equipment, an active answer to the big blow, and a round that costs
+     something, since nothing comes back without an entry. Regen stays as an identity where a chassis is built on it
      (the Buzzard's Thermal Recoupler, St. Elmo's Regenerator, perhaps the small gauges).
   Claude's lean: the second, since it trades a system that asks nothing for one that asks a
   question each round.
@@ -1642,4 +1641,50 @@ Claude's answer, his to take or leave:
   and the cover can come from any machine, but past the third round a tank wants it every
   round. And his pairing of 10 November, a small gauge that comes back fast and a fat one
   that comes back slow, loses its second half unless the regen is kept for the small ones.
+
+**A correction to this section's words, and his next question** (12 November). As devil's
+advocate: "So you're saying there's an unrecoverable buffer that's tied to the chassis, and
+then one-turn buffers as shield? How would we communicate that in a way that doesn't sound
+contrived and forced?"
+
+What was read is not that, and this section's wording is why it sounded so. Overshield, as the
+engine runs it and as every read above used it, is a shield grant: it adds its number to the
+machine's shield, keeps what fits under the maximum, and lets the rest stand past it until the
+round's end (`Unit.recharge_shield`). So there is one shield and one bar: the chassis sets
+its size, an entry fills it, and what is over the size does not keep. Two things written above
+are wrong for it. The gauge is not unrecoverable and does not only go down: an entry spent on
+it brings it back, and nothing brings it back for free. And "a plain shield grant stays off
+the die" should read "a grant that cannot pass the maximum", the one that read as no piece.
+
+The form his question describes, a shield that always goes at the round's end beside a gauge
+nothing refills, is Slice and Dice's and was not read. It is the one that needs a second word
+and a second mark, and Claude agrees it is the more contrived of the two.
+
+How the one-bar form reads to a player, all of it built on 5 October for the Puffin's piece:
+
+- The rule is one sentence in the vocabulary: "shield past the maximum fades at the end of
+  the round".
+- The bar draws the excess as a hatched block past its end, by structure and not by hue,
+  and shows the amount to come before the entry is spent (`game/ui/unit_view.gd`).
+- The entry prints its number with the keyword's mark.
+- The fiction is a field of a rated size that a projector can overcharge for a moment.
+
+What is left to say is the missing regen, if that package is his: a shield full as every
+fight opens that does not recharge under fire.
+
+At its rating the two packages cost a squad about the same, so the choice is who does the
+work, the machine by itself or the player with an entry:
+
+| The package | A formation | An elite | A boss |
+|---|---|---|---|
+| The gauge and the regen, no shield entry (the Jack in the slot) | 6.6% | 19.8% | 37.7% |
+| The gauge, no regen, Overshield 6 in the slot | 7.5% | 18.6% | 34.9% |
+
+Two more holes, from the records:
+
+- The vocabulary's note on Overshield says it is rare on purpose: "every overshield on the
+  field makes shield max a soft number; the fade is the whole safeguard". As a basic it makes
+  every chassis's gauge a softer number.
+- Under the second package recovery is back on the die for the shield, the refit's second
+  point reversed. It is his "maybe we went too far", and his to weigh.
 

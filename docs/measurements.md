@@ -9116,7 +9116,7 @@ direction.
 |---|---|---|---|---|---|---|
 | A Barrier, free (read before the Fallen Weapon's cut) | | | | 7.1% | 19.2% | 25 rounds |
 | A Barrier, cooldown 1 (content) | 2.8% | 6.3% | 5.9% | 9.5% | 21.4% | 23 rounds, one in twenty never ending |
-| Overshield 4: a shield for the round, past the gauge | 3.0% | 6.5% | 6.1% | 17.6% | 34.0% | 10 rounds |
+| Overshield 4: a shield grant that may pass the gauge, the excess gone at the round's end | 3.0% | 6.5% | 6.1% | 17.6% | 34.0% | 10 rounds |
 | Overshield 6 | | | | 15.4% | 27.2% | 11 rounds |
 | Shield 4, plain: it refills the gauge | 3.0% | 7.1% | 6.4% | 18.8% | 37.7% | 10 rounds |
 | The Shoring Jack, Armoured 2 | 3.5% | 6.9% | 6.6% | 19.8% | 37.7% | 10 rounds |
@@ -9190,8 +9190,10 @@ Read.
   4 or 6 is not worth a shot given up.
 - A plain shield grant reads as no piece: the Jack and a gun land where it does. A gauge is
   full as a fight opens, and after that the grant is recovery, which the regen already is.
-- A temporary shield does work and its number tunes it: 4 takes a ninth off the elites'
-  cost and a tenth off the bosses' against no piece, 6 a fifth and a quarter.
+- Overshield does work and its number tunes it: 4 takes a ninth off the elites' cost and a
+  tenth off the bosses' against no piece, 6 a fifth and a quarter. It is the plain grant
+  with one thing more, the room past the maximum, so that room is what earns the entry: a
+  grant that cannot pass a full gauge has nowhere to land when the fight opens.
 - The whole battle on these foe numbers is too dear without the Barrier in the slot, the
   Waste most (its bosses a third to a half of a four's hull). The numbers were set with the
   Barrier there, the elites' raised against it, so they come down with it if it goes.
@@ -9226,16 +9228,16 @@ The second battle whole, the mustering player, three squads, on the anchor's foe
 
 Read.
 
-- The gauge is what a round's shield cannot be. With no base shield a formation costs a
+- The gauge is what an entry's shield cannot be. With no base shield a formation costs a
   quarter of a four's hull where it costs a twentieth, and a squad is spent after two of
-  them. A shield for the round covers one machine against one blow when its entry shows; the
-  gauge covers every machine against the opening volley with no entry spent. To hold the
+  them. An entry's grant covers one machine when its entry shows; the gauge covers every
+  machine against the opening volley with no entry spent. To hold the
   budget without it the rank and file's blows would be a fifth of what they are, under one,
   or the hull five times its size, either of them off the scale's numbers.
-- The three stand on three clocks: the hull is the battle's, the gauge is the fight's, a
-  shield for the round is the round's. The fight's layer is what lets an ordinary fight end
+- They stand on different clocks: the hull is the battle's, the gauge is the fight's, and
+  what an entry adds past the gauge is the round's. The fight's layer is what lets an ordinary fight end
   clean and a bad one leave a mark that carries.
-- The regen is the part a round's shield overlaps: both are shield every round, one free and
+- The regen is the part an entry's grant overlaps: both are shield every round, one free and
   one chosen. It is worth two points of hull in a formation, three in an elite's fight and
   seven in a boss's, since it is paid by the round.
 - These foe numbers were set with the regen and the Barrier both in place, so the whole
