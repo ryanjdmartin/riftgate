@@ -8247,3 +8247,92 @@ Read.
 - A multiplier is a trial's shape. On top of the ramp's own counts it compounds, so the form
   for the game is the ramp's table and the Rupture's share of it, not a factor over both.
 
+
+## 12 November, the Ammit's rework: a tier-three battle's chain, before against after
+
+Ryan's rework of the Ammit, built 12 November (the bible's Ammit row, section 7): one Soulcutter
+Talons entry of 1 ×4 with Breach where four talons of 3 stood, each of which Empowered a kill; a
+Soul for every foe that falls in its fight, kept for the battle with no cap; a flare of 1
+Empowered for every 5 Souls as a fight opens and on each of its own kills, where the Quintessence
+Tap kept every stack for the battle; and the Soul Siphon, which consumes up to 5 Souls for a
+stack each and holds every Empowered on the field for the round. The to-do's test of the Tap
+asked for "a battle's chain of fights, not one fight", since what the Ammit keeps carries from
+one to the next; the single-fight matrix opens every fight with nothing kept and cannot see
+either form.
+
+What was read: a squad through one tier-three battle's fights back to back, dealt by the
+battle's own builders at Convergence 8 (a formation, an elite's pack, a formation and two elites'
+packs, 21 foes on average, then the lead domain's boss with its escort or its final, 4.6 heads),
+the hull and whatever a machine keeps carried from fight to fight, the shields full and the heat
+at nothing as each opens. The dealer is the quick campaign's encounter list, used as a dealer
+alone: no run of the quick campaign is read. A scratch driver, not kept; the same seeds on main
+at `87da46f` (before) and on the rework's commit (after). Two squads under the greedy rung and
+one again under the planner, 30 seeds a row: a direction, never a band. The greedy reads the
+kill flare and the Siphon by plain rules (`Policy.flare_gain`, `Policy.hold_score`), so the
+Siphon's spends are a bot's.
+
+A table a row, a fight a line: the rounds of the fights won and the squad's hull left after
+them, what the Ammit holds as the fight opens where it still stands (before, the Empowered its
+Tap kept; after, the flare and the Souls behind it), the Siphon's spends a fight, and how many
+of the Ammit's spends killed and set off a flare (before, fed its talons).
+
+The tier-three four (the Musk Ox, the Ammit, the Giant Petrel, the Lammergeier), the greedy. Battles won: 21 of 30 before and 19 of 30 after.
+
+| Fight | Rounds, before | after | Hull left, before | after | Empowered as it opens, before (kept) | after (the flare) | Souls as it opens | Siphon spends | Its kills that flared |
+|---|---|---|---|---|---|---|---|---|---|
+| 1, formation | 4.7 | 3.5 | 96% | 97% | 0.0 | 0.0 | 0.0 | 0.07 | 0.9 |
+| 2, elite | 5.0 | 5.1 | 85% | 89% | 1.3 | 0.7 | 6.5 | 0.43 | 0.7 |
+| 3, formation | 4.5 | 4.3 | 82% | 84% | 1.9 | 1.1 | 7.9 | 0.37 | 1.9 |
+| 4, elite | 4.6 | 4.5 | 70% | 74% | 3.4 | 2.2 | 12.5 | 0.27 | 0.9 |
+| 5, elite | 4.4 | 5.4 | 63% | 66% | 4.4 | 2.6 | 14.6 | 0.33 | 1.0 |
+| 6, the boss or the final | 5.4 | 6.4 | 54% | 58% | 5.2 | 2.8 | 15.9 | 0.28 | 1.4 |
+
+The Ammit beside three tier ones (the Honey Badger, the Cassowary, the Storm Petrel), the greedy. Battles won: 21 of 30 before and 18 of 30 after.
+
+| Fight | Rounds, before | after | Hull left, before | after | Empowered as it opens, before (kept) | after (the flare) | Souls as it opens | Siphon spends | Its kills that flared |
+|---|---|---|---|---|---|---|---|---|---|
+| 1, formation | 5.4 | 6.0 | 94% | 93% | 0.0 | 0.0 | 0.0 | 0.20 | 0.6 |
+| 2, elite | 7.0 | 6.3 | 83% | 84% | 1.5 | 0.7 | 6.2 | 0.67 | 0.8 |
+| 3, formation | 5.8 | 5.7 | 78% | 77% | 2.2 | 0.8 | 6.5 | 0.30 | 2.0 |
+| 4, elite | 5.9 | 6.6 | 71% | 69% | 3.9 | 2.0 | 11.7 | 0.40 | 1.2 |
+| 5, elite | 5.4 | 6.1 | 63% | 61% | 4.9 | 2.2 | 12.9 | 0.33 | 1.2 |
+| 6, the boss or the final | 6.4 | 7.1 | 50% | 56% | 5.8 | 2.6 | 14.4 | 0.32 | 1.4 |
+
+The tier-three four again, the planner (two rounds rolled out a decision), the same 30 seeds. Battles won: 25 of 30 before and 27 of 30 after.
+
+| Fight | Rounds, before | after | Hull left, before | after | Empowered as it opens, before (kept) | after (the flare) | Souls as it opens | Siphon spends | Its kills that flared |
+|---|---|---|---|---|---|---|---|---|---|
+| 1, formation | 3.1 | 3.6 | 98% | 97% | 0.0 | 0.0 | 0.0 | 0.13 | 0.7 |
+| 2, elite | 4.6 | 4.6 | 87% | 90% | 1.5 | 0.7 | 6.2 | 0.37 | 0.7 |
+| 3, formation | 3.8 | 5.0 | 85% | 86% | 2.6 | 1.1 | 8.0 | 0.37 | 1.7 |
+| 4, elite | 4.2 | 4.4 | 78% | 77% | 4.0 | 2.2 | 12.7 | 0.20 | 0.8 |
+| 5, elite | 4.3 | 4.6 | 70% | 71% | 5.2 | 2.6 | 14.6 | 0.10 | 0.7 |
+| 6, the boss or the final | 5.6 | 6.6 | 60% | 52% | 6.1 | 3.0 | 17.0 | 0.27 | 1.5 |
+
+Read.
+
+- The ramp is lower, and it has to be relit. Before, the Ammit opened the boss's fight holding
+  5.2 to 6.1 stacks of Empowered kept from its talons' kills (1 to 10 by the seed), a point on
+  every blow of that fight and of every fight after the one that earned it. After, it opens
+  there on a flare of 2.6 to 3.0 from 14 to 17 Souls, which halves from the first round's end
+  unless a kill of its own relights it; its kills flared about 1.4 times in that fight.
+- The Souls come at the pace of the pack. Six after the first formation, 12 to 13 as the fourth
+  fight opens and 14 to 17 at the boss's, by the seed 2 to 32, with the Siphon's spends taken
+  out: the squad kills all 21 foes before the boss, so a count nothing spent stands at 21 to 26
+  there, a flare of 4 or 5. Uncapped, that is the scale a battle of this length reaches; a
+  longer battle on the map, or a summoner left alive, goes past it, and no player here tries.
+- The boss's fight is a round longer in every row: 5.4 to 6.4 rounds and 6.4 to 7.1 under the
+  greedy, 5.6 to 6.6 under the planner, where the kept stacks had been worth most. The five
+  fights before it stand within a round of where they were and trade direction from row to row
+  (the first fight 4.7 to 3.5 rounds for one squad, 5.4 to 6.0 for the other, 3.1 to 3.6 under
+  the planner): noise at this size.
+- The battle's result does not move at 30 seeds. Won, of 30: 21 to 19 and 21 to 18 under the
+  greedy, 25 to 27 under the planner. Hull left by a battle won: 54 to 58% and 50 to 56%, and
+  60 to 52%. One band, and no direction to name.
+- The Siphon is spent about once in three fights by either rung, 1.4 to 2.2 times a battle,
+  five Souls a time where it holds them, a quarter to a third of the time in the boss's fight.
+  The greedy's rule is a plain one and the planner looks two rounds on, so this says the piece
+  is spent, never that the spends were right, and nothing here says what a round given to it
+  feels like.
+- What this cannot read is his to play (the to-do's line): the kill flare at one stack, the
+  Siphon's round, the talons at one roll in six, and the numbers, each a placeholder.
