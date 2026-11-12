@@ -1536,31 +1536,42 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	# The brace (12 October): spending the entry Armours its owner until the round's end.
 	if fd.has("braces") and int(fd["braces"]) <= 0:
 		errs.append("%s: braces is a positive number of stacks of Armoured, an armour point each" % where)
-	# Rolling again on a status (12 October, the Nemesis's fists on rage): the status it
-	# spends must be one of the engine's, and Rapid already rolls again on its own.
+	# Rolling again on a status (the Nemesis's fists on rage, 12 October to 11 November) and the
+	# spin (the Spin-Up's, 19 October) retired on 12 November: Instant is the roll that may land on
+	# itself, a spin on a stepping die, and a charged form on a store prices it (the Knuckle of
+	# Fury's five rage).
 	if fd.has("rolls_again_on"):
-		if not Effects.STATUS.has(str(fd["rolls_again_on"])):
-			errs.append("%s: rolls_again_on names a status, one of %s" % [where, ", ".join(Effects.STATUS.keys())])
-		if Array(fd.get("keywords", [])).has("rapid"):
-			errs.append("%s: a rapid entry already rolls again; rolls_again_on is for one that pays a status" % where)
-	# The cooldown (Ryan, 14 October): a printed property, the rounds the entry goes dark once
-	# spent, this one included, a cost the die prints by its clock; Rapid carries none of its own
-	# (Ryan, 2 November: "Rapid does not have a native Cooldown, it needs to be displayed always"),
-	# so an entry with none leaves it out.
-	var rapid := Array(fd.get("keywords", [])).has("rapid")
+		errs.append("%s: rolls_again_on is retired (12 November): Instant is the roll that may land on itself, a charged form on a store its price" % where)
+	if fd.has("spins"):
+		errs.append("%s: spins is retired (12 November): Instant's roll is a spin on a stepping die" % where)
+	# The cooldown (Ryan, 14 October; counted after the round of the spend since 12 November,
+	# "change the count so 1 is how I intended"): a printed property, the rounds the entry sits
+	# out once spent, a cost the die prints by its clock, so an entry with none leaves it out.
+	# Rapid's own switch-off, dark for the rest of the round, is the keyword's and never printed
+	# (Ryan, 12 November: "rapid gets its innate cooldown zero back without the explicit display").
+	var keys := Array(fd.get("keywords", []))
+	var rapid := keys.has("rapid")
+	var instant := keys.has("instant")
 	if fd.has("cooldown"):
 		var cd = fd["cooldown"]
 		if not (cd is int or cd is float) or float(cd) < 1.0 or float(cd) != floorf(float(cd)):
 			errs.append("%s: cooldown is a whole number of rounds, 1 or more; an entry with none leaves it out" % where)
-	# Every Rapid piece carries a limiter (Ryan, 15 October): a cooldown, heat or Volatile, so
-	# no chain is free; one that prints no cooldown pays heat or hull every spend. A piece locked
-	# on a stepping die has the cylinder and its odds for its limiter (the Cassowary's Spin-Up,
-	# Ryan, 19 October: a combo piece, its spin a true roll that lands on itself one time in its
-	# die's size, to be spent again, the high roll he allowed; the exit, a stepping-die piece that
-	# ever chains for sure gets a limiter of its own).
-	if rapid and not planned and not stepped and int(fd.get("cooldown", 0)) <= 0 \
+	# Rapid or Instant, never both: each gives the turn back its own way, so the charged form a store
+	# buys never adds the other to its plain one either.
+	var charged_keys: Array = (fd["charged"] as Dictionary).get("keywords", []) if fd.get("charged") is Dictionary else []
+	if (rapid or charged_keys.has("rapid")) and (instant or charged_keys.has("instant")):
+		errs.append("%s: an entry is Rapid or Instant, never both: each gives the machine its turn back its own way" % where)
+	# Every chain carries a limiter (Ryan, 15 October: no chain is free). Rapid's is its own, the
+	# entry dark for the rest of the round; Instant's roll may land on itself, so an Instant entry
+	# prints a cooldown or pays heat, hull or shield every spend, or is the charged form a store
+	# buys, its price the limit (the Knuckle of Fury's five rage). A piece locked on a stepping die
+	# has the cylinder and its odds for its limiter (the Cassowary's Spin-Up, Ryan, 19 October: a
+	# combo piece, its spin a true roll that lands on itself one time in its die's size, to be spent
+	# again, the high roll he allowed; the exit, a stepping-die piece that ever chains for sure gets a
+	# limiter of its own).
+	if instant and not planned and not stepped and int(fd.get("cooldown", 0)) <= 0 \
 			and int(fd.get("heat", 0)) <= 0 and int(fd.get("volatile", 0)) <= 0 and int(fd.get("shield_cost", 0)) <= 0:
-		errs.append("%s: a Rapid entry with no cooldown carries another limiter, heat, Volatile or a shield cost (the bible's Rapid row)" % where)
+		errs.append("%s: an Instant entry with no cooldown carries another limiter, heat, Volatile or a shield cost (the bible's Rapid row)" % where)
 	# A reach over every foe or every ally is a targeting mode since 4 November (Ryan: "Silence
 	# should not narrow targeting modes, that's why I'm switching them to targeting modes"; a
 	# keyword from 2 November, a flag before): Every Foe a debuff's reach (the Siphon's), Every Ally
@@ -1620,9 +1631,6 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	# and given its rule.
 	if str(fd.get("reach", "")) == "sweep" and (Array(fd.get("keywords", [])).has("swap") or bool(fd.get("detonates", false)) or bool(fd.get("gathers_mines", false))):
 		errs.append("%s: a Sweep carries no Swap, detonation or gather: each acts on one foe, and a Sweep's drop picks only its rank" % where)
-	# The spin (the Spin-Up's, 19 October): Rapid's free reroll as a true roll over every entry.
-	if fd.has("spins") and (not (fd["spins"] is bool) or not rapid):
-		errs.append("%s: spins (true) makes Rapid's free reroll a true spin, so it rides with Rapid" % where)
 	# The Changeover (the Clydesdale's, 11 November): turning a folded die to its other battery is a
 	# Rapid buff on itself, its free roll landing on the battery it raised.
 	if fd.has("turns_die") and (not (fd["turns_die"] is bool) or kind != "buff" or not rapid or str(fd.get("targets", "")) != "self"):

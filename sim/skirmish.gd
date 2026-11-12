@@ -2054,7 +2054,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 				# rolls again by the reroll rule, never onto the entry it spent (Ryan, 8 November:
 				# "It's a roll, it should follow roll rules, like everything that rolls"), and it acts
 				# again.
-				_act_again(who, f)
+				_act_again(who)
 				log.append("%s rallies %s: its die rolls again, and it acts again" % [ms.unit.display_name, who.unit.display_name])
 			elif f.turns_die:
 				# The Changeover (the Clydesdale's, Ryan, 11 November): its die turns to its other
@@ -2069,7 +2069,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 				# showed, and it acts again. The Booster's own Rapid gives the Petrel its turn back too,
 				# so no turn is traded for the ally's.
 				rerolls_left -= f.action_price
-				_act_again(who, f)
+				_act_again(who)
 				log.append("%s pays %d reroll%s: %s's die rolls again, and it acts again" % [ms.unit.display_name, f.action_price, "" if f.action_price == 1 else "s", who.unit.display_name])
 			else:
 				var until := round + f.buff_rounds - 1
@@ -2165,13 +2165,16 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 		Effects.grant_for_rounds(ms.unit, Effects.siphon_status(f.heat_per_blow), "siphon:" + f.component, round)
 		log.append("%s siphons: +%d heat for every blow it takes this round" % [ms.unit.display_name, f.heat_per_blow])
 	ms.assigned = true
-	# A cooldown (Ryan, 14 October): the entry goes dark for the rounds it prints, this one
-	# included, shown on the die with the rounds left. Rapid carries none of its own (Ryan, 2
-	# November: "Rapid does not have a native Cooldown, it needs to be displayed always"): a Rapid
-	# piece prints its cooldown, or pays heat or hull every spend (Face.cooldown_rounds).
+	# A cooldown (Ryan, 14 October; counted after the round of the spend since 12 November:
+	# "change the count so 1 is how I intended"): the entry is dark for the rest of this round and
+	# for the rounds it prints after it, shown on the die with the rounds left. Rapid's own
+	# switch-off is the keyword's and never printed (Ryan, 12 November: "rapid gets its innate
+	# cooldown zero back without the explicit display"): a Rapid entry, its own or the Needletail's
+	# gate's, is dark for the rest of the round. Instant's darkens nothing, its roll free to land
+	# on it again.
 	var cd := cooldown_of(ms, f)
-	if cd > 0:
-		Effects.disable_entry(ms.unit, ms.face_index, "cooldown", round + cd - 1)
+	if cd > 0 or f.has(Face.Keyword.RAPID):
+		Effects.disable_entry(ms.unit, ms.face_index, "cooldown", round + cd)
 	# The reset gun (the Kite's Pinion Driver, 21 October): if its spend killed, every entry dark
 	# from a cooldown comes back, itself included, and the machine acts again through Rapid's
 	# path, the free roll never landing on the entry just spent; a team reroll back onto it
@@ -2179,28 +2182,25 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 	var reset := f.resets_on_kill and killed > 0 and ms.alive() and not (field_foes().is_empty() and reinforcements.is_empty())
 	if reset:
 		var lit := Effects.clear_cooldowns(ms.unit)
-		_act_again(ms, f)
+		_act_again(ms)
 		log.append("%s: the kill resets it, %d back, and it acts again" % [ms.unit.display_name, lit])
 	# Rapid: the die rerolls for free (never the same entry; a copy of it may come up, so
-	# stacked copies chain, the cooldown of each copy its own), and the mech may act again.
-	# A spin (the Spin-Up's, Ryan's exception to the reroll rule, 19 October) is a true roll
-	# over every entry, itself included; a stepping die's free reroll steps it.
-	if f.has(Face.Keyword.RAPID) and not reset:
+	# stacked copies chain, each copy dark once spent), and the mech may act again; a stepping
+	# die's free reroll steps it. Instant (Ryan, 12 November: "reroll after use, can land on
+	# itself"): the die rolls again as the round opens, itself included, a spin on a stepping die
+	# (the Spin-Up's), so the same entry may show again and be spent again; its limit is what it
+	# costs and the odds (the Knuckle of Fury's five rage, the cylinder's sixth). A fight already
+	# won, or a machine its own spend wrecked, rolls nothing.
+	if f.acts_again() and not reset and ms.alive() and not (field_foes().is_empty() and reinforcements.is_empty()):
 		if quick:
 			# The gate spent (the Needletail's Quick-turn Avionics Relay): once a round.
 			Effects.grant_for_rounds(ms.unit, Effects.STATUS["quick_turned"], "gate", round)
-		_act_again(ms, f)
-		log.append("%s: %s" % [ms.unit.display_name, "the cylinder spins" if f.spins else ("a quick turn, rolls again" if quick else "rapid, rolls again")])
-	# Rolling again on a status (the Nemesis's fists on rage, Ryan, 12 October): spending the
-	# entry spends a stack, if its owner has one, and the die rolls again, a plain roll as the
-	# round opens. Not Rapid's reroll, which never lands on the entry just spent: a plain roll
-	# may show the same fist again. Nothing switches off: the stacks are the limit, and a fist
-	# that shows again punches again. A fight already won rolls nothing.
-	elif not f.rolls_again_on.is_empty() and ms.alive() and not (field_foes().is_empty() and reinforcements.is_empty()) \
-			and Effects.spend_stacks(ms.unit, f.rolls_again_on, 1) > 0:
-		ms.face_index = _roll(ms)
-		ms.assigned = false
-		log.append("%s: %s, rolls again (%d left)" % [ms.unit.display_name, str(Effects.STATUS.get(f.rolls_again_on, {}).get("name", f.rolls_again_on)).to_lower(), Effects.stacks_of(ms.unit, f.rolls_again_on)])
+		var instant := f.has(Face.Keyword.INSTANT)
+		_act_again(ms, instant)
+		var how := "a quick turn, rolls again" if quick else "rapid, rolls again"
+		if instant:
+			how = "the cylinder spins" if Effects.steps_die(ms.unit) else "instant, rolls again"
+		log.append("%s: %s" % [ms.unit.display_name, how])
 	# The fight ends the moment it is decided (Ryan, 22 September): the last foe down, or
 	# the last machine burnt out by its own heat, and nobody waits for End turn.
 	_refresh_allies()
@@ -3759,15 +3759,16 @@ func _roll_again(ms: MechState) -> void:
 
 
 ## The machine acts again through Rapid's path: the die rolls for free, never onto the entry
-## just spent (a copy of it may come up), a spin over every entry, a stepping die stepping; a folded
-## die among its live entries, so a Changeover's roll lands on the battery it raised.
-func _act_again(ms: MechState, f: Face) -> void:
+## just spent (a copy of it may come up), a stepping die stepping; a folded die among its live
+## entries, so a Changeover's roll lands on the battery it raised. Instant's roll (`itself`) is a
+## true roll over every live entry, itself included, a spin on a stepping die.
+func _act_again(ms: MechState, itself := false) -> void:
 	if previewing:
 		ms.assigned = false   # it acts again; the copy's die keeps its entry, a roll never promised
 		return
 	_rolled()
 	var live := Effects.live_entries(ms.unit, ms.die)
-	if f.spins:
+	if itself:
 		ms.face_index = ms.die.roll_among(rng, live)
 	elif Effects.steps_die(ms.unit):
 		ms.face_index = _step(ms)
@@ -4473,9 +4474,9 @@ func _detonate(ms: MechState, target: Foe) -> void:
 	_blow_mine(mine, 0 if target.is_massive() else target.rank, target.column, target.is_massive(), target.display_name)
 
 
-## The rounds an entry goes dark once this machine spends it, this one included: its own
-## printed cooldown or the one its machine's passives grant every weapon and debuff (the Kite's
-## two), the longer.
+## The rounds an entry sits out once this machine spends it, after the round of the spend: its
+## own printed cooldown or the one its machine's passives grant every weapon and debuff (the
+## Kite's one), the longer. Rapid's own switch-off, the rest of the round, is never counted here.
 func cooldown_of(ms: MechState, f: Face) -> int:
 	if f == null:
 		return 0

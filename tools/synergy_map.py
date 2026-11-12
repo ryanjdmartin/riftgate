@@ -89,18 +89,18 @@ KEYWORDS = {
     "chain": [("kill", "reads")], "cleave": [("strikes", "sets")], "penetrate": [("strikes", "sets")], "splash": [("strikes", "sets")],
     "spillover": [("strikes", "sets")], "dispel": [("foe_buff", "reads")],
     "cleanse": [("burning_mech", "reads"), ("scorched", "reads"), ("disabled", "reads"), ("corrupted", "reads")],
-    "overshield": [], "rapid": [], "breach": [], "every_foe": [], "every_ally": [],
+    "overshield": [], "rapid": [], "instant": [], "breach": [], "every_foe": [], "every_ally": [],
 }
 # A face field and what it sets or reads.
 FACE_FIELDS = {
     "braces": [("braced", "sets")], "devours": [("overcharged", "sets"), ("kill", "reads")], "fills_hopper": [("hopper", "sets")],
     "fires_hopper": [("hopper", "reads")], "heat_per_blow": [("heat", "sets")], "detonates": [("mine", "reads")],
     "gathers_mines": [("mine", "reads")], "vents_all": [("heat", "reads")], "power_per_heat": [("heat", "reads")],
-    "power_per_missing": [("missing_hp", "reads")], "resets_on_kill": [("kill", "reads")], "rolls_again_on": [("rage", "reads")],
+    "power_per_missing": [("missing_hp", "reads")], "resets_on_kill": [("kill", "reads")],
     "kill_rerolls": [("kill", "reads"), ("reroll", "sets")], "ally_action": [("reroll", "reads")], "regenerates": [("regenerating", "sets")],
     "spends_magazine": [("ammo", "reads")], "reloads_ammo": [("ammo", "sets")], "ammo_per_foe_hit": [("ammo", "sets")],
     "self_burn": [("burning_mech", "sets"), ("heat", "sets")], "volatile": [("hull_damage", "sets")], "strikes": [("strikes", "sets")],
-    "shields": [], "vents": [], "spins": [], "cooldown": [], "charged": [("muster", "reads")],
+    "shields": [], "vents": [], "cooldown": [], "charged": [("muster", "reads")],
     "rolls_target": [],
 }
 # A gate or a consume on a status reads it.

@@ -1103,24 +1103,25 @@ func test_the_last_kill_ends_the_fight_without_end_turn() -> void:
 	s.free()
 
 
-## The Nemesis's rage (Ryan, 13 October): a die rolled again by a spent stack bursts the
-## stack's chip, then flips back with the reroll's sound; headless, the burst is set going and
-## the die is the player's to spend again.
+## The Nemesis's rage (Ryan, 13 October; the Knuckle of Fury's charged Instant on five rage since
+## 12 November): a die rolled again by the store it spent bursts the store's chip, then flips back
+## with the reroll's sound; headless, the burst is set going and the die is the player's to spend
+## again.
 func test_a_rage_roll_bursts_the_chip_and_gives_the_die_back() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
 	var m := db.make_mech("badger")
 	var fist := Face.attack(10)
-	fist.rolls_again_on = "rage"
+	fist.charged = {"store": "rage", "price": 5, "keywords": ["instant"]}
 	m.die = Die.single(fist)
 	sk.add_mech(m)
 	sk.add_foes([Foe.make("revenant", 300, 10)])
 	var s := SkirmishScreen.new()
 	s.setup(sk)
-	Effects.stack(m, Effects.STATUS["rage"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	Effects.stack(m, Effects.STATUS["rage"], Effects.SKIRMISH, "test", 5, Effects.DECAY_NONE)
 	s._refresh()
 	assert_true(s._use_die(0, sk.front[0]), "the fist lands")
-	assert_false(sk.mechs[0].assigned, "the rage rolled it again")
+	assert_false(sk.mechs[0].assigned, "the five rage rolled it again")
 	assert_true(s._mech_views[0]._spend >= 0.0, "the rage chip bursts")
 	assert_eq(s._mech_views[0]._spend_glyph, SkirmishScreen.status_glyph("rage"), "on the rage chip")
 	assert_false(s._dice[0].spent, "the die is the player's again")
@@ -1135,16 +1136,16 @@ func test_a_rage_roll_bursts_the_chip_and_gives_the_die_back() -> void:
 ## like the badgers should be the same shape as the other resource bars, and continuous ...
 ## nestle under the Heat bar, same shape, divided into four clear segments"): one bar under the
 ## heat, a gauge's own shape and step, a segment a stack up to its cap, lit to its count, in its
-## chip's colour, and no chip; a rage spent from it bursts on the segment that emptied.
+## chip's colour, and no chip; a stack spent from it bursts on the segment that emptied. A store a
+## charged piece spends in chunks is the Muster's smooth bar instead (the Nemesis's rage since 11
+## November), so the rage here banks for no piece.
 func test_a_capped_store_shows_as_a_segmented_bar_under_the_heat_in_its_chips_place() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
 	var m := db.make_mech("badger")
 	m.grant_passive({"id": "rage_core", "name": "Rage Core", "description": "", "effects": [
 		{"trigger": "on_hull_damage", "effect": "stack_status", "value": "rage", "cap": 5}]})
-	var fist := Face.attack(10)
-	fist.rolls_again_on = "rage"
-	m.die = Die.single(fist)
+	m.die = Die.single(Face.attack(10))
 	sk.add_mech(m)
 	sk.add_foes([Foe.make("revenant", 300, 10)])
 	var s := SkirmishScreen.new()
@@ -1170,8 +1171,10 @@ func test_a_capped_store_shows_as_a_segmented_bar_under_the_heat_in_its_chips_pl
 		assert_true(is_equal_approx(here.size.x, next.size.x) and is_equal_approx(here.position.y, next.position.y), "one width, one row")
 	for r in s._mech_rows(0):
 		assert_ne(str(r[0]), SkirmishScreen.status_glyph("rage"), "and no rage chip")
-	assert_true(s._use_die(0, sk.front[0]), "the fist lands")
-	assert_true(v._spend >= 0.0 and v._spend_glyph == SkirmishScreen.status_glyph("rage"), "the spent rage bursts")
+	Effects.spend_stacks(m, "rage", 1)
+	s._refresh()
+	v.spend_chip(SkirmishScreen.status_glyph("rage"))
+	assert_true(v._spend >= 0.0 and v._spend_glyph == SkirmishScreen.status_glyph("rage"), "the spent stack bursts")
 	assert_eq(int(v.store[0]), 1, "one segment left lit")
 	assert_true(((v._chip_rects[SkirmishScreen.status_glyph("rage")][0]) as Rect2).encloses(v._store_cell(1)), "the burst on the segment that emptied")
 	s.free()

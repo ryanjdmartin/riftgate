@@ -429,6 +429,22 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			for i in range(2):
 				var x := -s * 0.55 + i * s * 0.6
 				ci.draw_polyline(PackedVector2Array([c + Vector2(x, -s * 0.7), c + Vector2(x + s * 0.5, 0), c + Vector2(x, s * 0.7)]), color, width)
+		"instant":
+			# One chevron with a loop curling back over it onto its own tail (Instant, Ryan, 12
+			# November: "reroll after use, can land on itself"): Rapid's chevron, its roll coming
+			# back to it. Apart from Rapid's two chevrons by its structure, from the reroll's arc
+			# by the chevron inside and the loop's way round.
+			var tip := c + Vector2(s * 0.32, s * 0.12)
+			ci.draw_polyline(PackedVector2Array([c + Vector2(-s * 0.2, -s * 0.4), tip, c + Vector2(-s * 0.2, s * 0.64)]), color, width * 1.15)
+			var r := s * 0.82
+			var a0 := -PI * 0.1
+			var a1 := -PI * 1.12
+			var lc := c + Vector2(0, s * 0.04)
+			ci.draw_arc(lc, r, a0, a1, 22, color, width * 1.15)
+			var end := lc + Vector2(cos(a1), sin(a1)) * r
+			var along := Vector2(sin(a1), -cos(a1))   # the way the loop runs on at its end, the angle falling
+			var side := Vector2(-along.y, along.x)
+			ci.draw_colored_polygon(PackedVector2Array([end + along * s * 0.62, end + side * s * 0.38, end - side * s * 0.38]), color)
 		"shocked", "shock":
 			# A bolt in a ring: the charge a foe carries until a blow spends it.
 			ci.draw_arc(c, s * 0.95, 0.0, TAU, 28, color, width * 0.8)

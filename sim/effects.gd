@@ -1025,8 +1025,9 @@ static func _holds(u, eff: Dictionary, face: Face, target = null, ctx: Dictionar
 			return face != null and face.is_attack() and (stacks_of(u, "shots") + 1) % maxi(1, int(eff.get("every", 6))) == 0
 		"setup_once":
 			# A setup (the Needletail's gate, 21 October): a debuff or a buff, read on the entry
-			# as it is spent, while the machine's free one this round is unspent.
-			return face != null and (face.is_debuff() or face.kind == Face.Kind.BUFF) and not has(u, "quick_turned")
+			# as it is spent, while the machine's free one this round is unspent; a piece that acts
+			# again of its own (Rapid or Instant) takes no gate.
+			return face != null and (face.is_debuff() or face.kind == Face.Kind.BUFF) and not face.acts_again() and not has(u, "quick_turned")
 	var w := str(eff.get("when", ""))
 	if w.begins_with("tag_"):
 		return face != null and face.tags.has(w.substr(4))
@@ -2118,10 +2119,10 @@ static func ordinal(n: int) -> String:
 
 ## Switch one die entry off until the end of `until_round`: the entry shows dark, the
 ## component itself is untouched. Applied to the target's showing entry by a foe's disable
-## (through the mech's next turn) and by a spent entry's own cooldown (`source` "cooldown":
-## the rounds it prints, this one included). A foe's disable can be cleansed; a cooldown
-## cannot (it is the piece's price, and a cleanse that lifted a Rapid piece's would start an
-## infinite turn).
+## (through the mech's next turn) and by a spent entry's own cooldown (`source` "cooldown": the
+## rest of the round of the spend and the rounds it prints after it; Rapid's own switch-off, the
+## rest of the round alone). A foe's disable can be cleansed; a cooldown cannot (it is the
+## piece's price, and a cleanse that lifted a Rapid piece's would start an infinite turn).
 static func disable_entry(u, index: int, source: String, until_round: int) -> Modifier:
 	var cooldown := source == "cooldown"
 	var status := {"id": "disabled_%d" % index, "name": "Cooldown" if cooldown else "Disabled",
@@ -2131,9 +2132,9 @@ static func disable_entry(u, index: int, source: String, until_round: int) -> Mo
 	return grant_for_rounds(u, status, source, until_round)
 
 
-## The rounds every weapon this machine spends goes dark, granted by its passives (static
-## weapon_cooldown; the Kite's Disabled Weapon Regulators, 21 October: the cooldown property
-## granted), the longest live one, on a weapon or a debuff alike; 0 for none or for a piece spent on machines. An entry's own cooldown stands
+## The rounds every weapon this machine spends sits out after the round of the spend, granted by
+## its passives (static weapon_cooldown; the Kite's Disabled Weapon Regulators, 21 October: the
+## cooldown property granted), the longest live one, on a weapon or a debuff alike; 0 for none or for a piece spent on machines. An entry's own cooldown stands
 ## beside it and the longer wins (Skirmish.cooldown_of).
 static func granted_cooldown(u, face: Face) -> int:
 	if face == null or not face.is_attack():
@@ -2207,13 +2208,13 @@ static func muster_charges(u) -> int:
 
 
 ## Is this entry Rapid by a once-a-round gate (a grant_keyword of rapid on setup_once, the
-## Needletail's Quick-turn Avionics Relay, 21 October), its own Rapid aside? Spent so, the gate
-## closes for the round (the quick_turned marker).
+## Needletail's Quick-turn Avionics Relay, 21 October), a piece that acts again of its own
+## (Rapid or Instant) aside? Spent so, the gate closes for the round (the quick_turned marker).
 static func quick_turn_live(u, face: Face) -> bool:
 	if face == null:
 		return false
 	var base := rewritten(u, face)
-	if base.has(Face.Keyword.RAPID) or keywords_muted(u):
+	if base.acts_again() or keywords_muted(u):
 		return false
 	for pair in _taking_part(u, "static", base, null):
 		var eff: Dictionary = pair[0]
@@ -2338,7 +2339,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"multiply_damage": body = "damage ×%s" % vs
 		"multiply_printed": body = "the printed number ×%s, before any buff" % vs
 		"split_strikes": body = "hits twice (fires twice the shots, for a Sweep), its base weapon damage halved, rounded down, never below one" if vs == "2" else "hits ×%s (×%s the shots, for a Sweep), its base weapon damage divided by %s, rounded down, never below one" % [vs, vs, vs]
-		"weapon_cooldown": body = "every weapon and equipment it aims at a foe goes dark for %s rounds" % vs
+		"weapon_cooldown": body = "every weapon and equipment it aims at a foe sits out the next %s" % ("round" if vs == "1" else vs + " rounds")
 		"mine_on_spend": body = "every weapon and equipment it aims at a foe leaves a Mine of %s on it with the spend's keywords, one Mine a foe however many spends feed it; when the foe falls the Mine blows on every foe round its slot" % vs
 		"carry": body = "the machines beside it on the map travel with it when it moves"
 		"forge": body = "its weapons spend ammo instead of heating it, 1 for every %d heat, its magazine %s, opening at %d and gaining %d a round" % [int(eff.get("per_heat", 10)), vs, int(eff.get("start", 0)), int(eff.get("per_round", 0))]

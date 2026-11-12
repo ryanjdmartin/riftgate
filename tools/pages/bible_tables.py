@@ -60,7 +60,6 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("self_burn", "Burns its firer", lambda f: int(f.get("self_burn", 0) or 0) > 0),
            ("hopper_property", "The hopper", lambda f: int(f.get("fills_hopper", 0)) > 0 or int(f.get("fires_hopper", 0)) > 0),
            ("brace_property", "Braces", lambda f: int(f.get("braces", 0)) > 0),
-           ("roll_again_property", "Rolls again", lambda f: bool(f.get("rolls_again_on"))),
            ("reset", "Reset", lambda f: bool(f.get("resets_on_kill"))),
            ("gather", "Gather", lambda f: bool(f.get("gathers_mines"))),
            ("detonate", "Detonate", lambda f: bool(f.get("detonates"))),
@@ -69,8 +68,9 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("ally_action", "An ally's action", lambda f: bool(f.get("ally_action"))),
            ("rolls_target", "Rolls its die", lambda f: bool(f.get("rolls_target"))),
            ("kill_rerolls", "Rerolls a kill", lambda f: int(f.get("kill_rerolls", 0) or 0) > 0),
-           # A printed cooldown: a number past Rapid's own switch-off, or a Rapid entry's "no cooldown".
-           ("cooldown", "Cooldown", lambda f: "cooldown" in f and not ("rapid" in (f.get("keywords") or []) and int(f["cooldown"]) == 1))]
+           # A printed cooldown: the rounds an entry sits out after its spend (12 November); Rapid's own
+           # switch-off is never printed.
+           ("cooldown", "Cooldown", lambda f: "cooldown" in f)]
 FOE_ONLY = ["breach", "scorch", "burn", "disable", "corrupt", "crush", "steal", "drain", "silence", "dispel", "swallow", "merge", "golden_rage", "self_destruct", "all", "countdown", "follow_up", "grudge", "last_act", "parts"]
 FOE_ONLY_TEXT = {"burn": "Keyword with a number on a foe's attack: each blow that lands leaves that many stacks of Burning on the machine it hits (Burning, above).",
                  "breach": "The blow ignores the machine's shield and armour: the shield stands and the whole blow reaches the hull; a Ward turns it away.",

@@ -318,8 +318,9 @@ any of them, which is the Suppress pattern (one answer, so every design reaches 
 | tempo lent to the best machine | the multi-rotor, the Cottonmouth (a Rapid shell is two drum shots) | an action moved |
 
 When this was written four of the five carriers were ungated (the switch-off and nothing
-else); since then the Diffuser and the Flakshot lost Rapid and every Rapid piece carries a
-limiter (the bible's Rapid row), the gated ones (the Spin-Up by its cylinder, the Needletail's
+else); since then the Diffuser and the Flakshot lost Rapid, and since 12 November Rapid's
+switch-off is its own again (once a round), Instant the roll that may land on itself and carries
+a limiter (the bible's Rapid row), the gated ones (the Spin-Up by its cylinder, the Needletail's
 once a round) the Paradox's shape. The stun row's cure applies: price by a gate, never ration.
 
 Homes for each want other than more Rapid pieces, with the engine's state:
@@ -345,13 +346,14 @@ Homes for each want other than more Rapid pieces, with the engine's state:
   the Flakshot. The stock pass's cantrips can be combined entries rather than Rapid ones: a
   vent that shields, a shield that lures, a gun that vents on fire. Density a spend instead of
   count of spends: no reroll, no chain, nothing to limit, the price each half's number.
-- **Rolls again, paid in a banked resource** (the second action, priced). The Nemesis's rule
-  (spend a stack, the die rolls again, no switch-off, the stacks the limit) as a family, one
+- **Instant, paid in a banked resource** (the second action, priced). The Nemesis's rule (a
+  charged Instant, five rage spent and the die rolls again, itself included, nothing dark, the
+  store the limit; a rage a roll from 12 October to 11 November) as a family, one
   banked resource a maker: rage, the hopper's loads, Spun Up, the H-tank's shells, Empowered,
   Kestrel's heat (roll again for 20 heat) or its rerolls. A plain roll, a visible price, gated
   by its setup.
 - **Cooldown bursts** (the second action, front-loaded). Two actions' worth in one spend, then
-  dark: strikes 2 with a cooldown of 2, the broadside, the Kite's chain. Paid in the
+  dark: strikes 2 with a cooldown of 1 (the round after sat out), the broadside, the Kite's chain. Paid in the
   die's reliability; the cooldown property, built, opens the family.
 - **Delayed actions** (an action moved in time). The bomber's mines, the web, and a charge kind
   (arm now, fire twice later), which reads the die's own state.

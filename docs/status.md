@@ -27,7 +27,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1132 tests, 363,473 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
+- Tests: 1132 tests, 364,475 checks, green on `ccr-63a1309a-caa9mw` (12 November: the cooldown's
+  count, Rapid's own switch-off and Instant; not yet on main). Before it,
+  1132 tests, 363,473 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
   with the Dingo's pieces, the pins and the Flakshot Repeater over the Clydesdale's review). Before it,
   1123 tests, 362,685 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
   with the Whip Scorpion's rework over the formation and refit session's landing). Before it,
@@ -55,6 +57,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 ## Branches
 
 Everything is on main as of 11 November 2026; the formation and refit session's branch lands as it goes, below.
+`ccr-63a1309a-caa9mw`, the cooldown's count, Rapid's own switch-off and Instant (12 November, How
+things stand below), cut from main at `fbce698`, is not yet on main: it touches `sim/save.gd`'s
+three versions (the battle's 25, the run's 24, the quick run's 7), the bible, the rules and these
+records, the places a parallel branch meets it.
 `ccr-c71bc17f-hclj2c`, Ryan's map playtest list of 10 November, his answers to it and his second
 and third map lists the same day (How things stand below), cut from main at `aa40832`, landed on
 main as fast-forwards on his word each time ("Ok, merge this into main so I can try it"; "yeah,
@@ -304,6 +310,29 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
+- **The cooldown counts after its round; Rapid's own switch-off; Instant** (`ccr-63a1309a-caa9mw`
+  from main at `fbce698`; Ryan, 12 November, on "So rapid cooldown 1 and a weapon cooldown 1 are
+  different, right?", which they were not: one count, the round of the spend included, so a plain
+  weapon's 1 cost nothing). A printed cooldown is now the rounds an entry sits out after its spend
+  ("change the count so 1 is how I intended"), so the Flakshot Repeater's 1 sits out the next
+  round as he set it on 11 November, and the Kite's grant is 1, the same rounds dark as its old 2
+  (its text "sits out the next round", a session's draft). Rapid darkens its entry for the rest
+  of the round again, its own and never printed ("rapid gets its innate cooldown zero back
+  without the explicit display"): the printed 1 left the Pulse Vacillator, the Changeover, the
+  Quick Reload, the Immelmann Booster and the planned Laminar Deflector, each playing as before,
+  and the Needletail's gate's setup goes dark for the round as the rules had said. Instant is a
+  keyword ("the rapid no cooldown pieces change to a new keyword: Instant (reroll after use, can
+  land on itself)"): the die rolls again as the round opens, itself included, a spin on a
+  stepping die, nothing dark, so the validator holds an Instant piece to a limiter; the Spin-Up
+  is Instant (`spins` retired). The Nemesis's Knuckle of Fury goes out charged on five rage with
+  Instant in place of the Breach (his answer to the one question asked: "Each reroll costs 5
+  rage. Just swapping the Breach for Instant, everything else stays the same"), the Breach one
+  direction of its upgrades. Retired with it, no piece printing it since 11 November: the roll
+  again on a status (`rolls_again_on`, its vocabulary entry "Rolls again", the bot's rage-on-hull
+  credit), Instant the one roll that may land on itself. A spend that wins the fight rolls
+  nothing, Rapid's as the old roll again's. The die marks Instant on its edge with one chevron and
+  a loop back onto it, apart from Rapid's two chevrons by shape; his to judge on the phone. Saves
+  before it are set aside (the battle's 25, the run's 24, the quick run's 7).
 - **The boss holds its hex** (`ccr-c71bc17f-hclj2c` from main at `944cd5e`, on main the same day on
   his word, "Yeah that will do. Merge into main"; Ryan, 10 November). The boss stands on the one hex touching both of the rift's front hexes, on its
   middle line, and never walks ("Put him on the single hex in front of the two new out of play

@@ -22,7 +22,7 @@ const TABLE := {
 	# Keywords.
 	"cleave": ["cleave", "plain"], "penetrate": ["penetrate", "plain"], "splash": ["splash", "plain"],
 	"every_foe": ["aim_every_foe", "plain"], "every_ally": ["aim_every_ally", "plain"], "every_other_ally": ["aim_every_other_ally", "plain"],
-	"spillover": ["spillover", "plain"], "rapid": ["rapid", "plain"],
+	"spillover": ["spillover", "plain"], "rapid": ["rapid", "plain"], "instant": ["instant", "plain"],
 	"burn": ["burn", "heat"], "shock": ["shock", "heat"], "chain": ["chain", "heat"],
 	"flak": ["flak", "heat"], "breach": ["breach", "heat"],
 	"cryo": ["cryo", "guard"], "lure": ["lure", "guard"], "disrupt": ["disrupt", "guard"],
@@ -37,7 +37,7 @@ const TABLE := {
 	"hopper_property": ["hopper", "plain"],
 	"volatile": ["hull", "hull"], "shield_cost": ["shield", "guard"], "brace_property": ["shield", "guard"],
 	"kill_overcharge": ["overcharge", "heat"], "self_burn": ["burn", "heat"], "vents_all": ["vent", "heat"],
-	"roll_again_property": ["rapid", "heat"], "gather": ["mine", "heat"], "detonate": ["mine", "heat"],
+	"gather": ["mine", "heat"], "detonate": ["mine", "heat"],
 	"regenerates": ["regenerating", "guard"], "ally_action": ["reroll", "plain"], "rolls_target": ["reroll", "plain"],
 	"kill_rerolls": ["reroll", "plain"],
 	# Statuses.
