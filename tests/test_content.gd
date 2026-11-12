@@ -885,7 +885,7 @@ func test_melee_is_a_tag_and_never_a_reach() -> void:
 	db.components["fist"] = claw
 	var refused := false
 	for e in db.validate():
-		if e.begins_with("component fist") and e.contains("reach direct, indirect, sweep or every_foe"):
+		if e.begins_with("component fist") and e.contains("reach direct, indirect or every_foe"):
 			refused = true
 	assert_true(refused, "melee is no reach")
 	claw["face"]["reach"] = "direct"
@@ -2727,7 +2727,8 @@ func test_the_area_keywords_say_their_number() -> void:
 		"test_plus_two_numbers": [{"keywords": ["cleave", "penetrate"], "cleave": 2, "penetrate": 1}, ""],
 		"test_debuff_n": [{"power": 0, "keywords": ["lure", "cleave"], "cleave": 1}, "carries no number"],
 		"test_debuff_area": [{"power": 0, "keywords": ["lure", "cleave"]}, ""],
-		"test_wide_weapon": [{"reach": "every_foe"}, "Every Foe is a debuff's"],
+		"test_wide_weapon": [{"reach": "every_foe"}, ""],
+		"test_wide_area": [{"reach": "every_foe", "keywords": ["cleave"], "cleave": 2}, "lands on every foe already"],
 		"test_wide_debuff": [{"power": 0, "reach": "every_foe", "keywords": ["lure"]}, ""],
 		"test_wide_keyword": [{"power": 0, "keywords": ["lure", "every_foe"]}, "a targeting mode since 4 November"],
 	}
@@ -2840,17 +2841,23 @@ func test_the_map_and_the_vocabulary_agree_on_the_ground() -> void:
 	assert_true(db.validate().any(func(e) -> bool: return e.begins_with("faction %s" % fid) and e.contains("names no map shape")), "a domain naming a map shape, even a real one, is reported (Ryan, 30 October)")
 
 
-## A Sweep carries no Swap, detonation or gather (Ryan, 8 November, agreeing the audit's lean): each
-## acts on one foe, and a Sweep's drop picks only its rank. The slot mines' fields are gone (9
-## November) and refused.
-func test_a_sweep_carries_no_swap_detonation_or_gather() -> void:
+## Sweep is gone (Ryan, 12 November: "let's remove it"): the reach and the keyword are refused,
+## a weapon may reach every foe, and no area keyword rides one that does. The slot mines' fields
+## are gone (9 November) and refused.
+func test_sweep_is_refused_and_a_weapon_may_reach_every_foe() -> void:
 	var db := ContentDB.load_default()
-	for extra in [{"keywords": ["swap"]}, {"detonates": true}, {"gathers_mines": true}]:
-		var errs: Array[String] = []
-		var fd := {"kind": "attack", "reach": "sweep", "power": 2, "strikes": 4, "keywords": []}
-		fd.merge(extra, true)
-		db._validate_face("test", fd, errs)
-		assert_true(errs.any(func(e) -> bool: return e.contains("a Sweep carries no Swap, detonation or gather")), "refused: %s" % str(extra))
+	var swept: Array[String] = []
+	db._validate_face("test", {"kind": "attack", "reach": "sweep", "power": 2, "strikes": 4, "keywords": []}, swept)
+	assert_true(swept.any(func(e) -> bool: return e.contains("Sweep is gone")), "the reach is refused: %s" % str(swept))
+	var every: Array[String] = []
+	db._validate_face("test", {"kind": "attack", "reach": "every_foe", "power": 2, "keywords": []}, every)
+	assert_eq(every, [], "a weapon over every foe validates")
+	var wide: Array[String] = []
+	db._validate_face("test", {"kind": "attack", "reach": "every_foe", "power": 2, "keywords": ["splash"], "splash": 1}, wide)
+	assert_true(wide.any(func(e) -> bool: return e.contains("lands on every foe already")), "an area on it is refused")
+	var gate: Array[String] = []
+	db._validate_face("test", {"kind": "attack", "reach": "direct", "power": 2, "keywords": [], "magazine_min": 8}, gate)
+	assert_true(gate.any(func(e) -> bool: return e.contains("magazine_min")), "a magazine's gate rides a piece that spends it")
 	for gone in [{"pulls_mines": true}, {"drones": true}]:
 		var errs: Array[String] = []
 		var fd := {"kind": "attack", "reach": "indirect", "power": 0, "keywords": []}

@@ -1398,11 +1398,14 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	if Face.kind_from_name(kind) < 0 or kind == "blank":
 		errs.append("%s: bad face kind '%s'" % [where, kind])
 	if kind == "attack":
-		# Two reaches since 10 October (Ryan): Close (melee) is removed, and melee is a tag. Sweep a
-		# targeting mode since 3 November, Every Foe since 4 November.
+		# Two reaches since 10 October (Ryan): Close (melee) is removed, and melee is a tag. Every
+		# Foe a targeting mode since 4 November; Sweep, one from 3 November, went on the 12th
+		# (Ryan: "let's remove it"; "it's just better spread").
 		var reach := str(fd.get("reach", ""))
-		if not ["direct", "indirect", "sweep", "every_foe"].has(reach):
-			errs.append("%s: attack face needs reach direct, indirect, sweep or every_foe, got '%s'" % [where, reach])
+		if reach == "sweep":
+			errs.append("%s: Sweep is gone (12 November): a weapon reaches wide by Spread, Penetrate or Splash, or lands on every foe (reach every_foe)" % where)
+		elif not ["direct", "indirect", "every_foe"].has(reach):
+			errs.append("%s: attack face needs reach direct, indirect or every_foe, got '%s'" % [where, reach])
 	if int(fd.get("power", 0)) < 0:
 		errs.append("%s: power cannot be negative" % where)
 	if int(fd.get("strikes", 1)) < 1:
@@ -1494,10 +1497,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: chain (the number) rides with the Chain keyword" % where)
 	if kw_names.has("cleave") and kw_names.has("penetrate") and int(fd.get("cleave", 0)) == int(fd.get("penetrate", 0)):
 		errs.append("%s: Spread and Penetrate at one number are Splash: write splash" % where)
-	# Every Foe is equipment's (the Siphon's lure-all): the foes past the target take no number,
-	# so a weapon reaches wide by Spread, Penetrate or Splash instead.
-	if str(fd.get("reach", "")) == "every_foe" and kind == "attack" and not debuff:
-		errs.append("%s: Every Foe is a debuff's; a weapon's area is Spread, Penetrate or Splash with its number" % where)
+	# Every Foe on a weapon lands its number whole on every foe (12 November, the two gated
+	# specials'), so an area keyword on it has no foe left to reach.
+	if str(fd.get("reach", "")) == "every_foe" and kind == "attack" and (kw_names.has("cleave") or kw_names.has("penetrate") or kw_names.has("splash")):
+		errs.append("%s: Every Foe lands on every foe already: no Spread, Penetrate or Splash rides it" % where)
 	# A gated keyword (the stock pass's engine, 22 October): keyword name to the condition it
 	# lands under, a condition on the foe in hand, read through the effects' conditions. Suppress
 	# alone today (the stun row's gated stuns); another keyword's gate waits for its first piece.
@@ -1600,9 +1603,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	# The Musk Ox's pieces (21 October): a refund, the salvo, random targets, a reload.
 	if fd.has("ammo_per_foe_hit") and (kind != "attack" or int(fd["ammo_per_foe_hit"]) <= 0):
 		errs.append("%s: ammo_per_foe_hit is an attack's, a weapon's or a debuff's: the ammo back for every foe its blows reach, a positive number" % where)
-	for key in ["spends_magazine", "random_targets"]:
-		if fd.has(key) and (kind != "attack" or not (fd[key] is bool)):
-			errs.append("%s: %s (true) is an attack's, a weapon's or a debuff's" % [where, key])
+	if fd.has("spends_magazine") and (kind != "attack" or not (fd["spends_magazine"] is bool)):
+		errs.append("%s: spends_magazine (true) is an attack's, a weapon's or a debuff's" % where)
+	if fd.has("magazine_min") and (not bool(fd.get("spends_magazine", false)) or int(fd["magazine_min"]) < 1):
+		errs.append("%s: magazine_min is the ammo a piece that spends the magazine needs to fire: 1 or more, beside spends_magazine" % where)
 	if fd.has("reloads_ammo") and (kind == "attack" or kind == "blank" or int(fd["reloads_ammo"]) <= 0):
 		errs.append("%s: reloads_ammo is a machine piece's: the ammo it adds to its forging machine, a positive number" % where)
 	if fd.has("heat_per_blow") and int(fd["heat_per_blow"]) <= 0:
@@ -1619,19 +1623,11 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	# opening an empty spot isn't a good design"): nothing is spent on an empty slot.
 	if fd.has("pulls_mines") or fd.has("drones"):
 		errs.append("%s: pulls_mines and drones are gone (9 November): the Lorentz Contractor gathers (gathers_mines) and the Syrinx Drone detonates (detonates)" % where)
-	# The spray (the Skua's Flechette Pod, built 25 October): the strikes after the first fall on
-	# random foes in reach, so a spray strikes at least twice.
-	# Sweep (Ryan, 2 November), in place of the spray and the random targets of October: a reach
-	# since the 3rd ("a targeting mode, since that's what it is"), whose strikes walk the rank picked.
+	# The spray and the random targets of October, and Sweep after them, are gone.
 	if fd.has("spray") or fd.has("random_targets"):
-		errs.append("%s: spray and random_targets are gone (3 November): Sweep, a reach, walks the rank picked" % where)
+		errs.append("%s: spray and random_targets are gone (3 November)" % where)
 	if Array(fd.get("keywords", [])).has("sweep"):
-		errs.append("%s: sweep is a reach since 3 November (reach: sweep), never a keyword" % where)
-	# A Sweep's drop picks its rank and nothing else (Ryan, 8 November, agreeing the audit's lean):
-	# a Swap, a detonation or a gather acts on one foe, so none rides a Sweep until one is wanted
-	# and given its rule.
-	if str(fd.get("reach", "")) == "sweep" and (Array(fd.get("keywords", [])).has("swap") or bool(fd.get("detonates", false)) or bool(fd.get("gathers_mines", false))):
-		errs.append("%s: a Sweep carries no Swap, detonation or gather: each acts on one foe, and a Sweep's drop picks only its rank" % where)
+		errs.append("%s: Sweep is gone (12 November), as a reach and as a keyword" % where)
 	# The spin (the Spin-Up's, 19 October): Rapid's free reroll as a true roll over every entry.
 	if fd.has("spins") and (not (fd["spins"] is bool) or not rapid):
 		errs.append("%s: spins (true) makes Rapid's free reroll a true spin, so it rides with Rapid" % where)
@@ -1814,8 +1810,8 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 		# every spend aimed at a foe leaves, a whole number, 1 or more.
 		if effect == "mine_on_spend" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 1 or float(eff["value"]) != floorf(float(eff["value"]))):
 			errs.append("%s: mine_on_spend is the Mine's flat damage a spend: a whole number, 1 or more" % where)
-		if effect == "pass_sweep" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 1 or float(eff["value"]) != floorf(float(eff["value"]))):
-			errs.append("%s: pass_sweep is the damage of each shot a passed turn fires for its heat: a whole number, 1 or more" % where)
+		if effect == "pass_release" and (int(eff.get("value", 0)) < 1 or int(eff.get("gate", 0)) < 1):
+			errs.append("%s: pass_release is what every foe takes from a passed turn at its gate: value and gate (the heat it needs), whole numbers, 1 or more" % where)
 		if effect == "vent_blast" and float(eff.get("value", 0)) <= 0.0:
 			errs.append("%s: vent_blast is the share of the heat a vent takes off that it blasts: a positive number" % where)
 		# The Petrels' passives (built 30 October): the shield paying a weapon's heat point for

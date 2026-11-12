@@ -216,13 +216,13 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 	if cd > 0:
 		out.append(marked(parts_line("effect", [_bare(word("Cooldown")), num(str(cd), cd, base.cooldown_rounds(), true)], "attr"), [mark("cooldown", Palette.INK, false)]))
 	# Whom it is aimed at, headed by the targeting mark the die draws under its number
-	# (Glyphs.aim_for: a line of fire for Direct, lobbed for Indirect, lobbed with a strike for each
-	# column for a Sweep, the enemy's formation lit for Every Foe; the three hexes for a piece spent
+	# (Glyphs.aim_for: a line of fire for Direct, lobbed for Indirect, the enemy's formation lit for
+	# Every Foe; the three hexes for a piece spent
 	# on machines, under an arch for Every Ally and Every Other Ally), bare as the mark is. An area past the
 	# target is its keyword's line (Spread, Penetrate, Splash), as the die chips it.
 	# The words bare: the reach's term stays a term (tap it), its icon the line's own mark, never
 	# a second one shrunk into the words (the formation reads as a blob at the text's size).
-	var aimed := (("Target: A rank, Sweep" if f.reach == Face.Reach.SWEEP else ("Target: Every Foe" if f.reach == Face.Reach.EVERY_FOE else "Target: Enemy, %s" % capital(Face.REACH_NAMES[f.reach])))) if f.kind == Face.Kind.ATTACK else whom(f)
+	var aimed := ("Target: Every Foe" if f.reach == Face.Reach.EVERY_FOE else "Target: Enemy, %s" % capital(Face.REACH_NAMES[f.reach])) if f.kind == Face.Kind.ATTACK else whom(f)
 	var target := parts_line("effect", [_bare(word(aimed))], "attr")
 	var aim := Glyphs.aim_for(f)
 	if not aim.is_empty():
@@ -909,11 +909,10 @@ static func turn_line(next: Face, place: int, db: ContentDB) -> Dictionary:
 	return marked(text_line("effect", "Spent, its die turns to %s, %s, and it acts again" % [Hud.roman(place), named], "rule"), [passive_mark(str(shown[0]), shown[1], shown[2])])
 
 
-## The strikes a machine's Ricochet adds to the weapon showing (the Skua's, 11 November), as a
-## line headed by the passive box the die shows them in: a Sweep's after every shot, any other
-## weapon's once after its strikes.
-static func ricochet_line(stacks: int, sweep: bool) -> Dictionary:
-	var said := "Ricochet: %s strikes its foe again, %d for 1" % ["each shot" if sweep else "after its strikes it", stacks]
+## The strikes a machine's Ricochet adds to the weapon showing (the Skua's, 12 November), as a
+## line headed by the passive box the die shows them in.
+static func ricochet_line(stacks: int) -> Dictionary:
+	var said := "Ricochet: after it fires it hits its target %d more time%s for 1" % [stacks, "" if stacks == 1 else "s"]
 	return marked(text_line("effect", said, "rule"), [passive_mark("ricochet", "+%d" % stacks, Glyphs.colour_for("ricochet"))])
 
 

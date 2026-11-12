@@ -18,7 +18,7 @@ extends RefCounted
 ## added or renamed there fails the build until it has its row here. A glyph "" draws none.
 const TABLE := {
 	# Reach.
-	"direct": ["aim_direct", "plain"], "indirect": ["aim_indirect", "plain"], "sweep": ["aim_sweep", "plain"],
+	"direct": ["aim_direct", "plain"], "indirect": ["aim_indirect", "plain"],
 	# Keywords.
 	"cleave": ["cleave", "plain"], "penetrate": ["penetrate", "plain"], "splash": ["splash", "plain"],
 	"every_foe": ["aim_every_foe", "plain"], "every_ally": ["aim_every_ally", "plain"], "every_other_ally": ["aim_every_other_ally", "plain"],

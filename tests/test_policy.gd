@@ -491,32 +491,6 @@ func test_the_bot_reads_a_shocked_foe_as_taking_double() -> void:
 	assert_eq(pol.expected_damage(ms, burst, g), 80.0, "only the first of three blows is doubled")
 
 
-## A sweep (the Skua's Flechette Pod; a reach since 3 November): the strikes walk the rank picked,
-## so the bot reads each foe its share; on a foe one strike kills, a sweep among others wastes
-## less past the kill than the same strikes all on it.
-func test_greedy_reads_a_sweep_as_its_share_on_every_foe_in_the_rank() -> void:
-	var sk := Skirmish.new(1, 3)
-	var plain := Face.attack(5, L)
-	plain.strikes = 3
-	var pod := plain.duplicate_face()
-	pod.reach = Face.Reach.SWEEP
-	sk.add_mech(_mech("A", Die.of([plain, pod]), 40, 100))
-	var weak := _ghoul(3, 10)
-	sk.add_foes([_ghoul(50, 10), weak, _ghoul(50, 10)])
-	sk.begin()
-	sk.start_round()
-	var pol := Policy.make(Policy.GREEDY)
-	var ms: Skirmish.MechState = sk.mechs[0]
-	assert_true(pol.attack_score(sk, ms, pod, weak) > pol.attack_score(sk, ms, plain, weak), "the sweep's strikes walk on to the others")
-	var lone := Skirmish.new(1, 1)
-	lone.add_mech(_mech("A", Die.of([plain, pod]), 40, 100))
-	var big := _ghoul(100, 10)
-	lone.add_foes([big])
-	lone.begin()
-	lone.start_round()
-	assert_true(absf(pol.attack_score(lone, lone.mechs[0], pod, big) - pol.attack_score(lone, lone.mechs[0], plain, big)) < 0.001, "on a lone foe the sweep is the plain gun")
-
-
 ## A flat buff lands on every strike, so the bot counts Empowered once a strike of the ally's
 ## gun showing: twice on a split gun (the Skua's), once on a plain one.
 func test_greedy_counts_a_flat_buff_once_a_strike_of_the_allys_gun() -> void:
@@ -1296,12 +1270,12 @@ func test_greedy_weighs_the_charged_form_the_die_will_spend() -> void:
 
 
 ## The Musk Ox for the bot (21 October), synthetic: a forging machine's gun costs its price at
-## what an ammo buys; a dry gun is no option; the salvo is worth its strikes on the field.
+## what an ammo buys; a dry gun is no option; the salvo is worth its number on every foe, less its reserve.
 func test_greedy_prices_a_forged_gun_in_ammo_and_weighs_the_salvo() -> void:
 	var forge := {"id": "forge", "name": "Forge", "description": "", "effects": [{"trigger": "static", "effect": "forge", "value": 10, "start": 3, "per_round": 1, "per_heat": 10, "vent": 3, "shield": 2}]}
 	var ray := Face.attack(30, L)
 	ray.heat = 30
-	var salvo := Face.attack(5, Face.Reach.SWEEP, [K.CLEAVE, K.PENETRATE])
+	var salvo := Face.attack(20, Face.Reach.EVERY_FOE)
 	salvo.spends_magazine = true
 	var sk := Skirmish.new(3, 2)
 	var m := _mech("Ox", Die.of([ray, salvo]), 40, 200)
@@ -1321,17 +1295,18 @@ func test_greedy_prices_a_forged_gun_in_ammo_and_weighs_the_salvo() -> void:
 	s2.begin()
 	s2.start_round()
 	assert_true(pol.attack_score(sk, ms, ray, sk.front[0]) < free.attack_score(s2, s2.mechs[0], ray, s2.front[0]), "the forged gun is worth its blow less its three ammo")
-	assert_true(pol.salvo_score(sk, ms, salvo) > 0.0, "three strikes on a full field are worth firing")
+	assert_true(pol.attack_score(sk, ms, salvo, sk.front[0]) > 0.0, "its number on a full field is worth firing")
 	# The reserve (3 November): only the ammo the ray's next spend needs counts against the salvo,
-	# so every ammo past it adds a whole strike.
-	var at_three := pol.salvo_score(sk, ms, salvo)
+	# so a fuller magazine costs it nothing more.
+	var at_three := pol.attack_score(sk, ms, salvo, sk.front[0])
 	ms.ammo = 10
-	var at_ten := pol.salvo_score(sk, ms, salvo)
-	assert_true(absf((at_ten - at_three) - 7.0 * pol.salvo_per_strike(sk, ms, salvo)) < 0.001, "past the ray's reserve of three, each ammo is a whole strike")
+	assert_eq(pol.magazine_reserve(ms), 3, "the ray's next spend")
+	assert_true(absf(pol.attack_score(sk, ms, salvo, sk.front[0]) - at_three) < 0.001, "past the reserve the magazine it empties is free")
 	ms.ammo = 0
 	ms.face_index = 0
 	assert_true(pol.options_for(sk, 0).is_empty(), "a dry gun is no option")
-	assert_eq(pol.salvo_score(sk, ms, salvo), -INF, "nor an empty salvo")
+	ms.face_index = 1
+	assert_true(pol.options_for(sk, 0).is_empty(), "nor an empty salvo")
 
 
 ## The planner (the stock pass's second chunk, 22 October) rolls a decision out over two rounds
@@ -1443,7 +1418,7 @@ func test_the_bot_reads_a_chains_arcs() -> void:
 	assert_true(absf(lead) < 0.001, "with no conductor the Chain gun is a plain gun: %f" % lead)
 	for foe in [a, b]:
 		Effects.stack(foe, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
-	assert_eq(pol.damage_outcomes(ms, gun, a, -1.0, true, Skirmish.AREA_CHAIN), [[2.0, 1.0]], "a conductor: Chain 2 plain, no strike aimed at it")
+	assert_eq(pol.damage_outcomes(ms, gun, a, Skirmish.AREA_CHAIN), [[2.0, 1.0]], "a conductor: Chain 2 plain, no strike aimed at it")
 	assert_eq(pol.damage_outcomes(ms, gun, a), [[8.0, 1.0]], "the same foe aimed at: the blow doubled")
 	lead = pol.attack_score(sk, ms, gun, aim) - pol.attack_score(sk, ms, plain, aim)
 	assert_true(absf(lead - 4.0) < 0.001, "two conductors, Chain 2 each: %f" % lead)
@@ -1470,8 +1445,8 @@ func test_the_bot_reads_each_foe_past_the_target_at_its_shapes_number() -> void:
 	var ms: Skirmish.MechState = sk.mechs[0]
 	var pol := Policy.new()
 	assert_eq(pol.damage_outcomes(ms, sweep, aim), [[6.0, 1.0]], "the clean target: the roll alone")
-	assert_eq(pol.damage_outcomes(ms, sweep, marked, -1.0, true, Skirmish.AREA_ROW), [[4.0, 1.0]], "the marked neighbour: Spread 2, the point its status earns, its Flak")
-	assert_eq(pol.damage_outcomes(ms, sweep, plain, -1.0, true, Skirmish.AREA_ROW), [[2.0, 1.0]], "the plain one: Spread 2")
+	assert_eq(pol.damage_outcomes(ms, sweep, marked, Skirmish.AREA_ROW), [[4.0, 1.0]], "the marked neighbour: Spread 2, the point its status earns, its Flak")
+	assert_eq(pol.damage_outcomes(ms, sweep, plain, Skirmish.AREA_ROW), [[2.0, 1.0]], "the plain one: Spread 2")
 	var before := pol.attack_score(sk, ms, sweep, aim)
 	sweep.cleave = 4
 	assert_true(pol.attack_score(sk, ms, sweep, aim) > before, "a bigger Spread is worth more")
@@ -1482,5 +1457,5 @@ func test_the_bot_reads_each_foe_past_the_target_at_its_shapes_number() -> void:
 	var dry := charge.duplicate_face()
 	dry.consumes = ""
 	Effects.stack(plain, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 3)
-	var lost: float = pol.attack_score(sk, ms, dry, aim) + float(pol.damage_outcomes(ms, charge, plain, -1.0, true, Skirmish.AREA_ROW)[0][0]) - float(pol.damage_outcomes(ms, dry, plain, -1.0, true, Skirmish.AREA_ROW)[0][0]) - pol.attack_score(sk, ms, charge, aim)
+	var lost: float = pol.attack_score(sk, ms, dry, aim) + float(pol.damage_outcomes(ms, charge, plain, Skirmish.AREA_ROW)[0][0]) - float(pol.damage_outcomes(ms, dry, plain, Skirmish.AREA_ROW)[0][0]) - pol.attack_score(sk, ms, charge, aim)
 	assert_true(lost > 0.0, "the neighbour's Burning eaten costs the ticks it would have dealt: %f" % lost)

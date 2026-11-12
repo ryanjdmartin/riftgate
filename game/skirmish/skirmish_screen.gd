@@ -123,11 +123,6 @@ static var MINE_DEBUG := OS.get_environment("RIFTGATE_MINE_DEBUG") == "1"
 static var HIT_DEBUG := OS.get_environment("RIFTGATE_HIT_DEBUG") == "1"
 const HIT_DEBUG_KINDS := [["hull", -1.0], ["shield", 0.0], ["block", 0.6], ["hull", 1.0]]
 var _hit_debug_at := 0.0
-## RIFTGATE_MISS_DEBUG=1: every second and a half a Sweep's wasted shot lands on an empty slot of the
-## enemy's formation, each in turn, to judge the impact running (7 November; a first cut).
-static var MISS_DEBUG := OS.get_environment("RIFTGATE_MISS_DEBUG") == "1"
-var _miss_debug_at := 0.0
-var _miss_debug_n := 0
 var _hit_debug_n := 0
 const ROLL_AGAIN_AT := 0.3   # the die flips back this long after its stack bursts (a placeholder, judged running)
 const HOME_FLIGHT := 0.22   # seconds a waiting Swap's die takes to fly home when a tap on nothing sets it back
@@ -238,9 +233,6 @@ func _process(delta: float) -> void:
 	if HIT_DEBUG and _fight_t - _hit_debug_at > 1.5 and not _mech_views.is_empty():
 		_hit_debug_at = _fight_t
 		_hit_debug()
-	if MISS_DEBUG and _fight_t - _miss_debug_at > 1.5:
-		_miss_debug_at = _fight_t
-		_miss_debug()
 	if _undo_waiting and Time.get_ticks_msec() >= _undo_from:
 		_undo_waiting = false
 		_refresh_undo()   # the spend's blow has played: the undo opens
@@ -1094,12 +1086,6 @@ func _refresh(save: bool = true) -> void:
 		var f := sk.spend_face(dm)   # the charged form when it goes out charged
 		if f != null and f.is_attack():
 			targets = sk.targets_for_face(dm, f)
-			# A sweep targets a rank (Ryan, 3 November: "fix the UI for sweep so its intuitively
-			# targeting a rank"): over a foe, the rank it stands in is the target, lit whole and
-			# bracketed (below), the other rank plain until the finger moves there.
-			if sk.reach_of(dm, f) == Face.Reach.SWEEP and _drag_over is Foe:
-				var swept_rank := sk.sweep_rank_of(_drag_over)
-				targets = targets.filter(func(foe: Foe) -> bool: return sk.sweep_rank_of(foe) == swept_rank)
 		elif f != null and f.on_machines():
 			support = sk.machine_targets_for(dm, Effects.effective_face(dm.unit, f))
 
@@ -1196,29 +1182,6 @@ func _refresh(save: bool = true) -> void:
 			var a := lv.drawing_rect()
 			var b := rv.drawing_rect()
 			marks.append(Rect2(_home.get(lv, lv.position) + a.position, a.size).merge(Rect2(_home.get(rv, rv.position) + b.position, b.size)).grow(6.0))
-	# A sweep's rank, bracketed whole while the die is over a foe in it (3 November): the strikes
-	# walk the rank, so the rank is what the drop picks, one bracket round it as round a twin
-	# slot's pair, its foes' own marks off so the rank reads as one target.
-	if _drag_from >= 0 and _drag_over is Foe:
-		var sm: Skirmish.MechState = sk.mechs[_drag_from]
-		var sf := sk.spend_face(sm)
-		if sf != null and sf.is_attack() and sk.reach_of(sm, sf) == Face.Reach.SWEEP:
-			var swept_rank := sk.sweep_rank_of(_drag_over)
-			var whole := Rect2()
-			var any := false
-			for v in _view_foe.keys():
-				var foe: Foe = _view_foe[v]
-				if not foe.alive() or sk.sweep_rank_of(foe) != swept_rank:
-					continue
-				var uv: UnitView = v
-				uv.highlight = false
-				uv.queue_redraw()
-				var vr: Rect2 = uv.drawing_rect()
-				var r := Rect2(_home.get(v, uv.position) + vr.position, vr.size)
-				whole = r if not any else whole.merge(r)
-				any = true
-			if any:
-				marks.append(whole.grow(6.0))
 	if _pair_marks != null:
 		_pair_marks.set_rects(marks)
 
@@ -2189,7 +2152,7 @@ func _show_die(i: int) -> bool:
 		# The strikes its Ricochet adds to a weapon (the Skua's), by the same box.
 		var bounced := _ricochets(ms, sf) if not ms.assigned else 0
 		if bounced > 0:
-			extra.append(EntryReadout.ricochet_line(bounced, sf.reach == Face.Reach.SWEEP))
+			extra.append(EntryReadout.ricochet_line(bounced))
 		# Its machine's form (the Polar Bear's): the seal or the opening this entry brings, by the
 		# chip the die shows for it, Sealed a term a tap opens.
 		var shift := form_mark(ms, sf) if not ms.assigned else ""
@@ -3156,30 +3119,17 @@ static func _is_ricochet(blows: Array, k: int) -> bool:
 
 
 ## The view a strike is aimed at, for the attacker's lunge: its first blow's foe as the spend found
-## it, a wasted shot's empty slot, else `fallback`.
+## it, else `fallback`.
 func _view_struck(blows: Array, k: int, was: Dictionary, fallback) -> UnitView:
 	for b in blows:
 		if int(b["strike"]) != k:
 			continue
-		if str(b["kind"]) == "miss":
-			var v := _miss_view(b)
-			if v != null:
-				return v
-		elif str(b["kind"]) in ["strike", "ricochet", "mine"]:
+		if str(b["kind"]) in ["strike", "ricochet", "mine"]:
 			var foe: Foe = b["foe"]
 			if was.has(foe):
 				return was[foe][0]
 			return _foe_view_for(foe)
 	return fallback
-
-
-## The empty slot a wasted shot landed in, or null.
-func _miss_view(b: Dictionary) -> UnitView:
-	var at: Vector2i = b.get("slot", Vector2i(-1, -1))
-	if at.x < 0 or at.x >= _slot_views.size() or at.y < 0 or at.y >= (_slot_views[at.x] as Array).size():
-		return null
-	var v: UnitView = _slot_views[at.x][at.y]
-	return v if v != null and is_instance_valid(v) else null
 
 
 ## The attacker's move for a strike, `t` seconds from now: `lands`, `cid` and `wound` as
@@ -3201,7 +3151,7 @@ func _attack_at(t: float, attacker: UnitView, aimed, ranged: bool, lands: float 
 func _land_blows(blows: Array, landed: float, was: Dictionary, dead: Array, hp_before: Dictionary) -> Dictionary:
 	var deaths := {}
 	var last := landed
-	# The death check (Ryan, 7 November: "check death(s)" once the hits, or a Sweep's every shot,
+	# The death check (Ryan, 7 November: "check death(s)" once the hits
 	# are done): every foe the spend killed dies after its last blow, so a later hit or shot on it
 	# lands on its stand-in first and nothing it took is cut short ("Anything truncated confuses
 	# the player").
@@ -3230,9 +3180,8 @@ func _land_blows(blows: Array, landed: float, was: Dictionary, dead: Array, hp_b
 	var count := {}
 	for b in blows:
 		var foe: Foe = b["foe"]
-		var key = foe if foe != null else b.get("slot", Vector2i(-1, -1))   # a wasted shot counts by its slot
-		var n := int(count.get(key, 0))
-		count[key] = n + 1
+		var n := int(count.get(foe, 0))
+		count[foe] = n + 1
 		events.append([_blow_time(b, landed, beats), _land_spend_blow.bind(b, n)])
 		last = maxf(last, _blow_time(b, landed, beats))
 	for foe in dead:
@@ -3257,9 +3206,6 @@ func _land_blows(blows: Array, landed: float, was: Dictionary, dead: Array, hp_b
 ## One blow landing: its foe's gauge steps down to what it left, the foe flashes and the blow's
 ## number rises off it, the `n`-th on that foe this spend set apart from the ones before.
 func _land_spend_blow(b: Dictionary, n: int) -> void:
-	if str(b.get("kind", "")) == "miss":
-		_land_miss(b)
-		return
 	var foe: Foe = b["foe"]
 	var v: UnitView = _stand_ins.get(foe, null)
 	if v == null:
@@ -3298,54 +3244,6 @@ func _pop_damage(v: UnitView, taken: int, n: int) -> void:
 	tw.tween_property(l, "modulate:a", 0.0, 0.45).set_delay(0.5)
 	tw.set_parallel(false)
 	tw.tween_callback(l.queue_free)
-
-
-## A Sweep's shot at an empty column landing (Ryan, 7 November: "Animate wasted shots. Anything
-## truncated confuses the player"): the empty slot jolts where the shot struck and a ring of dust
-## is thrown off it, wide and thick on purpose for the phone, with no number, since nothing was
-## there to take one. A first cut, judged running (RIFTGATE_MISS_DEBUG=1).
-func _land_miss(b: Dictionary) -> void:
-	var v := _miss_view(b)
-	if v == null or not is_inside_tree():
-		return
-	_animate_hit(v)
-	var r := v.drawing_rect()
-	var reach := maxf(r.size.x, 60.0)
-	var puff := Control.new()
-	puff.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	puff.position = _home.get(v, v.position) + r.get_center()
-	add_child(puff)
-	var state := {"t": 0.0}
-	var ink := Palette.INK
-	puff.draw.connect(func() -> void:
-		var t: float = state["t"]
-		var a := 1.0 - t
-		var rad := lerpf(reach * 0.12, reach * 0.6, t)
-		puff.draw_arc(Vector2.ZERO, rad, 0.0, TAU, 40, Color(ink, a), lerpf(7.0, 2.0, t))
-		for i in range(10):
-			var ang := TAU * float(i) / 10.0 + 0.3
-			var d := Vector2(cos(ang), sin(ang))
-			puff.draw_line(d * rad * 0.55, d * rad * 1.15, Color(ink, a * 0.85), lerpf(4.0, 1.5, t)))
-	var tw := create_tween()
-	tw.tween_method(func(t: float) -> void:
-		state["t"] = t
-		if is_instance_valid(puff):
-			puff.queue_redraw(), 0.0, 1.0, 0.5).set_ease(Tween.EASE_OUT)
-	tw.tween_callback(puff.queue_free)
-
-
-## The miss debug switch's beat (MISS_DEBUG): the next empty slot of the formation takes a wasted
-## shot's landing; none with the formation full.
-func _miss_debug() -> void:
-	var empty: Array[Vector2i] = []
-	for rank in range(2):
-		for col in range(sk.columns):
-			if sk.foe_at(rank, col) == null:
-				empty.append(Vector2i(rank, col))
-	if empty.is_empty():
-		return
-	_land_miss({"slot": empty[_miss_debug_n % empty.size()], "kind": "miss"})
-	_miss_debug_n += 1
 
 
 ## A killed foe's stand-in dies at the spend's death check, after its last blow: its marks go,
@@ -4144,7 +4042,7 @@ func _end_turn_now() -> void:
 
 
 ## What every foe a release struck had before it (the Whip Scorpion's valves): Foe -> its HP as
-## the enemy's turn left it, read off its first blow, and its gauge held there until the shots land.
+## the enemy's turn left it, read off its first blow, and its gauge held there until the blow lands.
 func _hold_releases(released: Array) -> Dictionary:
 	var hp_before := {}
 	for r in released:
@@ -4160,8 +4058,8 @@ func _hold_releases(released: Array) -> Dictionary:
 
 
 ## The releases played, once the enemy's turn has (a first cut, to judge running): each machine
-## fires a shot a beat along its rank, every shot its own flash, tick and number, a wasted one at
-## its empty slot, and the foes it felled die after the last. Returns the seconds it takes.
+## fires once and its blow lands on every foe at a beat, each its own flash and number, and the
+## foes it felled die after it. Returns the seconds it takes.
 func _play_releases(released: Array, was: Dictionary, hp_before: Dictionary) -> float:
 	var ends := 0.0
 	for r in released:

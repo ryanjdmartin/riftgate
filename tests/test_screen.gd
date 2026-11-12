@@ -634,7 +634,7 @@ func test_a_dies_readout_shows_the_entry_showing_with_its_effects_listed() -> vo
 	var s := _screen()
 	var db := ContentDB.load_default()
 	var ms: Skirmish.MechState = s.sk.mechs[1]
-	var gun := Face.attack(3, Face.Reach.SWEEP, [Face.Keyword.CLEAVE, Face.Keyword.BURN], 3)
+	var gun := Face.attack(3, Face.Reach.INDIRECT, [Face.Keyword.CLEAVE, Face.Keyword.BURN], 3)
 	gun.burn = 2
 	gun.cleave = 2
 	gun.strikes = 2
@@ -655,7 +655,7 @@ func test_a_dies_readout_shows_the_entry_showing_with_its_effects_listed() -> vo
 	assert_eq(str(lines[0]["place"]), "I", "beside its place on the die")
 	var sf := s.sk.shown_face(ms, gun)
 	var n := s.sk.shown_number(ms, sf)
-	assert_eq(texts, [texts[0], "Attack %d ×2" % n, "Heat %d" % sf.heat, "Target: A rank, Sweep", "Spread 2", "Apply Burn 2 on hit", "Tags: Beam, Flame"],
+	assert_eq(texts, [texts[0], "Attack %d ×2" % n, "Heat %d" % sf.heat, "Target: Enemy, Indirect", "Spread 2", "Apply Burn 2 on hit", "Tags: Beam, Flame"],
 		"a line a mark on the die, in the order a spend runs it, its numbers as the die prints them, and no source listed: %s" % str(texts))
 	var attack: Array = lines[1]["parts"]
 	assert_eq([int(attack[1]["trend"]), bool(attack[1]["gain"])], [1, true], "the blow moved up by the passive, the machine's gain: coloured, never explained")
@@ -731,7 +731,7 @@ func test_a_split_weapon_reads_its_blow_down_and_its_strikes_up() -> void:
 ## out. The plate lays the die out a row a component, one column.
 func test_the_codex_row_joins_the_holds_lines_into_three() -> void:
 	var db := ContentDB.load_default()
-	var gun := Face.attack(3, Face.Reach.SWEEP, [Face.Keyword.CLEAVE, Face.Keyword.BURN, Face.Keyword.RAPID], 3)
+	var gun := Face.attack(3, Face.Reach.INDIRECT, [Face.Keyword.CLEAVE, Face.Keyword.BURN, Face.Keyword.RAPID], 3)
 	gun.burn = 2
 	gun.cleave = 2
 	gun.strikes = 2
@@ -741,7 +741,7 @@ func test_the_codex_row_joins_the_holds_lines_into_three() -> void:
 	var texts: Array[String] = []
 	for l in lines:
 		texts.append(str(l["text"]))
-	assert_eq(texts, [db.component_name(gun.component).to_upper(), "Attack 3 ×2 · Heat 3 · Target: A rank, Sweep", "Spread 2 · Apply Burn 2 on hit · Rapid", "Test: a passive's line."],
+	assert_eq(texts, [db.component_name(gun.component).to_upper(), "Attack 3 ×2 · Heat 3 · Target: Enemy, Indirect", "Spread 2 · Apply Burn 2 on hit · Rapid", "Test: a passive's line."],
 		"its name, its attributes, its keywords, its rules: %s" % str(texts))
 	assert_eq([str(lines[0]["type"]), str(lines[0]["tags"])], ["Weapon", "Beam, Flame"], "its type, then its tags, beside its name")
 	var types := {}
@@ -2506,9 +2506,8 @@ func test_a_bursts_blows_land_a_strike_at_a_time() -> void:
 
 ## Nothing a spend fires is cut short on the screen (Ryan, 7 November: "Animate wasted shots.
 ## Anything truncated confuses the player"): a multi-hit that kills with its first hit still lands
-## its later hits, on the corpse, and the foe dies after the last; a Sweep's shot at an empty column
-## is recorded with its slot, counted as a beat, aimed at that slot and landed there.
-func test_every_hit_and_shot_lands_on_the_screen_a_wasted_one_included() -> void:
+## its later hits, on the corpse, and the foe dies after the last.
+func test_every_hit_lands_on_the_screen_one_on_a_corpse_included() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1, 3)
 	var m := db.make_mech("badger")
@@ -2528,32 +2527,6 @@ func test_every_hit_and_shot_lands_on_the_screen_a_wasted_one_included() -> void
 	var deaths := s._land_blows(blows, 0.5, {}, [frail], {frail: 4})
 	assert_true(is_equal_approx(float(deaths[frail]), 0.5 + 2.0 * SkirmishScreen.STRIKE_GAP), "it dies after the third hit, at the death check: %s" % str(deaths))
 	s.free()
-	# A sweep of four shots over three columns, the middle one empty.
-	var s2k := Skirmish.new(1, 3)
-	var m2 := db.make_mech("badger")
-	var pod := Face.attack(2, Face.Reach.SWEEP)
-	pod.strikes = 4
-	m2.die = Die.single(pod)
-	s2k.add_mech(m2)
-	var a := Foe.make("revenant", 30, 1)
-	var gone := Foe.make("revenant", 1, 1)
-	var c := Foe.make("revenant", 30, 1)
-	s2k.add_foes([a, gone, c])
-	var s2 := SkirmishScreen.new()
-	s2.setup(s2k)
-	gone.hp = 0
-	s2k._clear_dead()
-	s2._refresh()
-	assert_true(s2k.front[1] == null, "the middle column empty")
-	assert_true(s2._use_die(0, a), "swept")
-	var swept: Array = s2k.spend_blows
-	var misses: Array = swept.filter(func(x: Dictionary) -> bool: return str(x["kind"]) == "miss")
-	assert_eq(misses.size(), 1, "the shot at the empty column recorded: %s" % str(swept))
-	if misses.size() == 1:
-		assert_eq([int(misses[0]["strike"]), misses[0]["slot"]], [1, Vector2i(0, 1)], "the second shot, in the front rank's middle slot")
-		assert_eq(s2._view_struck(swept, 1, {}, null), s2._slot_views[0][1], "the shot is aimed at that empty slot")
-	assert_eq(SkirmishScreen._strikes_of(swept), 4, "four beats, the wasted one among them")
-	s2.free()
 
 
 ## Ricochet on the screen (the Skua's, 11 November; a synthetic passive): each of its strikes a
@@ -2800,63 +2773,25 @@ func test_a_status_row_says_buff_or_debuff_and_its_chip_carries_it() -> void:
 	s.free()
 
 
-## A sweep targets a rank (Ryan, 3 November: "fix the UI for sweep so its intuitively targeting a
-## rank"): the die dragged over a back foe lights the back rank alone and brackets it whole; over
-## nobody, every foe is a legal drop.
-func test_a_sweep_die_over_a_foe_lights_and_brackets_its_rank() -> void:
-	var s := _screen()
-	var ms: Skirmish.MechState = s.sk.mechs[0]
-	ms.unit.die = Die.single(Face.attack(1, Face.Reach.SWEEP))
-	ms.die = ms.unit.die
-	ms.face_index = 0
-	s._drag_from = 0
-	s._drag_over = null
-	s._refresh()
-	var lit := 0
-	for f in s.sk.field_foes():
-		if s._foe_view_for(f).highlight:
-			lit += 1
-	assert_eq(lit, s.sk.field_foes().size(), "over nobody, every foe is a legal drop")
-	assert_eq(s._pair_marks.rects.size(), 0, "and no rank is bracketed")
-	var back_foe: Foe = s.sk.back[0]
-	s._drag_over = back_foe
-	s._refresh()
-	for f in s.sk.field_foes():
-		assert_false(s._foe_view_for(f).highlight, "%s: no foe's own mark; the rank under the finger wears one bracket, the other rank is plain" % f.display_name)
-	assert_eq(s._pair_marks.rects.size(), 1, "one bracket round the rank")
-	var rank_rect: Rect2 = s._pair_marks.rects[0]
-	for f in s.sk.field_foes():
-		var v := s._foe_view_for(f)
-		var inside := rank_rect.encloses(Rect2(s._home.get(v, v.position) + v.drawing_rect().position, v.drawing_rect().size))
-		assert_eq(inside, f.rank == 1, "%s %s the bracket" % [f.display_name, "inside" if f.rank == 1 else "outside"])
-	s._drag_over = s.sk.front[0]
-	s._refresh()
-	assert_eq(s._pair_marks.rects.size(), 1, "the bracket moves with the finger")
-	var front_rect: Rect2 = s._pair_marks.rects[0]
-	assert_true(front_rect.encloses(Rect2(s._home.get(s._foe_view_for(s.sk.front[0]), Vector2.ZERO) + s._foe_view_for(s.sk.front[0]).drawing_rect().position, s._foe_view_for(s.sk.front[0]).drawing_rect().size)), "round the front rank now")
-	s._drag_from = -1
-	s._drag_over = null
-	s.free()
-
-
 ## A release plays on the screen (the Whip Scorpion's valves, 11 November): a machine that ends
 ## its turn with an entry it could have spent fires its heat once the enemy's turn has played, and
 ## the screen takes the fight as it stands after. Synthetic passive.
 func test_a_passed_turns_release_plays_after_the_enemy_turn() -> void:
 	var s := _screen(5)
 	var ms: Skirmish.MechState = s.sk.mechs[0]
-	ms.unit.grant_passive({"id": "boiler", "name": "Boiler", "description": "", "effects": [{"trigger": "static", "effect": "pass_sweep", "value": 2}]})
+	ms.unit.grant_passive({"id": "boiler", "name": "Boiler", "description": "", "effects": [{"trigger": "static", "effect": "pass_release", "value": 1, "gate": 4}]})
 	ms.heat = 6
 	assert_true(s.sk.can_spend(0), "its die has somewhere to go, and is left")
 	var hp := 0
 	for foe in s.sk.field_foes():
 		hp += foe.hp
+	var standing := s.sk.field_foes().size()
 	s._end_turn_now()
 	assert_eq(s.sk.releases.size(), 1, "it released")
-	assert_true((s.sk.releases[0]["blows"] as Array).size() >= 6, "a blow or a wasted shot for every heat")
+	assert_eq((s.sk.releases[0]["blows"] as Array).size(), standing, "a blow on every foe that stood")
 	var after := 0
 	for foe in s.sk.field_foes():
 		after += foe.hp
-	assert_true(after < hp, "the rank took its shots")
+	assert_true(after < hp, "the pack took it")
 	assert_true(s._shown_hp.is_empty(), "no gauge is left held off the tree")
 	s.free()

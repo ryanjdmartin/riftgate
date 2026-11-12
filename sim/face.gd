@@ -11,7 +11,7 @@ extends RefCounted
 enum Kind { ATTACK, SHIELD, VENT, BLANK, BUFF }
 ## Two reaches since 10 October (Ryan): Close, a worse Direct by design, is removed and melee
 ## is a tag. Direct was line of sight until 9 October.
-enum Reach { NONE, DIRECT, INDIRECT, SWEEP, EVERY_FOE }   # Sweep (Ryan, 3 November): a targeting mode, a rank picked and its filled slots walked; Every Foe (4 November), below
+enum Reach { NONE, DIRECT, INDIRECT, EVERY_FOE }   # Every Foe (4 November), below; Sweep, a rank picked and walked, went on 12 November
 ## Execute and Steady are retired (10 October): a threshold doubling is a hard sum hidden in
 ## a keyword, and a rolled weapon dealing its average is simply a flat one.
 ## The Soulcutter Talons' kill rule is a count printed on its one carrier (Ryan, 11 October: no
@@ -31,8 +31,8 @@ enum Reach { NONE, DIRECT, INDIRECT, SWEEP, EVERY_FOE }   # Sweep (Ryan, 3 Novem
 ## gun's reach, plain, no strike being aimed at it, so its Shock stands. A weapon's alone.
 ## Every Foe and Every Ally are targeting modes (Ryan, 4 November: "Silence should not narrow
 ## targeting modes, that's why I'm switching them to targeting modes"; keywords from 2 November):
-## Every Foe a reach (a debuff's, the Siphon's lure-all: dropped on any foe, it lands on every
-## foe in the fight); Every Ally and Every Other Ally `targets` (a shield's or a buff's: the whole
+## Every Foe a reach (dropped on any foe, it lands on every foe in the fight: a debuff's riders,
+## a weapon's number whole on each, the two gated specials' since 12 November); Every Ally and Every Other Ally `targets` (a shield's or a buff's: the whole
 ## team, its own machine among them, or every machine but its own, the Mooring Screens'; Ryan:
 ## "the difference is whether the center one is lit or not, its two modes"). `reaches_all` reads
 ## any of them.
@@ -47,7 +47,7 @@ const KIND_NAMES := {
 	Kind.ATTACK: "attack", Kind.SHIELD: "shield", Kind.VENT: "vent", Kind.BLANK: "blank", Kind.BUFF: "buff",
 }
 const REACH_NAMES := {
-	Reach.NONE: "none", Reach.DIRECT: "direct", Reach.INDIRECT: "indirect", Reach.SWEEP: "sweep", Reach.EVERY_FOE: "every_foe",
+	Reach.NONE: "none", Reach.DIRECT: "direct", Reach.INDIRECT: "indirect", Reach.EVERY_FOE: "every_foe",
 }
 const KEYWORD_NAMES := {
 	Keyword.NONE: "", Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate", Keyword.BURN: "burn",
@@ -190,7 +190,8 @@ var act_again: bool = false   # a buff on an ally whose die is spent: it rolls a
 var charged: Dictionary = {}  # a locked piece's charged form, what a muster buys (read by charged_form)
 # The Musk Ox's (Ryan's go, 21 October; built that day):
 var ammo_per_foe_hit: int = 0 # an attack: ammo back to its forging machine for every foe its blows reach (the Shrapnel Recuperator)
-var spends_magazine: bool = false   # an attack: every ammo in the magazine as a strike, the magazine its price (the Unrestricted Expenditure)
+var spends_magazine: bool = false   # an attack: the whole magazine its price (the Unrestricted Expenditure)
+var magazine_min: int = 0     # with spends_magazine: the ammo the magazine must hold for it to fire (Ryan, 12 November: "needing 8 heat/ammo to fire their specials"); 0 for any
 var split: int = 1            # the effective entry only, never printed: each roll serves this many strikes at its number divided among them, rounded down (the Skua's Split-cycle Breech; Effects.split_of)
 var reloads_ammo: int = 0     # a vent: ammo it adds to its forging machine as it is spent (the quick reload; the Forge counts it as no vent)
 var ammo: int = 0             # shown only: what a forging machine's gun costs it in ammo now (Skirmish.shown_face), its heat slot's place on the die
@@ -380,6 +381,7 @@ static func from_dict(d: Dictionary) -> Face:
 	f.charged = (cd as Dictionary).duplicate(true) if cd is Dictionary else {}
 	f.ammo_per_foe_hit = maxi(0, int(d.get("ammo_per_foe_hit", 0))) if f.kind == Kind.ATTACK else 0
 	f.spends_magazine = bool(d.get("spends_magazine", false)) and f.kind == Kind.ATTACK
+	f.magazine_min = maxi(0, int(d.get("magazine_min", 0))) if f.spends_magazine else 0
 	f.reloads_ammo = maxi(0, int(d.get("reloads_ammo", 0))) if f.kind != Kind.ATTACK and f.kind != Kind.BLANK else 0
 	var regen = d.get("regenerates", {})
 	if f.kind == Kind.ATTACK and regen is Dictionary:
@@ -498,6 +500,8 @@ func to_dict() -> Dictionary:
 		d["ammo_per_foe_hit"] = ammo_per_foe_hit
 	if spends_magazine:
 		d["spends_magazine"] = true
+	if magazine_min > 0:
+		d["magazine_min"] = magazine_min
 	if reloads_ammo > 0:
 		d["reloads_ammo"] = reloads_ammo
 	if regen_shield > 0 and regen_rounds > 0:
@@ -734,6 +738,7 @@ func duplicate_face() -> Face:
 	f.charged = charged.duplicate(true)
 	f.ammo_per_foe_hit = ammo_per_foe_hit
 	f.spends_magazine = spends_magazine
+	f.magazine_min = magazine_min
 	f.split = split
 	f.reloads_ammo = reloads_ammo
 	f.ammo = ammo
@@ -874,7 +879,7 @@ func rule_phrases() -> Array[String]:
 		if detonates:
 			out.append("detonates its Mine")
 		if spends_magazine:
-			out.append("a strike for every ammo in the magazine")
+			out.append("empties the magazine, %d ammo or more" % magazine_min if magazine_min > 1 else "empties the magazine")
 		if ammo_per_foe_hit > 0:
 			out.append("+%d ammo a foe hit" % ammo_per_foe_hit)
 		if kill_rerolls > 0:
@@ -1024,7 +1029,7 @@ func describe() -> String:
 			if detonates:
 				s += " detonates its Mine"
 			if spends_magazine:
-				s += " a strike for every ammo in the magazine"
+				s += (" empties the magazine, %d ammo or more" % magazine_min) if magazine_min > 1 else " empties the magazine"
 			if ammo_per_foe_hit > 0:
 				s += " +%d ammo a foe hit" % ammo_per_foe_hit
 			if kill_rerolls > 0:

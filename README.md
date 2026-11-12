@@ -506,8 +506,6 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # RIFTGATE_HIT_DEBUG=1 (any skirmish) lands a blow on a machine every second and a half, in turn a hull
 # hit from the left, one its shield holds, one its armour turns and a hull hit from the right, and
 # every fifth beat loses one and lights it again, to judge the hit reactions running.
-# RIFTGATE_MISS_DEBUG=1 (any skirmish) lands a Sweep's wasted shot on the formation's empty slots in
-# turn every second and a half: the jolt and the ring of dust thrown off it, to judge running.
 # RIFTGATE_ABILITY_DEBUG=1 (any skirmish) gives every foe and machine that has no ability an
 # ability's chip (Enrage on a foe, Sealed on a machine), to judge the look beside the buffs and debuffs.
 # RIFTGATE_MINE_DEBUG=1 (any skirmish) opens the fight with a Mine of 3 (Burn 1, Shock) on every foe,

@@ -1484,7 +1484,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "The signal mirror on its mast, turned on one foe with the whole boiler behind it. Ryan, 11 November: the locked piece \"takes the buzzards old form. Cools completely, damage per heat spent. Low base damage\"; \"The heliograph term can go on the new locked piece\" (his name of 20 October: \"Keep heliographic cause its dumber\"). The name is a session's draft he kept (11 November: \"Heliographic death ray is a great name. Kept\"), and its gun his the same day: \"an actual gun. Pipes connecting it to the boiler, steampunk style. Mirror or mirrors as part of it because weird future nonsense tech. Like a steam powered mirrored laser railgun.\"",
-    "niche": "The Whip Scorpion's answer to one big foe: it fires every point of heat the machine holds as one blow and leaves it cold, a low base and a point for every 2 heat. The same gauge feeds its passive's Sweep, which is the stronger spend against a rank (Ryan: \"I'd keep the sweep the more attractive option in terms of raw power\"), so each round is the ray on one foe now or the valves on a rank after the enemy's turn. The Buzzard's Afterburner Cannon held this form until its rework of 11 November."
+    "niche": "The Whip Scorpion's answer to one big foe: it fires every point of heat the machine holds as one blow and leaves it cold, a low base and a point for every 2 heat. The same gauge feeds its passive's release, which lands on every foe once it holds 8 heat (Ryan, 11 November, of the release as a Sweep: \"I'd keep the sweep the more attractive option in terms of raw power\"; a blow on every foe since the 12th), so each round is the ray on one foe now or the valves on the whole pack after the enemy's turn. The Buzzard's Afterburner Cannon held this form until its rework of 11 November."
    },
    "face": {
     "kind": "attack",
@@ -1705,18 +1705,16 @@
    "design": {
     "stage": "draft",
     "fantasy": "The rocket racks emptied at once, every tube, at nothing in particular. Ryan, 21 October: random targeting and Spread and Penetrate on every strike, \"the area-suppressing-fire-artillery fantasy of obliterating all the trash via repeated AOE damage\"; \"The artillery piece isn't a precision weapon\". The name is the order to spend everything, in the maker's dry voice (Ryan's pick of Claude's: abstract and military, nothing to do with the hardware).",
-    "niche": "The Musk Ox's salvo: every ammo in the magazine as a strike, each at a random live foe with Splash, a low number a strike; a boss killer when the boss stands alone and the trash obliterated when it does not, and a few ammo still land several blows."
+    "niche": "The Musk Ox's salvo. A stand-in since Sweep went (12 November; Ryan: \"gating the Scorp and Musk Ox to needing 8 heat/ammo to fire their specials, and making them a 'target all'\"; \"Ox will be tackled in a seperate session\"): it needs 8 ammo, empties the magazine and lands its number on every foe. Its numbers, and whether it scales with the magazine, are that session's."
    },
    "face": {
     "kind": "attack",
-    "reach": "sweep",
+    "reach": "every_foe",
     "power": 2,
-    "keywords": [
-     "splash"
-    ],
-    "splash": 1,
+    "keywords": [],
     "heat": 0,
-    "spends_magazine": true
+    "spends_magazine": true,
+    "magazine_min": 8
    },
    "passive": null,
    "tags": [
@@ -1833,16 +1831,16 @@
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "A pod of darts for the strafing run (Ryan named it 21 October), raked along a rank.",
-    "niche": "An ordinary weapon since 11 November (Ryan: \"Flechette gun - unlocked but still slotted\"): the Skua stocks it and any machine may fit it, so Sweep is in the pool. A shot at each column of the rank it is dropped on, 2 a shot, which is what it played as on the Skua under the Split-cycle Breech (four shots at half its 4). On a machine carrying Ricochet every shot that finds a foe bounces. Its numbers, and Sweep's own rule, wait on his call of the same day (Sweep as one shot a column always, or scrapped)."
+    "fantasy": "A pod of darts (Ryan named it 21 October; 12 November: \"Flechette to me sounds like something that hits a bunch of times, like a machine gun\").",
+    "niche": "Reworked 12 November with Sweep's removal (Ryan: \"the flechette pod just needs a rework. Doesn't have to be tied to the skua ... It could be the simple tier 1 multi-hit, maybe 1x3?\"): three strikes of 1 at one foe. It carries riders and flat buffs three times and a point of armour stops it whole. Placeholder numbers: built cold, heat 0, Claude's, so it is not a smaller Maxigun (2 by 3 at heat 1, the pool's tier-one multi-hit already); his to move. Still in the Skua's stock."
    },
    "face": {
     "kind": "attack",
-    "reach": "sweep",
-    "power": 2,
-    "strikes": 4,
+    "reach": "direct",
+    "power": 1,
+    "strikes": 3,
     "keywords": [],
-    "heat": 1
+    "heat": 0
    },
    "passive": null,
    "tags": [

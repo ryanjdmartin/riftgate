@@ -98,7 +98,7 @@ FACE_FIELDS = {
     "gathers_mines": [("mine", "reads")], "vents_all": [("heat", "reads")], "power_per_heat": [("heat", "reads")],
     "power_per_missing": [("missing_hp", "reads")], "finisher": [("missing_hp", "reads")], "resets_on_kill": [("kill", "reads")], "rolls_again_on": [("rage", "reads")],
     "kill_rerolls": [("kill", "reads"), ("reroll", "sets")], "ally_action": [("reroll", "reads")], "regenerates": [("regenerating", "sets")],
-    "spends_magazine": [("ammo", "reads")], "reloads_ammo": [("ammo", "sets")], "ammo_per_foe_hit": [("ammo", "sets")],
+    "spends_magazine": [("ammo", "reads")], "magazine_min": [("ammo", "reads")], "reloads_ammo": [("ammo", "sets")], "ammo_per_foe_hit": [("ammo", "sets")],
     "self_burn": [("burning_mech", "sets"), ("heat", "sets")], "volatile": [("hull_damage", "sets")], "strikes": [("strikes", "sets")],
     "shields": [], "vents": [], "spins": [], "cooldown": [], "charged": [("muster", "reads")],
     "rolls_target": [],
@@ -110,7 +110,7 @@ EFFECTS = {
     "shock_on_hull_strike": [("shocked", "sets"), ("hull_damage", "reads")], "seal_form": [("sealed", "sets"), ("braced", "sets"), ("heat", "sets")],
     "paradox": [("paradox", "sets"), ("suppressed", "sets")], "muster": [("muster", "sets"), ("reroll", "reads")],
     "shield_per_heat": [("heat", "reads")], "shield_per_ally_heat": [("ally_heat", "reads"), ("shield_granted", "reads")],
-    "add_stacks": [], "vent_blast": [("heat", "reads")], "forge": [("ammo", "sets"), ("heat", "reads")], "mine_on_spend": [("mine", "sets")],
+    "add_stacks": [], "vent_blast": [("heat", "reads")], "pass_release": [("heat", "reads")], "forge": [("ammo", "sets"), ("heat", "reads")], "mine_on_spend": [("mine", "sets")],
     "step_die": [("reroll", "reads")], "split_strikes": [("strikes", "sets")], "multiply_printed": [], "free_reroll": [("reroll", "sets")],
     "extra_action": [], "never_hunted": [], "no_destroy": [], "carry": [], "keep_status": [], "rewrite_weapon": [], "grant_keyword": [],
     "add_shield": [], "refill_shield": [], "vent_heat": [], "stack_status": [], "lay_status": [],
@@ -151,7 +151,7 @@ ENGINE_READERS = {
     "barrier": ["the next blow deals nothing"],
     "ward": ["no rider lands this round"],
     "spun_up": ["the next weapon spend +2 a stack"],
-    "ricochet": ["a strike of 1 more a stack after each shot of a weapon: most on a Sweep, whose every shot bounces, on riders a strike and on flat buffs; hull damage halves it"],
+    "ricochet": ["a strike of 1 more a stack at the target once a weapon has fired: most on riders a strike and on flat buffs; hull damage halves it"],
     "rallied": ["one reroll more this round"],
     "phased": ["untouchable until the round's end"],
     "sealed": ["armour +3, cooling stopped, 3 heat a turn"],
@@ -248,7 +248,7 @@ class Map:
                 self.add(status.get("status"), "reads", dict(p, how="gated on it"))
             if f.get("consumes"):
                 self.add(f["consumes"], "reads", dict(p, how="consumes it"))
-            if int(f.get("strikes", 1) or 1) > 1 or f.get("reach") == "sweep" or f.get("spends_magazine"):
+            if int(f.get("strikes", 1) or 1) > 1:
                 self.add("flakked", "reads", dict(p, how="strikes"))
                 self.add("overcharged", "reads", dict(p, how="strikes"))
                 self.add("primed", "reads", dict(p, how="strikes"))

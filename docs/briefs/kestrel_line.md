@@ -82,15 +82,14 @@ Where each stands:
   carries it, and his play is the to-do's.
 - **The Skua**: his rewrite of 11 November ("Ramping Dakka. Complete rewrite"), built the same
   day on his go: a stack of Ricochet for damaging a foe with a weapon, once a round, and a
-  second only by its lock, the Hypersonic Swoop (Rapid, a cooldown of one); a strike of 1 more
-  for every stack after each shot, half lost on any hull damage; the Flechette Pod an ordinary
-  tier-one weapon in its stock. The stacks ride a shot, his word: a Sweep gets them on every
-  shot, a weapon of several strikes once after them. Claude's other readings are built so and
-  his to move (a strike through the whole blow, no area; half rounded down at each blow that
-  takes hull; no cap). The Split-cycle Breech is gone from content. Its brief is retired (`git
-  show e5638e2:docs/briefs/kestrel_skua.md`); the bible's Kestrel row carries it, and his play
-  is the to-do's. His question of the same day, Sweep reworked or scrapped, is the bible's
-  section 12's.
+  second only by its lock, the Hypersonic Swoop (Rapid, a cooldown of one); half the stacks lost
+  on any hull damage. Ricochet in his text of 12 November: "After firing a weapon, it hits the
+  primary target 1 more time per stack, dealing 1 damage each time and applying all effects
+  other than area keywords", what it applies his to dial back to keywords if it proves too
+  much. Sweep went that day, so the Flechette Pod, an ordinary tier-one weapon in its stock, is
+  three strikes of 1 ("the simple tier 1 multi-hit, maybe 1x3?"). The Split-cycle Breech is gone
+  from content. Its brief is retired (`git show e5638e2:docs/briefs/kestrel_skua.md`); the
+  bible's Kestrel and Sweep rows carry it, and his play is the to-do's.
 - **The Needletail**: settled 11 November ("I agree with the Needletail, yes") and built the same
   day on his go ("Yes build them with placeholder numbers"): two things a round, a weapon and an
   equipment every round, its die turning to a lit entry of the other kind, the Designator kept,

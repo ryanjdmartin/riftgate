@@ -106,10 +106,8 @@ class Hits:
 	var vented_all := 0             # the heat Vents all emptied, for the log
 	var reached: Array = []         # every foe the blows reached, felled or not (the casings' refund)
 	var thawed := 0                 # Cryo stacks the hits spent, cooling the hitter once its heat lands (_pay_hits)
-	var swept: Array[String] = []   # a Sweep's shots, the foe and what it took, for the log
 	var damaged := 0                # the foes the blows took HP off (the on_damage trigger's read)
-	var steps := 0                  # the strikes and shots the spend came in, a Ricochet's among them: what lands after them takes the next place (_zap)
-	var sweep_rank := -1            # the rank a Sweep fired along
+	var steps := 0                  # the strikes the spend came in, a Ricochet's among them: what lands after them takes the next place (_zap)
 	## What the hits aimed at the spend's target fired at it, for the Mine its machine leaves there
 	## (Ryan, 9 November: "the mine should take the entire result of the spend, then apply it"):
 	## each status's stacks every hit laid, as its machine deepened and doubled them, its Purge
@@ -154,7 +152,7 @@ var log: Array[String] = []
 ## place of a kick back for melee with nothing that crosses the field.
 var last_roll: Dictionary = {}
 ## The heat released by passed turns as the last enemy turn ended (the Whip Scorpion's), for the
-## screen: {mech, rank, shots, blows (spend_blows' shape)} each. Cleared as a turn ends.
+## screen: {mech, heat, blows (spend_blows' shape)} each. Cleared as a turn ends.
 var releases: Array = []
 var _held: Dictionary = {}   # Foe -> the status ids a pin holds from this round's halving, read as the round's statuses run out
 var last_blast: Dictionary = {}   # the last vent blast, {mech, foe, dealt}, for the screen; cleared each round
@@ -206,9 +204,8 @@ var returned: Array = []
 ## blow at a time in step with the strikes (Ryan, 2 November: "flechette pod and other multistrikes
 ## need to clearly show the strikes in order, with individual ticks of damage ... damage needs to
 ## be timed to the animation across the board"): {foe, strike (from 0, the zap after the last),
-## taken (what the blow took off its HP), hp (after it), kind ("strike", "area", "chain", "spill",
-## "zap", "mine", or "miss" for a Sweep's shot at an empty column, its foe null and its `slot` the
-## [rank, column] it landed in)}, a blow on a foe an earlier hit felled included. Cleared as a
+## taken (what the blow took off its HP), hp (after it), kind ("strike", "ricochet", "area",
+## "chain", "spill", "zap" or "mine")}, a blow on a foe an earlier hit felled included. Cleared as a
 ## spend begins; the rules never read it.
 var spend_blows: Array = []
 ## Every special of the last enemy turn (a defend, buff or debuff in place of a blow), for
@@ -1229,9 +1226,8 @@ func targets_for_face(ms: MechState, f: Face) -> Array[Foe]:
 	var out: Array[Foe] = []
 	if f == null or not f.is_attack() or not can_fire(ms, f) or shield_short(ms, f):
 		return out   # a dry gun on a forging machine (the Musk Ox's), or an entry whose shield cost the shield cannot pay, has nothing it may be spent on
-	# Reach: direct hits the front and any exposed column's back; indirect hits everyone; a
-	# sweep is dropped on any foe and walks that foe's rank (Ryan, 3 November: "You pick a rank
-	# and that's the rank it hits"). A foe already killed this round still stands until the dead
+	# Reach: direct hits the front and any exposed column's back; indirect hits everyone, and a
+	# reach over every foe is dropped on any. A foe already killed this round still stands until the dead
 	# are cleared, but it is no target: a die spent on it would be wasted.
 	var anyone := reach_of(ms, f) != Face.Reach.DIRECT
 	for col in range(columns):
@@ -2109,9 +2105,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 			if Effects.nth_shot_due(ms.unit):
 				log.append("%s: the %s shot counts double" % [ms.unit.display_name, Effects.ordinal(Effects.counts_shots(ms.unit))])
 			var kills_before := team_kills   # the spend's kills are counted at its death check (is_kill)
-			if f.spends_magazine:
-				_salvo(mech_index, ms, f, target)
-			elif target != null:
+			if target != null:
 				# A Mine laid, the gather, the detonation and the Swap land in the rider phase,
 				# before the death check, on a target the hit felled too (_spend_at).
 				_spend_at(mech_index, ms, f, target, second)
@@ -2242,58 +2236,41 @@ func end_round() -> int:
 	return outcome
 
 
-## The rank a passed turn's release sweeps: the one with the most foes standing, the back on a tie
-## (Ryan, 11 November: "Tie can be back rank"). A massive foe stands in both.
-func release_rank() -> int:
-	var count := [0, 0]
-	for rank in range(2):
-		for spot in sweep_spots(rank):
-			if spot[0] != null and (spot[0] as Foe).alive():
-				count[rank] += 1
-	return 0 if count[0] > count[1] else 1
-
-
-## The shot a machine's release fires: a Sweep, a shot for every heat it holds, each of its
-## passive's damage. Null for a machine whose pass releases nothing, or one holding no heat.
+## The blow a machine's release lands on every foe (the Whip Scorpion's Thermal Ejection Manifold;
+## Ryan, 12 November: "1 damage to each enemy, increased by 1 for each heat over 8"): its passive's
+## number at the gate and a point more for each heat it holds past it. Null for a machine whose
+## pass releases nothing, or one holding less than the gate.
 func release_shot(ms: MechState) -> Face:
-	var power := Effects.pass_sweep(ms.unit) if ms != null else 0
-	if power <= 0 or ms.heat <= 0:
+	var rule := Effects.pass_release(ms.unit) if ms != null else {}
+	if rule.is_empty() or ms.heat < int(rule["gate"]):
 		return null
-	var shot := Face.attack(power, Face.Reach.SWEEP)
-	shot.strikes = ms.heat
-	return shot
+	return Face.attack(int(rule["value"]) + ms.heat - int(rule["gate"]), Face.Reach.EVERY_FOE)
 
 
-## The passes released (the Whip Scorpion's Thermal Ejection Manifold; Ryan, 11 November), as the
-## enemy's turn ends, so the heat the foes' blows banked over its maximum fires with the rest
-## ("end the turn right under the overheat, get hit a couple times to go over the threshold, and
-## then release it all"): each machine that passed and holds heat sweeps the rank with the most
-## foes, a shot for every heat, and is left cold. The shots are its hits, resolved as any Sweep's
-## (_hit), costing no heat of their own; the fight they decide ends there.
+## The passes released (the Whip Scorpion's; Ryan, 11 and 12 November), as the enemy's turn ends,
+## so the heat the foes' blows banked over its maximum fires with the rest ("end the turn right
+## under the overheat, get hit a couple times to go over the threshold, and then release it
+## all"): each machine that passed and holds its gate's heat lands its release on every foe and
+## is left cold; under the gate it keeps its heat. One hit, a weapon's, resolved as any (_hit),
+## costing no heat of its own; the fight it decides ends there.
 func _release_passes() -> void:
 	for i in range(mechs.size()):
 		var ms := mechs[i]
 		if not ms.passed or not ms.alive() or outcome != Outcome.NONE:
 			continue
 		var shot := release_shot(ms)
-		if shot == null:
+		var standing := field_foes().filter(func(foe: Foe) -> bool: return foe.alive())
+		if shot == null or standing.is_empty():
 			continue
-		var rank := release_rank()
-		var target: Foe = null
-		for spot in sweep_spots(rank):
-			if spot[0] != null and (spot[0] as Foe).alive():
-				target = spot[0]
-				break
-		if target == null:
-			continue
+		var target: Foe = standing[0]
 		var fired := ms.heat
-		log.append("%s opens its valves: %d heat along the %s" % [ms.unit.display_name, fired, "front" if rank == 0 else "back"])
+		log.append("%s opens its valves: %d heat, %d on every foe" % [ms.unit.display_name, fired, shot.power])
 		ms.heat = 0
 		spend_blows.clear()
 		var h := _hit(ms, shot, target)
 		_finish_hits(i, ms, shot, target, h, Pays.VENT)
-		ms.heat = 0   # cold after it, whatever the shots cashed
-		releases.append({"mech": i, "rank": rank, "shots": fired, "blows": spend_blows.duplicate()})
+		ms.heat = 0   # cold after it, whatever the blows cashed
+		releases.append({"mech": i, "heat": fired, "blows": spend_blows.duplicate()})
 		_refresh_guards()
 		_check_outcome()
 
@@ -2804,12 +2781,13 @@ func _spend_at(mech_index: int, ms: MechState, f: Face, target: Foe, second = nu
 		if ms.ammo < price:
 			log.append("%s: the magazine is dry" % ms.unit.display_name)
 			return
+		if f.spends_magazine:
+			log.append("%s empties the magazine: %d ammo" % [ms.unit.display_name, price])
 		ms.ammo -= price
 		pays = Pays.AMMO
 	var h := _hit(ms, f, target)
 	_lay_mine(ms, target, h.mine)
-	if f.reach != Face.Reach.SWEEP:
-		_entry_effects(ms, f, target, second)
+	_entry_effects(ms, f, target, second)
 	_finish_hits(mech_index, ms, f, target, h, pays)
 
 
@@ -2836,16 +2814,14 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	h.vented_all = ms.heat if f.vents_all else 0
 	if f.vents_all:
 		ms.heat = 0
-	# Every foe one strike reaches (a Spread's neighbours, a Penetrate's column), the same for
-	# each strike, since a kill clears its slot only after the spend; a sweep's later strikes
-	# find their own (below).
+	# Every foe one strike reaches (a Spread's neighbours, a Penetrate's column, every foe for a
+	# reach over them all), the same for each strike, since a kill clears its slot only after the
+	# spend.
 	var hit := reached_by(f, target)
 	var shapes := area_shapes(f, target)   # the shape each foe past the target stands in, for its number
 	# What the hit judges on each foe it reaches, before it lands (_judge): its machine's lays,
-	# the foe's own reads and the gates. A single-target weapon's hits judge once, here; a Sweep's
-	# shots each judge their own as they fire (below).
-	var sweep := f.reach == Face.Reach.SWEEP
-	var judged := _judge(ms, f, [] if sweep else hit)
+	# the foe's own reads and the gates, once, as the die is spent.
+	var judged := _judge(ms, f, hit)
 	var lays: Dictionary = judged["lays"]
 	var reads: Dictionary = judged["reads"]
 	var shut: Dictionary = judged["shut"]
@@ -2855,85 +2831,41 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	var riders: Array[Callable] = []   # every rider the strikes earn, in order, landed once the strikes are done (Ryan, 3 November)
 	var doubled := Effects.stack_multiplier(ms.unit, f, target)   # the stacks this spend lays, multiplied (the sixth shot)
 	var told_shut := {}   # the foes a gate turned the keyword from, told once
-	var split := maxi(1, f.split)    # the Skua's Split-cycle Breech: the hits it doubles, each base halved (Effects.split_of)
-	# Two shapes of weapon (Ryan, 7 November). A single-target one, area included: its hits all on
-	# the target, every hit's riders, then the death check. A multi-target one, Sweep alone for
-	# now, "Fires a shot at each column, left to right, repeating until it runs out of shots": each
-	# shot aimed at the foe in its column of the rank picked, hit and its riders landed before the
-	# next shot fires, then the death check once the shots are done. The Musk Ox's salvo is a
-	# Sweep, an ammo a shot (_salvo).
-	h.sweep_rank = sweep_rank_of(target) if sweep else -1
-	var spots: Array = sweep_spots(h.sweep_rank) if sweep else []   # queued as the spend begins (Ryan, 8 November)
-	var aimed := target              # the hit's own foe: the target, or the foe in a shot's column
+	var split := maxi(1, f.split)    # a passive's split: the hits it doubles, each base halved (Effects.split_of; none splits today)
+	# One shape of weapon (Sweep, the one multi-target mode, went on 12 November): its hits all on
+	# the target, an area's shape riding each, every hit's riders, then the death check.
 	var struck_once := {}            # every foe a blow of the spend has met, for what a foe reads on its first
 	var blocked := 0                 # the weapon's blows a living foe's armour or Barrier took whole (on_blocked)
-	if sweep:
-		h.heat += int(Effects.attack(ms.unit, f, 0, f.heat, target)["heat"])   # a sweep's heat, once, wherever its first shot falls
-	# Ricochet (the Skua's, Ryan, 11 November: "When striking an enemy with a weapon, the weapon
-	# strikes it again for each stack of Ricochet, dealing 1 damage each time"): a strike of 1 more a
-	# stack after each shot, at that shot's foe ("a sweep gets +N strikes every shot, a multi-hit
-	# gets+N strikes after"): a single-target weapon's once, after its strikes, a Sweep's after every
-	# shot that found a foe. Each is a strike through the whole blow, its number 1 in place of the
-	# entry's and what the entry reads: the firer's pipeline on it, the foe's Flak and armour, the
-	# weapon's riders a strike, and no area. Read as the spend begins, so a stack the spend earns
-	# bounces no shot of it.
+	# Ricochet (the Skua's, Ryan, 12 November: "After firing a weapon, it hits the primary target 1
+	# more time per stack, dealing 1 damage each time and applying all effects other than area
+	# keywords"): once the weapon's strikes are done, a strike of 1 more a stack at the target
+	# alone. Each is a strike through the whole blow, its number 1 in place of the entry's and what
+	# the entry reads: the firer's pipeline on it, the foe's Flak and armour, the weapon's riders
+	# a strike. Read as the spend begins, so a stack the spend earns bounces none of it.
+	var strikes := maxi(1, f.strikes)
 	var bounces := Effects.stacks_of(ms.unit, "ricochet") if f.is_weapon() else 0
-	var steps: Array = []   # the spend's strikes in order, [the entry's strike (a Sweep's shot), a Ricochet's]
-	for shot in range(maxi(1, f.strikes)):
-		steps.append([shot, false])
-		for _b in range(bounces if sweep else 0):
-			steps.append([shot, true])
-	for _b in range(0 if sweep else bounces):
-		steps.append([maxi(1, f.strikes) - 1, true])
-	h.steps = steps.size()
-	for at in range(steps.size()):
-		var s: int = steps[at][0]
-		var bounce: bool = steps[at][1]
-		if bounce:
-			if aimed == null:
-				continue   # a shot at an empty column struck no foe to strike again
-			var only: Array[Foe] = [aimed]
+	h.steps = strikes + bounces
+	for at in range(strikes + bounces):
+		var bounce := at >= strikes
+		if bounce and at == strikes:
+			var only: Array[Foe] = [target]
 			hit = only
 			shapes = {}
-		elif sweep:
-			# A shot at its spot: the foe there, standing or felled by an earlier shot, since a kill
-			# clears nothing until the death check (Ryan, 7 November: "sweep hits a unit it already
-			# killed and doesn't skip it"); an empty column takes the shot and nothing else, its area
-			# with it, so a lone foe takes its own column's shots alone ("it will NOT stack hits on a
-			# solo boss"); a pair's halves a spot each (8 November).
-			var spot: Array = spots[s % spots.size()]
-			aimed = spot[0]
-			if aimed == null:
-				h.swept.append("nothing")
-				_note_miss(Vector2i(h.sweep_rank, int(spot[1])), at)   # fired all the same, so the screen shows it land
-				continue
-			hit = reached_by(f, aimed)
-			shapes = area_shapes(f, aimed)
-			# Each shot a hit of its own (Ryan, 8 November: "Per shot"): it judges the foes it
-			# reaches as it fires, the shots before it landed, and what a foe reads on its first
-			# blow is read on this shot's.
-			judged = _judge(ms, f, hit)
-			lays = judged["lays"]
-			reads = judged["reads"]
-			shut = judged["shut"]
-			judged_hp = judged["hp"]
-			struck_once.clear()
-			doubled = Effects.stack_multiplier(ms.unit, f, aimed)
 		if bounce:
 			h.base += 1
-		elif s % split == 0:
+		elif at % split == 0:
 			h.base += f.power + own   # the number before the pipeline, once a split's hits, for the screen's flash
-		var heat := f.heat if at == 0 and not sweep else 0
-		# The blow's order (Ryan, 28 October), the hit's own foe (the target, or a shot's) first:
+		var heat := f.heat if at == 0 else 0
+		# The blow's order (Ryan, 28 October), the target first:
 		# the entry's number and what it prints from its firer (the heat Vents all fired, the
-		# hopper's loads), a split's halving of that base (the Skua's, Ryan, 7 November: "base
+		# hopper's loads), a split's halving of that base (Ryan, 7 November: "base
 		# weapon damage is halved"), then the firer's pipeline, every live modifier's adds,
 		# multiplies and floors in that order, its conditions read on that foe; then that foe's own
 		# reads, flat (_foe_reads): "the spirit of buffs and riders is they happen after".
 		# A Ricochet's strike is 1 where the entry's number and its reads of the foe would stand.
-		var modded := Effects.attack(ms.unit, f, 1 if bounce else split_share(f.power + own, split), heat, aimed, _judged(judged_hp, aimed))
-		var dmg: int = int(modded["damage"]) + (0 if bounce else _foe_reads(f, reads, aimed, not struck_once.has(aimed)))
-		if at == 0 and not sweep:
+		var modded := Effects.attack(ms.unit, f, 1 if bounce else split_share(f.power + own, split), heat, target, _judged(judged_hp, target))
+		var dmg: int = int(modded["damage"]) + (0 if bounce else _foe_reads(f, reads, target, not struck_once.has(target)))
+		if at == 0:
 			h.heat += modded["heat"]   # heat is paid once a spend, every modifier's with it (the rules: a blow)
 		h.vent += modded["vent"]
 		var landed := dmg
@@ -2945,13 +2877,13 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 		# strike, never this one's other blows.
 		var blows := {}
 		for foe in hit:
-			blows[foe] = dmg if foe == aimed else _area_blow(ms, f, int(shapes.get(foe, AREA_ALL)), foe, own, split, _judged(judged_hp, foe)) + _foe_reads(f, reads, foe, not struck_once.has(foe))
+			blows[foe] = dmg if foe == target else _area_blow(ms, f, int(shapes.get(foe, AREA_ALL)), foe, own, split, _judged(judged_hp, foe)) + _foe_reads(f, reads, foe, not struck_once.has(foe))
 		for foe in hit:
 			var was_alive := foe.alive()
 			var hp_before := foe.hp
 			var first := not struck_once.has(foe)   # the foe's first blow of the spend
 			struck_once[foe] = true
-			var into_mine := foe == aimed and aimed == target   # a hit aimed at the spend's target: its riders are the Mine's too
+			var into_mine := foe == target   # the blow on the spend's target: its riders are the Mine's too
 			if not h.reached.has(foe):
 				h.reached.append(foe)
 			if int(shapes.get(foe, 0)) == AREA_CHAIN:
@@ -2969,10 +2901,10 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				# counts the killing strike's excess. Its riders land on the corpse as any hit's do
 				# (the audit's eighth bug, 8 November: a Wild Boar's ×2 Flak 1 that kills with its
 				# first strike leaves Flak 2).
-				if foe == aimed:
+				if foe == target:
 					_note_blow(foe, at, 0, "ricochet" if bounce else "strike")   # the shot lands on the corpse before it spills
 				_spill(ms, f, foe, blow, hit, at, not f.is_debuff())
-				if foe == aimed:
+				if foe == target:
 					landed = blow
 			else:
 				# What the foe takes of the blow: its own statuses read last (its Flak adds to a
@@ -2983,7 +2915,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				# breaching blow meets none (one breach, 22 October). Every blow is recorded, one on a
 				# foe an earlier hit of the spend felled included, so the screen shows every hit and
 				# shot land (Ryan, 7 November: "Anything truncated confuses the player").
-				var landing := _land_blow(foe, blow, ms.unit, not f.is_debuff(), foe == aimed, foe.armour_for(f), at, ("ricochet" if bounce else "strike") if foe == aimed else ("chain" if int(shapes.get(foe, 0)) == AREA_CHAIN else "area"))
+				var landing := _land_blow(foe, blow, ms.unit, not f.is_debuff(), foe == target, foe.armour_for(f), at, ("ricochet" if bounce else "strike") if foe == target else ("chain" if int(shapes.get(foe, 0)) == AREA_CHAIN else "area"))
 				taken = int(landing["taken"])
 				var foe_armoured := int(landing["armoured"])
 				var barred := bool(landing["barred"])
@@ -2997,14 +2929,14 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 					log.append("%s consumes %s ×%d on %s, +%d" % [ms.unit.display_name, str(Effects.STATUS.get(f.consumes, {}).get("name", f.consumes)), eaten, foe.display_name, eaten * f.per_consumed])
 				if was_alive:
 					h.dealt += clampi(taken, 0, maxi(0, hp_before))
-				if foe == aimed:
+				if foe == target:
 					landed = taken
 					h.armoured += foe_armoured
 				# A weapon's strike aimed at the foe spends a shock, even one that deals nothing (Ryan,
 				# 25 October: "The important part is that it was a damaging weapon"; 29 October: "when
 				# targeted and struck by a weapon"); equipment (a lure, a probe) and a blow that only
 				# reaches the foe leave it standing.
-				if not f.is_debuff() and foe == aimed and Effects.remove(foe, "shocked"):
+				if not f.is_debuff() and foe == target and Effects.remove(foe, "shocked"):
 					log.append(("%s: the shock is spent on the Barrier" % foe.display_name) if barred else ("%s: the shock lands, %d doubled" % [foe.display_name, blow]))
 			# A hit lays what the passives lay on this foe, a stack per strike, a debuff's included,
 			# unless the passive asks for a weapon's hit (the Ambush's Vitriol, its text says so:
@@ -3088,33 +3020,21 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				h.mine["chain"] = int(h.mine["chain"]) + maxi(0, f.chain)   # every hit's arc number
 			if not touched.has(foe):
 				touched.append(foe)   # every foe the blows reached, felled or not: Shock, Expose, Lure and Disrupt land on it below
-		# A Primed machine's Burning, a stack a strike on each strike's own foe (the mechanics
-		# audit's 8, 27 October): a sweep's strikes burn the foes they fell on.
+		# A Primed machine's Burning, a stack a strike on the strike's own foe (the mechanics
+		# audit's 8, 27 October).
 		if int(modded["burn"]) > 0:
 			var primed_laid := _stacks_from(ms, "burning", int(modded["burn"])) * doubled
-			var struck := aimed
-			riders.append(func() -> void: _land_rider(struck, "burning", primed_laid, gained, turned))
-			if aimed == target:
-				h.mine_stack("burning", primed_laid)
+			riders.append(func() -> void: _land_rider(target, "burning", primed_laid, gained, turned))
+			h.mine_stack("burning", primed_laid)
 		h.total += landed
-		if sweep:
-			h.swept.append(("+%d" if bounce else "%s %d") % ([landed] if bounce else [aimed.display_name, landed]))
-			# A shot is a hit of its own (Ryan, 7 November: "[select target - hit(s) - riders per
-			# hit] for each shot fired"), its Ricochets part of it: its riders, and what lands after
-			# its blow, land once they are done and before the next shot fires, so a later shot at
-			# the same column reads them.
-			if at + 1 >= steps.size() or not bool(steps[at + 1][1]):
-				_land_riders(ms, riders, laid, webbed)
-				_after_blow(ms, f, touched, gained, turned)
 	# Riders land after the hits (Ryan, 3 November: "a multi-hit weapon with Shock would apply it
 	# after both hits ... Cryo should work the same way, resulting in 2 applications, not
 	# apply-cash-apply-cash, and not hit-hit-apply once"; and "It should be standard, not
 	# branching code"): every rider the hits earned, gathered above in the order the hits earned
 	# them, lands now the hits are done, an application a hit on each hit's own foe, so nothing in
 	# the hit cashes, feeds on or reads what it lays. Shock, Expose, Lure and Disrupt land below,
-	# after the blow, as they did. A sweep landed each shot's above.
-	if not sweep:
-		_land_riders(ms, riders, laid, webbed)
+	# after the blow, as they did.
+	_land_riders(ms, riders, laid, webbed)
 	# The hopper (11 October; the Ore Hopper, 31 October): a shot that fires it spends the loads
 	# it took; then each foe the spend's blows damaged puts loads in, after the blow, so a claw
 	# never feeds the shot it is part of: a weapon's own number where it prints one (the
@@ -3129,8 +3049,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 		var n := Effects.add_loads(ms.unit, per_foe * damaged.size())
 		if n > 0:
 			log.append("%s fills the hopper: +%d (%d)" % [ms.unit.display_name, n, Effects.stacks_of(ms.unit, "hopper")])
-	if not sweep:
-		_after_blow(ms, f, touched, gained, turned)
+	_after_blow(ms, f, touched, gained, turned)
 	if blocked > 0:
 		_blows_blocked(ms, blocked)
 	# What lands after the blow, and Breach on it, ride a Mine once.
@@ -3166,8 +3085,8 @@ func _finish_hits(mech_index: int, ms: MechState, f: Face, target: Foe, h: Hits,
 	_tell_hits(mech_index, ms, f, target, h, pays)
 	if pays == Pays.HEAT:
 		_zap(ms, f, target, h)
-	# The death check (Ryan, 7 November), once the hits and their riders are done, a sweep's every
-	# shot: a kill clears its slot (Ryan, 22 September: burning a hole through the front opens the
+	# The death check (Ryan, 7 November), once the hits and their riders are done: a kill clears
+	# its slot (Ryan, 22 September: burning a hole through the front opens the
 	# back rank to direct fire), and what it brings back waits for the spend's end. Indirect fire
 	# at the front rank costs its firer nothing (danger close retired with the stock pass, 22 October).
 	_clear_dead()
@@ -3178,15 +3097,12 @@ func _finish_hits(mech_index: int, ms: MechState, f: Face, target: Foe, h: Hits,
 		_fired(ms, Effects.fire(ms.unit, "on_damage"), "for the damage")
 
 
-## The hits told: the screen's last roll and the log's line (a Sweep's shots, a vent's blast or a
-## hit), then the heat Vents all fired into them.
+## The hits told: the screen's last roll and the log's line (a vent's blast or a hit), then the heat Vents all fired into them.
 func _tell_hits(mech_index: int, ms: MechState, f: Face, target: Foe, h: Hits, pays: int) -> void:
 	last_roll = {"mech": mech_index, "target": target, "base": h.base, "final": h.total, "tags": f.tags.duplicate()}
 	var how := f.describe()
 	var armour := " (armour -%d)" % h.armoured if h.armoured > 0 else ""
-	if f.reach == Face.Reach.SWEEP:
-		log.append("%s sweeps the %s: %s (%s)%s" % [ms.unit.display_name, "front" if h.sweep_rank == 0 else "back", ", ".join(h.swept), how, armour])
-	elif pays == Pays.VENT:
+	if pays == Pays.VENT:
 		log.append("%s's vent blasts %s for %d%s" % [ms.unit.display_name, target.display_name, h.total, armour])
 	else:
 		log.append("%s hits %s for %d (%s)%s" % [ms.unit.display_name, target.display_name, h.total, how, armour])
@@ -3252,8 +3168,7 @@ func _pay_hits(ms: MechState, f: Face, h: Hits, pays: int) -> void:
 ## pipeline, flat, beside its Flak, the eaten stacks a point each on its first blow and gone as it
 ## lands; and the gates (the stock pass's engine, 22 October: the Suppression Battery's Suppress on
 ## a foe carrying Flak), foe -> [keywords turned away], so a hit never opens its own gate. A
-## single-target weapon's hits judge once, at the spend; a Sweep's shots each their own as they
-## fire, the shots before them landed (Ryan, 8 November: "Per shot").
+## weapon's hits judge once, at the spend.
 func _judge(ms: MechState, f: Face, foes: Array) -> Dictionary:
 	var lays := {}
 	var reads := {}
@@ -3293,8 +3208,7 @@ func _entry_effects(ms: MechState, f: Face, target: Foe, second = null) -> void:
 
 ## A hit's riders landing (Ryan, 3 November: "a multi-hit weapon with Shock would apply it after
 ## both hits"): every rider its hits earned, in the order they earned them, an application a hit
-## on each hit's own foe; then what they laid and webbed, told. A single-target weapon lands
-## them once its hits are done, a Sweep once each shot is (Ryan, 7 November).
+## on each hit's own foe; then what they laid and webbed, told, once the spend's hits are done.
 func _land_riders(ms: MechState, riders: Array[Callable], laid: Dictionary, webbed: Array[Foe]) -> void:
 	for land in riders:
 		land.call()
@@ -3539,8 +3453,8 @@ func area_shapes(f: Face, target: Foe) -> Dictionary:
 
 
 ## The number a foe in a shape takes in place of the roll: the row's (Spread's or Splash's),
-## the column's (Penetrate's or Splash's), Chain's on a conductor, nothing for a foe a reach over
-## every foe adds (the Siphon's lure-all, equipment, whose blow is nothing).
+## the column's (Penetrate's or Splash's), Chain's on a conductor, and the entry's own for a foe
+## a reach over every foe adds (a weapon's lands whole on each; equipment's blow is nothing).
 static func area_number(f: Face, shape: int) -> int:
 	match shape:
 		AREA_ROW:
@@ -3549,6 +3463,8 @@ static func area_number(f: Face, shape: int) -> int:
 			return f.column_number()
 		AREA_CHAIN:
 			return f.number_of(Face.Keyword.CHAIN)
+		AREA_ALL:
+			return f.power
 	return 0
 
 
@@ -3892,13 +3808,14 @@ func _turn_die(ms: MechState, entries: Array[int]) -> void:
 # ---------------------------------------------------------------- the Musk Ox's
 
 ## What this gun costs its machine in ammo now (the Musk Ox's Desublimation Forge, Ryan's go of
-## 21 October): the whole magazine for the salvo, at least one; the forge's price for any other
+## 21 October): the whole magazine for the salvo, at least its gate (magazine_min: under it the
+## salvo cannot fire); the forge's price for any other
 ## weapon; nothing on a machine that forges nothing, or for anything but a weapon.
 func ammo_price_of(ms: MechState, f: Face) -> int:
 	if ms == null or ms.ammo_max <= 0 or f == null or not f.is_attack():
 		return 0
 	if f.spends_magazine:
-		return maxi(1, ms.ammo)
+		return maxi(maxi(1, f.magazine_min), ms.ammo)   # the whole magazine, and never under its gate: short of it the gun is dry
 	return Effects.ammo_price(ms.unit, f)
 
 
@@ -3974,71 +3891,6 @@ func rage_on_field() -> int:
 		if foe.alive():
 			n += foe.rage
 	return n
-
-
-## The rank a Sweep fires along (Ryan, 2 November: "target a rank, not a unit"; 3 November: "You
-## pick a rank and that's the rank it hits"): the rank of the foe the entry was dropped on, a
-## massive foe's the front. The drop picks the rank and nothing else: the shots start at its
-## first column.
-func sweep_rank_of(target: Foe) -> int:
-	return 0 if target == null or target.is_massive() or target.rank < 0 else target.rank
-
-
-## The spots a Sweep's shots walk on a rank (Ryan, 7 November: "Fires a shot at each column, left
-## to right, repeating until it runs out of shots"; 8 November, of a Gel's pair: "I would use up
-## a shot for each gel half. It functionally adds another column ... it queues up the spots to
-## target at the start of the spend, targeting each full column at least once"): each column in
-## turn as [its foe or null, the column], an empty column a spot of its own whose shot is wasted,
-## a pair's two halves a spot each, and a massive foe, filling both slots of its column, the spot
-## of either rank's column. Read once as the spend begins: a foe a shot fells keeps its spot, its
-## corpse taking the shots, and a half that fell before the spend leaves none.
-func sweep_spots(rank: int) -> Array:
-	var out: Array = []
-	for col in range(columns):
-		var standing := slot_foes(rank, col)
-		if standing.is_empty():
-			out.append([null, col])
-		for foe in standing:
-			out.append([foe, col])
-	return out
-
-
-## The shots each foe takes of a Sweep's `shots` dropped on `target`'s rank (the bot's read of the
-## rank as it stands): the spots in turn, repeating (sweep_spots), an empty column's wasted.
-func sweep_shots(target: Foe, shots: int) -> Dictionary:
-	var out := {}
-	var spots := sweep_spots(sweep_rank_of(target))
-	for s in range(maxi(1, shots)):
-		var foe = spots[s % spots.size()][0]
-		if foe != null:
-			out[foe] = int(out.get(foe, 0)) + 1
-	return out
-
-
-## The Unrestricted Expenditure (the Musk Ox's, Ryan's go of 21 October): every ammo in the
-## magazine a shot of one Sweep (Ryan, 7 November: every sweep on the one path) along the rank
-## it was dropped on, with the entry's keywords (Splash on every shot), the magazine its price
-## (Pays.AMMO: a foe's debuff alone heats it); a split doubles the shots as it does any sweep's.
-## One spend, so one Mine on the foe it was dropped on for a machine that leaves them (_lay_mine).
-func _salvo(mech_index: int, ms: MechState, f: Face, target: Foe = null) -> void:
-	var n := ms.ammo
-	ms.ammo = 0
-	if target == null:
-		var standing := field_foes()
-		if standing.is_empty():
-			return
-		target = standing[0]
-	var shots := n * maxi(1, f.split)
-	log.append("%s empties the magazine: %d shot%s along the %s" % [ms.unit.display_name, shots, "" if shots == 1 else "s", "front" if sweep_rank_of(target) == 0 else "back"])
-	if shots <= 0:
-		return
-	var salvo := f.duplicate_face()
-	salvo.reach = Face.Reach.SWEEP
-	salvo.strikes = shots
-	var pays: int = Pays.AMMO if ammo_price_of(ms, salvo) > 0 else Pays.HEAT   # the magazine, emptied above, its price
-	var h := _hit(ms, salvo, target)
-	_lay_mine(ms, target, h.mine)
-	_finish_hits(mech_index, ms, salvo, target, h, pays)
 
 
 # ---------------------------------------------------------------- the Swallowtail's
@@ -4404,7 +4256,7 @@ static func mine_text(mine: Dictionary) -> String:
 ## The Mine a spend leaves on its target (the Reverberant Payload, Ryan, 9 November: "Enemies
 ## targeted by the lammergeier's weapons and equipment get a mine on hit"; "One mine per spend";
 ## "the mine is laid as a rider, so ... applied before the death check"): the machine's flat damage
-## and the spend's riders join the Mine the foe carries, one Mine a foe, a Sweep's or a salvo's on
+## and the spend's riders join the Mine the foe carries, one Mine a foe, a reach over every foe's on
 ## the foe the die was dropped on. Its riders are what the spend's hits fired at the target
 ## (`riders`, Hits.mine: "the mine should take the entire result of the spend, then apply it",
 ## Ryan, 9 November), every hit's stacks as its machine laid them and a gated keyword where its
@@ -5507,12 +5359,6 @@ func _fall_with_cores() -> void:
 ## A blow the spend under way landed on `foe`, for the screen (spend_blows).
 func _note_blow(foe: Foe, strike: int, taken: int, kind: String) -> void:
 	spend_blows.append({"foe": foe, "strike": strike, "taken": maxi(0, taken), "hp": foe.hp, "kind": kind})
-
-
-## A Sweep's shot at an empty column (Ryan, 7 November: "Animate wasted shots"): no foe, the slot
-## it landed in, for the screen to fire at and land on.
-func _note_miss(slot: Vector2i, strike: int) -> void:
-	spend_blows.append({"foe": null, "slot": slot, "strike": strike, "taken": 0, "hp": 0, "kind": "miss"})
 
 
 ## The pack a foe fights for, or null (a test's foes come from none).

@@ -28,9 +28,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
 - Tests: 1132 tests, 363,473 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
-  with the Dingo's pieces, the pins and the Flakshot Repeater over the Clydesdale's review); 1143 tests,
-  364,454 checks, green on `ccr-e3ddf00b-ilkwbi` over main's `fbce698` (the three fast flyers rebuilt,
-  not landed). Before it,
+  with the Dingo's pieces, the pins and the Flakshot Repeater over the Clydesdale's review); 1135 tests,
+  364,369 checks, green on `ccr-e3ddf00b-ilkwbi` over main's `fbce698` (the three fast flyers rebuilt and
+  Sweep removed, not landed). Before it,
   1123 tests, 362,685 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
   with the Whip Scorpion's rework over the formation and refit session's landing). Before it,
   1119 tests, 362,994 checks, green on main (11 November, as `ccr-722ca9f0-yj8na3`
@@ -240,9 +240,10 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   "Everything should be automatic in this game, I don't want extra controls"). The Whip
   Scorpion's rework is his of the same day and built (the bible's Whip Scorpion row, v0.527: the
   tier-two formation breaker; nothing cools it; a pass, a turn it ends with an entry it could
-  have spent, Sweeps the rank with the most foes as the enemy's turn ends, a shot of 2 for every
-  heat, the back on a tie, the blows it took banked on top; its locked ray the Buzzard's old
-  form on one foe), dealt again, its brief retired: `pass_sweep` a passive's rule, the release
+  have spent, opens its valves on every foe as the enemy's turn ends once it holds 8 heat, 1
+  each and 1 more for each heat over 8 (Ryan, 12 November, in place of a Sweep of the fuller
+  rank at a shot of 2 a heat), the blows it took banked on top; its locked ray the Buzzard's old
+  form on one foe), dealt again, its brief retired: `pass_release` a passive's rule, the release
   after the enemy's turn in the round and its forecast, the bot holding its die when the
   release beats its best spend, the screen playing the shots once the enemy's turn has (a first
   cut). Its locked piece is the Heliographic Death Ray (his keep of the name; id
@@ -310,8 +311,13 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   "what does what and why you'd want one over the other"). All three are built on his go
   ("Yes build them with placeholder numbers"), each to be played (the to-do's Ryan list); the
   map is at the head of `kestrel_line.md`. Main's Whip Scorpion and Clydesdale work is merged in
-  (11 November). His question of the same day, Sweep reworked or scrapped, is the bible's
-  section 12's, with Claude's lean; nothing of it is built. A first direction on the placeholder
+  (11 and 12 November). Sweep is gone on his word of 12 November ("let's remove it and clean up
+  all those exceptions and code branches that it caused"; the bible's Sweep row, v0.538 here):
+  the reach, its spots and per-shot rules, the wasted shot and the rank's bracket, the bot's two
+  special paths and the salvo's routine; every weapon is one shape. Every Foe is a weapon's mode
+  too, for the Whip Scorpion's release (1 on every foe at 8 heat, 1 more for each heat over) and
+  the Musk Ox's salvo (a stand-in behind 8 ammo, its own session's). The Flechette Pod is three
+  strikes of 1, cold; Ricochet hits its weapon's target alone, his text of that day. A first direction on the placeholder
   numbers is in `docs/measurements.md` (each alone on the patrols, 30 seeds, the old kit beside
   the new): the Kite where it stood on its duels and a little dearer on packs rated for two, the
   Skua's duels from five to fifteen rounds down to three or four, the Needletail alone a little
@@ -329,14 +335,14 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
     declined (the bible's withdrawal row); Phased on a kill he kept for the shadow panther. The
     model's third mount is a bare pad on the nose's spine. Its brief is retired; his play is the
     to-do's.
-  - The Skua: built as his "Ramping Dakka" (the bible's Kestrel row, v0.535 on this branch,
+  - The Skua: built as his "Ramping Dakka" (the bible's Kestrel row, v0.538 on this branch,
     unpublished). Its passive gains a stack of Ricochet the first time each round one of its
     weapons damages a foe (the trigger `on_damage`; an effect's `once: round`, open to any effect
     an event fires). Ricochet is a buff that lasts the fight: after each shot of a weapon a
-    strike of 1 more a stack (a Sweep's every shot, any other weapon's once after its strikes),
-    through the whole blow, no area; hull damage halves it, rounded down. Its lock is the
+    strike of 1 more a stack at its target once the weapon's own strikes are done, with every
+    effect but its area; hull damage halves it, rounded down. Its lock is the
     Hypersonic Swoop (a stack, Rapid, a cooldown of one). The Flechette Pod is an ordinary
-    tier-one weapon in its stock, printed as it played (2 a shot, four shots), and the validator
+    tier-one weapon in its stock (three strikes of 1 since Sweep went), and the validator
     lets a machine stock up to its own tier at one and two (the bible's tiers row, its
     validator's half). The Split-cycle Breech is gone from content; the engine keeps the split.
     The bot counts the bounces and values a stack at a flat guess. On screen, unjudged: each
@@ -1126,7 +1132,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   a die in hand, the twenty-three tests moved onto it) and the Swap's gauges on the preview while
   it waits (Bug 16, the one visible change). Waits on Ryan's phone read of the Ability chips (the to-do).
 - **The spend's order and Sweep's columns** (7 November; the bible's section 5 Sweep, riders and
-  spend's order rows): a single-target weapon's hits, their riders, the death check, the spend's
+  spend's order rows; Sweep itself, its wasted shot and `RIFTGATE_MISS_DEBUG` went on 12 November,
+  the fast flyers' block above): a single-target weapon's hits, their riders, the death check, the spend's
   end, then what its kills bring back (a foe getting back up, a split's halves), so nothing a
   spend does meets them and a Purge on the killing hit keeps Undying down; Sweep a shot at each
   column, left to right, repeating, an empty column's shot wasted and a corpse taking its
@@ -1340,7 +1347,7 @@ commands are in `README.md`.
   (Version 504, main's `60a0e4d`), which matched that commit's file; new since 504 the pacing row in beats of the tide,
   menace a pack's threat rating and the rows that follow it, the Whip Scorpion's rework, the
   hardpoints row with every stock gun its class, the Clydesdale's batteries row and its square
-  ports, and Changed Over in the buff table). `ccr-e3ddf00b-ilkwbi`'s file is v0.537 over that (the withdrawal row with Ryan's call of 11 November on a break-off for one machine, the Kite's row rewritten, the Kestrel row's Needletail and Skua, the tiers row's stock rule, section 12's Sweep question), unpublished. BASE for the next merge is `3d5f98f`'s file. The
+  ports, and Changed Over in the buff table). `ccr-e3ddf00b-ilkwbi`'s file is v0.538 over that (the withdrawal row with Ryan's call of 11 November on a break-off for one machine, the Kite's row rewritten, the Kestrel row's Needletail and Skua, the tiers row's stock rule, the Sweep row rewritten as its removal with the rows that leaned on it, the Whip Scorpion's and the Musk Ox's rows), unpublished. BASE for the next merge is `3d5f98f`'s file. The
   live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
