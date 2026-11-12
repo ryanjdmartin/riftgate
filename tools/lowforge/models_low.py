@@ -254,8 +254,11 @@ def kite(b):
     chrome drum like the boosters' tapering aft to a lit exhaust, a dark inlet ahead ringed by
     gear teeth (the pinion, a wing's flight feathers and a gear) whose backs run aft as strakes
     tapering into the drum, the barrel out of the inlet's centre, its muzzle lit; each fires one of the Driver's two shots. The nose mounts either
-    side of the nosecone, hp_1 the stock's Transonic Rifle as its class, hp_2 bare (the Bleed
-    Valve shows nowhere), at half scale, the machine being small."""
+    side of the nosecone, hp_1 the stock's Transonic Rifle as its class, hp_2 bare, at half scale,
+    the machine being small; hp_3, bare, on top of the tail segment behind the canopy, its gun
+    firing forward over it (Ryan, 12 November: "move the new mount on top of the tail segment").
+    The tail segment's flat face behind the canopy is an air intake, a dark mouth in a steel lip
+    (the same day: "Can the flat face behind the canopy also get an intake treatment?")."""
     # Fuselage: one piece, a six-sided section lofted from a needle nose to a broad rear.
     # The top tapers sharply toward the nose, the belly shallowly, and the belly carries
     # forward under the wing roots (Ryan, 21 September).
@@ -271,16 +274,12 @@ def kite(b):
             b.stock("hp_1", (s * 4.5, 28.0, -1.0), "barrel", scale=0.5, carries="transonic_rifle")
         else:
             b.pad("hp_2", (s * 4.5, 30.0, -1.0), scale=0.5, size=(3.0, 1.0))
-    # A third mount since its fourth entry (Ryan, 11 November: "giving it 4 faces again"): bare, on
-    # the nose's spine between the two, a placeholder place for him to move.
-    b.pad("hp_3", (0.0, 26.0, 3.1), scale=0.5, size=(3.0, 1.0))
     # Canopy: far back, low, faired into the spine rather than a bubble.
     b.loft([(-2.0, hexagon(0.0, 6.2, 7.0, 0.5)), (-10.0, hexagon(0.0, 7.4, 9.0, 3.0)),
             (-18.0, hexagon(0.0, 7.5, 9.0, 3.2)), (-26.0, hexagon(0.0, 7.2, 9.0, 3.0))], "glass.glass", "canopy")
     # Behind it the raised spine is an air intake: a scoop with a dark mouth facing forward
     # and slits down its sides.
     b.loft([(-24.0, hexagon(0.0, 7.6, 9.4, 3.6)), (-28.0, hexagon(0.0, 8.4, 10.0, 5.0)), (-36.0, hexagon(0.0, 7.4, 9.4, 3.6))], "steel.panel", "intake")
-    b.loft([(-28.2, hexagon(0.0, 8.4, 8.6, 4.2)), (-27.4, hexagon(0.0, 8.4, 8.6, 4.2))], "bore.dark", "intake_mouth")
     for s in (-1.0, 1.0):
         b.box(s * 4.6, s * 5.2, -34.0, -29.0, 7.0, 9.6, "steel.vent", "intake_slits")
     # Reverse-swept wings with a little anhedral, knife-edged at the front (a three-point
@@ -325,6 +324,17 @@ def kite(b):
     b.loft([(-18.0, rect(0.0, 12.0, 4.0, 12.0)), (-32.0, rect(0.0, 8.0, 7.0, 12.5)),
             (-46.0, rect(0.0, 5.0, 9.0, 12.5)), (-60.0, rect(0.0, 3.0, 9.5, 11.5))], "steel.plate", "tail_boom")
     b.loft([(-30.0, rect(0.0, 4.0, 4.5, 8.0)), (-44.0, rect(0.0, 3.0, 5.5, 9.0))], "steel.dark", "keel")
+    # The tail segment's front face, over the canopy, is an air intake (Ryan, 12 November): a dark
+    # mouth across it inside a steel lip, a splitter down its middle.
+    _quad(b, [(-5.0, -17.9, 9.3), (5.0, -17.9, 9.3), (5.0, -17.9, 11.4), (-5.0, -17.9, 11.4)], "bore.dark", "intake_mouth")
+    for (za, zb) in ((11.4, 12.0), (8.9, 9.3)):
+        b.box(-5.6, 5.6, -18.2, -17.2, za, zb, "steel.plate", "intake_lip")
+    for (xa, xb) in ((-5.6, -5.0), (5.0, 5.6), (-0.3, 0.3)):
+        b.box(xa, xb, -18.2, -17.2, 9.3, 11.4, "steel.plate", "intake_lip")
+    # The third mount (its fourth entry, Ryan, 11 November: "giving it 4 faces again"; the 12th:
+    # "on top of the tail segment"): bare, on the tail segment's top behind the intake, on the
+    # centreline, its gun firing forward over the canopy.
+    b.pad("hp_3", (0.0, -25.0, 12.3), scale=0.5, size=(3.0, 1.0))
     for s in (-1.0, 1.0):
         a = math.radians(s * 38.0)
         root = [(s * 1.5, -60.0, 10.5), (s * 1.5, -48.0, 10.5), (s * 1.5, -48.0, 11.5), (s * 1.5, -60.0, 11.5)]
