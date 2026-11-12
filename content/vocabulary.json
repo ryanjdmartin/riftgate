@@ -350,6 +350,32 @@
    }
   },
   {
+   "id": "sap",
+   "category": "keyword",
+   "name": "Sap",
+   "codex": "Sap N: each foe hit gains N stacks of Sapped a strike, laid once the strikes are done, so no strike of the spend feeds on what it lays.",
+   "status": "implemented",
+   "design": {
+    "holes": "The keyword that lays Ryan's Sapped (11 November), first on the Baboon's Redshift Emitter."
+   }
+  },
+  {
+   "id": "juggernaut_breach",
+   "category": "status",
+   "name": "Juggernaut Breach",
+   "codex": "Machine status, the Wild Boar's. Its next weapon attack gains Breach, and that attack lifts it; equipment leaves it standing. Gained with a Barrier; one at a time. A purge takes it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 11 November: \"After gaining Barrier, its next weapon attack gains Breach. The next attack breach will need to be represented by a purgeable buff, I'd just call it 'Juggernaut Breach.'\"",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "No: one, whatever grants it",
+     "lasts": "Until its next weapon attack"
+    }
+   }
+  },
+  {
    "id": "numbed",
    "category": "status",
    "name": "Numbed",
@@ -369,14 +395,14 @@
    "id": "paradox",
    "category": "status",
    "name": "Paradox",
-   "codex": "Foe status. While a machine runs the Paradox meter (the Baboon's Pocket Paradox), a foe gains a stack each time it gains any other status: one a spend, however many strikes or stacks. At the machine's count (three) its past self knocks it out: it is Suppressed and the Paradox clears. A foe already suppressed loses its next action instead. Never decays. A status like any other: it counts for what reads a status, and a machine that deepens the statuses it applies deepens it.",
+   "codex": "Foe status. While a machine runs the Paradox meter (the Baboon's Pocket Paradox), a foe gains a stack of Paradox for every stack of another debuff it gains; a debuff that never stacks, as Shocked or Suppressed, is one. At the machine's count (five) or more its past self knocks it out: every stack is consumed and it is Suppressed.",
    "status": "implemented",
    "design": {
-    "holes": "The count is a placeholder.",
+    "holes": "The count is a placeholder (Ryan, 11 November: \"we have no idea how many paradox stacks is balanced, we just decided on 3 or whatever as a placeholder without knowing how much status chips were going to get thrown around in the game as a whole\"); a stack a debuff stack since that day, at five.",
     "table": {
      "kind": "debuff",
      "on": "foe",
-     "stacks": "Yes: one a debuff gained, a spend; at three it Suppresses and clears",
+     "stacks": "Yes: one for every debuff stack gained; at five or more it Suppresses and clears",
      "lasts": "The skirmish; never decays"
     }
    }
@@ -436,10 +462,20 @@
    "id": "rapid",
    "category": "keyword",
    "name": "Rapid",
-   "codex": "After this component is spent the machine acts again: the die rerolls for free onto any other component (a second copy of this one included, so copies chain). The Cassowary's Spin-Up spins the whole die instead, itself included, the one Rapid that may land on itself. Rapid carries no cooldown of its own: a Rapid component prints its cooldown, a cost the die shows by its clock, or pays heat or hull every spend instead. Any component may carry it, a vent or a shield as well as a weapon.",
+   "codex": "After this component is spent the machine acts again: the die rerolls for free onto any other component (a second copy of this one included, so copies chain), and the entry spent stays dark for the rest of the round, its own cooldown, never printed, so each copy acts once a round. Any component may carry it, a vent or a shield as well as a weapon.",
    "status": "implemented",
    "design": {
-    "holes": "Every Rapid piece carries a limiter (a cooldown, heat or Volatile), which the validator holds content to; a Rapid vent is never below tier three and a Rapid shield never below tier two (the bible's Rapid row)."
+    "holes": "Its limiter is its own switch-off, the entry dark for the rest of the round (Ryan, 12 November: \"rapid gets its innate cooldown zero back without the explicit display\"), which no cleanse lifts; a Rapid vent is never below tier three and a Rapid shield never below tier two (the bible's Rapid row)."
+   }
+  },
+  {
+   "id": "instant",
+   "category": "keyword",
+   "name": "Instant",
+   "codex": "After this component is spent the machine acts again: the die rolls again for free and may land on this one again, so the same component can be spent again. On the Cassowary's die the roll spins the whole cylinder. Nothing goes dark: what it costs and the odds are its limit. Any component may carry it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 12 November: \"the rapid no cooldown pieces change to a new keyword: Instant (reroll after use, can land on itself)\". Every Instant piece carries a limiter, which the validator holds content to: a cooldown, heat, Volatile or a shield cost, or the store a charged form spends (the Knuckle of Fury's five rage); a piece locked on a stepping die has the cylinder's odds (the Spin-Up's). An entry is Rapid or Instant, never both."
    }
   },
   {
@@ -613,6 +649,22 @@
      "on": "foe",
      "stacks": "Never: a second pin refreshes it",
      "lasts": "Until the round's end"
+    }
+   }
+  },
+  {
+   "id": "sapped",
+   "category": "status",
+   "name": "Sapped",
+   "codex": "Status, on a foe or a machine. Its attacks deal 1 less damage a stack, never below nothing. Every stack goes after its next turn: a foe's after its next action, a machine's after your next turn. A foe's Ward turns it away; a Cleanse clears it from a machine.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 11 November: \"I'd like to code in Weaken ... Weaken (debuff): Deals 1 less damage per stack with attacks ... Weaken can apply to both sides, it's not a bad soft CC from the foes to apply\"; then \"Weaken can change till after it's next turn then, instead of round end. Let's use Sapped.\" So a foe's Sapped laid in its turn reaches the machine's next attack.",
+    "table": {
+     "kind": "debuff",
+     "on": "both",
+     "stacks": "Yes: every Sap adds",
+     "lasts": "Until after its next turn"
     }
    }
   },
@@ -1472,6 +1524,16 @@
    }
   },
   {
+   "id": "on_barrier",
+   "category": "trigger",
+   "name": "On gaining a Barrier",
+   "codex": "Passive trigger. Fires as this machine gains a Barrier, from its own equipment or an ally's.",
+   "status": "implemented",
+   "design": {
+    "holes": "The Wild Boar's Juggernaut Breach (Ryan, 11 November: \"After gaining Barrier, its next weapon attack gains Breach\")."
+   }
+  },
+  {
    "id": "on_kill",
    "category": "trigger",
    "name": "On a kill",
@@ -1565,10 +1627,10 @@
    "id": "cooldown",
    "category": "component_property",
    "name": "Cooldown",
-   "codex": "A cost on a component, printed along its foot as a clock and a number: once spent, its entry goes dark for that many rounds, this one included, and the die shows it dark with the clock and the turns left; the die can still land on it, and nothing in it acts. Rapid carries none of its own. No cleanse lifts a cooldown.",
+   "codex": "A cost on a component, printed along its foot as a clock and a number: once spent, its entry goes dark for the rest of the round and sits out that many rounds after it, and the die shows it dark with the clock and the rounds left; the die can still land on it, and nothing in it acts. Rapid's own, the rest of the round, is never printed. No cleanse lifts a cooldown.",
    "status": "implemented",
    "design": {
-    "holes": "A price as heat is. The city's battlefield abilities count their own cooldowns in phases."
+    "holes": "A price as heat is. Counted after the round of the spend since 12 November (Ryan: \"change the count so 1 is how I intended\"; the round of the spend counted from 14 October, when a weapon's 1 cost nothing, the die spent for the round anyway). The city's battlefield abilities count their own cooldowns in phases."
    }
   },
   {
@@ -1902,16 +1964,6 @@
    }
   },
   {
-   "id": "roll_again_property",
-   "category": "component_property",
-   "name": "Rolls again",
-   "codex": "A rule a component may print. Spending it with a stack of the status it names spends one, and the die rolls again, a plain roll as the round opens, itself included, so the machine acts again and the same component may show again: the one roll again that is no reroll. Unlike Rapid nothing switches off: the stacks are the limit. No piece prints it today: the Nemesis's Knuckle of Fury did until 11 November, and its roll again is one direction of its upgrades.",
-   "status": "implemented",
-   "design": {
-    "holes": "A rule with no carrier since 11 November (the Nemesis's rework), kept in the engine for its upgrade direction."
-   }
-  },
-  {
    "id": "strikes",
    "category": "component_property",
    "name": "Strikes",
@@ -1925,7 +1977,7 @@
    "id": "static",
    "category": "trigger",
    "name": "Static",
-   "codex": "Passive trigger. Always on. Its effects change a machine's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat, armour, move or recharge; add_damage_taken and multiply_damage_taken on every incoming blow; weapon_cooldown (every weapon the machine fires goes dark for so many rounds: the Kite's); set_reach on a component (direct or indirect while a condition holds); suppress, which turns off another effect by id or tag.",
+   "codex": "Passive trigger. Always on. Its effects change a machine's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat, armour, move or recharge; add_damage_taken and multiply_damage_taken on every incoming blow; weapon_cooldown (every weapon the machine fires sits out so many rounds after the round it fires: the Kite's); set_reach on a component (direct or indirect while a condition holds); suppress, which turns off another effect by id or tag.",
    "status": "implemented",
    "design": {
     "holes": "Every read asks the pipeline; nothing is written to a stat or a component, so an effect that is gone stops answering. A static reach rule cannot be conditioned on reach."
@@ -1945,7 +1997,7 @@
    "id": "rage",
    "category": "resource",
    "name": "Rage",
-   "codex": "Machine store, the Nemesis's: a foe's hit on its shield banks one, hull damage two (a blow, a bite of its own, an overheat; a blow that breaks its shield and wounds is hull damage), and every blow of its own weapons that a foe's armour or Barrier takes whole two, up to 10, kept for the skirmish. With five banked its Knuckles of Fury go out charged, unasked: they spend the five and breach. Never decays; no cleanse, Silence or Purge touches it.",
+   "codex": "Machine store, the Nemesis's: a foe's hit on its shield banks one, hull damage two (a blow, a bite of its own, an overheat; a blow that breaks its shield and wounds is hull damage), and every blow of its own weapons that a foe's armour or Barrier takes whole two, up to 10, kept for the skirmish. With five banked its Knuckles of Fury go out charged, unasked: they spend the five and are Instant, the die rolling again, a fist included. Never decays; no cleanse, Silence or Purge touches it.",
    "status": "implemented",
    "design": {
     "holes": "Capped at 10 (the passive's stack_status cap), spent in fives (the Knuckle's charged price). The numbers are placeholders (Ryan, 11 November: \"These numbers are complete randomness anyway\").",

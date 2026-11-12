@@ -197,7 +197,7 @@ The roster, 24 built and 23 in briefs with 3 open (a brief's name in brackets; t
 | Kestrel (10, the Magpie's slot open to another design) | Skua, Storm Petrel, Puffin | Buzzard, Kite, Needletail | Lammergeier, Giant Petrel |
 | Kestrel's two, tiers open | the Snowy Owl, leaning to Cryo (`kestrel_owl.md`) | the Magpie (`kestrel_magpie.md`) | |
 | Wainwright & Sutler (10) | Prairie Dog, Cassowary, Cottonmouth | Dingo, Clydesdale, funnel-web, the gunship (`ws_gunship.md`), Whip Scorpion | Swallowtail, Musk Ox |
-| Aphelion (9 and one open) | Stingray; the line frame (`aphelion_line_frame.md`); Static (`aphelion_static.md`); the Barrier and Ward support, the defensive tier one (`aphelion_barrier_ward.md`) | Baboon (up, `aphelion_baboon.md`); the jellyfish with the status detonator (`aphelion_jellyfish.md`); the time-shifter (`aphelion_time_shifter.md`); one open, the time area's if it wants it | the Carrier (`aphelion_carrier.md`); the Macross with the aura-shifter (`aphelion_macross.md`) |
+| Aphelion (9 and one open) | Stingray; the line frame (`aphelion_line_frame.md`); Static (`aphelion_static.md`); the Barrier and Ward support, the defensive tier one (`aphelion_barrier_ward.md`) | Baboon (reworked 11 November, its tier placed later); the jellyfish with the status detonator (`aphelion_jellyfish.md`); the time-shifter (`aphelion_time_shifter.md`); one open, the time area's if it wants it | the Carrier (`aphelion_carrier.md`); the Macross with the aura-shifter (`aphelion_macross.md`) |
 | The Arsenal (8, two open, its tenth waiting) | none | Nemesis; Misharu (`arsenal_misharu.md`); the Onryō (`arsenal_onryo.md`); the Zoids walker (`zoids_walker.md`; "could still be Aphelion's 10th", Ryan, 6 November) | Ammit; Mastema (`arsenal_mastema.md`); Minos (`arsenal_minos.md`); the thunder figure (`arsenal_thunder.md`) |
 
 What moved to fit (Claude's, unmarked unless Ryan's word stands above):
@@ -318,8 +318,9 @@ any of them, which is the Suppress pattern (one answer, so every design reaches 
 | tempo lent to the best machine | the multi-rotor, the Cottonmouth (a Rapid shell is two drum shots) | an action moved |
 
 When this was written four of the five carriers were ungated (the switch-off and nothing
-else); since then the Diffuser and the Flakshot lost Rapid and every Rapid piece carries a
-limiter (the bible's Rapid row), the gated ones (the Spin-Up by its cylinder, the Needletail's
+else); since then the Diffuser and the Flakshot lost Rapid, and since 12 November Rapid's
+switch-off is its own again (once a round), Instant the roll that may land on itself and carries
+a limiter (the bible's Rapid row), the gated ones (the Spin-Up by its cylinder, the Needletail's
 once a round) the Paradox's shape. The stun row's cure applies: price by a gate, never ration.
 
 Homes for each want other than more Rapid pieces, with the engine's state:
@@ -345,13 +346,14 @@ Homes for each want other than more Rapid pieces, with the engine's state:
   the Flakshot. The stock pass's cantrips can be combined entries rather than Rapid ones: a
   vent that shields, a shield that lures, a gun that vents on fire. Density a spend instead of
   count of spends: no reroll, no chain, nothing to limit, the price each half's number.
-- **Rolls again, paid in a banked resource** (the second action, priced). The Nemesis's rule
-  (spend a stack, the die rolls again, no switch-off, the stacks the limit) as a family, one
+- **Instant, paid in a banked resource** (the second action, priced). The Nemesis's rule (a
+  charged Instant, five rage spent and the die rolls again, itself included, nothing dark, the
+  store the limit; a rage a roll from 12 October to 11 November) as a family, one
   banked resource a maker: rage, the hopper's loads, Spun Up, the H-tank's shells, Empowered,
   Kestrel's heat (roll again for 20 heat) or its rerolls. A plain roll, a visible price, gated
   by its setup.
 - **Cooldown bursts** (the second action, front-loaded). Two actions' worth in one spend, then
-  dark: strikes 2 with a cooldown of 2, the broadside, the Kite's chain. Paid in the
+  dark: strikes 2 with a cooldown of 1 (the round after sat out), the broadside, the Kite's chain. Paid in the
   die's reliability; the cooldown property, built, opens the family.
 - **Delayed actions** (an action moved in time). The bomber's mines, the web, and a charge kind
   (arm now, fire twice later), which reads the die's own state.
@@ -420,7 +422,6 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `aphelion_line_frame.md` | direction; Claude's first round, its review and Ryan's first calls in the brief (15 to 20 October) | Aphelion | 1 | Ryan's calls on its open list |
 | `aphelion_jellyfish.md` | direction; first round and review in the brief (15 and 16 October); the status detonator folded in, unrefined (Ryan, 4 November); his new direction of 5 November at its head (the status payoff carry, no weapons, its identity in its locked pieces) | Aphelion | 2 | Claude's first round on his direction of 5 November |
 | `aphelion_carrier.md` | proposal, open; first round and review in the brief (15 and 16 October) | Aphelion | 3 | Ryan's calls on its open list |
-| `aphelion_baboon.md` | rework; first round and review in the brief (15 and 16 October) | Aphelion | 2 (now 1) | Ryan's calls (the stock pass left it at tier one) |
 | `zoids_walker.md` | proposal, maker open; the Arsenal's on the ten-a-maker plan (4 November, unmarked), its verb open; his note of 6 November at its head (something more Sentai or Zoids, the shadow panther, "could still be Aphelion's 10th") | the Arsenal or Aphelion | 2 | Claude's first round on his note of 6 November, its maker with it |
 | `arsenal_misharu.md` | proposal; first round and review in the brief (15 and 16 October), unanswered; his new direction of 6 November at its head (delayed judgement) in the Penance round's place | the Arsenal | 2 | Claude's first round on his direction of 6 November |
 | `arsenal_onryo.md` | direction; first round and review in the brief (15 and 16 October), unanswered; his new direction of 6 November at its head (its own hull as a resource, a ramping carry) | the Arsenal | 2 | Claude's first round on his direction of 6 November |

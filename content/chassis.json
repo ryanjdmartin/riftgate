@@ -180,7 +180,7 @@
    "passive": {
     "id": "disabled_regulators",
     "name": "Disabled Weapon Regulators",
-    "description": "Premium Kestrel \"feature.\" Every weapon fires at double its printed number, and every weapon and equipment it aims at a foe runs 2 hotter and goes dark for two rounds. Each attack that kills makes its shots 1 hotter for the fight.",
+    "description": "Premium Kestrel \"feature.\" Every weapon fires at double its printed number, and every weapon and equipment it aims at a foe runs 2 hotter and sits out the next round. Each attack that kills makes its shots 1 hotter for the fight.",
     "effects": [
      {
       "trigger": "on_attack",
@@ -195,7 +195,7 @@
      {
       "trigger": "static",
       "effect": "weapon_cooldown",
-      "value": 2
+      "value": 1
      },
      {
       "trigger": "on_kill",
@@ -215,6 +215,7 @@
    "design": {
     "fantasy": "A long-armed, stubby-legged plantigrade walker with a high tech suite of weapons and equipment mounted on its backpack. Not fast or heavily armoured, it specializes in battlefield control through status effects and high-tech equipment with complex effects.",
     "niche": "combat support",
+    "rework": "Ryan, 11 November, its session: no tier assumed (\"I never actually intended for the stingray or baboon to be tier 1 ... Let's just design the best design we can and place it later\"); \"I think the baboon can afford some more tools in its 'control support' toolbox. Probably go to two locked pieces, and down to 4 slotted pieces, by removing the outer hand mounts (they don't make sense with the hand shape anyway)\"; its Paradox a stack a debuff stack at five, no second Paradox payoff (\"it's already a pretty great payoff\"); the backpack's two pods the two locked pieces (\"maybe just need a little something on top, a little asymmetry\"). The stock keeps the four basics on the shoulders and the fists' tops; the Twin Autoguns on the outer fists went with their mounts.",
     "name_clash": "Was the Mandrill (a BattleTech 'Mech that looks like ours); renamed the Baboon 28 September, Ryan's pick: a funny name for a funky machine Aphelion thought was cool. Gelada was too obscure for pilots to have coined, Silverback implied a fighter. Baboon is itself the Clan designation of BattleTech's Howler (a 20-ton light 'Mech); Ryan keeps it, a designation-tier clash."
    },
    "codex": "Looking like a cross between an orangutan and a troll, what the Baboon lacks in speed or endurance it more than makes up for with high-tech Aphelion technomagic. After the rifts first opened (and upended everything mankind knew about the laws of physics and the nature of the universe), Aphelion set to work assimilating the torrent of new data, developing experimental countermeasures at a frenetic pace. One unlucky researcher managed to knock out his past self using a localized pocket paradoxical time loop. The effect was quickly weaponized and a frame built to lug the heavy device in into battle, nicknamed the \"Baboon\" in the researcher's memory.",
@@ -223,7 +224,7 @@
    "shield_regen": 2,
    "movespeed": 3,
    "heat_max": 14,
-   "hardpoints": 6,
+   "hardpoints": 4,
    "module_slots": 2,
    "armour": 0,
    "cooling": 1,
@@ -232,25 +233,24 @@
    ],
    "size": "medium",
    "fixed": [
-    "solar_flare_array"
+    "retrocausal_shroud",
+    "redshift_emitter"
    ],
    "loadout": [
-    "twin_autoguns",
     "laser_carbine",
     "halo_projector",
-    "twin_autoguns",
-    "rivet_gun",
-    "ankle_mortar"
+    "ankle_mortar",
+    "rivet_gun"
    ],
    "passive": {
     "id": "pocket_paradox",
     "name": "Pocket Paradox",
-    "description": "A localized paradoxical time loop, weaponized. When a foe gains a status other than Paradox, it gains a stack of Paradox; at three its past self knocks it out (Suppressed), and the Paradox clears.",
+    "description": "A localized paradoxical time loop, weaponized. When an enemy gains one or more debuff stacks other than Paradox, it also gains that many Paradox stacks. At five or more its past self knocks it out: every stack is consumed to grant Suppressed.",
     "effects": [
      {
       "trigger": "on_foe_status",
       "effect": "paradox",
-      "value": 3
+      "value": 5
      }
     ]
    },
@@ -356,13 +356,19 @@
    "passive": {
     "id": "juggernaut_drive",
     "name": "Juggernaut Drive",
-    "description": "Momentum carries through. Damage past a kill spills into the rank behind, from any weapon.",
+    "description": "Damaging an enemy in the front rank deals 25% of its maximum HP, rounded up, to the enemy immediately behind. After gaining Barrier, its next weapon attack gains Breach.",
     "effects": [
      {
       "trigger": "static",
-      "effect": "grant_keyword",
-      "value": "spillover",
-      "printed": true
+      "effect": "shove_behind",
+      "value": 25
+     },
+     {
+      "trigger": "on_barrier",
+      "effect": "stack_status",
+      "value": "juggernaut_breach",
+      "stacks": 1,
+      "cap": 1
      }
     ]
    },

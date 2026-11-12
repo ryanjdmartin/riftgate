@@ -204,7 +204,7 @@ func damage_of(a: Dictionary, extra: int = 0) -> int:
 	# A swarm blow grows with the foe's kin on the field: the ghoul's threat is its numbers.
 	var swarm := int(a.get("swarm", 0)) * kin
 	var grudged := int(a.get("per_kill", 0)) * grudge
-	return int(roundf((base_number(a) + Effects.foe_attack_bonus(self) + extra + swarm + grudged) * float(a.get("factor", 1.0))))
+	return maxi(0, int(roundf((base_number(a) + Effects.foe_attack_bonus(self) + extra + swarm + grudged) * float(a.get("factor", 1.0)))))   # never below nothing (a Weakened foe's)
 
 
 ## The number a move's blow starts from: the foe's attack, or for a borrowed swing (`power`

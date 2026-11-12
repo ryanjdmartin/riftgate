@@ -57,8 +57,7 @@ const SHOCK_WEIGHT := 0.6        # a Shock cashed later (a mine's, a hull's): th
 const CLEANSE_ROUNDS := 2.0      # rounds a cleansed status would otherwise have cost (Corrupted lasts the fight, Burning fades)
 const HOPPER_WEIGHT := 0.6       # a load in the hopper, as a share of what it adds when a later shot fires it
 const PLATE_ROUNDS := 2.0        # rounds a held load's Armoured is likely to stand (this round's blows and the next's), for the hull its armour keeps
-const ROLL_AGAIN_WEIGHT := 1.0   # another roll of the die bought with a stack (the Nemesis's rage), as the die's own average blow
-const RAGE_BANK_WEIGHT := 0.5    # a stack banked by a bite of its own, as a share of the roll it buys: it waits for a fist to show
+const ROLL_AGAIN_WEIGHT := 1.0   # another action of the die (Rapid, Instant, the reset gun, the Horn's), as the die's own average blow
 const VITRIOL_WEIGHT := 0.5      # a status a passive lays (the funnel-web's acid) pays out over the actions to come, as Burn's does
 const FLAK_WEIGHT := 0.5         # a stack of Flak, as the point it adds to each team blow the foe is likely to take while it lasts
 const FUEL_WEIGHT := 0.5         # a point of heat banked by a machine whose vents blast, as a share of next round's blast it fuels
@@ -585,6 +584,12 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		for foe in sk.reached_by(f, target):
 			if foe == target or foe.alive():
 				score += purge_worth(sk, ms, f, foe, (1.0 - p_kill) if foe == target else 1.0)
+	# Sap (the Baboon's Redshift Emitter, 11 November): each foe reached that is to strike this round
+	# strikes a point lower a stack, never below nothing.
+	if f.has(Face.Keyword.SAP):
+		for foe in sk.reached_by(f, target):
+			if foe.alive() and foe.attacks() and not foe.is_suppressed():
+				score += float(mini(sk.foe_blow(foe), f.sap) * foe.strikes()) * HULL_WEIGHT
 	# Flak (21 October): a point a stack on every team blow each foe reached takes while the
 	# stacks last on their clock, damage in hand for the team's blows (flak_score).
 	if f.has(Face.Keyword.FLAK):
@@ -637,10 +642,6 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		score += siphon_score(sk, ms, f.heat_per_blow)
 	if f.has(Face.Keyword.EXPOSE):
 		score += (1.0 - p_kill) * expose_score(sk, target)
-	if not f.rolls_again_on.is_empty() and Effects.stacks_of(ms.unit, f.rolls_again_on) > 0:
-		# A stack to spend buys another roll of the die, so the machine acts again: about the
-		# die's own average blow, read plainly so the scorer never asks itself.
-		score += ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)
 	if f.resets_on_kill:
 		# The reset gun (the Kite's Pinion Driver): a kill lights every dark entry and the machine
 		# acts again, about the die's own average blow, at the odds of the kill.
@@ -688,6 +689,14 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	score -= heat_cost(sk, ms, f)
 	if not f.is_weapon():
 		score -= rage_cost(sk)   # a debuff is equipment, and feeds a raging foe (3 November)
+	# The Juggernaut Drive (the Wild Boar's, 11 November): a damaging blow on a front-rank foe drives
+	# a share of its maximum HP into the foe behind it, capped at what that foe has left; the
+	# target's alone, a placeholder read as every weight is.
+	var pct := Effects.shove_share(ms.unit)
+	if pct > 0 and f.is_weapon() and target.rank == 0 and not target.is_massive():
+		var back := sk.foe_at(1, target.column)
+		if back != null and back.alive() and expected_damage(ms, f, target) > 0.0:
+			score += minf(float(back.hp), float(ceili(float(target.hp_max) * float(pct) / 100.0)))
 	return score - volatile_cost(sk, ms, f) - cooldown_cost(ms, f, score)
 
 
@@ -1008,39 +1017,21 @@ static func volatile_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: f
 	if bite <= 0:
 		return 0.0
 	var cost := float(bite) * uses * HULL_WEIGHT
-	if not banked_on_hull(ms).is_empty():
-		# The bite is hull damage, so it banks a stack the machine's own entries spend to roll
-		# again (the Nemesis's rage): a share of the roll it will buy.
-		cost -= RAGE_BANK_WEIGHT * ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms) * uses
 	var fc := sk.forecast(ms)
 	if not fc["destroyed"] and int(fc["hull_after"]) - int(roundf(bite * uses)) <= 0:
 		cost += DEATH_WEIGHT
 	return cost
 
 
-## What a cooldown costs an entry (21 October): every round it stays dark after this one, the
-## share of the die's rolls it would have shown, at what it is worth now; its own or the one
-## its machine's passives grant (the Kite's), the longer. A cooldown of one ends with this
-## round and costs nothing here.
+## What a cooldown costs an entry (21 October): every round it sits out after this one (the
+## count since 12 November), the share of the die's rolls it would have shown, at what it is
+## worth now; its own or the one its machine's passives grant (the Kite's), the longer. Rapid's
+## own switch-off ends with this round and costs nothing here.
 static func cooldown_cost(ms: Skirmish.MechState, f: Face, worth: float) -> float:
-	var later := maxi(f.cooldown_rounds(), Effects.granted_cooldown(ms.unit, f)) - 1
+	var later := maxi(f.cooldown_rounds(), Effects.granted_cooldown(ms.unit, f))
 	if later <= 0 or worth <= 0.0 or ms.die.faces.is_empty():
 		return 0.0
 	return worth * float(later) / float(ms.die.faces.size())
-
-
-## The status this machine banks on every hull hit that one of its own entries spends to
-## roll again (the Nemesis's rage, 12 October), or "" when it has no such pair.
-static func banked_on_hull(ms: Skirmish.MechState) -> String:
-	for m in Effects.live(ms.unit):
-		for eff in m.effects:
-			if str(eff.get("trigger", "")) != "on_hull_damage" or str(eff.get("effect", "")) != "stack_status":
-				continue
-			var st := str(eff.get("value", ""))
-			for f in ms.die.faces:
-				if f.rolls_again_on == st:
-					return st
-	return ""
 
 
 ## What one stack of a status adds to a blow of `mean` damage: a flat add as itself, a
@@ -1341,6 +1332,7 @@ func machine_spend_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.Mec
 		var plain := f.duplicate_face()
 		plain.reaches_all = false
 		plain.keywords.erase(Face.Keyword.RAPID)   # its action again counted once, below, not once a machine
+		plain.keywords.erase(Face.Keyword.INSTANT)
 		for w in sk.reached_machines(ms, f):
 			score += machine_spend_score(sk, ms, w, plain)
 		return score + rapid_worth(ms, f, Effects.quick_turn_live(ms.unit, f))
@@ -1376,8 +1368,8 @@ func machine_spend_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.Mec
 				if f.rolls_target:
 					score += roll_gain(who)   # the Reheat Uplink's roll on the machine it lands on
 				if f.action_price > 0:
-					# Spent on itself, the Booster goes dark for the round (its cooldown of one): the
-					# ally's action it could still buy once an ally has spent is given up.
+					# Spent on itself, the Booster goes dark for the round (Rapid's own switch-off):
+					# the ally's action it could still buy once an ally has spent is given up.
 					score -= action_ahead(sk, ms, f)
 			if Effects.quick_turn_live(ms.unit, f):
 				score += ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)   # the Needletail's gate: Rapid once a round
@@ -1385,6 +1377,10 @@ func machine_spend_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.Mec
 				score += seal_score(sk, ms)   # a buff on itself seals a machine with a seal (the Polar Bear's Lockdown)
 	if f.has(Face.Keyword.CLEANSE):
 		score += cleanse_score(sk, who)
+	# The Retrocausal Shroud (the Baboon's, 11 November): every foe aiming at the machine Disrupted.
+	if f.disrupts_attackers:
+		for foe in sk.acting_on(who):
+			score += disrupt_score(sk, foe)
 	# The Forge's reloads (the Musk Ox's): the entry's own, else a vent's or a shield's on itself,
 	# as far as the magazine has room; and a printed heat's price on the low heat bar.
 	if ms.ammo_max > 0:
@@ -1400,16 +1396,17 @@ func machine_spend_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.Mec
 	return score - volatile_cost(sk, ms, f) - cooldown_cost(ms, f, score)
 
 
-## What a plain Rapid entry's action again is worth (4 November; Ryan: "If the bot doesn't value
-## rapid property, it probably should be fixed"): spent, the die rolls again, never onto the entry
-## just spent, and its machine acts again, about the die's own average blow, read plainly so the
-## scorer never asks itself (as the rage's, the reset gun's and the Horn's are). Nothing for a spend
-## the Needletail's gate makes Rapid (`quick`, valued as its own), nor on a stepping die, whose
-## cycle plan reads the chamber its Rapid steps to (cycle_chain). The bot had valued none, so the
+## What a plain Rapid or Instant entry's action again is worth (4 November; Ryan: "If the bot
+## doesn't value rapid property, it probably should be fixed"; Instant, 12 November): spent, the
+## die rolls again, never onto the entry just spent for Rapid and itself included for Instant, and
+## its machine acts again, about the die's own average blow, read plainly so the scorer never asks
+## itself (as the reset gun's and the Horn's are). Nothing for a spend the Needletail's gate makes
+## Rapid (`quick`, valued as its own), nor on a stepping die, whose cycle plan reads the chamber its
+## Rapid steps to and the chambers a spin may stop on (cycle_chain). The bot had valued none, so the
 ## Laminar Deflector, the Pulse Vacillator, the Cryo Flinger, the Musk Ox's Quick Reload and the
 ## Immelmann Booster's own action again were each worth only what they did once.
 static func rapid_worth(ms: Skirmish.MechState, f: Face, quick: bool) -> float:
-	if f == null or quick or not f.has(Face.Keyword.RAPID) or Effects.steps_die(ms.unit):
+	if f == null or quick or not f.acts_again() or Effects.steps_die(ms.unit):
 		return 0.0
 	if f.turns_die and Effects.folds_die(ms.unit) > 0:
 		return ROLL_AGAIN_WEIGHT * _raw_mean_of(_stowed_faces(ms))   # the Changeover's roll lands on the battery it raises
@@ -1828,6 +1825,12 @@ func buff_score(sk: Skirmish, who: Skirmish.MechState, f: Face) -> float:
 			score += phased_score(sk, who)
 		"rallied":
 			score += REROLL_SHARE * _team_raw_attack_mean(sk) * float(n)   # a team reroll more this round
+	# The foe in front (the Photosphere Lance's Sapped, 11 November): its blows this round a
+	# point lower a stack on each strike, never more than the blow, if it is to strike at all.
+	if f.front_status == "sapped":
+		var foe := sk.foe_in_front(who)
+		if foe != null and foe.attacks() and not foe.is_suppressed():
+			score += float(mini(sk.foe_blow(foe), f.front_stacks) * foe.strikes()) * HULL_WEIGHT
 	return score
 
 
@@ -2204,7 +2207,7 @@ func cycle_chain(sk: Skirmish, ms: Skirmish.MechState, at: int, read: Dictionary
 
 
 ## Every chamber of a stepping die read once: its worth now, its kind (0 plain or dark, 1 a spin,
-## 2 Rapid), what a spin brings after its own spend (a chamber drawn from all of them, each
+## Instant's roll on a stepping die, 2 Rapid), what a spin brings after its own spend (a chamber drawn from all of them, each
 ## played out one step deep, the spinning one landing on itself spinning again: E = (S + E) / n
 ## + M / n over the S of the spinning chambers and the M of the rest, solved), and the die's
 ## mean over its chambers played out, for a next round whose chamber a spin left to chance.
@@ -2215,7 +2218,7 @@ func cycle_read(sk: Skirmish, ms: Skirmish.MechState) -> Dictionary:
 	for i in range(n):
 		var f := _chamber_face(sk, ms, i)
 		vals.append(face_value(sk, ms, f))
-		kinds.append(0 if f == null else (1 if f.spins else (2 if f.has(Face.Keyword.RAPID) else 0)))
+		kinds.append(0 if f == null else (1 if f.has(Face.Keyword.INSTANT) else (2 if f.has(Face.Keyword.RAPID) else 0)))
 	var spinning := 0
 	var total := 0.0
 	for i in range(n):

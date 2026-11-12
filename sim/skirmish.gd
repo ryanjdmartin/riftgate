@@ -33,6 +33,7 @@ enum Outcome { NONE, VICTORY, DEFEAT, WITHDRAWN }   # WITHDRAWN is never produce
 ## Passed as an `int`, as every enum here is (CLAUDE.md).
 enum Pays { HEAT, AMMO, VENT }
 
+const SQUAD_SPOTS := 4   # the squad's spots across the floor, one under each of the foes' columns (the screen draws them)
 const DEFAULT_COLUMNS := 4   # the formation's width (Ryan, 23 September: four plays better than three)
 const REROLLS_PER_ROUND := 2   # two since 6 November (Ryan: a reroll gained is worth more, and two is the standard; a trial)
 ## The shapes a foe past a strike's target stands in (area by shape, numbered: Ryan, 28 October),
@@ -154,6 +155,7 @@ var last_roll: Dictionary = {}
 ## The heat released by passed turns as the last enemy turn ended (the Whip Scorpion's), for the
 ## screen: {mech, rank, shots, blows (spend_blows' shape)} each. Cleared as a turn ends.
 var releases: Array = []
+var _shoved: Dictionary = {}   # Foe -> true: the front-rank foes this spend has driven into the rank behind (the Juggernaut Drive), once a spend
 var _held: Dictionary = {}   # Foe -> the status ids a pin holds from this round's halving, read as the round's statuses run out
 ## The statuses no unit's clock runs down at this round's end, either side's (the Soul Siphon's
 ## hold, Ryan, 12 November: "No Empowered decays this round. And I mean none, not ally or enemy"):
@@ -1919,6 +1921,60 @@ func can_assign(mech_index: int, target) -> bool:
 	return false
 
 
+## The spot machine `i` stands in across the floor (Ryan, 29 October): a squad of one or two in
+## the middle spots, the outer ones left empty, a squad of three from the left; a wrecked machine
+## keeps its spot. The screen draws the squad by it, and a machine faces the foes' column of its
+## spot (Ryan, 11 November: "The machines are lined up, very clearly, in four columns with gaps
+## for missing ones").
+func mech_spot(i: int) -> int:
+	return i + floori((maxi(SQUAD_SPOTS, mechs.size()) - mechs.size()) * 0.5)
+
+
+## The foes' column a machine faces: its spot's, within the formation's width.
+func mech_column(ms: MechState) -> int:
+	return clampi(mech_spot(mechs.find(ms)), 0, columns - 1)
+
+
+## The foe in front of a machine (the Photosphere Lance's; Ryan, 11 November: "The enemy directly
+## in front of them gets the debuff, or if none in either rank in front, the closest column that
+## does, searching left-right-left-right"): its column's front rank, then its back; else the next
+## column left, then right, then two left, two right. Null with no foe standing.
+func foe_in_front(ms: MechState) -> Foe:
+	var c := mech_column(ms)
+	var order: Array[int] = [c]
+	for d in range(1, columns):
+		order.append(c - d)
+		order.append(c + d)
+	for col in order:
+		if col < 0 or col >= columns:
+			continue
+		for rank in [0, 1]:
+			var foe := foe_at(rank, col)
+			if foe != null and foe.alive():
+				return foe
+	return null
+
+
+## What an entry lays on the foe in front of the machine it lands on (the Photosphere Lance's
+## Sapped beside its Empowered), deepened by the spender's passives as any stack it lays.
+func _lay_in_front(ms: MechState, who: MechState, f: Face) -> void:
+	if f.front_status.is_empty() or who == null:
+		return
+	var foe := foe_in_front(who)
+	if foe == null:
+		return
+	var gained := {}
+	var turned := {}
+	var n := _stacks_from(ms, f.front_status, f.front_stacks)
+	_land_rider(foe, f.front_status, n, gained, turned)
+	if not Effects.turns_mark(foe, f.front_status):
+		log.append("%s lays %s ×%d on %s, in front of %s" % [ms.unit.display_name, str(Effects.STATUS[f.front_status]["name"]), n, foe.display_name, who.unit.display_name])
+	_tell_turned(turned)
+	for x in gained.keys():
+		for sid in gained[x]:
+			_foe_gained_status(x, sid, int(gained[x][sid]))
+
+
 ## Whether die `mech_index` has anywhere to be spent now: alive and unspent, an entry that is no
 ## blank (a dark one is), and a target it may land on (a foe in reach, a machine its chip
 ## allows). The screen's END TURN pulses once no die has (25 October).
@@ -1962,6 +2018,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 		return false
 	last_acts.clear()
 	spend_blows.clear()
+	_shoved.clear()
 	var ms := mechs[mech_index]
 	if not ms.alive() or ms.assigned:
 		return false
@@ -2096,7 +2153,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 				# rolls again by the reroll rule, never onto the entry it spent (Ryan, 8 November:
 				# "It's a roll, it should follow roll rules, like everything that rolls"), and it acts
 				# again.
-				_act_again(who, f)
+				_act_again(who)
 				log.append("%s rallies %s: its die rolls again, and it acts again" % [ms.unit.display_name, who.unit.display_name])
 			elif f.turns_die:
 				# The Changeover (the Clydesdale's, Ryan, 11 November): its die turns to its other
@@ -2111,7 +2168,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 				# showed, and it acts again. The Booster's own Rapid gives the Petrel its turn back too,
 				# so no turn is traded for the ally's.
 				rerolls_left -= f.action_price
-				_act_again(who, f)
+				_act_again(who)
 				log.append("%s pays %d reroll%s: %s's die rolls again, and it acts again" % [ms.unit.display_name, f.action_price, "" if f.action_price == 1 else "s", who.unit.display_name])
 			else:
 				var until := round + f.buff_rounds - 1
@@ -2138,6 +2195,9 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 					if m == null:
 						continue
 					log.append("%s buffs %s: %s ×%d%s" % [ms.unit.display_name, w.unit.display_name, m.name, stacks, "" if f.buff_rounds == 1 else " for %d rounds" % f.buff_rounds])
+					_lay_in_front(ms, w, f)
+					if f.buff_status == "barrier" and w.alive():
+						_fired(w, Effects.fire(w.unit, "on_barrier"), "as it gains a Barrier")   # the Wild Boar's Juggernaut Breach
 					if f.buff_status == "phased":
 						_phase(w)
 					elif f.buff_status == "rallied":
@@ -2149,6 +2209,16 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 						_roll_again(w)
 						log.append("%s's die rolls again" % w.unit.display_name)
 			_cleanse_with(ms, who, f)
+			# The Retrocausal Shroud (the Baboon's, Ryan, 11 November: "Cleanse an ally. Disrupt all
+			# enemies targeting it"; "Targeting all means targeting the ally"): every foe showing intent
+			# on the machine, its pick or a blow at every machine, takes Disrupt, the keyword's effect.
+			if f.disrupts_attackers:
+				var aiming := acting_on(who)
+				if aiming.is_empty():
+					log.append("%s: no foe aims at %s" % [ms.unit.display_name, who.unit.display_name])
+				else:
+					log.append("%s disrupts the foes aiming at %s" % [ms.unit.display_name, who.unit.display_name])
+					_disrupt(aiming)
 		Face.Kind.ATTACK:
 			# The sixth shot (the Cassowary's, Ryan's kit of 18 October): the spend the count
 			# lands on doubles its damage and the stacks it lays (an nth_shot rule read through
@@ -2186,6 +2256,8 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 				Effects.stack(ms.unit, Effects.STATUS["shots"], Effects.SKIRMISH, "count", 1, Effects.DECAY_NONE)
 			if f.is_weapon() and Effects.remove(ms.unit, "spun_up"):
 				log.append("%s: the spin is spent" % ms.unit.display_name)
+			if f.is_weapon() and Effects.remove(ms.unit, "juggernaut_breach"):
+				log.append("%s: its Juggernaut Breach is spent" % ms.unit.display_name)
 	_holding_returns = false
 	_release_returns()   # the spend is done with the field: what its kills bring back stands now
 	if f.on_machines():
@@ -2223,13 +2295,16 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 		Effects.grant_for_rounds(ms.unit, Effects.siphon_status(f.heat_per_blow), "siphon:" + f.component, round)
 		log.append("%s siphons: +%d heat for every blow it takes this round" % [ms.unit.display_name, f.heat_per_blow])
 	ms.assigned = true
-	# A cooldown (Ryan, 14 October): the entry goes dark for the rounds it prints, this one
-	# included, shown on the die with the rounds left. Rapid carries none of its own (Ryan, 2
-	# November: "Rapid does not have a native Cooldown, it needs to be displayed always"): a Rapid
-	# piece prints its cooldown, or pays heat or hull every spend (Face.cooldown_rounds).
+	# A cooldown (Ryan, 14 October; counted after the round of the spend since 12 November:
+	# "change the count so 1 is how I intended"): the entry is dark for the rest of this round and
+	# for the rounds it prints after it, shown on the die with the rounds left. Rapid's own
+	# switch-off is the keyword's and never printed (Ryan, 12 November: "rapid gets its innate
+	# cooldown zero back without the explicit display"): a Rapid entry, its own or the Needletail's
+	# gate's, is dark for the rest of the round. Instant's darkens nothing, its roll free to land
+	# on it again.
 	var cd := cooldown_of(ms, f)
-	if cd > 0:
-		Effects.disable_entry(ms.unit, ms.face_index, "cooldown", round + cd - 1)
+	if cd > 0 or f.has(Face.Keyword.RAPID):
+		Effects.disable_entry(ms.unit, ms.face_index, "cooldown", round + cd)
 	# The reset gun (the Kite's Pinion Driver, 21 October): if its spend killed, every entry dark
 	# from a cooldown comes back, itself included, and the machine acts again through Rapid's
 	# path, the free roll never landing on the entry just spent; a team reroll back onto it
@@ -2237,28 +2312,25 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 	var reset := f.resets_on_kill and killed > 0 and ms.alive() and not (field_foes().is_empty() and reinforcements.is_empty())
 	if reset:
 		var lit := Effects.clear_cooldowns(ms.unit)
-		_act_again(ms, f)
+		_act_again(ms)
 		log.append("%s: the kill resets it, %d back, and it acts again" % [ms.unit.display_name, lit])
 	# Rapid: the die rerolls for free (never the same entry; a copy of it may come up, so
-	# stacked copies chain, the cooldown of each copy its own), and the mech may act again.
-	# A spin (the Spin-Up's, Ryan's exception to the reroll rule, 19 October) is a true roll
-	# over every entry, itself included; a stepping die's free reroll steps it.
-	if f.has(Face.Keyword.RAPID) and not reset:
+	# stacked copies chain, each copy dark once spent), and the mech may act again; a stepping
+	# die's free reroll steps it. Instant (Ryan, 12 November: "reroll after use, can land on
+	# itself"): the die rolls again as the round opens, itself included, a spin on a stepping die
+	# (the Spin-Up's), so the same entry may show again and be spent again; its limit is what it
+	# costs and the odds (the Knuckle of Fury's five rage, the cylinder's sixth). A fight already
+	# won, or a machine its own spend wrecked, rolls nothing.
+	if f.acts_again() and not reset and ms.alive() and not (field_foes().is_empty() and reinforcements.is_empty()):
 		if quick:
 			# The gate spent (the Needletail's Quick-turn Avionics Relay): once a round.
 			Effects.grant_for_rounds(ms.unit, Effects.STATUS["quick_turned"], "gate", round)
-		_act_again(ms, f)
-		log.append("%s: %s" % [ms.unit.display_name, "the cylinder spins" if f.spins else ("a quick turn, rolls again" if quick else "rapid, rolls again")])
-	# Rolling again on a status (the Nemesis's fists on rage, Ryan, 12 October): spending the
-	# entry spends a stack, if its owner has one, and the die rolls again, a plain roll as the
-	# round opens. Not Rapid's reroll, which never lands on the entry just spent: a plain roll
-	# may show the same fist again. Nothing switches off: the stacks are the limit, and a fist
-	# that shows again punches again. A fight already won rolls nothing.
-	elif not f.rolls_again_on.is_empty() and ms.alive() and not (field_foes().is_empty() and reinforcements.is_empty()) \
-			and Effects.spend_stacks(ms.unit, f.rolls_again_on, 1) > 0:
-		ms.face_index = _roll(ms)
-		ms.assigned = false
-		log.append("%s: %s, rolls again (%d left)" % [ms.unit.display_name, str(Effects.STATUS.get(f.rolls_again_on, {}).get("name", f.rolls_again_on)).to_lower(), Effects.stacks_of(ms.unit, f.rolls_again_on)])
+		var instant := f.has(Face.Keyword.INSTANT)
+		_act_again(ms, instant)
+		var how := "a quick turn, rolls again" if quick else "rapid, rolls again"
+		if instant:
+			how = "the cylinder spins" if Effects.steps_die(ms.unit) else "instant, rolls again"
+		log.append("%s: %s" % [ms.unit.display_name, how])
 	# The fight ends the moment it is decided (Ryan, 22 September): the last foe down, or
 	# the last machine burnt out by its own heat, and nobody waits for End turn.
 	_refresh_allies()
@@ -2336,6 +2408,7 @@ func _release_passes() -> void:
 		log.append("%s opens its valves: %d heat along the %s" % [ms.unit.display_name, fired, "front" if rank == 0 else "back"])
 		ms.heat = 0
 		spend_blows.clear()
+		_shoved.clear()
 		var h := _hit(ms, shot, target)
 		_finish_hits(i, ms, shot, target, h, Pays.VENT)
 		ms.heat = 0   # cold after it, whatever the shots cashed
@@ -2446,6 +2519,7 @@ func _enemy_turn() -> void:
 			# A merge's lift (30 October), its own Empowered, riding its next move.
 			Effects.stack(f, Effects.STATUS["kindled"], Effects.SKIRMISH, "foe:" + f.content_id, int(_lift_after[f]), Effects.DECAY_HALF)
 			_lift_after.erase(f)
+		Effects.foe_turn_end(f)   # what lasts until after its next turn goes (Sapped)
 		_web_burst(f)
 		_turn_death_check()   # with the foe in _acted: a gold rage its own tick broke staggers it out of its next action, not the one it has had
 	if outcome == Outcome.NONE:
@@ -3079,6 +3153,12 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			# Flak (Ryan's go, 19 October; built 21 October): each foe hit gains the keyword's
 			# number in stacks a strike, with the riders, so no strike of the spend feeds on what
 			# it lays (Ryan, 3 November: "5,5,5 makes way more sense to me").
+			# Sap (the Baboon's Redshift Emitter, 11 November): Sapped laid as Flak is, with the riders.
+			if f.has(Face.Keyword.SAP):
+				var sap_laid := _stacks_from(ms, "sapped", f.sap) * doubled
+				riders.append(func() -> void: _land_rider(foe, "sapped", sap_laid, gained, turned))
+				if into_mine:
+					h.mine_stack("sapped", sap_laid)
 			if f.has(Face.Keyword.FLAK):
 				var flak_laid := _stacks_from(ms, "flakked", f.flak) * doubled
 				riders.append(func() -> void: _land_rider(foe, "flakked", flak_laid, gained, turned))
@@ -3180,12 +3260,45 @@ func _finish_hits(mech_index: int, ms: MechState, f: Face, target: Foe, h: Hits,
 	_tell_hits(mech_index, ms, f, target, h, pays)
 	if pays == Pays.HEAT:
 		_zap(ms, f, target, h)
+	_shove(ms, f, h)
 	# The death check (Ryan, 7 November), once the hits and their riders are done, a sweep's every
 	# shot: a kill clears its slot (Ryan, 22 September: burning a hole through the front opens the
 	# back rank to direct fire), and what it brings back waits for the spend's end. Indirect fire
 	# at the front rank costs its firer nothing (danger close retired with the stock pass, 22 October).
 	_clear_dead()
 	_pay_hits(ms, f, h, pays)
+
+
+## The Juggernaut Drive (the Wild Boar's, Ryan, 11 November: "Damaging an enemy in the front rank
+## deals 25% of its maximum HP, rounded up, to the enemy immediately behind"; "like the old storm
+## petrel zap, but to all targets hit"): once the spend's hits have landed, every front-rank foe a
+## blow of it damaged, felled or not, drives that share into the foe standing behind it, once a
+## spend, as the zap was dealt: plain, no keyword, through what the foe takes, its armour and its
+## Barrier, before the death check. A massive foe fills its column: nothing stands behind it.
+func _shove(ms: MechState, f: Face, h: Hits) -> void:
+	var pct := Effects.shove_share(ms.unit)
+	if pct <= 0:
+		return
+	var fronts: Array[Foe] = []
+	for b in spend_blows:
+		var foe = b.get("foe", null)
+		if foe == null or int(b.get("taken", 0)) <= 0 or str(b.get("kind", "")) in ["zap", "mine", "miss", "shove"]:
+			continue
+		if foe.rank == 0 and not foe.is_massive() and not fronts.has(foe) and not _shoved.has(foe):
+			fronts.append(foe)
+	for front in fronts:
+		_shoved[front] = true
+		var back := foe_at(1, front.column)
+		if back == null or back == front or not back.alive():
+			continue
+		var before := back.hp
+		var dealt := zap_on(back, ceili(float(front.hp_max) * float(pct) / 100.0), ms)
+		if _barrier_eats(back, true):
+			dealt = 0
+		back.hp -= dealt
+		_note_blow(back, maxi(1, f.strikes), dealt, "shove")   # after the strikes, as the zap is
+		h.dealt += clampi(dealt, 0, maxi(0, before))
+		log.append("%s drives %s into %s for %d" % [ms.unit.display_name, front.display_name, back.display_name, dealt])
 
 
 ## The hits told: the screen's last roll and the log's line (a Sweep's shots, a vent's blast or a
@@ -3338,7 +3451,7 @@ func _after_blow(ms: MechState, f: Face, touched: Array, gained: Dictionary, tur
 	_tell_turned(turned)
 	for foe in gained.keys():
 		for status_id in gained[foe]:
-			_foe_gained_status(foe, status_id)
+			_foe_gained_status(foe, status_id, int(gained[foe][status_id]))
 	touched.clear()
 	gained.clear()
 	turned.clear()
@@ -3823,15 +3936,16 @@ func _roll_again(ms: MechState) -> void:
 
 
 ## The machine acts again through Rapid's path: the die rolls for free, never onto the entry
-## just spent (a copy of it may come up), a spin over every entry, a stepping die stepping; a folded
-## die among its live entries, so a Changeover's roll lands on the battery it raised.
-func _act_again(ms: MechState, f: Face) -> void:
+## just spent (a copy of it may come up), a stepping die stepping; a folded die among its live
+## entries, so a Changeover's roll lands on the battery it raised. Instant's roll (`itself`) is a
+## true roll over every live entry, itself included, a spin on a stepping die.
+func _act_again(ms: MechState, itself := false) -> void:
 	if previewing:
 		ms.assigned = false   # it acts again; the copy's die keeps its entry, a roll never promised
 		return
 	_rolled()
 	var live := Effects.live_entries(ms.unit, ms.die)
-	if f.spins:
+	if itself:
 		ms.face_index = ms.die.roll_among(rng, live)
 	elif Effects.steps_die(ms.unit):
 		ms.face_index = _step(ms)
@@ -4310,7 +4424,7 @@ static func mine_of(foe: Foe) -> Dictionary:
 static func mine_riders(f: Face) -> Dictionary:
 	var hits := maxi(1, f.strikes)
 	var stacks := {}
-	for k in [Face.Keyword.BURN, Face.Keyword.CRYO, Face.Keyword.FLAK]:
+	for k in [Face.Keyword.BURN, Face.Keyword.CRYO, Face.Keyword.FLAK, Face.Keyword.SAP]:
 		if f.has(k):
 			var n := maxi(0, int(f.get(str(Face.NUMBER_FIELDS[k])))) * hits
 			if n > 0:
@@ -4491,7 +4605,7 @@ func _blow_mine(mine: Dictionary, rank: int, col: int, massive: bool, where: Str
 	_tell_turned(turned)
 	for foe in gained.keys():
 		for status_id in gained[foe]:
-			_foe_gained_status(foe, status_id)
+			_foe_gained_status(foe, status_id, int(gained[foe][status_id]))
 
 
 ## A mark a Mine's blast lays after its blow, Shocked or Exposed (through the next round, renewing),
@@ -4558,9 +4672,9 @@ func _detonate(ms: MechState, target: Foe) -> void:
 	_blow_mine(mine, 0 if target.is_massive() else target.rank, target.column, target.is_massive(), target.display_name)
 
 
-## The rounds an entry goes dark once this machine spends it, this one included: its own
-## printed cooldown or the one its machine's passives grant every weapon and debuff (the Kite's
-## two), the longer.
+## The rounds an entry sits out once this machine spends it, after the round of the spend: its
+## own printed cooldown or the one its machine's passives grant every weapon and debuff (the
+## Kite's one), the longer. Rapid's own switch-off, the rest of the round, is never counted here.
 func cooldown_of(ms: MechState, f: Face) -> int:
 	if f == null:
 		return 0
@@ -4653,7 +4767,7 @@ func _land_rider(foe: Foe, sid: String, n: int, gained: Dictionary, turned: Dict
 	if n <= 0:
 		return
 	Effects.stack(foe, Effects.STATUS[sid], Effects.SKIRMISH, "mech", n, Effects.status_decay(Effects.STATUS[sid]))
-	_note_status(gained, foe, sid, turned)
+	_note_status(gained, foe, sid, turned, n)
 	if laid == null or Effects.turns_mark(foe, sid):
 		return   # its Ward turned the lay away: nothing laid to tell
 	var per: Dictionary = laid.get(foe, {})
@@ -4775,17 +4889,18 @@ func paradox_count() -> int:
 
 ## One spend's status on one foe, told once at the end of the spend however many strikes or
 ## stacks put it there (Ryan, 10 October: an application, not a stack).
-static func _note_status(gained: Dictionary, foe: Foe, status_id: String, turned = null) -> void:
+static func _note_status(gained: Dictionary, foe: Foe, status_id: String, turned = null, n: int = 1) -> void:
 	if Effects.turns_mark(foe, status_id):
 		# A foe's Ward turned it away (28 October): nothing gained, nothing for the Paradox, and
 		# the spend tells it once.
 		if turned is Dictionary and foe.alive():
 			_note_turned(turned, foe, status_id)
 		return
-	var ids: Array = gained.get(foe, [])
-	if not ids.has(status_id):
-		ids.append(status_id)
-	gained[foe] = ids
+	# Each status the foe gained and the stacks it gained of it (the Paradox counts stacks since 11
+	# November); a status that never stacks gains one.
+	var got: Dictionary = gained.get(foe, {})
+	got[status_id] = int(got.get(status_id, 0)) + maxi(1, n)
+	gained[foe] = got
 
 
 ## A mark a foe's Ward turned away (28 October), noted once a spend.
@@ -4820,14 +4935,19 @@ func _tell_turned(turned: Dictionary) -> void:
 ## machine's count it is Suppressed and the Paradox clears. Paradox never counts, and the
 ## Suppressed it causes is never told, so it never feeds itself; a Suppress keyword's does
 ## count. Numbed is a buff a Purge lowers and nothing else touches (2 November).
-func _foe_gained_status(foe: Foe, status_id: String) -> void:
-	if status_id == "paradox" or status_id == "numbed" or Effects.turns_mark(foe, status_id):
+## A status the team put on a foe, `n` its stacks gained (the Baboon's Pocket Paradox, Ryan, 11
+## November: "When an enemy gains one or more debuff stacks other than Paradox, it also gains that
+## many Paradox stacks"; "Shocked and such are a stack, it just caps at 1, so yes they grant 1
+## paradox"): a debuff alone feeds the meter, a stack of Paradox a stack, and at its count it is
+## spent into a Suppress ("At five or more, consume all stacks to grant Suppressed").
+func _foe_gained_status(foe: Foe, status_id: String, n: int = 1) -> void:
+	if status_id == "paradox" or status_id == "numbed" or Effects.status_kind(status_id) != "debuff" or Effects.turns_mark(foe, status_id):
 		return   # a felled foe's gains count too: a trigger never goes unfired for a death checked last (3 November)
 	for ms in live_mechs():
 		var meter := Effects.paradox(ms.unit)
 		if meter[1] <= 0:
 			continue
-		Effects.stack(foe, Effects.STATUS["paradox"], Effects.SKIRMISH, "mech", _stacks_from(ms, "paradox", meter[0]), Effects.DECAY_NONE)
+		Effects.stack(foe, Effects.STATUS["paradox"], Effects.SKIRMISH, "mech", _stacks_from(ms, "paradox", meter[0] * maxi(1, n)), Effects.DECAY_NONE)
 		if Effects.stacks_of(foe, "paradox") >= meter[1]:
 			Effects.remove(foe, "paradox")
 			log.append("%s got trapped in a paradox! (%s)" % [foe.display_name, ms.unit.display_name])

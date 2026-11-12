@@ -2261,8 +2261,7 @@ func test_rapid_may_roll_onto_a_copy_of_itself() -> void:
 
 func test_rapid_rolls_again_for_free_and_switches_itself_off_for_the_round() -> void:
 	var sk := Skirmish.new(2)
-	var gun := Face.attack(10, L, K.RAPID)
-	gun.cooldown = 1   # its own, printed: Rapid carries none (2 November)
+	var gun := Face.attack(10, L, K.RAPID)   # its switch-off its own, never printed (12 November)
 	var d := Die.of([gun, Face.attack(30, L)])
 	var m := _mech("A", d)
 	sk.add_mech(m)
@@ -2834,7 +2833,7 @@ func test_stacks_a_hot_machine_applies_run_deeper() -> void:
 ## the Paradox clears. Paradox is a status, never decays, and never feeds itself.
 func test_the_paradox_meter_knocks_a_foe_out_at_its_count() -> void:
 	var meter := {"id": "loop", "name": "Pocket Paradox", "description": "", "effects": [
-		{"trigger": "on_foe_status", "effect": "paradox", "value": 3}]}
+		{"trigger": "on_foe_status", "effect": "paradox", "value": 6}]}
 	var sk := Skirmish.new(1)
 	var gun := Face.attack(5, L, [K.BURN, K.SHOCK])
 	gun.strikes = 3
@@ -2845,17 +2844,17 @@ func test_the_paradox_meter_knocks_a_foe_out_at_its_count() -> void:
 	sk.add_foes([g])
 	sk.begin()
 	sk.start_round()
-	assert_eq(Effects.paradox(m), [1, 3] as Array[int], "a stack an application, three to trip")
-	assert_eq(sk.paradox_count(), 3, "the team's count")
+	assert_eq(Effects.paradox(m), [1, 6] as Array[int], "a stack a debuff stack, six to trip")
+	assert_eq(sk.paradox_count(), 6, "the team's count")
 	sk.assign(0, g)
-	assert_eq(Effects.stacks_of(g, "paradox"), 2, "three strikes of burn are one application and the shock a second: two, not four")
+	assert_eq(Effects.stacks_of(g, "paradox"), 4, "three strikes of Burn 1 are three stacks and the Shock a fourth (11 November: a stack a stack)")
 	assert_false(g.is_suppressed(), "not yet")
 	sk._foe_gained_status(g, "paradox")
-	assert_eq(Effects.stacks_of(g, "paradox"), 2, "Paradox never feeds itself")
+	assert_eq(Effects.stacks_of(g, "paradox"), 4, "Paradox never feeds itself")
 	sk._foe_gained_status(g, "numbed")
-	assert_eq(Effects.stacks_of(g, "paradox"), 2, "nor Numbed, the foe's own buff")
-	sk._foe_gained_status(g, "burning")
-	assert_true(g.is_suppressed(), "the third trips it: its past self knocks it out")
+	assert_eq(Effects.stacks_of(g, "paradox"), 4, "nor Numbed, the foe's own buff")
+	sk._foe_gained_status(g, "burning", 2)
+	assert_true(g.is_suppressed(), "six trips it: its past self knocks it out")
 	assert_eq(Effects.stacks_of(g, "paradox"), 0, "the Paradox clears, and the Suppressed it caused added none")
 	assert_eq(Effects.stacks_of(g, "numbed"), 0, "Numbed lands as it recovers, not as the stun does")
 	assert_true("\n".join(sk.log).contains("trapped in a paradox"), "the log says so")
@@ -2882,7 +2881,7 @@ func test_the_paradox_meter_knocks_a_foe_out_at_its_count() -> void:
 	assert_true(g2.is_suppressed(), "the weapon's suppress landed")
 	assert_eq(Effects.stacks_of(g2, "paradox"), 1, "and it counts as a status gained")
 	Effects.remove(g2, "numbed")   # no resistance, so the trip is certain
-	s2._foe_gained_status(g2, "burning")
+	s2._foe_gained_status(g2, "burning", 4)
 	s2._foe_gained_status(g2, "shocked")
 	assert_eq(Effects.stacks_of(g2, "paradox"), 0, "tripped, and the meter is spent on a foe already suppressed")
 	assert_true("\n".join(s2.log).contains("already suppressed"), "the trip was wasted on it")
@@ -2902,8 +2901,8 @@ func test_the_paradox_meter_knocks_a_foe_out_at_its_count() -> void:
 	s3.begin()
 	s3.start_round()
 	s3.assign(0, g3)
-	assert_eq(Effects.stacks_of(g3, "paradox"), 2, "one application, two stacks")
-	assert_true(Effects.effect_text({"trigger": "on_foe_status", "effect": "paradox", "value": 3}).begins_with("a foe gaining any other status gains Paradox; at 3 it is suppressed"), "reads as a sentence")
+	assert_eq(Effects.stacks_of(g3, "paradox"), 3, "Burn 1 deepened to two stacks, two Paradox, deepened to three")
+	assert_true(Effects.effect_text({"trigger": "on_foe_status", "effect": "paradox", "value": 3}).begins_with("a foe gains a Paradox stack for every stack of another debuff it gains; at 3 or more every stack is consumed and it is Suppressed"), "reads as a sentence")
 
 
 ## A foe carrying a status (the Susceptibility Tensor's condition, 10 October) means what the
@@ -4041,43 +4040,59 @@ func test_a_capped_store_banks_no_more_than_its_cap() -> void:
 	assert_true(errs.any(func(e) -> bool: return e.contains("cap")), "a cap below one is refused")
 
 
-## The Nemesis's fists (Ryan, 12 October: "you just get rapid", without the switch-off): an
-## entry that rolls again on a status spends a stack as it is spent, and the die rolls again,
-## a plain roll that may show the same entry; with no stack left it is spent like any other.
-func test_an_entry_rolls_again_on_a_stack_and_nothing_switches_off() -> void:
-	var fist := Face.attack(10)
-	fist.rolls_again_on = "rage"
-	assert_true(fist.has_unique_rule(), "a rule printed on the entry: the star chip")
-	assert_true(fist.describe().contains("spends a Rage to roll again, itself included"), "and it says so, the same fist free to show again (Ryan, 8 November: \"we just need to make it clear\"): %s" % fist.describe())
+## Instant (Ryan, 12 November: "reroll after use, can land on itself"): spent, the die rolls again
+## as the round opens, itself included, and the machine acts again; nothing switches off, so the
+## same entry may show again and be spent again. The Nemesis's fists are the charged form five
+## rage buys ("Each reroll costs 5 rage"): with the price banked a fist goes out charged, unasked,
+## spends it and rolls again; short of it, a plain spend. The fight's last blow rolls nothing.
+func test_an_instant_entry_rolls_again_itself_included_and_nothing_switches_off() -> void:
+	var jab := Face.attack(10, L, [K.INSTANT])
+	jab.heat = 1
+	assert_false(jab.has_unique_rule(), "a keyword, never the star")
+	assert_eq(jab.describe(), "10 instant (+1 heat)", "and it says so")
 	var sk := Skirmish.new(3)
-	var m := _mech("A", Die.single(fist), 0, 200)
+	var m := _mech("A", Die.single(jab), 0, 200)
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(500, 10)])
 	sk.begin()
 	sk.start_round()
-	Effects.stack(m, Effects.STATUS["rage"], Effects.SKIRMISH, "test", 2, Effects.DECAY_NONE)
 	var g: Foe = sk.front[0]
 	assert_true(sk.assign(0, g), "spent")
-	assert_false(sk.mechs[0].assigned, "a rage spent: the die rolls again, and the machine acts again")
-	assert_eq(Effects.stacks_of(m, "rage"), 1, "one rage spent")
+	assert_false(sk.mechs[0].assigned, "the die rolls again, and the machine acts again")
 	assert_false(Effects.is_entry_disabled(m, 0), "nothing switches off")
-	assert_true(sk.assign(0, g), "the fist showed again, and it punches again")
-	assert_false(sk.mechs[0].assigned, "the last rage rolls it again")
-	assert_eq(Effects.stacks_of(m, "rage"), 0, "no rage left")
-	assert_true(sk.assign(0, g), "and once more")
-	assert_true(sk.mechs[0].assigned, "no rage: spent like any entry")
-	assert_eq(g.hp, 470, "three blows of 10")
-	# The fight's last blow rolls nothing: the fight is over.
+	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND, "the roll was free")
+	assert_true(sk.assign(0, g), "the same entry showed again, and it is spent again")
+	assert_eq(g.hp, 480, "two blows of 10")
+	assert_true("\n".join(sk.log).contains("instant, rolls again"), "the log says so")
+	# The Knuckle of Fury's form, on a synthetic entry.
+	var fist := Face.attack(10, L)
+	fist.charged = {"store": "rage", "price": 5, "keywords": ["instant"]}
+	assert_true(fist.describe().contains("5 rage: 10 instant"), "the entry prints both forms: %s" % fist.describe())
 	var s2 := Skirmish.new(4)
 	var n := _mech("N", Die.single(fist), 0, 200)
 	s2.add_mech(n)
-	s2.add_foes([_ghoul(10, 10)])
+	s2.add_foes([_ghoul(500, 10)])
 	s2.begin()
 	s2.start_round()
-	Effects.stack(n, Effects.STATUS["rage"], Effects.SKIRMISH, "test", 2, Effects.DECAY_NONE)
-	s2.assign(0, s2.front[0])
-	assert_eq(s2.outcome, Skirmish.Outcome.VICTORY, "the last foe down")
-	for line in s2.log:
+	Effects.stack(n, Effects.STATUS["rage"], Effects.SKIRMISH, "test", 7, Effects.DECAY_NONE)
+	var h: Foe = s2.front[0]
+	assert_true(s2.assign(0, h), "charged, unasked")
+	assert_eq(Effects.stacks_of(n, "rage"), 2, "five of the seven spent")
+	assert_false(s2.mechs[0].assigned, "Instant: the die rolls again and the machine acts again")
+	assert_true(s2.assign(0, h), "the fist showed again; two rage, a plain punch")
+	assert_true(s2.mechs[0].assigned, "short of five: spent like any entry")
+	assert_eq(Effects.stacks_of(n, "rage"), 2, "nothing more spent")
+	assert_eq(h.hp, 480, "two blows of 10")
+	# The fight's last blow rolls nothing: the fight is over.
+	var s3 := Skirmish.new(4)
+	var q := _mech("Q", Die.single(jab), 0, 200)
+	s3.add_mech(q)
+	s3.add_foes([_ghoul(10, 10)])
+	s3.begin()
+	s3.start_round()
+	s3.assign(0, s3.front[0])
+	assert_eq(s3.outcome, Skirmish.Outcome.VICTORY, "the last foe down")
+	for line in s3.log:
 		assert_false(line.contains("rolls again"), "no roll after the last kill: %s" % line)
 
 
@@ -6885,13 +6900,14 @@ func test_a_ward_turns_away_a_specials_riders_and_phased_is_out_of_them() -> voi
 	assert_eq(Effects.stacks_of(left, "scorched"), 2, "the other takes it")
 
 
-## The cooldown (Ryan, 14 October; built 21 October): a printed property, the entry dark for
-## the rounds it says, this one included, shown with the rounds left; no cleanse lifts it, a
-## price as heat is.
+## The cooldown (Ryan, 14 October; built 21 October; counted after the round of the spend since 12
+## November: "change the count so 1 is how I intended"): a printed property, the entry dark for the
+## rest of the round and the rounds it says after it, shown with the rounds left, this one
+## included; no cleanse lifts it, a price as heat is.
 func test_a_printed_cooldown_darkens_its_entry_for_the_rounds_it_says() -> void:
 	var gun := Face.attack(10, L)
-	gun.cooldown = 2
-	assert_eq(gun.describe(), "10 cooldown 2", "the entry says its cooldown")
+	gun.cooldown = 1
+	assert_eq(gun.describe(), "10 cooldown 1", "the entry says its cooldown")
 	assert_false(gun.has_unique_rule(), "a cost, its clock along the die's foot, never the star (2 November)")
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.of([gun, Face.attack(10, L)]), 40, 100)
@@ -6903,12 +6919,12 @@ func test_a_printed_cooldown_darkens_its_entry_for_the_rounds_it_says() -> void:
 	ms.face_index = 0
 	assert_true(sk.assign(0, sk.front[0]), "spent")
 	assert_true(Effects.is_entry_disabled(m, 0), "dark at once")
-	assert_eq(Effects.dark_rounds(m, 0, sk.round), 2, "two rounds left, this one included")
+	assert_eq(Effects.dark_rounds(m, 0, sk.round), 2, "two rounds left, this one included: the rest of this one and the one it sits out")
 	assert_false(Effects.cleansable_disable(m, 0), "and no cleanse lifts it")
 	assert_eq(Effects.dark_rounds(m, 1, sk.round), 0, "the other entry is lit")
 	sk.end_round()
 	sk.start_round()
-	assert_true(Effects.is_entry_disabled(m, 0), "still dark the next round")
+	assert_true(Effects.is_entry_disabled(m, 0), "it sits out the next round")
 	assert_eq(Effects.dark_rounds(m, 0, sk.round), 1, "its last")
 	ms.face_index = 0
 	assert_true(ms.face().disabled, "the die landing on it shows it dark")
@@ -6916,20 +6932,18 @@ func test_a_printed_cooldown_darkens_its_entry_for_the_rounds_it_says() -> void:
 	sk.start_round()
 	assert_false(Effects.is_entry_disabled(m, 0), "lit again the round after")
 	var round_trip := Face.from_dict(gun.to_dict())
-	assert_eq(round_trip.cooldown_rounds(), 2, "and a save keeps it")
+	assert_eq(round_trip.cooldown_rounds(), 1, "and a save keeps it")
 
 
-## Rapid carries no cooldown of its own (Ryan, 2 November: "Rapid does not have a native
-## Cooldown, it needs to be displayed always"): a Rapid piece prints its cooldown, a cost the die
-## shows by its clock, and goes dark for the rounds it says; one that prints none chains onto a
-## copy of itself and back, its heat the limiter.
-func test_rapid_is_a_cooldown_of_one_unless_it_prints_none() -> void:
+## Rapid's own switch-off (Ryan, 12 November: "rapid gets its innate cooldown zero back without the
+## explicit display"): a Rapid entry spent is dark for the rest of the round, never printed (no
+## clock along its foot, no word in its text), lit the next; a cooldown it prints sits out that
+## many rounds after; copies chain, each dark once spent, its heat paid every spend.
+func test_rapid_switches_its_entry_off_for_the_round_and_prints_nothing() -> void:
 	var zap := Face.attack(10, L, [K.RAPID])
-	assert_eq(zap.cooldown_rounds(), 0, "Rapid alone darkens nothing")
-	zap.cooldown = 1
-	assert_eq(zap.cooldown_rounds(), 1, "the piece's own cooldown")
-	assert_eq(zap.describe(), "10 rapid cooldown 1", "said as the piece's")
-	assert_false(zap.has_unique_rule(), "a cost, its clock along the foot, never the star")
+	assert_eq(zap.cooldown_rounds(), 0, "Rapid prints no cooldown: its switch-off is the keyword's")
+	assert_eq(zap.describe(), "10 rapid", "and says none")
+	assert_false(zap.has_unique_rule(), "a keyword, never the star")
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.of([zap, Face.attack(10, L)]), 40, 100)
 	sk.add_mech(m)
@@ -6940,14 +6954,33 @@ func test_rapid_is_a_cooldown_of_one_unless_it_prints_none() -> void:
 	ms.face_index = 0
 	assert_true(sk.assign(0, sk.front[0]), "spent")
 	assert_eq(Effects.dark_rounds(m, 0, sk.round), 1, "dark for the rest of this round")
+	assert_false(Effects.cleansable_disable(m, 0), "and no cleanse lifts it")
 	assert_false(ms.assigned, "and the machine acts again")
 	sk.end_round()
 	sk.start_round()
 	assert_false(Effects.is_entry_disabled(m, 0), "lit the next round")
+	# A Rapid piece may print a cooldown on top: the rounds it sits out after.
+	var slow := Face.attack(10, L, [K.RAPID])
+	slow.cooldown = 1
+	assert_eq(slow.describe(), "10 rapid cooldown 1", "said as the piece's")
+	var s1 := Skirmish.new(1)
+	var p := _mech("C", Die.of([slow, Face.attack(10, L)]), 40, 100)
+	s1.add_mech(p)
+	s1.add_foes([_ghoul(500, 1)])
+	s1.begin()
+	s1.start_round()
+	s1.mechs[0].face_index = 0
+	assert_true(s1.assign(0, s1.front[0]), "spent")
+	assert_eq(Effects.dark_rounds(p, 0, s1.round), 2, "dark this round and the next")
+	s1.end_round()
+	s1.start_round()
+	assert_true(Effects.is_entry_disabled(p, 0), "sitting out the next round")
+	s1.end_round()
+	s1.start_round()
+	assert_false(Effects.is_entry_disabled(p, 0), "lit the round after")
+	# Two copies chain, each dark once spent, its heat paid every spend.
 	var hot := Face.from_dict({"kind": "attack", "reach": "direct", "power": 10, "keywords": ["rapid"], "heat": 5})
-	assert_eq(hot.cooldown_rounds(), 0, "it prints none")
-	assert_eq(hot.describe(), "10 rapid (+5 heat)", "and says none")
-	assert_false(hot.has_unique_rule(), "no rule to star")
+	assert_eq(hot.describe(), "10 rapid (+5 heat)", "a hot Rapid piece says its heat and no cooldown")
 	var s2 := Skirmish.new(1)
 	var n := _mech("B", Die.of([hot, hot.duplicate_face()]), 40, 100)
 	s2.add_mech(n)
@@ -6957,11 +6990,12 @@ func test_rapid_is_a_cooldown_of_one_unless_it_prints_none() -> void:
 	var ns: Skirmish.MechState = s2.mechs[0]
 	ns.face_index = 0
 	var heat_before := ns.heat
-	for i in range(3):
-		assert_true(s2.assign(0, s2.front[0]), "spend %d" % i)
-		assert_false(Effects.is_entry_disabled(n, 0) or Effects.is_entry_disabled(n, 1), "nothing dark")
-	assert_eq(ns.heat - heat_before, 15, "three spends at five heat each")
-	assert_eq(ns.face_index, 1, "off the first copy onto the second, back, and onto the second again")
+	assert_true(s2.assign(0, s2.front[0]), "the first copy")
+	assert_eq(ns.face_index, 1, "the free reroll onto the other copy")
+	assert_true(s2.assign(0, s2.front[0]), "the second copy chains")
+	assert_eq(ns.heat - heat_before, 10, "two spends at five heat each")
+	assert_true(Effects.is_entry_disabled(n, 0) and Effects.is_entry_disabled(n, 1), "each copy dark once spent")
+	assert_true(s2.targets_for(0).is_empty(), "the chain ends on a dark copy")
 
 
 const STEP_PASSIVE := {"id": "test_step", "name": "Step", "description": "", "effects": [{"trigger": "static", "effect": "step_die", "value": 1}]}
@@ -7019,25 +7053,32 @@ func test_a_stepping_die_spins_once_then_steps_on_every_roll() -> void:
 	assert_eq(s2.mechs[0].face_index, 1, "and its free reroll steps the die to the next")
 
 
-## A spin (the Spin-Up's, Ryan's exception to the reroll rule, 19 October): a Rapid entry whose
-## free reroll is a true roll over every entry, itself included, on a stepping die or any.
-func test_a_spinning_rapid_entry_rolls_true_and_may_land_on_itself() -> void:
-	var spin := Face.from_dict({"kind": "buff", "status": "spun_up", "stacks": 1, "targets": "self", "keywords": ["rapid"], "spins": true})
-	assert_true(spin.spins and spin.has_unique_rule(), "a printed rule: the star")
-	assert_eq(spin.describe(), "Spun Up ×1 rapid spins the die, itself included (self only)", "the entry says what it does, itself included (Ryan, 8 November: \"we just need to make it clear\")")
-	var landed := {}
-	for seed_value in range(60):
-		var sk := Skirmish.new(seed_value)
-		var u := _mech("A", Die.of([spin, Face.attack(10, L), Face.attack(20, L)]), 40, 100)
-		u.grant_passive(STEP_PASSIVE)
-		sk.add_mech(u)
-		sk.add_foes([_ghoul(500, 1)])
-		sk.begin()
-		sk.start_round()
-		sk.mechs[0].face_index = 0
-		assert_true(sk.assign(0, sk.mechs[0]), "the spin is spent")
-		landed[sk.mechs[0].face_index] = true
-	assert_eq(landed.size(), 3, "it lands anywhere, itself included: %s" % str(landed.keys()))
+## Instant (Ryan, 12 November: "reroll after use, can land on itself"; the Spin-Up's spin of 19
+## October its first form): spent, the die rolls true over every entry, itself included, a spin on
+## a stepping die, and the machine acts again.
+func test_an_instant_entry_rolls_true_and_may_land_on_itself() -> void:
+	var spin := Face.from_dict({"kind": "buff", "status": "spun_up", "stacks": 1, "targets": "self", "keywords": ["instant"]})
+	assert_true(spin.has(K.INSTANT) and not spin.has_unique_rule(), "a keyword, never the star")
+	assert_eq(spin.describe(), "Spun Up ×1 instant (self only)", "the entry says it (Ryan, 8 November: \"we just need to make it clear\")")
+	for stepping in [true, false]:
+		var landed := {}
+		var said := ""
+		for seed_value in range(60):
+			var sk := Skirmish.new(seed_value)
+			var u := _mech("A", Die.of([spin, Face.attack(10, L), Face.attack(20, L)]), 40, 100)
+			if stepping:
+				u.grant_passive(STEP_PASSIVE)
+			sk.add_mech(u)
+			sk.add_foes([_ghoul(500, 1)])
+			sk.begin()
+			sk.start_round()
+			sk.mechs[0].face_index = 0
+			assert_true(sk.assign(0, sk.mechs[0]), "the spin is spent")
+			assert_false(sk.mechs[0].assigned, "and the machine acts again")
+			landed[sk.mechs[0].face_index] = true
+			said = "\n".join(sk.log)
+		assert_eq(landed.size(), 3, "it lands anywhere, itself included%s: %s" % [" (a stepping die)" if stepping else "", str(landed.keys())])
+		assert_true(said.contains("the cylinder spins" if stepping else "instant, rolls again"), "the log says how it rolled")
 
 
 ## Spun Up (the Cassowary's, Ryan's go of 19 October; built 21 October): its number a stack on
@@ -8377,11 +8418,12 @@ func test_a_vent_that_shields_cools_first_then_shields_on_what_is_left() -> void
 
 ## The Kite's rework (Ryan's go, 21 October), on synthetic passives: a multiply on the printed
 ## number alone, the buffs added once after it; the cooldown granted to every weapon and debuff
-## by a passive; a kill trigger laying a status whose heat rides every later shot.
+## by a passive (one round sat out since the count of 12 November); a kill trigger laying a status
+## whose heat rides every later shot.
 func test_a_printed_double_a_granted_cooldown_and_a_kill_trigger() -> void:
 	var regs := {"id": "regs", "name": "Regs", "description": "", "effects": [
 		{"trigger": "on_attack", "effect": "multiply_printed", "value": 2},
-		{"trigger": "static", "effect": "weapon_cooldown", "value": 2},
+		{"trigger": "static", "effect": "weapon_cooldown", "value": 1},
 		{"trigger": "on_kill", "effect": "stack_status", "value": "hot_streak"}]}
 	var gun := Face.attack(10, L)
 	gun.heat = 5
@@ -8396,11 +8438,11 @@ func test_a_printed_double_a_granted_cooldown_and_a_kill_trigger() -> void:
 	sk.start_round()
 	Effects.stack(m, Effects.STATUS["overcharged"], Effects.SKIRMISH, "test", 5, Effects.DECAY_NONE)
 	assert_eq(int(Effects.attack(m, gun, 10, 5, weak)["damage"]), 25, "the printed 10 doubled, then the buff's 5 once")
-	assert_eq(Effects.granted_cooldown(m, gun), 2, "every weapon goes dark two rounds")
+	assert_eq(Effects.granted_cooldown(m, gun), 1, "every weapon sits out the next round")
 	assert_eq(Effects.granted_cooldown(m, shield), 0, "a shield never")
 	sk.mechs[0].face_index = 0
 	assert_true(sk.assign(0, weak), "the doubled gun kills the weak foe")
-	assert_eq(Effects.dark_rounds(m, 0, sk.round), 2, "and goes dark for two rounds, this one included")
+	assert_eq(Effects.dark_rounds(m, 0, sk.round), 2, "and goes dark for the rest of this round and the next")
 	assert_eq(Effects.stacks_of(m, "hot_streak"), 1, "the kill lays a stack of the tax")
 	assert_eq(int(Effects.attack(m, gun, 0, gun.heat)["heat"]), 5 + _rule("hot_streak", "add_heat"), "every later shot runs hotter by the streak's number")
 	assert_true("\n".join(sk.log).contains("after the kill"), "the log says why")
@@ -8414,7 +8456,7 @@ func test_a_printed_double_a_granted_cooldown_and_a_kill_trigger() -> void:
 ## the free roll never landing on it; a spend that kills nothing resets nothing.
 func test_a_reset_gun_that_kills_lights_every_dark_entry_and_acts_again() -> void:
 	var regs := {"id": "regs", "name": "Regs", "description": "", "effects": [
-		{"trigger": "static", "effect": "weapon_cooldown", "value": 2}]}
+		{"trigger": "static", "effect": "weapon_cooldown", "value": 1}]}
 	var reset := Face.attack(30, L)
 	reset.resets_on_kill = true
 	var other := Face.attack(10, L)
@@ -9481,7 +9523,7 @@ func test_a_setup_is_rapid_once_a_round_on_the_gate() -> void:
 	ms.face_index = 0
 	assert_true(sk.assign(0, sk.front[0]), "the debuff spent")
 	assert_false(ms.assigned, "is Rapid: the machine acts again")
-	assert_eq(Effects.dark_rounds(m, 0, sk.round), 0, "lit still: the gate's Rapid carries no cooldown (2 November), the gate itself the limit")
+	assert_eq(Effects.dark_rounds(m, 0, sk.round), 1, "dark for the rest of the round, Rapid's own switch-off (12 November); the gate its once a round")
 	assert_true("\n".join(sk.log).contains("a quick turn, rolls again"), "the log says so")
 	assert_false(sk.shown_face(ms, coil).has(K.RAPID), "the gate closed for the round")
 	ms.face_index = 1
@@ -10569,3 +10611,293 @@ func test_pinned_burning_burns_and_loses_no_stack_this_round() -> void:
 	sk.start_round()
 	sk.end_round()
 	assert_eq(Effects.stacks_of(a, "burning"), 2, "and it fades the round after")
+
+
+## Sapped (Ryan, 11 November: "Deals 1 less damage per stack with attacks"; "Weaken can apply to
+## both sides"; "till after it's next turn then, instead of round end. Let's use Sapped"): a foe's
+## blow a point lower a stack, never below nothing, gone at the end of its next action; a machine's
+## attacks the same, gone at the end of the player's turn; a Cleanse clears it from a machine.
+func test_sapped_lowers_blows_on_either_side_and_goes_after_its_next_turn() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.blank()), 0, 1000)
+	sk.add_mech(m)
+	var foe := _ghoul(500, 4)
+	sk.add_foes([foe])
+	sk.begin()
+	sk.start_round()
+	var before := sk.foe_blow(foe)
+	var gained := {}
+	var turned := {}
+	sk._land_rider(foe, "sapped", 2, gained, turned)
+	assert_eq(sk.foe_blow(foe), before - 2, "its blow two lower")
+	sk._land_rider(foe, "sapped", 9, gained, turned)
+	assert_eq(sk.foe_blow(foe), 0, "never below nothing")
+	var hull := m.hull
+	sk.end_round()
+	assert_eq(m.hull, hull, "its blow landed as nothing")
+	assert_false(Effects.has(foe, "sapped"), "every stack gone after its action")
+	sk.start_round()
+	assert_eq(sk.foe_blow(foe), before, "and its blow whole again")
+	var whole := Effects.attack(m, Face.attack(5, L), 5, 0, foe)
+	Effects.stack(m, Effects.STATUS["sapped"], Effects.SKIRMISH, "test", 2, Effects.DECAY_AFTER_TURN)
+	var weak := Effects.attack(m, Face.attack(5, L), 5, 0, foe)
+	assert_eq(int(weak["damage"]), int(whole["damage"]) - 2, "a machine's attack two lower")
+	sk._end_player_turn()
+	assert_false(Effects.has(m, "sapped"), "gone at the end of the player's turn")
+	Effects.stack(m, Effects.STATUS["sapped"], Effects.SKIRMISH, "test", 1, Effects.DECAY_AFTER_TURN)
+	assert_eq(Effects.cleanse(m), ["Sapped"], "and a Cleanse clears it")
+
+
+## The foe in front (the Photosphere Lance's; Ryan, 11 November: "You target ally or self. The
+## enemy directly in front of them gets the debuff, or if none in either rank in front, the closest
+## column that does, searching left-right-left-right"): a machine faces its spot's column, the
+## squad of three from the left; its front rank, then its back, then left, right. Synthetic piece.
+func test_a_buff_lays_its_rider_on_the_foe_in_front_of_the_machine_it_lands_on() -> void:
+	var lance := Face.from_dict({"kind": "buff", "status": "overcharged", "stacks": 2, "in_front": {"status": "sapped", "stacks": 2}})
+	var sk := Skirmish.new(1)
+	for k in range(3):
+		sk.add_mech(_mech("M%d" % k, Die.single(lance), 40, 1000))
+	var a := _ghoul(500, 3)
+	var b := _archer(500, 3)
+	var c := _ghoul(500, 3)
+	sk.add_foes([a, b, c])
+	sk.begin()
+	_regrid(sk, [[a, 0, 0], [b, 1, 1], [c, 0, 3]])
+	sk.start_round()
+	assert_eq([sk.mech_spot(0), sk.mech_spot(1), sk.mech_spot(2)], [0, 1, 2], "a squad of three from the left")
+	assert_eq(sk.foe_in_front(sk.mechs[0]), a, "column 0's front")
+	assert_eq(sk.foe_in_front(sk.mechs[1]), b, "column 1: no front, its back")
+	assert_eq(sk.foe_in_front(sk.mechs[2]), b, "column 2 empty: left first")
+	assert_true(sk.assign(2, sk.mechs[0]), "spent on the first machine")
+	assert_eq(Effects.stacks_of(sk.mechs[0].unit, "overcharged"), 2, "Empowered there")
+	assert_eq(Effects.stacks_of(a, "sapped"), 2, "Sapped on the foe in front of it")
+	assert_eq(Effects.stacks_of(b, "sapped") + Effects.stacks_of(c, "sapped"), 0, "and no other")
+	var two := Skirmish.new(1)
+	for k in range(2):
+		two.add_mech(_mech("M%d" % k, Die.single(lance), 40, 1000))
+	var w := _ghoul(500, 3)
+	two.add_foes([w])
+	two.begin()
+	assert_eq([two.mech_spot(0), two.mech_spot(1)], [1, 2], "a squad of two in the middle spots")
+	_regrid(two, [[w, 0, 1]])
+	two.start_round()
+	Effects.grant_buff(w, "ward", 1, "test", two.round)
+	assert_true(two.assign(0, two.mechs[0]), "on itself")
+	assert_false(Effects.has(w, "sapped"), "a Ward turns it away")
+
+
+## The grid cleared and the foes stood where a test says: [foe, rank, column] each.
+func _regrid(sk: Skirmish, cells: Array) -> void:
+	for col in range(sk.columns):
+		sk.front[col] = null
+		sk.back[col] = null
+	for cell in cells:
+		sk._place(cell[0], cell[1], cell[2])
+
+
+## The round's forecast shows the Lance's rider coming (11 November): dragged over a machine, the
+## foe in front of it shows Sapped among what the round lands on it.
+func test_the_forecast_shows_the_rider_coming_on_the_foe_in_front() -> void:
+	var lance := Face.from_dict({"kind": "buff", "status": "overcharged", "stacks": 2, "in_front": {"status": "sapped", "stacks": 2}})
+	var sk := Skirmish.new(1)
+	sk.add_mech(_mech("A", Die.single(lance), 40, 1000))
+	sk.add_mech(_mech("B", Die.single(Face.attack(3, L)), 40, 1000))
+	var a := _ghoul(500, 3)
+	var b := _ghoul(500, 3)
+	sk.add_foes([a, b])
+	sk.begin()
+	_regrid(sk, [[a, 0, 1], [b, 0, 2]])
+	sk.start_round()
+	var front := sk.foe_in_front(sk.mechs[1])
+	var pv := sk.preview_round(0, sk.mechs[1])
+	assert_true((pv["foes"][front]["coming"] as Dictionary).has("sapped"), "Sapped coming on the foe in front")
+	assert_false(Effects.has(front, "sapped"), "and nothing landed yet")
+
+
+## The Juggernaut Drive's shove (the Wild Boar's; Ryan, 11 November: "Damaging an enemy in the
+## front rank deals 25% of its maximum HP, rounded up, to the enemy immediately behind"): once the
+## hits land, every front foe a blow damaged drives that share into the foe behind it, through its
+## armour, once a spend; a front foe the blow did not damage, or a massive one, drives nothing.
+## Synthetic passive and pieces.
+func _juggernaut() -> Dictionary:
+	return {"id": "juggernaut", "name": "Juggernaut", "description": "", "effects": [
+		{"trigger": "static", "effect": "shove_behind", "value": 25},
+		{"trigger": "on_barrier", "effect": "stack_status", "value": "juggernaut_breach", "stacks": 1, "cap": 1}]}
+
+
+func test_a_damaging_blow_on_the_front_drives_a_quarter_of_its_maximum_hp_behind() -> void:
+	var twice := Face.from_dict({"kind": "attack", "reach": "direct", "power": 3, "strikes": 2})
+	var sk := Skirmish.new(1)
+	var m := _mech("Boar", Die.of([twice, Face.attack(3, L)]), 40, 1000)
+	m.grant_passive(_juggernaut())
+	sk.add_mech(m)
+	var a := _ghoul(12, 0)
+	var b := _archer(500, 0)
+	var c := _ghoul(12, 0)
+	var d := _archer(500, 0)
+	c.armour = 10
+	sk.add_foes([a, b, c, d])
+	sk.begin()
+	_regrid(sk, [[a, 0, 0], [b, 1, 0], [c, 0, 1], [d, 1, 1]])
+	sk.start_round()
+	var ms := sk.mechs[0]
+	ms.face_index = 0
+	assert_true(sk.assign(0, a), "two strikes on the front foe")
+	assert_eq(b.hp, 500 - 3, "a quarter of its 12, once for the spend, not a strike")
+	assert_true("\n".join(sk.log).contains("drives revenant into"), "the log says so")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 1
+	assert_true(sk.assign(0, c), "a blow its armour takes whole")
+	assert_eq(d.hp, 500, "no damage on the front: nothing driven")
+	var boss := Skirmish.new(1)
+	var bm := _mech("Boar", Die.single(Face.attack(3, L)), 40, 1000)
+	bm.grant_passive(_juggernaut())
+	boss.add_mech(bm)
+	var big := _ghoul(40, 0)
+	big.size = 2
+	boss.add_foes([big])
+	boss.begin()
+	boss.start_round()
+	assert_true(boss.assign(0, big), "a massive foe")
+	assert_false("\n".join(boss.log).contains("drives"), "nothing stands behind it")
+
+
+## Juggernaut Breach (Ryan, 11 November: "After gaining Barrier, its next weapon attack gains
+## Breach"; "a purgeable buff, I'd just call it 'Juggernaut Breach'"): gained with a Barrier, one
+## whatever grants it, the next weapon spend breaching and lifting it, equipment leaving it, a purge
+## taking it. Synthetic passive and pieces.
+func test_a_barrier_gives_juggernaut_breach_to_the_next_weapon_attack() -> void:
+	var wall := Face.from_dict({"kind": "buff", "status": "barrier", "stacks": 1, "rounds": 1, "targets": "self"})
+	var lure := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"]})
+	var sk := Skirmish.new(1)
+	var m := _mech("Boar", Die.of([wall, lure, Face.attack(4, L)]), 40, 1000)
+	m.grant_passive(_juggernaut())
+	sk.add_mech(m)
+	var foe := _ghoul(500, 0)
+	foe.armour = 3
+	sk.add_foes([foe])
+	sk.begin()
+	sk.start_round()
+	var ms := sk.mechs[0]
+	ms.face_index = 0
+	assert_true(sk.assign(0, ms), "a Barrier on itself")
+	assert_eq(Effects.stacks_of(m, "juggernaut_breach"), 1, "Juggernaut Breach with it")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 0
+	assert_true(sk.assign(0, ms), "another Barrier")
+	assert_eq(Effects.stacks_of(m, "juggernaut_breach"), 1, "still one")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 1
+	assert_true(sk.assign(0, foe), "equipment at a foe")
+	assert_eq(Effects.stacks_of(m, "juggernaut_breach"), 1, "equipment leaves it standing")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 2
+	var hp := foe.hp
+	assert_true(sk.assign(0, foe), "the next weapon")
+	assert_eq(hp - foe.hp, 4, "it breaches: the foe's armour of 3 takes nothing")
+	assert_false(Effects.has(m, "juggernaut_breach"), "and lifts it")
+	Effects.stack(m, Effects.STATUS["juggernaut_breach"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	Effects.purge(m, 1)
+	assert_false(Effects.has(m, "juggernaut_breach"), "a purge takes it")
+
+
+## The Wild Boar as content (11 November): its Plow a self-defence, Cleanse and a Barrier on itself
+## on a cooldown of 1, and its Juggernaut Drive the shove and the Breach after a Barrier.
+func test_the_wild_boar_plows_and_drives() -> void:
+	var db := ContentDB.load_default()
+	var plow := Face.from_dict(db.components["breaching_plow"]["face"])
+	assert_eq(plow.kind, Face.Kind.BUFF, "the Plow is equipment")
+	assert_eq([plow.buff_status, plow.targets, plow.cooldown], ["barrier", Face.Target.SELF, 1], "a Barrier on itself, cooldown 1")
+	assert_true(plow.has(Face.Keyword.CLEANSE), "with a Cleanse")
+	var u := db.make_mech("wild_boar", 1)
+	assert_eq(Effects.shove_share(u), 25, "the drive's quarter")
+
+
+## The Pocket Paradox since 11 November (Ryan: "When an enemy gains one or more debuff stacks other
+## than Paradox, it also gains that many Paradox stacks"; "At five or more, consume all stacks to
+## grant Suppressed"; "Shocked and such are a stack, it just caps at 1, so yes they grant 1
+## paradox"): a stack of Paradox for every debuff stack, a stackless one one, a buff none; at five or
+## more every stack goes and the foe is Suppressed. Synthetic passive.
+func test_the_paradox_counts_debuff_stacks_and_suppresses_at_its_count() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("Baboon", Die.single(Face.blank()), 40, 1000)
+	m.grant_passive({"id": "paradox_test", "name": "", "description": "", "effects": [{"trigger": "on_foe_status", "effect": "paradox", "value": 5}]})
+	sk.add_mech(m)
+	var foe := _ghoul(500, 3)
+	sk.add_foes([foe])
+	sk.begin()
+	sk.start_round()
+	var gained := {}
+	var turned := {}
+	sk._land_rider(foe, "flakked", 3, gained, turned)
+	for f in gained.keys():
+		for sid in gained[f]:
+			sk._foe_gained_status(f, sid, int(gained[f][sid]))
+	assert_eq(Effects.stacks_of(foe, "paradox"), 3, "Flak 3: three Paradox")
+	sk._foe_gained_status(foe, "kindled", 2)
+	assert_eq(Effects.stacks_of(foe, "paradox"), 3, "a buff it gains feeds nothing")
+	sk._shock(foe, sk.mechs[0])
+	assert_eq(Effects.stacks_of(foe, "paradox"), 4, "Shocked, a stack that caps at one: one")
+	gained.clear()
+	sk._land_rider(foe, "burning", 2, gained, turned)
+	for f in gained.keys():
+		for sid in gained[f]:
+			sk._foe_gained_status(f, sid, int(gained[f][sid]))
+	assert_eq(Effects.stacks_of(foe, "paradox"), 0, "six of five: every stack consumed")
+	assert_true(foe.is_suppressed(), "and it is Suppressed")
+
+
+## The Retrocausal Shroud (the Baboon's; Ryan, 11 November: "Cleanse an ally. Disrupt all enemies
+## targeting it"; "Targeting all means targeting the ally"; "Cleanse can be self"): spent on a
+## machine, its marks cleared and every foe showing intent on it Disrupted, a blow at every machine
+## included; a foe aiming elsewhere keeps its move. Synthetic piece.
+func test_the_shroud_cleanses_a_machine_and_disrupts_every_foe_aiming_at_it() -> void:
+	var shroud := Face.from_dict({"kind": "buff", "keywords": ["cleanse"], "disrupts_attackers": true})
+	var sk := Skirmish.new(3)
+	sk.add_mech(_mech("Baboon", Die.single(shroud), 40, 1000))
+	sk.add_mech(_mech("Ally", Die.single(Face.attack(1, L)), 40, 1000))
+	var foes: Array = []
+	for k in range(3):
+		var g := _ghoul(500, 3)
+		g.actions = [Foe.basic_action(), {"id": "bite", "name": "Bite", "factor": 1.0, "strikes": 2, "weight": 1, "keywords": [], "text": ""}]
+		foes.append(g)
+	sk.add_foes(foes)
+	sk.begin()
+	sk.start_round()
+	var ally := sk.mechs[1]
+	for k in range(3):
+		var g: Foe = foes[k]
+		g.action = g.actions[0]
+		g.target = ally if k < 2 else sk.mechs[0]
+	Effects.stack(ally.unit, Effects.STATUS["burning_mech"], Effects.SKIRMISH, "test", 2, Effects.DECAY_TURN)
+	assert_true(sk.assign(0, ally), "the Shroud on the ally")
+	assert_false(Effects.has(ally.unit, "burning_mech"), "its Burning cleared")
+	assert_eq(foes[0].action, foes[0].actions[1], "a foe aiming at it takes its next move")
+	assert_eq(foes[1].action, foes[1].actions[1], "every one of them")
+	assert_eq(foes[2].action, foes[2].actions[0], "the one aiming elsewhere keeps its move")
+	assert_true("\n".join(sk.log).contains("disrupts the foes aiming at Ally"), "the log says so")
+	assert_eq(foes[0].target, ally, "still aimed at it: Disrupt changes the move, not the pick")
+
+
+## Sap (the Baboon's Redshift Emitter, 11 November): a hit lays its number of Sapped on each foe it
+## reaches, a strike's worth, and a Purge beside it strips a buff. Synthetic piece.
+func test_sap_lays_sapped_and_rides_beside_a_purge() -> void:
+	var emitter := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["dispel", "sap"], "dispel": 1, "sap": 1})
+	assert_eq([emitter.sap, emitter.has(Face.Keyword.SAP)], [1, true], "Sap 1 parsed")
+	assert_true(emitter.describe().contains("sap 1"), "and said")
+	var sk := Skirmish.new(1)
+	sk.add_mech(_mech("Baboon", Die.single(emitter), 40, 1000))
+	var foe := _archer(500, 3)
+	sk.add_foes([foe])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(foe, Effects.STATUS["kindled"], Effects.SKIRMISH, "test", 2, Effects.DECAY_HALF)
+	var blow := sk.foe_blow(foe)
+	assert_true(sk.assign(0, foe), "the Emitter on a back-rank foe")
+	assert_eq(Effects.stacks_of(foe, "sapped"), 1, "Sapped 1")
+	assert_eq(Effects.stacks_of(foe, "kindled"), 1, "a stack of its buff purged")
+	assert_eq(sk.foe_blow(foe), blow - 2, "its blow a point lower for each")

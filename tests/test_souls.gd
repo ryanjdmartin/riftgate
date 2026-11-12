@@ -172,7 +172,7 @@ func test_the_siphon_consumes_up_to_five_souls_for_a_stack_each() -> void:
 	assert_eq(sk.shown_face(ms, siphon).buff_stacks, 3, "the die shows what it would take now, and so what it would grant")
 	assert_true(sk.assign(0, null), "spent on itself")
 	assert_eq([Effects.stacks_of(m, "souls"), Effects.stacks_of(m, "overcharged")], [0, 3], "three consumed, three stacks of Empowered")
-	assert_eq(Effects.dark_rounds(m, 0, sk.round), 3, "and its entry is dark three rounds, this one included")
+	assert_eq(Effects.dark_rounds(m, 0, sk.round), 4, "and its entry is dark for the rest of this round and the three after it (a cooldown counts the rounds after its spend)")
 	# Seven: it takes five and leaves two.
 	var sk2 := Skirmish.new(2, 2)
 	var m2 := _mech("B", Die.of([Face.from_dict(SIPHON), Face.attack(10, L)]))
