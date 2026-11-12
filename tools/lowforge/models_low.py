@@ -295,11 +295,11 @@ def kite(b):
     # then 1 more): a port, the back wall of a trough cut into the spine a little ahead of the
     # canopy (a real hollow, b.cut_hull), its floor flat to just short of its front and ramped
     # up to the surface there, the front where it has been since the first push. Fixed: no joint.
-    # Then the line raised a little and, on trial, the trough filled in, the hood's mouth the
-    # port (his, the same day: "Move the mount vertically up a little bit, moving the fairing up
-    # if you need to, and then I want to see what filling in the cut looks like now"); TROUGH
-    # brings the cut back as it was, its floor kept 1.9 under the line.
-    GZ = 5.6                  # the gun's line
+    # Then, on trial, the trough filled in, the hood's mouth the port (his, the same day: "Move
+    # the mount vertically up a little bit, moving the fairing up if you need to, and then I want
+    # to see what filling in the cut looks like now"), and the line taken down again ("move the
+    # mount point down 1 unit"); TROUGH brings the cut back as it was, its floor 1.9 under the line.
+    GZ = 4.6                  # the gun's line
     TROUGH = False
     PORT, FLAT, RUN = 5.0, 12.6, 13.4  # the port's wall, seven ahead of the canopy's nose; the floor flat to here; ramped up to the surface here
     FLOOR = GZ - 1.9
@@ -311,26 +311,31 @@ def kite(b):
     # stands clear of the hood below ("The dish will need an extension of some kind so it's not
     # just covered"). The standard shapes were tried here and taken back the same day ("Just for
     # fun ..."; "Ok go back to port gun"). The blade's place is a guess.
-    NOSE_FITS = {"barrel": "barrel_port", "rack": ("rack_port", 0.6), "twin_barrel": ("twin_barrel_port", 0.92), "dish": ("dish_port", 0.55), "blade": ("blade", 0.7)}
+    # The dish sits forward of the mount by 1.35 so it stands clear of the hood's lip, its sleeve's
+    # root still under the hood.
+    NOSE_FITS = {"barrel": "barrel_port", "rack": ("rack_port", 0.6), "twin_barrel": ("twin_barrel_port", 0.92), "dish": ("dish_port", 0.55, -2.7), "blade": ("blade", 0.7)}
     if TROUGH:
         b.cut_hull([fuselage], [(x, y, z) for x in (-2.2, 2.2) for (y, z) in ((PORT, FLOOR), (FLAT, FLOOR), (RUN, 4.4), (RUN, 9.0), (PORT, 9.0))])
     b.pin("hp_3", (0.0, PORT, GZ), scale=0.5, carries="", fits=NOSE_FITS)
     # The hood over the port (his: "we slap a gentle curved fairing overtop of the back of the
-    # mount point, to hide the poking-out edge"): forward of the canopy the spine falls away
-    # under the gun's level line, so the root of whatever the port wears stood proud of it. A
-    # low arch on the spine rising gently from it toward the port and running a unit past the
-    # wall, wider than the cut so its lip rests on the hull either side, the class coming out
-    # of its dark mouth. Its arch sinks into the hull, so it meets the spine with no seam. Its
-    # height rose with the gun's line, so it clears the root by as much as it did.
+    # mount point, to hide the poking-out edge"; then "carry the fairing forward more, over the
+    # mount point, covering more of the weapon"): forward of the canopy the spine falls away
+    # under the weapon's level line, so its root stood proud of it. A low arch whose crown runs
+    # level over the weapon, carrying the spine's line forward from where the spine drops under
+    # it to four past the mount point, so it grows from nothing at its tail to its full height
+    # at its lip; wider than the cut, so its lip rests on the hull either side, the class coming
+    # out of its dark mouth. Its arch sinks into the hull, so it meets the spine with no seam.
     def spine(y):
         return 6.4 - (6.4 - 3.8) * y / 18.0    # the fuselage's top between its sections at 0 and 18
-    HOOD_TAIL, HOOD_LIP, HOOD_H, HOOD_W, HOOD_SUNK = 1.5, PORT + 1.0, 1.0 + (GZ - 5.0), 2.7, 0.4
+    HOOD_W, HOOD_SUNK = 2.7, 0.4
+    HOOD_TOP = GZ + 1.65           # its crown: a barrel's flat top (1.2 over the line) and a little
+    HOOD_LIP = PORT + 4.0
+    HOOD_TAIL = min(PORT - 2.0, max(-1.0, (6.4 - HOOD_TOP) / ((6.4 - 3.8) / 18.0)))   # where the spine falls under the crown
     hood = []
-    for k in range(6):
-        t = k / 5.0
-        y = HOOD_TAIL + (HOOD_LIP - HOOD_TAIL) * t
-        rise = HOOD_H * (1.0 - (1.0 - t) ** 2) + HOOD_SUNK
-        hw = HOOD_W * (0.35 + 0.65 * math.sqrt(t))
+    for k in range(9):
+        y = HOOD_TAIL + (HOOD_LIP - HOOD_TAIL) * k / 8.0
+        rise = max(0.0, HOOD_TOP - spine(y)) + HOOD_SUNK
+        hw = HOOD_W * (0.35 + 0.65 * math.sqrt(min(1.0, (y - HOOD_TAIL) / (PORT + 1.0 - HOOD_TAIL))))
         hood.append((y, [(hw * math.cos(math.pi * i / 8.0), spine(y) - HOOD_SUNK + rise * math.sin(math.pi * i / 8.0)) for i in range(9)]))
     b.loft(hood, "steel.plate", "port_hood")
     y, mouth = hood[-1]

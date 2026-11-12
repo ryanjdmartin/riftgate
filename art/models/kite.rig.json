@@ -2047,7 +2047,8 @@
    },
    "dish": {
     "shape": "dish_port",
-    "scale": 0.55
+    "scale": 0.55,
+    "sink": -2.7
    },
    "blade": {
     "shape": "blade",
