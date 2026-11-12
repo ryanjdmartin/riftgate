@@ -11,7 +11,7 @@ extends RefCounted
 enum Kind { ATTACK, SHIELD, VENT, BLANK, BUFF }
 ## Two reaches since 10 October (Ryan): Close, a worse Direct by design, is removed and melee
 ## is a tag. Direct was line of sight until 9 October.
-enum Reach { NONE, DIRECT, INDIRECT, SWEEP, EVERY_FOE }   # Sweep (Ryan, 3 November): a targeting mode, a rank picked and its filled slots walked; Every Foe (4 November), below
+enum Reach { NONE, DIRECT, INDIRECT, EVERY_FOE }   # Every Foe (4 November), below; Sweep, a rank picked and walked, went on 12 November
 ## Execute and Steady are retired (10 October): a threshold doubling is a hard sum hidden in
 ## a keyword, and a rolled weapon dealing its average is simply a flat one.
 ## The Soulcutter Talons' kill rule is a count printed on its one carrier (Ryan, 11 October: no
@@ -31,8 +31,9 @@ enum Reach { NONE, DIRECT, INDIRECT, SWEEP, EVERY_FOE }   # Sweep (Ryan, 3 Novem
 ## gun's reach, plain, no strike being aimed at it, so its Shock stands. A weapon's alone.
 ## Every Foe and Every Ally are targeting modes (Ryan, 4 November: "Silence should not narrow
 ## targeting modes, that's why I'm switching them to targeting modes"; keywords from 2 November):
-## Every Foe a reach (a debuff's, the Shift Whistle's lure-all: dropped on any foe, it lands on every
-## foe in the fight); Every Ally and Every Other Ally `targets` (a shield's or a buff's: the whole
+## Every Foe a reach (dropped on any foe, it lands on every foe in the fight: a debuff's riders,
+## the Shift Whistle's lure-all's among them, a weapon's number whole on each, the two gated
+## specials' since 12 November); Every Ally and Every Other Ally `targets` (a shield's or a buff's: the whole
 ## team, its own machine among them, or every machine but its own, the Mooring Screens'; Ryan:
 ## "the difference is whether the center one is lit or not, its two modes"). `reaches_all` reads
 ## any of them.
@@ -47,7 +48,7 @@ const KIND_NAMES := {
 	Kind.ATTACK: "attack", Kind.SHIELD: "shield", Kind.VENT: "vent", Kind.BLANK: "blank", Kind.BUFF: "buff",
 }
 const REACH_NAMES := {
-	Reach.NONE: "none", Reach.DIRECT: "direct", Reach.INDIRECT: "indirect", Reach.SWEEP: "sweep", Reach.EVERY_FOE: "every_foe",
+	Reach.NONE: "none", Reach.DIRECT: "direct", Reach.INDIRECT: "indirect", Reach.EVERY_FOE: "every_foe",
 }
 const KEYWORD_NAMES := {
 	Keyword.NONE: "", Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate", Keyword.BURN: "burn",
@@ -154,6 +155,7 @@ var power_per_heat: int = 0   # ...and each `per_heat` heat it fired adds this t
 var per_heat: int = 10        # ...the heat a step of power_per_heat stands for (the stock pass, 22 October: a field, 10 until the content landing)
 var power_per_missing: int = 0   # an attack: added for every per_missing HP its target is missing (10 October; flat, shown on the hover)...
 var per_missing: int = 20     # ...the HP a step of power_per_missing stands for (the stock pass, 22 October: a field, 20 until the content landing)
+var finisher: int = 0         # an attack: its number times this against a foe at half its HP or less, read as the hit judges the foe (the Kite's Pinion Driver, 11 November: the Coriolis's slope as one step); 0 for none
 var devours: int = 0          # an attack: each kill gives its owner this many stacks of Empowered (the Soulcutter Talons' rule; a keyword until 11 October, a count since 18 October)
 var fills_hopper: int = 0     # an attack: loads it puts in its machine's hopper for each foe its blows reach (the Chainsaw Claw, 11 October)
 var fires_hopper: int = 0     # an attack: the most loads one shot fires from the hopper...
@@ -197,7 +199,8 @@ var act_again: bool = false   # a buff on an ally whose die is spent: it rolls a
 var charged: Dictionary = {}  # a locked piece's charged form, what a muster buys (read by charged_form)
 # The Musk Ox's (Ryan's go, 21 October; built that day):
 var ammo_per_foe_hit: int = 0 # an attack: ammo back to its forging machine for every foe its blows reach (the Shrapnel Recuperator)
-var spends_magazine: bool = false   # an attack: every ammo in the magazine as a strike, the magazine its price (the Unrestricted Expenditure)
+var spends_magazine: bool = false   # an attack: the whole magazine its price (the Unrestricted Expenditure)
+var magazine_min: int = 0     # with spends_magazine: the ammo the magazine must hold for it to fire (Ryan, 12 November: "needing 8 heat/ammo to fire their specials"); 0 for any
 var split: int = 1            # the effective entry only, never printed: each roll serves this many strikes at its number divided among them, rounded down (the Skua's Split-cycle Breech; Effects.split_of)
 var reloads_ammo: int = 0     # a vent: ammo it adds to its forging machine as it is spent (the quick reload; the Forge counts it as no vent)
 var ammo: int = 0             # shown only: what a forging machine's gun costs it in ammo now (Skirmish.shown_face), its heat slot's place on the die
@@ -348,6 +351,7 @@ static func from_dict(d: Dictionary) -> Face:
 		f.per_heat = maxi(1, int(d.get("per_heat", 10)))
 		f.power_per_missing = maxi(0, int(d.get("power_per_missing", 0)))
 		f.per_missing = maxi(1, int(d.get("per_missing", 20)))
+		f.finisher = maxi(0, int(d.get("finisher", 0)))
 		f.fills_hopper = maxi(0, int(d.get("fills_hopper", 0)))
 		# A save or a draft from before 11 October lists devour as a keyword, and one from before
 		# 18 October says `true`: each reads as the rule, a stack a kill.
@@ -389,6 +393,7 @@ static func from_dict(d: Dictionary) -> Face:
 	f.charged = (cd as Dictionary).duplicate(true) if cd is Dictionary else {}
 	f.ammo_per_foe_hit = maxi(0, int(d.get("ammo_per_foe_hit", 0))) if f.kind == Kind.ATTACK else 0
 	f.spends_magazine = bool(d.get("spends_magazine", false)) and f.kind == Kind.ATTACK
+	f.magazine_min = maxi(0, int(d.get("magazine_min", 0))) if f.spends_magazine else 0
 	f.reloads_ammo = maxi(0, int(d.get("reloads_ammo", 0))) if f.kind != Kind.ATTACK and f.kind != Kind.BLANK else 0
 	var regen = d.get("regenerates", {})
 	if f.kind == Kind.ATTACK and regen is Dictionary:
@@ -437,6 +442,8 @@ func to_dict() -> Dictionary:
 	if power_per_missing > 0:
 		d["power_per_missing"] = power_per_missing
 		d["per_missing"] = per_missing
+	if finisher > 1:
+		d["finisher"] = finisher
 	if devours > 0:
 		d["devours"] = devours
 	if burn > 0 and has(Keyword.BURN):
@@ -505,6 +512,8 @@ func to_dict() -> Dictionary:
 		d["ammo_per_foe_hit"] = ammo_per_foe_hit
 	if spends_magazine:
 		d["spends_magazine"] = true
+	if magazine_min > 0:
+		d["magazine_min"] = magazine_min
 	if reloads_ammo > 0:
 		d["reloads_ammo"] = reloads_ammo
 	if regen_shield > 0 and regen_rounds > 0:
@@ -600,7 +609,7 @@ func acts_again() -> bool:
 ## prints with its shells (Ryan, 2 November), and a shield's cooling the number under its steam
 ## (3 November), so none of them is.
 func has_unique_rule() -> bool:
-	return vents_all or power_per_missing > 0 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_burn > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not label.is_empty() or not printed.is_empty() \
+	return vents_all or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_burn > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not label.is_empty() or not printed.is_empty() \
 		or turns_die or resets_on_kill or gathers_mines or detonates \
 		or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine \
@@ -672,6 +681,15 @@ func missing_bonus(target) -> int:
 	return power_per_missing * int(maxi(0, int(target.hp_max) - int(target.hp)) / maxi(1, per_missing))
 
 
+## Does this entry's finish hold against `target` (finisher: its number multiplied against a foe
+## at half its HP or less)? `hp` is the HP its hit judged the foe at, the foe's own when none is
+## given (a forecast, the die held over it).
+func finishes(target, hp: int = -1) -> bool:
+	if finisher <= 1 or target == null or target.get("hp_max") == null:
+		return false
+	return (hp if hp >= 0 else int(target.hp)) * 2 <= int(target.hp_max)
+
+
 ## What this blow adds against `target` for the stacks it consumes (the Backdraft Charge's
 ## Burning, 22 October): a point a stack, per_consumed each, read as the die is spent and
 ## added before the multiplies; nothing without a target or a status to eat.
@@ -705,6 +723,7 @@ func duplicate_face() -> Face:
 	f.per_heat = per_heat
 	f.power_per_missing = power_per_missing
 	f.per_missing = per_missing
+	f.finisher = finisher
 	f.devours = devours
 	f.burn = burn
 	f.cryo = cryo
@@ -742,6 +761,7 @@ func duplicate_face() -> Face:
 	f.charged = charged.duplicate(true)
 	f.ammo_per_foe_hit = ammo_per_foe_hit
 	f.spends_magazine = spends_magazine
+	f.magazine_min = magazine_min
 	f.split = split
 	f.reloads_ammo = reloads_ammo
 	f.ammo = ammo
@@ -836,6 +856,8 @@ func rule_phrases() -> Array[String]:
 			out.append("vents all" + (", +%d per %d heat" % [power_per_heat, per_heat] if power_per_heat > 0 else ""))
 		if power_per_missing > 0:
 			out.append("+%d per %d HP missing" % [power_per_missing, per_missing])
+		if finisher > 1:
+			out.append("×%d on a foe at half its HP or less" % finisher)
 		if not consumes.is_empty():
 			out.append("consumes %s, +%d a stack" % [str(Effects.STATUS.get(consumes, {}).get("name", consumes)), per_consumed])
 		if not holds.is_empty():
@@ -860,7 +882,7 @@ func rule_phrases() -> Array[String]:
 		if detonates:
 			out.append("detonates its Mine")
 		if spends_magazine:
-			out.append("a strike for every ammo in the magazine")
+			out.append("empties the magazine, %d ammo or more" % magazine_min if magazine_min > 1 else "empties the magazine")
 		if ammo_per_foe_hit > 0:
 			out.append("+%d ammo a foe hit" % ammo_per_foe_hit)
 		if kill_rerolls > 0:
@@ -1003,6 +1025,8 @@ func describe() -> String:
 				s += " vents all" + (", +%d per %d heat" % [power_per_heat, per_heat] if power_per_heat > 0 else "")
 			if power_per_missing > 0:
 				s += " +%d per %d HP missing" % [power_per_missing, per_missing]
+			if finisher > 1:
+				s += " ×%d on a foe at half its HP or less" % finisher
 			if not consumes.is_empty():
 				s += " consumes %s, +%d a stack" % [str(Effects.STATUS.get(consumes, {}).get("name", consumes)), per_consumed]
 			if not holds.is_empty():
@@ -1024,7 +1048,7 @@ func describe() -> String:
 			if detonates:
 				s += " detonates its Mine"
 			if spends_magazine:
-				s += " a strike for every ammo in the magazine"
+				s += (" empties the magazine, %d ammo or more" % magazine_min) if magazine_min > 1 else " empties the magazine"
 			if ammo_per_foe_hit > 0:
 				s += " +%d ammo a foe hit" % ammo_per_foe_hit
 			if kill_rerolls > 0:

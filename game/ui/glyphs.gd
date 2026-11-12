@@ -30,22 +30,6 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			# a line of fire, a long solid run breaking into ever smaller dashes, thinning as it
 			# goes; straight for Direct, a gentle lob for Indirect, as wide as the three hexes.
 			_fire_line(ci, c, size, color, width, id == "aim_indirect")
-		"aim_sweep":
-			# Sweep (3 November), the third reach: lobbed, since a sweep picks any rank (Ryan, 4
-			# November: "curved to indicate it has indirect reach"), its arc whole along the rank, and a
-			# line of fire rising off it for each of the rank's four columns, a solid run and a dash
-			# ("have the lines poking out have the same kind of segmented look as the others"; then,
-			# of the rising form: "Can we give it 4 lines instead of 3, symbolizing the 4 columns?",
-			# and two pieces, so it sits clear of a full costs row). Drawn small, the strikes plain.
-			var arc := _fire_pts(c + Vector2(0.0, s * 0.22), size, true, 0.85)
-			_run(ci, arc, 0.0, _path_length(arc), color, width)
-			for u in [0.125, 0.375, 0.625, 0.875]:
-				var from := _along(arc, u) + Vector2(0.0, -size * 0.04)
-				var rise := PackedVector2Array([from, from + Vector2(0.0, -s * 0.48)])
-				if size >= INNER_FROM:
-					_segmented(ci, rise, STRIKE_RUNS, STRIKE_GAPS, color, width)
-				else:
-					ci.draw_polyline(rise, color, width)
 		"aim_every_foe":
 			# Every Foe (a targeting mode since 4 November): the enemy's formation whole, both ranks
 			# of its four columns lit, the far rank smaller and narrower, as the field is seen from
@@ -431,6 +415,12 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			]), color, width)
 			ci.draw_polyline(PackedVector2Array([c + Vector2(s * 0.45, -s * 0.75), c + Vector2(s * 0.9, -s * 0.35), c + Vector2(s * 0.45, s * 0.05)]), color, width)
 			ci.draw_line(c + Vector2(-s * 0.3, -s * 0.2), c + Vector2(0.25 * s, s * 0.6), color, width * 0.7)
+		"ricochet":
+			# A shot glancing off a plate and away: the line in, the bounce, the arrow out (a
+			# placeholder for Ryan's eye, 11 November).
+			ci.draw_line(c + Vector2(-s * 0.9, s * 0.65), c + Vector2(s * 0.9, s * 0.65), color, width * 0.7)
+			ci.draw_polyline(PackedVector2Array([c + Vector2(-s * 0.9, -s * 0.5), c + Vector2(-s * 0.1, s * 0.65), c + Vector2(s * 0.8, -s * 0.7)]), color, width)
+			ci.draw_polyline(PackedVector2Array([c + Vector2(s * 0.25, -s * 0.7), c + Vector2(s * 0.8, -s * 0.7), c + Vector2(s * 0.75, -s * 0.15)]), color, width)
 		"rapid":
 			# Two chevrons: spent, and the die rolls again.
 			for i in range(2):
@@ -753,8 +743,6 @@ static func _inset(pts: PackedVector2Array, ctr: Vector2, k: float) -> PackedVec
 ## the indirect a little").
 const FIRE_RUNS := [0.42, 0.22, 0.12, 0.06]   # a line of fire: a solid run and three ever shorter dashes, one height (Ryan, 4 November: "You lost your 4-segment direct and indirect that I approved")
 const FIRE_GAPS := [0.07, 0.06, 0.05]
-const STRIKE_RUNS := [0.6, 0.26]   # a Sweep's rising strike: a short line of fire, a solid run and one dash (Ryan, 4 November)
-const STRIKE_GAPS := [0.18]
 
 
 static func _fire_line(ci: CanvasItem, c: Vector2, size: float, color: Color, width: float, lobbed: bool) -> void:
@@ -876,15 +864,13 @@ static func _steam(ci: CanvasItem, c: Vector2, half_w: float, half_h: float, n: 
 
 ## Whom an entry is aimed at, the targeting mark under its main mark (Ryan, 2 November: one
 ## width, "the width of the 3 hex symbol"; 3 November: "putting targeting underneath"): a foe by
-## its reach, a line of fire, straight (Direct), lobbed (Indirect) or walking a rank (Sweep); a
+## its reach, a line of fire, straight (Direct) or lobbed (Indirect); a
 ## machine by three hexes, its own only, its allies only, or either; "" for a blank. A reach past
 ## the target is its keyword's chip (an area, Every Foe, Every Ally).
 static func aim_for(face: Face) -> String:
 	if face == null or face.kind == Face.Kind.BLANK:
 		return ""
 	if face.kind == Face.Kind.ATTACK:
-		if face.reach == Face.Reach.SWEEP:
-			return "aim_sweep"   # a rank swept (3 November)
 		if face.reach == Face.Reach.EVERY_FOE:
 			return "aim_every_foe"   # every foe at once (4 November)
 		return "aim_indirect" if face.reach == Face.Reach.INDIRECT else "aim_direct"

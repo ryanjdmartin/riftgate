@@ -26,11 +26,10 @@ func test_a_stack_is_a_stack_whatever_granted_it() -> void:
 func test_abilities_stores_and_kept_stacks_stay() -> void:
 	var u := _unit()
 	Effects.stack(u, Effects.sealed_status(3, 2), Effects.SKIRMISH, "seal", 1, Effects.DECAY_NONE)
-	Effects.stack(u, Effects.STATUS["hot_streak"], Effects.SKIRMISH, "passive:regulators", 2, Effects.DECAY_NONE)
 	Effects.stack(u, Effects.STATUS["muster"], Effects.SKIRMISH, "muster", 30, Effects.DECAY_NONE)
-	assert_true(Effects.is_ability("sealed") and Effects.is_ability("hot_streak"), "the seal and Hot Streak are abilities")
+	assert_true(Effects.is_ability("sealed"), "the seal is an ability")
 	assert_true(Effects.purge(u, 9).is_empty(), "so a Purge finds nothing")
-	assert_true(Effects.is_sealed(u) and Effects.has(u, "hot_streak") and Effects.has(u, "muster"), "the abilities and the store stand")
+	assert_true(Effects.is_sealed(u) and Effects.has(u, "muster"), "the ability and the store stand")
 	var keeper := _unit()
 	keeper.grant_passive({"id": "tap", "name": "Tap", "description": "", "effects": [{"trigger": "static", "effect": "keep_status", "value": "overcharged"}]})
 	Effects.stack(keeper, Effects.STATUS["overcharged"], Effects.SKIRMISH, "kill", 5, Effects.DECAY_HALF)

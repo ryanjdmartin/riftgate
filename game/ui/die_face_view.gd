@@ -84,6 +84,7 @@ var cooldown: int = -1       # the rounds a spend darkens it, its machine's pass
 var next_face: Face = null   # a stepping die's next chamber (the Cassowary's), in the passive box at the rail's foot; null for a die that rolls
 var next_number: String = "" # the blow that next entry will deal now, as the screen reads it (Skirmish.shown_number_text); "" reads its own
 var after_blow: int = -1     # the blow its machine's passive adds after the strikes (the Storm Petrel's), its number in the passive box; -1 reads the entry's own (Skirmish.after_blow off a foe)
+var ricochet: int = 0        # the strikes of 1 its machine's Ricochet adds after each shot of a weapon (the Skua's), in the passive box
 var slot: int = 0            # the entry's place on its die, from one; 0 draws none
 var locked: bool = false
 var charged: bool = false      # armed for its charged form, a muster paid at the spend (the Swallowtail's): a double frame and the word above
@@ -412,7 +413,7 @@ func _draw() -> void:
 	# spent on machines.
 	var aim := Glyphs.aim_for(face)
 	if not aim.is_empty():
-		Glyphs.draw(self, aim, Vector2(FACE * 0.5, AIM_Y + bob), AIM_W, ink, 2.4 if aim in ["aim_direct", "aim_indirect", "aim_sweep"] else 1.8)
+		Glyphs.draw(self, aim, Vector2(FACE * 0.5, AIM_Y + bob), AIM_W, ink, 2.4 if aim in ["aim_direct", "aim_indirect"] else 1.8)
 	var costs := cost_marks()
 	var cx := 10.0
 	for cst in costs:
@@ -609,6 +610,8 @@ func passive_marks() -> Array:
 		var after := after_blow if after_blow >= 0 else Skirmish.after_blow(null, face)
 		if after > 0 and face.is_weapon():
 			out.append(["shield", str(after), Palette.SHIELD])   # by the shield's mark, in its colour, no sign (Ryan, 4 November: "can we fit the number inside, or next to, a shield icon in the helper box? or at least colour the number shield colour?")
+		if ricochet > 0 and face.is_weapon():
+			out.append(["ricochet", "+%d" % ricochet, Glyphs.colour_for("ricochet")])   # a strike of 1 more a stack after each shot (the Skua's)
 	if next_face != null:
 		out.append(next_mark(next_face, next_number))
 	return out

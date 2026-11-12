@@ -504,8 +504,6 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # RIFTGATE_HIT_DEBUG=1 (any skirmish) lands a blow on a machine every second and a half, in turn a hull
 # hit from the left, one its shield holds, one its armour turns and a hull hit from the right, and
 # every fifth beat loses one and lights it again, to judge the hit reactions running.
-# RIFTGATE_MISS_DEBUG=1 (any skirmish) lands a Sweep's wasted shot on the formation's empty slots in
-# turn every second and a half: the jolt and the ring of dust thrown off it, to judge running.
 # RIFTGATE_ABILITY_DEBUG=1 (any skirmish) gives every foe and machine that has no ability an
 # ability's chip (Enrage on a foe, Sealed on a machine), to judge the look beside the buffs and debuffs.
 # RIFTGATE_MINE_DEBUG=1 (any skirmish) opens the fight with a Mine of 3 (Burn 1, Shock) on every foe,
@@ -642,7 +640,7 @@ godot --path . --resolution 360x640 -s tools/gait_clip.gd -- clydesdale wainwrig
 BPY_PYTHON=.bpy/bin/python tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger
 tools/spriter/.venv/bin/python tools/lowforge/glbcmp.py art/models/badger.glb /tmp/badger.glb   # a rebuild's geometry against the committed file
 # the silhouette classes a swapped component wears at a gun mount (models_low.SHAPES) and their variants (VARIANTS: the round
-# launcher, which a mount's `fits` may declare for its class, with its scale and its sink back along the mount's line), every maker's metal, then re-import
+# launcher and the port gun, a barrel with its receiver inside the hull, which a mount's `fits` may declare for its class, with its scale and its sink back along the mount's line), every maker's metal, then re-import
 tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes
 # one machine wearing swapped components on its mounts ("2:" bares a mount; armour and vents show nowhere); a class alone: <chassis> shapes/barrel_minerva; rendered bare
 RIFTGATE_FIT="1:photosphere_lance,4:blazethrower" godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva fit.png front 480 480

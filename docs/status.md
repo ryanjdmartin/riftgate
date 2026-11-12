@@ -27,10 +27,14 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1139 tests, 364,448 checks, green on `ccr-4d58b054-3lyj0a` (12 November, the vent
-  blast's and Siphoning's code cut, the Overrun Gearing and the Shift Whistle dealt). 1142 tests,
-  364,574 checks, green on it before (12 November, Sapped, the Lance, the Wild Boar's and the
-  Baboon's reworks, with main's cooldown count, Rapid's switch-off and Instant taken in). 1132 tests, 364,475 checks, green on main (12 November, as `ccr-63a1309a-caa9mw` landed
+- Tests: 1142 tests, 364,566 checks, green on `ccr-4d58b054-3lyj0a` (12 November, as it took main with the fast
+  flyers and Sweep's removal: the vent blast's and Siphoning's code cut, the Overrun Gearing and
+  the Shift Whistle dealt). Before it, 1145 tests, 364,692 checks, green on main (12 November, as
+  `ccr-e3ddf00b-ilkwbi` landed with the three fast flyers rebuilt, Sweep removed and the Kite's
+  inset mount, over the cooldown's count, Instant, Sapped and the Wild Boar's and the Baboon's
+  reworks). Before it, 1142 tests, 364,574 checks, green on `ccr-4d58b054-3lyj0a` (12 November,
+  Sapped, the Lance, the Wild Boar's and the Baboon's reworks, with main's cooldown count, Rapid's
+  switch-off and Instant taken in). 1132 tests, 364,475 checks, green on main (12 November, as `ccr-63a1309a-caa9mw` landed
   with the cooldown's count, Rapid's own switch-off and Instant over the Clydesdale's review).
   Before it, 1132 tests, 364,286 checks, green on main (12 November, as the Clydesdale's review
   landed with its wells, broadside drill and hatch wave; Godot 4.8-beta2). Before it, 1132 tests,
@@ -57,6 +61,14 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 ## Branches
 
 Everything is on main as of 12 November 2026; the formation and refit session's branch lands as it goes, below.
+`ccr-e3ddf00b-ilkwbi`, the Kestrel fast flyers' session of 11 and 12 November (The design sessions, below),
+cut from main at `209112b`, took main four times in merges, the last at `8d936cf` (the cooldown's
+count, Instant, Sapped, the Wild Boar's and the Baboon's reworks: the engine's Rapid and Instant
+branch joined to the Needletail's turn, the validator, the bot, the rules, the bible, this file,
+the to-do and the generated vocabulary the conflicts, both sides kept): the Needletail, the Kite
+and the Skua rebuilt on placeholder numbers, Sweep removed with every branch it caused, the Whip
+Scorpion's release and the Musk Ox's salvo on every foe; main took it as a fast-forward on Ryan's
+word ("Merge into main and republish"), and it is merged and to delete with the rest.
 `ccr-63a1309a-caa9mw`, the cooldown's count, Rapid's own switch-off and Instant (12 November, How
 things stand below), cut from main at `fbce698`, took main at `243737d` in a merge (this file's
 tests line the one conflict, both landings kept) and main took it as a fast-forward on Ryan's word
@@ -168,7 +180,11 @@ Scorpion's rework and its Heliographic Death Ray, the Dingo's pieces, the pins, 
 Repeater, Sapped and the Lance, the Wild Boar's and the Baboon's reworks) over main's cooldown
 count ("Your names are fine. Clean up and merge into main"). Since then, on the branch and not on
 main until his word: the vent blast's and Siphoning's code cut, Spillover a module (the Overrun
-Gearing), the Shift Whistle dealt and the machine's level named tier (12 November). The Skua is his other session's (the Clydesdale's review landed 12 November). The formation and refit session's merges of main before it are in
+Gearing), the Shift Whistle dealt and the machine's level named tier (12 November), main taken at
+`aac6bfc` in a merge (the fast flyers and Sweep's removal: the release on every foe kept as main
+has it, paying FREE where it paid VENT; the bible on main's rows with this branch's edits laid
+over them, v0.548 above main's v0.547; the tables, the vocabulary and the synergy map run again).
+The Skua is his other session's (the Clydesdale's review landed 12 November). The formation and refit session's merges of main before it are in
 its branch's commits. Landed 11 November: `ccr-7effd31a-u5z4gw`, the music session (Hold The Line's, Night Shift's and
 The Far Bank's pairs passed and built into art/audio, How things stand), took main in a merge (the bible, this
 file and the to-do the conflicts: the bible three-way on the v0.469 both files carried, main's
@@ -244,9 +260,10 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   "Everything should be automatic in this game, I don't want extra controls"). The Whip
   Scorpion's rework is his of the same day and built (the bible's Whip Scorpion row, v0.527: the
   tier-two formation breaker; nothing cools it; a pass, a turn it ends with an entry it could
-  have spent, Sweeps the rank with the most foes as the enemy's turn ends, a shot of 2 for every
-  heat, the back on a tie, the blows it took banked on top; its locked ray the Buzzard's old
-  form on one foe), dealt again, its brief retired: `pass_sweep` a passive's rule, the release
+  have spent, opens its valves on every foe as the enemy's turn ends once it holds 8 heat, 1
+  each and 1 more for each heat over 8 (Ryan, 12 November, in place of a Sweep of the fuller
+  rank at a shot of 2 a heat), the blows it took banked on top; its locked ray the Buzzard's old
+  form on one foe), dealt again, its brief retired: `pass_release` a passive's rule, the release
   after the enemy's turn in the round and its forecast, the bot holding its die when the
   release beats its best spend, the screen playing the shots once the enemy's turn has (a first
   cut). Its locked piece is the Heliographic Death Ray (his keep of the name; id
@@ -321,6 +338,62 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   ("It needs something else"). Mastema's first round is unanswered; its tenth waits until its
   unrefined ideas settle (Ryan).
 - The roster's tasks, group by group, are the to-do's "The roster: ten a maker".
+- The Kestrel fast flyers, 11 November (`ccr-e3ddf00b-ilkwbi`; Ryan: "I want to revisit the Kite a
+  bit. Something about it feels clunky to me", then the Kite "from the ground up, ignoring target
+  tier and previous assumptions" and the three move-six flyers' identities under the long wall,
+  "what does what and why you'd want one over the other"). All three are built on his go
+  ("Yes build them with placeholder numbers"), each to be played (the to-do's Ryan list); the
+  map is at the head of `kestrel_line.md`. It landed on main 12 November on his word ("Merge into main and
+  republish"), main's work of those two days merged in (the Swoop printing no cooldown since, as
+  every Rapid piece: Rapid's own switch-off is its once a round by main's count). Sweep is gone on his word of 12 November ("let's remove it and clean up
+  all those exceptions and code branches that it caused"; the bible's Sweep row):
+  the reach, its spots and per-shot rules, the wasted shot and the rank's bracket, the bot's two
+  special paths and the salvo's routine; every weapon is one shape. Every Foe is a weapon's mode
+  too, for the Whip Scorpion's release (1 on every foe at 8 heat, 1 more for each heat over) and
+  the Musk Ox's salvo (a stand-in behind 8 ammo, its own session's), each foe struck as its own
+  target, so a Shock on any is doubled and spent. The Flechette Pod is four strikes of 1; Ricochet hits its weapon's target alone, his text of that day. A first direction on the placeholder
+  numbers is in `docs/measurements.md` (each alone on the patrols, 30 seeds, the old kit beside
+  the new): the Kite where it stood on its duels and a little dearer on packs rated for two, the
+  Skua's duels from five to fifteen rounds down to three or four, the Needletail alone a little
+  worse off without the Overcharge Coil. A probe of the old Kite's turns is in `docs/measurements.md` (its die opened
+  dark a round in five, its own heat cost it as much hull as the foes did, its reset fired under
+  once a fight). Where it stands:
+  - The Kite: built as his "Burst glass cannon" (the bible's Kite row, v0.532 on this branch,
+    unpublished). Four entries and no reset; every weapon doubled on an unhurt foe
+    (`target_unhurt`); the Pinion Driver the finisher, doubled on a foe at half its HP or less (a
+    component's `finisher`; Claude's form, his to move); a kill recharging its shield whole
+    (`refill_shield`); hull 12, shield 8 at a regen of 1. Both doubles read the foe's HP once a
+    hit, so a two-shot gun is doubled whole or not at all. Gone from content: the flat heat, the
+    dark rounds, Hot Streak, the d3 (the die's minimum is four again); the engine keeps Reset and
+    a passive's cooldown, which no piece prints. A Kite leaving a fight at its heat maximum he
+    declined (the bible's withdrawal row); Phased on a kill he kept for the shadow panther. The
+    model's third mount is ahead of the canopy, its gun sunk into the hull, the barrel out of a port
+    and clear in a trough (the port gun, a new variant of the barrel class: no block to show), a
+    launcher there the round rack,
+    and the tail segment's face behind the canopy is an air intake (his, 12 November). Its brief is retired; his play is the
+    to-do's.
+  - The Skua: built as his "Ramping Dakka" (the bible's Kestrel row). Its passive gains a stack of Ricochet the first time each round one of its
+    weapons damages a foe (the trigger `on_damage`; an effect's `once: round`, open to any effect
+    an event fires). Ricochet is a buff that lasts the fight: after each shot of a weapon a
+    strike of 1 more a stack at its target once the weapon's own strikes are done, with every
+    effect but its area; hull damage halves it, rounded down. Its lock is the
+    Hypersonic Swoop (a stack, Rapid, a cooldown of one). The Flechette Pod is an ordinary
+    tier-one weapon in its stock (four strikes of 1 since Sweep went), and the validator
+    lets a machine stock up to its own tier at one and two (the bible's tiers row, its
+    validator's half). The Split-cycle Breech is a module since 12 November (his: "Turn the skua
+    split strikes into a module"), Kestrel's, tier two for now.
+    The bot counts the bounces and values a stack at a flat guess. On screen, unjudged: each
+    bounce a quick beat of its own, "+N" in the die's passive box by a placeholder glyph. The
+    model: the Pod a rack on the belly mount, the spine's pods air intakes and the pod burst
+    act gone (his, 12 November). Its brief is
+    retired; his play is the to-do's.
+  - The Needletail: settled ("I agree with the Needletail, yes") and built on his go ("Yes build
+    them with placeholder numbers"): two things a round, a weapon and an equipment every round,
+    its die turning to a lit entry of the other kind (the static `one_of_each`; one entry to turn
+    to is no draw, the die showing it in its passive box; the bot weighs the second action; the
+    once-a-round gate that made equipment Rapid is gone from the engine). Its stock is the
+    Designator and three guns, so it marks every round. The chassis that orbits Exposed is one of
+    the two unspecced mediums. Its brief is retired; his play is the to-do's.
 
 ## How things stand
 
@@ -1121,7 +1194,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   a die in hand, the twenty-three tests moved onto it) and the Swap's gauges on the preview while
   it waits (Bug 16, the one visible change). Waits on Ryan's phone read of the Ability chips (the to-do).
 - **The spend's order and Sweep's columns** (7 November; the bible's section 5 Sweep, riders and
-  spend's order rows): a single-target weapon's hits, their riders, the death check, the spend's
+  spend's order rows; Sweep itself, its wasted shot and `RIFTGATE_MISS_DEBUG` went on 12 November,
+  the fast flyers' block above): a single-target weapon's hits, their riders, the death check, the spend's
   end, then what its kills bring back (a foe getting back up, a split's halves), so nothing a
   spend does meets them and a Purge on the killing hit keeps Undying down; Sweep a shot at each
   column, left to right, repeating, an empty column's shot wasted and a corpse taking its

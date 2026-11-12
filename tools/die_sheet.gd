@@ -110,8 +110,7 @@ func _die(f: Face) -> DieFaceView:
 func _kinds() -> Array:
 	var burst := Face.attack(2)
 	burst.strikes = 4
-	var sweep := Face.attack(2, Face.Reach.SWEEP)
-	sweep.strikes = 4
+	var every := Face.attack(2, Face.Reach.EVERY_FOE)
 	var petrel := Face.attack(4)
 	petrel.burns = 2
 	var zap := _die(petrel)
@@ -132,7 +131,7 @@ func _kinds() -> Array:
 	return [
 		["Weapon, direct", "the sight, its blow inside;\nthe line straight: Direct", _die(Face.attack(4))],
 		["Weapon, indirect", "the line lobbed:\nIndirect, any foe", _die(Face.attack(4, Face.Reach.INDIRECT))],
-		["Weapon, sweep", "lobbed, any rank: a\nstrike for each column", _die(sweep)],
+		["Weapon, every foe", "the formation lit:\nits blow on every foe", _die(every)],
 		["Weapon, strikes", "a strike's blow inside,\nits strikes beside", _die(burst)],
 		["Weapon, over a foe", "its passive's box: the Storm\nPetrel's blow after it", zap],
 		["Debuff, direct", "gear, what it lays inside\n(Suppress): no number", _die(Face.attack(0, Face.Reach.DIRECT, [Face.Keyword.SUPPRESS]))],

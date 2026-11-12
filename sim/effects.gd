@@ -51,7 +51,7 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "add_armour_vs_rank", "keep_status", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "fold_die", "rewrite_weapon", "heat_per_blow", "pass_sweep", "shove_behind", "mute_keywords", "weapon_cooldown", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "one_of_each", "add_armour_vs_rank", "keep_status", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "fold_die", "rewrite_weapon", "heat_per_blow", "pass_release", "shove_behind", "mute_keywords", "weapon_cooldown", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_shield_hit": ["stack_status", "add_shield", "vent_heat"],
@@ -65,7 +65,8 @@ const SUPPORTED_EFFECTS := {
 	"status": ["tick_hp", "tick_hp_share", "tick_heat", "skip_action", "disable_entry", "corrupt_entry", "regrow"],
 	"on_foe_status": ["paradox"],
 	"on_stack": ["add_stacks"],
-	"on_kill": ["stack_status", "add_shield", "vent_heat"],
+	"on_damage": ["stack_status", "add_shield", "vent_heat"],
+	"on_kill": ["stack_status", "add_shield", "vent_heat", "refill_shield"],
 }
 const DECAY_NONE := 0    # lives until its scope ends
 const DECAY_TICK := 1    # loses a stack each tick, gone at zero
@@ -197,10 +198,10 @@ const STATUS := {
 	# laid, so a Ward turns it away, a foe's cleanse takes it and the Paradox counts it.
 	"mine": {"id": "mine", "name": "Mine", "description": "When this foe falls, even if it gets back up or splits, the Mine blows: its damage and its riders on every foe round its slot.",
 		"tags": ["mine"], "effects": []},
-	# The Needletail's gate spent (the Quick-turn Avionics Relay, Ryan's go of 21 October; built
-	# that day): its free setup this round is used. A marker, never a chip: the die shows the
-	# gate open by the Rapid it grants a setup.
-	"quick_turned": {"id": "quick_turned", "name": "Quick turn spent", "description": "Its free setup this round is spent.", "stacking": "renew",
+	# The Needletail's second action spent (the Quick-turn Avionics Relay as Ryan settled it on 11
+	# November: two things a round, a weapon and an equipment): its die has turned once this
+	# round. A marker, never a chip: the die shows the turn it still has in its passive box.
+	"quick_turned": {"id": "quick_turned", "name": "Quick turn spent", "description": "Its second action this round is spent.", "stacking": "renew",
 		"tags": ["marker"], "effects": []},
 	# The Swallowtail's (Ryan's go, 21 October; built that day). The Muster: a store of points,
 	# every die's roll a point and a kill by its own guns more, a charge every so many (the
@@ -330,6 +331,14 @@ const STATUS := {
 	# them, since it only adds damage: Ryan, 26 October; a buff grants it with no rounds).
 	"spun_up": {"id": "spun_up", "name": "Spun Up", "description": "The next weapon it spends deals {value} more a stack and takes every stack; equipment leaves them standing. Carried between turns until then.", "decay": "none", "spent_by": "weapon",
 		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 2}]},
+	# Ricochet (the Skua's, Ryan, 12 November: "After firing a weapon, it hits the primary target 1
+	# more time per stack, dealing 1 damage each time and applying all effects other than area
+	# keywords"; 11 November: "Lose half stacks of Ricochet on any hull damage"): a buff that lasts
+	# the fight (`lasts`: a buff component grants it stacks and no rounds), read by the hit
+	# (Skirmish._hit) and halved, rounded down, whenever its machine's hull is damaged
+	# (`halves_on`, Skirmish._hull_damaged).
+	"ricochet": {"id": "ricochet", "name": "Ricochet", "description": "After a weapon fires, it hits its target again for 1, once a stack, with every effect but its area. Hull damage halves the stacks, rounded down.", "decay": "none", "lasts": "fight", "halves_on": "hull_damage",
+		"tags": ["buff"], "effects": []},
 	# A count a rule reads (the Cassowary's sixth shot, 21 October): every weapon and equipment the
 	# machine aims at a foe this fight, a stack each, kept only where a live effect counts them (nth_shot). A
 	# store with no effect of its own; the screen draws it as pips under the heat bar.
@@ -366,16 +375,10 @@ const STATUS := {
 		"tags": ["buff"], "effects": [{"trigger": "status", "effect": "regrow", "value": 2}]},
 	"ward": {"id": "ward", "name": "Ward", "description": "No rider a foe lays lands on it this round, from a blow or a move of its own (breach, burn, scorch, disable, corrupt, silence, purge); a blow's damage lands. Until the round's end.", "stacking": "renew",
 		"tags": ["buff"], "effects": []},
-	# The Kite's heat tax (Ryan's direction of 19 October, his go of 21 October; a working name):
-	# each attack that killed makes its shots 5 hotter for the fight, a stack a killing attack.
-	# The passive's own price, so neither a buff nor a store (no silence or purge lifts it) and no
-	# cleanse takes it; it lasts the fight.
-	"hot_streak": {"id": "hot_streak", "name": "Hot Streak", "description": "Its shots run {value} hotter a stack this fight: a stack for each attack that killed.", "decay": "none",
-		"tags": ["ability", "tax"], "effects": [{"trigger": "on_attack", "effect": "add_heat", "value": 1}]},
 }
 ## The statuses a buff component may grant: the machines' own (Braced is a foe's too, from its
 ## brace), never one only a foe carries.
-const MECH_STATUSES := ["overcharged", "braced", "primed", "retaliate", "barrier", "ward", "spun_up", "phased", "rallied"]
+const MECH_STATUSES := ["overcharged", "braced", "primed", "retaliate", "barrier", "ward", "spun_up", "phased", "rallied", "ricochet"]
 
 
 ## Is this id one of the engine's statuses: an id in STATUS, or a die entry's Corrupted or
@@ -509,14 +512,16 @@ const HOLDERS := {"flakked": "pinned", "burning": "pinned_burning"}
 ## is taking carries the status the effect's `status` names (any of FOE_STATUSES when it names
 ## none). Read by damage_taken alone, which is handed the striker; every other static query
 ## has no striker, so the condition never holds there. A status the engine lacks never holds.
-## setup_once (the Needletail's gate, 21 October; listed 23 October, when its content landed):
-## the entry spent is a debuff or a buff while the machine's free setup this round is unspent.
+## target_unhurt and target_half (the Kite's opener and its lock's finish, 11 November): the foe
+## the blow is aimed at stands at its full HP, or at half its HP or less. Read as the hit judges
+## the foe, as the die is spent, never between its strikes (the spend hands the HP it judged in
+## `ctx`; a forecast reads the foe's own).
 ## shield_up (the Storm Petrel's plate, built 30 October): the machine's own shield stands, read
 ## on the shield as it is before the blow (damage_taken's `shield` when a forecast walks its blows).
 ## sealed (the Polar Bear's Lockdown, 9 November): the machine wears its seal (is_sealed), so a
 ## grant holds only in the sealed form; with an `entry` beside it (any effect may carry one: a
 ## component id) it holds on that piece's entries alone.
-const SUPPORTED_WHEN := ["reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank", "setup_once", "shield_up", "sealed"]
+const SUPPORTED_WHEN := ["reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank", "target_unhurt", "target_half", "shield_up", "sealed"]
 ## Stats a static effect may change: the mech's base numbers by these names.
 const STATS := ["hull", "shield", "heat", "armour", "move", "cooling", "shield_regen"]
 ## Effects that are bonuses (a destroyed component keeps them) rather than abilities.
@@ -1030,6 +1035,12 @@ static func _holds(u, eff: Dictionary, face: Face, target = null, ctx: Dictionar
 			return stacks_of(target, want) >= maxi(1, int(eff.get("stacks", 1)))
 		"target_no_intent":
 			return target != null and target.has_method("intent_on") and not target.intent_on(u)
+		"target_unhurt":
+			# The foe stands at its full HP as its hit judged it (the Kite's opener, 11 November).
+			return target != null and target.get("hp_max") != null and int(ctx.get("hp", target.hp)) >= int(target.hp_max)
+		"target_half":
+			# The foe stands at half its HP or less as its hit judged it.
+			return target != null and target.get("hp_max") != null and int(ctx.get("hp", target.hp)) * 2 <= int(target.hp_max)
 		"attacker_status":
 			return target != null and target.get("modifiers") != null and carries_status(target, str(eff.get("status", "")))
 		"ally_present":
@@ -1048,11 +1059,6 @@ static func _holds(u, eff: Dictionary, face: Face, target = null, ctx: Dictionar
 			# Every n-th spend at a foe this fight (the Cassowary's sixth shot): this one, when the
 			# count so far is one short of a multiple of `every`.
 			return face != null and face.is_attack() and (stacks_of(u, "shots") + 1) % maxi(1, int(eff.get("every", 6))) == 0
-		"setup_once":
-			# A setup (the Needletail's gate, 21 October): a debuff or a buff, read on the entry
-			# as it is spent, while the machine's free one this round is unspent; a piece that acts
-			# again of its own (Rapid or Instant) takes no gate.
-			return face != null and (face.is_debuff() or face.kind == Face.Kind.BUFF) and not face.acts_again() and not has(u, "quick_turned")
 	var w := str(eff.get("when", ""))
 	if w.begins_with("tag_"):
 		return face != null and face.tags.has(w.substr(4))
@@ -1097,10 +1103,9 @@ static func stat(u, name: String, upto: int = ROUNDS) -> int:
 
 
 ## How many times over an entry spent at a foe hits (split_strikes, on_attack; the Skua's
-## Split-cycle Breech, built 25 October; Ryan, 7 November: "Doubles the number of hits (or number
-## of shots, for Sweep) for Weapons and Equipment. Base weapon damage is halved (rounded down,
-## minimum 1)"): a single-target entry hits that many times as often, a Sweep fires that many
-## times the shots, and each hit's base, the number and what the entry prints from its firer, is
+## Split-cycle Breech from 25 October to 11 November, a module of that name since the 12th; Ryan, 7 November:
+## "Doubles the number of hits ... for Weapons and Equipment. Base weapon damage is halved (rounded
+## down, minimum 1)"): an entry hits that many times as often, and each hit's base, the number and what the entry prints from its firer, is
 ## divided by it, rounded down and never below one (Skirmish.split_share); every buff, passive and
 ## foe's condition counts on each hit after it ("the spirit of buffs and riders is they happen
 ## after"). A debuff deals nothing to divide and hits as often all the same, its riders landing on
@@ -1120,7 +1125,7 @@ static func split_of(u, face: Face) -> int:
 ## damage and on heat, with the burn and the vent the effects add. `target` is the foe the
 ## blow is aimed at, for conditions on it (null when only the heat is asked). Returns
 ## {damage, heat, burn, vent}.
-static func attack(u, face: Face, dmg: int, heat: int, target = null) -> Dictionary:
+static func attack(u, face: Face, dmg: int, heat: int, target = null, ctx: Dictionary = {}) -> Dictionary:
 	var d_add := 0.0
 	var d_mult := 1.0
 	var d_floor := 0
@@ -1129,7 +1134,12 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null) -> Diction
 	var p_mult := 1.0   # a multiply on the entry's own number alone, before the adds (the Kite's double: the printed number, buffs once)
 	var burn := 0
 	var vent := 0
-	var parts: Array = _taking_part(u, "on_attack", face, target)
+	# The entry's own finish (the Kite's Pinion Driver, 11 November): its number multiplied against a
+	# foe at half its HP or less, on the printed number as a passive's double is, the buffs once
+	# after it; the HP the hit judged, as a passive's condition on it is.
+	if face != null and face.finishes(target, int(ctx.get("hp", -1))):
+		p_mult *= float(face.finisher)
+	var parts: Array = _taking_part(u, "on_attack", face, target, ctx)
 	for pair in parts:
 		var eff: Dictionary = pair[0]
 		var v: float = float(eff.get("value", 0))
@@ -1201,8 +1211,8 @@ static func effective_reach(u, face: Face) -> int:
 	if face == null:
 		return Face.Reach.NONE
 	face = rewritten(u, face)
-	if face.reach == Face.Reach.SWEEP or face.reach == Face.Reach.EVERY_FOE:
-		return face.reach   # a sweep and Every Foe are targeting modes of their own (Ryan, 3 November, of Sweep: "Not direct or indirect"; Every Foe, 4 November): no passive turns either into Direct or Indirect
+	if face.reach == Face.Reach.EVERY_FOE:
+		return face.reach   # Every Foe is a targeting mode of its own (Ryan, 4 November): no passive turns it into Direct or Indirect
 	for m in live(u):
 		for eff in m.effects:
 			if str(eff.get("trigger", "")) != "static" or str(eff.get("effect", "")) != "set_reach":
@@ -1264,8 +1274,8 @@ static func granted_numbers(u, face: Face, target = null) -> Dictionary:
 
 ## The statuses this machine's live passives lay on one foe its blow reaches (lay_status on
 ## on_attack, its `when` read against that foe: the funnel-web's Ambush, 18 October), as
-## [[status id, stacks a hit, damaging], ...]. The skirmish asks once a foe at the spend (a
-## Sweep at each shot), before any strike's riders land, and lays them on every strike that
+## [[status id, stacks a hit, damaging], ...]. The skirmish asks once a foe at the spend,
+## before any strike's riders land, and lays them on every strike that
 ## reaches the foe, one the spend fells too (the spend's order), a blow of nothing included,
 ## unless the effect asks for a weapon's hit (`damaging`, which its passive's text says: the
 ## Ambush's Vitriol, Ryan, 25 October); the bot asks the same. Nothing for a foe the condition
@@ -1609,12 +1619,21 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 	var out := {"shield": 0, "vent": 0, "statuses": [] as Array[String]}
 	for pair in _taking_part(u, trigger, null):
 		var eff: Dictionary = pair[0]
+		# An effect that fires once a round (its `once`: "round"; the Skua's stack of Ricochet for
+		# damaging a foe, Ryan, 11 November: "once per turn"): a mark on the unit says it has,
+		# gone at the round's tick (_once).
+		if str(eff.get("once", "")) == "round" and not _once(u, pair[1], eff):
+			continue
 		var v: int = int(eff.get("value", 0)) * int(pair[1].stacks)
 		match str(eff.get("effect", "")):
 			"shield_per_heat":
 				out["shield"] += v * int(amount / maxi(1, int(eff.get("per_heat", 10))))
 			"add_shield":
 				out["shield"] += v
+			"refill_shield":
+				# The shield back whole (the Kite's kill, Ryan, 11 November: "kills recharge it's
+				# shield completely"): what it is short of its maximum, no more.
+				out["shield"] += maxi(0, int(u.shield_max) - int(u.shield))
 			"vent_heat":
 				out["vent"] += v
 			"stack_status":
@@ -1631,6 +1650,47 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 						if m != null and not (out["statuses"] as Array).has(m.name):
 							(out["statuses"] as Array).append(m.name)
 	return out
+
+
+## The once-a-round gate of a fired effect: true the first time `eff` of modifier `m` fires on
+## `u` this round, and false after, until the round's tick lifts the mark it leaves (a modifier
+## tagged ONCE, the round's decay: the engine's own note, never described, shown or stripped).
+const ONCE := "once"
+static func _once(u, m, eff: Dictionary) -> bool:
+	var mark := "once:%s:%s:%d" % [str(m.id), str(eff.get("trigger", "")), (m.effects as Array).find(eff)]
+	for held in u.modifiers:
+		if held.id == mark:
+			return false
+	var note := Modifier.new()
+	note.id = mark
+	note.source = "gate"
+	note.scope = SKIRMISH
+	note.decay = DECAY_ROUND
+	note.tags.append(ONCE)
+	grant(u, note)
+	return true
+
+
+## A unit's hull was damaged: every status that halves on it halves, rounded down, and goes at
+## none (its `halves_on`: "hull_damage"; Ricochet, Ryan, 11 November: "Lose half stacks of
+## Ricochet on any hull damage"), each halving at each blow that takes hull. Returns what it
+## touched with what is left ("Ricochet 2", "Ricochet gone"), for the log.
+static func halve_on_hull_damage(u) -> Array[String]:
+	var told: Array[String] = []
+	var left := {}
+	var keep: Array = []
+	for m in u.modifiers:
+		if str(STATUS.get(m.id, {}).get("halves_on", "")) != "hull_damage":
+			keep.append(m)
+			continue
+		m.stacks = int(m.stacks / 2.0)
+		left[m.name] = int(left.get(m.name, 0)) + maxi(0, m.stacks)
+		if m.stacks > 0:
+			keep.append(m)
+	u.modifiers = keep
+	for name in left.keys():
+		told.append("%s %d" % [name, int(left[name])] if int(left[name]) > 0 else "%s gone" % name)
+	return told
 
 
 ## Every stack of a status the machine carries: what a cap counts.
@@ -1970,7 +2030,7 @@ static func purgeable(m) -> bool:
 
 ## Is this status an ability (Ryan, 8 November): a unit's own mechanic, shown as its chip on a
 ## solid tile, never a buff or a debuff, so nothing that strips buffs or marks reaches it (the
-## Polar Bear's seal, a core's guard, a golden rage, Hot Streak).
+## Polar Bear's seal, a core's guard, a golden rage).
 static func is_ability(status_id: String) -> bool:
 	return (STATUS.get(status_id, {}).get("tags", []) as Array).has("ability")
 
@@ -2081,15 +2141,16 @@ static func heat_per_blow(u) -> int:
 	return n
 
 
-## The shot a machine's passed turn fires for every heat it holds (the Whip Scorpion's Thermal
-## Ejection Manifold, Ryan, 11 November: "It Sweeps the rank with the most foes on a pass, a shot
-## per heat"): each shot's damage, 0 for a machine whose pass releases nothing.
-static func pass_sweep(u) -> int:
-	var n := 0
+## What a machine's passed turn releases (pass_release, static; the Whip Scorpion's Thermal
+## Ejection Manifold, Ryan, 12 November: "1 damage to each enemy, increased by 1 for each heat
+## over 8"): {value: what every foe takes at the gate, gate: the heat it needs to fire}, a point
+## more for each heat past the gate (Skirmish.release_shot). Empty for a machine whose pass
+## releases nothing.
+static func pass_release(u) -> Dictionary:
 	for pair in _taking_part(u, "static", null):
-		if str(pair[0].get("effect", "")) == "pass_sweep":
-			n += int(pair[0].get("value", 0))
-	return n
+		if str(pair[0].get("effect", "")) == "pass_release":
+			return {"value": int(pair[0].get("value", 1)), "gate": int(pair[0].get("gate", 1))}
+	return {}
 
 
 ## The kinds a piece is on this machine, in the engine's words (Ryan, 26 October: "Face type is
@@ -2209,18 +2270,23 @@ static func muster_charges(u) -> int:
 	return stacks_of(u, "muster") / maxi(1, int(rule.get("value", 30)))
 
 
-## Is this entry Rapid by a once-a-round gate (a grant_keyword of rapid on setup_once, the
-## Needletail's Quick-turn Avionics Relay, 21 October), a piece that acts again of its own
-## (Rapid or Instant) aside? Spent so, the gate closes for the round (the quick_turned marker).
-static func quick_turn_live(u, face: Face) -> bool:
-	if face == null:
-		return false
-	var base := rewritten(u, face)
-	if base.acts_again() or keywords_muted(u):
-		return false
-	for pair in _taking_part(u, "static", base, null):
-		var eff: Dictionary = pair[0]
-		if str(eff.get("effect", "")) == "grant_keyword" and str(eff.get("value", "")) == "rapid" and str(eff.get("when", "")) == "setup_once":
+## Does a kill of its own recharge this machine's shield whole (on_kill refill_shield, the Kite's
+## Disabled Weapon Regulators since 11 November)? The bot's read of a kill's worth.
+static func refills_on_kill(u) -> bool:
+	for pair in _taking_part(u, "on_kill", null):
+		if str(pair[0].get("effect", "")) == "refill_shield":
+			return true
+	return false
+
+
+## Does the machine act twice a round, once with a weapon and once with equipment (static
+## one_of_each, the Needletail's Quick-turn Avionics Relay; Ryan, 11 November: "using two things a
+## round is very Kestrel and deserves a chassis")? After its first spend of either kind its die
+## turns to a live entry of the other kind and it acts again, once a round (the quick_turned
+## marker; Skirmish.turn_entries). The machine's own rule and no keyword, so a Silence leaves it.
+static func one_of_each(u) -> bool:
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "one_of_each":
 			return true
 	return false
 
@@ -2281,6 +2347,12 @@ static func cleansable_disable(u, index: int) -> bool:
 	return false
 
 
+## Does the status last the fight once granted (its `lasts`: "fight"; Ricochet), so a buff
+## component grants it stacks and no rounds, as one a use spends?
+static func lasts_the_fight(def: Dictionary) -> bool:
+	return str(def.get("lasts", "")) == "fight"
+
+
 ## A buff component's grant (29 September): `stacks` of a machine status through the end of
 ## `until_round`. A grant ending the same round as one already there stacks onto it; one
 ## ending another round is its own, and each goes when its own rounds run out (16 October).
@@ -2292,8 +2364,9 @@ static func grant_buff(u, status_id: String, stacks: int, source: String, until_
 	var def: Dictionary = STATUS[status_id]
 	if decays_to_zero(def):
 		return stack(u, def, SKIRMISH, source, stacks, status_decay(def))
-	# One a use spends (Spun Up, spent by the next weapon) lasts until then, across turns.
-	if def.has("spent_by"):
+	# One a use spends (Spun Up, spent by the next weapon) lasts until then, across turns; one
+	# that lasts the fight (Ricochet) until the fight ends or its own rule takes it.
+	if def.has("spent_by") or lasts_the_fight(def):
 		return stack(u, def, SKIRMISH, source, stacks, DECAY_NONE)
 	return stack(u, def, ROUNDS, source, stacks, DECAY_NONE, until_round)
 
@@ -2340,8 +2413,9 @@ static func effect_text(eff: Dictionary) -> String:
 	match str(eff.get("effect", "")):
 		"multiply_damage": body = "damage ×%s" % vs
 		"multiply_printed": body = "the printed number ×%s, before any buff" % vs
-		"split_strikes": body = "hits twice (fires twice the shots, for a Sweep), its base weapon damage halved, rounded down, never below one" if vs == "2" else "hits ×%s (×%s the shots, for a Sweep), its base weapon damage divided by %s, rounded down, never below one" % [vs, vs, vs]
+		"split_strikes": body = "hits twice, its base weapon damage halved, rounded down, never below one" if vs == "2" else "hits ×%s, its base weapon damage divided by %s, rounded down, never below one" % [vs, vs]
 		"weapon_cooldown": body = "every weapon and equipment it aims at a foe sits out the next %s" % ("round" if vs == "1" else vs + " rounds")
+		"one_of_each": body = "acts twice a round, once with a weapon and once with equipment: after its first spend the die turns to an entry of the other kind"
 		"mine_on_spend": body = "every weapon and equipment it aims at a foe leaves a Mine of %s on it with the spend's keywords, one Mine a foe however many spends feed it; when the foe falls the Mine blows on every foe round its slot" % vs
 		"carry": body = "the machines beside it on the map travel with it when it moves"
 		"forge": body = "its weapons spend ammo instead of heating it, 1 for every %d heat, its magazine %s, opening at %d and gaining %d a round" % [int(eff.get("per_heat", 10)), vs, int(eff.get("start", 0)), int(eff.get("per_round", 0))]
@@ -2389,7 +2463,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"step_die": body = "its die never rolls: each fight opens on a random entry, and every roll steps it to the next in order"
 		"fold_die": body = "its die is two batteries of %s, one up at a time with its fixed pieces; the battery up stays up from fight to fight, and a battle opens on the first" % vs
 		"rewrite_weapon": body = "every weapon and equipment it aims at a foe fires as one %s %s blow, heat %s, its keywords and rules kept" % [str(eff.get("reach", "direct")), vs, str(eff.get("heat", 0))]
-		"pass_sweep": body = "a turn it ends with an entry it could have spent releases its heat once the enemy has acted: a Sweep of the rank with the most foes, a shot of %s for every heat" % vs
+		"pass_release": body = "a turn it ends with an entry it could have spent and %d heat or more releases its heat once the enemy has acted: %s on every foe, 1 more for each heat over %d" % [int(eff.get("gate", 1)), vs, int(eff.get("gate", 1))]
 		"shove_behind": body = "damaging a foe in the front rank deals %s%% of its maximum HP, rounded up, to the foe behind it" % vs
 		"hold_status": body = "its %s does not decay" % str(STATUS.get(str(v), {}).get("name", v))
 		"heat_per_blow": body = "every blow a foe lands on it adds %s heat" % vs
@@ -2400,6 +2474,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"shield_regen_per_heat": body = "shield regen +%s for every %d heat it carries" % [vs, int(eff.get("per_heat", 10))]
 		"shield_per_ally_heat": body = "the shield grows by %s for every %d heat it carries" % [vs, int(eff.get("per_heat", 10))]
 		"add_shield": body = "+%s shield" % vs
+		"refill_shield": body = "its shield recharges whole"
 		"tick_hp": body = "%s damage per stack each turn" % vs
 		"tick_hp_share": body = "loses %s%% of its current HP per stack each turn" % vs
 		"tick_heat": body = "%s heat per stack each turn" % vs
@@ -2431,6 +2506,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"on_heat_gain": lead = "on gaining heat: "
 		"out_of_combat": lead = "each phase out of combat: "
 		"on_kill": lead = "after an attack that killed: "
+		"on_damage": lead = "after a spend of its weapons that damaged a foe: "
 	match str(eff.get("when", "")):
 		"reach_direct": lead += "direct attacks: "
 		"reach_indirect": lead += "indirect attacks: "
@@ -2439,6 +2515,8 @@ static func effect_text(eff: Dictionary) -> String:
 			var want := str(eff.get("status", ""))
 			lead += ("foes carrying %s: " % str(STATUS[want]["name"])) if STATUS.has(want) else "foes carrying a status: "
 		"target_no_intent": lead += "foes showing no intent on this machine: "
+		"target_unhurt": lead += "unhurt foes: "
+		"target_half": lead += "foes at half their HP or less: "
 		"attacker_status":
 			var st := str(eff.get("status", ""))
 			lead += "blows from foes carrying %s: " % (str(STATUS[st]["name"]) if STATUS.has(st) else (st.capitalize() if not st.is_empty() else "a status"))
@@ -2450,6 +2528,8 @@ static func effect_text(eff: Dictionary) -> String:
 			lead += ("%s blows aimed at the %s rank: " % [by, str(eff.get("rank", "front"))]) if not by.is_empty() else ("aimed at the %s rank: " % str(eff.get("rank", "front")))
 	if str(eff.get("when", "")).begins_with("tag_"):
 		lead += "pieces tagged %s: " % str(eff["when"]).substr(4)
+	if str(eff.get("once", "")) == "round":
+		body += ", once a round"
 	return lead + body
 
 
@@ -2490,7 +2570,7 @@ static func explain(u, face: Face) -> Array[String]:
 				# A condition on the target is shown as a rule (its lead says when), since
 				# the row has no target in hand.
 				var w := str(eff.get("when", ""))
-				var on_target := w in ["target_status", "target_no_intent", "target_rank"]
+				var on_target := w in ["target_status", "target_no_intent", "target_rank", "target_unhurt", "target_half"]
 				if w == "target_rank" and not str(eff.get("reach", "")).is_empty():
 					on_target = effective_reach(u, face) == Face.reach_from_name(str(eff["reach"]))   # the Ram Frame's read: Direct entries only
 				if _usable(u, m, name) and (on_target or _holds(u, eff, face)):
@@ -2530,5 +2610,7 @@ static func written_out(m, eff: Dictionary) -> String:
 static func describe(u) -> Array:
 	var out: Array = []
 	for m in live(u):
+		if m.tags.has(ONCE):
+			continue   # a once-a-round gate's mark: the engine's own note
 		out.append([m.name, m.description, m.source, m.scope, m.stacks, m.id])
 	return out
