@@ -14,9 +14,6 @@ enum Kind { ATTACK, SHIELD, VENT, BLANK, BUFF }
 enum Reach { NONE, DIRECT, INDIRECT, EVERY_FOE }   # Every Foe (4 November), below; Sweep, a rank picked and walked, went on 12 November
 ## Execute and Steady are retired (10 October): a threshold doubling is a hard sum hidden in
 ## a keyword, and a rolled weapon dealing its average is simply a flat one.
-## Empowered a kill is a count printed on its carrier (Ryan, 11 October: no keyword to learn; 18
-## October: "devour is not a thing"): `devours`, the stacks a kill gives. The Soulcutter Talons'
-## until the Ammit's rework of 12 November; no piece prints it today.
 ## Web (18 October, the funnel-web's Web Bomb): the foe hit is Webbed, and after its action the
 ## web bursts into a Suppress on it and the next foe to act beside it (Skirmish._web_burst).
 ## Flak (Ryan's go, 19 October; built 21 October): Wainwright & Sutler's on-hit, a numbered
@@ -156,7 +153,6 @@ var per_heat: int = 10        # ...the heat a step of power_per_heat stands for 
 var power_per_missing: int = 0   # an attack: added for every per_missing HP its target is missing (10 October; flat, shown on the hover)...
 var per_missing: int = 20     # ...the HP a step of power_per_missing stands for (the stock pass, 22 October: a field, 20 until the content landing)
 var finisher: int = 0         # an attack: its number times this against a foe at half its HP or less, read as the hit judges the foe (the Kite's Pinion Driver, 11 November: the Coriolis's slope as one step); 0 for none
-var devours: int = 0          # an attack: each kill gives its owner this many stacks of Empowered (the Soulcutter Talons' rule until 12 November, no piece's since; a keyword until 11 October, a count since 18 October)
 # The Soul Siphon's (the Ammit's, Ryan, 12 November: "Consume up to 5 souls, granting 1 Empowered per soul"; "No Empowered decays this round. And I mean none, not ally or enemy"):
 var spends: String = ""       # a buff: the status of its own machine it spends for its stacks, a stack granted a stack spent (its Souls); with none to spend the entry cannot be played
 var spends_up_to: int = 0     # ...the most it spends, and so the most it grants (five); buff_stacks holds it as built, and what it would take now on the die as shown (Skirmish.shown_face)
@@ -366,11 +362,6 @@ static func from_dict(d: Dictionary) -> Face:
 		f.per_missing = maxi(1, int(d.get("per_missing", 20)))
 		f.finisher = maxi(0, int(d.get("finisher", 0)))
 		f.fills_hopper = maxi(0, int(d.get("fills_hopper", 0)))
-		# A save or a draft from before 11 October lists devour as a keyword, and one from before
-		# 18 October says `true`: each reads as the rule, a stack a kill.
-		f.devours = maxi(0, int(d.get("devours", 0)))
-		if Array(d.get("keywords", [])).has("devour"):
-			f.devours = maxi(1, f.devours)
 		f.burn = maxi(0, int(d.get("burn", 0)))   # add_keyword gives a Burn entry one stack when it says none
 		f.cryo = maxi(0, int(d.get("cryo", 0)))
 		f.flak = maxi(0, int(d.get("flak", 0)))
@@ -463,8 +454,6 @@ func to_dict() -> Dictionary:
 		d["per_missing"] = per_missing
 	if finisher > 1:
 		d["finisher"] = finisher
-	if devours > 0:
-		d["devours"] = devours
 	if burn > 0 and has(Keyword.BURN):
 		d["burn"] = burn
 	if cryo > 0 and has(Keyword.CRYO):
@@ -624,14 +613,14 @@ func acts_again() -> bool:
 
 
 ## A rule printed on the entry rather than a keyword (bible section 6: the die's star chip):
-## Vents all, the missing-hull bonus, Empowered a kill, the hopper, the brace, the
+## Vents all, the missing-hull bonus, the hopper, the brace, the
 ## Siphon's heat a blow, a count it spends for its stacks or a status it holds on every unit (the
 ## Soul Siphon's), or a labelled effect. A roll that may land on itself is Instant's, a
 ## keyword since 12 November, never the star. A cooldown is a cost the die prints with its clock, a reload the ammo the die
 ## prints with its shells (Ryan, 2 November), and a shield's cooling the number under its steam
 ## (3 November), so none of them is.
 func has_unique_rule() -> bool:
-	return vents_all or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_burn > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not label.is_empty() or not printed.is_empty() \
+	return vents_all or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_burn > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not label.is_empty() or not printed.is_empty() \
 		or turns_die or heat_per_blow > 0 or resets_on_kill or gathers_mines or detonates \
 		or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine \
@@ -747,7 +736,6 @@ func duplicate_face() -> Face:
 	f.power_per_missing = power_per_missing
 	f.per_missing = per_missing
 	f.finisher = finisher
-	f.devours = devours
 	f.spends = spends
 	f.spends_up_to = spends_up_to
 	f.holds_all = holds_all
@@ -907,8 +895,6 @@ func rule_phrases() -> Array[String]:
 			out.append("its target's %s does not decay this round" % str(Effects.STATUS.get(holds, {}).get("name", holds)))
 		if self_burn > 0:
 			out.append("Burning %d on itself" % self_burn)
-		if devours > 0:
-			out.append("Empowered ×%d a kill" % devours)
 		if fills_hopper > 0:
 			out.append("fills the hopper" + ("" if fills_hopper == 1 else " ×%d" % fills_hopper))
 		if fires_hopper > 0:
@@ -1096,8 +1082,6 @@ func describe() -> String:
 				s += " its target's %s does not decay this round" % str(Effects.STATUS.get(holds, {}).get("name", holds))
 			if self_burn > 0:
 				s += " Burning %d on itself" % self_burn   # the Stoker's: its own machine set burning as it fires
-			if devours > 0:
-				s += " Empowered ×%d a kill" % devours
 			if fills_hopper > 0:
 				s += " fills the hopper" + ("" if fills_hopper == 1 else " ×%d" % fills_hopper)
 			if fires_hopper > 0:

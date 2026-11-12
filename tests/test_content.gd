@@ -1751,14 +1751,13 @@ func test_the_new_passive_fields_are_checked() -> void:
 	c["name"] = "Odd Test"
 	c["passive"] = {"id": "odd", "name": "Odd", "description": "", "effects": [
 		{"trigger": "on_attack", "effect": "add_damage", "value": 5, "per_stack": "nonsense"},
-		{"trigger": "static", "effect": "keep_status", "value": "nonsense"},
 		{"trigger": "static", "effect": "add_armour_vs_rank", "value": 5, "rank": "sideways"}]}
 	db.chassis["odd"] = c
 	var hits := 0
 	for e in db.validate():
-		if e.begins_with("chassis odd") and (e.contains("per_stack") or e.contains("keep_status") or e.contains("front or back")):
+		if e.begins_with("chassis odd") and (e.contains("per_stack") or e.contains("front or back")):
 			hits += 1
-	assert_eq(hits, 3, "each bad field is named")
+	assert_eq(hits, 2, "each bad field is named")
 
 
 func test_the_foe_actions_run_and_the_validator_knows_their_shape() -> void:

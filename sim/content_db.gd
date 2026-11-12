@@ -1446,10 +1446,6 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: volatile is the hull a spend bites: a positive number" % where)
 	if fd.has("shield_cost") and int(fd.get("shield_cost", 0)) <= 0:
 		errs.append("%s: shield_cost is the shield a spend takes first: a positive number" % where)
-	# The hopper (11 October): a weapon fills it by the foes it reaches, another fires a few
-	# loads a shot for a bonus each.
-	if fd.has("devours") and (kind != "attack" or int(fd["devours"]) <= 0):
-		errs.append("%s: devours is the stacks of Empowered a kill gives its owner: a positive number on an attack" % where)
 	# A buff that spends a count of its own machine's for its stacks (the Soul Siphon, 12 November):
 	# the status it spends, one the engine knows, and the most it takes, which is the most it
 	# grants, so it says no stacks of its own.
@@ -1466,8 +1462,6 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	# halves on its own clock, held on every unit through the round's end.
 	if fd.has("holds_all") and not Effects.decays_to_zero(Effects.STATUS.get(str(fd["holds_all"]), {})):
 		errs.append("%s: holds_all names a status that halves at the round's end (Empowered, Flak): no unit's stacks of it run down this round" % where)
-	if Array(fd.get("keywords", [])).has("devour"):
-		errs.append("%s: devour is no keyword since 11 October: write devours: <the stacks a kill gives>" % where)
 	# Burn is a numbered keyword (Ryan, 18 October): an entry says the stacks each hit leaves.
 	if Array(fd.get("keywords", [])).has("burn") and int(fd.get("burn", 0)) <= 0:
 		errs.append("%s: an entry with Burn says its stacks: burn, a positive number" % where)
@@ -1807,7 +1801,7 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: per_stack names no engine status ('%s')" % [where, eff["per_stack"]])
 		if eff.has("per_heat") and int(eff["per_heat"]) <= 0:
 			errs.append("%s: per_heat is heat per step and must be positive" % where)
-		if (effect == "keep_status" or effect == "stack_status" or effect == "lay_status") and not Effects.STATUS.has(str(eff.get("value", ""))):
+		if (effect == "stack_status" or effect == "lay_status") and not Effects.STATUS.has(str(eff.get("value", ""))):
 			errs.append("%s: %s needs an engine status as its value" % [where, effect])
 		# A lay that asks for a weapon's hit (the Ambush's Vitriol, Ryan, 25 October) says so on the
 		# effect and in its passive's text; any other lays on every hit, equipment's included.

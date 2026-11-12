@@ -275,7 +275,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   too (its riders, a Mine, a Shock, an Expose, a Lure's turn, a Swap, a gather, a detonation,
   the zap after the strikes), so the
   preview shows the chips beside the skull and no trigger goes unfired; a spend that asks
-  whether it killed (a kill trigger, an entry's Empowered a kill, a Reset) reads its own death check. The death check
+  whether it killed (a kill trigger, a Reset) reads its own death check. The death check
   clears a kill's slot; a foe getting back up and a split's arrivals stand only once the spend
   is done, in the slot their unit died in, wherever a Swap moved it, so nothing the spend does meets them, and the preview shows a foe that will get back
   up or split with its return's chip in the skull's place. What a foe's tick fells comes back
@@ -550,9 +550,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 Component properties, printed on the entry rather than learned as keywords (the die marks
 them with a star): **Vents all** fires the whole heat gauge into the shot, adding its
 bonus per step of heat fired, the step printed on the entry (the Afterburner Cannon: +1 per 2),
-then its own heat lands. **Empowered a kill** (no word of its own, and no piece prints it
-today; the Soulcutter Talons did): each foe its spend kills gives its owner a stack of
-Empowered, at the spend's death check. **Missing HP** adds its bonus for every
+then its own heat lands. **Missing HP** adds its bonus for every
 step of HP the foe struck is missing, each foe its own, on each blow after the attacker's
 modifiers (so a split weapon's two strikes each add it), both numbers on the entry (the
 Coriolis Accelerator: +1 per 5). **Gated**: a keyword printed with a condition on the foe (a Suppress on a foe carrying

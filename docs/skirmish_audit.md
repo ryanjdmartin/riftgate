@@ -349,6 +349,33 @@ balance runner's valuation only).
 Kept on purpose, said so: an effect kind content may yet use is kept only in one block marked
 "engine ahead of content", so the next session knows it is unreached.
 
+Measured against the content on 12 November (Ryan, of the leftovers a rework had named: "Im just
+worried based on your descriptions that our trigger system is just spaghetti in there"), by a
+walk of `content/*.json` and of the engine's own status definitions, planned drafts set apart:
+
+- The passive table runs 19 triggers and 62 effect kinds as 86 trigger-and-effect pairs. Content
+  prints 43 of the pairs, the engine's own statuses use 16 more, and 27 are used by nothing. Most
+  of the 27 are the three plain effects (a status, a shield, a vent) on an event that no piece
+  pairs them with, which cost no code of their own. By kind, 13 of the 62 are used by nothing:
+  three wait on planned drafts (`muster`, `carry`, `shield_per_ally_heat`), and ten are leftovers:
+  `suppress`, `set_reach`, `min_damage`, `multiply_stat`, `shock_on_block` and
+  `add_armour_vs_rank` (on this list since 7 November); `vent_blast`, `weapon_cooldown` and
+  `shield_per_heat`, each of which a chassis printed on 7 November and none does now; and
+  `vent_heat`, which had no user then either. Two triggers fire for nothing: `on_shield_gain`
+  and `out_of_combat`.
+- The die entry reads 64 keys. Dealt pieces print 53; six more are set by the engine itself (a
+  charged form, a shown entry); two wait on planned drafts (`braces`, `shields`); three are
+  leftovers no piece prints: `heat_per_blow` (the Whip Scorpion's, its leavings line),
+  `resets_on_kill` (the Kite's Reset) and `shield_cost` (built ahead of content). 32 of the 64
+  are printed by exactly one piece, and 17 of the 19 static rules a chassis prints belong to one
+  chassis: one-piece rules are the design (a unique passive a machine, a rule of its own a locked
+  piece), so their number is no fault; that each is written out in five places is (Structure 11).
+- Cut that day on his word: Empowered a kill (`devours`) and the kept status (`keep_status`),
+  the Ammit's two, with their terms, the jaws glyph and their tests. Seven rules lost their last
+  piece between 7 and 12 November (those two, `vent_blast`, `weapon_cooldown`, `shield_per_heat`,
+  `heat_per_blow` and `resets_on_kill`, read off the content at each date) and every one stayed
+  in the engine, most as a rework's leavings line on the to-do: Root 5 was still growing.
+
 ## Text and records
 
 - Done 8 November: the rules' zap "lost if the strikes killed it" and a passive's lay "on a foe

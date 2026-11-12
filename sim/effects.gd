@@ -51,7 +51,7 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "one_of_each", "add_armour_vs_rank", "keep_status", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "fold_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "pass_release", "shove_behind", "mute_keywords", "weapon_cooldown", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "one_of_each", "add_armour_vs_rank", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "fold_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "pass_release", "shove_behind", "mute_keywords", "weapon_cooldown", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status"],
 	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_shield_hit": ["stack_status", "add_shield", "vent_heat"],
@@ -144,8 +144,9 @@ const STATUS := {
 	# glance), and it halves at the end of each round, rounded down, whatever granted it: a
 	# source feeding so many stacks a round settles near twice that, where a stack fading a
 	# round climbed without limit ("stacking to the moon and fueling massive ramp strategies").
-	# No machine keeps it since the Ammit's rework (12 November): its battle-long part is its Souls,
-	# below, and what they grant is this, halving like any (keep_status stays, with no carrier).
+	# No machine keeps it: the Ammit's Tap held every stack for the battle until its rework (12
+	# November), and that keep left the engine with it. Its battle-long part is its Souls, below,
+	# and what they grant is this, halving like any.
 	"overcharged": {"id": "overcharged", "name": "Empowered", "description": "Attacks deal +1 damage a stack. Halves at the end of each round, rounded down.", "decay": "half",
 		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 1}]},
 	# Armoured (Braced until 18 October; the engine id stays) is temporary armour (2 October):
@@ -674,19 +675,12 @@ static func _held(u, passive: Dictionary, scope: int, n: int, expires_round: int
 ## halving one half of them. A timed one (ROUNDS) stacks up only with one ending the same
 ## round (a brace beside a buff of Armoured); a grant ending another round is its own
 ## modifier, so a later grant never lengthens an earlier one's stacks (16 October). A status
-## that renews (its "stacking") is one grant however often it is granted. A machine that
-## keeps the status (keep_status; the Ammit's Quintessence Tap until its rework of 12 November,
-## no chassis's since) keeps every grant of it for the battle, whatever granted it (Ryan, 18
-## October: "that's the rules text, it doesn't care where it came from"): the grant's own scope
-## and decay give way. Whatever granted a stack, it is a stack (Ryan, 8 November: "A stack is a
-## stack, doesn't matter where it came from").
+## that renews (its "stacking") is one grant however often it is granted. Whatever granted a
+## stack, it is a stack (Ryan, 8 November: "A stack is a stack, doesn't matter where it came
+## from").
 static func stack(u, passive: Dictionary, scope: int, source: String, n: int = 1, decay: int = DECAY_TICK, expires_round: int = -1) -> Modifier:
 	if turns_mark(u, str(passive.get("id", ""))):
 		return null   # a foe's Ward turns the team's mark away (28 October)
-	if keeps(u, str(passive.get("id", ""))):
-		scope = BATTLE
-		decay = DECAY_NONE
-		expires_round = -1
 	if bool(passive.get("single", false)):
 		n = mini(n, 1)   # one stack whoever grants it (the STATUS note above)
 	var held := _held(u, passive, scope, n, expires_round)
@@ -1578,16 +1572,6 @@ static func armour_against(u, rank: int) -> int:
 	return maxi(0, n)
 
 
-## Does a passive keep a status from fading on this machine and carry it through the battle
-## (keep_status, static: the Ammit's Quintessence Tap on Empowered until its rework of 12
-## November; the engine's rule kept, no chassis carrying it)?
-static func keeps(u, status_id: String) -> bool:
-	for pair in _taking_part(u, "static", null):
-		if str(pair[0].get("effect", "")) == "keep_status" and str(pair[0].get("value", "")) == status_id:
-			return true
-	return false
-
-
 ## The form a machine seals into (seal_form, static; the Polar Bear's Lockdown, 20 October):
 ## {"armour": the armour the seal grants, "heat": what it runs hotter at the end of each turn}
 ## when a live passive carries it, else empty.
@@ -2174,15 +2158,14 @@ static func status_kind(status_id: String) -> String:
 ## stacks across its grants, in the order they were granted, gone at none, an unstackable one a
 ## stack of one. An ability is no buff (the unit's own mechanic, its chip on a solid tile: Ryan, 8
 ## November, "It's not a Buff, it's not a Debuff, it's labelled as an Ability, so it doesn't get
-## purged"), a store is no buff, and the stacks a keeping passive keeps stay (keep_status, no
-## chassis's since the Ammit's rework). Returns what it touched, once each, with what it left
+## purged"), and a store is no buff. Returns what it touched, once each, with what it left
 ## ("Armoured 1", "Barrier gone").
 static func purge(u, n: int = 1) -> Array[String]:
 	var touched: Array[String] = []
 	var left := {}
 	var keep: Array = []
 	for m in u.modifiers:
-		if not purgeable(m) or keeps(u, m.id):
+		if not purgeable(m):
 			keep.append(m)
 			continue
 		var take: int = mini(m.stacks, int(left.get(m.id, maxi(1, n))))
@@ -2230,12 +2213,11 @@ static func clear_marks(u) -> Array[String]:
 
 
 ## The stacks of buffs a purge can reach on a unit: what a foe that aims at the buffed reads,
-## and what a purger's condition asks (28 October). A kept one (a keep_status passive's own)
-## counts for nothing.
+## and what a purger's condition asks (28 October).
 static func buff_stacks(u) -> int:
 	var n := 0
 	for m in u.modifiers:
-		if purgeable(m) and not keeps(u, m.id):
+		if purgeable(m):
 			n += maxi(1, m.stacks)
 	return n
 
@@ -2579,7 +2561,6 @@ static func effect_text(eff: Dictionary) -> String:
 			if eff.has("number"):
 				body += " %d" % int(eff["number"])   # a numbered grant says its number (the drum's Spread 2)
 		"add_armour_vs_rank": body = "armour +%s against %s-rank blows" % [vs, str(eff.get("rank", "front"))]
-		"keep_status": body = "%s never fades and lasts the battle" % str(STATUS.get(str(v), {}).get("name", str(v)))
 		"seal_form": body = "equipment it spends on itself seals it: armour +%s, its own cooling stopped, %s hotter at the end of each turn; a weapon it fires opens it" % [vs, str(eff.get("heat", 0))]
 		"stack_status":
 			var nm := str(STATUS.get(str(v), {}).get("name", str(v)))

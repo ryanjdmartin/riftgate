@@ -429,16 +429,6 @@
    }
   },
   {
-   "id": "kill_overcharge",
-   "category": "component_property",
-   "name": "Empowered a kill",
-   "codex": "A rule a weapon may print, with no word of its own: every foe its spend kills gives its owner a stack of Empowered. No piece prints it today: the Ammit's Soulcutter Talons did until 12 November.",
-   "status": "implemented",
-   "design": {
-    "holes": "A rule with no carrier since 12 November (the Ammit's rework), kept in the engine. A spread that kills two feeds twice; a chain feeds on every link."
-   }
-  },
-  {
    "id": "targets",
    "category": "component_property",
    "name": "Targets",
@@ -562,7 +552,7 @@
    "id": "dispel",
    "category": "keyword",
    "name": "Purge",
-   "codex": "Purge N, on either side. On a player's entry aimed at a foe, a weapon or equipment, every foe it reaches loses N stacks of every buff it carries (an unstackable one is a stack of one), after the blow, so a foe the blow kills stays down. On a foe's move of its own, never a rider on a blow and never a last act's, the machine it lands on loses N stacks of every buff it carries, for good. A stack is a stack, whatever granted it; an Ability is no buff and stays, and so do the stores and a stack its passive keeps. A Ward turns it away and stands, on either side.",
+   "codex": "Purge N, on either side. On a player's entry aimed at a foe, a weapon or equipment, every foe it reaches loses N stacks of every buff it carries (an unstackable one is a stack of one), after the blow, so a foe the blow kills stays down. On a foe's move of its own, never a rider on a blow and never a last act's, the machine it lands on loses N stacks of every buff it carries, for good. A stack is a stack, whatever granted it; an Ability is no buff and stays, and so do the stores. A Ward turns it away and stands, on either side.",
    "status": "implemented",
    "design": {
     "holes": "One id, dispel, on both sides, as breach is (28 October); numbered 2 November (Ryan: \"lower everything by N and price accordingly\", a softer answer to armour and damage stacking that prices cheap and common; the Null Field Emitter at Purge 2, a placeholder). One purge on either side (Effects.purge): N stacks off every buff, whatever granted it (Ryan, 8 November: \"A stack is a stack, doesn't matter where it came from\"); retired with it the purge by source of 28 October (a die entry's stacks gone for good, a store's, a form's or a passive's put to sleep until the player's turn), which he called cryptic. What the unit is, its form or its passive mechanic, is an Ability and no buff, so no purge reaches it (the same day)."

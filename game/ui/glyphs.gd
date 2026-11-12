@@ -473,13 +473,6 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_polyline(PackedVector2Array([
 				c + Vector2(s * 0.2, -s * 0.65), c + Vector2(-s * 0.3, s * 0.05), c + Vector2(s * 0.05, s * 0.05), c + Vector2(-s * 0.2, s * 0.65),
 			]), color, width)
-		"devour":
-			# Open jaws, teeth down: what takes something from a kill.
-			ci.draw_arc(c + Vector2(0, -s * 0.15), s * 0.85, PI * 1.05, PI * 1.95, 16, color, width)
-			for i in range(3):
-				var x := -s * 0.5 + i * s * 0.5
-				ci.draw_line(c + Vector2(x, -s * 0.1), c + Vector2(x, s * 0.55), color, width * 0.9)
-			ci.draw_line(c + Vector2(-s * 0.85, -s * 0.1), c + Vector2(s * 0.85, -s * 0.1), color, width)
 		"corrupt":
 			# A jagged crack through the entry: the rot a foe's corrupt leaves in a component.
 			ci.draw_polyline(PackedVector2Array([
@@ -691,7 +684,7 @@ static func colour_for(id: String) -> Color:
 			return Terms.colour("sealed")   # the Polar Bear's shell, the Sealed status's colour
 		"exposed":
 			return Terms.colour("exposure")
-		"overcharge", "heat", "scorch", "devour", "spin", "mine":
+		"overcharge", "heat", "scorch", "spin", "mine":
 			return Palette.HEAT
 		"shieldbreak", "silence":
 			return Palette.ENEMY

@@ -1237,29 +1237,23 @@ func _chips_for(s: SkirmishScreen, i: int, id: String) -> Array[String]:
 
 
 ## Every status is a chip whatever its scope (Ryan, 16 October: the Ammit is Empowered, "so
-## anything that interacts with overcharged needs it displayed"). The talons' kills'
-## Empowered, kept for the battle when its owner keeps the status, is a chip with its count;
-## a buff's joins it in the one chip (kept too, since 18 October: the Tap keeps every grant),
-## and the hold and the codex each list it once.
+## anything that interacts with overcharged needs it displayed"). Stacks a battle keeps (the
+## Ammit's Empowered from 16 October until its rework of 12 November, its Souls since; here a
+## battle's own grant) are a chip with their count; a buff's for the round joins them in the one
+## chip, and the hold and the codex each list the status once.
 func test_a_status_kept_for_the_battle_is_a_chip_with_its_count() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
 	var m := db.make_mech("badger")
 	m.die = Die.single(Face.attack(10))
-	m.grant_passive({"id": "keeper", "name": "Keeper", "description": "Keeps what its kills give.",
-		"effects": [{"trigger": "static", "effect": "keep_status", "value": "overcharged"}]})
+	m.grant_passive({"id": "keeper", "name": "Keeper", "description": "A rule of its own, and no status.",
+		"effects": [{"trigger": "static", "effect": "add_stat", "stat": "hull", "value": 5}]})
 	sk.add_mech(m)
 	sk.add_foes([Foe.make("revenant", 300, 10)])
 	var s := SkirmishScreen.new()
 	s.setup(sk)
 	Effects.remove(m, "overcharged")
-	assert_true(Effects.keeps(m, "overcharged"), "the machine keeps Empowered")
-	sk._overcharge_on_kill(sk.mechs[0], 2, 1)   # two kills, a stack each
-	var scopes: Array = []
-	for d in Effects.describe(m):
-		if str(d[5]) == "overcharged":
-			scopes.append(int(d[3]))
-	assert_eq(scopes, [Effects.BATTLE], "two kills kept for the battle: one grant, below the skirmish's scope")
+	Effects.stack(m, Effects.STATUS["overcharged"], Effects.BATTLE, "reward", 2, Effects.DECAY_NONE)   # two stacks the battle keeps
 	s._refresh()
 	assert_eq(_chips_for(s, 0, "overcharged"), ["×2"] as Array[String], "an Empowered chip with its count")
 	Effects.grant_buff(m, "overcharged", 1, "buff", sk.round)
@@ -1279,9 +1273,9 @@ func test_a_status_kept_for_the_battle_is_a_chip_with_its_count() -> void:
 	for e in db.codex_for_unit(m)["effects"]:
 		if str(e["name"]).begins_with("EMPOWERED"):
 			listed += 1
-			assert_eq([str(e["name"]), str(e["note"])], ["EMPOWERED ×3", "KEPT FOR THE BATTLE"], "a kept status among the active effects, never a reward, with its count, the buff's stack kept with the kills' (Ryan, 18 October)")
+			assert_eq([str(e["name"]), str(e["note"])], ["EMPOWERED ×2", "KEPT FOR THE BATTLE"], "the battle's stacks among the active effects, never a reward, with their count; the round's buff is no part of what the battle keeps")
 	assert_eq(listed, 1, "and the codex once: the kept stacks, which the battle carries past this fight")
-	# What is no status stays in the codex: the passive that keeps it, and a battle reward.
+	# What is no status stays in the codex: a passive of its own, and a battle reward.
 	Effects.grant(m, Effects.make({"id": "spoils", "name": "Spoils", "description": "Hull +10.",
 		"effects": [{"trigger": "static", "effect": "add_stat", "stat": "hull", "value": 10}]}, Effects.BATTLE, "reward"))
 	s._refresh()

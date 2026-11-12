@@ -2245,7 +2245,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 			if f.is_weapon():
 				_spend_primers(ms)
 			killed = team_kills - kills_before
-			_after_kills(ms, killed, f)
+			_after_kills(ms, killed)
 			# The Spindrift Salvo's kill rider (the Giant Petrel's, Ryan's go of 21 October; built 30
 			# October): a spend that kills gives the team its rerolls this round, banked if unspent.
 			if f.kill_rerolls > 0 and killed > 0:
@@ -3020,8 +3020,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 		# reaches takes its shape's number (Spread's, Penetrate's, Splash's, Chain's on a Shocked
 		# conductor, whose Shock stands, no strike being aimed at it) in place of the roll,
 		# through the same order, the firer's modifiers on it and its own reads. Every blow of the
-		# strike is read before any lands, so a kill in it (the talons' Empowered) feeds the next
-		# strike, never this one's other blows.
+		# strike is read before any lands, so no blow of it reads what another did.
 		var blows := {}
 		for foe in hit:
 			blows[foe] = dmg if foe == target else _area_blow(ms, f, int(shapes.get(foe, AREA_ALL)), foe, own, split, _judged(judged_hp, foe)) + _foe_reads(f, reads, foe, not struck_once.has(foe))
@@ -3468,17 +3467,15 @@ static func blast_shot(amount: int) -> Face:
 
 
 ## A spend's kills, its weapon's or its vent's blast's, counted at its death check (is_kill):
-## Empowered a kill where an entry prints it (no piece does today), the muster its guns earn (the
-## Swallowtail's) and the kill trigger, once however many fell (the Kite's shield back whole;
+## the muster its guns earn (the Swallowtail's) and the kill trigger, once however many fell (the
+## Kite's shield back whole;
 ## the Ammit's flare, Ryan, 12 November: "the flare should be the Ammit kill only", and of a
 ## flare for each foe, built first: "Flaring twice for an AoE is probably wrong, let's make it
 ## 'one of more killed' by an attack"; the Souls its kills banked are in already, the death
 ## check's).
-func _after_kills(ms: MechState, killed: int, f: Face = null) -> void:
+func _after_kills(ms: MechState, killed: int) -> void:
 	if killed <= 0:
 		return
-	if f != null and f.devours > 0 and ms.alive():
-		_overcharge_on_kill(ms, killed, f.devours)
 	_muster(ms, killed * int(Effects.muster_rule(ms.unit).get("kill", 0)))
 	if ms.alive():
 		var got := Effects.fire(ms.unit, "on_kill")
@@ -4775,7 +4772,7 @@ func _land_web(foe: Foe, gained: Dictionary, turned: Dictionary, webbed: Array[F
 ## Spillover: `amount` of a blow, past the kill of the front-rank `foe`, carries into the foe
 ## behind it in the column as plain damage, a blow of the hit's landing as every blow does
 ## (_land_blow: the weapon's damage, so a Barrier takes it, then its armour, never a breach); it
-## feeds the talons' kill rule and carries no keyword of the blow, and, aimed at nobody, it
+## counts as the spend's kill where it fells one and carries no keyword of the blow, and, aimed at nobody, it
 ## neither doubles on a Shock nor spends one (29 October). A foe behind
 ## that the blow already reaches (a penetrate) takes the strike itself, never a spill too, and
 ## one already fallen takes nothing: nothing stands behind the back rank, so the damage is lost.
@@ -4788,21 +4785,6 @@ func _spill(ms: MechState, f: Face, foe: Foe, amount: int, hit: Array[Foe], stri
 		return
 	var behind_taken := int(_land_blow(behind, amount, ms.unit, true, false, behind.armour_total(), strike, "spill")["taken"])
 	log.append("%s spills over: %d into %s" % [ms.unit.display_name, behind_taken, behind.display_name])
-
-
-## Empowered a kill (the Soulcutter Talons' rule from 28 September to the Ammit's rework of 12
-## November, no piece's since; a rule printed on its carrier and no keyword to learn since 11
-## October, Ryan: "devour is not a thing"): every foe
-## the entry kills gives its owner `per_kill` stacks of Empowered, a grant a kill (a spread that
-## kills two feeds twice, a Chain on every conductor it kills), counted at the spend's death check
-## as every kill trigger is (is_kill, Ryan, 8 November), so a foe getting back up feeds nothing.
-## The stacks halve each round like any Empowered; a machine whose passive keeps the status
-## (keep_status, no machine's today) keeps them for the battle (Effects.stack applies the keep).
-func _overcharge_on_kill(ms: MechState, killed: int, per_kill: int) -> void:
-	for i in range(killed):
-		var stacks := _stacks_from(ms, "overcharged", per_kill)
-		Effects.stack(ms.unit, Effects.STATUS["overcharged"], Effects.SKIRMISH, "kill", stacks, Effects.status_decay(Effects.STATUS["overcharged"]))
-	log.append("%s feeds on %d kill%s: %s ×%d" % [ms.unit.display_name, killed, "" if killed == 1 else "s", str(Effects.STATUS["overcharged"]["name"]), Effects.stacks_of(ms.unit, "overcharged")])
 
 
 ## Stacks this machine is applying, deepened by its on_stack passives (the Stingray's

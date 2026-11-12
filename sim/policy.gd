@@ -49,7 +49,6 @@ const DEATH_WEIGHT := 20.0       # a machine kept alive through the round
 const BANK_WEIGHT := 0.2         # shield stood up or heat room made for a later round
 const BURN_WEIGHT := 0.5         # burn stacks pay out over the rounds to come
 const OPTION_GUARD := 64         # spends in one round, at most: rapid rerolls the die and acts again
-const DEVOUR_ROUNDS := 2.0       # rounds of damage a kill's Empowered stacks are worth: a halving stack pays about twice itself over the rounds to come (Empowered a kill, no piece's today)
 const FLARE_ROUNDS := 1.0        # rounds of damage a stack its own kill grants is worth (the Ammit's flare): it lands after the swing, so it pays from the next round at half, about once itself
 const HOLD_ROUNDS := 1.0         # rounds of damage a stack held whole into the next round is worth (the Soul Siphon's hold): whole next round and halving after, less the round's wait
 const SOUL_WEIGHT := 0.3         # a count spent for a buff (a Soul the Siphon consumes), in foe hit points: a fifth of a flare for the rest of the battle, which the bot's one fight cannot see; a placeholder
@@ -647,10 +646,6 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	# The Mines (the Lammergeier's Reverberant Payload, 9 November): the spend's own, a mined foe's
 	# blast on its kill, the gather and the detonation (mine_worth).
 	score += mine_worth(sk, ms, f, target, p_kill)
-	if f.devours > 0:
-		# A kill feeds stacks of Empowered: what the status adds to the die's own damage, a
-		# stack, for about the rounds the stacks last. Read from the status, never hardcoded.
-		score += p_kill * _stack_damage_gain("overcharged", _raw_attack_mean(ms)) * float(f.devours) * DEVOUR_ROUNDS
 	# What the machine's passives grant it on its own kill (the Ammit's flare, 12 November: a
 	# stack of Empowered for every five Souls it holds): each stack on the blows its die deals
 	# from the next round, a strike a point (flare_gain), at the odds of the kill.

@@ -7,6 +7,11 @@ const I := Face.Reach.INDIRECT
 const E := Face.Reach.EVERY_FOE   # a reach over every foe
 const K := Face.Keyword
 
+## A kill trigger to read: a stack of Empowered after each attack of the machine's own that
+## kills. No die entry prints a kill rule of its own since Empowered a kill left (12 November).
+const KILLER := {"id": "killer", "name": "Killer", "description": "", "effects": [
+	{"trigger": "on_kill", "effect": "stack_status", "value": "overcharged"}]}
+
 
 func _mech(name: String, d: Die, shield: int = 40, hull: int = 100) -> Unit:
 	var u := Unit.mech(0, name, Vector2i.ZERO)
@@ -1697,10 +1702,9 @@ func test_the_riders_land_on_every_conductor() -> void:
 
 
 func test_a_kill_by_an_arc_fires_the_kill_rules() -> void:
-	var gun := _chain_gun()
-	gun.devours = 1
 	var sk := Skirmish.new(1, 2)
-	var m := _mech("A", Die.single(gun))
+	var m := _mech("A", Die.single(_chain_gun()))
+	m.grant_passive(KILLER)
 	sk.add_mech(m)
 	var target := _ghoul(30, 5)
 	var weak := _ghoul(2, 5)
@@ -1710,7 +1714,7 @@ func test_a_kill_by_an_arc_fires_the_kill_rules() -> void:
 	_shock_on(weak)
 	assert_true(sk.assign(0, target), "the Chain gun spent")
 	assert_false(weak.alive(), "the arc kills the conductor")
-	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "and the kill feeds the talons' rule")
+	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "and the kill is its attack's: its kill trigger fires")
 
 
 func test_an_arc_meets_armour_unless_it_breaches() -> void:
@@ -3139,56 +3143,35 @@ func test_a_shield_cost_is_paid_first_and_locks_the_entry_while_the_shield_is_sh
 	assert_eq(m.hull, 100, "and costs nothing")
 
 
-func test_the_talons_kill_rule_feeds_overcharged_per_kill_and_it_halves_each_round() -> void:
-	var sk := Skirmish.new(3)
-	var talon := Face.from_dict({"kind": "attack", "reach": "direct", "power": 30, "keywords": ["cleave"], "cleave": 15, "devours": 1})
-	var m := _mech("A", Die.single(talon), 40, 100)
+func test_empowered_is_a_point_a_stack_and_halves_each_round() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.attack(30, L)), 40, 100)
 	sk.add_mech(m)
-	sk.add_foes([_ghoul(15, 10), _ghoul(30, 10), _ghoul(500, 10)])
+	var big := _ghoul(500, 10)
+	sk.add_foes([big])
 	sk.begin()
 	sk.start_round()
-	assert_eq(talon.describe(), "30 spread 15 Empowered ×1 a kill", "the rule reads on the entry, in plain words (Ryan, 18 October: devour is not a thing)")
-	assert_true(talon.has_unique_rule(), "a rule printed on the entry: the die's star chip")
-	assert_eq(Face.from_dict({"kind": "attack", "reach": "direct", "power": 30, "keywords": ["devour"]}).devours, 1, "an old save's devour keyword reads as the rule, a stack a kill")
-	assert_eq(Face.from_dict({"kind": "attack", "reach": "direct", "power": 30, "devours": true}).devours, 1, "and an old save's true as one")
-	assert_eq(Face.from_dict({"kind": "attack", "reach": "direct", "power": 30, "devours": 2}).to_dict()["devours"], 2, "the count round-trips")
-	# Column 1 (the middle) spreads to both neighbours: the middle ghoul takes the 30 and dies, the
-	# one beside it takes the Spread 15 and dies too (the kill before it feeds no blow of the same
-	# strike), the big one lives.
-	var middle: Foe = sk.front[1]
-	assert_true(sk.assign(0, middle), "spent on the middle")
-	var kills := 0
-	for col in range(3):
-		if sk.front[col] == null:
-			kills += 1
-	assert_eq(kills, 2, "two ghouls fell to the spread")
-	assert_eq(Effects.stacks_of(m, "overcharged"), 2, "one stack of Empowered per kill")
-	assert_true("\n".join(sk.log).contains("feeds on 2 kills: Empowered"), "the log says what the kills gave")
+	Effects.stack(m, Effects.STATUS["overcharged"], Effects.SKIRMISH, "test", 2, Effects.DECAY_HALF)
 	sk.end_round()
 	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "it halves at the round's end")
 	sk.start_round()
-	var big: Foe = null
-	for col in range(3):
-		if sk.front[col] != null and sk.front[col].hp > 100:
-			big = sk.front[col]
 	var before := big.hp
 	sk.assign(0, big)
 	assert_eq(before - big.hp, 31, "30 plus 1 with the stack left: a damage point a stack")
-	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "no kill, no new stack")
 	sk.end_round()
 	assert_eq(Effects.stacks_of(m, "overcharged"), 0, "and one stack halves to none, rounded down (Ryan: a status decays to zero or is timed)")
 
 
-func test_a_buffs_overcharged_and_a_kills_add_up_and_halve_as_one() -> void:
+func test_a_buffs_empowered_and_a_passives_add_up_and_halve_as_one() -> void:
 	var sk := Skirmish.new(1)
-	var m := _mech("A", Die.single(Face.from_dict({"kind": "attack", "reach": "direct", "power": 20, "devours": 1})), 40, 100)
+	var m := _mech("A", Die.single(Face.from_dict({"kind": "attack", "reach": "direct", "power": 20})), 40, 100)
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(500, 10)])
 	sk.begin()
 	sk.start_round()
 	Effects.grant_buff(m, "overcharged", 2, "buff", sk.round)
-	Effects.stack(m, Effects.STATUS["overcharged"], Effects.SKIRMISH, "kill", 3, Effects.DECAY_HALF)
-	assert_eq(Effects.stacks_of(m, "overcharged"), 5, "the buff's two and the kill's three together")
+	Effects.stack(m, Effects.STATUS["overcharged"], Effects.SKIRMISH, "passive:flare", 3, Effects.DECAY_HALF)
+	assert_eq(Effects.stacks_of(m, "overcharged"), 5, "the buff's two and a passive's three together")
 	assert_eq(m.modifiers.size(), 1, "one grant: a halving status has no rounds to part them, and a stack is a stack whatever granted it (Ryan, 18 October and 8 November)")
 	sk.assign(0, sk.front[0])
 	assert_eq(sk.front[0].hp, 500 - 25, "20 plus 1 a stack, five stacks")
@@ -3710,12 +3693,12 @@ func test_spillover_strikes_are_lost_once_the_foe_behind_falls() -> void:
 	assert_eq(sk.field_foes().size(), 2, "the other column stands")
 	for f in sk.field_foes():
 		assert_eq(f.hp, 100, "untouched: %s" % f.display_name)
-	# A devour feeds on the foe the spill kills, as it does on the foe the blow kills.
+	# The foe a spill kills is the spend's kill, as the foe its blow kills is.
 	var s2 := Skirmish.new(1, 2)
 	var talons := Face.attack(10, L, K.SPILLOVER)
 	talons.strikes = 4
-	talons.devours = true
 	var m := _mech("A", Die.single(talons), 40, 100)
+	m.grant_passive(KILLER)
 	s2.add_mech(m)
 	s2.add_foes([_ghoul(5, 20), _ghoul(100, 10), _archer(12, 20), _archer(100, 10)])
 	s2.begin()
@@ -3724,8 +3707,8 @@ func test_spillover_strikes_are_lost_once_the_foe_behind_falls() -> void:
 	var fed: Foe = s2.back[c2]
 	assert_true(s2.assign(0, s2.front[c2]), "the talons at the ghoul")
 	assert_false(fed.alive(), "the archer falls to the spill")
-	assert_true("\n".join(s2.log).contains("A feeds on 2 kills: Empowered"), "and feeds the talons' rule")
-	assert_eq(Effects.stacks_of(m, "overcharged"), 2, "one stack for each foe killed, the ghoul and the archer")
+	assert_eq(s2.team_kills, 2, "the ghoul and the archer both count as kills")
+	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "and its kill trigger fires once for the attack, however many fell")
 	assert_eq("\n".join(s2.log).count("A spills over: "), 2, "and nothing spills past the fallen archer")
 
 
@@ -4114,30 +4097,6 @@ func test_glacis_armours_against_the_front_rank_only() -> void:
 	sk.end_round()
 	assert_eq(m.hull, 175, "and so it lands")
 	assert_eq(Effects.effect_text(glacis["effects"][0]), "armour +5 against front-rank blows", "reads as a sentence")
-
-
-func test_a_kept_status_never_fades_and_lasts_the_battle() -> void:
-	var tap := {"id": "tap", "name": "Quintessence Tap", "description": "", "effects": [
-		{"trigger": "static", "effect": "keep_status", "value": "overcharged"}]}
-	var sk := Skirmish.new(1, 2)
-	var m := _mech("A", Die.single(Face.from_dict({"kind": "attack", "reach": "direct", "power": 30, "devours": true})), 40, 100)
-	m.grant_passive(tap)
-	sk.add_mech(m)
-	sk.add_foes([_ghoul(20, 10), _ghoul(20, 10), _ghoul(500, 10)])
-	sk.begin()
-	sk.start_round()
-	assert_true(Effects.keeps(m, "overcharged"), "the tap holds")
-	sk.assign(0, sk.front[0])
-	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "one kill, one stack")
-	sk.end_round()
-	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "it did not fade")
-	sk.start_round()
-	sk.assign(0, sk.front[0] if sk.front[0] != null and sk.front[0].hp <= 20 else sk.front[1])
-	assert_eq(Effects.stacks_of(m, "overcharged"), 2, "and grows")
-	sk._finish()
-	assert_eq(Effects.stacks_of(m, "overcharged"), 2, "kept past the skirmish")
-	Effects.end_battle(m)
-	assert_eq(Effects.stacks_of(m, "overcharged"), 0, "gone with the battle, never the campaign")
 
 
 func _special(kind: String, effect: String, extra: Dictionary = {}) -> Dictionary:
@@ -7815,8 +7774,7 @@ func test_a_piece_charged_on_rage_spends_five_unasked_and_breaches() -> void:
 ## stack, doesn't matter where it came from"): a foe's Purge N takes N stacks of every buff the
 ## machine carries, for good, whatever granted it, a die entry or a passive; an ability is no
 ## buff (the Polar Bear's seal, its form, stays and so does its armour); the stores and the
-## passives stay; a kept stack is its passive's own and stays, drawing no purger; a Ward turns it
-## away.
+## passives stay; a Ward turns it away.
 func test_a_purge_takes_every_buffs_stacks_and_leaves_the_abilities() -> void:
 	var sk := Skirmish.new(1, 1)
 	var u := _mech("A", Die.single(Face.attack(10, L)), 40, 200)
@@ -7859,22 +7817,6 @@ func test_a_purge_takes_every_buffs_stacks_and_leaves_the_abilities() -> void:
 	assert_true(Effects.is_sealed(m) and m.armour == 10, "the purge left the seal and its armour")
 	assert_eq(m.hull, 200 - 2, "so the blow after it met the plate")
 	assert_true("\n".join(s2.log).contains("purges D ×9: Empowered gone"), "the log says the purge took the buff that sealed it, and nothing of the seal")
-	# A kept stack is the passive's own: it stays, and draws no purger.
-	var s3 := Skirmish.new(3, 1)
-	var keeper := _mech("K", Die.single(Face.attack(10, L)), 40, 200)
-	keeper.grant_passive({"id": "tap", "name": "Tap", "description": "", "effects": [{"trigger": "static", "effect": "keep_status", "value": "overcharged"}]})
-	var plain := _mech("P", Die.single(Face.attack(10, L)), 40, 200)
-	s3.add_mech(keeper)
-	s3.add_mech(plain)
-	var priest := _purger()
-	s3.add_foes([priest])
-	s3.begin()
-	Effects.stack(keeper, Effects.STATUS["overcharged"], Effects.SKIRMISH, "kill", 5, Effects.DECAY_HALF)
-	Effects.stack(plain, Effects.STATUS["overcharged"], Effects.SKIRMISH, "buff:overcharge_coil", 1, Effects.DECAY_HALF)
-	assert_eq(Effects.buff_stacks(keeper), 0, "the kept stacks count for no purger")
-	s3.start_round()
-	assert_eq(priest.target, s3.mechs[1], "it aims at the one a purge can reach")
-	assert_true(Effects.purge(keeper).is_empty() and Effects.stacks_of(keeper, "overcharged") == 5, "and a purge on the keeper takes nothing")
 	# A Ward turns it away.
 	var s4 := Skirmish.new(1, 1)
 	var w := _mech("W", Die.single(Face.attack(10, L)), 40, 200)

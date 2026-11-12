@@ -27,9 +27,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1158 tests, 364,865 checks, green on `ccr-8af28d03-re9kz4` (12 November, main at `366b10e`
-  with the kill's flare once an attack, no per-foe flag and Empowered's up sword, not on main
-  yet). Before it,
+- Tests: 1156 tests, 364,831 checks, green on `ccr-8af28d03-re9kz4` (12 November, main at `366b10e`
+  with the kill's flare once an attack, no per-foe flag, Empowered's up sword, and Empowered a
+  kill and the kept status cut with two tests of their own, not on main yet). Before it,
   1158 tests, 364,864 checks, green on `ccr-722ca9f0-yj8na3` (12 November, main at `c717e69`
   with the HEAT and OVERHEAT dials). Before it, 1158 tests, 364,834 checks,
   green on main (12 November, as `ccr-8af28d03-re9kz4` landed with the
@@ -70,9 +70,10 @@ file, the measurements, the vocabulary, the die entry's fields, the effects' hel
 validator, the glyphs and their table the conflicts, both sides kept; Hot Streak, gone with the
 Kite's rebuild, out of the Ammit's lines; the bible's version main's plus one, the generated
 documents run again) and main took it as a fast-forward on Ryan's word ("Merge into main when
-you're done"). Since then, brought up to main at `366b10e`, it carries two changes of his the
-same day that main does not have: the kill's flare once an attack and Empowered's up sword
-(How things stand, below). They land on his word; the branch is to delete once they have.
+you're done"). Since then, brought up to main at `366b10e`, it carries four changes of his the
+same day that main does not have: the kill's flare once an attack, the per-foe flag gone,
+Empowered's up sword, and Empowered a kill and the kept status cut from the engine (How things
+stand, below). They land on his word; the branch is to delete once they have.
 `ccr-e3ddf00b-ilkwbi`, the Kestrel fast flyers' session of 11 and 12 November (The design sessions, below),
 cut from main at `209112b`, took main four times in merges, the last at `8d936cf` (the cooldown's
 count, Instant, Sapped, the Wild Boar's and the Baboon's reworks: the engine's Rapid and Instant
@@ -424,7 +425,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   hardpoints); Souls are its Ability, a chip with its count, since a count with no cap is no store;
   the hold is the round's rule and no status on anyone, so a Ward turns nothing away; the Tap's
   kept Empowered is retired with section 12's question and the to-do's test, and Empowered a kill
-  and the kept status stand in the engine with no carrier (the to-do's leavings line). Named, since
+  and the kept status, left in the engine with no carrier at first, were cut the same day (the
+  end of this bullet). Named, since
   they follow from his words: the talons show one roll in six (17%, about 47% with both team
   rerolls; four of eight before, 50% and 91%); each battle opens with the Siphon unplayable until
   the first Soul; the Coil, the Uplink and the Reliquary are no longer kept on it; a burn's tick
@@ -436,7 +438,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   in `models_low.py` by hand to the forge's own shape; no model was rebuilt). The first read is in
   `docs/measurements.md` (12 November: a tier-three battle's chain, before against after, a
   direction at 30 seeds). His three lines are the to-do's: play it, judge its marks, write or
-  pass its text. Two changes of his after it landed, the same day, on the branch and not on main
+  pass its text. Four changes of his after it landed, the same day, on the branch and not on main
   yet. The kill's flare comes once an attack that kills, however many fall to it ("Flaring twice
   for an AoE is probably wrong, let's make it 'one of more killed' by an attack"): the first
   build flared once for each foe a spend killed, by a flag on the effect that chose between once
@@ -450,7 +452,19 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   and empowered have the same glyph?": one bolt, Shock's in a ring and Empowered's bare), so the
   bolt is Shock's alone; Enraged, the golden rage and a foe's Empowered drew the same mark and
   follow it, and Empowered's pin is a smaller blade beside the arrow standing on the lock (a
-  first cut, the to-do's judging line).
+  first cut, the to-do's judging line). And the two rules the rework left with no piece are cut
+  from the engine, Empowered a kill and the kept status, with their terms, the unused jaws glyph
+  and their tests (his "Yeah" to cutting both, after "Is the empowered a kill also an exception
+  then?": it still paid a stack for each foe killed, and the keyword list still showed it); the
+  tests that read a kill through it read a kill trigger now, and the saves' three versions moved
+  (the battle's 26, the run's 25, the quick run's 8), so a die saved with the old talons is set
+  aside. His worry behind the questions ("Im just worried based on your descriptions that our
+  trigger system is just spaghetti in there") was answered in chat and measured into
+  `docs/skirmish_audit.md`'s Unused list: the event triggers are one table, one firing function
+  and one place each is raised; the weight is leftovers (seven rules lost their last piece
+  between 7 and 12 November and stayed, these two the first cut) and each one-piece rule being
+  written out in five places (the audit's Structure 11). Put to him, his to say: a rework that
+  takes a rule's last piece cuts the rule in the same pass, and the audit's dead-code pass next.
 - **The cooldown counts after its round; Rapid's own switch-off; Instant** (`ccr-63a1309a-caa9mw`
   from main at `fbce698`, on main the same day on his word, "All good. Clean up and merge into
   main"; Ryan, 12 November, on "So rapid cooldown 1 and a weapon cooldown 1 are
@@ -1503,8 +1517,9 @@ commands are in `README.md`.
   ports, and Changed Over in the buff table). BASE for the next merge is `aac6bfc`'s file. Also
   unpublished: main's v0.548, the Ammit's rework (its Ammit row, the Empowered, purge, store and
   Ability rows, section 12 without the Tap's question, and Souls and Pinned Empowered in the
-  tables), and v0.550 on `ccr-8af28d03-re9kz4`, not on main yet (the Ammit row's flare once an
-  attack, the Empowered row's mark); each goes up on Ryan's word. The
+  tables), and v0.551 on `ccr-8af28d03-re9kz4`, not on main yet (the Ammit row's flare once an
+  attack and the cut of its two old rules, the Empowered row's mark); each goes up on Ryan's
+  word. The
   live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
