@@ -162,8 +162,8 @@
    }
   },
   "baboon": {
-   "when": "The stock rebuild, 28 October.",
-   "note": "Ryan's go, 28 October: every station keeps its kind, the pins renumbered to the stock's order and each part its class: the shoulders' elevating mounts carry the Halo Shield's dish (left) and the Ankle Mortar's rack (right) where the Umbra Projectors rode; the fists' outer sides the Twin Autoguns (right) and the Rivet Gun (left) where the Pulse Repeaters were; the right fist's top the Laser Carbine where the Zenith Emitter was; the left fist's top bare.",
+   "when": "The rework, 11 November.",
+   "note": "Ryan, 11 November: \"down to 4 slotted pieces, by removing the outer hand mounts (they don't make sense with the hand shape anyway)\", and \"The backpack are the two locked bits, maybe just need a little something on top, a little asymmetry\": the fists' tops and the shoulders keep their mounts, the left pod wears the Retrocausal Shroud's tilted ring and the right the Redshift Emitter's raked lens. A first cut.",
    "images": [
     {
      "file": "baboon/baboon_front.png",
@@ -175,7 +175,7 @@
     }
    ],
    "before": {
-    "summary": "Before: fourth round, 30 September (the Umbra Projectors, the Pulse Repeaters and the Zenith Emitter)",
+    "summary": "Before: the stock rebuild, 28 October (the fists' outer mounts and the Solar Flare Array's two pods)",
     "images": [
      {
       "file": "baboon/before_baboon_front.png",
