@@ -329,7 +329,7 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   carrier's next turn), the Wild Boar's (the Plow a Cleanse and a Barrier on itself; its
   Juggernaut Drive a quarter of each damaged front foe's maximum HP into the foe behind, and
   Juggernaut Breach after a Barrier; Spillover, retired from it, a Minerva module since 12
-  November on his "Spillover can be a module", the Overrun Gearing, its name a working one) and
+  November on his "Spillover can be a module", the Overrun Gearing, a session's name he kept) and
   the Baboon's rework (a Paradox for every debuff stack,
   five Suppressing; the Retrocausal Shroud and the Redshift Emitter, Sap a new keyword, on its
   backpack's pods; four hardpoints; the Solar Flare Array parked), all built 11 November; the
