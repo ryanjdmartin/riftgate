@@ -136,7 +136,6 @@ var holds: String = ""        # an attack: the status its target keeps through t
 var consumes: String = ""     # an attack: the status it consumes on its target, every stack, a point more a stack before the multiplies (the Backdraft Charge's Burning, 22 October)...
 var per_consumed: int = 1     # ...the damage a stack consumed adds
 var self_burn: int = 0        # an attack: spending it sets its own machine Burning, this many stacks (the Stoker's slow fuel by decision, the stock pass's landing, 22 October)
-var label: String = ""
 var component: String = ""    # the component this entry is (content id); "" for an empty hardpoint
 var empty: bool = false       # an empty hardpoint: blank, and nothing was ever there to break
 var fixed: bool = false       # built into the chassis (no hardpoint); false means this entry is a hardpoint
@@ -299,8 +298,6 @@ static func kind_from_name(name: String) -> int:
 
 
 static func reach_from_name(name: String) -> int:
-	if name == "line" or name == "melee":
-		return Reach.DIRECT   # a save from before 10 October: line was direct's name, and melee went into it
 	for r in REACH_NAMES.keys():
 		if REACH_NAMES[r] == name:
 			return r
@@ -408,12 +405,6 @@ static func from_dict(d: Dictionary) -> Face:
 		var kw := keyword_from_name(str(name))
 		if kw > 0:
 			f.add_keyword(kw)
-	# A save from before the targeting modes (4 November) writes Every Foe or Every Ally among its
-	# keywords, and one from before 2 November says `reaches_all`: either reads as the mode its kind takes.
-	var old_kw: Array = d.get("keywords", [])
-	if (old_kw.has("every_foe") or old_kw.has("every_ally") or bool(d.get("reaches_all", false))) and f.kind != Kind.BLANK and not f.reaches_all:
-		f.reaches_all = true
-	f.label = str(d.get("label", ""))
 	return f
 
 
@@ -606,12 +597,12 @@ func acts_again() -> bool:
 
 ## A rule printed on the entry rather than a keyword (bible section 6: the die's star chip):
 ## Vents all, the missing-hull bonus, the hopper, the brace, a count it spends for its stacks or
-## a status it holds on every unit (the Soul Siphon's), or a labelled effect. A roll that may land on itself is Instant's, a
+## a status it holds on every unit (the Soul Siphon's). A roll that may land on itself is Instant's, a
 ## keyword since 12 November, never the star. A cooldown is a cost the die prints with its clock, a reload the ammo the die
 ## prints with its shells (Ryan, 2 November), and a shield's cooling the number under its steam
 ## (3 November), so none of them is.
 func has_unique_rule() -> bool:
-	return vents_all or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_burn > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not label.is_empty() or not printed.is_empty() \
+	return vents_all or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_burn > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not printed.is_empty() \
 		or turns_die or gathers_mines or detonates \
 		or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine \
@@ -710,7 +701,6 @@ func duplicate_face() -> Face:
 	f.heat = heat
 	f.strikes = strikes
 	f.printed = printed.duplicate()
-	f.label = label
 	f.component = component
 	f.empty = empty
 	f.fixed = fixed

@@ -874,8 +874,7 @@ func test_crits_are_refused_in_content() -> void:
 
 
 ## Two reaches since 10 October: melee is refused as a reach in content, a melee weapon is a
-## direct one with the tag, and its built entry carries the tag for a passive to read. An old
-## save's line or melee reads as direct.
+## direct one with the tag, and its built entry carries the tag for a passive to read.
 func test_melee_is_a_tag_and_never_a_reach() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
@@ -895,8 +894,7 @@ func test_melee_is_a_tag_and_never_a_reach() -> void:
 	var f: Face = db.build_die(["fist"], [], 0).faces[0]
 	assert_eq(f.reach, Face.Reach.DIRECT, "it builds direct")
 	assert_eq(f.tags, ["melee"] as Array[String], "carrying its tag")
-	assert_eq(Face.reach_from_name("line"), Face.Reach.DIRECT, "an old save's line is direct")
-	assert_eq(Face.reach_from_name("melee"), Face.Reach.DIRECT, "and its melee too")
+	assert_eq(Face.reach_from_name("melee"), -1, "and melee names no reach")
 
 
 ## The working set is the validator's list (the stock pass, 22 October): a component wears only

@@ -7138,14 +7138,8 @@ func test_a_drum_fires_every_weapon_as_its_shot_by_the_rank_it_is_aimed_at() -> 
 func test_a_lure_over_every_foe_turns_them_all_and_braces() -> void:
 	var siphon := Face.from_dict({"kind": "attack", "reach": "every_foe", "power": 0, "keywords": ["lure"], "braces": 2})
 	assert_eq(siphon.describe(), "every foe lure braces ×2", "the entry says its rules, Every Foe its targeting mode (4 November)")
-	for saved in [
-		{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure", "every_foe"], "braces": 2},   # 2 to 4 November: a keyword
-		{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "braces": 2, "reaches_all": true},   # before: a flag
-	]:
-		var old := Face.from_dict(saved)
-		assert_eq([old.reach, old.keywords], [Face.Reach.EVERY_FOE, siphon.keywords], "a save from before the targeting mode reads the same")
-		var back := old.to_dict()
-		assert_true(back["reach"] == "every_foe" and not back.has("reaches_all") and not (back["keywords"] as Array).has("every_foe"), "written back as its reach, never a keyword or the flag")
+	var back := Face.from_dict(siphon.to_dict()).to_dict()
+	assert_true(back["reach"] == "every_foe" and not back.has("reaches_all") and not (back["keywords"] as Array).has("every_foe"), "saved as its reach, never a keyword or a flag")
 	var sk := Skirmish.new(1, 2)
 	var u := _mech("A", Die.single(siphon), 40, 200)
 	u.grant_passive(_boiler(99, 10))   # heat a blow, and a release gate it never reaches
@@ -7203,7 +7197,7 @@ func test_a_silence_leaves_every_foe_and_every_ally_whole() -> void:
 ## brace and drinks their heat, the machine they left takes nothing; a targeted lure needs its
 ## aim, and an entry without Lure turns nobody (lure_turns, the arrows').
 func test_the_round_preview_over_a_lure_reads_the_turned_round_and_leaves_the_fight_untouched() -> void:
-	var siphon := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "braces": 2, "reaches_all": true})
+	var siphon := Face.from_dict({"kind": "attack", "reach": "every_foe", "power": 0, "keywords": ["lure"], "braces": 2})
 	var sk := Skirmish.new(1, 2)
 	var lurer := _mech("A", Die.single(siphon), 0, 200)
 	lurer.grant_passive(_boiler(99, 10))   # heat a blow, and a release gate it never reaches
@@ -9737,7 +9731,7 @@ func test_the_enemy_turn_goes_on_when_no_machine_can_be_struck() -> void:
 ## Heat a blow goes through the heat path every other heat takes (the audit's 17, 27 October),
 ## so a passive that answers heat gained answers it.
 func test_heat_a_blow_fires_the_on_heat_gain_passives() -> void:
-	var siphon := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "reaches_all": true})
+	var siphon := Face.from_dict({"kind": "attack", "reach": "every_foe", "power": 0, "keywords": ["lure"]})
 	var flywheel := {"id": "flywheel", "name": "Flywheel", "description": "", "effects": [
 		{"trigger": "on_heat_gain", "effect": "add_shield", "value": 5}]}
 	var sk := Skirmish.new(1, 2)

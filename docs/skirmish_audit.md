@@ -351,30 +351,40 @@ Kept on purpose, said so: an effect kind content may yet use is kept only in one
 
 Measured against the content on 12 November (Ryan, of the leftovers a rework had named: "Im just
 worried based on your descriptions that our trigger system is just spaghetti in there"), by a
-walk of `content/*.json` and of the engine's own status definitions, planned drafts set apart:
+walk of `content/*.json` and of the engine's own status definitions, a planned draft counted as
+a piece, and cut that day on his word ("Yeah go ahead and fix it"):
 
-- The passive table runs 19 triggers and 62 effect kinds as 86 trigger-and-effect pairs. Content
-  prints 43 of the pairs, the engine's own statuses use 16 more, and 27 are used by nothing. Most
-  of the 27 are the three plain effects (a status, a shield, a vent) on an event that no piece
-  pairs them with, which cost no code of their own. By kind, 13 of the 62 are used by nothing:
-  three wait on planned drafts (`muster`, `carry`, `shield_per_ally_heat`), and ten are leftovers:
-  `suppress`, `set_reach`, `min_damage`, `multiply_stat`, `shock_on_block` and
-  `add_armour_vs_rank` (on this list since 7 November); `vent_blast`, `weapon_cooldown` and
-  `shield_per_heat`, each of which a chassis printed on 7 November and none does now; and
-  `vent_heat`, which had no user then either. Two triggers fire for nothing: `on_shield_gain`
-  and `out_of_combat`.
-- The die entry reads 64 keys. Dealt pieces print 53; six more are set by the engine itself (a
-  charged form, a shown entry); two wait on planned drafts (`braces`, `shields`); three are
-  leftovers no piece prints: `heat_per_blow` (the Whip Scorpion's, its leavings line),
-  `resets_on_kill` (the Kite's Reset) and `shield_cost` (built ahead of content). 32 of the 64
-  are printed by exactly one piece, and 17 of the 19 static rules a chassis prints belong to one
-  chassis: one-piece rules are the design (a unique passive a machine, a rule of its own a locked
-  piece), so their number is no fault; that each is written out in five places is (Structure 11).
-- Cut that day on his word: Empowered a kill (`devours`) and the kept status (`keep_status`),
-  the Ammit's two, with their terms, the jaws glyph and their tests. Seven rules lost their last
-  piece between 7 and 12 November (those two, `vent_blast`, `weapon_cooldown`, `shield_per_heat`,
-  `heat_per_blow` and `resets_on_kill`, read off the content at each date) and every one stayed
-  in the engine, most as a rework's leavings line on the to-do: Root 5 was still growing.
+- The trigger system itself read sound: one table, one function that fires an event's passives,
+  one place in the fight that raises each event, and a validator that refuses whatever the table
+  does not list. The weight was Root 5. Seven rules had lost their last piece between 7 and 12
+  November (read off the content at each date) and every one had stayed in the engine, most as a
+  rework's "leavings" line on the to-do.
+- Cut, each with its engine path, its validator check, its term, its bot weight, its tools' rows
+  and the tests of the rule itself: Empowered a kill (`devours`) and the kept status
+  (`keep_status`), the Ammit's; Reset (`resets_on_kill`) and a passive's cooldown
+  (`weapon_cooldown`), the Kite's; the vent blast (`vent_blast`, with its rings, its mark on the
+  die and a vent's second kind), the old Siphon entry's heat a blow and its Siphoning status,
+  the Whip Scorpion's; shield for heat at the round's start (`shield_per_heat`), the Buzzard's
+  old Recoupler; a shock for a blocked blow (`shock_on_block`) and armour against one rank
+  (`add_armour_vs_rank`), on this list since 7 November; the out-of-combat event, which no effect
+  could ride, with the battle's `fought` record kept for it alone; and with them the per-foe
+  flag on a kill trigger, the round preview's notes, an entry's unused `label`, and the readers
+  for saves no version loads (`line` and `melee` as reaches, Every Foe as a keyword, the
+  `reaches_all` flag). The Whip Scorpion's passive still adds heat a blow by the static effect.
+- Kept, each listed with its reason in `tests/test_leftovers.gd`, which fails the build on an
+  effect kind, a trigger, a die entry's key or a keyword that no piece prints and no reason
+  covers, and on a listed one that is printed again: the one pipeline's own steps (`suppress`,
+  `multiply_stat`, `min_damage`, `set_reach`) and the trigger table's plain cells (`vent_heat`,
+  `on_shield_gain`), the general path and no piece's rule (the Ammit's flare took two such cells,
+  `on_skirmish_start` and `per_stack`, off this list five days after it named them); `shield_cost`,
+  which the Buzzard's and the Storm Petrel's settled briefs pay; two fields a charged form sets;
+  and Spillover the keyword, which its bible row keeps, put to Ryan.
+- After it the table runs 18 triggers and 57 effect kinds, and a die entry reads 60 keys. Of the
+  rules a chassis prints, most static ones belong to one chassis, and about half the entry's keys
+  to one piece: one-piece rules are the design (a unique passive a machine, a rule of its own a
+  locked piece), so their number is no fault. That each is written out by hand in five places is
+  Structure 11, still to do: Empowered a kill had reached a dozen files.
+- Left on this list: the engine's and the bot's helpers and parameters above, to check again.
 
 ## Text and records
 

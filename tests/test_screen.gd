@@ -1849,7 +1849,7 @@ func test_a_lure_in_hand_previews_its_turn_with_dashed_arrows_and_the_gauges() -
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
 	var a := db.make_mech("badger")
-	a.die = Die.single(Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "braces": 2, "reaches_all": true}))
+	a.die = Die.single(Face.from_dict({"kind": "attack", "reach": "every_foe", "power": 0, "keywords": ["lure"], "braces": 2}))
 	a.grant_passive({"id": "boiler", "name": "Boiler", "description": "", "effects": [{"trigger": "static", "effect": "heat_per_blow", "value": 10}]})
 	sk.add_mech(a)
 	sk.add_mech(db.make_mech("clydesdale"))
