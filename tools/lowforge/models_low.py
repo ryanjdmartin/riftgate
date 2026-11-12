@@ -307,13 +307,14 @@ def kite(b):
     # over the front's lip and past it, its underside into the nose where the cut has ended.
     PORT, FLAT, RUN = 4.0, 12.6, 13.4  # the port's wall, six ahead of the canopy's nose; the floor flat to here; ramped up to the surface here
     FLOOR = GZ - 1.9
-    # On trial (his, the same day: "Just for fun, can you change the model type on this mount
-    # back to standard for everything except rack?"): every class but the launcher wears its
-    # standard shape at the pin's own scale and place, its block in the open at the cut's back,
-    # so the port gun (barrel_port) is worn nowhere for now. The fits before it, for the way
-    # back: the barrel as "barrel_port", twin barrels sunk under the canopy (0.84, 17.04), the
-    # dish small and forward (0.6, -3.0), the blade at 0.7.
-    NOSE_FITS = {"rack": ("rack_round", 0.63, -1.26)}
+    # Every gun here is its port form, barrels alone out of the wall: the port gun, and the port
+    # pair for twin barrels, since the standard pair had to be sunk far back to hide its
+    # receiver and showed little (his: "Twin barrel isn't sticking out as far as it was"). A dish
+    # stands on its mast straight out of the port's wall, small enough for the cut (it had been
+    # set forward of the mount, off nothing: "Dish also floats too far forward from the mount
+    # point"). The standard shapes for every class but the launcher were tried and taken back
+    # the same day ("Just for fun ..."; then "Ok go back to port gun"). The blade's place is a guess.
+    NOSE_FITS = {"barrel": "barrel_port", "rack": ("rack_round", 0.63, -1.26), "twin_barrel": ("twin_barrel_port", 0.92), "dish": ("dish", 0.55), "blade": ("blade", 0.7)}
     b.cut_hull([fuselage], [(x, y, z) for x in (-2.2, 2.2) for (y, z) in ((PORT, FLOOR), (FLAT, FLOOR), (RUN, 4.4), (RUN, 9.0), (PORT, 9.0))])
     b.pin("hp_3", (0.0, PORT, GZ), scale=0.5, carries="", fits=NOSE_FITS)
     # Canopy: far back, low, faired into the spine rather than a bubble.
@@ -8323,8 +8324,19 @@ def shape_barrel_port(b, s=1.0):
     b.prism("y", 0.0, 23.0 * s, 0.0, 3.3 * s, 2.0 * s, "steel.plate", 6, "muzzle")
 
 
+def shape_twin_barrel_port(b, s=1.0):
+    """Twin guns through a port, as the port gun is: the two barrels and their muzzle collars
+    alone, starting at the socket, the brace between them at the port's wall, their receiver
+    inside the hull (Ryan, 12 November, of the standard pair sunk back to hide its receiver:
+    "Twin barrel isn't sticking out as far as it was")."""
+    for x in (-2.8, 2.8):
+        b.prism("y", x * s, 10.0 * s, 0.0, 1.8 * s, 20.0 * s, "steel.dark", 6, "barrel")
+        b.prism("y", x * s, 21.0 * s, 0.0, 2.2 * s, 2.0 * s, "steel.plate", 6, "muzzle")
+    b.box(-4.0 * s, 4.0 * s, 0.0, 2.0 * s, -1.0 * s, 1.0 * s, "steel.dark", "brace")
+
+
 ## Each variant by name: (its class, its builder).
-VARIANTS = {"rack_round": ("rack", shape_rack_round), "barrel_port": ("barrel", shape_barrel_port)}
+VARIANTS = {"rack_round": ("rack", shape_rack_round), "barrel_port": ("barrel", shape_barrel_port), "twin_barrel_port": ("twin_barrel", shape_twin_barrel_port)}
 
 
 def shape_builder(name):
@@ -8375,6 +8387,12 @@ def burn_barrel_port(b, s=1.0):
     b.prism("y", 0.0, 24.7 * s, 0.0, 2.4 * s, 1.4 * s, "amber.fire", 6, "burn_flame")
 
 
+def burn_twin_barrel_port(b, s=1.0):
+    """A pilot flame in each of the port pair's muzzles."""
+    for x in (-2.8, 2.8):
+        b.prism("y", x * s, 22.6 * s, 0.0, 1.6 * s, 1.2 * s, "amber.fire", 6, "burn_flame")
+
+
 def burn_rack_round(b, s=1.0):
     """The round launcher's shells glowing: a lit tip down each of its seven tubes."""
     for x, z in _ROUND_TUBES:
@@ -8382,7 +8400,7 @@ def burn_rack_round(b, s=1.0):
 
 
 ## A class's fire and each variant's whose class burns (a variant of a dish takes none).
-BURNS = {"barrel": burn_barrel, "twin_barrel": burn_twin_barrel, "rack": burn_rack, "blade": burn_blade, "rack_round": burn_rack_round, "barrel_port": burn_barrel_port}
+BURNS = {"barrel": burn_barrel, "twin_barrel": burn_twin_barrel, "rack": burn_rack, "blade": burn_blade, "rack_round": burn_rack_round, "barrel_port": burn_barrel_port, "twin_barrel_port": burn_twin_barrel_port}
 
 
 # Where each class's muzzle flare blooms as its weapon fires (Ryan, 31 October: "If the flare
@@ -8400,6 +8418,7 @@ MUZZLES = {
     "blade": [((0.0, 25.0, 0.0), 16.0)],
     "rack_round": [((0.0, 13.2, 0.0), 26.0)],
     "barrel_port": [((0.0, 27.0, 0.0), 24.0)],
+    "twin_barrel_port": [((-2.8, 25.0, 0.0), 17.0), ((2.8, 25.0, 0.0), 17.0)],
 }
 
 

@@ -2033,10 +2033,26 @@
  ],
  "fits": {
   "hp_3": {
+   "barrel": {
+    "shape": "barrel_port",
+    "scale": 1.0
+   },
    "rack": {
     "shape": "rack_round",
     "scale": 0.63,
     "sink": -1.26
+   },
+   "twin_barrel": {
+    "shape": "twin_barrel_port",
+    "scale": 0.92
+   },
+   "dish": {
+    "shape": "dish",
+    "scale": 0.55
+   },
+   "blade": {
+    "shape": "blade",
+    "scale": 0.7
    }
   }
  }
