@@ -27,7 +27,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1132 tests, 363,473 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
+- Tests: 1145 tests, 364,428 checks, green on `ccr-8af28d03-re9kz4` (12 November, the Ammit's
+  rework, not on main yet: Branches). On main, 1132 tests, 363,473 checks, green (11 November, as `ccr-4d58b054-3lyj0a` landed
   with the Dingo's pieces, the pins and the Flakshot Repeater over the Clydesdale's review). Before it,
   1123 tests, 362,685 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
   with the Whip Scorpion's rework over the formation and refit session's landing). Before it,
@@ -54,7 +55,12 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 ## Branches
 
-Everything is on main as of 11 November 2026; the formation and refit session's branch lands as it goes, below.
+Everything is on main as of 11 November 2026 but one branch; the formation and refit session's branch lands as it goes, below.
+`ccr-8af28d03-re9kz4`, the Ammit's rework of 12 November (How things stand below), cut from main at
+`87da46f` and pushed, is not merged: main takes it as a fast-forward on Ryan's word. It moves the
+bible (v0.537), `content/chassis.json`, `components.json` and `vocabulary.json`, the Ammit's rig
+sidecar and `sim/skirmish.gd`, `sim/effects.gd`, `sim/face.gd`, `sim/policy.gd`, `sim/save.gd`,
+`sim/content_db.gd`, which a session landing first meets when this one takes main.
 `ccr-c71bc17f-hclj2c`, Ryan's map playtest list of 10 November, his answers to it and his second
 and third map lists the same day (How things stand below), cut from main at `aa40832`, landed on
 main as fast-forwards on his word each time ("Ok, merge this into main so I can try it"; "yeah,
@@ -204,6 +210,9 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   unfinished by Ryan's own notes (the Needletail, the Giant Petrel, the Musk Ox) and the rest
   stand. The to-do's roster is grouped by what each waits on, in the order he took (Next, in
   order, item 1).
+- Ryan's rework of the Ammit, 12 November (`ccr-8af28d03-re9kz4`, his own design, posed with
+  "Thoughts?"; three holes raised in chat and his calls on each the same day; built on his "Yes,
+  go ahead"): How things stand, below. Its stock's Ward piece still waits (the to-do).
 - Ryan's round on the busted machines, 11 November (`ccr-4d58b054-3lyj0a`): the Polar Bear dealt again,
   equipment it spends on itself sealing it and a weapon it fires opening it, its lure neutral
   (his words; the armour kept for his play, a regen seal his first change), the brief retired;
@@ -304,6 +313,32 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
+- **The Ammit's rework** (`ccr-8af28d03-re9kz4` from main at `87da46f`, pushed, not merged; Ryan,
+  12 November, his own design: "The 4 claws are combined into one weapon that deals 1x4 instead,
+  with Breach. They no longer gain Empowered on kill"; "Kills grant one Soul. At the start of a
+  skirmish, or on kill, the souls flare, granting 1 Empowered per 5 souls"; "Soul Siphon: Consume
+  up to 5 souls, granting 1 Empowered per soul. Cooldown 3"). Three holes went to him in chat
+  before anything was built, all from one fact (Empowered halves at the round's end and the Ammit
+  swings once a round), and his calls settled each: the Souls last the battle and carry no cap ("as
+  part of the fantasy"); any kill in its fight banks one and only its own kill flares; the Siphon
+  holds every Empowered on the field for its round ("And I mean none, not ally or enemy"), and
+  the hold stays off the kill flare, where a kill a round would have climbed without limit. Built
+  as he said: its die is six (the talons one entry of 1 ×4 with Breach, the Siphon, four
+  hardpoints); Souls are its Ability, a chip with its count, since a count with no cap is no store;
+  the hold is the round's rule and no status on anyone, so a Ward turns nothing away; the Tap's
+  kept Empowered is retired with section 12's question and the to-do's test, and Empowered a kill
+  and the kept status stand in the engine with no carrier (the to-do's leavings line). Named, since
+  they follow from his words: the talons show one roll in six (17%, about 47% with both team
+  rerolls; four of eight before, 50% and 91%); each battle opens with the Siphon unplayable until
+  the first Soul; the Coil, the Uplink and the Reliquary are no longer kept on it; a burn's tick
+  or a Mine banks a Soul and flares nothing. Shown text is a session's drafts (the Tap's line, the
+  two terms, Consumes' second half, the triggers); the Text tab held nothing to fold, and the
+  voice file has nothing signed yet. First cuts for his eye: the Souls chip's ghost, the pin
+  beside each Empowered, the Siphon's firing act (the threat's coil, set in the rig sidecar and
+  in `models_low.py` by hand to the forge's own shape; no model was rebuilt). The first read is in
+  `docs/measurements.md` (12 November: a tier-three battle's chain, before against after, a
+  direction at 30 seeds). His three lines are the to-do's: play it, judge its marks, write or
+  pass its text.
 - **The boss holds its hex** (`ccr-c71bc17f-hclj2c` from main at `944cd5e`, on main the same day on
   his word, "Yeah that will do. Merge into main"; Ryan, 10 November). The boss stands on the one hex touching both of the rift's front hexes, on its
   middle line, and never walks ("Put him on the single hex in front of the two new out of play
@@ -1289,6 +1324,9 @@ commands are in `README.md`.
   menace a pack's threat rating and the rows that follow it, the Whip Scorpion's rework, the
   hardpoints row with every stock gun its class, the Clydesdale's batteries row and its square
   ports, and Changed Over in the buff table). BASE for the next merge is `fbce698`'s file. The
+  Ammit's branch (`ccr-8af28d03-re9kz4`, 12 November) carries v0.537, not published: its Ammit
+  row, the Empowered, purge and store rows, section 12 without the Tap's question, and Souls and
+  Pinned Empowered in the tables; it goes up on Ryan's word once main has the branch. The
   live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
@@ -1301,7 +1339,11 @@ commands are in `README.md`.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
-  the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
+  the last publish's before it is replaced, and `edits`, `designs` and `text` read first. Behind
+  the Ammit's branch (`ccr-8af28d03-re9kz4`, 12 November, not published: its `text` collection read
+  that day and empty) by `content/chassis.json`, `components.json` and `vocabulary.json`, the
+  Ammit's rig sidecar (the Siphon's firing slice) and `text.json`, where its drafts wait to be
+  seen; they go up on Ryan's word once main has the branch. At the
   page's Version 231 (12 November, main's `fbce698`, on Ryan's word, "Yes please"): the same nine
   for the Clydesdale's wells, broadside drill and hatch wave (its model with the wells' linings, its
   rig, its four renders, `renders.json`, and `designs.json` and `text.json` for their stamp), the page
