@@ -1430,7 +1430,14 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 244 (12 November, from `ccr-e3ddf00b-ilkwbi` at `fab16f9`, ahead of main, the live
+  page's Version 246 (12 November, from `ccr-e3ddf00b-ilkwbi` at `d9df719`, ahead of main, over
+  Version 245, which another session published in between with the Needletail's and the Giant
+  Petrel's render entries and its own `designs.json` and `text.json`, none of them on main: the
+  Kite's tail on its body, its hood's front cut and its dish at the launcher's diameter; the
+  Kite's model, rig and four renders, `muzzles.json`, the port dish in five metals and its
+  picture, and `renders.json` built from 245's copy with this branch's Kite entry and port forms
+  block, its two entries kept; 245's `designs.json` and `text.json` left as it published them).
+  Version 244 (from `fab16f9`, ahead of main, the live
   page still 243 when read: the little round cut for the launcher and the chamfered tail; the
   Kite's model, four renders and `renders.json`). Version 243 (from `cc9b8af`: the drop taken
   back, the long hood kept; the same six files). Version 242 (from `5f2f6f0`, the live page then 241: the trial's
