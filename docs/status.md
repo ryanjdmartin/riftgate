@@ -1628,17 +1628,15 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 245 (12 November, from `ccr-b7d5164e-1wtzzm` at `0351e7e`, ahead of main, on
-  Ryan's word, "Yes, republish the hangar so I can see them"): the twenty-nine files the
-  Needletail's and the Giant Petrel's models moved since 240 (the two content files with main's own
-  since; both models, rigs and renders, the first cuts as Before and the old transition picture
-  removed; `pins.json`, `designs.json`, `text.json` and `renders.json`), the page unchanged.
-  Versions 241 to 244 were another session's, from a branch not on main (the Kite's port forms:
-  its model, rig and pictures, the port classes, `shapes.json`, a newer Kite entry and a class
-  block in `renders.json`): every live copy this publish replaced matched 240's build but
-  `renders.json` (and the stamps of `designs.json` and `text.json`), so the live `renders.json`
-  went up again whole with only the two machines' entries replaced; this branch's file lacks that
-  session's entries until both land. `edits` and `text` empty, `designs` the two folded ideas. At
+  page's Version 249 (12 November, from `ccr-b7d5164e-1wtzzm` at `23adac5`, ahead of main, for
+  Ryan's notes on the two first cuts): the twenty-nine files the two reworked models moved since
+  245 (both models and rigs, their pictures with the first cuts as Before, a Giant Petrel
+  quarters picture added and the Needletail's oldest Before removed; `designs.json` and
+  `renders.json`), the page unchanged. Versions 246 to 248 were another session's: every live copy
+  this publish replaced matched 245's build but `renders.json` (a newer Kite note and class
+  block) and the stamps, so the live `renders.json` went up again whole with only the two
+  machines' entries replaced, as at 245. `edits` and `text` empty, `designs` the two folded
+  ideas. At
   the page's Version 240 (12 November, main's `f3e4841`, on Ryan's word, "Ok, republish the hangar on
   main"): the nine files moved since 233 (the five content files with the Ammit's rework, the
   dead-code pass, the four formations' numbers, the Overrun Gearing and the dealt Shift Whistle;
