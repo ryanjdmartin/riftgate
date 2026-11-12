@@ -18,7 +18,7 @@ extends RefCounted
 ## added or renamed there fails the build until it has its row here. A glyph "" draws none.
 const TABLE := {
 	# Reach.
-	"direct": ["aim_direct", "plain"], "indirect": ["aim_indirect", "plain"], "sweep": ["aim_sweep", "plain"],
+	"direct": ["aim_direct", "plain"], "indirect": ["aim_indirect", "plain"],
 	# Keywords.
 	"cleave": ["cleave", "plain"], "penetrate": ["penetrate", "plain"], "splash": ["splash", "plain"],
 	"every_foe": ["aim_every_foe", "plain"], "every_ally": ["aim_every_ally", "plain"], "every_other_ally": ["aim_every_other_ally", "plain"],
@@ -32,7 +32,7 @@ const TABLE := {
 	"disable": ["blank", "enemy"], "corrupt": ["corrupt", "enemy"], "steal": ["steal", "enemy"],
 	# Rules on a component.
 	"targets": ["", "plain"], "strikes": ["", "plain"],
-	"gated": ["", "plain"], "consumes": ["", "plain"], "power_per_missing": ["", "plain"],
+	"gated": ["", "plain"], "consumes": ["", "plain"], "power_per_missing": ["", "plain"], "finisher": ["", "plain"],
 	"cooldown": ["cooldown", "plain"], "reset": ["reroll", "plain"],
 	"hopper_property": ["hopper", "plain"],
 	"volatile": ["hull", "hull"], "shield_cost": ["shield", "guard"], "brace_property": ["shield", "guard"],
@@ -44,8 +44,8 @@ const TABLE := {
 	"burning": ["burn", "heat"], "scorched": ["scorch", "heat"], "primed": ["primed", "heat"],
 	"overcharged": ["overcharge", "heat"], "kindled": ["overcharge", "heat"], "enraged": ["overcharge", "heat"], "golden": ["overcharge", "heat"], "shocked": ["shocked", "heat"],
 	"charged": ["shocked", "heat"], "supercooled": ["cryo", "guard"],
-	"flakked": ["flak", "heat"], "vitriol": ["vitriol", "heat"], "spun_up": ["spin", "heat"],
-	"hot_streak": ["heat", "heat"], "siphoning": ["heat", "heat"], "mine": ["mine", "heat"],
+	"flakked": ["flak", "heat"], "vitriol": ["vitriol", "heat"], "spun_up": ["spin", "heat"], "ricochet": ["ricochet", "heat"],
+	"siphoning": ["heat", "heat"], "mine": ["mine", "heat"],
 	"souls": ["soul", "heat"], "pinned_empowered": ["pin_empower", "heat"],   # the Ammit's count and its Siphon's hold (12 November), with Empowered's group: what hits harder
 	"braced": ["shield", "guard"], "barrier": ["barrier", "guard"], "ward": ["ward", "guard"],
 	"phased": ["phased", "guard"], "guarded": ["lock", "guard"], "sealed": ["seal", "guard"], "changed_over": ["reroll", "plain"],

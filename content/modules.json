@@ -448,6 +448,30 @@
     "fantasy": "Small hinged tabs on every control surface, trimmed in flight: the airframe settles onto whatever it was aiming for.",
     "niche": "The Kestrel line's reroll module: another look at its own die, a free reroll a round, paid in heat maximum so no module is the universal pick."
    }
+  },
+  {
+   "id": "split_cycle_breech",
+   "name": "Split-cycle Breech",
+   "maker": "kestrel",
+   "tier": 2,
+   "codex": "",
+   "flavour": "",
+   "stats": {},
+   "text": {
+    "description": "Doubles the number of hits for Weapons and Equipment. Base weapon damage is halved (rounded down, minimum 1).",
+    "effects": [
+     {
+      "trigger": "on_attack",
+      "effect": "split_strikes",
+      "value": 2
+     }
+    ]
+   },
+   "design": {
+    "stage": "draft",
+    "fantasy": "The Skua's first passive, a breech that cycles twice for every pull, as a part any machine can wear (Ryan, 12 November: \"Turn the skua split strikes into a module\").",
+    "niche": "Count for magnitude: every weapon and equipment it aims at a foe hits twice, each hit's base halved, rounded down and never below one, every buff and rider whole on each hit. The text is his of 7 November, less its clause for Sweep. Riders and flat buffs double on it, plate takes twice, and a weapon of 1 a strike is doubled outright (the Flechette Pod's four strikes become eight), the first thing to watch. Tier two and no stat line are placeholders; a second one adds nothing."
+   }
   }
  ]
 }

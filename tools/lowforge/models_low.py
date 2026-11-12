@@ -246,7 +246,7 @@ def kite(b):
     the boosters, ending in two angled stabilisers. Small but deadly. Reskinned 22 September
     to Kestrel's metals: the body in chrome plate, the wings cobalt, the boosters dark (the
     bone body predated the palettes). Since its rework (21 October) it carries the Pinion
-    Driver locked and two hardpoints, and Ryan, 28 October: "both wingtips be the 'Pinion
+    Driver locked and two hardpoints, three since 11 November, and Ryan, 28 October: "both wingtips be the 'Pinion
     Drivers'... Then the nose mounts are the hardpoints. Then the wingtips can maintain a
     streamlined symmetrical appearance based on what the drivers look like." So a matched
     driver at each tip, fixed, no pin, each a ramjet-gun (Ryan, 29 October: "a kind of
@@ -254,13 +254,23 @@ def kite(b):
     chrome drum like the boosters' tapering aft to a lit exhaust, a dark inlet ahead ringed by
     gear teeth (the pinion, a wing's flight feathers and a gear) whose backs run aft as strakes
     tapering into the drum, the barrel out of the inlet's centre, its muzzle lit; each fires one of the Driver's two shots. The nose mounts either
-    side of the nosecone, hp_1 the stock's Transonic Rifle as its class, hp_2 bare (the Bleed
-    Valve shows nowhere), at half scale, the machine being small."""
+    side of the nosecone, hp_1 the stock's Transonic Rifle as its class, hp_2 bare, at half scale,
+    the machine being small; hp_3, bare, ahead of the canopy on the centreline, inset: a port at
+    the canopy's nose and a trough cut into the spine ahead of it, the gun's barrel out of the
+    port (the port variant: no block to show) and lying clear in the trough, whose floor ramps
+    up to the nose's surface past the muzzle; a launcher there is the round one
+    (Ryan, 12 November: "in front of the canopy, but inset, like the polar bear - so some of the
+    barrel pokes out through a cut channel. Doesn't retract or anything"; then "sink it
+    horizontally into the hull more, so the actual mount block is hidden, and don't cut a
+    channel all the way down the nose"; "let it poke out more and cut the trough a little
+    deeper vertically"; "a round rack would be warranted when a missile is slotted there").
+    The tail segment's flat face behind the canopy is an air intake, a dark mouth in a steel lip
+    (the same day: "Can the flat face behind the canopy also get an intake treatment?")."""
     # Fuselage: one piece, a six-sided section lofted from a needle nose to a broad rear.
     # The top tapers sharply toward the nose, the belly shallowly, and the belly carries
     # forward under the wing roots (Ryan, 21 September).
-    b.loft([(46.0, _fuse(1.2, 0.6, 0.5)), (36.0, _fuse(6.0, 2.2, 2.0)), (18.0, _fuse(12.0, 3.8, 3.4)),
-            (0.0, _fuse(16.0, 6.4, 4.6)), (-16.0, _fuse(18.0, 7.0, 4.8)), (-30.0, _fuse(15.0, 5.4, 4.0))], "steel.plate", "fuselage")
+    fuselage = b.loft([(46.0, _fuse(1.2, 0.6, 0.5)), (36.0, _fuse(6.0, 2.2, 2.0)), (18.0, _fuse(12.0, 3.8, 3.4)),
+                       (0.0, _fuse(16.0, 6.4, 4.6)), (-16.0, _fuse(18.0, 7.0, 4.8)), (-30.0, _fuse(15.0, 5.4, 4.0))], "steel.plate", "fuselage")
     b.loft([(38.0, diamond(0.0, 0.5, 2.0, 1.5)), (46.0, diamond(0.0, 0.5, 1.0, 0.7))], "steel.dark", "nose_tip")
     # The nose mounts, one either side of the nosecone on its fairing (Ryan, 30 September:
     # two nose hardpoints, sleeker than one; 28 October: the nose mounts are the hardpoints):
@@ -271,13 +281,30 @@ def kite(b):
             b.stock("hp_1", (s * 4.5, 28.0, -1.0), "barrel", scale=0.5, carries="transonic_rifle")
         else:
             b.pad("hp_2", (s * 4.5, 30.0, -1.0), scale=0.5, size=(3.0, 1.0))
+    # The third mount (its fourth entry, Ryan, 11 November: "giving it 4 faces again"), ahead of
+    # the canopy and inset (the 12th: "like the polar bear - so some of the barrel pokes out
+    # through a cut channel"; "sink it horizontally into the hull more, so the actual mount
+    # block is hidden, and don't cut a channel all the way down the nose"; "Raise the gun's line
+    # a little"; "let it poke out more and cut the trough a little deeper vertically so the
+    # barrel isn't covered"): a port, the back wall of a trough cut into the spine at the
+    # canopy's nose (a real hollow, b.cut_hull), and the gun through it is the port variant, its
+    # barrel and muzzle alone, the receiver being inside the hull, so nothing of the block can
+    # show and the barrel's whole length lies in the open. It comes out level with the spine
+    # and runs clear of the trough's walls and floor, the floor flat to just past the muzzle
+    # and then ramped up to the surface under the bore's line. Fixed: no joint. A launcher here
+    # is the round one, a drum against the port's wall (his: "a round rack would be warranted
+    # when a missile is slotted there"); the other classes' places are guesses nobody has judged.
+    GZ = 5.0                  # the gun's line
+    PORT, FLAT, RUN = -1.0, 11.4, 13.4  # the port's wall at the canopy's nose; the floor flat to here; ramped up to the surface here
+    NOSE_FITS = {"barrel": "barrel_port", "rack": ("rack_round", 0.7, -1.8), "twin_barrel": ("twin_barrel", 0.84, 5.2), "dish": ("dish", 0.6, -3.0), "blade": ("blade", 0.7)}
+    b.cut_hull([fuselage], [(x, y, z) for x in (-2.2, 2.2) for (y, z) in ((PORT, GZ - 2.4), (FLAT, GZ - 2.4), (RUN, 4.4), (RUN, 9.0), (PORT, 9.0))])
+    b.pin("hp_3", (0.0, PORT - 0.2, GZ), scale=0.5, carries="", fits=NOSE_FITS)
     # Canopy: far back, low, faired into the spine rather than a bubble.
     b.loft([(-2.0, hexagon(0.0, 6.2, 7.0, 0.5)), (-10.0, hexagon(0.0, 7.4, 9.0, 3.0)),
             (-18.0, hexagon(0.0, 7.5, 9.0, 3.2)), (-26.0, hexagon(0.0, 7.2, 9.0, 3.0))], "glass.glass", "canopy")
     # Behind it the raised spine is an air intake: a scoop with a dark mouth facing forward
     # and slits down its sides.
     b.loft([(-24.0, hexagon(0.0, 7.6, 9.4, 3.6)), (-28.0, hexagon(0.0, 8.4, 10.0, 5.0)), (-36.0, hexagon(0.0, 7.4, 9.4, 3.6))], "steel.panel", "intake")
-    b.loft([(-28.2, hexagon(0.0, 8.4, 8.6, 4.2)), (-27.4, hexagon(0.0, 8.4, 8.6, 4.2))], "bore.dark", "intake_mouth")
     for s in (-1.0, 1.0):
         b.box(s * 4.6, s * 5.2, -34.0, -29.0, 7.0, 9.6, "steel.vent", "intake_slits")
     # Reverse-swept wings with a little anhedral, knife-edged at the front (a three-point
@@ -322,6 +349,13 @@ def kite(b):
     b.loft([(-18.0, rect(0.0, 12.0, 4.0, 12.0)), (-32.0, rect(0.0, 8.0, 7.0, 12.5)),
             (-46.0, rect(0.0, 5.0, 9.0, 12.5)), (-60.0, rect(0.0, 3.0, 9.5, 11.5))], "steel.plate", "tail_boom")
     b.loft([(-30.0, rect(0.0, 4.0, 4.5, 8.0)), (-44.0, rect(0.0, 3.0, 5.5, 9.0))], "steel.dark", "keel")
+    # The tail segment's front face, over the canopy, is an air intake (Ryan, 12 November): a dark
+    # mouth across it inside a steel lip, a splitter down its middle.
+    _quad(b, [(-5.0, -17.9, 9.3), (5.0, -17.9, 9.3), (5.0, -17.9, 11.4), (-5.0, -17.9, 11.4)], "bore.dark", "intake_mouth")
+    for (za, zb) in ((11.4, 12.0), (8.9, 9.3)):
+        b.box(-5.6, 5.6, -18.2, -17.2, za, zb, "steel.plate", "intake_lip")
+    for (xa, xb) in ((-5.6, -5.0), (5.0, 5.6), (-0.3, 0.3)):
+        b.box(xa, xb, -18.2, -17.2, 9.3, 11.4, "steel.plate", "intake_lip")
     for s in (-1.0, 1.0):
         a = math.radians(s * 38.0)
         root = [(s * 1.5, -60.0, 10.5), (s * 1.5, -48.0, 10.5), (s * 1.5, -48.0, 11.5), (s * 1.5, -60.0, 11.5)]
@@ -5852,9 +5886,10 @@ def _mirror(pts, s):
     return [(s * x, z) for (x, z) in (pts if s > 0 else list(reversed(pts)))]
 
 def skua(b):
-    """Kestrel "Skua" (K-13 Mk I Swing-Wing Strafer): Kestrel's second tier one, every weapon
-    striking twice at half (Ryan's go, 21 October: a swing-wing, the strafing jet by trade, its
-    wings sweeping as it fires twice). Second round, the jaeger (Ryan, 26 October, on the first
+    """Kestrel "Skua" (K-13 Mk I Swing-Wing Strafer): Kestrel's second tier one (Ryan's go, 21
+    October: a swing-wing, the strafing jet by trade), "Ramping Dakka" since his rewrite of 11
+    November (Ricochet; its lock the Hypersonic Swoop, equipment that shows nowhere). Second
+    round, the jaeger (Ryan, 26 October, on the first
     cut's F-14: "I'm ok for a homage, but that has no originality in it whatsoever"; the jaeger
     "pretty cool", then "a bit too bird-like", then "go back to the previous Jaeger" with a jet's
     nose, the wings low, the fin back and taller; 27 October, "Skua as the Jaeger is good, ditch
@@ -5866,11 +5901,13 @@ def skua(b):
     for the run and spreads past square to brake, the bone-white flash a bar across the hand's
     root; a V tail of two canted stabilisers; two long streamers off the tail (the jaeger's
     central tail feathers); the fin from the fairing back over the booster, swept and tall; the
-    Flechette Pod (fixed, no pin) twin pods on the spine, honeycomb faces forward in dark collars
-    the strafing run lights twice. On the move the hands sweep back as it gathers speed and
-    spread as it slows. Mounts in the die's order: hp_1 under the left arm's root (the Laser
-    Carbine), hp_2 under the right (the Twin Autoguns), hp_3 bare under the belly (the self
-    shield shows nowhere). Centred on z = 0 like the Kite."""
+    twin air intakes on the spine, dark mouths forward in steel lips (Ryan, 12 November: "Can we
+    turn the skua's spine pods into intakes?"; they housed the Flechette Pod while it was its
+    lock). On the move the hands sweep
+    back as it gathers speed and spread as it slows. Mounts in the die's order: hp_1 under the
+    left arm's root (the Laser Carbine), hp_2 under the right (the Twin Autoguns), hp_3 under the
+    belly (the Flechette Pod, a rack, a strafer's centreline pod). Centred on z = 0 like the
+    Kite."""
     FUSE = [(30.0, 7.0, 3.3, 3.3), (18.0, 10.0, 4.4, 4.0), (4.0, 11.4, 4.9, 4.4), (-10.0, 10.8, 4.8, 4.4), (-22.0, 9.4, 4.5, 4.3)]   # (y, w, top, bottom)
     NOSE = [(30.0, 7.0, 3.3, 3.3), (40.0, 5.2, 2.5, 2.5), (49.0, 3.0, 1.4, 1.4), (55.0, 1.2, 0.5, 0.5)]
     BY, BR = -36.0, 7.0   # the booster's centre and radius
@@ -5913,19 +5950,21 @@ def skua(b):
         b.box(s * 1.6 - 0.6, s * 1.6 + 0.6, -41.0, -31.0, 4.6, 8.0, "steel.plate", "streamer_root")
     # The fin: its root from the fairing back over the booster, swept and tall.
     _rings(b, [_fin_section(0.0, -18.0, -44.0, 5.0, 0.8), _fin_section(0.0, -37.0, -47.0, 20.0, 0.3)], "livery.livery", "fin")
-    # The Flechette Pod (fixed): twin pods on the spine, honeycomb faces forward (one missile
-    # tile each), collars banked dark at rest and lit hot by the run.
+    # The spine's twin intakes (Ryan, 12 November; the Flechette Pod's housings until then): each
+    # a scoop fairing back into the spine, a dark mouth facing forward inside a steel lip.
     for px in (-3.0, 3.0):
-        b.loft([(-16.0, rect(px, 1.8, 4.2, 6.5)), (-10.0, rect(px, 3.4, 4.4, 8.2)), (3.0, rect(px, 3.4, 4.4, 8.2))], "steel.panel", "flechette_pod")
-        _missile_face(b, (px - 1.7, 3.1, 4.4), (0.0, 0.0, 1.0), (1.0, 0.0, 0.0), (0.0, 1.0, 0.0), 3.4, "flechette_face")
-        for (za, zb) in ((8.1, 8.6), (4.0, 4.5)):
-            b.box(px - 2.1, px + 2.1, 2.2, 3.0, za, zb, "amber.ember", "pod_collar")
-    # The mounts: a pylon under each arm's root, the gun ahead of the arm's edge; the third bare
-    # under the belly.
+        b.loft([(-16.0, rect(px, 1.8, 4.2, 6.5)), (-10.0, rect(px, 3.4, 4.4, 8.2)), (3.0, rect(px, 3.4, 4.4, 8.2))], "steel.panel", "intake")
+        _quad(b, [(px - 1.3, 3.05, 4.8), (px + 1.3, 3.05, 4.8), (px + 1.3, 3.05, 7.8), (px - 1.3, 3.05, 7.8)], "bore.dark", "intake_mouth")
+        for (za, zb) in ((7.9, 8.5), (4.1, 4.7)):
+            b.box(px - 2.0, px + 2.0, 2.4, 3.4, za, zb, "steel.plate", "intake_lip")
+        for (xa, xb) in ((px - 2.0, px - 1.4), (px + 1.4, px + 2.0)):
+            b.box(xa, xb, 2.4, 3.4, 4.1, 8.5, "steel.plate", "intake_lip")
+    # The mounts: a pylon under each arm's root, the gun ahead of the arm's edge; the third under
+    # the belly, the Flechette Pod's rack on the centreline.
     for s in (-1.0, 1.0):
         b.box(s * 10.0 - 0.7, s * 10.0 + 0.7, -2.0, 5.0, -2.4, -0.4, "steel.plate", "pylon")
         b.stock("hp_%d" % (1 if s < 0 else 2), (s * 10.0, 5.0, -3.0), "barrel" if s < 0 else "twin_barrel", scale=0.5, carries="laser_carbine" if s < 0 else "twin_autoguns")
-    b.pad("hp_3", (0.0, -10.0, -5.0), scale=0.5, size=(5.0, 1.4))
+    b.stock("hp_3", (0.0, -10.0, -5.0), "rack", scale=0.5, carries="flechette_pod")
 
     # Idle acts (five, like the Kite's, loud and never in step; Ryan, 28 October: the strafing
     # run and the sweep-dash read the same, and it wants the Kite's treatment, bigger
@@ -5941,9 +5980,8 @@ def skua(b):
     # The strafing run, on the map (its travel leaves the hex, as the Kite's circle does; Ryan,
     # 28 October: the keyed run read as sudden changes of direction and a reverse back to its
     # start, and a flown path never reverses): one banked circle beside its hex, climbing over
-    # the first third, the hands sweeping back as it rolls into a dive on the far side, the pods
-    # firing twice at the bottom, climbing out and sinking back onto its hex as the hands
-    # spread to brake.
+    # the first third, the hands sweeping back as it rolls into a dive on the far side, climbing
+    # out and sinking back onto its hex as the hands spread to brake.
     run = _over_ground(_survey_circle(r=60.0, bank=42.0, vmax=130.0, rise=0.0),
                        [(0.0, 0.0), (0.08, 2.0), (0.2, 16.0), (0.34, 34.0), (0.46, 22.0), (0.6, -8.0), (0.76, 8.0), (0.9, 5.0), (1.0, 0.0)])
     at = lambda u: _time_at(run, u)
@@ -5952,8 +5990,7 @@ def skua(b):
     b.act("strafing_run", run[-1][0], {"wing_l": [(at(0.26), 0.0), (at(0.46), SW), (at(0.62), SW), (at(0.78), 0.0), (at(0.9), -8.0), (run[-1][0], 0.0)],
                                        "wing_r": [(at(0.26), 0.0), (at(0.46), -SW), (at(0.62), -SW), (at(0.78), 0.0), (at(0.9), 8.0), (run[-1][0], 0.0)]},
           body=run, places=("map",),
-          glow=[(["pod_collar"], [(at(0.5), 0.0), (at(0.53), 18.0), (at(0.56), 1.0), (at(0.59), 18.0), (at(0.62), 1.0), (at(0.68), 0.0)]),
-                (boosters, [(0.3, 0.0), (1.0, 9.0), (run[-2][0] - 0.5, 6.0), (run[-1][0] - 0.1, 0.0)])])
+          glow=[(boosters, [(0.3, 0.0), (1.0, 9.0), (run[-2][0] - 0.5, 6.0), (run[-1][0] - 0.1, 0.0)])])
     # The barrel roll, the Kite's, the hands spread (Ryan, 28 October: the wings stay extended
     # for a barrel roll): a dip and a kick to gather, once round on the fuselage and past, back
     # short of level and settled.
@@ -5961,16 +5998,15 @@ def skua(b):
           body=_barrel_roll(t0=0.4, t1=1.6, over=28.0, duration=3.2, surge=8.0),
           glow=[(boosters, [(0.2, 0.0), (0.5, 8.0), (1.7, 8.0), (2.5, 0.0)])])
     # Harrying, on the map: the jaeger's stoops flown as a figure eight over its hex, a lobe to
-    # each side, each lobe lifting and then stooping at its far end with the hands half swept
-    # and a burst from the pods at the bottom, crossing its hex at speed between them.
+    # each side, each lobe lifting and then stooping at its far end with the hands half swept,
+    # crossing its hex at speed between them.
     eight = _over_ground(_figure_eight(radius=44.0, bank=-44.0, vmax=140.0, rise=0.0),
                          [(0.0, 0.0), (0.1, 6.0), (0.18, 8.0), (0.25, -14.0), (0.32, -6.0), (0.4, 6.0), (0.5, 0.0), (0.6, 6.0), (0.68, 8.0), (0.75, -14.0), (0.82, -6.0), (0.9, 6.0), (1.0, 0.0)])
     et = lambda u: _time_at(eight, u)
     b.act("harry", eight[-1][0], {"wing_l": [(et(0.06), 0.0), (et(0.2), 34.0), (et(0.3), 34.0), (et(0.44), 0.0), (et(0.56), 0.0), (et(0.7), 34.0), (et(0.8), 34.0), (et(0.94), 0.0)],
                                   "wing_r": [(et(0.06), 0.0), (et(0.2), -34.0), (et(0.3), -34.0), (et(0.44), 0.0), (et(0.56), 0.0), (et(0.7), -34.0), (et(0.8), -34.0), (et(0.94), 0.0)]},
           body=eight, places=("map",),
-          glow=[(["pod_collar"], [(et(0.23), 0.0), (et(0.25), 14.0), (et(0.28), 0.0), (et(0.73), 0.0), (et(0.75), 14.0), (et(0.78), 0.0)]),
-                (boosters, [(0.3, 0.0), (0.9, 7.0), (eight[-2][0] - 0.5, 6.0), (eight[-1][0] - 0.1, 0.0)])])
+          glow=[(boosters, [(0.3, 0.0), (0.9, 7.0), (eight[-2][0] - 0.5, 6.0), (eight[-1][0] - 0.1, 0.0)])])
     # The loop, the Kite's, on the map only: it backs off, runs in with the hands swept and
     # pulls up through a full circle, over on its back and down, and brakes onto its hex a
     # whole turn on.
@@ -5992,20 +6028,6 @@ def skua(b):
     b.halo = [("booster_ring", KESTREL_HALO), ("exhaust", KESTREL_HALO)]   # its booster, hot
     b.gait(tracks={"wing_l": [(0.0, SW), (1.0, SW)], "wing_r": [(0.0, -SW), (1.0, -SW)]}, glow=glow,
            body_hold=(0.0, 0.0, 0.0, 0.0, -6.0, 0.0), start=("spread", 0.25, 0.85))
-    # The burst (Ryan, 3 November: the Fire button "sometimes makes it do a loop. Is that because
-    # it's attached to Strafing run? Its janky either way"): the strafing run is a flown path on
-    # the map, and its slice carried the machine round its circle in the fight's frame. Its pods
-    # fire on their own act instead, where it stands: the hands half swept, the nose dipped at its
-    # mark with a little surge, two bursts, each kicking it back, then level. A weapon's firing
-    # alone (idle=False).
-    b.act("pod_burst", 1.8, {"wing_l": [(0.1, 0.0), (0.4, SW * 0.5), (1.0, SW * 0.5), (1.5, 0.0)],
-                             "wing_r": [(0.1, 0.0), (0.4, -SW * 0.5), (1.0, -SW * 0.5), (1.5, 0.0)]},
-          body=[(0.1, 0.0, 0.0, 0.0), (0.42, 0.0, 2.5, -1.0, 0.0, -7.0, 0.0), (0.5, 0.0, 0.8, -0.6, 0.0, -4.0, 0.0), (0.6, 0.0, 2.0, -0.9, 0.0, -6.0, 0.0),
-                (0.68, 0.0, 0.6, -0.5, 0.0, -3.5, 0.0), (0.9, 0.0, 1.2, -0.7, 0.0, -5.0, 0.0), (1.6, 0.0, 0.0, 0.0)],
-          heft=0.06, idle=False,
-          glow=[(["pod_collar"], [(0.44, 0.0), (0.48, 18.0), (0.54, 1.0), (0.62, 18.0), (0.68, 1.0), (0.76, 0.0)]),
-                (boosters, [(0.1, 0.0), (0.35, 6.0), (0.9, 6.0), (1.5, 0.0)])])
-    b.fires = {"flechette_pod": ("pod_burst", 0.25, 1.6, 0.48)}   # its fixed weapon fires with its burst, its blow at the first
     b.move(slide=0.5, bank=44.0, accel=0.7, heft=0.08, oversteer=0.3)
 
 skua.maker = "kestrel"
@@ -8279,8 +8301,17 @@ def _tile_cell(b, centre, radius, cell, material, label, sides=12, thick=0.1):
     o = c - right * (1.5 * cell) - up * (1.5 * cell)
     return b._finish(bm, material, label, None, (o, up, right, fwd, (3.0 * cell, 3.0 * cell)))
 
+def shape_barrel_port(b, s=1.0):
+    """A gun through a port: the standard gun's barrel and muzzle collar alone, starting at the
+    socket, its receiver and sight being inside the hull behind the port's wall (the Kite's
+    inset mount; Ryan, 12 November: "the actual mount block is hidden", then "let it poke out
+    more")."""
+    b.prism("y", 0.0, 11.0 * s, 0.0, 2.8 * s, 22.0 * s, "steel.dark", 6, "barrel")
+    b.prism("y", 0.0, 23.0 * s, 0.0, 3.3 * s, 2.0 * s, "steel.plate", 6, "muzzle")
+
+
 ## Each variant by name: (its class, its builder).
-VARIANTS = {"rack_round": ("rack", shape_rack_round)}
+VARIANTS = {"rack_round": ("rack", shape_rack_round), "barrel_port": ("barrel", shape_barrel_port)}
 
 
 def shape_builder(name):
@@ -8326,6 +8357,11 @@ def burn_blade(b, s=1.0):
                 (23.5 * s, rect(side * 0.6 * s, 0.4 * s, -0.15 * s, 0.15 * s))], "amber.fire", "burn_edge")
 
 
+def burn_barrel_port(b, s=1.0):
+    """A pilot flame in the port gun's muzzle."""
+    b.prism("y", 0.0, 24.7 * s, 0.0, 2.4 * s, 1.4 * s, "amber.fire", 6, "burn_flame")
+
+
 def burn_rack_round(b, s=1.0):
     """The round launcher's shells glowing: a lit tip down each of its seven tubes."""
     for x, z in _ROUND_TUBES:
@@ -8333,7 +8369,7 @@ def burn_rack_round(b, s=1.0):
 
 
 ## A class's fire and each variant's whose class burns (a variant of a dish takes none).
-BURNS = {"barrel": burn_barrel, "twin_barrel": burn_twin_barrel, "rack": burn_rack, "blade": burn_blade, "rack_round": burn_rack_round}
+BURNS = {"barrel": burn_barrel, "twin_barrel": burn_twin_barrel, "rack": burn_rack, "blade": burn_blade, "rack_round": burn_rack_round, "barrel_port": burn_barrel_port}
 
 
 # Where each class's muzzle flare blooms as its weapon fires (Ryan, 31 October: "If the flare
@@ -8350,6 +8386,7 @@ MUZZLES = {
     "dish": [((0.0, 10.0, 0.0), 26.0)],
     "blade": [((0.0, 25.0, 0.0), 16.0)],
     "rack_round": [((0.0, 13.2, 0.0), 26.0)],
+    "barrel_port": [((0.0, 27.0, 0.0), 24.0)],
 }
 
 

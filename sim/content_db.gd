@@ -12,7 +12,7 @@ const MAX_AUTHORED_KEYWORDS := 3    # per authored face; upgrades may exceed thi
 const MAX_MOVE := 6                 # a move in hexes, chassis or foe, is 1 to this (a placeholder bound, 28 October)
 ## The caveats a hunting composition may name (`hunts`): whom its pack locks.
 const HUNT_CAVEATS := ["nearest", "weakest", "strongest", "slowest", "fastest"]
-const MIN_DIE := 3                  # the Kite is a d3 (its row, Ryan's go of 21 October: every dark entry felt)
+const MIN_DIE := 4                  # a d3 was the first Kite's one-off (21 October to 11 November); no machine rolls one today
 const MAX_DIE := 10                 # the Clydesdale carries nine (Ryan, 28 September); ten leaves it room
 ## A chassis's class by mass, lightest first (Ryan, 5 October: the machines' scale on the map
 ## and in the skirmish): how big it is drawn, Map3D.SIZE_FIT and MechView3D.SIZE_FILL.
@@ -736,13 +736,21 @@ func city_makers() -> Array:
 ## Tiers (bible section 10, the ledger, 7 October; stored since the stock pass, 22 October). A
 ## chassis carries its tier, 1 to 3; every component that is not locked carries its own, 0 to
 ## 3: 0 the basics, whose blueprints a run starts with, 1 to 3 found or brought by a bought
-## chassis, and a chassis stocks only components below its own tier. A locked component has
+## chassis, and a chassis stocks components up to its own tier, a tier three to tier two
+## (stock_tier). A locked component has
 ## none (NO_TIER).
 const NO_TIER := -1
 
 
 func chassis_tier(chassis_id: String) -> int:
 	return int(chassis.get(chassis_id, {}).get("tier", 0))
+
+
+## The highest tier of component a chassis of tier `own` stocks (the bible's tiers row): its own
+## at tiers one and two, and tier two for a tier three, so a tier-three component is only ever
+## found.
+static func stock_tier(own: int) -> int:
+	return mini(own, 2)
 
 
 func component_tier(component_id: String) -> int:
@@ -1393,11 +1401,14 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	if Face.kind_from_name(kind) < 0 or kind == "blank":
 		errs.append("%s: bad face kind '%s'" % [where, kind])
 	if kind == "attack":
-		# Two reaches since 10 October (Ryan): Close (melee) is removed, and melee is a tag. Sweep a
-		# targeting mode since 3 November, Every Foe since 4 November.
+		# Two reaches since 10 October (Ryan): Close (melee) is removed, and melee is a tag. Every
+		# Foe a targeting mode since 4 November; Sweep, one from 3 November, went on the 12th
+		# (Ryan: "let's remove it"; "it's just better spread").
 		var reach := str(fd.get("reach", ""))
-		if not ["direct", "indirect", "sweep", "every_foe"].has(reach):
-			errs.append("%s: attack face needs reach direct, indirect, sweep or every_foe, got '%s'" % [where, reach])
+		if reach == "sweep":
+			errs.append("%s: Sweep is gone (12 November): a weapon reaches wide by Spread, Penetrate or Splash, or lands on every foe (reach every_foe)" % where)
+		elif not ["direct", "indirect", "every_foe"].has(reach):
+			errs.append("%s: attack face needs reach direct, indirect or every_foe, got '%s'" % [where, reach])
 	if int(fd.get("power", 0)) < 0:
 		errs.append("%s: power cannot be negative" % where)
 	if int(fd.get("strikes", 1)) < 1:
@@ -1422,6 +1433,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: power_per_missing is a positive number on an attack" % where)
 	if fd.has("per_missing") and (not fd.has("power_per_missing") or int(fd["per_missing"]) <= 0):
 		errs.append("%s: per_missing is the HP a step of power_per_missing stands for: positive, and only beside power_per_missing" % where)
+	# The Pinion Driver's finish (the Kite's, 11 November): a weapon's number times this against a
+	# foe at half its HP or less, a whole number of two or more.
+	if fd.has("finisher") and (kind != "attack" or int(fd.get("power", 0)) <= 0 or int(fd["finisher"]) < 2 or float(fd["finisher"]) != floorf(float(fd["finisher"]))):
+		errs.append("%s: finisher is a weapon's: its number times that, a whole number of 2 or more, against a foe at half its HP or less" % where)
 	# Volatile is a cost, not a keyword (Ryan, 26 October): `volatile`, the hull a spend bites, a
 	# positive number beside the heat; and a shield cost the same way (`shield_cost`), the shield
 	# a spend takes first, the entry unplayable while the shield is short of it.
@@ -1507,10 +1522,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: chain (the number) rides with the Chain keyword" % where)
 	if kw_names.has("cleave") and kw_names.has("penetrate") and int(fd.get("cleave", 0)) == int(fd.get("penetrate", 0)):
 		errs.append("%s: Spread and Penetrate at one number are Splash: write splash" % where)
-	# Every Foe is equipment's (the Siphon's lure-all): the foes past the target take no number,
-	# so a weapon reaches wide by Spread, Penetrate or Splash instead.
-	if str(fd.get("reach", "")) == "every_foe" and kind == "attack" and not debuff:
-		errs.append("%s: Every Foe is a debuff's; a weapon's area is Spread, Penetrate or Splash with its number" % where)
+	# Every Foe on a weapon lands its number whole on every foe (12 November, the two gated
+	# specials'), so an area keyword on it has no foe left to reach.
+	if str(fd.get("reach", "")) == "every_foe" and kind == "attack" and (kw_names.has("cleave") or kw_names.has("penetrate") or kw_names.has("splash")):
+		errs.append("%s: Every Foe lands on every foe already: no Spread, Penetrate or Splash rides it" % where)
 	# A gated keyword (the stock pass's engine, 22 October): keyword name to the condition it
 	# lands under, a condition on the foe in hand, read through the effects' conditions. Suppress
 	# alone today (the stun row's gated stuns); another keyword's gate waits for its first piece.
@@ -1630,9 +1645,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	# The Musk Ox's pieces (21 October): a refund, the salvo, random targets, a reload.
 	if fd.has("ammo_per_foe_hit") and (kind != "attack" or int(fd["ammo_per_foe_hit"]) <= 0):
 		errs.append("%s: ammo_per_foe_hit is an attack's, a weapon's or a debuff's: the ammo back for every foe its blows reach, a positive number" % where)
-	for key in ["spends_magazine", "random_targets"]:
-		if fd.has(key) and (kind != "attack" or not (fd[key] is bool)):
-			errs.append("%s: %s (true) is an attack's, a weapon's or a debuff's" % [where, key])
+	if fd.has("spends_magazine") and (kind != "attack" or not (fd["spends_magazine"] is bool)):
+		errs.append("%s: spends_magazine (true) is an attack's, a weapon's or a debuff's" % where)
+	if fd.has("magazine_min") and (not bool(fd.get("spends_magazine", false)) or int(fd["magazine_min"]) < 1):
+		errs.append("%s: magazine_min is the ammo a piece that spends the magazine needs to fire: 1 or more, beside spends_magazine" % where)
 	if fd.has("reloads_ammo") and (kind == "attack" or kind == "blank" or int(fd["reloads_ammo"]) <= 0):
 		errs.append("%s: reloads_ammo is a machine piece's: the ammo it adds to its forging machine, a positive number" % where)
 	if fd.has("heat_per_blow") and int(fd["heat_per_blow"]) <= 0:
@@ -1649,19 +1665,11 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	# opening an empty spot isn't a good design"): nothing is spent on an empty slot.
 	if fd.has("pulls_mines") or fd.has("drones"):
 		errs.append("%s: pulls_mines and drones are gone (9 November): the Lorentz Contractor gathers (gathers_mines) and the Syrinx Drone detonates (detonates)" % where)
-	# The spray (the Skua's Flechette Pod, built 25 October): the strikes after the first fall on
-	# random foes in reach, so a spray strikes at least twice.
-	# Sweep (Ryan, 2 November), in place of the spray and the random targets of October: a reach
-	# since the 3rd ("a targeting mode, since that's what it is"), whose strikes walk the rank picked.
+	# The spray and the random targets of October, and Sweep after them, are gone.
 	if fd.has("spray") or fd.has("random_targets"):
-		errs.append("%s: spray and random_targets are gone (3 November): Sweep, a reach, walks the rank picked" % where)
+		errs.append("%s: spray and random_targets are gone (3 November)" % where)
 	if Array(fd.get("keywords", [])).has("sweep"):
-		errs.append("%s: sweep is a reach since 3 November (reach: sweep), never a keyword" % where)
-	# A Sweep's drop picks its rank and nothing else (Ryan, 8 November, agreeing the audit's lean):
-	# a Swap, a detonation or a gather acts on one foe, so none rides a Sweep until one is wanted
-	# and given its rule.
-	if str(fd.get("reach", "")) == "sweep" and (Array(fd.get("keywords", [])).has("swap") or bool(fd.get("detonates", false)) or bool(fd.get("gathers_mines", false))):
-		errs.append("%s: a Sweep carries no Swap, detonation or gather: each acts on one foe, and a Sweep's drop picks only its rank" % where)
+		errs.append("%s: Sweep is gone (12 November), as a reach and as a keyword" % where)
 	# The Changeover (the Clydesdale's, 11 November): turning a folded die to its other battery is a
 	# Rapid buff on itself, its free roll landing on the battery it raised.
 	if fd.has("turns_die") and (not (fd["turns_die"] is bool) or kind != "buff" or not rapid or str(fd.get("targets", "")) != "self"):
@@ -1715,6 +1723,8 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		# One a use spends (Spun Up, spent by the next weapon) lasts until then.
 		if Effects.STATUS.get(st, {}).has("spent_by") and fd.has("rounds"):
 			errs.append("%s: %s lasts until a use spends it, so a buff grants it stacks and no rounds" % [where, st])
+		if Effects.lasts_the_fight(Effects.STATUS.get(st, {})) and fd.has("rounds"):
+			errs.append("%s: %s lasts the fight, so a buff grants it stacks and no rounds" % [where, st])
 	elif fd.has("status") or fd.has("stacks") or fd.has("rounds"):
 		errs.append("%s: status, stacks and rounds belong to a buff face" % where)
 	if fd.has("targets"):
@@ -1752,7 +1762,8 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 
 ## `one_off`: the chassis's design names the rule its passive breaks as a one-off (the bible's
 ## section 7: a passive may break a rule, the rule bending for one machine), which lifts the
-## effect cap by one: the Kite's double, its heat, its dark rounds and its tax, two lines.
+## effect cap by one (the first Kite's double, its heat, its dark rounds and its tax, two lines; no
+## chassis names one today).
 func _validate_passive(where: String, p, errs: Array[String], one_off: bool = false) -> void:
 	if p == null:
 		return
@@ -1813,6 +1824,11 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: stack_step is the stacks of per_stack's status a step takes: 1 or more, beside per_stack" % where)
 		if eff.has("each") and (effect != "stack_status" or not (eff["each"] is bool) or not ["on_kill", "on_foe_killed"].has(trig)):
 			errs.append("%s: each (true) grants a stack_status once for every foe its event counts: on_kill's or on_foe_killed's" % where)
+		# An effect that fires once a round (the Skua's stack of Ricochet for damaging a foe, Ryan,
+		# 11 November: "once per turn"): a gate on what an event fires (Effects.fire), which the
+		# pipeline's effects (static, on_attack, on_injury) never pass through.
+		if eff.has("once") and (str(eff["once"]) != "round" or ["static", "on_attack", "on_injury"].has(trig)):
+			errs.append("%s: once is \"round\", on an effect an event fires (never static, on_attack or on_injury)" % where)
 		# The Cottonmouth's drum (19 October): every weapon and debuff fired as one shot of a flat number,
 		# a reach and a heat; never keyed on reach, which reads the rewrite.
 		if effect == "rewrite_weapon":
@@ -1840,10 +1856,10 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 		# every spend aimed at a foe leaves, a whole number, 1 or more.
 		if effect == "mine_on_spend" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 1 or float(eff["value"]) != floorf(float(eff["value"]))):
 			errs.append("%s: mine_on_spend is the Mine's flat damage a spend: a whole number, 1 or more" % where)
+		if effect == "pass_release" and (int(eff.get("value", 0)) < 1 or int(eff.get("gate", 0)) < 1):
+			errs.append("%s: pass_release is what every foe takes from a passed turn at its gate: value and gate (the heat it needs), whole numbers, 1 or more" % where)
 		if effect == "shove_behind" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 1 or int(eff["value"]) > 100 or float(eff["value"]) != floorf(float(eff["value"]))):
 			errs.append("%s: shove_behind is the share of a front foe's maximum HP its damaging blow drives into the foe behind, in percent: a whole number, 1 to 100" % where)
-		if effect == "pass_sweep" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 1 or float(eff["value"]) != floorf(float(eff["value"]))):
-			errs.append("%s: pass_sweep is the damage of each shot a passed turn fires for its heat: a whole number, 1 or more" % where)
 		if effect == "vent_blast" and float(eff.get("value", 0)) <= 0.0:
 			errs.append("%s: vent_blast is the share of the heat a vent takes off that it blasts: a positive number" % where)
 		# The Petrels' passives (built 30 October): the shield paying a weapon's heat point for
@@ -2139,7 +2155,9 @@ func _validate_chassis(errs: Array[String]) -> void:
 	# Tiers (7 October; stored since the stock pass, 22 October): every chassis 1 to 3, and the
 	# capital's maker fields no tier one; every component that is not locked stores its tier, 0
 	# to 3, and a locked one none; the capital's maker makes no basics (tier zero); a chassis
-	# stocks only components below its own tier.
+	# stocks components up to its own tier at tiers one and two, and a tier three to tier two (the
+	# bible's tiers row; the validator's half since 11 November, with the Skua's Pod), so a
+	# tier-three component is only ever found.
 	var capital := capital_maker()
 	var stocked_ids := {}
 	var fixed_ids := {}
@@ -2173,8 +2191,8 @@ func _validate_chassis(errs: Array[String]) -> void:
 		var own := int(chassis[id].get("tier", 0))
 		for cid in chassis[id].get("loadout", []):
 			var ct := component_tier(str(cid))
-			if components.has(cid) and not fixed_ids.has(cid) and ct >= own:
-				errs.append("chassis %s: stocks %s at tier %d, and a chassis stocks only below its own tier (%d)" % [id, cid, ct, own])
+			if components.has(cid) and not fixed_ids.has(cid) and ct > stock_tier(own):
+				errs.append("chassis %s: stocks %s at tier %d, and a tier-%d chassis stocks up to tier %d" % [id, cid, ct, own, stock_tier(own)])
 	for id in chassis.keys():
 		var c: Dictionary = chassis[id]
 		var where := "chassis %s" % id

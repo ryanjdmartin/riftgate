@@ -8247,6 +8247,107 @@ Read.
 - A multiplier is a trial's shape. On top of the ramp's own counts it compounds, so the form
   for the game is the ramp's table and the Rupture's share of it, not a factor over both.
 
+## 11 November, the Kite's turns: a probe
+
+Ryan, 11 November: "I want to revisit the Kite a bit. Something about it feels clunky to me." What
+its turns hold, counted: a scratch script over `Skirmish` and `Policy` (the greedy rung; each
+round played by `Policy.play_round`, the Kite's die read as the round opens and the log read for
+its spends, its resets and its overheats), on main's content at `209112b`. Three reads: the
+default team cut to three (the Honey Badger, the Clydesdale, the Kite) against every tier-one
+patrol and formation of every domain, the same against tier two's, and the Kite with the Buzzard
+and the Lammergeier against tier two's formations; 20 seeds a composition. A first pass at 30
+seeds read the same on every counter the two share. A direction. The decision it informs: his
+call of the same day to redesign the Kite from the ground up (`docs/briefs/kestrel_kite.md`).
+
+| Read | The default three, tier one | The default three, tier two | With the Buzzard and the Lammergeier, tier two's formations |
+|---|---|---|---|
+| Fights, all won; mean rounds | 400; 2.7 | 480; 3.8 | 280; 4.0 |
+| Its die opens on a dark entry, of its rounds | 18% | 17% | 20% |
+| It spends nothing, of the rounds the fight goes on after | 6% | 13% | 13% |
+| Spends a fight: the Driver, the rifle, the autoguns | 1.1, 0.9, 0.5 | 1.5, 0.9, 0.5 | 1.7, 1.0, 0.8 |
+| Attacks that killed a fight | 1.8 | 1.8 | 2.2 |
+| Resets a fight; the action it gives spent, held | 0.6; 0.5, 0.1 | 0.7; 0.5, 0.1 | 0.9; 0.7, 0.1 |
+| Hot Streak at its peak | 1.3 | 1.3 | 1.8 |
+| Hull lost a fight to its own heat, to the foes (of 12) | 1.3, 1.1 | 1.4, 1.7 | 1.8, 2.1 |
+| Wrecked; by its own heat | 6%; 2% | 12%; 1% | 11%; 3% |
+
+Read. The entry it spent is dark the round after, so from the second round its die opens dark
+one time in three, about one round in five over fights this short; the bot buys most of them
+back with the team's rerolls. The reset fires under once a fight, and a d3 holds at most one
+entry dark from the round before, so what it brings back is that entry and the Driver itself.
+Its own heat takes about as much of its hull as the foes do, and it is the machine that falls in
+fights its team wins every time. One fight's log for the shape (`tools/balance.gd -- --trace
+"kestrel team|meadow formation tier 2|greedy|1"`): over five rounds it burnt 11 of its 12 hull
+itself and ended on 1, every blow the foes aimed at it stopped by its shield. Alone against a
+tier-two duelist it wins in two rounds with no hull lost (the duelists' read of 10 November,
+above). The Hot Streak figure is read as its turn ends, so a fight's last kill is not in it.
+
+## 11 November, the three fast flyers rebuilt: each alone against the patrols, the old kit beside the new
+
+The Needletail, the Kite and the Skua were rebuilt on 11 November on placeholder numbers (Ryan:
+"Yes build them with placeholder numbers"; the bible's Kite and Kestrel rows). A first look at
+where those numbers put each, the old kit beside the new: `tools/balance.gd -- --packs curve
+--team <flyer>,badger,clydesdale,baboon --tiers 1,2 --sizes patrol --seeds 30`, read at the cut
+of one (the flyer alone), on this branch at `4d70c47` and on main at `6cf3582` for the old kits.
+Twenty patrols, tiers one and two: eight duels rated for one machine and twelve packs rated for
+two, which a lone machine is over its rating against. The greedy rung's mean hull lost (percent
+of its own) and mean rounds; a wall is the greedy winning under half. 30 seeds: a direction. No
+decision reads it; it is the check that no placeholder is wildly off.
+
+| Alone, the greedy rung | The Kite, old | new | The Skua, old | new | The Needletail, old | new |
+|---|---|---|---|---|---|---|
+| The eight duels: hull lost, rounds | 0%, 1.5 | 2%, 1.6 | 46%, 8.8 | 4%, 3.3 | 5%, 3.1 | 8%, 3.3 |
+| The twelve packs rated for two: walls | 0 | 0 | 9 | 7 | 5 | 7 |
+| All twenty: hull lost, rounds | 12%, 2.4 | 18%, 2.6 | 70%, 6.5 | 42%, 3.7 | 44%, 4.0 | 51%, 4.2 |
+
+Read. The Kite stands where it stood on the duels made for one machine, a round and a half and
+no hull to speak of, and pays more on the packs made for two (the antlion trio 8% to 33% of its
+hull, the Cerberus pair 2% to 26%): the plain double it lost was worth more on a second and a
+third foe than the opener is. The Skua moves most: its duels took five to fifteen rounds under
+the Split-cycle Breech, a wall at tier two's lone Grave Dullahan, and take three to four now
+with little hull lost; two tier-one pairs go from a wall to a win and the Roc pair from a
+decision to one. It is slower than the Kite
+and level with the Needletail on the duels, so no placeholder reads as runaway there; the long
+fights it is built for are not in this read. The Needletail alone is a little worse off (five
+walls to seven): alone its second action is the Designator, a mark worth little without armour
+to strip or a squad to use it, where the old kit's free action was the Overcharge Coil it no
+longer stocks. With the Honey Badger beside them (the cut of two) all three win every patrol,
+old and new alike, the Pit pair the costliest (15% to 27% of the two machines' hull on the new
+kits). The bot knows nothing of
+holding the Kite's opener for a foe worth it or of keeping the Skua's hull clean, and a lone
+machine against a pack rated for two is no fight the battle deals, so the walls are a ceiling
+and no fault.
+
+## 12 November, Sweep removed: the Whip Scorpion's release on every foe beside its Sweep, and the Skua without the Pod's Sweep
+
+Sweep went on 12 November (the bible's Sweep row). Two reads of what took its place, the old
+beside the new, `tools/balance.gd -- --packs curve --seeds 30`, this branch at `728e823` against
+`a17339f` (the same tree with Sweep): a direction, the check on two placeholder calls. No
+decision reads it.
+
+The Whip Scorpion, `--team whip_scorpion,badger,clydesdale,baboon --tiers 2 --sizes
+patrol,formation`: its release was a Sweep of the fuller rank, a shot of 2 for every heat; it is
+1 on every foe at 8 heat and 1 more for each heat over (Ryan: "1 damage to each enemy, increased
+by 1 for each heat over 8"; built as the rule reads, 7 at 14). The greedy rung's mean hull lost
+and rounds, old then new:
+
+| Tier two | Alone | With the Badger | The three | The four |
+|---|---|---|---|---|
+| Fourteen formations, rated 3 | 94%, 4.7 to 84%, 4.1; walls 8 to 7 | 39%, 7.1 to 36%, 6.3 | 13%, 5.1 to 13%, 5.0 | 5%, 4.4 to 5%, 4.2 |
+| Six patrols rated 2 | 29%, 4.3 to 31%, 4.5 | 4%, 2.8 to 4%, 2.8 | 1%, 2.2 to 1%, 2.2 | 0%, 2.0 to 0%, 2.0 |
+| Four duels rated 1 | 2%, 2.9 to 2%, 3.0 | no change | no change | no change |
+
+Read. The new release sits where the Sweep sat: level in the squad of three the formations are
+rated for, a little better alone against a formation (both ranks take it), a shade worse on the
+small packs (nothing fires under 8 heat). The bot releases when the blow beats its best spend
+and does not hold a die to bank the foes' blows on purpose, so the play he describes, ending
+just under the maximum, is not in it.
+
+The Skua, `--team skua,badger,clydesdale,baboon --tiers 1,2 --sizes patrol`, alone: its eight
+duels are where they were (4% of its hull, 3.3 rounds, in the entry of 11 November above); on
+the twelve packs rated for two the walls stay at 7, and over all twenty it loses 48% of its
+hull in 4.2 rounds where it lost 42% in 3.7 with the Pod's Sweep: the Pod as three strikes of 1
+at one foe is worth less against a pair than four shots along a rank were.
 
 ## 12 November, the Ammit's rework: a tier-three battle's chain, before against after
 

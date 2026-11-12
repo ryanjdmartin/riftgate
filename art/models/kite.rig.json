@@ -1994,7 +1994,8 @@
  ],
  "pins": {
   "hp_1": "transonic_rifle",
-  "hp_2": ""
+  "hp_2": "",
+  "hp_3": ""
  },
  "halo": [
   [
@@ -2029,5 +2030,32 @@
    "reach": 25.0,
    "breadth": 9.5
   }
- ]
+ ],
+ "fits": {
+  "hp_3": {
+   "barrel": {
+    "shape": "barrel_port",
+    "scale": 1.0
+   },
+   "rack": {
+    "shape": "rack_round",
+    "scale": 0.7,
+    "sink": -1.8
+   },
+   "twin_barrel": {
+    "shape": "twin_barrel",
+    "scale": 0.84,
+    "sink": 5.2
+   },
+   "dish": {
+    "shape": "dish",
+    "scale": 0.6,
+    "sink": -3.0
+   },
+   "blade": {
+    "shape": "blade",
+    "scale": 0.7
+   }
+  }
+ }
 }

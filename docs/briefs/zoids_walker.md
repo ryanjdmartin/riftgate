@@ -9,6 +9,11 @@ let's keep that in mind.
 One idea I had was like a "shadow panther" where every hit pierces armour, and on kill it gains
 Phased, but it's very squishy.
 
+**Ryan, 11 November** (in the Kite's round, `kestrel_kite.md`, where a kill granting Phased was
+his second thought for the Kite): "Right, I liked shadow panther. It keeps the phased orbit, not
+the Kite." So Phased on a kill is this machine's. The Kite gives up its reset in the same round,
+so the verb the note above calls the Kite's is free again as well.
+
 The session decides whose machine the fast four-legged walker is, then its name, passive and
 tier with that answer.
 

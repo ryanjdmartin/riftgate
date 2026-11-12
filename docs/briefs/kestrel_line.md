@@ -14,7 +14,8 @@ stock by kind, since most stock pieces are placeholders until the stock pass; so
 now carries "The kit, written out" (the Buzzard's and the Puffin's below), its stock by kind
 and a piece named only where it fits as it is.
 
-**Status**: every chassis decided by 21 October and named that evening (the Skua, the Storm
+**Status**: the fast flyers' identities reopened under the long wall on 11 November (the next
+section; the Kite, the Needletail and the Skua rebuilt that day on placeholder numbers). Before that: every chassis decided by 21 October and named that evening (the Skua, the Storm
 Petrel, the Needletail and the Giant Petrel in content and modelled 23 October, the Needletail
 whole, the Skua whole since its engine of 25 October, the other two planned until theirs); the Buzzard's stock filled and the stock
 holes taken; the last two slots marked (the Magpie, a support engine; the
@@ -25,10 +26,90 @@ bible's action-economy row, its leans row and its Kestrel rows (sections 5 and 7
 Kestrel briefs; `content/chassis.json` and `content/components.json` (maker `kestrel`);
 `docs/balance.md` (13 October: the Kestrel rows and the pick shares).
 
+## The fast flyers, under the long wall (11 November)
+
+Newer than the review below, which predates the long wall, the refit and the foes' roles: where
+the two differ, this section stands.
+
+- Ryan, 11 November: "Given our new battle framework, I want to settle the identities of the
+  Kestrel fast flyers. Not pigeonholes, but just what does what and why you'd want one over the
+  other." "Kite, Skua, and Needletail are the 3 move Sixers, where the skua has a direction but
+  needs tweaks and the needletail is basically free to be whatever we want. Buzzard is close
+  behind as a move 5 risky dps/burst engine, giving it a hybrid identity that can fit into either
+  a squad or flanker role. So what about the other three? Let's sort them out together, now."
+- Of the Kite and the Buzzard: "I feel like the "cousin" angle between kite and Buzzard can be
+  dropped since they no longer share names."
+- Of the last two slots: "the remaining two Kestrel chassis probably shouldn't be in the move 6
+  light space with these three. Probably more in the Buzzard/storm Petrel medium space. So their
+  roles are still open but not really relevant to this discussion."
+
+**What the wall asks of a fast machine** (the rules' battlefield; the bible's squad row and roles
+row). A high-move machine is the flanker and the firefighter (his word of 5 November). A
+formation is a fight for three; a patrol is a duel for one or, as a pair or a hunting pack, a
+fight for two; an elite and the boss are a true four. A machine has one action a turn, no fight is
+left, hull stays for the battle while the shield opens full, and a pack that a fight has worn
+strikes the wall by the heads it still holds. So what a flank sends comes in three shapes: many
+small heads (a hunting pack, a pair, the tide's patrols), one head that matters (a duelist, the
+worker behind a formation's front, an elite's own), and a fight too long for a light.
+
+**The map**, as his refinement of 11 November left it (his words lead each; the rest Claude's
+reading, for him to move):
+
+| Machine | His word | Its fight | It wins by | What it cannot do | What its kit wants |
+|---|---|---|---|---|---|
+| The Kite | "Burst glass cannon" | the short one, and the first rounds of any | opening at double on what nothing has touched, finishing with its lock, a kill paying it | anything big after its first shot; a long fight | one big single hit; reach |
+| The Skua | "Ramping Dakka" | the long one | Ricochet: a strike more for every stack, a stack a round | plate; a pack that out-hits its shield | riders a hit, flat buffs, Exposed |
+| The Needletail | "free to be whatever we want" | beside another machine | two things a round, a weapon and an equipment, the mark every round | weight of its own | every maker's equipment |
+| The Buzzard (move 5, medium) | "risky dps/burst engine" | either, squad or flank | the burst that builds and commits: its shield spent into its blow | | hot guns |
+| A medium, unspecced | "at least one chassis that orbits" Exposed | its session's | cashing the mark the others set | | |
+
+In time they spread: the Kite is strongest in a fight's first round, the Skua in its last, the
+Buzzard when it chooses, and the Needletail every round alike. They pair on Exposed, the maker's
+keyword: a painted foe's armour counts for nothing, which is the one thing a strike of 1 fears,
+and the paint puts an untouched back rank in reach of the Kite's Direct opener.
+
+Where each stands:
+
+- **The Kite**: redesigned from the ground up on his word and built 11 November on his go ("Yes
+  build them with placeholder numbers"). A Kite that left a fight at its heat maximum he
+  declined ("it adds clunk to the battle. We ditched withdrawal and the game feels better for
+  it"). The kit: four entries and no reset; every weapon doubled on an unhurt foe; the Pinion
+  Driver the finisher, doubled on a foe at half its HP or less (Claude's form of his "simpler
+  but fill the same purpose"; his word on it, 12 November: "Pinion Driver good"), beside the Coriolis Accelerator, which keeps its
+  slope in the pool ("two execute pieces can exist"); a kill recharging a small shield whole.
+  Phased on a kill he kept for the shadow panther ("It keeps the phased orbit, not the Kite").
+  Its brief is retired (`git show eed817e:docs/briefs/kestrel_kite.md`); the bible's Kite row
+  carries it, and his play is the to-do's.
+- **The Skua**: his rewrite of 11 November ("Ramping Dakka. Complete rewrite"), built the same
+  day on his go: a stack of Ricochet for damaging a foe with a weapon, once a round, and a
+  second only by its lock, the Hypersonic Swoop (Rapid, a cooldown of one); half the stacks lost
+  on any hull damage. Ricochet in his text of 12 November: "After firing a weapon, it hits the
+  primary target 1 more time per stack, dealing 1 damage each time and applying all effects
+  other than area keywords", what it applies his to dial back to keywords if it proves too
+  much. Sweep went that day, so the Flechette Pod, an ordinary tier-one weapon in its stock, is
+  four strikes of 1 ("Flechette could be 1x4"). The Split-cycle Breech is gone
+  from content. Its brief is retired (`git show e5638e2:docs/briefs/kestrel_skua.md`); the
+  bible's Kestrel and Sweep rows carry it, and his play is the to-do's.
+- **The Needletail**: settled 11 November ("I agree with the Needletail, yes") and built the same
+  day on his go ("Yes build them with placeholder numbers"): two things a round, a weapon and an
+  equipment every round, its die turning to a lit entry of the other kind, the Designator kept,
+  so it marks every round. The squad's fire on its paint he set aside ("spotting, yes, but
+  artillery, not necessarily"). Its brief is retired (`git show
+  bf6bd1e:docs/briefs/kestrel_needletail.md`); the bible's Kestrel row carries it. Its look is
+  his pick from the fifth round's sheet (`docs/looks/kestrel_needletail4.png`: the fold-wing
+  Fox or the tail-sitter), never made.
+- **A chassis that orbits Exposed** ("Exposed being Kestrels primary keyword means we need at
+  least one chassis that orbits it"): one of the two unspecced mediums, the payoff the three
+  setters lack; that slot's session's to design.
+- **The last two slots** (the Snowy Owl, the Magpie): medium, by his word above; open, and not
+  this round's.
+
 ## The line as it stands
 
 Eight machines decided, 3-3-2 across the tiers, and the last two of Ryan's ten marked on 21
-October, their tiers open (the counts: 3-5-2 or 4-4-2). Each with what it reads, what it produces, what it pays, and the currency the
+October, their tiers open (the counts: 3-5-2 or 4-4-2). The table is the line as that review
+left it; the Kite, the Needletail and the Skua have moved since 11 November (the fast flyers'
+section above, and the bible's rows). Each with what it reads, what it produces, what it pays, and the currency the
 direction gives it (the row's homes: strikes, a die mechanic, a banked resource, a cooldown
 burst, a delayed action, a combined entry, own rerolls).
 
@@ -460,7 +541,8 @@ folded 7 November), for the design session the to-do names for them:
 - **The Giant Petrel**: "marked built, but it is far from completed. Placeholder model,
   unrefined kit."
 - **The Needletail**: "marked built, but it is far from completed. Placeholder model,
-  unrefined, dull, kit, not worthy of tier 2."
+  unrefined, dull, kit, not worthy of tier 2." Its kit was settled and rebuilt on 11 November
+  (The fast flyers, above); its model and its look stand open.
 
 The last two slots are their briefs' (`kestrel_magpie.md`, `kestrel_owl.md`), taken up in
 another session (Ryan, 21 October: "I'll take up the last 2 chassis in another session").

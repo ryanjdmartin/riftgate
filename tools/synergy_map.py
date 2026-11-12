@@ -54,6 +54,7 @@ CURRENCIES = OrderedDict([
     ("barrier", ("Barrier", "on a machine")),
     ("ward", ("Ward", "on a machine")),
     ("spun_up", ("Spun Up", "on a machine")),
+    ("ricochet", ("Ricochet", "on a machine")),
     ("rallied", ("Rallied", "on a machine")),
     ("phased", ("Phased", "on a machine")),
     ("sealed", ("Sealed", "on a machine")),
@@ -62,7 +63,6 @@ CURRENCIES = OrderedDict([
     ("scorched", ("Scorched", "on a machine")),
     ("disabled", ("Disabled", "on a machine")),
     ("corrupted", ("Corrupted", "on a machine")),
-    ("hot_streak", ("Hot Streak", "on a machine")),
     ("heat", ("This machine's heat", "a resource")),
     ("ally_heat", ("An ally's heat", "a resource")),
     ("hull_damage", ("Hull damage taken", "a resource")),
@@ -97,10 +97,10 @@ FACE_FIELDS = {
     "braces": [("braced", "sets")], "devours": [("overcharged", "sets"), ("kill", "reads")], "fills_hopper": [("hopper", "sets")],
     "fires_hopper": [("hopper", "reads")], "heat_per_blow": [("heat", "sets")], "detonates": [("mine", "reads")],
     "gathers_mines": [("mine", "reads")], "vents_all": [("heat", "reads")], "power_per_heat": [("heat", "reads")],
-    "power_per_missing": [("missing_hp", "reads")], "resets_on_kill": [("kill", "reads")],
+    "power_per_missing": [("missing_hp", "reads")], "finisher": [("missing_hp", "reads")], "resets_on_kill": [("kill", "reads")],
     "kill_rerolls": [("kill", "reads"), ("reroll", "sets")], "ally_action": [("reroll", "reads")], "regenerates": [("regenerating", "sets")],
     "spends": [("souls", "reads")], "spends_up_to": [], "holds_all": [("overcharged", "reads")],   # the Soul Siphon: it consumes Souls, and holds every Empowered a round
-    "spends_magazine": [("ammo", "reads")], "reloads_ammo": [("ammo", "sets")], "ammo_per_foe_hit": [("ammo", "sets")],
+    "spends_magazine": [("ammo", "reads")], "magazine_min": [("ammo", "reads")], "reloads_ammo": [("ammo", "sets")], "ammo_per_foe_hit": [("ammo", "sets")],
     "self_burn": [("burning_mech", "sets"), ("heat", "sets")], "volatile": [("hull_damage", "sets")], "strikes": [("strikes", "sets")],
     "shields": [], "vents": [], "cooldown": [], "charged": [("muster", "reads")],
     "rolls_target": [],
@@ -112,20 +112,20 @@ EFFECTS = {
     "shock_on_hull_strike": [("shocked", "sets"), ("hull_damage", "reads")], "seal_form": [("sealed", "sets"), ("braced", "sets"), ("heat", "sets")],
     "paradox": [("paradox", "sets"), ("suppressed", "sets")], "muster": [("muster", "sets"), ("reroll", "reads")],
     "shield_per_heat": [("heat", "reads")], "shield_per_ally_heat": [("ally_heat", "reads"), ("shield_granted", "reads")],
-    "add_stacks": [], "vent_blast": [("heat", "reads")], "forge": [("ammo", "sets"), ("heat", "reads")], "mine_on_spend": [("mine", "sets")],
+    "add_stacks": [], "vent_blast": [("heat", "reads")], "pass_release": [("heat", "reads")], "forge": [("ammo", "sets"), ("heat", "reads")], "mine_on_spend": [("mine", "sets")],
     "step_die": [("reroll", "reads")], "split_strikes": [("strikes", "sets")], "multiply_printed": [], "free_reroll": [("reroll", "sets")],
     "extra_action": [], "never_hunted": [], "no_destroy": [], "carry": [], "keep_status": [], "rewrite_weapon": [], "grant_keyword": [],
-    "add_shield": [], "vent_heat": [], "stack_status": [], "lay_status": [],
+    "add_shield": [], "refill_shield": [], "vent_heat": [], "stack_status": [], "lay_status": [],
     "multiply_heat": [("heat", "sets")], "add_damage": [], "add_damage_taken": [], "hull_per_spend": [("hull_damage", "sets")],
-    "multiply_damage": [], "multiply_stacks": [], "add_heat": [("heat", "sets")], "weapon_cooldown": [], "min_damage": [], "add_burn": [],
+    "multiply_damage": [], "multiply_stacks": [], "add_heat": [("heat", "sets")], "weapon_cooldown": [], "one_of_each": [], "min_damage": [], "add_burn": [],
     "burn_shield": [("heat", "reads")], "bank_rerolls": [("reroll", "reads"), ("reroll", "sets")],
     "fill_hopper": [("hopper", "sets")], "hopper_plate": [("hopper", "reads"), ("braced", "sets")],
 }
 TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_shield_granted": "shield_granted", "on_kill": "kill", "on_foe_killed": "kill",
             "on_foe_status": "paradox_feed", "on_stack": None, "on_attack": None, "static": None, "on_round_start": None,
-            "on_injury": None, "on_skirmish_start": None, "on_shield_gain": None}
-CONDITIONS = {"target_status": None, "attacker_status": None, "target_rank": "rank", "nth_shot": None, "setup_once": None,
-              "target_no_intent": None, "shield_up": None}
+            "on_injury": None, "on_skirmish_start": None, "on_shield_gain": None, "on_damage": None}
+CONDITIONS = {"target_status": None, "attacker_status": None, "target_rank": "rank", "nth_shot": None,
+              "target_no_intent": None, "shield_up": None, "target_unhurt": "missing_hp", "target_half": "missing_hp"}
 # A foe move's riders and effects, on machines.
 FOE_RIDERS = {"burn": "burning_mech", "scorch": "scorched", "disable": "disabled", "corrupt": "corrupted", "silence": "silenced", "breach": None}
 FOE_EFFECTS = {"burn": "burning_mech", "scorch_all": "scorched", "disable": "disabled", "corrupt_all": "corrupted", "drain_rerolls": "reroll",
@@ -153,6 +153,7 @@ ENGINE_READERS = {
     "barrier": ["the next blow deals nothing"],
     "ward": ["no rider lands this round"],
     "spun_up": ["the next weapon spend +2 a stack"],
+    "ricochet": ["a strike of 1 more a stack at the target once a weapon has fired: most on riders a strike and on flat buffs; hull damage halves it"],
     "rallied": ["one reroll more this round"],
     "phased": ["untouchable until the round's end"],
     "sealed": ["armour +3, cooling stopped, 3 heat a turn"],
@@ -161,7 +162,6 @@ ENGINE_READERS = {
     "scorched": ["every weapon fired runs 1 hotter a stack this turn"],
     "disabled": ["the entry comes up blank"],
     "corrupted": ["each spend bites 3 a stack"],
-    "hot_streak": ["its shots run 1 hotter a stack this fight: the Kite's own price"],
     "heat": ["the overheat: hull one for one past the maximum"],
     "hull_damage": ["the injury roll at a quarter of maximum hull in one blow"],
     "kill": ["the slot clears: Direct opens on the foe behind (every weapon sets it)"],
@@ -250,7 +250,7 @@ class Map:
                 self.add(status.get("status"), "reads", dict(p, how="gated on it"))
             if f.get("consumes"):
                 self.add(f["consumes"], "reads", dict(p, how="consumes it"))
-            if int(f.get("strikes", 1) or 1) > 1 or f.get("reach") == "sweep" or f.get("spends_magazine"):
+            if int(f.get("strikes", 1) or 1) > 1:
                 self.add("flakked", "reads", dict(p, how="strikes"))
                 self.add("overcharged", "reads", dict(p, how="strikes"))
                 self.add("primed", "reads", dict(p, how="strikes"))
@@ -377,14 +377,14 @@ def render(m):
         if cur == "heat":
             set_text = "every weapon with heat (%d pieces); " % m.heat_guns + set_text
         L.append("| %s | %s | %s | %s |" % (label, side, set_text, "; ".join(engine + [word(e) for e in readers]) or "nothing"))
-        foe_laid = cur in ("scorched", "disabled", "corrupted", "burning_mech", "hot_streak")
+        foe_laid = cur in ("scorched", "disabled", "corrupted", "burning_mech")
         if (side == "on a foe" or side == "on a machine") and not foe_laid:
             if setters and not sl:
                 unique.append(label)
             if len(sl) == 1:
                 holes.append("**%s** has one slottable setter, %s." % (label, word(sl[0])))
             if not readers and cur not in ("suppressed", "webbed", "disrupt", "swap", "phased", "barrier", "ward", "sealed", "regenerating",
-                                           "rallied", "spun_up", "braced", "vitriol", "mine", "paradox", "lure", "retaliate"):
+                                           "rallied", "spun_up", "ricochet", "braced", "vitriol", "mine", "paradox", "lure", "retaliate"):
                 holes.append("**%s** is read by nothing but its own effect." % label)
     L.append("")
     L.append("Tags, by the slottable pieces that wear them (locked in brackets); nothing but the screen's lunge reads one:")

@@ -27,8 +27,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1155 tests, 364,716 checks, green on main (12 November, as `ccr-8af28d03-re9kz4` landed
-  with the Ammit's rework over Sapped, the Lance and the Wild Boar's and the Baboon's reworks).
+- Tests: 1158 tests, 364,834 checks, green on main (12 November, as `ccr-8af28d03-re9kz4` landed with the
+  Ammit's rework over the three fast flyers rebuilt, Sweep removed, the cooldown's count, Instant,
+  Sapped and the Wild Boar's and the Baboon's reworks).
   Before it, 1142 tests, 364,574 checks, green on `ccr-4d58b054-3lyj0a` (12 November, Sapped, the Lance,
   the Wild Boar's and the Baboon's reworks, with main's cooldown count, Rapid's switch-off and
   Instant taken in). 1132 tests, 364,475 checks, green on main (12 November, as `ccr-63a1309a-caa9mw` landed
@@ -59,10 +60,20 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 Everything is on main as of 12 November 2026; the formation and refit session's branch lands as it goes, below.
 `ccr-8af28d03-re9kz4`, the Ammit's rework of 12 November (How things stand below), cut from main at
-`87da46f`, took main at `8d936cf` in a merge (the bible, the rules, this file, the die entry's
-fields, the effects' helpers and the glyphs the conflicts, both sides kept; the bible's version
-main's plus one, the generated documents run again) and main took it as a fast-forward on Ryan's
-word ("Merge into main when you're done"); it is merged and to delete with the rest.
+`87da46f`, took main twice in merges, at `8d936cf` and at `84b3835` (the bible, the rules, this
+file, the measurements, the vocabulary, the die entry's fields, the effects' helpers, the
+validator, the glyphs and their table the conflicts, both sides kept; Hot Streak, gone with the
+Kite's rebuild, out of the Ammit's lines; the bible's version main's plus one, the generated
+documents run again) and main took it as a fast-forward on Ryan's word ("Merge into main when
+you're done"); it is merged and to delete with the rest.
+`ccr-e3ddf00b-ilkwbi`, the Kestrel fast flyers' session of 11 and 12 November (The design sessions, below),
+cut from main at `209112b`, took main four times in merges, the last at `8d936cf` (the cooldown's
+count, Instant, Sapped, the Wild Boar's and the Baboon's reworks: the engine's Rapid and Instant
+branch joined to the Needletail's turn, the validator, the bot, the rules, the bible, this file,
+the to-do and the generated vocabulary the conflicts, both sides kept): the Needletail, the Kite
+and the Skua rebuilt on placeholder numbers, Sweep removed with every branch it caused, the Whip
+Scorpion's release and the Musk Ox's salvo on every foe; main took it as a fast-forward on Ryan's
+word ("Merge into main and republish"), and it is merged and to delete with the rest.
 `ccr-63a1309a-caa9mw`, the cooldown's count, Rapid's own switch-off and Instant (12 November, How
 things stand below), cut from main at `fbce698`, took main at `243737d` in a merge (this file's
 tests line the one conflict, both landings kept) and main took it as a fast-forward on Ryan's word
@@ -252,9 +263,10 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   "Everything should be automatic in this game, I don't want extra controls"). The Whip
   Scorpion's rework is his of the same day and built (the bible's Whip Scorpion row, v0.527: the
   tier-two formation breaker; nothing cools it; a pass, a turn it ends with an entry it could
-  have spent, Sweeps the rank with the most foes as the enemy's turn ends, a shot of 2 for every
-  heat, the back on a tie, the blows it took banked on top; its locked ray the Buzzard's old
-  form on one foe), dealt again, its brief retired: `pass_sweep` a passive's rule, the release
+  have spent, opens its valves on every foe as the enemy's turn ends once it holds 8 heat, 1
+  each and 1 more for each heat over 8 (Ryan, 12 November, in place of a Sweep of the fuller
+  rank at a shot of 2 a heat), the blows it took banked on top; its locked ray the Buzzard's old
+  form on one foe), dealt again, its brief retired: `pass_release` a passive's rule, the release
   after the enemy's turn in the round and its forecast, the bot holding its die when the
   release beats its best spend, the screen playing the shots once the enemy's turn has (a first
   cut). Its locked piece is the Heliographic Death Ray (his keep of the name; id
@@ -323,6 +335,62 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   ("It needs something else"). Mastema's first round is unanswered; its tenth waits until its
   unrefined ideas settle (Ryan).
 - The roster's tasks, group by group, are the to-do's "The roster: ten a maker".
+- The Kestrel fast flyers, 11 November (`ccr-e3ddf00b-ilkwbi`; Ryan: "I want to revisit the Kite a
+  bit. Something about it feels clunky to me", then the Kite "from the ground up, ignoring target
+  tier and previous assumptions" and the three move-six flyers' identities under the long wall,
+  "what does what and why you'd want one over the other"). All three are built on his go
+  ("Yes build them with placeholder numbers"), each to be played (the to-do's Ryan list); the
+  map is at the head of `kestrel_line.md`. It landed on main 12 November on his word ("Merge into main and
+  republish"), main's work of those two days merged in (the Swoop printing no cooldown since, as
+  every Rapid piece: Rapid's own switch-off is its once a round by main's count). Sweep is gone on his word of 12 November ("let's remove it and clean up
+  all those exceptions and code branches that it caused"; the bible's Sweep row):
+  the reach, its spots and per-shot rules, the wasted shot and the rank's bracket, the bot's two
+  special paths and the salvo's routine; every weapon is one shape. Every Foe is a weapon's mode
+  too, for the Whip Scorpion's release (1 on every foe at 8 heat, 1 more for each heat over) and
+  the Musk Ox's salvo (a stand-in behind 8 ammo, its own session's), each foe struck as its own
+  target, so a Shock on any is doubled and spent. The Flechette Pod is four strikes of 1; Ricochet hits its weapon's target alone, his text of that day. A first direction on the placeholder
+  numbers is in `docs/measurements.md` (each alone on the patrols, 30 seeds, the old kit beside
+  the new): the Kite where it stood on its duels and a little dearer on packs rated for two, the
+  Skua's duels from five to fifteen rounds down to three or four, the Needletail alone a little
+  worse off without the Overcharge Coil. A probe of the old Kite's turns is in `docs/measurements.md` (its die opened
+  dark a round in five, its own heat cost it as much hull as the foes did, its reset fired under
+  once a fight). Where it stands:
+  - The Kite: built as his "Burst glass cannon" (the bible's Kite row, v0.532 on this branch,
+    unpublished). Four entries and no reset; every weapon doubled on an unhurt foe
+    (`target_unhurt`); the Pinion Driver the finisher, doubled on a foe at half its HP or less (a
+    component's `finisher`; Claude's form, his to move); a kill recharging its shield whole
+    (`refill_shield`); hull 12, shield 8 at a regen of 1. Both doubles read the foe's HP once a
+    hit, so a two-shot gun is doubled whole or not at all. Gone from content: the flat heat, the
+    dark rounds, Hot Streak, the d3 (the die's minimum is four again); the engine keeps Reset and
+    a passive's cooldown, which no piece prints. A Kite leaving a fight at its heat maximum he
+    declined (the bible's withdrawal row); Phased on a kill he kept for the shadow panther. The
+    model's third mount is ahead of the canopy, its gun sunk into the hull, the barrel out of a port
+    and clear in a trough (the port gun, a new variant of the barrel class: no block to show), a
+    launcher there the round rack,
+    and the tail segment's face behind the canopy is an air intake (his, 12 November). Its brief is retired; his play is the
+    to-do's.
+  - The Skua: built as his "Ramping Dakka" (the bible's Kestrel row). Its passive gains a stack of Ricochet the first time each round one of its
+    weapons damages a foe (the trigger `on_damage`; an effect's `once: round`, open to any effect
+    an event fires). Ricochet is a buff that lasts the fight: after each shot of a weapon a
+    strike of 1 more a stack at its target once the weapon's own strikes are done, with every
+    effect but its area; hull damage halves it, rounded down. Its lock is the
+    Hypersonic Swoop (a stack, Rapid, a cooldown of one). The Flechette Pod is an ordinary
+    tier-one weapon in its stock (four strikes of 1 since Sweep went), and the validator
+    lets a machine stock up to its own tier at one and two (the bible's tiers row, its
+    validator's half). The Split-cycle Breech is a module since 12 November (his: "Turn the skua
+    split strikes into a module"), Kestrel's, tier two for now.
+    The bot counts the bounces and values a stack at a flat guess. On screen, unjudged: each
+    bounce a quick beat of its own, "+N" in the die's passive box by a placeholder glyph. The
+    model: the Pod a rack on the belly mount, the spine's pods air intakes and the pod burst
+    act gone (his, 12 November). Its brief is
+    retired; his play is the to-do's.
+  - The Needletail: settled ("I agree with the Needletail, yes") and built on his go ("Yes build
+    them with placeholder numbers"): two things a round, a weapon and an equipment every round,
+    its die turning to a lit entry of the other kind (the static `one_of_each`; one entry to turn
+    to is no draw, the die showing it in its passive box; the bot weighs the second action; the
+    once-a-round gate that made equipment Rapid is gone from the engine). Its stock is the
+    Designator and three guns, so it marks every round. The chassis that orbits Exposed is one of
+    the two unspecced mediums. Its brief is retired; his play is the to-do's.
 
 ## How things stand
 
@@ -1151,7 +1219,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   a die in hand, the twenty-three tests moved onto it) and the Swap's gauges on the preview while
   it waits (Bug 16, the one visible change). Waits on Ryan's phone read of the Ability chips (the to-do).
 - **The spend's order and Sweep's columns** (7 November; the bible's section 5 Sweep, riders and
-  spend's order rows): a single-target weapon's hits, their riders, the death check, the spend's
+  spend's order rows; Sweep itself, its wasted shot and `RIFTGATE_MISS_DEBUG` went on 12 November,
+  the fast flyers' block above): a single-target weapon's hits, their riders, the death check, the spend's
   end, then what its kills bring back (a foe getting back up, a split's halves), so nothing a
   spend does meets them and a Purge on the killing hit keeps Undying down; Sweep a shot at each
   column, left to right, repeating, an empty column's shot wasted and a corpse taking its
@@ -1305,7 +1374,7 @@ dials (the to-do's Ryan list), and his answers to the brief's section 7, then th
 the component pass, the heat prices, the foes' numbers after his play, the bosses' stat
 blocks, what prices a round), the vocabulary, the rules and the rows. Then the long wall's other open item (the bible's section 12: the shell). Beside them, the rest of the skirmish code audit
 (`docs/skirmish_audit.md`; its questions answered and its bugs built 8 November; the Ammit's Tap
-is section 12's, its test the to-do's): its structural steps in order (step 3 built on
+settled by its rework of 12 November): its structural steps in order (step 3 built on
 `ccr-8df9952c-4cccdf`, the mine's half gone with the slot mines on 9 November; then the bot's
 and the screen's mirrors onto the engine,
 then a 30-seed direction; statuses as data, the Face, the dead code, each refactor checked by
@@ -1354,14 +1423,19 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. The live page is v0.538, dated 12 November (the
-  page's Version 509, published from main at `0d992f3` on Ryan's word, "Yes", to "The hangar and
-  the bible are both behind main now. Want me to republish them?": main's file whole, the live
-  v0.536 matching `fbce698`'s file byte for byte, and the page after matching the file; new since
-  508 `ccr-63a1309a-caa9mw`'s rows (the cooldown counted after its spend, Rapid's own switch-off,
+  `docs/design-bible.html` after every change. The live page is v0.547, dated 12 November (the
+  page's Version 510, published from main at `aac6bfc` on Ryan's word, "Merge into main and
+  republish": main's file whole, the live v0.538 matching `0d992f3`'s file byte for byte; new since
+  509 `ccr-e3ddf00b-ilkwbi`'s rows: the withdrawal row's call on a break-off for one machine, the
+  Kite's row rewritten, the Kestrel row's Needletail and Skua with Ricochet and the Split-cycle
+  Breech, the tiers row's stock rule, the Sweep row rewritten as its removal with the rows that
+  leaned on it, the Whip Scorpion's and the Musk Ox's rows, the looks row's Kite mount and intake,
+  and Ricochet and Finisher in the tables). Version 509 (main's `0d992f3`, on his "Yes" to "The
+  hangar and the bible are both behind main now. Want me to republish them?") was main's file
+  whole over the live v0.536: `ccr-63a1309a-caa9mw`'s rows (the cooldown counted after its spend, Rapid's own switch-off,
   Instant) and `ccr-4d58b054-3lyj0a`'s (the Stingray's Lance and Sapped, the Wild Boar's row in
   place of its spill's, the Baboon's row Decided, the debuff and keyword tables' Sapped, Sap and
-  Juggernaut Breach). Version 508 (main's `fbce698`, on his "Yes please") was main's file whole
+  Juggernaut Breach. Version 508 (main's `fbce698`, on his "Yes please") was main's file whole
   over the live v0.535: the batteries row's wells and the acts table's broadside drill and hatch
   wave. Version 507 (main's `3d5f98f`, on his
   "Republish please") was main's file whole over the live v0.534: the Clydesdale's cell in the acts
@@ -1373,10 +1447,10 @@ commands are in `README.md`.
   (Version 504, main's `60a0e4d`), which matched that commit's file; new since 504 the pacing row in beats of the tide,
   menace a pack's threat rating and the rows that follow it, the Whip Scorpion's rework, the
   hardpoints row with every stock gun its class, the Clydesdale's batteries row and its square
-  ports, and Changed Over in the buff table). BASE for the next merge is `0d992f3`'s file. Main's
-  file is v0.539 since the Ammit's rework landed (12 November), not published: its Ammit row, the
-  Empowered, purge and store rows, section 12 without the Tap's question, and Souls and Pinned
-  Empowered in the tables; it goes up on Ryan's word. The
+  ports, and Changed Over in the buff table). BASE for the next merge is `aac6bfc`'s file. Main's
+  file is v0.548 since the Ammit's rework landed (12 November), not published: its Ammit row, the
+  Empowered, purge, store and Ability rows, section 12 without the Tap's question, and Souls and
+  Pinned Empowered in the tables; it goes up on Ryan's word. The
   live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
@@ -1393,7 +1467,17 @@ commands are in `README.md`.
   main since the Ammit's rework landed (12 November, not published; its `text` collection read
   that day and empty) by the three content files, the Ammit's rig sidecar (the Siphon's firing
   slice) and `text.json`, where its drafts wait to be seen; they go up on Ryan's word. At the
-  page's Version 232 (12 November, main's `3e6912e`, on Ryan's word, "Yes"): the thirteen files
+  page's Version 233 (12 November, main's `aac6bfc`, on Ryan's word, "Merge into main and
+  republish"): the twenty-two files moved since 232 (four content files with the three fast
+  flyers, Ricochet, the Breech and Sweep's removal; the Kite's and the Skua's models and rigs;
+  `pins.json`, `shapes.json` and `muzzles.json` with the Kite's third mount and the port gun; the
+  Kite's and the Skua's renders, the old ones their before, and `renders.json`; `designs.json`
+  without the three flyers' briefs; `text.json`), nine new (the port gun in five metals and its
+  fire, its picture, the Kite's port with a gun and with a round rack) and two removed (the Skua's
+  old pictures from above and of its strafing run), the page unchanged, every live copy matching
+  232's build before it was replaced (`designs.json` and `text.json` but for their stamp) and
+  main's after. `edits` and `text` empty, `designs` the two folded ideas. Version 232 (12
+  November, main's `3e6912e`, on Ryan's word, "Yes") was the thirteen files
   moved since 231 (the three content files with the cooldown's count, Instant, Sapped, the Lance,
   the Wild Boar's and the Baboon's reworks; the Baboon's model, rig and pins, its four mounts and
   the backpack's two locked pieces; its renders, the stock rebuild's its before, and

@@ -56,6 +56,7 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("vents_all", "Vents all", lambda f: bool(f.get("vents_all"))),
            ("kill_overcharge", "Empowered a kill", lambda f: int(f.get("devours", 0) or 0) > 0),   # Overcharged is Empowered since 3 November
            ("power_per_missing", "Grows with missing HP", lambda f: int(f.get("power_per_missing", 0)) > 0),
+           ("finisher", "Finisher", lambda f: int(f.get("finisher", 0) or 0) > 1),
            ("gated", "Gated", lambda f: bool(f.get("gates"))),
            ("consumes", "Consumes", lambda f: bool(f.get("consumes")) or bool(f.get("spends"))),   # a weapon's on its target, or equipment's of its own machine's count (the Soul Siphon)
            ("self_burn", "Burns its firer", lambda f: int(f.get("self_burn", 0) or 0) > 0),
@@ -176,7 +177,7 @@ def tally(words):
             if eff.get("when") == "nth_shot" and not counted:   # a rule on every n-th shot keeps the count
                 t.grant("shots", "machine", label, how, planned, who=who)
                 counted = True
-            if eff.get("when") == "setup_once":   # a grant once a round marks the round's turn spent (the Needletail's gate)
+            if e == "one_of_each":   # two things a round marks the round's turn spent (the Needletail's relay)
                 t.grant("quick_turned", "machine", label, how, planned, who=who)
             if e == "grant_keyword":
                 t.count(str(eff.get("value")), "passive", planned)

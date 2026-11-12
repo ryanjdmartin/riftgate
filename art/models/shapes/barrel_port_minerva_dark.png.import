@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://co1bqg7wi6jsi"
-path="res://.godot/imported/skua_ember.png-c1c1698f7730015d1a7514d45fb482cf.ctex"
+uid="uid://dioowsbs8wu7r"
+path="res://.godot/imported/barrel_port_minerva_dark.png-4c9bcca2fbaa63592fdc3b10b5419076.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "667f2ace7758b94dc7f6d76a39ee4612"
+"md5": "e53315c554f5108e8f75617daf6d6c66"
 }
 
 [deps]
 
-source_file="res://art/models/skua_ember.png"
-dest_files=["res://.godot/imported/skua_ember.png-c1c1698f7730015d1a7514d45fb482cf.ctex"]
+source_file="res://art/models/shapes/barrel_port_minerva_dark.png"
+dest_files=["res://.godot/imported/barrel_port_minerva_dark.png-4c9bcca2fbaa63592fdc3b10b5419076.ctex"]
 
 [params]
 

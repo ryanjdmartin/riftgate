@@ -286,7 +286,11 @@ machine's level, and three things his later rounds opened:
    machine may now stock them, so no team needs Sweep to have area: his "my team had no aoe" was
    the stock rule's. Claude's lean: the Pod stays the Skua's, an exclusive by his own test and
    glue besides (the Breech has a clause written for Sweep); a slottable Sweep of another flavour
-   is the component pass's to add and takes nothing from it.
+   is the component pass's to add and takes nothing from it. **Answered 11 November**, in the
+   Skua's rewrite (the bible's Kestrel row): "Flechette gun - unlocked but still slotted", its
+   lock the Hypersonic Swoop and the Breech gone, so the Pod is an ordinary tier-one weapon and
+   the tables' rows for it below read the piece as it was. Sweep itself went on 12 November
+   (the bible's Sweep row), and the Pod is four strikes of 1.
 3. **The Dingo.** Claude's lean: all in on the Translocator, the game's one Swap, with the
    Harpoon's Shock kept as what the swap leaves on the foes it moves if he wants the pin to
    survive; a session of its own, since "what a build on it would look like" is the question he

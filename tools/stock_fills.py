@@ -207,7 +207,6 @@ s = status_value(s, 'vitriol', 'tick_hp_share', 10)
 s = status_value(s, 'kindled', 'add_attack', 2)
 s = status_value(s, 'siphoning', 'heat_per_blow', 2)
 s = status_value(s, 'spun_up', 'add_damage', 2)
-s = status_value(s, 'hot_streak', 'add_heat', 1)
 s = status_value(s, 'cryoed', 'cool_hitter', 2)       # Cryo's cooling, a field on its status since 22 October
 s = status_value(s, 'corrupted', 'corrupt_bite', 3)   # Corrupted's bite, likewise
 open(R + 'sim/effects.gd', 'w', encoding='utf-8').write(s)

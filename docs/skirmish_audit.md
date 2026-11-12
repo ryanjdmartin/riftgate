@@ -33,8 +33,8 @@ the Musk Ox reloads once, the greater; a countdown shows what it would deal now;
 are queued at the spend's start, a pair's halves a spot each. Bugs 5 and 6 went further than
 their fix: "A stack is a stack, doesn't matter where it came from" retired the purge by source
 and its sleep whole, and a unit's own mechanic became an Ability that no purge touches; the
-Ammit's Quintessence Tap, which keeps its Empowered from a Purge, is a question in the bible's
-section 12. 15's
+Ammit's Quintessence Tap, which kept its Empowered from a Purge, was a question in the bible's
+section 12 until its rework of 12 November settled it (the bible's Ammit row). 15's
 rally worth is fixed; the bot's other readings wait for the bot's step below, and Bug 16 goes
 with Structure 3. All of it landed on main on 8 November (Ryan: "If there's nothing else open,
 clean up and merge into main"); what is left is Structure, the Unused list and the comments,
