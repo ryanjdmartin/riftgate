@@ -256,9 +256,12 @@ def kite(b):
     tapering into the drum, the barrel out of the inlet's centre, its muzzle lit; each fires one of the Driver's two shots. The nose mounts either
     side of the nosecone, hp_1 the stock's Transonic Rifle as its class, hp_2 bare, at half scale,
     the machine being small; hp_3, bare, ahead of the canopy on the centreline, inset: its gun
-    lies sunk in a trough cut down the nose's spine, the barrel showing as the nose falls away
+    is sunk level into the hull under the canopy's front, its mount block hidden inside, and the
+    barrel comes out of a port into a short trough whose floor ramps up to the nose's surface
     (Ryan, 12 November: "in front of the canopy, but inset, like the polar bear - so some of the
-    barrel pokes out through a cut channel. Doesn't retract or anything").
+    barrel pokes out through a cut channel. Doesn't retract or anything"; then "sink it
+    horizontally into the hull more, so the actual mount block is hidden, and don't cut a
+    channel all the way down the nose").
     The tail segment's flat face behind the canopy is an air intake, a dark mouth in a steel lip
     (the same day: "Can the flat face behind the canopy also get an intake treatment?")."""
     # Fuselage: one piece, a six-sided section lofted from a needle nose to a broad rear.
@@ -278,15 +281,18 @@ def kite(b):
             b.pad("hp_2", (s * 4.5, 30.0, -1.0), scale=0.5, size=(3.0, 1.0))
     # The third mount (its fourth entry, Ryan, 11 November: "giving it 4 faces again"), ahead of
     # the canopy and inset (the 12th: "like the polar bear - so some of the barrel pokes out
-    # through a cut channel. Doesn't retract or anything"): a well for the breech cut into the
-    # nose's spine and a trough running forward from it, real hollows (b.cut_box), a level gun
-    # lying in them so its barrel rises out of the hull as the nose tapers. A class wider than
-    # the stock gun sits smaller to pass the well (NOSE_FITS).
-    GZ = 3.8   # the gun's line, level, under the spine at the canopy and over it by the muzzle
-    NOSE_FITS = {"twin_barrel": 0.6, "rack": 0.5, "dish": 0.6, "blade": 0.7}
-    b.cut_box([fuselage], -2.3, 2.3, 3.6, 9.8, GZ - 2.3, 9.0)
-    b.cut_box([fuselage], -1.8, 1.8, 9.6, 34.0, GZ - 1.8, 9.0)
-    b.pin("hp_3", (0.0, 6.0, GZ), scale=0.5, carries="", fits=NOSE_FITS)
+    # through a cut channel"; "sink it horizontally into the hull more, so the actual mount
+    # block is hidden, and don't cut a channel all the way down the nose"): the gun lies level
+    # with its block inside the hull under the canopy's front, and its barrel comes out of a
+    # port, the back wall of a short trough cut into the spine (a real hollow, b.cut_hull) whose
+    # floor ramps up to meet the surface a little past the muzzle, so the bore's line runs clear.
+    # Fixed: no joint. A class that is no barrel sits smaller and forward so it shows in the
+    # trough (NOSE_FITS; guesses nobody has judged fitted).
+    GZ = 3.6               # the gun's line: its block and sight under the hull's top back here
+    PORT, RUN = 3.0, 18.0  # the port's wall, and where the trough's floor meets the surface
+    NOSE_FITS = {"twin_barrel": 0.7, "rack": ("rack", 0.5, -7.6), "dish": ("dish", 0.6, -6.0), "blade": 0.7}
+    b.cut_hull([fuselage], [(x, y, z) for x in (-1.8, 1.8) for (y, z) in ((PORT, GZ - 1.8), (PORT, 9.0), (RUN, 9.0), (RUN, 3.75))])
+    b.pin("hp_3", (0.0, -2.0, GZ), scale=0.5, carries="", fits=NOSE_FITS)
     # Canopy: far back, low, faired into the spine rather than a bubble.
     b.loft([(-2.0, hexagon(0.0, 6.2, 7.0, 0.5)), (-10.0, hexagon(0.0, 7.4, 9.0, 3.0)),
             (-18.0, hexagon(0.0, 7.5, 9.0, 3.2)), (-26.0, hexagon(0.0, 7.2, 9.0, 3.0))], "glass.glass", "canopy")

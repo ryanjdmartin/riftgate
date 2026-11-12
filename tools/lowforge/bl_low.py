@@ -635,6 +635,21 @@ class Build:
         self.cuts.append((list(targets), cutter))
         return cutter
 
+    def cut_hull(self, targets, points):
+        """The convex hull of `points` subtracted from `targets` before export: a pocket of any
+        convex shape, such as a trough whose floor ramps up to meet the surface (the Kite's
+        gun port, 12 November)."""
+        bm = bmesh.new()
+        vs = [bm.verts.new(v) for v in points]
+        bmesh.ops.convex_hull(bm, input=vs)
+        bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+        mesh = bpy.data.meshes.new("cutter")
+        bm.to_mesh(mesh)
+        bm.free()
+        cutter = bpy.data.objects.new("cutter", mesh)
+        bpy.context.scene.collection.objects.link(cutter)
+        self.cuts.append((list(targets), cutter))
+
     def cut_box(self, targets, x0, x1, y0, y1, z0, z1):
         """A box subtracted from `targets` before export: a shallow one makes a pocket in
         a surface (a vent cut into a fairing), a deep one a hole."""
