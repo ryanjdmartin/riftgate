@@ -36,7 +36,7 @@ enum Reach { NONE, DIRECT, INDIRECT, SWEEP, EVERY_FOE }   # Sweep (Ryan, 3 Novem
 ## team, its own machine among them, or every machine but its own, the Mooring Screens'; Ryan:
 ## "the difference is whether the center one is lit or not, its two modes"). `reaches_all` reads
 ## any of them.
-enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB, CRYO, FLAK, SWAP, EXPOSE, BREACH, SPLASH, DISPEL }
+enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB, CRYO, FLAK, SWAP, EXPOSE, BREACH, SPLASH, DISPEL, SAP }
 ## Whom a component may be spent on (Ryan, 26 September): an attack (a weapon or a debuff)
 ## targets foes; a shield, a vent or a buff targets self and allies by default, and content may
 ## narrow one to self only or allies only, so the design space stays open; Every Ally and Every
@@ -57,7 +57,7 @@ const KEYWORD_NAMES := {
 	Keyword.SPILLOVER: "spillover", Keyword.OVERSHIELD: "overshield", Keyword.SHOCK: "shock",
 	Keyword.WEB: "web", Keyword.CRYO: "cryo", Keyword.FLAK: "flak", Keyword.SWAP: "swap",
 	Keyword.EXPOSE: "expose", Keyword.BREACH: "breach", Keyword.SPLASH: "splash",
-	Keyword.DISPEL: "dispel",
+	Keyword.DISPEL: "dispel", Keyword.SAP: "sap",
 }
 ## What the player reads where it differs from the content id (the vocabulary's name).
 ## Purge (28 October) is one id on both sides, dispel, as breach is.
@@ -66,7 +66,7 @@ const KEYWORD_LABELS := { Keyword.CLEAVE: "spread", Keyword.DISPEL: "purge" }
 ## keyword as what the spend applies on hit, after its heat (Ryan, 25 October).
 const KEYWORD_STATUS := {
 	Keyword.BURN: "burning", Keyword.CRYO: "cryoed", Keyword.FLAK: "flakked", Keyword.SHOCK: "shocked",
-	Keyword.SUPPRESS: "suppressed", Keyword.WEB: "webbed", Keyword.EXPOSE: "exposure",
+	Keyword.SUPPRESS: "suppressed", Keyword.WEB: "webbed", Keyword.EXPOSE: "exposure", Keyword.SAP: "sapped",
 }
 ## The keywords that carry a number, each in the field of its name on the entry: the stacks a
 ## rider lays (Burn, Cryo, Flak), the blow an area keyword deals each foe past the target
@@ -75,7 +75,7 @@ const KEYWORD_STATUS := {
 const NUMBER_FIELDS := {
 	Keyword.BURN: "burn", Keyword.CRYO: "cryo", Keyword.FLAK: "flak",
 	Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate", Keyword.SPLASH: "splash",
-	Keyword.CHAIN: "chain", Keyword.DISPEL: "dispel",
+	Keyword.CHAIN: "chain", Keyword.DISPEL: "dispel", Keyword.SAP: "sap",
 }
 ## The area keywords (Ryan, 11 and 12 October: three shapes, three keywords; numbered 28 October).
 const AREA_KEYWORDS := [Keyword.CLEAVE, Keyword.PENETRATE, Keyword.SPLASH]
@@ -114,6 +114,8 @@ var heat: int = 0
 var strikes: int = 1          # blows per use: a rapid-fire weapon lands many small hits (each rolls and procs on its own)
 var burn: int = 0             # an attack with Burn: the stacks of Burning each blow leaves (Ryan, 18 October: a numbered keyword, never read off the damage)
 var cryo: int = 0             # an attack with Cryo: the stacks of Cryo each foe it reaches gains (the Cryo Flinger, 20 October; a numbered keyword like Burn)
+var sap: int = 0              # an attack with Sap: the stacks of Sapped each foe hit gains (the Baboon's Redshift Emitter, 11 November; numbered like Flak)
+var disrupts_attackers: bool = false   # a buff: every foe aiming at the machine it lands on is Disrupted (the Baboon's Retrocausal Shroud, 11 November)
 var flak: int = 0             # an attack with Flak: the stacks of Flak each foe hit gains (the Flakshot Repeater, 21 October; numbered like Burn)
 var cleave: int = 0           # an attack with Spread: the number each foe beside its target in its rank takes as its blow's (Ryan, 28 October: Spread N, the half retired)
 var penetrate: int = 0        # an attack with Penetrate: the number the other rank of its target's column takes (Penetrate N)
@@ -331,6 +333,7 @@ static func from_dict(d: Dictionary) -> Face:
 		f.buff_status = str(d.get("status", ""))
 		f.buff_stacks = maxi(1, int(d.get("stacks", 1)))
 		f.buff_rounds = maxi(1, int(d.get("rounds", 1)))
+		f.disrupts_attackers = bool(d.get("disrupts_attackers", false))
 		var front = d.get("in_front", {})
 		if front is Dictionary and not front.is_empty():
 			f.front_status = str(front.get("status", ""))
@@ -350,6 +353,7 @@ static func from_dict(d: Dictionary) -> Face:
 		f.burn = maxi(0, int(d.get("burn", 0)))   # add_keyword gives a Burn entry one stack when it says none
 		f.cryo = maxi(0, int(d.get("cryo", 0)))
 		f.flak = maxi(0, int(d.get("flak", 0)))
+		f.sap = maxi(0, int(d.get("sap", 0)))
 		f.cleave = maxi(0, int(d.get("cleave", 0)))   # add_keyword gives an area keyword a number of one when it says none
 		f.penetrate = maxi(0, int(d.get("penetrate", 0)))
 		f.splash = maxi(0, int(d.get("splash", 0)))
@@ -440,6 +444,10 @@ func to_dict() -> Dictionary:
 		d["cryo"] = cryo
 	if flak > 0 and has(Keyword.FLAK):
 		d["flak"] = flak
+	if sap > 0 and has(Keyword.SAP):
+		d["sap"] = sap
+	if disrupts_attackers:
+		d["disrupts_attackers"] = true
 	if not is_debuff():
 		for kw in AREA_KEYWORDS:
 			if has(kw) and number_of(kw) > 0:
@@ -524,6 +532,8 @@ func add_keyword(kw: int) -> void:
 		cryo = 1
 	if kw == Keyword.FLAK and flak <= 0:
 		flak = 1
+	if kw == Keyword.SAP and sap <= 0:
+		sap = 1
 	if kw == Keyword.DISPEL and dispel <= 0:
 		dispel = 1   # Purge says its number; one when nothing says
 	if (AREA_KEYWORDS.has(kw) or kw == Keyword.CHAIN) and int(get(NUMBER_FIELDS[kw])) <= 0:
@@ -587,7 +597,7 @@ func cooldown_rounds() -> int:
 ## prints with its shells (Ryan, 2 November), and a shield's cooling the number under its steam
 ## (3 November), so none of them is.
 func has_unique_rule() -> bool:
-	return vents_all or power_per_missing > 0 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or self_burn > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() or not printed.is_empty() \
+	return vents_all or power_per_missing > 0 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_burn > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() or not printed.is_empty() \
 		or spins or turns_die or heat_per_blow > 0 or resets_on_kill or gathers_mines or detonates \
 		or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine \
@@ -696,6 +706,8 @@ func duplicate_face() -> Face:
 	f.burn = burn
 	f.cryo = cryo
 	f.flak = flak
+	f.sap = sap
+	f.disrupts_attackers = disrupts_attackers
 	f.cleave = cleave
 	f.penetrate = penetrate
 	f.splash = splash
@@ -882,6 +894,8 @@ func rule_phrases() -> Array[String]:
 			out.append("its die rolls again")
 		if not front_status.is_empty():
 			out.append(front_text())
+		if disrupts_attackers:
+			out.append(DISRUPTS_TEXT)
 	out.append_array(_spin_phrases())
 	if not charged.is_empty():
 		out.append("%s: %s" % [charge_cost_text(), charged_form().describe()])
@@ -890,6 +904,10 @@ func rule_phrases() -> Array[String]:
 
 ## The Petrels' rules as the entry's text says them (built 30 October): the Salvo's kill rider,
 ## the Regenerator's rider on its own spender, the Booster's price for an ally's action.
+## The Retrocausal Shroud's rule as its text says it.
+const DISRUPTS_TEXT := "disrupts the foes aiming at it"
+
+
 ## What an entry lays on the foe in front of the machine it lands on, as its text says it.
 func front_text() -> String:
 	return "the foe in front of it gains %s ×%d" % [str(Effects.STATUS.get(front_status, {}).get("name", front_status)), front_stacks]
@@ -939,6 +957,8 @@ func describe() -> String:
 				s = "an ally whose die is spent acts again"
 			elif kind == Kind.BUFF and turns_die:
 				s = "turns its die to its other battery"   # the Changeover's: a buff that grants nothing, its turn its whole effect
+			elif kind == Kind.BUFF and buff_status.is_empty():
+				s = ""   # a buff that grants nothing (the Retrocausal Shroud): its keywords and its rule say what it does
 			elif kind == Kind.BUFF:
 				var status_name := str(Effects.STATUS.get(buff_status, {}).get("name", buff_status))
 				s = "%s ×%d" % [status_name, buff_stacks]
@@ -967,6 +987,8 @@ func describe() -> String:
 				s += " its die rolls again"   # the Reheat Uplink's roll on the machine it lands on
 			if not front_status.is_empty():
 				s += " " + front_text()   # the Photosphere Lance's: the foe in front of the machine it lands on
+			if disrupts_attackers:
+				s += " " + DISRUPTS_TEXT   # the Retrocausal Shroud's: the foes aiming at the machine it lands on
 			if braces > 0:
 				s += " braces" + ("" if braces == 1 else " ×%d" % braces)
 			if not rolls_again_on.is_empty():
@@ -992,6 +1014,8 @@ func describe() -> String:
 					s += " %d" % cryo
 				if k == Keyword.FLAK:
 					s += " %d" % flak
+				if k == Keyword.SAP:
+					s += " %d" % sap
 				if k == Keyword.DISPEL:
 					s += " %d" % maxi(1, dispel)   # Purge N: the stacks it takes off each buff (the audit's thirteenth bug, 8 November)
 				if (AREA_KEYWORDS.has(k) or k == Keyword.CHAIN) and not is_debuff():

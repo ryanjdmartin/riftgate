@@ -1445,6 +1445,12 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	if fd.has("cryo") and not Array(fd.get("keywords", [])).has("cryo"):
 		errs.append("%s: cryo (the stacks) rides with the Cryo keyword" % where)
 	# And Flak (21 October): the stacks each foe hit gains.
+	if Array(fd.get("keywords", [])).has("sap") and int(fd.get("sap", 0)) <= 0:
+		errs.append("%s: Sap needs its number: the stacks of Sapped each foe hit gains" % where)
+	if fd.has("sap") and not Array(fd.get("keywords", [])).has("sap"):
+		errs.append("%s: sap is the Sap keyword's number: the entry needs the keyword" % where)
+	if fd.has("disrupts_attackers") and kind != "buff":
+		errs.append("%s: disrupts_attackers is a buff's: every foe aiming at the machine it lands on is Disrupted" % where)
 	if Array(fd.get("keywords", [])).has("flak") and int(fd.get("flak", 0)) <= 0:
 		errs.append("%s: an entry with Flak says its stacks: flak, a positive number" % where)
 	if fd.has("flak") and not Array(fd.get("keywords", [])).has("flak"):
@@ -1654,7 +1660,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: rolls_target (true) is a buff's: the die of the machine it lands on rolls again" % where)
 	if fd.has("kill_rerolls") and (kind != "attack" or int(fd["kill_rerolls"]) <= 0):
 		errs.append("%s: kill_rerolls is an attack's: the rerolls a kill brings the team, a positive number" % where)
-	if kind == "buff" and not bool(fd.get("turns_die", false)):
+	if kind == "buff" and not bool(fd.get("turns_die", false)) and not (bool(fd.get("disrupts_attackers", false)) and not fd.has("status")):
 		# A buff grants one of the machines' statuses (the Changeover grants none: its rule is the
 		# turn of a folded die): it must exist and be theirs. A planned
 		# component may grant a machine status the vocabulary names but the engine lacks (the
@@ -1800,6 +1806,8 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 		# every spend aimed at a foe leaves, a whole number, 1 or more.
 		if effect == "mine_on_spend" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 1 or float(eff["value"]) != floorf(float(eff["value"]))):
 			errs.append("%s: mine_on_spend is the Mine's flat damage a spend: a whole number, 1 or more" % where)
+		if effect == "shove_behind" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 1 or int(eff["value"]) > 100 or float(eff["value"]) != floorf(float(eff["value"]))):
+			errs.append("%s: shove_behind is the share of a front foe's maximum HP its damaging blow drives into the foe behind, in percent: a whole number, 1 to 100" % where)
 		if effect == "pass_sweep" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 1 or float(eff["value"]) != floorf(float(eff["value"]))):
 			errs.append("%s: pass_sweep is the damage of each shot a passed turn fires for its heat: a whole number, 1 or more" % where)
 		if effect == "vent_blast" and float(eff.get("value", 0)) <= 0.0:

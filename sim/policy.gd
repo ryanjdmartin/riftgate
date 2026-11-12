@@ -582,6 +582,12 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		for foe in sk.reached_by(f, target):
 			if foe == target or foe.alive():
 				score += purge_worth(sk, ms, f, foe, (1.0 - p_kill) if foe == target else 1.0)
+	# Sap (the Baboon's Redshift Emitter, 11 November): each foe reached that is to strike this round
+	# strikes a point lower a stack, never below nothing.
+	if f.has(Face.Keyword.SAP):
+		for foe in sk.reached_by(f, target):
+			if foe.alive() and foe.attacks() and not foe.is_suppressed():
+				score += float(mini(sk.foe_blow(foe), f.sap) * foe.strikes()) * HULL_WEIGHT
 	# Flak (21 October): a point a stack on every team blow each foe reached takes while the
 	# stacks last on their clock, damage in hand for the team's blows (flak_score).
 	if f.has(Face.Keyword.FLAK):
@@ -679,6 +685,14 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	score -= heat_cost(sk, ms, f)
 	if not f.is_weapon():
 		score -= rage_cost(sk)   # a debuff is equipment, and feeds a raging foe (3 November)
+	# The Juggernaut Drive (the Wild Boar's, 11 November): a damaging blow on a front-rank foe drives
+	# a share of its maximum HP into the foe behind it, capped at what that foe has left; the
+	# target's alone, a placeholder read as every weight is.
+	var pct := Effects.shove_share(ms.unit)
+	if pct > 0 and f.is_weapon() and target.rank == 0 and not target.is_massive():
+		var back := sk.foe_at(1, target.column)
+		if back != null and back.alive() and expected_damage(ms, f, target) > 0.0:
+			score += minf(float(back.hp), float(ceili(float(target.hp_max) * float(pct) / 100.0)))
 	return score - volatile_cost(sk, ms, f) - cooldown_cost(ms, f, score)
 
 
@@ -1324,6 +1338,10 @@ func machine_spend_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.Mec
 				score += seal_score(sk, ms)   # a buff on itself seals a machine with a seal (the Polar Bear's Lockdown)
 	if f.has(Face.Keyword.CLEANSE):
 		score += cleanse_score(sk, who)
+	# The Retrocausal Shroud (the Baboon's, 11 November): every foe aiming at the machine Disrupted.
+	if f.disrupts_attackers:
+		for foe in sk.acting_on(who):
+			score += disrupt_score(sk, foe)
 	# The Forge's reloads (the Musk Ox's): the entry's own, else a vent's or a shield's on itself,
 	# as far as the magazine has room; and a printed heat's price on the low heat bar.
 	if ms.ammo_max > 0:
@@ -1767,9 +1785,9 @@ func buff_score(sk: Skirmish, who: Skirmish.MechState, f: Face) -> float:
 			score += phased_score(sk, who)
 		"rallied":
 			score += REROLL_SHARE * _team_raw_attack_mean(sk) * float(n)   # a team reroll more this round
-	# The foe in front (the Photosphere Lance's Weakened, 11 November): its blows this round a
+	# The foe in front (the Photosphere Lance's Sapped, 11 November): its blows this round a
 	# point lower a stack on each strike, never more than the blow, if it is to strike at all.
-	if f.front_status == "weakened":
+	if f.front_status == "sapped":
 		var foe := sk.foe_in_front(who)
 		if foe != null and foe.attacks() and not foe.is_suppressed():
 			score += float(mini(sk.foe_blow(foe), f.front_stacks) * foe.strikes()) * HULL_WEIGHT

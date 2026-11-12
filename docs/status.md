@@ -27,7 +27,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1132 tests, 363,473 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
+- Tests: 1142 tests, 363,563 checks, green on `ccr-4d58b054-3lyj0a` (11 November, Sapped, the Lance,
+  the Wild Boar's and the Baboon's reworks). Before it, 1132 tests, 363,473 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
   with the Dingo's pieces, the pins and the Flakshot Repeater over the Clydesdale's review). Before it,
   1123 tests, 362,685 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed
   with the Whip Scorpion's rework over the formation and refit session's landing). Before it,
@@ -258,12 +259,15 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   section 4. The Dingo's is settled and built (11 November, the bible's Dingo row: Shock on the
   Translocator, the harpoon the Hollow-point Harpoon, a Flak and a pin on its target's Flak for
   the round, Pinned a status of its own with Burning's beside it), the Prairie Dog's Flakshot
-  Repeater (Flak 2 on a cooldown of 1) and the Stingray's Photosphere Lance (support, no damage:
-  on itself or an ally, Empowered there and Weakened, coded in for either side, on the foe in
-  front of it, the squad's spots one rule in the sim the screen draws by); the Plow and the
-  Boar's passive have a direction (the bulldozer in Spillover's place), and the Solar Flare Array
-  goes with the Baboon's rework, its session under way (11 November); the Skua with the Pod's
-  lock is a session of his own. A branch's shape is settled
+  Repeater (Flak 2 on a cooldown of 1), the Stingray's Photosphere Lance (support, no damage: on
+  itself or an ally, Empowered there and Sapped, his name, on the foe in front of it, the squad's
+  spots one rule in the sim the screen draws by; Sapped coded in for either side, until after its
+  carrier's next turn), the Wild Boar's (the Plow a Cleanse and a Barrier on itself; its
+  Juggernaut Drive a quarter of each damaged front foe's maximum HP into the foe behind, and
+  Juggernaut Breach after a Barrier) and the Baboon's rework (a Paradox for every debuff stack,
+  five Suppressing; the Retrocausal Shroud and the Redshift Emitter, Sap a new keyword, on its
+  backpack's pods; four hardpoints; the Solar Flare Array parked), all built 11 November; the
+  Skua with the Pod's lock is a session of his own. A branch's shape is settled
   (two directions two steps deep, the second pick the deeper step or the one skipped). Every rework in design sorts its pieces on this footing.
 - Kestrel: ten machines, eight decided, in content and fielded (the bible's Kestrel row; the hub
   `docs/briefs/kestrel_line.md`); the Puffin back in design (`kestrel_puffin.md`). The Magpie (a
@@ -285,8 +289,8 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   his new direction of 5 November (no free Cryo, a locked piece that detonates it, the Arsenal's
   frost figure merged in), a first round on it owed. The Polar Bear is dealt again with its new
   seal trigger (11 November), its play his.
-- Aphelion: the line frame and the Baboon first (the pair that keeps its tier-one deal varied),
-  then the jellyfish; the Carrier on its own. Ryan's ideas of 4 November wait on his marks, each
+- Aphelion: the line frame first, the Baboon's rework built (11 November, its tier and the
+  Stingray's placed later), then the jellyfish; the Carrier on its own. Ryan's ideas of 4 November wait on his marks, each
   in its brief: Static, the Barrier and Ward support (the defensive tier one), the Macross
   flagship, the time-shifter kept unrefined; the jellyfish took his new direction of 5 November
   (the status payoff carry, no weapons), a first round on it owed; one slot open, the Zoids

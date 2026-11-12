@@ -1668,7 +1668,6 @@ func test_a_brace_is_a_positive_number_of_stacks() -> void:
 	# may brace; nothing braces for zero.
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	assert_true(int(db.components["breaching_plow"]["face"].get("braces", 0)) > 0, "the plow braces")
 	var plate: Dictionary = _piece(db, "laminar_deflector")
 	plate["face"]["braces"] = 0
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)

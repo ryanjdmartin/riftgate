@@ -2829,17 +2829,17 @@ func test_a_passed_turns_release_plays_after_the_enemy_turn() -> void:
 	s.free()
 
 
-## Weakened wears a chip of its own on the foe (11 November): the blade and the arrow down, its
+## Sapped wears a chip of its own on the foe (11 November): the blade and the arrow down, its
 ## stacks as the blow it takes off.
-func test_a_weakened_foe_wears_its_chip() -> void:
+func test_a_sapped_foe_wears_its_chip() -> void:
 	var s := _screen(5)
 	var foe: Foe = s.sk.front[0]
 	var gained := {}
 	var turned := {}
-	s.sk._land_rider(foe, "weakened", 2, gained, turned)
+	s.sk._land_rider(foe, "sapped", 2, gained, turned)
 	var found := false
 	for r in s._foe_rows(foe):
-		if r is Array and r.size() >= 3 and str(r[0]) == "weaken" and str(r[1]) == "-2":
+		if r is Array and r.size() >= 3 and str(r[0]) == "sap" and str(r[1]) == "-2":
 			found = true
-	assert_true(found, "the chip: the weaken glyph and -2")
+	assert_true(found, "the chip: the sap glyph and -2")
 	s.free()

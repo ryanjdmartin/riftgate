@@ -350,6 +350,32 @@
    }
   },
   {
+   "id": "sap",
+   "category": "keyword",
+   "name": "Sap",
+   "codex": "Sap N: each foe hit gains N stacks of Sapped a strike, laid once the strikes are done, so no strike of the spend feeds on what it lays.",
+   "status": "implemented",
+   "design": {
+    "holes": "The keyword that lays Ryan's Sapped (11 November), first on the Baboon's Redshift Emitter."
+   }
+  },
+  {
+   "id": "juggernaut_breach",
+   "category": "status",
+   "name": "Juggernaut Breach",
+   "codex": "Machine status, the Wild Boar's. Its next weapon attack gains Breach, and that attack lifts it; equipment leaves it standing. Gained with a Barrier; one at a time. A purge takes it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 11 November: \"After gaining Barrier, its next weapon attack gains Breach. The next attack breach will need to be represented by a purgeable buff, I'd just call it 'Juggernaut Breach.'\"",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "No: one, whatever grants it",
+     "lasts": "Until its next weapon attack"
+    }
+   }
+  },
+  {
    "id": "numbed",
    "category": "status",
    "name": "Numbed",
@@ -369,14 +395,14 @@
    "id": "paradox",
    "category": "status",
    "name": "Paradox",
-   "codex": "Foe status. While a machine runs the Paradox meter (the Baboon's Pocket Paradox), a foe gains a stack each time it gains any other status: one a spend, however many strikes or stacks. At the machine's count (three) its past self knocks it out: it is Suppressed and the Paradox clears. A foe already suppressed loses its next action instead. Never decays. A status like any other: it counts for what reads a status, and a machine that deepens the statuses it applies deepens it.",
+   "codex": "Foe status. While a machine runs the Paradox meter (the Baboon's Pocket Paradox), a foe gains a stack of Paradox for every stack of another debuff it gains; a debuff that never stacks, as Shocked or Suppressed, is one. At the machine's count (five) or more its past self knocks it out: every stack is consumed and it is Suppressed.",
    "status": "implemented",
    "design": {
-    "holes": "The count is a placeholder.",
+    "holes": "The count is a placeholder (Ryan, 11 November: \"we have no idea how many paradox stacks is balanced, we just decided on 3 or whatever as a placeholder without knowing how much status chips were going to get thrown around in the game as a whole\"); a stack a debuff stack since that day, at five.",
     "table": {
      "kind": "debuff",
      "on": "foe",
-     "stacks": "Yes: one a debuff gained, a spend; at three it Suppresses and clears",
+     "stacks": "Yes: one for every debuff stack gained; at five or more it Suppresses and clears",
      "lasts": "The skirmish; never decays"
     }
    }
@@ -617,18 +643,18 @@
    }
   },
   {
-   "id": "weakened",
+   "id": "sapped",
    "category": "status",
-   "name": "Weakened",
-   "codex": "Status, on a foe or a machine. Its attacks deal 1 less damage a stack, never below nothing. Every stack goes at the round's end. A foe's Ward turns it away; a Cleanse clears it from a machine.",
+   "name": "Sapped",
+   "codex": "Status, on a foe or a machine. Its attacks deal 1 less damage a stack, never below nothing. Every stack goes after its next turn: a foe's after its next action, a machine's after your next turn. A foe's Ward turns it away; a Cleanse clears it from a machine.",
    "status": "implemented",
    "design": {
-    "holes": "Ryan, 11 November: \"I'd like to code in Weaken ... Weaken (debuff): Deals 1 less damage per stack with attacks. Lose all stacks at end of round. Weaken can apply to both sides, it's not a bad soft CC from the foes to apply. I'd like a better name than weaken, though.\" The name is a session's draft. Laid by a foe in its own turn it would end before the machine's next attack: a foe's Weaken wants its own clock when one comes.",
+    "holes": "Ryan, 11 November: \"I'd like to code in Weaken ... Weaken (debuff): Deals 1 less damage per stack with attacks ... Weaken can apply to both sides, it's not a bad soft CC from the foes to apply\"; then \"Weaken can change till after it's next turn then, instead of round end. Let's use Sapped.\" So a foe's Sapped laid in its turn reaches the machine's next attack.",
     "table": {
      "kind": "debuff",
      "on": "both",
-     "stacks": "Yes: every Weaken adds",
-     "lasts": "Until the round's end"
+     "stacks": "Yes: every Sap adds",
+     "lasts": "Until after its next turn"
     }
    }
   },
@@ -1453,6 +1479,16 @@
    "status": "implemented",
    "design": {
     "holes": "The Nemesis's rage, two a blow blocked (Ryan, 11 November: per blow, \"that lets it scrap against the comp its supposed to\")."
+   }
+  },
+  {
+   "id": "on_barrier",
+   "category": "trigger",
+   "name": "On gaining a Barrier",
+   "codex": "Passive trigger. Fires as this machine gains a Barrier, from its own equipment or an ally's.",
+   "status": "implemented",
+   "design": {
+    "holes": "The Wild Boar's Juggernaut Breach (Ryan, 11 November: \"After gaining Barrier, its next weapon attack gains Breach\")."
    }
   },
   {

@@ -1723,9 +1723,9 @@ func _foe_rows(foe: Foe) -> Array:
 		# instead of the stacks, with the tooltip showing the riders"): the sea mine's glyph with its
 		# damage, its readout its keywords and what its fall does.
 		rows.append(status_row("mine", "mine", str(int(mine["damage"])), "%s; blows on every foe round its slot when it falls" % Skirmish.mine_text(mine), _foe_chip_colour("mine")))
-	var weak := Effects.stacks_of(foe, "weakened")
-	if weak > 0:
-		rows.append(status_row("weakened", "weaken", "-%d" % weak, "Weakened ×%d: its blows %d lower this round" % [weak, weak], _foe_chip_colour("weakened")))
+	var sap := Effects.stacks_of(foe, "sapped")
+	if sap > 0:
+		rows.append(status_row("sapped", "sap", "-%d" % sap, "Sapped ×%d: its blows %d lower until after its next turn" % [sap, sap], _foe_chip_colour("sapped")))
 	for pin in Effects.HOLDERS.values():   # a pin's chip: the lock on the status it holds
 		if Effects.has(foe, pin):
 			rows.append(status_row(pin, Terms.glyph(pin), "", str(Effects.STATUS[pin]["name"]), _foe_chip_colour(pin)))
@@ -1784,6 +1784,8 @@ static func _foe_glyph(id: String) -> String:
 			return "burn"
 		"flakked":
 			return "flak"
+		"sapped":
+			return "sap"
 		"cryoed":
 			return "cryo"
 		"webbed":
@@ -3091,7 +3093,7 @@ func _form_shift_at(t: float, i: int, sealing: bool) -> void:
 static func _strikes_of(blows: Array) -> int:
 	var n := 1
 	for b in blows:
-		if str(b["kind"]) != "zap" and str(b["kind"]) != "mine":
+		if str(b["kind"]) != "zap" and str(b["kind"]) != "mine" and str(b["kind"]) != "shove":
 			n = maxi(n, int(b["strike"]) + 1)
 	return n
 

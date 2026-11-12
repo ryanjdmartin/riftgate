@@ -6582,25 +6582,26 @@
   "rack_port"
  ],
  "pins": {
-  "hp_1": "twin_autoguns",
-  "hp_2": "laser_carbine",
-  "hp_3": "halo_projector",
-  "hp_4": "rivet_gun",
-  "hp_5": "ankle_mortar",
-  "hp_6": ""
+  "hp_1": "laser_carbine",
+  "hp_2": "halo_projector",
+  "hp_3": "ankle_mortar",
+  "hp_4": ""
  },
  "fires": {
-  "solar_flare_array": {
+  "retrocausal_shroud": {
+   "act": "charge_projectors",
+   "from": 1.8,
+   "to": 3.4
+  },
+  "redshift_emitter": {
    "act": "charge_projectors",
    "from": 1.8,
    "to": 3.4
   }
  },
  "stock_shapes": {
-  "hp_1": "twin_barrel",
-  "hp_2": "barrel",
-  "hp_3": "dish",
-  "hp_4": "barrel",
-  "hp_5": "rack"
+  "hp_1": "barrel",
+  "hp_2": "dish",
+  "hp_3": "rack"
  }
 }

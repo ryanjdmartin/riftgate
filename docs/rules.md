@@ -105,7 +105,7 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   of three from the left, a squad of one or two in the middle spots, the outer ones empty; a
   wrecked machine keeps its spot. A machine faces the column of its spot, and the foe in front of
   it is that column's front rank, then its back; with neither standing, the next column left,
-  then right, then two left, two right. The Photosphere Lance lays its Weakened there.
+  then right, then two left, two right. The Photosphere Lance lays its Sapped there.
 - A pack is its composition's grid (Content conventions): the count the map shows is the count the
   grid holds. Its fight, holding it alone, stands its foes as the grid has them: each cell, front
   then back, left to right, a foe of its kind, a massive one filling its column; a cell that
@@ -473,7 +473,10 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   two-move foe back) takes the next move in its list that its
   conditions allow, keeping its pick while the machine stands and is in the fight; a new one
   otherwise, and when the move it leaves aimed at no one machine (a brace, a blow at every
-  machine), since the pick it carried was never shown. Disrupt resolves before Lure.
+  machine), since the pick it carried was never shown. Disrupt resolves before Lure. The Baboon's
+  Retrocausal Shroud, spent on itself or an ally, Cleanses it and gives Disrupt to every foe
+  showing intent on it, its pick or a blow at every machine: they change their move, not their
+  pick.
 - **Purge N** (id `dispel`, the foes' word too; Aphelion's Null Field Emitter, Purge 2): every
   foe the entry reaches loses N stacks of every buff it carries (Armoured, Empowered, Enraged,
   Undying, Primed, Barrier, Regenerating, Numbed; an unstackable buff is one stack; its
@@ -521,6 +524,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   drop it; the second targets light; tap one to spend it; a tap or a hold on the die reads it; drag the die
   again to move it or set it back. A tap on the ground sets it back too, the die flying home,
   once no readout is open: the first such tap closes the open readout.
+- **Sap** (with a number; the Baboon's Redshift Emitter, beside a Purge 1): each foe hit gains
+  that many stacks of Sapped a strike, laid once the strikes are done.
 - **Flak** (with a number, Wainwright & Sutler's on-hit): each foe hit gains that many stacks
   of Flak a strike (Flak 2: two stacks), laid once the strikes are done, so no strike of the
   spend feeds on what it lays.
@@ -571,7 +576,7 @@ Honey Badger's Chainsaw Claw, two); a weapon that fires it takes up to its most 
 each adding its bonus to the blow, and spends them (its Bullion Fragmenter fires two at +2),
 the armour they stood for going with them. **Braces**:
 spending it Armours its owner, the stacks it says, an armour point each, until the round's
-end (the Wild Boar's Breaching Plow, two). **Rolls again** (no piece prints it today; the Nemesis's Knuckle of Fury did, and it is one direction of its upgrades): spending it
+end (no dealt piece prints it today; the Wild Boar's Breaching Plow did until 11 November). **Rolls again** (no piece prints it today; the Nemesis's Knuckle of Fury did, and it is one direction of its upgrades): spending it
 with a stack of its status spends one, and the die rolls again, a plain roll as the round
 opens, so the machine acts again and the same entry may show again; nothing switches off,
 the stacks being the limit, and the fight's last blow rolls nothing. **The gather** (the
@@ -591,12 +596,18 @@ many fell, banked if unspent. **The Reheat Uplink** (the Giant Petrel's, allies 
 gains Empowered 2 and its die rolls again, never onto the entry showing; a spent die rolls
 nothing. **Regenerates** (the Storm Petrel's St. Elmo's Regenerator, a lure): spent on a
 foe, its own machine gains Regenerating, the shield it prints at the start of each of the
-rounds it prints after this one. **Spillover** (the Wild
-Boar's Juggernaut Drive, on every weapon it fires): damage past the kill of a front-rank foe
+rounds it prints after this one. **Spillover** (no machine carries it since 11 November; the
+Wild Boar's Juggernaut Drive did, on every weapon it fired): damage past the kill of a front-rank foe
 carries into the foe behind it as plain damage, the killing strike's excess and every later
 strike of the spend whole, aimed at nobody, so a Shock behind neither doubles it nor is
-spent; the engine runs it as a keyword the passive grants written out, so each of the Boar's
-weapons wears the star, the die's readout reading the passive's line, and no keyword chip.
+spent; the engine runs it as a keyword a passive grants written out, so each weapon wears the
+star, the die's readout reading the passive's line, and no keyword chip.
+**The Juggernaut Drive** (the Wild Boar's, since 11 November): once a spend's hits land, every
+front-rank foe a blow of it damaged, felled or not, drives a quarter of its maximum HP, rounded
+up, into the foe standing behind it, once a spend, a plain blow as the Storm Petrel's zap was (no
+keyword and no Shock read, through what that foe takes, its armour and its Barrier); a massive foe
+has nothing behind it. As the Boar gains a Barrier, from its own Breaching Plow (Cleanse and a
+Barrier on itself, a cooldown of 1) or an ally's piece, it gains Juggernaut Breach.
 
 ### Buffs, debuffs and resistance
 A **store** is a capped resource a machine fills and spends (the Muster, the rage, the
@@ -766,11 +777,11 @@ On a foe:
 - **Mine** (debuff, the Lammergeier's): its damage, the spends that fed it added, and their
   keywords, one Mine a foe; when the foe falls it blows on every foe round its slot (A Mine,
   under A blow). It lasts the skirmish, until its foe falls or the Syrinx Drone detonates it.
-- **Paradox** (debuff, while the Baboon fights): a stack each time the foe gains any other
-  debuff, once a hit per debuff however many strikes or stacks (a single-target weapon's hits
-  are one, a Sweep's shots each their own); at three it is Suppressed
+- **Paradox** (debuff, while the Baboon fights): a stack for every stack of another debuff the
+  foe gains, a debuff that never stacks one (Shocked, Exposed, a Suppress, a pin), a buff none;
+  at five or more every stack is consumed and it is Suppressed
   (a stun like any other: a Numbed foe strips a stack instead, a Warded one turns it, and a foe
-  already suppressed gains nothing) and the Paradox clears either way. It never decays. The Suppressed a Paradox causes adds none; a Suppress
+  already suppressed gains nothing), the stacks spent either way. It never decays. The Suppressed a Paradox causes adds none; a Suppress
   keyword's does.
 - **Vitriol** (debuff): at its action it loses 10% of its current HP a stack, past armour,
   after Burning on what it leaves, the whole share rounded down and never the last hit point,
@@ -789,10 +800,12 @@ On a foe:
 - **Flak** (debuff): every blow of a weapon it takes deals a point more a stack, before its
   multiplies and its armour (a Shocked foe takes a strike aimed at it plus Flak, doubled); a
   debuff's blow stays nothing. The stacks halve at the end of each round, rounded down.
-- **Weakened** (debuff, on either side): its attacks deal 1 less a stack, an add before the
+- **Sapped** (debuff, on either side): its attacks deal 1 less a stack, an add before the
   multiplies, never below nothing: a foe's blow, its intent showing it, or a machine's weapon.
-  Every stack goes as the round's timed effects run out, at the end of the enemy's turn. A foe's
-  Ward turns it away; a Cleanse clears it from a machine.
+  Every stack goes after its next turn: a foe's at the end of its next action, a machine's at the
+  end of the player's turn. A foe's Ward turns it away; a Cleanse clears it from a machine.
+- **Juggernaut Breach** (buff, the Wild Boar's): gained as it gains a Barrier, one at a time; its
+  next weapon attack gains Breach and lifts it, equipment leaving it standing. A purge takes it.
 - **Empowered** (buff, Rally): lands on every other foe on the field the moment the rally does,
   the rally's value in stacks, and every blow the foe lands hits a point harder a stack, an add
   before the move's factor as every add is. It halves at the end of each round, rounded down,
@@ -843,7 +856,7 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or a
   off. A foe's armour comes off every blow on it the same way, never off Burning, Vitriol or a
   breaching weapon. Base armour is set by role (a tank 2, a heavy worker 1, the rest 0; the
   Polar Bear, a tank in its sealed form, 1 open and 4 sealed), and
-  Armoured adds to it (a brace: a buff, the Breaching Plow) until the
+  Armoured adds to it (a brace: a buff) until the
   round's end, the Polar Bear's seal until a weapon opens it.
   Damage-taken effects apply before armour.
 - The shield is the fight's, as the heat is: full as every fight opens, and nothing returns on

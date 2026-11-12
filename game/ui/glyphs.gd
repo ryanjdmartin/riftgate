@@ -8,8 +8,8 @@ extends RefCounted
 static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Color, width: float = 2.0) -> void:
 	var s := size / 2.0
 	match id:
-		"weaken":
-			# Weakened (Ryan, 11 November): a blade, smaller up and to the left, and an arrow down at
+		"sap":
+			# Sapped (Ryan, 11 November): a blade, smaller up and to the left, and an arrow down at
 			# its lower right: blows a point lower a stack.
 			draw(ci, "sword", c + Vector2(-s * 0.22, -s * 0.2), size * 0.78, color, width)
 			var ax := c + Vector2(s * 0.55, s * 0.05)

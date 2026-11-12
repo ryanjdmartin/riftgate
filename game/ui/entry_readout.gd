@@ -243,7 +243,7 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 		var line: Dictionary
 		if Face.KEYWORD_STATUS.has(k):
 			var parts := [_bare(word("Apply %s" % label))]
-			var field: String = {Face.Keyword.BURN: "burn", Face.Keyword.CRYO: "cryo", Face.Keyword.FLAK: "flak"}.get(k, "")
+			var field: String = {Face.Keyword.BURN: "burn", Face.Keyword.CRYO: "cryo", Face.Keyword.FLAK: "flak", Face.Keyword.SAP: "sap"}.get(k, "")
 			if not field.is_empty() and int(f.get(field)) > 0:
 				parts.append(num(str(f.get(field)), int(f.get(field)), int(base.get(field))))
 			parts.append(word(gate if not gate.is_empty() else "on hit"))

@@ -458,16 +458,70 @@
    ]
   },
   {
+   "id": "retrocausal_shroud",
+   "name": "Retrocausal Shroud",
+   "maker": "aphelion",
+   "shape": "dish",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "The left pod on the Baboon's backpack: a loop of borrowed time thrown over an ally, so the harm it took never quite happened and every foe lining it up finds its plan has changed. The name is a session's draft, his to give.",
+    "niche": "The Baboon's first locked piece (Ryan, 11 November: \"Cleanse an ally. Disrupt all enemies targeting it. -> upgrades buff the ally or improve the debuff\"; \"Disrupt: yes that was the point. It applies Disrupt the effect. Targeting all means targeting the ally. Cleanse can be self, sure, unless it needs a nerf\"): on itself or an ally, a Cleanse, and every foe showing intent on it, a blow at every machine included, takes Disrupt, its next move in its list, aimed where it was."
+   },
+   "face": {
+    "kind": "buff",
+    "keywords": [
+     "cleanse"
+    ],
+    "disrupts_attackers": true
+   },
+   "passive": null,
+   "tags": []
+  },
+  {
+   "id": "redshift_emitter",
+   "name": "Redshift Emitter",
+   "maker": "aphelion",
+   "shape": "dish",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "The right pod on the Baboon's backpack: light stretched long until there is nothing left in it, so whatever it touches is worth less, its buffs and its blows alike. The name is a session's draft, his to give.",
+    "niche": "The Baboon's second locked piece (Ryan, 11 November: \"Purge 1 and Weaken 1. -> upgrades buff a weak ally, or improve the purge and weaken\"; \"Indirect for the second piece\"): equipment on any foe, a buff stripped and a Sapped laid, the one stack of the Baboon's own that feeds its Paradox."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "indirect",
+    "power": 0,
+    "keywords": [
+     "dispel",
+     "sap"
+    ],
+    "dispel": 1,
+    "sap": 1,
+    "heat": 1
+   },
+   "passive": null,
+   "tags": [
+    "beam"
+   ]
+  },
+  {
    "id": "solar_flare_array",
    "name": "Solar Flare Array",
    "maker": "aphelion",
+   "tier": 2,
+   "status": "planned",
    "shape": "rack",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
     "fantasy": "Lobbed light. It lands at the same brightness every time and keeps burning.",
-    "niche": "Indirect burn at a flat number: predictable stacks for the passive to read."
+    "niche": "Indirect burn at a flat number: predictable stacks for the passive to read.",
+    "parked": "Off the Baboon on 11 November with its rework and parked, undealt (Ryan: \"Solar flare array can get parked, probably better as a tier 2 or something based on the name alone\"); its near twin in the pool, the Incendiary Shells, is why it is no ordinary tier-one piece."
    },
    "face": {
     "kind": "attack",
@@ -605,18 +659,18 @@
    "design": {
     "stage": "draft",
     "fantasy": "The Wild Boar's front end: a ram and a plow blade that go through a wall or a rank of fodder at the same speed.",
-    "niche": "The Boar's locked melee: one big cleaving hit that braces the Boar behind its blade."
+    "niche": "The Boar's locked self-defence since 11 November (Ryan: \"Breaching plow could easily earn its place by simply being a self-defense that does something else\"; \"Cleanse self and gain Barrier, cooldown 1\"): it clears the Boar's debuffs and puts a Barrier up, and the passive turns that Barrier into Breach on the next gun it fires. Until then a Direct 4 Spread 2 cleave that braced 2."
    },
    "face": {
-    "kind": "attack",
-    "reach": "direct",
-    "power": 4,
+    "kind": "buff",
+    "status": "barrier",
+    "stacks": 1,
+    "rounds": 1,
+    "targets": "self",
     "keywords": [
-     "cleave"
+     "cleanse"
     ],
-    "cleave": 2,
-    "heat": 0,
-    "braces": 2
+    "cooldown": 1
    },
    "passive": null,
    "tags": [
@@ -1088,7 +1142,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A beam drawn off the reactor's own surface. It burns what it touches and the machine with it.",
-    "niche": "The Stingray's locked piece since 11 November (Ryan: \"target ally or self. The enemy directly in front of them gets the debuff, or if none in either rank in front, the closest column that does, searching left -right-left-right\"; \"I don't think it should deal damage\"; \"The stingray wasn't intended as an offensive only unit. The interesting take here is a defensive debuff plus an offensive buff. Normally the opposite are paired together, a defend buff with a status that damages while you're defended. Flipping the script is neat. Upgrades can redirect it to the primed+burn abuse as one of the branches\"): spent on itself or an ally, Empowered there and Weakened on the foe in front of it, both deepened by the Suite. Still hot, so the Suite has heat to read. Until then a Direct 4 Burn 2 gun, the Blazethrower's twin."
+    "niche": "The Stingray's locked piece since 11 November (Ryan: \"target ally or self. The enemy directly in front of them gets the debuff, or if none in either rank in front, the closest column that does, searching left -right-left-right\"; \"I don't think it should deal damage\"; \"The stingray wasn't intended as an offensive only unit. The interesting take here is a defensive debuff plus an offensive buff. Normally the opposite are paired together, a defend buff with a status that damages while you're defended. Flipping the script is neat. Upgrades can redirect it to the primed+burn abuse as one of the branches\"): spent on itself or an ally, Empowered there and Sapped on the foe in front of it (his name for the status, \"Let's use Sapped\"), both deepened by the Suite. Still hot, so the Suite has heat to read. Until then a Direct 4 Burn 2 gun, the Blazethrower's twin."
    },
    "face": {
     "kind": "buff",
@@ -1096,7 +1150,7 @@
     "stacks": 2,
     "heat": 6,
     "in_front": {
-     "status": "weakened",
+     "status": "sapped",
      "stacks": 2
     }
    },

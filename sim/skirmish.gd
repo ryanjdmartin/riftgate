@@ -155,6 +155,7 @@ var last_roll: Dictionary = {}
 ## The heat released by passed turns as the last enemy turn ended (the Whip Scorpion's), for the
 ## screen: {mech, rank, shots, blows (spend_blows' shape)} each. Cleared as a turn ends.
 var releases: Array = []
+var _shoved: Dictionary = {}   # Foe -> true: the front-rank foes this spend has driven into the rank behind (the Juggernaut Drive), once a spend
 var _held: Dictionary = {}   # Foe -> the status ids a pin holds from this round's halving, read as the round's statuses run out
 var last_blast: Dictionary = {}   # the last vent blast, {mech, foe, dealt}, for the screen; cleared each round
 ## The fight's share of the run's Sponsorship measures (the bible's Sponsorship row; tallied 21
@@ -1913,7 +1914,7 @@ func foe_in_front(ms: MechState) -> Foe:
 
 
 ## What an entry lays on the foe in front of the machine it lands on (the Photosphere Lance's
-## Weakened beside its Empowered), deepened by the spender's passives as any stack it lays.
+## Sapped beside its Empowered), deepened by the spender's passives as any stack it lays.
 func _lay_in_front(ms: MechState, who: MechState, f: Face) -> void:
 	if f.front_status.is_empty() or who == null:
 		return
@@ -1929,7 +1930,7 @@ func _lay_in_front(ms: MechState, who: MechState, f: Face) -> void:
 	_tell_turned(turned)
 	for x in gained.keys():
 		for sid in gained[x]:
-			_foe_gained_status(x, sid)
+			_foe_gained_status(x, sid, int(gained[x][sid]))
 
 
 ## Whether die `mech_index` has anywhere to be spent now: alive and unspent, an entry that is no
@@ -1975,6 +1976,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 		return false
 	last_acts.clear()
 	spend_blows.clear()
+	_shoved.clear()
 	var ms := mechs[mech_index]
 	if not ms.alive() or ms.assigned:
 		return false
@@ -2144,6 +2146,8 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 						continue
 					log.append("%s buffs %s: %s ×%d%s" % [ms.unit.display_name, w.unit.display_name, m.name, stacks, "" if f.buff_rounds == 1 else " for %d rounds" % f.buff_rounds])
 					_lay_in_front(ms, w, f)
+					if f.buff_status == "barrier" and w.alive():
+						_fired(w, Effects.fire(w.unit, "on_barrier"), "as it gains a Barrier")   # the Wild Boar's Juggernaut Breach
 					if f.buff_status == "phased":
 						_phase(w)
 					elif f.buff_status == "rallied":
@@ -2155,6 +2159,16 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 						_roll_again(w)
 						log.append("%s's die rolls again" % w.unit.display_name)
 			_cleanse_with(ms, who, f)
+			# The Retrocausal Shroud (the Baboon's, Ryan, 11 November: "Cleanse an ally. Disrupt all
+			# enemies targeting it"; "Targeting all means targeting the ally"): every foe showing intent
+			# on the machine, its pick or a blow at every machine, takes Disrupt, the keyword's effect.
+			if f.disrupts_attackers:
+				var aiming := acting_on(who)
+				if aiming.is_empty():
+					log.append("%s: no foe aims at %s" % [ms.unit.display_name, who.unit.display_name])
+				else:
+					log.append("%s disrupts the foes aiming at %s" % [ms.unit.display_name, who.unit.display_name])
+					_disrupt(aiming)
 		Face.Kind.ATTACK:
 			# The sixth shot (the Cassowary's, Ryan's kit of 18 October): the spend the count
 			# lands on doubles its damage and the stacks it lays (an nth_shot rule read through
@@ -2192,6 +2206,8 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 				Effects.stack(ms.unit, Effects.STATUS["shots"], Effects.SKIRMISH, "count", 1, Effects.DECAY_NONE)
 			if f.is_weapon() and Effects.remove(ms.unit, "spun_up"):
 				log.append("%s: the spin is spent" % ms.unit.display_name)
+			if f.is_weapon() and Effects.remove(ms.unit, "juggernaut_breach"):
+				log.append("%s: its Juggernaut Breach is spent" % ms.unit.display_name)
 	_holding_returns = false
 	_release_returns()   # the spend is done with the field: what its kills bring back stands now
 	if f.on_machines():
@@ -2334,6 +2350,7 @@ func _release_passes() -> void:
 		log.append("%s opens its valves: %d heat along the %s" % [ms.unit.display_name, fired, "front" if rank == 0 else "back"])
 		ms.heat = 0
 		spend_blows.clear()
+		_shoved.clear()
 		var h := _hit(ms, shot, target)
 		_finish_hits(i, ms, shot, target, h, Pays.VENT)
 		ms.heat = 0   # cold after it, whatever the shots cashed
@@ -2443,6 +2460,7 @@ func _enemy_turn() -> void:
 			# A merge's lift (30 October), its own Empowered, riding its next move.
 			Effects.stack(f, Effects.STATUS["kindled"], Effects.SKIRMISH, "foe:" + f.content_id, int(_lift_after[f]), Effects.DECAY_HALF)
 			_lift_after.erase(f)
+		Effects.foe_turn_end(f)   # what lasts until after its next turn goes (Sapped)
 		_web_burst(f)
 		_turn_death_check()   # with the foe in _acted: a gold rage its own tick broke staggers it out of its next action, not the one it has had
 	if outcome == Outcome.NONE:
@@ -3076,6 +3094,12 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			# Flak (Ryan's go, 19 October; built 21 October): each foe hit gains the keyword's
 			# number in stacks a strike, with the riders, so no strike of the spend feeds on what
 			# it lays (Ryan, 3 November: "5,5,5 makes way more sense to me").
+			# Sap (the Baboon's Redshift Emitter, 11 November): Sapped laid as Flak is, with the riders.
+			if f.has(Face.Keyword.SAP):
+				var sap_laid := _stacks_from(ms, "sapped", f.sap) * doubled
+				riders.append(func() -> void: _land_rider(foe, "sapped", sap_laid, gained, turned))
+				if into_mine:
+					h.mine_stack("sapped", sap_laid)
 			if f.has(Face.Keyword.FLAK):
 				var flak_laid := _stacks_from(ms, "flakked", f.flak) * doubled
 				riders.append(func() -> void: _land_rider(foe, "flakked", flak_laid, gained, turned))
@@ -3177,12 +3201,45 @@ func _finish_hits(mech_index: int, ms: MechState, f: Face, target: Foe, h: Hits,
 	_tell_hits(mech_index, ms, f, target, h, pays)
 	if pays == Pays.HEAT:
 		_zap(ms, f, target, h)
+	_shove(ms, f, h)
 	# The death check (Ryan, 7 November), once the hits and their riders are done, a sweep's every
 	# shot: a kill clears its slot (Ryan, 22 September: burning a hole through the front opens the
 	# back rank to direct fire), and what it brings back waits for the spend's end. Indirect fire
 	# at the front rank costs its firer nothing (danger close retired with the stock pass, 22 October).
 	_clear_dead()
 	_pay_hits(ms, f, h, pays)
+
+
+## The Juggernaut Drive (the Wild Boar's, Ryan, 11 November: "Damaging an enemy in the front rank
+## deals 25% of its maximum HP, rounded up, to the enemy immediately behind"; "like the old storm
+## petrel zap, but to all targets hit"): once the spend's hits have landed, every front-rank foe a
+## blow of it damaged, felled or not, drives that share into the foe standing behind it, once a
+## spend, as the zap was dealt: plain, no keyword, through what the foe takes, its armour and its
+## Barrier, before the death check. A massive foe fills its column: nothing stands behind it.
+func _shove(ms: MechState, f: Face, h: Hits) -> void:
+	var pct := Effects.shove_share(ms.unit)
+	if pct <= 0:
+		return
+	var fronts: Array[Foe] = []
+	for b in spend_blows:
+		var foe = b.get("foe", null)
+		if foe == null or int(b.get("taken", 0)) <= 0 or str(b.get("kind", "")) in ["zap", "mine", "miss", "shove"]:
+			continue
+		if foe.rank == 0 and not foe.is_massive() and not fronts.has(foe) and not _shoved.has(foe):
+			fronts.append(foe)
+	for front in fronts:
+		_shoved[front] = true
+		var back := foe_at(1, front.column)
+		if back == null or back == front or not back.alive():
+			continue
+		var before := back.hp
+		var dealt := zap_on(back, ceili(float(front.hp_max) * float(pct) / 100.0), ms)
+		if _barrier_eats(back, true):
+			dealt = 0
+		back.hp -= dealt
+		_note_blow(back, maxi(1, f.strikes), dealt, "shove")   # after the strikes, as the zap is
+		h.dealt += clampi(dealt, 0, maxi(0, before))
+		log.append("%s drives %s into %s for %d" % [ms.unit.display_name, front.display_name, back.display_name, dealt])
 
 
 ## The hits told: the screen's last roll and the log's line (a Sweep's shots, a vent's blast or a
@@ -3335,7 +3392,7 @@ func _after_blow(ms: MechState, f: Face, touched: Array, gained: Dictionary, tur
 	_tell_turned(turned)
 	for foe in gained.keys():
 		for status_id in gained[foe]:
-			_foe_gained_status(foe, status_id)
+			_foe_gained_status(foe, status_id, int(gained[foe][status_id]))
 	touched.clear()
 	gained.clear()
 	turned.clear()
@@ -4281,7 +4338,7 @@ static func mine_of(foe: Foe) -> Dictionary:
 static func mine_riders(f: Face) -> Dictionary:
 	var hits := maxi(1, f.strikes)
 	var stacks := {}
-	for k in [Face.Keyword.BURN, Face.Keyword.CRYO, Face.Keyword.FLAK]:
+	for k in [Face.Keyword.BURN, Face.Keyword.CRYO, Face.Keyword.FLAK, Face.Keyword.SAP]:
 		if f.has(k):
 			var n := maxi(0, int(f.get(str(Face.NUMBER_FIELDS[k])))) * hits
 			if n > 0:
@@ -4462,7 +4519,7 @@ func _blow_mine(mine: Dictionary, rank: int, col: int, massive: bool, where: Str
 	_tell_turned(turned)
 	for foe in gained.keys():
 		for status_id in gained[foe]:
-			_foe_gained_status(foe, status_id)
+			_foe_gained_status(foe, status_id, int(gained[foe][status_id]))
 
 
 ## A mark a Mine's blast lays after its blow, Shocked or Exposed (through the next round, renewing),
@@ -4623,11 +4680,8 @@ func _spend_primers(ms: MechState) -> void:
 func _land_rider(foe: Foe, sid: String, n: int, gained: Dictionary, turned: Dictionary, laid = null) -> void:
 	if n <= 0:
 		return
-	if Effects.lasts_round(sid):
-		Effects.stack(foe, Effects.STATUS[sid], Effects.ROUNDS, "mech", n, Effects.DECAY_NONE, round)   # every stack goes at the round's end (Weakened)
-	else:
-		Effects.stack(foe, Effects.STATUS[sid], Effects.SKIRMISH, "mech", n, Effects.status_decay(Effects.STATUS[sid]))
-	_note_status(gained, foe, sid, turned)
+	Effects.stack(foe, Effects.STATUS[sid], Effects.SKIRMISH, "mech", n, Effects.status_decay(Effects.STATUS[sid]))
+	_note_status(gained, foe, sid, turned, n)
 	if laid == null or Effects.turns_mark(foe, sid):
 		return   # its Ward turned the lay away: nothing laid to tell
 	var per: Dictionary = laid.get(foe, {})
@@ -4749,17 +4803,18 @@ func paradox_count() -> int:
 
 ## One spend's status on one foe, told once at the end of the spend however many strikes or
 ## stacks put it there (Ryan, 10 October: an application, not a stack).
-static func _note_status(gained: Dictionary, foe: Foe, status_id: String, turned = null) -> void:
+static func _note_status(gained: Dictionary, foe: Foe, status_id: String, turned = null, n: int = 1) -> void:
 	if Effects.turns_mark(foe, status_id):
 		# A foe's Ward turned it away (28 October): nothing gained, nothing for the Paradox, and
 		# the spend tells it once.
 		if turned is Dictionary and foe.alive():
 			_note_turned(turned, foe, status_id)
 		return
-	var ids: Array = gained.get(foe, [])
-	if not ids.has(status_id):
-		ids.append(status_id)
-	gained[foe] = ids
+	# Each status the foe gained and the stacks it gained of it (the Paradox counts stacks since 11
+	# November); a status that never stacks gains one.
+	var got: Dictionary = gained.get(foe, {})
+	got[status_id] = int(got.get(status_id, 0)) + maxi(1, n)
+	gained[foe] = got
 
 
 ## A mark a foe's Ward turned away (28 October), noted once a spend.
@@ -4794,14 +4849,19 @@ func _tell_turned(turned: Dictionary) -> void:
 ## machine's count it is Suppressed and the Paradox clears. Paradox never counts, and the
 ## Suppressed it causes is never told, so it never feeds itself; a Suppress keyword's does
 ## count. Numbed is a buff a Purge lowers and nothing else touches (2 November).
-func _foe_gained_status(foe: Foe, status_id: String) -> void:
-	if status_id == "paradox" or status_id == "numbed" or Effects.turns_mark(foe, status_id):
+## A status the team put on a foe, `n` its stacks gained (the Baboon's Pocket Paradox, Ryan, 11
+## November: "When an enemy gains one or more debuff stacks other than Paradox, it also gains that
+## many Paradox stacks"; "Shocked and such are a stack, it just caps at 1, so yes they grant 1
+## paradox"): a debuff alone feeds the meter, a stack of Paradox a stack, and at its count it is
+## spent into a Suppress ("At five or more, consume all stacks to grant Suppressed").
+func _foe_gained_status(foe: Foe, status_id: String, n: int = 1) -> void:
+	if status_id == "paradox" or status_id == "numbed" or Effects.status_kind(status_id) != "debuff" or Effects.turns_mark(foe, status_id):
 		return   # a felled foe's gains count too: a trigger never goes unfired for a death checked last (3 November)
 	for ms in live_mechs():
 		var meter := Effects.paradox(ms.unit)
 		if meter[1] <= 0:
 			continue
-		Effects.stack(foe, Effects.STATUS["paradox"], Effects.SKIRMISH, "mech", _stacks_from(ms, "paradox", meter[0]), Effects.DECAY_NONE)
+		Effects.stack(foe, Effects.STATUS["paradox"], Effects.SKIRMISH, "mech", _stacks_from(ms, "paradox", meter[0] * maxi(1, n)), Effects.DECAY_NONE)
 		if Effects.stacks_of(foe, "paradox") >= meter[1]:
 			Effects.remove(foe, "paradox")
 			log.append("%s got trapped in a paradox! (%s)" % [foe.display_name, ms.unit.display_name])

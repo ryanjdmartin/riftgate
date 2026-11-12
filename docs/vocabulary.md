@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 191 implemented, 5 planned, 0 idea.
+Status: 194 implemented, 5 planned, 0 idea.
 
 ## Resource
 
@@ -99,6 +99,7 @@ Status: 191 implemented, 5 planned, 0 idea.
 | **Web** | The funnel-web's Web Bomb, locked: the foe hit is Webbed, no damage. After its action the web bursts, Suppressing it and the next foe to act beside it. | implemented |
 | **Swap** | Player keyword, the Dingo's Combat Translocator's: the spend takes two targets, a foe and then another foe or an empty slot, and the two trade places; no damage. A massive foe does not move. Drag the die to the first, drop it, then tap the second; drag it again to move it, or tap the ground to set it back. | implemented |
 | **Flak** | Flak N: each foe hit gains N stacks of Flak a strike, laid once the strikes are done, so no strike of the spend feeds on what it lays. | implemented |
+| **Sap** | Sap N: each foe hit gains N stacks of Sapped a strike, laid once the strikes are done, so no strike of the spend feeds on what it lays. | implemented |
 | **Chain** | Keyword with a number, a weapon's. Chain 2 also lands 2 on every other Shocked foe on the field, wherever it stands, where the target takes the number: the attacker's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. No strike is aimed at them, so their Shock stands. | implemented |
 | **Rapid** | After this component is spent the machine acts again: the die rerolls for free onto any other component (a second copy of this one included, so copies chain). The Cassowary's Spin-Up spins the whole die instead, itself included, the one Rapid that may land on itself. Rapid carries no cooldown of its own: a Rapid component prints its cooldown, a cost the die shows by its clock, or pays heat or hull every spend instead. Any component may carry it, a vent or a shield as well as a weapon. | implemented |
 | **Disable** | Enemy keyword. The component the target's die is showing is switched off through the target's next turn: if the die lands on it, it comes up blank. | implemented |
@@ -114,13 +115,14 @@ Status: 191 implemented, 5 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
+| **Juggernaut Breach** | Machine status, the Wild Boar's. Its next weapon attack gains Breach, and that attack lifts it; equipment leaves it standing. Gained with a Barrier; one at a time. A purge takes it. | implemented |
 | **Numbed** | Foe buff: the rounds until one stun lands. A stun on it strips a stack and lands nothing, so a foe with Numbed N takes N+1 stuns in a round. A stunned foe recovers with its stun resist in stacks (1 for most, 2 for a massive foe, 3 for an elite, a hero or a boss), after the round's decay; a stack goes at the end of each round. A Purge lowers it like any buff; nothing deepens, spreads or cleanses it. | implemented |
-| **Paradox** | Foe status. While a machine runs the Paradox meter (the Baboon's Pocket Paradox), a foe gains a stack each time it gains any other status: one a spend, however many strikes or stacks. At the machine's count (three) its past self knocks it out: it is Suppressed and the Paradox clears. A foe already suppressed loses its next action instead. Never decays. A status like any other: it counts for what reads a status, and a machine that deepens the statuses it applies deepens it. | implemented |
+| **Paradox** | Foe status. While a machine runs the Paradox meter (the Baboon's Pocket Paradox), a foe gains a stack of Paradox for every stack of another debuff it gains; a debuff that never stacks, as Shocked or Suppressed, is one. At the machine's count (five) or more its past self knocks it out: every stack is consumed and it is Suppressed. | implemented |
 | **Retaliate** | Machine status. While it lasts, a foe that strikes this machine's bare hull is Shocked. It lasts the rounds the component that grants it says. | implemented |
 | **Shocked** | Foe status. When a weapon's strike aimed at this foe lands, it deals double damage and the status clears. A blow that only reaches it (an area, a Chain's arc, a spill) neither doubles nor clears it, and equipment (a lure, a probe) leaves it standing. Never stacks. Laid by the Shock keyword, by a Charged machine's weapon, and on a foe that strikes the bare hull of a machine carrying Retaliate. | implemented |
 | **Pinned Flak** | Foe status, from the Hollow-point Harpoon. Its Flak does not halve at this round's end. Until the round's end; refreshed, never added. | implemented |
 | **Pinned Burning** | Foe status. Its Burning burns and loses no stack this round. Until the round's end; refreshed, never added. | implemented |
-| **Weakened** | Status, on a foe or a machine. Its attacks deal 1 less damage a stack, never below nothing. Every stack goes at the round's end. A foe's Ward turns it away; a Cleanse clears it from a machine. | implemented |
+| **Sapped** | Status, on a foe or a machine. Its attacks deal 1 less damage a stack, never below nothing. Every stack goes after its next turn: a foe's after its next action, a machine's after your next turn. A foe's Ward turns it away; a Cleanse clears it from a machine. | implemented |
 | **Exposed** | Foe status. In Direct reach of every machine as if its column's front were empty, and its armour counts for nothing, its own and any Armoured. Through the next round; refreshed, never added. | implemented |
 | **Empowered** | Machine status. Each stack is +1 damage on this machine's attacks, flat, so the count is the bonus. At the end of each round it halves, rounded down, whatever granted it, until it is gone. On the Ammit nothing of it fades: its Quintessence Tap keeps every stack for the battle. | implemented |
 | **Sealed** | Ability, the Polar Bear's form. Equipment it spends on itself seals it: armour up by its Lockdown's number, its own cooling stopped, its Cryo Flinger gaining Spread, and it runs hotter at the end of each turn. A weapon it fires opens it; equipment on an ally and a debuff, its lure among them, leave it as it is. No Purge touches it. | implemented |
@@ -230,6 +232,7 @@ Status: 191 implemented, 5 planned, 0 idea.
 | **On hull damage** | Passive trigger. Fires when this machine loses hull: to a blow, a bite or an overheat. | implemented |
 | **On a hit on its shield** | Passive trigger. Fires when a foe's blow lands on this machine's shield and puts nothing on its hull; a blow that wounds fires On hull damage alone. | implemented |
 | **On a blow blocked** | Passive trigger. Fires once for every blow of this machine's weapons that a living foe's armour or Barrier takes whole, each foe's of an area and each strike's. | implemented |
+| **On gaining a Barrier** | Passive trigger. Fires as this machine gains a Barrier, from its own equipment or an ally's. | implemented |
 | **On a kill** | Passive trigger. Fires once after an attack of this machine's that killed, however many foes fell to it, chains, spills and a vent's blast included: a status (the Kite's Hot Streak), a shield or a vent. | implemented |
 | **Out of combat** | Passive trigger. Fires at the end of a battlefield phase in which this machine had no skirmish. Nothing may ride it: the shield is full as every fight opens, so nothing returns on the map. | implemented |
 | **On injury** | Passive trigger. Fires when an injury lands on a component. Effects: no_destroy (the component holds instead of being destroyed). | implemented |
@@ -306,8 +309,10 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Disrupt** (implemented): Deterministic: the next move in the foe's list that its conditions allow, so a boss steps through its pattern.
 - **Web** (implemented): A keyword, so its chip and checks come free; the burst runs at the end of the foe's action (Skirmish._web_burst).
 - **Flak** (implemented): The stacks land after the blow, so the blow that lays them never feeds on them and a later strike of the same spend does.
+- **Sap** (implemented): The keyword that lays Ryan's Sapped (11 November), first on the Baboon's Redshift Emitter.
+- **Juggernaut Breach** (implemented): Ryan, 11 November: "After gaining Barrier, its next weapon attack gains Breach. The next attack breach will need to be represented by a purgeable buff, I'd just call it 'Juggernaut Breach.'"
 - **Numbed** (implemented): Ryan's clock (2 November): the chip reads as the rounds until it can be stunned again, so the stacks land after the decay phase; a stun lock costs its resist and one every round, so an all-in stun team can brute-force a boss at a price, and a Purge is the other key. The resist numbers are placeholders (content's resist; the bosses' by hand).
-- **Paradox** (implemented): The count is a placeholder.
+- **Paradox** (implemented): The count is a placeholder (Ryan, 11 November: "we have no idea how many paradox stacks is balanced, we just decided on 3 or whatever as a placeholder without knowing how much status chips were going to get thrown around in the game as a whole"); a stack a debuff stack since that day, at five.
 - **Volatile** (implemented): Hull outright, where the Corrupted bite takes shield first. The number is a placeholder. A keyword with a chip until 26 October; a cost like heat since, so the die says the price and no chip does.
 - **Shield cost** (implemented): No piece carries it yet; the numbers are content's.
 - **Empowered a kill** (implemented): A spread that kills two feeds twice; a chain feeds on every link.
@@ -323,7 +328,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Overshield** (implemented): Rare because every overshield on the field makes shield max a soft number; the fade is the whole safeguard, since a lasting excess would stack a team past every blow.
 - **Pinned Flak** (implemented): Ryan, 11 November: "The Flak pin should be its own status that gets applied for one turn. I assume we're going to want a similar one for burning as well." The name is a session's draft.
 - **Pinned Burning** (implemented): Ryan, 11 November: coded in beside Flak's pin, "since the Mastema will want it as a fitted piece, if nothing else". No piece lays it yet. The name is a session's draft.
-- **Weakened** (implemented): Ryan, 11 November: "I'd like to code in Weaken ... Weaken (debuff): Deals 1 less damage per stack with attacks. Lose all stacks at end of round. Weaken can apply to both sides, it's not a bad soft CC from the foes to apply. I'd like a better name than weaken, though." The name is a session's draft. Laid by a foe in its own turn it would end before the machine's next attack: a foe's Weaken wants its own clock when one comes.
+- **Sapped** (implemented): Ryan, 11 November: "I'd like to code in Weaken ... Weaken (debuff): Deals 1 less damage per stack with attacks ... Weaken can apply to both sides, it's not a bad soft CC from the foes to apply"; then "Weaken can change till after it's next turn then, instead of round end. Let's use Sapped." So a foe's Sapped laid in its turn reaches the machine's next attack.
 - **Exposed** (implemented): The id is exposure, since exposed names the formation word and the foes' default aim.
 - **Empowered** (implemented): Every grant is one status on the machine and the stacks add up. A halving rule has no duration, so a buff component grants stacks and no rounds. The name is a placeholder.
 - **Sealed** (implemented): One chip, renewing, never stacking: the armour it grants is tied to the form. The numbers are placeholders.
@@ -368,6 +373,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **On hull damage** (implemented): The hook for the pinned berserker idea too.
 - **On a hit on its shield** (implemented): The Nemesis's rage, one a hit on its shield (Ryan, 11 November: "hull damage takes priority").
 - **On a blow blocked** (implemented): The Nemesis's rage, two a blow blocked (Ryan, 11 November: per blow, "that lets it scrap against the comp its supposed to").
+- **On gaining a Barrier** (implemented): The Wild Boar's Juggernaut Breach (Ryan, 11 November: "After gaining Barrier, its next weapon attack gains Breach").
 - **Out of combat** (implemented): Heat does not persist between fights, so a vent here would be nothing. No content uses it yet.
 - **Command die** (planned): Open question: whether the command die exists at all, or one-shots only.
 - **Reward pick** (planned): Built without one (Ryan, 24 October: maybe not warranted at all); decided after the meter is played, with the economy pass.

@@ -24,7 +24,7 @@ const TABLE := {
 	"every_foe": ["aim_every_foe", "plain"], "every_ally": ["aim_every_ally", "plain"], "every_other_ally": ["aim_every_other_ally", "plain"],
 	"spillover": ["spillover", "plain"], "rapid": ["rapid", "plain"],
 	"burn": ["burn", "heat"], "shock": ["shock", "heat"], "chain": ["chain", "heat"],
-	"flak": ["flak", "heat"], "breach": ["breach", "heat"],
+	"flak": ["flak", "heat"], "breach": ["breach", "heat"], "sap": ["sap", "guard"],
 	"cryo": ["cryo", "guard"], "lure": ["lure", "guard"], "disrupt": ["disrupt", "guard"],
 	"suppress": ["suppress", "guard"], "web": ["web", "guard"], "swap": ["swap", "guard"],
 	"dispel": ["dispel", "guard"], "cleanse": ["cleanse", "guard"], "overshield": ["overshield", "guard"],
@@ -50,7 +50,7 @@ const TABLE := {
 	"phased": ["phased", "guard"], "guarded": ["lock", "guard"], "sealed": ["seal", "guard"], "changed_over": ["reroll", "plain"],
 	"retaliate": ["shocked", "guard"], "suppressed": ["suppress", "guard"], "webbed": ["web", "guard"],
 	"numbed": ["numbed", "guard"], "paradox": ["paradox", "guard"], "cryoed": ["cryo", "guard"],
-	"exposure": ["exposed", "harm"], "pinned": ["pin_flak", "heat"], "weakened": ["weaken", "guard"], "pinned_burning": ["pin_burn", "heat"], "destroyed_component": ["crack", "harm"],
+	"exposure": ["exposed", "harm"], "pinned": ["pin_flak", "heat"], "sapped": ["sap", "guard"], "juggernaut_breach": ["breach", "heat"], "pinned_burning": ["pin_burn", "heat"], "destroyed_component": ["crack", "harm"],
 	"corrupted": ["corrupt", "enemy"], "crushed": ["flak", "enemy"], "disabled": ["blank", "enemy"], "silenced": ["silence", "enemy"],
 	"risen": ["star", "enemy"], "regenerating": ["regenerating", "guard"], "swallowed": ["swallowed", "enemy"],
 	"ability": ["", "plain"],   # a unit's own mechanic, no buff or debuff (8 November): its chips carry their own marks
