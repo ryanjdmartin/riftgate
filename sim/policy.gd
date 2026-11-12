@@ -616,11 +616,6 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		score += siphon_score(sk, ms, f.heat_per_blow)
 	if f.has(Face.Keyword.EXPOSE):
 		score += (1.0 - p_kill) * expose_score(sk, target)
-	if f.resets_on_kill:
-		# A reset gun (no piece prints one since the Kite's Pinion Driver gave it up, 11 November): a
-		# kill lights every dark entry and the machine acts again, about the die's own average
-		# blow, at the odds of the kill.
-		score += p_kill * ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)
 	if f.is_weapon() and p_kill > 0.0 and Effects.refills_on_kill(ms.unit) and ms.unit.shield < ms.unit.shield_max:
 		# A kill that recharges its shield whole (the Kite's, 11 November): what the shield it
 		# would regain turns of the blows coming, at the odds of the kill.
@@ -1004,10 +999,9 @@ static func volatile_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: f
 
 ## What a cooldown costs an entry (21 October): every round it sits out after this one (the
 ## count since 12 November), the share of the die's rolls it would have shown, at what it is
-## worth now; its own or the one its machine's passives grant (the Kite's), the longer. Rapid's
-## own switch-off ends with this round and costs nothing here.
+## worth now. Rapid's own switch-off ends with this round and costs nothing here.
 static func cooldown_cost(ms: Skirmish.MechState, f: Face, worth: float) -> float:
-	var later := maxi(f.cooldown_rounds(), Effects.granted_cooldown(ms.unit, f))
+	var later := f.cooldown_rounds()
 	if later <= 0 or worth <= 0.0 or ms.die.faces.is_empty():
 		return 0.0
 	return worth * float(later) / float(ms.die.faces.size())
@@ -1525,7 +1519,7 @@ func next_round_hull(sk: Skirmish, who: Skirmish.MechState) -> float:
 	for foe in sk.field_foes():
 		if not foe.alive():
 			continue
-		var armour := who.unit.armour + Effects.armour_against(who.unit, foe.rank)
+		var armour := who.unit.armour
 		var follow := Foe.follow_ups(foe.actions)
 		var weights := 0.0
 		var sum := 0.0

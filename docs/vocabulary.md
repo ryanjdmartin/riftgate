@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 197 implemented, 5 planned, 0 idea.
+Status: 195 implemented, 5 planned, 0 idea.
 
 ## Resource
 
@@ -52,7 +52,6 @@ Status: 197 implemented, 5 planned, 0 idea.
 | **Shield cost** | A cost printed on any kind of component, along its foot beside its heat, the shield's mark and a number: spending it takes that much shield from its owner first, overshield included. Short of it, the entry cannot be played: the die shows the cost struck through, and it has nowhere to land. | implemented |
 | **Targets** | Whom a shield, a vent or a buff may be spent on: any ally or itself (the default), itself only, any other ally, or every machine at once: the whole team (Every Ally) or every machine but its own (Every Other Ally). On the die three connected hexes stand under its main mark, the middle its own machine and the two beside it its allies, a filled one a machine it may be spent on: all three for either, the middle alone for itself only, the two beside it for allies only. | implemented |
 | **Cooldown** | A cost on a component, printed along its foot as a clock and a number: once spent, its entry goes dark for the rest of the round and sits out that many rounds after it, and the die shows it dark with the clock and the rounds left; the die can still land on it, and nothing in it acts. Rapid's own, the rest of the round, is never printed. No cleanse lifts a cooldown. | implemented |
-| **Reset** | A rule printed on a weapon: if its spend kills, every entry dark from a cooldown comes back, itself included, and its machine acts again, the free roll never landing on the entry just spent; a team reroll may bring it back up, and every kill resets it again. No piece prints it today (the Kite's Pinion Driver did until its rework of 11 November). | implemented |
 | **Gather** | A rule printed on a component (the Lammergeier's Lorentz Contractor, a debuff): every Mine the field's other foes carry joins the one its target carries, their damage added and their keywords as one. | implemented |
 | **Detonate** | A rule printed on a component (the Lammergeier's Syrinx Drone, a weapon): after the spend's own Mine joins its target's, the target's Mine blows now, on it and every foe round its slot. | implemented |
 | **Regenerates** | A rule printed on a component (the Storm Petrel's St. Elmo's Regenerator, a lure): spent on a foe, its own machine gains Regenerating, the shield it says at the start of each of the rounds it says after this one, a grant of its own each time. | implemented |
@@ -237,9 +236,8 @@ Status: 197 implemented, 5 planned, 0 idea.
 | **On a kill** | Passive trigger. Fires once after an attack of this machine's that killed, however many foes fell to it, chains, spills and a vent's blast included: a status (the Ammit's flare), a shield (the Kite's, recharged whole) or a vent. | implemented |
 | **On a foe killed** | Passive trigger. Fires as a death check counts a kill in this machine's fight, whoever or whatever made it, an ally's blow, a burn's tick and a Mine's blast among them: a status, once for each foe that fell (the Ammit's Souls). | implemented |
 | **On damaging a foe** | Passive trigger. Fires after a spend of this machine's weapons that took HP off a foe, however many foes it hurt: a status, a shield or a vent. An effect may fire once a round only (the Skua's stack of Ricochet). | implemented |
-| **Out of combat** | Passive trigger. Fires at the end of a battlefield phase in which this machine had no skirmish. Nothing may ride it: the shield is full as every fight opens, so nothing returns on the map. | implemented |
 | **On injury** | Passive trigger. Fires when an injury lands on a component. Effects: no_destroy (the component holds instead of being destroyed). | implemented |
-| **Static** | Passive trigger. Always on. Its effects change a machine's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat, armour, move or recharge; add_damage_taken and multiply_damage_taken on every incoming blow; weapon_cooldown (every weapon the machine fires sits out so many rounds after the round it fires; no passive grants one today); set_reach on a component (direct or indirect while a condition holds); suppress, which turns off another effect by id or tag. | implemented |
+| **Static** | Passive trigger. Always on. Its effects change a machine's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat, armour, move or recharge; add_damage_taken and multiply_damage_taken on every incoming blow; set_reach on a component (direct or indirect while a condition holds); suppress, which turns off another effect by id or tag. | implemented |
 
 ## Commander
 
@@ -381,14 +379,12 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **On gaining a Barrier** (implemented): The Wild Boar's Juggernaut Breach (Ryan, 11 November: "After gaining Barrier, its next weapon attack gains Breach").
 - **On a foe killed** (implemented): Built 12 November for the Ammit's Souls. It fires once for each foe that falls, which is what the trigger is: no effect opts into the count. A foe getting back up, a part and a Bomb's burst are no kill and fire nothing.
 - **On damaging a foe** (implemented): Built for the Skua's rewrite (Ryan, 11 November: "Damaging an enemy grants it a stack of Ricochet (once per turn)"). The stack lands after the spend that earned it, so none of that spend's shots bounce off it. The once-a-round gate is the effect's own (once: round), open to any effect an event fires.
-- **Out of combat** (implemented): Heat does not persist between fights, so a vent here would be nothing. No content uses it yet.
 - **Command die** (planned): Open question: whether the command die exists at all, or one-shots only.
 - **Reward pick** (planned): Built without one (Ryan, 24 October: maybe not warranted at all); decided after the meter is played, with the economy pass.
 - **City ability** (planned): Consider range limits from the gate so the push north leaves support behind.
 - **Tier** (implemented): Shown on the front's card when the mission map comes; today the campaign runs headless.
 - **Ramp** (implemented): One table of placeholders (sim/ramp.gd), read by the campaign runner and moved on Ryan's word; the timer's 12 reads as the old clock's number (docs/measurements.md, 30 October).
 - **Cooldown** (implemented): A price as heat is. Counted after the round of the spend since 12 November (Ryan: "change the count so 1 is how I intended"; the round of the spend counted from 14 October, when a weapon's 1 cost nothing, the die spent for the round anyway). The city's battlefield abilities count their own cooldowns in phases.
-- **Reset** (implemented): No limit (Ryan, 24 October: "Let the Kite reset infinitely. There are other ways to nerf it that aren't more rules exceptions"): the free roll never lands on the entry just spent, so each action past the second is a team reroll back onto it and another kill, and the Kite's heat climbed with every kill. Free since 11 November, when the Kite gave it up; the Zoids walker's old verb.
 - **Gather** (implemented): Ryan, 9 November: "moves all mines to a single target, and Exposes that target. The Expose rider will effectively create an AoE expose mine, which we can try and see if it's dangerous." Its Expose is its keyword, so the Mine it gathers carries Expose. A Ward on the target turns the gather away.
 - **Detonate** (implemented): Ryan, 9 November: "Deals a small amount of damage and detonates a foe's combined mine immediately ... The small chip damage makes it add a stack first. Try without a cooldown first." Its chip strike spends a Shock on the target, so a Shock doubles the chip, never the Mine.
 - **Regenerates** (implemented): Self only and never Rapid: the die is its brake (Ryan, 19 October).

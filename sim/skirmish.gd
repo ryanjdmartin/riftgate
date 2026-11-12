@@ -1139,7 +1139,7 @@ func _blow_on(ms: MechState, amount: int, source: Foe, shield: int, barrier: boo
 	var arrived := Effects.damage_taken(ms.unit, amount, source, false, true, maxi(0, shield))
 	var barred := arrived > 0 and barrier
 	var warded := source.breaches() and Effects.has(ms.unit, "ward")
-	var r := _blow(shield, ms.unit.hull_max, ms.unit.armour + Effects.armour_against(ms.unit, source.rank), 0 if barred else arrived, source.breaches() and not warded)
+	var r := _blow(shield, ms.unit.hull_max, ms.unit.armour, 0 if barred else arrived, source.breaches() and not warded)
 	r["amount"] = arrived
 	r["barred"] = barred
 	r["warded"] = warded
@@ -2308,18 +2308,9 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 	# cooldown zero back without the explicit display"): a Rapid entry, its own or the Needletail's
 	# gate's, is dark for the rest of the round. Instant's darkens nothing, its roll free to land
 	# on it again.
-	var cd := cooldown_of(ms, f)
+	var cd := f.cooldown_rounds()
 	if cd > 0 or f.has(Face.Keyword.RAPID):
 		Effects.disable_entry(ms.unit, ms.face_index, "cooldown", round + cd)
-	# The reset gun (the Kite's Pinion Driver, 21 October): if its spend killed, every entry dark
-	# from a cooldown comes back, itself included, and the machine acts again through Rapid's
-	# path, the free roll never landing on the entry just spent; a team reroll back onto it
-	# chains it again with every kill, with no limit (Ryan, 24 October).
-	var reset := f.resets_on_kill and killed > 0 and ms.alive() and not (field_foes().is_empty() and reinforcements.is_empty())
-	if reset:
-		var lit := Effects.clear_cooldowns(ms.unit)
-		_act_again(ms)
-		log.append("%s: the kill resets it, %d back, and it acts again" % [ms.unit.display_name, lit])
 	# Rapid: the die rerolls for free (never the same entry; a copy of it may come up, so
 	# stacked copies chain, each copy dark once spent), and the mech may act again; a stepping
 	# die's free reroll steps it. Instant (Ryan, 12 November: "reroll after use, can land on
@@ -2327,7 +2318,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 	# (the Spin-Up's), so the same entry may show again and be spent again; its limit is what it
 	# costs and the odds (the Knuckle of Fury's five rage, the cylinder's sixth). A fight already
 	# won, or a machine its own spend wrecked, rolls nothing.
-	if f.acts_again() and not reset and ms.alive() and not (field_foes().is_empty() and reinforcements.is_empty()):
+	if f.acts_again() and ms.alive() and not (field_foes().is_empty() and reinforcements.is_empty()):
 		var instant := f.has(Face.Keyword.INSTANT)
 		_act_again(ms, instant)
 		var how := "rapid, rolls again"
@@ -2336,9 +2327,9 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 		log.append("%s: %s" % [ms.unit.display_name, how])
 	# Two things a round (the Needletail's Quick-turn Avionics Relay, Ryan, 11 November): its
 	# first spend of a weapon or of equipment turns its die to a live entry of the other kind and
-	# it acts again, once a round. A spend that acts again of its own (Rapid or Instant), or one whose kill reset it, leaves
+	# it acts again, once a round. A spend that acts again of its own (Rapid or Instant) leaves
 	# the turn for the next; a fight already won turns nothing.
-	elif not reset and not turn.is_empty() and ms.alive() and not (field_foes().is_empty() and reinforcements.is_empty()):
+	elif not turn.is_empty() and ms.alive() and not (field_foes().is_empty() and reinforcements.is_empty()):
 		var lit: Array[int] = []
 		for at in turn:
 			if not Effects.is_entry_disabled(ms.unit, at):
@@ -2682,7 +2673,7 @@ func _strike(f: Foe, t: MechState) -> void:
 		# shocks too, and a blow a Barrier took never touched either. Shocked is a setup and
 		# nothing else (Ryan, 11 October): the discharge a Shocked striker paid was thorns,
 		# scaling with the blows a horde lands, and it went.
-		if not bool(ev["barred"]) and Effects.shocks_striker(t.unit, bool(ev["blocked"])):
+		if not bool(ev["barred"]) and not bool(ev["blocked"]) and Effects.shocks_striker(t.unit):
 			_shock(f, t)
 		# A Ward turns away every rider a foe's blows lay this round; the damage has landed.
 		if Effects.has(t.unit, "ward"):
@@ -4649,15 +4640,6 @@ func _detonate(ms: MechState, target: Foe) -> void:
 	mine_tally["detonated"] += 1
 	log.append("%s detonates the Mine on %s" % [ms.unit.display_name, target.display_name])
 	_blow_mine(mine, 0 if target.is_massive() else target.rank, target.column, target.is_massive(), target.display_name)
-
-
-## The rounds an entry sits out once this machine spends it, after the round of the spend: its
-## own printed cooldown or the one its machine's passives grant every weapon and debuff (the
-## Kite's one), the longer. Rapid's own switch-off, the rest of the round, is never counted here.
-func cooldown_of(ms: MechState, f: Face) -> int:
-	if f == null:
-		return 0
-	return maxi(f.cooldown_rounds(), Effects.granted_cooldown(ms.unit, f))
 
 
 ## One attack's share of the reach tally (the runner's; the game never reads it).

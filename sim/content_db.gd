@@ -1649,8 +1649,6 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: heat_per_blow is the heat every blow taken this round adds: a positive number" % where)
 	if fd.has("shields") and (kind != "vent" or int(fd["shields"]) <= 0):
 		errs.append("%s: shields is a vent's shield half (the combined entry): the shield it gives after its vent, a positive number" % where)
-	if fd.has("resets_on_kill") and (kind != "attack" or not (fd["resets_on_kill"] is bool)):
-		errs.append("%s: resets_on_kill (true) is an attack's: if its spend kills, every dark entry comes back and its machine acts again" % where)
 	if fd.has("gathers_mines") and (kind != "attack" or not (fd["gathers_mines"] is bool)):
 		errs.append("%s: gathers_mines (true) is an attack's, a weapon's or a debuff's: every Mine on the field's other foes joins its target's" % where)
 	if fd.has("detonates") and (kind != "attack" or not (fd["detonates"] is bool)):
@@ -1833,8 +1831,8 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 		# as often, a whole number of two or more.
 		if effect == "split_strikes" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 2 or float(eff["value"]) != floorf(float(eff["value"]))):
 			errs.append("%s: split_strikes divides each roll among that many strikes: a whole number, 2 or more" % where)
-		if (effect == "weapon_cooldown" and int(eff.get("value", 0)) < 1) or (effect == "multiply_printed" and float(eff.get("value", 0)) <= 0.0):
-			errs.append("%s: %s needs a positive value (the rounds every weapon and debuff goes dark; the multiply on the printed number)" % [where, effect])
+		if effect == "multiply_printed" and float(eff.get("value", 0)) <= 0.0:
+			errs.append("%s: multiply_printed needs a positive value, the multiply on the printed number" % where)
 		# The Musk Ox's Forge (21 October): its magazine, the opening load, the trickle, the heat an
 		# ammo stands for, the reloads of a vent and a shield on itself.
 		if effect == "forge" and (int(eff.get("value", 0)) < 1 or int(eff.get("per_heat", 0)) < 1 \
@@ -1875,8 +1873,6 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 				errs.append("%s: target_rank's reach is direct or indirect" % where)
 			if str(eff.get("trigger", "")) != "on_attack":
 				errs.append("%s: target_rank reads a reach on an attack's own effects only (on_attack)" % where)
-		if effect == "add_armour_vs_rank" and not ["front", "back"].has(str(eff.get("rank", "front"))):
-			errs.append("%s: add_armour_vs_rank's rank is front or back" % where)
 		if effect == "seal_form" and (int(eff.get("value", 0)) <= 0 or int(eff.get("heat", 0)) < 0):
 			errs.append("%s: seal_form's value is the armour the seal grants, positive, and heat what it runs hotter a turn, not negative" % where)
 		if effect == "paradox" and int(eff.get("value", 0)) < 1:

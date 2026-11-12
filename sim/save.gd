@@ -79,7 +79,6 @@ static func to_dict(b: Battle) -> Dictionary:
 		"state": b.state,
 		"outcome": b.outcome,
 		"spent": _int_keys(b.spent),
-		"fought": _int_keys(b.fought),
 		"moved": moved,
 		"history": b.history,   # the turn's undo, in order: snapshots kept JSON's way already
 		"planned": b.planned,   # and the moves not yet played on the map
@@ -166,8 +165,6 @@ static func from_dict(d: Dictionary) -> Battle:
 	b.field.foe_profiles = b.db.pack_profiles()
 	for uid in d.get("spent", {}).keys():
 		b.spent[int(str(uid))] = int(d["spent"][uid])
-	for uid in d.get("fought", {}).keys():
-		b.fought[int(str(uid))] = true
 	for uid in d.get("moved", []):
 		b.moved[int(uid)] = true
 	# The undo and the plan (25 October), as they were; the snapshots read a JSON round trip's

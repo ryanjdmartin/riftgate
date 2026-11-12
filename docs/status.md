@@ -371,8 +371,9 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
     component's `finisher`; Claude's form, his to move); a kill recharging its shield whole
     (`refill_shield`); hull 12, shield 8 at a regen of 1. Both doubles read the foe's HP once a
     hit, so a two-shot gun is doubled whole or not at all. Gone from content: the flat heat, the
-    dark rounds, Hot Streak, the d3 (the die's minimum is four again); the engine keeps Reset and
-    a passive's cooldown, which no piece prints. A Kite leaving a fight at its heat maximum he
+    dark rounds, Hot Streak, the d3 (the die's minimum is four again); Reset and a passive's
+    cooldown, which the engine kept with no piece, left it on 12 November (the dead-code pass,
+    the Ammit's bullet's end). A Kite leaving a fight at its heat maximum he
     declined (the bible's withdrawal row); Phased on a kill he kept for the shadow panther. The
     model's third mount is ahead of the canopy, its gun sunk into the hull, the barrel out of a port
     and clear in a trough (the port gun, a new variant of the barrel class: no block to show), a

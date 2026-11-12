@@ -477,11 +477,10 @@ func test_drag_onto_a_target_spends_the_face() -> void:
 			assert_true(s._use_die(i, null), "blank discarded")
 		else:
 			assert_true(s._use_die(i, s.sk.mechs[(i + 1) % 3]), "support face spent on an ally")
-		if f.has(Face.Keyword.RAPID) or (f.resets_on_kill and not ms.assigned):
-			# A rapid entry gives the turn back (the Laminar Deflector's since 12 October), and so
-			# does a reset gun whose shot killed (the Kite's Pinion Driver, 21 October): the die
+		if f.has(Face.Keyword.RAPID):
+			# A rapid entry gives the turn back (the Laminar Deflector's since 12 October): the die
 			# rolls again and the machine acts again.
-			assert_false(ms.assigned, "a rapid face or a reset kill gives mech %d its turn back" % i)
+			assert_false(ms.assigned, "a rapid face gives mech %d its turn back" % i)
 			continue
 		assert_true(ms.assigned, "mech %d assigned" % i)
 		assert_false(s._dice[i].can_drag, "spent die no longer drags")

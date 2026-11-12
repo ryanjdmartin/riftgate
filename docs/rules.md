@@ -149,7 +149,7 @@ every machine is wrecked. There is no round limit.
   the team's). A reroll rerolls every unlocked,
   unspent die, before or after attacking, and lands on any other entry, never the one
   showing; a copy of it may come up, at the odds its copies give it. Every roll inside the round
-  follows the same rule (Rapid's free reroll, a Reset's, the Booster, the Uplink, the
+  follows the same rule (Rapid's free reroll, the Booster, the Uplink, the
   Reveille Horn), but Instant's, kept on purpose and shown on the die by its keyword: it rolls as
   the round's opening roll does, itself included, and spins every chamber on the Cassowary's
   die. Double-tap or hold a die to lock it, and again to unlock it; spending
@@ -275,7 +275,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   too (its riders, a Mine, a Shock, an Expose, a Lure's turn, a Swap, a gather, a detonation,
   the zap after the strikes), so the
   preview shows the chips beside the skull and no trigger goes unfired; a spend that asks
-  whether it killed (a kill trigger, a Reset) reads its own death check. The death check
+  whether it killed (a kill trigger, the Spindrift Salvo's rerolls) reads its own death check. The death check
   clears a kill's slot; a foe getting back up and a split's arrivals stand only once the spend
   is done, in the slot their unit died in, wherever a Swap moved it, so nothing the spend does meets them, and the preview shows a foe that will get back
   up or split with its return's chip in the skull's place. What a foe's tick fells comes back
@@ -474,8 +474,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - **Rapid** (any component): the die rerolls free onto any other entry, a copy of the same
   component included (a folded die among its live entries), and the machine acts again, so
   copies of one Rapid component chain. The entry spent stays dark for the rest of the round,
-  Rapid's own cooldown, never printed, so each copy acts once a round; no cleanse lifts it,
-  and a reset brings it back (Reset, below).
+  Rapid's own cooldown, never printed, so each copy acts once a round; no cleanse lifts it.
   A Rapid vent is never below tier three (the one is the Musk Ox's quick reload, locked on a
   tier three, which cools nothing), and a Rapid shield never below tier two (the Laminar
   Deflector's two).
@@ -493,10 +492,6 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   along the entry's foot by its clock: once spent, the entry is dark for the rest of the round
   and for that many rounds after it, shown on the die with the rounds left, this one included;
   the die may land on it, and a dark entry does nothing. No cleanse lifts it.
-- **Reset** (no piece prints it today): if its spend kills, every entry dark from a cooldown
-  comes back, itself included, and the machine acts again, the free roll never landing on the
-  entry just spent; a team reroll may bring it back up, and every kill resets it again, with
-  no limit.
 - **Finisher** (the Kite's Pinion Driver, ×2): against a foe at half its HP or less the
   weapon's printed number is multiplied, before its buffs as a passive's double is. The foe's
   HP is read once a hit, as the hit begins, so every strike of
@@ -1083,7 +1078,7 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
 ### Passives: triggers and conditions
 - Triggers: static, on attack, on injury, on round start (after the roll), on skirmish start,
   on hull damage (any hull lost: a blow, a bite or an overheat), on shield gain, on shield
-  granted (an ally this machine shields), on heat gain, out of combat, on foe status (a foe
+  granted (an ally this machine shields), on heat gain, on foe status (a foe
   gains a debuff), on stack (this machine applies stacks), on a kill (once after an attack of
   this machine's that killed, however many fell to it, arcs, spills and a vent's blast included:
   the Ammit's flare, the Kite's shield), on a foe killed (every kill the death check counts in

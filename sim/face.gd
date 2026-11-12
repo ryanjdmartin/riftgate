@@ -189,7 +189,6 @@ var reaches_all: bool:
 				targets = Target.ALLY
 var heat_per_blow: int = 0    # any entry: spending it, every blow a foe lands on its owner this round adds this much heat (the Siphon's, next round's fuel)
 var shields: int = 0          # a vent: the shield it also gives the machine it cools, after the vent (the combined entry, Ryan's go of 20 October: the Wake Diffuser)
-var resets_on_kill: bool = false   # an attack: if its spend kills, every entry dark from a cooldown comes back and its machine acts again (the Kite's Pinion Driver, 21 October)
 var gathers_mines: bool = false   # an attack: every Mine on the field's other foes joins its target's (the Lammergeier's Lorentz Contractor, Ryan, 9 November)
 var detonates: bool = false   # an attack: its target's Mine blows now, on it and every foe round it, after the spend's own Mine joined it (the Lammergeier's Syrinx Drone, Ryan, 9 November)
 # The Swallowtail's locked pieces (Ryan's go, 21 October; built that day):
@@ -386,7 +385,6 @@ static func from_dict(d: Dictionary) -> Face:
 	f.turns_die = bool(d.get("turns_die", false)) and f.kind == Kind.BUFF
 	f.heat_per_blow = maxi(0, int(d.get("heat_per_blow", 0)))
 	f.shields = maxi(0, int(d.get("shields", 0))) if f.kind == Kind.VENT else 0
-	f.resets_on_kill = bool(d.get("resets_on_kill", false)) and f.kind == Kind.ATTACK
 	f.gathers_mines = bool(d.get("gathers_mines", false)) and f.kind == Kind.ATTACK
 	f.detonates = bool(d.get("detonates", false)) and f.kind == Kind.ATTACK
 	f.vents = maxi(0, int(d.get("vents", 0))) if f.kind == Kind.SHIELD and not (d.get("vents") is String) else 0
@@ -500,8 +498,6 @@ func to_dict() -> Dictionary:
 		d["heat_per_blow"] = heat_per_blow
 	if shields > 0:
 		d["shields"] = shields
-	if resets_on_kill:
-		d["resets_on_kill"] = true
 	if gathers_mines:
 		d["gathers_mines"] = true
 	if detonates:
@@ -621,7 +617,7 @@ func acts_again() -> bool:
 ## (3 November), so none of them is.
 func has_unique_rule() -> bool:
 	return vents_all or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_burn > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not label.is_empty() or not printed.is_empty() \
-		or turns_die or heat_per_blow > 0 or resets_on_kill or gathers_mines or detonates \
+		or turns_die or heat_per_blow > 0 or gathers_mines or detonates \
 		or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine \
 		or regen_shield > 0 or action_price > 0 or rolls_target or kill_rerolls > 0 \
@@ -765,7 +761,6 @@ func duplicate_face() -> Face:
 	f.turns_die = turns_die
 	f.heat_per_blow = heat_per_blow
 	f.shields = shields
-	f.resets_on_kill = resets_on_kill
 	f.gathers_mines = gathers_mines
 	f.detonates = detonates
 	f.vents = vents
@@ -904,8 +899,6 @@ func rule_phrases() -> Array[String]:
 	if braces > 0:
 		out.append("braces" + ("" if braces == 1 else " ×%d" % braces))
 	if kind == Kind.ATTACK:
-		if resets_on_kill:
-			out.append("a kill brings back every entry its cooldowns darkened and it acts again")
 		if gathers_mines:
 			out.append("gathers every Mine onto it")
 		if detonates:
@@ -1088,8 +1081,6 @@ func describe() -> String:
 				s += " fires the hopper, +%d a load (%d a shot)" % [power_per_load, fires_hopper]
 			if braces > 0:
 				s += " braces" + ("" if braces == 1 else " ×%d" % braces)
-			if resets_on_kill:
-				s += " a kill brings back every entry its cooldowns darkened and it acts again"
 			if gathers_mines:
 				s += " gathers every Mine onto it"
 			if detonates:

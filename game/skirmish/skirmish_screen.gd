@@ -1276,7 +1276,7 @@ func _refresh(save: bool = true) -> void:
 		d.corrupted = Effects.corrupt_stacks(ms.unit, ms.face_index) if ms.face_index >= 0 else 0
 		# A dark entry shows the rounds it has left, this one included (the cooldown row).
 		d.dark = Effects.dark_rounds(ms.unit, ms.face_index, sk.round) if sf != null and sf.disabled else 0
-		d.cooldown = sk.cooldown_of(ms, sf)   # the rounds a spend darkens it, its passives in: a cost along its foot
+		d.cooldown = sf.cooldown_rounds() if sf != null else 0   # the rounds a spend darkens it: a cost along its foot
 		d.next_face = sk.next_face(ms) if ms.alive() else null   # a stepping die's next chamber
 		if d.next_face == null and ms.alive():
 			d.next_face = sk.turn_face(ms)   # the entry a one-of-each die turns to once this is spent (the Needletail's), when one stands
@@ -2196,7 +2196,7 @@ func _show_die(i: int) -> bool:
 			extra.append(EntryReadout.marked(EntryReadout.text_line("effect", said, "rule"), [EntryReadout.mark(shift, Glyphs.colour_for(shift))]))
 		var states: Array = _entry_states(ms, at)
 		states.append_array(_entry_marks(ms, at, i))
-		entry = EntryReadout.lines_for(sf, at + 1, shown, f, states, Effects.printed_grants(ms.unit, f), ContentDB.load_default(), EntryReadout.face_types(sf, ms.unit), extra, sk.cooldown_of(ms, sf))
+		entry = EntryReadout.lines_for(sf, at + 1, shown, f, states, Effects.printed_grants(ms.unit, f), ContentDB.load_default(), EntryReadout.face_types(sf, ms.unit), extra, sf.cooldown_rounds() if sf != null else 0)
 	if entry.is_empty() and ring.is_empty():
 		return false
 	_show_details("", _dice[i], ring, entry)
@@ -2577,7 +2577,7 @@ func _on_drag_started(i: int) -> void:
 	_ghost.after_blow = -1
 	_ghost.ricochet = _ricochets(sk.mechs[i], sf)
 	_ghost.form_mark = form_mark(sk.mechs[i], sf)
-	_ghost.cooldown = sk.cooldown_of(sk.mechs[i], sf)
+	_ghost.cooldown = sf.cooldown_rounds() if sf != null else 0
 	_ghost.charged = sk.charge_lands(sk.mechs[i])
 	_ghost.corrupted = Effects.corrupt_stacks(sk.mechs[i].unit, sk.mechs[i].face_index)
 	_ghost.slot = sk.mechs[i].face_index + 1

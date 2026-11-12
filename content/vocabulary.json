@@ -1554,16 +1554,6 @@
    }
   },
   {
-   "id": "out_of_combat",
-   "category": "trigger",
-   "name": "Out of combat",
-   "codex": "Passive trigger. Fires at the end of a battlefield phase in which this machine had no skirmish. Nothing may ride it: the shield is full as every fight opens, so nothing returns on the map.",
-   "status": "implemented",
-   "design": {
-    "holes": "Heat does not persist between fights, so a vent here would be nothing. No content uses it yet."
-   }
-  },
-  {
    "id": "command_die",
    "category": "commander",
    "name": "Command die",
@@ -1631,16 +1621,6 @@
    "status": "implemented",
    "design": {
     "holes": "A price as heat is. Counted after the round of the spend since 12 November (Ryan: \"change the count so 1 is how I intended\"; the round of the spend counted from 14 October, when a weapon's 1 cost nothing, the die spent for the round anyway). The city's battlefield abilities count their own cooldowns in phases."
-   }
-  },
-  {
-   "id": "reset",
-   "category": "component_property",
-   "name": "Reset",
-   "codex": "A rule printed on a weapon: if its spend kills, every entry dark from a cooldown comes back, itself included, and its machine acts again, the free roll never landing on the entry just spent; a team reroll may bring it back up, and every kill resets it again. No piece prints it today (the Kite's Pinion Driver did until its rework of 11 November).",
-   "status": "implemented",
-   "design": {
-    "holes": "No limit (Ryan, 24 October: \"Let the Kite reset infinitely. There are other ways to nerf it that aren't more rules exceptions\"): the free roll never lands on the entry just spent, so each action past the second is a team reroll back onto it and another kill, and the Kite's heat climbed with every kill. Free since 11 November, when the Kite gave it up; the Zoids walker's old verb."
    }
   },
   {
@@ -1977,7 +1957,7 @@
    "id": "static",
    "category": "trigger",
    "name": "Static",
-   "codex": "Passive trigger. Always on. Its effects change a machine's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat, armour, move or recharge; add_damage_taken and multiply_damage_taken on every incoming blow; weapon_cooldown (every weapon the machine fires sits out so many rounds after the round it fires; no passive grants one today); set_reach on a component (direct or indirect while a condition holds); suppress, which turns off another effect by id or tag.",
+   "codex": "Passive trigger. Always on. Its effects change a machine's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat, armour, move or recharge; add_damage_taken and multiply_damage_taken on every incoming blow; set_reach on a component (direct or indirect while a condition holds); suppress, which turns off another effect by id or tag.",
    "status": "implemented",
    "design": {
     "holes": "Every read asks the pipeline; nothing is written to a stat or a component, so an effect that is gone stops answering. A static reach rule cannot be conditioned on reach."

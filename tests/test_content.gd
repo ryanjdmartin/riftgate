@@ -1614,7 +1614,7 @@ func test_the_content_carries_a_live_hull_the_engine_runs() -> void:
 	db.load_dir(ContentDB.DIR)
 	var plate: Dictionary = _piece(db, "laminar_deflector")
 	plate["passive"] = {"id": "live_plate", "name": "Live Plate", "description": "", "effects": [
-		{"trigger": "static", "effect": "shock_on_block", "value": 1}]}
+		{"trigger": "static", "effect": "shock_on_hull_strike", "value": 1}]}
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["live_plate"] = plate
 	var coil: Dictionary = db.components["overcharge_coil"].duplicate(true)
@@ -1750,14 +1750,13 @@ func test_the_new_passive_fields_are_checked() -> void:
 	c["id"] = "odd"
 	c["name"] = "Odd Test"
 	c["passive"] = {"id": "odd", "name": "Odd", "description": "", "effects": [
-		{"trigger": "on_attack", "effect": "add_damage", "value": 5, "per_stack": "nonsense"},
-		{"trigger": "static", "effect": "add_armour_vs_rank", "value": 5, "rank": "sideways"}]}
+		{"trigger": "on_attack", "effect": "add_damage", "value": 5, "per_stack": "nonsense"}]}
 	db.chassis["odd"] = c
 	var hits := 0
 	for e in db.validate():
-		if e.begins_with("chassis odd") and (e.contains("per_stack") or e.contains("front or back")):
+		if e.begins_with("chassis odd") and e.contains("per_stack"):
 			hits += 1
-	assert_eq(hits, 2, "each bad field is named")
+	assert_eq(hits, 1, "the bad field is named")
 
 
 func test_the_foe_actions_run_and_the_validator_knows_their_shape() -> void:
@@ -2684,7 +2683,7 @@ func test_a_passive_one_off_lifts_the_effect_cap_by_one() -> void:
 	var four := {"id": "test_four", "name": "Four", "description": "Four effects.", "effects": [
 		{"trigger": "on_attack", "effect": "multiply_printed", "value": 2},
 		{"trigger": "on_attack", "effect": "add_heat", "value": 10},
-		{"trigger": "static", "effect": "weapon_cooldown", "value": 2},
+		{"trigger": "static", "effect": "add_stat", "stat": "hull", "value": 2},
 		{"trigger": "on_kill", "effect": "stack_status", "value": "rallied"}]}
 	db.chassis[cid]["passive"] = four
 	db.chassis[cid]["design"].erase("one_off")
