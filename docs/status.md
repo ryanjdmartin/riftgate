@@ -354,9 +354,10 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
     dark rounds, Hot Streak, the d3 (the die's minimum is four again); the engine keeps Reset and
     a passive's cooldown, which no piece prints. A Kite leaving a fight at its heat maximum he
     declined (the bible's withdrawal row); Phased on a kill he kept for the shadow panther. The
-    model's third mount is ahead of the canopy, its gun sunk into the hull, the barrel out of a port
-    and clear in a trough (the port gun, a new variant of the barrel class: no block to show), a
-    launcher there the round rack,
+    model's third mount is ahead of the canopy, a port at the back of a trough under a low curved
+    hood, every class there in its port form, its root inside the hull (four new variants: the
+    port gun, the port pair, the port rack and the port dish on its telescoping mast; the blade
+    standard),
     and the tail segment's face behind the canopy is an air intake (his, 12 November). Its brief is retired; his play is the
     to-do's.
   - The Skua: built as his "Ramping Dakka" (the bible's Kestrel row). Its passive gains a stack of Ricochet the first time each round one of its

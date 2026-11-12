@@ -642,7 +642,7 @@ godot --path . --resolution 360x640 -s tools/gait_clip.gd -- clydesdale wainwrig
 BPY_PYTHON=.bpy/bin/python tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger
 tools/spriter/.venv/bin/python tools/lowforge/glbcmp.py art/models/badger.glb /tmp/badger.glb   # a rebuild's geometry against the committed file
 # the silhouette classes a swapped component wears at a gun mount (models_low.SHAPES) and their variants (VARIANTS: the round
-# launcher, the port gun and the port pair, barrels with their receiver inside the hull, which a mount's `fits` may declare for its class, with its scale and its sink back along the mount's line), every maker's metal, then re-import
+# launcher, and the port forms for a mount behind a port's wall, their roots inside the hull: the port gun and the port pair, barrels without their receiver, the port rack, longer and thinner, and the port dish on its telescoping mast; a mount's `fits` may declare one for its class, with its scale and its sink back along the mount's line), every maker's metal, then re-import
 tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes
 # one machine wearing swapped components on its mounts ("2:" bares a mount; armour and vents show nowhere); a class alone: <chassis> shapes/barrel_minerva; rendered bare
 RIFTGATE_FIT="1:photosphere_lance,4:blazethrower" godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva fit.png front 480 480
