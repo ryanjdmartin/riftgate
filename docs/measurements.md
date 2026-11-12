@@ -8610,3 +8610,81 @@ a heat probe over the same fights, prices, cooling and gauge laid over the loade
 the engine's own `Policy` counts for holds and overheats (`forced_holds`, `overheats`,
 `overheat_hull`). The grid priced the debuff devices with the weapons; the shape and its
 four-trio read do not.
+
+## 12 November, the four over-budget formations cut toward the budget, and the second battle read whole
+
+Ryan, 12 November, on whether the four formations that breach or burn may come into the
+band with the breach rule left alone: "Yes go ahead with 2." And of the tuning's anchor:
+"Important to get the convergence 2 fight tuned around real tier 1s with real tier 1 numbers
+for damage, defense and heat, and then move on to the scaling for everything from there."
+Main at `366b10e`; main's `ea2f143` since (the Ammit's flare, the dead-code pass) moves none
+of these machines or foes. The fight bot (greedy) throughout, each a direction.
+
+**The four formations.** Each fought by trios of built machines that are tier one under any
+4-4-2 (Honey Badger, Skua, Cassowary; Honey Badger, Storm Petrel, Prairie Dog; Honey Badger,
+Storm Petrel, Cassowary) and one with the Polar Bear (Polar Bear, Skua, Cottonmouth), the
+foes' numbers laid over the content, ten seeds a variant and twenty for the first and last
+rows; a cell the range over the trios. Hull lost is of the trio's hull, the budget 5%.
+
+| The formation | The numbers | Rounds | Hull lost |
+|---|---|---|---|
+| The sandworm ambush | as it was: the sandworm 36 hit points, a maw of 8, plate 1 | 7.9 to 13.6 | 29 to 43% |
+| | the maw 4, 28 hit points | 6.1 to 9.9 | 16 to 21% |
+| | the maw 3, 24 hit points | 5.7 to 8.3 | 11 to 15% |
+| | the maw 3, 22 hit points, no plate | 4.2 to 5.1 | 8 to 10% |
+| | the maw 3, 14 hit points, the plate kept (landed) | 4.2 to 5.4 | 9 to 10% |
+| The knights' vigil | as it was: the zombie knight 8 hit points, a cleaver of 6, plate 1 | 5.3 to 8.5 | 25 to 47% |
+| | the cleaver 3 | 5.1 to 8.0 | 12 to 22% |
+| | the cleaver 3, 6 hit points, no plate | 3.1 to 3.8 | 4 to 7% |
+| | the cleaver 3, 4 hit points, the plate kept (landed) | 3.0 to 4.0 | 5 to 10% |
+| The ember pyre | as it was: the bomb 8, the salamander and the drake 5 | 3.5 to 5.7 | 8 to 24% |
+| | the bomb 4, the salamander and the drake 4 (landed) | 3.6 to 4.8 | 6 to 13% |
+| The magma vent | as it was: the magma elemental 40 hit points, a fist of 8, plate 1 | 7.7 to 13.8 | 27 to 57% |
+| | the fist 3, 26 hit points, with the Peak's blows as landed | 5.6 to 8.9 | 10 to 16% |
+| | the fist 3, 26 hit points, no plate | 4.0 to 5.2 | 6 to 12% |
+| | the fist 4, 14 hit points, the plate kept (landed) | 4.3 to 5.9 | 8 to 15% |
+
+Read.
+
+- A breach is hull whatever the shield holds, so a breaching blow has to be small to fit a
+  budget of a twentieth: 3 or 4 where it was 6 or 8. At those numbers the four cost a trio a
+  twentieth to a seventh of its hull, about twice what a formation with no breach costs. A
+  blow every round cannot go lower without being a 1 or a 2; what would is a telegraph, the
+  blow on a count the squad can answer, which is a kit and not a number.
+- The plate was the multiplier. A basic gun of 2 does 1 through plate of 1, so 36 hit points
+  under plate were 72 to a cold gun. Taking the plate off and cutting the hit points land
+  alike in cost and rounds, so the plate stays as the knight's and the giants' own and the
+  hit points came down: the warm gun and the big blow still matter against them.
+- The Polar Bear's trio pays the most to each (10 to 15%): it holds no Barrier and the least
+  damage.
+- Beside them, unlanded: the plain giants (the Treant, the Barrow Giant) at 16 hit points run
+  5.0 to 6.2 rounds where they run 6.6 to 10.8 at 32, for the same 2 to 3%; and the fodder
+  a blow harder brings the grave throng to 3 to 5% and the gel wall to 4 to 13%, the goblin
+  horde staying free until two harder.
+
+**The second battle, whole.** Four tier-one machines against a tier-one rift at Convergence 1
+(the second battle of a run), twenty seeds a domain, three squads (Honey Badger, Skua, Cassowary, Storm Petrel;
+Honey Badger, Storm Petrel, Prairie Dog, Cottonmouth; Honey Badger, Skua, Cottonmouth,
+Cassowary), the runner's player with the race for the boss; a cell the range over the squads.
+Read before and after the four formations' numbers; only the Peak moved.
+
+| Domain | Won | Wiped | Rupture reached | Its turn | Hull then |
+|---|---|---|---|---|---|
+| The Meadow | 70 to 75% | 5 to 10% | 75 to 80% | 5.7 to 6.0 | 89 to 94% |
+| The Marsh | 65 to 75% | 5 to 10% | 75 to 80% | 5.9 to 6.2 | 80 to 86% |
+| The Waste | 10 to 15% | 50 to 75% | 35 to 65% | 6.6 to 7.3 | 52 to 59% |
+| The Peak, before | 5 to 20% | 55 to 65% | 30 to 40% | 7.9 to 8.2 | 36 to 50% |
+| The Peak, after | 15 to 25% | 50 to 55% | 30 to 40% | 7.5 to 8.0 | 54 to 58% |
+
+Read.
+
+- The Meadow and the Marsh are soft by the budget: the squad breaks the seal with nine
+  tenths of its hull where two formations, three duels and an elite are budgeted for about
+  half of it.
+- The Waste and the Peak are walls, and the four formations were not why: the Waste's rows
+  did not move at all, since its rift opens on the needler thicket and the ambush is its
+  third wave, after the seal. What wipes the squad there is the rest: lone machines the bot
+  sends at packs, the elites and the bosses.
+- So the anchor is two different problems by domain, and neither is a formation's number
+  alone.
+

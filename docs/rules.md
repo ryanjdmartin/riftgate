@@ -408,11 +408,12 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   the round as the lure would leave it (a machine's heat a blow taken included).
 - Every number inside a fight is single digits or low tens: a blow 1 to 6, big guns to 10, one
   capstone 12; an amp a point a stack; foe HP 2 to 8 for rank and file at tier one and to 16 at
-  tier three, 30 to 40 massive at tier one and to 56 at tier three, 12
+  tier three, 30 to 40 massive at tier one and to 56 at tier three (a massive that breaches
+  14 at tier one), 12
   to 24 heroes, an elite 16 to 60, the slate's bosses 72 at tier one (a core in parts 40, a part
   8 to 18, a boss that may rise once 50); a foe's blow 2 to 8 at tier one (the rank and file's
   mostly 2 or 3) and to 10 at tier three, a massive
-  foe's 7 or 8, a hero's 4 to 10, an elite's 7 to 18 and the slate's bosses' 10 to 20, sized
+  foe's 7 or 8 where a shield meets it and 3 or 4 where it breaches, a hero's 4 to 10, an elite's 7 to 18 and the slate's bosses' 10 to 20, sized
   against a shield that refills (at tier one no action of theirs takes the lightest machine
   from full: a breach under 20, and any one action's blows on one machine under its shield and
   hull together); machine hull 20 to 50 by size (the
@@ -420,7 +421,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   1 to 20 (1 to 30 if the pricing needs it), the maxima 10 to 14 (the Musk Ox's 8), a vent 3 to
   8 (the Entropy Condenser's 10 the capstone, paid in hull). The scales are magnitudes,
   not steps: any whole number may be used, and content sits a little past them where its
-  loops moved it (the Zombie Knight's 8 HP, the promoted forms' 32 to 48, a hero's finisher, a
+  loops moved it (the promoted forms' 32 to 48, a hero's finisher, a
   multiple of its blow, to 16). A move is a count of hexes, 1 to 6 (the machines' 3 to 6, the foes' 1 to 4).
   The content's numbers are the stock pass's fills as its loops moved them
   (`docs/measurements.md`; set by `tools/stock_fills.py`), the four Kestrel machines' by hand at the same scale; placeholders until play.
