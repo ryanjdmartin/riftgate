@@ -1767,6 +1767,12 @@ func buff_score(sk: Skirmish, who: Skirmish.MechState, f: Face) -> float:
 			score += phased_score(sk, who)
 		"rallied":
 			score += REROLL_SHARE * _team_raw_attack_mean(sk) * float(n)   # a team reroll more this round
+	# The foe in front (the Photosphere Lance's Weakened, 11 November): its blows this round a
+	# point lower a stack on each strike, never more than the blow, if it is to strike at all.
+	if f.front_status == "weakened":
+		var foe := sk.foe_in_front(who)
+		if foe != null and foe.attacks() and not foe.is_suppressed():
+			score += float(mini(sk.foe_blow(foe), f.front_stacks) * foe.strikes()) * HULL_WEIGHT
 	return score
 
 

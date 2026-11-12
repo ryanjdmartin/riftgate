@@ -137,6 +137,8 @@ var targets: int = Target.SELF_ALLY   # a shield, a vent or a buff: whom it may 
 var buff_status: String = ""  # a buff: the engine status it grants (Effects.STATUS id), with...
 var buff_stacks: int = 1      # ...this many stacks...
 var buff_rounds: int = 1      # ...through the end of this many rounds (1: this round)
+var front_status: String = "" # a buff: the foe status it lays on the foe in front of the machine it lands on (the Photosphere Lance's Weakened), with...
+var front_stacks: int = 0     # ...this many stacks
 var vents_all: bool = false   # an attack that fires the machine's whole heat: the gauge is empty after the shot...
 var power_per_heat: int = 0   # ...and each `per_heat` heat it fired adds this to the blow (the Afterburner Cannon, 28 September)
 var per_heat: int = 10        # ...the heat a step of power_per_heat stands for (the stock pass, 22 October: a field, 10 until the content landing)
@@ -329,6 +331,10 @@ static func from_dict(d: Dictionary) -> Face:
 		f.buff_status = str(d.get("status", ""))
 		f.buff_stacks = maxi(1, int(d.get("stacks", 1)))
 		f.buff_rounds = maxi(1, int(d.get("rounds", 1)))
+		var front = d.get("in_front", {})
+		if front is Dictionary and not front.is_empty():
+			f.front_status = str(front.get("status", ""))
+			f.front_stacks = maxi(1, int(front.get("stacks", 1)))
 	if f.kind == Kind.ATTACK:
 		f.vents_all = bool(d.get("vents_all", false))
 		f.power_per_heat = maxi(0, int(d.get("power_per_heat", 0))) if f.vents_all else 0
@@ -416,6 +422,8 @@ func to_dict() -> Dictionary:
 		d["status"] = buff_status
 		d["stacks"] = buff_stacks
 		d["rounds"] = buff_rounds
+		if not front_status.is_empty():
+			d["in_front"] = {"status": front_status, "stacks": front_stacks}
 	if vents_all:
 		d["vents_all"] = true
 		if power_per_heat > 0:
@@ -579,7 +587,7 @@ func cooldown_rounds() -> int:
 ## prints with its shells (Ryan, 2 November), and a shield's cooling the number under its steam
 ## (3 November), so none of them is.
 func has_unique_rule() -> bool:
-	return vents_all or power_per_missing > 0 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or self_burn > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() or not printed.is_empty() \
+	return vents_all or power_per_missing > 0 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or self_burn > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not rolls_again_on.is_empty() or not label.is_empty() or not printed.is_empty() \
 		or spins or turns_die or heat_per_blow > 0 or resets_on_kill or gathers_mines or detonates \
 		or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine \
@@ -677,6 +685,8 @@ func duplicate_face() -> Face:
 	f.buff_status = buff_status
 	f.buff_stacks = buff_stacks
 	f.buff_rounds = buff_rounds
+	f.front_status = front_status
+	f.front_stacks = front_stacks
 	f.vents_all = vents_all
 	f.power_per_heat = power_per_heat
 	f.per_heat = per_heat
@@ -870,6 +880,8 @@ func rule_phrases() -> Array[String]:
 			out.append(_action_text())
 		if rolls_target:
 			out.append("its die rolls again")
+		if not front_status.is_empty():
+			out.append(front_text())
 	out.append_array(_spin_phrases())
 	if not charged.is_empty():
 		out.append("%s: %s" % [charge_cost_text(), charged_form().describe()])
@@ -878,6 +890,11 @@ func rule_phrases() -> Array[String]:
 
 ## The Petrels' rules as the entry's text says them (built 30 October): the Salvo's kill rider,
 ## the Regenerator's rider on its own spender, the Booster's price for an ally's action.
+## What an entry lays on the foe in front of the machine it lands on, as its text says it.
+func front_text() -> String:
+	return "the foe in front of it gains %s ×%d" % [str(Effects.STATUS.get(front_status, {}).get("name", front_status)), front_stacks]
+
+
 func _kill_rerolls_text() -> String:
 	return "a kill brings %d reroll%s" % [kill_rerolls, "" if kill_rerolls == 1 else "s"]
 
@@ -948,6 +965,8 @@ func describe() -> String:
 				s += " " + _action_text()   # the Immelmann Booster's ally use, after what it does on itself
 			if rolls_target:
 				s += " its die rolls again"   # the Reheat Uplink's roll on the machine it lands on
+			if not front_status.is_empty():
+				s += " " + front_text()   # the Photosphere Lance's: the foe in front of the machine it lands on
 			if braces > 0:
 				s += " braces" + ("" if braces == 1 else " ×%d" % braces)
 			if not rolls_again_on.is_empty():

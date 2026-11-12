@@ -71,7 +71,7 @@ const ROWS_BOTTOM := {"BACK_Y": 72.0, "FRONT_Y": 266.0, "MECH_Y": 480.0, "LOG_Y"
 ## FIELD_THETA down there; the squad stands in SLOTS hexes of it, a smaller one leaving its
 ## spots empty, so the floor never changes with the squad.
 const FIELD_THETA := 30.0
-const SLOTS := 4
+const SLOTS := Skirmish.SQUAD_SPOTS
 const MECH_FOOT := 214.0    # a machine's hex centre below the top of its row
 const MECH_WINDOW := Rect2(-22.0, 14.0, 220.0, 256.0)   # a machine's view in its row: the floor camera's window it is drawn through
 const MECH_FILL := 0.96     # a machine's size in hexes at its class's full share (MechView3D.SIZE_FILL)
@@ -799,7 +799,7 @@ func _slot_count() -> int:
 ## The spot machine `i` stands in: a squad of one or two in the middle hexes, the outer ones
 ## left empty (Ryan, 29 October), a squad of three from the left.
 func _mech_slot(i: int) -> int:
-	return i + floori((_slot_count() - sk.mechs.size()) * 0.5)
+	return sk.mech_spot(i)   # the sim's rule, so the foe a machine faces is the one drawn in front of it
 
 
 ## How far machine `i` turns from facing the foes, toward the middle (Ryan, 29 October: "player
@@ -1723,6 +1723,9 @@ func _foe_rows(foe: Foe) -> Array:
 		# instead of the stacks, with the tooltip showing the riders"): the sea mine's glyph with its
 		# damage, its readout its keywords and what its fall does.
 		rows.append(status_row("mine", "mine", str(int(mine["damage"])), "%s; blows on every foe round its slot when it falls" % Skirmish.mine_text(mine), _foe_chip_colour("mine")))
+	var weak := Effects.stacks_of(foe, "weakened")
+	if weak > 0:
+		rows.append(status_row("weakened", "weaken", "-%d" % weak, "Weakened ×%d: its blows %d lower this round" % [weak, weak], _foe_chip_colour("weakened")))
 	for pin in Effects.HOLDERS.values():   # a pin's chip: the lock on the status it holds
 		if Effects.has(foe, pin):
 			rows.append(status_row(pin, Terms.glyph(pin), "", str(Effects.STATUS[pin]["name"]), _foe_chip_colour(pin)))

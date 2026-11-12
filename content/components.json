@@ -1088,22 +1088,21 @@
    "design": {
     "stage": "draft",
     "fantasy": "A beam drawn off the reactor's own surface. It burns what it touches and the machine with it.",
-    "niche": "The Stingray's locked gun: a hot energy burn on a line, so the passive always has heat to read and a stack to deepen."
+    "niche": "The Stingray's locked piece since 11 November (Ryan: \"target ally or self. The enemy directly in front of them gets the debuff, or if none in either rank in front, the closest column that does, searching left -right-left-right\"; \"I don't think it should deal damage\"; \"The stingray wasn't intended as an offensive only unit. The interesting take here is a defensive debuff plus an offensive buff. Normally the opposite are paired together, a defend buff with a status that damages while you're defended. Flipping the script is neat. Upgrades can redirect it to the primed+burn abuse as one of the branches\"): spent on itself or an ally, Empowered there and Weakened on the foe in front of it, both deepened by the Suite. Still hot, so the Suite has heat to read. Until then a Direct 4 Burn 2 gun, the Blazethrower's twin."
    },
    "face": {
-    "kind": "attack",
-    "reach": "direct",
-    "power": 4,
-    "keywords": [
-     "burn"
-    ],
-    "burn": 2,
-    "heat": 6
+    "kind": "buff",
+    "status": "overcharged",
+    "stacks": 2,
+    "heat": 6,
+    "in_front": {
+     "status": "weakened",
+     "stacks": 2
+    }
    },
    "passive": null,
    "tags": [
-    "beam",
-    "flame"
+    "beam"
    ]
   },
   {

@@ -10569,3 +10569,81 @@ func test_pinned_burning_burns_and_loses_no_stack_this_round() -> void:
 	sk.start_round()
 	sk.end_round()
 	assert_eq(Effects.stacks_of(a, "burning"), 2, "and it fades the round after")
+
+
+## Weakened (Ryan, 11 November: "Deals 1 less damage per stack with attacks. Lose all stacks at end
+## of round"; "Weaken can apply to both sides"): a foe's blow a point lower a stack, never below
+## nothing, through the enemy's turn and gone at the round's end; a machine's attacks the same.
+func test_weakened_lowers_blows_on_either_side_and_goes_at_the_rounds_end() -> void:
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.single(Face.attack(5, L)), 0, 1000)
+	sk.add_mech(m)
+	var foe := _ghoul(500, 4)
+	sk.add_foes([foe])
+	sk.begin()
+	sk.start_round()
+	var before := sk.foe_blow(foe)
+	var gained := {}
+	var turned := {}
+	sk._land_rider(foe, "weakened", 2, gained, turned)
+	assert_eq(sk.foe_blow(foe), before - 2, "its blow two lower")
+	sk._land_rider(foe, "weakened", 9, gained, turned)
+	assert_eq(sk.foe_blow(foe), 0, "never below nothing")
+	var hull := m.hull
+	sk.end_round()
+	assert_eq(m.hull, hull, "its blow landed as nothing")
+	assert_false(Effects.has(foe, "weakened"), "every stack gone at the round's end")
+	sk.start_round()
+	assert_eq(sk.foe_blow(foe), before, "and its blow whole again")
+	var pv := Effects.attack(m, Face.attack(5, L), 5, 0, foe)
+	Effects.stack(m, Effects.STATUS["weakened"], Effects.ROUNDS, "test", 2, Effects.DECAY_NONE, sk.round)
+	var weak := Effects.attack(m, Face.attack(5, L), 5, 0, foe)
+	assert_eq(int(weak["damage"]), int(pv["damage"]) - 2, "a machine's attack two lower")
+	assert_eq(Effects.cleanse(m), ["Weakened"], "and a Cleanse clears it")
+
+
+## The foe in front (the Photosphere Lance's; Ryan, 11 November: "You target ally or self. The
+## enemy directly in front of them gets the debuff, or if none in either rank in front, the closest
+## column that does, searching left-right-left-right"): a machine faces its spot's column, the
+## squad of three from the left; its front rank, then its back, then left, right. Synthetic piece.
+func test_a_buff_lays_its_rider_on_the_foe_in_front_of_the_machine_it_lands_on() -> void:
+	var lance := Face.from_dict({"kind": "buff", "status": "overcharged", "stacks": 2, "in_front": {"status": "weakened", "stacks": 2}})
+	var sk := Skirmish.new(1)
+	for k in range(3):
+		sk.add_mech(_mech("M%d" % k, Die.single(lance), 40, 1000))
+	var a := _ghoul(500, 3)
+	var b := _archer(500, 3)
+	var c := _ghoul(500, 3)
+	sk.add_foes([a, b, c])
+	sk.begin()
+	_regrid(sk, [[a, 0, 0], [b, 1, 1], [c, 0, 3]])
+	sk.start_round()
+	assert_eq([sk.mech_spot(0), sk.mech_spot(1), sk.mech_spot(2)], [0, 1, 2], "a squad of three from the left")
+	assert_eq(sk.foe_in_front(sk.mechs[0]), a, "column 0's front")
+	assert_eq(sk.foe_in_front(sk.mechs[1]), b, "column 1: no front, its back")
+	assert_eq(sk.foe_in_front(sk.mechs[2]), b, "column 2 empty: left first")
+	assert_true(sk.assign(2, sk.mechs[0]), "spent on the first machine")
+	assert_eq(Effects.stacks_of(sk.mechs[0].unit, "overcharged"), 2, "Empowered there")
+	assert_eq(Effects.stacks_of(a, "weakened"), 2, "Weakened on the foe in front of it")
+	assert_eq(Effects.stacks_of(b, "weakened") + Effects.stacks_of(c, "weakened"), 0, "and no other")
+	var two := Skirmish.new(1)
+	for k in range(2):
+		two.add_mech(_mech("M%d" % k, Die.single(lance), 40, 1000))
+	var w := _ghoul(500, 3)
+	two.add_foes([w])
+	two.begin()
+	assert_eq([two.mech_spot(0), two.mech_spot(1)], [1, 2], "a squad of two in the middle spots")
+	_regrid(two, [[w, 0, 1]])
+	two.start_round()
+	Effects.grant_buff(w, "ward", 1, "test", two.round)
+	assert_true(two.assign(0, two.mechs[0]), "on itself")
+	assert_false(Effects.has(w, "weakened"), "a Ward turns it away")
+
+
+## The grid cleared and the foes stood where a test says: [foe, rank, column] each.
+func _regrid(sk: Skirmish, cells: Array) -> void:
+	for col in range(sk.columns):
+		sk.front[col] = null
+		sk.back[col] = null
+	for cell in cells:
+		sk._place(cell[0], cell[1], cell[2])

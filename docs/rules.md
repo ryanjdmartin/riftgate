@@ -101,6 +101,11 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   holds one pack, a boss's with its escort, so no fight is given more than its slots hold.
 - At the start, foes take their ranks heaviest hitters first from the left (its heaviest
   move's damage times strikes, a breach 1 more; ties in arrival order).
+- The squad stands in four spots across the floor, one under each of the foes' columns: a squad
+  of three from the left, a squad of one or two in the middle spots, the outer ones empty; a
+  wrecked machine keeps its spot. A machine faces the column of its spot, and the foe in front of
+  it is that column's front rank, then its back; with neither standing, the next column left,
+  then right, then two left, two right. The Photosphere Lance lays its Weakened there.
 - A pack is its composition's grid (Content conventions): the count the map shows is the count the
   grid holds. Its fight, holding it alone, stands its foes as the grid has them: each cell, front
   then back, left to right, a foe of its kind, a massive one filling its column; a cell that
@@ -784,6 +789,10 @@ On a foe:
 - **Flak** (debuff): every blow of a weapon it takes deals a point more a stack, before its
   multiplies and its armour (a Shocked foe takes a strike aimed at it plus Flak, doubled); a
   debuff's blow stays nothing. The stacks halve at the end of each round, rounded down.
+- **Weakened** (debuff, on either side): its attacks deal 1 less a stack, an add before the
+  multiplies, never below nothing: a foe's blow, its intent showing it, or a machine's weapon.
+  Every stack goes as the round's timed effects run out, at the end of the enemy's turn. A foe's
+  Ward turns it away; a Cleanse clears it from a machine.
 - **Empowered** (buff, Rally): lands on every other foe on the field the moment the rally does,
   the rally's value in stacks, and every blow the foe lands hits a point harder a stack, an add
   before the move's factor as every add is. It halves at the end of each round, rounded down,

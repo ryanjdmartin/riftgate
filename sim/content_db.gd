@@ -1513,6 +1513,12 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 			errs.append("%s: gates belong to an attack, spent on a foe" % where)
 	# A consumer (the Backdraft Charge's, 22 October): one blow on one foe, eating every stack of
 	# a status the team puts on foes, a point more a stack (per_consumed).
+	# The foe in front (the Photosphere Lance's, 11 November): a buff that also lays a foe status,
+	# stacks 1 or more, on the foe in front of the machine it lands on.
+	if fd.has("in_front"):
+		var front = fd["in_front"]
+		if kind != "buff" or not (front is Dictionary) or not Effects.FOE_STATUSES.has(str(front.get("status", ""))) or int(front.get("stacks", 0)) < 1:
+			errs.append("%s: in_front is a buff's: {status, stacks} laying a status the team puts on foes (%s), 1 stack or more, on the foe in front of the machine it lands on" % [where, ", ".join(Effects.FOE_STATUSES)])
 	# A pin (the Hollow-point Harpoon's, 11 November): a status that halves, held on the target
 	# through the round's end.
 	if fd.has("holds") and (kind != "attack" or not Effects.HOLDERS.has(str(fd["holds"]))):

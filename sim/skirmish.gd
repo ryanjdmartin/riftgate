@@ -33,6 +33,7 @@ enum Outcome { NONE, VICTORY, DEFEAT, WITHDRAWN }   # WITHDRAWN is never produce
 ## Passed as an `int`, as every enum here is (CLAUDE.md).
 enum Pays { HEAT, AMMO, VENT }
 
+const SQUAD_SPOTS := 4   # the squad's spots across the floor, one under each of the foes' columns (the screen draws them)
 const DEFAULT_COLUMNS := 4   # the formation's width (Ryan, 23 September: four plays better than three)
 const REROLLS_PER_ROUND := 2   # two since 6 November (Ryan: a reroll gained is worth more, and two is the standard; a trial)
 ## The shapes a foe past a strike's target stands in (area by shape, numbered: Ryan, 28 October),
@@ -1877,6 +1878,60 @@ func can_assign(mech_index: int, target) -> bool:
 	return false
 
 
+## The spot machine `i` stands in across the floor (Ryan, 29 October): a squad of one or two in
+## the middle spots, the outer ones left empty, a squad of three from the left; a wrecked machine
+## keeps its spot. The screen draws the squad by it, and a machine faces the foes' column of its
+## spot (Ryan, 11 November: "The machines are lined up, very clearly, in four columns with gaps
+## for missing ones").
+func mech_spot(i: int) -> int:
+	return i + floori((maxi(SQUAD_SPOTS, mechs.size()) - mechs.size()) * 0.5)
+
+
+## The foes' column a machine faces: its spot's, within the formation's width.
+func mech_column(ms: MechState) -> int:
+	return clampi(mech_spot(mechs.find(ms)), 0, columns - 1)
+
+
+## The foe in front of a machine (the Photosphere Lance's; Ryan, 11 November: "The enemy directly
+## in front of them gets the debuff, or if none in either rank in front, the closest column that
+## does, searching left-right-left-right"): its column's front rank, then its back; else the next
+## column left, then right, then two left, two right. Null with no foe standing.
+func foe_in_front(ms: MechState) -> Foe:
+	var c := mech_column(ms)
+	var order: Array[int] = [c]
+	for d in range(1, columns):
+		order.append(c - d)
+		order.append(c + d)
+	for col in order:
+		if col < 0 or col >= columns:
+			continue
+		for rank in [0, 1]:
+			var foe := foe_at(rank, col)
+			if foe != null and foe.alive():
+				return foe
+	return null
+
+
+## What an entry lays on the foe in front of the machine it lands on (the Photosphere Lance's
+## Weakened beside its Empowered), deepened by the spender's passives as any stack it lays.
+func _lay_in_front(ms: MechState, who: MechState, f: Face) -> void:
+	if f.front_status.is_empty() or who == null:
+		return
+	var foe := foe_in_front(who)
+	if foe == null:
+		return
+	var gained := {}
+	var turned := {}
+	var n := _stacks_from(ms, f.front_status, f.front_stacks)
+	_land_rider(foe, f.front_status, n, gained, turned)
+	if not Effects.turns_mark(foe, f.front_status):
+		log.append("%s lays %s ×%d on %s, in front of %s" % [ms.unit.display_name, str(Effects.STATUS[f.front_status]["name"]), n, foe.display_name, who.unit.display_name])
+	_tell_turned(turned)
+	for x in gained.keys():
+		for sid in gained[x]:
+			_foe_gained_status(x, sid)
+
+
 ## Whether die `mech_index` has anywhere to be spent now: alive and unspent, an entry that is no
 ## blank (a dark one is), and a target it may land on (a foe in reach, a machine its chip
 ## allows). The screen's END TURN pulses once no die has (25 October).
@@ -2088,6 +2143,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 					if m == null:
 						continue
 					log.append("%s buffs %s: %s ×%d%s" % [ms.unit.display_name, w.unit.display_name, m.name, stacks, "" if f.buff_rounds == 1 else " for %d rounds" % f.buff_rounds])
+					_lay_in_front(ms, w, f)
 					if f.buff_status == "phased":
 						_phase(w)
 					elif f.buff_status == "rallied":
@@ -4567,7 +4623,10 @@ func _spend_primers(ms: MechState) -> void:
 func _land_rider(foe: Foe, sid: String, n: int, gained: Dictionary, turned: Dictionary, laid = null) -> void:
 	if n <= 0:
 		return
-	Effects.stack(foe, Effects.STATUS[sid], Effects.SKIRMISH, "mech", n, Effects.status_decay(Effects.STATUS[sid]))
+	if Effects.lasts_round(sid):
+		Effects.stack(foe, Effects.STATUS[sid], Effects.ROUNDS, "mech", n, Effects.DECAY_NONE, round)   # every stack goes at the round's end (Weakened)
+	else:
+		Effects.stack(foe, Effects.STATUS[sid], Effects.SKIRMISH, "mech", n, Effects.status_decay(Effects.STATUS[sid]))
 	_note_status(gained, foe, sid, turned)
 	if laid == null or Effects.turns_mark(foe, sid):
 		return   # its Ward turned the lay away: nothing laid to tell

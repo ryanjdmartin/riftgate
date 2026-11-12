@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 190 implemented, 5 planned, 0 idea.
+Status: 191 implemented, 5 planned, 0 idea.
 
 ## Resource
 
@@ -120,6 +120,7 @@ Status: 190 implemented, 5 planned, 0 idea.
 | **Shocked** | Foe status. When a weapon's strike aimed at this foe lands, it deals double damage and the status clears. A blow that only reaches it (an area, a Chain's arc, a spill) neither doubles nor clears it, and equipment (a lure, a probe) leaves it standing. Never stacks. Laid by the Shock keyword, by a Charged machine's weapon, and on a foe that strikes the bare hull of a machine carrying Retaliate. | implemented |
 | **Pinned Flak** | Foe status, from the Hollow-point Harpoon. Its Flak does not halve at this round's end. Until the round's end; refreshed, never added. | implemented |
 | **Pinned Burning** | Foe status. Its Burning burns and loses no stack this round. Until the round's end; refreshed, never added. | implemented |
+| **Weakened** | Status, on a foe or a machine. Its attacks deal 1 less damage a stack, never below nothing. Every stack goes at the round's end. A foe's Ward turns it away; a Cleanse clears it from a machine. | implemented |
 | **Exposed** | Foe status. In Direct reach of every machine as if its column's front were empty, and its armour counts for nothing, its own and any Armoured. Through the next round; refreshed, never added. | implemented |
 | **Empowered** | Machine status. Each stack is +1 damage on this machine's attacks, flat, so the count is the bonus. At the end of each round it halves, rounded down, whatever granted it, until it is gone. On the Ammit nothing of it fades: its Quintessence Tap keeps every stack for the battle. | implemented |
 | **Sealed** | Ability, the Polar Bear's form. Equipment it spends on itself seals it: armour up by its Lockdown's number, its own cooling stopped, its Cryo Flinger gaining Spread, and it runs hotter at the end of each turn. A weapon it fires opens it; equipment on an ally and a debuff, its lure among them, leave it as it is. No Purge touches it. | implemented |
@@ -322,6 +323,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Overshield** (implemented): Rare because every overshield on the field makes shield max a soft number; the fade is the whole safeguard, since a lasting excess would stack a team past every blow.
 - **Pinned Flak** (implemented): Ryan, 11 November: "The Flak pin should be its own status that gets applied for one turn. I assume we're going to want a similar one for burning as well." The name is a session's draft.
 - **Pinned Burning** (implemented): Ryan, 11 November: coded in beside Flak's pin, "since the Mastema will want it as a fitted piece, if nothing else". No piece lays it yet. The name is a session's draft.
+- **Weakened** (implemented): Ryan, 11 November: "I'd like to code in Weaken ... Weaken (debuff): Deals 1 less damage per stack with attacks. Lose all stacks at end of round. Weaken can apply to both sides, it's not a bad soft CC from the foes to apply. I'd like a better name than weaken, though." The name is a session's draft. Laid by a foe in its own turn it would end before the machine's next attack: a foe's Weaken wants its own clock when one comes.
 - **Exposed** (implemented): The id is exposure, since exposed names the formation word and the foes' default aim.
 - **Empowered** (implemented): Every grant is one status on the machine and the stacks add up. A halving rule has no duration, so a buff component grants stacks and no rounds. The name is a placeholder.
 - **Sealed** (implemented): One chip, renewing, never stacking: the armour it grants is tied to the form. The numbers are placeholders.

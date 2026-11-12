@@ -295,6 +295,12 @@ const STATUS := {
 	# loop); Flak's shape on the other body, so the chip is a number and every machine feels it,
 	# the shield taking the extra first as it takes any blow. An ally's Cleanse lifts it; a Ward
 	# turns the crush away as it turns any rider.
+	# Weaken (Ryan, 11 November: "Deals 1 less damage per stack with attacks. Lose all stacks at
+	# end of round"; "Weaken can apply to both sides"): a machine's attacks through its pipeline's
+	# add (never below nothing), a foe's blow through its attack's; every stack goes as the round's
+	# timed effects run out (lasts: round). The name is a session's draft.
+	"weakened": {"id": "weakened", "name": "Weakened", "description": "Its attacks deal 1 less damage a stack. Every stack goes at the round's end.", "lasts": "round",
+		"tags": ["weaken", CLEANSABLE], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": -1}, {"trigger": "static", "effect": "add_attack", "value": -1}]},
 	"crushed": {"id": "crushed", "name": "Crushed", "description": "Every blow it takes deals a point more a stack, through the next round.", "decay": "none",
 		"tags": [CLEANSABLE], "effects": [{"trigger": "static", "effect": "add_damage_taken", "value": 1}]},
 	# Flak (Ryan's go, 19 October; built 21 October): Wainwright & Sutler's on-hit, laid by the
@@ -486,7 +492,7 @@ static func brace_stacks(value: int) -> int:
 ## What a foe carrying a status means (target_status, the Susceptibility Tensor; 10 October):
 ## what the team put on it. Never Numbed (a buff only a Purge lowers, 2 November), and never the foe's
 ## own buffs (Braced, Empowered, Undying).
-const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed", "flakked", "exposure", "mine", "pinned", "pinned_burning"]
+const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed", "flakked", "exposure", "mine", "pinned", "pinned_burning", "weakened"]
 ## The status that holds each status a piece may hold on its target (Face.holds).
 const HOLDERS := {"flakked": "pinned", "burning": "pinned_burning"}
 ## target_status: the foe struck carries any of FOE_STATUSES (Numbed and its own buffs never count).
@@ -799,6 +805,8 @@ static func status_decay(def: Dictionary) -> int:
 ## look a round on, the hold's line): half, rounded down, on a halving clock; a stack less on a
 ## stack a tick (a foe's statuses tick at its action); nothing on a round's; all of it on none.
 static func stacks_next_round(def: Dictionary, n: int) -> int:
+	if str(def.get("lasts", "")) == "round":
+		return 0
 	match status_decay(def):
 		DECAY_HALF:
 			return int(n / 2.0)
@@ -888,6 +896,12 @@ static func held_statuses(u) -> Array:
 		if str(pair[0].get("effect", "")) == "hold_status" and not out.has(str(pair[0].get("value", ""))):
 			out.append(str(pair[0].get("value", "")))
 	return out
+
+
+## Does a status last the round, every stack going as the round's timed effects run out
+## (Weakened)? Such a status is stacked for the round, not the skirmish.
+static func lasts_round(status_id: String) -> bool:
+	return str(STATUS.get(status_id, {}).get("lasts", "")) == "round"
 
 
 static func supports(trigger: String, effect: String) -> bool:
@@ -2013,7 +2027,7 @@ static func purge(u, n: int = 1) -> Array[String]:
 ## The marks the team lays on foes (28 October), what a foe's cleanse takes off its own: never
 ## Numbed (the buff nothing removes), never Suppressed (so a stun stays sure), never Guarded or a
 ## buff.
-const TEAM_MARKS := ["burning", "flakked", "cryoed", "vitriol", "shocked", "exposure", "webbed", "paradox", "mine", "pinned", "pinned_burning"]
+const TEAM_MARKS := ["burning", "flakked", "cryoed", "vitriol", "shocked", "exposure", "webbed", "paradox", "mine", "pinned", "pinned_burning", "weakened"]
 
 
 ## How many of the team's marks a foe carries, each status one mark.

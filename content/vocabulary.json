@@ -617,6 +617,22 @@
    }
   },
   {
+   "id": "weakened",
+   "category": "status",
+   "name": "Weakened",
+   "codex": "Status, on a foe or a machine. Its attacks deal 1 less damage a stack, never below nothing. Every stack goes at the round's end. A foe's Ward turns it away; a Cleanse clears it from a machine.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 11 November: \"I'd like to code in Weaken ... Weaken (debuff): Deals 1 less damage per stack with attacks. Lose all stacks at end of round. Weaken can apply to both sides, it's not a bad soft CC from the foes to apply. I'd like a better name than weaken, though.\" The name is a session's draft. Laid by a foe in its own turn it would end before the machine's next attack: a foe's Weaken wants its own clock when one comes.",
+    "table": {
+     "kind": "debuff",
+     "on": "both",
+     "stacks": "Yes: every Weaken adds",
+     "lasts": "Until the round's end"
+    }
+   }
+  },
+  {
    "id": "exposure",
    "category": "status",
    "name": "Exposed",
