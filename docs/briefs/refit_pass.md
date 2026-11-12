@@ -1387,18 +1387,20 @@ with four machines and the one he called where "the real game starts"; real tier
 the chassis that are tier one under 4-4-2, with tier-one numbers; and every chassis number
 may move, hull and shield with the rest.
 
-**4-4-2, from the records.** Four tier ones a city maker, none for the Arsenal by its rule.
+**4-4-2, with his marks of 12 November** ("That's probably fine for 4-4-2 for now"). Four
+tier ones a city maker, none for the Arsenal by its rule.
 
-| Maker | Tier one under 4-4-2 | Built today | What the records leave open |
+| Maker | Tier one under 4-4-2 | Built today | His marks, and what they leave |
 |---|---|---|---|
-| Minerva | the Honey Badger, the lure tank, the Wild Boar, the mole | the Honey Badger; the Wild Boar at tier two | His word was "either Boar or Mole will move down", and four takes both. The Polar Bear goes up as the lure tank lands and is dealt at tier one until then. |
-| Kestrel | the Skua, the Storm Petrel, and two of the Puffin, the Magpie and the Snowy Owl | the Skua, the Storm Petrel | The Puffin leans to tier two since 11 November, which makes it the Magpie and the Owl; its brief has the Magpie at tier one under 4-4-2 and the Owl "may" be. |
-| Wainwright & Sutler | the Prairie Dog, the Cassowary, the Cottonmouth, the Dingo | all four; the Dingo at tier two | The Dingo is his move down of 19 October. It has two actions a turn and two locked pieces, so its numbers come down with it. |
-| Aphelion | the line frame, Static, the Barrier and Ward support, and the Stingray or a fourth | none certain | "I never actually intended for the stingray or baboon to be tier 1." Its three certain tier ones are briefs. |
+| Minerva | the Honey Badger, the lure tank, and from the Wild Boar, the mole and the echidna | the Honey Badger; the Wild Boar at tier two | "I think the choice now would be between the mole and the echidna depending on their mechanics." The same day he calls the Boar's Plow "a tier 2 piece", so whether the Boar is the third with one of the two, or stays at two with both of them down, his words do not say. The Polar Bear goes up as the lure tank lands and is dealt at tier one until then. |
+| Kestrel | two of the three fast ones (the Skua, the new Kite, the Needletail), the Storm Petrel, and a support-lean | the Skua, the Storm Petrel; the Kite and the Needletail at tier two | "Argument could be made for the new kite or Needletail, too. I think two of the three fast Kestrels can be tier 1, and the storm petrel, and then whatever of Puffin and the two undesigned ones makes the most sense as a support-lean. Probably won't be the Owl from my current ideas." |
+| Wainwright & Sutler | the Prairie Dog, the Dingo, and the Cassowary and the Cottonmouth unless either is too complex | all four; the Dingo at tier two | "I think the set makes sense, I'm just not sure if the Cassowary or Cottonmouth are too complex. Could be Clydesdale for either. The cars stay." The Dingo comes down with two actions a turn and two locked pieces, so its numbers come down with it. |
+| Aphelion | open | none certain | "I really don't know and that's because we don't have anything locked in, relatively." |
 
-Built and tier one under any reading: the Honey Badger, the Skua, the Storm Petrel, the
-Prairie Dog, the Cassowary and the Cottonmouth. The tuning uses those six until he marks the
-rest.
+So the tier ones no mark leaves open are the Honey Badger, the Storm Petrel, the Prairie Dog
+and the Dingo once it is down. The reads of this section used six, with the Skua, the
+Cassowary and the Cottonmouth beside the first three, which stands for now on his word; each
+open place is its chassis's session's.
 
 **The four formations, landed** (`docs/measurements.md`, 12 November): the sandworm 14 hit
 points and a maw of 3, the zombie knight 4 and a cleaver of 3, the magma elemental 14 and a
@@ -1488,7 +1490,9 @@ cited there was two rounds dark, not one).
      with no machine hot: the squad blocks and braces where it could fire, because a round
      costs it nothing. That is the parked question of what prices a round.
    On the bench beside them: a second announced blow on every elite; a blow no Barrier
-   takes (which is breach by another name, and breach is parked).
+   takes (which is breach by another name, and breach is parked). His question of the same
+   day is wider, whether the Barrier is a basic at all (section 14), and if it is not, the
+   rest is not needed.
 2. The first battle. It was not scaled: it fights tier one's foes with three machines on
    tier one's lines, so the anchor's numbers made it harder (a mustering trio with the
    Honey Badger won 40% of the Meadow's and wins 0 to 5%). The reads part two things. Hull:
@@ -1518,3 +1522,88 @@ levels' ladder with them (a machine's stat line by level, the foes' by tier), si
 a higher tier shares with tier one moved today and stand unread there (the goblin, the
 wolf, the gel, the zombie knight, the bomb and the salamander, with the elites and the
 bosses, which stand at every tier).
+
+## 14. The Barrier's place (12 November, a discussion; nothing built)
+
+His words: "So lets discuss Barrier, then. Is it toxic? Is it worse than giving numerical
+shield? Should it be rare or locked? An argument could be made that a chassis with barrier is
+a sub for a Tank on a team, and thus it's not widely available. One thing we could do, which
+sounds terrible, is have a difference between shield and temporary shield. Or, we go back to
+some shield-granting pieces, as a keyword on Equipment so its not ubiquitous as a component
+type, but still exists. Armour grants and Barrier grants are very binary, shield is a buffer. I
+liked our simplification, but maybe we went too far. I'm really not sure. What do you think?"
+
+**What the records already say.**
+
+- 14 October, the shield row: under the old rule a small shield "was secretly 'negate one
+  blow', worth the biggest blow it met rather than its number, and the content kept
+  rediscovering it"; the one-blow block became "a priced, single-target buff of its own".
+- 17 October, the Barrier row: "if a Barrier grows common the foes need more damaging riders
+  to carry past it".
+- 22 October: its one carrier was the Blast Door, tier one, in no stock.
+- 9 November: of three shapes for the shield he took the second, an innate gauge with regen
+  and no shield entry, over the third, entries that overshield and drop at the round's end;
+  and of shield and vent entries, "perfect commander actions".
+- 10 November, the minimal swaps: the Halo, a shield of 6 until then, became the Barrier
+  basic, Claude's lean in section 3. That is the step that put a Barrier on eight stock dice
+  and took its price away.
+- The rules already hold a temporary shield: Overshield, a shield that may pass the gauge and
+  fades at the round's end, on the Puffin's Backwash Ionizer.
+
+**What the reads say** (`docs/measurements.md`, 12 November; the Halo's slot holding each
+form, the foes untouched):
+
+| The Halo's slot holds | A formation | An elite | A boss | The Gargantuan King's fight |
+|---|---|---|---|---|
+| A Barrier, cooldown 1 (content) | 5.9% | 9.5% | 21.4% | 23 rounds |
+| Overshield 4 | 6.1% | 17.6% | 34.0% | 10 rounds |
+| Overshield 6 | | 15.4% | 27.2% | 11 rounds |
+| Shield 4, plain | 6.4% | 18.8% | 37.7% | 10 rounds |
+| The Shoring Jack | 6.6% | 19.8% | 37.7% | 10 rounds |
+
+A Barrier takes one blow in eight in a formation, two in five from an elite or a boss, and
+seven in ten from the ones whose kit is one blow a round.
+
+**The bench**, each with the test it meets or fails:
+
+1. The Barrier a basic with its cooldown, as content has it. It fails the test of 14
+   October: a block worth the biggest blow it meets, on eight dice, for a round's cooldown.
+   No foe's number tunes against it, and three machines turning it stall a single-blow boss.
+2. That, with the machine's rest (section 13). The same failure, milder: the elites' mean 11%
+   where the piece's cooldown alone gives 9.5%.
+3. The Barrier rare or locked, and the Halo's slot a temporary shield, Overshield, on
+   equipment. Claude's lean. The elites come to 15 to 18% and the bosses to 27 to 34% on a
+   number that tunes, the stall goes, and nothing of the refit's simplification moves: it is
+   a buff for the round, as Armoured is, and no recovery.
+4. The Barrier rare, and the slot a plain shield grant. It reads as no piece: a gauge is full
+   as a fight opens, and after that the grant is recovery, which the regen is already and
+   which he gave to the commander layer.
+5. The Barrier rare, and the slot the Jack or a gun. The simplest; the elites 20% and the
+   bosses 38%, and Armoured the one defensive basic.
+6. Shield and temporary shield as two gauges. Not needed: Overshield is one bar and one word.
+
+**Claude's lean, in full**: the third. The Halo grants Overshield on itself or an ally, 4 to 6
+by the reads (it was a shield of 6). The Barrier keeps its cooldown and lives where a chassis
+is built round it, his tank's substitute: the Wild Boar's Plow, Aphelion's Barrier and Ward
+support when it is designed, and the Blast Door as the one find, as it was on 22 October. A
+plain shield grant stays off the die. The machine's rest is not needed. The numbers set
+against the Barrier come back: the six elites raised for the anchor, and the bosses read again,
+the Waste's first.
+
+**The holes in it**:
+
+- Stacking. Overshield from three machines on one target rebuilds the block at three dice.
+  Claude's read: fair, three turns for one blow, and the reads show the stall gone at 4 and
+  at 6; the cap, if wanted, is one grant a machine a round, as the Barrier is one stack.
+- Breach passes it, as it passes every shield. A breaching foe still asks for a Ward, the
+  rare Barrier, or the kill.
+- The Nob's rage feeds on shields raised, by the point. It will punish this hard, which may
+  be the point of the Nob.
+- Armoured is a wall against a blow at or under its number and partial above it. At tier
+  one's blows of 3 to 5 the Jack's 2 is partial, so it is left alone.
+- On the anchor's foe numbers the second battle is too dear with the Barrier gone from the
+  slot (the Waste 15 to 25% won with Overshield 6): those numbers were set with it there.
+- What it costs to come: the Halo's entry and how the die prints a shield for the round on
+  equipment; how the bar shows shield past the gauge, which only locked pieces raise today; the Nob's and
+  the Storm Petrel's rules that read a shield raised; the re-read of every elite and boss.
+

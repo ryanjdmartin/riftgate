@@ -919,17 +919,27 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   of heat, the squad blocking and bracing where it could fire because a round costs it
   nothing. The Storm Petrel in these reads is the machine as built, zap and all; his
   direction of 11 November takes the zap off it, and that session waited on the heat pass,
-  which has landed. Open, his, the refit brief's section 13: the Barrier on the machine,
-  his "more dramatic version ... apply the cooldown to the unit, similar to Numbed", read
-  as a what-if (it bites where one machine is named two rounds running; with the piece's
-  cooldown the elites' mean is 11%), with its holes; the first battle's block (not scaled:
+  which has landed. Open, his: the Barrier's place, the discussion he opened the same day
+  ("Is it toxic? Is it worse than giving numerical shield? Should it be rare or locked? ...
+  maybe we went too far"; the refit brief's section 14 has his words, the records, the
+  bench and Claude's lean with its holes, nothing built). The reads: a Barrier takes seven
+  blows in ten from a foe whose kit is one blow a round and one in eight in a formation;
+  with a shield for the round in the Halo's slot (Overshield, 4 or 6) the same elites cost
+  a four 15 to 18% of its hull where they cost 9.5%, and the Gargantuan King's fight is ten
+  rounds where three machines turning the Barrier made it twenty-three; a plain shield
+  grant reads as no piece. Claude's lean: the Barrier rare or locked with its cooldown, the
+  Halo a shield for the round on equipment, no plain grant on the die, the numbers set
+  against the Barrier read again. Under it his "more dramatic version", the cooldown on the
+  machine "similar to Numbed", is not needed (section 13 has its read and its holes if the
+  Barrier stays a basic). His marks on 4-4-2 are in ("That's probably fine for 4-4-2 for
+  now": the brief's section 13 has the table with his words, each open place its chassis's
+  session's). Also open, his: the first battle's block (not scaled:
   on the anchor's numbers a mustering trio with the Honey Badger wins 0 to 5% of the
   Meadow's first battles where it won 40%; at three fifths for its elite and boss and three
   quarters for its rank and file a trio keeps its hull, and the trios with the Badger still
-  lose the wall); his marks on 4-4-2; the Waste's bosses and the Peak's clock; the Prairie
-  Dog alone. The
+  lose the wall); the Waste's bosses and the Peak's clock; the Prairie Dog alone. The
   muster rule and the fight-at-its-rating read are scratch probes; the runner still plays
-  the defence rule. The bible's triangle, scale, shield and Barrier rows and section 12 (v0.558);
+  the defence rule. The bible's triangle, scale, shield and Barrier rows and section 12 (v0.560);
   the rules' chassis, basics, heat and scale lines.
 - **Four formations cut toward the budget, 4-4-2 to work with, and the anchor** (Ryan, 12
   November: "Yes go ahead with 2. Also, let's look at 4-4-2 right now so that you're working
@@ -1557,8 +1567,8 @@ content, the formation pass and a guess at the elites' and bosses' numbers (10 N
 brief's sections 5, 8 and 9); tier one only for now (his word, 11 November), tuned on the
 second battle with real tier ones before anything is scaled from it (his word, 12 November;
 landed the same day with the Barrier's cooldown: the brief's section 13 has what landed, what
-is open and 4-4-2 for his marks), next his play of the anchor and his word on the Barrier on
-the machine and on the first battle's block, then the first battle scaled down from the
+is open and 4-4-2 for his marks), next his play of the anchor and his word on the Barrier's
+place (the brief's section 14) and on the first battle's block, then the first battle scaled down from the
 anchor and tiers two and three scaled up, and his
 play of the Rupture in beats and of the tide's and the strike's dials, and his marks on the
 flanks' second patrols (the brief's section 11), and his answers on the first battle (section
@@ -1649,7 +1659,7 @@ commands are in `README.md`.
   tables), and main's v0.552 since `ccr-8af28d03-re9kz4` landed again (the Ammit row's flare once an
   attack and the cut of its two old rules, the Empowered row's mark, and the rows that said the
   engine kept a rule the dead-code pass cut: the Kite's, a piece of two kinds, a rider's limit,
-  Chain's targeting, the Whip Scorpion's), and main's v0.558 since `ccr-722ca9f0-yj8na3` landed
+  Chain's targeting, the Whip Scorpion's), and main's v0.560 since `ccr-722ca9f0-yj8na3` landed
   again (the scale row's tier-one foes, the triangle row's prices as content, the shield
   row's tier-one lines, the Barrier row's cooldown, and section 12's 4-4-2 to work with, the
   anchor, the heat-reading machines and the Barrier on the machine); each goes up on Ryan's word. The

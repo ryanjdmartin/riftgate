@@ -9049,8 +9049,9 @@ Read.
 - The Gargantuan King's long fight ends under none of the one-round rules: twenty rounds
   and more, one in twenty never ending. A trace of a forty-round one: sixteen hits on the
   King in forty rounds, no machine hot, the squad laying a Barrier and bracing where it
-  could fire. A round costs it nothing and three machines carry the piece. It is the
-  parked question of what prices a round, and no Barrier rule of one round answers it.
+  could fire. A round costs it nothing and three machines carry the piece. No Barrier
+  rule of one round answers it; the section below finds what does, since with no Barrier
+  basic at all the same fight is ten rounds.
 - With the piece dark a round the Waste falls out of the others' band (35 to 50% won), the
   Fallen Weapon the reason (27% to 36% of a four's hull at its rating). Its haft at 16 and
   its eyes' gaze at 8, where they were 20 and 10, read 23% under the cooldown, and the Waste
@@ -9093,4 +9094,108 @@ Read.
 Method: as the section above, with a fight bot for the rest (scratch, the engine untouched)
 and a share laid over every elite's and boss's hit points and blow, and the rank and file's,
 in memory.
+
+## 12 November, the Barrier's place: what the Halo's slot holds, a Barrier, a shield grant, a temporary shield or neither
+
+Ryan, 12 November: "So lets discuss Barrier, then. Is it toxic? Is it worse than giving
+numerical shield? Should it be rare or locked? An argument could be made that a chassis with
+barrier is a sub for a Tank on a team, and thus it's not widely available. One thing we could
+do, which sounds terrible, is have a difference between shield and temporary shield. Or, we go
+back to some shield-granting pieces, as a keyword on Equipment so its not ubiquitous as a
+component type, but still exists. Armour grants and Barrier grants are very binary, shield is
+a buffer. I liked our simplification, but maybe we went too far."
+
+Main at `031ddcf`. The Halo Projector, the Barrier basic that three of the six tier ones
+carry, with its entry replaced in memory and nothing else moved: the foes' numbers are the
+anchor's, set with the Barrier in the slot. The fight bot (greedy), each fight at its rating
+as in the sections above (six squads and five seeds for a flanker, a hunter and a formation;
+five squads of four and four seeds for an elite and a boss); a share of a four's hull. Each a
+direction.
+
+| The Halo's slot holds | A lone flanker | A hunter's pack | A formation | An elite | A boss | The Gargantuan King's fight |
+|---|---|---|---|---|---|---|
+| A Barrier, free (read before the Fallen Weapon's cut) | | | | 7.1% | 19.2% | 25 rounds |
+| A Barrier, cooldown 1 (content) | 2.8% | 6.3% | 5.9% | 9.5% | 21.4% | 23 rounds, one in twenty never ending |
+| Overshield 4: a shield for the round, past the gauge | 3.0% | 6.5% | 6.1% | 17.6% | 34.0% | 10 rounds |
+| Overshield 6 | | | | 15.4% | 27.2% | 11 rounds |
+| Shield 4, plain: it refills the gauge | 3.0% | 7.1% | 6.4% | 18.8% | 37.7% | 10 rounds |
+| The Shoring Jack, Armoured 2 | 3.5% | 6.9% | 6.6% | 19.8% | 37.7% | 10 rounds |
+| A gun, the Twin Autoguns | | | | 19.5% | | |
+
+The share of the foes' blows on machines that a Barrier took whole, with the cooldown: 12% in
+a formation, 41% in an elite's fight (49% when it was free), 40% in a boss's. By fight: the
+Rust Monster 79%, the Mantis Ant 72%, the Nob 70%, the Gargantuan King 65%, the Reaper 56%,
+the Pilgrim and the Marsh Serpent 55%, the Phantom Train 54%, the Old Man 52%.
+
+| The elite | A Barrier, cooldown 1 | Overshield 4 | Overshield 6 | Shield 4, plain | The Jack |
+|---|---|---|---|---|---|
+| The shaman's warband | 7.7% | 7.9% | 6.6% | 8.4% | 8.4% |
+| The Nob | 17.0% | 39.3% | 35.4% | 37.1% | 36.1% |
+| The Old Man's rising | 17.8% | 37.1% | 37.0% | 37.1% | 37.7% |
+| The Pilgrim's wake | 2.4% | 13.1% | 13.0% | 13.2% | 13.5% |
+| The Rust Monster | 2.9% | 7.3% | 6.1% | 11.5% | 11.1% |
+| Gilgamesh | 7.9% | 16.1% | 14.6% | 21.1% | 23.8% |
+| The Fell Rider | 6.7% | 14.4% | 11.1% | 16.9% | 15.8% |
+| The Reaper | 0.5% | 1.1% | 0.7% | 2.6% | 2.4% |
+| The Wild Hunt | 12.7% | 17.3% | 15.4% | 17.4% | 19.2% |
+| The Cinder Tortoise's brood | 16.4% | 26.4% | 18.6% | 27.3% | 36.0% |
+| The Thunder Ape | 13.1% | 13.2% | 10.7% | 14.6% | 13.6% |
+
+| The boss | A Barrier, cooldown 1 | Overshield 4 | Overshield 6 | Shield 4, plain | The Jack |
+|---|---|---|---|---|---|
+| Floraison | 20.0% | 21.9% | 16.0% | 22.9% | 19.2% |
+| King Gel | 15.0% | 32.8% | 23.6% | 39.2% | 42.1% |
+| The Mantis Ant | 8.6% | 27.8% | 25.4% | 29.4% | 32.3% |
+| The Ruby Colossus | 24.8% | 35.2% | 29.9% | 36.0% | 41.4% |
+| The Fallen Weapon | 22.7% | 41.6% | 33.9% | 41.4% | 50.6% |
+| The Emperor Scorpion | 24.8% | 40.7% | 27.6% | 44.0% | 41.4% |
+| The Matador | 16.7% | 16.4% | 11.7% | 25.6% | 19.6% |
+| The Phantom Train | 26.7% | 52.2% | 38.8% | 56.2% | 60.2% |
+| The Vampire Lord | 5.3% | 14.5% | 6.8% | 19.8% | 23.0% |
+| The Marsh Serpent | 11.3% | 30.7% | 27.0% | 35.1% | 32.9% |
+| The Gargantuan King | 38.3% | 51.9% | 42.9% | 59.4% | 65.8% |
+| The Fiend of Fire | 33.1% | 32.6% | 30.4% | 39.4% | 22.5% |
+| The Obsidian Tyrant | 31.5% | 43.8% | 39.1% | 41.2% | 38.5% |
+
+With Overshield 6 and the six elites back on their numbers of before the anchor (the shaman,
+the Nob, the Old Man, the Rust Monster, the Fell Rider, the Reaper), the elites' mean is
+11.7%: the Nob 17%, the Old Man 30%, the tortoise 19%, the Wild Hunt 15%, Gilgamesh 15%, the
+Pilgrim 13%, the Thunder Ape 11%.
+
+The second battle whole, the mustering player, three squads, twenty seeds a domain, on the
+anchor's foe numbers; won, then the hull left at the end.
+
+| The Halo's slot holds | The Meadow | The Marsh | The Waste | The Peak |
+|---|---|---|---|---|
+| A Barrier, cooldown 1 (content) | 75 to 85%, 49 to 66% | 60 to 65%, 46 to 52% | 45 to 55%, 28 to 34% | 40 to 60%, 28 to 37% |
+| Overshield 6 | 75 to 80%, 53 to 57% | 35 to 75%, 38 to 48% | 15 to 25%, 17 to 36% | 40 to 60%, 28 to 37% |
+| Overshield 4 | 65 to 85%, 39 to 51% | 25 to 60%, 33 to 43% | 10 to 30%, 13 to 32% | 25 to 50%, 24 to 32% |
+| Shield 4, plain | 65 to 80%, 31 to 46% | 30 to 60%, 27 to 41% | 10 to 25%, 8 to 35% | 15 to 40%, 21 to 24% |
+| The Shoring Jack | 50 to 80%, 32 to 47% | 25 to 40%, 20 to 35% | 0 to 30%, 13 to 27% | 25 to 45%, 20 to 27% |
+
+Read.
+
+- The Barrier's worth is the blow it meets. It takes two blows in five from an elite or a
+  boss and seven in ten from the ones whose kit is a single blow, with its cooldown on; in a
+  formation it takes one in eight. So it does nothing where blows are many and small and
+  erases the fights built on one big announced blow, which is the bible's own diagnosis of
+  the old shield rule (14 October: a small shield "was secretly 'negate one blow', worth the
+  biggest blow it met rather than its number").
+- Nothing in the slot changes a flanker's, a hunter's or a formation's cost.
+- With any number in the slot, or nothing, the same elites cost a four about twice what they
+  cost beside the Barrier, and the bosses a quarter to three quarters more, their numbers
+  untouched. The elites' budget of a quarter is in reach of a number.
+- The Gargantuan King's fight is ten rounds without the Barrier basic and twenty-three with
+  it. The stall of the section above was the Barrier, three machines turning it; a block of
+  4 or 6 is not worth a shot given up.
+- A plain shield grant reads as no piece: the Jack and a gun land where it does. A gauge is
+  full as a fight opens, and after that the grant is recovery, which the regen already is.
+- A temporary shield does work and its number tunes it: 4 takes a ninth off the elites'
+  cost and a tenth off the bosses' against no piece, 6 a fifth and a quarter.
+- The whole battle on these foe numbers is too dear without the Barrier in the slot, the
+  Waste most (its bosses a third to a half of a four's hull). The numbers were set with the
+  Barrier there, the elites' raised against it, so they come down with it if it goes.
+
+Method: the fight-at-its-rating probe and the ledger of the sections above, with one
+component's entry replaced whole in memory; the blows are counted from each fight's log.
 
