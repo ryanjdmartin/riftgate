@@ -1631,6 +1631,12 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
+  page's Version 251 (12 November, from `ccr-b7d5164e-1wtzzm` at `187ea48`, ahead of main, for
+  Ryan's notes on the Needletail's second cut): its model and rig, its twelve pictures (the
+  round-body cut as Before), `designs.json` and `renders.json`, the page unchanged. Version 250
+  was another session's (a newer Kite entry and Kite pictures): every live copy this publish
+  replaced matched 249's build but `renders.json`, which went up again whole with only the
+  Needletail's entry replaced. `edits` and `text` empty, `designs` the two folded ideas. At the
   page's Version 249 (12 November, from `ccr-b7d5164e-1wtzzm` at `23adac5`, ahead of main, for
   Ryan's notes on the two first cuts): the twenty-seven files the two reworked models moved since
   245 (both models and rigs, their pictures with the first cuts as Before, a Giant Petrel
