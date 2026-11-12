@@ -87,7 +87,7 @@ KINDS = [
      "where": "Beside the text they head: a machine's designation under its name, a passive's name before its description, a move's name over its line and on the plaque when it lands."},
     {"id": "status_line", "label": "Status lines (in code)", "group": "",
      "what": "A status's one-line description, written in sim/effects.gd.",
-     "where": "Only the codex's KEPT FOR THE BATTLE row, for a status a battle keeps (the Ammit's Empowered). Since 2 November a chip says its name and count and a tap opens the term's entry, so nothing else draws these."},
+     "where": "Only the codex's KEPT FOR THE BATTLE row, for a status a battle keeps (the Ammit's Souls). Since 2 November a chip says its name and count and a tap opens the term's entry, so nothing else draws these."},
     {"id": "intent_words", "label": "Aims and conditions (in code)", "group": "",
      "what": "How a foe's aim and a move's condition are said, written in sim/foe.gd.",
      "where": "A foe's codex: its sense (AIMS AT THE EXPOSED) and the condition after a move's name (when below half)."},

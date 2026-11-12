@@ -64,7 +64,6 @@ var history: Array = []
 var planned: Array = []
 var _batch := 0              # inside order_onto: its move and its order are one entry
 var _batch_dirty := false    # and something changed under it
-var fought: Dictionary = {}      # mech id -> true: it fought this turn (out_of_combat fires for the rest)
 ## The fights hunters forced this turn, first in line (bible section 5), one a hunter, a machine
 ## caught twice in two of them (Battlefield.forced_fights): [{"prey": Unit, "hunters": [the
 ## hunter]}]. While any is left, the first is the only fight that may open and the turn cannot
@@ -1309,19 +1308,15 @@ func _prune_orders() -> void:
 
 
 ## End the player's turn (bible section 4): the enemy's turn plays (packs walk round the
-## machines, a pack on the apron strikes the gate), out_of_combat fires for a machine that did not
-## fight this turn (nothing returns on the map since the long wall brief 3.6: the shield is full
-## as every fight opens), the rift ticks once, and the next turn opens with the fights hunters
-## have forced. The walks played (pack id -> Battlefield.Walk); empty when refused
+## machines, a pack on the apron strikes the gate), the rift ticks once, and the next turn opens
+## with the fights hunters have forced. Nothing returns on the map (the long wall brief 3.6: the
+## shield is full as every fight opens), so a turn out of a fight fires nothing. The walks played (pack id -> Battlefield.Walk); empty when refused
 ## (not the player's turn, or a forced fight still to come).
 func end_turn() -> Dictionary:
 	if state != State.PLAN or not forced.is_empty():
 		return {}
 	claim_caches()
 	var walks := field.enemy_turn()
-	for u in field.mechs():
-		if not fought.has(u.id):
-			Effects.fire(u, "out_of_combat")   # a trigger nothing may ride since the long wall brief 3.6
 	field.phase += 1
 	last_spawned = field.tick_pressure(1)
 	_new_turn()
@@ -1402,7 +1397,6 @@ func _new_turn() -> void:
 	spent.clear()
 	moved.clear()
 	action_hexes.clear()
-	fought.clear()
 	orders.clear()
 	history.clear()
 	planned.clear()
@@ -1505,7 +1499,6 @@ func finish_skirmish() -> void:
 		if ms.unit.hull <= 0 and not wrecks.has(ms.unit):
 			wrecks.append(ms.unit)
 		spent[ms.unit.id] = int(spent.get(ms.unit.id, 0)) + 1
-		fought[ms.unit.id] = true
 		moved.erase(ms.unit.id)
 		action_hexes.erase(ms.unit.id)
 	var tallied: Array[Unit] = []

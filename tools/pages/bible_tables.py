@@ -33,10 +33,10 @@ COMPONENT_KEYWORDS = {"burn": [("burning", "foe")], "shock": [("shocked", "foe")
                       "suppress": [("suppressed", "foe"), ("numbed", "foe")],
                       "web": [("webbed", "foe"), ("suppressed", "foe"), ("numbed", "foe")],
                       "cryo": [("cryoed", "foe")], "flak": [("flakked", "foe")], "expose": [("exposure", "foe")]}
-FACE_FIELDS = {"braces": "braced", "devours": "overcharged", "fills_hopper": "hopper",
+FACE_FIELDS = {"braces": "braced", "fills_hopper": "hopper",
                "holds_all": "pinned_empowered"}   # the Soul Siphon's hold on Empowered, the round's own (12 November), on its machine and...
 FACE_FIELDS_ON_FOES = {"holds_all": ["pinned_empowered"]}   # ...on every foe; the Syrinx Drone's status went with the slot mines (9 November), the Contractor's Expose is its keyword
-PASSIVE_EFFECTS = {"shock_on_hull_strike": ("shocked", "foe"), "shock_on_block": ("shocked", "foe"), "seal_form": ("sealed", "machine"),
+PASSIVE_EFFECTS = {"shock_on_hull_strike": ("shocked", "foe"), "seal_form": ("sealed", "machine"),
                    "paradox": ("paradox", "foe"), "muster": ("muster", "machine"),
                    "fill_hopper": ("hopper", "machine"), "hopper_plate": ("braced", "machine"),
                    "mine_on_spend": ("mine", "foe")}   # stack_status names its own, on the machine; the Reverberant Payload's Mine (9 November)
@@ -54,7 +54,6 @@ ENGINE_ALIASES = {"burning_mech": "burning"}   # the same word on the other body
 # Printed rules, read off a component's face.
 PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("vents_all", "Vents all", lambda f: bool(f.get("vents_all"))),
-           ("kill_overcharge", "Empowered a kill", lambda f: int(f.get("devours", 0) or 0) > 0),   # Overcharged is Empowered since 3 November
            ("power_per_missing", "Grows with missing HP", lambda f: int(f.get("power_per_missing", 0)) > 0),
            ("finisher", "Finisher", lambda f: int(f.get("finisher", 0) or 0) > 1),
            ("gated", "Gated", lambda f: bool(f.get("gates"))),
@@ -62,7 +61,6 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("self_burn", "Burns its firer", lambda f: int(f.get("self_burn", 0) or 0) > 0),
            ("hopper_property", "The hopper", lambda f: int(f.get("fills_hopper", 0)) > 0 or int(f.get("fires_hopper", 0)) > 0),
            ("brace_property", "Braces", lambda f: int(f.get("braces", 0)) > 0),
-           ("reset", "Reset", lambda f: bool(f.get("resets_on_kill"))),
            ("gather", "Gather", lambda f: bool(f.get("gathers_mines"))),
            ("detonate", "Detonate", lambda f: bool(f.get("detonates"))),
            # The Petrels' locked pieces (built 30 October).

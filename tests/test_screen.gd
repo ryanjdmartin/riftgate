@@ -473,11 +473,10 @@ func test_drag_onto_a_target_spends_the_face() -> void:
 			assert_true(s._use_die(i, null), "blank discarded")
 		else:
 			assert_true(s._use_die(i, s.sk.mechs[(i + 1) % 3]), "support face spent on an ally")
-		if f.has(Face.Keyword.RAPID) or (f.resets_on_kill and not ms.assigned):
-			# A rapid entry gives the turn back (the Laminar Deflector's since 12 October), and so
-			# does a reset gun whose shot killed (the Kite's Pinion Driver, 21 October): the die
+		if f.has(Face.Keyword.RAPID):
+			# A rapid entry gives the turn back (the Laminar Deflector's since 12 October): the die
 			# rolls again and the machine acts again.
-			assert_false(ms.assigned, "a rapid face or a reset kill gives mech %d its turn back" % i)
+			assert_false(ms.assigned, "a rapid face gives mech %d its turn back" % i)
 			continue
 		assert_true(ms.assigned, "mech %d assigned" % i)
 		assert_false(s._dice[i].can_drag, "spent die no longer drags")
@@ -676,10 +675,10 @@ func test_a_dies_readout_shows_the_entry_showing_with_its_effects_listed() -> vo
 	s.free()
 
 
-## The readout says what kind of piece the entry is on its machine (Effects.kinds_of: a passive
-## that makes it a second kind there shows on the readout, Ryan, 26 October), and the codex the
-## component as built.
-func test_the_readout_names_the_entrys_type_and_the_codex_the_component_as_built() -> void:
+## The readout says what kind of piece the entry is on its machine, as the codex says the
+## component as built (Ryan, 26 October; the one hybrid, the Whip Scorpion's vents as "vent,
+## weapon", left with the vent blast on 12 November).
+func test_the_readout_names_the_entrys_type() -> void:
 	var s := _screen()
 	var ms: Skirmish.MechState = s.sk.mechs[1]
 	var vent := Face.vent(4)
@@ -1229,29 +1228,23 @@ func _chips_for(s: SkirmishScreen, i: int, id: String) -> Array[String]:
 
 
 ## Every status is a chip whatever its scope (Ryan, 16 October: the Ammit is Empowered, "so
-## anything that interacts with overcharged needs it displayed"). The talons' kills'
-## Empowered, kept for the battle when its owner keeps the status, is a chip with its count;
-## a buff's joins it in the one chip (kept too, since 18 October: the Tap keeps every grant),
-## and the hold and the codex each list it once.
+## anything that interacts with overcharged needs it displayed"). Stacks a battle keeps (the
+## Ammit's Empowered from 16 October until its rework of 12 November, its Souls since; here a
+## battle's own grant) are a chip with their count; a buff's for the round joins them in the one
+## chip, and the hold and the codex each list the status once.
 func test_a_status_kept_for_the_battle_is_a_chip_with_its_count() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
 	var m := db.make_mech("badger")
 	m.die = Die.single(Face.attack(10))
-	m.grant_passive({"id": "keeper", "name": "Keeper", "description": "Keeps what its kills give.",
-		"effects": [{"trigger": "static", "effect": "keep_status", "value": "overcharged"}]})
+	m.grant_passive({"id": "keeper", "name": "Keeper", "description": "A rule of its own, and no status.",
+		"effects": [{"trigger": "static", "effect": "add_stat", "stat": "hull", "value": 5}]})
 	sk.add_mech(m)
 	sk.add_foes([Foe.make("revenant", 300, 10)])
 	var s := SkirmishScreen.new()
 	s.setup(sk)
 	Effects.remove(m, "overcharged")
-	assert_true(Effects.keeps(m, "overcharged"), "the machine keeps Empowered")
-	sk._overcharge_on_kill(sk.mechs[0], 2, 1)   # two kills, a stack each
-	var scopes: Array = []
-	for d in Effects.describe(m):
-		if str(d[5]) == "overcharged":
-			scopes.append(int(d[3]))
-	assert_eq(scopes, [Effects.BATTLE], "two kills kept for the battle: one grant, below the skirmish's scope")
+	Effects.stack(m, Effects.STATUS["overcharged"], Effects.BATTLE, "reward", 2, Effects.DECAY_NONE)   # two stacks the battle keeps
 	s._refresh()
 	assert_eq(_chips_for(s, 0, "overcharged"), ["×2"] as Array[String], "an Empowered chip with its count")
 	Effects.grant_buff(m, "overcharged", 1, "buff", sk.round)
@@ -1271,9 +1264,9 @@ func test_a_status_kept_for_the_battle_is_a_chip_with_its_count() -> void:
 	for e in db.codex_for_unit(m)["effects"]:
 		if str(e["name"]).begins_with("EMPOWERED"):
 			listed += 1
-			assert_eq([str(e["name"]), str(e["note"])], ["EMPOWERED ×3", "KEPT FOR THE BATTLE"], "a kept status among the active effects, never a reward, with its count, the buff's stack kept with the kills' (Ryan, 18 October)")
+			assert_eq([str(e["name"]), str(e["note"])], ["EMPOWERED ×2", "KEPT FOR THE BATTLE"], "the battle's stacks among the active effects, never a reward, with their count; the round's buff is no part of what the battle keeps")
 	assert_eq(listed, 1, "and the codex once: the kept stacks, which the battle carries past this fight")
-	# What is no status stays in the codex: the passive that keeps it, and a battle reward.
+	# What is no status stays in the codex: a passive of its own, and a battle reward.
 	Effects.grant(m, Effects.make({"id": "spoils", "name": "Spoils", "description": "Hull +10.",
 		"effects": [{"trigger": "static", "effect": "add_stat", "stat": "hull", "value": 10}]}, Effects.BATTLE, "reward"))
 	s._refresh()
@@ -1858,7 +1851,7 @@ func test_a_lure_in_hand_previews_its_turn_with_dashed_arrows_and_the_gauges() -
 	var sk := Skirmish.new(1)
 	var a := db.make_mech("badger")
 	a.die = Die.single(Face.from_dict({"kind": "attack", "reach": "every_foe", "power": 0, "keywords": ["lure"], "braces": 2}))
-	a.grant_passive({"id": "test_bank", "name": "Bank", "description": "", "effects": [{"trigger": "static", "effect": "heat_per_blow", "value": 10}]})
+	a.grant_passive({"id": "boiler", "name": "Boiler", "description": "", "effects": [{"trigger": "static", "effect": "heat_per_blow", "value": 10}]})
 	sk.add_mech(a)
 	sk.add_mech(db.make_mech("clydesdale"))
 	sk.add_foes([Foe.make("revenant", 300, 10), Foe.make("revenant", 300, 10)])

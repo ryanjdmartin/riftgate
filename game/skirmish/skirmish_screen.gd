@@ -1272,7 +1272,7 @@ func _refresh(save: bool = true) -> void:
 		d.corrupted = Effects.corrupt_stacks(ms.unit, ms.face_index) if ms.face_index >= 0 else 0
 		# A dark entry shows the rounds it has left, this one included (the cooldown row).
 		d.dark = Effects.dark_rounds(ms.unit, ms.face_index, sk.round) if sf != null and sf.disabled else 0
-		d.cooldown = sk.cooldown_of(ms, sf)   # the rounds a spend darkens it, its passives in: a cost along its foot
+		d.cooldown = sf.cooldown_rounds() if sf != null else 0   # the rounds a spend darkens it: a cost along its foot
 		d.next_face = sk.next_face(ms) if ms.alive() else null   # a stepping die's next chamber
 		if d.next_face == null and ms.alive():
 			d.next_face = sk.turn_face(ms)   # the entry a one-of-each die turns to once this is spent (the Needletail's), when one stands
@@ -2162,8 +2162,8 @@ func _show_die(i: int) -> bool:
 	if f != null:
 		var sf := sk.shown_face(ms, f)
 		var shown: int = sk.shown_number(ms, sf) if sf.is_attack() and not sf.is_debuff() else -1
-		# What the die prints in its passive's box from its machine heads a line with that box
-		# (Ryan, 2 November: every icon on a die face in the popup).
+		# What the die prints in its passive's box heads its line here with that box (Ryan, 2
+		# November: every icon on a die face in the popup).
 		var extra: Array = []
 		# A stepping die's next chamber (the Cassowary's), by the passive box the die shows it in
 		# (Ryan, 4 November: "should also explain its next-chamber chip in the tap popup").
@@ -2187,7 +2187,7 @@ func _show_die(i: int) -> bool:
 			extra.append(EntryReadout.marked(EntryReadout.text_line("effect", said, "rule"), [EntryReadout.mark(shift, Glyphs.colour_for(shift))]))
 		var states: Array = _entry_states(ms, at)
 		states.append_array(_entry_marks(ms, at, i))
-		entry = EntryReadout.lines_for(sf, at + 1, shown, f, states, Effects.printed_grants(ms.unit, f), ContentDB.load_default(), EntryReadout.face_types(sf, ms.unit), extra, sk.cooldown_of(ms, sf))
+		entry = EntryReadout.lines_for(sf, at + 1, shown, f, states, Effects.printed_grants(ms.unit, f), ContentDB.load_default(), EntryReadout.face_types(sf, ms.unit), extra, sf.cooldown_rounds() if sf != null else 0)
 	if entry.is_empty() and ring.is_empty():
 		return false
 	_show_details("", _dice[i], ring, entry)
@@ -2524,7 +2524,7 @@ func _on_drag_started(i: int) -> void:
 	_ghost.after_blow = -1
 	_ghost.ricochet = _ricochets(sk.mechs[i], sf)
 	_ghost.form_mark = form_mark(sk.mechs[i], sf)
-	_ghost.cooldown = sk.cooldown_of(sk.mechs[i], sf)
+	_ghost.cooldown = sf.cooldown_rounds() if sf != null else 0
 	_ghost.charged = sk.charge_lands(sk.mechs[i])
 	_ghost.corrupted = Effects.corrupt_stacks(sk.mechs[i].unit, sk.mechs[i].face_index)
 	_ghost.slot = sk.mechs[i].face_index + 1
@@ -2547,9 +2547,8 @@ func _on_drag_moved(global_pos: Vector2) -> void:
 	var target = _drop_target_at(global_pos)
 	var can := target != null and _drag_from >= 0 and sk.can_assign(_drag_from, target)
 	Sound.hover(can)
-	# What the die is over decides what the gauges forecast (a lure's turn, a Cryo cash, the heat
-	# bar's net over a Cryo foe: on the bar, never the die, Ryan, 16 October): read again only
-	# when it changes, never saved mid-drag.
+	# What the die is over decides what the gauges forecast (a lure's turn, a Cryo cash): read
+	# again only when it changes, never saved mid-drag.
 	var over = target if can else null
 	if not _same_target(over, _drag_over):
 		_drag_over = over
@@ -2570,6 +2569,8 @@ func _on_drag_moved(global_pos: Vector2) -> void:
 		# The blow its passive adds after the strikes, over the foe through its armour, in the
 		# passive's box (the Storm Petrel's; Ryan, 4 November).
 		_ghost.after_blow = Skirmish.after_blow(ms, sf, over_foe) if over_foe != null else -1
+		# The heat bar reads the net over a Cryo foe (Ryan, 16 October: on the bar, never the die)
+		# through the forecast the refresh above reads (_forecast_for).
 
 
 func _on_drag_ended(global_pos: Vector2) -> void:
@@ -2993,8 +2994,6 @@ func _use_die(i: int, target, second = null) -> bool:
 					var uw := create_tween()
 					uw.tween_interval(fire_at)
 					uw.tween_callback(_use_view.bind(_mech_3d[i], spent.component))
-		if not blows.is_empty():
-			_attack_at(maxf(0.0, fire_at - BLOW_AT), _mech_views[i], _view_struck(blows, 0, was, null), true)   # a blow a passive lands on the spend
 	if ok and Effects.is_sealed(sk.mechs[i].unit) != sealed_before:
 		# Its form shifts as the spend lands (Ryan, 2 November: "It also needs some highlight or
 		# something when it is transforming").

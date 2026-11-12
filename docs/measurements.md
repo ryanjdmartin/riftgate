@@ -8356,7 +8356,10 @@ Talons entry of 1 ×4 with Breach where four talons of 3 stood, each of which Em
 Soul for every foe that falls in its fight, kept for the battle with no cap; a flare of 1
 Empowered for every 5 Souls as a fight opens and on each of its own kills, where the Quintessence
 Tap kept every stack for the battle; and the Soul Siphon, which consumes up to 5 Souls for a
-stack each and holds every Empowered on the field for the round. The to-do's test of the Tap
+stack each and holds every Empowered on the field for the round. (As measured, the kill's flare
+came once for each foe a spend killed; since the same day it comes once an attack that kills,
+however many fall to it, on Ryan's word. The two differ only when one attack of the Ammit's
+kills two or more, and the read was not run again.) The to-do's test of the Tap
 asked for "a battle's chain of fights, not one fight", since what the Ammit keeps carries from
 one to the next; the single-fight matrix opens every fight with nothing kept and cannot see
 either form.

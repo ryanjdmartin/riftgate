@@ -94,10 +94,10 @@ KEYWORDS = {
 }
 # A face field and what it sets or reads.
 FACE_FIELDS = {
-    "braces": [("braced", "sets")], "devours": [("overcharged", "sets"), ("kill", "reads")], "fills_hopper": [("hopper", "sets")],
+    "braces": [("braced", "sets")], "fills_hopper": [("hopper", "sets")],
     "fires_hopper": [("hopper", "reads")], "detonates": [("mine", "reads")],
     "gathers_mines": [("mine", "reads")], "vents_all": [("heat", "reads")], "power_per_heat": [("heat", "reads")],
-    "power_per_missing": [("missing_hp", "reads")], "finisher": [("missing_hp", "reads")], "resets_on_kill": [("kill", "reads")],
+    "power_per_missing": [("missing_hp", "reads")], "finisher": [("missing_hp", "reads")],
     "kill_rerolls": [("kill", "reads"), ("reroll", "sets")], "ally_action": [("reroll", "reads")], "regenerates": [("regenerating", "sets")],
     "spends": [("souls", "reads")], "spends_up_to": [], "holds_all": [("overcharged", "reads")],   # the Soul Siphon: it consumes Souls, and holds every Empowered a round
     "spends_magazine": [("ammo", "reads")], "magazine_min": [("ammo", "reads")], "reloads_ammo": [("ammo", "sets")], "ammo_per_foe_hit": [("ammo", "sets")],
@@ -111,14 +111,14 @@ FACE_FIELDS = {
 EFFECTS = {
     "shock_on_hull_strike": [("shocked", "sets"), ("hull_damage", "reads")], "seal_form": [("sealed", "sets"), ("braced", "sets"), ("heat", "sets")],
     "paradox": [("paradox", "sets"), ("suppressed", "sets")], "muster": [("muster", "sets"), ("reroll", "reads")],
-    "shield_per_heat": [("heat", "reads")], "shield_per_ally_heat": [("ally_heat", "reads"), ("shield_granted", "reads")],
+    "shield_per_ally_heat": [("ally_heat", "reads"), ("shield_granted", "reads")],
     "add_stacks": [], "pass_release": [("heat", "reads")], "forge": [("ammo", "sets"), ("heat", "reads")], "mine_on_spend": [("mine", "sets")],
     "heat_per_blow": [("heat", "sets")],
     "step_die": [("reroll", "reads")], "split_strikes": [("strikes", "sets")], "multiply_printed": [], "free_reroll": [("reroll", "sets")],
-    "extra_action": [], "never_hunted": [], "no_destroy": [], "carry": [], "keep_status": [], "rewrite_weapon": [], "grant_keyword": [],
+    "extra_action": [], "never_hunted": [], "no_destroy": [], "carry": [], "rewrite_weapon": [], "grant_keyword": [],
     "add_shield": [], "refill_shield": [], "vent_heat": [], "stack_status": [], "lay_status": [],
     "multiply_heat": [("heat", "sets")], "add_damage": [], "add_damage_taken": [], "hull_per_spend": [("hull_damage", "sets")],
-    "multiply_damage": [], "multiply_stacks": [], "add_heat": [("heat", "sets")], "weapon_cooldown": [], "one_of_each": [], "min_damage": [], "add_burn": [],
+    "multiply_damage": [], "multiply_stacks": [], "add_heat": [("heat", "sets")], "one_of_each": [], "min_damage": [], "add_burn": [],
     "burn_shield": [("heat", "reads")], "bank_rerolls": [("reroll", "reads"), ("reroll", "sets")],
     "fill_hopper": [("hopper", "sets")], "hopper_plate": [("hopper", "reads"), ("braced", "sets")],
 }
@@ -316,8 +316,6 @@ class Map:
                     self.add(cur, how, p)
             if name == "add_shield" and trig in ("on_hull_damage", "on_heat_gain"):
                 pass   # the trigger's read is the synergy; the shield is its payoff
-            if name == "keep_status":
-                self.add(str(eff.get("value")), "reads", dict(p, how="keeps it"))
             if name == "add_stacks":
                 self.add("heat", "reads", dict(p, how="deepens every stack by it"))
             if name == "rewrite_weapon":

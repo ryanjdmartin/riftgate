@@ -429,16 +429,6 @@
    }
   },
   {
-   "id": "kill_overcharge",
-   "category": "component_property",
-   "name": "Empowered a kill",
-   "codex": "A rule a weapon may print, with no word of its own: every foe its spend kills gives its owner a stack of Empowered. No piece prints it today: the Ammit's Soulcutter Talons did until 12 November.",
-   "status": "implemented",
-   "design": {
-    "holes": "A rule with no carrier since 12 November (the Ammit's rework), kept in the engine. A spread that kills two feeds twice; a chain feeds on every link."
-   }
-  },
-  {
    "id": "targets",
    "category": "component_property",
    "name": "Targets",
@@ -562,7 +552,7 @@
    "id": "dispel",
    "category": "keyword",
    "name": "Purge",
-   "codex": "Purge N, on either side. On a player's entry aimed at a foe, a weapon or equipment, every foe it reaches loses N stacks of every buff it carries (an unstackable one is a stack of one), after the blow, so a foe the blow kills stays down. On a foe's move of its own, never a rider on a blow and never a last act's, the machine it lands on loses N stacks of every buff it carries, for good. A stack is a stack, whatever granted it; an Ability is no buff and stays, and so do the stores and a stack its passive keeps. A Ward turns it away and stands, on either side.",
+   "codex": "Purge N, on either side. On a player's entry aimed at a foe, a weapon or equipment, every foe it reaches loses N stacks of every buff it carries (an unstackable one is a stack of one), after the blow, so a foe the blow kills stays down. On a foe's move of its own, never a rider on a blow and never a last act's, the machine it lands on loses N stacks of every buff it carries, for good. A stack is a stack, whatever granted it; an Ability is no buff and stays, and so do the stores. A Ward turns it away and stands, on either side.",
    "status": "implemented",
    "design": {
     "holes": "One id, dispel, on both sides, as breach is (28 October); numbered 2 November (Ryan: \"lower everything by N and price accordingly\", a softer answer to armour and damage stacking that prices cheap and common; the Null Field Emitter at Purge 2, a placeholder). One purge on either side (Effects.purge): N stacks off every buff, whatever granted it (Ryan, 8 November: \"A stack is a stack, doesn't matter where it came from\"); retired with it the purge by source of 28 October (a die entry's stacks gone for good, a store's, a form's or a passive's put to sleep until the player's turn), which he called cryptic. What the unit is, its form or its passive mechanic, is an Ability and no buff, so no purge reaches it (the same day)."
@@ -944,10 +934,10 @@
    "id": "souls",
    "category": "status",
    "name": "Souls",
-   "codex": "Ability, the Ammit's. A Soul for every foe that falls in a fight it is in, whoever fells it, kept from fight to fight through the battle, with no limit. As each fight opens, and each time the Ammit kills, it gains 1 Empowered for every 5 Souls it holds; its Soul Siphon consumes them. No Purge, Silence or Cleanse touches it.",
+   "codex": "Ability, the Ammit's. A Soul for every foe that falls in a fight it is in, whoever fells it, kept from fight to fight through the battle, with no limit. As each fight opens, and after each attack of the Ammit's that kills, it gains 1 Empowered for every 5 Souls it holds; its Soul Siphon consumes them. No Purge, Silence or Cleanse touches it.",
    "status": "implemented",
    "design": {
-    "holes": "Ryan's rework of 12 November, the name his. No cap by his call (\"as part of the fantasy\"), so it is no store, which is capped and wears a bar: an Ability, a chip with its count. The text is a session's draft.",
+    "holes": "Ryan's rework of 12 November, the name his. No cap by his call (\"as part of the fantasy\"), so it is no store, which is capped and wears a bar: an Ability, a chip with its count. The kill's flare is once an attack that kills, however many fall to it (Ryan, 12 November: \"Flaring twice for an AoE is probably wrong, let's make it 'one of more killed' by an attack\"); the first build flared once for each foe. The text is a session's draft.",
     "table": {
      "kind": "ability",
      "on": "machine",
@@ -1521,7 +1511,7 @@
    "id": "on_kill",
    "category": "trigger",
    "name": "On a kill",
-   "codex": "Passive trigger. Fires once after an attack of this machine's that killed, however many foes fell to it, chains and spills included: a status, a shield (the Kite's, recharged whole) or a vent. A status may ask for each foe the attack killed instead (the Ammit's flare).",
+   "codex": "Passive trigger. Fires once after an attack of this machine's that killed, however many foes fell to it, chains and spills included: a status (the Ammit's flare), a shield (the Kite's, recharged whole) or a vent.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1534,7 +1524,7 @@
    "codex": "Passive trigger. Fires as a death check counts a kill in this machine's fight, whoever or whatever made it, an ally's blow, a burn's tick and a Mine's blast among them: a status, once for each foe that fell (the Ammit's Souls).",
    "status": "implemented",
    "design": {
-    "holes": "Built 12 November for the Ammit's Souls. A foe getting back up, a part and a Bomb's burst are no kill and fire nothing."
+    "holes": "Built 12 November for the Ammit's Souls. It fires once for each foe that falls, which is what the trigger is: no effect opts into the count. A foe getting back up, a part and a Bomb's burst are no kill and fire nothing."
    }
   },
   {
@@ -1545,16 +1535,6 @@
    "status": "implemented",
    "design": {
     "holes": "Built for the Skua's rewrite (Ryan, 11 November: \"Damaging an enemy grants it a stack of Ricochet (once per turn)\"). The stack lands after the spend that earned it, so none of that spend's shots bounce off it. The once-a-round gate is the effect's own (once: round), open to any effect an event fires."
-   }
-  },
-  {
-   "id": "out_of_combat",
-   "category": "trigger",
-   "name": "Out of combat",
-   "codex": "Passive trigger. Fires at the end of a battlefield phase in which this machine had no skirmish. Nothing may ride it: the shield is full as every fight opens, so nothing returns on the map.",
-   "status": "implemented",
-   "design": {
-    "holes": "Heat does not persist between fights, so a vent here would be nothing. No content uses it yet."
    }
   },
   {
@@ -1625,16 +1605,6 @@
    "status": "implemented",
    "design": {
     "holes": "A price as heat is. Counted after the round of the spend since 12 November (Ryan: \"change the count so 1 is how I intended\"; the round of the spend counted from 14 October, when a weapon's 1 cost nothing, the die spent for the round anyway). The city's battlefield abilities count their own cooldowns in phases."
-   }
-  },
-  {
-   "id": "reset",
-   "category": "component_property",
-   "name": "Reset",
-   "codex": "A rule printed on a weapon: if its spend kills, every entry dark from a cooldown comes back, itself included, and its machine acts again, the free roll never landing on the entry just spent; a team reroll may bring it back up, and every kill resets it again. No piece prints it today (the Kite's Pinion Driver did until its rework of 11 November).",
-   "status": "implemented",
-   "design": {
-    "holes": "No limit (Ryan, 24 October: \"Let the Kite reset infinitely. There are other ways to nerf it that aren't more rules exceptions\"): the free roll never lands on the entry just spent, so each action past the second is a team reroll back onto it and another kill, and the Kite's heat climbed with every kill. Free since 11 November, when the Kite gave it up; the Zoids walker's old verb."
    }
   },
   {
@@ -1971,7 +1941,7 @@
    "id": "static",
    "category": "trigger",
    "name": "Static",
-   "codex": "Passive trigger. Always on. Its effects change a machine's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat, armour, move or recharge; add_damage_taken and multiply_damage_taken on every incoming blow; weapon_cooldown (every weapon the machine fires sits out so many rounds after the round it fires; no passive grants one today); set_reach on a component (direct or indirect while a condition holds); suppress, which turns off another effect by id or tag.",
+   "codex": "Passive trigger. Always on. Its effects change a machine's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat, armour, move or recharge; add_damage_taken and multiply_damage_taken on every incoming blow; set_reach on a component (direct or indirect while a condition holds); suppress, which turns off another effect by id or tag.",
    "status": "implemented",
    "design": {
     "holes": "Every read asks the pipeline; nothing is written to a stat or a component, so an effect that is gone stops answering. A static reach rule cannot be conditioned on reach."

@@ -74,7 +74,7 @@ P = {
  'cryo_flinger': A(0, heat=1), 'flakshot_repeater': A(1, heat=0, flak=1), 'megataser_harpoon': A(2, 2), 'combat_translocator': A(0, heat=1),
  'afterburner_cannon': A(2, heat=0, power_per_heat=1, per_heat=2), 'backwash_ionizer': E(3), 'web_bomb': A(0, heat=1),
  'heliographic_siphon': A(0, heat=0, braces=1), 'solar_flare_array': A(3, heat=3, burn=2), 'photosphere_lance': A(4, heat=6, burn=2),
- 'knuckle_of_fury': A(5, heat=3), 'soulcutter_talons': A(3, heat=1, devours=1), 'spin_up': {},
+ 'knuckle_of_fury': A(5, heat=3), 'soulcutter_talons': A(3, heat=1), 'spin_up': {},
  'mooring_screens': E(2), 'spotting_flare': A(0, heat=1), 'sutlers_hoist': E(3, vents=2), 'reveille_horn': {},
  'shrapnel_recuperator': A(1, heat=2, flak=1), 'unrestricted_expenditure': A(2, heat=0), 'quick_reload': dict(heat=3),
  'blast_door': {}, 'decoherence_veil': {},   # the Barrier and the Ward: no numbers

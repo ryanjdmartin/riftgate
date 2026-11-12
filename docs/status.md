@@ -27,19 +27,21 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1155 tests, 371,132 checks, green on `ccr-4d58b054-3lyj0a` (12 November, the Whip
-  Scorpion's two new idle acts). Before it, 1155 tests, 364,744 checks, green on it (12 November, as it took main with the
-  Ammit's rework and the HEAT and OVERHEAT dials, over the release's broadside hooked up). Before
-  it, 1158 tests, 364,864 checks, green on `ccr-722ca9f0-yj8na3` (12 November, main at `c717e69`
-  with the HEAT and OVERHEAT dials). Before it, 1158 tests, 364,834 checks, green on main (12
-  November, as `ccr-8af28d03-re9kz4` landed with the Ammit's rework over the three fast flyers
-  rebuilt, Sweep removed, the cooldown's count, Instant, Sapped and the Wild Boar's and the
-  Baboon's reworks). Before it, 1142 tests, 364,572 checks, green on `ccr-4d58b054-3lyj0a` (12
-  November, the release's broadside hooked up, after the vent blast's and Siphoning's code cut,
-  the Overrun Gearing and the Shift Whistle dealt). Before it, 1142 tests, 364,574 checks, green
-  on `ccr-4d58b054-3lyj0a` (12 November, Sapped, the Lance, the Wild Boar's and the Baboon's
-  reworks, with main's cooldown count, Rapid's switch-off and Instant taken in). 1132 tests,
-  364,475 checks, green on main (12 November, as `ccr-63a1309a-caa9mw` landed
+- Tests: 1154 tests, 371,076 checks, green on `ccr-4d58b054-3lyj0a` (12 November, as it took main with the
+  dead-code pass, over the Whip Scorpion's broadside and its two new idle acts). Before it, 1152
+  tests, 364,655 checks, green on main (12 November, as `ccr-8af28d03-re9kz4` landed a second time
+  with the kill's flare once an attack, no per-foe flag, Empowered's up sword and the dead-code
+  pass, the rules it cut gone with the tests of their own). Before it, 1155 tests, 371,132 checks,
+  green on `ccr-4d58b054-3lyj0a` (12 November, the Whip Scorpion's two new idle acts, its
+  broadside hooked up, the vent blast's and Siphoning's code cut, the Overrun Gearing and the
+  Shift Whistle dealt). Before it, 1158 tests, 364,864 checks, green on `ccr-722ca9f0-yj8na3` (12
+  November, main at `c717e69` with the HEAT and OVERHEAT dials). Before it, 1158 tests, 364,834
+  checks, green on main (12 November, as `ccr-8af28d03-re9kz4` landed with the Ammit's rework over
+  the three fast flyers rebuilt, Sweep removed, the cooldown's count, Instant, Sapped and the Wild
+  Boar's and the Baboon's reworks). Before it, 1142 tests, 364,574 checks, green on
+  `ccr-4d58b054-3lyj0a` (12 November, Sapped, the Lance, the Wild Boar's and the Baboon's reworks,
+  with main's cooldown count, Rapid's switch-off and Instant taken in). 1132 tests, 364,475
+  checks, green on main (12 November, as `ccr-63a1309a-caa9mw` landed
   with the cooldown's count, Rapid's own switch-off and Instant over the Clydesdale's review).
   Before it, 1132 tests, 364,286 checks, green on main (12 November, as the Clydesdale's review
   landed with its wells, broadside drill and hatch wave; Godot 4.8-beta2). Before it, 1132 tests,
@@ -72,7 +74,11 @@ file, the measurements, the vocabulary, the die entry's fields, the effects' hel
 validator, the glyphs and their table the conflicts, both sides kept; Hot Streak, gone with the
 Kite's rebuild, out of the Ammit's lines; the bible's version main's plus one, the generated
 documents run again) and main took it as a fast-forward on Ryan's word ("Merge into main when
-you're done"); it is merged and to delete with the rest.
+you're done"). Brought up to main at `366b10e`, it then took his later words of the same day:
+the kill's flare once an attack, the per-foe flag gone, Empowered's up sword, and the dead-code
+pass with its standing rule and its build check (How things stand, below). Main had not moved,
+and took those six commits as a fast-forward on his word ("Merge in main and then reassess");
+it is merged and to delete with the rest.
 `ccr-e3ddf00b-ilkwbi`, the Kestrel fast flyers' session of 11 and 12 November (The design sessions, below),
 cut from main at `209112b`, took main four times in merges, the last at `8d936cf` (the cooldown's
 count, Instant, Sapped, the Wild Boar's and the Baboon's reworks: the engine's Rapid and Instant
@@ -200,7 +206,10 @@ has it, paying FREE where it paid VENT; the bible on main's rows with this branc
 over them, v0.548 above main's v0.547; the tables, the vocabulary and the synergy map run again), and again
 at `366b10e` (the Ammit's rework and the HEAT and OVERHEAT dials: its Soul Siphon's hold and
 Souls kept without Siphoning, the heat a blow or the blast; the bible on main's rows with this
-branch's edits over them, v0.550 above both sides' v0.549).
+branch's edits over them, v0.550 above both sides' v0.549), and a third time at `ea2f143` (the
+dead-code pass, which cut the same vent blast and heat a blow on main: main's form kept, its
+`Pays.VENT` for the release and its own tests, with this branch's validator refusals, kinds test,
+Overrun Gearing, dealt Shift Whistle, broadside and idle acts over it; the bible v0.553).
 The Skua is his other session's (the Clydesdale's review landed 12 November). The formation and refit session's merges of main before it are in
 its branch's commits. Landed 11 November: `ccr-7effd31a-u5z4gw`, the music session (Hold The Line's, Night Shift's and
 The Far Bank's pairs passed and built into art/audio, How things stand), took main in a merge (the bible, this
@@ -388,8 +397,9 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
     component's `finisher`; Claude's form, his to move); a kill recharging its shield whole
     (`refill_shield`); hull 12, shield 8 at a regen of 1. Both doubles read the foe's HP once a
     hit, so a two-shot gun is doubled whole or not at all. Gone from content: the flat heat, the
-    dark rounds, Hot Streak, the d3 (the die's minimum is four again); the engine keeps Reset and
-    a passive's cooldown, which no piece prints. A Kite leaving a fight at its heat maximum he
+    dark rounds, Hot Streak, the d3 (the die's minimum is four again); Reset and a passive's
+    cooldown, which the engine kept with no piece, left it on 12 November (the dead-code pass,
+    the Ammit's bullet's end). A Kite leaving a fight at its heat maximum he
     declined (the bible's withdrawal row); Phased on a kill he kept for the shadow panther. The
     model's third mount is ahead of the canopy, its gun sunk into the hull, the barrel out of a port
     and clear in a trough (the port gun, a new variant of the barrel class: no block to show), a
@@ -442,7 +452,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   hardpoints); Souls are its Ability, a chip with its count, since a count with no cap is no store;
   the hold is the round's rule and no status on anyone, so a Ward turns nothing away; the Tap's
   kept Empowered is retired with section 12's question and the to-do's test, and Empowered a kill
-  and the kept status stand in the engine with no carrier (the to-do's leavings line). Named, since
+  and the kept status, left in the engine with no carrier at first, were cut the same day (the
+  end of this bullet). Named, since
   they follow from his words: the talons show one roll in six (17%, about 47% with both team
   rerolls; four of eight before, 50% and 91%); each battle opens with the Siphon unplayable until
   the first Soul; the Coil, the Uplink and the Reliquary are no longer kept on it; a burn's tick
@@ -454,7 +465,56 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   in `models_low.py` by hand to the forge's own shape; no model was rebuilt). The first read is in
   `docs/measurements.md` (12 November: a tier-three battle's chain, before against after, a
   direction at 30 seeds). His three lines are the to-do's: play it, judge its marks, write or
-  pass its text.
+  pass its text. Four changes of his after it landed, the same day, on main since that evening
+  (the branch's line, above). The kill's flare comes once an attack that kills, however many fall to it ("Flaring twice
+  for an AoE is probably wrong, let's make it 'one of more killed' by an attack"): the first
+  build flared once for each foe a spend killed, by a flag on the effect that chose between once
+  an attack and once a foe. The flag is gone whole (his, of its second cut, kept for the Souls
+  and refused on a kill: "Why is the per for trigger refused, but still exists as an exception?
+  Makes no sense"): how often a trigger fires is the trigger's own, a kill's once an attack
+  that killed and a foe killed's once for each foe that falls, so nothing is refused and nothing
+  excepted; the Souls of a double kill are both in before the one flare. And Empowered's mark is
+  a blade with an arrow
+  up, Sapped's pair ("Yes use the up sword for empowered", from a mock, after his "Does shock
+  and empowered have the same glyph?": one bolt, Shock's in a ring and Empowered's bare), so the
+  bolt is Shock's alone; Enraged, the golden rage and a foe's Empowered drew the same mark and
+  follow it, and Empowered's pin is a smaller blade beside the arrow standing on the lock (a
+  first cut, the to-do's judging line). And the two rules the rework left with no piece are cut
+  from the engine, Empowered a kill and the kept status, with their terms, the unused jaws glyph
+  and their tests (his "Yeah" to cutting both, after "Is the empowered a kill also an exception
+  then?": it still paid a stack for each foe killed, and the keyword list still showed it); the
+  tests that read a kill through it read a kill trigger now, and the saves' three versions moved
+  (the battle's 26, the run's 25, the quick run's 8), so a die saved with the old talons is set
+  aside. His worry behind the questions ("Im just worried based on your descriptions that our
+  trigger system is just spaghetti in there") was answered in chat and measured into
+  `docs/skirmish_audit.md`'s Unused list: the event triggers are one table, one firing function
+  and one place each is raised; the weight is leftovers (seven rules lost their last piece
+  between 7 and 12 November and stayed, these two the first cut) and each one-piece rule being
+  written out in five places (the audit's Structure 11). Put to him: a rework that takes a
+  rule's last piece cuts the rule in the same pass, and the audit's dead-code pass next. He took
+  both ("Yeah go ahead and fix it"): the next bullet.
+- **The dead-code pass** (`ccr-8af28d03-re9kz4`, 12 November, on that word; on main the same day).
+  The standing rule is CLAUDE.md's: a rule leaves the engine with its last piece, nothing parked
+  as a rework's leavings. `tests/test_leftovers.gd` holds it: an effect kind, a trigger, a die
+  entry's key or a keyword that no piece prints fails the build until it is cut or listed there
+  with what it is, and a listed one that is printed again fails too. Cut, each with its engine
+  path, validator check, term, bot weight, tools' rows and own tests: Reset and a passive's
+  cooldown (the Kite's old kit), the vent blast with its rings, die mark and a vent's second
+  kind, the old Siphon entry's heat a blow and its Siphoning status (the Whip Scorpion's; its
+  passive's heat a blow stands), shield for heat at the round's start (the Buzzard's old
+  Recoupler), a shock for a blocked blow, armour against one rank, and the out-of-combat event
+  with the battle's `fought` record; with them an entry's unused label, the round preview's
+  notes and the readers for saves no version loads. Of the fifteen put to him, seven stay, each
+  with its reason on the test's lists, since reading them showed they are no leftovers: the one
+  pipeline's steps and the trigger table's plain cells (the general path: the Ammit's flare took
+  two such cells off the audit's unused list five days after it named them), the shield cost
+  the Buzzard's and the Storm Petrel's settled briefs pay, and two fields a charged form sets.
+  Two calls were his: Reset, which he had told the Kite's session that day "might come back,
+  sure" (found after the cut; the to-do had left the call to this pass; it returns from git on
+  his word), still on the to-do's Ryan list; and Spillover the keyword, settled the same day as a
+  module, the Overrun Gearing (his "Spillover can be a module"). The saves' versions, moved for the Ammit's two, cover the cut fields. The keyword
+  list lost three entries no piece carried (Empowered a kill, Reset, Siphoning). Still to do,
+  the audit's Structure 11: each one-piece rule is written out by hand in five places.
 - **The cooldown counts after its round; Rapid's own switch-off; Instant** (`ccr-63a1309a-caa9mw`
   from main at `fbce698`, on main the same day on his word, "All good. Clean up and merge into
   main"; Ryan, 12 November, on "So rapid cooldown 1 and a weapon cooldown 1 are
@@ -1432,8 +1492,8 @@ blocks, what prices a round), the vocabulary, the rules and the rows. Then the l
 settled by its rework of 12 November): its structural steps in order (step 3 built on
 `ccr-8df9952c-4cccdf`, the mine's half gone with the slot mines on 9 November; then the bot's
 and the screen's mirrors onto the engine,
-then a 30-seed direction; statuses as data, the Face, the dead code, each refactor checked by
-`tools/behaviour_trace.gd`), since its tangles bend every read after it. The
+then a 30-seed direction; statuses as data, the Face, the rest of the dead code (its rules with
+no piece went on 12 November), each refactor checked by `tools/behaviour_trace.gd`), since its tangles bend every read after it. The
 redesign moves every foe's blow and the battle's shape, so the 200-seed matrix (below) waits on
 the refit and the audit's bot step. First after that: the 200-seed matrix
 with the ladder's, the compositions' and the elites' cells on the desk machine (the to-do's
@@ -1504,10 +1564,13 @@ commands are in `README.md`.
   (Version 504, main's `60a0e4d`), which matched that commit's file; new since 504 the pacing row in beats of the tide,
   menace a pack's threat rating and the rows that follow it, the Whip Scorpion's rework, the
   hardpoints row with every stock gun its class, the Clydesdale's batteries row and its square
-  ports, and Changed Over in the buff table). BASE for the next merge is `aac6bfc`'s file. Main's
-  file is v0.548 since the Ammit's rework landed (12 November), not published: its Ammit row, the
-  Empowered, purge, store and Ability rows, section 12 without the Tap's question, and Souls and
-  Pinned Empowered in the tables; it goes up on Ryan's word. The
+  ports, and Changed Over in the buff table). BASE for the next merge is `aac6bfc`'s file. Also
+  unpublished: main's v0.548, the Ammit's rework (its Ammit row, the Empowered, purge, store and
+  Ability rows, section 12 without the Tap's question, and Souls and Pinned Empowered in the
+  tables), and main's v0.552 since `ccr-8af28d03-re9kz4` landed again (the Ammit row's flare once an
+  attack and the cut of its two old rules, the Empowered row's mark, and the rows that said the
+  engine kept a rule the dead-code pass cut: the Kite's, a piece of two kinds, a rider's limit,
+  Chain's targeting, the Whip Scorpion's); each goes up on Ryan's word. The
   live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS

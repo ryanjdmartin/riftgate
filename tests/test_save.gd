@@ -113,7 +113,6 @@ func test_a_battle_in_plan_round_trips() -> void:
 	hunter.prey = hunted.id
 	b.forced = b.field.forced_fights()
 	b.spent[b.mechs()[2].id] = 1
-	b.fought[b.mechs()[2].id] = true
 	b.orders[hunted.id] = hunter
 	var d := SaveGame.to_dict(b)
 	var text := JSON.stringify(d)
@@ -129,7 +128,6 @@ func test_a_battle_in_plan_round_trips() -> void:
 	assert_true(back.moved.has(m.id), "the machine among them, in one go")
 	assert_true(back.can_undo(), "and its move can still be taken back")
 	assert_eq(back.spent, b.spent, "who has fought")
-	assert_eq(back.fought, b.fought, "and who recharges")
 	assert_eq(back.forced.size(), 1, "the fight a hunter forced")
 	assert_eq((back.forced[0]["prey"] as Unit).id, hunted.id, "on its prey")
 	assert_eq((back.forced[0]["hunters"][0] as Unit).id, hunter.id, "by its hunter")

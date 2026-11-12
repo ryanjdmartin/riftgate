@@ -1453,10 +1453,6 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: volatile is the hull a spend bites: a positive number" % where)
 	if fd.has("shield_cost") and int(fd.get("shield_cost", 0)) <= 0:
 		errs.append("%s: shield_cost is the shield a spend takes first: a positive number" % where)
-	# The hopper (11 October): a weapon fills it by the foes it reaches, another fires a few
-	# loads a shot for a bonus each.
-	if fd.has("devours") and (kind != "attack" or int(fd["devours"]) <= 0):
-		errs.append("%s: devours is the stacks of Empowered a kill gives its owner: a positive number on an attack" % where)
 	# A buff that spends a count of its own machine's for its stacks (the Soul Siphon, 12 November):
 	# the status it spends, one the engine knows, and the most it takes, which is the most it
 	# grants, so it says no stacks of its own.
@@ -1473,8 +1469,6 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	# halves on its own clock, held on every unit through the round's end.
 	if fd.has("holds_all") and not Effects.decays_to_zero(Effects.STATUS.get(str(fd["holds_all"]), {})):
 		errs.append("%s: holds_all names a status that halves at the round's end (Empowered, Flak): no unit's stacks of it run down this round" % where)
-	if Array(fd.get("keywords", [])).has("devour"):
-		errs.append("%s: devour is no keyword since 11 October: write devours: <the stacks a kill gives>" % where)
 	# Burn is a numbered keyword (Ryan, 18 October): an entry says the stacks each hit leaves.
 	if Array(fd.get("keywords", [])).has("burn") and int(fd.get("burn", 0)) <= 0:
 		errs.append("%s: an entry with Burn says its stacks: burn, a positive number" % where)
@@ -1660,8 +1654,6 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: reloads_ammo is a machine piece's: the ammo it adds to its forging machine, a positive number" % where)
 	if fd.has("shields") and (kind != "vent" or int(fd["shields"]) <= 0):
 		errs.append("%s: shields is a vent's shield half (the combined entry): the shield it gives after its vent, a positive number" % where)
-	if fd.has("resets_on_kill") and (kind != "attack" or not (fd["resets_on_kill"] is bool)):
-		errs.append("%s: resets_on_kill (true) is an attack's: if its spend kills, every dark entry comes back and its machine acts again" % where)
 	if fd.has("gathers_mines") and (kind != "attack" or not (fd["gathers_mines"] is bool)):
 		errs.append("%s: gathers_mines (true) is an attack's, a weapon's or a debuff's: every Mine on the field's other foes joins its target's" % where)
 	if fd.has("detonates") and (kind != "attack" or not (fd["detonates"] is bool)):
@@ -1812,7 +1804,7 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: per_stack names no engine status ('%s')" % [where, eff["per_stack"]])
 		if eff.has("per_heat") and int(eff["per_heat"]) <= 0:
 			errs.append("%s: per_heat is heat per step and must be positive" % where)
-		if (effect == "keep_status" or effect == "stack_status" or effect == "lay_status") and not Effects.STATUS.has(str(eff.get("value", ""))):
+		if (effect == "stack_status" or effect == "lay_status") and not Effects.STATUS.has(str(eff.get("value", ""))):
 			errs.append("%s: %s needs an engine status as its value" % [where, effect])
 		# A lay that asks for a weapon's hit (the Ambush's Vitriol, Ryan, 25 October) says so on the
 		# effect and in its passive's text; any other lays on every hit, equipment's included.
@@ -1823,12 +1815,9 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 		if effect == "stack_status" and eff.has("cap") and int(eff["cap"]) < 1:
 			errs.append("%s: stack_status's cap is the most stacks it banks, at least 1" % where)
 		# An effect scaled by a status the machine carries may count it in steps (the Ammit's flare,
-		# 12 November: an Empowered for every five Souls), and a grant may come once for each thing
-		# its event counts.
+		# 12 November: an Empowered for every five Souls).
 		if eff.has("stack_step") and (not eff.has("per_stack") or int(eff["stack_step"]) < 1):
 			errs.append("%s: stack_step is the stacks of per_stack's status a step takes: 1 or more, beside per_stack" % where)
-		if eff.has("each") and (effect != "stack_status" or not (eff["each"] is bool) or not ["on_kill", "on_foe_killed"].has(trig)):
-			errs.append("%s: each (true) grants a stack_status once for every foe its event counts: on_kill's or on_foe_killed's" % where)
 		# An effect that fires once a round (the Skua's stack of Ricochet for damaging a foe, Ryan,
 		# 11 November: "once per turn"): a gate on what an event fires (Effects.fire), which the
 		# pipeline's effects (static, on_attack, on_injury) never pass through.
@@ -1847,8 +1836,8 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 		# as often, a whole number of two or more.
 		if effect == "split_strikes" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 2 or float(eff["value"]) != floorf(float(eff["value"]))):
 			errs.append("%s: split_strikes divides each roll among that many strikes: a whole number, 2 or more" % where)
-		if (effect == "weapon_cooldown" and int(eff.get("value", 0)) < 1) or (effect == "multiply_printed" and float(eff.get("value", 0)) <= 0.0):
-			errs.append("%s: %s needs a positive value (the rounds every weapon and debuff goes dark; the multiply on the printed number)" % [where, effect])
+		if effect == "multiply_printed" and float(eff.get("value", 0)) <= 0.0:
+			errs.append("%s: multiply_printed needs a positive value, the multiply on the printed number" % where)
 		# The Musk Ox's Forge (21 October): its magazine, the opening load, the trickle, the heat an
 		# ammo stands for, the reloads of a vent and a shield on itself.
 		if effect == "forge" and (int(eff.get("value", 0)) < 1 or int(eff.get("per_heat", 0)) < 1 \
@@ -1887,8 +1876,6 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 				errs.append("%s: target_rank's reach is direct or indirect" % where)
 			if str(eff.get("trigger", "")) != "on_attack":
 				errs.append("%s: target_rank reads a reach on an attack's own effects only (on_attack)" % where)
-		if effect == "add_armour_vs_rank" and not ["front", "back"].has(str(eff.get("rank", "front"))):
-			errs.append("%s: add_armour_vs_rank's rank is front or back" % where)
 		if effect == "seal_form" and (int(eff.get("value", 0)) <= 0 or int(eff.get("heat", 0)) < 0):
 			errs.append("%s: seal_form's value is the armour the seal grants, positive, and heat what it runs hotter a turn, not negative" % where)
 		if effect == "paradox" and int(eff.get("value", 0)) < 1:
