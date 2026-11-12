@@ -27,20 +27,16 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1154 tests, 371,076 checks, green on `ccr-4d58b054-3lyj0a` (12 November, as it took main with the four
-  formations' numbers, over the dead-code pass taken in, the Whip Scorpion's broadside and its two
-  new idle acts). Before it, 1154 tests, 371,076 checks, green on it (as it took the dead-code
-  pass). Before it, 1152 tests, 364,655 checks, green on main (12 November, as
+- Tests: 1154 tests, 371,076 checks, green on main (12 November, as `ccr-4d58b054-3lyj0a` landed
+  with the vent blast's and Siphoning's cut, the Overrun Gearing, the Shift Whistle dealt, the
+  Whip Scorpion's broadside and its two new idle acts, over the dead-code pass and the four
+  formations' numbers). Before it, 1152 tests, 364,655 checks, green on main (12 November, as
   `ccr-8af28d03-re9kz4` landed a second time with the kill's flare once an attack, no per-foe flag,
-  Empowered's up sword and the dead-code pass, the rules it cut gone with the tests of their own),
-  and the same counts green on `ccr-722ca9f0-yj8na3` over it with the four formations' numbers.
-  Before it, 1155 tests, 371,132 checks, green on `ccr-4d58b054-3lyj0a` (12 November, the Whip
-  Scorpion's two new idle acts, its broadside hooked up, the vent blast's and Siphoning's code cut,
-  the Overrun Gearing and the Shift Whistle dealt). Before it, 1158 tests, 364,864 checks, green on
-  `ccr-722ca9f0-yj8na3` (12 November, main at `c717e69` with the HEAT and OVERHEAT dials). Before
-  it, 1158 tests, 364,834 checks, green on main (12 November, as `ccr-8af28d03-re9kz4` landed with
-  the Ammit's rework over the three fast flyers rebuilt, Sweep removed, the cooldown's count,
-  Instant, Sapped and the Wild Boar's and the Baboon's reworks). Before it, 1142 tests, 364,574
+  Empowered's up sword and the dead-code pass), and the same counts green on `ccr-722ca9f0-yj8na3`
+  over it with the four formations' numbers. Before it, 1158 tests, 364,834 checks, green on main
+  (12 November, as `ccr-8af28d03-re9kz4` landed with the Ammit's rework over the three fast flyers
+  rebuilt, Sweep removed, the cooldown's count, Instant, Sapped and the Wild Boar's and the
+  Baboon's reworks). Before it, 1142 tests, 364,574
   checks, green on `ccr-4d58b054-3lyj0a` (12 November, Sapped, the Lance, the Wild Boar's and the
   Baboon's reworks, with main's cooldown count, Rapid's switch-off and Instant taken in). 1132
   tests, 364,475 checks, green on main (12 November, as `ccr-63a1309a-caa9mw` landed
@@ -202,21 +198,17 @@ pages' republish ("Everything else let's clean up and merge into main first befo
 proceeding"), and again on 12 November with the rest of its locked pieces' round (the Whip
 Scorpion's rework and its Heliographic Death Ray, the Dingo's pieces, the pins, the Flakshot
 Repeater, Sapped and the Lance, the Wild Boar's and the Baboon's reworks) over main's cooldown
-count ("Your names are fine. Clean up and merge into main"). Since then, on the branch and not on
-main until his word: the vent blast's and Siphoning's code cut, Spillover a module (the Overrun
-Gearing), the Shift Whistle dealt and the machine's level named tier (12 November), main taken at
-`aac6bfc` in a merge (the fast flyers and Sweep's removal: the release on every foe kept as main
-has it, paying FREE where it paid VENT; the bible on main's rows with this branch's edits laid
-over them, v0.548 above main's v0.547; the tables, the vocabulary and the synergy map run again), and again
-at `366b10e` (the Ammit's rework and the HEAT and OVERHEAT dials: its Soul Siphon's hold and
-Souls kept without Siphoning, the heat a blow or the blast; the bible on main's rows with this
-branch's edits over them, v0.550 above both sides' v0.549), and a third time at `ea2f143` (the
-dead-code pass, which cut the same vent blast and heat a blow on main: main's form kept, its
-`Pays.VENT` for the release and its own tests, with this branch's validator refusals, kinds test,
-Overrun Gearing, dealt Shift Whistle, broadside and idle acts over it; the bible v0.553), and a
-fourth at `bf5158e` (the four formations' numbers: the bible's section 12 line on "a tier of their
-own", v0.554 above both sides' v0.553).
-The Skua is his other session's (the Clydesdale's review landed 12 November). The formation and refit session's merges of main before it are in
+count ("Your names are fine. Clean up and merge into main"). Again on 12 November, with the vent
+blast's and Siphoning's code cut, Spillover a module (the Overrun Gearing), the Shift Whistle
+dealt, the machine's level named tier, the release's broadside and the Whip Scorpion's two new
+idle acts, on his word ("You can then clean up and merge into main"), the branch having taken main
+four times on the way (the fast flyers and Sweep's removal at `aac6bfc`, the Ammit's rework at
+`366b10e`, the dead-code pass at `ea2f143`, the four formations at `bf5158e`; each merge commit
+says how). Where the dead-code pass, which cut the same vent blast and heat a blow without knowing
+this branch's calls, stepped on them, this branch's stand on his word ("take ours as correct"):
+the release's `Pays.FREE` and its comments, Spillover kept as the Gearing's, the Shift Whistle
+dealt; its own cuts (Empowered a kill, the kept status, Reset and the other retired rules) stand.
+It is merged and to delete with the rest. The Skua is his other session's (the Clydesdale's review landed 12 November). The formation and refit session's merges of main before it are in
 its branch's commits. Landed 11 November: `ccr-7effd31a-u5z4gw`, the music session (Hold The Line's, Night Shift's and
 The Far Bank's pairs passed and built into art/audio, How things stand), took main in a merge (the bible, this
 file and the to-do the conflicts: the bible three-way on the v0.469 both files carried, main's
@@ -304,7 +296,7 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   cut). Its locked piece is the Heliographic Death Ray (his keep of the name; id
   `heliographic_death_ray`), remodelled the same day as a steam-fed mirrored railgun in the
   mast's place, with a firing act of its own (the model rebuilt in a cloud session: a python3.11
-  venv with `bpy==5.0.1` as `BPY_PYTHON`, renders under `xvfb-run`). Its leavings are the to-do's
+  venv with `bpy==5.0.1` as `BPY_PYTHON`, renders under `xvfb-run`). Its open ends are the to-do's
   line (its bot's first heuristic, its runner row unread, its release on screen a first cut). The
   release fires the model's broadside since 12 November (the blast act, keyed by the passive's
   id in the sidecar's `fires`, a firing alone: `Effects.pass_release` gives the id and the screen

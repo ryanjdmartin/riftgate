@@ -29,10 +29,9 @@ enum Outcome { NONE, VICTORY, DEFEAT, WITHDRAWN }   # WITHDRAWN is never produce
 ## How a spend at a foe pays for its hits (_pay_hits), the caller's to say: the firer's gauge takes
 ## the heat the pipeline makes of them (HEAT); a forging machine's gun paid ammo before it fired,
 ## and only a foe's debuff still heats it (AMMO: the Musk Ox's Desublimation Forge, the salvo's
-## magazine); a release's hits are paid whole by the heat it fired, so they heat nothing (VENT:
-## the Whip Scorpion's valves).
-## Passed as an `int`, as every enum here is (CLAUDE.md).
-enum Pays { HEAT, AMMO, VENT }
+## magazine); a passed turn's release fires its heat as its shots and pays none of its own (FREE:
+## the Whip Scorpion's). Passed as an `int`, as every enum here is (CLAUDE.md).
+enum Pays { HEAT, AMMO, FREE }
 
 const SQUAD_SPOTS := 4   # the squad's spots across the floor, one under each of the foes' columns (the screen draws them)
 const DEFAULT_COLUMNS := 4   # the formation's width (Ryan, 23 September: four plays better than three)
@@ -2375,7 +2374,7 @@ func _release_passes() -> void:
 		spend_blows.clear()
 		_shoved.clear()
 		var h := _hit(ms, shot, target)
-		_finish_hits(i, ms, shot, target, h, Pays.VENT)
+		_finish_hits(i, ms, shot, target, h, Pays.FREE)
 		ms.heat = 0   # cold after it, whatever the blows cashed
 		releases.append({"mech": i, "heat": fired, "blows": spend_blows.duplicate()})
 		_refresh_guards()
@@ -2876,8 +2875,8 @@ func withdraw() -> bool:
 
 # ---------------------------------------------------------------- resolution
 
-## A weapon's or a debuff's spend at a foe, the plain one (the salvo fires its own: _salvo). A
-## forging machine's gun pays ammo first for the heat its own spend would
+## A weapon's or a debuff's spend at a foe, the plain one (the salvo and a pass's release fire
+## their own: _salvo, _release_passes). A forging machine's gun pays ammo first for the heat its own spend would
 ## make (the Musk Ox's Desublimation Forge), a dry magazine firing nothing; then its hits (_hit);
 ## then, in the rider phase before the death check, on a target the hit felled too: the Mine its
 ## machine leaves on the target (_lay_mine, what the hits fired at it) and what the entry does
@@ -2901,7 +2900,7 @@ func _spend_at(mech_index: int, ms: MechState, f: Face, target: Foe, second = nu
 
 
 ## One weapon's or debuff's hits on its target, shared by every spend at a foe (the plain one, the
-## salvo, a release) and paying for none of it: every strike is its own blow (its own number,
+## salvo, a pass's release) and paying for none of it: every strike is its own blow (its own number,
 ## its keywords and passives), landing on every foe the component reaches; then the riders, the
 ## hopper's loads and what lands after the blow (_after_blow). The death check and what the spend
 ## pays are its caller's (_finish_hits).
@@ -3249,7 +3248,8 @@ func _shove(ms: MechState, f: Face, h: Hits) -> void:
 		log.append("%s drives %s into %s for %d" % [ms.unit.display_name, front.display_name, back.display_name, dealt])
 
 
-## The hits told: the screen's last roll and the log's line (a release's or a hit's), then the heat Vents all fired into them.
+## The hits told: the screen's last roll and the log's line, then the heat Vents all fired into
+## them.
 func _tell_hits(mech_index: int, ms: MechState, f: Face, target: Foe, h: Hits, pays: int) -> void:
 	last_roll = {"mech": mech_index, "target": target, "base": h.base, "final": h.total, "tags": f.tags.duplicate()}
 	var how := f.describe()
@@ -3284,20 +3284,21 @@ func _zap(ms: MechState, f: Face, target: Foe, h: Hits) -> void:
 
 
 ## What a spend pays for its hits once its death check is done, in order: the runner's reach tally
-## (a lure or a probe deals nothing and is no spend of damage; a release is no spend), the heat the firer's modifiers vent, the spend's heat as `pays` says (Pays: the gauge takes
+## (a lure or a probe deals nothing and is no spend of damage; a pass's release is no spend of
+## its own, FREE), the heat the firer's modifiers vent, the spend's heat as `pays` says (Pays: the gauge takes
 ## the hits'; the forge took the gun's own in ammo, the salvo's included, a foe's debuff still
 ## heating it, Ryan, 8 November: "scorch affects the actual heat bar, not the ammo cost"; the
-## release paid in the heat it fired), the Shrapnel Recuperator's casings (ammo back for every foe
+## release pays none), the Shrapnel Recuperator's casings (ammo back for every foe
 ## its blows reached), and the Cryo its hits spent, cooling the hitter once its heat has landed.
 func _pay_hits(ms: MechState, f: Face, h: Hits, pays: int) -> void:
-	if f.power > 0 and pays != Pays.VENT:
+	if f.power > 0 and pays != Pays.FREE:
 		_tally_reach(h.reach, h.dealt, h.aimed_back, h.heat)
 	if h.vent > 0:
 		ms.heat = maxi(0, ms.heat - h.vent)
 	var heat := h.heat
 	if pays == Pays.AMMO:
 		heat = Effects.debuff_heat(ms.unit, f)
-	elif pays == Pays.VENT:
+	elif pays == Pays.FREE:
 		heat = 0
 	_add_heat(ms, heat, ms.face_index)
 	if f.ammo_per_foe_hit > 0 and ms.ammo_max > 0 and not h.reached.is_empty():
@@ -4628,7 +4629,7 @@ func _shock(foe: Foe, by: MechState, turned = null) -> void:
 ## The primers (Ryan, 2 November; keywords since 3 November): Charged and Supercooled ride the
 ## weapons a machine fires as Shock and as Cryo, one more a strike (Effects.effective_face), and
 ## a weapon fired or laid spends a stack of each: a Rapid's second fire is a second fire, a salvo
-## one, and equipment spends nothing.
+## one, a passed turn's release none, and equipment spends nothing.
 func _spend_primers(ms: MechState) -> void:
 	for id in ["charged", "supercooled"]:
 		if Effects.stacks_of(ms.unit, id) <= 0:
