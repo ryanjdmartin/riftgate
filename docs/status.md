@@ -66,17 +66,14 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 ## Branches
 
 Everything is on main as of 12 November 2026; the formation and refit session's branch lands as it goes, below.
-`ccr-8af28d03-re9kz4`, the Ammit's rework of 12 November (How things stand below), cut from main at
-`87da46f`, took main twice in merges, at `8d936cf` and at `84b3835` (the bible, the rules, this
-file, the measurements, the vocabulary, the die entry's fields, the effects' helpers, the
-validator, the glyphs and their table the conflicts, both sides kept; Hot Streak, gone with the
-Kite's rebuild, out of the Ammit's lines; the bible's version main's plus one, the generated
-documents run again) and main took it as a fast-forward on Ryan's word ("Merge into main when
-you're done"). Brought up to main at `366b10e`, it then took his later words of the same day:
-the kill's flare once an attack, the per-foe flag gone, Empowered's up sword, and the dead-code
-pass with its standing rule and its build check (How things stand, below). Main had not moved,
-and took those six commits as a fast-forward on his word ("Merge in main and then reassess");
-it is merged and to delete with the rest.
+`ccr-8af28d03-re9kz4`, the Ammit's rework of 12 November and what followed it that day (How
+things stand, below), cut from main at `87da46f`, landed three times as fast-forwards on Ryan's
+word: the rework, after taking main twice in merges ("Merge into main when you're done"); the
+kill's flare once an attack, Empowered's up sword and the dead-code pass, on "Merge in main and
+then reassess", which was misread (he meant main into the branch; main had not moved at that
+fetch, so it was taken for a landing); and its records, once it had taken main at `f3e4841` and
+`27956e7` in merges and checked its calls against them ("Great, clean up and merge back into
+main"). It is merged and to delete with the rest.
 `ccr-e3ddf00b-ilkwbi`, the Kestrel fast flyers' session of 11 and 12 November (The design sessions, below),
 cut from main at `209112b`, took main four times in merges, the last at `8d936cf` (the cooldown's
 count, Instant, Sapped, the Wild Boar's and the Baboon's reworks: the engine's Rapid and Instant
@@ -397,7 +394,7 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
     hit, so a two-shot gun is doubled whole or not at all. Gone from content: the flat heat, the
     dark rounds, Hot Streak, the d3 (the die's minimum is four again); Reset and a passive's
     cooldown, which the engine kept with no piece, left it on 12 November (the dead-code pass,
-    the Ammit's bullet's end). A Kite leaving a fight at its heat maximum he
+    below). A Kite leaving a fight at its heat maximum he
     declined (the bible's withdrawal row); Phased on a kill he kept for the shadow panther. The
     model's third mount is ahead of the canopy, its gun sunk into the hull, the barrel out of a port
     and clear in a trough (the port gun, a new variant of the barrel class: no block to show), a
@@ -435,87 +432,70 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
-- **The Ammit's rework** (`ccr-8af28d03-re9kz4` from main at `87da46f`, on main the same day on his word, "Merge into
-  main when you're done"; Ryan,
-  12 November, his own design: "The 4 claws are combined into one weapon that deals 1x4 instead,
-  with Breach. They no longer gain Empowered on kill"; "Kills grant one Soul. At the start of a
-  skirmish, or on kill, the souls flare, granting 1 Empowered per 5 souls"; "Soul Siphon: Consume
-  up to 5 souls, granting 1 Empowered per soul. Cooldown 3"). Three holes went to him in chat
-  before anything was built, all from one fact (Empowered halves at the round's end and the Ammit
-  swings once a round), and his calls settled each: the Souls last the battle and carry no cap ("as
-  part of the fantasy"); any kill in its fight banks one and only its own kill flares; the Siphon
-  holds every Empowered on the field for its round ("And I mean none, not ally or enemy"), and
-  the hold stays off the kill flare, where a kill a round would have climbed without limit. Built
-  as he said: its die is six (the talons one entry of 1 ×4 with Breach, the Siphon, four
-  hardpoints); Souls are its Ability, a chip with its count, since a count with no cap is no store;
-  the hold is the round's rule and no status on anyone, so a Ward turns nothing away; the Tap's
-  kept Empowered is retired with section 12's question and the to-do's test, and Empowered a kill
-  and the kept status, left in the engine with no carrier at first, were cut the same day (the
-  end of this bullet). Named, since
-  they follow from his words: the talons show one roll in six (17%, about 47% with both team
-  rerolls; four of eight before, 50% and 91%); each battle opens with the Siphon unplayable until
-  the first Soul; the Coil, the Uplink and the Reliquary are no longer kept on it; a burn's tick
-  or a Mine banks a Soul and flares nothing. Its cooldown of 3 counts as every cooldown does since
-  the same day (the bullet below): the rest of its round and three rounds after. Shown text is a session's drafts (the Tap's line, the
-  two terms, Consumes' second half, the triggers); the Text tab held nothing to fold, and the
-  voice file has nothing signed yet. First cuts for his eye: the Souls chip's ghost, the pin
-  beside each Empowered, the Siphon's firing act (the threat's coil, set in the rig sidecar and
-  in `models_low.py` by hand to the forge's own shape; no model was rebuilt). The first read is in
-  `docs/measurements.md` (12 November: a tier-three battle's chain, before against after, a
-  direction at 30 seeds). His three lines are the to-do's: play it, judge its marks, write or
-  pass its text. Four changes of his after it landed, the same day, on main since that evening
-  (the branch's line, above). The kill's flare comes once an attack that kills, however many fall to it ("Flaring twice
-  for an AoE is probably wrong, let's make it 'one of more killed' by an attack"): the first
-  build flared once for each foe a spend killed, by a flag on the effect that chose between once
-  an attack and once a foe. The flag is gone whole (his, of its second cut, kept for the Souls
-  and refused on a kill: "Why is the per for trigger refused, but still exists as an exception?
-  Makes no sense"): how often a trigger fires is the trigger's own, a kill's once an attack
-  that killed and a foe killed's once for each foe that falls, so nothing is refused and nothing
-  excepted; the Souls of a double kill are both in before the one flare. And Empowered's mark is
-  a blade with an arrow
-  up, Sapped's pair ("Yes use the up sword for empowered", from a mock, after his "Does shock
-  and empowered have the same glyph?": one bolt, Shock's in a ring and Empowered's bare), so the
-  bolt is Shock's alone; Enraged, the golden rage and a foe's Empowered drew the same mark and
-  follow it, and Empowered's pin is a smaller blade beside the arrow standing on the lock (a
-  first cut, the to-do's judging line). And the two rules the rework left with no piece are cut
-  from the engine, Empowered a kill and the kept status, with their terms, the unused jaws glyph
-  and their tests (his "Yeah" to cutting both, after "Is the empowered a kill also an exception
-  then?": it still paid a stack for each foe killed, and the keyword list still showed it); the
-  tests that read a kill through it read a kill trigger now, and the saves' three versions moved
-  (the battle's 26, the run's 25, the quick run's 8), so a die saved with the old talons is set
-  aside. His worry behind the questions ("Im just worried based on your descriptions that our
-  trigger system is just spaghetti in there") was answered in chat and measured into
-  `docs/skirmish_audit.md`'s Unused list: the event triggers are one table, one firing function
-  and one place each is raised; the weight is leftovers (seven rules lost their last piece
-  between 7 and 12 November and stayed, these two the first cut) and each one-piece rule being
-  written out in five places (the audit's Structure 11). Put to him: a rework that takes a
-  rule's last piece cuts the rule in the same pass, and the audit's dead-code pass next. He took
-  both ("Yeah go ahead and fix it"): the next bullet.
-- **The dead-code pass** (`ccr-8af28d03-re9kz4`, 12 November, on that word; on main the same day).
-  The standing rule is CLAUDE.md's: a rule leaves the engine with its last piece, nothing parked
-  as a rework's leavings. `tests/test_leftovers.gd` holds it: an effect kind, a trigger, a die
-  entry's key or a keyword that no piece prints fails the build until it is cut or listed there
-  with what it is, and a listed one that is printed again fails too. Cut, each with its engine
-  path, validator check, term, bot weight, tools' rows and own tests: Reset and a passive's
-  cooldown (the Kite's old kit), the vent blast with its rings, die mark and a vent's second
-  kind, the old Siphon entry's heat a blow and its Siphoning status (the Whip Scorpion's; its
-  passive's heat a blow stands), shield for heat at the round's start (the Buzzard's old
-  Recoupler), a shock for a blocked blow, armour against one rank, and the out-of-combat event
-  with the battle's `fought` record; with them an entry's unused label, the round preview's
-  notes and the readers for saves no version loads. Of the fifteen put to him, seven stay, each
-  with its reason on the test's lists, since reading them showed they are no leftovers: the one
-  pipeline's steps and the trigger table's plain cells (the general path: the Ammit's flare took
-  two such cells off the audit's unused list five days after it named them), the shield cost
-  the Buzzard's and the Storm Petrel's settled briefs pay, and two fields a charged form sets.
-  Two calls were his, both settled the same day: Reset let go ("Let it go I think, I'm fairly
-  certain there was a better way of building it anyway"; git keeps it at `90feac1`), and Spillover
-  the keyword kept as a module, the Overrun Gearing (his "Spillover can be a module"). The stock
-  pass's fills script, `tools/stock_fills.py`, retired the same day, its tables a second copy of
-  the content's numbers that no longer ran (his "Retire the loop thing"); the balance loop,
-  `tools/stock_loop.py`, stays, `tools/endgame_fours.py` and the measurements' runs on it, a lever
-  kept landing in the content by hand. The saves' versions, moved for the Ammit's two, cover the cut fields. The keyword
-  list lost three entries no piece carried (Empowered a kill, Reset, Siphoning). Still to do,
-  the audit's Structure 11: each one-piece rule is written out by hand in five places.
+- **The Ammit's rework** (`ccr-8af28d03-re9kz4`, Ryan's own design, 12 November; on main): "The 4
+  claws are combined into one weapon that deals 1x4 instead, with Breach. They no longer gain
+  Empowered on kill"; "Kills grant one Soul. At the start of a skirmish, or on kill, the souls
+  flare, granting 1 Empowered per 5 souls"; "Soul Siphon: Consume up to 5 souls, granting 1
+  Empowered per soul. Cooldown 3". His calls on the three holes put to him first: the Souls last
+  the battle and carry no cap ("as part of the fantasy"); any kill in its fight banks one and only
+  its own kill flares; the Siphon's round holds every Empowered on the field ("And I mean none,
+  not ally or enemy"), and the hold stays off the kill flare. And later that day, the flare comes
+  once an attack that kills, however many fall to it ("Flaring twice for an AoE is probably
+  wrong, let's make it 'one of more killed' by an attack"), a double kill's Souls both in first.
+  As built: a die of six (the talons one entry of 1 ×4 with Breach, the Siphon, four hardpoints);
+  Souls its Ability, a chip with its count, since a count with no cap is no store; the hold the
+  round's rule and no status, so a Ward turns nothing away. Named, since they follow from his
+  words: the talons show one roll in six (17%, about 47% with both team rerolls; 50% and 91%
+  before); each battle opens with the Siphon unplayable until the first Soul; the Coil, the
+  Uplink and the Reliquary are no longer kept on it; a burn's tick or a Mine banks a Soul and
+  flares nothing; its cooldown of 3 is the rest of its round and three rounds after. Shown text
+  is a session's drafts (the Tap's line, the Souls' and the pin's entries, Consumes' second
+  half, the trigger), on the hangar's Text tab since Version 240. First cuts for his eye: the
+  Souls chip's ghost, the pin beside each Empowered, the Siphon's firing act (the threat's coil,
+  set by hand in the rig sidecar and `models_low.py`; no model was rebuilt). The first read is
+  `docs/measurements.md`'s, a direction at 30 seeds made on the flare's first form. His lines are
+  the to-do's: play it, judge its marks, write or pass its text.
+- **Empowered's mark** (12 November; on main): a blade with an arrow up, Sapped's pair ("Yes use
+  the up sword for empowered", from a mock, after his "Does shock and empowered have the same
+  glyph?": one bolt, Shock's in a ring and Empowered's bare). The bolt is Shock's alone; Enraged,
+  the golden rage and a foe's Empowered drew Empowered's mark and follow it; its pin is a smaller
+  blade beside the arrow standing on the lock, a first cut on the to-do's judging line.
+- **The dead-code pass** (`ccr-8af28d03-re9kz4`, 12 November; on main). It began with his
+  questions of the flare's flag ("Why is the per for trigger refused, but still exists as an
+  exception? Makes no sense") and of Empowered a kill ("also an exception then?"), and his worry
+  ("our trigger system is just spaghetti in there"). Measured, the triggers read sound (one
+  table, one function that fires an event's passives, one place that raises each) and the
+  weight was leftovers: seven rules had lost their last piece between 7 and 12 November and
+  stayed. On his "Yeah go ahead and fix it":
+  - The standing rule is CLAUDE.md's: a rule leaves the engine with its last piece, nothing
+    parked as a rework's leavings. `tests/test_leftovers.gd` holds it both ways: an effect kind,
+    a trigger, a die entry's key or a keyword that no piece prints fails the build until it is
+    cut or listed there with what it is, and a listed one that is printed again fails too.
+  - Cut, each with its engine path, validator check, term, bot weight, tools' rows and own
+    tests: the flare's per-foe flag; Empowered a kill and the kept status (the Ammit's old two);
+    Reset and a passive's cooldown (the Kite's); the vent blast, with its rings, die mark and a
+    vent's second kind, and the old Siphon entry's heat a blow with its Siphoning status (the
+    Whip Scorpion's, cut by `ccr-4d58b054-3lyj0a` too, whose form stands where the two met; its
+    passive's heat a blow stays); shield for heat at the round's start; a shock for a blocked
+    blow; armour against one rank; the out-of-combat event with the battle's `fought` record;
+    and an entry's unused label, the round preview's notes and the readers for saves no version
+    loads. The saves' versions moved (the battle's 26, the run's 25, the quick run's 8).
+  - Kept, on the test's lists with their reasons: the one pipeline's own steps and the trigger
+    table's plain cells (the general path: the Ammit's flare took two such cells off the audit's
+    unused list five days after it named them), the shield cost the Buzzard's and the Storm
+    Petrel's settled briefs pay, and two fields a charged form sets.
+  - His calls, settled the same day: Reset let go ("Let it go I think, I'm fairly certain there
+    was a better way of building it anyway"; git keeps it at `90feac1`); Spillover, listed as
+    unprinted and put to him wrongly by the time it was read, is the Overrun Gearing's (his
+    "Spillover can be a module"). The stock pass's fills script, `tools/stock_fills.py`, retired
+    too, its tables a second copy of the content's numbers that no longer ran (his "Retire the
+    loop thing"); the balance loop, `tools/stock_loop.py`, stays, a lever kept landing in the
+    content by hand.
+  - Next, the to-do's Engine line: the check does not yet hold a passive's conditions, the foes'
+    moves or a status to what lays it (four conditions, two foe moves and seven helpers only
+    tests call are unused there, checked on main at `f3e4841`), and Structure 11 is untouched:
+    a die entry's 73 fields are each written out by hand in several places, with no drift today.
+    The audit's Unused list holds the measure.
 - **The cooldown counts after its round; Rapid's own switch-off; Instant** (`ccr-63a1309a-caa9mw`
   from main at `fbce698`, on main the same day on his word, "All good. Clean up and merge into
   main"; Ryan, 12 November, on "So rapid cooldown 1 and a weapon cooldown 1 are
