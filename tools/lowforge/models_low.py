@@ -5942,10 +5942,11 @@ def needletail(b):
     PIN = YC - 1.5 + RUN - 7.68    # the gun's mount at rest, run out, its muzzle just clear of the nose (the port gun is 7.68 long here)
     # Each class rooted in the open bay and run out of the port, none ahead of it on nothing (Ryan,
     # 13 November: "racks, blades and dishes still float out of the front gun ports"): the port
-    # rack's drum and the port dish's sleeve from the bay's widest, the blade's bracket filling it,
-    # the twin barrels' receiver in it.
-    CHEEK_FITS = {"barrel": ("barrel_port", 1.0), "twin_barrel": ("twin_barrel", 0.55, -6.4), "rack": ("rack_port", 0.6, -1.75),
-                  "dish": ("dish_port", 0.6, -3.0), "blade": ("blade", 0.55, -4.0)}
+    # rack's drum and the port dish's sleeve from one root at the bay's back, just ahead of the
+    # gun's, at one diameter (of the Kite's, 12 November: "same diameter as the rack"), the blade's
+    # bracket filling the bay, the twin barrels' receiver in it.
+    CHEEK_FITS = {"barrel": ("barrel_port", 1.0), "twin_barrel": ("twin_barrel", 0.55, -6.4), "rack": ("rack_port", 0.65, -0.5),
+                  "dish": ("dish_port", 0.65, -0.5), "blade": ("blade", 0.55, -4.0)}
 
     def drop(y):
         """The blister's radius at `y`: a round back buried in the skin, its widest over the

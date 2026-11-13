@@ -3751,13 +3751,13 @@
    },
    "rack": {
     "shape": "rack_port",
-    "scale": 0.6,
-    "sink": -1.75
+    "scale": 0.65,
+    "sink": -0.5
    },
    "dish": {
     "shape": "dish_port",
-    "scale": 0.6,
-    "sink": -3.0
+    "scale": 0.65,
+    "sink": -0.5
    },
    "blade": {
     "shape": "blade",
@@ -3777,13 +3777,13 @@
    },
    "rack": {
     "shape": "rack_port",
-    "scale": 0.6,
-    "sink": -1.75
+    "scale": 0.65,
+    "sink": -0.5
    },
    "dish": {
     "shape": "dish_port",
-    "scale": 0.6,
-    "sink": -3.0
+    "scale": 0.65,
+    "sink": -0.5
    },
    "blade": {
     "shape": "blade",
