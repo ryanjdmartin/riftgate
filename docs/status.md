@@ -364,7 +364,7 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
     diameter; the tail's top edges chamfered, the intake taking the face's new shape, the tail
     six longer and carried on one root of the body's section in place of its dark keel and the
     old scoop, filleted into the shoulders, raked vents glowing in it over the boosters, flaring
-    with them, the tail floating behind it; the wings' leading edge angled more,
+    with them, the tail floating behind it; the wings' leading and trailing edges swept more,
     and the tail segment's face behind the canopy is an air intake (his, 12 November). Its brief is retired; his play is the
     to-do's.
   - The Skua: built as his "Ramping Dakka" (the bible's Kestrel row). Its passive gains a stack of Ricochet the first time each round one of its

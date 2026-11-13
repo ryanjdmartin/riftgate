@@ -373,9 +373,12 @@ def kite(b):
     # The leading edge angled more (Ryan, 12 November: "can we angle the forward face of the
     # wings a bit more, to make it a bit more aggressive?", then "Maybe a little more? Just so it
     # reads well at skirmish view"): its root drawn back from 6 to -2, the tip on its driver where
-    # it was, so the edge runs out at about 32 degrees off square where it ran at 17.
+    # it was, so the edge runs out at about 32 degrees off square where it ran at 17. Then the back
+    # edge the same way ("What if we pulled the back edge back a bit, making that a sharper angle
+    # as well?"): its root, inside the booster, drawn back from -32 to -38, so it sweeps at about
+    # 60 degrees where it swept at 56 and leaves the booster four and a half further back.
     for s in (-1.0, 1.0):
-        root = [(s * 6.5, -32.0, -1.0), (s * 6.5, -32.0, 1.4), (s * 6.5, -2.0, 0.2)]
+        root = [(s * 6.5, -38.0, -1.0), (s * 6.5, -38.0, 1.4), (s * 6.5, -2.0, 0.2)]
         tip = [(s * 32.0, 6.0, -5.4), (s * 32.0, 6.0, -4.6), (s * 32.0, 14.0, -5.0)]
         _wing(b, root, tip, "livery.livery", "wing")
         # The Pinion Driver at the tip, the same both sides (fixed, no pin), a ramjet-gun
