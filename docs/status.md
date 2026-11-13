@@ -920,24 +920,28 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   nothing. The Storm Petrel in these reads is the machine as built, zap and all; his
   direction of 11 November takes the zap off it, and that session waited on the heat pass,
   which has landed. Open, his: the Barrier's place, the discussion he opened the same day
-  ("Is it toxic? Is it worse than giving numerical shield? Should it be rare or locked? ...
-  maybe we went too far"; the refit brief's section 14 has his words, the records, the
-  bench and Claude's lean with its holes, nothing built). The reads: a Barrier takes seven
-  blows in ten from a foe whose kit is one blow a round and one in eight in a formation;
-  with a shield grant that may pass the gauge in the Halo's slot (Overshield, 4 or 6) the same elites cost
-  a four 15 to 18% of its hull where they cost 9.5%, and the Gargantuan King's fight is ten
-  rounds where three machines turning the Barrier made it twenty-three; a plain shield
-  grant reads as no piece. Claude's lean: the Barrier rare or locked with its cooldown, the
-  Halo a shield grant with Overshield on equipment, the numbers set
-  against the Barrier read again. His follow-up ("if we're making temp shield ubiquitous,
-  then why even have base shield?") is read too: with no base shield a formation costs a
-  four a quarter of its hull where it costs a twentieth, so the gauge stays, and the regen
-  is the part an entry's grant overlaps; the choice put to him is the gauge and the regen
-  with no shield on the basics, or the gauge with no regen by default and Overshield on
-  them, which cost a squad about the same at its rating. It is one bar and no second
-  buffer (the brief's section 14 corrects this session's first wording of it). Under either his "more dramatic version", the cooldown on the
-  machine "similar to Numbed", is not needed (section 13 has its read and its holes if the
-  Barrier stays a basic). His marks on 4-4-2 are in ("That's probably fine for 4-4-2 for
+  ("Is it toxic? Is it worse than giving numerical shield? Should it be rare or locked? An
+  argument could be made that a chassis with barrier is a sub for a Tank on a team"). The
+  reads: a Barrier takes seven blows in ten from a foe whose kit is one blow a round and one
+  in eight in a formation; with the Shoring Jack or a gun in the Halo's slot the same elites
+  cost a four a fifth of its hull where they cost 9.5%, against a budget of a quarter, and
+  the Gargantuan King's fight is ten rounds where three machines turning the Barrier made
+  it twenty-three. What is left to him is the Barrier a basic with its cooldown, as content
+  has it, or rare or locked with the Jack or a gun in the slot, Claude's lean, which brings
+  down the numbers set with the Barrier there. Closed on his word of 13 November: a shield
+  grant in the Halo's slot, with Overshield, and the gauge without its regen beside it, which
+  this session leaned to on the 12th and put to him as a second package ("I fail to see how
+  what you proposed is any different than what we had before when we had shield faces ...
+  we cut that for a reason, because it wasn't working for balance"). It is the third of his
+  three shapes of 9 November, the one he passed over, and the session had listed the shapes
+  without holding its lean to the reasons: a block on the die is the loop his play found, it
+  has to be found in the roll, it puts the shield back among the die's verbs and recovery
+  back on the die, and as a number it had read skipped or the whole turn (the benches of 27
+  and 30 October). The bible's shield row now carries those reasons with the forms they
+  retired, so the next session meets them; the brief's section 14 has the re-read and what
+  stands of the reads. His "more dramatic version", the cooldown on the machine "similar to
+  Numbed", matters only if the Barrier stays a basic (section 13 has its read and its
+  holes). His marks on 4-4-2 are in ("That's probably fine for 4-4-2 for
   now": the brief's section 13 has the table with his words, each open place its chassis's
   session's). Also open, his: the first battle's block (not scaled:
   on the anchor's numbers a mustering trio with the Honey Badger wins 0 to 5% of the
@@ -945,7 +949,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   quarters for its rank and file a trio keeps its hull, and the trios with the Badger still
   lose the wall); the Waste's bosses and the Peak's clock; the Prairie Dog alone. The
   muster rule and the fight-at-its-rating read are scratch probes; the runner still plays
-  the defence rule. The bible's triangle, scale, shield and Barrier rows and section 12 (v0.562);
+  the defence rule. The bible's triangle, scale, shield and Barrier rows and section 12 (v0.563);
   the rules' chassis, basics, heat and scale lines.
 - **Four formations cut toward the budget, 4-4-2 to work with, and the anchor** (Ryan, 12
   November: "Yes go ahead with 2. Also, let's look at 4-4-2 right now so that you're working
@@ -1665,10 +1669,11 @@ commands are in `README.md`.
   tables), and main's v0.552 since `ccr-8af28d03-re9kz4` landed again (the Ammit row's flare once an
   attack and the cut of its two old rules, the Empowered row's mark, and the rows that said the
   engine kept a rule the dead-code pass cut: the Kite's, a piece of two kinds, a rider's limit,
-  Chain's targeting, the Whip Scorpion's), and main's v0.562 since `ccr-722ca9f0-yj8na3` landed
+  Chain's targeting, the Whip Scorpion's), and main's v0.563 since `ccr-722ca9f0-yj8na3` landed
   again (the scale row's tier-one foes, the triangle row's prices as content, the shield
-  row's tier-one lines, the Barrier row's cooldown, and section 12's 4-4-2 to work with, the
-  anchor, the heat-reading machines and the Barrier on the machine); each goes up on Ryan's word. The
+  row's tier-one lines and the two shapes it passed over, the Barrier row's cooldown, and
+  section 12's 4-4-2 to work with, the anchor, the heat-reading machines, the Barrier on the
+  machine and the Barrier's place); each goes up on Ryan's word. The
   live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS

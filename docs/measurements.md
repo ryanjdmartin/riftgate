@@ -9243,3 +9243,18 @@ Read.
 - These foe numbers were set with the regen and the Barrier both in place, so the whole
   battle without either is too dear and says only which way each moves it.
 
+**13 November, how these reads were used: a correction.** The numbers stand. What this
+session drew from them is withdrawn on Ryan's word ("I fail to see how what you proposed is
+any different than what we had before when we had shield faces ... we cut that for a reason,
+because it wasn't working for balance"): a shield grant with Overshield in the Halo's slot,
+and the gauge without its regen beside it, are the third of his three shapes of 9 November.
+Held beside the benches of 27 and 30 October above, the grant's rows say what those said of
+every shield entry. A plain 4 reads as a gun in the slot does. An Overshield 4 reads two
+points under the gun in an elite's fight, 17.6% against 19.5%. A 6, the Halo's own number
+until 10 November, reads a fifth under. Two bullets above lean the wrong way for the model.
+"Overshield does work and its number tunes it" reads a fifth off an elite's cost as a place
+for the piece, where the model's test is whether a block belongs on the die at all. "The
+regen is the part an entry's grant overlaps" has it backwards: the regen is the buffer no
+die decides, his call of 5 and 9 November, and the entry is the part that was cut. The row
+that still informs his call on the Barrier is the Shoring Jack's: the gauge and the regen,
+no Barrier and no shield in the slot.

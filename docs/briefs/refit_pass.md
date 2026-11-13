@@ -1572,9 +1572,10 @@ seven in ten from the ones whose kit is one blow a round.
 2. That, with the machine's rest (section 13). The same failure, milder: the elites' mean 11%
    where the piece's cooldown alone gives 9.5%.
 3. The Barrier rare or locked, and the Halo's slot a shield grant with Overshield, on
-   equipment. Claude's lean. The elites come to 15 to 18% and the bosses to 27 to 34% on a
-   number that tunes, the stall goes, and nothing of the refit's simplification moves: it is
-   a buff for the round, as Armoured is, and no recovery.
+   equipment. Claude's lean of 12 November, withdrawn on the 13th (this section's end): it is
+   his third shape of 9 November. The elites come to 15 to 18% and the bosses to 27 to 34%.
+   What this line said of it was wrong, that "nothing of the refit's simplification moves" and
+   that it is "no recovery": it refills a gauge, and it is a shield entry on the die.
 4. The Barrier rare, and the slot a plain shield grant. It reads as no piece: a gauge is full
    as a fight opens, and after that the grant is recovery, which the regen is already and
    which he gave to the commander layer.
@@ -1582,7 +1583,8 @@ seven in ten from the ones whose kit is one blow a round.
    bosses 38%, and Armoured the one defensive basic.
 6. Shield and temporary shield as two gauges. Not needed: Overshield is one bar and one word.
 
-**Claude's lean, in full**: the third. The Halo grants Overshield on itself or an ally, 4 to 6
+**Claude's lean of 12 November, in full** (withdrawn on the 13th, this section's end): the
+third. The Halo grants Overshield on itself or an ally, 4 to 6
 by the reads (it was a shield of 6). The Barrier keeps its cooldown and lives where a chassis
 is built round it, his tank's substitute: the Wild Boar's Plow, Aphelion's Barrier and Ward
 support when it is designed, and the Blast Door as the one find, as it was on 22 October. A grant that cannot pass the maximum stays off the die. The machine's rest is not needed. The numbers set
@@ -1634,8 +1636,9 @@ Claude's answer, his to take or leave:
      keyword more on equipment, an active answer to the big blow, and a round that costs
      something, since nothing comes back without an entry. Regen stays as an identity where a chassis is built on it
      (the Buzzard's Thermal Recoupler, St. Elmo's Regenerator, perhaps the small gauges).
-  Claude's lean: the second, since it trades a system that asks nothing for one that asks a
-  question each round.
+  Claude's lean of 12 November: the second, since it trades a system that asks nothing for
+  one that asks a question each round. Withdrawn on the 13th: the second is his third shape
+  of 9 November to the word, and the regen it cuts is the buffer he asked back.
 - The holes in the second: his reason for the regen of 5 November, a buffer for bad rolls
   and a tank not held to one pattern. The gauge is still the buffer for a fight's opening
   and the cover can come from any machine, but past the third round a tank wants it every
@@ -1688,3 +1691,111 @@ Two more holes, from the records:
 - Under the second package recovery is back on the die for the shield, the refit's second
   point reversed. It is his "maybe we went too far", and his to weigh.
 
+**Withdrawn: the shield grant is his third shape of 9 November** (13 November). His words: "I
+fail to see how what you proposed is any different than what we had before when we had shield
+faces. It kind of just sounds like you're trying to bring shield faces back. But we cut that
+for a reason, because it wasn't working for balance. Go over our notes again and refresh on
+why we got rid of it in the first place."
+
+He is right, and the records say it more exactly than this section did. The three shapes he
+laid out on 9 November: "no innate shield, shield faces grant shield"; "innate shield and
+shield regen, but no shield faces, only other defensive tools like armoured, barrier and
+ward"; "innate shield, probably no regen, all shield faces overshield", amended in his next
+message ("Overshield option would obviously have to drop after each round, not stack
+forever"). He took the second "for the same reasons as you do". The second package above, the
+gauge with no regen and an Overshield grant on the basics, is the third shape to the word.
+The third bench item is the game as it stood until 10 November with one keyword more: the
+Halo was a shield of 6 for anyone, and what went into its slot here was a shield of 4 to 6
+for anyone that may pass the gauge. Calling it equipment changes its label and nothing else.
+This section listed the three shapes among what the records say and never held the lean to
+the reasons behind the choice.
+
+Why shield entries left the die, from the chat of 9 November and the reads before it:
+
+1. **The loop.** A defence that is rolled, against hull that does not come back, takes the
+   dice before offence does. His: "Lights that shield every round aren't winning. It's stall
+   without a purpose ... i end up in a shield loop, with no room to attack"; "In our game, I'm
+   ALWAYS feeling 'how do I block everything' and if I deal damage, it's a bonus, not a goal."
+   The read beside it: four lights against the grave field, one fight traced, sixty rounds
+   and nobody losing hull, the giant's blow of eight never passing the shields they raised
+   (`docs/measurements.md`, 9 November, the formation pass's reads).
+2. **It has to be found.** His: "I find myself wishing we had semi-reliable proactive
+   defense. Because we can't shield past max, we have no way of soft-defending squishy units.
+   No piece yet carries barrier for the big hits, and no piece grants armour for the small
+   ones. But even if we had those in tier 1, you'd still have to find them in the roll." So
+   he named the gap an overshield fills, wrote the shape that fills it, and passed it over.
+   What the lights lacked was a buffer no die decides, which is the gauge and the regen, his
+   call of 5 November and again that day ("There's no buffer for bad rolls or unfortunate
+   target RNG, and it pushes the tank into a singular, inflexible, mandatory pattern").
+3. **The die's verbs.** His: "you'd have weapons-shields-vents-barrier-armour on a
+   well-rounded die, and that's a lot of complexity for a single die"; and of the model, "Less
+   component types - weapons and equipment. It's simple, elegant, streamlined. Each component
+   is interesting, each round is interesting".
+4. **No recovery entry.** A shield entry and a vent entry are one thing, a die spent putting
+   a resource back ("If Shield is a side we're getting rid of... why is Vent still a thing").
+   His place for both: "perfect commander actions".
+5. **The numbers never found a place**, in three forms, each read:
+   - Until 14 October a standing shield blocked a whole blow, so a small one was "secretly
+     'negate one blow', worth the biggest blow it met rather than its number" (the bible's
+     shield row).
+   - As an honest number it was skipped, or it was the turn. On the benches of 27 and 30
+     October every shield read 1 to 8% of a row's spends, a quarter of a round and two points
+     of hull worse than the gun in its slot, and alike from 6 to 10 ("the ladder is flat by
+     tier"); the only defensive pieces that saved hull were the Barrier's and the Ward's.
+     Where a shield did decide a fight it was the loop of the first point.
+   - As an overshield on the key ally every round it was his worry of 21 October for the
+     Puffin, that it was toxic and boring (the bible's Puffin row). It passed as one
+     specialist's niche, the keyword rare on purpose (its note: "every overshield on the
+     field makes shield max a soft number; the fade is the whole safeguard"), and that
+     specialist went back to design on 9 November.
+
+Claude's own words against the third shape that day, the reasons he took the second for: "It gives
+proactive defence only on the turn you roll it, so turn one is unchanged, and it rewards
+exactly the loop you described"; in the table beside it, "shields stay a verb" and the chase
+"worse".
+
+The lean of 12 November held to each:
+
+| The reason | The Halo as a shield grant with Overshield |
+|---|---|
+| The loop | Fails. It is a block on the die that a squad may lay every round, on eight stock dice, seven of them dealt |
+| It has to be found | Fails. Nothing of it exists on a round its entry does not show |
+| The die's verbs | Fails. A starting die reads weapons, a shield and Armoured again |
+| No recovery entry | Fails. It refills a gauge, which this section first denied and then corrected |
+| The numbers | The reads of 12 November are the benches of October again: at 4 it reads two points under a gun in the same slot in an elite's fight (17.6% against 19.5%) and a plain 4 as the gun does; at 6 it takes a fifth off the elites, and 6 is what the Halo was |
+
+And the second package fails one more: it cuts the regen, the one part of the model that
+answers the second reason.
+
+What his "shield is a buffer" of 12 November has already: the buffer is the chassis's, the
+gauge and the regen, and no die decides it. That was the point of the second shape, and it is
+the answer this section should have given.
+
+**What stands of this section.** The reads, as numbers. The Barrier's worth being the blow it
+meets, two blows in five from an elite or a boss with its cooldown on. His own lead for it,
+rare or locked, a chassis that carries one a tank's substitute. Of the bench, the first, the
+second and the fifth; the third, the fourth and the sixth are shield entries and closed.
+
+**Claude's lean now, his to take or leave**: the fifth. The Barrier leaves the basics and
+lives where a chassis is built round it, with its cooldown; the Halo's slot takes the Jack or
+a gun; the gauge and the regen stay as they are. The reason is the first one above, turned on
+the Barrier: a block on seven dealt dice, priced at a round's cooldown and no heat, is the
+loop a shield entry was ("a block trades rounds for hull, and a round costs nothing", the
+first reads of 9 November), and his own "you can't just protect forever". On the anchor's numbers it reads a formation 6.6%, an elite
+19.8% against a budget of a quarter, a boss 37.7%, and the single-blow boss's fight ten
+rounds.
+
+Its holes:
+
+- A starting die's one defensive basic is then Armoured, partial against a single blow over
+  its number. The big blow at tier one is answered by the gauge, by a lure where a squad has
+  one, by the kill, or by taking it. That is the budget's own shape, an elite a quarter of a
+  four's hull, and his "where am I allowing this damage"; whether it plays as that or as the
+  tank needed again is his play's to say.
+- His read of 10 November, killing first "the best choice every time", gets no help from
+  fewer blocks on the die. The anchor's numbers were meant to answer it and are not played.
+- The whole battle is too dear on the anchor's numbers with the Barrier out of the slot (the
+  Waste 0 to 30% won): they were set with it there and come down with it, the bosses first.
+- Where the Halo Projector goes if it leaves the basics is content's, and his.
+
+Nothing is built. The Barrier basic stands in content with its cooldown until his word.
