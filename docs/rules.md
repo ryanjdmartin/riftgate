@@ -17,7 +17,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 ## Machines
 
 - **Chassis**: hull, shield, shield regen (shield regained as each round opens: one to three
-  by chassis, the faster on the smaller gauge), heat maximum, cooling (one at least on every chassis that is dealt), armour, move, size class, one way of moving, hardpoints, fixed components, module
+  by chassis, the faster on the smaller gauge; a tier one's two on its smallest gauge and one
+  on the rest), heat maximum, cooling (heat shed as each round opens: two on most chassis, three on a few, and none on the Whip Scorpion, by its rule), armour, move, size class, one way of moving, hardpoints, fixed components, module
   slots (two; the Clydesdale three) and one passive. Twenty-four chassis from five makers
   (`content/chassis.json`), two of them back in design and dealt by nothing until their
   sessions hand them back (the Puffin and the Swallowtail: a chassis whose entry
@@ -39,9 +40,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   modes of their own: the entry lands on the whole team, its own machine among them, or on every
   machine but its own, each taking all of it. They and Every Foe (Reach, below) are targeting
   modes, never keywords, so a Silence leaves them whole. A passive may make a piece count as
-  a second kind on its machine (a vent that blasts a foe is a weapon too there, and the blast
-  a weapon's hit; no chassis's does since the Whip Scorpion's rework, the engine's rule kept): the die's readout shows the kind on the machine, the
-  codex the piece as built. A rule over the pieces a machine aims at foes reads every weapon
+  a second kind on its machine (none does now): the die's readout shows the kind on the
+  machine, the codex the piece as built. A rule over the pieces a machine aims at foes reads every weapon
   and equipment aimed at a foe, so a buff, a shield and a vent stay out of it. A
   component has a number (or none), heat, strikes, up to three authored keywords, and may
   carry a passive. A **fixed** component is built into its chassis, uses no hardpoint, is
@@ -75,9 +75,9 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   stocks, never its blueprint. A fixed component has no tier; the Arsenal (the capital's
   maker) makes no basics and fields no tier-one chassis, though its tier-one components exist
   and its tier-two chassis stock them. The basic kit is six pieces, each a maker's: four
-  guns, each making heat (the Twin Autoguns and the Rivet Gun, Direct; the Ankle Mortar, Indirect; the Laser
-  Carbine, Direct and warm), and two defensive pieces, each spent on itself or an ally (the
-  Halo Projector, a Barrier; the Shoring Jack, Armoured 2 for the round).
+  guns, each making 4 heat (the Twin Autoguns and the Rivet Gun, Direct; the Ankle Mortar, Indirect; the Laser
+  Carbine, Direct and warm, 5), and two defensive pieces, each spent on itself or an ally (the
+  Halo Projector, a Barrier, cooldown 1; the Shoring Jack, Armoured 2 for the round).
 - **No recovery on the die**: a component is a weapon or equipment. No stock die holds a
   shield or a vent and no slottable one is dealt: the shield is the chassis's and comes back
   by its regen, heat goes by its cooling, and the decision heat leaves is the hold (fire the
@@ -124,7 +124,7 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 3. The player's turn: spend, lock and reroll in any order. Each spend resolves fully before
    the next. UNDO takes back the last spend or reroll, in the order made, back to the last
    roll, its floor: the round's roll, a reroll that draws, or a spend that draws inside itself
-   (Rapid's or Instant's reroll, a vent's blast); a stepping die's step draws nothing,
+   (Rapid's or Instant's reroll); a stepping die's step draws nothing,
    so it is taken back like a spend. The trail shows a bar at every roll, every line of it at
    full strength, and UNDO's badge says how many spends it reaches; UNDO opens once a spend's
    last blow has played. END TURN sits bottom-left and UNDO bottom-right, and UNDO reads on or
@@ -149,7 +149,7 @@ every machine is wrecked. There is no round limit.
   the team's). A reroll rerolls every unlocked,
   unspent die, before or after attacking, and lands on any other entry, never the one
   showing; a copy of it may come up, at the odds its copies give it. Every roll inside the round
-  follows the same rule (Rapid's free reroll, a Reset's, the Booster, the Uplink, the
+  follows the same rule (Rapid's free reroll, the Booster, the Uplink, the
   Reveille Horn), but Instant's, kept on purpose and shown on the die by its keyword: it rolls as
   the round's opening roll does, itself included, and spins every chamber on the Cassowary's
   die. Double-tap or hold a die to lock it, and again to unlock it; spending
@@ -219,8 +219,8 @@ every machine is wrecked. There is no round limit.
   lit for the whole team and dark for every other ally. Its costs run along the foot (Costs, below) and its keywords
   down the edge. What the machine's passive adds sits in its passive box at the foot of the
   edge, never joined to the blow: a blow added after the strikes by the mark of what pays it
-  (the Storm Petrel's zap by the shield's, in the shield's colour), a vent's blast at a random
-  foe by the blast's mark, a stepping die's next entry by its mark and the
+  (the Storm Petrel's zap by the shield's, in the shield's colour), a stepping die's next entry
+  by its mark and the
   number it will show (the Cassowary's). The readout says each on a line of its own, headed by
   the same box. A dark entry is blank, its clock and its turns left along the foot. How each
   mark is drawn is `tools/die_sheet.gd`'s sheet and the bible's section 6.
@@ -238,7 +238,8 @@ every machine is wrecked. There is no round limit.
   no area keyword rides it. It is
   a targeting mode of its own: no passive turns it into Direct or Indirect, and a Silence,
   which mutes keywords, leaves it whole. Two gated specials carry it, the Whip Scorpion's
-  release and the Musk Ox's salvo; no debuff dealt does (the Shift Whistle, a draft). A
+  release and the Musk Ox's salvo, and one debuff, the Shift Whistle's lure (Minerva, tier
+  three). A
   weapon reaches wide by Spread, Penetrate or Splash, or lands on every foe.
 - Chain's arcs read no reach: they land on every Shocked foe on the field, front or back,
   whatever the gun's reach.
@@ -275,7 +276,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   too (its riders, a Mine, a Shock, an Expose, a Lure's turn, a Swap, a gather, a detonation,
   the zap after the strikes), so the
   preview shows the chips beside the skull and no trigger goes unfired; a spend that asks
-  whether it killed (a kill trigger, the talons, a Reset) reads its own death check. The death check
+  whether it killed (a kill trigger, the Spindrift Salvo's rerolls) reads its own death check. The death check
   clears a kill's slot; a foe getting back up and a split's arrivals stand only once the spend
   is done, in the slot their unit died in, wherever a Swap moved it, so nothing the spend does meets them, and the preview shows a foe that will get back
   up or split with its return's chip in the skull's place. What a foe's tick fells comes back
@@ -358,9 +359,6 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   A piece that changes its machine's form wears that form's chip: on the Polar Bear, a buff it
   may spend on itself the seal's while its shell is open, and a weapon the opening's while it is
   sealed; the sealed machine wears a shell round it, a burst as it seals or opens.
-  A vent on a machine whose vents blast shows the blast beside it (its mark and the blow the
-  heat it would take off makes), and read or dragged anywhere but over an ally, every foe the
-  blast may land on wears a turning dashed ring with the number it would deal there.
 - **Tapping a machine or a foe** opens its readout, the way a die's shows an entry, and
   tapping it again closes it; one readout is open at a time, a tap on another unit or a die
   moves it, a tap on nothing or ending the turn closes it, and a hold opens it too; a tap on an
@@ -411,22 +409,22 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   the round as the lure would leave it (a machine's heat a blow taken included).
 - Every number inside a fight is single digits or low tens: a blow 1 to 6, big guns to 10, one
   capstone 12; an amp a point a stack; foe HP 2 to 8 for rank and file at tier one and to 16 at
-  tier three, 30 to 40 massive at tier one and to 56 at tier three, 12
-  to 24 heroes, an elite 16 to 60, the slate's bosses 72 at tier one (a core in parts 40, a part
+  tier three, a lone flanker 10 to 14 at tier one, 14 to 20 massive at tier one and to 56 at tier three, 12
+  to 24 heroes, an elite 16 to 60, the slate's bosses 60 to 72 at tier one (a core in parts 40, a part
   8 to 18, a boss that may rise once 50); a foe's blow 2 to 8 at tier one (the rank and file's
   mostly 2 or 3) and to 10 at tier three, a massive
-  foe's 7 or 8, a hero's 4 to 10, an elite's 7 to 18 and the slate's bosses' 10 to 20, sized
+  foe's 7 or 8 where a shield meets it and 3 or 4 where it breaches, a hero's 4 to 10, an elite's 7 to 18 and the slate's bosses' 10 to 20, sized
   against a shield that refills (at tier one no action of theirs takes the lightest machine
   from full: a breach under 20, and any one action's blows on one machine under its shield and
   hull together); machine hull 20 to 50 by size (the
-  Kite's paper hull 12, its row's one-off), shield 6 to 16, shield regen 1 to 3 a round, base armour 0 to 2 by role, timed armour to 4 or 5; heat
-  1 to 20 (1 to 30 if the pricing needs it), the maxima 10 to 14 (the Musk Ox's 8), a vent 3 to
+  Kite's paper hull 12, its row's one-off), shield 6 to 16 and shield regen 1 to 3 a round (tier one the low end, 6 to 12 and 1 or 2, since a level lifts both), base armour 0 to 2 by role, timed armour to 4 or 5; heat
+  1 to 20 (1 to 30 if the pricing needs it; a weapon 3 to 11 today, a basic gun 4 or 5), cooling 2 or 3, the maxima 10 to 14 (the Musk Ox's 8), a vent 3 to
   8 (the Entropy Condenser's 10 the capstone, paid in hull). The scales are magnitudes,
   not steps: any whole number may be used, and content sits a little past them where its
-  loops moved it (the Zombie Knight's 8 HP, the promoted forms' 32 to 48, a hero's finisher, a
+  loops moved it (the promoted forms' 32 to 48, a hero's finisher, a
   multiple of its blow, to 16). A move is a count of hexes, 1 to 6 (the machines' 3 to 6, the foes' 1 to 4).
-  The content's numbers are the stock pass's fills as its loops moved them
-  (`docs/measurements.md`; set by `tools/stock_fills.py`), the four Kestrel machines' by hand at the same scale; placeholders until play.
+  The content's numbers are set by hand in the content, on these scales (the stock pass's loops,
+  `docs/measurements.md`, the first of them); placeholders until play.
 
 ### Player keywords
 - **Spread N** (id `cleave`): also hits the foes beside the target in its rank, each taking N
@@ -436,7 +434,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   number are written Splash. A weapon's area keyword carries its number; a debuff's carries
   none, its effects reaching those foes and its blow nothing.
 - **Breach**: the blow ignores the foe's armour (foes carry no shield), the same word as the
-  foes' rider below. The Overclocked Railgun carries it.
+  foes' rider below. The Overclocked Railgun carries it, and the Ammit's Soulcutter Talons, four
+  strikes of 1 that armour would otherwise take whole.
 - **Burn** (with a number): each foe hit gains that many stacks of Burning (Burn 3: three
   stacks).
 - **Cryo** (with a number): every foe the entry reaches gains that many stacks of Cryo a
@@ -473,8 +472,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - **Rapid** (any component): the die rerolls free onto any other entry, a copy of the same
   component included (a folded die among its live entries), and the machine acts again, so
   copies of one Rapid component chain. The entry spent stays dark for the rest of the round,
-  Rapid's own cooldown, never printed, so each copy acts once a round; no cleanse lifts it,
-  and a reset brings it back (Reset, below).
+  Rapid's own cooldown, never printed, so each copy acts once a round; no cleanse lifts it.
   A Rapid vent is never below tier three (the one is the Musk Ox's quick reload, locked on a
   tier three, which cools nothing), and a Rapid shield never below tier two (the Laminar
   Deflector's two).
@@ -492,10 +490,6 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   along the entry's foot by its clock: once spent, the entry is dark for the rest of the round
   and for that many rounds after it, shown on the die with the rounds left, this one included;
   the die may land on it, and a dark entry does nothing. No cleanse lifts it.
-- **Reset** (no piece prints it today): if its spend kills, every entry dark from a cooldown
-  comes back, itself included, and the machine acts again, the free roll never landing on the
-  entry just spent; a team reroll may bring it back up, and every kill resets it again, with
-  no limit.
 - **Finisher** (the Kite's Pinion Driver, ×2): against a foe at half its HP or less the
   weapon's printed number is multiplied, before its buffs as a passive's double is. The foe's
   HP is read once a hit, as the hit begins, so every strike of
@@ -527,7 +521,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   its own, and a Pinned foe's Flak, what the spend lays and what stood there, does not halve at
   this round's end; it halves again the round after. A Ward turns it away. Burning has a pin of
   its own, Pinned Burning: the foe burns for every stack at its action and loses none that
-  round (no piece lays it yet). Each wears the lock on the status it holds.
+  round (no piece lays it yet). Each wears the lock on the status it holds. Empowered's pin is
+  the round's, on every unit at once (the Soul Siphon, below).
 - **Costs** are printed along the entry's foot with its heat, each a mark and a number with no
   word and no sign (the heat's thermometer, the shield's, the hull's machine body, a forging
   gun's shells, the cooldown's clock), never a keyword and never a chip: a
@@ -537,7 +532,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   first from the shield as it stands, overshield included). An entry whose shield cost the
   shield cannot pay cannot be played: the die shows the cost struck through, it has nowhere
   to land, and END TURN pulses as if the die were spent. It is the first entry with a
-  condition on its play, and the pattern for any to come.
+  condition on its play, and the pattern for any to come; the second is a **count it spends**
+  (the Soul Siphon's Souls, by their mark, the number what it would take now), unplayable and
+  struck the same way while its machine holds none.
 - **Cleanse** (on a shield or a vent, today): the machine it lands on loses Burning, Scorched, Crushed,
   Silenced, a foe's Disabled and Corrupted (never a cooldown).
 - **Overshield** (shields): may pass the maximum; the excess fades at the round's end, and as
@@ -546,9 +543,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 Component properties, printed on the entry rather than learned as keywords (the die marks
 them with a star): **Vents all** fires the whole heat gauge into the shot, adding its
 bonus per step of heat fired, the step printed on the entry (the Afterburner Cannon: +1 per 2),
-then its own heat lands. **Empowered a kill** (the Soulcutter Talons'
-rule, no word of its own): each foe its spend kills gives its owner a stack of Empowered, at
-the spend's death check. **Missing HP** adds its bonus for every
+then its own heat lands. **Missing HP** adds its bonus for every
 step of HP the foe struck is missing, each foe its own, on each blow after the attacker's
 modifiers (so a split weapon's two strikes each add it), both numbers on the entry (the
 Coriolis Accelerator: +1 per 5). **Gated**: a keyword printed with a condition on the foe (a Suppress on a foe carrying
@@ -570,7 +565,14 @@ Honey Badger's Chainsaw Claw, two); a weapon that fires it takes up to its most 
 each adding its bonus to the blow, and spends them (its Bullion Fragmenter fires two at +2),
 the armour they stood for going with them. **Braces**:
 spending it Armours its owner, the stacks it says, an armour point each, until the round's
-end (no dealt piece prints it today; the Wild Boar's Breaching Plow did until 11 November). **The gather** (the
+end (no dealt piece prints it today; the Wild Boar's Breaching Plow did until 11 November). **The Soul Siphon** (the Ammit's, equipment spent on
+itself, cooldown 3): it consumes the Ammit's Souls, as many as it holds up to 5, and grants a
+stack of Empowered for each, the die showing what it would take now; and in the round it is spent
+no Empowered decays, on any unit, machine or foe: what each holds and what it gains before the
+round ends skips that round's halving, and halves again the round after. The round carries the
+hold and no unit a status, so a Ward turns nothing away and nothing counts it as a mark; every
+unit holding Empowered wears the pin's chip, Pinned Empowered, until the round's end. With no
+Soul it cannot be played (Costs, above). **The gather** (the
 Lammergeier's Lorentz Contractor, a debuff with Expose): every Mine the field's other foes carry
 joins its target's, their damage added and their keywords as one, in the rider phase after the
 spend's own Mine joined it; a Ward on the target turns the gather away, the Mines staying where
@@ -587,12 +589,12 @@ many fell, banked if unspent. **The Reheat Uplink** (the Giant Petrel's, allies 
 gains Empowered 2 and its die rolls again, never onto the entry showing; a spent die rolls
 nothing. **Regenerates** (the Storm Petrel's St. Elmo's Regenerator, a lure): spent on a
 foe, its own machine gains Regenerating, the shield it prints at the start of each of the
-rounds it prints after this one. **Spillover** (no machine carries it since 11 November; the
-Wild Boar's Juggernaut Drive did, on every weapon it fired): damage past the kill of a front-rank foe
+rounds it prints after this one. **Spillover** (the Overrun Gearing's, a Minerva module, on
+every weapon its machine fires): damage past the kill of a front-rank foe
 carries into the foe behind it as plain damage, the killing strike's excess and every later
 strike of the spend whole, aimed at nobody, so a Shock behind neither doubles it nor is
-spent; the engine runs it as a keyword a passive grants written out, so each weapon wears the
-star, the die's readout reading the passive's line, and no keyword chip.
+spent; the engine runs it as a keyword the module grants written out, so each weapon wears the
+star, the die's readout reading the module's line, and no keyword chip.
 **The Juggernaut Drive** (the Wild Boar's, since 11 November): once a spend's hits land, every
 front-rank foe a blow of it damaged, felled or not, drives a quarter of its maximum HP, rounded
 up, into the foe standing behind it, once a spend, a plain blow as the Storm Petrel's zap was (no
@@ -613,7 +615,8 @@ unit's own mechanic, the rule it plays by, and never a buff or a debuff, so no P
 or Cleanse touches it; its chip shows its mark cut out of a solid tile, ahead of the unit's
 other chips, and its hold line names it an Ability and says what goes on. A foe's: the Goblin
 Nob's Enrage, a core's guard (Guarded), a Gel's split, a last act, a golden rage while it
-lasts. A machine's: the Polar Bear's seal (its form). What an
+lasts. A machine's: the Polar Bear's seal (its form) and the Ammit's Souls (a count with no
+cap, so no store: its chip says the number). What an
 ability, a passive or a store grants beyond itself is a buff like any (the Nob's gathered
 Enraged, a module's Empowered or Armoured, the Armoured the Honey Badger's hopper grants): a
 stack is a stack, whatever granted it.
@@ -628,8 +631,20 @@ ABILITIES.
 On a machine:
 - **Empowered** (buff): +1 damage a stack, so the count is the bonus. At the end of each
   round it halves, rounded down, whatever granted it, until it is gone; a buff component
-  grants it stacks and no rounds. On the Ammit nothing of it fades: its Quintessence Tap
-  keeps every stack for the battle, whatever granted it.
+  grants it stacks and no rounds. In a round the Soul Siphon is spent it does not halve, on any
+  unit (the Soul Siphon, above).
+- **Souls** (Ability, the Ammit's Quintessence Tap): a Soul for every foe that falls in a fight
+  the Ammit stands in, whoever or whatever fells it (its own blow, an ally's, a burn's tick, a
+  Mine's blast: a kill as the death check counts it, so a foe getting back up, a split and a
+  part bank none), with no cap, kept from fight to fight through the battle and gone as the
+  battle ends. The Souls flare as each fight opens, and once after each attack of the Ammit's
+  own that kills, however many fall to it (its weapon's blow, an arc, a spill): it gains a stack
+  of Empowered for every 5 Souls it holds, nothing under 5, and no Soul is spent by it. A death
+  check banks its Souls first, so an attack that kills two flares once at the count with both
+  in. What a flare grants is Empowered like any: it halves at the round's end and a Purge takes
+  it. Its Soul Siphon consumes Souls.
+  An Ability, so no Purge, Silence or Cleanse touches them; its chip says the count, and the
+  codex lists it among what the battle keeps.
 - **Armoured** (buff, on either side): armour +1 a stack, every stack at once, whatever
   granted it, so the count is the armour: a machine's until the round's end, a foe's (from
   its brace) until its next action.
@@ -668,7 +683,7 @@ On a machine:
 - **Rallied** (buff): the team has one reroll more this round.
 - **Charged** (buff): while it lasts the machine's weapons fire with Shock, shown on the die
   and landing as the keyword does, after the blows; a weapon fired spends a stack (a Rapid's
-  or an Instant's second fire is a second fire, a salvo one, a blast none; equipment carries it not and spends
+  or an Instant's second fire is a second fire, a salvo one, a passed turn's release none; equipment carries it not and spends
   nothing); a Mine the fire leaves carries the Shock.
 - **Supercooled** (buff): the same with Cryo, one more stack a strike on each foe hit (Cryo 1
   on a gun without it), laid after the hits.
@@ -697,7 +712,9 @@ On a machine:
   injures; its riders land, and a blow of nothing leaves it standing. One at a time and one
   stack whoever grants it (a passive that deepens the stacks its machine applies leaves it at
   one, and a Purge of one takes it whole); until the round's end. No piece grants it to every
-  ally at once. The Blast Door grants it, self or ally.
+  ally at once, and every piece that grants one carries a cooldown of 1, so it sits out the
+  round after its spend: the Halo Projector and the Blast Door, self or ally, and the Wild
+  Boar's Breaching Plow, on itself.
   A foe's, from its own special: the next blow of a weapon the team lands on it deals no damage,
   the blow's riders landing and a Shock it carried spent; equipment pops nothing; until it pops
   or the end of the player's next turn.
@@ -757,9 +774,8 @@ On a machine:
   its stores fill and spend as ever, and its targeting modes stand (Every Foe, Every Ally, Every
   Other Ally). Cleansable, an ally's Cleanse the way; a Ward turns
   the silence away. A foe's purge is Purge N too: N stacks off every buff the machine carries,
-  for good, whatever granted it (a stack is a stack); its Abilities and its stores stay, and the
-  Ammit's Quintessence Tap keeps its Empowered from a Purge as from every clock, whatever granted
-  it; a Ward turns it away too.
+  for good, whatever granted it (a stack is a stack); its Abilities and its stores stay (the
+  Ammit's Souls among them, never the Empowered they grant); a Ward turns it away too.
 
 On a foe:
 - **Burning** (debuff): 1 damage a stack at the start of its action, past armour, then a
@@ -769,8 +785,8 @@ On a foe:
   foe already suppressed, a Paradox's included, does nothing. As the foe recovers it gains its
   stun resist in Numbed, after the round's decay.
 - **Shocked** (debuff): when a weapon's strike aimed at it lands, the blow deals double and the
-  shock is spent. A strike is aimed at the foe it resolves on: the player's pick, or the draw of
-  a vent's blast, which the game targets rather than the player. A blow that
+  shock is spent. A strike is aimed at the foe it resolves on: the player's pick, or each foe a
+  weapon over every foe strikes, which the game targets rather than the player. A blow that
   only reaches it (an area's, a Chain's arc, a spill, a Mine's blast) neither doubles nor spends it, and equipment leaves it standing; it never stacks.
 - **Exposed** (debuff): it stands in Direct reach of every machine as if its
   column's front were empty, and its armour counts for nothing, its own and any Armoured.
@@ -810,7 +826,8 @@ On a foe:
 - **Empowered** (buff, Rally): lands on every other foe on the field the moment the rally does,
   the rally's value in stacks, and every blow the foe lands hits a point harder a stack, an add
   before the move's factor as every add is. It halves at the end of each round, rounded down,
-  the machine's clock: no move spends it, a special or a Suppress takes none of it, and a
+  the machine's clock, and skips the halving of a round the Soul Siphon is spent, as a machine's
+  does: no move spends it, a special or a Suppress takes none of it, and a
   countdown still gathering carries what stands to the blow it lands. A foe acting after the
   rallier hits harder this turn; one that has acted carries half to the next round; each rally's
   grant adds. An intent counts the rallies on their way to a blow this round, those of the ralliers acting
@@ -871,6 +888,10 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or a
   the turn, before the enemy acts, the excess burns hull one for one (an overheat) and the
   gauge settles at the maximum. With volatile, it is the way a machine dies on its own
   turn. Machines cool at the start of the round. Heat starts each fight at zero.
+- The prices are a pace. A basic gun makes 4 heat and the Laser Carbine 5, against a cooling of
+  2 and a maximum of 12 or 14: a machine that fires every round stands at its limit in four to
+  six rounds, and from there fires about one round in two, holds, or burns. Equipment is the
+  cool play: a buff makes none and a debuff device its one or two.
 - The console speaks of heat on a spend, one line a spend: the overheat every time a spend
   heats a machine and leaves it over its maximum; the warning once, as a machine first stands at
   three quarters of its maximum or past, and not again until it has been seen back under (as a
@@ -1061,13 +1082,18 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
 ### Passives: triggers and conditions
 - Triggers: static, on attack, on injury, on round start (after the roll), on skirmish start,
   on hull damage (any hull lost: a blow, a bite or an overheat), on shield gain, on shield
-  granted (an ally this machine shields), on heat gain, out of combat, on foe status (a foe
+  granted (an ally this machine shields), on heat gain, on foe status (a foe
   gains a debuff), on stack (this machine applies stacks), on a kill (once after an attack of
-  this machine's that killed, arcs, spills and a vent's blast included), on damaging a foe
-  (after a spend of its weapons that took HP off a foe, once however many it hurt; what it
-  grants lands after the spend, so the Skua's stack bounces none of the shots that earned
-  it). An effect an event fires may fire once a round only (the Skua's). No trigger feeds
-  itself.
+  this machine's that killed, however many fell to it, arcs and spills included:
+  the Ammit's flare, the Kite's shield), on a foe killed (every kill the death check counts in
+  this machine's fight, whoever made it, once for each: the Ammit's Souls), on
+  damaging a foe (after a spend of its weapons that took HP off a foe, once however many it
+  hurt; what it grants lands after the spend, so the Skua's stack bounces none of the shots
+  that earned it). An effect an event fires may fire once a round only (the Skua's). No trigger
+  feeds itself.
+- A passive may count a grant off a status its machine carries, in steps (a stack of Empowered
+  for every 5 Souls), and a status may name the battle as its scope, kept from fight to fight
+  (Souls).
 - A passive may double a weapon's printed number before its buffs, on every blow, what the
   entry prints from its firer included (an area's number, heat fired, hopper loads), the buffs
   added once after it and the struck foe's own reads (its missing HP, the stacks consumed on

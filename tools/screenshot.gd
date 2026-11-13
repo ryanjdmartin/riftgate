@@ -180,26 +180,43 @@ func _apply_pose() -> void:
 			# The other world's window announcing a foe's named move (RIFTGATE_SHOT_FRAME=20,
 			# past its fade-in).
 			s._announce("Self-Destruct")
-		"blast", "siphon":
-			# The Whip Scorpion's forecasts (22 October): the first machine whose die carries a vent
-			# that blasts (blast) or a Lure over every foe (siphon) shows that entry, hot enough to
-			# fire, dragged: over its own machine for the blast's rings, over a foe for the lure's
-			# dashed arrows and gauges. RIFTGATE_TEAM puts the Whip Scorpion on the team.
+		"lure_all":
+			# The lure-all's forecast (22 October): the first machine whose die carries a Lure over
+			# every foe shows that entry, hot enough to fire, dragged over a foe for the turned
+			# foes' dashed arrows and the gauges. With none on the team, the content's first
+			# lure-all (the Shift Whistle) takes the first machine's first entry.
+			var at_i := -1
+			var at_k := -1
 			for i in range(s.sk.mechs.size()):
-				var ms: Skirmish.MechState = s.sk.mechs[i]
-				for k in range(ms.die.faces.size()):
-					var f: Face = ms.die.faces[k]
-					var want: bool = (f.kind == Face.Kind.VENT and Effects.vent_blast(ms.unit) > 0.0) if _pose == "blast" else (f.reaches_all and f.has(Face.Keyword.LURE))
-					if not want:
+				var dm: Skirmish.MechState = s.sk.mechs[i]
+				for k in range(dm.die.faces.size()):
+					var df: Face = dm.die.faces[k]
+					if at_i < 0 and df.reaches_all and df.has(Face.Keyword.LURE):
+						at_i = i
+						at_k = k
+			if at_i < 0:
+				var db := ContentDB.load_default()
+				for cid in db.components:
+					var comp: Dictionary = db.components[cid]
+					if str(comp.get("status", "")) == "planned":
 						continue
-					ms.face_index = k
-					ms.heat = maxi(ms.heat, 40)
-					s._refresh()
-					s._on_drag_started(i)
-					var over: Control = s._mech_views[i] if _pose == "blast" else s._foe_view_for(s.sk.front[0])
-					var at := over.get_global_rect().get_center()
-					s._on_drag_moved(at)
-					return
+					var lf := db.build_face(comp.get("face", {}))
+					if lf.reaches_all and lf.has(Face.Keyword.LURE):
+						lf.component = str(cid)
+						for t in comp.get("tags", []):
+							lf.tags.append(str(t))
+						s.sk.mechs[0].die.faces[0] = lf
+						at_i = 0
+						at_k = 0
+						break
+			if at_i >= 0:
+				var ms: Skirmish.MechState = s.sk.mechs[at_i]
+				ms.face_index = at_k
+				ms.heat = maxi(ms.heat, 40)
+				s._refresh()
+				s._on_drag_started(at_i)
+				var over: Control = s._foe_view_for(s.sk.front[0])
+				s._on_drag_moved(over.get_global_rect().get_center())
 		"rage":
 			# The rage's roll again: the chip's burst and the die folded before its flip
 			# (RIFTGATE_SHOT_FRAME=8 catches the burst mid-flight).
@@ -244,6 +261,20 @@ func _apply_pose() -> void:
 			for foe in s.sk.field_foes():
 				for id in ["burning", "flakked", "shocked", "cryoed", "vitriol"]:
 					Effects.stack(foe, Effects.STATUS[id], Effects.SKIRMISH, "mech", 2, Effects.status_decay(Effects.STATUS[id]))
+			s._refresh()
+		"souls":
+			# The Ammit's count and its Siphon's hold (12 November; RIFTGATE_TEAM=ammit,...): every
+			# machine that banks a count as foes fall holds seven of it and two stacks of Empowered,
+			# the round holds Empowered, and the first foe carries three: the count's chip, and the
+			# pin beside each Empowered, a machine's and a foe's.
+			for ms in s.sk.mechs:
+				for count_id in Effects.kill_counts(ms.unit):
+					Effects.stack(ms.unit, Effects.STATUS[str(count_id)], Effects.status_scope(Effects.STATUS[str(count_id)]), "mech", 7, Effects.DECAY_NONE)
+					Effects.stack(ms.unit, Effects.STATUS["overcharged"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_HALF)
+			var foes := s.sk.field_foes()
+			if not foes.is_empty():
+				Effects.stack(foes[0], Effects.STATUS["kindled"], Effects.SKIRMISH, "foe", 3, Effects.DECAY_HALF)
+			s.sk.round_holds = Effects.named_like("overcharged")
 			s._refresh()
 		"stores":
 			# Every machine's own resource row part filled, to judge the rows beside the heat bar

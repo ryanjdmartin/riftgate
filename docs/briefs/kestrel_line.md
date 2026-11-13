@@ -136,7 +136,7 @@ spray), rerolls (Ryan, 19 October: Kestrel's), strikes (the strafer) and speed o
 Ryan, 20 October: "the maker didn't really have an identity before other than the look, and
 now we are indeed looking at heat, rerolls, multi-strikes, and risk". The leans row carries it
 since that day; Empowered leaves the Kestrel lean (the Coil is its one carrier, and the
-Ammit's talons and the Reliquary are the Arsenal's). Three of the eight hover (the Puffin, the
+Ammit's Souls and the Reliquary are the Arsenal's). Three of the eight hover (the Puffin, the
 off-tank, the capital) and five fly; the capital hovers from irony (Ryan, 20 October).
 
 **The overlap map**, each pair parted by its shape (Ryan's rule of 18 October): the strafer

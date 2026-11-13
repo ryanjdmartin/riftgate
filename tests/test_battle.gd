@@ -1482,14 +1482,13 @@ func test_a_draft_never_outruns_the_move() -> void:
 	assert_false(b.move_along(c, []), "an empty draft walks nowhere")
 
 
-## Nothing returns on the map (the long wall brief 3.6): a quiet turn gives back no shield, a
-## passive on the out-of-combat trigger included, which nothing may ride now.
+## Nothing returns on the map (the long wall brief 3.6): a quiet turn gives back no shield, and
+## no trigger fires for a turn out of a fight (the out-of-combat event left the engine on 12
+## November, an event no effect could ride).
 func test_a_quiet_turn_returns_no_shield() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]
 	m.shield = 0
-	m.grant_passive({"id": "hum", "name": "Hum", "description": "", "effects": [
-		{"trigger": "out_of_combat", "effect": "add_shield", "value": 5}]}, "hum")
 	b.forced = []
 	b.end_turn()
 	assert_eq(m.shield, 0, "no shield back after a turn out of a fight")

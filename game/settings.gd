@@ -42,6 +42,8 @@ const DISPLAY_DEFAULTS := {
 	"rupture_beats": "2",   # RUPTURE_BEATS: a debug build's trial of the Rupture meter's size in beats of the tide (Ramp.beats_trial), read as a battle starts
 	"tide_density": "100",   # TIDES: a debug build's trial of how many packs the opening places and the tide sends, in hundredths of the game's (Ramp.tide_trial), read as a battle starts
 	"wall_strike": "10",   # STRIKES: a debug build's trial of what a pip of threat rating strikes the wall for (Battlefield.strike_trial), read as a battle starts
+	"heat_trial": "0",   # HEATS: a debug build's what-if, every weapon a point cooler or hotter than content prices it (HEAT_SPECS, Refit's hotter and cooling), read at the next launch
+	"overheat_burn": "1",   # OVERHEATS: a debug build's trial of the hull an overheat burns a point of excess (Skirmish.overheat_scale), read as a battle starts
 }
 const DISPLAY_RANGES := {
 	"brightness": Vector2(0.5, 1.5), "pace": Vector2(0.5, 2.0), "enemy_pace": Vector2(0.5, 3.75),
@@ -72,6 +74,24 @@ const MAP_VIEW_LABELS := {"wall_left": "WALL LEFT", "wall_bottom": "WALL BOTTOM"
 ## starts (Harness.refit_trial), so at the next launch.
 const SHIELD_REGENS := ["built", "0", "1", "2", "3"]
 const SHIELD_REGEN_LABELS := {"built": "BUILT", "0": "0", "1": "1", "2": "2", "3": "3"}
+## Heat's two dials, a debug build's (Ryan, 10 November: "Heat generation is too low"; 9 November:
+## "run hot, and you're forced to wait and think about your decisions while you cool off"). The
+## prices are content since 12 November, on his word for the anchor ("real tier 1 numbers for
+## damage, defense and heat"): every weapon three hotter than it was and every chassis that
+## cools cooling one more, the shape the fight bot's reads chose (docs/measurements.md, 12
+## November: a formation fight brings a machine to its limit about once, in fights no longer).
+## HEAT moves every weapon a point either side of that, the two shapes that read like it:
+## COOLER a point cooler on the same cooling (the mild one), HOTTER a point hotter with one more
+## cooling (it bites the same and sustains a little better). The same what-if the runners read
+## (Refit's hotter and cooling), so read at the next launch.
+## OVERHEAT is the hull a point of excess burns as the turn ends, one the game's: the bot
+## overheats rather than holds at one and holds more at two, in longer fights, so what a hold
+## is worth is his play's to find.
+const HEATS := ["-1", "0", "1"]
+const HEAT_LABELS := {"-1": "COOLER", "0": "BUILT", "1": "HOTTER"}
+const HEAT_SPECS := {"-1": "hotter=-1", "1": "hotter=1,cooling=1"}
+const OVERHEATS := ["1", "2", "3"]
+const OVERHEAT_LABELS := {"1": "×1", "2": "×2", "3": "×3"}
 ## The field's trial, a debug build's (Ryan, 10 November, after his play of the long wall: "I think
 ## the map is a bit too shallow ... If the map is a little deeper, and the seam starts a little
 ## farther out, it will feel more like I can actually plan a little bit ahead instead of panicking
@@ -114,10 +134,11 @@ const STRIKES := ["10", "7", "5", "3"]
 
 
 ## Set the field's trial for the battles that start after this: RIFTGATE_FIELD_DEPTH,
-## RIFTGATE_OPENING, RIFTGATE_FODDER, RIFTGATE_BEATS, RIFTGATE_TIDE and RIFTGATE_STRIKE on any
-## run, else a debug build's six settings when `saved` (the game's own entry points pass it; a
-## scene run alone and the tests read the environment only, so no machine's saved settings move
-## a test's field). Nothing set is the game's own field, meter and tide.
+## RIFTGATE_OPENING, RIFTGATE_FODDER, RIFTGATE_BEATS, RIFTGATE_TIDE, RIFTGATE_STRIKE and
+## RIFTGATE_OVERHEAT on any run, else a debug build's seven settings when `saved` (the game's own
+## entry points pass it; a scene run alone and the tests read the environment only, so no
+## machine's saved settings move a test's field). Nothing set is the game's own field, meter,
+## tide and overheat.
 static func field_trial(saved: bool = false) -> void:
 	var depth := OS.get_environment("RIFTGATE_FIELD_DEPTH")
 	var opening := OS.get_environment("RIFTGATE_OPENING")
@@ -125,6 +146,7 @@ static func field_trial(saved: bool = false) -> void:
 	var beats := OS.get_environment("RIFTGATE_BEATS")
 	var tide := OS.get_environment("RIFTGATE_TIDE")
 	var strike := OS.get_environment("RIFTGATE_STRIKE")
+	var burn := OS.get_environment("RIFTGATE_OVERHEAT")
 	if saved and OS.is_debug_build():
 		if depth.is_empty() and FIELD_DEPTHS.has(str(display.get("field_depth", ""))):
 			depth = str(display["field_depth"])
@@ -138,6 +160,8 @@ static func field_trial(saved: bool = false) -> void:
 			tide = str(display["tide_density"])
 		if strike.is_empty() and STRIKES.has(str(display.get("wall_strike", ""))):
 			strike = str(display["wall_strike"])
+		if burn.is_empty() and OVERHEATS.has(str(display.get("overheat_burn", ""))):
+			burn = str(display["overheat_burn"])
 	Ramp.depth_trial = clampi(int(depth), 10, 24) if depth.is_valid_int() else 0
 	Battle.opening_trial = clampi(int(opening), 0, 3) if opening.is_valid_int() else 0
 	Battle.fodder_trial = clampi(int(fodder), 10, 100) if fodder.is_valid_int() else 100
@@ -145,6 +169,7 @@ static func field_trial(saved: bool = false) -> void:
 	Ramp.tide_trial = clampi(int(tide), 100, 400) if tide.is_valid_int() else 100
 	var pip := clampi(int(strike), 1, 20) if strike.is_valid_int() else 0
 	Battlefield.strike_trial = 0 if pip == Battlefield.STRIKE_PER_PIP else pip
+	Skirmish.overheat_scale = clampi(int(burn), 1, 10) if burn.is_valid_int() else 1
 
 
 ## Load once and push the choices into the palette. Safe to call repeatedly.

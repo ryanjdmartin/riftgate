@@ -1,5 +1,5 @@
 {
- "_about": "Components: the kit a machine's die is made of. Each is exactly one entry on the die (its face: the engine's word for one entry). Nothing generic exists: every entry on a die is a component, or an empty hardpoint. A component a chassis lists under fixed is built in and is never bought or crafted, which is what makes it unique. Every number inside a fight is single digits or low tens since the stock pass's landing (22 October: a blow 1 to 6, big guns to 10; docs/rules.md, the fills set by tools/stock_fills.py, the brief retired: git show a550c2e:docs/briefs/stock_pass.md): magnitudes, not steps, any whole number. A rolled entry carries power and power_max and rolls between them; a flat entry is one number and involves no roll. There are no crits. Keywords are a list; authored entries should stay under the validator's cap, upgrades may push past it. passive is null or one object, same shape as a chassis passive. tags are build flavour from the working set (ballistic, missile, beam, plasma, flame, arc, blade, melee), shown in the codex and read only by a module or a passive (and melee by the screen's lunge); the validator holds them to the set, assigned by each piece's fantasy. A face's kind makes it a weapon (attack: spent on a foe, need not deal damage) or equipment (shield, vent: spent on a machine); equipment may carry targets, self_ally (the default), self or ally, and its main icon on the die holds three hexes (the middle its own machine, a filled one a machine it may be spent on); a reach over every foe or every ally is a keyword, every_foe or every_ally. design.stage is draft until Ryan signs the entry off as final; nothing is final yet. Shown to the player: codex (the inspect entry), flavour (a quote); both still to be written. design is internal and never shown: fantasy, niche, stage, and notes only where the engine still owes something. Numbers are placeholders. A component the engine cannot run yet carries \"status\": \"planned\": it is kept, its face is checked for shape, a keyword the vocabulary names but the engine lacks is allowed on it, and the die builds it without that keyword. tier (bible section 10): every component that is not locked carries its tier, 0 to 3. Tier zero is the basics, whose blueprints a run starts with, and the capital's maker makes none; tiers one to three are found, or brought by a bought chassis, and a chassis stocks only components below its own tier (the validator checks both). A component locked on a chassis has none. shape is the silhouette class the model wears when the component is fitted (hardpoints are gun mounts on the model, and a component with a shape takes the next mount in the die's order): barrel, twin_barrel, rack, blade (katar-style, every one points forward) or dish (a projector, for equipment that can look like a gun: shield projectors, a buff coil); none for what is applied to the whole machine and shows nowhere (armour panels, vents). Each class is built by tools/lowforge in every maker's metal (art/models/shapes); the validator holds it to that list.",
+ "_about": "Components: the kit a machine's die is made of. Each is exactly one entry on the die (its face: the engine's word for one entry). Nothing generic exists: every entry on a die is a component, or an empty hardpoint. A component a chassis lists under fixed is built in and is never bought or crafted, which is what makes it unique. Every number inside a fight is single digits or low tens since the stock pass's landing (22 October: a blow 1 to 6, big guns to 10; docs/rules.md; the brief retired: git show a550c2e:docs/briefs/stock_pass.md): magnitudes, not steps, any whole number. A rolled entry carries power and power_max and rolls between them; a flat entry is one number and involves no roll. There are no crits. Keywords are a list; authored entries should stay under the validator's cap, upgrades may push past it. passive is null or one object, same shape as a chassis passive. tags are build flavour from the working set (ballistic, missile, beam, plasma, flame, arc, blade, melee), shown in the codex and read only by a module or a passive (and melee by the screen's lunge); the validator holds them to the set, assigned by each piece's fantasy. A face's kind makes it a weapon (attack: spent on a foe, need not deal damage) or equipment (shield, vent: spent on a machine); equipment may carry targets, self_ally (the default), self or ally, and its main icon on the die holds three hexes (the middle its own machine, a filled one a machine it may be spent on); a reach over every foe or every ally is a keyword, every_foe or every_ally. design.stage is draft until Ryan signs the entry off as final; nothing is final yet. Shown to the player: codex (the inspect entry), flavour (a quote); both still to be written. design is internal and never shown: fantasy, niche, stage, and notes only where the engine still owes something. Numbers are placeholders. A component the engine cannot run yet carries \"status\": \"planned\": it is kept, its face is checked for shape, a keyword the vocabulary names but the engine lacks is allowed on it, and the die builds it without that keyword. tier (bible section 10): every component that is not locked carries its tier, 0 to 3. Tier zero is the basics, whose blueprints a run starts with, and the capital's maker makes none; tiers one to three are found, or brought by a bought chassis, and a chassis stocks only components below its own tier (the validator checks both). A component locked on a chassis has none. shape is the silhouette class the model wears when the component is fitted (hardpoints are gun mounts on the model, and a component with a shape takes the next mount in the die's order): barrel, twin_barrel, rack, blade (katar-style, every one points forward) or dish (a projector, for equipment that can look like a gun: shield projectors, a buff coil); none for what is applied to the whole machine and shows nowhere (armour panels, vents). Each class is built by tools/lowforge in every maker's metal (art/models/shapes); the validator holds it to that list.",
  "entries": [
   {
    "id": "chainsaw_claw",
@@ -19,7 +19,7 @@
     "power": 3,
     "strikes": 2,
     "keywords": [],
-    "heat": 0,
+    "heat": 3,
     "fills_hopper": 2
    },
    "passive": null,
@@ -46,7 +46,7 @@
     "reach": "indirect",
     "power": 4,
     "keywords": [],
-    "heat": 2
+    "heat": 5
    },
    "passive": null,
    "tags": [
@@ -70,7 +70,7 @@
     "reach": "direct",
     "power": 4,
     "keywords": [],
-    "heat": 2,
+    "heat": 5,
     "fires_hopper": 2,
     "power_per_load": 2
    },
@@ -98,7 +98,7 @@
     "reach": "direct",
     "power": 4,
     "keywords": [],
-    "heat": 1
+    "heat": 4
    },
    "passive": null,
    "tags": [
@@ -123,7 +123,7 @@
     "reach": "direct",
     "power": 2,
     "keywords": [],
-    "heat": 1
+    "heat": 4
    },
    "passive": null,
    "tags": [
@@ -151,7 +151,7 @@
      "penetrate"
     ],
     "penetrate": 3,
-    "heat": 2
+    "heat": 5
    },
    "passive": null,
    "tags": [
@@ -176,7 +176,7 @@
     "reach": "indirect",
     "power": 2,
     "keywords": [],
-    "heat": 1
+    "heat": 4
    },
    "passive": null,
    "tags": [
@@ -225,7 +225,7 @@
     "keywords": [
      "splash"
     ],
-    "heat": 1,
+    "heat": 4,
     "splash": 1
    },
    "passive": null,
@@ -254,7 +254,7 @@
      "burn"
     ],
     "burn": 2,
-    "heat": 1
+    "heat": 4
    },
    "passive": null,
    "tags": [
@@ -282,7 +282,7 @@
     "keywords": [
      "suppress"
     ],
-    "heat": 2,
+    "heat": 5,
     "gates": {
      "suppress": {
       "when": "target_status",
@@ -315,7 +315,7 @@
     "keywords": [
      "breach"
     ],
-    "heat": 8
+    "heat": 11
    },
    "passive": null,
    "tags": [
@@ -341,7 +341,7 @@
     "reach": "direct",
     "power": 4,
     "keywords": [],
-    "heat": 1,
+    "heat": 4,
     "power_per_missing": 1,
     "per_missing": 5
    },
@@ -369,7 +369,7 @@
     "power": 2,
     "strikes": 2,
     "keywords": [],
-    "heat": 0,
+    "heat": 3,
     "finisher": 2
    },
    "passive": null,
@@ -395,7 +395,7 @@
     "keywords": [
      "chain"
     ],
-    "heat": 2,
+    "heat": 5,
     "chain": 2
    },
    "passive": null,
@@ -448,7 +448,7 @@
     "keywords": [
      "suppress"
     ],
-    "heat": 0,
+    "heat": 3,
     "volatile": 3
    },
    "passive": null,
@@ -530,7 +530,7 @@
      "burn"
     ],
     "burn": 2,
-    "heat": 3
+    "heat": 6
    },
    "passive": null,
    "tags": [
@@ -583,7 +583,7 @@
     "keywords": [
      "rapid"
     ],
-    "heat": 2
+    "heat": 5
    },
    "passive": null,
    "tags": [
@@ -698,7 +698,7 @@
     ],
     "cleave": 1,
     "flak": 2,
-    "heat": 0,
+    "heat": 3,
     "cooldown": 1
    },
    "passive": null,
@@ -726,7 +726,7 @@
      "flak"
     ],
     "flak": 1,
-    "heat": 2,
+    "heat": 5,
     "holds": "flakked"
    },
    "passive": null,
@@ -778,7 +778,7 @@
     "reach": "direct",
     "power": 2,
     "keywords": [],
-    "heat": 0,
+    "heat": 3,
     "vents_all": true,
     "power_per_heat": 1,
     "per_heat": 2
@@ -809,7 +809,7 @@
     "reach": "direct",
     "power": 5,
     "keywords": [],
-    "heat": 3,
+    "heat": 6,
     "charged": {
      "store": "rage",
      "price": 5,
@@ -849,7 +849,7 @@
      "burn"
     ],
     "burn": 3,
-    "heat": 4
+    "heat": 7
    },
    "passive": null,
    "tags": [
@@ -866,22 +866,48 @@
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "Four blades that take something from what they kill. The Arsenal's manual calls it attunement.",
-    "niche": "The Ammit's locked melee: flat, and each kill Empowers the Ammit, its scaling threat for the battle and nothing more."
+    "fantasy": "Four blades on four arms, cutting as one. What they cut loose from the fallen the machine takes in; the Arsenal's manual calls it attunement.",
+    "niche": "The Ammit's locked melee, one entry since its rework (Ryan, 12 November: \"The 4 claws are combined into one weapon that deals 1x4 instead, with Breach. They no longer gain Empowered on kill\"): four strikes of 1 at one foe, past its armour, so every stack of Empowered counts four times on it. Four copies of a flat 3 that Empowered a kill until then."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 3,
-    "keywords": [],
-    "heat": 1,
-    "devours": 1
+    "power": 1,
+    "strikes": 4,
+    "keywords": [
+     "breach"
+    ],
+    "heat": 4
    },
    "passive": null,
    "tags": [
     "blade",
     "melee"
    ]
+  },
+  {
+   "id": "soul_siphon",
+   "name": "Soul Siphon",
+   "maker": "arsenal",
+   "shape": "none",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "The tap opened the other way: what the Ammit has taken in, burned for a round. Ryan's piece and his name, 12 November.",
+    "niche": "The Ammit's second lock, equipment spent on itself (Ryan, 12 November: \"Consume up to 5 souls, granting 1 Empowered per soul. Cooldown 3\"; \"No Empowered decays this round. And I mean none, not ally or enemy\"): the round it is spent the Ammit does nothing else, and the next it swings at everything it held and what it consumed, whole. Unplayable with no Soul. Its cooldown keeps the hold from chaining. The foes' Empowered is held too, its price against a rally."
+   },
+   "face": {
+    "kind": "buff",
+    "status": "overcharged",
+    "targets": "self",
+    "spends": "souls",
+    "spends_up_to": 5,
+    "holds_all": "overcharged",
+    "cooldown": 3
+   },
+   "passive": null,
+   "tags": []
   },
   {
    "id": "rivet_gun",
@@ -901,7 +927,7 @@
     "reach": "direct",
     "power": 2,
     "keywords": [],
-    "heat": 1
+    "heat": 4
    },
    "passive": null,
    "tags": [
@@ -926,7 +952,7 @@
     "reach": "direct",
     "power": 3,
     "keywords": [],
-    "heat": 2
+    "heat": 5
    },
    "passive": null,
    "tags": [
@@ -973,7 +999,8 @@
     "kind": "buff",
     "status": "barrier",
     "stacks": 1,
-    "rounds": 1
+    "rounds": 1,
+    "cooldown": 1
    },
    "passive": null,
    "tags": []
@@ -1040,7 +1067,7 @@
     "reach": "direct",
     "power": 4,
     "keywords": [],
-    "heat": 2
+    "heat": 5
    },
    "passive": null,
    "tags": [
@@ -1069,7 +1096,7 @@
      "burn"
     ],
     "burn": 2,
-    "heat": 3
+    "heat": 6
    },
    "passive": null,
    "tags": [
@@ -1098,7 +1125,7 @@
      "burn"
     ],
     "burn": 3,
-    "heat": 6
+    "heat": 9
    },
    "passive": null,
    "tags": [
@@ -1346,7 +1373,7 @@
     "keywords": [
      "shock"
     ],
-    "heat": 3
+    "heat": 6
    },
    "passive": null,
    "tags": [
@@ -1419,7 +1446,7 @@
     "power": 2,
     "strikes": 3,
     "keywords": [],
-    "heat": 1
+    "heat": 4
    },
    "passive": null,
    "tags": [
@@ -1540,7 +1567,7 @@
     "reach": "direct",
     "power": 2,
     "keywords": [],
-    "heat": 0,
+    "heat": 3,
     "vents_all": true,
     "power_per_heat": 1,
     "per_heat": 2
@@ -1555,14 +1582,13 @@
    "name": "Shift Whistle",
    "maker": "minerva",
    "tier": 3,
-   "status": "planned",
    "shape": "dish",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "Every foe on the field turns to face it, and it braces. The Whip Scorpion's Heliographic Siphon of 20 October with its heat left behind. The name is a session's working one, his to give.",
-    "niche": "Ryan, 11 November: \"Lure every foe, gain armour is a massive premium component for Minerva chassis. If that's allowed to exist as a component, it needs to be tier 3 Minerva, not random W&S. And the name needs to change if it's no longer gaining heat on the component.\" A draft nothing deals until he says it exists."
+    "fantasy": "Every foe on the field turns to face it, and it braces. The Whip Scorpion's Heliographic Siphon of 20 October with its heat left behind. A session's name, kept on his word of 12 November (\"The working names are fine\").",
+    "niche": "Ryan, 11 November: \"Lure every foe, gain armour is a massive premium component for Minerva chassis. If that's allowed to exist as a component, it needs to be tier 3 Minerva, not random W&S. And the name needs to change if it's no longer gaining heat on the component.\" Dealt on his word of 12 November: \"The Minervan lure all can exist in tier 3, sure.\""
    },
    "face": {
     "kind": "attack",
@@ -1590,14 +1616,14 @@
    "design": {
     "stage": "draft",
     "fantasy": "A heat ray in the old sense, the one that walks across a field on three legs (Ryan, 20 October: \"Thermal Ray gives me war-of-the-worlds vibes\"). The hottest shot a spend can make, and the pressure it leaves is the point.",
-    "niche": "The Whip Scorpion's stock gun and fuel: Direct, flat and hot, so one shot fills the next vent's blast. A hot slot-in for any machine that can vent."
+    "niche": "The Whip Scorpion's stock gun and fuel: Direct, flat and hot, so one shot banks the heat its passed turn's release fires. A hot slot-in for any machine that runs hot on purpose."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
     "power": 6,
     "keywords": [],
-    "heat": 6
+    "heat": 9
    },
    "passive": null,
    "tags": [
@@ -1736,7 +1762,7 @@
     ],
     "splash": 1,
     "flak": 1,
-    "heat": 2,
+    "heat": 5,
     "ammo_per_foe_hit": 1
    },
    "passive": null,
@@ -1761,7 +1787,7 @@
     "reach": "every_foe",
     "power": 2,
     "keywords": [],
-    "heat": 0,
+    "heat": 3,
     "spends_magazine": true,
     "magazine_min": 8
    },
@@ -1838,7 +1864,7 @@
     "reach": "indirect",
     "power": 1,
     "keywords": [],
-    "heat": 0,
+    "heat": 3,
     "detonates": true
    },
    "passive": null,
@@ -1887,7 +1913,7 @@
     "power": 1,
     "strikes": 4,
     "keywords": [],
-    "heat": 1
+    "heat": 4
    },
    "passive": null,
    "tags": [
@@ -1994,7 +2020,7 @@
     "reach": "indirect",
     "power": 4,
     "keywords": [],
-    "heat": 4,
+    "heat": 7,
     "kill_rerolls": 2
    },
    "passive": null,
@@ -2043,7 +2069,7 @@
     "reach": "direct",
     "power": 5,
     "keywords": [],
-    "heat": 4
+    "heat": 7
    },
    "passive": null,
    "tags": [
@@ -2073,7 +2099,7 @@
     ],
     "cleave": 1,
     "flak": 1,
-    "heat": 1
+    "heat": 4
    },
    "passive": null,
    "tags": [
@@ -2099,7 +2125,7 @@
     "power": 2,
     "strikes": 4,
     "keywords": [],
-    "heat": 3
+    "heat": 6
    },
    "passive": null,
    "tags": [
@@ -2127,7 +2153,7 @@
      "flak"
     ],
     "flak": 2,
-    "heat": 2
+    "heat": 5
    },
    "passive": null,
    "tags": [
@@ -2155,7 +2181,7 @@
      "burn"
     ],
     "burn": 2,
-    "heat": 1,
+    "heat": 4,
     "self_burn": 1
    },
    "passive": null,
@@ -2184,7 +2210,7 @@
     "keywords": [
      "suppress"
     ],
-    "heat": 2,
+    "heat": 5,
     "gates": {
      "suppress": {
       "when": "target_status",
@@ -2218,7 +2244,8 @@
     "kind": "buff",
     "status": "barrier",
     "stacks": 1,
-    "rounds": 1
+    "rounds": 1,
+    "cooldown": 1
    },
    "passive": null,
    "tags": []

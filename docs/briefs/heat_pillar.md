@@ -229,6 +229,6 @@ placeholder under a hot gun that is usually the best entry.
 ## What the session hands back
 
 Rows in the bible (each decision with its reason and its exit), `docs/rules.md` where a rule
-changes (the overheat, the cooling, a soft zone), the prices in content through a fills
-script like `tools/stock_fills.py`'s, the reads in `docs/measurements.md`, the to-do's heat
+changes (the overheat, the cooling, a soft zone), the prices set by hand in the content (the
+stock pass's fills script retired on 12 November), the reads in `docs/measurements.md`, the to-do's heat
 session line ticked, `docs/status.md` updated. Nothing is built before Ryan's go.

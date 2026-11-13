@@ -51,8 +51,8 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "shock_on_block", "grant_keyword", "free_reroll", "one_of_each", "add_armour_vs_rank", "keep_status", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "fold_die", "rewrite_weapon", "vent_blast", "heat_per_blow", "pass_release", "shove_behind", "mute_keywords", "weapon_cooldown", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status"],
-	"on_round_start": ["shield_per_heat", "add_shield", "vent_heat", "stack_status"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "grant_keyword", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "fold_die", "rewrite_weapon", "heat_per_blow", "pass_release", "shove_behind", "mute_keywords", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status"],
+	"on_round_start": ["add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_shield_hit": ["stack_status", "add_shield", "vent_heat"],
 	"on_blocked": ["stack_status"],
@@ -61,12 +61,12 @@ const SUPPORTED_EFFECTS := {
 	"on_shield_gain": ["vent_heat", "stack_status"],
 	"on_shield_granted": ["vent_heat", "stack_status", "shield_per_ally_heat"],
 	"on_heat_gain": ["add_shield", "stack_status"],
-	"out_of_combat": [],   # fires at the end of a turn out of a fight, with no effect since the long wall brief 3.6 (the shield is full as every fight opens)
 	"status": ["tick_hp", "tick_hp_share", "tick_heat", "skip_action", "disable_entry", "corrupt_entry", "regrow"],
 	"on_foe_status": ["paradox"],
 	"on_stack": ["add_stacks"],
 	"on_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_kill": ["stack_status", "add_shield", "vent_heat", "refill_shield"],
+	"on_foe_killed": ["stack_status"],   # every kill in this machine's fight, whoever made it, once for each foe (the Ammit's Souls, 12 November)
 }
 const DECAY_NONE := 0    # lives until its scope ends
 const DECAY_TICK := 1    # loses a stack each tick, gone at zero
@@ -143,7 +143,9 @@ const STATUS := {
 	# glance), and it halves at the end of each round, rounded down, whatever granted it: a
 	# source feeding so many stacks a round settles near twice that, where a stack fading a
 	# round climbed without limit ("stacking to the moon and fueling massive ramp strategies").
-	# The Ammit's Quintessence Tap keeps every grant of it for the battle (stack()).
+	# No machine keeps it: the Ammit's Tap held every stack for the battle until its rework (12
+	# November), and that keep left the engine with it. Its battle-long part is its Souls, below,
+	# and what they grant is this, halving like any.
 	"overcharged": {"id": "overcharged", "name": "Empowered", "description": "Attacks deal +1 damage a stack. Halves at the end of each round, rounded down.", "decay": "half",
 		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 1}]},
 	# Armoured (Braced until 18 October; the engine id stays) is temporary armour (2 October):
@@ -344,11 +346,6 @@ const STATUS := {
 	# store with no effect of its own; the screen draws it as pips under the heat bar.
 	"shots": {"id": "shots", "name": "Shots", "description": "Every weapon and equipment it aims at a foe this fight, counted for a rule that lands on a number of them.", "decay": "none",
 		"tags": ["store", "count"], "effects": []},
-	# The Whip Scorpion's Siphon (Ryan's go, 20 October; built 21 October): spending it, every
-	# blow a foe lands on the machine that round adds heat, next round's fuel for its vents; the
-	# blows land in the enemy's turn, after the overheat, so it is never a same-turn burn. The
-	# value is the entry's own (siphon_status builds it); 10 here is the default a bare grant
-	# would carry. Renewing, the machine's own doing, so no cleanse lifts it.
 	# The enemy's question to the keyword build (Ryan, 27 and 28 October: silence "makes sense
 	# to only disable (positive) keywords, and not touch buffs"; built with the ladder): a foe's
 	# silence leaves the machine Silenced through its next round, its components' keywords
@@ -359,8 +356,6 @@ const STATUS := {
 	# (25 and 26 October), a one-round purge that returns.
 	"silenced": {"id": "silenced", "name": "Silenced", "description": "Its components' keywords are muted through its next round.", "stacking": "renew",
 		"tags": [CLEANSABLE, "silence"], "effects": [{"trigger": "static", "effect": "mute_keywords", "value": 1}]},
-	"siphoning": {"id": "siphoning", "name": "Siphoning", "description": "Every blow a foe lands on it this round adds {value} heat.", "stacking": "renew",
-		"tags": ["fuel"], "effects": [{"trigger": "static", "effect": "heat_per_blow", "value": 2}]},
 	# The block as a buff (Ryan, 14 October, the honest shield's upside; built 21 October), one
 	# machine at a time. A Barrier is Shocked's mirror on the machines' side: the next blow a
 	# foe lands on it deals nothing, so it never injures, its riders landing, and a blow of
@@ -382,6 +377,23 @@ const STATUS := {
 		"tags": ["buff"], "effects": [{"trigger": "status", "effect": "regrow", "value": 2}]},
 	"ward": {"id": "ward", "name": "Ward", "description": "No rider a foe lays lands on it this round, from a blow or a move of its own (breach, burn, scorch, disable, corrupt, silence, purge); a blow's damage lands. Until the round's end.", "stacking": "renew",
 		"tags": ["buff"], "effects": []},
+	# The Ammit's Souls (Ryan, 12 November, its rework: "Kills grant one Soul"; "Souls granted by
+	# any kill"; "The souls last the battle"; "I wasn't going to cap it, as part of the fantasy"):
+	# a count its passive banks, one for every foe that falls in its fight, kept from fight to
+	# fight through the battle (its `scope`) with no cap. Uncapped, it is no store (a store is a
+	# capped resource with a bar): it is the machine's Ability, a chip with its count (`counted`:
+	# the chip says it at one too), so no Purge, Silence or Cleanse touches it.
+	# Its flares read it (stack_status's `per_stack` and `stack_step`) and its Soul Siphon spends it
+	# (Face.spends).
+	"souls": {"id": "souls", "name": "Souls", "description": "A Soul for every foe that has fallen in its fights this battle. Its flares grant Empowered by the Souls it holds, and its Soul Siphon consumes them.", "decay": "none", "scope": "battle", "counted": true,
+		"tags": ["ability"], "effects": []},
+	# Empowered's pin (the Soul Siphon's, Ryan, 12 November: "No Empowered decays this round. And I
+	# mean none, not ally or enemy"): the third pin, and the first over the whole field. No unit
+	# carries it as a status: the round does (Skirmish.round_holds), so a Ward turns nothing away,
+	# no Paradox counts it and an Empowered gained later in the round is held with the rest. This
+	# is the chip every unit holding Empowered wears until the round's end, and its word in the list.
+	"pinned_empowered": {"id": "pinned_empowered", "name": "Pinned Empowered", "description": "Its Empowered does not decay this round.", "stacking": "renew",
+		"tags": ["pin", "marker"], "effects": []},
 }
 ## The statuses a buff component may grant: the machines' own (Braced is a foe's too, from its
 ## brace), never one only a foe carries.
@@ -507,6 +519,10 @@ static func brace_stacks(value: int) -> int:
 const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed", "flakked", "exposure", "mine", "pinned", "pinned_burning", "sapped"]
 ## The status that holds each status a piece may hold on its target (Face.holds).
 const HOLDERS := {"flakked": "pinned", "burning": "pinned_burning"}
+## The pin a unit wears on its chips while the round itself holds a status of its (Face.holds_all,
+## Skirmish.round_holds: the Soul Siphon's hold on Empowered, either side's): the chip's word and
+## icon alone, since the round carries the hold and no unit the status.
+const ROUND_HOLDERS := {"overcharged": "pinned_empowered", "kindled": "pinned_empowered"}
 ## target_status: the foe struck carries any of FOE_STATUSES (Numbed and its own buffs never count).
 ## ally_present: another live machine is in the fight (the unit's `allies`, kept by the skirmish).
 ## A `tag_<tag>` condition reads the component's tags (10 October: a tag never carries a rule of
@@ -651,18 +667,12 @@ static func _held(u, passive: Dictionary, scope: int, n: int, expires_round: int
 ## halving one half of them. A timed one (ROUNDS) stacks up only with one ending the same
 ## round (a brace beside a buff of Armoured); a grant ending another round is its own
 ## modifier, so a later grant never lengthens an earlier one's stacks (16 October). A status
-## that renews (its "stacking") is one grant however often it is granted. A machine that
-## keeps the status (keep_status, the Ammit's Quintessence Tap) keeps every grant of it for
-## the battle, whatever granted it (Ryan, 18 October: "that's the rules text, it doesn't care
-## where it came from"): the grant's own scope and decay give way. Whatever granted a stack, it
-## is a stack (Ryan, 8 November: "A stack is a stack, doesn't matter where it came from").
+## that renews (its "stacking") is one grant however often it is granted. Whatever granted a
+## stack, it is a stack (Ryan, 8 November: "A stack is a stack, doesn't matter where it came
+## from").
 static func stack(u, passive: Dictionary, scope: int, source: String, n: int = 1, decay: int = DECAY_TICK, expires_round: int = -1) -> Modifier:
 	if turns_mark(u, str(passive.get("id", ""))):
 		return null   # a foe's Ward turns the team's mark away (28 October)
-	if keeps(u, str(passive.get("id", ""))):
-		scope = BATTLE
-		decay = DECAY_NONE
-		expires_round = -1
 	if bool(passive.get("single", false)):
 		n = mini(n, 1)   # one stack whoever grants it (the STATUS note above)
 	var held := _held(u, passive, scope, n, expires_round)
@@ -732,13 +742,11 @@ static func remove(u, id: String) -> bool:
 	return gone
 
 
-## Does this machine shock a foe that strikes it? `blocked` asks about a blow its shield
-## stopped whole (shock_on_block, no carrier in content); otherwise about one that reached
-## hull (the Retaliate status).
-static func shocks_striker(u, blocked: bool) -> bool:
-	var want := "shock_on_block" if blocked else "shock_on_hull_strike"
+## Does this machine shock a foe whose blow reaches its hull (shock_on_hull_strike: the Retaliate
+## status)? A blow its shield stopped whole shocks nothing.
+static func shocks_striker(u) -> bool:
 	for pair in _taking_part(u, "static", null):
-		if str(pair[0].get("effect", "")) == want:
+		if str(pair[0].get("effect", "")) == "shock_on_hull_strike":
 			return true
 	return false
 
@@ -860,10 +868,12 @@ static func turn_tick(u) -> Dictionary:
 ## every tick-decaying status loses a stack and the empty ones go. A machine's turn is the
 ## round's end, so its halving statuses halve here too; a foe's comes at its action, so it
 ## passes `halving` false and its halving statuses wait for the round's end (halve: Flak on
-## Empowered's clock, 21 October).
-static func tick(u, halving: bool = true) -> Dictionary:
+## Empowered's clock, 21 October). `held_round`: the statuses the round itself holds from
+## decaying on every unit (the Soul Siphon's "No Empowered decays this round"), beside a pin's.
+static func tick(u, halving: bool = true, held_round: Array = []) -> Dictionary:
 	var out := tick_preview(u)
 	var held := held_statuses(u)   # a pin's: the status ticks and loses no stack (Pinned Burning)
+	held.append_array(held_round)  # and the round's own (Skirmish.round_holds: the Soul Siphon's hold on Empowered)
 	var keep: Array = []
 	for m in u.modifiers:
 		if m.decay == DECAY_ROUND:
@@ -874,6 +884,8 @@ static func tick(u, halving: bool = true) -> Dictionary:
 			m.stacks -= 1
 			if m.stacks <= 0:
 				continue
+		elif m.decay == DECAY_HALF and halving and held.has(m.id):
+			pass   # held from this round's halving; it halves again the round after
 		elif m.decay == DECAY_HALF and halving:
 			# Rounded down, so it reaches zero on its own (one stack halves to none). Its grants
 			# are one modifier, whatever granted each stack (stack), so it halves as one number.
@@ -908,6 +920,33 @@ static func held_statuses(u) -> Array:
 		if str(pair[0].get("effect", "")) == "hold_status" and not out.has(str(pair[0].get("value", ""))):
 			out.append(str(pair[0].get("value", "")))
 	return out
+
+
+## Every status that reads as `status_id` does on its chip, itself first: Empowered is a
+## machine's `overcharged` and a foe's `kindled`, one word on both sides (3 November), so a rule
+## that says "Empowered" names both (the Soul Siphon's hold: Ryan, 12 November, "none, not ally or
+## enemy").
+static func named_like(status_id: String) -> Array:
+	var out: Array = [status_id]
+	var name := str(STATUS.get(status_id, {}).get("name", ""))
+	if name.is_empty():
+		return out
+	for id in STATUS.keys():
+		if id != status_id and str(STATUS[id].get("name", "")) == name:
+			out.append(id)
+	return out
+
+
+## The scope a status's own definition names: "battle", kept from fight to fight until the battle
+## ends (the Ammit's Souls); the skirmish when it names none.
+static func status_scope(def: Dictionary) -> int:
+	return BATTLE if str(def.get("scope", "")) == "battle" else SKIRMISH
+
+
+## Whether a status is a count its chip always says, at one too (the Ammit's Souls), where a
+## buff's chip says its stacks from two.
+static func is_counted(status_id: String) -> bool:
+	return bool(STATUS.get(status_id, {}).get("counted", false))
 
 
 ## The share of a front-rank foe's maximum HP, in percent, a machine's damaging blow drives into
@@ -1151,10 +1190,11 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null, ctx: Dicti
 		var eff: Dictionary = pair[0]
 		var v: float = float(eff.get("value", 0))
 		var n: int = pair[1].stacks
-		# `per_stack` scales an effect by the machine's stacks of a status (no content uses it since
-		# the Nemesis's Crucible became rage, 12 October); none of the status, no effect.
+		# `per_stack` scales an effect by the machine's stacks of a status (no attack effect in
+		# content uses it since the Nemesis's Crucible became rage, 12 October); none of the
+		# status, no effect. `stack_step` counts it in steps of that many stacks (stack_steps).
 		if eff.has("per_stack"):
-			n *= stacks_of(u, str(eff["per_stack"]))
+			n *= stack_steps(u, eff)
 		match str(eff.get("effect", "")):
 			"add_damage":
 				d_add += v * n
@@ -1234,10 +1274,10 @@ static func effective_reach(u, face: Face) -> int:
 
 
 ## Keywords a live passive grants this component beyond its own (grant_keyword, static, its
-## `when` honoured; the Wild Boar's Juggernaut Drive puts spillover on every attack). An
+## `when` honoured; the Overrun Gearing, a module, puts Spillover on every attack). An
 ## attack keyword lands on attacks only, a support keyword on a shield, vent or buff only, a spend
 ## keyword on anything; a keyword the component already carries is not granted twice.
-## `printed_only`: just the grants written out (`printed`, the Boar's spill), which the die
+## `printed_only`: just the grants written out (`printed`, the Gearing's spill), which the die
 ## draws as the star with the hold reading the passive's line, never a keyword chip.
 static func granted_keywords(u, face: Face, target = null, printed_only: bool = false) -> Array[int]:
 	var out: Array[int] = []
@@ -1508,29 +1548,6 @@ static func foe_armour_bonus(f) -> int:
 	return n
 
 
-## Armour this machine has against blows from a rank (0 front, 1 back) on top of its stat
-## (add_armour_vs_rank, static; no carrier in content since the Glacis went).
-static func armour_against(u, rank: int) -> int:
-	var n := 0
-	for pair in _taking_part(u, "static", null):
-		var eff: Dictionary = pair[0]
-		if str(eff.get("effect", "")) != "add_armour_vs_rank":
-			continue
-		var want := 0 if str(eff.get("rank", "front")) == "front" else 1
-		if want == rank:
-			n += int(eff.get("value", 0)) * int(pair[1].stacks)
-	return maxi(0, n)
-
-
-## Does a passive keep a status from fading on this machine and carry it through the battle
-## (keep_status, static; the Ammit's Quintessence Tap on Empowered)?
-static func keeps(u, status_id: String) -> bool:
-	for pair in _taking_part(u, "static", null):
-		if str(pair[0].get("effect", "")) == "keep_status" and str(pair[0].get("value", "")) == status_id:
-			return true
-	return false
-
-
 ## The form a machine seals into (seal_form, static; the Polar Bear's Lockdown, 20 October):
 ## {"armour": the armour the seal grants, "heat": what it runs hotter at the end of each turn}
 ## when a live passive carries it, else empty.
@@ -1611,15 +1628,19 @@ static func blow_blocked(u) -> Dictionary:
 
 
 ## An event on a machine (on_skirmish_start as the fight begins, on_round_start after the
-## roll, on_shield_gain and on_heat_gain as the gauges move, on_hull_damage on a hit,
-## out_of_combat at the end of a phase spent out of a fight, which nothing may ride since the
-## long wall brief 3.6): every passive on that trigger
-## fires. `amount` is what the event carried (the heat carried for shield_per_heat, the
-## shield or heat gained). Returns {shield, vent, statuses}: shield to gain and heat to shed,
+## roll, on_shield_gain and on_heat_gain as the gauges move, on_hull_damage on a hit): every
+## passive on that trigger fires. `amount` is what the event carried (the shield or heat
+## gained). Returns {shield, vent, statuses}: shield to gain and heat to shed,
 ## for the caller to apply where the gauges live, and the names of the statuses granted
-## (stack_status: its `stacks`, one by default, for the skirmish, decaying as the status
-## says, never past its `cap` when it names one, a store's), on `onto` when it is given (the
-## ally an on_shield_granted passive shields) and on the machine itself otherwise.
+## (stack_status: its `stacks`, one by default, for the skirmish or the scope the status names,
+## decaying as the status says, never past its `cap` when it names one, a store's), on `onto`
+## when it is given (the ally an on_shield_granted passive shields) and on the machine itself
+## otherwise. A stack_status may count its grant off another status the machine carries
+## (`per_stack`, in steps of `stack_step`: the Ammit's flare, an Empowered for every five Souls,
+## nothing under five). How often a trigger fires is the trigger's own and never an effect's
+## option: a kill's once an attack that killed, however many fell; a foe killed's once for each
+## foe that falls, its caller firing it a foe at a time (a flag that chose between the two stood
+## for a day, legal on one trigger only; Ryan, 12 November: "Makes no sense").
 ## Nothing here can fire itself: a shield gained here grants no more shield, heat shed here
 ## grants no heat.
 static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary:
@@ -1633,8 +1654,6 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 			continue
 		var v: int = int(eff.get("value", 0)) * int(pair[1].stacks)
 		match str(eff.get("effect", "")):
-			"shield_per_heat":
-				out["shield"] += v * int(amount / maxi(1, int(eff.get("per_heat", 10))))
 			"add_shield":
 				out["shield"] += v
 			"refill_shield":
@@ -1648,14 +1667,52 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 				if STATUS.has(id):
 					var who = u if onto == null else onto
 					var n := maxi(1, int(eff.get("stacks", 1))) * int(pair[1].stacks)
+					# Counted off a status the machine itself carries (the Ammit's flare, 12 November):
+					# its stacks for every `stack_step` of `per_stack` held, rounded down.
+					if eff.has("per_stack"):
+						n *= stack_steps(u, eff)
 					# A store's cap (the Nemesis's rage, five; Ryan, 22 October): it banks no more.
 					if int(eff.get("cap", 0)) > 0:
 						n = mini(n, int(eff["cap"]) - banked(who, id))
 					if n > 0:
 						var decay := status_decay(STATUS[id])
-						var m := stack(who, STATUS[id], SKIRMISH, "passive:" + str(pair[1].id), n, decay)
+						var m := stack(who, STATUS[id], status_scope(STATUS[id]), "passive:" + str(pair[1].id), n, decay)
 						if m != null and not (out["statuses"] as Array).has(m.name):
 							(out["statuses"] as Array).append(m.name)
+	return out
+
+
+## The steps an effect scaled by a status is worth right now (`per_stack`, with `stack_step` the
+## stacks a step takes, one when it says none): how many whole steps of the status the machine
+## carries. The Ammit's flare is a stack of Empowered a step of five Souls.
+static func stack_steps(u, eff: Dictionary) -> int:
+	return int(stacks_of(u, str(eff.get("per_stack", ""))) / maxi(1, int(eff.get("stack_step", 1))))
+
+
+## What this machine's passives would grant it of `status_id` on `trigger` as it stands, a count
+## read and nothing granted: the stacks a flare is worth now (the Ammit's, off its Souls), for the
+## die, the bot and the codex: one firing of the trigger.
+static func would_stack(u, trigger: String, status_id: String) -> int:
+	var total := 0
+	for pair in _taking_part(u, trigger, null):
+		var eff: Dictionary = pair[0]
+		if str(eff.get("effect", "")) != "stack_status" or str(eff.get("value", "")) != status_id:
+			continue
+		var n := maxi(1, int(eff.get("stacks", 1))) * int(pair[1].stacks)
+		if eff.has("per_stack"):
+			n *= stack_steps(u, eff)
+		total += maxi(0, n)
+	return total
+
+
+## The counts this machine's passives bank as foes fall in its fight (on_foe_killed's
+## stack_status: the Ammit's Souls), by status id: what a debug switch fills and a pose shows.
+static func kill_counts(u) -> Array:
+	var out: Array = []
+	for pair in _taking_part(u, "on_foe_killed", null):
+		var id := str(pair[0].get("value", ""))
+		if str(pair[0].get("effect", "")) == "stack_status" and STATUS.has(id) and not out.has(id):
+			out.append(id)
 	return out
 
 
@@ -2048,9 +2105,8 @@ static func is_ability(status_id: String) -> bool:
 ## "debuff" (laid by the other side to hinder it: a mark the team lays on a foe, a foe's rider on a
 ## machine, each component's Disabled and Corrupted), "ability" (the unit's own mechanic, which
 ## nothing strips), "store" (a capped resource, and a count a rule reads), or "" for one that is
-## none of them: a marker no chip shows, and the Whip Scorpion's Siphoning, its own doing that no
-## Purge and no Cleanse touches. The chip and the readout line wear the label; the keywords list
-## files the term under it.
+## none of them: a marker no chip shows. The chip and the readout line wear the label; the
+## keywords list files the term under it.
 static func status_kind(status_id: String) -> String:
 	if status_id.begins_with("disabled") or status_id.begins_with("corrupted"):
 		return "debuff"
@@ -2063,7 +2119,7 @@ static func status_kind(status_id: String) -> String:
 		return "buff"
 	if tags.has("store") or tags.has("count"):
 		return "store"
-	if tags.has("marker") or tags.has("fuel"):
+	if tags.has("marker"):
 		return ""
 	return "debuff"
 
@@ -2073,15 +2129,14 @@ static func status_kind(status_id: String) -> String:
 ## stacks across its grants, in the order they were granted, gone at none, an unstackable one a
 ## stack of one. An ability is no buff (the unit's own mechanic, its chip on a solid tile: Ryan, 8
 ## November, "It's not a Buff, it's not a Debuff, it's labelled as an Ability, so it doesn't get
-## purged"), a store is no buff, and the stacks a keeping passive keeps stay (the Ammit's
-## Quintessence Tap). Returns what it touched, once each, with what it left ("Armoured 1",
-## "Barrier gone").
+## purged"), and a store is no buff. Returns what it touched, once each, with what it left
+## ("Armoured 1", "Barrier gone").
 static func purge(u, n: int = 1) -> Array[String]:
 	var touched: Array[String] = []
 	var left := {}
 	var keep: Array = []
 	for m in u.modifiers:
-		if not purgeable(m) or keeps(u, m.id):
+		if not purgeable(m):
 			keep.append(m)
 			continue
 		var take: int = mini(m.stacks, int(left.get(m.id, maxi(1, n))))
@@ -2129,26 +2184,17 @@ static func clear_marks(u) -> Array[String]:
 
 
 ## The stacks of buffs a purge can reach on a unit: what a foe that aims at the buffed reads,
-## and what a purger's condition asks (28 October). A kept one (the Ammit's Empowered, its
-## passive's own) counts for nothing.
+## and what a purger's condition asks (28 October).
 static func buff_stacks(u) -> int:
 	var n := 0
 	for m in u.modifiers:
-		if purgeable(m) and not keeps(u, m.id):
+		if purgeable(m):
 			n += maxi(1, m.stacks)
 	return n
 
 
-## The Siphoning status with an entry's own heat a blow (the Whip Scorpion's Heliographic
-## Siphon), as kindled() carries a rally's value.
-static func siphon_status(per_blow: int) -> Dictionary:
-	var s: Dictionary = STATUS["siphoning"].duplicate(true)
-	s["description"] = "Every blow a foe lands on it this round adds %d heat." % per_blow
-	s["effects"] = [{"trigger": "static", "effect": "heat_per_blow", "value": per_blow}]
-	return s
-
-
-## The heat every blow a foe lands on this machine adds this round (Siphoning), 0 for none.
+## The heat every blow a foe lands on this machine adds (heat_per_blow, static: the Whip
+## Scorpion's passive), 0 for none.
 static func heat_per_blow(u) -> int:
 	var n := 0
 	for pair in _taking_part(u, "static", null):
@@ -2159,34 +2205,23 @@ static func heat_per_blow(u) -> int:
 
 ## What a machine's passed turn releases (pass_release, static; the Whip Scorpion's Thermal
 ## Ejection Manifold, Ryan, 12 November: "1 damage to each enemy, increased by 1 for each heat
-## over 8"): {value: what every foe takes at the gate, gate: the heat it needs to fire}, a point
+## over 8"): {value: what every foe takes at the gate, gate: the heat it needs to fire, id: the
+## passive's, which its model's firing is keyed by (the broadside, MechRig.fire_act)}, a point
 ## more for each heat past the gate (Skirmish.release_shot). Empty for a machine whose pass
 ## releases nothing.
 static func pass_release(u) -> Dictionary:
 	for pair in _taking_part(u, "static", null):
 		if str(pair[0].get("effect", "")) == "pass_release":
-			return {"value": int(pair[0].get("value", 1)), "gate": int(pair[0].get("gate", 1))}
+			return {"value": int(pair[0].get("value", 1)), "gate": int(pair[0].get("gate", 1)), "id": str(pair[1].id)}
 	return {}
-
-
-## What this machine's vents spent on itself blast a random foe for, as a share of the heat
-## they take off it (the Whip Scorpion's Thermal Ejection Manifold, 12 and 13 October; built
-## 21 October): 1 for the whole heat, 0 when nothing blasts.
-static func vent_blast(u) -> float:
-	var share := 0.0
-	for pair in _taking_part(u, "static", null):
-		if str(pair[0].get("effect", "")) == "vent_blast":
-			share += float(pair[0].get("value", 1))
-	return share
 
 
 ## The kinds a piece is on this machine, in the engine's words (Ryan, 26 October: "Face type is
 ## either Weapon, Shield, Vent, or Equipment"): its own (equipment a buff or a debuff, a blank
-## none), then any a live passive adds. A vent on a machine whose vents blast a foe is a weapon
-## too ("Hybrid cases can exist. Such as the steam vents"): its blast is a weapon's hit and
-## resolves as one (Skirmish._blast), and the die's hold names both. With no machine, the piece
-## as built, as the codex shows it.
-static func kinds_of(u, f: Face) -> Array[String]:
+## none). One kind a piece today: the hybrid he allowed ("Hybrid cases can exist. Such as the
+## steam vents") was the vent that blasted, a weapon too, which left with the Whip Scorpion's
+## rework; a passive that makes a piece a second kind adds it here. `_u` is the machine it is on.
+static func kinds_of(_u, f: Face) -> Array[String]:
 	var out: Array[String] = []
 	if f == null:
 		return out
@@ -2197,8 +2232,6 @@ static func kinds_of(u, f: Face) -> Array[String]:
 			out.append("shield")
 		Face.Kind.VENT:
 			out.append("vent")
-			if u != null and vent_blast(u) > 0.0:
-				out.append("weapon")
 		Face.Kind.BUFF:
 			out.append("equipment")
 	return out
@@ -2223,20 +2256,6 @@ static func disable_entry(u, index: int, source: String, until_round: int) -> Mo
 		"tags": [] if cooldown else [CLEANSABLE],
 		"effects": [{"trigger": "status", "effect": "disable_entry", "value": index}]}
 	return grant_for_rounds(u, status, source, until_round)
-
-
-## The rounds every weapon this machine spends sits out after the round of the spend, granted by
-## its passives (static weapon_cooldown; the Kite's Disabled Weapon Regulators, 21 October: the
-## cooldown property granted), the longest live one, on a weapon or a debuff alike; 0 for none or for a piece spent on machines. An entry's own cooldown stands
-## beside it and the longer wins (Skirmish.cooldown_of).
-static func granted_cooldown(u, face: Face) -> int:
-	if face == null or not face.is_attack():
-		return 0
-	var n := 0
-	for pair in _taking_part(u, "static", face):
-		if str(pair[0].get("effect", "")) == "weapon_cooldown":
-			n = maxi(n, int(pair[0].get("value", 0)))
-	return n
 
 
 ## The machine's muster rule (static muster, the Swallowtail's Muster Deck, 21 October): its
@@ -2331,17 +2350,6 @@ static func mine_damage(u) -> int:
 		if str(pair[0].get("effect", "")) == "mine_on_spend":
 			n += maxi(0, int(pair[0].get("value", 0)))
 	return n
-
-
-## Every entry dark from a cooldown comes back at once (the Kite's reset gun, 21 October: a
-## kill brings back every entry its cooldowns darkened); an entry a foe switched off stays off. Returns how many.
-static func clear_cooldowns(u) -> int:
-	var back := 0
-	for m in u.modifiers.duplicate():
-		if m.source == "cooldown":
-			u.modifiers.erase(m)
-			back += 1
-	return back
 
 
 ## The rounds an entry stays dark, this one included: the latest end of whatever switched it
@@ -2444,7 +2452,6 @@ static func effect_text(eff: Dictionary) -> String:
 		"multiply_damage": body = "damage ×%s" % vs
 		"multiply_printed": body = "the printed number ×%s, before any buff" % vs
 		"split_strikes": body = "hits twice, its base weapon damage halved, rounded down, never below one" if vs == "2" else "hits ×%s, its base weapon damage divided by %s, rounded down, never below one" % [vs, vs]
-		"weapon_cooldown": body = "every weapon and equipment it aims at a foe sits out the next %s" % ("round" if vs == "1" else vs + " rounds")
 		"one_of_each": body = "acts twice a round, once with a weapon and once with equipment: after its first spend the die turns to an entry of the other kind"
 		"mine_on_spend": body = "every weapon and equipment it aims at a foe leaves a Mine of %s on it with the spend's keywords, one Mine a foe however many spends feed it; when the foe falls the Mine blows on every foe round its slot" % vs
 		"carry": body = "the machines beside it on the map travel with it when it moves"
@@ -2471,14 +2478,11 @@ static func effect_text(eff: Dictionary) -> String:
 		"multiply_damage_taken": body = "damage taken ×%s" % vs
 		"suppress": body = "turns off %s" % vs
 		"shock_on_hull_strike": body = "a foe that strikes bare hull is Shocked"
-		"shock_on_block": body = "a foe whose blow the shield blocks is Shocked"
 		"grant_keyword":
 			var kw := Face.keyword_from_name(str(v))
 			body = "gains %s" % (Face.keyword_label(kw) if kw > 0 else str(v))
 			if eff.has("number"):
 				body += " %d" % int(eff["number"])   # a numbered grant says its number (the drum's Spread 2)
-		"add_armour_vs_rank": body = "armour +%s against %s-rank blows" % [vs, str(eff.get("rank", "front"))]
-		"keep_status": body = "%s never fades and lasts the battle" % str(STATUS.get(str(v), {}).get("name", str(v)))
 		"seal_form": body = "equipment it spends on itself seals it: armour +%s, its own cooling stopped, %s hotter at the end of each turn; a weapon it fires opens it" % [vs, str(eff.get("heat", 0))]
 		"stack_status":
 			var nm := str(STATUS.get(str(v), {}).get("name", str(v)))
@@ -2493,7 +2497,6 @@ static func effect_text(eff: Dictionary) -> String:
 		"step_die": body = "its die never rolls: each fight opens on a random entry, and every roll steps it to the next in order"
 		"fold_die": body = "its die is two batteries of %s, one up at a time with its fixed pieces; the battery up stays up from fight to fight, and a battle opens on the first" % vs
 		"rewrite_weapon": body = "every weapon and equipment it aims at a foe fires as one %s %s blow, heat %s, its keywords and rules kept" % [str(eff.get("reach", "direct")), vs, str(eff.get("heat", 0))]
-		"vent_blast": body = "a vent it spends on itself blasts a random foe for %s the heat it takes off" % ("the whole of" if is_equal_approx(float(v), 1.0) else "%s×" % vs)
 		"pass_release": body = "a turn it ends with an entry it could have spent and %d heat or more releases its heat once the enemy has acted: %s on every foe, 1 more for each heat over %d" % [int(eff.get("gate", 1)), vs, int(eff.get("gate", 1))]
 		"shove_behind": body = "damaging a foe in the front rank deals %s%% of its maximum HP, rounded up, to the foe behind it" % vs
 		"hold_status": body = "its %s does not decay" % str(STATUS.get(str(v), {}).get("name", v))
@@ -2501,7 +2504,6 @@ static func effect_text(eff: Dictionary) -> String:
 		"mute_keywords": body = "its components' keywords are muted"
 		"multiply_stacks": body = "the stacks it lays ×%s" % vs
 		"free_reroll": body = "%s free reroll%s of this die a round" % [vs, "" if int(v) == 1 else "s"]
-		"shield_per_heat": body = "+%s shield for every %d heat carried" % [vs, int(eff.get("per_heat", 10))]
 		"shield_regen_per_heat": body = "shield regen +%s for every %d heat it carries" % [vs, int(eff.get("per_heat", 10))]
 		"shield_per_ally_heat": body = "the shield grows by %s for every %d heat it carries" % [vs, int(eff.get("per_heat", 10))]
 		"add_shield": body = "+%s shield" % vs
@@ -2522,7 +2524,9 @@ static func effect_text(eff: Dictionary) -> String:
 				body += " for every %s heat it carries" % str(int(eff["per_heat"]))
 		_: body = str(eff.get("effect", ""))
 	if eff.has("per_stack"):
-		body += " per stack of %s" % str(STATUS.get(str(eff["per_stack"]), {}).get("name", str(eff["per_stack"])))
+		var of := str(STATUS.get(str(eff["per_stack"]), {}).get("name", str(eff["per_stack"])))
+		var step := maxi(1, int(eff.get("stack_step", 1)))
+		body += (" per stack of %s" % of) if step == 1 else (" for every %d %s it holds" % [step, of])
 	var lead := ""
 	match str(eff.get("trigger", "")):
 		"on_injury": lead = "on an injury: "
@@ -2535,8 +2539,8 @@ static func effect_text(eff: Dictionary) -> String:
 		"on_shield_gain": lead = "on gaining shield: "
 		"on_shield_granted": lead = "an ally this machine shields: "
 		"on_heat_gain": lead = "on gaining heat: "
-		"out_of_combat": lead = "each phase out of combat: "
 		"on_kill": lead = "after an attack that killed: "
+		"on_foe_killed": lead = "for each foe that falls in its fight: "
 		"on_damage": lead = "after a spend of its weapons that damaged a foe: "
 	match str(eff.get("when", "")):
 		"reach_direct": lead += "direct attacks: "
@@ -2594,9 +2598,9 @@ static func explain(u, face: Face) -> Array[String]:
 			elif trig == "static" and name == "grant_keyword":
 				var kw := Face.keyword_from_name(str(eff.get("value", "")))
 				if kw > 0 and not face.has(kw) and granted_keywords(u, face).has(kw):
-					# A grant written out (the Boar's spill) reads the passive's own line, the
+					# A grant written out (the Gearing's spill) reads the passive's own line, the
 					# star's text, since the player learns no keyword for it.
-					out.append("%s (%s)" % [m.description if bool(eff.get("printed", false)) and not m.description.is_empty() else effect_text(eff), m.name])
+					out.append("%s (%s)" % [written_out(m, eff) if bool(eff.get("printed", false)) else effect_text(eff), m.name])
 			elif trig == "on_attack":
 				# A condition on the target is shown as a rule (its lead says when), since
 				# the row has no target in hand.
@@ -2609,7 +2613,7 @@ static func explain(u, face: Face) -> Array[String]:
 	return out
 
 
-## The written-out grants on this entry (the Boar's spill): the granting passive's own line
+## The written-out grants on this entry (the Gearing's spill): the granting passive's own line
 ## each, the text of the star the die draws for it, as the hold prints it.
 static func printed_grants(u, face: Face) -> Array[String]:
 	var out: Array[String] = []
@@ -2621,10 +2625,18 @@ static func printed_grants(u, face: Face) -> Array[String]:
 			if str(eff.get("trigger", "")) != "static" or str(eff.get("effect", "")) != "grant_keyword" or not bool(eff.get("printed", false)):
 				continue
 			if printed.has(Face.keyword_from_name(str(eff.get("value", "")))):
-				var line: String = m.description if not m.description.is_empty() else effect_text(eff)
+				var line := written_out(m, eff)
 				if not out.has(line):
 					out.append(line)
 	return out
+
+
+## The line a grant written out reads, the star's text: a module's rule (its `line`, the text's
+## own, never the stat lines the module's description leads with), else the granting passive's
+## description, else the effect's own words.
+static func written_out(m, eff: Dictionary) -> String:
+	var line := str(eff.get("line", m.description))
+	return line if not line.is_empty() else effect_text(eff)
 
 
 ## Every live modifier as [name, description, source, scope, stacks, id]: the codex lists

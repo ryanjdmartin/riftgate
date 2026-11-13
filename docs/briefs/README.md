@@ -96,8 +96,9 @@ here.
 - No reward for being struck that scales with the enemy's blows (the old discharge). A thorns
   tank is balanceable only if the thorns carry a drawback of their own, and rewarding a tank
   for doing its job (being struck under a draw) is dangerous. The condition that reopens it
-  (Ryan, 20 October, the Whip Scorpion's Siphon): a machine that spends its own turn to be
-  struck, deals nothing that turn and is paid later and at random is not a tank doing its job.
+  (Ryan, 20 October, of the Whip Scorpion's Siphon, cut 12 November): a machine that spends its
+  own turn to be struck, deals nothing that turn and is paid later and at random is not a tank
+  doing its job.
 - Niches can and should overlap across a larger roster so a player finds something that fits;
   mechanics should not repeat, and a mechanic is its pattern in its context, never one trait it
   shares (Ryan, 16 October: a random target in two pieces is no repeat; "if you say 'can't do
@@ -272,7 +273,7 @@ fit touches it. `docs/synergy_map.md` is the built content's piece-level view. R
 - **Stuns (5):** the Baboon's Paradox, the funnel-web's web, the Swallowtail's charged flare, the
   Cryo party defence's gated Suppress (the frost figure's until its cut) and the time-shifter's delay. Numbed is the shared brake, and the
   time-shifter's stasis freezes Numbed, so it works against the other four.
-- **Kills (5):** the Kite's Reset, the Ammit's talons, the Giant Petrel's Salvo, the Wild Boar's
+- **Kills (5):** the Kite's Reset, the Ammit's Souls and flare, the Giant Petrel's Salvo, the Wild Boar's
   spill and Mastema's Bellows; the reason the Zoids walker should not get its old verb back.
 
 **Maker leans, crowded on purpose.**

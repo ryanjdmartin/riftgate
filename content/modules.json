@@ -103,6 +103,33 @@
    }
   },
   {
+   "id": "overrun_gearing",
+   "name": "Overrun Gearing",
+   "maker": "minerva",
+   "tier": 2,
+   "codex": "",
+   "flavour": "",
+   "stats": {
+    "hull": 8
+   },
+   "text": {
+    "description": "Damage past a kill in the front rank spills into the foe behind, from any of its weapons.",
+    "effects": [
+     {
+      "trigger": "static",
+      "effect": "grant_keyword",
+      "value": "spillover",
+      "printed": true
+     }
+    ]
+   },
+   "design": {
+    "stage": "draft",
+    "fantasy": "A drive train that never lets off: whatever falls in front of it, the push carries on into whatever stood behind.",
+    "niche": "Ryan, 12 November: \"Spillover can be a module.\" The Wild Boar's Juggernaut Drive gave Spillover to every weapon it fired until 11 November, when he retired it from the Boar as a sole mechanic (\"Spillover as a sole mechanic is pretty lame. Not much to build around there\"); worn by any machine, it is one rule among its kit's. A session's name, kept on his word of 12 November (\"The working names are fine as are the placeholder numbers\"); the hull line is the Ram Frame's placeholder until the pricing run."
+   }
+  },
+  {
    "id": "boundary_layer_bleed",
    "name": "Boundary-layer Bleed",
    "maker": "kestrel",

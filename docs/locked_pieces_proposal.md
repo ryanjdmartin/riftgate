@@ -3,14 +3,14 @@
 Ryan's direction of 10 November for the question his play of Phase 2 raised ("Locked pieces need
 a new approach, as even the tier 1 chasses are warping", 9 November; the bible's section 12): a
 locked piece earns its lock by gluing its chassis's identity together or by being something
-nobody else has, its number even with the kit beside it; a machine holds a level, bought in the
+nobody else has, its number even with the kit beside it; a machine holds a tier, bought in the
 hangar once the Convergence reaches it, that lifts the whole machine, its locked pieces and its
 stats, with a branch; and tier zero is tier one's power, only simpler. His words carry his name
 and the day; everything else is Claude's for him to move. Nothing here is in `content/`: the direction is the bible's locked row and tiers row since his answers of that day; the content,
 the rules as built and the code follow in section 9's order.
 
-"Level" is a working word for the bought step, since "tier" stays the chassis's complexity; the
-name is his.
+The bought step is the machine's tier, his name for it (12 November: "Machines level is tier.
+Everything is tier."): a chassis's tier is its complexity and where its machine starts.
 
 ## 1. Ryan's calls, 10 November, in his words
 
@@ -54,10 +54,10 @@ name is his.
   customization could give that little push to want to invest in a lower tier chassis."
 - **A locked piece's number sits even with the kit beside it**, never above it: asked which,
   "Level."
-- **A higher chassis arrives at its level**: "I would say higher chassis come at their level,
+- **A higher chassis arrives at its tier**: "I would say higher chassis come at their level,
   since you get them later in the campaign. Last thing you want is to get a chassis you really
   wanted in the 11th battle and not have the resources to field it properly."
-- **A wreck keeps its level**: "Wrecks should keep their upgrades, for sure. It's baked into the
+- **A wreck keeps its tier**: "Wrecks should keep their upgrades, for sure. It's baked into the
   chassis."
 
 His second round, the same day, on the proposal's four questions and its sort:
@@ -151,7 +151,7 @@ kit beside it. Claude's first cut, moved by his words where they stand above:
 
 | | Pieces | What happens |
 |---|---|---|
-| **Glue** | the Honey Badger's Chainsaw Claw and Bullion Fragmenter (his word); the Cassowary's Spin-Up (his word); the Kite's Pinion Driver; the Nemesis's Knuckle of Fury; the Ammit's Soulcutter Talons; the Buzzard's Afterburner Cannon; the Funnel-web's Web Bomb; the Storm Petrel's St. Elmo's Regenerator; the Dingo's Combat Translocator; the Lammergeier's Lorentz Contractor and Syrinx Drone | stay locked, and ride their machine's level (section 5) |
+| **Glue** | the Honey Badger's Chainsaw Claw and Bullion Fragmenter (his word); the Cassowary's Spin-Up (his word); the Kite's Pinion Driver; the Nemesis's Knuckle of Fury; the Ammit's Soulcutter Talons and its Soul Siphon (12 November, his rework: the piece that spends what its passive banks); the Buzzard's Afterburner Cannon; the Funnel-web's Web Bomb; the Storm Petrel's St. Elmo's Regenerator; the Dingo's Combat Translocator; the Lammergeier's Lorentz Contractor and Syrinx Drone | stay locked, and ride their machine's tier (section 5) |
 | **Kept locked, a tweak before any cut** | the Stingray's Photosphere Lance; the Skua's Flechette Pod; the Baboon's Solar Flare Array; the Prairie Dog's Flakshot Repeater; the Wild Boar's Breaching Plow; the Dingo's Megataser Harpoon | each a round in chat toward something nobody else has (section 4); a piece that finds none becomes an ordinary weapon |
 | **Their own sessions'** | the Polar Bear's, the Puffin's, the Whip Scorpion's, the Swallowtail's, the Musk Ox's, the Needletail's and the Giant Petrel's | sorted when each session designs them, on this footing |
 | **None, as it stands** | the Cottonmouth (hard to make one for, not counted out); the Clydesdale held none until its batteries (11 November: its Changeover, glue for its identity, the bible's Clydesdale row) | nothing owed |
@@ -208,7 +208,7 @@ hardpoint and its sculpt that mount's stock part, a pin more on the model.
   places with a harpooned one is Shocked too. He agrees it is weak; the Dingo's question above
   stands in its place.
 
-## 5. The tiers and the levels
+## 5. The tiers: the chassis's, the machine's and the component's
 
 Built from his words; each line a consequence unless it is marked a question:
 
@@ -227,28 +227,28 @@ Built from his words; each line a consequence unless it is marked a question:
    - In tier-one rifts a find is a new trick and never a bigger number; the first step in power
      is tier two's, at the Convergence's gate, as it was always going to be (his word: the
      lowering moves the floor, never the step's place).
-2. **A machine holds a level, one to three.** A chassis arrives at the level of its tier (his
+2. **A machine holds a tier, one to three.** A chassis arrives at its own tier (his
    word), so a tier one is bought up twice, a tier two once and a tier three never. The chassis's
    tier keeps its meaning, complexity, and gains one: where it starts.
-3. **An upgrade is bought in the hangar, cheap, and gated by the Convergence** (his word): level
-   two opens as tier-two rifts and chassis do, level three with tier three. It lifts the whole
+3. **An upgrade is bought in the hangar, cheap, and gated by the Convergence** (his word): a
+   machine's tier two opens as tier-two rifts and chassis do, its tier three with theirs. It lifts the whole
    machine in one purchase: its stat line (hull and shield; under the refit pass its regen and
-   cooling, a number a level) and the number on every locked piece it carries. It belongs to the
+   cooling, a number a tier) and the number on every locked piece it carries. It belongs to the
    chassis and a wreck keeps it (his word; a wreck sits out a turn and returns).
 4. **Each upgrade carries a branch**, a pick of one from two, a tweak to a locked piece: never a
    stat (his word: stats are the modules' job) and not the passive, whose number may rise with
    the plain lift where it warrants one (his word). A tier
    one picks twice, a tier two once, which is what makes a lower chassis worth investing in (his
    reason). Twenty-nine choices and fifty-eight forms on today's roster, each proposed in chat.
-5. **A locked piece at level N is a tier-N piece in power**, even with the kit beside it (his
-   word, and his "Good point" on the ladder's top): level one tier one's band, which is tier
-   zero's too, level three tier three's, so no signature is ever the entry to skip.
-6. **The strict band**: a front's tier is tuned against machines of its level with kit to match,
+5. **A locked piece on a machine of tier N is a tier-N piece in power**, even with the kit
+   beside it (his word, and his "Good point" on the ladder's top): a machine's tier one tier
+   one's band, which is tier zero's too, its tier three tier three's, so no signature is ever the entry to skip.
+6. **The strict band**: a front's tier is tuned against machines of its tier with kit to match,
    which is how the runner already reads tier two, and what the refit's ramp reads against.
-   Blueprints stay the growth of the hardpoints; the level is the growth of what is the
+   Blueprints stay the growth of the hardpoints; the machine's tier is the growth of what is the
    chassis's own.
-7. **The engine**: a level is a Modifier with the chassis as its scope, read through
-   `sim/effects.gd` like every number, never a write to a stat or a component; a machine's level
+7. **The engine**: a machine's tier is a Modifier with the chassis as its scope, read through
+   `sim/effects.gd` like every number, never a write to a stat or a component; a machine's tier
    and its branches are the run's to save.
 
 ## 6. Settled, and what is still his
@@ -259,16 +259,16 @@ make sense"), and the bible's locked row and tiers row carry the direction:
 1. **What a machine stocks**: up to its own tier at tiers one and two; a tier three stocks to
    tier two, its tier-three kit still found, so its locked pieces are a band above its stock as
    it arrives, in a team whose blueprints are there already.
-2. **One ladder of three**: the rift's tier, the chassis's, the level and the component's; a
+2. **One ladder of three**: the rift's tier, the chassis's, the machine's and the component's; a
    basic is a plain tier-one piece whose blueprint is owned from a run's start, and "tier zero"
    is no longer a tier.
 
 For the tweak round, his word the same day: "Remember during the tweak that the special identity
-can also be after it's upgrades, not just at its base form." So a piece may be plain at level one
+can also be after it's upgrades, not just at its base form." So a piece may be plain at its machine's tier one
 and become the thing nobody else has in a branch.
 
-Still his: the six tweaks (section 4), the sort's glue row as Claude cut it, the name for a
-machine's level, and three things his later rounds opened:
+Still his: the six tweaks (section 4), the sort's glue row as Claude cut it, and three things his
+later rounds opened:
 
 1. **The shape of a branch: settled, his second** (section 1). A tier one ends in one of three
    builds (one direction taken twice, the other taken twice, or one step of each) from four
@@ -279,7 +279,7 @@ machine's level, and three things his later rounds opened:
    it, the Clydesdale branches on rerolls or module slots and the Cottonmouth on its passive (his
    words). A tweak that changes what is there before it adds a word, and a piece that still reads
    in one line after two picks, are the aim and no rule (his word). A tier two, which arrives at
-   level two with no first pick, picks one of its two directions' single step (Claude's lean,
+   its own tier with no first pick, picks one of its two directions' single step (Claude's lean,
    unmarked): three ends for a tier one, two for a tier two, none for a tier three.
 2. **The Pod's lock.** Area is in the pool at tier one in three shapes already (Splash on the
    Howitzer, Spread on the Airburst Shell, Penetrate on the Enfilade Beam), and a tier-one
@@ -318,27 +318,28 @@ reason and not only the idea:
 - A dear upgrade, a choice of which machine to lift: a machine left a band behind is dead
   weight; the branch is the choice.
 - A branch in the stat line: the modules' job.
-- Every chassis arriving at level one: "the 11th battle".
+- Every chassis arriving at tier one: "the 11th battle".
 - A locked piece as the die's best entry once set up: his "Level"; the chase he felt.
 - Cutting the four tier-one pieces to ordinary weapons at once: "Not yet"; the fallback.
 - Status pieces at tier zero, owned from a run's start: no advanced mechanic among the starting
   blueprints; they are tier one, in a machine's stock.
-- A level-three locked piece in tier two's band: a tier-three blueprint would out-hit it with no
+- A locked piece on a machine of tier three in tier two's band: a tier-three blueprint would out-hit it with no
   setup, the Fragmenter's fault at the top.
 
 ## 8. What it touches, on his go
 
 - **The bible**: the locked row of section 7 (never a blueprint and no tier: a locked piece is
-  glue or an exclusive, and rides its machine's level); the tiers row of section 10 (a chassis's
-  tier is complexity and where it starts, its level is power, bought, the chassis's own; tier
+  glue or an exclusive, and rides its machine's tier); the tiers row of section 10 (a chassis's
+  tier is complexity and where its machine starts, the machine's tier is power, bought, the
+  chassis's own; tier
   zero tier one's power; the stock rule); the basic kit row; section 12's item retired into them.
-- **The rules**: the chassis and hangar lines, the stock rule's wording, the level.
+- **The rules**: the chassis and hangar lines, the stock rule's wording, the machine's tier.
 - **Content**: the basics' numbers; the plain tier-one guns; a ladder of three numbers for each
   locked piece and each stat line; the six tweaks; the branches.
-- **The engine**: the level as a Modifier and in the saves; the hangar's upgrade verb and the
+- **The engine**: the machine's tier as a Modifier and in the saves; the hangar's upgrade verb and the
   Convergence's gate on it, which the economy pass has not built; the validator's stock rule;
-  the runners fielding a machine at a level.
-- **The other passes**: the refit pass's regen and cooling numbers become a number a level, its
+  the runners fielding a machine at a tier.
+- **The other passes**: the refit pass's regen and cooling numbers become a number a tier, its
   stock re-deal deals tier one into tier-one dice, and its foes are read on the basics' new
   numbers; the economy pass prices the upgrade; every rework in design sorts its own pieces on
   this footing.
@@ -350,5 +351,5 @@ reason and not only the idea:
 3. The rules as each part is built, the bible republished on his word.
 4. The basics' numbers and the stock rule with the refit pass's stock re-deal, read by the
    runner before they stand.
-5. The ladders and the level in the engine, the runner's rows at each level; the branches as
+5. The ladders and the machine's tier in the engine, the runner's rows at each tier; the branches as
    content proposed in chat, chassis by chassis; the upgrade's price with the economy pass.

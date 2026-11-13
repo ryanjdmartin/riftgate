@@ -14,7 +14,7 @@ extends RefCounted
 ## it travels as a string. Nothing here is shown to the player.
 
 const PATH := "user://battle.json"
-const VERSION := 25   # 2: moves in tens (2 October); 3: the water feature and the map's kind (3 and 4 October); 4: the generator's roads changed under every seed, and the guest, kills and wrecks (6 October); 5: the redesigned round, a turn of actions and fights in place of routes and contacts (8 October); 6: moves in hexes, a move in one go (28 October's movement proposal); 7: the six map shapes, every seed's map laid anew (29 October); 8: the fords and streets three or four in all, every river and city laid anew, and the horde wading (29 October); 9: hunters at ring two, and a sealed-off prey's stand-in in place of the re-pick (29 October); 10: the long wall (the field's size from the ramp, the tide, a pusher's wall segment, one pack one fight, no withdrawal, the shield the fight's, a pack's threat rating and dealt layout; 6 November); 11: no reinforcement inside a fight (a pack is what its slots hold, a regrowing foe's corpse holds its slot, a catch's overflow held back) and the compositions fitted to the ranks (7 November); 12: the field's caches, seeded with the map, and those claimed (7 November); 13: a hunter's catch a fight of its own, and no escort grown by the tier (7 November); 14: a cache's kind by its depth, the seam's upgrade gone (8 November); 15: a composition its grid, the cycle's entries carrying eight cells (8 November); 16: a composition saying whether its pack hunts, never its foes, and a hunter catching at the pounce alone, no pack carrying a ring (8 November); 17: the shapes relaid for the shallow field (the mouth a share of the depth, the fjords and cliffs by the width, the shores' rough ground), every seed's map laid anew (9 November); 18: the Armadillo's id the Polar Bear's, polar_bear (9 November), so a battle saved with the old id is set aside rather than drawn without its model; 19: every id still wearing an old name its name's (9 November): kite, buzzard, oblation_mantle, eleven foes and the compositions named for them; 20: the Lammergeier's Mines on foes, a foe status, in place of the slots' shots (9 November); 21: the refit pass's model landed (10 November): the stock dice with no shield or vent, the Halo Shield's id its name's (halo_projector), every chassis its own shield regen; 22: the rift five hexes, the two in front of its middle with its row's three, and the boss in front of them (10 November), every map's mouth laid anew, and the formation pass's compositions in place of the old (the same day); 23: the boss holding its hex in front of the rift, no patrol (10 November); 24: menace a pack's threat rating in hundredths of a pip (11 November), so a battle's tally and its thresholds are counted anew, with the Rupture sized in beats and the stall guard gone; 25: a cooldown counted after the round of its spend, Rapid's own switch-off back and Instant a keyword (12 November), so a die saved with a Rapid piece's printed cooldown, the Spin-Up's spin or a fist's Breach is set aside
+const VERSION := 26   # 2: moves in tens (2 October); 3: the water feature and the map's kind (3 and 4 October); 4: the generator's roads changed under every seed, and the guest, kills and wrecks (6 October); 5: the redesigned round, a turn of actions and fights in place of routes and contacts (8 October); 6: moves in hexes, a move in one go (28 October's movement proposal); 7: the six map shapes, every seed's map laid anew (29 October); 8: the fords and streets three or four in all, every river and city laid anew, and the horde wading (29 October); 9: hunters at ring two, and a sealed-off prey's stand-in in place of the re-pick (29 October); 10: the long wall (the field's size from the ramp, the tide, a pusher's wall segment, one pack one fight, no withdrawal, the shield the fight's, a pack's threat rating and dealt layout; 6 November); 11: no reinforcement inside a fight (a pack is what its slots hold, a regrowing foe's corpse holds its slot, a catch's overflow held back) and the compositions fitted to the ranks (7 November); 12: the field's caches, seeded with the map, and those claimed (7 November); 13: a hunter's catch a fight of its own, and no escort grown by the tier (7 November); 14: a cache's kind by its depth, the seam's upgrade gone (8 November); 15: a composition its grid, the cycle's entries carrying eight cells (8 November); 16: a composition saying whether its pack hunts, never its foes, and a hunter catching at the pounce alone, no pack carrying a ring (8 November); 17: the shapes relaid for the shallow field (the mouth a share of the depth, the fjords and cliffs by the width, the shores' rough ground), every seed's map laid anew (9 November); 18: the Armadillo's id the Polar Bear's, polar_bear (9 November), so a battle saved with the old id is set aside rather than drawn without its model; 19: every id still wearing an old name its name's (9 November): kite, buzzard, oblation_mantle, eleven foes and the compositions named for them; 20: the Lammergeier's Mines on foes, a foe status, in place of the slots' shots (9 November); 21: the refit pass's model landed (10 November): the stock dice with no shield or vent, the Halo Shield's id its name's (halo_projector), every chassis its own shield regen; 22: the rift five hexes, the two in front of its middle with its row's three, and the boss in front of them (10 November), every map's mouth laid anew, and the formation pass's compositions in place of the old (the same day); 23: the boss holding its hex in front of the rift, no patrol (10 November); 24: menace a pack's threat rating in hundredths of a pip (11 November), so a battle's tally and its thresholds are counted anew, with the Rupture sized in beats and the stall guard gone; 25: a cooldown counted after the round of its spend, Rapid's own switch-off back and Instant a keyword (12 November), so a die saved with a Rapid piece's printed cooldown, the Spin-Up's spin or a fist's Breach is set aside; 26: the rules no piece printed left the engine (12 November: Empowered a kill, a passive's keep of a status, Reset, an entry's heat a blow and label, the battle's fought record), so a die saved with one, or a machine saved holding kept Empowered, is set aside, and the readers for older saves' forms went with them
 
 
 # ---------------------------------------------------------------- the file
@@ -79,7 +79,6 @@ static func to_dict(b: Battle) -> Dictionary:
 		"state": b.state,
 		"outcome": b.outcome,
 		"spent": _int_keys(b.spent),
-		"fought": _int_keys(b.fought),
 		"moved": moved,
 		"history": b.history,   # the turn's undo, in order: snapshots kept JSON's way already
 		"planned": b.planned,   # and the moves not yet played on the map
@@ -166,8 +165,6 @@ static func from_dict(d: Dictionary) -> Battle:
 	b.field.foe_profiles = b.db.pack_profiles()
 	for uid in d.get("spent", {}).keys():
 		b.spent[int(str(uid))] = int(d["spent"][uid])
-	for uid in d.get("fought", {}).keys():
-		b.fought[int(str(uid))] = true
 	for uid in d.get("moved", []):
 		b.moved[int(uid)] = true
 	# The undo and the plan (25 October), as they were; the snapshots read a JSON round trip's
@@ -388,8 +385,6 @@ static func _face_dict(f: Face) -> Dictionary:
 	d["fixed"] = f.fixed
 	if not f.tags.is_empty():
 		d["tags"] = f.tags
-	if not f.label.is_empty():
-		d["label"] = f.label
 	return d
 
 
@@ -495,6 +490,7 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 		"kills": _typed_tallies(sk.kills),
 		"roll_marks": sk.roll_marks, "history": sk.history,   # the trail's bars and the undo's snapshots (2 November)
 		"team_kills": sk.team_kills,
+		"round_holds": sk.round_holds.duplicate(),   # what the round holds from decaying on every unit (the Soul Siphon's, 12 November)
 	}
 
 
@@ -556,7 +552,7 @@ static func snapshot_skirmish(sk: Skirmish) -> Dictionary:
 ## The fight put back as a snapshot had it, in place: the machines' units are the field's own,
 ## their numbers written back; the machines, the foes, the ranks, the queue, the
 ## stream and the log as they were; the packs' units, the callables and the undo stack stand.
-## The last blow, blast and acts, the screen's, are cleared: they were the spend's.
+## The last blow and acts, the screen's, are cleared: they were the spend's.
 static func restore_skirmish(sk: Skirmish, d: Dictionary) -> void:
 	var units: Array[Unit] = []
 	for ms in sk.mechs:
@@ -575,7 +571,6 @@ static func restore_skirmish(sk: Skirmish, d: Dictionary) -> void:
 		for k in sp.keys():
 			sk.sponsorship[str(k)] = int(sp[k])
 	sk.last_roll.clear()
-	sk.last_blast.clear()
 	sk.last_acts.clear()
 
 
@@ -598,6 +593,9 @@ static func _skirmish_into(sk: Skirmish, d: Dictionary, lookup: Callable) -> voi
 	sk.round = int(d.get("round", 0))
 	sk.rerolls_left = int(d.get("rerolls_left", 0))
 	sk.banked = int(d.get("banked", 0))   # the rerolls Maverick's Playbook carries to the next round (30 October)
+	sk.round_holds = []
+	for held_id in d.get("round_holds", []):   # a save from before 12 November has none
+		sk.round_holds.append(str(held_id))
 	sk.committed = bool(d.get("committed", false))
 	sk.layout = []
 	for cell in d.get("layout", []):
@@ -848,7 +846,7 @@ static func _hexes_from(list) -> Array[Vector2i]:
 # ---------------------------------------------------------------- the run
 
 const RUN_PATH := "user://campaign.json"
-const RUN_VERSION := 24   # 2: the threat became the Convergence; 3: Favour and the starting blueprints (7 October); 4: the battle inside it in the redesigned round (8 October); 5: the battle inside it in hexes (28 October); 6: the battle inside it on the six map shapes (29 October); 7: the battle inside it with the fords and streets laid anew (29 October); 8: the battle inside it with the hunters at ring two (29 October); 9: the battle inside it on the long wall (6 November); 10: the battle inside it with no reinforcement inside a fight (7 November); 11: the battle inside it with the field's caches (7 November); 12: the battle inside it with a catch a fight a hunter (7 November); 13: its caches by depth (8 November); 14: its compositions grids (8 November); 15: its compositions saying whether they hunt, and no ring but the pounce (8 November); 16: the battle inside it on the relaid shapes (9 November); 17: the battle inside it, and its roster, with the Polar Bear's id (9 November); 18: the battle inside it, its roster and its fronts with every renamed id (9 November); 19: the battle inside it with the Lammergeier's Mines on foes (9 November); 20: the battle inside it and its roster on the refit pass's model (10 November): the stock dice, halo_projector, the regen; 21: the battle inside it with the rift's five hexes (10 November) and the formation pass's compositions; 22: the battle inside it with the boss holding its hex (10 November); 23: the battle inside it and its Anathema with menace a pack's threat rating (11 November); 24: the battle inside it and its roster with the cooldown counted after its spend, Rapid's own switch-off and Instant (12 November)
+const RUN_VERSION := 25   # 2: the threat became the Convergence; 3: Favour and the starting blueprints (7 October); 4: the battle inside it in the redesigned round (8 October); 5: the battle inside it in hexes (28 October); 6: the battle inside it on the six map shapes (29 October); 7: the battle inside it with the fords and streets laid anew (29 October); 8: the battle inside it with the hunters at ring two (29 October); 9: the battle inside it on the long wall (6 November); 10: the battle inside it with no reinforcement inside a fight (7 November); 11: the battle inside it with the field's caches (7 November); 12: the battle inside it with a catch a fight a hunter (7 November); 13: its caches by depth (8 November); 14: its compositions grids (8 November); 15: its compositions saying whether they hunt, and no ring but the pounce (8 November); 16: the battle inside it on the relaid shapes (9 November); 17: the battle inside it, and its roster, with the Polar Bear's id (9 November); 18: the battle inside it, its roster and its fronts with every renamed id (9 November); 19: the battle inside it with the Lammergeier's Mines on foes (9 November); 20: the battle inside it and its roster on the refit pass's model (10 November): the stock dice, halo_projector, the regen; 21: the battle inside it with the rift's five hexes (10 November) and the formation pass's compositions; 22: the battle inside it with the boss holding its hex (10 November); 23: the battle inside it and its Anathema with menace a pack's threat rating (11 November); 24: the battle inside it and its roster with the cooldown counted after its spend, Rapid's own switch-off and Instant (12 November); 25: the battle inside it and its roster without Empowered a kill and the kept status (12 November)
 
 
 static func save_campaign(c: Campaign, path: String = RUN_PATH) -> bool:
@@ -1000,7 +998,7 @@ static func _strings(list) -> Array:
 # ---------------------------------------------------------------- the quick campaign
 
 const QUICK_PATH := "user://quick_run.json"
-const QUICK_VERSION := 7   # 2: its roster with the Polar Bear's id, polar_bear in place of armadillo (9 November); 3: its roster and fights with every renamed id, kite and buzzard among them (9 November); 4: its fights with the Lammergeier's Mines on foes (9 November); 5: its roster and fights on the refit pass's model (10 November): the stock dice, halo_projector, the regen, the basics six; 6: its fights on the formation pass's compositions (10 November); 7: its roster and fights with the cooldown counted after its spend, Rapid's own switch-off and Instant (12 November)
+const QUICK_VERSION := 8   # 2: its roster with the Polar Bear's id, polar_bear in place of armadillo (9 November); 3: its roster and fights with every renamed id, kite and buzzard among them (9 November); 4: its fights with the Lammergeier's Mines on foes (9 November); 5: its roster and fights on the refit pass's model (10 November): the stock dice, halo_projector, the regen, the basics six; 6: its fights on the formation pass's compositions (10 November); 7: its roster and fights with the cooldown counted after its spend, Rapid's own switch-off and Instant (12 November); 8: its roster and fights without Empowered a kill and the kept status (12 November)
 
 
 static func quick_exists(path: String = QUICK_PATH) -> bool:

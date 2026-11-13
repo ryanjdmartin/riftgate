@@ -8,19 +8,48 @@ extends RefCounted
 static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Color, width: float = 2.0) -> void:
 	var s := size / 2.0
 	match id:
-		"sap":
-			# Sapped (Ryan, 11 November): a blade, smaller up and to the left, and an arrow down at
-			# its lower right: blows a point lower a stack.
+		"sap", "overcharge":
+			# A blow's number, down and up, one blade and an arrow at its lower right. Sapped (Ryan,
+			# 11 November): the blade, smaller up and to the left, and the arrow down: blows a point
+			# lower a stack. Empowered (Ryan, 12 November: "Yes use the up sword for empowered") is
+			# its pair, the arrow turned up: blows a point higher a stack. It wore a bare bolt until
+			# then, Shock's bolt without the ring; the bolt is Shock's alone now.
 			draw(ci, "sword", c + Vector2(-s * 0.22, -s * 0.2), size * 0.78, color, width)
 			var ax := c + Vector2(s * 0.55, s * 0.05)
-			ci.draw_line(ax + Vector2(0, -s * 0.45), ax + Vector2(0, s * 0.85), color, width)
-			ci.draw_polyline(PackedVector2Array([ax + Vector2(-s * 0.36, s * 0.45), ax + Vector2(0, s * 0.88), ax + Vector2(s * 0.36, s * 0.45)]), color, width)
+			if id == "sap":
+				ci.draw_line(ax + Vector2(0, -s * 0.45), ax + Vector2(0, s * 0.85), color, width)
+				ci.draw_polyline(PackedVector2Array([ax + Vector2(-s * 0.36, s * 0.45), ax + Vector2(0, s * 0.88), ax + Vector2(s * 0.36, s * 0.45)]), color, width)
+			else:
+				ci.draw_line(ax + Vector2(0, s * 0.85), ax + Vector2(0, -s * 0.4), color, width)
+				ci.draw_polyline(PackedVector2Array([ax + Vector2(-s * 0.36, 0.0), ax + Vector2(0, -s * 0.43), ax + Vector2(s * 0.36, 0.0)]), color, width)
 		"pin_flak", "pin_burn":
 			# A pin (Ryan, 11 November: "Can we combine the lock and the flak/burn for these
 			# glyphs?"): the status it holds, drawn a little smaller up and to the left, with the
 			# lock at its lower right.
-			draw(ci, "flak" if id == "pin_flak" else "burn", c + Vector2(-s * 0.2, -s * 0.16), size * 0.8, color, width)
+			draw(ci, {"pin_flak": "flak", "pin_burn": "burn"}[id], c + Vector2(-s * 0.2, -s * 0.16), size * 0.8, color, width)
 			draw(ci, "lock", c + Vector2(s * 0.5, s * 0.48), size * 0.52, color, width)
+		"pin_empower":
+			# Empowered's pin (the Soul Siphon's hold, 12 November): the pins' lock at the lower
+			# right, and Empowered's two parts set around it rather than shrunk over it, where the
+			# lock sat on the arrow and left a caret: a smaller blade up and to the left, and the
+			# arrow up standing tall on the lock, so the arrow reads at a chip's size on the desk too.
+			draw(ci, "sword", c + Vector2(-s * 0.44, -s * 0.3), size * 0.56, color, width)
+			var px := c + Vector2(s * 0.5, 0.0)
+			ci.draw_line(px + Vector2(0, s * 0.2), px + Vector2(0, -s * 0.9), color, width)
+			ci.draw_polyline(PackedVector2Array([px + Vector2(-s * 0.3, -s * 0.52), px + Vector2(0, -s * 0.93), px + Vector2(s * 0.3, -s * 0.52)]), color, width)
+			draw(ci, "lock", c + Vector2(s * 0.5, s * 0.5), size * 0.52, color, width)
+		"soul":
+			# A small ghost (the Ammit's Souls, 12 November; a first cut for Ryan's eye, a wisp with
+			# a tail having read as a letter at a chip's size): a domed head, straight sides, a hem
+			# in three points and two eyes, what it takes from a foe that falls.
+			var crown := c + Vector2(0.0, -s * 0.22)
+			ci.draw_arc(crown, s * 0.72, PI, TAU, 14, color, width)
+			ci.draw_polyline(PackedVector2Array([
+				crown + Vector2(s * 0.72, 0.0), c + Vector2(s * 0.72, s * 0.95), c + Vector2(s * 0.36, s * 0.58), c + Vector2(0.0, s * 0.95),
+				c + Vector2(-s * 0.36, s * 0.58), c + Vector2(-s * 0.72, s * 0.95), crown + Vector2(-s * 0.72, 0.0),
+			]), color, width)
+			ci.draw_circle(c + Vector2(-s * 0.27, -s * 0.2), maxf(1.0, s * 0.13), color)
+			ci.draw_circle(c + Vector2(s * 0.27, -s * 0.2), maxf(1.0, s * 0.13), color)
 		# ---- the die's targeting marks (Ryan, 2 November): one width, under the main mark
 		"aim_direct", "aim_indirect":
 			# Whom a weapon or a debuff reaches (Ryan, 3 November: "I think we had it right with
@@ -311,10 +340,6 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 		"suppress":
 			ci.draw_arc(c, s * 0.9, 0.0, TAU, 28, color, width)
 			ci.draw_line(c + Vector2(-s * 0.65, s * 0.65), c + Vector2(s * 0.65, -s * 0.65), color, width)
-		"overcharge":
-			ci.draw_polyline(PackedVector2Array([
-				c + Vector2(s * 0.3, -s), c + Vector2(-s * 0.5, s * 0.1), c + Vector2(s * 0.1, s * 0.1), c + Vector2(-s * 0.3, s),
-			]), color, width)
 		"hopper":
 			# A funnel and its spout: what the claw digs out, waiting to be fired.
 			ci.draw_polyline(PackedVector2Array([
@@ -373,9 +398,9 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				ci.draw_line(fork, fork + (dir + side) * s * 0.28, color, width * 0.8)
 				ci.draw_line(fork, fork + (dir - side) * s * 0.28, color, width * 0.8)
 		"blast":
-			# A vent's blast (the Whip Scorpion's, 22 October): Indirect's arc, lobbed over and
-			# landing in a burst where Indirect lands on a dot, so it reads as a blow at a foe and
-			# never as the heat it came from.
+			# A blast (drawn for the Whip Scorpion's vent blast, 22 October; a foe's self-destruct
+			# now): Indirect's arc, lobbed over and landing in a burst where Indirect lands on a
+			# dot, so it reads as a blow landing.
 			ci.draw_arc(c + Vector2(-s * 0.15, s * 0.55), s * 0.8, PI, TAU, 18, color, width)
 			var hit := c + Vector2(s * 0.65, s * 0.55)
 			for i in range(6):
@@ -448,13 +473,6 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_polyline(PackedVector2Array([
 				c + Vector2(s * 0.2, -s * 0.65), c + Vector2(-s * 0.3, s * 0.05), c + Vector2(s * 0.05, s * 0.05), c + Vector2(-s * 0.2, s * 0.65),
 			]), color, width)
-		"devour":
-			# Open jaws, teeth down: what takes something from a kill.
-			ci.draw_arc(c + Vector2(0, -s * 0.15), s * 0.85, PI * 1.05, PI * 1.95, 16, color, width)
-			for i in range(3):
-				var x := -s * 0.5 + i * s * 0.5
-				ci.draw_line(c + Vector2(x, -s * 0.1), c + Vector2(x, s * 0.55), color, width * 0.9)
-			ci.draw_line(c + Vector2(-s * 0.85, -s * 0.1), c + Vector2(s * 0.85, -s * 0.1), color, width)
 		"corrupt":
 			# A jagged crack through the entry: the rot a foe's corrupt leaves in a component.
 			ci.draw_polyline(PackedVector2Array([
@@ -666,7 +684,7 @@ static func colour_for(id: String) -> Color:
 			return Terms.colour("sealed")   # the Polar Bear's shell, the Sealed status's colour
 		"exposed":
 			return Terms.colour("exposure")
-		"overcharge", "heat", "scorch", "devour", "spin", "mine":
+		"overcharge", "heat", "scorch", "spin", "mine":
 			return Palette.HEAT
 		"shieldbreak", "silence":
 			return Palette.ENEMY

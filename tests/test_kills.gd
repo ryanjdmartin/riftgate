@@ -11,6 +11,11 @@ extends TestCase
 const L := Face.Reach.DIRECT
 const I := Face.Reach.INDIRECT
 
+## A kill trigger to read: a stack of Empowered after each attack of the machine's own that
+## kills. No die entry prints a kill rule of its own since Empowered a kill left (12 November).
+const KILLER := {"id": "killer", "name": "Killer", "description": "", "effects": [
+	{"trigger": "on_kill", "effect": "stack_status", "value": "overcharged"}]}
+
 
 func _mech(name: String, d: Die, shield: int = 40, hull: int = 100) -> Unit:
 	var u := Unit.mech(0, name, Vector2i.ZERO)
@@ -61,23 +66,22 @@ func test_a_foe_that_gets_back_up_is_no_kill_until_it_stays_down() -> void:
 	assert_eq(sk.kills_by_type(sq), {"revenant": 1}, "and it counts by its type")
 
 
-func test_the_talons_feed_on_a_kill_at_the_death_check_never_on_a_foe_that_gets_back_up() -> void:
-	var talon := Face.attack(30, L)
-	talon.devours = 1
+func test_a_kill_trigger_fires_at_the_death_check_never_on_a_foe_that_gets_back_up() -> void:
 	var sk := Skirmish.new(1, 2)
-	var m := _mech("A", Die.single(talon))
+	var m := _mech("A", Die.single(Face.attack(30, L)))
+	m.grant_passive(KILLER)
 	sk.add_mech(m)
 	var g := _foe("revenant", 20)
 	sk.add_foes([g, _foe("revenant", 500)])
 	sk.begin()
 	sk.start_round()
 	_rise(g)
-	assert_true(sk.assign(0, g), "the talons fell a foe that gets back up")
-	assert_eq(Effects.stacks_of(m, "overcharged"), 0, "no kill, nothing fed")
+	assert_true(sk.assign(0, g), "it fells a foe that gets back up")
+	assert_eq(Effects.stacks_of(m, "overcharged"), 0, "no kill, so its kill trigger stays quiet")
 	sk.end_round()
 	sk.start_round()
 	assert_true(sk.assign(0, g), "and fell it for good")
-	assert_true(Effects.stacks_of(m, "overcharged") > 0, "a kill feeds them")
+	assert_true(Effects.stacks_of(m, "overcharged") > 0, "a kill fires it")
 
 
 func test_a_split_is_no_kill_and_each_half_is() -> void:
@@ -118,10 +122,9 @@ func test_a_part_its_core_takes_is_no_kill() -> void:
 
 
 func test_a_part_is_never_a_kill_only_its_core() -> void:
-	var talon := Face.attack(60, L)
-	talon.devours = 1
 	var sk := Skirmish.new(1, 3)
-	var m := _mech("A", Die.single(talon), 40, 400)
+	var m := _mech("A", Die.single(Face.attack(60, L)), 40, 400)
+	m.grant_passive(KILLER)
 	sk.add_mech(m)
 	var sq := _pack(6)
 	var core := _foe("hilt", 50, 1)
@@ -132,13 +135,13 @@ func test_a_part_is_never_a_kill_only_its_core() -> void:
 	sk.start_round()
 	assert_true(sk.assign(0, eye), "a part felled while its core stands")
 	assert_eq(sk.team_kills, 0, "no kill: a core and its parts are one unit")
-	assert_eq(Effects.stacks_of(m, "overcharged"), 0, "so the talons feed on nothing")
+	assert_eq(Effects.stacks_of(m, "overcharged"), 0, "so its kill trigger stays quiet")
 	assert_eq(sk.kills_by_type(sq), {}, "and salvage and menace count nothing")
 	sk.end_round()
 	sk.start_round()
 	assert_true(sk.assign(0, core), "the core falls")
 	assert_eq(sk.team_kills, 1, "its fall the one kill")
-	assert_true(Effects.stacks_of(m, "overcharged") > 0, "the talons feed on it")
+	assert_true(Effects.stacks_of(m, "overcharged") > 0, "and its kill trigger fires")
 	assert_eq(sk.kills_by_type(sq), {"hilt": 1}, "counted by the core's type")
 
 

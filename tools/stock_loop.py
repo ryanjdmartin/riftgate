@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """A balance loop (the stock pass's method, its retired brief's section 7, 22 October: git show a550c2e:docs/briefs/stock_pass.md): a
 copy of the project with one lever moved in its content, the balance runner read against the
-design tests, the levers kept landing through tools/stock_fills.py.
+design tests; a lever kept lands in the content by hand, as every number does (the stock fills'
+script that carried them, its tables a second copy of the content's numbers, retired 12 November:
+git show 27956e7:tools/stock_fills.py).
 
   python3 tools/stock_loop.py run <name> [--lever name[:arg]]... [--seeds 30] [--alone] [--no-campaign]
       [--team a,b,c,d]... [--set path=json]... [--fit chassis=module,module]...
@@ -22,8 +24,7 @@ chassis: `chassis/badger/loadout/0="polarity_projector"`), where a lever edits t
 content and the validator still reads it; --fit hands it the modules every machine of a chassis
 wears (the endgame fours of 23 October, fitted up to tier two). `compare` lays finished loops side by side. Run it
 from the repository; it never touches the repository's own files, and a kept lever lands by
-editing tools/stock_fills.py and running it (the copy is a direction at 30 seeds, the bands at
-200 are the report's). GODOT names the Godot binary when it is not on the path."""
+editing the content (the copy is a direction at 30 seeds, the bands at 200 are the report's). GODOT names the Godot binary when it is not on the path."""
 import argparse, json, math, os, re, shutil, subprocess, sys, time
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -47,7 +48,7 @@ def make_copy(root):
     shutil.copy2(REPO + '/project.godot', root)
     for d in ['.godot', 'content', 'sim', 'game']:
         shutil.copytree(REPO + '/' + d, root + '/' + d, symlinks=True)
-    for t in ['balance.gd', 'campaign_run.gd', 'stock_fills.py']:
+    for t in ['balance.gd', 'campaign_run.gd']:
         shutil.copy2(REPO + '/tools/' + t, root + '/tools/')
 
 

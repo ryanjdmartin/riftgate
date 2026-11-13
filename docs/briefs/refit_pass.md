@@ -474,7 +474,8 @@ the field's dials. `--guard W` is the aggressor's habit for the fight bot
   the Blast Door, a Barrier at tier one that must be more than the basic or retire; the two
   modules whose rules stop firing (the Reinforced Skeleton, the Phase Conjugator).
 - **The numbers.** The heat prices on every other entry, with the cooling and the gauges (the
-  heat session's); the regen read again once the foes' numbers move.
+  heat session's; a first shape on trial since 12 November, section 12); the regen read again
+  once the foes' numbers move.
 - **The four reworks**, and the lines on fielded machines that name a shield or a vent (the Musk
   Ox's forge reads neither; the Storm Petrel's and the Buzzard's shields run as written,
   cheaper under a regen).
@@ -712,7 +713,10 @@ word:
    a validator check) is what the reads say prices it; it is a rule over every pusher, his to
    set, and the Marsh's giants are its first defect. The other levers on the bench: a pack's
    strike at the wall while a fight runs (the wall has no clock inside a fight today), heat that
-   bites (item 5).
+   bites (item 5). Parked again, 12 November, behind the dice, heat and the foes' numbers:
+   "Yes park for now, right. Slice and Dice doesn't escalate mid fight, slay the Spire does. We
+   have to see what fits after the other pieces are in place." So both answers are open, a
+   fight that never escalates and one that does, and nothing is proposed on it until then.
 3. **The regen's size.** Half the gauge lets a lone tank beat a plain-blow formation rated for
    three, slowly; 2 a round leaves it a decision at four fifths of its hull. His first read (10
    November) is that half is far too much: two lights "nigh unkillable" against a formation for
@@ -731,7 +735,8 @@ word:
    stalls the long one, since a machine sustains one shot of N heat every N rounds once its
    gauge is full. The sustained rate is the cooling over a shot's heat and the burst the gauge
    over it, so the price pass moves the three together (the heat session's list: the prices on
-   every face, the basics included, with the cooling and the gauge).
+   every face, the basics included, with the cooling and the gauge). On trial since 12 November
+   (section 12): every weapon three hotter, every chassis cooling one more.
 6. The four machines' sessions and their order (the Polar Bear first, since Minerva's tier-one
    front and his own try of 9 November ride on it): the Polar Bear back on 11 November (equipment
    it spends on itself seals it, a weapon opens it); the Whip Scorpion's role first, the
@@ -1298,3 +1303,499 @@ Its holes, his:
    composition on every seed): left, the first wave starting on the list's second, or the
    opening's formation drawn by the seed.
 5. What measures a battle's minutes against his ten to thirty: nothing does yet.
+
+## 12. The player's side at tier one (12 November)
+
+His word: "Pull in main. Many of the machine reworks are done, so they can be included in
+the pass. If they're not on main right now, they will be shortly. You can proceed with the
+steps as you see fit." The order agreed the day before: the machines' dice, heat, the foes'
+numbers, then the machines' hull and shield; what prices a round parked (section 7).
+
+**What main had already settled.** Every tier-one stock die is basics beside its locked
+pieces: four guns (the Twin Autoguns, the Rivet Gun and the Ankle Mortar at 2, the Laser
+Carbine at 3), the Halo Projector and the Shoring Jack. So the re-deal proper is small, and
+the squad's damage a round is the basics' and the locked pieces', which are their sessions'.
+
+**The slots still holding a placeholder gun** (a second Twin Autoguns where a vent stood).
+Claude's leans, nothing landed; each is the machine's own content and his to mark:
+
+| The machine | Lean | Why |
+|---|---|---|
+| The Cassowary | A Laser Carbine in the chamber after the Halo Projector | Its plan is adjacency, the shield before the big gun, and its stock holds no big gun to line the doubled sixth shot up on |
+| The Cottonmouth | A keyword shell of its maker's, the Incendiary Shells | Every gun it stocks leaves the drum as the same shot, so three guns are one entry three times; a shell with a keyword shows what the drum does |
+| The Stingray | Left, both | Its tier is to be placed later, and its stock with it |
+| The Polar Bear | Left | His kit, in his play |
+| The Prairie Dog | Left | Two guns to cash the Flak its Repeater lays |
+| The Puffin | Left, both | In design |
+
+**Where tier one stands against the hull budget**, on the reworked machines and before the
+heat prices (`docs/measurements.md`, 12 November): the formations with no breach cost 1 to 6%
+of a trio's hull against the budget's 5%; the four that breach or burn cost 20 to 46%, both
+of the Peak's among them; the elites run from nothing to twice their quarter; the Waste's
+three bosses and the Phantom Train are walls for a trio. This is the foes' step's input.
+
+**Heat, on trial.** The shape the reads chose: every weapon three hotter and every chassis
+that cools cooling one more, the gauges and the overheat as they are. The basic guns would
+make 4 and 5 against a cooling of 2 on a gauge of 12 or 14: five cold shots or three warm
+from cold, then one shot in two. Equipment keeps its own price, a buff none and a debuff
+device one or two, so the cool plays at the limit are equipment and the pass. The reads: a
+machine meets its limit about once in a formation fight where it met it once in ten, the
+fights run no longer, and a lone duel rarely meets it; prices with no more cooling starve
+the long fight.
+
+It is a dial and no content. Main moved while it was read: another session rebuilt the fast
+flyers and set the Whip Scorpion's release against its gauge the same day, on today's
+prices, and a price on every weapon moves every machine that reads heat. So content keeps
+its prices and a debug build's SETTINGS → TRIALS has HEAT (BUILT, +2, +3, +4; the next
+launch; the what-if's `hotter` and `cooling`, which now leaves a chassis that cools nothing
+alone and moves the Cottonmouth's drum shot with the guns) and OVERHEAT (the hull a point of
+excess burns, one the game's, two or three; the next battle).
+
+Its holes, his:
+
+1. The bot never holds. It overheats rather than hold at one hull a point, and a harsher
+   burn makes it hold more, in longer fights it loses as often. So the reads say the limit
+   arrives; they cannot say a hold is right. His play of the two dials is that read.
+2. Equipment's price. The triangle row says every component carries one; the hold wants a
+   cool play. The Halo Projector and the Shoring Jack carry none today.
+3. The machines that read heat are tuned on today's prices: the Storm Petrel (its guns burn
+   shield for heat and zap for what they burnt: three more a shot, the shield gone in
+   three), the Whip Scorpion (its release at 8 heat comes after two shots), the Musk Ox (two
+   ammo a basic shot where it is one), the Buzzard and the Stingray (heat held fills
+   sooner). Landing the prices means re-setting each in the same pass, with their sessions.
+4. Tiers two and three are unread on the shape. Their hot guns would sustain better than
+   they do (an 8 against a cooling of 1 is a shot in eight rounds, an 11 against 2 one in
+   six) and their cold ones worse.
+5. The foes' numbers wait on it. A formation costs the bot four to six points more of its
+   hull under the shape, so tuning them first means tuning them twice.
+
+**Still to come in this step**: the heat prices as content once he has felt the dial, with
+the heat-reading machines' numbers; the tier-one slottable pieces brought to the basics' band
+(the locked pieces' footing: a plain tier-one gun is 4 beside a basic's 2 or 3), as one
+table with their heat; the stock rule and the basic property in the validator.
+
+## 13. The anchor: the second battle on real tier ones (12 November)
+
+His words: "Yes go ahead with 2. Also, let's look at 4-4-2 right now so that you're working
+with correct tier 1 chassis for testing. Remember that all the chassis numbers are on the
+table, including hull and shield. Important to get the convergence 2 fight tuned around real
+tier 1s with real tier 1 numbers for damage, defense and heat, and then move on to the
+scaling for everything from there."
+
+Claude's reading, his to correct: the convergence 2 fight is the second battle, the first
+with four machines and the one he called where "the real game starts"; real tier ones are
+the chassis that are tier one under 4-4-2, with tier-one numbers; and every chassis number
+may move, hull and shield with the rest.
+
+**4-4-2, with his marks of 12 November** ("That's probably fine for 4-4-2 for now"). Four
+tier ones a city maker, none for the Arsenal by its rule.
+
+| Maker | Tier one under 4-4-2 | Built today | His marks, and what they leave |
+|---|---|---|---|
+| Minerva | the Honey Badger, the lure tank, and from the Wild Boar, the mole and the echidna | the Honey Badger; the Wild Boar at tier two | "I think the choice now would be between the mole and the echidna depending on their mechanics." The same day he calls the Boar's Plow "a tier 2 piece", so whether the Boar is the third with one of the two, or stays at two with both of them down, his words do not say. The Polar Bear goes up as the lure tank lands and is dealt at tier one until then. |
+| Kestrel | two of the three fast ones (the Skua, the new Kite, the Needletail), the Storm Petrel, and a support-lean | the Skua, the Storm Petrel; the Kite and the Needletail at tier two | "Argument could be made for the new kite or Needletail, too. I think two of the three fast Kestrels can be tier 1, and the storm petrel, and then whatever of Puffin and the two undesigned ones makes the most sense as a support-lean. Probably won't be the Owl from my current ideas." |
+| Wainwright & Sutler | the Prairie Dog, the Dingo, and the Cassowary and the Cottonmouth unless either is too complex | all four; the Dingo at tier two | "I think the set makes sense, I'm just not sure if the Cassowary or Cottonmouth are too complex. Could be Clydesdale for either. The cars stay." The Dingo comes down with two actions a turn and two locked pieces, so its numbers come down with it. |
+| Aphelion | open | none certain | "I really don't know and that's because we don't have anything locked in, relatively." |
+
+So the tier ones no mark leaves open are the Honey Badger, the Storm Petrel, the Prairie Dog
+and the Dingo once it is down. The reads of this section used six, with the Skua, the
+Cassowary and the Cottonmouth beside the first three, which stands for now on his word; each
+open place is its chassis's session's.
+
+**The four formations, landed** (`docs/measurements.md`, 12 November): the sandworm 14 hit
+points and a maw of 3, the zombie knight 4 and a cleaver of 3, the magma elemental 14 and a
+fist of 4, each keeping its plate; the bomb 4, the salamander and the drake 4. They cost a
+trio 5 to 15% of its hull where they cost 25 to 57%, about twice a plain formation. A breach
+every round cannot go lower on numbers; a blow on a count would, and that is a kit.
+
+**What the anchor's reads found** (`docs/measurements.md`, 12 November; the six, a tier-one
+rift at Convergence 1, the fight bot):
+
+- The runner's player is no measure of the numbers. It meets the elite with one or two
+  machines and loses a third to four fifths of those fights; a battle of its that ends at
+  the gate is a lost elite fight standing at the wall. So every fight was read at its
+  rating (a lone flanker by one machine, a hunter by two, a formation by three, an elite and
+  a boss by four), and the battle whole by a scratch player that musters.
+- At its rating nothing in tier one cost a real squad its budget but the formations once
+  heat was real: a lone flanker, a hunter and an elite each about a seventh of theirs. A
+  four soaked about 76 points over a five-round fight beside 96 of hull.
+- A single blow a round costs a gathered four nothing: the Barrier basic is free, the blow
+  is announced, and the squad lays the Barrier on the machine named. With heat real the
+  squad's cool play is that same Barrier, so it holds behind one and waits.
+
+**What landed, each a placeholder** (the bible's triangle, scale and shield rows, v0.557):
+
+- Heat's shape as content: every weapon three hotter, every chassis that cools cooling one
+  more, the gauges kept. The dial moves it a point either side.
+- Tier one's shields at the low end of the scale: three quarters of the gauge and one less
+  regen, never under one (6 to 12 and 1 or 2). The levels lift hull, shield, regen and
+  cooling, so level one is the low end; hull is untouched; and the locked pieces' numbers,
+  which their own footing brings to the basics', are not moved here.
+- The foes at tier one: the lone flankers to a duel of three or four rounds (the whisker
+  cat 12 hit points, the roc 14, the dullahan 10), the wolf 7 and a bite of 4, the goblin 4,
+  the treant 16 and the barrow giant 20 so their fights are six rounds, the gel's blow 2,
+  the Peak's rank and file scorching 1 and the drake's stoke burning 2. The elites a number
+  could move (the shaman, the Nob, the Old Man, the Rust Monster, the Fell Rider, the
+  Reaper), and the two bosses furthest over (the Emperor Scorpion 60 hit points and 14, the
+  Phantom Train 16).
+
+**Where it leaves the second battle**, a player that musters, three squads of four:
+
+| Domain | Won, before | Won, landed | Hull at the end, before | Landed |
+|---|---|---|---|---|
+| The Meadow | 85 to 90% | 75 to 85% | 87 to 91% | 53 to 67% |
+| The Marsh | 80 to 90% | 65 to 75% | 77 to 83% | 50 to 58% |
+| The Waste | 60 to 75% | 45 to 70% | 45 to 55% | 29 to 40% |
+| The Peak | 35 to 55% | 40 to 60% | 40 to 64% | 37 to 44% |
+
+At its rating a lone flanker costs 2 to 4% of a four's hull, a hunter's pack 5 to 7%, a
+formation 2 to 9% with 5 the mean, an elite 0 to 13% with 7 the mean, a boss 5 to 32% with
+19 the mean.
+
+**The Barrier's cooldown, settled 12 November.** His words: "Barrier can have a cooldown,
+yeah. I gave it a cooldown on the Boar's locked and that's a tier 2 piece. This makes sense
+regardless of the reasoning, you can't just protect forever." Every piece that grants a
+Barrier carries a cooldown of 1: the Halo Projector and the Blast Door, as the Breaching Plow
+did. The Blast Door takes it as a consequence of his reason, named: a free Barrier at tier
+one beside a basic with a cooldown would be the way to protect forever, and a bigger number
+on a tier-one find. With it the Fallen Weapon's haft is 16 and its eyes' gaze 8, since the
+cooldown took it from 27% of a four's hull to 36% and the Waste out of the others' band
+(`docs/measurements.md`, 12 November, which also corrects the read above it: the what-if
+cited there was two rounds dark, not one).
+
+**Open, his**:
+
+1. The Barrier on the machine. His words: "The more dramatic version would actually apply
+   the cooldown to the unit, similar to Numbed, where they can't get barrier twice in a
+   row." Read as a what-if with the engine untouched (the same section): the elites' mean
+   7% of a four's hull with no cooldown, 9.5% with the piece's, 9% with the machine's rest
+   alone, 11% with both; the bosses' 19, 22, 23 and 24%. The holes, each with what settles
+   it:
+   - It bites only where the same machine is named two rounds running, so it is a rule
+     about the tank and the lure: the Storm Petrel's, the Polar Bear's, a Honey Badger at
+     the front. A foe that moves its blow is covered every round as before.
+   - The two limit different things. The piece's cooldown limits supply and fades as a
+     squad carries more pieces; the rest limits one machine's cover and holds however many.
+     Each alone leaves a way to cover every round; both leave none. Claude's lean: both.
+   - What starts the rest: the Barrier gained, or the blow it took. Numbed comes as the
+     stun is served, which is the second; the first is the simpler to read and the harder
+     rule, since a Barrier nothing struck still rests its machine.
+   - The Wild Boar: under a rest its Plow's own cooldown says nothing more, and an ally's
+     Barrier no longer feeds its Juggernaut Breach in the Plow's dark round.
+   - A foe's own Barrier (two foes raise one, a burrow and a mirage): the same rule on the
+     other body, or machines alone.
+   - It is a status the player must see: a word, a chip on the machine, a refusal in the
+     target picker. The word is his.
+   - Neither form answers the Gargantuan King's fight, which runs twenty rounds and more
+     with no machine hot: the squad blocks and braces where it could fire, because a round
+     costs it nothing. That is the parked question of what prices a round.
+   On the bench beside them: a second announced blow on every elite; a blow no Barrier
+   takes (which is breach by another name, and breach is parked). His question of the same
+   day is wider, whether the Barrier is a basic at all (section 14), and if it is not, the
+   rest is not needed.
+2. The first battle. It was not scaled: it fights tier one's foes with three machines on
+   tier one's lines, so the anchor's numbers made it harder (a mustering trio with the
+   Honey Badger won 40% of the Meadow's and wins 0 to 5%). The reads part two things. Hull:
+   with its elite and boss at three fifths of their hit points and blow and its rank and
+   file at three quarters, almost nobody is wiped and a trio keeps 45 to 90% of its hull.
+   The wall: the trios with the Honey Badger still lose the gate in 30 to 90% of them, as
+   they did before the anchor, since the opening asks three machines for a formation and
+   two flank patrols at once. Claude's lean, for his marks: a block at Convergence 0, the
+   first rift's foes at those shares, and one flank patrol at its opening where there are
+   two; section 10's bench has the other forms.
+3. His marks on 4-4-2, above: the machines coming down take tier one's lines as they do.
+4. The Waste's bosses and the Peak's clock, the two things that keep those domains under the
+   others: the bosses' session, and the pacing dials.
+5. The elites a number cannot move (the Pilgrim, the Reaper, Gilgamesh), their sessions'.
+6. The Prairie Dog alone: it loses a third of its duels with the cerberus and takes six to
+   twelve rounds over the others' two or three. Its hunter rule keeps it out of a catch, not
+   out of an order.
+7. The Storm Petrel. The reads used it as it is built, zapping for the shield its guns burn,
+   4 or 5 a shot under heat's prices. His direction of 11 November takes the zap off it and
+   gives it shield for heat gained (`kestrel_storm_petrel.md`), and that session waited on
+   the heat pass, which has landed. Two of the three squads in the whole-battle reads carry
+   it; the third, without it, reads the same band.
+
+**The plan from here**: his word on the machine's rest and on the first battle's block; then
+the first battle scaled down from the anchor; then tiers two and three scaled up, the
+levels' ladder with them (a machine's stat line by level, the foes' by tier), since the foes
+a higher tier shares with tier one moved today and stand unread there (the goblin, the
+wolf, the gel, the zombie knight, the bomb and the salamander, with the elites and the
+bosses, which stand at every tier).
+
+## 14. The Barrier's place (12 November, a discussion; nothing built)
+
+His words: "So lets discuss Barrier, then. Is it toxic? Is it worse than giving numerical
+shield? Should it be rare or locked? An argument could be made that a chassis with barrier is
+a sub for a Tank on a team, and thus it's not widely available. One thing we could do, which
+sounds terrible, is have a difference between shield and temporary shield. Or, we go back to
+some shield-granting pieces, as a keyword on Equipment so its not ubiquitous as a component
+type, but still exists. Armour grants and Barrier grants are very binary, shield is a buffer. I
+liked our simplification, but maybe we went too far. I'm really not sure. What do you think?"
+
+**What the records already say.**
+
+- 14 October, the shield row: under the old rule a small shield "was secretly 'negate one
+  blow', worth the biggest blow it met rather than its number, and the content kept
+  rediscovering it"; the one-blow block became "a priced, single-target buff of its own".
+- 17 October, the Barrier row: "if a Barrier grows common the foes need more damaging riders
+  to carry past it".
+- 22 October: its one carrier was the Blast Door, tier one, in no stock.
+- 9 November: of three shapes for the shield he took the second, an innate gauge with regen
+  and no shield entry, over the third, entries that overshield and drop at the round's end;
+  and of shield and vent entries, "perfect commander actions".
+- 10 November, the minimal swaps: the Halo, a shield of 6 until then, became the Barrier
+  basic, Claude's lean in section 3. That is the step that put a Barrier on eight stock dice
+  and took its price away.
+- The rules already hold the keyword: Overshield, a shield grant that may pass the gauge,
+  the excess fading at the round's end, on the Puffin's Backwash Ionizer.
+
+**What the reads say** (`docs/measurements.md`, 12 November; the Halo's slot holding each
+form, the foes untouched):
+
+| The Halo's slot holds | A formation | An elite | A boss | The Gargantuan King's fight |
+|---|---|---|---|---|
+| A Barrier, cooldown 1 (content) | 5.9% | 9.5% | 21.4% | 23 rounds |
+| Overshield 4 | 6.1% | 17.6% | 34.0% | 10 rounds |
+| Overshield 6 | | 15.4% | 27.2% | 11 rounds |
+| Shield 4, plain | 6.4% | 18.8% | 37.7% | 10 rounds |
+| The Shoring Jack | 6.6% | 19.8% | 37.7% | 10 rounds |
+
+A Barrier takes one blow in eight in a formation, two in five from an elite or a boss, and
+seven in ten from the ones whose kit is one blow a round.
+
+**The bench**, each with the test it meets or fails:
+
+1. The Barrier a basic with its cooldown, as content has it. It fails the test of 14
+   October: a block worth the biggest blow it meets, on eight dice, for a round's cooldown.
+   No foe's number tunes against it, and three machines turning it stall a single-blow boss.
+2. That, with the machine's rest (section 13). The same failure, milder: the elites' mean 11%
+   where the piece's cooldown alone gives 9.5%.
+3. The Barrier rare or locked, and the Halo's slot a shield grant with Overshield, on
+   equipment. Claude's lean of 12 November, withdrawn on the 13th (this section's end): it is
+   his third shape of 9 November. The elites come to 15 to 18% and the bosses to 27 to 34%.
+   What this line said of it was wrong, that "nothing of the refit's simplification moves" and
+   that it is "no recovery": it refills a gauge, and it is a shield entry on the die.
+4. The Barrier rare, and the slot a plain shield grant. It reads as no piece: a gauge is full
+   as a fight opens, and after that the grant is recovery, which the regen is already and
+   which he gave to the commander layer.
+5. The Barrier rare, and the slot the Jack or a gun. The simplest; the elites 20% and the
+   bosses 38%, and Armoured the one defensive basic.
+6. Shield and temporary shield as two gauges. Not needed: Overshield is one bar and one word.
+
+**Claude's lean of 12 November, in full** (withdrawn on the 13th, this section's end): the
+third. The Halo grants Overshield on itself or an ally, 4 to 6
+by the reads (it was a shield of 6). The Barrier keeps its cooldown and lives where a chassis
+is built round it, his tank's substitute: the Wild Boar's Plow, Aphelion's Barrier and Ward
+support when it is designed, and the Blast Door as the one find, as it was on 22 October. A grant that cannot pass the maximum stays off the die. The machine's rest is not needed. The numbers set
+against the Barrier come back: the six elites raised for the anchor, and the bosses read again,
+the Waste's first.
+
+**The holes in it**:
+
+- Stacking. Overshield from three machines on one target rebuilds the block at three dice.
+  Claude's read: fair, three turns for one blow, and the reads show the stall gone at 4 and
+  at 6; the cap, if wanted, is one grant a machine a round, as the Barrier is one stack.
+- Breach passes it, as it passes every shield. A breaching foe still asks for a Ward, the
+  rare Barrier, or the kill.
+- The Nob's rage feeds on shields raised, by the point. It will punish this hard, which may
+  be the point of the Nob.
+- Armoured is a wall against a blow at or under its number and partial above it. At tier
+  one's blows of 3 to 5 the Jack's 2 is partial, so it is left alone.
+- On the anchor's foe numbers the second battle is too dear with the Barrier gone from the
+  slot (the Waste 15 to 25% won with Overshield 6): those numbers were set with it there.
+- What it costs to come: the Halo's entry and how the die prints a shield for the round on
+  equipment; how the bar shows shield past the gauge, which only locked pieces raise today; the Nob's and
+  the Storm Petrel's rules that read a shield raised; the re-read of every elite and boss.
+
+**His follow-up, and the answer** (12 November): "I guess my point is, if we're making temp
+shield ubiquitous, then why even have base shield?"
+
+The reads (`docs/measurements.md`, the same section; Overshield 6 in the Halo's slot
+throughout): with no base shield a formation costs a four 27% of its hull where it costs 6%,
+a lone flanker 13% with a quarter of its duels lost, a boss 64% with a quarter of its fights
+lost. With the gauge and no regen the same fights cost 7.5%, 3.8% and 35%.
+
+Claude's answer, his to take or leave:
+
+- The gauge is not the redundant part. It covers every machine against the opening volley
+  with no entry spent; a shield for the round covers one machine against one blow when its
+  entry shows. They stand on different clocks, the hull the battle's, the gauge the fight's,
+  the round's shield the round's, and the fight's layer is what keeps an ordinary fight
+  clean (his test: danger for hunters, elites and bosses). Without it the scale's numbers
+  do not hold: blows under one, or five times the hull.
+- The regen is. A shield every round for nothing beside a shield every round for an entry:
+  the free one makes the chosen one idle, which is his own read of 10 November ("Even with
+  regen 2, I don't find myself feeling like I need to use defensive tools ... I feel like
+  even with zero regen I would be fine"). It is also most of what makes a round free.
+- So there are two whole packages, each without the Barrier as a basic:
+  1. The gauge and the regen as they are, no shield on the basics (the Jack or a gun in the
+     Halo's slot). The fewest rules. The one active defence on a starting die is Armoured,
+     and the answer to a single big blow is to kill faster.
+  2. The gauge with no regen by default, a shield grant with Overshield on the basics. One
+     keyword more on equipment, an active answer to the big blow, and a round that costs
+     something, since nothing comes back without an entry. Regen stays as an identity where a chassis is built on it
+     (the Buzzard's Thermal Recoupler, St. Elmo's Regenerator, perhaps the small gauges).
+  Claude's lean of 12 November: the second, since it trades a system that asks nothing for
+  one that asks a question each round. Withdrawn on the 13th: the second is his third shape
+  of 9 November to the word, and the regen it cuts is the buffer he asked back.
+- The holes in the second: his reason for the regen of 5 November, a buffer for bad rolls
+  and a tank not held to one pattern. The gauge is still the buffer for a fight's opening
+  and the cover can come from any machine, but past the third round a tank wants it every
+  round. And his pairing of 10 November, a small gauge that comes back fast and a fat one
+  that comes back slow, loses its second half unless the regen is kept for the small ones.
+
+**A correction to this section's words, and his next question** (12 November). As devil's
+advocate: "So you're saying there's an unrecoverable buffer that's tied to the chassis, and
+then one-turn buffers as shield? How would we communicate that in a way that doesn't sound
+contrived and forced?"
+
+What was read is not that, and this section's wording is why it sounded so. Overshield, as the
+engine runs it and as every read above used it, is a shield grant: it adds its number to the
+machine's shield, keeps what fits under the maximum, and lets the rest stand past it until the
+round's end (`Unit.recharge_shield`). So there is one shield and one bar: the chassis sets
+its size, an entry fills it, and what is over the size does not keep. Two things written above
+are wrong for it. The gauge is not unrecoverable and does not only go down: an entry spent on
+it brings it back, and nothing brings it back for free. And "a plain shield grant stays off
+the die" should read "a grant that cannot pass the maximum", the one that read as no piece.
+
+The form his question describes, a shield that always goes at the round's end beside a gauge
+nothing refills, is Slice and Dice's and was not read. It is the one that needs a second word
+and a second mark, and Claude agrees it is the more contrived of the two.
+
+How the one-bar form reads to a player, all of it built on 5 October for the Puffin's piece:
+
+- The rule is one sentence in the vocabulary: "shield past the maximum fades at the end of
+  the round".
+- The bar draws the excess as a hatched block past its end, by structure and not by hue,
+  and shows the amount to come before the entry is spent (`game/ui/unit_view.gd`).
+- The entry prints its number with the keyword's mark.
+- The fiction is a field of a rated size that a projector can overcharge for a moment.
+
+What is left to say is the missing regen, if that package is his: a shield full as every
+fight opens that does not recharge under fire.
+
+At its rating the two packages cost a squad about the same, so the choice is who does the
+work, the machine by itself or the player with an entry:
+
+| The package | A formation | An elite | A boss |
+|---|---|---|---|
+| The gauge and the regen, no shield entry (the Jack in the slot) | 6.6% | 19.8% | 37.7% |
+| The gauge, no regen, Overshield 6 in the slot | 7.5% | 18.6% | 34.9% |
+
+Two more holes, from the records:
+
+- The vocabulary's note on Overshield says it is rare on purpose: "every overshield on the
+  field makes shield max a soft number; the fade is the whole safeguard". As a basic it makes
+  every chassis's gauge a softer number.
+- Under the second package recovery is back on the die for the shield, the refit's second
+  point reversed. It is his "maybe we went too far", and his to weigh.
+
+**Withdrawn: the shield grant is his third shape of 9 November** (13 November). His words: "I
+fail to see how what you proposed is any different than what we had before when we had shield
+faces. It kind of just sounds like you're trying to bring shield faces back. But we cut that
+for a reason, because it wasn't working for balance. Go over our notes again and refresh on
+why we got rid of it in the first place."
+
+He is right, and the records say it more exactly than this section did. The three shapes he
+laid out on 9 November: "no innate shield, shield faces grant shield"; "innate shield and
+shield regen, but no shield faces, only other defensive tools like armoured, barrier and
+ward"; "innate shield, probably no regen, all shield faces overshield", amended in his next
+message ("Overshield option would obviously have to drop after each round, not stack
+forever"). He took the second "for the same reasons as you do". The second package above, the
+gauge with no regen and an Overshield grant on the basics, is the third shape to the word.
+The third bench item is the game as it stood until 10 November with one keyword more: the
+Halo was a shield of 6 for anyone, and what went into its slot here was a shield of 4 to 6
+for anyone that may pass the gauge. Calling it equipment changes its label and nothing else.
+This section listed the three shapes among what the records say and never held the lean to
+the reasons behind the choice.
+
+Why shield entries left the die, from the chat of 9 November and the reads before it:
+
+1. **The loop.** A defence that is rolled, against hull that does not come back, takes the
+   dice before offence does. His: "Lights that shield every round aren't winning. It's stall
+   without a purpose ... i end up in a shield loop, with no room to attack"; "In our game, I'm
+   ALWAYS feeling 'how do I block everything' and if I deal damage, it's a bonus, not a goal."
+   The read beside it: four lights against the grave field, one fight traced, sixty rounds
+   and nobody losing hull, the giant's blow of eight never passing the shields they raised
+   (`docs/measurements.md`, 9 November, the formation pass's reads).
+2. **It has to be found.** His: "I find myself wishing we had semi-reliable proactive
+   defense. Because we can't shield past max, we have no way of soft-defending squishy units.
+   No piece yet carries barrier for the big hits, and no piece grants armour for the small
+   ones. But even if we had those in tier 1, you'd still have to find them in the roll." So
+   he named the gap an overshield fills, wrote the shape that fills it, and passed it over.
+   What the lights lacked was a buffer no die decides, which is the gauge and the regen, his
+   call of 5 November and again that day ("There's no buffer for bad rolls or unfortunate
+   target RNG, and it pushes the tank into a singular, inflexible, mandatory pattern").
+3. **The die's verbs.** His: "you'd have weapons-shields-vents-barrier-armour on a
+   well-rounded die, and that's a lot of complexity for a single die"; and of the model, "Less
+   component types - weapons and equipment. It's simple, elegant, streamlined. Each component
+   is interesting, each round is interesting".
+4. **No recovery entry.** A shield entry and a vent entry are one thing, a die spent putting
+   a resource back ("If Shield is a side we're getting rid of... why is Vent still a thing").
+   His place for both: "perfect commander actions".
+5. **The numbers never found a place**, in three forms, each read:
+   - Until 14 October a standing shield blocked a whole blow, so a small one was "secretly
+     'negate one blow', worth the biggest blow it met rather than its number" (the bible's
+     shield row).
+   - As an honest number it was skipped, or it was the turn. On the benches of 27 and 30
+     October every shield read 1 to 8% of a row's spends, a quarter of a round and two points
+     of hull worse than the gun in its slot, and alike from 6 to 10 ("the ladder is flat by
+     tier"); the only defensive pieces that saved hull were the Barrier's and the Ward's.
+     Where a shield did decide a fight it was the loop of the first point.
+   - As an overshield on the key ally every round it was his worry of 21 October for the
+     Puffin, that it was toxic and boring (the bible's Puffin row). It passed as one
+     specialist's niche, the keyword rare on purpose (its note: "every overshield on the
+     field makes shield max a soft number; the fade is the whole safeguard"), and that
+     specialist went back to design on 9 November.
+
+Claude's own words against the third shape that day, the reasons he took the second for: "It gives
+proactive defence only on the turn you roll it, so turn one is unchanged, and it rewards
+exactly the loop you described"; in the table beside it, "shields stay a verb" and the chase
+"worse".
+
+The lean of 12 November held to each:
+
+| The reason | The Halo as a shield grant with Overshield |
+|---|---|
+| The loop | Fails. It is a block on the die that a squad may lay every round, on eight stock dice, seven of them dealt |
+| It has to be found | Fails. Nothing of it exists on a round its entry does not show |
+| The die's verbs | Fails. A starting die reads weapons, a shield and Armoured again |
+| No recovery entry | Fails. It refills a gauge, which this section first denied and then corrected |
+| The numbers | The reads of 12 November are the benches of October again: at 4 it reads two points under a gun in the same slot in an elite's fight (17.6% against 19.5%) and a plain 4 as the gun does; at 6 it takes a fifth off the elites, and 6 is what the Halo was |
+
+And the second package fails one more: it cuts the regen, the one part of the model that
+answers the second reason.
+
+What his "shield is a buffer" of 12 November has already: the buffer is the chassis's, the
+gauge and the regen, and no die decides it. That was the point of the second shape, and it is
+the answer this section should have given.
+
+**What stands of this section.** The reads, as numbers. The Barrier's worth being the blow it
+meets, two blows in five from an elite or a boss with its cooldown on. His own lead for it,
+rare or locked, a chassis that carries one a tank's substitute. Of the bench, the first, the
+second and the fifth; the third, the fourth and the sixth are shield entries and closed.
+
+**Claude's lean now, his to take or leave**: the fifth. The Barrier leaves the basics and
+lives where a chassis is built round it, with its cooldown; the Halo's slot takes the Jack or
+a gun; the gauge and the regen stay as they are. The reason is the first one above, turned on
+the Barrier: a block on seven dealt dice, priced at a round's cooldown and no heat, is the
+loop a shield entry was ("a block trades rounds for hull, and a round costs nothing", the
+first reads of 9 November), and his own "you can't just protect forever". On the anchor's numbers it reads a formation 6.6%, an elite
+19.8% against a budget of a quarter, a boss 37.7%, and the single-blow boss's fight ten
+rounds.
+
+Its holes:
+
+- A starting die's one defensive basic is then Armoured, partial against a single blow over
+  its number. The big blow at tier one is answered by the gauge, by a lure where a squad has
+  one, by the kill, or by taking it. That is the budget's own shape, an elite a quarter of a
+  four's hull, and his "where am I allowing this damage"; whether it plays as that or as the
+  tank needed again is his play's to say.
+- His read of 10 November, killing first "the best choice every time", gets no help from
+  fewer blocks on the die. The anchor's numbers were meant to answer it and are not played.
+- The whole battle is too dear on the anchor's numbers with the Barrier out of the slot (the
+  Waste 0 to 30% won): they were set with it there and come down with it, the bosses first.
+- Where the Halo Projector goes if it leaves the basics is content's, and his.
+
+Nothing is built. The Barrier basic stands in content with its cooldown until his word.

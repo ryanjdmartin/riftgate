@@ -454,22 +454,6 @@ func test_greedy_values_an_instant_spend_as_another_roll() -> void:
 		"Instant: another roll, the die's average blow (10 and 20 over two entries)")
 
 
-func test_greedy_values_the_kill_that_feeds_it() -> void:
-	var sk := Skirmish.new(3)
-	var plain := Face.attack(30, L)
-	var talon := Face.from_dict({"kind": "attack", "reach": "direct", "power": 30, "devours": true})
-	sk.add_mech(_mech("A", Die.of([plain, talon]), 40, 100))
-	sk.add_foes([_ghoul(30, 10)])
-	sk.begin()
-	sk.start_round()
-	var pol := Policy.make(Policy.GREEDY)
-	var ms: Skirmish.MechState = sk.mechs[0]
-	var a := pol.attack_score(sk, ms, plain, sk.front[0])
-	var b := pol.attack_score(sk, ms, talon, sk.front[0])
-	assert_true(b > a, "a devouring kill is worth more than the same kill without it")
-	assert_true(b - a < 10.0, "and not by much: a stack is a tenth of the die's damage for about a round")
-
-
 func test_the_bot_reads_a_shocked_foe_as_taking_double() -> void:
 	var sk := Skirmish.new(1)
 	var f := Face.attack(20, L)

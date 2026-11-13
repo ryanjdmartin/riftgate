@@ -75,7 +75,7 @@ static func hint_ink() -> Color:
 ## its machine (face_types), beside its name; its tags are the shown entry's, a passive's
 ## change in. A state is its words, or [words, mark()] when the die shows a mark for it (the
 ## lock, the corruption); `extra` is what the screen adds for a mark the die prints from its
-## machine (a vent's blast), each a line with its mark, after the entry's own.
+## machine (a stepping die's next chamber), each a line with its mark, after the entry's own.
 static func lines_for(f: Face, place: int, shown: int, base: Face, states: Array, grants: Array, db: ContentDB, types: Array = [], extra: Array = [], cooldown: int = -1) -> Array:
 	var out: Array = []
 	if f == null:
@@ -152,7 +152,11 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 				out.append(marked(text_line("effect", "Turns its die to its other battery", "attr"), [main, star]))
 			else:
 				var st: Dictionary = Effects.STATUS.get(f.buff_status, {})
-				var line := [word("Grants %s" % str(st.get("name", f.buff_status))), num("×%d" % f.buff_stacks, f.buff_stacks, base.buff_stacks)]
+				# What a buff grants against the component's own; one that spends a count for its
+				# stacks (the Soul Siphon) grants what it would take now, its own rule and no change
+				# a live source made, so its number reads plain.
+				var own_stacks := f.buff_stacks if not f.spends.is_empty() else base.buff_stacks
+				var line := [word("Grants %s" % str(st.get("name", f.buff_status))), num("×%d" % f.buff_stacks, f.buff_stacks, own_stacks)]
 				if f.buff_rounds > 1:
 					line.append(word("for %d rounds" % f.buff_rounds))
 				# The status's chip beside the equipment's mark, as the die's rail carries it with its
@@ -210,6 +214,14 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 		if f.short:
 			shield_cost.append(word("(the shield cannot pay it)"))
 		out.append(marked(parts_line("effect", shield_cost, "attr"), [mark("shield", Palette.LOSS if f.short else Palette.SHIELD, false)]))
+	if not f.spends.is_empty():
+		# A count its machine spends for its stacks (the Soul Siphon's Souls): what it would take
+		# now, by the count's own mark, as the die prints it along its foot.
+		var spent_term := Terms.of_status(f.spends)
+		var spent := [word("Consumes"), word(str(f.buff_stacks)), word(str(Effects.STATUS.get(f.spends, {}).get("name", f.spends)))]
+		if f.short:
+			spent.append(word("(it holds none)"))
+		out.append(marked(parts_line("effect", spent, "attr"), [mark(Terms.glyph(spent_term) if not spent_term.is_empty() else "star", Palette.LOSS if f.short else Terms.status_colour(f.spends), false)]))
 	# The rounds it goes dark once spent, a cost by its clock along the die's foot (Ryan, 2
 	# November: "Cooldown should be a cost in the bottom section as well").
 	var cd := cooldown if cooldown >= 0 else f.cooldown_rounds()

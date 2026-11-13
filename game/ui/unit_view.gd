@@ -745,9 +745,13 @@ static func chip_rows(widths: Array, wrap: float) -> Array:
 
 ## A chip's width: its glyph's square, its text, and each rider inside it after a divider (an
 ## intent's). `ch` is [glyph, text, Color, kind, riders].
+const ABILITY_TEXT_GAP := 5.0   # what an ability chip's text stands off its solid tile
+
 static func chip_width(mono: Font, ch: Array) -> float:
 	var txt := str(ch[1])
 	var w := CHIP_H + (mono.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, CHIP_TEXT).x + 8.0 if not txt.is_empty() else 0.0)
+	if not txt.is_empty() and ch.size() > 3 and str(ch[3]) == "ability":
+		w += ABILITY_TEXT_GAP   # its text stands clear of its solid tile (draw_chip)
 	for r in (ch[4] if ch.size() > 4 else []):
 		w += RIDER_PAD + RIDER_GLYPH + 4.0
 		var rt := str(r[1])
@@ -794,6 +798,8 @@ static func draw_chip(ci: CanvasItem, rect: Rect2, ch: Array, mono: Font, txt = 
 	Glyphs.draw(ci, str(ch[0]), Vector2(rect.position.x + CHIP_H * 0.5, cy), CHIP_GLYPH, glyph_col if kind != "preview" else col, 2.0)
 	var text := str(ch[1]) if txt == null else str(txt)
 	var x := rect.position.x + CHIP_H - 2.0
+	if kind == "ability":
+		x += ABILITY_TEXT_GAP   # clear of the solid tile, in whose colour the text is drawn: a bare count's first stroke sat under it (the Ammit's Souls, 12 November)
 	if not text.is_empty():
 		ci.draw_string(mono, Vector2(x, cy + CHIP_TEXT * 0.36), text, HORIZONTAL_ALIGNMENT_LEFT, -1, CHIP_TEXT, col)
 		x += mono.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, CHIP_TEXT).x + 8.0

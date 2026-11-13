@@ -27,12 +27,22 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1145 tests, 364,692 checks, green on main (12 November, as `ccr-e3ddf00b-ilkwbi` landed with
-  the three fast flyers rebuilt, Sweep removed and the Kite's inset mount, over the cooldown's count,
-  Instant, Sapped and the Wild Boar's and the Baboon's reworks).
-  Before it, 1142 tests, 364,574 checks, green on `ccr-4d58b054-3lyj0a` (12 November, Sapped, the Lance,
-  the Wild Boar's and the Baboon's reworks, with main's cooldown count, Rapid's switch-off and
-  Instant taken in). 1132 tests, 364,475 checks, green on main (12 November, as `ccr-63a1309a-caa9mw` landed
+- Tests: 1154 tests, 371,084 checks, green on `ccr-722ca9f0-yj8na3` (12 November, the Barrier's
+  cooldown over the anchor). Before it, 1154 tests, 371,080 checks, green on main at `4c29e09`
+  (12 November, the anchor: heat's prices, tier one's shields and its foes' numbers). Before it,
+  1154 tests, 371,076 checks, green on main (12 November, as `ccr-4d58b054-3lyj0a` landed
+  with the vent blast's and Siphoning's cut, the Overrun Gearing, the Shift Whistle dealt, the
+  Whip Scorpion's broadside and its two new idle acts, over the dead-code pass and the four
+  formations' numbers). Before it, 1152 tests, 364,655 checks, green on main (12 November, as
+  `ccr-8af28d03-re9kz4` landed a second time with the kill's flare once an attack, no per-foe flag,
+  Empowered's up sword and the dead-code pass), and the same counts green on `ccr-722ca9f0-yj8na3`
+  over it with the four formations' numbers. Before it, 1158 tests, 364,834 checks, green on main
+  (12 November, as `ccr-8af28d03-re9kz4` landed with the Ammit's rework over the three fast flyers
+  rebuilt, Sweep removed, the cooldown's count, Instant, Sapped and the Wild Boar's and the
+  Baboon's reworks). Before it, 1142 tests, 364,574
+  checks, green on `ccr-4d58b054-3lyj0a` (12 November, Sapped, the Lance, the Wild Boar's and the
+  Baboon's reworks, with main's cooldown count, Rapid's switch-off and Instant taken in). 1132
+  tests, 364,475 checks, green on main (12 November, as `ccr-63a1309a-caa9mw` landed
   with the cooldown's count, Rapid's own switch-off and Instant over the Clydesdale's review).
   Before it, 1132 tests, 364,286 checks, green on main (12 November, as the Clydesdale's review
   landed with its wells, broadside drill and hatch wave; Godot 4.8-beta2). Before it, 1132 tests,
@@ -58,15 +68,28 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 ## Branches
 
-Everything is on main as of 12 November 2026; the formation and refit session's branch lands as it goes, below.
-`ccr-e3ddf00b-ilkwbi`, the Kestrel fast flyers' session of 11 and 12 November (The design sessions, below),
-cut from main at `209112b`, took main four times in merges, the last at `8d936cf` (the cooldown's
+Everything is on main as of 13 November 2026; the formation and refit session's branch lands as it goes, below.
+`ccr-8af28d03-re9kz4`, the Ammit's rework of 12 November and what followed it that day (How
+things stand, below), cut from main at `87da46f`, landed three times as fast-forwards on Ryan's
+word: the rework, after taking main twice in merges ("Merge into main when you're done"); the
+kill's flare once an attack, Empowered's up sword and the dead-code pass, on "Merge in main and
+then reassess", which was misread (he meant main into the branch; main had not moved at that
+fetch, so it was taken for a landing); and its records, once it had taken main at `f3e4841` and
+`27956e7` in merges and checked its calls against them ("Great, clean up and merge back into
+main"). It is merged and to delete with the rest.
+`ccr-e3ddf00b-ilkwbi`, the Kestrel fast flyers' session of 11 to 13 November (The design sessions, below),
+cut from main at `209112b`, took main four times in merges before its first landing, the last at `8d936cf` (the cooldown's
 count, Instant, Sapped, the Wild Boar's and the Baboon's reworks: the engine's Rapid and Instant
 branch joined to the Needletail's turn, the validator, the bot, the rules, the bible, this file,
 the to-do and the generated vocabulary the conflicts, both sides kept): the Needletail, the Kite
 and the Skua rebuilt on placeholder numbers, Sweep removed with every branch it caused, the Whip
 Scorpion's release and the Musk Ox's salvo on every foe; main took it as a fast-forward on Ryan's
-word ("Merge into main and republish"), and it is merged and to delete with the rest.
+word ("Merge into main and republish"). It then carried the Kite's model rounds of 12 and 13
+November (the third mount's hood, bore and round cut with the port rack and the port dish, the
+tail on its body with its glowing vents, the wings' sharper sweep), took main at `ac48748` in a
+merge (the bible and this file the conflicts, both sides kept, the bible's version past both) and
+landed as a fast-forward on his word again ("Ship it, clean up and merge into main"); it is
+merged and to delete with the rest.
 `ccr-63a1309a-caa9mw`, the cooldown's count, Rapid's own switch-off and Instant (12 November, How
 things stand below), cut from main at `fbce698`, took main at `243737d` in a merge (this file's
 tests line the one conflict, both landings kept) and main took it as a fast-forward on Ryan's word
@@ -165,7 +188,14 @@ it as a fast-forward: the first battle read whole, the Rupture meter sized in be
 pack's threat rating, the stall guard's end and the tide's and the strike's trial dials (the
 refit brief's sections 10 and 11, the to-do, How things stand). Claude's reading of "start
 sending", his to correct: this session's later chunks land the same way once verified, this
-branch alone. Landed 11 November: `ccr-4d58b054-3lyj0a`, the chassis inventory and the locked pieces'
+branch alone. On 12 November ("Pull in main ... You can proceed with the steps as you see
+fit") it took main at `8d936cf` and at `c717e69` as fast-forwards and landed the tier-one
+baseline's read and heat's and the overheat's dials, no content moved, then took main at
+`ea2f143` and landed the four breach or burn formations' cut ("Yes go ahead with 2"), 4-4-2
+from the records and the second battle's read, and then, over main at `6112939` (a merge:
+the bible's version, v0.557 above both, its scale row and section 12 with both sides' edits,
+and the synergy map regenerated), the anchor (heat's prices, tier one's shields and its
+foes' numbers: How things stand). Landed 11 November: `ccr-4d58b054-3lyj0a`, the chassis inventory and the locked pieces'
 footing of 10 November and Ryan's round on the busted machines of 11 November (the Polar Bear
 dealt again, the Buzzard's regen, the Nemesis's rage bar; How things stand), carrying
 `ccr-722ca9f0-yj8na3` whole to `4c8dbf1`, took main (the music session's landing: the bible's
@@ -176,8 +206,17 @@ pages' republish ("Everything else let's clean up and merge into main first befo
 proceeding"), and again on 12 November with the rest of its locked pieces' round (the Whip
 Scorpion's rework and its Heliographic Death Ray, the Dingo's pieces, the pins, the Flakshot
 Repeater, Sapped and the Lance, the Wild Boar's and the Baboon's reworks) over main's cooldown
-count ("Your names are fine. Clean up and merge into main"); it is merged and to delete with the
-rest. The Skua is his other session's (the Clydesdale's review landed 12 November). The formation and refit session's merges of main before it are in
+count ("Your names are fine. Clean up and merge into main"). Again on 12 November, with the vent
+blast's and Siphoning's code cut, Spillover a module (the Overrun Gearing), the Shift Whistle
+dealt, the machine's level named tier, the release's broadside and the Whip Scorpion's two new
+idle acts, on his word ("You can then clean up and merge into main"), the branch having taken main
+four times on the way (the fast flyers and Sweep's removal at `aac6bfc`, the Ammit's rework at
+`366b10e`, the dead-code pass at `ea2f143`, the four formations at `bf5158e`; each merge commit
+says how). Where the dead-code pass, which cut the same vent blast and heat a blow without knowing
+this branch's calls, stepped on them, this branch's stand on his word ("take ours as correct"):
+the release's `Pays.FREE` and its comments, Spillover kept as the Gearing's, the Shift Whistle
+dealt; its own cuts (Empowered a kill, the kept status, Reset and the other retired rules) stand.
+It is merged and to delete with the rest. The Skua is his other session's (the Clydesdale's review landed 12 November). The formation and refit session's merges of main before it are in
 its branch's commits. Landed 11 November: `ccr-7effd31a-u5z4gw`, the music session (Hold The Line's, Night Shift's and
 The Far Bank's pairs passed and built into art/audio, How things stand), took main in a merge (the bible, this
 file and the to-do the conflicts: the bible three-way on the v0.469 both files carried, main's
@@ -226,6 +265,9 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   unfinished by Ryan's own notes (the Needletail, the Giant Petrel, the Musk Ox) and the rest
   stand. The to-do's roster is grouped by what each waits on, in the order he took (Next, in
   order, item 1).
+- Ryan's rework of the Ammit, 12 November (`ccr-8af28d03-re9kz4`, his own design, posed with
+  "Thoughts?"; three holes raised in chat and his calls on each the same day; built on his "Yes,
+  go ahead"): How things stand, below. Its stock's Ward piece still waits (the to-do).
 - Ryan's round on the busted machines, 11 November (`ccr-4d58b054-3lyj0a`): the Polar Bear dealt again,
   equipment it spends on itself sealing it and a weapon it fires opening it, its lure neutral
   (his words; the armour kept for his play, a regen seal his first change), the brief retired;
@@ -262,17 +304,25 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   cut). Its locked piece is the Heliographic Death Ray (his keep of the name; id
   `heliographic_death_ray`), remodelled the same day as a steam-fed mirrored railgun in the
   mast's place, with a firing act of its own (the model rebuilt in a cloud session: a python3.11
-  venv with `bpy==5.0.1` as `BPY_PYTHON`, renders under `xvfb-run`). Its leavings are the to-do's
-  line (the Minerva draft's name, the old vent blast and Siphoning unused in the engine, its
-  runner row unread). On main since the same day ("Yes that's perfect. Merge that into main"). The Dingo and the Prairie Dog are this branch's next (11 November), the
+  venv with `bpy==5.0.1` as `BPY_PYTHON`, renders under `xvfb-run`). Its open ends are the to-do's
+  line (its bot's first heuristic, its runner row unread, its release on screen a first cut). The
+  release fires the model's broadside since 12 November (the blast act, keyed by the passive's
+  id in the sidecar's `fires`, a firing alone: `Effects.pass_release` gives the id and the screen
+  winds the slice up before the blow), and two idle acts came in its place on Ryan's pick ("1 and 2,
+  sure"): a pressure check and a heliograph sighting, first cuts, five at rest in all. The
+  lure on every foe it left is the Shift Whistle, dealt at Minerva tier three on Ryan's word of
+  12 November ("The Minervan lure all can exist in tier 3, sure"), and the vent blast's code,
+  Siphoning and an entry's heat a blow are cut ("Siphoning can get cut along with the old vent
+  code"; the heat a blow is the passive's). On main since the same day ("Yes that's perfect. Merge that into main"). The Dingo and the Prairie Dog are this branch's next (11 November), the
   Skua his other session's (the Clydesdale's review landed 12 November).
 - The locked pieces' footing, decided 10 November (the bible's locked row, section 7, and tiers
   row, section 10; `docs/locked_pieces_proposal.md` holds what follows and the order; nothing
   built): a locked piece earns its lock as glue for its chassis's identity or as an exclusive,
-  its number even with the kit beside it, a tier-N piece at its machine's level N. A machine
-  holds a level, bought in the hangar, cheap and gated by the Convergence, that lifts its stats
+  its number even with the kit beside it, a tier-N piece on a machine of tier N. A machine
+  holds a tier (his name, 12 November: "Machines level is tier. Everything is tier."), bought
+  in the hangar, cheap and gated by the Convergence, that lifts its stats
   and its locked pieces together, with a branch that tweaks a locked piece, never a stat and
-  not the passive (its number may rise with the plain lift); a higher chassis arrives at its level, a wreck keeps it. One ladder of three:
+  not the passive (its number may rise with the plain lift); a higher chassis arrives at its own tier, a wreck keeps it. One ladder of three:
   tier zero is tier one's power, a basic a plain tier-one piece owned from the start, a machine
   stocking up to its own tier at one and two; the two meet at the basics' numbers, tier one's
   coming down (his lean, so the refit's reads stand). Six pieces that are neither glue nor an exclusive yet (the
@@ -286,7 +336,9 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   spots one rule in the sim the screen draws by; Sapped coded in for either side, until after its
   carrier's next turn), the Wild Boar's (the Plow a Cleanse and a Barrier on itself; its
   Juggernaut Drive a quarter of each damaged front foe's maximum HP into the foe behind, and
-  Juggernaut Breach after a Barrier) and the Baboon's rework (a Paradox for every debuff stack,
+  Juggernaut Breach after a Barrier; Spillover, retired from it, a Minerva module since 12
+  November on his "Spillover can be a module", the Overrun Gearing, a session's name he kept) and
+  the Baboon's rework (a Paradox for every debuff stack,
   five Suppressing; the Retrocausal Shroud and the Redshift Emitter, Sap a new keyword, on its
   backpack's pods; four hardpoints; the Solar Flare Array parked), all built 11 November; the
   Skua with the Pod's lock is a session of his own. A branch's shape is settled
@@ -351,8 +403,9 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
     component's `finisher`; Claude's form, his to move); a kill recharging its shield whole
     (`refill_shield`); hull 12, shield 8 at a regen of 1. Both doubles read the foe's HP once a
     hit, so a two-shot gun is doubled whole or not at all. Gone from content: the flat heat, the
-    dark rounds, Hot Streak, the d3 (the die's minimum is four again); the engine keeps Reset and
-    a passive's cooldown, which no piece prints. A Kite leaving a fight at its heat maximum he
+    dark rounds, Hot Streak, the d3 (the die's minimum is four again); Reset and a passive's
+    cooldown, which the engine kept with no piece, left it on 12 November (the dead-code pass,
+    below). A Kite leaving a fight at its heat maximum he
     declined (the bible's withdrawal row); Phased on a kill he kept for the shadow panther. The
     model's third mount is ahead of the canopy, a port under a low curved hood carried forward
     over the mount to four past it, every class there in its port form, its root inside the hull
@@ -397,6 +450,70 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
+- **The Ammit's rework** (`ccr-8af28d03-re9kz4`, Ryan's own design, 12 November; on main): "The 4
+  claws are combined into one weapon that deals 1x4 instead, with Breach. They no longer gain
+  Empowered on kill"; "Kills grant one Soul. At the start of a skirmish, or on kill, the souls
+  flare, granting 1 Empowered per 5 souls"; "Soul Siphon: Consume up to 5 souls, granting 1
+  Empowered per soul. Cooldown 3". His calls on the three holes put to him first: the Souls last
+  the battle and carry no cap ("as part of the fantasy"); any kill in its fight banks one and only
+  its own kill flares; the Siphon's round holds every Empowered on the field ("And I mean none,
+  not ally or enemy"), and the hold stays off the kill flare. And later that day, the flare comes
+  once an attack that kills, however many fall to it ("Flaring twice for an AoE is probably
+  wrong, let's make it 'one of more killed' by an attack"), a double kill's Souls both in first.
+  As built: a die of six (the talons one entry of 1 ×4 with Breach, the Siphon, four hardpoints);
+  Souls its Ability, a chip with its count, since a count with no cap is no store; the hold the
+  round's rule and no status, so a Ward turns nothing away. Named, since they follow from his
+  words: the talons show one roll in six (17%, about 47% with both team rerolls; 50% and 91%
+  before); each battle opens with the Siphon unplayable until the first Soul; the Coil, the
+  Uplink and the Reliquary are no longer kept on it; a burn's tick or a Mine banks a Soul and
+  flares nothing; its cooldown of 3 is the rest of its round and three rounds after. Shown text
+  is a session's drafts (the Tap's line, the Souls' and the pin's entries, Consumes' second
+  half, the trigger), on the hangar's Text tab since Version 240. First cuts for his eye: the
+  Souls chip's ghost, the pin beside each Empowered, the Siphon's firing act (the threat's coil,
+  set by hand in the rig sidecar and `models_low.py`; no model was rebuilt). The first read is
+  `docs/measurements.md`'s, a direction at 30 seeds made on the flare's first form. His lines are
+  the to-do's: play it, judge its marks, write or pass its text.
+- **Empowered's mark** (12 November; on main): a blade with an arrow up, Sapped's pair ("Yes use
+  the up sword for empowered", from a mock, after his "Does shock and empowered have the same
+  glyph?": one bolt, Shock's in a ring and Empowered's bare). The bolt is Shock's alone; Enraged,
+  the golden rage and a foe's Empowered drew Empowered's mark and follow it; its pin is a smaller
+  blade beside the arrow standing on the lock, a first cut on the to-do's judging line.
+- **The dead-code pass** (`ccr-8af28d03-re9kz4`, 12 November; on main). It began with his
+  questions of the flare's flag ("Why is the per for trigger refused, but still exists as an
+  exception? Makes no sense") and of Empowered a kill ("also an exception then?"), and his worry
+  ("our trigger system is just spaghetti in there"). Measured, the triggers read sound (one
+  table, one function that fires an event's passives, one place that raises each) and the
+  weight was leftovers: seven rules had lost their last piece between 7 and 12 November and
+  stayed. On his "Yeah go ahead and fix it":
+  - The standing rule is CLAUDE.md's: a rule leaves the engine with its last piece, nothing
+    parked as a rework's leavings. `tests/test_leftovers.gd` holds it both ways: an effect kind,
+    a trigger, a die entry's key or a keyword that no piece prints fails the build until it is
+    cut or listed there with what it is, and a listed one that is printed again fails too.
+  - Cut, each with its engine path, validator check, term, bot weight, tools' rows and own
+    tests: the flare's per-foe flag; Empowered a kill and the kept status (the Ammit's old two);
+    Reset and a passive's cooldown (the Kite's); the vent blast, with its rings, die mark and a
+    vent's second kind, and the old Siphon entry's heat a blow with its Siphoning status (the
+    Whip Scorpion's, cut by `ccr-4d58b054-3lyj0a` too, whose form stands where the two met; its
+    passive's heat a blow stays); shield for heat at the round's start; a shock for a blocked
+    blow; armour against one rank; the out-of-combat event with the battle's `fought` record;
+    and an entry's unused label, the round preview's notes and the readers for saves no version
+    loads. The saves' versions moved (the battle's 26, the run's 25, the quick run's 8).
+  - Kept, on the test's lists with their reasons: the one pipeline's own steps and the trigger
+    table's plain cells (the general path: the Ammit's flare took two such cells off the audit's
+    unused list five days after it named them), the shield cost the Buzzard's and the Storm
+    Petrel's settled briefs pay, and two fields a charged form sets.
+  - His calls, settled the same day: Reset let go ("Let it go I think, I'm fairly certain there
+    was a better way of building it anyway"; git keeps it at `90feac1`); Spillover, listed as
+    unprinted and put to him wrongly by the time it was read, is the Overrun Gearing's (his
+    "Spillover can be a module"). The stock pass's fills script, `tools/stock_fills.py`, retired
+    too, its tables a second copy of the content's numbers that no longer ran (his "Retire the
+    loop thing"); the balance loop, `tools/stock_loop.py`, stays, a lever kept landing in the
+    content by hand.
+  - Next, the to-do's Engine line: the check does not yet hold a passive's conditions, the foes'
+    moves or a status to what lays it (four conditions, two foe moves and seven helpers only
+    tests call are unused there, checked on main at `f3e4841`), and Structure 11 is untouched:
+    a die entry's 73 fields are each written out by hand in several places, with no drift today.
+    The audit's Unused list holds the measure.
 - **The cooldown counts after its round; Rapid's own switch-off; Instant** (`ccr-63a1309a-caa9mw`
   from main at `fbce698`, on main the same day on his word, "All good. Clean up and merge into
   main"; Ryan, 12 November, on "So rapid cooldown 1 and a weapon cooldown 1 are
@@ -767,6 +884,141 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   saying that the yield prices no stall now, a pack the tide sends paying what the opening's
   does; the rules and the glossary's Menace, Rupture meter and Seal lines follow, drafts
   redrafted. Left to the economy pass: what a boss pays and salvage's growth by tier.
+- **The anchor: tier one's real lines, its foes in the budget's band, and the Barrier left
+  open** (Ryan, 12 November: "Remember that all the chassis numbers are on the table,
+  including hull and shield. Important to get the convergence 2 fight tuned around real tier
+  1s with real tier 1 numbers for damage, defense and heat, and then move on to the scaling
+  for everything from there"; Claude's reading of "the convergence 2 fight", his to correct:
+  the second battle, four machines at Convergence 1). Read first
+  (`docs/measurements.md`, 12 November, the six built and certain tier ones): the runner's
+  player meets the elite with one or two machines and loses it, so its battle measures its
+  orders; every fight was read at its rating instead, and the battle whole by a scratch
+  player that musters. At its rating nothing in tier one cost a real squad its budget but
+  the formations once heat was real. Landed, each a placeholder. The player's side: heat's
+  prices are content (every weapon three hotter, every chassis that cools cooling one more,
+  the gauges kept; the HEAT dial now a point either side, COOLER, BUILT, HOTTER), and tier
+  one's ten chassis take the low end of the shield scale, three quarters of the gauge and
+  one less regen, never under one (6 to 12 and 1 or 2), since a level lifts hull, shield,
+  regen and cooling from level one; hull untouched. The foes at tier one: the lone flankers
+  a duel of three or four rounds (the whisker cat 12 hit points, the roc 14, the dullahan
+  10), the wolf 7 and a bite of 4, the goblin 4, the treant 16 and the barrow giant 20 so
+  their fights are six rounds, the gel's blow 2, the Peak's rank and file scorching 1 and
+  the drake's stoke burning 2; the elites a number could move (the shaman 28 and 10, the
+  Nob 60 and 18, the Old Man's maw 12, the Rust Monster 48 and 16, the Fell Rider 48 and 16,
+  the Reaper 44); the Emperor Scorpion 60 and 14 and the Phantom Train's blow 16. At its
+  rating a lone flanker now costs 2 to 4% of a four's hull, a hunter's pack 5 to 7%, a
+  formation 2 to 9% with 5 the mean, an elite 0 to 13%, a boss 5 to 32%. The second battle
+  for the mustering player: the Meadow and the Marsh won 65 to 85% with half to two thirds
+  of the hull left at the end (80 to 90% with four fifths before), the Waste 45 to 70% with
+  a third left (its bosses), the Peak 40 to 60%, its losses the gate's before and after.
+  Consequences, named: the machines that read heat moved under the prices and follow in
+  their own sessions (the bible's section 12 lists each); every foe a higher tier shares
+  with tier one moved and stands unread there, and the elites moved at every tier; the
+  runner's own player wins far less on the lower shields (the Meadow 45% where it won 70%),
+  since it fights alone; and the first battle is harder for three machines than it was (a
+  mustering trio with the Honey Badger won 40% of the Meadow's and wins 10%; it lost to the
+  gate before, 40 to 85% of the time), so it is the first thing to scale from the anchor.
+  The Barrier's cooldown followed the same day (Ryan: "Barrier can have a cooldown, yeah. I
+  gave it a cooldown on the Boar's locked and that's a tier 2 piece ... you can't just
+  protect forever"): every piece that grants one carries a cooldown of 1, the Halo Projector
+  and the Blast Door as the Breaching Plow did, and the Fallen Weapon's haft is 16 and its
+  eyes' gaze 8 with it, since the cooldown took the Waste out of the others' band. With it
+  the second battle reads the Meadow 75 to 85% won, the Marsh 60 to 65%, the Waste 45 to
+  55%, the Peak 40 to 60%, and the elites' mean 9.5% of a four's hull where it was 7.
+  Two corrections to what this session first wrote, both in `docs/measurements.md`: the
+  what-if it cited for the cooldown was two rounds dark, not one (the cooldown's count had
+  changed on main the same day), and the Gargantuan King's twenty-round fight is no matter
+  of heat, the squad blocking and bracing where it could fire because a round costs it
+  nothing. The Storm Petrel in these reads is the machine as built, zap and all; his
+  direction of 11 November takes the zap off it, and that session waited on the heat pass,
+  which has landed. Open, his: the Barrier's place, the discussion he opened the same day
+  ("Is it toxic? Is it worse than giving numerical shield? Should it be rare or locked? An
+  argument could be made that a chassis with barrier is a sub for a Tank on a team"). The
+  reads: a Barrier takes seven blows in ten from a foe whose kit is one blow a round and one
+  in eight in a formation; with the Shoring Jack or a gun in the Halo's slot the same elites
+  cost a four a fifth of its hull where they cost 9.5%, against a budget of a quarter, and
+  the Gargantuan King's fight is ten rounds where three machines turning the Barrier made
+  it twenty-three. What is left to him is the Barrier a basic with its cooldown, as content
+  has it, or rare or locked with the Jack or a gun in the slot, Claude's lean, which brings
+  down the numbers set with the Barrier there. Closed on his word of 13 November: a shield
+  grant in the Halo's slot, with Overshield, and the gauge without its regen beside it, which
+  this session leaned to on the 12th and put to him as a second package ("I fail to see how
+  what you proposed is any different than what we had before when we had shield faces ...
+  we cut that for a reason, because it wasn't working for balance"). It is the third of his
+  three shapes of 9 November, the one he passed over, and the session had listed the shapes
+  without holding its lean to the reasons: a block on the die is the loop his play found, it
+  has to be found in the roll, it puts the shield back among the die's verbs and recovery
+  back on the die, and as a number it had read skipped or the whole turn (the benches of 27
+  and 30 October). The bible's shield row now carries those reasons with the forms they
+  retired, so the next session meets them; the brief's section 14 has the re-read and what
+  stands of the reads. His "more dramatic version", the cooldown on the machine "similar to
+  Numbed", matters only if the Barrier stays a basic (section 13 has its read and its
+  holes). His marks on 4-4-2 are in ("That's probably fine for 4-4-2 for
+  now": the brief's section 13 has the table with his words, each open place its chassis's
+  session's). Also open, his: the first battle's block (not scaled:
+  on the anchor's numbers a mustering trio with the Honey Badger wins 0 to 5% of the
+  Meadow's first battles where it won 40%; at three fifths for its elite and boss and three
+  quarters for its rank and file a trio keeps its hull, and the trios with the Badger still
+  lose the wall); the Waste's bosses and the Peak's clock; the Prairie Dog alone. The
+  muster rule and the fight-at-its-rating read are scratch probes; the runner still plays
+  the defence rule. The bible's triangle, scale, shield and Barrier rows and section 12 (v0.563);
+  the rules' chassis, basics, heat and scale lines.
+- **Four formations cut toward the budget, 4-4-2 to work with, and the anchor** (Ryan, 12
+  November: "Yes go ahead with 2. Also, let's look at 4-4-2 right now so that you're working
+  with correct tier 1 chassis for testing. Remember that all the chassis numbers are on the
+  table, including hull and shield. Important to get the convergence 2 fight tuned around
+  real tier 1s with real tier 1 numbers for damage, defense and heat, and then move on to
+  the scaling for everything from there"). Landed in content, the breach rule untouched: the
+  sandworm 14 hit points and a maw of 3 (36 and 8), the zombie knight 4 and a cleaver of 3
+  (8 and 6), the magma elemental 14 and a fist of 4 (40 and 8), each keeping its plate, and
+  the Peak's bomb 4 (8), its salamander and drake 4 (5). The sandworm ambush, the knights'
+  vigil, the ember pyre and the magma vent cost a trio of real tier ones 5 to 15% of its
+  hull where they cost 8 to 57% (`docs/measurements.md`, 12 November; twenty seeds, four
+  trios, a direction), about twice a plain formation: a breach every round goes no lower
+  on numbers, a blow on a count would, and that is a kit. The plate was the multiplier (a
+  cold gun's 2 does 1 through it), so the hit points came down and the plate stayed.
+  Consequences, named: the same foes stand in tier-two compositions (the wyvern roost, the
+  grenade volley, the gargantuan king's herd, the skeleton king's court) and the salamander
+  in an elite's brood, lighter with them and unread, tier two being scaled from the anchor
+  after; the magma elemental's codex draft, unsigned, no longer calls its fist the biggest
+  hit on the Peak. 4-4-2 from the records is the refit brief's section 13 and the bible's
+  section 12: the six built and tier one under any reading (the Honey Badger, the Skua, the
+  Storm Petrel, the Prairie Dog, the Cassowary, the Cottonmouth) are what the tuning uses,
+  each maker's four his to mark (the Dingo down; both the Wild Boar and the mole; Kestrel's
+  two of the Puffin, the Magpie and the Snowy Owl; Aphelion's fourth). The anchor, Claude's
+  reading of "the convergence 2 fight", his to correct: the second battle, four tier ones
+  against a tier-one rift at Convergence 1. The runner's player wins the Meadow and the
+  Marsh seven times in ten there with nine tenths of its hull when the seal breaks, where
+  the budget spends about half by then, and the Waste and the Peak one time in six, the
+  formations not why (the Waste's rows did not move with the cut). What followed is the
+  bullet above. The bible's scale row and section 12; the rules' scale line.
+- **The player's side at tier one: the baseline, and heat on a dial** (Ryan, 12 November:
+  "Pull in main. Many of the machine reworks are done, so they can be included in the pass
+  ... You can proceed with the steps as you see fit"; the order agreed the day before, the
+  machines' dice, heat, the foes' numbers, then hull and shield; what prices a round parked
+  again, "Slice and Dice doesn't escalate mid fight, slay the Spire does. We have to see
+  what fits after the other pieces are in place"). The branch took main at `8d936cf` and
+  again at `c717e69` (the fast flyers rebuilt, Sweep removed, the Ammit's rework). Main had
+  settled most of the dice: every tier-one stock die is basics beside its locked pieces, so
+  what is left of the re-deal is a handful of placeholder slots (leans in the refit brief's
+  section 12, nothing landed) and the tier-one slottable pieces' numbers. Read first, tier
+  one against the hull budget (`docs/measurements.md`, 12 November, at `8d936cf`): the
+  formations with no breach cost 1 to 6% of a trio's hull against 5%, the four that breach
+  or burn 20 to 46% (both of the Peak's), the elites nothing to twice their quarter, the
+  Waste's bosses and the Phantom Train walls for a trio. Heat as a pace, read and on a
+  dial: every weapon three hotter with every chassis that cools cooling one more brings
+  the bot to its limit about once a machine in a formation fight where it met it once in
+  ten, in fights no longer; prices with no more cooling starve the long fight. It is no
+  content yet: main moved under the read with another session tuning heat-reading machines
+  on today's prices (the Whip Scorpion's release against its gauge the same day), and a
+  price on every weapon moves each of them. So a debug build's SETTINGS → TRIALS has HEAT
+  (BUILT, +2, +3, +4; the next launch; `Settings.HEAT_SPECS` over the what-if's `hotter` and
+  `cooling`, which now leaves a chassis that cools nothing alone and moves a rewritten
+  shot's heat with the guns) and OVERHEAT (×1, ×2, ×3; `RIFTGATE_OVERHEAT`; the skirmish's
+  forecast row shows the hull it burns). The shape went into content the same day with the anchor (the bullet above), the dial
+  re-based a point either side of it. Open, his: the shape by his play, what an overheat
+  should burn (the bot overheats rather than holds and plays no better at two), whether
+  equipment carries a price, and the heat-reading machines' numbers.
 - **More spawns than the Rupture needs, on trial** (Ryan, 11 November: "I think we should try
   to lean for noticeably more spawns then the minimum number required for our target
   completion speed. When I was playing I felt the need to chase every pack down, since that
@@ -839,7 +1091,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   leans are the brief's, for his answers; nothing of the tuning is built. The regen was
   assigned by the gauge's bands alone, which he asked and the brief now says. This session had
   not read the locked pieces' session (`ccr-4d58b054-3lyj0a`, `docs/locked_pieces_proposal.md`,
-  on main since 11 November: a machine holds a level, bought, lifting its stats and locked pieces; tier one
+  on main since 11 November: a machine holds a tier, bought, lifting its stats and locked pieces; tier one
   comes down to the basics) when it guessed the elites and bosses: the tier-two and tier-three
   reads of 10 November are stock machines that plan will not field, and are tuned no further.
 - **Ryan's play of Phase 2** (9 November, his read of the long wall as built, on the phone): hard
@@ -1334,7 +1586,12 @@ decision, component destruction off to test, two rerolls kept; the formation pas
 its proposal's grids re-cut under the new model and read by hull lost), in its brief's order: the
 what-if and its first reads are in (9 November), his two reads of the trial, the model as
 content, the formation pass and a guess at the elites' and bosses' numbers (10 November: the
-brief's sections 5, 8 and 9); tier one only for now (his word, 11 November), and next his
+brief's sections 5, 8 and 9); tier one only for now (his word, 11 November), tuned on the
+second battle with real tier ones before anything is scaled from it (his word, 12 November;
+landed the same day with the Barrier's cooldown: the brief's section 13 has what landed, what
+is open and 4-4-2 for his marks), next his play of the anchor and his word on the Barrier's
+place (the brief's section 14) and on the first battle's block, then the first battle scaled down from the
+anchor and tiers two and three scaled up, and his
 play of the Rupture in beats and of the tide's and the strike's dials, and his marks on the
 flanks' second patrols (the brief's section 11), and his answers on the first battle (section
 10: the fourth machine's route is settled, the first battle's shape and the boss's numbers by
@@ -1343,11 +1600,11 @@ dials (the to-do's Ryan list), and his answers to the brief's section 7, then th
 the component pass, the heat prices, the foes' numbers after his play, the bosses' stat
 blocks, what prices a round), the vocabulary, the rules and the rows. Then the long wall's other open item (the bible's section 12: the shell). Beside them, the rest of the skirmish code audit
 (`docs/skirmish_audit.md`; its questions answered and its bugs built 8 November; the Ammit's Tap
-is section 12's, its test the to-do's): its structural steps in order (step 3 built on
+settled by its rework of 12 November): its structural steps in order (step 3 built on
 `ccr-8df9952c-4cccdf`, the mine's half gone with the slot mines on 9 November; then the bot's
 and the screen's mirrors onto the engine,
-then a 30-seed direction; statuses as data, the Face, the dead code, each refactor checked by
-`tools/behaviour_trace.gd`), since its tangles bend every read after it. The
+then a 30-seed direction; statuses as data, the Face, the rest of the dead code (its rules with
+no piece went on 12 November), each refactor checked by `tools/behaviour_trace.gd`), since its tangles bend every read after it. The
 redesign moves every foe's blow and the battle's shape, so the 200-seed matrix (below) waits on
 the refit and the audit's bot step. First after that: the 200-seed matrix
 with the ladder's, the compositions' and the elites' cells on the desk machine (the to-do's
@@ -1399,7 +1656,11 @@ commands are in `README.md`.
   Kite's row rewritten, the Kestrel row's Needletail and Skua with Ricochet and the Split-cycle
   Breech, the tiers row's stock rule, the Sweep row rewritten as its removal with the rows that
   leaned on it, the Whip Scorpion's and the Musk Ox's rows, the looks row's Kite mount and intake,
-  and Ricochet and Finisher in the tables). Version 509 (main's `0d992f3`, on his "Yes" to "The
+  and Ricochet and Finisher in the tables). Main's file is v0.564 since `ccr-e3ddf00b-ilkwbi`
+  landed again on 13 November (the looks row's Kite for its shipped mount, the hood's bore and the
+  round cut), over main's v0.563 with the rows landed since v0.547 (the triangle row's heat shape
+  on trial, the anchor, the dead-code pass, Reset let go, the Barrier's cooldown and place, the
+  shield's worth and the grant withdrawn among them), unpublished, its republish on Ryan's word. Version 509 (main's `0d992f3`, on his "Yes" to "The
   hangar and the bible are both behind main now. Want me to republish them?") was main's file
   whole over the live v0.536: `ccr-63a1309a-caa9mw`'s rows (the cooldown counted after its spend, Rapid's own switch-off,
   Instant) and `ccr-4d58b054-3lyj0a`'s (the Stingray's Lance and Sapped, the Wild Boar's row in
@@ -1416,7 +1677,17 @@ commands are in `README.md`.
   (Version 504, main's `60a0e4d`), which matched that commit's file; new since 504 the pacing row in beats of the tide,
   menace a pack's threat rating and the rows that follow it, the Whip Scorpion's rework, the
   hardpoints row with every stock gun its class, the Clydesdale's batteries row and its square
-  ports, and Changed Over in the buff table). BASE for the next merge is `aac6bfc`'s file. The
+  ports, and Changed Over in the buff table). BASE for the next merge is `aac6bfc`'s file. Also
+  unpublished: main's v0.548, the Ammit's rework (its Ammit row, the Empowered, purge, store and
+  Ability rows, section 12 without the Tap's question, and Souls and Pinned Empowered in the
+  tables), and main's v0.552 since `ccr-8af28d03-re9kz4` landed again (the Ammit row's flare once an
+  attack and the cut of its two old rules, the Empowered row's mark, and the rows that said the
+  engine kept a rule the dead-code pass cut: the Kite's, a piece of two kinds, a rider's limit,
+  Chain's targeting, the Whip Scorpion's), and main's v0.563 since `ccr-722ca9f0-yj8na3` landed
+  again (the scale row's tier-one foes, the triangle row's prices as content, the shield
+  row's tier-one lines and the two shapes it passed over, the Barrier row's cooldown, and
+  section 12's 4-4-2 to work with, the anchor, the heat-reading machines, the Barrier on the
+  machine and the Barrier's place); each goes up on Ryan's word. The
   live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
@@ -1430,68 +1701,24 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 254 (13 November, from `ccr-e3ddf00b-ilkwbi` at `0c03430`, ahead of main, over
-  Version 253, which `ccr-b7d5164e-1wtzzm` published in between with its Needletail's and Giant
-  Petrel's entries: the Kite's wings' back edge swept to match the front; its model and four
-  renders, and `renders.json` built from 253's copy with the Kite's entry, that session's entries
-  kept). Version 252 (13 November, from `fcd5204`, ahead of main, over
-  Version 251, which `ccr-b7d5164e-1wtzzm` published in between with its Needletail's entry and
-  its `designs.json`: the Kite's leading edge angled further, to about 32 degrees; its model and
-  four renders, and `renders.json` built from 251's copy with the Kite's entry, that session's
-  entries and files kept). Version 250 (12 November, from `6bf1b8d`, ahead of main, over
-  Version 249, which `ccr-b7d5164e-1wtzzm` published in between with its Needletail's and Giant
-  Petrel's entries and its `designs.json`: the Kite's wings' leading edge angled more; its model
-  and four renders, and `renders.json` built from 249's copy with the Kite's entry, that
-  session's entries and files kept). Version 248 (from `2b69106`, ahead of main, the live
-  page still 247 when read: the Kite's tail a bit longer still and its vents real and glowing;
-  its model, rig and four renders, and `renders.json` built from the live copy again, the
-  Needletail's and the Giant Petrel's from 245 kept). Version 247 (from `18b43cf`, ahead of main, the live
-  page still 246 when read: the Kite's hood drilled along a smaller cut, its back end's joins
-  cleaned up with raked vents and its tail a little longer; its model and four renders, and
-  `renders.json` built again from the live copy with the Kite's entry, the Needletail's and the
-  Giant Petrel's from 245 kept). Version 246 (from `d9df719`, over
-  Version 245, which another session published in between with the Needletail's and the Giant
-  Petrel's render entries and its own `designs.json` and `text.json`, none of them on main: the
-  Kite's tail on its body, its hood's front cut and its dish at the launcher's diameter; the
-  Kite's model, rig and four renders, `muzzles.json`, the port dish in five metals and its
-  picture, and `renders.json` built from 245's copy with this branch's Kite entry and port forms
-  block, its two entries kept; 245's `designs.json` and `text.json` left as it published them).
-  Version 244 (from `fab16f9`, ahead of main, the live
-  page still 243 when read: the little round cut for the launcher and the chamfered tail; the
-  Kite's model, four renders and `renders.json`). Version 243 (from `cc9b8af`: the drop taken
-  back, the long hood kept; the same six files). Version 242 (from `5f2f6f0`, the live page then 241: the trial's
-  mount a unit lower and its hood carried forward over it;
-  the Kite's model, rig, four renders and `renders.json`, main's `designs.json` and `text.json`
-  left as they were). Version 241 (from `268d443`, ahead of main: on trial,
-  the Kite's mount 0.6 higher, its hood with it and its trough filled in): the six Kite files that
-  moved, its model, four renders and `renders.json`, over main's Version 240 (published from
-  `f3e4841` by `ccr-4d58b054-3lyj0a`'s landing in between), its every Kite file read as 239's;
-  `designs.json` and `text.json` left as 240 published them, main's being newer than this
-  branch's. Version 239 (from `16d45f6`, ahead of
-  main, the live page still Version 238 when read): the Kite's port a unit forward under its hood,
-  the port rack and the port dish, two more variants new in five metals with the rack's fire, and
-  the three port forms' pictures; the Kite's model, rig and four renders, `renders.json`,
-  `shapes.json`, `muzzles.json` and the two stamps moved, the live copies matching the branch's
-  after. Version 238 (from `d170d2b`, on his "Ok go back to port gun ... Fix the twin and dish
-  issues") was the Kite's inset mount
-  on the port gun again, twin barrels the port pair, a third variant, new in five metals with its
-  fire, the dish on the port's wall; its rig, the gun's picture, `renders.json`, `shapes.json`,
-  `muzzles.json` and the two stamps moved, the live copies read matching 237's before and the
-  branch's after). Version 237 (from `26af248`) was the trial he took back,
-  the Kite's inset mount wearing the standard shape for every class but the rack,
-  his "Just for fun, can you change the model type on this mount back to standard for everything
-  except rack?"; its rig, the gun's picture, `renders.json` and the two stamps moved). Version 236
-  (from `f8a73fa`) was his fourth note on the Kite's mount, "like 2 units more, same thing"; Version 235,
-  from `7690cff`, was his third, the gun pushed forward with the cut's back and the cut's front
-  unmoved): the same nine files each time, every live copy matching the version before's when it
-  was replaced and the branch's after, `edits` and `text` empty. Version 234 (12 November, from the
-  branch at `75cc6b3`, on Ryan's word, "Ok update the hangar") was the nine files the Kite's
-  mount moved after his two notes on it (the cut shortened from its back alone, its floor raised: its model
-  and rig, its four renders, `renders.json`, and `designs.json` and `text.json` for their stamp),
-  the page unchanged, every live copy matching 233's before it was replaced and the branch's
-  after; `edits` and `text` empty, `designs` the two folded ideas. Main takes the branch on his
-  word. Version 233 (12 November, main's `aac6bfc`, on Ryan's word, "Merge into main and
-  republish") was the twenty-two files moved since 232 (four content files with the three fast
+  page's Version 254 (13 November, from `ccr-e3ddf00b-ilkwbi` at `0c03430`, ahead of main): the
+  Kite's last round, its wings' back edge swept to match the front. The Kite's rounds went out
+  from that branch as they were made (Versions 234 to 254, its model, rig and four renders, the
+  port forms' variants and pictures, and `renders.json` with its Kite entry and port-forms block),
+  over five publishes from elsewhere in between: main's Version 240 below, and Versions 245, 249,
+  251 and 253 from `ccr-b7d5164e-1wtzzm`, with its Needletail's and Giant Petrel's render entries
+  and its own `designs.json` and `text.json`, none of them on main yet. Until that branch lands, a
+  publish from main builds `renders.json` from the live copy, keeping those two entries, and
+  leaves its `designs.json` and `text.json` alone. Main has the Kite as live but for its note
+  and its `when`, which since say it shipped (13 November), not yet published. Version 240 (12
+  November, main's `f3e4841`, on Ryan's word, "Ok, republish the hangar on
+  main"): the nine files moved since 233 (the five content files with the Ammit's rework, the
+  dead-code pass, the four formations' numbers, the Overrun Gearing and the dealt Shift Whistle;
+  the Ammit's rig sidecar with its Siphon's firing slice; the Whip Scorpion's, its broadside the
+  release's and its two new idle acts; `designs.json` and `text.json`), the page unchanged, every
+  live copy matching 233's build before it was replaced; `edits` and `text` empty, `designs` the
+  two folded ideas. Version 233 (12 November, main's `aac6bfc`, on Ryan's word, "Merge into main and
+  republish"): the twenty-two files moved since 232 (four content files with the three fast
   flyers, Ricochet, the Breech and Sweep's removal; the Kite's and the Skua's models and rigs;
   `pins.json`, `shapes.json` and `muzzles.json` with the Kite's third mount and the port gun; the
   Kite's and the Skua's renders, the old ones their before, and `renders.json`; `designs.json`

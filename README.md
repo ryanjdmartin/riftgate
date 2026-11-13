@@ -312,8 +312,8 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # shield or a vent, every chassis regains its own shield regen, the basics make heat), so what is
 # left are the numbers a read may still ask about: "regen=N" (a flat regen on every chassis in
 # place of its own) or "regen=half", "cooling=N" (an offset), "hotter=N" (every weapon N heat
-# more, a read for the heat prices), "barrier=cooldown" (the Barrier basic dark the round after
-# it is spent) or "barrier=heatN" (it costs N heat); comma-separated; tools/campaign_run.gd takes
+# more, a read for the heat prices), "barrier=cooldownN" (the Barrier basic sits out N rounds
+# once spent, 0 for none, where content gives it 1) or "barrier=heatN" (it costs N heat); comma-separated; tools/campaign_run.gd takes
 # it too.
 # --guard 0.05 is the aggressor's habit (a block, a Barrier, Armoured or a Ward, at a twentieth of
 # its worth to the bot, so it never rerolls for one and spends one only when its die is stuck
@@ -365,9 +365,6 @@ perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run
 for i in 0 1 2 3; do perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/quick_run.gd -- --runs 40 --part $i/4 --json build/quick_$i.json & done; wait
 perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/quick_run.gd -- --merge build/quick_0.json,build/quick_1.json,build/quick_2.json,build/quick_3.json
 
-# the stock pass's fills (22 October): the brief's numbers as the loops moved them, onto a checkout's content
-# and the engine's rule numbers; idempotent on the branch, so a kept lever lands by editing its tables and running it
-python3 tools/stock_fills.py .
 # a balance loop (the stock pass's method): a copy of the project under build/loops/<name> with one lever moved in
 # its content (`levers` lists them: the foes' blows, our durability, cooling, the maxima, a foe's armour, HP or move,
 # every foe's aim, Flak's clock, any one value), the balance runner on the team rows at 30 seeds with every rung in four processes
@@ -437,11 +434,11 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # first term its passive names opened, as a tap opens it), pair and pair_spread (a Gel's halves in its slot, and a
 # Spread held over them; RIFTGATE_FOES=gel:2,goblin:3), hold (the second die read, its readout; RIFTGATE_HOLD_ENTRY=<place>
 # picks the entry showing, with RIFTGATE_TEAM to choose the machine), mechhold and foehold (the first machine's
-# and the first foe's: gauges, chips, a foe's intent), stores (every machine's own resource row part filled, under its heat bar:
+# and the first foe's: gauges, chips, a foe's intent), souls (the Ammit's count and its Siphon's hold: seven Souls, two Empowered and the pin beside it, a foe's Empowered pinned too; RIFTGATE_TEAM=ammit,badger), stores (every machine's own resource row part filled, under its heat bar:
 # RIFTGATE_TEAM=badger,nemesis,cassowary,swallowtail, then musk_ox, to judge the hopper's and the rage's segmented bars beside the Muster, the magazine and the shot count's pips), confirm, lock, touch (the first die lit as its tap waits out the double-tap window), swaphome (a waiting Swap sent home by a tap on nothing; RIFTGATE_SHOT_FRAME=6 catches it in flight), repick (a foe whose machine falls first, a
 # second arrow dashed to the machine it will strike; RIFTGATE_FOES=wolf:3), strike,
 # enemyturn (RIFTGATE_SHOT_FRAME=8 catches the acting foe lit), chips (every unit crowded with chips, the rows wrapping:
-# seven statuses on each machine, five on each foe), plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), foeheat (Burning, Flak and Shocked on the first three front foes, heat's red-orange beside each violet intent), blast and siphon (the Whip Scorpion's vent dragged over itself, every foe ringed with its blast; its Siphon dragged over a foe, the turned foes' arrows dashed; `RIFTGATE_TEAM=whip_scorpion,...`), rounds, logfull, killed, acquire, menu, settings, quit, keywords (the keywords list, as the menu's KEYWORDS opens it), colours and colourpick (a debug build's COLOURS page, and with the red's picker open), and the feed's
+# seven statuses on each machine, five on each foe), plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), foeheat (Burning, Flak and Shocked on the first three front foes, heat's red-orange beside each violet intent), lure_all (a Lure over every foe dragged over a foe, the turned foes' arrows dashed; the content's first lure-all, the Shift Whistle, takes the first machine's first entry when no machine carries one), rounds, logfull, killed, acquire, menu, settings, quit, keywords (the keywords list, as the menu's KEYWORDS opens it), colours and colourpick (a debug build's COLOURS page, and with the red's picker open), and the feed's
 # events feed_scanbox, feed_databox, feed_readout, feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal,
 # and groundtear (the corrupted side's tear as it fires), swallowed (the first machine swallowed: a ghost under a dashed edge),
 # undo (a spend taken: UNDO lit at the bottom row's right end) and columns (every foe aimed at the machine nearest its
@@ -488,8 +485,6 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # on the team, the first machine's, the read forced), to judge it running.
 # RIFTGATE_PLAQUE_DEBUG=1 (any skirmish) fires the plaque with one of the field's move names after another,
 # to judge it running.
-# RIFTGATE_BLAST_DEBUG=1 (any skirmish) keeps the blast's marks on: every foe the first machine whose
-# vents blast would fire at with its die's vent wears the turning dashed ring and the number.
 # RIFTGATE_PULSE_DEBUG=1 (any run) keeps END TURN pulsing, on the map and in a fight, to judge it
 # running (it pulses on its own once nothing else is left to do).
 # RIFTGATE_MAP_VIEW=left|bottom (any run) turns the battle map for the run without touching the saved
@@ -510,12 +505,18 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # ability's chip (Enrage on a foe, Sealed on a machine), to judge the look beside the buffs and debuffs.
 # RIFTGATE_MINE_DEBUG=1 (any skirmish) opens the fight with a Mine of 3 (Burn 1, Shock) on every foe,
 # so any kill shows its blast land round the slot, to judge the Mine's chip and blast running.
+# RIFTGATE_SOULS_DEBUG=12 (any skirmish) opens the fight with that many Souls on every machine that
+# banks them (the Ammit), so its flare, its Soul Siphon and their chips show in a battle's first fight.
 # RIFTGATE_REFIT=regen=0 (any run; any spec tools/balance.gd's --refit takes) lays a what-if over
 # the refit pass's model, which is content since 10 November: a flat shield regen in place of
 # each chassis's own, a cooling offset, hotter weapons, a price on the Barrier basic.
 # On the phone a debug build's SETTINGS → TRIALS has SHIELD REGEN (BUILT, 0, 1, 2, 3: each
-# chassis its own number, or a flat one on all): pick, close the app, open it, and start a new
-# battle or run, since a saved one keeps the numbers it was saved with.
+# chassis its own number, or a flat one on all) and HEAT (COOLER, BUILT, HOTTER: every weapon
+# a point cooler than content prices it, or a point hotter with every chassis that cools
+# cooling one more; the what-if's hotter and cooling): pick, close the app, open it, and start a new
+# battle or run, since a saved one keeps the numbers it was saved with. RIFTGATE_OVERHEAT=2 (any battle) sets the hull an overheat burns a point of heat past
+# the gauge, 1 the game's; the same page's OVERHEAT (×1, ×2, ×3) sets it on the phone, read
+# as a battle starts.
 # RIFTGATE_FIELD_DEPTH=14 and RIFTGATE_OPENING=1 (any battle) try a deeper field and a farther
 # opening (Ryan, 10 November: "I think the map is a bit too shallow"): the rows from the rift to
 # the wall, 10 to 24 and 12 the game's, and how many more of their own moves from the wall the

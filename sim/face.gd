@@ -14,8 +14,6 @@ enum Kind { ATTACK, SHIELD, VENT, BLANK, BUFF }
 enum Reach { NONE, DIRECT, INDIRECT, EVERY_FOE }   # Every Foe (4 November), below; Sweep, a rank picked and walked, went on 12 November
 ## Execute and Steady are retired (10 October): a threshold doubling is a hard sum hidden in
 ## a keyword, and a rolled weapon dealing its average is simply a flat one.
-## The Soulcutter Talons' kill rule is a count printed on its one carrier (Ryan, 11 October: no
-## keyword to learn; 18 October: "devour is not a thing"): `devours`, the stacks a kill gives.
 ## Web (18 October, the funnel-web's Web Bomb): the foe hit is Webbed, and after its action the
 ## web bursts into a Suppress on it and the next foe to act beside it (Skirmish._web_burst).
 ## Flak (Ryan's go, 19 October; built 21 October): Wainwright & Sutler's on-hit, a numbered
@@ -32,7 +30,8 @@ enum Reach { NONE, DIRECT, INDIRECT, EVERY_FOE }   # Every Foe (4 November), bel
 ## Every Foe and Every Ally are targeting modes (Ryan, 4 November: "Silence should not narrow
 ## targeting modes, that's why I'm switching them to targeting modes"; keywords from 2 November):
 ## Every Foe a reach (dropped on any foe, it lands on every foe in the fight: a debuff's riders,
-## a weapon's number whole on each, the two gated specials' since 12 November); Every Ally and Every Other Ally `targets` (a shield's or a buff's: the whole
+## the Shift Whistle's lure-all's among them, a weapon's number whole on each, the two gated
+## specials' since 12 November); Every Ally and Every Other Ally `targets` (a shield's or a buff's: the whole
 ## team, its own machine among them, or every machine but its own, the Mooring Screens'; Ryan:
 ## "the difference is whether the center one is lit or not, its two modes"). `reaches_all` reads
 ## any of them.
@@ -117,7 +116,7 @@ var kind: int = Kind.ATTACK
 var reach: int = Reach.DIRECT
 var power: int = 20
 var keywords: Array[int] = []
-var printed: Array[int] = []  # of those, the ones a passive grants written out (the Boar's spill): drawn as the star, never a keyword chip (the stock pass, 22 October)
+var printed: Array[int] = []  # of those, the ones a passive grants written out (the Overrun Gearing's spill): drawn as the star, never a keyword chip (the stock pass, 22 October)
 var heat: int = 0
 var strikes: int = 1          # blows per use: a rapid-fire weapon lands many small hits (each rolls and procs on its own)
 var burn: int = 0             # an attack with Burn: the stacks of Burning each blow leaves (Ryan, 18 October: a numbered keyword, never read off the damage)
@@ -131,14 +130,13 @@ var splash: int = 0           # an attack with Splash: the number each foe of th
 var chain: int = 0            # an attack with Chain: the number every other Shocked foe on the field takes as its blow's (Chain N, 28 October)
 var dispel: int = 0           # an attack or equipment with Purge: the stacks every buff of each foe it reaches loses (Purge N, 2 November)
 var shield_cost: int = 0      # a cost (Ryan, 26 October): the shield a spend takes from its owner first, overshield included; short of it the entry cannot be played
-var short: bool = false       # shown only: the shield cannot pay the entry's shield cost now (Skirmish.shown_face), struck through on the die like a dry gun
+var short: bool = false       # shown only: its machine cannot pay the entry's price now, a shield cost or the count it spends (Skirmish.shown_face), struck through on the die like a dry gun
 var volatile: int = 0         # a cost (Ryan, 26 October, a keyword with a chip until then): the hull a spend bites its owner, past shield and armour, before the component acts; it may wreck it (a numbered keyword since the stock pass's engine, 22 October; a constant of 10 before)
 var gates: Dictionary = {}    # an attack: keyword name -> the condition it lands under, read against each foe at the spend before its own riders (the Suppression Battery's Suppress on a foe carrying Flak; the stock pass's engine, 22 October)
 var holds: String = ""        # an attack: the status its target keeps through this round's end, its halving skipped (the Hollow-point Harpoon's pin on Flak)
 var consumes: String = ""     # an attack: the status it consumes on its target, every stack, a point more a stack before the multiplies (the Backdraft Charge's Burning, 22 October)...
 var per_consumed: int = 1     # ...the damage a stack consumed adds
 var self_burn: int = 0        # an attack: spending it sets its own machine Burning, this many stacks (the Stoker's slow fuel by decision, the stock pass's landing, 22 October)
-var label: String = ""
 var component: String = ""    # the component this entry is (content id); "" for an empty hardpoint
 var empty: bool = false       # an empty hardpoint: blank, and nothing was ever there to break
 var fixed: bool = false       # built into the chassis (no hardpoint); false means this entry is a hardpoint
@@ -155,15 +153,17 @@ var per_heat: int = 10        # ...the heat a step of power_per_heat stands for 
 var power_per_missing: int = 0   # an attack: added for every per_missing HP its target is missing (10 October; flat, shown on the hover)...
 var per_missing: int = 20     # ...the HP a step of power_per_missing stands for (the stock pass, 22 October: a field, 20 until the content landing)
 var finisher: int = 0         # an attack: its number times this against a foe at half its HP or less, read as the hit judges the foe (the Kite's Pinion Driver, 11 November: the Coriolis's slope as one step); 0 for none
-var devours: int = 0          # an attack: each kill gives its owner this many stacks of Empowered (the Soulcutter Talons' rule; a keyword until 11 October, a count since 18 October)
+# The Soul Siphon's (the Ammit's, Ryan, 12 November: "Consume up to 5 souls, granting 1 Empowered per soul"; "No Empowered decays this round. And I mean none, not ally or enemy"):
+var spends: String = ""       # a buff: the status of its own machine it spends for its stacks, a stack granted a stack spent (its Souls); with none to spend the entry cannot be played
+var spends_up_to: int = 0     # ...the most it spends, and so the most it grants (five); buff_stacks holds it as built, and what it would take now on the die as shown (Skirmish.shown_face)
+var holds_all: String = ""    # any entry: once it is spent, no unit's stacks of this status run down at this round's end, either side's (Skirmish.round_holds)
 var fills_hopper: int = 0     # an attack: loads it puts in its machine's hopper for each foe its blows reach (the Chainsaw Claw, 11 October)
 var fires_hopper: int = 0     # an attack: the most loads one shot fires from the hopper...
 var power_per_load: int = 0   # ...each adding this to the blow (the Bullion Fragmenter, 11 October)
 var braces: int = 0           # any entry: spending it Braces its owner, this many stacks, until the round's end (the Breaching Plow, 12 October)
 var cooldown: int = -1        # any entry: the rounds it sits out once spent, after the round of the spend (Ryan, 14 October; counted so since 12 November: "change the count so 1 is how I intended"), printed on it; -1 or 0, none (Rapid's own switch-off is the keyword's, never printed)
 var turns_die: bool = false   # a Rapid buff on itself that turns a folded die to its other battery, its free roll landing there (the Clydesdale's Changeover, Ryan, 11 November)
-## Reaches every foe in the fight (an attack: the Whip Scorpion's Heliographic Siphon, a
-## lure-all, 20 October), or the whole team or every machine but its own (a shield or a buff: the
+## Reaches every foe in the fight (an attack: the Shift Whistle's lure-all), or the whole team or every machine but its own (a shield or a buff: the
 ## Swallowtail's Mooring Screens the latter): its targeting mode, Every Foe, Every Ally or Every
 ## Other Ally (4 November), so a Silence, which mutes keywords, leaves it whole. Setting it on
 ## gives the entry the mode that reaches all it may be spent on (any foe; itself and its allies the
@@ -186,9 +186,7 @@ var reaches_all: bool:
 				targets = Target.SELF_ALLY
 			elif not on and targets == Target.EVERY_OTHER_ALLY:
 				targets = Target.ALLY
-var heat_per_blow: int = 0    # any entry: spending it, every blow a foe lands on its owner this round adds this much heat (the Siphon's, next round's fuel)
 var shields: int = 0          # a vent: the shield it also gives the machine it cools, after the vent (the combined entry, Ryan's go of 20 October: the Wake Diffuser)
-var resets_on_kill: bool = false   # an attack: if its spend kills, every entry dark from a cooldown comes back and its machine acts again (the Kite's Pinion Driver, 21 October)
 var gathers_mines: bool = false   # an attack: every Mine on the field's other foes joins its target's (the Lammergeier's Lorentz Contractor, Ryan, 9 November)
 var detonates: bool = false   # an attack: its target's Mine blows now, on it and every foe round it, after the spend's own Mine joined it (the Lammergeier's Syrinx Drone, Ryan, 9 November)
 # The Swallowtail's locked pieces (Ryan's go, 21 October; built that day):
@@ -300,8 +298,6 @@ static func kind_from_name(name: String) -> int:
 
 
 static func reach_from_name(name: String) -> int:
-	if name == "line" or name == "melee":
-		return Reach.DIRECT   # a save from before 10 October: line was direct's name, and melee went into it
 	for r in REACH_NAMES.keys():
 		if REACH_NAMES[r] == name:
 			return r
@@ -346,6 +342,13 @@ static func from_dict(d: Dictionary) -> Face:
 		if front is Dictionary and not front.is_empty():
 			f.front_status = str(front.get("status", ""))
 			f.front_stacks = maxi(1, int(front.get("stacks", 1)))
+		# A buff that spends a count of its machine's for its stacks (the Soul Siphon): the most it
+		# spends is the most it grants, and a save's `stacks` beside it says no more than that.
+		f.spends = str(d.get("spends", ""))
+		if not f.spends.is_empty():
+			f.spends_up_to = maxi(1, int(d.get("spends_up_to", 1)))
+			f.buff_stacks = f.spends_up_to
+	f.holds_all = str(d.get("holds_all", ""))
 	if f.kind == Kind.ATTACK:
 		f.vents_all = bool(d.get("vents_all", false))
 		f.power_per_heat = maxi(0, int(d.get("power_per_heat", 0))) if f.vents_all else 0
@@ -354,11 +357,6 @@ static func from_dict(d: Dictionary) -> Face:
 		f.per_missing = maxi(1, int(d.get("per_missing", 20)))
 		f.finisher = maxi(0, int(d.get("finisher", 0)))
 		f.fills_hopper = maxi(0, int(d.get("fills_hopper", 0)))
-		# A save or a draft from before 11 October lists devour as a keyword, and one from before
-		# 18 October says `true`: each reads as the rule, a stack a kill.
-		f.devours = maxi(0, int(d.get("devours", 0)))
-		if Array(d.get("keywords", [])).has("devour"):
-			f.devours = maxi(1, f.devours)
 		f.burn = maxi(0, int(d.get("burn", 0)))   # add_keyword gives a Burn entry one stack when it says none
 		f.cryo = maxi(0, int(d.get("cryo", 0)))
 		f.flak = maxi(0, int(d.get("flak", 0)))
@@ -381,9 +379,7 @@ static func from_dict(d: Dictionary) -> Face:
 	f.shield_cost = maxi(0, int(d.get("shield_cost", 0)))
 	f.cooldown = maxi(0, int(d["cooldown"])) if d.has("cooldown") else -1
 	f.turns_die = bool(d.get("turns_die", false)) and f.kind == Kind.BUFF
-	f.heat_per_blow = maxi(0, int(d.get("heat_per_blow", 0)))
 	f.shields = maxi(0, int(d.get("shields", 0))) if f.kind == Kind.VENT else 0
-	f.resets_on_kill = bool(d.get("resets_on_kill", false)) and f.kind == Kind.ATTACK
 	f.gathers_mines = bool(d.get("gathers_mines", false)) and f.kind == Kind.ATTACK
 	f.detonates = bool(d.get("detonates", false)) and f.kind == Kind.ATTACK
 	f.vents = maxi(0, int(d.get("vents", 0))) if f.kind == Kind.SHIELD and not (d.get("vents") is String) else 0
@@ -409,12 +405,6 @@ static func from_dict(d: Dictionary) -> Face:
 		var kw := keyword_from_name(str(name))
 		if kw > 0:
 			f.add_keyword(kw)
-	# A save from before the targeting modes (4 November) writes Every Foe or Every Ally among its
-	# keywords, and one from before 2 November says `reaches_all`: either reads as the mode its kind takes.
-	var old_kw: Array = d.get("keywords", [])
-	if (old_kw.has("every_foe") or old_kw.has("every_ally") or bool(d.get("reaches_all", false))) and f.kind != Kind.BLANK and not f.reaches_all:
-		f.reaches_all = true
-	f.label = str(d.get("label", ""))
 	return f
 
 
@@ -436,6 +426,11 @@ func to_dict() -> Dictionary:
 		d["rounds"] = buff_rounds
 		if not front_status.is_empty():
 			d["in_front"] = {"status": front_status, "stacks": front_stacks}
+		if not spends.is_empty():
+			d["spends"] = spends
+			d["spends_up_to"] = spends_up_to
+	if not holds_all.is_empty():
+		d["holds_all"] = holds_all
 	if vents_all:
 		d["vents_all"] = true
 		if power_per_heat > 0:
@@ -446,8 +441,6 @@ func to_dict() -> Dictionary:
 		d["per_missing"] = per_missing
 	if finisher > 1:
 		d["finisher"] = finisher
-	if devours > 0:
-		d["devours"] = devours
 	if burn > 0 and has(Keyword.BURN):
 		d["burn"] = burn
 	if cryo > 0 and has(Keyword.CRYO):
@@ -490,12 +483,8 @@ func to_dict() -> Dictionary:
 		d["cooldown"] = cooldown
 	if turns_die:
 		d["turns_die"] = true
-	if heat_per_blow > 0:
-		d["heat_per_blow"] = heat_per_blow
 	if shields > 0:
 		d["shields"] = shields
-	if resets_on_kill:
-		d["resets_on_kill"] = true
 	if gathers_mines:
 		d["gathers_mines"] = true
 	if detonates:
@@ -607,17 +596,18 @@ func acts_again() -> bool:
 
 
 ## A rule printed on the entry rather than a keyword (bible section 6: the die's star chip):
-## Vents all, the missing-hull bonus, the talons' kill rule, the hopper, the brace, the
-## Siphon's heat a blow, or a labelled effect. A roll that may land on itself is Instant's, a
+## Vents all, the missing-hull bonus, the hopper, the brace, a count it spends for its stacks or
+## a status it holds on every unit (the Soul Siphon's). A roll that may land on itself is Instant's, a
 ## keyword since 12 November, never the star. A cooldown is a cost the die prints with its clock, a reload the ammo the die
 ## prints with its shells (Ryan, 2 November), and a shield's cooling the number under its steam
 ## (3 November), so none of them is.
 func has_unique_rule() -> bool:
-	return vents_all or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_burn > 0 or devours > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not label.is_empty() or not printed.is_empty() \
-		or turns_die or heat_per_blow > 0 or resets_on_kill or gathers_mines or detonates \
+	return vents_all or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_burn > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not printed.is_empty() \
+		or turns_die or gathers_mines or detonates \
 		or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine \
-		or regen_shield > 0 or action_price > 0 or rolls_target or kill_rerolls > 0
+		or regen_shield > 0 or action_price > 0 or rolls_target or kill_rerolls > 0 \
+		or not spends.is_empty() or not holds_all.is_empty()
 
 
 ## Whether the entry prints a cooldown: one round or more.
@@ -711,7 +701,6 @@ func duplicate_face() -> Face:
 	f.heat = heat
 	f.strikes = strikes
 	f.printed = printed.duplicate()
-	f.label = label
 	f.component = component
 	f.empty = empty
 	f.fixed = fixed
@@ -728,7 +717,9 @@ func duplicate_face() -> Face:
 	f.power_per_missing = power_per_missing
 	f.per_missing = per_missing
 	f.finisher = finisher
-	f.devours = devours
+	f.spends = spends
+	f.spends_up_to = spends_up_to
+	f.holds_all = holds_all
 	f.burn = burn
 	f.cryo = cryo
 	f.flak = flak
@@ -753,9 +744,7 @@ func duplicate_face() -> Face:
 	f.braces = braces
 	f.cooldown = cooldown
 	f.turns_die = turns_die
-	f.heat_per_blow = heat_per_blow
 	f.shields = shields
-	f.resets_on_kill = resets_on_kill
 	f.gathers_mines = gathers_mines
 	f.detonates = detonates
 	f.vents = vents
@@ -847,22 +836,6 @@ func cost_text() -> String:
 	return (" (-%d hull)" % volatile if volatile > 0 else "") + (" (-%d shield)" % shield_cost if shield_cost > 0 else "")
 
 
-## The Siphon's two rules as the entry's text says them. Equipment that reaches every ally says
-## so in its own words ("on every ally"), never "reaches every foe".
-func spin_text() -> String:
-	var out := ""
-	for p in _spin_phrases():
-		out += " " + p
-	return out
-
-
-func _spin_phrases() -> Array[String]:
-	var out: Array[String] = []
-	if heat_per_blow > 0:
-		out.append("+%d heat a blow taken this round" % heat_per_blow)
-	return out
-
-
 ## The rules an entry prints past its number, its reach, whom it is spent on and its keywords,
 ## one phrase each in describe()'s own words (a test holds every phrase to describe()): the
 ## die's hold lists them a line each, last (Ryan, 25 October: "unique effects last"). A reload
@@ -885,8 +858,6 @@ func rule_phrases() -> Array[String]:
 			out.append("its target's %s does not decay this round" % str(Effects.STATUS.get(holds, {}).get("name", holds)))
 		if self_burn > 0:
 			out.append("Burning %d on itself" % self_burn)
-		if devours > 0:
-			out.append("Empowered ×%d a kill" % devours)
 		if fills_hopper > 0:
 			out.append("fills the hopper" + ("" if fills_hopper == 1 else " ×%d" % fills_hopper))
 		if fires_hopper > 0:
@@ -896,8 +867,6 @@ func rule_phrases() -> Array[String]:
 	if braces > 0:
 		out.append("braces" + ("" if braces == 1 else " ×%d" % braces))
 	if kind == Kind.ATTACK:
-		if resets_on_kill:
-			out.append("a kill brings back every entry its cooldowns darkened and it acts again")
 		if gathers_mines:
 			out.append("gathers every Mine onto it")
 		if detonates:
@@ -919,7 +888,10 @@ func rule_phrases() -> Array[String]:
 			out.append(front_text())
 		if disrupts_attackers:
 			out.append(DISRUPTS_TEXT)
-	out.append_array(_spin_phrases())
+		if not spends.is_empty():
+			out.append(_spends_text())
+	if not holds_all.is_empty():
+		out.append(_holds_all_text())
 	if not charged.is_empty():
 		out.append("%s: %s" % [charge_cost_text(), charged_form().describe()])
 	return out
@@ -946,6 +918,17 @@ func _regen_text() -> String:
 
 func _action_text() -> String:
 	return "on an ally whose die is spent, %d reroll%s: its die rolls again and it acts again" % [action_price, "" if action_price == 1 else "s"]
+
+
+## The Soul Siphon's two rules as the entry's text says them (Ryan, 12 November): the count it
+## spends for its stacks, the most it takes and a stack a one; and the status no unit's clock runs
+## down this round, either side's.
+func _spends_text() -> String:
+	return "consumes up to %d %s, 1 %s each" % [spends_up_to, str(Effects.STATUS.get(spends, {}).get("name", spends)), str(Effects.STATUS.get(buff_status, {}).get("name", buff_status))]
+
+
+func _holds_all_text() -> String:
+	return "no %s decays this round" % str(Effects.STATUS.get(holds_all, {}).get("name", holds_all))
 
 
 ## A printed cooldown as the entry's text says it, " cooldown 2"; nothing for an entry with none.
@@ -980,6 +963,8 @@ func describe() -> String:
 				s = "an ally whose die is spent acts again"
 			elif kind == Kind.BUFF and turns_die:
 				s = "turns its die to its other battery"   # the Changeover's: a buff that grants nothing, its turn its whole effect
+			elif kind == Kind.BUFF and not spends.is_empty():
+				s = _spends_text()   # the Soul Siphon's: what it grants is what it consumes, said once
 			elif kind == Kind.BUFF and buff_status.is_empty():
 				s = ""   # a buff that grants nothing (the Retrocausal Shroud): its keywords and its rule say what it does
 			elif kind == Kind.BUFF:
@@ -1014,7 +999,9 @@ func describe() -> String:
 				s += " " + DISRUPTS_TEXT   # the Retrocausal Shroud's: the foes aiming at the machine it lands on
 			if braces > 0:
 				s += " braces" + ("" if braces == 1 else " ×%d" % braces)
-			s += cooldown_text() + spin_text() + cost_text()
+			if not holds_all.is_empty():
+				s += " " + _holds_all_text()
+			s += cooldown_text() + cost_text()
 			if targets == Target.SELF:
 				s += " (self only)"
 			elif targets == Target.ALLY and not reaches_all and not act_again:
@@ -1055,16 +1042,12 @@ func describe() -> String:
 				s += " its target's %s does not decay this round" % str(Effects.STATUS.get(holds, {}).get("name", holds))
 			if self_burn > 0:
 				s += " Burning %d on itself" % self_burn   # the Stoker's: its own machine set burning as it fires
-			if devours > 0:
-				s += " Empowered ×%d a kill" % devours
 			if fills_hopper > 0:
 				s += " fills the hopper" + ("" if fills_hopper == 1 else " ×%d" % fills_hopper)
 			if fires_hopper > 0:
 				s += " fires the hopper, +%d a load (%d a shot)" % [power_per_load, fires_hopper]
 			if braces > 0:
 				s += " braces" + ("" if braces == 1 else " ×%d" % braces)
-			if resets_on_kill:
-				s += " a kill brings back every entry its cooldowns darkened and it acts again"
 			if gathers_mines:
 				s += " gathers every Mine onto it"
 			if detonates:
@@ -1077,7 +1060,9 @@ func describe() -> String:
 				s += " " + _kill_rerolls_text()   # the Spindrift Salvo's kill rider
 			if regen_shield > 0 and regen_rounds > 0:
 				s += " " + _regen_text()   # the St. Elmo's Regenerator's rider on its own spender
-			s += cooldown_text() + spin_text()
+			if not holds_all.is_empty():
+				s += " " + _holds_all_text()
+			s += cooldown_text()
 			if heat > 0:
 				s += " (+%d heat)" % heat
 			s += cost_text()

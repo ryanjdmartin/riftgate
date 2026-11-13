@@ -874,8 +874,7 @@ func test_crits_are_refused_in_content() -> void:
 
 
 ## Two reaches since 10 October: melee is refused as a reach in content, a melee weapon is a
-## direct one with the tag, and its built entry carries the tag for a passive to read. An old
-## save's line or melee reads as direct.
+## direct one with the tag, and its built entry carries the tag for a passive to read.
 func test_melee_is_a_tag_and_never_a_reach() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
@@ -895,8 +894,7 @@ func test_melee_is_a_tag_and_never_a_reach() -> void:
 	var f: Face = db.build_die(["fist"], [], 0).faces[0]
 	assert_eq(f.reach, Face.Reach.DIRECT, "it builds direct")
 	assert_eq(f.tags, ["melee"] as Array[String], "carrying its tag")
-	assert_eq(Face.reach_from_name("line"), Face.Reach.DIRECT, "an old save's line is direct")
-	assert_eq(Face.reach_from_name("melee"), Face.Reach.DIRECT, "and its melee too")
+	assert_eq(Face.reach_from_name("melee"), -1, "and melee names no reach")
 
 
 ## The working set is the validator's list (the stock pass, 22 October): a component wears only
@@ -1614,7 +1612,7 @@ func test_the_content_carries_a_live_hull_the_engine_runs() -> void:
 	db.load_dir(ContentDB.DIR)
 	var plate: Dictionary = _piece(db, "laminar_deflector")
 	plate["passive"] = {"id": "live_plate", "name": "Live Plate", "description": "", "effects": [
-		{"trigger": "static", "effect": "shock_on_block", "value": 1}]}
+		{"trigger": "static", "effect": "shock_on_hull_strike", "value": 1}]}
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["live_plate"] = plate
 	var coil: Dictionary = db.components["overcharge_coil"].duplicate(true)
@@ -1750,15 +1748,13 @@ func test_the_new_passive_fields_are_checked() -> void:
 	c["id"] = "odd"
 	c["name"] = "Odd Test"
 	c["passive"] = {"id": "odd", "name": "Odd", "description": "", "effects": [
-		{"trigger": "on_attack", "effect": "add_damage", "value": 5, "per_stack": "nonsense"},
-		{"trigger": "static", "effect": "keep_status", "value": "nonsense"},
-		{"trigger": "static", "effect": "add_armour_vs_rank", "value": 5, "rank": "sideways"}]}
+		{"trigger": "on_attack", "effect": "add_damage", "value": 5, "per_stack": "nonsense"}]}
 	db.chassis["odd"] = c
 	var hits := 0
 	for e in db.validate():
-		if e.begins_with("chassis odd") and (e.contains("per_stack") or e.contains("keep_status") or e.contains("front or back")):
+		if e.begins_with("chassis odd") and e.contains("per_stack"):
 			hits += 1
-	assert_eq(hits, 3, "each bad field is named")
+	assert_eq(hits, 1, "the bad field is named")
 
 
 func test_the_foe_actions_run_and_the_validator_knows_their_shape() -> void:
@@ -2155,6 +2151,27 @@ func test_a_module_is_its_stat_lines_and_its_text_on_the_machine() -> void:
 		read[str(item[0]).get_slice(" ", 0)] = StatBlock.value_text(item)
 	assert_eq(read["hull"], "%d (+30▲)" % int(plain.base["hull"]), "its hull the chassis's, the module's change in a bracket, up")
 	assert_eq(read["move"], "%d (-1▼)" % int(plain.base["move"]), "and a drawback down")
+
+
+## A grant a module's text writes out (the Overrun Gearing's spill, 12 November): its weapons
+## carry the keyword for the engine, and the star and the hold read the module's rule, never the
+## stat lines its own description leads with.
+func test_a_modules_written_out_grant_reads_its_rule_and_never_its_stat_lines() -> void:
+	var db := _fresh()
+	var maker := str(db.chassis["badger"]["maker"])
+	db.modules["test_module"] = _module(maker, 1, {"hull": 8},
+		{"description": "Damage past a kill spills behind.", "effects": [{"trigger": "static", "effect": "grant_keyword", "value": "spillover", "printed": true}]})
+	var u := db.make_mech("badger", 0, Vector2i.ZERO, null, ["test_module"])
+	var gun: Face = null
+	for f in u.die.faces:
+		if f.is_weapon() and not f.has(Face.Keyword.SPILLOVER):
+			gun = f
+			break
+	assert_true(gun != null, "the machine has a weapon to wear it")
+	assert_true(Effects.effective_face(u, gun).has(Face.Keyword.SPILLOVER), "its weapons carry the keyword for the engine")
+	assert_eq(Effects.printed_grants(u, gun), ["Damage past a kill spills behind."] as Array[String], "the star reads the rule alone")
+	assert_true(Effects.explain(u, gun).has("Damage past a kill spills behind. (Test Module)"), "and so does the hold: %s" % str(Effects.explain(u, gun)))
+	assert_eq(db.module_description("test_module"), "Hull +8. Damage past a kill spills behind.", "where the module reads its stat line first")
 
 
 func test_a_machine_wears_no_more_modules_than_its_slots() -> void:
@@ -2597,28 +2614,28 @@ func test_a_rewrite_says_its_shot_and_a_rank_condition_its_rank() -> void:
 	assert_true(errs.any(func(e: String) -> bool: return e.contains("test_rank_bad") and e.contains("target_rank needs rank")), "a rank that is neither is refused")
 
 
-## The Siphon's rules and the vent blast (the Whip Scorpion's, 20 October): a reach over every
-## machine is never a vent's, the old reach key a targeting mode's now (4 November), a heat a blow
-## taken is a positive number, and a blast a positive share.
-func test_the_siphons_rules_and_the_vent_blast_say_their_numbers() -> void:
+## A reach over every machine is never a vent's, the old reach key is a targeting mode's now (4
+## November), and the Siphon's leavings are refused (12 November): a heat a blow on an entry (a
+## passive's now) and the vent blast, an effect the engine no longer runs.
+func test_a_vent_never_reaches_every_ally_and_the_siphons_leavings_are_refused() -> void:
 	var db := _fresh()
 	var plate: Dictionary = _piece(db, "coolant_jacket")
 	plate["tier"] = 1
 	plate["face"]["targets"] = "every_ally"
-	plate["face"]["heat_per_blow"] = 0
+	plate["face"]["heat_per_blow"] = 2
 	db.components["test_vent_all"] = plate
 	var old: Dictionary = db.components["heliographic_death_ray"].duplicate(true)
 	old["face"]["keywords"] = ["lure"]
 	old["face"]["reaches_all"] = true
 	db.components["test_old_reach"] = old
 	var boiler: Dictionary = db.chassis["whip_scorpion"].duplicate(true)
-	boiler["passive"]["effects"] = [{"trigger": "static", "effect": "vent_blast", "value": 0}]
+	boiler["passive"]["effects"] = [{"trigger": "static", "effect": "vent_blast", "value": 1}]
 	db.chassis["test_boiler"] = boiler
 	var errs := db.validate()
 	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_vent_all") and e.contains("Every Ally and Every Other Ally are a shield's or a buff's")), "a vent never reaches every ally")
 	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_old_reach") and e.contains("reaches_all is a targeting mode now")), "the old reach key is refused for the targeting mode")
-	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_vent_all") and e.contains("heat_per_blow")), "a heat a blow is positive")
-	assert_true(errs.any(func(e: String) -> bool: return e.contains("test_boiler") and e.contains("vent_blast")), "and a blast's share")
+	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_vent_all") and e.contains("heat_per_blow left the entry")), "a heat a blow on an entry is refused: a passive's now")
+	assert_true(errs.any(func(e: String) -> bool: return e.contains("test_boiler") and e.contains("'vent_blast'") and e.contains("not implemented")), "and the vent blast, which the engine no longer runs")
 
 
 ## A promoted form (the bible's section 9): its entry holds what the class change adds and
@@ -2685,7 +2702,7 @@ func test_a_passive_one_off_lifts_the_effect_cap_by_one() -> void:
 	var four := {"id": "test_four", "name": "Four", "description": "Four effects.", "effects": [
 		{"trigger": "on_attack", "effect": "multiply_printed", "value": 2},
 		{"trigger": "on_attack", "effect": "add_heat", "value": 10},
-		{"trigger": "static", "effect": "weapon_cooldown", "value": 2},
+		{"trigger": "static", "effect": "add_stat", "stat": "hull", "value": 2},
 		{"trigger": "on_kill", "effect": "stack_status", "value": "rallied"}]}
 	db.chassis[cid]["passive"] = four
 	db.chassis[cid]["design"].erase("one_off")
