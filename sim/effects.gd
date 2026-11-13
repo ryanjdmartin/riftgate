@@ -1595,8 +1595,10 @@ static func never_hunted(u) -> bool:
 	return false
 
 
-## Actions a turn this machine has past the one every machine has (extra_action, static; the
-## Dingo's second, bible section 7, the cars).
+## Actions a turn on the battlefield this machine has past the one every machine has
+## (extra_action, static; the Dingo's second, bible section 7, the cars): a move and a fight
+## opened, twice. Never a second spend in a skirmish: inside a fight it acts once a round, like
+## any machine (Ryan, 13 November: "Dingo doesn't act twice").
 static func extra_actions(u) -> int:
 	var n := 0
 	for pair in _taking_part(u, "static", null):
@@ -2492,7 +2494,7 @@ static func effect_text(eff: Dictionary) -> String:
 				body += ", up to %d" % int(eff["cap"])
 		"add_attack": body = "attack %s" % signed
 		"never_hunted": body = "no hunter ever picks it as its prey"
-		"extra_action": body = "%s more action%s a turn: move and fight again" % [vs, "" if int(v) == 1 else "s"]
+		"extra_action": body = "%s more action%s a turn on the map: move and open a fight again" % [vs, "" if int(v) == 1 else "s"]
 		"hull_per_spend": body = "every component it spends costs %s hull" % vs
 		"step_die": body = "its die never rolls: each fight opens on a random entry, and every roll steps it to the next in order"
 		"fold_die": body = "its die is two batteries of %s, one up at a time with its fixed pieces; the battery up stays up from fight to fight, and a battle opens on the first" % vs

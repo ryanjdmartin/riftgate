@@ -1026,15 +1026,19 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   the maximum stays, shown as an uncleanseable debuff, a stack a point, and anything that
   cools takes the stacks first; a broken shield "cannot gain shield by any method"; an
   overheat's triggers fire once until the reboot) and the point he calls undecided: at the
-  maximum, burn hull or stop the spend. **The next step is the build, and it waits on his
-  rulings.** The brief's section 22 has the spec line by line, the five rulings with the
-  default each is built on (the burn's clock, the overheat breaking the shield, the reboot
-  as the whole turn, a Barrier on a broken shield, a shield its own machine spends), the
-  machines the rules break or bend for his brainstorm (the Whip Scorpion, the Buzzard, the
-  Storm Petrel, the Polar Bear, the Musk Ox, the Kite, and the two in design; eight more
-  bend), and the build's list: a what-if off by default, REBOOT on the trials with BUILT,
-  BURN and STOP, the morning's SHIELD BREAK rest timer cut and its block kept as a switch.
-  Nothing is built yet.
+  maximum, burn hull or stop the spend. He ruled the same day (the brief's section 22 has
+  his words and the spec as ruled): "I agree on burn over stop"; the burn is every stack at
+  every turn, building "until the player is essentially forced to reboot, or die", since "in
+  the old spec, overheat wasn't punishing enough ... We tried x3 damage and it still didn't
+  stop the bot"; one shield-break trigger and one overheat trigger between reboots; a reboot
+  only for a machine that has "spent nothing"; "Barrier is barrier, it's a buff, it sits in
+  front of shield and hull"; and a shield spend or cost may break its own machine ("you can
+  break yourself"). Left for after, his: the foes' Burn and an audit of every rider and
+  keyword. The Dingo does not act twice in a fight, his correction: its two actions are on
+  the map, and its passive's line, the engine's words, the rules and the bible's cars row
+  now say so. The machines are read again against their briefs in section 22: the Storm
+  Petrel, the Buzzard and the Puffin read differently by their settled reworks, and
+  nineteen designs in briefs are reached by the rules.
   His marks on 4-4-2 are in ("That's probably fine for 4-4-2 for
   now": the brief's section 13 has the table with his words, each open place its chassis's
   session's). Also open, his: the first battle's block (not scaled:
