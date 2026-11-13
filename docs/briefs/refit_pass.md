@@ -2373,3 +2373,215 @@ a chassis's own, Kestrel's first.
 What it costs to come: every chassis's regen and cooling, the overheat's rule, the machines
 that read heat or a pass (the Whip Scorpion's release is a pass already), the weapons'
 damage if a fight is to run as long as it does, and the foes' numbers read again.
+
+## 20. The shutdown as he stated it (13 November; nothing decided)
+
+His words: "Ok so we're clear:"
+
+> - Shield does not normally regenerate
+> - Heat does not normally cool
+> - A shield breaking allows a shutdown but does not force it
+> - An overheat forces a shutdown
+> - A shutdown recovers both meters regardless of which condition set it off
+> - You cannot manually shutdown, so the game is to either try to play around it, or time it
+> - Shield Regen and Cooling can still possibly be granted buffs, assuming they're gated or
+>   costed properly
+> - we haven't reconfigured the enemies so we still don't know about the end result of the
+>   changes, or if we want the free damage block from breakage.
+> - regarding breakage blocking, it's left in an interesting space in that it is somewhat of a
+>   reward for a bad thing happening. Which could either be taken as a deliberate decision
+>   point, or as a potentially confusing softening of the penalty.
+
+**Where it departs from the splice of section 19.** Two of his lines. "You cannot manually
+shutdown": the splice let any pass vent and reboot, so a dud die was a recovery; here a turn
+passed recovers nothing unless the shield is down or the machine overheated, and the overheat
+is the one vent a machine controls. "Regardless of which condition set it off": an overheat's
+shutdown gives the shield back too, and a break's gives the heat back.
+
+**What follows from his words as they stand**, built into the model and no question:
+
+- The shot that overheats a machine fires, as it does today (heat may pass the maximum in the
+  turn, and the overheat lands at the turn's end), and the machine's next turn is the shutdown.
+- Every machine that fires overheats on a clock, since nothing else empties the gauge: a gun
+  of 4 heat against a maximum of 12 fires four turns and is down the fifth. The overheat stops
+  being a mistake and becomes the reload.
+- The hold goes. His words of 9 November made it the active decision ("run hot, and you're
+  forced to wait and think about your decisions while you cool off"); here a machine that
+  waits cools nothing. The decision moves to which shot tips the gauge, and in which round.
+- A point of heat is worth the turn it brings the shutdown nearer, in steps (the fourth table
+  below). The shot that tips the gauge is free whatever it costs, so the hottest piece wants
+  to be the last one fired.
+- Each bad thing pays out the other meter: a break lets a machine vent early, an overheat
+  hands its shield back. It is the block's "reward for a bad thing happening" in a smaller
+  form, and it is in the rule with no block.
+- "Broken" is a state that lasts until the shutdown, not a shield standing at nothing, or a
+  point of granted regen on a broken shield would take the shutdown away.
+
+**Where his words give no answer.** Two places, each played as its own row.
+
+1. *What an overheat costs past the turn.* Today the excess burns the hull one for one and
+   the gauge settles at its maximum; both overheat lines of his menu kept the burn, and this
+   list does not say. Three answers: nothing more; the burn as today; the shield down at once
+   (his menu's "Overheating crashes the shield").
+2. *When the recovery lands.* On the turn of the shutdown, before the foes strike, or as the
+   next round opens, after they have.
+
+**The model** (`python3 tools/shield_model.py --shutdown`) plays the rule in the fight of
+section 19: the same squad, a gun of 3 damage, a die that is a dud one round in five. A
+machine fires whenever it can, the shot that overheats it included. A fight of four rounds at
+full fire, the pack dealing 12 a round, a machine shutting down at once on a break; the
+squad's hull lost:
+
+| The rule | A lone blow of 12 | Two strikes, 8 then 4 | 12 on the same machine every round | Four foes of 3 | 4 on every machine | Its rounds |
+|---|---|---|---|---|---|---|
+| As built | 28% | 27% | 36% | 3% | 25% | 5.4 |
+| Section 19's splice, a pass at will | 31% | 29% | 46% | 5% | 26% | 6.7 |
+| The shutdown as stated | 33% | 32% | 49% | 6% | 33% | 6.8 |
+| The same, the overheat's excess off the hull | 40% | 39% | 66% | 14% | 33% | 6.8 |
+| The same, the overheat taking the shield down at once | 38% | 36% | 58% | 7% | 33% | 6.8 |
+| The same, the recovery landing the turn of the shutdown | 27% | 25% | 30% | 3% | 4% | 7.0 |
+| The shutdown with the block | 12% | 31% | 31% | 4% | 31% | 6.7 |
+
+At six rounds, in the same order of packs: as built 56%, 55%, 84%, 15%, 59%; as stated 61%,
+58%, 100%, 12%, 53%; the burn 72%, 70%, 100%, 25%, 53%; the shield down at once 69%, 67%,
+100%, 16%, 53%; the recovery the same turn 43%, 40%, 61%, 6%, 6%; the block 19%, 55%, 68%,
+9%, 50%.
+
+The same rules by the gun's heat, the lone blow, four rounds:
+
+| The rule | A gun of 2 heat | A gun of 4 heat | A gun of 6 heat |
+|---|---|---|---|
+| As built | 28% | 28% | 51% |
+| The shutdown as stated | 32% | 33% | 34% |
+| The same, the overheat's excess off the hull | 32% | 40% | 53% |
+| The same, the overheat taking the shield down at once | 32% | 38% | 42% |
+
+The break's choice under the rule as stated, played two ways:
+
+| The fight, and the play | A lone blow of 12 | Two strikes | The same machine every round | Four foes of 3 | 4 on every machine | Its rounds |
+|---|---|---|---|---|---|---|
+| Four rounds, it fights on and shuts down on a dud | 32% | 31% | 42% | 6% | 36% | 5.9 |
+| Four rounds, it shuts down at once | 33% | 32% | 49% | 6% | 33% | 6.8 |
+| Six rounds, it fights on and shuts down on a dud | 56% | 54% | 95% | 16% | 57% | 9.5 |
+| Six rounds, it shuts down at once | 61% | 58% | 100% | 12% | 53% | 11.3 |
+
+What a gun's heat costs in turns, one machine alone, a maximum of 12; as built it cools 2 a
+round and never overheats itself:
+
+| The gun's heat | As built, a fight's first six rounds | As built, at the cap | The shutdown, six rounds | The shutdown, at the cap | The shield of 8 its clock returns a round |
+|---|---|---|---|---|---|
+| 2 | 100% | 100% | 100% | 88% | 1.0 |
+| 3 | 100% | 67% | 83% | 83% | 1.3 |
+| 4 | 83% | 50% | 83% | 80% | 1.6 |
+| 5 | 67% | 40% | 83% | 75% | 2.0 |
+| 6 | 50% | 33% | 83% | 75% | 2.0 |
+| 8 | 33% | 25% | 67% | 67% | 2.7 |
+
+Which meter sets the clock, six rounds, a gun of 4, shutting down at once on a break:
+
+| The pack | Shutdowns an overheat forced | The shield a forced one found standing | The heat a taken one left unspent |
+|---|---|---|---|
+| A lone blow of 12 | 25% | 73% | 49% |
+| 12 on the same machine every round | 40% | 73% | 55% |
+| Four foes of 3 | 37% | 37% | 37% |
+| 4 on every machine | none | | 47% |
+
+A foe that heats the machine it strikes, six rounds; the squad's hull lost:
+
+| The rule | A blow of 4 | The blow and 4 heat | The same at the hottest machine | A blow of 8 | The blow and 4 heat | The same at the hottest machine |
+|---|---|---|---|---|---|---|
+| As built | 8% | 26% | 34% | 28% | 48% | 76% |
+| As built, a machine never overheating itself | 2% | 12% | 33% | 25% | 53% | 86% |
+| The shutdown as stated | 2% | 2% | 6% | 14% | 14% | 27% |
+| The same, the overheat taking the shield down at once | 8% | 9% | 20% | 22% | 22% | 45% |
+| The same, the overheat's excess off the hull | 18% | 27% | 27% | 25% | 25% | 42% |
+
+A long fight, eight rounds at full fire against a pack dealing 8 a round, the lone blow: as
+built 48% in 10.7 rounds, or 42% in 13.0 never overheating itself; the shutdown as stated 30%
+in 11.8 fighting on, 20% in 13.3 shutting down at once.
+
+**What the tables say.**
+
+- *It is about the shield as built, tilted by the fight's length.* In a four-round fight it
+  loses 3 to 13 points more hull than the game as built, the most against a foe that strikes
+  the same machine every round. At six rounds it is level but for that foe, played the better
+  way for each pack. In a long fight against a lighter pack and a lone hitter it loses half to
+  two thirds of what the game as built does, since as built a long fight runs at its heat cap
+  and here a machine fires four turns in five for ever. Its fights run a tenth longer when a
+  broken machine fights on and a quarter longer when it shuts down at once.
+- *With nothing past the turn, heat is all but free.* The gun's heat moves the hull lost by a
+  point a step (32%, 33%, 34%) and the fight by a fifth of a round. A gun of 6 heat fires five
+  turns of a fight's first six, as a gun of 4 does, where as built it fires three; at the cap
+  it fires three turns in four where as built it fires one in three. A foe's heat on its blow
+  costs the squad nothing (2% and 2%, 14% and 14%) where as built it costs 10 to 28 points. A
+  foe aiming at the hottest machine still bites (6%, 27%), most of it the aim alone, which
+  strikes the same machine again (4% and 23% with no heat on the blow).
+- *The burn as today is a tax no play avoids.* 7 to 17 points more hull against every pack
+  but the one that strikes every machine, where no shutdown is an overheat's. Nothing else
+  vents, so the one clean vent left would be a broken shield, which makes a break a relief.
+- *The shield down at once gives heat a slope* (32%, 38%, 42% at 2, 4, 6 heat) for up to 9
+  points at a gun of 4, makes the two conditions one state, and makes the round of the
+  overheat matter: the machine stands bare through the foes' turn, and their intents are
+  shown when the player chooses to tip it. With nothing past the turn there is no round to
+  pick, only the shield to keep in step with. It is also the answer under which the foes'
+  aim at the hottest machine is the hunter of the machine that is down: 15% where a blow of 4
+  at random costs 8%, 40% where a blow of 8 costs 22%, with no heat on the blow.
+- *The recovery the same turn is the turtle of section 19 again.* Against a foe that strikes
+  every machine the squad loses 4% where it loses 33%, with half its turns passed in a fight a
+  fifth longer; at six rounds 6% with 54% of its turns passed. As the next round opens, a
+  machine that shuts down stands through the foes' turn first, and the loop does not form.
+- *The break's choice is real and small.* Fighting on is better against a lone hitter,
+  shutting down against a foe that strikes everyone or comes in numbers; the gap is 7 points
+  at most either way. A shutdown buys about what it costs at these numbers: a gauge of 8
+  against a shot of 3.
+- *Whichever meter empties first is the only one that mattered that cycle.* With a gun of 4,
+  an overheat forces a quarter of the shutdowns against a lone hitter and none against a foe
+  that strikes everyone. A forced one finds three quarters of the shield still standing, so
+  the heat clock mostly falls on the machines the foes are not shooting at, as a turn lost
+  for a shield that was whole; a taken one leaves half the heat unspent.
+- *The block is the wall of section 16 again, and more so.* 12% where it is 33% against the
+  lone blow, 19% where it is 61% at six rounds; a point to three against two strikes. With
+  no regen a chipped shield never mends, so every machine carries one blow stopped whole a
+  cycle, a shield of 1 stopping a 12 as a shield of 8 does (section 15's sliver, now for
+  good). And the break already pays under this rule, in the vent; the block pays twice.
+
+**The frame** (the rule of 13 November in `CLAUDE.md`).
+
+- *Who it protects.* Every machine once a cycle, by a shield that takes its number and no
+  more; a light most, by its gauge against its hull. Nothing protects the battle's hull from
+  chip any more: a point through a shield stays gone until the reset.
+- *How.* Two budgets and one reset. A machine has a shield to lose and heat to spend; the
+  reset gives both back for a turn; it comes when either runs out, by force on the heat, by
+  choice on the shield. Waste is what a player plays against: a reset that finds the other
+  meter half full.
+- *What threatens it.* A break early in a machine's heat, a turn lost for little vented.
+  Damage on every machine, which no regen absorbs and which breaks four shields in one round.
+  A second strike in the round of the break, the one round a blow is sure of the hull. The
+  machine that is down, if the recovery waits for the next round. Heat, only if an overheat
+  costs past the turn.
+- *The player's counterplay.* A lure and a Barrier, each worth more than today, since a
+  shield point saved is not one that would have grown back. The kill of the breaker. The
+  hottest piece as the shot that tips the gauge. A shield ridden to its last points before
+  the tip. The squad's clocks kept apart.
+- *The foes' counterplay.* Break the machine that has just reset. Strike everyone. Strike
+  twice. Hunt the machine that is down. Heat the machine whose shield is whole, a turn stolen.
+- *The foes it would need,* as behaviours, no content: a breaker the size of a light's shield;
+  a strike behind it the same round; a foe that strikes every machine; a hunter of the machine
+  that is down (the exposed aim is this already); and a heater that aims at the hottest ("as a
+  boss would try to execute an easy target", the bible's row of 24 October), if an overheat
+  costs past the turn.
+
+**Claude's read, his to take or leave.** The rule holds together as stated, and it is not too
+much defence: it is a little less than today in the fights of every day and more in the long
+ones. Three picks on the open points. The overheat takes the shield down at once and burns no
+hull, since with nothing past the turn heat prices nothing and with the burn it taxes
+everything. The recovery lands as the next round opens. The block stays out until foes are
+built for it, since under this rule a break already pays in the vent. Then the foes' kits,
+proposed in chat against these behaviours, before any content or run.
+
+What it costs to come, all on his word: every chassis's regen and cooling at nothing, kept
+as stats for what grants them; the shutdown as a state on a machine, the turn it takes, and
+the control that takes it on a break; the overheat's rule; every heat price read again, since
+a point is now worth a step of the clock; the machines that read heat, a pass or regen, each
+its own session's; the bot's play of it; the gauges' marks and the console's lines on heat,
+which are shown text and his.

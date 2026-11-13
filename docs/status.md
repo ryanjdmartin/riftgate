@@ -992,7 +992,22 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   every threat to it is in the foes' vocabulary today. Dropped by the model: a pass that
   refills any shield or lands the same turn (the turtle), heat against the shield's regen or
   maximum, one bar as a first step. The block stays a clause for later, with foes built for
-  it. His call; nothing built. His marks on 4-4-2 are in ("That's probably fine for 4-4-2 for
+  it. He then stated the working shape himself (the brief's section 20 has his nine lines):
+  no regen and no cooling; a break allows a shutdown and an overheat forces one; a shutdown
+  recovers both meters; and "You cannot manually shutdown, so the game is to either try to
+  play around it, or time it." It departs from the splice in that line (a turn passed
+  recovers nothing unless the shield is down or the machine overheated, so the overheat is
+  the one vent a machine controls and the hold goes) and in each condition paying out the
+  other meter. The model plays it (`--shutdown`): about the shield as built, 3 to 13 points
+  more hull lost in a four-round fight, level at six, half to two thirds of it in a long one
+  against a lone hitter. His words leave two places open, and each is a row: what an overheat
+  costs past the turn (nothing more, and a gun's heat reads 32%, 33%, 34% at 2, 4, 6 and a
+  foe's heat costs nothing; the burn as today, a tax of 7 to 17 points no play avoids; the
+  shield down at once, 32%, 38%, 42%) and when the recovery lands (the same turn is the
+  turtle, 4% where the rule loses 33%). Claude's picks, his to take or leave: the shield
+  down at once and no burn, the recovery as the next round opens, the block out until foes
+  are built for it. Next on his answers: the foes' kits in chat. His call; nothing built.
+  His marks on 4-4-2 are in ("That's probably fine for 4-4-2 for
   now": the brief's section 13 has the table with his words, each open place its chassis's
   session's). Also open, his: the first battle's block (not scaled:
   on the anchor's numbers a mustering trio with the Honey Badger wins 0 to 5% of the
