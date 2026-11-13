@@ -6469,7 +6469,10 @@ def giant_petrel(b):
     quarters of the crew area"; the windshield "still too 'soft.' Not fast or sharp enough looking".
     And on the sixth: the quarters' guns "can face forward as well, right?", and "could be bigger,
     you could lower the spoiler a tad to make room for them to fire overtop instead of under";
-    "there's something really messed up with the front windscreen".
+    "there's something really messed up with the front windscreen". And on the seventh: "default
+    the aft guns to facing forward, or the skirmish animations will be awkward"; "The windscreen
+    pokes through the sides. [It] can sit lower on the front anyway, more vertically centered"; the
+    spoiler "back up so the guns firing line is under it. So I guess the whole spoiler can be bigger".
 
     The Navy SES's body: two knife hulls, their stems raked back as a wave piercer's, dark below
     the chine and chrome above, a cobalt chine stripe and straight deck stripes, each closing
@@ -6477,8 +6480,8 @@ def giant_petrel(b):
     open fore and aft, lift glowing under it; a raised centre bow between the knives carrying the
     fore gun house, a cobalt spearhead down each bow's deck; the deckhouse spanning the deck, every
     face leaning in, its front a sharp prow raked steeply back, each facet of it a smooth twisted
-    surface from its foot to the roof's edge, the bridge's glass following it, swept round it to
-    points on the flanks, and four long windows down each flank; on its roof the Spindrift Salvo's
+    surface from its foot to the roof's edge, the bridge's glass following it a band up its middle,
+    swept round it to points on the flanks, and four long windows down each flank; on its roof the Spindrift Salvo's
     three racks flush in line down the middle, each the size of the second cut's one rack (fixed,
     no pin; salvo_f, salvo_m, salvo_a, their faces rising out of the roof one after another to fire
     over the bow, eighteen tubes rippling, each rack at its own pace), the integrated mast behind them, a swept faceted fin
@@ -6487,10 +6490,10 @@ def giant_petrel(b):
     one of the racer's giant boosters (with the navy's pair, the Immelmann Booster, fixed, no pin),
     each on its own plinth on the deck, a faceted nose ahead of it and a pylon to the aft
     deckhouse; over them the racer's swept cobalt aerofoil spanning the hulls on two fins standing
-    on the hulls' outer edges astern, low enough for the quarters to fire over it. On each of the
-    deckhouse roof's back quarters, either side of the mast, an omnidirectional mount, a faceted
-    dome on a short pedestal, resting facing aft in line with the ship, its arc round the outboard
-    side to dead ahead, firing over everything astern. Mounts in the
+    on the hulls' outer edges astern, big and high, the quarters' line of fire astern under it. On
+    each of the deckhouse roof's back quarters, either side of the mast, an omnidirectional mount,
+    a faceted dome on a short pedestal, resting facing forward in line with the ship, its arc round
+    the outboard side to dead aft. Mounts in the
     die's order: hp_1 the fore gun house on the centre bow (the Overclocked Railgun), hp_2 the left
     quarter's dome (the Twin Autoguns), hp_3 the right quarter's (the Twin Autoguns, a placeholder in
     the vent's old slot since the refit pass).
@@ -6580,10 +6583,14 @@ def giant_petrel(b):
     # coming to a point aft, and a raked pane each side of the prow, its outer pillar swept back, a
     # thin mullion on the crease; each pane a thin shell over its facet's surface, a point drawn as
     # a sliver.
-    PANES = [[(0.06, 0.69), (0.97, 0.42), (0.97, 0.92), (0.06, 0.71)],
-             [(0.05, 0.42), (0.985, 0.42), (0.985, 0.92), (0.2, 0.92)],
-             [(0.015, 0.42), (0.95, 0.42), (0.8, 0.92), (0.015, 0.92)],
-             [(0.03, 0.42), (0.94, 0.69), (0.94, 0.71), (0.03, 0.92)]]
+    # The glass sits a band up the middle of the front, its foot a quarter up and its head three
+    # quarters (Ryan, 13 November: it "can sit lower on the front anyway, more vertically centered"),
+    # each side pane's point a quarter along its facet from the flank, so the shell standing off the
+    # facet stays inside the flank's line ("The windscreen pokes through the sides").
+    PANES = [[(0.25, 0.49), (0.97, 0.25), (0.97, 0.75), (0.25, 0.51)],
+             [(0.05, 0.25), (0.985, 0.25), (0.985, 0.75), (0.2, 0.75)],
+             [(0.015, 0.25), (0.95, 0.25), (0.8, 0.75), (0.015, 0.75)],
+             [(0.03, 0.25), (0.75, 0.49), (0.75, 0.51), (0.03, 0.75)]]
     NU, NV = 8, 5
     for i, (c0, c1, c2, c3) in enumerate(PANES):
         def kf(u, v):
@@ -6677,26 +6684,28 @@ def giant_petrel(b):
     # The quarters: an omnidirectional dome on each of the deckhouse roof's back quarters, either side
     # of the mast (Ryan, 13 November: "we have to move the rear guns entirely ... mount them on
     # omnidirectional mounts strapped to or embedded into the back quarters of the crew area"),
-    # resting facing aft in line with the ship ("just so they have a resting position in line with
-    # the ship"), their arc round the outboard side to dead ahead and a little inboard of dead aft,
-    # where the other quarter's gun closes it. Bigger, on short pedestals (Ryan, 13 November: "I
-    # feel like they could be bigger, you could lower the spoiler a tad to make room for them to
-    # fire overtop instead of under"), so they fire over the boosters and over the aerofoil, every
-    # class's receiver clear of the roof (hp_2, hp_3).
+    # resting facing forward in line with the ship ("default the aft guns to facing forward, or the
+    # skirmish animations will be awkward"), their arc from dead ahead round the outboard side to a
+    # little inboard of dead aft, where the other quarter's gun closes it. Bigger, on short pedestals
+    # ("I feel like they could be bigger"), every class's receiver clear of the roof, so they fire
+    # over the boosters astern and under the aerofoil (hp_2, hp_3).
     QX, QY, QR = 11.0, -21.0, 4.2
     QUARTER_FITS = {"rack": ("rack_round", 0.45), "dish": 0.4, "blade": 0.8}   # each clear of the roof under its gun's line
     for s, pin, name in ((-1.0, "hp_2", "turret_l"), (1.0, "hp_3", "turret_r")):
-        lim = (-180.0, 15.0) if s < 0 else (-15.0, 180.0)   # outboard is a right-hand turn for the left one, facing aft
-        _gp_dome_mount(b, name, pin, "twin_barrel", "twin_autoguns", s * QX, QY, _lerp_at(DH, QY)[2], QR, facing=180.0, limits=lim,
+        lim = (0.0, 195.0) if s < 0 else (-195.0, 0.0)   # outboard is a left-hand turn for the left one, facing forward
+        _gp_dome_mount(b, name, pin, "twin_barrel", "twin_autoguns", s * QX, QY, _lerp_at(DH, QY)[2], QR, facing=0.0, limits=lim,
                        fits=QUARTER_FITS, scale=0.7, lift=1.0)
     # The racer's stern wing: a swept cobalt aerofoil spanning the hulls on the tips of two fins
     # standing on the hulls' outer edges astern, a little canted (Ryan, 13 November: "I liked the
-    # other spoiler better. It was more aquatic, this one is like a race car"), two lower than it
-    # was so the quarters fire over it ("lower the spoiler a tad").
-    WZ2, FIN_X, TIP_X = 32.0, 26.0, 27.6   # the aerofoil's height, low enough for the quarters to fire over it and clear of the boosters under it; the fins' feet and tips across
+    # other spoiler better. It was more aquatic, this one is like a race car"), high, so the
+    # quarters' line of fire astern runs under it, and big, the fins and the wing both, the guns no
+    # longer resting in its way (Ryan, 13 November: "The sides of the rear spoiler could be bigger,
+    # now the the guns aren't in the way. And I actually take it back, put the spoiler back up so the
+    # guns firing line is under it. So I guess the whole spoiler can be bigger").
+    WZ2, FIN_X, TIP_X = 37.0, 26.0, 29.0   # the aerofoil's height, over the quarters' line astern; the fins' feet and tips across
     for s in (-1.0, 1.0):
-        _rings(b, [_fin_section(s * FIN_X, -49.0, -63.0, deck(-56.0) - 0.5, 0.6), _fin_section(s * TIP_X, -54.0, -64.0, WZ2, 0.45)], "livery.livery", "fin")
-    WING = [(-TIP_X, -54.5, -63.0, 0.4), (-12.0, -49.0, -58.6, 0.7), (0.0, -45.0, -55.4, 0.85), (12.0, -49.0, -58.6, 0.7), (TIP_X, -54.5, -63.0, 0.4)]
+        _rings(b, [_fin_section(s * FIN_X, -46.0, -62.0, deck(-56.0) - 0.5, 0.8), _fin_section(s * TIP_X, -51.0, -66.0, WZ2, 0.6)], "livery.livery", "fin")
+    WING = [(-TIP_X, -51.5, -66.0, 0.55), (-12.0, -46.5, -61.0, 0.9), (0.0, -42.0, -57.5, 1.1), (12.0, -46.5, -61.0, 0.9), (TIP_X, -51.5, -66.0, 0.55)]
     _rings(b, [_blade_section(x, le, te, WZ2, t) for (x, le, te, t) in WING], "livery.livery", "stern_wing")
 
     # Idle acts (four, loud, never in step; a capital's heavy servos). Degrees and seconds; a body
@@ -6728,12 +6737,12 @@ def giant_petrel(b):
     b.act("uplink", 5.6, {"sensor_uplink": [(0.5, 0.0), (1.9, 70.0), (3.6, 70.0), (5.0, 0.0)]},
           glow=[(["uplink_core"], [(1.8, 0.0), (2.1, 10.0), (2.4, 2.0), (2.7, 12.0), (3.6, 12.0), (4.4, 0.0)])])
     # The traverse: the fore gun house slews out to one side and back to the other, the quarters'
-    # swing out from dead aft together (mirrored) and back, a beat apart, each pausing before it
+    # swing out from dead ahead together (mirrored) and back, a beat apart, each pausing before it
     # turns back (the builder's turret rule).
     b.act("traverse", 7.4, {
         "turret_fore": [(0.6, 0.0), (2.0, 46.0), (2.8, 46.0), (5.2, -34.0), (6.0, -34.0), (7.2, 0.0)],
-        "turret_l": [(0.8, 0.0), (2.2, -45.0), (3.0, -45.0), (4.6, 0.0)],
-        "turret_r": [(0.9, 0.0), (2.3, 45.0), (3.1, 45.0), (4.7, 0.0)],
+        "turret_l": [(0.8, 0.0), (2.2, 45.0), (3.0, 45.0), (4.6, 0.0)],
+        "turret_r": [(0.9, 0.0), (2.3, -45.0), (3.1, -45.0), (4.7, 0.0)],
     })
     # Movement: slow and heavy, its boosters brightening, its nose a touch up as a ground-effect
     # craft runs; it drifts through its corners and never banks (a hovercraft keeps flat).

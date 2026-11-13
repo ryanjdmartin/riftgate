@@ -462,9 +462,10 @@ func test_each_weapon_turns_what_can_aim_it_and_a_quad_fires_where_it_points() -
 
 func test_a_gun_built_facing_off_ahead_aims_from_where_it_points() -> void:
 	# The turn to aim is the foe's bearing less where the gun points as built (MechView3D.aim_rest,
-	# SkirmishScreen._aim_plan): a gun built facing ahead turns by the bearing, one built facing aft
-	# swings from there (the Giant Petrel's quarter gun houses, resting in line with the ship: Ryan,
-	# 13 November, "It's not a slow carrier").
+	# SkirmishScreen._aim_plan): a gun built facing ahead turns by the bearing, one built facing off
+	# ahead swings from there. No machine's gun rests off ahead now (the Giant Petrel's quarters rest
+	# facing forward: Ryan, 13 November, "default the aft guns to facing forward, or the skirmish
+	# animations will be awkward"), so a pin built facing aft is a synthetic one.
 	assert_eq(MechView3D.bearing_left(Vector3(0.0, 0.0, -1.0)), 0.0, "a line ahead runs nought to the left")
 	assert_true(absf(MechView3D.bearing_left(Vector3(-1.0, 0.0, 0.0)) - 90.0) < 0.01, "one out to the left, ninety")
 	assert_true(absf(MechView3D.bearing_left(Vector3(1.0, 0.0, 0.0)) + 90.0) < 0.01, "one out to the right, minus ninety")
@@ -474,12 +475,21 @@ func test_a_gun_built_facing_off_ahead_aims_from_where_it_points() -> void:
 	for n in badger.hardpoints.keys():
 		assert_true(absf(float(badger._aim_rest[n])) < 0.5, "the Badger's hp_%s points ahead as built" % n)
 	badger.free()
+	var root := Node3D.new()
+	var house := Node3D.new()
+	root.add_child(house)
+	var pin := Node3D.new()
+	house.add_child(pin)
+	house.rotation = Vector3(0.0, PI, 0.0)
+	assert_true(absf(absf(MechView3D.rest_bearing(root, pin)) - 180.0) < 0.5, "a pin built facing aft rests a half turn off ahead")
+	house.rotation = Vector3(0.0, PI / 2.0, 0.0)
+	assert_true(absf(MechView3D.rest_bearing(root, pin) - 90.0) < 0.5, "one built facing left, ninety")
+	root.free()
 	var petrel := MechView3D.make("giant_petrel", "", "clean", "", MechView3D.YAW_FRONT, Vector2i(64, 64))
 	assert_true(absf(petrel.aim_rest("overclocked_railgun")) < 0.5, "the Giant Petrel's bow gun points ahead")
 	for n in [2, 3]:
-		assert_true(absf(absf(float(petrel._aim_rest[n])) - 180.0) < 0.5, "its quarter's gun house rests facing aft (hp_%d)" % n)
-	for n in [2, 3]:
-		assert_false(petrel.rig.aim_joint_over(petrel.hardpoints[n]).is_empty(), "the quarter's gun house turns to aim (hp_%d)" % n)
+		assert_true(absf(float(petrel._aim_rest[n])) < 0.5, "its quarter's gun rests facing forward (hp_%d)" % n)
+		assert_false(petrel.rig.aim_joint_over(petrel.hardpoints[n]).is_empty(), "the quarter's dome turns to aim (hp_%d)" % n)
 	petrel.free()
 
 
