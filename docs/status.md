@@ -28,7 +28,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
 - Tests: 1155 tests, 371,967 checks, green on `ccr-b7d5164e-1wtzzm` (13 November, the Needletail's
-  eighth cut on Ryan's notes over main at `6112939`). Before it, 1154 tests, 371,076
+  ninth cut on Ryan's notes over main at `6112939`). Before it, 1154 tests, 371,076
   checks, green on main (12 November, as `ccr-4d58b054-3lyj0a` landed
   with the vent blast's and Siphoning's cut, the Overrun Gearing, the Shift Whistle dealt, the
   Whip Scorpion's broadside and its two new idle acts, over the dead-code pass and the four
@@ -445,7 +445,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   not on main): built that day on Ryan's design and his mix, then reworked on his notes of that
   evening and 13 November (the bible's Kestrel row). The Needletail: a jet's chined fuselage
   (its round second cut retired: "I didn't literally mean round like a rocket"), shorter than the
-  first cut, a long canopy amidships, the nose one smooth taper to its point; it stands and fights
+  first cut and short and flat for its width, a long canopy amidships standing proud of it, the
+  nose one smooth taper to its point; it stands and fights
   in hover mode, four shorter boosters upright on swivels (the front pair on short canards beside
   the pop-up, the thicker rear pair each on a hub at the tip of a long tailplane whose outer panel
   rides in with it, under long, steep X fins), two pods raised out of dark slots in the upper

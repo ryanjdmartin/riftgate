@@ -609,28 +609,28 @@
    }
   },
   "needletail": {
-   "when": "Ryan's eighth notes on its two modes, 13 November.",
-   "note": "Ryan, 13 November, on the seventh cut: “Rear boosters too long now. Only needed a little more than last time.” “The forward guns extend too far when opened, they end up floating in front. The clamshell can extend forward to encompass the whole cut section, just to smooth it out more when closed.” “I was wrong about the wings coming to a point, maybe just a smaller flat top from what it was.” “The front boosters could extend a little more when hovering.” An eighth cut. The guns run out six units instead of nearly nine, the muzzle just clear of the nose and every class inside the open bay and trough. The clamshell itself can't reach over the trough: there the gun's line lies outside the nose's skin, so halves hinged on it would have nowhere to fold into. Instead a flush cover over each trough slides out of the nose in flight and back in behind the trough's floor in hover, so the closed nose is smooth from the bulge forward. The rear boosters sit at 21.5 units out (19.5 two cuts ago, 26 last cut); the front boosters at 15.5 (13.8); the wings keep their place, size and swept trailing edges, each with a small flat tip. Ryan's to judge running: Walk for the change by speed, Acts for the transition.",
+   "when": "Ryan's ninth notes on its two modes, 13 November.",
+   "note": "Ryan, 13 November, on the eighth cut: “Nice. I still find the body shape just a bit off. It feels too long, still, and could be flatter.” A ninth cut: the nose a sixth shorter from the canopy forward, the middle two units shorter and the tail three, so the machine is about a tenth shorter (about 100 units from point to needle, 111 before), and the whole body a fifth lower for its width, the canopy now standing proud of it. Everything rides with the body: the cheek ports and their troughs, the pop-up and the canards forward with the nose, the pods a little forward and higher up the chamfers so their slots clear the wings stowed under them, the wings a little lower inside, the tail fins, the rear boosters and their tailplanes and the exhaust moved up with the tail, the needle twelve long. Ryan's to judge running: Walk for the change by speed, Acts for the transition.",
    "images": [
     {
      "file": "needletail/needletail_front.png",
-     "alt": "needletail, hover mode, front: the guns run out a short way, the front boosters a little further out"
+     "alt": "needletail, hover mode, front: the shorter, flatter body"
     },
     {
      "file": "needletail/needletail_rear.png",
-     "alt": "needletail, hover mode, rear: the rear boosters a little further out than two cuts ago"
+     "alt": "needletail, hover mode, rear"
     },
     {
      "file": "needletail/needletail_above.png",
-     "alt": "needletail, hover mode, from above"
+     "alt": "needletail, hover mode, from above: the shorter nose"
     },
     {
      "file": "needletail/needletail_flight.png",
-     "alt": "needletail, flight mode, front: the troughs' covers flush ahead of each little bulge"
+     "alt": "needletail, flight mode, front"
     },
     {
      "file": "needletail/needletail_flight_above.png",
-     "alt": "needletail, flight mode, from above: the wings' small flat tips"
+     "alt": "needletail, flight mode, from above"
     },
     {
      "file": "needletail/needletail_changing.png",
@@ -638,7 +638,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the seventh cut, 13 November (the guns run far out, the troughs open in flight, pointed wings, the rear boosters at 26 units out)",
+    "summary": "Before: the eighth cut, 13 November (the nose a sixth longer, the whole body a fifth taller)",
     "images": [
      {
       "file": "needletail/before_needletail_front.png",
