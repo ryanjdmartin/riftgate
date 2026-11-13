@@ -27,8 +27,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1155 tests, 371,639 checks, green on `ccr-b7d5164e-1wtzzm` (13 November, the Needletail's
-  fourth cut and the Giant Petrel's third on Ryan's notes over main at `6112939`). Before it, 1154 tests, 371,076
+- Tests: 1155 tests, 371,933 checks, green on `ccr-b7d5164e-1wtzzm` (13 November, the Needletail's
+  fifth cut and the Giant Petrel's fourth on Ryan's notes over main at `6112939`). Before it, 1154 tests, 371,076
   checks, green on main (12 November, as `ccr-4d58b054-3lyj0a` landed
   with the vent blast's and Siphoning's cut, the Overrun Gearing, the Shift Whistle dealt, the
   Whip Scorpion's broadside and its two new idle acts, over the dead-code pass and the four
@@ -445,22 +445,26 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   not on main): built that day on Ryan's design and his mix, then reworked on his notes of that
   evening and 13 November (the bible's Kestrel row). The Needletail: a jet's chined fuselage
   (its round second cut retired: "I didn't literally mean round like a rocket"), shorter than the
-  first cut, the canopy amidships, the nose one long smooth taper to the needle; it stands and
-  fights in hover mode, four shorter boosters upright on swivels (the front pair on short
-  canards, the rear on tailplanes among long, steep X fins, six fins in all), two pods raised out
-  of dark slots in the upper chamfers behind the canopy, its cheek guns inside the nose with each
-  muzzle bared in a short recess, the Fovea Designator a low wedge pop-up after a sports car's;
-  on the map its gait changes it into flight mode as it gathers speed (the cheek guns in and a
-  short teardrop clamshell rolling shut over each barrel's tip on the gun's own line, the pods sunk
-  flush, the boosters level and run in along their fins, the swept wings out) and back as it
-  slows, its transition act the same change on the spot. A near-black tile (`void`) lines the
+  first cut, a long canopy amidships, the nose full through the guns and then a sharp taper to its
+  point; it stands and fights in hover mode, four shorter boosters upright on swivels (the front
+  pair on short canards beside the pop-up, the thicker rear pair on tailplanes among long, steep X
+  fins, six fins in all), two pods raised out of dark slots in the upper chamfers behind the
+  canopy, its cheek guns cut into the nose with each muzzle bared in a teardrop recess and nothing
+  proud of its line, the Fovea Designator a low wedge pop-up after a sports car's, its lamp behind
+  a six-bladed iris that widens and narrows as it paints, the tail's whole face a cut-out exhaust
+  round a needle fifteen long; on the map its gait changes it into flight mode as it gathers speed
+  (the cheek guns in and a short teardrop clamshell rolling shut over each barrel's tip on the
+  gun's own line, the pods sunk flush, the iris shut and the pop-up folded, the boosters level and
+  run in along their fins, the swept wings out, the exhaust burning) and back as it slows, its
+  transition act the same change on the spot. A near-black tile (`void`) lines the
   recesses, Kestrel's "dark" tile being a mid grey its chrome lights. The Giant Petrel: the
   railgun alone on the centre bow and a Twin Autoguns on each hull's afterdeck, resting facing aft
   in line with the ship (the skirmish turns a gun from where it points as built,
-  `MechView3D.aim_rest`; only these two mounts rest off ahead); three salvo racks rippling ahead of
-  a raked mast; the racer's boosters on plinths either side of a raised aft deckhouse, the navy's
-  two back at the hulls' sterns, the aerofoil's fins at the hulls' outer edges; long windows down
-  the deckhouse's flanks; the cushion open fore and aft. A render round in the hangar's Models tab
+  `MechView3D.aim_rest`; only these two mounts rest off ahead); three salvo racks in line down the
+  roof rippling ahead of a raked mast, eighteen tubes; the racer's boosters on plinths either side
+  of a raised aft deckhouse, the navy's two back at the hulls' sterns, the aerofoil's fins at the
+  hulls' outer edges; the deckhouse's front rounded and raked, the bridge's glass wrapping it; long
+  windows down its flanks; the cushion open fore and aft. A render round in the hangar's Models tab
   for each at every cut (the last cut as Before); 1155 tests green.
 
 - **The Ammit's rework** (`ccr-8af28d03-re9kz4`, Ryan's own design, 12 November; on main): "The 4
