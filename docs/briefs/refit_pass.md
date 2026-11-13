@@ -2261,3 +2261,115 @@ the bench: it remakes heat's economy, so it is no step toward one shape that wor
 The reboot's rules are small dials round one decision, the block, and the block is right
 only against foes built to threaten it (section 16). So the next step is unchanged: the
 foes' kits, proposed in chat against the model.
+
+## 19. His menu of pieces, spliced into builds (13 November; nothing decided)
+
+His words: "Ok so we've got various pieces here to pick and choose from and splice together
+somehow:"
+
+> Shield options:
+> - Passive regeneration every turn, or not
+> - Blocking a blow when broken, or letting it spill
+> - When broken, a delay before it automatically recovers, either by resuming regeneration
+>   from zero or fully recovering. Or, no delay before regenerating. Or, no automatic recovery
+>   at all.
+> - Ending turn on a pass, or an explicit pass button, that triggers the shield to recover.
+>   Either by starting regeneration or by returning to full. Either always available, or only
+>   after a break. Or, no manual trigger exists.
+> - An interaction between taking damage and slowing, or stopping, shield regeneration, with a
+>   duration for the effect. Or damage does not affect shield properties.
+>
+> Heat options:
+> - Heat passively cools every turn, or not
+> - Ending turn on a pass, or an explicit pass button, that triggers the cooling. Either by
+>   starting passive cooling or by returning to empty. Either always available, or only after
+>   an overheat. Or, no manual trigger exists.
+> - Overheat damages the hull then returns to max. Or, overheat damages the hull and stays
+>   overheated.
+> - Overheat triggers a "shutdown," forcing a pass, as in the point two above. Or, overheat
+>   still allows the unit to act, at a penalty.
+>
+> Combined options:
+> - Heat and Shield are one bar. Both heat and damage drain the shared bar. The above options
+>   then apply to both simultaneously (where they make sense). Or, they stay seperate.
+> - Heat impacts shield regeneration, either slowing or stopping it, or actively draining it,
+>   at thresholds or as a sliding scale. Or not.
+> - Overheating crashes the shield, reducing it to zero. Any of the above options could apply
+>   to restarting it, either just the shield or as a "shutdown" that recovers both heat and
+>   shield. Or we leave them as separate mechanics.
+> - Heat directly reduces maximum shield. Somewhat like the above, but softer and persistent.
+>   Or not.
+
+**The model plays whole builds** for it (`python3 tools/shield_model.py --builds`): the squad
+and the gun of section 18, a die that is a dud one round in five, and a pass that does what
+the build says. A machine passes on a dud, to keep from overheating, and, in the second way
+of playing, whenever a pass would recover anything. A pass exists in the engine already: a
+machine that ends the turn with its die unspent. A fight of four rounds at full fire, the
+pack dealing 12 a round; the squad's hull lost, firing whenever it can:
+
+| The build | A lone blow of 12 | Two strikes, 8 then 4 | 12 on the same machine every round | Four foes of 3 | 4 on every machine | Its rounds |
+|---|---|---|---|---|---|---|
+| As built | 28% | 27% | 36% | 3% | 25% | 5.4 |
+| As built, no regen while hot | 29% | 28% | 36% | 3% | 27% | 5.4 |
+| As built, heat lowers the shield's maximum | 29% | 28% | 37% | 3% | 25% | 5.4 |
+| As built, and a pass reboots a broken shield | 26% | 25% | 31% | 3% | 19% | 5.4 |
+| No regen, no cooling: a pass reboots a broken shield and vents | 31% | 29% | 38% | 6% | 29% | 6.2 |
+| The same with the block | 13% | 28% | 28% | 4% | 27% | 6.1 |
+| The same, the shield back the turn it passes | 30% | 28% | 40% | 5% | 22% | 6.2 |
+| The same, a pass refills any shield | 31% | 29% | 38% | 4% | 25% | 6.2 |
+| One bar: shots and hits drain it, a pass refills it | 15% | 15% | 34% | 2% | 18% | 6.1 |
+
+The same builds with the squad passing whenever a pass recovers anything, where that moves
+them: against the foe that strikes every machine, the shield back the same turn 4% in 8.8
+rounds with half the turns passed, a pass that refills any shield 3% in 8.8 rounds, one bar
+1% in 6.7; against the lone blow, the block 9% where it is 13%, and the build without it
+31% either way; against the hunter, the build without the block 46% where it is 38%.
+
+By the gun's heat, the lone blow, the hull lost at 2, 4 and 6 heat: as built 28%, 28%, 51%;
+a pass that reboots and vents 29%, 31%, 34%; one bar 8%, 13%, 22%.
+
+**His menu, line by line**, with what the models say:
+
+| His option | The read | Claude's pick |
+|---|---|---|
+| Passive regen every turn | Regen and cooling together are worth 5 points beside a pass that does both (26% against 31%) | Not, where the pass recovers: the pass is then the one way back |
+| A break blocks or spills | The block is still a wall against a lone blow (13% against 31%, 9% played to the full) and nothing else | Spill first; the block waits on foes built for it (section 16) |
+| After a break, a delay, or no automatic recovery | A delay alone moved nothing (section 18) | No automatic recovery: it comes back on a pass |
+| A pass recovers the shield | To full, only after a break, landing as the next round opens: no turtle, and passing where it is not needed buys nothing | Yes, that form |
+| The same, always available or the same turn | The turtle: against a foe that touches every machine the squad passes half its turns and loses 3 to 4% in a fight half again as long | Neither |
+| Damage slows or stops regen | Flat, and beaten by anything that touches everyone (section 16); with no regen there is nothing to stop | Not |
+| Heat cools every turn | With a pass that vents, it only blurs the count of shots | Not, or a point as a chassis's own |
+| A pass vents | Heat's price becomes the shots between passes, a gentle slope where as built it is nothing and then a wall | Yes, to empty, always |
+| Overheat burns and settles, or stays | Not modelled: nothing in the model overheats on purpose | Stays, as the next line |
+| Overheat shuts the machine down for a turn | The same | Yes: one state for a broken shield and an overheat, one answer to both |
+| One bar | It protects most (15%) since a pass refills all of it, turtles against chip (1%), and heat's price is steeper (8%, 13%, 22%) | Not first |
+| Heat slows the regen | A few points worse, and no decision in it | Not |
+| Overheating crashes the shield, a shutdown recovers both | Part of the shutdown above | Yes |
+| Heat lowers the shield's maximum | A few points worse, and no decision in it | Not |
+
+**The splice, Claude's, his to take or leave.** Four rules:
+
+1. A shield takes its number and the rest reaches the hull. It does not regenerate.
+2. A shield at nothing is down until its machine passes a turn; it is back whole as the next
+   round opens.
+3. Heat does not cool by itself. A pass empties it.
+4. A machine that overheats is down the same way: its shield off, and its next turn a pass.
+
+One verb, the pass, and one state, down. Who it protects: the machine whose die failed, since
+a dud is a pass and a pass is the recovery; and the lights by the gauge's own number, a blow
+costing what it says. What threatens it, all in the foes' vocabulary today: a blow at or over
+a gauge costs a turn as well as hull; a foe that strikes every machine can break four shields
+and cost a round; a hunter, or the exposed aim, finds the machine while it is down; burn and
+scorch cut the shots between passes. The counterplay on the player's side is when to pass:
+with the heat, with a dud, before the hunter comes back. In the model it protects as the
+shield as built does (31% against 28%), its fights run a sixth longer in rounds, a turn in
+three is a pass where a turn in five is a dud already, and passing where nothing is to be
+recovered buys nothing, so no round is safer than the one before it.
+
+What it leaves open: the block, as a clause to add once foes are built for it; whether an
+overheat burns hull as well as shutting the machine down; and a point of cooling or regen as
+a chassis's own, Kestrel's first.
+
+What it costs to come: every chassis's regen and cooling, the overheat's rule, the machines
+that read heat or a pass (the Whip Scorpion's release is a pass already), the weapons'
+damage if a fight is to run as long as it does, and the foes' numbers read again.

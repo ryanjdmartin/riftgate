@@ -981,8 +981,18 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   (`--fight`; the brief's section 18): the growth is a rule a player would seldom meet, the
   first reboot's length is the dial, and without the block no reboot rule moves a fight; the
   one gauge is one currency, heat costing from the first point where as built it is free and
-  then a wall, coherent and a rework of heat's economy. The decision stays the block or not,
-  the foes' kits first. His marks on 4-4-2 are in ("That's probably fine for 4-4-2 for
+  then a wall, coherent and a rework of heat's economy. He then laid the pieces out as a
+  menu to splice, and the model plays whole builds of them (`--builds`; the brief's section
+  19). Claude's splice, his to take or leave: a shield that takes its number and does not
+  regenerate, down at nothing until its machine passes a turn and back whole the round
+  after; heat that cools only on a pass; an overheat that puts a machine down the same way.
+  One verb and one state; a dud die is a pass and so a recovery; heat's price is the shots
+  between passes (29%, 31%, 34% of the squad's hull at 2, 4, 6 heat where as built reads
+  28%, 28%, 51%); it protects as the shield as built does in fights a sixth longer, and
+  every threat to it is in the foes' vocabulary today. Dropped by the model: a pass that
+  refills any shield or lands the same turn (the turtle), heat against the shield's regen or
+  maximum, one bar as a first step. The block stays a clause for later, with foes built for
+  it. His call; nothing built. His marks on 4-4-2 are in ("That's probably fine for 4-4-2 for
   now": the brief's section 13 has the table with his words, each open place its chassis's
   session's). Also open, his: the first battle's block (not scaled:
   on the anchor's numbers a mustering trio with the Honey Badger wins 0 to 5% of the
@@ -990,7 +1000,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   quarters for its rank and file a trio keeps its hull, and the trios with the Badger still
   lose the wall); the Waste's bosses and the Peak's clock; the Prairie Dog alone. The
   muster rule and the fight-at-its-rating read are scratch probes; the runner still plays
-  the defence rule. The bible's triangle, scale, shield and Barrier rows and section 12 (v0.568);
+  the defence rule. The bible's triangle, scale, shield and Barrier rows and section 12 (v0.569);
   the rules' chassis, basics, heat and scale lines.
 - **Four formations cut toward the budget, 4-4-2 to work with, and the anchor** (Ryan, 12
   November: "Yes go ahead with 2. Also, let's look at 4-4-2 right now so that you're working
@@ -1688,7 +1698,7 @@ commands are in `README.md`.
   that leaned on them, the triangle row's heat prices, the anchor's tier-one lines, Reset let go,
   the Barrier's cooldown and place, the shield's worth and the grant withdrawn, tier as a
   machine's word, and the looks row's Kite for its shipped mount. BASE for the next merge is
-  `620c717`'s file. Main's file is v0.568 since
+  `620c717`'s file. Main's file is v0.569 since
   `ccr-722ca9f0-yj8na3` landed again the same day (section 12's breaking shield, his idea of 13
   November read as a what-if, and the method his question set), unpublished, its republish on
   Ryan's word. The

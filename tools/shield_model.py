@@ -35,6 +35,15 @@ heat, or holds; the pack dies front foe first. It prints:
      with the block and without, by the fight's length.
   7. One gauge that fills from heat and from hits (his form of the same day), beside the
      shield and the heat gauge as built, by the gun's heat.
+
+    python3 tools/shield_model.py --builds   # his menu of 13 November spliced into rule sets
+
+The third model plays whole rule sets, each a splice of the options he listed: the shield's
+regen, the block, what a pass recovers, cooling, one bar for both. A machine passes when its
+die is a dud (one round in five), when its build says a pass would recover something, or when
+its shot would overheat it; else it fires. It prints each build against each pack twice, by
+the squad that fires whenever it can and by the squad that passes whenever a pass recovers
+anything, and then the builds by the gun's heat.
 """
 import argparse
 import random
@@ -442,6 +451,202 @@ def fights(a):
         table("One gauge for hits and heat, a fight of %d rounds at full fire: its rounds, the hull lost, the shots held" % length, rows, heads)
 
 
+# ---------------------------------------------------------------- the builds (--builds)
+# A build is a splice of the options of 13 November. regen and cooling are what returns every
+# round with nothing done. reboot: what a pass does for the shield as the next round opens,
+# "broken" (a broken shield back whole, and a broken shield never recovers by itself where
+# regen is nothing), "always" (any shield back whole) or absent. vent: a pass empties the heat.
+# block: the blow that breaks the shield is stopped whole. now: the pass's shield is back the
+# same turn, before the foes strike. one_bar: no shield and no heat gauge; shots and hits drain
+# one bar the size of both, a pass refills it, and at nothing the hull takes what is left.
+# hot_stops: no regen while the heat stands at half its maximum or more. heat_cuts: the shield's
+# maximum is lower by a third of the heat the machine carries.
+BUILDS = [
+    ("As built", {"regen": 1, "cooling": 2}),
+    ("As built, no regen while hot", {"regen": 1, "cooling": 2, "hot_stops": True}),
+    ("As built, heat lowers the shield's maximum", {"regen": 1, "cooling": 2, "heat_cuts": True}),
+    ("As built, and a pass reboots a broken shield", {"regen": 1, "cooling": 2, "reboot": "broken"}),
+    ("No regen, no cooling: a pass reboots a broken shield and vents", {"regen": 0, "cooling": 0, "reboot": "broken", "vent": True}),
+    ("The same with the block", {"regen": 0, "cooling": 0, "reboot": "broken", "vent": True, "block": True}),
+    ("The same, the shield back the turn it passes", {"regen": 0, "cooling": 0, "reboot": "broken", "vent": True, "now": True}),
+    ("The same, a pass refills any shield", {"regen": 0, "cooling": 0, "reboot": "always", "vent": True}),
+    ("One bar: shots and hits drain it, a pass refills it", {"regen": 0, "cooling": 0, "one_bar": True}),
+]
+DUD = 0.2   # a machine's die shows nothing it can fire, one round in five
+
+
+class Unit:
+    __slots__ = ("hull", "gauge", "armour", "shield", "heat", "down", "passed", "bar", "cap")
+
+    def __init__(self, spec):
+        self.hull = spec["hull"]
+        self.gauge = spec["gauge"]
+        self.armour = spec["armour"]
+        self.shield = self.gauge
+        self.heat = 0
+        self.down = False
+        self.passed = False
+        self.cap = HEAT_MAX + self.gauge
+        self.bar = self.cap
+
+
+def bout(build, pack, rng, gun_heat=4, eager=True, risk=2, cap_rounds=16):
+    """A fight that ends, on a build. Returns rounds, hull lost, wrecks, the share of
+    machine-turns passed. eager: the squad passes whenever a pass would recover anything;
+    else it passes only on a dud or to keep from overheating."""
+    squad = [Unit(s) for s in SQUAD]
+    foes = [dict(f) for f in pack]
+    one = bool(build.get("one_bar"))
+    start = sum(u.hull for u in squad)
+    passes = turns = rounds = 0
+    while rounds < cap_rounds and any(f["hp"] > 0 for f in foes) and any(u.hull > 0 for u in squad):
+        rounds += 1
+        if rounds > 1:
+            for u in squad:
+                if u.hull <= 0:
+                    continue
+                if one:
+                    u.bar = u.cap if u.passed else u.bar
+                else:
+                    u.heat = 0 if (u.passed and build.get("vent")) else max(0, u.heat - build["cooling"])
+                    if u.passed and not build.get("now"):
+                        _reboot(u, build)
+                    top = u.gauge - (u.heat // 3 if build.get("heat_cuts") else 0)
+                    u.shield = min(u.shield, max(0, top))
+                    if build["regen"] and u.shield < top and not (build.get("hot_stops") and u.heat * 2 >= HEAT_MAX):
+                        u.shield = min(top, u.shield + build["regen"])
+                u.passed = False
+        standing = [f for f in foes if f["hp"] > 0]
+        intents = picks(squad, [(f["pick"], f["blows"], f["rider"]) for f in standing], rng)
+        fire = 0
+        for u in squad:
+            if u.hull <= 0:
+                continue
+            turns += 1
+            want = rng.random() < DUD
+            if one:
+                want = want or u.bar < gun_heat or (eager and u.bar * 4 <= u.cap)
+            else:
+                over = u.heat + gun_heat - HEAT_MAX
+                want = want or (over > 0 if build.get("vent") else over > risk)
+                if eager and build.get("reboot") == "broken" and u.down:
+                    want = True
+                if eager and build.get("reboot") == "always" and u.shield * 2 <= u.gauge:
+                    want = True
+            if want:
+                passes += 1
+                u.passed = True
+                if build.get("now") and not one:
+                    _reboot(u, build)
+                continue
+            if one:
+                u.bar -= gun_heat
+            else:
+                u.heat += gun_heat
+            fire += GUN_DAMAGE
+        for f in foes:
+            if f["hp"] > 0 and fire > 0:
+                took = min(f["hp"], fire)
+                f["hp"] -= took
+                fire -= took
+        for u in squad:
+            if not one and u.hull > 0 and u.heat > HEAT_MAX:
+                u.hull -= u.heat - HEAT_MAX   # an overheat, as built
+                u.heat = HEAT_MAX
+        for (target, blows, _), f in zip(intents, standing):
+            if f["hp"] <= 0:
+                continue
+            for b in blows:
+                if target == "all":
+                    for u in squad:
+                        _take(u, b, build, one)
+                    continue
+                at = target
+                if squad[at].hull <= 0:
+                    live = [i for i, u in enumerate(squad) if u.hull > 0]
+                    if not live:
+                        break
+                    at = live[0]
+                _take(squad[at], b, build, one)
+    lost = start - sum(max(0, u.hull) for u in squad)
+    return rounds, lost, sum(1 for u in squad if u.hull <= 0), passes / float(max(1, turns))
+
+
+def _reboot(u, build):
+    if build.get("reboot") == "always" or (build.get("reboot") == "broken" and u.down):
+        u.shield = u.gauge
+        u.down = False
+
+
+def _take(u, amount, build, one):
+    if u.hull <= 0 or amount <= 0:
+        return
+    if one:
+        absorbed = min(u.bar, amount)
+        broke = absorbed > 0 and u.bar == absorbed
+        u.bar -= absorbed
+    else:
+        absorbed = min(u.shield, amount)
+        broke = absorbed > 0 and u.shield == absorbed
+        u.shield -= absorbed
+        if broke:
+            u.down = True
+    through = 0 if (broke and build.get("block")) else amount - absorbed
+    u.hull -= max(0, through - u.armour)
+
+
+def build_packs(length, blow):
+    out = packs(length, blow)
+    hp = GUN_DAMAGE * len(SQUAD) * length
+    out.append(("A lone foe, %d on every machine" % (blow // 3), [{"hp": hp, "pick": "all", "blows": [blow // 3], "rider": None}]))
+    return out
+
+
+def builds(a):
+    hull = float(sum(m["hull"] for m in SQUAD))
+    n = max(1, a.trials // 3)
+    print("The builds: the same squad and gun, the pack dealing %d a round, a die that is a dud one round in five, %d fights a cell. No content." % (a.blow, n))
+    print()
+    for length in (4, 6):
+        for eager, label in ((False, "the squad fires whenever it can"), (True, "the squad passes whenever a pass recovers anything")):
+            names = [p for p, _ in build_packs(length, a.blow)]
+            print("A fight of %d rounds at full fire, %s: the hull lost, the rounds, the turns passed" % (length, label))
+            print()
+            print("| The build | " + " | ".join(names) + " |")
+            print("|---|" + "---|" * len(names))
+            for bname, build in BUILDS:
+                cells = []
+                for pname, pack in build_packs(length, a.blow):
+                    rng = random.Random(a.seed)
+                    rs = ls = ps = 0
+                    for _ in range(n):
+                        r, l, w, p = bout(build, pack, rng, 4, eager)
+                        rs += r
+                        ls += l
+                        ps += p
+                    cells.append("%d%%, %.1f, %d%%" % (round(100.0 * ls / n / hull), rs / n, round(100.0 * ps / n)))
+                print("| %s | %s |" % (bname, " | ".join(cells)))
+            print()
+    print("By the gun's heat, a fight of 4 rounds against the lone blow, the squad passing whenever a pass recovers anything: the hull lost, the rounds, the turns passed")
+    print()
+    print("| The build | A gun of 2 heat | A gun of 4 heat | A gun of 6 heat |")
+    print("|---|---|---|---|")
+    pack = build_packs(4, a.blow)[0][1]
+    for bname, build in BUILDS:
+        cells = []
+        for heat in (2, 4, 6):
+            rng = random.Random(a.seed)
+            rs = ls = ps = 0
+            for _ in range(n):
+                r, l, w, p = bout(build, pack, rng, heat, True)
+                rs += r
+                ls += l
+                ps += p
+            cells.append("%d%%, %.1f, %d%%" % (round(100.0 * ls / n / hull), rs / n, round(100.0 * ps / n)))
+        print("| %s | %s |" % (bname, " | ".join(cells)))
+    print()
+
+
 def table(title, rows, heads):
     print(title)
     print()
@@ -461,6 +666,7 @@ def main():
     ap.add_argument("--bench", action="store_true", help="the wider bench alone")
     ap.add_argument("--fight", action="store_true", help="the fight that ends: the reboot that grows, and one gauge for hits and heat")
     ap.add_argument("--blow", type=int, default=12, help="what a pack deals a round in the fight that ends")
+    ap.add_argument("--builds", action="store_true", help="his menu of 13 November spliced into rule sets")
     a = ap.parse_args()
     dealt = a.damage * a.rounds
     heads = [name for name, _ in RULES]
@@ -469,6 +675,9 @@ def main():
         return
     if a.fight:
         fights(a)
+        return
+    if a.builds:
+        builds(a)
         return
     print("The shield's model: a plated machine (hull 36, shield 6, armour 1) and three lights (hull 20, shield 8), %d damage a round for %d rounds in each shape, %d fights a cell. No dice, no kills, no content." % (a.damage, a.rounds, a.trials))
     print()
