@@ -704,7 +704,7 @@ class Build:
             bm.to_mesh(ob.data)
             bm.free()
 
-    def pin(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, parts=(), carries=None, fits=None, hidden=False):
+    def pin(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, parts=(), carries=None, fits=None, hidden=False, up=None):
         """A socket: an Empty named `hp_<n>` at `at`, its own +y along `forward` (where the
         weapon points) and its scale the size a mounted component wears there, so the
         engine can hang a component's shape under it with no arithmetic. `parts` are the
@@ -725,6 +725,12 @@ class Build:
         deeper? ... a round missile rack doesn't need to poke out at all"). The sidecar carries
         it (rig()'s `fits`); the engine hangs what it names.
 
+        `up`, given, is the way the pin's +z leans, kept square to `forward`, so a class rides a
+        tilted face the way the face lies (the Needletail's pods on its upper chamfers, Ryan, 13
+        November: "Can the upper pod mounts be angled to match the angle of the pod they sit
+        in?"); unnamed, +z stays as near world up as `forward` allows (pin_frame). The engine
+        hangs a class under the pin, so it wears the whole frame.
+
         `hidden` makes a mount that shows nothing, its stock or a fitted component's class (the
         Cottonmouth's guns, mounted inside its drum: Ryan, 19 October, "the guns mounted
         (invisibly) inside"): still a hardpoint, counted and recording what it carries, with no
@@ -742,7 +748,7 @@ class Build:
                 self.hidden.append(name)
         e = bpy.data.objects.new(name, None)
         e.empty_display_size = 2.0
-        m = Matrix.Translation(Vector(at)) @ pin_frame(forward).to_4x4() @ Matrix.Scale(scale, 4)
+        m = Matrix.Translation(Vector(at)) @ pin_frame(forward, up).to_4x4() @ Matrix.Scale(scale, 4)
         e.matrix_world = m
         bpy.context.scene.collection.objects.link(e)
         self.pins.append(e)
@@ -1365,23 +1371,23 @@ class Build:
             ob.matrix_world = m
         return self.pin(name, at, forward, scale, carries="", fits=fits)
 
-    def stock(self, name, at, shape, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None, fits=None):
+    def stock(self, name, at, shape, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None, fits=None, up=None):
         """A pin whose stock component is one of the silhouette classes (models_low.SHAPES),
         built at the origin along +y and moved onto the pin's frame at its scale: the way a
         swapped component will sit there, so the machine is judged wearing one, in the variant
         and at the scale the pin's `fits` give its class. `carries` names the component
-        (pin()); its class is `shape`."""
+        (pin()); its class is `shape`; `up` leans the pin's frame (pin())."""
         import models_low
         start = len(self.objects)
         self.stock_shapes[name] = shape
         fit = _fits(self.name, name, fits or {}).get(shape, {})
         models_low.shape_builder(fit.get("shape", shape))(self, 1.0)
-        m = (Matrix.Translation(Vector(at)) @ pin_frame(forward).to_4x4() @ Matrix.Scale(scale, 4)
+        m = (Matrix.Translation(Vector(at)) @ pin_frame(forward, up).to_4x4() @ Matrix.Scale(scale, 4)
              @ Matrix.Translation((0.0, -fit.get("sink", 0.0), 0.0)) @ Matrix.Scale(fit.get("scale", 1.0), 4))
         parts = self.objects[start:]
         for ob in parts:
             ob.matrix_world = m
-        return self.pin(name, at, forward, scale, parts, carries=carries, fits=fits)
+        return self.pin(name, at, forward, scale, parts, carries=carries, fits=fits, up=up)
 
 
 def _fits(model, pin, fits):
@@ -1522,12 +1528,13 @@ class _Joint:
         return False
 
 
-def pin_frame(forward):
+def pin_frame(forward, up=None):
     """The rotation that turns +y onto `forward`, keeping +z as up where it can (a pin
     pointing straight up or down takes -y or +y as its up, so a rack firing upward wears
-    its top toward the tail)."""
+    its top toward the tail); `up`, given, is the way +z leans instead, kept square to
+    `forward`."""
     f = Vector(forward).normalized()
-    hint = Vector((0.0, 0.0, 1.0))
+    hint = Vector(up).normalized() if up is not None else Vector((0.0, 0.0, 1.0))
     if abs(f.dot(hint)) > 0.999:
         hint = Vector((0.0, -1.0, 0.0)) if f.z > 0 else Vector((0.0, 1.0, 0.0))
     z = (hint - f * hint.dot(f)).normalized()

@@ -621,12 +621,12 @@
    }
   },
   "needletail": {
-   "when": "Ryan's tenth note on its two modes, 13 November.",
-   "note": "Ryan, 13 November, on the ninth cut: “Also, racks, blades and dishes still float out of the front gun ports.” The cheeks now wear the port forms the Kite's port was given on 12 November, each rooted in the open recess and run out of its point: a launcher the port rack, its drum from the recess's back with its face just out of the port; a dish the port dish at the rack's diameter (Ryan's of the Kite's, 12 November: “same diameter as the rack”), its sleeve from the same root and its mast running the dish out to the port's mouth; a blade the standard one, its bracket filling the recess and the blade run out along the trough; twin barrels as they were, their receiver in the recess. In flight each runs back with the gun, under the shut blister. The body and the first six pictures are the ninth cut's, unchanged (the nose a sixth shorter than the eighth's, the whole body a fifth lower, about 100 units from point to needle); the last three are the new fits close up, a Shotfire Rack and a Chainsaw Claw in the left cheek and a Halo Projector in the right. Ryan's to judge running: Walk for the change by speed, Acts for the transition.",
+   "when": "Ryan's eleventh notes on its two modes, 13 November.",
+   "note": "Ryan, 13 November, on the tenth cut: “Can the upper pod mounts be angled to match the angle of the pod they sit in?” and “I think it needs more of the tapered part of the nose, and less body. If the canards moved up, that should give you room, right?” Each pod's mount now leans with its pod, square to the chamfer it is a slab of, so a class sits square in the pod's face, twin barrels side by side along the slope (the last picture, the Twin Autoguns in the left pod). The nose is one longer taper, reaching the body's full width only at the canopy's front third, so the straight body behind it is shorter; the machine's length is unchanged (about 100 from point to needle). The cheek ports moved 1.3 back with the taper, where the nose still narrows fast enough to bury the guns, the guns 0.85 closer in, their blisters bulging a little more (0.63 at their widest, 0.48 before). The canards moved 3 forward, beside the pop-up and just behind the cheeks' recesses, and the wings 2.5 forward with them, a little inboard so their roots stay inside the narrower body; in flight each front booster toes in about 9 degrees along the narrowing nose, so it still sits against the body its whole length. The rack, the dish and the blade in the cheeks are the tenth cut's port forms. Ryan's to judge running: Walk for the change by speed, Acts for the transition.",
    "images": [
     {
      "file": "needletail/needletail_front.png",
-     "alt": "needletail, hover mode, front: the shorter, flatter body"
+     "alt": "needletail, hover mode, front: the longer taper, the canards forward"
     },
     {
      "file": "needletail/needletail_rear.png",
@@ -634,7 +634,7 @@
     },
     {
      "file": "needletail/needletail_above.png",
-     "alt": "needletail, hover mode, from above: the shorter nose"
+     "alt": "needletail, hover mode, from above: the taper to the canopy's front third"
     },
     {
      "file": "needletail/needletail_flight.png",
@@ -642,39 +642,47 @@
     },
     {
      "file": "needletail/needletail_flight_above.png",
-     "alt": "needletail, flight mode, from above"
+     "alt": "needletail, flight mode, from above: the front boosters toed in along the nose"
     },
     {
      "file": "needletail/needletail_changing.png",
      "alt": "needletail, changing: the guns running in, the blisters shutting, the boosters swivelling"
     },
     {
-     "file": "needletail/needletail_port_rack.png",
-     "alt": "needletail, the left cheek with a Shotfire Rack: the port rack's drum in the recess, its face out of the port"
-    },
-    {
-     "file": "needletail/needletail_port_dish.png",
-     "alt": "needletail, the right cheek with a Halo Projector: the port dish on its mast out of the recess"
-    },
-    {
-     "file": "needletail/needletail_port_blade.png",
-     "alt": "needletail, the left cheek with a Chainsaw Claw: the blade's bracket in the recess, the blade out along the trough"
+     "file": "needletail/needletail_pod.png",
+     "alt": "needletail, the left pod with the Twin Autoguns: the mount leaning with the pod"
     }
    ],
    "before": {
-    "summary": "Before: the ninth cut's cheek fits, 13 November (the round rack, the dish and the blade set out ahead of the recesses, on nothing)",
+    "summary": "Before: the tenth cut, 13 November (the nose's taper reaching the body's width beside the pop-up, the canards and the wings 3 further back, the pods' mounts level)",
     "images": [
      {
-      "file": "needletail/before_needletail_port_rack.png",
-      "alt": "Earlier: the left cheek with a Shotfire Rack"
+      "file": "needletail/before_needletail_front.png",
+      "alt": "Earlier: needletail, hover mode, front"
      },
      {
-      "file": "needletail/before_needletail_port_dish.png",
-      "alt": "Earlier: the right cheek with a Halo Projector"
+      "file": "needletail/before_needletail_rear.png",
+      "alt": "Earlier: needletail, hover mode, rear"
      },
      {
-      "file": "needletail/before_needletail_port_blade.png",
-      "alt": "Earlier: the left cheek with a Chainsaw Claw"
+      "file": "needletail/before_needletail_above.png",
+      "alt": "Earlier: needletail, hover mode, from above"
+     },
+     {
+      "file": "needletail/before_needletail_flight.png",
+      "alt": "Earlier: needletail, flight mode, front"
+     },
+     {
+      "file": "needletail/before_needletail_flight_above.png",
+      "alt": "Earlier: needletail, flight mode, from above"
+     },
+     {
+      "file": "needletail/before_needletail_changing.png",
+      "alt": "Earlier: needletail, changing"
+     },
+     {
+      "file": "needletail/before_needletail_pod.png",
+      "alt": "Earlier: the left pod with the Twin Autoguns, its mount level"
      }
     ]
    }
