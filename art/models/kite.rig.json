@@ -78,7 +78,8 @@
       "booster_ring",
       "exhaust",
       "driver_ring",
-      "driver_exhaust"
+      "driver_exhaust",
+      "tail_vent_glow"
      ],
      "keys": [
       [
@@ -312,7 +313,8 @@
       "booster_ring",
       "exhaust",
       "driver_ring",
-      "driver_exhaust"
+      "driver_exhaust",
+      "tail_vent_glow"
      ],
      "keys": [
       [
@@ -387,7 +389,8 @@
       "booster_ring",
       "exhaust",
       "driver_ring",
-      "driver_exhaust"
+      "driver_exhaust",
+      "tail_vent_glow"
      ],
      "keys": [
       [
@@ -1097,7 +1100,8 @@
       "booster_ring",
       "exhaust",
       "driver_ring",
-      "driver_exhaust"
+      "driver_exhaust",
+      "tail_vent_glow"
      ],
      "keys": [
       [
@@ -1910,7 +1914,8 @@
       "booster_ring",
       "exhaust",
       "driver_ring",
-      "driver_exhaust"
+      "driver_exhaust",
+      "tail_vent_glow"
      ],
      "keys": [
       [
@@ -1964,7 +1969,8 @@
     "booster_ring",
     "exhaust",
     "driver_ring",
-    "driver_exhaust"
+    "driver_exhaust",
+    "tail_vent_glow"
    ],
    "k": 8.0
   },
@@ -1990,7 +1996,8 @@
   "booster_ring",
   "driver_exhaust",
   "driver_ring",
-  "exhaust"
+  "exhaust",
+  "tail_vent_glow"
  ],
  "pins": {
   "hp_1": "transonic_rifle",
@@ -2038,19 +2045,17 @@
     "scale": 1.0
    },
    "rack": {
-    "shape": "rack_round",
-    "scale": 0.7,
-    "sink": -1.8
+    "shape": "rack_port",
+    "scale": 0.6
    },
    "twin_barrel": {
-    "shape": "twin_barrel",
-    "scale": 0.84,
-    "sink": 5.2
+    "shape": "twin_barrel_port",
+    "scale": 0.92
    },
    "dish": {
-    "shape": "dish",
+    "shape": "dish_port",
     "scale": 0.6,
-    "sink": -3.0
+    "sink": -2.0
    },
    "blade": {
     "shape": "blade",
