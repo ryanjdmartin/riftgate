@@ -1744,13 +1744,13 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 267 (13 November, from `ccr-b7d5164e-1wtzzm` at `49657a4`, ahead of main, for
-  Ryan's note on the Needletail's twelfth cut): its thirteenth cut's model and rig (the stowed
-  wings' leading edges a strip down each chine), its eight pictures with a strip close-up and the
-  twelfth cut's eight as Before, and `renders.json`, the page unchanged; the live version was 266,
-  this branch's own (the Giant Petrel's eighth cut, `4281557`, live from it), so `renders.json`
-  went up as the live one with the Needletail's entry replaced, its Kite entry still the live one
-  (main's shipped note for it, taken in with main, not published from here). `edits` and
+  page's Version 268 (13 November, from `ccr-b7d5164e-1wtzzm` at `aa6f646`, ahead of main, for
+  Ryan's notes on the Giant Petrel's eighth cut): its ninth cut's model and rig (no glass on the
+  corner facets, the spoiler's fins raked back), its seven pictures and the eighth cut's seven as
+  Before, and `renders.json`, the page unchanged; the live version was 267, this branch's own (the
+  Needletail's thirteenth cut, `49657a4`, live from it), so `renders.json` went up as the live one
+  with the Giant Petrel's entry replaced, its Kite entry still the live one (main's shipped note for
+  it, taken in with main, not published from here). `edits` and
   `text` empty, `designs` the two folded ideas. Version 254 (13 November,
   from `ccr-e3ddf00b-ilkwbi` at `0c03430`, ahead of main): the
   Kite's last round, its wings' back edge swept to match the front. The Kite's rounds went out
