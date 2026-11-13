@@ -610,7 +610,7 @@
   },
   "needletail": {
    "when": "Ryan's ninth notes on its two modes, 13 November.",
-   "note": "Ryan, 13 November, on the eighth cut: “Nice. I still find the body shape just a bit off. It feels too long, still, and could be flatter.” A ninth cut: the nose a sixth shorter from the canopy forward, the middle two units shorter and the tail three, so the machine is about a tenth shorter (about 100 units from point to needle, 111 before), and the whole body a fifth lower for its width, the canopy now standing proud of it. Everything rides with the body: the cheek ports and their troughs, the pop-up and the canards forward with the nose, the pods a little forward and higher up the chamfers so their slots clear the wings stowed under them, the wings a little lower inside, the tail fins, the rear boosters and their tailplanes and the exhaust moved up with the tail, the needle twelve long. Ryan's to judge running: Walk for the change by speed, Acts for the transition.",
+   "note": "Ryan, 13 November, on the eighth cut: “Nice. I still find the body shape just a bit off. It feels too long, still, and could be flatter.” A ninth cut: the nose a sixth shorter from the canopy forward, the middle two units shorter and the tail three, so the machine is about a tenth shorter (about 100 units from point to needle, 111 before), and the whole body a fifth lower for its width, the canopy now standing proud of it. Everything rides with the body: the cheek ports and their troughs, the pop-up and the canards forward with the nose, the pods a little forward and higher up the chamfers so their slots clear the wings stowed under them, the wings a little lower inside, the tail fins, the rear boosters and their tailplanes and the exhaust moved up with the tail, the needle still twelve past the tail's face. Ryan's to judge running: Walk for the change by speed, Acts for the transition.",
    "images": [
     {
      "file": "needletail/needletail_front.png",
@@ -707,20 +707,20 @@
    }
   },
   "giant_petrel": {
-   "when": "Ryan's fourth notes on the catamaran, 13 November.",
-   "note": "Ryan, 13 November, on the fourth cut: “The rear guns clip right through the rear spoiler. They'll need a different approach.” “the front can be more a angular take to match the rest of the body.” “ripple fire can be a bit more desynced from each other” “the front livery on the pontoon bits is a little meh” A fifth cut: the guns swung through the aerofoil's fins on the hulls' edges, so the aerofoil now rides on two swept pylons off the giant boosters' backs, an end plate under each tip high over the guns, and nothing stands on the hulls where the quarters swing; the deckhouse's front five big facets, the glass a pane on each; each salvo rack firing its six tubes at its own pace and in its own order; a cobalt spearhead down each bow's deck, narrowing to a point over the stem, its back cut on a slant. If you'd rather the guns moved instead (hung on the hulls' sides as sponsons, the fins kept), that's the other way. Ryan's to judge running: Acts for the salvo and the traverse.",
+   "when": "Ryan's fifth notes on the catamaran, 13 November.",
+   "note": "Ryan, 13 November, on the fifth cut: “I liked the other spoiler better. It was more aquatic, this one is like a race car.” “I think we have to move the rear guns entirely . We could cut some of the crew area out, or do something like mount them on omnidirectional mounts strapped to or embedded into the back quarters of the crew area, or something else.” “Front windshield is still too ‘soft.’ Not fast or sharp enough looking.” A sixth cut: the aerofoil back on its fins at the hulls' outer edges; the rear guns moved up onto omnidirectional domes on the deckhouse roof's back quarters, either side of the mast, resting facing aft, high enough to fire over the boosters and under the aerofoil, their arc from a little inboard of dead aft round the outboard side to a little past dead ahead (the mast and the racks close the rest), nothing anywhere in it, the afterdecks bare; the deckhouse's front a sharp prow raked steeply back, a raked pane each side of its crease with the outer pillar swept back, and a swept pane down each side coming to a point aft. Ryan's to judge running: Acts for the traverse and the salvo.",
    "images": [
     {
      "file": "giant_petrel/giant_petrel_front.png",
-     "alt": "giant petrel, front: the angular front and its wrapping glass, the bows' spearheads"
+     "alt": "giant petrel, front: the sharp prow and its swept glass, the domes on the roof's back quarters"
     },
     {
      "file": "giant_petrel/giant_petrel_rear.png",
-     "alt": "giant petrel, rear: the aerofoil on its pylons, the quarters' guns resting aft"
+     "alt": "giant petrel, rear: the aerofoil on its fins again, the domes' guns resting aft over the boosters"
     },
     {
      "file": "giant_petrel/giant_petrel_above.png",
-     "alt": "giant petrel, from above: the racks in line, the spearheads on the bows"
+     "alt": "giant petrel, from above: the prow, the racks in line, the two domes either side of the mast"
     },
     {
      "file": "giant_petrel/giant_petrel_salvo.png",
@@ -728,11 +728,11 @@
     },
     {
      "file": "giant_petrel/giant_petrel_quarters.png",
-     "alt": "giant petrel, the traverse, the quarters' guns swung out under the aerofoil's tips"
+     "alt": "giant petrel, the traverse, the domes' guns swung out over the sides"
     }
    ],
    "before": {
-    "summary": "Before: the fourth cut, 13 November (the aerofoil on fins at the hulls' edges, which the guns swung through; the front rounded in nine facets; a lockstep ripple; plain stripes on the bows)",
+    "summary": "Before: the fifth cut, 13 November (the aerofoil on pylons off the boosters, the quarters' gun houses on the afterdecks, a front of five facets)",
     "images": [
      {
       "file": "giant_petrel/before_giant_petrel_front.png",

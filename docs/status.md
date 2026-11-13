@@ -27,8 +27,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1155 tests, 371,967 checks, green on `ccr-b7d5164e-1wtzzm` (13 November, the Needletail's
-  ninth cut on Ryan's notes over main at `6112939`). Before it, 1154 tests, 371,076
+- Tests: 1155 tests, 371,949 checks, green on `ccr-b7d5164e-1wtzzm` (13 November, the Giant
+  Petrel's sixth cut on Ryan's notes over main at `6112939`). Before it, 1154 tests, 371,076
   checks, green on main (12 November, as `ccr-4d58b054-3lyj0a` landed
   with the vent blast's and Siphoning's cut, the Overrun Gearing, the Shift Whistle dealt, the
   Whip Scorpion's broadside and its two new idle acts, over the dead-code pass and the four
@@ -461,14 +461,15 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   fuselage, the exhaust burning white-hot) and back as it slows, its transition act the same
   change on the spot. A near-black tile (`void`) lines the
   recesses, Kestrel's "dark" tile being a mid grey its chrome lights. The Giant Petrel: the
-  railgun alone on the centre bow and a Twin Autoguns on each hull's afterdeck, resting facing aft
-  in line with the ship (the skirmish turns a gun from where it points as built,
-  `MechView3D.aim_rest`; only these two mounts rest off ahead), swinging under the aerofoil's tips,
-  which rides on pylons off the giant boosters; three salvo racks in line down the roof rippling
-  ahead of a raked mast, eighteen tubes, each rack at its own pace; the racer's boosters on plinths
-  either side of a raised aft deckhouse, the navy's two back at the hulls' sterns; the deckhouse's
-  front five big raked facets, the bridge's glass wrapping it; long windows down its flanks; a
-  cobalt spearhead down each bow; the cushion open fore and aft. A render round in the hangar's Models tab
+  railgun alone on the centre bow and a Twin Autoguns on an omnidirectional dome on each of the
+  deckhouse roof's back quarters, either side of the mast, resting facing aft in line with the
+  ship (the skirmish turns a gun from where it points as built, `MechView3D.aim_rest`; only these
+  two mounts rest off ahead), firing over everything astern; three salvo racks in line down the
+  roof rippling ahead of a raked mast, eighteen tubes, each rack at its own pace; the racer's
+  boosters on plinths either side of a raised aft deckhouse under its aerofoil on fins at the hulls'
+  outer edges, the navy's two back at the hulls' sterns; the deckhouse's front a sharp prow raked
+  steeply back, the bridge's glass swept round it to points; long windows down its flanks; a cobalt
+  spearhead down each bow; the cushion open fore and aft. A render round in the hangar's Models tab
   for each at every cut (the last cut as Before); 1155 tests green.
 
 - **The Ammit's rework** (`ccr-8af28d03-re9kz4`, Ryan's own design, 12 November; on main): "The 4

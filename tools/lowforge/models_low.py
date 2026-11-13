@@ -6189,6 +6189,22 @@ def _gp_gun_house(b, name, pin, shape, carries, cx, ty, tz, w, l, h, facing=0.0,
         b.stock(pin, tuple(at), shape, forward=tuple(fwd), scale=0.8, carries=carries, fits=fits)
 
 
+def _gp_dome_mount(b, name, pin, shape, carries, cx, cy, cz, r, facing=0.0, limits=(-75.0, 75.0), fits=None, scale=0.5):
+    """An omnidirectional gun mount for a roof: a low faceted dome on a yaw joint over a dark ring,
+    a cobalt band round it, the stock gun its class out of its front, half sunk in it (the Giant
+    Petrel's back quarters; Ryan, 13 November: "omnidirectional mounts strapped to or embedded into
+    the back quarters of the crew area"). `facing` turns it to its left as built, in degrees (180
+    faces it aft), so its gun rests pointing there and swings from there."""
+    ring = lambda rr, z: [(cx + rr * math.cos(math.pi / 8 + i * math.pi / 4), cy + rr * math.sin(math.pi / 8 + i * math.pi / 4), z) for i in range(8)]
+    b.prism("z", cx, cy, cz + 0.15, r + 0.5, 0.5, "steel.dark", 8, "turret_ring", phase=math.pi / 8)
+    fwd = Vector((-math.sin(math.radians(facing)), math.cos(math.radians(facing)), 0.0))
+    with b.joint(name, (cx, cy, cz + 0.4), axis="yaw", limits=limits):
+        _rings(b, [ring(r, cz + 0.3), ring(r * 0.97, cz + 1.4), ring(r * 0.8, cz + 2.4), ring(r * 0.42, cz + 3.0)], "steel.plate", "turret_house")
+        _rings(b, [ring(r * 0.99, cz + 0.85), ring(r * 0.99, cz + 1.2)], "livery.livery", "turret_band", cap=False)
+        at = Vector((cx, cy, cz + 1.35)) + fwd * (r * 0.9)
+        b.stock(pin, tuple(at), shape, forward=tuple(fwd), scale=scale, carries=carries, fits=fits)
+
+
 def _gp_ses_booster(b, cx, cz, y0, y1, w, h):
     """The Navy SES's booster closing a hull astern, its mouth flattened: a wide flat hexagonal
     drum from `y0` back to `y1`, the lit ring and the exhaust at its end (the look test's)."""
@@ -6284,15 +6300,18 @@ def giant_petrel(b):
     front sleeker, "to make the windshield wrap around the front, and not just a slab on the front
     of the ship". And on the fourth: "The rear guns clip right through the rear spoiler. They'll
     need a different approach"; the front "a more angular take to match the rest of the body"; the
-    ripple "a bit more desynced"; the bows' livery "a little meh".
+    ripple "a bit more desynced"; the bows' livery "a little meh". And on the fifth: the spoiler on
+    its fins again ("It was more aquatic, this one is like a race car"); "we have to move the rear
+    guns entirely ... mount them on omnidirectional mounts strapped to or embedded into the back
+    quarters of the crew area"; the windshield "still too 'soft.' Not fast or sharp enough looking".
 
     The Navy SES's body: two knife hulls, their stems raked back as a wave piercer's, dark below
     the chine and chrome above, a cobalt chine stripe and straight deck stripes, each closing
     astern onto the navy's flattened booster; the cross deck between them over the air cushion,
     open fore and aft, lift glowing under it; a raised centre bow between the knives carrying the
     fore gun house, a cobalt spearhead down each bow's deck; the deckhouse spanning the deck, every
-    face leaning in, its front five big facets raked back all the way round, the bridge's glass a
-    pane on each, wrapping the front onto the flanks, and four long windows down each flank; on its roof the Spindrift Salvo's
+    face leaning in, its front a sharp prow raked steeply back, the bridge's glass swept round it
+    to points on the flanks, and four long windows down each flank; on its roof the Spindrift Salvo's
     three racks flush in line down the middle, each the size of the second cut's one rack (fixed,
     no pin; salvo_f, salvo_m, salvo_a, their faces rising out of the roof one after another to fire
     over the bow, eighteen tubes rippling, each rack at its own pace), the integrated mast behind them, a swept faceted fin
@@ -6300,13 +6319,13 @@ def giant_petrel(b):
     same style, a long window down each flank and a hatch in its raked back, and either side of it
     one of the racer's giant boosters (with the navy's pair, the Immelmann Booster, fixed, no pin),
     each on its own plinth on the deck, a faceted nose ahead of it and a pylon to the aft
-    deckhouse; over them the racer's swept cobalt aerofoil spanning the hulls, carried on two swept
-    pylons off the giant boosters' backs, an end plate under each tip. On each hull's afterdeck a gun
-    house resting facing aft, in line with the ship, its arc reaching round the outboard side
-    towards the bow under the aerofoil's tip, nothing standing in its way. Mounts in the
-    die's order: hp_1 the fore gun house on the centre bow
-    (the Overclocked Railgun), hp_2 the left quarter's (the Twin Autoguns), hp_3 the right
-    quarter's (the Twin Autoguns, a placeholder in the vent's old slot since the refit pass).
+    deckhouse; over them the racer's swept cobalt aerofoil spanning the hulls on two fins standing
+    on the hulls' outer edges astern. On each of the deckhouse roof's back quarters, either side of
+    the mast, an omnidirectional mount, a low faceted dome, resting facing aft in line with the ship,
+    its arc round the outboard side to dead ahead, firing over everything astern. Mounts in the
+    die's order: hp_1 the fore gun house on the centre bow (the Overclocked Railgun), hp_2 the left
+    quarter's dome (the Twin Autoguns), hp_3 the right quarter's (the Twin Autoguns, a placeholder in
+    the vent's old slot since the refit pass).
     Floats: the keels at z = 6."""
     HX = 22.0
     HULL = [(78.0, 0.8, 7.6, 8.6), (72.0, 3.2, 6.8, 12.4), (62.0, 7.6, 6.2, 17.8), (48.0, 11.4, 6.0, 20.0),
@@ -6330,10 +6349,10 @@ def giant_petrel(b):
             pts = [(x + 0.4, zc), (x - 0.3, zc + 0.8), (x - 1.2, zc), (x - 0.3, zc - 0.8)]
             secs.append((y, pts if s > 0 else [(-xx, z) for (xx, z) in reversed(pts)]))
         b.loft(secs, "livery.livery", "chine_stripe")
-        # The afterdeck's stripe behind the quarter's gun house; on the foredeck, a cobalt spearhead
+        # The afterdeck's stripe, its gun house gone up to the deckhouse's roof; on the foredeck, a cobalt spearhead
         # laid down the bow, narrowing with the deck to a point over the stem, its back cut on a slant
         # (Ryan, 13 November: the plain stripe there "a little meh").
-        b.loft([(y, rect(s * HX, 3.6, deck(y) - 0.4, deck(y) + 0.3)) for y in (-45.0, -52.5, -60.0)], "livery.livery", "deck_stripe")
+        b.loft([(y, rect(s * HX, 3.6, deck(y) - 0.4, deck(y) + 0.3)) for y in (-36.0, -48.0, -60.0)], "livery.livery", "deck_stripe")
         spear = [(43.0, 6.4), (50.0, 5.6), (56.0, 4.6), (62.0, 3.4), (66.0, 2.0), (69.0, 0.4)]   # (y, width) back to front
         rings = []
         for k, (y, w) in enumerate(spear):
@@ -6358,34 +6377,39 @@ def giant_petrel(b):
     _gp_gun_house(b, "turret_fore", "hp_1", "barrel", "overclocked_railgun", 0.0, 51.0, 20.0, 9.0, 12.0, 5.0)
     # The deckhouse: every face leaning in, four long windows down each flank, a gallery's (Ryan,
     # 13 November: the row of small ones read "like an airliner, implying compartments"). Its front
-    # a few big facets in plan, its foot and its roof's edge the same corners, the roof's set well
-    # back, so the face between them rakes back all the way round; the bridge's glass a pane on each
-    # facet, wrapping the front onto the flanks (Ryan, 13 November: "sleek it up a bit to make the
-    # windshield wrap around the front, and not just a slab on the front of the ship").
+    # a sharp prow in plan, its foot and its roof's edge the same corners, the roof's set far back, so
+    # the face between them rakes steeply back all the way round; the bridge's glass a raked pane
+    # each side of the prow's crease, its outer pillar swept back, and a swept pane down each side
+    # coming to a point aft (Ryan, 13 November: "make the windshield wrap around the front"; "still
+    # too 'soft.' Not fast or sharp enough looking").
     DZ = 20.0
     DH = [(28.0, 26.2, 15.1, 31.05), (4.0, 26.4, 16.0, 31.6), (-26.0, 26.4, 16.0, 31.6), (-33.0, 26.2, 12.0, 25.0)]   # (y, base half width, roof half width, roof)
     b.loft([(y, [(-a, DZ), (a, DZ), (t, zt), (-t, zt)]) for (y, a, t, zt) in DH], "steel.panel", "deckhouse")
-    FY0, BROW = 28.0, 0.38   # where the front leaves the run; how far forward the roof's edge reaches, as a share of the foot's reach
-    FRONT = [(26.2, 28.0), (24.6, 36.0), (12.5, 42.4)]   # the foot's corners, the right flank round to the middle facet: five facets, angular like the hulls (Ryan, 13 November: "a more angular take to match the rest of the body")
+    FY0, BROW = 28.0, 0.18   # where the front leaves the run; how far forward the roof's edge reaches, as a share of the foot's reach
+    FRONT = [(26.2, 28.0), (24.2, 33.5), (0.0, 43.5)]   # the foot's corners, the right flank round to the prow's point
     a0, t0, zt0 = _lerp_at(DH, FY0)
-    foot = [(x, y, DZ) for (x, y) in FRONT] + [(-x, y, DZ) for (x, y) in reversed(FRONT)]
+    foot = [(x, y, DZ) for (x, y) in FRONT] + [(-x, y, DZ) for (x, y) in reversed(FRONT[:-1])]
     brow = [(x * t0 / a0, FY0 + (y - FY0) * BROW, zt0) for (x, y, z) in foot]   # the roof's edge, the same corners drawn in and set back
     _rings(b, [foot, brow], "steel.panel", "deckhouse", cap=False)
     _slab(b, [(x, y, zt0 - 0.1) for (x, y, z) in brow], (0.0, 0.0, 1.0), 0.2, "steel.panel", "deckhouse")
-    # The glass: a pane on each facet round the front, five, the widest across the middle, a dark
-    # mullion where two facets meet.
+    # The glass, (along the facet, up it) for each facet round the front: a swept pane down each side
+    # coming to a point aft, and a raked pane each side of the prow, its outer pillar swept back, a
+    # thin mullion on the crease.
+    PANES = [[(0.06, 0.70), (0.97, 0.42), (0.97, 0.92)],
+             [(0.05, 0.42), (0.985, 0.42), (0.985, 0.92), (0.2, 0.92)],
+             [(0.015, 0.42), (0.95, 0.42), (0.8, 0.92), (0.015, 0.92)],
+             [(0.03, 0.42), (0.94, 0.70), (0.03, 0.92)]]
     mid = Vector((0.0, FY0, (DZ + zt0) / 2.0))
-    for i in range(len(foot) - 1):
+    for i, pane in enumerate(PANES):
         def at_face(k, f, i=i):
             p0, p1 = Vector(foot[i]).lerp(Vector(foot[i + 1]), k), Vector(brow[i]).lerp(Vector(brow[i + 1]), k)
             return p0.lerp(p1, f)
         nrm = (Vector(brow[i]) - Vector(foot[i])).cross(Vector(foot[i + 1]) - Vector(foot[i])).normalized()
         if nrm.dot(at_face(0.5, 0.5) - mid) < 0.0:
             nrm = -nrm
-        gap = 0.3 / (at_face(1.0, 0.6) - at_face(0.0, 0.6)).length   # half a mullion, as a share of this facet
-        _slab(b, [tuple(at_face(k, f) + nrm * 0.12) for (k, f) in ((gap, 0.36), (1.0 - gap, 0.36), (1.0 - gap, 0.88), (gap, 0.88))], tuple(nrm), 0.24, "glass.glass", "bridge_glass")
+        _slab(b, [tuple(at_face(k, f) + nrm * 0.12) for (k, f) in pane], tuple(nrm), 0.24, "glass.glass", "bridge_glass")
     for s in (-1.0, 1.0):
-        b.loft([(29.0, rect(s * 13.4, 2.0, 31.4, 31.9)), (-25.0, rect(s * 13.4, 2.0, 31.4, 31.9))], "livery.livery", "roof_stripe")
+        b.loft([(28.6, rect(s * 13.4, 2.0, 31.4, 31.9)), (-16.5, rect(s * 13.4, 2.0, 31.4, 31.9))], "livery.livery", "roof_stripe")
 
         def flank(y, s=s):
             a, t, zt = _lerp_at(DH, y)
@@ -6440,23 +6464,24 @@ def giant_petrel(b):
         x0, x1 = s * 3.4, s * (BX - hw + 0.2)
         web = lambda z0, z1: [(min(x0, x1), z0), (max(x0, x1), z0), (max(x0, x1), z1), (min(x0, x1), z1)]
         b.loft([(-38.0, web(24.6, 25.4)), (-41.0, web(23.6, 27.0)), (-50.0, web(23.6, 27.0)), (-53.0, web(24.6, 25.4))], "steel.dark", "pylon")
-    # The quarters: a gun house on each hull's afterdeck, resting facing aft, in line with the ship
-    # (Ryan, 13 November: "just so they have a resting position in line with the ship. It's not a
-    # slow carrier"; the deckhouse closes the way forward), its arc from dead aft round the outboard
-    # side to forty-five degrees off the bow, a little inboard before the boosters (hp_2, hp_3).
-    QX = 21.0
-    QUARTER_FITS = {"rack": ("rack_round", 0.7), "dish": 0.65, "blade": 0.85}   # each class narrow enough to rest between a fin and a booster
+    # The quarters: an omnidirectional dome on each of the deckhouse roof's back quarters, either side
+    # of the mast (Ryan, 13 November: "we have to move the rear guns entirely ... mount them on
+    # omnidirectional mounts strapped to or embedded into the back quarters of the crew area"),
+    # resting facing aft in line with the ship ("just so they have a resting position in line with
+    # the ship"), high enough to fire over the boosters and under the aerofoil, nothing in their arc
+    # from a little inboard of dead aft round the outboard side to a little past dead ahead, where
+    # the mast and the racks close it (hp_2, hp_3).
+    QX, QY = 11.5, -21.5
+    QUARTER_FITS = {"rack": "rack_round", "dish": 0.8}
     for s, pin, name in ((-1.0, "hp_2", "turret_l"), (1.0, "hp_3", "turret_r")):
-        lim = (-135.0, 10.0) if s < 0 else (-10.0, 135.0)   # outboard is a right-hand turn for the left one, facing aft
-        _gp_gun_house(b, name, pin, "twin_barrel", "twin_autoguns", s * QX, -38.5, deck(-38.5), 7.0, 10.0, 4.2, facing=180.0, limits=lim, fits=QUARTER_FITS)
-    # The racer's stern wing: a swept cobalt aerofoil spanning the hulls, carried on two swept
-    # pylons off the giant boosters' backs, so nothing stands on the hulls where the quarters' guns
-    # swing (Ryan, 13 November: "The rear guns clip right through the rear spoiler"); a small end
-    # plate under each tip, high over the guns.
-    WZ2, TIP_X = 34.0, 27.6   # the aerofoil's height; its tips across
+        lim = (-190.0, 40.0) if s < 0 else (-40.0, 190.0)   # outboard is a right-hand turn for the left one, facing aft
+        _gp_dome_mount(b, name, pin, "twin_barrel", "twin_autoguns", s * QX, QY, _lerp_at(DH, QY)[2], 3.0, facing=180.0, limits=lim, fits=QUARTER_FITS)
+    # The racer's stern wing: a swept cobalt aerofoil spanning the hulls on the tips of two fins
+    # standing on the hulls' outer edges astern, a little canted (Ryan, 13 November: "I liked the
+    # other spoiler better. It was more aquatic, this one is like a race car").
+    WZ2, FIN_X, TIP_X = 34.0, 26.0, 27.6   # the aerofoil's height; the fins' feet and tips across
     for s in (-1.0, 1.0):
-        _rings(b, [_fin_section(s * BX, -46.5, -57.5, BZ + BR - 0.5, 0.8), _fin_section(s * BX, -50.0, -57.8, WZ2, 0.6)], "livery.livery", "fin")
-        _rings(b, [_fin_section(s * TIP_X, -55.5, -63.2, WZ2 - 3.6, 0.3), _fin_section(s * TIP_X, -54.2, -63.6, WZ2 + 0.5, 0.3)], "livery.livery", "fin")
+        _rings(b, [_fin_section(s * FIN_X, -49.0, -63.0, deck(-56.0) - 0.5, 0.6), _fin_section(s * TIP_X, -54.0, -64.0, WZ2, 0.45)], "livery.livery", "fin")
     WING = [(-TIP_X, -54.5, -63.0, 0.4), (-12.0, -49.0, -58.6, 0.7), (0.0, -45.0, -55.4, 0.85), (12.0, -49.0, -58.6, 0.7), (TIP_X, -54.5, -63.0, 0.4)]
     _rings(b, [_blade_section(x, le, te, WZ2, t) for (x, le, te, t) in WING], "livery.livery", "stern_wing")
 
