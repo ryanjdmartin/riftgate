@@ -313,8 +313,9 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # left are the numbers a read may still ask about: "regen=N" (a flat regen on every chassis in
 # place of its own) or "regen=half", "cooling=N" (an offset), "hotter=N" (every weapon N heat
 # more, a read for the heat prices), "barrier=cooldownN" (the Barrier basic sits out N rounds
-# once spent, 0 for none, where content gives it 1) or "barrier=heatN" (it costs N heat); comma-separated; tools/campaign_run.gd takes
-# it too.
+# once spent, 0 for none, where content gives it 1), "barrier=heatN" (it costs N heat) or
+# "barrier=none" (it leaves the stock dice, the Armoured basic in its slot); comma-separated;
+# tools/campaign_run.gd takes it too.
 # --guard 0.05 is the aggressor's habit (a block, a Barrier, Armoured or a Ward, at a twentieth of
 # its worth to the bot, so it never rerolls for one and spends one only when its die is stuck
 # showing it): the hull the blocks keep and the rounds they cost are the gap between it and the
@@ -513,10 +514,18 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # On the phone a debug build's SETTINGS → TRIALS has SHIELD REGEN (BUILT, 0, 1, 2, 3: each
 # chassis its own number, or a flat one on all) and HEAT (COOLER, BUILT, HOTTER: every weapon
 # a point cooler than content prices it, or a point hotter with every chassis that cools
-# cooling one more; the what-if's hotter and cooling): pick, close the app, open it, and start a new
+# cooling one more; the what-if's hotter and cooling) and BARRIER BASIC (BUILT, NONE: the Barrier
+# basic on the stock dice, or the Armoured basic in its slot; the what-if's barrier=none): pick, close the app, open it, and start a new
 # battle or run, since a saved one keeps the numbers it was saved with. RIFTGATE_OVERHEAT=2 (any battle) sets the hull an overheat burns a point of heat past
 # the gauge, 1 the game's; the same page's OVERHEAT (×1, ×2, ×3) sets it on the phone, read
 # as a battle starts.
+# RIFTGATE_SHIELD_BREAK=2 (any battle) tries the breaking shield (Ryan, 13 November: "when a
+# shield breaks, it absorbs the whole blow ... it's down for a couple of turns before it starts to
+# regenerate again"): the blow that breaks a shield is stopped whole, and the broken shield stays
+# down that many rounds, 1 to 3, nothing raising it, before its regen starts again; a shield at
+# rest shows a dashed frame and a cell a round left. The same page's SHIELD BREAK (BUILT, REST 1,
+# REST 2, REST 3) sets it on the phone, read as a battle starts. A what-if, nothing decided;
+# the reads set it beside BARRIER BASIC on NONE, since the two together are worth twice either.
 # RIFTGATE_FIELD_DEPTH=14 and RIFTGATE_OPENING=1 (any battle) try a deeper field and a farther
 # opening (Ryan, 10 November: "I think the map is a bit too shallow"): the rows from the rift to
 # the wall, 10 to 24 and 12 the game's, and how many more of their own moves from the wall the

@@ -40,7 +40,7 @@ const ACT_RATE := 9.0      # the acting foe's breath, radians a second: quick, i
 var display_name: String = ""     # for the codex and readouts; never drawn here
 var is_enemy: bool = false
 var massive: bool = false
-var bars: Array = []              # [[value, max, Color, (pending)], ...]
+var bars: Array = []              # [[value, max, Color, (pending), (points a notch), (rounds at rest)], ...]
 var bars_above: bool = false      # true: full-width gauges above the sprite; false: floating
 var pips: Array = []              # [count, of]: a count toward a shot drawn as cells under the gauges (the Cassowary's sixth shot), the last lit when it is next; empty for none
 var store: Array = []             # [count, cap, colour, glyph]: a capped store's bar under the heat, a segment a stack up to its cap, lit to its count (the Honey Badger's hopper, the Nemesis's rage); empty for none
@@ -1010,7 +1010,29 @@ func _gauge(rect: Rect2, b: Array) -> void:
 	var col: Color = b[2]
 	Hud.fill_poly(self, Hud.slant(rect.grow(1.0), 4.0), Color(Palette.BG, 0.9))
 	Hud.gauge(self, rect, frac, col)
-	Hud.stroke_poly(self, Hud.slant(rect, 4.0), Color(col, 0.95), 1.0)   # a full-strength edge, so an empty bar still shows
+	# A shield at rest (the breaking shield's trial, 13 November; a sixth element, the rounds
+	# left): the bar's edge broken into dashes in place of its line and a lit cell a round left,
+	# so a shield that is down reads apart from one that is only empty by structure, not hue.
+	var rest := int(b[5]) if b.size() >= 6 else 0
+	if rest > 0:
+		var edge := Hud.slant(rect, 4.0)
+		for e in range(edge.size()):
+			var from: Vector2 = edge[e]
+			var to: Vector2 = edge[(e + 1) % edge.size()]
+			var run := from.distance_to(to)
+			var along := (to - from) / maxf(run, 0.001)
+			var at := 0.0
+			while at < run:
+				draw_line(from + along * at, from + along * minf(run, at + 6.0), Color(col, 0.95), 2.0)
+				at += 10.0
+		var cell_w := minf(rect.size.y * 2.0, rect.size.x / float(rest * 2 + 1))
+		var gap := cell_w * 0.6
+		var x0 := rect.position.x + (rect.size.x - cell_w * float(rest) - gap * float(rest - 1)) * 0.5
+		for k in rest:
+			var cell := Rect2(x0 + (cell_w + gap) * float(k), rect.position.y + 1.0, cell_w, rect.size.y - 2.0)
+			Hud.fill_poly(self, Hud.slant(cell, 2.4), Color(Palette.INK, 0.9))
+	else:
+		Hud.stroke_poly(self, Hud.slant(rect, 4.0), Color(col, 0.95), 1.0)   # a full-strength edge, so an empty bar still shows
 	# Shield past its maximum (Overshield, 5 October): the excess stands beyond the bar's
 	# end as a hatched block in the bar's colour on its own dark ground, by structure, not
 	# hue, so a full bar and an overfull one never read alike. It fades at the round's end.

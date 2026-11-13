@@ -27,7 +27,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1154 tests, 371,084 checks, green on `ccr-722ca9f0-yj8na3` (12 November, the Barrier's
+- Tests: 1167 tests, 371,243 checks, green on `ccr-722ca9f0-yj8na3` (13 November, the breaking
+  shield's what-if and its two trial dials). Before it, 1154 tests, 371,084 checks, green on
+  main (12 November, the Barrier's
   cooldown over the anchor). Before it, 1154 tests, 371,080 checks, green on main at `4c29e09`
   (12 November, the anchor: heat's prices, tier one's shields and its foes' numbers). Before it,
   1154 tests, 371,076 checks, green on main (12 November, as `ccr-4d58b054-3lyj0a` landed
@@ -941,7 +943,27 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   retired, so the next session meets them; the brief's section 14 has the re-read and what
   stands of the reads. His "more dramatic version", the cooldown on the machine "similar to
   Numbed", matters only if the Barrier stays a basic (section 13 has its read and its
-  holes). His marks on 4-4-2 are in ("That's probably fine for 4-4-2 for
+  holes). His idea of 13 November for the shield itself is read and on trial, nothing
+  decided: "What if we bring back that when a shield breaks, it absorbs the whole blow? It
+  does not bleed into the hull. But in exchange, if a shield breaks, it's down for a couple
+  of turns before it starts to regenerate again." It is a what-if in the engine behind three
+  switches, off in the game (`Skirmish.shield_break`, `shield_rest`, `shield_break_min`;
+  `tests/test_shield_break.gd`), with two dials on a debug build's SETTINGS → TRIALS: SHIELD
+  BREAK (BUILT, REST 1, REST 2, REST 3; `RIFTGATE_SHIELD_BREAK`; a shield at rest shows a
+  dashed frame and a cell a round left) and BARRIER BASIC (BUILT, NONE; the refit what-if's
+  `barrier=none`, the Armoured basic in the Barrier basic's slot on the stock dice). The
+  reads (`docs/measurements.md`, 13 November): with the Barrier off the basics and a rest of
+  two the fights of every day do not move (a formation 6.6% and 6.8% of a four's hull), an
+  elite costs 12.2% where it costs 19.8% and a boss 18.5% where it costs 37.7%, no die spent
+  and a boss's fight 6.2 rounds where it is 7.0, which is about what the Barrier basic is
+  worth today (9.5% and 21.4%); the two together are worth twice either; the second battle
+  reads as content's but for the Waste, where a breach passes a shield. Its holes, in the
+  brief's section 15 with the bench and Claude's read: it is the Barrier's shape, so a foe of
+  one blow a round falls to two fifths of its cost and a blow's number tunes nothing against
+  a shield that stands; a point of regen back after the rest stops a whole blow, a quarter
+  to a third of what the rule stops; and a blow finds a shield at rest once an elite's fight,
+  the bot spending a third fewer dice on defence under it. His play is the read: REST 2 with
+  NONE. His marks on 4-4-2 are in ("That's probably fine for 4-4-2 for
   now": the brief's section 13 has the table with his words, each open place its chassis's
   session's). Also open, his: the first battle's block (not scaled:
   on the anchor's numbers a mustering trio with the Honey Badger wins 0 to 5% of the
@@ -949,7 +971,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   quarters for its rank and file a trio keeps its hull, and the trios with the Badger still
   lose the wall); the Waste's bosses and the Peak's clock; the Prairie Dog alone. The
   muster rule and the fight-at-its-rating read are scratch probes; the runner still plays
-  the defence rule. The bible's triangle, scale, shield and Barrier rows and section 12 (v0.563);
+  the defence rule. The bible's triangle, scale, shield and Barrier rows and section 12 (v0.564);
   the rules' chassis, basics, heat and scale lines.
 - **Four formations cut toward the budget, 4-4-2 to work with, and the anchor** (Ryan, 12
   November: "Yes go ahead with 2. Also, let's look at 4-4-2 right now so that you're working
@@ -1669,11 +1691,11 @@ commands are in `README.md`.
   tables), and main's v0.552 since `ccr-8af28d03-re9kz4` landed again (the Ammit row's flare once an
   attack and the cut of its two old rules, the Empowered row's mark, and the rows that said the
   engine kept a rule the dead-code pass cut: the Kite's, a piece of two kinds, a rider's limit,
-  Chain's targeting, the Whip Scorpion's), and main's v0.563 since `ccr-722ca9f0-yj8na3` landed
+  Chain's targeting, the Whip Scorpion's), and main's v0.564 since `ccr-722ca9f0-yj8na3` landed
   again (the scale row's tier-one foes, the triangle row's prices as content, the shield
   row's tier-one lines and the two shapes it passed over, the Barrier row's cooldown, and
   section 12's 4-4-2 to work with, the anchor, the heat-reading machines, the Barrier on the
-  machine and the Barrier's place); each goes up on Ryan's word. The
+  machine, the Barrier's place and the breaking shield); each goes up on Ryan's word. The
   live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS

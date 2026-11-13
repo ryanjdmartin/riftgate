@@ -22,7 +22,8 @@ extends SceneTree
 ## for the one state), --refit SPEC (the refit pass's what-ifs over its model, which is content
 ## since 10 November, sim/refit.gd: "regen=N" or "regen=half" a flat shield regen in place of each
 ## chassis's own; "cooling=N" an offset; "hotter=N" every weapon N heat more; "barrier=cooldownN" or
-## "barrier=heatN" a price on the Barrier basic; comma-separated),
+## "barrier=heatN" a price on the Barrier basic, "barrier=none" the Armoured basic in its slot on
+## every stock die; comma-separated),
 ## --targeting aim|lowest (the foes' targeting rule for the matrix: the aims as shipped, or
 ## the lowest-shield rule from before 2 October; the team cells are always run under both
 ## and compared in their own section, since a single machine cannot see targeting),

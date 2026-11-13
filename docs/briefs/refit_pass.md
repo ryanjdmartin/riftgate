@@ -1799,3 +1799,140 @@ Its holes:
 - Where the Halo Projector goes if it leaves the basics is content's, and his.
 
 Nothing is built. The Barrier basic stands in content with its cooldown until his word.
+
+## 15. The breaking shield (13 November, his idea read; nothing decided)
+
+His words: "Here's a new idea. It'll require you to analyze and test it. What if we bring back
+that when a shield breaks, it absorbs the whole blow? It does not bleed into the hull. But in
+exchange, if a shield breaks, it's down for a couple of turns before it starts to regenerate
+again. So you get the off dice defensive measure at the cost of having to scramble to protect
+your lights small hull after they take a huge blow."
+
+**What the records say.**
+
+- 14 October, the bible's shield row: the rule he brings back ran until then and was retired
+  for a named form. "A small shield entry was secretly 'negate one blow', worth the biggest
+  blow it met rather than its number, and the content kept rediscovering it (small stand-up
+  shields; a screen on every ally negating four blows for one spend)." The form that failed
+  was an entry that stood a shield back up; the test it failed was that a shield's worth was
+  the blow it met, never its number.
+- 9 November: no shield entry is on the die, and the shield is innate with a regen. So the
+  old form is gone, and the one thing left that stands a shield back up is the regen. His
+  rest is aimed at exactly that.
+- 14 October, the Barrier row: the one-blow block became "a priced, single-target buff of its
+  own", and both up, a Barrier and a Ward, "the old whole block at twice its price".
+- 17 October, his: "if a Barrier grows common the foes need more damaging riders to carry
+  past it".
+- The model's own tests (section 14's five reasons): nothing of this is on the die, so it
+  meets none of them. It is the unrolled buffer of the second reason, made larger.
+
+**How it was read.** A what-if in the engine behind three switches, off in the game, with
+tests on synthetic pieces (`tests/test_shield_break.gd`). What follows from his words was
+built and is named here; where they give two answers the read took one, his to correct:
+
+- The rest's length. "A couple of turns" is read at one, two and three; two is called his.
+- A blow exactly the shield's size breaks it and rests it: the shield is at nothing by a blow.
+- Nothing raises a shield at rest, a passive's or an entry's any more than the regen. It
+  follows from "it's down": a hull hit that stood two points up would turn every second blow,
+  the form of 14 October. It touches four pieces as they stand: the Spall Liner, the
+  Boundary-layer Bleed, the Kite's kill and the Buzzard's Thermal Recoupler.
+- Only a foe's blow breaks a shield. One its own machine spent to nothing, a shield cost or a
+  corrupted entry's bite, is not broken and does not rest.
+- A breach passes a shield that stands, as now, and rests nothing. A Barrier takes its blow
+  first, and the shield behind it never breaks.
+- A blow's riders land whatever a shield stopped, as they pass a Barrier.
+- No foe carries a shield, so the rule is the machines' alone.
+- The foes act front rank left to right, then the back rank, so the first blow to meet a
+  shield at or over its number is the one stopped, and a small blow that spends the shield
+  bares the hull to the big one behind it. The forecast and the foes' own pick of a target
+  walk the same arithmetic.
+
+**The reads** (`docs/measurements.md`, 13 November; the fight bot, the six tier ones, the
+anchor's numbers; a share of a four's hull; each a direction):
+
+| The package | A lone flanker | A hunter's pack | A formation | An elite | A boss | A boss's fight |
+|---|---|---|---|---|---|---|
+| The Barrier basic, the honest shield (content) | 2.8% | 6.3% | 5.9% | 9.5% | 21.4% | 8.1 rounds |
+| No Barrier basic, the honest shield | 3.5% | 6.9% | 6.6% | 19.8% | 37.7% | 7.0 rounds |
+| No Barrier basic, the break and a rest of 2 | 3.5% | 7.0% | 6.8% | 12.2% | 18.5% | 6.2 rounds |
+| The Barrier basic, the break and a rest of 2 | 2.6% | 6.2% | 5.6% | 5.0% | 10.5% | 6.0 rounds |
+
+**What it does.**
+
+- Nothing to the fights of every day at a rest of two: the break and the rest cancel.
+- Two fifths off an elite and half off a boss, with no die spent and no longer fights. A
+  light is wrecked in 2 to 8% of its bosses' fights where it was in 12 to 28%. That is his
+  aim met: the Prairie Dog lost on a boss's first turn "with no chance to do anything about
+  it" (9 November) is the case it answers.
+- About what the Barrier basic does today, without its dice or its stall. So it fills the
+  hole section 14 left in the lean to take the Barrier off the basics: a starting die with
+  no answer to the big blow. With it the whole second battle reads as content's does but for
+  the Waste.
+- The two together are worth twice either. It is read, and is to be played, with the
+  Barrier basic off the dice.
+
+**The holes.**
+
+1. It is the Barrier's shape, which is the test of 14 October. A foe whose kit is one blow a
+   round falls to two fifths or less of its cost (the Nob 36% to 14%, the Gargantuan King
+   66% to 21%); one of many small blows does not move; a breach does not move, and the
+   Waste's battle is 15 to 35% won where content's is 45 to 55%. A blow of 8 or more is
+   stopped whole 56 to 70% of the time and lands on a bare hull a quarter of the time, so
+   its number tunes nothing against a shield that stands and everything against one that
+   does not. Ten of the twenty-four elites and bosses fall to two fifths of their cost or
+   less, and thirteen to about half. They would be re-cut by how many blows they land, by
+   riders and by breach, his own line of 17 October.
+2. The sliver. A point of regen back after the rest stops the next blow whole: a shield of 1
+   stopped 10 in the fight traced. It is a quarter to a third of what the rule stops, and
+   half in a long fight. With no rest at all it is half of everything, and a boss's big blow
+   is stopped 92% of the time, so the rest is what holds the old failure off, in part. A
+   machine's shield becomes a block that comes back every three rounds, and the size of its
+   gauge matters against small blows only, which changes what his pairing of 10 November
+   means (a small gauge that comes back fast, a fat one that comes back slow).
+3. The scramble is rare, and the bot does not answer it. A blow finds a shield at rest once
+   an elite's fight and three and a half times a boss's. The bot spends about a third fewer
+   dice on the Armoured basic under the rule, since 2 off a blow of 15 is not worth a die. So
+   by the bot the rule makes killing first more right, his read of 10 November over again
+   ("Kill-to-prevent-damage ... its now the best choice every time"), and the rest is paid
+   in hull, not in a decision. What a scramble would be spent on is a lure or a Barrier, and
+   a starting die holds neither once the Barrier leaves the basics. The bot plans no round
+   but this one, so his play is the read of this hole.
+4. It pays to spread the foes' blows over four shields and not to draw them onto one. The
+   lure stops being every round's play and becomes the answer to an ally's rest. That is
+   his WANT over NEED of 9 November; it is also less for the tank to do. Not measured.
+
+**The bench**, each with the test it meets or fails:
+
+1. As he stated it, a rest of two. Read: the tables above.
+2. The break only at half a gauge or more. Read: closes the sliver; an elite 14.4% and a
+   boss 26.3%, the small fights a fifth dearer than on the honest shield.
+3. The break only at a full gauge, the first blow of a fight. Read: 15.7% and 27.3%.
+4. The break stops as much again as stood, so a shield of 6 stops 12. Not read. The gauge's
+   size keeps its meaning and the sliver ends by arithmetic; the sentence is harder.
+5. A broken shield comes back whole after its rest, not by its regen. Not read. No sliver
+   from the regen; it changes what the regen is for.
+6. The rest alone, the arithmetic honest. Read: a tenth to a quarter dearer everywhere, and
+   nothing bought.
+7. A rest of one or of three. Read: one is too kind (a boss 14.5%), three is near two.
+
+**Claude's read, his to take or leave.** It is the best answer on the table to what a
+starting die loses when the Barrier leaves the basics, and it is none of the things that
+left the die on 9 November. Its price is the first hole: an elite's or a boss's single blow
+stops being damage and becomes what opens a machine, the first landing on nothing and the
+second on everything. That is a way to build those fights, a breaker and then the blow that
+counts, and it is a pass over all twenty-four of them. Two things to watch in his play
+before any of that: whether the round after a break is a decision or only a tax, and whether
+a point of shield stopping fifteen reads as a save or as a cheat. If a cheat, the guard at
+half a gauge is built behind the same switch.
+
+**What it costs to come**, if taken: the rule out of its switch and into the rules, the
+bible's shield row and the vocabulary, with a word and a mark for a shield at rest that are
+his to give; the Barrier off the stock dice with it, eight of them; the elites and bosses
+re-cut by their blows' count and the anchor read again; the four pieces that raise a shield
+read again and the Storm Petrel's session told; the fight bot taught what a standing shield
+is worth, since it values one by its number.
+
+**On the phone.** A debug build's SETTINGS → TRIALS has SHIELD BREAK (BUILT, REST 1, REST 2,
+REST 3), read as a battle starts, and BARRIER BASIC (BUILT, NONE), read at the next launch;
+REST 2 with NONE is the package read above. A shield at rest shows a dashed frame on its
+gauge and a cell a round left; the break itself plays the shatter the game already has.

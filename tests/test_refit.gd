@@ -114,6 +114,7 @@ func test_the_machines_back_in_design_are_undealt_and_still_build() -> void:
 
 
 func test_a_spec_parses_its_parts() -> void:
+	assert_eq(str(Refit.parse("barrier=none")["barrier"]), "none", "the Barrier basic off the stock dice parses as its rule")
 	var s := Refit.parse("regen=2,cooling=-1,hotter=2,barrier=cooldown")
 	assert_eq([str(s["regen"]), int(s["cooling"]), int(s["hotter"]), str(s["barrier"])], ["2", -1, 2, "cooldown"], "each part is its own")
 	var none := Refit.parse("")
@@ -176,6 +177,24 @@ func test_the_what_ifs_move_the_regen_the_cooling_the_heat_and_the_barriers_pric
 	Refit.apply(db, Refit.parse("barrier=heat3"))
 	assert_eq(int(db.components[barrier]["face"].get("heat", 0)), 3, "or it costs heat")
 	assert_eq(int(before.components[barrier]["face"].get("heat", 0)), 0, "and the game's own copy is untouched")
+	# Or it leaves the stock dice (its place is open since 12 November), the Armoured basic in its
+	# slot on every die that held it, the piece itself as it was.
+	db = _own()
+	var jack := Refit.basic_granting(before, "braced")
+	var held := 0
+	for id in before.chassis.keys():
+		held += (before.chassis[id].get("loadout", []) as Array).count(barrier)
+	assert_true(held > 0, "content stocks the Barrier basic on some die")
+	var said := Refit.apply(db, Refit.parse("barrier=none"))
+	assert_true(said.size() == 1 and said[0].contains("on %d" % held), "the what-if says how many dice it moved")
+	for id in db.chassis.keys():
+		var now: Array = db.chassis[id].get("loadout", [])
+		var was: Array = before.chassis[id].get("loadout", [])
+		assert_eq(now.count(barrier), 0, "%s stocks no Barrier basic" % id)
+		assert_eq(now.count(jack), was.count(jack) + was.count(barrier), "%s holds the Armoured basic in each such slot" % id)
+		assert_eq(now.size(), was.size(), "%s's die is as long as it was" % id)
+	assert_eq(str(db.components[barrier]["face"].get("status", "")), "barrier", "the piece itself is untouched")
+	assert_true((before.chassis.values() as Array).any(func(c) -> bool: return (c.get("loadout", []) as Array).has(barrier)), "and the game's own copy still stocks it")
 
 
 func test_a_fight_plays_on_the_models_dice() -> void:

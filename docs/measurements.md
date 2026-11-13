@@ -9258,3 +9258,207 @@ regen is the part an entry's grant overlaps" has it backwards: the regen is the 
 die decides, his call of 5 and 9 November, and the entry is the part that was cut. The row
 that still informs his call on the Barrier is the Shoring Jack's: the gauge and the regen,
 no Barrier and no shield in the slot.
+
+## 13 November, the breaking shield: the blow that breaks a shield stopped whole, and the broken shield at rest
+
+Ryan, 13 November: "What if we bring back that when a shield breaks, it absorbs the whole blow?
+It does not bleed into the hull. But in exchange, if a shield breaks, it's down for a couple of
+turns before it starts to regenerate again. So you get the off dice defensive measure at the
+cost of having to scramble to protect your lights small hull after they take a huge blow."
+
+The decision it informs: none yet; the idea and its holes are the refit brief's section 15.
+The rule is a what-if behind three switches (`Skirmish.shield_break`, `shield_rest`,
+`shield_break_min`), off in the game. As read: the blow that takes a standing shield to
+nothing is stopped whole; a shield a foe's blow broke stays down so many rounds, no regen and
+nothing else raising it, and its regen starts again after; a blow exactly the shield's size
+breaks it; a breach passes a shield that stands and rests nothing; a Barrier takes its blow
+first. The branch over main at `ac48748`, the anchor's foe numbers, the six tier ones, the fight bot (greedy),
+each fight at its rating as in the sections above (six squads and five seeds for a flanker, a
+hunter and a formation; five squads of four and four seeds for an elite and a boss). A share
+of a four's hull. Every row is read twice, since the Barrier's place is open: with the
+Shoring Jack's entry in the Halo's slot, and with the Barrier basic as content has it. Each a
+direction.
+
+| The Halo's slot | The shield | A lone flanker | A hunter's pack | A formation | An elite | A boss |
+|---|---|---|---|---|---|---|
+| The Jack | Honest | 3.5% | 6.9% | 6.6% | 19.8% | 37.7% |
+| The Jack | The rest alone, 2 rounds | 4.3% | 8.6% | 8.2% | 22.7% | 41.6% |
+| The Jack | The break alone, no rest | 0.9% | 2.9% | 4.5% | 6.4% | 7.0% |
+| The Jack | The break, rest 1 | 2.7% | 5.5% | 5.9% | 9.9% | 14.5% |
+| The Jack | The break, rest 2 | 3.5% | 7.0% | 6.8% | 12.2% | 18.5% |
+| The Jack | The break, rest 3 | 3.7% | 7.4% | 7.1% | 13.3% | 22.3% |
+| The Jack | The break at half a gauge or more, rest 2 | 4.1% | 8.5% | 7.9% | 14.4% | 26.3% |
+| The Jack | The break at a full gauge only, rest 2 | 4.3% | 8.6% | 8.1% | 15.7% | 27.3% |
+| The Barrier basic | Honest (content) | 2.8% | 6.3% | 5.9% | 9.5% | 21.4% |
+| The Barrier basic | The break, rest 1 | 1.8% | 4.8% | 5.2% | 3.7% | 8.3% |
+| The Barrier basic | The break, rest 2 | 2.6% | 6.2% | 5.6% | 5.0% | 10.5% |
+| The Barrier basic | The break, rest 3 | 3.1% | 6.5% | 5.9% | 5.5% | 11.8% |
+
+Rounds and wrecks, an elite's fight and a boss's: the Jack and the honest shield 4.6 and 7.0
+rounds, 0.16 and 0.60 wrecks a fight, 94% of the bosses' fights won; the Jack and the break at
+rest 2, 4.5 and 6.2 rounds, 0.09 and 0.18 wrecks, 99% won; content, 4.8 and 8.1 rounds, 0.03
+and 0.19 wrecks, 98% won.
+
+By fight, the Jack in the slot, and content beside it:
+
+| The elite | Honest | Rest 1 | Rest 2 | Rest 3 | Content |
+|---|---|---|---|---|---|
+| The shaman's warband | 8.4% | 8.6% | 10.1% | 11.1% | 7.7% |
+| The Nob | 36.1% | 10.4% | 13.6% | 14.4% | 17.0% |
+| The Old Man's rising | 37.7% | 37.8% | 37.4% | 38.1% | 17.8% |
+| The Pilgrim's wake | 13.5% | 14.2% | 14.2% | 14.3% | 2.4% |
+| The Rust Monster | 11.1% | 2.0% | 3.7% | 3.7% | 2.9% |
+| Gilgamesh | 23.8% | 4.0% | 8.0% | 10.7% | 7.9% |
+| The Fell Rider | 15.8% | 4.3% | 4.8% | 4.8% | 6.7% |
+| The Reaper | 2.4% | 0.5% | 0.5% | 0.5% | 0.5% |
+| The Wild Hunt | 19.2% | 7.3% | 8.5% | 9.3% | 12.7% |
+| The Cinder Tortoise's brood | 36.0% | 10.2% | 24.0% | 29.0% | 16.4% |
+| The Thunder Ape | 13.6% | 9.6% | 9.8% | 10.4% | 13.1% |
+
+| The boss | Honest | Rest 1 | Rest 2 | Rest 3 | Content |
+|---|---|---|---|---|---|
+| Floraison | 19.2% | 17.8% | 18.0% | 17.9% | 20.0% |
+| King Gel | 42.1% | 15.8% | 21.4% | 26.6% | 15.0% |
+| The Mantis Ant | 32.3% | 19.0% | 21.9% | 24.7% | 8.6% |
+| The Ruby Colossus | 41.4% | 14.4% | 15.1% | 18.3% | 24.8% |
+| The Fallen Weapon | 50.6% | 11.8% | 16.8% | 21.8% | 22.7% |
+| The Emperor Scorpion | 41.4% | 22.3% | 35.7% | 41.2% | 24.8% |
+| The Matador | 19.6% | 12.7% | 12.7% | 14.8% | 16.7% |
+| The Phantom Train | 60.2% | 16.9% | 26.9% | 34.5% | 26.7% |
+| The Vampire Lord | 23.0% | 10.0% | 15.2% | 23.2% | 5.3% |
+| The Marsh Serpent | 32.9% | 3.4% | 6.0% | 6.5% | 11.3% |
+| The Gargantuan King | 65.8% | 16.1% | 21.4% | 31.0% | 38.3% |
+| The Fiend of Fire | 22.5% | 18.3% | 19.5% | 19.8% | 33.1% |
+| The Obsidian Tyrant | 38.5% | 10.1% | 10.1% | 10.1% | 31.5% |
+
+By formation and patrol, the Jack in the slot, the honest shield and then the break at rest 2:
+the treant grove 10.2% and 9.8%, the barrow mound 8.1% and 6.5%, the goblin horde 2.5% and
+3.2%, the grave throng 3.5% and 5.0%, the gel wall 6.9% and 8.2%, the ember pyre 4.9% and
+5.0%, the wolf pack 5.1% and 5.4%, the antlion trio 8.7% and 8.6%; the ones led by a breach
+do not move under any rule (the sandworm ambush 9.9%, the magma vent 11.4% to 11.7%, the
+needler thicket 5.1%, the knights' vigil 3.9%). No blow of 8 or more lands in any of them.
+
+What became of the foes' damage on machines, the Jack in the slot (what is left of each row
+is the armour's):
+
+| The fight, the shield | The shield took | The hull took | A break stopped | Blows of 8 or more a fight | Of those, stopped whole | On a shield already gone | The hull they took a fight |
+|---|---|---|---|---|---|---|---|
+| An elite, honest | 43% | 46% | 0% | 2.9 | 0% | 10% | 18.0 |
+| An elite, the break and rest 2 | 37% | 29% | 29% | 2.7 | 56% | 24% | 10.1 |
+| An elite, the break alone | 41% | 15% | 42% | 2.5 | 73% | 8% | 5.6 |
+| A boss, honest | 36% | 45% | 0% | 4.7 | 0% | 8% | 31.8 |
+| A boss, the break and rest 2 | 31% | 22% | 34% | 4.1 | 70% | 26% | 11.8 |
+| A boss, the break alone | 35% | 8% | 47% | 3.7 | 92% | 4% | 2.3 |
+| A formation, honest | 65% | 24% | 0% | none | | | |
+| A formation, the break and rest 2 | 59% | 25% | 8% | none | | | |
+
+The worst single blow on a hull: 24 in an elite's fight and 27 in a boss's on the honest
+shield, 24 and 26 under the break at rest 2; the lights' hulls are 20 to 24.
+
+The sliver, the Jack in the slot: what a break stopped, in points of hull a fight, and how
+much of it a shield under a third of its gauge stopped, or one that had already broken once
+in the fight.
+
+| The fight, the rule | Breaks a fight | Stopped a fight | By a shield that had broken before | By a shield under a third of its gauge |
+|---|---|---|---|---|
+| An elite, rest 2 | 2.0 | 11.8 | 2.1 | 2.9 |
+| A boss, rest 2 | 3.8 | 25.4 | 7.4 | 8.2 |
+| An elite, no rest | 2.6 | 15.9 | 6.4 | 6.6 |
+| A boss, no rest | 4.5 | 31.4 | 14.9 | 14.6 |
+| A boss, half a gauge or more, rest 2 | 3.9 | 18.1 | 2.3 | none |
+| A formation, rest 2 | 1.3 | 1.9 | 0.6 | 1.5 |
+| The Phantom Train, rest 2 | 5.6 | 49.0 | 21.2 | 19.6 |
+| The Gargantuan King, rest 2 | 5.8 | 38.3 | 15.8 | 14.2 |
+| The Cinder Tortoise's brood, rest 2 | 5.7 | 28.6 | 13.7 | 13.9 |
+
+The rest's own cost at two rounds: a blow lands on a shield at rest 1.0 times an elite's
+fight and 3.6 times a boss's, taking 6.9 and 14.9 hull; 1.5 times a formation's, taking 3.1.
+
+By machine, its own hull lost and how often it was wrecked, the Jack in the slot:
+
+| The machine | An elite, honest | An elite, rest 2 | A boss, honest | A boss, rest 2 | Wrecked in a boss's fight, honest | Rest 2 |
+|---|---|---|---|---|---|---|
+| The Honey Badger | 9% | 4% | 19% | 9% | 2% | 0% |
+| The Skua | 20% | 15% | 40% | 22% | 19% | 6% |
+| The Storm Petrel | 30% | 17% | 52% | 26% | 22% | 8% |
+| The Prairie Dog | 23% | 14% | 34% | 18% | 12% | 5% |
+| The Cassowary | 20% | 13% | 44% | 21% | 15% | 2% |
+| The Cottonmouth | 28% | 19% | 55% | 24% | 28% | 7% |
+
+The fight bot's spends on the Armoured basic, both slots holding it: 10.7% of an elite's
+fight's spends on the honest shield and 7.8% under the break at rest 2 (2.0 a fight and 1.4);
+16.8% and 11.8% of a boss's (4.7 a fight and 3.0); 8.2% and 7.4% of a formation's.
+
+The second battle whole, the mustering player, three squads, twenty seeds a domain; won, then
+the hull left at the end.
+
+| The Halo's slot | The shield | The Meadow | The Marsh | The Waste | The Peak |
+|---|---|---|---|---|---|
+| The Jack | Honest | 50 to 80%, 32 to 47% | 25 to 40%, 20 to 35% | 0 to 30%, 13 to 27% | 25 to 45%, 20 to 27% |
+| The Jack | The break, rest 1 | 75 to 85%, 54 to 66% | 45 to 70%, 44 to 62% | 20 to 60%, 24 to 37% | 40 to 60%, 48 to 51% |
+| The Jack | The break, rest 2 | 65 to 85%, 45 to 58% | 50 to 55%, 37 to 55% | 15 to 35%, 19 to 32% | 40 to 50%, 39 to 42% |
+| The Jack | The break, rest 3 | 65 to 85%, 42 to 56% | 30 to 55%, 30 to 51% | 15 to 30%, 17 to 34% | 35 to 50%, 35 to 38% |
+| The Jack | Half a gauge or more, rest 2 | 55 to 80%, 36 to 51% | 30 to 50%, 30 to 45% | 5 to 30%, 13 to 25% | 25 to 35%, 29 to 35% |
+| The Barrier basic | Honest (content) | 75 to 85%, 49 to 66% | 60 to 65%, 46 to 52% | 45 to 55%, 28 to 34% | 40 to 60%, 28 to 37% |
+| The Barrier basic | The break, rest 1 | 75 to 85%, 66 to 76% | 70 to 90%, 66 to 74% | 65 to 75%, 45 to 50% | 50 to 70%, 50 to 58% |
+| The Barrier basic | The break, rest 2 | 70 to 85%, 60 to 72% | 60 to 70%, 57 to 65% | 60 to 65%, 35 to 44% | 40 to 60%, 44 to 49% |
+| The Barrier basic | The break, rest 3 | 75 to 85%, 55 to 70% | 45 to 70%, 47 to 63% | 45 to 60%, 34 to 39% | 30 to 55%, 37 to 45% |
+
+One fight traced, the Gargantuan King against the Honey Badger, the Skua, the Prairie Dog and
+the Cottonmouth, seed 2, the break at rest 2: round one, its 15 on the Prairie Dog's 8 of
+shield, "it breaks and stops the other 7"; round two, its 15 on the Badger's 6, the other 9
+stopped; round three it gathers its Charge; round four the Prairie Dog's regen brings back 1,
+and the Charge of 11 on every machine takes 8 from the Badger, whose shield is at rest, and
+nothing from the other three, the Prairie Dog's shield of 1 stopping the other 10. Four
+rounds, eight hull.
+
+Read.
+
+- At a rest of two the fights of every day do not move. The break and the rest cancel: a
+  flanker 3.5% and 3.5%, a hunter's pack 6.9% and 7.0%, a formation 6.6% and 6.8%. Their
+  blows are 2 to 7, so a break has little left over to stop, and what it pays is the regen
+  the rest takes. The swarms come a little dearer and the fights led by a giant a little
+  cheaper.
+- An elite costs two fifths less and a boss half, with no die spent and in fights no longer:
+  19.8% to 12.2%, 37.7% to 18.5%, a boss's fight 7.0 rounds to 6.2. A light is wrecked in 2
+  to 8% of its bosses' fights where it was wrecked in 12 to 28%.
+- That is about what the Barrier basic is worth today (9.5% and 21.4%), without its dice or
+  its stall: the Gargantuan King's fight is five rounds where three machines turning the
+  Barrier made it twenty-three. The two together are worth twice either, an elite 5.0% and a
+  boss 10.5%.
+- It is the Barrier's shape. A foe whose kit is one blow a round falls to two fifths or less of
+  what it cost (the Nob 36% to 14%, the Marsh Serpent 33% to 6%, the Gargantuan King 66% to
+  21%, the Obsidian Tyrant 39% to 10%); a foe of many small blows does not move or comes
+  dearer (the shaman's warband, Floraison, the Emperor Scorpion); a breach does not move at
+  all (the Old Man 38% and 37%), and the Waste's battle is where the rule falls short of the
+  Barrier basic (15 to 35% won against 45 to 55%).
+- A big blow becomes nothing or all of it. Of the blows of 8 or more, a break stops 56% whole
+  in an elite's fight and 70% in a boss's, and 24% and 26% land on a hull whose shield is
+  gone, where 10% and 8% did. The worst blow a hull takes is as it was, 24 to 27 against
+  hulls of 20 to 24, so a blow's number tunes nothing against a shield that stands and
+  everything against one that does not.
+- The sliver is a quarter to a third of the gain, and half of it in a long fight. A point of
+  regen back after the rest stops the next blow whole, as the trace's shield of 1 stopped 10.
+  With no rest it is half of everything stopped and a boss's big blow is stopped 92% of the
+  time: the rule of before 14 October, the regen its stand-up shield. The rest is what holds
+  it, and holds it in part. A guard at half a gauge closes it and keeps seven tenths of the
+  gain on an elite (14.4%) and three fifths on a boss (26.3%), with the small fights a fifth
+  dearer than on the honest shield, since the rest is then paid for a break that seldom stops
+  anything.
+- The scramble is rare and the bot does not answer it. A blow finds a shield at rest once an
+  elite's fight and three and a half times a boss's. The bot spends about a third fewer
+  dice on the Armoured basic under the rule than without it: 2 off a blow of 15 on a
+  bare hull is not worth a die, and fewer blows reach a hull at all. So on the bot's play
+  the rule makes killing first more right, his read of 10 November over again, and the
+  rest's cost is paid in hull and not in a decision. What a scramble would be spent on is a
+  Barrier or a lure, and the bot plans no round but this one; his play is the read of it.
+- By the rest's length: one round is too kind (a boss 14.5%), three is near two (22.3% to
+  18.5%), and the rest alone with the honest arithmetic costs a tenth to a quarter more than
+  the honest shield in every kind of fight.
+
+Method: the fight-at-its-rating probe and the ledger of the sections above, the engine's
+switches set for the run, and a fight that counts each blow as it lands (what the shield
+took, what reached the hull, what a break stopped, the shield as it stood, whether it was at
+rest). The Jack in the Halo's slot is the Halo Projector's entry replaced in memory by the
+Shoring Jack's. The honest rows reproduce the sections above to the decimal (19.8% and 37.7%;
+9.5% and 21.4%). Scratch probes, not in the repository.

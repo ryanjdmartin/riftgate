@@ -23,8 +23,11 @@ extends RefCounted
 ##   barrier=cooldownN  the Barrier basic sits out N rounds once spent, after the round of the
 ##                      spend (a cooldown's own count); 0 for none, and the bare word is 1
 ##   barrier=heatN      the Barrier basic makes N heat
+##   barrier=none       the Barrier basic leaves the stock dice, the Armoured basic in its slot
+##                      (the Barrier's place, open since 12 November: a basic, or rare or locked)
 
 const BARRIER := "barrier"   # the status the Barrier basic grants (the engine's word)
+const ARMOURED := "braced"   # the status the Armoured basic grants
 
 
 static func parse(text: String) -> Dictionary:
@@ -40,7 +43,7 @@ static func parse(text: String) -> Dictionary:
 		elif p.begins_with("barrier="):
 			spec["barrier"] = p.trim_prefix("barrier=")
 		elif not p.is_empty():
-			push_error("--refit: no part '%s' (regen=half|N, cooling=N, hotter=N, barrier=cooldownN|heatN; the model's die, its regen by chassis and the basics' heat are content since 10 November)" % p)
+			push_error("--refit: no part '%s' (regen=half|N, cooling=N, hotter=N, barrier=cooldownN|heatN|none; the model's die, its regen by chassis and the basics' heat are content since 10 November)" % p)
 	return spec
 
 
@@ -98,8 +101,26 @@ static func apply(db: ContentDB, spec: Dictionary) -> Array[String]:
 		elif barrier_rule.begins_with("heat"):
 			db.components[barrier]["face"]["heat"] = int(barrier_rule.trim_prefix("heat"))
 			notes.append("the Barrier basic makes %d heat" % int(barrier_rule.trim_prefix("heat")))
+		elif barrier_rule == "none":
+			# The Barrier off the starting dice (its place is open since 12 November: Ryan, "Should
+			# it be rare or locked?"): every stock slot that holds the Barrier basic holds the
+			# Armoured basic, the piece itself untouched for whoever finds one.
+			var jack := basic_granting(db, ARMOURED)
+			if jack.is_empty():
+				push_error("the refit what-if: content has no slottable Armoured piece to stand in the Barrier basic's slot")
+			else:
+				var dice := 0
+				for id in db.chassis.keys():
+					var loadout = db.chassis[id].get("loadout", [])
+					if not (loadout is Array):
+						continue
+					for i in range((loadout as Array).size()):
+						if str(loadout[i]) == barrier:
+							loadout[i] = jack
+							dice += 1
+				notes.append("the Barrier basic leaves the stock dice: the Armoured basic in its slot on %d" % dice)
 		else:
-			push_error("--refit: barrier=%s is no rule (cooldownN, heatN)" % barrier_rule)
+			push_error("--refit: barrier=%s is no rule (cooldownN, heatN, none)" % barrier_rule)
 	return notes
 
 

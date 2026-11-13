@@ -1200,7 +1200,7 @@ func _refresh(save: bool = true) -> void:
 		var fc: Dictionary = _forecast_for(i) if assigning and ms.alive() else {}
 		# Shield above hull: it is what the enemy meets first, and it drops first.
 		v.bars = [
-			[ms.unit.shield, ms.unit.shield_max, Palette.SHIELD, fc.get("shield_after", ms.unit.shield)],
+			[ms.unit.shield, ms.unit.shield_max, Palette.SHIELD, fc.get("shield_after", ms.unit.shield), 0, ms.shield_down],   # the sixth: the rounds a broken shield has left at rest (the breaking shield's trial), drawn on the gauge
 			[ms.unit.hull, ms.unit.hull_max, Palette.HULL, fc.get("hull_after", ms.unit.hull)],
 			[ms.heat, ms.heat_max, Palette.HEAT, fc.get("heat_after", ms.heat)],
 		]

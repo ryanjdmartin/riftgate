@@ -59,6 +59,21 @@ static var pilot: Dictionary = {}   # chassis id -> heat it gains as each round 
 # maximum (--burnout), and every overheat Corrupts that component, so many stacks (--overheat-corrupt N).
 static var overheat_burnout: bool = false
 static var overheat_corrupt: int = 0
+## The breaking shield, a what-if for the runners and a debug build's trial (Ryan, 13 November:
+## "What if we bring back that when a shield breaks, it absorbs the whole blow? It does not bleed
+## into the hull. But in exchange, if a shield breaks, it's down for a couple of turns before it
+## starts to regenerate again"; docs/briefs/refit_pass.md, section 15). Never content, and off
+## the honest shield of 14 October runs.
+##   shield_break      the blow that takes a standing shield to nothing is stopped whole, what
+##                     was left of it never reaching the hull (the rule of before 14 October)
+##   shield_rest       the rounds a shield a foe's blow broke stays down before its regen starts
+##                     again, nothing else raising it meanwhile (MechState.shield_down); 0, none
+##   shield_break_min  the share of its maximum, in hundredths, a shield must stand at for its
+##                     break to stop the blow whole; 0, any shield at all (the bench's guard
+##                     against a sliver doing a full gauge's work)
+static var shield_break: bool = false
+static var shield_rest: int = 0
+static var shield_break_min: int = 0
 
 
 class MechState:
@@ -78,6 +93,7 @@ class MechState:
 	var ammo: int = 0           # the magazine (the Musk Ox's Desublimation Forge): a resource beside heat, never a status
 	var ammo_max: int = 0       # its size; 0 for a machine that forges nothing
 	var hot_entry: int = -1     # the entry whose spend last took the gauge past its maximum this turn (the overheat's what-ifs)
+	var shield_down: int = 0    # the round starts left before a shield a blow broke may gain again, the one that restarts its regen counted (the breaking shield's rest, a what-if: Skirmish.shield_rest)
 
 	## The entry showing, as it is right now: a disabled one shows as blank (the component
 	## itself is untouched; the status is what says so).
@@ -1130,7 +1146,7 @@ func _blow_on(ms: MechState, amount: int, source: Foe, shield: int, barrier: boo
 	var arrived := Effects.damage_taken(ms.unit, amount, source, false, true, maxi(0, shield))
 	var barred := arrived > 0 and barrier
 	var warded := source.breaches() and Effects.has(ms.unit, "ward")
-	var r := _blow(shield, ms.unit.hull_max, ms.unit.armour, 0 if barred else arrived, source.breaches() and not warded)
+	var r := _blow(shield, ms.unit.hull_max, ms.unit.armour, 0 if barred else arrived, source.breaches() and not warded, breaks_whole(shield, ms.unit.shield_max))
 	r["amount"] = arrived
 	r["barred"] = barred
 	r["warded"] = warded
@@ -1397,12 +1413,22 @@ func start_round() -> void:
 	# nothing stops it, where the seal stops its own cooling. What its heat adds to the regen (the
 	# Buzzard's Thermal Recoupler) is read here with it, the heat as the cooling left it.
 	var regened: Array[String] = []
+	var resting: Array[String] = []
 	for ms in live_mechs():
+		# A shield a blow broke rests (the breaking shield, a what-if): its count runs down a
+		# round start at a time, and the regen runs again from the start that ends it.
+		if ms.shield_down > 0:
+			ms.shield_down -= 1
+			if ms.shield_down > 0:
+				resting.append("%s %d" % [ms.unit.display_name, ms.shield_down])
+				continue
 		var gained := _gain_shield(ms, shield_regen_of(ms))
 		if gained > 0:
 			regened.append("%s +%d" % [ms.unit.display_name, gained])
 	if not regened.is_empty():
 		log.append("shield regen: " + ", ".join(regened))
+	if not resting.is_empty():
+		log.append("shield down, rounds left: " + ", ".join(resting))
 	# Passives that fire at the round's start, after the roll: shield from heat, a flat
 	# shield, a vent (the Buzzard's Thermal Recoupler reads the heat as it stands now).
 	for ms in live_mechs():
@@ -4928,8 +4954,8 @@ func _add_heat(ms: MechState, amount: int, entry: int = -1) -> void:
 ## Overshield; gaining any fires the on_shield_gain passives (which may shed heat, never
 ## raise shield). Returns what stood up.
 func _gain_shield(ms: MechState, amount: int, overshield: bool = false) -> int:
-	if amount <= 0:
-		return 0
+	if amount <= 0 or ms.shield_down > 0:
+		return 0   # a shield a blow broke is down until its rest ends (the breaking shield, a what-if): no regen, no passive, no entry raises it
 	var gained := ms.unit.recharge_shield(amount, overshield)
 	if gained > 0:
 		_fired(ms, Effects.fire(ms.unit, "on_shield_gain", gained), "on the shield")
@@ -5044,12 +5070,16 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	var had_shield := ms.unit.shield > 0
 	ms.unit.shield = r["shield"]
 	ms.unit.hull -= r["through"]
+	# The breaking shield's rest (a what-if): a shield a foe's blow took to nothing stays down so
+	# many rounds, this round's remainder apart, before its regen starts again.
+	if shield_rest > 0 and bool(r["broke"]):
+		ms.shield_down = shield_rest + 1
 	var rk := "back" if source != null and source.rank == 1 else "front"
 	taken_by_rank[rk] = int(taken_by_rank.get(rk, 0)) + int(r["absorbed"]) + int(r["through"])
 	sponsorship["guarded"] = int(sponsorship["guarded"]) + int(r["absorbed"]) + int(r["armoured"])
 	# The mech's gauges after the blow ride along, so a replay can step them down blow by blow.
 	turn_events.append({"foe": source, "mech": mechs.find(ms), "amount": brought, "absorbed": r["absorbed"], "through": r["through"],
-		"blocked": r["blocked"], "barred": barred, "broke_shield": had_shield and ms.unit.shield == 0, "injured": r["injures"],
+		"blocked": r["blocked"], "barred": barred, "broke_shield": had_shield and ms.unit.shield == 0, "stopped": r["stopped"], "injured": r["injures"],
 		"shield": ms.unit.shield, "hull": ms.unit.hull, "seq": _seq,
 		"name": str(source.action.get("name", "")) if source != null else "", "boss": source != null and source.boss,
 		"all": source != null and source.hits_all()})
@@ -5060,8 +5090,10 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 		log.append("%s: the Ward turns %s's breach away" % [ms.unit.display_name, source.display_name])
 	if barred:
 		log.append("%s hits %s: the Barrier takes the blow" % [source.display_name, ms.unit.display_name])
+	elif int(r["stopped"]) > 0:
+		log.append("%s hits %s: shield -%d, it breaks and stops the other %d%s" % [source.display_name, ms.unit.display_name, r["absorbed"], r["stopped"], ", down %d rounds" % shield_rest if shield_rest > 0 else ""])
 	elif r["blocked"]:
-		log.append("%s hits %s: shield -%d, blocked" % [source.display_name, ms.unit.display_name, r["absorbed"]])
+		log.append("%s hits %s: shield -%d, blocked%s" % [source.display_name, ms.unit.display_name, r["absorbed"], ", broken, down %d rounds" % shield_rest if shield_rest > 0 and bool(r["broke"]) else ""])
 	elif r["through"] == 0:
 		log.append("%s %s %s: %sarmour holds" % [source.display_name, verb, ms.unit.display_name, "shield -%d, " % r["absorbed"] if r["absorbed"] > 0 else ""])
 	elif r["absorbed"] > 0:
@@ -5090,11 +5122,19 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 ## excess passes to the hull. One breach (22 October): a breach ignores the shield outright,
 ## which stands, and the armour, so the whole blow reaches the hull.
 ## Returns shield after, absorbed, through (to hull), armoured (taken off by armour), blocked
-## (the shield took the whole blow), injures (what reached the hull, over the threshold) and
-## breach (the blow ignored shield and armour).
-static func _blow(shield: int, hull_max: int, armour: int, amount: int, breach: bool) -> Dictionary:
+## (the shield took the whole blow), injures (what reached the hull, over the threshold),
+## breach (the blow ignored shield and armour), broke (the blow took a standing shield to
+## nothing) and stopped (what a break kept from the hull: nothing on the honest shield).
+## `whole` is the breaking shield, a what-if (shield_break; breaks_whole says when): the blow
+## that breaks the shield is stopped there, and what was left of it reaches nothing.
+static func _blow(shield: int, hull_max: int, armour: int, amount: int, breach: bool, whole: bool = false) -> Dictionary:
 	var absorbed := 0 if breach else mini(maxi(0, shield), maxi(0, amount))
 	var through := maxi(0, amount) - absorbed
+	var broke := not breach and shield > 0 and absorbed >= shield
+	var stopped := 0
+	if whole and broke:
+		stopped = through
+		through = 0
 	# Armour comes off every blow that reaches the hull, a shield's overflow included, and never
 	# off a breach (one breach, 22 October: the anti-tank threat, by move, the Ward its answer;
 	# until then a breach beat the shield and never the plate). A blow on the shield costs it
@@ -5104,7 +5144,14 @@ static func _blow(shield: int, hull_max: int, armour: int, amount: int, breach: 
 	# Injury counts what reaches the hull in one blow, wherever it came from: past the shield,
 	# past a breach, on bare hull (the injury row: a share of the hull in one blow injures).
 	var injures := injuries and through > 0 and through * 100 >= hull_max * injury_pct
-	return {"shield": shield - absorbed, "absorbed": absorbed, "through": through, "armoured": armoured, "blocked": absorbed > 0 and through + armoured == 0, "injures": injures, "breach": breach}
+	return {"shield": shield - absorbed, "absorbed": absorbed, "through": through, "armoured": armoured, "blocked": absorbed > 0 and through + armoured == 0, "injures": injures, "breach": breach, "broke": broke, "stopped": stopped}
+
+
+## Whether the blow that breaks a shield standing at `shield` of `shield_max` is stopped whole:
+## never on the honest shield, and under the breaking shield's what-if when the shield stands
+## at shield_break_min hundredths of its maximum or more (any shield at all at 0).
+static func breaks_whole(shield: int, shield_max: int) -> bool:
+	return shield_break and shield > 0 and shield * 100 >= shield_max * shield_break_min
 
 
 ## The injury destroys the entry the die shows (Ryan, 2 November, in place of the die's roll of
