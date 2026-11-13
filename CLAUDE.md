@@ -73,6 +73,20 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   `shield_regen`, one to three), cooling is the chassis's; the slottable shields and vents are
   planned drafts nothing deals, four machines are back in design (`"status": "planned"` on the
   chassis), and the engine still runs the four kinds for the locked pieces that are one.
+- The reboot is the working shape of the shield and of heat (Ryan, 13 November: "This is
+  fundamental, I don't want it to get skipped by other sessions"): read
+  `docs/briefs/refit_pass.md`, section 22, before designing, pricing or reading any machine,
+  component, module or foe. It has his rules, his rulings and the spec. Under it nothing
+  regenerates or cools by itself; a machine that has spent nothing may give its turn to a
+  reboot, bare that turn, cold and whole the next; heat past the maximum stays and burns hull
+  every turn; a shield at nothing is broken and gains none until the reboot. It is built and
+  on trial, off in the game (`Skirmish.reboot`; REBOOT on a debug build's trials), and content
+  still carries the regen and the cooling of the paragraph above until his play says. So a
+  piece is read both ways, as built and under the reboot, and one that leans on regen,
+  cooling, a shield gain or a vent says so. His expectation, no strict rule ("I don't want to
+  make a strict rule about anything"): what grants regen, cooling, flat shield or flat heat
+  reduction is part of a kit or a locked piece, or gated behind a synergy ("they should be
+  something special"); and a shield spend may not be standard fare ("it's so expensive").
 - `sim/` never touches scenes. Everything there runs headless with a seeded RNG.
 - Numbers in content are placeholders, not balance.
 - Content ideas (makers, chassis, components, foes, names, lore) are proposed in conversation first;

@@ -11,6 +11,13 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 - Read `CLAUDE.md`, `docs/rules.md`, the bible's first row, this file and `docs/todo.md`. If a
   chat and a file disagree, the chat is newer.
+- **The reboot is the working shape of the shield and of heat, and no session skips it**
+  (Ryan, 13 November: "This is fundamental, I don't want it to get skipped by other
+  sessions"). `docs/briefs/refit_pass.md`, section 22, has his rules, his rulings, the spec
+  and every machine read against it. It is built and on main, off in the game behind
+  `Skirmish.reboot` (REBOOT on a debug build's trials), and content still carries the regen
+  and the cooling it replaces. Read section 22 before any work on a machine, a component, a
+  module or a foe (`CLAUDE.md` has the rule).
 - Sessions run in parallel on this repo: `git status` first, stage by path, diff a shared file
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. A branch
   takes main as it lands and main takes the branch as a fast-forward on Ryan's word; expect the
@@ -1059,7 +1066,12 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   longer (a formation 10.7% of a four's hull where it costs 5.9%, an elite 14.8% for 9.5%, a
   boss 37.1% for 21.4% with 93% won for 98%), a machine rebooting about once a fight, none
   stalling. **Next, his: his play of the trial; then the audit of every rider and keyword
-  and the foes' Burn, each a first round in chat.**
+  and the foes' Burn, each a first round in chat.** His notes on the list the same day:
+  the Dingo's line is his now ("May move and act twice during each turn of the map
+  phase"); a lure is activated, "So it's a choice. They can have a safe turn if they want",
+  which corrects the list's first draft; what grants regen, cooling, flat shield or flat
+  heat reduction he expects in a kit, a locked piece or behind a synergy, no strict rule;
+  and a shield spend may not be standard fare, "because it's so expensive".
   His marks on 4-4-2 are in ("That's probably fine for 4-4-2 for
   now": the brief's section 13 has the table with his words, each open place its chassis's
   session's). Also open, his: the first battle's block (not scaled:

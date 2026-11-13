@@ -1258,8 +1258,8 @@ a stat.
   turn's stop numbered, and the thing it comes for under a crawling border with the attack mark
   on it (a sword in the reticle's turning ring, one mark for both): a pusher's piece of the
   wall, a hunter's machine; no other pack's whole way shows, a selected machine's hunters'
-  included. Each machine has one action (the Dingo two, by its Retrograde Flywheel: these are
-  actions on the battlefield, and inside a fight it spends its die once a round like any machine): one move,
+  included. Each machine has one action (the Dingo two, by its Retrograde Flywheel: it may
+  move and act twice during each turn of the map phase, and inside a fight it spends its die once a round like any machine): one move,
   in one go, then it may fight; a fight ends the action however it ends, and the board under the
   map says what each can still do. A selected machine lights the hexes its move reaches, one
   border round the whole reach, its dashes crawling as its target's do, and brackets the packs it could be ordered onto. A move is

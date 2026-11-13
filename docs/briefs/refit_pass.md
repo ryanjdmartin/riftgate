@@ -2925,7 +2925,7 @@ fight, which it does not: its two actions are on the map.
 
 | The machine | As its brief has it | Under the rules |
 |---|---|---|
-| **Storm Petrel**, Kestrel, tier 1, direction of 11 November | It keeps the shield armour, a point off every blow while its shield stands. Its hook is shield gained whenever it gains heat, "any source". Its guns make heat again and the zap leaves | The one machine whose shield mends as it fires. The mending stops the moment its shield breaks, and a reboot throws away what it built. It lures, so the picks are on it when it wants to reboot |
+| **Storm Petrel**, Kestrel, tier 1, direction of 11 November | It keeps the shield armour, a point off every blow while its shield stands. Its hook is shield gained whenever it gains heat, "any source". Its guns make heat again and the zap leaves | The one machine whose shield mends as it fires. The mending stops the moment its shield breaks, and a reboot throws away what it built |
 | **Buzzard**, Kestrel, tier 2, settled 11 November | Its passive pays a flat shield cost on each weapon, unasked, for flat damage. Its cannon fires its whole field. Its heat raises its regen | Heat that never leaves is a regen that only climbs, the one standing regen in the game. "You can break yourself": the cannon empties its own shield, and the unasked cost can take its last point. A reboot empties the shield anyway, so the cannon before a reboot is free |
 | **Puffin**, Kestrel, the rework, tier two | It moves heat. Equipment it spends on an ally pulls some of that ally's heat onto it. A locked piece dumps its heat on another unit with a buff by the heat moved, "forcing an overheat for hull damage" among its uses | Moving heat is the one way heat leaves a machine short of a reboot, so it is worth far more. A dump can force an ally's overheat, which now breaks that ally's shield and starts a burn that stands. Pulled heat can take the Puffin past its own maximum |
 | **Swallowtail**, Wainwright & Sutler, tier 3, punted | Its Screens and Hoist are to be replaced. On the bench: a team Ward or a team Barrier, every ally's regen doubled for a round, the Hoist as "in-fight refueling" | No regen is left to double. A team Barrier is cover for a round of reboots. Its charged Hoist, "its shield full, its heat gone", was a reboot by another hand, the dearest thing the rule has |
@@ -2938,7 +2938,7 @@ fight, which it does not: its two actions are on the map.
 | The machine | What it is built on | Under the rules |
 |---|---|---|
 | **Whip Scorpion**, Wainwright & Sutler, tier 2 | "Nothing cools it"; a pass at 8 heat or more releases the lot on every foe and leaves it cold; its ray fires its whole gauge; regen 3; a foe's blow on it adds 2 heat | Its rule is every machine's now. It has two ways to empty its gauge that keep its shield. A foe's blows can carry it past its maximum, which breaks its shield |
-| **Polar Bear**, Minerva, tier 1 | The seal: "its own cooling stopped", 3 heat more a turn, opening its heat's "one way down". It lures | Nothing to stop, opening cools nothing, and the seal walks it into the overheat. It lures, so the picks are on it |
+| **Polar Bear**, Minerva, tier 1 | The seal: "its own cooling stopped", 3 heat more a turn, opening its heat's "one way down" | Nothing to stop, opening cools nothing, and the seal walks it into the overheat |
 | **Stingray**, Aphelion, tier 1 | A stack deeper for every 5 heat it carries | Heat never leaves and counts past the maximum, so it is paid to ride there, against a burn that stands |
 | **Nemesis**, Arsenal, tier 2 | Rage on a hit on its shield and on hull damage, the burn included | A shield that does not mend is hit fewer times. A burn every turn banks rage every turn |
 | **Cottonmouth**, Wainwright & Sutler, tier 1 | Cooling 3 for a drum shot of heat 6 | Two shots a reboot at a maximum of 12 |
@@ -2961,8 +2961,8 @@ fight, which it does not: its two actions are on the map.
 | **The Macross**, Aphelion, tier 3, idea | Its shift to GERWALK grants allies shield regen for two turns; Supercooled is the team's cooling, by Cryo | Two of the few team grants of regen and cooling. The regen lands on live shields alone |
 | **The jellyfish**, Aphelion, tier 2, direction | Its EMP "comes at a cost to its allies (maybe a group shield cost)" | A group shield cost can break allies' shields, each then shut out until its reboot |
 | **The Onryō**, Arsenal, tier 2, direction | "Using its own hull as a resource, and draining foes to heal itself", wanting "a fight to go long" | The one machine that could pay a standing burn and heal it back, which is the thing "reboot, or die" rests on |
-| **The lure tank**, Minerva, tier 1, idea | Every hit lures; Armoured for each hit taken | It is built to have every pick on it, so it has no safe turn to reboot, and its shield is gone in the first blows. If a hit is hull damage, a burn buys it Armoured every turn |
-| **The echidna**, Minerva, tier 2, direction, left open | It wants to be struck, and lures | The same squeeze as the lure tank |
+| **The lure tank**, Minerva, tier 1, idea | Every hit lures; Armoured for each hit taken | What it draws lands on a shield that does not mend, so its shield is gone in the first blows. If a hit is hull damage, a burn buys it Armoured every turn |
+| **The echidna**, Minerva, tier 2, direction, left open | It wants to be struck, and lures | The same: what it draws lands on a shield that does not mend |
 | **The immune one**, Minerva, tier 2, idea | Immune to all buffs and debuffs; on receipt, all of both removed | Overheated and Broken show as debuffs. If its immunity or its removal reaches them it is a reboot without the turn. No Barrier can cover its own reboot |
 | **The Cryo party defence**, Minerva, tier 2, idea | Cryo left on a foe lowers its blows; a weapon hit cashes it for cooling | Cryo's cooling is dear now, so the choice it asks, hold the frost or cash it, tilts to cashing |
 | **The Barrier and Ward support**, Aphelion, tier 1, idea | It leans on the Barrier | His fourth ruling makes the Barrier the reboot's cover, so this is the reboot's escort |
@@ -2974,12 +2974,27 @@ fight, which it does not: its two actions are on the map.
 *In briefs, not built: nothing in them reads heat, cooling, regen or a shield gain.* Static, the
 mole, Minos, the siege battery as parked, and the shield bash.
 
-Across the list, three things recur. The machines that lure (the Polar Bear, the Storm Petrel,
-the lure tank, the echidna) are the ones the picks sit on, and the rule's price falls on the
-machine under the picks. The machines that grant cooling or regen (the line
-frame, the gunship, the Macross, the Buzzard, the Storm Petrel, the Puffin's pull) hold what is
-now the dearest currency. And the pieces that pay in shield (the Buzzard, the thunder figure,
-the jellyfish's EMP) pay with a budget that comes back once a reboot.
+Across the list, two things recur, and his word on each the same day.
+
+The pieces that grant cooling or regen (the line frame, the gunship, the Macross, the
+Buzzard, the Storm Petrel, the Puffin's pull) hold what is now the dearest currency. His
+word: "I don't want to make a strict rule about anything, but I would expect that anything
+that grants Regen, cooling, flat shield or flat heat reduction, would probably be part of a
+kit or locked piece. Or gated behind a synergy. Bring the dearest pieces, as you say, they
+should be something special." An expectation, not a rule. What grants one from a slot today,
+for the audit's first look: the Boundary-layer Bleed, the Spall Liner and the Field Radiators,
+three modules, and the ten planned shields and vents.
+
+The pieces that pay in shield (the Buzzard, the thunder figure, the jellyfish's EMP) pay
+with a budget that comes back once a reboot. His word: "Shield spend also is something I'm
+not certain will be standard fare, because it's so expensive."
+
+The first draft of this list had a third, and had it wrong: that a machine which lures has
+every pick on it and so no safe turn to reboot. His correction: "Luring is, currently,
+always something that needs to be activated. So it's a choice. They can have a safe turn if
+they want." A lure is a piece spent, and a reboot is for a machine that has spent nothing,
+so the turn a lurer reboots it draws nothing onto itself. What the rule changes for a lurer
+is that the blows it chooses to draw land on a shield that does not mend.
 
 Beside the chassis, the pieces that read the same things:
 
