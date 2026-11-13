@@ -27,27 +27,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1154 tests, 371,084 checks, green on `ccr-722ca9f0-yj8na3` (12 November, the Barrier's
-  cooldown over the anchor). Before it, 1154 tests, 371,080 checks, green on main at `4c29e09`
-  (12 November, the anchor: heat's prices, tier one's shields and its foes' numbers). Before it,
-  1154 tests, 371,076 checks, green on main (12 November, as `ccr-4d58b054-3lyj0a` landed
-  with the vent blast's and Siphoning's cut, the Overrun Gearing, the Shift Whistle dealt, the
-  Whip Scorpion's broadside and its two new idle acts, over the dead-code pass and the four
-  formations' numbers). Before it, 1152 tests, 364,655 checks, green on main (12 November, as
-  `ccr-8af28d03-re9kz4` landed a second time with the kill's flare once an attack, no per-foe flag,
-  Empowered's up sword and the dead-code pass), and the same counts green on `ccr-722ca9f0-yj8na3`
-  over it with the four formations' numbers. Before it, 1158 tests, 364,834 checks, green on main
-  (12 November, as `ccr-8af28d03-re9kz4` landed with the Ammit's rework over the three fast flyers
-  rebuilt, Sweep removed, the cooldown's count, Instant, Sapped and the Wild Boar's and the
-  Baboon's reworks). Before it, 1142 tests, 364,574
-  checks, green on `ccr-4d58b054-3lyj0a` (12 November, Sapped, the Lance, the Wild Boar's and the
-  Baboon's reworks, with main's cooldown count, Rapid's switch-off and Instant taken in). 1132
-  tests, 364,475 checks, green on main (12 November, as `ccr-63a1309a-caa9mw` landed
-  with the cooldown's count, Rapid's own switch-off and Instant over the Clydesdale's review).
-  Before it, 1132 tests, 364,286 checks, green on main (12 November, as the Clydesdale's review
-  landed with its wells, broadside drill and hatch wave; Godot 4.8-beta2). Before it, 1132 tests,
-  363,473 checks, green on main (11 November, as `ccr-4d58b054-3lyj0a` landed with the Dingo's
-  pieces, the pins and the Flakshot Repeater over the Clydesdale's review); one
+- Tests: 1154 tests, 371,110 checks, green on main (13 November, as `ccr-e3ddf00b-ilkwbi` landed
+  again with the Kite's model rounds, over the Barrier's cooldown, the shield's reads and the
+  anchor). Before it, 1154 tests, 371,084 checks, green on `ccr-722ca9f0-yj8na3` (12 November, the
+  Barrier's cooldown over the anchor); git keeps the counts before. One
   SCRIPT ERROR in every run's log is the runner's own test, raised on purpose; Godot 4.8-beta2;
   either map view on 6 November; about four minutes in a cloud session, twenty on a slow one;
   words after `--` run only the files whose names hold one (`-- loot rig`). A cloud
