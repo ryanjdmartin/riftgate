@@ -735,16 +735,16 @@
    }
   },
   "giant_petrel": {
-   "when": "Ryan's seventh notes on the catamaran, 13 November.",
-   "note": "Ryan, 13 November, on the seventh cut: “default the aft guns to facing forward, or the skirmish animations will be awkward. The windscreen pokes through the sides. [It] can sit lower on the front anyway, more vertically centered. The sides of the rear spoiler could be bigger, now the the guns aren't in the way. And I actually take it back, put the spoiler back up so the guns firing line is under it. So I guess the whole spoiler can be bigger.” The quarters now rest facing forward, in line with the ship, their arc from dead ahead round the outboard side to a little inboard of dead aft, so in a fight they turn from ahead as every other gun does. The windscreen is a band up the middle of the front, its foot a quarter up and its head three quarters, and each side pane's point starts a quarter along its facet from the flank, so the glass standing off the facet no longer shows past the flank's edge. The aerofoil is back up, at 37 where it was 32 (34 before that), so the quarters' line of fire astern runs 1.6 under it, and it is bigger: its chord half as long again, its span out to 29 from 27.6, a third thicker, and its fins longer in chord and thicker (the last picture, side on). Ryan's to judge running: Acts for the salvo, the traverse (the quarters swinging out from ahead) and the uplink.",
+   "when": "Ryan's eighth notes on the catamaran, 13 November.",
+   "note": "Ryan, 13 November, on the eighth cut: “front windshield still poking out the sides. Sides of the spoiler, the front edges could increase their slant towards the rear of the ship. Keep the top of the spoiler where is is in space, shift the bottom vertices of each side strut forward towards the nose, moving the forward vertex more than the rear.” What showed was the swept pane on each short facet either side of the prow: those facets face out to the flanks, so their glass read from the sides and astern as the windshield sticking out. They are gone; the windshield is the two raked panes across the front, their outer edges held a little in from the corners, so no glass shows from a side or from behind. Each fin's foot is drawn forward under its top, which stays where it was, its leading edge 8 and its trailing edge 4, so both rake back harder (the last picture, side on). Ryan's to judge running: Acts for the salvo, the traverse and the uplink.",
    "images": [
     {
      "file": "giant_petrel/giant_petrel_front.png",
-     "alt": "giant petrel, front: the windscreen lower on the front"
+     "alt": "giant petrel, front: the windshield the two panes across the front"
     },
     {
      "file": "giant_petrel/giant_petrel_rear.png",
-     "alt": "giant petrel, rear: the bigger spoiler, the quarters resting forward"
+     "alt": "giant petrel, rear: no glass at the deckhouse's corners"
     },
     {
      "file": "giant_petrel/giant_petrel_above.png",
@@ -760,15 +760,15 @@
     },
     {
      "file": "giant_petrel/giant_petrel_windscreen.png",
-     "alt": "giant petrel, the windscreen close: a band up the front's middle"
+     "alt": "giant petrel, the windshield close"
     },
     {
      "file": "giant_petrel/giant_petrel_guns.png",
-     "alt": "giant petrel, side on: the high spoiler, the left quarter's guns forward"
+     "alt": "giant petrel, side on: the fins raked back harder"
     }
    ],
    "before": {
-    "summary": "Before: the seventh cut, 13 November (the quarters resting facing aft, the aerofoil lowered for them to fire over, the glass high on the front with its side panes reaching the flanks' edge)",
+    "summary": "Before: the eighth cut, 13 November (a swept pane on each corner facet, showing from the sides and astern; the fins more upright)",
     "images": [
      {
       "file": "giant_petrel/before_giant_petrel_front.png",
@@ -796,7 +796,7 @@
      },
      {
       "file": "giant_petrel/before_giant_petrel_guns.png",
-      "alt": "Earlier: giant petrel, side on: the guns over the lowered aerofoil"
+      "alt": "Earlier: giant petrel, side on"
      }
     ]
    }

@@ -6483,6 +6483,8 @@ def giant_petrel(b):
     the aft guns to facing forward, or the skirmish animations will be awkward"; "The windscreen
     pokes through the sides. [It] can sit lower on the front anyway, more vertically centered"; the
     spoiler "back up so the guns firing line is under it. So I guess the whole spoiler can be bigger".
+    And on the eighth: the "front windshield still poking out the sides"; the spoiler's side struts
+    raked back harder, their tops kept and their feet drawn forward.
 
     The Navy SES's body: two knife hulls, their stems raked back as a wave piercer's, dark below
     the chine and chrome above, a cobalt chine stripe and straight deck stripes, each closing
@@ -6491,7 +6493,7 @@ def giant_petrel(b):
     fore gun house, a cobalt spearhead down each bow's deck; the deckhouse spanning the deck, every
     face leaning in, its front a sharp prow raked steeply back, each facet of it a smooth twisted
     surface from its foot to the roof's edge, the bridge's glass following it a band up its middle,
-    swept round it to points on the flanks, and four long windows down each flank; on its roof the Spindrift Salvo's
+    a raked pane each side of the prow, and four long windows down each flank; on its roof the Spindrift Salvo's
     three racks flush in line down the middle, each the size of the second cut's one rack (fixed,
     no pin; salvo_f, salvo_m, salvo_a, their faces rising out of the roof one after another to fire
     over the bow, eighteen tubes rippling, each rack at its own pace), the integrated mast behind them, a swept faceted fin
@@ -6589,20 +6591,17 @@ def giant_petrel(b):
     _rings(b, [[tuple(facet(i, m / NK, j / NF)) for i in range(len(foot) - 1) for m in range(NK)] + [tuple(facet(len(foot) - 2, 1.0, j / NF))]
                for j in range(NF + 1)], "steel.panel", "deckhouse", cap=False)
     _slab(b, [(x, y, zt0 - 0.1) for (x, y, z) in brow], (0.0, 0.0, 1.0), 0.2, "steel.panel", "deckhouse")
-    # The glass, (along the facet, up it) for each facet round the front: a swept pane down each side
-    # coming to a point aft, and a raked pane each side of the prow, its outer pillar swept back, a
-    # thin mullion on the crease; each pane a thin shell over its facet's surface, a point drawn as
-    # a sliver.
-    # The glass sits a band up the middle of the front, its foot a quarter up and its head three
-    # quarters (Ryan, 13 November: it "can sit lower on the front anyway, more vertically centered"),
-    # each side pane's point a quarter along its facet from the flank, so the shell standing off the
-    # facet stays inside the flank's line ("The windscreen pokes through the sides").
-    PANES = [[(0.25, 0.49), (0.97, 0.25), (0.97, 0.75), (0.25, 0.51)],
-             [(0.05, 0.25), (0.985, 0.25), (0.985, 0.75), (0.2, 0.75)],
-             [(0.015, 0.25), (0.95, 0.25), (0.8, 0.75), (0.015, 0.75)],
-             [(0.03, 0.25), (0.75, 0.49), (0.75, 0.51), (0.03, 0.75)]]
+    # The glass, (along the facet, up it): a raked pane each side of the prow, its outer pillar swept
+    # back, a thin mullion on the crease, each a thin shell over its facet's surface; a band up the
+    # middle of the front, its foot a quarter up and its head three quarters (Ryan, 13 November: it
+    # "can sit lower on the front anyway, more vertically centered"). Nothing on the short facets
+    # each side of the prow, which face out to the flanks, so no glass shows from the sides or astern
+    # ("front windshield still poking out the sides"), and each pane's outer edge held a little in
+    # from its corner.
+    PANES = {1: [(0.08, 0.25), (0.985, 0.25), (0.985, 0.75), (0.22, 0.75)],
+             2: [(0.015, 0.25), (0.92, 0.25), (0.78, 0.75), (0.015, 0.75)]}   # the facet's index round the front: its corners
     NU, NV = 8, 5
-    for i, (c0, c1, c2, c3) in enumerate(PANES):
+    for i, (c0, c1, c2, c3) in PANES.items():
         def kf(u, v):
             lo, hi = ((1 - u) * c0[0] + u * c1[0], (1 - u) * c0[1] + u * c1[1]), ((1 - u) * c3[0] + u * c2[0], (1 - u) * c3[1] + u * c2[1])
             return (1 - v) * lo[0] + v * hi[0], (1 - v) * lo[1] + v * hi[1]
@@ -6714,7 +6713,11 @@ def giant_petrel(b):
     # guns firing line is under it. So I guess the whole spoiler can be bigger").
     WZ2, FIN_X, TIP_X = 37.0, 26.0, 29.0   # the aerofoil's height, over the quarters' line astern; the fins' feet and tips across
     for s in (-1.0, 1.0):
-        _rings(b, [_fin_section(s * FIN_X, -46.0, -62.0, deck(-56.0) - 0.5, 0.8), _fin_section(s * TIP_X, -51.0, -66.0, WZ2, 0.6)], "livery.livery", "fin")
+        # Each fin's foot drawn forward under its top, its leading edge more than its trailing, so both
+        # rake back harder (Ryan, 13 November: "Keep the top of the spoiler where is is in space,
+        # shift the bottom vertices of each side strut forward towards the nose, moving the forward
+        # vertex more than the rear").
+        _rings(b, [_fin_section(s * FIN_X, -38.0, -58.0, deck(-56.0) - 0.5, 0.8), _fin_section(s * TIP_X, -51.0, -66.0, WZ2, 0.6)], "livery.livery", "fin")
     WING = [(-TIP_X, -51.5, -66.0, 0.55), (-12.0, -46.5, -61.0, 0.9), (0.0, -42.0, -57.5, 1.1), (12.0, -46.5, -61.0, 0.9), (TIP_X, -51.5, -66.0, 0.55)]
     _rings(b, [_blade_section(x, le, te, WZ2, t) for (x, le, te, t) in WING], "livery.livery", "stern_wing")
 
