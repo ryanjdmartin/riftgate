@@ -1632,13 +1632,14 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 251 (12 November, from `ccr-b7d5164e-1wtzzm` at `187ea48`, ahead of main, for
-  Ryan's notes on the Needletail's second cut): its model and rig, its twelve pictures (the
-  round-body cut as Before), `designs.json` and `renders.json`, the page unchanged. Version 249
-  (from `23adac5`) had carried both machines' second cuts, the Giant Petrel's still live. Version 250
-  was another session's (a newer Kite entry and Kite pictures): every live copy this publish
-  replaced matched 249's build but `renders.json`, which went up again whole with only the
-  Needletail's entry replaced. `edits` and `text` empty, `designs` the two folded ideas. At
+  page's Version 253 (13 November, from `ccr-b7d5164e-1wtzzm` at `50356e8`, ahead of main, for
+  Ryan's notes of 13 November): the Needletail's fourth cut and the Giant Petrel's third, each
+  machine's model and rig, the Needletail's twelve pictures and the Giant Petrel's ten (the last
+  cut of each as Before), and `renders.json`, the page unchanged. Version 252 was another
+  session's: every live copy this publish replaced matched 251's and 249's builds but
+  `renders.json`, which went up again whole with only these two machines' entries replaced.
+  Version 251 (`187ea48`) had carried the Needletail's third cut, 249 (`23adac5`) both
+  machines' second cuts. `edits` and `text` empty, `designs` the two folded ideas. At
   the page's Version 240 (12 November, main's `f3e4841`, on Ryan's word, "Ok, republish the hangar on
   main"): the nine files moved since 233 (the five content files with the Ammit's rework, the
   dead-code pass, the four formations' numbers, the Overrun Gearing and the dealt Shift Whistle;
