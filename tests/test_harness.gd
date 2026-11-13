@@ -410,7 +410,9 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 	var tide_was = Settings.display.get("tide_density", "100")
 	var strike_was = Settings.display.get("wall_strike", "10")
 	var burn_was = Settings.display.get("overheat_burn", "1")
+	var break_was = Settings.display.get("shield_break", "off")
 	Settings.display["overheat_burn"] = "2"
+	Settings.display["shield_break"] = "2"
 	Settings.display["tide_density"] = "150"
 	Settings.display["wall_strike"] = "5"
 	Settings.display["field_depth"] = "16"
@@ -421,11 +423,13 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 	assert_eq([Ramp.depth_trial, Battle.opening_trial, Battle.fodder_trial, Ramp.beats_trial], [0, 0, 100, 0], "run alone, the saved settings move nothing")
 	assert_eq([Ramp.tide_trial, Battlefield.strike_trial], [100, 0], "nor the tide's density or the wall strike")
 	assert_eq(Skirmish.overheat_scale, 1, "nor the overheat's burn")
+	assert_eq([Skirmish.shield_break, Skirmish.shield_rest], [false, 0], "nor the breaking shield")
 	Settings.field_trial(true)
 	assert_eq([Ramp.depth_trial, Battle.opening_trial, Battle.fodder_trial, Ramp.beats_trial], [16, 2, 50, 3] if OS.is_debug_build() else [0, 0, 100, 0], "where the game starts a battle, a debug build's settings are the trial")
 	assert_eq([Ramp.tide_trial, Battlefield.strike_trial], [150, 5] if OS.is_debug_build() else [100, 0], "the tide's density and the wall strike with them")
 	assert_eq(Battlefield.strike_per_pip(), 5 if OS.is_debug_build() else Battlefield.STRIKE_PER_PIP, "and the field answers with the strike")
 	assert_eq(Skirmish.overheat_scale, 2 if OS.is_debug_build() else 1, "the overheat's burn with them")
+	assert_eq([Skirmish.shield_break, Skirmish.shield_rest], [true, 2] if OS.is_debug_build() else [false, 0], "and the breaking shield, a break stopping the blow whole and two rounds down")
 	assert_eq(Ramp.beats_at(0), 3 if OS.is_debug_build() else Ramp.BEATS, "and the ramp answers with the beats")
 	assert_eq(Ramp.depth_at(0), 16 if OS.is_debug_build() else 12, "and the ramp answers with it")
 	Settings.display["field_depth"] = "a mile"
@@ -435,10 +439,15 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 	Settings.display["tide_density"] = "a flood"
 	Settings.display["wall_strike"] = "a tap"
 	Settings.display["overheat_burn"] = "a furnace"
+	Settings.display["shield_break"] = "a wall"
 	Settings.field_trial(true)
 	assert_eq([Ramp.depth_trial, Battle.opening_trial, Battle.fodder_trial, Ramp.beats_trial], [0, 0, 100, 0], "a value that is no option asks for nothing")
 	assert_eq([Ramp.tide_trial, Battlefield.strike_trial], [100, 0], "of the tide or the strike either")
 	assert_eq(Skirmish.overheat_scale, 1, "or of the overheat")
+	assert_eq([Skirmish.shield_break, Skirmish.shield_rest], [false, 0], "or of the shield")
+	Settings.display["shield_break"] = "off"
+	Settings.field_trial(true)
+	assert_eq([Skirmish.shield_break, Skirmish.shield_rest], [false, 0], "and the game's own shield is no trial")
 	Settings.display["wall_strike"] = str(Battlefield.STRIKE_PER_PIP)
 	Settings.field_trial(true)
 	assert_eq(Battlefield.strike_trial, 0, "and the game's own strike is no trial")
@@ -449,6 +458,9 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 	Settings.display["tide_density"] = tide_was
 	Settings.display["wall_strike"] = strike_was
 	Settings.display["overheat_burn"] = burn_was
+	Settings.display["shield_break"] = break_was
+	assert_eq(str(Settings.DISPLAY_DEFAULTS["shield_break"]), "off", "the shield ships honest, its number and the rest on the hull")
+	assert_true(Settings.SHIELD_BREAKS.has("off"), "which is among its options")
 	assert_eq(str(Settings.DISPLAY_DEFAULTS["overheat_burn"]), "1", "the overheat ships at one hull a point")
 	assert_eq([str(Settings.DISPLAY_DEFAULTS["tide_density"]), str(Settings.DISPLAY_DEFAULTS["wall_strike"])], ["100", str(Battlefield.STRIKE_PER_PIP)], "the tide and the strike ship on the game's own")
 	assert_true(Settings.TIDES.has("100") and Settings.STRIKES.has(str(Battlefield.STRIKE_PER_PIP)), "which are among their options")
@@ -461,6 +473,8 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 	Ramp.tide_trial = 100
 	Battlefield.strike_trial = 0
 	Skirmish.overheat_scale = 1
+	Skirmish.shield_break = false
+	Skirmish.shield_rest = 0
 	if OS.is_debug_build():
 		var menu := PauseMenu.new()
 		menu._show_page("settings")
@@ -553,9 +567,17 @@ func test_the_refit_what_if_is_off_until_the_setting_or_the_environment_asks() -
 		return
 	var was = Settings.display.get("shield_regen", "built")
 	var heat_was = Settings.display.get("heat_trial", "0")
+	var barrier_was = Settings.display.get("barrier_basic", "built")
 	Settings.display["shield_regen"] = "built"
 	Settings.display["heat_trial"] = "0"
+	Settings.display["barrier_basic"] = "built"
 	assert_eq(HARNESS.refit_spec(), "", "as built by default: the game plays the content as written")
+	# The Barrier basic's dial (13 November): off the stock dice, the same what-if.
+	Settings.display["barrier_basic"] = "none"
+	assert_eq(HARNESS.refit_spec(), "barrier=none" if OS.is_debug_build() else "", "a debug build's setting takes the Barrier basic off the stock dice")
+	Settings.display["barrier_basic"] = "everywhere"
+	assert_eq(HARNESS.refit_spec(), "", "a value that is no option asks for nothing")
+	Settings.display["barrier_basic"] = "built"
 	for regen in Settings.SHIELD_REGENS:
 		Settings.display["shield_regen"] = regen
 		var want: String = "" if regen == "built" or not OS.is_debug_build() else "regen=%s" % regen
@@ -565,8 +587,9 @@ func test_the_refit_what_if_is_off_until_the_setting_or_the_environment_asks() -
 		assert_true(Settings.SHIELD_REGEN_LABELS.has(regen), "%s has its button's label" % regen)
 	Settings.display["shield_regen"] = "plenty"
 	assert_eq(HARNESS.refit_spec(), "", "a value that is no option asks for nothing")
-	# The heat's dial beside it (12 November): every weapon so much hotter than content prices
-	# it with more cooling to sustain it, the same what-if, alone or with the regen's.
+	# The heat's dial beside it (12 November): every weapon a point cooler or hotter than content
+	# prices it, the hotter with more cooling to sustain it, the same what-if, alone or with the
+	# regen's.
 	Settings.display["shield_regen"] = "built"
 	for heat in Settings.HEATS:
 		Settings.display["heat_trial"] = heat
@@ -575,18 +598,20 @@ func test_the_refit_what_if_is_off_until_the_setting_or_the_environment_asks() -
 		if not want_heat.is_empty():
 			var priced := Refit.parse(want_heat)
 			assert_eq(int(priced["hotter"]), int(heat), "the what-if takes the price")
-			assert_true(int(priced["cooling"]) >= 1, "with more cooling to sustain it")
+			assert_eq(int(priced["cooling"]) >= 1, int(heat) > 0, "a hotter price with more cooling to sustain it, a cooler one on the cooling as built")
 		assert_true(Settings.HEAT_LABELS.has(heat), "%s has its button's label" % heat)
 	Settings.display["shield_regen"] = "2"
-	Settings.display["heat_trial"] = "3"
+	Settings.display["heat_trial"] = "1"
 	if OS.is_debug_build():
 		var both := Refit.parse(HARNESS.refit_spec())
-		assert_eq([str(both["regen"]), int(both["hotter"]), int(both["cooling"])], ["2", 3, 1], "the two dials make one spec")
+		assert_eq([str(both["regen"]), int(both["hotter"]), int(both["cooling"])], ["2", 1, 1], "the two dials make one spec")
 	Settings.display["heat_trial"] = "scalding"
 	Settings.display["shield_regen"] = "built"
 	assert_eq(HARNESS.refit_spec(), "", "a heat that is no option asks for nothing")
 	Settings.display["shield_regen"] = was
 	Settings.display["heat_trial"] = heat_was
+	Settings.display["barrier_basic"] = barrier_was
+	assert_eq(str(Settings.DISPLAY_DEFAULTS.get("barrier_basic", "")), "built", "the Barrier basic ships on the dice content gives it")
 	assert_eq(str(Settings.DISPLAY_DEFAULTS.get("shield_regen", "")), "built", "and the setting ships as built")
 	assert_eq(str(Settings.DISPLAY_DEFAULTS.get("heat_trial", "")), "0", "the heat's too")
 	if OS.is_debug_build():
@@ -599,4 +624,8 @@ func test_the_refit_what_if_is_off_until_the_setting_or_the_environment_asks() -
 			assert_true(labels.has(str(Settings.HEAT_LABELS[heat])), "the heat's offset %s" % Settings.HEAT_LABELS[heat])
 		for burn in Settings.OVERHEATS:
 			assert_true(labels.has(str(Settings.OVERHEAT_LABELS[burn])), "and the overheat's burn %s" % Settings.OVERHEAT_LABELS[burn])
+		for rest in Settings.SHIELD_BREAKS:
+			assert_true(labels.has(str(Settings.SHIELD_BREAK_LABELS[rest])), "and the breaking shield's rest %s" % Settings.SHIELD_BREAK_LABELS[rest])
+		for deal in Settings.BARRIER_BASICS:
+			assert_true(labels.has(str(Settings.BARRIER_BASIC_LABELS[deal])), "and the Barrier basic's place %s" % Settings.BARRIER_BASIC_LABELS[deal])
 		menu.free()

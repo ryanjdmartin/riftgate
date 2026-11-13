@@ -163,10 +163,14 @@ func _show_page(page: String) -> void:
 			_title("TRIALS")
 			_choice_row("SHIELD REGEN", "shield_regen", Settings.SHIELD_REGENS, Settings.SHIELD_REGEN_LABELS)   # a flat shield regen on every chassis in place of each one's own (game/harness.gd, refit_trial): the refit pass's model is content since 10 November, and this is the one what-if left on the phone
 			_credit("Shield back each round: as built by chassis, or flat on all. Next launch.")
-			_choice_row("HEAT", "heat_trial", Settings.HEATS, Settings.HEAT_LABELS)   # every weapon so much hotter than content prices it, with more cooling to sustain it (Settings.HEAT_SPECS; Ryan, 10 November: "Heat generation is too low")
-			_credit("Every weapon hotter, every machine cooling one more. Next launch.")
+			_choice_row("HEAT", "heat_trial", Settings.HEATS, Settings.HEAT_LABELS)   # every weapon a point cooler or hotter than content prices it, the hotter with one more cooling (Settings.HEAT_SPECS; the prices themselves are content since 12 November)
+			_credit("Every weapon a point cooler or hotter than built. Next launch.")
 			_choice_row("OVERHEAT", "overheat_burn", Settings.OVERHEATS, Settings.OVERHEAT_LABELS)   # the hull a point of heat past the gauge burns as the turn ends, one the game's (Skirmish.overheat_scale)
 			_credit("Hull an overheat burns a point past the gauge. Next battle.")
+			_choice_row("BARRIER BASIC", "barrier_basic", Settings.BARRIER_BASICS, Settings.BARRIER_BASIC_LABELS)   # the Barrier basic on the stock dice as built, or off them with the Armoured basic in its slot (Refit's barrier=none; its place is open since 12 November)
+			_credit("The Barrier on the starting dice, or the Armoured basic in its slot. Next launch.")
+			_choice_row("SHIELD BREAK", "shield_break", Settings.SHIELD_BREAKS, Settings.SHIELD_BREAK_LABELS)   # the breaking shield (Ryan, 13 November: "when a shield breaks, it absorbs the whole blow ... it's down for a couple of turns"): Skirmish.shield_break and shield_rest, a what-if and no decision
+			_credit("A blow that breaks a shield is stopped whole; the shield is down that many rounds. Next battle.")
 			_choice_row("FIELD DEPTH", "field_depth", Settings.FIELD_DEPTHS)   # the field's depth in rows, twelve the game's (Ramp.depth_trial; Ryan, 10 November: "I think the map is a bit too shallow")
 			_choice_row("OPENING", "field_opening", Settings.FIELD_OPENINGS, Settings.FIELD_OPENING_LABELS)   # how many moves farther from the wall the opening's packs stand (Battle.opening_trial): depth alone leaves their first walk on the wall
 			_credit("Rows from rift to wall; moves farther out the first packs stand. Next battle.")

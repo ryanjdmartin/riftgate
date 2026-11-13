@@ -49,9 +49,10 @@ func _ready() -> void:
 
 ## The refit pass's what-ifs (docs/briefs/refit_pass.md; sim/refit.gd), laid over the content
 ## once, as the game starts and before anything is built from it: RIFTGATE_REFIT names a spec (its
-## parts: regen=half|N, cooling=N, hotter=N, barrier=cooldown|heatN), or a debug build's SETTINGS →
-## TRIALS has SHIELD REGEN on a flat number (the phone's way, read at the next launch;
-## Settings.SHIELD_REGENS). The model itself is content since 10 November. A battle or a run saved
+## parts: regen=half|N, cooling=N, hotter=N, barrier=cooldownN|heatN|none), or a debug build's
+## SETTINGS → TRIALS has SHIELD REGEN on a flat number, HEAT a point either side, or BARRIER BASIC
+## off the stock dice (the phone's way, read at the next launch; Settings.SHIELD_REGENS, HEAT_SPECS
+## and BARRIER_BASICS). The model itself is content since 10 November. A battle or a run saved
 ## before a switch keeps the numbers it was saved with, so judge it on a new one.
 static var _refit_trial_done := false
 static func refit_trial() -> void:
@@ -64,7 +65,8 @@ static func refit_trial() -> void:
 
 
 ## The what-if's spec, "" for the game as built: the environment's as written, else a debug
-## build's flat shield regen (Settings.SHIELD_REGENS) and its heat prices (Settings.HEAT_SPECS).
+## build's flat shield regen (Settings.SHIELD_REGENS), its heat prices (Settings.HEAT_SPECS) and
+## the Barrier basic off the stock dice (Settings.BARRIER_BASICS).
 static func refit_spec() -> String:
 	var spec := OS.get_environment("RIFTGATE_REFIT")
 	if spec.is_empty() and OS.is_debug_build():
@@ -75,6 +77,8 @@ static func refit_spec() -> String:
 		var heat := str(Settings.display.get("heat_trial", "0"))
 		if Settings.HEAT_SPECS.has(heat):
 			parts.append(str(Settings.HEAT_SPECS[heat]))
+		if str(Settings.display.get("barrier_basic", "built")) == "none":
+			parts.append("barrier=none")
 		spec = ",".join(parts)
 	return spec
 

@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bxsjqtm4nit14"
-path="res://.godot/imported/kite_vent.png-c3b012e04962ef377f1a6945a6a932b1.ctex"
+uid="uid://bsa3ail17pf8b"
+path="res://.godot/imported/dish_port_wainwright_sutler_dark.png-d60296d5db4f51e5081e395ff740518b.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "570c8deeeff4dc4042d33ca38eabf942"
+"md5": "452208338f565a104564b6cc702930f1"
 }
 
 [deps]
 
-source_file="res://art/models/kite_vent.png"
-dest_files=["res://.godot/imported/kite_vent.png-c3b012e04962ef377f1a6945a6a932b1.ctex"]
+source_file="res://art/models/shapes/dish_port_wainwright_sutler_dark.png"
+dest_files=["res://.godot/imported/dish_port_wainwright_sutler_dark.png-d60296d5db4f51e5081e395ff740518b.ctex"]
 
 [params]
 

@@ -17,7 +17,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 ## Machines
 
 - **Chassis**: hull, shield, shield regen (shield regained as each round opens: one to three
-  by chassis, the faster on the smaller gauge), heat maximum, cooling (one at least on every chassis that is dealt), armour, move, size class, one way of moving, hardpoints, fixed components, module
+  by chassis, the faster on the smaller gauge; a tier one's two on its smallest gauge and one
+  on the rest), heat maximum, cooling (heat shed as each round opens: two on most chassis, three on a few, and none on the Whip Scorpion, by its rule), armour, move, size class, one way of moving, hardpoints, fixed components, module
   slots (two; the Clydesdale three) and one passive. Twenty-four chassis from five makers
   (`content/chassis.json`), two of them back in design and dealt by nothing until their
   sessions hand them back (the Puffin and the Swallowtail: a chassis whose entry
@@ -74,9 +75,9 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   stocks, never its blueprint. A fixed component has no tier; the Arsenal (the capital's
   maker) makes no basics and fields no tier-one chassis, though its tier-one components exist
   and its tier-two chassis stock them. The basic kit is six pieces, each a maker's: four
-  guns, each making heat (the Twin Autoguns and the Rivet Gun, Direct; the Ankle Mortar, Indirect; the Laser
-  Carbine, Direct and warm), and two defensive pieces, each spent on itself or an ally (the
-  Halo Projector, a Barrier; the Shoring Jack, Armoured 2 for the round).
+  guns, each making 4 heat (the Twin Autoguns and the Rivet Gun, Direct; the Ankle Mortar, Indirect; the Laser
+  Carbine, Direct and warm, 5), and two defensive pieces, each spent on itself or an ally (the
+  Halo Projector, a Barrier, cooldown 1; the Shoring Jack, Armoured 2 for the round).
 - **No recovery on the die**: a component is a weapon or equipment. No stock die holds a
   shield or a vent and no slottable one is dealt: the shield is the chassis's and comes back
   by its regen, heat goes by its cooling, and the decision heat leaves is the hold (fire the
@@ -408,17 +409,16 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   the round as the lure would leave it (a machine's heat a blow taken included).
 - Every number inside a fight is single digits or low tens: a blow 1 to 6, big guns to 10, one
   capstone 12; an amp a point a stack; foe HP 2 to 8 for rank and file at tier one and to 16 at
-  tier three, 30 to 40 massive at tier one and to 56 at tier three (a massive that breaches
-  14 at tier one), 12
-  to 24 heroes, an elite 16 to 60, the slate's bosses 72 at tier one (a core in parts 40, a part
+  tier three, a lone flanker 10 to 14 at tier one, 14 to 20 massive at tier one and to 56 at tier three, 12
+  to 24 heroes, an elite 16 to 60, the slate's bosses 60 to 72 at tier one (a core in parts 40, a part
   8 to 18, a boss that may rise once 50); a foe's blow 2 to 8 at tier one (the rank and file's
   mostly 2 or 3) and to 10 at tier three, a massive
   foe's 7 or 8 where a shield meets it and 3 or 4 where it breaches, a hero's 4 to 10, an elite's 7 to 18 and the slate's bosses' 10 to 20, sized
   against a shield that refills (at tier one no action of theirs takes the lightest machine
   from full: a breach under 20, and any one action's blows on one machine under its shield and
   hull together); machine hull 20 to 50 by size (the
-  Kite's paper hull 12, its row's one-off), shield 6 to 16, shield regen 1 to 3 a round, base armour 0 to 2 by role, timed armour to 4 or 5; heat
-  1 to 20 (1 to 30 if the pricing needs it), the maxima 10 to 14 (the Musk Ox's 8), a vent 3 to
+  Kite's paper hull 12, its row's one-off), shield 6 to 16 and shield regen 1 to 3 a round (tier one the low end, 6 to 12 and 1 or 2, since a level lifts both), base armour 0 to 2 by role, timed armour to 4 or 5; heat
+  1 to 20 (1 to 30 if the pricing needs it; a weapon 3 to 11 today, a basic gun 4 or 5), cooling 2 or 3, the maxima 10 to 14 (the Musk Ox's 8), a vent 3 to
   8 (the Entropy Condenser's 10 the capstone, paid in hull). The scales are magnitudes,
   not steps: any whole number may be used, and content sits a little past them where its
   loops moved it (the promoted forms' 32 to 48, a hero's finisher, a
@@ -712,7 +712,9 @@ On a machine:
   injures; its riders land, and a blow of nothing leaves it standing. One at a time and one
   stack whoever grants it (a passive that deepens the stacks its machine applies leaves it at
   one, and a Purge of one takes it whole); until the round's end. No piece grants it to every
-  ally at once. The Blast Door grants it, self or ally.
+  ally at once, and every piece that grants one carries a cooldown of 1, so it sits out the
+  round after its spend: the Halo Projector and the Blast Door, self or ally, and the Wild
+  Boar's Breaching Plow, on itself.
   A foe's, from its own special: the next blow of a weapon the team lands on it deals no damage,
   the blow's riders landing and a Shock it carried spent; equipment pops nothing; until it pops
   or the end of the player's next turn.
@@ -886,6 +888,10 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or a
   the turn, before the enemy acts, the excess burns hull one for one (an overheat) and the
   gauge settles at the maximum. With volatile, it is the way a machine dies on its own
   turn. Machines cool at the start of the round. Heat starts each fight at zero.
+- The prices are a pace. A basic gun makes 4 heat and the Laser Carbine 5, against a cooling of
+  2 and a maximum of 12 or 14: a machine that fires every round stands at its limit in four to
+  six rounds, and from there fires about one round in two, holds, or burns. Equipment is the
+  cool play: a buff makes none and a debuff device its one or two.
 - The console speaks of heat on a spend, one line a spend: the overheat every time a spend
   heats a machine and leaves it over its maximum; the warning once, as a machine first stands at
   three quarters of its maximum or past, and not again until it has been seen back under (as a

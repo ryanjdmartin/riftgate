@@ -20,10 +20,14 @@ extends RefCounted
 ##   hotter=N   every weapon makes N more heat, fixed pieces too, and a passive that rewrites
 ##              its machine's weapons its shot's (a read of how much hotter the guns must run
 ##              before heat is a pace; Ryan, 10 November: "Heat generation is too low")
-##   barrier=cooldown   the Barrier basic goes dark for the next round once spent
+##   barrier=cooldownN  the Barrier basic sits out N rounds once spent, after the round of the
+##                      spend (a cooldown's own count); 0 for none, and the bare word is 1
 ##   barrier=heatN      the Barrier basic makes N heat
+##   barrier=none       the Barrier basic leaves the stock dice, the Armoured basic in its slot
+##                      (the Barrier's place, open since 12 November: a basic, or rare or locked)
 
 const BARRIER := "barrier"   # the status the Barrier basic grants (the engine's word)
+const ARMOURED := "braced"   # the status the Armoured basic grants
 
 
 static func parse(text: String) -> Dictionary:
@@ -39,7 +43,7 @@ static func parse(text: String) -> Dictionary:
 		elif p.begins_with("barrier="):
 			spec["barrier"] = p.trim_prefix("barrier=")
 		elif not p.is_empty():
-			push_error("--refit: no part '%s' (regen=half|N, cooling=N, hotter=N, barrier=cooldown|heatN; the model's die, its regen by chassis and the basics' heat are content since 10 November)" % p)
+			push_error("--refit: no part '%s' (regen=half|N, cooling=N, hotter=N, barrier=cooldownN|heatN|none; the model's die, its regen by chassis and the basics' heat are content since 10 November)" % p)
 	return spec
 
 
@@ -79,20 +83,44 @@ static func apply(db: ContentDB, spec: Dictionary) -> Array[String]:
 					e["heat"] = maxi(0, int(e["heat"]) + hotter)
 		notes.append("every weapon makes %+d heat (%d weapons)" % [hotter, n])
 	# The Barrier basic's price, a question the first reads raised (a free Barrier is spent every
-	# round it is rolled): a round dark once spent, or so much heat.
+	# round it is rolled): so many rounds dark once spent, or so much heat. The number is a
+	# cooldown's own, the rounds sat out after the round of the spend; until 12 November this
+	# wrote 2 for "the next round dark", the count of the day before, and so read two rounds.
 	var barrier_rule := str(spec.get("barrier", ""))
 	if not barrier_rule.is_empty():
 		var barrier := basic_granting(db, BARRIER)
 		if barrier.is_empty():
 			push_error("the refit what-if: content has no slottable Barrier piece")
-		elif barrier_rule == "cooldown":
-			db.components[barrier]["face"]["cooldown"] = 2   # a cooldown counts the round of the spend (Face.cooldown), so two is the next round dark
-			notes.append("the Barrier basic goes dark for the next round once spent")
+		elif barrier_rule.begins_with("cooldown"):
+			var dark := 1 if barrier_rule == "cooldown" else maxi(0, int(barrier_rule.trim_prefix("cooldown")))
+			if dark > 0:
+				db.components[barrier]["face"]["cooldown"] = dark
+			else:
+				(db.components[barrier]["face"] as Dictionary).erase("cooldown")
+			notes.append("the Barrier basic sits out %d round%s once spent" % [dark, "" if dark == 1 else "s"])
 		elif barrier_rule.begins_with("heat"):
 			db.components[barrier]["face"]["heat"] = int(barrier_rule.trim_prefix("heat"))
 			notes.append("the Barrier basic makes %d heat" % int(barrier_rule.trim_prefix("heat")))
+		elif barrier_rule == "none":
+			# The Barrier off the starting dice (its place is open since 12 November: Ryan, "Should
+			# it be rare or locked?"): every stock slot that holds the Barrier basic holds the
+			# Armoured basic, the piece itself untouched for whoever finds one.
+			var jack := basic_granting(db, ARMOURED)
+			if jack.is_empty():
+				push_error("the refit what-if: content has no slottable Armoured piece to stand in the Barrier basic's slot")
+			else:
+				var dice := 0
+				for id in db.chassis.keys():
+					var loadout = db.chassis[id].get("loadout", [])
+					if not (loadout is Array):
+						continue
+					for i in range((loadout as Array).size()):
+						if str(loadout[i]) == barrier:
+							loadout[i] = jack
+							dice += 1
+				notes.append("the Barrier basic leaves the stock dice: the Armoured basic in its slot on %d" % dice)
 		else:
-			push_error("--refit: barrier=%s is no rule (cooldown, heatN)" % barrier_rule)
+			push_error("--refit: barrier=%s is no rule (cooldownN, heatN, none)" % barrier_rule)
 	return notes
 
 

@@ -124,7 +124,9 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   `--fit`, summarised into `build/pricing/<name>/summary.md`); `synergy_map.py` prints who sets and who reads every
   status and resource, from content, and writes `docs/synergy_map.md`; `turn_loop.py` models the
   campaign's turn loop from its constants with every battle won, for the pressure the fronts put
-  on the cities; `backdrop_shot.gd` paints the skirmish's battle backdrop for every domain on
+  on the cities; `shield_model.py` models the shield apart from content, four machines against
+  the same damage a round in different shapes under each rule for the shield, for what a rule
+  makes the foes and the player want before the runner reads it; `backdrop_shot.gd` paints the skirmish's battle backdrop for every domain on
   every ground into PNGs, headless; `screenshot.gd` renders a
   scene to PNG at 720x1280; `die_sheet.gd` draws the die's whole iconography on one sheet with
   the die's own drawing (every main mark and what it holds, whom a piece reaches, the rest of a face's marks);
@@ -312,9 +314,10 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # shield or a vent, every chassis regains its own shield regen, the basics make heat), so what is
 # left are the numbers a read may still ask about: "regen=N" (a flat regen on every chassis in
 # place of its own) or "regen=half", "cooling=N" (an offset), "hotter=N" (every weapon N heat
-# more, a read for the heat prices), "barrier=cooldown" (the Barrier basic dark the round after
-# it is spent) or "barrier=heatN" (it costs N heat); comma-separated; tools/campaign_run.gd takes
-# it too.
+# more, a read for the heat prices), "barrier=cooldownN" (the Barrier basic sits out N rounds
+# once spent, 0 for none, where content gives it 1), "barrier=heatN" (it costs N heat) or
+# "barrier=none" (it leaves the stock dice, the Armoured basic in its slot); comma-separated;
+# tools/campaign_run.gd takes it too.
 # --guard 0.05 is the aggressor's habit (a block, a Barrier, Armoured or a Ward, at a twentieth of
 # its worth to the bot, so it never rerolls for one and spends one only when its die is stuck
 # showing it): the hull the blocks keep and the rounds they cost are the gap between it and the
@@ -406,6 +409,14 @@ python3 tools/synergy_map.py --write
 # up once it has bled its city N times. Seconds; a model, not a run of the game
 python3 tools/turn_loop.py --seeds 2000
 python3 tools/turn_loop.py --seeds 2000 --widen 3
+# the shield's model (13 November, Ryan: "build simple models perhaps, before slamming it against the whole game as
+# it stands"): a plated machine and three lights against 16 damage a round in each shape (one blow, two strikes, a
+# breaker and a blow behind it, a swarm, a cleave, the same machine again, a breach), the shield under each rule
+# (as built, a break that blocks the blow, a broken shield down two rounds, any hit stopping the regen); of the
+# damage dealt what reaches a hull, the wrecks, what a Barrier, Armoured and a lure save, what a kill saves. No
+# dice, no kills, no content: what a rule does with a shape, never what a fight costs. Seconds
+python3 tools/shield_model.py
+python3 tools/shield_model.py --damage 12 --rounds 4
 # whom the foes strike (23 October): every starter trio a tender can deal, stock, greedy, against each
 # faction's formation, bosses and first pack; picks as intents are drawn, the same with every machine standing,
 # swings after any Lure, the exposed aim's weights, hull lost. JSON per cell, read by hand; four parts in parallel.
@@ -511,12 +522,20 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # the refit pass's model, which is content since 10 November: a flat shield regen in place of
 # each chassis's own, a cooling offset, hotter weapons, a price on the Barrier basic.
 # On the phone a debug build's SETTINGS → TRIALS has SHIELD REGEN (BUILT, 0, 1, 2, 3: each
-# chassis its own number, or a flat one on all) and HEAT (BUILT, +2, +3, +4: every weapon so
-# much hotter than content prices it and every chassis that cools cooling one more, two more
-# at +4; the what-if's hotter and cooling): pick, close the app, open it, and start a new
+# chassis its own number, or a flat one on all) and HEAT (COOLER, BUILT, HOTTER: every weapon
+# a point cooler than content prices it, or a point hotter with every chassis that cools
+# cooling one more; the what-if's hotter and cooling) and BARRIER BASIC (BUILT, NONE: the Barrier
+# basic on the stock dice, or the Armoured basic in its slot; the what-if's barrier=none): pick, close the app, open it, and start a new
 # battle or run, since a saved one keeps the numbers it was saved with. RIFTGATE_OVERHEAT=2 (any battle) sets the hull an overheat burns a point of heat past
 # the gauge, 1 the game's; the same page's OVERHEAT (×1, ×2, ×3) sets it on the phone, read
 # as a battle starts.
+# RIFTGATE_SHIELD_BREAK=2 (any battle) tries the breaking shield (Ryan, 13 November: "when a
+# shield breaks, it absorbs the whole blow ... it's down for a couple of turns before it starts to
+# regenerate again"): the blow that breaks a shield is stopped whole, and the broken shield stays
+# down that many rounds, 1 to 3, nothing raising it, before its regen starts again; a shield at
+# rest shows a dashed frame and a cell a round left. The same page's SHIELD BREAK (BUILT, REST 1,
+# REST 2, REST 3) sets it on the phone, read as a battle starts. A what-if, nothing decided;
+# the reads set it beside BARRIER BASIC on NONE, since the two together are worth twice either.
 # RIFTGATE_FIELD_DEPTH=14 and RIFTGATE_OPENING=1 (any battle) try a deeper field and a farther
 # opening (Ryan, 10 November: "I think the map is a bit too shallow"): the rows from the rift to
 # the wall, 10 to 24 and 12 the game's, and how many more of their own moves from the wall the
@@ -643,7 +662,7 @@ godot --path . --resolution 360x640 -s tools/gait_clip.gd -- clydesdale wainwrig
 BPY_PYTHON=.bpy/bin/python tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger
 tools/spriter/.venv/bin/python tools/lowforge/glbcmp.py art/models/badger.glb /tmp/badger.glb   # a rebuild's geometry against the committed file
 # the silhouette classes a swapped component wears at a gun mount (models_low.SHAPES) and their variants (VARIANTS: the round
-# launcher and the port gun, a barrel with its receiver inside the hull, which a mount's `fits` may declare for its class, with its scale and its sink back along the mount's line), every maker's metal, then re-import
+# launcher, and the port forms for a mount behind a port's wall, their roots inside the hull: the port gun and the port pair, barrels without their receiver, the port rack, longer and thinner, and the port dish on its telescoping mast; a mount's `fits` may declare one for its class, with its scale and its sink back along the mount's line), every maker's metal, then re-import
 tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes
 # one machine wearing swapped components on its mounts ("2:" bares a mount; armour and vents show nowhere); a class alone: <chassis> shapes/barrel_minerva; rendered bare
 RIFTGATE_FIT="1:photosphere_lance,4:blazethrower" godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva fit.png front 480 480

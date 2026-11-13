@@ -454,7 +454,7 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 	for ms in sk.mechs:
 		mechs.append({"unit": ms.unit.id, "heat": ms.heat, "heat_max": ms.heat_max, "face_index": ms.face_index,
 			"locked": ms.locked, "assigned": ms.assigned, "free_rerolls": ms.free_rerolls, "ammo": ms.ammo, "ammo_max": ms.ammo_max,
-			"hot_entry": ms.hot_entry})
+			"hot_entry": ms.hot_entry, "shield_down": ms.shield_down})
 	var packs: Array = []
 	for sq in sk.packs:
 		packs.append(sq.id)
@@ -620,6 +620,7 @@ static func _skirmish_into(sk: Skirmish, d: Dictionary, lookup: Callable) -> voi
 		ms.ammo_max = int(md.get("ammo_max", ms.ammo_max))
 		ms.ammo = int(md.get("ammo", ms.ammo))
 		ms.hot_entry = int(md.get("hot_entry", -1))   # the overheat's culprit (a save from before 3 November has none)
+		ms.shield_down = int(md.get("shield_down", 0))   # a broken shield's rest (the breaking shield's what-if; a save from before 13 November has none)
 	sk.packs.clear()
 	for pid in d.get("packs", []):
 		var sq: Unit = lookup.call(int(pid))

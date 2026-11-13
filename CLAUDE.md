@@ -92,6 +92,16 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   means too easy, greedy losing means a wall, both landing together means no decision.
   Pick share is the component signal. Ryan's play tests decide feel and micro balance;
   the runner decides macro. Never chase a simulated win rate to a decimal.
+- A fundamental is reasoned as a system before it is measured (Ryan, 13 November, of the
+  shield: "our enemies aren't set up to threaten that type of defense"; "It's all part of the
+  same system, not just how hard the foes hit, but HOW they hit that matters. Ergo we need to
+  be thinking theoretically and critically about the system as a whole and how it fits
+  together, and build simple models perhaps, before slamming it against the whole game as it
+  stands"). For a rule over the shield, the die, heat or targeting, lay out first who it
+  protects, how, what threatens it and the counterplay on both sides, with a small model apart
+  from content where one helps (`tools/shield_model.py` is the pattern), and name the foes it
+  would need. The runner's read on today's content says what today's foes do against the
+  rule, never whether the rule is right: they were built for another.
 - The bible's register (decided 13 October): a Decided row is a design test (what the player
   feels), a rule the engine runs, or a content call for a named piece; a maker's or a side's
   theme, word or keyword is a Lean, never a rule and never an exclusion. A "never" carries its

@@ -8,7 +8,7 @@ extends SceneTree
 ## --shape KIND (every battle on that map shape, a key of BattleMap.KINDS; by default each
 ## battle's seed draws one), --out path (docs/campaign_run.md), --trace SEED (print one run
 ## battle by battle), --refit SPEC (the refit pass's what-ifs laid over the content, sim/refit.gd,
-## as tools/balance.gd takes it: "regen=half|N", "cooling=N", "hotter=N", "barrier=cooldown|heatN"), --injury
+## as tools/balance.gd takes it: "regen=half|N", "cooling=N", "hotter=N", "barrier=cooldownN|heatN|none"), --injury
 ## on|N (the injury rule on for the runs, off in the game since 9 November). The squad-as-one rule
 ## (--solo before it) and the turtle and detaching
 ## personas went with the long wall brief: the map is the defence rule (BattleBot).
