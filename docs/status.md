@@ -1431,7 +1431,11 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 250 (12 November, from `ccr-e3ddf00b-ilkwbi` at `6bf1b8d`, ahead of main, over
+  page's Version 252 (13 November, from `ccr-e3ddf00b-ilkwbi` at `fcd5204`, ahead of main, over
+  Version 251, which `ccr-b7d5164e-1wtzzm` published in between with its Needletail's entry and
+  its `designs.json`: the Kite's leading edge angled further, to about 32 degrees; its model and
+  four renders, and `renders.json` built from 251's copy with the Kite's entry, that session's
+  entries and files kept). Version 250 (12 November, from `6bf1b8d`, ahead of main, over
   Version 249, which `ccr-b7d5164e-1wtzzm` published in between with its Needletail's and Giant
   Petrel's entries and its `designs.json`: the Kite's wings' leading edge angled more; its model
   and four renders, and `renders.json` built from 249's copy with the Kite's entry, that
