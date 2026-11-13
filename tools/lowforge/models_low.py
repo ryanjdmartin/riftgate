@@ -6345,19 +6345,23 @@ def _gp_gun_house(b, name, pin, shape, carries, cx, ty, tz, w, l, h, facing=0.0,
         b.stock(pin, tuple(at), shape, forward=tuple(fwd), scale=0.8, carries=carries, fits=fits)
 
 
-def _gp_dome_mount(b, name, pin, shape, carries, cx, cy, cz, r, facing=0.0, limits=(-75.0, 75.0), fits=None, scale=0.5):
+def _gp_dome_mount(b, name, pin, shape, carries, cx, cy, cz, r, facing=0.0, limits=(-75.0, 75.0), fits=None, scale=0.5, lift=0.0):
     """An omnidirectional gun mount for a roof: a low faceted dome on a yaw joint over a dark ring,
     a cobalt band round it, the stock gun its class out of its front, half sunk in it (the Giant
     Petrel's back quarters; Ryan, 13 November: "omnidirectional mounts strapped to or embedded into
     the back quarters of the crew area"). `facing` turns it to its left as built, in degrees (180
-    faces it aft), so its gun rests pointing there and swings from there."""
+    faces it aft), so its gun rests pointing there and swings from there. The dome's height goes
+    with its radius (3 to a radius of 3); `lift` stands the ring up as a pedestal that tall, so
+    every class's receiver clears the roof as it turns."""
+    k = r / 3.0
     ring = lambda rr, z: [(cx + rr * math.cos(math.pi / 8 + i * math.pi / 4), cy + rr * math.sin(math.pi / 8 + i * math.pi / 4), z) for i in range(8)]
-    b.prism("z", cx, cy, cz + 0.15, r + 0.5, 0.5, "steel.dark", 8, "turret_ring", phase=math.pi / 8)
+    z0 = cz + lift
+    b.prism("z", cx, cy, cz + (lift + 0.4 * k - 0.1) / 2.0, r + 0.5, lift + 0.4 * k + 0.1, "steel.dark", 8, "turret_ring", phase=math.pi / 8)
     fwd = Vector((-math.sin(math.radians(facing)), math.cos(math.radians(facing)), 0.0))
-    with b.joint(name, (cx, cy, cz + 0.4), axis="yaw", limits=limits):
-        _rings(b, [ring(r, cz + 0.3), ring(r * 0.97, cz + 1.4), ring(r * 0.8, cz + 2.4), ring(r * 0.42, cz + 3.0)], "steel.plate", "turret_house")
-        _rings(b, [ring(r * 0.99, cz + 0.85), ring(r * 0.99, cz + 1.2)], "livery.livery", "turret_band", cap=False)
-        at = Vector((cx, cy, cz + 1.35)) + fwd * (r * 0.9)
+    with b.joint(name, (cx, cy, z0 + 0.4 * k), axis="yaw", limits=limits):
+        _rings(b, [ring(r, z0 + 0.3 * k), ring(r * 0.97, z0 + 1.4 * k), ring(r * 0.8, z0 + 2.4 * k), ring(r * 0.42, z0 + 3.0 * k)], "steel.plate", "turret_house")
+        _rings(b, [ring(r * 0.99, z0 + 0.85 * k), ring(r * 0.99, z0 + 1.2 * k)], "livery.livery", "turret_band", cap=False)
+        at = Vector((cx, cy, z0 + 1.35 * k)) + fwd * (r * 0.9)
         b.stock(pin, tuple(at), shape, forward=tuple(fwd), scale=scale, carries=carries, fits=fits)
 
 
@@ -6460,14 +6464,18 @@ def giant_petrel(b):
     its fins again ("It was more aquatic, this one is like a race car"); "we have to move the rear
     guns entirely ... mount them on omnidirectional mounts strapped to or embedded into the back
     quarters of the crew area"; the windshield "still too 'soft.' Not fast or sharp enough looking".
+    And on the sixth: the quarters' guns "can face forward as well, right?", and "could be bigger,
+    you could lower the spoiler a tad to make room for them to fire overtop instead of under";
+    "there's something really messed up with the front windscreen".
 
     The Navy SES's body: two knife hulls, their stems raked back as a wave piercer's, dark below
     the chine and chrome above, a cobalt chine stripe and straight deck stripes, each closing
     astern onto the navy's flattened booster; the cross deck between them over the air cushion,
     open fore and aft, lift glowing under it; a raised centre bow between the knives carrying the
     fore gun house, a cobalt spearhead down each bow's deck; the deckhouse spanning the deck, every
-    face leaning in, its front a sharp prow raked steeply back, the bridge's glass swept round it
-    to points on the flanks, and four long windows down each flank; on its roof the Spindrift Salvo's
+    face leaning in, its front a sharp prow raked steeply back, each facet of it a smooth twisted
+    surface from its foot to the roof's edge, the bridge's glass following it, swept round it to
+    points on the flanks, and four long windows down each flank; on its roof the Spindrift Salvo's
     three racks flush in line down the middle, each the size of the second cut's one rack (fixed,
     no pin; salvo_f, salvo_m, salvo_a, their faces rising out of the roof one after another to fire
     over the bow, eighteen tubes rippling, each rack at its own pace), the integrated mast behind them, a swept faceted fin
@@ -6476,9 +6484,10 @@ def giant_petrel(b):
     one of the racer's giant boosters (with the navy's pair, the Immelmann Booster, fixed, no pin),
     each on its own plinth on the deck, a faceted nose ahead of it and a pylon to the aft
     deckhouse; over them the racer's swept cobalt aerofoil spanning the hulls on two fins standing
-    on the hulls' outer edges astern. On each of the deckhouse roof's back quarters, either side of
-    the mast, an omnidirectional mount, a low faceted dome, resting facing aft in line with the ship,
-    its arc round the outboard side to dead ahead, firing over everything astern. Mounts in the
+    on the hulls' outer edges astern, low enough for the quarters to fire over it. On each of the
+    deckhouse roof's back quarters, either side of the mast, an omnidirectional mount, a faceted
+    dome on a short pedestal, resting facing aft in line with the ship, its arc round the outboard
+    side to dead ahead, firing over everything astern. Mounts in the
     die's order: hp_1 the fore gun house on the centre bow (the Overclocked Railgun), hp_2 the left
     quarter's dome (the Twin Autoguns), hp_3 the right quarter's (the Twin Autoguns, a placeholder in
     the vent's old slot since the refit pass).
@@ -6546,24 +6555,66 @@ def giant_petrel(b):
     a0, t0, zt0 = _lerp_at(DH, FY0)
     foot = [(x, y, DZ) for (x, y) in FRONT] + [(-x, y, DZ) for (x, y) in reversed(FRONT[:-1])]
     brow = [(x * t0 / a0, FY0 + (y - FY0) * BROW, zt0) for (x, y, z) in foot]   # the roof's edge, the same corners drawn in and set back
-    _rings(b, [foot, brow], "steel.panel", "deckhouse", cap=False)
+    # Each facet runs straight from its foot to its brow, but the brow's edges are not parallel to
+    # the foot's, so a facet twists: built whole it was two flat triangles creased across it that
+    # the glass cut through (Ryan, 13 November: "there's something really messed up with the front
+    # windscreen"). So each is laid as the smooth surface it is, finely, and the glass follows it.
+    mid = Vector((0.0, FY0, (DZ + zt0) / 2.0))
+    NK, NF = 10, 8
+
+    def facet(i, k, f):
+        return Vector(foot[i]).lerp(Vector(foot[i + 1]), k).lerp(Vector(brow[i]).lerp(Vector(brow[i + 1]), k), f)
+
+    def facet_out(i, k, f):
+        dk = Vector(foot[i + 1]).lerp(Vector(brow[i + 1]), f) - Vector(foot[i]).lerp(Vector(brow[i]), f)
+        df = Vector(brow[i]).lerp(Vector(brow[i + 1]), k) - Vector(foot[i]).lerp(Vector(foot[i + 1]), k)
+        n = dk.cross(df).normalized()
+        return n if n.dot(facet(i, k, f) - mid) > 0.0 else -n
+    _rings(b, [[tuple(facet(i, m / NK, j / NF)) for i in range(len(foot) - 1) for m in range(NK)] + [tuple(facet(len(foot) - 2, 1.0, j / NF))]
+               for j in range(NF + 1)], "steel.panel", "deckhouse", cap=False)
     _slab(b, [(x, y, zt0 - 0.1) for (x, y, z) in brow], (0.0, 0.0, 1.0), 0.2, "steel.panel", "deckhouse")
     # The glass, (along the facet, up it) for each facet round the front: a swept pane down each side
     # coming to a point aft, and a raked pane each side of the prow, its outer pillar swept back, a
-    # thin mullion on the crease.
-    PANES = [[(0.06, 0.70), (0.97, 0.42), (0.97, 0.92)],
+    # thin mullion on the crease; each pane a thin shell over its facet's surface, a point drawn as
+    # a sliver.
+    PANES = [[(0.06, 0.69), (0.97, 0.42), (0.97, 0.92), (0.06, 0.71)],
              [(0.05, 0.42), (0.985, 0.42), (0.985, 0.92), (0.2, 0.92)],
              [(0.015, 0.42), (0.95, 0.42), (0.8, 0.92), (0.015, 0.92)],
-             [(0.03, 0.42), (0.94, 0.70), (0.03, 0.92)]]
-    mid = Vector((0.0, FY0, (DZ + zt0) / 2.0))
-    for i, pane in enumerate(PANES):
-        def at_face(k, f, i=i):
-            p0, p1 = Vector(foot[i]).lerp(Vector(foot[i + 1]), k), Vector(brow[i]).lerp(Vector(brow[i + 1]), k)
-            return p0.lerp(p1, f)
-        nrm = (Vector(brow[i]) - Vector(foot[i])).cross(Vector(foot[i + 1]) - Vector(foot[i])).normalized()
-        if nrm.dot(at_face(0.5, 0.5) - mid) < 0.0:
-            nrm = -nrm
-        _slab(b, [tuple(at_face(k, f) + nrm * 0.12) for (k, f) in pane], tuple(nrm), 0.24, "glass.glass", "bridge_glass")
+             [(0.03, 0.42), (0.94, 0.69), (0.94, 0.71), (0.03, 0.92)]]
+    NU, NV = 8, 5
+    for i, (c0, c1, c2, c3) in enumerate(PANES):
+        def kf(u, v):
+            lo, hi = ((1 - u) * c0[0] + u * c1[0], (1 - u) * c0[1] + u * c1[1]), ((1 - u) * c3[0] + u * c2[0], (1 - u) * c3[1] + u * c2[1])
+            return (1 - v) * lo[0] + v * hi[0], (1 - v) * lo[1] + v * hi[1]
+        bm = bmesh.new()
+        shell = []
+        for d in (0.08, 0.28):   # its inner face just off the facet, its outer a pane's thickness out
+            grid = []
+            for a in range(NU + 1):
+                row = []
+                for c in range(NV + 1):
+                    k, f = kf(a / NU, c / NV)
+                    row.append(bm.verts.new(facet(i, k, f) + facet_out(i, k, f) * d))
+                grid.append(row)
+            shell.append(grid)
+        inner, outer = shell
+        for a in range(NU):
+            for c in range(NV):
+                bm.faces.new([outer[a][c], outer[a + 1][c], outer[a + 1][c + 1], outer[a][c + 1]])
+                bm.faces.new([inner[a][c + 1], inner[a + 1][c + 1], inner[a + 1][c], inner[a][c]])
+        rim = [(a, 0) for a in range(NU)] + [(NU, c) for c in range(NV)] + [(a, NV) for a in range(NU, 0, -1)] + [(0, c) for c in range(NV, 0, -1)]
+        for (ra, rc), (rb, rd) in zip(rim, rim[1:] + rim[:1]):
+            bm.faces.new([inner[ra][rc], inner[rb][rd], outer[rb][rd], outer[ra][rc]])
+        # One glass tile across the pane, its gradient corner to corner, so a pane facing the
+        # light shows its sheen rather than one flat tone.
+        o = facet(i, *kf(0.0, 0.0))
+        across = facet(i, *kf(1.0, 0.0)) - o
+        over = facet_out(i, *kf(0.5, 0.5))
+        along = over.cross(across).normalized()
+        if along.dot(facet(i, *kf(0.0, 1.0)) - o) < 0.0:
+            along = -along
+        height = max((facet(i, *kf(u, 1.0)) - facet(i, *kf(u, 0.0))).dot(along) for u in (0.0, 0.5, 1.0))
+        b._finish(bm, "glass.glass", "bridge_glass", frame=(o, along, across.normalized(), over, (across.length, max(0.5, height))))
     for s in (-1.0, 1.0):
         b.loft([(28.6, rect(s * 13.4, 2.0, 31.4, 31.9)), (-16.5, rect(s * 13.4, 2.0, 31.4, 31.9))], "livery.livery", "roof_stripe")
 
@@ -6624,18 +6675,22 @@ def giant_petrel(b):
     # of the mast (Ryan, 13 November: "we have to move the rear guns entirely ... mount them on
     # omnidirectional mounts strapped to or embedded into the back quarters of the crew area"),
     # resting facing aft in line with the ship ("just so they have a resting position in line with
-    # the ship"), high enough to fire over the boosters and under the aerofoil, nothing in their arc
-    # from a little inboard of dead aft round the outboard side to a little past dead ahead, where
-    # the mast and the racks close it (hp_2, hp_3).
-    QX, QY = 11.5, -21.5
-    QUARTER_FITS = {"rack": "rack_round", "dish": 0.8}
+    # the ship"), their arc round the outboard side to dead ahead and a little inboard of dead aft,
+    # where the other quarter's gun closes it. Bigger, on short pedestals (Ryan, 13 November: "I
+    # feel like they could be bigger, you could lower the spoiler a tad to make room for them to
+    # fire overtop instead of under"), so they fire over the boosters and over the aerofoil, every
+    # class's receiver clear of the roof (hp_2, hp_3).
+    QX, QY, QR = 11.0, -21.0, 4.2
+    QUARTER_FITS = {"rack": ("rack_round", 0.45), "dish": 0.4, "blade": 0.8}   # each clear of the roof under its gun's line
     for s, pin, name in ((-1.0, "hp_2", "turret_l"), (1.0, "hp_3", "turret_r")):
-        lim = (-190.0, 40.0) if s < 0 else (-40.0, 190.0)   # outboard is a right-hand turn for the left one, facing aft
-        _gp_dome_mount(b, name, pin, "twin_barrel", "twin_autoguns", s * QX, QY, _lerp_at(DH, QY)[2], 3.0, facing=180.0, limits=lim, fits=QUARTER_FITS)
+        lim = (-180.0, 15.0) if s < 0 else (-15.0, 180.0)   # outboard is a right-hand turn for the left one, facing aft
+        _gp_dome_mount(b, name, pin, "twin_barrel", "twin_autoguns", s * QX, QY, _lerp_at(DH, QY)[2], QR, facing=180.0, limits=lim,
+                       fits=QUARTER_FITS, scale=0.7, lift=1.0)
     # The racer's stern wing: a swept cobalt aerofoil spanning the hulls on the tips of two fins
     # standing on the hulls' outer edges astern, a little canted (Ryan, 13 November: "I liked the
-    # other spoiler better. It was more aquatic, this one is like a race car").
-    WZ2, FIN_X, TIP_X = 34.0, 26.0, 27.6   # the aerofoil's height; the fins' feet and tips across
+    # other spoiler better. It was more aquatic, this one is like a race car"), two lower than it
+    # was so the quarters fire over it ("lower the spoiler a tad").
+    WZ2, FIN_X, TIP_X = 32.0, 26.0, 27.6   # the aerofoil's height, low enough for the quarters to fire over it and clear of the boosters under it; the fins' feet and tips across
     for s in (-1.0, 1.0):
         _rings(b, [_fin_section(s * FIN_X, -49.0, -63.0, deck(-56.0) - 0.5, 0.6), _fin_section(s * TIP_X, -54.0, -64.0, WZ2, 0.45)], "livery.livery", "fin")
     WING = [(-TIP_X, -54.5, -63.0, 0.4), (-12.0, -49.0, -58.6, 0.7), (0.0, -45.0, -55.4, 0.85), (12.0, -49.0, -58.6, 0.7), (TIP_X, -54.5, -63.0, 0.4)]

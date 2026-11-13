@@ -727,32 +727,40 @@
    }
   },
   "giant_petrel": {
-   "when": "Ryan's fifth notes on the catamaran, 13 November.",
-   "note": "Ryan, 13 November, on the fifth cut: “I liked the other spoiler better. It was more aquatic, this one is like a race car.” “I think we have to move the rear guns entirely . We could cut some of the crew area out, or do something like mount them on omnidirectional mounts strapped to or embedded into the back quarters of the crew area, or something else.” “Front windshield is still too ‘soft.’ Not fast or sharp enough looking.” A sixth cut: the aerofoil back on its fins at the hulls' outer edges; the rear guns moved up onto omnidirectional domes on the deckhouse roof's back quarters, either side of the mast, resting facing aft, high enough to fire over the boosters and under the aerofoil, their arc from a little inboard of dead aft round the outboard side to a little past dead ahead (the mast and the racks close the rest), nothing anywhere in it, the afterdecks bare; the deckhouse's front a sharp prow raked steeply back, a raked pane each side of its crease with the outer pillar swept back, and a swept pane down each side coming to a point aft. Ryan's to judge running: Acts for the traverse and the salvo.",
+   "when": "Ryan's sixth notes on the catamaran, 13 November.",
+   "note": "Ryan, 13 November, on the sixth cut: “the guns can face forward as well, right? In that configuration? I feel like they could be bigger, you could lower the spoiler a tad to make room for them to fire overtop instead of under”, and “there's something really messed up with the front windscreen.” Yes, the quarters face forward: each dome's arc runs from aft round its outboard side to dead ahead. Each dome is bigger now (a radius of 4.2 where it was 3) on a short pedestal, its Twin Autoguns 40% bigger, the gun's line 1.5 higher, and the aerofoil 2 lower, still clear of the giant boosters under it, so the quarters fire over it (the last picture, side on); the arc stops at dead ahead and 15 inboard of dead aft, so the two longer guns never cross, and a launcher, a dish or a blade fitted there is sized to clear the roof. The windscreen: each facet of the front runs straight from its foot to the roof's edge, but the roof's edges are not parallel to the foot's, so each facet twists; built whole it was two flat triangles creased across it, lit differently, and the flat glass cut through them. Now each facet is laid as the smooth surface it is, finely, the glass is a thin shell following it, and one glass tile runs across each pane, so a pane facing the light shows its sheen (the sixth picture, close). Ryan's to judge running: Acts for the salvo, the traverse and the uplink.",
    "images": [
     {
      "file": "giant_petrel/giant_petrel_front.png",
-     "alt": "giant petrel, front: the sharp prow and its swept glass, the domes on the roof's back quarters"
+     "alt": "giant petrel, front: the windscreen whole"
     },
     {
      "file": "giant_petrel/giant_petrel_rear.png",
-     "alt": "giant petrel, rear: the aerofoil on its fins again, the domes' guns resting aft over the boosters"
+     "alt": "giant petrel, rear: the bigger quarters over the lowered aerofoil"
     },
     {
      "file": "giant_petrel/giant_petrel_above.png",
-     "alt": "giant petrel, from above: the prow, the racks in line, the two domes either side of the mast"
+     "alt": "giant petrel, from above"
     },
     {
      "file": "giant_petrel/giant_petrel_salvo.png",
-     "alt": "giant petrel, the salvo, its three racks up, rippling out of step"
+     "alt": "giant petrel, firing the salvo: three racks rippling"
     },
     {
      "file": "giant_petrel/giant_petrel_quarters.png",
-     "alt": "giant petrel, the traverse, the domes' guns swung out over the sides"
+     "alt": "giant petrel, the quarters swung out (the traverse)"
+    },
+    {
+     "file": "giant_petrel/giant_petrel_windscreen.png",
+     "alt": "giant petrel, the windscreen close: each pane a shell on its facet"
+    },
+    {
+     "file": "giant_petrel/giant_petrel_guns.png",
+     "alt": "giant petrel, side on: the left quarter's guns over the aerofoil"
     }
    ],
    "before": {
-    "summary": "Before: the fifth cut, 13 November (the aerofoil on pylons off the boosters, the quarters' gun houses on the afterdecks, a front of five facets)",
+    "summary": "Before: the sixth cut, 13 November (the quarters' smaller domes firing under the aerofoil, two higher; the front's facets each two flat triangles, the glass cutting through them)",
     "images": [
      {
       "file": "giant_petrel/before_giant_petrel_front.png",
@@ -768,11 +776,19 @@
      },
      {
       "file": "giant_petrel/before_giant_petrel_salvo.png",
-      "alt": "Earlier: giant petrel, the salvo"
+      "alt": "Earlier: giant petrel, firing the salvo"
      },
      {
       "file": "giant_petrel/before_giant_petrel_quarters.png",
-      "alt": "Earlier: giant petrel, the traverse"
+      "alt": "Earlier: giant petrel, the quarters swung out"
+     },
+     {
+      "file": "giant_petrel/before_giant_petrel_windscreen.png",
+      "alt": "Earlier: giant petrel, the windscreen close"
+     },
+     {
+      "file": "giant_petrel/before_giant_petrel_guns.png",
+      "alt": "Earlier: giant petrel, side on: the guns under the aerofoil"
      }
     ]
    }

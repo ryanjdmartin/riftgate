@@ -27,8 +27,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1168 tests, 372,142 checks, green on `ccr-b7d5164e-1wtzzm` (13 November, the
-  Needletail's eleventh cut, over main at `4a0c9b5` taken in a merge). Before it, 1167 tests,
+- Tests: 1168 tests, 372,160 checks, green on `ccr-b7d5164e-1wtzzm` (13 November, the Giant
+  Petrel's seventh cut, over main at `4a0c9b5` taken in a merge). Before it, 1167 tests,
   371,269 checks, green on `ccr-722ca9f0-yj8na3` (13 November, the breaking shield's what-if and
   its two trial dials, over main's Kite), and 1155 tests, 371,949 checks, green on this branch
   over main at `6112939` (13 November, the Giant Petrel's sixth cut). Before it, 1154 tests,
@@ -469,15 +469,17 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   change on the spot. A near-black tile (`void`) lines the
   recesses, Kestrel's "dark" tile being a mid grey its chrome lights. The Giant Petrel: the
   railgun alone on the centre bow and a Twin Autoguns on an omnidirectional dome on each of the
-  deckhouse roof's back quarters, either side of the mast, resting facing aft in line with the
-  ship (the skirmish turns a gun from where it points as built, `MechView3D.aim_rest`; only these
-  two mounts rest off ahead), firing over everything astern; three salvo racks in line down the
+  deckhouse roof's back quarters, either side of the mast, bigger and on short pedestals since
+  the seventh cut, resting facing aft in line with the ship (the skirmish turns a gun from where
+  it points as built, `MechView3D.aim_rest`; only these two mounts rest off ahead), firing over
+  everything astern, the aerofoil two lower so they fire over it; three salvo racks in line down the
   roof rippling ahead of a raked mast, eighteen tubes, each rack at its own pace; the racer's
   boosters on plinths either side of a raised aft deckhouse under its aerofoil on fins at the hulls'
   outer edges, the navy's two back at the hulls' sterns; the deckhouse's front a sharp prow raked
-  steeply back, the bridge's glass swept round it to points; long windows down its flanks; a cobalt
-  spearhead down each bow; the cushion open fore and aft. A render round in the hangar's Models tab
-  for each at every cut (the last cut as Before); 1155 tests green.
+  steeply back, each twisted facet laid smooth and the bridge's glass a shell following it, swept
+  round it to points; long windows down its flanks; a cobalt spearhead down each bow; the cushion
+  open fore and aft. A render round in the hangar's Models tab for each at every cut (the last cut
+  as Before); the tests green at each.
 
 - **The Ammit's rework** (`ccr-8af28d03-re9kz4`, Ryan's own design, 12 November; on main): "The 4
   claws are combined into one weapon that deals 1x4 instead, with Breach. They no longer gain
