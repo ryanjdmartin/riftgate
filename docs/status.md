@@ -1641,12 +1641,12 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 259 (13 November, from `ccr-b7d5164e-1wtzzm` at `f08b4bb`, ahead of main, for
-  Ryan's note on the Needletail's eighth cut): its ninth cut's model and rig (the shorter, flatter
-  body), its twelve pictures (the eighth cut as Before) and `renders.json`, the page unchanged; the
-  live version was 258, this branch's own, so `renders.json` went up as 258's with only the
-  Needletail's entry replaced. The Giant Petrel's fifth cut is still live from Version 256
-  (`d06ccd7`); 254 was another session's (a newer Kite entry). `edits` and `text` empty,
+  page's Version 260 (13 November, from `ccr-b7d5164e-1wtzzm` at `b61f097`, ahead of main, for
+  Ryan's notes on the Giant Petrel's fifth cut): its sixth cut's model and rig, its ten pictures
+  (the fifth cut as Before) and `renders.json`, the page unchanged; the live version was 259, this
+  branch's own, so `renders.json` went up as 259's with these two machines' entries replaced (the
+  Needletail's note corrected on its needle). The Needletail's ninth cut is live from Version 259
+  (`f08b4bb`); 254 was another session's (a newer Kite entry). `edits` and `text` empty,
   `designs` the two folded ideas. At
   the page's Version 240 (12 November, main's `f3e4841`, on Ryan's word, "Ok, republish the hangar on
   main"): the nine files moved since 233 (the five content files with the Ammit's rework, the
