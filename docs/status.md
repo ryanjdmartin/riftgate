@@ -1637,15 +1637,13 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 255 (13 November, from `ccr-b7d5164e-1wtzzm` at `9b9c650`, ahead of main, for
-  Ryan's later notes of 13 November): the Needletail's fifth cut and the Giant Petrel's fourth,
-  each machine's model and rig, the Needletail's twelve pictures and the Giant Petrel's ten (the
-  last cut of each as Before), and `renders.json`, the page unchanged. Version 254 was another
-  session's (a newer Kite entry and Kite pictures): every live copy this publish replaced matched
-  253's build but `renders.json`, which went up again whole with only these two machines' entries
-  replaced. Version 253 (`50356e8`) had carried the Needletail's fourth cut and the Giant
-  Petrel's third, 251 and 249 the cuts before. `edits` and `text` empty, `designs` the two folded
-  ideas. At
+  page's Version 256 (13 November, from `ccr-b7d5164e-1wtzzm` at `d06ccd7`, ahead of main, for
+  Ryan's last notes of 13 November): the Needletail's sixth cut and the Giant Petrel's fifth, each
+  machine's model and rig, the Needletail's twelve pictures and the Giant Petrel's ten (the last
+  cut of each as Before), and `renders.json`, the page unchanged; the live version was 255, this
+  branch's own, so `renders.json` went up as 255's with only these two machines' entries replaced.
+  Version 255 (`9b9c650`) had carried the cuts before, over another session's 254 (a newer Kite
+  entry and Kite pictures). `edits` and `text` empty, `designs` the two folded ideas. At
   the page's Version 240 (12 November, main's `f3e4841`, on Ryan's word, "Ok, republish the hangar on
   main"): the nine files moved since 233 (the five content files with the Ammit's rework, the
   dead-code pass, the four formations' numbers, the Overrun Gearing and the dealt Shift Whistle;
