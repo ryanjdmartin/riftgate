@@ -460,11 +460,11 @@ func test_each_weapon_turns_what_can_aim_it_and_a_quad_fires_where_it_points() -
 	assert_true(named >= 2, "the fixed weapons riding a head or a turret name it (%d)" % named)
 
 
-func test_a_gun_built_facing_its_side_aims_from_where_it_points() -> void:
+func test_a_gun_built_facing_off_ahead_aims_from_where_it_points() -> void:
 	# The turn to aim is the foe's bearing less where the gun points as built (MechView3D.aim_rest,
-	# SkirmishScreen._aim_plan): a gun built facing ahead turns by the bearing, one built facing out
-	# to its side swings from its side (the Giant Petrel's quarter gun houses, Ryan's pick of 12
-	# November: "Bow + both quarters").
+	# SkirmishScreen._aim_plan): a gun built facing ahead turns by the bearing, one built facing aft
+	# swings from there (the Giant Petrel's quarter gun houses, resting in line with the ship: Ryan,
+	# 13 November, "It's not a slow carrier").
 	assert_eq(MechView3D.bearing_left(Vector3(0.0, 0.0, -1.0)), 0.0, "a line ahead runs nought to the left")
 	assert_true(absf(MechView3D.bearing_left(Vector3(-1.0, 0.0, 0.0)) - 90.0) < 0.01, "one out to the left, ninety")
 	assert_true(absf(MechView3D.bearing_left(Vector3(1.0, 0.0, 0.0)) + 90.0) < 0.01, "one out to the right, minus ninety")
@@ -476,8 +476,8 @@ func test_a_gun_built_facing_its_side_aims_from_where_it_points() -> void:
 	badger.free()
 	var petrel := MechView3D.make("giant_petrel", "", "clean", "", MechView3D.YAW_FRONT, Vector2i(64, 64))
 	assert_true(absf(petrel.aim_rest("overclocked_railgun")) < 0.5, "the Giant Petrel's bow gun points ahead")
-	assert_true(absf(float(petrel._aim_rest[2]) - 90.0) < 0.5, "its left quarter's gun house faces out to the left")
-	assert_true(absf(float(petrel._aim_rest[3]) + 90.0) < 0.5, "its right quarter's faces out to the right")
+	for n in [2, 3]:
+		assert_true(absf(absf(float(petrel._aim_rest[n])) - 180.0) < 0.5, "its quarter's gun house rests facing aft (hp_%d)" % n)
 	for n in [2, 3]:
 		assert_false(petrel.rig.aim_joint_over(petrel.hardpoints[n]).is_empty(), "the quarter's gun house turns to aim (hp_%d)" % n)
 	petrel.free()

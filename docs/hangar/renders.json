@@ -609,24 +609,24 @@
    }
   },
   "needletail": {
-   "when": "Ryan's third notes on its two modes, 12 November.",
-   "note": "Ryan, 12 November, on the second cut: “I didn't literally mean round like a rocket, I just meant no exposed weapons or ports, that's all. It looks silly like this.” “The clamshells are correct but my intent was to have the clamshells be the only part of the weapon port be visible, i.e. no visible tube. So the clamshell itself would have the hinge on the axis parallel to the line of the weapons, folding into the sides of the fuselage instead of the front. So the clamshell halves wouldn't be spherical, they would be like teardrop shaped, with the point facing the nose. The whole effect being an aerodynamic profile when closed, just a little bulge coming out of each side of the nose.” A third cut: a jet's chined fuselage again, eight-sided, the canopy amidships and the length kept short, a radome tapering to a dark point; on each side of the nose a teardrop blister, its point forward, the outer half of a teardrop round the gun's line split on a horizontal seam. In hover each half rolls on the gun's own line up (or down) and in, into the fuselage's side, baring the gun in a dark teardrop recess, and the gun runs out past the point; in flight the halves roll shut, a little bulge on each side and nothing else. The pods slabs of the upper chamfers, raised out of dark slots and sunk flush in flight; the six fins, the boosters and the wings as before. Every class goes all the way in at all four mounts. Ryan's to judge running: the hangar's Walk for the change by speed, Acts for the transition.",
+   "when": "Ryan's fourth notes on its two modes, 13 November.",
+   "note": "Ryan, 13 November, on the third cut: “The nose should taper more smoothly to the needle tip, which would let more of the guns live inside the fuselage. The clamshells are the right idea, but if the bulk of the gun is stored in the fuselage then the clamshell only needs to cover the barrel tip and not be nearly so long.” “Can the rear tailfins be longer? Angle might need to change to clear the boosters, that's fine.” “The hidden headlight isn't quite it, I've attached a picture of a car with them. It doesn't need to swivel or pitch like in the animation you made. Should be more sleek.” A fourth cut: the nose one long smooth taper from the canopy to the needle's point; each cheek gun inside it, its line where the taper crosses it, so in flight only the barrel's tip stands proud under a short teardrop clamshell, point forward, its halves rolling on the gun's line into the fuselage's side in hover to bare the muzzle in a small recess; the X fins longer and steeper, clear of the rear boosters upright and tucked; the Designator a low wedge after the sports car's pop-up, its top a panel of the nose, its sides dark, its round lamp facing ahead, and it no longer turns or tips as it paints. Every class goes all the way in at all four mounts. Ryan's to judge running: the hangar's Walk for the change by speed, Acts for the transition.",
    "images": [
     {
      "file": "needletail/needletail_front.png",
-     "alt": "needletail, hover mode, front: the cheek bays open, the pods raised, the pop-up up"
+     "alt": "needletail, hover mode, front: the muzzles bared, the pods raised, the pop-up up"
     },
     {
      "file": "needletail/needletail_rear.png",
-     "alt": "needletail, hover mode, rear"
+     "alt": "needletail, hover mode, rear: the longer fins"
     },
     {
      "file": "needletail/needletail_above.png",
-     "alt": "needletail, hover mode, from above: six fins round the tail"
+     "alt": "needletail, hover mode, from above"
     },
     {
      "file": "needletail/needletail_flight.png",
-     "alt": "needletail, flight mode, front: a teardrop blister shut on each side of the nose, the pods flush, the boosters in"
+     "alt": "needletail, flight mode, front: a small blister over each barrel's tip, the pods flush, the boosters in"
     },
     {
      "file": "needletail/needletail_flight_above.png",
@@ -634,11 +634,11 @@
     },
     {
      "file": "needletail/needletail_changing.png",
-     "alt": "needletail, changing: the cheek guns in, the blisters' halves rolling shut, the boosters swivelling"
+     "alt": "needletail, changing: the guns in, the blisters shutting, the pop-up folding, the boosters swivelling"
     }
    ],
    "before": {
-    "summary": "Before: the second cut, 12 November (a round twelve-sided body, the cheek guns in tubes under quarter-sphere clamshells)",
+    "summary": "Before: the third cut, 13 November (the cheek guns under long teardrop blisters on a straight-sided nose, a tall pop-up that turned and tipped)",
     "images": [
      {
       "file": "needletail/before_needletail_front.png",
@@ -707,32 +707,32 @@
    }
   },
   "giant_petrel": {
-   "when": "Ryan's notes on the catamaran, 12 November.",
-   "note": "Ryan, 12 November, his notes on the first cut of his mix: it “doesn't need all its weapons up front. Its a command ship, more weapons should be able to cover its sides and rear” (the bow and both quarters, his pick); “The missile rack would just shoot into the mast. Swap their places”; “The engines from the racer just kind of clip into the hull. They should be integrated better. Also we've lost the visual interest from the rear deck of the original SES design, it needs something in between the boosters”; “Bring back the SES boosters, too, so it has 4 total”; “Windows along the side, as well, where appropriate.” A second cut: the Overclocked Railgun alone on the centre bow; a Twin Autoguns on each hull's afterdeck, its gun house built facing out to its side, its arc reaching round towards the rear and forward along the deckhouse (the game now aims a gun from where it points as built); the Spindrift Salvo's box ahead on the roof, firing over the bow, the mast and the uplink behind it; between the hulls astern a raised aft deckhouse in the SES's style, windows down its flanks and a hatch with a lamp in its raked back, and either side of it one of the racer's giant boosters on its own plinth on the deck, a faceted nose ahead of it and a pylon to the aft deckhouse, the racer's aerofoil over them; the navy's flattened boosters back at the hulls' sterns, four in all; a row of windows down each flank of the deckhouse. Its acts: the salvo, the Immelmann (all four boosters burning), the uplink, a traverse (the bow gun out to one side and back, the quarters swinging aft together and then forward). Ryan's to judge running.",
+   "when": "Ryan's second notes on the catamaran, 13 November.",
+   "note": "Ryan, 13 November, on the second cut: “The petrel's side windows are too small, like an airliner, implying compartments.” “The rear cannons need to be able to face full forward or aft, regardless of where they're mounted, just so they have a resting position in line with the ship. It's not a slow carrier.” “I don't think it needs the front and rear skirt pieces, they look too boat and not flying hovercraft.” “Salvo could be a pair of racks, or even 3, to really give that ripple fire effect from a comment ship. The mast can move back and remodelled to be slanted, a bit more Kestrel aerodynamic.” A third cut: four long windows down each flank of the deckhouse and a long one down each flank of the aft deckhouse; the quarters' gun houses resting facing aft, in line with the ship (the deckhouse closes the way forward from the afterdecks), their arc from dead aft round the outboard side to forty-five degrees off the bow, the aerofoil's fins moved to the hulls' outer edges to clear them, each class fitted narrow enough to rest between a fin and a booster; the cushion open fore and aft, the skirt's fingers and bags gone; the Spindrift Salvo as three racks side by side, their faces rising one after another and twelve tubes rippling across them; the mast moved back and raked, a swept faceted fin with the uplink's array on its tip. Ryan's to judge running.",
    "images": [
     {
      "file": "giant_petrel/giant_petrel_front.png",
-     "alt": "giant petrel, front: the bow's railgun, the quarters' guns facing out"
+     "alt": "giant petrel, front: the long windows, the open cushion"
     },
     {
      "file": "giant_petrel/giant_petrel_rear.png",
-     "alt": "giant petrel, rear: four boosters, the aft deckhouse and its hatch between the racer's pair"
+     "alt": "giant petrel, rear: the quarters' guns resting aft beside the boosters"
     },
     {
      "file": "giant_petrel/giant_petrel_above.png",
-     "alt": "giant petrel, from above"
+     "alt": "giant petrel, from above: three salvo racks, the raked mast"
     },
     {
      "file": "giant_petrel/giant_petrel_salvo.png",
-     "alt": "giant petrel, the salvo, its box raised ahead of the mast"
+     "alt": "giant petrel, the salvo, its three racks up, rippling"
     },
     {
      "file": "giant_petrel/giant_petrel_quarters.png",
-     "alt": "giant petrel, the traverse, the quarters' guns swung aft"
+     "alt": "giant petrel, the traverse, the quarters' guns swung out from dead aft"
     }
    ],
    "before": {
-    "summary": "Before: the first cut of his mix, 12 November (three gun houses forward, the racer's two boosters out of the deckhouse's aft end, the salvo behind the mast)",
+    "summary": "Before: the second cut, 12 November (the quarters' guns facing out to their sides, one salvo box, an upright mast, small windows, the skirts)",
     "images": [
      {
       "file": "giant_petrel/before_giant_petrel_front.png",
@@ -749,6 +749,10 @@
      {
       "file": "giant_petrel/before_giant_petrel_salvo.png",
       "alt": "Earlier: giant petrel, the salvo"
+     },
+     {
+      "file": "giant_petrel/before_giant_petrel_quarters.png",
+      "alt": "Earlier: giant petrel, the traverse"
      }
     ]
    }

@@ -1357,9 +1357,9 @@ func aim_at(cid: String, deg: float, hold: float) -> bool:
 ## The joint that turns to aim a component (aim_at), or "" when it fires where it points.
 ## How far the gun spending `cid` already points to the machine's left as built, in degrees: its
 ## mount's line on the model, level; nought for a gun built facing forward, ninety for one built
-## facing out to its left (the Giant Petrel's quarter gun houses). A turn to aim is the target's
-## bearing less this (SkirmishScreen._aim_plan), so a turret built facing its side swings from
-## where it points rather than as though it pointed ahead. The mount is the one aim_joint_for
+## facing out to its left, a half turn for one built facing aft (the Giant Petrel's quarter gun
+## houses). A turn to aim is the target's bearing less this (SkirmishScreen._aim_plan), so a
+## turret built facing off ahead swings from where it points rather than as though it pointed ahead. The mount is the one aim_joint_for
 ## turns; a weapon on no mount points ahead.
 func aim_rest(cid: String) -> float:
 	var mounts := carrying(cid)

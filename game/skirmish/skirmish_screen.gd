@@ -3342,7 +3342,7 @@ func _shoot_trail(mi: int, target: UnitView, cid: String, lands: float) -> void:
 ## How machine `i` turns to fire at `target`: [degrees to its left, the seconds the turn takes],
 ## the seconds nought when it fires where it points (no joint turns for the weapon spent, or the
 ## gun already points at the foe). The turn is the foe's bearing less where the gun points as
-## built (MechView3D.aim_rest: a gun house built facing its side swings from its side).
+## built (MechView3D.aim_rest: a gun house built facing aft swings from there).
 func _aim_plan(i: int, target: UnitView, spent: Face) -> Array:
 	if target == null or spent == null or i < 0 or i >= _mech_3d.size() or _mech_3d[i] == null:
 		return [0.0, 0.0]
