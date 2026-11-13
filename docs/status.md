@@ -1742,15 +1742,14 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 264 (13 November, from `ccr-b7d5164e-1wtzzm` at `cc869a1`, ahead of main, for
-  Ryan's notes on the Giant Petrel's sixth cut): its seventh cut's model and rig (the bigger
-  quarters on pedestals over the lowered aerofoil, the windscreen's facets laid smooth with the
-  glass following them), its seven pictures with a windscreen close-up and a side-on view of the
-  guns, the sixth cut's seven as Before, and `renders.json`, the page unchanged; the live version
-  was 263, this branch's own (the Needletail's eleventh cut, `00026cf`), so `renders.json` went up
-  as the live one with the Giant Petrel's entry replaced, its Kite entry still the live one (main's
-  shipped note for it, taken in with main, not published from here). The Needletail's eleventh cut is live
-  from Version 263 (`00026cf`). `edits` and
+  page's Version 265 (13 November, from `ccr-b7d5164e-1wtzzm` at `f3f6c55`, ahead of main, for
+  Ryan's notes on the Needletail's eleventh cut): its twelfth cut's model and rig (the front
+  boosters straight with their canards riding in, narrower at its widest, the lower canopy, the
+  longer needles), its seven pictures and the eleventh cut's seven as Before, and `renders.json`,
+  the page unchanged; the live version was 264, this branch's own (the Giant Petrel's seventh cut,
+  `cc869a1`, live from it), so `renders.json` went up as the live one with the Needletail's entry
+  replaced, its Kite entry still the live one (main's shipped note for it, taken in with main, not
+  published from here). `edits` and
   `text` empty, `designs` the two folded ideas. Version 254 (13 November,
   from `ccr-e3ddf00b-ilkwbi` at `0c03430`, ahead of main): the
   Kite's last round, its wings' back edge swept to match the front. The Kite's rounds went out
