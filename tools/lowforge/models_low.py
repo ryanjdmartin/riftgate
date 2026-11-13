@@ -5845,7 +5845,10 @@ def needletail(b):
     a bit off. It feels too long, still, and could be flatter". And on the ninth: "racks, blades
     and dishes still float out of the front gun ports". And on the tenth: the pods' mounts "angled to
     match the angle of the pod they sit in"; "it needs more of the tapered part of the nose, and less
-    body. If the canards moved up, that should give you room, right?"
+    body. If the canards moved up, that should give you room, right?" And on the eleventh: the
+    front boosters toed in along the nose "causing the canards to poke through. Also straight is
+    better"; "Is there any way to reduce the max width the fuselage reaches?"; "the canopy could be
+    a bit flatter"; "The rear and nose needles can actually be longer".
 
     Built at rest in hover mode, the pose it holds standing and in every fight: a jet's chined
     fuselage, eight-sided (a flat top and belly, chamfers, a short upright band at the chine),
@@ -5873,7 +5876,7 @@ def needletail(b):
     troughs' covers slide out flush, the
     pods' guns run back into the pods and the pods sink flush into their slots, the iris shuts and the pop-up folds
     flat, the boosters swivel level and run in along their fins to sit against the body (the front
-    pair toed in along the narrowing nose, the rear pair between the upper and lower X fins, the tailplanes' outer panels running into the body with
+    pair's canards running into the body with them, the rear pair between the upper and lower X fins, the tailplanes' outer panels running into the body with
     them), the wings swing out, their roots in the fuselage, and the exhaust burns hot; slowing,
     it all comes back. Mounts in the die's order: hp_1 the left cheek (the Transonic Rifle), hp_2
     the right (the Laser Carbine), hp_3 the left pod (the Twin Autoguns), hp_4 the right pod (the
@@ -5885,12 +5888,14 @@ def needletail(b):
     # recesses back on its sides where it still narrows fast enough to bury them (Ryan, 13
     # November: "Move the front guns and ports back further on the fuselage ... get rid of that
     # ridge and come to a smooth point"); astern the tail ends square, its whole face the exhaust.
-    # Short and flat for its width, the whole about 100 from point to needle and a fifth lower than
-    # the eighth cut ("It feels too long, still, and could be flatter").
+    # Short and flat for its width, a fifth lower than the eighth cut ("It feels too long, still, and
+    # could be flatter"), and at its widest 15.8 where it was 17.4 (Ryan, 13 November: "Is there any
+    # way to reduce the max width the fuselage reaches?"), what the stowed wings and the canopy on
+    # the flat top still leave room for.
     BODY = [(39.86, 0.7, 0.25, 0.2, 0.05), (37.5, 2.2, 0.75, 0.65, 0.35), (34.7, 3.7, 1.2, 1.0, 0.6), (31.5, 5.3, 1.65, 1.35, 0.85),
             (28.6, 6.8, 2.05, 1.6, 1.05), (25.7, 8.4, 2.45, 1.85, 1.25), (23.0, 10.0, 2.8, 2.1, 1.4), (20.2, 11.7, 3.15, 2.3, 1.5),
-            (17.2, 13.1, 3.5, 2.5, 1.55), (14.0, 14.2, 3.8, 2.7, 1.55), (9.8, 15.3, 4.25, 2.9, 1.5),
-            (4.0, 16.3, 4.8, 3.1, 1.4), (-0.5, 16.8, 5.35, 3.25, 1.3), (-6.0, 17.4, 5.8, 3.4, 1.2), (-24.0, 17.4, 5.8, 3.4, 1.2),
+            (17.2, 13.1, 3.5, 2.5, 1.55), (14.0, 13.79, 3.8, 2.7, 1.55), (9.8, 14.47, 4.25, 2.9, 1.5),
+            (4.0, 15.09, 4.8, 3.1, 1.4), (-0.5, 15.41, 5.35, 3.25, 1.3), (-6.0, 15.8, 5.8, 3.4, 1.2), (-24.0, 15.8, 5.8, 3.4, 1.2),
             (-29.0, 12.4, 4.2, 2.8, 0.55), (-39.5, 12.4, 4.0, 2.7, 0.5), (-43.5, 10.8, 3.6, 2.5, 0.45)]   # straight the pods' whole length, so each pod's gun runs back under a full face
 
     def sec(w, top, bottom, s):
@@ -5904,7 +5909,7 @@ def needletail(b):
         """The body's chine at `y`, its widest."""
         return at(y)[0] / 2.0
     body = b.loft([(y, sec(w, t, bt, s)) for (y, w, t, bt, s) in BODY], "steel.plate", "fuselage")
-    b.loft([(39.4, diamond(0.0, 0.0, 0.8, 0.5)), (44.0, diamond(0.0, 0.0, 0.08, 0.08))], "steel.dark", "nose_tip")
+    b.loft([(39.4, diamond(0.0, 0.0, 0.8, 0.5)), (47.5, diamond(0.0, 0.0, 0.06, 0.06))], "steel.dark", "nose_tip")   # long (Ryan, 13 November: "The rear and nose needles can actually be longer")
     # The exhaust: the tail's whole face cut out and lined dark, its floor lit, and the needle
     # running out of its middle, long (Ryan, 13 November: "that whole thing could be a cut-out
     # exhaust, with the needle coming out of the middle, even longer than it is now").
@@ -5920,15 +5925,15 @@ def needletail(b):
     x0, x1, z0, z1 = min(p[0] for p in hot), max(p[0] for p in hot), min(p[2] for p in hot), max(p[2] for p in hot)
     _rings(b, [mouth(FLOOR - 0.1, 0.99), mouth(FLOOR + 0.05, 0.99)], "amber.exhaust", "tail_exhaust",
            frame=(Vector((x0, FLOOR, z0)), Vector((0.0, 1.0, 0.0)), Vector((1.0, 0.0, 0.0)), Vector((0.0, 0.0, 1.0)), (x1 - x0, z1 - z0)))   # one whole flame tile across it, white-hot in the middle round the needle
-    b.loft([(FLOOR + 0.3, diamond(0.0, ZC, 2.6, 2.2)), (YT - 3.0, diamond(0.0, ZC, 1.4, 1.1)), (YT - 12.0, diamond(0.0, ZC, 0.08, 0.08))], "steel.dark", "needle")
+    b.loft([(FLOOR + 0.3, diamond(0.0, ZC, 2.6, 2.2)), (YT - 4.0, diamond(0.0, ZC, 1.4, 1.1)), (YT - 16.0, diamond(0.0, ZC, 0.08, 0.08))], "steel.dark", "needle")
     # A nozzle's dark rim standing round the mouth, and a cobalt band round the tail just ahead of
     # it (Ryan, 13 November: "a little decoration on the fuselage where it sits").
     _rings(b, [mouth(YT + 0.03, 1.13), mouth(YT - 0.32, 1.13), mouth(YT - 0.32, 1.0), mouth(YT + 0.03, 1.0), mouth(YT + 0.03, 1.13)], "steel.dark", "nozzle_rim", cap=False)
     b.loft([(y, [(x * 1.025, z * 1.025) for (x, z) in sec(*at(y))]) for y in (YT + 4.3, YT + 2.5)], "livery.livery", "tail_band", cap=False)   # a sleeve: a cap would close the exhaust
     # The canopy amidships, long and tall, carrying well back (Ryan, 13 November: "It's a small
     # spotter ship, it needs a good viewing range for the canopy"), two bows across it.
-    CANOPY = [(8.5, 0.9, 0.5), (5.5, 2.9, 2.7), (1.0, 3.7, 3.7), (-5.0, 3.95, 4.1), (-11.0, 3.95, 4.0), (-16.0, 3.6, 3.4),
-              (-19.5, 2.6, 2.1), (-21.5, 1.3, 0.8), (-22.5, 0.6, 0.3)]
+    CANOPY = [(8.5, 0.85, 0.38), (5.5, 2.7, 2.0), (1.0, 3.4, 2.8), (-5.0, 3.6, 3.08), (-11.0, 3.6, 3.0), (-16.0, 3.3, 2.55),
+              (-19.5, 2.4, 1.58), (-21.5, 1.2, 0.6), (-22.5, 0.55, 0.22)]   # a quarter lower than it was (Ryan, 13 November: "I also think the canopy could be a bit flatter")
     _jet_canopy(b, [(y, w, t, bt) for (y, w, t, bt, s) in BODY], CANOPY, -3.0, frames=(-12.5,))
 
     # The cheeks: each gun lies inside the nose on a run, its line where the nose's side crosses
@@ -6099,16 +6104,18 @@ def needletail(b):
             b.prism("z", nx, ny, nz - 11.0 * L - 0.6 * k, 4.9 * k, 1.4 * k, "amber.engine", 6, "booster_ring", phase=math.pi / 6)
             _disc(b, (nx, ny, nz - 11.0 * L - 1.35 * k), (0.0, 0.0, -1.0), 4.5 * k, 6, "amber.exhaust", "exhaust", phase=math.pi / 6)
 
-    def tucked(k, L, y_pivot, toe=0.0):
-        """Where a booster's axis sits level and run in against the body (its intake leading),
-        toed in `toe` degrees: each hexagon's flat side (the lip at the intake's end, the ring at the
-        exhaust's) clear of the chine wherever along its length it lies."""
-        out, c, sn = 0.0, math.cos(math.radians(toe)), math.sin(math.radians(toe))
+    def tucked(k, L, y_pivot):
+        """Where a booster's axis sits level and run in against the body (its intake leading):
+        each hexagon's flat side (the lip at the intake's end, the ring at the exhaust's) clear of
+        the chine wherever along its length it lies."""
+        out = 0.0
         for (dy, r) in ((11.0 * L + 0.8 * k, 5.1 * k), (8.0 * L, 4.7 * k), (0.0, 4.4 * k), (-11.0 * L - 1.3 * k, 4.9 * k)):
-            out = max(out, face(y_pivot + dy * c) + r * math.cos(math.pi / 6) + dy * sn + 0.05)
+            out = max(out, face(y_pivot + dy) + r * math.cos(math.pi / 6) + 0.05)
         return out
-    # The canards stay put, each front booster running in along its canard on a slide until it sits
-    # against the body, the canard going into it. Each rear booster turns on a hub at the tip of a
+    # Each front booster runs in on a slide until it sits against the body, its canard riding in with
+    # it, into the body (his design: "the wings they are on retract"), so the canard's tip stays
+    # inside the booster (Ryan, 13 November, of the boosters toed in along the nose: "it's causing
+    # the canards to poke through. Also straight is better"). Each rear booster turns on a hub at the tip of a
     # long tailplane of its own planform (Ryan, 13 November: "the wings they're attached to don't have
     # to strictly match the other tailfins"): a fixed root stub off the body and an outer panel riding
     # on the booster's slide, so in flight the panel runs into the body with the booster (his design:
@@ -6118,19 +6125,16 @@ def needletail(b):
     KR, LR = 1.05, 0.61          # the rear's (Ryan, 13 November: "rear boosters can be thicker")
     FY, FX = 14.0, 15.5          # the canards' station, beside the pop-up and just behind the cheeks' recesses (Ryan: "can the canards afford to be further forward now?"; 13 November, of the longer taper: "If the canards moved up, that should give you room"), and their boosters' pivot ("could extend a little more when hovering")
     RY, RX = -37.0, 21.5         # the tailplanes' (Ryan, 13 November: "too long now. Only needed a little more than last time")
-    # In flight each front booster lies along the nose's side, toed in as the taper narrows under it,
-    # so it sits against the body its whole length (his design: "the boosters are tight to the body").
-    TOE = math.degrees(math.atan((face(FY - 11.0 * LF - 1.3 * KF) - face(FY + 11.0 * LF + 0.8 * KF)) / (22.0 * LF + 2.1 * KF)))
-    FIN = FX - tucked(KF, LF, FY, TOE)
+    FIN = FX - tucked(KF, LF, FY)
     RIN = RX - tucked(KR, LR, RY)
     ROOT_LE, ROOT_TE, TIP_LE, TIP_TE, SPAN = -28.5, -40.0, -37.5, -43.0, 10.0   # the X fins' planform: root chord, tip chord, span (Ryan, 13 November: "Can the rear tailfins be longer?")
     FIN_RAKE = 52.0   # the X fins' angle off the horizontal, steep enough to clear the rear boosters up and tucked
     for s in (-1.0, 1.0):
         side = "l" if s < 0 else "r"
         tip = FX - 4.4 * KF * math.cos(math.pi / 6) + 0.4
-        _rings(b, [_blade_section(s * (face(FY) - 0.2), FY + 3.5, FY - 3.5, 0.0, 0.7), _blade_section(s * tip, FY + 2.0, FY - 2.0, 0.0, 0.5)],
-               "livery.livery", "canard")
         with b.joint("slide_f" + side, (s * FX, FY, 0.0), slide=(1.0, 0.0, 0.0)):
+            _rings(b, [_blade_section(s * (face(FY) - 0.2), FY + 3.5, FY - 3.5, 0.0, 0.7), _blade_section(s * tip, FY + 2.0, FY - 2.0, 0.0, 0.5)],
+                   "livery.livery", "canard")
             booster("f" + side, s * FX, FY, 0.0, KF, LF)
         root = face(RY + 3.0) - 0.06
         _rings(b, [_blade_section(s * root, RY + 7.5, RY - 4.6, 0.0, 0.85), _blade_section(s * 12.4, RY + 4.5, RY - 4.3, 0.0, 0.7)], "livery.livery", "tailplane")
@@ -6167,7 +6171,7 @@ def needletail(b):
     SWING = 58.0
     for s in (-1.0, 1.0):
         side = "l" if s < 0 else "r"
-        zw = -0.75 if s < 0 else -1.35
+        zw = -0.45 if s < 0 else -1.05   # the two a wing's thickness apart, high enough that the lower stays off the lower chamfer
         piv = Vector((s * 7.0, 6.0, zw))   # forward with the canards, a little in where the longer taper narrows the body
         out = [piv, Vector((s * 29.0, -14.0, zw)), Vector((s * 29.0, -16.8, zw)), Vector((s * 6.6, -10.5, zw))]   # the deployed planform
         turn = Matrix.Rotation(math.radians(SWING if s < 0 else -SWING), 3, "Z")
@@ -6242,7 +6246,6 @@ def needletail(b):
     BOOST = ["booster_fl", "booster_fr", "booster_rl", "booster_rr"]
     LEVEL = -88.0
     FLIGHT = {j: (LEVEL, 0.0, 0.0, 0.0, 0.0, 0.0) for j in BOOST}
-    FLIGHT.update({"booster_fl": (LEVEL, -TOE, 0.0, 0.0, 0.0, 0.0), "booster_fr": (LEVEL, TOE, 0.0, 0.0, 0.0, 0.0)})   # toed in along the nose
     FLIGHT.update({"slide_fl": (0.0, 0.0, 0.0, FIN, 0.0, 0.0), "slide_fr": (0.0, 0.0, 0.0, -FIN, 0.0, 0.0),
                    "slide_rl": (0.0, 0.0, 0.0, RIN, 0.0, 0.0), "slide_rr": (0.0, 0.0, 0.0, -RIN, 0.0, 0.0),
                    "wing_l": (0.0, -SWING, 0.0, 0.0, 0.0, 0.0), "wing_r": (0.0, SWING, 0.0, 0.0, 0.0, 0.0),

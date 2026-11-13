@@ -621,20 +621,20 @@
    }
   },
   "needletail": {
-   "when": "Ryan's eleventh notes on its two modes, 13 November.",
-   "note": "Ryan, 13 November, on the tenth cut: “Can the upper pod mounts be angled to match the angle of the pod they sit in?” and “I think it needs more of the tapered part of the nose, and less body. If the canards moved up, that should give you room, right?” Each pod's mount now leans with its pod, square to the chamfer it is a slab of, so a class sits square in the pod's face, twin barrels side by side along the slope (the last picture, the Twin Autoguns in the left pod). The nose is one longer taper, reaching the body's full width only at the canopy's front third, so the straight body behind it is shorter; the machine's length is unchanged (about 100 from point to needle). The cheek ports moved 1.3 back with the taper, where the nose still narrows fast enough to bury the guns, the guns 0.85 closer in, their blisters bulging a little more (0.63 at their widest, 0.48 before). The canards moved 3 forward, beside the pop-up and just behind the cheeks' recesses, and the wings 2.5 forward with them, a little inboard so their roots stay inside the narrower body; in flight each front booster toes in about 9 degrees along the narrowing nose, so it still sits against the body its whole length. The rack, the dish and the blade in the cheeks are the tenth cut's port forms. Ryan's to judge running: Walk for the change by speed, Acts for the transition.",
+   "when": "Ryan's twelfth notes on its two modes, 13 November.",
+   "note": "Ryan, 13 November, on the eleventh cut: “Don't angle the front boosters on the needle, it's causing the canards to poke through. Also straight is better. Is there any way to reduce the max width the fuselage reaches? Or are we out of wiggle room there? I also think the canopy could be a bit flatter. The rear and nose needles can actually be longer, I think.” The front boosters are straight again in flight, and each canard now runs into the body with its booster (his design: “the wings they are on retract”): left fixed, a canard's tip stood out past its booster even straight, since the longer taper lets the booster tuck in closer than the canard is long. The body is 15.8 at its widest where it was 17.4, the shoulder drawn in to it, the nose and the cheeks as they were; the wings sit 0.3 higher inside so they still stow in it, and the canopy is a little narrower for the narrower top and a quarter lower. That is about the room there is: much under 15 the stowed wings meet the body's lower chamfers and the canopy runs off the flat top. The nose's needle runs 3.5 further and the tail's 4, the machine about 107 from point to needle (about 100 before), so drawn a little smaller on the map. Ryan's to judge running: Walk for the change by speed, Acts for the transition.",
    "images": [
     {
      "file": "needletail/needletail_front.png",
-     "alt": "needletail, hover mode, front: the longer taper, the canards forward"
+     "alt": "needletail, hover mode, front: the flatter canopy, the longer nose needle"
     },
     {
      "file": "needletail/needletail_rear.png",
-     "alt": "needletail, hover mode, rear"
+     "alt": "needletail, hover mode, rear: the longer needle"
     },
     {
      "file": "needletail/needletail_above.png",
-     "alt": "needletail, hover mode, from above: the taper to the canopy's front third"
+     "alt": "needletail, hover mode, from above: narrower at its widest"
     },
     {
      "file": "needletail/needletail_flight.png",
@@ -642,7 +642,7 @@
     },
     {
      "file": "needletail/needletail_flight_above.png",
-     "alt": "needletail, flight mode, from above: the front boosters toed in along the nose"
+     "alt": "needletail, flight mode, from above: the front boosters straight, their canards in with them"
     },
     {
      "file": "needletail/needletail_changing.png",
@@ -650,11 +650,11 @@
     },
     {
      "file": "needletail/needletail_pod.png",
-     "alt": "needletail, the left pod with the Twin Autoguns: the mount leaning with the pod"
+     "alt": "needletail, the left pod with the Twin Autoguns, its mount leaning with the pod"
     }
    ],
    "before": {
-    "summary": "Before: the tenth cut, 13 November (the nose's taper reaching the body's width beside the pop-up, the canards and the wings 3 further back, the pods' mounts level)",
+    "summary": "Before: the eleventh cut, 13 November (17.4 at its widest, the canopy taller, the needles shorter, the front boosters toed in along the nose in flight)",
     "images": [
      {
       "file": "needletail/before_needletail_front.png",
@@ -682,7 +682,7 @@
      },
      {
       "file": "needletail/before_needletail_pod.png",
-      "alt": "Earlier: the left pod with the Twin Autoguns, its mount level"
+      "alt": "Earlier: the left pod with the Twin Autoguns"
      }
     ]
    }

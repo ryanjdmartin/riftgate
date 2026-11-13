@@ -27,8 +27,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1168 tests, 372,160 checks, green on `ccr-b7d5164e-1wtzzm` (13 November, the Giant
-  Petrel's seventh cut, over main at `4a0c9b5` taken in a merge). Before it, 1167 tests,
+- Tests: 1168 tests, 372,160 checks, green on `ccr-b7d5164e-1wtzzm` (13 November, the
+  Needletail's twelfth cut, over main at `4a0c9b5` taken in a merge). Before it, 1167 tests,
   371,269 checks, green on `ccr-722ca9f0-yj8na3` (13 November, the breaking shield's what-if and
   its two trial dials, over main's Kite), and 1155 tests, 371,949 checks, green on this branch
   over main at `6112939` (13 November, the Giant Petrel's sixth cut). Before it, 1154 tests,
@@ -449,8 +449,9 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   not on main): built that day on Ryan's design and his mix, then reworked on his notes of that
   evening and 13 November (the bible's Kestrel row). The Needletail: a jet's chined fuselage
   (its round second cut retired: "I didn't literally mean round like a rocket"), shorter than the
-  first cut and short and flat for its width, a long canopy amidships standing proud of it, the
-  nose one long smooth taper to its point, reaching the body's width only at the canopy's front
+  first cut and short and flat for its width, 15.8 at its widest since the twelfth cut (17.4
+  before), a long, low canopy amidships standing proud of it, the nose one long smooth taper to its
+  point and its needle, reaching the body's width only at the canopy's front
   third, so the straight body behind it is short; it stands and fights
   in hover mode, four shorter boosters upright on swivels (the front pair on short canards beside
   the pop-up just behind the cheeks, the thicker rear pair each on a hub at the tip of a long tailplane whose outer panel
@@ -461,10 +462,10 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   port; the blade's bracket and the twins' receiver in the recess), the Fovea Designator a low wedge pop-up
   after a sports car's, its lamp behind
   a six-bladed iris that widens and narrows as it paints, the tail's whole face a cut-out exhaust
-  round a needle fifteen long, in a dark rim behind a cobalt band; on the map its gait changes it into flight mode as it gathers speed
+  round a needle nineteen long, in a dark rim behind a cobalt band; on the map its gait changes it into flight mode as it gathers speed
   (the cheek guns in, a short teardrop clamshell rolling shut over each barrel's tip on the gun's
   own line and a flush cover sliding out over each trough, the pods sunk flush, the iris shut and the pop-up folded, the boosters level and
-  run in along their fins, the front pair toed in along the narrowing nose, the swept wings out near the canards, small flat tips, their roots in the
+  run in along their fins, straight, the front pair's canards running into the body with them, the swept wings out near the canards, small flat tips, their roots in the
   fuselage, the exhaust burning white-hot) and back as it slows, its transition act the same
   change on the spot. A near-black tile (`void`) lines the
   recesses, Kestrel's "dark" tile being a mid grey its chrome lights. The Giant Petrel: the
