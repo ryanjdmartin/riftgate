@@ -354,14 +354,13 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
     dark rounds, Hot Streak, the d3 (the die's minimum is four again); the engine keeps Reset and
     a passive's cooldown, which no piece prints. A Kite leaving a fight at its heat maximum he
     declined (the bible's withdrawal row); Phased on a kill he kept for the shadow panther. The
-    model's third mount is ahead of the canopy, a port at the back of a trough under a low curved
-    hood, every class there in its port form, its root inside the hull (four new variants: the
-    port gun, the port pair, the port rack and the port dish on its telescoping mast; the blade
-    standard); on trial, the trough filled in (`TROUGH` in the builder brings it back), the line
-    0.6 higher (a unit's drop from there tried and taken back), the hood carried forward over
-    the mount to four past it and a little round cut under the weapon that frees the launcher,
-    a little smaller since and drilled two into the hood along the line; the dish the launcher's
-    diameter; the tail's top edges chamfered, the intake taking the face's new shape, the tail
+    model's third mount is ahead of the canopy, a port under a low curved hood carried forward
+    over the mount to four past it, every class there in its port form, its root inside the hull
+    (four new variants: the port gun, the port pair, the port rack and the port dish on its
+    telescoping mast; the blade standard), coming out of a round bore drilled two into the hood
+    along the line into a little round cut under the weapon that frees the launcher, the trough
+    it first lay in filled and the line 0.6 higher (a unit's drop from there tried and taken
+    back), shipped on his "Ship it" (13 November); the dish the launcher's diameter; the tail's top edges chamfered, the intake taking the face's new shape, the tail
     six longer and carried on one root of the body's section in place of its dark keel and the
     old scoop, filleted into the shoulders, raked vents glowing in it over the boosters, flaring
     with them, the tail floating behind it; the wings' leading and trailing edges swept more,

@@ -255,18 +255,15 @@ def kite(b):
     gear teeth (the pinion, a wing's flight feathers and a gear) whose backs run aft as strakes
     tapering into the drum, the barrel out of the inlet's centre, its muzzle lit; each fires one of the Driver's two shots. The nose mounts either
     side of the nosecone, hp_1 the stock's Transonic Rifle as its class, hp_2 bare, at half scale,
-    the machine being small; hp_3, bare, ahead of the canopy on the centreline, inset: a port a
-    little ahead of the canopy and a trough cut into the spine ahead of it, under a low curved
-    hood over the port, every class there its port form coming out of the hood's mouth (the
-    port gun's barrel lying clear in the trough, whose floor ramps up to the nose's surface,
-    its muzzle past it; a launcher the port rack
-    (Ryan, 12 November: "in front of the canopy, but inset, like the polar bear - so some of the
-    barrel pokes out through a cut channel. Doesn't retract or anything"; then "sink it
-    horizontally into the hull more, so the actual mount block is hidden, and don't cut a
-    channel all the way down the nose"; "let it poke out more and cut the trough a little
-    deeper vertically"; "a round rack would be warranted when a missile is slotted there"; then
-    the gun pushed forward with the cut's back, its front kept; "slap a gentle curved fairing
-    overtop of the back of the mount point, to hide the poking-out edge").
+    the machine being small; hp_3, bare, ahead of the canopy on the centreline: a port under a
+    low curved hood, every class there its port form coming out of a round bore drilled in the
+    hood's mouth into a short round cut in the nose: the port gun's barrel running down the
+    nose to its muzzle, a launcher the port rack, a dish on a telescoping mast clear of the
+    hood (Ryan, 12 November: "in front of the canopy, but inset, like the polar bear"; "sink it
+    horizontally into the hull more, so the actual mount block is hidden"; "a round rack would
+    be warranted when a missile is slotted there"; "slap a gentle curved fairing overtop of the
+    back of the mount point, to hide the poking-out edge"; the trough it first lay in filled,
+    "Can we make a little round cut under, just long enough that the rack isn't covered?").
     The tail segment's flat face behind the canopy is an air intake, a dark mouth in a steel lip
     (the same day: "Can the flat face behind the canopy also get an intake treatment?"), both
     taking the face's shape once its top corners were chamfered."""
@@ -286,39 +283,30 @@ def kite(b):
         else:
             b.pad("hp_2", (s * 4.5, 30.0, -1.0), scale=0.5, size=(3.0, 1.0))
     # The third mount (its fourth entry, Ryan, 11 November: "giving it 4 faces again"), ahead of
-    # the canopy and inset (the 12th, in order: "like the polar bear - so some of the barrel
-    # pokes out through a cut channel"; "sink it horizontally into the hull more, so the actual
-    # mount block is hidden, and don't cut a channel all the way down the nose"; "Raise the
-    # gun's line a little"; "let it poke out more and cut the trough a little deeper vertically
-    # so the barrel isn't covered"; "I just wanted the cut shorter by removing from the back.
-    # Also, the floor of the cut can come up a bit, without moving the gun"; "push the barrel
-    # horizontally forward, moving the back of the cut with it but not the front", by 1.6, 2 and
-    # then 1 more): a port, the back wall of a trough cut into the spine a little ahead of the
-    # canopy (a real hollow, b.cut_hull), its floor flat to just short of its front and ramped
-    # up to the surface there, the front where it has been since the first push. Fixed: no joint.
-    # Then the line raised a little and, on trial, the trough filled in, the hood's mouth the
-    # port (his, the same day: "Move the mount vertically up a little bit, moving the fairing up
-    # if you need to, and then I want to see what filling in the cut looks like now"); a unit's
-    # drop from there was tried and taken back ("I didn't think one unit would move it down so
-    # much. Maybe revert the drop"). TROUGH brings the cut back as it was, its floor 1.9 under the line.
+    # the canopy on the centreline, fixed, no joint. Its form after a day of rounds on the 12th,
+    # shipped on the 13th on his "Ship it": a port seven ahead of the canopy's nose under a low
+    # hood, the weapon coming out of a round bore drilled in the hood's mouth into a short round
+    # cut in the nose. The rounds that shaped it, in order: "in front of the canopy, but inset,
+    # like the polar bear"; "sink it horizontally into the hull more, so the actual mount block
+    # is hidden"; the port pushed forward ("push the barrel horizontally forward, moving the back
+    # of the cut with it but not the front", and twice more) and the line raised ("Move the mount
+    # vertically up a little bit"; a unit's drop from there tried and taken back, "Maybe revert
+    # the drop"). The trough cut down the nose that the weapon first lay in was filled ("I want
+    # to see what filling in the cut looks like now"), the round cut below taking its place for
+    # a launcher.
     GZ = 5.6                  # the gun's line
-    TROUGH = False
-    PORT, FLAT, RUN = 5.0, 12.6, 13.4  # the port's wall, seven ahead of the canopy's nose; the floor flat to here; ramped up to the surface here
-    FLOOR = GZ - 1.9
-    # Every class here is its port form, starting at the wall, its root inside the hull: the
+    PORT = 5.0                # the port: the mount point, seven ahead of the canopy's nose
+    # Every class here is its port form, starting at the mount, its root inside the hood: the
     # port gun (the barrel alone), the port pair for twin barrels (the standard pair had to be
     # sunk far back to hide its receiver: "Twin barrel isn't sticking out as far as it was"),
     # the port rack for a launcher, the round one longer and thinner (his: "it would look the
     # same, but be a bit longer and thinner"), and the port dish on its telescoping mast, so it
-    # stands clear of the hood below ("The dish will need an extension of some kind so it's not
-    # just covered"). The standard shapes were tried here and taken back the same day ("Just for
-    # fun ..."; "Ok go back to port gun"). The blade's place is a guess.
-    # The dish wears the launcher's scale, so it is the launcher's diameter (his: "the dish model
-    # needs to be a bit smaller, same diameter as the rack"), a unit forward of the mount so it
-    # stands clear of the hood's lip, its sleeve's root still under the hood.
+    # stands clear of the hood ("The dish will need an extension of some kind so it's not just
+    # covered"), at the launcher's scale, so the launcher's diameter ("the dish model needs to be
+    # a bit smaller, same diameter as the rack"), and a unit forward of the mount, its sleeve's
+    # root still under the hood. The standard shapes were tried here and taken back the same
+    # day ("Just for fun ..."; "Ok go back to port gun"). The blade's place is a guess.
     NOSE_FITS = {"barrel": "barrel_port", "rack": ("rack_port", 0.6), "twin_barrel": ("twin_barrel_port", 0.92), "dish": ("dish_port", 0.6, -2.0), "blade": ("blade", 0.7)}
-    if TROUGH:
-        b.cut_hull([fuselage], [(x, y, z) for x in (-2.2, 2.2) for (y, z) in ((PORT, FLOOR), (FLAT, FLOOR), (RUN, 4.4), (RUN, 9.0), (PORT, 9.0))])
     b.pin("hp_3", (0.0, PORT, GZ), scale=0.5, carries="", fits=NOSE_FITS)
     # The hood over the port (his: "we slap a gentle curved fairing overtop of the back of the
     # mount point, to hide the poking-out edge"; then "carry the fairing forward more, over the
@@ -326,8 +314,8 @@ def kite(b):
     # under the weapon's level line, so its root stood proud of it. A low arch rising gently off
     # the spine to clear the weapon's root at the mount point, its crown running level from there
     # over the weapon to four past it while the nose falls away under it, so its mouth is the
-    # tallest of it; wider than the cut, so its lip rests on the hull either side, the class coming
-    # out of its dark mouth. Its arch sinks into the hull, so it meets the spine with no seam.
+    # tallest of it; wide enough that its lip rests on the hull either side of the weapon, which
+    # comes out of its dark mouth. Its arch sinks into the hull, so it meets the spine with no seam.
     def spine(y):
         return 6.4 - (6.4 - 3.8) * y / 18.0    # the fuselage's top between its sections at 0 and 18
     HOOD_W, HOOD_SUNK = 2.7, 0.4
@@ -343,10 +331,10 @@ def kite(b):
     hood_part = b.loft(hood, "steel.plate", "port_hood")
     y, mouth = hood[-1]
     hood_mouth = b.loft([(y + 0.02, mouth), (y + 0.06, mouth)], "bore.dark", "port_hood_mouth")
-    # With the trough filled, a little round cut under the weapon (his: "Can we make a little
-    # round cut under, just long enough that the rack isn't covered?"): a channel round the line
-    # a little wider than the launcher's drum, from just inside the hood's mouth to just past the
-    # launcher's face (5.6 past the mount at its fit), its floor ramped up to the surface beyond,
+    # A little round cut under the weapon (his: "Can we make a little round cut under, just
+    # long enough that the rack isn't covered?"): a channel round the line a little wider than
+    # the launcher's drum, from just inside the hood's mouth to just past the launcher's face
+    # (5.6 past the mount at its fit), its floor ramped up to the surface beyond,
     # so the nose no longer covers the launcher's underside. Sized to the launcher alone, as
     # close as clears its drum (his, the same day: "shrink the diameter of the hood cut too, as
     # it's a bit big right now anyway"): twin barrels are wider and still touch the nose at their
@@ -354,12 +342,11 @@ def kite(b):
     # under its crown, never through its top ("I didn't mean right through the top. I meant drill
     # it out a bit following the hood cut"), the weapon coming out of a round hole in it two
     # sooner, the hole lined dark to its floor.
-    if not TROUGH:
-        CUT_R, CUT_END, CUT_BACK = 1.53, PORT + 5.9, PORT + 2.0
-        def ring(y, z):
-            return [(CUT_R * math.cos(math.pi * i / 8.0), y, z + CUT_R * math.sin(math.pi * i / 8.0)) for i in range(16)]
-        b.cut_hull([fuselage, hood_part, hood_mouth], ring(CUT_BACK, GZ) + ring(CUT_END, GZ) + ring(CUT_END + 1.6, spine(CUT_END + 1.6) + CUT_R))
-        _tube(b, (0.0, CUT_BACK, GZ), (0.0, HOOD_LIP + 0.04, GZ), CUT_R - 0.02, CUT_R - 0.1, 16, "bore.dark", "port_bore", floor_material="bore.dark", floor_depth=0.05)
+    CUT_R, CUT_END, CUT_BACK = 1.53, PORT + 5.9, PORT + 2.0
+    def ring(y, z):
+        return [(CUT_R * math.cos(math.pi * i / 8.0), y, z + CUT_R * math.sin(math.pi * i / 8.0)) for i in range(16)]
+    b.cut_hull([fuselage, hood_part, hood_mouth], ring(CUT_BACK, GZ) + ring(CUT_END, GZ) + ring(CUT_END + 1.6, spine(CUT_END + 1.6) + CUT_R))
+    _tube(b, (0.0, CUT_BACK, GZ), (0.0, HOOD_LIP + 0.04, GZ), CUT_R - 0.02, CUT_R - 0.1, 16, "bore.dark", "port_bore", floor_material="bore.dark", floor_depth=0.05)
     # Canopy: far back, low, faired into the spine rather than a bubble.
     b.loft([(-2.0, hexagon(0.0, 6.2, 7.0, 0.5)), (-10.0, hexagon(0.0, 7.4, 9.0, 3.0)),
             (-18.0, hexagon(0.0, 7.5, 9.0, 3.2)), (-26.0, hexagon(0.0, 7.2, 9.0, 3.0))], "glass.glass", "canopy")
