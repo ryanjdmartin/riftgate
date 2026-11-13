@@ -5848,7 +5848,8 @@ def needletail(b):
     body. If the canards moved up, that should give you room, right?" And on the eleventh: the
     front boosters toed in along the nose "causing the canards to poke through. Also straight is
     better"; "Is there any way to reduce the max width the fuselage reaches?"; "the canopy could be
-    a bit flatter"; "The rear and nose needles can actually be longer".
+    a bit flatter"; "The rear and nose needles can actually be longer". And on the twelfth: the
+    wings stowed so "the forward edge was visible as a strip along the side of the fuselage".
 
     Built at rest in hover mode, the pose it holds standing and in every fight: a jet's chined
     fuselage, eight-sided (a flat top and belly, chamfers, a short upright band at the chine),
@@ -5869,7 +5870,7 @@ def needletail(b):
     booster_rr), thicker, far out on long tailplanes below the X fins, each turning on a hub at its
     tailplane's tip, each on a slide (slide_fl, slide_fr, slide_rl, slide_rr) that carries the rear
     tailplanes' outer panels with it; the swept wings (wing_l, wing_r), each a small flat tip, stowed
-    inside the middle;
+    inside the middle but for the leading edge, a cobalt strip down each chine;
     astern, the whole rear face a dark cut-out exhaust in a dark rim behind a cobalt band, lit at its
     floor, the long needle running out of its middle. Flight mode is the gait (MechRig.drive):
     as it gathers speed the cheek guns run back, the blisters' halves roll shut over the barrels' tips and the
@@ -6159,21 +6160,30 @@ def needletail(b):
                 return [(c.x, y_te, c.z), (c.x + t.x, ym, c.z + t.z), (c.x, y_le, c.z), (c.x - t.x, ym, c.z - t.z)]
             _rings(b, [fin(ROOT_LE, ROOT_TE, -0.3), fin(TIP_LE, TIP_TE, SPAN)], "livery.livery", "tail_fin")
 
-    # The wings, stowed inside the middle: each a flat cobalt quadrilateral, swept, its inner edge
-    # tapering up to the pivot at the leading root (Ryan: "The inner face can taper up"), built
-    # swung in about the pivot, so in flight it swings out 58 degrees (the left a little above the
-    # right, where the two lie across each other inside, both under the pods' slots). Out, its root
-    # lies inside the fuselage all along, no gap at the side (Ryan, 13 November: "a bit bigger, and
-    # make sure there's no gap between them and the fuselage when extended"); nearer the canards,
-    # bigger, its trailing edge swept back ("closer to the canards, and get a bit bigger even, with a
-    # bit more angle to the rear edges"), a small flat tip ("I was wrong about the wings coming to a
-    # point, maybe just a smaller flat top from what it was").
-    SWING = 58.0
+    # The wings: each a flat cobalt quadrilateral, swept, its inner edge tapering up to its leading
+    # root (Ryan: "The inner face can taper up"), built swung in about a pivot on its leading edge, so
+    # stowed the wing lies inside the middle but for its leading edge, which runs down the chine as a
+    # strip standing a little out of the side (Ryan, 13 November: "if the forward edge was visible as
+    # a strip along the side of the fuselage, that would really sell it. And add some visual interest
+    # to hover mode"); in flight it swings out about 45 degrees. The two lie across each other inside
+    # at one height, so the strips match. Out, its root lies inside the fuselage all along, the
+    # leading edge carried a little past the pivot into the body, no gap at the side (Ryan, 13
+    # November: "a bit bigger, and make sure there's no gap between them and the fuselage when
+    # extended"); near the canards, bigger, its trailing edge swept back ("closer to the canards, and
+    # get a bit bigger even, with a bit more angle to the rear edges"), a small flat tip ("I was
+    # wrong about the wings coming to a point, maybe just a smaller flat top from what it was").
+    ZW, PIVOT_Y, STRIP = -0.4, 6.0, 1.0   # the wings' height, in the band just under the pods' slots; the pivot's station; how far the strip's ends stand out of the side
+    TIP_LE, TIP_TE, ROOT_TE = (29.0, -14.0), (29.0, -16.8), (6.6, -10.5)   # the deployed planform's outer corners and its root's trailing corner, the right wing's
+    yf, ya = PIVOT_Y + 2.0, PIVOT_Y - 28.7   # the strip's ends, near enough: the leading edge from two past the pivot to the tip
+    slope = (face(ya) - face(yf)) / (yf - ya)   # the strip's lean out, aft, so it stands as far out of the side at both ends
+    px = face(yf) + STRIP + (yf - PIVOT_Y) * slope
+    SWING = 90.0 - math.degrees(math.atan(slope)) + math.degrees(math.atan2(TIP_LE[1] - PIVOT_Y, TIP_LE[0] - px))
     for s in (-1.0, 1.0):
         side = "l" if s < 0 else "r"
-        zw = -0.45 if s < 0 else -1.05   # the two a wing's thickness apart, high enough that the lower stays off the lower chamfer
-        piv = Vector((s * 7.0, 6.0, zw))   # forward with the canards, a little in where the longer taper narrows the body
-        out = [piv, Vector((s * 29.0, -14.0, zw)), Vector((s * 29.0, -16.8, zw)), Vector((s * 6.6, -10.5, zw))]   # the deployed planform
+        piv = Vector((s * px, PIVOT_Y, ZW))
+        tip_le = Vector((s * TIP_LE[0], TIP_LE[1], ZW))
+        le = (tip_le - piv).normalized()
+        out = [piv - le * 2.0, tip_le, Vector((s * TIP_TE[0], TIP_TE[1], ZW)), Vector((s * ROOT_TE[0], ROOT_TE[1], ZW))]   # the deployed planform
         turn = Matrix.Rotation(math.radians(SWING if s < 0 else -SWING), 3, "Z")
         stowed = [tuple(piv + turn @ (p - piv)) for p in out]
         with b.joint("wing_" + side, tuple(piv), axis="yaw", limits=(-SWING - 5.0, 0.0) if s < 0 else (0.0, SWING + 5.0)):

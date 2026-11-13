@@ -621,20 +621,20 @@
    }
   },
   "needletail": {
-   "when": "Ryan's twelfth notes on its two modes, 13 November.",
-   "note": "Ryan, 13 November, on the eleventh cut: “Don't angle the front boosters on the needle, it's causing the canards to poke through. Also straight is better. Is there any way to reduce the max width the fuselage reaches? Or are we out of wiggle room there? I also think the canopy could be a bit flatter. The rear and nose needles can actually be longer, I think.” The front boosters are straight again in flight, and each canard now runs into the body with its booster (his design: “the wings they are on retract”): left fixed, a canard's tip stood out past its booster even straight, since the longer taper lets the booster tuck in closer than the canard is long. The body is 15.8 at its widest where it was 17.4, the shoulder drawn in to it, the nose and the cheeks as they were; the wings sit 0.3 higher inside so they still stow in it, and the canopy is a little narrower for the narrower top and a quarter lower. That is about the room there is: much under 15 the stowed wings meet the body's lower chamfers and the canopy runs off the flat top. The nose's needle runs 3.5 further and the tail's 4, the machine about 107 from point to needle (about 100 before), so drawn a little smaller on the map. Ryan's to judge running: Walk for the change by speed, Acts for the transition.",
+   "when": "Ryan's thirteenth note on its two modes, 13 November.",
+   "note": "Ryan, 13 November, on the twelfth cut: “Is there a way to adjust the wings so they don't completely disappear into the body when stowed? Just as a suspension of disbelief angle, if the forward edge was visible as a strip along the side of the fuselage, that would really sell it. And add some visual interest to hover mode.” Each wing now folds about a pivot on its own leading edge, set just outside the side, so stowed the wing lies inside the middle but for its leading edge, which runs straight down the chine as a cobalt strip from just behind the front boosters to the pods' end, standing 0.7 to 1.0 out of the side; it folds about 45 degrees where it folded 58. Out, the leading edge is carried a little past the pivot into the body, so the root still lies inside it and there is no gap. The two wings now stow at one height, so the strips match side to side; they lie across each other inside the body, out of sight. The body, the canopy and the needles are the twelfth cut's. Ryan's to judge running: Walk for the change by speed, Acts for the transition (the wings unfolding out of the strips).",
    "images": [
     {
      "file": "needletail/needletail_front.png",
-     "alt": "needletail, hover mode, front: the flatter canopy, the longer nose needle"
+     "alt": "needletail, hover mode, front: the strip down the chine"
     },
     {
      "file": "needletail/needletail_rear.png",
-     "alt": "needletail, hover mode, rear: the longer needle"
+     "alt": "needletail, hover mode, rear"
     },
     {
      "file": "needletail/needletail_above.png",
-     "alt": "needletail, hover mode, from above: narrower at its widest"
+     "alt": "needletail, hover mode, from above: a strip down each side"
     },
     {
      "file": "needletail/needletail_flight.png",
@@ -642,7 +642,7 @@
     },
     {
      "file": "needletail/needletail_flight_above.png",
-     "alt": "needletail, flight mode, from above: the front boosters straight, their canards in with them"
+     "alt": "needletail, flight mode, from above: the wings out"
     },
     {
      "file": "needletail/needletail_changing.png",
@@ -651,10 +651,14 @@
     {
      "file": "needletail/needletail_pod.png",
      "alt": "needletail, the left pod with the Twin Autoguns, its mount leaning with the pod"
+    },
+    {
+     "file": "needletail/needletail_strip.png",
+     "alt": "needletail, hover mode, close: the stowed wing's leading edge as a strip down the chine"
     }
    ],
    "before": {
-    "summary": "Before: the eleventh cut, 13 November (17.4 at its widest, the canopy taller, the needles shorter, the front boosters toed in along the nose in flight)",
+    "summary": "Before: the twelfth cut, 13 November (the wings stowed wholly inside the body)",
     "images": [
      {
       "file": "needletail/before_needletail_front.png",
@@ -683,6 +687,10 @@
      {
       "file": "needletail/before_needletail_pod.png",
       "alt": "Earlier: the left pod with the Twin Autoguns"
+     },
+     {
+      "file": "needletail/before_needletail_strip.png",
+      "alt": "Earlier: hover mode, close: no strip, the wings inside"
      }
     ]
    }
