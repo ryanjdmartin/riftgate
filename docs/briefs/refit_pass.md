@@ -2904,6 +2904,9 @@ What follows from those, built so and no question:
 - The burn is hull damage for every passive that reads hull damage, as today, at each END
   TURN it burns.
 - A blow on a machine with no shield can injure, as today.
+- A machine out of the fight, Swallowed or Phased, neither burns nor overheats while it is
+  out: it cannot reboot, so the burn would ask it for a choice it has not got. What it carries
+  past its maximum burns again the turn it is back.
 - A fight opens as today: the shield whole, the heat nothing, none of the three states.
 
 Left for after the build, his words: the foes' Burn ("Ignore enemy Burn for now, we might be
@@ -2992,20 +2995,51 @@ Beside the chassis, the pieces that read the same things:
   the Black Mage's and the Red Dragon's, and the exposed aim, four foes', point at the
   machines the rule squeezes.
 
-### The build
+### The build, as it landed (13 November)
 
 A what-if off by default, as the others are; nothing in content moves.
 
-- The engine: one switch; a chassis's own regen and cooling read as nothing under it; the
-  reboot as an act with its undo; the three states on a machine; the burn of every stack at
-  every END TURN; the overheat once between reboots; every shield gain refused while Broken;
-  the recovery as the round opens; the forecast playing a rebooting machine bare; the save and
-  the clone.
-- The morning's SHIELD BREAK dial: its rest timer goes, since nothing comes back by itself
-  now. Its block stays as a switch of its own, since the block is still his open question.
-- The screen: a REBOOT control on a machine that has spent nothing, and the three states'
-  marks. Their names and lines are shown text and his: a session's drafts, on the Text tab,
-  unsigned.
-- The bot: a first play of it, so the runner and the campaign's tools still run.
-- The trial: REBOOT on SETTINGS → TRIALS, BUILT or ON.
-- Tests of each line of the spec.
+- *The engine* (`Skirmish.reboot`; `tests/test_reboot.gd` holds each line of the spec). A
+  chassis's own regen and cooling read as nothing under it (`shield_regen_of`, `cooling_of`:
+  the stat with its base left out, so a module's or a passive's grant stays). `reboot_mech`
+  is the act and `can_reboot` its gate, a machine alive, in the fight, its die unspent and
+  nothing spent by it this turn; the undo takes it back by the snapshot it takes spends back
+  by. A machine carries four states the save and the clone keep: what it has spent this turn,
+  rebooting, its shield broken, and overheated. The end of the player's turn burns every
+  stack and settles nothing (`_burn_stacks`), the first such turn between reboots breaking the
+  shield and firing what an overheat sets off. Every shield gain passes one function, which
+  refuses a broken shield; a shield's fall is noted where a blow, a cost, a corrupted bite and
+  a shield paying its guns' heat take it. The recovery lands as the round opens, before
+  anything cools or regenerates and before the foes pick. The bot's forecast and the screen's
+  round preview read the burn that stands and a gauge that does not settle.
+- *The morning's SHIELD BREAK dial.* Its rest timer is cut, engine, save, gauge and tests,
+  since nothing comes back by itself now. Its block stays as the dial's one choice, BUILT or
+  BLOCK, since the block is still his open question.
+- *The screen.* REBOOT sits beside REROLL, only under the trial, and is lit while the die
+  being read belongs to a machine that may reboot: tap a die, then REBOOT. Heat past the
+  maximum is a chip with its stacks, a broken shield a chip and a dashed frame on its gauge,
+  a reboot under way a chip; the heat gauge draws what stands past its end as the shield's
+  does an overshield. The chips' lines and the control's word are working text in code, his
+  to write once the rule is his.
+- *The bot* (`Policy._reboot_first`, `_reboot_idle`): a first play, so the runners finish a
+  fight under the rule. Past its maximum a machine reboots. With its shield broken it reboots
+  when a blow is coming or its heat is half spent. With an entry too hot to fire it reboots
+  where this round's blows would take a point of its shield or less, and holds otherwise. A
+  die left idle is a reboot where there is something to get back. The blind and the random
+  bot read no picks. Heat's price in its weighing counts the shield a first overheat breaks.
+- *The trial.* REBOOT on SETTINGS → TRIALS, BUILT or ON, read as a battle starts;
+  `RIFTGATE_REBOOT=1` on any run, the skirmish scene alone included. OVERHEAT beside it prices
+  a stack.
+
+What is a first cut, his to judge running: where the control sits and that it wants a die
+read first; the three chips' glyphs; the die of a rebooting machine, which reads as spent;
+no sound of its own (it plays the vent's).
+
+**A first read of it** (`docs/measurements.md`, 13 November; each fight at its rating, the
+six tier ones, the bot's first play, a direction). Every fight costs 1.6 to 2.4 times its
+hull and runs a quarter to a third longer: a flanker 6.8% of a four's hull where it costs
+2.8%, a formation 10.7% where it costs 5.9%, an elite 14.8% where it costs 9.5%, a boss 37.1%
+where it costs 21.4%, with 93% of the bosses' fights won where 98% are. A machine gives a
+turn in five to seven to a reboot, about one a fight, and the bot all but never burns. No
+fight stalls. It says what today's foes, sized against a shield that refills, do to the
+rule, and the bot's play is a floor: his play of the trial is the read that counts.

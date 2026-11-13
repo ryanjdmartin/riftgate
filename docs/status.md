@@ -27,8 +27,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1167 tests, 371,269 checks, green on `ccr-722ca9f0-yj8na3` (13 November, the
-  breaking shield's what-if and its two trial dials, over main's Kite). Before it, 1154 tests,
+- Tests: 1187 tests, 371,387 checks, green on `ccr-722ca9f0-yj8na3` (13 November, the
+  reboot's what-if, its trial and the bot's first play of it, the block's rest timer cut).
+  Before it, 1167 tests, 371,269 checks (13 November, the breaking shield's what-if and its
+  two trial dials, over main's Kite). Before it, 1154 tests,
   371,110 checks, green on main (13 November, as `ccr-e3ddf00b-ilkwbi` landed
   again with the Kite's model rounds, over the Barrier's cooldown, the shield's reads and the
   anchor); git keeps the counts before. One
@@ -940,13 +942,14 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   holes). His idea of 13 November for the shield itself is read and on trial, nothing
   decided: "What if we bring back that when a shield breaks, it absorbs the whole blow? It
   does not bleed into the hull. But in exchange, if a shield breaks, it's down for a couple
-  of turns before it starts to regenerate again." It is a what-if in the engine behind three
-  switches, off in the game (`Skirmish.shield_break`, `shield_rest`, `shield_break_min`;
-  `tests/test_shield_break.gd`), with two dials on a debug build's SETTINGS → TRIALS: SHIELD
-  BREAK (BUILT, REST 1, REST 2, REST 3; `RIFTGATE_SHIELD_BREAK`; a shield at rest shows a
-  dashed frame and a cell a round left) and BARRIER BASIC (BUILT, NONE; the refit what-if's
+  of turns before it starts to regenerate again." Its block is a what-if in the engine, off in
+  the game (`Skirmish.shield_break`, `shield_break_min`; `tests/test_shield_break.gd`); its
+  rest timer left the engine the same day with the reboot's build (below), nothing coming
+  back by itself there. Two dials on a debug build's SETTINGS → TRIALS: SHIELD BREAK (BUILT,
+  BLOCK; `RIFTGATE_SHIELD_BREAK`) and BARRIER BASIC (BUILT, NONE; the refit what-if's
   `barrier=none`, the Armoured basic in the Barrier basic's slot on the stock dice). The
-  reads (`docs/measurements.md`, 13 November): with the Barrier off the basics and a rest of
+  reads of that morning, the rest still on the dial (`docs/measurements.md`, 13 November):
+  with the Barrier off the basics and a rest of
   two the fights of every day do not move (a formation 6.6% and 6.8% of a four's hull), an
   elite costs 12.2% where it costs 19.8% and a boss 18.5% where it costs 37.7%, no die spent
   and a boss's fight 6.2 rounds where it is 7.0, which is about what the Barrier basic is
@@ -1038,7 +1041,25 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   the map, and its passive's line, the engine's words, the rules and the bible's cars row
   now say so. The machines are read again against their briefs in section 22: the Storm
   Petrel, the Buzzard and the Puffin read differently by their settled reworks, and
-  nineteen designs in briefs are reached by the rules.
+  nineteen designs in briefs are reached by the rules. **Built the same day as a what-if,
+  off in the game** (`Skirmish.reboot`; `tests/test_reboot.gd`, each line of the spec): a
+  chassis's own regen and cooling read as nothing, what is granted staying; `reboot_mech`
+  the act, for a machine that has spent nothing, undone like a spend; every stack burning at
+  every end of the player's turn and nothing settling; the first overheat between reboots
+  breaking the shield; every shield gain refused while it is broken; the recovery as the
+  round opens. On a debug build's SETTINGS → TRIALS, REBOOT (BUILT, ON; `RIFTGATE_REBOOT=1`
+  on any run): tap a machine's die, then REBOOT beside REROLL; heat past the maximum, a
+  broken shield and a reboot under way each wear a chip, and a broken shield's gauge a
+  dashed frame (the screenshot pose `reboot`). The fight bot has a first play of it
+  (`Policy._reboot_first`, `_reboot_idle`), so the runners finish a fight under the rule.
+  First cuts, his to judge running: where the control sits, the chips, the die of a
+  rebooting machine. A first read of it (`docs/measurements.md`, 13 November, a direction;
+  today's foes were sized against a shield that refills, and the bot's play is a floor):
+  every fight at its rating costs 1.6 to 2.4 times its hull and runs a quarter to a third
+  longer (a formation 10.7% of a four's hull where it costs 5.9%, an elite 14.8% for 9.5%, a
+  boss 37.1% for 21.4% with 93% won for 98%), a machine rebooting about once a fight, none
+  stalling. **Next, his: his play of the trial; then the audit of every rider and keyword
+  and the foes' Burn, each a first round in chat.**
   His marks on 4-4-2 are in ("That's probably fine for 4-4-2 for
   now": the brief's section 13 has the table with his words, each open place its chassis's
   session's). Also open, his: the first battle's block (not scaled:

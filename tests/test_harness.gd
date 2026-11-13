@@ -411,8 +411,10 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 	var strike_was = Settings.display.get("wall_strike", "10")
 	var burn_was = Settings.display.get("overheat_burn", "1")
 	var break_was = Settings.display.get("shield_break", "off")
+	var reboot_was = Settings.display.get("reboot", "off")
 	Settings.display["overheat_burn"] = "2"
-	Settings.display["shield_break"] = "2"
+	Settings.display["shield_break"] = "on"
+	Settings.display["reboot"] = "on"
 	Settings.display["tide_density"] = "150"
 	Settings.display["wall_strike"] = "5"
 	Settings.display["field_depth"] = "16"
@@ -423,13 +425,13 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 	assert_eq([Ramp.depth_trial, Battle.opening_trial, Battle.fodder_trial, Ramp.beats_trial], [0, 0, 100, 0], "run alone, the saved settings move nothing")
 	assert_eq([Ramp.tide_trial, Battlefield.strike_trial], [100, 0], "nor the tide's density or the wall strike")
 	assert_eq(Skirmish.overheat_scale, 1, "nor the overheat's burn")
-	assert_eq([Skirmish.shield_break, Skirmish.shield_rest], [false, 0], "nor the breaking shield")
+	assert_eq([Skirmish.shield_break, Skirmish.reboot], [false, false], "nor the block or the reboot")
 	Settings.field_trial(true)
 	assert_eq([Ramp.depth_trial, Battle.opening_trial, Battle.fodder_trial, Ramp.beats_trial], [16, 2, 50, 3] if OS.is_debug_build() else [0, 0, 100, 0], "where the game starts a battle, a debug build's settings are the trial")
 	assert_eq([Ramp.tide_trial, Battlefield.strike_trial], [150, 5] if OS.is_debug_build() else [100, 0], "the tide's density and the wall strike with them")
 	assert_eq(Battlefield.strike_per_pip(), 5 if OS.is_debug_build() else Battlefield.STRIKE_PER_PIP, "and the field answers with the strike")
 	assert_eq(Skirmish.overheat_scale, 2 if OS.is_debug_build() else 1, "the overheat's burn with them")
-	assert_eq([Skirmish.shield_break, Skirmish.shield_rest], [true, 2] if OS.is_debug_build() else [false, 0], "and the breaking shield, a break stopping the blow whole and two rounds down")
+	assert_eq([Skirmish.shield_break, Skirmish.reboot], [true, true] if OS.is_debug_build() else [false, false], "and the block, a break stopping the blow whole, and the reboot")
 	assert_eq(Ramp.beats_at(0), 3 if OS.is_debug_build() else Ramp.BEATS, "and the ramp answers with the beats")
 	assert_eq(Ramp.depth_at(0), 16 if OS.is_debug_build() else 12, "and the ramp answers with it")
 	Settings.display["field_depth"] = "a mile"
@@ -440,14 +442,16 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 	Settings.display["wall_strike"] = "a tap"
 	Settings.display["overheat_burn"] = "a furnace"
 	Settings.display["shield_break"] = "a wall"
+	Settings.display["reboot"] = "2"
 	Settings.field_trial(true)
 	assert_eq([Ramp.depth_trial, Battle.opening_trial, Battle.fodder_trial, Ramp.beats_trial], [0, 0, 100, 0], "a value that is no option asks for nothing")
 	assert_eq([Ramp.tide_trial, Battlefield.strike_trial], [100, 0], "of the tide or the strike either")
 	assert_eq(Skirmish.overheat_scale, 1, "or of the overheat")
-	assert_eq([Skirmish.shield_break, Skirmish.shield_rest], [false, 0], "or of the shield")
+	assert_eq([Skirmish.shield_break, Skirmish.reboot], [false, false], "or of the shield or the reboot: a rest of two rounds, the old dial's, is no option now")
 	Settings.display["shield_break"] = "off"
+	Settings.display["reboot"] = "off"
 	Settings.field_trial(true)
-	assert_eq([Skirmish.shield_break, Skirmish.shield_rest], [false, 0], "and the game's own shield is no trial")
+	assert_eq([Skirmish.shield_break, Skirmish.reboot], [false, false], "and the game's own shield and heat are no trial")
 	Settings.display["wall_strike"] = str(Battlefield.STRIKE_PER_PIP)
 	Settings.field_trial(true)
 	assert_eq(Battlefield.strike_trial, 0, "and the game's own strike is no trial")
@@ -459,8 +463,11 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 	Settings.display["wall_strike"] = strike_was
 	Settings.display["overheat_burn"] = burn_was
 	Settings.display["shield_break"] = break_was
+	Settings.display["reboot"] = reboot_was
 	assert_eq(str(Settings.DISPLAY_DEFAULTS["shield_break"]), "off", "the shield ships honest, its number and the rest on the hull")
 	assert_true(Settings.SHIELD_BREAKS.has("off"), "which is among its options")
+	assert_eq(str(Settings.DISPLAY_DEFAULTS["reboot"]), "off", "and the game ships with its regen and its cooling: the reboot is a trial")
+	assert_true(Settings.REBOOTS.has("off"), "which is among its options")
 	assert_eq(str(Settings.DISPLAY_DEFAULTS["overheat_burn"]), "1", "the overheat ships at one hull a point")
 	assert_eq([str(Settings.DISPLAY_DEFAULTS["tide_density"]), str(Settings.DISPLAY_DEFAULTS["wall_strike"])], ["100", str(Battlefield.STRIKE_PER_PIP)], "the tide and the strike ship on the game's own")
 	assert_true(Settings.TIDES.has("100") and Settings.STRIKES.has(str(Battlefield.STRIKE_PER_PIP)), "which are among their options")
@@ -474,7 +481,7 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 	Battlefield.strike_trial = 0
 	Skirmish.overheat_scale = 1
 	Skirmish.shield_break = false
-	Skirmish.shield_rest = 0
+	Skirmish.reboot = false
 	if OS.is_debug_build():
 		var menu := PauseMenu.new()
 		menu._show_page("settings")
@@ -624,8 +631,10 @@ func test_the_refit_what_if_is_off_until_the_setting_or_the_environment_asks() -
 			assert_true(labels.has(str(Settings.HEAT_LABELS[heat])), "the heat's offset %s" % Settings.HEAT_LABELS[heat])
 		for burn in Settings.OVERHEATS:
 			assert_true(labels.has(str(Settings.OVERHEAT_LABELS[burn])), "and the overheat's burn %s" % Settings.OVERHEAT_LABELS[burn])
-		for rest in Settings.SHIELD_BREAKS:
-			assert_true(labels.has(str(Settings.SHIELD_BREAK_LABELS[rest])), "and the breaking shield's rest %s" % Settings.SHIELD_BREAK_LABELS[rest])
+		for block in Settings.SHIELD_BREAKS:
+			assert_true(labels.has(str(Settings.SHIELD_BREAK_LABELS[block])), "and the block %s" % Settings.SHIELD_BREAK_LABELS[block])
+		for boot in Settings.REBOOTS:
+			assert_true(labels.has(str(Settings.REBOOT_LABELS[boot])), "and the reboot %s" % Settings.REBOOT_LABELS[boot])
 		for deal in Settings.BARRIER_BASICS:
 			assert_true(labels.has(str(Settings.BARRIER_BASIC_LABELS[deal])), "and the Barrier basic's place %s" % Settings.BARRIER_BASIC_LABELS[deal])
 		menu.free()

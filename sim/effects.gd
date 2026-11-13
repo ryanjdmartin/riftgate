@@ -1131,8 +1131,8 @@ static func _taking_part(u, trigger: String, face: Face, target = null, ctx: Dic
 ## is the longest-lived scope that takes part, ROUNDS by default (everything live); the
 ## codex asks with BATTLE (Ryan, 26 September: the codex is the machine's base state with
 ## its battle rewards, never its combat effects).
-static func stat(u, name: String, upto: int = ROUNDS) -> int:
-	var base: float = float(u.base.get(name, 0))
+static func stat(u, name: String, upto: int = ROUNDS, own: bool = true) -> int:
+	var base: float = float(u.base.get(name, 0)) if own else 0.0   # `own` false: what is granted alone, the chassis's own left out (the reboot's cooling and regen, a what-if)
 	var add := 0.0
 	var mult := 1.0
 	for pair in _taking_part(u, "static", null):

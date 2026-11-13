@@ -1,19 +1,14 @@
 extends TestCase
 
-## The breaking shield, a what-if behind three switches (Skirmish.shield_break, shield_rest,
-## shield_break_min; Ryan, 13 November: "What if we bring back that when a shield breaks, it
-## absorbs the whole blow? It does not bleed into the hull. But in exchange, if a shield breaks,
-## it's down for a couple of turns before it starts to regenerate again";
-## docs/briefs/refit_pass.md, section 15). Off, the honest shield of 14 October runs, and
-## tests/test_skirmish.gd holds that. The runner turns every switch off before each test.
-## Numbers are in tens; every piece here is synthetic.
+## The block, a what-if behind two switches (Skirmish.shield_break, shield_break_min; Ryan, 13
+## November: "What if we bring back that when a shield breaks, it absorbs the whole blow? It does
+## not bleed into the hull"; docs/briefs/refit_pass.md, sections 15 to 22). Off, the honest
+## shield of 14 October runs, and tests/test_skirmish.gd holds that. Its other half that day, a
+## broken shield resting before its regen started again, left with the reboot
+## (tests/test_reboot.gd), where nothing comes back by itself. The runner turns every switch off
+## before each test. Numbers are in tens; every piece here is synthetic.
 
 const L := Face.Reach.DIRECT
-
-## A hull hit that stands a shield up, the form the rule of before 14 October kept meeting
-## ("small stand-up shields"): what the rest has to keep down.
-const LINER := {"id": "liner", "name": "Liner", "description": "", "effects": [
-	{"trigger": "on_hull_damage", "effect": "add_shield", "value": 10}]}
 
 
 func _mech(name: String, shield: int, hull: int, regen: int = 0) -> Unit:
@@ -58,7 +53,6 @@ func test_off_a_blow_past_the_shield_reaches_the_hull() -> void:
 	var sk := _fight(m, [Foe.make("brute", 900, 50)])
 	_round(sk)
 	assert_eq(m.hull, 60, "and so in a fight")
-	assert_eq(sk.mechs[0].shield_down, 0, "with no rest")
 	sk.start_round()
 	assert_eq(m.shield, 2, "its regen runs the round after")
 
@@ -131,9 +125,8 @@ func test_a_second_strike_lands_on_the_hull_the_first_bared() -> void:
 	assert_eq(m.hull, 70, "the first is stopped whole and the second lands whole")
 
 
-func test_a_breach_passes_a_shield_that_stands_and_never_rests_it() -> void:
+func test_a_breach_passes_a_shield_that_stands() -> void:
 	Skirmish.shield_break = true
-	Skirmish.shield_rest = 2
 	var m := _mech("A", 10, 100, 1)
 	var maw := Foe.make("maw", 900, 50)
 	maw.actions[0]["keywords"] = ["breach"]
@@ -141,12 +134,10 @@ func test_a_breach_passes_a_shield_that_stands_and_never_rests_it() -> void:
 	_round(sk)
 	assert_eq(m.shield, 10, "the shield stands")
 	assert_eq(m.hull, 50, "the whole fifty reached the hull")
-	assert_eq(sk.mechs[0].shield_down, 0, "and a shield that stands has no rest to take")
 
 
 func test_a_barrier_takes_the_blow_and_the_shield_behind_it_never_breaks() -> void:
 	Skirmish.shield_break = true
-	Skirmish.shield_rest = 2
 	var m := _mech("A", 10, 100)
 	var sk := _fight(m, [Foe.make("brute", 900, 50)])
 	sk.start_round()
@@ -154,93 +145,6 @@ func test_a_barrier_takes_the_blow_and_the_shield_behind_it_never_breaks() -> vo
 	sk.end_round()
 	assert_eq(m.shield, 10, "the Barrier took it, the shield untouched")
 	assert_eq(m.hull, 100, "and the hull")
-	assert_eq(sk.mechs[0].shield_down, 0, "so nothing rests")
-
-
-## The rest (Ryan: "it's down for a couple of turns before it starts to regenerate again"): at a
-## rest of two the round starts after the break bring no regen twice, and the third brings it.
-## The log counts it down. What comes back is the regen's own number, and that sliver breaks on
-## the next blow and stops it whole like any shield: the rule as he stated it.
-func test_a_broken_shield_rests_then_its_regen_starts_again() -> void:
-	Skirmish.shield_break = true
-	Skirmish.shield_rest = 2
-	var m := _mech("A", 10, 200, 2)
-	var sk := _fight(m, [Foe.make("brute", 900, 20)])
-	var ms: Skirmish.MechState = sk.mechs[0]
-	_round(sk)
-	assert_eq(m.hull, 200, "round one: the break stops the twenty whole")
-	assert_eq(ms.shield_down, 3, "and the rest begins: the round's remainder and two rounds")
-	assert_true("\n".join(sk.log).contains("it breaks and stops the other 10, down 2 rounds"), "the log says how long")
-	sk.start_round()
-	assert_eq(m.shield, 0, "round two opens with no regen")
-	assert_eq(ms.shield_down, 2, "two rounds down")
-	assert_true("\n".join(sk.log).contains("shield down, rounds left: A 2"), "and the log counts them")
-	sk.end_round()
-	assert_eq(m.hull, 180, "the blow lands on bare hull")
-	sk.start_round()
-	assert_eq(m.shield, 0, "round three opens with none")
-	assert_eq(ms.shield_down, 1, "one round down")
-	sk.end_round()
-	assert_eq(m.hull, 160, "bare again")
-	sk.start_round()
-	assert_eq(ms.shield_down, 0, "round four: the rest is over")
-	assert_eq(m.shield, 2, "and the regen starts again at its own number")
-	sk.end_round()
-	assert_eq(m.hull, 160, "the two that came back break on the twenty and stop it whole")
-	assert_eq(ms.shield_down, 3, "and the rest begins again")
-
-
-func test_a_blow_the_size_of_the_shield_breaks_it_and_rests_it() -> void:
-	Skirmish.shield_break = true
-	Skirmish.shield_rest = 1
-	var m := _mech("A", 10, 100, 3)
-	var sk := _fight(m, [Foe.make("jab", 900, 10)])
-	_round(sk)
-	assert_eq(m.shield, 0, "spent exactly")
-	assert_eq(int(sk.turn_events[0]["stopped"]), 0, "with nothing left over to stop")
-	assert_eq(sk.mechs[0].shield_down, 2, "a shield at nothing by a blow is broken, and rests")
-	assert_true("\n".join(sk.log).contains("shield -10, blocked, broken, down 1 rounds"), "the log says so")
-	sk.start_round()
-	assert_eq(m.shield, 0, "one round down")
-	sk.end_round()
-	sk.start_round()
-	assert_eq(m.shield, 3, "then its regen")
-
-
-## Nothing raises a shield at rest, a passive's or an entry's any more than the regen: a hull hit
-## that stood a shield up every time would turn every second blow away, the form the rule of
-## before 14 October failed on. Once the rest ends the passive works again.
-func test_nothing_raises_a_shield_at_rest() -> void:
-	Skirmish.shield_break = true
-	Skirmish.shield_rest = 1
-	var m := _mech("A", 10, 200)
-	m.grant_passive(LINER)
-	var sk := _fight(m, [Foe.make("brute", 900, 20)])
-	var ms: Skirmish.MechState = sk.mechs[0]
-	_round(sk)
-	assert_eq(m.hull, 200, "round one: the break stops the blow")
-	_round(sk)
-	assert_eq(m.hull, 180, "round two: bare hull")
-	assert_eq(m.shield, 0, "and the hit stands nothing up while the shield rests")
-	assert_eq(sk._gain_shield(ms, 5), 0, "nor does any other gain")
-	_round(sk)
-	assert_eq(m.hull, 160, "round three: the rest is over, the hull is hit")
-	assert_eq(m.shield, 10, "and now the hit stands its shield up")
-	_round(sk)
-	assert_eq(m.hull, 160, "round four: that shield breaks and stops the blow whole")
-	assert_eq(ms.shield_down, 2, "and rests again")
-
-
-## The rest alone, the break's rule off: the honest shield with a regen that waits.
-func test_the_rest_without_the_break_keeps_the_honest_arithmetic() -> void:
-	Skirmish.shield_rest = 2
-	var m := _mech("A", 10, 100, 2)
-	var sk := _fight(m, [Foe.make("brute", 900, 30)])
-	_round(sk)
-	assert_eq(m.hull, 80, "the twenty past the shield reach the hull")
-	assert_eq(sk.mechs[0].shield_down, 3, "and the broken shield rests all the same")
-	sk.start_round()
-	assert_eq(m.shield, 0, "no regen the round after")
 
 
 ## The bench's guard against a sliver: a shield under the share of its maximum breaks honestly,
@@ -261,20 +165,3 @@ func test_a_shield_under_the_share_breaks_honestly() -> void:
 	var s2 := _fight(m2, [Foe.make("brute", 900, 20)])
 	_round(s2)
 	assert_eq(m2.hull, 100, "half a gauge breaks and stops it whole")
-
-
-## The rest rides with the fight, so the round preview's copy and the bot's lookahead carry it.
-func test_a_copy_of_the_fight_carries_the_rest() -> void:
-	Skirmish.shield_break = true
-	Skirmish.shield_rest = 2
-	var m := _mech("A", 10, 200, 2)
-	var sk := _fight(m, [Foe.make("brute", 900, 20)])
-	_round(sk)
-	sk.start_round()
-	var copy: Skirmish = SaveGame.clone_skirmish(sk)
-	assert_eq(copy.mechs[0].shield_down, sk.mechs[0].shield_down, "the copy's shield rests as long")
-	assert_eq(copy.mechs[0].shield_down, 2, "two rounds")
-	copy.end_round()
-	copy.start_round()
-	assert_eq(copy.mechs[0].unit.shield, 0, "and the copy's next round opens with no regen")
-	assert_eq(sk.mechs[0].shield_down, 2, "the fight itself untouched")

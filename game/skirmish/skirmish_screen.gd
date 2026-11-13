@@ -307,6 +307,7 @@ var _confirm: HudPanel
 var _confirm_text: Label
 var _confirm_action: Callable = Callable()
 var _reroll_btn: HudButton
+var _reboot_btn: HudButton   # the reboot's control, beside REROLL, only under its trial (Skirmish.reboot): it reboots the machine whose die is being read
 ## What the screen played for the last spend: {"dead": the foes it showed falling, "rose": those
 ## among them it showed getting back up}.
 var spend_played: Dictionary = {"dead": [], "rose": []}
@@ -361,6 +362,7 @@ func _ready() -> void:
 	Settings.apply()
 	Hud.oversample(get_window())   # standalone runs too: text at the glass's density
 	if sk == null:
+		Settings.field_trial()   # RIFTGATE_REBOOT and the other trials, for a shot or a scene run alone
 		setup(_default_skirmish())
 	elif _header == null or H != Hud.screen_height(self):
 		_build()   # built here for the screen's real height (a taller phone than the design)
@@ -600,6 +602,19 @@ func _build() -> void:
 	_reroll_btn.center_text = true
 	_reroll_btn.tooltip_text = "A reroll never shows the same component twice."
 	_place(_reroll_btn, Vector2(W * 0.5 - REROLL_SIZE.x * 0.5, REROLL_Y), REROLL_SIZE)
+	# The reboot's control (a debug build's trial, Ryan, 13 November: "smash the Reboot button"):
+	# beside REROLL, the dice's row, lit while the die being read belongs to a machine that has
+	# spent nothing. A tap on a die reads it; REBOOT then gives that machine's turn.
+	if Skirmish.reboot:
+		_reboot_btn = HudButton.new("REBOOT", _on_reboot)
+		_reboot_btn.sound = ""   # the reboot plays its own
+		_reboot_btn.glyph = "shield_vent"
+		_reboot_btn.font_size = 20
+		_reboot_btn.center_text = true
+		_reboot_btn.state_marked = true
+		_reboot_btn.tooltip_text = "Tap a machine's die, then REBOOT: its shield drops now, and its heat and shield are back next round."
+		var left := W * 0.5 + REROLL_SIZE.x * 0.5 + 14.0
+		_place(_reboot_btn, Vector2(left, REROLL_Y), Vector2(W - 16.0 - left, REROLL_SIZE.y))
 
 	# Mechs: each on its hex of the floor, drawn by the floor's camera, gauges above, chips under.
 	for i in range(n):
@@ -1200,7 +1215,7 @@ func _refresh(save: bool = true) -> void:
 		var fc: Dictionary = _forecast_for(i) if assigning and ms.alive() else {}
 		# Shield above hull: it is what the enemy meets first, and it drops first.
 		v.bars = [
-			[ms.unit.shield, ms.unit.shield_max, Palette.SHIELD, fc.get("shield_after", ms.unit.shield), 0, ms.shield_down],   # the sixth: the rounds a broken shield has left at rest (the breaking shield's trial), drawn on the gauge
+			[ms.unit.shield, ms.unit.shield_max, Palette.SHIELD, fc.get("shield_after", ms.unit.shield), 0, 1 if ms.shield_broken else 0],   # the sixth: a broken shield (the reboot's trial), drawn on the gauge as a dashed frame
 			[ms.unit.hull, ms.unit.hull_max, Palette.HULL, fc.get("hull_after", ms.unit.hull)],
 			[ms.heat, ms.heat_max, Palette.HEAT, fc.get("heat_after", ms.heat)],
 		]
@@ -1292,6 +1307,8 @@ func _refresh(save: bool = true) -> void:
 	_refresh_log()
 	_reroll_btn.badge = "×%d" % sk.rerolls_left
 	_reroll_btn.set_enabled(assigning and sk.can_reroll() and not _reroll_indices().is_empty())
+	if _reboot_btn != null:
+		_reboot_btn.set_enabled(assigning and _pending.is_empty() and sk.can_reboot(_read_die()))
 	_refresh_undo()
 	_end_btn.set_enabled(assigning)
 	# Nothing left to spend, rerolls aside: END TURN is the next thing to press (Ryan, 25 October).
@@ -1934,6 +1951,18 @@ func _mech_rows(i: int) -> Array:
 		abilities.append([status_glyph("sealed"), "", "Ability, Sealed (RIFTGATE_ABILITY_DEBUG)", _chip_colour("sealed"), "ability"])
 	for k in range(abilities.size()):
 		rows.insert(at + k, abilities[k])
+	# The reboot's three states (a debug build's trial; Ryan, 13 November: heat past the maximum
+	# "in an uncleanseable debuff on the unit, a stack for every point of heat", a broken shield
+	# "another uncleanseable debuff"), no status of the engine's table: the gauges are what they
+	# say. Working words, his to write.
+	if Skirmish.reboot:
+		var stacks := ms.overheat_stacks()
+		if stacks > 0:
+			rows.append(["heat", "×%d" % stacks, "Debuff, Overheated ×%d: hull -%d every turn until it reboots" % [stacks, stacks * Skirmish.overheat_scale], Palette.HEAT, "status", "debuff"])
+		if ms.rebooting:
+			rows.append(["shield_vent", "", "Rebooting: bare this turn, cold and whole the next", Palette.HUD])
+		elif ms.shield_broken:
+			rows.append(["shieldbreak", "", "Debuff, Shield broken: no shield until it reboots", Palette.SHIELD, "status", "debuff"])
 	if sk.state == Skirmish.State.ASSIGN:
 		var fc := _forecast_for(i)
 		# Every warning is a prediction, so each pulses as the incoming chips do (Ryan, 26 October:
@@ -2322,7 +2351,7 @@ func _mech_hold_lines(i: int) -> Array:
 	out.append(EntryReadout.bar_line("Heat", ms.heat, ms.heat_max, int(u.base["heat"]), Palette.HEAT))
 	if ms.ammo_max > 0:
 		out.append(EntryReadout.bar_line("Ammo", ms.ammo, ms.ammo_max, ms.ammo_max, Palette.SELECT))
-	out.append(EntryReadout.parts_line("effect", _stat("Armour", int(u.base["armour"]), u.armour) + [EntryReadout.word("·")] + _stat("Cooling", int(u.base["cooling"]), u.cooling)))
+	out.append(EntryReadout.parts_line("effect", _stat("Armour", int(u.base["armour"]), u.armour) + [EntryReadout.word("·")] + _stat("Cooling", int(u.base["cooling"]), Skirmish.cooling_of(ms))))
 	for r in _mech_rows(i):
 		out.append(EntryReadout.chip_line(str(r[0]), r[3], str(r[2])))
 	return out
@@ -3865,6 +3894,20 @@ func _on_reroll() -> void:
 			d.scale = Vector2(0.15, 1.0)
 			var tw := create_tween()
 			tw.tween_property(d, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
+## REBOOT (the reboot's trial; Ryan, 13 November): the machine whose die is being read gives its
+## turn. Its shield drops at once, the round preview plays it bare, and UNDO takes it back.
+func _on_reboot() -> void:
+	var i := _read_die()
+	if _replay_shade.visible or not _pending.is_empty() or not sk.can_reboot(i):
+		return
+	_flush_blows()   # whatever of the last spend is still landing lands first
+	if not sk.reboot_mech(i):
+		return
+	_close_pop()
+	Sound.play("vent")
+	_refresh()
 
 
 ## UNDO's reach: the spends and rerolls since the last roll, its badge; off while a spend's

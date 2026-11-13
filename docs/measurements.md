@@ -9462,3 +9462,83 @@ took, what reached the hull, what a break stopped, the shield as it stood, wheth
 rest). The Jack in the Halo's slot is the Halo Projector's entry replaced in memory by the
 Shoring Jack's. The honest rows reproduce the sections above to the decimal (19.8% and 37.7%;
 9.5% and 21.4%). Scratch probes, not in the repository.
+
+## 13 November, the reboot: each fight at its rating under the what-if, a first read
+
+Ryan, 13 November, of the reboot he ruled that day (the refit brief's section 22): "the
+overheat damage stacks, damages the hull every turn for the total stacks, and keeps building
+until the player is essentially forced to reboot, or die."
+
+The decision it informs: none. It is a first look at the rule as built, for his play of its
+trial. Two things stand over every number here. Today's foes were built for another rule,
+their blows sized against a shield that refills (12 November), so this says what they do to
+the reboot and never whether the reboot is right (`CLAUDE.md`, the fundamentals' rule). And
+the fight bot's play of it is a first cut (`Policy._reboot_first`, `_reboot_idle`): it
+reboots where it must and reads the foes' picks crudely, so its cost is a floor of skill.
+
+As read: `Skirmish.reboot` on, content as it stands with the Barrier basic on the stock dice,
+the six tier ones, the fight bot (greedy), each fight at its rating as in the sections above
+(six squads and five seeds for a flanker, a hunter and a formation; five squads of four and
+four seeds for an elite and a boss), beside the same read as built (13 November's content
+row). A share of a four's hull. Each a direction.
+
+| The fight | As built | Its rounds | Under the reboot | Its rounds | Won | Reboots a machine a fight |
+|---|---|---|---|---|---|---|
+| A lone flanker | 2.8% | 4.3 | 6.8% | 5.5 | 96% | 1.1 |
+| A hunter's pack | 6.3% | 4.0 | 11.6% | 5.3 | 100% | 1.1 |
+| A formation | 5.9% | 4.5 | 10.7% | 6.0 | 100% | 1.0 |
+| An elite | 9.5% | 4.8 | 14.8% | 6.1 | 100% | 0.9 |
+| A boss | 21.4% | 8.1 | 37.1% | 10.8 | 93% | 1.6 |
+
+Wrecks a fight, an elite's and a boss's: 0.03 and 0.19 as built, 0.10 and 0.58 under the
+reboot; the bosses' fights won 98% as built. The burn took 0.2 hull a fight at most: the bot
+all but never fires past its maximum. A machine gives a turn in five to seven to a reboot.
+
+By fight, as built and under the reboot:
+
+| The elite | As built | Under the reboot | Its rounds |
+|---|---|---|---|
+| The shaman's warband | 7.7% | 18.1% | 5.0 |
+| The Nob | 17.0% | 21.4% | 6.4 |
+| The Old Man's rising | 17.8% | 19.9% | 8.0 |
+| The Pilgrim's wake | 2.4% | 6.3% | 6.0 |
+| The Rust Monster | 2.9% | 4.6% | 4.4 |
+| Gilgamesh | 7.9% | 13.7% | 8.6 |
+| The Fell Rider | 6.7% | 11.0% | 4.5 |
+| The Reaper | 0.5% | 0.7% | 3.8 |
+| The Wild Hunt | 12.7% | 22.9% | 5.7 |
+| The Cinder Tortoise's brood | 16.4% | 24.6% | 9.5 |
+| The Thunder Ape | 13.1% | 19.7% | 5.6 |
+
+| The boss | As built | Under the reboot | Its rounds | Won |
+|---|---|---|---|---|
+| Floraison | 20.0% | 34.2% | 8.0 | 100% |
+| King Gel | 15.0% | 26.5% | 8.7 | 100% |
+| The Mantis Ant | 8.6% | 14.6% | 7.8 | 100% |
+| The Ruby Colossus | 24.8% | 61.0% | 13.4 | 65% |
+| The Fallen Weapon | 22.7% | 48.7% | 11.1 | 85% |
+| The Emperor Scorpion | 24.8% | 40.7% | 10.4 | 90% |
+| The Matador | 16.7% | 24.7% | 8.7 | 100% |
+| The Phantom Train | 26.7% | 52.0% | 15.8 | 95% |
+| The Vampire Lord | 5.3% | 16.9% | 8.2 | 95% |
+| The Marsh Serpent | 11.3% | 29.3% | 7.1 | 100% |
+| The Gargantuan King | 38.3% | 32.5% | 20.9 | 85% |
+| The Fiend of Fire | 33.1% | 56.2% | 9.2 | 100% |
+| The Obsidian Tyrant | 31.5% | 44.7% | 11.2 | 95% |
+
+What it says:
+
+- Every fight costs more, 1.6 to 2.4 times its hull, and runs a quarter to a third longer in
+  rounds. The model of section 21 had the length, a third longer, and had the cost closer:
+  the game's foes lean on the regen their blows were sized against more than the model's did.
+- The fights of every day roughly double: a formation 10.7% where the budget's anchor has it
+  at 5.9%. The foes' numbers would be tuned again under the rule, as they were for the regen.
+- The long fights grow longest: the Gargantuan King 20.9 rounds, the Phantom Train 15.8, the
+  Ruby Colossus 13.4 with a third of its fights lost. A boss's fight is where a squad reboots
+  most, 1.6 times a machine. The Gargantuan King is the one fight that costs less, 32.5%
+  where it costs 38.3%: the long fight where a reset outdoes a regen, as the model had it.
+- No fight stalls, and the bot never burns for a shot: the rule plays to the end as built.
+
+Not read: the Barrier basic off the dice under the reboot (the Barrier is the reboot's cover
+by his fourth ruling, so its place moves with this), the second battle whole, and any tier
+past one. Each on his word.

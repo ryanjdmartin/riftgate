@@ -457,7 +457,8 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # seven statuses on each machine, five on each foe), plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), foeheat (Burning, Flak and Shocked on the first three front foes, heat's red-orange beside each violet intent), lure_all (a Lure over every foe dragged over a foe, the turned foes' arrows dashed; the content's first lure-all, the Shift Whistle, takes the first machine's first entry when no machine carries one), rounds, logfull, killed, acquire, menu, settings, quit, keywords (the keywords list, as the menu's KEYWORDS opens it), colours and colourpick (a debug build's COLOURS page, and with the red's picker open), and the feed's
 # events feed_scanbox, feed_databox, feed_readout, feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal,
 # and groundtear (the corrupted side's tear as it fires), swallowed (the first machine swallowed: a ghost under a dashed edge),
-# undo (a spend taken: UNDO lit at the bottom row's right end) and columns (every foe aimed at the machine nearest its
+# undo (a spend taken: UNDO lit at the bottom row's right end), reboot (the reboot's trial, with RIFTGATE_REBOOT=1: a machine past its
+# maximum, one with its shield broken, one rebooting, and REBOOT lit beside REROLL) and columns (every foe aimed at the machine nearest its
 # column, every arrow on, each from its intent chip's middle, the ranks slightly apart; RIFTGATE_FOES=goblin:4,mandragora:4 fills both ranks).
 # RIFTGATE_MAP_KIND=gorge (any standalone battle run) picks the map's shape, none drawing one by the seed,
 # and RIFTGATE_SEED=<n> the battle's seed (7); the harness has a picker.
@@ -534,13 +535,21 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # battle or run, since a saved one keeps the numbers it was saved with. RIFTGATE_OVERHEAT=2 (any battle) sets the hull an overheat burns a point of heat past
 # the gauge, 1 the game's; the same page's OVERHEAT (×1, ×2, ×3) sets it on the phone, read
 # as a battle starts.
-# RIFTGATE_SHIELD_BREAK=2 (any battle) tries the breaking shield (Ryan, 13 November: "when a
-# shield breaks, it absorbs the whole blow ... it's down for a couple of turns before it starts to
-# regenerate again"): the blow that breaks a shield is stopped whole, and the broken shield stays
-# down that many rounds, 1 to 3, nothing raising it, before its regen starts again; a shield at
-# rest shows a dashed frame and a cell a round left. The same page's SHIELD BREAK (BUILT, REST 1,
-# REST 2, REST 3) sets it on the phone, read as a battle starts. A what-if, nothing decided;
-# the reads set it beside BARRIER BASIC on NONE, since the two together are worth twice either.
+# RIFTGATE_SHIELD_BREAK=1 (any battle) tries the block (Ryan, 13 November: "when a shield
+# breaks, it absorbs the whole blow"): the blow that breaks a shield is stopped whole. The same
+# page's SHIELD BREAK (BUILT, BLOCK) sets it on the phone, read as a battle starts. A what-if,
+# nothing decided; its rest timer of that morning left with the reboot.
+# RIFTGATE_REBOOT=1 (any battle, and the skirmish scene run alone) tries the reboot (Ryan, 13
+# November; the refit brief's section 22 has the spec): no shield regen and no cooling of a
+# chassis's own; a machine that has spent nothing may reboot, its shield down at once and both
+# gauges back as the next round opens; heat past the maximum stays and every point of it burns
+# hull every turn; the first overheat between reboots breaks the shield; a broken shield gains
+# none until its machine reboots. On the screen: tap a machine's die, then REBOOT beside REROLL;
+# UNDO takes it back; heat past the maximum, a broken shield and a reboot under way each wear a
+# chip, and a broken shield's gauge a dashed frame. The same page's REBOOT (BUILT, ON) sets it
+# on the phone, read as a battle starts, with OVERHEAT pricing a point of the burn. A what-if,
+# nothing decided; the fight bot has a first play of it, and `tools/balance.gd -- --reboot` reads
+# the matrix under it. The screenshot pose `reboot` shows all three states.
 # RIFTGATE_FIELD_DEPTH=14 and RIFTGATE_OPENING=1 (any battle) try a deeper field and a farther
 # opening (Ryan, 10 November: "I think the map is a bit too shallow"): the rows from the rift to
 # the wall, 10 to 24 and 12 the game's, and how many more of their own moves from the wall the

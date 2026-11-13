@@ -125,6 +125,19 @@ func _apply_pose() -> void:
 			s._on_end_turn()
 		"lock":
 			s._toggle_lock(0)
+		"reboot":
+			# The reboot's trial (13 November; run with RIFTGATE_REBOOT=1): the first machine past
+			# its maximum, the second's shield broken, the third rebooting, and the first die read,
+			# so REBOOT is lit beside REROLL.
+			var hot: Skirmish.MechState = s.sk.mechs[0]
+			hot.heat = hot.heat_max + 4
+			if s.sk.mechs.size() > 1:
+				s.sk.mechs[1].unit.shield = 0
+				s.sk._note_break(s.sk.mechs[1])
+			if s.sk.mechs.size() > 2:
+				s.sk.reboot_mech(2)
+			s._refresh()
+			s._on_die_tapped(0)
 		"touch":
 			# The first die lit as its tap waits out the double-tap window (30 October).
 			s._dice[0]._tap_due = 1.0e12
