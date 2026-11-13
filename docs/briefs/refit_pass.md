@@ -2585,3 +2585,193 @@ the control that takes it on a break; the overheat's rule; every heat price read
 a point is now worth a step of the clock; the machines that read heat, a pass or regen, each
 its own session's; the bot's play of it; the gauges' marks and the console's lines on heat,
 which are shown text and his.
+
+## 21. The reboot by choice (13 November; nothing decided)
+
+His words, on section 20's read:
+
+> So, yes I had intended the "shutdown" or "reboot" to not actually apply until the next turn,
+> so there's a whole turn of staying exposed with no shield.
+>
+> The shape I wrote was what I had interpreted from yours, which clearly differed. What was
+> your differences?
+>
+> The one thing I don't like about this shape currently is it takes away player agency,
+> despite being thematic. Let's look again but letting the player ride at max heat and the
+> reboot being a choice to vent heat and recover shield. If the shield is not empty and the
+> unit reboots, I'd feel like we should empty the shield. It's thematic for a "shield reboot"
+> and that way there's no gaming an overheat to recover pseudo partial shield, when
+> convenient.
+
+His first line settles one of section 20's two gaps: the recovery lands as the next round
+opens, and the machine stands that turn with no shield.
+
+**The differences he asked for**, his statement of section 20 against the splice of section
+19. They shared the frame: no regen, no cooling, the recovery as the next round opens, an
+overheat costing the next turn. They differed in three places.
+
+1. *Who decides.* In the splice any pass vented, at the player's choice, and a dud die was
+   one; only an overheat forced a turn. His statement took the choice away.
+2. *What a pass gave back.* In the splice a pass brought back only a shield that was down; a
+   shield still standing was neither refilled nor lost. His statement had a shutdown recover
+   both meters whichever set it off, so an overheat refilled a chipped shield.
+3. *What an overheat did to the shield.* The splice took it down at once; his statement did
+   not say, and his first line here says the bare turn was meant.
+
+**The shape he asks to look at**, as the model plays it:
+
+- No regen and no cooling, carried from section 20.
+- A reboot is a machine's choice on any turn, and it takes the turn.
+- Its shield goes to nothing at once. As the next round opens its heat is empty and its
+  shield whole.
+- Nothing forces one. A machine may ride at its maximum.
+
+What follows from that, no question:
+
+- A reboot is an act of its own, apart from a pass: a dud die that rebooted by itself would
+  drop a standing shield. A dud is the cheap moment for one.
+- "Broken" needs no memory now, since a reboot is always there.
+- The foes' picks are set as the round opens and do not move ("The pick is a commitment,
+  smart as it is made and never after", the rules). So the bare turn costs hull only when a
+  pick is already on the machine or the blow strikes every machine, and the player can see
+  which. Reading the picks is the skill the rule asks for.
+
+Where his words leave one thing open: what a shot past the maximum costs while a machine
+rides. It is built as today's rule, the excess off the hull and the gauge settling at its
+maximum. With no cooling that is the whole heat of every further shot.
+
+**The model** (`python3 tools/shield_model.py --choice`), the fight of section 20, with two
+packs added: a lone foe that aims at the hottest machine and one that aims at the least
+shield, the heat aim and the exposed aim in small. A fight of four rounds at full fire, the
+reboot by choice played reading the picks; the squad's hull lost:
+
+| The rule | A lone blow of 12 | 12 on the same machine every round | Four foes of 3 | 4 on every machine | 12 at the hottest machine | 12 at the least shield | Its rounds |
+|---|---|---|---|---|---|---|---|
+| As built | 28% | 36% | 3% | 25% | 29% | 37% | 5.4 |
+| Section 19's splice | 31% | 46% | 5% | 26% | 33% | 41% | 6.7 |
+| Section 20's shutdown, bare for its turn | 35% | 50% | 6% | 33% | 37% | 45% | 6.8 |
+| The reboot by choice | 35% | 52% | 7% | 33% | 38% | 43% | 7.0 |
+| The same, a standing shield kept through the reboot | 33% | 50% | 4% | 26% | 33% | 43% | 6.8 |
+| The reboot by choice with the block | 12% | 34% | 6% | 31% | 21% | 30% | 6.9 |
+
+At six rounds, in the same order of packs: as built 56%, 84%, 15%, 59%, 59%, 64%; the
+shutdown 64%, 100%, 14%, 53%, 66%, 83%; the reboot by choice 65%, 100%, 13%, 52%, 73%, 84%;
+a standing shield kept 59%, 100%, 8%, 42%, 61%, 82%; the block 21%, 80%, 13%, 49%, 39%, 45%.
+
+The reboot by choice by the way it is played, four rounds:
+
+| The play | A lone blow of 12 | The same machine every round | Four foes of 3 | 4 on every machine | 12 at the hottest machine | 12 at the least shield |
+|---|---|---|---|---|---|---|
+| It reboots at the maximum or on a break, blind to the picks | 37% | 55% | 8% | 33% | 42% | 46% |
+| It reads the picks | 35% | 52% | 7% | 33% | 38% | 43% |
+| It fires past the maximum and burns | 43% | 67% | 19% | 33% | 42% | 60% |
+| It reboots at half a shield or less, blind | 38% | 58% | 9% | 69% | 42% | 48% |
+
+Reading the picks, a machine with no blow coming reboots at its maximum, on a dud, or to
+top up a shield at a quarter or less; with a blow coming and a shield standing it rides at
+its maximum, holding its fire. At six rounds: blind 70%, 100%, 15%, 53%, 78%, 88%; reading
+65%, 100%, 13%, 52%, 73%, 84%; burning 80%, 100%, 36%, 53%, 84%, 100%; at half a shield 71%,
+100%, 17%, 88%, 78%, 91%.
+
+What emptying the shield buys, the squad that reboots at half a shield or less, four rounds:
+
+| The rule | A lone blow of 12 | Four foes of 3 | 4 on every machine | The rounds of that last fight | Its turns not fired |
+|---|---|---|---|---|---|
+| A reboot empties the shield | 38% | 9% | 69% | 10.5 | 56% |
+| A reboot keeps a standing shield | 35% | 4% | 5% | 9.8 | 55% |
+
+By the gun's heat, the lone blow, four rounds; the hull lost and the rounds:
+
+| The rule | A gun of 2 heat | A gun of 4 heat | A gun of 6 heat |
+|---|---|---|---|
+| As built | 28%, 5.4 | 28%, 5.4 | 51%, 6.9 |
+| Section 20's shutdown, bare for its turn | 32%, 6.6 | 35%, 6.8 | 37%, 7.0 |
+| The reboot by choice | 32%, 6.6 | 35%, 7.0 | 40%, 7.8 |
+
+A gun's heat in turns, one machine alone at the cap, the share of turns it fires:
+
+| The gun's heat | As built | Section 20's shutdown | The reboot by choice | One shot past the maximum before each reboot, and the hull it burns |
+|---|---|---|---|---|
+| 2 | 100% | 88% | 86% | 88%, 2 |
+| 3 | 67% | 83% | 80% | 83%, 3 |
+| 4 | 50% | 80% | 75% | 80%, 4 |
+| 5 | 40% | 75% | 67% | 75%, 3 |
+| 6 | 33% | 75% | 67% | 75%, 6 |
+| 8 | 25% | 67% | 50% | 67%, 4 |
+
+What the reboots were, six rounds, a gun of 4, the squad reading the picks:
+
+| The pack | Reboots a machine a fight | Taken with a blow coming | The shield a reboot gave up | The heat it left unspent | Turns held at the maximum, a machine a fight |
+|---|---|---|---|---|---|
+| A lone blow of 12 | 2.9 | 21% | 32% | 43% | 0.2 |
+| 12 on the same machine every round | 2.2 | 57% | 41% | 38% | 0.1 |
+| Four foes of 3 | 2.6 | 35% | 37% | 37% | 0.2 |
+| 4 on every machine | 3.2 | all | 2% | 47% | none |
+| 12 at the hottest machine | 2.2 | 42% | 35% | 32% | 0.4 |
+| 12 at the least shield | 2.5 | 46% | 57% | 37% | 0.1 |
+
+**What the tables say.**
+
+- *The choice costs nothing in protection beside the forced shutdown.* Within two points on
+  every pack at four rounds, and a fifth of a round longer, since the forced form's last
+  shot was free.
+- *Beside the game as built it is less defence against a lone hitter and more against the
+  many, as section 20's was.* 4 to 16 points more hull lost at four rounds. At six rounds, 9
+  to 20 points more against a foe of one blow and 2 to 7 fewer against four foes or a blow at
+  every machine. Nothing mends between hits, so a blow over a shield's size costs what it
+  says each time.
+- *Its fights run about a third longer in rounds:* 7.0 where the game as built runs 5.4, three
+  turns in eight not fired where one in five is a dud already. A machine reboots every fourth
+  turn at a gun of 4.
+- *There are right and wrong plays, which the forced form did not have.* Reading the picks
+  saves up to 5 points. Firing past the maximum costs up to 17 points at four rounds and 23 at
+  six. Rebooting into a blow at every machine doubles the loss, 69% where the careful play
+  loses 33%.
+- *His emptying rule is what closes the loop.* With a standing shield kept, the squad that
+  reboots at half a shield loses 5% to a foe that strikes every machine, in a fight of 9.8
+  rounds with over half its turns not fired: the stall of 9 November. Emptied, the same play
+  loses 69%. For the careful player the rule costs 0 to 7 points.
+- *It does not stop a top-up where no pick points.* Four reboots in five against a lone
+  hitter are taken with no blow coming, and they give up a third of a shield nothing was
+  going to test. The turn is what prices those, and it is enough here: the squad that tops up
+  at half a shield does worse than the one that waits, 38% against 35%.
+- *Heat has a slope again, in hull and in rounds:* 32%, 35%, 40% and 6.6, 7.0, 7.8 rounds at
+  2, 4, 6 heat. A gun of 4 fires three turns in four at the cap and a gun of 6 two in three.
+  One shot past the maximum before each reboot buys the forced form's pace for its excess in
+  hull, so the burn as today is a priced push here, where under section 20 it was a tax.
+- *Riding at the maximum by firing is a trap,* the whole heat of the shot off the hull. Riding
+  is holding, or a cool piece. A machine that reads the picks holds 0.2 turns a fight against
+  a lone hitter and 0.4 against a foe that aims at the hottest, 0.9 with a gun of 6.
+- *The block is the wall again:* 12% where the rule loses 35%, and a point against four foes.
+
+**The frame.**
+
+- *Who it protects.* The machine no foe is aiming at, which may have both meters back for a
+  turn. The machine under the picks may not without standing bare. Regen is the reverse: it
+  serves whoever was hit.
+- *How.* Two budgets and one reset, the player's to call. It costs the turn, and the shield
+  for the foes' turn.
+- *What threatens it.* A pick on the machine that needs the reset. A blow at every machine,
+  into which every reboot is bare. One foe on one machine, round after round. A blow over a
+  shield's size, since nothing mends.
+- *The player's counterplay.* Read the picks and reboot where none points. Ride at the
+  maximum under a pick, holding or on a cool piece. A lure, which moves a pick and so buys a
+  safe reboot. A Barrier over a machine that reboots. The kill of the foe that pins the hot
+  machine.
+- *The foes' counterplay.* The heat aim, which finds the machine that wants the reset. The
+  exposed aim, which finds the shield that broke. A blow at every machine. Numbers, each one
+  more pick. A countdown, whose pick holds while it gathers.
+- *The foes it would need.* Every one is in the vocabulary today, which section 16's block
+  could not say.
+
+**Claude's read, his to take or leave.** This is the better form of the three. It protects
+as the forced shutdown does, the timing is the player's, heat is priced on a slope, his
+emptying rule closes the stall, and the foes it wants exist. Two things come with it at these
+numbers. A fight runs about a third longer in rounds, which the heat maxima or the guns'
+numbers would have to give back. And a lone hitter's blow over a shield's size costs more
+than today. The burn stays as today. Next on his word: an engine what-if behind a trial
+dial, since the feel of reading the picks is his play's to judge, and the foes' kits in chat.
+
+What it costs to come, beyond section 20's list: the reboot as an act on a machine, its
+control, the forecast showing the bare turn, and the bot's play of it. The forced turn and
+the "broken" state are not needed.

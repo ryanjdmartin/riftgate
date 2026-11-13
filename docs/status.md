@@ -1006,7 +1006,23 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   shield down at once, 32%, 38%, 42%) and when the recovery lands (the same turn is the
   turtle, 4% where the rule loses 33%). Claude's picks, his to take or leave: the shield
   down at once and no burn, the recovery as the next round opens, the block out until foes
-  are built for it. Next on his answers: the foes' kits in chat. His call; nothing built.
+  are built for it. His answer settled the recovery ("a whole turn of staying exposed with
+  no shield") and moved the shape, since the forced form "takes away player agency, despite
+  being thematic": "letting the player ride at max heat and the reboot being a choice to
+  vent heat and recover shield. If the shield is not empty and the unit reboots, I'd feel
+  like we should empty the shield." That is the working shape (the brief's section 21;
+  `--choice`): no regen, no cooling, a reboot any turn for the turn, the shield to nothing
+  at once and both meters back the round after, nothing forced. By the model the choice
+  costs nothing in protection beside the forced form (35% and 35% against the lone blow);
+  his emptying rule closes the stall (a squad that reboots at half a shield loses 5% to a
+  foe that strikes every machine with a standing shield kept, 69% with it emptied); heat is
+  priced on a slope (32%, 35%, 40% and 6.6, 7.0, 7.8 rounds at 2, 4, 6 heat); firing past
+  the maximum is the wrong play and reading the foes' picks the right one; and the foes it
+  wants are in the vocabulary today. It comes with fights about a third longer in rounds at
+  the model's numbers. Open in it, his: what a shot past the maximum costs while a machine
+  rides (the model keeps today's burn). The answer also lists the three differences he
+  asked for between his statement and the splice. Next on his word: an engine what-if
+  behind a trial dial and the foes' kits in chat. His call; nothing built.
   His marks on 4-4-2 are in ("That's probably fine for 4-4-2 for
   now": the brief's section 13 has the table with his words, each open place its chassis's
   session's). Also open, his: the first battle's block (not scaled:

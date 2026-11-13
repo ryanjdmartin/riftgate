@@ -59,6 +59,21 @@ recovers both meters, and no machine shuts down by choice. It prints:
      kind wasted of the other meter.
  13. What a gun's heat costs in turns as built and under the shutdown, one machine alone.
  14. A foe that heats the machine it strikes, at random and at the hottest.
+
+    python3 tools/shield_model.py --choice   # the reboot by choice, his next form
+
+"It takes away player agency ... letting the player ride at max heat and the reboot being a
+choice to vent heat and recover shield. If the shield is not empty and the unit reboots, I'd
+feel like we should empty the shield." A reboot takes the turn and empties the shield at
+once; heat and shield are back as the next round opens; nothing forces one, and a shot past
+the maximum burns its excess as built. It prints:
+ 15. The rule beside the game as built, section 19's splice and the shutdown above, against
+     the packs and against a foe that aims at the hottest machine or at the least shield.
+ 16. The rule by the way it is played: blind to the foes' picks, reading them, firing past the
+     maximum, and rebooting at half a shield.
+ 17. What emptying the shield buys, by the squad that reboots at half a shield or less.
+ 18. The rule by the gun's heat, and a gun's heat in turns.
+ 19. What the reboots were: how many, how many under fire, and what each gave up.
 """
 import argparse
 import random
@@ -272,6 +287,9 @@ def picks(squad, shape, rng):
         elif pick == "hot":
             top = max(getattr(squad[i], "heat", 0) for i in live)
             last = rng.choice([i for i in live if getattr(squad[i], "heat", 0) == top])
+        elif pick == "bare":
+            low = min(squad[i].shield for i in live)
+            last = rng.choice([i for i in live if squad[i].shield == low])
         elif pick == "one" or last is None:
             last = rng.choice(live)
         out.append((last, blows, rider))
@@ -508,6 +526,32 @@ SHUTDOWNS = [
     ("The same, the recovery landing the turn of the shutdown", dict(SHUTDOWN, now=True)),
     ("The shutdown with the block", dict(SHUTDOWN, block=True)),
 ]
+# The reboot by choice (Ryan, 13 November, on the shutdown above: "it takes away player agency
+# ... letting the player ride at max heat and the reboot being a choice to vent heat and recover
+# shield. If the shield is not empty and the unit reboots, I'd feel like we should empty the
+# shield"). No regen and no cooling. A machine may give its turn to a reboot whenever it likes:
+# its shield goes to nothing at once, and as the next round opens its heat is empty and its
+# shield whole. Nothing forces one: a shot past the maximum burns its excess off the hull and
+# the gauge settles at the maximum, as built. keeps: the reboot leaves a standing shield up
+# through the foes' turn. bare: in the shutdown above, the shield is down for its turn.
+CHOICE = {"regen": 0, "cooling": 0, "choice": True}
+CHOICES = [
+    ("As built", {"regen": 1, "cooling": 2}),
+    ("Section 19's splice: a pass vents, and reboots a broken shield", {"regen": 0, "cooling": 0, "reboot": "broken", "vent": True}),
+    ("The shutdown of section 20, bare for its turn", dict(SHUTDOWN, bare=True)),
+    ("The reboot by choice", CHOICE),
+    ("The same, a standing shield kept through the reboot", dict(CHOICE, keeps=True)),
+    ("The reboot by choice with the block", dict(CHOICE, block=True)),
+]
+# How a squad plays the reboot by choice. plain: a machine reboots when its next shot would
+# pass the maximum or its shield is down, and never looks at the foes' picks. timed: it reads
+# them (a pick is set as the round opens and does not move): with no blow coming it reboots at
+# the maximum, on a dud, or to top up a shield at a quarter or less; with a blow coming and a
+# shield standing it rides at the maximum, holding its fire, or firing once more when the
+# excess is 2 or less. pushes: it never holds, firing past the maximum and burning, and
+# reboots only a shield that is down. greedy: it reboots whenever its shield is at half or
+# less, picks or no picks.
+PLAYS = [("plain", "It reboots at the maximum or on a break, blind to the picks"), ("timed", "It reads the picks"), ("pushes", "It fires past the maximum and burns"), ("greedy", "It reboots at half a shield or less, blind")]
 DUD = 0.2   # a machine's die shows nothing it can fire, one round in five
 
 
@@ -546,7 +590,7 @@ def bout(build, pack, rng, gun_heat=4, eager=True, risk=2, cap_rounds=16, tally=
                     continue
                 if one:
                     u.bar = u.cap if u.passed else u.bar
-                elif build.get("shutdown"):
+                elif build.get("shutdown") or build.get("choice"):
                     if u.passed and not build.get("now"):
                         u.heat, u.shield, u.down = 0, u.gauge, False
                 else:
@@ -561,11 +605,58 @@ def bout(build, pack, rng, gun_heat=4, eager=True, risk=2, cap_rounds=16, tally=
         standing = [f for f in foes if f["hp"] > 0]
         intents = picks(squad, [(f["pick"], f["blows"], f["rider"]) for f in standing], rng)
         fire = 0
-        for u in squad:
+        for i, u in enumerate(squad):
             if u.hull <= 0:
                 continue
             turns += 1
             want = rng.random() < DUD
+            if build.get("choice"):
+                coming = sum(sum(b) for t, b, _ in intents if t == "all" or t == i)
+                kept = 0 if build.get("keeps") else min(u.shield, coming)   # what a reboot would let through
+                excess = u.heat + gun_heat - HEAT_MAX
+                act = "idle" if want else "fire"
+                if eager == "plain":
+                    if want:
+                        act = "reboot" if (u.shield == 0 or excess > 0) else "idle"
+                    elif u.shield == 0 or excess > 0:
+                        act = "reboot"
+                elif eager == "greedy":
+                    if u.shield * 2 <= u.gauge or (excess > 0 and not want):
+                        act = "reboot"
+                elif eager == "pushes":
+                    if u.shield == 0:
+                        act = "reboot"
+                else:   # timed
+                    safe = kept <= 2
+                    if want:
+                        act = "reboot" if safe and (u.heat > 0 or u.shield < u.gauge) else "idle"
+                    elif u.shield == 0:
+                        act = "reboot"
+                    elif excess > 0:
+                        act = "reboot" if safe else ("fire" if excess <= 2 else "idle")
+                    elif safe and u.shield * 4 <= u.gauge:
+                        act = "reboot"
+                if act == "reboot":
+                    passes += 1
+                    u.passed = True
+                    if tally is not None:
+                        tally["reboots"] += 1
+                        tally["shield_left"] += u.shield
+                        tally["gauge"] += u.gauge
+                        tally["heat_left"] += max(0, HEAT_MAX - u.heat)
+                        tally["under_fire"] += 1 if coming > 0 else 0
+                    if not build.get("keeps"):
+                        u.shield, u.down = 0, True
+                elif act == "idle":
+                    passes += 1
+                    if tally is not None and not want:
+                        tally["held"] += 1
+                else:
+                    u.heat += gun_heat
+                    fire += GUN_DAMAGE
+                    if tally is not None and excess > 0:
+                        tally["pushed"] += 1
+                continue
             if build.get("shutdown"):
                 # Forced by an overheat; allowed by a broken shield, taken on a dud or, played
                 # to the full, at once; never by choice. A dud with nothing broken recovers nothing.
@@ -581,6 +672,8 @@ def bout(build, pack, rng, gun_heat=4, eager=True, risk=2, cap_rounds=16, tally=
                     passes += 1
                     u.shut = False
                     u.passed = True
+                    if build.get("bare"):
+                        u.shield, u.down = 0, True
                     if build.get("now"):
                         u.heat, u.shield, u.down = 0, u.gauge, False
                 elif want:
@@ -865,6 +958,85 @@ def shutdown(a):
     print()
 
 
+def choice_packs(length, blow):
+    out = [(p, k) for p, k in build_packs(length, blow) if "two strikes" not in p]
+    hp = GUN_DAMAGE * len(SQUAD) * length
+    out.append(("A lone foe, %d at the hottest machine" % blow, [{"hp": hp, "pick": "hot", "blows": [blow], "rider": None}]))
+    out.append(("A lone foe, %d at the least shield" % blow, [{"hp": hp, "pick": "bare", "blows": [blow], "rider": None}]))
+    return out
+
+
+def choice(a):
+    hull = float(sum(m["hull"] for m in SQUAD))
+    n = max(1, a.trials // 3)
+
+    def cells(build, play, packs_, heat=4, cap=16):
+        return ["%d%%, %.1f, %d%%" % (round(l), r, round(p)) for l, r, p in (_cell(build, pack, a, n, hull, heat, play, None, cap) for _, pack in packs_)]
+
+    def play_of(build):
+        return "timed" if build.get("choice") else True
+
+    print("The reboot by choice, 13 November: the same squad and gun, the pack dealing %d a round, a die that is a dud one round in five, %d fights a cell. No content." % (a.blow, n))
+    print()
+    for length in (4, 6):
+        ps = choice_packs(length, a.blow)
+        print("A fight of %d rounds at full fire, the reboot by choice played reading the picks: the hull lost, the rounds, the turns not fired" % length)
+        print()
+        print("| The rule | " + " | ".join(p for p, _ in ps) + " |")
+        print("|---|" + "---|" * len(ps))
+        for bname, build in CHOICES:
+            print("| %s | %s |" % (bname, " | ".join(cells(build, play_of(build), ps))))
+        print()
+    for length in (4, 6):
+        ps = choice_packs(length, a.blow)
+        print("The reboot by choice by the way it is played, a fight of %d rounds: the hull lost, the rounds, the turns not fired" % length)
+        print()
+        print("| The play | " + " | ".join(p for p, _ in ps) + " |")
+        print("|---|" + "---|" * len(ps))
+        for play, label in PLAYS:
+            print("| %s | %s |" % (label, " | ".join(cells(CHOICE, play, ps))))
+        print()
+    ps = choice_packs(4, a.blow)
+    print("What emptying the shield buys, a fight of 4 rounds, the squad rebooting at half a shield or less: the hull lost, the rounds, the turns not fired")
+    print()
+    print("| The rule | " + " | ".join(p for p, _ in ps) + " |")
+    print("|---|" + "---|" * len(ps))
+    print("| A reboot empties the shield | %s |" % " | ".join(cells(CHOICE, "greedy", ps)))
+    print("| A reboot keeps a standing shield | %s |" % " | ".join(cells(dict(CHOICE, keeps=True), "greedy", ps)))
+    print()
+    print("By the gun's heat, a fight of 4 rounds against the lone blow: the hull lost, the rounds, the turns not fired")
+    print()
+    print("| The rule | A gun of 2 heat | A gun of 4 heat | A gun of 6 heat |")
+    print("|---|---|---|---|")
+    lone = build_packs(4, a.blow)[0][1]
+    for bname, build in CHOICES:
+        row = ["%d%%, %.1f, %d%%" % (round(l), r, round(p)) for l, r, p in (_cell(build, lone, a, n, hull, heat, play_of(build)) for heat in (2, 4, 6))]
+        print("| %s | %s |" % (bname, " | ".join(row)))
+    print()
+    print("A gun's heat in turns, one machine firing whenever its rule lets it and never burning (a maximum of %d): the share of turns it fires at the cap" % HEAT_MAX)
+    print()
+    print("| The gun's heat | As built, cooling %d | The shutdown of section 20 | The reboot by choice | The same, one shot past the maximum before each reboot, and the hull it burns |" % COOLING)
+    print("|---|---|---|---|---|")
+    for heat in (2, 3, 4, 5, 6, 8):
+        shots = HEAT_MAX // heat
+        over = (shots + 1) * heat - HEAT_MAX
+        print("| %d | %d%% | %d%% | %d%% | %d%%, %d |" % (heat, round(100 * pace(heat, 600, False, 60)), round(100 * pace(heat, 600, True, 60)), round(100.0 * shots / (shots + 1)), round(100.0 * (shots + 1) / (shots + 2)), over))
+    print()
+    print("What the reboots were, a fight of 6 rounds, the squad reading the picks: reboots a machine a fight; the share taken with a blow coming; the shield a reboot gave up, of the gauge; the heat it left unspent, of the maximum; turns held at the maximum a machine a fight")
+    print()
+    print("| The pack | A gun of 4 heat | A gun of 6 heat |")
+    print("|---|---|---|")
+    for pname, pack in choice_packs(6, a.blow):
+        row = []
+        for heat in (4, 6):
+            t = {"reboots": 0, "shield_left": 0, "gauge": 0, "heat_left": 0, "under_fire": 0, "held": 0, "pushed": 0}
+            _cell(CHOICE, pack, a, n, hull, heat, "timed", t)
+            rb = max(1, t["reboots"])
+            row.append("%.1f, %d%%, %d%%, %d%%, %.1f" % (t["reboots"] / float(n * len(SQUAD)), round(100.0 * t["under_fire"] / rb), round(100.0 * t["shield_left"] / max(1, t["gauge"])), round(100.0 * t["heat_left"] / float(rb * HEAT_MAX)), t["held"] / float(n * len(SQUAD))))
+        print("| %s | %s |" % (pname, " | ".join(row)))
+    print()
+
+
 def table(title, rows, heads):
     print(title)
     print()
@@ -886,6 +1058,7 @@ def main():
     ap.add_argument("--blow", type=int, default=12, help="what a pack deals a round in the fight that ends")
     ap.add_argument("--builds", action="store_true", help="his menu of 13 November spliced into rule sets")
     ap.add_argument("--shutdown", action="store_true", help="the shutdown as he stated it on 13 November, and the points it leaves open")
+    ap.add_argument("--choice", action="store_true", help="the reboot by choice, his form of the same day: ride at the maximum, a reboot empties the shield")
     a = ap.parse_args()
     dealt = a.damage * a.rounds
     heads = [name for name, _ in RULES]
@@ -900,6 +1073,9 @@ def main():
         return
     if a.shutdown:
         shutdown(a)
+        return
+    if a.choice:
+        choice(a)
         return
     print("The shield's model: a plated machine (hull 36, shield 6, armour 1) and three lights (hull 20, shield 8), %d damage a round for %d rounds in each shape, %d fights a cell. No dice, no kills, no content." % (a.damage, a.rounds, a.trials))
     print()

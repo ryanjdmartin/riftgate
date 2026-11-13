@@ -421,6 +421,7 @@ python3 tools/shield_model.py --bench   # the wider bench alone: one field for t
 python3 tools/shield_model.py --fight   # a fight that ends: each machine a gun with heat, the pack with hit points; a reboot that grows with every break, and one gauge for hits and heat
 python3 tools/shield_model.py --builds  # whole rule sets spliced from Ryan's menu of 13 November: regen or none, the block, what a pass recovers, cooling, one bar; a die that is a dud one round in five
 python3 tools/shield_model.py --shutdown  # the shutdown as he stated it the same day (no regen, no cooling, a break allows it, an overheat forces it, none by choice), with what an overheat costs and when the recovery lands each as a row; a gun's heat in turns; a foe that heats
+python3 tools/shield_model.py --choice  # the reboot by choice, his next form: a machine rides at its maximum, a reboot takes the turn and empties the shield, both back the round after; played blind to the foes' picks and reading them, with what the emptying buys
 # whom the foes strike (23 October): every starter trio a tender can deal, stock, greedy, against each
 # faction's formation, bosses and first pack; picks as intents are drawn, the same with every machine standing,
 # swings after any Lure, the exposed aim's weights, hull lost. JSON per cell, read by hand; four parts in parallel.
