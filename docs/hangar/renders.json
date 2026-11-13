@@ -621,8 +621,8 @@
    }
   },
   "needletail": {
-   "when": "Ryan's ninth notes on its two modes, 13 November.",
-   "note": "Ryan, 13 November, on the eighth cut: “Nice. I still find the body shape just a bit off. It feels too long, still, and could be flatter.” A ninth cut: the nose a sixth shorter from the canopy forward, the middle two units shorter and the tail three, so the machine is about a tenth shorter (about 100 units from point to needle, 111 before), and the whole body a fifth lower for its width, the canopy now standing proud of it. Everything rides with the body: the cheek ports and their troughs, the pop-up and the canards forward with the nose, the pods a little forward and higher up the chamfers so their slots clear the wings stowed under them, the wings a little lower inside, the tail fins, the rear boosters and their tailplanes and the exhaust moved up with the tail, the needle still twelve past the tail's face. Ryan's to judge running: Walk for the change by speed, Acts for the transition.",
+   "when": "Ryan's tenth note on its two modes, 13 November.",
+   "note": "Ryan, 13 November, on the ninth cut: “Also, racks, blades and dishes still float out of the front gun ports.” The cheeks now wear the port forms the Kite's port was given on 12 November, each rooted in the open recess and run out of its point: a launcher the port rack, its drum from the recess's widest with its face just out of the port; a dish the port dish, its sleeve in the recess and its mast running the dish out to the port's mouth; a blade the standard one, its bracket filling the recess and the blade run out along the trough; twin barrels as they were, their receiver in the recess. In flight each runs back with the gun, under the shut blister. The body and the first six pictures are the ninth cut's, unchanged (the nose a sixth shorter than the eighth's, the whole body a fifth lower, about 100 units from point to needle); the last three are the new fits close up, a Shotfire Rack and a Chainsaw Claw in the left cheek and a Halo Projector in the right. Ryan's to judge running: Walk for the change by speed, Acts for the transition.",
    "images": [
     {
      "file": "needletail/needletail_front.png",
@@ -647,34 +647,34 @@
     {
      "file": "needletail/needletail_changing.png",
      "alt": "needletail, changing: the guns running in, the blisters shutting, the boosters swivelling"
+    },
+    {
+     "file": "needletail/needletail_port_rack.png",
+     "alt": "needletail, the left cheek with a Shotfire Rack: the port rack's drum in the recess, its face out of the port"
+    },
+    {
+     "file": "needletail/needletail_port_dish.png",
+     "alt": "needletail, the right cheek with a Halo Projector: the port dish on its mast out of the recess"
+    },
+    {
+     "file": "needletail/needletail_port_blade.png",
+     "alt": "needletail, the left cheek with a Chainsaw Claw: the blade's bracket in the recess, the blade out along the trough"
     }
    ],
    "before": {
-    "summary": "Before: the eighth cut, 13 November (the nose a sixth longer, the whole body a fifth taller)",
+    "summary": "Before: the ninth cut's cheek fits, 13 November (the round rack, the dish and the blade set out ahead of the recesses, on nothing)",
     "images": [
      {
-      "file": "needletail/before_needletail_front.png",
-      "alt": "Earlier: needletail, hover mode, front"
+      "file": "needletail/before_needletail_port_rack.png",
+      "alt": "Earlier: the left cheek with a Shotfire Rack"
      },
      {
-      "file": "needletail/before_needletail_rear.png",
-      "alt": "Earlier: needletail, hover mode, rear"
+      "file": "needletail/before_needletail_port_dish.png",
+      "alt": "Earlier: the right cheek with a Halo Projector"
      },
      {
-      "file": "needletail/before_needletail_above.png",
-      "alt": "Earlier: needletail, hover mode, from above"
-     },
-     {
-      "file": "needletail/before_needletail_flight.png",
-      "alt": "Earlier: needletail, flight mode, front"
-     },
-     {
-      "file": "needletail/before_needletail_flight_above.png",
-      "alt": "Earlier: needletail, flight mode, from above"
-     },
-     {
-      "file": "needletail/before_needletail_changing.png",
-      "alt": "Earlier: needletail, changing"
+      "file": "needletail/before_needletail_port_blade.png",
+      "alt": "Earlier: the left cheek with a Chainsaw Claw"
      }
     ]
    }

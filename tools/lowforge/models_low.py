@@ -5842,7 +5842,8 @@ def needletail(b):
     "extend too far when opened, they end up floating in front"; the cut ahead of each clamshell
     covered when closed, "just to smooth it out more"; the wings "just a smaller flat top" rather than
     a point; the front boosters "extend a little more when hovering". And on the eighth: the body "just
-    a bit off. It feels too long, still, and could be flatter".
+    a bit off. It feels too long, still, and could be flatter". And on the ninth: "racks, blades
+    and dishes still float out of the front gun ports".
 
     Built at rest in hover mode, the pose it holds standing and in every fight: a jet's chined
     fuselage, eight-sided (a flat top and belly, chamfers, a short upright band at the chine),
@@ -5850,7 +5851,8 @@ def needletail(b):
     gun's teardrop recess back on the side where the nose's side crosses its line, the halves rolled
     up and down into the fuselage's side on the gun's own line (shell_lt, shell_lb, shell_rt,
     shell_rb), the gun run out of it (run_l, run_r) through a short trough, its muzzle clear of the
-    skin beyond it; the trough's flush cover slid into the nose (trough_l, trough_r); the Designator a low wedge popped up on the nose's top (lamp, hinged at
+    skin beyond it, and every other class rooted in the bay and run out of the port (the port rack,
+    the port dish on its mast, the blade's bracket and the twin barrels' receiver in the bay); the trough's flush cover slid into the nose (trough_l, trough_r); the Designator a low wedge popped up on the nose's top (lamp, hinged at
     its back), its round lamp facing ahead behind a six-bladed iris (iris_1 to iris_6, each
     blade turning on its own pin in the lamp's rim); the long canopy amidships, two bows across
     it; the two pods on the
@@ -5938,8 +5940,12 @@ def needletail(b):
     TH, OPEN = 0.22, 120.0         # the halves' thickness, and how far each rolls in to open
     RUN = 6.0                      # how far the gun runs back in flight, its muzzle under the blister (Ryan, 13 November: "extend too far when opened, they end up floating in front")
     PIN = YC - 1.5 + RUN - 7.68    # the gun's mount at rest, run out, its muzzle just clear of the nose (the port gun is 7.68 long here)
-    CHEEK_FITS = {"barrel": ("barrel_port", 1.0), "twin_barrel": ("twin_barrel", 0.55, -6.4), "rack": ("rack_round", 0.48, -11.6),
-                  "dish": ("dish", 0.42, -12.8), "blade": ("blade", 0.55, -8.6)}   # each class run out inside the open bay and trough, none floating ahead
+    # Each class rooted in the open bay and run out of the port, none ahead of it on nothing (Ryan,
+    # 13 November: "racks, blades and dishes still float out of the front gun ports"): the port
+    # rack's drum and the port dish's sleeve from the bay's widest, the blade's bracket filling it,
+    # the twin barrels' receiver in it.
+    CHEEK_FITS = {"barrel": ("barrel_port", 1.0), "twin_barrel": ("twin_barrel", 0.55, -6.4), "rack": ("rack_port", 0.6, -1.75),
+                  "dish": ("dish_port", 0.6, -3.0), "blade": ("blade", 0.55, -4.0)}
 
     def drop(y):
         """The blister's radius at `y`: a round back buried in the skin, its widest over the

@@ -3750,19 +3750,19 @@
     "sink": -6.4
    },
    "rack": {
-    "shape": "rack_round",
-    "scale": 0.48,
-    "sink": -11.6
+    "shape": "rack_port",
+    "scale": 0.6,
+    "sink": -1.75
    },
    "dish": {
-    "shape": "dish",
-    "scale": 0.42,
-    "sink": -12.8
+    "shape": "dish_port",
+    "scale": 0.6,
+    "sink": -3.0
    },
    "blade": {
     "shape": "blade",
     "scale": 0.55,
-    "sink": -8.6
+    "sink": -4.0
    }
   },
   "hp_2": {
@@ -3776,19 +3776,19 @@
     "sink": -6.4
    },
    "rack": {
-    "shape": "rack_round",
-    "scale": 0.48,
-    "sink": -11.6
+    "shape": "rack_port",
+    "scale": 0.6,
+    "sink": -1.75
    },
    "dish": {
-    "shape": "dish",
-    "scale": 0.42,
-    "sink": -12.8
+    "shape": "dish_port",
+    "scale": 0.6,
+    "sink": -3.0
    },
    "blade": {
     "shape": "blade",
     "scale": 0.55,
-    "sink": -8.6
+    "sink": -4.0
    }
   },
   "hp_3": {
