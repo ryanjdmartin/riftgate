@@ -27,8 +27,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1155 tests, 371,933 checks, green on `ccr-b7d5164e-1wtzzm` (13 November, the Needletail's
-  seventh cut on Ryan's notes over main at `6112939`). Before it, 1154 tests, 371,076
+- Tests: 1155 tests, 371,967 checks, green on `ccr-b7d5164e-1wtzzm` (13 November, the Needletail's
+  eighth cut on Ryan's notes over main at `6112939`). Before it, 1154 tests, 371,076
   checks, green on main (12 November, as `ccr-4d58b054-3lyj0a` landed
   with the vent blast's and Siphoning's cut, the Overrun Gearing, the Shift Whistle dealt, the
   Whip Scorpion's broadside and its two new idle acts, over the dead-code pass and the four
@@ -447,16 +447,16 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   (its round second cut retired: "I didn't literally mean round like a rocket"), shorter than the
   first cut, a long canopy amidships, the nose one smooth taper to its point; it stands and fights
   in hover mode, four shorter boosters upright on swivels (the front pair on short canards beside
-  the pop-up, the thicker rear pair spread wide, each on a hub at the tip of a long tailplane whose
-  outer panel rides in with it, under long, steep X fins), two pods raised out of dark slots in the
-  upper chamfers behind the canopy, its cheek guns run far out of teardrop recesses back on the
-  nose's sides, through a short trough and clear beyond it, the Fovea Designator a low wedge pop-up
+  the pop-up, the thicker rear pair each on a hub at the tip of a long tailplane whose outer panel
+  rides in with it, under long, steep X fins), two pods raised out of dark slots in the upper
+  chamfers behind the canopy, its cheek guns run a short way out of teardrop recesses back on the
+  nose's sides, through a short trough to a muzzle clear of the skin, the Fovea Designator a low wedge pop-up
   after a sports car's, its lamp behind
   a six-bladed iris that widens and narrows as it paints, the tail's whole face a cut-out exhaust
   round a needle fifteen long, in a dark rim behind a cobalt band; on the map its gait changes it into flight mode as it gathers speed
-  (the cheek guns in and a short teardrop clamshell rolling shut over each barrel's tip on the
-  gun's own line, the pods sunk flush, the iris shut and the pop-up folded, the boosters level and
-  run in along their fins, the pointed swept wings out near the canards, their roots in the
+  (the cheek guns in, a short teardrop clamshell rolling shut over each barrel's tip on the gun's
+  own line and a flush cover sliding out over each trough, the pods sunk flush, the iris shut and the pop-up folded, the boosters level and
+  run in along their fins, the swept wings out near the canards, small flat tips, their roots in the
   fuselage, the exhaust burning white-hot) and back as it slows, its transition act the same
   change on the spot. A near-black tile (`void`) lines the
   recesses, Kestrel's "dark" tile being a mid grey its chrome lights. The Giant Petrel: the
