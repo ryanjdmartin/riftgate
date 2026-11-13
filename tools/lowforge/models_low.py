@@ -5697,43 +5697,47 @@ def needletail(b):
     of "cut in"): "There was no clipping on the outer surface, the guns just didn't actually clear
     the nose, they were half embedded in it when extended"; the rear boosters extending "further when
     fully extended"; the wings "a bit bigger", with "no gap between them and the fuselage when
-    extended".
+    extended". And on the sixth: the guns and ports "back further on the fuselage", so the nose can
+    "get rid of that ridge and come to a smooth point"; the rear boosters to "attach properly to their
+    mounts, and don't float", spread "even bigger", their wings free of the tailfins' planform; "a
+    little decoration" round the exhaust, which "could also glow hotter during flight mode"; the wings
+    "closer to the canards", bigger, "a bit more angle to the rear edges", and pointed again.
 
     Built at rest in hover mode, the pose it holds standing and in every fight: a jet's chined
     fuselage, eight-sided (a flat top and belly, chamfers, a short upright band at the chine),
-    the nose full back by the cheeks and cut in sharply ahead of them to a long slim needle; each
-    cheek gun's teardrop recess where the nose's side crosses its line, the halves rolled up and
-    down into the fuselage's side on the gun's own line (shell_lt, shell_lb, shell_rt, shell_rb),
-    the gun run far out of it along the needle (run_l, run_r), its barrel clear of the skin, a short
-    trough where it leaves the recess; the Designator a low wedge popped up on the nose's top (lamp, hinged at
+    the nose one smooth taper to its point, narrowing fastest just ahead of the cheeks; each cheek
+    gun's teardrop recess back on the side where the nose's side crosses its line, the halves rolled
+    up and down into the fuselage's side on the gun's own line (shell_lt, shell_lb, shell_rt,
+    shell_rb), the gun run far out of it (run_l, run_r) through a short trough, clear of the skin
+    beyond it; the Designator a low wedge popped up on the nose's top (lamp, hinged at
     its back), its round lamp facing ahead behind a six-bladed iris (iris_1 to iris_6, each
     blade turning on its own pin in the lamp's rim); the long canopy amidships, two bows across
     it; the two pods on the
     upper chamfers behind it, each a slab of the chamfer raised out of its dark slot (pod_l,
     pod_r), its gun out of its face (run_pod_l, run_pod_r); the front boosters (booster_fl,
     booster_fr) upright at the tips of the canards, beside the pop-up, the rear (booster_rl,
-    booster_rr), thicker, far out at the tips of long tailplanes among the X fins, each on a slide
-    (slide_fl, slide_fr, slide_rl, slide_rr); the wings (wing_l, wing_r) stowed inside the
-    middle; astern, the whole rear face a dark cut-out exhaust, lit at its floor, the long
-    needle running out of its middle. Flight mode is the gait (MechRig.drive):
+    booster_rr), thicker, far out on long tailplanes below the X fins, each turning on a hub at its
+    tailplane's tip, each on a slide (slide_fl, slide_fr, slide_rl, slide_rr) that carries the rear
+    tailplanes' outer panels with it; the pointed wings (wing_l, wing_r) stowed inside the middle;
+    astern, the whole rear face a dark cut-out exhaust in a dark rim behind a cobalt band, lit at its
+    floor, the long needle running out of its middle. Flight mode is the gait (MechRig.drive):
     as it gathers speed the cheek guns run back and the blisters' halves roll shut over the barrels' tips, the
     pods' guns run back into the pods and the pods sink flush into their slots, the iris shuts and the pop-up folds
     flat, the boosters swivel level and run in along their fins to sit against the body (the rear
-    pair between the upper and lower X fins), the wings swing out, their roots in the fuselage,
-    and the exhaust burns; slowing,
+    pair between the upper and lower X fins, the tailplanes' outer panels running into the body with
+    them), the wings swing out, their roots in the fuselage, and the exhaust burns hot; slowing,
     it all comes back. Mounts in the die's order: hp_1 the left cheek (the Transonic Rifle), hp_2
     the right (the Laser Carbine), hp_3 the left pod (the Twin Autoguns), hp_4 the right pod (the
     second Laser Carbine). Centred on z = 0 like the Kite."""
     # The body: a jet's chined fuselage, (y, width, top, belly, the upright band's half height at
-    # the chine) nose to tail; the nose full back by the cheek guns, then cut in sharply ahead of
-    # their recesses to a long slim needle, so a gun run out lies clear of it (Ryan, 13 November:
-    # "the guns just didn't actually clear the nose, they were half embedded in it when extended";
-    # "It needs to be cut in more. Tapering the nose sharper should help with that"); astern the
-    # tail ends square, its whole face the exhaust.
-    BODY = [(46.5, 0.5, 0.25, 0.2, 0.03), (43.0, 2.1, 1.0, 0.85, 0.35), (39.0, 3.9, 1.65, 1.35, 0.7), (35.5, 5.4, 2.2, 1.8, 1.0),
-            (32.4, 6.7, 2.7, 2.15, 1.22), (31.6, 9.0, 3.3, 2.55, 1.55), (30.0, 10.4, 3.7, 2.8, 1.75), (28.0, 11.9, 4.1, 3.05, 1.85),
-            (25.5, 13.2, 4.6, 3.3, 1.85), (19.5, 15.0, 5.3, 3.6, 1.75),
-            (12.5, 16.1, 6.0, 3.85, 1.5), (5.0, 16.8, 6.7, 4.05, 1.15), (-4.0, 17.0, 7.2, 4.2, 0.8), (-26.0, 17.0, 7.2, 4.2, 0.8),
+    # the chine) nose to tail; the nose one smooth taper to its point, narrowing fastest just ahead
+    # of the cheek guns' recesses, which sit back on its sides (Ryan, 13 November: "Move the front
+    # guns and ports back further on the fuselage ... get rid of that ridge and come to a smooth
+    # point"); astern the tail ends square, its whole face the exhaust.
+    BODY = [(46.5, 0.7, 0.3, 0.25, 0.05), (44.0, 2.2, 0.95, 0.8, 0.4), (41.0, 3.7, 1.5, 1.25, 0.7), (37.5, 5.3, 2.05, 1.65, 1.0),
+            (34.5, 6.8, 2.55, 2.0, 1.25), (32.0, 8.4, 3.05, 2.32, 1.5), (30.0, 10.0, 3.5, 2.6, 1.65), (28.0, 11.7, 3.95, 2.88, 1.8),
+            (26.0, 13.1, 4.35, 3.12, 1.85), (23.5, 14.2, 4.75, 3.35, 1.85), (19.5, 15.3, 5.3, 3.6, 1.75),
+            (12.5, 16.3, 6.0, 3.85, 1.5), (5.0, 16.8, 6.7, 4.05, 1.15), (-4.0, 17.0, 7.2, 4.2, 0.8), (-26.0, 17.0, 7.2, 4.2, 0.8),
             (-31.0, 12.0, 5.2, 3.5, 0.4), (-43.0, 12.0, 5.0, 3.4, 0.4), (-48.0, 10.4, 4.4, 3.0, 0.35)]   # straight the pods' whole length, so each pod's gun runs back under a full face
 
     def sec(w, top, bottom, s):
@@ -5758,8 +5762,15 @@ def needletail(b):
         return [(x * 0.78 * k, y, ZC + (z - ZC) * 0.74 * k) for (x, z) in sec(w, t, bt, s)]
     b.cut_hull([body], mouth(YT - 0.6) + mouth(FLOOR))
     _rings(b, [mouth(YT + 0.04, 0.995), mouth(FLOOR - 0.05, 0.995)], "bore.void", "tail_well", cap=False)
-    _rings(b, [mouth(FLOOR - 0.1, 0.99), mouth(FLOOR + 0.05, 0.99)], "amber.exhaust", "tail_exhaust")
+    hot = mouth(FLOOR, 0.99)
+    x0, x1, z0, z1 = min(p[0] for p in hot), max(p[0] for p in hot), min(p[2] for p in hot), max(p[2] for p in hot)
+    _rings(b, [mouth(FLOOR - 0.1, 0.99), mouth(FLOOR + 0.05, 0.99)], "amber.exhaust", "tail_exhaust",
+           frame=(Vector((x0, FLOOR, z0)), Vector((0.0, 1.0, 0.0)), Vector((1.0, 0.0, 0.0)), Vector((0.0, 0.0, 1.0)), (x1 - x0, z1 - z0)))   # one whole flame tile across it, white-hot in the middle round the needle
     b.loft([(FLOOR + 0.3, diamond(0.0, ZC, 2.6, 2.2)), (-50.5, diamond(0.0, ZC, 1.4, 1.2)), (-60.0, diamond(0.0, ZC, 0.08, 0.08))], "steel.dark", "needle")
+    # A nozzle's dark rim standing round the mouth, and a cobalt band round the tail just ahead of
+    # it (Ryan, 13 November: "a little decoration on the fuselage where it sits").
+    _rings(b, [mouth(YT + 0.03, 1.13), mouth(YT - 0.32, 1.13), mouth(YT - 0.32, 1.0), mouth(YT + 0.03, 1.0), mouth(YT + 0.03, 1.13)], "steel.dark", "nozzle_rim", cap=False)
+    b.loft([(y, [(x * 1.025, z * 1.025) for (x, z) in sec(*at(y))]) for y in (-43.8, -45.6)], "livery.livery", "tail_band", cap=False)   # a sleeve: a cap would close the exhaust
     # The canopy amidships, long and tall, carrying well back (Ryan, 13 November: "It's a small
     # spotter ship, it needs a good viewing range for the canopy"), two bows across it.
     CANOPY = [(8.5, 0.9, 0.5), (5.5, 2.9, 2.7), (1.0, 3.7, 3.7), (-5.0, 3.95, 4.1), (-11.0, 3.95, 4.0), (-16.0, 3.6, 3.4),
@@ -5771,16 +5782,16 @@ def needletail(b):
     # clamshell, point forward, a little bulge. Shut it is the outer part of a teardrop of
     # revolution about the gun's line, split on a horizontal seam; each half hinges on that line (a
     # roll joint) and in hover is rolled up (or down) and in, into the fuselage's side behind the
-    # recess's dark lining, and the gun runs far out along the needle ahead, its barrel clear of the
-    # skin (Ryan, 13 November: "they were half embedded in it when extended"), through a short
-    # trough where it leaves the recess.
-    AX = 4.5                       # the gun's line out from the middle
-    TIP_B, WIDE, NARROW, TIP_F = 27.6, 29.0, 30.3, 31.6   # the blister's back tip, its widest, the start of its point, its point (where the nose's side crosses the gun's line)
+    # recess's dark lining, and the gun runs far out ahead through a short trough, clear of the skin
+    # beyond it (Ryan, 13 November: "they were half embedded in it when extended"), the nose
+    # narrowing fastest just there.
+    AX = 5.85                      # the gun's line out from the middle, back where the nose is wide (Ryan, 13 November: "Move the front guns and ports back further on the fuselage")
+    TIP_B, WIDE, NARROW, TIP_F = 24.0, 25.4, 26.7, 28.0   # the blister's back tip, its widest, the start of its point, its point (where the nose's side crosses the gun's line)
     RM = 1.42                      # its radius at its widest
     TH, OPEN = 0.22, 120.0         # the halves' thickness, and how far each rolls in to open
-    PIN, RUN = 29.72, 7.2          # the gun's mount at rest (run out along the needle), and how far it runs back in flight, its muzzle under the blister
-    CHEEK_FITS = {"barrel": ("barrel_port", 1.0), "twin_barrel": ("twin_barrel", 0.55, -8.1), "rack": ("rack_round", 0.48, -5.0),
-                  "dish": ("dish", 0.42, -4.0), "blade": ("blade", 0.55, -6.2)}   # each class's back in the recess's mouth when run out, so a short one never floats ahead of it
+    PIN, RUN = 27.52, 8.7          # the gun's mount at rest (run out, its back in the recess's mouth), and how far it runs back in flight, its muzzle under the blister
+    CHEEK_FITS = {"barrel": ("barrel_port", 1.0), "twin_barrel": ("twin_barrel", 0.55, -2.1), "rack": ("rack_round", 0.48, -0.9),
+                  "dish": ("dish", 0.42, 0.0), "blade": ("blade", 0.55, -2.1)}   # each class's back in the recess's mouth when run out, so a short one never floats ahead of it
 
     def drop(y):
         """The blister's radius at `y`: a round back buried in the skin, its widest over the
@@ -5795,7 +5806,7 @@ def needletail(b):
         return max(0.04, RM * (1.0 - t) * (1.0 + 0.7 * t))
     STATIONS = [TIP_B + (WIDE - TIP_B) * f for f in (0.0, 0.025, 0.1, 0.25, 0.45, 0.7)] + [WIDE, (WIDE + NARROW) / 2.0, NARROW] + \
                [NARROW + (TIP_F - NARROW) * f for f in (0.25, 0.5, 0.75, 0.92, 1.0)]
-    TROUGH = (30.9, 32.5, 1.0)     # where the barrel leaves the recess, along a short trough of this radius about its line, till the needle is clear of it
+    TROUGH = (27.2, 30.9, 1.1)     # where the barrel leaves the recess, along a short trough of this radius about its line, till the nose has narrowed clear of it
 
     def edge(y, r):
         """How far round from the outboard side (degrees) the blister's surface meets the nose's
@@ -5918,16 +5929,20 @@ def needletail(b):
         for (dy, r) in ((11.0 * L + 0.8 * k, 5.1 * k), (8.0 * L, 4.7 * k), (0.0, 4.4 * k), (-11.0 * L - 1.3 * k, 4.9 * k)):
             out = max(out, face(y_pivot + dy) + r * math.cos(math.pi / 6) + 0.05)
         return out
-    # The canards and the tailplanes stay put; each booster runs in along its fin on a slide until
-    # it sits against the body, the fin going into it. The tailplanes take the X fins' planform,
-    # so the tail reads as six fins.
+    # The canards stay put, each front booster running in along its canard on a slide until it sits
+    # against the body, the canard going into it. Each rear booster turns on a hub at the tip of a
+    # long tailplane of its own planform (Ryan, 13 November: "the wings they're attached to don't have
+    # to strictly match the other tailfins"): a fixed root stub off the body and an outer panel riding
+    # on the booster's slide, so in flight the panel runs into the body with the booster (his design:
+    # "the wings they are on retract so the boosters are tight to the body"), and nothing floats or is
+    # left standing past it ("Make sure the rear boosters attach properly to their mounts").
     KF, LF = 0.62, 0.45          # the front boosters' girth and length
     KR, LR = 1.05, 0.61          # the rear's (Ryan, 13 November: "rear boosters can be thicker")
     FY, FX = 12.0, 13.8          # the canards' station, beside the pop-up (Ryan: "can the canards afford to be further forward now?"), and their boosters' pivot
-    RY, RX = -40.0, 19.5         # the tailplanes' (Ryan, 13 November: the rear boosters to "extend further when fully extended")
+    RY, RX = -40.0, 26.0         # the tailplanes' (Ryan, 13 November: "I'd make them spread even bigger if we can")
     FIN = FX - tucked(KF, LF, FY)
     RIN = RX - tucked(KR, LR, RY)
-    ROOT_LE, ROOT_TE, TIP_LE, TIP_TE, SPAN = -30.0, -43.5, -40.0, -46.5, 10.0   # the six fins' planform: root chord, tip chord, span (Ryan, 13 November: "Can the rear tailfins be longer?")
+    ROOT_LE, ROOT_TE, TIP_LE, TIP_TE, SPAN = -30.0, -43.5, -40.0, -46.5, 10.0   # the X fins' planform: root chord, tip chord, span (Ryan, 13 November: "Can the rear tailfins be longer?")
     FIN_RAKE = 52.0   # the X fins' angle off the horizontal, steep enough to clear the rear boosters up and tucked
     for s in (-1.0, 1.0):
         side = "l" if s < 0 else "r"
@@ -5936,12 +5951,13 @@ def needletail(b):
                "livery.livery", "canard")
         with b.joint("slide_f" + side, (s * FX, FY, 0.0), slide=(1.0, 0.0, 0.0)):
             booster("f" + side, s * FX, FY, 0.0, KF, LF)
-        tip = RX - 4.4 * KR * math.cos(math.pi / 6) + 0.35
         root = face(-37.0) - 0.06
-        f = (tip - root) / SPAN   # the X fins' edges carried out to the tip
-        _rings(b, [_blade_section(s * root, ROOT_LE, ROOT_TE, 0.0, 0.85), _blade_section(s * tip, ROOT_LE + (TIP_LE - ROOT_LE) * f, ROOT_TE + (TIP_TE - ROOT_TE) * f, 0.0, 0.5)],
-               "livery.livery", "tailplane")
+        _rings(b, [_blade_section(s * root, -32.0, -45.0, 0.0, 0.85), _blade_section(s * 12.4, -35.2, -44.7, 0.0, 0.7)], "livery.livery", "tailplane")
+        inner = RX - 4.4 * KR * math.cos(math.pi / 6)   # the booster's inner face
+        zp = 0.18 * s   # the two panels pass each other inside the body when in
         with b.joint("slide_r" + side, (s * RX, RY, 0.0), slide=(1.0, 0.0, 0.0)):
+            _rings(b, [_blade_section(s * 11.0, -35.6, -44.4, zp, 0.45), _blade_section(s * (inner + 0.3), RY + 2.1, RY - 2.3, zp, 0.4)], "livery.livery", "tailplane")
+            b.prism("x", s * (inner - 0.5), RY, 0.0, 1.3, 1.2, "steel.dark", 6, "booster_hub", phase=math.pi / 6)
             booster("r" + side, s * RX, RY, 0.0, KR, LR)
 
     # The X fins off the tail's chamfers with the tailplanes: six fins, the rear boosters settling
@@ -5963,13 +5979,16 @@ def needletail(b):
     # swung in about the pivot, so in flight it swings out 58 degrees (the left a little above the
     # right, where the two lie across each other inside, both under the pods' slots). Out, its root
     # lies inside the fuselage all along, no gap at the side (Ryan, 13 November: "a bit bigger, and
-    # make sure there's no gap between them and the fuselage when extended").
+    # make sure there's no gap between them and the fuselage when extended"); a triangle again,
+    # nearer the canards, bigger, its trailing edge swept back to the point ("closer to the canards,
+    # and get a bit bigger even, with a bit more angle to the rear edges. I kind of liked how they
+    # came to a point before").
     SWING = 58.0
     for s in (-1.0, 1.0):
         side = "l" if s < 0 else "r"
         zw = -0.55 if s < 0 else -1.25
-        piv = Vector((s * 7.4, -6.0, zw))
-        out = [piv, Vector((s * 24.0, -17.5, zw)), Vector((s * 24.0, -23.0, zw)), Vector((s * 7.0, -21.5, zw))]   # the deployed planform
+        piv = Vector((s * 7.4, 3.5, zw))
+        out = [piv, Vector((s * 30.0, -18.5, zw)), Vector((s * 7.0, -13.0, zw))]   # the deployed planform
         turn = Matrix.Rotation(math.radians(SWING if s < 0 else -SWING), 3, "Z")
         stowed = [tuple(piv + turn @ (p - piv)) for p in out]
         with b.joint("wing_" + side, tuple(piv), axis="yaw", limits=(-SWING - 5.0, 0.0) if s < 0 else (0.0, SWING + 5.0)):
@@ -6085,7 +6104,8 @@ def needletail(b):
     b.act("transition", 5.4, tracks,
           body=[(1.2, 0.0, 0.0, 0.0), (1.9, 0.0, 8.0, -1.0, 0.0, -6.0, 0.0), (2.7, 0.0, 14.0, -0.5, 0.0, -5.0, 0.0), (3.4, 0.0, 12.0, 0.5, 0.0, 2.0, 0.0),
                 (4.2, 0.0, 4.0, 1.0, 0.0, 6.0, 0.0), (5.4, 0.0, 0.0, 0.0)],
-          glow=[(burn, [(0.6, 0.0), (1.4, 6.0), (3.4, 6.0), (4.4, 1.0), (5.0, 0.0)])])
+          glow=[(boosters, [(0.6, 0.0), (1.4, 6.0), (3.4, 6.0), (4.4, 1.0), (5.0, 0.0)]),
+                (["tail_exhaust"], [(0.6, 0.0), (1.5, 11.0), (3.3, 11.0), (4.4, 1.0), (5.0, 0.0)])])
     # The sidestep: omnidirectional, it slides a step to one side rolling into it and straight on
     # across to the other, the boosters leaning a touch forward through it.
     lean = [(0.4, 0.0), (0.9, -12.0), (3.4, -12.0), (4.0, 0.0)]
@@ -6112,7 +6132,7 @@ def needletail(b):
     # as it gathers speed, a jet at full pace (crossfaded by speed); slowing, it changes back.
     glow = {"parts": burn, "k": KESTREL_BURN}
     b.gait_option("hover", tracks=held({j: (-15.0, 0.0, 0.0, 0.0, 0.0, 0.0) for j in BOOST}), glow=glow)
-    b.halo = [("booster_ring", KESTREL_HALO), ("exhaust", KESTREL_HALO), ("tail_exhaust", KESTREL_HALO)]   # its boosters and its exhaust, hot
+    b.halo = [("booster_ring", KESTREL_HALO), ("exhaust", KESTREL_HALO), ("tail_exhaust", 3.0)]   # its boosters hot, its exhaust hotter, its bloom wide at full burn (Ryan, 13 November: "It could also glow hotter during flight mode")
     b.gait(tracks=held(FLIGHT), glow=glow, body_hold=(0.0, 0.0, 0.0, 0.0, -4.0, 0.0), start=("hover", 0.25, 0.85))
     b.fires = {"fovea_designator": ("designate", 1.4, 2.9)}   # its fixed weapon fires with a slice of its act: the iris snapping down and the fovea's flare (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.move(slide=0.35, bank=32.0, accel=0.7, heft=0.1, oversteer=0.4)

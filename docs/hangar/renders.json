@@ -609,36 +609,36 @@
    }
   },
   "needletail": {
-   "when": "Ryan's sixth notes on its two modes, 13 November.",
-   "note": "Ryan, 13 November, on the fifth cut: “I don't know what you did, but the front guns are strictly worse in every way. There was no clipping on the outer surface, the guns just didn't actually clear the nose, they were half embedded in it when extended.” “can the rear boosters extend further when fully extended?” “the wings can be a bit bigger, and make sure there's no gap between them and the fuselage when extended.” A sixth cut. The fifth had sunk the guns deeper on a misread of “it needs to be cut in more” (the nose, not the guns). Now the nose stays full back by the cheeks and is cut in sharply ahead of their recesses to a long slim needle; in hover each gun runs far out of its recess along the needle, its barrel clear of the skin, through a short trough where it leaves the recess; in flight it runs back in and the clamshell shuts over its tip, a little bulge (the trough shows as a small notch ahead of it). Every class sits at the recess's mouth run out and goes all the way in for flight, at all four mounts. The rear boosters ride four units further out on longer tailplanes, so they slide further in flight; the wings are about a quarter bigger, their roots inside the fuselage when out. Ryan's to judge running: Walk for the change by speed, Acts for the transition.",
+   "when": "Ryan's seventh notes on its two modes, 13 November.",
+   "note": "Ryan, 13 November, on the sixth cut: “Move the front guns and ports back further on the fuselage, and see if that lets you smooth out the nose shape to get rid of that ridge and come to a smooth point.” “Make sure the rear boosters attach properly to their mounts, and don't float. I'd make them spread even bigger if we can, the wings they're attached to don't have to strictly match the other tailfins.” “The rear exhaust could use a little decoration on the fuselage where it sits. It could also glow hotter during flight mode.” “Wings can move up closer to the canards, and get a bit bigger even, with a bit more angle to the rear edges. I kind of liked how they came to a point before, too.” A seventh cut. The guns and their ports sit four units further back, and the nose is one smooth taper to its point, narrowing fastest just ahead of them; each gun runs far out through a short trough and is clear of the skin beyond it, and in flight the trough shows as a shallow groove ahead of each little bulge (with a parallel gun and a smooth nose, the barrel always passes the skin for a short stretch as it leaves its port). Every class sits at its port's mouth run out. The rear boosters spread to 26 units out on long tailplanes of their own: a fixed stub off the body and an outer panel that rides on the booster's slide, so in flight it runs into the body with the booster (your first design's “the wings they are on retract”), each booster turning on a hub at its panel's tip. The exhaust sits in a dark rim behind a cobalt band, a flame tile across its floor, burning white-hot in flight with a wider bloom. The wings are pointed triangles again, bigger, their trailing edges swept back to the point, their pivots nine units further forward, near the canards. Ryan's to judge running: Walk for the change by speed, Acts for the transition.",
    "images": [
     {
      "file": "needletail/needletail_front.png",
-     "alt": "needletail, hover mode, front: the guns run out along the needle"
+     "alt": "needletail, hover mode, front: the guns run out on the smooth nose, the rear boosters spread wide"
     },
     {
      "file": "needletail/needletail_rear.png",
-     "alt": "needletail, hover mode, rear: the rear boosters further out, the cut-out exhaust"
+     "alt": "needletail, hover mode, rear: the exhaust's rim and band, the rear boosters on their tailplanes"
     },
     {
      "file": "needletail/needletail_above.png",
-     "alt": "needletail, hover mode, from above: the barrels clear of the needle"
+     "alt": "needletail, hover mode, from above: the smooth nose, the rear boosters spread wide"
     },
     {
      "file": "needletail/needletail_flight.png",
-     "alt": "needletail, flight mode, front: a little bulge over each barrel's tip, the bigger wings"
+     "alt": "needletail, flight mode, front: the pointed wings out, the exhaust burning hot"
     },
     {
      "file": "needletail/needletail_flight_above.png",
-     "alt": "needletail, flight mode, from above: the bigger wings out, their roots in the fuselage"
+     "alt": "needletail, flight mode, from above: the pointed wings near the canards"
     },
     {
      "file": "needletail/needletail_changing.png",
-     "alt": "needletail, changing: the guns running in, the blisters shutting, the iris shut and the pop-up folding, the boosters swivelling"
+     "alt": "needletail, changing: the guns running in, the boosters swivelling and running in with their tailplanes' panels"
     }
    ],
    "before": {
-    "summary": "Before: the fifth cut, 13 November (the guns sunk inside a full nose, barely out in hover, the rear boosters closer in, smaller wings with a gap at the root)",
+    "summary": "Before: the sixth cut, 13 November (the nose stepped in to a needle ahead of the guns, the rear boosters on short tailplanes, cropped wings further back)",
     "images": [
      {
       "file": "needletail/before_needletail_front.png",
