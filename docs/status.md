@@ -956,8 +956,21 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   one blow a round falls to two fifths of its cost and a blow's number tunes nothing against
   a shield that stands; a point of regen back after the rest stops a whole blow, a quarter
   to a third of what the rule stops; and a blow finds a shield at rest once an elite's fight,
-  the bot spending a third fewer dice on defence under it. His play is the read: REST 2 with
-  NONE. His marks on 4-4-2 are in ("That's probably fine for 4-4-2 for
+  the bot spending a third fewer dice on defence under it. His question on those reads the
+  same day set the method for the fundamentals, now a rule in `CLAUDE.md`: "is it too much
+  defense? ... our enemies aren't set up to threaten that type of defense ... we need to be
+  thinking theoretically and critically about the system as a whole and how it fits together,
+  and build simple models perhaps, before slamming it against the whole game as it stands."
+  The model is `tools/shield_model.py` (seconds, no content: four machines, the same damage a
+  round in each shape, the shield under each rule) and the frame is the brief's section 16.
+  By the model the block is no more defence over all and a wall against the lone blow (64%
+  of it reaches a hull as built, 26% with the block), which most elites and bosses are today,
+  so the reads above measured that mismatch; what threatens it is a breaker the shield's size
+  and a blow behind it, and it is the one shape of his three where a kill answers a big blow
+  (the breaker's kill saves twice its own damage), the delay alone and the shooter's rule
+  being answered by who gets hit. So the clause and the foes' kits are one decision, and the
+  kits are next, proposed in chat against the model before any content or run. His play of
+  the trial waits on them. His marks on 4-4-2 are in ("That's probably fine for 4-4-2 for
   now": the brief's section 13 has the table with his words, each open place its chassis's
   session's). Also open, his: the first battle's block (not scaled:
   on the anchor's numbers a mustering trio with the Honey Badger wins 0 to 5% of the
@@ -965,7 +978,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   quarters for its rank and file a trio keeps its hull, and the trios with the Badger still
   lose the wall); the Waste's bosses and the Peak's clock; the Prairie Dog alone. The
   muster rule and the fight-at-its-rating read are scratch probes; the runner still plays
-  the defence rule. The bible's triangle, scale, shield and Barrier rows and section 12 (v0.565);
+  the defence rule. The bible's triangle, scale, shield and Barrier rows and section 12 (v0.566);
   the rules' chassis, basics, heat and scale lines.
 - **Four formations cut toward the budget, 4-4-2 to work with, and the anchor** (Ryan, 12
   November: "Yes go ahead with 2. Also, let's look at 4-4-2 right now so that you're working
@@ -1663,9 +1676,10 @@ commands are in `README.md`.
   that leaned on them, the triangle row's heat prices, the anchor's tier-one lines, Reset let go,
   the Barrier's cooldown and place, the shield's worth and the grant withdrawn, tier as a
   machine's word, and the looks row's Kite for its shipped mount. BASE for the next merge is
-  `620c717`'s file. Main's file is v0.565 since
+  `620c717`'s file. Main's file is v0.566 since
   `ccr-722ca9f0-yj8na3` landed again the same day (section 12's breaking shield, his idea of 13
-  November read as a what-if), unpublished, its republish on Ryan's word. The
+  November read as a what-if, and the method his question set), unpublished, its republish on
+  Ryan's word. The
   live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS

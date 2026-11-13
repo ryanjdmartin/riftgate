@@ -124,7 +124,9 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   `--fit`, summarised into `build/pricing/<name>/summary.md`); `synergy_map.py` prints who sets and who reads every
   status and resource, from content, and writes `docs/synergy_map.md`; `turn_loop.py` models the
   campaign's turn loop from its constants with every battle won, for the pressure the fronts put
-  on the cities; `backdrop_shot.gd` paints the skirmish's battle backdrop for every domain on
+  on the cities; `shield_model.py` models the shield apart from content, four machines against
+  the same damage a round in different shapes under each rule for the shield, for what a rule
+  makes the foes and the player want before the runner reads it; `backdrop_shot.gd` paints the skirmish's battle backdrop for every domain on
   every ground into PNGs, headless; `screenshot.gd` renders a
   scene to PNG at 720x1280; `die_sheet.gd` draws the die's whole iconography on one sheet with
   the die's own drawing (every main mark and what it holds, whom a piece reaches, the rest of a face's marks);
@@ -407,6 +409,14 @@ python3 tools/synergy_map.py --write
 # up once it has bled its city N times. Seconds; a model, not a run of the game
 python3 tools/turn_loop.py --seeds 2000
 python3 tools/turn_loop.py --seeds 2000 --widen 3
+# the shield's model (13 November, Ryan: "build simple models perhaps, before slamming it against the whole game as
+# it stands"): a plated machine and three lights against 16 damage a round in each shape (one blow, two strikes, a
+# breaker and a blow behind it, a swarm, a cleave, the same machine again, a breach), the shield under each rule
+# (as built, a break that blocks the blow, a broken shield down two rounds, any hit stopping the regen); of the
+# damage dealt what reaches a hull, the wrecks, what a Barrier, Armoured and a lure save, what a kill saves. No
+# dice, no kills, no content: what a rule does with a shape, never what a fight costs. Seconds
+python3 tools/shield_model.py
+python3 tools/shield_model.py --damage 12 --rounds 4
 # whom the foes strike (23 October): every starter trio a tender can deal, stock, greedy, against each
 # faction's formation, bosses and first pack; picks as intents are drawn, the same with every machine standing,
 # swings after any Lure, the exposed aim's weights, hull lost. JSON per cell, read by hand; four parts in parallel.

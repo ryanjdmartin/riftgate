@@ -1936,3 +1936,172 @@ is worth, since it values one by its number.
 REST 3), read as a battle starts, and BARRIER BASIC (BUILT, NONE), read at the next launch;
 REST 2 with NONE is the package read above. A shield at rest shows a dashed frame on its
 gauge and a cell a round left; the break itself plays the shatter the game already has.
+
+## 16. The shield as a system (13 November, a frame and a model; nothing decided)
+
+His words, on the reads of section 15: "I guess my main question right now, is it too much
+defense? I like the thematics of shield break, let it reboot, but it's about what serves the
+game. And while I think our empirical method is good, but our enemies aren't set up to
+threaten that type of defense. I think that's something to really keep in mind as we sort out
+these fundamentals. It's all part of the same system, not just how hard the foes hit, but HOW
+they hit that matters. Ergo we need to be thinking theoretically and critically about the
+system as a whole and how it fits together, and build simple models perhaps, before slamming
+it against the whole game as it stands. Who are we trying to protect, how do we protect them,
+how are we threatened, what counterplay exists on both sides. And so on. I'm pretty sure this
+is why Breach foes are either garbage, or broken in your analysis, never in between."
+
+He then laid out three shapes and the game each asks for:
+
+- The block and a delay: "shield break blocks a blow. Shield then doesn't start to regenerate
+  until after two player turns have passed. The logical threat to that, for me, is
+  multi-strikes, to break the shield and then chip the hull, cleaves and DoTs to counter
+  shield regeneration and make it easier to break, and attacks that just deal bonus damage to
+  shield. They also want to be more defensive on average, since not every hit matters. A well
+  timed lure saves the day, as does a well timed barrier, to give an ailing shield time to
+  recover before it breaks." And of the clause: "the only reason to include the 'blocks a
+  blow' clause is if there's a real reason to include it."
+- The delay with no block: "They want big hits and constant aggro, to blow shields and then
+  quickly capitalize. Enemy defense tactics matter much less. Multi strike no longer matters.
+  DoTs fight regen, but probably aren't worth anyone's time to cast or heal. Barrier on the
+  player side is worth a whole lot more, armour less."
+- "Going all the way in: Any shield damage stops regeneration for a turn. The shooter
+  paradigm. Shield break doesn't block a blow ... Shield Regen rates are a little faster. The
+  play on both sides then becomes a back and forth of the enemy wanting to hit the same guy
+  many times in a row, when the player wants to spread it. A game the player, right now, is
+  pretty good at winning. I'm not sure I like this shape, but the point is to consider it and
+  what kind of game forms around it."
+- And of the Barrier basic: "It seemed toxic, and probably still is, but we were pitting it
+  against enemies ill equipped to fight back."
+
+The method is a rule since (`CLAUDE.md`: a fundamental is reasoned as a system before it is
+measured).
+
+**The frame.**
+
+- Who is protected. The lights from the spike, a big blow or two on one machine: his Prairie
+  Dog of 9 November, lost on a boss's first turn. And the battle's hull from the drip, since
+  hull is the battle's and a battle is eight to ten fights.
+- How, by what each layer answers:
+
+| The layer | Where it lives | The drip | The spike |
+|---|---|---|---|
+| The gauge | The chassis, a fight's | In part | In part |
+| The regen | The chassis, a round's | Yes | No |
+| Armour, and Armoured | The chassis; a die | Yes | No |
+| The Barrier | A die | No | Yes |
+| The lure | A die | Moves it | Moves it |
+| A kill | A die, any weapon | Ends it | Ends it |
+
+  Nothing that is not a die answers the spike but the gauge's own number. The block would
+  stand in that gap: it is to the Barrier what the regen is to Armoured.
+- How we are threatened. A pack's damage has a shape: its size and count (one blow, strikes,
+  a swarm), where it lands (one pick, each its own, every machine, the same machine again),
+  what it passes (a breach, a rider), and when (now, a follow-up, a countdown). The foes'
+  vocabulary holds most of that today: strikes, every machine, the focus and exposed aims, a
+  follow-up, a countdown, Crushed. It holds no blow worth more against a shield, their Burning
+  heats a machine and wears no shield, and breach passes everything.
+- A test for a threat, Claude's, from his line on breach: a threat is fair when some layer
+  answers it in part with nothing spent, and some tool answers it whole with a die. Breach as
+  built fails both ways. No layer touches it, and one tool, a Barrier, erases it. So it is
+  garbage at a small number and broken at a large one, and no number between is found. The
+  Barrier basic failed the mirror of it: one shape, the lone blow, that it erases, set
+  against elites and bosses that were mostly that shape.
+
+**The model** (`tools/shield_model.py`; seconds, no content). A plated machine (hull 36,
+shield 6, armour 1) and three lights (hull 20, shield 8) take 16 damage a round for five
+rounds, and only its shape changes. The foes pick at random but where a shape says. No die
+is rolled and no foe dies, so the numbers say what a rule does with a shape, never what a
+fight costs. Of the damage dealt, what reaches a hull:
+
+| The foes' shape | As built | A break blocks the blow, 2 down | Blocks as much again, 2 down | 2 down, no block | 2 down, no block, regen 3 | Any hit stops regen, regen 3 |
+|---|---|---|---|---|---|---|
+| One blow of 16 | 64% | 26% | 39% | 67% | 66% | 63% |
+| Two strikes of 8 | 62% | 61% | 63% | 65% | 64% | 61% |
+| Two strikes, 6 then 10 | 63% | 40% | 59% | 66% | 65% | 62% |
+| 12, then 4 from the foe behind | 62% | 42% | 47% | 63% | 60% | 59% |
+| 4, then 12 from the foe behind | 63% | 33% | 51% | 66% | 65% | 62% |
+| 4 that counts double on shield, then 12 | 79% | 79% | 80% | 81% | 80% | 78% |
+| Four blows of 4, each its own pick | 43% | 41% | 45% | 50% | 38% | 49% |
+| 4 on every machine | 38% | 38% | 39% | 48% | 8% | 58% |
+| 1 on every machine, then 12 on one | 48% | 34% | 35% | 54% | 51% | 60% |
+| 16 on the same machine every round | 68% | 60% | 60% | 70% | 70% | 70% |
+| 16 through the shield, a breach as built | 100% | 100% | 100% | 100% | 100% | 100% |
+
+Machines wrecked a fight, as built and then with the block: a lone blow 1.3 and 0.1, two
+strikes of 8, 1.2 and 1.0, the same machine every round 2.0 and 1.0.
+
+What a tool saves a fight, used as well as one round's forecast allows, in hull:
+
+| The tool, against | As built | The block, 2 down | 2 down, no block, regen 3 | Any hit stops regen |
+|---|---|---|---|---|
+| A Barrier every other round, a lone blow of 16 | 33 | 17 | 34 | 33 |
+| The same, 4 then 12 from the foe behind | 12 | 7 | 12 | 11 |
+| The same, 1 on every machine then 12 | 3 | 4 | 3 | 3 |
+| The same, a breach of 16 | 48 | 48 | 48 | 48 |
+| Armoured 2 every round, a lone blow | 9 | 3 | 10 | 9 |
+| The same, four blows of 4 | 15 | 13 | 13 | 14 |
+| A lure onto the plate every other round, the same machine hunted | 3 | 17 | 3 | 9 |
+| The same, four blows of 4 | 2 | 3 | 2 | 6 |
+
+The lure's worth is in wrecks more than in hull: against a lone blow as built it saves 1
+point of hull and 0.6 of the 1.3 wrecks.
+
+What a kill saves: the foe in front gone after the first round, in hull for each point of
+damage it would have dealt. Over 1, the kill saved more than its own foe's blows.
+
+| The foe killed | As built | The block, 2 down | Any hit stops regen |
+|---|---|---|---|
+| One of four in a swarm | 0.8 | 0.8 | 0.9 |
+| A jab of 4 in front of a 12 | 0.9 | 0.7 | 0.9 |
+| A jab that counts double on shield, in front of a 12 | 1.5 | 2.2 | 1.5 |
+| The foe that tags every machine for 1, in front of a 12 | 0.3 | 0.7 | 0.9 |
+
+The orderings hold at 12 a round for four rounds and at 20 for five. What moves is the
+breaker's size: two strikes of 6 on a shield of 8 are still half blocked (34% where it is 50%
+as built).
+
+**What forms round each rule.**
+
+| The rule | What the foes want | What the player wants | What goes dead |
+|---|---|---|---|
+| As built | One pick and big blows (62 to 68%) over spread ones (38 to 43%); order is nothing | The Barrier against a lone blow, which is why it read toxic; a kill is worth its own damage or less | Nothing; a blow is its number |
+| A break blocks, 2 down | A breaker the shield's size and a blow behind it: 8 and 8, or a small foe in front that breaks it | The breaker dead, a kill worth twice its damage; a lure when one machine is hunted; the Barrier worth half | The lone big number |
+| 2 down, no block | Today's regen: nothing new, 1 to 10 points more on a hull in every shape. A faster regen: only blows that break | What it wants as built; the Barrier is worth a point more | At a faster regen, chip and with it the swarm |
+| Any hit stops regen | A foe that touches every machine; the same machine again is no better than it is now | That foe dead; the lure, worth three times as much against a swarm | The lone blow at random, which costs what it does as built |
+
+**Is it too much defence.** By the model it is no more defence over all. Against a swarm, a
+cleave or two strikes of the shield's size it adds nothing. Against a lone blow it takes
+what reaches a hull from 64% to 26%. So it is a wall against one shape, and too much exactly
+where the foes are that shape. Ten of the twenty-four elites and bosses fell to two fifths of
+their cost in the reads of section 15: those reads measured the mismatch he names, not the
+rule. The form that blocks as much again as stood is the dial's middle, 39%.
+
+**Where the model differs from his sketch.**
+
+1. Under the block, a cleave or a tag alone is no threat: a cleave reaches a hull at 38% as
+   built and at 38% with the block. Its regen is not what needs countering, since the delay
+   already does that. What threatens it is whatever breaks the shield just before the blow
+   that counts, and the breaker has to be the shield's size: 8 and 8 reaches a hull at 61%, 6
+   then 10 at 40%. A blow that counts double on shield is the cheapest breaker, 79%.
+2. Under the delay with no block, the Barrier is not worth "a whole lot more": 34 against 33.
+   That rule moves what the foes want and leaves what the player reaches for.
+3. Under the shooter's rule, hitting the same machine again is no better for the foes than
+   it is now, 70% against 68%. Touching everyone is, 58% against 38%. So that shape is less
+   a duel of focus against spread than a hunt for the foe that tags.
+
+His point that foes under the block "want to be more defensive on average, since not every
+hit matters" stands and is outside the model, where no foe dies.
+
+**Claude's read, his to take or leave.** The real reason for the clause is the kill's row.
+The block is the one shape of the three in which a weapon answers a big blow: kill the foe
+that would break the shield and the blow behind it is blocked. The other two are answered by
+who gets hit, which is the lure's work and so the tank's, the NEED of 9 November. But that
+reason exists only when the foes are built as a breaker and a blow behind it. Set against
+lone blows the block is a Barrier on every machine for nothing, and too much. So the clause
+and the foes' kits are one decision, and the kits come first.
+
+**What would come next, on his word**, in this order: the foes' kits proposed in chat against
+the model, before any content (an elite as a breaker and a blow behind it, in one round or by
+a follow-up, which is the fair one since it shows a round ahead; a boss that strikes every
+machine and then hunts one; what a breach is once it sits inside the system and no longer
+outside it); then those kits as synthetic foes in the engine's what-if; then his play.
