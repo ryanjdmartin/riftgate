@@ -1021,8 +1021,20 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   wants are in the vocabulary today. It comes with fights about a third longer in rounds at
   the model's numbers. Open in it, his: what a shot past the maximum costs while a machine
   rides (the model keeps today's burn). The answer also lists the three differences he
-  asked for between his statement and the splice. Next on his word: an engine what-if
-  behind a trial dial and the foes' kits in chat. His call; nothing built.
+  asked for between his statement and the splice. His go the same day: "Yes let's go for it.
+  Dump the rules spec here first before we start", with three rules of his own (heat past
+  the maximum stays, shown as an uncleanseable debuff, a stack a point, and anything that
+  cools takes the stacks first; a broken shield "cannot gain shield by any method"; an
+  overheat's triggers fire once until the reboot) and the point he calls undecided: at the
+  maximum, burn hull or stop the spend. **The next step is the build, and it waits on his
+  rulings.** The brief's section 22 has the spec line by line, the five rulings with the
+  default each is built on (the burn's clock, the overheat breaking the shield, the reboot
+  as the whole turn, a Barrier on a broken shield, a shield its own machine spends), the
+  machines the rules break or bend for his brainstorm (the Whip Scorpion, the Buzzard, the
+  Storm Petrel, the Polar Bear, the Musk Ox, the Kite, and the two in design; eight more
+  bend), and the build's list: a what-if off by default, REBOOT on the trials with BUILT,
+  BURN and STOP, the morning's SHIELD BREAK rest timer cut and its block kept as a switch.
+  Nothing is built yet.
   His marks on 4-4-2 are in ("That's probably fine for 4-4-2 for
   now": the brief's section 13 has the table with his words, each open place its chassis's
   session's). Also open, his: the first battle's block (not scaled:

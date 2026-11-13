@@ -2775,3 +2775,183 @@ dial, since the feel of reading the picks is his play's to judge, and the foes' 
 What it costs to come, beyond section 20's list: the reboot as an act on a machine, its
 control, the forecast showing the bare turn, and the bot's play of it. The forced turn and
 the "broken" state are not needed.
+
+## 22. The reboot's rules, before the build (13 November; his go, the spec waiting on his rulings)
+
+His words, on section 21's read:
+
+> Yes let's go for it. Dump the rules spec here first before we start, though.
+>
+> The one main undecided point, that I currently see, is what happens at max heat. Either we
+> let them burn hull, or we prevent them from using anything that creates more heat. The
+> former is the better agency choice, but it has to be costed properly.
+>
+> One change I'd make to the current rules, is that heat over the maximum does NOT go away. We
+> display it in an uncleanseable debuff on the unit, a stack for every point of heat, and it's
+> treated like any other heat - so if a hypothetical cooling ability comes through, it would
+> reduce the stacks first before hitting the bar. Obviously it can be tracked however in the
+> engine, but that's how I would display it on screen.
+>
+> There's a couple other edge cases that would need addressing:
+>
+> -If the shield is broken, by either foes or overheat, that's another uncleanseable debuff. It
+> states that the unit cannot gain shield by any method. So granting a shield or shield Regen
+> through whatever abilities we might allow, only applies to a "live" shield.
+>
+> -any triggers on Overheat, if they should exist, only fire the first time it overheats,
+> reset on the "reboot." So if the machine overheats, then somehow gets back under the cap (it
+> gains cooling, is cooled, or its cap is temporarily raised), it cannot trigger an overheat
+> event even if it goes back over. Not until it reboots.
+>
+> Any other edge cases you need me to rule on?
+>
+> I'd also like a list of the chassis that break with this change, so that I can start
+> brainstorming.
+
+### The spec
+
+Present tense, in the round's order (`docs/rules.md`, The round). A bracket names the ruling a
+line waits on.
+
+*The meters.*
+
+1. A shield takes a blow up to its number and the rest reaches the hull, as today. It does
+   not come back by itself: a chassis's own shield regen is nothing.
+2. A spend adds its heat, as today. Heat does not leave by itself: a chassis's own cooling is
+   nothing.
+3. Regen and cooling exist only where something grants them: a passive, a module, a status, a
+   component.
+
+*The reboot.*
+
+4. On the player's turn a machine whose die is unspent, and which has spent nothing this turn,
+   may reboot. It is its whole turn. [ruling 3]
+5. At once its shield goes to nothing, and it is Rebooting through the enemy's turn. UNDO
+   takes a reboot back like a spend.
+6. As the next round opens, before the roll and before the foes pick, its heat is nothing, its
+   shield is whole, and Broken and Overheated are gone.
+7. Nothing forces a reboot, and it clears nothing else: the machine's statuses stand.
+8. A rebooting machine neither overheats nor burns at END TURN.
+
+*Past the maximum.*
+
+9. Heat may pass the maximum, and it stays there. What stands past it shows as Overheated, an
+   uncleanseable debuff, a stack a point. It is heat like any other: every rule that reads heat
+   counts it, anything that cools takes the stacks first, and a maximum that rises takes stacks
+   back onto the bar.
+10. The overheat is judged at END TURN, after Burning's heat, as today. The first END TURN a
+    machine stands past its maximum since its last reboot is its overheat: its shield breaks,
+    and anything that triggers on an overheat fires. Neither happens again until it has
+    rebooted, though it fall back under its maximum and pass it again. [ruling 2]
+11. The undecided point, both ways on the trial's dial:
+    - *Burn.* A spend may take a machine past its maximum. At END TURN it loses a point of
+      hull for every point its heat has climbed past the maximum since the last END TURN.
+      [ruling 1] The hull a point costs is the trial's OVERHEAT dial, one to three, built 12
+      November.
+    - *Stop.* A spend whose heat would take a machine past its maximum cannot be made. A foe's
+      heat, or its own Burning, can still take it past; then line 10 lands and nothing burns.
+
+*Broken.*
+
+12. A shield at nothing is Broken, an uncleanseable debuff, whatever took it there: a foe's
+    blow, the overheat, its own reboot, its own machine's spend. [ruling 5] A Broken shield
+    gains no shield by any method: a grant, a regen, a refill on a kill, a module's. Only the
+    reboot's recovery clears it.
+13. A Barrier is no shield, and lands on a machine whose shield is Broken. [ruling 4]
+
+What follows from those, built so and no question:
+
+- Under the trial only a chassis's own regen and cooling read as nothing. Everything else that
+  grants either stays as written and obeys lines 9 and 12, so the machines that break are seen
+  breaking.
+- The recovery lands before the foes pick, so the exposed aim sees a whole shield and the heat
+  aim a cold machine.
+- A reboot is no pass, no entry spent and no shield gain, so nothing that reads one fires on
+  it: the Whip Scorpion's valve, a foe's count of entries spent, a passive on shield gain.
+- An overheat's burn is hull damage for every passive that reads hull damage, as today, once
+  at each END TURN it burns.
+- A blow on a machine with no shield can injure, as today.
+- A fight opens as today: the shield whole, the heat nothing, none of the three states.
+
+### The rulings it waits on
+
+Each with the default the build takes if he says nothing more.
+
+1. *The burn's clock.* Each point burns once, as it passes the maximum; or every stack burns at
+   every END TURN it stands. His line, taken with today's rule (the excess burns at END TURN),
+   reads as the second. Default: once. The overheat already breaks the shield, so a machine
+   past its maximum has its reason to reboot, and a standing burn would turn a foe's Burn on a
+   hot machine into a forced reboot, which is what this form took out.
+2. *The overheat breaks the shield.* Read from his "broken, by either foes or overheat".
+   Default: yes.
+3. *The reboot is the whole turn.* A machine that has spent anything this turn cannot reboot:
+   the Dingo's second action, the Needletail's second, a Rapid or Instant piece first. The
+   other answer has a reboot take one action. Default: the whole turn.
+4. *A Barrier on a Broken or rebooting machine.* Default: it lands, since a Barrier is a status
+   over the hull and no shield. It is then the one cover a rebooting machine can be given.
+5. *A shield its own machine spends to nothing.* The Storm Petrel pays its weapons' heat in
+   shield. Default: Broken like any.
+
+On the undecided point, Claude's lean, his to take or leave: burn. Under a stop heat is
+lumpy, a gun of 5 against a maximum of 12 firing twice and stranding two points, the Carbine
+and a gun of 6 costing the same; under the burn every point is paid, on the bar or in hull.
+The model has the burn as a tool and not a habit at today's price: a squad that never reboots
+for heat and burns loses up to 17 points more hull at four rounds and 23 at six (section 21).
+In content a basic gun's shot past the maximum is 4 hull for a blow of 2, over half of what a
+formation fight costs a squad, so one hull a point is already dear; the OVERHEAT dial, which
+only raises it, is there if his play says otherwise.
+
+### The machines, by what the rules do to them
+
+No fix proposed: the list is for his brainstorm. "In design" marks a machine whose session is
+already pending (`docs/todo.md`, Design sessions).
+
+| The machine | What it is built on | Under the rules |
+|---|---|---|
+| **Whip Scorpion**, Wainwright & Sutler, tier 2 | "Nothing cools it"; a pass at 8 heat or more releases the lot on every foe and leaves it cold; its ray vents all; regen 3; a foe's blow on it adds 2 heat after the overheat is judged | Its rule is every machine's now. It has two ways to empty its gauge that keep its shield. A foe's blows can carry it past its maximum, which now breaks its shield |
+| **Buzzard**, Kestrel, tier 2, a rework given a direction | Shield regen by the heat it carries; the Afterburner fires its whole gauge | Heat that never leaves is a standing regen, and a vent that is a shot means no reboot for heat. Both count heat past the maximum |
+| **Storm Petrel**, Kestrel, tier 1, a rework given a direction | Its weapons pay their heat out of its shield; the Regenerator grants regen; blows lose 1 while its shield stands | It spends its own shield to nothing, makes no heat to vent, and its regen grant needs a live shield |
+| **Polar Bear**, Minerva, tier 1 | The seal: "its own cooling stopped", 3 heat more a turn, opening its heat's "one way down" | Nothing to stop, opening cools nothing, and the seal walks it into an overheat, which breaks its shield and stays |
+| **Musk Ox**, Wainwright & Sutler, tier 3, a session pending | Ammo in place of heat; a maximum of 8 | No heat clock at all. A reboot is for its shield alone |
+| **Kite**, Kestrel, tier 2 | A kill refills its shield; a shield of 8 on a hull of 12 | A refill outside the reboot, refused while Broken. The lightest body, with nothing mending |
+| **Puffin**, Kestrel, tier 1, in design | A shield spent on an ally, grown by the ally's heat | A shield grant needs a live shield |
+| **Swallowtail**, Wainwright & Sutler, tier 3, in design | Its Screens and Hoist shield allies and vent them | The same, and the one piece that vents an ally |
+| **Stingray**, Aphelion, tier 1 | A stack deeper for every 5 heat it carries | Heat never leaves and counts past the maximum, so it is paid to ride there |
+| **Nemesis**, Arsenal, tier 2 | Rage on a hit on its shield and on hull damage, the burn included | A shield that does not mend is hit fewer times, and the burn is a rage source the player controls |
+| **Cottonmouth**, Wainwright & Sutler, tier 1 | Cooling 3 for a drum shot of heat 6 | Two shots a reboot at a maximum of 12 |
+| **Dingo**, Wainwright & Sutler, tier 2; **Needletail**, Kestrel, tier 2 | Two actions a turn | Twice the heat a turn, and ruling 3 |
+| **Wild Boar**, Minerva, tier 2 | Regen 3 as a tank's stat | The stat goes; its passive reads a Barrier and stands |
+| **Giant Petrel**, Kestrel, tier 3 | Cooling 3 | The stat goes |
+| **Skua**, Kestrel, tier 1 | Ricochet halves on hull damage | A burn halves it |
+| Honey Badger, Clydesdale, Funnel-web, Ammit, Baboon, Prairie Dog, Cassowary, Lammergeier | Nothing that reads heat, cooling, regen or a shield gain | Only the stats: regen 1 or 2, cooling 2 |
+
+Beside the chassis, the pieces that read the same things:
+
+- *Modules.* The Boundary-layer Bleed, a shield point each time heat climbs and a point of
+  cooling. The Spall Liner, 2 shield on hull damage, the burn included. The Field Radiators, a
+  point of cooling. The Phase Conjugator, which reads a shield granted to an ally.
+- *Components.* The Afterburner Cannon and the Heliographic Death Ray, which fire the whole
+  gauge. The St. Elmo's Regenerator. The Backwash Ionizer, the Mooring Screens and the Sutler's
+  Hoist, shield grants on machines in design. The Quick Reload, a vent in kind. The Stoker,
+  which sets its own machine Burning. The ten planned shields and vents.
+- *Statuses.* Cryo cools the machine that hits it. Regenerating is a regen grant.
+- *Foes.* Burning and Scorched weigh more with nothing cooling. The heat aim, the Black Mage's
+  and the Red Dragon's, and the exposed aim, four foes', point at the machines the rule
+  squeezes.
+
+### The build, once he has ruled
+
+A what-if off by default, as the others are; nothing in content moves.
+
+- The engine: a switch with the two answers to the undecided point; a chassis's own regen and
+  cooling read as nothing under it; the reboot as an act with its undo; the three states on a
+  machine; the overheat judged once; every shield gain refused while Broken; the recovery as
+  the round opens; the forecast playing a rebooting machine bare; the save and the clone.
+- The morning's SHIELD BREAK dial: its rest timer goes, since nothing comes back by itself
+  now. Its block stays as a switch of its own, since the block is still his open question.
+- The screen: a REBOOT control on a machine while its die is unspent, and the three states'
+  marks. Their names and lines are shown text and his: a session's drafts beside
+  `docs/voice.md`, on the Text tab, unsigned.
+- The bot: a first play of it, so the runner and the campaign's tools still run.
+- The trial: REBOOT on SETTINGS → TRIALS, with BUILT, BURN and STOP.
+- Tests of each line of the spec.
