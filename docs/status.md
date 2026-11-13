@@ -1632,52 +1632,25 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
-  `docs/design-bible.html` after every change. The live page is v0.547, dated 12 November (the
-  page's Version 510, published from main at `aac6bfc` on Ryan's word, "Merge into main and
-  republish": main's file whole, the live v0.538 matching `0d992f3`'s file byte for byte; new since
-  509 `ccr-e3ddf00b-ilkwbi`'s rows: the withdrawal row's call on a break-off for one machine, the
-  Kite's row rewritten, the Kestrel row's Needletail and Skua with Ricochet and the Split-cycle
-  Breech, the tiers row's stock rule, the Sweep row rewritten as its removal with the rows that
-  leaned on it, the Whip Scorpion's and the Musk Ox's rows, the looks row's Kite mount and intake,
-  and Ricochet and Finisher in the tables). Main's file is v0.564 since `ccr-e3ddf00b-ilkwbi`
-  landed again on 13 November (the looks row's Kite for its shipped mount, the hood's bore and the
-  round cut), over main's v0.563 with the rows landed since v0.547 (the triangle row's heat shape
-  on trial, the anchor, the dead-code pass, Reset let go, the Barrier's cooldown and place, the
-  shield's worth and the grant withdrawn among them), unpublished, its republish on Ryan's word. Version 509 (main's `0d992f3`, on his "Yes" to "The
-  hangar and the bible are both behind main now. Want me to republish them?") was main's file
-  whole over the live v0.536: `ccr-63a1309a-caa9mw`'s rows (the cooldown counted after its spend, Rapid's own switch-off,
-  Instant) and `ccr-4d58b054-3lyj0a`'s (the Stingray's Lance and Sapped, the Wild Boar's row in
-  place of its spill's, the Baboon's row Decided, the debuff and keyword tables' Sapped, Sap and
-  Juggernaut Breach. Version 508 (main's `fbce698`, on his "Yes please") was main's file whole
-  over the live v0.535: the batteries row's wells and the acts table's broadside drill and hatch
-  wave. Version 507 (main's `3d5f98f`, on his
-  "Republish please") was main's file whole over the live v0.534: the Clydesdale's cell in the acts
-  table, its five idle acts. Version 506 (main's `da18614`, on his "Pull in main
-  and republish") was main's file whole over the live v0.533 (`d2c024d`'s): the Prairie Dog's and
-  the Dingo's rows from `ccr-4d58b054-3lyj0a`, the Flakshot Repeater, the Hollow-point Harpoon, the
-  Translocator's Shock and the two pins in the debuff table. Version 505
-  (main's `d2c024d`, on his "Merge in and republish") was main's file whole over the live v0.524
-  (Version 504, main's `60a0e4d`), which matched that commit's file; new since 504 the pacing row in beats of the tide,
-  menace a pack's threat rating and the rows that follow it, the Whip Scorpion's rework, the
-  hardpoints row with every stock gun its class, the Clydesdale's batteries row and its square
-  ports, and Changed Over in the buff table). BASE for the next merge is `aac6bfc`'s file. Also
-  unpublished: main's v0.548, the Ammit's rework (its Ammit row, the Empowered, purge, store and
-  Ability rows, section 12 without the Tap's question, and Souls and Pinned Empowered in the
-  tables), and main's v0.552 since `ccr-8af28d03-re9kz4` landed again (the Ammit row's flare once an
-  attack and the cut of its two old rules, the Empowered row's mark, and the rows that said the
-  engine kept a rule the dead-code pass cut: the Kite's, a piece of two kinds, a rider's limit,
-  Chain's targeting, the Whip Scorpion's), and main's v0.563 since `ccr-722ca9f0-yj8na3` landed
-  again (the scale row's tier-one foes, the triangle row's prices as content, the shield
-  row's tier-one lines and the two shapes it passed over, the Barrier row's cooldown, and
-  section 12's 4-4-2 to work with, the anchor, the heat-reading machines, the Barrier on the
-  machine and the Barrier's place); each goes up on Ryan's word. The
+  `docs/design-bible.html` after every change, on Ryan's word. The live page is v0.564, dated 13
+  November (the page's Version 512, published from main at `7b23422` on his "Sure" to the offer:
+  main's file whole, dated the 13th since rows of that day are in it, Version 511 a minute before
+  it the same file under the 12th's date; the live v0.547 matched `aac6bfc`'s file byte for byte
+  before it was replaced, and the live copy matches `620c717`'s after). New since 510: the rows
+  landed on main from v0.548 to v0.564, the Ammit's rework (its row, Souls and Pinned Empowered in
+  the tables, Siphoning and Empowered a kill out of them), the dead-code pass's cuts and the rows
+  that leaned on them, the triangle row's heat prices, the anchor's tier-one lines, Reset let go,
+  the Barrier's cooldown and place, the shield's worth and the grant withdrawn, tier as a
+  machine's word, and the looks row's Kite for its shipped mount. BASE for the next merge is
+  `620c717`'s file. The
   live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS
   this branch's file, THEIRS the saved live source with the tool's wrapper line and its trailing
   newline and `</body></html>` stripped, so it matches the file byte for byte). The tool's read
   counts as viewing the page, its saved copy needing no whole Read (it said so on 11 November);
-  the saved copy is 666 KB, so a subagent still does the comparing and the merge. After main
+  the saved copy is about 700 KB, so a few lines of Python do the comparing (its first line and
+  its closing `</body></html>` dropped, it is the file), and a subagent the merge when one is needed. After main
   merges in, check the tables script's run against the file's tables before keeping it: a row it
   reverts belongs to a branch not yet landed.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
