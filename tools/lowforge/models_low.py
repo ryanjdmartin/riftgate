@@ -5693,38 +5693,46 @@ def needletail(b):
     sharper should help with that, maybe?"; the lens "a segmented iris opening that widens and
     narrows"; the canopy "longer, carrying back more. It's a small spotter ship, it needs a good
     viewing range"; the rear face "a cut-out exhaust, with the needle coming out of the middle,
-    even longer than it is now".
+    even longer than it is now". And on the fifth (whose guns had gone inside the nose on a misread
+    of "cut in"): "There was no clipping on the outer surface, the guns just didn't actually clear
+    the nose, they were half embedded in it when extended"; the rear boosters extending "further when
+    fully extended"; the wings "a bit bigger", with "no gap between them and the fuselage when
+    extended".
 
     Built at rest in hover mode, the pose it holds standing and in every fight: a jet's chined
     fuselage, eight-sided (a flat top and belly, chamfers, a short upright band at the chine),
-    the nose full through the guns and then a sharp taper to a long dark point; each cheek gun
-    inside the nose, its barrel's tip in a teardrop recess cut into the nose's side, the halves
-    rolled up and down into the fuselage's side on the gun's own line (shell_lt, shell_lb,
-    shell_rt, shell_rb), the muzzle run out to the recess's front (run_l, run_r), nothing proud
-    of the nose's line; the Designator a low wedge popped up on the nose's top (lamp, hinged at
+    the nose full back by the cheeks and cut in sharply ahead of them to a long slim needle; each
+    cheek gun's teardrop recess where the nose's side crosses its line, the halves rolled up and
+    down into the fuselage's side on the gun's own line (shell_lt, shell_lb, shell_rt, shell_rb),
+    the gun run far out of it along the needle (run_l, run_r), its barrel clear of the skin, a short
+    trough where it leaves the recess; the Designator a low wedge popped up on the nose's top (lamp, hinged at
     its back), its round lamp facing ahead behind a six-bladed iris (iris_1 to iris_6, each
     blade turning on its own pin in the lamp's rim); the long canopy amidships, two bows across
     it; the two pods on the
     upper chamfers behind it, each a slab of the chamfer raised out of its dark slot (pod_l,
     pod_r), its gun out of its face (run_pod_l, run_pod_r); the front boosters (booster_fl,
     booster_fr) upright at the tips of the canards, beside the pop-up, the rear (booster_rl,
-    booster_rr), thicker, at the tips of the tailplanes among the X fins, each on a slide
+    booster_rr), thicker, far out at the tips of long tailplanes among the X fins, each on a slide
     (slide_fl, slide_fr, slide_rl, slide_rr); the wings (wing_l, wing_r) stowed inside the
     middle; astern, the whole rear face a dark cut-out exhaust, lit at its floor, the long
     needle running out of its middle. Flight mode is the gait (MechRig.drive):
     as it gathers speed the cheek guns run back and the blisters' halves roll shut over the barrels' tips, the
     pods' guns run back into the pods and the pods sink flush into their slots, the iris shuts and the pop-up folds
     flat, the boosters swivel level and run in along their fins to sit against the body (the rear
-    pair between the upper and lower X fins), the wings swing out and the exhaust burns; slowing,
+    pair between the upper and lower X fins), the wings swing out, their roots in the fuselage,
+    and the exhaust burns; slowing,
     it all comes back. Mounts in the die's order: hp_1 the left cheek (the Transonic Rifle), hp_2
     the right (the Laser Carbine), hp_3 the left pod (the Twin Autoguns), hp_4 the right pod (the
     second Laser Carbine). Centred on z = 0 like the Kite."""
     # The body: a jet's chined fuselage, (y, width, top, belly, the upright band's half height at
-    # the chine) nose to tail; the nose full through the cheek guns, then a sharp taper to the
-    # point (Ryan, 13 November: "Tapering the nose sharper should help with that"), the cheeks
-    # inside it; astern the tail ends square, its whole face the exhaust.
-    BODY = [(47.0, 0.5, 0.25, 0.2, 0.03), (44.0, 2.0, 0.85, 0.7, 0.3), (40.5, 4.6, 1.75, 1.4, 0.8), (37.0, 7.6, 2.6, 2.05, 1.3),
-            (33.5, 10.2, 3.35, 2.55, 1.7), (30.0, 12.2, 4.0, 2.95, 1.85), (25.5, 13.9, 4.6, 3.3, 1.85), (19.5, 15.2, 5.3, 3.6, 1.75),
+    # the chine) nose to tail; the nose full back by the cheek guns, then cut in sharply ahead of
+    # their recesses to a long slim needle, so a gun run out lies clear of it (Ryan, 13 November:
+    # "the guns just didn't actually clear the nose, they were half embedded in it when extended";
+    # "It needs to be cut in more. Tapering the nose sharper should help with that"); astern the
+    # tail ends square, its whole face the exhaust.
+    BODY = [(46.5, 0.5, 0.25, 0.2, 0.03), (43.0, 2.1, 1.0, 0.85, 0.35), (39.0, 3.9, 1.65, 1.35, 0.7), (35.5, 5.4, 2.2, 1.8, 1.0),
+            (32.4, 6.7, 2.7, 2.15, 1.22), (31.6, 9.0, 3.3, 2.55, 1.55), (30.0, 10.4, 3.7, 2.8, 1.75), (28.0, 11.9, 4.1, 3.05, 1.85),
+            (25.5, 13.2, 4.6, 3.3, 1.85), (19.5, 15.0, 5.3, 3.6, 1.75),
             (12.5, 16.1, 6.0, 3.85, 1.5), (5.0, 16.8, 6.7, 4.05, 1.15), (-4.0, 17.0, 7.2, 4.2, 0.8), (-26.0, 17.0, 7.2, 4.2, 0.8),
             (-31.0, 12.0, 5.2, 3.5, 0.4), (-43.0, 12.0, 5.0, 3.4, 0.4), (-48.0, 10.4, 4.4, 3.0, 0.35)]   # straight the pods' whole length, so each pod's gun runs back under a full face
 
@@ -5739,7 +5747,7 @@ def needletail(b):
         """The body's chine at `y`, its widest."""
         return at(y)[0] / 2.0
     body = b.loft([(y, sec(w, t, bt, s)) for (y, w, t, bt, s) in BODY], "steel.plate", "fuselage")
-    b.loft([(46.5, diamond(0.0, 0.0, 0.8, 0.6)), (51.5, diamond(0.0, 0.0, 0.08, 0.08))], "steel.dark", "nose_tip")
+    b.loft([(46.0, diamond(0.0, 0.0, 0.8, 0.6)), (51.5, diamond(0.0, 0.0, 0.08, 0.08))], "steel.dark", "nose_tip")
     # The exhaust: the tail's whole face cut out and lined dark, its floor lit, and the needle
     # running out of its middle, long (Ryan, 13 November: "that whole thing could be a cut-out
     # exhaust, with the needle coming out of the middle, even longer than it is now").
@@ -5758,20 +5766,21 @@ def needletail(b):
               (-19.5, 2.6, 2.1), (-21.5, 1.3, 0.8), (-22.5, 0.6, 0.3)]
     _jet_canopy(b, [(y, w, t, bt) for (y, w, t, bt, s) in BODY], CANOPY, -3.0, frames=(-12.5,))
 
-    # The cheeks: each gun lies inside the nose on a run, far enough in that nothing of it stands
-    # proud of the nose's line (Ryan, 13 November, on the barrels' tips out of the side: "It needs
-    # to be cut in more"); its barrel's tip in a teardrop recess cut into the side, point forward,
-    # which a clamshell closes in flight, a little bulge. Shut it is the outer part of a teardrop of
+    # The cheeks: each gun lies inside the nose on a run, its line where the nose's side crosses
+    # it, so in flight only its barrel's tip stands proud of the skin, under a short teardrop
+    # clamshell, point forward, a little bulge. Shut it is the outer part of a teardrop of
     # revolution about the gun's line, split on a horizontal seam; each half hinges on that line (a
     # roll joint) and in hover is rolled up (or down) and in, into the fuselage's side behind the
-    # recess's dark lining, baring the muzzle, which runs out to the recess's front.
-    AX = 4.6                       # the gun's line out from the middle
-    TIP_B, WIDE, NARROW, TIP_F = 26.6, 28.6, 30.3, 31.8   # the blister's back tip, its widest, the start of its point, its point
-    RM = 1.9                       # its radius at its widest
+    # recess's dark lining, and the gun runs far out along the needle ahead, its barrel clear of the
+    # skin (Ryan, 13 November: "they were half embedded in it when extended"), through a short
+    # trough where it leaves the recess.
+    AX = 4.5                       # the gun's line out from the middle
+    TIP_B, WIDE, NARROW, TIP_F = 27.6, 29.0, 30.3, 31.6   # the blister's back tip, its widest, the start of its point, its point (where the nose's side crosses the gun's line)
+    RM = 1.42                      # its radius at its widest
     TH, OPEN = 0.22, 120.0         # the halves' thickness, and how far each rolls in to open
-    PIN, RUN = 22.32, 1.2          # the gun's mount at rest (run out, the muzzle at the recess's front), and how far it runs back in flight
-    CHEEK_FITS = {"barrel": ("barrel_port", 1.0), "twin_barrel": ("twin_barrel", 0.55, -8.1), "rack": ("rack_round", 0.48, -16.6),
-                  "dish": ("dish", 0.42, -20.0), "blade": ("blade", 0.55, -11.6)}
+    PIN, RUN = 29.72, 7.2          # the gun's mount at rest (run out along the needle), and how far it runs back in flight, its muzzle under the blister
+    CHEEK_FITS = {"barrel": ("barrel_port", 1.0), "twin_barrel": ("twin_barrel", 0.55, -8.1), "rack": ("rack_round", 0.48, -5.0),
+                  "dish": ("dish", 0.42, -4.0), "blade": ("blade", 0.55, -6.2)}   # each class's back in the recess's mouth when run out, so a short one never floats ahead of it
 
     def drop(y):
         """The blister's radius at `y`: a round back buried in the skin, its widest over the
@@ -5786,6 +5795,7 @@ def needletail(b):
         return max(0.04, RM * (1.0 - t) * (1.0 + 0.7 * t))
     STATIONS = [TIP_B + (WIDE - TIP_B) * f for f in (0.0, 0.025, 0.1, 0.25, 0.45, 0.7)] + [WIDE, (WIDE + NARROW) / 2.0, NARROW] + \
                [NARROW + (TIP_F - NARROW) * f for f in (0.25, 0.5, 0.75, 0.92, 1.0)]
+    TROUGH = (30.9, 32.5, 1.0)     # where the barrel leaves the recess, along a short trough of this radius about its line, till the needle is clear of it
 
     def edge(y, r):
         """How far round from the outboard side (degrees) the blister's surface meets the nose's
@@ -5804,6 +5814,7 @@ def needletail(b):
         for y in STATIONS:
             hull += arc(s, y, drop(y) + 0.05, 0.0, 360.0, 15)[:-1]
         b.cut_hull([body], hull)
+        b.cut_hull([body], arc(s, TROUGH[0], TROUGH[2], 0.0, 360.0, 15)[:-1] + arc(s, TROUGH[1], TROUGH[2], 0.0, 360.0, 15)[:-1])
         _rings(b, [arc(s, y, max(0.02, drop(y) - 0.3), edge(y, drop(y)), 360.0 - edge(y, drop(y)))
                    + list(reversed(arc(s, y, max(0.01, drop(y) - 0.36), edge(y, drop(y)), 360.0 - edge(y, drop(y))))) for y in STATIONS],
                "bore.void", "cheek_bay")
@@ -5913,7 +5924,7 @@ def needletail(b):
     KF, LF = 0.62, 0.45          # the front boosters' girth and length
     KR, LR = 1.05, 0.61          # the rear's (Ryan, 13 November: "rear boosters can be thicker")
     FY, FX = 12.0, 13.8          # the canards' station, beside the pop-up (Ryan: "can the canards afford to be further forward now?"), and their boosters' pivot
-    RY, RX = -40.0, 15.5         # the tailplanes'
+    RY, RX = -40.0, 19.5         # the tailplanes' (Ryan, 13 November: the rear boosters to "extend further when fully extended")
     FIN = FX - tucked(KF, LF, FY)
     RIN = RX - tucked(KR, LR, RY)
     ROOT_LE, ROOT_TE, TIP_LE, TIP_TE, SPAN = -30.0, -43.5, -40.0, -46.5, 10.0   # the six fins' planform: root chord, tip chord, span (Ryan, 13 November: "Can the rear tailfins be longer?")
@@ -5950,13 +5961,15 @@ def needletail(b):
     # The wings, stowed inside the middle: each a flat cobalt quadrilateral, swept, its inner edge
     # tapering up to the pivot at the leading root (Ryan: "The inner face can taper up"), built
     # swung in about the pivot, so in flight it swings out 58 degrees (the left a little above the
-    # right, where the two lie across each other inside, both under the pods' slots).
+    # right, where the two lie across each other inside, both under the pods' slots). Out, its root
+    # lies inside the fuselage all along, no gap at the side (Ryan, 13 November: "a bit bigger, and
+    # make sure there's no gap between them and the fuselage when extended").
     SWING = 58.0
     for s in (-1.0, 1.0):
         side = "l" if s < 0 else "r"
         zw = -0.55 if s < 0 else -1.25
         piv = Vector((s * 7.4, -6.0, zw))
-        out = [piv, Vector((s * 20.0, -16.0, zw)), Vector((s * 20.0, -20.5, zw)), Vector((s * 9.4, -19.5, zw))]   # the deployed planform
+        out = [piv, Vector((s * 24.0, -17.5, zw)), Vector((s * 24.0, -23.0, zw)), Vector((s * 7.0, -21.5, zw))]   # the deployed planform
         turn = Matrix.Rotation(math.radians(SWING if s < 0 else -SWING), 3, "Z")
         stowed = [tuple(piv + turn @ (p - piv)) for p in out]
         with b.joint("wing_" + side, tuple(piv), axis="yaw", limits=(-SWING - 5.0, 0.0) if s < 0 else (0.0, SWING + 5.0)):
@@ -6218,25 +6231,28 @@ def giant_petrel(b):
     back and "slanted, a bit more Kestrel aerodynamic". And on the third cut, the same day: "i
     meant 3 racks in line down the body, not across, back at the size they were"; the deckhouse's
     front sleeker, "to make the windshield wrap around the front, and not just a slab on the front
-    of the ship".
+    of the ship". And on the fourth: "The rear guns clip right through the rear spoiler. They'll
+    need a different approach"; the front "a more angular take to match the rest of the body"; the
+    ripple "a bit more desynced"; the bows' livery "a little meh".
 
     The Navy SES's body: two knife hulls, their stems raked back as a wave piercer's, dark below
     the chine and chrome above, a cobalt chine stripe and straight deck stripes, each closing
     astern onto the navy's flattened booster; the cross deck between them over the air cushion,
     open fore and aft, lift glowing under it; a raised centre bow between the knives carrying the
-    fore gun house; the deckhouse spanning the deck, every face leaning in, its front rounded in
-    plan and raked back all the way round, the bridge's glass a band of panes wrapping the front
-    onto the flanks, and four long windows down each flank; on its roof the Spindrift Salvo's
+    fore gun house, a cobalt spearhead down each bow's deck; the deckhouse spanning the deck, every
+    face leaning in, its front five big facets raked back all the way round, the bridge's glass a
+    pane on each, wrapping the front onto the flanks, and four long windows down each flank; on its roof the Spindrift Salvo's
     three racks flush in line down the middle, each the size of the second cut's one rack (fixed,
     no pin; salvo_f, salvo_m, salvo_a, their faces rising out of the roof one after another to fire
-    over the bow, eighteen tubes rippling), the integrated mast behind them, a swept faceted fin
+    over the bow, eighteen tubes rippling, each rack at its own pace), the integrated mast behind them, a swept faceted fin
     raked aft, carrying the Reheat Uplink's array on its tip (fixed, no pin; sensor_uplink). Astern of the deckhouse, between the hulls: a raised aft deckhouse in the
     same style, a long window down each flank and a hatch in its raked back, and either side of it
     one of the racer's giant boosters (with the navy's pair, the Immelmann Booster, fixed, no pin),
     each on its own plinth on the deck, a faceted nose ahead of it and a pylon to the aft
-    deckhouse; over them the racer's swept cobalt aerofoil spanning the hulls on two fins standing
-    on the hulls' outer edges astern. On each hull's afterdeck a gun house resting facing aft, in
-    line with the ship, its arc reaching round the outboard side towards the bow. Mounts in the
+    deckhouse; over them the racer's swept cobalt aerofoil spanning the hulls, carried on two swept
+    pylons off the giant boosters' backs, an end plate under each tip. On each hull's afterdeck a gun
+    house resting facing aft, in line with the ship, its arc reaching round the outboard side
+    towards the bow under the aerofoil's tip, nothing standing in its way. Mounts in the
     die's order: hp_1 the fore gun house on the centre bow
     (the Overclocked Railgun), hp_2 the left quarter's (the Twin Autoguns), hp_3 the right
     quarter's (the Twin Autoguns, a placeholder in the vent's old slot since the refit pass).
@@ -6263,10 +6279,18 @@ def giant_petrel(b):
             pts = [(x + 0.4, zc), (x - 0.3, zc + 0.8), (x - 1.2, zc), (x - 0.3, zc - 0.8)]
             secs.append((y, pts if s > 0 else [(-xx, z) for (xx, z) in reversed(pts)]))
         b.loft(secs, "livery.livery", "chine_stripe")
-        # The deck stripes, laid on the deck: the foredeck's, bare since its gun houses went aft,
-        # and the afterdeck's behind the quarter's gun house, under the spoiler's fin.
-        for (ya, yb) in ((62.0, 44.0), (-45.0, -60.0)):
-            b.loft([(y, rect(s * HX, 3.6, deck(y) - 0.4, deck(y) + 0.3)) for y in (ya, (ya + yb) / 2.0, yb)], "livery.livery", "deck_stripe")
+        # The afterdeck's stripe behind the quarter's gun house; on the foredeck, a cobalt spearhead
+        # laid down the bow, narrowing with the deck to a point over the stem, its back cut on a slant
+        # (Ryan, 13 November: the plain stripe there "a little meh").
+        b.loft([(y, rect(s * HX, 3.6, deck(y) - 0.4, deck(y) + 0.3)) for y in (-45.0, -52.5, -60.0)], "livery.livery", "deck_stripe")
+        spear = [(43.0, 6.4), (50.0, 5.6), (56.0, 4.6), (62.0, 3.4), (66.0, 2.0), (69.0, 0.4)]   # (y, width) back to front
+        rings = []
+        for k, (y, w) in enumerate(spear):
+            back = 3.6 if k == 0 else 0.0   # the back cut on a slant, its outer corner furthest aft
+            pts = [(s * (HX - w / 2.0), y + back, deck(y + back) - 0.4), (s * (HX + w / 2.0), y, deck(y) - 0.4),
+                   (s * (HX + w / 2.0), y, deck(y) + 0.3), (s * (HX - w / 2.0), y + back, deck(y + back) + 0.3)]
+            rings.append(pts if s > 0 else list(reversed(pts)))
+        _rings(b, rings, "livery.livery", "deck_stripe")
         # Astern, the hull closes onto the navy's flattened booster.
         y, w, z0, z1 = HULL[-1]
         b.loft([(y, [(s * HX + p[0], p[1]) for p in hexagon(0.0, (z0 + z1) / 2.0, w, z1 - z0)]), (y - 4.0, hexagon(s * HX, 13.4, 11.6, 7.4))], "steel.plate", "tail_fairing")
@@ -6283,21 +6307,21 @@ def giant_petrel(b):
     _gp_gun_house(b, "turret_fore", "hp_1", "barrel", "overclocked_railgun", 0.0, 51.0, 20.0, 9.0, 12.0, 5.0)
     # The deckhouse: every face leaning in, four long windows down each flank, a gallery's (Ryan,
     # 13 November: the row of small ones read "like an airliner, implying compartments"). Its front
-    # rounded in plan, its foot and its roof's edge each a rounded curve, the roof's set well back,
-    # so the face between them rakes back all the way round; the bridge's glass a band of panes on
-    # that face, wrapping the front onto the flanks (Ryan, 13 November: "sleek it up a bit to make
-    # the windshield wrap around the front, and not just a slab on the front of the ship").
+    # a few big facets in plan, its foot and its roof's edge the same corners, the roof's set well
+    # back, so the face between them rakes back all the way round; the bridge's glass a pane on each
+    # facet, wrapping the front onto the flanks (Ryan, 13 November: "sleek it up a bit to make the
+    # windshield wrap around the front, and not just a slab on the front of the ship").
     DZ = 20.0
     DH = [(28.0, 26.2, 15.1, 31.05), (4.0, 26.4, 16.0, 31.6), (-26.0, 26.4, 16.0, 31.6), (-33.0, 26.2, 12.0, 25.0)]   # (y, base half width, roof half width, roof)
     b.loft([(y, [(-a, DZ), (a, DZ), (t, zt), (-t, zt)]) for (y, a, t, zt) in DH], "steel.panel", "deckhouse")
     FY0, BROW = 28.0, 0.38   # where the front leaves the run; how far forward the roof's edge reaches, as a share of the foot's reach
-    FRONT = [(26.2, 28.0), (25.4, 33.0), (22.4, 37.6), (16.4, 41.0), (8.0, 42.6)]   # the foot's corners, the right flank round to the middle facet
+    FRONT = [(26.2, 28.0), (24.6, 36.0), (12.5, 42.4)]   # the foot's corners, the right flank round to the middle facet: five facets, angular like the hulls (Ryan, 13 November: "a more angular take to match the rest of the body")
     a0, t0, zt0 = _lerp_at(DH, FY0)
     foot = [(x, y, DZ) for (x, y) in FRONT] + [(-x, y, DZ) for (x, y) in reversed(FRONT)]
     brow = [(x * t0 / a0, FY0 + (y - FY0) * BROW, zt0) for (x, y, z) in foot]   # the roof's edge, the same corners drawn in and set back
     _rings(b, [foot, brow], "steel.panel", "deckhouse", cap=False)
     _slab(b, [(x, y, zt0 - 0.1) for (x, y, z) in brow], (0.0, 0.0, 1.0), 0.2, "steel.panel", "deckhouse")
-    # The glass: a pane on each facet round the front, nine, the widest across the middle, a dark
+    # The glass: a pane on each facet round the front, five, the widest across the middle, a dark
     # mullion where two facets meet.
     mid = Vector((0.0, FY0, (DZ + zt0) / 2.0))
     for i in range(len(foot) - 1):
@@ -6374,12 +6398,14 @@ def giant_petrel(b):
     for s, pin, name in ((-1.0, "hp_2", "turret_l"), (1.0, "hp_3", "turret_r")):
         lim = (-135.0, 10.0) if s < 0 else (-10.0, 135.0)   # outboard is a right-hand turn for the left one, facing aft
         _gp_gun_house(b, name, pin, "twin_barrel", "twin_autoguns", s * QX, -38.5, deck(-38.5), 7.0, 10.0, 4.2, facing=180.0, limits=lim, fits=QUARTER_FITS)
-    # The racer's stern wing: a swept cobalt aerofoil spanning the hulls on the tips of two fins
-    # standing on the hulls' outer edges astern, a little canted, clear of the quarters' guns
-    # resting aft between them and the boosters.
-    WZ2, FIN_X, TIP_X = 34.0, 26.0, 27.6   # the aerofoil's height; the fins' feet and tips across
+    # The racer's stern wing: a swept cobalt aerofoil spanning the hulls, carried on two swept
+    # pylons off the giant boosters' backs, so nothing stands on the hulls where the quarters' guns
+    # swing (Ryan, 13 November: "The rear guns clip right through the rear spoiler"); a small end
+    # plate under each tip, high over the guns.
+    WZ2, TIP_X = 34.0, 27.6   # the aerofoil's height; its tips across
     for s in (-1.0, 1.0):
-        _rings(b, [_fin_section(s * FIN_X, -49.0, -63.0, deck(-56.0) - 0.5, 0.6), _fin_section(s * TIP_X, -54.0, -64.0, WZ2, 0.45)], "livery.livery", "fin")
+        _rings(b, [_fin_section(s * BX, -46.5, -57.5, BZ + BR - 0.5, 0.8), _fin_section(s * BX, -50.0, -57.8, WZ2, 0.6)], "livery.livery", "fin")
+        _rings(b, [_fin_section(s * TIP_X, -55.5, -63.2, WZ2 - 3.6, 0.3), _fin_section(s * TIP_X, -54.2, -63.6, WZ2 + 0.5, 0.3)], "livery.livery", "fin")
     WING = [(-TIP_X, -54.5, -63.0, 0.4), (-12.0, -49.0, -58.6, 0.7), (0.0, -45.0, -55.4, 0.85), (12.0, -49.0, -58.6, 0.7), (TIP_X, -54.5, -63.0, 0.4)]
     _rings(b, [_blade_section(x, le, te, WZ2, t) for (x, le, te, t) in WING], "livery.livery", "stern_wing")
 
@@ -6387,15 +6413,19 @@ def giant_petrel(b):
     # key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll); a glow key is (t, k).
     boosters = ["booster_ring", "exhaust"]
     # The salvo: the three racks' faces rise out of the roof one after another, front to back,
-    # then the eighteen tubes ripple down them, a tube from each rack in turn, the top rows first,
-    # each back-blast flaring as the hull shrugs back; the racks come down again.
+    # then the eighteen tubes ripple down them, each rack firing at its own pace and in its own
+    # order, out of step with the others (Ryan, 13 November: "a bit more desynced"), each
+    # back-blast flaring as the hull shrugs back; the racks come down again.
+    PACE = {"f": (2.05, 0.23, (1, 5, 3, 6, 2, 4), (0.0, 0.03, -0.02, 0.04, 0.0, -0.03)),
+            "m": (2.24, 0.29, (6, 2, 4, 1, 5, 3), (0.02, -0.03, 0.0, 0.05, -0.02, 0.0)),
+            "a": (2.13, 0.19, (3, 4, 1, 6, 2, 5), (-0.02, 0.04, 0.01, -0.03, 0.02, 0.0))}   # first shot, beat, order, a nudge to each shot
     ripple = []
-    for k in range(18):
-        tag, n = "fma"[k % 3], 1 + k // 3
-        t1 = 2.1 + 0.1 * k
-        ripple.append((["salvo_%s%d_floor" % (tag, n), "salvo_%s%d_blast" % (tag, n)], [(t1, 0.0), (t1 + 0.12, 16.0), (t1 + 0.55, 2.0), (t1 + 1.3, 0.0)]))
-    rise = lambda d: [(0.4 + d, 0.0), (1.5 + d, 30.0), (5.1 + d, 30.0), (6.2 + d, 0.0)]
-    b.act("salvo", 7.0, {"salvo_f": rise(0.0), "salvo_m": rise(0.12), "salvo_a": rise(0.24)},
+    for tag, (t0, beat, order, nudge) in PACE.items():
+        for k, n in enumerate(order):
+            t1 = round(t0 + beat * k + nudge[k], 3)
+            ripple.append((["salvo_%s%d_floor" % (tag, n), "salvo_%s%d_blast" % (tag, n)], [(t1, 0.0), (t1 + 0.12, 16.0), (t1 + 0.55, 2.0), (t1 + 1.3, 0.0)]))
+    rise = lambda d, up: [(0.4 + d, 0.0), (0.4 + d + up, 30.0), (5.1 + d, 30.0), (6.2 + d, 0.0)]
+    b.act("salvo", 7.2, {"salvo_f": rise(0.0, 1.1), "salvo_m": rise(0.25, 1.3), "salvo_a": rise(0.5, 1.0)},
           body=[(2.0, 0.0, 0.0, 0.0), (2.3, 0.0, -0.5, 0.0, 0.0, 0.7, 0.0), (2.9, 0.0, -0.9, 0.0, 0.0, 1.0, 0.0), (3.5, 0.0, -1.2, 0.0, 0.0, 1.0, 0.0),
                 (4.2, 0.0, -0.4, 0.0), (6.8, 0.0, 0.0, 0.0)],
           glow=ripple)

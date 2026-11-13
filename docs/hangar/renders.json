@@ -609,36 +609,36 @@
    }
   },
   "needletail": {
-   "when": "Ryan's fifth notes on its two modes, 13 November.",
-   "note": "Ryan, 13 November, on the fourth cut: “rear boosters can be thicker.” “can the canards afford to be further forward now?” “front guns are exactly the right idea, but the barrels are clipping. It needs to be cut in more. Tapering the nose sharper should help with that, maybe?” “the designator looks good. Maybe the lens could spin for the animation? Or even cooler would be a segmented iris opening that widens and narrows.” “canopy can be longer, carrying back more. It's a small spotter ship, it needs a good viewing range for the canopy, so maybe some other tweaks too.” “rear face where the needle is, that whole thing could be a cut-out exhaust, with the needle coming out of the middle, even longer than it is now.” A fifth cut: the barrels' tips had stood out of the nose's side in hover, its line too near the skin; the nose is now full through the guns and then a sharp taper to its point, and each gun sits further in, so nothing of it stands proud in hover, its tip in a teardrop recess cut into the side, which the clamshell closes in flight, a little bulge; every class goes all the way in at all four mounts. The rear boosters thicker, the X fins still clear of them up and tucked; the canards and the front boosters forward, beside the pop-up; the lamp behind a six-bladed iris that opens wide, snaps down to a pinpoint as the lamp flares, and widens and narrows again as it holds the mark (it shuts as the pop-up folds); the canopy long and tall, carried back to the pods, two bows across it; the tail's whole face a dark cut-out exhaust lit at its floor, the needle out of its middle, fifteen long, the exhaust burning with the boosters and brightest in flight. The needle makes the machine about eight per cent longer, so the map, which fits a machine's length to its hex, draws it that much smaller. Ryan's to judge running: the hangar's Acts for the iris (Designate) and the transition, Walk for the change by speed.",
+   "when": "Ryan's sixth notes on its two modes, 13 November.",
+   "note": "Ryan, 13 November, on the fifth cut: “I don't know what you did, but the front guns are strictly worse in every way. There was no clipping on the outer surface, the guns just didn't actually clear the nose, they were half embedded in it when extended.” “can the rear boosters extend further when fully extended?” “the wings can be a bit bigger, and make sure there's no gap between them and the fuselage when extended.” A sixth cut. The fifth had sunk the guns deeper on a misread of “it needs to be cut in more” (the nose, not the guns). Now the nose stays full back by the cheeks and is cut in sharply ahead of their recesses to a long slim needle; in hover each gun runs far out of its recess along the needle, its barrel clear of the skin, through a short trough where it leaves the recess; in flight it runs back in and the clamshell shuts over its tip, a little bulge (the trough shows as a small notch ahead of it). Every class sits at the recess's mouth run out and goes all the way in for flight, at all four mounts. The rear boosters ride four units further out on longer tailplanes, so they slide further in flight; the wings are about a quarter bigger, their roots inside the fuselage when out. Ryan's to judge running: Walk for the change by speed, Acts for the transition.",
    "images": [
     {
      "file": "needletail/needletail_front.png",
-     "alt": "needletail, hover mode, front: the guns inside the nose, the canards forward, the long canopy"
+     "alt": "needletail, hover mode, front: the guns run out along the needle"
     },
     {
      "file": "needletail/needletail_rear.png",
-     "alt": "needletail, hover mode, rear: the cut-out exhaust and the long needle, the thicker boosters"
+     "alt": "needletail, hover mode, rear: the rear boosters further out, the cut-out exhaust"
     },
     {
      "file": "needletail/needletail_above.png",
-     "alt": "needletail, hover mode, from above"
+     "alt": "needletail, hover mode, from above: the barrels clear of the needle"
     },
     {
      "file": "needletail/needletail_flight.png",
-     "alt": "needletail, flight mode, front: a little bulge over each barrel's tip, the pods flush, the boosters in"
+     "alt": "needletail, flight mode, front: a little bulge over each barrel's tip, the bigger wings"
     },
     {
      "file": "needletail/needletail_flight_above.png",
-     "alt": "needletail, flight mode, from above: the wings out, the exhaust burning"
+     "alt": "needletail, flight mode, from above: the bigger wings out, their roots in the fuselage"
     },
     {
      "file": "needletail/needletail_changing.png",
-     "alt": "needletail, changing: the guns in, the blisters shutting, the iris shut and the pop-up folding, the boosters swivelling"
+     "alt": "needletail, changing: the guns running in, the blisters shutting, the iris shut and the pop-up folding, the boosters swivelling"
     }
    ],
    "before": {
-    "summary": "Before: the fourth cut, 13 November (the barrels' tips standing out of the nose's side in hover, the canards amidships, a short canopy, a plain tail and a short needle, the lamp a plain lens)",
+    "summary": "Before: the fifth cut, 13 November (the guns sunk inside a full nose, barely out in hover, the rear boosters closer in, smaller wings with a gap at the root)",
     "images": [
      {
       "file": "needletail/before_needletail_front.png",
@@ -707,32 +707,32 @@
    }
   },
   "giant_petrel": {
-   "when": "Ryan's third notes on the catamaran, 13 November.",
-   "note": "Ryan, 13 November, on the third cut: “i meant 3 racks in line down the body, not across, back at the size they were.” “can we do something about the front face of the upper body, can we sleek it up a bit to make the windshield wrap around the front, and not just a slab on the front of the ship? I think there's room for a bit more geometry there if we need to.” A fourth cut: the salvo's three racks in line down the middle of the roof, each the second cut's one rack again with its six tubes, so eighteen, their faces rising front to back and the tubes rippling down them, a tube from each rack in turn; the deckhouse's front rounded in plan as nine facets, raked back all the way round from its foot to the roof's edge, the bridge's glass a pane on each facet, wrapping the front onto the flanks, the widest across the middle. Ryan's to judge running: the hangar's Acts for the salvo.",
+   "when": "Ryan's fourth notes on the catamaran, 13 November.",
+   "note": "Ryan, 13 November, on the fourth cut: “The rear guns clip right through the rear spoiler. They'll need a different approach.” “the front can be more a angular take to match the rest of the body.” “ripple fire can be a bit more desynced from each other” “the front livery on the pontoon bits is a little meh” A fifth cut: the guns swung through the aerofoil's fins on the hulls' edges, so the aerofoil now rides on two swept pylons off the giant boosters' backs, an end plate under each tip high over the guns, and nothing stands on the hulls where the quarters swing; the deckhouse's front five big facets, the glass a pane on each; each salvo rack firing its six tubes at its own pace and in its own order; a cobalt spearhead down each bow's deck, narrowing to a point over the stem, its back cut on a slant. If you'd rather the guns moved instead (hung on the hulls' sides as sponsons, the fins kept), that's the other way. Ryan's to judge running: Acts for the salvo and the traverse.",
    "images": [
     {
      "file": "giant_petrel/giant_petrel_front.png",
-     "alt": "giant petrel, front: the windshield wrapping the deckhouse's raked front"
+     "alt": "giant petrel, front: the angular front and its wrapping glass, the bows' spearheads"
     },
     {
      "file": "giant_petrel/giant_petrel_rear.png",
-     "alt": "giant petrel, rear: the quarters' guns resting aft beside the boosters"
+     "alt": "giant petrel, rear: the aerofoil on its pylons, the quarters' guns resting aft"
     },
     {
      "file": "giant_petrel/giant_petrel_above.png",
-     "alt": "giant petrel, from above: the three salvo racks in line, the glass round the front"
+     "alt": "giant petrel, from above: the racks in line, the spearheads on the bows"
     },
     {
      "file": "giant_petrel/giant_petrel_salvo.png",
-     "alt": "giant petrel, the salvo, its three racks up in line, rippling"
+     "alt": "giant petrel, the salvo, its three racks up, rippling out of step"
     },
     {
      "file": "giant_petrel/giant_petrel_quarters.png",
-     "alt": "giant petrel, the traverse, the quarters' guns swung out from dead aft"
+     "alt": "giant petrel, the traverse, the quarters' guns swung out under the aerofoil's tips"
     }
    ],
    "before": {
-    "summary": "Before: the third cut, 13 November (three small salvo racks side by side, the bridge's glass a slab across a flat raked front)",
+    "summary": "Before: the fourth cut, 13 November (the aerofoil on fins at the hulls' edges, which the guns swung through; the front rounded in nine facets; a lockstep ripple; plain stripes on the bows)",
     "images": [
      {
       "file": "giant_petrel/before_giant_petrel_front.png",
