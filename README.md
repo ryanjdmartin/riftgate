@@ -418,6 +418,7 @@ python3 tools/turn_loop.py --seeds 2000 --widen 3
 python3 tools/shield_model.py
 python3 tools/shield_model.py --damage 12 --rounds 4
 python3 tools/shield_model.py --bench   # the wider bench alone: one field for the squad, a gauge that shrinks, small blows that bounce, a block a machine calls once
+python3 tools/shield_model.py --fight   # a fight that ends: each machine a gun with heat, the pack with hit points; a reboot that grows with every break, and one gauge for hits and heat
 # whom the foes strike (23 October): every starter trio a tender can deal, stock, greedy, against each
 # faction's formation, bosses and first pack; picks as intents are drawn, the same with every machine standing,
 # swings after any Lure, the exposed aim's weights, hull lost. JSON per cell, read by hand; four parts in parallel.

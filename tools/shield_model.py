@@ -25,6 +25,16 @@ What it prints:
   5. The first two tables again for the shapes of a wider bench (MORE): one field for the
      squad, a gauge that shrinks each round, a shield small blows bounce off, and a block each
      machine may call once a fight.
+
+    python3 tools/shield_model.py --fight    # a fight that ends, and heat
+
+The second model gives the squad a gun and the pack hit points, so a fight has a length and a
+machine that holds its fire costs the squad a shot. Each machine fires 3 damage for the gun's
+heat, or holds; the pack dies front foe first. It prints:
+  6. A reboot that takes a round longer every time the shield breaks (Ryan, 13 November),
+     with the block and without, by the fight's length.
+  7. One gauge that fills from heat and from hits (his form of the same day), beside the
+     shield and the heat gauge as built, by the gun's heat.
 """
 import argparse
 import random
@@ -65,6 +75,44 @@ MORE = [
     ("As built, and a block each machine calls once", {"block": "none", "down": 0, "hit_stops": False, "regen": 1, "call": True}),
 ]
 
+# The fight that ends (--fight). A machine's gun, its heat gauge as tier one has it, and what
+# the squad's rules are read against.
+GUN_DAMAGE = 3
+HEAT_MAX = 12
+COOLING = 2
+# grow: a broken shield stays down `down` rounds the first time and `grow` more each time after.
+# whole: it is back at its full gauge when the reboot ends, where the others restart their regen.
+REBOOTS = [
+    ("As built", {"block": "none", "down": 0, "hit_stops": False, "regen": 1}),
+    ("Block, 2 down", {"block": "whole", "down": 2, "hit_stops": False, "regen": 1}),
+    ("Block, 2 down then one more each break", {"block": "whole", "down": 2, "grow": 1, "hit_stops": False, "regen": 1}),
+    ("Block, 1 down", {"block": "whole", "down": 1, "hit_stops": False, "regen": 1}),
+    ("Block, 1 down then one more each break", {"block": "whole", "down": 1, "grow": 1, "hit_stops": False, "regen": 1}),
+    ("No block, 2 down then one more each break", {"block": "none", "down": 2, "grow": 1, "hit_stops": False, "regen": 1}),
+    ("No block, back whole after 1 then one more each break", {"block": "none", "down": 1, "grow": 1, "whole": True, "hit_stops": False, "regen": 0}),
+]
+# one_gauge: no shield bar. Hits fill the heat gauge as shots do, its size the heat maximum and
+# the shield together, its drain the cooling and the regen together; what will not fit burns hull.
+GAUGES = [
+    ("As built", {"block": "none", "down": 0, "hit_stops": False, "regen": 1}),
+    ("One gauge, hits and heat", {"block": "none", "down": 0, "hit_stops": False, "regen": 1, "one_gauge": True}),
+]
+
+
+def packs(rounds_at_full_fire, blow):
+    """The packs of the fight that ends: [(name, [foe, ...])], a foe {hp, pick, blows, rider}.
+    Hit points are sized so four machines firing every round end it in so many rounds; every
+    pack deals `blow` a round while it stands whole."""
+    hp = GUN_DAMAGE * len(SQUAD) * rounds_at_full_fire
+    light = SQUAD[1]["gauge"]
+    return [
+        ("A lone foe, one blow of %d" % blow, [{"hp": hp, "pick": "one", "blows": [blow], "rider": None}]),
+        ("A lone foe, two strikes, %d then %d" % (light, blow - light), [{"hp": hp, "pick": "one", "blows": [light, blow - light], "rider": None}]),
+        ("A lone foe, %d on the same machine every round" % blow, [{"hp": hp, "pick": "first", "blows": [blow], "rider": None}]),
+        ("Four foes, a blow of %d each" % (blow // 4), [{"hp": hp // 4, "pick": "one", "blows": [blow // 4], "rider": None} for _ in range(4)]),
+    ]
+
+
 # The foes' shapes, each `damage` a round. A shape is a list of attackers in the order they
 # strike; an attacker is (pick, [its blows], rider). pick: "one" a machine at random, "same"
 # the machine the attacker before it picked (a shared pick), "all" every machine, "first" the
@@ -88,7 +136,7 @@ def shapes(d):
 
 
 class Machine:
-    __slots__ = ("hull", "gauge", "armour", "shield", "down", "hit", "barrier", "brace", "called", "calling")
+    __slots__ = ("hull", "gauge", "armour", "shield", "down", "hit", "barrier", "brace", "called", "calling", "heat", "breaks")
 
     def __init__(self, spec):
         self.hull = spec["hull"]
@@ -101,6 +149,8 @@ class Machine:
         self.brace = 0
         self.called = False
         self.calling = False
+        self.heat = 0
+        self.breaks = 0
 
     def copy(self):
         m = Machine.__new__(Machine)
@@ -124,6 +174,10 @@ def land(m, amount, rider, rule, field):
     m.hit = True
     if rider == "breach":
         through = amount    # as built: it ignores the shield and the armour
+    elif rule.get("one_gauge"):
+        absorbed = min(max(0, HEAT_MAX + m.gauge - m.heat), amount)
+        m.heat += absorbed
+        through = max(0, amount - absorbed - m.armour - m.brace)
     elif rule.get("pool"):
         absorbed = min(field["pool"], amount * (2 if rider == "x2" else 1))
         field["pool"] -= absorbed
@@ -150,8 +204,10 @@ def land(m, amount, rider, rule, field):
                 through = 0
             elif rule["block"] == "again":
                 through = max(0, through - stood)
-            if rule["down"] > 0:
-                m.down = rule["down"] + 1
+            wait = rule["down"] + rule.get("grow", 0) * m.breaks
+            m.breaks += 1
+            if wait > 0:
+                m.down = wait + 1
         through = max(0, through - m.armour - m.brace)
     m.hull -= through
     return through
@@ -169,7 +225,7 @@ def open_round(squad, rule, field):
             m.down -= 1
             if m.down > 0:
                 continue
-            if rule.get("bounce"):
+            if rule.get("bounce") or rule.get("whole"):
                 m.shield = m.gauge   # back whole
         if rule["hit_stops"] and was_hit:
             continue
@@ -287,6 +343,105 @@ def fight(rule, shape, rounds, rng, tool=None, front_falls=False):
     return lost, sum(1 for m in squad if m.hull <= 0)
 
 
+def duel(rule, pack, rng, gun_heat=4, risk=2, cap_rounds=14):
+    """A fight that ends. Each round: the machines cool and regain, the foes pick, each machine
+    fires (GUN_DAMAGE for gun_heat) or holds, the pack takes the fire front foe first, heat
+    over a gauge burns hull, and the foes left strike. A machine holds when its shot would cost
+    more than `risk` hull this round: its own overheat, and under one gauge the blow it has
+    been shown. Returns rounds, hull lost, wrecks and the share of machine-rounds held."""
+    squad = [Machine(s) for s in SQUAD]
+    foes = [dict(f) for f in pack]
+    field = {}
+    one = bool(rule.get("one_gauge"))
+    if one:
+        for m in squad:
+            m.shield = 0
+    start = sum(m.hull for m in squad)
+    held = turns = rounds = 0
+    while rounds < cap_rounds and any(f["hp"] > 0 for f in foes) and any(m.hull > 0 for m in squad):
+        rounds += 1
+        if rounds > 1:
+            open_round(squad, rule, field)
+            for m in squad:
+                m.heat = max(0, m.heat - COOLING - (rule["regen"] if one else 0))
+            if one:
+                for m in squad:
+                    m.shield = 0
+        standing = [f for f in foes if f["hp"] > 0]
+        intents = picks(squad, [(f["pick"], f["blows"], f["rider"]) for f in standing], rng)
+        fire = 0
+        for i, m in enumerate(squad):
+            if m.hull <= 0:
+                continue
+            turns += 1
+            cap = HEAT_MAX + (m.gauge if one else 0)
+            shown = sum(sum(blows) for target, blows, _ in intents if target == i or target == "all") if one else 0
+            cost = max(0, m.heat + gun_heat + shown - cap) - max(0, m.heat + shown - cap)
+            if cost > risk:
+                held += 1
+                continue
+            m.heat += gun_heat
+            fire += GUN_DAMAGE
+        for f in foes:
+            if f["hp"] > 0 and fire > 0:
+                took = min(f["hp"], fire)
+                f["hp"] -= took
+                fire -= took
+        for m in squad:
+            cap = HEAT_MAX + (m.gauge if one else 0)
+            if m.hull > 0 and m.heat > cap:
+                m.hull -= m.heat - cap
+                m.heat = cap
+        strike(squad, [it for it, f in zip(intents, standing) if f["hp"] > 0], rule, field)
+    lost = start - sum(max(0, m.hull) for m in squad)
+    return rounds, lost, sum(1 for m in squad if m.hull <= 0), held / float(max(1, turns))
+
+
+def fights(a):
+    """The fight that ends: the reboot that grows, then the one gauge."""
+    hull = float(sum(m["hull"] for m in SQUAD))
+    n = max(1, a.trials // 2)
+    print("The fight that ends: the same squad, a gun of %d damage for 4 heat, a heat gauge of %d cooling %d, the pack dealing %d a round with hit points sized to four machines' fire, %d fights a cell. A machine holds when its shot would cost it more than 2 hull that round. No dice, no content." % (GUN_DAMAGE, HEAT_MAX, COOLING, a.blow, n))
+    print()
+    heads = [name for name, _ in REBOOTS]
+    for length in (4, 6, 8):
+        rows = []
+        for pname, pack in packs(length, a.blow):
+            cells = []
+            for rname, rule in REBOOTS:
+                rng = random.Random(a.seed)
+                rs = ls = ws = 0
+                for _ in range(n):
+                    r, l, w, _h = duel(rule, pack, rng)
+                    rs += r
+                    ls += l
+                    ws += w
+                cells.append("%d%%, %.1f" % (round(100.0 * ls / n / hull), ws / n))
+            rows.append((pname, cells))
+        table("A fight of %d rounds at full fire: the squad's hull lost, then the wrecks" % length, rows, heads)
+    heads = []
+    for gname, _ in GAUGES:
+        for heat in (2, 4, 6):
+            heads.append("%s, a gun of %d heat" % (gname, heat))
+    for length in (4, 6):
+        rows = []
+        for pname, pack in packs(length, a.blow):
+            cells = []
+            for gname, rule in GAUGES:
+                for heat in (2, 4, 6):
+                    rng = random.Random(a.seed)
+                    rs = ls = ws = hs = 0
+                    for _ in range(n):
+                        r, l, w, h = duel(rule, pack, rng, heat)
+                        rs += r
+                        ls += l
+                        ws += w
+                        hs += h
+                    cells.append("%.1f rounds, %d%%, %d%% held" % (rs / n, round(100.0 * ls / n / hull), round(100.0 * hs / n)))
+            rows.append((pname, cells))
+        table("One gauge for hits and heat, a fight of %d rounds at full fire: its rounds, the hull lost, the shots held" % length, rows, heads)
+
+
 def table(title, rows, heads):
     print(title)
     print()
@@ -304,11 +459,16 @@ def main():
     ap.add_argument("--damage", type=int, default=16)
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--bench", action="store_true", help="the wider bench alone")
+    ap.add_argument("--fight", action="store_true", help="the fight that ends: the reboot that grows, and one gauge for hits and heat")
+    ap.add_argument("--blow", type=int, default=12, help="what a pack deals a round in the fight that ends")
     a = ap.parse_args()
     dealt = a.damage * a.rounds
     heads = [name for name, _ in RULES]
     if a.bench:
         bench(a, dealt)
+        return
+    if a.fight:
+        fights(a)
         return
     print("The shield's model: a plated machine (hull 36, shield 6, armour 1) and three lights (hull 20, shield 8), %d damage a round for %d rounds in each shape, %d fights a cell. No dice, no kills, no content." % (a.damage, a.rounds, a.trials))
     print()

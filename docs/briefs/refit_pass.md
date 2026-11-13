@@ -2121,7 +2121,7 @@ bench by what each moves, every line a sketch for the chat:
 | Rest to recharge | No regen by the clock. A machine that holds its die has its shield back as the next round opens | Three fire and one rests. A bad roll becomes the rest, so the buffer arrives on the round the die failed. The foes want to outlast the rests | Resting must never be safer than fighting, so a round has to cost something, which is parked |
 | A block a machine calls | As built, and once a fight each machine may stop one blow whole; its shield then reboots for two rounds | His block made a choice with a count. The foes' answer is more big blows than the squad has calls, or a small blow in front | One more tap a round; a lone-blow boss still meets four calls |
 | One field for the squad | Every gauge is one pool, whoever is hit | Who gets hit stops mattering until the field drops, then the tank matters; the fight is a race against the field | How the foes hit stops mattering too |
-| A shield for each maker | No one rule. Hard light blocks and reboots, a fast flyer's comes back quickly unless touched, plate has none, a convoy shares one | The draft decides what a squad fears, and a domain tests one of them | Several rules to learn on one screen |
+| A shield for each maker (parked 13 November: one shape first, section 18) | No one rule. Hard light blocks and reboots, a fast flyer's comes back quickly unless touched, plate has none, a convoy shares one | The draft decides what a squad fears, and a domain tests one of them | Several rules to learn on one screen |
 | Earned by kills | Shield comes back when a machine kills | Fodder becomes a battery to time | A bad roll is no kill and no shield: it fails the test the regen was brought back for |
 | Small blows bounce | A blow under half the gauge does nothing; a bigger one drops the shield | Fodder cannot hurt a squad until the big one lands | It protects the drip and leaves the lights to the spike: armour by another name |
 | Unspent rerolls become shield | Each reroll not used shields the squad's weakest a little | Chasing the perfect roll costs safety | Small, and it taxes the one tool that shifts luck |
@@ -2168,3 +2168,96 @@ break and the reboot he likes, bounded and chosen, and answers a breach in part.
 for each maker is less a shape than a frame that could hold two of them. And whichever
 shape is taken, the foes can wear it too, so the player's weapons meet the same question
 his machines do.
+
+## 18. A reboot that grows, one shape first, and one gauge for hits and heat (13 November; nothing decided)
+
+His words: "What about, every time the shield breaks, it takes longer to reboot? Whether we add
+the blocking or not. Multiple shapes is fun but I think we need to find one that works,
+first, before trying to balance more. Your heat+shield bar could do something, but I think
+I'd rework it into either a gauge that fills from both hits and heat, or empties from both
+hits and heat, not two different directions. It's an interesting idea but I'm not sure how to
+apply it to gameplay or what the repercussions are in terms of heat costs and what they're
+worth. If heat is tied to damage thresholding, then it has to be evaluated in two directions."
+
+**One shape first** is his call. Section 17's shield for each maker is parked on it until
+one shape stands.
+
+**The model got a fight that ends** to read both (`python3 tools/shield_model.py --fight`).
+The same squad, each machine with a gun of 3 damage for 4 heat on a heat gauge of 12 that
+cools 2. The pack has hit points, sized so four machines firing every round end it in four,
+six or eight rounds, and it deals 12 a round while it stands whole. A machine holds its fire
+when the shot would cost it more than 2 hull that round. No dice and no content still, so
+the numbers set rules side by side and say nothing of what a real fight costs.
+
+**The reboot that grows.** The squad's hull lost to a lone foe's one blow of 12, by the
+fight's length:
+
+| The fight | As built | Block, 2 down | Block, 2 down, one more each break | Block, 1 down | Block, 1 down, one more each break | No block, 2 down, one more each break | No block, back whole after 1, one more each break |
+|---|---|---|---|---|---|---|---|
+| 4 rounds | 18% | 8% | 8% | 5% | 5% | 19% | 17% |
+| 6 rounds | 44% | 25% | 25% | 19% | 19% | 46% | 40% |
+| 8 rounds | 79% | 50% | 51% | 40% | 43% | 88% | 75% |
+
+Against a foe that hunts one machine every round, four rounds: as built 25% and one machine
+wrecked; the block at 2 down 21% and one wrecked, growing or not; the block at 1 down 12%
+and none wrecked, growing or not. Against two strikes sized to the shield, or four foes of 3,
+no column moves by more than a few points at four and six rounds.
+
+Read.
+
+- The growth is a rule a player would seldom meet. It adds nothing at four and six rounds
+  and 1 to 3 points at eight. A shield rarely breaks three times in one fight, and a light
+  that is hunted is wrecked before its third.
+- The dial that matters is the first reboot's length. One round against two is 3, 6 and 10
+  points, and under a hunter it is a wreck or none.
+- Without the block no reboot rule moves a fight. A delay that grows costs 1, 2 and 9
+  points; a shield back whole after its reboot saves 1, 4 and 4. At these gauges a shield is
+  spent in one blow and regains one a round, so a delay has little to take.
+- What the growth is good for is the fight that will not end. It does nothing in a fight of
+  ordinary length and more every round past it, so it is a guard against a stall on the
+  player's side, section 3's ninth point from the other end. That is its case, and it is a
+  small one while what prices a round stays parked.
+- So the decision is where it was: the block or not, and with it one round or two.
+
+**One gauge for hits and heat**, his form, modelled as filling: no shield bar; a hit fills
+the heat gauge as a shot does; its size is the heat maximum and the shield together, its
+drain the cooling and the regen together; what will not fit burns hull. A four-round fight
+against the lone blow of 12, by the gun's heat:
+
+| The gun's heat | As built: hull lost | Its shots held | One gauge: hull lost | Its shots held | Its fight |
+|---|---|---|---|---|---|
+| 2 | 18% | none | 4% | none | 4.0 rounds |
+| 4 | 18% | none | 11% | 9% | 4.9 rounds |
+| 6 | 44% | 21% | 28% | 42% | 7.2 rounds |
+
+In a six-round fight the one gauge reads 12%, 30% and 77%, and as built 34%, 44% and 98%.
+
+Read.
+
+- Filling one way, it is one currency, and that is the answer to his two directions. A
+  point of heat is a point of the buffer. A gun's heat stops being a pace alone and becomes
+  what the shot spends of its own machine's protection.
+- As built, heat is free and then a wall: a gun of 2 or of 4 reads the same in a four-round
+  fight, and a gun of 6 makes the fight a third longer and more than doubles the hull lost.
+  Under one gauge it costs from the first point, 4%, 11%, 28%. Every price would carry
+  weight, and the spread between a cool gun and a hot one would be the balance itself.
+- What a point of heat is worth: a fifth to a half of a point of hull over a fight, more the
+  longer it runs. But it is the whole point for a machine under fire and nothing for one in
+  the clear, and the foes' picks are shown. So the play is: in the clear fire hot, under
+  fire play cool, a hold or a piece of equipment. That is where it would apply to the game:
+  it gives equipment its job and the hold its reason, and it breaks his "best choice every
+  time" of 10 November.
+- Its costs. A squad under pressure fires less: 9% of its shots held at 4 heat and the fight
+  a fifth longer, 42% at 6. With hot guns against a swarm the squad sits and drains, a
+  six-round fight running thirteen: resting is safe, which is the stall. The foes' burn,
+  scorch and heat aim become attacks on the buffer. And every heat price, every chassis's
+  two numbers in place of four, and every machine that reads heat is read again.
+- As sized here it protects more than as built at the same gun (11% against 18%), since the
+  heat gauge's idle room goes to the hits. The size is a dial; the column's shape is the
+  finding.
+
+**Claude's read, his to take or leave.** The one gauge is coherent and the largest change on
+the bench: it remakes heat's economy, so it is no step toward one shape that works first.
+The reboot's rules are small dials round one decision, the block, and the block is right
+only against foes built to threaten it (section 16). So the next step is unchanged: the
+foes' kits, proposed in chat against the model.
