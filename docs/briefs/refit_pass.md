@@ -2105,3 +2105,66 @@ the model, before any content (an elite as a breaker and a blow behind it, in on
 a follow-up, which is the fair one since it shows a round ahead; a boss that strikes every
 machine and then hunts one; what a breach is once it sits inside the system and no longer
 outside it); then those kits as synthetic foes in the engine's what-if; then his play.
+
+## 17. Other shapes for the shield (13 November, a bench he asked for; nothing decided)
+
+His words: "Think outside the box for a second. What other shapes are there? Those 3 I just
+pulled from the top of my head."
+
+His three all move one thing, when the regen stops. A shield has four other things to move:
+where it comes back from, what it does with a blow, whose it is, and when it wears. The
+bench by what each moves, every line a sketch for the chat:
+
+| The shape | What it is | The game it makes | The catch |
+|---|---|---|---|
+| One bar for heat and shield | Heat fills the bar from one end, blows eat it from the other, and where they meet the hull pays | A cool machine is a shielded one, so holding fire is the defence and every hot shot is a risk taken on purpose. The foes already carry what threatens it: burn, scorch and the heat aim | Every machine that reads heat changes its meaning, and a machine under fire shoots less |
+| Rest to recharge | No regen by the clock. A machine that holds its die has its shield back as the next round opens | Three fire and one rests. A bad roll becomes the rest, so the buffer arrives on the round the die failed. The foes want to outlast the rests | Resting must never be safer than fighting, so a round has to cost something, which is parked |
+| A block a machine calls | As built, and once a fight each machine may stop one blow whole; its shield then reboots for two rounds | His block made a choice with a count. The foes' answer is more big blows than the squad has calls, or a small blow in front | One more tap a round; a lone-blow boss still meets four calls |
+| One field for the squad | Every gauge is one pool, whoever is hit | Who gets hit stops mattering until the field drops, then the tank matters; the fight is a race against the field | How the foes hit stops mattering too |
+| A shield for each maker | No one rule. Hard light blocks and reboots, a fast flyer's comes back quickly unless touched, plate has none, a convoy shares one | The draft decides what a squad fears, and a domain tests one of them | Several rules to learn on one screen |
+| Earned by kills | Shield comes back when a machine kills | Fodder becomes a battery to time | A bad roll is no kill and no shield: it fails the test the regen was brought back for |
+| Small blows bounce | A blow under half the gauge does nothing; a bigger one drops the shield | Fodder cannot hurt a squad until the big one lands | It protects the drip and leaves the lights to the spike: armour by another name |
+| Unspent rerolls become shield | Each reroll not used shields the squad's weakest a little | Chasing the perfect roll costs safety | Small, and it taxes the one tool that shifts luck |
+| A gauge that shrinks each round | Regen as fast as wanted, the gauge a point smaller every round | Every fight has a clock on the player's side | It is an answer to what prices a round, which is parked |
+
+The model runs four of them as it stands (`python3 tools/shield_model.py --bench`). Of the
+damage dealt, what reaches a hull, and the wrecks:
+
+| The foes' shape | As built | His block, 2 down | A block a machine calls | One field | Small blows bounce | Regen 3, the gauge shrinking |
+|---|---|---|---|---|---|---|
+| One blow of 16 | 64% | 26% | 37% | 42% | 81% | 66% |
+| Two strikes of 8 | 62% | 61% | 52% | 41% | 76% | 64% |
+| 4, then 12 from the foe behind | 63% | 33% | 63% | 42% | 66% | 65% |
+| Four blows of 4, each its own pick | 43% | 41% | 42% | 40% | 12% | 25% |
+| 16 on the same machine every round | 68% | 60% | 60% | 44% | 85% | 70% |
+| A breach of 16, as built | 100% | 100% | 38% | 100% | 100% | 100% |
+| Machines wrecked, one blow of 16 | 1.3 | 0.1 | 0.3 | 0.5 | 1.3 | 1.1 |
+| Machines wrecked, the same machine hunted | 2.0 | 1.0 | 1.0 | 1.0 | 2.0 | 2.0 |
+
+Read.
+
+- The one field is the flattest column there is, 40 to 44% whatever the shape but for a blow
+  that counts double on shield (58%), and it halves the wrecks. It is the best protection against bad luck and it erases the question
+  of how the foes hit.
+- The called block does three quarters of what his block does against a lone blow, with
+  four uses a fight, and it is the only shape on either bench that puts a breach in between:
+  38% of it reaches a hull, where every other column reads 100%. A small blow in front
+  strips it, as it strips a Barrier.
+- Small blows bounce protects the wrong thing: a swarm falls to 12% and a lone blow rises
+  to 81%.
+- The shrinking gauge shows nothing here, since no fight in the model runs long. Its case
+  is the clock, which the model does not have.
+
+The four the model cannot run price themselves in tempo or in dice, and the model has
+neither: the heat bar, the rest, the kills and the rerolls. They wait on a model with a die
+and a fight that ends.
+
+**Claude's read, his to take or leave.** Three to take further, each for a different
+reason. One bar for heat and shield, because it is the only shape that uses what the foes
+already carry and it makes heat the pillar he called undervalued (28 October); it is also
+the largest change. Rest to recharge, because it is the smallest change and the only one
+whose buffer arrives when the die fails. The block a machine calls, because it keeps the
+break and the reboot he likes, bounded and chosen, and answers a breach in part. A shield
+for each maker is less a shape than a frame that could hold two of them. And whichever
+shape is taken, the foes can wear it too, so the player's weapons meet the same question
+his machines do.

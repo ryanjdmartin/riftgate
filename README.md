@@ -417,6 +417,7 @@ python3 tools/turn_loop.py --seeds 2000 --widen 3
 # dice, no kills, no content: what a rule does with a shape, never what a fight costs. Seconds
 python3 tools/shield_model.py
 python3 tools/shield_model.py --damage 12 --rounds 4
+python3 tools/shield_model.py --bench   # the wider bench alone: one field for the squad, a gauge that shrinks, small blows that bounce, a block a machine calls once
 # whom the foes strike (23 October): every starter trio a tender can deal, stock, greedy, against each
 # faction's formation, bosses and first pack; picks as intents are drawn, the same with every machine standing,
 # swings after any Lure, the exposed aim's weights, hull lost. JSON per cell, read by hand; four parts in parallel.

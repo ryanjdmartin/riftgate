@@ -970,7 +970,11 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   (the breaker's kill saves twice its own damage), the delay alone and the shooter's rule
   being answered by who gets hit. So the clause and the foes' kits are one decision, and the
   kits are next, proposed in chat against the model before any content or run. His play of
-  the trial waits on them. His marks on 4-4-2 are in ("That's probably fine for 4-4-2 for
+  the trial waits on them. He then asked for other shapes ("Think outside the box for a
+  second ... Those 3 I just pulled from the top of my head"): nine are on a bench in the
+  brief's section 17, four of them run by the model (`--bench`), and Claude's three to take
+  further are one bar for heat and shield, a shield that comes back when a machine rests,
+  and a block a machine calls once a fight. His to pick; the shape comes before the kits. His marks on 4-4-2 are in ("That's probably fine for 4-4-2 for
   now": the brief's section 13 has the table with his words, each open place its chassis's
   session's). Also open, his: the first battle's block (not scaled:
   on the anchor's numbers a mustering trio with the Honey Badger wins 0 to 5% of the
@@ -978,7 +982,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   quarters for its rank and file a trio keeps its hull, and the trios with the Badger still
   lose the wall); the Waste's bosses and the Peak's clock; the Prairie Dog alone. The
   muster rule and the fight-at-its-rating read are scratch probes; the runner still plays
-  the defence rule. The bible's triangle, scale, shield and Barrier rows and section 12 (v0.566);
+  the defence rule. The bible's triangle, scale, shield and Barrier rows and section 12 (v0.567);
   the rules' chassis, basics, heat and scale lines.
 - **Four formations cut toward the budget, 4-4-2 to work with, and the anchor** (Ryan, 12
   November: "Yes go ahead with 2. Also, let's look at 4-4-2 right now so that you're working
@@ -1676,7 +1680,7 @@ commands are in `README.md`.
   that leaned on them, the triangle row's heat prices, the anchor's tier-one lines, Reset let go,
   the Barrier's cooldown and place, the shield's worth and the grant withdrawn, tier as a
   machine's word, and the looks row's Kite for its shipped mount. BASE for the next merge is
-  `620c717`'s file. Main's file is v0.566 since
+  `620c717`'s file. Main's file is v0.567 since
   `ccr-722ca9f0-yj8na3` landed again the same day (section 12's breaking shield, his idea of 13
   November read as a what-if, and the method his question set), unpublished, its republish on
   Ryan's word. The

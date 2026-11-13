@@ -22,6 +22,9 @@ What it prints:
      machine every other round.
   4. What a kill saves: the foe in front gone after the first round, in hull for each point of
      damage it would have dealt. Over 1, the kill saved more than its foe's own blows.
+  5. The first two tables again for the shapes of a wider bench (MORE): one field for the
+     squad, a gauge that shrinks each round, a shield small blows bounce off, and a block each
+     machine may call once a fight.
 """
 import argparse
 import random
@@ -47,6 +50,21 @@ RULES = [
     ("Any hit stops regen, regen 3", {"block": "none", "down": 0, "hit_stops": True, "regen": 3}),
 ]
 
+# A wider bench (Ryan, 13 November: "Think outside the box for a second. What other shapes are
+# there?"), each beside the shield as built. pool: the squad's gauges are one field, whoever is
+# hit. fade: every gauge a point smaller as each round opens. bounce: a blow at or under half the
+# gauge does nothing, a bigger one loses that much, drops the shield and it is back whole after
+# `down` rounds. call: once a fight a machine may block the next blow on it whole, one call a
+# round for the squad, and its shield is then down two rounds; the model calls it when one
+# round's forecast says it saves a wreck or six hull.
+MORE = [
+    ("As built", {"block": "none", "down": 0, "hit_stops": False, "regen": 1}),
+    ("One field for the squad", {"block": "none", "down": 0, "hit_stops": False, "regen": 1, "pool": True}),
+    ("Regen 3, every gauge a point smaller a round", {"block": "none", "down": 0, "hit_stops": False, "regen": 3, "fade": 1}),
+    ("Small blows bounce, a big one drops it 2 rounds", {"block": "none", "down": 2, "hit_stops": False, "regen": 0, "bounce": True}),
+    ("As built, and a block each machine calls once", {"block": "none", "down": 0, "hit_stops": False, "regen": 1, "call": True}),
+]
+
 # The foes' shapes, each `damage` a round. A shape is a list of attackers in the order they
 # strike; an attacker is (pick, [its blows], rider). pick: "one" a machine at random, "same"
 # the machine the attacker before it picked (a shared pick), "all" every machine, "first" the
@@ -70,7 +88,7 @@ def shapes(d):
 
 
 class Machine:
-    __slots__ = ("hull", "gauge", "armour", "shield", "down", "hit", "barrier", "brace")
+    __slots__ = ("hull", "gauge", "armour", "shield", "down", "hit", "barrier", "brace", "called", "calling")
 
     def __init__(self, spec):
         self.hull = spec["hull"]
@@ -81,6 +99,8 @@ class Machine:
         self.hit = False
         self.barrier = False
         self.brace = 0
+        self.called = False
+        self.calling = False
 
     def copy(self):
         m = Machine.__new__(Machine)
@@ -89,16 +109,36 @@ class Machine:
         return m
 
 
-def land(m, amount, rider, rule):
+def land(m, amount, rider, rule, field):
     """One blow on one machine. Returns what reached its hull."""
     if amount <= 0 or m.hull <= 0:
         return 0
     if m.barrier:
         m.barrier = False   # a Barrier takes the blow whole: the shield untouched, the machine not hit
         return 0
+    if m.calling:
+        m.calling = False   # the block it called: the blow whole, and its shield reboots
+        m.shield = 0
+        m.down = 3
+        return 0
     m.hit = True
     if rider == "breach":
         through = amount    # as built: it ignores the shield and the armour
+    elif rule.get("pool"):
+        absorbed = min(field["pool"], amount * (2 if rider == "x2" else 1))
+        field["pool"] -= absorbed
+        through = max(0, amount - (absorbed + 1) // 2 if rider == "x2" else amount - absorbed)
+        through = max(0, through - m.armour - m.brace)
+    elif rule.get("bounce"):
+        rating = m.gauge // 2
+        if m.shield > 0 and amount * (2 if rider == "x2" else 1) <= rating:
+            through = 0
+        else:
+            through = amount - (rating if m.shield > 0 else 0)
+            if m.shield > 0:
+                m.shield = 0
+                m.down = rule["down"] + 1
+            through = max(0, through - m.armour - m.brace)
     else:
         stood = m.shield
         per = 2 if rider == "x2" else 1
@@ -117,18 +157,26 @@ def land(m, amount, rider, rule):
     return through
 
 
-def open_round(squad, rule):
+def open_round(squad, rule, field):
     for m in squad:
-        was_hit, m.hit, m.brace, m.barrier = m.hit, False, 0, False
+        was_hit, m.hit, m.brace, m.barrier, m.calling = m.hit, False, 0, False, False
         if m.hull <= 0:
             continue
+        if rule.get("fade"):
+            m.gauge = max(0, m.gauge - rule["fade"])
+            m.shield = min(m.shield, m.gauge)
         if m.down > 0:
             m.down -= 1
             if m.down > 0:
                 continue
+            if rule.get("bounce"):
+                m.shield = m.gauge   # back whole
         if rule["hit_stops"] and was_hit:
             continue
         m.shield = min(m.gauge, m.shield + rule["regen"])
+    if rule.get("pool"):
+        live = [m for m in squad if m.hull > 0]
+        field["pool"] = min(sum(m.gauge for m in live), field["pool"] + rule["regen"] * len(live))
 
 
 def picks(squad, shape, rng):
@@ -147,14 +195,14 @@ def picks(squad, shape, rng):
     return out
 
 
-def strike(squad, intents, rule, lured_to=None):
+def strike(squad, intents, rule, field, lured_to=None):
     """The enemy's turn. Returns the hull the round took."""
     lost = 0
     for target, blows, rider in intents:
         for b in blows:
             if target == "all":
                 for m in squad:
-                    lost += land(m, b, rider, rule)
+                    lost += land(m, b, rider, rule, field)
                 continue
             at = lured_to if lured_to is not None else target
             if squad[at].hull <= 0:   # its machine fell first: the next in line
@@ -162,20 +210,44 @@ def strike(squad, intents, rule, lured_to=None):
                 if not live:
                     return lost
                 at = live[0]
-            lost += land(squad[at], b, rider, rule)
+            lost += land(squad[at], b, rider, rule, field)
     return lost
 
 
-def best_use(squad, intents, rule, tool):
-    """The tool's best use by one round's forecast: a wreck first, then hull, then a quarter for
-    shield kept."""
+def forecast(squad, intents, rule, field, prepare):
+    """One round played on a copy: a wreck first, then hull, then a quarter for shield kept."""
+    trial = [m.copy() for m in squad]
+    trial_field = dict(field)
+    lure = prepare(trial)
+    before = sum(m.shield for m in trial) + trial_field.get("pool", 0)
+    stood = sum(1 for m in trial if m.hull > 0)
+    lost = strike(trial, intents, rule, trial_field, lure)
+    wrecks = stood - sum(1 for m in trial if m.hull > 0)
+    kept = sum(m.shield for m in trial) + trial_field.get("pool", 0)
+    return 40 * wrecks + lost + 0.25 * (before - kept), lost, wrecks
+
+
+def call_block(squad, intents, rule, field):
+    """The block a machine may call once a fight: called where one round's forecast says it
+    saves a wreck or six hull, one call a round."""
+    _, lost, wrecks = forecast(squad, intents, rule, field, lambda t: None)
+    best, best_gain = None, 0
+    for i, m in enumerate(squad):
+        if m.hull <= 0 or m.called:
+            continue
+        _, l, w = forecast(squad, intents, rule, field, lambda t, i=i: setattr(t[i], "calling", True))
+        gain = 40 * (wrecks - w) + (lost - l)
+        if (w < wrecks or lost - l >= 6) and gain > best_gain:
+            best, best_gain = i, gain
+    if best is not None:
+        squad[best].calling = True
+        squad[best].called = True
+
+
+def best_use(squad, intents, rule, field, tool):
+    """The tool's best use by one round's forecast."""
     def worth(prepare):
-        trial = [m.copy() for m in squad]
-        lure = prepare(trial)
-        before = sum(m.shield for m in trial)
-        stood = sum(1 for m in trial if m.hull > 0)
-        lost = strike(trial, intents, rule, lure)
-        return 40 * (stood - sum(1 for m in trial if m.hull > 0)) + lost + 0.25 * (before - sum(m.shield for m in trial))
+        return forecast(squad, intents, rule, field, prepare)[0]
 
     options = [lambda t: None]
     for i, m in enumerate(squad):
@@ -193,22 +265,25 @@ def best_use(squad, intents, rule, tool):
 
 def fight(rule, shape, rounds, rng, tool=None, front_falls=False):
     squad = [Machine(s) for s in SQUAD]
+    field = {"pool": sum(m.gauge for m in squad)} if rule.get("pool") else {}
     lost, ready = 0, True
     for r in range(rounds):
         if r > 0:
-            open_round(squad, rule)
+            open_round(squad, rule, field)
         if all(m.hull <= 0 for m in squad):
             break
         intents = picks(squad, shape[1:] if front_falls and r > 0 else shape, rng)
         lure = None
         if tool and (tool == "armoured" or ready):
-            use = best_use(squad, intents, rule, tool)
+            use = best_use(squad, intents, rule, field, tool)
             lure = use(squad)
             used = lure is not None or any(m.barrier or m.brace for m in squad)
             ready = not used or tool == "armoured"
         else:
             ready = True
-        lost += strike(squad, intents, rule, lure)
+        if rule.get("call"):
+            call_block(squad, intents, rule, field)
+        lost += strike(squad, intents, rule, field, lure)
     return lost, sum(1 for m in squad if m.hull <= 0)
 
 
@@ -228,9 +303,13 @@ def main():
     ap.add_argument("--rounds", type=int, default=5)
     ap.add_argument("--damage", type=int, default=16)
     ap.add_argument("--seed", type=int, default=1)
+    ap.add_argument("--bench", action="store_true", help="the wider bench alone")
     a = ap.parse_args()
     dealt = a.damage * a.rounds
     heads = [name for name, _ in RULES]
+    if a.bench:
+        bench(a, dealt)
+        return
     print("The shield's model: a plated machine (hull 36, shield 6, armour 1) and three lights (hull 20, shield 8), %d damage a round for %d rounds in each shape, %d fights a cell. No dice, no kills, no content." % (a.damage, a.rounds, a.trials))
     print()
     plain = {}
@@ -290,6 +369,28 @@ def main():
             cells.append("%.1f" % ((without - with_kill) / gone))
         rows.append((sname, cells))
     table("The foe in front killed in the first round: hull saved for each point of damage it would have dealt", rows, heads)
+    bench(a, dealt)
+
+
+def bench(a, dealt):
+    """The wider bench: what reaches a hull, the wrecks, and the worst a single light loses."""
+    heads = [name for name, _ in MORE]
+    share, wrecks = [], []
+    for sname, shape in shapes(a.damage):
+        row_s, row_w = [], []
+        for rname, rule in MORE:
+            rng = random.Random(a.seed)
+            lost = wrecked = 0
+            for _ in range(a.trials):
+                l, w = fight(rule, shape, a.rounds, rng)
+                lost += l
+                wrecked += w
+            row_s.append("%d%%" % round(100.0 * lost / a.trials / dealt))
+            row_w.append("%.1f" % (wrecked / a.trials))
+        share.append((sname, row_s))
+        wrecks.append((sname, row_w))
+    table("The wider bench: of the damage dealt, what reaches a hull", share, heads)
+    table("The wider bench: machines wrecked a fight", wrecks, heads)
 
 
 if __name__ == "__main__":
