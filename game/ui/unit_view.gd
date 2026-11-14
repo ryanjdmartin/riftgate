@@ -1010,11 +1010,10 @@ func _gauge(rect: Rect2, b: Array) -> void:
 	var col: Color = b[2]
 	Hud.fill_poly(self, Hud.slant(rect.grow(1.0), 4.0), Color(Palette.BG, 0.9))
 	Hud.gauge(self, rect, frac, col)
-	# A shield at rest (the breaking shield's trial, 13 November; a sixth element, the rounds
-	# left): the bar's edge broken into dashes in place of its line and a lit cell a round left,
-	# so a shield that is down reads apart from one that is only empty by structure, not hue.
-	var rest := int(b[5]) if b.size() >= 6 else 0
-	if rest > 0:
+	# A broken shield (the reboot's trial, 13 November; a sixth element, set): the bar's edge
+	# broken into dashes in place of its line, so a shield that is broken reads apart from one
+	# that is only empty by structure, not hue.
+	if b.size() >= 6 and int(b[5]) != 0:
 		var edge := Hud.slant(rect, 4.0)
 		for e in range(edge.size()):
 			var from: Vector2 = edge[e]
@@ -1025,12 +1024,6 @@ func _gauge(rect: Rect2, b: Array) -> void:
 			while at < run:
 				draw_line(from + along * at, from + along * minf(run, at + 6.0), Color(col, 0.95), 2.0)
 				at += 10.0
-		var cell_w := minf(rect.size.y * 2.0, rect.size.x / float(rest * 2 + 1))
-		var gap := cell_w * 0.6
-		var x0 := rect.position.x + (rect.size.x - cell_w * float(rest) - gap * float(rest - 1)) * 0.5
-		for k in rest:
-			var cell := Rect2(x0 + (cell_w + gap) * float(k), rect.position.y + 1.0, cell_w, rect.size.y - 2.0)
-			Hud.fill_poly(self, Hud.slant(cell, 2.4), Color(Palette.INK, 0.9))
 	else:
 		Hud.stroke_poly(self, Hud.slant(rect, 4.0), Color(col, 0.95), 1.0)   # a full-strength edge, so an empty bar still shows
 	# Shield past its maximum (Overshield, 5 October): the excess stands beyond the bar's

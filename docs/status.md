@@ -11,6 +11,15 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 - Read `CLAUDE.md`, `docs/rules.md`, the bible's first row, this file and `docs/todo.md`. If a
   chat and a file disagree, the chat is newer.
+- **The reboot is the working shape of the shield and of heat, and no session skips it**
+  (Ryan, 13 November: "This is fundamental, I don't want it to get skipped by other
+  sessions"). `docs/briefs/refit_pass.md`, section 22, has his rules, his rulings, the spec
+  and every machine read against it. It is built and on main, off in the game behind
+  `Skirmish.reboot` (REBOOT on a debug build's trials), and content still carries the regen
+  and the cooling it replaces. **His play of 14 November says it stays ("I like this
+  direction. It works"), and folding it in is the next pass** (Next, in order, below). Read
+  section 22 before any work on a machine, a component, a module or a foe (`CLAUDE.md` has
+  the rule).
 - Sessions run in parallel on this repo: `git status` first, stage by path, diff a shared file
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. A branch
   takes main as it lands and main takes the branch as a fast-forward on Ryan's word; expect the
@@ -27,11 +36,19 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1168 tests, 372,193 checks, green on `ccr-b7d5164e-1wtzzm` (14 November, the Needletail's
-  nineteenth cut and the Giant Petrel's twelfth, over main at `4a0c9b5` taken in a merge). Before it, 1167 tests,
-  371,269 checks, green on `ccr-722ca9f0-yj8na3` (13 November, the breaking shield's what-if and
-  its two trial dials, over main's Kite), and 1155 tests, 371,949 checks, green on this branch
-  over main at `6112939` (13 November, the Giant Petrel's sixth cut). Before it, 1154 tests,
+- Tests: 1189 tests, 372,485 checks, green on `ccr-b7d5164e-1wtzzm` (14 November, the Needletail's
+  nineteenth cut and the Giant Petrel's twelfth, over main at `bbcf375` taken in a merge). Before it, on main,
+  1188 tests, 371,561 checks, green on `ccr-722ca9f0-yj8na3` (14 November, the
+  vocabulary pass's two rounds of records, no engine code moved; before that the
+  basics' what-ifs and their dials; before that REBOOT on the bottom row's middle with
+  REROLL centred again; before that REBOOT a drop's target
+  alone, and shot trails the game's own; before
+  that the dragged die's target and drop; the KEYWORD INK and TRACES switches cut with their
+  two tests; before that the same day, 1189 with the reboot's control remade and driven by a
+  finger's events, and a lone fight from the menu reading the trial dials). Before it, 1187 tests, 371,387 checks (13
+  November, the reboot's what-if, its trial and the bot's first play of it, the block's rest
+  timer cut). Before it, 1167 tests, 371,269 checks (13 November, the breaking shield's what-if and its
+  two trial dials, over main's Kite). Before it, 1154 tests,
   371,110 checks, green on main (13 November, as `ccr-e3ddf00b-ilkwbi` landed
   again with the Kite's model rounds, over the Barrier's cooldown, the shield's reads and the
   anchor); git keeps the counts before. One
@@ -1001,13 +1018,14 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   holes). His idea of 13 November for the shield itself is read and on trial, nothing
   decided: "What if we bring back that when a shield breaks, it absorbs the whole blow? It
   does not bleed into the hull. But in exchange, if a shield breaks, it's down for a couple
-  of turns before it starts to regenerate again." It is a what-if in the engine behind three
-  switches, off in the game (`Skirmish.shield_break`, `shield_rest`, `shield_break_min`;
-  `tests/test_shield_break.gd`), with two dials on a debug build's SETTINGS → TRIALS: SHIELD
-  BREAK (BUILT, REST 1, REST 2, REST 3; `RIFTGATE_SHIELD_BREAK`; a shield at rest shows a
-  dashed frame and a cell a round left) and BARRIER BASIC (BUILT, NONE; the refit what-if's
+  of turns before it starts to regenerate again." Its block is a what-if in the engine, off in
+  the game (`Skirmish.shield_break`, `shield_break_min`; `tests/test_shield_break.gd`); its
+  rest timer left the engine the same day with the reboot's build (below), nothing coming
+  back by itself there. Two dials on a debug build's SETTINGS → TRIALS: SHIELD BREAK (BUILT,
+  BLOCK; `RIFTGATE_SHIELD_BREAK`) and BARRIER BASIC (BUILT, NONE; the refit what-if's
   `barrier=none`, the Armoured basic in the Barrier basic's slot on the stock dice). The
-  reads (`docs/measurements.md`, 13 November): with the Barrier off the basics and a rest of
+  reads of that morning, the rest still on the dial (`docs/measurements.md`, 13 November):
+  with the Barrier off the basics and a rest of
   two the fights of every day do not move (a formation 6.6% and 6.8% of a four's hull), an
   elite costs 12.2% where it costs 19.8% and a boss 18.5% where it costs 37.7%, no die spent
   and a boss's fight 6.2 rounds where it is 7.0, which is about what the Barrier basic is
@@ -1031,7 +1049,111 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   (the breaker's kill saves twice its own damage), the delay alone and the shooter's rule
   being answered by who gets hit. So the clause and the foes' kits are one decision, and the
   kits are next, proposed in chat against the model before any content or run. His play of
-  the trial waits on them. His marks on 4-4-2 are in ("That's probably fine for 4-4-2 for
+  the trial waits on them. He then asked for other shapes ("Think outside the box for a
+  second ... Those 3 I just pulled from the top of my head"): nine are on a bench in the
+  brief's section 17, four of them run by the model (`--bench`), and Claude's three to take
+  further are one bar for heat and shield, a shield that comes back when a machine rests,
+  and a block a machine calls once a fight. His answer: one shape first ("we need to find one
+  that works, first, before trying to balance more"), so the shield for each maker is
+  parked; a reboot that takes longer with every break, with the block or without; and the
+  heat bar as one gauge filling from hits and heat. The model has a fight that ends for both
+  (`--fight`; the brief's section 18): the growth is a rule a player would seldom meet, the
+  first reboot's length is the dial, and without the block no reboot rule moves a fight; the
+  one gauge is one currency, heat costing from the first point where as built it is free and
+  then a wall, coherent and a rework of heat's economy. He then laid the pieces out as a
+  menu to splice, and the model plays whole builds of them (`--builds`; the brief's section
+  19). Claude's splice, his to take or leave: a shield that takes its number and does not
+  regenerate, down at nothing until its machine passes a turn and back whole the round
+  after; heat that cools only on a pass; an overheat that puts a machine down the same way.
+  One verb and one state; a dud die is a pass and so a recovery; heat's price is the shots
+  between passes (29%, 31%, 34% of the squad's hull at 2, 4, 6 heat where as built reads
+  28%, 28%, 51%); it protects as the shield as built does in fights a sixth longer, and
+  every threat to it is in the foes' vocabulary today. Dropped by the model: a pass that
+  refills any shield or lands the same turn (the turtle), heat against the shield's regen or
+  maximum, one bar as a first step. The block stays a clause for later, with foes built for
+  it. He then stated the working shape himself (the brief's section 20 has his nine lines):
+  no regen and no cooling; a break allows a shutdown and an overheat forces one; a shutdown
+  recovers both meters; and "You cannot manually shutdown, so the game is to either try to
+  play around it, or time it." It departs from the splice in that line (a turn passed
+  recovers nothing unless the shield is down or the machine overheated, so the overheat is
+  the one vent a machine controls and the hold goes) and in each condition paying out the
+  other meter. The model plays it (`--shutdown`): about the shield as built, 3 to 13 points
+  more hull lost in a four-round fight, level at six, half to two thirds of it in a long one
+  against a lone hitter. His words leave two places open, and each is a row: what an overheat
+  costs past the turn (nothing more, and a gun's heat reads 32%, 33%, 34% at 2, 4, 6 and a
+  foe's heat costs nothing; the burn as today, a tax of 7 to 17 points no play avoids; the
+  shield down at once, 32%, 38%, 42%) and when the recovery lands (the same turn is the
+  turtle, 4% where the rule loses 33%). Claude's picks, his to take or leave: the shield
+  down at once and no burn, the recovery as the next round opens, the block out until foes
+  are built for it. His answer settled the recovery ("a whole turn of staying exposed with
+  no shield") and moved the shape, since the forced form "takes away player agency, despite
+  being thematic": "letting the player ride at max heat and the reboot being a choice to
+  vent heat and recover shield. If the shield is not empty and the unit reboots, I'd feel
+  like we should empty the shield." That is the working shape (the brief's section 21;
+  `--choice`): no regen, no cooling, a reboot any turn for the turn, the shield to nothing
+  at once and both meters back the round after, nothing forced. By the model the choice
+  costs nothing in protection beside the forced form (35% and 35% against the lone blow);
+  his emptying rule closes the stall (a squad that reboots at half a shield loses 5% to a
+  foe that strikes every machine with a standing shield kept, 69% with it emptied); heat is
+  priced on a slope (32%, 35%, 40% and 6.6, 7.0, 7.8 rounds at 2, 4, 6 heat); firing past
+  the maximum is the wrong play and reading the foes' picks the right one; and the foes it
+  wants are in the vocabulary today. It comes with fights about a third longer in rounds at
+  the model's numbers. Open in it, his: what a shot past the maximum costs while a machine
+  rides (the model keeps today's burn). The answer also lists the three differences he
+  asked for between his statement and the splice. His go the same day: "Yes let's go for it.
+  Dump the rules spec here first before we start", with three rules of his own (heat past
+  the maximum stays, shown as an uncleanseable debuff, a stack a point, and anything that
+  cools takes the stacks first; a broken shield "cannot gain shield by any method"; an
+  overheat's triggers fire once until the reboot) and the point he calls undecided: at the
+  maximum, burn hull or stop the spend. He ruled the same day (the brief's section 22 has
+  his words and the spec as ruled): "I agree on burn over stop"; the burn is every stack at
+  every turn, building "until the player is essentially forced to reboot, or die", since "in
+  the old spec, overheat wasn't punishing enough ... We tried x3 damage and it still didn't
+  stop the bot"; one shield-break trigger and one overheat trigger between reboots; a reboot
+  only for a machine that has "spent nothing"; "Barrier is barrier, it's a buff, it sits in
+  front of shield and hull"; and a shield spend or cost may break its own machine ("you can
+  break yourself"). Left for after, his: the foes' Burn and an audit of every rider and
+  keyword. The Dingo does not act twice in a fight, his correction: its two actions are on
+  the map, and its passive's line, the engine's words, the rules and the bible's cars row
+  now say so. The machines are read again against their briefs in section 22: the Storm
+  Petrel, the Buzzard and the Puffin read differently by their settled reworks, and
+  nineteen designs in briefs are reached by the rules. **Built the same day as a what-if,
+  off in the game** (`Skirmish.reboot`; `tests/test_reboot.gd`, each line of the spec): a
+  chassis's own regen and cooling read as nothing, what is granted staying; `reboot_mech`
+  the act, for a machine that has spent nothing, undone like a spend; every stack burning at
+  every end of the player's turn and nothing settling; the first overheat between reboots
+  breaking the shield; every shield gain refused while it is broken; the recovery as the
+  round opens. On a debug build's SETTINGS → TRIALS, REBOOT (BUILT, ON; `RIFTGATE_REBOOT=1`
+  on any run; read as a battle or a lone fight starts from the menu, the lone fight since 14
+  November, on his "What settings exactly should I be using?": the to-do's line has every
+  row's setting for his play, and the two rows that do nothing under it, SHIELD REGEN and
+  HOTTER's one more cooling): REBOOT is a drop's target in the middle of the bottom row,
+  between END TURN and UNDO, REROLL centred under the dice as it was (his option of 14
+  November, after REROLL was tried at the row's left: "keep it centered and put reboot on the
+  bottom middle between end turn and undo"; a reroll is the undo's floor, so UNDO onto REROLL
+  is the dearest slip on the screen, and a target that takes no press parts the two buttons),
+  and a die dragged onto it is the one way in ("dragging is the gesture we already have, we
+  should stick with that"): dashed at rest, lit and pulsing with a die in hand, filled under
+  it, the drop taken a thumb's width past its edge, a touch passing through it. The first
+  cut lit for a die's open readout alone (his "So I can't actually trigger a reboot"), and
+  the presses built in its place that day were cut on his word; heat past the maximum, a
+  broken shield and a reboot under way each wear a chip, and a broken shield's gauge a
+  dashed frame (the screenshot pose `reboot`). The fight bot has a first play of it
+  (`Policy._reboot_first`, `_reboot_idle`), so the runners finish a fight under the rule.
+  First cuts, his to judge running: where the control sits, the chips, the die of a
+  rebooting machine. A first read of it (`docs/measurements.md`, 13 November, a direction;
+  today's foes were sized against a shield that refills, and the bot's play is a floor):
+  every fight at its rating costs 1.6 to 2.4 times its hull and runs a quarter to a third
+  longer (a formation 10.7% of a four's hull where it costs 5.9%, an elite 14.8% for 9.5%, a
+  boss 37.1% for 21.4% with 93% won for 98%), a machine rebooting about once a fight, none
+  stalling. **Next, his: his play of the trial; then the audit of every rider and keyword
+  and the foes' Burn, each a first round in chat.** His notes on the list the same day:
+  the Dingo's line is his now ("May move and act twice during each turn of the map
+  phase"); a lure is activated, "So it's a choice. They can have a safe turn if they want",
+  which corrects the list's first draft; what grants regen, cooling, flat shield or flat
+  heat reduction he expects in a kit, a locked piece or behind a synergy, no strict rule;
+  and a shield spend may not be standard fare, "because it's so expensive".
+  His marks on 4-4-2 are in ("That's probably fine for 4-4-2 for
   now": the brief's section 13 has the table with his words, each open place its chassis's
   session's). Also open, his: the first battle's block (not scaled:
   on the anchor's numbers a mustering trio with the Honey Badger wins 0 to 5% of the
@@ -1039,7 +1161,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   quarters for its rank and file a trio keeps its hull, and the trios with the Badger still
   lose the wall); the Waste's bosses and the Peak's clock; the Prairie Dog alone. The
   muster rule and the fight-at-its-rating read are scratch probes; the runner still plays
-  the defence rule. The bible's triangle, scale, shield and Barrier rows and section 12 (v0.566);
+  the defence rule. The bible's triangle, scale, shield and Barrier rows and section 12 (v0.569);
   the rules' chassis, basics, heat and scale lines.
 - **Four formations cut toward the budget, 4-4-2 to work with, and the anchor** (Ryan, 12
   November: "Yes go ahead with 2. Also, let's look at 4-4-2 right now so that you're working
@@ -1575,7 +1697,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   with slices of their acts; a blow jolts the machine and a lost one slumps; the boosters by
   maker (Aphelion's plumes, Kestrel's halos); a hardpoint's variant and scale per silhouette
   class (`tools/fit_sheet.gd`); micro-models for the Swallowtail's flares and the Musk Ox's
-  rockets, shell and casing; shot trails tabled behind SHOT TRAILS. All first cuts for Ryan's
+  rockets, shell and casing; shot trails, kept as the game's own on 14 November ("adds a lot
+  to both immersion and to readibility. Let's keep it"), their switch cut. All first cuts for Ryan's
   judge lines; the render margin (a piece fired out cut at the view's edge) is his to judge running.
 - **The Honey Badger's hopper** (31 October): a load a foe its weapons damage, four at most,
   every two loads a stack of Armoured, granted as each round opens (10 November; the Ore Plate before it), the first buff a store grants; "never destroyed" is the
@@ -1591,7 +1714,10 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   perspective; the enemy in the rift's violet, heat red-orange, harm red-red, a debug build's
   COLOURS page for Ryan's picks; every term bold in its colour with its icon and a tap opening
   its entry (`Terms`, `KeywordTip`); the dice's gestures (tap reads, double-tap or hold locks);
-  Godot 4.8-beta2 for the MSAA fix, the player's AA MODE. Waits on Ryan's phone reads.
+  Godot 4.8-beta2 for the MSAA fix, the player's AA MODE. Waits on Ryan's phone reads; two are
+  in (14 November): the keywords stay coloured ("it's fine coloured") and the map keeps its
+  traces, and the two debug switches that set each against its other form are cut (KEYWORD
+  INK, TRACES).
 - **The pacing session and the foes' fresh start** (29 and 30 October): packs as compositions,
   the field and the rift's cycle by the tier and the ramp (`sim/ramp.gd`), the tears and the
   seam, the whole wall struck, the Rupture meter by menace with its Fractures, the elites at
@@ -1657,7 +1783,58 @@ The tasks are the to-do's; this is the index of what waits.
 ## Next, in order
 
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
-to-do's Ryan list). Ahead of all of it: **the refit pass** (`docs/briefs/refit_pass.md`, the direction
+to-do's Ryan list).
+
+**First: the reboot folded in** (Ryan, 14 November, on his play of the trial: "I like this
+direction. It works. What's our next step? Fold the trial in, and then what?"; the to-do's
+Engine list has the pass, the refit brief's section 22 the spec). The rule leaves its switch
+and the rule it replaces is cut in the same pass: the chassis's own shield regen and cooling
+out of the engine and of content, and the overheat that settles. The foes' numbers do not
+move in it. **Then, Claude's order, put to him the same day and his to set:** the audit of
+every rider and keyword against the reboot, with the foes' Burn and the Barrier's place (it
+settles what the foes' effects are before anything is sized against them). **It had two
+rounds the same day, ahead of the fold-in, on his "let's do the rider and keyword pass
+now", and his second round made it the vocabulary pass** ("I want to examine enemy riders
+as well, and all existing buffs and debuffs on both sides ... This is a vocabulary domain
+pass. I'm, as always, particularly concerned with Armour"): `docs/vocabulary_pass_proposal.md`
+reads every rider, cost, buff and debuff on both sides against the reboot and his yardstick,
+measures each of our riders on the vanilla and each of the foes' on the standard blow
+(`docs/measurements.md`, two entries), lays out armour against the hit sizes, unwinds the
+Barrier basic and waits on his marks (the to-do's Ryan list has its fourteen decisions;
+nothing in content moved). The two that are open at the root, both his questions of the
+second round: whether the vanilla sits one under the standard foe or two ("Should we still
+be considering +2?"; Claude leans to two, at 3 against 5, and a dial for the rank and
+file's hit points is offered, not built), and the foes' Burn, which he reads as dangerous
+under the reboot and Claude now reads the same way, with a status that erodes on both sides
+in its place and its word his to choose. With the pass, on his proposal, the tier-one
+bench: placeholder pieces, each the vanilla with one thing traded and priced to read as the
+vanilla alone ("the plain vanilla gun is the benchmark for 'viable,' not 'good'"), the
+proposal's section 13, built after his marks. Then the foes' kits against the frame (who
+the reboot protects and what threatens it: the brief's section 21; the approach to the
+defence side he asked for, a shield in standard blows, a fight in cycles and a hull by its
+budget, is the proposal's section 14), a small model first, no shield or hull
+renumbered before it; tier one's numbers at the anchor
+to the hull budget, since today's foes were sized against a shield that refills and cost
+about twice the hull under it, and with them the stock basics' numbers, which are sized
+against the same foes (his logic of 14 November, open: the vanilla gun one under the
+standard fodder's hit points, riders paid in damage, the gun that deals one more paid in
+heat; the refit brief's section 23 has it read, with `tools/basics_model.py`; his scope is
+the basics and tier one, and a standard foe of 5 is set aside, the point being the same
+question at any size). **It is on trial behind three dials** (a debug build's TRIALS: BASIC
+GUNS, HEAT with two off, TOP BASIC; the what-if's `basics` and `top`), read by the bot the
+same day (`docs/measurements.md`): a vanilla of 3 with a point or two of heat off gives a
+formation back the 4.5 rounds it ran before the reboot, at 8% of a four's hull where today's
+basics take 6.0 rounds and 10.7%, and an elite and a boss stand within a round and a few
+points of hull of the anchor's (a boss 24 to 27% for 37%), so most of what the reboot added
+to tier one's fights was the basics themselves; his play of the dials is next; then his play of
+the anchor; then the scaling the paragraph below already orders, the first battle down and
+tiers two and three up. His play's notes for those numbers (the bible's section 12 has his
+words): a stack burns one hull, his pick to start; he overheated a lot, and today's basic
+guns were priced against a cooling of 2 the reboot removes; some foes took "a shot too
+many", which a vanilla of 2 does on a fifth of tier one's formation slots. Beside them, his: the
+machines the rule reaches, each a design session as his brainstorm yields them.
+
+Ahead of the rest: **the refit pass** (`docs/briefs/refit_pass.md`, the direction
 Ryan set on 9 November after his play of Phase 2: shields and vents leave the die, a component a
 weapon or equipment, the shield innate and regenerating, cooling passive, the hold the heat
 decision, component destruction off to test, two rerolls kept; the formation pass folded into it,
@@ -1737,7 +1914,7 @@ commands are in `README.md`.
   that leaned on them, the triangle row's heat prices, the anchor's tier-one lines, Reset let go,
   the Barrier's cooldown and place, the shield's worth and the grant withdrawn, tier as a
   machine's word, and the looks row's Kite for its shipped mount. BASE for the next merge is
-  `620c717`'s file. Main's file is v0.566 since
+  `620c717`'s file. Main's file is v0.569 since
   `ccr-722ca9f0-yj8na3` landed again the same day (section 12's breaking shield, his idea of 13
   November read as a what-if, and the method his question set), unpublished, its republish on
   Ryan's word. The

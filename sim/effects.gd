@@ -1131,8 +1131,8 @@ static func _taking_part(u, trigger: String, face: Face, target = null, ctx: Dic
 ## is the longest-lived scope that takes part, ROUNDS by default (everything live); the
 ## codex asks with BATTLE (Ryan, 26 September: the codex is the machine's base state with
 ## its battle rewards, never its combat effects).
-static func stat(u, name: String, upto: int = ROUNDS) -> int:
-	var base: float = float(u.base.get(name, 0))
+static func stat(u, name: String, upto: int = ROUNDS, own: bool = true) -> int:
+	var base: float = float(u.base.get(name, 0)) if own else 0.0   # `own` false: what is granted alone, the chassis's own left out (the reboot's cooling and regen, a what-if)
 	var add := 0.0
 	var mult := 1.0
 	for pair in _taking_part(u, "static", null):
@@ -1595,8 +1595,11 @@ static func never_hunted(u) -> bool:
 	return false
 
 
-## Actions a turn this machine has past the one every machine has (extra_action, static; the
-## Dingo's second, bible section 7, the cars).
+## Actions a turn on the battlefield this machine has past the one every machine has
+## (extra_action, static; the Dingo's second, bible section 7, the cars): a move and a fight
+## opened, twice. Never a second spend in a skirmish: inside a fight it acts once a round, like
+## any machine (Ryan, 13 November: "Dingo doesn't act twice"; his line for it, "May move and act
+## twice during each turn of the map phase").
 static func extra_actions(u) -> int:
 	var n := 0
 	for pair in _taking_part(u, "static", null):
@@ -2492,7 +2495,7 @@ static func effect_text(eff: Dictionary) -> String:
 				body += ", up to %d" % int(eff["cap"])
 		"add_attack": body = "attack %s" % signed
 		"never_hunted": body = "no hunter ever picks it as its prey"
-		"extra_action": body = "%s more action%s a turn: move and fight again" % [vs, "" if int(v) == 1 else "s"]
+		"extra_action": body = "may move and act %s during each turn of the map phase" % ("twice" if int(v) == 1 else "%d times" % (int(v) + 1))
 		"hull_per_spend": body = "every component it spends costs %s hull" % vs
 		"step_die": body = "its die never rolls: each fight opens on a random entry, and every roll steps it to the next in order"
 		"fold_die": body = "its die is two batteries of %s, one up at a time with its fixed pieces; the battery up stays up from fight to fight, and a battle opens on the first" % vs

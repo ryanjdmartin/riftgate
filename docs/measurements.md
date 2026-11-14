@@ -9462,3 +9462,486 @@ took, what reached the hull, what a break stopped, the shield as it stood, wheth
 rest). The Jack in the Halo's slot is the Halo Projector's entry replaced in memory by the
 Shoring Jack's. The honest rows reproduce the sections above to the decimal (19.8% and 37.7%;
 9.5% and 21.4%). Scratch probes, not in the repository.
+
+## 13 November, the reboot: each fight at its rating under the what-if, a first read
+
+Ryan, 13 November, of the reboot he ruled that day (the refit brief's section 22): "the
+overheat damage stacks, damages the hull every turn for the total stacks, and keeps building
+until the player is essentially forced to reboot, or die."
+
+The decision it informs: none. It is a first look at the rule as built, for his play of its
+trial. Two things stand over every number here. Today's foes were built for another rule,
+their blows sized against a shield that refills (12 November), so this says what they do to
+the reboot and never whether the reboot is right (`CLAUDE.md`, the fundamentals' rule). And
+the fight bot's play of it is a first cut (`Policy._reboot_first`, `_reboot_idle`): it
+reboots where it must and reads the foes' picks crudely, so its cost is a floor of skill.
+
+As read: `Skirmish.reboot` on, content as it stands with the Barrier basic on the stock dice,
+the six tier ones, the fight bot (greedy), each fight at its rating as in the sections above
+(six squads and five seeds for a flanker, a hunter and a formation; five squads of four and
+four seeds for an elite and a boss), beside the same read as built (13 November's content
+row). A share of a four's hull. Each a direction.
+
+| The fight | As built | Its rounds | Under the reboot | Its rounds | Won | Reboots a machine a fight |
+|---|---|---|---|---|---|---|
+| A lone flanker | 2.8% | 4.3 | 6.8% | 5.5 | 96% | 1.1 |
+| A hunter's pack | 6.3% | 4.0 | 11.6% | 5.3 | 100% | 1.1 |
+| A formation | 5.9% | 4.5 | 10.7% | 6.0 | 100% | 1.0 |
+| An elite | 9.5% | 4.8 | 14.8% | 6.1 | 100% | 0.9 |
+| A boss | 21.4% | 8.1 | 37.1% | 10.8 | 93% | 1.6 |
+
+Wrecks a fight, an elite's and a boss's: 0.03 and 0.19 as built, 0.10 and 0.58 under the
+reboot; the bosses' fights won 98% as built. The burn took 0.2 hull a fight at most: the bot
+all but never fires past its maximum. A machine gives a turn in five to seven to a reboot.
+
+By fight, as built and under the reboot:
+
+| The elite | As built | Under the reboot | Its rounds |
+|---|---|---|---|
+| The shaman's warband | 7.7% | 18.1% | 5.0 |
+| The Nob | 17.0% | 21.4% | 6.4 |
+| The Old Man's rising | 17.8% | 19.9% | 8.0 |
+| The Pilgrim's wake | 2.4% | 6.3% | 6.0 |
+| The Rust Monster | 2.9% | 4.6% | 4.4 |
+| Gilgamesh | 7.9% | 13.7% | 8.6 |
+| The Fell Rider | 6.7% | 11.0% | 4.5 |
+| The Reaper | 0.5% | 0.7% | 3.8 |
+| The Wild Hunt | 12.7% | 22.9% | 5.7 |
+| The Cinder Tortoise's brood | 16.4% | 24.6% | 9.5 |
+| The Thunder Ape | 13.1% | 19.7% | 5.6 |
+
+| The boss | As built | Under the reboot | Its rounds | Won |
+|---|---|---|---|---|
+| Floraison | 20.0% | 34.2% | 8.0 | 100% |
+| King Gel | 15.0% | 26.5% | 8.7 | 100% |
+| The Mantis Ant | 8.6% | 14.6% | 7.8 | 100% |
+| The Ruby Colossus | 24.8% | 61.0% | 13.4 | 65% |
+| The Fallen Weapon | 22.7% | 48.7% | 11.1 | 85% |
+| The Emperor Scorpion | 24.8% | 40.7% | 10.4 | 90% |
+| The Matador | 16.7% | 24.7% | 8.7 | 100% |
+| The Phantom Train | 26.7% | 52.0% | 15.8 | 95% |
+| The Vampire Lord | 5.3% | 16.9% | 8.2 | 95% |
+| The Marsh Serpent | 11.3% | 29.3% | 7.1 | 100% |
+| The Gargantuan King | 38.3% | 32.5% | 20.9 | 85% |
+| The Fiend of Fire | 33.1% | 56.2% | 9.2 | 100% |
+| The Obsidian Tyrant | 31.5% | 44.7% | 11.2 | 95% |
+
+What it says:
+
+- Every fight costs more, 1.6 to 2.4 times its hull, and runs a quarter to a third longer in
+  rounds. The model of section 21 had the length, a third longer, and had the cost closer:
+  the game's foes lean on the regen their blows were sized against more than the model's did.
+- The fights of every day roughly double: a formation 10.7% where the budget's anchor has it
+  at 5.9%. The foes' numbers would be tuned again under the rule, as they were for the regen.
+- The long fights grow longest: the Gargantuan King 20.9 rounds, the Phantom Train 15.8, the
+  Ruby Colossus 13.4 with a third of its fights lost. A boss's fight is where a squad reboots
+  most, 1.6 times a machine. The Gargantuan King is the one fight that costs less, 32.5%
+  where it costs 38.3%: the long fight where a reset outdoes a regen, as the model had it.
+- No fight stalls, and the bot never burns for a shot: the rule plays to the end as built.
+
+Not read: the Barrier basic off the dice under the reboot (the Barrier is the reboot's cover
+by his fourth ruling, so its place moves with this), the second battle whole, and any tier
+past one. Each on his word.
+
+## 14 November, the stock basics by the fodder's health: the roster counted, and a model apart from content
+
+Ryan's logic of the day (the refit brief's section 23): the vanilla gun one under the
+standard fodder's hit points, riders paid in damage, the gun that deals one more paid in
+heat. Two reads, neither a fight of the game's.
+
+**The roster, counted** (content of 14 November: the ten tier-one formations, 69 foes; a
+foe's hit points and plate against a gun's number, one shot at a time, nothing else).
+
+| A gun of | Kills in one shot | In two | In three | In four or more |
+|---|---|---|---|---|
+| 2, today's vanilla | 10% | 70% | 12% | 9% |
+| 3 | 23% | 71% | none | 6% |
+| 4 | 80% | 14% | none | 6% |
+| 5 | 88% | 6% | none | 6% |
+
+The slots: 23% thin (2 or 3 hit points), 57% a plain 4, 3% a 4 behind a point of plate, 12%
+thick (5 or 6), 6% a big plated one (14 to 20). By domain, in one shot: a gun of 3 none of
+the Meadow's or the Peak's, half the Waste's and 45% of the Marsh's; a gun of 4, 77%, 62%,
+93% and 85%.
+
+**The model** (`python3 tools/basics_model.py`; three machines, one gun a round each, a foe
+dead before the foes' turn strikes nobody, heat under the reboot at a maximum of 12; no dice
+but in its last table, no reach, shield or riders). Rounds to clear and blows taken, heat
+left out:
+
+| The pack | A gun of 2 | A gun of 3 | A gun of 4 |
+|---|---|---|---|
+| Eight thin, 3 | 6 rounds, 57 | 3 rounds, 21 | 3 rounds, 21 |
+| Eight standard, 4 | 6 rounds, 76 | 6 rounds, 76 | 3 rounds, 28 |
+| Six thick, 6 | 6 rounds, 60 | 4 rounds, 40 | 4 rounds, 40 |
+| Six of 4 behind a point of plate | 8 rounds, 72 | 4 rounds, 30 | 4 rounds, 30 |
+| A big plated one, three standard, three thin | 10 rounds, 101 | 6 rounds, 55 | 4 rounds, 30 |
+
+Blows taken under the reboot, with the blows that land while the squad stands bare:
+
+| The pack | 3 for 3 heat | 4 for 4 heat | 4 for 6 | 4 for 8 | 4 for 12 |
+|---|---|---|---|---|---|
+| Eight thin | 21 | 21 | 21 | 36 (15 bare) | 36 (15) |
+| Eight standard | 84 (8) | 28 | 28 | 48 (20) | 48 (20) |
+| Six thick | 40 | 40 | 52 (12) | 72 (32) | 72 (32) |
+| Six plated | 30 | 30 | 39 (9) | 54 (24) | 54 (24) |
+| The mixed pack | 62 (7) | 30 | 37 (7) | 53 (23) | 53 (23) |
+
+One machine of the three changed, heat left out, 4,000 fights a cell, eight standard foes
+and a vanilla of 3: 76 blows on plain dice, 71 with one of its six entries dealing one more,
+66 with two, 64 with every weapon of its dealing one more from the second round; with a
+vanilla of 2, 76 in every column. An entry in one of six shows on 17% of its machine's turns,
+31% with one reroll given it, 42% with two.
+
+What they say: against a foe of 4 a gun of 2 and a gun of 3 are one gun, and the third point
+earns its place on everything else; the step from 3 to 4 is a cliff on a roster that sits on
+one number; no heat under the maximum makes the gun of 4 the vanilla's equal against
+standard fodder, and any heat over the vanilla's is a loss where its point crosses nothing;
+a lasting point on every weapon is worth two entries and more, and nothing with the vanilla
+at 2. What they do not say: what a fight of the game's costs, which is the anchor's read once
+a number moves.
+
+## 14 November, the basics on dials: tier one's fights under the reboot, the vanilla a point up and the heat down
+
+Ryan's "Sure, let's try it" on a dial for the vanilla's number and heat (the refit brief's
+section 23). Each fight at its rating, tier one at Convergence 1, the six certain tier ones
+(the Honey Badger, the Skua, the Storm Petrel, the Prairie Dog, the Cassowary, the
+Cottonmouth), six squads and five seeds a fight, the greedy rung with its first play of the
+reboot, `Skirmish.reboot` on; the what-if's `basics`, `hotter` and `top` (scratch probe, the
+battle's own builders). 30 fights a cell: a direction. Rounds, and hull lost as a share of a
+squad of four's.
+
+| The basics | A lone flanker (4 fights) | A hunter's pack (2) | A formation (10) | Reboots a machine a fight, a formation | The burn a fight |
+|---|---|---|---|---|---|
+| As built: 2 for 4 heat, the Laser Carbine 3 for 5 | 96% won, 5.5 rounds, 6.8% | 100%, 5.3, 11.6% | 100%, 6.0, 10.7% | 1.02 | 0.19 |
+| `hotter=-1` | 96%, 5.4, 6.6% | 100%, 5.1, 11.8% | 100%, 5.5, 9.9% | 0.77 | 0.14 |
+| `hotter=-2` | 96%, 5.4, 6.9% | 100%, 5.2, 11.6% | 100%, 5.0, 8.8% | 0.58 | 0.04 |
+| `basics=1`: 3 for 4, the Carbine 4 for 5 | 100%, 4.5, 5.1% | 98%, 4.6, 9.3% | 100%, 5.1, 9.4% | 0.85 | 0.21 |
+| `basics=1,hotter=-1` | 100%, 4.5, 4.9% | 98%, 4.5, 9.2% | 100%, 4.7, 8.1% | 0.64 | 0.10 |
+| `basics=1,hotter=-2` | 100%, 4.5, 5.1% | 100%, 4.5, 9.6% | 100%, 4.5, 7.9% | 0.48 | 0.03 |
+| `basics=1,hotter=-1,top=2`: the Carbine 4 for 6 | 100%, 4.5, 5.0% | 98%, 4.6, 9.7% | 100%, 4.8, 8.4% | 0.69 | 0.11 |
+| `basics=1,hotter=-1,top=4`: the Carbine 4 for 8 | 100%, 4.4, 5.0% | 98%, 4.7, 10.0% | 100%, 5.0, 8.8% | 0.74 | 0.18 |
+
+By fight, rounds and hull, as built and with the point of damage alone: the goblin horde 5.2
+and 6.8% to 4.9 and 5.9%; the treant's grove 7.5 and 12.9% to 6.2 and 12.8%; the gel wall
+7.5 and 15.2% to 7.3 and 18.8%; the needler thicket 3.6 and 6.2% to 3.3 and 6.2%; the
+sandworm's ambush 5.8 and 10.7% to 4.9 and 9.7%; the grave throng 6.7 and 13.1% to 5.3 and
+6.6%; the barrow mound 8.1 and 13.6% to 6.8 and 7.5%; the knights' vigil 4.2 and 5.1% to 3.2
+and 4.5%; the ember pyre 5.2 and 11.4% to 4.8 and 11.5%; the magma vent 5.9 and 11.7% to 4.8
+and 10.0%. The Laser Carbine is 10.5% of a formation's spends as built, 13.5% at 4 for 4
+heat and 10.5% at 4 for 8.
+
+The squads of four (five squads and four seeds a fight, 20 fights a cell):
+
+| The basics | An elite (11 fights) | A boss (13) | Reboots a machine a fight: elite, boss |
+|---|---|---|---|
+| Before the reboot, as built (13 November's read) | 100% won, 4.8 rounds, 9.5% | 98%, 8.1, 21.4% | none |
+| Under the reboot, as built (13 November's) | 100%, 6.1, 14.8% | 93%, 10.8, 37.1% | 0.89, 1.63 |
+| `basics=1,hotter=-1` | 100%, 5.2, 11.1% | 99%, 8.7, 26.5% | 0.58, 1.12 |
+| `basics=1,hotter=-2` | 100%, 4.9, 10.9% | 98%, 8.4, 23.6% | 0.36, 0.82 |
+
+What it says: the point and the heat each take about a round off a formation and add to the
+4.5 rounds a formation ran before the reboot (5.9% of a four's hull then); with both, an
+elite and a boss stand within a round and a few points of hull of the anchor's, so most of
+what the reboot added to tier one's fights was the basics themselves; a duel answers to
+the point and not to the heat; the goblin horde barely moves for the point, the Marsh's
+throng halves, the plated and the thick give a round; the top basic's heat is a slope. What
+it does not say: whether a hold or a reboot is right, the bot's play being a floor; the gel
+wall's rise is inside a cell's noise at 30 fights.
+
+## 14 November, the rider and keyword pass: each rider on the vanilla, a gun's strikes, and the Barrier basic at a price
+
+Ryan's "let's do the rider and keyword pass now" (`docs/vocabulary_pass_proposal.md`, whose
+section 2 reads these). Each formation of tier one at its rating, Convergence 1, the six
+certain tier ones as trios, six squads and five seeds a fight, the greedy rung, the reboot
+on, the trial's basics (`basics=1,hotter=-1`: a vanilla of 3 for 3 heat). Every plain basic
+gun, the Twin Autoguns, the Rivet Gun and the Ankle Mortar (which keeps its Indirect), is
+replaced on every die by one test gun at 3 heat; the Laser Carbine and every fixed piece
+stand as the trial has them (scratch probe, the battle's own builders). 30 fights a cell and
+300 a row: a direction. Hull lost is a share of a squad of four's.
+
+| The test gun | Won | Rounds | Hull | Reboots a machine | The foes' damage a fight | On shield, hull, a Barrier |
+|---|---|---|---|---|---|---|
+| A flat 1 | 99% | 6.0 | 12.4% | 0.91 | 38.8 | 51%, 31%, 14% |
+| A flat 2 | 100% | 5.3 | 9.6% | 0.74 | 31.2 | 54%, 29%, 13% |
+| A flat 3 | 100% | 4.7 | 8.1% | 0.64 | 25.6 | 57%, 30%, 9% |
+| A flat 4 | 100% | 4.1 | 6.6% | 0.53 | 21.8 | 61%, 29%, 6% |
+| A flat 5 | 100% | 3.9 | 6.4% | 0.48 | 21.0 | 62%, 29%, 5% |
+| 1 three times | 100% | 4.8 | 8.4% | 0.67 | 26.5 | 57%, 30%, 9% |
+| 2 twice | 100% | 4.2 | 6.8% | 0.53 | 21.9 | 61%, 30%, 6% |
+| 1 four times | 100% | 4.3 | 7.1% | 0.56 | 22.7 | 59%, 30%, 7% |
+| 3, Burn 2 | 100% | 3.9 | 6.4% | 0.48 | 21.0 | 61%, 29%, 6% |
+| 3, Flak 1 | 100% | 4.4 | 7.6% | 0.59 | 24.7 | 59%, 29%, 7% |
+| 3, Shock | 100% | 4.3 | 7.6% | 0.57 | 24.1 | 61%, 30%, 5% |
+| 3, Spread 1 | 100% | 4.2 | 5.8% | 0.52 | 20.8 | 62%, 27%, 7% |
+| 3, Splash 1 | 100% | 4.0 | 5.3% | 0.46 | 19.6 | 63%, 26%, 7% |
+| 3, Penetrate 2 | 100% | 4.1 | 5.3% | 0.49 | 19.9 | 63%, 25%, 8% |
+| 3, Breach | 100% | 4.4 | 7.6% | 0.60 | 24.3 | 59%, 30%, 8% |
+| 3, Chain 2 | 100% | 4.7 | 8.1% | 0.64 | 25.6 | 57%, 30%, 9% |
+| 3, Sap 1 | 100% | 4.6 | 6.7% | 0.60 | 23.1 | 61%, 28%, 8% |
+| 3, Cryo 1 | 100% | 4.6 | 8.0% | 0.59 | 25.5 | 57%, 30%, 9% |
+| 3, Expose | 100% | 4.4 | 7.8% | 0.59 | 24.6 | 60%, 30%, 7% |
+| 3, Lure | 100% | 4.9 | 7.9% | 0.71 | 26.8 | 61%, 28%, 8% |
+| 3, Purge 1 | 100% | 4.7 | 8.1% | 0.64 | 25.6 | 57%, 30%, 9% |
+| 3, Disrupt | 100% | 5.2 | 7.9% | 0.73 | 25.0 | 60%, 30%, 6% |
+| 3, Suppress | 100% | 4.8 | 6.3% | 0.62 | 20.4 | 63%, 29%, 5% |
+| 2, Burn 2 | 100% | 4.3 | 7.7% | 0.55 | 24.3 | 59%, 30%, 8% |
+| 2, Flak 1 | 100% | 5.0 | 9.1% | 0.70 | 29.1 | 56%, 30%, 11% |
+| 2, Shock | 100% | 4.6 | 9.1% | 0.64 | 27.5 | 58%, 32%, 7% |
+| 2, Spread 1 | 100% | 4.7 | 6.7% | 0.61 | 24.0 | 59%, 27%, 11% |
+| 2, Splash 1 | 100% | 4.5 | 6.1% | 0.57 | 22.6 | 61%, 26%, 9% |
+| 2, Breach | 100% | 4.9 | 8.9% | 0.67 | 29.1 | 57%, 29%, 10% |
+| 2, Sap 1 | 100% | 5.3 | 8.5% | 0.71 | 27.2 | 58%, 29%, 9% |
+| 2, Cryo 1 | 100% | 5.2 | 9.5% | 0.69 | 30.8 | 54%, 29%, 13% |
+
+By fight, rounds and hull:
+
+| The test gun | Goblin horde | Treant's grove | Gel wall | Needler thicket | Sandworm's ambush | Grave throng | Barrow mound | Knights' vigil | Ember pyre | Magma vent |
+|---|---|---|---|---|---|---|---|---|---|---|
+| A flat 1 | 5.7, 7.7% | 7.6, 14.2% | 8.0, 20.8% | 4.2, 10.5% | 5.3, 12.1% | 6.8, 16.0% | 7.8, 11.4% | 4.0, 6.8% | 5.3, 14.0% | 5.5, 10.8% |
+| A flat 2 | 4.8, 5.6% | 7.0, 10.9% | 6.9, 14.6% | 3.2, 6.0% | 5.0, 9.1% | 5.8, 11.7% | 7.0, 11.0% | 3.6, 5.7% | 4.9, 11.2% | 5.1, 10.3% |
+| A flat 3 | 4.4, 5.0% | 5.9, 10.6% | 6.9, 15.8% | 3.0, 6.0% | 3.9, 8.5% | 5.0, 5.6% | 5.9, 7.4% | 2.9, 4.2% | 4.6, 8.9% | 4.4, 9.1% |
+| A flat 4 | 3.4, 1.3% | 5.3, 9.0% | 6.6, 13.0% | 2.9, 6.6% | 3.5, 8.5% | 4.5, 4.8% | 5.2, 6.3% | 2.3, 2.3% | 3.9, 5.8% | 3.9, 8.4% |
+| A flat 5 | 3.4, 1.3% | 4.7, 8.5% | 6.5, 15.3% | 2.9, 6.6% | 3.2, 7.7% | 4.5, 4.8% | 4.8, 5.5% | 2.0, 1.0% | 3.8, 5.1% | 3.4, 7.8% |
+| 1 three times | 4.7, 5.7% | 6.3, 10.9% | 6.9, 15.8% | 3.0, 6.0% | 4.1, 8.8% | 5.0, 5.7% | 5.7, 6.9% | 3.5, 6.2% | 4.5, 8.4% | 4.3, 9.5% |
+| 2 twice | 3.4, 1.3% | 5.2, 8.8% | 6.5, 13.8% | 2.9, 6.6% | 3.9, 8.4% | 4.5, 4.8% | 5.1, 6.9% | 2.5, 3.2% | 3.9, 5.8% | 3.8, 8.4% |
+| 1 four times | 3.6, 1.5% | 5.5, 8.9% | 6.5, 13.8% | 2.9, 6.6% | 3.9, 8.6% | 4.5, 4.8% | 5.2, 6.7% | 3.2, 5.7% | 3.9, 5.8% | 4.0, 8.5% |
+| 3, Burn 2 | 3.6, 2.4% | 4.7, 7.4% | 6.5, 15.8% | 2.9, 6.0% | 3.2, 7.7% | 3.9, 2.9% | 4.2, 4.1% | 2.4, 3.1% | 4.1, 7.1% | 3.3, 7.7% |
+| 3, Flak 1 | 4.4, 4.4% | 5.3, 10.3% | 6.8, 14.6% | 3.0, 6.0% | 3.5, 8.2% | 5.0, 5.5% | 5.3, 6.5% | 2.7, 3.2% | 4.5, 9.3% | 3.7, 8.5% |
+| 3, Shock | 4.5, 4.7% | 5.0, 9.9% | 6.9, 16.4% | 3.1, 6.0% | 3.1, 6.6% | 5.1, 5.5% | 4.4, 6.4% | 2.6, 3.6% | 4.6, 9.0% | 3.3, 8.3% |
+| 3, Spread 1 | 3.7, 1.5% | 5.7, 9.8% | 5.7, 6.5% | 2.8, 5.1% | 4.0, 8.9% | 4.2, 2.7% | 5.8, 5.6% | 2.6, 4.7% | 4.0, 5.0% | 3.6, 8.2% |
+| 3, Splash 1 | 3.5, 2.1% | 5.7, 9.6% | 5.3, 4.6% | 2.8, 5.2% | 4.2, 9.2% | 3.8, 2.1% | 5.7, 4.9% | 2.3, 3.5% | 3.4, 3.4% | 3.7, 8.8% |
+| 3, Penetrate 2 | 3.5, 1.4% | 5.7, 10.1% | 4.7, 2.7% | 2.7, 3.7% | 3.8, 7.3% | 3.9, 2.5% | 5.9, 6.5% | 2.2, 3.3% | 4.0, 6.6% | 4.1, 9.0% |
+| 3, Breach | 4.4, 5.2% | 5.5, 10.8% | 6.9, 15.8% | 3.0, 6.0% | 3.4, 7.8% | 5.0, 5.6% | 5.0, 5.3% | 2.7, 3.6% | 4.6, 8.9% | 3.7, 7.4% |
+| 3, Chain 2 | 4.4, 5.0% | 5.9, 10.6% | 6.9, 15.8% | 3.0, 6.0% | 3.9, 8.5% | 5.0, 5.6% | 5.9, 7.4% | 2.9, 4.2% | 4.6, 8.9% | 4.4, 9.1% |
+| 3, Sap 1 | 4.2, 3.2% | 5.9, 9.4% | 6.6, 14.2% | 3.0, 5.3% | 4.1, 6.9% | 4.6, 3.7% | 5.7, 4.7% | 2.7, 3.6% | 4.5, 8.5% | 4.2, 7.9% |
+| 3, Cryo 1 | 4.3, 5.2% | 5.9, 10.6% | 6.8, 15.8% | 3.0, 6.0% | 3.8, 8.4% | 4.9, 5.6% | 5.9, 7.6% | 2.8, 4.1% | 4.5, 8.4% | 4.1, 8.3% |
+| 3, Expose | 4.3, 4.5% | 5.5, 12.4% | 6.6, 13.8% | 3.0, 6.0% | 3.3, 8.0% | 5.0, 5.7% | 5.2, 6.7% | 2.6, 3.1% | 4.5, 9.9% | 3.5, 8.2% |
+| 3, Lure | 4.5, 4.8% | 6.4, 8.8% | 6.9, 16.2% | 3.0, 6.0% | 4.1, 8.5% | 5.0, 5.8% | 6.6, 7.1% | 2.9, 4.2% | 4.7, 8.6% | 4.4, 9.0% |
+| 3, Purge 1 | 4.4, 5.0% | 5.9, 10.6% | 6.9, 15.8% | 3.0, 6.0% | 3.9, 8.6% | 5.0, 5.6% | 5.8, 7.3% | 2.9, 4.2% | 4.6, 8.9% | 4.4, 9.1% |
+| 3, Disrupt | 4.4, 3.1% | 6.9, 11.0% | 6.7, 13.7% | 3.1, 5.9% | 5.6, 9.3% | 5.1, 5.7% | 8.3, 9.4% | 3.6, 3.0% | 4.3, 10.0% | 4.4, 8.2% |
+| 3, Suppress | 4.3, 2.2% | 6.5, 7.0% | 6.8, 16.1% | 3.1, 5.9% | 3.9, 6.0% | 5.0, 4.0% | 6.4, 5.5% | 2.8, 2.2% | 4.9, 8.0% | 4.5, 6.5% |
+| 2, Burn 2 | 4.0, 2.9% | 5.0, 9.9% | 6.7, 14.1% | 3.1, 5.9% | 3.6, 8.0% | 4.7, 7.0% | 4.9, 6.6% | 2.9, 4.7% | 4.4, 10.3% | 3.6, 7.5% |
+| 2, Flak 1 | 4.9, 5.2% | 5.9, 10.8% | 7.0, 14.2% | 3.1, 6.0% | 4.1, 8.6% | 5.9, 11.4% | 6.1, 8.9% | 3.3, 5.4% | 5.0, 11.8% | 4.5, 9.0% |
+| 2, Shock | 4.7, 6.0% | 5.4, 10.7% | 6.6, 13.8% | 3.2, 6.0% | 3.4, 7.6% | 5.5, 11.2% | 5.4, 9.4% | 3.3, 5.7% | 5.0, 12.6% | 3.7, 8.3% |
+| 2, Spread 1 | 4.2, 2.9% | 6.5, 9.7% | 5.5, 6.4% | 2.8, 5.0% | 4.8, 9.5% | 4.4, 4.5% | 6.4, 7.2% | 3.2, 4.6% | 4.5, 8.1% | 4.3, 9.0% |
+| 2, Splash 1 | 3.9, 2.7% | 6.1, 7.0% | 5.1, 6.1% | 2.8, 4.4% | 4.9, 9.9% | 4.4, 4.0% | 6.4, 7.4% | 2.8, 3.7% | 4.3, 7.0% | 4.2, 9.0% |
+| 2, Breach | 4.5, 4.9% | 6.0, 11.0% | 6.9, 14.6% | 3.2, 6.0% | 3.8, 8.0% | 5.8, 11.7% | 6.3, 9.6% | 3.1, 3.4% | 4.9, 11.2% | 4.3, 9.0% |
+| 2, Sap 1 | 4.8, 4.8% | 7.0, 11.9% | 6.9, 12.7% | 3.0, 5.3% | 5.3, 7.2% | 5.7, 10.4% | 7.1, 8.1% | 3.3, 5.0% | 4.8, 11.8% | 4.8, 7.6% |
+| 2, Cryo 1 | 4.7, 5.6% | 6.9, 10.8% | 6.9, 14.5% | 3.2, 6.0% | 4.6, 8.9% | 5.7, 11.6% | 6.8, 11.1% | 3.5, 5.6% | 4.8, 10.9% | 4.9, 9.7% |
+
+The squads of four against the Barrier basic at a price (five squads and four seeds a fight,
+20 fights a cell; `basics=1,hotter=-1` throughout, the first row the read of the basics on
+dials above):
+
+| The Barrier basic | An elite (11 fights) | A boss (13) | Reboots a machine: elite, boss | The foes' damage a fight, and a Barrier's share: elite, boss | Its spends a fight: elite, boss |
+|---|---|---|---|---|---|
+| As built: no heat, sits out a round | 100% won, 5.2 rounds, 11.1%, 0.03 wrecks | 99%, 8.7, 26.5%, 0.22 wrecks | 0.58, 1.12 | 53.4 and 48%, 106.6 and 46% | 2.66, 5.17 |
+| `barrier=heat3`: the same at 3 heat | 100%, 5.4, 12.7%, 0.05 | 99%, 9.0, 31.7%, 0.31 | 0.75, 1.52 | 56.3 and 45%, 113.0 and 39% | 2.52, 4.61 |
+| `barrier=none`: the Armoured basic in its slot | 100%, 5.1, 24.6%, 0.23 | 92%, 8.4, 46.8%, 0.90 | 0.72, 1.34 | 50.0 and none, 102.3 and none | none; the Shoring Jack 1.62, 3.73 |
+
+A formation with the Barrier basic at 3 heat: 100% won, 4.7 rounds, 8.3% (8.1% as built),
+0.68 reboots a machine (0.64), a Barrier 8% of the foes' damage (9%), 0.54 spends a fight
+(0.63).
+
+What it says: a point of a flat gun is worth most where it crosses the kill line, 3 to 4
+(0.6 rounds, 1.5 points of hull) against 4 to 5 (0.2 and 0.2); a gun of 2 twice runs as a
+straight 4 but against the knights behind plate, and 1 four times falls under the vanilla
+there; Burn 2 and the area chips of 1 read highest, by a point to two in rounds and more in
+hull; Flak 1, Shock, Breach and Expose read as nothing in the four hordes and match or beat
+a flat 4 in the four fights with a massive behind plate; Sap 1 reads in hull alone; Cryo 1,
+Chain 2 and Purge 1 read as the vanilla; the gel wall answers to area and not to a gun's
+number; the Barrier basic takes nearly half of an elite's and a boss's damage, a vanilla
+shot's heat changes its use by a tenth, and without it an elite costs 2.2 times the hull and
+a boss 1.8 times. What it does not say: what a rider is worth to a player who plans a second
+spend, the greedy rung laying Shock, Flak and Expose without aiming to cash them; anything
+of Lure, Disrupt or Suppress, read here on every gun of a squad at once; a duel, an elite or
+a boss for the riders; a difference under 0.2 rounds or half a point of hull.
+
+## 14 November, the vocabulary pass's second round: the unit riders, a horde by its hit points and plate, the foes' riders on the standard blow, Burning as erosion, and the Barrier by cooldown and by the spike
+
+Ryan's second round on the pass (`docs/vocabulary_pass_proposal.md`, his words there): "Why
+measure penetrate 2, burn 2, and not 1?", "Should we still be considering +2?", "I want to
+examine enemy riders as well", Burn on a machine as "a DoT that hits both meters", and the
+Barrier basic, "I'm really not sure how to unwind it from the data". The same squads, basics
+and probe as the entry above: the six certain tier ones, the greedy rung, the reboot on,
+`basics=1,hotter=-1`, hull as a share of a squad of four's. All a direction.
+
+**The unit riders, and a second number for each** (every plain basic gun replaced by the test
+gun at 3 heat; ten formations, 300 fights a row):
+
+| The test gun | Won | Rounds | Hull | Wrecks a fight | Reboots a machine | The overheat's burn a fight | The foes' damage a fight | On shield, hull, a Barrier |
+|---|---|---|---|---|---|---|---|---|
+| 3, Burn 1 | 100% | 4.2 | 7.1% | 0.00 | 0.53 | 0.04 | 22.9 | 59%, 30%, 8% |
+| 3, Burn 3 | 100% | 3.7 | 6.5% | 0.00 | 0.45 | 0.04 | 20.4 | 62%, 30%, 4% |
+| 3, Penetrate 1 | 100% | 4.4 | 6.9% | 0.00 | 0.57 | 0.07 | 23.2 | 61%, 28%, 7% |
+| 3, Spread 2 | 100% | 3.7 | 4.1% | 0.00 | 0.39 | 0.00 | 16.2 | 66%, 24%, 7% |
+| 3, Splash 2 | 100% | 3.2 | 2.8% | 0.00 | 0.26 | 0.00 | 12.2 | 67%, 22%, 8% |
+| 3, Flak 2 | 100% | 4.2 | 7.4% | 0.00 | 0.56 | 0.06 | 23.5 | 61%, 30%, 5% |
+| 3, Sap 2 | 100% | 4.7 | 6.4% | 0.00 | 0.61 | 0.17 | 21.4 | 63%, 28%, 6% |
+| 3, Cryo 2 | 100% | 4.6 | 7.9% | 0.00 | 0.57 | 0.07 | 25.3 | 58%, 30%, 9% |
+| 2, Burn 1 | 100% | 4.8 | 8.9% | 0.00 | 0.63 | 0.10 | 27.6 | 56%, 31%, 11% |
+| 2, Penetrate 1 | 100% | 5.0 | 8.1% | 0.00 | 0.67 | 0.05 | 27.4 | 56%, 28%, 12% |
+| 2, Penetrate 2 | 100% | 4.4 | 6.0% | 0.00 | 0.57 | 0.04 | 22.5 | 61%, 26%, 10% |
+| 1, Burn 1 | 100% | 5.4 | 10.9% | 0.01 | 0.76 | 0.09 | 33.5 | 52%, 31%, 13% |
+| 1, Burn 2 | 100% | 4.8 | 9.6% | 0.00 | 0.65 | 0.06 | 29.5 | 54%, 31%, 11% |
+| 1, Spread 1 | 100% | 5.1 | 7.6% | 0.00 | 0.69 | 0.08 | 27.3 | 56%, 26%, 14% |
+| 1, Splash 1 | 100% | 4.9 | 7.3% | 0.00 | 0.67 | 0.06 | 26.6 | 57%, 26%, 12% |
+| 1, Shock | 100% | 5.4 | 12.0% | 0.03 | 0.79 | 0.10 | 34.8 | 53%, 33%, 10% |
+
+| The test gun | Goblin horde | Treant's grove | Gel wall | Needler thicket | Sandworm's ambush | Grave throng | Barrow mound | Knights' vigil | Ember pyre | Magma vent |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 3, Burn 1 | 4.0, 3.1% | 5.4, 10.5% | 6.7, 15.2% | 3.0, 6.0% | 3.5, 8.2% | 3.9, 3.1% | 4.9, 5.1% | 2.5, 3.7% | 4.2, 8.5% | 3.7, 7.8% |
+| 3, Burn 3 | 3.5, 2.8% | 4.2, 8.2% | 6.7, 18.6% | 2.9, 6.1% | 3.0, 7.8% | 4.0, 2.9% | 3.9, 4.3% | 2.4, 2.2% | 3.7, 4.5% | 3.0, 7.5% |
+| 3, Penetrate 1 | 4.1, 2.9% | 5.9, 9.2% | 6.2, 12.2% | 2.8, 5.3% | 3.9, 7.8% | 4.4, 4.0% | 5.6, 7.1% | 2.5, 3.7% | 4.3, 7.0% | 4.2, 9.3% |
+| 3, Spread 2 | 3.3, 1.3% | 5.5, 8.6% | 4.0, 1.6% | 2.3, 1.5% | 3.3, 5.3% | 3.4, 0.9% | 5.5, 4.8% | 2.3, 3.9% | 3.4, 4.0% | 3.5, 8.6% |
+| 3, Splash 2 | 2.8, 0.8% | 5.1, 5.2% | 3.4, 0.2% | 2.0, 0.9% | 3.2, 4.3% | 2.2, 0.1% | 4.8, 4.2% | 2.1, 3.4% | 2.7, 1.0% | 3.3, 7.6% |
+| 3, Flak 2 | 4.3, 4.2% | 5.1, 11.5% | 6.7, 14.8% | 3.0, 6.0% | 2.9, 6.5% | 5.0, 5.4% | 4.1, 5.6% | 2.7, 3.5% | 4.6, 9.1% | 3.3, 7.2% |
+| 3, Sap 2 | 4.4, 4.0% | 6.2, 7.8% | 6.7, 15.6% | 3.0, 4.8% | 4.0, 5.6% | 4.7, 3.6% | 6.3, 3.5% | 2.7, 3.3% | 4.5, 8.3% | 4.4, 7.2% |
+| 3, Cryo 2 | 4.3, 4.9% | 5.8, 10.5% | 6.8, 15.8% | 3.0, 6.0% | 3.8, 8.4% | 4.9, 5.6% | 5.9, 7.5% | 2.7, 4.0% | 4.4, 8.4% | 4.0, 8.2% |
+| 2, Burn 1 | 4.5, 5.3% | 5.8, 10.9% | 6.8, 15.0% | 3.1, 6.0% | 3.8, 8.6% | 5.0, 9.2% | 6.2, 8.9% | 3.3, 5.4% | 4.7, 11.5% | 4.4, 8.6% |
+| 2, Penetrate 1 | 4.4, 4.3% | 6.7, 10.0% | 6.1, 10.8% | 3.0, 5.0% | 4.9, 8.8% | 4.9, 8.1% | 6.8, 8.5% | 3.1, 4.9% | 4.7, 9.7% | 5.1, 10.4% |
+| 2, Penetrate 2 | 4.1, 2.5% | 6.0, 9.1% | 4.9, 3.6% | 2.7, 3.7% | 4.4, 7.9% | 4.2, 4.7% | 6.1, 6.8% | 2.6, 3.8% | 4.5, 8.7% | 4.7, 9.5% |
+| 1, Burn 1 | 4.9, 6.7% | 6.8, 12.8% | 7.7, 19.4% | 3.9, 9.6% | 5.0, 11.6% | 5.8, 11.9% | 6.3, 9.2% | 3.6, 5.9% | 5.0, 12.5% | 4.9, 9.6% |
+| 1, Burn 2 | 4.4, 5.1% | 5.7, 10.9% | 7.3, 18.2% | 3.7, 9.4% | 4.2, 10.7% | 5.0, 9.0% | 5.5, 7.4% | 3.4, 5.5% | 4.8, 11.6% | 4.0, 8.4% |
+| 1, Spread 1 | 4.6, 4.2% | 7.1, 11.7% | 5.5, 6.5% | 3.5, 6.2% | 4.7, 9.9% | 4.8, 4.1% | 7.1, 9.8% | 3.8, 5.5% | 4.9, 9.0% | 5.0, 9.3% |
+| 1, Splash 1 | 4.7, 4.0% | 7.1, 11.3% | 5.3, 6.9% | 3.2, 5.4% | 4.7, 9.4% | 4.8, 4.4% | 7.0, 8.0% | 3.3, 5.0% | 4.6, 8.8% | 4.8, 9.4% |
+| 1, Shock | 5.2, 7.9% | 6.3, 12.2% | 8.1, 21.5%, 97% won | 4.2, 10.5% | 4.3, 11.8% | 6.3, 13.7% | 5.8, 11.8% | 3.9, 6.3% | 5.1, 14.0% | 4.6, 9.9% |
+
+**A horde by its hit points and its plate** (the goblin horde's grid, its goblins and
+mandragoras each given the hit points and plate of the column, a blow of 3 and no move but
+a blow; the test gun in every plain basic's place; six squads and twenty seeds, 120 fights a
+cell; rounds and hull):
+
+| The test gun | Eight plain 3s | Eight plain 4s | Eight plain 5s | Eight plain 6s | Eight of 3 behind a point of plate | Eight of 4 behind plate | Eight of 5 behind plate |
+|---|---|---|---|---|---|---|---|
+| A flat 1 |  | 5.2, 14.3% | 6.3, 21.1%, 99% won |  | 7.1, 23.2%, 93% won | 8.1, 31.8%, 88% won | 9.2, 39.4%, 78% won |
+| A flat 2 | 4.5, 10.6% | 4.6, 11.4% | 5.4, 16.9% | 6.3, 21.5%, 98% won | 5.7, 16.4%, 99% won | 7.5, 25.8%, 97% won | 8.7, 33.4%, 91% won |
+| A flat 3 | 3.7, 6.1% | 4.2, 10.0% | 4.9, 13.8% | 5.4, 17.1% | 5.1, 13.6% | 6.2, 21.2%, 99% won | 8.0, 30.5%, 96% won |
+| A flat 4 | 3.7, 6.1% | 3.6, 6.2% | 4.6, 11.8% | 4.9, 14.1% | 3.9, 6.9% | 5.9, 18.8%, 98% won | 6.4, 22.7%, 99% won |
+| A flat 5 | 3.7, 6.1% | 3.6, 6.2% | 4.0, 9.3% | 4.8, 13.8% | 3.9, 6.9% | 4.3, 9.9% | 6.3, 22.1% |
+| 2 twice | 3.7, 6.1% | 3.6, 6.2% | 4.6, 11.8% | 4.9, 14.0% | 5.1, 13.6% | 6.0, 19.8%, 98% won | 7.7, 29.0%, 96% won |
+| 1 four times | 3.7, 6.1% | 3.6, 6.2% | 4.6, 11.7% | 4.9, 14.1% | 6.2, 16.5% | 7.5, 25.8%, 95% won | 8.7, 32.7%, 92% won |
+| 2, Spread 1 |  | 3.9, 6.6% | 4.5, 10.5% |  | 5.0, 12.4% | 6.8, 21.8%, 97% won | 8.1, 30.2%, 94% won |
+| 3, Spread 1 | 3.4, 4.9% | 3.7, 6.2% | 4.2, 9.9% | 4.7, 12.6% | 4.8, 11.1% | 5.6, 17.1% | 7.3, 26.3%, 97% won |
+| 2, Burn 1 |  | 4.4, 10.5% | 4.9, 13.5% |  | 4.9, 13.1%, 99% won | 6.7, 21.4%, 97% won | 7.8, 28.5%, 94% won |
+| 3, Burn 1 | 3.3, 4.6% | 4.0, 8.8% | 4.6, 11.2% | 5.2, 15.0% | 4.5, 10.5% | 5.8, 18.1%, 99% won | 7.3, 25.2%, 98% won |
+| 3, Breach |  | 4.2, 10.0% | 4.9, 13.8% |  | 3.7, 6.4% | 5.3, 15.3%, 99% won | 6.0, 20.8%, 98% won |
+
+**The roster with every rank-and-file foe a hit point up** (the goblin, the mandragora, the
+cockatrice, the ghost, the zombie knight, the bomb and the drake 5, the revenant 4, the
+needler and the gel's half 3, the gel 6, the salamander 7; the massives as built; ten
+formations, 300 fights a row):
+
+| The test gun, the rank and file a hit point up | Won | Rounds | Hull | Wrecks a fight | Reboots a machine | The overheat's burn a fight | The foes' damage a fight | On shield, hull, a Barrier |
+|---|---|---|---|---|---|---|---|---|
+| A flat 2 | 100% | 6.2 | 13.3% | 0.02 | 1.02 | 0.14 | 40.6 | 52%, 31%, 12% |
+| A flat 3 | 100% | 5.4 | 11.0% | 0.01 | 0.85 | 0.10 | 33.6 | 55%, 31%, 9% |
+| A flat 4 | 100% | 5.0 | 9.5% | 0.00 | 0.75 | 0.14 | 29.3 | 58%, 30%, 7% |
+| A flat 5 | 100% | 4.3 | 7.9% | 0.00 | 0.60 | 0.06 | 24.3 | 60%, 31%, 5% |
+| 2 twice | 100% | 5.0 | 9.5% | 0.00 | 0.74 | 0.14 | 29.6 | 57%, 30%, 8% |
+| 3, Spread 1 | 100% | 4.7 | 8.3% | 0.00 | 0.69 | 0.09 | 26.7 | 58%, 29%, 8% |
+| 3, Burn 1 | 100% | 4.9 | 9.6% | 0.00 | 0.70 | 0.15 | 29.2 | 57%, 31%, 8% |
+| 3, Burn 2 | 100% | 4.3 | 7.9% | 0.00 | 0.57 | 0.08 | 25.0 | 60%, 30%, 6% |
+
+| The test gun, the rank and file a hit point up | Goblin horde | Treant's grove | Gel wall | Needler thicket | Sandworm's ambush | Grave throng | Barrow mound | Knights' vigil | Ember pyre | Magma vent |
+|---|---|---|---|---|---|---|---|---|---|---|
+| A flat 2 | 5.6, 8.9% | 7.6, 17.6% | 8.8, 23.9% | 4.6, 11.0% | 5.4, 11.7% | 6.7, 12.5% | 7.4, 11.1% | 4.4, 7.7% | 6.1, 16.3% | 5.9, 12.1% |
+| A flat 3 | 5.2, 8.1% | 6.9, 16.4% | 7.6, 17.5% | 3.6, 7.0% | 4.1, 8.9% | 5.8, 9.5% | 6.6, 10.5% | 3.8, 7.2% | 5.6, 14.3% | 5.0, 10.5% |
+| A flat 4 | 4.6, 6.5% | 6.3, 13.0% | 7.5, 18.6% | 3.6, 6.8% | 4.0, 8.6% | 5.3, 5.2% | 5.6, 6.9% | 3.5, 5.2% | 5.2, 14.1% | 4.3, 9.5% |
+| A flat 5 | 3.9, 3.4% | 5.0, 11.5% | 7.2, 17.5% | 3.3, 7.4% | 3.4, 8.4% | 4.5, 3.9% | 4.9, 5.3% | 2.5, 4.0% | 4.4, 8.8% | 3.7, 8.6% |
+| 2 twice | 4.7, 6.5% | 6.5, 13.3% | 7.5, 18.6% | 3.6, 6.8% | 3.9, 8.6% | 5.3, 5.2% | 5.6, 7.6% | 3.7, 6.5% | 5.0, 11.8% | 4.3, 10.0% |
+| 3, Spread 1 | 4.2, 4.7% | 6.3, 12.5% | 6.0, 12.2% | 3.4, 5.2% | 4.1, 8.5% | 4.7, 4.9% | 6.1, 8.2% | 3.6, 6.7% | 4.7, 10.1% | 4.4, 10.0% |
+| 3, Burn 1 | 4.5, 6.4% | 6.1, 13.3% | 7.3, 15.2% | 3.2, 5.0% | 3.9, 8.1% | 5.4, 8.8% | 5.7, 8.8% | 3.3, 6.2% | 5.2, 15.1% | 4.1, 9.1% |
+| 3, Burn 2 | 4.0, 5.0% | 5.0, 9.7% | 7.0, 14.2% | 3.1, 4.8% | 3.3, 7.4% | 4.4, 5.3% | 4.5, 6.0% | 3.0, 5.9% | 5.0, 11.6% | 3.5, 8.8% |
+
+**The foes' riders on the standard blow** (every rank-and-file foe of tier one's formations
+carries the rider on its plain blow, beside what it already carries; the ladder is every
+such foe's attack a point lighter to two heavier; the last three rows are a what-if in the
+scratch probe, a machine's Burning taking shield then hull, past armour and Barrier, in
+place of heat; ten formations, 300 fights a row):
+
+| Every rank-and-file blow | Won | Rounds | Hull | Wrecks a fight | Reboots a machine | The overheat's burn a fight | The foes' damage a fight | On shield, hull, a Barrier |
+|---|---|---|---|---|---|---|---|---|
+| Every blow a point lighter | 100% | 4.5 | 4.0% | 0.00 | 0.49 | 0.06 | 16.6 | 66%, 23%, 9% |
+| A point heavier | 99% | 4.8 | 13.7% | 0.05 | 0.75 | 0.09 | 36.4 | 50%, 36%, 10% |
+| Two heavier | 95% | 5.0 | 20.9% | 0.22 | 0.85 | 0.10 | 47.7 | 44%, 43%, 10% |
+| With Breach | 99% | 4.6 | 20.6% | 0.07 | 0.34 | 0.12 | 23.5 | 0%, 84%, 16% |
+| With Burn 1, heat | 99% | 4.9 | 10.0% | 0.06 | 0.78 | 1.14 | 27.3 | 55%, 31%, 10% |
+| With Burn 2, heat | 92% | 5.5 | 16.3% | 0.29 | 1.05 | 6.21 | 30.8 | 50%, 34%, 11% |
+| With Scorch 1 | 100% | 4.8 | 8.3% | 0.00 | 0.69 | 0.09 | 26.3 | 57%, 30%, 9% |
+| With Scorch 2 | 99% | 5.1 | 9.1% | 0.02 | 0.79 | 0.16 | 28.3 | 56%, 30%, 10% |
+| With Disable | 100% | 4.9 | 8.7% | 0.00 | 0.67 | 0.08 | 27.1 | 57%, 30%, 9% |
+| With Corrupt 1 | 96% | 4.9 | 15.6% | 0.20 | 0.83 | 0.09 | 27.9 | 49%, 38%, 9% |
+| With Crush 1 | 94% | 4.7 | 15.4% | 0.21 | 0.70 | 0.02 | 37.0 | 46%, 41%, 9% |
+| With Drain | 100% | 5.0 | 8.5% | 0.00 | 0.70 | 0.10 | 27.3 | 56%, 30%, 11% |
+| With Burn 1, as erosion | 95% | 4.8 | 15.8% | 0.17 | 0.78 | 0.02 | 27.0 | 49%, 37%, 9% |
+| With Burn 2, as erosion | 86% | 4.9 | 27.1% | 0.55 | 0.90 | 0.01 | 28.3 | 41%, 43%, 10% |
+| Content as built, Burning as erosion | 100% | 4.7 | 8.5% | 0.00 | 0.64 | 0.06 | 25.6 | 57%, 31%, 9% |
+
+| Every rank-and-file blow | Goblin horde | Treant's grove | Gel wall | Needler thicket | Sandworm's ambush | Grave throng | Barrow mound | Knights' vigil | Ember pyre | Magma vent |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Every blow a point lighter | 4.2, 1.1% | 5.8, 6.5% | 6.7, 5.9% | 2.9, 3.6% | 4.0, 5.9% | 4.3, 0.5% | 5.8, 4.0% | 2.8, 2.4% | 4.5, 3.6% | 4.3, 6.6% |
+| A point heavier | 4.3, 9.8% | 6.3, 16.9% | 7.3, 31.5%, 90% won | 3.2, 9.3% | 4.0, 11.4% | 4.9, 11.7% | 6.3, 12.3% | 3.0, 6.0% | 4.7, 16.4% | 4.4, 11.7% |
+| Two heavier | 4.7, 17.7% | 6.8, 26.8%, 97% won | 6.7, 47.9%, 53% won | 3.3, 13.3% | 4.3, 15.0% | 5.3, 23.6% | 6.6, 16.9% | 2.9, 7.5% | 5.0, 25.6%, 97% won | 4.4, 14.7% |
+| With Breach | 3.8, 17.2% | 6.0, 30.1% | 7.1, 41.3%, 87% won | 2.9, 13.4% | 3.9, 9.9% | 4.4, 20.5% | 6.4, 26.7% | 2.8, 10.7% | 4.8, 23.9% | 4.3, 12.3% |
+| With Burn 1, heat | 4.5, 5.5% | 6.2, 11.1% | 8.0, 29.9%, 90% won | 3.1, 6.0% | 4.3, 8.8% | 5.2, 6.0% | 5.8, 7.5% | 3.0, 4.4% | 4.8, 11.5% | 4.4, 9.1% |
+| With Burn 2, heat | 5.0, 9.2% | 7.1, 13.8% | 7.5, 53.0%, 40% won | 3.8, 7.6% | 4.8, 10.2% | 6.6, 17.8%, 93% won | 6.3, 8.4% | 3.2, 5.6% | 5.7, 24.4%, 87% won | 5.0, 12.4% |
+| With Scorch 1 | 4.4, 5.2% | 6.0, 10.8% | 7.2, 16.8% | 3.0, 6.0% | 4.3, 8.8% | 5.0, 5.7% | 5.8, 7.1% | 3.0, 4.3% | 4.6, 8.9% | 4.4, 9.2% |
+| With Scorch 2 | 4.6, 5.6% | 6.2, 11.3% | 8.0, 21.1%, 93% won | 3.5, 6.6% | 4.3, 8.8% | 5.4, 6.2% | 5.9, 7.2% | 3.3, 4.5% | 4.8, 10.1% | 4.6, 9.4% |
+| With Disable | 4.6, 6.2% | 6.4, 11.8% | 7.0, 16.4% | 3.2, 6.5% | 4.0, 8.7% | 5.0, 5.9% | 6.1, 7.2% | 3.2, 4.3% | 4.8, 9.4% | 4.6, 10.3% |
+| With Corrupt 1 | 4.5, 9.5% | 6.5, 20.8% | 7.4, 43.1%, 63% won | 3.1, 8.0% | 4.0, 9.1% | 5.3, 17.0%, 97% won | 5.9, 14.4% | 2.9, 4.7% | 4.9, 17.4% | 4.6, 11.6% |
+| With Crush 1 | 4.7, 13.7%, 97% won | 6.3, 15.1% | 5.7, 49.5%, 47% won | 3.1, 8.6% | 3.9, 9.2% | 5.3, 13.1% | 6.1, 9.0% | 3.0, 4.4% | 4.8, 21.4%, 97% won | 4.4, 10.1% |
+| With Drain | 4.5, 5.2% | 6.4, 11.1% | 7.0, 16.0% | 3.0, 6.0% | 4.9, 10.0% | 5.1, 5.2% | 6.4, 7.5% | 2.9, 3.9% | 4.8, 9.3% | 5.2, 10.7% |
+| With Burn 1, as erosion | 4.6, 11.6% | 6.5, 19.5% | 6.6, 45.5%, 53% won | 3.1, 7.8% | 4.1, 9.1% | 5.1, 14.1% | 5.8, 11.9% | 3.0, 4.8% | 4.6, 22.9% | 4.4, 11.1% |
+| With Burn 2, as erosion | 4.8, 24.2%, 90% won | 7.1, 37.2%, 80% won | 5.4, 59.1%, 30% won | 3.3, 12.6% | 4.2, 11.7% | 5.2, 32.6%, 90% won | 6.6, 25.7% | 2.9, 6.5% | 5.2, 46.7%, 67% won | 4.5, 14.6% |
+| Content as built, Burning as erosion | 4.4, 5.0% | 5.9, 10.6% | 6.9, 15.8% | 3.0, 6.0% | 3.9, 8.5% | 5.0, 5.6% | 5.9, 7.4% | 2.9, 4.2% | 4.6, 12.4% | 4.3, 9.4% |
+
+By machine, the same fights as built (its own hull lost a formation, of its own hull): the
+Honey Badger 5%, the Storm Petrel 10%, the Cottonmouth 11%, the Skua 12%, the Prairie Dog
+14%, the Cassowary 18%; none wrecked.
+
+**The Barrier basic by its cooldown and by the spike** (squads of four, five squads and four
+seeds a fight, 20 fights a cell; the rows as built, at 3 heat and off the dice are the entry
+above's):
+
+| The read | An elite (11 fights) | A boss (13) | Reboots a machine: elite, boss | The foes' damage a fight and a Barrier's share: elite, boss | Its spends a fight: elite, boss |
+|---|---|---|---|---|---|
+| `barrier=cooldown0`: no cooldown | 100% won, 5.4 rounds, 8.8%, 0.02 wrecks | 98%, 9.2, 23.1%, 0.19 wrecks | 0.55, 1.06 | 54.8 and 57%, 115.7 and 56% | 3.50, 7.75 |
+| `barrier=cooldown2`: sits out two rounds | 100% won, 5.0 rounds, 13.0%, 0.05 wrecks | 99%, 8.0, 31.0%, 0.28 wrecks | 0.58, 1.15 | 49.6 and 41%, 99.5 and 34% | 1.96, 3.30 |
+| As built, every elite and boss striking half again as hard | 97% won, 5.7 rounds, 24.4%, 0.40 wrecks | 73%, 10.5, 60.0%, 1.63 wrecks | 0.70, 1.16 | 87.6 and 47%, 191.7 and 43% | 2.97, 5.73 |
+| As built, their blows doubled | 92% won, 5.9 rounds, 34.3%, 0.81 wrecks | 46%, 9.3, 76.4%, 2.68 wrecks | 0.67, 0.90 | 117.4 and 49%, 224.2 and 40% | 3.10, 4.47 |
+| `barrier=none`, their blows halved | 100% won, 4.7 rounds, 6.0%, 0.00 wrecks | 100%, 6.6, 9.7%, 0.00 wrecks | 0.53, 1.00 | 22.4 and 0%, 40.5 and 0% | none, none |
+
+By fight, as built against off the dice (the entry above's runs), a Barrier's share of the
+foes' damage, then hull with it and without: the Thunder Ape 34%, 12.5% and 11.9%; the Fiend
+of Fire 19%, 39.3% and 39.1%; Floraison 13%, 23.0% and 24.5%; the Shaman's warband 14%,
+13.6% and 18.5%; the Matador 36%, 19.0% and 23.0%; the Wild Hunt 30%, 17.1% and 27.3%; the
+Cinder Tortoise 36%, 21.3% and 40.8%; the Emperor Scorpion 30%, 35.3% and 51.7%; the Fell
+Rider 47%, 9.6% and 19.5%; the Marsh Serpent 48%, 20.9% and 40.4%; the Phantom Train 47%,
+30.8% and 71.4% with 75% won; the King Gel 49%, 21.3% and 51.6%; the Fallen Weapon 50%,
+24.9% and 49.6%; the Ruby Colossus 45%, 37.3% and 61.5% with 70% won; the Vampire Lord 54%,
+6.3% and 42.7% with 80% won; Gilgamesh 57%, 10.3% and 24.8%; the Old Man of the Desert 58%,
+15.0% and 41.1%; the Pilgrim 65%, 3.7% and 17.4%; the Mantis Ant 66%, 11.1% and 42.7%; the
+Reaper 66%, 0.4% and 3.3%; the Goblin Nob 73%, 15.6% and 53.3%; the Rust Monster 78%, 2.4%
+and 12.6%; the Obsidian Tyrant 40%, 40.3% and 55.3%; the Gargantuan King 65%, 35.1% in 21.2
+rounds with 85% won and two stalls, and 55.2% in 9.4 rounds with 95% won.
+
+What it says: a rider reads the same on a gun of 3, of 2 and of 1 (Burn 1 nine tenths of a
+point, Spread 1 a point, Splash 1 a point and a half, Shock nine tenths, Penetrate 1 six
+tenths), Burn's and the area riders' second point is worth more than the first, Sap is a
+point of hull a stack and Cryo a fifth of a point at 1 or 2; against eight plain 4s a flat 2
+and a flat 3 stand 1.4 points of hull apart and a flat 4 takes 38% off the 3's, a straight 4
+and 2 twice are one gun there and part against 3 behind plate, where 2 twice is the flat 3
+to the decimal; a point of plate on eight 4s more than doubles the horde; the rank and file a
+hit point up costs the roster 0.7 rounds and 2.9 points of hull at a flat 3; a point on
+every rank-and-file blow is four to seven points of hull, Breach reads as two such points,
+Corrupt 1 and Crush 1 as 1.2 to 1.3, Burn 2 as heat as 1.4 with 8% of fights lost, and
+Disable, Drain and Scorch 1 as a tenth or less; Burning as erosion is dearer than as heat at
+the same number, 15.8% for 10.0% at 1; the Barrier's cooldown is a slope of two to four
+points of hull a round, an elite striking half again as hard costs a squad with the Barrier
+basic what today's costs one without, and its share runs from an eighth to three quarters by
+the foe's kit. What it does not say: anything a rider is worth to a planned second spend;
+a formation of one rider on every blow is no formation, so the dearer riders read at their
+worst; the marks are one grid and eight of one foe; 20 fights a cell by fight is a
+direction's direction.

@@ -662,15 +662,9 @@ func _bake_model(node: Node3D, band: int) -> void:
 ## The display traces a thing's edges in light (TraceLines), lit by the scan bar as it
 ## passes. RIFTGATE_INK=dark starts them as black ink.
 var _trace_nodes: Array = []
-var _trace_mode := _first_trace_mode()
+var _trace_mode := TraceLines.mode()
 var _light_mat: ShaderMaterial = null
 var _ink_line_mat: StandardMaterial3D = null
-
-## The traces' mode the map starts in: TraceLines.mode(), or none while a debug build's TRACES is
-## off (a crease is one device pixel at every zoom, many on a machine drawn small: Ryan judges
-## on the phone whether they are the grain he sees zoomed out, 30 October).
-static func _first_trace_mode() -> String:
-	return TraceLines.mode() if bool(Settings.display.get("traces", true)) or not OS.is_debug_build() else "off"
 
 func _trace(mi: MeshInstance3D, kind: String = "prop") -> void:
 	var added := TraceLines.attach(mi, _trace_material(kind))

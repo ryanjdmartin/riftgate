@@ -1932,10 +1932,12 @@ re-cut by their blows' count and the anchor read again; the four pieces that rai
 read again and the Storm Petrel's session told; the fight bot taught what a standing shield
 is worth, since it values one by its number.
 
-**On the phone.** A debug build's SETTINGS → TRIALS has SHIELD BREAK (BUILT, REST 1, REST 2,
-REST 3), read as a battle starts, and BARRIER BASIC (BUILT, NONE), read at the next launch;
-REST 2 with NONE is the package read above. A shield at rest shows a dashed frame on its
-gauge and a cell a round left; the break itself plays the shatter the game already has.
+**On the phone.** A debug build's SETTINGS → TRIALS has SHIELD BREAK (BUILT, BLOCK), read as
+a battle or a lone fight starts, and BARRIER BASIC (BUILT, NONE), read at the next launch. The
+dial's rest (REST 1, 2 or 3 rounds; the package read above was REST 2 with NONE) left with
+the reboot's build, section 22, where nothing comes back by itself: the block's rest is the
+reboot's now, BLOCK with REBOOT on ON, and with REBOOT on BUILT a blocked shield regenerates
+the next round. The break itself plays the shatter the game already has.
 
 ## 16. The shield as a system (13 November, a frame and a model; nothing decided)
 
@@ -2105,3 +2107,1340 @@ the model, before any content (an elite as a breaker and a blow behind it, in on
 a follow-up, which is the fair one since it shows a round ahead; a boss that strikes every
 machine and then hunts one; what a breach is once it sits inside the system and no longer
 outside it); then those kits as synthetic foes in the engine's what-if; then his play.
+
+## 17. Other shapes for the shield (13 November, a bench he asked for; nothing decided)
+
+His words: "Think outside the box for a second. What other shapes are there? Those 3 I just
+pulled from the top of my head."
+
+His three all move one thing, when the regen stops. A shield has four other things to move:
+where it comes back from, what it does with a blow, whose it is, and when it wears. The
+bench by what each moves, every line a sketch for the chat:
+
+| The shape | What it is | The game it makes | The catch |
+|---|---|---|---|
+| One bar for heat and shield | Heat fills the bar from one end, blows eat it from the other, and where they meet the hull pays | A cool machine is a shielded one, so holding fire is the defence and every hot shot is a risk taken on purpose. The foes already carry what threatens it: burn, scorch and the heat aim | Every machine that reads heat changes its meaning, and a machine under fire shoots less |
+| Rest to recharge | No regen by the clock. A machine that holds its die has its shield back as the next round opens | Three fire and one rests. A bad roll becomes the rest, so the buffer arrives on the round the die failed. The foes want to outlast the rests | Resting must never be safer than fighting, so a round has to cost something, which is parked |
+| A block a machine calls | As built, and once a fight each machine may stop one blow whole; its shield then reboots for two rounds | His block made a choice with a count. The foes' answer is more big blows than the squad has calls, or a small blow in front | One more tap a round; a lone-blow boss still meets four calls |
+| One field for the squad | Every gauge is one pool, whoever is hit | Who gets hit stops mattering until the field drops, then the tank matters; the fight is a race against the field | How the foes hit stops mattering too |
+| A shield for each maker (parked 13 November: one shape first, section 18) | No one rule. Hard light blocks and reboots, a fast flyer's comes back quickly unless touched, plate has none, a convoy shares one | The draft decides what a squad fears, and a domain tests one of them | Several rules to learn on one screen |
+| Earned by kills | Shield comes back when a machine kills | Fodder becomes a battery to time | A bad roll is no kill and no shield: it fails the test the regen was brought back for |
+| Small blows bounce | A blow under half the gauge does nothing; a bigger one drops the shield | Fodder cannot hurt a squad until the big one lands | It protects the drip and leaves the lights to the spike: armour by another name |
+| Unspent rerolls become shield | Each reroll not used shields the squad's weakest a little | Chasing the perfect roll costs safety | Small, and it taxes the one tool that shifts luck |
+| A gauge that shrinks each round | Regen as fast as wanted, the gauge a point smaller every round | Every fight has a clock on the player's side | It is an answer to what prices a round, which is parked |
+
+The model runs four of them as it stands (`python3 tools/shield_model.py --bench`). Of the
+damage dealt, what reaches a hull, and the wrecks:
+
+| The foes' shape | As built | His block, 2 down | A block a machine calls | One field | Small blows bounce | Regen 3, the gauge shrinking |
+|---|---|---|---|---|---|---|
+| One blow of 16 | 64% | 26% | 37% | 42% | 81% | 66% |
+| Two strikes of 8 | 62% | 61% | 52% | 41% | 76% | 64% |
+| 4, then 12 from the foe behind | 63% | 33% | 63% | 42% | 66% | 65% |
+| Four blows of 4, each its own pick | 43% | 41% | 42% | 40% | 12% | 25% |
+| 16 on the same machine every round | 68% | 60% | 60% | 44% | 85% | 70% |
+| A breach of 16, as built | 100% | 100% | 38% | 100% | 100% | 100% |
+| Machines wrecked, one blow of 16 | 1.3 | 0.1 | 0.3 | 0.5 | 1.3 | 1.1 |
+| Machines wrecked, the same machine hunted | 2.0 | 1.0 | 1.0 | 1.0 | 2.0 | 2.0 |
+
+Read.
+
+- The one field is the flattest column there is, 40 to 44% whatever the shape but for a blow
+  that counts double on shield (58%), and it halves the wrecks. It is the best protection against bad luck and it erases the question
+  of how the foes hit.
+- The called block does three quarters of what his block does against a lone blow, with
+  four uses a fight, and it is the only shape on either bench that puts a breach in between:
+  38% of it reaches a hull, where every other column reads 100%. A small blow in front
+  strips it, as it strips a Barrier.
+- Small blows bounce protects the wrong thing: a swarm falls to 12% and a lone blow rises
+  to 81%.
+- The shrinking gauge shows nothing here, since no fight in the model runs long. Its case
+  is the clock, which the model does not have.
+
+The four the model cannot run price themselves in tempo or in dice, and the model has
+neither: the heat bar, the rest, the kills and the rerolls. They wait on a model with a die
+and a fight that ends.
+
+**Claude's read, his to take or leave.** Three to take further, each for a different
+reason. One bar for heat and shield, because it is the only shape that uses what the foes
+already carry and it makes heat the pillar he called undervalued (28 October); it is also
+the largest change. Rest to recharge, because it is the smallest change and the only one
+whose buffer arrives when the die fails. The block a machine calls, because it keeps the
+break and the reboot he likes, bounded and chosen, and answers a breach in part. A shield
+for each maker is less a shape than a frame that could hold two of them. And whichever
+shape is taken, the foes can wear it too, so the player's weapons meet the same question
+his machines do.
+
+## 18. A reboot that grows, one shape first, and one gauge for hits and heat (13 November; nothing decided)
+
+His words: "What about, every time the shield breaks, it takes longer to reboot? Whether we add
+the blocking or not. Multiple shapes is fun but I think we need to find one that works,
+first, before trying to balance more. Your heat+shield bar could do something, but I think
+I'd rework it into either a gauge that fills from both hits and heat, or empties from both
+hits and heat, not two different directions. It's an interesting idea but I'm not sure how to
+apply it to gameplay or what the repercussions are in terms of heat costs and what they're
+worth. If heat is tied to damage thresholding, then it has to be evaluated in two directions."
+
+**One shape first** is his call. Section 17's shield for each maker is parked on it until
+one shape stands.
+
+**The model got a fight that ends** to read both (`python3 tools/shield_model.py --fight`).
+The same squad, each machine with a gun of 3 damage for 4 heat on a heat gauge of 12 that
+cools 2. The pack has hit points, sized so four machines firing every round end it in four,
+six or eight rounds, and it deals 12 a round while it stands whole. A machine holds its fire
+when the shot would cost it more than 2 hull that round. No dice and no content still, so
+the numbers set rules side by side and say nothing of what a real fight costs.
+
+**The reboot that grows.** The squad's hull lost to a lone foe's one blow of 12, by the
+fight's length:
+
+| The fight | As built | Block, 2 down | Block, 2 down, one more each break | Block, 1 down | Block, 1 down, one more each break | No block, 2 down, one more each break | No block, back whole after 1, one more each break |
+|---|---|---|---|---|---|---|---|
+| 4 rounds | 18% | 8% | 8% | 5% | 5% | 19% | 17% |
+| 6 rounds | 44% | 25% | 25% | 19% | 19% | 46% | 40% |
+| 8 rounds | 79% | 50% | 51% | 40% | 43% | 88% | 75% |
+
+Against a foe that hunts one machine every round, four rounds: as built 25% and one machine
+wrecked; the block at 2 down 21% and one wrecked, growing or not; the block at 1 down 12%
+and none wrecked, growing or not. Against two strikes sized to the shield, or four foes of 3,
+no column moves by more than a few points at four and six rounds.
+
+Read.
+
+- The growth is a rule a player would seldom meet. It adds nothing at four and six rounds
+  and 1 to 3 points at eight. A shield rarely breaks three times in one fight, and a light
+  that is hunted is wrecked before its third.
+- The dial that matters is the first reboot's length. One round against two is 3, 6 and 10
+  points, and under a hunter it is a wreck or none.
+- Without the block no reboot rule moves a fight. A delay that grows costs 1, 2 and 9
+  points; a shield back whole after its reboot saves 1, 4 and 4. At these gauges a shield is
+  spent in one blow and regains one a round, so a delay has little to take.
+- What the growth is good for is the fight that will not end. It does nothing in a fight of
+  ordinary length and more every round past it, so it is a guard against a stall on the
+  player's side, section 3's ninth point from the other end. That is its case, and it is a
+  small one while what prices a round stays parked.
+- So the decision is where it was: the block or not, and with it one round or two.
+
+**One gauge for hits and heat**, his form, modelled as filling: no shield bar; a hit fills
+the heat gauge as a shot does; its size is the heat maximum and the shield together, its
+drain the cooling and the regen together; what will not fit burns hull. A four-round fight
+against the lone blow of 12, by the gun's heat:
+
+| The gun's heat | As built: hull lost | Its shots held | One gauge: hull lost | Its shots held | Its fight |
+|---|---|---|---|---|---|
+| 2 | 18% | none | 4% | none | 4.0 rounds |
+| 4 | 18% | none | 11% | 9% | 4.9 rounds |
+| 6 | 44% | 21% | 28% | 42% | 7.2 rounds |
+
+In a six-round fight the one gauge reads 12%, 30% and 77%, and as built 34%, 44% and 98%.
+
+Read.
+
+- Filling one way, it is one currency, and that is the answer to his two directions. A
+  point of heat is a point of the buffer. A gun's heat stops being a pace alone and becomes
+  what the shot spends of its own machine's protection.
+- As built, heat is free and then a wall: a gun of 2 or of 4 reads the same in a four-round
+  fight, and a gun of 6 makes the fight a third longer and more than doubles the hull lost.
+  Under one gauge it costs from the first point, 4%, 11%, 28%. Every price would carry
+  weight, and the spread between a cool gun and a hot one would be the balance itself.
+- What a point of heat is worth: a fifth to a half of a point of hull over a fight, more the
+  longer it runs. But it is the whole point for a machine under fire and nothing for one in
+  the clear, and the foes' picks are shown. So the play is: in the clear fire hot, under
+  fire play cool, a hold or a piece of equipment. That is where it would apply to the game:
+  it gives equipment its job and the hold its reason, and it breaks his "best choice every
+  time" of 10 November.
+- Its costs. A squad under pressure fires less: 9% of its shots held at 4 heat and the fight
+  a fifth longer, 42% at 6. With hot guns against a swarm the squad sits and drains, a
+  six-round fight running thirteen: resting is safe, which is the stall. The foes' burn,
+  scorch and heat aim become attacks on the buffer. And every heat price, every chassis's
+  two numbers in place of four, and every machine that reads heat is read again.
+- As sized here it protects more than as built at the same gun (11% against 18%), since the
+  heat gauge's idle room goes to the hits. The size is a dial; the column's shape is the
+  finding.
+
+**Claude's read, his to take or leave.** The one gauge is coherent and the largest change on
+the bench: it remakes heat's economy, so it is no step toward one shape that works first.
+The reboot's rules are small dials round one decision, the block, and the block is right
+only against foes built to threaten it (section 16). So the next step is unchanged: the
+foes' kits, proposed in chat against the model.
+
+## 19. His menu of pieces, spliced into builds (13 November; nothing decided)
+
+His words: "Ok so we've got various pieces here to pick and choose from and splice together
+somehow:"
+
+> Shield options:
+> - Passive regeneration every turn, or not
+> - Blocking a blow when broken, or letting it spill
+> - When broken, a delay before it automatically recovers, either by resuming regeneration
+>   from zero or fully recovering. Or, no delay before regenerating. Or, no automatic recovery
+>   at all.
+> - Ending turn on a pass, or an explicit pass button, that triggers the shield to recover.
+>   Either by starting regeneration or by returning to full. Either always available, or only
+>   after a break. Or, no manual trigger exists.
+> - An interaction between taking damage and slowing, or stopping, shield regeneration, with a
+>   duration for the effect. Or damage does not affect shield properties.
+>
+> Heat options:
+> - Heat passively cools every turn, or not
+> - Ending turn on a pass, or an explicit pass button, that triggers the cooling. Either by
+>   starting passive cooling or by returning to empty. Either always available, or only after
+>   an overheat. Or, no manual trigger exists.
+> - Overheat damages the hull then returns to max. Or, overheat damages the hull and stays
+>   overheated.
+> - Overheat triggers a "shutdown," forcing a pass, as in the point two above. Or, overheat
+>   still allows the unit to act, at a penalty.
+>
+> Combined options:
+> - Heat and Shield are one bar. Both heat and damage drain the shared bar. The above options
+>   then apply to both simultaneously (where they make sense). Or, they stay seperate.
+> - Heat impacts shield regeneration, either slowing or stopping it, or actively draining it,
+>   at thresholds or as a sliding scale. Or not.
+> - Overheating crashes the shield, reducing it to zero. Any of the above options could apply
+>   to restarting it, either just the shield or as a "shutdown" that recovers both heat and
+>   shield. Or we leave them as separate mechanics.
+> - Heat directly reduces maximum shield. Somewhat like the above, but softer and persistent.
+>   Or not.
+
+**The model plays whole builds** for it (`python3 tools/shield_model.py --builds`): the squad
+and the gun of section 18, a die that is a dud one round in five, and a pass that does what
+the build says. A machine passes on a dud, to keep from overheating, and, in the second way
+of playing, whenever a pass would recover anything. A pass exists in the engine already: a
+machine that ends the turn with its die unspent. A fight of four rounds at full fire, the
+pack dealing 12 a round; the squad's hull lost, firing whenever it can:
+
+| The build | A lone blow of 12 | Two strikes, 8 then 4 | 12 on the same machine every round | Four foes of 3 | 4 on every machine | Its rounds |
+|---|---|---|---|---|---|---|
+| As built | 28% | 27% | 36% | 3% | 25% | 5.4 |
+| As built, no regen while hot | 29% | 28% | 36% | 3% | 27% | 5.4 |
+| As built, heat lowers the shield's maximum | 29% | 28% | 37% | 3% | 25% | 5.4 |
+| As built, and a pass reboots a broken shield | 26% | 25% | 31% | 3% | 19% | 5.4 |
+| No regen, no cooling: a pass reboots a broken shield and vents | 31% | 29% | 38% | 6% | 29% | 6.2 |
+| The same with the block | 13% | 28% | 28% | 4% | 27% | 6.1 |
+| The same, the shield back the turn it passes | 30% | 28% | 40% | 5% | 22% | 6.2 |
+| The same, a pass refills any shield | 31% | 29% | 38% | 4% | 25% | 6.2 |
+| One bar: shots and hits drain it, a pass refills it | 15% | 15% | 34% | 2% | 18% | 6.1 |
+
+The same builds with the squad passing whenever a pass recovers anything, where that moves
+them: against the foe that strikes every machine, the shield back the same turn 4% in 8.8
+rounds with half the turns passed, a pass that refills any shield 3% in 8.8 rounds, one bar
+1% in 6.7; against the lone blow, the block 9% where it is 13%, and the build without it
+31% either way; against the hunter, the build without the block 46% where it is 38%.
+
+By the gun's heat, the lone blow, the hull lost at 2, 4 and 6 heat: as built 28%, 28%, 51%;
+a pass that reboots and vents 29%, 31%, 34%; one bar 8%, 13%, 22%.
+
+**His menu, line by line**, with what the models say:
+
+| His option | The read | Claude's pick |
+|---|---|---|
+| Passive regen every turn | Regen and cooling together are worth 5 points beside a pass that does both (26% against 31%) | Not, where the pass recovers: the pass is then the one way back |
+| A break blocks or spills | The block is still a wall against a lone blow (13% against 31%, 9% played to the full) and nothing else | Spill first; the block waits on foes built for it (section 16) |
+| After a break, a delay, or no automatic recovery | A delay alone moved nothing (section 18) | No automatic recovery: it comes back on a pass |
+| A pass recovers the shield | To full, only after a break, landing as the next round opens: no turtle, and passing where it is not needed buys nothing | Yes, that form |
+| The same, always available or the same turn | The turtle: against a foe that touches every machine the squad passes half its turns and loses 3 to 4% in a fight half again as long | Neither |
+| Damage slows or stops regen | Flat, and beaten by anything that touches everyone (section 16); with no regen there is nothing to stop | Not |
+| Heat cools every turn | With a pass that vents, it only blurs the count of shots | Not, or a point as a chassis's own |
+| A pass vents | Heat's price becomes the shots between passes, a gentle slope where as built it is nothing and then a wall | Yes, to empty, always |
+| Overheat burns and settles, or stays | Not modelled: nothing in the model overheats on purpose | Stays, as the next line |
+| Overheat shuts the machine down for a turn | The same | Yes: one state for a broken shield and an overheat, one answer to both |
+| One bar | It protects most (15%) since a pass refills all of it, turtles against chip (1%), and heat's price is steeper (8%, 13%, 22%) | Not first |
+| Heat slows the regen | A few points worse, and no decision in it | Not |
+| Overheating crashes the shield, a shutdown recovers both | Part of the shutdown above | Yes |
+| Heat lowers the shield's maximum | A few points worse, and no decision in it | Not |
+
+**The splice, Claude's, his to take or leave.** Four rules:
+
+1. A shield takes its number and the rest reaches the hull. It does not regenerate.
+2. A shield at nothing is down until its machine passes a turn; it is back whole as the next
+   round opens.
+3. Heat does not cool by itself. A pass empties it.
+4. A machine that overheats is down the same way: its shield off, and its next turn a pass.
+
+One verb, the pass, and one state, down. Who it protects: the machine whose die failed, since
+a dud is a pass and a pass is the recovery; and the lights by the gauge's own number, a blow
+costing what it says. What threatens it, all in the foes' vocabulary today: a blow at or over
+a gauge costs a turn as well as hull; a foe that strikes every machine can break four shields
+and cost a round; a hunter, or the exposed aim, finds the machine while it is down; burn and
+scorch cut the shots between passes. The counterplay on the player's side is when to pass:
+with the heat, with a dud, before the hunter comes back. In the model it protects as the
+shield as built does (31% against 28%), its fights run a sixth longer in rounds, a turn in
+three is a pass where a turn in five is a dud already, and passing where nothing is to be
+recovered buys nothing, so no round is safer than the one before it.
+
+What it leaves open: the block, as a clause to add once foes are built for it; whether an
+overheat burns hull as well as shutting the machine down; and a point of cooling or regen as
+a chassis's own, Kestrel's first.
+
+What it costs to come: every chassis's regen and cooling, the overheat's rule, the machines
+that read heat or a pass (the Whip Scorpion's release is a pass already), the weapons'
+damage if a fight is to run as long as it does, and the foes' numbers read again.
+
+## 20. The shutdown as he stated it (13 November; nothing decided)
+
+His words: "Ok so we're clear:"
+
+> - Shield does not normally regenerate
+> - Heat does not normally cool
+> - A shield breaking allows a shutdown but does not force it
+> - An overheat forces a shutdown
+> - A shutdown recovers both meters regardless of which condition set it off
+> - You cannot manually shutdown, so the game is to either try to play around it, or time it
+> - Shield Regen and Cooling can still possibly be granted buffs, assuming they're gated or
+>   costed properly
+> - we haven't reconfigured the enemies so we still don't know about the end result of the
+>   changes, or if we want the free damage block from breakage.
+> - regarding breakage blocking, it's left in an interesting space in that it is somewhat of a
+>   reward for a bad thing happening. Which could either be taken as a deliberate decision
+>   point, or as a potentially confusing softening of the penalty.
+
+**Where it departs from the splice of section 19.** Two of his lines. "You cannot manually
+shutdown": the splice let any pass vent and reboot, so a dud die was a recovery; here a turn
+passed recovers nothing unless the shield is down or the machine overheated, and the overheat
+is the one vent a machine controls. "Regardless of which condition set it off": an overheat's
+shutdown gives the shield back too, and a break's gives the heat back.
+
+**What follows from his words as they stand**, built into the model and no question:
+
+- The shot that overheats a machine fires, as it does today (heat may pass the maximum in the
+  turn, and the overheat lands at the turn's end), and the machine's next turn is the shutdown.
+- Every machine that fires overheats on a clock, since nothing else empties the gauge: a gun
+  of 4 heat against a maximum of 12 fires four turns and is down the fifth. The overheat stops
+  being a mistake and becomes the reload.
+- The hold goes. His words of 9 November made it the active decision ("run hot, and you're
+  forced to wait and think about your decisions while you cool off"); here a machine that
+  waits cools nothing. The decision moves to which shot tips the gauge, and in which round.
+- A point of heat is worth the turn it brings the shutdown nearer, in steps (the fourth table
+  below). The shot that tips the gauge is free whatever it costs, so the hottest piece wants
+  to be the last one fired.
+- Each bad thing pays out the other meter: a break lets a machine vent early, an overheat
+  hands its shield back. It is the block's "reward for a bad thing happening" in a smaller
+  form, and it is in the rule with no block.
+- "Broken" is a state that lasts until the shutdown, not a shield standing at nothing, or a
+  point of granted regen on a broken shield would take the shutdown away.
+
+**Where his words give no answer.** Two places, each played as its own row.
+
+1. *What an overheat costs past the turn.* Today the excess burns the hull one for one and
+   the gauge settles at its maximum; both overheat lines of his menu kept the burn, and this
+   list does not say. Three answers: nothing more; the burn as today; the shield down at once
+   (his menu's "Overheating crashes the shield").
+2. *When the recovery lands.* On the turn of the shutdown, before the foes strike, or as the
+   next round opens, after they have.
+
+**The model** (`python3 tools/shield_model.py --shutdown`) plays the rule in the fight of
+section 19: the same squad, a gun of 3 damage, a die that is a dud one round in five. A
+machine fires whenever it can, the shot that overheats it included. A fight of four rounds at
+full fire, the pack dealing 12 a round, a machine shutting down at once on a break; the
+squad's hull lost:
+
+| The rule | A lone blow of 12 | Two strikes, 8 then 4 | 12 on the same machine every round | Four foes of 3 | 4 on every machine | Its rounds |
+|---|---|---|---|---|---|---|
+| As built | 28% | 27% | 36% | 3% | 25% | 5.4 |
+| Section 19's splice, a pass at will | 31% | 29% | 46% | 5% | 26% | 6.7 |
+| The shutdown as stated | 33% | 32% | 49% | 6% | 33% | 6.8 |
+| The same, the overheat's excess off the hull | 40% | 39% | 66% | 14% | 33% | 6.8 |
+| The same, the overheat taking the shield down at once | 38% | 36% | 58% | 7% | 33% | 6.8 |
+| The same, the recovery landing the turn of the shutdown | 27% | 25% | 30% | 3% | 4% | 7.0 |
+| The shutdown with the block | 12% | 31% | 31% | 4% | 31% | 6.7 |
+
+At six rounds, in the same order of packs: as built 56%, 55%, 84%, 15%, 59%; as stated 61%,
+58%, 100%, 12%, 53%; the burn 72%, 70%, 100%, 25%, 53%; the shield down at once 69%, 67%,
+100%, 16%, 53%; the recovery the same turn 43%, 40%, 61%, 6%, 6%; the block 19%, 55%, 68%,
+9%, 50%.
+
+The same rules by the gun's heat, the lone blow, four rounds:
+
+| The rule | A gun of 2 heat | A gun of 4 heat | A gun of 6 heat |
+|---|---|---|---|
+| As built | 28% | 28% | 51% |
+| The shutdown as stated | 32% | 33% | 34% |
+| The same, the overheat's excess off the hull | 32% | 40% | 53% |
+| The same, the overheat taking the shield down at once | 32% | 38% | 42% |
+
+The break's choice under the rule as stated, played two ways:
+
+| The fight, and the play | A lone blow of 12 | Two strikes | The same machine every round | Four foes of 3 | 4 on every machine | Its rounds |
+|---|---|---|---|---|---|---|
+| Four rounds, it fights on and shuts down on a dud | 32% | 31% | 42% | 6% | 36% | 5.9 |
+| Four rounds, it shuts down at once | 33% | 32% | 49% | 6% | 33% | 6.8 |
+| Six rounds, it fights on and shuts down on a dud | 56% | 54% | 95% | 16% | 57% | 9.5 |
+| Six rounds, it shuts down at once | 61% | 58% | 100% | 12% | 53% | 11.3 |
+
+What a gun's heat costs in turns, one machine alone, a maximum of 12; as built it cools 2 a
+round and never overheats itself:
+
+| The gun's heat | As built, a fight's first six rounds | As built, at the cap | The shutdown, six rounds | The shutdown, at the cap | The shield of 8 its clock returns a round |
+|---|---|---|---|---|---|
+| 2 | 100% | 100% | 100% | 88% | 1.0 |
+| 3 | 100% | 67% | 83% | 83% | 1.3 |
+| 4 | 83% | 50% | 83% | 80% | 1.6 |
+| 5 | 67% | 40% | 83% | 75% | 2.0 |
+| 6 | 50% | 33% | 83% | 75% | 2.0 |
+| 8 | 33% | 25% | 67% | 67% | 2.7 |
+
+Which meter sets the clock, six rounds, a gun of 4, shutting down at once on a break:
+
+| The pack | Shutdowns an overheat forced | The shield a forced one found standing | The heat a taken one left unspent |
+|---|---|---|---|
+| A lone blow of 12 | 25% | 73% | 49% |
+| 12 on the same machine every round | 40% | 73% | 55% |
+| Four foes of 3 | 37% | 37% | 37% |
+| 4 on every machine | none | | 47% |
+
+A foe that heats the machine it strikes, six rounds; the squad's hull lost:
+
+| The rule | A blow of 4 | The blow and 4 heat | The same at the hottest machine | A blow of 8 | The blow and 4 heat | The same at the hottest machine |
+|---|---|---|---|---|---|---|
+| As built | 8% | 26% | 34% | 28% | 48% | 76% |
+| As built, a machine never overheating itself | 2% | 12% | 33% | 25% | 53% | 86% |
+| The shutdown as stated | 2% | 2% | 6% | 14% | 14% | 27% |
+| The same, the overheat taking the shield down at once | 8% | 9% | 20% | 22% | 22% | 45% |
+| The same, the overheat's excess off the hull | 18% | 27% | 27% | 25% | 25% | 42% |
+
+A long fight, eight rounds at full fire against a pack dealing 8 a round, the lone blow: as
+built 48% in 10.7 rounds, or 42% in 13.0 never overheating itself; the shutdown as stated 30%
+in 11.8 fighting on, 20% in 13.3 shutting down at once.
+
+**What the tables say.**
+
+- *It is about the shield as built, tilted by the fight's length.* In a four-round fight it
+  loses 3 to 13 points more hull than the game as built, the most against a foe that strikes
+  the same machine every round. At six rounds it is level but for that foe, played the better
+  way for each pack. In a long fight against a lighter pack and a lone hitter it loses half to
+  two thirds of what the game as built does, since as built a long fight runs at its heat cap
+  and here a machine fires four turns in five for ever. Its fights run a tenth longer when a
+  broken machine fights on and a quarter longer when it shuts down at once.
+- *With nothing past the turn, heat is all but free.* The gun's heat moves the hull lost by a
+  point a step (32%, 33%, 34%) and the fight by a fifth of a round. A gun of 6 heat fires five
+  turns of a fight's first six, as a gun of 4 does, where as built it fires three; at the cap
+  it fires three turns in four where as built it fires one in three. A foe's heat on its blow
+  costs the squad nothing (2% and 2%, 14% and 14%) where as built it costs 10 to 28 points. A
+  foe aiming at the hottest machine still bites (6%, 27%), most of it the aim alone, which
+  strikes the same machine again (4% and 23% with no heat on the blow).
+- *The burn as today is a tax no play avoids.* 7 to 17 points more hull against every pack
+  but the one that strikes every machine, where no shutdown is an overheat's. Nothing else
+  vents, so the one clean vent left would be a broken shield, which makes a break a relief.
+- *The shield down at once gives heat a slope* (32%, 38%, 42% at 2, 4, 6 heat) for up to 9
+  points at a gun of 4, makes the two conditions one state, and makes the round of the
+  overheat matter: the machine stands bare through the foes' turn, and their intents are
+  shown when the player chooses to tip it. With nothing past the turn there is no round to
+  pick, only the shield to keep in step with. It is also the answer under which the foes'
+  aim at the hottest machine is the hunter of the machine that is down: 15% where a blow of 4
+  at random costs 8%, 40% where a blow of 8 costs 22%, with no heat on the blow.
+- *The recovery the same turn is the turtle of section 19 again.* Against a foe that strikes
+  every machine the squad loses 4% where it loses 33%, with half its turns passed in a fight a
+  fifth longer; at six rounds 6% with 54% of its turns passed. As the next round opens, a
+  machine that shuts down stands through the foes' turn first, and the loop does not form.
+- *The break's choice is real and small.* Fighting on is better against a lone hitter,
+  shutting down against a foe that strikes everyone or comes in numbers; the gap is 7 points
+  at most either way. A shutdown buys about what it costs at these numbers: a gauge of 8
+  against a shot of 3.
+- *Whichever meter empties first is the only one that mattered that cycle.* With a gun of 4,
+  an overheat forces a quarter of the shutdowns against a lone hitter and none against a foe
+  that strikes everyone. A forced one finds three quarters of the shield still standing, so
+  the heat clock mostly falls on the machines the foes are not shooting at, as a turn lost
+  for a shield that was whole; a taken one leaves half the heat unspent.
+- *The block is the wall of section 16 again, and more so.* 12% where it is 33% against the
+  lone blow, 19% where it is 61% at six rounds; a point to three against two strikes. With
+  no regen a chipped shield never mends, so every machine carries one blow stopped whole a
+  cycle, a shield of 1 stopping a 12 as a shield of 8 does (section 15's sliver, now for
+  good). And the break already pays under this rule, in the vent; the block pays twice.
+
+**The frame** (the rule of 13 November in `CLAUDE.md`).
+
+- *Who it protects.* Every machine once a cycle, by a shield that takes its number and no
+  more; a light most, by its gauge against its hull. Nothing protects the battle's hull from
+  chip any more: a point through a shield stays gone until the reset.
+- *How.* Two budgets and one reset. A machine has a shield to lose and heat to spend; the
+  reset gives both back for a turn; it comes when either runs out, by force on the heat, by
+  choice on the shield. Waste is what a player plays against: a reset that finds the other
+  meter half full.
+- *What threatens it.* A break early in a machine's heat, a turn lost for little vented.
+  Damage on every machine, which no regen absorbs and which breaks four shields in one round.
+  A second strike in the round of the break, the one round a blow is sure of the hull. The
+  machine that is down, if the recovery waits for the next round. Heat, only if an overheat
+  costs past the turn.
+- *The player's counterplay.* A lure and a Barrier, each worth more than today, since a
+  shield point saved is not one that would have grown back. The kill of the breaker. The
+  hottest piece as the shot that tips the gauge. A shield ridden to its last points before
+  the tip. The squad's clocks kept apart.
+- *The foes' counterplay.* Break the machine that has just reset. Strike everyone. Strike
+  twice. Hunt the machine that is down. Heat the machine whose shield is whole, a turn stolen.
+- *The foes it would need,* as behaviours, no content: a breaker the size of a light's shield;
+  a strike behind it the same round; a foe that strikes every machine; a hunter of the machine
+  that is down (the exposed aim is this already); and a heater that aims at the hottest ("as a
+  boss would try to execute an easy target", the bible's row of 24 October), if an overheat
+  costs past the turn.
+
+**Claude's read, his to take or leave.** The rule holds together as stated, and it is not too
+much defence: it is a little less than today in the fights of every day and more in the long
+ones. Three picks on the open points. The overheat takes the shield down at once and burns no
+hull, since with nothing past the turn heat prices nothing and with the burn it taxes
+everything. The recovery lands as the next round opens. The block stays out until foes are
+built for it, since under this rule a break already pays in the vent. Then the foes' kits,
+proposed in chat against these behaviours, before any content or run.
+
+What it costs to come, all on his word: every chassis's regen and cooling at nothing, kept
+as stats for what grants them; the shutdown as a state on a machine, the turn it takes, and
+the control that takes it on a break; the overheat's rule; every heat price read again, since
+a point is now worth a step of the clock; the machines that read heat, a pass or regen, each
+its own session's; the bot's play of it; the gauges' marks and the console's lines on heat,
+which are shown text and his.
+
+## 21. The reboot by choice (13 November; nothing decided)
+
+His words, on section 20's read:
+
+> So, yes I had intended the "shutdown" or "reboot" to not actually apply until the next turn,
+> so there's a whole turn of staying exposed with no shield.
+>
+> The shape I wrote was what I had interpreted from yours, which clearly differed. What was
+> your differences?
+>
+> The one thing I don't like about this shape currently is it takes away player agency,
+> despite being thematic. Let's look again but letting the player ride at max heat and the
+> reboot being a choice to vent heat and recover shield. If the shield is not empty and the
+> unit reboots, I'd feel like we should empty the shield. It's thematic for a "shield reboot"
+> and that way there's no gaming an overheat to recover pseudo partial shield, when
+> convenient.
+
+His first line settles one of section 20's two gaps: the recovery lands as the next round
+opens, and the machine stands that turn with no shield.
+
+**The differences he asked for**, his statement of section 20 against the splice of section
+19. They shared the frame: no regen, no cooling, the recovery as the next round opens, an
+overheat costing the next turn. They differed in three places.
+
+1. *Who decides.* In the splice any pass vented, at the player's choice, and a dud die was
+   one; only an overheat forced a turn. His statement took the choice away.
+2. *What a pass gave back.* In the splice a pass brought back only a shield that was down; a
+   shield still standing was neither refilled nor lost. His statement had a shutdown recover
+   both meters whichever set it off, so an overheat refilled a chipped shield.
+3. *What an overheat did to the shield.* The splice took it down at once; his statement did
+   not say, and his first line here says the bare turn was meant.
+
+**The shape he asks to look at**, as the model plays it:
+
+- No regen and no cooling, carried from section 20.
+- A reboot is a machine's choice on any turn, and it takes the turn.
+- Its shield goes to nothing at once. As the next round opens its heat is empty and its
+  shield whole.
+- Nothing forces one. A machine may ride at its maximum.
+
+What follows from that, no question:
+
+- A reboot is an act of its own, apart from a pass: a dud die that rebooted by itself would
+  drop a standing shield. A dud is the cheap moment for one.
+- "Broken" needs no memory now, since a reboot is always there.
+- The foes' picks are set as the round opens and do not move ("The pick is a commitment,
+  smart as it is made and never after", the rules). So the bare turn costs hull only when a
+  pick is already on the machine or the blow strikes every machine, and the player can see
+  which. Reading the picks is the skill the rule asks for.
+
+Where his words leave one thing open: what a shot past the maximum costs while a machine
+rides. It is built as today's rule, the excess off the hull and the gauge settling at its
+maximum. With no cooling that is the whole heat of every further shot.
+
+**The model** (`python3 tools/shield_model.py --choice`), the fight of section 20, with two
+packs added: a lone foe that aims at the hottest machine and one that aims at the least
+shield, the heat aim and the exposed aim in small. A fight of four rounds at full fire, the
+reboot by choice played reading the picks; the squad's hull lost:
+
+| The rule | A lone blow of 12 | 12 on the same machine every round | Four foes of 3 | 4 on every machine | 12 at the hottest machine | 12 at the least shield | Its rounds |
+|---|---|---|---|---|---|---|---|
+| As built | 28% | 36% | 3% | 25% | 29% | 37% | 5.4 |
+| Section 19's splice | 31% | 46% | 5% | 26% | 33% | 41% | 6.7 |
+| Section 20's shutdown, bare for its turn | 35% | 50% | 6% | 33% | 37% | 45% | 6.8 |
+| The reboot by choice | 35% | 52% | 7% | 33% | 38% | 43% | 7.0 |
+| The same, a standing shield kept through the reboot | 33% | 50% | 4% | 26% | 33% | 43% | 6.8 |
+| The reboot by choice with the block | 12% | 34% | 6% | 31% | 21% | 30% | 6.9 |
+
+At six rounds, in the same order of packs: as built 56%, 84%, 15%, 59%, 59%, 64%; the
+shutdown 64%, 100%, 14%, 53%, 66%, 83%; the reboot by choice 65%, 100%, 13%, 52%, 73%, 84%;
+a standing shield kept 59%, 100%, 8%, 42%, 61%, 82%; the block 21%, 80%, 13%, 49%, 39%, 45%.
+
+The reboot by choice by the way it is played, four rounds:
+
+| The play | A lone blow of 12 | The same machine every round | Four foes of 3 | 4 on every machine | 12 at the hottest machine | 12 at the least shield |
+|---|---|---|---|---|---|---|
+| It reboots at the maximum or on a break, blind to the picks | 37% | 55% | 8% | 33% | 42% | 46% |
+| It reads the picks | 35% | 52% | 7% | 33% | 38% | 43% |
+| It fires past the maximum and burns | 43% | 67% | 19% | 33% | 42% | 60% |
+| It reboots at half a shield or less, blind | 38% | 58% | 9% | 69% | 42% | 48% |
+
+Reading the picks, a machine with no blow coming reboots at its maximum, on a dud, or to
+top up a shield at a quarter or less; with a blow coming and a shield standing it rides at
+its maximum, holding its fire. At six rounds: blind 70%, 100%, 15%, 53%, 78%, 88%; reading
+65%, 100%, 13%, 52%, 73%, 84%; burning 80%, 100%, 36%, 53%, 84%, 100%; at half a shield 71%,
+100%, 17%, 88%, 78%, 91%.
+
+What emptying the shield buys, the squad that reboots at half a shield or less, four rounds:
+
+| The rule | A lone blow of 12 | Four foes of 3 | 4 on every machine | The rounds of that last fight | Its turns not fired |
+|---|---|---|---|---|---|
+| A reboot empties the shield | 38% | 9% | 69% | 10.5 | 56% |
+| A reboot keeps a standing shield | 35% | 4% | 5% | 9.8 | 55% |
+
+By the gun's heat, the lone blow, four rounds; the hull lost and the rounds:
+
+| The rule | A gun of 2 heat | A gun of 4 heat | A gun of 6 heat |
+|---|---|---|---|
+| As built | 28%, 5.4 | 28%, 5.4 | 51%, 6.9 |
+| Section 20's shutdown, bare for its turn | 32%, 6.6 | 35%, 6.8 | 37%, 7.0 |
+| The reboot by choice | 32%, 6.6 | 35%, 7.0 | 40%, 7.8 |
+
+A gun's heat in turns, one machine alone at the cap, the share of turns it fires:
+
+| The gun's heat | As built | Section 20's shutdown | The reboot by choice | One shot past the maximum before each reboot, and the hull it burns |
+|---|---|---|---|---|
+| 2 | 100% | 88% | 86% | 88%, 2 |
+| 3 | 67% | 83% | 80% | 83%, 3 |
+| 4 | 50% | 80% | 75% | 80%, 4 |
+| 5 | 40% | 75% | 67% | 75%, 3 |
+| 6 | 33% | 75% | 67% | 75%, 6 |
+| 8 | 25% | 67% | 50% | 67%, 4 |
+
+What the reboots were, six rounds, a gun of 4, the squad reading the picks:
+
+| The pack | Reboots a machine a fight | Taken with a blow coming | The shield a reboot gave up | The heat it left unspent | Turns held at the maximum, a machine a fight |
+|---|---|---|---|---|---|
+| A lone blow of 12 | 2.9 | 21% | 32% | 43% | 0.2 |
+| 12 on the same machine every round | 2.2 | 57% | 41% | 38% | 0.1 |
+| Four foes of 3 | 2.6 | 35% | 37% | 37% | 0.2 |
+| 4 on every machine | 3.2 | all | 2% | 47% | none |
+| 12 at the hottest machine | 2.2 | 42% | 35% | 32% | 0.4 |
+| 12 at the least shield | 2.5 | 46% | 57% | 37% | 0.1 |
+
+**What the tables say.**
+
+- *The choice costs nothing in protection beside the forced shutdown.* Within two points on
+  every pack at four rounds, and a fifth of a round longer, since the forced form's last
+  shot was free.
+- *Beside the game as built it is less defence against a lone hitter and more against the
+  many, as section 20's was.* 4 to 16 points more hull lost at four rounds. At six rounds, 9
+  to 20 points more against a foe of one blow and 2 to 7 fewer against four foes or a blow at
+  every machine. Nothing mends between hits, so a blow over a shield's size costs what it
+  says each time.
+- *Its fights run about a third longer in rounds:* 7.0 where the game as built runs 5.4, three
+  turns in eight not fired where one in five is a dud already. A machine reboots every fourth
+  turn at a gun of 4.
+- *There are right and wrong plays, which the forced form did not have.* Reading the picks
+  saves up to 5 points. Firing past the maximum costs up to 17 points at four rounds and 23 at
+  six. Rebooting into a blow at every machine doubles the loss, 69% where the careful play
+  loses 33%.
+- *His emptying rule is what closes the loop.* With a standing shield kept, the squad that
+  reboots at half a shield loses 5% to a foe that strikes every machine, in a fight of 9.8
+  rounds with over half its turns not fired: the stall of 9 November. Emptied, the same play
+  loses 69%. For the careful player the rule costs 0 to 7 points.
+- *It does not stop a top-up where no pick points.* Four reboots in five against a lone
+  hitter are taken with no blow coming, and they give up a third of a shield nothing was
+  going to test. The turn is what prices those, and it is enough here: the squad that tops up
+  at half a shield does worse than the one that waits, 38% against 35%.
+- *Heat has a slope again, in hull and in rounds:* 32%, 35%, 40% and 6.6, 7.0, 7.8 rounds at
+  2, 4, 6 heat. A gun of 4 fires three turns in four at the cap and a gun of 6 two in three.
+  One shot past the maximum before each reboot buys the forced form's pace for its excess in
+  hull, so the burn as today is a priced push here, where under section 20 it was a tax.
+- *Riding at the maximum by firing is a trap,* the whole heat of the shot off the hull. Riding
+  is holding, or a cool piece. A machine that reads the picks holds 0.2 turns a fight against
+  a lone hitter and 0.4 against a foe that aims at the hottest, 0.9 with a gun of 6.
+- *The block is the wall again:* 12% where the rule loses 35%, and a point against four foes.
+
+**The frame.**
+
+- *Who it protects.* The machine no foe is aiming at, which may have both meters back for a
+  turn. The machine under the picks may not without standing bare. Regen is the reverse: it
+  serves whoever was hit.
+- *How.* Two budgets and one reset, the player's to call. It costs the turn, and the shield
+  for the foes' turn.
+- *What threatens it.* A pick on the machine that needs the reset. A blow at every machine,
+  into which every reboot is bare. One foe on one machine, round after round. A blow over a
+  shield's size, since nothing mends.
+- *The player's counterplay.* Read the picks and reboot where none points. Ride at the
+  maximum under a pick, holding or on a cool piece. A lure, which moves a pick and so buys a
+  safe reboot. A Barrier over a machine that reboots. The kill of the foe that pins the hot
+  machine.
+- *The foes' counterplay.* The heat aim, which finds the machine that wants the reset. The
+  exposed aim, which finds the shield that broke. A blow at every machine. Numbers, each one
+  more pick. A countdown, whose pick holds while it gathers.
+- *The foes it would need.* Every one is in the vocabulary today, which section 16's block
+  could not say.
+
+**Claude's read, his to take or leave.** This is the better form of the three. It protects
+as the forced shutdown does, the timing is the player's, heat is priced on a slope, his
+emptying rule closes the stall, and the foes it wants exist. Two things come with it at these
+numbers. A fight runs about a third longer in rounds, which the heat maxima or the guns'
+numbers would have to give back. And a lone hitter's blow over a shield's size costs more
+than today. The burn stays as today. Next on his word: an engine what-if behind a trial
+dial, since the feel of reading the picks is his play's to judge, and the foes' kits in chat.
+
+What it costs to come, beyond section 20's list: the reboot as an act on a machine, its
+control, the forecast showing the bare turn, and the bot's play of it. The forced turn and
+the "broken" state are not needed.
+
+## 22. The reboot's rules (13 November; ruled by him, the build on his go)
+
+His words, on section 21's read:
+
+> Yes let's go for it. Dump the rules spec here first before we start, though.
+>
+> The one main undecided point, that I currently see, is what happens at max heat. Either we
+> let them burn hull, or we prevent them from using anything that creates more heat. The
+> former is the better agency choice, but it has to be costed properly.
+>
+> One change I'd make to the current rules, is that heat over the maximum does NOT go away. We
+> display it in an uncleanseable debuff on the unit, a stack for every point of heat, and it's
+> treated like any other heat - so if a hypothetical cooling ability comes through, it would
+> reduce the stacks first before hitting the bar. Obviously it can be tracked however in the
+> engine, but that's how I would display it on screen.
+>
+> There's a couple other edge cases that would need addressing:
+>
+> -If the shield is broken, by either foes or overheat, that's another uncleanseable debuff. It
+> states that the unit cannot gain shield by any method. So granting a shield or shield Regen
+> through whatever abilities we might allow, only applies to a "live" shield.
+>
+> -any triggers on Overheat, if they should exist, only fire the first time it overheats,
+> reset on the "reboot." So if the machine overheats, then somehow gets back under the cap (it
+> gains cooling, is cooled, or its cap is temporarily raised), it cannot trigger an overheat
+> event even if it goes back over. Not until it reboots.
+>
+> Any other edge cases you need me to rule on?
+>
+> I'd also like a list of the chassis that break with this change, so that I can start
+> brainstorming.
+
+His rulings, the same day, on the five questions the first spec put to him:
+
+> 1. Ignore enemy Burn for now, we might be forced to change it regardless. Actually, I'd posit
+> that we'll need to audit every rider and keyword after this, no matter what. My point about
+> overheat damage was that in the old spec, overheat wasn't punishing enough, and it was always
+> cheaper to keep firing to prevent incoming damage. We tried x3 damage and it still didn't
+> stop the bot. So here, my thought is that the overheat damage stacks, damages the hull every
+> turn for the total stacks, and keeps building until the player is essentially forced to
+> reboot, or die. Its a much, much riskier play, and means we can tune around lower heat
+> numbers with more confidence, if that's what the rest of the game dictates, since even lower
+> heat numbers will eventually compound into a real problem.
+>
+> 2. When I'm saying this, I'm referring to between reboots. The spirit of my message is, only
+> one shield-break trigger between reboots, and only one overheat trigger between reboots. My
+> other words were implementation dressing. Hopefully that clears it up.
+>
+> 3. Dingo doesn't act twice, that's the second time this mistake has been made. The rules on
+> its passive should be reworded for clarity. For the needletail, or anything that could act
+> more than once, be it rapid or a grant, I think your lean that they have had to "spent
+> nothing" to smash the Reboot button is correct. Undo will help teach that.
+>
+> 4. Barrier is barrier, it's a buff, it sits in front of shield and hull. Doesn't interact
+> with the bars. It's a mechanic for the player to cheat out another safe turn before
+> rebooting, if that's what they wish. Or, to cover it while it reboots. Or whatever.
+>
+> 5. I would say yes, but that's not the storm Petrel any longer. Or at least, it won't be.
+> Regardless, the global rule of a shield spend or cost, I think we set to "you can break
+> yourself" for now.
+>
+> I agree on burn over stop.
+>
+> Redo your chassis list after looking at the briefs.
+
+### The spec, as ruled
+
+Present tense, in the round's order (`docs/rules.md`, The round).
+
+*The meters.*
+
+1. A shield takes a blow up to its number and the rest reaches the hull, as today. It does
+   not come back by itself: a chassis's own shield regen is nothing.
+2. A spend adds its heat, as today. Heat does not leave by itself: a chassis's own cooling is
+   nothing.
+3. Regen and cooling exist only where something grants them: a passive, a module, a status, a
+   component.
+
+*The reboot.*
+
+4. On the player's turn a machine that has spent nothing this turn may reboot. It is its whole
+   turn: a machine that could act more than once, by Rapid, Instant or a grant, gives all of
+   it up.
+5. At once its shield goes to nothing, and it is Rebooting through the enemy's turn. UNDO
+   takes a reboot back like a spend.
+6. As the next round opens, before the roll and before the foes pick, its heat is nothing, its
+   shield is whole, and Broken and Overheated are gone.
+7. Nothing forces a reboot, and it clears nothing else: the machine's statuses stand.
+8. A rebooting machine neither overheats nor burns at END TURN.
+
+*Past the maximum.*
+
+9. A spend is never refused for its heat. Heat may pass the maximum, and it stays there. What
+   stands past it shows as Overheated, an uncleanseable debuff, a stack a point. It is heat
+   like any other: every rule that reads heat counts it, anything that cools takes the stacks
+   first, and a maximum that rises takes stacks back onto the bar.
+10. At END TURN, after Burning's heat, a machine past its maximum loses a point of hull for
+    every stack it carries, at every END TURN it stands there. The stacks build with every
+    spend, so the burn grows until the machine reboots or is wrecked. The hull a stack costs is
+    the trial's OVERHEAT dial, one to three, built 12 November.
+11. The first END TURN a machine stands past its maximum since its last reboot is its
+    overheat: its shield breaks, and anything that triggers on an overheat fires. One overheat
+    between reboots: a machine that falls back under its maximum and passes it again burns,
+    and overheats no second time.
+
+*Broken.*
+
+12. A shield at nothing is Broken, an uncleanseable debuff, whatever took it there: a foe's
+    blow, the overheat, its own reboot, or a shield spend or cost of its own machine's. A
+    Broken shield gains no shield by any method: a grant, a regen, a refill on a kill, a
+    module's. Only the reboot's recovery clears it, so a shield breaks once between reboots.
+13. A Barrier is a buff in front of shield and hull. It does not touch the bars, and it lands
+    on any machine, Broken or rebooting.
+
+What follows from those, built so and no question:
+
+- Line 11's break is read from his "broken, by either foes or overheat". His second ruling
+  set its spirit, one break and one overheat between reboots, and did not unsay it.
+- Under the trial only a chassis's own regen and cooling read as nothing. Everything else that
+  grants either stays as written and obeys lines 9 and 12, so the machines that break are seen
+  breaking.
+- The recovery lands before the foes pick, so the exposed aim sees a whole shield and the heat
+  aim a cold machine.
+- A reboot is no pass, no entry spent and no shield gain, so nothing that reads one fires on
+  it: the Whip Scorpion's valve, a foe's count of entries spent, a passive on shield gain.
+- The burn is hull damage for every passive that reads hull damage, as today, at each END
+  TURN it burns.
+- A blow on a machine with no shield can injure, as today.
+- A machine out of the fight, Swallowed or Phased, neither burns nor overheats while it is
+  out: it cannot reboot, so the burn would ask it for a choice it has not got. What it carries
+  past its maximum burns again the turn it is back.
+- A fight opens as today: the shield whole, the heat nothing, none of the three states.
+
+Left for after the build, his words: the foes' Burn ("Ignore enemy Burn for now, we might be
+forced to change it regardless") and an audit of every rider and keyword ("we'll need to audit
+every rider and keyword after this, no matter what"). Both had their first
+round on 14 November, on his "let's do the rider and keyword pass now":
+`docs/vocabulary_pass_proposal.md`, waiting on his marks.
+
+### The machines, redone against the briefs
+
+His ask: "Redo your chassis list after looking at the briefs." Each machine is read as its
+brief has it where a brief stands, and as built where none does. No fix is proposed: the list
+is for his brainstorm. The first list read three machines as built that their briefs have
+since changed (the Storm Petrel, the Buzzard, the Puffin), and had the Dingo acting twice in a
+fight, which it does not: its two actions are on the map.
+
+*Built, with a brief that changes them.*
+
+| The machine | As its brief has it | Under the rules |
+|---|---|---|
+| **Storm Petrel**, Kestrel, tier 1, direction of 11 November | It keeps the shield armour, a point off every blow while its shield stands. Its hook is shield gained whenever it gains heat, "any source". Its guns make heat again and the zap leaves | The one machine whose shield mends as it fires. The mending stops the moment its shield breaks, and a reboot throws away what it built |
+| **Buzzard**, Kestrel, tier 2, settled 11 November | Its passive pays a flat shield cost on each weapon, unasked, for flat damage. Its cannon fires its whole field. Its heat raises its regen | Heat that never leaves is a regen that only climbs, the one standing regen in the game. "You can break yourself": the cannon empties its own shield, and the unasked cost can take its last point. A reboot empties the shield anyway, so the cannon before a reboot is free |
+| **Puffin**, Kestrel, the rework, tier two | It moves heat. Equipment it spends on an ally pulls some of that ally's heat onto it. A locked piece dumps its heat on another unit with a buff by the heat moved, "forcing an overheat for hull damage" among its uses | Moving heat is the one way heat leaves a machine short of a reboot, so it is worth far more. A dump can force an ally's overheat, which now breaks that ally's shield and starts a burn that stands. Pulled heat can take the Puffin past its own maximum |
+| **Swallowtail**, Wainwright & Sutler, tier 3, punted | Its Screens and Hoist are to be replaced. On the bench: a team Ward or a team Barrier, every ally's regen doubled for a round, the Hoist as "in-fight refueling" | No regen is left to double. A team Barrier is cover for a round of reboots. Its charged Hoist, "its shield full, its heat gone", was a reboot by another hand, the dearest thing the rule has |
+| **Musk Ox**, Wainwright & Sutler, tier 3, a session pending | Ammo in place of heat, a maximum of 8 for equipment and the foes' heat | It sits outside the heat half of the rule. A reboot is for its shield alone |
+| **Needletail**, Kestrel, tier 2, settled 11 November | Two things a round, a weapon and an equipment | One weapon's heat a round, like any. A reboot needs it to have spent nothing, so it gives up both |
+| **Kite**, Kestrel, tier 2, rebuilt 11 November | "Burst glass cannon", for the short fight. A kill recharges a small shield whole | The one whole refill outside a reboot, and it does not land on a Broken shield. A hull of 12 with nothing mending. A short fight seldom reaches a reboot, so it is touched least in the fights it is for |
+
+*Built, as built.*
+
+| The machine | What it is built on | Under the rules |
+|---|---|---|
+| **Whip Scorpion**, Wainwright & Sutler, tier 2 | "Nothing cools it"; a pass at 8 heat or more releases the lot on every foe and leaves it cold; its ray fires its whole gauge; regen 3; a foe's blow on it adds 2 heat | Its rule is every machine's now. It has two ways to empty its gauge that keep its shield. A foe's blows can carry it past its maximum, which breaks its shield |
+| **Polar Bear**, Minerva, tier 1 | The seal: "its own cooling stopped", 3 heat more a turn, opening its heat's "one way down" | Nothing to stop, opening cools nothing, and the seal walks it into the overheat |
+| **Stingray**, Aphelion, tier 1 | A stack deeper for every 5 heat it carries | Heat never leaves and counts past the maximum, so it is paid to ride there, against a burn that stands |
+| **Nemesis**, Arsenal, tier 2 | Rage on a hit on its shield and on hull damage, the burn included | A shield that does not mend is hit fewer times. A burn every turn banks rage every turn |
+| **Cottonmouth**, Wainwright & Sutler, tier 1 | Cooling 3 for a drum shot of heat 6 | Two shots a reboot at a maximum of 12 |
+| **Wild Boar**, Minerva, tier 2 | Regen 3 as a tank's stat | The stat goes; its passive reads a Barrier and stands |
+| **Giant Petrel**, Kestrel, tier 3 | Cooling 3 | The stat goes |
+| **Skua**, Kestrel, tier 1 | Ricochet halves on hull damage | A burn halves it, every turn it burns |
+| Honey Badger, Clydesdale, Dingo, Funnel-web, Ammit, Baboon, Prairie Dog, Cassowary, Lammergeier | Nothing that reads heat, cooling, regen or a shield gain | Only the stats: regen 1 or 2, cooling 2 |
+
+*In briefs, not built: the ones the rules reach.*
+
+| The design | As its brief has it | Under the rules |
+|---|---|---|
+| **The Snowy Owl**, Kestrel, direction, leaning to Cryo | "Cold is quiet": no foe picks it while it carries no heat as the foes pick, "after its cooling" | Its own cooling is gone, so its heat returns to nothing only by a reboot or by Cryo's cooling. The Cryo lean carries the whole design, and the round after a reboot it is unseen |
+| **The line frame**, Aphelion, tier 1, direction | Its combo pays in cooling and regen by the count ("Like 1 cooling and 1 shield Regen to start"), and a turn with no weapon spent breaks the combo | Its payoffs are two of the few grants of cooling and regen in the game. A reboot is a turn with no weapon, so it costs the whole ramp |
+| **The gunship**, Wainwright & Sutler, tier 2, proposal | Its Ballistic guns raise its armour and cooling, its Beams its shield and recharge | The one machine that fits its own cooling and regen, paid in hardpoints. Those two rows are worth more than any other |
+| **Misharu**, Arsenal, tier 2, proposal; his newer direction of 6 November is marks and delayed judgement | As drafted: a foe whose blow breaks a shield is punished, "every shield on the team is bait", and its Pavise is a self overshield | A shield breaks once between reboots and a Broken one takes no bait. The drafted form's economy is gone; his direction of 6 November stands apart from it |
+| **Mastema**, Arsenal, tier 3, direction | It sets its own allies alight, Burning on a machine being heat, shields by the burning count and moves the fire to a foe | Heat laid on an ally never leaves and can force that ally's overheat. Its Screen needs a live shield. His "Ignore enemy Burn for now" reaches it first |
+| **The thunder figure**, Arsenal, tier 3, idea | "Lots of shield and low hull". Its hits cost it shield, or its Empowered burns its shield. It ramps while it keeps attacking; a locked piece stops the decay for a round | Its shield is one cycle's budget, and it can break itself. A reboot is a turn with no attack, which its locked piece would cover |
+| **The battlecruiser**, Minerva, tier 3, direction | The broadside: every live gun at once, "a broadside costs their sum", "the dark rounds are the vent rounds" | Dark rounds vent nothing. A sum past the maximum breaks its shield and burns every turn. Its dark rounds are when it would reboot, so the bar sizes the broadside |
+| **The Macross**, Aphelion, tier 3, idea | Its shift to GERWALK grants allies shield regen for two turns; Supercooled is the team's cooling, by Cryo | Two of the few team grants of regen and cooling. The regen lands on live shields alone |
+| **The jellyfish**, Aphelion, tier 2, direction | Its EMP "comes at a cost to its allies (maybe a group shield cost)" | A group shield cost can break allies' shields, each then shut out until its reboot |
+| **The Onryō**, Arsenal, tier 2, direction | "Using its own hull as a resource, and draining foes to heal itself", wanting "a fight to go long" | The one machine that could pay a standing burn and heal it back, which is the thing "reboot, or die" rests on |
+| **The lure tank**, Minerva, tier 1, idea | Every hit lures; Armoured for each hit taken | What it draws lands on a shield that does not mend, so its shield is gone in the first blows. If a hit is hull damage, a burn buys it Armoured every turn |
+| **The echidna**, Minerva, tier 2, direction, left open | It wants to be struck, and lures | The same: what it draws lands on a shield that does not mend |
+| **The immune one**, Minerva, tier 2, idea | Immune to all buffs and debuffs; on receipt, all of both removed | Overheated and Broken show as debuffs. If its immunity or its removal reaches them it is a reboot without the turn. No Barrier can cover its own reboot |
+| **The Cryo party defence**, Minerva, tier 2, idea | Cryo left on a foe lowers its blows; a weapon hit cashes it for cooling | Cryo's cooling is dear now, so the choice it asks, hold the frost or cash it, tilts to cashing |
+| **The Barrier and Ward support**, Aphelion, tier 1, idea | It leans on the Barrier | His fourth ruling makes the Barrier the reboot's cover, so this is the reboot's escort |
+| **The time-shifter**, Aphelion, tier 2, direction | It moves and delays the foes' blows | A blow moved off a machine is a safe reboot bought |
+| **The Magpie**, Kestrel, direction | The thief weakens a telegraphed blow | The same, smaller: cover for a reboot |
+| **The shadow panther**, the Zoids walker, proposal | Phased on a kill, "very squishy" | A thin shield with nothing mending; Phased is its cover |
+| **The Carrier**, Aphelion, tier 3, proposal, open | On its bench, a screen of shield on every machine | It would land on live shields alone |
+
+*In briefs, not built: nothing in them reads heat, cooling, regen or a shield gain.* Static, the
+mole, Minos, the siege battery as parked, and the shield bash.
+
+Across the list, two things recur, and his word on each the same day.
+
+The pieces that grant cooling or regen (the line frame, the gunship, the Macross, the
+Buzzard, the Storm Petrel, the Puffin's pull) hold what is now the dearest currency. His
+word: "I don't want to make a strict rule about anything, but I would expect that anything
+that grants Regen, cooling, flat shield or flat heat reduction, would probably be part of a
+kit or locked piece. Or gated behind a synergy. Bring the dearest pieces, as you say, they
+should be something special." An expectation, not a rule. What grants one from a slot today,
+for the audit's first look: the Boundary-layer Bleed, the Spall Liner and the Field Radiators,
+three modules, and the ten planned shields and vents.
+
+The pieces that pay in shield (the Buzzard, the thunder figure, the jellyfish's EMP) pay
+with a budget that comes back once a reboot. His word: "Shield spend also is something I'm
+not certain will be standard fare, because it's so expensive."
+
+The first draft of this list had a third, and had it wrong: that a machine which lures has
+every pick on it and so no safe turn to reboot. His correction: "Luring is, currently,
+always something that needs to be activated. So it's a choice. They can have a safe turn if
+they want." A lure is a piece spent, and a reboot is for a machine that has spent nothing,
+so the turn a lurer reboots it draws nothing onto itself. What the rule changes for a lurer
+is that the blows it chooses to draw land on a shield that does not mend.
+
+Beside the chassis, the pieces that read the same things:
+
+- *Modules.* The Boundary-layer Bleed, a shield point each time heat climbs and a point of
+  cooling. The Spall Liner, 2 shield on hull damage, the burn included. The Field Radiators, a
+  point of cooling. The Phase Conjugator, which reads a shield granted to an ally.
+- *Components.* The Afterburner Cannon and the Heliographic Death Ray, which fire the whole
+  gauge. The St. Elmo's Regenerator. The Backwash Ionizer, the Mooring Screens and the Sutler's
+  Hoist, shield grants on machines in design. The Quick Reload, a vent in kind. The Stoker,
+  which sets its own machine Burning. The ten planned shields and vents.
+- *Statuses.* Cryo cools the machine that hits it. Regenerating is a regen grant.
+- *Foes.* Burning and Scorched weigh more with nothing cooling, his to change. The heat aim,
+  the Black Mage's and the Red Dragon's, and the exposed aim, four foes', point at the
+  machines the rule squeezes.
+
+### The build, as it landed (13 November)
+
+A what-if off by default, as the others are; nothing in content moves.
+
+- *The engine* (`Skirmish.reboot`; `tests/test_reboot.gd` holds each line of the spec). A
+  chassis's own regen and cooling read as nothing under it (`shield_regen_of`, `cooling_of`:
+  the stat with its base left out, so a module's or a passive's grant stays). `reboot_mech`
+  is the act and `can_reboot` its gate, a machine alive, in the fight, its die unspent and
+  nothing spent by it this turn; the undo takes it back by the snapshot it takes spends back
+  by. A machine carries four states the save and the clone keep: what it has spent this turn,
+  rebooting, its shield broken, and overheated. The end of the player's turn burns every
+  stack and settles nothing (`_burn_stacks`), the first such turn between reboots breaking the
+  shield and firing what an overheat sets off. Every shield gain passes one function, which
+  refuses a broken shield; a shield's fall is noted where a blow, a cost, a corrupted bite and
+  a shield paying its guns' heat take it. The recovery lands as the round opens, before
+  anything cools or regenerates and before the foes pick. The bot's forecast and the screen's
+  round preview read the burn that stands and a gauge that does not settle.
+- *The morning's SHIELD BREAK dial.* Its rest timer is cut, engine, save, gauge and tests,
+  since nothing comes back by itself now. Its block stays as the dial's one choice, BUILT or
+  BLOCK, since the block is still his open question.
+- *The screen.* REBOOT is a drop's target in the middle of the bottom row, between END TURN
+  and UNDO, only under the trial, and REROLL sits centred under the dice as it did (his
+  option of 14 November: "keep it centered and put reboot on the bottom middle between end
+  turn and undo"). REROLL was tried at the row's left that day, over END TURN in the bottom
+  layout, and weighed at its right, over UNDO: a reroll is the undo's floor, never taken
+  back and sealing the spends before it, so UNDO onto REROLL is the dearest slip the screen
+  has, and END TURN's is met by its question on unspent dice. A target that takes no press
+  parts the two buttons and can be slipped onto by neither. A die dragged onto it gives its
+  machine's turn, and nothing else does (the same day: "dragging is the gesture we already
+  have, we should stick with that"): it is dashed at rest, live while any machine may
+  reboot; a die in hand lights it, solid and pulsing, or darkens it for a machine that may
+  not; it fills under the die and takes the drop a thumb's width past its own edge (twelve
+  design pixels to each side, twenty-four up, ten down to the glass's edge, clear of the
+  machines, of REROLL and of the two buttons); a touch passes through it. Two forms went
+  before it that day. The first cut
+  lit it for a die's open readout alone, and nothing on the screen said so: his "So I can't
+  actually trigger a reboot". The second kept a press beside the drag, one that asked which
+  machine and one that took the machine being read, and was cut on his word above
+  (`tests/test_reboot.gd` drives the drag with a finger's events). Heat past the
+  maximum is a chip with its stacks, a broken shield a chip and a dashed frame on its gauge,
+  a reboot under way a chip; the heat gauge draws what stands past its end as the shield's
+  does an overshield. The chips' lines and the control's word are working text in code, his
+  to write once the rule is his.
+- *The bot* (`Policy._reboot_first`, `_reboot_idle`): a first play, so the runners finish a
+  fight under the rule. Past its maximum a machine reboots. With its shield broken it reboots
+  when a blow is coming or its heat is half spent. With an entry too hot to fire it reboots
+  where this round's blows would take a point of its shield or less, and holds otherwise. A
+  die left idle is a reboot where there is something to get back. The blind and the random
+  bot read no picks. Heat's price in its weighing counts the shield a first overheat breaks.
+- *The trial.* REBOOT on SETTINGS → TRIALS, BUILT or ON, read as a battle or a lone fight
+  starts from the menu (the lone fight since 14 November: it had read the dials at launch
+  alone); `RIFTGATE_REBOOT=1` on any run, the skirmish scene alone included. OVERHEAT beside
+  it prices a stack.
+- *The settings for his play* (his "What settings exactly should I be using?", 14 November).
+  REBOOT on ON; OVERHEAT on ×1, his rule's one hull a stack; SHIELD BREAK on BUILT, the block
+  being its own question and by the model the wall again beside the reboot (section 21);
+  BARRIER BASIC on BUILT, the Barrier on the stock dice being the cover his fourth ruling
+  names; HEAT on BUILT, with COOLER the one to try if a machine reboots too often; the
+  field's six on the game's own, so one thing has moved. Two rows are dead under it, since a
+  chassis's own regen and cooling read as nothing: SHIELD REGEN whole, and HOTTER's one more
+  cooling. SHIELD REGEN, HEAT and BARRIER BASIC are read at launch, so the game is closed
+  and opened again after the rows are set. A row with no choice lit holds a value of an
+  older build (a REST, a +3) and reads as BUILT.
+
+What is a first cut, his to judge running: the target's look at rest and with a die in
+hand; the drop's room; the drag's length to the bottom row in the middle layout, about a
+drag to the back rank; the three chips' glyphs; the die of a rebooting machine, which reads
+as spent; no sound of its own (it plays the vent's).
+
+**A first read of it** (`docs/measurements.md`, 13 November; each fight at its rating, the
+six tier ones, the bot's first play, a direction). Every fight costs 1.6 to 2.4 times its
+hull and runs a quarter to a third longer: a flanker 6.8% of a four's hull where it costs
+2.8%, a formation 10.7% where it costs 5.9%, an elite 14.8% where it costs 9.5%, a boss 37.1%
+where it costs 21.4%, with 93% of the bosses' fights won where 98% are. A machine gives a
+turn in five to seven to a reboot, about one a fight, and the bot all but never burns. No
+fight stalls. It says what today's foes, sized against a shield that refills, do to the
+rule, and the bot's play is a floor: his play of the trial is the read that counts.
+
+### His play of it, and what follows (14 November)
+
+His words: "I like this direction. It works. What's our next step? Fold the trial in, and
+then what?" With them the two calls on its screen recorded above (the drag alone, REROLL at
+the left), and shot trails kept as the game's own ("adds a lot to both immersion and to
+readibility. Let's keep it").
+
+**The fold-in, the next pass.** The rule leaves its switch, and the rule it replaces leaves
+with it, in one pass (`CLAUDE.md`: a rule leaves the engine with its last piece).
+
+- *The engine.* `Skirmish.reboot` gone, its branches the code. Out: a chassis's own shield
+  regen and cooling as the round opens, and the overheat that burns once and settles. The
+  two stats stay as what a grant adds to (a module's, a passive's, a status's).
+- *Content.* `shield_regen` and `cooling` off every chassis, the validator and the hangar's
+  columns with them. No other number moves, the foes' least of all.
+- *The dials.* REBOOT goes, and SHIELD REGEN with the what-if's `regen` and `cooling`, which
+  the rule made dead. OVERHEAT, HEAT, SHIELD BREAK and BARRIER BASIC stay, each an open
+  question of his: what a stack burns, the guns' prices, the block, the Barrier's place.
+- *The screen.* The row is the fight's own. The three states become terms, drafts beside
+  his own writing for his marks; what the codex and the holds say of regen and cooling
+  follows the rule.
+- *The bot and the tools.* The reboot's play the only one, the habits that lean on cooling
+  cut; the runners' `--reboot` gone; saves from before refused.
+- *The records.* The rules; the bible's shield and heat rows as decided, section 12's item
+  retired to them; `CLAUDE.md`'s two paragraphs; then the anchor read again as the baseline.
+
+**Then, Claude's order, his to set.** Each rests on the one before.
+
+1. *The audit of every rider and keyword against the rule*, with the foes' Burn, the block
+   and the Barrier's place (his "we'll need to audit every rider and keyword after this, no
+   matter what"), a first round in chat. It comes before any number because it settles what
+   the foes' effects are: heat a foe lays never leaves now, Cryo's cooling and every grant
+   of regen or shield are dear, a shield spend can break its own machine.
+2. *The foes' kits against the frame* (section 21: who the reboot protects, what threatens
+   it), a small model apart from content first: a domain needs a pick that finds the hot
+   machine, one that finds the broken shield, a blow at every machine, and numbers.
+3. *Tier one's numbers at the anchor*, to the hull budget: today's foes cost about twice the
+   hull under the rule and fights run a quarter to a third longer, so either the budget
+   moves or the foes do, his to say once the read is in.
+4. *His play of the anchor*, then the scaling already ordered: the first battle down, tiers
+   two and three up.
+
+Beside them, his: the machines the rule reaches (the list above), each a design session as
+his brainstorm yields it. Until its session a machine plays as it is built.
+
+## 23. The stock basics by the fodder's health (14 November; his logic read, nothing decided)
+
+**His play of the trial, in his words.** "I will say that I felt the heat playing already.
+Heat costs are probably too high, for some pieces, or heat caps are too low - but that's a
+whole thing, I don't want to judge based on my tiny sample. I just know I overheated a lot.
+Overheat damage did felt fair at 1 per heat, especially because I didn't feel so bad if my
+'math' was wrong and I went over by one or two. I'd go with that to start." "Enemy damage
+felt ok, some foes I felt like took a shot too many to kill, but my read there is that the
+stock loadouts were just not up to where they needed to be, which I think we know." So a
+stack burns one, his pick to start; the heat prices and the maxima are noted and not judged.
+
+**His logic.** "A 'standard' vanilla shot should be 1 less than our 'standard' fodder
+health, whatever that is. So if a goblin, the most basic swarm unit, is 4, then we set a
+normal, no rider, direct gun at 3. That's the baseline. If it proves that a 3 health
+standard, vanilla fodder works better, then our vanilla gun needs to be 2. For 5HP, probably
+4. From there, I extrapolate. I have no idea what each rider is worth. But I would cost them
+by damage first, not heat. So a basic with one decent rider gets -1 damage, and one with a
+more powerful effect gets -2, and so on until it turns into Equipment by dealing no damage.
+Then I go up. In the example of the 4 health goblin, a 4 damage shot is premium since it
+prevents one instance of damage. That needs to cost something, and for basics, the only cost
+we should have is Heat. So the 4 damage basic, or more explicitly the +1 damage gun over the
+vanilla, needs to bite appropriately. My thought process is that that extra point of damage
+should be something to work for as a first build step for the player. Reliably one-shotting
+the core fodder units. I could be very wrong on this. Perhaps the standard for a 4 HP core
+should be 2, so that it takes two complete shots. It depends a lot on how many foes we sick
+on the player in a formation. If the baseline is 2 shots per unit either way, then it comes
+down to how accessible are we making that extra damage. Like the Skua for example, it gets
+that +1 and starts one shooting from turn two (or one if lucky), with the basic vanilla gun.
+So maybe that's too strong, and indicates that the base gun should be -2. Or, the skua is
+too warping at low numbers and needs to get sent to tier two." His ask: "How is my logic? Do
+a deep analysis on it, applying our learnings so far, and game design theory."
+
+**What the records already hold.** His kill-time test of 21 and 22 October: "a rank-and-file
+foe dies to one good blow or two ordinary ones" ("One to two for rank and file makes
+sense"). The logic is that test made exact: the ordinary blow is the vanilla, the good one a
+point more. The pricing pass of 28 October measured the keywords in points of flat damage on
+that day's content: a Breach about one, a Shock one and a half, Flak 2 and Burn 2 about two,
+Burn 3 and a Chain nearly three. The tiers row: tier zero is tier one's power, only simpler.
+The triangle row: every component has a price, and the basics carry heat.
+
+**Today's content against it** (tier one, 14 November). Three basic guns deal 2 for 4 heat
+and the Laser Carbine 3 for 5; a plain tier-one gun, the Slugthrower, deals 4 for 4. So the
+vanilla today is half a goblin, his "two complete shots", and the gun that kills a goblin
+outright is a find at the vanilla's heat. The ten tier-one formations hold 69 foes:
+
+| The foes | Slots | Share |
+|---|---|---|
+| Thin, 2 or 3 hit points (the needler, the revenant) | 16 | 23% |
+| Standard, 4 (the goblin, the bomb, every back rank) | 39 | 57% |
+| 4 behind a point of plate (the zombie knight) | 2 | 3% |
+| Thick, 5 or 6 (the gel, the salamander) | 8 | 12% |
+| A big plated one, 14 to 20 | 4 | 6% |
+
+| A gun of | Kills in one shot | In two | In three | In four or more |
+|---|---|---|---|---|
+| 2, today's vanilla | 10% | 70% | 12% | 9% |
+| 3, his rule on the goblin | 23% | 71% | none | 6% |
+| 4 | 80% | 14% | none | 6% |
+| 5 | 88% | 6% | none | 6% |
+
+By domain a gun of 3 kills in one shot half the Waste's slots and 45% of the Marsh's, and
+none of the Meadow's or the Peak's; a gun of 4 kills in one 62% of the Peak's and 77 to 93%
+of the others'. A braced goblin is 4 behind a point of plate for a round, and the wolf, a
+hunter and no formation's, is 7: four shots of 2, three of 3, two of 4.
+
+**The model** (`tools/basics_model.py`, apart from content: three machines, one gun a round
+each, a foe dead before the foes' turn strikes nobody; heat under the reboot at a maximum of
+12; no dice, reach, shield or riders).
+
+| The pack | A gun of 2 | A gun of 3 | A gun of 4 |
+|---|---|---|---|
+| Eight thin, 3 | 6 rounds, 57 blows | 3 rounds, 21 | 3 rounds, 21 |
+| Eight standard, 4 | 6 rounds, 76 | 6 rounds, 76 | 3 rounds, 28 |
+| Six thick, 6 | 6 rounds, 60 | 4 rounds, 40 | 4 rounds, 40 |
+| Six of 4 behind a point of plate | 8 rounds, 72 | 4 rounds, 30 | 4 rounds, 30 |
+| A big plated one, three standard, three thin | 10 rounds, 101 | 6 rounds, 55 | 4 rounds, 30 |
+
+Under the reboot, blows taken (and of them the blows that land while the squad stands bare):
+
+| The pack | 3 for 3 heat | 4 for 4 heat | 4 for 6 | 4 for 8 | 4 for 12 |
+|---|---|---|---|---|---|
+| Eight thin | 21 | 21 | 21 | 36 (15 bare) | 36 (15) |
+| Eight standard | 84 (8) | 28 | 28 | 48 (20) | 48 (20) |
+| Six thick | 40 | 40 | 52 (12) | 72 (32) | 72 (32) |
+| Six plated | 30 | 30 | 39 (9) | 54 (24) | 54 (24) |
+| The mixed pack | 62 (7) | 30 | 37 (7) | 53 (23) | 53 (23) |
+
+One machine of the three changed, the vanilla 3, heat left out: against eight standard foes
+the squad takes 76 blows on plain dice, 71 with one of that machine's six entries dealing
+one more, 66 with two, and 64 with every weapon of its dealing one more from the second
+round. With the vanilla at 2 all four are 76. An entry in one of six shows on 17% of its
+machine's turns, 31% with a reroll given it and 42% with two.
+
+**The read.**
+
+*What holds.*
+
+- *The anchor is the right one.* At single digits a point of damage does one thing, change
+  the shots a foe takes, so the fodder's hit points are the unit a gun is measured in. It is
+  the vanilla test of the card games (fix a plain body for a cost, pay each keyword out of
+  the body), set against the foe in place of a cost.
+- *A kill is worth more than its damage.* The foes pick, the squad acts, the foes strike: a
+  foe dead this round does not strike this round. Two shots becoming one takes the model's
+  squad from 76 blows to 28 against eight standard foes, well over twice for twice the
+  kills, since the foes that die first never strike at all (the square law of aimed fire).
+  "It prevents one instance of damage" is the smaller half of it.
+- *His rule fits his test on today's roster, and names what he felt.* A vanilla of 3 kills
+  everything in tier one's formations in one or two but the four big plated ones. Today's 2
+  takes three or four shots on a fifth of the slots: the gels, the salamanders, anything
+  braced or plated, and the wolf. That is "a shot too many".
+- *Riders paid in damage.* It agrees with the measure of 28 October, and under the reboot it
+  keeps the triangle's sides apart: heat is the one budget a gun draws on now, so a rider
+  paid in heat would be the gun's own price with a bigger number.
+
+*What needs care.*
+
+1. *One under the fodder is a knife's edge, by design.* Against a foe of 4, a gun of 2 and a
+   gun of 3 are the same gun: two shots. The vanilla's third point lives only off the
+   standard foe (thin, thick, plated, big) and beside a chip (3 and 1 kill). And every
+   single point on either side then crosses the line: a stack of any amp doubles the squad's
+   kills on standard fodder, and a point of plate on a foe undoes it. So the rule makes the
+   amps and plate the dearest things in tier one. That is its excitement and its risk, and
+   it is the baseline's doing, no one machine's.
+2. *The roster sits on one number.* 57% of the slots are a plain 4. So the step from 3 to 4
+   is a cliff: 23% of slots die in one shot, then 80%. The lever that turns a cliff into
+   steps is the foes' spread, not the gun: with thin, standard and thick near a third each,
+   a 4 kills half in one and a 5 the next share, and every point of damage has its own foes.
+3. *The rider ladder's steps are unequal.* On a foe of 4 the pairs 3 and 3, 3 and 2, 3 and 1
+   and 2 and 2 all kill. So a point paid for a rider is free against standard fodder (two
+   rider guns kill a goblin as two vanillas do) and dear against everything else (table
+   above, a gun of 2 against thin, thick and plated), and the second point is steep
+   everywhere: a gun of 1 kills nothing without a 3 beside it. Plate and thick fodder are
+   what make a rider's price real, so each domain needs some.
+4. *Heat cannot price a point that crosses the line.* Under the reboot a shot's heat is a
+   share of a reboot, its heat over the maximum, so heat is a straight price. The point's
+   worth is a step. Against standard fodder the gun of 4 beats the vanilla at any heat the
+   gauge holds: 48 blows at 12 heat, one shot a reboot, where the vanilla takes 84. Against
+   thin, thick or plated fodder the point crosses nothing and any heat over the vanilla's is
+   a loss. So its heat does not tune how good it is. The roster does that. Its heat sets how
+   often it speaks: three kills a reboot at 4, two at 6, one at 8, at a maximum of 12.
+5. *The last volley is never burnt.* A fight ends on the spend that kills its last foe,
+   before the turn does, so heat spent to finish costs nothing. Against standard fodder the
+   gun of 4 ends the model's fight inside the gauge at any heat up to 6, with no reboot at
+   all. A price that should "bite" shows from about 8.
+6. *"Accessible" is how often the die shows it.* One entry in six is a sixth to two fifths
+   of a machine's turns. A point on every weapon from the second round is every turn. So the
+   Skua's first stack is worth two entries and more (64 blows beside 71 and 66), and with
+   the vanilla at 2 it is worth nothing on standard fodder, the dead point again. It is the
+   canary for the baseline. It has its own answers built in: a point of plate eats the
+   bounce, and hull damage, a burn included, halves the stacks.
+7. *His other form is today's game.* A vanilla of half the fodder wastes nothing, and a
+   point more does nothing: the Laser Carbine's third point and the Skua's first stack are
+   dead on a goblin, and the step that matters is two points, the Slugthrower's. Flat and
+   safe, where one under is sharp. His play of it is the "shot too many".
+
+**Claude's leans, his to mark.**
+
+1. Take the rule, said in shots: the vanilla kills the standard foe in two with a point to
+   spare, the good gun in one. On today's roster that is a vanilla of 3.
+2. Say what the standard foe is, 4, and make thin and thick each domain's deliberate turn
+   from it. Whether the spread flattens toward thirds is the foes' pass's question.
+3. The ladder as he has it, 3, 2, 1 and equipment, with the measure of 28 October as the
+   first prices: a Breach or a Shock a point, Flak 2 or Burn 2 two, a Chain or Burn 3 the
+   third, which is equipment.
+4. The gun of 4 is a find and no stock, priced in kills a reboot (6 or 8 heat at a maximum
+   of 12), its worth set by how much of a domain is a plain 4.
+5. The vanilla's heat comes down to 2 or 3. Today's 4 was priced against a cooling of 2
+   that the reboot took away, which is why he overheated: a machine met its limit in four to
+   six rounds by the prices' own design, and meets it in three now.
+6. The Skua waits for its own session, read against the baseline once that is set. Its
+   levers there are his two, when the stacks arrive and its tier, and never the vanilla.
+
+**The bench**, each with the rule that killed it:
+
+- *The vanilla at half the fodder* (today's): no dead waste, but a point more is dead and
+  the thick and the plated take three and four shots, against his kill-time test.
+- *The vanilla equal to the fodder*: every gun kills in one, the round's question (which
+  die on which foe) goes, and a formation of eight is two rounds.
+- *Pay riders in heat*: under the reboot heat is the gun's own price, so the rider and the
+  gun would draw on one budget, against the triangle's sides.
+- *Price the gun of 4 to parity by heat alone*: no heat under the maximum does it against
+  standard fodder (the model's fourth table).
+- *Move the base gun down for the Skua*: one machine's passive setting every machine's gun,
+  and at 2 the fault he felt comes back.
+
+**What it would move, if taken**: the three basic guns from 2 to 3 and the Laser Carbine
+from 3 to its own place on the ladder (a rider's, or the first hot gun's); every basic's
+heat; the tier-one finds brought to the ladder with them (section 12's last step); the
+machines that read damage or heat by the point, their sessions'; then the anchor read again.
+It belongs with the foes' numbers, after the audit, since both are sized against each
+other; a dial for the vanilla's number and heat would let his play and the runner read it
+before content moves.
+
+### His scope, a standard foe of 5, and the dials (14 November)
+
+His words: "Sure, let's try it. Remember that I'm just trying to price the basics, and from
+there estimate the cost of the riders. Tier two foes are facing a more coherent build from
+the player, so these +/- 1 questions aren't relevant there." "There's no reason to consider
+adjusting the standard foe up to 5, is there? Just to add a small percentage of
+granularity?"
+
+So the read above is the basics' and tier one's: the knife's edge, the cliff and the dead
+point are questions of a stock die of basics against rank and file. It is no call on tier
+two, where a built die answers them. The roster's spread is the foes' pass's and no part of
+this pricing.
+
+**A standard foe of 5: no.** The model's seventh table, each gun from the vanilla down
+against the standard foe:
+
+| The standard foe | The vanilla | One under it | Two under | Three under |
+|---|---|---|---|---|
+| 3 | 2 | 1: kills only beside the vanilla | equipment | |
+| 4 | 3 | 2: kills in two of its own | 1: only beside the vanilla | equipment |
+| 5 | 4 | 3: kills in two of its own | 2: only beside a 3 or more | 1: only beside the vanilla |
+| 6 | 5 | 4: kills in two of its own | 3: kills in two of its own | 2: only beside a 4 or more |
+
+The point more is the same question at any size: one under is one under, and 4 against 5
+is the cliff 3 against 4 is. What a 5 buys is one more rung under the vanilla, and a
+middling one, a gun of 2 that kills only beside a 3; and a softer plate on the first rider
+gun (three shots through a point of plate where a 4's takes four). Two rider rungs that
+stand by themselves come only at 6. What it costs: 57% of tier one's formation slots and
+every gun renumbered, the tiers above scaled with them, and the sums a player does in his
+head a size up.
+
+Claude first added that 4 is the least standard that carries his ladder, since at 3 the
+first step down is the last before equipment. His correction the same day: "That's not
+necessarily true, since we have heat as a second cost lever. One step down, but heat can
+rise on a 1 damage weapon." So the ladder has two levers, damage first and heat second, and
+a rung holds as many grades as its heat can tell apart: a gun of 1 with a light rider and a
+gun of 1 with a heavy one are two pieces at two heats. The size of the standard foe does
+not bound the riders' grades, and 4 stays for the plainer reasons: the roster sits on it
+and nothing is bought by moving.
+
+What followed from it the same day, each with its own home: the riders priced on the ladder
+and read against the reboot, his tier-one bench of placeholder pieces (a hot 4 beside a
+cooler 2 twice, "then see what sticks and is interesting and what is redundant enough to
+cut") and the approach to the defence side he asked for are `docs/vocabulary_pass_proposal.md`.
+
+**The dials** (a debug build's SETTINGS → TRIALS, each read at the next launch; the same
+what-if the runners read, `basics=N` and `top=N` beside `hotter=N`; no content moves):
+
+- BASIC GUNS, BUILT or +1: every basic gun a point of damage up. The Twin Autoguns, the
+  Rivet Gun and the Ankle Mortar deal 3, the vanilla his rule gives a goblin of 4, and the
+  Laser Carbine deals 4, the gun that deals one more, on the stock dice that hold it.
+- HEAT, −2, −1, BUILT or +1: every weapon's heat. The prices of 12 November were sized
+  against a cooling of 2, so two off is the pace they meant under the reboot: a basic gun 2
+  and the Carbine 3, where they are 4 and 5.
+- TOP BASIC, BUILT, +2 or +4: more heat on the basic guns that deal more than the plainest,
+  the price his logic gives the point. With HEAT at −1 the Carbine makes 4, 6 or 8 against a
+  vanilla's 3: three kills a reboot, two, or one, at a maximum of 12.
+
+A passive that rewrites its machine's guns into its own shot (the Cottonmouth's drum) keeps
+that shot's damage, which is no basic's. The page scrolls since the same day: at twelve rows
+it had outgrown a glass of 1280.
+
+**The bot's read of the dials** (`docs/measurements.md`, 14 November; tier one's fights at
+their ratings under the reboot, the six certain tier ones, the fight bot's first play, 30
+fights a cell; a direction):
+
+| The basics | A lone flanker: rounds, hull | A hunter's pack | A formation | Reboots a machine, a formation |
+|---|---|---|---|---|
+| As built: 2 for 4 heat, the Carbine 3 for 5 | 5.5, 6.8% | 5.3, 11.6% | 6.0, 10.7% | 1.02 |
+| One heat off every weapon | 5.4, 6.6% | 5.1, 11.8% | 5.5, 9.9% | 0.77 |
+| Two off | 5.4, 6.9% | 5.2, 11.6% | 5.0, 8.8% | 0.58 |
+| A point of damage up: 3 for 4, the Carbine 4 for 5 | 4.5, 5.1% | 4.6, 9.3% | 5.1, 9.4% | 0.85 |
+| A point up, one heat off: 3 for 3, the Carbine 4 for 4 | 4.5, 4.9% | 4.5, 9.2% | 4.7, 8.1% | 0.64 |
+| A point up, two off: 3 for 2, the Carbine 4 for 3 | 4.5, 5.1% | 4.5, 9.6% | 4.5, 7.9% | 0.48 |
+| A point up, one off, the Carbine 4 for 6 | 4.5, 5.0% | 4.6, 9.7% | 4.8, 8.4% | 0.69 |
+| A point up, one off, the Carbine 4 for 8 | 4.4, 5.0% | 4.7, 10.0% | 5.0, 8.8% | 0.74 |
+
+What it says, on today's foes and the bot's play:
+
+- The point and the heat each take about a round off a formation, and they add: 6.0 rounds
+  as built, 5.1 and 5.0 for either alone, 4.5 for both, which is the length a formation ran
+  before the reboot. Hull falls from 10.7% of a four's to 8%, where it was 5.9% under a
+  shield that refilled.
+- A duel answers to the point and not to the heat: a lone machine reboots for its shield, a
+  flanker's blows all being its own, so cooler guns leave its fight as long.
+- By fight the model holds. The goblin horde, all plain 4s, barely moves for the point (5.2
+  rounds to 4.9). The Marsh's throng, whose revenants a 3 kills outright, halves its cost
+  (13.1% to 6.6%). The plated and the thick move by a round or more (the treant's grove 7.5
+  to 6.2, the barrow 8.1 to 6.8, the sandworm's ambush 5.8 to 4.9).
+- The Carbine's price shows as a slope, not a wall: 4.7 rounds, 4.8 and 5.0 at 4, 6 and 8
+  heat, and the bot spends it on 13.5% of its spends, then 10.5% at 8. It is one entry on
+  three of the six dice.
+- Reboots a machine fall from one a fight to two in three with a point off, and to one in
+  two with two off, where the burn all but stops (0.03 hull a fight): at two off heat is
+  seldom a question in a formation.
+
+The squads of four, 20 fights a cell:
+
+| The basics | An elite: won, rounds, hull | A boss |
+|---|---|---|
+| Before the reboot, as built | 100%, 4.8, 9.5% | 98%, 8.1, 21.4% |
+| Under the reboot, as built | 100%, 6.1, 14.8% | 93%, 10.8, 37.1% |
+| A point up, one heat off | 100%, 5.2, 11.1% | 99%, 8.7, 26.5% |
+| A point up, two off | 100%, 4.9, 10.9% | 98%, 8.4, 23.6% |
+
+So most of what the reboot added to tier one's fights, in rounds and in hull, was the basics
+themselves: guns sized against a shield that refilled and priced against a cooling the rule
+removes. With the point and two heat off, an elite and a boss stand within a round and a
+few points of hull of where the anchor left them, which leaves the foes' pass the kits and
+less of the numbers.
+
+Claude's lean for his play: BASIC GUNS on +1, HEAT on −1 and TOP BASIC on +2, so a vanilla is
+3 for 3 heat, four shots a gauge, and the Carbine 4 for 6, two kills a reboot; HEAT on −2
+beside it if he still overheats more than he likes.

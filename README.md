@@ -124,7 +124,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   `--fit`, summarised into `build/pricing/<name>/summary.md`); `synergy_map.py` prints who sets and who reads every
   status and resource, from content, and writes `docs/synergy_map.md`; `turn_loop.py` models the
   campaign's turn loop from its constants with every battle won, for the pressure the fronts put
-  on the cities; `shield_model.py` models the shield apart from content, four machines against
+  on the cities; `basics_model.py` models the stock guns against rank and file apart from content (shots to kill, the heat of a gun that deals one more, and a bench of guns by the spends each takes to kill five standard foes); `shield_model.py` models the shield apart from content, four machines against
   the same damage a round in different shapes under each rule for the shield, for what a rule
   makes the foes and the player want before the runner reads it; `backdrop_shot.gd` paints the skirmish's battle backdrop for every domain on
   every ground into PNGs, headless; `screenshot.gd` renders a
@@ -188,7 +188,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   design-session briefs (`briefs/`, with a README that says what each waits on), the economy
   pass (`economy_pass.md`), the formation pass (`formation_proposal.md`: its grids landed in `content/factions.json` on
   10 November, re-cut to the roles, and its tool retired with them; kept for the bosses' stat
-  blocks, its section 6, and the flankers' slate and bench, its section 13), the refit pass's brief (`briefs/refit_pass.md`: the resource model Ryan set on 9 November, the formation pass folded into it), the locked pieces' footing (`locked_pieces_proposal.md`: Ryan's direction of 10 November, glue kept locked and a bought level that lifts the whole machine, waiting on his marks), the bosses' and elites' slate (`bosses_proposal.md`), the heroes'
+  blocks, its section 6, and the flankers' slate and bench, its section 13), the refit pass's brief (`briefs/refit_pass.md`: the resource model Ryan set on 9 November, the formation pass folded into it), the locked pieces' footing (`locked_pieces_proposal.md`: Ryan's direction of 10 November, glue kept locked and a bought level that lifts the whole machine, waiting on his marks), the vocabulary pass (`vocabulary_pass_proposal.md`, 14 November, two rounds: every rider, cost, buff and debuff on both sides read against the reboot and the yardstick for the basics, our riders measured on the vanilla and the foes' on the standard blow, the vanilla one under the standard foe or two, armour against the hit sizes, the foes' Burn as a status that erodes on both sides, the Barrier unwound, what still grants shield or cooling, the tier-one bench and the approach to the defence side; waiting on his marks), the bosses' and elites' slate (`bosses_proposal.md`), the heroes'
   pass beyond Final Fantasy (`heroes_proposal.md`), the mechanics audit (`mechanics_audit.md`),
   the skirmish code audit (`skirmish_audit.md`: exceptions, duplicates and dead code, its
   questions and its order of work) and the roster analysis (`roster_analysis.md`, published as a page by
@@ -314,7 +314,10 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # shield or a vent, every chassis regains its own shield regen, the basics make heat), so what is
 # left are the numbers a read may still ask about: "regen=N" (a flat regen on every chassis in
 # place of its own) or "regen=half", "cooling=N" (an offset), "hotter=N" (every weapon N heat
-# more, a read for the heat prices), "barrier=cooldownN" (the Barrier basic sits out N rounds
+# more, a read for the heat prices; negative for cooler), "basics=N" (every basic gun deals N
+# more) and "top=N" (the basic guns that deal more than the plainest make N more heat), the two
+# of Ryan's logic for the stock basics (the refit brief's section 23),
+# "barrier=cooldownN" (the Barrier basic sits out N rounds
 # once spent, 0 for none, where content gives it 1), "barrier=heatN" (it costs N heat) or
 # "barrier=none" (it leaves the stock dice, the Armoured basic in its slot); comma-separated;
 # tools/campaign_run.gd takes it too.
@@ -417,6 +420,12 @@ python3 tools/turn_loop.py --seeds 2000 --widen 3
 # dice, no kills, no content: what a rule does with a shape, never what a fight costs. Seconds
 python3 tools/shield_model.py
 python3 tools/shield_model.py --damage 12 --rounds 4
+python3 tools/shield_model.py --bench   # the wider bench alone: one field for the squad, a gauge that shrinks, small blows that bounce, a block a machine calls once
+python3 tools/shield_model.py --fight   # a fight that ends: each machine a gun with heat, the pack with hit points; a reboot that grows with every break, and one gauge for hits and heat
+python3 tools/shield_model.py --builds  # whole rule sets spliced from Ryan's menu of 13 November: regen or none, the block, what a pass recovers, cooling, one bar; a die that is a dud one round in five
+python3 tools/shield_model.py --shutdown  # the shutdown as he stated it the same day (no regen, no cooling, a break allows it, an overheat forces it, none by choice), with what an overheat costs and when the recovery lands each as a row; a gun's heat in turns; a foe that heats
+python3 tools/basics_model.py           # the stock basics apart from content (Ryan's logic of 14 November: the vanilla gun one under the standard fodder's hit points): shots to kill, the pairs that kill, a fight by the gun's number, the gun that deals one more by its heat under the reboot, how often a die shows an entry, a hot entry beside a lasting point, the rider ladder by the standard foe's hit points, 3 to 6, and a bench of guns, each the vanilla with one thing traded, by its spends to kill five marks (two with the same row and heat are one gun)
+python3 tools/shield_model.py --choice  # the reboot by choice, his next form: a machine rides at its maximum, a reboot takes the turn and empties the shield, both back the round after; played blind to the foes' picks and reading them, with what the emptying buys
 # whom the foes strike (23 October): every starter trio a tender can deal, stock, greedy, against each
 # faction's formation, bosses and first pack; picks as intents are drawn, the same with every machine standing,
 # swings after any Lure, the exposed aim's weights, hull lost. JSON per cell, read by hand; four parts in parallel.
@@ -452,7 +461,9 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # seven statuses on each machine, five on each foe), plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), foeheat (Burning, Flak and Shocked on the first three front foes, heat's red-orange beside each violet intent), lure_all (a Lure over every foe dragged over a foe, the turned foes' arrows dashed; the content's first lure-all, the Shift Whistle, takes the first machine's first entry when no machine carries one), rounds, logfull, killed, acquire, menu, settings, quit, keywords (the keywords list, as the menu's KEYWORDS opens it), colours and colourpick (a debug build's COLOURS page, and with the red's picker open), and the feed's
 # events feed_scanbox, feed_databox, feed_readout, feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal,
 # and groundtear (the corrupted side's tear as it fires), swallowed (the first machine swallowed: a ghost under a dashed edge),
-# undo (a spend taken: UNDO lit at the bottom row's right end) and columns (every foe aimed at the machine nearest its
+# undo (a spend taken: UNDO lit at the bottom row's right end), reboot (the reboot's trial, with RIFTGATE_REBOOT=1: a machine past its
+# maximum, one with its shield broken, one rebooting, and REBOOT at rest at the row's right end), rebootdrag (the same trial: a die in
+# hand over REBOOT, the control lit as its target and filled) and columns (every foe aimed at the machine nearest its
 # column, every arrow on, each from its intent chip's middle, the ranks slightly apart; RIFTGATE_FOES=goblin:4,mandragora:4 fills both ranks).
 # RIFTGATE_MAP_KIND=gorge (any standalone battle run) picks the map's shape, none drawing one by the seed,
 # and RIFTGATE_SEED=<n> the battle's seed (7); the harness has a picker.
@@ -521,21 +532,38 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # RIFTGATE_REFIT=regen=0 (any run; any spec tools/balance.gd's --refit takes) lays a what-if over
 # the refit pass's model, which is content since 10 November: a flat shield regen in place of
 # each chassis's own, a cooling offset, hotter weapons, a price on the Barrier basic.
-# On the phone a debug build's SETTINGS → TRIALS has SHIELD REGEN (BUILT, 0, 1, 2, 3: each
-# chassis its own number, or a flat one on all) and HEAT (COOLER, BUILT, HOTTER: every weapon
-# a point cooler than content prices it, or a point hotter with every chassis that cools
-# cooling one more; the what-if's hotter and cooling) and BARRIER BASIC (BUILT, NONE: the Barrier
+# On the phone a debug build's SETTINGS → TRIALS (a page that scrolls) has SHIELD REGEN (BUILT, 0, 1, 2, 3: each
+# chassis its own number, or a flat one on all) and HEAT (−2, −1, BUILT, +1: every weapon
+# one or two cooler than content prices it, or a point hotter with every chassis that cools
+# cooling one more; the what-if's hotter and cooling), BASIC GUNS (BUILT, +1: every basic gun
+# a point of damage up, the plain ones 3 where they are 2; the what-if's basics), TOP BASIC
+# (BUILT, +2, +4: more heat on the basic guns that deal more than the plainest; the what-if's
+# top) and BARRIER BASIC (BUILT, NONE: the Barrier
 # basic on the stock dice, or the Armoured basic in its slot; the what-if's barrier=none): pick, close the app, open it, and start a new
 # battle or run, since a saved one keeps the numbers it was saved with. RIFTGATE_OVERHEAT=2 (any battle) sets the hull an overheat burns a point of heat past
 # the gauge, 1 the game's; the same page's OVERHEAT (×1, ×2, ×3) sets it on the phone, read
-# as a battle starts.
-# RIFTGATE_SHIELD_BREAK=2 (any battle) tries the breaking shield (Ryan, 13 November: "when a
-# shield breaks, it absorbs the whole blow ... it's down for a couple of turns before it starts to
-# regenerate again"): the blow that breaks a shield is stopped whole, and the broken shield stays
-# down that many rounds, 1 to 3, nothing raising it, before its regen starts again; a shield at
-# rest shows a dashed frame and a cell a round left. The same page's SHIELD BREAK (BUILT, REST 1,
-# REST 2, REST 3) sets it on the phone, read as a battle starts. A what-if, nothing decided;
-# the reads set it beside BARRIER BASIC on NONE, since the two together are worth twice either.
+# as a battle or a lone fight starts from the menu.
+# RIFTGATE_SHIELD_BREAK=1 (any battle) tries the block (Ryan, 13 November: "when a shield
+# breaks, it absorbs the whole blow"): the blow that breaks a shield is stopped whole. The same
+# page's SHIELD BREAK (BUILT, BLOCK) sets it on the phone, read as a battle or a lone fight
+# starts. A what-if, nothing decided; its rest timer of that morning left with the reboot.
+# RIFTGATE_REBOOT=1 (any battle, and the skirmish scene run alone) tries the reboot (Ryan, 13
+# November; the refit brief's section 22 has the spec): no shield regen and no cooling of a
+# chassis's own; a machine that has spent nothing may reboot, its shield down at once and both
+# gauges back as the next round opens; heat past the maximum stays and every point of it burns
+# hull every turn; the first overheat between reboots breaks the shield; a broken shield gains
+# none until its machine reboots. On the screen: REBOOT in the middle of the bottom row, between
+# END TURN and UNDO, REROLL centred under the dice. Drag a die onto REBOOT and its machine reboots,
+# the one way in: the control is a drop's target and no button, dashed at rest, lit with a die in
+# hand, and it takes the drop a little past its own edge. UNDO takes it back; heat past the maximum, a broken shield and a reboot under way each wear a
+# chip, and a broken shield's gauge a dashed frame. The same page's REBOOT (BUILT, ON) sets it
+# on the phone, read as a battle or a lone fight starts, with OVERHEAT pricing a point of the
+# burn. A what-if, nothing decided; the fight bot has a first play of it, and
+# `tools/balance.gd -- --reboot` reads the matrix under it. The screenshot pose `reboot` shows
+# all three states. The settings for a first play of it: REBOOT on ON, OVERHEAT on ×1, every
+# other row on BUILT or the game's own; SHIELD REGEN and the +1 HEAT's one more cooling do nothing
+# under it (a chassis's own regen and cooling are ignored); close the game and open it again
+# once the rows are set, three of them being read at launch, then start a new battle or fight.
 # RIFTGATE_FIELD_DEPTH=14 and RIFTGATE_OPENING=1 (any battle) try a deeper field and a farther
 # opening (Ryan, 10 November: "I think the map is a bit too shallow"): the rows from the rift to
 # the wall, 10 to 24 and 12 the game's, and how many more of their own moves from the wall the
@@ -561,8 +589,6 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # with the vetted set (31 October).
 # RIFTGATE_PLUME=off (any run) draws a booster's ring in place of its plume (the Stingray's, on
 # trial), to compare the two.
-# RIFTGATE_SHOTS=1 (any skirmish) draws the shot crossing the field, tabled and off by default (a debug
-# build's Settings → SHOT TRAILS turns it on too).
 # The phone's layout on the desk machine: RIFTGATE_SHOT_H=<design height> renders a taller glass
 # (a 1080x2424 phone is 1616), RIFTGATE_SAFE=<top>,<bottom> keeps its safe bands clear
 # (any run, not only the tool), RIFTGATE_SHOT_SCALE=1.5 renders at its pixel density (the
@@ -574,10 +600,8 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # in every mode.
 # RIFTGATE_SHOT_ZOOM=<z> shows any battle pose zoomed to z on its first machine (the overlay holds its size on screen).
 # RIFTGATE_OUTLINE=<n> sets the battle map's machine outline width in design pixels, the same at every zoom, for a comparison
-# (Map3D.OUTLINE is the default). A debug build's TRACES toggle draws the map without its traces (the creases on the
-# machines, the props and the gate, one device pixel at every zoom), to judge the grain zoomed out on the phone; on the
-# desk, RIFTGATE_TUNE=1's TRACE knob does the same live. A debug build's KEYWORD INK sets the terms in shown text
-# bold in ink with their icons alone in their colour, against the words in their colour, to compare on the phone.
+# (Map3D.OUTLINE is the default). On the desk, RIFTGATE_TUNE=1's TRACE knob draws the map's traces (the creases on the
+# machines, the props and the gate, one device pixel at every zoom) in another mode or not at all, live.
 # RIFTGATE_HUD=<green|amber|blue> forces the HUD colour for a run (any run), to judge a mark against every option.
 # RIFTGATE_SHOT_WINDOW=1 puts the scene in the window itself instead of a SubViewport, so the
 # capture goes through the project's own stretch and font oversampling as the phone's does:

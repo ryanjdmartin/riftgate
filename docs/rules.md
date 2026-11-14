@@ -60,7 +60,9 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   the Fovea Designator, the St. Elmo's Regenerator), and only `melee` is read today: a blow
   lunges on screen when its weapon is melee and nothing about it crosses the field (a blade's
   class, and no Ballistic, Missile or Beam); any other fires as a gun, a shotgun tagged melee and
-  ballistic among them.
+  ballistic among them. A machine's gun shows its shot crossing the field, from its muzzle to
+  what it fires at: a tracer for a direct shot, a lobbed arc for an indirect one, a beam held
+  through the blow for a laser (the Beam tag). A foe's blow shows none.
   Melee means short range, a shotgun included, never only a blade.
 - **Modules** sit inside the machine and are never spent: stat lines up or down (hull,
   shield, heat maximum, armour, move, cooling, shield regen) and at most one rule, tier 1
@@ -1258,7 +1260,8 @@ a stat.
   turn's stop numbered, and the thing it comes for under a crawling border with the attack mark
   on it (a sword in the reticle's turning ring, one mark for both): a pusher's piece of the
   wall, a hunter's machine; no other pack's whole way shows, a selected machine's hunters'
-  included. Each machine has one action (the Dingo two): one move,
+  included. Each machine has one action (the Dingo two, by its Retrograde Flywheel: it may
+  move and act twice during each turn of the map phase, and inside a fight it spends its die once a round like any machine): one move,
   in one go, then it may fight; a fight ends the action however it ends, and the board under the
   map says what each can still do. A selected machine lights the hexes its move reaches, one
   border round the whole reach, its dashes crawling as its target's do, and brackets the packs it could be ordered onto. A move is

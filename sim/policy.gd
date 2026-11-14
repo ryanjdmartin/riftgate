@@ -74,6 +74,7 @@ const REGEN_WEIGHT := 0.5        # a point of shield a regeneration brings in a 
 const REGEN_ACTIONS := 3         # the actions a foe's Regenerating runs from its grant (Effects.regenerating's clock)
 const AHEAD_SHARE := 0.6         # the shield persona: a blow next round, as a share of one this round (the fight may end, the foes pick afresh)
 const CYCLE_AHEAD := 0.6         # a stepping die's next round, as a share of this one: where the dial rests now is the chamber it opens on (the Cassowary's cycle, 3 November)
+const REBOOT_KEEP := 1           # the reboot's first play (a what-if): the shield this round's blows would take off a machine that it gives up without a thought when it reboots
 
 var kind: int = GREEDY
 var cool_above: int = 0          # persona: keep the gauge under this percent of the maximum (0: cool only against an overheat)
@@ -89,6 +90,7 @@ var overheats: int = 0           # overheat events (a machine over its maximum a
 var heat_peak_pct: float = 0.0   # the hottest any machine stood as a turn ended, percent of its maximum
 var hot_rounds: int = 0          # rounds a machine ended its turn at four fifths of its maximum or more
 var forced_holds: int = 0        # damaging dice held because spending them would cross the maximum (the heat report, 13 October: spikes, not actions)
+var reboots: int = 0             # turns given to a reboot (Skirmish.reboot, a what-if)
 var forgone: float = 0.0         # the damage those dice would have dealt, at their mean
 var spends: Dictionary = {}      # component id, or "empty", "destroyed", "disabled" -> times spent
 var stalled: bool = false
@@ -175,8 +177,11 @@ func _read_heat(sk: Skirmish) -> void:
 func play_round(sk: Skirmish, rerolls: bool = true) -> void:
 	if rerolls and kind != RANDOM:
 		_greedy_rerolls(sk)
+	if Skirmish.reboot:
+		_reboot_first(sk)
 	if kind == BLIND:
 		_blind_round(sk)
+		_reboot_idle(sk)
 		return
 	var held: Array[int] = []   # dice left unspent this round: nothing in reach, or every spend a loss
 	var guard := 0
@@ -239,6 +244,63 @@ func play_round(sk: Skirmish, rerolls: bool = true) -> void:
 			held = still
 		else:
 			held.append(best["mech"])
+	_reboot_idle(sk)
+
+
+## The reboot's first play (Skirmish.reboot, a what-if; Ryan, 13 November; docs/briefs/
+## refit_pass.md, section 22): the machines that owe one give their turn before any die is spent.
+## A first cut, no weighing against the spend it gives up, so the runners still play a fight under
+## the rule and its reads are a floor: a bot that reads the foes' picks reboots where no blow would
+## cost it a shield worth keeping.
+func _reboot_first(sk: Skirmish) -> void:
+	if not Skirmish.reboot:
+		return
+	for i in range(sk.mechs.size()):
+		if sk.can_reboot(i) and _wants_reboot(sk, sk.mechs[i]):
+			if sk.reboot_mech(i):
+				reboots += 1
+
+
+## Whether a machine that may reboot should, before it spends (_reboot_first): past its maximum
+## it burns every turn, so always; with its shield broken, when a blow is coming or its heat is
+## half spent; with the entry it shows too hot to fire without passing its maximum, when this
+## round's blows would take little of its shield; and to top up a shield at a quarter or less
+## with its heat half spent, when none are coming. The blind and the random bot read no picks:
+## they reboot at the maximum or on a break, whatever is coming.
+func _wants_reboot(sk: Skirmish, ms: Skirmish.MechState) -> bool:
+	if ms.overheat_stacks() > 0:
+		return true
+	var blind := kind == BLIND or kind == RANDOM
+	var fc := sk.forecast(ms)
+	var pressed := int(fc["incoming"]) > 0
+	var kept := maxi(0, ms.unit.shield - int(fc["shield_after"]))   # what its shield would take of this round's blows
+	if ms.shield_broken:
+		return blind or pressed or ms.heat * 2 >= ms.heat_max
+	var f := ms.face()
+	var entry_heat := heat_of(ms, f) if f != null and f.kind != Face.Kind.BLANK else 0
+	if entry_heat > 0 and ms.heat + entry_heat > ms.heat_max:
+		return blind or kept <= REBOOT_KEEP
+	return not blind and not pressed and ms.unit.shield * 4 <= ms.unit.shield_max and ms.heat * 2 >= ms.heat_max
+
+
+## A die left unspent as the turn's spending ends is the cheap moment for a reboot (a what-if):
+## a machine that may, has something to get back, and would lose little shield to this round's
+## blows, gives the turn it was not using. One holding its die for a release (the Whip Scorpion's
+## pass) keeps it: a reboot is no pass.
+func _reboot_idle(sk: Skirmish) -> void:
+	if not Skirmish.reboot or sk.state != Skirmish.State.ASSIGN:
+		return
+	for i in range(sk.mechs.size()):
+		if not sk.can_reboot(i):
+			continue
+		var ms: Skirmish.MechState = sk.mechs[i]
+		if (ms.heat <= 0 and ms.unit.shield >= ms.unit.shield_max) or release_worth(sk, ms) > 0.0:
+			continue
+		var fc := sk.forecast(ms)
+		var kept := maxi(0, ms.unit.shield - int(fc["shield_after"]))
+		if kind == BLIND or kind == RANDOM or kept <= REBOOT_KEEP:
+			if sk.reboot_mech(i):
+				reboots += 1
 
 
 ## What a pass would release (the Whip Scorpion's Thermal Ejection Manifold, 11 and 12 November),
@@ -825,6 +887,12 @@ func heat_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: float = 1.0)
 	if not fc["destroyed"] and int(fc["hull_after"]) - burn <= 0:
 		cost += DEATH_WEIGHT
 	cost += overheat_marks_cost(ms, int(fc["overheat"]), over)
+	# Under the reboot (a what-if) the first turn past the maximum breaks the shield, and what
+	# stands there burns again every turn: the shield it would lose, and the burn once more.
+	if Skirmish.reboot and over > 0:
+		cost += float(burn) * HULL_WEIGHT
+		if int(fc["overheat"]) <= 0 and not ms.overheated:
+			cost += float(ms.unit.shield) * HULL_WEIGHT
 	# The cautious persona: the heat this spend leaves above its line (under the maximum, past
 	# which the overheat above prices it), as an overheat's hull.
 	var line := caution_line(ms)
@@ -2018,7 +2086,7 @@ func seal_score(sk: Skirmish, ms: Skirmish.MechState) -> float:
 	if seal.is_empty() or Effects.is_sealed(ms.unit):
 		return 0.0
 	var kept := _armour_saved(sk, ms, int(seal["armour"])) * HULL_WEIGHT
-	var cost := float(int(seal["heat"]) + ms.unit.cooling) * BANK_WEIGHT
+	var cost := float(int(seal["heat"]) + Skirmish.cooling_of(ms)) * BANK_WEIGHT
 	return kept - cost
 
 

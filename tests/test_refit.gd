@@ -119,7 +119,55 @@ func test_a_spec_parses_its_parts() -> void:
 	assert_eq([str(s["regen"]), int(s["cooling"]), int(s["hotter"]), str(s["barrier"])], ["2", -1, 2, "cooldown"], "each part is its own")
 	var none := Refit.parse("")
 	assert_eq([str(none["regen"]), int(none["cooling"]), int(none["hotter"]), str(none["barrier"])], ["", 0, 0, ""], "nothing asked, nothing set")
+	assert_eq([int(none["basics"]), int(none["top"])], [0, 0], "the basic guns' parts with them")
 	assert_true(Refit.apply(_own(), none).is_empty(), "and nothing changed")
+	var guns := Refit.parse("basics=1,top=2,hotter=-2")
+	assert_eq([int(guns["basics"]), int(guns["top"]), int(guns["hotter"])], [1, 2, -2], "the basic guns' damage, the top basic's heat and a cooler price each parse")
+
+
+## The basics' own what-ifs (Ryan, 14 November: the vanilla gun one under the standard fodder's
+## health, the gun that deals one more paid in heat): every basic gun a point of damage up and
+## nothing else moved, and more heat on the basic guns that deal more than the plainest alone.
+## The pieces are found by what they are, tier zero and a weapon that deals damage, never by id.
+func test_the_basic_guns_deal_a_point_more_and_the_top_basic_runs_hotter() -> void:
+	var db := _own()
+	var guns := Refit.basic_guns(db)
+	assert_true(guns.size() >= 2, "content has basic guns to read: %s" % str(guns))
+	var before := {}
+	for cid in db.components.keys():
+		before[cid] = (db.components[cid].get("face", {}) as Dictionary).duplicate(true)
+	var plain := 99
+	for cid in guns:
+		assert_eq(db.component_tier(cid), 0, "%s is a basic" % cid)
+		plain = mini(plain, int(before[cid]["power"]))
+	var notes := Refit.apply(db, Refit.parse("basics=1"))
+	assert_eq(notes.size(), 1, "one line says what moved: %s" % str(notes))
+	for cid in db.components.keys():
+		var face: Dictionary = db.components[cid].get("face", {})
+		if guns.has(str(cid)):
+			assert_eq(int(face["power"]), int(before[cid]["power"]) + 1, "%s deals a point more" % cid)
+			if before[cid].has("power_max"):
+				assert_eq(int(face["power_max"]), int(before[cid]["power_max"]) + 1, "at both ends of its roll")
+			assert_eq(int(face.get("heat", 0)), int(before[cid].get("heat", 0)), "for the heat it made")
+		else:
+			assert_eq(face, before[cid], "%s, no basic gun, is as content has it" % cid)
+	var db2 := _own()
+	Refit.apply(db2, Refit.parse("top=2"))
+	var hotter := 0
+	for cid in guns:
+		var face: Dictionary = db2.components[cid]["face"]
+		var over := int(before[cid]["power"]) > plain
+		assert_eq(int(face.get("heat", 0)), int(before[cid].get("heat", 0)) + (2 if over else 0), "%s: %s" % [cid, "over the plainest, two hotter" if over else "the plainest, its heat kept"])
+		assert_eq(int(face["power"]), int(before[cid]["power"]), "its damage kept")
+		hotter += 1 if over else 0
+	assert_true(hotter >= 1 and hotter < guns.size(), "some basic gun deals more than the plainest, and not every one (%d of %d)" % [hotter, guns.size()])
+	var db3 := _own()
+	Refit.apply(db3, Refit.parse("basics=1,top=2,hotter=-2"))
+	for cid in guns:
+		var face: Dictionary = db3.components[cid]["face"]
+		var over := int(before[cid]["power"]) > plain
+		assert_eq(int(face["power"]), int(before[cid]["power"]) + 1, "the three together: %s a point more" % cid)
+		assert_eq(int(face.get("heat", 0)), maxi(0, int(before[cid].get("heat", 0)) - 2) + (2 if over else 0), "two cooler with every weapon, the top basic's price on top")
 
 
 ## The what-ifs left over the landed model: a flat regen in place of each chassis's own, an

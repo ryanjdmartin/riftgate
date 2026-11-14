@@ -133,6 +133,7 @@ func test_a_term_reads_bold_in_its_colour_with_its_icon() -> void:
 	assert_eq(w.get("font"), Hud.display_bold(), "bold")
 	assert_eq(w.get("ink"), Terms.colour("burning"), "in its colour")
 	assert_eq(str(w.get("glyph")), Terms.glyph("burning"), "its icon before it")
+	assert_eq(w.get("glyph_ink"), Terms.colour("burning"), "in the same colour")
 	assert_true(float(w.get("icon", 0.0)) > 0.0, "the icon taking its room")
 	assert_eq(_word(r, "It").get("ink"), Palette.INK, "the words round it plain")
 	assert_eq(r.text(), "It leaves %s on the foe." % name, "the line's text unchanged")
@@ -148,22 +149,6 @@ func test_a_term_reads_bold_in_its_colour_with_its_icon() -> void:
 	var head := _word(r, name)
 	assert_eq(head.get("ink"), Terms.colour("burning"), "the chip's name in its colour")
 	assert_eq(float(head.get("icon", 0.0)), 0.0, "and no icon of its own")
-	r.free()
-
-
-func test_keyword_ink_puts_the_word_in_ink_and_keeps_the_icon_its_colour() -> void:
-	var was: bool = bool(Settings.display.get("keyword_ink", false))
-	Settings.display["keyword_ink"] = true
-	var name := _name("suppressed")
-	var r := EntryReadout.new()
-	r.set_lines([EntryReadout.prose_line("It is %s now." % name)], 400.0)
-	var w := _word(r, name)
-	if OS.is_debug_build():
-		assert_eq(w.get("ink"), Palette.INK, "the word in ink")
-	else:
-		assert_eq(w.get("ink"), Terms.colour("suppressed"), "a release build keeps the colour")
-	assert_eq(w.get("glyph_ink"), Terms.colour("suppressed"), "its icon still its colour")
-	Settings.display["keyword_ink"] = was
 	r.free()
 
 

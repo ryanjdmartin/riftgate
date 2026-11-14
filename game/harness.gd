@@ -65,8 +65,9 @@ static func refit_trial() -> void:
 
 
 ## The what-if's spec, "" for the game as built: the environment's as written, else a debug
-## build's flat shield regen (Settings.SHIELD_REGENS), its heat prices (Settings.HEAT_SPECS) and
-## the Barrier basic off the stock dice (Settings.BARRIER_BASICS).
+## build's flat shield regen (Settings.SHIELD_REGENS), its heat prices (Settings.HEAT_SPECS), the
+## basic guns' damage and the top basic's heat (Settings.BASIC_GUNS, TOP_BASIC_HEATS) and the
+## Barrier basic off the stock dice (Settings.BARRIER_BASICS).
 static func refit_spec() -> String:
 	var spec := OS.get_environment("RIFTGATE_REFIT")
 	if spec.is_empty() and OS.is_debug_build():
@@ -77,6 +78,12 @@ static func refit_spec() -> String:
 		var heat := str(Settings.display.get("heat_trial", "0"))
 		if Settings.HEAT_SPECS.has(heat):
 			parts.append(str(Settings.HEAT_SPECS[heat]))
+		var guns := str(Settings.display.get("basic_guns", "0"))
+		if guns != "0" and Settings.BASIC_GUNS.has(guns):
+			parts.append("basics=" + guns)
+		var top := str(Settings.display.get("top_basic_heat", "0"))
+		if top != "0" and Settings.TOP_BASIC_HEATS.has(top):
+			parts.append("top=" + top)
 		if str(Settings.display.get("barrier_basic", "built")) == "none":
 			parts.append("barrier=none")
 		spec = ",".join(parts)
@@ -830,6 +837,7 @@ func _button(text: String, on_pressed: Callable, h: float = 60, size_px: int = 2
 # ---------------------------------------------------------------- launching
 
 func _on_fight() -> void:
+	Settings.field_trial(true)   # the fight's trials as the settings stand now (the reboot, the block, the overheat's burn): a lone fight reads them as a battle does
 	var sk := setup.make_skirmish()
 	if sk == null:
 		return

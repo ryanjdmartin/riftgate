@@ -307,6 +307,8 @@ var _confirm: HudPanel
 var _confirm_text: Label
 var _confirm_action: Callable = Callable()
 var _reroll_btn: HudButton
+var _reboot_btn: HudButton   # the reboot's control, the dice's row's right end, only under its trial (Skirmish.reboot): a drop's target and no button, live while any machine may reboot
+var _reboot_hover := false   # a die whose machine may reboot is held over REBOOT
 ## What the screen played for the last spend: {"dead": the foes it showed falling, "rose": those
 ## among them it showed getting back up}.
 var spend_played: Dictionary = {"dead": [], "rose": []}
@@ -361,6 +363,7 @@ func _ready() -> void:
 	Settings.apply()
 	Hud.oversample(get_window())   # standalone runs too: text at the glass's density
 	if sk == null:
+		Settings.field_trial()   # RIFTGATE_REBOOT and the other trials, for a shot or a scene run alone
 		setup(_default_skirmish())
 	elif _header == null or H != Hud.screen_height(self):
 		_build()   # built here for the screen's real height (a taller phone than the design)
@@ -591,7 +594,10 @@ func _build() -> void:
 		_dice.append(d)
 
 	# Reroll: one wide button centred right under the dice, the dice's own control. Far from
-	# End turn, so a thumb going for one cannot land on the other.
+	# End turn and from Undo alike, so a thumb going for one cannot land on the other: a reroll
+	# is the undo's floor, so the slip from Undo onto it is the dearest on the screen (Ryan, 14
+	# November, weighed it at the row's left over End turn and at its right over Undo, and
+	# kept it centred with the reboot's control below).
 	_reroll_btn = HudButton.new("REROLL", _on_reroll)
 	_reroll_btn.sound = ""   # the reroll is its own figure
 	_reroll_btn.glyph = "reroll"
@@ -600,6 +606,28 @@ func _build() -> void:
 	_reroll_btn.center_text = true
 	_reroll_btn.tooltip_text = "A reroll never shows the same component twice."
 	_place(_reroll_btn, Vector2(W * 0.5 - REROLL_SIZE.x * 0.5, REROLL_Y), REROLL_SIZE)
+	# The reboot's control (a debug build's trial): the middle of the bottom row, between End
+	# turn and Undo (his option of 14 November: "keep it centered and put reboot on the bottom
+	# middle between end turn and undo"), a drop's target and no button, so it parts the two
+	# presses and can be slipped onto by neither. A die dragged onto it gives its machine's turn, and nothing else does (Ryan, 14
+	# November: "dragging is the gesture we already have, we should stick with that"; the press
+	# that asked which machine, and the one that took the machine being read, were cut on that
+	# word the day they were built). It is live while any machine may reboot (one that has spent
+	# nothing), dashed at rest since there is nothing to press; a die in hand lights it,
+	# pulsing, or darkens it for a machine that may not; it fills under the die and takes the
+	# drop a thumb's width past its own edge (REBOOT_DROP). A touch passes through it.
+	_reboot_btn = null
+	_reboot_hover = false
+	if Skirmish.reboot:
+		_reboot_btn = HudButton.new("REBOOT")
+		_reboot_btn.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_reboot_btn.glyph = "shield_vent"
+		_reboot_btn.font_size = 20
+		_reboot_btn.center_text = true
+		_reboot_btn.state_marked = true
+		_reboot_btn.socket = true
+		var left := 16.0 + BOTTOM_BTN.x + REBOOT_GAP
+		_place(_reboot_btn, Vector2(left, BOTTOM_Y), Vector2(W - left * 2.0, BOTTOM_BTN.y))
 
 	# Mechs: each on its hex of the floor, drawn by the floor's camera, gauges above, chips under.
 	for i in range(n):
@@ -1200,7 +1228,7 @@ func _refresh(save: bool = true) -> void:
 		var fc: Dictionary = _forecast_for(i) if assigning and ms.alive() else {}
 		# Shield above hull: it is what the enemy meets first, and it drops first.
 		v.bars = [
-			[ms.unit.shield, ms.unit.shield_max, Palette.SHIELD, fc.get("shield_after", ms.unit.shield), 0, ms.shield_down],   # the sixth: the rounds a broken shield has left at rest (the breaking shield's trial), drawn on the gauge
+			[ms.unit.shield, ms.unit.shield_max, Palette.SHIELD, fc.get("shield_after", ms.unit.shield), 0, 1 if ms.shield_broken else 0],   # the sixth: a broken shield (the reboot's trial), drawn on the gauge as a dashed frame
 			[ms.unit.hull, ms.unit.hull_max, Palette.HULL, fc.get("hull_after", ms.unit.hull)],
 			[ms.heat, ms.heat_max, Palette.HEAT, fc.get("heat_after", ms.heat)],
 		]
@@ -1292,6 +1320,12 @@ func _refresh(save: bool = true) -> void:
 	_refresh_log()
 	_reroll_btn.badge = "×%d" % sk.rerolls_left
 	_reroll_btn.set_enabled(assigning and sk.can_reroll() and not _reroll_indices().is_empty())
+	if _reboot_btn != null:
+		var may := assigning and _pending.is_empty() and _any_may_reboot()
+		if _drag_from >= 0:
+			may = may and sk.can_reboot(_drag_from)   # a die in hand: its target, or dark for a machine that may not
+		_reboot_btn.set_enabled(may)
+		_dress_reboot()
 	_refresh_undo()
 	_end_btn.set_enabled(assigning)
 	# Nothing left to spend, rerolls aside: END TURN is the next thing to press (Ryan, 25 October).
@@ -1934,6 +1968,18 @@ func _mech_rows(i: int) -> Array:
 		abilities.append([status_glyph("sealed"), "", "Ability, Sealed (RIFTGATE_ABILITY_DEBUG)", _chip_colour("sealed"), "ability"])
 	for k in range(abilities.size()):
 		rows.insert(at + k, abilities[k])
+	# The reboot's three states (a debug build's trial; Ryan, 13 November: heat past the maximum
+	# "in an uncleanseable debuff on the unit, a stack for every point of heat", a broken shield
+	# "another uncleanseable debuff"), no status of the engine's table: the gauges are what they
+	# say. Working words, his to write.
+	if Skirmish.reboot:
+		var stacks := ms.overheat_stacks()
+		if stacks > 0:
+			rows.append(["heat", "×%d" % stacks, "Debuff, Overheated ×%d: hull -%d every turn until it reboots" % [stacks, stacks * Skirmish.overheat_scale], Palette.HEAT, "status", "debuff"])
+		if ms.rebooting:
+			rows.append(["shield_vent", "", "Rebooting: bare this turn, cold and whole the next", Palette.HUD])
+		elif ms.shield_broken:
+			rows.append(["shieldbreak", "", "Debuff, Shield broken: no shield until it reboots", Palette.SHIELD, "status", "debuff"])
 	if sk.state == Skirmish.State.ASSIGN:
 		var fc := _forecast_for(i)
 		# Every warning is a prediction, so each pulses as the incoming chips do (Ryan, 26 October:
@@ -2322,7 +2368,7 @@ func _mech_hold_lines(i: int) -> Array:
 	out.append(EntryReadout.bar_line("Heat", ms.heat, ms.heat_max, int(u.base["heat"]), Palette.HEAT))
 	if ms.ammo_max > 0:
 		out.append(EntryReadout.bar_line("Ammo", ms.ammo, ms.ammo_max, ms.ammo_max, Palette.SELECT))
-	out.append(EntryReadout.parts_line("effect", _stat("Armour", int(u.base["armour"]), u.armour) + [EntryReadout.word("·")] + _stat("Cooling", int(u.base["cooling"]), u.cooling)))
+	out.append(EntryReadout.parts_line("effect", _stat("Armour", int(u.base["armour"]), u.armour) + [EntryReadout.word("·")] + _stat("Cooling", int(u.base["cooling"]), Skirmish.cooling_of(ms))))
 	for r in _mech_rows(i):
 		out.append(EntryReadout.chip_line(str(r[0]), r[3], str(r[2])))
 	return out
@@ -2546,7 +2592,12 @@ func _on_drag_moved(global_pos: Vector2) -> void:
 	# The hover hum while the die is over somewhere it may be spent (Ryan, 5 October).
 	var target = _drop_target_at(global_pos)
 	var can := target != null and _drag_from >= 0 and sk.can_assign(_drag_from, target)
-	Sound.hover(can)
+	# Over REBOOT, a die whose machine may reboot hums as over a target, and the control fills.
+	var boots := _drag_from >= 0 and _over_reboot(global_pos) and sk.can_reboot(_drag_from)
+	if boots != _reboot_hover:
+		_reboot_hover = boots
+		_dress_reboot()
+	Sound.hover(can or boots)
 	# What the die is over decides what the gauges forecast (a lure's turn, a Cryo cash): read
 	# again only when it changes, never saved mid-drag.
 	var over = target if can else null
@@ -2577,13 +2628,16 @@ func _on_drag_ended(global_pos: Vector2) -> void:
 	var i := _drag_from
 	_drag_from = -1
 	_drag_over = null
+	_reboot_hover = false   # every way out of here refreshes, which dresses the control
 	_ghost.visible = false
 	Sound.hover(false)
 	if i < 0:
 		_refresh()
 		return
-	var target = _drop_target_at(global_pos)
 	_ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if _over_reboot(global_pos) and _do_reboot(i):
+		return   # the die dropped on REBOOT: its machine's turn given
+	var target = _drop_target_at(global_pos)
 	if target is Foe and sk.needs_second(sk.mechs[i]) and sk.can_assign(i, target):
 		_begin_second(i, target)
 		return
@@ -3305,7 +3359,7 @@ func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool, hit: bo
 	var mi := _mech_views.find(attacker)
 	if mi >= 0 and mi < _mech_3d.size() and _mech_3d[mi] != null and not wound:
 		_mech_3d[mi].strike(ranged, cid)   # the weapon that fired kicks and flares, its aim already turned (_aim_before); a fixed one fires with its act, unless its wind-up began it (_wind_up)
-	if mi >= 0 and ranged and target != null and not cid.is_empty() and ShotTrail.on():
+	if mi >= 0 and ranged and target != null and not cid.is_empty():
 		_shoot_trail(mi, target, cid, lands)
 	var tw := _track(attacker, create_tween())
 	if ranged or target == null:
@@ -3320,9 +3374,9 @@ func _animate_attack(attacker: UnitView, target: UnitView, ranged: bool, hit: bo
 		_animate_hit(target, lands)
 
 
-## A shot crossing the field (ShotTrail; tabled, so off unless SHOT TRAILS or RIFTGATE_SHOTS=1
-## turns it on): from the muzzle of the weapon machine `mi` fired, as its view projects it, to the
-## middle of what it fired at, landing `lands` seconds from now as the blow's sound says it lands.
+## A shot crossing the field (ShotTrail): from the muzzle of the weapon machine `mi` fired, as
+## its view projects it, to the middle of what it fired at, landing `lands` seconds from now as
+## the blow's sound says it lands.
 func _shoot_trail(mi: int, target: UnitView, cid: String, lands: float) -> void:
 	var db := ContentDB.load_default()
 	var c: Dictionary = db.components.get(cid, {})
@@ -3866,6 +3920,61 @@ func _on_reroll() -> void:
 			d.scale = Vector2(0.15, 1.0)
 			var tw := create_tween()
 			tw.tween_property(d, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
+## Machine `i` gives its turn to a reboot, if it may (its die dropped on REBOOT): its shield
+## drops at once, the round preview plays it bare, and UNDO takes it back. False when it may not,
+## and nothing changes.
+func _do_reboot(i: int) -> bool:
+	if _replay_shade.visible or not _pending.is_empty() or not sk.can_reboot(i):
+		return false
+	_flush_blows()   # whatever of the last spend is still landing lands first
+	if not sk.reboot_mech(i):
+		return false
+	_close_pop()
+	Sound.play("vent")
+	_refresh()
+	return true
+
+
+func _any_may_reboot() -> bool:
+	for i in range(sk.mechs.size()):
+		if sk.can_reboot(i):
+			return true
+	return false
+
+
+## How far past its own edge REBOOT takes a dropped die, in design pixels: left, up, right,
+## down. A thumb hides a control 60 high, so the drop is given more room than the drawing: to
+## the sides as far as its gap to End turn and Undo, upward toward the row above (the machines
+## in the middle layout, Reroll in the bottom one, both clear of it), and down to the glass's
+## edge.
+const REBOOT_DROP := [12.0, 24.0, 12.0, 10.0]
+const REBOOT_GAP := 14.0   # between REBOOT and the bottom row's two buttons
+
+
+## Where a die dropped reboots its machine: REBOOT's drawing and REBOOT_DROP round it.
+func reboot_drop_rect() -> Rect2:
+	if _reboot_btn == null:
+		return Rect2()
+	var k := get_global_transform().get_scale()
+	return _reboot_btn.get_global_rect().grow_individual(REBOOT_DROP[0] * k.x, REBOOT_DROP[1] * k.y, REBOOT_DROP[2] * k.x, REBOOT_DROP[3] * k.y)
+
+
+## Whether a die held at `global_pos` is over REBOOT.
+func _over_reboot(global_pos: Vector2) -> bool:
+	return _reboot_btn != null and _reboot_btn.is_visible_in_tree() and reboot_drop_rect().has_point(global_pos)
+
+
+## The control as it stands: dashed at rest; its edge solid and pulsing while a die it would take
+## is in hand, the drop's target; filled once that die is over it. Its word is working text in
+## code, his to write.
+func _dress_reboot() -> void:
+	if _reboot_btn == null:
+		return
+	_reboot_btn.filled = _reboot_hover
+	_reboot_btn.set_pulse(_drag_from >= 0 and sk.can_reboot(_drag_from))
+	_reboot_btn.queue_redraw()
 
 
 ## UNDO's reach: the spends and rerolls since the last roll, its badge; off while a spend's

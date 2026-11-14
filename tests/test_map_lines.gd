@@ -77,15 +77,6 @@ func test_no_machine_wears_the_engines_outline() -> void:
 	assert_true(outlined.is_empty(), "no part wears a stencil outline: %s" % str(outlined))
 
 
-func test_a_debug_build_can_draw_the_map_without_its_traces() -> void:
-	Settings.display["traces"] = true
-	assert_eq(Map3D._first_trace_mode(), TraceLines.mode(), "the traces drawn by default")
-	if OS.is_debug_build():   # the tests' build always is; a release build draws them whatever is saved
-		Settings.display["traces"] = false
-		assert_eq(Map3D._first_trace_mode(), "off", "TRACES off draws none (the phone's switch)")
-		Settings.display["traces"] = true
-
-
 func test_the_marks_edges_carry_their_distance_in() -> void:
 	# The ground marks' edges (Map3D.set_marks) are lines of one width on screen too, drawn by
 	# mark_line.gdshader from the distance in each corner carries.

@@ -455,7 +455,7 @@
    "passive": {
     "id": "retrograde_flywheel",
     "name": "Retrograde Flywheel",
-    "description": "A flywheel that banks the car's momentum between bursts and pays it back out. The Dingo has two actions a turn: it may move and fight, then move and fight again.",
+    "description": "May move and act twice during each turn of the map phase.",
     "effects": [
      {
       "trigger": "static",
