@@ -27,8 +27,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1168 tests, 372,233 checks, green on `ccr-b7d5164e-1wtzzm` (14 November, the Needletail's
-  fourteenth cut and the Giant Petrel's tenth with its windshield slimmed, over main at `4a0c9b5` taken in a merge). Before it, 1167 tests,
+- Tests: 1168 tests, 372,201 checks, green on `ccr-b7d5164e-1wtzzm` (14 November, the Needletail's
+  fifteenth cut and the Giant Petrel's tenth with its windshield slimmed, over main at `4a0c9b5` taken in a merge). Before it, 1167 tests,
   371,269 checks, green on `ccr-722ca9f0-yj8na3` (13 November, the breaking shield's what-if and
   its two trial dials, over main's Kite), and 1155 tests, 371,949 checks, green on this branch
   over main at `6112939` (13 November, the Giant Petrel's sixth cut). Before it, 1154 tests,
@@ -454,18 +454,18 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   point and its needle, reaching the body's width only at the canopy's front
   third, so the straight body behind it is short; it stands and fights
   in hover mode, four shorter boosters upright on swivels (the front pair on short canards beside
-  the pop-up, the thicker rear pair each on a hub at the tip of a long tailplane whose outer panel
+  the pop-up just behind the cheeks, the thicker rear pair each on a hub at the tip of a long tailplane whose outer panel
   rides in with it, under long, steep X fins), two pods raised out of dark slots in the upper
-  chamfers behind the canopy, each mount leaning with its pod (a pin's `up`, new in lowforge), its nose guns on trial since the
-  fourteenth cut (14 November) in teardrop recesses on the nose's upper chamfers, longer than the chines' were (the thirteenth cut,
-  the guns on the chines, kept as Ryan's candidate final at `49657a4`, its pictures the hangar's Candidate final), each run a short
-  way out through a short trough and tipped up 6 degrees about the recess's back to a muzzle clear of the skin, every other class rooted in the
+  chamfers behind the canopy, each mount leaning with its pod (a pin's `up`, new in lowforge), its cheek guns run a short way out of
+  teardrop recesses back on the nose's sides, through a short trough to a muzzle clear of the skin (the thirteenth cut's, Ryan's
+  candidate final at `49657a4`, its pictures the hangar's Candidate final; back in the fifteenth cut after a day's trial on the
+  upper chamfers, the fourteenth), every other class rooted in the
   recess in its port form (the port rack, the port dish on its mast, taken from main with the Kite's
   port; the blade's bracket and the twins' receiver in the recess), the Fovea Designator a low wedge pop-up
   after a sports car's, its lamp behind
   a six-bladed iris that widens and narrows as it paints, the tail's whole face a cut-out exhaust
   round a needle nineteen long, in a dark rim behind a cobalt band; on the map its gait changes it into flight mode as it gathers speed
-  (the nose guns in and level, a teardrop clamshell rolling shut over each barrel's tip on the gun's
+  (the cheek guns in, a short teardrop clamshell rolling shut over each barrel's tip on the gun's
   own line and a flush cover sliding out over each trough, the pods sunk flush, the iris shut and the pop-up folded, the boosters level and
   run in along their fins, straight, the front pair's canards running into the body with them, the swept wings out near the canards and slid back clear of the front boosters, small flat tips, their roots in the
   fuselage, the exhaust burning white-hot; stowed in hover, each wing's leading edge shows as a

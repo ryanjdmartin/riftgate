@@ -5851,49 +5851,49 @@ def needletail(b):
     a bit flatter"; "The rear and nose needles can actually be longer". And on the twelfth: the
     wings stowed so "the forward edge was visible as a strip along the side of the fuselage".
     And on the thirteenth, kept as the candidate final (14 November: "Save this version as a
-    candidate final"): the forward gun ports tried "onto the upper angled faces of the nose,
-    instead", and the front boosters "blast right into the wings in flight mode", so "the wings,
-    if they could slide back a bit, as they extend".
+    candidate final"): the front boosters "blast right into the wings in flight mode", so "the
+    wings, if they could slide back a bit, as they extend"; the forward gun ports were tried "onto
+    the upper angled faces of the nose, instead", and then: "let's put the gun ports back where
+    they were on our saved version, but keep the new wing adjustment".
 
     Built at rest in hover mode, the pose it holds standing and in every fight: a jet's chined
     fuselage, eight-sided (a flat top and belly, chamfers, a short upright band at the chine),
     the nose one long smooth taper to its point, reaching the body's width only at the canopy's
-    front third; each nose
-    gun's teardrop recess on an upper chamfer where the chamfer crosses its line, the halves rolled
-    up and down the chamfer into the nose on the gun's own line (shell_lt, shell_lb, shell_rt,
-    shell_rb), the gun run out of it (run_l, run_r) through a short trough and tipped up about the
-    bay's back (tilt_l, tilt_r), its muzzle clear of the skin beyond it, and every other class
-    rooted in the bay and run out of the port (the port rack, the port dish on its mast, the
-    blade's bracket and the twin barrels' receiver in the bay); the trough's flush cover slid into the nose (trough_l, trough_r); the Designator a low wedge popped up on the nose's top (lamp, hinged at
+    front third; each cheek
+    gun's teardrop recess back on the side where the nose's side crosses its line, the halves rolled
+    up and down into the fuselage's side on the gun's own line (shell_lt, shell_lb, shell_rt,
+    shell_rb), the gun run out of it (run_l, run_r) through a short trough, its muzzle clear of the
+    skin beyond it, and every other class rooted in the bay and run out of the port (the port rack,
+    the port dish on its mast, the blade's bracket and the twin barrels' receiver in the bay); the trough's flush cover slid into the nose (trough_l, trough_r); the Designator a low wedge popped up on the nose's top (lamp, hinged at
     its back), its round lamp facing ahead behind a six-bladed iris (iris_1 to iris_6, each
     blade turning on its own pin in the lamp's rim); the long canopy amidships, two bows across
     it; the two pods on the
     upper chamfers behind it, each a slab of the chamfer raised out of its dark slot (pod_l,
     pod_r), its gun out of its face (run_pod_l, run_pod_r), the mount leaning with the pod; the front
-    boosters (booster_fl, booster_fr) upright at the tips of the canards, beside the pop-up and
-    below the ports' recesses, the rear (booster_rl,
+    boosters (booster_fl, booster_fr) upright at the tips of the canards, beside the pop-up and just
+    behind the cheeks' recesses, the rear (booster_rl,
     booster_rr), thicker, far out on long tailplanes below the X fins, each turning on a hub at its
     tailplane's tip, each on a slide (slide_fl, slide_fr, slide_rl, slide_rr) that carries the rear
     tailplanes' outer panels with it; the swept wings (wing_l, wing_r), each a small flat tip, stowed
     inside the middle but for the leading edge, a cobalt strip down each chine;
     astern, the whole rear face a dark cut-out exhaust in a dark rim behind a cobalt band, lit at its
     floor, the long needle running out of its middle. Flight mode is the gait (MechRig.drive):
-    as it gathers speed the nose guns run back and lie level, the blisters' halves roll shut over the barrels' tips and the
+    as it gathers speed the cheek guns run back, the blisters' halves roll shut over the barrels' tips and the
     troughs' covers slide out flush, the
     pods' guns run back into the pods and the pods sink flush into their slots, the iris shuts and the pop-up folds
     flat, the boosters swivel level and run in along their fins to sit against the body (the front
     pair's canards running into the body with them, the rear pair between the upper and lower X fins, the tailplanes' outer panels running into the body with
     them), the wings swing out and slide back, their roots in the fuselage, and the exhaust burns hot; slowing,
-    it all comes back. Mounts in the die's order: hp_1 the left nose port (the Transonic Rifle), hp_2
+    it all comes back. Mounts in the die's order: hp_1 the left cheek (the Transonic Rifle), hp_2
     the right (the Laser Carbine), hp_3 the left pod (the Twin Autoguns), hp_4 the right pod (the
     second Laser Carbine). Centred on z = 0 like the Kite."""
     # The body: a jet's chined fuselage, (y, width, top, belly, the upright band's half height at
     # the chine) nose to tail; the nose one smooth taper to its point, long, reaching the body's
     # width only at the canopy's front third, so the straight body behind it is short (Ryan, 13
-    # November: "it needs more of the tapered part of the nose, and less body"), the nose guns'
-    # recesses back on its upper chamfers (Ryan, 13 November: "Move the front guns and ports back
-    # further on the fuselage ... get rid of that ridge and come to a smooth point"); astern the
-    # tail ends square, its whole face the exhaust.
+    # November: "it needs more of the tapered part of the nose, and less body"), the cheek guns'
+    # recesses back on its sides where it still narrows fast enough to bury them (Ryan, 13
+    # November: "Move the front guns and ports back further on the fuselage ... get rid of that
+    # ridge and come to a smooth point"); astern the tail ends square, its whole face the exhaust.
     # Short and flat for its width, a fifth lower than the eighth cut ("It feels too long, still, and
     # could be flatter"), and at its widest 15.8 where it was 17.4 (Ryan, 13 November: "Is there any
     # way to reduce the max width the fuselage reaches?"), what the stowed wings and the canopy on
@@ -5942,180 +5942,101 @@ def needletail(b):
               (-19.5, 2.4, 1.58), (-21.5, 1.2, 0.6), (-22.5, 0.55, 0.22)]   # a quarter lower than it was (Ryan, 13 November: "I also think the canopy could be a bit flatter")
     _jet_canopy(b, [(y, w, t, bt) for (y, w, t, bt, s) in BODY], CANOPY, -3.0, frames=(-12.5,))
 
-    # The nose ports, on the upper chamfers (Ryan, 14 November: "I want to try moving the forward
-    # gun ports onto the upper angled faces of the nose, instead"; the thirteenth cut's on the
-    # chines kept as the candidate final): each gun lies under its chamfer on a line along the
-    # body, which the chamfer crosses at the port's point, so in flight only its barrel's tip
-    # stands proud of the skin, under a teardrop clamshell, point forward, a bulge in the chamfer
-    # ("like teardrop shaped, with the point facing the nose"). Shut it is the outer part of a
-    # teardrop of revolution about the gun's line, split along its crest; each half hinges on that
-    # line (a roll joint) and in hover is rolled in, up or down the chamfer, into the nose behind
-    # the recess's dark lining. The chamfer falls away from the line about half as fast as the
-    # side did, so the teardrop is longer than the cheeks' was and the gun, run out ahead through
-    # a short trough, tips up about the bay's back as it goes (tilt_l, tilt_r), its muzzle clear
-    # of the skin beyond (Ryan, 13 November: "they were half embedded in it when extended"); any
-    # part of it still under the skin behind the bay sinks as it tips, so nothing comes through
-    # the plating on the way.
-    YC, FG = 22.0, 0.44            # the port's point, where the chamfer crosses the gun's line in flight; how far up the chamfer from the chine the line lies there
-    TIP_B, WIDE, NARROW, TIP_F = YC - 6.0, YC - 3.2, YC - 1.3, YC   # the clamshell's back tip, its widest, the start of its point, its point
-    FULL, RM = 2.8, 1.42           # the round back's fullness, a superellipse's power (2 is an ellipse), over the barrel where it still stands out of the skin; its radius at its widest
-    LINE = 0.0                     # how far the gun's line in flight rises toward the nose, degrees (0 along the body), so it lies deeper the further back it runs
-    RETRACT, REACH, TILT = 1.5, 3.0, 6.0   # how far behind the point the muzzle lies in flight, under the clamshell's widest; how far ahead of it the gun runs in hover, before it tips (Ryan, 13 November: "extend too far when opened, they end up floating in front"); how far it tips up
-    TROUGH = True                 # a trough ahead of the point for the gun's path, its flush cover sliding in in hover
+    # The cheeks: each gun lies inside the nose on a run, its line where the nose's side crosses
+    # it, so in flight only its barrel's tip stands proud of the skin, under a short teardrop
+    # clamshell, point forward, a little bulge. Shut it is the outer part of a teardrop of
+    # revolution about the gun's line, split on a horizontal seam; each half hinges on that line (a
+    # roll joint) and in hover is rolled up (or down) and in, into the fuselage's side behind the
+    # recess's dark lining, and the gun runs far out ahead through a short trough, clear of the skin
+    # beyond it (Ryan, 13 November: "they were half embedded in it when extended"), the nose
+    # narrowing fastest just there.
+    YC = 23.0                      # the port's point, where the nose's side crosses the gun's line, back where the nose is wide (Ryan, 13 November: "Move the front guns and ports back further on the fuselage"), on the longer taper where it still narrows fast enough for a small blister
+    AX = face(YC)                  # the gun's line out from the middle
+    TIP_B, WIDE, NARROW, TIP_F = YC - 4.0, YC - 2.6, YC - 1.3, YC   # the blister's back tip, its widest, the start of its point, its point
+    RM = 1.42                      # its radius at its widest
     TH, OPEN = 0.22, 120.0         # the halves' thickness, and how far each rolls in to open
-    GUN_L = 24.0 * 0.32            # the port gun's length (the port barrel at the mount's scale)
-    TR, SINK = 1.1, 1.6            # the trough's radius about the gun's path, and how far its cover slides in, behind its floor, in hover
+    RUN = 6.0                      # how far the gun runs back in flight, its muzzle under the blister (Ryan, 13 November: "extend too far when opened, they end up floating in front")
+    PIN = YC - 1.5 + RUN - 7.68    # the gun's mount at rest, run out, its muzzle just clear of the nose (the port gun is 7.68 long here)
     # Each class rooted in the open bay and run out of the port, none ahead of it on nothing (Ryan,
     # 13 November: "racks, blades and dishes still float out of the front gun ports"): the port
     # rack's drum and the port dish's sleeve from one root at the bay's back, just ahead of the
     # gun's, at one diameter (of the Kite's, 12 November: "same diameter as the rack"), the blade's
     # bracket filling the bay, the twin barrels' receiver in it.
-    PORT_FITS = {"barrel": ("barrel_port", 1.0), "twin_barrel": ("twin_barrel", 0.55, -6.4), "rack": ("rack_port", 0.65, -0.5),
-                 "dish": ("dish_port", 0.65, -0.5), "blade": ("blade", 0.55, -4.0)}
-
-    def chamfer(y):
-        """The right upper chamfer at `y`: its foot (the band's top), its unit run up it, its
-        length and its outward normal, in (x, z)."""
-        w, tp, bt, s = at(y)
-        p0 = Vector((w / 2.0, s))
-        run = Vector((w / 4.0, tp)) - p0
-        length = run.length
-        u = run / length
-        return p0, u, length, Vector((u.y, -u.x))
-    c0, cu, clen, cn = chamfer(YC)
-    G = c0 + cu * (FG * clen)      # the right gun's line at the point, (x, z)
-    O, V = cn, cu                  # the frame about it: out of the chamfer, and up it
-    LINE_R = math.radians(LINE)
-
-    def centre(y):
-        """The right gun's line in flight at `y`, (x, z)."""
-        return G + Vector((0.0, (y - YC) * math.tan(LINE_R)))
-
-    def outside(y, p):
-        """How far the point (x, z) stands outside the body's section at `y` (negative inside)."""
-        pts = sec(*at(y))
-        return max(((p[0] - a[0]) * (q[1] - a[1]) - (p[1] - a[1]) * (q[0] - a[0])) / math.hypot(q[0] - a[0], q[1] - a[1])
-                   for a, q in zip(pts, pts[1:] + pts[:1]))
-
-    def about(y, r, a, c=None):
-        """The point (x, z) on the right `r` from the gun's line in flight at `y` (or from `c`),
-        `a` degrees round it from out (up the chamfer positive)."""
-        c = centre(y) if c is None else c
-        cs, sn = math.cos(math.radians(a)), math.sin(math.radians(a))
-        return (c.x + O.x * r * cs + V.x * r * sn, c.y + O.y * r * cs + V.y * r * sn)
-
-    def edges(y, r):
-        """The arc of the circle `r` about the line at `y` that stands outside the body: its ends
-        in degrees round from out, down the chamfer first; (0, 0) when none does."""
-        out = [k / 4.0 for k in range(-720, 721) if outside(y, about(y, r, k / 4.0)) > 0.0]
-        return (out[0], out[-1]) if out else (0.0, 0.0)
+    CHEEK_FITS = {"barrel": ("barrel_port", 1.0), "twin_barrel": ("twin_barrel", 0.55, -6.4), "rack": ("rack_port", 0.65, -0.5),
+                  "dish": ("dish_port", 0.65, -0.5), "blade": ("blade", 0.55, -4.0)}
 
     def drop(y):
-        """The clamshell's radius at `y`: a full round back buried in the skin, its widest, then a
-        point."""
+        """The blister's radius at `y`: a round back buried in the skin, its widest over the
+        muzzle, then a point."""
         if y <= TIP_B or y >= TIP_F:
             return 0.04
         if y <= WIDE:
-            return max(0.04, RM * max(0.0, 1.0 - ((WIDE - y) / (WIDE - TIP_B)) ** FULL) ** (1.0 / FULL))
+            return max(0.04, RM * math.sqrt(max(0.0, 1.0 - ((WIDE - y) / (WIDE - TIP_B)) ** 2)))
         if y <= NARROW:
             return RM
         t = (y - NARROW) / (TIP_F - NARROW)
         return max(0.04, RM * (1.0 - t) * (1.0 + 0.7 * t))
-    STATIONS = [TIP_B + (WIDE - TIP_B) * f for f in (0.0, 0.025, 0.06, 0.12, 0.25, 0.45, 0.7)] + [WIDE, (WIDE + NARROW) / 2.0, NARROW] + \
+    STATIONS = [TIP_B + (WIDE - TIP_B) * f for f in (0.0, 0.025, 0.1, 0.25, 0.45, 0.7)] + [WIDE, (WIDE + NARROW) / 2.0, NARROW] + \
                [NARROW + (TIP_F - NARROW) * f for f in (0.25, 0.5, 0.75, 0.92, 1.0)]
-    PY = next(k / 50.0 for k in range(int(TIP_B * 50), int(TIP_F * 50)) if outside(k / 50.0, about(k / 50.0, drop(k / 50.0) + 0.05, 0.0)) > 0.0)   # the opening's back, where the gun tips
-    PIV = centre(PY)
-    TILT_R = math.radians(TILT)
-    HOVER = LINE_R + TILT_R                       # the gun's line in hover
-    M_F = YC - RETRACT                            # its muzzle in flight
-    FOOT = (M_F - PY) / math.cos(LINE_R) - GUN_L   # its back in flight, along its line from the pivot
-    RUN = RETRACT / math.cos(LINE_R) + REACH / math.cos(LINE_R)   # how far it runs along its line
-    M_H = PY + (FOOT + RUN + GUN_L) * math.cos(HOVER)   # its muzzle in hover
-    T0, T1 = YC - 0.8, M_H + 0.1                 # the trough: from inside the point to just past the muzzle in hover
+    TROUGH = (YC - 0.8, next(y / 100.0 for y in range(int(YC * 100), int(BODY[0][0] * 100)) if face(y / 100.0) <= AX - 1.1) + 0.3, 1.1)   # where the barrel leaves the recess, along a short trough of this radius about its line, till the nose has narrowed clear of it
+    SINK = 1.6                     # how far the trough's cover slides in, behind the trough's floor, in hover
 
-    def trough_mid(y):
-        """The trough's middle at `y`, from the gun's line in flight at T0 to its line in hover at T1."""
-        a, z = centre(T0), PIV.y + (T1 - PY) * math.tan(HOVER)
-        f = (y - T0) / (T1 - T0)
-        return Vector((G.x, a.y + (z - a.y) * f))
+    def edge(y, r):
+        """How far round from the outboard side (degrees) the blister's surface meets the nose's
+        side at `y`, the gun's line lying inside it there."""
+        return math.degrees(math.acos(max(-1.0, min(1.0, (face(y) - AX) / max(r, 1e-6)))))
 
-    def trough_at(y):
-        """The trough's opening in the chamfer at `y`: its middle (x, z), half width, the run up
-        the chamfer and its normal there; None where it does not reach the skin."""
-        c = trough_mid(y)
-        p0, u, length, nrm = chamfer(y)
-        dd = (p0 - c).dot(nrm)
-        if abs(dd) >= TR - 0.02:
-            return None
-        return c + nrm * dd, math.sqrt(TR * TR - dd * dd), u, nrm
-
-    def arc(s, y, r, a0, a1, n=8, c=None):
-        """Points on the circle `r` about the gun's line at `y` (or `c`), from a0 to a1 degrees, on side `s`."""
-        return [(s * x, y, z) for (x, z) in (about(y, r, a0 + (a1 - a0) * k / n, c) for k in range(n + 1))]
-    Y_MID = (TIP_B + TIP_F) / 2.0
+    def arc(s, y, r, a0, a1, n=8):
+        """Points on the circle of radius `r` about the gun's line at `y`, from a0 to a1 degrees
+        (from the outboard side, positive up), on side `s`."""
+        return [(s * (AX + r * math.cos(math.radians(a0 + (a1 - a0) * k / n))), y, r * math.sin(math.radians(a0 + (a1 - a0) * k / n))) for k in range(n + 1)]
     for s, n, carries in ((-1.0, 1, "transonic_rifle"), (1.0, 2, "laser_carbine")):
         side = "l" if s < 0 else "r"
-        hub = Vector((s * centre(Y_MID).x, Y_MID, centre(Y_MID).y))   # the halves' hinge, on the gun's line at the clamshell's middle
-        # The recess: the clamshell's whole teardrop cut out of the body, its inboard part lined dark.
+        axis_at = Vector((s * AX, 0.0, 0.0))
+        # The recess: the blister's whole teardrop cut out of the body, its inboard part lined dark.
         hull = []
         for y in STATIONS:
             hull += arc(s, y, drop(y) + 0.05, 0.0, 360.0, 15)[:-1]
         b.cut_hull([body], hull)
-        if TROUGH:
-            # The trough: round the gun's path out of the point, from its line in flight to its
-            # line in hover; its cover a flush lens of the chamfer over it, slid in behind its floor
-            # in hover and out flush in flight (Ryan, 13 November: "encompass the whole cut section,
-            # just to smooth it out more when closed"), its slot cut through the floor along its travel.
-            b.cut_hull([body], arc(s, T0, TR, 0.0, 360.0, 15)[:-1] + arc(s, T1, TR, 0.0, 360.0, 15, trough_mid(T1))[:-1])
-            T_END = max(k / 50.0 for k in range(int(T0 * 50), int(T1 * 50) + 1) if trough_at(k / 50.0))
-            line = Vector((s * O.x, 0.0, O.y))
-            slot, rings = [], []
-            for y in [T0 + (T_END - T0) * k / 12.0 for k in range(13)]:
-                F, h, u, nrm = trough_at(y) or (trough_at(T_END)[0], 0.02, chamfer(y)[1], chamfer(y)[3])
-                for dn in (0.05, -SINK - 0.25):
-                    for du in (-h - 0.03, h + 0.03):
-                        p = F + u * du
-                        slot.append((s * p.x + line.x * dn, y, p.y + line.z * dn))
-                ring = []
-                for (du, dn) in ((-h, 0.0), (h, 0.0), (h, -0.18), (-h, -0.18)):
-                    p = F + u * du + nrm * dn
-                    ring.append((s * p.x - line.x * SINK, y, p.y - line.z * SINK))
+        b.cut_hull([body], arc(s, TROUGH[0], TROUGH[2], 0.0, 360.0, 15)[:-1] + arc(s, TROUGH[1], TROUGH[2], 0.0, 360.0, 15)[:-1])
+        # The trough's cover: a flush lens of the nose's side over the trough, slid in behind its
+        # floor in hover and out flush in flight, so the closed nose is smooth from the blister on
+        # (Ryan, 13 November: "encompass the whole cut section, just to smooth it out more when
+        # closed"); its slot cut through the floor along its travel.
+        lens = []
+        for k in range(11):
+            y = TROUGH[0] + (TROUGH[1] - TROUGH[0]) * k / 10.0
+            h = math.sqrt(max(0.0, TROUGH[2] ** 2 - (face(y) - AX) ** 2))
+            lens.append((y, face(y), h))
+        b.cut_hull([body], [(s * (x + dx), y, z) for (y, x, h) in lens for dx in (0.05, -SINK - 0.25) for z in (-h - 0.03, h + 0.03)])
+        with b.joint("trough_" + side, (s * (face(YC) - SINK), YC, 0.0), slide=(1.0, 0.0, 0.0)):
+            rings = []
+            for (y, x, h) in lens:
+                ring = [(s * (x - SINK), y, -h), (s * (x - SINK), y, h), (s * (x - SINK - 0.18), y, h), (s * (x - SINK - 0.18), y, -h)]
                 rings.append(ring if s > 0 else list(reversed(ring)))
-            b.cut_hull([body], slot)
-            with b.joint("trough_" + side, (s * (G.x - O.x * SINK), YC, G.y - O.y * SINK), slide=tuple(line)):
-                _rings(b, rings, "steel.plate", "trough_cover")
-        rings = []
-        for y in STATIONS:
-            e0, e1 = edges(y, drop(y))
-            rings.append(arc(s, y, max(0.02, drop(y) - 0.3), e1, 360.0 + e0) + list(reversed(arc(s, y, max(0.01, drop(y) - 0.36), e1, 360.0 + e0))))
-        _rings(b, rings, "bore.void", "port_bay")
-        # The two halves, each a shell of the teardrop shut over the gun's line in flight, built
-        # rolled open into the nose (hover) about the hinge.
+            _rings(b, rings, "steel.plate", "trough_cover")
+        _rings(b, [arc(s, y, max(0.02, drop(y) - 0.3), edge(y, drop(y)), 360.0 - edge(y, drop(y)))
+                   + list(reversed(arc(s, y, max(0.01, drop(y) - 0.36), edge(y, drop(y)), 360.0 - edge(y, drop(y))))) for y in STATIONS],
+               "bore.void", "cheek_bay")
+        # The two halves, each built rolled open into the side (hover).
         for half, sign in (("t", 1.0), ("b", -1.0)):
-            roll = -s * sign * OPEN   # the roll that opens it: up the chamfer and in for the top, down it and in for the bottom
+            roll = -s * sign * OPEN   # the roll that opens it: up and in for the top, down and in for the bottom
             turn = Matrix.Rotation(math.radians(roll), 3, "Y")
             rings = []
             for y in STATIONS:
                 r = drop(y)
-                e0, e1 = edges(y, r)
-                a0, a1 = (0.0, e1) if sign > 0 else (e0, 0.0)
+                e = edge(y, r)
+                a0, a1 = (0.0, e) if sign > 0 else (-e, 0.0)
                 ring = arc(s, y, r, a0, a1) + list(reversed(arc(s, y, max(0.01, r - TH), a0, a1)))
-                rings.append([tuple(hub + turn @ (Vector(p) - hub)) for p in ring])
+                rings.append([tuple(axis_at + turn @ (Vector(p) - axis_at)) for p in ring])
             close = -roll
-            with b.joint("shell_%s%s" % (side, half), tuple(hub), axis="roll", limits=(min(0.0, close) - 5.0, max(0.0, close) + 5.0)):
+            with b.joint("shell_%s%s" % (side, half), (s * AX, (TIP_B + TIP_F) / 2.0, 0.0), axis="roll",
+                         limits=(min(0.0, close) - 5.0, max(0.0, close) + 5.0)):
                 _rings(b, rings, "steel.plate", "shell")
-        # The gun: tipped up about its line at the opening's back, and run out along its tipped
-        # line; its mount square to the chamfer.
-        fwd = Vector((0.0, math.cos(HOVER), math.sin(HOVER)))
-        up = Vector((s * O.x, 0.0, O.y))
-        up = (up - fwd * up.dot(fwd)).normalized()
-        pivot = Vector((s * PIV.x, PY, PIV.y))
-        mount = pivot + fwd * (FOOT + RUN)
-        with b.joint("tilt_" + side, tuple(pivot), axis="pitch", limits=(-TILT - 3.0, 3.0)):
-            with b.joint("run_" + side, tuple(mount), slide=tuple(fwd)):
-                b.stock("hp_%d" % n, tuple(mount), "barrel", forward=tuple(fwd), up=tuple(up), scale=0.32, carries=carries, fits=PORT_FITS)
+        with b.joint("run_" + side, (s * AX, PIN, 0.0), slide=(0.0, 1.0, 0.0)):
+            b.stock("hp_%d" % n, (s * AX, PIN, 0.0), "barrel", scale=0.32, carries=carries, fits=CHEEK_FITS)
 
-    # The Fovea Designator (fixed): a pop-up on the nose's top between the ports, after a sports
+    # The Fovea Designator (fixed): a pop-up on the nose's top between the cheeks, after a sports
     # car's hidden headlight (Ryan's picture, 13 November: "Should be more sleek"): a low wedge
     # hinged at its back, its top a panel of the nose's own plating, its sides dark triangles, the
     # round lamp in its upright face. Up, the panel rises forward from the hinge and the lamp
@@ -6208,7 +6129,7 @@ def needletail(b):
     # left standing past it ("Make sure the rear boosters attach properly to their mounts").
     KF, LF = 0.62, 0.45          # the front boosters' girth and length
     KR, LR = 1.05, 0.61          # the rear's (Ryan, 13 November: "rear boosters can be thicker")
-    FY, FX = 14.0, 15.5          # the canards' station, beside the pop-up and below the ports' recesses (Ryan: "can the canards afford to be further forward now?"; 13 November, of the longer taper: "If the canards moved up, that should give you room"), and their boosters' pivot ("could extend a little more when hovering")
+    FY, FX = 14.0, 15.5          # the canards' station, beside the pop-up and just behind the cheeks' recesses (Ryan: "can the canards afford to be further forward now?"; 13 November, of the longer taper: "If the canards moved up, that should give you room"), and their boosters' pivot ("could extend a little more when hovering")
     RY, RX = -37.0, 21.5         # the tailplanes' (Ryan, 13 November: "too long now. Only needed a little more than last time")
     FIN = FX - tucked(KF, LF, FY)
     RIN = RX - tucked(KR, LR, RY)
@@ -6287,6 +6208,15 @@ def needletail(b):
     POD_FITS = {"barrel": "barrel_port", "twin_barrel": ("twin_barrel", 0.65), "rack": ("rack_round", 0.7, 8.1),
                 "dish": ("dish", 0.6, 4.2), "blade": ("blade", 0.75)}
 
+    def chamfer(y):
+        """The right upper chamfer at `y`: its foot (the band's top), its unit run up it, its
+        length and its outward normal, in (x, z)."""
+        w, tp, bt, s = at(y)
+        p0 = Vector((w / 2.0, s))
+        run = Vector((w / 4.0, tp)) - p0
+        length = run.length
+        u = run / length
+        return p0, u, length, Vector((u.y, -u.x))
 
     def band(s, y, f0, f1, d0, d1, out=0.0, inset=0.0):
         """A slab of the chamfer at `y`, from f0 to f1 up it and from d1 (outside) down to d0
@@ -6338,14 +6268,12 @@ def needletail(b):
                    "wing_l": (0.0, -SWING, 0.0, 0.0, -AFT, 0.0), "wing_r": (0.0, SWING, 0.0, 0.0, -AFT, 0.0),   # swung out and slid back
                    "pod_l": (0.0, 0.0, 0.0, PN.x * OUT, 0.0, -PN.y * OUT), "pod_r": (0.0, 0.0, 0.0, -PN.x * OUT, 0.0, -PN.y * OUT),
                    "run_pod_l": (0.0, 0.0, 0.0, 0.0, -RUNP, 0.0), "run_pod_r": (0.0, 0.0, 0.0, 0.0, -RUNP, 0.0),
-                   "run_l": (0.0, 0.0, 0.0, 0.0, -RUN * math.cos(HOVER), -RUN * math.sin(HOVER)), "run_r": (0.0, 0.0, 0.0, 0.0, -RUN * math.cos(HOVER), -RUN * math.sin(HOVER)),   # back along the tipped line, which the tilt then lays on its line in flight
-                   "tilt_l": (-TILT, 0.0, 0.0, 0.0, 0.0, 0.0), "tilt_r": (-TILT, 0.0, 0.0, 0.0, 0.0, 0.0),
+                   "run_l": (0.0, 0.0, 0.0, 0.0, -RUN, 0.0), "run_r": (0.0, 0.0, 0.0, 0.0, -RUN, 0.0),
                    "shell_lt": (0.0, 0.0, -OPEN, 0.0, 0.0, 0.0), "shell_rt": (0.0, 0.0, OPEN, 0.0, 0.0, 0.0),
                    "shell_lb": (0.0, 0.0, OPEN, 0.0, 0.0, 0.0), "shell_rb": (0.0, 0.0, -OPEN, 0.0, 0.0, 0.0),
                    "lamp": (LAMP_FOLD, 0.0, 0.0, 0.0, 0.0, 0.0)})
     FLIGHT.update({"iris_%d" % (k + 1): (0.0, 0.0, IRIS_SHUT, 0.0, 0.0, 0.0) for k in range(IRIS)})   # the iris shut under the folded lid
-    if TROUGH:
-        FLIGHT.update({"trough_l": (0.0, 0.0, 0.0, -O.x * SINK, 0.0, O.y * SINK), "trough_r": (0.0, 0.0, 0.0, O.x * SINK, 0.0, O.y * SINK)})   # the troughs' covers out flush, along the chamfer's normal
+    FLIGHT.update({"trough_l": (0.0, 0.0, 0.0, -SINK, 0.0, 0.0), "trough_r": (0.0, 0.0, 0.0, SINK, 0.0, 0.0)})   # the troughs' covers out flush
 
     def held(pose):
         return {j: [(0.0,) + tuple(v), (1.0,) + tuple(v)] for j, v in pose.items()}
@@ -6354,13 +6282,12 @@ def needletail(b):
     # roll shut and the pods sink; then the boosters swivel, run in along their fins and the wings
     # swing out; back the other way round), from `t0` over `span` seconds, or from flight back to
     # hover when `back`.
-    STAGE = {"run_l": 0.0, "run_r": 0.0, "tilt_l": 0.0, "tilt_r": 0.0, "run_pod_l": 0.0, "run_pod_r": 0.0, "lamp": 0.1,
+    STAGE = {"run_l": 0.0, "run_r": 0.0, "run_pod_l": 0.0, "run_pod_r": 0.0, "lamp": 0.1,
              "shell_lt": 0.4, "shell_lb": 0.4, "shell_rt": 0.4, "shell_rb": 0.4, "pod_l": 0.3, "pod_r": 0.3,
              "booster_fl": 0.4, "booster_fr": 0.4, "booster_rl": 0.4, "booster_rr": 0.4,
              "slide_fl": 0.5, "slide_fr": 0.5, "slide_rl": 0.5, "slide_rr": 0.5, "wing_l": 0.55, "wing_r": 0.55}
     STAGE.update({"iris_%d" % (k + 1): 0.0 for k in range(IRIS)})
-    if TROUGH:
-        STAGE.update({"trough_l": 0.45, "trough_r": 0.45})
+    STAGE.update({"trough_l": 0.45, "trough_r": 0.45})
 
     def change(t0, span, back=False):
         out = {}
