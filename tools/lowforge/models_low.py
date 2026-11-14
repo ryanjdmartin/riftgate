@@ -5854,7 +5854,9 @@ def needletail(b):
     candidate final"): the front boosters "blast right into the wings in flight mode", so "the
     wings, if they could slide back a bit, as they extend"; the forward gun ports were tried "onto
     the upper angled faces of the nose, instead", and then: "let's put the gun ports back where
-    they were on our saved version, but keep the new wing adjustment".
+    they were on our saved version, but keep the new wing adjustment". And on the fifteenth: "can
+    we try moving the forward guns and ports closer to the nose tip, then moving the canards up too?
+    Then, using the room gained, cut out some of the middle to make the whole ship shorter?"
 
     Built at rest in hover mode, the pose it holds standing and in every fight: a jet's chined
     fuselage, eight-sided (a flat top and belly, chamfers, a short upright band at the chine),
@@ -5891,18 +5893,21 @@ def needletail(b):
     # the chine) nose to tail; the nose one smooth taper to its point, long, reaching the body's
     # width only at the canopy's front third, so the straight body behind it is short (Ryan, 13
     # November: "it needs more of the tapered part of the nose, and less body"), the cheek guns'
-    # recesses back on its sides where it still narrows fast enough to bury them (Ryan, 13
-    # November: "Move the front guns and ports back further on the fuselage ... get rid of that
-    # ridge and come to a smooth point"); astern the tail ends square, its whole face the exhaust.
+    # recesses on its sides toward the tip where it still narrows fast enough to bury them, the
+    # point smooth (Ryan, 13 November: "get rid of that ridge and come to a smooth point"; 14
+    # November: "moving the forward guns and ports closer to the nose tip"); astern the tail ends
+    # square, its whole face the exhaust. Behind the canards a slice cut out of the middle, so the
+    # whole ship is four shorter (14 November: "using the room gained, cut out some of the middle
+    # to make the whole ship shorter").
     # Short and flat for its width, a fifth lower than the eighth cut ("It feels too long, still, and
     # could be flatter"), and at its widest 15.8 where it was 17.4 (Ryan, 13 November: "Is there any
     # way to reduce the max width the fuselage reaches?"), what the stowed wings and the canopy on
     # the flat top still leave room for.
     BODY = [(39.86, 0.7, 0.25, 0.2, 0.05), (37.5, 2.2, 0.75, 0.65, 0.35), (34.7, 3.7, 1.2, 1.0, 0.6), (31.5, 5.3, 1.65, 1.35, 0.85),
             (28.6, 6.8, 2.05, 1.6, 1.05), (25.7, 8.4, 2.45, 1.85, 1.25), (23.0, 10.0, 2.8, 2.1, 1.4), (20.2, 11.7, 3.15, 2.3, 1.5),
-            (17.2, 13.1, 3.5, 2.5, 1.55), (14.0, 13.79, 3.8, 2.7, 1.55), (9.8, 14.47, 4.25, 2.9, 1.5),
-            (4.0, 15.09, 4.8, 3.1, 1.4), (-0.5, 15.41, 5.35, 3.25, 1.3), (-6.0, 15.8, 5.8, 3.4, 1.2), (-24.0, 15.8, 5.8, 3.4, 1.2),
-            (-29.0, 12.4, 4.2, 2.8, 0.55), (-39.5, 12.4, 4.0, 2.7, 0.5), (-43.5, 10.8, 3.6, 2.5, 0.45)]   # straight the pods' whole length, so each pod's gun runs back under a full face
+            (17.2, 13.1, 3.5, 2.5, 1.55), (14.0, 13.79, 3.8, 2.7, 1.55),
+            (8.0, 15.09, 4.8, 3.1, 1.4), (3.5, 15.41, 5.35, 3.25, 1.3), (-2.0, 15.8, 5.8, 3.4, 1.2), (-20.0, 15.8, 5.8, 3.4, 1.2),
+            (-25.0, 12.4, 4.2, 2.8, 0.55), (-35.5, 12.4, 4.0, 2.7, 0.5), (-39.5, 10.8, 3.6, 2.5, 0.45)]   # straight the pods' whole length, so each pod's gun runs back under a full face
 
     def sec(w, top, bottom, s):
         return [(w / 2, -s), (w / 2, s), (w / 4, top), (-w / 4, top), (-w / 2, s), (-w / 2, -s), (-w / 4, -bottom), (w / 4, -bottom)]
@@ -5938,9 +5943,9 @@ def needletail(b):
     b.loft([(y, [(x * 1.025, z * 1.025) for (x, z) in sec(*at(y))]) for y in (YT + 4.3, YT + 2.5)], "livery.livery", "tail_band", cap=False)   # a sleeve: a cap would close the exhaust
     # The canopy amidships, long and tall, carrying well back (Ryan, 13 November: "It's a small
     # spotter ship, it needs a good viewing range for the canopy"), two bows across it.
-    CANOPY = [(8.5, 0.85, 0.38), (5.5, 2.7, 2.0), (1.0, 3.4, 2.8), (-5.0, 3.6, 3.08), (-11.0, 3.6, 3.0), (-16.0, 3.3, 2.55),
-              (-19.5, 2.4, 1.58), (-21.5, 1.2, 0.6), (-22.5, 0.55, 0.22)]   # a quarter lower than it was (Ryan, 13 November: "I also think the canopy could be a bit flatter")
-    _jet_canopy(b, [(y, w, t, bt) for (y, w, t, bt, s) in BODY], CANOPY, -3.0, frames=(-12.5,))
+    CANOPY = [(12.5, 0.85, 0.38), (9.5, 2.7, 2.0), (5.0, 3.4, 2.8), (-1.0, 3.6, 3.08), (-7.0, 3.6, 3.0), (-12.0, 3.3, 2.55),
+              (-15.5, 2.4, 1.58), (-17.5, 1.2, 0.6), (-18.5, 0.55, 0.22)]   # a quarter lower than it was (Ryan, 13 November: "I also think the canopy could be a bit flatter")
+    _jet_canopy(b, [(y, w, t, bt) for (y, w, t, bt, s) in BODY], CANOPY, 1.0, frames=(-8.5,))
 
     # The cheeks: each gun lies inside the nose on a run, its line where the nose's side crosses
     # it, so in flight only its barrel's tip stands proud of the skin, under a short teardrop
@@ -5950,7 +5955,7 @@ def needletail(b):
     # recess's dark lining, and the gun runs far out ahead through a short trough, clear of the skin
     # beyond it (Ryan, 13 November: "they were half embedded in it when extended"), the nose
     # narrowing fastest just there.
-    YC = 23.0                      # the port's point, where the nose's side crosses the gun's line, back where the nose is wide (Ryan, 13 November: "Move the front guns and ports back further on the fuselage"), on the longer taper where it still narrows fast enough for a small blister
+    YC = 27.0                      # the port's point, where the nose's side crosses the gun's line, toward the tip (Ryan, 14 November: "moving the forward guns and ports closer to the nose tip"), where the nose still narrows fast enough for a small blister and its band still holds the trough's cover
     AX = face(YC)                  # the gun's line out from the middle
     TIP_B, WIDE, NARROW, TIP_F = YC - 4.0, YC - 2.6, YC - 1.3, YC   # the blister's back tip, its widest, the start of its point, its point
     RM = 1.42                      # its radius at its widest
@@ -5981,10 +5986,18 @@ def needletail(b):
     TROUGH = (YC - 0.8, next(y / 100.0 for y in range(int(YC * 100), int(BODY[0][0] * 100)) if face(y / 100.0) <= AX - 1.1) + 0.3, 1.1)   # where the barrel leaves the recess, along a short trough of this radius about its line, till the nose has narrowed clear of it
     SINK = 1.6                     # how far the trough's cover slides in, behind the trough's floor, in hover
 
-    def edge(y, r):
-        """How far round from the outboard side (degrees) the blister's surface meets the nose's
-        side at `y`, the gun's line lying inside it there."""
-        return math.degrees(math.acos(max(-1.0, min(1.0, (face(y) - AX) / max(r, 1e-6)))))
+    def outside(y, p):
+        """How far the point (x, z) stands outside the body's section at `y` (negative inside)."""
+        pts = sec(*at(y))
+        return max(((p[0] - a[0]) * (q[1] - a[1]) - (p[1] - a[1]) * (q[0] - a[0])) / math.hypot(q[0] - a[0], q[1] - a[1])
+                   for a, q in zip(pts, pts[1:] + pts[:1]))
+
+    def edges(y, r):
+        """The arc of the circle `r` about the gun's line at `y` that stands outside the body (its
+        band and, this far forward, the chamfers above and below it): its ends in degrees round from
+        the outboard side, down first; (0, 0) when none does."""
+        out = [k / 4.0 for k in range(-720, 721) if outside(y, (AX + r * math.cos(math.radians(k / 4.0)), r * math.sin(math.radians(k / 4.0)))) > 0.0]
+        return (out[0], out[-1]) if out else (0.0, 0.0)
 
     def arc(s, y, r, a0, a1, n=8):
         """Points on the circle of radius `r` about the gun's line at `y`, from a0 to a1 degrees
@@ -6015,9 +6028,11 @@ def needletail(b):
                 ring = [(s * (x - SINK), y, -h), (s * (x - SINK), y, h), (s * (x - SINK - 0.18), y, h), (s * (x - SINK - 0.18), y, -h)]
                 rings.append(ring if s > 0 else list(reversed(ring)))
             _rings(b, rings, "steel.plate", "trough_cover")
-        _rings(b, [arc(s, y, max(0.02, drop(y) - 0.3), edge(y, drop(y)), 360.0 - edge(y, drop(y)))
-                   + list(reversed(arc(s, y, max(0.01, drop(y) - 0.36), edge(y, drop(y)), 360.0 - edge(y, drop(y))))) for y in STATIONS],
-               "bore.void", "cheek_bay")
+        rings = []
+        for y in STATIONS:
+            e0, e1 = edges(y, drop(y))
+            rings.append(arc(s, y, max(0.02, drop(y) - 0.3), e1, 360.0 + e0) + list(reversed(arc(s, y, max(0.01, drop(y) - 0.36), e1, 360.0 + e0))))
+        _rings(b, rings, "bore.void", "cheek_bay")
         # The two halves, each built rolled open into the side (hover).
         for half, sign in (("t", 1.0), ("b", -1.0)):
             roll = -s * sign * OPEN   # the roll that opens it: up and in for the top, down and in for the bottom
@@ -6025,8 +6040,8 @@ def needletail(b):
             rings = []
             for y in STATIONS:
                 r = drop(y)
-                e = edge(y, r)
-                a0, a1 = (0.0, e) if sign > 0 else (-e, 0.0)
+                e0, e1 = edges(y, r)
+                a0, a1 = (0.0, e1) if sign > 0 else (e0, 0.0)
                 ring = arc(s, y, r, a0, a1) + list(reversed(arc(s, y, max(0.01, r - TH), a0, a1)))
                 rings.append([tuple(axis_at + turn @ (Vector(p) - axis_at)) for p in ring])
             close = -roll
@@ -6044,7 +6059,7 @@ def needletail(b):
     # well. It neither swivels nor tips; its lamp looks out through a six-bladed iris that widens
     # and narrows as it paints (Ryan, 13 November: "a segmented iris opening that widens and
     # narrows"), each blade turning on a pin in the lamp's rim under a housing ring.
-    HY, LP, RISE, FACE, HW = 11.7, 4.4, 24.0, 2.4, 1.6   # the hinge's station; the panel's length and rise; the face's height; half the width
+    HY, LP, RISE, FACE, HW = 15.7, 4.4, 24.0, 2.4, 1.6   # the hinge's station; the panel's length and rise; the face's height; half the width
     top = lambda y: at(y)[1]
     hinge = Vector((0.0, HY, top(HY)))
     lean = math.degrees(math.atan((top(HY) - top(HY + LP)) / LP))   # the nose's top falling ahead of the hinge
@@ -6129,17 +6144,17 @@ def needletail(b):
     # left standing past it ("Make sure the rear boosters attach properly to their mounts").
     KF, LF = 0.62, 0.45          # the front boosters' girth and length
     KR, LR = 1.05, 0.61          # the rear's (Ryan, 13 November: "rear boosters can be thicker")
-    FY, FX = 14.0, 15.5          # the canards' station, beside the pop-up and just behind the cheeks' recesses (Ryan: "can the canards afford to be further forward now?"; 13 November, of the longer taper: "If the canards moved up, that should give you room"), and their boosters' pivot ("could extend a little more when hovering")
-    RY, RX = -37.0, 21.5         # the tailplanes' (Ryan, 13 November: "too long now. Only needed a little more than last time")
+    FY, FX = 18.0, 15.5          # the canards' station, beside the pop-up and just behind the cheeks' recesses (Ryan: "can the canards afford to be further forward now?"; 13 November, of the longer taper: "If the canards moved up, that should give you room"; 14 November: "then moving the canards up too"), and their boosters' pivot ("could extend a little more when hovering")
+    RY, RX = -33.0, 21.5         # the tailplanes' (Ryan, 13 November: "too long now. Only needed a little more than last time")
     FIN = FX - tucked(KF, LF, FY)
     RIN = RX - tucked(KR, LR, RY)
-    ROOT_LE, ROOT_TE, TIP_LE, TIP_TE, SPAN = -28.5, -40.0, -37.5, -43.0, 10.0   # the X fins' planform: root chord, tip chord, span (Ryan, 13 November: "Can the rear tailfins be longer?")
+    ROOT_LE, ROOT_TE, TIP_LE, TIP_TE, SPAN = -24.5, -36.0, -33.5, -39.0, 10.0   # the X fins' planform: root chord, tip chord, span (Ryan, 13 November: "Can the rear tailfins be longer?")
     FIN_RAKE = 52.0   # the X fins' angle off the horizontal, steep enough to clear the rear boosters up and tucked
     for s in (-1.0, 1.0):
         side = "l" if s < 0 else "r"
         tip = FX - 4.4 * KF * math.cos(math.pi / 6) + 0.4
         with b.joint("slide_f" + side, (s * FX, FY, 0.0), slide=(1.0, 0.0, 0.0)):
-            _rings(b, [_blade_section(s * (face(FY) - 0.2), FY + 3.5, FY - 3.5, 0.0, 0.7), _blade_section(s * tip, FY + 2.0, FY - 2.0, 0.0, 0.5)],
+            _rings(b, [_blade_section(s * (face(FY + 3.5) - 0.3), FY + 3.5, FY - 3.5, 0.0, 0.7), _blade_section(s * tip, FY + 2.0, FY - 2.0, 0.0, 0.5)],
                    "livery.livery", "canard")
             booster("f" + side, s * FX, FY, 0.0, KF, LF)
         root = face(RY + 3.0) - 0.06
@@ -6178,9 +6193,9 @@ def needletail(b):
     # extended"); near the canards, bigger, its trailing edge swept back ("closer to the canards, and
     # get a bit bigger even, with a bit more angle to the rear edges"), a small flat tip ("I was
     # wrong about the wings coming to a point, maybe just a smaller flat top from what it was").
-    ZW, PIVOT_Y, STRIP = -0.4, 6.0, 1.0   # the wings' height, in the band just under the pods' slots; the pivot's station; how far the strip's ends stand out of the side
+    ZW, PIVOT_Y, STRIP = -0.4, 10.0, 1.0   # the wings' height, in the band just under the pods' slots; the pivot's station; how far the strip's ends stand out of the side
     AFT = 5.0                             # how far each slides back as it swings out, clear of the front boosters' blast (Ryan, 14 November: "a little awkward that the front boosters blast right into the wings in flight mode ... the wings, if they could slide back a bit, as they extend")
-    TIP_LE, TIP_TE, ROOT_TE = (29.0, -14.0), (29.0, -16.8), (6.6, -10.5)   # the deployed planform's outer corners and its root's trailing corner, the right wing's
+    TIP_LE, TIP_TE, ROOT_TE = (29.0, -10.0), (29.0, -12.8), (6.6, -6.5)   # the deployed planform's outer corners and its root's trailing corner, the right wing's
     yf, ya = PIVOT_Y + 2.0, PIVOT_Y - 28.7   # the strip's ends, near enough: the leading edge from two past the pivot to the tip
     slope = (face(ya) - face(yf)) / (yf - ya)   # the strip's lean out, aft, so it stands as far out of the side at both ends
     px = face(yf) + STRIP + (yf - PIVOT_Y) * slope
@@ -6201,7 +6216,7 @@ def needletail(b):
     # of its slot (cut into the body and lined dark) along the chamfer's normal at rest, its gun out
     # of its face; in flight the gun runs back into the pod and the pod sinks flush, a dark seam
     # round it.
-    PY0, PY1, PT, OUT = -11.0, -23.0, 3.4, 3.0   # the pod's front and back, its depth, how far it stands out at rest
+    PY0, PY1, PT, OUT = -7.0, -19.0, 3.4, 3.0   # the pod's front and back, its depth, how far it stands out at rest
     F0, F1 = 0.32, 0.9                           # the band of the chamfer it is, from the chine's band up, high enough that its slot clears the wings stowed under it
     GUN = 1.7                                    # the gun's line under the pod's face, every class inside the pod
     RUNP = 8.0                                   # how far a pod's gun runs back into it in flight

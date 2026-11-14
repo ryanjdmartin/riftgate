@@ -621,12 +621,12 @@
    }
   },
   "needletail": {
-   "when": "Ryan's fifteenth note on its two modes, 14 November: the candidate final's ports back, the new wings kept.",
-   "note": "Ryan, 14 November, after the options for the nose ports on the upper chamfers: “let's put the gun ports back where they were on our saved version, but keep the new wing adjustment.” The nose ports are the candidate final's again (the thirteenth cut, below, commit 49657a4): each gun's teardrop clamshell back on the nose's side where the side crosses its line, its halves rolling up and down into the side, the gun run out a short way through its trough. The wings keep the fourteenth cut's slide: each slides back 5 as it swings out, so in flight its leading edge sits clear of the front boosters' exhausts (the flight pictures). Everything else is the candidate final's. Ryan's to judge running: Walk for the change by speed, Acts for the transition.",
+   "when": "Ryan's sixteenth note on its two modes, 14 November.",
+   "note": "Ryan, 14 November, on the fifteenth cut: “can we try moving the forward guns and ports closer to the nose tip, then moving the canards up too? Then, using the room gained, cut out some of the middle to make the whole ship shorter?” The cheek ports sit 4 nearer the tip, the canards with their boosters and the pop-up 4 forward with them, and a 4-long slice is cut out of the middle just behind the canards, where the room was gained, so everything aft of it (the canopy, the wings, the pods, the tail with its boosters and fins) sits 4 further forward and the whole ship is 103 from point to needle where it was 107; the canopy, the wings and the pods keep their size. This far forward the nose's band is thinner than the blister, so the clamshell now wraps onto the chamfers above and below it and its halves follow them. The canards' roots are sunk along their whole chord, the nose narrowing faster ahead of them. Ryan's to judge running: Walk for the change by speed, Acts for the transition.",
    "images": [
     {
      "file": "needletail/needletail_front.png",
-     "alt": "needletail, hover mode, front: the cheek guns back on the nose's sides"
+     "alt": "needletail, hover mode, front: the cheek guns and the canards nearer the tip"
     },
     {
      "file": "needletail/needletail_rear.png",
@@ -634,19 +634,27 @@
     },
     {
      "file": "needletail/needletail_above.png",
-     "alt": "needletail, hover mode, from above"
+     "alt": "needletail, hover mode, from above: four shorter"
     },
     {
      "file": "needletail/needletail_flight.png",
-     "alt": "needletail, flight mode, front: the wings slid back"
+     "alt": "needletail, flight mode, front"
     },
     {
      "file": "needletail/needletail_flight_above.png",
-     "alt": "needletail, flight mode, from above: the wings out and slid back, clear of the front boosters"
+     "alt": "needletail, flight mode, from above: the wings out and slid back"
     },
     {
      "file": "needletail/needletail_changing.png",
      "alt": "needletail, changing: the guns running in, the blisters shutting, the boosters swivelling"
+    },
+    {
+     "file": "needletail/needletail_cheek.png",
+     "alt": "needletail, hover mode, close: the right cheek gun run out of its recess toward the tip"
+    },
+    {
+     "file": "needletail/needletail_cheek_shut.png",
+     "alt": "needletail, flight mode, close, side on: the right cheek's blister shut, its trough's cover flush"
     }
    ],
    "candidate": {
@@ -687,7 +695,7 @@
     ]
    },
    "before": {
-    "summary": "Before: the fourteenth cut, 14 November (the nose ports tried on the upper chamfers)",
+    "summary": "Before: the fifteenth cut, 14 November (the candidate final's ports, the ship 107 long)",
     "images": [
      {
       "file": "needletail/before_needletail_front.png",
@@ -712,14 +720,6 @@
      {
       "file": "needletail/before_needletail_changing.png",
       "alt": "Earlier: needletail, changing"
-     },
-     {
-      "file": "needletail/before_needletail_ports.png",
-      "alt": "Earlier: needletail, hover mode, close"
-     },
-     {
-      "file": "needletail/before_needletail_ports_shut.png",
-      "alt": "Earlier: needletail, flight mode, close"
      }
     ]
    }

@@ -28,7 +28,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
 - Tests: 1168 tests, 372,201 checks, green on `ccr-b7d5164e-1wtzzm` (14 November, the Needletail's
-  fifteenth cut and the Giant Petrel's tenth with its windshield slimmed, over main at `4a0c9b5` taken in a merge). Before it, 1167 tests,
+  sixteenth cut and the Giant Petrel's tenth with its windshield slimmed, over main at `4a0c9b5` taken in a merge). Before it, 1167 tests,
   371,269 checks, green on `ccr-722ca9f0-yj8na3` (13 November, the breaking shield's what-if and
   its two trial dials, over main's Kite), and 1155 tests, 371,949 checks, green on this branch
   over main at `6112939` (13 November, the Giant Petrel's sixth cut). Before it, 1154 tests,
@@ -457,9 +457,10 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   the pop-up just behind the cheeks, the thicker rear pair each on a hub at the tip of a long tailplane whose outer panel
   rides in with it, under long, steep X fins), two pods raised out of dark slots in the upper
   chamfers behind the canopy, each mount leaning with its pod (a pin's `up`, new in lowforge), its cheek guns run a short way out of
-  teardrop recesses back on the nose's sides, through a short trough to a muzzle clear of the skin (the thirteenth cut's, Ryan's
-  candidate final at `49657a4`, its pictures the hangar's Candidate final; back in the fifteenth cut after a day's trial on the
-  upper chamfers, the fourteenth), every other class rooted in the
+  teardrop recesses on the nose's sides toward the tip, through a short trough to a muzzle clear of the skin (on the sides as in
+  the thirteenth cut, Ryan's candidate final at `49657a4`, its pictures the hangar's Candidate final, after a day's trial on the
+  upper chamfers; 4 nearer the tip since the sixteenth, with the canards and the pop-up, and a slice cut from the middle so the
+  ship is 103 from point to needle), every other class rooted in the
   recess in its port form (the port rack, the port dish on its mast, taken from main with the Kite's
   port; the blade's bracket and the twins' receiver in the recess), the Fovea Designator a low wedge pop-up
   after a sports car's, its lamp behind
