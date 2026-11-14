@@ -735,12 +735,12 @@
    }
   },
   "giant_petrel": {
-   "when": "Ryan's ninth notes on the catamaran, 14 November.",
-   "note": "Ryan, 14 November: “Petrel: the traverse animation should point the guns back, just cause they can. Bring the spoiler back down, back to guns-over height. Narrow the windshield.” In the traverse the quarters now swing round the outboard side from dead ahead to dead astern together, over the aerofoil, hold, and come back (the traverse picture, taken from astern; the last, side on). The turret rule held every act within 70 degrees of the bow; a turret's model may now name a wider reach, the quarters' 180, while the rule's slow slew and its pause still hold, so each half turn takes a little over five seconds and the act runs thirteen. The aerofoil is back down at the seventh cut's height, 5 lower, under the quarters' line of fire and clear of the giant boosters beneath it; it keeps the eighth cut's size, and the fins' feet stay where the ninth cut drew them, so with their tops lower they rake back harder. The windshield's panes reach a little over half way out from the prow, where they reached nearly to the front's corners. Ryan's to judge running: Acts for the traverse, the salvo and the uplink.",
+   "when": "Ryan's ninth notes on the catamaran, 14 November, and his word on the windshield the same day.",
+   "note": "Ryan, 14 November: “Petrel: the traverse animation should point the guns back, just cause they can. Bring the spoiler back down, back to guns-over height. Narrow the windshield.” In the traverse the quarters now swing round the outboard side from dead ahead to dead astern together, over the aerofoil, hold, and come back (the traverse picture, taken from astern; the last, side on). The turret rule held every act within 70 degrees of the bow; a turret's model may now name a wider reach, the quarters' 180, while the rule's slow slew and its pause still hold, so each half turn takes a little over five seconds and the act runs thirteen. The aerofoil is back down at the seventh cut's height, 5 lower, under the quarters' line of fire and clear of the giant boosters beneath it; it keeps the eighth cut's size, and the fins' feet stay where the ninth cut drew them, so with their tops lower they rake back harder. The windshield, then (“I mean narrower vertically for the windshield, not horizontally. The rest looks good”): its panes reach out to the front's corners again, held a little in from them on the swept line they had, and the band across the front is slimmer, from a little over a third of the front's height to a little under two thirds, where it ran from a quarter to three quarters. Ryan's to judge running: Acts for the traverse, the salvo and the uplink.",
    "images": [
     {
      "file": "giant_petrel/giant_petrel_front.png",
-     "alt": "giant petrel, front: the spoiler lower, the windshield narrower"
+     "alt": "giant petrel, front: the spoiler lower, the windshield a slimmer band"
     },
     {
      "file": "giant_petrel/giant_petrel_rear.png",
@@ -760,7 +760,7 @@
     },
     {
      "file": "giant_petrel/giant_petrel_windscreen.png",
-     "alt": "giant petrel, the windshield close: the panes a little over half way out"
+     "alt": "giant petrel, the windshield close: a slimmer band across the front"
     },
     {
      "file": "giant_petrel/giant_petrel_guns.png",
@@ -768,7 +768,7 @@
     }
    ],
    "before": {
-    "summary": "Before: the ninth cut, 13 November (the spoiler high, the quarters firing under it; the windshield nearly to the front's corners)",
+    "summary": "Before: the ninth cut, 13 November (the spoiler high, the quarters firing under it; the windshield's band half the front's height)",
     "images": [
      {
       "file": "giant_petrel/before_giant_petrel_front.png",

@@ -6554,7 +6554,8 @@ def giant_petrel(b):
     And on the eighth: the "front windshield still poking out the sides"; the spoiler's side struts
     raked back harder, their tops kept and their feet drawn forward. And on the ninth (14
     November): "the traverse animation should point the guns back, just cause they can. Bring the
-    spoiler back down, back to guns-over height. Narrow the windshield."
+    spoiler back down, back to guns-over height. Narrow the windshield", and then: "I mean narrower
+    vertically for the windshield, not horizontally."
 
     The Navy SES's body: two knife hulls, their stems raked back as a wave piercer's, dark below
     the chine and chrome above, a cobalt chine stripe and straight deck stripes, each closing
@@ -6563,7 +6564,7 @@ def giant_petrel(b):
     fore gun house, a cobalt spearhead down each bow's deck; the deckhouse spanning the deck, every
     face leaning in, its front a sharp prow raked steeply back, each facet of it a smooth twisted
     surface from its foot to the roof's edge, the bridge's glass following it a band up its middle,
-    a raked pane each side of the prow reaching a little over half way out, and four long windows down each flank; on its roof the Spindrift Salvo's
+    a raked pane each side of the prow, a slim band, and four long windows down each flank; on its roof the Spindrift Salvo's
     three racks flush in line down the middle, each the size of the second cut's one rack (fixed,
     no pin; salvo_f, salvo_m, salvo_a, their faces rising out of the roof one after another to fire
     over the bow, eighteen tubes rippling, each rack at its own pace), the integrated mast behind them, a swept faceted fin
@@ -6663,13 +6664,14 @@ def giant_petrel(b):
     _slab(b, [(x, y, zt0 - 0.1) for (x, y, z) in brow], (0.0, 0.0, 1.0), 0.2, "steel.panel", "deckhouse")
     # The glass, (along the facet, up it): a raked pane each side of the prow, its outer pillar swept
     # back, a thin mullion on the crease, each a thin shell over its facet's surface; a band up the
-    # middle of the front, its foot a quarter up and its head three quarters (Ryan, 13 November: it
-    # "can sit lower on the front anyway, more vertically centered"). Nothing on the short facets
-    # each side of the prow, which face out to the flanks, so no glass shows from the sides or astern
-    # ("front windshield still poking out the sides"), and each pane reaching a little over half
-    # way out from the prow to its corner (Ryan, 14 November: "Narrow the windshield").
-    PANES = {1: [(0.42, 0.25), (0.985, 0.25), (0.985, 0.75), (0.54, 0.75)],
-             2: [(0.015, 0.25), (0.58, 0.25), (0.46, 0.75), (0.015, 0.75)]}   # the facet's index round the front: its corners
+    # middle of the front, vertically centred on it (Ryan, 13 November: it "can sit lower on the front
+    # anyway, more vertically centered"), its foot a little over a third up and its head a little
+    # under two thirds (14 November: "narrower vertically for the windshield, not horizontally").
+    # Nothing on the short facets each side of the prow, which face out to the flanks, so no glass
+    # shows from the sides or astern ("front windshield still poking out the sides"), and each pane's
+    # outer edge held a little in from its corner, on the swept line it had.
+    PANES = {1: [(0.108, 0.35), (0.985, 0.35), (0.985, 0.65), (0.192, 0.65)],
+             2: [(0.015, 0.35), (0.892, 0.35), (0.808, 0.65), (0.015, 0.65)]}   # the facet's index round the front: its corners
     NU, NV = 8, 5
     for i, (c0, c1, c2, c3) in PANES.items():
         def kf(u, v):

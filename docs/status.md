@@ -28,7 +28,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
 - Tests: 1168 tests, 372,233 checks, green on `ccr-b7d5164e-1wtzzm` (14 November, the Needletail's
-  fourteenth cut and the Giant Petrel's tenth, over main at `4a0c9b5` taken in a merge). Before it, 1167 tests,
+  fourteenth cut and the Giant Petrel's tenth with its windshield slimmed, over main at `4a0c9b5` taken in a merge). Before it, 1167 tests,
   371,269 checks, green on `ccr-722ca9f0-yj8na3` (13 November, the breaking shield's what-if and
   its two trial dials, over main's Kite), and 1155 tests, 371,949 checks, green on this branch
   over main at `6112939` (13 November, the Giant Petrel's sixth cut). Before it, 1154 tests,
@@ -483,7 +483,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   boosters on plinths either side of a raised aft deckhouse under its aerofoil on fins at the hulls'
   outer edges, the navy's two back at the hulls' sterns; the deckhouse's front a sharp prow raked
   steeply back, each twisted facet laid smooth and the bridge's glass a shell following it, a
-  band up the front's middle, a raked pane each side of the prow reaching a little over half way out, none on the corner facets; long windows down its flanks; a cobalt spearhead down each bow; the cushion
+  band up the front's middle, a raked pane each side of the prow in a slimmer band, none on the corner facets; long windows down its flanks; a cobalt spearhead down each bow; the cushion
   open fore and aft. A render round in the hangar's Models tab for each at every cut (the last cut
   as Before); the tests green at each.
 
