@@ -34,9 +34,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1187 tests, 371,387 checks, green on `ccr-722ca9f0-yj8na3` (13 November, the
-  reboot's what-if, its trial and the bot's first play of it, the block's rest timer cut).
-  Before it, 1167 tests, 371,269 checks (13 November, the breaking shield's what-if and its
+- Tests: 1188 tests, 371,389 checks, green on `ccr-722ca9f0-yj8na3` (14 November, a lone
+  fight from the menu reading the trial dials). Before it, 1187 tests, 371,387 checks (13
+  November, the reboot's what-if, its trial and the bot's first play of it, the block's rest
+  timer cut). Before it, 1167 tests, 371,269 checks (13 November, the breaking shield's what-if and its
   two trial dials, over main's Kite). Before it, 1154 tests,
   371,110 checks, green on main (13 November, as `ccr-e3ddf00b-ilkwbi` landed
   again with the Kite's model rounds, over the Barrier's cooldown, the shield's reads and the
@@ -1055,7 +1056,10 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   every end of the player's turn and nothing settling; the first overheat between reboots
   breaking the shield; every shield gain refused while it is broken; the recovery as the
   round opens. On a debug build's SETTINGS → TRIALS, REBOOT (BUILT, ON; `RIFTGATE_REBOOT=1`
-  on any run): tap a machine's die, then REBOOT beside REROLL; heat past the maximum, a
+  on any run; read as a battle or a lone fight starts from the menu, the lone fight since 14
+  November, on his "What settings exactly should I be using?": the to-do's line has every
+  row's setting for his play, and the two rows that do nothing under it, SHIELD REGEN and
+  HOTTER's one more cooling): tap a machine's die, then REBOOT beside REROLL; heat past the maximum, a
   broken shield and a reboot under way each wear a chip, and a broken shield's gauge a
   dashed frame (the screenshot pose `reboot`). The fight bot has a first play of it
   (`Policy._reboot_first`, `_reboot_idle`), so the runners finish a fight under the rule.

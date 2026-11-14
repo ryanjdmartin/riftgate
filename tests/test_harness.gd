@@ -506,6 +506,29 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 		menu.free()
 
 
+## A lone fight from the menu reads the fight's trials as a battle does (the reboot, the block
+## and the overheat's burn are a fight's): a dial set inside one fight is the next one's, with
+## no relaunch. The launch here has nobody to fight, so it stops before it saves or shows.
+func test_a_lone_fight_from_the_menu_reads_the_trials() -> void:
+	if not OS.get_environment("RIFTGATE_REBOOT").is_empty():
+		return
+	var reboot_was = Settings.display.get("reboot", "off")
+	var h: Control = HARNESS.new()
+	var hs := HarnessSetup.defaults(_db())
+	hs.team = []
+	h.setup = hs
+	Settings.display["reboot"] = "on"
+	Skirmish.reboot = false
+	h._on_fight()
+	assert_eq(Skirmish.reboot, OS.is_debug_build(), "a debug build's REBOOT is the next lone fight's")
+	Settings.display["reboot"] = "off"
+	h._on_fight()
+	assert_false(Skirmish.reboot, "and off again with the dial")
+	Settings.display["reboot"] = reboot_was
+	Settings.field_trial()
+	h.free()
+
+
 ## The text of every button a menu page shows.
 func _menu_labels(menu: PauseMenu) -> Array:
 	var labels: Array = []

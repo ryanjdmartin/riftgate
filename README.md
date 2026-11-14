@@ -534,11 +534,11 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # basic on the stock dice, or the Armoured basic in its slot; the what-if's barrier=none): pick, close the app, open it, and start a new
 # battle or run, since a saved one keeps the numbers it was saved with. RIFTGATE_OVERHEAT=2 (any battle) sets the hull an overheat burns a point of heat past
 # the gauge, 1 the game's; the same page's OVERHEAT (×1, ×2, ×3) sets it on the phone, read
-# as a battle starts.
+# as a battle or a lone fight starts from the menu.
 # RIFTGATE_SHIELD_BREAK=1 (any battle) tries the block (Ryan, 13 November: "when a shield
 # breaks, it absorbs the whole blow"): the blow that breaks a shield is stopped whole. The same
-# page's SHIELD BREAK (BUILT, BLOCK) sets it on the phone, read as a battle starts. A what-if,
-# nothing decided; its rest timer of that morning left with the reboot.
+# page's SHIELD BREAK (BUILT, BLOCK) sets it on the phone, read as a battle or a lone fight
+# starts. A what-if, nothing decided; its rest timer of that morning left with the reboot.
 # RIFTGATE_REBOOT=1 (any battle, and the skirmish scene run alone) tries the reboot (Ryan, 13
 # November; the refit brief's section 22 has the spec): no shield regen and no cooling of a
 # chassis's own; a machine that has spent nothing may reboot, its shield down at once and both
@@ -547,9 +547,13 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # none until its machine reboots. On the screen: tap a machine's die, then REBOOT beside REROLL;
 # UNDO takes it back; heat past the maximum, a broken shield and a reboot under way each wear a
 # chip, and a broken shield's gauge a dashed frame. The same page's REBOOT (BUILT, ON) sets it
-# on the phone, read as a battle starts, with OVERHEAT pricing a point of the burn. A what-if,
-# nothing decided; the fight bot has a first play of it, and `tools/balance.gd -- --reboot` reads
-# the matrix under it. The screenshot pose `reboot` shows all three states.
+# on the phone, read as a battle or a lone fight starts, with OVERHEAT pricing a point of the
+# burn. A what-if, nothing decided; the fight bot has a first play of it, and
+# `tools/balance.gd -- --reboot` reads the matrix under it. The screenshot pose `reboot` shows
+# all three states. The settings for a first play of it: REBOOT on ON, OVERHEAT on ×1, every
+# other row on BUILT or the game's own; SHIELD REGEN and HOTTER's one more cooling do nothing
+# under it (a chassis's own regen and cooling are ignored); close the game and open it again
+# once the rows are set, three of them being read at launch, then start a new battle or fight.
 # RIFTGATE_FIELD_DEPTH=14 and RIFTGATE_OPENING=1 (any battle) try a deeper field and a farther
 # opening (Ryan, 10 November: "I think the map is a bit too shallow"): the rows from the rift to
 # the wall, 10 to 24 and 12 the game's, and how many more of their own moves from the wall the

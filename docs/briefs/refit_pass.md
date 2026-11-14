@@ -1932,10 +1932,12 @@ re-cut by their blows' count and the anchor read again; the four pieces that rai
 read again and the Storm Petrel's session told; the fight bot taught what a standing shield
 is worth, since it values one by its number.
 
-**On the phone.** A debug build's SETTINGS → TRIALS has SHIELD BREAK (BUILT, REST 1, REST 2,
-REST 3), read as a battle starts, and BARRIER BASIC (BUILT, NONE), read at the next launch;
-REST 2 with NONE is the package read above. A shield at rest shows a dashed frame on its
-gauge and a cell a round left; the break itself plays the shatter the game already has.
+**On the phone.** A debug build's SETTINGS → TRIALS has SHIELD BREAK (BUILT, BLOCK), read as
+a battle or a lone fight starts, and BARRIER BASIC (BUILT, NONE), read at the next launch. The
+dial's rest (REST 1, 2 or 3 rounds; the package read above was REST 2 with NONE) left with
+the reboot's build, section 22, where nothing comes back by itself: the block's rest is the
+reboot's now, BLOCK with REBOOT on ON, and with REBOOT on BUILT a blocked shield regenerates
+the next round. The break itself plays the shatter the game already has.
 
 ## 16. The shield as a system (13 November, a frame and a model; nothing decided)
 
@@ -3042,9 +3044,20 @@ A what-if off by default, as the others are; nothing in content moves.
   where this round's blows would take a point of its shield or less, and holds otherwise. A
   die left idle is a reboot where there is something to get back. The blind and the random
   bot read no picks. Heat's price in its weighing counts the shield a first overheat breaks.
-- *The trial.* REBOOT on SETTINGS → TRIALS, BUILT or ON, read as a battle starts;
-  `RIFTGATE_REBOOT=1` on any run, the skirmish scene alone included. OVERHEAT beside it prices
-  a stack.
+- *The trial.* REBOOT on SETTINGS → TRIALS, BUILT or ON, read as a battle or a lone fight
+  starts from the menu (the lone fight since 14 November: it had read the dials at launch
+  alone); `RIFTGATE_REBOOT=1` on any run, the skirmish scene alone included. OVERHEAT beside
+  it prices a stack.
+- *The settings for his play* (his "What settings exactly should I be using?", 14 November).
+  REBOOT on ON; OVERHEAT on ×1, his rule's one hull a stack; SHIELD BREAK on BUILT, the block
+  being its own question and by the model the wall again beside the reboot (section 21);
+  BARRIER BASIC on BUILT, the Barrier on the stock dice being the cover his fourth ruling
+  names; HEAT on BUILT, with COOLER the one to try if a machine reboots too often; the
+  field's six on the game's own, so one thing has moved. Two rows are dead under it, since a
+  chassis's own regen and cooling read as nothing: SHIELD REGEN whole, and HOTTER's one more
+  cooling. SHIELD REGEN, HEAT and BARRIER BASIC are read at launch, so the game is closed
+  and opened again after the rows are set. A row with no choice lit holds a value of an
+  older build (a REST, a +3) and reads as BUILT.
 
 What is a first cut, his to judge running: where the control sits and that it wants a die
 read first; the three chips' glyphs; the die of a rebooting machine, which reads as spent;
