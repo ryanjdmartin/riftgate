@@ -37,6 +37,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
 - Tests: 1188 tests, 371,561 checks, green on `ccr-722ca9f0-yj8na3` (14 November, the
+  rider and keyword pass's records, no engine code moved; before that the
   basics' what-ifs and their dials; before that REBOOT on the bottom row's middle with
   REROLL centred again; before that REBOOT a drop's target
   alone, and shot trails the game's own; before
@@ -1730,10 +1731,19 @@ Engine list has the pass, the refit brief's section 22 the spec). The rule leave
 and the rule it replaces is cut in the same pass: the chassis's own shield regen and cooling
 out of the engine and of content, and the overheat that settles. The foes' numbers do not
 move in it. **Then, Claude's order, put to him the same day and his to set:** the audit of
-every rider and keyword against the reboot, with the foes' Burn, the block and the Barrier's
-place, a first round in chat (it settles what the foes' effects are before anything is
-sized against them); the foes' kits against the frame (who the reboot protects and what
-threatens it: the brief's section 21), a small model first; tier one's numbers at the anchor
+every rider and keyword against the reboot, with the foes' Burn and the Barrier's place (it
+settles what the foes' effects are before anything is sized against them). **It had its
+first round the same day, ahead of the fold-in, on his "let's do the rider and keyword pass
+now"**: `docs/rider_pass_proposal.md` reads every rider, cost, status and foes' mark against
+the reboot and his yardstick, measures each rider on the vanilla (`docs/measurements.md`),
+lists what still grants shield or cooling, and waits on his marks (the to-do's Ryan list has
+its eleven decisions; nothing in content moved). With it, on his proposal, the tier-one
+bench: placeholder pieces, each the vanilla with one thing traded, read by the kind of
+formation, the proposal's section 9, built after his marks. Then the foes' kits against the
+frame (who the reboot protects and what threatens it: the brief's section 21; the approach
+to the defence side he asked for, a shield in standard blows, a fight in cycles and a hull
+by its budget, is the proposal's section 10), a small model first, no shield or hull
+renumbered before it; tier one's numbers at the anchor
 to the hull budget, since today's foes were sized against a shield that refills and cost
 about twice the hull under it, and with them the stock basics' numbers, which are sized
 against the same foes (his logic of 14 November, open: the vanilla gun one under the

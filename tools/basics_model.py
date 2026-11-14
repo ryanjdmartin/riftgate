@@ -32,6 +32,11 @@ What it prints:
   7. The ladder by the standard foe's hit points, 3 to 6, the vanilla one under it: what each
      gun under the vanilla still does to that foe, alone and beside another, and behind a
      point of plate. It answers whether a standard foe of 5 buys anything a 4 does not.
+  8. A bench of tier-one guns, each the vanilla with one thing traded (Ryan, 14 November: "a
+     hot 4 and a less hot 2x2 ... a variety of combinations of riders, damage, heat, and hit
+     counts, and then see what sticks ... and what is redundant enough to cut"): the spends
+     each takes to kill five standard foes, a plain 4, a 3 behind a point of plate, a thin 3,
+     a thick 6 and a 4 behind plate. Two guns with the same row and the same heat are one gun.
 """
 
 import argparse
@@ -249,6 +254,33 @@ def main():
             plated = shots_to_kill(hp, 1, d)
             rows.append([hp, d, "%d under" % (vanilla - d) if d < vanilla else "", what, plated or "never"])
     table("7. The ladder by the standard foe: each gun from the vanilla down, on that foe", ["The standard foe", "A gun of", "Paid for a rider", "On the standard foe", "Shots behind a point of plate"], rows)
+
+    # 8. The bench: each gun's kill signature across the standard foes.
+    bench = [   # name, damage a strike, strikes, heat
+        ("The vanilla: 3", 3, 1, 3),
+        ("One more, hot: 4", 4, 1, 6),
+        ("One more, split: 2 twice", 2, 2, 4),
+        ("Split fine: 1 four times", 1, 4, 4),
+        ("The vanilla split: 1 three times", 1, 3, 3),
+        ("A rider's gun: 2", 2, 1, 3),
+        ("A heavy rider's gun: 1", 1, 1, 3),
+        ("Two more, hotter: 5", 5, 1, 8),
+        ("Two more, split: 3 twice", 3, 2, 7),
+        ("A big gun: 6", 6, 1, 9),
+        ("Six, split: 2 three times", 2, 3, 6),
+    ]
+    marks = [("a plain 4", 4, 0), ("3 behind plate", 3, 1), ("a thin 3", 3, 0), ("a thick 6", 6, 0), ("4 behind plate", 4, 1)]
+    def spends(hp, plate, dmg, strikes):
+        through = (dmg - plate) * strikes
+        return "never" if through <= 0 else math.ceil(hp / through)
+    seen = {}
+    rows = []
+    for name, dmg, strikes, h in bench:
+        sig = tuple(spends(hp, plate, dmg, strikes) for _, hp, plate in marks)
+        same = seen.get(sig, "")
+        seen.setdefault(sig, name)
+        rows.append([name, h] + list(sig) + [("as " + same.split(":")[0].lower()) if same else ""])
+    table("8. A bench of guns, each the vanilla with one thing traded: spends to kill", ["The gun", "Heat"] + [m_[0].capitalize() for m_ in marks] + ["The same kills"], rows)
 
 
 if __name__ == "__main__":

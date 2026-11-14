@@ -2913,7 +2913,9 @@ What follows from those, built so and no question:
 
 Left for after the build, his words: the foes' Burn ("Ignore enemy Burn for now, we might be
 forced to change it regardless") and an audit of every rider and keyword ("we'll need to audit
-every rider and keyword after this, no matter what"). The to-do holds both.
+every rider and keyword after this, no matter what"). Both had their first
+round on 14 November, on his "let's do the rider and keyword pass now":
+`docs/rider_pass_proposal.md`, waiting on his marks.
 
 ### The machines, redone against the briefs
 
@@ -3357,8 +3359,21 @@ middling one, a gun of 2 that kills only beside a 3; and a softer plate on the f
 gun (three shots through a point of plate where a 4's takes four). Two rider rungs that
 stand by themselves come only at 6. What it costs: 57% of tier one's formation slots and
 every gun renumbered, the tiers above scaled with them, and the sums a player does in his
-head a size up. 4 is the least standard that carries his ladder: at 3 the first step down
-is the last before equipment.
+head a size up.
+
+Claude first added that 4 is the least standard that carries his ladder, since at 3 the
+first step down is the last before equipment. His correction the same day: "That's not
+necessarily true, since we have heat as a second cost lever. One step down, but heat can
+rise on a 1 damage weapon." So the ladder has two levers, damage first and heat second, and
+a rung holds as many grades as its heat can tell apart: a gun of 1 with a light rider and a
+gun of 1 with a heavy one are two pieces at two heats. The size of the standard foe does
+not bound the riders' grades, and 4 stays for the plainer reasons: the roster sits on it
+and nothing is bought by moving.
+
+What followed from it the same day, each with its own home: the riders priced on the ladder
+and read against the reboot, his tier-one bench of placeholder pieces (a hot 4 beside a
+cooler 2 twice, "then see what sticks and is interesting and what is redundant enough to
+cut") and the approach to the defence side he asked for are `docs/rider_pass_proposal.md`.
 
 **The dials** (a debug build's SETTINGS → TRIALS, each read at the next launch; the same
 what-if the runners read, `basics=N` and `top=N` beside `hotter=N`; no content moves):
