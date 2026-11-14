@@ -2915,7 +2915,7 @@ Left for after the build, his words: the foes' Burn ("Ignore enemy Burn for now,
 forced to change it regardless") and an audit of every rider and keyword ("we'll need to audit
 every rider and keyword after this, no matter what"). Both had their first
 round on 14 November, on his "let's do the rider and keyword pass now":
-`docs/rider_pass_proposal.md`, waiting on his marks.
+`docs/vocabulary_pass_proposal.md`, waiting on his marks.
 
 ### The machines, redone against the briefs
 
@@ -3373,7 +3373,7 @@ and nothing is bought by moving.
 What followed from it the same day, each with its own home: the riders priced on the ladder
 and read against the reboot, his tier-one bench of placeholder pieces (a hot 4 beside a
 cooler 2 twice, "then see what sticks and is interesting and what is redundant enough to
-cut") and the approach to the defence side he asked for are `docs/rider_pass_proposal.md`.
+cut") and the approach to the defence side he asked for are `docs/vocabulary_pass_proposal.md`.
 
 **The dials** (a debug build's SETTINGS → TRIALS, each read at the next launch; the same
 what-if the runners read, `basics=N` and `top=N` beside `hotter=N`; no content moves):

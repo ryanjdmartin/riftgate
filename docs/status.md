@@ -37,7 +37,7 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
 - Tests: 1188 tests, 371,561 checks, green on `ccr-722ca9f0-yj8na3` (14 November, the
-  rider and keyword pass's records, no engine code moved; before that the
+  vocabulary pass's two rounds of records, no engine code moved; before that the
   basics' what-ifs and their dials; before that REBOOT on the bottom row's middle with
   REROLL centred again; before that REBOOT a drop's target
   alone, and shot trails the game's own; before
@@ -1732,17 +1732,27 @@ and the rule it replaces is cut in the same pass: the chassis's own shield regen
 out of the engine and of content, and the overheat that settles. The foes' numbers do not
 move in it. **Then, Claude's order, put to him the same day and his to set:** the audit of
 every rider and keyword against the reboot, with the foes' Burn and the Barrier's place (it
-settles what the foes' effects are before anything is sized against them). **It had its
-first round the same day, ahead of the fold-in, on his "let's do the rider and keyword pass
-now"**: `docs/rider_pass_proposal.md` reads every rider, cost, status and foes' mark against
-the reboot and his yardstick, measures each rider on the vanilla (`docs/measurements.md`),
-lists what still grants shield or cooling, and waits on his marks (the to-do's Ryan list has
-its eleven decisions; nothing in content moved). With it, on his proposal, the tier-one
-bench: placeholder pieces, each the vanilla with one thing traded, read by the kind of
-formation, the proposal's section 9, built after his marks. Then the foes' kits against the
-frame (who the reboot protects and what threatens it: the brief's section 21; the approach
-to the defence side he asked for, a shield in standard blows, a fight in cycles and a hull
-by its budget, is the proposal's section 10), a small model first, no shield or hull
+settles what the foes' effects are before anything is sized against them). **It had two
+rounds the same day, ahead of the fold-in, on his "let's do the rider and keyword pass
+now", and his second round made it the vocabulary pass** ("I want to examine enemy riders
+as well, and all existing buffs and debuffs on both sides ... This is a vocabulary domain
+pass. I'm, as always, particularly concerned with Armour"): `docs/vocabulary_pass_proposal.md`
+reads every rider, cost, buff and debuff on both sides against the reboot and his yardstick,
+measures each of our riders on the vanilla and each of the foes' on the standard blow
+(`docs/measurements.md`, two entries), lays out armour against the hit sizes, unwinds the
+Barrier basic and waits on his marks (the to-do's Ryan list has its fourteen decisions;
+nothing in content moved). The two that are open at the root, both his questions of the
+second round: whether the vanilla sits one under the standard foe or two ("Should we still
+be considering +2?"; Claude leans to two, at 3 against 5, and a dial for the rank and
+file's hit points is offered, not built), and the foes' Burn, which he reads as dangerous
+under the reboot and Claude now reads the same way, with a status that erodes on both sides
+in its place and its word his to choose. With the pass, on his proposal, the tier-one
+bench: placeholder pieces, each the vanilla with one thing traded and priced to read as the
+vanilla alone ("the plain vanilla gun is the benchmark for 'viable,' not 'good'"), the
+proposal's section 13, built after his marks. Then the foes' kits against the frame (who
+the reboot protects and what threatens it: the brief's section 21; the approach to the
+defence side he asked for, a shield in standard blows, a fight in cycles and a hull by its
+budget, is the proposal's section 14), a small model first, no shield or hull
 renumbered before it; tier one's numbers at the anchor
 to the hull budget, since today's foes were sized against a shield that refills and cost
 about twice the hull under it, and with them the stock basics' numbers, which are sized
