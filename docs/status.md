@@ -34,10 +34,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1187 tests, 371,408 checks, green on `ccr-722ca9f0-yj8na3` (14 November, the
-  KEYWORD INK and TRACES switches cut with their two tests; before that the same day, 1189
-  with the reboot's control remade and driven by a finger's events, and a lone fight from the
-  menu reading the trial dials). Before it, 1187 tests, 371,387 checks (13
+- Tests: 1187 tests, 371,424 checks, green on `ccr-722ca9f0-yj8na3` (14 November, the
+  dragged die's target and drop on REBOOT; the KEYWORD INK and TRACES switches cut with their
+  two tests; before that the same day, 1189 with the reboot's control remade and driven by a
+  finger's events, and a lone fight from the menu reading the trial dials). Before it, 1187 tests, 371,387 checks (13
   November, the reboot's what-if, its trial and the bot's first play of it, the block's rest
   timer cut). Before it, 1167 tests, 371,269 checks (13 November, the breaking shield's what-if and its
   two trial dials, over main's Kite). Before it, 1154 tests,
@@ -1061,9 +1061,11 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   on any run; read as a battle or a lone fight starts from the menu, the lone fight since 14
   November, on his "What settings exactly should I be using?": the to-do's line has every
   row's setting for his play, and the two rows that do nothing under it, SHIELD REGEN and
-  HOTTER's one more cooling): REBOOT beside REROLL is lit while any machine may reboot, and a
-  press asks which, the next tap on a machine or its die the answer; with a machine's readout
-  open, or its die's, the press reboots it at once; a die dropped on it does the same (the
+  HOTTER's one more cooling): REBOOT beside REROLL is lit while any machine may reboot. A die
+  dragged onto it gives its machine's turn, his lean ("can we drag the die to Reboot? That's
+  probably the most intuitive"): a die in hand lights it as its target and it takes the drop
+  a thumb's width past its edge. A press asks which, the next tap on a machine or its die
+  the answer, and with a machine's readout open, or its die's, reboots it at once (the
   control since 14 November, on his "So I can't actually trigger a reboot": it had lit for a
   die's open readout alone, and nothing on the screen said so); heat past the maximum, a
   broken shield and a reboot under way each wear a chip, and a broken shield's gauge a

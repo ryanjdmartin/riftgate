@@ -548,9 +548,10 @@ func test_the_screen_s_reboot_control_gives_the_read_die_s_turn() -> void:
 
 ## The control under a finger, as the phone delivers one (Ryan, 14 November: "So I can't actually
 ## trigger a reboot"; it had lit for a die's open readout alone, and nothing on the screen said
-## so). Every way in: a press that asks which and the tap on a die or a machine that answers, a
-## press with a machine's readout open or its die's, and a die dropped on the control. Live: the
-## fight's screen in a viewport, every touch pushed through it.
+## so). Every way in: a die dragged onto the control, which lights as the die's target while
+## it is in hand; a press that asks which and the tap on a die or a machine that answers; and a
+## press with a machine's readout open or its die's. Live: the fight's screen in a viewport,
+## every touch pushed through it.
 func live_test_reboot_takes_a_press_and_a_pick_a_read_machine_and_a_dropped_die() -> void:
 	Skirmish.reboot = true
 	var db := ContentDB.load_default()
@@ -598,12 +599,43 @@ func live_test_reboot_takes_a_press_and_a_pick_a_read_machine_and_a_dropped_die(
 	_tap(vp, rb)
 	assert_eq(_rebooting(sk), [false, true, false], "and REBOOT with a die's readout open reboots its machine")
 	_undo(s)
-	# A die dropped on the control.
+	# A die dragged to the control, the gesture he leans to ("can we drag the die to Reboot?
+	# That's probably the most intuitive"): in hand it lights its target, and the drop lands a
+	# thumb's width past the drawing too.
 	var from: Vector2 = s._dice[2].get_global_rect().get_center()
-	_drag(vp, from, rb - from)
+	var out := from + Vector2(0.0, -60.0)
+	_finger(vp, from, true)
+	_slide(vp, from, out)
+	assert_eq(s._drag_from, 2, "the die in hand")
+	assert_true(s._reboot_btn.pulse and not s._reboot_btn.disabled, "a die in hand lights REBOOT as its target, pulsing")
+	assert_false(s._reboot_btn.filled, "not filled until the die is over it")
+	var drop: Vector2 = s.reboot_drop_rect().end - Vector2(4.0, 4.0)
+	assert_false(s._reboot_btn.get_global_rect().has_point(drop), "a point past the drawing, inside the drop's room")
+	_slide(vp, out, drop)
+	assert_true(s._reboot_btn.filled, "filled with the die over it")
+	_finger(vp, drop, false)
 	assert_eq(_rebooting(sk), [false, false, true], "a die dropped on REBOOT gives its machine's turn")
 	assert_false(s._ghost.visible, "the die in hand set down")
+	assert_false(s._reboot_btn.filled or (s._reboot_btn.pulse and not HudButton.PULSE_DEBUG), "and the control at rest")
 	_undo(s)
+	# The drop's room stops short of the dice above: a die set back on its own slot reboots nothing.
+	for d in s._dice:
+		assert_false(s.reboot_drop_rect().intersects(d.get_global_rect()), "REBOOT's drop clear of a die's slot")
+	for v in s._mech_views:
+		assert_false(s.reboot_drop_rect().intersects(v.get_global_rect()), "and of a machine, a die's other target")
+	# A machine that has spent and still holds a die (two things a round) is no target: its
+	# die in hand darkens the control, and a drop there sets the die back.
+	sk.mechs[1].spends = 1
+	var held: Vector2 = s._dice[1].get_global_rect().get_center()
+	_finger(vp, held, true)
+	_slide(vp, held, rb)
+	assert_eq(s._drag_from, 1, "its die in hand")
+	assert_true(s._reboot_btn.disabled and not s._reboot_btn.filled, "a die whose machine has spent darkens REBOOT")
+	_finger(vp, rb, false)
+	assert_false(_rebooting(sk).has(true), "and a drop there reboots nothing")
+	assert_false(s._reboot_btn.disabled, "the die set back, the control lit again for the others")
+	sk.mechs[1].spends = 0
+	s._refresh()
 	# The question taken back: a second press, a tap on nothing.
 	_tap(vp, rb)
 	_tap(vp, rb)
@@ -647,6 +679,24 @@ func _tap_die(vp: Viewport, s: SkirmishScreen, i: int) -> void:
 func _undo(s: SkirmishScreen) -> void:
 	s._undo_from = 0
 	s._on_undo()
+
+
+## A finger already down slid from `a` to `b`, not lifted: its motion as Android delivers it.
+func _slide(vp: Viewport, a: Vector2, b: Vector2, steps: int = 8) -> void:
+	for k in range(1, steps + 1):
+		var at := a.lerp(b, float(k) / steps)
+		var mm := InputEventMouseMotion.new()
+		mm.device = InputEvent.DEVICE_ID_EMULATION
+		mm.position = at
+		mm.global_position = at
+		mm.relative = (b - a) / steps
+		mm.button_mask = MOUSE_BUTTON_MASK_LEFT
+		vp.push_input(mm)
+		var sd := InputEventScreenDrag.new()
+		sd.index = 0
+		sd.position = at
+		sd.relative = (b - a) / steps
+		vp.push_input(sd)
 
 
 func test_off_the_screen_has_no_reboot_control() -> void:

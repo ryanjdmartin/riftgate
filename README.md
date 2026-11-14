@@ -546,9 +546,10 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # gauges back as the next round opens; heat past the maximum stays and every point of it burns
 # hull every turn; the first overheat between reboots breaks the shield; a broken shield gains
 # none until its machine reboots. On the screen: REBOOT beside REROLL, lit while any machine may
-# reboot. Press it and it asks which, the next tap on a machine or its die the answer; press it
-# with a machine's readout open, or its die's, and that machine reboots at once; or drop a die on
-# it. UNDO takes it back; heat past the maximum, a broken shield and a reboot under way each wear a
+# reboot. Drag a die onto it and its machine reboots: a die in hand lights it as its target, and
+# it takes the drop a little past its own edge. Or press it and it asks which, the next tap on a
+# machine or its die the answer; or press it with a machine's readout open, or its die's. UNDO
+# takes it back; heat past the maximum, a broken shield and a reboot under way each wear a
 # chip, and a broken shield's gauge a dashed frame. The same page's REBOOT (BUILT, ON) sets it
 # on the phone, read as a battle or a lone fight starts, with OVERHEAT pricing a point of the
 # burn. A what-if, nothing decided; the fight bot has a first play of it, and

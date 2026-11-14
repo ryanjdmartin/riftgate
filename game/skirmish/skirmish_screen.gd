@@ -606,10 +606,14 @@ func _build() -> void:
 	_place(_reroll_btn, Vector2(W * 0.5 - REROLL_SIZE.x * 0.5, REROLL_Y), REROLL_SIZE)
 	# The reboot's control (a debug build's trial, Ryan, 13 November: "smash the Reboot button"):
 	# beside REROLL, the dice's row, lit while any machine may reboot (one that has spent
-	# nothing). A press reboots the machine being read, its own readout open or its die's; with
-	# none read it asks which, and the next tap on a machine or its die answers; a die dragged
-	# onto it gives its machine's turn the same way (14 November, his "So I can't actually
-	# trigger a reboot": it had lit for a die's open readout alone, and said so nowhere).
+	# nothing). A die dragged onto it gives its machine's turn, the gesture he leans to (14
+	# November: "can we drag the die to Reboot? That's probably the most intuitive"): a die in
+	# hand lights it as its target, pulsing, or darkens it for a machine that may not, and it
+	# takes the drop a thumb's width past its own edge (REBOOT_DROP). A press works too: it
+	# reboots the machine being read, its own readout open or its die's, and with none read it
+	# asks which, the next tap on a machine or its die the answer (the same day, his "So I
+	# can't actually trigger a reboot": it had lit for a die's open readout alone, and said so
+	# nowhere).
 	_reboot_btn = null
 	_reboot_armed = false
 	_reboot_hover = false
@@ -620,7 +624,7 @@ func _build() -> void:
 		_reboot_btn.font_size = 20
 		_reboot_btn.center_text = true
 		_reboot_btn.state_marked = true
-		_reboot_btn.tooltip_text = "REBOOT, then a machine or its die, or drag a die here: its shield drops now, and its heat and shield are back next round."
+		_reboot_btn.tooltip_text = "Drag a die here, or REBOOT and then a machine or its die: its shield drops now, and its heat and shield are back next round."
 		var left := W * 0.5 + REROLL_SIZE.x * 0.5 + 14.0
 		_place(_reboot_btn, Vector2(left, REROLL_Y), Vector2(W - 16.0 - left, REROLL_SIZE.y))
 
@@ -1317,6 +1321,8 @@ func _refresh(save: bool = true) -> void:
 	_reroll_btn.set_enabled(assigning and sk.can_reroll() and not _reroll_indices().is_empty())
 	if _reboot_btn != null:
 		var may := assigning and _pending.is_empty() and _any_may_reboot()
+		if _drag_from >= 0:
+			may = may and sk.can_reboot(_drag_from)   # a die in hand: its target, or dark for a machine that may not
 		if not may:
 			_reboot_armed = false
 		_reboot_btn.set_enabled(may)
@@ -3975,20 +3981,37 @@ func _any_may_reboot() -> bool:
 	return false
 
 
+## How far past its own edge REBOOT takes a dropped die, in design pixels: left, up, right,
+## down. A thumb hides a control 54 high, so the drop is given more room than the drawing: up
+## to the screen's edge, most of the way to the machines' row or the bottom row below, and
+## little upward, where a die set back on its own slot must not land.
+const REBOOT_DROP := [12.0, 8.0, 16.0, 20.0]
+
+
+## Where a die dropped reboots its machine: REBOOT's drawing and REBOOT_DROP round it.
+func reboot_drop_rect() -> Rect2:
+	if _reboot_btn == null:
+		return Rect2()
+	var k := get_global_transform().get_scale()
+	return _reboot_btn.get_global_rect().grow_individual(REBOOT_DROP[0] * k.x, REBOOT_DROP[1] * k.y, REBOOT_DROP[2] * k.x, REBOOT_DROP[3] * k.y)
+
+
 ## Whether a die held at `global_pos` is over REBOOT.
 func _over_reboot(global_pos: Vector2) -> bool:
-	return _reboot_btn != null and _reboot_btn.is_visible_in_tree() and _reboot_btn.get_global_rect().has_point(global_pos)
+	return _reboot_btn != null and _reboot_btn.is_visible_in_tree() and reboot_drop_rect().has_point(global_pos)
 
 
-## The control as it stands: filled, pulsing and asking while it waits for its answer, filled
-## under a die it would take, its word and its outline otherwise. The words are working text in
-## code, his to write.
+## The control as it stands: pulsing while a die it would take is in hand, the drop's target,
+## and filled once that die is over it; filled, pulsing and asking while it waits for the answer
+## to a press; its word and its outline otherwise. The words are working text in code, his to
+## write.
 func _dress_reboot() -> void:
 	if _reboot_btn == null:
 		return
+	var takes := _drag_from >= 0 and sk.can_reboot(_drag_from)   # the die in hand is one it would take
 	_reboot_btn.text = "WHICH ONE?" if _reboot_armed else "REBOOT"
-	_reboot_btn.filled = _reboot_armed or _reboot_hover   # filled too under a die it would take
-	_reboot_btn.set_pulse(_reboot_armed)
+	_reboot_btn.filled = _reboot_armed or _reboot_hover
+	_reboot_btn.set_pulse(_reboot_armed or takes)
 	_reboot_btn.queue_redraw()
 
 

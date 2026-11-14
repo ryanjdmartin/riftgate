@@ -3033,13 +3033,18 @@ A what-if off by default, as the others are; nothing in content moves.
   since nothing comes back by itself now. Its block stays as the dial's one choice, BUILT or
   BLOCK, since the block is still his open question.
 - *The screen.* REBOOT sits beside REROLL, only under the trial, lit while any machine may
-  reboot. A press reboots the machine being read, its own readout open or its die's; with
-  none read it asks which, filled and pulsing, and the next tap on a machine or its die
-  answers, a second press, a tap on a foe or on nothing taking the question back; a die
-  dropped on it gives its machine's turn. The first cut lit it for a die's open readout
-  alone, and nothing on the screen said so: his "So I can't actually trigger a reboot" of 14
-  November, and the control was remade the same day (`tests/test_reboot.gd` drives each way
-  in with a finger's events). Heat past the
+  reboot. A die dragged onto it gives its machine's turn, the gesture he leans to (14
+  November: "can we drag the die to Reboot? That's probably the most intuitive"): a die in
+  hand lights the control as its target, pulsing, or darkens it for a machine that may
+  not, it fills under the die, and it takes the drop a thumb's width past its own edge
+  (twelve design pixels left, eight up, sixteen right, twenty down, clear of the dice and
+  of the machines). A press works too: it reboots the machine being read, its own readout
+  open or its die's; with none read it asks which, filled and pulsing, and the next tap on
+  a machine or its die answers, a second press, a tap on a foe or on nothing taking the
+  question back. The first cut lit it for a die's open readout alone, and nothing on the
+  screen said so: his "So I can't actually trigger a reboot" of 14 November, and the
+  control was remade the same day (`tests/test_reboot.gd` drives each way in with a
+  finger's events). Heat past the
   maximum is a chip with its stacks, a broken shield a chip and a dashed frame on its gauge,
   a reboot under way a chip; the heat gauge draws what stands past its end as the shield's
   does an overshield. The chips' lines and the control's word are working text in code, his
@@ -3065,9 +3070,9 @@ A what-if off by default, as the others are; nothing in content moves.
   and opened again after the rows are set. A row with no choice lit holds a value of an
   older build (a REST, a +3) and reads as BUILT.
 
-What is a first cut, his to judge running: where the control sits and which of its ways in
-he keeps (the press that asks, the read machine, the dropped die), with its word while it
-asks, "WHICH ONE?", working text; the three chips' glyphs; the die of a rebooting machine,
+What is a first cut, his to judge running: where the control sits; whether the press's two
+ways in stay beside the drag he leans to (the press that asks, the read machine), with its
+word while it asks, "WHICH ONE?", working text; the drop's room; the three chips' glyphs; the die of a rebooting machine,
 which reads as spent; no sound of its own (it plays the vent's).
 
 **A first read of it** (`docs/measurements.md`, 13 November; each fight at its rating, the
