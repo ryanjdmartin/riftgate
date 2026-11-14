@@ -3032,16 +3032,21 @@ A what-if off by default, as the others are; nothing in content moves.
 - *The morning's SHIELD BREAK dial.* Its rest timer is cut, engine, save, gauge and tests,
   since nothing comes back by itself now. Its block stays as the dial's one choice, BUILT or
   BLOCK, since the block is still his open question.
-- *The screen.* REBOOT is a drop's target at the right end of the dice's row, only under the
-  trial, REROLL at the row's left (his "Probably move reroll to the left side, too", 14
-  November; in the bottom layout that stands REROLL 50 design pixels over END TURN, where
-  END TURN's question on unspent dice meets a slip). A die dragged onto it gives its
+- *The screen.* REBOOT is a drop's target in the middle of the bottom row, between END TURN
+  and UNDO, only under the trial, and REROLL sits centred under the dice as it did (his
+  option of 14 November: "keep it centered and put reboot on the bottom middle between end
+  turn and undo"). REROLL was tried at the row's left that day, over END TURN in the bottom
+  layout, and weighed at its right, over UNDO: a reroll is the undo's floor, never taken
+  back and sealing the spends before it, so UNDO onto REROLL is the dearest slip the screen
+  has, and END TURN's is met by its question on unspent dice. A target that takes no press
+  parts the two buttons and can be slipped onto by neither. A die dragged onto it gives its
   machine's turn, and nothing else does (the same day: "dragging is the gesture we already
   have, we should stick with that"): it is dashed at rest, live while any machine may
   reboot; a die in hand lights it, solid and pulsing, or darkens it for a machine that may
   not; it fills under the die and takes the drop a thumb's width past its own edge (twelve
-  design pixels left, eight up, sixteen right, twenty down, clear of the dice and of the
-  machines); a touch passes through it. Two forms went before it that day. The first cut
+  design pixels to each side, twenty-four up, ten down to the glass's edge, clear of the
+  machines, of REROLL and of the two buttons); a touch passes through it. Two forms went
+  before it that day. The first cut
   lit it for a die's open readout alone, and nothing on the screen said so: his "So I can't
   actually trigger a reboot". The second kept a press beside the drag, one that asked which
   machine and one that took the machine being read, and was cut on his word above
@@ -3072,8 +3077,9 @@ A what-if off by default, as the others are; nothing in content moves.
   older build (a REST, a +3) and reads as BUILT.
 
 What is a first cut, his to judge running: the target's look at rest and with a die in
-hand; the drop's room; REROLL over END TURN in the bottom layout; the three chips' glyphs; the die of a rebooting machine,
-which reads as spent; no sound of its own (it plays the vent's).
+hand; the drop's room; the drag's length to the bottom row in the middle layout, about a
+drag to the back rank; the three chips' glyphs; the die of a rebooting machine, which reads
+as spent; no sound of its own (it plays the vent's).
 
 **A first read of it** (`docs/measurements.md`, 13 November; each fight at its rating, the
 six tier ones, the bot's first play, a direction). Every fight costs 1.6 to 2.4 times its
@@ -3128,3 +3134,196 @@ with it, in one pass (`CLAUDE.md`: a rule leaves the engine with its last piece)
 
 Beside them, his: the machines the rule reaches (the list above), each a design session as
 his brainstorm yields it. Until its session a machine plays as it is built.
+
+## 23. The stock basics by the fodder's health (14 November; his logic read, nothing decided)
+
+**His play of the trial, in his words.** "I will say that I felt the heat playing already.
+Heat costs are probably too high, for some pieces, or heat caps are too low - but that's a
+whole thing, I don't want to judge based on my tiny sample. I just know I overheated a lot.
+Overheat damage did felt fair at 1 per heat, especially because I didn't feel so bad if my
+'math' was wrong and I went over by one or two. I'd go with that to start." "Enemy damage
+felt ok, some foes I felt like took a shot too many to kill, but my read there is that the
+stock loadouts were just not up to where they needed to be, which I think we know." So a
+stack burns one, his pick to start; the heat prices and the maxima are noted and not judged.
+
+**His logic.** "A 'standard' vanilla shot should be 1 less than our 'standard' fodder
+health, whatever that is. So if a goblin, the most basic swarm unit, is 4, then we set a
+normal, no rider, direct gun at 3. That's the baseline. If it proves that a 3 health
+standard, vanilla fodder works better, then our vanilla gun needs to be 2. For 5HP, probably
+4. From there, I extrapolate. I have no idea what each rider is worth. But I would cost them
+by damage first, not heat. So a basic with one decent rider gets -1 damage, and one with a
+more powerful effect gets -2, and so on until it turns into Equipment by dealing no damage.
+Then I go up. In the example of the 4 health goblin, a 4 damage shot is premium since it
+prevents one instance of damage. That needs to cost something, and for basics, the only cost
+we should have is Heat. So the 4 damage basic, or more explicitly the +1 damage gun over the
+vanilla, needs to bite appropriately. My thought process is that that extra point of damage
+should be something to work for as a first build step for the player. Reliably one-shotting
+the core fodder units. I could be very wrong on this. Perhaps the standard for a 4 HP core
+should be 2, so that it takes two complete shots. It depends a lot on how many foes we sick
+on the player in a formation. If the baseline is 2 shots per unit either way, then it comes
+down to how accessible are we making that extra damage. Like the Skua for example, it gets
+that +1 and starts one shooting from turn two (or one if lucky), with the basic vanilla gun.
+So maybe that's too strong, and indicates that the base gun should be -2. Or, the skua is
+too warping at low numbers and needs to get sent to tier two." His ask: "How is my logic? Do
+a deep analysis on it, applying our learnings so far, and game design theory."
+
+**What the records already hold.** His kill-time test of 21 and 22 October: "a rank-and-file
+foe dies to one good blow or two ordinary ones" ("One to two for rank and file makes
+sense"). The logic is that test made exact: the ordinary blow is the vanilla, the good one a
+point more. The pricing pass of 28 October measured the keywords in points of flat damage on
+that day's content: a Breach about one, a Shock one and a half, Flak 2 and Burn 2 about two,
+Burn 3 and a Chain nearly three. The tiers row: tier zero is tier one's power, only simpler.
+The triangle row: every component has a price, and the basics carry heat.
+
+**Today's content against it** (tier one, 14 November). Three basic guns deal 2 for 4 heat
+and the Laser Carbine 3 for 5; a plain tier-one gun, the Slugthrower, deals 4 for 4. So the
+vanilla today is half a goblin, his "two complete shots", and the gun that kills a goblin
+outright is a find at the vanilla's heat. The ten tier-one formations hold 69 foes:
+
+| The foes | Slots | Share |
+|---|---|---|
+| Thin, 2 or 3 hit points (the needler, the revenant) | 16 | 23% |
+| Standard, 4 (the goblin, the bomb, every back rank) | 39 | 57% |
+| 4 behind a point of plate (the zombie knight) | 2 | 3% |
+| Thick, 5 or 6 (the gel, the salamander) | 8 | 12% |
+| A big plated one, 14 to 20 | 4 | 6% |
+
+| A gun of | Kills in one shot | In two | In three | In four or more |
+|---|---|---|---|---|
+| 2, today's vanilla | 10% | 70% | 12% | 9% |
+| 3, his rule on the goblin | 23% | 71% | none | 6% |
+| 4 | 80% | 14% | none | 6% |
+| 5 | 88% | 6% | none | 6% |
+
+By domain a gun of 3 kills in one shot half the Waste's slots and 45% of the Marsh's, and
+none of the Meadow's or the Peak's; a gun of 4 kills in one 62% of the Peak's and 77 to 93%
+of the others'. A braced goblin is 4 behind a point of plate for a round, and the wolf, a
+hunter and no formation's, is 7: four shots of 2, three of 3, two of 4.
+
+**The model** (`tools/basics_model.py`, apart from content: three machines, one gun a round
+each, a foe dead before the foes' turn strikes nobody; heat under the reboot at a maximum of
+12; no dice, reach, shield or riders).
+
+| The pack | A gun of 2 | A gun of 3 | A gun of 4 |
+|---|---|---|---|
+| Eight thin, 3 | 6 rounds, 57 blows | 3 rounds, 21 | 3 rounds, 21 |
+| Eight standard, 4 | 6 rounds, 76 | 6 rounds, 76 | 3 rounds, 28 |
+| Six thick, 6 | 6 rounds, 60 | 4 rounds, 40 | 4 rounds, 40 |
+| Six of 4 behind a point of plate | 8 rounds, 72 | 4 rounds, 30 | 4 rounds, 30 |
+| A big plated one, three standard, three thin | 10 rounds, 101 | 6 rounds, 55 | 4 rounds, 30 |
+
+Under the reboot, blows taken (and of them the blows that land while the squad stands bare):
+
+| The pack | 3 for 3 heat | 4 for 4 heat | 4 for 6 | 4 for 8 | 4 for 12 |
+|---|---|---|---|---|---|
+| Eight thin | 21 | 21 | 21 | 36 (15 bare) | 36 (15) |
+| Eight standard | 84 (8) | 28 | 28 | 48 (20) | 48 (20) |
+| Six thick | 40 | 40 | 52 (12) | 72 (32) | 72 (32) |
+| Six plated | 30 | 30 | 39 (9) | 54 (24) | 54 (24) |
+| The mixed pack | 62 (7) | 30 | 37 (7) | 53 (23) | 53 (23) |
+
+One machine of the three changed, the vanilla 3, heat left out: against eight standard foes
+the squad takes 76 blows on plain dice, 71 with one of that machine's six entries dealing
+one more, 66 with two, and 64 with every weapon of its dealing one more from the second
+round. With the vanilla at 2 all four are 76. An entry in one of six shows on 17% of its
+machine's turns, 31% with a reroll given it and 42% with two.
+
+**The read.**
+
+*What holds.*
+
+- *The anchor is the right one.* At single digits a point of damage does one thing, change
+  the shots a foe takes, so the fodder's hit points are the unit a gun is measured in. It is
+  the vanilla test of the card games (fix a plain body for a cost, pay each keyword out of
+  the body), set against the foe in place of a cost.
+- *A kill is worth more than its damage.* The foes pick, the squad acts, the foes strike: a
+  foe dead this round does not strike this round. Two shots becoming one takes the model's
+  squad from 76 blows to 28 against eight standard foes, well over twice for twice the
+  kills, since the foes that die first never strike at all (the square law of aimed fire).
+  "It prevents one instance of damage" is the smaller half of it.
+- *His rule fits his test on today's roster, and names what he felt.* A vanilla of 3 kills
+  everything in tier one's formations in one or two but the four big plated ones. Today's 2
+  takes three or four shots on a fifth of the slots: the gels, the salamanders, anything
+  braced or plated, and the wolf. That is "a shot too many".
+- *Riders paid in damage.* It agrees with the measure of 28 October, and under the reboot it
+  keeps the triangle's sides apart: heat is the one budget a gun draws on now, so a rider
+  paid in heat would be the gun's own price with a bigger number.
+
+*What needs care.*
+
+1. *One under the fodder is a knife's edge, by design.* Against a foe of 4, a gun of 2 and a
+   gun of 3 are the same gun: two shots. The vanilla's third point lives only off the
+   standard foe (thin, thick, plated, big) and beside a chip (3 and 1 kill). And every
+   single point on either side then crosses the line: a stack of any amp doubles the squad's
+   kills on standard fodder, and a point of plate on a foe undoes it. So the rule makes the
+   amps and plate the dearest things in tier one. That is its excitement and its risk, and
+   it is the baseline's doing, no one machine's.
+2. *The roster sits on one number.* 57% of the slots are a plain 4. So the step from 3 to 4
+   is a cliff: 23% of slots die in one shot, then 80%. The lever that turns a cliff into
+   steps is the foes' spread, not the gun: with thin, standard and thick near a third each,
+   a 4 kills half in one and a 5 the next share, and every point of damage has its own foes.
+3. *The rider ladder's steps are unequal.* On a foe of 4 the pairs 3 and 3, 3 and 2, 3 and 1
+   and 2 and 2 all kill. So a point paid for a rider is free against standard fodder (two
+   rider guns kill a goblin as two vanillas do) and dear against everything else (table
+   above, a gun of 2 against thin, thick and plated), and the second point is steep
+   everywhere: a gun of 1 kills nothing without a 3 beside it. Plate and thick fodder are
+   what make a rider's price real, so each domain needs some.
+4. *Heat cannot price a point that crosses the line.* Under the reboot a shot's heat is a
+   share of a reboot, its heat over the maximum, so heat is a straight price. The point's
+   worth is a step. Against standard fodder the gun of 4 beats the vanilla at any heat the
+   gauge holds: 48 blows at 12 heat, one shot a reboot, where the vanilla takes 84. Against
+   thin, thick or plated fodder the point crosses nothing and any heat over the vanilla's is
+   a loss. So its heat does not tune how good it is. The roster does that. Its heat sets how
+   often it speaks: three kills a reboot at 4, two at 6, one at 8, at a maximum of 12.
+5. *The last volley is never burnt.* A fight ends on the spend that kills its last foe,
+   before the turn does, so heat spent to finish costs nothing. Against standard fodder the
+   gun of 4 ends the model's fight inside the gauge at any heat up to 6, with no reboot at
+   all. A price that should "bite" shows from about 8.
+6. *"Accessible" is how often the die shows it.* One entry in six is a sixth to two fifths
+   of a machine's turns. A point on every weapon from the second round is every turn. So the
+   Skua's first stack is worth two entries and more (64 blows beside 71 and 66), and with
+   the vanilla at 2 it is worth nothing on standard fodder, the dead point again. It is the
+   canary for the baseline. It has its own answers built in: a point of plate eats the
+   bounce, and hull damage, a burn included, halves the stacks.
+7. *His other form is today's game.* A vanilla of half the fodder wastes nothing, and a
+   point more does nothing: the Laser Carbine's third point and the Skua's first stack are
+   dead on a goblin, and the step that matters is two points, the Slugthrower's. Flat and
+   safe, where one under is sharp. His play of it is the "shot too many".
+
+**Claude's leans, his to mark.**
+
+1. Take the rule, said in shots: the vanilla kills the standard foe in two with a point to
+   spare, the good gun in one. On today's roster that is a vanilla of 3.
+2. Say what the standard foe is, 4, and make thin and thick each domain's deliberate turn
+   from it. Whether the spread flattens toward thirds is the foes' pass's question.
+3. The ladder as he has it, 3, 2, 1 and equipment, with the measure of 28 October as the
+   first prices: a Breach or a Shock a point, Flak 2 or Burn 2 two, a Chain or Burn 3 the
+   third, which is equipment.
+4. The gun of 4 is a find and no stock, priced in kills a reboot (6 or 8 heat at a maximum
+   of 12), its worth set by how much of a domain is a plain 4.
+5. The vanilla's heat comes down to 2 or 3. Today's 4 was priced against a cooling of 2
+   that the reboot took away, which is why he overheated: a machine met its limit in four to
+   six rounds by the prices' own design, and meets it in three now.
+6. The Skua waits for its own session, read against the baseline once that is set. Its
+   levers there are his two, when the stacks arrive and its tier, and never the vanilla.
+
+**The bench**, each with the rule that killed it:
+
+- *The vanilla at half the fodder* (today's): no dead waste, but a point more is dead and
+  the thick and the plated take three and four shots, against his kill-time test.
+- *The vanilla equal to the fodder*: every gun kills in one, the round's question (which
+  die on which foe) goes, and a formation of eight is two rounds.
+- *Pay riders in heat*: under the reboot heat is the gun's own price, so the rider and the
+  gun would draw on one budget, against the triangle's sides.
+- *Price the gun of 4 to parity by heat alone*: no heat under the maximum does it against
+  standard fodder (the model's fourth table).
+- *Move the base gun down for the Skua*: one machine's passive setting every machine's gun,
+  and at 2 the fault he felt comes back.
+
+**What it would move, if taken**: the three basic guns from 2 to 3 and the Laser Carbine
+from 3 to its own place on the ladder (a rider's, or the first hot gun's); every basic's
+heat; the tier-one finds brought to the ladder with them (section 12's last step); the
+machines that read damage or heat by the point, their sessions'; then the anchor read again.
+It belongs with the foes' numbers, after the audit, since both are sized against each
+other; a dial for the vanilla's number and heat would let his play and the runner read it
+before content moves.

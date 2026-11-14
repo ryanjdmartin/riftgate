@@ -124,7 +124,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   `--fit`, summarised into `build/pricing/<name>/summary.md`); `synergy_map.py` prints who sets and who reads every
   status and resource, from content, and writes `docs/synergy_map.md`; `turn_loop.py` models the
   campaign's turn loop from its constants with every battle won, for the pressure the fronts put
-  on the cities; `shield_model.py` models the shield apart from content, four machines against
+  on the cities; `basics_model.py` models the stock guns against rank and file apart from content (shots to kill, and the heat of a gun that deals one more); `shield_model.py` models the shield apart from content, four machines against
   the same damage a round in different shapes under each rule for the shield, for what a rule
   makes the foes and the player want before the runner reads it; `backdrop_shot.gd` paints the skirmish's battle backdrop for every domain on
   every ground into PNGs, headless; `screenshot.gd` renders a
@@ -421,6 +421,7 @@ python3 tools/shield_model.py --bench   # the wider bench alone: one field for t
 python3 tools/shield_model.py --fight   # a fight that ends: each machine a gun with heat, the pack with hit points; a reboot that grows with every break, and one gauge for hits and heat
 python3 tools/shield_model.py --builds  # whole rule sets spliced from Ryan's menu of 13 November: regen or none, the block, what a pass recovers, cooling, one bar; a die that is a dud one round in five
 python3 tools/shield_model.py --shutdown  # the shutdown as he stated it the same day (no regen, no cooling, a break allows it, an overheat forces it, none by choice), with what an overheat costs and when the recovery lands each as a row; a gun's heat in turns; a foe that heats
+python3 tools/basics_model.py           # the stock basics apart from content (Ryan's logic of 14 November: the vanilla gun one under the standard fodder's hit points): shots to kill, the pairs that kill, a fight by the gun's number, the gun that deals one more by its heat under the reboot, how often a die shows an entry, a hot entry beside a lasting point
 python3 tools/shield_model.py --choice  # the reboot by choice, his next form: a machine rides at its maximum, a reboot takes the turn and empties the shield, both back the round after; played blind to the foes' picks and reading them, with what the emptying buys
 # whom the foes strike (23 October): every starter trio a tender can deal, stock, greedy, against each
 # faction's formation, bosses and first pack; picks as intents are drawn, the same with every machine standing,
@@ -545,10 +546,10 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # chassis's own; a machine that has spent nothing may reboot, its shield down at once and both
 # gauges back as the next round opens; heat past the maximum stays and every point of it burns
 # hull every turn; the first overheat between reboots breaks the shield; a broken shield gains
-# none until its machine reboots. On the screen: REBOOT at the right end of the dice's row, REROLL
-# at its left. Drag a die onto REBOOT and its machine reboots, the one way in: the control is a
-# drop's target and no button, dashed at rest, lit with a die in hand, and it takes the drop a
-# little past its own edge. UNDO takes it back; heat past the maximum, a broken shield and a reboot under way each wear a
+# none until its machine reboots. On the screen: REBOOT in the middle of the bottom row, between
+# END TURN and UNDO, REROLL centred under the dice. Drag a die onto REBOOT and its machine reboots,
+# the one way in: the control is a drop's target and no button, dashed at rest, lit with a die in
+# hand, and it takes the drop a little past its own edge. UNDO takes it back; heat past the maximum, a broken shield and a reboot under way each wear a
 # chip, and a broken shield's gauge a dashed frame. The same page's REBOOT (BUILT, ON) sets it
 # on the phone, read as a battle or a lone fight starts, with OVERHEAT pricing a point of the
 # burn. A what-if, nothing decided; the fight bot has a first play of it, and

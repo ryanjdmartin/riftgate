@@ -9542,3 +9542,61 @@ What it says:
 Not read: the Barrier basic off the dice under the reboot (the Barrier is the reboot's cover
 by his fourth ruling, so its place moves with this), the second battle whole, and any tier
 past one. Each on his word.
+
+## 14 November, the stock basics by the fodder's health: the roster counted, and a model apart from content
+
+Ryan's logic of the day (the refit brief's section 23): the vanilla gun one under the
+standard fodder's hit points, riders paid in damage, the gun that deals one more paid in
+heat. Two reads, neither a fight of the game's.
+
+**The roster, counted** (content of 14 November: the ten tier-one formations, 69 foes; a
+foe's hit points and plate against a gun's number, one shot at a time, nothing else).
+
+| A gun of | Kills in one shot | In two | In three | In four or more |
+|---|---|---|---|---|
+| 2, today's vanilla | 10% | 70% | 12% | 9% |
+| 3 | 23% | 71% | none | 6% |
+| 4 | 80% | 14% | none | 6% |
+| 5 | 88% | 6% | none | 6% |
+
+The slots: 23% thin (2 or 3 hit points), 57% a plain 4, 3% a 4 behind a point of plate, 12%
+thick (5 or 6), 6% a big plated one (14 to 20). By domain, in one shot: a gun of 3 none of
+the Meadow's or the Peak's, half the Waste's and 45% of the Marsh's; a gun of 4, 77%, 62%,
+93% and 85%.
+
+**The model** (`python3 tools/basics_model.py`; three machines, one gun a round each, a foe
+dead before the foes' turn strikes nobody, heat under the reboot at a maximum of 12; no dice
+but in its last table, no reach, shield or riders). Rounds to clear and blows taken, heat
+left out:
+
+| The pack | A gun of 2 | A gun of 3 | A gun of 4 |
+|---|---|---|---|
+| Eight thin, 3 | 6 rounds, 57 | 3 rounds, 21 | 3 rounds, 21 |
+| Eight standard, 4 | 6 rounds, 76 | 6 rounds, 76 | 3 rounds, 28 |
+| Six thick, 6 | 6 rounds, 60 | 4 rounds, 40 | 4 rounds, 40 |
+| Six of 4 behind a point of plate | 8 rounds, 72 | 4 rounds, 30 | 4 rounds, 30 |
+| A big plated one, three standard, three thin | 10 rounds, 101 | 6 rounds, 55 | 4 rounds, 30 |
+
+Blows taken under the reboot, with the blows that land while the squad stands bare:
+
+| The pack | 3 for 3 heat | 4 for 4 heat | 4 for 6 | 4 for 8 | 4 for 12 |
+|---|---|---|---|---|---|
+| Eight thin | 21 | 21 | 21 | 36 (15 bare) | 36 (15) |
+| Eight standard | 84 (8) | 28 | 28 | 48 (20) | 48 (20) |
+| Six thick | 40 | 40 | 52 (12) | 72 (32) | 72 (32) |
+| Six plated | 30 | 30 | 39 (9) | 54 (24) | 54 (24) |
+| The mixed pack | 62 (7) | 30 | 37 (7) | 53 (23) | 53 (23) |
+
+One machine of the three changed, heat left out, 4,000 fights a cell, eight standard foes
+and a vanilla of 3: 76 blows on plain dice, 71 with one of its six entries dealing one more,
+66 with two, 64 with every weapon of its dealing one more from the second round; with a
+vanilla of 2, 76 in every column. An entry in one of six shows on 17% of its machine's turns,
+31% with one reroll given it, 42% with two.
+
+What they say: against a foe of 4 a gun of 2 and a gun of 3 are one gun, and the third point
+earns its place on everything else; the step from 3 to 4 is a cliff on a roster that sits on
+one number; no heat under the maximum makes the gun of 4 the vanilla's equal against
+standard fodder, and any heat over the vanilla's is a loss where its point crosses nothing;
+a lasting point on every weapon is worth two entries and more, and nothing with the vanilla
+at 2. What they do not say: what a fight of the game's costs, which is the anchor's read once
+a number moves.

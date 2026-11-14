@@ -518,7 +518,9 @@ func test_the_screen_s_reboot_control_is_a_drop_s_target_and_shows_the_three_sta
 	assert_false(s._reboot_btn.disabled, "live while a machine has spent nothing")
 	assert_eq(s._reboot_btn.mouse_filter, Control.MOUSE_FILTER_IGNORE, "and no button: a touch passes through it")
 	assert_true(s._reboot_btn.socket and not s._reboot_btn.pressed.has_connections(), "a drop's target, nothing wired to a press")
-	assert_true(s._reroll_btn.position.x + s._reroll_btn.size.x < s._reboot_btn.position.x, "REROLL at the row's left, the control at its right")
+	assert_eq(s._reroll_btn.position.x + s._reroll_btn.size.x * 0.5, s.W * 0.5, "REROLL centred under the dice")
+	assert_true(s._end_btn.position.x + s._end_btn.size.x < s._reboot_btn.position.x and s._reboot_btn.position.x + s._reboot_btn.size.x < s._undo_btn.position.x, "the control between END TURN and UNDO")
+	assert_eq(s._reboot_btn.position.y, s._end_btn.position.y, "on the bottom row")
 	ms.heat = ms.heat_max + 3
 	s._refresh()
 	var chips: Array[String] = []
@@ -584,7 +586,7 @@ func live_test_a_die_dragged_onto_reboot_is_the_one_way_in() -> void:
 	assert_eq(s._drag_from, 2, "the die in hand")
 	assert_true(s._reboot_btn.pulse and not s._reboot_btn.disabled, "a die in hand lights REBOOT as its target, pulsing")
 	assert_false(s._reboot_btn.filled, "not filled until the die is over it")
-	var drop: Vector2 = s.reboot_drop_rect().end - Vector2(4.0, 4.0)
+	var drop: Vector2 = s.reboot_drop_rect().position + Vector2(4.0, 4.0)
 	assert_false(s._reboot_btn.get_global_rect().has_point(drop), "a point past the drawing, inside the drop's room")
 	_slide(vp, out, drop)
 	assert_true(s._reboot_btn.filled, "filled with the die over it")
@@ -599,7 +601,8 @@ func live_test_a_die_dragged_onto_reboot_is_the_one_way_in() -> void:
 		assert_false(s.reboot_drop_rect().intersects(d.get_global_rect()), "REBOOT's drop clear of a die's slot")
 	for v in s._mech_views:
 		assert_false(s.reboot_drop_rect().intersects(v.get_global_rect()), "and of a machine, a die's other target")
-	assert_false(s.reboot_drop_rect().intersects(s._reroll_btn.get_global_rect()), "and of REROLL, at the row's other end")
+	assert_false(s.reboot_drop_rect().intersects(s._reroll_btn.get_global_rect()), "and of REROLL, in the row above")
+	assert_false(s.reboot_drop_rect().intersects(s._end_btn.get_global_rect()) or s.reboot_drop_rect().intersects(s._undo_btn.get_global_rect()), "and of END TURN and UNDO beside it")
 	# A die dropped anywhere else is no reboot: on a foe it is spent, on nothing it is set back.
 	_finger(vp, from, true)
 	_slide(vp, from, out)

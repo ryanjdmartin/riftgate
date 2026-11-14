@@ -593,11 +593,11 @@ func _build() -> void:
 		d.drag_ended.connect(_on_drag_ended)
 		_dice.append(d)
 
-	# Reroll: one wide button right under the dice, the dice's own control. Alone on its row it
-	# sits centred, far from End turn, so a thumb going for one cannot land on the other. With
-	# the reboot's control on the row it takes the left end (Ryan, 14 November: "Probably move
-	# reroll to the left side, too"), which in the bottom layout stands it over End turn: a slip
-	# there meets End turn's question, asked whenever a die is unspent.
+	# Reroll: one wide button centred right under the dice, the dice's own control. Far from
+	# End turn and from Undo alike, so a thumb going for one cannot land on the other: a reroll
+	# is the undo's floor, so the slip from Undo onto it is the dearest on the screen (Ryan, 14
+	# November, weighed it at the row's left over End turn and at its right over Undo, and
+	# kept it centred with the reboot's control below).
 	_reroll_btn = HudButton.new("REROLL", _on_reroll)
 	_reroll_btn.sound = ""   # the reroll is its own figure
 	_reroll_btn.glyph = "reroll"
@@ -605,9 +605,11 @@ func _build() -> void:
 	_reroll_btn.badge_size = 20
 	_reroll_btn.center_text = true
 	_reroll_btn.tooltip_text = "A reroll never shows the same component twice."
-	_place(_reroll_btn, Vector2(16.0 if Skirmish.reboot else W * 0.5 - REROLL_SIZE.x * 0.5, REROLL_Y), REROLL_SIZE)
-	# The reboot's control (a debug build's trial): the row's right end, a drop's target and no
-	# button. A die dragged onto it gives its machine's turn, and nothing else does (Ryan, 14
+	_place(_reroll_btn, Vector2(W * 0.5 - REROLL_SIZE.x * 0.5, REROLL_Y), REROLL_SIZE)
+	# The reboot's control (a debug build's trial): the middle of the bottom row, between End
+	# turn and Undo (his option of 14 November: "keep it centered and put reboot on the bottom
+	# middle between end turn and undo"), a drop's target and no button, so it parts the two
+	# presses and can be slipped onto by neither. A die dragged onto it gives its machine's turn, and nothing else does (Ryan, 14
 	# November: "dragging is the gesture we already have, we should stick with that"; the press
 	# that asked which machine, and the one that took the machine being read, were cut on that
 	# word the day they were built). It is live while any machine may reboot (one that has spent
@@ -624,7 +626,8 @@ func _build() -> void:
 		_reboot_btn.center_text = true
 		_reboot_btn.state_marked = true
 		_reboot_btn.socket = true
-		_place(_reboot_btn, Vector2(W - 16.0 - REROLL_SIZE.x, REROLL_Y), REROLL_SIZE)
+		var left := 16.0 + BOTTOM_BTN.x + REBOOT_GAP
+		_place(_reboot_btn, Vector2(left, BOTTOM_Y), Vector2(W - left * 2.0, BOTTOM_BTN.y))
 
 	# Mechs: each on its hex of the floor, drawn by the floor's camera, gauges above, chips under.
 	for i in range(n):
@@ -3941,10 +3944,12 @@ func _any_may_reboot() -> bool:
 
 
 ## How far past its own edge REBOOT takes a dropped die, in design pixels: left, up, right,
-## down. A thumb hides a control 54 high, so the drop is given more room than the drawing: up
-## to the screen's edge, most of the way to the machines' row or the bottom row below, and
-## little upward, where a die set back on its own slot must not land.
-const REBOOT_DROP := [12.0, 8.0, 16.0, 20.0]
+## down. A thumb hides a control 60 high, so the drop is given more room than the drawing: to
+## the sides as far as its gap to End turn and Undo, upward toward the row above (the machines
+## in the middle layout, Reroll in the bottom one, both clear of it), and down to the glass's
+## edge.
+const REBOOT_DROP := [12.0, 24.0, 12.0, 10.0]
+const REBOOT_GAP := 14.0   # between REBOOT and the bottom row's two buttons
 
 
 ## Where a die dropped reboots its machine: REBOOT's drawing and REBOOT_DROP round it.
