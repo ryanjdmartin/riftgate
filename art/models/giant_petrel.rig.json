@@ -18,7 +18,19 @@
    "swing": false,
    "parent": ""
   },
+  "fan_l_aft": {
+   "axis": "roll",
+   "limits": {},
+   "swing": false,
+   "parent": ""
+  },
   "fan_r": {
+   "axis": "roll",
+   "limits": {},
+   "swing": false,
+   "parent": ""
+  },
+  "fan_r_aft": {
    "axis": "roll",
    "limits": {},
    "swing": false,
@@ -1098,6 +1110,14 @@
   "fan_r": [
    -240.0,
    -900.0
+  ],
+  "fan_l_aft": [
+   -320.0,
+   -1100.0
+  ],
+  "fan_r_aft": [
+   320.0,
+   1100.0
   ]
  },
  "halo": [

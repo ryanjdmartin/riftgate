@@ -36,8 +36,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1189 tests, 372,485 checks, green on `ccr-b7d5164e-1wtzzm` (14 November, the Needletail's
-  nineteenth cut and the Giant Petrel's twelfth, over main at `bbcf375` taken in a merge). Before it, on main,
+- Tests: 1189 tests, 372,483 checks, green on `ccr-b7d5164e-1wtzzm` (14 November, the Needletail's
+  nineteenth cut, the Giant Petrel's thirteenth and the Kite's round pair, over main at `bbcf375` taken in a merge). Before it, on main,
   1188 tests, 371,561 checks, green on `ccr-722ca9f0-yj8na3` (14 November, the
   vocabulary pass's two rounds of records, no engine code moved; before that the
   basics' what-ifs and their dials; before that REBOOT on the bottom row's middle with
@@ -420,8 +420,9 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
     declined (the bible's withdrawal row); Phased on a kill he kept for the shadow panther. The
     model's third mount is ahead of the canopy, a port under a low curved hood carried forward
     over the mount to four past it, every class there in its port form, its root inside the hull
-    (four new variants: the port gun, the port pair, the port rack and the port dish on its
-    telescoping mast; the blade standard), coming out of a round bore drilled two into the hood
+    (new variants: the port gun, the port rack and the port dish on its telescoping mast, and
+    since 14 November the round pair, two barrels out of a round receiver the port rack's diameter,
+    in place of the port pair, as in the Needletail's cheeks; the blade standard), coming out of a round bore drilled two into the hood
     along the line into a little round cut under the weapon that frees the launcher, the trough
     it first lay in filled and the line 0.6 higher (a unit's drop from there tried and taken
     back), shipped on his "Ship it" (13 November); the dish the launcher's diameter; the tail's top edges chamfered, the intake taking the face's new shape, the tail
@@ -463,7 +464,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
 - **The Needletail's two modes and the Giant Petrel's hull** (`ccr-b7d5164e-1wtzzm`, 12 November;
-  not on main): built that day on Ryan's design and his mix, then reworked on his notes of that
+  on main since 14 November, on Ryan's "Needletail looks great. Ship it.", the Giant Petrel's
+  thirteenth cut with it, his notes on it still coming): built that day on Ryan's design and his mix, then reworked on his notes of that
   evening and 13 November (the bible's Kestrel row). The Needletail: a jet's chined fuselage
   (its round second cut retired: "I didn't literally mean round like a rocket"), shorter than the
   first cut and short and flat for its width, 15.8 at its widest since the twelfth cut (17.4
@@ -506,10 +508,11 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   boosters on plinths either side of a raised aft deckhouse under its aerofoil on fins at the hulls'
   outer edges, the navy's two back at the hulls' sterns; the deckhouse's front a sharp prow raked
   steeply back (since the eleventh a long spearhead laid back to about 26 degrees over the centre bow, a brow's peak over the glass), each twisted facet laid smooth and the bridge's glass a shell following it, a
-  raked pane each side of the prow, high under the brow and tall since the twelfth (his pick from the sheets), an intake on each corner facet;
-  two long windows forward down each flank and aft of them a turbine on a web, its fan turning (`fan_l`, `fan_r`) and its nozzle burning
-  with the boosters, a fin under it canted out at 45 degrees (the twelfth, his "combine A and C"); a cobalt spearhead down each bow; the cushion
-  open fore and aft. A render round in the hangar's Models tab for each at every cut (the last cut
+  raked pane each side of the prow, high under the brow and tall since the twelfth (his pick from the sheets), bigger and meeting on the
+  crease, mirrored, since the thirteenth; the foot's shoulders square, so each corner facet is flat and faces ahead, the whole of it an intake;
+  two long windows forward down each flank and aft of them a turbine on a web, its fan turning (`fan_l`, `fan_r`), its last stage turning
+  astern against the glow in its nozzle (`fan_l_aft`, `fan_r_aft`), its nozzle burning with the boosters, a fin on it canted up and out at
+  45 degrees (the twelfth, his "combine A and C", and the thirteenth); a cobalt spearhead down each bow; the cushion open fore and aft. A render round in the hangar's Models tab for each at every cut (the last cut
   as Before); the tests green at each.
 
 - **The Ammit's rework** (`ccr-8af28d03-re9kz4`, Ryan's own design, 12 November; on main): "The 4

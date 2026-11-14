@@ -306,7 +306,7 @@ def kite(b):
     # a bit smaller, same diameter as the rack"), and a unit forward of the mount, its sleeve's
     # root still under the hood. The standard shapes were tried here and taken back the same
     # day ("Just for fun ..."; "Ok go back to port gun"). The blade's place is a guess.
-    NOSE_FITS = {"barrel": "barrel_port", "rack": ("rack_port", 0.6), "twin_barrel": ("twin_barrel_port", 0.92), "dish": ("dish_port", 0.6, -2.0), "blade": ("blade", 0.7)}
+    NOSE_FITS = {"barrel": "barrel_port", "rack": ("rack_port", 0.6), "twin_barrel": ("twin_barrel_round", 0.6), "dish": ("dish_port", 0.6, -2.0), "blade": ("blade", 0.7)}   # the twins on their round receiver at the rack's scale, its diameter (Ryan, 14 November: "Change the kite too, might as well")
     b.pin("hp_3", (0.0, PORT, GZ), scale=0.5, carries="", fits=NOSE_FITS)
     # The hood over the port (his: "we slap a gentle curved fairing overtop of the back of the
     # mount point, to hide the poking-out edge"; then "carry the fairing forward more, over the
@@ -6504,8 +6504,14 @@ def _gp_turbine(b, s, cx, cz, y_front, y_back, r, joint):
             _cottonmouth_blade(b, (cx, y_front - 2.4, cz), k * 2.0 * math.pi / 7.0, 0.7, ri - 0.12, 1.3, s * math.radians(32.0), 0.16, "steel.dark", "fan_blade")
     b.loft([(y_back + 3.2, _oct(cz, 2.0 * r, 2.0 * r, cx, 12)), (y_back + 0.9, _oct(cz, 1.6 * r, 1.6 * r, cx, 12))], "steel.dark", "turbine_nozzle", cap=False)
     _cottonmouth_ring(b, cx, cz, y_back + 0.1, y_back + 0.9, 0.8 * r + 0.15, 0.8 * r - 0.35, 12, "amber.engine", "booster_ring", phase=ph)
-    _disc(b, (cx, y_back + 1.4, cz), (0.0, -1.0, 0.0), 0.8 * r - 0.3, 12, "amber.exhaust", "exhaust", phase=ph)
-    b.loft([(y_back + 1.6, _oct(cz, 1.8, 1.8, cx, 8)), (y_back - 0.9, _oct(cz, 0.2, 0.2, cx, 8))], "steel.dark", "tail_cone")
+    _disc(b, (cx, y_back + 2.8, cz), (0.0, -1.0, 0.0), 0.85 * r, 12, "amber.exhaust", "exhaust", phase=ph)   # the glow deep in the nozzle
+    b.loft([(y_back + 2.7, _oct(cz, 1.8, 1.8, cx, 8)), (y_back - 0.9, _oct(cz, 0.2, 0.2, cx, 8))], "steel.dark", "tail_cone")
+    # Astern the turbine's last stage turns with the fan, dark against the glow behind it, so it
+    # reads as a turbine from astern too (Ryan, 14 November: "wonder if we can get some turbine
+    # action on the other side of the turbines so that they also read turbine from the rear").
+    with b.joint(joint + "_aft", (cx, y_back + 1.8, cz), axis="roll"):
+        for k in range(9):
+            _cottonmouth_blade(b, (cx, y_back + 1.8, cz), k * 2.0 * math.pi / 9.0, 0.85, 0.84 * r, 0.9, -s * math.radians(34.0), 0.14, "steel.dark", "turbine_blade")
 
 
 def giant_petrel(b):
@@ -6554,7 +6560,11 @@ def giant_petrel(b):
     but extend it down so it's taller. On the side front faces flanking the windshield, let's style
     those as vents or intakes. On the sides, let's combine A and C, so that there's a booster with a
     fin underneath, the fin at an angle, maybe 45 to the body. And maybe style the booster so it's
-    more of a turbine".
+    more of a turbine". And on the twelfth: "expand those face vents so they cover the face they're
+    on, give that geometry a purpose. I think you might need to flatten the face though, the skewed
+    curve in it makes the vents weird. Front windshield can be a bit bigger. It also doesn't meet
+    itself in the middle"; "some turbine action on the other side of the turbines so that they also
+    read turbine from the rear"; "The fins I meant angle 45 up, not down".
 
     The Navy SES's body: two knife hulls, their stems raked back as a wave piercer's, dark below
     the chine and chrome above, a cobalt chine stripe and straight deck stripes, each closing
@@ -6564,9 +6574,11 @@ def giant_petrel(b):
     the deck, every face leaning in, its front a long spearhead laid well back and run forward over
     the centre bow, a brow's peak over its glass, each facet of it a smooth twisted surface from its
     foot to the roof's edge, the bridge's glass following it high up its middle under the brow,
-    a tall raked pane each side of the prow, an intake on each corner facet beside it, two long
-    windows forward down each flank and a turbine aft on each on a web (fan_l, fan_r turning in their
-    intakes, burning with the boosters), a fin under it canted out at 45 degrees; on its roof the Spindrift Salvo's
+    a tall raked pane each side of the prow, the two meeting on the crease, the foot's shoulders
+    square so each corner facet is flat and faces ahead, the whole of it an intake, two long windows
+    forward down each flank and a turbine aft on each on a web (fan_l, fan_r turning in their intakes,
+    fan_l_aft, fan_r_aft their last stages astern, burning with the boosters), a fin on it canted up
+    and out at 45 degrees; on its roof the Spindrift Salvo's
     three racks flush in line down the middle, each the size of the second cut's one rack (fixed,
     no pin; salvo_f, salvo_m, salvo_a, their faces rising out of the roof one after another to fire
     over the bow, eighteen tubes rippling, each rack at its own pace), the integrated mast behind them, a swept faceted fin
@@ -6650,7 +6662,7 @@ def giant_petrel(b):
     # streamlined enough"; of the options, "I actually like 5", the fore gun then moved under the bow
     # so the face could come forward, "which gives the roof racks some breathing room").
     FY0, BROW = 31.0, 0.0   # where the front leaves the run; how far forward the roof's edge reaches, as a share of the foot's reach (nothing: straight across)
-    FRONT = [(26.2, 31.0), (18.0, 36.0), (0.0, 54.0)]   # the foot's corners, the right flank round to the prow's point
+    FRONT = [(26.2, 36.0), (18.0, 36.0), (0.0, 54.0)]   # the foot's corners, the right flank round to the prow's point: square shoulders, so each corner facet's foot runs straight across like its head and the facet is flat (Ryan, 14 November: "I think you might need to flatten the face though, the skewed curve in it makes the vents weird")
     VISOR, DROOP = 3.0, 0.7   # the brow's peak: how far it stands out over the face, and how far its lip dips
     RACKS = (30.0, 18.0, 6.0)   # the salvo racks' fronts down the roof, spaced
     DH = [(FY0, 26.2, 15.1, 31.05), (4.0, 26.4, 16.0, 31.6), (-26.0, 26.4, 16.0, 31.6), (-33.0, 26.2, 12.0, 25.0)]   # (y, base half width, roof half width, roof)
@@ -6685,6 +6697,10 @@ def giant_petrel(b):
     _rings(b, [[tuple(facet(i, m / NK, j / NF)) for i in range(len(foot) - 1) for m in range(NK)] + [tuple(facet(len(foot) - 2, 1.0, j / NF))]
                for j in range(NF + 1)], "steel.panel", "deckhouse", cap=False)
     _slab(b, [(x, y, zt0 - 0.1) for (x, y, z) in brow], (0.0, 0.0, 1.0), 0.2, "steel.panel", "deckhouse")
+    for s in (-1.0, 1.0):   # each flank's foot carried forward to its shoulder, a triangle in the flank's plane
+        bm = bmesh.new()
+        bm.faces.new([bm.verts.new(p) for p in ((s * a0, FY0, DZ), (s * FRONT[0][0], FRONT[0][1], DZ), (s * t0, FY0, zt0))])
+        b._finish(bm, "steel.panel", "deckhouse")
     if VISOR:
         # A brow's peak: the roof's front edge carried out over the face as a thin lip, the glass in
         # its shadow.
@@ -6704,21 +6720,29 @@ def giant_petrel(b):
             quad = [(pts[k], 0.0), (pts[k + 1], 0.0), (outs[k + 1], drop), (outs[k], drop)]
             _slab(b, [(q.x, q.y, zt0 - 0.05 - dz) for (q, dz) in quad], (0.0, 0.0, 1.0), 0.32, "steel.panel", "brow_peak")
     # The glass, (along the facet, up it): a raked pane each side of the prow, its outer pillar swept
-    # back, a thin mullion on the crease, each a thin shell over its facet's surface; high on the
+    # back, the two meeting on the crease, each a thin shell over its facet's surface; high on the
     # front, its head under the brow's peak, in its shadow, and tall (Ryan, 14 November, of the
-    # options: "go with 1, High for the window, but extend it down so it's taller"). Nothing on the
-    # short facets each side of the prow, which face out to the flanks, so no glass shows from the
-    # sides or astern ("front windshield still poking out the sides"), and each pane's outer edge
-    # held a little in from its corner, on the swept line it had. On those short facets instead an
-    # intake each, a cobalt frame round a dark mouth with bright louvres across it ("On the side
-    # front faces flanking the windshield, let's style those as vents or intakes").
-    PANES = {1: [(0.13, 0.45), (0.985, 0.45), (0.985, 0.9), (0.25, 0.9)],
-             2: [(0.015, 0.45), (0.87, 0.45), (0.75, 0.9), (0.015, 0.9)]}   # the facet's index round the front: its corners
+    # options: "go with 1, High for the window, but extend it down so it's taller"; then "Front
+    # windshield can be a bit bigger. It also doesn't meet itself in the middle"), each pane's glass
+    # tile laid from the crease out, so the two halves mirror. Nothing on the short facets each side
+    # of the prow, which face out to the flanks, so no glass shows from the sides or astern ("front
+    # windshield still poking out the sides"): each of those flat faces is an intake instead, its
+    # whole face, a cobalt frame round a dark mouth with bright louvres across it ("On the side front
+    # faces flanking the windshield, let's style those as vents or intakes"; then "expand those face
+    # vents so they cover the face they're on, give that geometry a purpose").
+    F0, F1, KB, KT = 0.36, 0.93, 0.05, 0.16   # the glass's foot and head up the facet; its outer pillar's foot and head, in from the facet's outer edge
     NU, NV = 8, 5
+    ci = len(FRONT) - 2   # the right long facet, its crease at its far end; the left's mirrors it at its near end
 
-    def pane(i, corners, d0, d1, material, label, glass=False):
-        """A thin shell over facet `i` between `corners` (along it, up it), `d0` to `d1` off its
-        surface; glass wears one glass tile across it, its gradient corner to corner, so a pane
+    def crease_out(f):
+        """Out from the crease at `f` up it, between the two long facets."""
+        return (facet_out(ci, 1.0, f) + facet_out(ci + 1, 0.0, f)).normalized()
+
+    def pane(i, corners, d0, d1, material, label, glass=False, crease=None):
+        """A thin shell over facet `i` between `corners` (along it, up it: the first and last its
+        near edge), `d0` to `d1` off its surface; `crease`, given, says its near edge lies on the
+        prow's crease and stands off it square to both long facets, so two panes meet there; glass
+        wears one glass tile across it from its near edge, its gradient corner to corner, so a pane
         facing the light shows its sheen rather than one flat tone."""
         c0, c1, c2, c3 = corners
 
@@ -6733,7 +6757,8 @@ def giant_petrel(b):
                 row = []
                 for c in range(NV + 1):
                     k, f = kf(a / NU, c / NV)
-                    row.append(bm.verts.new(facet(i, k, f) + facet_out(i, k, f) * d))
+                    out = crease_out(f) if (crease and a == 0) else facet_out(i, k, f)
+                    row.append(bm.verts.new(facet(i, k, f) + out * d))
                 grid.append(row)
             shell.append(grid)
         inner, outer = shell
@@ -6754,14 +6779,14 @@ def giant_petrel(b):
             along = -along
         height = max((facet(i, *kf(u, 1.0)) - facet(i, *kf(u, 0.0))).dot(along) for u in (0.0, 0.5, 1.0))
         return b._finish(bm, material, label, frame=(o, along, across.normalized(), over, (across.length, max(0.5, height))))
-    for i, corners in PANES.items():
-        pane(i, corners, 0.08, 0.28, "glass.glass", "bridge_glass", glass=True)
-    for i in (0, len(foot) - 2):   # the short facets, flank-side of the glass
+    pane(ci, [(1.0, F0), (KB, F0), (KT, F1), (1.0, F1)], 0.08, 0.28, "glass.glass", "bridge_glass", glass=True, crease=True)
+    pane(ci + 1, [(0.0, F0), (1.0 - KB, F0), (1.0 - KT, F1), (0.0, F1)], 0.08, 0.28, "glass.glass", "bridge_glass", glass=True, crease=True)
+    for i in (0, len(foot) - 2):   # the flat shoulder facets, flank-side of the glass, an intake each the whole face
         box = lambda k0, k1, f0, f1: [(k0, f0), (k1, f0), (k1, f1), (k0, f1)]
-        pane(i, box(0.1, 0.9, 0.18, 0.8), 0.06, 0.18, "livery.livery", "intake_frame")
-        pane(i, box(0.17, 0.83, 0.26, 0.72), 0.18, 0.26, "bore.void", "intake")
-        for f in (0.33, 0.44, 0.55, 0.66):
-            pane(i, box(0.15, 0.85, f - 0.022, f + 0.022), 0.26, 0.62, "steel.plate", "intake_louvre")
+        pane(i, box(0.0, 1.0, 0.0, 1.0), 0.04, 0.14, "livery.livery", "intake_frame")
+        pane(i, box(0.06, 0.94, 0.07, 0.93), 0.14, 0.2, "bore.void", "intake")
+        for f in (0.17, 0.31, 0.45, 0.59, 0.73, 0.86):
+            pane(i, box(0.05, 0.95, f - 0.022, f + 0.022), 0.2, 0.62, "steel.plate", "intake_louvre")
     for s in (-1.0, 1.0):
         b.loft([(min(28.6, min(brow_y(x) for x in (12.4, 14.4))), rect(s * 13.4, 2.0, 31.4, 31.9)), (-16.5, rect(s * 13.4, 2.0, 31.4, 31.9))], "livery.livery", "roof_stripe")
 
@@ -6769,7 +6794,7 @@ def giant_petrel(b):
             a, t, zt = _lerp_at(DH, y)
             return (s * a, DZ), (s * t, zt)
         # The bridge's two windows forward; aft of them a turbine on each flank on a web, burning
-        # with the boosters, a fin under it canted out at 45 degrees, in place of the gallery's
+        # with the boosters, a fin on it canted up and out at 45 degrees, in place of the gallery's
         # other two windows (Ryan, 14 November: "take out some side windows for either additional
         # boosters or faux-wings or fins or something, to fit the Kestrel look more, and look less
         # like a ferry"; of the options, "let's combine A and C, so that there's a booster with a fin
@@ -6782,8 +6807,8 @@ def giant_petrel(b):
         tx = fx(TZ) + TR + 1.3
         _gp_turbine(b, s, s * tx, TZ, TF, TB, TR, "fan_" + ("l" if s < 0 else "r"))
         b.loft([(y, rect(s * (fx(TZ) + tx - TR) / 2.0, tx - TR - fx(TZ) + 1.4, TZ - 0.7, TZ + 0.7)) for y in (TF - 4.0, TB + 4.0)], "steel.dark", "pylon")
-        out = Vector((s * math.sqrt(0.5), 0.0, -math.sqrt(0.5)))   # down and out at 45 degrees
-        across = Vector((s * math.sqrt(0.5), 0.0, math.sqrt(0.5)))  # the fin's thickness, square to it
+        out = Vector((s * math.sqrt(0.5), 0.0, math.sqrt(0.5)))     # up and out at 45 degrees (Ryan, 14 November: "The fins I meant angle 45 up, not down")
+        across = Vector((s * math.sqrt(0.5), 0.0, -math.sqrt(0.5)))  # the fin's thickness, square to it
 
         def fin_at(d, y_le, y_te, t):
             base = Vector((s * tx, 0.0, TZ)) + out * d
@@ -6915,6 +6940,8 @@ def giant_petrel(b):
     b.gait(body_hold=(0.0, 0.0, 0.0, 0.0, 2.0, 0.0), glow={"parts": boosters, "k": KESTREL_HEAVY}, rock=2.0)
     b.spin("fan_l", 240.0, 900.0)   # the flank turbines' fans idling, and spun up under way
     b.spin("fan_r", -240.0, -900.0)
+    b.spin("fan_l_aft", -320.0, -1100.0)   # each one's last stage astern, against its fan
+    b.spin("fan_r_aft", 320.0, 1100.0)
     # Its fixed weapon fires with a slice of its act, the three launches (Ryan, 31 October: "go for
     # ones that are cheapest to do first"), and its fixed equipment with theirs as it is used (Ryan's
     # go of 3 November): the boosters burning for the Immelmann, the array swinging onto an ally for
@@ -9423,17 +9450,6 @@ def shape_barrel_port(b, s=1.0):
     b.prism("y", 0.0, 23.0 * s, 0.0, 3.3 * s, 2.0 * s, "steel.plate", 6, "muzzle")
 
 
-def shape_twin_barrel_port(b, s=1.0):
-    """Twin guns through a port, as the port gun is: the two barrels and their muzzle collars
-    alone, starting at the socket, the brace between them at the port's wall, their receiver
-    inside the hull (Ryan, 12 November, of the standard pair sunk back to hide its receiver:
-    "Twin barrel isn't sticking out as far as it was")."""
-    for x in (-2.8, 2.8):
-        b.prism("y", x * s, 10.0 * s, 0.0, 1.8 * s, 20.0 * s, "steel.dark", 6, "barrel")
-        b.prism("y", x * s, 21.0 * s, 0.0, 2.2 * s, 2.0 * s, "steel.plate", 6, "muzzle")
-    b.box(-4.0 * s, 4.0 * s, 0.0, 2.0 * s, -1.0 * s, 1.0 * s, "steel.dark", "brace")
-
-
 def shape_rack_port(b, s=1.0):
     """A launcher through a port: the round launcher longer and thinner (Ryan, 12 November: "If
     you want to make a true 'port' version of the rack, it would look the same, but be a bit
@@ -9469,7 +9485,9 @@ def shape_twin_barrel_round(b, s=1.0):
     its root lies where the port rack's does (Ryan, 14 November, of the Needletail's cheek ports:
     "the twin barrels end in a square block when they should end in a round one, same diameter as
     the rack. And the back of it needs to start at the same point too, the double barrel floats
-    out of the port when everything else is anchored"), the brace between the barrels halfway."""
+    out of the port when everything else is anchored"; then, of the Kite's nose port, "Change the
+    kite too, might as well"), the brace between the barrels halfway. It took the place of the port
+    pair, the two barrels and their brace alone off the socket."""
     w = 0.8 * s   # across, the port rack's sections
     b.prism("y", 0.0, 3.5 * s, 0.0, 6.0 * w, 7.0 * s, "steel.panel", 12, "receiver", phase=math.pi / 12)
     b.prism("y", 0.0, 7.3 * s, 0.0, 5.7 * w, 0.6 * s, "steel.plate", 12, "receiver_face", phase=math.pi / 12)
@@ -9480,8 +9498,8 @@ def shape_twin_barrel_round(b, s=1.0):
 
 
 ## Each variant by name: (its class, its builder).
-VARIANTS = {"rack_round": ("rack", shape_rack_round), "barrel_port": ("barrel", shape_barrel_port), "twin_barrel_port": ("twin_barrel", shape_twin_barrel_port),
-            "rack_port": ("rack", shape_rack_port), "dish_port": ("dish", shape_dish_port), "twin_barrel_round": ("twin_barrel", shape_twin_barrel_round)}
+VARIANTS = {"rack_round": ("rack", shape_rack_round), "barrel_port": ("barrel", shape_barrel_port), "rack_port": ("rack", shape_rack_port),
+            "dish_port": ("dish", shape_dish_port), "twin_barrel_round": ("twin_barrel", shape_twin_barrel_round)}
 
 
 def shape_builder(name):
@@ -9532,12 +9550,6 @@ def burn_barrel_port(b, s=1.0):
     b.prism("y", 0.0, 24.7 * s, 0.0, 2.4 * s, 1.4 * s, "amber.fire", 6, "burn_flame")
 
 
-def burn_twin_barrel_port(b, s=1.0):
-    """A pilot flame in each of the port pair's muzzles."""
-    for x in (-2.8, 2.8):
-        b.prism("y", x * s, 22.6 * s, 0.0, 1.6 * s, 1.2 * s, "amber.fire", 6, "burn_flame")
-
-
 def burn_twin_barrel_round(b, s=1.0):
     """A pilot flame in each of the round-receiver pair's muzzles."""
     for x in (-2.6, 2.6):
@@ -9558,7 +9570,7 @@ def burn_rack_round(b, s=1.0):
 
 
 ## A class's fire and each variant's whose class burns (a variant of a dish takes none).
-BURNS = {"barrel": burn_barrel, "twin_barrel": burn_twin_barrel, "rack": burn_rack, "blade": burn_blade, "rack_round": burn_rack_round, "barrel_port": burn_barrel_port, "twin_barrel_port": burn_twin_barrel_port, "rack_port": burn_rack_port,
+BURNS = {"barrel": burn_barrel, "twin_barrel": burn_twin_barrel, "rack": burn_rack, "blade": burn_blade, "rack_round": burn_rack_round, "barrel_port": burn_barrel_port, "rack_port": burn_rack_port,
          "twin_barrel_round": burn_twin_barrel_round}
 
 
@@ -9577,7 +9589,6 @@ MUZZLES = {
     "blade": [((0.0, 25.0, 0.0), 16.0)],
     "rack_round": [((0.0, 13.2, 0.0), 26.0)],
     "barrel_port": [((0.0, 27.0, 0.0), 24.0)],
-    "twin_barrel_port": [((-2.8, 25.0, 0.0), 17.0), ((2.8, 25.0, 0.0), 17.0)],
     "rack_port": [((0.0, 20.4, 0.0), 21.0)],
     "dish_port": [((0.0, 19.0, 0.0), 18.0)],
     "twin_barrel_round": [((-2.6, 35.0, 0.0), 17.0), ((2.6, 35.0, 0.0), 17.0)],
