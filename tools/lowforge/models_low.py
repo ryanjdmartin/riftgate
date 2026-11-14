@@ -5867,8 +5867,8 @@ def needletail(b):
     laid along the nose's taper (shell_lt, shell_lb, shell_rt, shell_rb), the gun lying out of the
     bay along its line (stow_l, stow_r carry it, run_l, run_r take a shot's kick), its root under the
     skin behind the bay and its muzzle clear of the nose, and every other class rooted in the bay and
-    run out of the port (the port rack, the port dish on its mast, the blade's bracket and the twin
-    barrels' receiver in the bay); the Designator a low wedge popped up on the nose's top (lamp, hinged at
+    run out of the port (the port rack, the port dish on its mast, the twin barrels on their round
+    receiver and the blade's bracket in the bay); the Designator a low wedge popped up on the nose's top (lamp, hinged at
     its back), its round lamp facing ahead behind a six-bladed iris (iris_1 to iris_6, each
     blade turning on its own pin in the lamp's rim); the long canopy amidships, two bows across
     it; the two pods on the
@@ -5972,10 +5972,11 @@ def needletail(b):
     PIN = YC + REACH - 7.68        # the gun's mount in hover (the port gun is 7.68 long here)
     # Each class rooted in the open bay and run out of the port, none ahead of it on nothing (Ryan,
     # 13 November: "racks, blades and dishes still float out of the front gun ports"): the port
-    # rack's drum and the port dish's sleeve from one root at the bay's back, just ahead of the
-    # gun's, at one diameter (of the Kite's, 12 November: "same diameter as the rack"), the blade's
-    # bracket filling the bay, the twin barrels' receiver in it.
-    CHEEK_FITS = {"barrel": ("barrel_port", 1.0), "twin_barrel": ("twin_barrel", 0.55, -6.4), "rack": ("rack_port", 0.65, -0.5),
+    # rack's drum, the port dish's sleeve and the twin barrels' round receiver from one root at the
+    # bay's back, just ahead of the gun's, at one diameter (of the Kite's, 12 November: "same
+    # diameter as the rack"; of the twins here, 14 November: "the back of it needs to start at the
+    # same point too"), the blade's bracket filling the bay.
+    CHEEK_FITS = {"barrel": ("barrel_port", 1.0), "twin_barrel": ("twin_barrel_round", 0.65, -0.5), "rack": ("rack_port", 0.65, -0.5),
                   "dish": ("dish_port", 0.65, -0.5), "blade": ("blade", 0.55, -4.0)}
     # The hinge, the right side's (the left mirrors it): along the band's taper over the
     # clamshell's run, DH in from the band at the crossing.
@@ -6205,7 +6206,7 @@ def needletail(b):
     # get a bit bigger even, with a bit more angle to the rear edges"), a small flat tip ("I was
     # wrong about the wings coming to a point, maybe just a smaller flat top from what it was").
     ZW, PIVOT_Y, STRIP = -0.4, 10.0, 1.0   # the wings' height, in the band just under the pods' slots; the pivot's station; how far the strip's ends stand out of the side
-    AFT = 5.0                             # how far each slides back as it swings out, clear of the front boosters' blast (Ryan, 14 November: "a little awkward that the front boosters blast right into the wings in flight mode ... the wings, if they could slide back a bit, as they extend")
+    AFT = 8.0                             # how far each slides back as it swings out, clear of the front boosters' blast (Ryan, 14 November: "a little awkward that the front boosters blast right into the wings in flight mode ... the wings, if they could slide back a bit, as they extend"; then "Can the wings slide back a little bit more when extended?")
     TIP_LE, TIP_TE, ROOT_TE = (29.0, -10.0), (29.0, -12.8), (6.6, -6.5)   # the deployed planform's outer corners and its root's trailing corner, the right wing's
     yf, ya = PIVOT_Y + 2.0, PIVOT_Y - 28.7   # the strip's ends, near enough: the leading edge from two past the pivot to the tip
     slope = (face(ya) - face(yf)) / (yf - ya)   # the strip's lean out, aft, so it stands as far out of the side at both ends
@@ -9437,9 +9438,25 @@ def shape_dish_port(b, s=1.0):
     b.prism("y", 0.0, 16.5 * s, 0.0, 2.0 * k * s, 1.0 * s, "amber.engine", 8, "dish_core")
 
 
+def shape_twin_barrel_round(b, s=1.0):
+    """Twin guns on a round receiver, for a port whose launcher is round: the two barrels and
+    their collars out of the face of a drum the port rack's diameter, the drum from the socket so
+    its root lies where the port rack's does (Ryan, 14 November, of the Needletail's cheek ports:
+    "the twin barrels end in a square block when they should end in a round one, same diameter as
+    the rack. And the back of it needs to start at the same point too, the double barrel floats
+    out of the port when everything else is anchored"), the brace between the barrels halfway."""
+    w = 0.8 * s   # across, the port rack's sections
+    b.prism("y", 0.0, 3.5 * s, 0.0, 6.0 * w, 7.0 * s, "steel.panel", 12, "receiver", phase=math.pi / 12)
+    b.prism("y", 0.0, 7.3 * s, 0.0, 5.7 * w, 0.6 * s, "steel.plate", 12, "receiver_face", phase=math.pi / 12)
+    for x in (-2.6, 2.6):
+        b.prism("y", x * s, 19.0 * s, 0.0, 1.8 * s, 24.0 * s, "steel.dark", 6, "barrel")
+        b.prism("y", x * s, 31.0 * s, 0.0, 2.2 * s, 2.0 * s, "steel.plate", 6, "muzzle")
+    b.box(-3.6 * s, 3.6 * s, 18.0 * s, 20.0 * s, -1.0 * s, 1.0 * s, "steel.dark", "brace")
+
+
 ## Each variant by name: (its class, its builder).
 VARIANTS = {"rack_round": ("rack", shape_rack_round), "barrel_port": ("barrel", shape_barrel_port), "twin_barrel_port": ("twin_barrel", shape_twin_barrel_port),
-            "rack_port": ("rack", shape_rack_port), "dish_port": ("dish", shape_dish_port)}
+            "rack_port": ("rack", shape_rack_port), "dish_port": ("dish", shape_dish_port), "twin_barrel_round": ("twin_barrel", shape_twin_barrel_round)}
 
 
 def shape_builder(name):
@@ -9496,6 +9513,12 @@ def burn_twin_barrel_port(b, s=1.0):
         b.prism("y", x * s, 22.6 * s, 0.0, 1.6 * s, 1.2 * s, "amber.fire", 6, "burn_flame")
 
 
+def burn_twin_barrel_round(b, s=1.0):
+    """A pilot flame in each of the round-receiver pair's muzzles."""
+    for x in (-2.6, 2.6):
+        b.prism("y", x * s, 32.6 * s, 0.0, 1.6 * s, 1.2 * s, "amber.fire", 6, "burn_flame")
+
+
 def burn_rack_port(b, s=1.0):
     """The port rack's shells glowing: a lit tip down each of its seven tubes."""
     w = 0.8 * s
@@ -9510,7 +9533,8 @@ def burn_rack_round(b, s=1.0):
 
 
 ## A class's fire and each variant's whose class burns (a variant of a dish takes none).
-BURNS = {"barrel": burn_barrel, "twin_barrel": burn_twin_barrel, "rack": burn_rack, "blade": burn_blade, "rack_round": burn_rack_round, "barrel_port": burn_barrel_port, "twin_barrel_port": burn_twin_barrel_port, "rack_port": burn_rack_port}
+BURNS = {"barrel": burn_barrel, "twin_barrel": burn_twin_barrel, "rack": burn_rack, "blade": burn_blade, "rack_round": burn_rack_round, "barrel_port": burn_barrel_port, "twin_barrel_port": burn_twin_barrel_port, "rack_port": burn_rack_port,
+         "twin_barrel_round": burn_twin_barrel_round}
 
 
 # Where each class's muzzle flare blooms as its weapon fires (Ryan, 31 October: "If the flare
@@ -9531,6 +9555,7 @@ MUZZLES = {
     "twin_barrel_port": [((-2.8, 25.0, 0.0), 17.0), ((2.8, 25.0, 0.0), 17.0)],
     "rack_port": [((0.0, 20.4, 0.0), 21.0)],
     "dish_port": [((0.0, 19.0, 0.0), 18.0)],
+    "twin_barrel_round": [((-2.6, 35.0, 0.0), 17.0), ((2.6, 35.0, 0.0), 17.0)],
 }
 
 

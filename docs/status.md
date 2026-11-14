@@ -27,8 +27,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1168 tests, 372,179 checks, green on `ccr-b7d5164e-1wtzzm` (14 November, the Needletail's
-  eighteenth cut and the Giant Petrel's option switches, over main at `4a0c9b5` taken in a merge). Before it, 1167 tests,
+- Tests: 1168 tests, 372,187 checks, green on `ccr-b7d5164e-1wtzzm` (14 November, the Needletail's
+  nineteenth cut and the Giant Petrel's option switches, over main at `4a0c9b5` taken in a merge). Before it, 1167 tests,
   371,269 checks, green on `ccr-722ca9f0-yj8na3` (13 November, the breaking shield's what-if and
   its two trial dials, over main's Kite), and 1155 tests, 371,949 checks, green on this branch
   over main at `6112939` (13 November, the Giant Petrel's sixth cut). Before it, 1154 tests,
@@ -465,13 +465,14 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   ship is 103 from point to needle, the ports and canards 2 back again in the seventeenth, each bay dark to its rim and each
   gun's root under the skin in hover), every other class rooted at the
   bay's back in its port form (the port rack, the port dish on its mast, taken from main with the Kite's
-  port; the blade's bracket and the twins' receiver in the bay), the Fovea Designator a low wedge pop-up
+  port; the twin barrels on a round receiver the port rack's diameter, `twin_barrel_round`, new on the
+  nineteenth cut; the blade's bracket in the bay), the Fovea Designator a low wedge pop-up
   after a sports car's, its lamp behind
   a six-bladed iris that widens and narrows as it paints, the tail's whole face a cut-out exhaust
   round a needle nineteen long, in a dark rim behind a cobalt band; on the map its gait changes it into flight mode as it gathers speed
   (the cheek guns drawn back and in under the skin, each long clamshell's halves rolling shut over its empty bay about a
   hinge laid along the nose's taper, a joint's resting heading, new in lowforge, the pods sunk flush, the iris shut and the pop-up folded, the boosters level and
-  run in along their fins, straight, the front pair's canards running into the body with them, the swept wings out near the canards and slid back clear of the front boosters, small flat tips, their roots in the
+  run in along their fins, straight, the front pair's canards running into the body with them, the swept wings out near the canards and slid back 8 clear of the front boosters (5 until the nineteenth cut), small flat tips, their roots in the
   fuselage, the exhaust burning white-hot; stowed in hover, each wing's leading edge shows as a
   cobalt strip down the chine) and back as it slows, its transition act the same
   change on the spot. A near-black tile (`void`) lines the

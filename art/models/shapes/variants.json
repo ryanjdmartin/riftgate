@@ -4,5 +4,6 @@
  "barrel_port": "barrel",
  "twin_barrel_port": "twin_barrel",
  "rack_port": "rack",
- "dish_port": "dish"
+ "dish_port": "dish",
+ "twin_barrel_round": "twin_barrel"
 }

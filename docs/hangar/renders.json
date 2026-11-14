@@ -621,8 +621,8 @@
    }
   },
   "needletail": {
-   "when": "Ryan's eighteenth note on its two modes, 14 November, from his phone's look at the cheeks.",
-   "note": "Ryan, 14 November, on the seventeenth cut: “the weird cuts are still weird. And I still think the instead of the front cut sinking, we can just have an elongated clamshell that covers the whole cut area. Teardrop shaped, the point at the front.” Each cheek is now one long teardrop clamshell, point forward, over the whole bay, and the sliding cover over the trough is gone. Its outline stays on the upright band between the chines, so it no longer wraps onto the angled faces where the rim zigzagged. Its halves still roll up and down into the nose, now about a hinge laid inside the side along the nose's taper rather than on the gun's line, which is what lets a long clamshell fold in along its whole length. For flight each gun draws back and a little in, behind its bay and under the skin, before the halves reach it, so they shut over an empty bay and nothing shows through them partway, even in the walk's blend where every part moves at once. The light band across an open bay was the bay's dark lining catching the chrome's gloss: every dark inside of a bay, a barrel or a well now takes none. Ryan's to judge running: Acts for the transition, Walk for the blend.",
+   "when": "Ryan's nineteenth note on its two modes, 14 November.",
+   "note": "Ryan, 14 November, on the eighteenth cut: “Needle looks really good. Can the wings slide back a little bit more when extended? And my only other complaint is not actually with the ship model, but the port style gun models: the twin barrels end in a square block when they should end in a round one, same diameter as the rack. And the back of it needs to start at the same point too, the double barrel floats out of the port when everything else is anchored.” The wings slide back 8 as they swing out, where they slid 5. The twin barrels in the cheeks are a new port form: the two barrels run out of a round receiver the port rack's diameter, rooted at the bay's back where the rack and the dish are; the twin picture shows them on the left cheek. The Kite's nose keeps its own twin form. Ryan's to judge: Walk for the wings, and the twin fitted on a cheek in the Models tab.",
    "images": [
     {
      "file": "needletail/needletail_front.png",
@@ -646,15 +646,19 @@
     },
     {
      "file": "needletail/needletail_changing.png",
-     "alt": "needletail, changing: the guns running in, the blisters shutting, the boosters swivelling"
+     "alt": "needletail, changing: the guns drawn in, the clamshells shutting, the boosters swivelling"
     },
     {
      "file": "needletail/needletail_cheek.png",
-     "alt": "needletail, hover mode, close: the right cheek gun run out, its recess dark to the rim, its root under the skin"
+     "alt": "needletail, hover mode, close, side on: a cheek gun lying out of its long bay, the clamshell's halves rolled in"
     },
     {
      "file": "needletail/needletail_cheek_shut.png",
-     "alt": "needletail, flight mode, close, side on: the right cheek's blister shut"
+     "alt": "needletail, flight mode, close, side on: a cheek's long clamshell shut"
+    },
+    {
+     "file": "needletail/needletail_twin.png",
+     "alt": "needletail, hover mode, close, side on: a twin gun fitted in a cheek's bay, its two barrels out of a round receiver at the bay's back"
     }
    ],
    "candidate": {
@@ -695,7 +699,7 @@
     ]
    },
    "before": {
-    "summary": "Before: the seventeenth cut, 14 November (a short clamshell over the barrel's tip and a sliding cover over the trough ahead of it)",
+    "summary": "Before: the eighteenth cut, 14 November (the wings sliding back 5, the twin barrels' square receiver set forward in the cheek's bay)",
     "images": [
      {
       "file": "needletail/before_needletail_front.png",
