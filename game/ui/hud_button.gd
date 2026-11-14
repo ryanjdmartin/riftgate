@@ -8,6 +8,8 @@ extends BaseButton
 ## CANCEL). Disabled draws at a third. `state_marked` parts on from off by structure as well as
 ## light (the UNDOs; Ryan, 9 November: "map undo needs to be more obvious when it's active versus
 ## disabled"): on, a heavy solid edge over a faint fill at full strength; off, a dashed edge, faint.
+## `socket` makes it a drop's target, which its owner sets to pass every touch through: dashed
+## while it rests, at full strength while it is live, solid while it pulses.
 
 var text: String = ""
 var glyph: String = ""
@@ -15,6 +17,7 @@ var badge: String = ""
 var filled: bool = false
 var ghost: bool = false
 var state_marked: bool = false   # on and off told apart by structure: a heavy solid edge, or a faint dashed one
+var socket: bool = false         # with state_marked, a drop's target and no button (the reboot's): live and at rest it keeps the dashed edge, at full strength, and wears the solid one only while it pulses, the thing it takes in hand
 var font_size: int = 20
 var badge_size: int = 13
 var center_text: bool = false               # centre the text over the whole button even with a glyph
@@ -102,6 +105,11 @@ func _draw() -> void:
 			col.a = 0.3
 			ink = col
 			_dashed_poly(pts, col, 1.5)
+		elif socket and not pulsing:
+			# A drop's target at rest: live, so at full strength, and dashed, so nothing to press.
+			col.a = 1.0
+			ink = col
+			_dashed_poly(pts, col, 2.0)
 		else:
 			# On: a heavy solid edge over a faint fill, at full strength, so it reads as live.
 			col.a = 1.0

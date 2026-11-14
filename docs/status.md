@@ -16,8 +16,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   sessions"). `docs/briefs/refit_pass.md`, section 22, has his rules, his rulings, the spec
   and every machine read against it. It is built and on main, off in the game behind
   `Skirmish.reboot` (REBOOT on a debug build's trials), and content still carries the regen
-  and the cooling it replaces. Read section 22 before any work on a machine, a component, a
-  module or a foe (`CLAUDE.md` has the rule).
+  and the cooling it replaces. **His play of 14 November says it stays ("I like this
+  direction. It works"), and folding it in is the next pass** (Next, in order, below). Read
+  section 22 before any work on a machine, a component, a module or a foe (`CLAUDE.md` has
+  the rule).
 - Sessions run in parallel on this repo: `git status` first, stage by path, diff a shared file
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. A branch
   takes main as it lands and main takes the branch as a fast-forward on Ryan's word; expect the
@@ -34,8 +36,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1187 tests, 371,424 checks, green on `ccr-722ca9f0-yj8na3` (14 November, the
-  dragged die's target and drop on REBOOT; the KEYWORD INK and TRACES switches cut with their
+- Tests: 1187 tests, 371,418 checks, green on `ccr-722ca9f0-yj8na3` (14 November, REBOOT a
+  drop's target alone with REROLL at the row's left, and shot trails the game's own; before
+  that the dragged die's target and drop; the KEYWORD INK and TRACES switches cut with their
   two tests; before that the same day, 1189 with the reboot's control remade and driven by a
   finger's events, and a lone fight from the menu reading the trial dials). Before it, 1187 tests, 371,387 checks (13
   November, the reboot's what-if, its trial and the bot's first play of it, the block's rest
@@ -1061,13 +1064,13 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   on any run; read as a battle or a lone fight starts from the menu, the lone fight since 14
   November, on his "What settings exactly should I be using?": the to-do's line has every
   row's setting for his play, and the two rows that do nothing under it, SHIELD REGEN and
-  HOTTER's one more cooling): REBOOT beside REROLL is lit while any machine may reboot. A die
-  dragged onto it gives its machine's turn, his lean ("can we drag the die to Reboot? That's
-  probably the most intuitive"): a die in hand lights it as its target and it takes the drop
-  a thumb's width past its edge. A press asks which, the next tap on a machine or its die
-  the answer, and with a machine's readout open, or its die's, reboots it at once (the
-  control since 14 November, on his "So I can't actually trigger a reboot": it had lit for a
-  die's open readout alone, and nothing on the screen said so); heat past the maximum, a
+  HOTTER's one more cooling): REBOOT is a drop's target at the right end of the dice's row,
+  REROLL at its left (his "Probably move reroll to the left side, too"), and a die dragged
+  onto it is the one way in (14 November: "dragging is the gesture we already have, we
+  should stick with that"): dashed at rest, lit and pulsing with a die in hand, filled under
+  it, the drop taken a thumb's width past its edge, a touch passing through it. The first
+  cut lit for a die's open readout alone (his "So I can't actually trigger a reboot"), and
+  the presses built in its place that day were cut on his word; heat past the maximum, a
   broken shield and a reboot under way each wear a chip, and a broken shield's gauge a
   dashed frame (the screenshot pose `reboot`). The fight bot has a first play of it
   (`Policy._reboot_first`, `_reboot_idle`), so the runners finish a fight under the rule.
@@ -1628,7 +1631,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   with slices of their acts; a blow jolts the machine and a lost one slumps; the boosters by
   maker (Aphelion's plumes, Kestrel's halos); a hardpoint's variant and scale per silhouette
   class (`tools/fit_sheet.gd`); micro-models for the Swallowtail's flares and the Musk Ox's
-  rockets, shell and casing; shot trails tabled behind SHOT TRAILS. All first cuts for Ryan's
+  rockets, shell and casing; shot trails, kept as the game's own on 14 November ("adds a lot
+  to both immersion and to readibility. Let's keep it"), their switch cut. All first cuts for Ryan's
   judge lines; the render margin (a piece fired out cut at the view's edge) is his to judge running.
 - **The Honey Badger's hopper** (31 October): a load a foe its weapons damage, four at most,
   every two loads a stack of Armoured, granted as each round opens (10 November; the Ore Plate before it), the first buff a store grants; "never destroyed" is the
@@ -1713,7 +1717,24 @@ The tasks are the to-do's; this is the index of what waits.
 ## Next, in order
 
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
-to-do's Ryan list). Ahead of all of it: **the refit pass** (`docs/briefs/refit_pass.md`, the direction
+to-do's Ryan list).
+
+**First: the reboot folded in** (Ryan, 14 November, on his play of the trial: "I like this
+direction. It works. What's our next step? Fold the trial in, and then what?"; the to-do's
+Engine list has the pass, the refit brief's section 22 the spec). The rule leaves its switch
+and the rule it replaces is cut in the same pass: the chassis's own shield regen and cooling
+out of the engine and of content, and the overheat that settles. The foes' numbers do not
+move in it. **Then, Claude's order, put to him the same day and his to set:** the audit of
+every rider and keyword against the reboot, with the foes' Burn, the block and the Barrier's
+place, a first round in chat (it settles what the foes' effects are before anything is
+sized against them); the foes' kits against the frame (who the reboot protects and what
+threatens it: the brief's section 21), a small model first; tier one's numbers at the anchor
+to the hull budget, since today's foes were sized against a shield that refills and cost
+about twice the hull under it; his play of the anchor; then the scaling the paragraph below
+already orders, the first battle down and tiers two and three up. Beside them, his: the
+machines the rule reaches, each a design session as his brainstorm yields them.
+
+Ahead of the rest: **the refit pass** (`docs/briefs/refit_pass.md`, the direction
 Ryan set on 9 November after his play of Phase 2: shields and vents leave the die, a component a
 weapon or equipment, the shield innate and regenerating, cooling passive, the hold the heat
 decision, component destruction off to test, two rerolls kept; the formation pass folded into it,

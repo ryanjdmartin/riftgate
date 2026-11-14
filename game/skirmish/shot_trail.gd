@@ -1,13 +1,12 @@
 class_name ShotTrail
 extends Node2D
 
-## The shot crossing the field (Ryan, 3 November: "Table shots crossing the field for now, it might
-## be too busy. Maybe just build a simple version so I can judge"): off unless a debug build's
-## Settings turns SHOT TRAILS on (RIFTGATE_SHOTS=1 on the desk). From the firing machine to what it
-## fires at, a tracer for a direct shot, an arc for a launcher's, a beam held for the blow's length,
-## nothing for a weapon that lunges (MuzzleFlare.lunges; its lunge is the travel), landing when the
-## blow's sound says it lands. Its
-## colour is the shot's flare's (MuzzleFlare), which carries no meaning in play.
+## The shot crossing the field, the game's own (Ryan, 14 November, on the simple version he had
+## tabled on 3 November as maybe too busy: "Shot trails adds a lot to both immersion and to
+## readibility. Let's keep it"). From the firing machine to what it fires at, a tracer for a
+## direct shot, an arc for a launcher's, a beam held for the blow's length, nothing for a weapon
+## that lunges (MuzzleFlare.lunges; its lunge is the travel), landing when the blow's sound says
+## it lands. Its colour is the shot's flare's (MuzzleFlare), which carries no meaning in play.
 
 enum { TRACER, ARC, BEAM }
 const STREAK := 0.28      # a tracer's streak, this share of its run
@@ -22,11 +21,6 @@ var colour := Color.WHITE
 var start := 0.0      # seconds from now that it leaves the muzzle
 var flight := 0.2     # seconds it takes to land
 var _t := 0.0
-
-
-## Whether trails show: a debug build's SHOT TRAILS, or RIFTGATE_SHOTS=1.
-static func on() -> bool:
-	return OS.get_environment("RIFTGATE_SHOTS") == "1" or (OS.is_debug_build() and bool(Settings.display.get("shot_trails", false)))
 
 
 ## The trail a component's shot takes: none for a weapon that lunges (MuzzleFlare.lunges: melee

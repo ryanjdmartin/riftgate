@@ -60,7 +60,9 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   the Fovea Designator, the St. Elmo's Regenerator), and only `melee` is read today: a blow
   lunges on screen when its weapon is melee and nothing about it crosses the field (a blade's
   class, and no Ballistic, Missile or Beam); any other fires as a gun, a shotgun tagged melee and
-  ballistic among them.
+  ballistic among them. A machine's gun shows its shot crossing the field, from its muzzle to
+  what it fires at: a tracer for a direct shot, a lobbed arc for an indirect one, a beam held
+  through the blow for a laser (the Beam tag). A foe's blow shows none.
   Melee means short range, a shotgun included, never only a blade.
 - **Modules** sit inside the machine and are never spent: stat lines up or down (hull,
   shield, heat maximum, armour, move, cooling, shield regen) and at most one rule, tier 1

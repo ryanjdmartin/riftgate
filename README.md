@@ -458,8 +458,8 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # events feed_scanbox, feed_databox, feed_readout, feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal,
 # and groundtear (the corrupted side's tear as it fires), swallowed (the first machine swallowed: a ghost under a dashed edge),
 # undo (a spend taken: UNDO lit at the bottom row's right end), reboot (the reboot's trial, with RIFTGATE_REBOOT=1: a machine past its
-# maximum, one with its shield broken, one rebooting, and REBOOT lit beside REROLL), rebootask (the same trial: REBOOT pressed with no
-# machine read, filled and asking which) and columns (every foe aimed at the machine nearest its
+# maximum, one with its shield broken, one rebooting, and REBOOT at rest at the row's right end), rebootdrag (the same trial: a die in
+# hand over REBOOT, the control lit as its target and filled) and columns (every foe aimed at the machine nearest its
 # column, every arrow on, each from its intent chip's middle, the ranks slightly apart; RIFTGATE_FOES=goblin:4,mandragora:4 fills both ranks).
 # RIFTGATE_MAP_KIND=gorge (any standalone battle run) picks the map's shape, none drawing one by the seed,
 # and RIFTGATE_SEED=<n> the battle's seed (7); the harness has a picker.
@@ -545,11 +545,10 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # chassis's own; a machine that has spent nothing may reboot, its shield down at once and both
 # gauges back as the next round opens; heat past the maximum stays and every point of it burns
 # hull every turn; the first overheat between reboots breaks the shield; a broken shield gains
-# none until its machine reboots. On the screen: REBOOT beside REROLL, lit while any machine may
-# reboot. Drag a die onto it and its machine reboots: a die in hand lights it as its target, and
-# it takes the drop a little past its own edge. Or press it and it asks which, the next tap on a
-# machine or its die the answer; or press it with a machine's readout open, or its die's. UNDO
-# takes it back; heat past the maximum, a broken shield and a reboot under way each wear a
+# none until its machine reboots. On the screen: REBOOT at the right end of the dice's row, REROLL
+# at its left. Drag a die onto REBOOT and its machine reboots, the one way in: the control is a
+# drop's target and no button, dashed at rest, lit with a die in hand, and it takes the drop a
+# little past its own edge. UNDO takes it back; heat past the maximum, a broken shield and a reboot under way each wear a
 # chip, and a broken shield's gauge a dashed frame. The same page's REBOOT (BUILT, ON) sets it
 # on the phone, read as a battle or a lone fight starts, with OVERHEAT pricing a point of the
 # burn. A what-if, nothing decided; the fight bot has a first play of it, and
@@ -583,8 +582,6 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # with the vetted set (31 October).
 # RIFTGATE_PLUME=off (any run) draws a booster's ring in place of its plume (the Stingray's, on
 # trial), to compare the two.
-# RIFTGATE_SHOTS=1 (any skirmish) draws the shot crossing the field, tabled and off by default (a debug
-# build's Settings → SHOT TRAILS turns it on too).
 # The phone's layout on the desk machine: RIFTGATE_SHOT_H=<design height> renders a taller glass
 # (a 1080x2424 phone is 1616), RIFTGATE_SAFE=<top>,<bottom> keeps its safe bands clear
 # (any run, not only the tool), RIFTGATE_SHOT_SCALE=1.5 renders at its pixel density (the

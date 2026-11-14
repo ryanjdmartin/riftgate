@@ -31,7 +31,6 @@ const DISPLAY_DEFAULTS := {
 	"weld": true,   # a debug build's comparison: off, the machines' parts are drawn as authored rather than welded (MechWeld), to judge the battery plan on the phone
 	"aa_mode": "msaa4",   # AA_MODES: the 3D's anti-aliasing (Hud.aa_mode)
 	"skirmish_controls": "middle",   # SKIRMISH_CONTROLS: where the skirmish's log, dice and Reroll sit
-	"shot_trails": false,   # a debug build's trial: a shot crossing the field from the muzzle to its target (ShotTrail), tabled as maybe too busy (Ryan, 3 November)
 	"map_view": "wall_left",   # MAP_VIEWS: the battle map's orientation (MapOrient), a view only
 	"shield_regen": "built",   # SHIELD_REGENS: a debug build's what-if, a flat shield regen on every chassis in place of each one's own (Refit), read at the next launch (docs/briefs/refit_pass.md)
 	"field_depth": "12",   # FIELD_DEPTHS: a debug build's trial of the field's depth in rows (Ramp.depth_trial), read as a battle starts

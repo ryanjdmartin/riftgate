@@ -148,7 +148,6 @@ func _show_page(page: String) -> void:
 			if OS.is_debug_build():
 				_toggle("EVERY LINE", "voice_test")   # Jenny on every hook, every time: to hear them all on the phone
 				_toggle("WELD", "weld")   # the machines' parts welded (MechWeld); off draws them as authored, to compare the look and the heat on the phone
-				_toggle("SHOT TRAILS", "shot_trails")   # a shot crossing the field from its muzzle to its target (ShotTrail): tabled as maybe too busy, here to judge
 				_button("TRIALS", func() -> void: _show_page("trials"))   # the trial dials (the shield's regen, the field's depth and opening, the fodder's worth, the Rupture's size, the tide's density and the wall strike), a page of their own so the settings fit every glass
 				_button("COLOURS", func() -> void: _show_page("colours"))   # the colours that carry a meaning and the HUD presets, by wheel or hex (ColourTuner)
 			_button("BACK", func() -> void: _show_page("paused"), false, "ui_back")

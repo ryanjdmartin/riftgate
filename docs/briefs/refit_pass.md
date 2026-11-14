@@ -3032,19 +3032,20 @@ A what-if off by default, as the others are; nothing in content moves.
 - *The morning's SHIELD BREAK dial.* Its rest timer is cut, engine, save, gauge and tests,
   since nothing comes back by itself now. Its block stays as the dial's one choice, BUILT or
   BLOCK, since the block is still his open question.
-- *The screen.* REBOOT sits beside REROLL, only under the trial, lit while any machine may
-  reboot. A die dragged onto it gives its machine's turn, the gesture he leans to (14
-  November: "can we drag the die to Reboot? That's probably the most intuitive"): a die in
-  hand lights the control as its target, pulsing, or darkens it for a machine that may
-  not, it fills under the die, and it takes the drop a thumb's width past its own edge
-  (twelve design pixels left, eight up, sixteen right, twenty down, clear of the dice and
-  of the machines). A press works too: it reboots the machine being read, its own readout
-  open or its die's; with none read it asks which, filled and pulsing, and the next tap on
-  a machine or its die answers, a second press, a tap on a foe or on nothing taking the
-  question back. The first cut lit it for a die's open readout alone, and nothing on the
-  screen said so: his "So I can't actually trigger a reboot" of 14 November, and the
-  control was remade the same day (`tests/test_reboot.gd` drives each way in with a
-  finger's events). Heat past the
+- *The screen.* REBOOT is a drop's target at the right end of the dice's row, only under the
+  trial, REROLL at the row's left (his "Probably move reroll to the left side, too", 14
+  November; in the bottom layout that stands REROLL 50 design pixels over END TURN, where
+  END TURN's question on unspent dice meets a slip). A die dragged onto it gives its
+  machine's turn, and nothing else does (the same day: "dragging is the gesture we already
+  have, we should stick with that"): it is dashed at rest, live while any machine may
+  reboot; a die in hand lights it, solid and pulsing, or darkens it for a machine that may
+  not; it fills under the die and takes the drop a thumb's width past its own edge (twelve
+  design pixels left, eight up, sixteen right, twenty down, clear of the dice and of the
+  machines); a touch passes through it. Two forms went before it that day. The first cut
+  lit it for a die's open readout alone, and nothing on the screen said so: his "So I can't
+  actually trigger a reboot". The second kept a press beside the drag, one that asked which
+  machine and one that took the machine being read, and was cut on his word above
+  (`tests/test_reboot.gd` drives the drag with a finger's events). Heat past the
   maximum is a chip with its stacks, a broken shield a chip and a dashed frame on its gauge,
   a reboot under way a chip; the heat gauge draws what stands past its end as the shield's
   does an overshield. The chips' lines and the control's word are working text in code, his
@@ -3070,9 +3071,8 @@ A what-if off by default, as the others are; nothing in content moves.
   and opened again after the rows are set. A row with no choice lit holds a value of an
   older build (a REST, a +3) and reads as BUILT.
 
-What is a first cut, his to judge running: where the control sits; whether the press's two
-ways in stay beside the drag he leans to (the press that asks, the read machine), with its
-word while it asks, "WHICH ONE?", working text; the drop's room; the three chips' glyphs; the die of a rebooting machine,
+What is a first cut, his to judge running: the target's look at rest and with a die in
+hand; the drop's room; REROLL over END TURN in the bottom layout; the three chips' glyphs; the die of a rebooting machine,
 which reads as spent; no sound of its own (it plays the vent's).
 
 **A first read of it** (`docs/measurements.md`, 13 November; each fight at its rating, the
@@ -3083,3 +3083,48 @@ where it costs 21.4%, with 93% of the bosses' fights won where 98% are. A machin
 turn in five to seven to a reboot, about one a fight, and the bot all but never burns. No
 fight stalls. It says what today's foes, sized against a shield that refills, do to the
 rule, and the bot's play is a floor: his play of the trial is the read that counts.
+
+### His play of it, and what follows (14 November)
+
+His words: "I like this direction. It works. What's our next step? Fold the trial in, and
+then what?" With them the two calls on its screen recorded above (the drag alone, REROLL at
+the left), and shot trails kept as the game's own ("adds a lot to both immersion and to
+readibility. Let's keep it").
+
+**The fold-in, the next pass.** The rule leaves its switch, and the rule it replaces leaves
+with it, in one pass (`CLAUDE.md`: a rule leaves the engine with its last piece).
+
+- *The engine.* `Skirmish.reboot` gone, its branches the code. Out: a chassis's own shield
+  regen and cooling as the round opens, and the overheat that burns once and settles. The
+  two stats stay as what a grant adds to (a module's, a passive's, a status's).
+- *Content.* `shield_regen` and `cooling` off every chassis, the validator and the hangar's
+  columns with them. No other number moves, the foes' least of all.
+- *The dials.* REBOOT goes, and SHIELD REGEN with the what-if's `regen` and `cooling`, which
+  the rule made dead. OVERHEAT, HEAT, SHIELD BREAK and BARRIER BASIC stay, each an open
+  question of his: what a stack burns, the guns' prices, the block, the Barrier's place.
+- *The screen.* The row is the fight's own. The three states become terms, drafts beside
+  his own writing for his marks; what the codex and the holds say of regen and cooling
+  follows the rule.
+- *The bot and the tools.* The reboot's play the only one, the habits that lean on cooling
+  cut; the runners' `--reboot` gone; saves from before refused.
+- *The records.* The rules; the bible's shield and heat rows as decided, section 12's item
+  retired to them; `CLAUDE.md`'s two paragraphs; then the anchor read again as the baseline.
+
+**Then, Claude's order, his to set.** Each rests on the one before.
+
+1. *The audit of every rider and keyword against the rule*, with the foes' Burn, the block
+   and the Barrier's place (his "we'll need to audit every rider and keyword after this, no
+   matter what"), a first round in chat. It comes before any number because it settles what
+   the foes' effects are: heat a foe lays never leaves now, Cryo's cooling and every grant
+   of regen or shield are dear, a shield spend can break its own machine.
+2. *The foes' kits against the frame* (section 21: who the reboot protects, what threatens
+   it), a small model apart from content first: a domain needs a pick that finds the hot
+   machine, one that finds the broken shield, a blow at every machine, and numbers.
+3. *Tier one's numbers at the anchor*, to the hull budget: today's foes cost about twice the
+   hull under the rule and fights run a quarter to a third longer, so either the budget
+   moves or the foes do, his to say once the read is in.
+4. *His play of the anchor*, then the scaling already ordered: the first battle down, tiers
+   two and three up.
+
+Beside them, his: the machines the rule reaches (the list above), each a design session as
+his brainstorm yields it. Until its session a machine plays as it is built.

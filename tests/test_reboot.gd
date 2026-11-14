@@ -498,11 +498,11 @@ func _a_chassis(db: ContentDB) -> String:
 	return ""
 
 
-## The screen under the trial (a debug build's): a REBOOT control beside REROLL, lit while any
-## machine may reboot, a press giving the turn of the machine whose die is read; the three states
-## as chips, the two debuffs said so; the hold's cooling reading what the rule leaves of it; UNDO
-## taking it back.
-func test_the_screen_s_reboot_control_gives_the_read_die_s_turn() -> void:
+## The screen under the trial (a debug build's): a REBOOT control on the dice's row, a drop's
+## target and no button, live while any machine may reboot; a die dropped there gives its
+## machine's turn (the gesture is the live test's, below); the three states as chips, the two
+## debuffs said so; the hold's cooling reading what the rule leaves of it; UNDO taking it back.
+func test_the_screen_s_reboot_control_is_a_drop_s_target_and_shows_the_three_states() -> void:
 	Skirmish.reboot = true
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
@@ -515,19 +515,21 @@ func test_the_screen_s_reboot_control_gives_the_read_die_s_turn() -> void:
 	s.setup(sk)
 	var ms: Skirmish.MechState = sk.mechs[0]
 	assert_true(s._reboot_btn != null, "under its trial the screen has the control")
-	assert_false(s._reboot_btn.disabled, "lit while a machine has spent nothing, with nothing read")
-	s._on_die_tapped(0)
-	assert_false(s._reboot_btn.disabled, "and with its die read")
+	assert_false(s._reboot_btn.disabled, "live while a machine has spent nothing")
+	assert_eq(s._reboot_btn.mouse_filter, Control.MOUSE_FILTER_IGNORE, "and no button: a touch passes through it")
+	assert_true(s._reboot_btn.socket and not s._reboot_btn.pressed.has_connections(), "a drop's target, nothing wired to a press")
+	assert_true(s._reroll_btn.position.x + s._reroll_btn.size.x < s._reboot_btn.position.x, "REROLL at the row's left, the control at its right")
 	ms.heat = ms.heat_max + 3
 	s._refresh()
 	var chips: Array[String] = []
 	for r in s._mech_rows(0):
 		chips.append(str(r[2]))
 	assert_true(chips.has("Debuff, Overheated ×3: hull -3 every turn until it reboots"), "heat past the maximum is a debuff, a stack a point: %s" % str(chips))
-	s._on_reboot()
-	assert_true(ms.rebooting, "REBOOT gives the read die's machine its reboot")
+	assert_true(s._do_reboot(0), "its die dropped on REBOOT, the machine reboots")
+	assert_true(ms.rebooting, "its turn given")
 	assert_eq(m.shield, 0, "its shield down at once")
-	assert_true(s._reboot_btn.disabled, "and the control goes dark")
+	assert_true(s._reboot_btn.disabled, "and the control goes dark, no machine left that may")
+	assert_false(s._do_reboot(0), "a machine rebooting may not again")
 	chips.clear()
 	for r in s._mech_rows(0):
 		chips.append(str(r[2]))
@@ -546,13 +548,14 @@ func test_the_screen_s_reboot_control_gives_the_read_die_s_turn() -> void:
 	s.free()
 
 
-## The control under a finger, as the phone delivers one (Ryan, 14 November: "So I can't actually
-## trigger a reboot"; it had lit for a die's open readout alone, and nothing on the screen said
-## so). Every way in: a die dragged onto the control, which lights as the die's target while
-## it is in hand; a press that asks which and the tap on a die or a machine that answers; and a
-## press with a machine's readout open or its die's. Live: the fight's screen in a viewport,
-## every touch pushed through it.
-func live_test_reboot_takes_a_press_and_a_pick_a_read_machine_and_a_dropped_die() -> void:
+## The control under a finger, as the phone delivers one. A die dragged onto it is the one way
+## in (Ryan, 14 November: "dragging is the gesture we already have, we should stick with that"):
+## in hand it lights its target, the drop lands a thumb's width past the drawing, and a machine
+## that may not reboot darkens it. It is no button: a touch on it passes through and reboots
+## nothing (the press that asked which machine was cut on his word the day it was built; the
+## first cut had lit for a die's open readout alone, his "So I can't actually trigger a
+## reboot"). Live: the fight's screen in a viewport, every touch pushed through it.
+func live_test_a_die_dragged_onto_reboot_is_the_one_way_in() -> void:
 	Skirmish.reboot = true
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
@@ -571,37 +574,9 @@ func live_test_reboot_takes_a_press_and_a_pick_a_read_machine_and_a_dropped_die(
 	s.setup(sk)
 	vp.add_child(s)
 	var rb: Vector2 = s._reboot_btn.get_global_rect().get_center()
-	assert_false(s._reboot_btn.disabled, "lit with nothing read: a press is never dead while a machine may reboot")
-	# A press with nothing read asks which, and a tap on a die answers.
-	_tap(vp, rb)
-	assert_true(s._reboot_armed and s._reboot_btn.filled, "a press with no machine read asks which, the control filled")
-	assert_false(_rebooting(sk).has(true), "and reboots nothing yet")
-	_tap_die(vp, s, 1)
-	assert_eq(_rebooting(sk), [false, true, false], "a tap on a die answers: its machine reboots")
-	assert_false(s._reboot_armed or s._reboot_btn.filled, "the question answered")
-	_undo(s)
-	assert_false(_rebooting(sk).has(true), "UNDO takes it back")
-	# The same press, answered by a tap on the machine itself.
-	_tap(vp, rb)
-	_tap(vp, s._mech_views[2].get_global_rect().get_center())
-	assert_eq(_rebooting(sk), [false, false, true], "a tap on a machine answers as its die does")
-	_undo(s)
-	# A machine's own readout open: the press reboots it at once.
-	_tap(vp, s._mech_views[0].get_global_rect().get_center())
-	assert_eq(s._pop, {"mech": 0}, "a tap on a machine reads it")
-	_tap(vp, rb)
-	assert_eq(_rebooting(sk), [true, false, false], "REBOOT with a machine's readout open reboots that machine")
-	assert_true(s._pop.is_empty(), "its readout shut")
-	_undo(s)
-	# Its die's readout open: the same.
-	_tap_die(vp, s, 1)
-	assert_eq(s._pop, {"die": 1}, "a tap on a die reads it")
-	_tap(vp, rb)
-	assert_eq(_rebooting(sk), [false, true, false], "and REBOOT with a die's readout open reboots its machine")
-	_undo(s)
-	# A die dragged to the control, the gesture he leans to ("can we drag the die to Reboot?
-	# That's probably the most intuitive"): in hand it lights its target, and the drop lands a
-	# thumb's width past the drawing too.
+	assert_false(s._reboot_btn.disabled, "live at rest: a machine may reboot")
+	assert_false(s._reboot_btn.pulse and not HudButton.PULSE_DEBUG, "and still, no die in hand")
+	# A die in hand lights its target; the drop lands a thumb's width past the drawing too.
 	var from: Vector2 = s._dice[2].get_global_rect().get_center()
 	var out := from + Vector2(0.0, -60.0)
 	_finger(vp, from, true)
@@ -618,11 +593,18 @@ func live_test_reboot_takes_a_press_and_a_pick_a_read_machine_and_a_dropped_die(
 	assert_false(s._ghost.visible, "the die in hand set down")
 	assert_false(s._reboot_btn.filled or (s._reboot_btn.pulse and not HudButton.PULSE_DEBUG), "and the control at rest")
 	_undo(s)
+	assert_false(_rebooting(sk).has(true), "UNDO takes it back")
 	# The drop's room stops short of the dice above: a die set back on its own slot reboots nothing.
 	for d in s._dice:
 		assert_false(s.reboot_drop_rect().intersects(d.get_global_rect()), "REBOOT's drop clear of a die's slot")
 	for v in s._mech_views:
 		assert_false(s.reboot_drop_rect().intersects(v.get_global_rect()), "and of a machine, a die's other target")
+	assert_false(s.reboot_drop_rect().intersects(s._reroll_btn.get_global_rect()), "and of REROLL, at the row's other end")
+	# A die dropped anywhere else is no reboot: on a foe it is spent, on nothing it is set back.
+	_finger(vp, from, true)
+	_slide(vp, from, out)
+	_finger(vp, out, false)
+	assert_false(_rebooting(sk).has(true), "a die set back reboots nothing")
 	# A machine that has spent and still holds a die (two things a round) is no target: its
 	# die in hand darkens the control, and a drop there sets the die back.
 	sk.mechs[1].spends = 1
@@ -633,26 +615,22 @@ func live_test_reboot_takes_a_press_and_a_pick_a_read_machine_and_a_dropped_die(
 	assert_true(s._reboot_btn.disabled and not s._reboot_btn.filled, "a die whose machine has spent darkens REBOOT")
 	_finger(vp, rb, false)
 	assert_false(_rebooting(sk).has(true), "and a drop there reboots nothing")
-	assert_false(s._reboot_btn.disabled, "the die set back, the control lit again for the others")
+	assert_false(s._reboot_btn.disabled, "the die set back, the control live again for the others")
 	sk.mechs[1].spends = 0
 	s._refresh()
-	# The question taken back: a second press, a tap on nothing.
+	# No button: a touch on it reboots nothing, with a machine's readout open or its die's, and
+	# passes through to the ground, which shuts the readout as a tap on nothing does.
 	_tap(vp, rb)
+	assert_false(_rebooting(sk).has(true), "a touch on REBOOT reboots nothing")
+	_tap(vp, s._mech_views[0].get_global_rect().get_center())
+	assert_eq(s._pop, {"mech": 0}, "a tap on a machine reads it")
 	_tap(vp, rb)
-	assert_false(s._reboot_armed, "a second press takes the question back")
+	assert_false(_rebooting(sk).has(true), "nor with a machine's readout open")
+	assert_true(s._pop.is_empty(), "the touch falls through: the readout shuts, as on a tap on nothing")
+	_tap_die(vp, s, 1)
+	assert_eq(s._pop, {"die": 1}, "a tap on a die reads it")
 	_tap(vp, rb)
-	_tap(vp, Vector2(60.0, rb.y))
-	assert_false(s._reboot_armed, "and so does a tap on nothing")
-	assert_false(_rebooting(sk).has(true), "nothing rebooted by either")
-	# A machine that has spent may not: its die's tap is no answer, and reads it as ever.
-	assert_true(sk.assign(0, sk.field_foes()[0]), "the first machine spends its die")
-	s._refresh()
-	_tap(vp, rb)
-	assert_true(s._reboot_armed, "the others may still, so the control asks")
-	_tap_die(vp, s, 0)
-	assert_false(_rebooting(sk).has(true), "a machine that has spent is no answer")
-	assert_false(s._reboot_armed, "the question is let go")
-	assert_eq(s._pop, {"die": 0}, "and the tap reads its die as ever")
+	assert_false(_rebooting(sk).has(true), "nor with a die's")
 	vp.free()
 
 
