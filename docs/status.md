@@ -1755,12 +1755,14 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 274 (14 November, from `ccr-b7d5164e-1wtzzm` at `5e3e457`, ahead of main, for
-  Ryan's long clamshell on the Needletail's cheeks): the Needletail's eighteenth cut, its model and
-  rig, its eight pictures and the seventeenth's as Before, and `renders.json` with its entry
-  replaced in the live one (Version 273, this branch's own), its Kite entry still the live one
-  (main's shipped note for it, taken in with main, not published from here); the Giant Petrel
-  unchanged there, its option sheets sent in chat. `edits` and
+  page's Version 275 (14 November, from `ccr-b7d5164e-1wtzzm` at `3b97b8a`, ahead of main, for
+  Ryan's notes on the Needletail's wings and its cheeks' twin barrels): the Needletail's nineteenth
+  cut, its rig, its nine pictures (a twin in a cheek the ninth) and the eighteenth's as Before, the
+  new twin form `twin_barrel_round` in every maker's metal with its burn, `shapes.json` and the
+  muzzles (each the live copy with the new form added), and `renders.json` with its entry replaced
+  in the live one (Version 274, this branch's own), its Kite entry still the live one (main's
+  shipped note for it, taken in with main, not published from here); the Giant Petrel unchanged
+  there, its option sheets sent in chat. `edits` and
   `text` empty, `designs` the two folded ideas. Version 254 (13 November,
   from `ccr-e3ddf00b-ilkwbi` at `0c03430`, ahead of main): the
   Kite's last round, its wings' back edge swept to match the front. The Kite's rounds went out
