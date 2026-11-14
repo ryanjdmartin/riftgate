@@ -2786,6 +2786,7 @@ function renderModels(main) {
         el("p", {class: "when"}, d.when || ""),
         el("p", {class: "mnote"}, d.note || ""),
         pics(d.images || [], false));
+      if (d.candidate && d.candidate.images && d.candidate.images.length) s.append(el("details", {}, el("summary", {}, d.candidate.summary || "Candidate final"), pics(d.candidate.images, true)));   // a cut Ryan saved as a candidate final, kept until he settles it
       if (d.before && d.before.images && d.before.images.length) s.append(el("details", {}, el("summary", {}, d.before.summary || "Before"), pics(d.before.images, true)));
       under.append(s);
     }

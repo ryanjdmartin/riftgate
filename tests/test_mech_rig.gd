@@ -619,8 +619,9 @@ func test_a_part_carries_its_weight_toward_what_the_act_asks() -> void:
 
 func test_every_turret_turns_slowly_not_far_and_pauses_before_turning_back() -> void:
 	# Ryan, 4 October, the third pass: turret swivels too fast and wild. The builder refuses
-	# an act that breaks the rule; this reads the sidecars to be sure none slipped through.
-	var reach := 70.0
+	# an act that breaks the rule; this reads the sidecars to be sure none slipped through. A
+	# turret whose model names a wider reach (the sidecar's `reach`: the Giant Petrel's quarters
+	# swing to dead astern; Ryan, 14 November) is held to that, its slew and pause still the rule's.
 	var slew := 35.0
 	var pause := 0.6
 	for id in MACHINES:
@@ -630,6 +631,8 @@ func test_every_turret_turns_slowly_not_far_and_pauses_before_turning_back() -> 
 				if not str(jn).begins_with("turret"):
 					continue
 				var axis := ["pitch", "yaw", "roll"].find(str(side["joints"][jn]["axis"]))
+				var reach := float(side["joints"][jn].get("reach", 70.0))
+				assert_true(reach <= 180.0, "%s: %s's reach is at most a half turn" % [id, jn])
 				var pts: Array = []
 				if float(a["tracks"][jn][0][0]) > 0.0:
 					pts.append([0.0, 0.0])

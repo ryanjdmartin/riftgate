@@ -167,8 +167,9 @@ def main():
     groups = [b["images"] for b in manifest["classes"]["blocks"]]
     for cid, d in manifest["chassis"].items():
         groups.append(d["images"])
-        if d.get("before"):
-            groups.append(d["before"]["images"])
+        for kept in ("candidate", "before"):   # a cut saved as a candidate final, and the last cut
+            if d.get(kept):
+                groups.append(d[kept]["images"])
         if cid not in pins:
             missing.append("renders.json names a chassis the content has not got: " + cid)
     for g in groups:

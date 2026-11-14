@@ -461,6 +461,7 @@ class Build:
         self.hidden = []    # the hp_<n> pins that show nothing, stock or fitted: the sidecar's hidden_pins (see pin())
         self.cuts = []      # (targets, cutter) pairs: booleans applied before export (see cut)
         self.joint_meta = {}   # joint name -> {"axis", "limits", "parent"}: the rig sidecar (see rig())
+        self.turret_reach = {}   # turret joint -> degrees from the bow its acts may swing it, where wider than the rule's (joint()'s `reach`)
         self.acts = []         # the machine's idle acts, in authoring order (see act())
         self.tuning = {}       # the cornering module's per-machine numbers (see move())
         self.gait_spec = {}    # how the machine moves (see gait())
@@ -758,7 +759,7 @@ class Build:
             ob.matrix_parent_inverse = inv
         return e
 
-    def joint(self, name, at, axis=None, limits=None, swing=None, slide=None):
+    def joint(self, name, at, axis=None, limits=None, swing=None, slide=None, reach=None):
         """`with b.joint("shoulder_l", pivot): ...` builds a limb inside the block and hangs
         everything made there, pins included, under an Empty named `joint_<name>` at the
         pivot, its axes the world's. A joint inside another joint's block nests under it
@@ -778,7 +779,16 @@ class Build:
         a joint named shoulder_* swings. `slide`, given, is the one line the joint moves along,
         never turning (a gun that only runs in and out of its port: the Polar Bear's, Ryan, 29
         October): every turn is held to nothing and a shot kicks it back along the line. All of
-        it goes to the rig sidecar (see rig()); the engine (MechRig) reads it."""
+        it goes to the rig sidecar (see rig()); the engine (MechRig) reads it. `reach`, for a turret,
+        is how far from the bow its acts may swing it where its model means to show its arc, in
+        place of the turret rule's TURRET_REACH (the Giant Petrel's quarters to dead astern, Ryan,
+        14 November: "the traverse animation should point the guns back, just cause they can"); the
+        rule's slew and pause still hold. It goes to the sidecar with the rest (the rig's test reads
+        it there); the engine needs it not."""
+        if reach is not None:
+            if not 0.0 < float(reach) <= 180.0:
+                raise ValueError("joint %s of %s: a reach is up to 180 degrees from the bow, not %g" % (name, self.name, float(reach)))
+            self.turret_reach[name] = float(reach)
         return _Joint(self, name, at, axis, limits, swing, slide)
 
     @staticmethod
@@ -941,9 +951,10 @@ class Build:
         if pts[-1][0] < duration:
             pts.append((duration, 0.0))
         where = "act %r of %s, %s" % (name, self.name, jn)
+        reach = self.turret_reach.get(jn, self.TURRET_REACH)
         for t, v in pts:
-            if abs(v) > self.TURRET_REACH + 1e-6:
-                raise ValueError("%s: %g degrees at %gs, past the turret's reach of %g" % (where, v, t, self.TURRET_REACH))
+            if abs(v) > reach + 1e-6:
+                raise ValueError("%s: %g degrees at %gs, past the turret's reach of %g" % (where, v, t, reach))
         moves = []   # (t0, t1, direction) of each leg that moves
         for (t0, v0), (t1, v1) in zip(pts, pts[1:]):
             if v1 == v0:
@@ -1506,6 +1517,8 @@ class _Joint:
                                         "parent": self.b._joint_stack[-1] if self.b._joint_stack else ""}
         if self.slide is not None:
             self.b.joint_meta[self.name]["slide"] = self.slide
+        if self.name in self.b.turret_reach:
+            self.b.joint_meta[self.name]["reach"] = self.b.turret_reach[self.name]
         self.b._joint_stack.append(self.name)
         return self
 
