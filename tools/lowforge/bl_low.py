@@ -243,18 +243,6 @@ class Tiles:
                 for y in range(TILE):
                     x = (TILE - y + d) % TILE
                     img[y, x, :] = np.minimum(img[y, x, :] * 1.6, 1.0)
-        elif kind == "smoke":
-            # Smoked glass: the cockpit glass's gradient and glint, dark (the Giant Petrel's
-            # windshield options, 14 November: "just looks a little awkward and uncool").
-            img = np.zeros((TILE, TILE, 3), np.float32)
-            for y in range(TILE):
-                for x in range(TILE):
-                    t = (x + y) / (2.0 * TILE)
-                    img[y, x, :] = np.array([0.04 + 0.08 * t, 0.09 + 0.14 * t, 0.20 + 0.24 * t], np.float32)
-            for d in range(-3, 3):
-                for y in range(TILE):
-                    x = (TILE - y + d) % TILE
-                    img[y, x, :] = np.minimum(img[y, x, :] * 2.2, 1.0)
         elif kind == "tread":
             # Dark rubber with low cleats: darker than any vent, so the two never read alike.
             img = self.metal(0.13, 0.015, mottle=0.008)

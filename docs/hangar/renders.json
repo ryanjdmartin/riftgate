@@ -776,8 +776,8 @@
    }
   },
   "giant_petrel": {
-   "when": "Ryan's tenth notes on the catamaran, 14 November: the bold wedge, the fore gun under the bow.",
-   "note": "Ryan, 14 November: the front face “could be shaped more aggressive looking. It's not streamlined enough. I'm not sure what to change though”; of the five directions, “I actually like 5, but it reads too me as too much deck in front, entirely the fault of the forward gun. So either the gun needs to move, perhaps underneath”; and of the two ways, “The gun under the bow works for petrel, let's go with that.” The deckhouse's front is now a long spearhead laid back to about 26 degrees, run 10 forward over the centre bow, the roof's edge straight across it and a brow's peak over the glass, its lip drooping a little; the windshield's proportion is kept. The fore gun hangs under the centre bow as a chin turret (the railgun, hp_1), so the bow's deck is the deckhouse's, and the three salvo racks are spaced out again. From above and from the sides the hulls and the bow hide most of the chin turret. Ryan's to judge running: Acts for the traverse, the salvo and the uplink.",
+   "when": "Ryan's eleventh notes on the catamaran, 14 November: his picks from the windshield and side-window sheets.",
+   "note": "Ryan, 14 November, of the option sheets: “go with 1, High for the window, but extend it down so it's taller. On the side front faces flanking the windshield, let's style those as vents or intakes. On the sides, let's combine A and C, so that there's a booster with a fin underneath, the fin at an angle, maybe 45 to the body. And maybe style the booster so it's more of a turbine.” The bridge's glass sits high under the brow's peak and reaches further down the front, so it is taller. Each corner face beside it carries an intake: a cobalt frame round a dark mouth with bright louvres. Each flank keeps its two forward windows; aft of them a turbine on a web, its fan turning in an open intake behind a cobalt lip and its nozzle lit with the boosters, a cobalt fin under it canted out and down at 45 degrees. Ryan's to judge running: the fans idle and spin up under way (Walk), and the turbines burn with the boosters (Acts, the Immelmann).",
    "images": [
     {
      "file": "giant_petrel/giant_petrel_front.png",
@@ -801,7 +801,7 @@
     },
     {
      "file": "giant_petrel/giant_petrel_windscreen.png",
-     "alt": "giant petrel, the front close: the brow's peak over the glass"
+     "alt": "giant petrel, the front close: the tall glass under the brow's peak, an intake on each corner face"
     },
     {
      "file": "giant_petrel/giant_petrel_guns.png",
@@ -810,10 +810,14 @@
     {
      "file": "giant_petrel/giant_petrel_chin.png",
      "alt": "giant petrel, low ahead: the fore gun hung under the centre bow"
+    },
+    {
+     "file": "giant_petrel/giant_petrel_turbine.png",
+     "alt": "giant petrel, the right flank close from ahead: the turbine's fan in its intake, the fin canted under it, the two windows forward of it"
     }
    ],
    "before": {
-    "summary": "Before: the tenth cut, 14 November (the front raked about 41 degrees, blunt in plan, the fore gun house on the centre bow)",
+    "summary": "Before: the eleventh cut, 14 November (the glass a slim band centred on the front, four windows down each flank)",
     "images": [
      {
       "file": "giant_petrel/before_giant_petrel_front.png",
@@ -837,11 +841,15 @@
      },
      {
       "file": "giant_petrel/before_giant_petrel_windscreen.png",
-      "alt": "Earlier: giant petrel, the windshield close"
+      "alt": "Earlier: giant petrel, the front close: the glass a slim band centred on the front"
      },
      {
       "file": "giant_petrel/before_giant_petrel_guns.png",
       "alt": "Earlier: giant petrel, the quarters' guns pointing astern over the spoiler"
+     },
+     {
+      "file": "giant_petrel/before_giant_petrel_chin.png",
+      "alt": "Earlier: giant petrel, low ahead: the fore gun hung under the centre bow"
      }
     ]
    }

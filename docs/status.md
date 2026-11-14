@@ -27,8 +27,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1168 tests, 372,187 checks, green on `ccr-b7d5164e-1wtzzm` (14 November, the Needletail's
-  nineteenth cut and the Giant Petrel's option switches, over main at `4a0c9b5` taken in a merge). Before it, 1167 tests,
+- Tests: 1168 tests, 372,193 checks, green on `ccr-b7d5164e-1wtzzm` (14 November, the Needletail's
+  nineteenth cut and the Giant Petrel's twelfth, over main at `4a0c9b5` taken in a merge). Before it, 1167 tests,
   371,269 checks, green on `ccr-722ca9f0-yj8na3` (13 November, the breaking shield's what-if and
   its two trial dials, over main's Kite), and 1155 tests, 371,949 checks, green on this branch
   over main at `6112939` (13 November, the Giant Petrel's sixth cut). Before it, 1154 tests,
@@ -489,10 +489,10 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   boosters on plinths either side of a raised aft deckhouse under its aerofoil on fins at the hulls'
   outer edges, the navy's two back at the hulls' sterns; the deckhouse's front a sharp prow raked
   steeply back (since the eleventh a long spearhead laid back to about 26 degrees over the centre bow, a brow's peak over the glass), each twisted facet laid smooth and the bridge's glass a shell following it, a
-  band up the front's middle, a raked pane each side of the prow in a slimmer band, none on the corner facets; long windows down its flanks; a cobalt spearhead down each bow; the cushion
-  open fore and aft. Its windshield and its side windows are on two option sheets sent 14 November (six treatments of the
-  glass; boosters, stub wings, fins or vents for the two aft windows), switches in the code (`GLASS`, `FLANKS`, both at
-  "now"), nothing changed on the hangar until he picks. A render round in the hangar's Models tab for each at every cut (the last cut
+  raked pane each side of the prow, high under the brow and tall since the twelfth (his pick from the sheets), an intake on each corner facet;
+  two long windows forward down each flank and aft of them a turbine on a web, its fan turning (`fan_l`, `fan_r`) and its nozzle burning
+  with the boosters, a fin under it canted out at 45 degrees (the twelfth, his "combine A and C"); a cobalt spearhead down each bow; the cushion
+  open fore and aft. A render round in the hangar's Models tab for each at every cut (the last cut
   as Before); the tests green at each.
 
 - **The Ammit's rework** (`ccr-8af28d03-re9kz4`, Ryan's own design, 12 November; on main): "The 4
