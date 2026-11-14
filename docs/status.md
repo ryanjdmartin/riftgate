@@ -27,8 +27,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1168 tests, 372,201 checks, green on `ccr-b7d5164e-1wtzzm` (14 November, the Needletail's
-  seventeenth cut and the Giant Petrel's eleventh, over main at `4a0c9b5` taken in a merge). Before it, 1167 tests,
+- Tests: 1168 tests, 372,179 checks, green on `ccr-b7d5164e-1wtzzm` (14 November, the Needletail's
+  eighteenth cut and the Giant Petrel's option switches, over main at `4a0c9b5` taken in a merge). Before it, 1167 tests,
   371,269 checks, green on `ccr-722ca9f0-yj8na3` (13 November, the breaking shield's what-if and
   its two trial dials, over main's Kite), and 1155 tests, 371,949 checks, green on this branch
   over main at `6112939` (13 November, the Giant Petrel's sixth cut). Before it, 1154 tests,
@@ -456,24 +456,27 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   in hover mode, four shorter boosters upright on swivels (the front pair on short canards beside
   the pop-up just behind the cheeks, the thicker rear pair each on a hub at the tip of a long tailplane whose outer panel
   rides in with it, under long, steep X fins), two pods raised out of dark slots in the upper
-  chamfers behind the canopy, each mount leaning with its pod (a pin's `up`, new in lowforge), its cheek guns run a short way out of
-  teardrop recesses on the nose's sides toward the tip, through a short trough to a muzzle clear of the skin (on the sides as in
+  chamfers behind the canopy, each mount leaning with its pod (a pin's `up`, new in lowforge), its cheek guns lying in bays
+  on the nose's sides toward the tip, each under one long teardrop clamshell, point forward, on the band between the chines
+  (the eighteenth cut, on Ryan's "an elongated clamshell that covers the whole cut area"; the trough and its sliding cover
+  gone), the muzzle clear of the skin (on the sides as in
   the thirteenth cut, Ryan's candidate final at `49657a4`, its pictures the hangar's Candidate final, after a day's trial on the
   upper chamfers; nearer the tip since the sixteenth, with the canards and the pop-up, and a slice cut from the middle so the
-  ship is 103 from point to needle, the ports and canards 2 back again in the seventeenth, each recess dark to its rim and each
-  gun's root under the skin in hover), every other class rooted in the
-  recess in its port form (the port rack, the port dish on its mast, taken from main with the Kite's
-  port; the blade's bracket and the twins' receiver in the recess), the Fovea Designator a low wedge pop-up
+  ship is 103 from point to needle, the ports and canards 2 back again in the seventeenth, each bay dark to its rim and each
+  gun's root under the skin in hover), every other class rooted at the
+  bay's back in its port form (the port rack, the port dish on its mast, taken from main with the Kite's
+  port; the blade's bracket and the twins' receiver in the bay), the Fovea Designator a low wedge pop-up
   after a sports car's, its lamp behind
   a six-bladed iris that widens and narrows as it paints, the tail's whole face a cut-out exhaust
   round a needle nineteen long, in a dark rim behind a cobalt band; on the map its gait changes it into flight mode as it gathers speed
-  (the cheek guns in, a short teardrop clamshell rolling shut over each barrel's tip on the gun's
-  own line and a flush cover sliding out over each trough, the pods sunk flush, the iris shut and the pop-up folded, the boosters level and
+  (the cheek guns drawn back and in under the skin, each long clamshell's halves rolling shut over its empty bay about a
+  hinge laid along the nose's taper, a joint's resting heading, new in lowforge, the pods sunk flush, the iris shut and the pop-up folded, the boosters level and
   run in along their fins, straight, the front pair's canards running into the body with them, the swept wings out near the canards and slid back clear of the front boosters, small flat tips, their roots in the
   fuselage, the exhaust burning white-hot; stowed in hover, each wing's leading edge shows as a
   cobalt strip down the chine) and back as it slows, its transition act the same
   change on the spot. A near-black tile (`void`) lines the
-  recesses, Kestrel's "dark" tile being a mid grey its chrome lights. The Giant Petrel: the
+  bays, Kestrel's "dark" tile being a mid grey its chrome lights, and since the eighteenth cut a bore, a well or a bay
+  takes no gloss in the game (`MechView3D.toon`), the chrome having lit an open bay's far wall as a bright band. The Giant Petrel: the
   railgun hung under the centre bow as a chin turret since the eleventh cut and a Twin Autoguns on an omnidirectional dome on each of the
   deckhouse roof's back quarters, either side of the mast, bigger and on short pedestals since
   the seventh cut, resting facing forward in line with the ship since the eighth (the skirmish
@@ -486,7 +489,9 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   outer edges, the navy's two back at the hulls' sterns; the deckhouse's front a sharp prow raked
   steeply back (since the eleventh a long spearhead laid back to about 26 degrees over the centre bow, a brow's peak over the glass), each twisted facet laid smooth and the bridge's glass a shell following it, a
   band up the front's middle, a raked pane each side of the prow in a slimmer band, none on the corner facets; long windows down its flanks; a cobalt spearhead down each bow; the cushion
-  open fore and aft. A render round in the hangar's Models tab for each at every cut (the last cut
+  open fore and aft. Its windshield and its side windows are on two option sheets sent 14 November (six treatments of the
+  glass; boosters, stub wings, fins or vents for the two aft windows), switches in the code (`GLASS`, `FLANKS`, both at
+  "now"), nothing changed on the hangar until he picks. A render round in the hangar's Models tab for each at every cut (the last cut
   as Before); the tests green at each.
 
 - **The Ammit's rework** (`ccr-8af28d03-re9kz4`, Ryan's own design, 12 November; on main): "The 4

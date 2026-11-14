@@ -621,8 +621,8 @@
    }
   },
   "needletail": {
-   "when": "Ryan's seventeenth note on its two modes, 14 November, from his phone's look at the cheeks.",
-   "note": "Ryan, 14 November, on the sixteenth cut: “Canards and guns can go aft like, maybe 2 units. Your point about the shells is valid, but the execution is leaving weird cuts. Also the clam cut could start relatively farther up the barrel, to hide any floating.” The cheek ports and the canards with their boosters sit 2 further aft (the pop-up and the shorter middle stay). The light slivers round each recess were the cut's own walls, which took the hull's light plating and showed past the dark lining where the clamshell wraps onto the chamfers: the recess is now dark to its rim (lowforge can give a cut's walls their own material). In hover each gun runs out 1 less, so its root lies under the skin behind the recess and the barrel comes out of the hull rather than starting in the open bay; in flight its muzzle sits under the blister as before. Ryan's to judge running, and up close on the phone as he did: Acts for the transition.",
+   "when": "Ryan's eighteenth note on its two modes, 14 November, from his phone's look at the cheeks.",
+   "note": "Ryan, 14 November, on the seventeenth cut: “the weird cuts are still weird. And I still think the instead of the front cut sinking, we can just have an elongated clamshell that covers the whole cut area. Teardrop shaped, the point at the front.” Each cheek is now one long teardrop clamshell, point forward, over the whole bay, and the sliding cover over the trough is gone. Its outline stays on the upright band between the chines, so it no longer wraps onto the angled faces where the rim zigzagged. Its halves still roll up and down into the nose, now about a hinge laid inside the side along the nose's taper rather than on the gun's line, which is what lets a long clamshell fold in along its whole length. For flight each gun draws back and a little in, behind its bay and under the skin, before the halves reach it, so they shut over an empty bay and nothing shows through them partway, even in the walk's blend where every part moves at once. The light band across an open bay was the bay's dark lining catching the chrome's gloss: every dark inside of a bay, a barrel or a well now takes none. Ryan's to judge running: Acts for the transition, Walk for the blend.",
    "images": [
     {
      "file": "needletail/needletail_front.png",
@@ -695,7 +695,7 @@
     ]
    },
    "before": {
-    "summary": "Before: the sixteenth cut, 14 November (the ports and canards 2 further forward, light walls showing in the recesses)",
+    "summary": "Before: the seventeenth cut, 14 November (a short clamshell over the barrel's tip and a sliding cover over the trough ahead of it)",
     "images": [
      {
       "file": "needletail/before_needletail_front.png",

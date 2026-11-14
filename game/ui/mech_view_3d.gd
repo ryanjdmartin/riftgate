@@ -1482,6 +1482,13 @@ static func toon(node: Node, maker: String, look: String, paint_arg: Dictionary 
 				elif role == "glass":
 					tm.roughness = 0.25
 					tm.metallic = 0.35
+				elif role == "bore":
+					# The dark inside a bore, a well or a bay takes no finish: a chrome maker's
+					# gloss lit the far wall of a deep bay as a bright band (the Needletail's
+					# cheek bays, Ryan, 14 November: "the weird cuts are still weird").
+					tm.roughness = 1.0
+					tm.metallic = 0.0
+					tm.metallic_specular = 0.0
 				mi.set_surface_override_material(i, tm)
 				continue
 			var m := ShaderMaterial.new()

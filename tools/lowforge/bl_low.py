@@ -243,6 +243,18 @@ class Tiles:
                 for y in range(TILE):
                     x = (TILE - y + d) % TILE
                     img[y, x, :] = np.minimum(img[y, x, :] * 1.6, 1.0)
+        elif kind == "smoke":
+            # Smoked glass: the cockpit glass's gradient and glint, dark (the Giant Petrel's
+            # windshield options, 14 November: "just looks a little awkward and uncool").
+            img = np.zeros((TILE, TILE, 3), np.float32)
+            for y in range(TILE):
+                for x in range(TILE):
+                    t = (x + y) / (2.0 * TILE)
+                    img[y, x, :] = np.array([0.04 + 0.08 * t, 0.09 + 0.14 * t, 0.20 + 0.24 * t], np.float32)
+            for d in range(-3, 3):
+                for y in range(TILE):
+                    x = (TILE - y + d) % TILE
+                    img[y, x, :] = np.minimum(img[y, x, :] * 2.2, 1.0)
         elif kind == "tread":
             # Dark rubber with low cleats: darker than any vent, so the two never read alike.
             img = self.metal(0.13, 0.015, mottle=0.008)
@@ -462,6 +474,7 @@ class Build:
         self.cuts = []      # (targets, cutter) pairs: booleans applied before export (see cut)
         self.joint_meta = {}   # joint name -> {"axis", "limits", "parent"}: the rig sidecar (see rig())
         self.turret_reach = {}   # turret joint -> degrees from the bow its acts may swing it, where wider than the rule's (joint()'s `reach`)
+        self.joint_heading = {}   # joint name -> its resting heading in degrees (joint()'s `heading`)
         self.acts = []         # the machine's idle acts, in authoring order (see act())
         self.tuning = {}       # the cornering module's per-machine numbers (see move())
         self.gait_spec = {}    # how the machine moves (see gait())
@@ -660,6 +673,30 @@ class Build:
         bpy.context.scene.collection.objects.link(cutter)
         self.cuts.append((list(targets), cutter))
 
+    def cut_rings(self, targets, rings, material=None):
+        """A pocket lofted through point rings (each the same count, in order along it, capped at
+        both ends) subtracted from `targets` before export: a shape no hull gives, such as a
+        teardrop of revolution whose point fades into the skin (the Needletail's cheek bays, 14
+        November). `material` as for cut_hull."""
+        bm = bmesh.new()
+        vs = [[bm.verts.new(p) for p in ring] for ring in rings]
+        n = len(vs[0])
+        for r0, r1 in zip(vs, vs[1:]):
+            for i in range(n):
+                bm.faces.new([r0[i], r0[(i + 1) % n], r1[(i + 1) % n], r1[i]])
+        bm.faces.new(vs[0])
+        bm.faces.new(list(reversed(vs[-1])))
+        bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+        mesh = bpy.data.meshes.new("cutter")
+        bm.to_mesh(mesh)
+        bm.free()
+        if material:
+            mesh.materials.append(self.material(material))
+        cutter = bpy.data.objects.new("cutter", mesh)
+        bpy.context.scene.collection.objects.link(cutter)
+        self.cuts.append((list(targets), cutter))
+        return cutter
+
     def cut_box(self, targets, x0, x1, y0, y1, z0, z1):
         """A box subtracted from `targets` before export: a shallow one makes a pocket in
         a surface (a vent cut into a fairing), a deep one a hole."""
@@ -767,7 +804,7 @@ class Build:
             ob.matrix_parent_inverse = inv
         return e
 
-    def joint(self, name, at, axis=None, limits=None, swing=None, slide=None, reach=None):
+    def joint(self, name, at, axis=None, limits=None, swing=None, slide=None, reach=None, heading=None):
         """`with b.joint("shoulder_l", pivot): ...` builds a limb inside the block and hangs
         everything made there, pins included, under an Empty named `joint_<name>` at the
         pivot, its axes the world's. A joint inside another joint's block nests under it
@@ -792,7 +829,15 @@ class Build:
         place of the turret rule's TURRET_REACH (the Giant Petrel's quarters to dead astern, Ryan,
         14 November: "the traverse animation should point the guns back, just cause they can"); the
         rule's slew and pause still hold. It goes to the sidecar with the rest (the rig's test reads
-        it there); the engine needs it not."""
+        it there); the engine needs it not. `heading`, given, turns the joint's own axes about up by
+        that many degrees at rest (positive to the left), so its roll is about a line laid in plan
+        along a tapering side rather than straight ahead (the Needletail's clamshell halves, rolling
+        in about a hinge along the nose's taper: Ryan, 14 November, "an elongated clamshell that
+        covers the whole cut area"). The engine and the hangar keep a joint's resting turn and add
+        the pose to it (MechRig._rest), so the roll stays one turn about that line; the sidecar
+        names it."""
+        if heading is not None:
+            self.joint_heading[name] = float(heading)
         if reach is not None:
             if not 0.0 < float(reach) <= 180.0:
                 raise ValueError("joint %s of %s: a reach is up to 180 degrees from the bow, not %g" % (name, self.name, float(reach)))
@@ -1527,6 +1572,8 @@ class _Joint:
             self.b.joint_meta[self.name]["slide"] = self.slide
         if self.name in self.b.turret_reach:
             self.b.joint_meta[self.name]["reach"] = self.b.turret_reach[self.name]
+        if self.name in self.b.joint_heading:
+            self.b.joint_meta[self.name]["heading"] = self.b.joint_heading[self.name]
         self.b._joint_stack.append(self.name)
         return self
 
@@ -1537,7 +1584,7 @@ class _Joint:
         b = self.b
         e = bpy.data.objects.new("joint_" + self.name, None)
         e.empty_display_size = 3.0
-        m = Matrix.Translation(Vector(self.at))
+        m = Matrix.Translation(Vector(self.at)) @ Matrix.Rotation(math.radians(b.joint_heading.get(self.name, 0.0)), 4, "Z")
         e.matrix_world = m
         bpy.context.scene.collection.objects.link(e)
         inv = m.inverted()
