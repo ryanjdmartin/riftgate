@@ -7,6 +7,7 @@ extends TestCase
 
 const L := Face.Reach.DIRECT
 const K := Face.Keyword
+const SKIRMISH_SCENE := preload("res://game/skirmish/skirmish_screen.tscn")
 
 ## A point of cooling and of regen granted over the chassis's own, as a module or a passive would.
 const RADIATOR := {"id": "radiator", "name": "Radiator", "description": "", "effects": [
@@ -497,9 +498,10 @@ func _a_chassis(db: ContentDB) -> String:
 	return ""
 
 
-## The screen under the trial (a debug build's): a REBOOT control beside REROLL, lit while the
-## die being read belongs to a machine that may reboot; the three states as chips, the two
-## debuffs said so; the hold's cooling reading what the rule leaves of it; UNDO taking it back.
+## The screen under the trial (a debug build's): a REBOOT control beside REROLL, lit while any
+## machine may reboot, a press giving the turn of the machine whose die is read; the three states
+## as chips, the two debuffs said so; the hold's cooling reading what the rule leaves of it; UNDO
+## taking it back.
 func test_the_screen_s_reboot_control_gives_the_read_die_s_turn() -> void:
 	Skirmish.reboot = true
 	var db := ContentDB.load_default()
@@ -513,9 +515,9 @@ func test_the_screen_s_reboot_control_gives_the_read_die_s_turn() -> void:
 	s.setup(sk)
 	var ms: Skirmish.MechState = sk.mechs[0]
 	assert_true(s._reboot_btn != null, "under its trial the screen has the control")
-	assert_true(s._reboot_btn.disabled, "dark until a die is read")
+	assert_false(s._reboot_btn.disabled, "lit while a machine has spent nothing, with nothing read")
 	s._on_die_tapped(0)
-	assert_false(s._reboot_btn.disabled, "lit while the die read is a machine's that has spent nothing")
+	assert_false(s._reboot_btn.disabled, "and with its die read")
 	ms.heat = ms.heat_max + 3
 	s._refresh()
 	var chips: Array[String] = []
@@ -542,6 +544,109 @@ func test_the_screen_s_reboot_control_gives_the_read_die_s_turn() -> void:
 	s._on_mech_held(0)
 	assert_true(s._details_entry.text().contains("Cooling %d" % int(sk.mechs[0].unit.base["cooling"])), "the hold reads its cooling from the chassis's own")
 	s.free()
+
+
+## The control under a finger, as the phone delivers one (Ryan, 14 November: "So I can't actually
+## trigger a reboot"; it had lit for a die's open readout alone, and nothing on the screen said
+## so). Every way in: a press that asks which and the tap on a die or a machine that answers, a
+## press with a machine's readout open or its die's, and a die dropped on the control. Live: the
+## fight's screen in a viewport, every touch pushed through it.
+func live_test_reboot_takes_a_press_and_a_pick_a_read_machine_and_a_dropped_die() -> void:
+	Skirmish.reboot = true
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	sk.keeps_undo = true
+	for k in range(3):
+		var m := db.make_mech(_a_chassis(db))
+		m.die = Die.single(Face.attack(1, L, [], 0))
+		sk.add_mech(m)
+	sk.add_foes([Foe.make("dummy", 900, 0)])
+	var vp := SubViewport.new()
+	vp.size = Vector2i(720, 1280)
+	vp.gui_embed_subwindows = true
+	(Engine.get_main_loop() as SceneTree).root.add_child(vp)
+	var s: SkirmishScreen = SKIRMISH_SCENE.instantiate()
+	s.sk = sk
+	s.setup(sk)
+	vp.add_child(s)
+	var rb: Vector2 = s._reboot_btn.get_global_rect().get_center()
+	assert_false(s._reboot_btn.disabled, "lit with nothing read: a press is never dead while a machine may reboot")
+	# A press with nothing read asks which, and a tap on a die answers.
+	_tap(vp, rb)
+	assert_true(s._reboot_armed and s._reboot_btn.filled, "a press with no machine read asks which, the control filled")
+	assert_false(_rebooting(sk).has(true), "and reboots nothing yet")
+	_tap_die(vp, s, 1)
+	assert_eq(_rebooting(sk), [false, true, false], "a tap on a die answers: its machine reboots")
+	assert_false(s._reboot_armed or s._reboot_btn.filled, "the question answered")
+	_undo(s)
+	assert_false(_rebooting(sk).has(true), "UNDO takes it back")
+	# The same press, answered by a tap on the machine itself.
+	_tap(vp, rb)
+	_tap(vp, s._mech_views[2].get_global_rect().get_center())
+	assert_eq(_rebooting(sk), [false, false, true], "a tap on a machine answers as its die does")
+	_undo(s)
+	# A machine's own readout open: the press reboots it at once.
+	_tap(vp, s._mech_views[0].get_global_rect().get_center())
+	assert_eq(s._pop, {"mech": 0}, "a tap on a machine reads it")
+	_tap(vp, rb)
+	assert_eq(_rebooting(sk), [true, false, false], "REBOOT with a machine's readout open reboots that machine")
+	assert_true(s._pop.is_empty(), "its readout shut")
+	_undo(s)
+	# Its die's readout open: the same.
+	_tap_die(vp, s, 1)
+	assert_eq(s._pop, {"die": 1}, "a tap on a die reads it")
+	_tap(vp, rb)
+	assert_eq(_rebooting(sk), [false, true, false], "and REBOOT with a die's readout open reboots its machine")
+	_undo(s)
+	# A die dropped on the control.
+	var from: Vector2 = s._dice[2].get_global_rect().get_center()
+	_drag(vp, from, rb - from)
+	assert_eq(_rebooting(sk), [false, false, true], "a die dropped on REBOOT gives its machine's turn")
+	assert_false(s._ghost.visible, "the die in hand set down")
+	_undo(s)
+	# The question taken back: a second press, a tap on nothing.
+	_tap(vp, rb)
+	_tap(vp, rb)
+	assert_false(s._reboot_armed, "a second press takes the question back")
+	_tap(vp, rb)
+	_tap(vp, Vector2(60.0, rb.y))
+	assert_false(s._reboot_armed, "and so does a tap on nothing")
+	assert_false(_rebooting(sk).has(true), "nothing rebooted by either")
+	# A machine that has spent may not: its die's tap is no answer, and reads it as ever.
+	assert_true(sk.assign(0, sk.field_foes()[0]), "the first machine spends its die")
+	s._refresh()
+	_tap(vp, rb)
+	assert_true(s._reboot_armed, "the others may still, so the control asks")
+	_tap_die(vp, s, 0)
+	assert_false(_rebooting(sk).has(true), "a machine that has spent is no answer")
+	assert_false(s._reboot_armed, "the question is let go")
+	assert_eq(s._pop, {"die": 0}, "and the tap reads its die as ever")
+	vp.free()
+
+
+func _rebooting(sk: Skirmish) -> Array:
+	var out: Array = []
+	for ms in sk.mechs:
+		out.append(ms.rebooting)
+	return out
+
+
+func _tap(vp: Viewport, at: Vector2) -> void:
+	_finger(vp, at, true)
+	_finger(vp, at, false)
+
+
+## A tap on a die lands once its double-tap window has passed: the wait, then the frame that
+## would land it.
+func _tap_die(vp: Viewport, s: SkirmishScreen, i: int) -> void:
+	_tap(vp, s._dice[i].get_global_rect().get_center())
+	OS.delay_msec(int(DieFaceView.DOUBLE_TAP_SECONDS * 1000.0) + 40)
+	s._dice[i]._process(0.016)
+
+
+func _undo(s: SkirmishScreen) -> void:
+	s._undo_from = 0
+	s._on_undo()
 
 
 func test_off_the_screen_has_no_reboot_control() -> void:

@@ -138,6 +138,10 @@ func _apply_pose() -> void:
 				s.sk.reboot_mech(2)
 			s._refresh()
 			s._on_die_tapped(0)
+		"rebootask":
+			# REBOOT pressed with no machine read (14 November; run with RIFTGATE_REBOOT=1): the
+			# control filled and asking which, the next tap on a machine or its die its answer.
+			s._on_reboot()
 		"touch":
 			# The first die lit as its tap waits out the double-tap window (30 October).
 			s._dice[0]._tap_due = 1.0e12

@@ -307,7 +307,9 @@ var _confirm: HudPanel
 var _confirm_text: Label
 var _confirm_action: Callable = Callable()
 var _reroll_btn: HudButton
-var _reboot_btn: HudButton   # the reboot's control, beside REROLL, only under its trial (Skirmish.reboot): it reboots the machine whose die is being read
+var _reboot_btn: HudButton   # the reboot's control, beside REROLL, only under its trial (Skirmish.reboot): lit while any machine may reboot
+var _reboot_armed := false   # REBOOT pressed with no machine read: the next tap on a machine or its die picks the one that reboots
+var _reboot_hover := false   # a die whose machine may reboot is held over REBOOT
 ## What the screen played for the last spend: {"dead": the foes it showed falling, "rose": those
 ## among them it showed getting back up}.
 var spend_played: Dictionary = {"dead": [], "rose": []}
@@ -603,8 +605,14 @@ func _build() -> void:
 	_reroll_btn.tooltip_text = "A reroll never shows the same component twice."
 	_place(_reroll_btn, Vector2(W * 0.5 - REROLL_SIZE.x * 0.5, REROLL_Y), REROLL_SIZE)
 	# The reboot's control (a debug build's trial, Ryan, 13 November: "smash the Reboot button"):
-	# beside REROLL, the dice's row, lit while the die being read belongs to a machine that has
-	# spent nothing. A tap on a die reads it; REBOOT then gives that machine's turn.
+	# beside REROLL, the dice's row, lit while any machine may reboot (one that has spent
+	# nothing). A press reboots the machine being read, its own readout open or its die's; with
+	# none read it asks which, and the next tap on a machine or its die answers; a die dragged
+	# onto it gives its machine's turn the same way (14 November, his "So I can't actually
+	# trigger a reboot": it had lit for a die's open readout alone, and said so nowhere).
+	_reboot_btn = null
+	_reboot_armed = false
+	_reboot_hover = false
 	if Skirmish.reboot:
 		_reboot_btn = HudButton.new("REBOOT", _on_reboot)
 		_reboot_btn.sound = ""   # the reboot plays its own
@@ -612,7 +620,7 @@ func _build() -> void:
 		_reboot_btn.font_size = 20
 		_reboot_btn.center_text = true
 		_reboot_btn.state_marked = true
-		_reboot_btn.tooltip_text = "Tap a machine's die, then REBOOT: its shield drops now, and its heat and shield are back next round."
+		_reboot_btn.tooltip_text = "REBOOT, then a machine or its die, or drag a die here: its shield drops now, and its heat and shield are back next round."
 		var left := W * 0.5 + REROLL_SIZE.x * 0.5 + 14.0
 		_place(_reboot_btn, Vector2(left, REROLL_Y), Vector2(W - 16.0 - left, REROLL_SIZE.y))
 
@@ -1308,7 +1316,11 @@ func _refresh(save: bool = true) -> void:
 	_reroll_btn.badge = "×%d" % sk.rerolls_left
 	_reroll_btn.set_enabled(assigning and sk.can_reroll() and not _reroll_indices().is_empty())
 	if _reboot_btn != null:
-		_reboot_btn.set_enabled(assigning and _pending.is_empty() and sk.can_reboot(_read_die()))
+		var may := assigning and _pending.is_empty() and _any_may_reboot()
+		if not may:
+			_reboot_armed = false
+		_reboot_btn.set_enabled(may)
+		_dress_reboot()
 	_refresh_undo()
 	_end_btn.set_enabled(assigning)
 	# Nothing left to spend, rerolls aside: END TURN is the next thing to press (Ryan, 25 October).
@@ -2115,6 +2127,8 @@ func _show_details(text: String, near: Control, ring: Array = [], entry: Array =
 func _on_die_tapped(i: int) -> void:
 	if _replay_shade.visible or _codex.is_open():
 		return
+	if _pick_reboot(i):
+		return
 	if _pop == {"die": i}:
 		_close_pop()
 	else:
@@ -2228,6 +2242,7 @@ func _show_die(i: int) -> bool:
 ## toggle, only one unit popup allowed at a time"); a hold opens it too. While a Swap waits for
 ## its second target, the tap picks that instead.
 func _on_foe_tapped(v: UnitView, rank: int, col: int, twin: bool = false) -> void:
+	_disarm_reboot()   # a foe is no answer to REBOOT's question: the tap reads it as ever
 	if not _pending.is_empty():
 		if twin:
 			_on_twin_tapped(rank, col)
@@ -2248,6 +2263,8 @@ func _on_foe_held(v: UnitView) -> void:
 
 
 func _on_mech_tapped(i: int) -> void:
+	if _pick_reboot(i):
+		return
 	if _pop == {"mech": i}:
 		_close_pop()
 	else:
@@ -2326,6 +2343,7 @@ func _show_pop() -> void:
 ## the Swap away.
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		_disarm_reboot()   # and REBOOT's question goes unanswered
 		if not _pop.is_empty():
 			_close_pop()
 		elif not _pending.is_empty():
@@ -2543,6 +2561,7 @@ func prey_for(i: int, force: bool = false) -> Array[Foe]:
 
 
 func _on_drag_started(i: int) -> void:
+	_reboot_armed = false   # the die in hand is the answer now, if it is dropped on REBOOT (the refresh below dresses it)
 	_drop_die_pop()
 	_drag_from = i
 	_drag_over = null
@@ -2575,7 +2594,12 @@ func _on_drag_moved(global_pos: Vector2) -> void:
 	# The hover hum while the die is over somewhere it may be spent (Ryan, 5 October).
 	var target = _drop_target_at(global_pos)
 	var can := target != null and _drag_from >= 0 and sk.can_assign(_drag_from, target)
-	Sound.hover(can)
+	# Over REBOOT, a die whose machine may reboot hums as over a target, and the control fills.
+	var boots := _drag_from >= 0 and _over_reboot(global_pos) and sk.can_reboot(_drag_from)
+	if boots != _reboot_hover:
+		_reboot_hover = boots
+		_dress_reboot()
+	Sound.hover(can or boots)
 	# What the die is over decides what the gauges forecast (a lure's turn, a Cryo cash): read
 	# again only when it changes, never saved mid-drag.
 	var over = target if can else null
@@ -2606,13 +2630,16 @@ func _on_drag_ended(global_pos: Vector2) -> void:
 	var i := _drag_from
 	_drag_from = -1
 	_drag_over = null
+	_reboot_hover = false   # every way out of here refreshes, which dresses the control
 	_ghost.visible = false
 	Sound.hover(false)
 	if i < 0:
 		_refresh()
 		return
-	var target = _drop_target_at(global_pos)
 	_ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if _over_reboot(global_pos) and _do_reboot(i):
+		return   # the die dropped on REBOOT: its machine's turn given
+	var target = _drop_target_at(global_pos)
 	if target is Foe and sk.needs_second(sk.mechs[i]) and sk.can_assign(i, target):
 		_begin_second(i, target)
 		return
@@ -3896,18 +3923,73 @@ func _on_reroll() -> void:
 			tw.tween_property(d, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
-## REBOOT (the reboot's trial; Ryan, 13 November): the machine whose die is being read gives its
-## turn. Its shield drops at once, the round preview plays it bare, and UNDO takes it back.
+## REBOOT (the reboot's trial; Ryan, 13 November): the machine being read gives its turn, its
+## own readout open or its die's. With none read, or one that may not, the press asks which: the
+## control fills and waits, and the next tap on a machine or its die answers (_pick_reboot); a
+## second press, a tap on a foe or on nothing takes the question back.
 func _on_reboot() -> void:
-	var i := _read_die()
-	if _replay_shade.visible or not _pending.is_empty() or not sk.can_reboot(i):
+	if _replay_shade.visible or not _pending.is_empty():
 		return
+	if _do_reboot(int(_pop.get("die", _pop.get("mech", -1)))):
+		return
+	_reboot_armed = not _reboot_armed and _any_may_reboot()
+	Sound.play("ui_tap")
+	_dress_reboot()
+
+
+## Machine `i` gives its turn to a reboot, if it may: its shield drops at once, the round preview
+## plays it bare, and UNDO takes it back. False when it may not, and nothing changes.
+func _do_reboot(i: int) -> bool:
+	if _replay_shade.visible or not _pending.is_empty() or not sk.can_reboot(i):
+		return false
 	_flush_blows()   # whatever of the last spend is still landing lands first
 	if not sk.reboot_mech(i):
-		return
+		return false
+	_reboot_armed = false
 	_close_pop()
 	Sound.play("vent")
 	_refresh()
+	return true
+
+
+## A tap on machine `i` or its die while REBOOT waits for its answer: that machine reboots, if it
+## may. True when the tap was the answer; false with no question waiting, or for a machine that
+## may not, whose tap then reads it as ever.
+func _pick_reboot(i: int) -> bool:
+	if not _reboot_armed:
+		return false
+	_disarm_reboot()
+	return _do_reboot(i)
+
+
+func _disarm_reboot() -> void:
+	if _reboot_armed:
+		_reboot_armed = false
+		_dress_reboot()
+
+
+func _any_may_reboot() -> bool:
+	for i in range(sk.mechs.size()):
+		if sk.can_reboot(i):
+			return true
+	return false
+
+
+## Whether a die held at `global_pos` is over REBOOT.
+func _over_reboot(global_pos: Vector2) -> bool:
+	return _reboot_btn != null and _reboot_btn.is_visible_in_tree() and _reboot_btn.get_global_rect().has_point(global_pos)
+
+
+## The control as it stands: filled, pulsing and asking while it waits for its answer, filled
+## under a die it would take, its word and its outline otherwise. The words are working text in
+## code, his to write.
+func _dress_reboot() -> void:
+	if _reboot_btn == null:
+		return
+	_reboot_btn.text = "WHICH ONE?" if _reboot_armed else "REBOOT"
+	_reboot_btn.filled = _reboot_armed or _reboot_hover   # filled too under a die it would take
+	_reboot_btn.set_pulse(_reboot_armed)
+	_reboot_btn.queue_redraw()
 
 
 ## UNDO's reach: the spends and rerolls since the last roll, its badge; off while a spend's

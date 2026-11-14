@@ -458,7 +458,8 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # events feed_scanbox, feed_databox, feed_readout, feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal,
 # and groundtear (the corrupted side's tear as it fires), swallowed (the first machine swallowed: a ghost under a dashed edge),
 # undo (a spend taken: UNDO lit at the bottom row's right end), reboot (the reboot's trial, with RIFTGATE_REBOOT=1: a machine past its
-# maximum, one with its shield broken, one rebooting, and REBOOT lit beside REROLL) and columns (every foe aimed at the machine nearest its
+# maximum, one with its shield broken, one rebooting, and REBOOT lit beside REROLL), rebootask (the same trial: REBOOT pressed with no
+# machine read, filled and asking which) and columns (every foe aimed at the machine nearest its
 # column, every arrow on, each from its intent chip's middle, the ranks slightly apart; RIFTGATE_FOES=goblin:4,mandragora:4 fills both ranks).
 # RIFTGATE_MAP_KIND=gorge (any standalone battle run) picks the map's shape, none drawing one by the seed,
 # and RIFTGATE_SEED=<n> the battle's seed (7); the harness has a picker.
@@ -544,8 +545,10 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # chassis's own; a machine that has spent nothing may reboot, its shield down at once and both
 # gauges back as the next round opens; heat past the maximum stays and every point of it burns
 # hull every turn; the first overheat between reboots breaks the shield; a broken shield gains
-# none until its machine reboots. On the screen: tap a machine's die, then REBOOT beside REROLL;
-# UNDO takes it back; heat past the maximum, a broken shield and a reboot under way each wear a
+# none until its machine reboots. On the screen: REBOOT beside REROLL, lit while any machine may
+# reboot. Press it and it asks which, the next tap on a machine or its die the answer; press it
+# with a machine's readout open, or its die's, and that machine reboots at once; or drop a die on
+# it. UNDO takes it back; heat past the maximum, a broken shield and a reboot under way each wear a
 # chip, and a broken shield's gauge a dashed frame. The same page's REBOOT (BUILT, ON) sets it
 # on the phone, read as a battle or a lone fight starts, with OVERHEAT pricing a point of the
 # burn. A what-if, nothing decided; the fight bot has a first play of it, and
