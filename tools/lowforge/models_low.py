@@ -6363,20 +6363,21 @@ needletail.maker = "kestrel"
 
 
 
-def _gp_gun_house(b, name, pin, shape, carries, cx, ty, tz, w, l, h, facing=0.0, limits=(-75.0, 75.0), fits=None):
+def _gp_gun_house(b, name, pin, shape, carries, cx, ty, tz, w, l, h, facing=0.0, limits=(-75.0, 75.0), fits=None, down=False):
     """A faceted gun house on a yaw joint over a dark ring: its face raked, its flanks leaning
     in, its back stepped down; the stock gun its class out of its face (the Giant Petrel's look
     test of 31 October, tools/lowforge/looks/kestrel_looks6.py). `facing` turns the whole house
     to its left as built, in degrees (ninety faces it out to the left), so its gun rests pointing
-    there and swings from there."""
-    b.prism("z", cx, ty, tz + 0.4, w * 0.55, 1.0, "steel.dark", 8, "turret_ring", phase=math.pi / 8)
+    there and swings from there. `down` hangs it under a deck at `tz`, a chin turret."""
+    k = -1.0 if down else 1.0
+    b.prism("z", cx, ty, tz + 0.4 * k, w * 0.55, 1.0, "steel.dark", 8, "turret_ring", phase=math.pi / 8)
     turn = Matrix.Translation((cx, ty, 0.0)) @ Matrix.Rotation(math.radians(facing), 4, "Z")
     fwd = Vector((-math.sin(math.radians(facing)), math.cos(math.radians(facing)), 0.0))
-    with b.joint(name, (cx, ty, tz + 0.9), axis="yaw", limits=limits):
+    with b.joint(name, (cx, ty, tz + 0.9 * k), axis="yaw", limits=limits):
         a = w / 2.0
-        secs = [(l * 0.55, a * 0.6, tz + h * 0.4), (l * 0.2, a, tz + h), (-l * 0.3, a, tz + h), (-l * 0.5, a * 0.8, tz + h * 0.7)]
-        b.loft([(y, [(-aa, tz + 0.8), (aa, tz + 0.8), (aa * 0.7, z1), (-aa * 0.7, z1)]) for (y, aa, z1) in secs], "steel.plate", "turret_house", turn)
-        at = Vector((cx, ty, tz + h * 0.62)) + fwd * (l * 0.3)
+        secs = [(l * 0.55, a * 0.6, tz + h * 0.4 * k), (l * 0.2, a, tz + h * k), (-l * 0.3, a, tz + h * k), (-l * 0.5, a * 0.8, tz + h * 0.7 * k)]
+        b.loft([(y, [(-aa, tz + 0.8 * k), (aa, tz + 0.8 * k), (aa * 0.7, z1), (-aa * 0.7, z1)]) for (y, aa, z1) in secs], "steel.plate", "turret_house", turn)
+        at = Vector((cx, ty, tz + h * 0.62 * k)) + fwd * (l * 0.3)
         b.stock(pin, tuple(at), shape, forward=tuple(fwd), scale=0.8, carries=carries, fits=fits)
 
 
@@ -6583,7 +6584,14 @@ def giant_petrel(b):
     CB = [(62.0, 1.2, 17.6, 19.4), (55.0, 12.0, 15.0, 20.0), (45.0, 2 * HX - 5.0, 13.0, 20.0)]
     b.loft([(y, [(-w * 0.2, z0), (w * 0.2, z0), (w * 0.5, (z0 + z1) / 2.0), (w * 0.44, z1), (-w * 0.44, z1), (-w * 0.5, (z0 + z1) / 2.0)]) for (y, w, z0, z1) in CB],
            "steel.plate", "centre_bow")
-    _gp_gun_house(b, "turret_fore", "hp_1", "barrel", "overclocked_railgun", 0.0, 51.0, 20.0, 9.0, 12.0, 5.0)
+    GUN_STYLE = "centre"   # the fore gun on the centre bow; or under it ("under"); or a pair, one on each hull's foredeck ("pair": a fourth hardpoint, the kit's call)
+    if GUN_STYLE == "centre":
+        _gp_gun_house(b, "turret_fore", "hp_1", "barrel", "overclocked_railgun", 0.0, 51.0, 20.0, 9.0, 12.0, 5.0)
+    elif GUN_STYLE == "under":
+        _gp_gun_house(b, "turret_fore", "hp_1", "barrel", "overclocked_railgun", 0.0, 52.0, 14.2, 9.0, 12.0, 4.5, down=True, limits=(-50.0, 50.0))
+    else:
+        _gp_gun_house(b, "turret_fore", "hp_1", "barrel", "overclocked_railgun", -HX, 44.0, 20.0, 9.0, 12.0, 5.0, limits=(-20.0, 110.0))
+        _gp_gun_house(b, "turret_fore_r", "hp_4", "barrel", "overclocked_railgun", HX, 44.0, 20.0, 9.0, 12.0, 5.0, limits=(-110.0, 20.0))
     # The deckhouse: every face leaning in, four long windows down each flank, a gallery's (Ryan,
     # 13 November: the row of small ones read "like an airliner, implying compartments"). Its front
     # a sharp prow in plan, its foot and its roof's edge the same corners, the roof's set far back, so
@@ -6603,7 +6611,8 @@ def giant_petrel(b):
           "sharp": dict(fy0=26.0, brow=0.18, front=[(26.2, 26.0), (21.5, 30.0), (0.0, 44.0)], visor=0.0, racks=0.0),
           "raked_sharp": dict(fy0=24.5, brow=0.0, front=[(26.2, 24.5), (21.5, 28.5), (0.0, 44.0)], visor=0.0, racks=-3.0),
           "visor": dict(fy0=24.5, brow=0.0, front=[(26.2, 24.5), (21.5, 28.5), (0.0, 44.0)], visor=2.2, racks=-3.0),
-          "bold": dict(fy0=21.0, brow=0.0, front=[(26.2, 21.0), (18.0, 26.0), (0.0, 44.0)], visor=3.0, droop=0.7, rack_y=(20.0, 10.0, 0.0))}[FRONT_STYLE]
+          "bold": dict(fy0=21.0, brow=0.0, front=[(26.2, 21.0), (18.0, 26.0), (0.0, 44.0)], visor=3.0, droop=0.7, rack_y=(20.0, 10.0, 0.0)),
+          "bold_fwd": dict(fy0=31.0, brow=0.0, front=[(26.2, 31.0), (18.0, 36.0), (0.0, 54.0)], visor=3.0, droop=0.7, rack_y=(30.0, 18.0, 6.0))}[FRONT_STYLE]
     FY0, BROW, FRONT = FS["fy0"], FS["brow"], FS["front"]
     DH = [(FY0, 26.2, 15.1, 31.05), (4.0, 26.4, 16.0, 31.6), (-26.0, 26.4, 16.0, 31.6), (-33.0, 26.2, 12.0, 25.0)]   # (y, base half width, roof half width, roof)
     b.loft([(y, [(-a, DZ), (a, DZ), (t, zt), (-t, zt)]) for (y, a, t, zt) in DH], "steel.panel", "deckhouse")
@@ -6820,11 +6829,13 @@ def giant_petrel(b):
     # aerofoil, and back, a beat apart, each pausing before it turns back (the builder's turret
     # rule; Ryan, 14 November: "the traverse animation should point the guns back, just cause they
     # can").
-    b.act("traverse", 13.2, {
-        "turret_fore": [(0.6, 0.0), (2.0, 46.0), (2.8, 46.0), (5.2, -34.0), (6.0, -34.0), (7.2, 0.0)],
+    sweep = {"turret_fore": [(0.6, 0.0), (2.0, 46.0), (2.8, 46.0), (5.2, -34.0), (6.0, -34.0), (7.2, 0.0)]}
+    if GUN_STYLE == "pair":   # each bow gun out to its own side and back
+        sweep = {"turret_fore": [(0.6, 0.0), (2.0, 46.0), (2.8, 46.0), (4.4, 0.0)], "turret_fore_r": [(0.7, 0.0), (2.1, -46.0), (2.9, -46.0), (4.5, 0.0)]}
+    b.act("traverse", 13.2, dict(sweep, **{
         "turret_l": [(0.8, 0.0), (6.2, 180.0), (7.0, 180.0), (12.4, 0.0)],
         "turret_r": [(1.0, 0.0), (6.4, -180.0), (7.2, -180.0), (12.6, 0.0)],   # a half turn at the turret rule's slew, so it carries its weight
-    })
+    }))
     # Movement: slow and heavy, its boosters brightening, its nose a touch up as a ground-effect
     # craft runs; it drifts through its corners and never banks (a hovercraft keeps flat).
     b.halo = [("booster_ring", KESTREL_HALO), ("exhaust", KESTREL_HALO)]   # its boosters, hot
