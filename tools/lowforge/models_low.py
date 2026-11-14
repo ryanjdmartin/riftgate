@@ -5956,15 +5956,14 @@ def needletail(b):
     # of the skin beyond (Ryan, 13 November: "they were half embedded in it when extended"); any
     # part of it still under the skin behind the bay sinks as it tips, so nothing comes through
     # the plating on the way.
-    YC = 22.0                      # the port's point, where the chamfer crosses the gun's line, where the chamfer is still wide enough for the blister
-    FG = 0.44                      # how far up the chamfer from the chine the line lies there
-    TIP_B, WIDE, NARROW, TIP_F = YC - 6.0, YC - 3.2, YC - 1.3, YC   # the blister's back tip, its widest, the start of its point, its point
-    FULL = 2.8                     # the round back's fullness, a superellipse's power (2 is an ellipse), over the barrel where it still stands out of the skin
-    RM = 1.42                      # its radius at its widest
+    YC, FG = 22.0, 0.44            # the port's point, where the chamfer crosses the gun's line in flight; how far up the chamfer from the chine the line lies there
+    TIP_B, WIDE, NARROW, TIP_F = YC - 6.0, YC - 3.2, YC - 1.3, YC   # the clamshell's back tip, its widest, the start of its point, its point
+    FULL, RM = 2.8, 1.42           # the round back's fullness, a superellipse's power (2 is an ellipse), over the barrel where it still stands out of the skin; its radius at its widest
+    LINE = 0.0                     # how far the gun's line in flight rises toward the nose, degrees (0 along the body), so it lies deeper the further back it runs
+    RETRACT, REACH, TILT = 1.5, 3.0, 6.0   # how far behind the point the muzzle lies in flight, under the clamshell's widest; how far ahead of it the gun runs in hover, before it tips (Ryan, 13 November: "extend too far when opened, they end up floating in front"); how far it tips up
+    TROUGH = True                 # a trough ahead of the point for the gun's path, its flush cover sliding in in hover
     TH, OPEN = 0.22, 120.0         # the halves' thickness, and how far each rolls in to open
     GUN_L = 24.0 * 0.32            # the port gun's length (the port barrel at the mount's scale)
-    M_F = YC - 1.5                 # its muzzle in flight, under the blister's widest
-    RUN, TILT = 4.5, 6.0           # how far it runs back in flight (Ryan, 13 November: "extend too far when opened, they end up floating in front"), and how far it tips up in hover
     TR, SINK = 1.1, 1.6            # the trough's radius about the gun's path, and how far its cover slides in, behind its floor, in hover
     # Each class rooted in the open bay and run out of the port, none ahead of it on nothing (Ryan,
     # 13 November: "racks, blades and dishes still float out of the front gun ports"): the port
@@ -5984,8 +5983,13 @@ def needletail(b):
         u = run / length
         return p0, u, length, Vector((u.y, -u.x))
     c0, cu, clen, cn = chamfer(YC)
-    G = c0 + cu * (FG * clen)      # the right gun's line, (x, z)
+    G = c0 + cu * (FG * clen)      # the right gun's line at the point, (x, z)
     O, V = cn, cu                  # the frame about it: out of the chamfer, and up it
+    LINE_R = math.radians(LINE)
+
+    def centre(y):
+        """The right gun's line in flight at `y`, (x, z)."""
+        return G + Vector((0.0, (y - YC) * math.tan(LINE_R)))
 
     def outside(y, p):
         """How far the point (x, z) stands outside the body's section at `y` (negative inside)."""
@@ -5993,21 +5997,22 @@ def needletail(b):
         return max(((p[0] - a[0]) * (q[1] - a[1]) - (p[1] - a[1]) * (q[0] - a[0])) / math.hypot(q[0] - a[0], q[1] - a[1])
                    for a, q in zip(pts, pts[1:] + pts[:1]))
 
-    def about(r, a, lift=0.0):
-        """The point (x, z) on the right `r` from the gun's line and `a` degrees round it from out
-        (up the chamfer positive), the line raised `lift`."""
-        c, sn = math.cos(math.radians(a)), math.sin(math.radians(a))
-        return (G.x + O.x * r * c + V.x * r * sn, G.y + O.y * r * c + V.y * r * sn + lift)
+    def about(y, r, a, c=None):
+        """The point (x, z) on the right `r` from the gun's line in flight at `y` (or from `c`),
+        `a` degrees round it from out (up the chamfer positive)."""
+        c = centre(y) if c is None else c
+        cs, sn = math.cos(math.radians(a)), math.sin(math.radians(a))
+        return (c.x + O.x * r * cs + V.x * r * sn, c.y + O.y * r * cs + V.y * r * sn)
 
     def edges(y, r):
         """The arc of the circle `r` about the line at `y` that stands outside the body: its ends
         in degrees round from out, down the chamfer first; (0, 0) when none does."""
-        out = [k / 4.0 for k in range(-720, 721) if outside(y, about(r, k / 4.0)) > 0.0]
+        out = [k / 4.0 for k in range(-720, 721) if outside(y, about(y, r, k / 4.0)) > 0.0]
         return (out[0], out[-1]) if out else (0.0, 0.0)
 
     def drop(y):
-        """The blister's radius at `y`: a full round back buried in the skin, its widest over the
-        muzzle, then a point."""
+        """The clamshell's radius at `y`: a full round back buried in the skin, its widest, then a
+        point."""
         if y <= TIP_B or y >= TIP_F:
             return 0.04
         if y <= WIDE:
@@ -6018,67 +6023,74 @@ def needletail(b):
         return max(0.04, RM * (1.0 - t) * (1.0 + 0.7 * t))
     STATIONS = [TIP_B + (WIDE - TIP_B) * f for f in (0.0, 0.025, 0.06, 0.12, 0.25, 0.45, 0.7)] + [WIDE, (WIDE + NARROW) / 2.0, NARROW] + \
                [NARROW + (TIP_F - NARROW) * f for f in (0.25, 0.5, 0.75, 0.92, 1.0)]
-    PY = next(k / 50.0 for k in range(int(TIP_B * 50), int(TIP_F * 50)) if outside(k / 50.0, about(drop(k / 50.0) + 0.05, 0.0)) > 0.0)   # the opening's back, where the gun tips
+    PY = next(k / 50.0 for k in range(int(TIP_B * 50), int(TIP_F * 50)) if outside(k / 50.0, about(k / 50.0, drop(k / 50.0) + 0.05, 0.0)) > 0.0)   # the opening's back, where the gun tips
+    PIV = centre(PY)
     TILT_R = math.radians(TILT)
+    HOVER = LINE_R + TILT_R                       # the gun's line in hover
+    M_F = YC - RETRACT                            # its muzzle in flight
+    FOOT = (M_F - PY) / math.cos(LINE_R) - GUN_L   # its back in flight, along its line from the pivot
+    RUN = RETRACT / math.cos(LINE_R) + REACH / math.cos(LINE_R)   # how far it runs along its line
+    M_H = PY + (FOOT + RUN + GUN_L) * math.cos(HOVER)   # its muzzle in hover
+    T0, T1 = YC - 0.8, M_H + 0.1                 # the trough: from inside the point to just past the muzzle in hover
 
-    def rise(y):
-        """How far the gun's line stands over its line in flight at `y`, tipped up in hover."""
-        return (y - PY) * math.tan(TILT_R)
-    M_H = PY + (M_F + RUN - PY) * math.cos(TILT_R)   # its muzzle in hover
-    T0, T1 = YC - 0.8, M_H + 0.1                 # the trough: from inside the blister's point to just past the muzzle in hover
+    def trough_mid(y):
+        """The trough's middle at `y`, from the gun's line in flight at T0 to its line in hover at T1."""
+        a, z = centre(T0), PIV.y + (T1 - PY) * math.tan(HOVER)
+        f = (y - T0) / (T1 - T0)
+        return Vector((G.x, a.y + (z - a.y) * f))
 
     def trough_at(y):
         """The trough's opening in the chamfer at `y`: its middle (x, z), half width, the run up
         the chamfer and its normal there; None where it does not reach the skin."""
-        c = G + Vector((0.0, rise(T1) * (y - T0) / (T1 - T0)))
+        c = trough_mid(y)
         p0, u, length, nrm = chamfer(y)
         dd = (p0 - c).dot(nrm)
         if abs(dd) >= TR - 0.02:
             return None
         return c + nrm * dd, math.sqrt(TR * TR - dd * dd), u, nrm
-    T_END = max(k / 50.0 for k in range(int(T0 * 50), int(T1 * 50) + 1) if trough_at(k / 50.0))
-    LENS = [T0 + (T_END - T0) * k / 12.0 for k in range(13)]
 
-    def arc(s, y, r, a0, a1, n=8):
-        """Points on the circle `r` about the gun's line at `y`, from a0 to a1 degrees, on side `s`."""
-        return [(s * x, y, z) for (x, z) in (about(r, a0 + (a1 - a0) * k / n) for k in range(n + 1))]
+    def arc(s, y, r, a0, a1, n=8, c=None):
+        """Points on the circle `r` about the gun's line at `y` (or `c`), from a0 to a1 degrees, on side `s`."""
+        return [(s * x, y, z) for (x, z) in (about(y, r, a0 + (a1 - a0) * k / n, c) for k in range(n + 1))]
+    Y_MID = (TIP_B + TIP_F) / 2.0
     for s, n, carries in ((-1.0, 1, "transonic_rifle"), (1.0, 2, "laser_carbine")):
         side = "l" if s < 0 else "r"
-        axis_at = Vector((s * G.x, 0.0, G.y))
-        # The recess: the blister's whole teardrop cut out of the body, its inboard part lined dark.
+        hub = Vector((s * centre(Y_MID).x, Y_MID, centre(Y_MID).y))   # the halves' hinge, on the gun's line at the clamshell's middle
+        # The recess: the clamshell's whole teardrop cut out of the body, its inboard part lined dark.
         hull = []
         for y in STATIONS:
             hull += arc(s, y, drop(y) + 0.05, 0.0, 360.0, 15)[:-1]
         b.cut_hull([body], hull)
-        # The trough: round the gun's path out of the blister's point, from its line in flight to
-        # its line in hover.
-        b.cut_hull([body], arc(s, T0, TR, 0.0, 360.0, 15)[:-1] + [(s * x, T1, z) for (x, z) in (about(TR, 24.0 * k, rise(T1)) for k in range(15))])
-        # The trough's cover: a flush lens of the chamfer over the trough, slid in behind its floor
-        # in hover and out flush in flight, so the closed nose is smooth from the blister on (Ryan,
-        # 13 November: "encompass the whole cut section, just to smooth it out more when closed");
-        # its slot cut through the floor along its travel.
-        line = Vector((s * O.x, 0.0, O.y))
-        slot, rings = [], []
-        for y in LENS:
-            F, h, u, nrm = trough_at(y) or (trough_at(T_END)[0], 0.02, chamfer(y)[1], chamfer(y)[3])
-            for dn in (0.05, -SINK - 0.25):
-                for du in (-h - 0.03, h + 0.03):
-                    p = F + u * du
-                    slot.append((s * p.x + line.x * dn, y, p.y + line.z * dn))
-            ring = []
-            for (du, dn) in ((-h, 0.0), (h, 0.0), (h, -0.18), (-h, -0.18)):
-                p = F + u * du + nrm * dn
-                ring.append((s * p.x - line.x * SINK, y, p.y - line.z * SINK))
-            rings.append(ring if s > 0 else list(reversed(ring)))
-        b.cut_hull([body], slot)
-        with b.joint("trough_" + side, (s * (G.x - O.x * SINK), YC, G.y - O.y * SINK), slide=tuple(line)):
-            _rings(b, rings, "steel.plate", "trough_cover")
+        if TROUGH:
+            # The trough: round the gun's path out of the point, from its line in flight to its
+            # line in hover; its cover a flush lens of the chamfer over it, slid in behind its floor
+            # in hover and out flush in flight (Ryan, 13 November: "encompass the whole cut section,
+            # just to smooth it out more when closed"), its slot cut through the floor along its travel.
+            b.cut_hull([body], arc(s, T0, TR, 0.0, 360.0, 15)[:-1] + arc(s, T1, TR, 0.0, 360.0, 15, trough_mid(T1))[:-1])
+            T_END = max(k / 50.0 for k in range(int(T0 * 50), int(T1 * 50) + 1) if trough_at(k / 50.0))
+            line = Vector((s * O.x, 0.0, O.y))
+            slot, rings = [], []
+            for y in [T0 + (T_END - T0) * k / 12.0 for k in range(13)]:
+                F, h, u, nrm = trough_at(y) or (trough_at(T_END)[0], 0.02, chamfer(y)[1], chamfer(y)[3])
+                for dn in (0.05, -SINK - 0.25):
+                    for du in (-h - 0.03, h + 0.03):
+                        p = F + u * du
+                        slot.append((s * p.x + line.x * dn, y, p.y + line.z * dn))
+                ring = []
+                for (du, dn) in ((-h, 0.0), (h, 0.0), (h, -0.18), (-h, -0.18)):
+                    p = F + u * du + nrm * dn
+                    ring.append((s * p.x - line.x * SINK, y, p.y - line.z * SINK))
+                rings.append(ring if s > 0 else list(reversed(ring)))
+            b.cut_hull([body], slot)
+            with b.joint("trough_" + side, (s * (G.x - O.x * SINK), YC, G.y - O.y * SINK), slide=tuple(line)):
+                _rings(b, rings, "steel.plate", "trough_cover")
         rings = []
         for y in STATIONS:
             e0, e1 = edges(y, drop(y))
             rings.append(arc(s, y, max(0.02, drop(y) - 0.3), e1, 360.0 + e0) + list(reversed(arc(s, y, max(0.01, drop(y) - 0.36), e1, 360.0 + e0))))
         _rings(b, rings, "bore.void", "port_bay")
-        # The two halves, each built rolled open into the nose (hover).
+        # The two halves, each a shell of the teardrop shut over the gun's line in flight, built
+        # rolled open into the nose (hover) about the hinge.
         for half, sign in (("t", 1.0), ("b", -1.0)):
             roll = -s * sign * OPEN   # the roll that opens it: up the chamfer and in for the top, down it and in for the bottom
             turn = Matrix.Rotation(math.radians(roll), 3, "Y")
@@ -6088,19 +6100,18 @@ def needletail(b):
                 e0, e1 = edges(y, r)
                 a0, a1 = (0.0, e1) if sign > 0 else (e0, 0.0)
                 ring = arc(s, y, r, a0, a1) + list(reversed(arc(s, y, max(0.01, r - TH), a0, a1)))
-                rings.append([tuple(axis_at + turn @ (Vector(p) - axis_at)) for p in ring])
+                rings.append([tuple(hub + turn @ (Vector(p) - hub)) for p in ring])
             close = -roll
-            with b.joint("shell_%s%s" % (side, half), (s * G.x, (TIP_B + TIP_F) / 2.0, G.y), axis="roll",
-                         limits=(min(0.0, close) - 5.0, max(0.0, close) + 5.0)):
+            with b.joint("shell_%s%s" % (side, half), tuple(hub), axis="roll", limits=(min(0.0, close) - 5.0, max(0.0, close) + 5.0)):
                 _rings(b, rings, "steel.plate", "shell")
         # The gun: tipped up about its line at the opening's back, and run out along its tipped
         # line; its mount square to the chamfer.
-        fwd = Vector((0.0, math.cos(TILT_R), math.sin(TILT_R)))
+        fwd = Vector((0.0, math.cos(HOVER), math.sin(HOVER)))
         up = Vector((s * O.x, 0.0, O.y))
         up = (up - fwd * up.dot(fwd)).normalized()
-        foot = M_F + RUN - GUN_L   # the gun's back, run out, before it tips
-        mount = Vector((s * G.x, PY + (foot - PY) * math.cos(TILT_R), G.y + (foot - PY) * math.sin(TILT_R)))
-        with b.joint("tilt_" + side, (s * G.x, PY, G.y), axis="pitch", limits=(-TILT - 3.0, 3.0)):
+        pivot = Vector((s * PIV.x, PY, PIV.y))
+        mount = pivot + fwd * (FOOT + RUN)
+        with b.joint("tilt_" + side, tuple(pivot), axis="pitch", limits=(-TILT - 3.0, 3.0)):
             with b.joint("run_" + side, tuple(mount), slide=tuple(fwd)):
                 b.stock("hp_%d" % n, tuple(mount), "barrel", forward=tuple(fwd), up=tuple(up), scale=0.32, carries=carries, fits=PORT_FITS)
 
@@ -6327,13 +6338,14 @@ def needletail(b):
                    "wing_l": (0.0, -SWING, 0.0, 0.0, -AFT, 0.0), "wing_r": (0.0, SWING, 0.0, 0.0, -AFT, 0.0),   # swung out and slid back
                    "pod_l": (0.0, 0.0, 0.0, PN.x * OUT, 0.0, -PN.y * OUT), "pod_r": (0.0, 0.0, 0.0, -PN.x * OUT, 0.0, -PN.y * OUT),
                    "run_pod_l": (0.0, 0.0, 0.0, 0.0, -RUNP, 0.0), "run_pod_r": (0.0, 0.0, 0.0, 0.0, -RUNP, 0.0),
-                   "run_l": (0.0, 0.0, 0.0, 0.0, -RUN * math.cos(TILT_R), -RUN * math.sin(TILT_R)), "run_r": (0.0, 0.0, 0.0, 0.0, -RUN * math.cos(TILT_R), -RUN * math.sin(TILT_R)),   # back along the tipped line, which the tilt then lays level
+                   "run_l": (0.0, 0.0, 0.0, 0.0, -RUN * math.cos(HOVER), -RUN * math.sin(HOVER)), "run_r": (0.0, 0.0, 0.0, 0.0, -RUN * math.cos(HOVER), -RUN * math.sin(HOVER)),   # back along the tipped line, which the tilt then lays on its line in flight
                    "tilt_l": (-TILT, 0.0, 0.0, 0.0, 0.0, 0.0), "tilt_r": (-TILT, 0.0, 0.0, 0.0, 0.0, 0.0),
                    "shell_lt": (0.0, 0.0, -OPEN, 0.0, 0.0, 0.0), "shell_rt": (0.0, 0.0, OPEN, 0.0, 0.0, 0.0),
                    "shell_lb": (0.0, 0.0, OPEN, 0.0, 0.0, 0.0), "shell_rb": (0.0, 0.0, -OPEN, 0.0, 0.0, 0.0),
                    "lamp": (LAMP_FOLD, 0.0, 0.0, 0.0, 0.0, 0.0)})
     FLIGHT.update({"iris_%d" % (k + 1): (0.0, 0.0, IRIS_SHUT, 0.0, 0.0, 0.0) for k in range(IRIS)})   # the iris shut under the folded lid
-    FLIGHT.update({"trough_l": (0.0, 0.0, 0.0, -O.x * SINK, 0.0, O.y * SINK), "trough_r": (0.0, 0.0, 0.0, O.x * SINK, 0.0, O.y * SINK)})   # the troughs' covers out flush, along the chamfer's normal
+    if TROUGH:
+        FLIGHT.update({"trough_l": (0.0, 0.0, 0.0, -O.x * SINK, 0.0, O.y * SINK), "trough_r": (0.0, 0.0, 0.0, O.x * SINK, 0.0, O.y * SINK)})   # the troughs' covers out flush, along the chamfer's normal
 
     def held(pose):
         return {j: [(0.0,) + tuple(v), (1.0,) + tuple(v)] for j, v in pose.items()}
@@ -6347,7 +6359,8 @@ def needletail(b):
              "booster_fl": 0.4, "booster_fr": 0.4, "booster_rl": 0.4, "booster_rr": 0.4,
              "slide_fl": 0.5, "slide_fr": 0.5, "slide_rl": 0.5, "slide_rr": 0.5, "wing_l": 0.55, "wing_r": 0.55}
     STAGE.update({"iris_%d" % (k + 1): 0.0 for k in range(IRIS)})
-    STAGE.update({"trough_l": 0.45, "trough_r": 0.45})
+    if TROUGH:
+        STAGE.update({"trough_l": 0.45, "trough_r": 0.45})
 
     def change(t0, span, back=False):
         out = {}
