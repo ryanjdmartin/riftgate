@@ -1935,13 +1935,16 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 276 (14 November, from `ccr-b7d5164e-1wtzzm` at `8d6cdac`, ahead of main, for
-  Ryan's picks from the Giant Petrel's option sheets): the Giant Petrel's twelfth cut, its model and
-  rig, its nine pictures (the turbine close the ninth) and the eleventh's as Before, the live copies
-  read first and found to be this branch's last publish, and `renders.json` with its entry replaced
-  in the live one (Version 275, this branch's own: the Needletail's nineteenth cut and the new twin
-  form `twin_barrel_round`), its Kite entry still the live one (main's shipped note for it, taken in
-  with main, not published from here). `edits` and
+  page's Version 277 (14 November, from main at `d80a996`, the branch `ccr-b7d5164e-1wtzzm` landed
+  there on Ryan's "Ship it" for the Needletail): the Giant Petrel's thirteenth cut, its model and rig,
+  its ten pictures (a turbine from astern the tenth) and the twelfth's as Before; the Kite's rig with
+  its port's round pair, a close picture of it, and its entry from main (the live one was the 12
+  November note, main's of the 13th never published); the round pair's class picture in place of the
+  port pair's, which is gone with its models and burn; `shapes.json` and the muzzles without it;
+  `content/chassis.json`, `components.json` and `foes.json`, `designs.json` and `text.json` brought
+  up to main's (the live content was Version 260's); every replaced file read first and found older
+  than main's or this branch's last publish. `edits` and `text` empty, `designs` the two folded
+  ideas. `edits` and
   `text` empty, `designs` the two folded ideas. Version 254 (13 November,
   from `ccr-e3ddf00b-ilkwbi` at `0c03430`, ahead of main): the
   Kite's last round, its wings' back edge swept to match the front. The Kite's rounds went out
