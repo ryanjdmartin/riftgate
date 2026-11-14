@@ -6577,13 +6577,33 @@ def giant_petrel(b):
     # coming to a point aft (Ryan, 13 November: "make the windshield wrap around the front"; "still
     # too 'soft.' Not fast or sharp enough looking").
     DZ = 20.0
-    DH = [(28.0, 26.2, 15.1, 31.05), (4.0, 26.4, 16.0, 31.6), (-26.0, 26.4, 16.0, 31.6), (-33.0, 26.2, 12.0, 25.0)]   # (y, base half width, roof half width, roof)
+    # The front's shape: FRONT_STYLE picks one of the options put to Ryan (14 November: "I still feel
+    # the front face there could be shaped more aggressive looking. It's not streamlined enough"):
+    # where the front leaves the run, how far forward the roof's edge reaches as a share of the
+    # foot's reach (nothing: a straight edge across), the foot's corners (the right flank round to the
+    # prow's point), a brow's peak over the face, and the salvo racks moved back for a roof edge further back.
+    FRONT_STYLE = "now"
+    FS = {"now": dict(fy0=28.0, brow=0.18, front=[(26.2, 28.0), (24.2, 33.5), (0.0, 43.5)], visor=0.0, racks=0.0),
+          "raked": dict(fy0=25.0, brow=0.0, front=[(26.2, 25.0), (24.2, 31.0), (0.0, 43.5)], visor=0.0, racks=-2.5),
+          "sharp": dict(fy0=26.0, brow=0.18, front=[(26.2, 26.0), (21.5, 30.0), (0.0, 44.0)], visor=0.0, racks=0.0),
+          "raked_sharp": dict(fy0=24.5, brow=0.0, front=[(26.2, 24.5), (21.5, 28.5), (0.0, 44.0)], visor=0.0, racks=-3.0),
+          "visor": dict(fy0=24.5, brow=0.0, front=[(26.2, 24.5), (21.5, 28.5), (0.0, 44.0)], visor=2.2, racks=-3.0),
+          "bold": dict(fy0=21.0, brow=0.0, front=[(26.2, 21.0), (18.0, 26.0), (0.0, 44.0)], visor=3.0, droop=0.7, rack_y=(20.0, 10.0, 0.0))}[FRONT_STYLE]
+    FY0, BROW, FRONT = FS["fy0"], FS["brow"], FS["front"]
+    DH = [(FY0, 26.2, 15.1, 31.05), (4.0, 26.4, 16.0, 31.6), (-26.0, 26.4, 16.0, 31.6), (-33.0, 26.2, 12.0, 25.0)]   # (y, base half width, roof half width, roof)
     b.loft([(y, [(-a, DZ), (a, DZ), (t, zt), (-t, zt)]) for (y, a, t, zt) in DH], "steel.panel", "deckhouse")
-    FY0, BROW = 28.0, 0.18   # where the front leaves the run; how far forward the roof's edge reaches, as a share of the foot's reach
-    FRONT = [(26.2, 28.0), (24.2, 33.5), (0.0, 43.5)]   # the foot's corners, the right flank round to the prow's point
     a0, t0, zt0 = _lerp_at(DH, FY0)
     foot = [(x, y, DZ) for (x, y) in FRONT] + [(-x, y, DZ) for (x, y) in reversed(FRONT[:-1])]
     brow = [(x * t0 / a0, FY0 + (y - FY0) * BROW, zt0) for (x, y, z) in foot]   # the roof's edge, the same corners drawn in and set back
+
+    def brow_y(x):
+        """The roof's front edge at `x` across (either side)."""
+        chain = [(px, py) for (px, py, pz) in brow[:len(FRONT)]]   # the right half, flank to prow
+        x = abs(x)
+        for (xa, ya), (xb, yb) in zip(chain, chain[1:]):
+            if xb <= x <= xa:
+                return ya + (yb - ya) * (xa - x) / max(1e-6, xa - xb)
+        return chain[0][1]
     # Each facet runs straight from its foot to its brow, but the brow's edges are not parallel to
     # the foot's, so a facet twists: built whole it was two flat triangles creased across it that
     # the glass cut through (Ryan, 13 November: "there's something really messed up with the front
@@ -6602,6 +6622,24 @@ def giant_petrel(b):
     _rings(b, [[tuple(facet(i, m / NK, j / NF)) for i in range(len(foot) - 1) for m in range(NK)] + [tuple(facet(len(foot) - 2, 1.0, j / NF))]
                for j in range(NF + 1)], "steel.panel", "deckhouse", cap=False)
     _slab(b, [(x, y, zt0 - 0.1) for (x, y, z) in brow], (0.0, 0.0, 1.0), 0.2, "steel.panel", "deckhouse")
+    if FS["visor"]:
+        # A brow's peak: the roof's front edge carried out over the face as a thin lip, the glass in
+        # its shadow.
+        pts = [Vector((x, y)) for (x, y, z) in brow]
+        outs = []
+        for k, p in enumerate(pts):
+            ns = []
+            for q, sgn in ((pts[k - 1] if k > 0 else None, 1.0), (pts[k + 1] if k + 1 < len(pts) else None, -1.0)):
+                if q is not None:
+                    e = (p - q) if sgn > 0 else (q - p)
+                    ns.append(Vector((e.y, -e.x)).normalized())
+            n = sum(ns, Vector((0.0, 0.0))).normalized()
+            n = n * (1.0 / max(0.5, n.dot(ns[0])))   # mitred, so each edge's lip is as deep
+            outs.append(p + n * FS["visor"])
+        drop = FS.get("droop", 0.0)   # how far its lip dips below the roof's edge
+        for k in range(len(pts) - 1):
+            quad = [(pts[k], 0.0), (pts[k + 1], 0.0), (outs[k + 1], drop), (outs[k], drop)]
+            _slab(b, [(q.x, q.y, zt0 - 0.05 - dz) for (q, dz) in quad], (0.0, 0.0, 1.0), 0.32, "steel.panel", "brow_peak")
     # The glass, (along the facet, up it): a raked pane each side of the prow, its outer pillar swept
     # back, a thin mullion on the crease, each a thin shell over its facet's surface; a band up the
     # middle of the front, vertically centred on it (Ryan, 13 November: it "can sit lower on the front
@@ -6647,19 +6685,19 @@ def giant_petrel(b):
         height = max((facet(i, *kf(u, 1.0)) - facet(i, *kf(u, 0.0))).dot(along) for u in (0.0, 0.5, 1.0))
         b._finish(bm, "glass.glass", "bridge_glass", frame=(o, along, across.normalized(), over, (across.length, max(0.5, height))))
     for s in (-1.0, 1.0):
-        b.loft([(28.6, rect(s * 13.4, 2.0, 31.4, 31.9)), (-16.5, rect(s * 13.4, 2.0, 31.4, 31.9))], "livery.livery", "roof_stripe")
+        b.loft([(min(28.6, min(brow_y(x) for x in (12.4, 14.4))), rect(s * 13.4, 2.0, 31.4, 31.9)), (-16.5, rect(s * 13.4, 2.0, 31.4, 31.9))], "livery.livery", "roof_stripe")
 
         def flank(y, s=s):
             a, t, zt = _lerp_at(DH, y)
             return (s * a, DZ), (s * t, zt)
-        _gp_windows(b, flank, 27.0, -23.0, 4, 0.30, 0.62, gap=0.1)
+        _gp_windows(b, flank, min(27.0, FY0 - 1.0), -23.0, 4, 0.30, 0.62, gap=0.1)
     # On the roof the salvo's three racks flush in line down the middle, each the second cut's one
     # rack again, six tubes, firing over the bow in a ripple (Ryan, 13 November: "i meant 3 racks
     # in line down the body, not across, back at the size they were"), and the integrated mast
     # behind them, moved back and raked, a swept faceted fin (his word: "slanted, a bit more
     # Kestrel aerodynamic"), the uplink's array on its tip.
     MZ = 31.4
-    for tag, yf in (("f", 26.5), ("m", 14.5), ("a", 2.5)):
+    for tag, yf in zip("fma", FS.get("rack_y", (26.5 + FS.get("racks", 0.0), 14.5 + FS.get("racks", 0.0), 2.5 + FS.get("racks", 0.0)))):
         _gp_salvo_rack(b, tag, 0.0, yf, yf - 9.0, _lerp_at(DH, yf - 4.5)[2], 13.0, cols=3)
     MB = [(0.0, -10.0), (5.2, -14.0), (5.2, -22.5), (0.0, -25.5), (-5.2, -22.5), (-5.2, -14.0)]    # its foot on the roof, a point fore and aft
     MT = [(0.0, -22.0), (1.9, -23.5), (1.9, -27.0), (0.0, -28.5), (-1.9, -27.0), (-1.9, -23.5)]   # its tip, raked well aft
