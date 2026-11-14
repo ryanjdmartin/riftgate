@@ -9600,3 +9600,51 @@ standard fodder, and any heat over the vanilla's is a loss where its point cross
 a lasting point on every weapon is worth two entries and more, and nothing with the vanilla
 at 2. What they do not say: what a fight of the game's costs, which is the anchor's read once
 a number moves.
+
+## 14 November, the basics on dials: tier one's fights under the reboot, the vanilla a point up and the heat down
+
+Ryan's "Sure, let's try it" on a dial for the vanilla's number and heat (the refit brief's
+section 23). Each fight at its rating, tier one at Convergence 1, the six certain tier ones
+(the Honey Badger, the Skua, the Storm Petrel, the Prairie Dog, the Cassowary, the
+Cottonmouth), six squads and five seeds a fight, the greedy rung with its first play of the
+reboot, `Skirmish.reboot` on; the what-if's `basics`, `hotter` and `top` (scratch probe, the
+battle's own builders). 30 fights a cell: a direction. Rounds, and hull lost as a share of a
+squad of four's.
+
+| The basics | A lone flanker (4 fights) | A hunter's pack (2) | A formation (10) | Reboots a machine a fight, a formation | The burn a fight |
+|---|---|---|---|---|---|
+| As built: 2 for 4 heat, the Laser Carbine 3 for 5 | 96% won, 5.5 rounds, 6.8% | 100%, 5.3, 11.6% | 100%, 6.0, 10.7% | 1.02 | 0.19 |
+| `hotter=-1` | 96%, 5.4, 6.6% | 100%, 5.1, 11.8% | 100%, 5.5, 9.9% | 0.77 | 0.14 |
+| `hotter=-2` | 96%, 5.4, 6.9% | 100%, 5.2, 11.6% | 100%, 5.0, 8.8% | 0.58 | 0.04 |
+| `basics=1`: 3 for 4, the Carbine 4 for 5 | 100%, 4.5, 5.1% | 98%, 4.6, 9.3% | 100%, 5.1, 9.4% | 0.85 | 0.21 |
+| `basics=1,hotter=-1` | 100%, 4.5, 4.9% | 98%, 4.5, 9.2% | 100%, 4.7, 8.1% | 0.64 | 0.10 |
+| `basics=1,hotter=-2` | 100%, 4.5, 5.1% | 100%, 4.5, 9.6% | 100%, 4.5, 7.9% | 0.48 | 0.03 |
+| `basics=1,hotter=-1,top=2`: the Carbine 4 for 6 | 100%, 4.5, 5.0% | 98%, 4.6, 9.7% | 100%, 4.8, 8.4% | 0.69 | 0.11 |
+| `basics=1,hotter=-1,top=4`: the Carbine 4 for 8 | 100%, 4.4, 5.0% | 98%, 4.7, 10.0% | 100%, 5.0, 8.8% | 0.74 | 0.18 |
+
+By fight, rounds and hull, as built and with the point of damage alone: the goblin horde 5.2
+and 6.8% to 4.9 and 5.9%; the treant's grove 7.5 and 12.9% to 6.2 and 12.8%; the gel wall
+7.5 and 15.2% to 7.3 and 18.8%; the needler thicket 3.6 and 6.2% to 3.3 and 6.2%; the
+sandworm's ambush 5.8 and 10.7% to 4.9 and 9.7%; the grave throng 6.7 and 13.1% to 5.3 and
+6.6%; the barrow mound 8.1 and 13.6% to 6.8 and 7.5%; the knights' vigil 4.2 and 5.1% to 3.2
+and 4.5%; the ember pyre 5.2 and 11.4% to 4.8 and 11.5%; the magma vent 5.9 and 11.7% to 4.8
+and 10.0%. The Laser Carbine is 10.5% of a formation's spends as built, 13.5% at 4 for 4
+heat and 10.5% at 4 for 8.
+
+The squads of four (five squads and four seeds a fight, 20 fights a cell):
+
+| The basics | An elite (11 fights) | A boss (13) | Reboots a machine a fight: elite, boss |
+|---|---|---|---|
+| Before the reboot, as built (13 November's read) | 100% won, 4.8 rounds, 9.5% | 98%, 8.1, 21.4% | none |
+| Under the reboot, as built (13 November's) | 100%, 6.1, 14.8% | 93%, 10.8, 37.1% | 0.89, 1.63 |
+| `basics=1,hotter=-1` | 100%, 5.2, 11.1% | 99%, 8.7, 26.5% | 0.58, 1.12 |
+| `basics=1,hotter=-2` | 100%, 4.9, 10.9% | 98%, 8.4, 23.6% | 0.36, 0.82 |
+
+What it says: the point and the heat each take about a round off a formation and add to the
+4.5 rounds a formation ran before the reboot (5.9% of a four's hull then); with both, an
+elite and a boss stand within a round and a few points of hull of the anchor's, so most of
+what the reboot added to tier one's fights was the basics themselves; a duel answers to
+the point and not to the heat; the goblin horde barely moves for the point, the Marsh's
+throng halves, the plated and the thick give a round; the top basic's heat is a slope. What
+it does not say: whether a hold or a reboot is right, the bot's play being a floor; the gel
+wall's rise is inside a cell's noise at 30 fights.

@@ -39,7 +39,9 @@ const DISPLAY_DEFAULTS := {
 	"rupture_beats": "2",   # RUPTURE_BEATS: a debug build's trial of the Rupture meter's size in beats of the tide (Ramp.beats_trial), read as a battle starts
 	"tide_density": "100",   # TIDES: a debug build's trial of how many packs the opening places and the tide sends, in hundredths of the game's (Ramp.tide_trial), read as a battle starts
 	"wall_strike": "10",   # STRIKES: a debug build's trial of what a pip of threat rating strikes the wall for (Battlefield.strike_trial), read as a battle starts
-	"heat_trial": "0",   # HEATS: a debug build's what-if, every weapon a point cooler or hotter than content prices it (HEAT_SPECS, Refit's hotter and cooling), read at the next launch
+	"heat_trial": "0",   # HEATS: a debug build's what-if, every weapon a point or two cooler than content prices it, or a point hotter (HEAT_SPECS, Refit's hotter and cooling), read at the next launch
+	"basic_guns": "0",   # BASIC_GUNS: a debug build's what-if, every basic gun dealing a point more than content gives it (Refit's basics), read at the next launch
+	"top_basic_heat": "0",   # TOP_BASIC_HEATS: a debug build's what-if, more heat on the basic guns that deal more than the plainest (Refit's top), read at the next launch
 	"overheat_burn": "1",   # OVERHEATS: a debug build's trial of the hull an overheat burns a point of excess (Skirmish.overheat_scale), read as a battle starts
 	"barrier_basic": "built",   # BARRIER_BASICS: a debug build's what-if, the Barrier basic off the stock dice with the Armoured basic in its slot (Refit's barrier=none), read at the next launch
 	"shield_break": "off",   # SHIELD_BREAKS: a debug build's trial of the block, the blow that breaks a shield stopped whole (Skirmish.shield_break), read as a battle starts
@@ -80,16 +82,29 @@ const SHIELD_REGEN_LABELS := {"built": "BUILT", "0": "0", "1": "1", "2": "2", "3
 ## damage, defense and heat"): every weapon three hotter than it was and every chassis that
 ## cools cooling one more, the shape the fight bot's reads chose (docs/measurements.md, 12
 ## November: a formation fight brings a machine to its limit about once, in fights no longer).
-## HEAT moves every weapon a point either side of that, the two shapes that read like it:
-## COOLER a point cooler on the same cooling (the mild one), HOTTER a point hotter with one more
-## cooling (it bites the same and sustains a little better). The same what-if the runners read
-## (Refit's hotter and cooling), so read at the next launch.
+## HEAT moves every weapon against that: one or two off on the same cooling, or a point more
+## with one more cooling (it bites the same and sustains a little better). The same what-if the
+## runners read (Refit's hotter and cooling), so read at the next launch.
 ## OVERHEAT is the hull a point of excess burns as the turn ends, one the game's: the bot
 ## overheats rather than holds at one and holds more at two, in longer fights, so what a hold
 ## is worth is his play's to find.
-const HEATS := ["-1", "0", "1"]
-const HEAT_LABELS := {"-1": "COOLER", "0": "BUILT", "1": "HOTTER"}
-const HEAT_SPECS := {"-1": "hotter=-1", "1": "hotter=1,cooling=1"}
+## Two cooler since 14 November: under the reboot nothing cools, and the prices of 12 November
+## were sized against a cooling of two, so two off every weapon is the pace those prices meant
+## (Ryan's play of the reboot: "I just know I overheated a lot").
+const HEATS := ["-2", "-1", "0", "1"]
+const HEAT_LABELS := {"-2": "−2", "-1": "−1", "0": "BUILT", "1": "+1"}
+const HEAT_SPECS := {"-2": "hotter=-2", "-1": "hotter=-1", "1": "hotter=1,cooling=1"}
+## The basics' own numbers, a debug build's what-ifs (Ryan, 14 November: "A 'standard' vanilla
+## shot should be 1 less than our 'standard' fodder health"; the gun that deals one more "needs
+## to bite appropriately", and "for basics, the only cost we should have is Heat"; the refit
+## brief's section 23): BASIC GUNS a point of damage on every basic gun, which makes the plain
+## ones 3 against a goblin's 4 and the hottest basic the gun that deals one more; TOP BASIC more
+## heat on the basic guns that deal more than the plainest, that gun's price. The same what-if
+## the runners read (Refit's basics and top), so read at the next launch.
+const BASIC_GUNS := ["0", "1"]
+const BASIC_GUN_LABELS := {"0": "BUILT", "1": "+1"}
+const TOP_BASIC_HEATS := ["0", "2", "4"]
+const TOP_BASIC_HEAT_LABELS := {"0": "BUILT", "2": "+2", "4": "+4"}
 const OVERHEATS := ["1", "2", "3"]
 const OVERHEAT_LABELS := {"1": "×1", "2": "×2", "3": "×3"}
 ## The block's trial, a debug build's (Ryan, 13 November: "What if we bring back that when a

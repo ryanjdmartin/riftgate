@@ -598,10 +598,36 @@ func test_the_refit_what_if_is_off_until_the_setting_or_the_environment_asks() -
 	var was = Settings.display.get("shield_regen", "built")
 	var heat_was = Settings.display.get("heat_trial", "0")
 	var barrier_was = Settings.display.get("barrier_basic", "built")
+	var guns_was = Settings.display.get("basic_guns", "0")
+	var top_was = Settings.display.get("top_basic_heat", "0")
 	Settings.display["shield_regen"] = "built"
 	Settings.display["heat_trial"] = "0"
 	Settings.display["barrier_basic"] = "built"
+	Settings.display["basic_guns"] = "0"
+	Settings.display["top_basic_heat"] = "0"
 	assert_eq(HARNESS.refit_spec(), "", "as built by default: the game plays the content as written")
+	# The basics' own dials (14 November): a point of damage on every basic gun, and more heat
+	# on the basic guns that deal more than the plainest, the same what-if.
+	for guns in Settings.BASIC_GUNS:
+		Settings.display["basic_guns"] = guns
+		var want_guns: String = "" if guns == "0" or not OS.is_debug_build() else "basics=%s" % guns
+		assert_eq(HARNESS.refit_spec(), want_guns, "a debug build's setting names the basic guns' damage: %s" % guns)
+		if not want_guns.is_empty():
+			assert_eq(int(Refit.parse(want_guns)["basics"]), int(guns), "and the what-if takes it")
+		assert_true(Settings.BASIC_GUN_LABELS.has(guns), "%s has its button's label" % guns)
+	Settings.display["basic_guns"] = "0"
+	for top in Settings.TOP_BASIC_HEATS:
+		Settings.display["top_basic_heat"] = top
+		var want_top: String = "" if top == "0" or not OS.is_debug_build() else "top=%s" % top
+		assert_eq(HARNESS.refit_spec(), want_top, "and the top basic's heat: %s" % top)
+		if not want_top.is_empty():
+			assert_eq(int(Refit.parse(want_top)["top"]), int(top), "which the what-if takes")
+		assert_true(Settings.TOP_BASIC_HEAT_LABELS.has(top), "%s has its button's label" % top)
+	Settings.display["basic_guns"] = "a cannon"
+	Settings.display["top_basic_heat"] = "molten"
+	assert_eq(HARNESS.refit_spec(), "", "a value that is no option asks for nothing")
+	Settings.display["basic_guns"] = "0"
+	Settings.display["top_basic_heat"] = "0"
 	# The Barrier basic's dial (13 November): off the stock dice, the same what-if.
 	Settings.display["barrier_basic"] = "none"
 	assert_eq(HARNESS.refit_spec(), "barrier=none" if OS.is_debug_build() else "", "a debug build's setting takes the Barrier basic off the stock dice")
@@ -641,6 +667,9 @@ func test_the_refit_what_if_is_off_until_the_setting_or_the_environment_asks() -
 	Settings.display["shield_regen"] = was
 	Settings.display["heat_trial"] = heat_was
 	Settings.display["barrier_basic"] = barrier_was
+	Settings.display["basic_guns"] = guns_was
+	Settings.display["top_basic_heat"] = top_was
+	assert_eq([str(Settings.DISPLAY_DEFAULTS.get("basic_guns", "")), str(Settings.DISPLAY_DEFAULTS.get("top_basic_heat", ""))], ["0", "0"], "the basic guns ship as content has them")
 	assert_eq(str(Settings.DISPLAY_DEFAULTS.get("barrier_basic", "")), "built", "the Barrier basic ships on the dice content gives it")
 	assert_eq(str(Settings.DISPLAY_DEFAULTS.get("shield_regen", "")), "built", "and the setting ships as built")
 	assert_eq(str(Settings.DISPLAY_DEFAULTS.get("heat_trial", "")), "0", "the heat's too")
@@ -652,6 +681,9 @@ func test_the_refit_what_if_is_off_until_the_setting_or_the_environment_asks() -
 			assert_true(labels.has(str(Settings.SHIELD_REGEN_LABELS[regen])), "a debug build's trials page offers the regen %s" % Settings.SHIELD_REGEN_LABELS[regen])
 		for heat in Settings.HEATS:
 			assert_true(labels.has(str(Settings.HEAT_LABELS[heat])), "the heat's offset %s" % Settings.HEAT_LABELS[heat])
+		for top in Settings.TOP_BASIC_HEATS:
+			assert_true(labels.has(str(Settings.TOP_BASIC_HEAT_LABELS[top])), "the top basic's heat %s" % Settings.TOP_BASIC_HEAT_LABELS[top])
+		assert_true(menu._list != null and menu._list.is_ancestor_of(menu._rows.find_children("*", "BaseButton", true, false)[0]), "the dials stand in a scroller, so a short glass holds them")
 		for burn in Settings.OVERHEATS:
 			assert_true(labels.has(str(Settings.OVERHEAT_LABELS[burn])), "and the overheat's burn %s" % Settings.OVERHEAT_LABELS[burn])
 		for block in Settings.SHIELD_BREAKS:

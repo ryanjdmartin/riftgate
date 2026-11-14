@@ -314,7 +314,10 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # shield or a vent, every chassis regains its own shield regen, the basics make heat), so what is
 # left are the numbers a read may still ask about: "regen=N" (a flat regen on every chassis in
 # place of its own) or "regen=half", "cooling=N" (an offset), "hotter=N" (every weapon N heat
-# more, a read for the heat prices), "barrier=cooldownN" (the Barrier basic sits out N rounds
+# more, a read for the heat prices; negative for cooler), "basics=N" (every basic gun deals N
+# more) and "top=N" (the basic guns that deal more than the plainest make N more heat), the two
+# of Ryan's logic for the stock basics (the refit brief's section 23),
+# "barrier=cooldownN" (the Barrier basic sits out N rounds
 # once spent, 0 for none, where content gives it 1), "barrier=heatN" (it costs N heat) or
 # "barrier=none" (it leaves the stock dice, the Armoured basic in its slot); comma-separated;
 # tools/campaign_run.gd takes it too.
@@ -421,7 +424,7 @@ python3 tools/shield_model.py --bench   # the wider bench alone: one field for t
 python3 tools/shield_model.py --fight   # a fight that ends: each machine a gun with heat, the pack with hit points; a reboot that grows with every break, and one gauge for hits and heat
 python3 tools/shield_model.py --builds  # whole rule sets spliced from Ryan's menu of 13 November: regen or none, the block, what a pass recovers, cooling, one bar; a die that is a dud one round in five
 python3 tools/shield_model.py --shutdown  # the shutdown as he stated it the same day (no regen, no cooling, a break allows it, an overheat forces it, none by choice), with what an overheat costs and when the recovery lands each as a row; a gun's heat in turns; a foe that heats
-python3 tools/basics_model.py           # the stock basics apart from content (Ryan's logic of 14 November: the vanilla gun one under the standard fodder's hit points): shots to kill, the pairs that kill, a fight by the gun's number, the gun that deals one more by its heat under the reboot, how often a die shows an entry, a hot entry beside a lasting point
+python3 tools/basics_model.py           # the stock basics apart from content (Ryan's logic of 14 November: the vanilla gun one under the standard fodder's hit points): shots to kill, the pairs that kill, a fight by the gun's number, the gun that deals one more by its heat under the reboot, how often a die shows an entry, a hot entry beside a lasting point, and the rider ladder by the standard foe's hit points, 3 to 6
 python3 tools/shield_model.py --choice  # the reboot by choice, his next form: a machine rides at its maximum, a reboot takes the turn and empties the shield, both back the round after; played blind to the foes' picks and reading them, with what the emptying buys
 # whom the foes strike (23 October): every starter trio a tender can deal, stock, greedy, against each
 # faction's formation, bosses and first pack; picks as intents are drawn, the same with every machine standing,
@@ -529,10 +532,13 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # RIFTGATE_REFIT=regen=0 (any run; any spec tools/balance.gd's --refit takes) lays a what-if over
 # the refit pass's model, which is content since 10 November: a flat shield regen in place of
 # each chassis's own, a cooling offset, hotter weapons, a price on the Barrier basic.
-# On the phone a debug build's SETTINGS → TRIALS has SHIELD REGEN (BUILT, 0, 1, 2, 3: each
-# chassis its own number, or a flat one on all) and HEAT (COOLER, BUILT, HOTTER: every weapon
-# a point cooler than content prices it, or a point hotter with every chassis that cools
-# cooling one more; the what-if's hotter and cooling) and BARRIER BASIC (BUILT, NONE: the Barrier
+# On the phone a debug build's SETTINGS → TRIALS (a page that scrolls) has SHIELD REGEN (BUILT, 0, 1, 2, 3: each
+# chassis its own number, or a flat one on all) and HEAT (−2, −1, BUILT, +1: every weapon
+# one or two cooler than content prices it, or a point hotter with every chassis that cools
+# cooling one more; the what-if's hotter and cooling), BASIC GUNS (BUILT, +1: every basic gun
+# a point of damage up, the plain ones 3 where they are 2; the what-if's basics), TOP BASIC
+# (BUILT, +2, +4: more heat on the basic guns that deal more than the plainest; the what-if's
+# top) and BARRIER BASIC (BUILT, NONE: the Barrier
 # basic on the stock dice, or the Armoured basic in its slot; the what-if's barrier=none): pick, close the app, open it, and start a new
 # battle or run, since a saved one keeps the numbers it was saved with. RIFTGATE_OVERHEAT=2 (any battle) sets the hull an overheat burns a point of heat past
 # the gauge, 1 the game's; the same page's OVERHEAT (×1, ×2, ×3) sets it on the phone, read
@@ -555,7 +561,7 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # burn. A what-if, nothing decided; the fight bot has a first play of it, and
 # `tools/balance.gd -- --reboot` reads the matrix under it. The screenshot pose `reboot` shows
 # all three states. The settings for a first play of it: REBOOT on ON, OVERHEAT on ×1, every
-# other row on BUILT or the game's own; SHIELD REGEN and HOTTER's one more cooling do nothing
+# other row on BUILT or the game's own; SHIELD REGEN and the +1 HEAT's one more cooling do nothing
 # under it (a chassis's own regen and cooling are ignored); close the game and open it again
 # once the rows are set, three of them being read at launch, then start a new battle or fight.
 # RIFTGATE_FIELD_DEPTH=14 and RIFTGATE_OPENING=1 (any battle) try a deeper field and a farther

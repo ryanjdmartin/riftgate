@@ -29,6 +29,9 @@ What it prints:
   6. One machine of the squad changed, heat left out: one of its six entries dealing one more,
      against every weapon of its dealing one more from the second round (a lasting amp), by
      the vanilla's number.
+  7. The ladder by the standard foe's hit points, 3 to 6, the vanilla one under it: what each
+     gun under the vanilla still does to that foe, alone and beside another, and behind a
+     point of plate. It answers whether a standard foe of 5 buys anything a 4 does not.
 """
 
 import argparse
@@ -230,6 +233,22 @@ def main():
             rows.append(cells)
     table("6. One machine of %d changed, heat left out: rounds, blows taken and foes killed outright (%d fights a cell)" % (m, a.trials),
           ["The pack", "The vanilla", "Plain dice", "One of its six entries deals one more", "Two of its six", "Every weapon of its one more from round two"], rows)
+
+    # 7. The ladder by the standard foe.
+    rows = []
+    for hp in (3, 4, 5, 6):
+        vanilla = hp - 1
+        for d in range(vanilla, 0, -1):
+            if d == vanilla:
+                what = "the vanilla: two shots"
+            elif d + d >= hp:
+                what = "kills in two of its own: the point paid for its rider is free on this foe"
+            else:
+                need = hp - d
+                what = "kills only beside a gun of %d or more%s" % (need, ", the vanilla alone" if need == vanilla else "")
+            plated = shots_to_kill(hp, 1, d)
+            rows.append([hp, d, "%d under" % (vanilla - d) if d < vanilla else "", what, plated or "never"])
+    table("7. The ladder by the standard foe: each gun from the vanilla down, on that foe", ["The standard foe", "A gun of", "Paid for a rider", "On the standard foe", "Shots behind a point of plate"], rows)
 
 
 if __name__ == "__main__":

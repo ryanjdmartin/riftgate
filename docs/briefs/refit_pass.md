@@ -3327,3 +3327,105 @@ machines that read damage or heat by the point, their sessions'; then the anchor
 It belongs with the foes' numbers, after the audit, since both are sized against each
 other; a dial for the vanilla's number and heat would let his play and the runner read it
 before content moves.
+
+### His scope, a standard foe of 5, and the dials (14 November)
+
+His words: "Sure, let's try it. Remember that I'm just trying to price the basics, and from
+there estimate the cost of the riders. Tier two foes are facing a more coherent build from
+the player, so these +/- 1 questions aren't relevant there." "There's no reason to consider
+adjusting the standard foe up to 5, is there? Just to add a small percentage of
+granularity?"
+
+So the read above is the basics' and tier one's: the knife's edge, the cliff and the dead
+point are questions of a stock die of basics against rank and file. It is no call on tier
+two, where a built die answers them. The roster's spread is the foes' pass's and no part of
+this pricing.
+
+**A standard foe of 5: no.** The model's seventh table, each gun from the vanilla down
+against the standard foe:
+
+| The standard foe | The vanilla | One under it | Two under | Three under |
+|---|---|---|---|---|
+| 3 | 2 | 1: kills only beside the vanilla | equipment | |
+| 4 | 3 | 2: kills in two of its own | 1: only beside the vanilla | equipment |
+| 5 | 4 | 3: kills in two of its own | 2: only beside a 3 or more | 1: only beside the vanilla |
+| 6 | 5 | 4: kills in two of its own | 3: kills in two of its own | 2: only beside a 4 or more |
+
+The point more is the same question at any size: one under is one under, and 4 against 5
+is the cliff 3 against 4 is. What a 5 buys is one more rung under the vanilla, and a
+middling one, a gun of 2 that kills only beside a 3; and a softer plate on the first rider
+gun (three shots through a point of plate where a 4's takes four). Two rider rungs that
+stand by themselves come only at 6. What it costs: 57% of tier one's formation slots and
+every gun renumbered, the tiers above scaled with them, and the sums a player does in his
+head a size up. 4 is the least standard that carries his ladder: at 3 the first step down
+is the last before equipment.
+
+**The dials** (a debug build's SETTINGS → TRIALS, each read at the next launch; the same
+what-if the runners read, `basics=N` and `top=N` beside `hotter=N`; no content moves):
+
+- BASIC GUNS, BUILT or +1: every basic gun a point of damage up. The Twin Autoguns, the
+  Rivet Gun and the Ankle Mortar deal 3, the vanilla his rule gives a goblin of 4, and the
+  Laser Carbine deals 4, the gun that deals one more, on the stock dice that hold it.
+- HEAT, −2, −1, BUILT or +1: every weapon's heat. The prices of 12 November were sized
+  against a cooling of 2, so two off is the pace they meant under the reboot: a basic gun 2
+  and the Carbine 3, where they are 4 and 5.
+- TOP BASIC, BUILT, +2 or +4: more heat on the basic guns that deal more than the plainest,
+  the price his logic gives the point. With HEAT at −1 the Carbine makes 4, 6 or 8 against a
+  vanilla's 3: three kills a reboot, two, or one, at a maximum of 12.
+
+A passive that rewrites its machine's guns into its own shot (the Cottonmouth's drum) keeps
+that shot's damage, which is no basic's. The page scrolls since the same day: at twelve rows
+it had outgrown a glass of 1280.
+
+**The bot's read of the dials** (`docs/measurements.md`, 14 November; tier one's fights at
+their ratings under the reboot, the six certain tier ones, the fight bot's first play, 30
+fights a cell; a direction):
+
+| The basics | A lone flanker: rounds, hull | A hunter's pack | A formation | Reboots a machine, a formation |
+|---|---|---|---|---|
+| As built: 2 for 4 heat, the Carbine 3 for 5 | 5.5, 6.8% | 5.3, 11.6% | 6.0, 10.7% | 1.02 |
+| One heat off every weapon | 5.4, 6.6% | 5.1, 11.8% | 5.5, 9.9% | 0.77 |
+| Two off | 5.4, 6.9% | 5.2, 11.6% | 5.0, 8.8% | 0.58 |
+| A point of damage up: 3 for 4, the Carbine 4 for 5 | 4.5, 5.1% | 4.6, 9.3% | 5.1, 9.4% | 0.85 |
+| A point up, one heat off: 3 for 3, the Carbine 4 for 4 | 4.5, 4.9% | 4.5, 9.2% | 4.7, 8.1% | 0.64 |
+| A point up, two off: 3 for 2, the Carbine 4 for 3 | 4.5, 5.1% | 4.5, 9.6% | 4.5, 7.9% | 0.48 |
+| A point up, one off, the Carbine 4 for 6 | 4.5, 5.0% | 4.6, 9.7% | 4.8, 8.4% | 0.69 |
+| A point up, one off, the Carbine 4 for 8 | 4.4, 5.0% | 4.7, 10.0% | 5.0, 8.8% | 0.74 |
+
+What it says, on today's foes and the bot's play:
+
+- The point and the heat each take about a round off a formation, and they add: 6.0 rounds
+  as built, 5.1 and 5.0 for either alone, 4.5 for both, which is the length a formation ran
+  before the reboot. Hull falls from 10.7% of a four's to 8%, where it was 5.9% under a
+  shield that refilled.
+- A duel answers to the point and not to the heat: a lone machine reboots for its shield, a
+  flanker's blows all being its own, so cooler guns leave its fight as long.
+- By fight the model holds. The goblin horde, all plain 4s, barely moves for the point (5.2
+  rounds to 4.9). The Marsh's throng, whose revenants a 3 kills outright, halves its cost
+  (13.1% to 6.6%). The plated and the thick move by a round or more (the treant's grove 7.5
+  to 6.2, the barrow 8.1 to 6.8, the sandworm's ambush 5.8 to 4.9).
+- The Carbine's price shows as a slope, not a wall: 4.7 rounds, 4.8 and 5.0 at 4, 6 and 8
+  heat, and the bot spends it on 13.5% of its spends, then 10.5% at 8. It is one entry on
+  three of the six dice.
+- Reboots a machine fall from one a fight to two in three with a point off, and to one in
+  two with two off, where the burn all but stops (0.03 hull a fight): at two off heat is
+  seldom a question in a formation.
+
+The squads of four, 20 fights a cell:
+
+| The basics | An elite: won, rounds, hull | A boss |
+|---|---|---|
+| Before the reboot, as built | 100%, 4.8, 9.5% | 98%, 8.1, 21.4% |
+| Under the reboot, as built | 100%, 6.1, 14.8% | 93%, 10.8, 37.1% |
+| A point up, one heat off | 100%, 5.2, 11.1% | 99%, 8.7, 26.5% |
+| A point up, two off | 100%, 4.9, 10.9% | 98%, 8.4, 23.6% |
+
+So most of what the reboot added to tier one's fights, in rounds and in hull, was the basics
+themselves: guns sized against a shield that refilled and priced against a cooling the rule
+removes. With the point and two heat off, an elite and a boss stand within a round and a
+few points of hull of where the anchor left them, which leaves the foes' pass the kits and
+less of the numbers.
+
+Claude's lean for his play: BASIC GUNS on +1, HEAT on −1 and TOP BASIC on +2, so a vanilla is
+3 for 3 heat, four shots a gauge, and the Carbine 4 for 6, two kills a reboot; HEAT on −2
+beside it if he still overheats more than he likes.

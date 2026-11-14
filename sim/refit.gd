@@ -20,6 +20,12 @@ extends RefCounted
 ##   hotter=N   every weapon makes N more heat, fixed pieces too, and a passive that rewrites
 ##              its machine's weapons its shot's (a read of how much hotter the guns must run
 ##              before heat is a pace; Ryan, 10 November: "Heat generation is too low")
+##   basics=N   every basic gun deals N more, a rolled one at both ends (Ryan, 14 November: "A
+##              'standard' vanilla shot should be 1 less than our 'standard' fodder health": a
+##              read of the vanilla a point up; section 23 of the brief); may be negative
+##   top=N      the basic guns that deal more than the plainest basic gun make N more heat (the
+##              same day: the gun that deals one more "needs to bite appropriately", and "for
+##              basics, the only cost we should have is Heat")
 ##   barrier=cooldownN  the Barrier basic sits out N rounds once spent, after the round of the
 ##                      spend (a cooldown's own count); 0 for none, and the bare word is 1
 ##   barrier=heatN      the Barrier basic makes N heat
@@ -31,7 +37,7 @@ const ARMOURED := "braced"   # the status the Armoured basic grants
 
 
 static func parse(text: String) -> Dictionary:
-	var spec := {"regen": "", "cooling": 0, "hotter": 0, "barrier": ""}
+	var spec := {"regen": "", "cooling": 0, "hotter": 0, "basics": 0, "top": 0, "barrier": ""}
 	for part in text.split(",", false):
 		var p := part.strip_edges()
 		if p.begins_with("regen="):
@@ -40,10 +46,14 @@ static func parse(text: String) -> Dictionary:
 			spec["cooling"] = int(p.trim_prefix("cooling="))
 		elif p.begins_with("hotter="):
 			spec["hotter"] = int(p.trim_prefix("hotter="))
+		elif p.begins_with("basics="):
+			spec["basics"] = int(p.trim_prefix("basics="))
+		elif p.begins_with("top="):
+			spec["top"] = int(p.trim_prefix("top="))
 		elif p.begins_with("barrier="):
 			spec["barrier"] = p.trim_prefix("barrier=")
 		elif not p.is_empty():
-			push_error("--refit: no part '%s' (regen=half|N, cooling=N, hotter=N, barrier=cooldownN|heatN|none; the model's die, its regen by chassis and the basics' heat are content since 10 November)" % p)
+			push_error("--refit: no part '%s' (regen=half|N, cooling=N, hotter=N, basics=N, top=N, barrier=cooldownN|heatN|none; the model's die, its regen by chassis and the basics' heat are content since 10 November)" % p)
 	return spec
 
 
@@ -82,6 +92,28 @@ static func apply(db: ContentDB, spec: Dictionary) -> Array[String]:
 				if e is Dictionary and str(e.get("effect", "")) == "rewrite_weapon" and e.has("heat"):
 					e["heat"] = maxi(0, int(e["heat"]) + hotter)
 		notes.append("every weapon makes %+d heat (%d weapons)" % [hotter, n])
+	# The basic guns' own numbers (the brief's section 23): the damage of every one, and the heat
+	# of those that deal more than the plainest, which is the price his logic gives the point.
+	var basics := int(spec.get("basics", 0))
+	var top := int(spec.get("top", 0))
+	if basics != 0 or top != 0:
+		var guns := basic_guns(db)
+		var plain := 0
+		for cid in guns:
+			var power := int(db.components[cid]["face"].get("power", 0))
+			plain = power if plain == 0 else mini(plain, power)
+		var said: Array[String] = []
+		for cid in guns:
+			var face: Dictionary = db.components[cid]["face"]
+			var over := int(face.get("power", 0)) > plain
+			if basics != 0:
+				if face.has("power_max"):
+					face["power_max"] = maxi(1, int(face["power_max"]) + basics)
+				face["power"] = maxi(1, int(face.get("power", 0)) + basics)
+			if top != 0 and over:
+				face["heat"] = maxi(0, int(face.get("heat", 0)) + top)
+			said.append("%s %d for %d heat" % [str(db.components[cid].get("name", cid)), int(face["power"]), int(face.get("heat", 0))])
+		notes.append("the basic guns (%+d damage, %+d heat on those over the plainest): %s" % [basics, top, ", ".join(said)])
 	# The Barrier basic's price, a question the first reads raised (a free Barrier is spent every
 	# round it is rolled): so many rounds dark once spent, or so much heat. The number is a
 	# cooldown's own, the rounds sat out after the round of the spend; until 12 November this
@@ -122,6 +154,20 @@ static func apply(db: ContentDB, spec: Dictionary) -> Array[String]:
 		else:
 			push_error("--refit: barrier=%s is no rule (cooldownN, heatN, none)" % barrier_rule)
 	return notes
+
+
+## The basic guns, in content order: every tier-zero piece the engine runs whose entry is a
+## weapon that deals damage.
+static func basic_guns(db: ContentDB) -> Array[String]:
+	var out: Array[String] = []
+	for cid in db.components.keys():
+		var c: Dictionary = db.components[cid]
+		var face = c.get("face", null)
+		if str(c.get("status", "")) == "planned" or not (face is Dictionary) or db.component_tier(str(cid)) != 0:
+			continue
+		if str(face.get("kind", "")) == "attack" and int(face.get("power", 0)) > 0:
+			out.append(str(cid))
+	return out
 
 
 ## The lowest-tier slottable buff that grants `status`, in content order: the basic of its kind.

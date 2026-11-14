@@ -36,8 +36,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1187 tests, 371,421 checks, green on `ccr-722ca9f0-yj8na3` (14 November, REBOOT on
-  the bottom row's middle with REROLL centred again; before that REBOOT a drop's target
+- Tests: 1188 tests, 371,561 checks, green on `ccr-722ca9f0-yj8na3` (14 November, the
+  basics' what-ifs and their dials; before that REBOOT on the bottom row's middle with
+  REROLL centred again; before that REBOOT a drop's target
   alone, and shot trails the game's own; before
   that the dragged die's target and drop; the KEYWORD INK and TRACES switches cut with their
   two tests; before that the same day, 1189 with the reboot's control remade and driven by a
@@ -1737,7 +1738,15 @@ to the hull budget, since today's foes were sized against a shield that refills 
 about twice the hull under it, and with them the stock basics' numbers, which are sized
 against the same foes (his logic of 14 November, open: the vanilla gun one under the
 standard fodder's hit points, riders paid in damage, the gun that deals one more paid in
-heat; the refit brief's section 23 has it read, with `tools/basics_model.py`); his play of
+heat; the refit brief's section 23 has it read, with `tools/basics_model.py`; his scope is
+the basics and tier one, and a standard foe of 5 is set aside, the point being the same
+question at any size). **It is on trial behind three dials** (a debug build's TRIALS: BASIC
+GUNS, HEAT with two off, TOP BASIC; the what-if's `basics` and `top`), read by the bot the
+same day (`docs/measurements.md`): a vanilla of 3 with a point or two of heat off gives a
+formation back the 4.5 rounds it ran before the reboot, at 8% of a four's hull where today's
+basics take 6.0 rounds and 10.7%, and an elite and a boss stand within a round and a few
+points of hull of the anchor's (a boss 24 to 27% for 37%), so most of what the reboot added
+to tier one's fights was the basics themselves; his play of the dials is next; then his play of
 the anchor; then the scaling the paragraph below already orders, the first battle down and
 tiers two and three up. His play's notes for those numbers (the bible's section 12 has his
 words): a stack burns one hull, his pick to start; he overheated a lot, and today's basic
