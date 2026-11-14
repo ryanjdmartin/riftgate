@@ -56,12 +56,6 @@ func _init() -> void:
 	mouse_filter = Control.MOUSE_FILTER_PASS
 
 
-## A debug build's comparison (Settings' KEYWORD INK): a term's word in ink, its icon alone in
-## its colour, against the word in its colour.
-static func keyword_ink() -> bool:
-	return OS.is_debug_build() and bool(Settings.display.get("keyword_ink", false))
-
-
 ## The quieter face's ink: halfway from the ink to the muted grey (the tags row).
 static func hint_ink() -> Color:
 	return Palette.INK.lerp(Palette.MUTED, 0.5)
@@ -698,7 +692,7 @@ static func _marked(spans: Array, icons: bool = true) -> Array:
 			if not terms.is_empty():
 				var c := Terms.colour(str(terms[0]))
 				sub["font"] = Hud.display_bold()
-				sub["ink"] = Palette.INK if keyword_ink() else c
+				sub["ink"] = c
 				sub["terms"] = terms
 				if icons:
 					sub["glyph"] = Terms.glyph(str(terms[0]))

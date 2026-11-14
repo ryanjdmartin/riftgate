@@ -911,9 +911,9 @@ func _open_menu() -> void:
 	if _menu == null:
 		_menu = PauseMenu.new()
 		_menu.display_changed.connect(func(key: String, _value: Variant) -> void:
-			if key == "weld" or key == "aa_mode" or key == "traces" or key == "map_view":
+			if key == "weld" or key == "aa_mode" or key == "map_view":
 				MapOrient.apply_setting()
-				_map.set_field(battle.field)   # the machines with the weld on or off, the anti-aliasing, the traces, or the map turned
+				_map.set_field(battle.field)   # the machines with the weld on or off, the anti-aliasing, or the map turned
 				_refresh()
 			_apply_display())
 		_menu.hud_changed.connect(_rebuild)
@@ -935,10 +935,10 @@ func _apply_display() -> void:
 	_built_map = _map_switches()
 
 
-## What the map is built with that a settings switch changes: the AA mode, and a debug build's
-## weld and traces.
+## What the map is built with that a settings switch changes: the AA mode, the map's view, and a
+## debug build's weld.
 func _map_switches() -> String:
-	return str([MechWeld.enabled(), Hud.aa_mode(), Settings.display.get("traces", true), Settings.display.get("map_view", "wall_left")])
+	return str([MechWeld.enabled(), Hud.aa_mode(), Settings.display.get("map_view", "wall_left")])
 
 
 ## A colour change rebuilds the screen from the battle (the skirmish, if one is open,

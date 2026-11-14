@@ -34,9 +34,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1189 tests, 371,411 checks, green on `ccr-722ca9f0-yj8na3` (14 November, the
-  reboot's control remade and driven by a finger's events; a lone fight from the menu
-  reading the trial dials). Before it, 1187 tests, 371,387 checks (13
+- Tests: 1187 tests, 371,408 checks, green on `ccr-722ca9f0-yj8na3` (14 November, the
+  KEYWORD INK and TRACES switches cut with their two tests; before that the same day, 1189
+  with the reboot's control remade and driven by a finger's events, and a lone fight from the
+  menu reading the trial dials). Before it, 1187 tests, 371,387 checks (13
   November, the reboot's what-if, its trial and the bot's first play of it, the block's rest
   timer cut). Before it, 1167 tests, 371,269 checks (13 November, the breaking shield's what-if and its
   two trial dials, over main's Kite). Before it, 1154 tests,
@@ -1641,7 +1642,10 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   perspective; the enemy in the rift's violet, heat red-orange, harm red-red, a debug build's
   COLOURS page for Ryan's picks; every term bold in its colour with its icon and a tap opening
   its entry (`Terms`, `KeywordTip`); the dice's gestures (tap reads, double-tap or hold locks);
-  Godot 4.8-beta2 for the MSAA fix, the player's AA MODE. Waits on Ryan's phone reads.
+  Godot 4.8-beta2 for the MSAA fix, the player's AA MODE. Waits on Ryan's phone reads; two are
+  in (14 November): the keywords stay coloured ("it's fine coloured") and the map keeps its
+  traces, and the two debug switches that set each against its other form are cut (KEYWORD
+  INK, TRACES).
 - **The pacing session and the foes' fresh start** (29 and 30 October): packs as compositions,
   the field and the rift's cycle by the tier and the ramp (`sim/ramp.gd`), the tears and the
   seam, the whole wall struck, the Rupture meter by menace with its Fractures, the elites at

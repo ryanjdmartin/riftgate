@@ -595,10 +595,8 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # in every mode.
 # RIFTGATE_SHOT_ZOOM=<z> shows any battle pose zoomed to z on its first machine (the overlay holds its size on screen).
 # RIFTGATE_OUTLINE=<n> sets the battle map's machine outline width in design pixels, the same at every zoom, for a comparison
-# (Map3D.OUTLINE is the default). A debug build's TRACES toggle draws the map without its traces (the creases on the
-# machines, the props and the gate, one device pixel at every zoom), to judge the grain zoomed out on the phone; on the
-# desk, RIFTGATE_TUNE=1's TRACE knob does the same live. A debug build's KEYWORD INK sets the terms in shown text
-# bold in ink with their icons alone in their colour, against the words in their colour, to compare on the phone.
+# (Map3D.OUTLINE is the default). On the desk, RIFTGATE_TUNE=1's TRACE knob draws the map's traces (the creases on the
+# machines, the props and the gate, one device pixel at every zoom) in another mode or not at all, live.
 # RIFTGATE_HUD=<green|amber|blue> forces the HUD colour for a run (any run), to judge a mark against every option.
 # RIFTGATE_SHOT_WINDOW=1 puts the scene in the window itself instead of a SubViewport, so the
 # capture goes through the project's own stretch and font oversampling as the phone's does:
