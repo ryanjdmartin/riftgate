@@ -641,10 +641,12 @@ class Build:
         self.cuts.append((list(targets), cutter))
         return cutter
 
-    def cut_hull(self, targets, points):
+    def cut_hull(self, targets, points, material=None):
         """The convex hull of `points` subtracted from `targets` before export: a pocket of any
         convex shape, such as a trough whose floor ramps up to meet the surface (the Kite's
-        gun port, 12 November)."""
+        gun port, 12 November). `material`, given, is what the pocket's own walls wear, in place
+        of the target's (the Needletail's cheek recesses, dark to their rim: Ryan, 14 November,
+        of a light wall showing past their lining, "the execution is leaving weird cuts")."""
         bm = bmesh.new()
         vs = [bm.verts.new(v) for v in points]
         bmesh.ops.convex_hull(bm, input=vs)
@@ -652,6 +654,8 @@ class Build:
         mesh = bpy.data.meshes.new("cutter")
         bm.to_mesh(mesh)
         bm.free()
+        if material:
+            mesh.materials.append(self.material(material))
         cutter = bpy.data.objects.new("cutter", mesh)
         bpy.context.scene.collection.objects.link(cutter)
         self.cuts.append((list(targets), cutter))
@@ -683,6 +687,8 @@ class Build:
                 mod = ob.modifiers.new("cut", "BOOLEAN")
                 mod.operation = "DIFFERENCE"
                 mod.object = cutter
+                if cutter.data.materials:
+                    mod.material_mode = "TRANSFER"   # the pocket's walls wear the cutter's material (cut_hull's `material`)
                 with bpy.context.temp_override(object=ob, active_object=ob, selected_objects=[ob], selected_editable_objects=[ob]):
                     bpy.ops.object.modifier_apply(modifier=mod.name)
                 if ob not in touched:
@@ -690,6 +696,7 @@ class Build:
             bpy.data.objects.remove(cutter, do_unlink=True)
         self.cuts = []
         for ob in touched:
+            keep = len(ob.material_slots) > 1   # a pocket whose walls wear their own material keeps it (cut_hull's `material`)
             bm = bmesh.new()
             bm.from_mesh(ob.data)
             uv = bm.loops.layers.uv.verify()
@@ -701,7 +708,8 @@ class Build:
                 for loop in f.loops:
                     co = loop.vert.co
                     loop[uv].uv = (co[a] / self.tile_world, co[b2] / self.tile_world)
-                f.material_index = 0
+                if not keep:
+                    f.material_index = 0
             bm.to_mesh(ob.data)
             bm.free()
 

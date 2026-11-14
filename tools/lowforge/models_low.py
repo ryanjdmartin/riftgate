@@ -5955,12 +5955,12 @@ def needletail(b):
     # recess's dark lining, and the gun runs far out ahead through a short trough, clear of the skin
     # beyond it (Ryan, 13 November: "they were half embedded in it when extended"), the nose
     # narrowing fastest just there.
-    YC = 27.0                      # the port's point, where the nose's side crosses the gun's line, toward the tip (Ryan, 14 November: "moving the forward guns and ports closer to the nose tip"), where the nose still narrows fast enough for a small blister and its band still holds the trough's cover
+    YC = 25.0                      # the port's point, where the nose's side crosses the gun's line, toward the tip (Ryan, 14 November: "moving the forward guns and ports closer to the nose tip", then "Canards and guns can go aft like, maybe 2 units"), where the nose still narrows fast enough for a small blister and its band still holds the trough's cover
     AX = face(YC)                  # the gun's line out from the middle
     TIP_B, WIDE, NARROW, TIP_F = YC - 4.0, YC - 2.6, YC - 1.3, YC   # the blister's back tip, its widest, the start of its point, its point
     RM = 1.42                      # its radius at its widest
     TH, OPEN = 0.22, 120.0         # the halves' thickness, and how far each rolls in to open
-    RUN = 6.0                      # how far the gun runs back in flight, its muzzle under the blister (Ryan, 13 November: "extend too far when opened, they end up floating in front")
+    RUN = 5.0                      # how far the gun runs back in flight, its muzzle under the blister (Ryan, 13 November: "extend too far when opened, they end up floating in front"), its root under the skin behind the recess in hover (14 November: "the clam cut could start relatively farther up the barrel, to hide any floating")
     PIN = YC - 1.5 + RUN - 7.68    # the gun's mount at rest, run out, its muzzle just clear of the nose (the port gun is 7.68 long here)
     # Each class rooted in the open bay and run out of the port, none ahead of it on nothing (Ryan,
     # 13 November: "racks, blades and dishes still float out of the front gun ports"): the port
@@ -6010,7 +6010,7 @@ def needletail(b):
         hull = []
         for y in STATIONS:
             hull += arc(s, y, drop(y) + 0.05, 0.0, 360.0, 15)[:-1]
-        b.cut_hull([body], hull)
+        b.cut_hull([body], hull, material="bore.void")   # dark to its rim, so no light wall shows past the lining where the blister wraps onto the chamfers
         b.cut_hull([body], arc(s, TROUGH[0], TROUGH[2], 0.0, 360.0, 15)[:-1] + arc(s, TROUGH[1], TROUGH[2], 0.0, 360.0, 15)[:-1])
         # The trough's cover: a flush lens of the nose's side over the trough, slid in behind its
         # floor in hover and out flush in flight, so the closed nose is smooth from the blister on
@@ -6144,7 +6144,7 @@ def needletail(b):
     # left standing past it ("Make sure the rear boosters attach properly to their mounts").
     KF, LF = 0.62, 0.45          # the front boosters' girth and length
     KR, LR = 1.05, 0.61          # the rear's (Ryan, 13 November: "rear boosters can be thicker")
-    FY, FX = 18.0, 15.5          # the canards' station, beside the pop-up and just behind the cheeks' recesses (Ryan: "can the canards afford to be further forward now?"; 13 November, of the longer taper: "If the canards moved up, that should give you room"; 14 November: "then moving the canards up too"), and their boosters' pivot ("could extend a little more when hovering")
+    FY, FX = 16.0, 15.5          # the canards' station, beside the pop-up and just behind the cheeks' recesses (Ryan: "can the canards afford to be further forward now?"; 13 November, of the longer taper: "If the canards moved up, that should give you room"; 14 November: "then moving the canards up too", and then "Canards and guns can go aft like, maybe 2 units"), and their boosters' pivot ("could extend a little more when hovering")
     RY, RX = -33.0, 21.5         # the tailplanes' (Ryan, 13 November: "too long now. Only needed a little more than last time")
     FIN = FX - tucked(KF, LF, FY)
     RIN = RX - tucked(KR, LR, RY)
@@ -6511,15 +6511,20 @@ def giant_petrel(b):
     raked back harder, their tops kept and their feet drawn forward. And on the ninth (14
     November): "the traverse animation should point the guns back, just cause they can. Bring the
     spoiler back down, back to guns-over height. Narrow the windshield", and then: "I mean narrower
-    vertically for the windshield, not horizontally."
+    vertically for the windshield, not horizontally." And on the tenth: the front face "could be
+    shaped more aggressive looking. It's not streamlined enough"; of the options, "I actually like 5,
+    but it reads too me as too much deck in front, entirely the fault of the forward gun. So either
+    the gun needs to move, perhaps underneath"; and "The gun under the bow works for petrel, let's go
+    with that".
 
     The Navy SES's body: two knife hulls, their stems raked back as a wave piercer's, dark below
     the chine and chrome above, a cobalt chine stripe and straight deck stripes, each closing
     astern onto the navy's flattened booster; the cross deck between them over the air cushion,
-    open fore and aft, lift glowing under it; a raised centre bow between the knives carrying the
-    fore gun house, a cobalt spearhead down each bow's deck; the deckhouse spanning the deck, every
-    face leaning in, its front a sharp prow raked steeply back, each facet of it a smooth twisted
-    surface from its foot to the roof's edge, the bridge's glass following it a band up its middle,
+    open fore and aft, lift glowing under it; a raised centre bow between the knives, the fore gun
+    hung under it as a chin turret, a cobalt spearhead down each bow's deck; the deckhouse spanning
+    the deck, every face leaning in, its front a long spearhead laid well back and run forward over
+    the centre bow, a brow's peak over its glass, each facet of it a smooth twisted surface from its
+    foot to the roof's edge, the bridge's glass following it a band up its middle,
     a raked pane each side of the prow, a slim band, and four long windows down each flank; on its roof the Spindrift Salvo's
     three racks flush in line down the middle, each the size of the second cut's one rack (fixed,
     no pin; salvo_f, salvo_m, salvo_a, their faces rising out of the roof one after another to fire
@@ -6533,7 +6538,7 @@ def giant_petrel(b):
     each of the deckhouse roof's back quarters, either side of the mast, an omnidirectional mount,
     a faceted dome on a short pedestal, resting facing forward in line with the ship, its arc round
     the outboard side to dead aft, where its traverse swings it. Mounts in the
-    die's order: hp_1 the fore gun house on the centre bow (the Overclocked Railgun), hp_2 the left
+    die's order: hp_1 the chin turret under the centre bow (the Overclocked Railgun), hp_2 the left
     quarter's dome (the Twin Autoguns), hp_3 the right quarter's (the Twin Autoguns, a placeholder in
     the vent's old slot since the refit pass).
     Floats: the keels at z = 6."""
@@ -6580,18 +6585,15 @@ def giant_petrel(b):
     b.loft([(45.0, rect(0.0, 2 * HX - 4.0, 13.0, 20.0)), (-57.0, rect(0.0, 2 * HX - 4.0, 13.0, 20.0))], "steel.plate", "cross_deck")
     for (x, y) in ((-8.0, 24.0), (8.0, 24.0), (0.0, 0.0), (-8.0, -26.0), (8.0, -26.0)):
         _disc(b, (x, y, 12.9), (0.0, 0.0, -1.0), 2.8, 6, "amber.engine", "lift_nozzle")
-    # The centre bow between the knives: a raised wedge, the fore gun house on it (hp_1).
+    # The centre bow between the knives: a raised wedge, the deckhouse's prow over it.
     CB = [(62.0, 1.2, 17.6, 19.4), (55.0, 12.0, 15.0, 20.0), (45.0, 2 * HX - 5.0, 13.0, 20.0)]
     b.loft([(y, [(-w * 0.2, z0), (w * 0.2, z0), (w * 0.5, (z0 + z1) / 2.0), (w * 0.44, z1), (-w * 0.44, z1), (-w * 0.5, (z0 + z1) / 2.0)]) for (y, w, z0, z1) in CB],
            "steel.plate", "centre_bow")
-    GUN_STYLE = "centre"   # the fore gun on the centre bow; or under it ("under"); or a pair, one on each hull's foredeck ("pair": a fourth hardpoint, the kit's call)
-    if GUN_STYLE == "centre":
-        _gp_gun_house(b, "turret_fore", "hp_1", "barrel", "overclocked_railgun", 0.0, 51.0, 20.0, 9.0, 12.0, 5.0)
-    elif GUN_STYLE == "under":
-        _gp_gun_house(b, "turret_fore", "hp_1", "barrel", "overclocked_railgun", 0.0, 52.0, 14.2, 9.0, 12.0, 4.5, down=True, limits=(-50.0, 50.0))
-    else:
-        _gp_gun_house(b, "turret_fore", "hp_1", "barrel", "overclocked_railgun", -HX, 44.0, 20.0, 9.0, 12.0, 5.0, limits=(-20.0, 110.0))
-        _gp_gun_house(b, "turret_fore_r", "hp_4", "barrel", "overclocked_railgun", HX, 44.0, 20.0, 9.0, 12.0, 5.0, limits=(-110.0, 20.0))
+    # The fore gun hung under the centre bow as a chin turret, so the bow's deck is the deckhouse's
+    # (Ryan, 14 November, of the wedge: "too much deck in front, entirely the fault of the forward
+    # gun. So either the gun needs to move, perhaps underneath"; of the options, "The gun under the
+    # bow works for petrel, let's go with that") (hp_1).
+    _gp_gun_house(b, "turret_fore", "hp_1", "barrel", "overclocked_railgun", 0.0, 52.0, 14.2, 9.0, 12.0, 4.5, down=True, limits=(-50.0, 50.0))
     # The deckhouse: every face leaning in, four long windows down each flank, a gallery's (Ryan,
     # 13 November: the row of small ones read "like an airliner, implying compartments"). Its front
     # a sharp prow in plan, its foot and its roof's edge the same corners, the roof's set far back, so
@@ -6600,20 +6602,15 @@ def giant_petrel(b):
     # coming to a point aft (Ryan, 13 November: "make the windshield wrap around the front"; "still
     # too 'soft.' Not fast or sharp enough looking").
     DZ = 20.0
-    # The front's shape: FRONT_STYLE picks one of the options put to Ryan (14 November: "I still feel
-    # the front face there could be shaped more aggressive looking. It's not streamlined enough"):
-    # where the front leaves the run, how far forward the roof's edge reaches as a share of the
-    # foot's reach (nothing: a straight edge across), the foot's corners (the right flank round to the
-    # prow's point), a brow's peak over the face, and the salvo racks moved back for a roof edge further back.
-    FRONT_STYLE = "now"
-    FS = {"now": dict(fy0=28.0, brow=0.18, front=[(26.2, 28.0), (24.2, 33.5), (0.0, 43.5)], visor=0.0, racks=0.0),
-          "raked": dict(fy0=25.0, brow=0.0, front=[(26.2, 25.0), (24.2, 31.0), (0.0, 43.5)], visor=0.0, racks=-2.5),
-          "sharp": dict(fy0=26.0, brow=0.18, front=[(26.2, 26.0), (21.5, 30.0), (0.0, 44.0)], visor=0.0, racks=0.0),
-          "raked_sharp": dict(fy0=24.5, brow=0.0, front=[(26.2, 24.5), (21.5, 28.5), (0.0, 44.0)], visor=0.0, racks=-3.0),
-          "visor": dict(fy0=24.5, brow=0.0, front=[(26.2, 24.5), (21.5, 28.5), (0.0, 44.0)], visor=2.2, racks=-3.0),
-          "bold": dict(fy0=21.0, brow=0.0, front=[(26.2, 21.0), (18.0, 26.0), (0.0, 44.0)], visor=3.0, droop=0.7, rack_y=(20.0, 10.0, 0.0)),
-          "bold_fwd": dict(fy0=31.0, brow=0.0, front=[(26.2, 31.0), (18.0, 36.0), (0.0, 54.0)], visor=3.0, droop=0.7, rack_y=(30.0, 18.0, 6.0))}[FRONT_STYLE]
-    FY0, BROW, FRONT = FS["fy0"], FS["brow"], FS["front"]
+    # The front a long spearhead laid well back, run forward over the centre bow, the roof's edge
+    # straight across it, a brow's peak over the glass drooping a little at its lip (Ryan, 14
+    # November: "I still feel the front face there could be shaped more aggressive looking. It's not
+    # streamlined enough"; of the options, "I actually like 5", the fore gun then moved under the bow
+    # so the face could come forward, "which gives the roof racks some breathing room").
+    FY0, BROW = 31.0, 0.0   # where the front leaves the run; how far forward the roof's edge reaches, as a share of the foot's reach (nothing: straight across)
+    FRONT = [(26.2, 31.0), (18.0, 36.0), (0.0, 54.0)]   # the foot's corners, the right flank round to the prow's point
+    VISOR, DROOP = 3.0, 0.7   # the brow's peak: how far it stands out over the face, and how far its lip dips
+    RACKS = (30.0, 18.0, 6.0)   # the salvo racks' fronts down the roof, spaced
     DH = [(FY0, 26.2, 15.1, 31.05), (4.0, 26.4, 16.0, 31.6), (-26.0, 26.4, 16.0, 31.6), (-33.0, 26.2, 12.0, 25.0)]   # (y, base half width, roof half width, roof)
     b.loft([(y, [(-a, DZ), (a, DZ), (t, zt), (-t, zt)]) for (y, a, t, zt) in DH], "steel.panel", "deckhouse")
     a0, t0, zt0 = _lerp_at(DH, FY0)
@@ -6646,7 +6643,7 @@ def giant_petrel(b):
     _rings(b, [[tuple(facet(i, m / NK, j / NF)) for i in range(len(foot) - 1) for m in range(NK)] + [tuple(facet(len(foot) - 2, 1.0, j / NF))]
                for j in range(NF + 1)], "steel.panel", "deckhouse", cap=False)
     _slab(b, [(x, y, zt0 - 0.1) for (x, y, z) in brow], (0.0, 0.0, 1.0), 0.2, "steel.panel", "deckhouse")
-    if FS["visor"]:
+    if VISOR:
         # A brow's peak: the roof's front edge carried out over the face as a thin lip, the glass in
         # its shadow.
         pts = [Vector((x, y)) for (x, y, z) in brow]
@@ -6659,8 +6656,8 @@ def giant_petrel(b):
                     ns.append(Vector((e.y, -e.x)).normalized())
             n = sum(ns, Vector((0.0, 0.0))).normalized()
             n = n * (1.0 / max(0.5, n.dot(ns[0])))   # mitred, so each edge's lip is as deep
-            outs.append(p + n * FS["visor"])
-        drop = FS.get("droop", 0.0)   # how far its lip dips below the roof's edge
+            outs.append(p + n * VISOR)
+        drop = DROOP   # how far its lip dips below the roof's edge
         for k in range(len(pts) - 1):
             quad = [(pts[k], 0.0), (pts[k + 1], 0.0), (outs[k + 1], drop), (outs[k], drop)]
             _slab(b, [(q.x, q.y, zt0 - 0.05 - dz) for (q, dz) in quad], (0.0, 0.0, 1.0), 0.32, "steel.panel", "brow_peak")
@@ -6721,7 +6718,7 @@ def giant_petrel(b):
     # behind them, moved back and raked, a swept faceted fin (his word: "slanted, a bit more
     # Kestrel aerodynamic"), the uplink's array on its tip.
     MZ = 31.4
-    for tag, yf in zip("fma", FS.get("rack_y", (26.5 + FS.get("racks", 0.0), 14.5 + FS.get("racks", 0.0), 2.5 + FS.get("racks", 0.0)))):
+    for tag, yf in zip("fma", RACKS):
         _gp_salvo_rack(b, tag, 0.0, yf, yf - 9.0, _lerp_at(DH, yf - 4.5)[2], 13.0, cols=3)
     MB = [(0.0, -10.0), (5.2, -14.0), (5.2, -22.5), (0.0, -25.5), (-5.2, -22.5), (-5.2, -14.0)]    # its foot on the roof, a point fore and aft
     MT = [(0.0, -22.0), (1.9, -23.5), (1.9, -27.0), (0.0, -28.5), (-1.9, -27.0), (-1.9, -23.5)]   # its tip, raked well aft
@@ -6824,18 +6821,16 @@ def giant_petrel(b):
     # burning; then it swings home.
     b.act("uplink", 5.6, {"sensor_uplink": [(0.5, 0.0), (1.9, 70.0), (3.6, 70.0), (5.0, 0.0)]},
           glow=[(["uplink_core"], [(1.8, 0.0), (2.1, 10.0), (2.4, 2.0), (2.7, 12.0), (3.6, 12.0), (4.4, 0.0)])])
-    # The traverse: the fore gun house slews out to one side and back to the other, the quarters'
+    # The traverse: the chin turret slews out to one side and back to the other, the quarters'
     # swing from dead ahead round the outboard side to dead astern together (mirrored), over the
     # aerofoil, and back, a beat apart, each pausing before it turns back (the builder's turret
     # rule; Ryan, 14 November: "the traverse animation should point the guns back, just cause they
     # can").
-    sweep = {"turret_fore": [(0.6, 0.0), (2.0, 46.0), (2.8, 46.0), (5.2, -34.0), (6.0, -34.0), (7.2, 0.0)]}
-    if GUN_STYLE == "pair":   # each bow gun out to its own side and back
-        sweep = {"turret_fore": [(0.6, 0.0), (2.0, 46.0), (2.8, 46.0), (4.4, 0.0)], "turret_fore_r": [(0.7, 0.0), (2.1, -46.0), (2.9, -46.0), (4.5, 0.0)]}
-    b.act("traverse", 13.2, dict(sweep, **{
+    b.act("traverse", 13.2, {
+        "turret_fore": [(0.6, 0.0), (2.0, 46.0), (2.8, 46.0), (5.2, -34.0), (6.0, -34.0), (7.2, 0.0)],
         "turret_l": [(0.8, 0.0), (6.2, 180.0), (7.0, 180.0), (12.4, 0.0)],
         "turret_r": [(1.0, 0.0), (6.4, -180.0), (7.2, -180.0), (12.6, 0.0)],   # a half turn at the turret rule's slew, so it carries its weight
-    }))
+    })
     # Movement: slow and heavy, its boosters brightening, its nose a touch up as a ground-effect
     # craft runs; it drifts through its corners and never banks (a hovercraft keeps flat).
     b.halo = [("booster_ring", KESTREL_HALO), ("exhaust", KESTREL_HALO)]   # its boosters, hot

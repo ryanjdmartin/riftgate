@@ -621,12 +621,12 @@
    }
   },
   "needletail": {
-   "when": "Ryan's sixteenth note on its two modes, 14 November.",
-   "note": "Ryan, 14 November, on the fifteenth cut: “can we try moving the forward guns and ports closer to the nose tip, then moving the canards up too? Then, using the room gained, cut out some of the middle to make the whole ship shorter?” The cheek ports sit 4 nearer the tip, the canards with their boosters and the pop-up 4 forward with them, and a 4-long slice is cut out of the middle just behind the canards, where the room was gained, so everything aft of it (the canopy, the wings, the pods, the tail with its boosters and fins) sits 4 further forward and the whole ship is 103 from point to needle where it was 107; the canopy, the wings and the pods keep their size. This far forward the nose's band is thinner than the blister, so the clamshell now wraps onto the chamfers above and below it and its halves follow them. The canards' roots are sunk along their whole chord, the nose narrowing faster ahead of them. Ryan's to judge running: Walk for the change by speed, Acts for the transition.",
+   "when": "Ryan's seventeenth note on its two modes, 14 November, from his phone's look at the cheeks.",
+   "note": "Ryan, 14 November, on the sixteenth cut: “Canards and guns can go aft like, maybe 2 units. Your point about the shells is valid, but the execution is leaving weird cuts. Also the clam cut could start relatively farther up the barrel, to hide any floating.” The cheek ports and the canards with their boosters sit 2 further aft (the pop-up and the shorter middle stay). The light slivers round each recess were the cut's own walls, which took the hull's light plating and showed past the dark lining where the clamshell wraps onto the chamfers: the recess is now dark to its rim (lowforge can give a cut's walls their own material). In hover each gun runs out 1 less, so its root lies under the skin behind the recess and the barrel comes out of the hull rather than starting in the open bay; in flight its muzzle sits under the blister as before. Ryan's to judge running, and up close on the phone as he did: Acts for the transition.",
    "images": [
     {
      "file": "needletail/needletail_front.png",
-     "alt": "needletail, hover mode, front: the cheek guns and the canards nearer the tip"
+     "alt": "needletail, hover mode, front"
     },
     {
      "file": "needletail/needletail_rear.png",
@@ -634,7 +634,7 @@
     },
     {
      "file": "needletail/needletail_above.png",
-     "alt": "needletail, hover mode, from above: four shorter"
+     "alt": "needletail, hover mode, from above"
     },
     {
      "file": "needletail/needletail_flight.png",
@@ -650,11 +650,11 @@
     },
     {
      "file": "needletail/needletail_cheek.png",
-     "alt": "needletail, hover mode, close: the right cheek gun run out of its recess toward the tip"
+     "alt": "needletail, hover mode, close: the right cheek gun run out, its recess dark to the rim, its root under the skin"
     },
     {
      "file": "needletail/needletail_cheek_shut.png",
-     "alt": "needletail, flight mode, close, side on: the right cheek's blister shut, its trough's cover flush"
+     "alt": "needletail, flight mode, close, side on: the right cheek's blister shut"
     }
    ],
    "candidate": {
@@ -695,7 +695,7 @@
     ]
    },
    "before": {
-    "summary": "Before: the fifteenth cut, 14 November (the candidate final's ports, the ship 107 long)",
+    "summary": "Before: the sixteenth cut, 14 November (the ports and canards 2 further forward, light walls showing in the recesses)",
     "images": [
      {
       "file": "needletail/before_needletail_front.png",
@@ -720,6 +720,14 @@
      {
       "file": "needletail/before_needletail_changing.png",
       "alt": "Earlier: needletail, changing"
+     },
+     {
+      "file": "needletail/before_needletail_cheek.png",
+      "alt": "Earlier: needletail, hover mode, close"
+     },
+     {
+      "file": "needletail/before_needletail_cheek_shut.png",
+      "alt": "Earlier: needletail, flight mode, close, side on"
      }
     ]
    }
@@ -764,20 +772,20 @@
    }
   },
   "giant_petrel": {
-   "when": "Ryan's ninth notes on the catamaran, 14 November, and his word on the windshield the same day.",
-   "note": "Ryan, 14 November: “Petrel: the traverse animation should point the guns back, just cause they can. Bring the spoiler back down, back to guns-over height. Narrow the windshield.” In the traverse the quarters now swing round the outboard side from dead ahead to dead astern together, over the aerofoil, hold, and come back (the traverse picture, taken from astern; the last, side on). The turret rule held every act within 70 degrees of the bow; a turret's model may now name a wider reach, the quarters' 180, while the rule's slow slew and its pause still hold, so each half turn takes a little over five seconds and the act runs thirteen. The aerofoil is back down at the seventh cut's height, 5 lower, under the quarters' line of fire and clear of the giant boosters beneath it; it keeps the eighth cut's size, and the fins' feet stay where the ninth cut drew them, so with their tops lower they rake back harder. The windshield, then (“I mean narrower vertically for the windshield, not horizontally. The rest looks good”): its panes reach out to the front's corners again, held a little in from them on the swept line they had, and the band across the front is slimmer, from a little over a third of the front's height to a little under two thirds, where it ran from a quarter to three quarters. Ryan's to judge running: Acts for the traverse, the salvo and the uplink.",
+   "when": "Ryan's tenth notes on the catamaran, 14 November: the bold wedge, the fore gun under the bow.",
+   "note": "Ryan, 14 November: the front face “could be shaped more aggressive looking. It's not streamlined enough. I'm not sure what to change though”; of the five directions, “I actually like 5, but it reads too me as too much deck in front, entirely the fault of the forward gun. So either the gun needs to move, perhaps underneath”; and of the two ways, “The gun under the bow works for petrel, let's go with that.” The deckhouse's front is now a long spearhead laid back to about 26 degrees, run 10 forward over the centre bow, the roof's edge straight across it and a brow's peak over the glass, its lip drooping a little; the windshield's proportion is kept. The fore gun hangs under the centre bow as a chin turret (the railgun, hp_1), so the bow's deck is the deckhouse's, and the three salvo racks are spaced out again. From above and from the sides the hulls and the bow hide most of the chin turret. Ryan's to judge running: Acts for the traverse, the salvo and the uplink.",
    "images": [
     {
      "file": "giant_petrel/giant_petrel_front.png",
-     "alt": "giant petrel, front: the spoiler lower, the windshield a slimmer band"
+     "alt": "giant petrel, front: the long wedge over the bow, the gun under it"
     },
     {
      "file": "giant_petrel/giant_petrel_rear.png",
-     "alt": "giant petrel, rear: the spoiler down over the boosters"
+     "alt": "giant petrel, rear"
     },
     {
      "file": "giant_petrel/giant_petrel_above.png",
-     "alt": "giant petrel, from above"
+     "alt": "giant petrel, from above: the racks spaced again"
     },
     {
      "file": "giant_petrel/giant_petrel_salvo.png",
@@ -789,15 +797,19 @@
     },
     {
      "file": "giant_petrel/giant_petrel_windscreen.png",
-     "alt": "giant petrel, the windshield close: a slimmer band across the front"
+     "alt": "giant petrel, the front close: the brow's peak over the glass"
     },
     {
      "file": "giant_petrel/giant_petrel_guns.png",
      "alt": "giant petrel, the quarters' guns pointing astern over the spoiler"
+    },
+    {
+     "file": "giant_petrel/giant_petrel_chin.png",
+     "alt": "giant petrel, low ahead: the fore gun hung under the centre bow"
     }
    ],
    "before": {
-    "summary": "Before: the ninth cut, 13 November (the spoiler high, the quarters firing under it; the windshield's band half the front's height)",
+    "summary": "Before: the tenth cut, 14 November (the front raked about 41 degrees, blunt in plan, the fore gun house on the centre bow)",
     "images": [
      {
       "file": "giant_petrel/before_giant_petrel_front.png",
@@ -817,7 +829,7 @@
      },
      {
       "file": "giant_petrel/before_giant_petrel_quarters.png",
-      "alt": "Earlier: giant petrel, the quarters swung out from ahead (the traverse)"
+      "alt": "Earlier: giant petrel, the traverse"
      },
      {
       "file": "giant_petrel/before_giant_petrel_windscreen.png",
@@ -825,7 +837,7 @@
      },
      {
       "file": "giant_petrel/before_giant_petrel_guns.png",
-      "alt": "Earlier: giant petrel, side on"
+      "alt": "Earlier: giant petrel, the quarters' guns pointing astern over the spoiler"
      }
     ]
    }

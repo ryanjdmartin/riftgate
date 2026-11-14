@@ -5,8 +5,8 @@
    "axis": "yaw",
    "limits": {
     "yaw": [
-     -75.0,
-     75.0
+     -50.0,
+     50.0
     ]
    },
    "swing": false,
