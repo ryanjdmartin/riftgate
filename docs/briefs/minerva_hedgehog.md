@@ -23,7 +23,8 @@ content with the Polar Bear's landing, 20 October).
   of the hypertank).
 - On its look, 15 November: "Echidna I had two general ideas, either a half track, or a heavily
   armored car with protected wheels." (His "wheeled crawler" of 15 October is below, in the
-  Minerva session.)
+  Minerva session.) Then, of the first sheet: "I like the armoured car", and the spines need not
+  be "so on the nose" (The look, below).
 
 ## What Claude proposed
 
@@ -165,29 +166,48 @@ otherwise.
   piece's spread carries the debuff to a marked foe's neighbours as it pays, that is the Static
   machine's Splash on another clock (`aphelion_static.md`).
 
-## The look, two ways (15 November)
+## The look: the armoured car (15 November)
 
 Ryan, 15 November, asking for look tests of the chassis that have a direction ("let's see what
 you come up with for all of these. Doesn't have to be too detailed since none are finalized"),
-gave his two ideas for this one, above. Both are mocked up on one sheet
+gave his two ideas for this one, above. The first round mocked both up on one sheet
 (`docs/looks/minerva_echidna.png`, built by `tools/lowforge/looks/echidna_looks.py`; look tests,
-never content until the chassis lands), the same machine on two running gears:
+never content until the chassis lands): a half-track, and an armoured car on six heavy wheels,
+each in its own boxed housing with only its foot showing, under a faceted hull with a wedge
+glacis, a vision slit and a low turret, about 64 wide and 91 long. Both wore a green shell of
+about thirty bone-white quills, a needle on the snout and a spiked ram block on each front
+corner.
 
-- **The half-track**: two open front wheels flanking a long bonnet that is its snout, a track
-  unit under each side of the rear body, a cab with a raked windscreen; about 58 wide and 86 long.
-- **The armoured car, protected wheels**: six heavy wheels, each in its own boxed housing with
-  only its foot showing, under a faceted hull with a wedge glacis, a vision slit and a low
-  turret; about 64 wide and 91 long.
+His read of it, the same day: "Echidna - I like the armoured car. How does it turn? Like a tank?
+I don't think the spines need to be so on the nose - remember the machines were nicknamed after
+animals they resemble or act like, not designed to look like a particular animal." So the
+armoured car is his pick and the half-track is out; the shell of quills is retired, and the
+principle is the bible's (its nickname row).
 
-Both carry the echidna the same way: a green shell of about thirty thick quills raked toward the
-tail and longer aft, a snout ending in a needle, and a ram block with two blunt spikes on each
-front corner, the soft Knuckles nod as a cue alone. Claude's choices where his words were
-silent, each his to change: six wheels in separate housings rather than one skirt, so the feet
-read as wheels and not a track; the quills bone white with dark points, so they read from above
-(steel is the other way); the needle on the snout as a guess at where the Sonic Needle lives.
-Three placeholder mounts each (a barrel on the cab's ring or the turret, a rack, a bare pad), no
-act and no gait. From above the half-track's tracks show only at their outer edge, and both run
-longer than the Honey Badger.
+**How it turns** (Claude's answer to his question): like a tank. Skid steer, each side's three
+wheels driven together and the two sides run against each other to pivot, as six-wheeled
+armoured cars with fixed wheel stations do. Nothing steers, so the housings stay rigid and
+tight, which is what protecting the wheels wants; steering the outer pairs would mean opening
+the boxes round them. The look test says so to the rig: it turns on the spot to aim, as the
+tracked machines do.
+
+**The second round** (`docs/looks/minerva_echidna2.png`, the module's `SHEET2`): the car alone,
+the bristle three ways, in steel and the maker's green.
+
+- **A, the bristle as its kit**: two banks of six thin dark rods with lit tips on rails along
+  the engine cover, and one emitter off the prow, the Sonic Needle's as a guess.
+- **B, the bristle as its armour**: a comb of seven raked plates across the engine cover,
+  taller and narrower toward the tail.
+- **C, barely there**: the plain car, two grilles, a spine rib and three whip aerials, the
+  nickname left to how it acts.
+
+On the car itself: the snout cut back to a blunt wedge prow, its needle gone; the green shell
+lowered to an engine cover; the rams, his own soft reference, kept with their spikes now two
+blunt bosses; each housing rigid on one dark sill a side, a drive case between stations.
+Three placeholder mounts as before (a barrel on the turret, a rack, a bare pad), no act and no
+gait. Claude's pick is B: its side silhouette is the bristle, and it reads from behind, the
+skirmish's angle. His to judge: A's rods can read as a rocket rack from the side, and from
+above only their lit tips show; the engine cover is still green.
 
 ## Open for the session
 
@@ -196,7 +216,8 @@ longer than the Honey Badger.
    its locked piece's verb (spread or synergize), and whether the Sonic Needle stays as that
    piece's setup.
 3. Its numbers, and a locked piece if the silhouette has a signature.
-4. Its look: the half-track or the armoured car (the sheet of 15 November), or another round.
+4. Its look: the armoured car, his pick (15 November); the bristle's treatment, from the second
+   round's three, or another round.
 5. The Faraday Hull and Sealed Live retiring, now that the needle takes the Hull's place.
 6. The Thurible module's numbers, and its condition read as hull damage past armour.
 7. Its name (Ryan's; Hedgehog is a BattleTech 'Mech's, on the reserved list, and Echidna is free).

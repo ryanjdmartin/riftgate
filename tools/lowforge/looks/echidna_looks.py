@@ -18,6 +18,26 @@ Lower and longer than the Badger, in Minerva's own steel and green.
 Nothing about its kit is settled, so each wears three hardpoints as placeholders: hp_1 a gun
 forward (the cab's ring, the car's turret), hp_2 a rack and hp_3 a bare mount on the flanks. Not
 content: built only by build_look.py and sheet.py. x right, y forward, z up, the ground at z = 0.
+
+The second round (SHEET2), on his notes of 15 November: "Echidna - I like the armoured car. How
+does it turn? Like a tank? I don't think the spines need to be so on the nose - remember the
+machines were nicknamed after animals they resemble or act like, not designed to look like a
+particular animal." So the armoured car alone, as a fighting vehicle that earns the nickname and
+is no model of the animal: the same hull, glacis, turret and six boxed wheel stations, the
+animal's snout cut back to a blunt wedge prow with a cap, the green shell lowered to an engine
+cover, the rams' spikes blunted to two bosses. It turns as a tank does, by skid steer: each
+side's three wheels are driven together and the sides against each other, so nothing steers,
+the housings stay rigid and tight on one sill, a drive case runs between the stations and the
+hubs are heavy (`pivots`: the whole machine turns on the spot to aim). The bristle three ways,
+in steel and the maker's green, nothing bone white:
+
+    mnlook_echidna2_a   the bristle as its kit: two raked banks of short emitter rods along the
+                        engine cover, dark with lit tips, a driver between them and one emitter
+                        off the prow (a guess at the Sonic Needle's emitters)
+    mnlook_echidna2_b   the bristle as its armour: a comb of raked plates across the engine
+                        cover, longer toward the tail, a ridged back from above
+    mnlook_echidna2_c   barely there: the plain car, its low domed cover with its grilles and a
+                        few whip aerials, the nickname left to how it acts
 """
 
 import math
@@ -209,7 +229,167 @@ def mnlook_echidna_car(b):
 
 mnlook_echidna_car.maker = MN
 
-LOOKS = ["mnlook_echidna_halftrack", "mnlook_echidna_car"]
+
+# ---------------------------------------------------------------- the second round (15 November)
+
+BEAD = "amber.lit"                       # an emitter's lit tip
+STATIONS = (27.0, 0.0, -27.0)            # the three wheel stations a side, evenly spaced
+COVER = [(-44.0, 26.0), (-37.0, 31.0), (-12.0, 32.0), (-6.0, 30.0)]   # the engine cover's crown, (y, z)
+
+
+def _raked(rake, splay=0.0):
+    """A direction `rake` degrees up off the deck toward the tail, `splay` degrees out to the
+    side (positive to the right)."""
+    r, s = math.radians(rake), math.radians(splay)
+    return Vector((math.sin(s) * math.cos(r), -math.cos(s) * math.cos(r), math.sin(r)))
+
+
+def _rod(b, base, d, length, half=0.7, bead=0.85, collar="z"):
+    """An emitter rod: a collar where it roots (a ring about `collar`'s axis), a dark rod along
+    `d`, a small lit bead on its tip."""
+    p, d = Vector(base), Vector(d).normalized()
+    if collar == "z":
+        b.prism("z", p.x, p.y, p.z + 0.7, 1.8, 1.4, "steel.plate", 6, "emitter_collar")
+    else:
+        b.prism("y", p.x, p.y + 0.8, p.z, 1.8, 1.6, "steel.plate", 6, "emitter_collar")
+    tip = p + d * length
+    _beam(b, tuple(p - d * 0.6), tuple(tip), _sq(half * 2.0, half * 2.0), _sq(half * 1.1, half * 1.1), "steel.dark", "emitter")
+    _beam(b, tuple(tip - d * 0.2), tuple(tip + d * (bead * 1.8)), _sq(bead * 2.0, bead * 2.0), _sq(bead * 1.3, bead * 1.3), BEAD, "emitter_tip")
+
+
+def _whip(b, base, height, lean=10.0, splay=0.0):
+    """A whip aerial on a spring base, leaning a little toward the tail."""
+    l, s = math.radians(lean), math.radians(splay)
+    d = Vector((math.sin(s) * math.sin(l), -math.cos(s) * math.sin(l), math.cos(l)))
+    p = Vector(base)
+    b.prism("z", p.x, p.y, p.z + 1.0, 1.3, 2.0, "steel.dark", 6, "aerial_base")
+    _beam(b, tuple(p + Vector((0.0, 0.0, 1.6))), tuple(p + d * height), _sq(0.95, 0.95), _sq(0.55, 0.55), "steel.dark", "aerial")
+
+
+def _ram(b, s, x, y0, y1, z0, z1, w=11.0):
+    """Round two's ram block on a front corner: round one's block and strap, its two knuckles
+    blunt bosses in place of spikes, so it reads as a ram first and a fist second."""
+    b.box(x - w / 2.0, x + w / 2.0, y0, y1, z0, z1, "livery.livery2", "ram")
+    b.box(x - w / 2.0 - 0.6, x + w / 2.0 + 0.6, y0 + 1.0, y0 + 3.6, z0 - 0.6, z1 + 0.6, "steel.dark", "ram_strap")
+    zc = (z0 + z1) / 2.0
+    for k in (-1.0, 1.0):
+        px = x + k * w * 0.25
+        _beam(b, (px, y1 - 0.5, zc), (px, y1 + 3.0, zc), _sq(4.6, 6.6), _sq(3.0, 4.4), "steel.dark", "ram_boss")
+
+
+def _car2(b):
+    """Round two's armoured car, the same under every bristle: round one's hull, glacis, turret
+    and six boxed wheel stations, made a fighting vehicle first. The stations are fixed and
+    driven, three a side on one sill with a drive case between them and a heavy hub on each: it
+    turns as a tank does, by skid steer, so nothing steers and the housings stay tight. The
+    snout is cut back to a blunt wedge prow with a cap, the shell lowered to an engine cover,
+    the rams' spikes blunted to bosses, a whip aerial on the turret. Returns the cover's crown
+    height at a y."""
+    for s in (-1.0, 1.0):
+        xo = s * 30.5
+        for yc in STATIONS:
+            hx = s * 24.0
+            _wheel(b, s * 23.0, yc, 10.0, 11.0)
+            b.loft([(yc - 12.5, rect(hx, 13.0, 11.5, 17.0)), (yc - 9.0, rect(hx, 13.0, 7.5, 22.0)),
+                    (yc + 9.0, rect(hx, 13.0, 7.5, 22.0)), (yc + 12.5, rect(hx, 13.0, 11.5, 17.0))], "steel.plate", "housing")
+            b.box(min(xo, xo + s * 1.4), max(xo, xo + s * 1.4), yc - 8.0, yc + 8.0, 10.5, 20.5, "livery.livery2", "housing_plate")
+            b.prism("x", xo + s * 1.9, yc, 12.0, 4.8, 2.2, "steel.dark", 8, "hub", phase=math.pi / 8)
+            b.prism("x", xo + s * 3.3, yc, 12.0, 2.3, 1.2, "steel.plate", 8, "hub_cap", phase=math.pi / 8)
+        # One sill along the foot of the three housings and a drive case between the stations: one
+        # frame, one drive a side.
+        b.box(min(xo, xo + s * 1.6), max(xo, xo + s * 1.6), -37.5, 37.5, 7.5, 9.8, "steel.dark", "sill")
+        b.box(min(s * 19.0, s * 29.0), max(s * 19.0, s * 29.0), -30.0, 30.0, 9.0, 15.0, "steel.dark", "drive_case")
+    # The belly between the wheels and the faceted hull over it, its glacis wedged down to the prow.
+    b.loft([(-39.0, rect(0.0, 36.0, 9.0, 15.0)), (-34.0, rect(0.0, 36.0, 6.0, 16.0)), (34.0, rect(0.0, 36.0, 6.0, 16.0)), (40.0, rect(0.0, 30.0, 9.0, 15.0))], "steel.dark", "belly")
+    b.loft([(-41.0, _chamfered(0.0, 34.0, 14.0, 23.0, 5.0)), (-35.0, _chamfered(0.0, 42.0, 13.0, 29.0, 6.0)), (9.0, _chamfered(0.0, 42.0, 13.0, 29.0, 6.0)),
+            (29.0, _chamfered(0.0, 36.0, 12.0, 20.0, 4.0))], "steel.panel", "hull")
+    b.box(-13.0, 13.0, -41.8, -40.9, 15.0, 21.0, "steel.vent", "rear_vents")
+    b.loft([(12.0, rect(0.0, 28.0, 24.0, 28.1)), (17.0, rect(0.0, 27.0, 22.0, 25.9))], "glass.glass", "slit")
+    b.loft([(7.5, rect(0.0, 32.0, 28.6, 30.2)), (12.5, rect(0.0, 31.0, 27.5, 29.0))], "steel.plate", "brow")
+    # The prow: a blunt wedge off the glacis's foot with a dark cap, a vehicle's bow and no snout.
+    b.loft([(29.0, _chamfered(0.0, 36.0, 12.0, 20.0, 4.0)), (37.0, _chamfered(0.0, 21.0, 11.0, 17.5, 3.0)), (44.0, _chamfered(0.0, 10.0, 11.5, 15.6, 1.6))], "steel.panel", "prow")
+    b.loft([(44.0, _chamfered(0.0, 10.0, 11.5, 15.6, 1.6)), (46.5, _chamfered(0.0, 6.0, 12.2, 14.8, 0.8))], "steel.dark", "prow_cap")
+    for s in (-1.0, 1.0):
+        b.box(s * 13.0 - 2.2, s * 13.0 + 2.2, 26.2, 28.6, 20.4, 23.2, "amber.light", "lamp")
+    # The bumper under the prow and a ram on the front of each front housing.
+    b.box(-24.0, 24.0, 39.5, 42.0, 7.0, 11.0, "steel.dark", "bumper")
+    for s in (-1.0, 1.0):
+        _ram(b, s, s * 24.0, 39.0, 46.0, 4.5, 16.0)
+    # The engine cover over the rear two thirds: the shell brought down to a low dome.
+    b.loft([(-44.0, _chamfered(0.0, 28.0, 21.0, 26.0, 4.0)), (-37.0, _chamfered(0.0, 42.0, 25.0, 31.0, 6.0)),
+            (-12.0, _chamfered(0.0, 42.0, 25.0, 32.0, 6.0)), (-6.0, _chamfered(0.0, 36.0, 26.0, 30.0, 4.0))], "livery.livery2", "engine_cover")
+    # Mounts, placeholders: the turret's gun, a rack and a bare mount on the middle housings.
+    b.prism("z", 0.0, 2.0, 29.5, 9.5, 1.2, "steel.dark", 8, "ring")
+    with b.joint("turret", (0.0, 2.0, 30.0)):
+        b.prism("z", 0.0, 2.0, 33.2, 8.5, 6.0, "steel.panel", 8, "turret", phase=math.pi / 8)
+        b.box(-5.0, 5.0, 8.0, 11.0, 31.0, 35.5, "steel.plate", "mantlet")
+        b.box(-3.0, 3.0, -3.5, 1.5, 36.2, 37.0, "steel.plate", "hatch")
+        b.stock("hp_1", (0.0, 11.0, 33.2), "barrel", scale=0.85, carries="slugthrower")
+        _whip(b, (-5.6, -2.6, 36.0), 13.0, lean=12.0, splay=-10.0)
+    b.stock("hp_2", (-24.0, -1.0, 22.0), "rack", scale=0.62, carries="shotfire_rack")
+    b.pad("hp_3", (24.0, 0.0, 23.0), size=(7.0, 1.0))
+    b.pivots = True   # skid steer: each side's three wheels driven together, the sides against each other, so it turns on the spot as a tank's neutral turn
+    return lambda y: _at(COVER, y)
+
+
+def mnlook_echidna2_a(b):
+    """The bristle as its kit: two raked banks of six short emitter rods along the engine
+    cover, dark with lit tips and longer toward the tail, a driver box between the banks, and
+    one emitter off the prow's cap: a guess at the Sonic Needle's emitters."""
+    _car2(b)
+    for s in (-1.0, 1.0):
+        x = s * 11.5
+        b.box(x - 1.8, x + 1.8, -39.0, -9.0, 30.4, 33.0, "steel.dark", "emitter_rail")
+        d = _raked(58.0, s * 16.0)
+        for k in range(6):
+            _rod(b, (x, -11.5 - 5.0 * k, 33.0), d, 10.5 + 0.6 * k)
+        # A tie bar across the bank at half height: an array on one bus, no rack of rockets.
+        tie = [Vector((x, -11.5 - 5.0 * k, 33.0)) + d * ((10.5 + 0.6 * k) * 0.52) for k in (0, 5)]
+        _beam(b, tuple(tie[0] + Vector((0.0, 1.6, 0.0))), tuple(tie[1] - Vector((0.0, 1.6, 0.0))), _sq(0.9, 1.3), _sq(0.9, 1.3), "steel.plate", "emitter_tie")
+    b.box(-5.0, 5.0, -33.0, -17.0, 31.0, 34.4, "steel.dark", "emitter_driver")
+    b.box(-3.6, 3.6, -31.5, -18.5, 34.4, 34.9, "steel.vent", "driver_grille")
+    _rod(b, (0.0, 46.3, 13.5), (0.0, math.cos(math.radians(6.0)), math.sin(math.radians(6.0))), 8.0, collar="y")
+
+
+mnlook_echidna2_a.maker = MN
+
+
+def mnlook_echidna2_b(b):
+    """The bristle as its armour: a comb of seven raked plates across the engine cover, on a
+    rail each side, each a little longer than the one ahead of it and dark along its edge:
+    spaced armour or heat fins as you like, a ridged back from above and a saw's edge from the
+    side."""
+    top = _car2(b)
+    a = math.radians(63.0)
+    for s in (-1.0, 1.0):
+        b.box(s * 15.2 - 1.1, s * 15.2 + 1.1, -40.0, -8.0, 29.6, 32.4, "steel.dark", "fin_rail")
+    for k in range(7):
+        y0, h, w = -9.5 - 4.7 * k, 6.0 + 0.5 * k, 31.0 - 0.9 * k
+        z0 = top(y0) - 0.4
+        y1, z1 = y0 - h * math.cos(a), z0 + h * math.sin(a)
+        b.loft([(y1, rect(0.0, w, z1 - 0.9, z1 + 0.9)), (y0, rect(0.0, w, z0 - 0.9, z0 + 0.9))], "steel.plate", "fin")
+        ye, ze = y1 - 1.4 * math.cos(a), z1 + 1.4 * math.sin(a)
+        b.loft([(ye, rect(0.0, w + 0.8, ze - 1.1, ze + 1.1)), (y1, rect(0.0, w + 0.8, z1 - 1.1, z1 + 1.1))], "steel.dark", "fin_edge")
+
+
+mnlook_echidna2_b.maker = MN
+
+
+def mnlook_echidna2_c(b):
+    """Barely there: the plain car. Its low domed engine cover with two grilles and a spine rib,
+    and three whip aerials, one on the turret and two off the cover's tail; the nickname is left
+    to how it acts."""
+    _car2(b)
+    for s in (-1.0, 1.0):
+        b.box(s * 8.5 - 5.0, s * 8.5 + 5.0, -34.0, -15.0, 30.8, 32.5, "steel.vent", "engine_grille")
+    b.box(-2.0, 2.0, -36.0, -13.0, 30.8, 33.0, "steel.plate", "spine_rib")
+    _whip(b, (-13.0, -36.0, 30.6), 16.0, lean=14.0, splay=-12.0)
+    _whip(b, (13.0, -36.0, 30.6), 11.0, lean=14.0, splay=12.0)
+
+
+mnlook_echidna2_c.maker = MN
+
+LOOKS = ["mnlook_echidna_halftrack", "mnlook_echidna_car", "mnlook_echidna2_a", "mnlook_echidna2_b", "mnlook_echidna2_c"]
 
 SHEET = {
     "title": "The echidna, two ways, 15 November (look tests, not content)",
@@ -218,5 +398,18 @@ SHEET = {
     "rows": [
         {"model": "mnlook_echidna_halftrack", "label": "Half-track", "views": ["codex", "above", "skirmish", ("from the side", 90, 8)]},
         {"model": "mnlook_echidna_car", "label": "Armoured car, protected wheels", "views": ["codex", "above", "skirmish", ("from the side", 90, 8)]},
+    ],
+}
+
+
+_VIEWS2 = ["codex", "above", "skirmish", ("from the side", 90, 8)]
+SHEET2 = {
+    "title": "The echidna, second round, 15 November (look tests, not content)",
+    "out": "docs/looks/minerva_echidna2.png",
+    "cell": (320, 320),
+    "rows": [
+        {"model": "mnlook_echidna2_a", "label": "A, the bristle as its kit", "views": _VIEWS2},
+        {"model": "mnlook_echidna2_b", "label": "B, the bristle as its armour", "views": _VIEWS2},
+        {"model": "mnlook_echidna2_c", "label": "C, barely there", "views": _VIEWS2},
     ],
 }
