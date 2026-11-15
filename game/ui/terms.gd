@@ -56,6 +56,7 @@ const TABLE := {
 	"risen": ["star", "enemy"], "regenerating": ["regenerating", "guard"], "swallowed": ["swallowed", "enemy"],
 	"ability": ["", "plain"],   # a unit's own mechanic, no buff or debuff (8 November): its chips carry their own marks
 	"rallied": ["reroll", "plain"], "quick_turned": ["rapid", "plain"],
+	"overheated": ["heat", "heat"], "broken": ["shieldbreak", "guard"], "rebooting": ["shield_vent", "plain"],   # the reboot's three states (13 November), read off the gauges: no status of the engine's table
 	# A foe's moves: the keywords they carry, the list's last heading. A foe-side word without a row
 	# here (its aim, its menace, the seal) is the engine's and stays out of the list.
 	"scorch": ["scorch", "heat"], "crush": ["flak", "enemy"], "golden_rage": ["overcharge", "heat"], "silence": ["silence", "enemy"], "swallow": ["swallowed", "enemy"],

@@ -702,7 +702,7 @@ const FILTER_SPECS = {
     ],
     sorts: [BY_ORDER, BY_NAME, BY_MAKER, stat("tier", "Tier", e => e.tier),
       stat("hull", "Hull", e => e.hull), stat("shield", "Shield", e => e.shield),
-      stat("armour", "Armour", e => e.armour ?? 0), stat("heat_max", "Heat max", e => e.heat_max), stat("cooling", "Cooling", e => e.cooling ?? 0),
+      stat("armour", "Armour", e => e.armour ?? 0), stat("heat_max", "Heat max", e => e.heat_max),
       stat("movespeed", "Move", e => e.movespeed), stat("die", "Die entries", dieSize)],
     line: e => [makerShort(e.maker), e.tier ? "T" + e.tier : "", (e.traits || []).map(vocabName).join(", "), `hull ${e.hull}`, `shield ${e.shield}`, `move ${e.movespeed}`, "d" + dieSize(e)],
   },
@@ -1066,8 +1066,8 @@ function renderCodex(main) {
     if ((e.traits || []).length) { sub.append(" · "); for (const t of e.traits) sub.append(kwChip(t), " "); }
     head.append(sub);
     card.append(head);
-    // The shield regen shows only where it is not zero (the long wall brief 3.6); the field recharge is gone.
-    const stats = [["hull", "hull", e.hull], ["shield", "shield", e.shield], ...(e.shield_regen ? [["shield_regen", "shield regen", "+" + e.shield_regen]] : []), ["armour", "armour", e.armour], ["heat_max", "heat max", e.heat_max], ["cooling", "cooling", e.cooling], ["movespeed", "move", e.movespeed], ["die", "die", "d" + die], ["module_slots", "module slots", e.module_slots ?? ""]];
+    // A chassis has no shield regen and no cooling of its own (the reboot, folded in 15 November); the field recharge went before them.
+    const stats = [["hull", "hull", e.hull], ["shield", "shield", e.shield], ["armour", "armour", e.armour], ["heat_max", "heat max", e.heat_max], ["movespeed", "move", e.movespeed], ["die", "die", "d" + die], ["module_slots", "module slots", e.module_slots ?? ""]];
     card.append(el("div", {class: "stats"}, ...stats.map(([id, k, v]) => el("div", {class: "stat" + (id === sorted ? " sorted" : "")}, el("span", {class: "k"}, k), el("span", {class: "v"}, String(v ?? ""))))));
     if (compact) { main.append(card); continue; }
     const p = e.passive;
@@ -2398,7 +2398,7 @@ const BENCH_STATES = [
   {id: "brief", label: "Briefed", what: "Not built: a design in progress, its brief on the Designs tab."},
   {id: "cut", label: "Cut", what: "Set aside."},
 ];
-const BENCH_NUMS = [["tier", "tier"], ["hull", "hull"], ["shield", "shield"], ["shield_regen", "shield regen"], ["armour", "armour"], ["heat_max", "heat max"], ["cooling", "cooling"], ["movespeed", "move"], ["hardpoints", "hardpoints"], ["module_slots", "module slots"]];
+const BENCH_NUMS = [["tier", "tier"], ["hull", "hull"], ["shield", "shield"], ["armour", "armour"], ["heat_max", "heat max"], ["movespeed", "move"], ["hardpoints", "hardpoints"], ["module_slots", "module slots"]];
 const BENCH_LOCKS = [["", "not sorted"], ["glue", "glue: the passive and the piece need each other"], ["exclusive", "an exclusive: nobody else has it"], ["tweak", "wants a tweak before any cut"], ["pool", "to the pool, an ordinary piece"]];
 const benchOf = (e) => ((e && e.design) || {}).bench || {};
 const benchCan = () => state.dbState === "ready" && state.canWrite;

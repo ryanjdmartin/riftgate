@@ -201,8 +201,6 @@ func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO, l
 		u.traits.append(str(t))
 	u.hardpoints = int(c.get("hardpoints", 6))
 	u.armour = int(c.get("armour", 0))
-	u.cooling = int(c.get("cooling", 0))
-	u.shield_regen = int(c.get("shield_regen", 0))   # the long wall brief 3.6: no chassis sets it yet
 	u.die = build_die(c.get("fixed", []), fitted, u.hardpoints)
 	u.chassis_id = chassis_id
 	var p = c.get("passive", null)
@@ -469,16 +467,20 @@ func codex_for_unit(u: Unit) -> Dictionary:
 	var now := {}
 	for k in Effects.STATS:
 		now[k] = Effects.stat(u, k, Effects.BATTLE)
-	# The shield regen shows only where it is not zero (the long wall brief 3.6).
+	# A chassis has no shield regen and no cooling of its own (the reboot), so each shows only
+	# where the loadout grants it.
 	var regen := (" (+%d A ROUND)" % int(now["shield_regen"])) if int(now["shield_regen"]) != 0 else ""
-	var stats := "SHIELD %d%s // HULL %d // ARMOUR %d // HEAT %d (-%d A TURN) // MOVE %d // %d HARDPOINTS // D%d" % [
-		now["shield"], regen, now["hull"], now["armour"], now["heat"], now["cooling"], now["move"], u.hardpoints, u.die.size() if u.die != null else 0]
+	var cools := (" (-%d A TURN)" % int(now["cooling"])) if int(now["cooling"]) != 0 else ""
+	var stats := "SHIELD %d%s // HULL %d // ARMOUR %d // HEAT %d%s // MOVE %d // %d HARDPOINTS // D%d" % [
+		now["shield"], regen, now["hull"], now["armour"], now["heat"], cools, now["move"], u.hardpoints, u.die.size() if u.die != null else 0]
 	var items: Array = [["shield max", stat_parts(int(u.base["shield"]), now["shield"])]]
-	if int(now["shield_regen"]) != 0 or int(u.base.get("shield_regen", 0)) != 0:
-		items.append(["shield regen", stat_parts(int(u.base.get("shield_regen", 0)), now["shield_regen"], "+")])
+	if int(now["shield_regen"]) != 0:
+		items.append(["shield regen", stat_parts(0, now["shield_regen"], "+")])
 	items.append_array([["hull max", stat_parts(int(u.base["hull"]), now["hull"])], ["armour", stat_parts(int(u.base["armour"]), now["armour"])],
-		["heat max", stat_parts(int(u.base["heat"]), now["heat"])], ["cooling", stat_parts(int(u.base["cooling"]), now["cooling"])],
-		["move", stat_parts(int(u.base["move"]), now["move"])]])
+		["heat max", stat_parts(int(u.base["heat"]), now["heat"])]])
+	if int(now["cooling"]) != 0:
+		items.append(["cooling", stat_parts(0, now["cooling"])])
+	items.append(["move", stat_parts(int(u.base["move"]), now["move"])])
 	# The die as built: the codex shows each component at its own numbers (26 October).
 	var faces: Array = []
 	var face_rules: Array = []   # each entry's component passive, its lines on the component's row
@@ -2204,12 +2206,12 @@ func _validate_chassis(errs: Array[String]) -> void:
 			errs.append("%s: recharge_combat is gone; in a fight shield comes only from components (a passive may say otherwise)" % where)
 		if c.has("recharge_field"):
 			errs.append("%s: recharge_field is gone (the long wall brief, docs/briefs/long_wall_build.md 3.6): the shield is full as every fight opens and nothing returns on the map" % where)
-		if int(c.get("armour", 0)) < 0 or int(c.get("cooling", 0)) < 0:
-			errs.append("%s: armour and cooling cannot be negative" % where)
+		if int(c.get("armour", 0)) < 0:
+			errs.append("%s: armour cannot be negative" % where)
+		if c.has("cooling") or c.has("shield_regen"):
+			errs.append("%s: cooling and shield_regen are gone from a chassis (the reboot, folded in 15 November): nothing cools or regenerates by itself, and a module, a passive or a status grants either" % where)
 		if c.has("status") and not VALID_STATUS.has(str(c["status"])):
 			errs.append("%s: status is one of %s (planned: back in design and undealt)" % [where, ", ".join(VALID_STATUS)])
-		if c.has("shield_regen") and (not (c["shield_regen"] is float or c["shield_regen"] is int) or int(c["shield_regen"]) != c["shield_regen"] or int(c["shield_regen"]) < 0 or int(c["shield_regen"]) > 9):
-			errs.append("%s: shield_regen is a whole number from 0 to 9 (the long wall brief 3.6)" % where)
 		_validate_design(where, c, errs)
 		var hp := int(c.get("hardpoints", 0))
 		if c.has("filler"):

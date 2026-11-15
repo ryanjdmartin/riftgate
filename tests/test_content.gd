@@ -1097,21 +1097,21 @@ func test_chassis_cooling_is_read_and_never_negative() -> void:
 	assert_true(hit, "negative cooling is refused")
 
 
-## The field recharge is gone and the shield regen is a slot (the long wall brief 3.6): the
-## validator refuses recharge_field, takes shield_regen from 0 to 9 and nothing else, and a
-## chassis that names none reads 0; the codex shows the stat only where it is not zero.
-func test_the_field_recharge_is_refused_and_the_shield_regen_is_a_slot() -> void:
+## A chassis carries no field recharge, no shield regen and no cooling of its own: the reboot is
+## how both gauges come back (folded in 15 November), so the validator refuses the three keys.
+## What a loadout grants of either shows in the codex, and nothing shows where nothing is granted.
+func test_a_chassis_has_no_recharge_regen_or_cooling_of_its_own() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	assert_true(db.validate().is_empty(), "content validates")
 	for id in db.chassis.keys():
-		assert_false(db.chassis[id].has("recharge_field"), "%s names no field recharge" % id)
-		var regen: int = db.make_mech(id).shield_regen
-		assert_true(regen >= 1 and regen <= 3, "%s regains one to three a round, its own number (got %d)" % [id, regen])
-	var base: Dictionary = db.chassis["kite"].duplicate(true)
-	base.erase("shield_regen")
-	var cases := {"old": ["recharge_field", 4, true], "regen": ["shield_regen", 2, false], "top": ["shield_regen", 9, false],
-		"over": ["shield_regen", 10, true], "under": ["shield_regen", -1, true], "half": ["shield_regen", 1.5, true]}
+		for gone in ["recharge_field", "shield_regen", "cooling"]:
+			assert_false(db.chassis[id].has(gone), "%s names no %s" % [id, gone])
+		var built := db.make_mech(id)
+		assert_eq([built.shield_regen, built.cooling], [0, 0], "%s regains and cools nothing as stocked" % id)
+	var first := str(db.chassis.keys()[0])
+	var base: Dictionary = db.chassis[first].duplicate(true)
+	var cases := {"old": ["recharge_field", 4], "regen": ["shield_regen", 2], "cooling": ["cooling", 1], "nought": ["cooling", 0]}
 	for tag in cases.keys():
 		var c := base.duplicate(true)
 		c[cases[tag][0]] = cases[tag][1]
@@ -1122,17 +1122,21 @@ func test_the_field_recharge_is_refused_and_the_shield_regen_is_a_slot() -> void
 			if e.begins_with("chassis probe_%s:" % tag):
 				refused[tag] = true
 	for tag in cases.keys():
-		assert_eq(refused.has(tag), bool(cases[tag][2]), "%s %s: %s" % [cases[tag][0], str(cases[tag][1]), "refused" if cases[tag][2] else "taken"])
-	var u := db.make_mech("probe_regen")
-	assert_eq(u.shield_regen, 2, "the regen read from content")
-	var shown := false
-	for item in db.codex_for_unit(u)["stat_items"]:
-		shown = shown or str(item[0]) == "shield regen"
-	assert_true(shown, "the codex shows a regen that is not zero")
+		assert_true(refused.has(tag), "%s %s on a chassis is refused" % [cases[tag][0], str(cases[tag][1])])
 	db.chassis["probe_plain"] = base.duplicate(true)
-	var plain_items: Array = db.codex_for_unit(db.make_mech("probe_plain"))["stat_items"]
-	assert_false(plain_items.any(func(item) -> bool: return str(item[0]) == "shield regen"), "and none where it is zero")
-	assert_false(str(db.codex_for_unit(db.make_mech("kite"))["stats"]).contains("PHASE"), "the stats line names no field recharge")
+	var plain := db.make_mech("probe_plain")
+	var bare: Dictionary = db.codex_for_unit(plain)
+	assert_false((bare["stat_items"] as Array).any(func(item) -> bool: return str(item[0]) == "shield regen" or str(item[0]) == "cooling"), "a bare machine's codex lists neither")
+	assert_false(str(bare["stats"]).contains("A ROUND") or str(bare["stats"]).contains("A TURN"), "nor does its stats line")
+	assert_false(str(bare["stats"]).contains("PHASE"), "and it names no field recharge")
+	plain.grant_passive({"id": "probe_mender", "name": "Mender", "description": "", "effects": [
+		{"trigger": "static", "effect": "add_stat", "stat": "shield_regen", "value": 2},
+		{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 1}]})
+	var fitted: Dictionary = db.codex_for_unit(plain)
+	assert_eq([plain.shield_regen, plain.cooling], [2, 1], "what a loadout grants is the machine's")
+	for want in ["shield regen", "cooling"]:
+		assert_true((fitted["stat_items"] as Array).any(func(item) -> bool: return str(item[0]) == want), "and the codex shows its %s" % want)
+	assert_true(str(fitted["stats"]).contains("(+2 A ROUND)") and str(fitted["stats"]).contains("(-1 A TURN)"), "with both on the stats line: %s" % str(fitted["stats"]))
 
 
 ## A composition's fields of the long wall brief (section 6), on synthetic compositions: squad 1
@@ -1387,25 +1391,27 @@ func test_a_component_passive_from_content_lands_on_the_mech() -> void:
 	c["fixed"] = []   # nothing built in, so the component is the die's first entry
 	c["loadout"] = ["fins_pack"]
 	c["passive"] = null
-	c["cooling"] = 10
 	db.chassis["finned"] = c
 	for e in db.validate():
 		assert_false(e.begins_with("chassis finned") or e.begins_with("component fins_pack"), "a stat passive on a component validates clean: %s" % e)
 	var u := db.make_mech("finned")
-	assert_eq(u.cooling, 15, "the chassis's cooling plus the component's")
+	assert_eq(u.cooling, 5, "the component's cooling, the chassis having none of its own")
 	var codex := db.codex_for_unit(u)
 	assert_eq(codex["face_rules"][0], ["Fins: Cooling +5."], "the codex prints a component's passive on its row")
 	assert_false(str(codex["passive"]).contains("Fins"), "never as the machine's own")
+	var cooling_shown := false
 	for item in codex["stat_items"]:
 		if str(item[0]) == "cooling":
-			assert_eq(StatBlock.value_text(item), "10 (+5▲)", "its cooling the chassis's, the change the component makes beside it")
+			cooling_shown = true
+			assert_eq(StatBlock.value_text(item), "0 (+5▲)", "its cooling nothing of the chassis's, the change the component makes beside it")
+	assert_true(cooling_shown, "and the codex lists the cooling it is granted")
 	var sink: Face = u.die.faces[0]
 	assert_eq(sink.component, "fins_pack", "the first entry is the component")
 	assert_eq(Effects.explain(u, sink).size(), 1, "the die row names it")
 	# Destroyed, the component keeps its stat bonus (18 September).
 	u.die.faces[0] = Face.blank()
 	u.die.faces[0].component = "fins_pack"
-	assert_eq(u.cooling, 15, "a destroyed component keeps its stat bonus")
+	assert_eq(u.cooling, 5, "a destroyed component keeps its stat bonus")
 
 
 func test_a_buff_face_names_a_machine_status() -> void:

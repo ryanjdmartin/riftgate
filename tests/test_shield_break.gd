@@ -11,11 +11,10 @@ extends TestCase
 const L := Face.Reach.DIRECT
 
 
-func _mech(name: String, shield: int, hull: int, regen: int = 0) -> Unit:
+func _mech(name: String, shield: int, hull: int) -> Unit:
 	var u := Unit.mech(0, name, Vector2i.ZERO)
 	u.shield = shield
 	u.shield_max = shield
-	u.shield_regen = regen
 	u.hull = hull
 	u.hull_max = hull
 	u.die = Die.single(Face.attack(1, L))
@@ -49,12 +48,12 @@ func test_off_a_blow_past_the_shield_reaches_the_hull() -> void:
 	assert_false(Skirmish.breaks_whole(10, 10), "off, no break stops a blow")
 	assert_eq(int(r["through"]), 40, "the forty past a ten-point shield reach the hull")
 	assert_true(bool(r["broke"]) and int(r["stopped"]) == 0, "the shield broke and stopped nothing more than its number")
-	var m := _mech("A", 10, 100, 2)
+	var m := _mech("A", 10, 100)
 	var sk := _fight(m, [Foe.make("brute", 900, 50)])
 	_round(sk)
 	assert_eq(m.hull, 60, "and so in a fight")
 	sk.start_round()
-	assert_eq(m.shield, 2, "its regen runs the round after")
+	assert_eq(m.shield, 0, "and nothing mends it the round after: a shield at nothing is broken until its machine reboots")
 
 
 func test_the_blow_that_breaks_a_shield_is_stopped_whole() -> void:
@@ -127,7 +126,7 @@ func test_a_second_strike_lands_on_the_hull_the_first_bared() -> void:
 
 func test_a_breach_passes_a_shield_that_stands() -> void:
 	Skirmish.shield_break = true
-	var m := _mech("A", 10, 100, 1)
+	var m := _mech("A", 10, 100)
 	var maw := Foe.make("maw", 900, 50)
 	maw.actions[0]["keywords"] = ["breach"]
 	var sk := _fight(m, [maw])

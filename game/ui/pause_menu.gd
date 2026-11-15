@@ -167,9 +167,7 @@ func _show_page(page: String) -> void:
 			_rows.add_child(_list)
 			var page_rows := _rows
 			_rows = _list.get_child(0)
-			_choice_row("SHIELD REGEN", "shield_regen", Settings.SHIELD_REGENS, Settings.SHIELD_REGEN_LABELS)   # a flat shield regen on every chassis in place of each one's own (game/harness.gd, refit_trial): the refit pass's model is content since 10 November, and this is the one what-if left on the phone
-			_credit("Shield back each round: as built by chassis, or flat on all. Next launch.")
-			_choice_row("HEAT", "heat_trial", Settings.HEATS, Settings.HEAT_LABELS)   # every weapon a point cooler or hotter than content prices it, the hotter with one more cooling (Settings.HEAT_SPECS; the prices themselves are content since 12 November)
+			_choice_row("HEAT", "heat_trial", Settings.HEATS, Settings.HEAT_LABELS)   # every weapon a point cooler or hotter than content prices it (Settings.HEAT_SPECS; the prices themselves are content since 12 November)
 			_credit("Every weapon's heat against built: one or two less, or one more. Next launch.")
 			_choice_row("BASIC GUNS", "basic_guns", Settings.BASIC_GUNS, Settings.BASIC_GUN_LABELS)   # every basic gun a point of damage up (Refit's basics; Ryan, 14 November: the vanilla one under the standard fodder's health, 3 against a goblin's 4)
 			_credit("Every basic gun's damage: as built, or a point more. Next launch.")
@@ -185,8 +183,6 @@ func _show_page(page: String) -> void:
 			_credit("The Barrier on the starting dice, or the Armoured basic in its slot. Next launch.")
 			_choice_row("SHIELD BREAK", "shield_break", Settings.SHIELD_BREAKS, Settings.SHIELD_BREAK_LABELS)   # the block (Ryan, 13 November: "when a shield breaks, it absorbs the whole blow"): Skirmish.shield_break, a what-if and no decision
 			_credit("A blow that breaks a shield is stopped whole. Next battle.")
-			_choice_row("REBOOT", "reboot", Settings.REBOOTS, Settings.REBOOT_LABELS)   # the reboot (Ryan, 13 November; the refit brief's section 22): Skirmish.reboot, a what-if and no decision
-			_credit("No regen, no cooling. A machine that has spent nothing may reboot: bare this turn, both gauges back the next. Heat past the gauge burns every turn. Next battle.")
 			_choice_row("FIELD DEPTH", "field_depth", Settings.FIELD_DEPTHS)   # the field's depth in rows, twelve the game's (Ramp.depth_trial; Ryan, 10 November: "I think the map is a bit too shallow")
 			_choice_row("OPENING", "field_opening", Settings.FIELD_OPENINGS, Settings.FIELD_OPENING_LABELS)   # how many moves farther from the wall the opening's packs stand (Battle.opening_trial): depth alone leaves their first walk on the wall
 			_credit("Rows from rift to wall; moves farther out the first packs stand. Next battle.")

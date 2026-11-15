@@ -47,7 +47,7 @@ func test_greedy_shields_the_machine_about_to_die() -> void:
 	var sk := Skirmish.new(3)
 	var tank := _mech("Tank", Die.single(Face.shield(20)), 40, 100)
 	var weak := _mech("Weak", Die.single(Face.attack(10, L)), 40, 20)
-	weak.shield = 0   # bare, with room for one
+	weak.shield = 10   # a sliver standing, with room for more: a shield at nothing is broken and takes none
 	sk.add_mech(tank)
 	sk.add_mech(weak)
 	sk.add_foes([_ghoul(300, 30)])
@@ -56,10 +56,10 @@ func test_greedy_shields_the_machine_about_to_die() -> void:
 	sk.front[0].target = sk.mechs[1]   # its pick, set: the test is the shield's, not the aim's
 	assert_true(sk.forecast(sk.mechs[1])["destroyed"], "the ghoul would wreck the weak machine")
 	Policy.make(Policy.GREEDY).play_round(sk)
-	assert_eq(weak.shield, 20, "the tank's shield went on the weak machine, not itself")
+	assert_eq(weak.shield, 30, "the tank's shield went on the weak machine, not itself")
 	assert_eq(tank.shield, 40, "and the tank kept its own")
 	sk.end_round()
-	assert_eq(weak.hull, 10, "so it lived: the shield took twenty of the thirty, and ten reached the hull")
+	assert_eq(weak.hull, 20, "so it lived: the shield took the whole thirty")
 
 
 func test_greedy_vents_before_it_burns() -> void:
@@ -123,8 +123,10 @@ func test_the_bot_prices_an_overheat_at_its_burn() -> void:
 	ms.heat = 55
 	var cost_doubled := pol.heat_cost(sk, ms, gun)
 	Skirmish.overheat_scale = 1
-	assert_true(absf(cost_plain - 5.0 * Policy.HULL_WEIGHT) < 0.001, "five past the cap, one for one: %f" % cost_plain)
-	assert_true(absf(cost_doubled - 10.0 * Policy.HULL_WEIGHT) < 0.001, "doubled, the hull it burns: %f" % cost_doubled)
+	# The first turn past the maximum breaks the shield, and what stands there burns again: the
+	# burn twice over, and the forty of shield it would lose.
+	assert_true(absf(cost_plain - (5.0 * 2.0 + 40.0) * Policy.HULL_WEIGHT) < 0.001, "five past the cap: its burn now and again, and the shield the overheat breaks: %f" % cost_plain)
+	assert_true(absf(cost_doubled - (10.0 * 2.0 + 40.0) * Policy.HULL_WEIGHT) < 0.001, "doubled, the hull it burns, the shield the same: %f" % cost_doubled)
 	assert_true(absf(vent_doubled - vent_plain - 10.0 * Policy.HULL_WEIGHT) < 0.001, "the vent saves twice the hull")
 
 
@@ -357,7 +359,7 @@ func test_greedy_holds_a_die_rather_than_burn_out() -> void:
 func test_shield_only_die_is_spent_on_the_one_machine() -> void:
 	var sk := Skirmish.new(1)
 	var u := _mech("A", Die.single(Face.shield(10)), 40, 100)
-	u.shield = 0
+	u.shield = 10
 	sk.add_mech(u)
 	sk.add_foes([_ghoul(30, 1)])
 	sk.begin()
@@ -365,7 +367,7 @@ func test_shield_only_die_is_spent_on_the_one_machine() -> void:
 	var pol := Policy.make(Policy.GREEDY)
 	pol.play_round(sk)
 	assert_true(sk.mechs[0].assigned, "the shield was spent")
-	assert_eq(sk.mechs[0].unit.shield, 10, "on itself, the only machine")
+	assert_eq(sk.mechs[0].unit.shield, 20, "on itself, the only machine")
 
 
 func test_greedy_holds_a_volatile_die_that_would_wreck_the_machine() -> void:
@@ -1336,8 +1338,8 @@ func test_blind_play_spends_on_the_nearest_foe_and_its_own_machine() -> void:
 	var gun := _mech("Gun", Die.single(Face.attack(10, L)), 40, 100)
 	var wall := _mech("Wall", Die.single(Face.shield(20)), 40, 100)
 	var hot := _mech("Hot", Die.single(Face.attack(10, L, K.NONE, 80)), 40, 100)   # eighty heat on a cap of sixty
-	gun.shield = 0
-	wall.shield = 0
+	gun.shield = 10
+	wall.shield = 10
 	for u in [gun, wall, hot]:
 		sk.add_mech(u)
 	sk.add_foes([_ghoul(300, 1), _ghoul(10, 1)])
@@ -1349,8 +1351,8 @@ func test_blind_play_spends_on_the_nearest_foe_and_its_own_machine() -> void:
 	pol.play_round(sk)
 	assert_eq(near.hp, 290, "the gun hit the nearest foe")
 	assert_eq(weak.hp, 10, "not the one it could kill")
-	assert_eq(wall.shield, 20, "the shield went on its own machine")
-	assert_eq(gun.shield, 0, "not on the bare gun beside it")
+	assert_eq(wall.shield, 30, "the shield went on its own machine")
+	assert_eq(gun.shield, 10, "not on the thinner gun beside it")
 	assert_false(sk.mechs[2].assigned, "the hot gun was held")
 	assert_eq(Policy.kind_name(Policy.BLIND), "blind", "the rung's name, as the runner reads it")
 	assert_eq(Policy.kind_name(Policy.PLANNER), "planner", "and the planner's")

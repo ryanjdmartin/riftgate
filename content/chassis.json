@@ -53,13 +53,11 @@
    "codex": "The Minerva EX-45L (colloquially nicknamed the \"Badger\") was popular a mining mech widely praised for its reliability and durability, being designed to operate in the harshest, deepest environments imaginable. Reports exist of Badgers being caught in cave-ins while mining over 5 kilometers underground, only to dig their way out to the surface by nightfall, just in time for drinks with the crew. So naturally, when the Rifts opened, the ever-practical Minerva engineering team's first instinct was to finally give their prized Badger claws, teeth, and as many missiles as it could carry, putting its legendary longevity to work on the battlefield.",
    "hull": 36,
    "shield": 6,
-   "shield_regen": 1,
    "movespeed": 3,
    "heat_max": 12,
    "hardpoints": 3,
    "module_slots": 2,
    "armour": 1,
-   "cooling": 2,
    "traits": [
     "tracked"
    ],
@@ -107,13 +105,11 @@
    "codex": "Surprisingly, or perhaps not, the ever-pragmatic Wainwright & Sutler were the first surviving manufacturer to field a combat walker when the invasion first began. Not knowing the full scope of the threat, the Clydesdale was positioned as a rugged and effective jack-of-all trades, a true workhorse befitting its namesake. A hundred years later, and the original design is still barely changed, its signature W&S simplicity being favourited by pilots and maintenence crews alike. It also serves as an effective training vehicle, as its notoriously poor turning radius results in one less thing for a green pilot to worry about on the battlefield.",
    "hull": 40,
    "shield": 10,
-   "shield_regen": 2,
    "movespeed": 4,
    "heat_max": 12,
    "hardpoints": 8,
    "module_slots": 3,
    "armour": 1,
-   "cooling": 2,
    "traits": [
     "walker"
    ],
@@ -159,13 +155,11 @@
    "codex": "Shortly into the invasion, it was determined that the masses of zombies, demons, and otherwordly things were, frankly, quite dumb without a guiding intelligence coordinating them. Naturally, Kestrel won the bid to produce a small interceptor aircraft, designed to eliminate priority targets and disengage before getting overwhelmed. However, the weapons package traditionally mounted on such a small frame proved ineffective to the task. It wasn't until one inspired engineer suggested cutting all 'uneccesary' weight from the design that a breakthrough was achieved; Armour, weapon regulators, ejection systems, and padded seats were all deemed frivolous, and their omission skyrocketed the Kite to excel in its role.",
    "hull": 12,
    "shield": 8,
-   "shield_regen": 1,
    "movespeed": 6,
    "heat_max": 12,
    "hardpoints": 3,
    "module_slots": 2,
    "armour": 0,
-   "cooling": 2,
    "traits": [
     "flyer"
    ],
@@ -212,13 +206,11 @@
    "codex": "Looking like a cross between an orangutan and a troll, what the Baboon lacks in speed or endurance it more than makes up for with high-tech Aphelion technomagic. After the rifts first opened (and upended everything mankind knew about the laws of physics and the nature of the universe), Aphelion set to work assimilating the torrent of new data, developing experimental countermeasures at a frenetic pace. One unlucky researcher managed to knock out his past self using a localized pocket paradoxical time loop. The effect was quickly weaponized and a frame built to lug the heavy device in into battle, nicknamed the \"Baboon\" in the researcher's memory.",
    "hull": 28,
    "shield": 8,
-   "shield_regen": 1,
    "movespeed": 3,
    "heat_max": 14,
    "hardpoints": 4,
    "module_slots": 2,
    "armour": 0,
-   "cooling": 2,
    "traits": [
     "walker"
    ],
@@ -261,13 +253,11 @@
    "codex": "",
    "hull": 40,
    "shield": 6,
-   "shield_regen": 2,
    "movespeed": 3,
    "heat_max": 12,
    "hardpoints": 4,
    "module_slots": 2,
    "armour": 1,
-   "cooling": 2,
    "traits": [
     "walker"
    ],
@@ -323,13 +313,11 @@
    "codex": "",
    "hull": 36,
    "shield": 8,
-   "shield_regen": 3,
    "movespeed": 4,
    "heat_max": 12,
    "hardpoints": 5,
    "module_slots": 2,
    "armour": 2,
-   "cooling": 2,
    "traits": [
     "tracked"
    ],
@@ -378,13 +366,11 @@
    "codex": "",
    "hull": 20,
    "shield": 8,
-   "shield_regen": 1,
    "movespeed": 6,
    "heat_max": 12,
    "hardpoints": 3,
    "module_slots": 2,
    "armour": 0,
-   "cooling": 2,
    "traits": [
     "wheeled"
    ],
@@ -432,13 +418,11 @@
    "codex": "",
    "hull": 20,
    "shield": 10,
-   "shield_regen": 2,
    "movespeed": 5,
    "heat_max": 12,
    "hardpoints": 3,
    "module_slots": 2,
    "armour": 0,
-   "cooling": 2,
    "traits": [
     "wheeled"
    ],
@@ -479,13 +463,11 @@
    "codex": "",
    "hull": 28,
    "shield": 12,
-   "shield_regen": 1,
    "movespeed": 5,
    "heat_max": 14,
    "hardpoints": 5,
    "module_slots": 2,
    "armour": 0,
-   "cooling": 2,
    "traits": [
     "flyer"
    ],
@@ -528,13 +510,11 @@
    "codex": "",
    "hull": 36,
    "shield": 6,
-   "shield_regen": 1,
    "movespeed": 3,
    "heat_max": 14,
    "hardpoints": 4,
    "module_slots": 2,
    "armour": 2,
-   "cooling": 2,
    "traits": [
     "walker"
    ],
@@ -593,13 +573,11 @@
    "codex": "",
    "hull": 32,
    "shield": 10,
-   "shield_regen": 2,
    "movespeed": 4,
    "heat_max": 14,
    "hardpoints": 4,
    "module_slots": 2,
    "armour": 1,
-   "cooling": 2,
    "traits": [
     "walker"
    ],
@@ -655,13 +633,11 @@
    "codex": "",
    "hull": 24,
    "shield": 9,
-   "shield_regen": 1,
    "movespeed": 5,
    "heat_max": 14,
    "hardpoints": 5,
    "module_slots": 2,
    "armour": 0,
-   "cooling": 2,
    "traits": [
     "hover"
    ],
@@ -706,13 +682,11 @@
    "codex": "",
    "hull": 20,
    "shield": 6,
-   "shield_regen": 2,
    "movespeed": 5,
    "heat_max": 12,
    "hardpoints": 4,
    "module_slots": 2,
    "armour": 0,
-   "cooling": 2,
    "traits": [
     "hover"
    ],
@@ -754,13 +728,11 @@
    "codex": "",
    "hull": 30,
    "shield": 10,
-   "shield_regen": 2,
    "movespeed": 4,
    "heat_max": 12,
    "hardpoints": 4,
    "module_slots": 2,
    "armour": 1,
-   "cooling": 2,
    "traits": [
     "walker"
    ],
@@ -804,13 +776,11 @@
    "codex": "",
    "hull": 24,
    "shield": 6,
-   "shield_regen": 2,
    "movespeed": 5,
    "heat_max": 12,
    "hardpoints": 5,
    "module_slots": 2,
    "armour": 0,
-   "cooling": 2,
    "traits": [
     "walker"
    ],
@@ -866,13 +836,11 @@
    "codex": "",
    "hull": 20,
    "shield": 6,
-   "shield_regen": 2,
    "movespeed": 6,
    "heat_max": 12,
    "hardpoints": 4,
    "module_slots": 2,
    "armour": 0,
-   "cooling": 3,
    "traits": [
     "hover"
    ],
@@ -930,13 +898,11 @@
    "codex": "",
    "hull": 40,
    "shield": 8,
-   "shield_regen": 3,
    "movespeed": 3,
    "heat_max": 14,
    "hardpoints": 4,
    "module_slots": 2,
    "armour": 1,
-   "cooling": 0,
    "traits": [
     "walker"
    ],
@@ -985,13 +951,11 @@
    "codex": "",
    "hull": 48,
    "shield": 14,
-   "shield_regen": 1,
    "movespeed": 3,
    "heat_max": 14,
    "hardpoints": 3,
    "module_slots": 2,
    "armour": 1,
-   "cooling": 3,
    "traits": [
     "flyer"
    ],
@@ -1040,13 +1004,11 @@
    "codex": "",
    "hull": 44,
    "shield": 10,
-   "shield_regen": 2,
    "movespeed": 3,
    "heat_max": 8,
    "hardpoints": 4,
    "module_slots": 2,
    "armour": 1,
-   "cooling": 2,
    "traits": [
     "wheeled"
    ],
@@ -1094,13 +1056,11 @@
    "codex": "",
    "hull": 28,
    "shield": 16,
-   "shield_regen": 1,
    "movespeed": 5,
    "heat_max": 14,
    "hardpoints": 4,
    "module_slots": 2,
    "armour": 0,
-   "cooling": 2,
    "traits": [
     "flyer"
    ],
@@ -1143,13 +1103,11 @@
    "codex": "",
    "hull": 20,
    "shield": 9,
-   "shield_regen": 1,
    "movespeed": 6,
    "heat_max": 12,
    "hardpoints": 3,
    "module_slots": 2,
    "armour": 0,
-   "cooling": 2,
    "traits": [
     "flyer"
    ],
@@ -1191,13 +1149,11 @@
    "codex": "",
    "hull": 24,
    "shield": 12,
-   "shield_regen": 1,
    "movespeed": 6,
    "heat_max": 12,
    "hardpoints": 4,
    "module_slots": 2,
    "armour": 0,
-   "cooling": 2,
    "traits": [
     "hover"
    ],
@@ -1245,13 +1201,11 @@
    "codex": "",
    "hull": 20,
    "shield": 10,
-   "shield_regen": 2,
    "movespeed": 6,
    "heat_max": 12,
    "hardpoints": 4,
    "module_slots": 2,
    "armour": 0,
-   "cooling": 2,
    "traits": [
     "flyer"
    ],
@@ -1292,13 +1246,11 @@
    "codex": "",
    "hull": 44,
    "shield": 14,
-   "shield_regen": 1,
    "movespeed": 3,
    "heat_max": 14,
    "hardpoints": 3,
    "module_slots": 2,
    "armour": 0,
-   "cooling": 3,
    "traits": [
     "hover"
    ],

@@ -11,15 +11,14 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 - Read `CLAUDE.md`, `docs/rules.md`, the bible's first row, this file and `docs/todo.md`. If a
   chat and a file disagree, the chat is newer.
-- **The reboot is the working shape of the shield and of heat, and no session skips it**
-  (Ryan, 13 November: "This is fundamental, I don't want it to get skipped by other
-  sessions"). `docs/briefs/refit_pass.md`, section 22, has his rules, his rulings, the spec
-  and every machine read against it. It is built and on main, off in the game behind
-  `Skirmish.reboot` (REBOOT on a debug build's trials), and content still carries the regen
-  and the cooling it replaces. **His play of 14 November says it stays ("I like this
-  direction. It works"), and folding it in is the next pass** (Next, in order, below). Read
-  section 22 before any work on a machine, a component, a module or a foe (`CLAUDE.md` has
-  the rule).
+- **The reboot is the rule of the shield and of heat, in the game since 15 November, and no
+  session skips it** (Ryan, 13 November: "This is fundamental, I don't want it to get skipped
+  by other sessions"; folded in on his "Go ahead on the fold and build"). `docs/rules.md` has
+  the rule (The reboot) and `docs/briefs/refit_pass.md`, section 22, his rules, his rulings,
+  what landed and every machine read against it. No chassis regenerates or cools: the two
+  stats are what a grant adds to, and the validator refuses both keys on a chassis. The foes'
+  numbers are still the ones sized against a shield that refilled. Read both before any work
+  on a machine, a component, a module or a foe (`CLAUDE.md` has the rule).
 - Sessions run in parallel on this repo: `git status` first, stage by path, diff a shared file
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. A branch
   takes main as it lands and main takes the branch as a fast-forward on Ryan's word; expect the
@@ -36,7 +35,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1193 tests, 372,939 checks, green on `ccr-722ca9f0-yj8na3` (15 November, the vocabulary
+- Tests: 1188 tests, 372,897 checks, green on `ccr-722ca9f0-yj8na3` (15 November, the reboot
+  folded in: five tests of the switch's off side cut with it, over main at `0f5c801`). Before
+  it, 1193 tests, 372,939 checks, green on the same branch (15 November, the vocabulary
   pass's marks folded, documents alone, over main at `196d802` taken in a merge). Before it, the
   same count green on `ccr-b7d5164e-1wtzzm` as it landed on main (15 November, the
   blade class retired, the Kite's hood whole to its mouth and the Giant Petrel's fifteenth cut,
@@ -868,15 +869,13 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   The trial's MODEL deal is written into `content/`: on every stock die a shield's slot holds a
   defensive basic (the Halo Projector, a Barrier, where a shield for anyone stood; the Shoring
   Jack, Armoured 2, where one for itself did) and a vent's a Twin Autoguns, a placeholder; the
-  basics are six, the four guns each making heat; every chassis regains its own `shield_regen`,
-  one to three, the faster on the smaller gauge ("a smaller shield that regens fast, a fatter
-  shield that regens slow, some variation of the middle"; the Nemesis and the Buzzard one by
-  role); the Stingray cools one; the ten slottable shields and vents are planned drafts nothing
+  basics are six, the four guns each making heat; every chassis regained its own `shield_regen`,
+  one to three, until the reboot's fold-in of 15 November took the regen and the cooling off
+  every chassis; the ten slottable shields and vents are planned drafts nothing
   deals; the machines back in design are undealt by `"status": "planned"` on their own
   entries, their kits still built (three since the Polar Bear came back on 11 November). Saves from before are refused (the three save versions).
-  The trial's rows are gone but one: SETTINGS → TRIALS → SHIELD REGEN (BUILT, 0, 1, 2, 3), a
-  flat regen in place of each chassis's own; `--refit` and `RIFTGATE_REFIT` keep the what-ifs
-  that still mean something (regen, cooling, hotter, a price on the Barrier basic). The
+  The trial's rows are gone (SHIELD REGEN, the last, with the reboot's fold-in); `--refit` and
+  `RIFTGATE_REFIT` keep the what-ifs that still mean something (the README lists the parts). The
   campaign runner reads it as the what-if did (`docs/measurements.md`: battles won 10% where
   they were 3%, the Rupture reached twice as often, four battles in five still lost). Not
   landed, each a later step: the re-deal proper (what each die wants in a vent's old slot), the
@@ -1172,17 +1171,16 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   the map, and its passive's line, the engine's words, the rules and the bible's cars row
   now say so. The machines are read again against their briefs in section 22: the Storm
   Petrel, the Buzzard and the Puffin read differently by their settled reworks, and
-  nineteen designs in briefs are reached by the rules. **Built the same day as a what-if,
-  off in the game** (`Skirmish.reboot`; `tests/test_reboot.gd`, each line of the spec): a
-  chassis's own regen and cooling read as nothing, what is granted staying; `reboot_mech`
+  nineteen designs in briefs are reached by the rules. **Built the same day as a what-if and
+  folded into the game on 15 November** (his "Go ahead on the fold and build";
+  `tests/test_reboot.gd`, each line of the spec; the brief says what landed): no chassis
+  carries a regen or a cooling, what is granted staying; `reboot_mech`
   the act, for a machine that has spent nothing, undone like a spend; every stack burning at
   every end of the player's turn and nothing settling; the first overheat between reboots
   breaking the shield; every shield gain refused while it is broken; the recovery as the
-  round opens. On a debug build's SETTINGS → TRIALS, REBOOT (BUILT, ON; `RIFTGATE_REBOOT=1`
-  on any run; read as a battle or a lone fight starts from the menu, the lone fight since 14
-  November, on his "What settings exactly should I be using?": the to-do's line has every
-  row's setting for his play, and the two rows that do nothing under it, SHIELD REGEN and
-  HOTTER's one more cooling): REBOOT is a drop's target in the middle of the bottom row,
+  round opens. Its switch, the REBOOT dial and `RIFTGATE_REBOOT` went with the fold-in, the
+  SHIELD REGEN dial and HOTTER's one more cooling with them. REBOOT is a drop's target in the
+  middle of the bottom row,
   between END TURN and UNDO, REROLL centred under the dice as it was (his option of 14
   November, after REROLL was tried at the row's left: "keep it centered and put reboot on the
   bottom middle between end turn and undo"; a reroll is the undo's floor, so UNDO onto REROLL
@@ -1193,7 +1191,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   cut lit for a die's open readout alone (his "So I can't actually trigger a reboot"), and
   the presses built in its place that day were cut on his word; heat past the maximum, a
   broken shield and a reboot under way each wear a chip, and a broken shield's gauge a
-  dashed frame (the screenshot pose `reboot`). The fight bot has a first play of it
+  dashed frame (the screenshot pose `reboot`). The three states are terms since the fold-in,
+  Overheated, Broken and Rebooting, each a draft for his writing. The fight bot has a first play of it
   (`Policy._reboot_first`, `_reboot_idle`), so the runners finish a fight under the rule.
   First cuts, his to judge running: where the control sits, the chips, the die of a
   rebooting machine. A first read of it (`docs/measurements.md`, 13 November, a direction;
@@ -1815,10 +1814,11 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 The tasks are the to-do's; this is the index of what waits.
 
 - Burn as Ablate, one rule on both sides (Ryan, 15 November: "hits shield first, I think.
-  Pretty deadly otherwise. Bypasses armour when damaging hull"; the bible's Burning row): built
-  with the reboot's fold-in. Until then the engine runs a machine's Burning as heat.
+  Pretty deadly otherwise. Bypasses armour when damaging hull"; the bible's Burning row): the
+  build's next part, now the reboot is folded in. Until then the engine runs a machine's
+  Burning as heat.
 - The vanilla gun at 3 (the same day: "3 against 5 or 3 against 4 as the options"): content
-  still prints 2 and a debug build's BASIC GUNS dial plays the 3; it lands with the fold-in.
+  still prints 2 and a debug build's BASIC GUNS dial plays the 3; it lands with Breach's cut.
 - Exposed for the foes (the same day, his third to fifth rounds; the bible's row in section
   5): a machine's armour of every kind for nothing until the end of the next round, and the
   whole field's targeted intents on it as that round opens, up to its predicted death, the
@@ -1827,9 +1827,9 @@ The tasks are the to-do's; this is the index of what waits.
 - Breach cut on both sides (his fifth round: "Sure, let's cut breach"; the bible's breach
   row): the foes' keyword off thirty-four foes and the engine's path with it, ours a
   property written on the piece ("Ignores armour can be an explicitly written out property")
-  and on pieces of a higher tier or behind a gate. It leaves with the fold-in, where its
-  premise lands (nothing mends); until then content and the engine run breach as built, and
-  a debug build's FOE BREACH dial plays the foes without it (`Refit`'s `breach=cut`).
+  and on pieces of a higher tier or behind a gate. Until it is built content and the engine
+  run breach as before, and a debug build's FOE BREACH dial plays the foes without it
+  (`Refit`'s `breach=cut`).
 - His marks on the vocabulary's table (15 November, all eighty-two rows; the proposal's
   section 18 has each with its read, and the to-do's Engine list the build in four parts):
   Splash, Overshield, Retaliate, Silence and Rallied as a buff cut; Spillover, Swap, Web,
@@ -1875,56 +1875,23 @@ The tasks are the to-do's; this is the index of what waits.
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
 to-do's Ryan list).
 
-**First: the reboot folded in** (Ryan, 14 November, on his play of the trial: "I like this
-direction. It works. What's our next step? Fold the trial in, and then what?"; the to-do's
-Engine list has the pass, the refit brief's section 22 the spec). The rule leaves its switch
-and the rule it replaces is cut in the same pass: the chassis's own shield regen and cooling
-out of the engine and of content, and the overheat that settles. The foes' numbers do not
-move in it. **Then, Claude's order, put to him the same day and his to set:** the audit of
-every rider and keyword against the reboot, with the foes' Burn and the Barrier's place (it
-settles what the foes' effects are before anything is sized against them). **It has had four
-rounds, ahead of the fold-in, and his second made it the vocabulary pass** ("I want to
-examine enemy riders as well, and all existing buffs and debuffs on both sides ... This is a
-vocabulary domain pass. I'm, as always, particularly concerned with Armour"):
-`docs/vocabulary_pass_proposal.md` reads every rider, cost, buff and debuff on both sides
-against the reboot and his yardstick, measures each of our riders on the vanilla and each of
-the foes' on the standard blow (`docs/measurements.md`, four entries), lays out armour
-against the hit sizes and unwinds the Barrier basic. **His third round, 15 November, called
-the roots**: the vanilla is 3 against a standard foe of 4 or of 5, his play to pick, both on
-dials (BASIC GUNS, and RANK AND FILE, built that day); the foes' base armour at tier one
-stops at 2; Burn becomes Ablate, the shield first on a machine and the hull past armour,
-built with the fold-in (Decided, not built, above); and his lean is that the Barrier is no
-basic, so that no massive strike is justified by it. **It also opened three proposals of
-his**: Exposed for the foes, Breach as pressure on the shield, and Ward where the Barrier
-basic stood. **His fourth round, the same day, ruled on the first two** (the proposal's
-section 17; Decided, not built, above): an Ablate tick ignores a Barrier; Exposed for the
-foes sends the whole field, at tier two and up, on one machine at a time, a Lure wins and it
-negates armour of every kind; Breach leaves the player's side, "ignores armour" a written
-property. **Built from that round, his side
-note**: the foes announce down the strike order and no reroll drain is announced once the
-drains already out take every reroll a round gives ("mandragoras shouldn't try to scream
-away 3 rerolls"; `Skirmish.legal_actions`, `drain_announced`). **His fifth round, on that
-report, settled three more**: Exposed keeps the rule that foes never overkill ("the whole
-field targets up until predicted death, then the rest pick intent targets as normal");
-**Breach is cut on both sides** ("Sure, let's cut breach": its first job was to pass a
-shield that mended, Exposed and Ablate answer plate, and cut outright it is three tenths of
-what a tier-one formation costs in hull and next to none of an elite's or a boss's), on a
-dial until the fold-in (FOE BREACH, built that day); and a piece of ours that ignores armour
-sits at a higher tier or behind a gate ("Else they become obvious best faces for certain
-domains"), which the Ammit's Talons and the Wild Boar's charge already do and the
-Overclocked Railgun, a tier-one find, does not: it goes to the component pass, where it may
-move up a tier regardless. **His marks are done** ("My marks are done", the same day):
-forty-six rows kept, twenty-five changed, eight cut, no question, folded in the proposal's
-section 18 with seven choices his notes leave (the to-do's Ryan list has them, each with a
-lean). **And a direction for the foes** (section 19): their moves need not fit a component's
-format, "we're fighting mechs versus JRPG enemies, who cast elaborate spells and stuff".
-**So the pass's talking is nearly over and its build is what waits**: the fold-in on his go,
-carrying Ablate, the basic guns' 3 and Breach's cut; the marks that need no answer; then the
-ones that wait on his seven; then the foes' pass.
-The table of every rider, buff and debuff, eighty-two rows (`docs/vocabulary_table.md`),
-stands with its page (Pages, below) as the record of his marks until the pass retires.
-Nothing in content moved but Exposed's texts, which now say it lasts until the end of the
-next round.
+**First: the vocabulary pass's build** (Ryan, 15 November, on his marks and his answers of
+the seventh round: "Go ahead on the fold and build"). `docs/vocabulary_pass_proposal.md` is
+its record: six rounds, his marks on all eighty-two rows (section 18), his answers and the
+go (section 20), and his direction for the foes' moves (section 19). **The reboot is folded
+in** (15 November: the rule out of its switch; the chassis's own regen and cooling and the
+overheat that settles cut from the engine and from content; the three states terms; the
+refit brief's section 22 says what landed). **What rides behind it, in the to-do's order,
+each a commit of its own**: Ablate in Burn's place on both sides; the vanilla gun at 3 in
+content and Breach cut on both sides; his marks' cuts, renames and the words that leave the
+keyword list; his marks' rule changes (Rally on the rallier, Regenerating fading a stack a
+turn, Primed a stack a weapon fired, Brittle in place of Flak and Crushed, Phased granted
+at the round's end); then the anchor read again as the baseline. **Then the foes' pass**
+(the to-do's line): Exposed's carriers and its engine, the moves his marks renamed or
+moved onto the unit, the countdowns off the rank and file, a fall free to do more than
+strike, and a move as a short list of steps if he takes section 19's proposal.
+The table of every rider, buff and debuff (`docs/vocabulary_table.md`) stands with its page
+(Pages, below) as the record of his marks until the pass retires.
 With the pass, on his proposal, the tier-one
 bench: placeholder pieces, each the vanilla with one thing traded and priced to read as the
 vanilla alone ("the plain vanilla gun is the benchmark for 'viable,' not 'good'"), the

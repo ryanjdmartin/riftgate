@@ -126,7 +126,7 @@ func _apply_pose() -> void:
 		"lock":
 			s._toggle_lock(0)
 		"reboot":
-			# The reboot's trial (13 November; run with RIFTGATE_REBOOT=1): the first machine past
+			# The reboot (13 November; the rule since 15 November): the first machine past
 			# its maximum, the second's shield broken, the third rebooting, the first die read, and
 			# REBOOT at rest at the row's right end, REROLL at its left.
 			var hot: Skirmish.MechState = s.sk.mechs[0]

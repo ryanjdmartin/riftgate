@@ -307,7 +307,7 @@ var _confirm: HudPanel
 var _confirm_text: Label
 var _confirm_action: Callable = Callable()
 var _reroll_btn: HudButton
-var _reboot_btn: HudButton   # the reboot's control, the dice's row's right end, only under its trial (Skirmish.reboot): a drop's target and no button, live while any machine may reboot
+var _reboot_btn: HudButton   # the reboot's control, the middle of the bottom row: a drop's target and no button, live while any machine may reboot
 var _reboot_hover := false   # a die whose machine may reboot is held over REBOOT
 ## What the screen played for the last spend: {"dead": the foes it showed falling, "rose": those
 ## among them it showed getting back up}.
@@ -606,7 +606,7 @@ func _build() -> void:
 	_reroll_btn.center_text = true
 	_reroll_btn.tooltip_text = "A reroll never shows the same component twice."
 	_place(_reroll_btn, Vector2(W * 0.5 - REROLL_SIZE.x * 0.5, REROLL_Y), REROLL_SIZE)
-	# The reboot's control (a debug build's trial): the middle of the bottom row, between End
+	# The reboot's control: the middle of the bottom row, between End
 	# turn and Undo (his option of 14 November: "keep it centered and put reboot on the bottom
 	# middle between end turn and undo"), a drop's target and no button, so it parts the two
 	# presses and can be slipped onto by neither. A die dragged onto it gives its machine's turn, and nothing else does (Ryan, 14
@@ -616,18 +616,16 @@ func _build() -> void:
 	# nothing), dashed at rest since there is nothing to press; a die in hand lights it,
 	# pulsing, or darkens it for a machine that may not; it fills under the die and takes the
 	# drop a thumb's width past its own edge (REBOOT_DROP). A touch passes through it.
-	_reboot_btn = null
 	_reboot_hover = false
-	if Skirmish.reboot:
-		_reboot_btn = HudButton.new("REBOOT")
-		_reboot_btn.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		_reboot_btn.glyph = "shield_vent"
-		_reboot_btn.font_size = 20
-		_reboot_btn.center_text = true
-		_reboot_btn.state_marked = true
-		_reboot_btn.socket = true
-		var left := 16.0 + BOTTOM_BTN.x + REBOOT_GAP
-		_place(_reboot_btn, Vector2(left, BOTTOM_Y), Vector2(W - left * 2.0, BOTTOM_BTN.y))
+	_reboot_btn = HudButton.new("REBOOT")
+	_reboot_btn.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_reboot_btn.glyph = "shield_vent"
+	_reboot_btn.font_size = 20
+	_reboot_btn.center_text = true
+	_reboot_btn.state_marked = true
+	_reboot_btn.socket = true
+	var left := 16.0 + BOTTOM_BTN.x + REBOOT_GAP
+	_place(_reboot_btn, Vector2(left, BOTTOM_Y), Vector2(W - left * 2.0, BOTTOM_BTN.y))
 
 	# Mechs: each on its hex of the floor, drawn by the floor's camera, gauges above, chips under.
 	for i in range(n):
@@ -1968,18 +1966,17 @@ func _mech_rows(i: int) -> Array:
 		abilities.append([status_glyph("sealed"), "", "Ability, Sealed (RIFTGATE_ABILITY_DEBUG)", _chip_colour("sealed"), "ability"])
 	for k in range(abilities.size()):
 		rows.insert(at + k, abilities[k])
-	# The reboot's three states (a debug build's trial; Ryan, 13 November: heat past the maximum
+	# The reboot's three states (Ryan, 13 November: heat past the maximum
 	# "in an uncleanseable debuff on the unit, a stack for every point of heat", a broken shield
 	# "another uncleanseable debuff"), no status of the engine's table: the gauges are what they
-	# say. Working words, his to write.
-	if Skirmish.reboot:
-		var stacks := ms.overheat_stacks()
-		if stacks > 0:
-			rows.append(["heat", "×%d" % stacks, "Debuff, Overheated ×%d: hull -%d every turn until it reboots" % [stacks, stacks * Skirmish.overheat_scale], Palette.HEAT, "status", "debuff"])
-		if ms.rebooting:
-			rows.append(["shield_vent", "", "Rebooting: bare this turn, cold and whole the next", Palette.HUD])
-		elif ms.shield_broken:
-			rows.append(["shieldbreak", "", "Debuff, Shield broken: no shield until it reboots", Palette.SHIELD, "status", "debuff"])
+	# say. Their terms are the vocabulary's (overheated, broken, rebooting), drafts for his writing.
+	var stacks := ms.overheat_stacks()
+	if stacks > 0:
+		rows.append(["heat", "×%d" % stacks, "Debuff, Overheated ×%d: hull -%d every turn until it reboots" % [stacks, stacks * Skirmish.overheat_scale], Palette.HEAT, "status", "debuff"])
+	if ms.rebooting:
+		rows.append(["shield_vent", "", "Rebooting: bare this turn, cold and whole the next", Palette.HUD])
+	elif ms.shield_broken:
+		rows.append(["shieldbreak", "", "Debuff, Broken: no shield until it reboots", Palette.SHIELD, "status", "debuff"])
 	if sk.state == Skirmish.State.ASSIGN:
 		var fc := _forecast_for(i)
 		# Every warning is a prediction, so each pulses as the incoming chips do (Ryan, 26 October:
@@ -2353,7 +2350,7 @@ func _gui_input(event: InputEvent) -> void:
 ## similar format as the hold press on the die, showing resource bars with numbers and
 ## modification up/downs if they exist, a list of all chips on the unit"): its name; its
 ## gauges with their numbers, a maximum anything moved off the chassis's coloured with its
-## arrow; its armour and cooling as the codex's stats, the base with the change beside it
+## arrow; its armour, and its cooling where it is granted any, as the codex's stats, the base with the change beside it
 ## ("Armour 2 (+1▲)"); then every chip on it and the round's warnings, each by its name and count,
 ## its term opening what it does on a tap (Ryan, 2 November).
 func _mech_hold_lines(i: int) -> Array:
@@ -2368,7 +2365,11 @@ func _mech_hold_lines(i: int) -> Array:
 	out.append(EntryReadout.bar_line("Heat", ms.heat, ms.heat_max, int(u.base["heat"]), Palette.HEAT))
 	if ms.ammo_max > 0:
 		out.append(EntryReadout.bar_line("Ammo", ms.ammo, ms.ammo_max, ms.ammo_max, Palette.SELECT))
-	out.append(EntryReadout.parts_line("effect", _stat("Armour", int(u.base["armour"]), u.armour) + [EntryReadout.word("·")] + _stat("Cooling", int(u.base["cooling"]), Skirmish.cooling_of(ms))))
+	var stats: Array = _stat("Armour", int(u.base["armour"]), u.armour)
+	var cools := Skirmish.cooling_of(ms)
+	if cools > 0:
+		stats = stats + [EntryReadout.word("·")] + _stat("Cooling", 0, cools)   # granted alone: a chassis has none of its own (the reboot)
+	out.append(EntryReadout.parts_line("effect", stats))
 	for r in _mech_rows(i):
 		out.append(EntryReadout.chip_line(str(r[0]), r[3], str(r[2])))
 	return out

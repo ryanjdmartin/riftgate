@@ -1010,7 +1010,7 @@ func _gauge(rect: Rect2, b: Array) -> void:
 	var col: Color = b[2]
 	Hud.fill_poly(self, Hud.slant(rect.grow(1.0), 4.0), Color(Palette.BG, 0.9))
 	Hud.gauge(self, rect, frac, col)
-	# A broken shield (the reboot's trial, 13 November; a sixth element, set): the bar's edge
+	# A broken shield (the reboot, 13 November; a sixth element, set): the bar's edge
 	# broken into dashes in place of its line, so a shield that is broken reads apart from one
 	# that is only empty by structure, not hue.
 	if b.size() >= 6 and int(b[5]) != 0:

@@ -1,15 +1,14 @@
 extends TestCase
 
-## The reboot, a what-if behind one switch (Skirmish.reboot; Ryan, 13 November;
+## The reboot, the shield's and the heat's rule (Ryan, 13 November; folded in 15 November;
 ## docs/briefs/refit_pass.md, section 22, has his words and the spec these tests follow line by
-## line). Off, the game as built runs, and tests/test_skirmish.gd holds that. The runner turns
-## the switch off before each test. Numbers are in tens; every piece here is synthetic.
+## line). Numbers are in tens; every piece here is synthetic.
 
 const L := Face.Reach.DIRECT
 const K := Face.Keyword
 const SKIRMISH_SCENE := preload("res://game/skirmish/skirmish_screen.tscn")
 
-## A point of cooling and of regen granted over the chassis's own, as a module or a passive would.
+## Cooling and regen granted, as a module or a passive would: a chassis has none of its own.
 const RADIATOR := {"id": "radiator", "name": "Radiator", "description": "", "effects": [
 	{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 15}]}
 const MENDER := {"id": "mender", "name": "Mender", "description": "", "effects": [
@@ -47,50 +46,26 @@ func _fight(units: Array, foes: Array) -> Skirmish:
 	return sk
 
 
-func test_off_the_game_as_built_runs_and_no_machine_reboots() -> void:
-	var m := _mech(1, "A", _gun(10))
-	m.cooling = 2
-	m.shield_regen = 2
-	m.shield = 30
-	var sk := _fight([m], [Foe.make("dummy", 900, 0)])
-	sk.start_round()
-	assert_false(sk.can_reboot(0), "off, there is no reboot")
-	assert_false(sk.reboot_mech(0), "and asking for one does nothing")
-	assert_eq(m.shield, 32, "its regen ran as the round opened")
-	sk.assign(0, sk.front[0])
-	sk.end_round()
-	sk.start_round()
-	assert_eq(sk.mechs[0].heat, 8, "and its cooling runs")
-	assert_eq(m.shield, 34, "with its regen")
-
-
-func test_on_a_chassis_s_own_regen_and_cooling_are_nothing() -> void:
-	Skirmish.reboot = true
-	var m := _mech(1, "A", _gun(10))
-	m.cooling = 2
-	m.shield_regen = 2
-	m.shield = 30
-	var sk := _fight([m], [Foe.make("dummy", 900, 0)])
-	sk.start_round()
-	assert_eq(m.shield, 30, "no regen of its own")
-	sk.assign(0, sk.front[0])
-	sk.end_round()
-	sk.start_round()
-	assert_eq(sk.mechs[0].heat, 10, "and no cooling of its own")
-	assert_eq(m.cooling, 2, "the stat stands on the chassis; the rule reads past it")
-
-
-func test_what_is_granted_still_cools_and_mends() -> void:
-	Skirmish.reboot = true
+## Nothing cools or mends by itself, and what a module or a passive grants does.
+func test_a_machine_cools_and_mends_only_by_what_it_is_granted() -> void:
+	var bare := _mech(1, "A", _gun(10))
+	bare.shield = 30
+	var plain := _fight([bare], [Foe.make("dummy", 900, 0)])
+	plain.start_round()
+	assert_eq(bare.shield, 30, "no regen of its own")
+	plain.assign(0, plain.front[0])
+	plain.end_round()
+	plain.start_round()
+	assert_eq(plain.mechs[0].heat, 10, "and no cooling of its own")
+	assert_eq([bare.cooling, bare.shield_regen], [0, 0], "the two stats read nothing on a bare machine")
 	var m := _mech(1, "A", _gun(20))
-	m.cooling = 2
-	m.shield_regen = 2
 	m.shield = 30
 	m.grant_passive(RADIATOR)
 	m.grant_passive(MENDER)
+	assert_eq([m.cooling, m.shield_regen], [15, 5], "and what is granted, on one that carries it")
 	var sk := _fight([m], [Foe.make("dummy", 900, 0)])
 	sk.start_round()
-	assert_eq(m.shield, 35, "a granted regen lands, the chassis's own two left out")
+	assert_eq(m.shield, 35, "a granted regen lands")
 	sk.assign(0, sk.front[0])
 	sk.end_round()
 	sk.start_round()
@@ -99,7 +74,6 @@ func test_what_is_granted_still_cools_and_mends() -> void:
 
 
 func test_a_reboot_drops_the_shield_at_once_and_both_gauges_are_back_next_round() -> void:
-	Skirmish.reboot = true
 	var m := _mech(1, "A", _gun(10))
 	var sk := _fight([m], [Foe.make("brute", 900, 25)])
 	var ms: Skirmish.MechState = sk.mechs[0]
@@ -125,7 +99,6 @@ func test_a_reboot_drops_the_shield_at_once_and_both_gauges_are_back_next_round(
 
 
 func test_only_a_machine_that_has_spent_nothing_may_reboot() -> void:
-	Skirmish.reboot = true
 	var quick := Face.attack(1, L, [K.RAPID])
 	var m := _mech(1, "A", Die.of([quick, Face.attack(1, L), Face.attack(2, L)]))
 	var plain := _mech(2, "B", _gun(0))
@@ -149,7 +122,6 @@ func test_only_a_machine_that_has_spent_nothing_may_reboot() -> void:
 
 
 func test_the_undo_takes_a_reboot_back() -> void:
-	Skirmish.reboot = true
 	var m := _mech(1, "A", _gun(10), 40, 100)
 	var sk := _fight([m], [Foe.make("dummy", 900, 0)])
 	sk.start_round()
@@ -164,7 +136,6 @@ func test_the_undo_takes_a_reboot_back() -> void:
 
 
 func test_heat_past_the_maximum_stays_and_every_stack_burns_every_turn() -> void:
-	Skirmish.reboot = true
 	var m := _mech(1, "A", _gun(40), 40, 200, 30)
 	var sk := _fight([m], [Foe.make("dummy", 9000, 0)])
 	var ms: Skirmish.MechState = sk.mechs[0]
@@ -187,7 +158,6 @@ func test_heat_past_the_maximum_stays_and_every_stack_burns_every_turn() -> void
 
 
 func test_the_overheat_s_dial_prices_a_stack() -> void:
-	Skirmish.reboot = true
 	Skirmish.overheat_scale = 2
 	var m := _mech(1, "A", _gun(40), 40, 200, 30)
 	var sk := _fight([m], [Foe.make("dummy", 9000, 0)])
@@ -198,7 +168,6 @@ func test_the_overheat_s_dial_prices_a_stack() -> void:
 
 
 func test_the_first_overheat_breaks_the_shield_once_between_reboots() -> void:
-	Skirmish.reboot = true
 	var m := _mech(1, "A", _gun(40), 40, 900, 30)
 	m.grant_passive(RADIATOR)
 	var sk := _fight([m], [Foe.make("dummy", 9000, 0)])
@@ -229,7 +198,6 @@ func test_the_first_overheat_breaks_the_shield_once_between_reboots() -> void:
 
 
 func test_a_rebooting_machine_neither_burns_nor_overheats() -> void:
-	Skirmish.reboot = true
 	var m := _mech(1, "A", _gun(40), 40, 200, 30)
 	var sk := _fight([m], [Foe.make("dummy", 9000, 0)])
 	var ms: Skirmish.MechState = sk.mechs[0]
@@ -249,7 +217,6 @@ func test_a_rebooting_machine_neither_burns_nor_overheats() -> void:
 
 
 func test_a_machine_out_of_the_fight_does_not_burn() -> void:
-	Skirmish.reboot = true
 	var m := _mech(1, "A", _gun(40), 40, 200, 30)
 	var sk := _fight([m, _mech(2, "B", _gun(0))], [Foe.make("dummy", 9000, 0)])
 	var ms: Skirmish.MechState = sk.mechs[0]
@@ -269,7 +236,6 @@ func test_a_machine_out_of_the_fight_does_not_burn() -> void:
 
 
 func test_a_blow_that_takes_a_shield_to_nothing_breaks_it_and_a_breach_does_not() -> void:
-	Skirmish.reboot = true
 	var m := _mech(1, "A", _gun(0), 40, 200)
 	var sk := _fight([m], [Foe.make("brute", 900, 40)])
 	sk.start_round()
@@ -288,7 +254,6 @@ func test_a_blow_that_takes_a_shield_to_nothing_breaks_it_and_a_breach_does_not(
 
 
 func test_a_broken_shield_gains_none_by_any_method_until_it_reboots() -> void:
-	Skirmish.reboot = true
 	var m := _mech(1, "A", _gun(0), 10, 900)
 	m.grant_passive(MENDER)
 	m.grant_passive(LINER)
@@ -317,7 +282,6 @@ func test_a_broken_shield_gains_none_by_any_method_until_it_reboots() -> void:
 
 
 func test_a_machine_can_break_its_own_shield() -> void:
-	Skirmish.reboot = true
 	var costly := Face.attack(10, L)
 	costly.shield_cost = 10
 	var m := _mech(1, "A", Die.single(costly), 10, 200)
@@ -330,7 +294,6 @@ func test_a_machine_can_break_its_own_shield() -> void:
 
 
 func test_a_barrier_lands_on_a_broken_shield_and_covers_a_reboot() -> void:
-	Skirmish.reboot = true
 	var m := _mech(1, "A", _gun(0), 40, 200)
 	var sk := _fight([m], [Foe.make("brute", 900, 50)])
 	sk.start_round()
@@ -344,7 +307,6 @@ func test_a_barrier_lands_on_a_broken_shield_and_covers_a_reboot() -> void:
 
 
 func test_a_reboot_is_no_pass() -> void:
-	Skirmish.reboot = true
 	var m := _mech(1, "A", _gun(10), 40, 200)
 	m.grant_passive(BOILER)
 	var foe := Foe.make("dummy", 900, 0)
@@ -372,7 +334,6 @@ func test_a_reboot_is_no_pass() -> void:
 
 
 func test_the_round_preview_plays_a_reboot_bare_and_a_burn_that_stands() -> void:
-	Skirmish.reboot = true
 	var m := _mech(1, "A", _gun(40), 40, 200, 30)
 	var sk := _fight([m], [Foe.make("brute", 9000, 25)])
 	var ms: Skirmish.MechState = sk.mechs[0]
@@ -396,7 +357,6 @@ func test_the_round_preview_plays_a_reboot_bare_and_a_burn_that_stands() -> void
 
 
 func test_a_copy_of_the_fight_carries_the_reboot() -> void:
-	Skirmish.reboot = true
 	var m := _mech(1, "A", _gun(40), 40, 200, 30)
 	var sk := _fight([m], [Foe.make("dummy", 9000, 0)])
 	sk.start_round()
@@ -417,7 +377,6 @@ func test_a_copy_of_the_fight_carries_the_reboot() -> void:
 ## finish a fight under the rule: a machine past its maximum gives its turn, one whose entry
 ## would pass it reboots where little shield is at stake, and a die left idle is a reboot too.
 func test_the_bot_reboots_and_plays_the_fight_out() -> void:
-	Skirmish.reboot = true
 	for kind in [Policy.GREEDY, Policy.BLIND, Policy.PLANNER, Policy.RANDOM]:
 		var m := _mech(1, "A", _gun(20, 10), 40, 300, 30)   # twenty heat a shot against thirty: its second shot would pass the maximum
 		var sk := _fight([m], [Foe.make("dummy", 60, 0)])
@@ -430,7 +389,6 @@ func test_the_bot_reboots_and_plays_the_fight_out() -> void:
 
 
 func test_the_bot_reboots_out_of_a_burn_it_did_not_choose() -> void:
-	Skirmish.reboot = true
 	var m := _mech(1, "A", _gun(0, 10), 40, 300, 30)
 	var sk := _fight([m], [Foe.make("dummy", 900, 0)])
 	var p := Policy.make(Policy.GREEDY, 1)
@@ -443,7 +401,6 @@ func test_the_bot_reboots_out_of_a_burn_it_did_not_choose() -> void:
 
 
 func test_the_bot_keeps_a_shield_a_blow_is_coming_for() -> void:
-	Skirmish.reboot = true
 	var m := _mech(1, "A", _gun(40, 10), 40, 300, 30)   # its one entry would pass the maximum
 	var sk := _fight([m], [Foe.make("brute", 900, 30)])
 	var p := Policy.make(Policy.GREEDY, 1)
@@ -456,37 +413,13 @@ func test_the_bot_keeps_a_shield_a_blow_is_coming_for() -> void:
 	var s2 := _fight([m2], [Foe.make("brute", 900, 30)])
 	s2.start_round()
 	blind.play_round(s2)
-	assert_true(s2.mechs[0].rebooting, "the blind bot reads no picks: it reboots where its entry would pass the maximum")
-
-
-## A fight saved under the trial and carried on without it plays as built from there: no
-## recovery owed, and the shield its regen may raise again.
-func test_a_fight_carried_on_without_the_trial_is_the_game_as_built() -> void:
-	Skirmish.reboot = true
-	var m := _mech(1, "A", _gun(10), 40, 200)
-	m.shield_regen = 5
-	var sk := _fight([m], [Foe.make("brute", 900, 50)])
-	sk.start_round()
-	sk.assign(0, sk.front[0])
-	sk.end_round()
-	assert_true(sk.mechs[0].shield_broken, "its shield broken under the trial")
-	sk.start_round()
-	sk.reboot_mech(0)
-	Skirmish.reboot = false
-	sk.end_round()
-	sk.start_round()
-	assert_false(sk.mechs[0].rebooting, "the trial off, no reboot is under way")
-	assert_eq(sk.mechs[0].heat, 10, "and no recovery lands: its heat is where it was")
-	assert_eq(m.shield, 5, "its regen raises its shield, as built")
-
-
-func test_off_the_bot_never_reboots() -> void:
-	var m := _mech(1, "A", _gun(20, 10), 40, 300, 30)
-	m.cooling = 10
-	var sk := _fight([m], [Foe.make("dummy", 60, 0)])
-	var p := Policy.make(Policy.GREEDY, 1)
-	assert_eq(p.play(sk), Skirmish.Outcome.VICTORY, "the fight as built")
-	assert_eq(p.reboots, 0, "with no reboot in it")
+	assert_false(s2.mechs[0].rebooting, "cold and whole, a reboot buys its entry no room: even the blind bot holds")
+	var m3 := _mech(3, "C", _gun(40, 10), 40, 300, 30)
+	var s3 := _fight([m3], [Foe.make("brute", 900, 30)])
+	s3.start_round()
+	s3.mechs[0].heat = 10
+	Policy.make(Policy.BLIND, 1).play_round(s3)
+	assert_true(s3.mechs[0].rebooting, "with heat to shed the blind bot reads no picks: it reboots where its entry would pass the maximum")
 
 
 ## A chassis the game can run, whichever content lists first: the screen wants a real machine's
@@ -503,7 +436,6 @@ func _a_chassis(db: ContentDB) -> String:
 ## machine's turn (the gesture is the live test's, below); the three states as chips, the two
 ## debuffs said so; the hold's cooling reading what the rule leaves of it; UNDO taking it back.
 func test_the_screen_s_reboot_control_is_a_drop_s_target_and_shows_the_three_states() -> void:
-	Skirmish.reboot = true
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
 	sk.keeps_undo = true
@@ -544,9 +476,14 @@ func test_the_screen_s_reboot_control_is_a_drop_s_target_and_shows_the_three_sta
 	chips.clear()
 	for r in s._mech_rows(0):
 		chips.append(str(r[2]))
-	assert_true(chips.has("Debuff, Shield broken: no shield until it reboots"), "a broken shield is a debuff of its own: %s" % str(chips))
+	assert_true(chips.has("Debuff, Broken: no shield until it reboots"), "a broken shield is a debuff of its own: %s" % str(chips))
 	s._on_mech_held(0)
-	assert_true(s._details_entry.text().contains("Cooling %d" % int(sk.mechs[0].unit.base["cooling"])), "the hold reads its cooling from the chassis's own")
+	assert_false(s._details_entry.text().contains("Cooling"), "the hold names no cooling on a machine that is granted none: %s" % s._details_entry.text())
+	sk.mechs[0].unit.grant_passive(RADIATOR)
+	var granted: Array = []
+	for l in s._mech_hold_lines(0):
+		granted.append(str(l["text"]))
+	assert_true(granted.any(func(t: String) -> bool: return t.contains("Cooling 0 (+15")), "and what a loadout grants, as a gain over nothing: %s" % str(granted))
 	s.free()
 
 
@@ -558,7 +495,6 @@ func test_the_screen_s_reboot_control_is_a_drop_s_target_and_shows_the_three_sta
 ## first cut had lit for a die's open readout alone, his "So I can't actually trigger a
 ## reboot"). Live: the fight's screen in a viewport, every touch pushed through it.
 func live_test_a_die_dragged_onto_reboot_is_the_one_way_in() -> void:
-	Skirmish.reboot = true
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
 	sk.keeps_undo = true
@@ -680,16 +616,3 @@ func _slide(vp: Viewport, a: Vector2, b: Vector2, steps: int = 8) -> void:
 		vp.push_input(sd)
 
 
-func test_off_the_screen_has_no_reboot_control() -> void:
-	var db := ContentDB.load_default()
-	var sk := Skirmish.new(1)
-	sk.add_mech(db.make_mech(_a_chassis(db)))
-	sk.add_foes([Foe.make("dummy", 900, 0)])
-	var s := SkirmishScreen.new()
-	s.setup(sk)
-	assert_true(s._reboot_btn == null, "the game as built shows none")
-	var chips: Array[String] = []
-	for r in s._mech_rows(0):
-		chips.append(str(r[2]))
-	assert_false(chips.any(func(c: String) -> bool: return c.contains("eboot")), "nor any of its chips")
-	s.free()

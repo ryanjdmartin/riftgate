@@ -6,7 +6,8 @@ extends RefCounted
 ## reinforcement inside a fight, Ryan, 6 November). The rules are docs/rules.md's.
 ##
 ## Round loop:
-##   start_round()       passive cooling, roll every live mech's die, telegraph foe intents
+##   start_round()       a reboot's recovery, what cooling and regen are granted, roll every live
+##                       mech's die, telegraph foe intents
 ##   reroll([...])       up to REROLLS_PER_ROUND times, any subset of unspent mech dice,
 ##                       before or after spending others: a low damage roll is information;
 ##                       a reroll always lands on a different face (see Die.reroll)
@@ -71,11 +72,11 @@ static var overheat_corrupt: int = 0
 ##                     against a sliver doing a full gauge's work)
 static var shield_break: bool = false
 static var shield_break_min: int = 0
-## The reboot, a what-if for the runners and a debug build's trial (Ryan, 13 November;
-## docs/briefs/refit_pass.md, section 22, has his words and the spec line by line). Never
-## content, and off the game as built runs. On:
-##   - A chassis's own shield regen and cooling are nothing (shield_regen_of, cooling_of); what
-##     a module, a passive or a status grants stays.
+## The reboot, the shield's and the heat's rule (Ryan, 13 November; folded in on his go of 15
+## November: "Go ahead on the fold and build"; docs/briefs/refit_pass.md, section 22, has his
+## words and the spec line by line):
+##   - A chassis has no shield regen and no cooling of its own; a module, a passive or a status
+##     may grant either (shield_regen_of, cooling_of).
 ##   - A machine that has spent nothing this turn may reboot (reboot_mech): its shield goes to
 ##     nothing at once, and as the next round opens its heat is nothing and its shield whole.
 ##     Nothing forces one.
@@ -88,7 +89,6 @@ static var shield_break_min: int = 0
 ##   - A shield at nothing is broken, whatever took it there, its own machine's spend or cost
 ##     included ("you can break yourself"), and gains no shield by any method until the reboot.
 ##   - A Barrier is a buff in front of the gauges and is untouched by any of it.
-static var reboot: bool = false
 
 
 class MechState:
@@ -109,9 +109,9 @@ class MechState:
 	var ammo_max: int = 0       # its size; 0 for a machine that forges nothing
 	var hot_entry: int = -1     # the entry whose spend last took the gauge past its maximum this turn (the overheat's what-ifs)
 	var spends: int = 0             # the entries it has spent this turn: a reboot is for a machine that has spent nothing
-	var rebooting: bool = false     # it gave this turn to a reboot (Skirmish.reboot): its shield is down through the enemy's turn, and both gauges are back as the next round opens
-	var shield_broken: bool = false # its shield has stood at nothing since its last reboot (Skirmish.reboot): it gains none by any method until the reboot's recovery
-	var overheated: bool = false    # it has overheated since its last reboot (Skirmish.reboot): one overheat, and one shield broken by it, between reboots
+	var rebooting: bool = false     # it gave this turn to a reboot: its shield is down through the enemy's turn, and both gauges are back as the next round opens
+	var shield_broken: bool = false # its shield has stood at nothing since its last reboot: it gains none by any method until the reboot's recovery
+	var overheated: bool = false    # it has overheated since its last reboot: one overheat, and one shield broken by it, between reboots
 
 	## The heat it carries past its maximum, a stack a point (the reboot's Overheated).
 	func overheat_stacks() -> int:
@@ -962,21 +962,18 @@ func preview_round(hover_mech: int = -1, hover_target = null) -> Dictionary:
 			copy.assign(hover_mech, t)
 	var events: Array = copy.turn_events.duplicate()   # a last act the spend set off lands now
 	var over: Array[int] = []
-	var settled: Array[int] = []
 	var standing: Array[int] = []
 	over.resize(mechs.size())
-	settled.resize(mechs.size())
 	standing.resize(mechs.size())
 	if copy.outcome == Outcome.NONE:
 		copy._end_player_turn()
 		for o in copy.overheats:
 			over[int(o["mech"])] += int(o["over"])
-			settled[int(o["mech"])] += int(o.get("settled", o["over"]))   # nothing under the reboot, where the gauge does not settle
 	for i in range(mechs.size()):
 		standing[i] = copy.mechs[i].unit.shield
 	var heat_end: Array[int] = []
 	for i in range(mechs.size()):
-		heat_end.append(copy.mechs[i].heat + settled[i])
+		heat_end.append(copy.mechs[i].heat)   # the gauge does not settle: what stands past the maximum stays
 	var played := copy.outcome == Outcome.NONE   # a spend that wins, or a burn that wrecks the last machine, ends the fight at once
 	if played:
 		copy._enemy_turn()
@@ -1128,17 +1125,17 @@ func forecast(ms: MechState, extra_shield: int = 0, overshield: bool = false) ->
 	shield = int(walk["shield"])
 	var heat_end := ms.heat + int(Effects.tick_preview(ms.unit, true)["heat"]) + seal_heat(ms)
 	var over := maxi(0, heat_end - ms.heat_max)
-	if reboot and ms.rebooting:
-		over = 0   # a machine giving its turn to a reboot neither burns nor overheats (a what-if)
+	if ms.rebooting:
+		over = 0   # a machine giving its turn to a reboot neither burns nor overheats
 	hull -= over * overheat_scale
-	# Under the reboot the gauge does not settle: what stands past the maximum stays, and burns again.
-	var heat_after := (heat_end if reboot else mini(heat_end, ms.heat_max)) + int(Effects.tick_preview(ms.unit)["heat"]) + Effects.heat_per_blow(ms.unit) * blows
+	# The gauge does not settle: what stands past the maximum stays, and burns again.
+	var heat_after := heat_end + int(Effects.tick_preview(ms.unit)["heat"]) + Effects.heat_per_blow(ms.unit) * blows
 	return {
 		"incoming": incoming,
 		"shield_after": shield,
 		"hull_after": hull,
 		"heat_end": heat_end,       # the gauge as the turn ends, uncapped: what the burn reads
-		"heat_after": heat_after,   # the gauge after the round: settled at the cap, then the foes' heat
+		"heat_after": heat_after,   # the gauge after the round: what the turn left on it, then the foes' heat
 		"overheat": over,
 		"component_risk": component_risk,
 		"destroyed": hull <= 0 and ms.alive(),
@@ -1407,8 +1404,8 @@ func start_round() -> void:
 		log.append("the roar costs the team %d reroll%s" % [reroll_debt, "" if reroll_debt == 1 else "s"])
 	reroll_debt = 0
 	last_roll.clear()
-	# The turn begins with passive cooling (Ryan, 22 September: cool at the start, heat at
-	# the end): every machine sheds its chassis's cooling rating, one log line for all.
+	# The turn begins with what cooling a machine is granted (a module's, a passive's, a
+	# status's: a chassis has none of its own since the reboot), one log line for all.
 	var cooled: Array[String] = []
 	for ms in mechs:
 		# A swallowed machine cannot act while it is out (30 October): its die is spent before it rolls.
@@ -1416,15 +1413,12 @@ func start_round() -> void:
 		ms.spends = 0
 		if not ms.alive():
 			continue
-		# A reboot's recovery (a what-if): the machine that gave its last turn to one opens the
-		# round cold and whole, before anything cools or regenerates and before the foes pick.
+		# A reboot's recovery: the machine that gave its last turn to one opens the round cold
+		# and whole, before anything cools or regenerates and before the foes pick.
 		if ms.rebooting:
-			if reboot:
-				_recover(ms)
-			else:
-				ms.rebooting = false   # a fight saved under the trial and carried on without it: the game as built from here
-		# A sealed machine's own cooling stops (the Polar Bear's Lockdown, 20 October): opening
-		# is its one way down, since no die is dealt a vent.
+			_recover(ms)
+		# A sealed machine's cooling stops (the Polar Bear's Lockdown, 20 October): opening or
+		# a reboot is its way down.
 		var drop := 0 if Effects.is_sealed(ms.unit) else mini(ms.heat, cooling_of(ms))
 		if drop > 0:
 			ms.heat -= drop
@@ -1442,15 +1436,14 @@ func start_round() -> void:
 	if not cooled.is_empty():
 		log.append("cooling: " + ", ".join(cooled))
 	_refresh_allies()
-	# The shield regen (the long wall brief 3.6; Ryan, 5 November: "Base shield regen and
-	# cooling returning, as a build-strategy buffer"): every machine regains its shield_regen up
-	# to its maximum, after the cooling and before the round-start passives, a shield gain like
-	# any other (on_shield_gain fires), one log line for all. A sealed machine's regen runs:
-	# nothing stops it, where the seal stops its own cooling. What its heat adds to the regen (the
+	# The shield regen a machine is granted (a chassis has none of its own since the reboot):
+	# up to its maximum, after the cooling and before the round-start passives, a shield gain
+	# like any other (on_shield_gain fires), one log line for all. A sealed machine's regen runs:
+	# nothing stops it, where the seal stops its cooling. What its heat adds to the regen (the
 	# Buzzard's Thermal Recoupler) is read here with it, the heat as the cooling left it.
 	var regened: Array[String] = []
 	for ms in live_mechs():
-		var gained := _gain_shield(ms, shield_regen_of(ms))   # a broken shield takes none (the reboot, a what-if)
+		var gained := _gain_shield(ms, shield_regen_of(ms))   # a broken shield takes none
 		if gained > 0:
 			regened.append("%s +%d" % [ms.unit.display_name, gained])
 	if not regened.is_empty():
@@ -2496,7 +2489,7 @@ func _end_player_turn() -> void:
 		Effects.player_turn_end_foe(f)   # a foe's Barrier and Ward last to the end of the player's turn (28 October)
 	_burn_mechs()
 	_seal_heat()
-	_settle_heat()
+	_burn_overheated()
 	_refresh_allies()
 	_check_outcome()
 
@@ -2875,16 +2868,16 @@ func _tick_mechs() -> void:
 ## The end of the player's turn, before the overheat (Ryan, 13 October): each machine's
 ## Burning adds its heat, so a vent made room for it or a cleanse took it off; Burning loses a
 ## stack and Scorched goes.
-## A machine's shield regen as the round opens: the stat, and what its heat adds to it (the
-## Buzzard's Thermal Recoupler).
+## A machine's shield regen as the round opens: what it is granted (a module's, a passive's, a
+## status's; a chassis has none of its own), and what its heat adds to it (the Buzzard's Thermal
+## Recoupler).
 static func shield_regen_of(ms: MechState) -> int:
-	return maxi(0, Effects.stat(ms.unit, "shield_regen", Effects.ROUNDS, not reboot) + Effects.regen_from_heat(ms.unit, ms.heat))
+	return maxi(0, Effects.stat(ms.unit, "shield_regen") + Effects.regen_from_heat(ms.unit, ms.heat))
 
 
-## A machine's cooling as the round opens: the stat, and under the reboot (a what-if) only what
-## is granted over the chassis's own, a module's or a passive's.
+## A machine's cooling as the round opens: what it is granted, a chassis having none of its own.
 static func cooling_of(ms: MechState) -> int:
-	return Effects.stat(ms.unit, "cooling", Effects.ROUNDS, not reboot)
+	return Effects.stat(ms.unit, "cooling")
 
 
 ## The heat a sealed machine runs at the end of its turn (the Polar Bear's Lockdown): the
@@ -5016,8 +5009,8 @@ func _gain_shield(ms: MechState, amount: int, overshield: bool = false) -> int:
 	if amount <= 0:
 		return 0
 	_note_break(ms)
-	if reboot and ms.shield_broken:
-		return 0   # a broken shield gains none by any method until its machine reboots (the reboot, a what-if): no regen, no passive, no entry raises it
+	if ms.shield_broken:
+		return 0   # a broken shield gains none by any method until its machine reboots: no regen, no passive, no entry raises it
 	var gained := ms.unit.recharge_shield(amount, overshield)
 	if gained > 0:
 		_fired(ms, Effects.fire(ms.unit, "on_shield_gain", gained), "on the shield")
@@ -5073,28 +5066,16 @@ func _apply(ms: MechState, result: Dictionary) -> Array[String]:
 	return parts
 
 
-## The end of the player's turn: heat above the maximum burns hull one for one (overheat_scale
-## a point, for a runner's what-if) and the gauge settles at its cap.
-func _settle_heat() -> void:
+## The end of the player's turn: every machine past its maximum burns (overheat_scale a point,
+## a runner's what-if), and the gauge stays where it stands.
+func _burn_overheated() -> void:
 	for ms in live_mechs():
 		var over := ms.heat - ms.heat_max
-		if over <= 0:
-			continue
-		if reboot:
+		if over > 0:
 			_burn_stacks(ms, over)
-			continue
-		var burn := over * overheat_scale
-		var culprit := ms.hot_entry   # read before the gauge settles, which clears it
-		ms.unit.hull -= burn
-		ms.heat = ms.heat_max
-		overheats.append({"mech": mechs.find(ms), "over": over, "burn": burn, "hull": ms.unit.hull, "settled": over})
-		log.append("%s overheats: hull -%d" % [ms.unit.display_name, burn])
-		if ms.alive():
-			_hull_damaged(ms)   # an overheat is hull damage like any other (10 October)
-		_overheat_marks(ms, burn, culprit)
 
 
-## The end of the player's turn under the reboot (a what-if; Ryan, 13 November: "the overheat
+## A machine's burn as the player's turn ends (Ryan, 13 November: "the overheat
 ## damage stacks, damages the hull every turn for the total stacks, and keeps building until the
 ## player is essentially forced to reboot, or die"): the heat a machine carries past its maximum
 ## stays, and every point of it burns hull, every turn it stands there. The first such turn since
@@ -5110,7 +5091,7 @@ func _burn_stacks(ms: MechState, over: int) -> void:
 	var first := not ms.overheated
 	ms.overheated = true
 	ms.unit.hull -= burn
-	overheats.append({"mech": mechs.find(ms), "over": over, "burn": burn, "hull": ms.unit.hull, "settled": 0, "first": first})
+	overheats.append({"mech": mechs.find(ms), "over": over, "burn": burn, "hull": ms.unit.hull, "first": first})
 	log.append("%s is overheated ×%d: hull -%d" % [ms.unit.display_name, over, burn])
 	if first and ms.unit.shield > 0:
 		log.append("%s overheats: its shield breaks" % ms.unit.display_name)
@@ -5122,31 +5103,31 @@ func _burn_stacks(ms: MechState, over: int) -> void:
 		_overheat_marks(ms, burn, culprit)
 
 
-## A shield at nothing is broken under the reboot (a what-if; Ryan, 13 November: "the unit
+## A shield at nothing is broken (Ryan, 13 November: "the unit
 ## cannot gain shield by any method"), whatever took it there: a foe's blow, the overheat, its
 ## machine's reboot, or a shield spend or cost of its own ("you can break yourself"). Noted
 ## wherever a shield falls, and again before any gain, so nothing raises it until the reboot's
 ## recovery. One break between reboots: a broken shield cannot break again.
 func _note_break(ms: MechState) -> void:
-	if not reboot or ms.shield_broken or ms.unit.shield > 0 or ms.unit.shield_max <= 0:
+	if ms.shield_broken or ms.unit.shield > 0 or ms.unit.shield_max <= 0:
 		return
 	ms.shield_broken = true
 	if not ms.rebooting:
 		log.append("%s's shield is broken: no shield until it reboots" % ms.unit.display_name)
 
 
-## Whether machine `mech_index` may give its turn to a reboot now (the reboot, a what-if; Ryan, 13
+## Whether machine `mech_index` may give its turn to a reboot now (Ryan, 13
 ## November: "they have had to 'spent nothing' to smash the Reboot button"): on the player's
 ## turn, alive and in the fight, its die unspent and nothing spent by it this turn, whatever
 ## would let it act more than once (Rapid, Instant, a second thing a round, a grant).
 func can_reboot(mech_index: int) -> bool:
-	if not reboot or state != State.ASSIGN or mech_index < 0 or mech_index >= mechs.size():
+	if state != State.ASSIGN or mech_index < 0 or mech_index >= mechs.size():
 		return false
 	var ms := mechs[mech_index]
 	return ms.alive() and not is_out(ms) and not ms.assigned and not ms.rebooting and ms.spends == 0
 
 
-## The reboot (a what-if): the machine gives its whole turn. Its shield goes to nothing at once
+## The reboot: the machine gives its whole turn. Its shield goes to nothing at once
 ## and stays so through the enemy's turn; as the next round opens its heat is nothing and its
 ## shield whole (_recover). No pass, no entry spent and no shield gain, so nothing that reads one
 ## fires. The undo takes it back like a spend. False when it may not (can_reboot).
@@ -5222,7 +5203,7 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	var had_shield := ms.unit.shield > 0
 	ms.unit.shield = r["shield"]
 	ms.unit.hull -= r["through"]
-	_note_break(ms)   # a shield a blow takes to nothing is broken (the reboot, a what-if)
+	_note_break(ms)   # a shield a blow takes to nothing is broken
 	var rk := "back" if source != null and source.rank == 1 else "front"
 	taken_by_rank[rk] = int(taken_by_rank.get(rk, 0)) + int(r["absorbed"]) + int(r["through"])
 	sponsorship["guarded"] = int(sponsorship["guarded"]) + int(r["absorbed"]) + int(r["armoured"])

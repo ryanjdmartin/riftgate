@@ -593,7 +593,8 @@ func test_a_units_hold_reads_its_gauges_its_chips_and_a_foes_intent() -> void:
 	var top: Dictionary = gauges["Hull"]["parts"][1]
 	assert_eq([int(top["trend"]), bool(top["gain"])], [1, true], "a maximum the passive raised: up, the machine's gain")
 	assert_eq(int(gauges["Shield"]["parts"][1]["trend"]), 0, "one nothing moved: plain")
-	assert_true(s._details_entry.text().contains("Armour %d · Cooling %d" % [m.armour, m.cooling]), "its armour and cooling as stats, nothing moved: %s" % s._details_entry.text())
+	assert_true(s._details_entry.text().contains("Armour %d" % m.armour), "its armour as a stat, nothing moved: %s" % s._details_entry.text())
+	assert_false(s._details_entry.text().contains("Cooling"), "and no cooling, a chassis having none of its own")
 	assert_false(s._details_entry.text().contains("breaks the shield"), "no shield-break warning: the gauges preview the blows")
 	assert_true(chips.any(func(c: String) -> bool: return c.begins_with("Buff, Empowered")), "every chip listed with what it does, a buff's said so: %s" % str(chips))
 	# A foe: its HP, its attack a rally raised (the foe's gain: up and green), its intent.

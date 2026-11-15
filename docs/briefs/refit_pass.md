@@ -3118,6 +3118,17 @@ with it, in one pass (`CLAUDE.md`: a rule leaves the engine with its last piece)
 - *The records.* The rules; the bible's shield and heat rows as decided, section 12's item
   retired to them; `CLAUDE.md`'s two paragraphs; then the anchor read again as the baseline.
 
+*Landed, 15 November, on his "Go ahead on the fold and build".* As listed, with three things
+the build settled. The two stats stay in `Effects.STATS` at a base of nothing, so a grant
+still has something to add to, and the codex and the hold show a regen or a cooling only
+where one is granted. The bot's reboot is the only play, and two of its habits changed with
+the switch gone: a cold, whole machine no longer reboots because its entry is too hot to
+fire (it would only drop its shield), and a vent showing that clears the excess beats the
+reboot. The three states are terms, Overheated, Broken and Rebooting, each a draft for his
+marks on the hangar's Text tab. Saves from before are refused (the battle's, the run's and
+the quick campaign's versions each moved). The anchor read as the new baseline is
+`docs/measurements.md`'s entry of that day.
+
 **Then, Claude's order, his to set.** Each rests on the one before.
 
 1. *The audit of every rider and keyword against the rule*, with the foes' Burn, the block

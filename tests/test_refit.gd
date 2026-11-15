@@ -43,31 +43,16 @@ func test_no_stock_die_holds_a_shield_or_a_vent_and_none_is_dealt() -> void:
 			assert_false(_kind(db, cid) in ["shield", "vent"], "no loot pool deals %s" % cid)
 
 
-## Every chassis regains its own shield regen a round, one to three, the larger on the smaller
-## gauge (Ryan, 10 November: "a smaller shield that regens fast, a fatter shield that regens
-## slow, some variation of the middle"); every chassis cools; and every basic weapon makes heat.
-func test_every_chassis_regains_its_own_regen_cools_and_the_basics_make_heat() -> void:
+## No chassis regains shield or cools by itself (the reboot, folded in 15 November: the regen of
+## one to three a chassis and the cooling of the model went with it), and every basic weapon
+## makes heat.
+func test_no_chassis_regains_or_cools_of_its_own_and_the_basics_make_heat() -> void:
 	var db := ContentDB.load_default()
-	var by_regen := {}
 	for id in db.chassis.keys():
 		var c: Dictionary = db.chassis[id]
-		var regen := int(c.get("shield_regen", 0))
-		assert_true(regen >= 1 and regen <= 3, "%s regains %d a round: one to three" % [id, regen])
-		if not by_regen.has(regen):
-			by_regen[regen] = []
-		by_regen[regen].append(int(c.get("shield", 0)))
+		assert_false(c.has("shield_regen") or c.has("cooling"), "%s names no regen and no cooling" % id)
 		var u := db.make_mech(str(id), 1)
-		if db.chassis_runnable(str(id)):
-			# A machine whose pass releases its heat has that as its way down (the boiler's rule).
-			assert_true(int(c.get("cooling", 0)) >= 1 or not Effects.pass_release(u).is_empty(), "%s cools: with no vent on the die, cooling or a release is its way down" % id)
-		assert_eq(u.shield_regen, regen, "%s: the machine carries its chassis's regen" % id)
-	assert_eq(by_regen.size(), 3, "all three speeds are in use")
-	var mean := func(a: Array) -> float:
-		var t := 0.0
-		for x in a:
-			t += float(x)
-		return t / float(a.size())
-	assert_true(mean.call(by_regen[3]) < mean.call(by_regen[2]) and mean.call(by_regen[2]) < mean.call(by_regen[1]), "the faster the regen, the smaller the gauge on average (%.1f, %.1f, %.1f)" % [mean.call(by_regen[3]), mean.call(by_regen[2]), mean.call(by_regen[1])])
+		assert_eq([u.shield_regen, u.cooling], [0, 0], "%s: the machine carries none as stocked" % id)
 	for cid in db.components.keys():
 		var face: Dictionary = db.components[cid].get("face", {})
 		if db.component_tier(str(cid)) == 0 and str(face.get("kind", "")) == "attack" and int(face.get("power", 0)) > 0:
@@ -115,10 +100,11 @@ func test_the_machines_back_in_design_are_undealt_and_still_build() -> void:
 
 func test_a_spec_parses_its_parts() -> void:
 	assert_eq(str(Refit.parse("barrier=none")["barrier"]), "none", "the Barrier basic off the stock dice parses as its rule")
-	var s := Refit.parse("regen=2,cooling=-1,hotter=2,barrier=cooldown")
-	assert_eq([str(s["regen"]), int(s["cooling"]), int(s["hotter"]), str(s["barrier"])], ["2", -1, 2, "cooldown"], "each part is its own")
+	var s := Refit.parse("hotter=2,barrier=cooldown")
+	assert_eq([int(s["hotter"]), str(s["barrier"])], [2, "cooldown"], "each part is its own")
+	assert_false(s.has("regen") or s.has("cooling"), "the regen's and the cooling's parts left with the chassis's own (15 November)")
 	var none := Refit.parse("")
-	assert_eq([str(none["regen"]), int(none["cooling"]), int(none["hotter"]), str(none["barrier"])], ["", 0, 0, ""], "nothing asked, nothing set")
+	assert_eq([int(none["hotter"]), str(none["barrier"])], [0, ""], "nothing asked, nothing set")
 	assert_eq([int(none["basics"]), int(none["top"])], [0, 0], "the basic guns' parts with them")
 	assert_true(Refit.apply(_own(), none).is_empty(), "and nothing changed")
 	var guns := Refit.parse("basics=1,top=2,hotter=-2")
@@ -261,30 +247,11 @@ func test_the_foes_breach_is_cut_and_nothing_else_moves() -> void:
 
 ## The what-ifs left over the landed model: a flat regen in place of each chassis's own, an
 ## offset on the cooling, every weapon hotter, and a price on the Barrier basic.
-func test_the_what_ifs_move_the_regen_the_cooling_the_heat_and_the_barriers_price() -> void:
+func test_the_what_ifs_move_the_heat_and_the_barriers_price() -> void:
 	var before := ContentDB.load_default()
 	var db := _own()
-	var notes := Refit.apply(db, Refit.parse("regen=0"))
+	var notes := Refit.apply(db, Refit.parse("hotter=2"))
 	assert_eq(notes.size(), 1, "one line for the one change")
-	for id in db.chassis.keys():
-		assert_eq(int(db.chassis[id].get("shield_regen", -1)), 0, "%s: a flat nought in place of its own" % id)
-	db = _own()
-	Refit.apply(db, Refit.parse("regen=half"))
-	for id in db.chassis.keys():
-		assert_eq(int(db.chassis[id]["shield_regen"]), int(ceil(float(int(db.chassis[id]["shield"])) / 2.0)), "%s: half its gauge, rounded up" % id)
-	db = _own()
-	Refit.apply(db, Refit.parse("cooling=1"))
-	var cooled := 0
-	for id in db.chassis.keys():
-		var own := int(before.chassis[id].get("cooling", 0))
-		if own > 0:
-			cooled += 1
-			assert_eq(int(db.chassis[id].get("cooling", 0)), own + 1, "%s cools one more" % id)
-		else:
-			assert_eq(int(db.chassis[id].get("cooling", 0)), 0, "%s cools nothing by its rule, and no offset moves it" % id)
-	assert_true(cooled > 0, "the chassis that cool cooled more")
-	db = _own()
-	Refit.apply(db, Refit.parse("hotter=2"))
 	var hot := 0
 	for cid in db.components.keys():
 		var face: Dictionary = db.components[cid].get("face", {})
