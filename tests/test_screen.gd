@@ -152,7 +152,7 @@ func test_whom_a_piece_reaches_is_three_hexes_under_its_main_glyph() -> void:
 	assert_eq(Glyphs.aim_for(shield), "aim_ally", "its allies only: the two beside it")
 	shield.reaches_all = true
 	assert_eq([Glyphs.aim_for(shield), shield.targets], ["aim_every_other_ally", Face.Target.EVERY_OTHER_ALLY], "its allies all at once: its targeting mode, Every Other Ally, its own cell dark under the arch (4 November)")
-	assert_true(shield.keywords.is_empty(), "never a keyword, so a Silence leaves it whole")
+	assert_true(shield.keywords.is_empty(), "never a keyword")
 	var team := Face.shield(4)
 	team.reaches_all = true
 	assert_eq([Glyphs.aim_for(team), team.targets], ["aim_every_ally", Face.Target.EVERY_ALLY], "itself and its allies all at once: Every Ally, its own cell lit")
@@ -424,6 +424,37 @@ func test_reroll_goes_dark_with_every_die_spent_or_locked() -> void:
 	var before := s.sk.rerolls_left
 	s._on_reroll()
 	assert_eq(s.sk.rerolls_left, before, "and a press spends nothing")
+	s.free()
+
+
+## REROLL lights while the die in hand would bring the team a reroll, and its badge shows the
+## count it would leave (Ryan, 15 November: "We can communicate by highlighting the reroll button
+## as part of the preview, if one will be granted"): no buff and no chip stand for the grant.
+func test_reroll_lights_while_the_die_in_hand_would_grant_one() -> void:
+	var s := _screen(5)
+	var ms: Skirmish.MechState = s.sk.mechs[0]
+	ms.unit.die = Die.single(Face.from_dict({"kind": "buff", "team_rerolls": 1, "targets": "self"}))
+	ms.die = ms.unit.die
+	ms.face_index = 0
+	s._refresh()
+	assert_false(s._reroll_btn.granting, "no die in hand: unlit")
+	assert_eq(s._reroll_btn.badge, "×%d" % s.sk.rerolls_left, "the count as it stands")
+	s._drag_from = 0
+	s._drag_over = ms
+	s._refresh()
+	assert_true(s._reroll_btn.granting, "the die over its own machine: REROLL lights")
+	assert_eq(s._reroll_btn.badge, "×%d+1" % s.sk.rerolls_left, "and the badge shows the one coming")
+	s.sk.rerolls_left = 0
+	for i in range(s.sk.mechs.size()):
+		s.locked[i] = i != 0
+	s._refresh()
+	assert_true(s._reroll_btn.granting, "with none left it lights all the same: that is when the grant matters most")
+	assert_eq(s._reroll_btn.badge, "×0+1", "none in hand, one coming")
+	s._drag_from = -1
+	s._drag_over = null
+	s._refresh()
+	assert_false(s._reroll_btn.granting, "the die set down: unlit again")
+	assert_eq(s._reroll_btn.badge, "×0", "and the count alone")
 	s.free()
 
 
@@ -1349,8 +1380,8 @@ func test_an_incoming_rally_lifts_the_intent_and_wears_a_preview_chip_until_the_
 
 
 ## Every status on its way wears a pulsing preview chip (Ryan, 26 October: "All incoming chips
-## should appear as pulsing opacity versions"): the Shocked a Retaliate will put on the foe that
-## strikes the bare hull, the Ablating its rider leaves on the machine; a foe the round kills wears
+## should appear as pulsing opacity versions"): the Ablating a foe's rider leaves on the machine it
+## strikes, and none on a foe nothing is on its way to; a foe the round kills wears
 ## its skull and no chips on the way.
 func test_every_status_on_its_way_wears_a_preview_chip() -> void:
 	var db := ContentDB.load_default()
@@ -1365,14 +1396,10 @@ func test_every_status_on_its_way_wears_a_preview_chip() -> void:
 	sk.add_foes([g])
 	var s := SkirmishScreen.new()
 	s.setup(sk)
-	Effects.grant_for_rounds(m, Effects.STATUS["retaliate"], "test", sk.round)
 	g.target = sk.mechs[0]
 	s._refresh()
 	var previews: Array = s._foe_view_for(g).statuses.filter(func(st) -> bool: return st.size() >= 4 and str(st[3]) == "preview")
-	assert_eq(previews.size(), 1, "the foe wears one chip on its way")
-	if previews.size() == 1:
-		assert_eq(str(previews[0][0]), "shocked", "the Shocked the Retaliate lands")
-		assert_eq(str(previews[0][1]), "", "a status that renews shows no count")
+	assert_eq(previews.size(), 0, "nothing is on its way to the foe, so it wears no preview chip")
 	var mine: Array = s._mech_rows(0).filter(func(r) -> bool: return r.size() >= 5 and str(r[4]) == "preview")
 	assert_eq(mine.size(), 1, "the machine wears one")
 	if mine.size() == 1:
@@ -2268,9 +2295,9 @@ func test_every_mark_on_a_die_face_heads_a_line_of_its_readout() -> void:
 			assert_true(heads.has(aim), "%s: the die's hexes head its target line (%s)" % [cid, str(heads)])
 
 
-## The die's readout lines each with the mark it says: the Puffin's projector, an ally's shield
-## with Overshield, its glyph on its number, the three hexes on its target, the keyword's chip on
-## its line (and no second icon in the words), and a lock and a corruption on their states.
+## The die's readout lines each with the mark it says: the Puffin's projector, an ally's shield,
+## its glyph on its number, the three hexes on its target, and a lock and a corruption on their
+## states.
 func test_a_dies_readout_heads_each_line_with_its_mark() -> void:
 	var db := ContentDB.load_default()
 	var f := db.build_face(db.components["backwash_ionizer"]["face"])
@@ -2288,8 +2315,6 @@ func test_a_dies_readout_heads_each_line_with_its_mark() -> void:
 	assert_false(target.is_empty(), "whom it reaches, in words")
 	assert_eq((target.get("marks", []) as Array).map(func(m: Dictionary) -> String: return str(m.get("glyph", ""))), ["aim_ally"], "headed by the three hexes the die draws, the two beside lit")
 	assert_false(bool((target.get("marks", [{}]) as Array)[0].get("box", true)), "bare, as the die draws them under its glyph")
-	assert_eq(str(by.get("overshield", {}).get("text", "")), "Overshield", "the keyword's chip on its line")
-	assert_false(bool((by.get("overshield", {}).get("parts", [{}])[0] as Dictionary).get("icon", true)), "its word wears no second icon")
 	assert_eq(str(by.get("lock", {}).get("style", "")), "state", "the lock on its state")
 	var readout := EntryReadout.new()
 	readout.set_lines(lines)
@@ -2300,7 +2325,7 @@ func test_a_dies_readout_heads_each_line_with_its_mark() -> void:
 			boxed += 1
 		else:
 			bare += 1
-	assert_eq([boxed, bare], [1, 3], "the keyword's chip boxed as the die boxes it, the big glyph, the hexes and the lock bare")
+	assert_eq([boxed, bare], [0, 3], "the big glyph, the hexes and the lock bare, and no keyword's chip on a piece that carries none")
 	readout.free()
 
 

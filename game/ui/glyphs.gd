@@ -217,12 +217,6 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				var o := c + Vector2(0, -s * 0.12)
 				ci.draw_arc(o, s * 0.42, 0.0, TAU, 18, color, width * 0.85)
 				ci.draw_line(o + Vector2(-s * 0.3, s * 0.3), o + Vector2(s * 0.3, -s * 0.3), color, width * 0.85)
-		"silence":
-			# Silenced (21 October; keywords alone, 28 October): a voice's three arcs struck
-			# through, its keywords muted through its next round.
-			for k in range(3):
-				ci.draw_arc(c + Vector2(-s * 0.45, 0), s * (0.35 + 0.3 * k), -PI * 0.3, PI * 0.3, 10, color, width)
-			ci.draw_line(c + Vector2(-s * 0.9, s * 0.9), c + Vector2(s * 0.9, -s * 0.9), color, width * 1.2)
 		"spin":
 			# The drum spun up (Spun Up, the Cassowary's, 21 October): three-quarters of a ring
 			# with an arrowhead where it runs on, and the cylinder's hub at its centre.
@@ -299,13 +293,6 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_line(c + Vector2(0, -s), c + Vector2(0, s), color, width)
 			ci.draw_line(c + Vector2(-s * 0.45, s * 0.5), c + Vector2(0, s), color, width)
 			ci.draw_line(c + Vector2(s * 0.45, s * 0.5), c + Vector2(0, s), color, width)
-		"splash":
-			# Splash (28 October): the plus round the target, Spread's row and Penetrate's column at
-			# one number. A solid core with four arms standing off it, a burst, so it reads apart
-			# from Spread's three bars, Penetrate's arrow and the crosshair's ringed cross.
-			ci.draw_rect(Rect2(c - Vector2(s * 0.28, s * 0.28), Vector2(s * 0.56, s * 0.56)), color, true)
-			for d in [Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)]:
-				ci.draw_line(c + d * s * 0.5, c + d * s, color, width)
 		"penetrate":
 			ci.draw_line(c + Vector2(-s, 0), c + Vector2(s, 0), color, width)
 			ci.draw_line(c + Vector2(s * 0.3, -s * 0.6), c + Vector2(s, 0), color, width)
@@ -417,11 +404,6 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				var a := PI / 8.0 + i * PI / 4.0
 				var dir := Vector2(cos(a), sin(a))
 				ci.draw_line(c + dir * s * 0.5, c + dir * s, color, width)
-		"overshield":
-			# A shield's arch with a second arch standing above its crown: more than the maximum.
-			ci.draw_arc(c + Vector2(0, s * 0.3), s * 0.7, PI, TAU, 16, color, width)
-			ci.draw_line(c + Vector2(-s * 0.7, s * 0.3), c + Vector2(s * 0.7, s * 0.3), color, width)
-			ci.draw_arc(c + Vector2(0, -s * 0.15), s * 0.95, PI * 1.15, PI * 1.85, 12, color, width * 0.8)
 		"spillover":
 			# An arrow driven down through a bar: what carries past the kill into the rank behind.
 			ci.draw_line(c + Vector2(-s * 0.8, -s * 0.15), c + Vector2(s * 0.8, -s * 0.15), color, width)
@@ -672,7 +654,7 @@ static func colour_for(id: String) -> Color:
 			return Terms.colour("exposure")
 		"overcharge", "heat", "scorch", "spin", "mine":
 			return Palette.HEAT
-		"shieldbreak", "silence":
+		"shieldbreak":
 			return Palette.ENEMY
 		"skull":
 			return Palette.LOSS

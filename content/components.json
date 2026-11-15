@@ -224,10 +224,12 @@
     "reach": "indirect",
     "power": 4,
     "keywords": [
-     "splash"
+     "cleave",
+     "penetrate"
     ],
     "heat": 4,
-    "splash": 1
+    "cleave": 1,
+    "penetrate": 1
    },
    "passive": null,
    "tags": [
@@ -1218,15 +1220,13 @@
    "design": {
     "stage": "draft",
     "fantasy": "The whole front of the Puffin is one shield projector, and it only points outward.",
-    "niche": "The Puffin's locked shield: a big bubble it can only raise on an ally, and the game's first Overshield, so it may lift the ally past its maximum for the round (Ryan, 2 October: a shield specialist, not a shield-bot; 5 October: overshield a rare keyword, the projector first)."
+    "niche": "The Puffin's locked shield: a big bubble it can only raise on an ally, and the game's first Overshield, so it may lift the ally past its maximum for the round (Ryan, 2 October: a shield specialist, not a shield-bot; 5 October: overshield a rare keyword, the projector first). Overshield was cut as a keyword on 15 November (Ryan's mark), so it raises no shield past the maximum: its session finds it another rule."
    },
    "face": {
     "kind": "shield",
     "power": 3,
     "targets": "ally",
-    "keywords": [
-     "overshield"
-    ]
+    "keywords": []
    },
    "passive": null,
    "tags": []
@@ -1414,13 +1414,14 @@
    "name": "Retribution Thurible",
    "maker": "arsenal",
    "tier": 1,
+   "status": "planned",
    "shape": "dish",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
     "fantasy": "A censer swung over the hull. Whatever strikes the consecrated metal is marked for what comes next.",
-    "niche": "The Retaliate carrier: for two rounds, a foe that strikes the machine's bare hull is Shocked; on the Nemesis its own punches spend the shocks."
+    "niche": "Back in design (Ryan, 15 November: \"Send the retribution thurible back to design. It can have unique text but not until we sort out our fundamentals\"), a planned draft nothing deals. It was the Retaliate carrier: for two rounds, a foe that strikes the machine's bare hull is Shocked; on the Nemesis its own punches spent the shocks. Retaliate was cut as a buff word the same day, so its rule will be the piece's own text."
    },
    "face": {
     "kind": "buff",
@@ -1732,9 +1733,7 @@
    },
    "face": {
     "kind": "buff",
-    "status": "rallied",
-    "stacks": 1,
-    "rounds": 1,
+    "team_rerolls": 1,
     "targets": "self",
     "charged": {
      "muster": 1,
@@ -1754,17 +1753,19 @@
    "design": {
     "stage": "draft",
     "fantasy": "A cluster howitzer whose shells burst over a rank, and whose spent casings the forge pulls back as ammo. Ryan, 21 October: \"a cluster cannon that does low damage, spreads Flak 1 to all targets hit, and returns 1 ammo for each target hit\". The name is Claude's, Ryan's pick: shrapnel is the old-world cluster round, and a recuperator is the real artillery part that returns the barrel after recoil, here returning the shells.",
-    "niche": "The Musk Ox's status and ammo piece: a low number on up to four foes (Splash), Flak 1 on each for the team's blows that turn, and 1 ammo back for every foe it hits, so a crowd fills the magazine and a lone boss is a wash."
+    "niche": "The Musk Ox's status and ammo piece: a low number on up to four foes (Spread 1 and Penetrate 1, Splash until the word was cut on 15 November), Flak 1 on each for the team's blows that turn, and 1 ammo back for every foe it hits, so a crowd fills the magazine and a lone boss is a wash."
    },
    "face": {
     "kind": "attack",
     "reach": "indirect",
     "power": 1,
     "keywords": [
-     "splash",
+     "cleave",
+     "penetrate",
      "flak"
     ],
-    "splash": 1,
+    "cleave": 1,
+    "penetrate": 1,
     "flak": 1,
     "heat": 5,
     "ammo_per_foe_hit": 1
@@ -1989,13 +1990,11 @@
     "stage": "draft",
     "fantasy": "The Immelmann turn reverses a fighter's course and climbs (Ryan named it 21 October), as a spent ally comes round to act again: the flagship's eight boosters, lit.",
     "niche": "The Giant Petrel's first lock, Rapid (Ryan, 21 October): spent on itself the team gains a reroll; spent on an ally whose die is spent, three of the team's rerolls are paid, banked or fresh, and the ally's die rolls again, never onto the entry it showed, and it acts again. The order is the play: spend the ally first.",
-    "notes": "Built 30 October: the self use is the Reveille Horn's Rallied; the ally use (ally_action, the Horn's charged act-again priced in rerolls) takes an ally whose die is spent while the team holds the price, and its Rapid gives the Petrel its turn back."
+    "notes": "Built 30 October: the self use is the Reveille Horn's reroll for the team (a rule of its own since 15 November, the Rallied buff cut); the ally use (ally_action, the Horn's charged act-again priced in rerolls) takes an ally whose die is spent while the team holds the price, and its Rapid gives the Petrel its turn back."
    },
    "face": {
     "kind": "buff",
-    "status": "rallied",
-    "stacks": 1,
-    "rounds": 1,
+    "team_rerolls": 1,
     "keywords": [
      "rapid"
     ],
@@ -2242,7 +2241,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A slab of mine-shaft door on a hydraulic arm, swung across in front of whoever needs it for the one blow that matters.",
-    "niche": "The Barrier carrier: the next blow a foe lands on the machine deals no damage, so it never injures, until the round's end; self or ally, never a team buff (the Barrier row)."
+    "niche": "The Barrier carrier: the next blow a foe lands on the machine deals no damage, until the round's end; self or ally, never a team buff (the Barrier row)."
    },
    "face": {
     "kind": "buff",

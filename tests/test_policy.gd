@@ -130,10 +130,9 @@ func test_the_bot_prices_an_overheat_at_its_burn() -> void:
 	assert_true(absf(vent_doubled - vent_plain - 10.0 * Policy.HULL_WEIGHT) < 0.001, "the vent saves twice the hull")
 
 
-## The overheat's other what-ifs priced (30 October): the spend that takes the burn to the injury
-## threshold pays for the component it burns out, and the one that starts an overheat for the
-## corruption it lays; nothing while both are off.
-func test_the_bot_prices_a_burnout_and_an_overheats_corruption() -> void:
+## The overheat's other what-if priced (30 October): the spend that starts an overheat pays for
+## the corruption it lays; nothing while it is off.
+func test_the_bot_prices_an_overheats_corruption() -> void:
 	var sk := Skirmish.new(3)
 	sk.add_mech(_mech("Hot", Die.of([Face.vent(30), Face.attack(10, L, [], 10)]), 40, 100))
 	sk.add_foes([_ghoul(300, 1)])
@@ -141,19 +140,11 @@ func test_the_bot_prices_a_burnout_and_an_overheats_corruption() -> void:
 	sk.start_round()
 	var ms: Skirmish.MechState = sk.mechs[0]
 	var pol := Policy.make(Policy.GREEDY)
-	assert_eq(pol.overheat_marks_cost(ms, 0, 30), 0.0, "both off: nothing")
-	Skirmish.overheat_burnout = true
-	var burnt := pol.overheat_marks_cost(ms, 0, 30)
-	var short := pol.overheat_marks_cost(ms, 0, 20)
-	var already := pol.overheat_marks_cost(ms, 25, 30)
-	Skirmish.overheat_burnout = false
+	assert_eq(pol.overheat_marks_cost(ms, 0, 30), 0.0, "off: nothing")
 	Skirmish.overheat_corrupt = 1
 	var corrupt := pol.overheat_marks_cost(ms, 0, 5)
 	var again := pol.overheat_marks_cost(ms, 5, 10)
 	Skirmish.overheat_corrupt = 0
-	assert_true(absf(burnt - Policy.DEATH_WEIGHT / 2.0) < 0.001, "thirty past the cap on a 100-hull machine reaches the quarter: half the machine's worth on a die of two: %f" % burnt)
-	assert_eq(short, 0.0, "twenty burns short of the quarter")
-	assert_eq(already, 0.0, "a burnout the turn was making anyway costs this spend nothing")
 	assert_true(corrupt > 0.0, "the spend that starts the overheat pays for its corruption")
 	assert_eq(again, 0.0, "one overheat a turn: a spend that only deepens it lays no more")
 

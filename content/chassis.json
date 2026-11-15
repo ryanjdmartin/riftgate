@@ -505,7 +505,8 @@
    "tier": 2,
    "design": {
     "fantasy": "A hulking, neckless, spiked brute. Thick arms made for pummeling. A glowing firey core in its torso that lights up as the mech takes damage and heats up.",
-    "niche": "Sustained damage bruiser"
+    "niche": "Sustained damage bruiser",
+    "notes": "Its fourth hardpoint holds a placeholder, the plain basic gun, since the Retribution Thurible went back to design on 15 November (Ryan's word; the placeholder a session's, as a vent's slot took one on 10 November): the stock re-deal's to fill."
    },
    "codex": "",
    "hull": 36,
@@ -526,7 +527,7 @@
    "loadout": [
     "plasma_arquebus",
     "blazethrower",
-    "retribution_thurible",
+    "twin_autoguns",
     "halo_projector"
    ],
    "passive": {

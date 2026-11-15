@@ -1026,23 +1026,6 @@ func _gauge(rect: Rect2, b: Array) -> void:
 				at += 10.0
 	else:
 		Hud.stroke_poly(self, Hud.slant(rect, 4.0), Color(col, 0.95), 1.0)   # a full-strength edge, so an empty bar still shows
-	# Shield past its maximum (Overshield, 5 October): the excess stands beyond the bar's
-	# end as a hatched block in the bar's colour on its own dark ground, by structure, not
-	# hue, so a full bar and an overfull one never read alike. It fades at the round's end.
-	var over_now := maxf(0.0, (float(b[0]) - mx) / mx)
-	var over_pending := maxf(0.0, (float(b[3]) - mx) / mx) if b.size() >= 4 else over_now
-	var over := maxf(over_now, over_pending)
-	if over > 0.0:
-		var ext := Rect2(rect.end.x + 3.0, rect.position.y, maxf(4.0, rect.size.x * minf(over, 0.6)), rect.size.y)
-		Hud.fill_poly(self, Hud.slant(ext.grow(1.0), 4.0), Color(Palette.BG, 0.9))
-		var solid := over_now / over if over > 0.0 else 0.0
-		if solid > 0.0:
-			Hud.fill_poly(self, Hud.slant(Rect2(ext.position, Vector2(ext.size.x * solid, ext.size.y)), 4.0), Color(col, 0.95))
-		Hud.stroke_poly(self, Hud.slant(ext, 4.0), Color(col, 0.95), 1.0)
-		var hx := ext.position.x + 2.0
-		while hx < ext.end.x:
-			draw_line(Vector2(hx, ext.end.y), Vector2(hx + ext.size.y, ext.position.y), Color(Palette.INK, 0.8), 1.0)
-			hx += 4.0
 	# A banked bar's charges (the Swallowtail's Muster, a fifth element the points a charge): a
 	# notch at each charge across the bar, so its count reads by structure; every other bar
 	# wears its scale, a tick a point (Hud.ticks), drawn over its pending change so it holds.

@@ -23,7 +23,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   - `face.gd`, `die.gd` die faces and dice
   - `foe.gd` an enemy inside a skirmish
   - `skirmish.gd` the dice skirmish: two-rank enemy formation fed from a pool, reach rules,
-    keywords, heat, shields, injuries, outcome
+    keywords, heat, shields, destroyed components, outcome
   - `loadouts.gd` sample dice and packs for prototypes and tests
   - `harness_setup.gd` what the harness launches (team, loadouts, a battle as a run deals it,
     a fight, seed, map shape), built into a battle or a skirmish, kept between launches
@@ -275,8 +275,8 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # --cool-above 50 (the cautious persona: each machine keeps its heat under half its maximum,
 # venting early and holding a hot spend above the line; the pricing driver passes it on too),
 # --overheat 2 (a what-if: an overheat burns two hull a point past the maximum; the driver's too),
-# --burnout and --overheat-corrupt 1 (what-ifs on the component that took the gauge past the maximum:
-# burnt out once the burn reaches the injury threshold, or Corrupted a stack every overheat; the driver's too),
+# --overheat-corrupt 1 (a what-if on the component that took the gauge past the maximum:
+# Corrupted a stack every overheat; the driver's too),
 # --shield-ahead (the shield persona: a shield left standing valued by the blows it turns next round,
 # where the rungs bank it at a fifth of a point; the driver's too, for the support ladders),
 # --targeting lowest (the rule before 2 October for the matrix), --json out.json for every cell;
@@ -329,7 +329,6 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # its worth to the bot, so it never rerolls for one and spends one only when its die is stuck
 # showing it): the hull the blocks keep and the rounds they cost are the gap between it and the
 # rung as it is; tools/campaign_run.gd takes it too.
-# --injury on|N reads a run with the injury rule on (off in the game since 9 November).
 perl -e 'alarm 36000; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
 perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --packs promise --seeds 30 --policies greedy --out /tmp/promise.md
 perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --packs curve --seeds 30 --out /tmp/curve.md
@@ -441,7 +440,7 @@ perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/special_prob
 python3 tools/special_probe_read.py build
 # formations back to back (25 October, docs/quick_campaign_proposal.md): every starter trio (or four: --squads fours,
 # or a JSON file of squads, as endgame_fours.py --json prints the endgame fours) against one domain's formation up
-# to nine times in a row, hull, injuries and wrecks carried, the shield full as each fight opens (the long wall
+# to nine times in a row, hull, destroyed components and wrecks carried, the shield full as each fight opens (the long wall
 # brief: no field recharge); --density F scales the formation; four parts in parallel, then the reader
 perl -e 'alarm 5400; exec @ARGV' godot --headless --path . -s tools/chain_probe.gd -- --squads trios --seeds 2 --out build/chain_0.json --part 0/4
 python3 tools/endgame_fours.py --json > build/endgame_fours.json   # then --squads build/endgame_fours.json

@@ -345,7 +345,7 @@ func strikes() -> int:
 const ACTION_EFFECTS := {
 	"defend": ["brace", "regrow", "regrow_ally", "brace_all", "cleanse", "barrier", "regenerate"],
 	"buff": ["revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "merge", "golden"],
-	"debuff": ["drain_rerolls", "ablate", "disable", "scorch_all", "corrupt_all", "silence", "dispel", "swallow"],
+	"debuff": ["drain_rerolls", "ablate", "disable", "scorch_all", "corrupt_all", "dispel", "swallow"],
 }
 
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn and no machine
@@ -389,12 +389,16 @@ func intent_on(u) -> bool:
 ## the foe takes it: its borrowed swing (a move with `power` "held") lands that weapon's number,
 ## and anything else it took is a fake, for 1 (Gilgamesh's, 30 October). drain: the striker
 ## regrows what the blow dealt, shield and hull (the Vampire Lord's, 30 October); it lays nothing
-## on the machine, so no Ward turns it away, and Ablating on the striker is its race.
-## A silence and a purge are specials, never riders (28 October: a rider on a hitter's blow is a
-## tax with no decision), so neither is an attack keyword; the validator refuses them on a blow.
-const ATTACK_KEYWORDS := ["scorch", "ablate", "disable", "corrupt", "crush", "self_destruct", "all", "steal", "drain"]
+## on the machine, so no Ward turns it away, and Ablating on the striker is its race. destroy:
+## any of the blow on the hull and the entry the machine's die shows is destroyed, blank until
+## the hangar mends it (Ryan, 15 November: "a boss-level rider, that destroys the visible face
+## if it damages hull at all. Only promoted form or superboss-level so we're not tuning the
+## economy around it"); a shield that takes the whole blow, a Barrier or a Ward keeps the entry.
+## A purge is a special, never a rider (28 October: a rider on a hitter's blow is a tax with no
+## decision), so it is no attack keyword; the validator refuses it on a blow.
+const ATTACK_KEYWORDS := ["scorch", "ablate", "disable", "corrupt", "crush", "self_destruct", "all", "steal", "drain", "destroy"]
 ## The specials that may never ride a blow (28 October).
-const SPECIALS_ONLY := ["silence", "dispel"]
+const SPECIALS_ONLY := ["dispel"]
 ## The riders that lay stacks, each a number on the move beside its keyword (24 October, as the
 ## player's Ablate N: Scorch 2 lays two stacks a blow).
 const NUMBERED_RIDERS := ["scorch", "ablate", "corrupt", "crush"]

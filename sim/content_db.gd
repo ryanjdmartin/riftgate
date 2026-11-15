@@ -1413,7 +1413,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		# (Ryan: "let's remove it"; "it's just better spread").
 		var reach := str(fd.get("reach", ""))
 		if reach == "sweep":
-			errs.append("%s: Sweep is gone (12 November): a weapon reaches wide by Spread, Penetrate or Splash, or lands on every foe (reach every_foe)" % where)
+			errs.append("%s: Sweep is gone (12 November): a weapon reaches wide by Spread or Penetrate, or lands on every foe (reach every_foe)" % where)
 		elif not ["direct", "indirect", "every_foe"].has(reach):
 			errs.append("%s: attack face needs reach direct, indirect or every_foe, got '%s'" % [where, reach])
 	if int(fd.get("power", 0)) < 0:
@@ -1492,13 +1492,13 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: an entry with Flak says its stacks: flak, a positive number" % where)
 	if fd.has("flak") and not Array(fd.get("keywords", [])).has("flak"):
 		errs.append("%s: flak (the stacks) rides with the Flak keyword" % where)
-	# Area by shape, numbered (Ryan, 28 October; the half retired): a weapon's Spread, Penetrate
-	# or Splash says the number each foe past its target takes (cleave, penetrate, splash); a
-	# debuff's area deals nothing, so it says none. Splash is the row and the column at one
-	# number, so it never rides beside Spread or Penetrate, and the two at one number are Splash.
+	# Area by shape, numbered (Ryan, 28 October; the half retired): a weapon's Spread or Penetrate
+	# says the number each foe past its target takes (cleave, penetrate); a debuff's area deals
+	# nothing, so it says none. A piece may carry both, at one number or two (Splash, the two
+	# under one word, was cut on 15 November).
 	var kw_names := Array(fd.get("keywords", []))
 	var debuff := kind == "attack" and Face.from_dict(fd).is_debuff()
-	for name: String in ["cleave", "penetrate", "splash"]:
+	for name: String in ["cleave", "penetrate"]:
 		var label: String = "Spread" if name == "cleave" else str(name).capitalize()
 		if kw_names.has(name) and kind == "attack" and not debuff and int(fd.get(name, 0)) <= 0:
 			errs.append("%s: a weapon with %s says what each foe past its target takes: %s, a positive number" % [where, label, name])
@@ -1506,8 +1506,6 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 			errs.append("%s: %s (the number) rides with the %s keyword" % [where, name, label])
 		if fd.has(name) and debuff:
 			errs.append("%s: a debuff's %s deals nothing, so it carries no number (%s)" % [where, label, name])
-	if kw_names.has("splash") and (kw_names.has("cleave") or kw_names.has("penetrate")):
-		errs.append("%s: Splash is the row and the column together: it never rides beside Spread or Penetrate" % where)
 	# Chain (Ryan, 28 October; the kill and repeat retired): a weapon's keyword with a number, the
 	# blow every other Shocked foe on the field takes; a debuff's arc would carry its riders to
 	# every conductor for no blow, so a debuff carries none.
@@ -1523,12 +1521,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: Chain says the number every other Shocked foe takes: chain, a positive number" % where)
 	if fd.has("chain") and not kw_names.has("chain"):
 		errs.append("%s: chain (the number) rides with the Chain keyword" % where)
-	if kw_names.has("cleave") and kw_names.has("penetrate") and int(fd.get("cleave", 0)) == int(fd.get("penetrate", 0)):
-		errs.append("%s: Spread and Penetrate at one number are Splash: write splash" % where)
 	# Every Foe on a weapon lands its number whole on every foe (12 November, the two gated
 	# specials'), so an area keyword on it has no foe left to reach.
-	if str(fd.get("reach", "")) == "every_foe" and kind == "attack" and (kw_names.has("cleave") or kw_names.has("penetrate") or kw_names.has("splash")):
-		errs.append("%s: Every Foe lands on every foe already: no Spread, Penetrate or Splash rides it" % where)
+	if str(fd.get("reach", "")) == "every_foe" and kind == "attack" and (kw_names.has("cleave") or kw_names.has("penetrate")):
+		errs.append("%s: Every Foe lands on every foe already: no Spread or Penetrate rides it" % where)
 	# A gated keyword (the stock pass's engine, 22 October): keyword name to the condition it
 	# lands under, a condition on the foe in hand, read through the effects' conditions. Suppress
 	# alone today (the stun row's gated stuns); another keyword's gate waits for its first piece.
@@ -1699,7 +1695,11 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: rolls_target (true) is a buff's: the die of the machine it lands on rolls again" % where)
 	if fd.has("kill_rerolls") and (kind != "attack" or int(fd["kill_rerolls"]) <= 0):
 		errs.append("%s: kill_rerolls is an attack's: the rerolls a kill brings the team, a positive number" % where)
-	if kind == "buff" and not bool(fd.get("turns_die", false)) and not (bool(fd.get("disrupts_attackers", false)) and not fd.has("status")):
+	# A reroll for the team is equipment's own rule (15 November, in the Rallied buff's place): a
+	# positive number on a buff, which then grants no status.
+	if fd.has("team_rerolls") and (kind != "buff" or int(fd["team_rerolls"]) <= 0 or fd.has("status")):
+		errs.append("%s: team_rerolls is a buff's own rule, a positive number of rerolls, and it grants no status beside it" % where)
+	if kind == "buff" and not bool(fd.get("turns_die", false)) and not (int(fd.get("team_rerolls", 0)) > 0 and not fd.has("status")) and not (bool(fd.get("disrupts_attackers", false)) and not fd.has("status")):
 		# A buff grants one of the machines' statuses (the Changeover grants none: its rule is the
 		# turn of a folded die): it must exist and be theirs. A planned
 		# component may grant a machine status the vocabulary names but the engine lacks (the
@@ -1760,8 +1760,6 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 			errs.append("%s: '%s' rides on a shield or vent component, not an attack" % [where, k])
 		elif kind != "attack" and not Face.SUPPORT_KEYWORDS.has(kw):
 			errs.append("%s: '%s' is an attack keyword; a %s component cannot carry it" % [where, k, kind])
-		elif kind != "shield" and Face.SHIELD_ONLY_KEYWORDS.has(kw):
-			errs.append("%s: '%s' rides on a shield component only; a %s has nothing to pass" % [where, k, kind])
 
 
 ## `one_off`: the chassis's design names the rule its passive breaks as a one-off (the bible's
@@ -1899,11 +1897,11 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			# keyword's must (Ryan, 28 October); a keyword with no number takes none.
 			var numbered := Face.NUMBER_FIELDS.has(Face.keyword_from_name(kw))
 			if eff.has("number") and (not numbered or int(eff["number"]) <= 0):
-				errs.append("%s: grant_keyword's number is a positive number for a numbered keyword (Ablate, Cryo, Flak, Spread, Penetrate, Splash, Chain, Purge)" % where)
+				errs.append("%s: grant_keyword's number is a positive number for a numbered keyword (Ablate, Cryo, Flak, Spread, Penetrate, Chain, Purge)" % where)
 			# An area granted to one debuff (`entry`: the Cryo Flinger's Spread while sealed) carries
 			# no number, as a debuff's printed one does: its effects reach those foes, and it deals
 			# nothing. Any other area grant says what each foe past the target takes.
-			var area := ["cleave", "penetrate", "splash"].has(kw)
+			var area := ["cleave", "penetrate"].has(kw)
 			var on_debuff := _entry_is_debuff(eff)
 			if area and not eff.has("number") and not on_debuff:
 				errs.append("%s: a grant of %s says what each foe past the target takes: number" % [where, "Spread" if kw == "cleave" else kw.capitalize()])
@@ -2550,7 +2548,7 @@ func _validate_foes(errs: Array[String]) -> void:
 		if f.has("tier") and (int(f["tier"]) < 1 or int(f["tier"]) > 3):
 			errs.append("%s: tier must be 1 to 3" % where)
 		if f.has("injures"):
-			errs.append("%s: 'injures' is gone; component injuries are a global rule" % where)
+			errs.append("%s: 'injures' is gone; a move that destroys a component carries the destroy keyword" % where)
 		if f.has("stun_resist"):
 			errs.append("%s: no foe resists a suppress by nature (10 October); drop stun_resist" % where)
 		# The rings are gone and the hunt is a composition's (Ryan, 8 November: "The composition

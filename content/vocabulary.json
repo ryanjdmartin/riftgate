@@ -43,7 +43,7 @@
    "id": "shield",
    "category": "resource",
    "name": "Shield",
-   "codex": "Enemy damage hits shield before hull. A shield absorbs its number: a blow costs it its damage, and whatever it cannot absorb passes to the hull, armour coming off it there. Nothing mends a shield by itself: a reboot brings it back whole, and a component, a module or a passive may add to one that still stands, up to the chassis maximum (a component with Overshield may pass it, and the excess fades at the end of the round). A shield at nothing is Broken, and takes none until its machine reboots. The shield is full as every fight opens, as the heat starts at zero; nothing returns on the map.",
+   "codex": "Enemy damage hits shield before hull. A shield absorbs its number: a blow costs it its damage, and whatever it cannot absorb passes to the hull, armour coming off it there. Nothing mends a shield by itself: a reboot brings it back whole, and a component, a module or a passive may add to one that still stands, up to the chassis maximum. A shield at nothing is Broken, and takes none until its machine reboots. The shield is full as every fight opens, as the heat starts at zero; nothing returns on the map.",
    "status": "implemented",
    "design": {
     "holes": "Rates and shield sizes are placeholders. No in-combat trickle; a passive may bring one back for one chassis."
@@ -186,7 +186,7 @@
    "codex": "Keyword with a number. Spread 2 also hits the foes beside the target in its rank, each taking 2 where the target takes the number: the attacker's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. On a debuff it carries no number: its effects reach those foes, and it deals nothing.",
    "status": "implemented",
    "design": {
-    "holes": "Its number rides on the entry beside the keyword (cleave), and the validator asks for it on a weapon. The half it dealt from 26 October retired 28 October (Ryan): at single digits a neighbour's half killed no rank and file."
+    "holes": "Its number rides on the entry beside the keyword (cleave), and the validator asks for it on a weapon. The half it dealt from 26 October retired 28 October (Ryan): at single digits a neighbour's half killed no rank and file. A piece may carry it beside Penetrate, the plus round its target; Splash, the two under one word, was cut on 15 November (Ryan: \"It might be a more interesting game with only the other area shapes, with a few select pieces carrying both spread and penetrate together\")."
    }
   },
   {
@@ -200,20 +200,10 @@
    }
   },
   {
-   "id": "splash",
-   "category": "keyword",
-   "name": "Splash",
-   "codex": "Keyword with a number. Splash 1 also hits every foe round the target, those beside it in its rank and the other rank of its column, each taking 1 where the target takes the number: the attacker's bonuses land on that 1 as on the blow, then each foe's own statuses and armour. On a debuff it carries no number.",
-   "status": "implemented",
-   "design": {
-    "holes": "Spread and Penetrate at one number, one chip on the die (Ryan, 28 October: Splash N back 'for the sake of display simplicity'); the validator refuses the two at one number and Splash beside either. Its number rides on the entry (splash)."
-   }
-  },
-  {
    "id": "every_foe",
    "category": "reach",
    "name": "Every Foe",
-   "codex": "Targeting mode. Dropped on any foe, the entry lands on every foe in the fight, front rank and back, and none is its one target: a debuff's effects on each, or a weapon's strike on each for its whole number, so a Shock on any of them is doubled and spent. A Silence leaves it whole: it mutes keywords, never a targeting mode.",
+   "codex": "Targeting mode. Dropped on any foe, the entry lands on every foe in the fight, front rank and back, and none is its one target: a debuff's effects on each, or a weapon's strike on each for its whole number, so a Shock on any of them is doubled and spent..",
    "status": "implemented",
    "design": {
     "holes": "A keyword from 2 November (Ryan: 'Every foe is a targeting mode, just like spread, penetrate, and splash, it should be listed as such and given a keyword'), a targeting mode in its own right since 4 November ('Silence should not narrow targeting modes, that's why I'm switching them to targeting modes'), drawn in the die's targeting slot. A working name, the foes' Every Machine mirrored. A weapon's too since 12 November, when Sweep went (Ryan: the Whip Scorpion's and the Musk Ox's specials \"a 'target all'\"): it strikes every foe for its whole number and none is its one target (Ryan, 12 November: \"Target all shouldn't need a target in the same way that sweep didn't. Why would only the first target pop shock? That's weird and useless\"), so a Shock is doubled and spent on each and, with no primary target, no Ricochet follows it. No area keyword rides it."
@@ -223,7 +213,7 @@
    "id": "every_ally",
    "category": "reach",
    "name": "Every Ally",
-   "codex": "Targeting mode, a shield's or a buff's. Spent on any machine, the entry lands on the whole team, its own machine among them, each taking all of it. A Silence leaves it whole: it mutes keywords, never a targeting mode.",
+   "codex": "Targeting mode, a shield's or a buff's. Spent on any machine, the entry lands on the whole team, its own machine among them, each taking all of it..",
    "status": "implemented",
    "design": {
     "holes": "Every Foe's mirror on the team's side (2 November; a targeting mode since 4 November); a working name. Its mark is the three hexes under a low arch, its own cell lit (Ryan, 4 November: 'the difference is whether the center one is lit or not, its two modes, even if the every ally doesn't actually exist in game, yet'): no piece carries it yet. Never a vent's (the validator)."
@@ -233,7 +223,7 @@
    "id": "every_other_ally",
    "category": "reach",
    "name": "Every Other Ally",
-   "codex": "Targeting mode, a shield's or a buff's. Spent on an ally, the entry lands on every machine but its own, each taking all of it. A Silence leaves it whole: it mutes keywords, never a targeting mode.",
+   "codex": "Targeting mode, a shield's or a buff's. Spent on an ally, the entry lands on every machine but its own, each taking all of it..",
    "status": "implemented",
    "design": {
     "holes": "Every Ally's other mode (4 November), the Mooring Screens' team shield; a working name. Its mark is Every Ally's with its own cell dark. Never a vent's (the validator)."
@@ -489,6 +479,16 @@
    }
   },
   {
+   "id": "destroy",
+   "category": "keyword",
+   "name": "Destroy",
+   "codex": "Enemy keyword. If any of the blow reaches the hull, the component the target's die is showing is destroyed: blank for the rest of the battle, and after it a hardpoint's is gone for good and a built-in one is rebuilt. A shield that takes the whole blow, a Barrier or a Ward keeps it, and a blank or a broken entry showing has nothing left to break.",
+   "status": "implemented",
+   "design": {
+    "holes": "No foe carries it (Ryan, 15 November: \"This can be a boss-level rider, that destroys the visible face if it damages hull at all. Only promoted form or superboss-level so we're not tuning the economy around it. No longer a general rule\"). Its carrier is the foes' pass's, and the fight bot prices no entry's loss until one does."
+   }
+  },
+  {
    "id": "drain",
    "category": "keyword",
    "name": "Drain",
@@ -506,16 +506,6 @@
    "status": "implemented",
    "design": {
     "holes": ""
-   }
-  },
-  {
-   "id": "silence",
-   "category": "foe",
-   "name": "Silence",
-   "codex": "Foe move of its own, never a rider on a blow. The machine it lands on is Silenced: its components' keywords are muted through its next round, printed and granted alike; its buffs count and its stores fill as ever. A Ward turns it away.",
-   "status": "implemented",
-   "design": {
-    "holes": "Who carries it is section 12's question. It mutes the machine's keywords and never its buffs (Ryan, 27 and 28 October); cast with no condition, aimed as its move says."
    }
   },
   {
@@ -562,20 +552,10 @@
    "id": "cleanse",
    "category": "keyword",
    "name": "Cleanse",
-   "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Ablating, Scorched, Crushed, Silenced, Disabled and Corrupted status. A rapid component's own switch-off is not a status a cleanse touches. On a foe's move of its own, the same word: every mark the team laid (Ablating, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox, the Drone) comes off the most-marked of its own, never Numbed or Suppressed.",
+   "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Ablating, Scorched, Crushed, Disabled and Corrupted status. A rapid component's own switch-off is not a status a cleanse touches. On a foe's move of its own, the same word: every mark the team laid (Ablating, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox, the Drone) comes off the most-marked of its own, never Numbed or Suppressed.",
    "status": "implemented",
    "design": {
     "holes": ""
-   }
-  },
-  {
-   "id": "overshield",
-   "category": "keyword",
-   "name": "Overshield",
-   "codex": "Player keyword, on shield components, rare. The shield may raise its target past the target's maximum; shield past the maximum fades at the end of the round, or as the fight ends. A shield die spent on a machine already at its maximum is never wasted when it carries this.",
-   "status": "implemented",
-   "design": {
-    "holes": "Rare because every overshield on the field makes shield max a soft number; the fade is the whole safeguard, since a lasting excess would stack a team past every blow."
    }
   },
   {
@@ -583,9 +563,9 @@
    "category": "status",
    "name": "Retaliate",
    "codex": "Machine status. While it lasts, a foe that strikes this machine's bare hull is Shocked. It lasts the rounds the component that grants it says.",
-   "status": "implemented",
+   "status": "planned",
    "design": {
-    "holes": "",
+    "holes": "Cut as a buff word on 15 November (Ryan's mark on the vocabulary's table), its rule out of the engine. Kept as a planned draft, never shown, so the Retribution Thurible, back in design the same day (\"It can have unique text but not until we sort out our fundamentals\"), and two foes' planned moves still read: when the Thurible comes back its rule is its own text, and this entry goes.",
     "table": {
      "kind": "buff",
      "on": "machine",
@@ -934,7 +914,7 @@
    "id": "souls",
    "category": "status",
    "name": "Souls",
-   "codex": "Ability, the Ammit's. A Soul for every foe that falls in a fight it is in, whoever fells it, kept from fight to fight through the battle, with no limit. As each fight opens, and after each attack of the Ammit's that kills, it gains 1 Empowered for every 5 Souls it holds; its Soul Siphon consumes them. No Purge, Silence or Cleanse touches it.",
+   "codex": "Ability, the Ammit's. A Soul for every foe that falls in a fight it is in, whoever fells it, kept from fight to fight through the battle, with no limit. As each fight opens, and after each attack of the Ammit's that kills, it gains 1 Empowered for every 5 Souls it holds; its Soul Siphon consumes them. No Purge or Cleanse touches it.",
    "status": "implemented",
    "design": {
     "holes": "Ryan's rework of 12 November, the name his. No cap by his call (\"as part of the fantasy\"), so it is no store, which is capped and wears a bar: an Ability, a chip with its count. The kill's flare is once an attack that kills, however many fall to it (Ryan, 12 November: \"Flaring twice for an AoE is probably wrong, let's make it 'one of more killed' by an attack\"); the first build flared once for each foe. The text is a session's draft.",
@@ -1014,10 +994,10 @@
    "id": "destroyed_component",
    "category": "status",
    "name": "Destroyed component",
-   "codex": "Machine status, global rule. When what one blow puts on the hull, past shield and armour, is at least a quarter of its maximum hull, the entry the die shows is destroyed: blank, it does nothing when it comes up, and provides its passive bonuses but not passive abilities, for the rest of the battle; after it, a hardpoint's is gone for good and a built-in one is rebuilt. A shield prevents it only by absorbing enough of the blow, and a blow a Barrier takes never injures. An injury that lands on a destroyed component or an empty hardpoint finds nothing to break, so a machine showing a broken entry shrugs it off, and what faces the enemy is the player's choice.",
+   "codex": "Machine status. A destroyed component is blank: it does nothing when it comes up, and provides its passive bonuses but not passive abilities, for the rest of the battle; after it, a hardpoint's is gone for good and a built-in one is rebuilt. One thing destroys a component, a foe's blow that carries Destroy, when any of it reaches the hull, and it destroys the entry the die shows: one that lands on a destroyed component or an empty hardpoint finds nothing to break, so what faces the enemy is the player's choice. No blow destroys one by its size.",
    "status": "implemented",
    "design": {
-    "holes": "The threshold is a placeholder, set by what it asks of the player, never by a loss or win rate (Ryan, 25 October). The campaign's hangar screen is not built."
+    "holes": "No foe carries Destroy yet, so nothing is destroyed in play (Ryan, 15 November: \"Only promoted form or superboss-level so we're not tuning the economy around it. No longer a general rule\"). The campaign's hangar screen is not built."
    }
   },
   {
@@ -1044,7 +1024,7 @@
    "id": "mine",
    "category": "status",
    "name": "Mine",
-   "codex": "Foe status, the Lammergeier's: every weapon and equipment it aims at a foe adds its flat damage to a Mine on that foe, with what the spend fired at it: every hit's stacks and its other keywords, one Mine a foe however many spends feed it. When the foe falls, even one that gets back up or splits, the Mine blows: its damage on every foe round its slot, each through its own Flak and armour, then its keywords as on a blow. Spread, Penetrate, Splash, Spillover and Lure stay with the spend, and its damage never grows with the spend's. The chip shows its damage; its readout, its keywords.",
+   "codex": "Foe status, the Lammergeier's: every weapon and equipment it aims at a foe adds its flat damage to a Mine on that foe, with what the spend fired at it: every hit's stacks and its other keywords, one Mine a foe however many spends feed it. When the foe falls, even one that gets back up or splits, the Mine blows: its damage on every foe round its slot, each through its own Flak and armour, then its keywords as on a blow. Spread, Penetrate, a spill behind and Lure stay with the spend, and its damage never grows with the spend's. The chip shows its damage; its readout, its keywords.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 9 November: \"the lammergeier basically converts all hits to AoE hits, at the cost of a delay until Death\". One Mine a spend at a flat 2 (\"then look at per hit later if it's weak\"); its riders the spend's whole result on the foe (\"the mine should take the entire result of the spend, then apply it. So a 3-hit flak that burns 1 per hit if the target is under 50% HP, would result in adding a 2 damage mine with 3 flak, and 0-3 burn\"), every hit's stacks as its machine deepened and doubled them and a gated keyword where its gate held (\"if a gate is met when fired only, then apply it\"); the numbered ones add up and the rest ride once; Chain rides as its arcs (Claude's lean, which he took); in the enemy's turn a Mine's Disrupt does nothing; a Suppress rides as fired, each foe the blast meets judging its own Numbed (Claude's read; Ryan: \"Your reads are correct\"). A mark the team laid: a Ward turns it away, a foe's cleanse takes it, the Paradox counts it. A foe taken into a merge hands its Mine to the merger.",
@@ -1668,6 +1648,16 @@
    }
   },
   {
+   "id": "team_rerolls",
+   "category": "component_property",
+   "name": "Grants a reroll",
+   "codex": "A rule printed on equipment (the Swallowtail's Reveille Horn, the Giant Petrel's Immelmann Booster): spending it gives the team the rerolls it says, at once and past the round's two. While the die is held over its target, the REROLL button lights and shows the count it would leave.",
+   "status": "implemented",
+   "design": {
+    "holes": "The Rallied buff until 15 November (Ryan's mark: \"This doesn't need to be a temporary buff or a keyword ... We can communicate by highlighting the reroll button as part of the preview, if one will be granted\"; the grant passing the round's two: \"allow it\"). A reroll the Horn grants still counts toward the Muster when spent on the carrier. A session's draft, his to write."
+   }
+  },
+  {
    "id": "component",
    "category": "kit",
    "name": "Component",
@@ -1721,7 +1711,7 @@
    "id": "on_injury",
    "category": "trigger",
    "name": "On injury",
-   "codex": "Passive trigger. Fires when an injury lands on a component. Effects: no_destroy (the component holds instead of being destroyed).",
+   "codex": "Passive trigger. Fires when a blow would destroy a component (a foe's Destroy, any of it on the hull). Effects: no_destroy (the component holds instead of being destroyed).",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1831,7 +1821,7 @@
    "id": "foe_action",
    "category": "foe",
    "name": "Foe action",
-   "codex": "A foe has a base attack, the quick read of how hard it hits, and a list of actions: attacks that scale it, and defends, buffs and debuffs it does instead of a blow (bracing against damage, sheltering behind a Barrier, regrowing or curing one of its own, regenerating over its next actions, cleansing the team's marks off its own, warding its side against them, readying to get back up, calling up a foe, rallying or priming the others, costing the team a reroll, setting a machine Ablating, silencing or purging one, switching off the entry a die shows, scorching or corrupting every machine). Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number.",
+   "codex": "A foe has a base attack, the quick read of how hard it hits, and a list of actions: attacks that scale it, and defends, buffs and debuffs it does instead of a blow (bracing against damage, sheltering behind a Barrier, regrowing or curing one of its own, regenerating over its next actions, cleansing the team's marks off its own, warding its side against them, readying to get back up, calling up a foe, rallying or priming the others, costing the team a reroll, setting a machine Ablating, purging one, switching off the entry a die shows, scorching or corrupting every machine). Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number.",
    "status": "implemented",
    "design": {
     "holes": "A foe's whole brain is its weighted draw and its aim; none plans ahead."
@@ -1961,7 +1951,7 @@
    "id": "rage",
    "category": "resource",
    "name": "Rage",
-   "codex": "Machine store, the Nemesis's: a foe's hit on its shield banks one, hull damage two (a blow, a bite of its own, an overheat; a blow that breaks its shield and wounds is hull damage), and every blow of its own weapons that a foe's armour or Barrier takes whole two, up to 10, kept for the skirmish. With five banked its Knuckles of Fury go out charged, unasked: they spend the five and are Instant, the die rolling again, a fist included. Never decays; no cleanse, Silence or Purge touches it.",
+   "codex": "Machine store, the Nemesis's: a foe's hit on its shield banks one, hull damage two (a blow, a bite of its own, an overheat; a blow that breaks its shield and wounds is hull damage), and every blow of its own weapons that a foe's armour or Barrier takes whole two, up to 10, kept for the skirmish. With five banked its Knuckles of Fury go out charged, unasked: they spend the five and are Instant, the die rolling again, a fist included. Never decays; no cleanse or Purge touches it.",
    "status": "implemented",
    "design": {
     "holes": "Capped at 10 (the passive's stack_status cap), spent in fives (the Knuckle's charged price). The numbers are placeholders (Ryan, 11 November: \"These numbers are complete randomness anyway\").",
@@ -1977,7 +1967,7 @@
    "id": "hopper",
    "category": "resource",
    "name": "Hopper",
-   "codex": "Machine store, the Honey Badger's: every foe its weapons damage puts a load in it (its Chainsaw Claw digs two), up to four, and every two loads held are a stack of Armoured, granted as each round opens and following the loads as they come and go. Its Bullion Fragmenter fires two a shot. Lasts the skirmish; never decays, and no cleanse, Silence or Purge touches the loads: a Purge strips the Armoured they granted, until the machine's next turn.",
+   "codex": "Machine store, the Honey Badger's: every foe its weapons damage puts a load in it (its Chainsaw Claw digs two), up to four, and every two loads held are a stack of Armoured, granted as each round opens and following the loads as they come and go. Its Bullion Fragmenter fires two a shot. Lasts the skirmish; never decays, and no cleanse or Purge touches the loads: a Purge strips the Armoured they granted, until the machine's next turn.",
    "status": "implemented",
    "design": {
     "holes": "Its numbers since 31 October (Ryan's go, then his second fallback on the runner's read the same day): a cap of four, a point of armour for every two loads. What the loads are worth is Armoured, a buff a Purge strips, since 10 November (Ryan: \"The buff he gets from it is Armoured, not an ability. Its purgeable, but returns at the start of his turn since its granted by the funnel bar\"); the Ore Plate, an ability of its own, before.",
@@ -2118,22 +2108,6 @@
    }
   },
   {
-   "id": "silenced",
-   "category": "status",
-   "name": "Silenced",
-   "codex": "Machine status, from a foe's silence: its components' keywords are muted through its next round, printed and granted alike (a Rapid entry acts once, a Spread lands one blow, its own Cleanse is a plain shield), then wake; its buffs count and its stores fill and spend as ever. Can be cleansed by an ally's Cleanse; a Ward turns the silence away.",
-   "status": "implemented",
-   "design": {
-    "holes": "Its stores are untouched. Keywords alone since 28 October (buffs alone from 25 to 28 October, a one-round purge that returns); Volatile is a cost, so nothing it mutes is a price.",
-    "table": {
-     "kind": "debuff",
-     "on": "machine",
-     "stacks": "No",
-     "lasts": "Through the machine's next round"
-    }
-   }
-  },
-  {
    "id": "swallowed",
    "category": "status",
    "name": "Swallowed",
@@ -2169,7 +2143,7 @@
    "id": "ability",
    "category": "status",
    "name": "Ability",
-   "codex": "A unit's own mechanic, the rule it plays by: never a buff or a debuff, so no Purge, Silence or Cleanse touches it. Its chip shows its mark cut out of a solid tile: the Goblin Nob's Enrage, a core's guard, a Gel's split, a last act, the Thunder Ape's golden rage; the Polar Bear's seal, the Ammit's Souls.",
+   "codex": "A unit's own mechanic, the rule it plays by: never a buff or a debuff, so no Purge or Cleanse touches it. Its chip shows its mark cut out of a solid tile: the Goblin Nob's Enrage, a core's guard, a Gel's split, a last act, the Thunder Ape's golden rage; the Polar Bear's seal, the Ammit's Souls.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 8 November, of the Nob's rage: \"Nob, and any other enemies with a passive ability, should have an unpurgable passive chip that points out what's going on. Plus, that's how slay the Spire works, where he comes from. It's not a Buff, it's not a Debuff, it's labelled as an Ability, so it doesn't get purged. Can use this for player units as well, like the armadillo's form. Golden rage should be an ability chip too.\" The tile is a placeholder look, to judge on the phone (RIFTGATE_ABILITY_DEBUG=1)."
@@ -2179,7 +2153,7 @@
    "id": "barrier",
    "category": "status",
    "name": "Barrier",
-   "codex": "Status, on either side. The next blow it takes deals no damage; the blow's riders land. On a machine, the next blow a foe lands on it, so it never injures, until the round's end; never granted to every ally at once. On a foe, from its own move, the next blow of a weapon the team lands on it, equipment popping nothing, until it pops or the end of the player's next turn.",
+   "codex": "Status, on either side. The next blow it takes deals no damage; the blow's riders land. On a machine, the next blow a foe lands on it, until the round's end, so a Destroy on that blow finds no hull damage to read; never granted to every ally at once. On a foe, from its own move, the next blow of a weapon the team lands on it, equipment popping nothing, until it pops or the end of the player's next turn.",
    "status": "implemented",
    "design": {
     "holes": "",
@@ -2195,7 +2169,7 @@
    "id": "ward",
    "category": "status",
    "name": "Ward",
-   "codex": "Status, on either side; a blow's damage lands. On a machine, no rider a foe lays lands on it this round, from a blow or from a move of its own (ablate, scorch, disable, corrupt, silence, purge), until the round's end. On a foe, from a move that wards every foe on the field, no mark the team lays lands on it (Ablating, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox and the drone), nor a stun, nor a Purge, and a turned mark feeds no Paradox, until the end of the player's next turn.",
+   "codex": "Status, on either side; a blow's damage lands. On a machine, no rider a foe lays lands on it this round, from a blow or from a move of its own (ablate, scorch, disable, corrupt, purge), until the round's end. On a foe, from a move that wards every foe on the field, no mark the team lays lands on it (Ablating, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox and the drone), nor a stun, nor a Purge, and a turned mark feeds no Paradox, until the end of the player's next turn.",
    "status": "implemented",
    "design": {
     "holes": "A foe's move that lays a debuff without a blow is a rider too (Ryan, 25 October: \"Should stop all riders, even from non-damaging attacks\"), so a Stoke, a Stone, an Eruption on every machine and a Diamond Dust all pass a warded machine by. A foe's Ward (28 October) turns the team's marks (Effects.TEAM_MARKS), and since 2 November a stun and a Purge too, on either side, and stands (Ryan: nothing but damage lands on a Warded foe; the exception that let a stun through went with Numbed's roll).",
@@ -2261,7 +2235,7 @@
    "id": "muster",
    "category": "resource",
    "name": "Muster",
-   "codex": "Machine store, the Swallowtail's: a charge its locked pieces spend for their charged forms. Every die that rolls fills it a sliver, about thirty rolls a charge, and a kill by its own guns five rolls' worth; stored up to its cap. Starts each fight empty and never decays; a store, so no Silence or Purge touches it. With a charge up, its locked pieces go out charged unasked, unless the charged form has nowhere to land; then the plain form goes out and the charge waits.",
+   "codex": "Machine store, the Swallowtail's: a charge its locked pieces spend for their charged forms. Every die that rolls fills it a sliver, about thirty rolls a charge, and a kill by its own guns five rolls' worth; stored up to its cap. Starts each fight empty and never decays; a store, so no Purge touches it. With a charge up, its locked pieces go out charged unasked, unless the charged form has nowhere to land; then the plain form goes out and the charge waits.",
    "status": "implemented",
    "design": {
     "holes": "Every number is a placeholder; carrying it between fights is section 12's heat question.",
@@ -2270,22 +2244,6 @@
      "on": "machine",
      "stacks": "Yes: a charge about thirty rolls of any die, five rolls' worth a kill by its guns, up to its cap",
      "lasts": "The skirmish; never decays"
-    }
-   }
-  },
-  {
-   "id": "rallied",
-   "category": "status",
-   "name": "Rallied",
-   "codex": "Machine status, the Swallowtail's Reveille Horn: its team has one reroll more this round.",
-   "status": "implemented",
-   "design": {
-    "holes": "The reroll it grants counts toward the Muster when spent on the carrier: the intended combo, held by the cap.",
-    "table": {
-     "kind": "buff",
-     "on": "machine",
-     "stacks": "No",
-     "lasts": "The round"
     }
    }
   },
@@ -2344,7 +2302,7 @@
    "codex": "The Musk Ox's magazine, a bar under its heat bar, a notch an ammo. Its weapons spend ammo instead of heating it: 1 for every 2 heat a gun would make, rounded up, at least 1, the price printed where the gun's heat would be; a foe's Scorched still heats them. The magazine holds 10, opens each fight at 3 and gains 1 at the start of every round after the first; a vent the Musk Ox spends on itself adds 3, a shield 2. With too little left, a gun cannot be spent (DRY).",
    "status": "implemented",
    "design": {
-    "holes": "Never a buff, so no Silence or Purge reaches it. If ammo runs plentiful, the vents' and shields' reloads or the trickle come down."
+    "holes": "Never a buff, so no Purge reaches it. If ammo runs plentiful, the vents' and shields' reloads or the trickle come down."
    }
   }
  ]

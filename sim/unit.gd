@@ -259,16 +259,11 @@ func touches(other: Unit) -> bool:
 
 
 ## Shield gained in a fight (a component, a module, a passive, the shield regen), up to the
-## maximum or past it with Overshield. Nothing returns on the map: the shield is full as every
+## maximum. Nothing returns on the map: the shield is full as every
 ## fight opens (the long wall brief 3.6). Returns what stood up.
-func recharge_shield(amount: int, overshield: bool = false) -> int:
+func recharge_shield(amount: int) -> int:
 	var before := shield
-	if overshield:
-		# Overshield (5 October): the shield may pass its maximum; the excess fades at the
-		# round's end (Skirmish._trim_overshield). A shield already past it still gains.
-		shield = shield + maxi(0, amount)
-	else:
-		shield = mini(shield_max, shield + maxi(0, amount)) if shield < shield_max else shield
+	shield = mini(shield_max, shield + maxi(0, amount)) if shield < shield_max else shield
 	return shield - before
 
 

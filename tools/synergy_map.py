@@ -50,12 +50,10 @@ CURRENCIES = OrderedDict([
     ("overcharged", ("Empowered", "on a machine")),
     ("braced", ("Armoured", "on a machine")),
     ("primed", ("Primed", "on a machine")),
-    ("retaliate", ("Retaliate", "on a machine")),
     ("barrier", ("Barrier", "on a machine")),
     ("ward", ("Ward", "on a machine")),
     ("spun_up", ("Spun Up", "on a machine")),
     ("ricochet", ("Ricochet", "on a machine")),
-    ("rallied", ("Rallied", "on a machine")),
     ("phased", ("Phased", "on a machine")),
     ("sealed", ("Sealed", "on a machine")),
     ("regenerating", ("Regenerating", "on a machine")),
@@ -87,10 +85,10 @@ KEYWORDS = {
     "ablate": [("ablating", "sets")], "shock": [("shocked", "sets")], "suppress": [("suppressed", "sets")],
     "web": [("webbed", "sets"), ("suppressed", "sets")], "cryo": [("cryoed", "sets")], "flak": [("flakked", "sets")],
     "expose": [("exposure", "sets")], "lure": [("lure", "sets")], "disrupt": [("disrupt", "sets")], "swap": [("swap", "sets"), ("rank", "sets")],
-    "chain": [("kill", "reads")], "cleave": [("strikes", "sets")], "penetrate": [("strikes", "sets")], "splash": [("strikes", "sets")],
+    "chain": [("kill", "reads")], "cleave": [("strikes", "sets")], "penetrate": [("strikes", "sets")],
     "spillover": [("strikes", "sets")], "dispel": [("foe_buff", "reads")],
     "cleanse": [("ablating_mech", "reads"), ("scorched", "reads"), ("disabled", "reads"), ("corrupted", "reads")],
-    "overshield": [], "rapid": [], "instant": [], "every_foe": [], "every_ally": [],
+    "rapid": [], "instant": [], "every_foe": [], "every_ally": [],
 }
 # A face field and what it sets or reads.
 FACE_FIELDS = {
@@ -109,7 +107,7 @@ FACE_FIELDS = {
 # A buff face's status is set (kind buff), its stacks and rounds its own.
 # A passive's or a module's effect and what it sets or reads, by effect name (and by trigger below).
 EFFECTS = {
-    "shock_on_hull_strike": [("shocked", "sets"), ("hull_damage", "reads")], "seal_form": [("sealed", "sets"), ("braced", "sets"), ("heat", "sets")],
+    "seal_form": [("sealed", "sets"), ("braced", "sets"), ("heat", "sets")],
     "paradox": [("paradox", "sets"), ("suppressed", "sets")], "muster": [("muster", "sets"), ("reroll", "reads")],
     "shield_per_ally_heat": [("ally_heat", "reads"), ("shield_granted", "reads")],
     "add_stacks": [], "pass_release": [("heat", "reads")], "forge": [("ammo", "sets"), ("heat", "reads")], "mine_on_spend": [("mine", "sets")],
@@ -128,7 +126,7 @@ TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_shield_
 CONDITIONS = {"target_status": None, "attacker_status": None, "target_rank": "rank", "nth_shot": None,
               "target_no_intent": None, "shield_up": None, "target_unhurt": "missing_hp", "target_half": "missing_hp"}
 # A foe move's riders and effects, on machines.
-FOE_RIDERS = {"ablate": "ablating_mech", "scorch": "scorched", "disable": "disabled", "corrupt": "corrupted", "silence": "silenced"}
+FOE_RIDERS = {"ablate": "ablating_mech", "scorch": "scorched", "disable": "disabled", "corrupt": "corrupted"}
 FOE_EFFECTS = {"ablate": "ablating_mech", "scorch_all": "scorched", "disable": "disabled", "corrupt_all": "corrupted", "drain_rerolls": "reroll",
                "brace": "foe_buff", "brace_all": "foe_buff", "rally": "foe_buff", "revive_once": "foe_buff", "revive_once_ally": "foe_buff",
                "prime_all": "foe_buff", "barrier": "foe_buff", "ward_all": "foe_buff", "regenerate": "foe_buff"}
@@ -144,18 +142,16 @@ ENGINE_READERS = {
     "webbed": ["the burst at the end of its action: it and its neighbour Suppressed"],
     "vitriol": ["its tick: 10% of its current HP a stack, past armour"],
     "paradox": ["at three, Suppressed"],
-    "lure": ["every foe reached turns on the spender, so whatever reads being struck pays (Retaliate, a Barrier, the Armoured and Sealed plate, and every reader of hull damage)"],
+    "lure": ["every foe reached turns on the spender, so whatever reads being struck pays (a Barrier, the Armoured and Sealed plate, and every reader of hull damage)"],
     "disrupt": ["the foe takes its next open move"],
     "swap": ["the two trade places: reach, the acting order, area"],
     "overcharged": ["every blow +1 a stack: most on strikes; halves each round"],
     "braced": ["armour +1 a stack until the round's end"],
     "primed": ["every blow lays an Ablating stack a stack: most on strikes"],
-    "retaliate": ["a foe striking bare hull is Shocked, so every reader of Shocked"],
     "barrier": ["the next blow deals nothing"],
     "ward": ["no rider lands this round"],
     "spun_up": ["the next weapon spend +2 a stack"],
     "ricochet": ["a strike of 1 more a stack at the target once a weapon has fired: most on riders a strike and on flat buffs; hull damage halves it"],
-    "rallied": ["one reroll more this round"],
     "phased": ["untouchable until the round's end"],
     "sealed": ["armour +3, cooling stopped, 3 heat a turn"],
     "regenerating": ["2 shield a round for three rounds"],
@@ -164,7 +160,7 @@ ENGINE_READERS = {
     "disabled": ["the entry comes up blank"],
     "corrupted": ["each spend bites 3 a stack"],
     "heat": ["the overheat: hull one for one past the maximum"],
-    "hull_damage": ["the injury roll at a quarter of maximum hull in one blow"],
+    "hull_damage": ["a foe's Destroy: any of its blow on the hull destroys the entry showing (no foe carries it yet)"],
     "kill": ["the slot clears: Direct opens on the foe behind (every weapon sets it)"],
     "reroll": ["three a round, banked up to three while a Giant Petrel fights"],
     "rank": ["Direct reaches the front, Indirect any"],
@@ -221,13 +217,13 @@ class Map:
                 if kw not in KEYWORDS:
                     self.unmapped.append("%s: keyword %s" % (e["name"], kw))
                 for cur, how in KEYWORDS.get(kw, []):
-                    if kw in ("cleave", "penetrate", "splash"):
+                    if kw in ("cleave", "penetrate"):
                         self.add(cur, how, dict(p, area="%s %s" % ({"cleave": "Spread"}.get(kw, kw.capitalize()), f.get(kw, "a debuff's, no number"))))
                     else:
                         self.add(cur, how, p)
             for k, v in f.items():
                 if k in ("kind", "reach", "power", "keywords", "heat", "targets", "status", "stacks", "rounds",
-                         "ablate", "flak", "cryo", "cleave", "penetrate", "splash", "gates", "consumes", "per_consumed", "per_heat", "per_missing", "power_per_load"):
+                         "ablate", "flak", "cryo", "cleave", "penetrate", "gates", "consumes", "per_consumed", "per_heat", "per_missing", "power_per_load"):
                     continue
                 if k not in FACE_FIELDS:
                     self.unmapped.append("%s: face field %s" % (e["name"], k))
@@ -383,7 +379,7 @@ def render(m):
             if len(sl) == 1:
                 holes.append("**%s** has one slottable setter, %s." % (label, word(sl[0])))
             if not readers and cur not in ("suppressed", "webbed", "disrupt", "swap", "phased", "barrier", "ward", "sealed", "regenerating",
-                                           "rallied", "spun_up", "ricochet", "braced", "vitriol", "mine", "paradox", "lure", "retaliate"):
+                                           "spun_up", "ricochet", "braced", "vitriol", "mine", "paradox", "lure"):
                 holes.append("**%s** is read by nothing but its own effect." % label)
     L.append("")
     L.append("Tags, by the slottable pieces that wear them (locked in brackets); nothing but the screen's lunge reads one:")

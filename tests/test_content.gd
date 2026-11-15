@@ -389,19 +389,19 @@ func test_keyword_cap_is_enforced() -> void:
 	assert_true(hit, "four keywords on an authored face is reported")
 
 
-## A silence and a purge are specials, never riders (28 October): the validator refuses either
-## on a blow and in a last act.
-func test_a_silence_or_a_purge_rides_no_blow() -> void:
+## A purge is a special, never a rider (28 October): the validator refuses it on a blow and in
+## a last act.
+func test_a_purge_rides_no_blow() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var f: Dictionary = db.foes["revenant"].duplicate(true)
-	f["actions"][0]["keywords"] = ["silence"]
+	f["actions"][0]["keywords"] = ["dispel"]
 	db.foes["hushed"] = f
 	var g: Dictionary = db.foes["revenant"].duplicate(true)
 	g["on_death"] = {"blow": {"name": "Last Rites", "factor": 1, "strikes": 1, "keywords": ["dispel"]}}
 	db.foes["rites"] = g
 	var errs := db.validate()
-	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe hushed") and e.contains("a special, never a rider")), "a silence on a blow is reported")
+	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe hushed") and e.contains("a special, never a rider")), "a purge on a blow is reported")
 	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe rites") and e.contains("on_death blow") and e.contains("never a rider")), "a purge in a last act is reported")
 
 
@@ -1626,25 +1626,6 @@ func test_the_rule_numbers_are_fields_on_their_keyword_their_face_or_their_statu
 	assert_true(Skirmish.cryo_cool() > 0 and Skirmish.corrupt_bite() > 0, "both carry a number")
 
 
-func test_the_content_carries_a_live_hull_the_engine_runs() -> void:
-	var db := ContentDB.new()
-	db.load_dir(ContentDB.DIR)
-	var plate: Dictionary = _piece(db, "laminar_deflector")
-	plate["passive"] = {"id": "live_plate", "name": "Live Plate", "description": "", "effects": [
-		{"trigger": "static", "effect": "shock_on_hull_strike", "value": 1}]}
-	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
-	db.components["live_plate"] = plate
-	var coil: Dictionary = db.components["overcharge_coil"].duplicate(true)
-	coil["face"]["status"] = "retaliate"
-	coil["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
-	db.components["klaxon_coil"] = coil
-	var errs := db.validate()
-	for e in errs:
-		assert_false(e.begins_with("component live_plate") or e.begins_with("component klaxon_coil"), "a shock passive and a retaliate buff validate: %s" % e)
-	assert_true(errs.is_empty(), "and the shipped content is clean with them: %s" % str(errs))
-	assert_eq(db.build_face(coil["face"]).buff_status, "retaliate", "the buff builds")
-
-
 func test_lure_and_disrupt_ride_on_attacks_and_never_on_a_shield() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
@@ -2724,7 +2705,7 @@ func test_a_passive_one_off_lifts_the_effect_cap_by_one() -> void:
 		{"trigger": "on_attack", "effect": "multiply_printed", "value": 2},
 		{"trigger": "on_attack", "effect": "add_heat", "value": 10},
 		{"trigger": "static", "effect": "add_stat", "stat": "hull", "value": 2},
-		{"trigger": "on_kill", "effect": "stack_status", "value": "rallied"}]}
+		{"trigger": "on_kill", "effect": "stack_status", "value": "rage"}]}
 	db.chassis[cid]["passive"] = four
 	db.chassis[cid]["design"].erase("one_off")
 	var capped := func() -> bool:
@@ -2739,9 +2720,9 @@ func test_a_passive_one_off_lifts_the_effect_cap_by_one() -> void:
 	assert_true(db.validate().any(func(e): return e.begins_with("chassis %s" % cid) and e.contains("passive has 5 effects")), "the lift is one, never more")
 
 
-## Area by shape, numbered (Ryan, 28 October): a weapon's Spread, Penetrate or Splash says what
-## each foe past its target takes; a debuff's says none; Splash is the row and the column at one
-## number, so it never rides beside either, and the two at one number are Splash; Every Foe is a
+## Area by shape, numbered (Ryan, 28 October): a weapon's Spread or Penetrate says what each foe
+## past its target takes; a debuff's says none; a piece may carry both, at one number or two
+## (Splash, the two under one word, was cut on 15 November and is refused); Every Foe is a
 ## debuff's (2 November: a targeting mode given a keyword).
 func test_the_area_keywords_say_their_number() -> void:
 	var db := _fresh()
@@ -2753,9 +2734,8 @@ func test_the_area_keywords_say_their_number() -> void:
 		"test_spread_bare": [{"keywords": ["cleave"]}, "a weapon with Spread says what each foe past its target takes"],
 		"test_spread_n": [{"keywords": ["cleave"], "cleave": 2}, ""],
 		"test_stray_n": [{"penetrate": 2}, "rides with the Penetrate keyword"],
-		"test_splash_n": [{"keywords": ["splash"], "splash": 1}, ""],
-		"test_splash_beside": [{"keywords": ["splash", "cleave"], "splash": 1, "cleave": 2}, "never rides beside Spread or Penetrate"],
-		"test_plus_one_number": [{"keywords": ["cleave", "penetrate"], "cleave": 2, "penetrate": 2}, "are Splash"],
+		"test_splash_n": [{"keywords": ["splash"]}, "splash"],
+		"test_plus_one_number": [{"keywords": ["cleave", "penetrate"], "cleave": 2, "penetrate": 2}, ""],
 		"test_plus_two_numbers": [{"keywords": ["cleave", "penetrate"], "cleave": 2, "penetrate": 1}, ""],
 		"test_debuff_n": [{"power": 0, "keywords": ["lure", "cleave"], "cleave": 1}, "carries no number"],
 		"test_debuff_area": [{"power": 0, "keywords": ["lure", "cleave"]}, ""],
@@ -2777,15 +2757,16 @@ func test_the_area_keywords_say_their_number() -> void:
 			assert_true(mine.is_empty(), "%s validates: %s" % [id, str(mine)])
 		else:
 			assert_true(mine.any(func(e: String) -> bool: return e.contains(want)), "%s is refused (%s): %s" % [id, want, str(mine)])
-	var f := db.build_face(db.components["test_splash_n"]["face"])
-	assert_true(f.has(Face.Keyword.SPLASH) and f.splash == 1, "Splash builds with its number")
-	assert_eq(Face.from_dict(f.to_dict()).splash, 1, "and survives the round trip a save makes")
+	var f := db.build_face(db.components["test_plus_one_number"]["face"])
+	assert_true(f.reaches_row() and f.reaches_column() and [f.cleave, f.penetrate] == [2, 2], "the plus builds as Spread and Penetrate, each with its number")
+	var back := Face.from_dict(f.to_dict())
+	assert_eq([back.cleave, back.penetrate], [2, 2], "and survives the round trip a save makes")
 	assert_eq(Face.from_dict(db.build_face(db.components["test_debuff_area"]["face"]).to_dict()).to_dict().has("cleave"), false, "a debuff's area writes no number")
 	for id in db.components.keys():
 		var face: Dictionary = db.components[id].get("face", {})
 		if id.begins_with("test_") or str(face.get("status", "")) == "planned":
 			continue
-		for name in ["cleave", "penetrate", "splash", "chain"]:
+		for name in ["cleave", "penetrate", "chain"]:
 			if Array(face.get("keywords", [])).has(name) and not db.build_face(face).is_debuff():
 				assert_true(int(face.get(name, 0)) > 0, "%s's %s carries its number" % [id, name])
 
@@ -2836,7 +2817,7 @@ func test_a_numbered_keywords_grant_says_its_number() -> void:
 		"test_grant_odd": [{"trigger": "static", "effect": "grant_keyword", "value": "shock", "number": 2}, "a positive number for a numbered keyword"],
 		"test_grant_conductor": [{"trigger": "static", "effect": "grant_keyword", "value": "chain", "number": 2}, ""],
 		"test_grant_arc": [{"trigger": "static", "effect": "grant_keyword", "value": "chain"}, "says what every other Shocked foe takes"],
-		"test_grant_none": [{"trigger": "static", "effect": "grant_keyword", "value": "splash", "number": 0}, "a positive number for a numbered keyword"],
+		"test_grant_none": [{"trigger": "static", "effect": "grant_keyword", "value": "cleave", "number": 0}, "a positive number for a numbered keyword"],
 	}
 	for id in cases:
 		var m: Dictionary = base.duplicate(true)
@@ -2885,7 +2866,7 @@ func test_sweep_is_refused_and_a_weapon_may_reach_every_foe() -> void:
 	db._validate_face("test", {"kind": "attack", "reach": "every_foe", "power": 2, "keywords": []}, every)
 	assert_eq(every, [], "a weapon over every foe validates")
 	var wide: Array[String] = []
-	db._validate_face("test", {"kind": "attack", "reach": "every_foe", "power": 2, "keywords": ["splash"], "splash": 1}, wide)
+	db._validate_face("test", {"kind": "attack", "reach": "every_foe", "power": 2, "keywords": ["cleave"], "cleave": 1}, wide)
 	assert_true(wide.any(func(e) -> bool: return e.contains("lands on every foe already")), "an area on it is refused")
 	var gate: Array[String] = []
 	db._validate_face("test", {"kind": "attack", "reach": "direct", "power": 2, "keywords": [], "magazine_min": 8}, gate)

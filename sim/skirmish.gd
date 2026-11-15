@@ -43,22 +43,11 @@ const AREA_ROW := 1      # beside the target in its rank: Spread's, Splash's
 const AREA_COLUMN := 2   # the other rank of its column: Penetrate's, Splash's
 const AREA_ALL := 3      # any other foe a reach over every foe adds: nothing
 const AREA_CHAIN := 4    # every other Shocked foe on the field: Chain's conductors (28 October)
-const INJURY_MIN_HULL_PCT := 25     # a single hull hit this big (percent of max) destroys the entry the die lands on
-static var injury_pct: int = INJURY_MIN_HULL_PCT   # the threshold read; tools/balance.gd's --injury sets it for one run's what-if
-## The injury rule's switch: off, for now (Ryan, 9 November, from his play of Phase 2 and the
-## refit pass, docs/briefs/refit_pass.md: "I'm fine disabling component destruction entirely to
-## test these points. It was placed to offer a balancing lever between tanks and dps, an issue
-## that clearly no longer exists"; "Lets turn destruction off completely, for now, and see where
-## that gets us"). Off, no blow injures: no entry breaks in a fight and no component is destroyed,
-## in the game and the runners alike. The rule stands whole behind the switch until the pass's
-## reads and his play say; a test of the rule, and tools/balance.gd's --injury, turn it on.
-static var injuries: bool = false
 static var overheat_scale: int = 1   # hull an overheat burns a point of heat past the maximum; tools/balance.gd's --overheat sets it for one run's what-if (30 October)
 static var pilot: Dictionary = {}   # chassis id -> heat it gains as each round opens, a what-if for tools/balance.gd's --pilot (the Whip Scorpion's pilot light, 3 November); never content
-# Two more what-ifs on the overheat (Ryan, 30 October), set by tools/balance.gd for one run: a
-# burn reaching the injury threshold burns out the component that took the gauge past the
-# maximum (--burnout), and every overheat Corrupts that component, so many stacks (--overheat-corrupt N).
-static var overheat_burnout: bool = false
+# One more what-if on the overheat (Ryan, 30 October), set by tools/balance.gd for one run: every
+# overheat Corrupts the component that took the gauge past the maximum, so many stacks
+# (--overheat-corrupt N).
 static var overheat_corrupt: int = 0
 ## The block, a what-if for the runners and a debug build's trial (Ryan, 13 November: "What if we
 ## bring back that when a shield breaks, it absorbs the whole blow? It does not bleed into the
@@ -670,7 +659,7 @@ func can_withdraw() -> bool:
 
 ## The shield a weapon's spend burns in place of `heat` (the Storm Petrel's Riot Field Generator,
 ## Ryan's go of 21 October; built 30 October): as much of the gun's own heat as the shield holds
-## as it stands, overshield included; the rest reaches the gauge, and so does a Scorched machine's
+## as it stands; the rest reaches the gauge, and so does a Scorched machine's
 ## extra, which heats the bar and never the shield (Ryan, 8 November: "scorch affects the actual
 ## heat bar, not the ammo cost ... Same as the storm petrel when its shield is up"; the forge
 ## splits it the same way, Effects.ammo_price). Nothing for equipment, a forging machine's gun
@@ -963,6 +952,11 @@ func preview_round(hover_mech: int = -1, hover_target = null) -> Dictionary:
 			bite = pending_bite(mechs[hover_mech])
 			volatile = pending_volatile(mechs[hover_mech])
 			copy.assign(hover_mech, t)
+	# The rerolls the die in hand would bring the team, or cost it (a piece that grants one, a
+	# kill's, an ally use's price): the REROLL button lights on a gain (Ryan, 15 November: "We
+	# can communicate by highlighting the reroll button as part of the preview, if one will be
+	# granted").
+	var rerolls_gained := copy.rerolls_left - rerolls_left
 	var events: Array = copy.turn_events.duplicate()   # a last act the spend set off lands now
 	var over: Array[int] = []
 	var ablated: Array[int] = []
@@ -1037,7 +1031,7 @@ func preview_round(hover_mech: int = -1, hover_target = null) -> Dictionary:
 			if ev.get("foe", null) == cf and not struck.has(int(ev.get("mech", -1))):
 				struck.append(int(ev.get("mech", -1)))
 		out_foes[back[cf]] = {"hp": maxi(0, cf.hp), "alive": cf.alive(), "struck": struck, "coming": coming.get(cf, {}), "returns": str(came_back.get(cf, ""))}
-	return {"mechs": out_mechs, "foes": out_foes}
+	return {"mechs": out_mechs, "foes": out_foes, "rerolls": rerolls_gained}
 
 
 ## What a rally adds to this round's blows, on every machine they reach: each foe acting after
@@ -1111,15 +1105,14 @@ static func spend_bite(u, f: Face) -> int:
 ## playing the round out, the die in hand spent on it). Recomputed after every action, so
 ## shielding or killing an attacker moves the numbers at once. `extra_shield` asks the same
 ## question with that much more shield standing (a shield component about to be spent here), for
-## whoever weighs one; `overshield` lets it pass the maximum, as a component with that keyword
-## would. Its Ablating ticks first, as the player's turn ends: the shield, then the hull, none
+## whoever weighs one. Its Ablating ticks first, as the player's turn ends: the shield, then the hull, none
 ## for a machine out of the fight. Then each foe's blows walk the shield they meet (blows_on, the
 ## blow that lands' own arithmetic). Heat is what the gauge holds and a seal's, before the enemy
 ## acts (11 October), the foes adding none (their fire leaves Ablating, which is damage, and
 ## Scorched, which taxes the next turn's spends), then the heat a passive banks with their blows
 ## (the Whip Scorpion's).
-func forecast(ms: MechState, extra_shield: int = 0, overshield: bool = false) -> Dictionary:
-	var shield := ms.unit.shield + extra_shield if overshield else mini(maxi(ms.unit.shield_max, ms.unit.shield), ms.unit.shield + extra_shield)
+func forecast(ms: MechState, extra_shield: int = 0) -> Dictionary:
+	var shield := mini(maxi(ms.unit.shield_max, ms.unit.shield), ms.unit.shield + extra_shield)
 	var hull := ms.unit.hull
 	var ablated := 0 if is_out(ms) else int(Effects.tick_preview(ms.unit, true)["hp"])
 	var off_shield := clampi(shield, 0, ablated)
@@ -1134,7 +1127,7 @@ func forecast(ms: MechState, extra_shield: int = 0, overshield: bool = false) ->
 		blows += f.strikes()
 		for r in blows_on(ms, f, walk):
 			hull -= int(r["through"])
-			if r["injures"]:
+			if int(r["through"]) > 0 and destroys(f, ms):
 				component_risk = true
 	shield = int(walk["shield"])
 	var heat_end := ms.heat + seal_heat(ms)
@@ -1155,6 +1148,18 @@ func forecast(ms: MechState, extra_shield: int = 0, overshield: bool = false) ->
 		"component_risk": component_risk,
 		"destroyed": hull <= 0 and ms.alive(),
 	}
+
+
+## Whether this foe's blow, reaching this machine's hull, destroys the entry its die shows
+## (Destroy, the foes' rider; Ryan, 15 November: "destroys the visible face if it damages hull at
+## all"): its move carries the rider, no Ward turns it away, and a component shows that no
+## passive holds (a blank or a broken entry has nothing left to break). The forecast's read;
+## the blow itself is _strike's.
+func destroys(f: Foe, ms: MechState) -> bool:
+	if f == null or not f.has_keyword(f.action, "destroy") or Effects.has(ms.unit, "ward"):
+		return false
+	var showing := ms.face()
+	return showing != null and showing.kind != Face.Kind.BLANK and not Effects.no_destroy(ms.unit, showing)
 
 
 ## One foe's blows on a machine as they would land now, in order: each through what the
@@ -1185,7 +1190,7 @@ func blows_on(ms: MechState, f: Foe, walk: Dictionary) -> Array:
 func _blow_on(ms: MechState, amount: int, source: Foe, shield: int, barrier: bool) -> Dictionary:
 	var arrived := Effects.damage_taken(ms.unit, amount, source, false, true, maxi(0, shield))
 	var barred := arrived > 0 and barrier
-	var r := _blow(shield, ms.unit.hull_max, ms.unit.armour, 0 if barred else arrived, breaks_whole(shield, ms.unit.shield_max))
+	var r := _blow(shield, ms.unit.armour, 0 if barred else arrived, breaks_whole(shield, ms.unit.shield_max))
 	r["amount"] = arrived
 	r["barred"] = barred
 	return r
@@ -2121,7 +2126,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 		return false
 	# A shield cost (Ryan, 26 October: "if you don't have the shield, the face cannot be played,
 	# and overshield does cheat it out at the cost of using two actions for one effect"): taken
-	# first, from the shield as it stands, overshield included; short of it the entry is locked
+	# first, from the shield as it stands; short of it the entry is locked
 	# (cannot_pay) and never reaches here.
 	var toll := f.shield_cost
 	if toll > 0:
@@ -2195,8 +2200,8 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 					var cooled := w.heat if f.cools_all else mini(w.heat, f.vents)
 					w.heat -= cooled
 					log.append("%s cools %s by %d" % [ms.unit.display_name, w.unit.display_name, cooled])
-				_gain_shield(w, amount, f.has(Face.Keyword.OVERSHIELD))
-				log.append("%s shields %s for %d%s" % [ms.unit.display_name, w.unit.display_name, amount, " (past its maximum)" if w.unit.shield > w.unit.shield_max else ""])
+				_gain_shield(w, amount)
+				log.append("%s shields %s for %d" % [ms.unit.display_name, w.unit.display_name, amount])
 				if w != ms:
 					_shield_granted(ms, w, amount)
 				_cleanse_with(ms, w, f)
@@ -2209,7 +2214,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 			# shield on the same machine, through its shield gain and the spender's passives
 			# for an ally it shields, sized on the heat the vent left.
 			if shield_half > 0 and who.alive():
-				_gain_shield(who, shield_half, false)
+				_gain_shield(who, shield_half)
 				log.append("%s shields %s for %d%s" % [ms.unit.display_name, who.unit.display_name, shield_half, " (past its maximum)" if who.unit.shield > who.unit.shield_max else ""])
 				if who != ms:
 					_shield_granted(ms, who, shield_half)
@@ -2231,6 +2236,12 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 				if Effects.folds_die(ms.unit) > 0:
 					var raised := Effects.turn_die(ms.unit)
 					log.append("%s changes over: its %s battery is up" % [ms.unit.display_name, "second" if raised else "first"])
+			elif f.team_rerolls > 0 and not (f.action_price > 0 and who != ms):
+				# A reroll for the team (the Reveille Horn, the Immelmann Booster's own use; Ryan, 15
+				# November, in the place of the Rallied buff: "This doesn't need to be a temporary buff
+				# or a keyword"; "allow it" past the round's two): given at once, no status and no chip.
+				rerolls_left += f.team_rerolls
+				log.append("%s: the team gains %s" % [ms.unit.display_name, "a reroll" if f.team_rerolls == 1 else "%d rerolls" % f.team_rerolls])
 			elif f.action_price > 0 and who != ms:
 				# The Immelmann Booster's ally use (the Giant Petrel's, Ryan's go of 21 October; built
 				# 30 October): on an ally whose die is spent, the team's rerolls pay its price, banked
@@ -2270,8 +2281,6 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 						_fired(w, Effects.fire(w.unit, "on_barrier"), "as it gains a Barrier")   # the Wild Boar's Juggernaut Drive
 					if f.buff_status == "phased":
 						_phase(w)
-					elif f.buff_status == "rallied":
-						rerolls_left += stacks   # the team's reroll more this round (the Reveille Horn)
 					# The Reheat Uplink's roll (the Giant Petrel's, Ryan's go of 21 October; built 30
 					# October): the die of the machine it lands on rolls again, never onto the entry
 					# showing; a spent die rolls nothing.
@@ -2476,7 +2485,6 @@ func _finish_round() -> void:
 		Effects.halve(f, (_held.get(f, []) as Array) + round_holds)
 	_held.clear()
 	round_holds = []   # the round's own hold (the Soul Siphon's) is over: everything halves again from the next
-	_trim_overshield()
 	_regrow_parts()
 
 
@@ -2727,13 +2735,6 @@ func _strike(f: Foe, t: MechState) -> void:
 			f.hp = mini(f.hp_max, f.hp + dealt)
 			if f.hp > had:
 				log.append("%s drains %d" % [f.display_name, f.hp - had])
-		# The live hull (the Polar Bear's, a machine under Retaliate): a blow that reaches
-		# hull shocks the foe that struck; a shutters' blocked blow (the shield took it whole)
-		# shocks too, and a blow a Barrier took never touched either. Shocked is a setup and
-		# nothing else (Ryan, 11 October): the discharge a Shocked striker paid was thorns,
-		# scaling with the blows a horde lands, and it went.
-		if not bool(ev["barred"]) and not bool(ev["blocked"]) and Effects.shocks_striker(t.unit):
-			_shock(f, t)
 		# A Ward turns away every rider a foe's blows lay this round; the damage has landed.
 		if Effects.has(t.unit, "ward"):
 			if t.alive() and _rides(f) and not turned:
@@ -2771,13 +2772,20 @@ func _strike(f: Foe, t: MechState) -> void:
 			log.append("%s crushes %s ×%d: every blow it takes through the next round lands harder" % [f.display_name, t.unit.display_name, nc])
 		if f.has_keyword(f.action, "steal") and t.alive() and t.face_index >= 0:
 			_steal(f, t)
+		if f.has_keyword(f.action, "destroy") and t.alive() and int(ev["through"]) > 0:
+			# Destroy (Ryan, 15 November: "a boss-level rider, that destroys the visible face if it
+			# damages hull at all"): any of the blow on the hull, past shield, armour and a Barrier,
+			# and the entry the die shows is destroyed. What it did rides on the event: the console
+			# says a component was destroyed (Jenny's information lines, 8 October).
+			ev["component"] = apply_injury(t)
+			ev["injured"] = str(ev["component"]) == "destroyed"
 
 
 
-## Whether this foe's blows carry a rider a Ward turns away: a scorch, an ablate, a disable or a
-## corrupt (a silence and a purge are specials).
+## Whether this foe's blows carry a rider a Ward turns away: a scorch, an ablate, a disable, a
+## corrupt, a crush, a steal or a destroy (a purge is a special).
 static func _rides(f: Foe) -> bool:
-	for kw in ["scorch", "ablate", "disable", "corrupt", "crush", "steal"]:
+	for kw in ["scorch", "ablate", "disable", "corrupt", "crush", "steal", "destroy"]:
 		if f.has_keyword(f.action, kw):
 			return true
 	return Effects.has(f, "primed")   # a primed foe's blows carry Ablating as a rider (28 October)
@@ -2850,15 +2858,6 @@ func _set_slot(at: Vector2i, f: Foe) -> void:
 		front[at.y] = f
 	else:
 		back[at.y] = f
-
-
-## Silenced (Ryan, 17 and 18 October; built 21 October; keywords alone since 28 October): its
-## components' keywords are muted through its next round, its buffs and stores untouched, as a
-## foe's Disabled lasts: the foe acts as the round ends, so "the round" a silence costs is the
-## machine's next.
-func _silence(t: MechState, f: Foe) -> void:
-	Effects.grant_for_rounds(t.unit, Effects.STATUS["silenced"], "foe:" + f.content_id, round + 1)
-	log.append("%s silences %s: its keywords are muted through its next round" % [f.display_name, t.unit.display_name])
 
 
 ## A foe's Purge N (28 October; by its number since 2 November): every buff the machine carries
@@ -3371,7 +3370,7 @@ func _tell_hits(mech_index: int, ms: MechState, f: Face, target: Foe, h: Hits, p
 
 ## The Riot Field Generator (the Storm Petrel's, Ryan's go of 21 October; built 30 October): while
 ## its shield stands its weapons burn shield in place of heat, the gun's own heat coming off the
-## shield as it stands, overshield included, and the rest reaching the gauge, a Scorched machine's
+## shield as it stands, and the rest reaching the gauge, a Scorched machine's
 ## extra among it (shield_burn); then, the hits landed, the target takes a blow of what the
 ## shield paid (the zap), plain, no keyword and no Shock read, through what it takes and its
 ## armour, before the death check, so a target the strikes felled takes it too (Ryan, 7 November).
@@ -3712,7 +3711,7 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 	var a := f.action
 	var effect := str(a.get("effect", ""))
 	var value := int(a.get("value", 0))
-	if t == null and effect in ["ablate", "disable", "silence", "dispel", "swallow"]:
+	if t == null and effect in ["ablate", "disable", "dispel", "swallow"]:
 		log.append("%s: %s, and no machine stands to take it" % [f.display_name, str(a.get("name", effect))])
 		return
 	turn_specials.append({"foe": f, "name": str(a.get("name", "")), "kind": Foe.kind_of(a), "seq": _seq})
@@ -3876,13 +3875,6 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			m.source = "foe:" + f.content_id
 			Effects.grant(f, m)
 			log.append("%s: %s, regrowing %d at each of its next three actions" % [f.display_name, str(a.get("name", "knits")), maxi(1, value)])
-		"silence":
-			# A caster's silence (17 October; keywords alone, 28 October): no blow, the machine
-			# Silenced through its next round.
-			if Effects.has(t.unit, "ward"):
-				log.append("%s: %s, and %s's Ward turns it away" % [f.display_name, str(a.get("name", "silences")), t.unit.display_name])
-			else:
-				_silence(t, f)
 		"dispel":
 			# A hero's or a boss's Purge N (17 October; numbered 2 November): no blow, every buff N
 			# stacks down, the stores kept.
@@ -4032,8 +4024,8 @@ func can_fire(ms: MechState, f: Face) -> bool:
 
 
 ## The first entry with a condition on its play (Ryan, 26 October, the shield cost: "if you don't
-## have the shield, the face cannot be played"): true while the machine's shield, overshield
-## included, is short of the entry's shield cost. Every target list reads it, so the die has
+## have the shield, the face cannot be played"): true while the machine's shield
+## is short of the entry's shield cost. Every target list reads it, so the die has
 ## nowhere to land, the screen's drag finds no target, the bot passes it over and END TURN
 ## pulses; the die shows the cost struck through (Face.short, shown_face). The pattern for any
 ## conditional entry to come.
@@ -4363,7 +4355,7 @@ func _rolled() -> void:
 		_muster(ms, 1)
 
 
-## Points on a machine's Muster, up to its cap (a store, which no Silence touches); a charge
+## Points on a machine's Muster, up to its cap (a store, which nothing a foe does takes); a charge
 ## filled is told.
 func _muster(ms: MechState, points: int) -> void:
 	var rule := Effects.muster_rule(ms.unit)
@@ -4887,7 +4879,7 @@ static func _note_turned(turned: Dictionary, foe: Foe, status_id: String) -> voi
 	turned[foe] = ids
 
 
-## A mark a foe's Ward turned away outside a spend's own count (a machine's Retaliate):
+## A mark a foe's Ward turned away outside a spend's own count (a Mine's blast):
 ## noted for the spend's one line when the spend gathers them, told at once otherwise.
 func _turned_away(foe: Foe, status_id: String, turned, by: MechState) -> void:
 	if turned is Dictionary:
@@ -5006,7 +4998,7 @@ func disrupt_next(foe: Foe) -> Dictionary:
 
 
 ## The cleanse keyword on a shield or vent component: whoever it was spent on loses every
-## cleansable status (a foe's disable, Corrupted, Silenced, Ablating, Scorched), and the log says which.
+## cleansable status (a foe's disable, Corrupted, Ablating, Scorched), and the log says which.
 func _cleanse_with(ms: MechState, who: MechState, f: Face) -> void:
 	if not f.has(Face.Keyword.CLEANSE):
 		return
@@ -5036,16 +5028,15 @@ func _add_heat(ms: MechState, amount: int, entry: int = -1) -> void:
 		_fired(ms, Effects.fire(ms.unit, "on_heat_gain", amount), "on the heat")
 
 
-## Shield gained from any source, capped at the maximum unless the component carries
-## Overshield; gaining any fires the on_shield_gain passives (which may shed heat, never
-## raise shield). Returns what stood up.
-func _gain_shield(ms: MechState, amount: int, overshield: bool = false) -> int:
+## Shield gained from any source, capped at the maximum; gaining any fires the on_shield_gain
+## passives (which may shed heat, never raise shield). Returns what stood up.
+func _gain_shield(ms: MechState, amount: int) -> int:
 	if amount <= 0:
 		return 0
 	_note_break(ms)
 	if ms.shield_broken:
 		return 0   # a broken shield gains none by any method until its machine reboots: no regen, no passive, no entry raises it
-	var gained := ms.unit.recharge_shield(amount, overshield)
+	var gained := ms.unit.recharge_shield(amount)
 	if gained > 0:
 		_fired(ms, Effects.fire(ms.unit, "on_shield_gain", gained), "on the shield")
 	return gained
@@ -5065,15 +5056,6 @@ func _shield_granted(ms: MechState, who: MechState, amount: int) -> void:
 		parts.append(str(name))
 	if not parts.is_empty():
 		log.append("%s: %s's escort, %s" % [who.unit.display_name, ms.unit.display_name, ", ".join(parts)])
-
-
-## The round's end lets shield past the maximum go (Overshield, 5 October): the excess was a
-## one-round buffer, and a buffer that stayed would stack a team past every blow.
-func _trim_overshield() -> void:
-	for ms in live_mechs():
-		if ms.unit.shield > ms.unit.shield_max:
-			log.append("%s: %d shield past its maximum fades" % [ms.unit.display_name, ms.unit.shield - ms.unit.shield_max])
-			ms.unit.shield = ms.unit.shield_max
 
 
 ## Apply what a trigger's passives gave a machine: shield up (which is a shield gain of its
@@ -5134,7 +5116,7 @@ func _burn_stacks(ms: MechState, over: int) -> void:
 	if ms.alive():
 		_hull_damaged(ms)   # the burn is hull damage like any other, each turn it burns
 	if first:
-		_overheat_marks(ms, burn, culprit)
+		_overheat_marks(ms, culprit)
 
 
 ## A shield at nothing is broken (Ryan, 13 November: "the unit
@@ -5196,18 +5178,13 @@ func _recover(ms: MechState) -> void:
 	log.append("%s is back: heat 0, shield %d" % [ms.unit.display_name, ms.unit.shield])
 
 
-## The overheat's what-ifs (Ryan, 30 October), on the component whose spend took the gauge past
+## The overheat's what-if (Ryan, 30 October), on the component whose spend took the gauge past
 ## its maximum this turn and left it there (`idx`, MechState.hot_entry): none when a status's
-## heat did, or when a vent brought the gauge back under before a status took it over again. A
-## burn reaching the injury threshold burns it out for the battle as an injury does, else the
-## overheat Corrupts it.
-func _overheat_marks(ms: MechState, burn: int, idx: int) -> void:
+## heat did, or when a vent brought the gauge back under before a status took it over again.
+## The overheat Corrupts it.
+func _overheat_marks(ms: MechState, idx: int) -> void:
 	if idx < 0 or idx >= ms.die.faces.size() or not ms.alive():
 		return
-	if overheat_burnout and burn * 100 >= ms.unit.hull_max * injury_pct:
-		log.append("%s: the overheat burns out its %s" % [ms.unit.display_name, ms.die.faces[idx].describe()])
-		if _injure_entry(ms, idx) == "destroyed":
-			return
 	if overheat_corrupt > 0 and ms.die.faces[idx].kind != Face.Kind.BLANK:
 		Effects.corrupt_entry(ms.unit, idx, "overheat", overheat_corrupt)
 		log.append("%s: the overheat corrupts its %s (×%d)" % [ms.unit.display_name, ms.die.faces[idx].describe(), Effects.corrupt_stacks(ms.unit, idx)])
@@ -5215,8 +5192,9 @@ func _overheat_marks(ms: MechState, burn: int, idx: int) -> void:
 
 ## One blow. The honest shield (Ryan, 14 October; built 21 October): the shield absorbs its
 ## number and the excess reaches the hull. A blow that reaches the hull loses the chassis's
-## armour first, so small hits bounce off a heavy machine, and it destroys a component when
-## what gets through reaches the injury threshold, a share of max hull (INJURY_MIN_HULL_PCT).
+## armour first, so small hits bounce off a heavy machine. No blow destroys a component by its
+## size (the injury rule's threshold, 17 September to 15 November: Ryan, "No longer a general
+## rule"); a blow that carries Destroy does when any of it reaches the hull (_strike).
 ## A Barrier takes the next blow whole. A shield sized to a telegraphed blow, or a Barrier, is
 ## the counterplay; no blow of a foe's passes the shield or the armour (breach, 22 October to 15
 ## November: its first job was to pass a shield that mended, and nothing mends).
@@ -5240,7 +5218,7 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	sponsorship["guarded"] = int(sponsorship["guarded"]) + int(r["absorbed"]) + int(r["armoured"])
 	# The mech's gauges after the blow ride along, so a replay can step them down blow by blow.
 	turn_events.append({"foe": source, "mech": mechs.find(ms), "amount": brought, "absorbed": r["absorbed"], "through": r["through"],
-		"blocked": r["blocked"], "barred": barred, "broke_shield": had_shield and ms.unit.shield == 0, "stopped": r["stopped"], "injured": r["injures"],
+		"blocked": r["blocked"], "barred": barred, "broke_shield": had_shield and ms.unit.shield == 0, "stopped": r["stopped"], "injured": false,
 		"shield": ms.unit.shield, "hull": ms.unit.hull, "seq": _seq,
 		"name": str(source.action.get("name", "")) if source != null else "", "boss": source != null and source.boss,
 		"all": source != null and source.hits_all()})
@@ -5270,22 +5248,17 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 		_hull_damaged(ms)
 	elif int(r["absorbed"]) > 0:
 		_shield_hit(ms)   # a blow its shield took, none of it on the hull (the Nemesis's rage: hull first)
-	if r["injures"]:
-		# What the injury did rides on the event too: the console says a component was
-		# damaged or destroyed (Jenny's information lines, 8 October).
-		turn_events[turn_events.size() - 1]["component"] = apply_injury(ms)
 
 
-## The arithmetic of one blow against a shield, hull max and armour, shared by the real hit
+## The arithmetic of one blow against a shield and armour, shared by the real hit
 ## and the forecast. The honest shield (Ryan, 14 October): a shield absorbs its number and the
 ## excess passes to the hull.
 ## Returns shield after, absorbed, through (to hull), armoured (taken off by armour), blocked
-## (the shield took the whole blow), injures (what reached the hull, over the threshold),
-## broke (the blow took a standing shield to
+## (the shield took the whole blow), broke (the blow took a standing shield to
 ## nothing) and stopped (what a break kept from the hull: nothing on the honest shield).
 ## `whole` is the block, a what-if (shield_break; breaks_whole says when): the blow that breaks
 ## the shield is stopped there, and what was left of it reaches nothing.
-static func _blow(shield: int, hull_max: int, armour: int, amount: int, whole: bool = false) -> Dictionary:
+static func _blow(shield: int, armour: int, amount: int, whole: bool = false) -> Dictionary:
 	var absorbed := mini(maxi(0, shield), maxi(0, amount))
 	var through := maxi(0, amount) - absorbed
 	var broke := shield > 0 and absorbed >= shield
@@ -5297,10 +5270,7 @@ static func _blow(shield: int, hull_max: int, armour: int, amount: int, whole: b
 	# on the shield costs it its full damage: shield is not armoured.
 	var armoured := mini(armour, through) if through > 0 else 0
 	through -= armoured
-	# Injury counts what reaches the hull in one blow, wherever it came from: past the shield
-	# or on bare hull (the injury row: a share of the hull in one blow injures).
-	var injures := injuries and through > 0 and through * 100 >= hull_max * injury_pct
-	return {"shield": shield - absorbed, "absorbed": absorbed, "through": through, "armoured": armoured, "blocked": absorbed > 0 and through + armoured == 0, "injures": injures, "broke": broke, "stopped": stopped}
+	return {"shield": shield - absorbed, "absorbed": absorbed, "through": through, "armoured": armoured, "blocked": absorbed > 0 and through + armoured == 0, "broke": broke, "stopped": stopped}
 
 
 ## Whether the blow that breaks a shield standing at `shield` of `shield_max` is stopped whole:
@@ -5310,13 +5280,15 @@ static func breaks_whole(shield: int, shield_max: int) -> bool:
 	return shield_break and shield > 0 and shield * 100 >= shield_max * shield_break_min
 
 
-## The injury destroys the entry the die shows (Ryan, 2 November, in place of the die's roll of
+## An injury destroys the entry the die shows (Ryan, 2 November, in place of the die's roll of
 ## 17 September: what faces the enemy is the player's choice, the entry it spent, held or
 ## locked): blank, until the hangar mends it (one state, Ryan, 25 October: "Cracked is gone").
 ## A destroyed component or an empty hardpoint showing takes the blow and nothing happens, so a
 ## second such blow in the turn finds nothing to break. The damage lives on the unit and
 ## persists until repaired in the hangar. A passive may say no_destroy on_injury: then the
-## component holds. The preview's copy breaks the same entry, so the forecast is exact.
+## component holds. The preview's copy breaks the same entry, so the forecast is exact. One
+## thing injures: a blow that carries Destroy and reaches the hull (_strike), a boss's rider
+## and no rule of every blow (Ryan, 15 November).
 func apply_injury(ms: MechState) -> String:
 	if ms.die.faces.is_empty():
 		return ""
@@ -5870,10 +5842,6 @@ func _check_outcome() -> void:
 ## and timed effects end.
 func _finish() -> void:
 	state = State.DONE
-	# Shield past the maximum is the round's buffer, so it fades as the fight ends, mid-turn
-	# included, never carried onto the map (the mechanics audit, 25 October: only the round's end
-	# trimmed it).
-	_trim_overshield()
 	round_holds = []
 	for ms in mechs:
 		Effects.end_skirmish(ms.unit)

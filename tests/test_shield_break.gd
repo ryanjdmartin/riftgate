@@ -44,7 +44,7 @@ func _regrid(sk: Skirmish, cells: Array) -> void:
 
 
 func test_off_a_blow_past_the_shield_reaches_the_hull() -> void:
-	var r := Skirmish._blow(10, 100, 0, 50, Skirmish.breaks_whole(10, 10))
+	var r := Skirmish._blow(10, 0, 50, Skirmish.breaks_whole(10, 10))
 	assert_false(Skirmish.breaks_whole(10, 10), "off, no break stops a blow")
 	assert_eq(int(r["through"]), 40, "the forty past a ten-point shield reach the hull")
 	assert_true(bool(r["broke"]) and int(r["stopped"]) == 0, "the shield broke and stopped nothing more than its number")

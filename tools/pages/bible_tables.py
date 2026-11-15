@@ -36,19 +36,19 @@ COMPONENT_KEYWORDS = {"ablate": [("ablating", "foe")], "shock": [("shocked", "fo
 FACE_FIELDS = {"braces": "braced", "fills_hopper": "hopper",
                "holds_all": "pinned_empowered"}   # the Soul Siphon's hold on Empowered, the round's own (12 November), on its machine and...
 FACE_FIELDS_ON_FOES = {"holds_all": ["pinned_empowered"]}   # ...on every foe; the Syrinx Drone's status went with the slot mines (9 November), the Contractor's Expose is its keyword
-PASSIVE_EFFECTS = {"shock_on_hull_strike": ("shocked", "foe"), "seal_form": ("sealed", "machine"),
+PASSIVE_EFFECTS = {"seal_form": ("sealed", "machine"),
                    "paradox": ("paradox", "foe"), "muster": ("muster", "machine"),
                    "fill_hopper": ("hopper", "machine"), "hopper_plate": ("braced", "machine"),
                    "mine_on_spend": ("mine", "foe")}   # stack_status names its own, on the machine; the Reverberant Payload's Mine (9 November)
-FOE_KEYWORDS = {"scorch": "scorched", "ablate": "ablating", "disable": "disabled", "corrupt": "corrupted", "crush": "crushed", "steal": "disabled"}   # a silence is a special since 28 October, never a rider
+FOE_KEYWORDS = {"scorch": "scorched", "ablate": "ablating", "disable": "disabled", "corrupt": "corrupted", "crush": "crushed", "steal": "disabled"}
 FOE_EFFECTS_ON_MACHINES = {"ablate": "ablating", "scorch_all": "scorched", "corrupt_all": "corrupted",
-                           "disable": "disabled", "silence": "silenced", "swallow": "swallowed"}
+                           "disable": "disabled", "swallow": "swallowed"}
 FOE_EFFECTS_ON_FOES = {"brace": "braced", "brace_all": "braced", "harden": "braced", "harden_all": "braced",
                        "rally": "kindled", "revive_once": "risen", "revive_once_ally": "risen",
                        "prime": "primed", "barrier": "barrier", "ward_all": "ward", "regenerate": "regenerating", "golden": "golden"}   # the ladder's (28 October); golden the Thunder Ape's (4 November)
 # A special that is a rider's own mechanic, played as a whole move, counts under the rider.
-MOVE_AS_KEYWORD = {"ablate": "ablate", "disable": "disable", "scorch_all": "scorch", "corrupt_all": "corrupt", "swallow": "swallow", "merge": "merge", "dispel": "dispel", "silence": "silence", "golden": "golden_rage"}
-VIA_STATUS = {"primed": [("ablating", "foe")], "retaliate": [("shocked", "foe")], "paradox": [("suppressed", "foe"), ("numbed", "foe")]}
+MOVE_AS_KEYWORD = {"ablate": "ablate", "disable": "disable", "scorch_all": "scorch", "corrupt_all": "corrupt", "swallow": "swallow", "merge": "merge", "dispel": "dispel", "golden": "golden_rage"}
+VIA_STATUS = {"primed": [("ablating", "foe")], "paradox": [("suppressed", "foe"), ("numbed", "foe")]}
 ENGINE_ALIASES = {"ablating_mech": "ablating"}   # the same word on the other body
 
 # Printed rules, read off a component's face.
@@ -69,10 +69,11 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("ally_action", "An ally's action", lambda f: bool(f.get("ally_action"))),
            ("rolls_target", "Rolls its die", lambda f: bool(f.get("rolls_target"))),
            ("kill_rerolls", "Rerolls a kill", lambda f: int(f.get("kill_rerolls", 0) or 0) > 0),
+           ("team_rerolls", "Grants a reroll", lambda f: int(f.get("team_rerolls", 0) or 0) > 0),
            # A printed cooldown: the rounds an entry sits out after its spend (12 November); Rapid's own
            # switch-off is never printed.
            ("cooldown", "Cooldown", lambda f: "cooldown" in f)]
-FOE_ONLY = ["scorch", "ablate", "disable", "corrupt", "crush", "steal", "drain", "silence", "dispel", "swallow", "merge", "golden_rage", "self_destruct", "all", "countdown", "follow_up", "grudge", "last_act", "parts"]
+FOE_ONLY = ["scorch", "ablate", "disable", "corrupt", "crush", "steal", "destroy", "drain", "dispel", "swallow", "merge", "golden_rage", "self_destruct", "all", "countdown", "follow_up", "grudge", "last_act", "parts"]
 FOE_ONLY_TEXT = {"ablate": "Keyword with a number on a foe's attack: each blow that lands leaves that many stacks of Ablating on the machine it hits (Ablating, above).",
                  "dispel": "A foe's move of its own, never a rider on a blow and never a last act's: the machine it lands on loses every buff a die face bought, every stack, for good, and what a store, a form or a passive grants until the start of the player's turn; its stores stay; a Ward turns it away."}
 SHARED = ["ablate", "dispel"]   # our keyword and the foes' word share it, each with a row (Purge on both sides, 28 October)

@@ -147,6 +147,32 @@ func test_every_key_a_die_entry_reads_is_printed_or_has_a_reason() -> void:
 	_hold("the entry key", keys.keys(), _keys, KEPT_KEYS)
 
 
+## A switch that leaves the engine leaves its runners too (15 November: the reboot's fold-in
+## took Skirmish.reboot and left tools/balance.gd reading it, so the runner would not parse and
+## no test said so). Every script under tools/ compiles against the engine as it stands.
+func test_every_tool_script_parses_against_the_engine() -> void:
+	var seen := 0
+	for f in DirAccess.open("res://tools").get_files():
+		if not f.ends_with(".gd"):
+			continue
+		seen += 1
+		var script = load("res://tools".path_join(f))
+		assert_true(script != null and (script as Script).can_instantiate(), "tools/%s parses" % f)
+	assert_true(seen > 10, "the tools are read (%d)" % seen)
+
+
+## A foe's rider no move carries, as a keyword of ours no piece prints.
+const KEPT_RIDERS := {
+	"destroy": "the vocabulary pass's settled answer (docs/vocabulary_pass_proposal.md, section 18; Ryan, 15 November: \"This can be a boss-level rider, that destroys the visible face if it damages hull at all. Only promoted form or superboss-level\"): the injury rule's one form, its carrier the foes' pass's",
+}
+
+
+func test_every_rider_a_foes_blow_may_carry_is_printed_or_has_a_reason() -> void:
+	_read_all()
+	assert_true(Foe.ATTACK_KEYWORDS.size() > 5, "the riders are read")
+	_hold("the foes' rider", Foe.ATTACK_KEYWORDS, _keywords, KEPT_RIDERS)
+
+
 func test_every_keyword_the_engine_names_is_printed_or_has_a_reason() -> void:
 	_read_all()
 	var names: Array = []

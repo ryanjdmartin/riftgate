@@ -3,7 +3,7 @@ extends SceneTree
 ## Formations back to back (25 October, for the quick campaign's proposal: how many complete
 ## formations a squad gets through in a row, docs/quick_campaign_proposal.md). A squad fights
 ## one domain's formation (its whole spawn list in one fight, as tools/balance.gd builds it) up
-## to CHAIN times, carrying hull, injuries and wrecks from fight to fight, the shield full and the
+## to CHAIN times, carrying hull, destroyed components and wrecks from fight to fight, the shield full and the
 ## heat at zero as each fight opens, as a battle's fights open (the long wall brief 3.6: the
 ## shield is the fight's; the probe's two variants of 25 October, no shield back and one field
 ## recharge between fights, went with the field recharge); greedy play, every fight fought out.

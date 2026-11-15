@@ -265,7 +265,6 @@ func test_a_broken_shield_gains_none_by_any_method_until_it_reboots() -> void:
 	sk.start_round()
 	assert_eq(m.shield, 0, "nor does a granted regen")
 	assert_eq(sk._gain_shield(ms, 5), 0, "nor any gain at all")
-	assert_eq(sk._gain_shield(ms, 5, true), 0, "an overshield included")
 	sk.reboot_mech(0)
 	sk.end_round()
 	assert_eq(m.shield, 0, "it reboots bare, and the hit stands nothing up")

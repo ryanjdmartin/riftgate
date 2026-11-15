@@ -1316,7 +1316,11 @@ func _refresh(save: bool = true) -> void:
 		d.queue_redraw()
 
 	_refresh_log()
-	_reroll_btn.badge = "×%d" % sk.rerolls_left
+	# A die in hand that would bring the team a reroll lights REROLL and shows the count it
+	# would leave (15 November: the grant's own preview, no buff and no chip).
+	var gained := int(_round.get("rerolls", 0)) if assigning else 0
+	_reroll_btn.badge = "×%d" % sk.rerolls_left if gained <= 0 else "×%d+%d" % [sk.rerolls_left, gained]
+	_reroll_btn.set_granting(gained > 0)
 	_reroll_btn.set_enabled(assigning and sk.can_reroll() and not _reroll_indices().is_empty())
 	if _reboot_btn != null:
 		var may := assigning and _pending.is_empty() and _any_may_reboot()
@@ -1846,8 +1850,6 @@ static func status_glyph(id: String) -> String:
 			return "primed"
 		"regenerating":
 			return "regenerating"
-		"retaliate":
-			return "shocked"
 		"hopper":
 			return "hopper"
 		"sealed":
@@ -1856,8 +1858,6 @@ static func status_glyph(id: String) -> String:
 			return "phased"
 		"swallowed":
 			return "swallowed"
-		"rallied":
-			return "reroll"
 		"barrier":
 			return "barrier"
 		"ward":
@@ -1868,8 +1868,6 @@ static func status_glyph(id: String) -> String:
 			return "ricochet"
 		"souls":
 			return "soul"
-		"silenced":
-			return "silence"
 		"cryoed":
 			return "cryo"
 	return "star"

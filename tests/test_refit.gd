@@ -290,4 +290,4 @@ func test_a_fight_plays_on_the_models_dice() -> void:
 	for kind in pol.spends.keys():
 		var c: Dictionary = db.components.get(str(kind), {})
 		assert_false(str(c.get("face", {}).get("kind", "")) in ["shield", "vent"], "%s: no shield and no vent is spent" % kind)
-	assert_true(sk.destroyed == 0, "and nothing is destroyed, the injury rule off")
+	assert_true(sk.destroyed == 0, "and nothing is destroyed: no foe's blow carries Destroy")

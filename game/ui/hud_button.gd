@@ -30,6 +30,11 @@ var hit_pad: Vector2 = Vector2.ZERO         # how far past its drawing the butto
 ## left to do): rings breathe out past its edge and its face brightens, by motion as well as
 ## light. Set with set_pulse.
 var pulse: bool = false
+## The die in hand would change what this button counts (a reroll the spend grants: Ryan, 15
+## November, "highlighting the reroll button as part of the preview, if one will be granted"):
+## it pulses as the next thing to press does, whether or not it may be pressed now, since a team
+## with no reroll left is the one that most wants to see it. Set with set_granting.
+var granting: bool = false
 var _pulse_t := 0.0
 const PULSE_RATE := 1.1   # rings a second
 ## RIFTGATE_PULSE_DEBUG=1: every button asked whether to pulse pulses, to judge it running.
@@ -64,7 +69,7 @@ func set_enabled(on: bool) -> void:
 
 
 func _ready() -> void:
-	set_process(pulse)   # a script with _process processes from the start; only a pulse needs it
+	set_process(pulse or granting)   # a script with _process processes from the start; only a pulse needs it
 
 
 func set_pulse(on: bool) -> void:
@@ -73,7 +78,16 @@ func set_pulse(on: bool) -> void:
 		return
 	pulse = on
 	_pulse_t = 0.0
-	set_process(on)
+	set_process(pulse or granting)
+	queue_redraw()
+
+
+func set_granting(on: bool) -> void:
+	if granting == on:
+		return
+	granting = on
+	_pulse_t = 0.0
+	set_process(pulse or granting)
 	queue_redraw()
 
 
@@ -91,7 +105,7 @@ func _draw() -> void:
 	var pts := Hud.slant(rect, slant_px)
 	var active := button_pressed or is_pressed()
 	var ink := col
-	var pulsing := pulse and not disabled
+	var pulsing := (pulse and not disabled) or granting
 	if pulsing:
 		# Two rings breathing out past the edge, half a beat apart, fading as they go; hot, since
 		# every mark judged on the phone has come back wanting more.
