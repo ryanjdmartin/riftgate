@@ -2035,7 +2035,11 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 279 (15 November, from `ccr-b7d5164e-1wtzzm` at `a2f89ca`, ahead of main): the
+  page's Version 280 (15 November, from main at `4514a2c`, the branch `ccr-b7d5164e-1wtzzm` landed
+  there on Ryan's "These look great. Let's clean up and merge into main"): main's `vocabulary.json`
+  (the vocabulary pass's rounds), `text.json` from the merged tree, `renders.json` with the Giant
+  Petrel shipped, and the Needletail's eight candidate-final pictures removed; the live copy
+  Version 279's own, so the page and main match. Version 279 (15 November, from `ccr-b7d5164e-1wtzzm` at `a2f89ca`, ahead of main): the
   Kite's model with its crown whole to the mouth, the Giant Petrel's fifteenth cut, its model and
   its ten pictures with the fourteenth's as Before, the Kite's port close-up, and `renders.json`;
   the page untouched since Version 278. Version 278 (15 November, from `ccr-b7d5164e-1wtzzm` at `6ad897c`, ahead of main): the
@@ -2046,8 +2050,7 @@ commands are in `README.md`.
   eight pictures and the Kite's port close-up rendered again for the bores' dark, and the two
   refits and the Dingo's mixed swap without the blade; the live copy found to be Version 277's
   own (its version id) and each replaced file matched to that publish. `edits` and `text` empty,
-  `designs` the two folded ideas. Until the branch lands, a publish from main keeps those files
-  as live (the page is ahead of main's content, renders and models). Version 277 (14 November, from main at `d80a996`, the branch `ccr-b7d5164e-1wtzzm` landed
+  `designs` the two folded ideas. Version 277 (14 November, from main at `d80a996`, the branch `ccr-b7d5164e-1wtzzm` landed
   there on Ryan's "Ship it" for the Needletail): the Giant Petrel's thirteenth cut, its model and rig,
   its ten pictures (a turbine from astern the tenth) and the twelfth's as Before; the Kite's rig with
   its port's round pair, a close picture of it, and its entry from main (the live one was the 12
