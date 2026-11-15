@@ -5,8 +5,8 @@ buffs and debuffs into one table? Just names, type, effects, and where it exists
 needed. I just need to see them all in one place to mark them."
 
 Read from content as it stands on main: the vocabulary's keywords and statuses, the foes'
-riders and moves, and what the pass has decided or proposed, his rulings of the fourth round
-among them. A rider and the mark it lays
+riders and moves, and what the pass has decided or proposed, his rulings of the fourth and
+fifth rounds among them. A rider and the mark it lays
 share a row. "Planned" is a draft the engine does not run; "in design" is a machine not
 dealt. The pass itself is `docs/vocabulary_pass_proposal.md`; his marks on this table fold
 into it. `tools/pages/vocabulary_marks_page.py` turns this file into the page he marks on.
@@ -19,7 +19,7 @@ into it. `tools/pages/vocabulary_marks_page.py` turns this file into the page he
 | Penetrate | Rider, ours | The other rank of the target's column takes the rider's number | Enfilade Beam (tier one). The Cottonmouth's drum at the back rank |
 | Chain | Rider, ours | Every other Shocked foe takes the rider's number. Their Shock stands | Arc Fault Cannon (tier one) |
 | Spillover | Rider, ours, a module's | Damage past a kill in the front rank carries into the foe behind | Overrun Gearing (module, tier two) |
-| Breach, ours | Rider, ours | The blow ignores a foe's armour | Overclocked Railgun (tier one). The Ammit's Soulcutter Talons. The Wild Boar's next weapon after it gains a Barrier |
+| Breach, ours | Rider, ours. Cut 15 November, his: the property stays, written on its piece | The blow ignores a foe's armour | Overclocked Railgun (tier one). The Ammit's Soulcutter Talons. The Wild Boar's next weapon after it gains a Barrier |
 | **Our riders: a mark on a foe** | | | |
 | Burn, lays Burning | Rider, ours. Debuff on a foe | Stacks. At the start of its action the foe loses a point of hit points a stack, past armour, then a stack fades | Incendiary Shells, Blazethrower (tier one). Stoker, Meteor Artillery (tier two). Gravity Knuckles (tier three). Solar Flare Array (planned). A Primed machine's blows |
 | Flak | Rider, ours. Debuff on a foe | Stacks. Every weapon blow on the foe lands a point more a stack. Halves each round | Airburst Shell (tier one). Flak Cannon (tier two). The Prairie Dog's Flakshot Repeater. The Dingo's Hollow-point Harpoon. The Musk Ox's Shrapnel Recuperator |
@@ -60,7 +60,7 @@ into it. `tools/pages/vocabulary_marks_page.py` turns this file into the page he
 | Rallied | Buff on a machine | Its team has one reroll more this round | The Giant Petrel's Immelmann Booster. The Swallowtail's Reveille Horn (in design) |
 | Pinned Empowered | The round's rule, a kit's | No Empowered halves at this round's end, on any unit | The Ammit's Soul Siphon |
 | **The foes' riders: a mark on a machine** | | | |
-| Breach, the foes' | Rider, the foes' | The blow ignores the shield and the armour and lands whole on the hull. A Ward turns it away | 34 foes. At tier one: the Needler, the Zombie Knight, the Sandworm, the Magma Elemental, the Roc, the Bomb's last blow; the Old Man of the Desert, the Reaper, the Pilgrim |
+| Breach, the foes' | Rider, the foes'. Cut 15 November, his; it leaves with the fold-in | The blow ignores the shield and the armour and lands whole on the hull. A Ward turns it away | 34 foes. At tier one: the Needler, the Zombie Knight, the Sandworm, the Magma Elemental, the Roc, the Bomb's last blow; the Old Man of the Desert, the Reaper, the Pilgrim |
 | Burn, lays Burning, on a machine | Rider, the foes'. Debuff on a machine | Stacks. A point of heat a stack as the player's turn ends, then a stack fades | The Drake's and the Wyvern's Stoke. The Bane. Rotbloom. The Fiend of Fire. A pack the Magma Lizard has primed |
 | Scorch, lays Scorched | Rider, the foes'. Debuff on a machine | Every weapon and equipment the machine aims at a foe runs hotter a stack, this turn alone | 21 foes. At tier one: the Salamander, the Drake, the Bomb, Cerberus; the Goblin Nob, the Cinder Tortoise. On every machine at once: the Magma Elemental and its kin, the Red Dragon, the Black Mage, the Summoner |
 | Corrupt, lays Corrupted | Rider, the foes'. Debuff on a machine | The entry the die shows bites its owner when spent, a bite a stack, shield first, for the rest of the fight | 13 foes. At tier one: the Reaper, the Rust Monster, the Fell Rider. Above: the Barbed Needler, the Gorgon, the Wraith, Rotbloom; the Emperor Scorpion, the Marsh Serpent |
@@ -101,6 +101,6 @@ into it. `tools/pages/vocabulary_marks_page.py` turns this file into the page he
 | Overheated | Debuff on a machine, the reboot's | Heat past the maximum stays, a stack a point, and burns hull a stack at every END TURN. No cleanse lifts it | Every machine, behind the REBOOT trial |
 | Broken | Debuff on a machine, the reboot's | A shield at nothing gains no shield by any method until the reboot. No cleanse lifts it | Every machine, behind the REBOOT trial |
 | Ablate, lays Ablating | Decided 15 November, his word and form: one rule for Burn on both sides | Stacks. As its side's turn comes round the unit loses a point a stack, then a stack fades. On a foe hit points, past armour. On a machine the shield first, then the hull past armour. A tick ignores a Barrier | Replaces Burn and Burning on every piece and foe that carries them. Not built |
-| Exposed, on a machine | Decided 15 November, his | The machine's armour of every kind counts for nothing at once and until the end of the next round, and as the next round opens every targeted intent turns on it, the whole field. Nothing happens to its shield. A Lure moves the fire, and the mark as it is announced; a Ward turns it; a Cleanse gives the armour back and leaves the intents. The foes try it on one machine at a time | No foe yet: tier two and up, in formations that suit it. Not built |
-| Breach, the foes', as shield damage | Proposed, his of 15 November, and in question since: whether the foes need Breach at all | The blow deals more to a shield, in place of ignoring shield and armour. It no longer reaches the hull directly | Would replace the foes' Breach, as one domain's identity at most. Not built |
-| Ignores armour | Decided 15 November, his: a property written on the piece, no keyword | The blow ignores a foe's armour | Replaces our Breach on its three carriers: the Overclocked Railgun, the Ammit's Soulcutter Talons, the Wild Boar's next weapon after it gains a Barrier. Not built |
+| Exposed, on a machine | Decided 15 November, his | The machine's armour of every kind counts for nothing at once and until the end of the next round, and as the next round opens every targeted intent turns on it, the whole field, until the blows already drawn would wreck it. Nothing happens to its shield. A Lure moves the fire, and the mark as it is announced; a Ward turns it; a Cleanse gives the armour back and leaves the intents. The foes try it on one machine at a time | No foe yet: tier two and up, in formations that suit it. Not built |
+| Breach, the foes', as shield damage | Set aside 15 November with the word, which he cut on both sides | The blow deals more to a shield, in place of ignoring shield and armour. It no longer reaches the hull directly | On the shelf, as one domain's identity on a few foes at most. Not built |
+| Ignores armour | Decided 15 November, his: a property written on the piece, no keyword, on pieces of a higher tier or behind a gate | The blow ignores a foe's armour | Replaces our Breach on the Ammit's Soulcutter Talons and the Wild Boar's next weapon after it gains a Barrier. The Overclocked Railgun, a tier-one find, is the one open piece, its place his. Not built |

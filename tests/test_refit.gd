@@ -210,6 +210,55 @@ func test_tier_ones_rank_and_file_gain_a_hit_point_and_no_other_foe_moves() -> v
 	assert_eq(Refit.apply(_own(), Refit.parse("")), [], "and no part moves nothing")
 
 
+## The foes' breach, cut (Ryan, 15 November: "Sure, let's cut breach"): every foe's move loses
+## the rider, its other riders stay, and no piece of the team's moves. The what-if plays the cut
+## ahead of the fold-in and leaves with it, once content's foes carry none.
+func test_the_foes_breach_is_cut_and_nothing_else_moves() -> void:
+	var db := _own()
+	var before := {}
+	var carried := 0
+	var breacher := ""
+	var its_move := ""
+	for fid in db.foes.keys():
+		var kept: Array = []
+		for a in db.foes[fid].get("actions", []):
+			var riders: Array = (a.get("keywords", []) as Array).duplicate()
+			if riders.has(Refit.BREACH):
+				carried += 1
+				if breacher.is_empty():
+					breacher = str(fid)
+					its_move = str(a.get("id", ""))
+			riders.erase(Refit.BREACH)
+			kept.append(riders)
+		before[fid] = kept
+	assert_true(carried > 0, "content's foes breach today, on %d moves" % carried)
+	var ours := {}
+	for cid in db.components.keys():
+		ours[cid] = JSON.stringify(db.components[cid])
+	var was := db.make_foe(breacher)
+	for a in was.actions:
+		if str(a.get("id", "")) == its_move:
+			was.action = a
+	assert_true(was.breaches(), "%s's %s breaches as content has it" % [breacher, its_move])
+	assert_eq(str(Refit.parse("breach=cut")["breach"]), "cut", "the part parses")
+	var notes := Refit.apply(db, Refit.parse("breach=cut"))
+	assert_eq(notes.size(), 1, "one line says what moved: %s" % str(notes))
+	for fid in db.foes.keys():
+		var i := 0
+		for a in db.foes[fid].get("actions", []):
+			assert_eq(Array(a.get("keywords", [])), before[fid][i], "%s's %s keeps every rider but the breach" % [fid, str(a.get("id", ""))])
+			i += 1
+	for cid in db.components.keys():
+		assert_eq(JSON.stringify(db.components[cid]), ours[cid], "%s, a piece of the team's, is as content has it" % cid)
+	var now := db.make_foe(breacher)
+	for a in now.actions:
+		if str(a.get("id", "")) == its_move:
+			now.action = a
+	assert_false(now.breaches(), "a foe made after the what-if lands a plain blow")
+	assert_eq(now.damage_of(now.action), was.damage_of(was.action), "of the same size")
+	assert_eq(str(Refit.parse("")["breach"]), "", "and unsaid, the foes breach as content has them")
+
+
 ## The what-ifs left over the landed model: a flat regen in place of each chassis's own, an
 ## offset on the cooling, every weapon hotter, and a price on the Barrier basic.
 func test_the_what_ifs_move_the_regen_the_cooling_the_heat_and_the_barriers_price() -> void:

@@ -188,7 +188,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   design-session briefs (`briefs/`, with a README that says what each waits on), the economy
   pass (`economy_pass.md`), the formation pass (`formation_proposal.md`: its grids landed in `content/factions.json` on
   10 November, re-cut to the roles, and its tool retired with them; kept for the bosses' stat
-  blocks, its section 6, and the flankers' slate and bench, its section 13), the refit pass's brief (`briefs/refit_pass.md`: the resource model Ryan set on 9 November, the formation pass folded into it), the locked pieces' footing (`locked_pieces_proposal.md`: Ryan's direction of 10 November, glue kept locked and a bought level that lifts the whole machine, waiting on his marks), the vocabulary pass (`vocabulary_pass_proposal.md`, 14 and 15 November, four rounds: every rider, cost, buff and debuff on both sides read against the reboot and the yardstick for the basics, our riders measured on the vanilla and the foes' on the standard blow, the vanilla one under the standard foe or two, armour against the hit sizes, the foes' Burn as a status that erodes on both sides, the Barrier unwound, what still grants shield or cooling, the tier-one bench and the approach to the defence side, his third round's calls with Ward read in the Barrier basic's slot, and his fourth round's: Exposed for the foes as one rule, Breach off the player's side, and whether the foes need Breach at all; with `vocabulary_table.md`, every rider, buff and debuff in one table by name, type, effect and where it exists, which he marks on its page; waiting on his marks), the bosses' and elites' slate (`bosses_proposal.md`), the heroes'
+  blocks, its section 6, and the flankers' slate and bench, its section 13), the refit pass's brief (`briefs/refit_pass.md`: the resource model Ryan set on 9 November, the formation pass folded into it), the locked pieces' footing (`locked_pieces_proposal.md`: Ryan's direction of 10 November, glue kept locked and a bought level that lifts the whole machine, waiting on his marks), the vocabulary pass (`vocabulary_pass_proposal.md`, 14 and 15 November, five rounds: every rider, cost, buff and debuff on both sides read against the reboot and the yardstick for the basics, our riders measured on the vanilla and the foes' on the standard blow, the vanilla one under the standard foe or two, armour against the hit sizes, the foes' Burn as a status that erodes on both sides, the Barrier unwound, what still grants shield or cooling, the tier-one bench and the approach to the defence side, his third round's calls with Ward read in the Barrier basic's slot, and his fourth and fifth rounds': Exposed for the foes as one rule, Breach cut on both sides, and where a piece that ignores armour may sit; with `vocabulary_table.md`, every rider, buff and debuff in one table by name, type, effect and where it exists, which he marks on its page; waiting on his marks), the bosses' and elites' slate (`bosses_proposal.md`), the heroes'
   pass beyond Final Fantasy (`heroes_proposal.md`), the mechanics audit (`mechanics_audit.md`),
   the skirmish code audit (`skirmish_audit.md`: exceptions, duplicates and dead code, its
   questions and its order of work) and the roster analysis (`roster_analysis.md`, published as a page by
@@ -319,7 +319,9 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # more) and "top=N" (the basic guns that deal more than the plainest make N more heat), the two
 # of Ryan's logic for the stock basics (the refit brief's section 23), "foehp=N" (every foe a
 # tier-one formation fields that is no massive has N more hit points: the standard foe 5 where
-# it is 4, his two options of 15 November for a vanilla of 3),
+# it is 4, his two options of 15 November for a vanilla of 3), "breach=cut" (every foe's move
+# loses its breach and lands as a plain blow: his cut of 15 November, played ahead of the
+# fold-in, where the word leaves the engine and content),
 # "barrier=cooldownN" (the Barrier basic sits out N rounds
 # once spent, 0 for none, where content gives it 1), "barrier=heatN" (it costs N heat) or
 # "barrier=none" (it leaves the stock dice, the Armoured basic in its slot); comma-separated;
@@ -542,7 +544,9 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # a point of damage up, the plain ones 3 where they are 2; the what-if's basics), TOP BASIC
 # (BUILT, +2, +4: more heat on the basic guns that deal more than the plainest; the what-if's
 # top), RANK AND FILE (BUILT, +1: a hit point more on tier one's rank and file, the massive foes
-# as built; the what-if's foehp) and BARRIER BASIC (BUILT, NONE: the Barrier
+# as built; the what-if's foehp), FOE BREACH (BUILT, CUT: every foe's breach cut, its blow
+# meeting the shield and the armour, the moves' texts unchanged; the what-if's breach=cut)
+# and BARRIER BASIC (BUILT, NONE: the Barrier
 # basic on the stock dice, or the Armoured basic in its slot; the what-if's barrier=none): pick, close the app, open it, and start a new
 # battle or run, since a saved one keeps the numbers it was saved with. RIFTGATE_OVERHEAT=2 (any battle) sets the hull an overheat burns a point of heat past
 # the gauge, 1 the game's; the same page's OVERHEAT (×1, ×2, ×3) sets it on the phone, read

@@ -1,4 +1,4 @@
-# The vocabulary pass, 14 and 15 November (four rounds; his calls of the third in section 16, of the fourth in section 17)
+# The vocabulary pass, 14 and 15 November (five rounds; his calls of the third in section 16, of the fourth and fifth in section 17)
 
 Every rider, keyword, cost, buff and debuff on both sides, read against the reboot and the
 yardstick for the basics. It began as the rider and keyword pass and Ryan widened it in its
@@ -116,11 +116,21 @@ and 23): "On that note, let's do the rider and keyword pass now."
 > shields suck here, but only if it asks an interesting question and not an unfair one.
 > We've already nerfed shields pretty hard already with the other changes.
 
+**His words, the fifth round**, the same day, on the fourth round's report:
+
+> Exposed: keep the logic where enemies don't try and overkill. That helps keep it fair. So
+> the whole field targets up until predicted death, then the rest pick intent targets as
+> normal.
+>
+> Sure, let's cut breach. And the player armour piercing pieces should be higher tier,
+> obviously, or gated, I think. Else they become obvious best faces for certain domains,
+> right?
+
 The table is `docs/vocabulary_table.md`, and its page for his marks is in the status's
-Pages. Section 16 has what the third round called; section 17 has the fourth: his rulings
-on what the third opened, Exposed for the foes as one rule, Breach off our side, and
-Claude's answer to his question on the foes' Breach. The sections before them stand as the
-second round left them but where they say otherwise.
+Pages. Section 16 has what the third round called; section 17 has the fourth and the fifth:
+Exposed for the foes as one rule, Breach cut on both sides with the reasoning he agreed to,
+and where a piece that ignores armour may sit. The sections before them stand as the second
+round left them but where they say otherwise.
 
 What it reads against:
 
@@ -1068,14 +1078,17 @@ Each with Claude's lean. Nothing here is built or changed in content.
 13. **The bench** (section 13): its five rules, and where its pieces live.
 14. **The defence side's approach** (section 14): the units, then a model, before any
     shield or hull is renumbered.
-15. **Exposed for the foes** (section 17). *Called 15 November*: the whole field, at tier two
-    and up, one machine at a time, a Lure wins, armour of every kind. Still his: whether a
-    machine that stands Exposed may be marked again. Lean: no.
-16. **Breach on our side** (section 17). *Called 15 November*: the word leaves, and the
-    property is written on its three pieces.
-17. **Breach on the foes' side** (section 17). His question, whether it is needed. Lean:
-    no, cut the word on both sides; "shields suck here" is a weighting of Ablate and Scorch;
-    the shield form stays on the shelf with its reads and its test.
+15. **Exposed for the foes** (section 17). *Called 15 November*: the whole field up to the
+    machine's predicted death, the rule that foes never overkill kept; at tier two and up,
+    one machine at a time, a Lure wins, armour of every kind. Still his: whether a machine
+    that stands Exposed may be marked again. Lean: no.
+16. **Breach on our side** (section 17). *Called 15 November*: the word leaves, the property
+    is written on its pieces, and such a piece sits at a higher tier or behind a gate. Still
+    his: the Overclocked Railgun, the one open tier-one piece it reaches. Lean: it drops the
+    property and keeps its tier.
+17. **Breach on the foes' side** (section 17). *Called 15 November*: cut. "Shields suck
+    here" is a weighting of Ablate and Scorch, and the shield form stays on the shelf with
+    its reads and its test. It leaves the engine with the fold-in, and a dial plays it now.
 
 What follows his marks: the bench's grid as a table in chat, then built and read; the fold-in
 of the reboot, on his go, carrying the cuts he marks here; the defence side's model.
@@ -1126,7 +1139,7 @@ Scorch, Corrupt and Disable. So Claude leans to Ward in the slot once tier one's
 Ablate, and to the Armoured basic or a gun there until then; and to a round's cooldown on it
 as the Barrier had, since a Ward on the right machine turns an Exposed whole.
 
-## 17. The fourth round, 15 November: Exposed for the foes, Breach off our side, and whether the foes need it
+## 17. The fourth and fifth rounds, 15 November: Exposed for the foes, Breach cut, and where a piece that ignores armour may sit
 
 **What he ruled** (his words in full at the head of this file):
 
@@ -1140,6 +1153,13 @@ as the Barrier had, since a Ward on the right machine turns an Exposed whole.
   out take every reroll a round gives. It reads the foes' own side against the round's two
   and never the team's bank, which is the rule that no move is gated on the player's state.
 - His question: whether the foes need Breach at all.
+
+**What the fifth round called**, on that report:
+
+- Exposed keeps the rule that foes never overkill: "the whole field targets up until
+  predicted death, then the rest pick intent targets as normal."
+- Breach is cut: "Sure, let's cut breach." Both sides lose the word.
+- A piece of ours that ignores armour sits at a higher tier or behind a gate.
 
 ### Exposed, on a machine: the rule as ruled
 
@@ -1157,9 +1177,11 @@ Decided, not built. It rides with the vocabulary's build.
    armour stays: "Exposed does not strip the petrel's resistant shield", its Riot Field's
    point off every blow while the shield stands.
 4. *The next round.* As it opens every targeted intent turns on the Exposed machine,
-   whatever each foe's aim: the whole field. A foe whose move aims at no machine is not made
-   to strike. The rule that foes never pile onto a machine their blows would already wreck
-   stands aside for it, which was Claude's lean the other way and his answer: it lives where
+   whatever each foe's aim, until the blows already drawn would wreck it. From there the
+   rest pick as they would. So it is the whole field and never an overkill: "keep the logic
+   where enemies don't try and overkill. That helps keep it fair. So the whole field targets
+   up until predicted death, then the rest pick intent targets as normal." A foe whose move
+   aims at no machine is not made to strike. His reasons for the whole field: it lives where
    the player has tools; "for a tank, it's too much of a good thing, which is the point";
    and "not all foes will attack every round".
 5. *After the intents.* "Exposed sets the intents, everything after proceeds as normal." A
@@ -1189,16 +1211,65 @@ and the turn the fire comes is the worst; and work for the Lure and the Ward.
 ### Breach, off our side
 
 Decided, not built. The word leaves our vocabulary and the property stays, written on its
-piece: the Overclocked Railgun, the Ammit's Soulcutter Talons and the Wild Boar's charge
-each say that the blow ignores armour. A foe's armour then has three answers on our side: a
-piece that says so, Expose, and Ablate. The Boar's buff carries the word in its name,
-Juggernaut Breach, and the name is his.
+piece: a piece that carries it says that the blow ignores armour. A foe's armour then has
+three answers on our side: a piece that says so, Expose, and Ablate. The Boar's buff carries
+the word in its name, Juggernaut Breach, and the name is his.
 
-It is built with the foes' side settled, in one pass: the keyword, its glyph, its term and
-its weights leave together if the foes' Breach goes too, and stay as the foes' alone if it
-does not.
+The foes' side is settled too, so the word leaves the engine whole in one pass, with the
+fold-in: the keyword, its glyph, its term, its weights and the tests of the rule.
+
+### Where a piece that ignores armour may sit
+
+His fifth round: "the player armour piercing pieces should be higher tier, obviously, or
+gated, I think. Else they become obvious best faces for certain domains, right?"
+
+Right, and the pass had measured it. Armour is flat, so ignoring it is worth the plate on
+every strike, whatever the strike's size:
+
+| The piece | Against plate 1: lands, and with the property | Against plate 2 |
+|---|---|---|
+| A vanilla of 3 | 2, and 3 | 1, and 3 |
+| 2 twice | 2, and 4 | nothing, and 4 |
+| 1 four times, the Talons' shape | nothing, and 4 | nothing, and 4 |
+| One shot of 8, the Railgun's shape | 7, and 8 | 6, and 8 |
+
+On the marks of section 6, eight foes of 3 behind a point of plate, the vanilla cost 13.6%
+of a four's hull, the gun that deals one more 6.9%, and the vanilla with the property 6.4%.
+So on a small gun it is the whole gun wherever a domain is plated, and at the point of heat
+section 4 priced it at it beats the next rung of the ladder. That is no decision, and his
+rule follows.
+
+What it reaches today:
+
+- *The Ammit's Soulcutter Talons*: its own fixed piece, at tier three, and four strikes of 1
+  that are nothing without it. Already both.
+- *The Wild Boar's charge*: at tier two, and only after it gains a Barrier. Already both.
+- *The Overclocked Railgun*: a tier-one find any machine may slot. The one piece the rule
+  moves.
+
+Two things Claude adds.
+
+1. *A gate does more than a tier.* Plate grows with the tiers, 2 on the promoted forms and 3
+   on the Metal Gel, so the property is worth more up there, and a higher tier alone makes
+   it rarer and no less the best face. A kit's own piece or a condition keeps a decision
+   beside it. So the firmer reading of his rule is "a kit's or gated", with the tier as the
+   lighter of the two.
+2. *The open answer to plate is already size.* A flat point comes off every strike, so one
+   big shot loses an eighth where two small ones lose half, and that needs no property. The
+   Railgun's 8 is that answer, which is why Claude leans to take the property off it and
+   leave it at tier one, where the hot single shot against the split gun is the bench's own
+   question. Its place is his, in the bench's pass.
+
+The rule of thumb it leaves for a new piece: never on an open gun of small or many strikes.
 
 ### Whether the foes need Breach
+
+**His call, the fifth round: "Sure, let's cut breach."** What follows is the question and
+the reasoning he agreed to, kept for the record. The cut leaves the engine and content with
+the fold-in, since its premise is the reboot's, and a debug build's FOE BREACH dial plays
+the foes without it now. Thirty-four foes carry it on thirty-seven moves, all but four of
+whose texts name the shield, and some two dozen codex entries say "through the shield", so
+the cut carries those drafts for his writing.
 
 His question: "My question about enemy breach is if it's even needed. It could be a domain
 identity, i.e. shields suck here, but only if it asks an interesting question and not an
@@ -1255,7 +1326,7 @@ is interesting when it changes who takes a blow or when the reboot comes.
    machine carries. The bot, which does not weigh the trade, reboots more under it.
 3. One word fewer on both sides, and an engine path with it.
 
-**If he keeps it**, the form that passes the test is narrow: double and no more; on a few
+**On the shelf**, the form that passes the test is narrow: double and no more; on a few
 killable rank and file of one domain; never on an elite's or a boss's one blow; never on
 every foe of a formation; and at tier two and up, as Exposed is. The Waste carries four of
 its lines today, the Marsh one and the Peak three.
@@ -1266,7 +1337,7 @@ three have none.
 
 | The foes' Breach | A formation | An elite | A boss | A formation, no Barrier basic | An elite | A boss |
 |---|---|---|---|---|---|---|
-| As built: past shield and armour | 8.1% | 11.1% | 26.5% | 9.1% | 24.6% | 46.8% |
+| As built: past shield and armour | 8.1% | 11.1% | 26.5% | 9.2% | 24.6% | 46.8% |
 | Double to a shield | 6.8% | 10.8% | 25.8% | 7.5% | 23.4% | 46.0% |
 | Cut: a plain blow | 5.7% | 10.6% | 25.6% | 6.4% | 22.0% | 46.5% |
 
@@ -1276,3 +1347,53 @@ their size. Reboots hardly move: 0.64 a machine a formation as built, 0.70 cut, 
 double. So the bill is the rank and file's. Thirty-four foes lose the rider, and the six
 tier-one lines that carry it want their numbers or a mark read again, which is the defence
 side's pass (section 14).
+
+## 18. His marks on the table, folded as they come
+
+He began marking the table's page on 15 November. The rows below carry a mark of his own,
+beside the twelve seeded from his calls in chat. Read at 09:23 UTC that day, while he was
+still marking down the table, so this is the first of several folds: fourteen rows, from
+the shapes of a blow to Web.
+
+| Row | His mark | His note |
+|---|---|---|
+| Spread | Keep | |
+| Splash | Cut | "It might be a more interesting game with only the other area shapes, with a few select pieces carrying both spread and penetrate together." |
+| Penetrate | Keep | |
+| Chain | Keep | |
+| Spillover | Change | "As a module only effect, this does not need to be a keyword. It can be unique text." |
+| Flak | Keep | |
+| Shock, lays Shocked | Keep | |
+| Sap, lays Sapped | Keep | |
+| Cryo | Keep | |
+| Suppress, lays Suppressed | Keep | |
+| Disrupt | Keep | |
+| Lure | Keep | |
+| Purge, ours | Keep | |
+| Web, lays Webbed | Change | "I don't think this needs to be listed as a keyword." |
+
+He passed two seeded rows on the way and left them as they were: Breach, ours, cut, and
+Expose, kept.
+
+**Splash, read against the records.** The cut costs no shape.
+
+- Splash is Spread and Penetrate at one number by its own rule, and it measures so: a point
+  and a half on the vanilla, against Spread's point and Penetrate's six tenths (section 2).
+- Two pieces print it, the Howitzer and the Musk Ox's Shrapnel Recuperator, each Splash 1.
+  They would print Spread 1 and Penetrate 1, which is his "few select pieces carrying both".
+- No tier-one chassis stocks it today: the Howitzer stands on the Clydesdale and the
+  Funnel-web at tier two and on the Swallowtail, in design, and the Recuperator is the Musk
+  Ox's, at tier three. The Howitzer is itself a tier-one piece, so a tier-one rift may deal
+  it as a find.
+- So the shapes of a blow come down to two words and Chain.
+
+**Spillover and Web, off the keyword list.** Each is one piece's rule, so each can be that
+piece's own text: Spillover is the Overrun Gearing's, a tier-two module, and its codex
+already says no component carries it; Web is the Funnel-web's locked Web Bomb. Webbed, the
+mark the web leaves on a foe, keeps its chip, since a status the player sees on a foe wants
+a name to tap. Whether he means the status too is his to say. With Breach, that is three
+words off our list in a day and "ignores armour" the fourth written out, the same move each
+time: a rule one piece carries is written on the piece.
+
+All of it is built with the vocabulary's calls once his marks are in, at the strength of
+his notes: "It might be a more interesting game with only the other area shapes."

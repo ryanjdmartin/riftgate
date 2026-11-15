@@ -30,6 +30,10 @@ extends RefCounted
 ##              leaves as it falls, has N more hit points (Ryan, 15 November: "Ok let's go 3
 ##              against 5 or 3 against 4 as the options": the standard foe a point up beside
 ##              basics=1, so both can be played); may be negative, never under one
+##   breach=cut every foe's move loses its breach and lands as a plain blow, the shield first
+##              and armour off what passes it (Ryan, 15 November: "Sure, let's cut breach": the
+##              cut played ahead of the fold-in, where it leaves the engine and content); the
+##              team's own pieces are untouched
 ##   barrier=cooldownN  the Barrier basic sits out N rounds once spent, after the round of the
 ##                      spend (a cooldown's own count); 0 for none, and the bare word is 1
 ##   barrier=heatN      the Barrier basic makes N heat
@@ -37,11 +41,12 @@ extends RefCounted
 ##                      (the Barrier's place, open since 12 November: a basic, or rare or locked)
 
 const BARRIER := "barrier"   # the status the Barrier basic grants (the engine's word)
+const BREACH := "breach"   # the rider a foe's move carries (the engine's word)
 const ARMOURED := "braced"   # the status the Armoured basic grants
 
 
 static func parse(text: String) -> Dictionary:
-	var spec := {"regen": "", "cooling": 0, "hotter": 0, "basics": 0, "top": 0, "foehp": 0, "barrier": ""}
+	var spec := {"regen": "", "cooling": 0, "hotter": 0, "basics": 0, "top": 0, "foehp": 0, "breach": "", "barrier": ""}
 	for part in text.split(",", false):
 		var p := part.strip_edges()
 		if p.begins_with("regen="):
@@ -56,10 +61,12 @@ static func parse(text: String) -> Dictionary:
 			spec["top"] = int(p.trim_prefix("top="))
 		elif p.begins_with("foehp="):
 			spec["foehp"] = int(p.trim_prefix("foehp="))
+		elif p.begins_with("breach="):
+			spec["breach"] = p.trim_prefix("breach=")
 		elif p.begins_with("barrier="):
 			spec["barrier"] = p.trim_prefix("barrier=")
 		elif not p.is_empty():
-			push_error("--refit: no part '%s' (regen=half|N, cooling=N, hotter=N, basics=N, top=N, foehp=N, barrier=cooldownN|heatN|none; the model's die, its regen by chassis and the basics' heat are content since 10 November)" % p)
+			push_error("--refit: no part '%s' (regen=half|N, cooling=N, hotter=N, basics=N, top=N, foehp=N, breach=cut, barrier=cooldownN|heatN|none; the model's die, its regen by chassis and the basics' heat are content since 10 November)" % p)
 	return spec
 
 
@@ -129,6 +136,22 @@ static func apply(db: ContentDB, spec: Dictionary) -> Array[String]:
 			db.foes[fid]["hp"] = maxi(1, int(db.foes[fid].get("hp", 1)) + foehp)
 			raised.append("%s %d" % [str(db.foes[fid].get("name", fid)), int(db.foes[fid]["hp"])])
 		notes.append("tier one's rank and file (%+d hit points): %s" % [foehp, ", ".join(raised)])
+	# The foes' breach, cut (the vocabulary pass, 15 November): every move that carried it lands
+	# as a plain blow, whatever foe it is on; the team's own pieces keep what they print.
+	var breach_rule := str(spec.get("breach", ""))
+	if breach_rule == "cut":
+		var plain: Array[String] = []
+		for fid in db.foes.keys():
+			var lost := false
+			for a in db.foes[fid].get("actions", []):
+				if a is Dictionary and a.has("keywords") and a["keywords"] is Array and (a["keywords"] as Array).has(BREACH):
+					(a["keywords"] as Array).erase(BREACH)
+					lost = true
+			if lost:
+				plain.append(str(db.foes[fid].get("name", fid)))
+		notes.append("the foes' breach cut, %d foes' moves landing as plain blows: %s" % [plain.size(), ", ".join(plain)])
+	elif not breach_rule.is_empty():
+		push_error("--refit: breach=%s is no rule (cut)" % breach_rule)
 	# The Barrier basic's price, a question the first reads raised (a free Barrier is spent every
 	# round it is rolled): so many rounds dark once spent, or so much heat. The number is a
 	# cooldown's own, the rounds sat out after the round of the spend; until 12 November this
