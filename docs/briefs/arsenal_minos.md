@@ -89,6 +89,24 @@ hip. Acts: a predator at rest (flares the pack, crouches and rises on its digiti
 uncoils the whip, turns its horned head and holds); it hovers, balancing like a platform on
 water. Its model is a new lowforge kind: digitigrade legs on hoverjets under a winged pack.
 
+A first look test of it, 15 November, on Ryan's ask of that day for the chassis with a
+direction ("let's see what you come up with for all of these. Doesn't have to be too detailed
+since none are finalized"): `docs/looks/arsenal_minos.png`, built by
+`tools/lowforge/looks/minos_looks.py`, never content until the chassis lands. The figure as
+above, 126 tall with its horns and 77 across the wings, taller than the Nemesis: hunched
+forward over a bare red-lit spine, a keeled chest with three lit ribs a side, shoulder blades
+swept back, a low wedge head with two slit eyes, the winged pack with twin thrusters blowing
+down and back, and digitigrade legs that hang and trail, a hoverjet at each hock. A homage in
+its cues alone, no one suit's or unit's head, chest or colours. Claude's choices, his to
+change: an uneven stance, its left arm raised and its right hanging to the shin; the corruption
+as the left wing broken short and uneven horns, the right longer with a second tine; the locked
+piece a plain drum on the right forearm, since its kit is in question; hp_1 and hp_2 as racks
+on the wing roots over the shoulders, where the proposal had them beside the thrusters, hp_3 a
+barrel along the left forearm and hp_4 a twin barrel on the right hip. A second row adds a
+segmented tail coiling under its feet to a hook, the judge's tail of its name, which nobody
+asked for: his to strike or keep. His to judge besides: the codex angle is busy, dark on dark;
+from above it reads as wings, racks, horns and trailing legs.
+
 **Engine and tests**, as proposed: medium. A turn of the ranks after `_resolve_attack`,
 collected across the Chain's recursive calls (its list of foes touched is local today); the
 swap of `front` and `back` in a column and each foe's `rank`; the forecast and the drawing on
@@ -150,6 +168,7 @@ The first round's answer is above; Ryan has given none.
    foes' formations to be worth its slot (the round: as written, decided now, built after).
 2. A human-sized boss: whether Minos turns it as it turns any foe (the rule as written does),
    and a boss in parts.
+3. Its look: his read of the first look test (15 November), the tail with it, or another round.
 
 ## Holes already raised
 
