@@ -21,7 +21,13 @@ coiling his tail): a segmented cable from the base of the spine, hanging and coi
 the feet to a hook. Nobody asked for it; it is there to be struck or kept.
 
 Not content: built only by build_look.py and sheet.py, x right, y forward, z up, as in
-models_low.py. Hovers: the lowest claw at about z = 6."""
+models_low.py. Hovers: the lowest claw at about z = 6.
+
+Second round, the same day, on Ryan's notes ("Minos is actually pretty close to what I thought. No
+tail. Maybe bump up the wings so it's more obvious in the silhouette"): the figure as it stood, no
+tail, and the pack's wings grown (`_big_wing`): longer, deeper and cranked at mid-span, the outer
+panel raked back to a narrow tip with two blades off its trailing edge, the left one still broken
+short on the slant. Two sizes on the sheet, his to pick between or past."""
 
 import math
 
@@ -130,7 +136,52 @@ def _tail(b):
     _spike(b, _add(tip, (-0.6, 1.5, 2.5)), _add(tip, (-1.0, -4.0, 6.0)), 1.1, "steel.dark", "tail_barb")
 
 
-def _minos(b, tail=False):
+def _big_wing(b, s, whole, span, chord):
+    """Round two's wing: round one's swept wing off the pack, `span` times as long and `chord` times
+    as deep, cranked at mid-span so the outer panel rakes back to a narrow tip. The left one
+    (`whole` false) is still broken short, cut on the slant across its outer panel."""
+    CRANK = 0.5
+    keys = [  # (t along the span, x out from the pack, the leading edge's y, the chord, the top's z, the thickness)
+        (0.0, 9.0, -6.5, 16.0 * chord, 97.2, 2.8),
+        (CRANK, 9.0 + 35.0 * span * CRANK, -6.5 - 6.0 * span, 12.0 * chord, 97.2 + 7.5 * span, 2.0),
+        (1.0, 9.0 + 35.0 * span, -6.5 - 24.0 * span, 4.5 * chord, 97.2 + 13.0 * span, 1.1),
+    ]
+
+    def at(t):
+        lo, hi = (keys[0], keys[1]) if t <= CRANK else (keys[1], keys[2])
+        return _lerp(lo, hi, (t - lo[0]) / (hi[0] - lo[0]))
+
+    def lead(t, top=True):
+        _, x, y, _c, z, th = at(t)
+        return (s * x, y, z if top else z - th)
+
+    def trail(t, top=True):
+        _, x, y, c, z, th = at(t)
+        return (s * x, y - c, (z - 1.2 if top else z - 1.2 - th))
+
+    def section(tl, tt):
+        return [lead(tl), trail(tt), trail(tt, False), lead(tl, False)]
+
+    # The panels: the inner one whole; the outer to its tip, or to the break (further out along the
+    # leading edge than the trailing one, so the stump ends on a slant).
+    ends = (1.0, 1.0) if whole else (0.86, 0.66)
+    for (l0, t0), (l1, t1) in (((0.0, 0.0), (CRANK, CRANK)), ((CRANK, CRANK), ends)):
+        _wing(b, section(l0, t0), section(l1, t1), "steel.plate", "wing")
+        # A dark leading edge, and a seam along the top lit like a crack.
+        _beam(b, _add(lead(l0), (0.0, 0.7, -1.3)), _add(lead(l1), (0.0, 0.7, -0.7)), _sq(1.8, 3.6), _sq(1.5, 2.2), "steel.dark", "wing_edge")
+        a0, a1 = _lerp(lead(l0), trail(t0), 0.42), _lerp(lead(l1), trail(t1), 0.42)
+        _slab(b, [_add(_lerp(a0, a1, 0.06), (0.0, 0.9, 0.3)), _add(_lerp(a0, a1, 0.95), (0.0, 0.6, 0.3)),
+                  _add(_lerp(a0, a1, 0.95), (0.0, -0.6, 0.3)), _add(_lerp(a0, a1, 0.06), (0.0, -0.9, 0.3))], (0.0, 0.0, 1.0), 0.5, "glass.glass", "wing_seam")
+    if whole:
+        # Two blades off the outer panel's trailing edge, raked back and out, so the wing ends in points.
+        for t, reach in ((0.68, 9.0), (0.86, 7.0)):
+            base = _add(_lerp(trail(t), lead(t), 0.12), (0.0, 0.0, -0.6))
+            _spike(b, base, _add(base, (s * reach * 0.35 * span, -reach * span, 1.0)), 1.5, "steel.dark", "wing_blade")
+    else:
+        _slab(b, [_add(q, (s * 0.35, 0.0, 0.0)) for q in section(*ends)], (s * 0.82, 0.57, 0.0), 0.6, "glass.glass", "wing_break")
+
+
+def _minos(b, tail=False, wings=None):
     # The legs and the pelvis they hang from, upright: only what is above the waist leans.
     for s in (-1.0, 1.0):
         _leg(b, s)
@@ -183,6 +234,10 @@ def _minos(b, tail=False):
         b.box(-6.0, 6.0, -20.9, -20.0, z, z + 1.3, "amber.fume", "pack_vent")
     for s in (-1.0, 1.0):
         whole = s > 0   # the left wing is broken off short
+        if wings is not None:
+            _big_wing(b, s, whole, *wings)
+            b.box(min(s * 10.0, s * 18.0), max(s * 10.0, s * 18.0), -19.0, -9.0, 96.5, 99.0, "steel.dark", "rack_mount")
+            continue
         root = [(s * 9.0, -6.5, 97.2), (s * 9.0, -22.5, 96.0), (s * 9.0, -22.5, 93.2), (s * 9.0, -6.5, 94.4)]
         if whole:
             tip = [(s * 44.0, -24.0, 109.4), (s * 44.0, -33.5, 108.8), (s * 44.0, -33.5, 107.4), (s * 44.0, -24.0, 108.0)]
@@ -274,7 +329,24 @@ def arlook_minos_tail(b):
 
 arlook_minos_tail.maker = AR
 
-LOOKS = ["arlook_minos", "arlook_minos_tail"]
+
+
+def arlook_minos2(b):
+    """Round two: no tail, the wings bumped up to half as long again and deeper."""
+    _minos(b, wings=(1.5, 1.45))
+
+
+arlook_minos2.maker = AR
+
+
+def arlook_minos2_wide(b):
+    """Round two, further: the wings at twice round one's span."""
+    _minos(b, wings=(2.0, 1.7))
+
+
+arlook_minos2_wide.maker = AR
+
+LOOKS = ["arlook_minos", "arlook_minos_tail", "arlook_minos2", "arlook_minos2_wide"]
 
 SHEET = {
     "title": "Minos, first round, 15 November (look tests, not content)",
@@ -283,5 +355,16 @@ SHEET = {
     "rows": [
         {"model": "arlook_minos", "label": "Minos", "views": ["codex", "above", "skirmish", "front", ("from the side", 90.0, 8.0)]},
         {"model": "arlook_minos_tail", "label": "With the judge's tail", "views": ["codex", "skirmish", ("from the side", 90.0, 8.0)]},
+    ],
+}
+
+_VIEWS2 = ["codex", "above", "skirmish", "front", ("from the side", 90.0, 8.0)]
+SHEET2 = {
+    "title": "Minos, second round, 15 November (look tests, not content)",
+    "out": "docs/looks/arsenal_minos2.png",
+    "cell": (320, 400),
+    "rows": [
+        {"model": "arlook_minos2", "label": "Wings bumped up", "views": _VIEWS2},
+        {"model": "arlook_minos2_wide", "label": "Bumped up further", "views": _VIEWS2},
     ],
 }
