@@ -1777,6 +1777,18 @@ The tasks are the to-do's; this is the index of what waits.
   and on pieces of a higher tier or behind a gate. It leaves with the fold-in, where its
   premise lands (nothing mends); until then content and the engine run breach as built, and
   a debug build's FOE BREACH dial plays the foes without it (`Refit`'s `breach=cut`).
+- His marks on the vocabulary's table (15 November, all eighty-two rows; the proposal's
+  section 18 has each with its read, and the to-do's Engine list the build in four parts):
+  Splash, Overshield, Retaliate, Silence and Rallied as a buff cut; Spillover, Swap, Web,
+  Drain, Steal, the drained reroll and Follow-up off the keyword list, each its one piece's
+  own text; Disabled as Jammed, Pinned Flak as Pinned, Pinned Burning as Seared, Regrow as
+  Recover and Heal, the Ammit's names; Armoured ending as its side's next turn starts; Rally
+  on the rallier too; the injury rule out as a general rule; countdowns an elite's or a
+  boss's mostly; a fall free to do more than strike. Until built, content and the engine run
+  every one of them as before.
+- A foe's move need not take a component's shape (the same day; the bible's row on the foes'
+  rule set, the proposal's section 19): the direction for the foes' pass, with Claude's
+  proposal of a move as a short list of steps. Nothing of it is built.
 
 - The Fracture's prize (section 12); the escorts' marks (`docs/bosses_proposal.md`) and the
   promoted forms' one move more for seven of them (`docs/heroes_proposal.md`).
@@ -1847,11 +1859,17 @@ what a tier-one formation costs in hull and next to none of an elite's or a boss
 dial until the fold-in (FOE BREACH, built that day); and a piece of ours that ignores armour
 sits at a higher tier or behind a gate ("Else they become obvious best faces for certain
 domains"), which the Ammit's Talons and the Wild Boar's charge already do and the
-Overclocked Railgun, a tier-one find, does not: its place is his, Claude's lean that it drops
-the property and keeps its tier.
-**What waits is his marks on one table**: every rider, buff and debuff, eighty-two rows
-(`docs/vocabulary_table.md`), on a page of its own that takes a mark and a note a row
-(Pages, below; `marks` is the collection a session reads back and folds into the proposal).
+Overclocked Railgun, a tier-one find, does not: it goes to the component pass, where it may
+move up a tier regardless. **His marks are done** ("My marks are done", the same day):
+forty-six rows kept, twenty-five changed, eight cut, no question, folded in the proposal's
+section 18 with seven choices his notes leave (the to-do's Ryan list has them, each with a
+lean). **And a direction for the foes** (section 19): their moves need not fit a component's
+format, "we're fighting mechs versus JRPG enemies, who cast elaborate spells and stuff".
+**So the pass's talking is nearly over and its build is what waits**: the fold-in on his go,
+carrying Ablate, the basic guns' 3 and Breach's cut; the marks that need no answer; then the
+ones that wait on his seven; then the foes' pass.
+The table of every rider, buff and debuff, eighty-two rows (`docs/vocabulary_table.md`),
+stands with its page (Pages, below) as the record of his marks until the pass retires.
 Nothing in content moved but Exposed's texts, which now say it lasts until the end of the
 next round.
 With the pass, on his proposal, the tier-one
@@ -1951,25 +1969,19 @@ Every page lives in Ryan's account and is republished by its URL (read first), i
 with it. A page's link goes into this file in the same commit as its first publish; the
 commands are in `README.md`.
 
-- The vocabulary pass's table, for his marks: https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko,
+- The vocabulary pass's table, with his marks: https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko,
   built from `docs/vocabulary_table.md` by `tools/pages/vocabulary_marks_page.py` and published
-  with the `db` capability (Version 2, 15 November, from `ccr-722ca9f0-yj8na3`, with the
-  fourth round's rows; the fifth round moved five rows' text in the table after it, and the
-  page was left as it stood because he was marking on it, the seeded notes carrying the
-  calls meanwhile: regenerate and republish once his marks have been quiet). Each of its
-  eighty-two rows takes a mark (KEEP, CHANGE, CUT, ASK) and a note, saved in the collection
-  `marks`, a document a row keyed by the row's name as a slug (`mark`, `note`, `name`, `at`).
-  Twelve rows are seeded with his calls of 15 November, ten with a mark and two with a note
-  alone, each note saying so. His own marks began that day (fourteen at 09:24 UTC, down to
-  Web: eleven kept, Splash cut, Spillover and Web no keywords) and the proposal's section 18
-  folds them as they come; he was still marking at that read, so the next session reads the
-  rest first. He may be on the page when a session works: write notes to rows he has not
-  touched, pinned to their versions, and republish only when his marks have been quiet a
-  while. A session that
-  works the pass reads `marks` first (ArtifactData, `list`), folds them into
-  `docs/vocabulary_pass_proposal.md` and the table, and republishes only when the table's rows
-  change; a row renamed in the table loses its mark's key, so move the document with it. The
-  page retires with the pass.
+  with the `db` capability (Version 3, 15 November, from `ccr-722ca9f0-yj8na3`, with the
+  fifth round's rows, once his marks were done). Each of its eighty-two rows takes a mark
+  (KEEP, CHANGE, CUT, ASK) and a note, saved in the collection `marks`, a document a row
+  keyed by the row's name as a slug (`mark`, `note`, `name`, `at`). **His marks are complete**
+  (15 November, "My marks are done": forty-six kept, twenty-five changed, eight cut, three
+  with a note alone; twelve of the rows were seeded from his calls in chat and he left those
+  as they stood) and the proposal's section 18 is their fold, every note in his words. The
+  page stays as the record: a session reads `marks` again before it builds from them
+  (ArtifactData, `list`), in case he has moved one, and never republishes while he is on
+  the page; a row renamed in the table loses its mark's key, so move the document with it.
+  The page retires with the pass.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
   `docs/design-bible.html` after every change, on Ryan's word. The live page is v0.564, dated 13

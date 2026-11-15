@@ -1,4 +1,4 @@
-# The vocabulary pass, 14 and 15 November (five rounds; his calls of the third in section 16, of the fourth and fifth in section 17)
+# The vocabulary pass, 14 and 15 November (six rounds; his calls of the third in section 16, of the fourth and fifth in section 17, his marks in section 18 and the foes' moves in section 19)
 
 Every rider, keyword, cost, buff and debuff on both sides, read against the reboot and the
 yardstick for the basics. It began as the rider and keyword pass and Ryan widened it in its
@@ -126,8 +126,24 @@ and 23): "On that note, let's do the rider and keyword pass now."
 > obviously, or gated, I think. Else they become obvious best faces for certain domains,
 > right?
 
+**His words, the sixth round**, the same day, with his marks done:
+
+> Railgun might need to move up a tier regardless just because there won't be room for an
+> even higher damage, even hotter gun. I assume that will shake out in our component pass
+> though.
+>
+> My marks are done. One question, the list of foe moves, those aren't a comprehensive list
+> of all enemy moves, are they? If it is, it's pretty small. Enemy moves don't have to fit
+> into the same damage+rider+targeting explicit bucketed format as machine components. It
+> kind of seems like the moves as currently designed are trying to do that - it's like
+> jamming a square peg into a round hole. There's nothing wrong if we ended to with every
+> enemy special move having unique text and rules, if it serves the gameplay. That's kind
+> of the point, really, we're not fighting mechs vs mechs we're fighting mechs versus JRPG
+> enemies, who cast elaborate spells and stuff.
+
 The table is `docs/vocabulary_table.md`, and its page for his marks is in the status's
-Pages. Section 16 has what the third round called; section 17 has the fourth and the fifth:
+Pages. Section 18 has his marks, all eighty-two, and section 19 his question on the foes'
+moves. Section 16 has what the third round called; section 17 has the fourth and the fifth:
 Exposed for the foes as one rule, Breach cut on both sides with the reasoning he agreed to,
 and where a piece that ignores armour may sit. The sections before them stand as the second
 round left them but where they say otherwise.
@@ -1077,15 +1093,16 @@ Each with Claude's lean. Nothing here is built or changed in content.
 12. **Indirect.** Lean: a point of heat over Direct.
 13. **The bench** (section 13): its five rules, and where its pieces live.
 14. **The defence side's approach** (section 14): the units, then a model, before any
-    shield or hull is renumbered.
+    shield or hull is renumbered. Its units measure a kit and are no menu for one, by his
+    sixth round (section 19).
 15. **Exposed for the foes** (section 17). *Called 15 November*: the whole field up to the
     machine's predicted death, the rule that foes never overkill kept; at tier two and up,
     one machine at a time, a Lure wins, armour of every kind. Still his: whether a machine
     that stands Exposed may be marked again. Lean: no.
 16. **Breach on our side** (section 17). *Called 15 November*: the word leaves, the property
-    is written on its pieces, and such a piece sits at a higher tier or behind a gate. Still
-    his: the Overclocked Railgun, the one open tier-one piece it reaches. Lean: it drops the
-    property and keeps its tier.
+    is written on its pieces, and such a piece sits at a higher tier or behind a gate. The
+    Overclocked Railgun, the one open tier-one piece it reaches, goes to the component
+    pass, where it may move up a tier for room above it as well.
 17. **Breach on the foes' side** (section 17). *Called 15 November*: cut. "Shields suck
     here" is a weighting of Ablate and Scorch, and the shield form stays on the shelf with
     its reads and its test. It leaves the engine with the fold-in, and a dial plays it now.
@@ -1258,7 +1275,9 @@ Two things Claude adds.
    big shot loses an eighth where two small ones lose half, and that needs no property. The
    Railgun's 8 is that answer, which is why Claude leans to take the property off it and
    leave it at tier one, where the hot single shot against the split gun is the bench's own
-   question. Its place is his, in the bench's pass.
+   question. Its place is his, in the component pass, and his sixth round adds a reason of
+   its own to move it: "Railgun might need to move up a tier regardless just because there
+   won't be room for an even higher damage, even hotter gun."
 
 The rule of thumb it leaves for a new piece: never on an open gun of small or many strikes.
 
@@ -1348,52 +1367,220 @@ double. So the bill is the rank and file's. Thirty-four foes lose the rider, and
 tier-one lines that carry it want their numbers or a mark read again, which is the defence
 side's pass (section 14).
 
-## 18. His marks on the table, folded as they come
+## 18. His marks on the table, complete
 
-He began marking the table's page on 15 November. The rows below carry a mark of his own,
-beside the twelve seeded from his calls in chat. Read at 09:24 UTC that day, while he was
-still marking down the table, so this is the first of several folds: fourteen rows, from
-the shapes of a blow to Web.
+"My marks are done" (Ryan, 15 November). Every one of the table's eighty-two rows carries
+a mark or a note: forty-six kept, twenty-five changed, eight cut, three with a note and no
+mark, and no question. Twelve of them were seeded from his calls in chat and he left those
+as they stood, three changed rows among them: Burn on both sides becomes Ablate (section
+9) and the Barrier is no basic (section 11). His notes are in his words; what follows each
+is the read against content and the engine. Nothing here is built. The build's order is at
+the section's end.
 
-| Row | His mark | His note |
+### Kept, forty-six
+
+- *Shapes of a blow*: Spread, Penetrate, Chain.
+- *Marks on a foe*: Flak, Shock, Sap, Cryo, Expose, Suppress, Disrupt, Lure, our Purge,
+  Vitriol, Mine, Paradox.
+- *On the spend*: Rapid, Instant, Cleanse.
+- *Buffs*: Ward, Empowered, Charged, Supercooled, Spun Up, Ricochet.
+- *The foes' marks and shapes*: Scorch, Corrupt, Swallow, Every Machine, Several strikes,
+  Grudge.
+- *The foes' own*: Brace, Undying, Summon, Merge, Splits as it falls, Numbed, Enraged,
+  Golden, Guarded and parts.
+- *States*: Sealed, Changed Over, Souls and Quick turn spent; Rebooting, Overheated, Broken.
+- *This pass's*: Ablate, Exposed on a machine, Ignores armour.
+
+Two kept rows carry a note. Supercooled: "Specify "1" cryo in tooltip", a text fix. Grudge:
+"Might not be threatening enough, depends on its escort", which is the Pilgrim's Karma and
+goes to the foes' pass with it.
+
+### Cut, eight
+
+| Row | His note | What the cut reaches |
 |---|---|---|
-| Spread | Keep | |
-| Splash | Cut | "It might be a more interesting game with only the other area shapes, with a few select pieces carrying both spread and penetrate together." |
-| Penetrate | Keep | |
-| Chain | Keep | |
-| Spillover | Change | "As a module only effect, this does not need to be a keyword. It can be unique text." |
-| Flak | Keep | |
-| Shock, lays Shocked | Keep | |
-| Sap, lays Sapped | Keep | |
-| Cryo | Keep | |
-| Suppress, lays Suppressed | Keep | |
-| Disrupt | Keep | |
-| Lure | Keep | |
-| Purge, ours | Keep | |
-| Web, lays Webbed | Change | "I don't think this needs to be listed as a keyword. It's a unique effect, and the debuff can be "webbed" or "web bomb," doesn't matter." |
+| Splash | "It might be a more interesting game with only the other area shapes, with a few select pieces carrying both spread and penetrate together." | The Howitzer and the Musk Ox's Shrapnel Recuperator print Spread 1 and Penetrate 1. Splash is the two at one number by its own rule and measures so, 1.5 points against 1 and 0.6, so no shape is lost |
+| Breach, ours | His fourth round | Section 17 |
+| Breach, the foes', and its shield form | His fifth round | Section 17 |
+| Overshield | | One piece prints it, the Puffin's Backwash Ionizer, on a machine in design: its session finds it another rule |
+| Retaliate | | The Retribution Thurible, a tier-one piece that stands on the Nemesis's stock die, and the Salamander's planned Ember Hide. The Thurible needs a rule or leaves with the word, which is the component pass's |
+| Rallied | "This doesn't need to be a temporary buff or a keyword. If there's room for a reroll, grant one, otherwise it's wasted. We can communicate by highlighting the reroll button as part of the preview, if one will be granted." | The Giant Petrel's Immelmann Booster and the Swallowtail's Reveille Horn grant the reroll at once, with no status. One point is his, below: what "room" is |
+| Silence, lays Silenced | "Honestly I think that this just causes more confusion and potential bugs than it grants gameplay. Ward exists, Jammed exists, that's plenty of disruption. Plus, the counterplay is "bring vanilla guns" and that's lame." | No foe carries it today, so it is the engine's path, the status, the two terms, the glyph and the tests of the rule, with its place in the Cleanse's and the Ward's texts |
 
-He passed two seeded rows on the way and left them as they were: Breach, ours, cut, and
-Expose, kept.
+### Off the keyword list: a rule one piece carries is written on the piece
 
-**Splash, read against the records.** The cut costs no shape.
+| Row | His note | The read |
+|---|---|---|
+| Spillover | "As a module only effect, this does not need to be a keyword. It can be unique text." | The Overrun Gearing's own text. Its codex already said no component carries it |
+| Web, lays Webbed | "I don't think the rider needs to be listed as a keyword. It's a unique effect, and the debuff can be renamed "web bomb."" | The Funnel-web's Web Bomb says what it does, and the mark it leaves on a foe takes the piece's name |
+| Swap | "Can be unique text, not a keyworded rider." | The Dingo's Combat Translocator's own text |
+| Juggernaut Breach | "Change to explicit "ignores armour."" | The Wild Boar's passive says its next weapon attack ignores armour. Lean: the waiting state shows under the passive's own name, so the word Breach is gone from the game |
+| Drained rerolls | "There should be an effect on the reroll button when this happens. It can be unique text on the ability and not a keyword." | Each of the five moves says it in its own text, and the REROLL button shows the loss as it is announced and as it lands |
+| Drain | "This should be moved to an ability on the unit since it's on every attack. Like the Nob." | The Vampire Lord's own rule, as Enraged is the Goblin Nob's: no rider on its blows |
+| Steal | "Doesn't need to be it's own rider. It grants Jammed on the target, and Gilgamesh gains Appropriated with the value. The ability should be renamed to Collect." | Gilgamesh's Disarm becomes Collect: Jammed on the entry showing, and a buff on him, Appropriated, that holds what his next swing lands |
+| Follow-up | "I don't think we need to explicitly spell this out for the player. A backend pattern is ok, and it will become obvious through play and mastery by the player." | The term leaves the list. The pattern stays in the engine for its five carriers. His second thought there, innate immunities, is among the choices below |
 
-- Splash is Spread and Penetrate at one number by its own rule, and it measures so: a point
-  and a half on the vanilla, against Spread's point and Penetrate's six tenths (section 2).
-- Two pieces print it, the Howitzer and the Musk Ox's Shrapnel Recuperator, each Splash 1.
-  They would print Spread 1 and Penetrate 1, which is his "few select pieces carrying both".
-- No tier-one chassis stocks it today: the Howitzer stands on the Clydesdale and the
-  Funnel-web at tier two and on the Swallowtail, in design, and the Recuperator is the Musk
-  Ox's, at tier three. The Howitzer is itself a tier-one piece, so a tier-one rift may deal
-  it as a find.
-- So the shapes of a blow come down to two words and Chain.
+With Breach this is the move the whole round made: a word earns its place by being shared,
+and a rule one piece carries is that piece's text.
 
-**Spillover and Web, off the keyword list.** Each is one piece's rule, so each can be that
-piece's own text: Spillover is the Overrun Gearing's, a tier-two module, and its codex
-already says no component carries it; Web is the Funnel-web's locked Web Bomb. The mark
-the web leaves on a foe keeps a name and its chip, by his note, Webbed or the bomb's own
-name as he likes. With Breach, that is three words off our list in a day and "ignores
-armour" the fourth written out, the same move each time: a rule one piece carries is
-written on the piece.
+### Renamed, his words
 
-All of it is built with the vocabulary's calls once his marks are in, at the strength of
-his notes: "It might be a more interesting game with only the other area shapes."
+| Today | His word | The read |
+|---|---|---|
+| Disable, lays Disabled | "Rename to Jammed" | The rider follows the pattern, Jam lays Jammed. Fifteen foes carry it |
+| Pinned Flak | "Just "Pinned."" | The Dingo's Hollow-point Harpoon |
+| Pinned Burning | "Rename "Seared."" | No piece lays it today. It pins Ablating once Burn is Ablate |
+| Regrow | "If this is a flat HP recovery, it can just be named Heal, or Recover if it's self-only." | Recover on itself: the treants, the Bone Wyvern, the Rust Monster, the Martial Artist. Heal on another: Enkidu, the Mending Orb, the Cleric. The treants' move is named Regen today, which would now read as Regenerating, so it takes Recover |
+| The Ammit | "This is not pinned empowered, this is an Ammit specific buff. I would give it to the Ammit only, even though it affects the whole battlefield. I propose some Ammit content renames: Passive: Quintessence Reactor. Rename souls to Essence. Soul Siphon -> Quintessence Tap. Grants the no-decay state which is represented as a buff on the Ammit called Essence Flare." | The passive is Quintessence Tap today, so that name moves to the piece. Pinned Empowered leaves as a status of every unit and becomes Essence Flare on the Ammit, still holding every unit's Empowered. The Soulcutter Talons keep their name unless he says otherwise |
+
+### Rules changed
+
+| Row | His note | The read |
+|---|---|---|
+| Armoured | "The common "end" state between both sides is "start of their next turn."" | One clock in one wording. On a machine nothing moves: the round's end and the opening of its next turn are one moment for the forecast, so it still ends before the foes announce. On a foe it ends as the foes' turn begins, where each foe's ends at its own action today |
+| Rally | "Buff itself too. Helps with low foe counts." | The rallier is Empowered with the rest. Ten foes carry it |
+| Purge, the foes' | "This should be symmetrical with machine side Purge. This is confusing." | The engine already runs one rule, Purge N on either side, and the vocabulary's entry says so. What differs is the Djinn's own text, "loses every buff an entry's spend bought", and the table's row, which Claude wrote from that text. So it is a text fix: the Djinn's Unmake is Purge 1 |
+| Destroyed component | "This can be a boss-level rider, that destroys the visible face if it damages hull at all. Only promoted form or superboss-level so we're not tuning the economy around it. No longer a general rule." | The injury rule, off since 9 November, leaves as a rule of every blow: its quarter-of-the-hull threshold, its warning and its tests. What stays is the destroyed entry as a state, laid by a rider no foe carries yet |
+| Countdown | "This is too ubiquitous. Should be primarily an elite or boss mechanic. Causes a lot of mental overhead." | Eighteen moves gather today, and the Lich's planned Dark Rite would be a nineteenth. Seven are rank and file's: the three Rocs' Stoop, the Great Needler's Thousand Needles, the Antlion Queen's Devour, the Red Dragon's Crush and the Balloon's burst. The Balloon's stays by his note on Self-Destruct, "This is a good place for Countdown on a rank and file monster" |
+| Last Act | "We could probably make more use of this. A common strategy trope is foes who, say buff others on death, or debuff on death, which makes kill sequencing more interesting in normal formations. It's a good domain identity, too. So change to not just damage effects, and maybe rename to something more interesting, but these last breath / death rattle effects are so common in games that I'm not sure what words are used and what's appropriate for our game." | Two foes carry one today, both a blow: the Dread Knight's Death Throes and the Gargantuan King's Meteor. The engine's fall already runs a summon for the Gels. Widened, a fall may run any effect a move can. The word is among the choices below |
+| Phased | "I think we give this to the foes too. New effect: "Cannot be damaged or targeted by anything until the end of this round." We remove the awkward act clause, but still ensure that it cannot be buffed or interacted with by allies until it unphases. The thing that makes it work with that wording, is that all sources of Phased should say "at the end of this round, grant Phased." For the foes that's irrelevant, but for the player it turns it into a proactive tool instead of a reactive one. They queue up a phased for end of round, and it lasts for a whole round, where they cannot be interacted with by either side. It also gains a niche as a setup or recovery tool. If that's too strong, I would add "Remove all buffs and debuffs. Cannot gain any buffs or debuffs while Phased." The debuff clause isn't strictly necessary, but it makes the buff-negation feel less arbitrary." | One piece grants it, the Swallowtail's Mooring Screens, on a machine in design, so the rework is that session's and the foes' pass's. Two things it changes are named among the choices below |
+| The aims | "These need to be audited separately as an entire subsystem. Not immediately, but needs to get looked at as part of higher tier difficulty at least." | A task of its own, with the higher tiers |
+
+### Where his words leave a choice
+
+Each with Claude's lean. The first five stand between the marks and their build.
+
+1. **Rallied, and what "room" is.** A granted reroll goes past the round's two today, and
+   the Giant Petrel's bank carries up to three more, so there is always room. If he means a
+   cap, the round's two, then a grant refills a spent reroll and is wasted on a full pair,
+   which makes the Booster a piece to spend after a reroll and never before. Lean: no cap,
+   so nothing is ever wasted, and the button's highlight is the whole change.
+2. **Regenerating's clock.** "Either a fixed duration, say 2 or 3 turns, or have it decay
+   one stack at a time." Lean: decay. It is Ablate's clock turned round, a point a stack as
+   the turn comes and then a stack fades, so the two read as one pair and each carries one
+   number. Regen 3 then gives 3, 2 and 1.
+3. **Primed's form.** "It needs either a standard time, or make it decay 1 a round. Or, give
+   it the same format as cryo: applies ablate 2, use a stack on firing." Lean: the last. It
+   puts Primed beside Charged and Supercooled as one family, a stack a weapon fired, each
+   lending its rider.
+4. **Crush, Flak and one word.** "This could be our Corrode, Brittle, or Blight ... We could
+   consider making this one symmetrical and folding it into Flak as well." Lean: fold them.
+   They are one effect under two words and two clocks today, a point more on every blow a
+   stack. One clock, Flak's halving, which Empowered shares. For the word, read against
+   his own notes of the third round: Corrode "implies acid", which suits the saliva and
+   asks every Flak piece to turn chemical; Blight "sounds less like something a machine
+   would cause"; Brittle names the state whatever caused it, acid, cold or fatigue, so the
+   Flak pieces may keep their guns. Lean: Brittle, with the verb his.
+5. **Phased, two things.** First, with the act clause gone a Phased machine acts, so it may
+   reboot untouched: the reboot's bare turn costs nothing that round. That is his "recovery
+   tool", named here because it is the reboot's one free pass. Second, a Phased foe breaks a
+   decided row, that "every foe on the field can be reached by a die the player has, every
+   round it stands there". His mark overrules it for the foes that carry Phased; the row
+   wants its exit written so. Lean on his spare clause: hold it until play asks for it.
+6. **Last Act's word.** The words other games use: Deathrattle and Last Breath are each one
+   card game's own keyword; Final Attack is the Final Fantasy term, and it names a blow;
+   Death Throes is content's own name for the Dread Knight's. Lean: keep Last Act as the
+   term, since it already covers a blessing or a curse as well as a blow, and let each
+   move's own name carry the colour, as Death Throes and Meteor do.
+7. **Innate immunities.** "There might be a case that for some or all elites or bosses,
+   since their patterns kind of define them, we should give some or all of them innate
+   resistances, like Immune to Disrupt, Immune to Exposed, Immune to Purge, Immune to
+   Suppress...not as a blanket for all bosses, but for ones who need it for their fight to
+   actually do something." Today a follow-up cannot be Disrupted once announced, so the
+   first move is the window, and Numbed is a stun resist that grows. An immunity for the
+   whole fight is simpler to read, one line on the plaque, and takes the window away. Lean:
+   his, case by case, in the foes' pass, each named on the foe.
+
+### The build, in order
+
+1. *With the fold-in, on his go*: the reboot out of its switch; Ablate; the basic guns' 3;
+   Breach cut on both sides.
+2. *Words and texts that need no answer*: Jammed, Pinned, Seared, Recover and Heal; Spillover,
+   Swap and the Web Bomb as their pieces' own text; Splash, Silence and Overshield cut; the
+   Djinn's Purge 1; Supercooled's number; Armoured's one wording; Rally on the rallier too;
+   the Ammit's names and Essence Flare; the injury rule out as a general rule; Follow-up
+   off the list. Every text is a draft for his writing.
+3. *After his answers*: Rallied's grant and the button; Regenerating; Primed; Flak and
+   Crushed as one word; Phased.
+4. *The foes' pass*: Exposed's carriers; Collect and Appropriated; the Vampire Lord's rule;
+   the countdowns off the rank and file; Last Act widened; immunities; the reroll button's
+   effect with the five moves' texts; and section 19.
+5. *Their own sessions*: the Thurible and the Railgun in the component pass; the Puffin's
+   Ionizer and the Swallowtail's two pieces with their machines; the aims' audit.
+
+## 19. The foes' moves: his question, and what the format forces
+
+His sixth round, 15 November: "the list of foe moves, those aren't a comprehensive list of
+all enemy moves, are they? If it is, it's pretty small. Enemy moves don't have to fit into
+the same damage+rider+targeting explicit bucketed format as machine components. It kind of
+seems like the moves as currently designed are trying to do that - it's like jamming a
+square peg into a round hole. There's nothing wrong if we ended to with every enemy special
+move having unique text and rules, if it serves the gameplay. That's kind of the point,
+really, we're not fighting mechs vs mechs we're fighting mechs versus JRPG enemies, who
+cast elaborate spells and stuff."
+
+**The answer.** The table lists the words, not the moves. Content has 284 moves on 128
+foes. But what he senses is true of every one of them: each is put together from one small
+kit.
+
+| What the 284 moves are | Moves |
+|---|---|
+| A plain blow | 89 |
+| A blow with one tag, from a list of ten | 85 |
+| A blow with two tags or more | 16 |
+| One special, from a list of twenty-three | 94 |
+
+Of the twenty-three specials five have one carrier: the Magma Lizard's Stoke the Pack, the
+Thunder Ape's Golden Rage, the King Gel's Merge, the Djinn's Unmake and the Summoner's
+Diamond Dust. Three tags have one: the World Eater's Crush, Gilgamesh's Steal and the
+Vampire Lord's Drain. Everything else is shared. The names and the texts are spells. The
+rules under them are a gun's.
+
+**What the format forces today.**
+
+1. A move is a blow or one special, never both and never two. A spell cannot strike and
+   curse, or heal one foe and summon another. Bad Breath is a blow with five tags because
+   tags are the one way to stack effects.
+2. Tags and specials are closed lists the validator holds, so a move is designed by picking
+   from them.
+3. A rider rides a blow and nothing else.
+
+**What a move owes the player, whatever it does.** These are decided rows, and they are why
+the fights can be planned. His direction frees what a move does and leaves these.
+
+1. It is announced before the player acts, with its target where it has one.
+2. The forecast shows what will land.
+3. The team's answers meet it by rules learned once. What it lays on a machine is a mark: a
+   Ward turns it and a Cleanse lifts it. What it deals is a blow: the shield, the armour
+   and a Barrier meet it. What is aimed, a Lure moves. A kill, a Suppress or a Disrupt
+   stops the move, unless the foe's plaque says it is immune.
+4. It reads its own side for its conditions, never the player's.
+
+So the freedom is in the effect and the discipline is in the sockets. A spell that Wards do
+not turn and Cleanses do not lift, case by case, would be Breach again.
+
+**The marks stay shared.** A JRPG's elaborate spell is most often the shared ailments in a
+new bundle, on new targets, at a new time. Bad Breath is the model, four marks on every
+machine at once. So this pass's work stands under his direction: the statuses are the
+words both sides share, and a spell is free in how it deals them.
+
+**What opens it.** A move becomes a short list of steps where it is one effect today. A
+step is a shared one, a blow, a mark on a set of machines, a recovery, a summon, a state on
+itself, or a rule of its own. The intent shows the move's name, its largest number and its
+marks; a tap gives its text; the forecast walks the steps. Composing shared steps costs
+nearly nothing once that is built. A rule of its own costs its forecast, its chip, the
+bot's read and its tests, named for planning and no argument against.
+
+**The budget is reading, not code.** Eight intents stand on a phone at once. His own marks
+of this round say it twice: Countdown "causes a lot of mental overhead", and Follow-up need
+not be spelled out. So the test for a unique move is whether the player must read it to
+play the turn, and whether it is worth the read. Claude's lean on where to spend it: the
+foe a formation is built round, the elites, the heroes and the bosses, with the rank and
+file's blows left as plain numbers so the field reads at a glance. Three goblins and a
+shaman, and the shaman's spell is the fight's question.
+
+**What it does to this pass.** The foes' half of the table stands as the marks and the
+shared buffs. "A rider on a blow" stops being the unit a foe is designed in: a foe's moves
+come from its fantasy first, and the runner prices them after, since it plays whatever the
+engine runs. Section 14's units, the standard blow and the clock a kit presses, stay as the
+measure of what a kit costs the player and are no menu to build from.
