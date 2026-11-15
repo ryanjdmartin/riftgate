@@ -490,7 +490,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   and Playwright aiming its camera (the scratchpad's `hview/shot.js`; not kept in the repository).
 - **The Needletail's two modes and the Giant Petrel's hull** (`ccr-b7d5164e-1wtzzm`, 12 November;
   on main since 14 November, on Ryan's "Needletail looks great. Ship it.", the Giant Petrel's
-  thirteenth cut with it, his notes on it still coming, its fourteenth and fifteenth on this branch since 15 November): built that day on Ryan's design and his mix, then reworked on his notes of that
+  thirteenth cut with it; the Giant Petrel's model shipped at its fifteenth cut on his "These look great", 15 November, its kit
+  still his to start): built that day on Ryan's design and his mix, then reworked on his notes of that
   evening and 13 November (the bible's Kestrel row). The Needletail: a jet's chined fuselage
   (its round second cut retired: "I didn't literally mean round like a rocket"), shorter than the
   first cut and short and flat for its width, 15.8 at its widest since the twelfth cut (17.4
@@ -504,7 +505,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   on the nose's sides toward the tip, each under one long teardrop clamshell, point forward, on the band between the chines
   (the eighteenth cut, on Ryan's "an elongated clamshell that covers the whole cut area"; the trough and its sliding cover
   gone), the muzzle clear of the skin (on the sides as in
-  the thirteenth cut, Ryan's candidate final at `49657a4`, its pictures the hangar's Candidate final, after a day's trial on the
+  the thirteenth cut, Ryan's candidate final at `49657a4` (its pictures retired from the hangar once the nineteenth shipped), after a day's trial on the
   upper chamfers; nearer the tip since the sixteenth, with the canards and the pop-up, and a slice cut from the middle so the
   ship is 103 from point to needle, the ports and canards 2 back again in the seventeenth, each bay dark to its rim and each
   gun's root under the skin in hover), every other class rooted at the

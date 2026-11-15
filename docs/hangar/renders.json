@@ -661,43 +661,6 @@
      "alt": "needletail, hover mode, close, side on: a twin gun fitted in a cheek's bay, its two barrels out of a round receiver at the bay's back"
     }
    ],
-   "candidate": {
-    "summary": "Candidate final: the thirteenth cut, 13 November (the nose ports on the chines, the wings swinging out in place), saved on Ryan's word of 14 November; commit 49657a4",
-    "images": [
-     {
-      "file": "needletail/candidate_needletail_front.png",
-      "alt": "Candidate final: needletail, hover mode, front: the strip down the chine"
-     },
-     {
-      "file": "needletail/candidate_needletail_rear.png",
-      "alt": "Candidate final: needletail, hover mode, rear"
-     },
-     {
-      "file": "needletail/candidate_needletail_above.png",
-      "alt": "Candidate final: needletail, hover mode, from above: a strip down each side"
-     },
-     {
-      "file": "needletail/candidate_needletail_flight.png",
-      "alt": "Candidate final: needletail, flight mode, front"
-     },
-     {
-      "file": "needletail/candidate_needletail_flight_above.png",
-      "alt": "Candidate final: needletail, flight mode, from above: the wings out"
-     },
-     {
-      "file": "needletail/candidate_needletail_changing.png",
-      "alt": "Candidate final: needletail, changing: the guns running in, the blisters shutting, the boosters swivelling"
-     },
-     {
-      "file": "needletail/candidate_needletail_pod.png",
-      "alt": "Candidate final: needletail, the left pod with the Twin Autoguns, its mount leaning with the pod"
-     },
-     {
-      "file": "needletail/candidate_needletail_strip.png",
-      "alt": "Candidate final: needletail, hover mode, close: the stowed wing's leading edge as a strip down the chine"
-     }
-    ]
-   },
    "before": {
     "summary": "Before: the eighteenth cut, 14 November (the wings sliding back 5, the twin barrels' square receiver set forward in the cheek's bay)",
     "images": [
@@ -777,7 +740,7 @@
   },
   "giant_petrel": {
    "when": "Ryan's fourteenth notes on the catamaran, 15 November.",
-   "note": "Ryan, 15 November, on the fourteenth cut: “the cowl corners don't meet. There are panel lines through the vents. The windscreen can come down a bit more.” The cowl is one band now, round the face's top and down each shoulder's outer edge to the deck, mitred at the roof's corners, its lip dipping in toward the face all the way round, so its top and its sides are one piece (they were two, the peak's end standing proud of the side's top). The louvres are plain metal: a plate's seams had lined up across the slats as a panel line. The glass sits lower again, a fifth of the way up the front to three quarters. On the fourteenth (that morning): “make the brow a little longer, and carry it down the sides so it encompasses the new vents, too. So more of a cowl then a brow. The vents need some kind of border so the slats don't go right to the face edges.”",
+   "note": "Ryan, 15 November, on the fourteenth cut: “the cowl corners don't meet. There are panel lines through the vents. The windscreen can come down a bit more.” The cowl is one band now, round the face's top and down each shoulder's outer edge to the deck, mitred at the roof's corners, its lip dipping in toward the face all the way round, so its top and its sides are one piece (they were two, the peak's end standing proud of the side's top). The louvres are plain metal: a plate's seams had lined up across the slats as a panel line. The glass sits lower again, a fifth of the way up the front to three quarters. On the fourteenth (that morning): “make the brow a little longer, and carry it down the sides so it encompasses the new vents, too. So more of a cowl then a brow. The vents need some kind of border so the slats don't go right to the face edges.” Shipped on his word of 15 November: “These look great.”",
    "images": [
     {
      "file": "giant_petrel/giant_petrel_front.png",
