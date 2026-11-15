@@ -4,6 +4,7 @@ the renders out under their labels as the sheets in docs/looks/ are, and delete 
 again, since a look test is never content.
 
     $BPY_PYTHON tools/lowforge/looks/sheet.py siege_looks                    # the module's SHEET into its `out`
+    $BPY_PYTHON tools/lowforge/looks/sheet.py siege_looks --sheet SHEET2     # a later round's, where a module keeps one a round
     $BPY_PYTHON tools/lowforge/looks/sheet.py siege_looks --project /tmp/copy --only mnlook_siege
 
 Run it under the Python that holds bpy (the README's cloud recipe) with Pillow beside it. With no
@@ -20,7 +21,8 @@ head on, 45 the codex's front three-quarter, 90 its flank with the nose to the r
 tail; the pitch is the camera's tilt down, so 180 and 75 are from above, nose up. `--project` builds, imports and renders in
 another copy of the project (its own .godot), so several rounds built side by side never meet in one
 import; the sheet is written under this checkout either way. `--only` renders some of the models,
-`--keep` leaves the built files, `--raw <dir>` keeps each render beside the sheet.
+`--keep` leaves the built files, `--raw <dir>` keeps each render beside the sheet. A module keeps a
+sheet a round (SHEET, SHEET2, ...), each with its own `out`, so an earlier round still rebuilds.
 """
 import argparse
 import os
@@ -55,6 +57,7 @@ def run(cmd, cwd=None, seconds=600):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("module")
+    ap.add_argument("--sheet", default="SHEET")
     ap.add_argument("--project", default=ROOT)
     ap.add_argument("--only", nargs="*", default=None)
     ap.add_argument("--keep", action="store_true")
@@ -68,7 +71,7 @@ def main():
     sys.path.insert(0, HERE)
     os.chdir(LF)
     module = __import__(a.module)
-    sheet = module.SHEET
+    sheet = getattr(module, a.sheet)
     project = os.path.abspath(a.project)
     godot = shutil.which("godot") or os.path.expanduser("~/bin/godot")
     work = tempfile.mkdtemp(prefix="looksheet_")
