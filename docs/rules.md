@@ -16,9 +16,7 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 
 ## Machines
 
-- **Chassis**: hull, shield, shield regen (shield regained as each round opens: one to three
-  by chassis, the faster on the smaller gauge; a tier one's two on its smallest gauge and one
-  on the rest), heat maximum, cooling (heat shed as each round opens: two on most chassis, three on a few, and none on the Whip Scorpion, by its rule), armour, move, size class, one way of moving, hardpoints, fixed components, module
+- **Chassis**: hull, shield, heat maximum, armour, move, size class, one way of moving, hardpoints, fixed components, module
   slots (two; the Clydesdale three) and one passive. Twenty-four chassis from five makers
   (`content/chassis.json`), two of them back in design and dealt by nothing until their
   sessions hand them back (the Puffin and the Swallowtail: a chassis whose entry
@@ -81,9 +79,10 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   Carbine, Direct and warm, 5), and two defensive pieces, each spent on itself or an ally (the
   Halo Projector, a Barrier, cooldown 1; the Shoring Jack, Armoured 2 for the round).
 - **No recovery on the die**: a component is a weapon or equipment. No stock die holds a
-  shield or a vent and no slottable one is dealt: the shield is the chassis's and comes back
-  by its regen, heat goes by its cooling, and the decision heat leaves is the hold (fire the
-  cold entry, keep the hot one, or pass and cool). The slottable shields and vents are kept in
+  shield or a vent and no slottable one is dealt: no chassis regains shield or cools by
+  itself, both gauges come back by a reboot (The reboot, below), and the decision heat leaves
+  is the hold or the reboot (fire the cold entry, keep the hot one, or give the turn and come
+  back cold and whole). The slottable shields and vents are kept in
   content as drafts nothing deals (no blueprint, no loot, no basic), each until it is made
   equipment or removed; the engine still runs both kinds, for the locked pieces that are one
   (the Musk Ox's Quick Reload) and the machines back in design.
@@ -114,8 +113,10 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   names none stands empty.
 
 ### The round
-1. Rerolls reset to two (less any a foe drained). Every machine sheds heat by its cooling,
-   then regains its shield regen up to its maximum (a shield gain like any; a passive that adds
+1. Rerolls reset to two (less any a foe drained). A machine that gave its last turn to a
+   reboot recovers: its heat nothing, its shield whole. Every machine sheds what cooling it is
+   granted, then regains what shield regen it is granted, up to its maximum (a module's, a
+   passive's or a status's: a chassis has neither of its own; a shield gain like any; a passive that adds
    to the regen by heat, the Buzzard's Thermal Recoupler, reads the heat the cooling left). Every die rolls;
    entries are equally likely. Round-start passives fire, and a store that grants a buff
    grants it for the round (the Honey Badger's hopper its Armoured), before the foes pick.
@@ -131,11 +132,13 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
    full strength, and UNDO's badge says how many spends it reaches; UNDO opens once a spend's
    last blow has played. END TURN sits bottom-left and UNDO bottom-right, and UNDO reads on or
    off by its edge, a heavy solid one or a faint dashed one. END TURN pulses once no
-   die has anywhere to be spent, rerolls aside.
+   die has anywhere to be spent, rerolls aside. A machine that has spent nothing this turn may
+   give the turn to a reboot, its die dragged onto REBOOT between the two (The reboot, below).
 4. END TURN: a machine's Burning adds its heat and loses a stack, and its Scorched goes;
-   then heat over a machine's maximum burns hull one for one and the gauge settles at the
-   maximum (an overheat). A machine it wrecks is lost on its own turn, before the enemy
-   acts.
+   then heat over a machine's maximum burns hull one for one and stays on the gauge, burning
+   again every turn it stands there; the first such turn since the machine's last reboot is
+   its overheat, and its shield breaks. A rebooting machine neither burns nor overheats. A
+   machine the burn wrecks is lost on its own turn, before the enemy acts.
 5. The enemy's turn (below), then a passed turn's release (the Whip Scorpion's, Passives
    below). Round-timed effects end.
 6. Machines' statuses tick, and foes' Flak halves. Shield past the maximum (overshield) fades.
@@ -369,7 +372,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   shows its name;
   its gauges with their numbers (a machine's shield, hull and heat, and its magazine if it
   has one; a foe's HP), a maximum something moved off its own coloured with its arrow; its
-  armour and cooling (a foe's armour and attack) as the codex's stats, the base with the change
+  armour, and its cooling where it is granted any (a foe's armour and attack), as the codex's stats, the base with the change
   beside it ("Armour 2 (+1▲)"); every chip on it by its name and count, a buff's and a debuff's
   headed by the word ("Buff, Empowered +2", "Debuff, Burning ×2") as an Ability's is, what it does
   a tap on its term away, and the round's warnings (an overheat, a wreck, an injury's risk); then a foe's intent
@@ -416,11 +419,11 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   8 to 18, a boss that may rise once 50); a foe's blow 2 to 8 at tier one (the rank and file's
   mostly 2 or 3) and to 10 at tier three, a massive
   foe's 7 or 8 where a shield meets it and 3 or 4 where it breaches, a hero's 4 to 10, an elite's 7 to 18 and the slate's bosses' 10 to 20, sized
-  against a shield that refills (at tier one no action of theirs takes the lightest machine
+  against the shield that refilled before the reboot, the defence side's pass's to size again (at tier one no action of theirs takes the lightest machine
   from full: a breach under 20, and any one action's blows on one machine under its shield and
   hull together); machine hull 20 to 50 by size (the
-  Kite's paper hull 12, its row's one-off), shield 6 to 16 and shield regen 1 to 3 a round (tier one the low end, 6 to 12 and 1 or 2, since a level lifts both), base armour 0 to 2 by role, timed armour to 4 or 5; heat
-  1 to 20 (1 to 30 if the pricing needs it; a weapon 3 to 11 today, a basic gun 4 or 5), cooling 2 or 3, the maxima 10 to 14 (the Musk Ox's 8), a vent 3 to
+  Kite's paper hull 12, its row's one-off), shield 6 to 16 (tier one the low end, 6 to 12, since a level lifts it), base armour 0 to 2 by role, timed armour to 4 or 5; heat
+  1 to 20 (1 to 30 if the pricing needs it; a weapon 3 to 11 today, a basic gun 4 or 5), the maxima 10 to 14 (the Musk Ox's 8), a vent 3 to
   8 (the Entropy Condenser's 10 the capstone, paid in hull). The scales are magnitudes,
   not steps: any whole number may be used, and content sits a little past them where its
   loops moved it (the promoted forms' 32 to 48, a hero's finisher, a
@@ -657,12 +660,13 @@ On a machine:
   machine's Ward turns its Burning away as it does a burn.
 - **Phased** (buff): cannot act, take damage or be targeted until the
   round's end, so allies cannot vent or shield it, a foe's intent on it re-picks, and a blow or
-  a special at every machine passes it by; it still cools by its cooling, and ticks and
-  overheats land. Granted only to a unit that has not acted
+  a special at every machine passes it by; it still cools by what cooling it is granted and
+  its ticks land, and it neither burns nor overheats while it is out, since it cannot reboot:
+  what it carries past its maximum burns again the turn it is back. Granted only to a unit that has not acted
   this round, whose die stands down as it is granted.
 - **Swallowed** (debuff, from a foe's swallow): out of the fight as a Phased machine is (it
   cannot act, take damage or be targeted, a foe's intent on it re-picks, and a blow or a special
-  at every machine passes it by; its cooling, ticks and overheats are its own) for the swallow's
+  at every machine passes it by; its cooling and its ticks are its own, and it neither burns nor overheats while it is out) for the swallow's
   rounds, its die standing down as each round opens, until its swallower falls, or until its
   swallower has lost a quarter of its maximum HP since the swallow (its chip counting the damage
   still to deal, never more than the swallower has left; a second machine taken while it holds
@@ -881,26 +885,58 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or a
   round's end, the Polar Bear's seal until a weapon opens it.
   Damage-taken effects apply before armour.
 - The shield is the fight's, as the heat is: full as every fight opens, and nothing returns on
-  the map. In a fight it comes from components, modules, passives and the shield regen. Hull
+  the map. In a fight nothing mends it by itself: a reboot brings it back whole (The reboot,
+  below), and a component, a module or a passive adds to one that still stands. A shield at
+  nothing is Broken, and takes none until its machine reboots. Hull
   is the battle's and never heals in it.
 
 ### Heat
 - A weapon adds its heat when spent, once a spend, through the attacker's modifiers in the
   blow's order: adds, then multiplies (so a machine whose heat is doubled doubles Scorched's
-  extra too). Heat may pass the maximum during the player's turn harmlessly; at the end of
-  the turn, before the enemy acts, the excess burns hull one for one (an overheat) and the
-  gauge settles at the maximum. With volatile, it is the way a machine dies on its own
-  turn. Machines cool at the start of the round. Heat starts each fight at zero.
-- The prices are a pace. A basic gun makes 4 heat and the Laser Carbine 5, against a cooling of
-  2 and a maximum of 12 or 14: a machine that fires every round stands at its limit in four to
-  six rounds, and from there fires about one round in two, holds, or burns. Equipment is the
-  cool play: a buff makes none and a debuff device its one or two.
+  extra too). A spend is never refused for its heat. Heat may pass the maximum during the
+  player's turn harmlessly, and it stays there: at the end of the turn, before the enemy acts,
+  every point past the maximum burns a point of hull, and burns again every turn it stands
+  (Overheated, a stack a point). The first such turn since the machine's last reboot is its
+  overheat: its shield breaks, and what an overheat sets off fires, once between reboots. With
+  volatile, it is the way a machine dies on its own turn. Nothing cools by itself: a reboot
+  takes the heat to nothing, and what cooling a machine is granted (a vent, a module, a
+  passive) takes the stacks past the maximum first. Heat starts each fight at zero.
+- The prices are a pace. A basic gun makes 4 heat and the Laser Carbine 5, against a maximum
+  of 12 or 14: a machine that fires every round stands at its limit in three rounds, and from
+  there holds, burns, or gives a turn to a reboot. Equipment is the cool play: a buff makes
+  none and a debuff device its one or two.
 - The console speaks of heat on a spend, one line a spend: the overheat every time a spend
   heats a machine and leaves it over its maximum; the warning once, as a machine first stands at
   three quarters of its maximum or past, and not again until it has been seen back under (as a
-  round opens, once the machines have cooled, or after a spend), so a machine that stays hot, or
-  settles at its maximum after an overheat, is not warned twice.
-- An overheat is hull damage for every passive that reads hull damage.
+  round opens, once a reboot or a granted cooling has taken it down, or after a spend), so a
+  machine that stays hot is not warned twice.
+- The burn is hull damage for every passive that reads hull damage, each turn it burns.
+
+### The reboot
+- Nothing regenerates and nothing cools by itself. A machine gets both gauges back by giving a
+  turn: on the player's turn a machine that has spent nothing this turn may reboot, its die
+  dragged onto REBOOT, the target in the middle of the bottom row. It is its whole turn: a
+  machine that could act more than once, by Rapid, Instant or a grant, gives all of it up.
+- At once its shield goes to nothing, and it is Rebooting through the enemy's turn. As the next
+  round opens, before the roll and before the foes pick, its heat is nothing, its shield is
+  whole, and Overheated and Broken are gone. UNDO takes a reboot back like a spend.
+- Nothing forces a reboot, and it clears nothing else: the machine's statuses stand. It is no
+  pass, no entry spent and no shield gain, so nothing that reads one fires on it.
+- **Overheated** (debuff): the heat a machine carries past its maximum, a stack a point. It is
+  heat like any other: every rule that reads heat counts it, and a maximum that rises takes
+  stacks back onto the bar. No cleanse lifts it. Its burn and the one overheat between reboots
+  are Heat's, above.
+- **Broken** (debuff): a shield at nothing, whatever took it there: a foe's blow, the overheat,
+  the machine's own reboot, or a shield spend or cost of its own. A Broken shield gains no
+  shield by any method, a grant, a regen, a refill on a kill or a module's, until the reboot's
+  recovery, so a shield breaks once between reboots. No cleanse lifts it. A Barrier is a buff
+  in front of shield and hull: it touches neither bar and lands on any machine, Broken or
+  rebooting.
+- A machine out of the fight, Swallowed or Phased, cannot reboot.
+- The fight bot reboots a machine past its maximum, unless a vent it shows takes it back
+  under; one whose shield is broken when a blow is coming or its heat is half spent; one whose
+  entry would pass its maximum, where it has heat to shed and this round's blows would take a
+  point of its shield or less; and a die left idle, where there is something to get back.
 - **The Riot Field Generator** (the Storm Petrel's passive): its weapons' heat comes off its
   shield as they are spent, every point of a gun's own heat taken from the shield as it
   stands, overshield included, and only what the shield cannot pay reaching the gauge; a

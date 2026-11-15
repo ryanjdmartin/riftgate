@@ -43,7 +43,7 @@
    "id": "shield",
    "category": "resource",
    "name": "Shield",
-   "codex": "Enemy damage hits shield before hull. A shield absorbs its number: a blow costs it its damage, and whatever it cannot absorb passes to the hull, armour coming off it there; a breaching blow ignores the shield, which stands, and the armour, so the whole blow reaches the hull. Shield components add shield up to the chassis maximum (a component with Overshield may pass it, and the excess fades at the end of the round); in a fight shield comes back from components, modules, passives and a chassis's shield regen. The shield is full as every fight opens, as the heat starts at zero; nothing returns on the map.",
+   "codex": "Enemy damage hits shield before hull. A shield absorbs its number: a blow costs it its damage, and whatever it cannot absorb passes to the hull, armour coming off it there; a breaching blow ignores the shield, which stands, and the armour, so the whole blow reaches the hull. Nothing mends a shield by itself: a reboot brings it back whole, and a component, a module or a passive may add to one that still stands, up to the chassis maximum (a component with Overshield may pass it, and the excess fades at the end of the round). A shield at nothing is Broken, and takes none until its machine reboots. The shield is full as every fight opens, as the heat starts at zero; nothing returns on the map.",
    "status": "implemented",
    "design": {
     "holes": "Rates and shield sizes are placeholders. No in-combat trickle; a passive may bring one back for one chassis."
@@ -53,7 +53,7 @@
    "id": "heat",
    "category": "resource",
    "name": "Heat",
-   "codex": "A component that prints heat adds it when spent. At the end of your turn, before the enemy acts, heat above the chassis maximum burns hull one for one and the gauge settles at the maximum; until then a vent can still bring it down, and a machine the burn wrecks is lost on its own turn. Vent components remove heat. At the start of every round a machine sheds its chassis's cooling rating in heat, so a round spent on shields or cool weapons is a way of cooling down without a vent. Foes never add heat outright: a Burning machine gains its heat at the end of your turn, just before the overheat, and a Scorched machine's weapons and equipment aimed at foes run hotter.",
+   "codex": "A component that prints heat adds it when spent, and it stays: nothing cools a machine by itself. Heat may pass the chassis maximum, and what stands past it is Overheated: at the end of your turn, before the enemy acts, it burns hull one for one, every turn it stands there, and the first such turn since the machine's last reboot breaks its shield. A reboot takes the heat to nothing; a vent, a module or a passive that cools takes some off, what stands past the maximum first. A machine the burn wrecks is lost on its own turn. Foes never add heat outright: a Burning machine gains its heat at the end of your turn, just before the burn, and a Scorched machine's weapons and equipment aimed at foes run hotter.",
    "status": "implemented",
    "design": {
     "holes": "Heat does nothing below the cap. Consider effects at high heat short of overflow. Cooling numbers are placeholders; cooling must stay below a typical weapon's heat or heat never matters, and a vent component must be worth a whole turn (tuning)."
@@ -2002,6 +2002,54 @@
      "on": "machine",
      "stacks": "Yes: its heat a stack",
      "lasts": "Until the end of the player's turn, every stack at once"
+    }
+   }
+  },
+  {
+   "id": "overheated",
+   "category": "status",
+   "name": "Overheated",
+   "codex": "Machine debuff, a stack for every point of heat past the maximum. At the end of the player's turn it burns a point of hull a stack, every turn it stands, and every spend adds to it. The first such turn since the machine's last reboot is its overheat: its shield breaks. Whatever cools takes these stacks first. No Cleanse lifts it; a reboot clears it.",
+   "status": "implemented",
+   "design": {
+    "holes": "The reboot's (Ryan, 13 November: \"an uncleanseable debuff on the unit, a stack for every point of heat\"), read off the gauge and no status of the engine's table. A session's draft, his to write. The hull a stack burns is the trial's OVERHEAT dial, one the game's.",
+    "table": {
+     "kind": "debuff",
+     "on": "machine",
+     "stacks": "Yes: a point of heat past the maximum each",
+     "lasts": "Until the heat is back under the maximum, or the machine reboots"
+    }
+   }
+  },
+  {
+   "id": "broken",
+   "category": "status",
+   "name": "Broken",
+   "codex": "Machine debuff. A shield at nothing is Broken, whatever took it there: a foe's blow, the overheat, a reboot, or a cost of the machine's own. A Broken shield gains none by any method until its machine reboots. A Barrier is no shield and lands all the same. No Cleanse lifts it.",
+   "status": "implemented",
+   "design": {
+    "holes": "The reboot's (Ryan, 13 November: \"the unit cannot gain shield by any method\"; \"you can break yourself\"), a state of the machine and no status of the engine's table. A session's draft, his to write.",
+    "table": {
+     "kind": "debuff",
+     "on": "machine",
+     "stacks": "No",
+     "lasts": "Until the machine's reboot brings its shield back"
+    }
+   }
+  },
+  {
+   "id": "rebooting",
+   "category": "status",
+   "name": "Rebooting",
+   "codex": "Machine status. A machine that has spent nothing this turn may give the turn to a reboot: drag its die onto REBOOT. Its shield drops to nothing at once and it stands bare through the enemy's turn; as the next round opens its heat is nothing, its shield is whole, and Overheated and Broken are gone. It neither burns nor overheats while it reboots. Nothing forces one, and UNDO takes it back like a spend.",
+   "status": "implemented",
+   "design": {
+    "holes": "The reboot (Ryan, 13 November; folded in 15 November), a state of the machine and no status of the engine's table. A session's draft, his to write.",
+    "table": {
+     "kind": "state",
+     "on": "machine",
+     "stacks": "No",
+     "lasts": "Through the enemy's turn, until the next round opens"
     }
    }
   },

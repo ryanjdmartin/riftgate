@@ -69,26 +69,25 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   The engine's `Kind.ATTACK` is a weapon and a debuff alike (`is_weapon()`, `is_attack()`).
   The refit pass's model (Ryan, 9 November; landed in content 10 November on his "start with
   the minimal swaps"; `docs/briefs/refit_pass.md`): shields and vents have left the die, so a
-  dealt component is a weapon or equipment, the shield is the chassis's and regenerates (its
-  `shield_regen`, one to three), cooling is the chassis's; the slottable shields and vents are
+  dealt component is a weapon or equipment, and the shield and the heat come back by a reboot
+  alone (the next rule: no chassis regenerates or cools); the slottable shields and vents are
   planned drafts nothing deals, four machines are back in design (`"status": "planned"` on the
   chassis), and the engine still runs the four kinds for the locked pieces that are one.
-- The reboot is the working shape of the shield and of heat (Ryan, 13 November: "This is
-  fundamental, I don't want it to get skipped by other sessions"): read
-  `docs/briefs/refit_pass.md`, section 22, before designing, pricing or reading any machine,
-  component, module or foe. It has his rules, his rulings and the spec. Under it nothing
+- The reboot is the rule of the shield and of heat (Ryan, 13 November: "This is
+  fundamental, I don't want it to get skipped by other sessions"; folded into the game on 15
+  November, on his "Go ahead on the fold and build"): `docs/rules.md` has it (The reboot), and
+  `docs/briefs/refit_pass.md`, section 22, his rules, his rulings and the spec. Read both
+  before designing, pricing or reading any machine, component, module or foe. Nothing
   regenerates or cools by itself; a machine that has spent nothing may give its turn to a
   reboot, bare that turn, cold and whole the next; heat past the maximum stays and burns hull
-  every turn; a shield at nothing is broken and gains none until the reboot. It is built and
-  on trial, off in the game (`Skirmish.reboot`; REBOOT on a debug build's trials), and his
-  play of 14 November says it stays ("I like this direction. It works"): folding it in is the
-  next pass (the status's Next), and until that lands content still carries the regen and
-  the cooling of the paragraph above. So a
-  piece is read both ways, as built and under the reboot, and one that leans on regen,
-  cooling, a shield gain or a vent says so. His expectation, no strict rule ("I don't want to
-  make a strict rule about anything"): what grants regen, cooling, flat shield or flat heat
-  reduction is part of a kit or a locked piece, or gated behind a synergy ("they should be
-  something special"); and a shield spend may not be standard fare ("it's so expensive").
+  every turn; a shield at nothing is broken and gains none until the reboot. No chassis
+  carries a regen or a cooling (the validator refuses both keys), and the foes' numbers are
+  still the ones sized against a shield that refilled: the defence side's pass sizes them
+  again. A piece that leans on regen, cooling, a shield gain or a vent says so. His
+  expectation, no strict rule ("I don't want to make a strict rule about anything"): what
+  grants regen, cooling, flat shield or flat heat reduction is part of a kit or a locked
+  piece, or gated behind a synergy ("they should be something special"); and a shield spend
+  may not be standard fare ("it's so expensive").
 - `sim/` never touches scenes. Everything there runs headless with a seeded RNG.
 - Numbers in content are placeholders, not balance.
 - Content ideas (makers, chassis, components, foes, names, lore) are proposed in conversation first;

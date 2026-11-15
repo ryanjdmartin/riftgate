@@ -438,8 +438,12 @@ func test_heat_overflow_damages_hull() -> void:
 	assert_eq(sk.mechs[0].heat, 80, "the gauge runs past its cap during the round")
 	assert_eq(m.hull, 100, "nothing burns yet")
 	sk.end_round()
-	assert_eq(sk.mechs[0].heat, 60, "at the end of the round the gauge settles at its cap")
-	assert_eq(m.hull, 80, "and the twenty over it burnt the hull (the ghoul's blow was blocked by the shield)")
+	assert_eq(sk.mechs[0].heat, 80, "the gauge does not settle: what stands past its cap stays until the machine reboots")
+	assert_eq([m.shield, sk.mechs[0].shield_broken], [0, true], "its first overheat breaks its shield")
+	assert_eq(m.hull, 70, "the twenty over the cap burnt the hull, and the ghoul's ten landed on it bare")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(m.hull, 40, "and it burns again the next turn, twenty more beside the ghoul's ten")
 
 
 func test_machine_targets_are_the_components_to_set() -> void:
@@ -450,7 +454,7 @@ func test_machine_targets_are_the_components_to_set() -> void:
 	give.targets = Face.Target.ALLY
 	var a := _mech("A", Die.single(own), 40, 100)
 	var b := _mech("B", Die.single(give), 40, 100)
-	a.shield = 0
+	a.shield = 5   # a sliver standing: a shield at nothing is broken and takes none
 	sk.add_mech(a)
 	sk.add_mech(b)
 	sk.add_foes([_ghoul(500, 10)])
@@ -460,7 +464,7 @@ func test_machine_targets_are_the_components_to_set() -> void:
 	assert_eq(sk.machine_targets_for(sk.mechs[0], own).size(), 1, "a self-only shield offers one target")
 	assert_false(sk.assign(0, sk.mechs[1]), "and refuses an ally")
 	assert_true(sk.assign(0, null), "self is fine")
-	assert_eq(a.shield, 10, "shielded")
+	assert_eq(a.shield, 15, "shielded")
 	assert_false(sk.assign(1, null), "an allies-only vent refuses self")
 	assert_true(sk.assign(1, sk.mechs[0]), "and takes the ally")
 	var default_face := Face.shield(10)
@@ -976,9 +980,10 @@ func test_shield_component_helps_an_ally() -> void:
 	assert_true(sk.assign(0, sk.mechs[1]), "shield the ally")
 	assert_eq(taker.shield, 0, "capped at the ally's shield max of 0")
 	taker.shield_max = 50
+	taker.shield = 10   # standing: a shield at nothing is broken and takes none
 	sk.mechs[0].assigned = false
 	assert_true(sk.assign(0, sk.mechs[1]), "shield again with room")
-	assert_eq(taker.shield, 30, "ally gained 30")
+	assert_eq(taker.shield, 40, "ally gained 30")
 
 
 func test_forecast_predicts_shield_break_and_hull_loss() -> void:
@@ -1024,7 +1029,7 @@ func test_forecast_predicts_wreck_and_overheat() -> void:
 	sk.start_round()
 	var fc: Dictionary = sk.preview_round(0, sk.front[0])["mechs"][0]   # the die in hand, over its foe
 	assert_eq(fc["overheat"], 10, "a 40-heat face on a 30 cap overheats by 10")
-	assert_eq(fc["heat_after"], 30, "heat capped")
+	assert_eq(fc["heat_after"], 40, "and the heat stays on the gauge, past its cap")
 	assert_true(fc["destroyed"], "25 through plus 10 overheat beats 20 hull")
 	assert_eq(sk.forecast(ms)["overheat"], 0, "the round as it stands counts no die")
 	sk.assign(0, sk.front[0])
@@ -1174,14 +1179,15 @@ func test_shield_never_comes_back_on_its_own_in_a_fight() -> void:
 	assert_eq(m.shield, 40, "at max")
 
 
-## The shield regen (the long wall brief 3.6; Ryan, 5 November: "Base shield regen and cooling
-## returning, as a build-strategy buffer"): a machine regains its shield_regen at each round's
-## start after the cooling, up to its maximum, one log line for all. A sealed machine's regen
-## runs: the Polar Bear's seal stops its own cooling, and nothing says it stops the regen.
-func test_the_shield_regen_comes_back_each_round_to_the_maximum_sealed_or_not() -> void:
+## A granted shield regen (a module's or a passive's: a chassis has none of its own since the
+## reboot): a machine regains it at each round's start after the cooling, up to its maximum, one
+## log line for all. A sealed machine's regen runs: the Polar Bear's seal stops its cooling, and
+## nothing says it stops the regen.
+func test_a_granted_shield_regen_comes_back_each_round_to_the_maximum_sealed_or_not() -> void:
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.attack(1, L)), 10, 100)
-	m.shield_regen = 2
+	m.grant_passive({"id": "mender", "name": "Mender", "description": "", "effects": [
+		{"trigger": "static", "effect": "add_stat", "stat": "shield_regen", "value": 2}]})
 	m.shield = 5
 	m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
 		{"trigger": "static", "effect": "seal_form", "value": 1, "heat": 0}]})
@@ -1193,7 +1199,7 @@ func test_the_shield_regen_comes_back_each_round_to_the_maximum_sealed_or_not() 
 	sk.begin()
 	sk.start_round()
 	assert_eq(m.shield, 7, "two back at the round's start")
-	assert_eq(plain.shield, 5, "none where the stat is nothing")
+	assert_eq(plain.shield, 5, "none where nothing grants it")
 	assert_true("\n".join(sk.log).contains("shield regen: A +2"), "one log line says so")
 	sk.end_round()
 	sk.start_round()
@@ -1217,8 +1223,9 @@ func test_the_shield_regen_comes_back_each_round_to_the_maximum_sealed_or_not() 
 func test_heat_adds_to_the_shield_regen_where_a_passive_says_so() -> void:
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.attack(1, L)), 20, 100)
-	m.shield_regen = 1
-	m.cooling = 1
+	m.grant_passive({"id": "fitted", "name": "Fitted", "description": "", "effects": [
+		{"trigger": "static", "effect": "add_stat", "stat": "shield_regen", "value": 1},
+		{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 1}]})
 	m.grant_passive({"id": "recoupler", "name": "Recoupler", "description": "", "effects": [
 		{"trigger": "static", "effect": "shield_regen_per_heat", "value": 1, "per_heat": 4}]})
 	sk.add_mech(m)
@@ -1229,12 +1236,12 @@ func test_heat_adds_to_the_shield_regen_where_a_passive_says_so() -> void:
 	ms.heat = 10
 	sk.start_round()
 	assert_eq(ms.heat, 9, "the cooling first")
-	assert_eq(Skirmish.shield_regen_of(ms), 3, "its regen of one and two for the nine it carries")
+	assert_eq(Skirmish.shield_regen_of(ms), 3, "the regen of one it is granted and two for the nine it carries")
 	assert_eq(m.shield, 8, "three back as the round opens")
 	assert_true("\n".join(sk.log).contains("shield regen: A +3"), "in the regen's one line")
 	assert_eq(Effects.effect_text({"trigger": "static", "effect": "shield_regen_per_heat", "value": 1, "per_heat": 4}), "shield regen +1 for every 4 heat it carries", "its text says it is regen")
 	ms.heat = 0
-	assert_eq(Skirmish.shield_regen_of(ms), 1, "cold, its own regen alone")
+	assert_eq(Skirmish.shield_regen_of(ms), 1, "cold, the granted regen alone")
 	m.shield = 19
 	ms.heat = 40
 	sk.end_round()
@@ -2051,7 +2058,6 @@ func test_a_doubled_heat_doubles_scorched_too() -> void:
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.attack(10, L, [], 10)), 0, 200)
 	m.heat_max = 100
-	m.cooling = 0
 	Effects.grant(m, Effects.make({"id": "hot", "name": "Hot", "description": "", "effects": [{"trigger": "on_attack", "effect": "multiply_heat", "value": 2}]}, Effects.BATTLE, "test"))
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(500, 10)])
@@ -2072,7 +2078,6 @@ func test_statuses_stack_tick_and_decay_on_both_sides() -> void:
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.attack(10, L, [], 10)), 0, 200)
 	m.heat_max = 100
-	m.cooling = 0
 	sk.add_mech(m)
 	var scorcher := Foe.make("hellhound", 900, 10)
 	scorcher.actions[0]["keywords"] = ["scorch"]
@@ -2099,7 +2104,6 @@ func test_statuses_stack_tick_and_decay_on_both_sides() -> void:
 	var s2 := Skirmish.new(2)
 	var n := _mech("B", Die.single(Face.shield(10)), 0, 200)
 	n.heat_max = 100
-	n.cooling = 0
 	s2.add_mech(n)
 	var burner := Foe.make("hellhound", 900, 10)
 	burner.actions[0]["keywords"] = ["burn"]
@@ -2354,11 +2358,13 @@ func test_a_kill_clears_the_slot_at_once_and_opens_the_back_rank() -> void:
 func test_cooling_at_the_start_of_the_round_and_overheating_at_the_end_of_the_turn() -> void:
 	# Ryan, 22 September: cool at the start of the round. Ryan, 11 October: the overheat burns
 	# at the end of the player's turn, before the enemy acts. Ryan, 13 October: a machine's
-	# Burning adds its heat there too, before the overheat, so it burns in the same turn.
+	# Burning adds its heat there too, before the overheat, so it burns in the same turn. The
+	# cooling here is granted, a chassis having none of its own, and the gauge never settles
+	# (the reboot, 13 November).
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.attack(10, L, [], 30)), 40, 100)
 	m.heat_max = 60
-	m.cooling = 10
+	m.grant_passive({"id": "radiator", "name": "Radiator", "description": "", "effects": [{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 10}]}, "radiator")
 	var ms := sk.add_mech(m)
 	sk.add_foes([_ghoul(30, 10)])
 	sk.begin()
@@ -2385,17 +2391,17 @@ func test_cooling_at_the_start_of_the_round_and_overheating_at_the_end_of_the_tu
 	Effects.stack(m, Effects.STATUS["burning_mech"], Effects.SKIRMISH, "test", 2, Effects.DECAY_TURN)
 	var bt := _rule("burning_mech", "tick_heat")
 	assert_eq(sk.forecast(ms)["overheat"], 20 + 2 * bt, "the tick's heat burns with the twenty already over")
-	assert_eq(sk.forecast(ms)["heat_after"], 60, "and the gauge settles at its cap")
+	assert_eq(sk.forecast(ms)["heat_after"], 80 + 2 * bt, "and the gauge keeps what it carries: nothing settles")
 	sk.end_round()
-	assert_eq(m.hull, 100 - (20 + 2 * bt), "the twenty and the tick burn as the turn ends")
-	assert_eq(ms.heat, 60, "settled at the cap")
+	assert_eq(m.hull, 100 - (20 + 2 * bt) - 10, "the twenty and the tick burn as the turn ends, and the overheat bares the hull to the ghoul's ten")
+	assert_eq(ms.heat, 80 + 2 * bt, "the heat stands past the cap")
 	assert_eq(Effects.stacks_of(m, "burning_mech"), 1, "one stack ticked away")
 	sk.start_round()
-	assert_eq(ms.heat, 50, "then cooled by 10")
-	assert_eq(m.hull, 100 - (20 + 2 * bt), "nothing burns at the round's start")
-	# Cooling is a stat like any other: a passive can raise it, and it never goes below zero.
+	assert_eq(ms.heat, 70 + 2 * bt, "then cooled by the ten it is granted")
+	assert_eq(m.hull, 100 - (20 + 2 * bt) - 10, "nothing burns at the round's start")
+	# Cooling is a stat like any other: a second grant adds to it, and it never goes below zero.
 	m.grant_passive({"id": "fins", "name": "Fins", "description": "", "effects": [{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 15}]}, "fins")
-	assert_eq(m.cooling, 25, "base plus the passive")
+	assert_eq(m.cooling, 25, "the two grants together")
 	ms.heat = 5
 	sk.end_round()   # the last stack ticks
 	assert_eq(ms.heat, 5 + bt, "the remaining stack ticked at the end of the turn")
@@ -2408,7 +2414,6 @@ func test_forecast_counts_burning_in_the_turn_it_lands() -> void:
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.shield(10)), 0, 100)
 	m.heat_max = 60
-	m.cooling = 0
 	var ms := sk.add_mech(m)
 	var demon := _ghoul(30, 10)
 	demon.actions[0]["keywords"] = ["burn"]
@@ -2578,7 +2583,8 @@ func test_an_overheat_that_wrecks_the_last_machine_ends_the_fight_before_the_ene
 
 ## The overheat burns as the player's turn ends, before the enemy strikes (Ryan, 11 October;
 ## a withdrawal shared the turn's end until the long wall brief took it away): running hot is
-## paid in hull on the machine's own turn, and the enemy's blow lands after on the shield.
+## paid in hull on the machine's own turn, and the enemy's blow lands after on what the overheat
+## left, the first one between reboots breaking the shield (13 November).
 func test_the_overheat_burns_before_the_enemy_strikes() -> void:
 	var sk := Skirmish.new(1)
 	var hot := _mech("Hot", Die.single(Face.attack(10, L, [], 50)), 40, 100)
@@ -2590,8 +2596,8 @@ func test_the_overheat_burns_before_the_enemy_strikes() -> void:
 	sk.assign(0, sk.front[0])
 	sk.end_round()
 	assert_eq(sk.outcome, Skirmish.Outcome.NONE, "the fight goes on")
-	assert_eq(hot.hull, 80, "the twenty over the cap burnt as the turn ended")
-	assert_eq(hot.shield, 30, "and the enemy's blow landed on the shield after")
+	assert_eq(hot.shield, 0, "its first overheat broke its shield as the turn ended")
+	assert_eq(hot.hull, 70, "the twenty over the cap burnt then, and the enemy's ten landed after on the hull it bared")
 
 
 ## A stun lock costs its stuns (Ryan, 2 November): a foe with Numbed N takes N stuns to strip and
@@ -2685,7 +2691,7 @@ func test_cleanse_clears_what_foes_did_and_not_a_cooldown() -> void:
 	scrubber.add_keyword(K.CLEANSE)
 	var a := _mech("A", Die.single(scrubber), 0, 100)
 	var b := _mech("B", Die.single(Face.attack(30, L)), 40, 100)
-	b.shield = 0
+	b.shield = 5
 	sk.add_mech(a)
 	sk.add_mech(b)
 	sk.add_foes([_ghoul(500, 10)])
@@ -2697,7 +2703,7 @@ func test_cleanse_clears_what_foes_did_and_not_a_cooldown() -> void:
 	Effects.stack(b, Effects.STATUS["scorched"], Effects.SKIRMISH, "foe:x", 2, Effects.DECAY_TURN_ALL)
 	assert_eq(scrubber.describe(), "shield 10 cleanse", "the keyword reads on the entry")
 	assert_true(sk.assign(0, sk.mechs[1]), "the shield is spent on B")
-	assert_eq(b.shield, 10, "shielded")
+	assert_eq(b.shield, 15, "shielded")
 	assert_eq(Effects.corrupt_stacks(b, 0), 0, "corruption gone")
 	assert_false(Effects.is_entry_disabled(b, 0), "the foe's disable gone")
 	assert_eq(Effects.stacks_of(b, "burning_mech"), 0, "burning gone")
@@ -3041,13 +3047,13 @@ func test_a_volatile_shield_costs_hull_to_raise() -> void:
 	var plate := Face.shield(20)
 	plate.volatile = 10
 	var m := _mech("A", Die.single(plate), 40, 100)
-	m.shield = 0
+	m.shield = 5
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(500, 10)])
 	sk.begin()
 	sk.start_round()
 	assert_true(sk.assign(0, null), "raised on itself")
-	assert_eq(m.shield, 20, "the shield stands")
+	assert_eq(m.shield, 25, "the shield stands")
 	assert_eq(m.hull, 90, "and cost hull to raise")
 
 
@@ -3346,10 +3352,12 @@ func test_a_shocked_foe_that_reaches_hull_again_pays_nothing() -> void:
 	assert_eq(g.hp, 500, "the second strike on bare hull costs it nothing")
 	assert_true(Effects.has(g, "shocked"), "and it stays Shocked, never doubly")
 	assert_false("\n".join(sk.log).contains("discharges"), "no discharge in the log")
-	# A blocked blow does not shock.
+	# A blocked blow does not shock: a shield at nothing is broken, so it comes back by a reboot.
 	sk.start_round()
-	sk.assign(0, null)
-	assert_eq(m.shield, 10, "shield up")
+	assert_true(sk.reboot_mech(0), "the machine gives a turn to a reboot")
+	sk.end_round()
+	sk.start_round()
+	assert_eq(m.shield, 40, "its shield back whole")
 	sk.end_round()
 	assert_eq(g.hp, 500, "the blocked blow cost the ghoul nothing")
 
@@ -3957,7 +3965,7 @@ func test_rage_banks_on_every_hull_hit_for_the_skirmish() -> void:
 	# An overheat is hull damage too.
 	var before := Effects.stacks_of(m, "rage")
 	sk.mechs[0].heat = sk.mechs[0].heat_max + 20
-	sk._settle_heat()
+	sk._burn_overheated()
 	assert_eq(Effects.stacks_of(m, "rage"), before + 1, "the overheat fed it")
 	# A volatile bite is the machine's own weapon reaching hull: it counts.
 	var s2 := Skirmish.new(2)
@@ -4710,7 +4718,6 @@ func test_the_debuffs_cost_rerolls_and_heat() -> void:
 	# Stoke: Burning on the target, its heat at the end of the next player's turn.
 	var s2 := Skirmish.new(9, 1)
 	var m2 := _mech("B", Die.single(Face.attack(10, L)), 40, 100)
-	m2.cooling = 0
 	s2.add_mech(m2)
 	var h := _archer(500, 10)
 	h.actions = [_special("debuff", "burn", {"value": 2})]
@@ -4844,6 +4851,7 @@ func test_an_overshield_passes_the_maximum_and_fades_at_the_rounds_end() -> void
 	assert_eq(taker.shield, 0, "the shield spent on them")
 	# The excess fades at the round's end when nothing spends it.
 	taker.shield = 20
+	sk.mechs[1].shield_broken = false   # set whole by hand with the number: the first round's blows took it to nothing, and a broken shield takes none
 	sk.start_round()
 	sk.mechs[0].face_index = 0
 	for f in sk.field_foes():
@@ -5208,9 +5216,22 @@ func test_a_hull_hit_can_raise_shield_and_shed_heat() -> void:
 	sk.assign(0, g)
 	sk.end_round()
 	assert_eq(m.hull, 190, "the blow reached bare hull")
-	assert_eq(m.shield, 10, "and the hit stood a shield up")
+	assert_eq(m.shield, 0, "and stood no shield up: one at nothing is broken until its machine reboots, whatever would raise it")
 	assert_eq(sk.mechs[0].heat, 15, "and shed heat")
-	assert_true("\n".join(sk.log).contains("A: +10 shield, -5 heat from the hit"), "the log says so")
+	assert_true("\n".join(sk.log).contains("A: -5 heat from the hit"), "the log says so")
+	# Hull damage behind a shield that stands (a cost of the machine's own): the shield half lands.
+	var s2 := Skirmish.new(1)
+	var cost := Face.shield(5)
+	cost.volatile = 10
+	var m2 := _mech("B", Die.single(cost), 40, 200)
+	m2.shield = 10
+	m2.grant_passive(liner)
+	s2.add_mech(m2)
+	s2.add_foes([_ghoul(500, 1)])
+	s2.begin()
+	s2.start_round()
+	assert_true(s2.assign(0, null), "a volatile shield raised: hull damage with the shield standing")
+	assert_eq(m2.shield, 25, "the entry's five and the liner's ten on a shield that stands")
 
 
 func test_a_status_granted_on_shielding_lands_on_the_ally() -> void:
@@ -6429,7 +6450,7 @@ func test_a_buff_on_itself_seals_the_machine_and_a_weapon_opens_it() -> void:
 	var lure := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure", "cryo"], "heat": 5, "cryo": 1})
 	var shield := Face.shield(20)
 	var m := _mech("A", Die.of([buff, vent, gun, lure, shield]), 0, 200)
-	m.cooling = 5
+	m.grant_passive({"id": "radiator", "name": "Radiator", "description": "", "effects": [{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 5}]}, "radiator")   # cooling is granted: a chassis has none of its own
 	m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
 		{"trigger": "static", "effect": "seal_form", "value": 10, "heat": 15}]})
 	var b := _mech("B", Die.single(Face.attack(10, L)), 40, 100)
@@ -7247,9 +7268,9 @@ func test_a_silence_leaves_every_foe_and_every_ally_whole() -> void:
 	screens.targets = Face.Target.EVERY_OTHER_ALLY
 	var c := _mech("Carrier", Die.single(screens), 40, 100)
 	sk.add_mech(c)
-	var a := _mech("A", Die.single(Face.attack(10, L)), 0, 100)
+	var a := _mech("A", Die.single(Face.attack(10, L)), 10, 100)
 	a.shield_max = 40
-	var b := _mech("B", Die.single(Face.attack(10, L)), 0, 100)
+	var b := _mech("B", Die.single(Face.attack(10, L)), 10, 100)
 	b.shield_max = 40
 	sk.add_mech(a)
 	sk.add_mech(b)
@@ -7258,7 +7279,7 @@ func test_a_silence_leaves_every_foe_and_every_ally_whole() -> void:
 	sk.start_round()
 	Effects.grant_for_rounds(c, Effects.STATUS["silenced"], "foe:test", sk.round + 1)
 	assert_true(sk.assign(0, sk.mechs[1]), "the team shield spent, Silenced")
-	assert_eq([a.shield, b.shield, c.shield], [5, 5, 40], "every other ally shielded all the same, never its own machine: a Silence mutes keywords, never a targeting mode")
+	assert_eq([a.shield, b.shield, c.shield], [15, 15, 40], "every other ally shielded all the same, never its own machine: a Silence mutes keywords, never a targeting mode")
 	var team := Face.shield(5)
 	team.targets = Face.Target.EVERY_ALLY
 	assert_eq(sk.reached_machines(sk.mechs[0], team).size(), 3, "Every Ally: the whole team, its own machine among them")
@@ -7487,7 +7508,7 @@ func test_a_silence_mutes_the_keywords_for_the_round_and_leaves_the_buffs() -> v
 	var s7 := Skirmish.new(1, 1)
 	var p := _mech("P", Die.single(own), 40, 100)
 	var q := _mech("Q", Die.single(ally), 40, 100)
-	p.shield = 0
+	p.shield = 10
 	s7.add_mech(p)
 	s7.add_mech(q)
 	s7.add_foes([_ghoul(500, 1)])
@@ -7495,7 +7516,7 @@ func test_a_silence_mutes_the_keywords_for_the_round_and_leaves_the_buffs() -> v
 	s7.start_round()
 	Effects.grant_for_rounds(p, Effects.STATUS["silenced"], "foe:x", s7.round + 1)
 	assert_true(s7.assign(0, s7.mechs[0]), "P shields itself")
-	assert_eq(p.shield, 5, "a plain shield")
+	assert_eq(p.shield, 15, "a plain shield")
 	assert_true(Effects.has(p, "silenced"), "its own Cleanse, muted, lifts nothing")
 	assert_true(s7.assign(1, s7.mechs[0]), "Q shields P")
 	assert_false(Effects.has(p, "silenced"), "an ally's Cleanse lifts it")
@@ -7679,7 +7700,7 @@ func test_a_purge_takes_every_buffs_stacks_and_leaves_the_abilities() -> void:
 	var s2 := Skirmish.new(1, 2)
 	var buff := Face.buff("overcharged", 1)
 	var m := _mech("D", Die.of([buff, Face.attack(10, L)]), 40, 200)
-	m.cooling = 5
+	m.grant_passive({"id": "radiator", "name": "Radiator", "description": "", "effects": [{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 5}]}, "radiator")   # cooling is granted: a chassis has none of its own
 	m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
 		{"trigger": "static", "effect": "seal_form", "value": 10, "heat": 15}]})
 	s2.add_mech(m)
@@ -8218,11 +8239,11 @@ func test_a_vent_that_shields_cools_first_then_shields_on_what_is_left() -> void
 	assert_true(lines.contains("Giver vents Taker by 10") and lines.contains("Giver shields Taker for 14"), "the log says both halves")
 	sk.end_round()
 	sk.start_round()
-	giver.shield = 0
+	giver.shield = 5   # standing: a shield at nothing is broken and takes none
 	sk.mechs[0].heat = 5
 	sk.mechs[0].face_index = 1
 	assert_true(sk.assign(0, sk.mechs[0]), "spent on itself")
-	assert_eq([sk.mechs[0].heat, giver.shield], [0, 10], "its own heat off and the number alone")
+	assert_eq([sk.mechs[0].heat, giver.shield], [0, 15], "its own heat off and the number alone")
 	var bot := Policy.make(Policy.GREEDY, 1)
 	var cold := bot.machine_spend_score(sk, sk.mechs[0], sk.mechs[1], Face.from_dict({"kind": "vent", "power": 10}))
 	assert_true(bot.machine_spend_score(sk, sk.mechs[0], sk.mechs[1], both) >= cold, "the bot weighs the shield half on top of the vent")
@@ -8387,6 +8408,7 @@ func test_a_kill_recharges_the_shield_whole() -> void:
 	m.shield = 12
 	assert_true(sk.assign(0, big), "a spend that kills nothing")
 	assert_eq(m.shield, 12, "recharges nothing")
+	m.shield = m.shield_max   # whole for the foes' turn: a shield they take to nothing is broken, and a kill gives a broken one nothing
 	sk.end_round()
 	sk.start_round()
 	m.shield = 3
@@ -9267,7 +9289,7 @@ func test_hull_damage_halves_ricochet_and_a_shield_keeps_it() -> void:
 	m.shield = 40
 	_ricochet(m, 4)
 	ms.heat = ms.heat_max + 3
-	sk.end_round()
+	sk._burn_overheated()   # the burn alone: the overheat also breaks the shield, and the blow after it would halve them again
 	assert_eq(Effects.stacks_of(m, "ricochet"), 2, "its own heat burning hull halves them too")
 	# A stack is a stack: a Purge takes one.
 	Effects.purge(m, 1)
@@ -9498,9 +9520,9 @@ func test_the_team_shield_reaches_every_ally_and_phased_takes_the_team_out_of_th
 	var c := _mech("Carrier", Die.single(screens), 40, 100)
 	c.grant_passive(MUSTER)
 	sk.add_mech(c)
-	var a := _mech("A", Die.single(Face.attack(10, L)), 0, 100)
+	var a := _mech("A", Die.single(Face.attack(10, L)), 10, 100)
 	a.shield_max = 40
-	var b := _mech("B", Die.single(Face.attack(10, L)), 0, 100)
+	var b := _mech("B", Die.single(Face.attack(10, L)), 10, 100)
 	b.shield_max = 40
 	sk.add_mech(a)
 	sk.add_mech(b)
@@ -9509,7 +9531,7 @@ func test_the_team_shield_reaches_every_ally_and_phased_takes_the_team_out_of_th
 	sk.start_round()
 	Effects.remove(c, "muster")   # the three dice's rolls made a charge; this round's shield is plain
 	assert_true(sk.assign(0, sk.mechs[1]), "the team shield, dropped on one ally")
-	assert_eq([a.shield, b.shield, c.shield], [10, 10, 40], "every ally shielded, never its spender")
+	assert_eq([a.shield, b.shield, c.shield], [20, 20, 40], "every ally shielded, never its spender")
 	sk.end_round()
 	sk.start_round()
 	Effects.remove(c, "muster")
@@ -9556,7 +9578,7 @@ func test_the_hoist_resets_an_ally_and_the_horn_rallies_or_gives_an_ally_its_tur
 	var c := _mech("Carrier", Die.of([hoist, horn]), 40, 100)
 	c.grant_passive(MUSTER)
 	sk.add_mech(c)
-	var a := _mech("A", Die.single(Face.attack(10, L)), 0, 100)
+	var a := _mech("A", Die.single(Face.attack(10, L)), 10, 100)
 	a.shield_max = 60
 	sk.add_mech(a)
 	sk.add_foes([_ghoul(300, 0), _ghoul(300, 0)])
@@ -9565,7 +9587,7 @@ func test_the_hoist_resets_an_ally_and_the_horn_rallies_or_gives_an_ally_its_tur
 	sk.mechs[1].heat = 30
 	sk.mechs[0].face_index = 0
 	assert_true(sk.assign(0, sk.mechs[1]), "the plain Hoist on the ally")
-	assert_eq([sk.mechs[1].heat, a.shield], [20, 15], "cooled 10, then shielded 15")
+	assert_eq([sk.mechs[1].heat, a.shield], [20, 25], "cooled 10, then shielded 15")
 	sk.end_round()
 	sk.start_round()
 	Effects.stack(c, Effects.STATUS["muster"], Effects.SKIRMISH, "test", 6, Effects.DECAY_NONE)
@@ -10325,7 +10347,6 @@ func _boiler(gate: int = 8, per_blow: int = 0) -> Dictionary:
 func _boiler_fight(d: Die, front: int, back: int, atk: int = 0) -> Array:
 	var sk := Skirmish.new(1)
 	var m := _mech("A", d, 40, 1000)
-	m.cooling = 0
 	m.grant_passive(_boiler(8, 2 if atk > 0 else 0))
 	sk.add_mech(m)
 	var foes: Array = []

@@ -49,10 +49,9 @@ func _ready() -> void:
 
 ## The refit pass's what-ifs (docs/briefs/refit_pass.md; sim/refit.gd), laid over the content
 ## once, as the game starts and before anything is built from it: RIFTGATE_REFIT names a spec (its
-## parts: regen=half|N, cooling=N, hotter=N, barrier=cooldownN|heatN|none), or a debug build's
-## SETTINGS → TRIALS has SHIELD REGEN on a flat number, HEAT a point either side, or BARRIER BASIC
-## off the stock dice (the phone's way, read at the next launch; Settings.SHIELD_REGENS, HEAT_SPECS
-## and BARRIER_BASICS). The model itself is content since 10 November. A battle or a run saved
+## parts: hotter=N, basics=N, top=N, foehp=N, breach=cut, barrier=cooldownN|heatN|none), or a
+## debug build's SETTINGS → TRIALS has HEAT a point either side, or BARRIER BASIC off the stock
+## dice (the phone's way, read at the next launch; Settings.HEAT_SPECS and BARRIER_BASICS). The model itself is content since 10 November. A battle or a run saved
 ## before a switch keeps the numbers it was saved with, so judge it on a new one.
 static var _refit_trial_done := false
 static func refit_trial() -> void:
@@ -65,7 +64,7 @@ static func refit_trial() -> void:
 
 
 ## The what-if's spec, "" for the game as built: the environment's as written, else a debug
-## build's flat shield regen (Settings.SHIELD_REGENS), its heat prices (Settings.HEAT_SPECS), the
+## build's heat prices (Settings.HEAT_SPECS), the
 ## basic guns' damage and the top basic's heat (Settings.BASIC_GUNS, TOP_BASIC_HEATS), tier
 ## one's rank and file a hit point up (Settings.RANK_HPS), the foes' breach cut
 ## (Settings.FOE_BREACHES) and the Barrier basic off the stock dice (Settings.BARRIER_BASICS).
@@ -73,9 +72,6 @@ static func refit_spec() -> String:
 	var spec := OS.get_environment("RIFTGATE_REFIT")
 	if spec.is_empty() and OS.is_debug_build():
 		var parts: Array[String] = []
-		var regen := str(Settings.display.get("shield_regen", "built"))
-		if regen != "built" and Settings.SHIELD_REGENS.has(regen):
-			parts.append("regen=" + regen)
 		var heat := str(Settings.display.get("heat_trial", "0"))
 		if Settings.HEAT_SPECS.has(heat):
 			parts.append(str(Settings.HEAT_SPECS[heat]))
@@ -843,7 +839,7 @@ func _button(text: String, on_pressed: Callable, h: float = 60, size_px: int = 2
 # ---------------------------------------------------------------- launching
 
 func _on_fight() -> void:
-	Settings.field_trial(true)   # the fight's trials as the settings stand now (the reboot, the block, the overheat's burn): a lone fight reads them as a battle does
+	Settings.field_trial(true)   # the fight's trials as the settings stand now (the block, the overheat's burn): a lone fight reads them as a battle does
 	var sk := setup.make_skirmish()
 	if sk == null:
 		return

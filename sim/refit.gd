@@ -3,20 +3,16 @@ extends RefCounted
 
 ## The refit pass's what-ifs (docs/briefs/refit_pass.md). The model itself is content since 10
 ## November (Ryan: "The re-deal with regen and heat ... seems like the correct way to go ... start
-## with the minimal swaps"): no stock die holds a shield or a vent, every chassis regains its own
-## `shield_regen` a round, the basics make heat, and the machines back in design are undealt. What
-## is left here are the numbers a read may still be asked about, laid over a loaded ContentDB, the
-## copy in memory and never the files. Nothing here is a decision.
+## with the minimal swaps"): no stock die holds a shield or a vent, the basics make heat, and the
+## machines back in design are undealt; and since the reboot's fold-in of 15 November no chassis
+## regains shield or cools by itself, so the parts that moved either are gone. What is left here
+## are the numbers a read may still be asked about, laid over a loaded ContentDB, the copy in
+## memory and never the files. Nothing here is a decision.
 ##
 ## It names no content id (CLAUDE.md: ids are Ryan's to rename): the pieces are found by what
 ## their entries do.
 ##
 ## A spec is a comma-separated list, the runners' --refit and the game's RIFTGATE_REFIT:
-##   regen=N    every chassis regains a flat N a round, 0 to 9, in place of its own number
-##   regen=half every chassis regains half its shield a round, rounded up (the pass's first lean,
-##              far too much by Ryan's first read of 10 November)
-##   cooling=N  every chassis that cools at all cools N more a round (a read of the offset; may
-##              be negative); one that cools nothing keeps its rule
 ##   hotter=N   every weapon makes N more heat, fixed pieces too, and a passive that rewrites
 ##              its machine's weapons its shot's (a read of how much hotter the guns must run
 ##              before heat is a pace; Ryan, 10 November: "Heat generation is too low")
@@ -46,14 +42,10 @@ const ARMOURED := "braced"   # the status the Armoured basic grants
 
 
 static func parse(text: String) -> Dictionary:
-	var spec := {"regen": "", "cooling": 0, "hotter": 0, "basics": 0, "top": 0, "foehp": 0, "breach": "", "barrier": ""}
+	var spec := {"hotter": 0, "basics": 0, "top": 0, "foehp": 0, "breach": "", "barrier": ""}
 	for part in text.split(",", false):
 		var p := part.strip_edges()
-		if p.begins_with("regen="):
-			spec["regen"] = p.trim_prefix("regen=")
-		elif p.begins_with("cooling="):
-			spec["cooling"] = int(p.trim_prefix("cooling="))
-		elif p.begins_with("hotter="):
+		if p.begins_with("hotter="):
 			spec["hotter"] = int(p.trim_prefix("hotter="))
 		elif p.begins_with("basics="):
 			spec["basics"] = int(p.trim_prefix("basics="))
@@ -66,7 +58,7 @@ static func parse(text: String) -> Dictionary:
 		elif p.begins_with("barrier="):
 			spec["barrier"] = p.trim_prefix("barrier=")
 		elif not p.is_empty():
-			push_error("--refit: no part '%s' (regen=half|N, cooling=N, hotter=N, basics=N, top=N, foehp=N, breach=cut, barrier=cooldownN|heatN|none; the model's die, its regen by chassis and the basics' heat are content since 10 November)" % p)
+			push_error("--refit: no part '%s' (hotter=N, basics=N, top=N, foehp=N, breach=cut, barrier=cooldownN|heatN|none; the model's die and the basics' heat are content since 10 November, and regen= and cooling= left with the chassis's own on 15 November)" % p)
 	return spec
 
 
@@ -74,22 +66,6 @@ static func parse(text: String) -> Dictionary:
 ## head.
 static func apply(db: ContentDB, spec: Dictionary) -> Array[String]:
 	var notes: Array[String] = []
-	var regen := str(spec.get("regen", ""))
-	if not regen.is_empty():
-		var said: Array[String] = []
-		for id in db.chassis.keys():
-			var c: Dictionary = db.chassis[id]
-			var n := int(ceil(float(int(c.get("shield", 0))) / 2.0)) if regen == "half" else int(regen)
-			c["shield_regen"] = clampi(n, 0, 9)
-			said.append("%s %d" % [str(c.get("name", id)), int(c["shield_regen"])])
-		notes.append("shield regen a round (%s, in place of each chassis's own): %s" % ["half the gauge, rounded up" if regen == "half" else "flat", ", ".join(said)])
-	var cooling := int(spec.get("cooling", 0))
-	if cooling != 0:
-		for id in db.chassis.keys():
-			var cools := int(db.chassis[id].get("cooling", 0))
-			if cools > 0:   # a chassis that cools nothing is so by its rule, and no offset moves it
-				db.chassis[id]["cooling"] = maxi(0, cools + cooling)
-		notes.append("cooling: every chassis that cools %+d a round" % cooling)
 	var hotter := int(spec.get("hotter", 0))
 	if hotter != 0:
 		var n := 0

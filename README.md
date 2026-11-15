@@ -312,9 +312,9 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # cell carries greedy's hull lost, its rounds and its stalled fights beside the band.
 # --refit SPEC lays one of the refit pass's what-ifs over the run's content (sim/refit.gd; the brief
 # docs/briefs/refit_pass.md). The model itself is content since 10 November (no stock die holds a
-# shield or a vent, every chassis regains its own shield regen, the basics make heat), so what is
-# left are the numbers a read may still ask about: "regen=N" (a flat regen on every chassis in
-# place of its own) or "regen=half", "cooling=N" (an offset), "hotter=N" (every weapon N heat
+# shield or a vent, the basics make heat) and the reboot is the game's rule since 15 November (no
+# chassis regains shield or cools, so the regen's and the cooling's parts are gone), so what is
+# left are the numbers a read may still ask about: "hotter=N" (every weapon N heat
 # more, a read for the heat prices; negative for cooler), "basics=N" (every basic gun deals N
 # more) and "top=N" (the basic guns that deal more than the plainest make N more heat), the two
 # of Ryan's logic for the stock basics (the refit brief's section 23), "foehp=N" (every foe a
@@ -466,8 +466,8 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # seven statuses on each machine, five on each foe), plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), foeheat (Burning, Flak and Shocked on the first three front foes, heat's red-orange beside each violet intent), lure_all (a Lure over every foe dragged over a foe, the turned foes' arrows dashed; the content's first lure-all, the Shift Whistle, takes the first machine's first entry when no machine carries one), rounds, logfull, killed, acquire, menu, settings, quit, keywords (the keywords list, as the menu's KEYWORDS opens it), colours and colourpick (a debug build's COLOURS page, and with the red's picker open), and the feed's
 # events feed_scanbox, feed_databox, feed_readout, feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal,
 # and groundtear (the corrupted side's tear as it fires), swallowed (the first machine swallowed: a ghost under a dashed edge),
-# undo (a spend taken: UNDO lit at the bottom row's right end), reboot (the reboot's trial, with RIFTGATE_REBOOT=1: a machine past its
-# maximum, one with its shield broken, one rebooting, and REBOOT at rest at the row's right end), rebootdrag (the same trial: a die in
+# undo (a spend taken: UNDO lit at the bottom row's right end), reboot (a machine past its
+# maximum, one with its shield broken, one rebooting, and REBOOT at rest in the bottom row's middle), rebootdrag (a die in
 # hand over REBOOT, the control lit as its target and filled) and columns (every foe aimed at the machine nearest its
 # column, every arrow on, each from its intent chip's middle, the ranks slightly apart; RIFTGATE_FOES=goblin:4,mandragora:4 fills both ranks).
 # RIFTGATE_MAP_KIND=gorge (any standalone battle run) picks the map's shape, none drawing one by the seed,
@@ -534,13 +534,12 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # so any kill shows its blast land round the slot, to judge the Mine's chip and blast running.
 # RIFTGATE_SOULS_DEBUG=12 (any skirmish) opens the fight with that many Souls on every machine that
 # banks them (the Ammit), so its flare, its Soul Siphon and their chips show in a battle's first fight.
-# RIFTGATE_REFIT=regen=0 (any run; any spec tools/balance.gd's --refit takes) lays a what-if over
-# the refit pass's model, which is content since 10 November: a flat shield regen in place of
-# each chassis's own, a cooling offset, hotter weapons, a price on the Barrier basic.
-# On the phone a debug build's SETTINGS → TRIALS (a page that scrolls) has SHIELD REGEN (BUILT, 0, 1, 2, 3: each
-# chassis its own number, or a flat one on all) and HEAT (−2, −1, BUILT, +1: every weapon
-# one or two cooler than content prices it, or a point hotter with every chassis that cools
-# cooling one more; the what-if's hotter and cooling), BASIC GUNS (BUILT, +1: every basic gun
+# RIFTGATE_REFIT=hotter=-1 (any run; any spec tools/balance.gd's --refit takes) lays a what-if over
+# the refit pass's model, which is content since 10 November: hotter or cooler weapons, the
+# basic guns' numbers, the rank and file's hit points, the foes' breach cut, a price on the
+# Barrier basic.
+# On the phone a debug build's SETTINGS → TRIALS (a page that scrolls) has HEAT (−2, −1, BUILT, +1: every weapon
+# one or two cooler than content prices it, or a point hotter; the what-if's hotter), BASIC GUNS (BUILT, +1: every basic gun
 # a point of damage up, the plain ones 3 where they are 2; the what-if's basics), TOP BASIC
 # (BUILT, +2, +4: more heat on the basic guns that deal more than the plainest; the what-if's
 # top), RANK AND FILE (BUILT, +1: a hit point more on tier one's rank and file, the massive foes
@@ -555,23 +554,13 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # breaks, it absorbs the whole blow"): the blow that breaks a shield is stopped whole. The same
 # page's SHIELD BREAK (BUILT, BLOCK) sets it on the phone, read as a battle or a lone fight
 # starts. A what-if, nothing decided; its rest timer of that morning left with the reboot.
-# RIFTGATE_REBOOT=1 (any battle, and the skirmish scene run alone) tries the reboot (Ryan, 13
-# November; the refit brief's section 22 has the spec): no shield regen and no cooling of a
-# chassis's own; a machine that has spent nothing may reboot, its shield down at once and both
-# gauges back as the next round opens; heat past the maximum stays and every point of it burns
-# hull every turn; the first overheat between reboots breaks the shield; a broken shield gains
-# none until its machine reboots. On the screen: REBOOT in the middle of the bottom row, between
-# END TURN and UNDO, REROLL centred under the dice. Drag a die onto REBOOT and its machine reboots,
-# the one way in: the control is a drop's target and no button, dashed at rest, lit with a die in
-# hand, and it takes the drop a little past its own edge. UNDO takes it back; heat past the maximum, a broken shield and a reboot under way each wear a
-# chip, and a broken shield's gauge a dashed frame. The same page's REBOOT (BUILT, ON) sets it
-# on the phone, read as a battle or a lone fight starts, with OVERHEAT pricing a point of the
-# burn. A what-if, nothing decided; the fight bot has a first play of it, and
-# `tools/balance.gd -- --reboot` reads the matrix under it. The screenshot pose `reboot` shows
-# all three states. The settings for a first play of it: REBOOT on ON, OVERHEAT on ×1, every
-# other row on BUILT or the game's own; SHIELD REGEN and the +1 HEAT's one more cooling do nothing
-# under it (a chassis's own regen and cooling are ignored); close the game and open it again
-# once the rows are set, three of them being read at launch, then start a new battle or fight.
+# The reboot is the game's rule (Ryan, 13 November; folded in 15 November; docs/rules.md, The
+# reboot): REBOOT stands in the middle of the bottom row, between END TURN and UNDO, a drop's
+# target and no button, dashed at rest, lit with a die in hand, taking the drop a little past its
+# own edge. Heat past the maximum, a broken shield and a reboot under way each wear a chip, and a
+# broken shield's gauge a dashed frame. OVERHEAT prices a point of the burn. Its dial, the
+# SHIELD REGEN dial and the runners' --reboot went with the fold-in; a battle, a run or a quick
+# campaign saved before it is set aside.
 # RIFTGATE_FIELD_DEPTH=14 and RIFTGATE_OPENING=1 (any battle) try a deeper field and a farther
 # opening (Ryan, 10 November: "I think the map is a bit too shallow"): the rows from the rift to
 # the wall, 10 to 24 and 12 the game's, and how many more of their own moves from the wall the

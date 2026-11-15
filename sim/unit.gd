@@ -22,7 +22,7 @@ var shield: int = 40
 ## Base numbers from the chassis. Every maximum and rate is read through Effects.stat, which
 ## adds every live modifier (fitted components, rewards, buffs) on top; writing hull_max or
 ## armour sets the base. Nothing stores a total (decided 18 September).
-var base: Dictionary = {"hull": 100, "shield": 40, "heat": 60, "armour": 0, "move": 3, "cooling": 0, "shield_regen": 0}
+var base: Dictionary = {"hull": 100, "shield": 40, "heat": 60, "armour": 0, "move": 3}
 var modifiers: Array = []   # Effects.Modifier list: loadout, battle, skirmish and timed effects
 var recorder = null         # the round preview's copy alone (Skirmish.preview_round): an Array every grant and stack this unit gains is noted in (Effects._record); null in any fight that plays
 var allies: int = 0         # live allies in the fight this unit is in, kept by the skirmish, for passives that read it
@@ -51,22 +51,17 @@ var movespeed: int:
 		return Effects.stat(self, "move")
 	set(v):
 		base["move"] = v
-## Heat shed at the start of every skirmish round, passively, before the roll: venting is a
-## tactic, but a round spent on shields or cool weapons is a way of cooling too.
+## Heat shed at the start of every skirmish round, before the roll: what a module, a passive
+## or a status grants. A chassis has none of its own (the reboot, folded in 15 November), so
+## there is nothing to set.
 var cooling: int:
 	get:
 		return Effects.stat(self, "cooling")
-	set(v):
-		base["cooling"] = v
-## Shield regained at the start of every skirmish round, after the cooling, up to the maximum (the
-## long wall brief 3.6; Ryan, 5 November: "Base shield regen and cooling returning, as a
-## build-strategy buffer"): a chassis stat beside cooling, which modules and passives may move.
-## No chassis sets it yet.
+## Shield regained at the start of every skirmish round, after the cooling, up to the maximum:
+## what is granted, as cooling is. A chassis has none of its own.
 var shield_regen: int:
 	get:
 		return Effects.stat(self, "shield_regen")
-	set(v):
-		base["shield_regen"] = v
 
 ## Chassis traits: a way of moving ("flyer", "hover", "walker", "tracked", "wheeled";
 ## BattleMap.WAYS), or "defense" for a static unit. A pack carries none and moves by the

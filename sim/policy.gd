@@ -90,7 +90,7 @@ var overheats: int = 0           # overheat events (a machine over its maximum a
 var heat_peak_pct: float = 0.0   # the hottest any machine stood as a turn ended, percent of its maximum
 var hot_rounds: int = 0          # rounds a machine ended its turn at four fifths of its maximum or more
 var forced_holds: int = 0        # damaging dice held because spending them would cross the maximum (the heat report, 13 October: spikes, not actions)
-var reboots: int = 0             # turns given to a reboot (Skirmish.reboot, a what-if)
+var reboots: int = 0             # turns given to a reboot
 var forgone: float = 0.0         # the damage those dice would have dealt, at their mean
 var spends: Dictionary = {}      # component id, or "empty", "destroyed", "disabled" -> times spent
 var stalled: bool = false
@@ -177,8 +177,7 @@ func _read_heat(sk: Skirmish) -> void:
 func play_round(sk: Skirmish, rerolls: bool = true) -> void:
 	if rerolls and kind != RANDOM:
 		_greedy_rerolls(sk)
-	if Skirmish.reboot:
-		_reboot_first(sk)
+	_reboot_first(sk)
 	if kind == BLIND:
 		_blind_round(sk)
 		_reboot_idle(sk)
@@ -247,14 +246,12 @@ func play_round(sk: Skirmish, rerolls: bool = true) -> void:
 	_reboot_idle(sk)
 
 
-## The reboot's first play (Skirmish.reboot, a what-if; Ryan, 13 November; docs/briefs/
-## refit_pass.md, section 22): the machines that owe one give their turn before any die is spent.
+## The reboot's first play (Ryan, 13 November; docs/briefs/refit_pass.md, section 22): the
+## machines that owe one give their turn before any die is spent.
 ## A first cut, no weighing against the spend it gives up, so the runners still play a fight under
 ## the rule and its reads are a floor: a bot that reads the foes' picks reboots where no blow would
 ## cost it a shield worth keeping.
 func _reboot_first(sk: Skirmish) -> void:
-	if not Skirmish.reboot:
-		return
 	for i in range(sk.mechs.size()):
 		if sk.can_reboot(i) and _wants_reboot(sk, sk.mechs[i]):
 			if sk.reboot_mech(i):
@@ -262,15 +259,19 @@ func _reboot_first(sk: Skirmish) -> void:
 
 
 ## Whether a machine that may reboot should, before it spends (_reboot_first): past its maximum
-## it burns every turn, so always; with its shield broken, when a blow is coming or its heat is
+## it burns every turn, so always, unless a vent it shows takes it back under; with its shield broken, when a blow is coming or its heat is
 ## half spent; with the entry it shows too hot to fire without passing its maximum, when this
 ## round's blows would take little of its shield; and to top up a shield at a quarter or less
 ## with its heat half spent, when none are coming. The blind and the random bot read no picks:
 ## they reboot at the maximum or on a break, whatever is coming.
 func _wants_reboot(sk: Skirmish, ms: Skirmish.MechState) -> bool:
-	if ms.overheat_stacks() > 0:
-		return true
 	var blind := kind == BLIND or kind == RANDOM
+	if ms.overheat_stacks() > 0:
+		# A vent showing that takes it back under its maximum is the cheaper way down: it keeps
+		# the shield a reboot would drop (the kits that still roll a vent).
+		var shown := ms.face()
+		var vents := shown.power if shown != null and shown.kind == Face.Kind.VENT else 0
+		return blind or vents < ms.overheat_stacks()
 	var fc := sk.forecast(ms)
 	var pressed := int(fc["incoming"]) > 0
 	var kept := maxi(0, ms.unit.shield - int(fc["shield_after"]))   # what its shield would take of this round's blows
@@ -279,16 +280,16 @@ func _wants_reboot(sk: Skirmish, ms: Skirmish.MechState) -> bool:
 	var f := ms.face()
 	var entry_heat := heat_of(ms, f) if f != null and f.kind != Face.Kind.BLANK else 0
 	if entry_heat > 0 and ms.heat + entry_heat > ms.heat_max:
-		return blind or kept <= REBOOT_KEEP
+		return ms.heat > 0 and (blind or kept <= REBOOT_KEEP)   # cold already, a reboot buys the entry no room: it only drops the shield
 	return not blind and not pressed and ms.unit.shield * 4 <= ms.unit.shield_max and ms.heat * 2 >= ms.heat_max
 
 
-## A die left unspent as the turn's spending ends is the cheap moment for a reboot (a what-if):
+## A die left unspent as the turn's spending ends is the cheap moment for a reboot:
 ## a machine that may, has something to get back, and would lose little shield to this round's
 ## blows, gives the turn it was not using. One holding its die for a release (the Whip Scorpion's
 ## pass) keeps it: a reboot is no pass.
 func _reboot_idle(sk: Skirmish) -> void:
-	if not Skirmish.reboot or sk.state != Skirmish.State.ASSIGN:
+	if sk.state != Skirmish.State.ASSIGN:
 		return
 	for i in range(sk.mechs.size()):
 		if not sk.can_reboot(i):
@@ -887,9 +888,9 @@ func heat_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: float = 1.0)
 	if not fc["destroyed"] and int(fc["hull_after"]) - burn <= 0:
 		cost += DEATH_WEIGHT
 	cost += overheat_marks_cost(ms, int(fc["overheat"]), over)
-	# Under the reboot (a what-if) the first turn past the maximum breaks the shield, and what
-	# stands there burns again every turn: the shield it would lose, and the burn once more.
-	if Skirmish.reboot and over > 0:
+	# The first turn past the maximum breaks the shield, and what stands there burns again
+	# every turn: the shield it would lose, and the burn once more.
+	if over > 0:
 		cost += float(burn) * HULL_WEIGHT
 		if int(fc["overheat"]) <= 0 and not ms.overheated:
 			cost += float(ms.unit.shield) * HULL_WEIGHT

@@ -1,4 +1,4 @@
-# The vocabulary pass, 14 and 15 November (six rounds; his calls of the third in section 16, of the fourth and fifth in section 17, his marks in section 18 and the foes' moves in section 19)
+# The vocabulary pass, 14 and 15 November (seven rounds; his calls of the third in section 16, of the fourth and fifth in section 17, his marks in section 18, the foes' moves in section 19, and his answers with the go to build in section 20)
 
 Every rider, keyword, cost, buff and debuff on both sides, read against the reboot and the
 yardstick for the basics. It began as the rider and keyword pass and Ryan widened it in its
@@ -1584,3 +1584,50 @@ shared buffs. "A rider on a blow" stops being the unit a foe is designed in: a f
 come from its fantasy first, and the runner prices them after, since it plays whatever the
 engine runs. Section 14's units, the standard blow and the clock a kit presses, stay as the
 measure of what a kit costs the player and are no menu to build from.
+
+## 20. His seventh round: the answers, and the go
+
+His words, 15 November, on section 18's choices:
+
+> You're right about the granted reroll going over the cap, I take that back, allow it. My
+> mark about highlighting it and not having a keyword for it still stands, though. Send the
+> retribution thurible back to design. It can have unique text but not until we sort out our
+> fundamentals. Regenerating - agreed. Primed - agreed, how many Ablate stacks does each
+> Primed stack apply? Just one, like supercooled? Crushed and flak - agreed, brittle. Phased
+> - that was my thought, it's a safe reboot if you can pull it off. All phased granters need
+> to be gated, it should be earned, with the caveat that you have to survive the current
+> round. I think it's a cool mechanic that could be very satisfying to play around. Phased
+> on foes can be less strict since it's balanced around their kit and theme. Go ahead on the
+> fold and build
+
+**What each settles.**
+
+| The choice | His answer | What it means for the build |
+|---|---|---|
+| A granted reroll | "allow it" past the round's two; the highlight and no keyword stand | The grant lands at once and may pass the two. No status, no term. The REROLL button lights in the preview of a spend that will grant one |
+| The Retribution Thurible | "back to design", unique text later, "not until we sort out our fundamentals" | A planned draft, undealt. Retaliate leaves the engine with it. The Nemesis's slot takes a placeholder, as a vent's slot did on 10 November |
+| Regenerating | "agreed" | A point a stack as the unit's turn comes round, then a stack fades. Regen 3 gives 3, 2 and 1 |
+| Primed | "agreed", and his question below | A stack a weapon fired, beside Charged and Supercooled |
+| Crushed and Flak | "agreed, brittle" | One word on both sides, Brittle, on Flak's halving clock |
+| Phased | "a safe reboot if you can pull it off"; every granter gated, "it should be earned"; the round survived first; looser on the foes | Granted as the round ends, standing through the next. Our granters each sit behind a gate. A foe's is its kit's to set |
+
+**His question: how many Ablate stacks does a Primed stack lay?** One, as Supercooled lays
+one Cryo. The reason is section 2's table. Ablate 1 on a gun reads as nine tenths of a
+point, the same as the Shock a Charged stack lends, so at one a stack the three buffs of the
+family cost alike. At two it is 1.8, since Ablate's second stack is worth more than its
+first, and Primed would be double its siblings. A piece that wants more grants more stacks.
+
+**What the gate on Phased asks.** One piece grants it today, the Swallowtail's Mooring
+Screens, on a machine in design, so the gate is that session's to name. The engine builds
+the rule: the grant waits for the round's end, a machine wrecked before then never phases,
+and a Phased machine is out of reach of both sides through the next round and still acts.
+The decided row that every foe on the field can be reached every round takes its exit for
+the foes that carry Phased.
+
+**Still his.** Last Act's word, lean keep. Innate immunities, case by case in the foes'
+pass. Whether a machine that stands Exposed may be marked again, lean no.
+
+**"Go ahead on the fold and build."** The order is section 18's. The reboot is folded in
+first, then Ablate, then the guns' 3 with Breach's cut, then the marks that needed no
+answer, then the five his answers settle. The foes' pass and the pieces with their own
+sessions wait as section 18 lists them.

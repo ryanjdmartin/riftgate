@@ -15,9 +15,6 @@ extends SceneTree
 ## engine burns one; Skirmish.overheat_scale, 30 October), --burnout (a what-if: an overheat whose
 ## burn reaches the injury threshold burns out the component that took the gauge past the
 ## maximum) and --overheat-corrupt N (a what-if: every overheat Corrupts that component N stacks),
-## --reboot (a what-if: the reboot, Skirmish.reboot, 13 November; no regen or cooling of a
-## chassis's own, a turn given for both gauges back, heat past the maximum burning every turn;
-## the bots have a first play of it),
 ## --pilot chassis=N (a what-if: that chassis gains N heat as each round opens, the Whip
 ## Scorpion's pilot light; Skirmish.pilot, 3 November), --shield-ahead (a persona valuing a shield left standing by the blows it turns next round),
 ## --injury on|N (the injury rule on for this run, off in the game since 9 November, at the
@@ -284,8 +281,6 @@ func _parse_args() -> void:
 				i += 1
 			"--burnout":
 				Skirmish.overheat_burnout = true
-			"--reboot":
-				Skirmish.reboot = true
 			"--shield-ahead":
 				shield_ahead = true
 			"--guard":
