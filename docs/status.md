@@ -82,10 +82,20 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   `bpy==5.0.1` (about twenty seconds to install on 11 November). The first `--import` may rewrite four Prairie
   Dog textures and a model build the maker's review tiles: restore both
   (`git checkout -- art/models/prairie_dog_* tools/lowforge/tiles/`) rather than commit them.
+  An import after taking main may rewrite other machines' textures the same way (the Kite's
+  and the Needletail's on 15 November): `git status` after it, and restore what it touched. A
+  look round's sheet is one command there (`tools/lowforge/looks/sheet.py`, the README's
+  lines), in a copy of the project (`--project`) when several rounds are built side by side.
 
 ## Branches
 
 Everything is on main as of 13 November 2026; the formation and refit session's branch lands as it goes, below.
+`ccr-c1cf6f73-ql6n4q`, the look tests' session of 15 November, cut from main at `011576a`:
+first look tests of six chassis in briefs and three rough kits for the mole (How things stand,
+the Models line; each brief has its own), with `tools/lowforge/looks/sheet.py`, a round's sheet
+in one command, and a look builder that finds its modules itself; it took main at `0f5c801` in
+a merge the same day, no conflicts; not landed, main takes it on his word. Its briefs' new
+sections reach the hangar's Designs tab with the next publish that carries `designs.json`.
 `ccr-b7d5164e-1wtzzm`, this session's (12 November), cut from main at `6112939`: the to-do's
 roster pruned, then the Needletail's two modes and the Giant Petrel's hull on Ryan's design and
 mix, reworked on his notes (How things stand, below); it took main at `4a0c9b5` in a merge on 13
@@ -1785,10 +1795,16 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   Salamander's Ember Hide, retaliates; the Lich's Dark Rite). Every number is a placeholder: the stock pass's fills as its loops moved them.
 - **Models**: every machine's by lowforge with its rig sidecar (joints, acts, gait, pins, fires,
   launches, counts, forms). The Wainwright & Sutler five and the Kestrel four are to judge
-  running on Ryan's notes (the to-do); the Needletail's and the Giant Petrel's are first cuts
-  until his session. The guard: a model names the component each pin's stock part is and the
-  game wears a die against that record; every model has as many pins as its chassis has
-  hardpoints (a test).
+  running on Ryan's notes (the to-do); the Needletail's and the Giant Petrel's shipped on his
+  word of 14 and 15 November. The guard: a model names the component each pin's stock part is
+  and the game wears a die against that record; every model has as many pins as its chassis has
+  hardpoints (a test). Beside them, look tests and never content (`docs/looks/`, 15 November,
+  on his "let's see what you come up with for all of these. Doesn't have to be too detailed
+  since none are finalized"): the siege battery, Mastema, the echidna two ways (his half-track
+  and his armoured car with protected wheels), Minos, the line frame and the mole three ways,
+  each a sheet of stills with its choices in its brief, his to judge (the to-do); the mole's
+  brief carries three rough kits and a bench with them. A pick's next round is a model with
+  its rig and acts.
 - **Balance, read by stage** (the bible's section 2 kill-time row; `docs/measurements.md`): the
   200-seed matrix on file (`docs/balance.md`, 27 October) predates the ladder, the numbered
   area, the blow's order, the compositions and the randomness pass, so the next 200-seed run
