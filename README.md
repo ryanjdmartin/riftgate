@@ -693,6 +693,11 @@ godot --path . --resolution 360x640 --position 2000,2000 -s tools/fit_sheet.gd -
 # nose up), then the art/models/wslook_* and ktlook_* files deleted again
 $BPY_PYTHON tools/lowforge/looks/build_look.py -- --model wslook_deck --out art/models/wslook_deck.glb --tiles /tmp/tiles
 godot --path . --resolution 360x640 -s tools/lowforge/looks/look_shot.gd -- wslook_deck wainwright_sutler deck.png 180 75 520 520
+# a look round's sheet in one command (15 November): each model a look module's SHEET names is built, imported and rendered at
+# each view it lists, laid out under its labels into the module's sheet under docs/looks/, and the built models deleted again; a
+# new round is a new file in that folder (its LOOKS and its SHEET), found by build_look.py itself. --project <a copy of the
+# project> builds, imports and renders there, so several rounds built side by side never meet in one import
+$BPY_PYTHON tools/lowforge/looks/sheet.py siege_looks
 
 # every sound and the six music tracks into art/audio (forge.py SHIP: the console from palette_sketches.py,
 # the iron, rift and red from fx_sketches.py's third cut, each as Ryan heard it; the loops from forge.py, Hold The Line's, Night Shift's and
