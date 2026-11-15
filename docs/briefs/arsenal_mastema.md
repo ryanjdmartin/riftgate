@@ -129,6 +129,23 @@ wings and holds, flexes its claws as embers spit from its forearms, wraps its wi
 itself like a cloak, tilts its head down along its arms). Its model is a new lowforge kind, a
 legless winged flyer.
 
+A first look test of it, 15 November, on Ryan's ask of that day for the chassis with a
+direction ("let's see what you come up with for all of these. Doesn't have to be too detailed
+since none are finalized"): `docs/looks/arsenal_mastema.png`, built by
+`tools/lowforge/looks/mastema_looks.py`, never content until the chassis lands. The body as
+above, about 155 across the wings and 120 tall with them raised: a torso leaned forward with a
+hump behind the head, a horned head with a long snout, a dropped jaw, lit eyes and a lit maw,
+long arms ending in three claws and a thumb, a banded keel tapering to a point with a red seam
+down its front, and flat bat wings (a dark arm to a wrist with a thumb spike, four red-glass
+fingers, black scalloped panels) over a booster under each root. Two rows, its wings raised to
+hover and levelled to move. The locked pieces are left generic, as its kit is unanswered: an
+open chest with a plain fire, no Ewer and no votive rack. The mounts as proposed, racks on the
+wing roots and barrels on the pauldrons. What it is not yet: the head came out more wolf or
+dragon than gargoyle, and the Stryge's chin on its hands and the cloak of wings are not built.
+His to judge besides: the Arsenal's chrome turns a wing facet that faces the light pale grey,
+strongest with the wings levelled; the racks behind the head are loud; from above the raised
+wings show at a little over half their depth.
+
 **Engine and tests**, as proposed: small, three pieces. The Bellows: a hook at a foe's death
 (the tick kill in `_enemy_turn`, the kills in `_resolve_attack`, Spillover), reading the foe's
 Burning before the dead are cleared and stacking it on the neighbours as Spread finds them. The
@@ -292,6 +309,7 @@ The first round's answers and the review's corrections are above; Ryan has given
    proposal's reading gave Scorched no meaning on a foe.
 7. Whether Mastema still waits on the foes' fresh start once its own kit lights the fire (the
    README's order and the to-do say it does).
+8. Its look: his read of the first look test (15 November), or another round.
 
 ## Holes already raised
 
