@@ -1967,7 +1967,10 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 278 (15 November, from `ccr-b7d5164e-1wtzzm` at `6ad897c`, ahead of main): the
+  page's Version 279 (15 November, from `ccr-b7d5164e-1wtzzm` at `a2f89ca`, ahead of main): the
+  Kite's model with its crown whole to the mouth, the Giant Petrel's fifteenth cut, its model and
+  its ten pictures with the fourteenth's as Before, the Kite's port close-up, and `renders.json`;
+  the page untouched since Version 278. Version 278 (15 November, from `ccr-b7d5164e-1wtzzm` at `6ad897c`, ahead of main): the
   Giant Petrel's fourteenth cut, its model, rig and ten pictures with the thirteenth's as Before;
   the blade's five class models, its fire and its class picture removed, `shapes.json` and the
   muzzles without it, the four other rigs that fitted it, `components.json` with the six pieces,
