@@ -48836,11 +48836,6 @@
     "shape": "dish",
     "scale": 0.7
    },
-   "blade": {
-    "shape": "blade",
-    "scale": 0.8,
-    "sink": 3.9
-   },
    "twin_barrel": {
     "shape": "twin_barrel",
     "scale": 0.7,
@@ -48861,11 +48856,6 @@
    "dish": {
     "shape": "dish",
     "scale": 0.7
-   },
-   "blade": {
-    "shape": "blade",
-    "scale": 0.8,
-    "sink": 3.9
    },
    "twin_barrel": {
     "shape": "twin_barrel",
@@ -48888,11 +48878,6 @@
     "shape": "dish",
     "scale": 0.6
    },
-   "blade": {
-    "shape": "blade",
-    "scale": 0.7,
-    "sink": 2.0
-   },
    "twin_barrel": {
     "shape": "twin_barrel",
     "scale": 0.6,
@@ -48913,11 +48898,6 @@
    "dish": {
     "shape": "dish",
     "scale": 0.6
-   },
-   "blade": {
-    "shape": "blade",
-    "scale": 0.7,
-    "sink": 2.0
    },
    "twin_barrel": {
     "shape": "twin_barrel",

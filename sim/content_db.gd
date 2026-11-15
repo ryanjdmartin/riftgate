@@ -1956,15 +1956,17 @@ func _validate_design(where: String, e: Dictionary, errs: Array[String], need_fa
 ## settled 30 September): hardpoints are gun mounts on the model, and a component with a
 ## shape takes the next mount in the die's order, in its own maker's metal
 ## (art/models/shapes/<shape>_<maker>.glb, built by tools/lowforge; models_low.SHAPES is the
-## same list). "none" is for what is applied to the whole machine and shows nowhere: armour
-## panels and vents take a die entry and no mount.
-const SHAPES := ["barrel", "twin_barrel", "rack", "blade", "dish", "none"]
+## same list). "none" is for what takes no mount and so wears no class: armour panels and vents,
+## applied to the whole machine, and a locked piece built into its machine as no class could
+## draw it (the four melee pieces, once the blade's: the blade class retired on 15 November,
+## when every melee piece left was locked; Ryan: "it's pretty safe to retire the Blade model").
+const SHAPES := ["barrel", "twin_barrel", "rack", "dish", "none"]
 const SHAPE_NONE := "none"
 
 ## The tags a component may wear (the working set, decided 10 and 12 October; the stock pass's
 ## validator list, 22 October): build flavour shown in the codex, never a rule of their own. A
 ## module or a passive reads one through a `tag_<tag>` condition, the screen's lunge reads
-## `melee` (on a blade with no tag that crosses the field: a shotgun fires), and the Cottonmouth's
+## `melee` (on a piece with no firing class and no tag that crosses the field: a shotgun fires), and the Cottonmouth's
 ## drum adds `ballistic` to the shot it fires. The old internal
 ## filing tags (kinetic, energy, single, support and the rest) are retired; the stock pass's
 ## landing assigns these by each piece's fantasy.
@@ -1973,11 +1975,11 @@ const TAGS := ["ballistic", "missile", "beam", "plasma", "flame", "arc", "blade"
 ## The sound a component's blow plays, where its shape and face are not enough to say
 ## (decided 2 October: content carries a label for the effects): `sound`, a word from SOUNDS
 ## or a list of them. A list means layers (Ryan, 2 October): the first word is the blow and
-## every word after it rides on the landing, so the Gravity Knuckles say ["blunt", "plasma"],
+## every word after it rides on the landing, so the Knuckle of Fury says ["blunt", "plasma"],
 ## the mass arriving with the hot splash on it. The list is game effects, never gameplay
 ## properties: it is not derived from keywords or tags and does not feed them (a stretch goal:
 ## a modification that adds burn or shock could add its layer). Absent, the game derives one
-## word: a barrel is a barrel, a twin a twin, a rack a rack, a blade a blade, a dish a
+## word: a barrel is a barrel, a twin a twin, a rack a rack, a dish a
 ## deflector or a coil by its face, an energy barrel a laser and the Arsenal's a plasma.
 ## Content names only the exceptions.
 const SOUNDS := ["barrel", "twin_barrel", "rack", "blade", "blunt", "laser", "plasma", "deflector", "coil"]
@@ -2016,7 +2018,7 @@ func sound_of(component_id: String) -> Array[String]:
 		out.append("laser")
 	elif shape == "dish":
 		out.append("coil")
-	elif ["barrel", "twin_barrel", "rack", "blade"].has(shape):
+	elif ["barrel", "twin_barrel", "rack"].has(shape):
 		out.append(shape)
 	else:
 		out.append("rack" if str(face.get("reach", "direct")) == "indirect" else "barrel")

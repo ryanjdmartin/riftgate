@@ -1161,10 +1161,6 @@
    "dish": {
     "shape": "dish",
     "scale": 0.4
-   },
-   "blade": {
-    "shape": "blade",
-    "scale": 0.8
    }
   },
   "hp_3": {
@@ -1175,10 +1171,6 @@
    "dish": {
     "shape": "dish",
     "scale": 0.4
-   },
-   "blade": {
-    "shape": "blade",
-    "scale": 0.8
    }
   }
  }

@@ -305,8 +305,8 @@ def kite(b):
     # covered"), at the launcher's scale, so the launcher's diameter ("the dish model needs to be
     # a bit smaller, same diameter as the rack"), and a unit forward of the mount, its sleeve's
     # root still under the hood. The standard shapes were tried here and taken back the same
-    # day ("Just for fun ..."; "Ok go back to port gun"). The blade's place is a guess.
-    NOSE_FITS = {"barrel": "barrel_port", "rack": ("rack_port", 0.6), "twin_barrel": ("twin_barrel_round", 0.6), "dish": ("dish_port", 0.6, -2.0), "blade": ("blade", 0.7)}   # the twins on their round receiver at the rack's scale, its diameter (Ryan, 14 November: "Change the kite too, might as well")
+    # day ("Just for fun ..."; "Ok go back to port gun").
+    NOSE_FITS = {"barrel": "barrel_port", "rack": ("rack_port", 0.6), "twin_barrel": ("twin_barrel_round", 0.6), "dish": ("dish_port", 0.6, -2.0)}   # the twins on their round receiver at the rack's scale, its diameter (Ryan, 14 November: "Change the kite too, might as well")
     b.pin("hp_3", (0.0, PORT, GZ), scale=0.5, carries="", fits=NOSE_FITS)
     # The hood over the port (his: "we slap a gentle curved fairing overtop of the back of the
     # mount point, to hide the poking-out edge"; then "carry the fairing forward more, over the
@@ -1157,8 +1157,8 @@ def polar_bear(b):
     # bears guns start deeper? Why do they have to come all the way out? Like a round missile rack
     # doesn't need to poke out at all"): a round rack's face just inside the rim, a gun about as
     # far out as the old hand-built ones (13 past a rear rim, 11 past a fore one), a dish as it was.
-    REAR_FITS = {"rack": ("rack_round", 0.78, 5.0), "dish": 0.7, "blade": ("blade", 0.8, 3.9), "twin_barrel": ("twin_barrel", 0.7, 4.3), "barrel": ("barrel", 0.9, 11.7)}
-    FORE_FITS = {"rack": ("rack_round", 0.68, 2.6), "dish": 0.6, "blade": ("blade", 0.7, 2.0), "twin_barrel": ("twin_barrel", 0.6, 2.0), "barrel": ("barrel", 0.8, 9.2)}
+    REAR_FITS = {"rack": ("rack_round", 0.78, 5.0), "dish": 0.7, "twin_barrel": ("twin_barrel", 0.7, 4.3), "barrel": ("barrel", 0.9, 11.7)}
+    FORE_FITS = {"rack": ("rack_round", 0.68, 2.6), "dish": 0.6, "twin_barrel": ("twin_barrel", 0.6, 2.0), "barrel": ("barrel", 0.8, 9.2)}
     # The shell: six bands from tail to brow, a dome in section, each proud of the last;
     # the tail band fuller than before (Ryan, 30 September: it tapered too much).
     bands = [(-50.0, -38.0, 50.0, Z0 + 21.0, 9.0), (-39.0, -22.0, 54.0, Z0 + 24.0, 10.0), (-23.0, -4.0, 60.0, Z0 + 28.0, 12.0),
@@ -3623,7 +3623,7 @@ def buzzard(b):
         for k, (px, r) in enumerate(((20.0, 2.4), (46.0, 2.1))):
             # A class on a pod's nose: a round launcher for a rack, as a rocket pod; the wide
             # classes a little smaller so they sit on a pod rather than swallow it.
-            POD_FITS = {"rack": ("rack_round", 0.75), "twin_barrel": 0.8, "blade": 0.8, "dish": 0.8}
+            POD_FITS = {"rack": ("rack_round", 0.75), "twin_barrel": 0.8, "dish": 0.8}
             wz = wing_z(px)
             pz = wz - 1.0 - r - 2.0   # the pod hangs clear under the wing on a pylon
             b.box(s * px - 1.2, s * px + 1.2, -1.0, 7.0, pz + r - 0.5, wz - 0.6, "steel.plate", "pylon")
@@ -5867,8 +5867,8 @@ def needletail(b):
     laid along the nose's taper (shell_lt, shell_lb, shell_rt, shell_rb), the gun lying out of the
     bay along its line (stow_l, stow_r carry it, run_l, run_r take a shot's kick), its root under the
     skin behind the bay and its muzzle clear of the nose, and every other class rooted in the bay and
-    run out of the port (the port rack, the port dish on its mast, the twin barrels on their round
-    receiver and the blade's bracket in the bay); the Designator a low wedge popped up on the nose's top (lamp, hinged at
+    run out of the port (the port rack, the port dish on its mast and the twin barrels on their
+    round receiver); the Designator a low wedge popped up on the nose's top (lamp, hinged at
     its back), its round lamp facing ahead behind a six-bladed iris (iris_1 to iris_6, each
     blade turning on its own pin in the lamp's rim); the long canopy amidships, two bows across
     it; the two pods on the
@@ -5975,9 +5975,9 @@ def needletail(b):
     # rack's drum, the port dish's sleeve and the twin barrels' round receiver from one root at the
     # bay's back, just ahead of the gun's, at one diameter (of the Kite's, 12 November: "same
     # diameter as the rack"; of the twins here, 14 November: "the back of it needs to start at the
-    # same point too"), the blade's bracket filling the bay.
+    # same point too").
     CHEEK_FITS = {"barrel": ("barrel_port", 1.0), "twin_barrel": ("twin_barrel_round", 0.65, -0.5), "rack": ("rack_port", 0.65, -0.5),
-                  "dish": ("dish_port", 0.65, -0.5), "blade": ("blade", 0.55, -4.0)}
+                  "dish": ("dish_port", 0.65, -0.5)}
     # The hinge, the right side's (the left mirrors it): along the band's taper over the
     # clamshell's run, DH in from the band at the crossing.
     BETA = math.atan((face(YC + TB) - face(YC + TF)) / (TF - TB))
@@ -6233,7 +6233,7 @@ def needletail(b):
     GUN = 1.7                                    # the gun's line under the pod's face, every class inside the pod
     RUNP = 8.0                                   # how far a pod's gun runs back into it in flight
     POD_FITS = {"barrel": "barrel_port", "twin_barrel": ("twin_barrel", 0.65), "rack": ("rack_round", 0.7, 8.1),
-                "dish": ("dish", 0.6, 4.2), "blade": ("blade", 0.75)}
+                "dish": ("dish", 0.6, 4.2)}
 
     def chamfer(y):
         """The right upper chamfer at `y`: its foot (the band's top), its unit run up it, its
@@ -6564,7 +6564,11 @@ def giant_petrel(b):
     on, give that geometry a purpose. I think you might need to flatten the face though, the skewed
     curve in it makes the vents weird. Front windshield can be a bit bigger. It also doesn't meet
     itself in the middle"; "some turbine action on the other side of the turbines so that they also
-    read turbine from the rear"; "The fins I meant angle 45 up, not down".
+    read turbine from the rear"; "The fins I meant angle 45 up, not down". And on the thirteenth (15
+    November): "make the brow a little longer, and carry it down the sides so it encompasses the new
+    vents, too. So more of a cowl then a brow. The vents need some kind of border so the slats don't
+    go right to the face edges. Turbines look great. Move the windshield down a bit so it's not right
+    up against the brow/cowl."
 
     The Navy SES's body: two knife hulls, their stems raked back as a wave piercer's, dark below
     the chine and chrome above, a cobalt chine stripe and straight deck stripes, each closing
@@ -6572,10 +6576,12 @@ def giant_petrel(b):
     open fore and aft, lift glowing under it; a raised centre bow between the knives, the fore gun
     hung under it as a chin turret, a cobalt spearhead down each bow's deck; the deckhouse spanning
     the deck, every face leaning in, its front a long spearhead laid well back and run forward over
-    the centre bow, a brow's peak over its glass, each facet of it a smooth twisted surface from its
-    foot to the roof's edge, the bridge's glass following it high up its middle under the brow,
-    a tall raked pane each side of the prow, the two meeting on the crease, the foot's shoulders
-    square so each corner facet is flat and faces ahead, the whole of it an intake, two long windows
+    the centre bow, a cowl over it, its brow's peak across the roof's edge carried down the outer
+    edge of each shoulder, each facet of it a smooth twisted surface from its foot to the roof's
+    edge, the bridge's glass following it up its middle a little under the brow, a tall raked pane
+    each side of the prow, the two meeting on the crease, the foot's shoulders square so each corner
+    facet is flat and faces ahead, the whole of it an intake inside the cowl, louvres in a dark mouth
+    inside a raised cobalt border, two long windows
     forward down each flank and a turbine aft on each on a web (fan_l, fan_r turning in their intakes,
     fan_l_aft, fan_r_aft their last stages astern, burning with the boosters), a fin on it canted up
     and out at 45 degrees; on its roof the Spindrift Salvo's
@@ -6663,7 +6669,7 @@ def giant_petrel(b):
     # so the face could come forward, "which gives the roof racks some breathing room").
     FY0, BROW = 31.0, 0.0   # where the front leaves the run; how far forward the roof's edge reaches, as a share of the foot's reach (nothing: straight across)
     FRONT = [(26.2, 36.0), (18.0, 36.0), (0.0, 54.0)]   # the foot's corners, the right flank round to the prow's point: square shoulders, so each corner facet's foot runs straight across like its head and the facet is flat (Ryan, 14 November: "I think you might need to flatten the face though, the skewed curve in it makes the vents weird")
-    VISOR, DROOP = 3.0, 0.7   # the brow's peak: how far it stands out over the face, and how far its lip dips
+    VISOR, DROOP = 4.0, 0.9   # the cowl's lip: how far it stands out over the face, and how far its top dips
     RACKS = (30.0, 18.0, 6.0)   # the salvo racks' fronts down the roof, spaced
     DH = [(FY0, 26.2, 15.1, 31.05), (4.0, 26.4, 16.0, 31.6), (-26.0, 26.4, 16.0, 31.6), (-33.0, 26.2, 12.0, 25.0)]   # (y, base half width, roof half width, roof)
     b.loft([(y, [(-a, DZ), (a, DZ), (t, zt), (-t, zt)]) for (y, a, t, zt) in DH], "steel.panel", "deckhouse")
@@ -6719,6 +6725,22 @@ def giant_petrel(b):
         for k in range(len(pts) - 1):
             quad = [(pts[k], 0.0), (pts[k + 1], 0.0), (outs[k + 1], drop), (outs[k], drop)]
             _slab(b, [(q.x, q.y, zt0 - 0.05 - dz) for (q, dz) in quad], (0.0, 0.0, 1.0), 0.32, "steel.panel", "brow_peak")
+        # Carried down the sides as a cowl (Ryan, 15 November: "make the brow a little longer, and
+        # carry it down the sides so it encompasses the new vents, too. So more of a cowl then a
+        # brow"): down each shoulder facet's outer edge from the roof's corner to the foot, the flank
+        # run on forward past the face as far as the peak stands out, its lip dipping in over the
+        # intake as the peak's dips over the glass, so each intake sits inside it.
+        zl = zt0 - 0.05 - drop   # the peak's lip
+        for s in (-1.0, 1.0):
+            def fx(z, s=s):
+                """The flank's plane at height `z`: how far out it stands."""
+                return s * (a0 + (t0 - a0) * (z - DZ) / (zt0 - DZ))
+            top, bot = Vector((s * t0, FY0, zt0 - 0.05)), Vector((s * FRONT[0][0], FRONT[0][1], DZ + 0.02))
+            out = (bot - top).cross(Vector((0.0, 1.0, 0.0))).normalized()   # square to the flank, outward
+            if out.x * s < 0.0:
+                out = -out
+            side = [top, Vector((fx(zl), FY0 + VISOR, zl)) - out * drop, Vector((bot.x - out.x * drop, bot.y + VISOR, bot.z)), bot]   # its foot's lip kept on the deck
+            _slab(b, [tuple(q) for q in side], tuple(out), 0.32, "steel.panel", "cowl")
     # The glass, (along the facet, up it): a raked pane each side of the prow, its outer pillar swept
     # back, the two meeting on the crease, each a thin shell over its facet's surface; high on the
     # front, its head under the brow's peak, in its shadow, and tall (Ryan, 14 November, of the
@@ -6730,7 +6752,7 @@ def giant_petrel(b):
     # whole face, a cobalt frame round a dark mouth with bright louvres across it ("On the side front
     # faces flanking the windshield, let's style those as vents or intakes"; then "expand those face
     # vents so they cover the face they're on, give that geometry a purpose").
-    F0, F1, KB, KT = 0.36, 0.93, 0.05, 0.16   # the glass's foot and head up the facet; its outer pillar's foot and head, in from the facet's outer edge
+    F0, F1, KB, KT = 0.27, 0.84, 0.05, 0.16   # the glass's foot and head up the facet, its head clear of the cowl (Ryan, 15 November: "Move the windshield down a bit so it's not right up against the brow/cowl"); its outer pillar's foot and head, in from the facet's outer edge
     NU, NV = 8, 5
     ci = len(FRONT) - 2   # the right long facet, its crease at its far end; the left's mirrors it at its near end
 
@@ -6781,12 +6803,18 @@ def giant_petrel(b):
         return b._finish(bm, material, label, frame=(o, along, across.normalized(), over, (across.length, max(0.5, height))))
     pane(ci, [(1.0, F0), (KB, F0), (KT, F1), (1.0, F1)], 0.08, 0.28, "glass.glass", "bridge_glass", glass=True, crease=True)
     pane(ci + 1, [(0.0, F0), (1.0 - KB, F0), (1.0 - KT, F1), (0.0, F1)], 0.08, 0.28, "glass.glass", "bridge_glass", glass=True, crease=True)
+    # Each intake inside a raised cobalt border, its louvres in the dark mouth within it, stopping
+    # short of the face's edges (Ryan, 15 November: "The vents need some kind of border so the slats
+    # don't go right to the face edges").
+    BK, BF = 0.12, 0.08   # the border's width, along the facet and up it
     for i in (0, len(foot) - 2):   # the flat shoulder facets, flank-side of the glass, an intake each the whole face
         box = lambda k0, k1, f0, f1: [(k0, f0), (k1, f0), (k1, f1), (k0, f1)]
         pane(i, box(0.0, 1.0, 0.0, 1.0), 0.04, 0.14, "livery.livery", "intake_frame")
-        pane(i, box(0.06, 0.94, 0.07, 0.93), 0.14, 0.2, "bore.void", "intake")
-        for f in (0.17, 0.31, 0.45, 0.59, 0.73, 0.86):
-            pane(i, box(0.05, 0.95, f - 0.022, f + 0.022), 0.2, 0.62, "steel.plate", "intake_louvre")
+        for k0, k1, f0, f1 in ((0.0, 1.0, 0.0, BF), (0.0, 1.0, 1.0 - BF, 1.0), (0.0, BK, BF, 1.0 - BF), (1.0 - BK, 1.0, BF, 1.0 - BF)):
+            pane(i, box(k0, k1, f0, f1), 0.14, 0.78, "livery.livery", "intake_border")
+        pane(i, box(BK, 1.0 - BK, BF, 1.0 - BF), 0.14, 0.2, "bore.void", "intake")
+        for f in (0.2, 0.32, 0.44, 0.56, 0.68, 0.8):
+            pane(i, box(BK + 0.02, 1.0 - BK - 0.02, f - 0.022, f + 0.022), 0.2, 0.56, "steel.plate", "intake_louvre")
     for s in (-1.0, 1.0):
         b.loft([(min(28.6, min(brow_y(x) for x in (12.4, 14.4))), rect(s * 13.4, 2.0, 31.4, 31.9)), (-16.5, rect(s * 13.4, 2.0, 31.4, 31.9))], "livery.livery", "roof_stripe")
 
@@ -6873,7 +6901,7 @@ def giant_petrel(b):
     # ("I feel like they could be bigger"), every class's receiver clear of the roof, so they fire
     # over the boosters astern and over the aerofoil (hp_2, hp_3).
     QX, QY, QR = 11.0, -21.0, 4.2
-    QUARTER_FITS = {"rack": ("rack_round", 0.45), "dish": 0.4, "blade": 0.8}   # each clear of the roof under its gun's line
+    QUARTER_FITS = {"rack": ("rack_round", 0.45), "dish": 0.4}   # each clear of the roof under its gun's line
     for s, pin, name in ((-1.0, "hp_2", "turret_l"), (1.0, "hp_3", "turret_r")):
         lim = (0.0, 195.0) if s < 0 else (-195.0, 0.0)   # outboard is a left-hand turn for the left one, facing forward
         _gp_dome_mount(b, name, pin, "twin_barrel", "twin_autoguns", s * QX, QY, _lerp_at(DH, QY)[2], QR, facing=0.0, limits=lim,
@@ -9330,9 +9358,11 @@ def _swing(amp, phase=0.0, n=40):
 # armour and vents show nowhere). The die says what the component is; the model only has
 # to look like it could be. Each class is built at the origin along +y (the socket at the
 # origin, the business end forward, +z up) at the scale of a 60-unit machine; a pin's own
-# scale sizes it to its machine (a Kite's pins are half size). Five classes: barrel,
-# twin barrel, rack, blade (katar-style), dish (a projector: equipment that can look like a
-# gun). `forge.py shapes` builds every class in every maker's metal into
+# scale sizes it to its machine (a Kite's pins are half size). Four classes: barrel,
+# twin barrel, rack, dish (a projector: equipment that can look like a gun). The blade, a
+# katar-style edge, retired on 15 November: every melee piece is locked, built into its machine,
+# so nothing dealt wore it (Ryan: "it's pretty safe to retire the Blade model and not worry about
+# maintaining it"). `forge.py shapes` builds every class in every maker's metal into
 # art/models/shapes/<shape>_<maker>.glb, and MechView3D.mount() hangs one on a pin.
 
 def shape_barrel(b, s=1.0):
@@ -9386,20 +9416,10 @@ def shape_dish(b, s=1.0):
     b.prism("y", 0.0, 7.5 * s, 0.0, 2.0 * s, 1.0 * s, "amber.engine", 8, "dish_core")
 
 
-def shape_blade(b, s=1.0):
-    """A melee edge, katar-style (Ryan, 30 September: every blade punches forward, which
-    fits the mecha register and lets every mount point the same way): a bracket on the
-    socket, a wide flat blade with a spine ridge, tapering to a point."""
-    b.box(-5.0 * s, 5.0 * s, -4.0 * s, 1.0 * s, -3.5 * s, 3.5 * s, "steel.panel", "bracket")
-    b.loft([(1.0 * s, rect(0.0, 9.0 * s, -1.2 * s, 1.2 * s)), (14.0 * s, rect(0.0, 7.0 * s, -0.9 * s, 0.9 * s)),
-            (24.0 * s, rect(0.0, 1.0 * s, -0.3 * s, 0.3 * s))], "steel.dark", "blade")
-    b.loft([(1.0 * s, diamond(0.0, 0.0, 2.2 * s, 3.6 * s)), (16.0 * s, diamond(0.0, 0.0, 1.4 * s, 2.4 * s))], "steel.plate", "spine")
-
-
 ## The classes by the name content uses (a component's `shape`; sim/content_db.gd holds the
 ## same list plus "none"). Slab and vent block are detail helpers now, never mounted: armour
 ## and vents show nowhere (the rule, 30 September).
-SHAPES = {"barrel": shape_barrel, "twin_barrel": shape_twin_barrel, "rack": shape_rack, "blade": shape_blade, "dish": shape_dish}
+SHAPES = {"barrel": shape_barrel, "twin_barrel": shape_twin_barrel, "rack": shape_rack, "dish": shape_dish}
 
 
 # A class's variants (Ryan, 2 November: "maybe some hardpoints want circular missile racks,
@@ -9538,13 +9558,6 @@ def burn_rack(b, s=1.0):
             b.prism("y", x * s, 11.3 * s, z * s, 1.3 * s, 0.6 * s, "amber.fire", 6, "burn_shell")
 
 
-def burn_blade(b, s=1.0):
-    """The edge hot: a lit strip down each side of the blade to its point."""
-    for side in (-1.0, 1.0):
-        b.loft([(1.5 * s, rect(side * 4.55 * s, 0.5 * s, -0.5 * s, 0.5 * s)), (14.0 * s, rect(side * 3.55 * s, 0.5 * s, -0.4 * s, 0.4 * s)),
-                (23.5 * s, rect(side * 0.6 * s, 0.4 * s, -0.15 * s, 0.15 * s))], "amber.fire", "burn_edge")
-
-
 def burn_barrel_port(b, s=1.0):
     """A pilot flame in the port gun's muzzle."""
     b.prism("y", 0.0, 24.7 * s, 0.0, 2.4 * s, 1.4 * s, "amber.fire", 6, "burn_flame")
@@ -9570,14 +9583,14 @@ def burn_rack_round(b, s=1.0):
 
 
 ## A class's fire and each variant's whose class burns (a variant of a dish takes none).
-BURNS = {"barrel": burn_barrel, "twin_barrel": burn_twin_barrel, "rack": burn_rack, "blade": burn_blade, "rack_round": burn_rack_round, "barrel_port": burn_barrel_port, "rack_port": burn_rack_port,
+BURNS = {"barrel": burn_barrel, "twin_barrel": burn_twin_barrel, "rack": burn_rack, "rack_round": burn_rack_round, "barrel_port": burn_barrel_port, "rack_port": burn_rack_port,
          "twin_barrel_round": burn_twin_barrel_round}
 
 
 # Where each class's muzzle flare blooms as its weapon fires (Ryan, 31 October: "If the flare
 # colour of the weapons can follow their tags, that would be really cool"): (point, size) in the
 # class's own frame, as the classes above are built, the size the flare's width there. A barrel's
-# at its muzzle, a rack's over its tube face, a dish's off its core, a blade's at its point. One
+# at its muzzle, a rack's over its tube face, a dish's off its core. One
 # table for a swapped class and a stock one alike, since both hang on the pin the same way;
 # `forge.py shapes` writes it into art/models/shapes/muzzles.json in the models' own frame, and
 # the component's tags pick the flare's colour and beat (MuzzleFlare).
@@ -9586,7 +9599,6 @@ MUZZLES = {
     "twin_barrel": [((-2.8, 31.0, 0.0), 17.0), ((2.8, 31.0, 0.0), 17.0)],
     "rack": [((0.0, 13.0, 0.0), 30.0)],
     "dish": [((0.0, 10.0, 0.0), 26.0)],
-    "blade": [((0.0, 25.0, 0.0), 16.0)],
     "rack_round": [((0.0, 13.2, 0.0), 26.0)],
     "barrel_port": [((0.0, 27.0, 0.0), 24.0)],
     "rack_port": [((0.0, 20.4, 0.0), 21.0)],

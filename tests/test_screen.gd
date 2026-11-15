@@ -2606,7 +2606,7 @@ func test_a_shot_crossing_the_field_follows_its_weapon() -> void:
 func test_a_shotgun_tagged_melee_fires_a_tracer() -> void:
 	# Ryan, 3 November: "It's a shotgun, thematically". Synthetic components.
 	assert_eq(ShotTrail.kind_for({"tags": ["ballistic", "melee"], "shape": "barrel", "face": {"reach": "direct"}}), ShotTrail.TRACER, "a shotgun tagged melee fires a tracer")
-	assert_eq(ShotTrail.kind_for({"tags": ["blade", "melee"], "shape": "blade", "face": {"reach": "direct"}}), -1, "a claw lunges, no trail")
+	assert_eq(ShotTrail.kind_for({"tags": ["blade", "melee"], "shape": "none", "face": {"reach": "direct"}}), -1, "a claw lunges, no trail")
 
 
 ## UNDO (Ryan, 2 November: "undo to your last roll"): a spend taken back on the screen, the

@@ -105,7 +105,7 @@ const FLARES = {
   colours: {ballistic: [1.0, 0.71, 0.24], missile: [1.0, 0.48, 0.13], flame: [1.0, 0.29, 0.06], beam: [1.0, 0.13, 0.25], plasma: [0.4, 1.0, 0.33], arc: [0.54, 0.85, 1.0], blade: [1.0, 0.84, 0.35]},
   cores: {ballistic: 0.7, missile: 0.5, flame: 0.35, beam: 0.6, plasma: 0.55, arc: 0.75, blade: 0.8},
   order: ["ballistic", "missile", "beam", "blade", "melee", "flame", "plasma", "arc"],
-  classLook: {barrel: "ballistic", twin_barrel: "ballistic", rack: "missile", dish: "arc", blade: "blade"},
+  classLook: {barrel: "ballistic", twin_barrel: "ballistic", rack: "missile", dish: "arc"},
   layerDelay: 0.05, layerScale: 0.75,
   beats: {
     ballistic: {rays: 4, up: 0.03, hold: 0.04, down: 0.16, flicker: 0, scale: 1.0},
@@ -1118,7 +1118,7 @@ class Rig {
       }
       if (ranged) { if (!armed[name] && !only.includes(name)) continue; swing = 5; }   // a joint named kicks though it carries no mount (a fixed gun on a wrist)
       else if (m.swing) swing = -29;
-      else if (named) swing = -15;   // a blade on a joint that is not an arm's: a jab
+      else if (named) swing = -15;   // a melee piece on a joint that is not an arm's: a jab
       else continue;
       const lim = m.limits[axis];
       if (Array.isArray(lim) && lim.length === 2) {
@@ -1993,7 +1993,7 @@ class Stage {
   // A blow (MechView3D.strike): Fire fires the machine's weapons one press at a time, mount by
   // mount and then each fixed weapon with its own act, each turning onto a target first where it
   // can (a turret, a waist, a hover's pivot; here a bearing to one side and then the other) and
-  // only it moving and flaring, a gun kicking and a blade that lunges jabbing (MuzzleFlare.lunges),
+  // only it moving and flaring, a gun kicking and a melee piece that lunges jabbing (MuzzleFlare.lunges),
   // as the game does. A burn weapon's fire flares with its mount. (Melee, the old swing every
   // machine made before its weapons fired, is gone: no weapon strikes that way now.)
   strike(ranged = true) {
@@ -2039,7 +2039,7 @@ class Stage {
       const back = fwd.multiplyScalar(-RECOIL_BODY).applyQuaternion(rig.body.quaternion).multiply(rig.body.scale);
       recoil = {x: back.x, y: back.y, z: back.z};
     }
-    const jab = this.flares.some(f => f.pin === n && f.lunges);   // a blade fitted to a mount jabs, as the game strikes it
+    const jab = this.flares.some(f => f.pin === n && f.lunges);   // a melee piece fitted to a mount jabs, as the game strikes it
     rig.strike(!jab, owner ? [owner] : [], jab ? null : recoil, lead);
     for (const f of this.flares) if (f.pin === n) rig.fireFlare(f.mesh, f.look, lead + f.delay);
     for (const part of this.burns || []) if (part.parent === pin && part.visible !== false) rig.flashUnder(part);

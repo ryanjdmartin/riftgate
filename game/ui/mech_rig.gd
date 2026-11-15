@@ -2343,7 +2343,7 @@ func strike(ranged: bool, only: Array = [], recoil := Vector3.ZERO, lead := 0.0)
 		elif bool(m.get("swing", false)):
 			swing_deg = -29.0
 		elif named:
-			swing_deg = -15.0   # a blade on a joint that is not an arm's: a jab, not a swing
+			swing_deg = -15.0   # a melee piece on a joint that is not an arm's: a jab, not a swing
 		else:
 			continue
 		var lim: Dictionary = m.get("limits", {})
