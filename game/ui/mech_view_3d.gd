@@ -1482,10 +1482,13 @@ static func toon(node: Node, maker: String, look: String, paint_arg: Dictionary 
 				elif role == "glass":
 					tm.roughness = 0.25
 					tm.metallic = 0.35
-				elif role == "bore":
-					# The dark inside a bore, a well or a bay takes no finish: a chrome maker's
-					# gloss lit the far wall of a deep bay as a bright band (the Needletail's
-					# cheek bays, Ryan, 14 November: "the weird cuts are still weird").
+				elif role == "bore" and src.resource_name.to_lower().ends_with(".void"):
+					# The near-black inside a deep bay takes no finish: a chrome maker's gloss
+					# lit the far wall of a deep bay as a bright band (the Needletail's cheek
+					# bays, Ryan, 14 November: "the weird cuts are still weird"). The void alone:
+					# a bore's "dark" tile is a mid grey a metal finish keeps dark, and matte it
+					# lit pale (the Kite's port mouth and the Needletail's pod intakes, 15
+					# November).
 					tm.roughness = 1.0
 					tm.metallic = 0.0
 					tm.metallic_specular = 0.0

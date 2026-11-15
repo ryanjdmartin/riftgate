@@ -36,13 +36,19 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1193 tests, 373,127 checks, green on `ccr-722ca9f0-yj8na3` (15 November, the FOE
-  BREACH dial, over main at `0bd1799`). Before it, 1192 tests, 372,709 checks, green on the
-  same branch (15 November, the foes' reroll drains read as they announce, over main at
-  `a9a8ffa`). Before it, 1190 tests, 372,677
-  checks, green on the same branch (15 November, the rank and
-  file's dial and Exposed's texts, over main at `038b22b`). Before it, 1189 tests, 372,483 checks, green on `ccr-b7d5164e-1wtzzm` (14 November, the Needletail's
-  nineteenth cut, the Giant Petrel's thirteenth and the Kite's round pair, over main at `bbcf375` taken in a merge). Before it, on main,
+- Tests: 1193 tests, 372,939 checks, green on `ccr-b7d5164e-1wtzzm` as it landed on main (15 November, the
+  blade class retired, the Kite's hood whole to its mouth and the Giant Petrel's fifteenth cut,
+  over main at `3d195e0` taken in a merge). Before it, 1193 tests, 373,127 checks, green on
+  `ccr-722ca9f0-yj8na3` (15 November, the FOE BREACH dial, over main at `0bd1799`). Before it,
+  1192 tests, 372,709 checks, green on the same branch (15 November, the foes' reroll drains read
+  as they announce, over main at `a9a8ffa`). Before it, 1190 tests, 372,677 checks, green on the
+  same branch (15 November, the rank and file's dial and Exposed's texts, over main at
+  `038b22b`). Before it, 1189 tests, 372,295 checks, green on `ccr-b7d5164e-1wtzzm` (15 November,
+  the blade class retired, the Giant Petrel's fourteenth and fifteenth cuts and the Kite's hood,
+  one content test's rule narrowed, a locked weapon wearing no class). Before it, 1189 tests,
+  372,483 checks, green on `ccr-b7d5164e-1wtzzm` (14 November, the Needletail's nineteenth cut,
+  the Giant Petrel's thirteenth and the Kite's round pair, over main at `bbcf375` taken in a
+  merge). Before it, on main,
   1188 tests, 371,561 checks, green on `ccr-722ca9f0-yj8na3` (14 November, the
   vocabulary pass's two rounds of records, no engine code moved; before that the
   basics' what-ifs and their dials; before that REBOOT on the bottom row's middle with
@@ -468,9 +474,31 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
+- **The blade class retired** (`ccr-b7d5164e-1wtzzm`, 15 November, on Ryan's "The four you listed are
+  locked pieces. The others need to be renamed into short range (i.e "melee" as per our definition)
+  guns, or just sent back to design"): four silhouette classes (barrel, twin barrel, rack, dish) in
+  `ContentDB.SHAPES` and `models_low.SHAPES`; the blade's shape, fire, flare point, every mount's fit
+  and its 44 files in `art/models/shapes` gone (a model and three tiles a maker, the fire, their imports), the five sidecars that fitted it rebuilt (their geometry unchanged).
+  The Chainsaw Claw, the Breaching Plow, the Knuckle of Fury and the Soulcutter Talons wear `none`,
+  each built into its machine, the two that had no sound named naming the blade's, so nothing in
+  play changes (the lunge and the sparks read the tags). The Gravity Knuckles and the Tesla
+  Gauntlets are back in design, undealt (`"status": "planned"`, a barrel meanwhile); their names as
+  short-range guns are Ryan's (the to-do). The hangar's classes show four, and the three pictures
+  that wore a blade (two refits and the Dingo's mixed swap) were rendered again. The bible's
+  hardpoints row holds the retirement and its exit (a melee piece dealt to a mount); its section 12
+  question is gone.
+- **The Kite's hood whole to its mouth** (`ccr-b7d5164e-1wtzzm`, 15 November, on Ryan's "There's a
+  chunk of casing sticking out the top of the fairing", from the hangar's live view): the cut that
+  drills the port's bore and the round cut under it was one hull through three rings, the one ahead
+  raised to ramp the round cut's floor up, which sloped its top through the hood's crown over its
+  last 0.7; the notch bared the bore's dark lining above the hood's line. Two hulls now, the ramp's
+  cutting the nose alone. The hangar's live view can be driven headless in a cloud session: three.js
+  0.128.0 from npm in place of its CDN, the page served locally from `tools/hangar_data.py`'s map,
+  and Playwright aiming its camera (the scratchpad's `hview/shot.js`; not kept in the repository).
 - **The Needletail's two modes and the Giant Petrel's hull** (`ccr-b7d5164e-1wtzzm`, 12 November;
   on main since 14 November, on Ryan's "Needletail looks great. Ship it.", the Giant Petrel's
-  thirteenth cut with it, his notes on it still coming): built that day on Ryan's design and his mix, then reworked on his notes of that
+  thirteenth cut with it; the Giant Petrel's model shipped at its fifteenth cut on his "These look great", 15 November, its kit
+  still his to start): built that day on Ryan's design and his mix, then reworked on his notes of that
   evening and 13 November (the bible's Kestrel row). The Needletail: a jet's chined fuselage
   (its round second cut retired: "I didn't literally mean round like a rocket"), shorter than the
   first cut and short and flat for its width, 15.8 at its widest since the twelfth cut (17.4
@@ -484,13 +512,13 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   on the nose's sides toward the tip, each under one long teardrop clamshell, point forward, on the band between the chines
   (the eighteenth cut, on Ryan's "an elongated clamshell that covers the whole cut area"; the trough and its sliding cover
   gone), the muzzle clear of the skin (on the sides as in
-  the thirteenth cut, Ryan's candidate final at `49657a4`, its pictures the hangar's Candidate final, after a day's trial on the
+  the thirteenth cut, Ryan's candidate final at `49657a4` (its pictures retired from the hangar once the nineteenth shipped), after a day's trial on the
   upper chamfers; nearer the tip since the sixteenth, with the canards and the pop-up, and a slice cut from the middle so the
   ship is 103 from point to needle, the ports and canards 2 back again in the seventeenth, each bay dark to its rim and each
   gun's root under the skin in hover), every other class rooted at the
   bay's back in its port form (the port rack, the port dish on its mast, taken from main with the Kite's
   port; the twin barrels on a round receiver the port rack's diameter, `twin_barrel_round`, new on the
-  nineteenth cut; the blade's bracket in the bay), the Fovea Designator a low wedge pop-up
+  nineteenth cut), the Fovea Designator a low wedge pop-up
   after a sports car's, its lamp behind
   a six-bladed iris that widens and narrows as it paints, the tail's whole face a cut-out exhaust
   round a needle nineteen long, in a dark rim behind a cobalt band; on the map its gait changes it into flight mode as it gathers speed
@@ -500,8 +528,10 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   fuselage, the exhaust burning white-hot; stowed in hover, each wing's leading edge shows as a
   cobalt strip down the chine) and back as it slows, its transition act the same
   change on the spot. A near-black tile (`void`) lines the
-  bays, Kestrel's "dark" tile being a mid grey its chrome lights, and since the eighteenth cut a bore, a well or a bay
-  takes no gloss in the game (`MechView3D.toon`), the chrome having lit an open bay's far wall as a bright band. The Giant Petrel: the
+  bays, Kestrel's "dark" tile being a mid grey its chrome lights, and since the eighteenth cut that near-black lining
+  takes no gloss in the game (`MechView3D.toon`), the chrome having lit an open bay's far wall as a bright band; a bore's
+  plain dark keeps its maker's finish since 15 November (matte, Kestrel's mid grey lit pale: the Kite's port mouth, and
+  the Needletail's four pod intakes, which had gone white in its shipped pictures, rendered again). The Giant Petrel: the
   railgun hung under the centre bow as a chin turret since the eleventh cut and a Twin Autoguns on an omnidirectional dome on each of the
   deckhouse roof's back quarters, either side of the mast, bigger and on short pedestals since
   the seventh cut, resting facing forward in line with the ship since the eighth (the skirmish
@@ -512,9 +542,14 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   roof rippling ahead of a raked mast, eighteen tubes, each rack at its own pace; the racer's
   boosters on plinths either side of a raised aft deckhouse under its aerofoil on fins at the hulls'
   outer edges, the navy's two back at the hulls' sterns; the deckhouse's front a sharp prow raked
-  steeply back (since the eleventh a long spearhead laid back to about 26 degrees over the centre bow, a brow's peak over the glass), each twisted facet laid smooth and the bridge's glass a shell following it, a
+  steeply back (since the eleventh a long spearhead laid back to about 26 degrees over the centre bow, a brow's peak over the glass,
+  a cowl since the fourteenth, the peak a third longer and carried down each shoulder's outer edge to the deck, one band mitred at
+  the roof's corners since the fifteenth, its lip dipping in toward the face all the way round), each twisted facet laid smooth and the bridge's glass a shell following it, a
   raked pane each side of the prow, high under the brow and tall since the twelfth (his pick from the sheets), bigger and meeting on the
-  crease, mirrored, since the thirteenth; the foot's shoulders square, so each corner facet is flat and faces ahead, the whole of it an intake;
+  crease, mirrored, since the thirteenth, lower since the fourteenth and lower again since the fifteenth, a fifth of the front's height
+  to three quarters; the foot's shoulders square, so each corner facet is flat and faces ahead, the whole of it an intake, a raised
+  cobalt border round its mouth and louvres since the fourteenth, the louvres plain metal since the fifteenth (a plate's seams had
+  lined up across them, Ryan's "panel lines through the vents");
   two long windows forward down each flank and aft of them a turbine on a web, its fan turning (`fan_l`, `fan_r`), its last stage turning
   astern against the glow in its nozzle (`fan_l_aft`, `fan_r_aft`), its nozzle burning with the boosters, a fin on it canted up and out at
   45 degrees (the twelfth, his "combine A and C", and the thirteenth); a cobalt spearhead down each bow; the cushion open fore and aft. A render round in the hangar's Models tab for each at every cut (the last cut
@@ -2012,7 +2047,22 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 277 (14 November, from main at `d80a996`, the branch `ccr-b7d5164e-1wtzzm` landed
+  page's Version 280 (15 November, from main at `4514a2c`, the branch `ccr-b7d5164e-1wtzzm` landed
+  there on Ryan's "These look great. Let's clean up and merge into main"): main's `vocabulary.json`
+  (the vocabulary pass's rounds), `text.json` from the merged tree, `renders.json` with the Giant
+  Petrel shipped, and the Needletail's eight candidate-final pictures removed; the live copy
+  Version 279's own, so the page and main match. Version 279 (15 November, from `ccr-b7d5164e-1wtzzm` at `a2f89ca`, ahead of main): the
+  Kite's model with its crown whole to the mouth, the Giant Petrel's fifteenth cut, its model and
+  its ten pictures with the fourteenth's as Before, the Kite's port close-up, and `renders.json`;
+  the page untouched since Version 278. Version 278 (15 November, from `ccr-b7d5164e-1wtzzm` at `6ad897c`, ahead of main): the
+  Giant Petrel's fourteenth cut, its model, rig and ten pictures with the thirteenth's as Before;
+  the blade's five class models, its fire and its class picture removed, `shapes.json` and the
+  muzzles without it, the four other rigs that fitted it, `components.json` with the six pieces,
+  `motion.js` without its class look, `text.json` with the two back in design; the Needletail's
+  eight pictures and the Kite's port close-up rendered again for the bores' dark, and the two
+  refits and the Dingo's mixed swap without the blade; the live copy found to be Version 277's
+  own (its version id) and each replaced file matched to that publish. `edits` and `text` empty,
+  `designs` the two folded ideas. Version 277 (14 November, from main at `d80a996`, the branch `ccr-b7d5164e-1wtzzm` landed
   there on Ryan's "Ship it" for the Needletail): the Giant Petrel's thirteenth cut, its model and rig,
   its ten pictures (a turbine from astern the tenth) and the twelfth's as Before; the Kite's rig with
   its port's round pair, a close picture of it, and its entry from main (the live one was the 12

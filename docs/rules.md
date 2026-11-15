@@ -58,8 +58,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   read one. Every weapon and debuff wears its tags by its fantasy, a shield, a vent and a buff none, but five locked ones the stock
   pass's table did not reach (the Pinion Driver, the Lorentz Contractor, the Syrinx Drone,
   the Fovea Designator, the St. Elmo's Regenerator), and only `melee` is read today: a blow
-  lunges on screen when its weapon is melee and nothing about it crosses the field (a blade's
-  class, and no Ballistic, Missile or Beam); any other fires as a gun, a shotgun tagged melee and
+  lunges on screen when its weapon is melee and nothing about it crosses the field (no class
+  built to fire, and no Ballistic, Missile or Beam); any other fires as a gun, a shotgun tagged melee and
   ballistic among them. A machine's gun shows its shot crossing the field, from its muzzle to
   what it fires at: a tracer for a direct shot, a lobbed arc for an indirect one, a beam held
   through the blow for a laser (the Beam tag). A foe's blow shows none.

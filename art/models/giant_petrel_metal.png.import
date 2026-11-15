@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://doy5jt0d7mu1q"
-path="res://.godot/imported/blade_kestrel_panel.png-b4e8de1b19e7d0b8019a09d85d02e4e8.ctex"
+uid="uid://82ucpqcdek01"
+path="res://.godot/imported/giant_petrel_metal.png-ef1968433e3cf8c91e88755da238a7d8.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "a3d38b0d96ed9de7b19cd2da7c66ece1"
+"md5": "d0a00615d15dbe978f95f86e48990d96"
 }
 
 [deps]
 
-source_file="res://art/models/shapes/blade_kestrel_panel.png"
-dest_files=["res://.godot/imported/blade_kestrel_panel.png-b4e8de1b19e7d0b8019a09d85d02e4e8.ctex"]
+source_file="res://art/models/giant_petrel_metal.png"
+dest_files=["res://.godot/imported/giant_petrel_metal.png-ef1968433e3cf8c91e88755da238a7d8.ctex"]
 
 [params]
 

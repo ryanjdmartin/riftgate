@@ -1842,8 +1842,10 @@ func test_every_component_names_a_silhouette_class() -> void:
 		var c0: Dictionary = db.components[id]
 		var shape := str(c0.get("shape", ""))
 		assert_true(ContentDB.SHAPES.has(shape), "%s wears a class the model can build" % id)
-		# The rule (30 September): a weapon always has a shape; armour and vents never do.
-		if c0["face"].get("kind") == "attack":
+		# The rule (30 September): a weapon has a shape; armour and vents never do. Narrowed with
+		# the blade's retirement (15 November): a locked weapon is built into its machine and never
+		# takes a mount, so it may wear none (Ryan: "The four you listed are locked pieces").
+		if c0["face"].get("kind") == "attack" and not db.is_fixed(str(id)):
 			assert_true(shape != ContentDB.SHAPE_NONE, "%s is a weapon and takes a mount" % id)
 		if c0["face"].get("kind") == "vent":
 			assert_eq(shape, ContentDB.SHAPE_NONE, "%s is a vent and shows nowhere" % id)
@@ -2248,8 +2250,8 @@ func test_a_component_sound_is_its_label_or_derived() -> void:
 		"beam": {"shape": "barrel", "maker": "kestrel", "tags": ["beam"], "face": energy},
 		"hot": {"shape": "barrel", "maker": "arsenal", "tags": ["plasma"], "face": energy},
 		"hot_rack": {"shape": "rack", "maker": "arsenal", "tags": ["plasma"], "face": energy},
-		"plow": {"shape": "blade", "maker": "minerva", "face": {"kind": "attack", "reach": "direct", "power": 5}, "sound": "blunt"},
-		"fist": {"shape": "blade", "maker": "arsenal", "face": energy, "sound": ["blunt", "plasma"]},
+		"plow": {"shape": "none", "maker": "minerva", "face": {"kind": "attack", "reach": "direct", "power": 5}, "sound": "blunt"},
+		"fist": {"shape": "none", "maker": "arsenal", "face": energy, "sound": ["blunt", "plasma"]},
 		"field": {"shape": "none", "maker": "minerva", "face": {"kind": "shield", "power": 20}},
 		"coil": {"shape": "dish", "maker": "kestrel", "face": {"kind": "buff"}},
 		"lure": {"shape": "dish", "maker": "minerva", "face": {"kind": "attack", "reach": "indirect", "power": 0}},

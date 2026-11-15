@@ -5,7 +5,8 @@
    "id": "chainsaw_claw",
    "name": "Chainsaw Claw",
    "maker": "minerva",
-   "shape": "blade",
+   "shape": "none",
+   "sound": "blade",
    "codex": "",
    "flavour": "",
    "design": {
@@ -650,7 +651,7 @@
    "id": "breaching_plow",
    "name": "Breaching Plow",
    "maker": "minerva",
-   "shape": "blade",
+   "shape": "none",
    "sound": "blunt",
    "codex": "",
    "flavour": "",
@@ -792,7 +793,7 @@
    "id": "knuckle_of_fury",
    "name": "Knuckle of Fury",
    "maker": "arsenal",
-   "shape": "blade",
+   "shape": "none",
    "sound": [
     "blunt",
     "plasma"
@@ -829,7 +830,8 @@
    "name": "Gravity Knuckles",
    "maker": "arsenal",
    "tier": 3,
-   "shape": "blade",
+   "status": "planned",
+   "shape": "barrel",
    "sound": [
     "blunt",
     "plasma"
@@ -839,7 +841,8 @@
    "design": {
     "stage": "draft",
     "fantasy": "Fists that weigh what the Arsenal says they weigh. Each blow burns, and each blow costs the machine a little of itself.",
-    "niche": "Shelved: a tier-three blueprint kept unstocked until the gravity piece returns (the bible's Nemesis fists row)."
+    "niche": "Shelved: a tier-three blueprint kept unstocked until the gravity piece returns (the bible's Nemesis fists row).",
+    "parked": "Back in design since 15 November, undealt, as the blade class retired: a gauntlet on a machine with no hands was the headache (Ryan, 14 November: \"we didn't want to deal with the headache of how something with no hands wields a gauntlet\"), so it returns renamed as a short-range gun, melee in the tag's sense, or stays here (Ryan, 15 November: \"renamed into short range (i.e 'melee' as per our definition) guns, or just sent back to design\"). Its class a barrel meanwhile, a gun's."
    },
    "face": {
     "kind": "attack",
@@ -861,7 +864,8 @@
    "id": "soulcutter_talons",
    "name": "Soulcutter Talons",
    "maker": "arsenal",
-   "shape": "blade",
+   "shape": "none",
+   "sound": "blade",
    "codex": "",
    "flavour": "",
    "design": {
@@ -1358,13 +1362,15 @@
    "name": "Tesla Gauntlets",
    "maker": "minerva",
    "tier": 2,
-   "shape": "blade",
+   "status": "planned",
+   "shape": "barrel",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
     "fantasy": "Mining gauntlets with the arc welder left switched on. What they punch stays live.",
-    "niche": "Melee that Shocks what it hits and leaves standing, so the next blow on it lands double."
+    "niche": "Melee that Shocks what it hits and leaves standing, so the next blow on it lands double.",
+    "parked": "Back in design since 15 November, undealt, as the blade class retired: a gauntlet on a machine with no hands was the headache (Ryan, 14 November: \"we didn't want to deal with the headache of how something with no hands wields a gauntlet\"), so it returns renamed as a short-range gun, melee in the tag's sense, or stays here (Ryan, 15 November: \"renamed into short range (i.e 'melee' as per our definition) guns, or just sent back to design\"). Its class a barrel meanwhile, a gun's."
    },
    "face": {
     "kind": "attack",

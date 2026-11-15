@@ -9,7 +9,7 @@ extends SceneTree
 ##   godot --path . --resolution 360x640 -s tools/fit_sheet.gd -- out.png [chassis ...] [--cell 220]
 ## With no chassis named, every chassis drawn by a model of its own.
 
-const CLASSES := ["barrel", "twin_barrel", "rack", "dish", "blade"]
+const CLASSES := ["barrel", "twin_barrel", "rack", "dish"]
 const GROUND := Color(0.04, 0.05, 0.06)
 
 var _cell := 220
