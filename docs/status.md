@@ -1960,7 +1960,7 @@ commands are in `README.md`.
   eighty-two rows takes a mark (KEEP, CHANGE, CUT, ASK) and a note, saved in the collection
   `marks`, a document a row keyed by the row's name as a slug (`mark`, `note`, `name`, `at`).
   Twelve rows are seeded with his calls of 15 November, ten with a mark and two with a note
-  alone, each note saying so. His own marks began that day (fourteen at 09:23 UTC, down to
+  alone, each note saying so. His own marks began that day (fourteen at 09:24 UTC, down to
   Web: eleven kept, Splash cut, Spillover and Web no keywords) and the proposal's section 18
   folds them as they come; he was still marking at that read, so the next session reads the
   rest first. He may be on the page when a session works: write notes to rows he has not

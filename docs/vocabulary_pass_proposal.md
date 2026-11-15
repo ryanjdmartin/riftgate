@@ -1351,7 +1351,7 @@ side's pass (section 14).
 ## 18. His marks on the table, folded as they come
 
 He began marking the table's page on 15 November. The rows below carry a mark of his own,
-beside the twelve seeded from his calls in chat. Read at 09:23 UTC that day, while he was
+beside the twelve seeded from his calls in chat. Read at 09:24 UTC that day, while he was
 still marking down the table, so this is the first of several folds: fourteen rows, from
 the shapes of a blow to Web.
 
@@ -1370,7 +1370,7 @@ the shapes of a blow to Web.
 | Disrupt | Keep | |
 | Lure | Keep | |
 | Purge, ours | Keep | |
-| Web, lays Webbed | Change | "I don't think this needs to be listed as a keyword." |
+| Web, lays Webbed | Change | "I don't think this needs to be listed as a keyword. It's a unique effect, and the debuff can be "webbed" or "web bomb," doesn't matter." |
 
 He passed two seeded rows on the way and left them as they were: Breach, ours, cut, and
 Expose, kept.
@@ -1389,11 +1389,11 @@ Expose, kept.
 
 **Spillover and Web, off the keyword list.** Each is one piece's rule, so each can be that
 piece's own text: Spillover is the Overrun Gearing's, a tier-two module, and its codex
-already says no component carries it; Web is the Funnel-web's locked Web Bomb. Webbed, the
-mark the web leaves on a foe, keeps its chip, since a status the player sees on a foe wants
-a name to tap. Whether he means the status too is his to say. With Breach, that is three
-words off our list in a day and "ignores armour" the fourth written out, the same move each
-time: a rule one piece carries is written on the piece.
+already says no component carries it; Web is the Funnel-web's locked Web Bomb. The mark
+the web leaves on a foe keeps a name and its chip, by his note, Webbed or the bomb's own
+name as he likes. With Breach, that is three words off our list in a day and "ignores
+armour" the fourth written out, the same move each time: a rule one piece carries is
+written on the piece.
 
 All of it is built with the vocabulary's calls once his marks are in, at the strength of
 his notes: "It might be a more interesting game with only the other area shapes."
