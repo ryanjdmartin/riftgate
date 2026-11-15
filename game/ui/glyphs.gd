@@ -22,11 +22,11 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			else:
 				ci.draw_line(ax + Vector2(0, s * 0.85), ax + Vector2(0, -s * 0.4), color, width)
 				ci.draw_polyline(PackedVector2Array([ax + Vector2(-s * 0.36, 0.0), ax + Vector2(0, -s * 0.43), ax + Vector2(s * 0.36, 0.0)]), color, width)
-		"pin_flak", "pin_burn":
+		"pin_flak", "pin_ablate":
 			# A pin (Ryan, 11 November: "Can we combine the lock and the flak/burn for these
 			# glyphs?"): the status it holds, drawn a little smaller up and to the left, with the
 			# lock at its lower right.
-			draw(ci, {"pin_flak": "flak", "pin_burn": "burn"}[id], c + Vector2(-s * 0.2, -s * 0.16), size * 0.8, color, width)
+			draw(ci, {"pin_flak": "flak", "pin_ablate": "ablate"}[id], c + Vector2(-s * 0.2, -s * 0.16), size * 0.8, color, width)
 			draw(ci, "lock", c + Vector2(s * 0.5, s * 0.48), size * 0.52, color, width)
 		"pin_empower":
 			# Empowered's pin (the Soul Siphon's hold, 12 November): the pins' lock at the lower
@@ -310,14 +310,14 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_line(c + Vector2(s * 0.3, -s * 0.6), c + Vector2(s, 0), color, width)
 			ci.draw_line(c + Vector2(s * 0.3, s * 0.6), c + Vector2(s, 0), color, width)
 			ci.draw_line(c + Vector2(-s * 0.2, -s), c + Vector2(-s * 0.2, s), color, width)
-		"burn":
+		"ablate":
 			ci.draw_polyline(PackedVector2Array([
 				c + Vector2(0, -s), c + Vector2(s * 0.7, s * 0.1), c + Vector2(s * 0.3, s),
 				c + Vector2(-s * 0.3, s), c + Vector2(-s * 0.7, s * 0.1), c + Vector2(0, -s),
 			]), color, width)
 		"primed":
-			# Primed (28 October, the same chip on both sides): Burn's hollow flame with its core
-			# lit, a blow primed to set fire, so on a foe it never reads as the team's Burning,
+			# Primed (28 October, the same chip on both sides): Ablate's hollow flame with its core
+			# lit, a blow primed to lay it, so on a foe it never reads as the team's Ablating,
 			# which keeps the bare hollow flame.
 			ci.draw_polyline(PackedVector2Array([
 				c + Vector2(0, -s), c + Vector2(s * 0.7, s * 0.1), c + Vector2(s * 0.3, s),
@@ -378,7 +378,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				ci.draw_polyline(ring, color, width * 0.9)
 		"vitriol":
 			# Acid: a drop, point up, over two pits it has eaten into the plate beneath (the
-			# funnel-web's Vitriol, 18 October). The hollow flame stays Burn's.
+			# funnel-web's Vitriol, 18 October). The hollow flame stays Ablate's.
 			ci.draw_polyline(PackedVector2Array([
 				c + Vector2(0, -s), c + Vector2(s * 0.55, -s * 0.05), c + Vector2(s * 0.45, s * 0.35),
 				c + Vector2(0, s * 0.55), c + Vector2(-s * 0.45, s * 0.35), c + Vector2(-s * 0.55, -s * 0.05), c + Vector2(0, -s),
@@ -409,7 +409,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				ci.draw_line(hit + dir * s * 0.16, hit + dir * s * 0.45, color, width)
 		"flak":
 			# An airburst: a small shell ring and the dashes of shrapnel thrown off it (Flak,
-			# 21 October). Burning's flame is a closed shape; this one is open, so the two part
+			# 21 October). Ablating's flame is a closed shape; this one is open, so the two part
 			# by structure as well as colour.
 			ci.draw_arc(c, s * 0.24, 0.0, TAU, 14, color, width)
 			for i in range(8):
@@ -484,21 +484,6 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 		"heat":
 			ci.draw_line(c + Vector2(0, -s), c + Vector2(0, s * 0.3), color, width)
 			ci.draw_circle(c + Vector2(0, s * 0.55), s * 0.45, color)
-		"burning":
-			# Burning on a machine (Ryan, 13 October: a glyph of its own): Burn's flame filled solid,
-			# the heat glyph's thermometer cut out of it, since on metal the fire is heat. The hollow
-			# flame stays Burn's and a foe's Burning's (Primed wears it with its core lit since 28
-			# October), the bare thermometer the overheat's.
-			var flame := PackedVector2Array([
-				c + Vector2(0, -s), c + Vector2(s * 0.7, s * 0.1), c + Vector2(s * 0.3, s),
-				c + Vector2(-s * 0.3, s), c + Vector2(-s * 0.7, s * 0.1),
-			])
-			ci.draw_colored_polygon(flame, color)
-			flame.append(flame[0])
-			ci.draw_polyline(flame, color, width)
-			var cut := Color(Palette.BG, color.a)
-			ci.draw_line(c + Vector2(0, -s * 0.4), c + Vector2(0, s * 0.3), cut, maxf(1.5, width))
-			ci.draw_circle(c + Vector2(0, s * 0.5), s * 0.24, cut)
 		"scorch":
 			# Heat rising off a barrel: Scorched, every weapon and debuff running hotter (13 October).
 			ci.draw_line(c + Vector2(-s, s * 0.75), c + Vector2(s, s * 0.75), color, width)

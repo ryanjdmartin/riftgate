@@ -485,11 +485,11 @@ func _apply_plan() -> void:
 		_flares += wear_fx_flares(fx_nodes, MechRig.load_sidecar(model_id).get("fx", {}), db)
 
 
-## Whether a component burns: its entry's keywords hold "burn" (content says, never an id).
+## Whether a component burns: its entry's keywords hold "ablate" (content says, never an id).
 static func burning(cid: String, db: ContentDB) -> bool:
 	var face = db.components.get(cid, {}).get("face", {})
 	var words = face.get("keywords", []) if face is Dictionary else []
-	return words is Array and (words as Array).has("burn")
+	return words is Array and (words as Array).has("ablate")
 
 
 ## A burn weapon's fire (Ryan, 31 October: "every burn-causing weapon", "on the actual swappable

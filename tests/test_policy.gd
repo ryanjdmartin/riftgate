@@ -419,10 +419,10 @@ func test_greedy_values_a_gated_stun_where_it_lands_and_prices_what_a_consumer_e
 	var shut_part := on_plain - pol.expected_damage(ms, gun, plain)
 	assert_true(open_part > shut_part + 1.0, "the stun counts only where the gate is open (%s against %s)" % [open_part, shut_part])
 	var charge := Face.attack(2, L)
-	charge.consumes = "burning"
+	charge.consumes = "ablating"
 	charge.per_consumed = 1
 	var plain_charge := Face.attack(2, L)
-	Effects.stack(plain, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 3)
+	Effects.stack(plain, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 3)
 	assert_eq(int(pol.damage_outcomes(ms, charge, plain)[0][0]), 5, "the bot reads the blow with the three stacks in")
 	var eat := pol.attack_score(sk, ms, charge, plain) - pol.expected_damage(ms, charge, plain)
 	var keep := pol.attack_score(sk, ms, plain_charge, plain) - pol.expected_damage(ms, plain_charge, plain)
@@ -707,7 +707,7 @@ func test_greedy_bites_the_foe_looking_away() -> void:
 		due += tick
 		hp -= tick
 	assert_eq(int(Policy.dot_payout("vitriol", 3, 138)), due, "a bite's three stacks on 138 HP: the share a stack, three ticks, each on what the last left")
-	assert_eq(int(Policy.dot_payout("burning", 3, 500)), 6, "Burning's flat ticks: three, two, one stacks of a point (18 October)")
+	assert_eq(int(Policy.dot_payout("ablating", 3, 500)), 6, "Ablating's flat ticks: three, two, one stacks of a point (18 October)")
 	pol.play_round(sk)
 	assert_eq(Effects.stacks_of(away, "vitriol"), 1, "and the die went there")
 	assert_eq(Effects.stacks_of(looking, "vitriol"), 0, "not on the one looking")
@@ -796,8 +796,8 @@ func test_the_bot_reads_a_foes_barrier_ward_priming_and_regrowth() -> void:
 	var pol := Policy.make(Policy.GREEDY)
 	var sk := Skirmish.new(1, 3)
 	var gun := Face.attack(10, L)
-	var torch := Face.attack(10, L, [K.BURN])
-	torch.burn = 3
+	var torch := Face.attack(10, L, [K.ABLATE])
+	torch.ablate = 3
 	sk.add_mech(_mech("A", Die.single(gun), 40, 200))
 	sk.add_mech(_mech("B", Die.single(torch), 40, 200))
 	var caster := Foe.make("caster", 500, 1)
@@ -830,7 +830,7 @@ func test_the_bot_reads_a_foes_barrier_ward_priming_and_regrowth() -> void:
 	var bare := pol.attack_score(sk, b, torch, g2)
 	var bare_gun := pol.attack_score(sk, a, gun, g2)
 	Effects.stack(g2, Effects.foe_ward(), Effects.SKIRMISH, "foe:caster", 1, Effects.DECAY_TURN_ALL)
-	assert_true(pol.attack_score(sk, b, torch, g2) < bare, "a Ward leaves the Burn worth nothing")
+	assert_true(pol.attack_score(sk, b, torch, g2) < bare, "a Ward leaves the Ablate worth nothing")
 	assert_eq(pol.attack_score(sk, a, gun, g2), bare_gun, "and a plain gun as it was")
 
 
@@ -1438,9 +1438,9 @@ func test_the_bot_reads_each_foe_past_the_target_at_its_shapes_number() -> void:
 	# A consumer through a Spread: every foe it strikes eats its own, so the ticks each gives up count.
 	var charge := Face.attack(2, L, K.CLEAVE)
 	charge.cleave = 1
-	charge.consumes = "burning"
+	charge.consumes = "ablating"
 	var dry := charge.duplicate_face()
 	dry.consumes = ""
-	Effects.stack(plain, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 3)
+	Effects.stack(plain, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 3)
 	var lost: float = pol.attack_score(sk, ms, dry, aim) + float(pol.damage_outcomes(ms, charge, plain, Skirmish.AREA_ROW)[0][0]) - float(pol.damage_outcomes(ms, dry, plain, Skirmish.AREA_ROW)[0][0]) - pol.attack_score(sk, ms, charge, aim)
-	assert_true(lost > 0.0, "the neighbour's Burning eaten costs the ticks it would have dealt: %f" % lost)
+	assert_true(lost > 0.0, "the neighbour's Ablating eaten costs the ticks it would have dealt: %f" % lost)

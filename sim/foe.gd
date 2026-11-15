@@ -38,7 +38,7 @@ var rank: int = -1               # 0 front, 1 back, -1 in reserve
 var column: int = -1
 var target: RefCounted = null    # Skirmish.MechState, set when intents are telegraphed
 var action: Dictionary = {}      # this round's chosen action
-var modifiers: Array = []        # statuses on this foe (burning, suppressed, numbed...): Effects.Modifier list
+var modifiers: Array = []        # statuses on this foe (ablating, suppressed, numbed...): Effects.Modifier list
 var recorder = null              # the round preview's copy alone (Skirmish.preview_round): an Array every grant and stack this foe gains is noted in (Effects._record); null in any fight that plays
 var recovering: bool = false     # lost its action to a stun this turn: its stun resist lands as Numbed at the round's end
 var die = null                   # foes have no die; the pipeline asks, so the field exists
@@ -89,8 +89,8 @@ const WHEN_TEXT := {
 }
 
 
-func burn_stacks() -> int:
-	return Effects.stacks_of(self, "burning")
+func ablate_stacks() -> int:
+	return Effects.stacks_of(self, "ablating")
 
 
 func is_suppressed() -> bool:
@@ -325,12 +325,12 @@ func strikes() -> int:
 ##           summon: `count` foes of `foe` join the pool at the round's end (Raise)
 ##           rally: every other foe on the field hits `value` harder next round (Kindle)
 ##           prime: Primed `value` on every other foe on the field, its next move's blows each
-##           leaving that much Burning on the machine they hit (28 October)
+##           leaving that much Ablating on the machine they hit (28 October)
 ##           ward_all: a Ward on every foe on the field, itself included: no mark the team lays
 ##           lands, Suppressed excepted, until the end of the player's next turn (28 October)
 ##   debuff  drain_rerolls: the team has `value` fewer rerolls next round (Roar)
-##           burn: its target gains `value` stacks of Burning, heat at the end of the player's
-##           turn (Stoke; direct heat retired 13 October)
+##           ablate: its target gains `value` stacks of Ablating, a point a stack off its shield
+##           and then its hull as the player's turn ends (Stoke; Burning as heat until 15 November)
 ##           disable: its target's showing entry is switched off through its next turn (Hush)
 ##           scorch_all: every machine gains `value` stacks of Scorched, its weapons and debuffs
 ##           running hotter (Eruption; nobody in particular)
@@ -345,7 +345,7 @@ func strikes() -> int:
 const ACTION_EFFECTS := {
 	"defend": ["brace", "regrow", "regrow_ally", "brace_all", "cleanse", "barrier", "regenerate"],
 	"buff": ["revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "merge", "golden"],
-	"debuff": ["drain_rerolls", "burn", "disable", "scorch_all", "corrupt_all", "silence", "dispel", "swallow"],
+	"debuff": ["drain_rerolls", "ablate", "disable", "scorch_all", "corrupt_all", "silence", "dispel", "swallow"],
 }
 
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn and no machine
@@ -376,8 +376,9 @@ func intent_on(u) -> bool:
 ## Tags an attack action may carry. Anything true or false about a blow is a tag here, never
 ## a field of its own.
 ## breach: ignores the shield and the armour, the whole blow to hull. scorch: a stack of Scorched on the machine it hits, its
-## weapons and debuffs running hotter for the turn; burn: a stack of Burning, heat at the end of the
-## player's turn (Ryan, 13 October: Burn and Scorch, foes heat machines only through them).
+## weapons and debuffs running hotter for the turn (the foes' one tax on heat); ablate: a stack of
+## Ablating, a point a stack off the shield and then the hull, past armour and a Barrier, as the
+## player's turn ends (Ryan, 15 November: one rule on both sides, in Burning's place).
 ## disable: switches off the entry the target's die shows, through its next turn. corrupt:
 ## a stack of Corrupted on that entry, for the skirmish: it bites its owner every time it is
 ## spent. self_destruct: the blow spends the striker: it dies after it, whole, and never gets
@@ -388,15 +389,15 @@ func intent_on(u) -> bool:
 ## the foe takes it: its borrowed swing (a move with `power` "held") lands that weapon's number,
 ## and anything else it took is a fake, for 1 (Gilgamesh's, 30 October). drain: the striker
 ## regrows what the blow dealt, shield and hull (the Vampire Lord's, 30 October); it lays nothing
-## on the machine, so no Ward turns it away, and Burning on the striker is its race.
+## on the machine, so no Ward turns it away, and Ablating on the striker is its race.
 ## A silence and a purge are specials, never riders (28 October: a rider on a hitter's blow is a
 ## tax with no decision), so neither is an attack keyword; the validator refuses them on a blow.
-const ATTACK_KEYWORDS := ["breach", "scorch", "burn", "disable", "corrupt", "crush", "self_destruct", "all", "steal", "drain"]
+const ATTACK_KEYWORDS := ["breach", "scorch", "ablate", "disable", "corrupt", "crush", "self_destruct", "all", "steal", "drain"]
 ## The specials that may never ride a blow (28 October).
 const SPECIALS_ONLY := ["silence", "dispel"]
 ## The riders that lay stacks, each a number on the move beside its keyword (24 October, as the
-## player's Burn N: Scorch 2 lays two stacks a blow).
-const NUMBERED_RIDERS := ["scorch", "burn", "corrupt", "crush"]
+## player's Ablate N: Scorch 2 lays two stacks a blow).
+const NUMBERED_RIDERS := ["scorch", "ablate", "corrupt", "crush"]
 
 
 func has_keyword(a: Dictionary, k: String) -> bool:

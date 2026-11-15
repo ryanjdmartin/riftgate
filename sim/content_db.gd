@@ -1471,11 +1471,11 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	# halves on its own clock, held on every unit through the round's end.
 	if fd.has("holds_all") and not Effects.decays_to_zero(Effects.STATUS.get(str(fd["holds_all"]), {})):
 		errs.append("%s: holds_all names a status that halves at the round's end (Empowered, Flak): no unit's stacks of it run down this round" % where)
-	# Burn is a numbered keyword (Ryan, 18 October): an entry says the stacks each hit leaves.
-	if Array(fd.get("keywords", [])).has("burn") and int(fd.get("burn", 0)) <= 0:
-		errs.append("%s: an entry with Burn says its stacks: burn, a positive number" % where)
-	if fd.has("burn") and not Array(fd.get("keywords", [])).has("burn"):
-		errs.append("%s: burn (the stacks) rides with the Burn keyword" % where)
+	# Ablate is a numbered keyword (Ryan, 18 October): an entry says the stacks each hit leaves.
+	if Array(fd.get("keywords", [])).has("ablate") and int(fd.get("ablate", 0)) <= 0:
+		errs.append("%s: an entry with Ablate says its stacks: ablate, a positive number" % where)
+	if fd.has("ablate") and not Array(fd.get("keywords", [])).has("ablate"):
+		errs.append("%s: ablate (the stacks) rides with the Ablate keyword" % where)
 	# Cryo is numbered the same way (20 October): the stacks each foe reached gains.
 	if Array(fd.get("keywords", [])).has("cryo") and int(fd.get("cryo", 0)) <= 0:
 		errs.append("%s: an entry with Cryo says its stacks: cryo, a positive number" % where)
@@ -1574,9 +1574,9 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	if fd.has("per_consumed") and (not fd.has("consumes") or int(fd["per_consumed"]) <= 0):
 		errs.append("%s: per_consumed is the damage a stack consumed adds: positive, and only beside consumes" % where)
 	# Its own fire (the Stoker's, the stock pass's landing, 22 October): an attack that sets its
-	# machine Burning as it is spent, a positive number of stacks.
-	if fd.has("self_burn") and (kind != "attack" or int(fd["self_burn"]) <= 0):
-		errs.append("%s: self_burn is a positive number of stacks of Burning on its own machine, on an attack" % where)
+	# machine Ablating as it is spent, a positive number of stacks.
+	if fd.has("self_ablate") and (kind != "attack" or int(fd["self_ablate"]) <= 0):
+		errs.append("%s: self_ablate is a positive number of stacks of Ablating on its own machine, on an attack" % where)
 	for key in ["fills_hopper", "fires_hopper"]:
 		if fd.has(key) and (kind != "attack" or int(fd[key]) <= 0):
 			errs.append("%s: %s is a positive number on an attack" % [where, key])
@@ -1894,7 +1894,7 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			# keyword's must (Ryan, 28 October); a keyword with no number takes none.
 			var numbered := Face.NUMBER_FIELDS.has(Face.keyword_from_name(kw))
 			if eff.has("number") and (not numbered or int(eff["number"]) <= 0):
-				errs.append("%s: grant_keyword's number is a positive number for a numbered keyword (Burn, Cryo, Flak, Spread, Penetrate, Splash, Chain, Purge)" % where)
+				errs.append("%s: grant_keyword's number is a positive number for a numbered keyword (Ablate, Cryo, Flak, Spread, Penetrate, Splash, Chain, Purge)" % where)
 			# An area granted to one debuff (`entry`: the Cryo Flinger's Spread while sealed) carries
 			# no number, as a debuff's printed one does: its effects reach those foes, and it deals
 			# nothing. Any other area grant says what each foe past the target takes.
@@ -2406,7 +2406,7 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 				if int(a.get("value", 0)) < 0 or int(a.get("count", 1)) < 1 or int(a.get("weight", 1)) < 1:
 					errs.append("%s: value cannot be negative; count and weight are at least 1" % aw)
 				# What an effect lays, it says: the stacks, or the rerolls a theft takes (24 October).
-				if ["burn", "scorch_all", "corrupt_all", "drain_rerolls"].has(effect) and int(a.get("value", 0)) <= 0:
+				if ["ablate", "scorch_all", "corrupt_all", "drain_rerolls"].has(effect) and int(a.get("value", 0)) <= 0:
 					errs.append("%s: %s says what it lays: value, a positive number" % [aw, effect])
 				# A swallow (30 October) says the rounds its machine is out, 1 to 3: hard control on
 				# the team, held short.
@@ -2436,7 +2436,7 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 						errs.append("%s: '%s' is a special, never a rider on a blow (28 October)" % [aw, k])
 					elif not Foe.ATTACK_KEYWORDS.has(str(k)):
 						errs.append("%s: unknown attack keyword '%s' (foe attacks know %s)" % [aw, k, ", ".join(Foe.ATTACK_KEYWORDS)])
-				# A rider that lays stacks says how many (24 October, as the player's Burn N does).
+				# A rider that lays stacks says how many (24 October, as the player's Ablate N does).
 				for k in Foe.NUMBERED_RIDERS:
 					var carried := Array(a.get("keywords", [])).has(k)
 					if carried and int(a.get(k, 0)) <= 0:

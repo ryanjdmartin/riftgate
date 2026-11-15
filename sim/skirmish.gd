@@ -13,9 +13,9 @@ extends RefCounted
 ##                       a reroll always lands on a different face (see Die.reroll)
 ##   assign(i, target)   spend a mech's face on a foe (attacks) or a mech (shield, vent);
 ##                       a kill clears its slot at once; a decided fight ends at once
-##   end_round()         the player's turn ends: a machine's Burning adds its heat and loses a
-##                       stack, Scorched goes, then heat over the cap burns hull; then
-##                       burn ticks, foes act, the dead are cleared, mech statuses tick, a
+##   end_round()         the player's turn ends: a machine's Ablating takes its points, the
+##                       shield first, and loses a stack, Scorched goes, then heat over the cap
+##                       burns hull; then foes act, each after its own ticks, the dead are cleared, mech statuses tick, a
 ##                       part due grows back in its corpse's slot, outcome is checked
 ##   can_withdraw()      false: there is no withdrawal (the long wall brief 3.5); a fight ends
 ##                       in the foes' fall or the team's
@@ -288,6 +288,9 @@ var mine_tally := {"laid": 0, "blasts": 0, "detonated": 0, "gathered": 0, "damag
 ## Every mech that burnt at the end of the last enemy turn, for the screen to land after
 ## the blows: {mech (index), over, hull}.
 var overheats: Array = []
+## Every machine its Ablating took from as the player's turn ended, for the screen to land
+## before the overheats: {mech (index), points, shield_lost, hull_lost, shield, hull}.
+var ablations: Array = []
 ## The foes that have finished their action in the enemy turn under way, so a suppress that
 ## lands on one of them afterwards (a machine's loop catching a status it just gained) skips
 ## its next action rather than an action already taken.
@@ -576,7 +579,7 @@ func _count_kill(f: Foe) -> void:
 ## Every kill a death check counts, whoever or whatever made it (on_foe_killed; the Ammit's Souls,
 ## Ryan, 12 November: "Souls granted by any kill"): each machine standing in the fight fires its
 ## passives once for each foe that fell, which is what the trigger is and no option of an
-## effect's, so an ally's kill, a burn's tick and a Mine's blast all feed it, and a foe getting
+## effect's, so an ally's kill, an Ablate tick and a Mine's blast all feed it, and a foe getting
 ## back up, a part or a Bomb's burst, no kill, feeds nothing. One line in the log a machine,
 ## however many fell.
 func _foes_fell(n: int) -> void:
@@ -822,7 +825,7 @@ func _refresh_allies() -> void:
 
 ## The foes that will strike this mech when the round ends, in the order they act: alive,
 ## not suppressed, aimed at it with an attack (a foe bracing, rallying or roaring lands no
-## blow), and not about to die to burn first.
+## blow), and not about to die to its Ablating first.
 func attackers_of(ms: MechState) -> Array[Foe]:
 	var out: Array[Foe] = []
 	for f in acting_on(ms):
@@ -833,7 +836,7 @@ func attackers_of(ms: MechState) -> Array[Foe]:
 
 ## Every foe that will act on this mech when the round ends, whatever its action: alive, not
 ## suppressed, showing intent on it (its pick, or a blow at every machine; a special that acts
-## on nobody in particular shows none: Foe.intent_on), and not about to die to burn first. Its
+## on nobody in particular shows none: Foe.intent_on), and not about to die to its Ablating first. Its
 ## intent still shows on the screen whether its blow will land or not (Ryan, 4 November: "that
 ## is still possibly relevant information", an effect counting the intents on a machine).
 func acting_on(ms: MechState) -> Array[Foe]:
@@ -843,15 +846,15 @@ func acting_on(ms: MechState) -> Array[Foe]:
 	for f in field_foes():
 		if not f.intent_on(ms.unit):
 			continue
-		if hp_after_ticks(f) <= 0:   # burns to death before it strikes
+		if hp_after_ticks(f) <= 0:   # its ticks kill it before it strikes
 			continue
 		out.append(f)
 	return out
 
 
-## The HP a foe's ticks leave it at the start of its action (its Burning, then Vitriol's share):
+## The HP a foe's ticks leave it at the start of its action (its Ablating, then Vitriol's share):
 ## static numbers, so its gauge shows the loss to come and a death before it acts (Ryan, 26
-## October). At 0 it burns to death before it strikes: the forecast leaves its blow out and no
+## October). At 0 its ticks kill it before it strikes: the forecast leaves its blow out and no
 ## rally of its lands, while its intent stays shown.
 func hp_after_ticks(f: Foe) -> int:
 	return maxi(0, f.hp - int(Effects.tick_preview(f)["hp"]))
@@ -906,7 +909,7 @@ func rallies_on(x: Foe) -> Array[Foe]:
 
 
 ## Will this foe's move this round rally the others: a rally, the foe alive and yet to act, not
-## Suppressed, not gathering, not stepped up this round and not about to burn to death at its
+## Suppressed, not gathering, not stepped up this round and not about to die to its ticks at its
 ## action.
 func rallies_now(r: Foe) -> bool:
 	if r == null or not r.alive() or r.fresh or r.is_suppressed() or r.gathering() or _acted.has(r):
@@ -962,13 +965,17 @@ func preview_round(hover_mech: int = -1, hover_target = null) -> Dictionary:
 			copy.assign(hover_mech, t)
 	var events: Array = copy.turn_events.duplicate()   # a last act the spend set off lands now
 	var over: Array[int] = []
+	var ablated: Array[int] = []
 	var standing: Array[int] = []
 	over.resize(mechs.size())
+	ablated.resize(mechs.size())
 	standing.resize(mechs.size())
 	if copy.outcome == Outcome.NONE:
 		copy._end_player_turn()
 		for o in copy.overheats:
 			over[int(o["mech"])] += int(o["over"])
+		for a in copy.ablations:
+			ablated[int(a["mech"])] += int(a["points"])
 	for i in range(mechs.size()):
 		standing[i] = copy.mechs[i].unit.shield
 	var heat_end: Array[int] = []
@@ -1012,6 +1019,7 @@ func preview_round(hover_mech: int = -1, hover_target = null) -> Dictionary:
 			"heat_end": heat_end[i],       # the gauge as the turn ends, uncapped: what the burn reads
 			"heat_after": cm.heat,         # the gauge after the round
 			"overheat": over[i],
+			"ablated": ablated[i],         # what its Ablating takes as the turn ends, the shield first
 			"breaks_shield": standing[i] > 0 and shield_hit[i] <= 0,
 			"component_risk": injures,
 			"destroyed": mechs[i].alive() and not cm.alive(),
@@ -1046,7 +1054,7 @@ func rally_worth(r: Foe) -> int:
 		if not rallies_on(x).has(r) or not x.attacks() or x.is_suppressed() or x.target == null:
 			continue
 		if hp_after_ticks(x) <= 0:
-			continue   # its Burning kills it before it acts (the audit's fifteenth)
+			continue   # its Ablating kills it before it acts (the audit's fifteenth)
 		var machines := targetable_mechs().size() if x.hits_all() else 1
 		total += (foe_blow(x) - x.damage_of(x.action, incoming_rally(x) - v)) * x.strikes() * machines
 	return total
@@ -1104,13 +1112,19 @@ static func spend_bite(u, f: Face) -> int:
 ## shielding or killing an attacker moves the numbers at once. `extra_shield` asks the same
 ## question with that much more shield standing (a shield component about to be spent here), for
 ## whoever weighs one; `overshield` lets it pass the maximum, as a component with that keyword
-## would. Each foe's blows walk the shield they meet (blows_on, the blow that lands' own
-## arithmetic); heat is what the gauge holds, Burning's tick at the end of the player's turn and
-## a seal's, before the enemy acts (11 and 13 October), the foes adding none outright (their fire
-## leaves Burning and Scorched, which land on later turns), then the heat a passive banks with their blows (the Whip Scorpion's).
+## would. Its Ablating ticks first, as the player's turn ends: the shield, then the hull, none
+## for a machine out of the fight. Then each foe's blows walk the shield they meet (blows_on, the
+## blow that lands' own arithmetic). Heat is what the gauge holds and a seal's, before the enemy
+## acts (11 October), the foes adding none (their fire leaves Ablating, which is damage, and
+## Scorched, which taxes the next turn's spends), then the heat a passive banks with their blows
+## (the Whip Scorpion's).
 func forecast(ms: MechState, extra_shield: int = 0, overshield: bool = false) -> Dictionary:
 	var shield := ms.unit.shield + extra_shield if overshield else mini(maxi(ms.unit.shield_max, ms.unit.shield), ms.unit.shield + extra_shield)
 	var hull := ms.unit.hull
+	var ablated := 0 if is_out(ms) else int(Effects.tick_preview(ms.unit, true)["hp"])
+	var off_shield := clampi(shield, 0, ablated)
+	shield -= off_shield
+	hull -= ablated - off_shield
 	var incoming := 0
 	var component_risk := false
 	var walk := {"shield": shield, "barrier": Effects.has(ms.unit, "barrier")}
@@ -1123,15 +1137,16 @@ func forecast(ms: MechState, extra_shield: int = 0, overshield: bool = false) ->
 			if r["injures"]:
 				component_risk = true
 	shield = int(walk["shield"])
-	var heat_end := ms.heat + int(Effects.tick_preview(ms.unit, true)["heat"]) + seal_heat(ms)
+	var heat_end := ms.heat + seal_heat(ms)
 	var over := maxi(0, heat_end - ms.heat_max)
 	if ms.rebooting:
 		over = 0   # a machine giving its turn to a reboot neither burns nor overheats
 	hull -= over * overheat_scale
 	# The gauge does not settle: what stands past the maximum stays, and burns again.
-	var heat_after := heat_end + int(Effects.tick_preview(ms.unit)["heat"]) + Effects.heat_per_blow(ms.unit) * blows
+	var heat_after := heat_end + Effects.heat_per_blow(ms.unit) * blows
 	return {
 		"incoming": incoming,
+		"ablated": ablated,           # what its Ablating takes as the turn ends, the shield first
 		"shield_after": shield,
 		"hull_after": hull,
 		"heat_end": heat_end,       # the gauge as the turn ends, uncapped: what the burn reads
@@ -2333,12 +2348,12 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 		if bm != null:
 			log.append("%s braces: %s ×%d" % [ms.unit.display_name, bm.name, f.braces])
 	# The Stoker's fire on its own firer (the stock pass's landing, 22 October): spending it
-	# sets its machine Burning, the stacks it prints, after the blow: slow fuel by decision, the
-	# machine's Burning heating it at the turn's end before the overheat, then fading a stack,
-	# so a vent makes room for it and a cleanse lifts it.
-	if f.self_burn > 0 and ms.alive():
-		Effects.stack(ms.unit, Effects.STATUS["burning_mech"], Effects.SKIRMISH, "self:" + f.component, f.self_burn, Effects.status_decay(Effects.STATUS["burning_mech"]))
-		log.append("%s: its own fire, %s ×%d" % [ms.unit.display_name, Effects.STATUS["burning_mech"]["name"], f.self_burn])
+	# sets its machine Ablating, the stacks it prints, after the blow. Since Ablate took Burn's
+	# place (15 November) that is a point a stack off its own shield, then its hull, as its turn
+	# ends, where it was heat: a price, and fuel for no machine. A cleanse lifts it.
+	if f.self_ablate > 0 and ms.alive():
+		Effects.stack(ms.unit, Effects.STATUS["ablating_mech"], Effects.SKIRMISH, "self:" + f.component, f.self_ablate, Effects.status_decay(Effects.STATUS["ablating_mech"]))
+		log.append("%s: its own fire, %s ×%d" % [ms.unit.display_name, Effects.STATUS["ablating_mech"]["name"], f.self_ablate])
 	_shift_form(ms, f, target)
 	if f.kind != Face.Kind.BLANK:
 		var deals := f.is_attack() and f.power > 0
@@ -2470,9 +2485,9 @@ func _finish_round() -> void:
 ## The end of the player's turn (Ryan, 11 October): heat over the maximum burns hull now,
 ## before the enemy acts, so an overheat is the machine's own doing on its own turn, like a
 ## volatile bite. A machine it wrecks is gone before the enemy strikes, and a fight it
-## decides ends here. A foe's Burning adds its heat just before it (13 October), so a vent
-## made room for it or a cleanse took it off. END TURN's (a withdrawal shared it until the long
-## wall brief, 3.5).
+## decides ends here. A machine's Ablating takes its points just before it (15 November; as
+## heat, 13 October), the shield first, so a cleanse took it off in the turn the player had.
+## END TURN's (a withdrawal shared it until the long wall brief, 3.5).
 func _end_player_turn() -> void:
 	# A pass (Ryan, 11 November: "any time it ends the round with a spendable die face"): read as
 	# the turn ends, before anything moves, so an entry Rapid rolled or an action granted and left
@@ -2481,13 +2496,14 @@ func _end_player_turn() -> void:
 	for i in range(mechs.size()):
 		mechs[i].passed = can_spend(i)
 	overheats.clear()
+	ablations.clear()
 	history.clear()   # the enemy's turn draws: nothing before it comes back
 	# Maverick's Playbook (the Giant Petrel's, built 30 October): the team's rerolls left unspent
 	# as the turn ends are banked, up to its cap, for the next round while it still fights.
 	banked = mini(rerolls_left, bank_cap())
 	for f in field_foes():
 		Effects.player_turn_end_foe(f)   # a foe's Barrier and Ward last to the end of the player's turn (28 October)
-	_burn_mechs()
+	_ablate_mechs()
 	_seal_heat()
 	_burn_overheated()
 	_refresh_allies()
@@ -2501,7 +2517,7 @@ func _enemy_turn() -> void:
 	turn_specials.clear()
 	_seq = 0
 	# Foes act in the order they stand: front rank left to right, then the back rank. Each
-	# foe's statuses tick at the start of its action (burning may kill it first, and a dead foe
+	# foe's statuses tick at the start of its action (Ablating may kill it first, and a dead foe
 	# never strikes: Ryan, 4 November, "What we absolutely do not want to do is have a zero-hp
 	# enemy attacking and then dying after"; vitriol eats its share of what is left and
 	# finishes nobody), a suppressed foe skips, and a foe with two strikes lands two separate
@@ -2522,16 +2538,16 @@ func _enemy_turn() -> void:
 		var tick := Effects.tick(f, false)   # a halving status (Flak) waits for the round's end
 		var share := int(tick.get("share", 0))
 		if int(tick["hp"]) - share > 0:
-			log.append("%s burns for %d" % [f.display_name, int(tick["hp"]) - share])
+			log.append("%s is ablating: -%d" % [f.display_name, int(tick["hp"]) - share])
 		if share > 0:
 			log.append("vitriol eats %s for %d" % [f.display_name, share])
 		if int(tick["hp"]) > 0:
 			f.hp -= int(tick["hp"])
 			if not f.alive():
-				_turn_death_check()   # burnt to death before it acts: a web it carried goes with it
+				_turn_death_check()   # ablated to death before it acts: a web it carried goes with it
 				continue
-		# Regenerating (28 October): what it regrows comes after its Burning and Vitriol, so a
-		# burn is a race and never a wall; a suppressed foe regrows too, its ticks being its own.
+		# Regenerating (28 October): what it regrows comes after its Ablating and Vitriol, so an
+		# Ablate is a race and never a wall; a suppressed foe regrows too, its ticks being its own.
 		if regrow > 0 and f.hp < f.hp_max:
 			var before := f.hp
 			f.hp = mini(f.hp_max, f.hp + regrow)
@@ -2706,7 +2722,7 @@ func _strike(f: Foe, t: MechState) -> void:
 		# A drain (the Vampire Lord's, 30 October): the striker regrows what the blow took from the
 		# hull, no more than the machine had, so a shield starves it (one of shield and hull walled
 		# the slow trios, the shield no answer to the heal). It lays nothing on the machine, so no
-		# Ward turns it away; a Barrier's blow deals nothing, and Burning on the striker races it.
+		# Ward turns it away; a Barrier's blow deals nothing, and Ablating on the striker races it.
 		if f.has_keyword(f.action, "drain") and f.alive() and turn_events.size() > events_before:
 			var dealt := clampi(int(ev["through"]), 0, maxi(0, hull_before))
 			var had := f.hp
@@ -2730,16 +2746,16 @@ func _strike(f: Foe, t: MechState) -> void:
 			var ns := f.rider(f.action, "scorch")
 			_fire_on(t, "scorched", ns, f)
 			log.append("%s scorches %s ×%d" % [f.display_name, t.unit.display_name, ns])
-		if f.has_keyword(f.action, "burn") and t.alive():
-			var nb := f.rider(f.action, "burn")
-			_fire_on(t, "burning_mech", nb, f)
-			log.append("%s sets %s burning ×%d" % [f.display_name, t.unit.display_name, nb])
-		# Primed (a stoker's, 28 October): each blow of the move leaves its stacks of Burning, as
-		# a Burn rider would, and the move spends it (_enemy_turn).
+		if f.has_keyword(f.action, "ablate") and t.alive():
+			var nb := f.rider(f.action, "ablate")
+			_fire_on(t, "ablating_mech", nb, f)
+			log.append("%s lays Ablating ×%d on %s" % [f.display_name, nb, t.unit.display_name])
+		# Primed (a stoker's, 28 October): each blow of the move leaves its stacks of Ablating, as
+		# an Ablate rider would, and the move spends it (_enemy_turn).
 		var primed := Effects.stacks_of(f, "primed")
 		if primed > 0 and t.alive():
-			_fire_on(t, "burning_mech", primed, f)
-			log.append("%s, primed, sets %s burning ×%d" % [f.display_name, t.unit.display_name, primed])
+			_fire_on(t, "ablating_mech", primed, f)
+			log.append("%s, primed, lays Ablating ×%d on %s" % [f.display_name, primed, t.unit.display_name])
 		if f.has_keyword(f.action, "disable") and t.alive() and t.face_index >= 0:
 			# The entry the die shows is switched off through the mech's next turn.
 			Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, round + 1)
@@ -2760,13 +2776,13 @@ func _strike(f: Foe, t: MechState) -> void:
 
 
 
-## Whether this foe's blows carry a rider a Ward turns away: a scorch, a burn, a disable or a
+## Whether this foe's blows carry a rider a Ward turns away: a scorch, an ablate, a disable or a
 ## corrupt (the breach is the Ward's too, in _damage_mech; a silence and a purge are specials).
 static func _rides(f: Foe) -> bool:
-	for kw in ["scorch", "burn", "disable", "corrupt", "crush", "steal"]:
+	for kw in ["scorch", "ablate", "disable", "corrupt", "crush", "steal"]:
 		if f.has_keyword(f.action, kw):
 			return true
-	return Effects.has(f, "primed")   # a primed foe's blows carry Burning as a rider (28 October)
+	return Effects.has(f, "primed")   # a primed foe's blows carry Ablating as a rider (28 October)
 
 
 ## A Swap (the Dingo's Combat Translocator, Ryan's go of 19 October; built 21 October): the
@@ -2855,19 +2871,13 @@ func _purge(t: MechState, f: Foe, n: int = 1) -> void:
 	log.append("%s purges %s ×%d%s" % [f.display_name, t.unit.display_name, n, ": " + ", ".join(touched) if not touched.is_empty() else ", and finds nothing to take"])
 
 
-## The round ends with the machines' statuses ticking, after the enemy has struck. Burning and
-## Scorched are not among them: they tick at the end of the player's turn (_burn_mechs).
+## The round ends with the machines' statuses ticking, after the enemy has struck. Ablating and
+## Scorched are not among them: they tick at the end of the player's turn (_ablate_mechs).
 func _tick_mechs() -> void:
 	for ms in live_mechs():
-		var t := Effects.tick(ms.unit, true, round_holds)
-		if int(t["heat"]) > 0:
-			log.append("%s: %d heat from its statuses" % [ms.unit.display_name, int(t["heat"])])
-			_add_heat(ms, int(t["heat"]))
+		Effects.tick(ms.unit, true, round_holds)
 
 
-## The end of the player's turn, before the overheat (Ryan, 13 October): each machine's
-## Burning adds its heat, so a vent made room for it or a cleanse took it off; Burning loses a
-## stack and Scorched goes.
 ## A machine's shield regen as the round opens: what it is granted (a module's, a passive's, a
 ## status's; a chassis has none of its own), and what its heat adds to it (the Buzzard's Thermal
 ## Recoupler).
@@ -2888,8 +2898,8 @@ func seal_heat(ms: MechState) -> int:
 	return int(Effects.seal_form(ms.unit).get("heat", 0))
 
 
-## Sealed machines run hotter at the end of the player's turn, after Burning and before the
-## overheat (Burning's timing), so the clock bites where a vent can answer it.
+## Sealed machines run hotter at the end of the player's turn, after Ablating and before the
+## overheat, so the clock bites on the turn the player ended.
 func _seal_heat() -> void:
 	for ms in live_mechs():
 		var h := seal_heat(ms)
@@ -2930,17 +2940,42 @@ static func form_change(ms: MechState, f: Face, on_self: bool = true) -> String:
 	return "seal" if f.kind == Face.Kind.BUFF and on_self else ""
 
 
-func _burn_mechs() -> void:
+## The end of the player's turn, before the overheat (Ryan, 15 November: Ablate, one rule on
+## both sides): each machine's Ablating takes a point a stack and loses a stack, and Scorched
+## goes. A machine out of the fight (Swallowed, Phased) takes no damage, so its stacks wait and
+## tick again the turn it is back, as its overheat does.
+func _ablate_mechs() -> void:
 	for ms in live_mechs():
-		var t := Effects.turn_tick(ms.unit)
-		if int(t["heat"]) > 0:
-			log.append("%s burns: +%d heat" % [ms.unit.display_name, int(t["heat"])])
-			_add_heat(ms, int(t["heat"]))
+		var points := int(Effects.turn_tick(ms.unit, is_out(ms))["hp"])
+		if points > 0:
+			_ablate(ms, points)
 
 
-## A foe's fire on a machine (Ryan, 13 October: Burn and Scorch; foes heat machines only
-## through them): stacks of Burning or Scorched for the skirmish, decaying as each says at the
-## end of the player's turn (Burning a stack, Scorched every stack).
+## What a machine's Ablating takes as its turn ends: the shield first ("hits shield first, I
+## think. Pretty deadly otherwise"), then the hull past armour ("Bypasses armour when damaging
+## hull"). A tick is no blow: a Barrier neither stops it nor is spent on it ("Tick of ablate
+## ignores barrier yes"), nothing that reads a blow on the shield fires, and what reads hull
+## damage does where it reaches the hull. A shield it takes to nothing is broken like any other.
+func _ablate(ms: MechState, points: int) -> void:
+	var from_shield := clampi(ms.unit.shield, 0, points)
+	var from_hull := points - from_shield
+	ms.unit.shield -= from_shield
+	ms.unit.hull -= from_hull
+	ablations.append({"mech": mechs.find(ms), "points": points, "shield_lost": from_shield, "hull_lost": from_hull, "shield": ms.unit.shield, "hull": ms.unit.hull})
+	var bits: Array[String] = []
+	if from_shield > 0:
+		bits.append("shield -%d" % from_shield)
+	if from_hull > 0:
+		bits.append("hull -%d" % from_hull)
+	log.append("%s is ablating: %s" % [ms.unit.display_name, ", ".join(bits)])
+	_note_break(ms)
+	if from_hull > 0 and ms.alive():
+		_hull_damaged(ms)
+
+
+## What a foe lays on a machine that ticks or fades at the end of the player's turn (Ryan, 13
+## October, as Burn and Scorch; Ablate since 15 November): stacks of Ablating or Scorched for
+## the skirmish, decaying as each says there (Ablating a stack, Scorched every stack).
 func _fire_on(t: MechState, id: String, n: int, f: Foe) -> void:
 	Effects.stack(t.unit, Effects.STATUS[id], Effects.SKIRMISH, "foe:" + f.content_id, n, Effects.status_decay(Effects.STATUS[id]))
 
@@ -3145,13 +3180,13 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			# Every rider lands on the foe its strike struck, felled or not (Ryan, 3 November: "the
 			# point is to show that the riders hit, AND it dies"; death is the spend's last check, so
 			# the preview shows them beside the skull and no trigger goes unfired).
-			if f.has(Face.Keyword.BURN):
-				# Burn is a numbered keyword (Ryan, 18 October): the stacks it says, whatever the
+			if f.has(Face.Keyword.ABLATE):
+				# Ablate is a numbered keyword (Ryan, 18 October): the stacks it says, whatever the
 				# blow dealt (it was a stack per 10 of the damage, rounded up, until then).
-				var burn_laid := _stacks_from(ms, "burning", f.burn) * doubled
-				riders.append(func() -> void: _land_rider(foe, "burning", burn_laid, gained, turned))
+				var ablate_laid := _stacks_from(ms, "ablating", f.ablate) * doubled
+				riders.append(func() -> void: _land_rider(foe, "ablating", ablate_laid, gained, turned))
 				if into_mine:
-					h.mine_stack("burning", burn_laid)
+					h.mine_stack("ablating", ablate_laid)
 			if f.has(Face.Keyword.SUPPRESS) and shut.get(foe, []).has(Face.Keyword.SUPPRESS):
 				if foe.alive() and not told_shut.has(foe):
 					told_shut[foe] = true
@@ -3215,12 +3250,12 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				h.mine["chain"] = int(h.mine["chain"]) + maxi(0, f.chain)   # every hit's arc number
 			if not touched.has(foe):
 				touched.append(foe)   # every foe the blows reached, felled or not: Shock, Expose, Lure and Disrupt land on it below
-		# A Primed machine's Burning, a stack a strike on the strike's own foe (the mechanics
+		# A Primed machine's Ablating, a stack a strike on the strike's own foe (the mechanics
 		# audit's 8, 27 October).
-		if int(modded["burn"]) > 0:
-			var primed_laid := _stacks_from(ms, "burning", int(modded["burn"])) * doubled
-			riders.append(func() -> void: _land_rider(target, "burning", primed_laid, gained, turned))
-			h.mine_stack("burning", primed_laid)
+		if int(modded["ablate"]) > 0:
+			var primed_laid := _stacks_from(ms, "ablating", int(modded["ablate"])) * doubled
+			riders.append(func() -> void: _land_rider(target, "ablating", primed_laid, gained, turned))
+			h.mine_stack("ablating", primed_laid)
 		h.total += landed
 	# Riders land after the hits (Ryan, 3 November: "a multi-hit weapon with Shock would apply it
 	# after both hits ... Cryo should work the same way, resulting in 2 applications, not
@@ -3679,7 +3714,7 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 	var a := f.action
 	var effect := str(a.get("effect", ""))
 	var value := int(a.get("value", 0))
-	if t == null and effect in ["burn", "disable", "silence", "dispel", "swallow"]:
+	if t == null and effect in ["ablate", "disable", "silence", "dispel", "swallow"]:
 		log.append("%s: %s, and no machine stands to take it" % [f.display_name, str(a.get("name", effect))])
 		return
 	turn_specials.append({"foe": f, "name": str(a.get("name", "")), "kind": Foe.kind_of(a), "seq": _seq})
@@ -3784,14 +3819,14 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			Effects.grant_for_rounds(f, Effects.golden(maxi(1, value)), "golden", round + rounds)
 			f.golden_mark = f.hp
 			log.append("%s: %s, its blows %d harder and a point of armour for %d round%s; %d more damage breaks it" % [f.display_name, str(a.get("name", "goes gold")), maxi(1, value), rounds, "" if rounds == 1 else "s", golden_left(f)])
-		"burn":
+		"ablate":
 			# A Ward turns away every rider a foe lays on its machine, a special's as a blow's
 			# (Ryan, 25 October: "Should stop all riders, even from non-damaging attacks").
 			if Effects.has(t.unit, "ward"):
 				log.append("%s: %s, and %s's Ward turns it away" % [f.display_name, str(a.get("name", "stokes")), t.unit.display_name])
 			else:
-				_fire_on(t, "burning_mech", maxi(1, value), f)
-				log.append("%s: %s, %s burning ×%d" % [f.display_name, str(a.get("name", "stokes")), t.unit.display_name, maxi(1, value)])
+				_fire_on(t, "ablating_mech", maxi(1, value), f)
+				log.append("%s: %s, Ablating ×%d on %s" % [f.display_name, str(a.get("name", "stokes")), maxi(1, value), t.unit.display_name])
 		"swallow":
 			_swallow(f, t, maxi(1, value))
 		"disable":
@@ -3835,7 +3870,7 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 				if other != f and other.alive():
 					Effects.grant(other, Effects.primed_foe(value, "foe:" + f.content_id))
 					primed += 1
-			log.append("%s: %s, %d primed to burn ×%d" % [f.display_name, str(a.get("name", "stokes")), primed, maxi(1, value)])
+			log.append("%s: %s, %d primed to ablate ×%d" % [f.display_name, str(a.get("name", "stokes")), primed, maxi(1, value)])
 		"regenerate":
 			# Regenerating on itself (28 October, the Marsh's by lean): its value at each of its
 			# next three actions, after its ticks.
@@ -4384,7 +4419,7 @@ static func mine_of(foe: Foe) -> Dictionary:
 static func mine_riders(f: Face) -> Dictionary:
 	var hits := maxi(1, f.strikes)
 	var stacks := {}
-	for k in [Face.Keyword.BURN, Face.Keyword.CRYO, Face.Keyword.FLAK, Face.Keyword.SAP]:
+	for k in [Face.Keyword.ABLATE, Face.Keyword.CRYO, Face.Keyword.FLAK, Face.Keyword.SAP]:
 		if f.has(k):
 			var n := maxi(0, int(f.get(str(Face.NUMBER_FIELDS[k])))) * hits
 			if n > 0:
@@ -4421,7 +4456,7 @@ static func mine_riders_merged(a: Dictionary, b: Dictionary) -> Dictionary:
 
 
 ## A Mine's words, for the log and the chip's readout: its damage, then its riders, each stack by
-## the keyword that lays it where one does ("Mine 6: Burn 4, Flak 3, Vitriol 2, Shock, Breach").
+## the keyword that lays it where one does ("Mine 6: Ablate 4, Flak 3, Vitriol 2, Shock, Breach").
 static func mine_text(mine: Dictionary) -> String:
 	var bits: Array[String] = []
 	var r: Dictionary = mine.get("riders", {})
@@ -4502,7 +4537,7 @@ func mine_reach(rank: int, col: int, massive: bool) -> Array[Foe]:
 ## meets (mine_reach), each through its own reads (its Flak, a Barrier, what it takes; aimed at
 ## nobody, so a Shock neither doubles it nor is spent) and its armour, none under Breach, and
 ## Chain's number on every other Shocked foe on the field; then its riders on each foe it met,
-## felled or not, as a hit's land: every status's stacks it carries (Burning, Cryo, Flak, a
+## felled or not, as a hit's land: every status's stacks it carries (Ablating, Cryo, Flak, a
 ## passive's Vitriol), Purge, Suppress and a web, then Shock and Expose, and Disrupt in the
 ## player's turn alone, the foes' moves being under way in theirs.
 ## Nothing ties it to the machine that laid it: no modifier, no deepening, no Cryo cashed. Its
@@ -4972,7 +5007,7 @@ func disrupt_next(foe: Foe) -> Dictionary:
 
 
 ## The cleanse keyword on a shield or vent component: whoever it was spent on loses every
-## cleansable status (a foe's disable, Corrupted, Silenced, Burning, Scorched), and the log says which.
+## cleansable status (a foe's disable, Corrupted, Silenced, Ablating, Scorched), and the log says which.
 func _cleanse_with(ms: MechState, who: MechState, f: Face) -> void:
 	if not f.has(Face.Keyword.CLEANSE):
 		return

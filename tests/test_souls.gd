@@ -63,7 +63,7 @@ func test_every_kill_in_its_fight_banks_a_soul_whoever_made_it() -> void:
 	assert_eq(Effects.stacks_of(ally, "souls"), 0, "on the machine whose passive banks them, and no other")
 	assert_eq(Effects.stacks_of(eater, "overcharged"), 0, "and flares nothing: the flare is its own kill's")
 	# A burn's tick is nobody's blow, and a kill all the same.
-	Effects.stack(b, Effects.STATUS["burning"], Effects.SKIRMISH, "test", 30, Effects.status_decay(Effects.STATUS["burning"]))
+	Effects.stack(b, Effects.STATUS["ablating"], Effects.SKIRMISH, "test", 30, Effects.status_decay(Effects.STATUS["ablating"]))
 	# A foe getting back up is no kill, so it banks nothing.
 	Effects.stack(riser, Effects.STATUS["risen"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
 	sk.end_round()

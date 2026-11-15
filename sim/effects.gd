@@ -37,9 +37,9 @@ extends RefCounted
 ## go when its own rounds run out (Ryan, 16 October: "Timed stacks should decay based on when
 ## they started. Not stack and refresh."); every reader sums a status across its modifiers.
 ## A status with tick decay ticks at its owner's turn:
-## its tick effects apply per stack (tick_hp, tick_heat), then it loses one stack and is
-## gone at zero. A machine's Burning and Scorched tick at the end of its turn instead (turn
-## decay, 13 October): Burning's heat lands before the overheat and a stack goes; Scorched
+## its tick effects apply per stack (tick_hp), then it loses one stack and is
+## gone at zero. A machine's Ablating and Scorched tick at the end of its turn instead (turn
+## decay, 13 October): Ablating's points land before the overheat and a stack goes; Scorched
 ## goes whole.
 
 const LOADOUT := 0
@@ -49,7 +49,7 @@ const ROUNDS := 3
 
 ## What the content may ask for, by trigger. The validator refuses anything else.
 const SUPPORTED_EFFECTS := {
-	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_burn", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
+	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_ablate", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
 	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "grant_keyword", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "fold_die", "rewrite_weapon", "heat_per_blow", "pass_release", "shove_behind", "mute_keywords", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status"],
 	"on_round_start": ["add_shield", "vent_heat", "stack_status"],
@@ -61,7 +61,7 @@ const SUPPORTED_EFFECTS := {
 	"on_shield_gain": ["vent_heat", "stack_status"],
 	"on_shield_granted": ["vent_heat", "stack_status", "shield_per_ally_heat"],
 	"on_heat_gain": ["add_shield", "stack_status"],
-	"status": ["tick_hp", "tick_hp_share", "tick_heat", "skip_action", "disable_entry", "corrupt_entry", "regrow"],
+	"status": ["tick_hp", "tick_hp_share", "skip_action", "disable_entry", "corrupt_entry", "regrow"],
 	"on_foe_status": ["paradox"],
 	"on_stack": ["add_stacks"],
 	"on_damage": ["stack_status", "add_shield", "vent_heat"],
@@ -71,7 +71,7 @@ const SUPPORTED_EFFECTS := {
 const DECAY_NONE := 0    # lives until its scope ends
 const DECAY_TICK := 1    # loses a stack each tick, gone at zero
 const DECAY_ROUND := 2   # gone at its owner's next tick, every stack at once (Braced: one turn from any source, 12 October)
-const DECAY_TURN := 3    # ticks at the end of its owner's turn and loses a stack there, not at the round's end (a machine's Burning, 13 October)
+const DECAY_TURN := 3    # ticks at the end of its owner's turn and loses a stack there, not at the round's end (a machine's Ablating, 13 October)
 const DECAY_TURN_ALL := 4    # lasts until the end of its owner's turn, every stack going there at once (a machine's Scorched, 13 October: it never piles up)
 const DECAY_HALF := 5    # halves at its owner's tick, rounded down, gone at zero (Empowered, 18 October: a halving rule has no duration)
 const DECAY_AFTER_TURN := 6    # gone after its owner's next turn, every stack at once: a foe's at the end of its next action, a machine's at the end of the player's turn (Sapped, 11 November)
@@ -93,9 +93,10 @@ const CLEANSABLE := "cleansable"
 ## probably shouldn't be stackable. The stingray stacks it due to its passive": its Exothermic
 ## Suite had it read x2 at five heat, though it only ever took one blow).
 const STATUS := {
-	# A damage point a stack since 18 October (Ryan, in the spirit of flattening the numbers;
-	# 5 before), the stacks the Burn keyword's own number.
-	"burning": {"id": "burning", "name": "Burning", "description": "Loses {value} HP per stack at the start of its action, then loses a stack.",
+	# Ablating on a foe (Ryan, 15 November: Ablate, his word, in Burn's place; "evokes eating
+	# though armour to me"). A damage point a stack since 18 October (in the spirit of flattening
+	# the numbers; 5 before), the stacks the Ablate keyword's own number.
+	"ablating": {"id": "ablating", "name": "Ablating", "description": "Loses {value} HP per stack at the start of its action, then loses a stack.",
 		"tags": ["dot"], "effects": [{"trigger": "status", "effect": "tick_hp", "value": 1}]},
 	# The Nemesis's rage (Ryan, 12 October, in place of the Crucible): its passive banks a
 	# stack for every hull hit, its own included, for the skirmish (`decay` none overrides a
@@ -103,14 +104,17 @@ const STATUS := {
 	# A store like the hopper: it does nothing by itself.
 	"rage": {"id": "rage", "name": "Rage", "description": "Banked for the skirmish, up to its cap; a piece charged on rage spends it for its charged form.", "decay": "none",
 		"tags": ["store"], "effects": []},
-	# A foe's fire on a machine (Ryan, 13 October: Burn and Scorch; direct heat retired). Burning
-	# is the player's word on the other body: metal does not burn, it heats, so a stack adds its
-	# heat at the end of the player's turn, before the overheat, where a vent made room for it
-	# or a cleanse took it off, then loses a stack. Scorched is the softer: every weapon and equipment
-	# aimed at a foe runs hotter until the turn's end, when every stack goes, so it never piles up under
-	# several scorchers, and spending a shield, a vent, a buff or a cool weapon plays round it.
-	"burning_mech": {"id": "burning_mech", "name": "Burning", "description": "Gains {value} heat per stack at the end of the player's turn, before the overheat, then loses a stack.", "decay": "turn",
-		"tags": ["dot", CLEANSABLE], "effects": [{"trigger": "status", "effect": "tick_heat", "value": 1}]},
+	# Ablating on a machine, the same rule on the other body (Ryan, 15 November: "hits shield
+	# first, I think. Pretty deadly otherwise. Bypasses armour when damaging hull"; "Tick of ablate
+	# ignores barrier yes"): a point a stack at the end of the player's turn, before the overheat,
+	# so the player has a turn to cleanse what the foes laid; the shield first, then the hull past
+	# armour; then a stack fades (Skirmish._ablate_mechs). It took the place of Burning as heat (13
+	# October), which the reboot left with one answer where its row asked for two. Scorched is
+	# the foes' tax on heat: every weapon and equipment aimed at a foe runs hotter until the
+	# turn's end, when every stack goes, so it never piles up under several scorchers, and a hold,
+	# a buff or a cool weapon plays round it.
+	"ablating_mech": {"id": "ablating_mech", "name": "Ablating", "description": "Loses {value} shield per stack at the end of the player's turn, then hull, past armour and a Barrier; then loses a stack.", "decay": "turn",
+		"tags": ["dot", CLEANSABLE], "effects": [{"trigger": "status", "effect": "tick_hp", "value": 1}]},
 	"scorched": {"id": "scorched", "name": "Scorched", "description": "Every weapon and equipment it aims at a foe runs {value} hotter per stack, until the end of the player's turn, when every stack goes.", "decay": "turn_all",
 		"tags": [CLEANSABLE], "effects": [{"trigger": "on_attack", "effect": "add_heat", "value": 1}]},
 	"suppressed": {"id": "suppressed", "name": "Suppressed", "description": "Skips its telegraphed action this round.", "stacking": "renew",
@@ -126,11 +130,11 @@ const STATUS := {
 	"paradox": {"id": "paradox", "name": "Paradox", "description": "A paradox building, a stack for every debuff stack it gains: at the count every stack is consumed and it is Suppressed.",
 		"effects": []},
 	# The funnel-web's acid (Ryan's go, 18 October; Vitriol his word): a share of the foe's
-	# current hull a stack at its action, past armour, after Burning's flat tick, rounded down
-	# and never the last hit point, then a stack fades (Burning's shape, stacking add): it
+	# current hull a stack at its action, past armour, after Ablating's flat tick, rounded down
+	# and never the last hit point, then a stack fades (Ablating's shape, stacking add): it
 	# opens on a boss, finishes no foe and so sets off no last act. Its passive lays it a stack
 	# per hit on a foe showing no intent on it (lay_status on on_attack, when target_no_intent).
-	"vitriol": {"id": "vitriol", "name": "Vitriol", "description": "Loses {value}% of its current HP per stack at its action, past armour, after Burning, rounded down, then loses a stack. It never finishes a foe.",
+	"vitriol": {"id": "vitriol", "name": "Vitriol", "description": "Loses {value}% of its current HP per stack at its action, past armour, after Ablating, rounded down, then loses a stack. It never finishes a foe.",
 		"tags": ["dot"], "effects": [{"trigger": "status", "effect": "tick_hp_share", "value": 10}]},
 	# The funnel-web's web (18 October): the mark its Web Bomb leaves. The skirmish bursts it at
 	# the end of the foe's action (Skirmish._web_burst): a Suppress on it and on the next foe
@@ -158,8 +162,8 @@ const STATUS := {
 	# keyword or an effect and the buff it creates share a name), its value its stacks.
 	"braced": {"id": "braced", "name": "Armoured", "description": "Armour +1 a stack, every stack at once: on a machine until the round's end, on a foe until its next action.", "decay": "round",
 		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]},
-	"primed": {"id": "primed", "name": "Primed", "description": "Every blow it lands leaves a stack of Burning, per stack.",
-		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_burn", "value": 1}]},
+	"primed": {"id": "primed", "name": "Primed", "description": "Every blow it lands leaves a stack of Ablating, per stack.",
+		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_ablate", "value": 1}]},
 	# Retaliation as a debuff, not thorns (Ryan, 28 September): a foe that strikes this
 	# machine's bare hull is Shocked, and the team's next weapon strike aimed at it lands double.
 	"retaliate": {"id": "retaliate", "name": "Retaliate", "description": "A foe that strikes this machine's bare hull is Shocked.", "stacking": "renew",
@@ -180,14 +184,14 @@ const STATUS := {
 	# id is "exposure" since "exposed" names that formation word and the foes' default aim.
 	# Pinned (the Hollow-point Harpoon's, Ryan, 11 November): a status of its own for the round,
 	# holding the foe's Flak from halving at the round's end. HOLDERS names the holder of each
-	# status a piece may hold, so a like one for Burning is a row there and a status here.
+	# status a piece may hold, so a like one for Ablating is a row there and a status here.
 	"pinned": {"id": "pinned", "name": "Pinned Flak", "description": "Its Flak does not decay this round.", "stacking": "renew",
 		"tags": ["pin"], "effects": [{"trigger": "static", "effect": "hold_status", "value": "flakked"}]},
-	# Burning's pin (Ryan, 11 November: "Might as well code it in since the Mastema will want it as
-	# a fitted piece, if nothing else"): its Burning burns and loses no stack this round. No piece
-	# lays it yet.
-	"pinned_burning": {"id": "pinned_burning", "name": "Pinned Burning", "description": "Its Burning loses no stack this round.", "stacking": "renew",
-		"tags": ["pin"], "effects": [{"trigger": "static", "effect": "hold_status", "value": "burning"}]},
+	# Ablating's pin, Seared (Ryan, 11 November: "Might as well code it in since the Mastema will
+	# want it as a fitted piece, if nothing else"; its name his, 15 November: "Rename 'Seared.'"):
+	# its Ablating takes its points and loses no stack this round. No piece lays it yet.
+	"seared": {"id": "seared", "name": "Seared", "description": "Its Ablating loses no stack this round.", "stacking": "renew",
+		"tags": ["pin"], "effects": [{"trigger": "static", "effect": "hold_status", "value": "ablating"}]},
 	"exposure": {"id": "exposure", "name": "Exposed", "description": "In Direct reach of every machine, and its armour counts for nothing. Until the end of the next round.", "stacking": "renew",
 		"tags": ["expose"], "effects": []},
 	# The Mine (the Lammergeier's Reverberant Payload, Ryan, 9 November: "the lammergeier basically
@@ -368,14 +372,14 @@ const STATUS := {
 	"barrier": {"id": "barrier", "name": "Barrier", "description": "The next blow a foe lands on it deals no damage, so it never injures; its riders land. Until the round's end.", "stacking": "renew", "single": true,
 		"tags": ["buff"], "effects": []},
 	# A foe's regrowth over time (28 October; the Marsh's by lean): at each of its actions it
-	# regrows its value in HP, after its Burning and Vitriol have ticked, so a burn is a race and
+	# regrows its value in HP, after its Ablating and Vitriol have ticked, so an Ablate is a race and
 	# never a wall; a stack an action left, three from the grant, each grant its own clock
 	# (regenerating() and regrowth() below). The machines' half (the Storm Petrel's shield, built
 	# 30 October) is regenerating_shield's: shield at each round's start, a timed grant of its own.
 	# A buff a Purge lowers, on either side.
-	"regenerating": {"id": "regenerating", "name": "Regenerating", "description": "Regrows {value} HP at each of its actions, after its Burning and Vitriol; a stack an action left.",
+	"regenerating": {"id": "regenerating", "name": "Regenerating", "description": "Regrows {value} HP at each of its actions, after its Ablating and Vitriol; a stack an action left.",
 		"tags": ["buff"], "effects": [{"trigger": "status", "effect": "regrow", "value": 2}]},
-	"ward": {"id": "ward", "name": "Ward", "description": "No rider a foe lays lands on it this round, from a blow or a move of its own (breach, burn, scorch, disable, corrupt, silence, purge); a blow's damage lands. Until the round's end.", "stacking": "renew",
+	"ward": {"id": "ward", "name": "Ward", "description": "No rider a foe lays lands on it this round, from a blow or a move of its own (breach, ablate, scorch, disable, corrupt, silence, purge); a blow's damage lands. Until the round's end.", "stacking": "renew",
 		"tags": ["buff"], "effects": []},
 	# The Ammit's Souls (Ryan, 12 November, its rework: "Kills grant one Soul"; "Souls granted by
 	# any kill"; "The souls last the battle"; "I wasn't going to cap it, as part of the fantasy"):
@@ -461,11 +465,11 @@ static func regrowth(u) -> int:
 
 
 ## Primed on a foe at a stoker's value (28 October): its next move's blows each leave that much
-## Burning on the machine they hit, as a Burn rider would, and the move spends it, whatever it
+## Ablating on the machine they hit, as an Ablate rider would, and the move spends it, whatever it
 ## is (Empowered's clock); a grant of its own, so two stokings add.
 static func primed_foe(value: int, source: String) -> Modifier:
 	var d: Dictionary = STATUS["primed"].duplicate(true)
-	d["description"] = "Its next move's blows each leave %d Burning on the machine they hit; the move spends it." % maxi(1, value)
+	d["description"] = "Its next move's blows each leave %d Ablating on the machine they hit; the move spends it." % maxi(1, value)
 	var m := make(d, SKIRMISH, source)
 	m.stacks = maxi(1, value)
 	return m
@@ -482,7 +486,7 @@ static func foe_barrier() -> Dictionary:
 
 static func foe_ward() -> Dictionary:
 	var d: Dictionary = STATUS["ward"].duplicate(true)
-	d["description"] = "No mark the team lays lands on it but Suppressed: no Burning, Flak, Cryo, Vitriol, Shock, Expose, Web, Paradox or drone. Damage lands. Until the player's turn ends."
+	d["description"] = "No mark the team lays lands on it but Suppressed: no Ablating, Flak, Cryo, Vitriol, Shock, Expose, Web, Paradox or drone. Damage lands. Until the player's turn ends."
 	return d
 
 
@@ -516,9 +520,9 @@ static func brace_stacks(value: int) -> int:
 ## What a foe carrying a status means (target_status, the Susceptibility Tensor; 10 October):
 ## what the team put on it. Never Numbed (a buff only a Purge lowers, 2 November), and never the foe's
 ## own buffs (Braced, Empowered, Undying).
-const FOE_STATUSES := ["burning", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed", "flakked", "exposure", "mine", "pinned", "pinned_burning", "sapped"]
+const FOE_STATUSES := ["ablating", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed", "flakked", "exposure", "mine", "pinned", "seared", "sapped"]
 ## The status that holds each status a piece may hold on its target (Face.holds).
-const HOLDERS := {"flakked": "pinned", "burning": "pinned_burning"}
+const HOLDERS := {"flakked": "pinned", "ablating": "seared"}
 ## The pin a unit wears on its chips while the round itself holds a status of its (Face.holds_all,
 ## Skirmish.round_holds: the Soul Siphon's hold on Empowered, either side's): the chip's word and
 ## icon alone, since the round carries the hold and no unit the status.
@@ -751,18 +755,19 @@ static func shocks_striker(u) -> bool:
 	return false
 
 
-## What a status effect amounts to right now across live statuses: {hp, heat, skip,
-## resist, share}. hp and heat are per stack sums; skip is any skip_action; resist is percent;
+## What a status effect amounts to right now across live statuses: {hp, skip, share}. hp is a
+## per stack sum (a foe's hit points; a machine's shield and then its hull, Ablating's on either
+## body); skip is any skip_action;
 ## share is the part of hp that is a share of the owner's current hull (tick_hp_share:
-## Vitriol, 18 October), read after the flat ticks (after Burning), the whole share rounded
+## Vitriol, 18 October), read after the flat ticks (after Ablating), the whole share rounded
 ## down and never the last hit point, so it opens on a boss and finishes no foe.
 ## `at_turn_end` asks the statuses that tick at the end of the owner's turn (turn decay, a
-## machine's Burning and Scorched), and only those; otherwise every other. What the ticks take
+## machine's Ablating and Scorched), and only those; otherwise every other. What the ticks take
 ## goes through what the unit takes, its multiplies alone (Guarded's nothing: Ryan, 8 November, a
 ## guarded core takes no tick "by definition"), never a weapon's adds (Flak) nor an aimed strike's
 ## (Shocked).
 static func tick_preview(u, at_turn_end: bool = false) -> Dictionary:
-	var out := {"hp": 0, "heat": 0, "skip": false, "share": 0}
+	var out := {"hp": 0, "skip": false, "share": 0}
 	var pct := 0
 	for pair in _taking_part(u, "status", null):
 		var eff: Dictionary = pair[0]
@@ -775,8 +780,6 @@ static func tick_preview(u, at_turn_end: bool = false) -> Dictionary:
 				out["hp"] += v
 			"tick_hp_share":
 				pct += v
-			"tick_heat":
-				out["heat"] += v
 			"skip_action":
 				out["skip"] = true
 	var taken := ticks_taken(u)
@@ -846,16 +849,20 @@ static func decays_to_zero(def: Dictionary) -> bool:
 	return str(def.get("decay", "")) == "half"
 
 
-## The end of a machine's turn (the player's, 13 October): its turn statuses tick, Burning's
-## heat for the caller to add before the overheat, then Burning loses a stack, Scorched goes
-## whole and the empty ones go. The round's tick leaves them alone.
-static func turn_tick(u) -> Dictionary:
+## The end of a machine's turn (the player's, 13 October): its turn statuses tick, Ablating's
+## points for the caller to take before the overheat, then Ablating loses a stack, Scorched goes
+## whole and the empty ones go. The round's tick leaves them alone. `waits`: the machine is out
+## of the fight (Swallowed, Phased), where nothing damages it, so its Ablating neither takes its
+## points nor fades: it ticks again the turn the machine is back, as its overheat burns again.
+static func turn_tick(u, waits: bool = false) -> Dictionary:
 	var out := tick_preview(u, true)
+	if waits:
+		out["hp"] = 0
 	var keep: Array = []
 	for m in u.modifiers:
 		if m.decay == DECAY_TURN_ALL or m.decay == DECAY_AFTER_TURN:
 			continue
-		if m.decay == DECAY_TURN:
+		if m.decay == DECAY_TURN and not waits:
 			m.stacks -= 1
 			if m.stacks <= 0:
 				continue
@@ -864,7 +871,7 @@ static func turn_tick(u) -> Dictionary:
 	return out
 
 
-## The owner's turn comes: apply this tick (the caller subtracts hp and adds heat), then
+## The owner's turn comes: apply this tick (the caller subtracts hp), then
 ## every tick-decaying status loses a stack and the empty ones go. A machine's turn is the
 ## round's end, so its halving statuses halve here too; a foe's comes at its action, so it
 ## passes `halving` false and its halving statuses wait for the round's end (halve: Flak on
@@ -872,7 +879,7 @@ static func turn_tick(u) -> Dictionary:
 ## decaying on every unit (the Soul Siphon's "No Empowered decays this round"), beside a pin's.
 static func tick(u, halving: bool = true, held_round: Array = []) -> Dictionary:
 	var out := tick_preview(u)
-	var held := held_statuses(u)   # a pin's: the status ticks and loses no stack (Pinned Burning)
+	var held := held_statuses(u)   # a pin's: the status ticks and loses no stack (Seared)
 	held.append_array(held_round)  # and the round's own (Skirmish.round_holds: the Soul Siphon's hold on Empowered)
 	var keep: Array = []
 	for m in u.modifiers:
@@ -1072,7 +1079,7 @@ static func _holds(u, eff: Dictionary, face: Face, target = null, ctx: Dictionar
 			return face != null and effective_reach(u, face) == Face.Reach.INDIRECT
 		"target_status":
 			# Any status the team put on it, or the one named, at least so many stacks (a gate's:
-			# the Suppression Battery's on Flak, the Backdraft Charge's on 2 Burning; 22 October).
+			# the Suppression Battery's on Flak, the Backdraft Charge's on 2 Ablating; 22 October).
 			if target == null or target.get("modifiers") == null:
 				return false
 			var want := str(eff.get("status", ""))
@@ -1168,9 +1175,9 @@ static func split_of(u, face: Face) -> int:
 
 
 ## An attack after the roll and the keyword rules: adds, then multiplies, then floors, on
-## damage and on heat, with the burn and the vent the effects add. `target` is the foe the
+## damage and on heat, with the ablate and the vent the effects add. `target` is the foe the
 ## blow is aimed at, for conditions on it (null when only the heat is asked). Returns
-## {damage, heat, burn, vent}.
+## {damage, heat, ablate, vent}.
 static func attack(u, face: Face, dmg: int, heat: int, target = null, ctx: Dictionary = {}) -> Dictionary:
 	var d_add := 0.0
 	var d_mult := 1.0
@@ -1178,7 +1185,7 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null, ctx: Dicti
 	var h_add := 0.0
 	var h_mult := 1.0
 	var p_mult := 1.0   # a multiply on the entry's own number alone, before the adds (the Kite's double: the printed number, buffs once)
-	var burn := 0
+	var ablate := 0
 	var vent := 0
 	# The entry's own finish (the Kite's Pinion Driver, 11 November): its number multiplied against a
 	# foe at half its HP or less, on the printed number as a passive's double is, the buffs once
@@ -1208,20 +1215,20 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null, ctx: Dicti
 				h_add += v * n
 			"multiply_heat":
 				h_mult *= pow(v, n)
-			"add_burn":
-				burn += int(v) * n
+			"add_ablate":
+				ablate += int(v) * n
 			"vent_heat":
 				vent += int(v) * n
 	var out_dmg := maxi(d_floor, int(roundf((float(dmg) * p_mult + d_add) * d_mult)))
 	var out_heat := maxi(0, int(roundf((heat + h_add) * h_mult)))
 	if face != null and face.is_debuff():
 		# A debuff deals nothing under any effect (Ryan's die grammar, 20 and 21 October): no
-		# flat add (Empowered, Spun Up), no multiply, no floor, no burn of a Primed machine;
+		# flat add (Empowered, Spun Up), no multiply, no floor, no ablate of a Primed machine;
 		# its heat runs as a weapon's and its keywords are its whole effect. Read on the entry as
 		# spent, so a debuff the Cottonmouth's drum fires is its shot, a gun.
 		out_dmg = 0
-		burn = 0
-	return {"damage": out_dmg, "heat": out_heat, "burn": burn, "vent": vent}
+		ablate = 0
+	return {"damage": out_dmg, "heat": out_heat, "ablate": ablate, "vent": vent}
 
 
 ## An incoming blow before shield and armour see it: adds, then multiplies, never below zero.
@@ -1511,7 +1518,7 @@ static func paradox(u) -> Array[int]:
 ## Stacks a status this machine applies gains from its passives (add_stacks on on_stack;
 ## the Stingray's Exothermic Suite, 2 October): `value` per stack of the passive, times
 ## the machine's heat over `per_heat` when the effect carries one. It reads any stack the
-## machine applies, on a foe, an ally or itself (a burn, a buff, a devour), never Numbed,
+## machine applies, on a foe, an ally or itself (an ablate, a buff, a devour), never Numbed,
 ## which is exempt from every interaction but suppress and its own decay (Ryan, 2 October:
 ## a touchable stun resist is where other games' combat loops broke).
 static func extra_stacks(u, status_id: String, heat: int) -> int:
@@ -2164,7 +2171,7 @@ static func purge(u, n: int = 1) -> Array[String]:
 ## The marks the team lays on foes (28 October), what a foe's cleanse takes off its own: never
 ## Numbed (the buff nothing removes), never Suppressed (so a stun stays sure), never Guarded or a
 ## buff.
-const TEAM_MARKS := ["burning", "flakked", "cryoed", "vitriol", "shocked", "exposure", "webbed", "paradox", "mine", "pinned", "pinned_burning", "sapped"]
+const TEAM_MARKS := ["ablating", "flakked", "cryoed", "vitriol", "shocked", "exposure", "webbed", "paradox", "mine", "pinned", "seared", "sapped"]
 
 
 ## How many of the team's marks a foe carries, each status one mark.
@@ -2468,7 +2475,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"min_damage": body = "damage at least %s" % vs
 		"multiply_heat": body = "heat ×%s" % vs
 		"add_heat": body = "heat %s" % signed
-		"add_burn": body = "+%s burn" % vs
+		"add_ablate": body = "+%s Ablating" % vs
 		"lay_status":
 			var n := int(eff.get("stacks", 1))
 			body = "lays %s on each foe %s, %s a hit" % [str(STATUS.get(str(v), {}).get("name", str(v))), "a weapon hits" if bool(eff.get("damaging", false)) else "hit", "a stack" if n <= 1 else "%d stacks" % n]
@@ -2513,7 +2520,6 @@ static func effect_text(eff: Dictionary) -> String:
 		"refill_shield": body = "its shield recharges whole"
 		"tick_hp": body = "%s damage per stack each turn" % vs
 		"tick_hp_share": body = "loses %s%% of its current HP per stack each turn" % vs
-		"tick_heat": body = "%s heat per stack each turn" % vs
 		"skip_action": body = "skips its action"
 		"disable_entry": body = "die entry %s switched off" % str(int(v) + 1)
 		"corrupt_entry": body = "die entry %s bites its owner when spent" % str(int(v) + 1)

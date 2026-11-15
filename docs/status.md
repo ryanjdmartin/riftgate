@@ -35,7 +35,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1188 tests, 372,897 checks, green on `ccr-722ca9f0-yj8na3` (15 November, the reboot
+- Tests: 1197 tests, 372,937 checks, green on `ccr-722ca9f0-yj8na3` (15 November, Ablate in
+  Burn's place, its rule's ten tests in a file of their own, over main at `c9e55a9`). Before
+  it, 1188 tests, 372,897 checks, green on the same branch (15 November, the reboot
   folded in: five tests of the switch's off side cut with it, over main at `0f5c801`). Before
   it, 1193 tests, 372,939 checks, green on the same branch (15 November, the vocabulary
   pass's marks folded, documents alone, over main at `196d802` taken in a merge). Before it, the
@@ -1797,10 +1799,6 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 
 The tasks are the to-do's; this is the index of what waits.
 
-- Burn as Ablate, one rule on both sides (Ryan, 15 November: "hits shield first, I think.
-  Pretty deadly otherwise. Bypasses armour when damaging hull"; the bible's Burning row): the
-  build's next part, now the reboot is folded in. Until then the engine runs a machine's
-  Burning as heat.
 - The vanilla gun at 3 (the same day: "3 against 5 or 3 against 4 as the options"): content
   still prints 2 and a debug build's BASIC GUNS dial plays the 3; it lands with Breach's cut.
 - Exposed for the foes (the same day, his third to fifth rounds; the bible's row in section
@@ -1865,8 +1863,11 @@ its record: six rounds, his marks on all eighty-two rows (section 18), his answe
 go (section 20), and his direction for the foes' moves (section 19). **The reboot is folded
 in** (15 November: the rule out of its switch; the chassis's own regen and cooling and the
 overheat that settles cut from the engine and from content; the three states terms; the
-refit brief's section 22 says what landed). **What rides behind it, in the to-do's order,
-each a commit of its own**: Ablate in Burn's place on both sides; the vanilla gun at 3 in
+refit brief's section 22 says what landed). **Ablate is built in Burn's place on both
+sides** (the same day; the bible's Ablate row, `tests/test_ablate.gd`): a machine's is a
+point a stack off its shield and then its hull as the player's turn ends, where its Burning
+was heat; the foes' numbers are unmoved, his to size. **What rides behind it, in the to-do's
+order, each a commit of its own**: the vanilla gun at 3 in
 content and Breach cut on both sides; his marks' cuts, renames and the words that leave the
 keyword list; his marks' rule changes (Rally on the rallier, Regenerating fading a stack a
 turn, Primed a stack a weapon fired, Brittle in place of Flak and Crushed, Phased granted

@@ -29,7 +29,7 @@ END = "<!-- bible-tables:end -->"
 
 # Who grants what, in the engine's own words (sim/skirmish.gd, sim/effects.gd), and the side it
 # lands on. A keyword or effect missing here grants no status.
-COMPONENT_KEYWORDS = {"burn": [("burning", "foe")], "shock": [("shocked", "foe")],
+COMPONENT_KEYWORDS = {"ablate": [("ablating", "foe")], "shock": [("shocked", "foe")],
                       "suppress": [("suppressed", "foe"), ("numbed", "foe")],
                       "web": [("webbed", "foe"), ("suppressed", "foe"), ("numbed", "foe")],
                       "cryo": [("cryoed", "foe")], "flak": [("flakked", "foe")], "expose": [("exposure", "foe")]}
@@ -40,16 +40,16 @@ PASSIVE_EFFECTS = {"shock_on_hull_strike": ("shocked", "foe"), "seal_form": ("se
                    "paradox": ("paradox", "foe"), "muster": ("muster", "machine"),
                    "fill_hopper": ("hopper", "machine"), "hopper_plate": ("braced", "machine"),
                    "mine_on_spend": ("mine", "foe")}   # stack_status names its own, on the machine; the Reverberant Payload's Mine (9 November)
-FOE_KEYWORDS = {"scorch": "scorched", "burn": "burning", "disable": "disabled", "corrupt": "corrupted", "crush": "crushed", "steal": "disabled"}   # a silence is a special since 28 October, never a rider
-FOE_EFFECTS_ON_MACHINES = {"burn": "burning", "scorch_all": "scorched", "corrupt_all": "corrupted",
+FOE_KEYWORDS = {"scorch": "scorched", "ablate": "ablating", "disable": "disabled", "corrupt": "corrupted", "crush": "crushed", "steal": "disabled"}   # a silence is a special since 28 October, never a rider
+FOE_EFFECTS_ON_MACHINES = {"ablate": "ablating", "scorch_all": "scorched", "corrupt_all": "corrupted",
                            "disable": "disabled", "silence": "silenced", "swallow": "swallowed"}
 FOE_EFFECTS_ON_FOES = {"brace": "braced", "brace_all": "braced", "harden": "braced", "harden_all": "braced",
                        "rally": "kindled", "revive_once": "risen", "revive_once_ally": "risen",
                        "prime": "primed", "barrier": "barrier", "ward_all": "ward", "regenerate": "regenerating", "golden": "golden"}   # the ladder's (28 October); golden the Thunder Ape's (4 November)
 # A special that is a rider's own mechanic, played as a whole move, counts under the rider.
-MOVE_AS_KEYWORD = {"burn": "burn", "disable": "disable", "scorch_all": "scorch", "corrupt_all": "corrupt", "swallow": "swallow", "merge": "merge", "dispel": "dispel", "silence": "silence", "golden": "golden_rage"}
-VIA_STATUS = {"primed": [("burning", "foe")], "retaliate": [("shocked", "foe")], "paradox": [("suppressed", "foe"), ("numbed", "foe")]}
-ENGINE_ALIASES = {"burning_mech": "burning"}   # the same word on the other body
+MOVE_AS_KEYWORD = {"ablate": "ablate", "disable": "disable", "scorch_all": "scorch", "corrupt_all": "corrupt", "swallow": "swallow", "merge": "merge", "dispel": "dispel", "silence": "silence", "golden": "golden_rage"}
+VIA_STATUS = {"primed": [("ablating", "foe")], "retaliate": [("shocked", "foe")], "paradox": [("suppressed", "foe"), ("numbed", "foe")]}
+ENGINE_ALIASES = {"ablating_mech": "ablating"}   # the same word on the other body
 
 # Printed rules, read off a component's face.
 PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
@@ -58,7 +58,7 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("finisher", "Finisher", lambda f: int(f.get("finisher", 0) or 0) > 1),
            ("gated", "Gated", lambda f: bool(f.get("gates"))),
            ("consumes", "Consumes", lambda f: bool(f.get("consumes")) or bool(f.get("spends"))),   # a weapon's on its target, or equipment's of its own machine's count (the Soul Siphon)
-           ("self_burn", "Burns its firer", lambda f: int(f.get("self_burn", 0) or 0) > 0),
+           ("self_ablate", "Ablates its firer", lambda f: int(f.get("self_ablate", 0) or 0) > 0),
            ("hopper_property", "The hopper", lambda f: int(f.get("fills_hopper", 0)) > 0 or int(f.get("fires_hopper", 0)) > 0),
            ("brace_property", "Braces", lambda f: int(f.get("braces", 0)) > 0),
            ("gather", "Gather", lambda f: bool(f.get("gathers_mines"))),
@@ -71,11 +71,11 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            # A printed cooldown: the rounds an entry sits out after its spend (12 November); Rapid's own
            # switch-off is never printed.
            ("cooldown", "Cooldown", lambda f: "cooldown" in f)]
-FOE_ONLY = ["breach", "scorch", "burn", "disable", "corrupt", "crush", "steal", "drain", "silence", "dispel", "swallow", "merge", "golden_rage", "self_destruct", "all", "countdown", "follow_up", "grudge", "last_act", "parts"]
-FOE_ONLY_TEXT = {"burn": "Keyword with a number on a foe's attack: each blow that lands leaves that many stacks of Burning on the machine it hits (Burning, above).",
+FOE_ONLY = ["breach", "scorch", "ablate", "disable", "corrupt", "crush", "steal", "drain", "silence", "dispel", "swallow", "merge", "golden_rage", "self_destruct", "all", "countdown", "follow_up", "grudge", "last_act", "parts"]
+FOE_ONLY_TEXT = {"ablate": "Keyword with a number on a foe's attack: each blow that lands leaves that many stacks of Ablating on the machine it hits (Ablating, above).",
                  "breach": "The blow ignores the machine's shield and armour: the shield stands and the whole blow reaches the hull; a Ward turns it away.",
                  "dispel": "A foe's move of its own, never a rider on a blow and never a last act's: the machine it lands on loses every buff a die face bought, every stack, for good, and what a store, a form or a passive grants until the start of the player's turn; its stores stay; a Ward turns it away."}
-SHARED = ["burn", "breach", "dispel"]   # our keyword and the foes' word share it, each with a row (Purge on both sides, 28 October)
+SHARED = ["ablate", "breach", "dispel"]   # our keyword and the foes' word share it, each with a row (Purge on both sides, 28 October)
 KIND_ORDER = {"buff": 0, "debuff": 1, "ability": 2, "store": 3}   # a store is a capped resource, its own kind (Ryan, 21 October); an ability a unit's own mechanic, no buff or debuff (8 November)
 ON_ORDER = {"machine": 0, "both": 1, "foe": 2}
 
@@ -286,7 +286,7 @@ def keyword_rows(t, vocab, words):
     empty = {"unlocked": [0, 0], "locked": [0, 0], "passive": [0, 0], "foe": [0, 0], "moves": [0, 0], "foes": set()}
     line = "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>"
     rows = ['<tr><td colspan="6"><em>On our components</em></td></tr>']
-    # Our Burn and Breach share their words with the foes' riders, which have rows of their own below.
+    # Our Ablate and Breach share their words with the foes' riders, which have rows of their own below.
     ours = [e for e in vocab if e["category"] == "keyword" and (e["id"] in SHARED or e["id"] not in FOE_ONLY)]
     for e in sorted(ours, key=lambda e: e["name"]):
         c = t.keywords.get(e["id"], empty)
@@ -300,7 +300,7 @@ def keyword_rows(t, vocab, words):
     for key in FOE_ONLY:
         c = t.keywords.get(key, empty)
         word = words.get(key, {})
-        name = {"burn": "Burn (a foe's)", "breach": "Breach (a foe's)", "dispel": "Purge (a foe's)"}.get(key, word.get("name", key))
+        name = {"ablate": "Ablate (a foe's)", "breach": "Breach (a foe's)", "dispel": "Purge (a foe's)"}.get(key, word.get("name", key))
         if word.get("status", "implemented") != "implemented":
             name += " (planned)"
         who = ", ".join(sorted(the(n) for n in c["foes"]))

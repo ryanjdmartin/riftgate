@@ -110,7 +110,7 @@ static var PREVIEW_DEBUG := OS.get_environment("RIFTGATE_PREVIEW_DEBUG") == "1"
 ## RIFTGATE_ABILITY_DEBUG=1: every foe and machine wears an ability's chip (its glyph on a solid
 ## tile, 8 November), to judge the look on the phone beside the buffs and debuffs.
 static var ABILITY_DEBUG := OS.get_environment("RIFTGATE_ABILITY_DEBUG") == "1"
-## RIFTGATE_MINE_DEBUG=1: every foe opens the fight carrying a Mine of 3 with Burn 1 and Shock (the
+## RIFTGATE_MINE_DEBUG=1: every foe opens the fight carrying a Mine of 3 with Ablate 1 and Shock (the
 ## Lammergeier's, 9 November), so any kill shows its blast land round the slot and the chips, to
 ## judge them running.
 static var MINE_DEBUG := OS.get_environment("RIFTGATE_MINE_DEBUG") == "1"
@@ -354,7 +354,7 @@ func setup(skirmish: Skirmish) -> void:
 	if MINE_DEBUG:
 		for foe in sk.field_foes():
 			if Skirmish.mine_of(foe).is_empty():
-				sk._add_mine(foe, 3, {"stacks": {"burning": 1}, "keywords": ["shock"]})
+				sk._add_mine(foe, 3, {"stacks": {"ablating": 1}, "keywords": ["shock"]})
 	_build()
 	_refresh()
 
@@ -1637,8 +1637,8 @@ func _foe_rows(foe: Foe) -> Array:
 	elif foe.alive() and not fate.is_empty() and not bool(fate.get("alive", true)):
 		rows.append(["skull", "", "Destroyed this round", Palette.LOSS, "preview"])
 	rows.append_array(_foe_abilities(foe))
-	if foe.burn_stacks() > 0:
-		rows.append(status_row("burning", "burn", str(foe.burn_stacks()), "Burning ×%d" % foe.burn_stacks(), _foe_chip_colour("burning")))
+	if foe.ablate_stacks() > 0:
+		rows.append(status_row("ablating", "ablate", str(foe.ablate_stacks()), "Ablating ×%d" % foe.ablate_stacks(), _foe_chip_colour("ablating")))
 	var vitriol := Effects.stacks_of(foe, "vitriol")
 	if vitriol > 0:
 		# The funnel-web's acid (18 October): its stacks, and the share they eat at its action.
@@ -1760,7 +1760,7 @@ func _foe_rows(foe: Foe) -> Array:
 ## A status's row, as the chips and the hold read it: [glyph, chip text, readout text, colour, kind,
 ## what it is to its unit]. The readout says what it is ahead of its name (Ryan, 9 November:
 ## "Buffs and debuffs ... need to be clearly labeled as such, so that it's clear what gets
-## purged"), "Buff, Empowered +2" or "Debuff, Burning ×2" as an ability's says "Ability, ...", and
+## purged"), "Buff, Empowered +2" or "Debuff, Ablating ×2" as an ability's says "Ability, ...", and
 ## the chip wears its mark by the same word (UnitView.draw_chip); one that is neither keeps its
 ## words and wears none (Effects.status_kind).
 static func status_row(status_id: String, glyph: String, chip_text: String, text: String, colour: Color, kind: String = "status") -> Array:
@@ -1792,8 +1792,8 @@ static func _coming_rows(coming: Dictionary, skip: Array, glyph_of: Callable, co
 ## The glyph a foe's status wears on its chip (the rows above name them inline).
 static func _foe_glyph(id: String) -> String:
 	match id:
-		"burning":
-			return "burn"
+		"ablating":
+			return "ablate"
 		"flakked":
 			return "flak"
 		"sapped":
@@ -1832,8 +1832,8 @@ static func status_glyph(id: String) -> String:
 	if id.begins_with("disabled"):
 		return "blank"
 	match id:
-		"burning_mech":
-			return "burning"
+		"ablating_mech":
+			return "ablate"   # one mark on either body (15 November): the machine's thermometer flame went with Burning as heat
 		"scorched":
 			return "scorch"
 		"overcharged":
@@ -1992,7 +1992,7 @@ func _mech_rows(i: int) -> Array:
 		# The shield-break chip went on 26 October (Ryan: "It's clutter, the bar previews are more
 		# than enough"). Every status the round will land on it (Ryan, 26 October: "All incoming
 		# chips should appear as pulsing opacity versions"), beside the skull when the round wrecks
-		# it (one may be the cause: a Burning it lit on itself), the counts and stores that are no
+		# it (one may be the cause: an Ablating it lit on itself), the counts and stores that are no
 		# chip left out.
 		var skip: Array = ["shots", "quick_turned", "muster"]
 		for id in fc.get("coming", {}).keys():
@@ -3620,12 +3620,13 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 	for st in steps:
 		if not (st["blow"] as Array).is_empty():
 			hits.append(st["blow"])
-	if not is_inside_tree() or (steps.is_empty() and sk.overheats.is_empty()):
+	if not is_inside_tree() or (steps.is_empty() and sk.overheats.is_empty() and sk.ablations.is_empty()):
 		then.call()
 		return
-	# The burn is the end of the player's own turn (11 October): it lands before the phase
-	# turns over to the enemy.
-	_set_phase("ASSIGN" if not sk.overheats.is_empty() else "ENEMY PHASE")
+	# The burn is the end of the player's own turn (11 October), and so is what a machine's
+	# Ablating takes (15 November): both land before the phase turns over to the enemy.
+	var own_end: bool = not sk.overheats.is_empty() or not sk.ablations.is_empty()
+	_set_phase("ASSIGN" if own_end else "ENEMY PHASE")
 	_replay_shade.visible = true
 	_replay_shade.move_to_front()
 	if _menu != null:
@@ -3644,6 +3645,11 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 	# dies at the end of the turn, one after another, with nothing over it (Ryan, 9 October).
 	var deaths: Array = []
 	_dying.clear()
+	for ab in sk.ablations:
+		var ai: int = ab["mech"]
+		if ai >= 0 and ai < _mech_views.size() and int(ab["hull"]) <= 0 and not _mech_views[ai].dead and not _dying.has(_mech_views[ai]):
+			_dying[_mech_views[ai]] = true
+			deaths.append([_mech_views[ai], _maker_of(sk.mechs[ai])])
 	for ov in sk.overheats:
 		var oi: int = ov["mech"]
 		if oi >= 0 and oi < _mech_views.size() and int(ov["hull"]) <= 0 and not _mech_views[oi].dead and not _dying.has(_mech_views[oi]):
@@ -3659,9 +3665,13 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 	# comes out of the beat after the last blow, so the turn keeps its pace.
 	var lead := beat * ACT_LEAD
 	var tw := create_tween()
+	if not sk.ablations.is_empty():
+		tw.tween_callback(_land_ablations)
+		tw.tween_interval(beat)
 	if not sk.overheats.is_empty():
 		tw.tween_callback(_land_overheats)
 		tw.tween_interval(beat)
+	if own_end:
 		tw.tween_callback(_set_phase.bind("ENEMY PHASE"))
 	for k in range(steps.size()):
 		var st: Dictionary = steps[k]
@@ -3816,6 +3826,23 @@ func _land_death(mv: UnitView, maker: String) -> void:
 		return
 	mv.dead = true
 	mv.queue_redraw()
+
+
+## What the machines' Ablating took as the player's turn ended (15 November) lands together,
+## before the overheats and the enemy's blows: each machine flinches, its shield steps down and
+## then its hull, a shield taken to nothing shattering as a blow's would.
+func _land_ablations() -> void:
+	Sound.play("overheat")
+	for ab in sk.ablations:
+		var i: int = ab["mech"]
+		if i < 0 or i >= _mech_views.size():
+			continue
+		var mv := _mech_views[i]
+		_animate_hit(mv)
+		if mv.bars.size() >= 2:
+			mv.bars[0][0] = int(ab["shield"])
+			mv.bars[1][0] = int(ab["hull"])
+		mv.queue_redraw()   # one it fells dies at the end of the turn (`_land_death`)
 
 
 ## The turn's overheats land together before the enemy's blows (the sim burns them as the
@@ -4077,7 +4104,7 @@ func _end_turn_now() -> void:
 	var before := _before_enemy_turn()
 	var field_before: Array[Foe] = sk.field_foes()
 	# The foes ready to get back up, as they look now: one that falls in the enemy's turn (to its
-	# Burning, to a Mine's blast) and stands again is shown dying and rising
+	# Ablating, to a Mine's blast) and stands again is shown dying and rising
 	# once the turn has played (26 October), as one killed by a die is.
 	var readied := {}
 	for foe in field_before:

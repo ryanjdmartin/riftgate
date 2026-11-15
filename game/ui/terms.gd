@@ -23,7 +23,7 @@ const TABLE := {
 	"cleave": ["cleave", "plain"], "penetrate": ["penetrate", "plain"], "splash": ["splash", "plain"],
 	"every_foe": ["aim_every_foe", "plain"], "every_ally": ["aim_every_ally", "plain"], "every_other_ally": ["aim_every_other_ally", "plain"],
 	"spillover": ["spillover", "plain"], "rapid": ["rapid", "plain"], "instant": ["instant", "plain"],
-	"burn": ["burn", "heat"], "shock": ["shock", "heat"], "chain": ["chain", "heat"],
+	"ablate": ["ablate", "heat"], "shock": ["shock", "heat"], "chain": ["chain", "heat"],
 	"flak": ["flak", "heat"], "breach": ["breach", "heat"], "sap": ["sap", "guard"],
 	"cryo": ["cryo", "guard"], "lure": ["lure", "guard"], "disrupt": ["disrupt", "guard"],
 	"suppress": ["suppress", "guard"], "web": ["web", "guard"], "swap": ["swap", "guard"],
@@ -36,12 +36,12 @@ const TABLE := {
 	"cooldown": ["cooldown", "plain"],
 	"hopper_property": ["hopper", "plain"],
 	"volatile": ["hull", "hull"], "shield_cost": ["shield", "guard"], "brace_property": ["shield", "guard"],
-	"self_burn": ["burn", "heat"], "vents_all": ["vent", "heat"],
+	"self_ablate": ["ablate", "heat"], "vents_all": ["vent", "heat"],
 	"gather": ["mine", "heat"], "detonate": ["mine", "heat"],
 	"regenerates": ["regenerating", "guard"], "ally_action": ["reroll", "plain"], "rolls_target": ["reroll", "plain"],
 	"kill_rerolls": ["reroll", "plain"],
 	# Statuses.
-	"burning": ["burn", "heat"], "scorched": ["scorch", "heat"], "primed": ["primed", "heat"],
+	"ablating": ["ablate", "heat"], "scorched": ["scorch", "heat"], "primed": ["primed", "heat"],
 	"overcharged": ["overcharge", "heat"], "kindled": ["overcharge", "heat"], "enraged": ["overcharge", "heat"], "golden": ["overcharge", "heat"], "shocked": ["shocked", "heat"],
 	"charged": ["shocked", "heat"], "supercooled": ["cryo", "guard"],
 	"flakked": ["flak", "heat"], "vitriol": ["vitriol", "heat"], "spun_up": ["spin", "heat"], "ricochet": ["ricochet", "heat"],
@@ -51,7 +51,7 @@ const TABLE := {
 	"phased": ["phased", "guard"], "guarded": ["lock", "guard"], "sealed": ["seal", "guard"], "changed_over": ["reroll", "plain"],
 	"retaliate": ["shocked", "guard"], "suppressed": ["suppress", "guard"], "webbed": ["web", "guard"],
 	"numbed": ["numbed", "guard"], "paradox": ["paradox", "guard"], "cryoed": ["cryo", "guard"],
-	"exposure": ["exposed", "harm"], "pinned": ["pin_flak", "heat"], "sapped": ["sap", "guard"], "juggernaut_breach": ["breach", "heat"], "pinned_burning": ["pin_burn", "heat"], "destroyed_component": ["crack", "harm"],
+	"exposure": ["exposed", "harm"], "pinned": ["pin_flak", "heat"], "sapped": ["sap", "guard"], "juggernaut_breach": ["breach", "heat"], "seared": ["pin_ablate", "heat"], "destroyed_component": ["crack", "harm"],
 	"corrupted": ["corrupt", "enemy"], "crushed": ["flak", "enemy"], "disabled": ["blank", "enemy"], "silenced": ["silence", "enemy"],
 	"risen": ["star", "enemy"], "regenerating": ["regenerating", "guard"], "swallowed": ["swallowed", "enemy"],
 	"ability": ["", "plain"],   # a unit's own mechanic, no buff or debuff (8 November): its chips carry their own marks
@@ -65,8 +65,8 @@ const TABLE := {
 	"drain": ["heart", "enemy"],   # the Vampire Lord's (31 October): a blow that regrows what it took from the hull
 }
 
-## An engine status keyed apart from its term: a machine's Burning, the Badger's hopper.
-const ALIASES := {"burning_mech": "burning", "hopper": "hopper_property"}
+## An engine status keyed apart from its term: a machine's Ablating, the Badger's hopper.
+const ALIASES := {"ablating_mech": "ablating", "hopper": "hopper_property"}
 
 ## Terms never matched in prose: names a shown text uses as a plain word in their place
 ## ("Targets any front-rank foe", a move that "Strikes twice").
@@ -146,7 +146,7 @@ static func entry(id: String, db: ContentDB = null) -> Dictionary:
 
 
 ## The engine's status a status term names: its own id, or the engine's where an alias keys it apart
-## (the hopper's term, a machine's Burning reading as the foe's).
+## (the hopper's term, a machine's Ablating reading as the foe's).
 static func engine_status(term_id: String) -> String:
 	for k in ALIASES.keys():
 		if str(ALIASES[k]) == term_id and Effects.STATUS.has(str(k)) and not Effects.STATUS.has(term_id):

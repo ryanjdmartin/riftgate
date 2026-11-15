@@ -7,7 +7,7 @@ extends SceneTree
 ## and pair_spread (a Gel's halves in its slot, and a Spread held over them; RIFTGATE_FOES=gel:2,goblin:3),
 ## mechcodex, hold (the second die's readout; RIFTGATE_HOLD_ENTRY=<place> picks the entry
 ## showing), mechhold and foehold (the first machine's and the first foe's readout, as a tap opens it), confirm (the
-## end-turn question), lock, rage (the rage's roll again mid-burst), heat (Burning and
+## end-turn question), lock, rage (the rage's roll again mid-burst), heat (Ablating and
 ## Scorched on the first machine), foeheat (heat's red-orange beside the enemy's violet on three foes' chips), repick (a foe whose machine falls before it acts, a second
 ## arrow dashed to the machine it will strike), columns (every foe aimed at the machine nearest its column, every arrow on).
 
@@ -273,11 +273,11 @@ func _apply_pose() -> void:
 			# width and the third row under a machine shows its room.
 			for ms in s.sk.mechs:
 				var u: Unit = ms.unit
-				for st in [["burning_mech", Effects.DECAY_TURN], ["scorched", Effects.DECAY_TURN_ALL], ["primed", Effects.DECAY_TICK], ["overcharged", Effects.DECAY_NONE], ["braced", Effects.DECAY_TURN_ALL], ["phased", Effects.DECAY_TURN_ALL], ["cryoed", Effects.DECAY_NONE]]:
+				for st in [["ablating_mech", Effects.DECAY_TURN], ["scorched", Effects.DECAY_TURN_ALL], ["primed", Effects.DECAY_TICK], ["overcharged", Effects.DECAY_NONE], ["braced", Effects.DECAY_TURN_ALL], ["phased", Effects.DECAY_TURN_ALL], ["cryoed", Effects.DECAY_NONE]]:
 					if Effects.STATUS.has(st[0]):
 						Effects.stack(u, Effects.STATUS[st[0]], Effects.SKIRMISH, "shot", 2, st[1])
 			for foe in s.sk.field_foes():
-				for id in ["burning", "flakked", "shocked", "cryoed", "vitriol"]:
+				for id in ["ablating", "flakked", "shocked", "cryoed", "vitriol"]:
 					Effects.stack(foe, Effects.STATUS[id], Effects.SKIRMISH, "mech", 2, Effects.status_decay(Effects.STATUS[id]))
 			s._refresh()
 		"souls":
@@ -317,17 +317,17 @@ func _apply_pose() -> void:
 					ms.ammo = maxi(0, ms.ammo_max - 2)
 			s._refresh()
 		"heat":
-			# A foe's fire on the first machine: Burning ×2 and Scorched ×1 on its chip row, with
+			# A foe's fire on the first machine: Ablating ×2 and Scorched ×1 on its chip row, with
 			# Primed beside them, the one other flame a machine wears.
 			var u: Unit = s.sk.mechs[0].unit
-			Effects.stack(u, Effects.STATUS["burning_mech"], Effects.SKIRMISH, "shot", 2, Effects.DECAY_TURN)
+			Effects.stack(u, Effects.STATUS["ablating_mech"], Effects.SKIRMISH, "shot", 2, Effects.DECAY_TURN)
 			Effects.stack(u, Effects.STATUS["scorched"], Effects.SKIRMISH, "shot", 1, Effects.DECAY_TURN_ALL)
 			Effects.stack(u, Effects.STATUS["primed"], Effects.SKIRMISH, "shot", 1, Effects.DECAY_TICK)
 			s._refresh()
 		"foeheat":
 			# Heat's red-orange beside the enemy's violet on the foes' chip rows, the one place the two
-			# sit side by side: Burning on the first front foe, Flak on the second, Shocked on the third.
-			var ids := ["burning", "flakked", "shocked"]
+			# sit side by side: Ablating on the first front foe, Flak on the second, Shocked on the third.
+			var ids := ["ablating", "flakked", "shocked"]
 			var k := 0
 			for foe in s.sk.front:
 				if foe == null or k >= ids.size():

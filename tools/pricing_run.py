@@ -514,7 +514,7 @@ FACE_PLAIN = ('kind', 'reach', 'power', 'strikes', 'heat', 'keywords')
 def face_text(f):
     """An attack face in one line: the number (its strikes), the heat, the keywords with
     their numbers, and every other field the face carries (a Coriolis's point a missing five, a
-    Stoker's self_burn), so a piece that is no vanilla never reads as one."""
+    Stoker's self_ablate), so a piece that is no vanilla never reads as one."""
     num = '%s' % f.get('power', 0)
     if int(f.get('strikes', 1) or 1) > 1:
         num += ' x%d' % f['strikes']

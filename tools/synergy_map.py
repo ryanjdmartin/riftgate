@@ -35,7 +35,7 @@ def load(name):
 # ------------------------------------------------------------------ the currencies
 # id: (label, side). The order is the map's order.
 CURRENCIES = OrderedDict([
-    ("burning", ("Burning", "on a foe")),
+    ("ablating", ("Ablating", "on a foe")),
     ("flakked", ("Flak", "on a foe")),
     ("shocked", ("Shocked", "on a foe")),
     ("exposure", ("Exposed", "on a foe")),
@@ -59,7 +59,7 @@ CURRENCIES = OrderedDict([
     ("phased", ("Phased", "on a machine")),
     ("sealed", ("Sealed", "on a machine")),
     ("regenerating", ("Regenerating", "on a machine")),
-    ("burning_mech", ("Burning", "on a machine")),
+    ("ablating_mech", ("Ablating", "on a machine")),
     ("scorched", ("Scorched", "on a machine")),
     ("disabled", ("Disabled", "on a machine")),
     ("corrupted", ("Corrupted", "on a machine")),
@@ -84,12 +84,12 @@ CURRENCIES = OrderedDict([
 
 # A component keyword and what it sets or reads: (currency, "sets" or "reads").
 KEYWORDS = {
-    "burn": [("burning", "sets")], "shock": [("shocked", "sets")], "suppress": [("suppressed", "sets")],
+    "ablate": [("ablating", "sets")], "shock": [("shocked", "sets")], "suppress": [("suppressed", "sets")],
     "web": [("webbed", "sets"), ("suppressed", "sets")], "cryo": [("cryoed", "sets")], "flak": [("flakked", "sets")],
     "expose": [("exposure", "sets")], "lure": [("lure", "sets")], "disrupt": [("disrupt", "sets")], "swap": [("swap", "sets"), ("rank", "sets")],
     "chain": [("kill", "reads")], "cleave": [("strikes", "sets")], "penetrate": [("strikes", "sets")], "splash": [("strikes", "sets")],
     "spillover": [("strikes", "sets")], "dispel": [("foe_buff", "reads")],
-    "cleanse": [("burning_mech", "reads"), ("scorched", "reads"), ("disabled", "reads"), ("corrupted", "reads")],
+    "cleanse": [("ablating_mech", "reads"), ("scorched", "reads"), ("disabled", "reads"), ("corrupted", "reads")],
     "overshield": [], "rapid": [], "instant": [], "breach": [], "every_foe": [], "every_ally": [],
 }
 # A face field and what it sets or reads.
@@ -101,7 +101,7 @@ FACE_FIELDS = {
     "kill_rerolls": [("kill", "reads"), ("reroll", "sets")], "ally_action": [("reroll", "reads")], "regenerates": [("regenerating", "sets")],
     "spends": [("souls", "reads")], "spends_up_to": [], "holds_all": [("overcharged", "reads")],   # the Soul Siphon: it consumes Souls, and holds every Empowered a round
     "spends_magazine": [("ammo", "reads")], "magazine_min": [("ammo", "reads")], "reloads_ammo": [("ammo", "sets")], "ammo_per_foe_hit": [("ammo", "sets")],
-    "self_burn": [("burning_mech", "sets"), ("heat", "sets")], "volatile": [("hull_damage", "sets")], "strikes": [("strikes", "sets")],
+    "self_ablate": [("ablating_mech", "sets")], "volatile": [("hull_damage", "sets")], "strikes": [("strikes", "sets")],
     "shields": [], "vents": [], "cooldown": [], "charged": [("muster", "reads")],
     "rolls_target": [],
 }
@@ -118,7 +118,7 @@ EFFECTS = {
     "extra_action": [], "never_hunted": [], "no_destroy": [], "carry": [], "rewrite_weapon": [], "grant_keyword": [],
     "add_shield": [], "refill_shield": [], "vent_heat": [], "stack_status": [], "lay_status": [],
     "multiply_heat": [("heat", "sets")], "add_damage": [], "add_damage_taken": [], "hull_per_spend": [("hull_damage", "sets")],
-    "multiply_damage": [], "multiply_stacks": [], "add_heat": [("heat", "sets")], "one_of_each": [], "min_damage": [], "add_burn": [],
+    "multiply_damage": [], "multiply_stacks": [], "add_heat": [("heat", "sets")], "one_of_each": [], "min_damage": [], "add_ablate": [],
     "burn_shield": [("heat", "reads")], "bank_rerolls": [("reroll", "reads"), ("reroll", "sets")],
     "fill_hopper": [("hopper", "sets")], "hopper_plate": [("hopper", "reads"), ("braced", "sets")],
 }
@@ -128,14 +128,14 @@ TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_shield_
 CONDITIONS = {"target_status": None, "attacker_status": None, "target_rank": "rank", "nth_shot": None,
               "target_no_intent": None, "shield_up": None, "target_unhurt": "missing_hp", "target_half": "missing_hp"}
 # A foe move's riders and effects, on machines.
-FOE_RIDERS = {"burn": "burning_mech", "scorch": "scorched", "disable": "disabled", "corrupt": "corrupted", "silence": "silenced", "breach": None}
-FOE_EFFECTS = {"burn": "burning_mech", "scorch_all": "scorched", "disable": "disabled", "corrupt_all": "corrupted", "drain_rerolls": "reroll",
+FOE_RIDERS = {"ablate": "ablating_mech", "scorch": "scorched", "disable": "disabled", "corrupt": "corrupted", "silence": "silenced", "breach": None}
+FOE_EFFECTS = {"ablate": "ablating_mech", "scorch_all": "scorched", "disable": "disabled", "corrupt_all": "corrupted", "drain_rerolls": "reroll",
                "brace": "foe_buff", "brace_all": "foe_buff", "rally": "foe_buff", "revive_once": "foe_buff", "revive_once_ally": "foe_buff",
                "prime_all": "foe_buff", "barrier": "foe_buff", "ward_all": "foe_buff", "regenerate": "foe_buff"}
 
 # The engine's own readers, where a currency pays by itself (the rules, docs/rules.md).
 ENGINE_READERS = {
-    "burning": ["its tick: 1 HP a stack at the foe's action, past armour"],
+    "ablating": ["its tick: 1 HP a stack at the foe's action, past armour"],
     "flakked": ["every blow of a damaging weapon it takes, +1 a stack, a 0 included: most on strikes"],
     "shocked": ["the next damaging blow it takes, doubled: most on one big blow"],
     "exposure": ["Direct reach to it wherever it stands, and its armour counts for nothing"],
@@ -149,7 +149,7 @@ ENGINE_READERS = {
     "swap": ["the two trade places: reach, the acting order, area"],
     "overcharged": ["every blow +1 a stack: most on strikes; halves each round"],
     "braced": ["armour +1 a stack until the round's end"],
-    "primed": ["every blow lays a Burning stack a stack: most on strikes"],
+    "primed": ["every blow lays an Ablating stack a stack: most on strikes"],
     "retaliate": ["a foe striking bare hull is Shocked, so every reader of Shocked"],
     "barrier": ["the next blow deals nothing"],
     "ward": ["no rider lands this round"],
@@ -159,7 +159,7 @@ ENGINE_READERS = {
     "phased": ["untouchable until the round's end"],
     "sealed": ["armour +3, cooling stopped, 3 heat a turn"],
     "regenerating": ["2 shield a round for three rounds"],
-    "burning_mech": ["+1 heat a stack at the turn's end"],
+    "ablating_mech": ["its tick: 1 shield a stack at the turn's end, then hull, past armour and a Barrier"],
     "scorched": ["every weapon fired runs 1 hotter a stack this turn"],
     "disabled": ["the entry comes up blank"],
     "corrupted": ["each spend bites 3 a stack"],
@@ -227,7 +227,7 @@ class Map:
                         self.add(cur, how, p)
             for k, v in f.items():
                 if k in ("kind", "reach", "power", "keywords", "heat", "targets", "status", "stacks", "rounds",
-                         "burn", "flak", "cryo", "cleave", "penetrate", "splash", "gates", "consumes", "per_consumed", "per_heat", "per_missing", "power_per_load"):
+                         "ablate", "flak", "cryo", "cleave", "penetrate", "splash", "gates", "consumes", "per_consumed", "per_heat", "per_missing", "power_per_load"):
                     continue
                 if k not in FACE_FIELDS:
                     self.unmapped.append("%s: face field %s" % (e["name"], k))
@@ -290,7 +290,7 @@ class Map:
                 self.unmapped.append("%s: trigger %s" % (p["who"], trig))
             tcur = TRIGGERS.get(trig)
             if tcur == "paradox_feed":
-                for cur in ("burning", "flakked", "shocked", "exposure", "cryoed", "suppressed", "webbed", "vitriol", "mine"):
+                for cur in ("ablating", "flakked", "shocked", "exposure", "cryoed", "suppressed", "webbed", "vitriol", "mine"):
                     self.add(cur, "reads", dict(p, how="counts it"))
             elif tcur:
                 self.add(tcur, "reads", p)
@@ -301,7 +301,7 @@ class Map:
                 if eff.get("status"):
                     self.add(eff["status"], "reads", p)
                 else:
-                    for cur in ("burning", "flakked", "shocked", "exposure", "cryoed", "suppressed", "webbed", "vitriol", "mine", "paradox"):
+                    for cur in ("ablating", "flakked", "shocked", "exposure", "cryoed", "suppressed", "webbed", "vitriol", "mine", "paradox"):
                         self.add(cur, "reads", dict(p, how="any status"))
             if when == "attacker_status":
                 self.add(eff.get("status"), "reads", p)
@@ -376,7 +376,7 @@ def render(m):
         if cur == "heat":
             set_text = "every weapon with heat (%d pieces); " % m.heat_guns + set_text
         L.append("| %s | %s | %s | %s |" % (label, side, set_text, "; ".join(engine + [word(e) for e in readers]) or "nothing"))
-        foe_laid = cur in ("scorched", "disabled", "corrupted", "burning_mech")
+        foe_laid = cur in ("scorched", "disabled", "corrupted", "ablating_mech")
         if (side == "on a foe" or side == "on a machine") and not foe_laid:
             if setters and not sl:
                 unique.append(label)

@@ -218,7 +218,7 @@ func test_the_main_mark_holds_what_an_entry_delivers() -> void:
 	assert_eq(DieFaceView.inside_effect(mines), "star", "a debuff whose effect is a rule of its own holds the star")
 	d.set_face(mines)
 	assert_false(d.rail_tags().has("star"), "and the rail does not star it again")
-	assert_eq(DieFaceView.inside_effect(Face.attack(4, Face.Reach.DIRECT, [Face.Keyword.BURN])), "", "a weapon holds its number, never a keyword")
+	assert_eq(DieFaceView.inside_effect(Face.attack(4, Face.Reach.DIRECT, [Face.Keyword.ABLATE])), "", "a weapon holds its number, never a keyword")
 	d.free()
 	var wake := Face.vent(3)
 	wake.shields = 3
@@ -630,8 +630,8 @@ func test_a_dies_readout_shows_the_entry_showing_with_its_effects_listed() -> vo
 	var s := _screen()
 	var db := ContentDB.load_default()
 	var ms: Skirmish.MechState = s.sk.mechs[1]
-	var gun := Face.attack(3, Face.Reach.INDIRECT, [Face.Keyword.CLEAVE, Face.Keyword.BURN], 3)
-	gun.burn = 2
+	var gun := Face.attack(3, Face.Reach.INDIRECT, [Face.Keyword.CLEAVE, Face.Keyword.ABLATE], 3)
+	gun.ablate = 2
 	gun.cleave = 2
 	gun.strikes = 2
 	gun.component = str(db.components.keys()[0])
@@ -651,7 +651,7 @@ func test_a_dies_readout_shows_the_entry_showing_with_its_effects_listed() -> vo
 	assert_eq(str(lines[0]["place"]), "I", "beside its place on the die")
 	var sf := s.sk.shown_face(ms, gun)
 	var n := s.sk.shown_number(ms, sf)
-	assert_eq(texts, [texts[0], "Attack %d ×2" % n, "Heat %d" % sf.heat, "Target: Enemy, Indirect", "Spread 2", "Apply Burn 2 on hit", "Tags: Beam, Flame"],
+	assert_eq(texts, [texts[0], "Attack %d ×2" % n, "Heat %d" % sf.heat, "Target: Enemy, Indirect", "Spread 2", "Apply Ablate 2 on hit", "Tags: Beam, Flame"],
 		"a line a mark on the die, in the order a spend runs it, its numbers as the die prints them, and no source listed: %s" % str(texts))
 	var attack: Array = lines[1]["parts"]
 	assert_eq([int(attack[1]["trend"]), bool(attack[1]["gain"])], [1, true], "the blow moved up by the passive, the machine's gain: coloured, never explained")
@@ -723,8 +723,8 @@ func test_a_split_weapon_reads_its_blow_down_and_its_strikes_up() -> void:
 ## out. The plate lays the die out a row a component, one column.
 func test_the_codex_row_joins_the_holds_lines_into_three() -> void:
 	var db := ContentDB.load_default()
-	var gun := Face.attack(3, Face.Reach.INDIRECT, [Face.Keyword.CLEAVE, Face.Keyword.BURN, Face.Keyword.RAPID], 3)
-	gun.burn = 2
+	var gun := Face.attack(3, Face.Reach.INDIRECT, [Face.Keyword.CLEAVE, Face.Keyword.ABLATE, Face.Keyword.RAPID], 3)
+	gun.ablate = 2
 	gun.cleave = 2
 	gun.strikes = 2
 	gun.component = str(db.components.keys()[0])
@@ -733,7 +733,7 @@ func test_the_codex_row_joins_the_holds_lines_into_three() -> void:
 	var texts: Array[String] = []
 	for l in lines:
 		texts.append(str(l["text"]))
-	assert_eq(texts, [db.component_name(gun.component).to_upper(), "Attack 3 ×2 · Heat 3 · Target: Enemy, Indirect", "Spread 2 · Apply Burn 2 on hit · Rapid", "Test: a passive's line."],
+	assert_eq(texts, [db.component_name(gun.component).to_upper(), "Attack 3 ×2 · Heat 3 · Target: Enemy, Indirect", "Spread 2 · Apply Ablate 2 on hit · Rapid", "Test: a passive's line."],
 		"its name, its attributes, its keywords, its rules: %s" % str(texts))
 	assert_eq([str(lines[0]["type"]), str(lines[0]["tags"])], ["Weapon", "Beam, Flame"], "its type, then its tags, beside its name")
 	var types := {}
@@ -1350,7 +1350,7 @@ func test_an_incoming_rally_lifts_the_intent_and_wears_a_preview_chip_until_the_
 
 ## Every status on its way wears a pulsing preview chip (Ryan, 26 October: "All incoming chips
 ## should appear as pulsing opacity versions"): the Shocked a Retaliate will put on the foe that
-## strikes the bare hull, the Burning its rider leaves on the machine; a foe the round kills wears
+## strikes the bare hull, the Ablating its rider leaves on the machine; a foe the round kills wears
 ## its skull and no chips on the way.
 func test_every_status_on_its_way_wears_a_preview_chip() -> void:
 	var db := ContentDB.load_default()
@@ -1360,8 +1360,8 @@ func test_every_status_on_its_way_wears_a_preview_chip() -> void:
 	m.shield = 0
 	sk.add_mech(m)
 	var g := Foe.make("revenant", 300, 4)
-	g.actions[0]["keywords"] = ["burn"]
-	g.actions[0]["burn"] = 2
+	g.actions[0]["keywords"] = ["ablate"]
+	g.actions[0]["ablate"] = 2
 	sk.add_foes([g])
 	var s := SkirmishScreen.new()
 	s.setup(sk)
@@ -1376,12 +1376,12 @@ func test_every_status_on_its_way_wears_a_preview_chip() -> void:
 	var mine: Array = s._mech_rows(0).filter(func(r) -> bool: return r.size() >= 5 and str(r[4]) == "preview")
 	assert_eq(mine.size(), 1, "the machine wears one")
 	if mine.size() == 1:
-		assert_eq(str(mine[0][0]), SkirmishScreen.status_glyph("burning_mech"), "the Burning its rider leaves")
+		assert_eq(str(mine[0][0]), SkirmishScreen.status_glyph("ablating_mech"), "the Ablating its rider leaves")
 		assert_eq(str(mine[0][1]), "+2", "two stacks")
-	# A foe the die in hand kills with a Burn weapon wears the skull and the Burn coming, both
+	# A foe the die in hand kills with an Ablate weapon wears the skull and the Ablate coming, both
 	# (Ryan, 26 October: "It should be in addition ... some of those chips might be the cause").
-	var torch := Face.attack(1, Face.Reach.DIRECT, Face.Keyword.BURN)
-	torch.burn = 3
+	var torch := Face.attack(1, Face.Reach.DIRECT, Face.Keyword.ABLATE)
+	torch.ablate = 3
 	m.die = Die.single(torch)
 	sk.mechs[0].die = m.die
 	sk.mechs[0].face_index = 0
@@ -1391,7 +1391,7 @@ func test_every_status_on_its_way_wears_a_preview_chip() -> void:
 	s._refresh()
 	var rows := s._foe_rows(g)
 	assert_true(rows.any(func(r) -> bool: return str(r[0]) == "skull" and str(r[1]) == ""), "over it, it wears the skull")
-	assert_true(rows.any(func(r) -> bool: return r.size() >= 5 and str(r[4]) == "preview" and str(r[0]) == "burn"), "and the Burn on its way beside it")
+	assert_true(rows.any(func(r) -> bool: return r.size() >= 5 and str(r[4]) == "preview" and str(r[0]) == "ablate"), "and the Ablate on its way beside it")
 	s._drag_from = -1
 	s._drag_over = null
 	s.free()
@@ -1514,7 +1514,7 @@ func test_an_ability_wears_its_own_chip_and_no_purge_takes_it() -> void:
 
 
 ## The four buffs a foe's specials grant (the ladder's brief, B; 28 October) wear the machines'
-## chips on a foe, each its own mark: Primed's lit flame never the team's Burning's hollow one,
+## chips on a foe, each its own mark: Primed's lit flame never the team's Ablating's hollow one,
 ## Regenerating's heart never Undying's star, the Barrier's wall and the Ward's struck ring.
 func test_a_foes_four_buffs_wear_their_own_chips() -> void:
 	var db := ContentDB.load_default()
@@ -1526,7 +1526,7 @@ func test_a_foes_four_buffs_wear_their_own_chips() -> void:
 	sk.add_foes([foe])
 	var s := SkirmishScreen.new()
 	s.setup(sk)
-	Effects.stack(foe, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 2)
+	Effects.stack(foe, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 2)
 	Effects.stack(foe, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:revenant", 1, Effects.DECAY_NONE)
 	Effects.grant(foe, Effects.primed_foe(2, "foe:caster"))
 	Effects.stack(foe, Effects.foe_barrier(), Effects.SKIRMISH, "foe:caster", 1, Effects.DECAY_TURN_ALL)
@@ -1537,7 +1537,7 @@ func test_a_foes_four_buffs_wear_their_own_chips() -> void:
 		by[str(r[0])] = r
 	for g in ["primed", "barrier", "ward", "regenerating"]:
 		assert_true(by.has(g), "a %s chip" % g)
-	assert_true(by.has("burn") and by.has("star"), "beside the Burning and the Undying, each its own")
+	assert_true(by.has("ablate") and by.has("star"), "beside the Ablating and the Undying, each its own")
 	# The readout names each chip with its count, never what it does (Ryan, 2 November: "unit popups
 	# don't need the chips descriptions spelled out now that we can tap keywords").
 	if by.has("primed"):
@@ -1583,9 +1583,9 @@ func test_a_foe_whose_machine_falls_first_draws_its_arrow_dashed_to_the_machine_
 	s.free()
 
 
-## A foe's ticks preview on its gauge (Ryan, 26 October: Burning and the other ticks are static
+## A foe's ticks preview on its gauge (Ryan, 26 October: Ablating and the other ticks are static
 ## numbers, "so a hypothetical death at the start of the enemy's turn could be previewed"): the HP
-## its Burning will take at its action is the gauge's pending loss, the whole bar when it kills it
+## its Ablating will take at its action is the gauge's pending loss, the whole bar when it kills it
 ## before it acts, which the machines' forecast already reads.
 func test_a_foes_gauge_previews_what_its_ticks_will_take() -> void:
 	var db := ContentDB.load_default()
@@ -1599,12 +1599,12 @@ func test_a_foes_gauge_previews_what_its_ticks_will_take() -> void:
 	var s := SkirmishScreen.new()
 	s.setup(sk)
 	assert_eq(int(s._foe_view_for(a).bars[0][3]), 10, "nothing ticking: no change pending")
-	var per := Effects.status_value("burning", "tick_hp")
-	Effects.stack(a, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 2)
-	Effects.stack(b, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 4)
+	var per := Effects.status_value("ablating", "tick_hp")
+	Effects.stack(a, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 2)
+	Effects.stack(b, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 4)
 	s._refresh()
-	assert_eq(int(s._foe_view_for(a).bars[0][3]), 10 - 2 * per, "its Burning's tick pending on its gauge")
-	assert_eq(int(s._foe_view_for(b).bars[0][3]), 0, "Burning that fells it at its action: the whole bar")
+	assert_eq(int(s._foe_view_for(a).bars[0][3]), 10 - 2 * per, "its Ablating's tick pending on its gauge")
+	assert_eq(int(s._foe_view_for(b).bars[0][3]), 0, "Ablating that fells it at its action: the whole bar")
 	assert_eq(sk.hp_after_ticks(b), 0, "the same number the forecast reads")
 	sk.end_round()
 	assert_false(b.alive(), "and it burnt to death at its action")
@@ -1614,13 +1614,13 @@ func test_a_foes_gauge_previews_what_its_ticks_will_take() -> void:
 
 ## A foe the round will kill wears the machines' destroyed chip and keeps its intent (Ryan, 26
 ## October: "Intent of a foe thats dying should absolutely NOT lose its intent ... It should get a
-## destroyed chip same as the player"); a Burn hit enough to kill it shows the fall at once, and a
+## destroyed chip same as the player"); an Ablate hit enough to kill it shows the fall at once, and a
 ## foe a Cure will heal shows the heal coming on its gauge.
 func test_a_foe_the_round_kills_wears_the_destroyed_chip_and_keeps_its_intent() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
 	var m := db.make_mech("badger")
-	m.die = Die.single(Face.attack(1, Face.Reach.DIRECT, [Face.Keyword.BURN]))
+	m.die = Die.single(Face.attack(1, Face.Reach.DIRECT, [Face.Keyword.ABLATE]))
 	sk.add_mech(m)
 	var cleric := Foe.make("revenant", 500, 20)
 	var cure := {"id": "cure", "name": "Cure", "kind": "defend", "effect": "regrow_ally", "value": 3, "weight": 1, "text": ""}
@@ -1634,13 +1634,13 @@ func test_a_foe_the_round_kills_wears_the_destroyed_chip_and_keeps_its_intent() 
 	var skulls := func(v: UnitView) -> int:
 		return v.statuses.filter(func(st) -> bool: return str(st[0]) == "skull").size()
 	assert_eq(skulls.call(s._foe_view_for(a)), 0, "standing through the round: no skull")
-	Effects.stack(a, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 5)
+	Effects.stack(a, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 5)
 	s._refresh()
 	var v := s._foe_view_for(a)
-	assert_eq(skulls.call(v), 1, "its Burning kills it at its action: the destroyed chip")
+	assert_eq(skulls.call(v), 1, "its Ablating kills it at its action: the destroyed chip")
 	assert_eq(v.intent_kind, "attack", "its intent kept")
 	assert_eq(int(v.bars[0][3]), 0, "and the whole bar pulsing")
-	Effects.remove(a, "burning")
+	Effects.remove(a, "ablating")
 	a.hp = 1
 	cleric.action = cure
 	s._refresh()
@@ -2024,8 +2024,8 @@ func test_a_mined_foe_wears_its_mine_chip_with_the_damage_and_the_riders_in_its_
 	var s := _screen()
 	var ms: Skirmish.MechState = s.sk.mechs[0]
 	ms.unit.grant_passive({"id": "bay", "name": "Bay", "description": "", "effects": [{"trigger": "static", "effect": "mine_on_spend", "value": 2}]})
-	ms.die.faces[ms.face_index] = Face.attack(1, Face.Reach.INDIRECT, [Face.Keyword.BURN])
-	ms.die.faces[ms.face_index].burn = 2
+	ms.die.faces[ms.face_index] = Face.attack(1, Face.Reach.INDIRECT, [Face.Keyword.ABLATE])
+	ms.die.faces[ms.face_index].ablate = 2
 	s._drag_from = 0
 	s._refresh()
 	for rank in range(2):
@@ -2047,7 +2047,7 @@ func test_a_mined_foe_wears_its_mine_chip_with_the_damage_and_the_riders_in_its_
 	for row in s._foe_rows(foe):
 		if str(row[0]) == "mine":
 			said = str(row[2])
-	assert_true(said.contains("Debuff, Mine 2: Burn 2"), "its readout names the riders: %s" % said)
+	assert_true(said.contains("Debuff, Mine 2: Ablate 2"), "its readout names the riders: %s" % said)
 	s.free()
 
 
@@ -2195,7 +2195,7 @@ func test_a_foe_getting_back_up_in_the_enemy_turn_is_shown() -> void:
 	var s := _screen(5)
 	var foe: Foe = s.sk.front[0]
 	Effects.stack(foe, Effects.STATUS["risen"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
-	Effects.stack(foe, Effects.STATUS["burning"], Effects.SKIRMISH, "test", 5, Effects.DECAY_TICK)
+	Effects.stack(foe, Effects.STATUS["ablating"], Effects.SKIRMISH, "test", 5, Effects.DECAY_TICK)
 	foe.hp = 1
 	s._end_turn_now()
 	assert_true(s.sk.field_foes().has(foe), "it stood again")
@@ -2370,14 +2370,14 @@ func test_a_units_readout_names_its_chips_without_their_descriptions() -> void:
 	sk.add_foes([foe])
 	var s := SkirmishScreen.new()
 	s.setup(sk)
-	Effects.stack(foe, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 3)
+	Effects.stack(foe, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 3)
 	Effects.grant_buff(m, "overcharged", 2, "buff", sk.round)
 	s._refresh()
 	var chips: Array[String] = []
 	for l in s._foe_hold_lines(foe):
 		if str(l["style"]) == "chip":
 			chips.append(str(l["text"]))
-	assert_true(chips.has("Debuff, Burning ×3"), "a foe's Burning by its name and stacks, labelled a debuff (Ryan, 9 November): %s" % str(chips))
+	assert_true(chips.has("Debuff, Ablating ×3"), "a foe's Ablating by its name and stacks, labelled a debuff (Ryan, 9 November): %s" % str(chips))
 	var mine: Array[String] = []
 	for l in s._mech_hold_lines(0):
 		if str(l["style"]) == "chip":
@@ -2388,7 +2388,7 @@ func test_a_units_readout_names_its_chips_without_their_descriptions() -> void:
 	var terms: Array = []
 	for h in readout._hits:
 		terms.append_array(h["terms"])
-	assert_true(terms.has("burning"), "the name a term, its meaning a tap away")
+	assert_true(terms.has("ablating"), "the name a term, its meaning a tap away")
 	readout.free()
 	s.free()
 
@@ -2705,8 +2705,8 @@ func test_a_status_row_says_buff_or_debuff_and_its_chip_carries_it() -> void:
 	var buff := SkirmishScreen.status_row("overcharged", "overcharge", "×2", "Empowered ×2", Palette.HEAT)
 	assert_eq(str(buff[2]), "Buff, Empowered ×2", "a buff's line")
 	assert_eq(str(buff[5]), "buff", "and its chip's mark")
-	var debuff := SkirmishScreen.status_row("burning", "burn", "2", "Burning ×2", Palette.HEAT)
-	assert_eq(str(debuff[2]), "Debuff, Burning ×2", "a debuff's line")
+	var debuff := SkirmishScreen.status_row("ablating", "ablate", "2", "Ablating ×2", Palette.HEAT)
+	assert_eq(str(debuff[2]), "Debuff, Ablating ×2", "a debuff's line")
 	assert_eq(str(debuff[5]), "debuff", "and its chip's mark")
 	var plain := SkirmishScreen.status_row("quick_turned", "rapid", "", "Quick turn spent", Palette.INK)
 	assert_eq([str(plain[2]), str(plain[5])], ["Quick turn spent", ""], "one that is neither keeps its words and wears no mark")

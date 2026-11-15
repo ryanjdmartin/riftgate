@@ -328,7 +328,7 @@ func test_damage_and_statuses_survive_the_trip() -> void:
 	m.damaged_faces[1] = m.die.faces[1].duplicate_face()
 	m.die.faces[1] = gone
 	Effects.grant(m, Effects.make({"id": "reward", "name": "Reward", "description": "", "effects": [{"trigger": "static", "effect": "add_stat", "stat": "hull", "value": 20}]}, Effects.BATTLE, "reward"))
-	Effects.stack(m, Effects.STATUS["burning_mech"], Effects.SKIRMISH, "foe:x", 2, Effects.DECAY_TURN)
+	Effects.stack(m, Effects.STATUS["ablating_mech"], Effects.SKIRMISH, "foe:x", 2, Effects.DECAY_TURN)
 	Effects.stack(m, Effects.STATUS["scorched"], Effects.SKIRMISH, "foe:x", 2, Effects.DECAY_TURN_ALL)
 	m.hull = 33
 	m.shield = 7
@@ -343,9 +343,9 @@ func test_damage_and_statuses_survive_the_trip() -> void:
 	assert_eq(bm.hull, 33, "hull as it was")
 	assert_eq(bm.shield, 7, "shield as it was")
 	assert_eq(bm.hull_max, m.hull_max, "the reward still counts")
-	assert_eq(Effects.stacks_of(bm, "burning_mech"), 2, "the status and its stacks")
+	assert_eq(Effects.stacks_of(bm, "ablating_mech"), 2, "the status and its stacks")
 	Effects.turn_tick(bm)
-	assert_eq(Effects.stacks_of(bm, "burning_mech"), 1, "Burning still loses a stack at the turn's end")
+	assert_eq(Effects.stacks_of(bm, "ablating_mech"), 1, "Ablating still loses a stack at the turn's end")
 	assert_eq(Effects.stacks_of(bm, "scorched"), 0, "and Scorched every stack: each keeps its decay")
 	bm.repair_faces()
 	assert_eq(bm.die.faces[0].to_dict(), original.to_dict(), "and the hangar can repair it")
@@ -383,13 +383,13 @@ func test_the_mines_survive_the_trip() -> void:
 	sk.start_round()
 	m.grant_passive({"id": "bay", "name": "Bay", "description": "", "effects": [{"trigger": "static", "effect": "mine_on_spend", "value": 2}]})
 	var foe: Foe = sk.field_foes()[0]
-	sk._add_mine(foe, 5, {"stacks": {"burning": 2, "vitriol": 1}, "keywords": ["shock", "breach"]})
+	sk._add_mine(foe, 5, {"stacks": {"ablating": 2, "vitriol": 1}, "keywords": ["shock", "breach"]})
 	var back := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
 	var sk2: Skirmish = back.current
 	var foe2: Foe = sk2.field_foes()[0]
 	var mine := Skirmish.mine_of(foe2)
 	assert_eq(int(mine.get("damage", 0)), 5, "its damage")
-	assert_eq([int(mine["riders"]["stacks"]["burning"]), int(mine["riders"]["stacks"]["vitriol"])], [2, 1], "its stacks by status")
+	assert_eq([int(mine["riders"]["stacks"]["ablating"]), int(mine["riders"]["stacks"]["vitriol"])], [2, 1], "its stacks by status")
 	assert_eq(mine["riders"]["keywords"], ["shock", "breach"], "its flags, as a list")
 	assert_eq(JSON.stringify(mine), JSON.stringify(Skirmish.mine_of(foe)), "the Mine as it was")
 

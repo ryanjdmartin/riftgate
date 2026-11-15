@@ -252,9 +252,9 @@
     "reach": "indirect",
     "power": 2,
     "keywords": [
-     "burn"
+     "ablate"
     ],
-    "burn": 2,
+    "ablate": 2,
     "heat": 4
    },
    "passive": null,
@@ -528,9 +528,9 @@
     "reach": "indirect",
     "power": 3,
     "keywords": [
-     "burn"
+     "ablate"
     ],
-    "burn": 2,
+    "ablate": 2,
     "heat": 6
    },
    "passive": null,
@@ -849,9 +849,9 @@
     "reach": "direct",
     "power": 5,
     "keywords": [
-     "burn"
+     "ablate"
     ],
-    "burn": 3,
+    "ablate": 3,
     "heat": 7
    },
    "passive": null,
@@ -1097,9 +1097,9 @@
     "reach": "direct",
     "power": 3,
     "keywords": [
-     "burn"
+     "ablate"
     ],
-    "burn": 2,
+    "ablate": 2,
     "heat": 6
    },
    "passive": null,
@@ -1126,9 +1126,9 @@
     "reach": "indirect",
     "power": 5,
     "keywords": [
-     "burn"
+     "ablate"
     ],
-    "burn": 3,
+    "ablate": 3,
     "heat": 9
    },
    "passive": null,
@@ -1813,7 +1813,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A crash reload: the forge run hot to cast a few shells at once, the heat dumped into the hull. Ryan, 21 October: \"something that reloads but actually gives the machine a good chunk of heat\".",
-    "niche": "The Musk Ox's tempo piece, in for testing: Rapid, 2 ammo, and heat its low maximum feels, so with the foes' Burning and Scorched it threatens an overheat."
+    "niche": "The Musk Ox's tempo piece, in for testing: Rapid, 2 ammo, and heat its low maximum feels, so with the foes' Scorched it threatens an overheat."
    },
    "face": {
     "kind": "vent",
@@ -2177,18 +2177,18 @@
    "design": {
     "stage": "draft",
     "fantasy": "A firebox gun that throws its own coals: the target catches, and so does the machine that fed it.",
-    "niche": "Slow fuel by decision: Burn on the foe and Burning on its own firer, a price on most machines and fuel for the Whip Scorpion's vents."
+    "niche": "Ablate on the foe and Ablating on its own firer. It was slow fuel by decision while a machine's Burning was heat (22 October); since Ablate (15 November) the price is a point of its own shield a stack and it fuels nothing, the component pass's to read again."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
     "power": 3,
     "keywords": [
-     "burn"
+     "ablate"
     ],
-    "burn": 2,
+    "ablate": 2,
     "heat": 4,
-    "self_burn": 1
+    "self_ablate": 1
    },
    "passive": null,
    "tags": [
@@ -2207,7 +2207,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A charge that pulls the fire out of whatever it strikes and turns it inward: the flames go out, and the foe goes down with them.",
-    "niche": "The fire-synergy stun: it consumes every stack of Burning on its target for a point a stack, and Suppresses it if it consumed two or more, so one Burn 2 piece opens it and no all-in burn team is needed."
+    "niche": "The fire-synergy stun: it consumes every stack of Ablating on its target for a point a stack, and Suppresses it if it consumed two or more, so one Ablate 2 piece opens it and no all-in ablate team is needed."
    },
    "face": {
     "kind": "attack",
@@ -2220,11 +2220,11 @@
     "gates": {
      "suppress": {
       "when": "target_status",
-      "status": "burning",
+      "status": "ablating",
       "stacks": 2
      }
     },
-    "consumes": "burning",
+    "consumes": "ablating",
     "per_consumed": 1
    },
    "passive": null,

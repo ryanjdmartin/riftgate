@@ -1149,7 +1149,7 @@ func test_a_stagger_numbs_nothing_and_a_tick_broken_rage_costs_the_next_action()
 	sk2.end_round()
 	sk2.start_round()
 	assert_true(Effects.has(ape2, "golden"), "gold at 24, a quarter breaks it at 18")
-	Effects.stack(ape2, Effects.STATUS["burning"], Effects.SKIRMISH, "test", 6)
+	Effects.stack(ape2, Effects.STATUS["ablating"], Effects.SKIRMISH, "test", 6)
 	ape2.action = ape2.actions[0]
 	sk2.end_round()
 	assert_eq(ape2.hp, 18, "its burn took it to the break")

@@ -8,7 +8,7 @@ extends SceneTree
 ## machine at a heat, a machine showing a weapon and a reroll left, which went after it). Per
 ## special it tallies the rounds its foe drew a move, the draws its condition held, and the
 ## draws that picked it, and each fight's overheats and the hull they cost. --heat N scales every
-## foe's heat stacks (its Scorch and Burn riders, its burn and scorch_all moves) by N before the
+## foe's heat stacks (its Scorch riders and its scorch_all moves) by N before the
 ## fights, to size a buff; --only a,b keeps the cells whose names hold one of the words.
 ##   perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/special_probe.gd -- --out build/special_0.json --part 0/4 --seeds 10 --step 3
 
@@ -189,13 +189,12 @@ func _tally(sk: ProbeSkirmish, agg: Dictionary, carried: Dictionary) -> void:
 			agg["specials"][key] = row
 
 
-## Every foe's heat stacks scaled by `k` (rounded, one at least): its Scorch and Burn riders and
-## the stacks its burn and scorch_all moves lay.
+## Every foe's heat stacks scaled by `k` (rounded, one at least): its Scorch riders and the
+## stacks its scorch_all moves lay. Ablate is damage since 15 November, and no heat of a foe's.
 func _scale_heat(k: float) -> void:
 	for id in db.foes.keys():
 		for a in db.foes[id].get("actions", []):
-			for r in ["scorch", "burn"]:
-				if a.has(r):
-					a[r] = maxi(1, roundi(float(a[r]) * k))
-			if ["burn", "scorch_all"].has(str(a.get("effect", ""))):
+			if a.has("scorch"):
+				a["scorch"] = maxi(1, roundi(float(a["scorch"]) * k))
+			if str(a.get("effect", "")) == "scorch_all":
 				a["value"] = maxi(1, roundi(float(a.get("value", 0)) * k))

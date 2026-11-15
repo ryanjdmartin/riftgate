@@ -17,7 +17,7 @@ enum Reach { NONE, DIRECT, INDIRECT, EVERY_FOE }   # Every Foe (4 November), bel
 ## Web (18 October, the funnel-web's Web Bomb): the foe hit is Webbed, and after its action the
 ## web bursts into a Suppress on it and the next foe to act beside it (Skirmish._web_burst).
 ## Flak (Ryan's go, 19 October; built 21 October): Wainwright & Sutler's on-hit, a numbered
-## keyword like Burn and Cryo; each foe hit gains that many stacks of Flak.
+## keyword like Ablate and Cryo; each foe hit gains that many stacks of Flak.
 ## Swap (the Dingo's Combat Translocator, Ryan's go of 19 October; built 21 October): the spend
 ## takes a second target, another foe or an empty slot, and the two trade places.
 ## Area by shape, numbered (Ryan, 28 October; the half retired): Spread N (id `cleave`) the
@@ -35,7 +35,7 @@ enum Reach { NONE, DIRECT, INDIRECT, EVERY_FOE }   # Every Foe (4 November), bel
 ## team, its own machine among them, or every machine but its own, the Mooring Screens'; Ryan:
 ## "the difference is whether the center one is lit or not, its two modes"). `reaches_all` reads
 ## any of them.
-enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB, CRYO, FLAK, SWAP, EXPOSE, BREACH, SPLASH, DISPEL, INSTANT, SAP }
+enum Keyword { NONE, CLEAVE, PENETRATE, ABLATE, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB, CRYO, FLAK, SWAP, EXPOSE, BREACH, SPLASH, DISPEL, INSTANT, SAP }
 ## Whom a component may be spent on (Ryan, 26 September): an attack (a weapon or a debuff)
 ## targets foes; a shield, a vent or a buff targets self and allies by default, and content may
 ## narrow one to self only or allies only, so the design space stays open; Every Ally and Every
@@ -49,7 +49,7 @@ const REACH_NAMES := {
 	Reach.NONE: "none", Reach.DIRECT: "direct", Reach.INDIRECT: "indirect", Reach.EVERY_FOE: "every_foe",
 }
 const KEYWORD_NAMES := {
-	Keyword.NONE: "", Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate", Keyword.BURN: "burn",
+	Keyword.NONE: "", Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate", Keyword.ABLATE: "ablate",
 	Keyword.SUPPRESS: "suppress",
 	Keyword.CHAIN: "chain", Keyword.RAPID: "rapid", Keyword.CLEANSE: "cleanse",
 	Keyword.LURE: "lure", Keyword.DISRUPT: "disrupt",
@@ -64,15 +64,15 @@ const KEYWORD_LABELS := { Keyword.CLEAVE: "spread", Keyword.DISPEL: "purge" }
 ## The status each foe hit gains from a keyword that lays one: the die's hold lists such a
 ## keyword as what the spend applies on hit, after its heat (Ryan, 25 October).
 const KEYWORD_STATUS := {
-	Keyword.BURN: "burning", Keyword.CRYO: "cryoed", Keyword.FLAK: "flakked", Keyword.SHOCK: "shocked",
+	Keyword.ABLATE: "ablating", Keyword.CRYO: "cryoed", Keyword.FLAK: "flakked", Keyword.SHOCK: "shocked",
 	Keyword.SUPPRESS: "suppressed", Keyword.WEB: "webbed", Keyword.EXPOSE: "exposure", Keyword.SAP: "sapped",
 }
 ## The keywords that carry a number, each in the field of its name on the entry: the stacks a
-## rider lays (Burn, Cryo, Flak), the blow an area keyword deals each foe past the target
+## rider lays (Ablate, Cryo, Flak), the blow an area keyword deals each foe past the target
 ## (Spread, Penetrate, Splash; Ryan, 28 October) or the blow Chain deals each conductor (Chain,
 ## 28 October).
 const NUMBER_FIELDS := {
-	Keyword.BURN: "burn", Keyword.CRYO: "cryo", Keyword.FLAK: "flak",
+	Keyword.ABLATE: "ablate", Keyword.CRYO: "cryo", Keyword.FLAK: "flak",
 	Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate", Keyword.SPLASH: "splash",
 	Keyword.CHAIN: "chain", Keyword.DISPEL: "dispel", Keyword.SAP: "sap",
 }
@@ -119,11 +119,11 @@ var keywords: Array[int] = []
 var printed: Array[int] = []  # of those, the ones a passive grants written out (the Overrun Gearing's spill): drawn as the star, never a keyword chip (the stock pass, 22 October)
 var heat: int = 0
 var strikes: int = 1          # blows per use: a rapid-fire weapon lands many small hits (each rolls and procs on its own)
-var burn: int = 0             # an attack with Burn: the stacks of Burning each blow leaves (Ryan, 18 October: a numbered keyword, never read off the damage)
-var cryo: int = 0             # an attack with Cryo: the stacks of Cryo each foe it reaches gains (the Cryo Flinger, 20 October; a numbered keyword like Burn)
+var ablate: int = 0             # an attack with Ablate: the stacks of Ablating each blow leaves (Ryan, 18 October: a numbered keyword, never read off the damage)
+var cryo: int = 0             # an attack with Cryo: the stacks of Cryo each foe it reaches gains (the Cryo Flinger, 20 October; a numbered keyword like Ablate)
 var sap: int = 0              # an attack with Sap: the stacks of Sapped each foe hit gains (the Baboon's Redshift Emitter, 11 November; numbered like Flak)
 var disrupts_attackers: bool = false   # a buff: every foe aiming at the machine it lands on is Disrupted (the Baboon's Retrocausal Shroud, 11 November)
-var flak: int = 0             # an attack with Flak: the stacks of Flak each foe hit gains (the Flakshot Repeater, 21 October; numbered like Burn)
+var flak: int = 0             # an attack with Flak: the stacks of Flak each foe hit gains (the Flakshot Repeater, 21 October; numbered like Ablate)
 var cleave: int = 0           # an attack with Spread: the number each foe beside its target in its rank takes as its blow's (Ryan, 28 October: Spread N, the half retired)
 var penetrate: int = 0        # an attack with Penetrate: the number the other rank of its target's column takes (Penetrate N)
 var splash: int = 0           # an attack with Splash: the number each foe of the plus round its target takes, the row's and the column's (Splash N)
@@ -134,9 +134,9 @@ var short: bool = false       # shown only: its machine cannot pay the entry's p
 var volatile: int = 0         # a cost (Ryan, 26 October, a keyword with a chip until then): the hull a spend bites its owner, past shield and armour, before the component acts; it may wreck it (a numbered keyword since the stock pass's engine, 22 October; a constant of 10 before)
 var gates: Dictionary = {}    # an attack: keyword name -> the condition it lands under, read against each foe at the spend before its own riders (the Suppression Battery's Suppress on a foe carrying Flak; the stock pass's engine, 22 October)
 var holds: String = ""        # an attack: the status its target keeps through this round's end, its halving skipped (the Hollow-point Harpoon's pin on Flak)
-var consumes: String = ""     # an attack: the status it consumes on its target, every stack, a point more a stack before the multiplies (the Backdraft Charge's Burning, 22 October)...
+var consumes: String = ""     # an attack: the status it consumes on its target, every stack, a point more a stack before the multiplies (the Backdraft Charge's Ablating, 22 October)...
 var per_consumed: int = 1     # ...the damage a stack consumed adds
-var self_burn: int = 0        # an attack: spending it sets its own machine Burning, this many stacks (the Stoker's slow fuel by decision, the stock pass's landing, 22 October)
+var self_ablate: int = 0        # an attack: spending it sets its own machine Ablating, this many stacks (the Stoker's, the stock pass's landing, 22 October; a price in its own shield since Ablate, 15 November)
 var component: String = ""    # the component this entry is (content id); "" for an empty hardpoint
 var empty: bool = false       # an empty hardpoint: blank, and nothing was ever there to break
 var fixed: bool = false       # built into the chassis (no hardpoint); false means this entry is a hardpoint
@@ -357,7 +357,7 @@ static func from_dict(d: Dictionary) -> Face:
 		f.per_missing = maxi(1, int(d.get("per_missing", 20)))
 		f.finisher = maxi(0, int(d.get("finisher", 0)))
 		f.fills_hopper = maxi(0, int(d.get("fills_hopper", 0)))
-		f.burn = maxi(0, int(d.get("burn", 0)))   # add_keyword gives a Burn entry one stack when it says none
+		f.ablate = maxi(0, int(d.get("ablate", 0)))   # add_keyword gives an Ablate entry one stack when it says none
 		f.cryo = maxi(0, int(d.get("cryo", 0)))
 		f.flak = maxi(0, int(d.get("flak", 0)))
 		f.sap = maxi(0, int(d.get("sap", 0)))
@@ -371,7 +371,7 @@ static func from_dict(d: Dictionary) -> Face:
 		f.consumes = str(d.get("consumes", ""))
 		f.holds = str(d.get("holds", ""))
 		f.per_consumed = maxi(1, int(d.get("per_consumed", 1)))
-		f.self_burn = maxi(0, int(d.get("self_burn", 0)))
+		f.self_ablate = maxi(0, int(d.get("self_ablate", 0)))
 		f.fires_hopper = maxi(0, int(d.get("fires_hopper", 0)))
 		f.power_per_load = maxi(0, int(d.get("power_per_load", 0))) if f.fires_hopper > 0 else 0
 	f.braces = maxi(0, int(d.get("braces", 0)))
@@ -441,8 +441,8 @@ func to_dict() -> Dictionary:
 		d["per_missing"] = per_missing
 	if finisher > 1:
 		d["finisher"] = finisher
-	if burn > 0 and has(Keyword.BURN):
-		d["burn"] = burn
+	if ablate > 0 and has(Keyword.ABLATE):
+		d["ablate"] = ablate
 	if cryo > 0 and has(Keyword.CRYO):
 		d["cryo"] = cryo
 	if flak > 0 and has(Keyword.FLAK):
@@ -470,8 +470,8 @@ func to_dict() -> Dictionary:
 	if not consumes.is_empty():
 		d["consumes"] = consumes
 		d["per_consumed"] = per_consumed
-	if self_burn > 0:
-		d["self_burn"] = self_burn
+	if self_ablate > 0:
+		d["self_ablate"] = self_ablate
 	if fills_hopper > 0:
 		d["fills_hopper"] = fills_hopper
 	if fires_hopper > 0:
@@ -523,8 +523,8 @@ func to_dict() -> Dictionary:
 func add_keyword(kw: int) -> void:
 	if kw > Keyword.NONE and not keywords.has(kw):
 		keywords.append(kw)
-	if kw == Keyword.BURN and burn <= 0:
-		burn = 1   # a Burn entry says its stacks; one when nothing says (a synthetic entry, an old save)
+	if kw == Keyword.ABLATE and ablate <= 0:
+		ablate = 1   # an Ablate entry says its stacks; one when nothing says (a synthetic entry, an old save)
 	if kw == Keyword.CRYO and cryo <= 0:
 		cryo = 1
 	if kw == Keyword.FLAK and flak <= 0:
@@ -541,7 +541,7 @@ func has(kw: int) -> bool:
 	return keywords.has(kw)
 
 
-## The number a numbered keyword carries here (Burn's stacks, Spread's blow), 0 for a keyword
+## The number a numbered keyword carries here (Ablate's stacks, Spread's blow), 0 for a keyword
 ## it does not carry or one with no number.
 func number_of(kw: int) -> int:
 	var field: String = NUMBER_FIELDS.get(kw, "")
@@ -602,7 +602,7 @@ func acts_again() -> bool:
 ## prints with its shells (Ryan, 2 November), and a shield's cooling the number under its steam
 ## (3 November), so none of them is.
 func has_unique_rule() -> bool:
-	return vents_all or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_burn > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not printed.is_empty() \
+	return vents_all or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_ablate > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not printed.is_empty() \
 		or turns_die or gathers_mines or detonates \
 		or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine \
@@ -685,7 +685,7 @@ func finishes(target, hp: int = -1) -> bool:
 
 
 ## What this blow adds against `target` for the stacks it consumes (the Backdraft Charge's
-## Burning, 22 October): a point a stack, per_consumed each, read as the die is spent and
+## Ablating, 22 October): a point a stack, per_consumed each, read as the die is spent and
 ## added before the multiplies; nothing without a target or a status to eat.
 func consume_bonus(target) -> int:
 	if consumes.is_empty() or target == null:
@@ -720,7 +720,7 @@ func duplicate_face() -> Face:
 	f.spends = spends
 	f.spends_up_to = spends_up_to
 	f.holds_all = holds_all
-	f.burn = burn
+	f.ablate = ablate
 	f.cryo = cryo
 	f.flak = flak
 	f.sap = sap
@@ -737,7 +737,7 @@ func duplicate_face() -> Face:
 	f.consumes = consumes
 	f.holds = holds
 	f.per_consumed = per_consumed
-	f.self_burn = self_burn
+	f.self_ablate = self_ablate
 	f.fills_hopper = fills_hopper
 	f.fires_hopper = fires_hopper
 	f.power_per_load = power_per_load
@@ -856,8 +856,8 @@ func rule_phrases() -> Array[String]:
 			out.append("consumes %s, +%d a stack" % [str(Effects.STATUS.get(consumes, {}).get("name", consumes)), per_consumed])
 		if not holds.is_empty():
 			out.append("its target's %s does not decay this round" % str(Effects.STATUS.get(holds, {}).get("name", holds)))
-		if self_burn > 0:
-			out.append("Burning %d on itself" % self_burn)
+		if self_ablate > 0:
+			out.append("Ablating %d on itself" % self_ablate)
 		if fills_hopper > 0:
 			out.append("fills the hopper" + ("" if fills_hopper == 1 else " ×%d" % fills_hopper))
 		if fires_hopper > 0:
@@ -1016,8 +1016,8 @@ func describe() -> String:
 				if printed.has(k):
 					continue   # a grant written out says itself in its passive's line (the star), never as a keyword
 				s += " " + keyword_label(k)
-				if k == Keyword.BURN:
-					s += " %d" % burn   # a numbered keyword: the stacks each blow leaves
+				if k == Keyword.ABLATE:
+					s += " %d" % ablate   # a numbered keyword: the stacks each blow leaves
 				if k == Keyword.CRYO:
 					s += " %d" % cryo
 				if k == Keyword.FLAK:
@@ -1040,8 +1040,8 @@ func describe() -> String:
 				s += " consumes %s, +%d a stack" % [str(Effects.STATUS.get(consumes, {}).get("name", consumes)), per_consumed]
 			if not holds.is_empty():
 				s += " its target's %s does not decay this round" % str(Effects.STATUS.get(holds, {}).get("name", holds))
-			if self_burn > 0:
-				s += " Burning %d on itself" % self_burn   # the Stoker's: its own machine set burning as it fires
+			if self_ablate > 0:
+				s += " Ablating %d on itself" % self_ablate   # the Stoker's: its own machine set ablating as it fires
 			if fills_hopper > 0:
 				s += " fills the hopper" + ("" if fills_hopper == 1 else " ×%d" % fills_hopper)
 			if fires_hopper > 0:

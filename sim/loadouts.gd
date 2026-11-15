@@ -36,7 +36,7 @@ static func mortar_die() -> Die:
 	return Die.of([
 		Face.attack(35, I),
 		Face.attack(35, I),
-		Face.attack(20, I, K.BURN),
+		Face.attack(20, I, K.ABLATE),
 		Face.attack(40, I, K.SUPPRESS, 20),
 		Face.vent(30),
 		Face.shield(10),

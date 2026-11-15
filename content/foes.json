@@ -437,7 +437,7 @@
     {
       "id": "spectre", "name": "Spectre", "faction": "marsh", "tier": 2,
       "design": { "fantasy": "The spectre, the Marsh's cleanser: the domain's lever (Ryan, 28 October, 'debuffs are hard here'). Tier two of the ghost line." },
-      "codex": "A ghost that keeps its dead clean. Its hallow strips the burns, flak and shocks the team has laid on one of its own: kill it first, or cash the marks before it acts.",
+      "codex": "A ghost that keeps its dead clean. Its hallow strips what the team has laid on one of its own, Ablating, Flak and Shock alike: kill it first, or cash the marks before it acts.",
       "hp": 6, "attack": 4, "rank": "back", "movespeed": 2, "winged": true,
       "actions": [
         { "id": "hex_bolt", "name": "Hex Bolt", "kind": "attack", "weight": 2, "text": "A bolt of grave-light for {damage}.", "status": "implemented" },
@@ -631,11 +631,11 @@
     {
       "id": "magma_lizard", "name": "Magma Lizard", "faction": "peak", "tier": 3,
       "design": { "fantasy": "The magma lizard, the Peak's primer: Primed as a foe's buff. Tier three of the salamander line." },
-      "codex": "A salamander that lights the rest: its stoke primes every other foe, so their next blows leave the machine Burning. Kill it first, or Ward what they are aimed at.",
+      "codex": "A salamander that lights the rest: its stoke primes every other foe, so their next blows leave the machine Ablating. Kill it first, or Ward what they are aimed at.",
       "hp": 9, "attack": 7, "rank": "front", "movespeed": 2,
       "actions": [
         { "id": "bite", "name": "Bite", "kind": "attack", "weight": 2, "keywords": ["scorch"], "scorch": 2, "text": "A burning bite for {damage}. It scorches.", "status": "implemented" },
-        { "id": "stoke_the_pack", "name": "Stoke the Pack", "kind": "buff", "effect": "prime", "value": 1, "weight": 1, "when": "others_on_field", "text": "Lights the others: every other foe's next blow leaves {value} Burning.", "status": "implemented" }
+        { "id": "stoke_the_pack", "name": "Stoke the Pack", "kind": "buff", "effect": "prime", "value": 1, "weight": 1, "when": "others_on_field", "text": "Lights the others: every other foe's next blow leaves {value} Ablating.", "status": "implemented" }
       ],
       "flavour": "One of them is the match. Find the match."
     },
@@ -646,7 +646,7 @@
       "hp": 4, "attack": 4, "rank": "back", "movespeed": 2, "winged": true,
       "actions": [
         { "id": "breath", "name": "Breath", "kind": "attack", "weight": 2, "keywords": ["scorch"], "scorch": 1, "text": "A gout of fire for {damage}, over the front rank. It scorches.", "status": "implemented" },
-        { "id": "stoke", "name": "Stoke", "kind": "debuff", "effect": "burn", "value": 2, "weight": 1, "text": "Sets a machine burning, ×{value}.", "status": "implemented" }
+        { "id": "stoke", "name": "Stoke", "kind": "debuff", "effect": "ablate", "value": 2, "weight": 1, "text": "Sets a machine Ablating, ×{value}.", "status": "implemented" }
       ],
       "flavour": "If the sky turns orange, that's not the sunset."
     },
@@ -658,7 +658,7 @@
       "actions": [
         { "id": "breath", "name": "Breath", "kind": "attack", "weight": 2, "keywords": ["scorch"], "scorch": 2, "text": "A gout of fire for {damage}, over the front rank. It scorches.", "status": "implemented" },
         { "id": "dive", "name": "Dive", "kind": "attack", "factor": 1.5, "weight": 1, "keywords": ["breach"], "text": "Drops on a machine for {damage}, through the shield.", "status": "implemented" },
-        { "id": "stoke", "name": "Stoke", "kind": "debuff", "effect": "burn", "value": 4, "weight": 1, "text": "Sets a machine burning, ×{value}.", "status": "implemented" }
+        { "id": "stoke", "name": "Stoke", "kind": "debuff", "effect": "ablate", "value": 4, "weight": 1, "text": "Sets a machine Ablating, ×{value}.", "status": "implemented" }
       ],
       "flavour": "When it climbs, it is not leaving."
     },
@@ -817,10 +817,10 @@
     {
       "id": "bane", "name": "The Bane", "faction": "peak", "elite": true,
       "design": {"fantasy": "Tolkien's Balrog by archetype, the shadow and flame on the mountain's bridge (Balrog is his coinage, so a name of ours: the Bane, for Durin's; Ryan, 3 November: \"Balrog yes\"). The Peak's hunter: it goes for the strongest, as it went for the wizard.", "niche": "Hunts the strongest machine, the fattest hull. Flame Whip burns, Shadow Blade comes through the shield, and below half Shadow and Flame scorches every machine. The tank is its prey, so the tank's heat is the question.", "notes": "Landed 3 November as a placeholder kit on Ryan's marks; every number a placeholder. Its art a rough placeholder (tools/placeholder_art.py) until a render is picked. Not winged: its wings are the shadow's, and the Fell Rider is the winged hunter.", "sprite": "a colossal demon of shadow and fire, a mane of flame over a body of black smoke and cinder, a whip of fire in one hand and a sword of flame in the other, horned, drawn retro"},
-      "codex": "Shadow and flame, the size of a gate. It picks the strongest machine on the field and comes for it: a whip that leaves it burning, a blade that comes through the shield, and below half a fire that scorches everything. Keep the tank cool, or it is the first to go.",
+      "codex": "Shadow and flame, the size of a gate. It picks the strongest machine on the field and comes for it: a whip that leaves it ablating, a blade that comes through the shield, and below half a fire that scorches everything. Keep the tank cool, or it is the first to go.",
       "hp": 54, "attack": 16, "armour": 1, "rank": "front", "size": 2, "movespeed": 2,
       "actions": [
-        {"id": "flame_whip", "name": "Flame Whip", "kind": "attack", "factor": 0.75, "weight": 2, "keywords": ["burn"], "burn": 2, "text": "The whip of flame: {damage}, and the machine burning ×2.", "status": "implemented"},
+        {"id": "flame_whip", "name": "Flame Whip", "kind": "attack", "factor": 0.75, "weight": 2, "keywords": ["ablate"], "ablate": 2, "text": "The whip of flame: {damage}, and the machine Ablating ×2.", "status": "implemented"},
         {"id": "shadow_blade", "name": "Shadow Blade", "kind": "attack", "weight": 2, "keywords": ["breach"], "text": "The blade of shadow, for {damage}, through the shield.", "status": "implemented"},
         {"id": "shadow_and_flame", "name": "Shadow and Flame", "kind": "attack", "factor": 0.5, "weight": 2, "keywords": ["all", "scorch"], "scorch": 1, "when": "below_half", "text": "Shadow and flame: {damage} to every machine, each one scorched.", "status": "implemented"}
       ],
@@ -959,11 +959,11 @@
     {
       "id": "rotbloom", "name": "Rotbloom", "faction": "meadow", "tier": 2,
       "design": {"fantasy": "The genre's Malboro by archetype (Final Fantasy's coinage, so a name of ours; Rotbloom is a working name): a bloated maw-plant whose breath carries every ailment at once. It stays beside Floraison (Ryan, 24 October: mechanically very different, and a different silhouette). To the rank and file 3 November (Ryan: the Malboro is a species, no named entity, and \"could be a rank and file\"; tier two and up): the Meadow's massive at tiers two and three, its bed a formation, Bad Breath the twist.", "niche": "Bad Breath lays everything at once on every machine: Burning, Scorched, a switched-off entry and a corrupted one. Cleanse is the answer and a Ward the prevention; below half it seeds the ground with mandragoras, the Meadow's numbers.", "notes": "Landed 30 October as a boss, a runnable placeholder kit for Ryan's marks (the slate, docs/bosses_proposal.md); a massive rank and file since 3 November, its escorts retired and its bed a formation at tiers two and three; every number a placeholder. Its art a rough placeholder (tools/placeholder_art.py) until a render is picked (design.sprite is the forge's brief).", "sprite": "a colossal bloated plant creature squatting on a mass of thick roots, a huge round maw ringed with dripping fangs gaping in its swollen body, a mass of writhing tendrils bursting from its sides, sickly green and yellow-brown blotched hide, a foul cloud seeping from its mouth", "variants": ["a colossal bloated plant creature squatting on a mass of thick roots, a huge round maw ringed with dripping fangs gaping in its swollen body, a mass of writhing tendrils bursting from its sides, sickly green and yellow-brown blotched hide, a foul cloud seeping from its mouth", "a colossal swollen bulb of a plant monster with no eyes, its whole front a wide fanged mouth, a crown of thick tendrils lashing forward, its hide a mottled sickly green with weeping yellow sores, a haze of spores around it", "a colossal rotting flower monster rearing up on a knot of roots, its petals peeled back from a round mouth of needle teeth, dozens of tendrils hanging from it like a beard, dull green and brown, a foul mist pouring out between its teeth", "a colossal squat plant beast like a giant gourd with a mouth, tendrils coiled round it and reaching out on every side, its sickly green skin stretched tight and blotched brown, a dripping fanged mouth breathing out a cloud of rot"]},
-      "codex": "A walking bloom of rot. Its breath carries everything at once: every machine it reaches burns, runs hot, loses the entry it is showing and has it corrupted. Cleanse what it lays; a Ward keeps it off. Hurt badly, it seeds the ground.",
+      "codex": "A walking bloom of rot. Its breath carries everything at once: every machine it reaches is left ablating, runs hot, loses the entry it is showing and has it corrupted. Cleanse what it lays; a Ward keeps it off. Hurt badly, it seeds the ground.",
       "hp": 40, "attack": 7, "armour": 0, "rank": "front", "size": 2, "movespeed": 1,
       "actions": [
         {"id": "lash", "name": "Tendrils", "kind": "attack", "factor": 0.6, "strikes": 2, "weight": 2, "text": "Tendrils, twice: {damage} each.", "status": "implemented"},
-        {"id": "bad_breath", "name": "Bad Breath", "kind": "attack", "factor": 0.3, "weight": 1, "keywords": ["all", "burn", "scorch", "disable", "corrupt"], "burn": 1, "scorch": 1, "corrupt": 1, "text": "Bad Breath over every machine: {damage} each, and each one burning, scorched, the entry it shows switched off and corrupted.", "status": "implemented"},
+        {"id": "bad_breath", "name": "Bad Breath", "kind": "attack", "factor": 0.3, "weight": 1, "keywords": ["all", "ablate", "scorch", "disable", "corrupt"], "ablate": 1, "scorch": 1, "corrupt": 1, "text": "Bad Breath over every machine: {damage} each, and each one Ablating, scorched, the entry it shows switched off and corrupted.", "status": "implemented"},
         {"id": "seedfall", "name": "Seedfall", "kind": "buff", "effect": "summon", "foe": "mandragora", "count": 2, "weight": 1, "when": "below_half", "text": "Below half, it seeds the ground: two mandragoras join the fight.", "status": "implemented"}
       ],
       "flavour": "Gate order one, amended again: if it is green and it smells like that, masks on."
@@ -1069,7 +1069,7 @@
       "hp": 72, "attack": 14, "armour": 0, "rank": "front", "size": 2, "movespeed": 1,
       "actions": [
         {"id": "six_blades", "name": "Six Blades", "kind": "attack", "factor": 0.3, "strikes": 6, "weight": 2, "text": "Six blades, one after another: {damage}, six times.", "status": "implemented"},
-        {"id": "flame_lash", "name": "Flame Lash", "kind": "attack", "factor": 0.75, "weight": 1, "keywords": ["burn"], "burn": 2, "text": "A lash of flame: {damage}, and the machine burning ×2.", "status": "implemented"},
+        {"id": "flame_lash", "name": "Flame Lash", "kind": "attack", "factor": 0.75, "weight": 1, "keywords": ["ablate"], "ablate": 2, "text": "A lash of flame: {damage}, and the machine Ablating ×2.", "status": "implemented"},
         {"id": "fire", "name": "Fire", "kind": "attack", "factor": 0.6, "weight": 2, "keywords": ["all", "scorch"], "scorch": 1, "when": "below_half", "text": "Fire: {damage} to every machine, each one scorched.", "status": "implemented"}
       ],
       "flavour": "Recruitment poster, the back: six arms. Count them again. Six."
@@ -1251,7 +1251,7 @@
     {
       "id": "vampire_lord", "name": "The Vampire Lord", "faction": "marsh",
       "design": {"fantasy": "Suikoden's Neclord by archetype, the vampire lord who will not stay dead (Suikoden's coinage, so a name of ours, the genre's own words). Yes to the slate's last five, 30 October.", "niche": "Hard to keep down, the Marsh's own: its bite heals what it takes from the hull, it readies itself once a fight to get back up whole, and below half it drinks from every machine. Shield what it bites (a shield starves the drain), burn it (Burning takes back what it drains), stop the readying (a Suppress, a Disrupt, a Purge on its Getting Back Up), and burst it twice if it rises.", "notes": "Landed 30 October as a runnable placeholder kit (Ryan: \"Yes to all waiting bosses\"); every number a placeholder. Its art a rough placeholder (tools/placeholder_art.py), a reminder until a render is picked. At 40 HP, under the slate's 48, since it may rise once whole. Its drain takes from the hull alone: one of shield and hull walled Wainwright & Sutler's trio at every HP tried down to 24 (0 to 10% won), the shield doing nothing against the heal; hull only, every row won it at 40 (30 October, docs/measurements.md).", "sprite": "a tall gaunt pale lord in a high-collared black cape lined with red, long clawed fingers spread, fangs bared, his eyes glowing red in a sunken face", "variants": ["a tall gaunt pale lord in a high-collared black cape lined with red, long clawed fingers spread, fangs bared, his eyes glowing red in a sunken face"]},
-      "codex": "It feeds. Every bite that reaches the hull heals it, it readies itself to rise once more after it falls, and below half it drinks from every machine at once. Shield what it bites, burn it, and stop it readying.",
+      "codex": "It feeds. Every bite that reaches the hull heals it, it readies itself to rise once more after it falls, and below half it drinks from every machine at once. Shield what it bites, ablate it, and stop it readying.",
       "hp": 50, "attack": 12, "armour": 0, "rank": "front", "movespeed": 1,
       "actions": [
         {"id": "drain", "name": "Drain", "kind": "attack", "weight": 2, "keywords": ["drain"], "text": "Drain: {damage}, and it heals what it takes from the hull.", "status": "implemented"},
