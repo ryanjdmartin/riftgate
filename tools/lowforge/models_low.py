@@ -342,10 +342,15 @@ def kite(b):
     # under its crown, never through its top ("I didn't mean right through the top. I meant drill
     # it out a bit following the hood cut"), the weapon coming out of a round hole in it two
     # sooner, the hole lined dark to its floor.
+    # Two hulls, the bore's and the ramp's: one hull through all three rings sloped its top up to
+    # the raised ring ahead, through the hood's crown over its last 0.7, and the notch bared the
+    # bore's dark lining above the hood's line (Ryan, 15 November: "There's a chunk of casing
+    # sticking out the top of the fairing"). The ramp ahead of the hood cuts the nose alone.
     CUT_R, CUT_END, CUT_BACK = 1.53, PORT + 5.9, PORT + 2.0
     def ring(y, z):
         return [(CUT_R * math.cos(math.pi * i / 8.0), y, z + CUT_R * math.sin(math.pi * i / 8.0)) for i in range(16)]
-    b.cut_hull([fuselage, hood_part, hood_mouth], ring(CUT_BACK, GZ) + ring(CUT_END, GZ) + ring(CUT_END + 1.6, spine(CUT_END + 1.6) + CUT_R))
+    b.cut_hull([fuselage, hood_part, hood_mouth], ring(CUT_BACK, GZ) + ring(CUT_END, GZ))
+    b.cut_hull([fuselage], ring(CUT_END, GZ) + ring(CUT_END + 1.6, spine(CUT_END + 1.6) + CUT_R))
     _tube(b, (0.0, CUT_BACK, GZ), (0.0, HOOD_LIP + 0.04, GZ), CUT_R - 0.02, CUT_R - 0.1, 16, "bore.dark", "port_bore", floor_material="bore.dark", floor_depth=0.05)
     # Canopy: far back, low, faired into the spine rather than a bubble.
     b.loft([(-2.0, hexagon(0.0, 6.2, 7.0, 0.5)), (-10.0, hexagon(0.0, 7.4, 9.0, 3.0)),
@@ -6568,7 +6573,8 @@ def giant_petrel(b):
     November): "make the brow a little longer, and carry it down the sides so it encompasses the new
     vents, too. So more of a cowl then a brow. The vents need some kind of border so the slats don't
     go right to the face edges. Turbines look great. Move the windshield down a bit so it's not right
-    up against the brow/cowl."
+    up against the brow/cowl." And on the fourteenth, the same day: "the cowl corners don't meet. There
+    are panel lines through the vents. The windscreen can come down a bit more."
 
     The Navy SES's body: two knife hulls, their stems raked back as a wave piercer's, dark below
     the chine and chrome above, a cobalt chine stripe and straight deck stripes, each closing
@@ -6576,12 +6582,12 @@ def giant_petrel(b):
     open fore and aft, lift glowing under it; a raised centre bow between the knives, the fore gun
     hung under it as a chin turret, a cobalt spearhead down each bow's deck; the deckhouse spanning
     the deck, every face leaning in, its front a long spearhead laid well back and run forward over
-    the centre bow, a cowl over it, its brow's peak across the roof's edge carried down the outer
-    edge of each shoulder, each facet of it a smooth twisted surface from its foot to the roof's
-    edge, the bridge's glass following it up its middle a little under the brow, a tall raked pane
-    each side of the prow, the two meeting on the crease, the foot's shoulders square so each corner
-    facet is flat and faces ahead, the whole of it an intake inside the cowl, louvres in a dark mouth
-    inside a raised cobalt border, two long windows
+    the centre bow, a cowl over it, one band across the roof's edge and down the outer edge of each
+    shoulder, mitred at the roof's corners, each facet of it a smooth twisted surface from its foot
+    to the roof's edge, the bridge's glass following it up its middle well under the cowl, a tall
+    raked pane each side of the prow, the two meeting on the crease, the foot's shoulders square so
+    each corner facet is flat and faces ahead, the whole of it an intake inside the cowl, plain metal
+    louvres in a dark mouth inside a raised cobalt border, two long windows
     forward down each flank and a turbine aft on each on a web (fan_l, fan_r turning in their intakes,
     fan_l_aft, fan_r_aft their last stages astern, burning with the boosters), a fin on it canted up
     and out at 45 degrees; on its roof the Spindrift Salvo's
@@ -6708,39 +6714,39 @@ def giant_petrel(b):
         bm.faces.new([bm.verts.new(p) for p in ((s * a0, FY0, DZ), (s * FRONT[0][0], FRONT[0][1], DZ), (s * t0, FY0, zt0))])
         b._finish(bm, "steel.panel", "deckhouse")
     if VISOR:
-        # A brow's peak: the roof's front edge carried out over the face as a thin lip, the glass in
-        # its shadow.
-        pts = [Vector((x, y)) for (x, y, z) in brow]
-        outs = []
-        for k, p in enumerate(pts):
-            ns = []
-            for q, sgn in ((pts[k - 1] if k > 0 else None, 1.0), (pts[k + 1] if k + 1 < len(pts) else None, -1.0)):
-                if q is not None:
-                    e = (p - q) if sgn > 0 else (q - p)
-                    ns.append(Vector((e.y, -e.x)).normalized())
-            n = sum(ns, Vector((0.0, 0.0))).normalized()
-            n = n * (1.0 / max(0.5, n.dot(ns[0])))   # mitred, so each edge's lip is as deep
-            outs.append(p + n * VISOR)
-        drop = DROOP   # how far its lip dips below the roof's edge
-        for k in range(len(pts) - 1):
-            quad = [(pts[k], 0.0), (pts[k + 1], 0.0), (outs[k + 1], drop), (outs[k], drop)]
-            _slab(b, [(q.x, q.y, zt0 - 0.05 - dz) for (q, dz) in quad], (0.0, 0.0, 1.0), 0.32, "steel.panel", "brow_peak")
-        # Carried down the sides as a cowl (Ryan, 15 November: "make the brow a little longer, and
-        # carry it down the sides so it encompasses the new vents, too. So more of a cowl then a
-        # brow"): down each shoulder facet's outer edge from the roof's corner to the foot, the flank
-        # run on forward past the face as far as the peak stands out, its lip dipping in over the
-        # intake as the peak's dips over the glass, so each intake sits inside it.
-        zl = zt0 - 0.05 - drop   # the peak's lip
-        for s in (-1.0, 1.0):
-            def fx(z, s=s):
-                """The flank's plane at height `z`: how far out it stands."""
-                return s * (a0 + (t0 - a0) * (z - DZ) / (zt0 - DZ))
-            top, bot = Vector((s * t0, FY0, zt0 - 0.05)), Vector((s * FRONT[0][0], FRONT[0][1], DZ + 0.02))
-            out = (bot - top).cross(Vector((0.0, 1.0, 0.0))).normalized()   # square to the flank, outward
-            if out.x * s < 0.0:
-                out = -out
-            side = [top, Vector((fx(zl), FY0 + VISOR, zl)) - out * drop, Vector((bot.x - out.x * drop, bot.y + VISOR, bot.z)), bot]   # its foot's lip kept on the deck
-            _slab(b, [tuple(q) for q in side], tuple(out), 0.32, "steel.panel", "cowl")
+        # The cowl: a brow's peak over the glass (14 November), carried down the sides (Ryan, 15
+        # November: "make the brow a little longer, and carry it down the sides so it encompasses
+        # the new vents, too. So more of a cowl then a brow"; then "the cowl corners don't meet"):
+        # one band round the face's top and down each shoulder's outer edge to the deck, mitred at
+        # the roof's corners, standing VISOR out ahead of the face, its lip dipping DROOP in toward
+        # the face all the way round (down over the glass, in over each intake), so its top and its
+        # sides are one piece.
+        top_z, up = zt0 - 0.05, Vector((0.0, 0.0, 1.0))
+
+        def flank_out(s):
+            """Square to the flank on side `s`, outward."""
+            n = (Vector((s * FRONT[0][0], FRONT[0][1], DZ)) - Vector((s * t0, FY0, top_z))).cross(Vector((0.0, 1.0, 0.0))).normalized()
+            return n if n.x * s > 0.0 else -n
+        path = [(Vector((FRONT[0][0], FRONT[0][1], DZ + 0.02)), flank_out(1.0), 1.0)]   # the right foot; the roof's edge right to left; the left foot
+        for k, (x, y, z) in enumerate(brow):
+            n = (up + flank_out(1.0)).normalized() if k == 0 else (up + flank_out(-1.0)).normalized() if k == len(brow) - 1 else up
+            path.append((Vector((x, y, top_z)), n, 1.0 / n.dot(up)))   # a corner's band as thick as the rest, mitred
+        path.append((Vector((-FRONT[0][0], FRONT[0][1], DZ + 0.02)), flank_out(-1.0), 1.0))
+        bm = bmesh.new()
+        rows = []
+        for i, (p, n, m) in enumerate(path):
+            q = p + Vector((0.0, VISOR, 0.0)) - n * (DROOP * m)
+            if i in (0, len(path) - 1):
+                q.z = p.z   # a foot's lip kept on the deck
+            h = n * (0.16 * m)
+            rows.append([bm.verts.new(p + h), bm.verts.new(q + h), bm.verts.new(q - h), bm.verts.new(p - h)])
+        for r0, r1 in zip(rows, rows[1:]):
+            for j in range(4):
+                bm.faces.new([r0[j], r0[(j + 1) % 4], r1[(j + 1) % 4], r1[j]])
+        bm.faces.new(rows[0])
+        bm.faces.new(list(reversed(rows[-1])))
+        bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+        b._finish(bm, "steel.panel", "cowl")
     # The glass, (along the facet, up it): a raked pane each side of the prow, its outer pillar swept
     # back, the two meeting on the crease, each a thin shell over its facet's surface; high on the
     # front, its head under the brow's peak, in its shadow, and tall (Ryan, 14 November, of the
@@ -6752,7 +6758,7 @@ def giant_petrel(b):
     # whole face, a cobalt frame round a dark mouth with bright louvres across it ("On the side front
     # faces flanking the windshield, let's style those as vents or intakes"; then "expand those face
     # vents so they cover the face they're on, give that geometry a purpose").
-    F0, F1, KB, KT = 0.27, 0.84, 0.05, 0.16   # the glass's foot and head up the facet, its head clear of the cowl (Ryan, 15 November: "Move the windshield down a bit so it's not right up against the brow/cowl"); its outer pillar's foot and head, in from the facet's outer edge
+    F0, F1, KB, KT = 0.2, 0.77, 0.05, 0.16   # the glass's foot and head up the facet, its head well clear of the cowl (Ryan, 15 November: "Move the windshield down a bit so it's not right up against the brow/cowl"; then "The windscreen can come down a bit more"); its outer pillar's foot and head, in from the facet's outer edge
     NU, NV = 8, 5
     ci = len(FRONT) - 2   # the right long facet, its crease at its far end; the left's mirrors it at its near end
 
@@ -6814,7 +6820,7 @@ def giant_petrel(b):
             pane(i, box(k0, k1, f0, f1), 0.14, 0.78, "livery.livery", "intake_border")
         pane(i, box(BK, 1.0 - BK, BF, 1.0 - BF), 0.14, 0.2, "bore.void", "intake")
         for f in (0.2, 0.32, 0.44, 0.56, 0.68, 0.8):
-            pane(i, box(BK + 0.02, 1.0 - BK - 0.02, f - 0.022, f + 0.022), 0.2, 0.56, "steel.plate", "intake_louvre")
+            pane(i, box(BK + 0.02, 1.0 - BK - 0.02, f - 0.022, f + 0.022), 0.2, 0.56, "steel.metal", "intake_louvre")   # plain metal: a plate's seams lined up across the slats as a panel line (Ryan, 15 November: "There are panel lines through the vents")
     for s in (-1.0, 1.0):
         b.loft([(min(28.6, min(brow_y(x) for x in (12.4, 14.4))), rect(s * 13.4, 2.0, 31.4, 31.9)), (-16.5, rect(s * 13.4, 2.0, 31.4, 31.9))], "livery.livery", "roof_stripe")
 
