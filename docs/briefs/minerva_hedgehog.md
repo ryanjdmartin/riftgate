@@ -21,6 +21,9 @@ content with the Polar Bear's landing, 20 October).
 - On thorns, 15 October: a thorns tank is balanceable only if the thorns carry a drawback of
   their own; rewarding a tank for doing its job (being struck under a draw) is dangerous (said
   of the hypertank).
+- On its look, 15 November: "Echidna I had two general ideas, either a half track, or a heavily
+  armored car with protected wheels." (His "wheeled crawler" of 15 October is below, in the
+  Minerva session.)
 
 ## What Claude proposed
 
@@ -162,6 +165,30 @@ otherwise.
   piece's spread carries the debuff to a marked foe's neighbours as it pays, that is the Static
   machine's Splash on another clock (`aphelion_static.md`).
 
+## The look, two ways (15 November)
+
+Ryan, 15 November, asking for look tests of the chassis that have a direction ("let's see what
+you come up with for all of these. Doesn't have to be too detailed since none are finalized"),
+gave his two ideas for this one, above. Both are mocked up on one sheet
+(`docs/looks/minerva_echidna.png`, built by `tools/lowforge/looks/echidna_looks.py`; look tests,
+never content until the chassis lands), the same machine on two running gears:
+
+- **The half-track**: two open front wheels flanking a long bonnet that is its snout, a track
+  unit under each side of the rear body, a cab with a raked windscreen; about 58 wide and 86 long.
+- **The armoured car, protected wheels**: six heavy wheels, each in its own boxed housing with
+  only its foot showing, under a faceted hull with a wedge glacis, a vision slit and a low
+  turret; about 64 wide and 91 long.
+
+Both carry the echidna the same way: a green shell of about thirty thick quills raked toward the
+tail and longer aft, a snout ending in a needle, and a ram block with two blunt spikes on each
+front corner, the soft Knuckles nod as a cue alone. Claude's choices where his words were
+silent, each his to change: six wheels in separate housings rather than one skirt, so the feet
+read as wheels and not a track; the quills bone white with dark points, so they read from above
+(steel is the other way); the needle on the snout as a guess at where the Sonic Needle lives.
+Three placeholder mounts each (a barrel on the cab's ring or the turret, a rack, a bare pad), no
+act and no gait. From above the half-track's tracks show only at their outer edge, and both run
+longer than the Honey Badger.
+
 ## Open for the session
 
 1. The spikes or the luring tank (Claude's reading of 4 November: answered, the spikes here, above).
@@ -169,9 +196,10 @@ otherwise.
    its locked piece's verb (spread or synergize), and whether the Sonic Needle stays as that
    piece's setup.
 3. Its numbers, and a locked piece if the silhouette has a signature.
-4. The Faraday Hull and Sealed Live retiring, now that the needle takes the Hull's place.
-5. The Thurible module's numbers, and its condition read as hull damage past armour.
-6. Its name (Ryan's; Hedgehog is a BattleTech 'Mech's, on the reserved list, and Echidna is free).
+4. Its look: the half-track or the armoured car (the sheet of 15 November), or another round.
+5. The Faraday Hull and Sealed Live retiring, now that the needle takes the Hull's place.
+6. The Thurible module's numbers, and its condition read as hull damage past armour.
+7. Its name (Ryan's; Hedgehog is a BattleTech 'Mech's, on the reserved list, and Echidna is free).
 
 ## Holes already raised
 
