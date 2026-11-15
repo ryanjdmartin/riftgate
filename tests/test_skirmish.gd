@@ -4726,6 +4726,81 @@ func test_the_debuffs_cost_rerolls_and_heat() -> void:
 	assert_eq(s2.forecast(s2.mechs[0])["heat_end"], 2 * _rule("burning_mech", "tick_heat"), "the forecast counts the tick to come")
 
 
+## The foes never announce more drain than a round's rerolls (Ryan, 15 November: "mandragoras
+## shouldn't try to scream away 3 rerolls, they should be smarter than that when declaring
+## intents"): each reads the drains already out as it announces, down the strike order, and once
+## they take every reroll a round gives its own drain is no move it may pick.
+func test_the_foes_never_announce_more_drain_than_a_rounds_rerolls() -> void:
+	var sk := Skirmish.new(11, 4)
+	sk.add_mech(_mech("A", Die.single(Face.attack(1, L)), 40, 100000))
+	var pack: Array[Foe] = []
+	for i in range(4):
+		var s := _archer(500, 1)
+		s.actions = [Foe.basic_action(), _special("debuff", "drain_rerolls", {"value": 1, "weight": 1000})]
+		s.action = s.actions[0]
+		pack.append(s)
+	sk.add_foes(pack)
+	sk.begin()
+	var most := 0
+	for r in range(8):
+		sk.start_round()
+		var out := 0
+		for f in sk.field_foes():
+			if str(f.action.get("effect", "")) == "drain_rerolls":
+				out += 1
+		most = maxi(most, out)
+		assert_true(out <= Skirmish.REROLLS_PER_ROUND, "round %d: %d drains announced, never more than a round's rerolls" % [sk.round, out])
+		sk.end_round()
+		assert_true(sk.reroll_debt <= Skirmish.REROLLS_PER_ROUND, "and never more owed than a round gives")
+	assert_eq(most, Skirmish.REROLLS_PER_ROUND, "at that weight they do take every one, and stop there")
+
+
+func test_a_drain_reads_only_the_moves_already_out_and_what_would_land() -> void:
+	var sk := Skirmish.new(12, 4)
+	sk.add_mech(_mech("A", Die.single(Face.attack(1, L)), 40, 100000))
+	var pack: Array[Foe] = []
+	for i in range(3):
+		var s := _archer(500, 1)
+		s.actions = [Foe.basic_action(), _special("debuff", "drain_rerolls", {"value": 1})]
+		s.action = s.actions[0]
+		pack.append(s)
+	sk.add_foes(pack)
+	sk.begin()
+	sk.start_round()
+	var foes := sk.field_foes()
+	var a: Foe = foes[0]
+	var b: Foe = foes[1]
+	var c: Foe = foes[2]
+	for f in foes:
+		f.last_special = ""
+	a.action = a.actions[1]
+	b.action = b.actions[1]
+	c.action = c.actions[0]
+	assert_eq(sk.drain_announced(c), 2, "two drains out besides its own move")
+	assert_false(sk.legal_actions(c).has(c.actions[1]), "so a third is no move it may announce")
+	assert_true(sk.disrupt_next(c).is_empty(), "and a Disrupt finds it nothing else to do")
+	assert_eq(sk.drain_announced(a), 1, "a drainer counts the others', never its own")
+	assert_true(sk.legal_actions(a).has(a.actions[1]), "so its own stays open")
+	# As the round opens a foe reads only the moves already out: what the foes after it in the
+	# strike order still hold is last round's.
+	assert_true(sk.legal_actions(c, []).has(c.actions[1]), "none out yet: the drain is open")
+	assert_true(sk.legal_actions(c, [a]).has(c.actions[1]), "one out: still open")
+	assert_false(sk.legal_actions(c, [a, b]).has(c.actions[1]), "two out: shut")
+	# A drain that will not land counts for nothing.
+	b.hp = 0
+	assert_eq(sk.drain_announced(c), 1, "a destroyed foe's drain is out of the count")
+	assert_true(sk.legal_actions(c).has(c.actions[1]), "so a drain is open again")
+	assert_eq(sk.disrupt_next(c), c.actions[1], "and a Disrupt turns it there")
+	# The count is in rerolls, not in foes.
+	a.actions[1] = _special("debuff", "drain_rerolls", {"value": Skirmish.REROLLS_PER_ROUND})
+	a.action = a.actions[1]
+	assert_false(sk.legal_actions(c).has(c.actions[1]), "one drain of a whole round's rerolls shuts the next")
+	# A foe that stepped up this round has announced nothing, whatever move it holds.
+	a.fresh = true
+	assert_eq(sk.drain_announced(c), 0, "a foe that stepped up this round is out of the count")
+	assert_true(sk.legal_actions(c).has(c.actions[1]), "so the drain is open")
+
+
 func test_a_foes_special_action_is_picked_by_weight_and_shows_its_kind() -> void:
 	var g := _ghoul(30, 10)
 	g.actions = [Foe.basic_action(), _special("defend", "brace", {"value": 10})]

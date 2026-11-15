@@ -9989,3 +9989,29 @@ presses the shield costs the roster less hull than today's and more reboots, and
 it is a point on the blow where today's is two. What it does not say: what a Ward is worth
 to a player who reads the intents, the greedy rung not weighing a mark turned; and tier one
 lays few marks to turn.
+
+## 15 November, the vocabulary pass's fourth round: the foes' Breach cut outright
+
+Ryan's fourth round (`docs/vocabulary_pass_proposal.md`, section 17): "My question about
+enemy breach is if it's even needed. It could be a domain identity, i.e. shields suck here,
+but only if it asks an interesting question and not an unfair one." So what today's foes
+lose with it. The same squads, basics and probe as the entry above: the six certain tier
+ones, the greedy rung, the reboot on, `basics=1,hotter=-1`, content as built, hull as a
+share of a squad of four's; a formation's row 300 fights, an elite's 220, a boss's 260. The
+what-if is the entry above's, at a multiple of one for the cut: a breaching blow lands as a
+plain blow, the shield first and armour off what passes it. All a direction.
+
+| The foes' Breach | A formation | An elite | A boss | With no Barrier basic (`barrier=none`): a formation | An elite | A boss |
+|---|---|---|---|---|---|---|
+| As built: past shield and armour | 4.7 rounds, 8.1%, 0.64 reboots a machine | 5.2, 11.1%, 0.03 wrecks | 8.7, 26.5%, 0.22 | 4.7, 9.1%, 0.67 | 5.1, 24.6%, 0.23 | 8.4, 46.8%, 0.90 |
+| Double to a shield | 4.9, 6.8%, 0.81 | 5.3, 10.8%, 0.03 | 8.3, 25.8%, 0.22 | 4.9, 7.5%, 0.83 | 5.2, 23.4%, 0.21 | 8.4, 46.0%, 0.84 |
+| Cut: a plain blow | 4.8, 5.7%, 0.70 | 5.3, 10.6%, 0.03 | 8.3, 25.6%, 0.21 | 4.8, 6.4%, 0.73 | 5.2, 22.0%, 0.20 | 8.5, 46.5%, 0.88 |
+
+What it says: Breach is three tenths of what a tier-one formation costs in hull, with the
+Barrier basic or without (8.1% to 5.7%, 9.1% to 6.4%); a tenth of an elite's with no
+Barrier on the dice and a twentieth with one; and next to none of a boss's, whose blows pass
+a shield by their size. The shield form at double sits halfway on a formation. Reboots a
+machine move little: the cut frees the bot to reboot a touch more than under a breach its
+shield never met, and double asks the most. What it does not say: what a domain built on the
+shield form would play like, since today's eleven breaching slots of sixty-nine are spread
+over three domains; and nothing of tier two, where Exposed would live.

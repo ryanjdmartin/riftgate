@@ -961,7 +961,11 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or a
   flat armour (a boss only where its kit is armour, the Cinder Tortoise's stepping by the tier; the promoted forms 2) and perhaps an aim. Its damage
   never rolls.
 - **Its move**: from the moves whose conditions hold, weighted by each move's own weight (attacks mostly 2, specials 1, the Bomb's Self-Destruct 3), never
-  the same special twice running while anything else is open. A move without a condition
+  the same special twice running while anything else is open. The foes announce in the order
+  they strike, each reading the moves already out: a reroll drain is no move a foe may announce
+  once the drains already out take every reroll a round gives, so the field never announces more
+  than two (a drain held by a Suppress, still gathering, or its foe destroyed counts nothing; a
+  Disrupt reads the same, and finds such a foe nothing else to do). A move without a condition
   fires on its weight; the conditions read the foe's own side or what its move needs: below
   half, hurt, a foe behind it, another foe on the field, one
   of its own hurt, a machine carrying a buff, one of its own not readied, one of its own

@@ -5,7 +5,8 @@ buffs and debuffs into one table? Just names, type, effects, and where it exists
 needed. I just need to see them all in one place to mark them."
 
 Read from content as it stands on main: the vocabulary's keywords and statuses, the foes'
-riders and moves, and the three things the pass has proposed. A rider and the mark it lays
+riders and moves, and what the pass has decided or proposed, his rulings of the fourth round
+among them. A rider and the mark it lays
 share a row. "Planned" is a draft the engine does not run; "in design" is a machine not
 dealt. The pass itself is `docs/vocabulary_pass_proposal.md`; his marks on this table fold
 into it. `tools/pages/vocabulary_marks_page.py` turns this file into the page he marks on.
@@ -69,7 +70,7 @@ into it. `tools/pages/vocabulary_marks_page.py` turns this file into the page he
 | Drain | Rider, the foes' | The foe regrows what its blow took from the hull | The Vampire Lord |
 | Silence, lays Silenced | Move, the foes'. Debuff on a machine | The machine's keywords are muted through its next round | No foe carries it today |
 | Swallow, lays Swallowed | Move, the foes'. Debuff on a machine | The machine is out of the fight for some rounds, or until the swallower falls or is hurt enough | Floraison. The Ruby Colossus |
-| Drained rerolls | Move, the foes' | The team has a reroll fewer next round | The Mandragora and the Mandrake. The Fell Rider. The Obsidian Tyrant. The Thief |
+| Drained rerolls | Move, the foes' | The team has a reroll fewer next round. The foes never announce more of it in a round than a round's rerolls | The Mandragora and the Mandrake. The Fell Rider. The Obsidian Tyrant. The Thief |
 | Purge, the foes' | Move, the foes' | The machine carrying the most buffs loses every buff an entry bought | The Djinn |
 | Destroyed component | Debuff on a machine, a rule | A blow that puts a quarter of its hull on the hull destroys the entry the die shows, for the battle | Any blow big enough |
 | **The foes: the shape of a blow** | | | |
@@ -99,6 +100,7 @@ into it. `tools/pages/vocabulary_marks_page.py` turns this file into the page he
 | Rebooting | State, the reboot's | The machine has given its turn: its shield is at nothing through the enemy's turn, and it is cold and whole as the next round opens | Every machine, behind the REBOOT trial |
 | Overheated | Debuff on a machine, the reboot's | Heat past the maximum stays, a stack a point, and burns hull a stack at every END TURN. No cleanse lifts it | Every machine, behind the REBOOT trial |
 | Broken | Debuff on a machine, the reboot's | A shield at nothing gains no shield by any method until the reboot. No cleanse lifts it | Every machine, behind the REBOOT trial |
-| Ablate, lays Ablating | Proposed, his word and form of 15 November: one rule for Burn on both sides | Stacks. As its side's turn comes round the unit loses a point a stack, then a stack fades. On a foe hit points, past armour. On a machine the shield first, then the hull past armour | Would replace Burn and Burning on every piece and foe that carries them. Not built |
-| Exposed, on a machine | Proposed, his of 15 November | The machine's armour counts for nothing at once and until the end of the next round, and next round every targeted intent turns on it. Nothing happens to its shield | No foe yet. Not built |
-| Breach, the foes', as shield damage | Proposed, his of 15 November | The blow deals more to a shield, in place of ignoring shield and armour. It no longer reaches the hull directly | Would replace the foes' Breach. Not built |
+| Ablate, lays Ablating | Decided 15 November, his word and form: one rule for Burn on both sides | Stacks. As its side's turn comes round the unit loses a point a stack, then a stack fades. On a foe hit points, past armour. On a machine the shield first, then the hull past armour. A tick ignores a Barrier | Replaces Burn and Burning on every piece and foe that carries them. Not built |
+| Exposed, on a machine | Decided 15 November, his | The machine's armour of every kind counts for nothing at once and until the end of the next round, and as the next round opens every targeted intent turns on it, the whole field. Nothing happens to its shield. A Lure moves the fire, and the mark as it is announced; a Ward turns it; a Cleanse gives the armour back and leaves the intents. The foes try it on one machine at a time | No foe yet: tier two and up, in formations that suit it. Not built |
+| Breach, the foes', as shield damage | Proposed, his of 15 November, and in question since: whether the foes need Breach at all | The blow deals more to a shield, in place of ignoring shield and armour. It no longer reaches the hull directly | Would replace the foes' Breach, as one domain's identity at most. Not built |
+| Ignores armour | Decided 15 November, his: a property written on the piece, no keyword | The blow ignores a foe's armour | Replaces our Breach on its three carriers: the Overclocked Railgun, the Ammit's Soulcutter Talons, the Wild Boar's next weapon after it gains a Barrier. Not built |

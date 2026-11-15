@@ -110,7 +110,7 @@ textarea { font: 15px/1.35 var(--body); color: var(--ink); background: var(--pan
 </style>
 <div class="wrap">
   <h1>Vocabulary Marks</h1>
-  <p class="lede">Every rider, buff and debuff in the game as it stands, with the three the pass has proposed. Mark each row and leave a note where one helps. The marks save as you go and Claude reads them back.</p>
+  <p class="lede">Every rider, buff and debuff in the game as it stands, with what the pass has decided or proposed. Mark each row and leave a note where one helps. The marks save as you go and Claude reads them back.</p>
   <div class="strip">
     <div class="filters" id="filters" role="group" aria-label="Show"></div>
     <div class="count" id="count"></div>
