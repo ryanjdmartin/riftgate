@@ -792,7 +792,8 @@ On a foe:
   only reaches it (an area's, a Chain's arc, a spill, a Mine's blast) neither doubles nor spends it, and equipment leaves it standing; it never stacks.
 - **Exposed** (debuff): it stands in Direct reach of every machine as if its
   column's front were empty, and its armour counts for nothing, its own and any Armoured.
-  Through the next round; refreshed, never added.
+  Until the end of the next round, so through the player's next turn and the foes' turn after
+  it; refreshed, never added.
 - **Mine** (debuff, the Lammergeier's): its damage, the spends that fed it added, and their
   keywords, one Mine a foe; when the foe falls it blows on every foe round its slot (A Mine,
   under A blow). It lasts the skirmish, until its foe falls or the Syrinx Drone detonates it.

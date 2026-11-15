@@ -66,8 +66,9 @@ static func refit_trial() -> void:
 
 ## The what-if's spec, "" for the game as built: the environment's as written, else a debug
 ## build's flat shield regen (Settings.SHIELD_REGENS), its heat prices (Settings.HEAT_SPECS), the
-## basic guns' damage and the top basic's heat (Settings.BASIC_GUNS, TOP_BASIC_HEATS) and the
-## Barrier basic off the stock dice (Settings.BARRIER_BASICS).
+## basic guns' damage and the top basic's heat (Settings.BASIC_GUNS, TOP_BASIC_HEATS), tier
+## one's rank and file a hit point up (Settings.RANK_HPS) and the Barrier basic off the stock
+## dice (Settings.BARRIER_BASICS).
 static func refit_spec() -> String:
 	var spec := OS.get_environment("RIFTGATE_REFIT")
 	if spec.is_empty() and OS.is_debug_build():
@@ -84,6 +85,9 @@ static func refit_spec() -> String:
 		var top := str(Settings.display.get("top_basic_heat", "0"))
 		if top != "0" and Settings.TOP_BASIC_HEATS.has(top):
 			parts.append("top=" + top)
+		var rank_hp := str(Settings.display.get("rank_hp", "0"))
+		if rank_hp != "0" and Settings.RANK_HPS.has(rank_hp):
+			parts.append("foehp=" + rank_hp)
 		if str(Settings.display.get("barrier_basic", "built")) == "none":
 			parts.append("barrier=none")
 		spec = ",".join(parts)

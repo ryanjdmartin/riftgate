@@ -26,6 +26,10 @@ extends RefCounted
 ##   top=N      the basic guns that deal more than the plainest basic gun make N more heat (the
 ##              same day: the gun that deals one more "needs to bite appropriately", and "for
 ##              basics, the only cost we should have is Heat")
+##   foehp=N    every foe a tier-one formation fields that is no massive, and what such a foe
+##              leaves as it falls, has N more hit points (Ryan, 15 November: "Ok let's go 3
+##              against 5 or 3 against 4 as the options": the standard foe a point up beside
+##              basics=1, so both can be played); may be negative, never under one
 ##   barrier=cooldownN  the Barrier basic sits out N rounds once spent, after the round of the
 ##                      spend (a cooldown's own count); 0 for none, and the bare word is 1
 ##   barrier=heatN      the Barrier basic makes N heat
@@ -37,7 +41,7 @@ const ARMOURED := "braced"   # the status the Armoured basic grants
 
 
 static func parse(text: String) -> Dictionary:
-	var spec := {"regen": "", "cooling": 0, "hotter": 0, "basics": 0, "top": 0, "barrier": ""}
+	var spec := {"regen": "", "cooling": 0, "hotter": 0, "basics": 0, "top": 0, "foehp": 0, "barrier": ""}
 	for part in text.split(",", false):
 		var p := part.strip_edges()
 		if p.begins_with("regen="):
@@ -50,10 +54,12 @@ static func parse(text: String) -> Dictionary:
 			spec["basics"] = int(p.trim_prefix("basics="))
 		elif p.begins_with("top="):
 			spec["top"] = int(p.trim_prefix("top="))
+		elif p.begins_with("foehp="):
+			spec["foehp"] = int(p.trim_prefix("foehp="))
 		elif p.begins_with("barrier="):
 			spec["barrier"] = p.trim_prefix("barrier=")
 		elif not p.is_empty():
-			push_error("--refit: no part '%s' (regen=half|N, cooling=N, hotter=N, basics=N, top=N, barrier=cooldownN|heatN|none; the model's die, its regen by chassis and the basics' heat are content since 10 November)" % p)
+			push_error("--refit: no part '%s' (regen=half|N, cooling=N, hotter=N, basics=N, top=N, foehp=N, barrier=cooldownN|heatN|none; the model's die, its regen by chassis and the basics' heat are content since 10 November)" % p)
 	return spec
 
 
@@ -114,6 +120,15 @@ static func apply(db: ContentDB, spec: Dictionary) -> Array[String]:
 				face["heat"] = maxi(0, int(face.get("heat", 0)) + top)
 			said.append("%s %d for %d heat" % [str(db.components[cid].get("name", cid)), int(face["power"]), int(face.get("heat", 0))])
 		notes.append("the basic guns (%+d damage, %+d heat on those over the plainest): %s" % [basics, top, ", ".join(said)])
+	# The standard foe's hit points (the vocabulary pass, 15 November): tier one's rank and file
+	# a point up or down, the massive foes, the elites and the bosses as content has them.
+	var foehp := int(spec.get("foehp", 0))
+	if foehp != 0:
+		var raised: Array[String] = []
+		for fid in rank_and_file(db):
+			db.foes[fid]["hp"] = maxi(1, int(db.foes[fid].get("hp", 1)) + foehp)
+			raised.append("%s %d" % [str(db.foes[fid].get("name", fid)), int(db.foes[fid]["hp"])])
+		notes.append("tier one's rank and file (%+d hit points): %s" % [foehp, ", ".join(raised)])
 	# The Barrier basic's price, a question the first reads raised (a free Barrier is spent every
 	# round it is rolled): so many rounds dark once spent, or so much heat. The number is a
 	# cooldown's own, the rounds sat out after the round of the spend; until 12 November this
@@ -168,6 +183,28 @@ static func basic_guns(db: ContentDB) -> Array[String]:
 		if str(face.get("kind", "")) == "attack" and int(face.get("power", 0)) > 0:
 			out.append(str(cid))
 	return out
+
+
+## Tier one's rank and file, in content order: every foe a tier-one formation fields that is
+## no massive, no elite and no boss, and whatever such a foe leaves as it falls (a Gel's halves).
+static func rank_and_file(db: ContentDB) -> Array[String]:
+	var out: Array[String] = []
+	for faction in db.factions.keys():
+		for c in db.compositions(str(faction), 1, "formation"):
+			for member in c.get("members", []):
+				var fid := str(member[0])
+				if not _is_rank_and_file(db, fid) or out.has(fid):
+					continue
+				out.append(fid)
+				var fallen = db.foes[fid].get("on_death", null)
+				var left := str(fallen.get("summon", "")) if fallen is Dictionary else ""
+				if _is_rank_and_file(db, left) and not out.has(left):
+					out.append(left)
+	return out
+
+
+static func _is_rank_and_file(db: ContentDB, fid: String) -> bool:
+	return db.foes.has(fid) and int(db.foes[fid].get("size", 1)) < 2 and not db.is_elite(fid) and not db.is_boss(fid)
 
 
 ## The lowest-tier slottable buff that grants `status`, in content order: the basic of its kind.

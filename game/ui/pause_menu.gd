@@ -175,6 +175,8 @@ func _show_page(page: String) -> void:
 			_credit("Every basic gun's damage: as built, or a point more. Next launch.")
 			_choice_row("TOP BASIC", "top_basic_heat", Settings.TOP_BASIC_HEATS, Settings.TOP_BASIC_HEAT_LABELS)   # more heat on the basic guns that deal more than the plainest (Refit's top): the price of the gun that deals one more
 			_credit("The basic gun that deals most: its heat as built, or more. Next launch.")
+			_choice_row("RANK AND FILE", "rank_hp", Settings.RANK_HPS, Settings.RANK_HP_LABELS)   # a hit point more on tier one's rank and file (Refit's foehp; Ryan, 15 November: a vanilla of 3 against a standard foe of 4 or of 5)
+			_credit("Tier one's rank and file: hit points as built, or one more. Next launch.")
 			_choice_row("OVERHEAT", "overheat_burn", Settings.OVERHEATS, Settings.OVERHEAT_LABELS)   # the hull a point of heat past the gauge burns as the turn ends, one the game's (Skirmish.overheat_scale)
 			_credit("Hull an overheat burns a point past the gauge. Next battle.")
 			_choice_row("BARRIER BASIC", "barrier_basic", Settings.BARRIER_BASICS, Settings.BARRIER_BASIC_LABELS)   # the Barrier basic on the stock dice as built, or off them with the Armoured basic in its slot (Refit's barrier=none; its place is open since 12 November)

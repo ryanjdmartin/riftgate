@@ -1,4 +1,4 @@
-# The vocabulary pass, 14 November (two rounds; nothing decided)
+# The vocabulary pass, 14 and 15 November (three rounds; his calls of the third in section 16)
 
 Every rider, keyword, cost, buff and debuff on both sides, read against the reboot and the
 yardstick for the basics. It began as the rider and keyword pass and Ryan widened it in its
@@ -42,6 +42,57 @@ and 23): "On that note, let's do the rider and keyword pass now."
 >
 > I'm not sure on the barrier basic. With cooldown 1 it reads as not degenerate to me, but
 > I'm really not sure how to unwind it from the data.
+
+**His words, the third round**, 15 November, on the second round's report:
+
+> Ok let's go 3 against 5 or 3 against 4 as the options. Either number eases my concerns
+> about armoured on the foe's side. As long as we don't exceed base armour of 2 in tier 1, I
+> think it'll be fine. Like 3 against 4+1 is still only two shots. 3 against 5+1 is 3 shots,
+> but only two if the player finds that extra +1. Works for me.
+>
+> Burn - hits shield first, I think. Pretty deadly otherwise. Bypasses armour when damaging
+> hull.
+>
+> Ablate actually works well, I think. Whither implies weakening from game tropes, Erode is
+> ok but sounds more mechanical like friction, Corrode implies acid from game tropes, Blight
+> is decent but sounds less like something a machine would cause, Rot reads death magic, Sear
+> doesn't sound ongoing. Ablating or ablate is very clinical, it fits the military notation,
+> and evokes eating though armour to me.
+>
+> Regarding Breach, I had a thought to help make it less binary. Exposed already has the
+> armour penetration aspect, and it needs to be applied, so it can be forecasted. I vote to
+> give it to the enemies too. It strips armour immediately, until the end of the next round
+> (i.e. after another player turn and enemy turn), and acts as a reverse lure, drawing all
+> enemy fire to that unit next turn, for all targeted intents (it doesn't force the dues l
+> foes to attack, just if they do target something, it's forced on that unit). It does
+> nothing to shield, and you can see it coming, so it gives you an opportunity to spend the
+> forecasting turn rebooting, warding, or deciding who it should land on. For tanks it's
+> probably a chunk of hull lost especially since they lose the armour immediately, and for
+> lighter units without armour it's basically the same problem as usual to solve, just
+> worse. But having two turns to react hopefully is a fair window. Thoughts? Cleansing would
+> obviously only solve the armour stripping since the intents are already chosen.
+>
+> Player-applies Exposed I want to clarify that it lasts until the end of next round, as
+> that's not clear in the tooltip. So another ally and enemy turn. It's redundant to last
+> through the enemy turn, but to make it fully symmetrical it makes sense.
+>
+> Breach we could keep, but not as a strict anti-all-defense tool. Instead I would make it
+> deal extra damage to shield, 1.5x, double, triple, who knows. But something to pressure
+> the shield. Maybe it also strips armour, not sure. But not directly to hull, since Ablate
+> exists on both sides now.
+>
+> I don't want the existence of barrier as an accessible-to-all tool, to justify the
+> existence of massive enemy strikes. That's my main concern, degenerate or not. I think
+> that's why I lean towards not having it as a basic. Ward, however, is another question, if
+> we're expanding effects.
+>
+> Can you gather all the riders, buffs and debuffs into one table? Just names, type,
+> effects, and where it exists. No numbers needed. I just need to see them all in one place
+> to mark them.
+
+The table is `docs/vocabulary_table.md`, and its page for his marks is in the status's
+Pages. Section 16 has what the third round called and what it opened; the sections before
+it stand as the second round left them but where they say otherwise.
 
 What it reads against:
 
@@ -345,10 +396,14 @@ foe a hit point up, the massives as they are):
 
 **Claude's lean, his to take or leave**: two under, at 3 against 5. How convinced: less than
 the first round sounded. The measure says the yardstick matters less over the roster than a
-pure horde suggests, and what it feels like to be a point short is his play's to say. All
-three are a dial away. BASIC GUNS is built. A second dial, a hit point more on tier one's
-rank and file, would make the third world playable beside the other two. It is offered, not
-built.
+pure horde suggests, and what it feels like to be a point short is his play's to say.
+
+**His call, 15 November**: "Ok let's go 3 against 5 or 3 against 4 as the options." So the
+vanilla is 3, 2 against 4 is gone, and the standard foe is 4 or 5 by his play. Both are on
+dials of a debug build's TRIALS: BASIC GUNS on +1 is the vanilla of 3, and RANK AND FILE on
++1 is a hit point more on every foe a tier-one formation fields that is no massive (the
+what-if's `foehp`), built the same day. Content still prints basic guns of 2; the 3 lands
+there with the fold-in, or sooner on his word.
 
 ## 4. The player's riders
 
@@ -370,7 +425,7 @@ tier-one find (section 13): what a unit adds to it is the reason to slot it.
 | **Sap N** | The foe's blows deal N less until after its next action | Dearer: a point off a blow is a point of shield kept for the cycle | Nothing in rounds, a point of hull a stack | The vanilla with Sap 1, a point of heat over: a gun that defends. Today a kit's alone, the Baboon's |
 | **Cryo N** | N stacks on each foe hit; a weapon's hit on it spends them and cools the hitter 2 a stack | The one way heat leaves short of a reboot | 0.2 whatever its number, while heat seldom binds | Kept to a kit or a locked piece (section 12) |
 | **Chain N** | N on every other Shocked foe | Nothing | Nothing without a Shock laid first | With a Shock source in the same kit or tier. Tier one has one, the Polarity Projector |
-| **Purge N** | N stacks off every buff the foe carries | Nothing | Nothing at tier one, whose buffs are a round's brace and one rally | Today a kit's alone, the Baboon's Redshift Emitter. A bench row where a domain braces and rallies |
+| **Purge N** | N stacks off every buff the foe carries | Nothing | Nothing at tier one, whose buffs are a round's brace and one rally | The Baboon's Redshift Emitter, and the Null Field Emitter at tier two. A bench row where a domain braces and rallies |
 | **Lure** | Every foe the entry reaches turns on this machine for the round | Buys an ally a safe reboot. What it draws lands on a shield that does not mend | No fair read. Its worth is a reboot covered, which the bot does not play | Equipment at 1 heat, as the Proximity Klaxon is |
 | **Suppress** | The foe skips its action this round | A blow that never lands is dearer | No fair read. Over 2 in hull on every gun | Tier two's, a gun of 2 at 5 heat, as built |
 | **Disrupt** | The foe does its other move instead | A blow turned into a brace or a howl | No fair read: on every gun it turns knives into braces and the fights run longer | Tier two's equipment, as built |
@@ -483,6 +538,13 @@ machine reboots for nothing under a formation.
    keeps the vanilla at 3.
 5. His to say: whether a tank that reboots for nothing under a formation is its identity, as
    "tanking is lure plus plate" and the wall by design say, or a hole the reboot opened.
+
+**His ceiling for the foes' plate, 15 November**: "As long as we don't exceed base armour of
+2 in tier 1, I think it'll be fine. Like 3 against 4+1 is still only two shots. 3 against
+5+1 is 3 shots, but only two if the player finds that extra +1." Tier one's foes stand at 1
+today, the braces aside. What the marks add to it: at a vanilla of 3 a point of plate on a
+whole horde of 4s already doubles the horde, and two points leave the vanilla one a shot, so
+a plate of 2 is a massive foe's or a lone foe's, never a formation's standard.
 
 ## 7. The statuses on both sides
 
@@ -614,7 +676,14 @@ a little over, and 2 is three points over two turns. So the form is safer in kin
 numbers are damage numbers, smaller than today's. Content as built barely moves, since one
 tier-one foe lays it: the ember pyre costs 12.4% of a four's hull for 8.9%.
 
-**The form, a first statement, his to shape.** N stacks. As its side's turn comes round it
+**His rulings, 15 November.** "Burn - hits shield first, I think. Pretty deadly otherwise.
+Bypasses armour when damaging hull." And its word: "Ablate actually works well, I think ...
+Ablating or ablate is very clinical, it fits the military notation, and evokes eating though
+armour to me." So the form below stands with its first hole settled, and it is Ablate,
+laying Ablating, on both sides. It is built with the reboot's fold-in. Still his: whether a
+tick passes a Barrier, and its numbers.
+
+**The form.** N stacks. As its side's turn comes round it
 loses a point a stack, then a stack fades. On a foe: hit points, past armour, at the start
 of its action, as Burning does today. On a machine: shield first, then hull, past armour, as
 the player's turn ends, so the player has a turn to answer what the foes laid. A tick is no
@@ -657,22 +726,24 @@ as today.
   moves that name it.
 
 **The word.** His ask: "a word that we could use to represent not just strict burning, but
-a general eroding over time, that we could apply to it on both sides". A bench, each with
-what it has and what it lacks. The name is his.
+a general eroding over time, that we could apply to it on both sides". The bench as it was
+put to him, and his read of each, 15 November. He chose Ablate.
 
-| The word, and the status | For it | Against it |
-|---|---|---|
-| **Wither**, Withering | Reads on flesh, on plants, on the dead and on a machine. "Withering fire" is a gun's own idiom, so a weapon can print it. Collides with nothing | Softer on bare metal than a word for rust |
-| **Erode**, Eroding | His own word. Neutral across fire, acid, sand, rot and time, and the most natural on metal | Flat on flesh, and odd from a flamethrower |
-| **Blight**, Blighted | A wasting on land, flesh and works alike; a foe's word | Odd from an incendiary shell |
-| **Rot**, Rotting | As short as Sap and Flak. Flesh, and a hulk "left to rot". The Marsh's own | Odd from a gun; near Rotbloom |
-| **Corrode**, Corroding | The truest to metal, and acid does it to flesh | A syllable from Corrupt, which a foe also lays on a machine |
-| **Sear**, Searing | Both bodies | Still fire |
-| **Ablate**, Ablating | Lasers, plasma and sandstorms do it | Clinical on a goblin; Ablative Plating is a module's name |
-| **Decay**, Decaying | Plain and general | The records' own verb for stacks fading: a status called Decaying that decays |
-| **Burn** kept, the rule alone made one | No rename; a machine on fire reads as plainly as a goblin on fire | Acid, rot and sand would print Burn, or go without the status |
+| The word, and the status | For it | Against it | His read |
+|---|---|---|---|
+| **Ablate**, Ablating | Lasers, plasma and sandstorms do it | Clinical on a goblin; Ablative Plating is a module's name | Chosen: "very clinical, it fits the military notation, and evokes eating though armour to me" |
+| **Wither**, Withering | Reads on flesh, on plants, on the dead and on a machine. "Withering fire" is a gun's own idiom | Softer on bare metal than a word for rust | "implies weakening from game tropes" |
+| **Erode**, Eroding | His own word. Neutral across fire, acid, sand, rot and time | Flat on flesh, and odd from a flamethrower | "ok but sounds more mechanical like friction" |
+| **Blight**, Blighted | A wasting on land, flesh and works alike | Odd from an incendiary shell | "decent but sounds less like something a machine would cause" |
+| **Rot**, Rotting | As short as Sap and Flak; the Marsh's own | Odd from a gun; near Rotbloom | "reads death magic" |
+| **Corrode**, Corroding | The truest to metal, and acid does it to flesh | A syllable from Corrupt | "implies acid from game tropes" |
+| **Sear**, Searing | Both bodies | Still fire | "doesn't sound ongoing" |
+| **Decay**, Decaying | Plain and general | The records' own verb for stacks fading | not read |
+| **Burn** kept, the rule alone made one | No rename | Acid, rot and sand would print Burn, or go without the status | not read |
 
-Claude's lean: Wither, then Erode.
+Claude's lean had been Wither, then Erode. One thing rides with his choice: the module
+Ablative Plating now shares a root with a status it has nothing to do with, his to rename or
+to leave.
 
 ## 10. The foes' own kit
 
@@ -754,7 +825,13 @@ an elite's fight is a quarter of a four's hull. Today's elites cost that without
 and half of it with one. So the elites are sized for a squad with none, and the Barrier is
 an edge worth half an elite, which is his "sub for a Tank" of 12 November.
 
-**Leans.**
+**His lean, 15 November**: "I don't want the existence of barrier as an accessible-to-all
+tool, to justify the existence of massive enemy strikes. That's my main concern, degenerate
+or not. I think that's why I lean towards not having it as a basic." It answers the leans
+below from the other side, and section 16 reads what would stand in its slot. A debug
+build's TRIALS has had it playable since 13 November: BARRIER BASIC on NONE.
+
+**Claude's leans of the second round**, the first of which his lean replaces:
 
 1. Leave the Barrier basic as built, cooldown and all, and do not size the spike against
    it: a squad without one is then on budget and a squad with one is ahead.
@@ -931,21 +1008,18 @@ a point off every blow (sections 6 and 11).
 
 Each with Claude's lean. Nothing here is built or changed in content.
 
-1. **One under or two** (section 3). Lean: two under, at a vanilla of 3 against a standard
-   foe of 5, loosely held. A dial for the rank and file's hit points, beside BASIC GUNS,
-   plays all three; built on his word.
-2. **The foes' Burn** (section 9). Lean: one status that erodes on both sides, shield then
-   hull on a machine, past armour and past a Barrier, its numbers a damage rider's. Its
-   three rulings: shield first or hull alone; whether it passes the Barrier; its numbers at
-   tier one. And its word: Wither, then Erode, his to name.
+1. **One under or two** (section 3). *Called 15 November*: a vanilla of 3, against a
+   standard foe of 4 or of 5, his play to pick; both are on dials.
+2. **The foes' Burn** (section 9). *Called 15 November*: Ablate on both sides, the shield
+   first on a machine and the hull past armour. Still his: whether a tick passes a Barrier,
+   and its numbers at tier one.
 3. **The riders at par** (section 4's last column) as the bench's first rows: a tier-one
    find reads as the vanilla alone, by his second round and the two rows of section 13.
 4. **Armour** (section 6). Lean: no rule change; the standard blow written down a tier and
    every armour number read against it; plate on a standard foe a domain's turn. His to
    say: whether a walled tank's free reboot is its identity.
-5. **The Barrier basic** (section 11), his open call of 12 November. Lean: leave it as
-   built and size no spike against it; mend the one-blow kits in the foes' pass, where a
-   rider that lands through a Barrier does the work.
+5. **The Barrier basic** (section 11). *His lean, 15 November*: no basic, so that no
+   massive strike is justified by it. What stands in its slot is section 16's.
 6. **Scorch's numbers.** Lean: bring the scorches on every machine, 4 and 5 today, to 2,
    the Red Dragon's. At 4 the answer is always to hold fire; at 2 a shot is a price.
 7. **Flak and Crushed**, one effect under two words (section 7). Lean: leave them.
@@ -966,3 +1040,118 @@ Each with Claude's lean. Nothing here is built or changed in content.
 
 What follows his marks: the bench's grid as a table in chat, then built and read; the fold-in
 of the reboot, on his go, carrying the cuts he marks here; the defence side's model.
+
+## 16. The third round, 15 November: his calls, and his three proposals read
+
+**What he called** (his words in full at the head of this file):
+
+- The vanilla is 3; the standard foe is 4 or 5, on dials (section 3).
+- The foes' base armour at tier one stops at 2 (section 6).
+- Burn becomes Ablate: the shield first on a machine, the hull past armour (section 9).
+- The player's Exposed lasts until the end of the next round. The engine already ran it so;
+  the keyword's and the status's texts and the rules now say it.
+- His lean: the Barrier is no basic (section 11).
+
+**Every rider, buff and debuff in one table**: `docs/vocabulary_table.md`, eighty-one rows by
+name, type, effect and where each exists, no numbers; its page takes a mark and a note a
+row.
+
+### Exposed, for the foes
+
+His rule: a foe lays it, announced as any move is. As it lands the machine's armour counts
+for nothing, at once and until the end of the next round. Next round every targeted intent
+turns on that machine; a foe that aims at nothing is not made to. The shield is untouched. A
+Cleanse gives the armour back and leaves the intents.
+
+Claude's thoughts. It is a good piece, for three reasons.
+
+1. It is the answer to plate that is no breach, and it is announced twice: the move's
+   intent, then a round of intents all on one machine.
+2. It gives the reboot a foe that reads it. The turn it is announced is the turn to reboot,
+   so the fire meets a whole shield; the turn the fire comes is the worst turn to.
+3. It gives Lure and Ward work. A Ward on the target turns the mark away. A Lure from
+   another machine pulls the fire back off it, which is tanking as the armour row has it,
+   "lure plus plate", with the plate on the one who lures.
+
+The holes, each his to rule:
+
+- *How much fire.* A formation's whole round on one machine is 18 to 26 points at tier one,
+  against a shield of 6 to 12 and a hull of 20 to 40. With the fire spread a machine takes a
+  third of that. So on a light machine it is most of its hull in one enemy turn, and whose
+  move it is decides more than its rule: in a duel it is the armour strip alone, in a
+  pack of four a hard turn, in a formation of eight a wreck unless answered. Lean: the
+  engine's rule that foes never pile onto a machine their blows would already wreck stays
+  under it, and at tier one it is a small pack's or a duelist's move.
+- *Lure against it.* Lean: the player's Lure wins, being laid later, so the answer is a
+  second machine and the mark is no lock.
+- *The aim called exposed.* Four foes carry an aim of that name, the lowest shield. Lean:
+  that aim takes an Exposed machine first and the lowest shield after, so the word means
+  one thing.
+- *Two machines Exposed at once.* Lean: each foe picks between them as it would pick.
+- *What it strips.* Lean: the machine's own armour and any Armoured, as on a foe, so the
+  Armoured basic is no answer to it and the Ward and the Lure are.
+
+### Breach, as pressure on the shield
+
+His rule: Breach stays, deals more to a shield, and no longer reaches the hull directly.
+"1.5x, double, triple, who knows."
+
+Read as a what-if in the scratch probe: each point of a breaching blow takes that many
+points of shield, and what the shield cannot pay for lands on the hull with armour off it
+as any blow's does. First on content as built, where 11 of tier one's 69 formation slots
+breach; then on every rank-and-file blow, against section 8's ladder.
+
+| Breach | Content as built: a formation, an elite, a boss | Reboots a machine, a formation | On every blow: hull | Reads as, in points on the blow | Reboots a machine |
+|---|---|---|---|---|---|
+| As built: past shield and armour | 8.1%, 11.1%, 26.5% | 0.64 | 20.6% | 2 | 0.34 |
+| One and a half to a shield | | | 10.3% | 0.4 | 0.97 |
+| Double to a shield | 6.8%, 10.8%, 25.8% | 0.81 | 13.6% | 1 | 1.10 |
+| Triple to a shield | 7.4% | 0.83 | 18.3% | 1.6 | 1.30 |
+
+So it does what he asks. At double a breach is a point on the blow where it is two today,
+and it is paid in reboots more than in hull: the shield clock runs faster and the hull is
+spared. Passing armour as well moved nothing on today's content, 7.0% for 6.8%.
+
+Claude's thoughts.
+
+- It finishes a set in which no threat beats every defence. Breach presses the shield.
+  Exposed strips the plate. Ablate goes past plate, and past a Barrier if he rules it so,
+  and still meets the shield. Scorch taxes the heat.
+- Lean: double, and nothing more. No armour strip on it, since Exposed and Ablate hold that
+  job, and a breacher is then a shield-heavy machine's problem and a tank's relief.
+- *The hole is our side.* A foe has no shield, so Breach as shield damage does nothing on
+  the Overclocked Railgun, the Ammit's Soulcutter Talons and the Wild Boar's charge. Three
+  ways, each with what it gives up. One rule on both sides, "ignores armour, and deals
+  double to a shield": one word and no piece of ours moves, and a foe's breach then passes
+  plate again once the shield is gone. The foes' Breach presses the shield alone and our
+  three pieces keep ignoring armour under a word of their own: two clean jobs and a word
+  more. Or our three pieces print Expose: no new word, and a rider that lands after its own
+  blow, so the Talons would need it to land first. Claude leans to the first as the least
+  to learn, lightly.
+- A Ward turns a breach away today. Lean: it still does, and the blow lands plain.
+
+### What stands where the Barrier basic stood, and Ward
+
+Read with the reboot on at the trial's basics, the Barrier basic's slot on the stock dice
+holding each:
+
+| In the slot | A formation: rounds, hull | An elite: hull, wrecks | A boss: hull, won, wrecks |
+|---|---|---|---|
+| The Barrier, as built | 4.7, 8.1% | 11.1%, 0.03 | 26.5%, 99%, 0.22 |
+| The Armoured basic, which is BARRIER BASIC on NONE | 4.7, 9.1% | 24.6%, 0.23 | 46.8%, 92%, 0.90 |
+| A plain gun of 3 | 4.5, 8.7% | 22.5%, 0.21 | 47.3%, 94%, 0.87 |
+| A Ward | 4.8, 9.3% | 24.2%, 0.28 | 52.7%, 91%, 1.08 |
+
+Without the Barrier an elite costs 22 to 25% of a four's hull whatever stands in the slot,
+which is his budget of a quarter: the elites are already sized for a squad with none. The
+bosses are not: 47 to 53% and a wreck a fight, so the bosses' numbers follow the Barrier out,
+the one-blow kits first. That is his point from the other side: with no Barrier on every
+die, no boss needs a strike sized to be eaten.
+
+On Ward as the basic. It is the right kind of piece for his concern: it turns marks and
+never a blow, so no strike can be sized against it. Its worth is the marks a domain lays,
+and tier one lays few today, which is why the bot reads it as nearly a blank. The pass is
+adding the marks that make it matter: Ablate, Exposed, a Breach worth warding, beside Scorch,
+Corrupt and Disable. So Claude leans to Ward in the slot once tier one's foes carry those,
+and to the Armoured basic or a gun there until then; and to a round's cooldown on it as the
+Barrier had, since a Ward on the right machine turns an Exposed whole.

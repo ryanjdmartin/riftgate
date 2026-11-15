@@ -36,7 +36,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1189 tests, 372,483 checks, green on `ccr-b7d5164e-1wtzzm` (14 November, the Needletail's
+- Tests: 1190 tests, 372,677 checks, green on `ccr-722ca9f0-yj8na3` (15 November, the rank and
+  file's dial and Exposed's texts, over main at `038b22b`). Before it, 1189 tests, 372,483 checks, green on `ccr-b7d5164e-1wtzzm` (14 November, the Needletail's
   nineteenth cut, the Giant Petrel's thirteenth and the Kite's round pair, over main at `bbcf375` taken in a merge). Before it, on main,
   1188 tests, 371,561 checks, green on `ccr-722ca9f0-yj8na3` (14 November, the
   vocabulary pass's two rounds of records, no engine code moved; before that the
@@ -1756,6 +1757,12 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 
 The tasks are the to-do's; this is the index of what waits.
 
+- Burn as Ablate, one rule on both sides (Ryan, 15 November: "hits shield first, I think.
+  Pretty deadly otherwise. Bypasses armour when damaging hull"; the bible's Burning row): built
+  with the reboot's fold-in. Until then the engine runs a machine's Burning as heat.
+- The vanilla gun at 3 (the same day: "3 against 5 or 3 against 4 as the options"): content
+  still prints 2 and a debug build's BASIC GUNS dial plays the 3; it lands with the fold-in.
+
 - The Fracture's prize (section 12); the escorts' marks (`docs/bosses_proposal.md`) and the
   promoted forms' one move more for seven of them (`docs/heroes_proposal.md`).
 - The planned foe moves (the Lich's Dark Rite among them); a silence carrier and a purge
@@ -1795,21 +1802,28 @@ and the rule it replaces is cut in the same pass: the chassis's own shield regen
 out of the engine and of content, and the overheat that settles. The foes' numbers do not
 move in it. **Then, Claude's order, put to him the same day and his to set:** the audit of
 every rider and keyword against the reboot, with the foes' Burn and the Barrier's place (it
-settles what the foes' effects are before anything is sized against them). **It had two
-rounds the same day, ahead of the fold-in, on his "let's do the rider and keyword pass
-now", and his second round made it the vocabulary pass** ("I want to examine enemy riders
-as well, and all existing buffs and debuffs on both sides ... This is a vocabulary domain
-pass. I'm, as always, particularly concerned with Armour"): `docs/vocabulary_pass_proposal.md`
-reads every rider, cost, buff and debuff on both sides against the reboot and his yardstick,
-measures each of our riders on the vanilla and each of the foes' on the standard blow
-(`docs/measurements.md`, two entries), lays out armour against the hit sizes, unwinds the
-Barrier basic and waits on his marks (the to-do's Ryan list has its fourteen decisions;
-nothing in content moved). The two that are open at the root, both his questions of the
-second round: whether the vanilla sits one under the standard foe or two ("Should we still
-be considering +2?"; Claude leans to two, at 3 against 5, and a dial for the rank and
-file's hit points is offered, not built), and the foes' Burn, which he reads as dangerous
-under the reboot and Claude now reads the same way, with a status that erodes on both sides
-in its place and its word his to choose. With the pass, on his proposal, the tier-one
+settles what the foes' effects are before anything is sized against them). **It has had three
+rounds, ahead of the fold-in, and his second made it the vocabulary pass** ("I want to
+examine enemy riders as well, and all existing buffs and debuffs on both sides ... This is a
+vocabulary domain pass. I'm, as always, particularly concerned with Armour"):
+`docs/vocabulary_pass_proposal.md` reads every rider, cost, buff and debuff on both sides
+against the reboot and his yardstick, measures each of our riders on the vanilla and each of
+the foes' on the standard blow (`docs/measurements.md`, three entries), lays out armour
+against the hit sizes and unwinds the Barrier basic. **His third round, 15 November, called
+the roots**: the vanilla is 3 against a standard foe of 4 or of 5, his play to pick, both on
+dials (BASIC GUNS, and RANK AND FILE, built that day); the foes' base armour at tier one
+stops at 2; Burn becomes Ablate, the shield first on a machine and the hull past armour,
+built with the fold-in (Decided, not built, above); and his lean is that the Barrier is no
+basic, so that no massive strike is justified by it. **It also opened three proposals of
+his**, each read in the proposal's section 16 with its holes: Exposed for the foes, an armour
+strip and a reverse lure announced a round ahead; Breach as pressure on the shield, read at
+double as a point on the blow where today's is two; and Ward where the Barrier basic stood.
+**What waits is his marks on one table**: every rider, buff and debuff, eighty-one rows
+(`docs/vocabulary_table.md`), on a page of its own that takes a mark and a note a row
+(Pages, below; `marks` is the collection a session reads back and folds into the proposal).
+Nothing in content moved but Exposed's texts, which now say it lasts until the end of the
+next round.
+With the pass, on his proposal, the tier-one
 bench: placeholder pieces, each the vanilla with one thing traded and priced to read as the
 vanilla alone ("the plain vanilla gun is the benchmark for 'viable,' not 'good'"), the
 proposal's section 13, built after his marks. Then the foes' kits against the frame (who
@@ -1905,6 +1919,17 @@ engine line), since the matrix on file predates everything since 27 October.
 Every page lives in Ryan's account and is republished by its URL (read first), its database
 with it. A page's link goes into this file in the same commit as its first publish; the
 commands are in `README.md`.
+
+- The vocabulary pass's table, for his marks: https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko,
+  built from `docs/vocabulary_table.md` by `tools/pages/vocabulary_marks_page.py` and published
+  with the `db` capability (Version 1, 15 November, from `ccr-722ca9f0-yj8na3`). Each of its
+  eighty-one rows takes a mark (KEEP, CHANGE, CUT, ASK) and a note, saved in the collection
+  `marks`, a document a row keyed by the row's name as a slug (`mark`, `note`, `name`, `at`).
+  Six rows were seeded with his calls of 15 November, each note saying so. A session that
+  works the pass reads `marks` first (ArtifactData, `list`), folds them into
+  `docs/vocabulary_pass_proposal.md` and the table, and republishes only when the table's rows
+  change; a row renamed in the table loses its mark's key, so move the document with it. The
+  page retires with the pass.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
   `docs/design-bible.html` after every change, on Ryan's word. The live page is v0.564, dated 13
