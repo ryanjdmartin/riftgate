@@ -56,8 +56,9 @@ Each carries three placeholder mounts clear of the digging gear, and the drills 
 head turn on joints; none has an act or a gait. A and B run long beside the Honey Badger's 72 or
 so, and B's conveyor reads as a ramp from the codex angle.
 
-**Three rough kits** (Claude's, for him to move; every number a placeholder; each read as built
-and under the reboot, the refit brief's section 22). Any of them can wear any of the looks.
+**Three rough kits** (Claude's, for him to move; every number a placeholder; each read under the
+reboot, the game's rule since 15 November: the rules' The reboot and the refit brief's section
+22). Any of them can wear any of the looks.
 
 1. **The drill stays in**, a hitter for the long fight.
    - The drill is its locked weapon, Direct and melee, small and many-toothed (2 ×2 at 3 heat).
@@ -74,8 +75,8 @@ and under the reboot, the refit brief's section 22). Any of them can wear any of
      pay in a banked resource, a cooldown or an ally's turn.
    - Where it is blank: a pack of small foes, whose holes die under it. The Kite is the short
      fight's machine; this is the long one's (a flanker, a massive foe, an elite, a boss).
-   - Both ways: nothing in it reads regen, cooling or a shield gain. Under the reboot the free
-     turn needs no spend, so a mole that reboots keeps drilling.
+   - Under the reboot: nothing in it reads regen, cooling or a shield gain. The free turn needs
+     no spend, so a mole that reboots keeps drilling.
    - Holes: free damage every round wants a limit (his taste line on riders), here one foe and
      the drill's own number; whether the free strike should spend a Shock the squad laid
      (Claude's lean: plain, so it never eats a setup); the bot would have to value the hole.
@@ -91,11 +92,10 @@ and under the reboot, the refit brief's section 22). Any of them can wear any of
      line). An own reroll (the Trim Tabs) is a free dig-out; a cool entry or equipment held is a
      Shoring Jack or a lure every round, on schedule; a cooldown piece fights it, held dark
      every other round.
-   - Both ways: as built, a cooling of 2 lets a basic gun repeat five or six rounds. Under the
-     reboot its heat never leaves, so a held basic gun stands at the maximum on its third round
-     and the gauge paces the hold. A reboot spends nothing, so whether it keeps its entry and
-     its plate through one is open (Claude's lean: it does, the die untouched, which makes its
-     bare turn less bare; his to rule).
+   - Under the reboot: its heat never leaves, so a held basic gun stands at the maximum on its
+     third round and the gauge paces the hold. A reboot spends nothing, so whether it keeps its
+     entry and its plate through one is open (Claude's lean: it does, the die untouched, which
+     makes its bare turn less bare; his to rule).
    - Holes: the best line may be to find the best entry and sit on it, and whether heat, a
      cooldown and a front that changes break that often enough is play's to say; it takes the
      roll off one machine (the Cassowary's die never rolls either, by stepping); flat armour at
@@ -108,9 +108,8 @@ and under the reboot, the refit brief's section 22). Any of them can wear any of
    - The decision: reading the picks. A foe aiming at it picks again as it dives, so a dive
      moves a blow onto an ally; it dives when the squad can take that, and comes up where the
      fight wants one big blow.
-   - Both ways: nothing in it grants shield, regen or cooling. Under the reboot a Phased machine
-     cannot reboot (section 22), so a dive is cover with no recovery: it spares a shield that
-     will not mend.
+   - Under the reboot: nothing in it grants shield, regen or cooling. A Phased machine cannot
+     reboot, so a dive is cover with no recovery: it spares a shield that will not mend.
    - Holes: a tank that sends its blows to its allies is a tank backwards (the burrow above, a
      reverse Lure) and off Minerva's line ("Everything is a tank, even the ones with legs");
      Phased is the shadow panther's orbit by his word of 11 November; its rhythm waits on one
