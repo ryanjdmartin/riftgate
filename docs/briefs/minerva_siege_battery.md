@@ -39,6 +39,26 @@ hardpoints, the gimbaled mounts on the four armoured panels; the slowest machine
 the turrets' balance is a charge that asks when, never a cooldown that asks how often; no charge
 from shields spent on it.
 
+**A first look test of it** (15 November, on his ask of that day for the chassis with a
+direction: "let's see what you come up with for all of these. Doesn't have to be too detailed
+since none are finalized"): `docs/looks/minerva_siege.png`, built by
+`tools/lowforge/looks/siege_looks.py`, never content until the chassis lands. The pitch as he
+wrote it: four track pods at the corners, each under a bevelled armoured panel, and a hull slung
+between them that stops short of the pods at both ends, so from above the pods stand proud as
+the letter's strokes; the rear deck 24 above the front (72 against 48), a twin-gun turret on
+each, the rear one's guns lying over the front one's roof; a gimbal on each of the four panels.
+About 168 wide and 216 long over the tracks (257 with the guns), 94 to the rear roof: roughly
+2.2 times the Wild Boar's width and 2.8 times its length, which the sheet's last row shows at
+one scale. Claude's choices where his words were silent, each his to change: a rangefinder bar
+with lit ends across each turret's roof; a visor slit on the glacis as the cab; the engine's
+grille and two stacks at the tail; ladders, olive skirts and side plates, hazard tips; the decks
+spaced so both turrets can train (a row shows the battery trained to port); guns on the front
+gimbals and racks on the rear, stand-in classes, since a rack on a front pod would foul the
+front guns' sweep. The turrets are built by hand as locked pieces and take no pin; every turret
+and gimbal has a joint and nothing animates. His to judge besides: the front guns overhang the
+tracks by about 41, and from above the rear guns hide the front turret, the step reading from
+the side.
+
 ## How it got here
 
 - The sketch (Claude, 14 October, the analysis's gap two): every weapon it fires strikes twice
@@ -187,8 +207,10 @@ weapon's keywords and number by steps, which is the new piece.
 3. The passive: ~~Ryan's "Massive Chassis: terrain penalties don't apply", its worth at the
    slowest move~~ no penalties remain (the movement proposal, 28 October: ground is ground and
    water the one priced hex); the charge as the passive stands.
-4. Its size: gargantuan, drawn bigger than the assault class (the Carrier's question too).
+4. Its size: gargantuan, drawn bigger than the assault class (the Carrier's question too); the
+   look test of 15 November draws it at 168 by 216, beside the Wild Boar.
 5. Its numbers and its way of moving.
+6. Its look: his read of the first look test (15 November), or another round.
 
 ## What the session hands back
 
