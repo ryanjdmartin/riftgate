@@ -315,13 +315,12 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # shield or a vent, the basics make heat) and the reboot is the game's rule since 15 November (no
 # chassis regains shield or cools, so the regen's and the cooling's parts are gone), so what is
 # left are the numbers a read may still ask about: "hotter=N" (every weapon N heat
-# more, a read for the heat prices; negative for cooler), "basics=N" (every basic gun deals N
-# more) and "top=N" (the basic guns that deal more than the plainest make N more heat), the two
-# of Ryan's logic for the stock basics (the refit brief's section 23), "foehp=N" (every foe a
+# more, a read for the heat prices; negative for cooler), "top=N" (the basic guns that deal more
+# than the plainest make N more heat, of Ryan's logic for the stock basics: the refit brief's
+# section 23), "foehp=N" (every foe a
 # tier-one formation fields that is no massive has N more hit points: the standard foe 5 where
-# it is 4, his two options of 15 November for a vanilla of 3), "breach=cut" (every foe's move
-# loses its breach and lands as a plain blow: his cut of 15 November, played ahead of the
-# fold-in, where the word leaves the engine and content),
+# it is 4, his two options of 15 November for a vanilla of 3; the vanilla's own point and
+# breach's cut, "basics=" and "breach=" until that day, are content now),
 # "barrier=cooldownN" (the Barrier basic sits out N rounds
 # once spent, 0 for none, where content gives it 1), "barrier=heatN" (it costs N heat) or
 # "barrier=none" (it leaves the stock dice, the Armoured basic in its slot); comma-separated;
@@ -536,15 +535,13 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # banks them (the Ammit), so its flare, its Soul Siphon and their chips show in a battle's first fight.
 # RIFTGATE_REFIT=hotter=-1 (any run; any spec tools/balance.gd's --refit takes) lays a what-if over
 # the refit pass's model, which is content since 10 November: hotter or cooler weapons, the
-# basic guns' numbers, the rank and file's hit points, the foes' breach cut, a price on the
+# top basic's heat, the rank and file's hit points, a price on the
 # Barrier basic.
 # On the phone a debug build's SETTINGS → TRIALS (a page that scrolls) has HEAT (−2, −1, BUILT, +1: every weapon
-# one or two cooler than content prices it, or a point hotter; the what-if's hotter), BASIC GUNS (BUILT, +1: every basic gun
-# a point of damage up, the plain ones 3 where they are 2; the what-if's basics), TOP BASIC
+# one or two cooler than content prices it, or a point hotter; the what-if's hotter), TOP BASIC
 # (BUILT, +2, +4: more heat on the basic guns that deal more than the plainest; the what-if's
 # top), RANK AND FILE (BUILT, +1: a hit point more on tier one's rank and file, the massive foes
-# as built; the what-if's foehp), FOE BREACH (BUILT, CUT: every foe's breach cut, its blow
-# meeting the shield and the armour, the moves' texts unchanged; the what-if's breach=cut)
+# as built; the what-if's foehp)
 # and BARRIER BASIC (BUILT, NONE: the Barrier
 # basic on the stock dice, or the Armoured basic in its slot; the what-if's barrier=none): pick, close the app, open it, and start a new
 # battle or run, since a saved one keeps the numbers it was saved with. RIFTGATE_OVERHEAT=2 (any battle) sets the hull an overheat burns a point of heat past

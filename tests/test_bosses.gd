@@ -572,7 +572,7 @@ func test_a_grudge_grows_with_the_teams_kills_and_a_burst_is_none() -> void:
 	var sk := Skirmish.new(1, 4)
 	sk.add_mech(_mech("A", Die.single(Face.attack(50, I))))
 	var p := Foe.make("pilgrim", 900, 6)
-	p.actions = [_move("karma", {"per_kill": 1, "keywords": ["breach"]})]
+	p.actions = [_move("karma", {"per_kill": 1})]
 	p.action = p.actions[0]
 	var fodder := Foe.make("revenant", 3, 1)
 	var bomb := Foe.make("bomb", 900, 1)

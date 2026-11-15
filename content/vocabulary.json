@@ -43,7 +43,7 @@
    "id": "shield",
    "category": "resource",
    "name": "Shield",
-   "codex": "Enemy damage hits shield before hull. A shield absorbs its number: a blow costs it its damage, and whatever it cannot absorb passes to the hull, armour coming off it there; a breaching blow ignores the shield, which stands, and the armour, so the whole blow reaches the hull. Nothing mends a shield by itself: a reboot brings it back whole, and a component, a module or a passive may add to one that still stands, up to the chassis maximum (a component with Overshield may pass it, and the excess fades at the end of the round). A shield at nothing is Broken, and takes none until its machine reboots. The shield is full as every fight opens, as the heat starts at zero; nothing returns on the map.",
+   "codex": "Enemy damage hits shield before hull. A shield absorbs its number: a blow costs it its damage, and whatever it cannot absorb passes to the hull, armour coming off it there. Nothing mends a shield by itself: a reboot brings it back whole, and a component, a module or a passive may add to one that still stands, up to the chassis maximum (a component with Overshield may pass it, and the excess fades at the end of the round). A shield at nothing is Broken, and takes none until its machine reboots. The shield is full as every fight opens, as the heat starts at zero; nothing returns on the map.",
    "status": "implemented",
    "design": {
     "holes": "Rates and shield sizes are placeholders. No in-combat trickle; a passive may bring one back for one chassis."
@@ -360,13 +360,13 @@
    }
   },
   {
-   "id": "juggernaut_breach",
+   "id": "juggernaut",
    "category": "status",
-   "name": "Juggernaut Breach",
-   "codex": "Machine status, the Wild Boar's. Its next weapon attack gains Breach, and that attack lifts it; equipment leaves it standing. Gained with a Barrier; one at a time. A purge takes it.",
+   "name": "Juggernaut Drive",
+   "codex": "Machine status, the Wild Boar's passive waiting. Its next weapon attack ignores armour, and that attack lifts it; equipment leaves it standing. Gained with a Barrier; one at a time. A purge takes it.",
    "status": "implemented",
    "design": {
-    "holes": "Ryan, 11 November: \"After gaining Barrier, its next weapon attack gains Breach. The next attack breach will need to be represented by a purgeable buff, I'd just call it 'Juggernaut Breach.'\"",
+    "holes": "Ryan, 11 November: \"After gaining Barrier, its next weapon attack gains Breach. The next attack breach will need to be represented by a purgeable buff, I'd just call it 'Juggernaut Breach.'\" 15 November, Breach cut on our side: 'Change to explicit \"ignores armour.\"', so the state shows under the passive's own name and the word Breach is gone from the game.",
     "table": {
      "kind": "buff",
      "on": "machine",
@@ -555,7 +555,7 @@
    "codex": "Purge N, on either side. On a player's entry aimed at a foe, a weapon or equipment, every foe it reaches loses N stacks of every buff it carries (an unstackable one is a stack of one), after the blow, so a foe the blow kills stays down. On a foe's move of its own, never a rider on a blow and never a last act's, the machine it lands on loses N stacks of every buff it carries, for good. A stack is a stack, whatever granted it; an Ability is no buff and stays, and so do the stores. A Ward turns it away and stands, on either side.",
    "status": "implemented",
    "design": {
-    "holes": "One id, dispel, on both sides, as breach is (28 October); numbered 2 November (Ryan: \"lower everything by N and price accordingly\", a softer answer to armour and damage stacking that prices cheap and common; the Null Field Emitter at Purge 2, a placeholder). One purge on either side (Effects.purge): N stacks off every buff, whatever granted it (Ryan, 8 November: \"A stack is a stack, doesn't matter where it came from\"); retired with it the purge by source of 28 October (a die entry's stacks gone for good, a store's, a form's or a passive's put to sleep until the player's turn), which he called cryptic. What the unit is, its form or its passive mechanic, is an Ability and no buff, so no purge reaches it (the same day)."
+    "holes": "One id, dispel, on both sides (28 October); numbered 2 November (Ryan: \"lower everything by N and price accordingly\", a softer answer to armour and damage stacking that prices cheap and common; the Null Field Emitter at Purge 2, a placeholder). One purge on either side (Effects.purge): N stacks off every buff, whatever granted it (Ryan, 8 November: \"A stack is a stack, doesn't matter where it came from\"); retired with it the purge by source of 28 October (a die entry's stacks gone for good, a store's, a form's or a passive's put to sleep until the player's turn), which he called cryptic. What the unit is, its form or its passive mechanic, is an Ability and no buff, so no purge reaches it (the same day)."
    }
   },
   {
@@ -1044,7 +1044,7 @@
    "id": "mine",
    "category": "status",
    "name": "Mine",
-   "codex": "Foe status, the Lammergeier's: every weapon and equipment it aims at a foe adds its flat damage to a Mine on that foe, with what the spend fired at it: every hit's stacks and its other keywords, one Mine a foe however many spends feed it. When the foe falls, even one that gets back up or splits, the Mine blows: its damage on every foe round its slot, each through its own Flak and armour (none under Breach), then its keywords as on a blow. Spread, Penetrate, Splash, Spillover and Lure stay with the spend, and its damage never grows with the spend's. The chip shows its damage; its readout, its keywords.",
+   "codex": "Foe status, the Lammergeier's: every weapon and equipment it aims at a foe adds its flat damage to a Mine on that foe, with what the spend fired at it: every hit's stacks and its other keywords, one Mine a foe however many spends feed it. When the foe falls, even one that gets back up or splits, the Mine blows: its damage on every foe round its slot, each through its own Flak and armour, then its keywords as on a blow. Spread, Penetrate, Splash, Spillover and Lure stay with the spend, and its damage never grows with the spend's. The chip shows its damage; its readout, its keywords.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 9 November: \"the lammergeier basically converts all hits to AoE hits, at the cost of a delay until Death\". One Mine a spend at a flat 2 (\"then look at per hit later if it's weak\"); its riders the spend's whole result on the foe (\"the mine should take the entire result of the spend, then apply it. So a 3-hit flak that burns 1 per hit if the target is under 50% HP, would result in adding a 2 damage mine with 3 flak, and 0-3 burn\"), every hit's stacks as its machine deepened and doubled them and a gated keyword where its gate held (\"if a gate is met when fired only, then apply it\"); the numbered ones add up and the rest ride once; Chain rides as its arcs (Claude's lean, which he took); in the enemy's turn a Mine's Disrupt does nothing; a Suppress rides as fired, each foe the blast meets judging its own Numbed (Claude's read; Ryan: \"Your reads are correct\"). A mark the team laid: a Ward turns it away, a foe's cleanse takes it, the Paradox counts it. A foe taken into a merge hands its Mine to the merger.",
@@ -1504,7 +1504,7 @@
    "codex": "Passive trigger. Fires as this machine gains a Barrier, from its own equipment or an ally's.",
    "status": "implemented",
    "design": {
-    "holes": "The Wild Boar's Juggernaut Breach (Ryan, 11 November: \"After gaining Barrier, its next weapon attack gains Breach\")."
+    "holes": "The Wild Boar's Juggernaut Drive (Ryan, 11 November: \"After gaining Barrier, its next weapon attack gains Breach\"; ignores armour since 15 November)."
    }
   },
   {
@@ -1731,7 +1731,7 @@
    "id": "armour",
    "category": "resource",
    "name": "Armour",
-   "codex": "A chassis number taken off every blow that reaches the hull, flat, never a percentage: a blow on bare hull and what passes a shield alike, never a breach, which ignores it. A blow at or under the armour does nothing to the hull. Shield is not armoured: a blow on shield costs the shield its full damage.",
+   "codex": "A chassis number taken off every blow that reaches the hull, flat, never a percentage: a blow on bare hull and what passes a shield alike. A blow at or under the armour does nothing to the hull. Shield is not armoured: a blow on shield costs the shield its full damage.",
    "status": "implemented",
    "design": {
     "holes": "Numbers are placeholders."
@@ -1758,23 +1758,13 @@
    }
   },
   {
-   "id": "breach",
-   "category": "keyword",
-   "name": "Breach",
-   "codex": "A breaching blow ignores the shield and the armour: the shield stands, the armour counts for nothing, and the whole blow lands. On a foe's move it reaches a machine's hull, and if what gets through is a quarter of its maximum hull or more it destroys a component; a Ward turns it away, and the shield and armour then take the blow like any other. On a weapon it ignores a foe's armour.",
-   "status": "implemented",
-   "design": {
-    "holes": ""
-   }
-  },
-  {
    "id": "self_destruct",
    "category": "foe",
    "name": "Self-Destruct",
    "codex": "A blow that spends the striker: after it lands the foe is gone, whole, and nothing brings it back. The blow is the foe's whole life, so it is announced like any other and the answer is to kill it first or to shield what it has picked.",
    "status": "implemented",
    "design": {
-    "holes": "A property of a foe's attack action, like breach. A self-destructing foe counts as a kill like any other."
+    "holes": "A property of a foe's attack action. A self-destructing foe counts as a kill like any other."
    }
   },
   {
@@ -1905,6 +1895,16 @@
    "status": "implemented",
    "design": {
     "holes": "A working name for Ryan's name pass. It was fuel for a machine that wanted heat while a machine's Burning was heat; since Ablate (15 November) it is a price alone, the component pass's to read."
+   }
+  },
+  {
+   "id": "ignores_armour",
+   "category": "component_property",
+   "name": "Ignores armour",
+   "codex": "A rule printed on a weapon: its blows take nothing off for a foe's armour, its own or Armoured. A Barrier still takes the blow. Written on few pieces, each of a higher tier or behind a gate.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 15 November, with Breach cut on both sides: \"I would remove Breach from the player's side. Ignores armour can be an explicitly written out property\"; \"the player armour piercing pieces should be higher tier, obviously, or gated, I think. Else they become obvious best faces for certain domains\". On the Ammit's Soulcutter Talons, the Wild Boar's next weapon after a Barrier, and the Overclocked Railgun, whose tier is the component pass's. A session's draft, his to write."
    }
   },
   {
@@ -2195,7 +2195,7 @@
    "id": "ward",
    "category": "status",
    "name": "Ward",
-   "codex": "Status, on either side; a blow's damage lands. On a machine, no rider a foe lays lands on it this round, from a blow or from a move of its own (breach, ablate, scorch, disable, corrupt, silence, purge), until the round's end. On a foe, from a move that wards every foe on the field, no mark the team lays lands on it (Ablating, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox and the drone), nor a stun, nor a Purge, and a turned mark feeds no Paradox, until the end of the player's next turn.",
+   "codex": "Status, on either side; a blow's damage lands. On a machine, no rider a foe lays lands on it this round, from a blow or from a move of its own (ablate, scorch, disable, corrupt, silence, purge), until the round's end. On a foe, from a move that wards every foe on the field, no mark the team lays lands on it (Ablating, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox and the drone), nor a stun, nor a Purge, and a turned mark feeds no Paradox, until the end of the player's next turn.",
    "status": "implemented",
    "design": {
     "holes": "A foe's move that lays a debuff without a blow is a rider too (Ryan, 25 October: \"Should stop all riders, even from non-damaging attacks\"), so a Stoke, a Stone, an Eruption on every machine and a Diamond Dust all pass a warded machine by. A foe's Ward (28 October) turns the team's marks (Effects.TEAM_MARKS), and since 2 November a stun and a Purge too, on either side, and stands (Ryan: nothing but damage lands on a Warded foe; the exception that let a stun through went with Numbed's roll).",

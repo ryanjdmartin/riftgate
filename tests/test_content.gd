@@ -936,28 +936,41 @@ func test_a_component_wears_only_the_working_set_of_tags() -> void:
 	assert_true(Array(db.components["chainsaw_claw"]["tags"]).has("melee"), "the claw keeps its melee")
 
 
-## Breach is one word on both sides (22 October): a keyword our weapons may carry, the foes'
-## rider sharing it, and an attack's alone, so a shield carrying it is refused.
-func test_breach_is_a_weapon_keyword_the_foes_share() -> void:
+## Breach is no word of the game's (Ryan, 15 November: "Sure, let's cut breach"): no vocabulary
+## entry, no keyword and no foe's rider, so a piece that names it is refused. A piece that ignores
+## armour says so as a rule written on it, a weapon's alone.
+func test_breach_is_gone_and_ignoring_armour_is_a_rule_written_on_a_weapon() -> void:
 	var db := _fresh()
-	assert_eq(str(db.vocabulary["breach"]["category"]), "keyword", "one vocabulary word, a keyword")
-	assert_true(Foe.ATTACK_KEYWORDS.has("breach"), "and still a foe's rider")
+	assert_false(db.vocabulary.has("breach"), "no vocabulary word")
+	assert_eq(str(db.vocabulary["ignores_armour"]["category"]), "component_property", "the rule that took its place on our side, printed on the piece")
+	assert_false(Foe.ATTACK_KEYWORDS.has("breach"), "and no foe's rider")
+	var old: Dictionary = db.components["enfilade_beam"].duplicate(true)
+	old["tier"] = 1
+	old["face"]["keywords"] = ["breach"]
+	old["face"].erase("penetrate")   # the beam's Penetrate number goes with its keyword
+	db.components["breacher"] = old
 	var gun: Dictionary = db.components["enfilade_beam"].duplicate(true)
 	gun["tier"] = 1
-	gun["face"]["keywords"] = ["breach"]
-	gun["face"].erase("penetrate")   # the beam's Penetrate number goes with its keyword
-	db.components["breacher"] = gun
+	gun["face"]["ignores_armour"] = true
+	db.components["piercer"] = gun
 	var plate: Dictionary = _piece(db, "canopy")
 	plate["tier"] = 1
-	plate["face"]["keywords"] = ["breach"]
-	db.components["breach_plate"] = plate
-	var refused := false
+	plate["face"]["ignores_armour"] = true
+	db.components["piercing_plate"] = plate
+	var wordy: Dictionary = db.components["enfilade_beam"].duplicate(true)
+	wordy["tier"] = 1
+	wordy["face"]["ignores_armour"] = "yes"
+	db.components["wordy"] = wordy
+	var refused := {"breacher": false, "piercing_plate": false, "wordy": false}
 	for e in db.validate():
-		assert_false(e.begins_with("component breacher"), "a breaching weapon validates clean: %s" % e)
-		if e.begins_with("component breach_plate") and e.contains("attack keyword"):
-			refused = true
-	assert_true(refused, "a breaching shield is refused")
-	assert_true(db.build_face(gun["face"]).has(Face.Keyword.BREACH), "and the weapon builds with it")
+		assert_false(e.begins_with("component piercer"), "a weapon that ignores armour validates clean: %s" % e)
+		for id in refused.keys():
+			if e.begins_with("component %s" % id):
+				refused[id] = true
+	assert_true(refused["breacher"], "a piece that names breach is refused: the engine knows no such keyword")
+	assert_true(refused["piercing_plate"], "the rule on a shield is refused: an attack's alone")
+	assert_true(refused["wordy"], "and it is true or false")
+	assert_true(db.build_face(gun["face"]).ignores_armour, "and the weapon builds with it")
 
 
 func _refused(db: ContentDB, prefix: String, word: String) -> bool:
@@ -1030,8 +1043,8 @@ func test_every_foe_has_an_action_roster_and_player_text() -> void:
 func test_foe_actions_scale_the_base_attack_and_are_picked_by_weight() -> void:
 	var f := Foe.make("revenant", 30, 10)
 	f.actions = [
-		{"id": "claw", "name": "Claw", "factor": 1.0, "strikes": 1, "breach": false, "weight": 3, "text": "Claws for {damage}."},
-		{"id": "rend", "name": "Jaw Rend", "factor": 1.5, "strikes": 1, "breach": false, "weight": 1, "text": "Bites for {damage}."},
+		{"id": "claw", "name": "Claw", "factor": 1.0, "strikes": 1, "weight": 3, "text": "Claws for {damage}."},
+		{"id": "rend", "name": "Jaw Rend", "factor": 1.5, "strikes": 1, "weight": 1, "text": "Bites for {damage}."},
 	]
 	assert_eq(f.damage_of(f.actions[1]), 15, "1.5 times 10 is 15, in the magnitude of tens")
 	assert_eq(f.text_of(f.actions[1]), "Bites for 15.", "the text shows the number, never the factor")
@@ -2455,10 +2468,10 @@ func test_a_charged_form_on_a_store_names_a_store_and_its_price() -> void:
 	db.load_dir(ContentDB.DIR)
 	var base: Dictionary = db.components["slugthrower"].duplicate(true)
 	var cases := {
-		"store_ok": [{"store": "rage", "price": 5, "keywords": ["breach"]}, ""],
+		"store_ok": [{"store": "rage", "price": 5, "keywords": ["shock"]}, ""],
 		"store_not_one": [{"store": "overcharged", "price": 5}, "tagged a store"],
 		"store_and_muster": [{"store": "rage", "muster": 1}, "never in musters"],
-		"price_alone": [{"price": 3, "keywords": ["breach"]}, "needs the store"],
+		"price_alone": [{"price": 3, "keywords": ["shock"]}, "needs the store"],
 		"price_nothing": [{"store": "rage", "price": 0}, "at least one stack"],
 	}
 	for id in cases.keys():

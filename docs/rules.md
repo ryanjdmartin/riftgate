@@ -75,8 +75,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   stocks, never its blueprint. A fixed component has no tier; the Arsenal (the capital's
   maker) makes no basics and fields no tier-one chassis, though its tier-one components exist
   and its tier-two chassis stock them. The basic kit is six pieces, each a maker's: four
-  guns, each making 4 heat (the Twin Autoguns and the Rivet Gun, Direct; the Ankle Mortar, Indirect; the Laser
-  Carbine, Direct and warm, 5), and two defensive pieces, each spent on itself or an ally (the
+  guns, three dealing 3 for 4 heat (the Twin Autoguns and the Rivet Gun, Direct; the Ankle Mortar, Indirect) and the Laser
+  Carbine, Direct and warm, 4 for 5, and two defensive pieces, each spent on itself or an ally (the
   Halo Projector, a Barrier, cooldown 1; the Shoring Jack, Armoured 2 for the round).
 - **No recovery on the die**: a component is a weapon or equipment. No stock die holds a
   shield or a vent and no slottable one is dealt: no chassis regains shield or cools by
@@ -101,7 +101,7 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   once the fight begins. Every composition fits its slots (Content conventions) and every fight
   holds one pack, a boss's with its escort, so no fight is given more than its slots hold.
 - At the start, foes take their ranks heaviest hitters first from the left (its heaviest
-  move's damage times strikes, a breach 1 more; ties in arrival order).
+  move's damage times strikes; ties in arrival order).
 - The squad stands in four spots across the floor, one under each of the foes' columns: a squad
   of three from the left, a squad of one or two in the middle spots, the outer ones empty; a
   wrecked machine keeps its spot. A machine faces the column of its spot, and the foe in front of
@@ -308,16 +308,16 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   carries, one Mine a foe: every status's stacks the hits aimed at it fired (each hit's, as its
   machine deepened and doubled them, a Primed machine's Ablating and a passive's lays among them,
   a condition read as the die was spent), its Purge and Chain at every hit's number, the rest
-  once each (Shock, Suppress, Web, Expose, Breach, Disrupt), a gated keyword where its gate held.
+  once each (Shock, Suppress, Web, Expose, Disrupt), a gated keyword where its gate held.
   The numbered ones add up across the spends that feed it. Spread, Penetrate, Splash and
-  Spillover, the Swap, Rapid, Instant and Lure stay with the spend, and what a hit reads off its foe for
+  Spillover, the Swap, Rapid, Instant and Lure stay with the spend, as does a rule written on the piece's own blows (ignores armour), and what a hit reads off its foe for
   damage (missing hull, a consumer's stacks) means nothing to a flat Mine; each foe its blast
   meets takes it with its own defences (a Ward, its Numbed). When the foe falls, one
   that gets back up or splits included, a tick's fall and a part's too, the Mine blows once the
   death check has cleared the slots and before what the falls bring back stands: one blow of
   its damage on every foe round its slot (the slot's other half, the foes beside it in its rank
   and the other rank of its column; a massive foe's, the front-rank foes in the columns either
-  side), each through its own Flak, a Barrier and its armour, none under Breach, aimed at nobody
+  side), each through its own Flak, a Barrier and its armour, aimed at nobody
   so a Shock neither doubles it nor is spent; Chain's number on every other Shocked foe on the
   field; then its keywords on each foe it met, felled or not, as a hit's riders land, Shock and
   Expose after its blow, Disrupt only in the player's turn. Several Mines due at one death check
@@ -419,9 +419,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   to 24 heroes, an elite 16 to 60, the slate's bosses 60 to 72 at tier one (a core in parts 40, a part
   8 to 18, a boss that may rise once 50); a foe's blow 2 to 8 at tier one (the rank and file's
   mostly 2 or 3) and to 10 at tier three, a massive
-  foe's 7 or 8 where a shield meets it and 3 or 4 where it breaches, a hero's 4 to 10, an elite's 7 to 18 and the slate's bosses' 10 to 20, sized
+  foe's 3 to 8, a hero's 4 to 10, an elite's 7 to 18 and the slate's bosses' 10 to 20, sized
   against the shield that refilled before the reboot, the defence side's pass's to size again (at tier one no action of theirs takes the lightest machine
-  from full: a breach under 20, and any one action's blows on one machine under its shield and
+  from full: any one action's blows on one machine come to less than its shield and
   hull together); machine hull 20 to 50 by size (the
   Kite's paper hull 12, its row's one-off), shield 6 to 16 (tier one the low end, 6 to 12, since a level lifts it), base armour 0 to 2 by role, timed armour to 4 or 5; heat
   1 to 20 (1 to 30 if the pricing needs it; a weapon 3 to 11 today, a basic gun 4 or 5), the maxima 10 to 14 (the Musk Ox's 8), a vent 3 to
@@ -439,9 +439,11 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - **Splash N**: the plus round the target, Spread and Penetrate at one number; the two at one
   number are written Splash. A weapon's area keyword carries its number; a debuff's carries
   none, its effects reaching those foes and its blow nothing.
-- **Breach**: the blow ignores the foe's armour (foes carry no shield), the same word as the
-  foes' rider below. The Overclocked Railgun carries it, and the Ammit's Soulcutter Talons, four
-  strikes of 1 that armour would otherwise take whole.
+- **Ignores armour** (a rule written on the piece, no keyword): the weapon's blows take nothing
+  off for the foe's armour, its own or Armoured; a Barrier still takes the blow. The Overclocked
+  Railgun prints it, and the Ammit's Soulcutter Talons, four strikes of 1 that armour would
+  otherwise take whole; the Wild Boar's next weapon after a Barrier fires with it (the
+  Juggernaut Drive, below). A Mine never carries it.
 - **Ablate** (with a number): each foe hit gains that many stacks of Ablating (Ablate 3: three
   stacks). The same word on a foe's blow, on the machine it hits.
 - **Cryo** (with a number): every foe the entry reaches gains that many stacks of Cryo a
@@ -606,7 +608,7 @@ front-rank foe a blow of it damaged, felled or not, drives a quarter of its maxi
 up, into the foe standing behind it, once a spend, a plain blow as the Storm Petrel's zap was (no
 keyword and no Shock read, through what that foe takes, its armour and its Barrier); a massive foe
 has nothing behind it. As the Boar gains a Barrier, from its own Breaching Plow (Cleanse and a
-Barrier on itself, a cooldown of 1) or an ally's piece, it gains Juggernaut Breach.
+Barrier on itself, a cooldown of 1) or an ally's piece, its Drive waits (a buff under the passive's own name): its next weapon attack ignores armour.
 
 ### Buffs, debuffs and resistance
 A **store** is a capped resource a machine fills and spends (the Muster, the rage, the
@@ -727,8 +729,7 @@ On a machine:
   the blow's riders landing and a Shock it carried spent; equipment pops nothing; until it pops
   or the end of the player's next turn.
 - **Ward** (buff): no rider a foe lays lands on this machine this round, from a blow or from a
-  move of its own (breach, ablate, scorch, disable, corrupt, silence, purge), so its shield
-  absorbs a breach like any blow; a blow's damage lands. Until the round's end. The Decoherence
+  move of its own (ablate, scorch, disable, corrupt, silence, purge); a blow's damage lands. Until the round's end. The Decoherence
   Veil grants it, self or ally. A foe's, from a special that wards every foe on the field: no mark
   the team lays lands on it (Ablating, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox,
   a Mine), nor a stun, nor a Purge, so a turned mark feeds no Paradox; the damage
@@ -833,8 +834,8 @@ On a foe:
   multiplies, never below nothing: a foe's blow, its intent showing it, or a machine's weapon.
   Every stack goes after its next turn: a foe's at the end of its next action, a machine's at the
   end of the player's turn. A foe's Ward turns it away; a Cleanse clears it from a machine.
-- **Juggernaut Breach** (buff, the Wild Boar's): gained as it gains a Barrier, one at a time; its
-  next weapon attack gains Breach and lifts it, equipment leaving it standing. A purge takes it.
+- **Juggernaut Drive** (buff, the Wild Boar's passive waiting): gained as it gains a Barrier, one at a time; its
+  next weapon attack ignores armour and lifts it, equipment leaving it standing. A purge takes it.
 - **Empowered** (buff, Rally): lands on every other foe on the field the moment the rally does,
   the rally's value in stacks, and every blow the foe lands hits a point harder a stack, an add
   before the move's factor as every add is. It halves at the end of each round, rounded down,
@@ -879,12 +880,11 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or 
 
 ### Shields, armour, hull
 - A shield absorbs a blow up to its number and loses what it absorbed; the excess reaches
-  the hull. A **breach** blow ignores the shield and the armour: the shield stands, the
-  armour counts for nothing, and the whole blow reaches the hull.
+  the hull. No blow of a foe's passes a shield or armour.
 - A machine's armour comes off every blow that reaches its hull, flat, what passes a shield
-  included, never a breach; a blow at or under the armour is nothing; a shield takes no armour
+  included; a blow at or under the armour is nothing; a shield takes no armour
   off. A foe's armour comes off every blow on it the same way, never off Ablating, Vitriol or a
-  breaching weapon. Base armour is set by role (a tank 2, a heavy worker 1, the rest 0; the
+  weapon that ignores armour. Base armour is set by role (a tank 2, a heavy worker 1, the rest 0; the
   Polar Bear, a tank in its sealed form, 1 open and 4 sealed), and
   Armoured adds to it (a brace: a buff) until the
   round's end, the Polar Bear's seal until a weapon opens it.
@@ -989,7 +989,7 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or 
   stands behind its switch, and what follows is the rule as it runs when on). Shown text still
   names it.
 - A foe's blow that puts a quarter of the machine's maximum hull or more past armour into its
-  hull (a breach's whole blow included) destroys the entry the machine's die shows (the one it
+  hull destroys the entry the machine's die shows (the one it
   spent, held or locked), a blank shrugs it off, and a second such blow in the turn finds it
   broken already. What faces the enemy is the player's choice. A shield absorbs its share first and what reaches the hull counts; a
   Barrier's blow never does. Bites and overheats never injure.
@@ -1045,7 +1045,7 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or 
   foe gone whole, a burst or a part falling with its core, and one taken in by a merge), times
   the move's factor: the adds, then the multiplies, the one damage formula on both
   sides; strikes are separate blows. Riders (a Ward turns away all but the last
-  three): breach (the blow ignores the shield and the armour), scorch (stacks of Scorched), ablate (stacks of
+  three): scorch (stacks of Scorched), ablate (stacks of
   Ablating), disable (the entry the machine shows), corrupt (Corrupted stacks on it), crush
   (Crushed stacks on the machine: a point more on every blow it takes a stack, through the
   next round), steal (the
@@ -1100,7 +1100,7 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or 
 - **A split** (the Gel): a dead Gel splits into two Half-Gels (one deep) once the spend that
   felled it is done, or at once to a tick, standing as a
   pair in the slot it fell from: a twin slot, one slot to the formation, so its hole never
-  opens (the Gel is a wall, not an attacker, and its blow carries no breach). An area blow
+  opens (the Gel is a wall, not an attacker). An area blow
   that reaches the slot (Spread, Penetrate, Splash, a Mine's blast) reaches both halves, aimed at one
   of them or beside, each half taking the number of the shape it stands in (the aimed half's
   twin the row's, or the column's when the entry reaches no row); a single-target blow, a Spillover included, the one it is spent on. The slot is

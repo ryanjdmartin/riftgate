@@ -50,7 +50,7 @@ var intent_value: int = 0
 var intent_note: String = ""      # after the number: "×2" for a double strike
 ## The blow's riders inside the intent chip, after its number (Ryan, 2 November: "Enemy intents with
 ## a rider need to show that rider as part of the intent chip"): [[glyph, text, Color], ...], a
-## breach, a scorch with its stacks, a blow at every machine.
+## scorch with its stacks, a blow at every machine.
 var intent_riders: Array = []
 var chip_wrap := 0.0              # the widest a row of chips runs before the next row starts; 0, the view's width
 var intent: String = ""           # quiet text under a foe, or a corpse's regrowth"

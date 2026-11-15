@@ -90,7 +90,7 @@ KEYWORDS = {
     "chain": [("kill", "reads")], "cleave": [("strikes", "sets")], "penetrate": [("strikes", "sets")], "splash": [("strikes", "sets")],
     "spillover": [("strikes", "sets")], "dispel": [("foe_buff", "reads")],
     "cleanse": [("ablating_mech", "reads"), ("scorched", "reads"), ("disabled", "reads"), ("corrupted", "reads")],
-    "overshield": [], "rapid": [], "instant": [], "breach": [], "every_foe": [], "every_ally": [],
+    "overshield": [], "rapid": [], "instant": [], "every_foe": [], "every_ally": [],
 }
 # A face field and what it sets or reads.
 FACE_FIELDS = {
@@ -128,7 +128,7 @@ TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_shield_
 CONDITIONS = {"target_status": None, "attacker_status": None, "target_rank": "rank", "nth_shot": None,
               "target_no_intent": None, "shield_up": None, "target_unhurt": "missing_hp", "target_half": "missing_hp"}
 # A foe move's riders and effects, on machines.
-FOE_RIDERS = {"ablate": "ablating_mech", "scorch": "scorched", "disable": "disabled", "corrupt": "corrupted", "silence": "silenced", "breach": None}
+FOE_RIDERS = {"ablate": "ablating_mech", "scorch": "scorched", "disable": "disabled", "corrupt": "corrupted", "silence": "silenced"}
 FOE_EFFECTS = {"ablate": "ablating_mech", "scorch_all": "scorched", "disable": "disabled", "corrupt_all": "corrupted", "drain_rerolls": "reroll",
                "brace": "foe_buff", "brace_all": "foe_buff", "rally": "foe_buff", "revive_once": "foe_buff", "revive_once_ally": "foe_buff",
                "prime_all": "foe_buff", "barrier": "foe_buff", "ward_all": "foe_buff", "regenerate": "foe_buff"}
@@ -171,7 +171,7 @@ ENGINE_READERS = {
     "strikes": ["each strike takes the foe's conditions and armour on its own"],
     "mine": ["blows on every foe round its slot when it falls"],
     "ammo": [], "muster": [], "rage": [], "hopper": [], "missing_hp": [], "ally_heat": [], "shield_granted": [], "tags": ["the screen's lunge reads Melee; nothing else reads a tag"],
-    "foe_buff": ["each has an answer beside a purge: kill, suppress or disrupt the rallier, Expose or breach the brace, pop a Barrier with a cheap blow, wait out a Ward, burst what regenerates"],
+    "foe_buff": ["each has an answer beside a purge: kill, suppress or disrupt the rallier, Expose the brace or ignore its armour, pop a Barrier with a cheap blow, wait out a Ward, burst what regenerates"],
 }
 
 

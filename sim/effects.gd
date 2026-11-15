@@ -51,7 +51,7 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_ablate", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "grant_keyword", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "fold_die", "rewrite_weapon", "heat_per_blow", "pass_release", "shove_behind", "mute_keywords", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "shock_on_hull_strike", "grant_keyword", "ignore_armour", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "fold_die", "rewrite_weapon", "heat_per_blow", "pass_release", "shove_behind", "mute_keywords", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status"],
 	"on_round_start": ["add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_shield_hit": ["stack_status", "add_shield", "vent_heat"],
@@ -309,12 +309,13 @@ const STATUS := {
 	# use Sapped"): a machine's attacks through its pipeline's add (never below nothing), a foe's
 	# blow through its attack's; every stack goes after its owner's next turn (after_turn): a
 	# foe's at the end of its next action, a machine's at the end of the player's turn.
-	# Juggernaut Breach (the Wild Boar's, Ryan, 11 November: "After gaining Barrier, its next weapon
-	# attack gains Breach"; "The next attack breach will need to be represented by a purgeable buff,
-	# I'd just call it 'Juggernaut Breach'"): one whoever grants it, lifted by the next weapon the
+	# The Juggernaut Drive's waiting state (the Wild Boar's, Ryan, 11 November: "After gaining
+	# Barrier, its next weapon attack gains Breach"; "The next attack breach will need to be
+	# represented by a purgeable buff"; 15 November, Breach cut on our side: 'Change to explicit
+	# "ignores armour."', the state under the passive's own name): one whoever grants it, lifted by the next weapon the
 	# machine spends, equipment leaving it standing; a buff, so a purge takes it.
-	"juggernaut_breach": {"id": "juggernaut_breach", "name": "Juggernaut Breach", "description": "Its next weapon attack gains Breach.", "decay": "none", "spent_by": "weapon", "single": true, "stacking": "renew",
-		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "grant_keyword", "value": "breach"}]},
+	"juggernaut": {"id": "juggernaut", "name": "Juggernaut Drive", "description": "Its next weapon attack ignores armour.", "decay": "none", "spent_by": "weapon", "single": true, "stacking": "renew",
+		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "ignore_armour", "value": 1}]},
 	"sapped": {"id": "sapped", "name": "Sapped", "description": "Its attacks deal 1 less damage a stack. Every stack goes after its next turn.", "decay": "after_turn",
 		"tags": ["sap", CLEANSABLE], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": -1}, {"trigger": "static", "effect": "add_attack", "value": -1}]},
 	"crushed": {"id": "crushed", "name": "Crushed", "description": "Every blow it takes deals a point more a stack, through the next round.", "decay": "none",
@@ -364,7 +365,7 @@ const STATUS := {
 	# machine at a time. A Barrier is Shocked's mirror on the machines' side: the next blow a
 	# foe lands on it deals nothing, so it never injures, its riders landing, and a blow of
 	# nothing leaves it standing (Skirmish._damage_mech spends it). A Ward turns away every rider
-	# a foe's blows lay on it that round, a breach included, so its shield absorbs the needle; the
+	# a foe's blows lay on it that round; the
 	# damage lands. Neither stacks, and both go at the round's end (a buff's grant). On a foe
 	# (28 October), from its own specials, they last until the end of the player's next turn in
 	# its own words (foe_barrier, foe_ward): its Barrier pops on a weapon's blow alone, and its
@@ -379,7 +380,7 @@ const STATUS := {
 	# A buff a Purge lowers, on either side.
 	"regenerating": {"id": "regenerating", "name": "Regenerating", "description": "Regrows {value} HP at each of its actions, after its Ablating and Vitriol; a stack an action left.",
 		"tags": ["buff"], "effects": [{"trigger": "status", "effect": "regrow", "value": 2}]},
-	"ward": {"id": "ward", "name": "Ward", "description": "No rider a foe lays lands on it this round, from a blow or a move of its own (breach, ablate, scorch, disable, corrupt, silence, purge); a blow's damage lands. Until the round's end.", "stacking": "renew",
+	"ward": {"id": "ward", "name": "Ward", "description": "No rider a foe lays lands on it this round, from a blow or a move of its own (ablate, scorch, disable, corrupt, silence, purge); a blow's damage lands. Until the round's end.", "stacking": "renew",
 		"tags": ["buff"], "effects": []},
 	# The Ammit's Souls (Ryan, 12 November, its rework: "Kills grant one Soul"; "Souls granted by
 	# any kill"; "The souls last the battle"; "I wasn't going to cap it, as part of the fantasy"):
@@ -1395,7 +1396,11 @@ static func effective_face(u, face: Face, target = null) -> Face:
 	# Silence mutes them with the rest.
 	var primed_shock := not muted and base.is_weapon() and stacks_of(u, "charged") > 0 and not base.has(Face.Keyword.SHOCK)
 	var primed_cryo := not muted and base.is_weapon() and stacks_of(u, "supercooled") > 0
-	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and split <= 1 and not mutes and not primed_shock and not primed_cryo:
+	# A weapon's blows ignoring armour by a state its machine carries (the Wild Boar's Juggernaut
+	# Drive, a written rule since 15 November, no keyword): a weapon alone, and what a Silence
+	# mutes is keywords, so it stands.
+	var unarmours := base.is_weapon() and not base.ignores_armour and grants_ignore_armour(u, base, target)
+	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and split <= 1 and not mutes and not primed_shock and not primed_cryo and not unarmours:
 		return face
 	var c := base.duplicate_face() if base == face else base
 	if mutes:
@@ -1419,7 +1424,19 @@ static func effective_face(u, face: Face, target = null) -> Face:
 	if split > 1:
 		c.strikes = maxi(1, c.strikes) * split
 		c.split = split
+	if unarmours:
+		c.ignores_armour = true
 	return c
+
+
+## Does a live effect make this weapon's blows ignore armour (ignore_armour, static, its `when`
+## honoured: the Wild Boar's Juggernaut Drive, waiting on the machine as a state its next weapon
+## spends)?
+static func grants_ignore_armour(u, face: Face, target = null) -> bool:
+	for pair in _taking_part(u, "static", face, target):
+		if str(pair[0].get("effect", "")) == "ignore_armour":
+			return true
+	return false
 
 
 ## An entry spent at a foe as a live rewrite fires it (the Cottonmouth's Adaptive Munitions Drum,
@@ -2510,6 +2527,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"pass_release": body = "a turn it ends with an entry it could have spent and %d heat or more releases its heat once the enemy has acted: %s on every foe, 1 more for each heat over %d" % [int(eff.get("gate", 1)), vs, int(eff.get("gate", 1))]
 		"shove_behind": body = "damaging a foe in the front rank deals %s%% of its maximum HP, rounded up, to the foe behind it" % vs
 		"hold_status": body = "its %s does not decay" % str(STATUS.get(str(v), {}).get("name", v))
+		"ignore_armour": body = "its weapons ignore armour"
 		"heat_per_blow": body = "every blow a foe lands on it adds %s heat" % vs
 		"mute_keywords": body = "its components' keywords are muted"
 		"multiply_stacks": body = "the stacks it lays ×%s" % vs

@@ -16,20 +16,14 @@ extends RefCounted
 ##   hotter=N   every weapon makes N more heat, fixed pieces too, and a passive that rewrites
 ##              its machine's weapons its shot's (a read of how much hotter the guns must run
 ##              before heat is a pace; Ryan, 10 November: "Heat generation is too low")
-##   basics=N   every basic gun deals N more, a rolled one at both ends (Ryan, 14 November: "A
-##              'standard' vanilla shot should be 1 less than our 'standard' fodder health": a
-##              read of the vanilla a point up; section 23 of the brief); may be negative
-##   top=N      the basic guns that deal more than the plainest basic gun make N more heat (the
-##              same day: the gun that deals one more "needs to bite appropriately", and "for
-##              basics, the only cost we should have is Heat")
+##   top=N      the basic guns that deal more than the plainest basic gun make N more heat (Ryan,
+##              14 November: the gun that deals one more "needs to bite appropriately", and "for
+##              basics, the only cost we should have is Heat"). The vanilla's own point, the
+##              `basics` part until 15 November, is content: the basic guns deal 3
 ##   foehp=N    every foe a tier-one formation fields that is no massive, and what such a foe
 ##              leaves as it falls, has N more hit points (Ryan, 15 November: "Ok let's go 3
-##              against 5 or 3 against 4 as the options": the standard foe a point up beside
-##              basics=1, so both can be played); may be negative, never under one
-##   breach=cut every foe's move loses its breach and lands as a plain blow, the shield first
-##              and armour off what passes it (Ryan, 15 November: "Sure, let's cut breach": the
-##              cut played ahead of the fold-in, where it leaves the engine and content); the
-##              team's own pieces are untouched
+##              against 5 or 3 against 4 as the options": the standard foe a point up, so
+##              both can be played); may be negative, never under one
 ##   barrier=cooldownN  the Barrier basic sits out N rounds once spent, after the round of the
 ##                      spend (a cooldown's own count); 0 for none, and the bare word is 1
 ##   barrier=heatN      the Barrier basic makes N heat
@@ -37,28 +31,23 @@ extends RefCounted
 ##                      (the Barrier's place, open since 12 November: a basic, or rare or locked)
 
 const BARRIER := "barrier"   # the status the Barrier basic grants (the engine's word)
-const BREACH := "breach"   # the rider a foe's move carries (the engine's word)
 const ARMOURED := "braced"   # the status the Armoured basic grants
 
 
 static func parse(text: String) -> Dictionary:
-	var spec := {"hotter": 0, "basics": 0, "top": 0, "foehp": 0, "breach": "", "barrier": ""}
+	var spec := {"hotter": 0, "top": 0, "foehp": 0, "barrier": ""}
 	for part in text.split(",", false):
 		var p := part.strip_edges()
 		if p.begins_with("hotter="):
 			spec["hotter"] = int(p.trim_prefix("hotter="))
-		elif p.begins_with("basics="):
-			spec["basics"] = int(p.trim_prefix("basics="))
 		elif p.begins_with("top="):
 			spec["top"] = int(p.trim_prefix("top="))
 		elif p.begins_with("foehp="):
 			spec["foehp"] = int(p.trim_prefix("foehp="))
-		elif p.begins_with("breach="):
-			spec["breach"] = p.trim_prefix("breach=")
 		elif p.begins_with("barrier="):
 			spec["barrier"] = p.trim_prefix("barrier=")
 		elif not p.is_empty():
-			push_error("--refit: no part '%s' (hotter=N, basics=N, top=N, foehp=N, breach=cut, barrier=cooldownN|heatN|none; the model's die and the basics' heat are content since 10 November, and regen= and cooling= left with the chassis's own on 15 November)" % p)
+			push_error("--refit: no part '%s' (hotter=N, top=N, foehp=N, barrier=cooldownN|heatN|none; the model's die and the basics' heat are content since 10 November, regen= and cooling= left with the chassis's own on 15 November, and basics= and breach= with the vanilla's 3 and breach's cut the same day)" % p)
 	return spec
 
 
@@ -81,11 +70,10 @@ static func apply(db: ContentDB, spec: Dictionary) -> Array[String]:
 				if e is Dictionary and str(e.get("effect", "")) == "rewrite_weapon" and e.has("heat"):
 					e["heat"] = maxi(0, int(e["heat"]) + hotter)
 		notes.append("every weapon makes %+d heat (%d weapons)" % [hotter, n])
-	# The basic guns' own numbers (the brief's section 23): the damage of every one, and the heat
-	# of those that deal more than the plainest, which is the price his logic gives the point.
-	var basics := int(spec.get("basics", 0))
+	# The basic guns' heat (the brief's section 23): that of those that deal more than the
+	# plainest, which is the price his logic gives the point.
 	var top := int(spec.get("top", 0))
-	if basics != 0 or top != 0:
+	if top != 0:
 		var guns := basic_guns(db)
 		var plain := 0
 		for cid in guns:
@@ -95,14 +83,10 @@ static func apply(db: ContentDB, spec: Dictionary) -> Array[String]:
 		for cid in guns:
 			var face: Dictionary = db.components[cid]["face"]
 			var over := int(face.get("power", 0)) > plain
-			if basics != 0:
-				if face.has("power_max"):
-					face["power_max"] = maxi(1, int(face["power_max"]) + basics)
-				face["power"] = maxi(1, int(face.get("power", 0)) + basics)
-			if top != 0 and over:
+			if over:
 				face["heat"] = maxi(0, int(face.get("heat", 0)) + top)
 			said.append("%s %d for %d heat" % [str(db.components[cid].get("name", cid)), int(face["power"]), int(face.get("heat", 0))])
-		notes.append("the basic guns (%+d damage, %+d heat on those over the plainest): %s" % [basics, top, ", ".join(said)])
+		notes.append("the basic guns (%+d heat on those over the plainest): %s" % [top, ", ".join(said)])
 	# The standard foe's hit points (the vocabulary pass, 15 November): tier one's rank and file
 	# a point up or down, the massive foes, the elites and the bosses as content has them.
 	var foehp := int(spec.get("foehp", 0))
@@ -112,22 +96,6 @@ static func apply(db: ContentDB, spec: Dictionary) -> Array[String]:
 			db.foes[fid]["hp"] = maxi(1, int(db.foes[fid].get("hp", 1)) + foehp)
 			raised.append("%s %d" % [str(db.foes[fid].get("name", fid)), int(db.foes[fid]["hp"])])
 		notes.append("tier one's rank and file (%+d hit points): %s" % [foehp, ", ".join(raised)])
-	# The foes' breach, cut (the vocabulary pass, 15 November): every move that carried it lands
-	# as a plain blow, whatever foe it is on; the team's own pieces keep what they print.
-	var breach_rule := str(spec.get("breach", ""))
-	if breach_rule == "cut":
-		var plain: Array[String] = []
-		for fid in db.foes.keys():
-			var lost := false
-			for a in db.foes[fid].get("actions", []):
-				if a is Dictionary and a.has("keywords") and a["keywords"] is Array and (a["keywords"] as Array).has(BREACH):
-					(a["keywords"] as Array).erase(BREACH)
-					lost = true
-			if lost:
-				plain.append(str(db.foes[fid].get("name", fid)))
-		notes.append("the foes' breach cut, %d foes' moves landing as plain blows: %s" % [plain.size(), ", ".join(plain)])
-	elif not breach_rule.is_empty():
-		push_error("--refit: breach=%s is no rule (cut)" % breach_rule)
 	# The Barrier basic's price, a question the first reads raised (a free Barrier is spent every
 	# round it is rolled): so many rounds dark once spent, or so much heat. The number is a
 	# cooldown's own, the rounds sat out after the round of the spend; until 12 November this

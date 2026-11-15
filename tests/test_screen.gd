@@ -2306,13 +2306,13 @@ func test_a_dies_readout_heads_each_line_with_its_mark() -> void:
 
 ## A foe's intent chip carries its blow's riders (Ryan, 2 November: "Enemy intents with a rider need
 ## to show that rider as part of the intent chip"): each keyword its move carries by its term's mark,
-## a numbered one with its stacks, the breach no longer a "!" after the number.
+## a numbered one with its stacks.
 func test_a_foes_intent_chip_carries_its_riders() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
 	sk.add_mech(db.make_mech("badger"))
 	var foe := Foe.make("revenant", 30, 4)
-	foe.actions = [{"id": "rake", "name": "Rake", "kind": "attack", "weight": 1, "keywords": ["breach", "scorch"], "scorch": 2}]
+	foe.actions = [{"id": "rake", "name": "Rake", "kind": "attack", "weight": 1, "keywords": ["all", "scorch"], "scorch": 2}]
 	sk.add_foes([foe])
 	var s := SkirmishScreen.new()
 	s.setup(sk)
@@ -2321,7 +2321,7 @@ func test_a_foes_intent_chip_carries_its_riders() -> void:
 	var riders: Array = v.intent_riders
 	assert_eq(riders.size(), 2, "both riders inside the chip")
 	if riders.size() == 2:
-		assert_eq([str(riders[0][0]), str(riders[0][1])], [Terms.glyph("breach"), ""], "the breach by its mark")
+		assert_eq([str(riders[0][0]), str(riders[0][1])], [Terms.glyph("all"), ""], "the blow at every machine by its mark")
 		assert_eq([str(riders[1][0]), str(riders[1][1])], [Terms.glyph("scorch"), "2"], "the scorch with its stacks")
 	var plain := UnitView.chip_width(Hud.mono(), ["sword", "4", Palette.ENEMY, "intent", []])
 	assert_true(UnitView.chip_width(Hud.mono(), ["sword", "4", Palette.ENEMY, "intent", riders]) > plain + 30.0, "the chip grows to hold them")

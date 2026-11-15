@@ -757,7 +757,7 @@ func test_greedy_values_flak_by_the_team_blows_still_to_come() -> void:
 
 
 ## A Barrier and a Ward (21 October) are worth what the forecast keeps with them up: the
-## Barrier the one big blow, the Ward a breach's needles and their riders; nothing a second time.
+## Barrier the one big blow, the Ward the needles' riders; nothing a second time.
 func test_greedy_values_a_barrier_by_the_blow_it_takes_and_a_ward_by_what_it_turns_away() -> void:
 	var pol := Policy.make(Policy.GREEDY)
 	var wall := Face.buff("barrier")
@@ -778,13 +778,13 @@ func test_greedy_values_a_barrier_by_the_blow_it_takes_and_a_ward_by_what_it_tur
 	s2.add_mech(n)
 	var needler := _ghoul(500, 10)
 	needler.actions[0]["strikes"] = 4
-	needler.actions[0]["keywords"] = ["breach", "scorch"]
+	needler.actions[0]["keywords"] = ["scorch"]
 	s2.add_foes([needler])
 	s2.begin()
 	s2.start_round()
 	var ns: Skirmish.MechState = s2.mechs[0]
-	assert_true(pol.machine_spend_score(s2, ns, ns, ward) > pol.machine_spend_score(s2, ns, ns, wall), "four breaching needles: the Ward, which lets the shield take them all and turns their scorch away")
-	assert_true(pol.machine_spend_score(s2, ns, ns, wall) > 0.0, "though the Barrier still takes one")
+	assert_true(pol.machine_spend_score(s2, ns, ns, ward) > 0.0, "four scorching needles: the Ward turns every scorch away")
+	assert_true(pol.machine_spend_score(s2, ns, ns, wall) > 0.0, "and the Barrier takes one of the four")
 
 
 ## The bot's read of a foe's four buffs (the ladder's brief, B; 28 October; placeholders): a

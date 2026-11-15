@@ -289,10 +289,11 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			for i in range(3):
 				var x := -s * 0.7 + i * s * 0.7
 				ci.draw_line(c + Vector2(x, -s), c + Vector2(x, s), color, width)
-		"breach":
-			# One breach (22 October): the blow through the plate, so neither shield nor armour
-			# takes any of it. The plate is two bars with the gap an arrow drives down through,
-			# its structure apart from Penetrate's sideways arrow and the shield's crack.
+		"juggernaut":
+			# The Wild Boar's Juggernaut Drive waiting (its next weapon ignores armour): the blow
+			# through the plate. The plate is two bars with the gap an arrow drives down through,
+			# its structure apart from Penetrate's sideways arrow and the shield's crack. Breach's
+			# mark until the keyword was cut (15 November), and this state's alone since.
 			ci.draw_line(c + Vector2(-s, s * 0.05), c + Vector2(-s * 0.32, s * 0.05), color, width)
 			ci.draw_line(c + Vector2(s * 0.32, s * 0.05), c + Vector2(s, s * 0.05), color, width)
 			ci.draw_line(c + Vector2(0, -s), c + Vector2(0, s), color, width)

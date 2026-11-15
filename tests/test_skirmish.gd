@@ -1309,57 +1309,38 @@ func test_double_strike_breaks_the_shield_and_reaches_the_hull() -> void:
 	assert_eq(m.hull, 50, "twenty past it, and the second blow's thirty")
 
 
-func test_breach_ignores_the_shield_and_can_injure() -> void:
-	Skirmish.injuries = true   # the rule read here is off in the game since 9 November (the refit pass); the runner resets it
-	# A breach ignores the shield outright, and the shield stands (Ryan, 14 October).
+## No blow of a foe's passes a shield or armour (Ryan, 15 November: "Sure, let's cut breach"):
+## the shield takes its number, the armour comes off what is left, and a move that still names
+## the old rider is a plain blow.
+func test_every_blow_meets_the_shield_and_then_the_armour() -> void:
 	var sk := Skirmish.new(1)
-	var m := _mech("A", Die.single(Face.shield(10)), 10, 100)
-	sk.add_mech(m)
-	var boss := Foe.make("maw", 200, 50)
-	boss.actions[0]["keywords"] = ["breach"]
-	sk.add_foes([boss])
-	sk.begin()
-	sk.start_round()
-	sk.end_round()
-	assert_eq(m.shield, 10, "the shield stands")
-	assert_eq(m.hull, 50, "the whole fifty reached the hull")
-	assert_eq(m.damaged_component_count(), 1, "fifty of a hundred hull in one blow injures")
-	assert_true(sk.turn_events.size() == 1 and not sk.turn_events[0]["broke_shield"] and sk.turn_events[0]["injured"], "the turn event says the shield held and a component was hit")
-	assert_true(str(sk.log).contains("maw breaches A: hull -50"), "the log says it breached")
-	# One breach (22 October): the breach ignores the armour as well as the shield, so the whole
-	# blow reaches the hull of a plated machine too; until then armour came off it (11 October).
-	var s2 := Skirmish.new(1)
 	var plated := _mech("B", Die.single(Face.shield(10)), 10, 100)
 	plated.armour = 15
-	s2.add_mech(plated)
+	sk.add_mech(plated)
 	var maw := Foe.make("maw", 200, 50)
-	maw.actions[0]["keywords"] = ["breach"]
-	s2.add_foes([maw])
-	s2.begin()
-	s2.start_round()
-	assert_eq(s2.forecast(s2.mechs[0])["hull_after"], 50, "the forecast takes no armour off the breach")
-	assert_eq(int(s2.hull_reached(maw, s2.mechs[0])), 50, "and the foes' aim reads the whole blow reaching the hull")
-	s2.end_round()
-	assert_eq(plated.shield, 10, "the shield took nothing")
-	assert_eq(plated.hull, 50, "the whole fifty breached, the armour taking none")
-	# The same blow without the breach: the shield takes ten and the armour fifteen of the rest.
-	var s3 := Skirmish.new(1)
-	var plain := _mech("C", Die.single(Face.shield(10)), 10, 100)
-	plain.armour = 15
-	s3.add_mech(plain)
-	s3.add_foes([Foe.make("maw", 200, 50)])
-	s3.begin()
-	s3.start_round()
-	s3.end_round()
-	assert_eq(plain.hull, 75, "unbreached, ten on the shield and fifteen off the armour")
+	maw.actions[0]["keywords"] = ["breach"]   # a rider the engine no longer knows: nothing reads it
+	sk.add_foes([maw])
+	sk.begin()
+	sk.start_round()
+	assert_eq(sk.forecast(sk.mechs[0])["hull_after"], 75, "the forecast: ten on the shield and fifteen off the armour")
+	assert_eq(int(sk.hull_reached(maw, sk.mechs[0])), 25, "and the foes' aim reads the same twenty-five reaching the hull")
+	sk.end_round()
+	assert_eq(plated.shield, 0, "the shield took its ten")
+	assert_eq(plated.hull, 75, "and the armour fifteen of the rest")
+	assert_true(str(sk.log).contains("maw hits B"), "the log calls it a hit like any other")
 
 
-## Our side of one breach (22 October): a breaching weapon ignores a foe's armour, in the blow,
-## the forecast and the bot's read; the same gun without it loses the armour. A spill stays
-## plain damage and meets the armour behind.
-func test_a_breaching_weapon_ignores_a_foes_armour() -> void:
-	var gun := Face.attack(20, L, [K.BREACH])
-	assert_true(gun.has(K.BREACH) and Face.keyword_from_name("breach") == K.BREACH, "Breach is a weapon keyword")
+## A piece that ignores armour (Ryan, 15 November: "Ignores armour can be an explicitly written
+## out property", where the Breach keyword stood on our side): in the blow, the forecast and the
+## bot's read; the same gun without it loses the armour. It is a rule written on the entry, kept
+## through a save, and no keyword.
+func test_a_weapon_that_ignores_armour_takes_nothing_off_for_it() -> void:
+	var gun := Face.attack(20, L)
+	gun.ignores_armour = true
+	assert_true(gun.describe().contains("ignores armour"), "the entry says it: %s" % gun.describe())
+	assert_true(gun.rule_phrases().has("ignores armour") and gun.has_unique_rule(), "a printed rule: the star, and its line on the hold")
+	assert_true(Face.from_dict(gun.to_dict()).ignores_armour and gun.duplicate_face().ignores_armour, "and it survives a save and a copy")
+	assert_true(Face.keyword_from_name("breach") <= 0, "Breach is no keyword")
 	var sk := Skirmish.new(1)
 	sk.add_mech(_mech("A", Die.single(gun), 40, 100))
 	var plate := _ghoul(100, 1)
@@ -1486,24 +1467,15 @@ func test_a_reach_read_on_the_rank_adds_only_on_its_reach_and_its_rank() -> void
 	assert_false(on_lob.any(func(t: String) -> bool: return t.contains("direct blows aimed at the front")), "and not the front's")
 
 
-## Armour bought against a breach keeps nothing of it (one breach, 22 October): the bot's
-## value of extra armour counts only the blows the armour meets.
-func test_extra_armour_keeps_nothing_of_a_breach() -> void:
-	var sk := Skirmish.new(1)
-	sk.add_mech(_mech("A", Die.single(Face.shield(10)), 0, 100))
-	var maw := Foe.make("maw", 200, 30)
-	maw.actions[0]["keywords"] = ["breach"]
-	sk.add_foes([maw])
-	sk.begin()
-	sk.start_round()
+## The bot's value of extra armour: what it keeps of every blow that reaches the hull.
+func test_extra_armour_keeps_its_number_of_a_blow_on_the_hull() -> void:
 	var pol := Policy.make(Policy.GREEDY)
-	assert_eq(pol._armour_saved(sk, sk.mechs[0], 10), 0.0, "against a breach the armour keeps nothing")
 	var sk2 := Skirmish.new(1)
 	sk2.add_mech(_mech("A", Die.single(Face.shield(10)), 0, 100))
 	sk2.add_foes([Foe.make("maw", 200, 30)])
 	sk2.begin()
 	sk2.start_round()
-	assert_eq(pol._armour_saved(sk2, sk2.mechs[0], 10), 10.0, "against a plain blow on bare hull it keeps its ten")
+	assert_eq(pol._armour_saved(sk2, sk2.mechs[0], 10), 10.0, "against a blow on bare hull it keeps its ten")
 
 
 func test_heaviest_hitters_deploy_left_and_strike_first() -> void:
@@ -1692,10 +1664,12 @@ func test_a_kill_by_an_arc_fires_the_kill_rules() -> void:
 	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "and the kill is its attack's: its kill trigger fires")
 
 
-func test_an_arc_meets_armour_unless_it_breaches() -> void:
-	for breach in [false, true]:
+func test_an_arc_meets_armour_unless_its_gun_ignores_it() -> void:
+	for ignores in [false, true]:
 		var sk := Skirmish.new(1, 2)
-		sk.add_mech(_mech("A", Die.single(_chain_gun(4, 2, 3, [K.BREACH] if breach else []))))
+		var gun := _chain_gun(4, 2, 3)
+		gun.ignores_armour = ignores
+		sk.add_mech(_mech("A", Die.single(gun)))
 		var target := _ghoul(30, 5)
 		var plated := _ghoul(30, 5)
 		plated.armour = 1
@@ -1704,7 +1678,7 @@ func test_an_arc_meets_armour_unless_it_breaches() -> void:
 		sk.start_round()
 		_shock_on(plated)
 		assert_true(sk.assign(0, target), "the Chain gun spent")
-		assert_eq(30 - plated.hp, 2 if breach else 1, "a Breach meets no armour" if breach else "Chain 2, plain, less armour 1")
+		assert_eq(30 - plated.hp, 2 if ignores else 1, "a gun that ignores armour arcs past it" if ignores else "Chain 2, plain, less armour 1")
 
 
 ## The primers (Ryan, 2 November; as keywords since 3 November: "a multi-hit weapon with Shock
@@ -6783,42 +6757,30 @@ func test_a_barrier_takes_the_next_blow_whole_and_its_riders_land() -> void:
 
 
 ## The Ward (Ryan, 14 October; built 21 October): every blow a foe lands on the machine that
-## round leaves no rider, a breach included, so the shield absorbs it; the damage lands.
-func test_a_ward_turns_away_every_rider_and_the_breach_for_the_round() -> void:
+## round leaves no rider; the damage lands, on the shield and then the hull like any blow.
+func test_a_ward_turns_away_every_rider_for_the_round() -> void:
 	var sk := Skirmish.new(1, 1)
 	var m := _mech("A", Die.single(Face.buff("ward")), 30, 100)
 	sk.add_mech(m)
-	sk.add_foes([_storm(20, 2, ["breach", "scorch", "corrupt"])])
+	sk.add_foes([_storm(20, 2, ["scorch", "corrupt"])])
 	sk.begin()
 	sk.start_round()
-	assert_eq(int(sk.forecast(sk.mechs[0])["hull_after"]), 60, "unwarded, both blows breach past the shield")
+	var bare := sk.forecast(sk.mechs[0])
 	assert_true(sk.assign(0, sk.mechs[0]), "the Ward goes up")
 	var fc := sk.forecast(sk.mechs[0])
-	assert_eq(int(fc["shield_after"]), 0, "warded, the shield takes thirty of the forty")
-	assert_eq(int(fc["hull_after"]), 90, "and ten pass")
+	assert_eq([int(fc["shield_after"]), int(fc["hull_after"])], [int(bare["shield_after"]), int(bare["hull_after"])], "a Ward moves no blow's arithmetic")
+	assert_eq([int(fc["shield_after"]), int(fc["hull_after"])], [0, 90], "the shield takes thirty of the forty and ten pass")
 	sk.end_round()
-	assert_eq(m.shield, 0, "the shield absorbed the needle")
+	assert_eq(m.shield, 0, "the shield absorbed its thirty")
 	assert_eq(m.hull, 90, "the damage landed")
 	assert_eq(Effects.stacks_of(m, "scorched"), 0, "no scorch")
 	assert_eq(Effects.corrupt_stacks(m, 0), 0, "no corruption")
-	var said := "\n".join(sk.log)
-	assert_true(said.contains("the Ward turns storm's breach away") and said.contains("the Ward turns storm's riders away"), "the log says so")
+	assert_true("\n".join(sk.log).contains("the Ward turns storm's riders away"), "the log says so")
 	assert_false(Effects.has(m, "ward"), "the round's end takes it")
 	sk.start_round()
 	sk.end_round()
-	assert_eq(m.hull, 50, "unwarded the next round, both blows breach")
+	assert_eq(m.hull, 50, "unwarded the next round, both blows land on bare hull")
 	assert_eq(Effects.stacks_of(m, "scorched"), 2, "and both riders land")
-	# A warded machine's armour takes the turned breach like any blow (one breach, 22 October).
-	var sk2 := Skirmish.new(1, 1)
-	var plated := _mech("B", Die.single(Face.buff("ward")), 0, 100)
-	plated.armour = 5
-	sk2.add_mech(plated)
-	sk2.add_foes([_storm(20, 1, ["breach"])])
-	sk2.begin()
-	sk2.start_round()
-	assert_eq(int(sk2.forecast(sk2.mechs[0])["hull_after"]), 80, "unwarded, the breach ignores the plate")
-	assert_true(sk2.assign(0, sk2.mechs[0]), "the Ward goes up")
-	assert_eq(int(sk2.forecast(sk2.mechs[0])["hull_after"]), 85, "warded, the armour takes its five")
 
 
 ## The Ward turns away every rider, a special's too (Ryan, 25 October: "Should stop all riders,
@@ -7592,13 +7554,13 @@ func test_every_blow_a_foes_armour_or_barrier_takes_whole_banks_two() -> void:
 
 
 ## A charged form on another store than the Muster (the Nemesis's Knuckles, Ryan, 11 November: "its
-## rage is consumed in chunks of 5", "Rage is spent automatically", "consuming rage gives the punch
-## breach"): with the price banked the entry goes out charged, unasked, spends it and fires with
-## Breach, through the foe's armour; short of it, the plain form, the store untouched. The meter
-## reads the chunk. Synthetic piece.
-func test_a_piece_charged_on_rage_spends_five_unasked_and_breaches() -> void:
+## rage is consumed in chunks of 5", "Rage is spent automatically"): with the price banked the
+## entry goes out charged, unasked, spends it and fires with its charged form's keyword; short of
+## it, the plain form, the store untouched. The meter reads the chunk. Synthetic piece, its
+## charged keyword a Shock (the punch's first, Breach, went with the keyword on 15 November).
+func test_a_piece_charged_on_rage_spends_five_unasked_and_fires_its_charged_form() -> void:
 	var sk := Skirmish.new(1)
-	var fist := Face.from_dict({"kind": "attack", "reach": "direct", "power": 5, "charged": {"store": "rage", "price": 5, "keywords": ["breach"]}})
+	var fist := Face.from_dict({"kind": "attack", "reach": "direct", "power": 5, "charged": {"store": "rage", "price": 5, "keywords": ["shock"]}})
 	var m := _mech("A", Die.single(fist), 40, 200)
 	m.grant_passive(_crucible())
 	sk.add_mech(m)
@@ -7614,15 +7576,15 @@ func test_a_piece_charged_on_rage_spends_five_unasked_and_breaches() -> void:
 	var hp := plated.hp
 	assert_true(sk.assign(0, plated), "the plain punch")
 	assert_eq(hp - plated.hp, 1, "its armour takes four of the five")
+	assert_false(Effects.has(plated, "shocked"), "and the plain form shocks nothing")
 	assert_eq(Effects.stacks_of(m, "rage"), 4, "the store untouched")
 	sk.end_round()
 	sk.start_round()
 	Effects.stack(m, Effects.STATUS["rage"], Effects.SKIRMISH, "test", 3, Effects.DECAY_NONE)
 	assert_true(sk.charge_lands(ms), "seven banked: it goes out charged")
-	assert_true(sk.spend_face(ms).has(K.BREACH), "the charged form breaches")
-	hp = plated.hp
+	assert_true(sk.spend_face(ms).has(K.SHOCK), "the charged form carries its keyword")
 	assert_true(sk.assign(0, plated), "the charged punch, unasked")
-	assert_eq(hp - plated.hp, 5, "Breach: its armour takes nothing")
+	assert_true(Effects.has(plated, "shocked"), "and it lands: the foe is Shocked")
 	assert_eq(Effects.stacks_of(m, "rage"), 2, "five spent")
 	assert_true("\n".join(sk.log).contains("spends 5 rage"), "the log says so")
 	assert_true(fist.rule_phrases().any(func(p) -> bool: return str(p).begins_with("5 rage: ")), "its text names the store and the price")
@@ -8858,18 +8820,21 @@ func test_mines_blow_in_strike_order_and_a_blast_that_fells_a_mined_foe_blows_it
 
 ## The single big hit (Ryan, 9 November: "mines combine into one large hit with all keywords
 ## combined ... a way to group small weapons into armour-overcoming hits"): the numbered keywords
-## add up, the rest ride once; one Breach carries the whole blast through armour; a gated keyword
-## rides only where its gate held on the hit; nothing a hit reads off its foe rides.
-func test_a_mines_keywords_add_up_and_one_breach_carries_the_whole_blast_through_armour() -> void:
-	var merged := Skirmish.mine_riders_merged({"stacks": {"ablating": 2}, "keywords": ["shock"]}, {"stacks": {"ablating": 3}, "chain": 1, "keywords": ["shock", "breach"]})
+## add up, the rest ride once; a gated keyword rides only where its gate held on the hit; nothing
+## a hit reads off its foe rides, and a rule written on a piece's own blows (ignores armour, where
+## Breach rode until 15 November) stays with the piece: the blast always meets armour.
+func test_a_mines_keywords_add_up_and_its_blast_meets_armour() -> void:
+	var merged := Skirmish.mine_riders_merged({"stacks": {"ablating": 2}, "keywords": ["shock"]}, {"stacks": {"ablating": 3}, "chain": 1, "keywords": ["shock", "expose"]})
 	assert_eq([int(merged["stacks"]["ablating"]), int(merged["chain"])], [5, 1], "Ablating 2 and Ablating 3 are Ablating 5")
-	assert_eq(merged["keywords"], ["shock", "breach"], "the flags once each, in a fixed order")
+	assert_eq(merged["keywords"], ["shock", "expose"], "the flags once each, in a fixed order")
 	var sk := Skirmish.new(1, 3)
 	var gated := Face.attack(1, I, [K.SUPPRESS])
 	gated.gates = {"suppress": {"when": "target_status", "status": "flakked"}}
 	gated.consumes = "ablating"
 	gated.per_consumed = 1
-	var bomber := _mech("Bomber", Die.of([gated, Face.attack(1, I, [K.BREACH])]), 40, 100)
+	var piercer := Face.attack(1, I)
+	piercer.ignores_armour = true
+	var bomber := _mech("Bomber", Die.of([gated, piercer]), 40, 100)
 	bomber.grant_passive(MINER)
 	sk.add_mech(bomber)
 	sk.add_mech(_mech("Killer", Die.single(Face.attack(200, L)), 40, 100))
@@ -8891,11 +8856,12 @@ func test_a_mines_keywords_add_up_and_one_breach_carries_the_whole_blast_through
 	assert_true(Skirmish.mine_of(b)["riders"]["keywords"].has("suppress"), "the gate held: the Suppress rides")
 	sk.mechs[0].assigned = false
 	sk.mechs[0].face_index = 1
-	assert_true(sk.assign(0, b), "a Breach gun")
-	a.armour = 50
+	assert_true(sk.assign(0, b), "a gun that ignores armour")
+	assert_false(Skirmish.mine_of(b)["riders"]["keywords"].has("ignores_armour"), "its rule is its own blows': no flag of it in the Mine")
+	a.armour = 4
 	c.armour = 50
 	assert_true(sk.assign(1, b), "b felled")
-	assert_eq([a.hp, c.hp], [94, 94], "the whole Mine of 6 through their armour")
+	assert_eq([a.hp, c.hp], [98, 100], "the Mine of 6 meets their armour: two past four of plate, none past fifty")
 
 
 ## The Syrinx Drone (Ryan, 9 November: "Deals a small amount of damage and detonates a foe's
@@ -10589,9 +10555,9 @@ func test_the_forecast_shows_the_rider_coming_on_the_foe_in_front() -> void:
 ## armour, once a spend; a front foe the blow did not damage, or a massive one, drives nothing.
 ## Synthetic passive and pieces.
 func _juggernaut() -> Dictionary:
-	return {"id": "juggernaut", "name": "Juggernaut", "description": "", "effects": [
+	return {"id": "juggernaut_test", "name": "Juggernaut", "description": "", "effects": [
 		{"trigger": "static", "effect": "shove_behind", "value": 25},
-		{"trigger": "on_barrier", "effect": "stack_status", "value": "juggernaut_breach", "stacks": 1, "cap": 1}]}
+		{"trigger": "on_barrier", "effect": "stack_status", "value": "juggernaut", "stacks": 1, "cap": 1}]}
 
 
 func test_a_damaging_blow_on_the_front_drives_a_quarter_of_its_maximum_hp_behind() -> void:
@@ -10632,11 +10598,11 @@ func test_a_damaging_blow_on_the_front_drives_a_quarter_of_its_maximum_hp_behind
 	assert_false("\n".join(boss.log).contains("drives"), "nothing stands behind it")
 
 
-## Juggernaut Breach (Ryan, 11 November: "After gaining Barrier, its next weapon attack gains
-## Breach"; "a purgeable buff, I'd just call it 'Juggernaut Breach'"): gained with a Barrier, one
-## whatever grants it, the next weapon spend breaching and lifting it, equipment leaving it, a purge
-## taking it. Synthetic passive and pieces.
-func test_a_barrier_gives_juggernaut_breach_to_the_next_weapon_attack() -> void:
+## The Juggernaut Drive's waiting state (Ryan, 11 November: "After gaining Barrier, its next
+## weapon attack gains Breach"; "a purgeable buff"; 15 November: 'Change to explicit "ignores
+## armour."'): gained with a Barrier, one whatever grants it, the next weapon spend ignoring armour
+## and lifting it, equipment leaving it, a purge taking it. Synthetic passive and pieces.
+func test_a_barrier_makes_the_next_weapon_attack_ignore_armour() -> void:
 	var wall := Face.from_dict({"kind": "buff", "status": "barrier", "stacks": 1, "rounds": 1, "targets": "self"})
 	var lure := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"]})
 	var sk := Skirmish.new(1)
@@ -10651,31 +10617,36 @@ func test_a_barrier_gives_juggernaut_breach_to_the_next_weapon_attack() -> void:
 	var ms := sk.mechs[0]
 	ms.face_index = 0
 	assert_true(sk.assign(0, ms), "a Barrier on itself")
-	assert_eq(Effects.stacks_of(m, "juggernaut_breach"), 1, "Juggernaut Breach with it")
+	assert_eq(Effects.stacks_of(m, "juggernaut"), 1, "the Drive's state with it")
+	assert_eq(str(Effects.STATUS["juggernaut"]["name"]), "Juggernaut Drive", "shown under the passive's own name")
 	sk.end_round()
 	sk.start_round()
 	ms.face_index = 0
 	assert_true(sk.assign(0, ms), "another Barrier")
-	assert_eq(Effects.stacks_of(m, "juggernaut_breach"), 1, "still one")
+	assert_eq(Effects.stacks_of(m, "juggernaut"), 1, "still one")
 	sk.end_round()
 	sk.start_round()
 	ms.face_index = 1
 	assert_true(sk.assign(0, foe), "equipment at a foe")
-	assert_eq(Effects.stacks_of(m, "juggernaut_breach"), 1, "equipment leaves it standing")
+	assert_eq(Effects.stacks_of(m, "juggernaut"), 1, "equipment leaves it standing")
 	sk.end_round()
 	sk.start_round()
 	ms.face_index = 2
 	var hp := foe.hp
+	assert_true(Effects.effective_face(ms.unit, ms.face(), foe).ignores_armour and not ms.die.faces[2].ignores_armour, "the gun fires ignoring armour, the piece itself unchanged")
+	var shown := sk.shown_face(ms, ms.face(), foe)
+	assert_true(shown.rule_phrases().has("ignores armour"), "the die shows the rule on the gun while the state stands")
+	assert_eq(sk.shown_number(ms, shown, foe), 4, "and its number whole")
 	assert_true(sk.assign(0, foe), "the next weapon")
-	assert_eq(hp - foe.hp, 4, "it breaches: the foe's armour of 3 takes nothing")
-	assert_false(Effects.has(m, "juggernaut_breach"), "and lifts it")
-	Effects.stack(m, Effects.STATUS["juggernaut_breach"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	assert_eq(hp - foe.hp, 4, "it ignores armour: the foe's 3 takes nothing")
+	assert_false(Effects.has(m, "juggernaut"), "and lifts it")
+	Effects.stack(m, Effects.STATUS["juggernaut"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
 	Effects.purge(m, 1)
-	assert_false(Effects.has(m, "juggernaut_breach"), "a purge takes it")
+	assert_false(Effects.has(m, "juggernaut"), "a purge takes it")
 
 
 ## The Wild Boar as content (11 November): its Plow a self-defence, Cleanse and a Barrier on itself
-## on a cooldown of 1, and its Juggernaut Drive the shove and the Breach after a Barrier.
+## on a cooldown of 1, and its Juggernaut Drive the shove and the gun that ignores armour after a Barrier.
 func test_the_wild_boar_plows_and_drives() -> void:
 	var db := ContentDB.load_default()
 	var plow := Face.from_dict(db.components["breaching_plow"]["face"])

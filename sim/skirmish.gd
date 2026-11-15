@@ -1159,7 +1159,7 @@ func forecast(ms: MechState, extra_shield: int = 0, overshield: bool = false) ->
 
 ## One foe's blows on a machine as they would land now, in order: each through what the
 ## machine takes (damage_taken), a Barrier that stands taking the first that deals anything,
-## a breach unless a Ward turns it away, each against the shield the one before left. `walk`
+## each against the shield the one before left. `walk`
 ## carries the shield and the Barrier from blow to blow, and from foe to foe for a caller
 ## walking every attacker: {"shield": int, "barrier": bool}, updated.
 ## Returns each blow's arithmetic (_blow_on's).
@@ -1178,18 +1178,16 @@ func blows_on(ms: MechState, f: Foe, walk: Dictionary) -> Array:
 ## forecast's walk (blows_on) share, changing nothing: what the machine takes of `amount`
 ## (damage_taken, the striker read for its statuses, a plate that stands with the shield reading
 ## `shield`, the shield this blow meets), a Barrier standing (`barrier`) taking it whole if it deals
-## anything, a breach unless a Ward turns it away, then the shield, the armour (the machine's and
+## anything, then the shield, the armour (the machine's and
 ## what it holds against the striker's rank) and the hull (_blow). Returns _blow's dictionary
-## with `amount` (the blow as it arrives, before a Barrier), `barred` and `warded` (a Ward turned
-## its breach away).
+## with `amount` (the blow as it arrives, before a Barrier) and `barred`. No blow of a foe's
+## passes a shield or armour (Ryan, 15 November: "Sure, let's cut breach").
 func _blow_on(ms: MechState, amount: int, source: Foe, shield: int, barrier: bool) -> Dictionary:
 	var arrived := Effects.damage_taken(ms.unit, amount, source, false, true, maxi(0, shield))
 	var barred := arrived > 0 and barrier
-	var warded := source.breaches() and Effects.has(ms.unit, "ward")
-	var r := _blow(shield, ms.unit.hull_max, ms.unit.armour, 0 if barred else arrived, source.breaches() and not warded, breaks_whole(shield, ms.unit.shield_max))
+	var r := _blow(shield, ms.unit.hull_max, ms.unit.armour, 0 if barred else arrived, breaks_whole(shield, ms.unit.shield_max))
 	r["amount"] = arrived
 	r["barred"] = barred
-	r["warded"] = warded
 	return r
 
 
@@ -2269,7 +2267,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 					log.append("%s buffs %s: %s ×%d%s" % [ms.unit.display_name, w.unit.display_name, m.name, stacks, "" if f.buff_rounds == 1 else " for %d rounds" % f.buff_rounds])
 					_lay_in_front(ms, w, f)
 					if f.buff_status == "barrier" and w.alive():
-						_fired(w, Effects.fire(w.unit, "on_barrier"), "as it gains a Barrier")   # the Wild Boar's Juggernaut Breach
+						_fired(w, Effects.fire(w.unit, "on_barrier"), "as it gains a Barrier")   # the Wild Boar's Juggernaut Drive
 					if f.buff_status == "phased":
 						_phase(w)
 					elif f.buff_status == "rallied":
@@ -2326,8 +2324,8 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 				Effects.stack(ms.unit, Effects.STATUS["shots"], Effects.SKIRMISH, "count", 1, Effects.DECAY_NONE)
 			if f.is_weapon() and Effects.remove(ms.unit, "spun_up"):
 				log.append("%s: the spin is spent" % ms.unit.display_name)
-			if f.is_weapon() and Effects.remove(ms.unit, "juggernaut_breach"):
-				log.append("%s: its Juggernaut Breach is spent" % ms.unit.display_name)
+			if f.is_weapon() and Effects.remove(ms.unit, "juggernaut"):
+				log.append("%s: its Juggernaut Drive is spent" % ms.unit.display_name)
 	_holding_returns = false
 	_release_returns()   # the spend is done with the field: what its kills bring back stands now
 	if f.on_machines():
@@ -2777,7 +2775,7 @@ func _strike(f: Foe, t: MechState) -> void:
 
 
 ## Whether this foe's blows carry a rider a Ward turns away: a scorch, an ablate, a disable or a
-## corrupt (the breach is the Ward's too, in _damage_mech; a silence and a purge are specials).
+## corrupt (a silence and a purge are specials).
 static func _rides(f: Foe) -> bool:
 	for kw in ["scorch", "ablate", "disable", "corrupt", "crush", "steal"]:
 		if f.has_keyword(f.action, kw):
@@ -3136,7 +3134,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				# strike aimed at it double, spending the shock, while a blow that only reaches it, an
 				# area's or a Chain's arc, neither doubles nor spends it: Ryan, 29 October), then its armour comes off, flat,
 				# so small blows bounce off a braced foe the way they do off a heavy machine; a
-				# breaching blow meets none (one breach, 22 October). Every blow is recorded, one on a
+				# piece that ignores armour meets none (Foe.armour_for). Every blow is recorded, one on a
 				# foe an earlier hit of the spend felled included, so the screen shows every hit and
 				# shot land (Ryan, 7 November: "Anything truncated confuses the player").
 				var landing := _land_blow(foe, blow, ms.unit, not f.is_debuff(), struck, foe.armour_for(f), at, ("ricochet" if bounce else "strike") if struck else ("chain" if int(shapes.get(foe, 0)) == AREA_CHAIN else "area"))
@@ -3282,8 +3280,8 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	_after_blow(ms, f, touched, gained, turned)
 	if blocked > 0:
 		_blows_blocked(ms, blocked)
-	# What lands after the blow, and Breach on it, ride a Mine once.
-	for k in [Face.Keyword.SHOCK, Face.Keyword.EXPOSE, Face.Keyword.DISRUPT, Face.Keyword.BREACH]:
+	# What lands after the blow rides a Mine once.
+	for k in [Face.Keyword.SHOCK, Face.Keyword.EXPOSE, Face.Keyword.DISRUPT]:
 		if f.has(k):
 			h.mine_flag(k)
 	return h
@@ -4393,11 +4391,12 @@ func _muster(ms: MechState, points: int) -> void:
 ## number; keywords, the flags once each}. The numbered ones add up across every spend that fed it.
 const MINE_NUMBERED := ["dispel", "chain"]
 ## The keywords a Mine carries once each: a stun or a mark it lays (Suppress, a web, Shock,
-## Expose), Breach on its blow, and Disrupt. Ryan, 9 November: "Area modifiers, targeting rules
+## Expose) and Disrupt; a piece's written rule on its own blows (ignores armour) stays with the
+## piece, so a Mine's blast always meets armour. Ryan, 9 November: "Area modifiers, targeting rules
 ## (sweep), and hit counts are ignored. Anything that ties it back to the firer is ignored, like
 ## lure": Spread, Penetrate, Splash and Spillover are area, the Swap a target, Rapid the spend's
 ## own, Lure the firer's; the hits count in the stacks they fired, never in the Mine's damage.
-const MINE_FLAGS := [Face.Keyword.SHOCK, Face.Keyword.SUPPRESS, Face.Keyword.WEB, Face.Keyword.EXPOSE, Face.Keyword.BREACH, Face.Keyword.DISRUPT]
+const MINE_FLAGS := [Face.Keyword.SHOCK, Face.Keyword.SUPPRESS, Face.Keyword.WEB, Face.Keyword.EXPOSE, Face.Keyword.DISRUPT]
 
 
 ## The Mine a foe carries (the Lammergeier's Reverberant Payload, Ryan, 9 November): {damage, the
@@ -4456,7 +4455,7 @@ static func mine_riders_merged(a: Dictionary, b: Dictionary) -> Dictionary:
 
 
 ## A Mine's words, for the log and the chip's readout: its damage, then its riders, each stack by
-## the keyword that lays it where one does ("Mine 6: Ablate 4, Flak 3, Vitriol 2, Shock, Breach").
+## the keyword that lays it where one does ("Mine 6: Ablate 4, Flak 3, Vitriol 2, Shock").
 static func mine_text(mine: Dictionary) -> String:
 	var bits: Array[String] = []
 	var r: Dictionary = mine.get("riders", {})
@@ -4535,7 +4534,7 @@ func mine_reach(rank: int, col: int, massive: bool) -> Array[Foe]:
 
 ## A Mine blowing at a slot (Ryan, 9 November): one plain blow of its damage on every foe its reach
 ## meets (mine_reach), each through its own reads (its Flak, a Barrier, what it takes; aimed at
-## nobody, so a Shock neither doubles it nor is spent) and its armour, none under Breach, and
+## nobody, so a Shock neither doubles it nor is spent) and its armour, and
 ## Chain's number on every other Shocked foe on the field; then its riders on each foe it met,
 ## felled or not, as a hit's land: every status's stacks it carries (Ablating, Cryo, Flak, a
 ## passive's Vitriol), Purge, Suppress and a web, then Shock and Expose, and Disrupt in the
@@ -4566,7 +4565,7 @@ func _blow_mine(mine: Dictionary, rank: int, col: int, massive: bool, where: Str
 		var taken := Effects.damage_taken(foe, blow, null, true, false)
 		if _barrier_eats(foe, true):
 			taken = 0   # its riders land all the same
-		taken = maxi(0, taken - (0 if kws.has("breach") else foe.armour_total()))
+		taken = maxi(0, taken - foe.armour_total())
 		foe.hp -= taken
 		_note_blow(foe, beat, taken, "mine")
 		mine_tally["damage"] += clampi(taken, 0, maxi(0, hp_before))
@@ -4778,7 +4777,7 @@ func _land_web(foe: Foe, gained: Dictionary, turned: Dictionary, webbed: Array[F
 
 ## Spillover: `amount` of a blow, past the kill of the front-rank `foe`, carries into the foe
 ## behind it in the column as plain damage, a blow of the hit's landing as every blow does
-## (_land_blow: the weapon's damage, so a Barrier takes it, then its armour, never a breach); it
+## (_land_blow: the weapon's damage, so a Barrier takes it, then its armour); it
 ## counts as the spend's kill where it fells one and carries no keyword of the blow, and, aimed at nobody, it
 ## neither doubles on a Shock nor spends one (29 October). A foe behind
 ## that the blow already reaches (a penetrate) takes the strike itself, never a spill too, and
@@ -5218,23 +5217,20 @@ func _overheat_marks(ms: MechState, burn: int, idx: int) -> void:
 ## number and the excess reaches the hull. A blow that reaches the hull loses the chassis's
 ## armour first, so small hits bounce off a heavy machine, and it destroys a component when
 ## what gets through reaches the injury threshold, a share of max hull (INJURY_MIN_HULL_PCT).
-## One breach (22 October): a breach ignores the shield, which stands, and the armour, so the
-## whole blow reaches the hull. A Barrier takes the next blow whole; a Ward turns a breach
-## away. A shield sized to a telegraphed blow, or a Barrier, is the counterplay.
+## A Barrier takes the next blow whole. A shield sized to a telegraphed blow, or a Barrier, is
+## the counterplay; no blow of a foe's passes the shield or the armour (breach, 22 October to 15
+## November: its first job was to pass a shield that mended, and nothing mends).
 func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	if is_out(ms):
 		return   # a machine out of the fight takes no damage (ticks and overheats are its own, and land elsewhere)
 	# Buffs and debuffs on damage taken, before shield and armour, the striker read for its
 	# statuses; a Barrier takes the next blow that deals anything, whole, and is spent, a blow of
-	# nothing leaving it standing (Shocked's mirror); a Ward turns a breach away, so the shield
-	# absorbs it like any blow (Ryan, 14 October): _blow_on, the forecast's arithmetic too.
+	# nothing leaving it standing (Shocked's mirror): _blow_on, the forecast's arithmetic too.
 	var r := _blow_on(ms, amount, source, ms.unit.shield, Effects.has(ms.unit, "barrier"))
 	var brought := int(r["amount"])   # the blow as it arrives, for the round preview's incoming
 	var barred := bool(r["barred"])
 	if barred:
 		Effects.remove(ms.unit, "barrier")
-	var warded := bool(r["warded"])
-	var breach := bool(r["breach"])
 	var had_shield := ms.unit.shield > 0
 	ms.unit.shield = r["shield"]
 	ms.unit.hull -= r["through"]
@@ -5249,10 +5245,8 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 		"name": str(source.action.get("name", "")) if source != null else "", "boss": source != null and source.boss,
 		"all": source != null and source.hits_all()})
 	_seq += 1
-	var verb := "breaches" if breach and had_shield else "hits"
+	var verb := "hits"
 	var armoured: String = " (armour -%d)" % r["armoured"] if r["armoured"] > 0 else ""
-	if warded and had_shield and not barred:
-		log.append("%s: the Ward turns %s's breach away" % [ms.unit.display_name, source.display_name])
 	if barred:
 		log.append("%s hits %s: the Barrier takes the blow" % [source.display_name, ms.unit.display_name])
 	elif int(r["stopped"]) > 0:
@@ -5284,32 +5278,29 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 
 ## The arithmetic of one blow against a shield, hull max and armour, shared by the real hit
 ## and the forecast. The honest shield (Ryan, 14 October): a shield absorbs its number and the
-## excess passes to the hull. One breach (22 October): a breach ignores the shield outright,
-## which stands, and the armour, so the whole blow reaches the hull.
+## excess passes to the hull.
 ## Returns shield after, absorbed, through (to hull), armoured (taken off by armour), blocked
 ## (the shield took the whole blow), injures (what reached the hull, over the threshold),
-## breach (the blow ignored shield and armour), broke (the blow took a standing shield to
+## broke (the blow took a standing shield to
 ## nothing) and stopped (what a break kept from the hull: nothing on the honest shield).
 ## `whole` is the block, a what-if (shield_break; breaks_whole says when): the blow that breaks
 ## the shield is stopped there, and what was left of it reaches nothing.
-static func _blow(shield: int, hull_max: int, armour: int, amount: int, breach: bool, whole: bool = false) -> Dictionary:
-	var absorbed := 0 if breach else mini(maxi(0, shield), maxi(0, amount))
+static func _blow(shield: int, hull_max: int, armour: int, amount: int, whole: bool = false) -> Dictionary:
+	var absorbed := mini(maxi(0, shield), maxi(0, amount))
 	var through := maxi(0, amount) - absorbed
-	var broke := not breach and shield > 0 and absorbed >= shield
+	var broke := shield > 0 and absorbed >= shield
 	var stopped := 0
 	if whole and broke:
 		stopped = through
 		through = 0
-	# Armour comes off every blow that reaches the hull, a shield's overflow included, and never
-	# off a breach (one breach, 22 October: the anti-tank threat, by move, the Ward its answer;
-	# until then a breach beat the shield and never the plate). A blow on the shield costs it
-	# its full damage: shield is not armoured.
-	var armoured := mini(armour, through) if through > 0 and not breach else 0
+	# Armour comes off every blow that reaches the hull, a shield's overflow included. A blow
+	# on the shield costs it its full damage: shield is not armoured.
+	var armoured := mini(armour, through) if through > 0 else 0
 	through -= armoured
-	# Injury counts what reaches the hull in one blow, wherever it came from: past the shield,
-	# past a breach, on bare hull (the injury row: a share of the hull in one blow injures).
+	# Injury counts what reaches the hull in one blow, wherever it came from: past the shield
+	# or on bare hull (the injury row: a share of the hull in one blow injures).
 	var injures := injuries and through > 0 and through * 100 >= hull_max * injury_pct
-	return {"shield": shield - absorbed, "absorbed": absorbed, "through": through, "armoured": armoured, "blocked": absorbed > 0 and through + armoured == 0, "injures": injures, "breach": breach, "broke": broke, "stopped": stopped}
+	return {"shield": shield - absorbed, "absorbed": absorbed, "through": through, "armoured": armoured, "blocked": absorbed > 0 and through + armoured == 0, "injures": injures, "broke": broke, "stopped": stopped}
 
 
 ## Whether the blow that breaks a shield standing at `shield` of `shield_max` is stopped whole:
@@ -5478,8 +5469,8 @@ func shield_broken(f: Foe, ms: MechState) -> int:
 	return ms.unit.shield if int(walk["shield"]) <= 0 else 0
 
 
-## The hull this foe's blows would reach on a machine as it stands: its damage, its strikes,
-## its breach, against the shield, armour, Barrier, Ward and damage taken the forecast reads.
+## The hull this foe's blows would reach on a machine as it stands: its damage and its strikes
+## against the shield, armour, Barrier and damage taken the forecast reads.
 func hull_reached(f: Foe, ms: MechState) -> int:
 	if foe_blow(f) <= 0:
 		return 0

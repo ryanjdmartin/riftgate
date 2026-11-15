@@ -1195,8 +1195,8 @@ func composition_menace(c: Dictionary) -> int:
 	return worth_of(squad_of(c))
 
 
-## A foe's weight by its own numbers: its heaviest implemented blow (damage times strikes, a
-## breach one more: the engine's threat, which already orders the deployment) plus a quarter of
+## A foe's weight by its own numbers: its heaviest implemented blow (damage times strikes: the
+## engine's threat, which already orders the deployment) plus a quarter of
 ## its HP, rounded up. What menace was until 11 November and what a kill no longer pays; kept as
 ## the other side of the benchmark, what a pack's stat blocks add up to against the rating its
 ## difficulty is tuned to (the balance report's column).
@@ -1577,6 +1577,11 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	# machine Ablating as it is spent, a positive number of stacks.
 	if fd.has("self_ablate") and (kind != "attack" or int(fd["self_ablate"]) <= 0):
 		errs.append("%s: self_ablate is a positive number of stacks of Ablating on its own machine, on an attack" % where)
+	# Ignores armour (Ryan, 15 November, where the Breach keyword stood on our side: "Ignores
+	# armour can be an explicitly written out property"): a rule written on a weapon, true or
+	# false, never on equipment, which deals nothing.
+	if fd.has("ignores_armour") and (not (fd["ignores_armour"] is bool) or kind != "attack"):
+		errs.append("%s: ignores_armour is true or false, on an attack" % where)
 	for key in ["fills_hopper", "fires_hopper"]:
 		if fd.has(key) and (kind != "attack" or int(fd[key]) <= 0):
 			errs.append("%s: %s is a positive number on an attack" % [where, key])
@@ -2427,8 +2432,6 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 					errs.append("%s: strikes must be at least 1" % aw)
 				if int(a.get("weight", 1)) < 1:
 					errs.append("%s: weight must be at least 1" % aw)
-				if a.has("breach"):
-					errs.append("%s: breach is a tag, put it in keywords" % aw)
 				if a.has("countdown") and (int(a["countdown"]) < 1 or int(a["countdown"]) > 5):
 					errs.append("%s: countdown is the rounds a move gathers before it lands, 1 to 5" % aw)
 				for k in a.get("keywords", []):
@@ -2575,7 +2578,7 @@ func _validate_foes(errs: Array[String]) -> void:
 			errs.append("%s: only an elite wanders (31 October: the one elite any domain fields, scaled by the tier)" % where)
 		if f.has("winged") and not (f["winged"] is bool):
 			errs.append("%s: winged is true or false" % where)
-		for key in ["strikes", "breach"]:
+		for key in ["strikes"]:
 			if f.has(key):
 				errs.append("%s: '%s' belongs on an attack action, not the foe" % [where, key])
 		if f.has("faction") and not factions.has(f["faction"]):

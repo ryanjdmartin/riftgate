@@ -15,8 +15,8 @@ extends RefCounted
 ## special never fires twice running (`last_special`). A blow may carry `swarm`: so much more
 ## per other foe of its type on the field (`kin`, kept by the skirmish), the ghoul's threat.
 ## Damage is base attack, plus its Empowered and its swarm, times the action's factor (damage_of);
-## strikes are separate blows; keywords are tags on the blow (breach: ignores the shield and the
-## armour, the whole blow to hull).
+## strikes are separate blows; keywords are tags on the blow (scorch: stacks of Scorched on the
+## machine it hits).
 
 var display_name: String = "foe"
 var content_id: String = ""      # id in content/foes.json, for the codex
@@ -142,11 +142,11 @@ func armour_total() -> int:
 	return maxi(0, armour + Effects.foe_armour_bonus(self))
 
 
-## The armour a blow of this entry meets: none when it breaches (one breach, 22 October: a
-## breaching weapon ignores a foe's armour as a foe's breach ignores a machine's shield and
-## armour), else the armour standing. A spill is plain damage and meets it.
+## The armour a blow of this entry meets: none for a piece that ignores armour, a rule written
+## on it (Ryan, 15 November, where the Breach keyword stood), else the armour standing. A spill
+## is plain damage and meets it.
 func armour_for(f: Face) -> int:
-	return 0 if f != null and f.has(Face.Keyword.BREACH) else armour_total()
+	return 0 if f != null and f.ignores_armour else armour_total()
 
 
 func on_field() -> bool:
@@ -375,7 +375,7 @@ func intent_on(u) -> bool:
 
 ## Tags an attack action may carry. Anything true or false about a blow is a tag here, never
 ## a field of its own.
-## breach: ignores the shield and the armour, the whole blow to hull. scorch: a stack of Scorched on the machine it hits, its
+## scorch: a stack of Scorched on the machine it hits, its
 ## weapons and debuffs running hotter for the turn (the foes' one tax on heat); ablate: a stack of
 ## Ablating, a point a stack off the shield and then the hull, past armour and a Barrier, as the
 ## player's turn ends (Ryan, 15 November: one rule on both sides, in Burning's place).
@@ -392,7 +392,7 @@ func intent_on(u) -> bool:
 ## on the machine, so no Ward turns it away, and Ablating on the striker is its race.
 ## A silence and a purge are specials, never riders (28 October: a rider on a hitter's blow is a
 ## tax with no decision), so neither is an attack keyword; the validator refuses them on a blow.
-const ATTACK_KEYWORDS := ["breach", "scorch", "ablate", "disable", "corrupt", "crush", "self_destruct", "all", "steal", "drain"]
+const ATTACK_KEYWORDS := ["scorch", "ablate", "disable", "corrupt", "crush", "self_destruct", "all", "steal", "drain"]
 ## The specials that may never ride a blow (28 October).
 const SPECIALS_ONLY := ["silence", "dispel"]
 ## The riders that lay stacks, each a number on the move beside its keyword (24 October, as the
@@ -408,10 +408,6 @@ func has_keyword(a: Dictionary, k: String) -> bool:
 ## built in a test; content always says it).
 func rider(a: Dictionary, k: String) -> int:
 	return maxi(1, int(a.get(k, 1)))
-
-
-func breaches() -> bool:
-	return has_keyword(action, "breach")
 
 
 ## Is this round's move a blow at every machine (`all`)?
@@ -436,5 +432,5 @@ func text_of(a: Dictionary) -> String:
 func threat() -> int:
 	var best := 0
 	for a in actions:
-		best = maxi(best, damage_of(a) * maxi(1, int(a.get("strikes", 1))) + (1 if has_keyword(a, "breach") else 0))
+		best = maxi(best, damage_of(a) * maxi(1, int(a.get("strikes", 1))))
 	return best

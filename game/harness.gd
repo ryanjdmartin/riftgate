@@ -49,7 +49,7 @@ func _ready() -> void:
 
 ## The refit pass's what-ifs (docs/briefs/refit_pass.md; sim/refit.gd), laid over the content
 ## once, as the game starts and before anything is built from it: RIFTGATE_REFIT names a spec (its
-## parts: hotter=N, basics=N, top=N, foehp=N, breach=cut, barrier=cooldownN|heatN|none), or a
+## parts: hotter=N, top=N, foehp=N, barrier=cooldownN|heatN|none), or a
 ## debug build's SETTINGS → TRIALS has HEAT a point either side, or BARRIER BASIC off the stock
 ## dice (the phone's way, read at the next launch; Settings.HEAT_SPECS and BARRIER_BASICS). The model itself is content since 10 November. A battle or a run saved
 ## before a switch keeps the numbers it was saved with, so judge it on a new one.
@@ -64,10 +64,9 @@ static func refit_trial() -> void:
 
 
 ## The what-if's spec, "" for the game as built: the environment's as written, else a debug
-## build's heat prices (Settings.HEAT_SPECS), the
-## basic guns' damage and the top basic's heat (Settings.BASIC_GUNS, TOP_BASIC_HEATS), tier
-## one's rank and file a hit point up (Settings.RANK_HPS), the foes' breach cut
-## (Settings.FOE_BREACHES) and the Barrier basic off the stock dice (Settings.BARRIER_BASICS).
+## build's heat prices (Settings.HEAT_SPECS), the top basic's heat
+## (Settings.TOP_BASIC_HEATS), tier one's rank and file a hit point up (Settings.RANK_HPS) and
+## the Barrier basic off the stock dice (Settings.BARRIER_BASICS).
 static func refit_spec() -> String:
 	var spec := OS.get_environment("RIFTGATE_REFIT")
 	if spec.is_empty() and OS.is_debug_build():
@@ -75,17 +74,12 @@ static func refit_spec() -> String:
 		var heat := str(Settings.display.get("heat_trial", "0"))
 		if Settings.HEAT_SPECS.has(heat):
 			parts.append(str(Settings.HEAT_SPECS[heat]))
-		var guns := str(Settings.display.get("basic_guns", "0"))
-		if guns != "0" and Settings.BASIC_GUNS.has(guns):
-			parts.append("basics=" + guns)
 		var top := str(Settings.display.get("top_basic_heat", "0"))
 		if top != "0" and Settings.TOP_BASIC_HEATS.has(top):
 			parts.append("top=" + top)
 		var rank_hp := str(Settings.display.get("rank_hp", "0"))
 		if rank_hp != "0" and Settings.RANK_HPS.has(rank_hp):
 			parts.append("foehp=" + rank_hp)
-		if str(Settings.display.get("foe_breach", "built")) == "cut":
-			parts.append("breach=cut")
 		if str(Settings.display.get("barrier_basic", "built")) == "none":
 			parts.append("barrier=none")
 		spec = ",".join(parts)

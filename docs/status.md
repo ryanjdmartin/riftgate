@@ -35,8 +35,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1197 tests, 372,937 checks, green on `ccr-722ca9f0-yj8na3` (15 November, Ablate in
-  Burn's place, its rule's ten tests in a file of their own, over main at `c9e55a9`). Before
+- Tests: 1196 tests, 372,909 checks, green on `ccr-722ca9f0-yj8na3` (15 November, the
+  vanilla's 3 and breach's cut, over main at `c9e55a9`). Before it, 1197 tests, 372,937
+  checks, green on the same branch (15 November, Ablate in
+  Burn's place, its rule's ten tests in a file of their own). Before
   it, 1188 tests, 372,897 checks, green on the same branch (15 November, the reboot
   folded in: five tests of the switch's off side cut with it, over main at `0f5c801`). Before
   it, 1193 tests, 372,939 checks, green on the same branch (15 November, the vocabulary
@@ -1799,19 +1801,11 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 
 The tasks are the to-do's; this is the index of what waits.
 
-- The vanilla gun at 3 (the same day: "3 against 5 or 3 against 4 as the options"): content
-  still prints 2 and a debug build's BASIC GUNS dial plays the 3; it lands with Breach's cut.
-- Exposed for the foes (the same day, his third to fifth rounds; the bible's row in section
-  5): a machine's armour of every kind for nothing until the end of the next round, and the
-  whole field's targeted intents on it as that round opens, up to its predicted death, the
-  rule that foes never overkill kept; tier two and up, one machine at a time, a Lure wins. No
-  foe carries it. Built with the vocabulary's calls (the to-do's Engine list).
-- Breach cut on both sides (his fifth round: "Sure, let's cut breach"; the bible's breach
-  row): the foes' keyword off thirty-four foes and the engine's path with it, ours a
-  property written on the piece ("Ignores armour can be an explicitly written out property")
-  and on pieces of a higher tier or behind a gate. Until it is built content and the engine
-  run breach as before, and a debug build's FOE BREACH dial plays the foes without it
-  (`Refit`'s `breach=cut`).
+- Exposed for the foes (Ryan, 15 November, his third to fifth rounds; the bible's row in
+  section 5): a machine's armour of every kind for nothing until the end of the next round,
+  and the whole field's targeted intents on it as that round opens, up to its predicted
+  death, the rule that foes never overkill kept; tier two and up, one machine at a time, a
+  Lure wins. No foe carries it. It is the foes' pass's (the to-do's Engine list).
 - His marks on the vocabulary's table (15 November, all eighty-two rows; the proposal's
   section 18 has each with its read, and the to-do's Engine list the build in four parts):
   Splash, Overshield, Retaliate, Silence and Rallied as a buff cut; Spillover, Swap, Web,
@@ -1866,9 +1860,14 @@ overheat that settles cut from the engine and from content; the three states ter
 refit brief's section 22 says what landed). **Ablate is built in Burn's place on both
 sides** (the same day; the bible's Ablate row, `tests/test_ablate.gd`): a machine's is a
 point a stack off its shield and then its hull as the player's turn ends, where its Burning
-was heat; the foes' numbers are unmoved, his to size. **What rides behind it, in the to-do's
-order, each a commit of its own**: the vanilla gun at 3 in
-content and Breach cut on both sides; his marks' cuts, renames and the words that leave the
+was heat; the foes' numbers are unmoved, his to size. **The vanilla is 3 in content and
+Breach is cut on both sides** (the same day; the bible's breach row and its vanilla row):
+the plain basic guns deal 3 and the Carbine 4; every blow of a foe's meets the shield and
+then the armour, thirty-four foes' moves plain blows at the numbers they had; ours is a rule
+written on the piece, "ignores armour", on the Ammit's Talons, the Wild Boar's next weapon
+after a Barrier and the Overclocked Railgun, whose tier is the component pass's. The BASIC
+GUNS and FOE BREACH dials went with them. **What rides behind, in the to-do's order, each a
+commit of its own**: his marks' cuts, renames and the words that leave the
 keyword list; his marks' rule changes (Rally on the rallier, Regenerating fading a stack a
 turn, Primed a stack a weapon fired, Brittle in place of Flak and Crushed, Phased granted
 at the round's end); then the anchor read again as the baseline. **Then the foes' pass**

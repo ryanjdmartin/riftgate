@@ -35,7 +35,7 @@ enum Reach { NONE, DIRECT, INDIRECT, EVERY_FOE }   # Every Foe (4 November), bel
 ## team, its own machine among them, or every machine but its own, the Mooring Screens'; Ryan:
 ## "the difference is whether the center one is lit or not, its two modes"). `reaches_all` reads
 ## any of them.
-enum Keyword { NONE, CLEAVE, PENETRATE, ABLATE, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB, CRYO, FLAK, SWAP, EXPOSE, BREACH, SPLASH, DISPEL, INSTANT, SAP }
+enum Keyword { NONE, CLEAVE, PENETRATE, ABLATE, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB, CRYO, FLAK, SWAP, EXPOSE, SPLASH, DISPEL, INSTANT, SAP }
 ## Whom a component may be spent on (Ryan, 26 September): an attack (a weapon or a debuff)
 ## targets foes; a shield, a vent or a buff targets self and allies by default, and content may
 ## narrow one to self only or allies only, so the design space stays open; Every Ally and Every
@@ -55,11 +55,11 @@ const KEYWORD_NAMES := {
 	Keyword.LURE: "lure", Keyword.DISRUPT: "disrupt",
 	Keyword.SPILLOVER: "spillover", Keyword.OVERSHIELD: "overshield", Keyword.SHOCK: "shock",
 	Keyword.WEB: "web", Keyword.CRYO: "cryo", Keyword.FLAK: "flak", Keyword.SWAP: "swap",
-	Keyword.EXPOSE: "expose", Keyword.BREACH: "breach", Keyword.SPLASH: "splash",
+	Keyword.EXPOSE: "expose", Keyword.SPLASH: "splash",
 	Keyword.DISPEL: "dispel", Keyword.INSTANT: "instant", Keyword.SAP: "sap",
 }
 ## What the player reads where it differs from the content id (the vocabulary's name).
-## Purge (28 October) is one id on both sides, dispel, as breach is.
+## Purge (28 October) is one id on both sides, dispel.
 const KEYWORD_LABELS := { Keyword.CLEAVE: "spread", Keyword.DISPEL: "purge" }
 ## The status each foe hit gains from a keyword that lays one: the die's hold lists such a
 ## keyword as what the spend applies on hit, after its heat (Ryan, 25 October).
@@ -136,6 +136,7 @@ var gates: Dictionary = {}    # an attack: keyword name -> the condition it land
 var holds: String = ""        # an attack: the status its target keeps through this round's end, its halving skipped (the Hollow-point Harpoon's pin on Flak)
 var consumes: String = ""     # an attack: the status it consumes on its target, every stack, a point more a stack before the multiplies (the Backdraft Charge's Ablating, 22 October)...
 var per_consumed: int = 1     # ...the damage a stack consumed adds
+var ignores_armour: bool = false   # an attack: its blows take nothing off for a foe's armour, a rule written on the piece (Ryan, 15 November: "Ignores armour can be an explicitly written out property", where the Breach keyword stood on our side)
 var self_ablate: int = 0        # an attack: spending it sets its own machine Ablating, this many stacks (the Stoker's, the stock pass's landing, 22 October; a price in its own shield since Ablate, 15 November)
 var component: String = ""    # the component this entry is (content id); "" for an empty hardpoint
 var empty: bool = false       # an empty hardpoint: blank, and nothing was ever there to break
@@ -372,6 +373,7 @@ static func from_dict(d: Dictionary) -> Face:
 		f.holds = str(d.get("holds", ""))
 		f.per_consumed = maxi(1, int(d.get("per_consumed", 1)))
 		f.self_ablate = maxi(0, int(d.get("self_ablate", 0)))
+		f.ignores_armour = d.get("ignores_armour", false) is bool and d.get("ignores_armour", false)
 		f.fires_hopper = maxi(0, int(d.get("fires_hopper", 0)))
 		f.power_per_load = maxi(0, int(d.get("power_per_load", 0))) if f.fires_hopper > 0 else 0
 	f.braces = maxi(0, int(d.get("braces", 0)))
@@ -472,6 +474,8 @@ func to_dict() -> Dictionary:
 		d["per_consumed"] = per_consumed
 	if self_ablate > 0:
 		d["self_ablate"] = self_ablate
+	if ignores_armour:
+		d["ignores_armour"] = true
 	if fills_hopper > 0:
 		d["fills_hopper"] = fills_hopper
 	if fires_hopper > 0:
@@ -602,7 +606,7 @@ func acts_again() -> bool:
 ## prints with its shells (Ryan, 2 November), and a shield's cooling the number under its steam
 ## (3 November), so none of them is.
 func has_unique_rule() -> bool:
-	return vents_all or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_ablate > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not printed.is_empty() \
+	return vents_all or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_ablate > 0 or ignores_armour or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not printed.is_empty() \
 		or turns_die or gathers_mines or detonates \
 		or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine \
@@ -738,6 +742,7 @@ func duplicate_face() -> Face:
 	f.holds = holds
 	f.per_consumed = per_consumed
 	f.self_ablate = self_ablate
+	f.ignores_armour = ignores_armour
 	f.fills_hopper = fills_hopper
 	f.fires_hopper = fires_hopper
 	f.power_per_load = power_per_load
@@ -856,6 +861,8 @@ func rule_phrases() -> Array[String]:
 			out.append("consumes %s, +%d a stack" % [str(Effects.STATUS.get(consumes, {}).get("name", consumes)), per_consumed])
 		if not holds.is_empty():
 			out.append("its target's %s does not decay this round" % str(Effects.STATUS.get(holds, {}).get("name", holds)))
+		if ignores_armour:
+			out.append("ignores armour")
 		if self_ablate > 0:
 			out.append("Ablating %d on itself" % self_ablate)
 		if fills_hopper > 0:
@@ -1040,6 +1047,8 @@ func describe() -> String:
 				s += " consumes %s, +%d a stack" % [str(Effects.STATUS.get(consumes, {}).get("name", consumes)), per_consumed]
 			if not holds.is_empty():
 				s += " its target's %s does not decay this round" % str(Effects.STATUS.get(holds, {}).get("name", holds))
+			if ignores_armour:
+				s += " ignores armour"
 			if self_ablate > 0:
 				s += " Ablating %d on itself" % self_ablate   # the Stoker's: its own machine set ablating as it fires
 			if fills_hopper > 0:

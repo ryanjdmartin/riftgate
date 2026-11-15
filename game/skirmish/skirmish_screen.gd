@@ -1497,7 +1497,7 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	v.intent = ""
 	v.intent_dim = false
 	# The intent is this round's chosen attack: a sword, its damage, and a mark for a double
-	# strike or a breach; a suppressed foe shows no intent, only the status; a dead one
+	# strike; a suppressed foe shows no intent, only the status; a dead one
 	# threatens nothing.
 	v.intent_kind = "" if (foe.is_suppressed() or foe.target == null or not foe.alive()) else Foe.kind_of(foe.action)
 	# A move still gathering (a countdown) shows the blow it will land; its rounds are a chip.
@@ -1570,7 +1570,7 @@ static func form_mark(ms: Skirmish.MechState, f: Face) -> String:
 ## The riders of a foe's blow, inside its intent chip after its number (Ryan, 2 November: "Enemy
 ## intents with a rider need to show that rider as part of the intent chip"): each keyword its
 ## move carries by its term's mark in its term's colour (Terms), a numbered one with its stacks
-## (Scorch 2: two), so a breach, a scorch or a blow at every machine is read off the chip itself.
+## (Scorch 2: two), so a scorch or a blow at every machine is read off the chip itself.
 static func intent_riders(foe: Foe) -> Array:
 	var out: Array = []
 	if foe == null or not Foe.is_attack_action(foe.action):

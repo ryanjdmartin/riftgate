@@ -105,17 +105,18 @@ func test_a_spec_parses_its_parts() -> void:
 	assert_false(s.has("regen") or s.has("cooling"), "the regen's and the cooling's parts left with the chassis's own (15 November)")
 	var none := Refit.parse("")
 	assert_eq([int(none["hotter"]), str(none["barrier"])], [0, ""], "nothing asked, nothing set")
-	assert_eq([int(none["basics"]), int(none["top"])], [0, 0], "the basic guns' parts with them")
+	assert_eq(int(none["top"]), 0, "the top basic's part with them")
+	assert_false(none.has("basics") or none.has("breach"), "the vanilla's point and breach's cut are content since 15 November, their parts gone")
 	assert_true(Refit.apply(_own(), none).is_empty(), "and nothing changed")
-	var guns := Refit.parse("basics=1,top=2,hotter=-2")
-	assert_eq([int(guns["basics"]), int(guns["top"]), int(guns["hotter"])], [1, 2, -2], "the basic guns' damage, the top basic's heat and a cooler price each parse")
+	var guns := Refit.parse("top=2,hotter=-2")
+	assert_eq([int(guns["top"]), int(guns["hotter"])], [2, -2], "the top basic's heat and a cooler price each parse")
 
 
-## The basics' own what-ifs (Ryan, 14 November: the vanilla gun one under the standard fodder's
-## health, the gun that deals one more paid in heat): every basic gun a point of damage up and
-## nothing else moved, and more heat on the basic guns that deal more than the plainest alone.
-## The pieces are found by what they are, tier zero and a weapon that deals damage, never by id.
-func test_the_basic_guns_deal_a_point_more_and_the_top_basic_runs_hotter() -> void:
+## The top basic's what-if (Ryan, 14 November: the gun that deals one more paid in heat): more
+## heat on the basic guns that deal more than the plainest alone, nothing else moved. The pieces
+## are found by what they are, tier zero and a weapon that deals damage, never by id. The
+## vanilla's own point is content since 15 November: the plainest basic gun deals 3.
+func test_the_top_basic_runs_hotter_and_the_plain_basics_deal_three() -> void:
 	var db := _own()
 	var guns := Refit.basic_guns(db)
 	assert_true(guns.size() >= 2, "content has basic guns to read: %s" % str(guns))
@@ -126,34 +127,26 @@ func test_the_basic_guns_deal_a_point_more_and_the_top_basic_runs_hotter() -> vo
 	for cid in guns:
 		assert_eq(db.component_tier(cid), 0, "%s is a basic" % cid)
 		plain = mini(plain, int(before[cid]["power"]))
-	var notes := Refit.apply(db, Refit.parse("basics=1"))
+	assert_eq(plain, 3, "the vanilla is 3 (Ryan, 15 November: \"3 against 5 or 3 against 4 as the options\")")
+	var notes := Refit.apply(db, Refit.parse("top=2"))
 	assert_eq(notes.size(), 1, "one line says what moved: %s" % str(notes))
+	var hotter := 0
 	for cid in db.components.keys():
 		var face: Dictionary = db.components[cid].get("face", {})
 		if guns.has(str(cid)):
-			assert_eq(int(face["power"]), int(before[cid]["power"]) + 1, "%s deals a point more" % cid)
-			if before[cid].has("power_max"):
-				assert_eq(int(face["power_max"]), int(before[cid]["power_max"]) + 1, "at both ends of its roll")
-			assert_eq(int(face.get("heat", 0)), int(before[cid].get("heat", 0)), "for the heat it made")
+			var over := int(before[cid]["power"]) > plain
+			assert_eq(int(face.get("heat", 0)), int(before[cid].get("heat", 0)) + (2 if over else 0), "%s: %s" % [cid, "over the plainest, two hotter" if over else "the plainest, its heat kept"])
+			assert_eq(int(face["power"]), int(before[cid]["power"]), "its damage kept")
+			hotter += 1 if over else 0
 		else:
 			assert_eq(face, before[cid], "%s, no basic gun, is as content has it" % cid)
+	assert_true(hotter >= 1 and hotter < guns.size(), "some basic gun deals more than the plainest, and not every one (%d of %d)" % [hotter, guns.size()])
 	var db2 := _own()
-	Refit.apply(db2, Refit.parse("top=2"))
-	var hotter := 0
+	Refit.apply(db2, Refit.parse("top=2,hotter=-2"))
 	for cid in guns:
 		var face: Dictionary = db2.components[cid]["face"]
 		var over := int(before[cid]["power"]) > plain
-		assert_eq(int(face.get("heat", 0)), int(before[cid].get("heat", 0)) + (2 if over else 0), "%s: %s" % [cid, "over the plainest, two hotter" if over else "the plainest, its heat kept"])
-		assert_eq(int(face["power"]), int(before[cid]["power"]), "its damage kept")
-		hotter += 1 if over else 0
-	assert_true(hotter >= 1 and hotter < guns.size(), "some basic gun deals more than the plainest, and not every one (%d of %d)" % [hotter, guns.size()])
-	var db3 := _own()
-	Refit.apply(db3, Refit.parse("basics=1,top=2,hotter=-2"))
-	for cid in guns:
-		var face: Dictionary = db3.components[cid]["face"]
-		var over := int(before[cid]["power"]) > plain
-		assert_eq(int(face["power"]), int(before[cid]["power"]) + 1, "the three together: %s a point more" % cid)
-		assert_eq(int(face.get("heat", 0)), maxi(0, int(before[cid].get("heat", 0)) - 2) + (2 if over else 0), "two cooler with every weapon, the top basic's price on top")
+		assert_eq(int(face.get("heat", 0)), maxi(0, int(before[cid].get("heat", 0)) - 2) + (2 if over else 0), "the two together: two cooler with every weapon, the top basic's price on top")
 
 
 ## The standard foe's what-if (Ryan, 15 November: "Ok let's go 3 against 5 or 3 against 4 as
@@ -196,53 +189,21 @@ func test_tier_ones_rank_and_file_gain_a_hit_point_and_no_other_foe_moves() -> v
 	assert_eq(Refit.apply(_own(), Refit.parse("")), [], "and no part moves nothing")
 
 
-## The foes' breach, cut (Ryan, 15 November: "Sure, let's cut breach"): every foe's move loses
-## the rider, its other riders stay, and no piece of the team's moves. The what-if plays the cut
-## ahead of the fold-in and leaves with it, once content's foes carry none.
-func test_the_foes_breach_is_cut_and_nothing_else_moves() -> void:
+## Breach is cut on both sides (Ryan, 15 November: "Sure, let's cut breach"): no foe's move
+## carries the word, and none of ours does: a piece that ignores armour says so as a rule
+## written on it.
+func test_no_move_and_no_piece_carries_breach() -> void:
 	var db := _own()
-	var before := {}
-	var carried := 0
-	var breacher := ""
-	var its_move := ""
 	for fid in db.foes.keys():
-		var kept: Array = []
 		for a in db.foes[fid].get("actions", []):
-			var riders: Array = (a.get("keywords", []) as Array).duplicate()
-			if riders.has(Refit.BREACH):
-				carried += 1
-				if breacher.is_empty():
-					breacher = str(fid)
-					its_move = str(a.get("id", ""))
-			riders.erase(Refit.BREACH)
-			kept.append(riders)
-		before[fid] = kept
-	assert_true(carried > 0, "content's foes breach today, on %d moves" % carried)
-	var ours := {}
+			assert_false(Array(a.get("keywords", [])).has("breach"), "%s's %s is a plain blow" % [fid, str(a.get("id", ""))])
+	var written := 0
 	for cid in db.components.keys():
-		ours[cid] = JSON.stringify(db.components[cid])
-	var was := db.make_foe(breacher)
-	for a in was.actions:
-		if str(a.get("id", "")) == its_move:
-			was.action = a
-	assert_true(was.breaches(), "%s's %s breaches as content has it" % [breacher, its_move])
-	assert_eq(str(Refit.parse("breach=cut")["breach"]), "cut", "the part parses")
-	var notes := Refit.apply(db, Refit.parse("breach=cut"))
-	assert_eq(notes.size(), 1, "one line says what moved: %s" % str(notes))
-	for fid in db.foes.keys():
-		var i := 0
-		for a in db.foes[fid].get("actions", []):
-			assert_eq(Array(a.get("keywords", [])), before[fid][i], "%s's %s keeps every rider but the breach" % [fid, str(a.get("id", ""))])
-			i += 1
-	for cid in db.components.keys():
-		assert_eq(JSON.stringify(db.components[cid]), ours[cid], "%s, a piece of the team's, is as content has it" % cid)
-	var now := db.make_foe(breacher)
-	for a in now.actions:
-		if str(a.get("id", "")) == its_move:
-			now.action = a
-	assert_false(now.breaches(), "a foe made after the what-if lands a plain blow")
-	assert_eq(now.damage_of(now.action), was.damage_of(was.action), "of the same size")
-	assert_eq(str(Refit.parse("")["breach"]), "", "and unsaid, the foes breach as content has them")
+		var face: Dictionary = db.components[cid].get("face", {})
+		assert_false(Array(face.get("keywords", [])).has("breach"), "%s carries no breach" % cid)
+		written += 1 if bool(face.get("ignores_armour", false)) else 0
+	assert_true(written >= 1, "and content has a piece that ignores armour by its own rule (%d)" % written)
+	assert_false(Foe.ATTACK_KEYWORDS.has("breach"), "the engine knows no such rider")
 
 
 ## The what-ifs left over the landed model: a flat regen in place of each chassis's own, an

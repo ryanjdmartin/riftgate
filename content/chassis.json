@@ -335,7 +335,7 @@
    "passive": {
     "id": "juggernaut_drive",
     "name": "Juggernaut Drive",
-    "description": "Damaging an enemy in the front rank deals 25% of its maximum HP, rounded up, to the enemy immediately behind. After gaining Barrier, its next weapon attack gains Breach.",
+    "description": "Damaging an enemy in the front rank deals 25% of its maximum HP, rounded up, to the enemy immediately behind. After gaining Barrier, its next weapon attack ignores armour.",
     "effects": [
      {
       "trigger": "static",
@@ -345,7 +345,7 @@
      {
       "trigger": "on_barrier",
       "effect": "stack_status",
-      "value": "juggernaut_breach",
+      "value": "juggernaut",
       "stacks": 1,
       "cap": 1
      }

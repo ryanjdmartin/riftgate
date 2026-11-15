@@ -982,7 +982,7 @@ func mine_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe, p_ki
 
 
 ## A Mine's blast at a foe's slot, in foe hit points, as the field stands: its damage through each
-## foe's own reads and armour (none under Breach), capped at what it has left, a kill's bonus where
+## foe's own reads and armour, capped at what it has left, a kill's bonus where
 ## it fells, and its riders on a foe it leaves standing (Ablate's ticks, a stun's blow stopped, a
 ## Shock's doubled team blow, Exposed's worth); the foe itself among those it meets for a
 ## detonation (`centre`), never for its fall.
@@ -999,7 +999,7 @@ func blast_worth(sk: Skirmish, mine: Dictionary, at: Foe, centre: bool) -> float
 	var ablate := int((r.get("stacks", {}) as Dictionary).get("ablating", 0))
 	var worth := 0.0
 	for foe in met:
-		var taken := maxi(0, Effects.damage_taken(foe, dmg, null, true, false) - (0 if kws.has("breach") else foe.armour_total()))
+		var taken := maxi(0, Effects.damage_taken(foe, dmg, null, true, false) - foe.armour_total())
 		worth += minf(float(taken), float(foe.hp))
 		if taken >= foe.hp:
 			worth += KILL_BONUS + _threat_now(foe, sk) * HULL_WEIGHT
@@ -1100,8 +1100,7 @@ func brace_score(sk: Skirmish, ms: Skirmish.MechState, stacks: int) -> float:
 
 ## Hull that `extra` armour keeps this round: every blow aimed at this machine that reaches
 ## its hull (past the shield's number or on bare hull) loses that much more, down to nothing,
-## walked blow by blow as the forecast walks them; a breach meets no armour, so extra keeps
-## none of it (one breach, 22 October).
+## walked blow by blow as the forecast walks them.
 func _armour_saved(sk: Skirmish, who: Skirmish.MechState, extra: int) -> float:
 	if extra <= 0:
 		return 0.0
@@ -1109,8 +1108,7 @@ func _armour_saved(sk: Skirmish, who: Skirmish.MechState, extra: int) -> float:
 	var walk := {"shield": who.unit.shield, "barrier": Effects.has(who.unit, "barrier")}
 	for a in sk.attackers_of(who):
 		for r in sk.blows_on(who, a, walk):
-			if not bool(r.get("breach", false)):
-				saved += mini(extra, int(r["through"]))
+			saved += mini(extra, int(r["through"]))
 	return float(saved)
 
 
@@ -1713,7 +1711,7 @@ static func last_act_cost(sk: Skirmish, f: Foe) -> float:
 		var shield: int = m.unit.shield
 		var hull: int = m.unit.hull
 		for s in range(maxi(1, int(blow.get("strikes", 1)))):
-			var r := Skirmish._blow(shield, m.unit.hull_max, m.unit.armour, Effects.damage_taken(m.unit, amount, f), false, Skirmish.breaks_whole(shield, m.unit.shield_max))
+			var r := Skirmish._blow(shield, m.unit.hull_max, m.unit.armour, Effects.damage_taken(m.unit, amount, f), Skirmish.breaks_whole(shield, m.unit.shield_max))
 			cost += float(int(r["absorbed"])) * SHIELD_LOSS_WEIGHT + float(int(r["through"])) * HULL_WEIGHT
 			shield = int(r["shield"])
 			hull -= int(r["through"])
@@ -1895,16 +1893,14 @@ func barrier_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 	return _outlook_gain(sk.forecast(who), after)
 
 
-## What a Ward is worth (21 October): the breach it turns away, read as the Barrier's is (the
-## blow lands on the shield instead, so the hull kept less the shield it costs), and every
+## What a Ward is worth (21 October): every
 ## rider the blows aimed at it would lay this round, each at what a cleanse would clear of it:
 ## a Scorch's heat, an Ablate's points and a corruption's bites, each by the stacks its rider lays, and
 ## a disabled entry's share of the die.
 func ward_score(sk: Skirmish, who: Skirmish.MechState) -> float:
-	var after := _forecast_with(sk, who, "ward")
-	if after.is_empty():
-		return 0.0
-	var score := _outlook_gain(sk.forecast(who), after)
+	if Effects.has(who.unit, "ward"):
+		return 0.0   # a second one renews, and changes nothing this round
+	var score := 0.0
 	var n := maxi(1, who.die.faces.size())
 	var scorch := 0
 	for eff in Effects.STATUS["scorched"]["effects"]:

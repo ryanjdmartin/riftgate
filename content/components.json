@@ -122,7 +122,7 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 2,
+    "power": 3,
     "keywords": [],
     "heat": 4
    },
@@ -175,7 +175,7 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 2,
+    "power": 3,
     "keywords": [],
     "heat": 4
    },
@@ -307,15 +307,14 @@
    "design": {
     "stage": "draft",
     "fantasy": "Kestrel removed the safety interlock and called it a feature.",
-    "niche": ""
+    "niche": "Ignores armour, a rule written on the piece since Breach was cut on our side (15 November). The one tier-one find that does, so its tier is the component pass's (Ryan: \"the player armour piercing pieces should be higher tier, obviously, or gated, I think. Else they become obvious best faces for certain domains\"; \"Railgun might need to move up a tier regardless just because there won't be room for an even higher damage, even hotter gun\")."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
     "power": 8,
-    "keywords": [
-     "breach"
-    ],
+    "keywords": [],
+    "ignores_armour": true,
     "heat": 11
    },
    "passive": null,
@@ -658,7 +657,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "The Wild Boar's front end: a ram and a plow blade that go through a wall or a rank of fodder at the same speed.",
-    "niche": "The Boar's locked self-defence since 11 November (Ryan: \"Breaching plow could easily earn its place by simply being a self-defense that does something else\"; \"Cleanse self and gain Barrier, cooldown 1\"): it clears the Boar's debuffs and puts a Barrier up, and the passive turns that Barrier into Breach on the next gun it fires. Until then a Direct 4 Spread 2 cleave that braced 2."
+    "niche": "The Boar's locked self-defence since 11 November (Ryan: \"Breaching plow could easily earn its place by simply being a self-defense that does something else\"; \"Cleanse self and gain Barrier, cooldown 1\"): it clears the Boar's debuffs and puts a Barrier up, and the passive turns that Barrier into Breach on the next gun it fires. Until then a Direct 4 Spread 2 cleave that braced 2. Since 15 November that gun ignores armour, a written rule where Breach stood."
    },
    "face": {
     "kind": "buff",
@@ -871,16 +870,15 @@
    "design": {
     "stage": "draft",
     "fantasy": "Four blades on four arms, cutting as one. What they cut loose from the fallen the machine takes in; the Arsenal's manual calls it attunement.",
-    "niche": "The Ammit's locked melee, one entry since its rework (Ryan, 12 November: \"The 4 claws are combined into one weapon that deals 1x4 instead, with Breach. They no longer gain Empowered on kill\"): four strikes of 1 at one foe, past its armour, so every stack of Empowered counts four times on it. Four copies of a flat 3 that Empowered a kill until then."
+    "niche": "The Ammit's locked melee, one entry since its rework (Ryan, 12 November: \"The 4 claws are combined into one weapon that deals 1x4 instead, with Breach. They no longer gain Empowered on kill\"): four strikes of 1 at one foe, past its armour, so every stack of Empowered counts four times on it. Four copies of a flat 3 that Empowered a kill until then. Its Breach is the written rule, ignores armour, since the keyword was cut on our side (15 November)."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
     "power": 1,
     "strikes": 4,
-    "keywords": [
-     "breach"
-    ],
+    "keywords": [],
+    "ignores_armour": true,
     "heat": 4
    },
    "passive": null,
@@ -929,7 +927,7 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 2,
+    "power": 3,
     "keywords": [],
     "heat": 4
    },
@@ -954,7 +952,7 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 3,
+    "power": 4,
     "keywords": [],
     "heat": 5
    },

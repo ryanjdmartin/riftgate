@@ -235,7 +235,7 @@ func test_a_machine_out_of_the_fight_does_not_burn() -> void:
 	assert_eq(m.hull, 180, "back in the fight, the stacks it still carries burn again")
 
 
-func test_a_blow_that_takes_a_shield_to_nothing_breaks_it_and_a_breach_does_not() -> void:
+func test_a_blow_that_takes_a_shield_to_nothing_breaks_it_and_a_lesser_one_does_not() -> void:
 	var m := _mech(1, "A", _gun(0), 40, 200)
 	var sk := _fight([m], [Foe.make("brute", 900, 40)])
 	sk.start_round()
@@ -244,12 +244,10 @@ func test_a_blow_that_takes_a_shield_to_nothing_breaks_it_and_a_breach_does_not(
 	assert_true(sk.mechs[0].shield_broken, "and broken all the same")
 	assert_true("\n".join(sk.log).contains("A's shield is broken: no shield until it reboots"), "the log says so")
 	var m2 := _mech(2, "B", _gun(0), 40, 200)
-	var maw := Foe.make("maw", 900, 50)
-	maw.actions[0]["keywords"] = ["breach"]
-	var s2 := _fight([m2], [maw])
+	var s2 := _fight([m2], [Foe.make("maw", 900, 30)])
 	s2.start_round()
 	s2.end_round()
-	assert_eq([m2.shield, m2.hull], [40, 150], "a breach passes a shield that stands")
+	assert_eq([m2.shield, m2.hull], [10, 200], "a blow under its number leaves the shield standing")
 	assert_false(s2.mechs[0].shield_broken, "which is not broken")
 
 

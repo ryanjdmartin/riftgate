@@ -383,14 +383,14 @@ func test_the_mines_survive_the_trip() -> void:
 	sk.start_round()
 	m.grant_passive({"id": "bay", "name": "Bay", "description": "", "effects": [{"trigger": "static", "effect": "mine_on_spend", "value": 2}]})
 	var foe: Foe = sk.field_foes()[0]
-	sk._add_mine(foe, 5, {"stacks": {"ablating": 2, "vitriol": 1}, "keywords": ["shock", "breach"]})
+	sk._add_mine(foe, 5, {"stacks": {"ablating": 2, "vitriol": 1}, "keywords": ["shock", "expose"]})
 	var back := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
 	var sk2: Skirmish = back.current
 	var foe2: Foe = sk2.field_foes()[0]
 	var mine := Skirmish.mine_of(foe2)
 	assert_eq(int(mine.get("damage", 0)), 5, "its damage")
 	assert_eq([int(mine["riders"]["stacks"]["ablating"]), int(mine["riders"]["stacks"]["vitriol"])], [2, 1], "its stacks by status")
-	assert_eq(mine["riders"]["keywords"], ["shock", "breach"], "its flags, as a list")
+	assert_eq(mine["riders"]["keywords"], ["shock", "expose"], "its flags, as a list")
 	assert_eq(JSON.stringify(mine), JSON.stringify(Skirmish.mine_of(foe)), "the Mine as it was")
 
 
