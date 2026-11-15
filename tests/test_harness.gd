@@ -600,6 +600,10 @@ func test_the_refit_what_if_is_off_until_the_setting_or_the_environment_asks() -
 	var barrier_was = Settings.display.get("barrier_basic", "built")
 	var guns_was = Settings.display.get("basic_guns", "0")
 	var top_was = Settings.display.get("top_basic_heat", "0")
+	var rank_was = Settings.display.get("rank_hp", "0")
+	var breach_was = Settings.display.get("foe_breach", "built")
+	Settings.display["rank_hp"] = "0"
+	Settings.display["foe_breach"] = "built"
 	Settings.display["shield_regen"] = "built"
 	Settings.display["heat_trial"] = "0"
 	Settings.display["barrier_basic"] = "built"
@@ -628,6 +632,40 @@ func test_the_refit_what_if_is_off_until_the_setting_or_the_environment_asks() -
 	assert_eq(HARNESS.refit_spec(), "", "a value that is no option asks for nothing")
 	Settings.display["basic_guns"] = "0"
 	Settings.display["top_basic_heat"] = "0"
+	# The standard foe's dial beside them (15 November): a hit point more on tier one's rank and
+	# file, the same what-if, alone or with the basic guns'.
+	for rank_hp in Settings.RANK_HPS:
+		Settings.display["rank_hp"] = rank_hp
+		var want_rank: String = "" if rank_hp == "0" or not OS.is_debug_build() else "foehp=%s" % rank_hp
+		assert_eq(HARNESS.refit_spec(), want_rank, "a debug build's setting names the rank and file's hit points: %s" % rank_hp)
+		if not want_rank.is_empty():
+			assert_eq(int(Refit.parse(want_rank)["foehp"]), int(rank_hp), "and the what-if takes it")
+		assert_true(Settings.RANK_HP_LABELS.has(rank_hp), "%s has its button's label" % rank_hp)
+	Settings.display["basic_guns"] = "1"
+	Settings.display["rank_hp"] = "1"
+	if OS.is_debug_build():
+		var three_five := Refit.parse(HARNESS.refit_spec())
+		assert_eq([int(three_five["basics"]), int(three_five["foehp"])], [1, 1], "a vanilla a point up against a standard foe a point up: the two dials make one spec")
+	Settings.display["rank_hp"] = "a horde"
+	Settings.display["basic_guns"] = "0"
+	assert_eq(HARNESS.refit_spec(), "", "a value that is no option asks for nothing")
+	Settings.display["rank_hp"] = "0"
+	# The foes' breach (15 November): cut, the same what-if, alone or beside the others.
+	for breach in Settings.FOE_BREACHES:
+		Settings.display["foe_breach"] = breach
+		var want_breach: String = "" if breach == "built" or not OS.is_debug_build() else "breach=%s" % breach
+		assert_eq(HARNESS.refit_spec(), want_breach, "a debug build's setting names the foes' breach: %s" % breach)
+		if not want_breach.is_empty():
+			assert_eq(str(Refit.parse(want_breach)["breach"]), breach, "and the what-if takes it")
+		assert_true(Settings.FOE_BREACH_LABELS.has(breach), "%s has its button's label" % breach)
+	Settings.display["rank_hp"] = "1"
+	if OS.is_debug_build():
+		var both_foes := Refit.parse(HARNESS.refit_spec())
+		assert_eq([int(both_foes["foehp"]), str(both_foes["breach"])], [1, "cut"], "the standard foe a point up and no breach: the two dials make one spec")
+	Settings.display["rank_hp"] = "0"
+	Settings.display["foe_breach"] = "gone"
+	assert_eq(HARNESS.refit_spec(), "", "a value that is no option asks for nothing")
+	Settings.display["foe_breach"] = "built"
 	# The Barrier basic's dial (13 November): off the stock dice, the same what-if.
 	Settings.display["barrier_basic"] = "none"
 	assert_eq(HARNESS.refit_spec(), "barrier=none" if OS.is_debug_build() else "", "a debug build's setting takes the Barrier basic off the stock dice")
@@ -669,7 +707,11 @@ func test_the_refit_what_if_is_off_until_the_setting_or_the_environment_asks() -
 	Settings.display["barrier_basic"] = barrier_was
 	Settings.display["basic_guns"] = guns_was
 	Settings.display["top_basic_heat"] = top_was
+	Settings.display["rank_hp"] = rank_was
+	Settings.display["foe_breach"] = breach_was
 	assert_eq([str(Settings.DISPLAY_DEFAULTS.get("basic_guns", "")), str(Settings.DISPLAY_DEFAULTS.get("top_basic_heat", ""))], ["0", "0"], "the basic guns ship as content has them")
+	assert_eq(str(Settings.DISPLAY_DEFAULTS.get("rank_hp", "")), "0", "and the rank and file as content has them")
+	assert_eq(str(Settings.DISPLAY_DEFAULTS.get("foe_breach", "")), "built", "and the foes' breach as content has it")
 	assert_eq(str(Settings.DISPLAY_DEFAULTS.get("barrier_basic", "")), "built", "the Barrier basic ships on the dice content gives it")
 	assert_eq(str(Settings.DISPLAY_DEFAULTS.get("shield_regen", "")), "built", "and the setting ships as built")
 	assert_eq(str(Settings.DISPLAY_DEFAULTS.get("heat_trial", "")), "0", "the heat's too")
@@ -683,6 +725,13 @@ func test_the_refit_what_if_is_off_until_the_setting_or_the_environment_asks() -
 			assert_true(labels.has(str(Settings.HEAT_LABELS[heat])), "the heat's offset %s" % Settings.HEAT_LABELS[heat])
 		for top in Settings.TOP_BASIC_HEATS:
 			assert_true(labels.has(str(Settings.TOP_BASIC_HEAT_LABELS[top])), "the top basic's heat %s" % Settings.TOP_BASIC_HEAT_LABELS[top])
+		var captions: Array = []
+		for l in menu._rows.find_children("*", "Label", true, false):
+			captions.append(str((l as Label).text))
+		assert_true(captions.has("RANK AND FILE"), "and the rank and file's hit points have their row: %s" % str(captions))
+		assert_true(captions.has("FOE BREACH"), "and the foes' breach has its row: %s" % str(captions))
+		for breach in Settings.FOE_BREACHES:
+			assert_true(labels.has(str(Settings.FOE_BREACH_LABELS[breach])), "with its choice %s" % Settings.FOE_BREACH_LABELS[breach])
 		assert_true(menu._list != null and menu._list.is_ancestor_of(menu._rows.find_children("*", "BaseButton", true, false)[0]), "the dials stand in a scroller, so a short glass holds them")
 		for burn in Settings.OVERHEATS:
 			assert_true(labels.has(str(Settings.OVERHEAT_LABELS[burn])), "and the overheat's burn %s" % Settings.OVERHEAT_LABELS[burn])

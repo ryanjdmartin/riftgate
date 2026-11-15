@@ -9945,3 +9945,80 @@ the foe's kit. What it does not say: anything a rider is worth to a planned seco
 a formation of one rider on every blow is no formation, so the dearer riders read at their
 worst; the marks are one grid and eight of one foe; 20 fights a cell by fight is a
 direction's direction.
+
+## 15 November, the vocabulary pass's third round: what stands in the Barrier basic's slot, and Breach as damage to the shield
+
+Ryan's third round (`docs/vocabulary_pass_proposal.md`, section 16): "I lean towards not
+having it as a basic. Ward, however, is another question", and of Breach, "I would make it
+deal extra damage to shield, 1.5x, double, triple, who knows ... But not directly to hull".
+The same squads, basics and probe as the two entries above: the six certain tier ones, the
+greedy rung, the reboot on, `basics=1,hotter=-1`, hull as a share of a squad of four's; a
+formation's row 300 fights, an elite's 220, a boss's 260. All a direction.
+
+**The Barrier basic's slot on the stock dice** (the piece's entry replaced whole; the first
+row and the Armoured basic's elite and boss are the entries above):
+
+| In the slot | A formation | An elite | A boss | Its spends a fight: formation, elite, boss |
+|---|---|---|---|---|
+| The Barrier, sits out a round (content) | 100% won, 4.7 rounds, 8.1% | 100%, 5.2, 11.1%, 0.03 wrecks | 99%, 8.7, 26.5%, 0.22 wrecks | 0.63, 2.66, 5.17 |
+| The Armoured basic (`barrier=none`) | 100%, 4.7, 9.1% | 100%, 5.1, 24.6%, 0.23 | 92%, 8.4, 46.8%, 0.90 | the Shoring Jack 0.59, 1.62, 3.73 |
+| A plain gun of 3 for 3 heat | 100%, 4.5, 8.7% | 100%, 4.7, 22.5%, 0.21 | 94%, 7.6, 47.3%, 0.87 | |
+| A Ward for the round, no cooldown | 100%, 4.8, 9.3% | 100%, 5.1, 24.2%, 0.28 | 91%, 8.4, 52.7%, 1.08 | 0.43, 0.85, 1.18 |
+
+**Breach as damage to the shield** (a what-if in the scratch probe: each point of a
+breaching blow takes N points of shield, what the shield cannot pay for lands on the hull
+with armour off it as any blow's, and nothing passes a standing shield; a Ward turns it to a
+plain blow):
+
+| Breach | Content as built: a formation | An elite | A boss | Every rank-and-file blow breaching: a formation |
+|---|---|---|---|---|
+| As built: past shield and armour | 4.7 rounds, 8.1%, 0.64 reboots a machine | 5.2, 11.1% | 8.7, 26.5% | 4.6 rounds, 20.6%, 0.34 reboots, 99% won |
+| One and a half to a shield | | | | 5.1, 10.3%, 0.97, 100% |
+| Double | 4.9, 6.8%, 0.81 | 5.3, 10.8% | 8.3, 25.8% | 5.3, 13.6%, 1.10, 100% |
+| Double, and past armour | 4.9, 7.0%, 0.81 | | | |
+| Triple | 4.9, 7.4%, 0.83 | | | 5.5, 18.3%, 1.30, 99% |
+
+Against the ladder of the entry above (a point on every blow 13.7%, two 20.9%): as built a
+breach reads as two points on the blow, one and a half to a shield as 0.4, double as 1.0,
+triple as 1.6.
+
+What it says: with no Barrier on the stock dice an elite costs 22 to 25% of a four's hull
+whatever stands in the slot, and a boss 47 to 53% with about a wreck a fight; the bot spends
+a Ward once a fight or less and it reads under the Armoured basic and the gun; a breach that
+presses the shield costs the roster less hull than today's and more reboots, and at double
+it is a point on the blow where today's is two. What it does not say: what a Ward is worth
+to a player who reads the intents, the greedy rung not weighing a mark turned; and tier one
+lays few marks to turn.
+
+## 15 November, the vocabulary pass's fourth round: the foes' Breach cut outright
+
+Ryan's fourth round (`docs/vocabulary_pass_proposal.md`, section 17): "My question about
+enemy breach is if it's even needed. It could be a domain identity, i.e. shields suck here,
+but only if it asks an interesting question and not an unfair one." So what today's foes
+lose with it. The same squads, basics and probe as the entry above: the six certain tier
+ones, the greedy rung, the reboot on, `basics=1,hotter=-1`, content as built, hull as a
+share of a squad of four's; a formation's row 300 fights, an elite's 220, a boss's 260. The
+what-if is the entry above's, at a multiple of one for the cut: a breaching blow lands as a
+plain blow, the shield first and armour off what passes it. All a direction.
+
+| The foes' Breach | A formation | An elite | A boss | With no Barrier basic (`barrier=none`): a formation | An elite | A boss |
+|---|---|---|---|---|---|---|
+| As built: past shield and armour | 4.7 rounds, 8.1%, 0.64 reboots a machine | 5.2, 11.1%, 0.03 wrecks | 8.7, 26.5%, 0.22 | 4.7, 9.2%, 0.67 | 5.1, 24.6%, 0.23 | 8.4, 46.8%, 0.90 |
+| Double to a shield | 4.9, 6.8%, 0.81 | 5.3, 10.8%, 0.03 | 8.3, 25.8%, 0.22 | 4.9, 7.5%, 0.83 | 5.2, 23.4%, 0.21 | 8.4, 46.0%, 0.84 |
+| Cut: a plain blow | 4.8, 5.7%, 0.70 | 5.3, 10.6%, 0.03 | 8.3, 25.6%, 0.21 | 4.8, 6.4%, 0.73 | 5.2, 22.0%, 0.20 | 8.5, 46.5%, 0.88 |
+
+The formation rows are all on the engine as it stands with the reroll drains read as they
+announce, built the same day: that rule moved the goblin horde from 5.0% to 5.3% and one
+cell of this table by a tenth, the Armoured basic's 9.1% of the entry above being 9.2% here.
+The what-if's own part, `breach=cut`, built after his "Sure, let's cut breach" for a debug
+build's FOE BREACH dial, reads the cut's formation row to the decimal: 4.8 rounds, 5.7%,
+0.70 reboots.
+
+What it says: Breach is three tenths of what a tier-one formation costs in hull, with the
+Barrier basic or without (8.1% to 5.7%, 9.2% to 6.4%); a tenth of an elite's with no
+Barrier on the dice and a twentieth with one; and next to none of a boss's, whose blows pass
+a shield by their size. The shield form at double sits halfway on a formation. Reboots a
+machine move little: the cut frees the bot to reboot a touch more than under a breach its
+shield never met, and double asks the most. What it does not say: what a domain built on the
+shield form would play like, since today's eleven breaching slots of sixty-nine are spread
+over three domains; and nothing of tier two, where Exposed would live.

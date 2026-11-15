@@ -1476,11 +1476,13 @@ func start_round() -> void:
 	_focus.clear()
 	_refresh_kin()
 	var ahead := {}
+	var announced: Array = []   # the foes whose move for this round is out, in the order they strike
 	for f in field_foes():
 		f.fresh = false   # a half that stepped up last round acts from this one
 		# A move gathered last round holds, and so does its pick while the machine stands.
 		var carried := not f.pending.is_empty()
-		_choose_foe_action(f)
+		_choose_foe_action(f, announced)
+		announced.append(f)
 		if not (carried and f.target != null and (f.target as MechState).alive()):
 			f.target = _pick_mech_target(f, _doomed(ahead))
 		_draw_blows(f, ahead)
@@ -1522,12 +1524,17 @@ func _draw_blows(f: Foe, ahead: Dictionary) -> void:
 ## The moves a foe may announce this round: those whose conditions hold, less the special
 ## it announced last round when anything else is open (a special never fires twice running,
 ## so the swing after the roar can be counted on). Nothing legal falls back to its blow.
-func legal_actions(f: Foe) -> Array:
+## `announced` is the foes whose move for this round is already out, as the round's opening
+## hands them down the strike order; unsaid, it is every foe on the field (the player's turn,
+## where a Disrupt reads what a foe would turn to).
+func legal_actions(f: Foe, announced = null) -> Array:
 	var legal: Array = []
 	var follow := Foe.follow_ups(f.actions)
 	for a in f.actions:
 		if follow.has(str(a.get("id", ""))):
 			continue   # a follow-up comes only after the move that names it (30 October)
+		if str(a.get("effect", "")) == "drain_rerolls" and drain_announced(f, announced) >= REROLLS_PER_ROUND:
+			continue   # the drains already out take every reroll a round gives (Ryan, 15 November: "mandragoras shouldn't try to scream away 3 rerolls, they should be smarter than that when declaring intents")
 		if str(a.get("effect", "")) == "swallow" and swallowable().size() < 2:
 			continue   # never the last machine able to act
 		if str(a.get("effect", "")) == "merge" and mergeable(f, a).is_empty():
@@ -1583,7 +1590,23 @@ func _free_slots_for(n: Foe) -> int:
 	return out
 
 
-func _choose_foe_action(f: Foe) -> void:
+## The rerolls the other foes' announced moves would take from the team's next round: every
+## live foe on the field but `f` whose move is a drain, among `announced` (every foe on the
+## field when unsaid). What a foe reads before it announces a drain of its own, so the field
+## never announces more than a round's rerolls.
+func drain_announced(f: Foe, announced = null) -> int:
+	var out := 0
+	var said: Array = announced if announced is Array else Array(field_foes())
+	for o in said:
+		if o == f or not o.alive() or not o.on_field() or str(o.action.get("effect", "")) != "drain_rerolls":
+			continue
+		if o.fresh or o.is_suppressed() or (not o.pending.is_empty() and o.charge > 0):
+			continue   # stepped up this round with no move out, held this round, or still gathering: it takes nothing yet
+		out += maxi(0, int(o.action.get("value", 0)))
+	return out
+
+
+func _choose_foe_action(f: Foe, announced = null) -> void:
 	if not f.pending.is_empty():
 		f.action = f.pending   # a countdown move holds until it lands
 		return
@@ -1600,7 +1623,7 @@ func _choose_foe_action(f: Foe) -> void:
 				f.last_special = "" if f.attacks() else str(f.action.get("id", ""))
 				_begin_countdown(f)
 				return
-	f.choose_from(legal_actions(f), rng)
+	f.choose_from(legal_actions(f, announced), rng)
 	f.last_special = "" if f.attacks() else str(f.action.get("id", ""))
 	_begin_countdown(f)
 

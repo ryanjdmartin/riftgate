@@ -293,7 +293,7 @@
    "id": "expose",
    "category": "keyword",
    "name": "Expose",
-   "codex": "Player keyword, on any entry aimed at a foe. Every foe the entry reaches is Exposed through the next round, a felled one too: in Direct reach of every machine, and its armour counts for nothing. A second Expose refreshes it, never adds.",
+   "codex": "Player keyword, on any entry aimed at a foe. Every foe the entry reaches is Exposed until the end of the next round, a felled one too: in Direct reach of every machine, and its armour counts for nothing. A second Expose refreshes it, never adds.",
    "status": "implemented",
    "design": {
     "holes": "The formation word exposed stays rules text, so the status's id is exposure."
@@ -662,7 +662,7 @@
    "id": "exposure",
    "category": "status",
    "name": "Exposed",
-   "codex": "Foe status. In Direct reach of every machine as if its column's front were empty, and its armour counts for nothing, its own and any Armoured. Through the next round; refreshed, never added.",
+   "codex": "Foe status. In Direct reach of every machine as if its column's front were empty, and its armour counts for nothing, its own and any Armoured. Until the end of the next round, so through your next turn and the foes' turn after it; refreshed, never added.",
    "status": "implemented",
    "design": {
     "holes": "The id is exposure, since exposed names the formation word and the foes' default aim.",
@@ -670,7 +670,7 @@
      "kind": "debuff",
      "on": "foe",
      "stacks": "Never: a second Expose refreshes it",
-     "lasts": "Through the next round"
+     "lasts": "Until the end of the next round"
     }
    }
   },

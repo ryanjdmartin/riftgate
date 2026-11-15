@@ -36,12 +36,19 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1189 tests, 372,295 checks, green on `ccr-b7d5164e-1wtzzm` (15 November, the Kite's hood
-  whole to its mouth and the Giant Petrel's fifteenth cut, no engine code moved; before them that
-  day, the blade class retired, the Giant Petrel's fourteenth cut and the bores' plain dark given
-  back its finish, one content test's rule narrowed, a locked weapon wearing no class). Before it, 1189 tests, 372,483
-  checks (14 November, the Needletail's nineteenth cut, the Giant Petrel's thirteenth and the Kite's
-  round pair, over main at `bbcf375` taken in a merge). Before it, on main,
+- Tests: 1193 tests, 372,939 checks, green on `ccr-b7d5164e-1wtzzm` as it landed on main (15 November, the
+  blade class retired, the Kite's hood whole to its mouth and the Giant Petrel's fifteenth cut,
+  over main at `3d195e0` taken in a merge). Before it, 1193 tests, 373,127 checks, green on
+  `ccr-722ca9f0-yj8na3` (15 November, the FOE BREACH dial, over main at `0bd1799`). Before it,
+  1192 tests, 372,709 checks, green on the same branch (15 November, the foes' reroll drains read
+  as they announce, over main at `a9a8ffa`). Before it, 1190 tests, 372,677 checks, green on the
+  same branch (15 November, the rank and file's dial and Exposed's texts, over main at
+  `038b22b`). Before it, 1189 tests, 372,295 checks, green on `ccr-b7d5164e-1wtzzm` (15 November,
+  the blade class retired, the Giant Petrel's fourteenth and fifteenth cuts and the Kite's hood,
+  one content test's rule narrowed, a locked weapon wearing no class). Before it, 1189 tests,
+  372,483 checks, green on `ccr-b7d5164e-1wtzzm` (14 November, the Needletail's nineteenth cut,
+  the Giant Petrel's thirteenth and the Kite's round pair, over main at `bbcf375` taken in a
+  merge). Before it, on main,
   1188 tests, 371,561 checks, green on `ccr-722ca9f0-yj8na3` (14 November, the
   vocabulary pass's two rounds of records, no engine code moved; before that the
   basics' what-ifs and their dials; before that REBOOT on the bottom row's middle with
@@ -1789,6 +1796,23 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 
 The tasks are the to-do's; this is the index of what waits.
 
+- Burn as Ablate, one rule on both sides (Ryan, 15 November: "hits shield first, I think.
+  Pretty deadly otherwise. Bypasses armour when damaging hull"; the bible's Burning row): built
+  with the reboot's fold-in. Until then the engine runs a machine's Burning as heat.
+- The vanilla gun at 3 (the same day: "3 against 5 or 3 against 4 as the options"): content
+  still prints 2 and a debug build's BASIC GUNS dial plays the 3; it lands with the fold-in.
+- Exposed for the foes (the same day, his third to fifth rounds; the bible's row in section
+  5): a machine's armour of every kind for nothing until the end of the next round, and the
+  whole field's targeted intents on it as that round opens, up to its predicted death, the
+  rule that foes never overkill kept; tier two and up, one machine at a time, a Lure wins. No
+  foe carries it. Built with the vocabulary's calls (the to-do's Engine list).
+- Breach cut on both sides (his fifth round: "Sure, let's cut breach"; the bible's breach
+  row): the foes' keyword off thirty-four foes and the engine's path with it, ours a
+  property written on the piece ("Ignores armour can be an explicitly written out property")
+  and on pieces of a higher tier or behind a gate. It leaves with the fold-in, where its
+  premise lands (nothing mends); until then content and the engine run breach as built, and
+  a debug build's FOE BREACH dial plays the foes without it (`Refit`'s `breach=cut`).
+
 - The Fracture's prize (section 12); the escorts' marks (`docs/bosses_proposal.md`) and the
   promoted forms' one move more for seven of them (`docs/heroes_proposal.md`).
 - The planned foe moves (the Lich's Dark Rite among them); a silence carrier and a purge
@@ -1828,21 +1852,44 @@ and the rule it replaces is cut in the same pass: the chassis's own shield regen
 out of the engine and of content, and the overheat that settles. The foes' numbers do not
 move in it. **Then, Claude's order, put to him the same day and his to set:** the audit of
 every rider and keyword against the reboot, with the foes' Burn and the Barrier's place (it
-settles what the foes' effects are before anything is sized against them). **It had two
-rounds the same day, ahead of the fold-in, on his "let's do the rider and keyword pass
-now", and his second round made it the vocabulary pass** ("I want to examine enemy riders
-as well, and all existing buffs and debuffs on both sides ... This is a vocabulary domain
-pass. I'm, as always, particularly concerned with Armour"): `docs/vocabulary_pass_proposal.md`
-reads every rider, cost, buff and debuff on both sides against the reboot and his yardstick,
-measures each of our riders on the vanilla and each of the foes' on the standard blow
-(`docs/measurements.md`, two entries), lays out armour against the hit sizes, unwinds the
-Barrier basic and waits on his marks (the to-do's Ryan list has its fourteen decisions;
-nothing in content moved). The two that are open at the root, both his questions of the
-second round: whether the vanilla sits one under the standard foe or two ("Should we still
-be considering +2?"; Claude leans to two, at 3 against 5, and a dial for the rank and
-file's hit points is offered, not built), and the foes' Burn, which he reads as dangerous
-under the reboot and Claude now reads the same way, with a status that erodes on both sides
-in its place and its word his to choose. With the pass, on his proposal, the tier-one
+settles what the foes' effects are before anything is sized against them). **It has had four
+rounds, ahead of the fold-in, and his second made it the vocabulary pass** ("I want to
+examine enemy riders as well, and all existing buffs and debuffs on both sides ... This is a
+vocabulary domain pass. I'm, as always, particularly concerned with Armour"):
+`docs/vocabulary_pass_proposal.md` reads every rider, cost, buff and debuff on both sides
+against the reboot and his yardstick, measures each of our riders on the vanilla and each of
+the foes' on the standard blow (`docs/measurements.md`, four entries), lays out armour
+against the hit sizes and unwinds the Barrier basic. **His third round, 15 November, called
+the roots**: the vanilla is 3 against a standard foe of 4 or of 5, his play to pick, both on
+dials (BASIC GUNS, and RANK AND FILE, built that day); the foes' base armour at tier one
+stops at 2; Burn becomes Ablate, the shield first on a machine and the hull past armour,
+built with the fold-in (Decided, not built, above); and his lean is that the Barrier is no
+basic, so that no massive strike is justified by it. **It also opened three proposals of
+his**: Exposed for the foes, Breach as pressure on the shield, and Ward where the Barrier
+basic stood. **His fourth round, the same day, ruled on the first two** (the proposal's
+section 17; Decided, not built, above): an Ablate tick ignores a Barrier; Exposed for the
+foes sends the whole field, at tier two and up, on one machine at a time, a Lure wins and it
+negates armour of every kind; Breach leaves the player's side, "ignores armour" a written
+property. **Built from that round, his side
+note**: the foes announce down the strike order and no reroll drain is announced once the
+drains already out take every reroll a round gives ("mandragoras shouldn't try to scream
+away 3 rerolls"; `Skirmish.legal_actions`, `drain_announced`). **His fifth round, on that
+report, settled three more**: Exposed keeps the rule that foes never overkill ("the whole
+field targets up until predicted death, then the rest pick intent targets as normal");
+**Breach is cut on both sides** ("Sure, let's cut breach": its first job was to pass a
+shield that mended, Exposed and Ablate answer plate, and cut outright it is three tenths of
+what a tier-one formation costs in hull and next to none of an elite's or a boss's), on a
+dial until the fold-in (FOE BREACH, built that day); and a piece of ours that ignores armour
+sits at a higher tier or behind a gate ("Else they become obvious best faces for certain
+domains"), which the Ammit's Talons and the Wild Boar's charge already do and the
+Overclocked Railgun, a tier-one find, does not: its place is his, Claude's lean that it drops
+the property and keeps its tier.
+**What waits is his marks on one table**: every rider, buff and debuff, eighty-two rows
+(`docs/vocabulary_table.md`), on a page of its own that takes a mark and a note a row
+(Pages, below; `marks` is the collection a session reads back and folds into the proposal).
+Nothing in content moved but Exposed's texts, which now say it lasts until the end of the
+next round.
+With the pass, on his proposal, the tier-one
 bench: placeholder pieces, each the vanilla with one thing traded and priced to read as the
 vanilla alone ("the plain vanilla gun is the benchmark for 'viable,' not 'good'"), the
 proposal's section 13, built after his marks. Then the foes' kits against the frame (who
@@ -1938,6 +1985,26 @@ engine line), since the matrix on file predates everything since 27 October.
 Every page lives in Ryan's account and is republished by its URL (read first), its database
 with it. A page's link goes into this file in the same commit as its first publish; the
 commands are in `README.md`.
+
+- The vocabulary pass's table, for his marks: https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko,
+  built from `docs/vocabulary_table.md` by `tools/pages/vocabulary_marks_page.py` and published
+  with the `db` capability (Version 2, 15 November, from `ccr-722ca9f0-yj8na3`, with the
+  fourth round's rows; the fifth round moved five rows' text in the table after it, and the
+  page was left as it stood because he was marking on it, the seeded notes carrying the
+  calls meanwhile: regenerate and republish once his marks have been quiet). Each of its
+  eighty-two rows takes a mark (KEEP, CHANGE, CUT, ASK) and a note, saved in the collection
+  `marks`, a document a row keyed by the row's name as a slug (`mark`, `note`, `name`, `at`).
+  Twelve rows are seeded with his calls of 15 November, ten with a mark and two with a note
+  alone, each note saying so. His own marks began that day (fourteen at 09:24 UTC, down to
+  Web: eleven kept, Splash cut, Spillover and Web no keywords) and the proposal's section 18
+  folds them as they come; he was still marking at that read, so the next session reads the
+  rest first. He may be on the page when a session works: write notes to rows he has not
+  touched, pinned to their versions, and republish only when his marks have been quiet a
+  while. A session that
+  works the pass reads `marks` first (ArtifactData, `list`), folds them into
+  `docs/vocabulary_pass_proposal.md` and the table, and republishes only when the table's rows
+  change; a row renamed in the table loses its mark's key, so move the document with it. The
+  page retires with the pass.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
   `docs/design-bible.html` after every change, on Ryan's word. The live page is v0.564, dated 13

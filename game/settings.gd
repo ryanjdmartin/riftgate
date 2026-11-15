@@ -42,6 +42,8 @@ const DISPLAY_DEFAULTS := {
 	"heat_trial": "0",   # HEATS: a debug build's what-if, every weapon a point or two cooler than content prices it, or a point hotter (HEAT_SPECS, Refit's hotter and cooling), read at the next launch
 	"basic_guns": "0",   # BASIC_GUNS: a debug build's what-if, every basic gun dealing a point more than content gives it (Refit's basics), read at the next launch
 	"top_basic_heat": "0",   # TOP_BASIC_HEATS: a debug build's what-if, more heat on the basic guns that deal more than the plainest (Refit's top), read at the next launch
+	"rank_hp": "0",   # RANK_HPS: a debug build's what-if, a hit point more on tier one's rank and file (Refit's foehp), read at the next launch
+	"foe_breach": "built",   # FOE_BREACHES: a debug build's what-if, every foe's breach cut so its blow meets the shield and the armour (Refit's breach=cut), read at the next launch
 	"overheat_burn": "1",   # OVERHEATS: a debug build's trial of the hull an overheat burns a point of excess (Skirmish.overheat_scale), read as a battle starts
 	"barrier_basic": "built",   # BARRIER_BASICS: a debug build's what-if, the Barrier basic off the stock dice with the Armoured basic in its slot (Refit's barrier=none), read at the next launch
 	"shield_break": "off",   # SHIELD_BREAKS: a debug build's trial of the block, the blow that breaks a shield stopped whole (Skirmish.shield_break), read as a battle starts
@@ -105,6 +107,20 @@ const BASIC_GUNS := ["0", "1"]
 const BASIC_GUN_LABELS := {"0": "BUILT", "1": "+1"}
 const TOP_BASIC_HEATS := ["0", "2", "4"]
 const TOP_BASIC_HEAT_LABELS := {"0": "BUILT", "2": "+2", "4": "+4"}
+## The standard foe's hit points, a debug build's what-if beside BASIC GUNS (Ryan, 15 November:
+## "Ok let's go 3 against 5 or 3 against 4 as the options"): a hit point more on every foe a
+## tier-one formation fields that is no massive, so a vanilla of 3 meets a standard foe of 4 as
+## built and of 5 with it. The same what-if the runners read (Refit's foehp), so read at the
+## next launch.
+const RANK_HPS := ["0", "1"]
+const RANK_HP_LABELS := {"0": "BUILT", "1": "+1"}
+## The foes' breach, a debug build's what-if (Ryan, 15 November, on whether the foes need it at
+## all: "Sure, let's cut breach"): as built, a breaching blow passing the shield and the armour;
+## or cut, every such blow a plain one that meets both. It plays the cut ahead of the reboot's
+## fold-in, where the word leaves the engine and content. The same what-if the runners read
+## (Refit's breach=cut), so read at the next launch.
+const FOE_BREACHES := ["built", "cut"]
+const FOE_BREACH_LABELS := {"built": "BUILT", "cut": "CUT"}
 const OVERHEATS := ["1", "2", "3"]
 const OVERHEAT_LABELS := {"1": "×1", "2": "×2", "3": "×3"}
 ## The block's trial, a debug build's (Ryan, 13 November: "What if we bring back that when a

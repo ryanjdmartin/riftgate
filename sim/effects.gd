@@ -188,7 +188,7 @@ const STATUS := {
 	# lays it yet.
 	"pinned_burning": {"id": "pinned_burning", "name": "Pinned Burning", "description": "Its Burning loses no stack this round.", "stacking": "renew",
 		"tags": ["pin"], "effects": [{"trigger": "static", "effect": "hold_status", "value": "burning"}]},
-	"exposure": {"id": "exposure", "name": "Exposed", "description": "In Direct reach of every machine, and its armour counts for nothing. Through the next round.", "stacking": "renew",
+	"exposure": {"id": "exposure", "name": "Exposed", "description": "In Direct reach of every machine, and its armour counts for nothing. Until the end of the next round.", "stacking": "renew",
 		"tags": ["expose"], "effects": []},
 	# The Mine (the Lammergeier's Reverberant Payload, Ryan, 9 November: "the lammergeier basically
 	# converts all hits to AoE hits, at the cost of a delay until Death"): a spend of its weapons and

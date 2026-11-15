@@ -170,6 +170,95 @@ func test_the_basic_guns_deal_a_point_more_and_the_top_basic_runs_hotter() -> vo
 		assert_eq(int(face.get("heat", 0)), maxi(0, int(before[cid].get("heat", 0)) - 2) + (2 if over else 0), "two cooler with every weapon, the top basic's price on top")
 
 
+## The standard foe's what-if (Ryan, 15 November: "Ok let's go 3 against 5 or 3 against 4 as
+## the options"): tier one's rank and file a hit point up, found by what they are, every foe a
+## tier-one formation fields that is no massive, no elite and no boss, and what such a foe
+## leaves as it falls. Every other foe is as content has it, and a foe made from the content
+## after it carries the point.
+func test_tier_ones_rank_and_file_gain_a_hit_point_and_no_other_foe_moves() -> void:
+	var db := _own()
+	var rank := Refit.rank_and_file(db)
+	assert_true(rank.size() >= 4, "content has a rank and file to read: %s" % str(rank))
+	var before := {}
+	for fid in db.foes.keys():
+		before[fid] = int(db.foes[fid].get("hp", 0))
+	for fid in rank:
+		assert_true(int(db.foes[fid].get("size", 1)) < 2 and not db.is_elite(fid) and not db.is_boss(fid), "%s is no massive, no elite and no boss" % fid)
+	var fielded := 0
+	for faction in db.factions.keys():
+		for c in db.compositions(str(faction), 1, "formation"):
+			for member in c["members"]:
+				var fid := str(member[0])
+				if int(db.foes[fid].get("size", 1)) >= 2:
+					assert_false(rank.has(fid), "%s, a massive foe, is not rank and file" % fid)
+				else:
+					fielded += 1
+					assert_true(rank.has(fid), "%s stands in a tier-one formation: rank and file" % fid)
+	assert_true(fielded > 0, "tier one's formations field them")
+	assert_eq(int(Refit.parse("foehp=1")["foehp"]), 1, "the part parses")
+	var notes := Refit.apply(db, Refit.parse("foehp=1"))
+	assert_eq(notes.size(), 1, "one line says what moved: %s" % str(notes))
+	for fid in db.foes.keys():
+		var up := 1 if rank.has(str(fid)) else 0
+		assert_eq(int(db.foes[fid].get("hp", 0)), int(before[fid]) + up, "%s: %s" % [fid, "a hit point more" if up == 1 else "as content has it"])
+	var first := str(rank[0])
+	assert_eq(db.make_foe(first).hp_max, int(before[first]) + 1, "a foe made after the what-if stands a point taller")
+	var db2 := _own()
+	Refit.apply(db2, Refit.parse("foehp=-9"))
+	for fid in rank:
+		assert_eq(int(db2.foes[fid]["hp"]), 1, "%s never falls under one hit point" % fid)
+	assert_eq(Refit.apply(_own(), Refit.parse("")), [], "and no part moves nothing")
+
+
+## The foes' breach, cut (Ryan, 15 November: "Sure, let's cut breach"): every foe's move loses
+## the rider, its other riders stay, and no piece of the team's moves. The what-if plays the cut
+## ahead of the fold-in and leaves with it, once content's foes carry none.
+func test_the_foes_breach_is_cut_and_nothing_else_moves() -> void:
+	var db := _own()
+	var before := {}
+	var carried := 0
+	var breacher := ""
+	var its_move := ""
+	for fid in db.foes.keys():
+		var kept: Array = []
+		for a in db.foes[fid].get("actions", []):
+			var riders: Array = (a.get("keywords", []) as Array).duplicate()
+			if riders.has(Refit.BREACH):
+				carried += 1
+				if breacher.is_empty():
+					breacher = str(fid)
+					its_move = str(a.get("id", ""))
+			riders.erase(Refit.BREACH)
+			kept.append(riders)
+		before[fid] = kept
+	assert_true(carried > 0, "content's foes breach today, on %d moves" % carried)
+	var ours := {}
+	for cid in db.components.keys():
+		ours[cid] = JSON.stringify(db.components[cid])
+	var was := db.make_foe(breacher)
+	for a in was.actions:
+		if str(a.get("id", "")) == its_move:
+			was.action = a
+	assert_true(was.breaches(), "%s's %s breaches as content has it" % [breacher, its_move])
+	assert_eq(str(Refit.parse("breach=cut")["breach"]), "cut", "the part parses")
+	var notes := Refit.apply(db, Refit.parse("breach=cut"))
+	assert_eq(notes.size(), 1, "one line says what moved: %s" % str(notes))
+	for fid in db.foes.keys():
+		var i := 0
+		for a in db.foes[fid].get("actions", []):
+			assert_eq(Array(a.get("keywords", [])), before[fid][i], "%s's %s keeps every rider but the breach" % [fid, str(a.get("id", ""))])
+			i += 1
+	for cid in db.components.keys():
+		assert_eq(JSON.stringify(db.components[cid]), ours[cid], "%s, a piece of the team's, is as content has it" % cid)
+	var now := db.make_foe(breacher)
+	for a in now.actions:
+		if str(a.get("id", "")) == its_move:
+			now.action = a
+	assert_false(now.breaches(), "a foe made after the what-if lands a plain blow")
+	assert_eq(now.damage_of(now.action), was.damage_of(was.action), "of the same size")
+	assert_eq(str(Refit.parse("")["breach"]), "", "and unsaid, the foes breach as content has them")
+
+
 ## The what-ifs left over the landed model: a flat regen in place of each chassis's own, an
 ## offset on the cooling, every weapon hotter, and a price on the Barrier basic.
 func test_the_what_ifs_move_the_regen_the_cooling_the_heat_and_the_barriers_price() -> void:
