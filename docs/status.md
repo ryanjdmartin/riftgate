@@ -36,7 +36,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1193 tests, 372,939 checks, green on `ccr-b7d5164e-1wtzzm` as it landed on main (15 November, the
+- Tests: 1193 tests, 372,939 checks, green on `ccr-722ca9f0-yj8na3` (15 November, the vocabulary
+  pass's marks folded, documents alone, over main at `196d802` taken in a merge). Before it, the
+  same count green on `ccr-b7d5164e-1wtzzm` as it landed on main (15 November, the
   blade class retired, the Kite's hood whole to its mouth and the Giant Petrel's fifteenth cut,
   over main at `3d195e0` taken in a merge). Before it, 1193 tests, 373,127 checks, green on
   `ccr-722ca9f0-yj8na3` (15 November, the FOE BREACH dial, over main at `0bd1799`). Before it,
