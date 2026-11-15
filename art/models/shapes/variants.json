@@ -2,7 +2,7 @@
  "_about": "Each variant of a silhouette class and the class it is (models_low.VARIANTS), written by tools/lowforge: a hardpoint's `fits` in its model's sidecar may name one for its class.",
  "rack_round": "rack",
  "barrel_port": "barrel",
- "twin_barrel_port": "twin_barrel",
  "rack_port": "rack",
- "dish_port": "dish"
+ "dish_port": "dish",
+ "twin_barrel_round": "twin_barrel"
 }

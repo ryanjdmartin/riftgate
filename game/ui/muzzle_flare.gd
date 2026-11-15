@@ -28,11 +28,11 @@ const CORES := {"ballistic": 0.7, "missile": 0.5, "flame": 0.35, "beam": 0.6, "p
 ## that lunges (lunges): on one that fires, melee is its range and shows nothing of its own.
 const ORDER := ["ballistic", "missile", "beam", "blade", "melee", "flame", "plasma", "arc"]
 ## The tags that send a blow across the field (a shell, a rocket, a beam), and the classes built
-## to fire one; a blade's class strikes in reach.
+## to fire one.
 const CROSSING := ["ballistic", "missile", "beam"]
 const FIRING := ["barrel", "twin_barrel", "rack", "dish"]
 ## A class's look for a component with no tag.
-const CLASS_LOOK := {"barrel": "ballistic", "twin_barrel": "ballistic", "rack": "missile", "dish": "arc", "blade": "blade"}
+const CLASS_LOOK := {"barrel": "ballistic", "twin_barrel": "ballistic", "rack": "missile", "dish": "arc"}
 ## Each layer after the first blooms this much later and this much smaller than the one before.
 const LAYER_DELAY := 0.05
 const LAYER_SCALE := 0.75
@@ -53,7 +53,7 @@ const BEATS := {
 
 ## Whether a weapon lunges at its foe rather than firing at it: melee (its tag: short range, a
 ## shotgun included) with nothing that sends its blow across the field, no tag of CROSSING and no
-## firing class (a blade's class, or none named). The rest fire as guns do, kicking back and
+## firing class (none named: a locked melee piece, built into its machine). The rest fire as guns do, kicking back and
 ## flaring: a shotgun tagged melee and ballistic as the gun it is (Ryan, 3 November, of the Bullion
 ## Fragmenter: "It's a shotgun, thematically"), a flamethrower tagged melee as its stream, and a
 ## claw the Cottonmouth's drum fires as its shot (the drum adds Ballistic). The screen's lunge, the

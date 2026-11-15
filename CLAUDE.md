@@ -80,8 +80,10 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   regenerates or cools by itself; a machine that has spent nothing may give its turn to a
   reboot, bare that turn, cold and whole the next; heat past the maximum stays and burns hull
   every turn; a shield at nothing is broken and gains none until the reboot. It is built and
-  on trial, off in the game (`Skirmish.reboot`; REBOOT on a debug build's trials), and content
-  still carries the regen and the cooling of the paragraph above until his play says. So a
+  on trial, off in the game (`Skirmish.reboot`; REBOOT on a debug build's trials), and his
+  play of 14 November says it stays ("I like this direction. It works"): folding it in is the
+  next pass (the status's Next), and until that lands content still carries the regen and
+  the cooling of the paragraph above. So a
   piece is read both ways, as built and under the reboot, and one that leans on regen,
   cooling, a shield gain or a vent says so. His expectation, no strict rule ("I don't want to
   make a strict rule about anything"): what grants regen, cooling, flat shield or flat heat

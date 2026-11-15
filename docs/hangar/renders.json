@@ -1,12 +1,12 @@
 {
- "_about": "The Models tab of the hangar page (tools/hangar.html): every render Ryan judges, by chassis. A round adds its pictures under docs/hangar/renders/<chassis>/, moves the previous 'images' to 'before' with a summary, and writes 'when' and 'note'; then the page is republished with the new files (tools/hangar_data.py prints the files map). 'classes' is the silhouette classes section, a list of blocks shown in order.",
+ "_about": "The Models tab of the hangar page (tools/hangar.html): every render Ryan judges, by chassis. A round adds its pictures under docs/hangar/renders/<chassis>/, moves the previous 'images' to 'before' with a summary, and writes 'when' and 'note'; a 'candidate' block keeps a cut Ryan saved as a candidate final, its pictures under candidate_<file>, until he settles it; then the page is republished with the new files (tools/hangar_data.py prints the files map). 'classes' is the silhouette classes section, a list of blocks shown in order.",
  "classes": {
   "title": "Silhouette classes",
   "plate": "What a swapped component wears at a gun mount · the rule settled 30 September",
   "blocks": [
    {
     "when": "The rule.",
-    "note": "Hardpoints are gun mounts. A weapon, or equipment that can look like one (a shield projector, a buff coil), wears its class at the next mount in the die's order, in its own maker's metal; armour panels and vents take a die entry and no mount, since they are applied to the whole machine. Five classes: barrel, twin barrel, rack, blade (katar-style, punching forward) and dish. A machine with more hardpoints than stock guns carries bare mount pads. Shown: a Minerva barrel, a Wainwright & Sutler rack, a Kestrel dish, an Arsenal blade.",
+    "note": "Hardpoints are gun mounts. A weapon, or equipment that can look like one (a shield projector, a buff coil), wears its class at the next mount in the die's order, in its own maker's metal; armour panels and vents take a die entry and no mount, since they are applied to the whole machine. Four classes: barrel, twin barrel, rack and dish; the blade, a katar-style edge, retired on 15 November, every melee piece being locked into its machine (Ryan: “it's pretty safe to retire the Blade model and not worry about maintaining it”). A machine with more hardpoints than stock guns carries bare mount pads. Shown: a Minerva barrel, a Wainwright & Sutler rack, a Kestrel dish.",
     "small": true,
     "images": [
      {
@@ -20,16 +20,12 @@
      {
       "file": "shapes/dish_kestrel.png",
       "alt": "dish, Kestrel"
-     },
-     {
-      "file": "shapes/blade_the_arsenal.png",
-      "alt": "blade, the Arsenal"
      }
     ]
    },
    {
     "when": "Worn on a machine.",
-    "note": "Four refits rendered with <code>RIFTGATE_FIT</code>: the Honey Badger with a W&S Lance on the wrist, a Heat Sink (which shows nowhere), an Arsenal Blazethrower on the left pauldron and a Kestrel Deflector's dish on the right; the Clydesdale with an Arc Projector in place of the Lance and, on its bare mounts, a Missile Rack, Soulcutter Talons and an Overcharge Coil; the Kite with Soulcutter Talons as a wing blade and Meteor Artillery on the other tip; the Wild Boar with a Plasma Carbine and a Blazethrower on its rear quarters.",
+    "note": "Four refits rendered with <code>RIFTGATE_FIT</code>: the Honey Badger with a W&S Lance on the wrist, a Heat Sink (which shows nowhere), an Arsenal Blazethrower on the left pauldron and a Kestrel Deflector's dish on the right; the Clydesdale with the Arc Fault Cannon's twin barrels in place of its Maxigun, the Shotfire Rack on its bare mount and the Overcharge Coil's dish in place of its Howitzer; the Kite with Meteor Artillery's rack and the Overcharge Coil's dish on its nose mounts and the Arc Fault Cannon's round pair in its port (those two rendered again on 15 November, as they wore the retired blade); the Wild Boar with a Plasma Carbine and a Blazethrower on its rear quarters.",
     "small": false,
     "images": [
      {
@@ -67,7 +63,7 @@
    },
    {
     "when": "The port forms, 12 November.",
-    "note": "A class's form for a mount behind a port's wall, starting at the socket with its root inside the hull (the Kite's inset mount, Ryan, 12 November: \"the actual mount block is hidden\", then \"let it poke out more\"). The port gun, the standard gun's barrel and muzzle alone; the port pair, the two barrels and their brace alone (\"Twin barrel isn't sticking out as far as it was\", of the standard pair sunk back to hide its receiver); the port rack, the round launcher longer and thinner, its hazard band where it shows (\"it would look the same, but be a bit longer and thinner\"); the port dish, the dish run out on a telescoping mast so it stands clear of a hood over the port (\"The dish will need an extension of some kind so it's not just covered\"), the port rack's diameter (\"same diameter as the rack\"). Shown in Kestrel's metal; the Kite's pictures show them worn.",
+    "note": "A class's form for a mount behind a port's wall, starting at the socket with its root inside the hull (the Kite's inset mount, Ryan, 12 November: \"the actual mount block is hidden\", then \"let it poke out more\"). The port gun, the standard gun's barrel and muzzle alone; the round pair, the two barrels out of a round receiver the port rack's diameter, rooted where it is (14 November, of the Needletail's cheeks: \"the twin barrels end in a square block when they should end in a round one, same diameter as the rack\"; of the Kite's port, \"Change the kite too\"), in place of the port pair, the barrels and their brace alone; the port rack, the round launcher longer and thinner, its hazard band where it shows (\"it would look the same, but be a bit longer and thinner\"); the port dish, the dish run out on a telescoping mast so it stands clear of a hood over the port (\"The dish will need an extension of some kind so it's not just covered\"), the port rack's diameter (\"same diameter as the rack\"). Shown in Kestrel's metal; the Kite's pictures show them worn.",
     "small": true,
     "images": [
      {
@@ -75,8 +71,8 @@
       "alt": "port gun, Kestrel"
      },
      {
-      "file": "shapes/twin_barrel_port_kestrel.png",
-      "alt": "port pair, Kestrel"
+      "file": "shapes/twin_barrel_round_kestrel.png",
+      "alt": "round pair, Kestrel"
      },
      {
       "file": "shapes/rack_port_kestrel.png",
@@ -159,7 +155,7 @@
   },
   "kite": {
    "when": "The third mount, the intake, the tail and the wings, 12 and 13 November.",
-   "note": "Ryan, 12 November: a third mount \"in front of the canopy, but inset, like the polar bear - so some of the barrel pokes out through a cut channel. Doesn't retract or anything\"; \"sink it horizontally into the hull more, so the actual mount block is hidden, and don't cut a channel all the way down the nose\". A port seven ahead of the canopy's nose (\"push the barrel horizontally forward, moving the back of the cut with it but not the front\", then \"like 2 units more, same thing\" and another unit), its line raised (\"Raise the gun's line a little\", then \"Move the mount vertically up a little bit\"; a unit's drop from there tried and taken back: \"Maybe revert the drop\"), under a low curved hood (\"slap a gentle curved fairing overtop of the back of the mount point, to hide the poking-out edge\") carried forward to four past the mount point, rising off the spine to the mount and level from there over the weapon as the nose falls away (\"carry the fairing forward more, over the mount point, covering more of the weapon\"), what the port wears coming out of its dark mouth; bare on the stock machine. The trough the weapon first lay in is filled (\"I want to see what filling in the cut looks like now\"), so a barrel runs from the hood's mouth down the nose, its underside sunk at first; a little round cut under the weapon from the hood's mouth to just past the launcher's face frees the launcher (\"Can we make a little round cut under, just long enough that the rack isn't covered?\"), made as small as clears the launcher's drum (\"shrink the diameter of the hood cut too, as it's a bit big right now anyway\") and drilled two back into the hood along the line, through its mouth and under its crown, never through its top (\"I meant drill it out a bit following the hood cut\"), the hole lined dark; the twin barrels' sides still touch the nose. Every class there is its port form, its root inside the hull: the port gun, the port pair for twin barrels, the port rack for a launcher (\"a round rack would be warranted when a missile is slotted there\", then \"a true 'port' version of the rack, it would look the same, but be a bit longer and thinner\") and the port dish on a telescoping mast (\"The dish will need an extension of some kind so it's not just covered\"), the launcher's diameter (\"the dish model needs to be a bit smaller, same diameter as the rack\"); the blade is the standard one (the third and fourth pictures: a Laser Carbine, a Shotfire Rack). The tail segment's flat face behind the canopy is an air intake (\"Can the flat face behind the canopy also get an intake treatment?\"), and the tail's top edges are chamfered, its intake's mouth and lip taking the chamfered face's shape (\"Can we chamfer the top edges of it, make it a bit more streamlined?\"). The tail is carried on the body (\"I like the floating tail, maybe we can get it to make more sense as part of the body\"), its joins cleaned up (\"it was already messy where things connected\"): one root in the body's metal, its upper corners on the tail's flanks the whole way, running out onto the fuselage's shoulders as a fillet each side and, behind the fuselage's blunt end, in between the boosters and up into the tail's underside where the dark keel was, the tail floating free over the boosters either side and behind; three raked vents on each of its flanks just over the boosters (\"I like the idea of angled vents around the lower connection area\"), cut in as real pockets with a fire glowing behind two slats in each, flaring with the boosters (\"Can we add some actual glowing vent parts too?\"); the old scoop run through the tail with its slits gone (\"The weird vent jammed through the middle can get taken out\"); the tail six longer, its fins with its end (\"the tail itself could be a smidge longer\", then \"Maybe a bit longer still\"). The wings' leading edge angled more, its root drawn back so it runs out at about 32 degrees off square where it ran at 17 (\"can we angle the forward face of the wings a bit more, to make it a bit more aggressive?\", then \"Maybe a little more? Just so it reads well at skirmish view\"), and its back edge drawn back at its root the same way, so it sweeps at about 60 degrees where it swept at 56 (\"What if we pulled the back edge back a bit, making that a sharper angle as well?\"). Shipped on the 13th (\"That's really cool. Ship it\"); the blade's place is a guess.",
+   "note": "Ryan, 12 November: a third mount \"in front of the canopy, but inset, like the polar bear - so some of the barrel pokes out through a cut channel. Doesn't retract or anything\"; \"sink it horizontally into the hull more, so the actual mount block is hidden, and don't cut a channel all the way down the nose\". A port seven ahead of the canopy's nose (\"push the barrel horizontally forward, moving the back of the cut with it but not the front\", then \"like 2 units more, same thing\" and another unit), its line raised (\"Raise the gun's line a little\", then \"Move the mount vertically up a little bit\"; a unit's drop from there tried and taken back: \"Maybe revert the drop\"), under a low curved hood (\"slap a gentle curved fairing overtop of the back of the mount point, to hide the poking-out edge\") carried forward to four past the mount point, rising off the spine to the mount and level from there over the weapon as the nose falls away (\"carry the fairing forward more, over the mount point, covering more of the weapon\"), what the port wears coming out of its dark mouth; bare on the stock machine. The trough the weapon first lay in is filled (\"I want to see what filling in the cut looks like now\"), so a barrel runs from the hood's mouth down the nose, its underside sunk at first; a little round cut under the weapon from the hood's mouth to just past the launcher's face frees the launcher (\"Can we make a little round cut under, just long enough that the rack isn't covered?\"), made as small as clears the launcher's drum (\"shrink the diameter of the hood cut too, as it's a bit big right now anyway\") and drilled two back into the hood along the line, through its mouth and under its crown, never through its top (\"I meant drill it out a bit following the hood cut\"), the hole lined dark; the twin barrels' sides still touch the nose. Every class there is its port form, its root inside the hull: the port gun, the port pair for twin barrels, the port rack for a launcher (\"a round rack would be warranted when a missile is slotted there\", then \"a true 'port' version of the rack, it would look the same, but be a bit longer and thinner\") and the port dish on a telescoping mast (\"The dish will need an extension of some kind so it's not just covered\"), the launcher's diameter (\"the dish model needs to be a bit smaller, same diameter as the rack\"); the third and fourth pictures show a Laser Carbine and a Shotfire Rack. The tail segment's flat face behind the canopy is an air intake (\"Can the flat face behind the canopy also get an intake treatment?\"), and the tail's top edges are chamfered, its intake's mouth and lip taking the chamfered face's shape (\"Can we chamfer the top edges of it, make it a bit more streamlined?\"). The tail is carried on the body (\"I like the floating tail, maybe we can get it to make more sense as part of the body\"), its joins cleaned up (\"it was already messy where things connected\"): one root in the body's metal, its upper corners on the tail's flanks the whole way, running out onto the fuselage's shoulders as a fillet each side and, behind the fuselage's blunt end, in between the boosters and up into the tail's underside where the dark keel was, the tail floating free over the boosters either side and behind; three raked vents on each of its flanks just over the boosters (\"I like the idea of angled vents around the lower connection area\"), cut in as real pockets with a fire glowing behind two slats in each, flaring with the boosters (\"Can we add some actual glowing vent parts too?\"); the old scoop run through the tail with its slits gone (\"The weird vent jammed through the middle can get taken out\"); the tail six longer, its fins with its end (\"the tail itself could be a smidge longer\", then \"Maybe a bit longer still\"). The wings' leading edge angled more, its root drawn back so it runs out at about 32 degrees off square where it ran at 17 (\"can we angle the forward face of the wings a bit more, to make it a bit more aggressive?\", then \"Maybe a little more? Just so it reads well at skirmish view\"), and its back edge drawn back at its root the same way, so it sweeps at about 60 degrees where it swept at 56 (\"What if we pulled the back edge back a bit, making that a sharper angle as well?\"). Shipped on the 13th (\"That's really cool. Ship it\"). Since 14 November its port's twin guns are the round pair, the two barrels out of a round receiver the port rack's diameter (Ryan: \"Change the kite too, might as well\"); the close picture shows them. On 15 November its port's mouth is dark again (the matte finish bores were given on the 14th had lit Kestrel's dark lining pale; that finish is the deep bays' alone now), and its crown is whole to the mouth: the cut drilling the bore and the round channel under it was one hull through three rings, the one ahead raised to ramp the channel's floor up, which sloped the hull's top up through the crown over its last 0.7, and the notch bared the bore's dark lining above the hood's line (Ryan: \"There's a chunk of casing sticking out the top of the fairing\"). The bore's hull and the ramp's are two now, the ramp cutting the nose alone. The close picture shows it.",
    "images": [
     {
      "file": "kite/kite_front.png",
@@ -176,6 +172,10 @@
     {
      "file": "kite/kite_port_rack.png",
      "alt": "kite, a round rack in the inset mount"
+    },
+    {
+     "file": "kite/kite_port_twin.png",
+     "alt": "kite, close: twin guns in the inset mount, their round receiver under the hood"
     }
    ],
    "before": {
@@ -350,7 +350,7 @@
   },
   "dingo": {
    "when": "Ryan's swap notes, 2 November.",
-   "note": "Ryan's go of 2 November: the nose mounts sat inside the raked nose, which buried a fitted dish and half sank a rack. Each now stands on a low pedestal on the nose ahead of the visor, the stock's Twin Autoguns on the left one, so whatever is fitted stands clear. The shots: the stock from the front and behind, two racks, then a dish and a blade.",
+   "note": "Ryan's go of 2 November: the nose mounts sat inside the raked nose, which buried a fitted dish and half sank a rack. Each now stands on a low pedestal on the nose ahead of the visor, the stock's Twin Autoguns on the left one, so whatever is fitted stands clear. The shots: the stock from the front and behind, two racks, then a dish and a gun (the Halo Projector and the Transonic Rifle, rendered again on 15 November, as it wore the retired blade).",
    "images": [
     {
      "file": "dingo/dingo_front.png",
@@ -621,26 +621,83 @@
    }
   },
   "needletail": {
-   "when": "First cut, 23 October.",
-   "note": "Claude's first cut, 23 October (Ryan: models for every chassis ready to build, their silhouettes apart from the Kestrel roster's). From above, the view the player reads, the roster is the Kite's dart on forward-swept wings with a V tail, the Buzzard's tailless plank, the Puffin's blunt hull on stubs, and the Lammergeier's two wing pairs to come. The Needletail is a needle of a fuselage on a short straight stub wing with a big booster nacelle on each tip, standing upright at rest so it hovers on them, exhausts down, where the Buzzard's nacelles tilt on the shoulders of a broad-winged airframe; a long thin tail ending in a dark needle with an X of small fins; a wide spotter's canopy; the Fovea Designator a sensor ball on a mast behind it, turning and nodding, its lens lit as it paints. Its acts: the transition to level flight and back, a sidestep, designating, backpedalling on its nacelles tipped back. On the move its nacelles tilt level as it gathers speed and come upright as it slows. Ryan's to judge running.",
+   "when": "Ryan's nineteenth note on its two modes, 14 November.",
+   "note": "Ryan, 14 November, on the eighteenth cut: “Needle looks really good. Can the wings slide back a little bit more when extended? And my only other complaint is not actually with the ship model, but the port style gun models: the twin barrels end in a square block when they should end in a round one, same diameter as the rack. And the back of it needs to start at the same point too, the double barrel floats out of the port when everything else is anchored.” The wings slide back 8 as they swing out, where they slid 5. The twin barrels in the cheeks are a new port form: the two barrels run out of a round receiver the port rack's diameter, rooted at the bay's back where the rack and the dish are; the twin picture shows them on the left cheek. The Kite's port wears it too since the same day. Ryan's to judge: Walk for the wings, and the twin fitted on a cheek in the Models tab. Shipped on his word of 14 November. Rendered again on the 15th: the four pods' intakes are dark again, as before the 14th, the matte finish that had lit them pale being the deep bays' alone now.",
    "images": [
     {
      "file": "needletail/needletail_front.png",
-     "alt": "needletail, front"
+     "alt": "needletail, hover mode, front"
     },
     {
      "file": "needletail/needletail_rear.png",
-     "alt": "needletail, rear"
+     "alt": "needletail, hover mode, rear"
     },
     {
      "file": "needletail/needletail_above.png",
-     "alt": "needletail, from above"
+     "alt": "needletail, hover mode, from above"
     },
     {
-     "file": "needletail/needletail_transition.png",
-     "alt": "needletail, the transition, nacelles level"
+     "file": "needletail/needletail_flight.png",
+     "alt": "needletail, flight mode, front"
+    },
+    {
+     "file": "needletail/needletail_flight_above.png",
+     "alt": "needletail, flight mode, from above: the wings out and slid back"
+    },
+    {
+     "file": "needletail/needletail_changing.png",
+     "alt": "needletail, changing: the guns drawn in, the clamshells shutting, the boosters swivelling"
+    },
+    {
+     "file": "needletail/needletail_cheek.png",
+     "alt": "needletail, hover mode, close, side on: a cheek gun lying out of its long bay, the clamshell's halves rolled in"
+    },
+    {
+     "file": "needletail/needletail_cheek_shut.png",
+     "alt": "needletail, flight mode, close, side on: a cheek's long clamshell shut"
+    },
+    {
+     "file": "needletail/needletail_twin.png",
+     "alt": "needletail, hover mode, close, side on: a twin gun fitted in a cheek's bay, its two barrels out of a round receiver at the bay's back"
     }
-   ]
+   ],
+   "before": {
+    "summary": "Before: the eighteenth cut, 14 November (the wings sliding back 5, the twin barrels' square receiver set forward in the cheek's bay)",
+    "images": [
+     {
+      "file": "needletail/before_needletail_front.png",
+      "alt": "Earlier: needletail, hover mode, front"
+     },
+     {
+      "file": "needletail/before_needletail_rear.png",
+      "alt": "Earlier: needletail, hover mode, rear"
+     },
+     {
+      "file": "needletail/before_needletail_above.png",
+      "alt": "Earlier: needletail, hover mode, from above"
+     },
+     {
+      "file": "needletail/before_needletail_flight.png",
+      "alt": "Earlier: needletail, flight mode, front"
+     },
+     {
+      "file": "needletail/before_needletail_flight_above.png",
+      "alt": "Earlier: needletail, flight mode, from above"
+     },
+     {
+      "file": "needletail/before_needletail_changing.png",
+      "alt": "Earlier: needletail, changing"
+     },
+     {
+      "file": "needletail/before_needletail_cheek.png",
+      "alt": "Earlier: needletail, hover mode, close"
+     },
+     {
+      "file": "needletail/before_needletail_cheek_shut.png",
+      "alt": "Earlier: needletail, flight mode, close, side on"
+     }
+    ]
+   }
   },
   "storm_petrel": {
    "when": "Ryan's glow notes, 31 October.",
@@ -682,12 +739,12 @@
    }
   },
   "giant_petrel": {
-   "when": "First cut, 23 October.",
-   "note": "Claude's first cut, 23 October (Ryan: models for every chassis ready to build, their silhouettes apart from the Kestrel roster's). From above, the view the player reads, the roster is the Kite's dart on forward-swept wings with a V tail, the Buzzard's tailless plank, the Puffin's blunt hull on stubs, and the Lammergeier's two wing pairs to come. The Giant Petrel is after the Lun: a long flying-boat hull, the longest thing Kestrel builds; eight boosters in two banks of four on canards over the bow (the Immelmann Booster), pitching to blow under the wings; short cobalt wings low on the hull with float pontoons and endplates; a tall T-tail; the Spindrift Salvo's three pairs of tubes along the spine on a plinth that elevates, each back-blast lit; the Reheat Uplink's dish behind the cockpit; two turrets. Its acts: the salvo, the Immelmann, the uplink, a traverse. On the move it runs heavy and slow, nose a touch up. Ryan's to judge running.",
+   "when": "Ryan's fourteenth notes on the catamaran, 15 November.",
+   "note": "Ryan, 15 November, on the fourteenth cut: “the cowl corners don't meet. There are panel lines through the vents. The windscreen can come down a bit more.” The cowl is one band now, round the face's top and down each shoulder's outer edge to the deck, mitred at the roof's corners, its lip dipping in toward the face all the way round, so its top and its sides are one piece (they were two, the peak's end standing proud of the side's top). The louvres are plain metal: a plate's seams had lined up across the slats as a panel line. The glass sits lower again, a fifth of the way up the front to three quarters. On the fourteenth (that morning): “make the brow a little longer, and carry it down the sides so it encompasses the new vents, too. So more of a cowl then a brow. The vents need some kind of border so the slats don't go right to the face edges.” Shipped on his word of 15 November: “These look great.”",
    "images": [
     {
      "file": "giant_petrel/giant_petrel_front.png",
-     "alt": "giant petrel, front"
+     "alt": "giant petrel, front: the long wedge over the bow, the gun under it"
     },
     {
      "file": "giant_petrel/giant_petrel_rear.png",
@@ -695,13 +752,82 @@
     },
     {
      "file": "giant_petrel/giant_petrel_above.png",
-     "alt": "giant petrel, from above"
+     "alt": "giant petrel, from above: the racks spaced again"
     },
     {
      "file": "giant_petrel/giant_petrel_salvo.png",
-     "alt": "giant petrel, the salvo, its battery raised"
+     "alt": "giant petrel, firing the salvo: three racks rippling"
+    },
+    {
+     "file": "giant_petrel/giant_petrel_quarters.png",
+     "alt": "giant petrel, the traverse: the quarters' guns swung round to astern"
+    },
+    {
+     "file": "giant_petrel/giant_petrel_windscreen.png",
+     "alt": "giant petrel, the front close: the cowl one band round the face, the glass lower under it, each corner face an intake inside its border"
+    },
+    {
+     "file": "giant_petrel/giant_petrel_guns.png",
+     "alt": "giant petrel, the quarters' guns pointing astern over the spoiler"
+    },
+    {
+     "file": "giant_petrel/giant_petrel_chin.png",
+     "alt": "giant petrel, low ahead: the fore gun hung under the centre bow"
+    },
+    {
+     "file": "giant_petrel/giant_petrel_turbine.png",
+     "alt": "giant petrel, the right flank close from ahead: the turbine's fan in its intake, the fin canted up and out on it"
+    },
+    {
+     "file": "giant_petrel/giant_petrel_turbine_aft.png",
+     "alt": "giant petrel, a turbine from astern: its last stage dark against the glow in the nozzle"
     }
-   ]
+   ],
+   "before": {
+    "summary": "Before: the fourteenth cut, 15 November (the cowl's peak and its sides apart, meeting at a step, the louvres in a seamed tile, the glass higher)",
+    "images": [
+     {
+      "file": "giant_petrel/before_giant_petrel_front.png",
+      "alt": "Earlier: giant petrel, front: the long wedge over the bow, the gun under it"
+     },
+     {
+      "file": "giant_petrel/before_giant_petrel_rear.png",
+      "alt": "Earlier: giant petrel, rear"
+     },
+     {
+      "file": "giant_petrel/before_giant_petrel_above.png",
+      "alt": "Earlier: giant petrel, from above: the racks spaced again"
+     },
+     {
+      "file": "giant_petrel/before_giant_petrel_salvo.png",
+      "alt": "Earlier: giant petrel, firing the salvo: three racks rippling"
+     },
+     {
+      "file": "giant_petrel/before_giant_petrel_quarters.png",
+      "alt": "Earlier: giant petrel, the traverse: the quarters' guns swung round to astern"
+     },
+     {
+      "file": "giant_petrel/before_giant_petrel_windscreen.png",
+      "alt": "Earlier: giant petrel, the front close: the cowl's peak and sides apart, the glass higher"
+     },
+     {
+      "file": "giant_petrel/before_giant_petrel_guns.png",
+      "alt": "Earlier: giant petrel, the quarters' guns pointing astern over the spoiler"
+     },
+     {
+      "file": "giant_petrel/before_giant_petrel_chin.png",
+      "alt": "Earlier: giant petrel, low ahead: the fore gun hung under the centre bow"
+     },
+     {
+      "file": "giant_petrel/before_giant_petrel_turbine.png",
+      "alt": "Earlier: giant petrel, the right flank close from ahead: the turbine's fan in its intake, the fin canted up and out on it"
+     },
+     {
+      "file": "giant_petrel/before_giant_petrel_turbine_aft.png",
+      "alt": "Earlier: giant petrel, a turbine from astern: its last stage dark against the glow in the nozzle"
+     }
+    ]
+   }
   },
   "lammergeier": {
    "when": "First model, the flying wing, the launcher nacelles on the skin, 28 October.",

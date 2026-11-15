@@ -104,6 +104,7 @@ const SPIN_SPEED := 0.7           # radians per second
 var rig := MechRig.new()
 var joints: Dictionary = {}       # "shoulder_l" -> Node3D (the rig's)
 var hardpoints: Dictionary = {}   # 1 -> Node3D (the rig's)
+var _aim_rest: Dictionary = {}    # 1 -> the degrees its gun points to the machine's left as built (aim_rest)
 var fx_nodes: Dictionary = {}     # a fixed weapon -> the fx_<component> node at its business end (its sidecar's `fx`), riding its joint
 var plan: Array = []              # what the pins wear instead of their built parts (plan_for's rows), applied in _setup
 var wears_stock := true           # whether the model's own stock parts are its machine's kit (false on a borrowed model)
@@ -994,6 +995,9 @@ func _setup(chassis_id: String, maker: String) -> void:
 		rig.top_speed = MechRig.map_speed(widest, int(c.get("movespeed", Unit.MECH_MOVE)), Map3D.fit_for(str(c.get("size", ""))))
 	joints = rig.joints
 	hardpoints = rig.hardpoints
+	_aim_rest = {}
+	for n in hardpoints.keys():
+		_aim_rest[n] = rest_bearing(_model, hardpoints[n])   # at rest still: nothing has played yet
 	fx_nodes = fx_of(_model, side)
 	_apply_plan()   # before the traces attach and the camera frames, so a mounted shape gets both
 	if PLUMES and not token:
@@ -1351,6 +1355,40 @@ func aim_at(cid: String, deg: float, hold: float) -> bool:
 
 
 ## The joint that turns to aim a component (aim_at), or "" when it fires where it points.
+## How far the gun spending `cid` already points to the machine's left as built, in degrees: its
+## mount's line on the model, level; nought for a gun built facing forward, ninety for one built
+## facing out to its left, a half turn for one built facing aft (the Giant Petrel's quarter gun
+## houses). A turn to aim is the target's bearing less this (SkirmishScreen._aim_plan), so a
+## turret built facing off ahead swings from where it points rather than as though it pointed ahead. The mount is the one aim_joint_for
+## turns; a weapon on no mount points ahead.
+func aim_rest(cid: String) -> float:
+	var mounts := carrying(cid)
+	for n in mounts:
+		if not rig.aim_joint_over(hardpoints[n]).is_empty():
+			return float(_aim_rest.get(n, 0.0))
+	return float(_aim_rest.get(mounts[0], 0.0)) if not mounts.is_empty() else 0.0
+
+
+## The degrees a pin's line (its -z, down which its class points) runs to the model's left as
+## built: its basis carried up through every node to the model's root, then levelled.
+static func rest_bearing(root: Node, pin: Node3D) -> float:
+	var basis := Basis.IDENTITY
+	var p: Node = pin
+	while p != null and p != root:
+		if p is Node3D:
+			basis = (p as Node3D).transform.basis * basis
+		p = p.get_parent()
+	return bearing_left(basis * Vector3(0.0, 0.0, -1.0))
+
+
+## The degrees a line in the model's axes runs to the left of its forward (-z), level: nought
+## ahead, ninety to the left (-x), minus ninety to the right, nought for a line straight up or down.
+static func bearing_left(d: Vector3) -> float:
+	if Vector2(d.x, d.z).length() < 0.001:
+		return 0.0
+	return rad_to_deg(atan2(-d.x, -d.z))
+
+
 func aim_joint_for(cid: String) -> String:
 	var mounts := carrying(cid)
 	for n in mounts:
@@ -1444,6 +1482,16 @@ static func toon(node: Node, maker: String, look: String, paint_arg: Dictionary 
 				elif role == "glass":
 					tm.roughness = 0.25
 					tm.metallic = 0.35
+				elif role == "bore" and src.resource_name.to_lower().ends_with(".void"):
+					# The near-black inside a deep bay takes no finish: a chrome maker's gloss
+					# lit the far wall of a deep bay as a bright band (the Needletail's cheek
+					# bays, Ryan, 14 November: "the weird cuts are still weird"). The void alone:
+					# a bore's "dark" tile is a mid grey a metal finish keeps dark, and matte it
+					# lit pale (the Kite's port mouth and the Needletail's pod intakes, 15
+					# November).
+					tm.roughness = 1.0
+					tm.metallic = 0.0
+					tm.metallic_specular = 0.0
 				mi.set_surface_override_material(i, tm)
 				continue
 			var m := ShaderMaterial.new()

@@ -198,6 +198,11 @@ class Tiles:
             img = self._seam(self.metal(g * 1.08, self.p["streak"] * 0.6))
         elif kind == "dark":
             img = self.metal(g * 0.55, 0.05)
+        elif kind == "void":
+            # The dark inside a recess, near black under any maker's finish: Kestrel's light grey
+            # makes its "dark" tile a mid grey that its chrome lights, so a deep curved bay read as
+            # bright metal (the Needletail's cheek bays, 12 November).
+            img = self.metal(0.08, 0.01, mottle=0.006)
         elif kind == "vent":
             # Grilles read by contrast, not grain: a calm base and deep slits.
             img = self.metal(g * 0.85, 0.03, mottle=0.015)
@@ -456,6 +461,8 @@ class Build:
         self.hidden = []    # the hp_<n> pins that show nothing, stock or fitted: the sidecar's hidden_pins (see pin())
         self.cuts = []      # (targets, cutter) pairs: booleans applied before export (see cut)
         self.joint_meta = {}   # joint name -> {"axis", "limits", "parent"}: the rig sidecar (see rig())
+        self.turret_reach = {}   # turret joint -> degrees from the bow its acts may swing it, where wider than the rule's (joint()'s `reach`)
+        self.joint_heading = {}   # joint name -> its resting heading in degrees (joint()'s `heading`)
         self.acts = []         # the machine's idle acts, in authoring order (see act())
         self.tuning = {}       # the cornering module's per-machine numbers (see move())
         self.gait_spec = {}    # how the machine moves (see gait())
@@ -635,10 +642,12 @@ class Build:
         self.cuts.append((list(targets), cutter))
         return cutter
 
-    def cut_hull(self, targets, points):
+    def cut_hull(self, targets, points, material=None):
         """The convex hull of `points` subtracted from `targets` before export: a pocket of any
         convex shape, such as a trough whose floor ramps up to meet the surface (the Kite's
-        gun port, 12 November)."""
+        gun port, 12 November). `material`, given, is what the pocket's own walls wear, in place
+        of the target's (the Needletail's cheek recesses, dark to their rim: Ryan, 14 November,
+        of a light wall showing past their lining, "the execution is leaving weird cuts")."""
         bm = bmesh.new()
         vs = [bm.verts.new(v) for v in points]
         bmesh.ops.convex_hull(bm, input=vs)
@@ -646,9 +655,35 @@ class Build:
         mesh = bpy.data.meshes.new("cutter")
         bm.to_mesh(mesh)
         bm.free()
+        if material:
+            mesh.materials.append(self.material(material))
         cutter = bpy.data.objects.new("cutter", mesh)
         bpy.context.scene.collection.objects.link(cutter)
         self.cuts.append((list(targets), cutter))
+
+    def cut_rings(self, targets, rings, material=None):
+        """A pocket lofted through point rings (each the same count, in order along it, capped at
+        both ends) subtracted from `targets` before export: a shape no hull gives, such as a
+        teardrop of revolution whose point fades into the skin (the Needletail's cheek bays, 14
+        November). `material` as for cut_hull."""
+        bm = bmesh.new()
+        vs = [[bm.verts.new(p) for p in ring] for ring in rings]
+        n = len(vs[0])
+        for r0, r1 in zip(vs, vs[1:]):
+            for i in range(n):
+                bm.faces.new([r0[i], r0[(i + 1) % n], r1[(i + 1) % n], r1[i]])
+        bm.faces.new(vs[0])
+        bm.faces.new(list(reversed(vs[-1])))
+        bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+        mesh = bpy.data.meshes.new("cutter")
+        bm.to_mesh(mesh)
+        bm.free()
+        if material:
+            mesh.materials.append(self.material(material))
+        cutter = bpy.data.objects.new("cutter", mesh)
+        bpy.context.scene.collection.objects.link(cutter)
+        self.cuts.append((list(targets), cutter))
+        return cutter
 
     def cut_box(self, targets, x0, x1, y0, y1, z0, z1):
         """A box subtracted from `targets` before export: a shallow one makes a pocket in
@@ -677,6 +712,8 @@ class Build:
                 mod = ob.modifiers.new("cut", "BOOLEAN")
                 mod.operation = "DIFFERENCE"
                 mod.object = cutter
+                if cutter.data.materials:
+                    mod.material_mode = "TRANSFER"   # the pocket's walls wear the cutter's material (cut_hull's `material`)
                 with bpy.context.temp_override(object=ob, active_object=ob, selected_objects=[ob], selected_editable_objects=[ob]):
                     bpy.ops.object.modifier_apply(modifier=mod.name)
                 if ob not in touched:
@@ -684,6 +721,7 @@ class Build:
             bpy.data.objects.remove(cutter, do_unlink=True)
         self.cuts = []
         for ob in touched:
+            keep = len(ob.material_slots) > 1   # a pocket whose walls wear their own material keeps it (cut_hull's `material`)
             bm = bmesh.new()
             bm.from_mesh(ob.data)
             uv = bm.loops.layers.uv.verify()
@@ -695,11 +733,12 @@ class Build:
                 for loop in f.loops:
                     co = loop.vert.co
                     loop[uv].uv = (co[a] / self.tile_world, co[b2] / self.tile_world)
-                f.material_index = 0
+                if not keep:
+                    f.material_index = 0
             bm.to_mesh(ob.data)
             bm.free()
 
-    def pin(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, parts=(), carries=None, fits=None, hidden=False):
+    def pin(self, name, at, forward=(0.0, 1.0, 0.0), scale=1.0, parts=(), carries=None, fits=None, hidden=False, up=None):
         """A socket: an Empty named `hp_<n>` at `at`, its own +y along `forward` (where the
         weapon points) and its scale the size a mounted component wears there, so the
         engine can hang a component's shape under it with no arithmetic. `parts` are the
@@ -720,6 +759,12 @@ class Build:
         deeper? ... a round missile rack doesn't need to poke out at all"). The sidecar carries
         it (rig()'s `fits`); the engine hangs what it names.
 
+        `up`, given, is the way the pin's +z leans, kept square to `forward`, so a class rides a
+        tilted face the way the face lies (the Needletail's pods on its upper chamfers, Ryan, 13
+        November: "Can the upper pod mounts be angled to match the angle of the pod they sit
+        in?"); unnamed, +z stays as near world up as `forward` allows (pin_frame). The engine
+        hangs a class under the pin, so it wears the whole frame.
+
         `hidden` makes a mount that shows nothing, its stock or a fitted component's class (the
         Cottonmouth's guns, mounted inside its drum: Ryan, 19 October, "the guns mounted
         (invisibly) inside"): still a hardpoint, counted and recording what it carries, with no
@@ -737,7 +782,7 @@ class Build:
                 self.hidden.append(name)
         e = bpy.data.objects.new(name, None)
         e.empty_display_size = 2.0
-        m = Matrix.Translation(Vector(at)) @ pin_frame(forward).to_4x4() @ Matrix.Scale(scale, 4)
+        m = Matrix.Translation(Vector(at)) @ pin_frame(forward, up).to_4x4() @ Matrix.Scale(scale, 4)
         e.matrix_world = m
         bpy.context.scene.collection.objects.link(e)
         self.pins.append(e)
@@ -747,7 +792,7 @@ class Build:
             ob.matrix_parent_inverse = inv
         return e
 
-    def joint(self, name, at, axis=None, limits=None, swing=None, slide=None):
+    def joint(self, name, at, axis=None, limits=None, swing=None, slide=None, reach=None, heading=None):
         """`with b.joint("shoulder_l", pivot): ...` builds a limb inside the block and hangs
         everything made there, pins included, under an Empty named `joint_<name>` at the
         pivot, its axes the world's. A joint inside another joint's block nests under it
@@ -767,7 +812,24 @@ class Build:
         a joint named shoulder_* swings. `slide`, given, is the one line the joint moves along,
         never turning (a gun that only runs in and out of its port: the Polar Bear's, Ryan, 29
         October): every turn is held to nothing and a shot kicks it back along the line. All of
-        it goes to the rig sidecar (see rig()); the engine (MechRig) reads it."""
+        it goes to the rig sidecar (see rig()); the engine (MechRig) reads it. `reach`, for a turret,
+        is how far from the bow its acts may swing it where its model means to show its arc, in
+        place of the turret rule's TURRET_REACH (the Giant Petrel's quarters to dead astern, Ryan,
+        14 November: "the traverse animation should point the guns back, just cause they can"); the
+        rule's slew and pause still hold. It goes to the sidecar with the rest (the rig's test reads
+        it there); the engine needs it not. `heading`, given, turns the joint's own axes about up by
+        that many degrees at rest (positive to the left), so its roll is about a line laid in plan
+        along a tapering side rather than straight ahead (the Needletail's clamshell halves, rolling
+        in about a hinge along the nose's taper: Ryan, 14 November, "an elongated clamshell that
+        covers the whole cut area"). The engine and the hangar keep a joint's resting turn and add
+        the pose to it (MechRig._rest), so the roll stays one turn about that line; the sidecar
+        names it."""
+        if heading is not None:
+            self.joint_heading[name] = float(heading)
+        if reach is not None:
+            if not 0.0 < float(reach) <= 180.0:
+                raise ValueError("joint %s of %s: a reach is up to 180 degrees from the bow, not %g" % (name, self.name, float(reach)))
+            self.turret_reach[name] = float(reach)
         return _Joint(self, name, at, axis, limits, swing, slide)
 
     @staticmethod
@@ -930,9 +992,10 @@ class Build:
         if pts[-1][0] < duration:
             pts.append((duration, 0.0))
         where = "act %r of %s, %s" % (name, self.name, jn)
+        reach = self.turret_reach.get(jn, self.TURRET_REACH)
         for t, v in pts:
-            if abs(v) > self.TURRET_REACH + 1e-6:
-                raise ValueError("%s: %g degrees at %gs, past the turret's reach of %g" % (where, v, t, self.TURRET_REACH))
+            if abs(v) > reach + 1e-6:
+                raise ValueError("%s: %g degrees at %gs, past the turret's reach of %g" % (where, v, t, reach))
         moves = []   # (t0, t1, direction) of each leg that moves
         for (t0, v0), (t1, v1) in zip(pts, pts[1:]):
             if v1 == v0:
@@ -1360,23 +1423,23 @@ class Build:
             ob.matrix_world = m
         return self.pin(name, at, forward, scale, carries="", fits=fits)
 
-    def stock(self, name, at, shape, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None, fits=None):
+    def stock(self, name, at, shape, forward=(0.0, 1.0, 0.0), scale=1.0, carries=None, fits=None, up=None):
         """A pin whose stock component is one of the silhouette classes (models_low.SHAPES),
         built at the origin along +y and moved onto the pin's frame at its scale: the way a
         swapped component will sit there, so the machine is judged wearing one, in the variant
         and at the scale the pin's `fits` give its class. `carries` names the component
-        (pin()); its class is `shape`."""
+        (pin()); its class is `shape`; `up` leans the pin's frame (pin())."""
         import models_low
         start = len(self.objects)
         self.stock_shapes[name] = shape
         fit = _fits(self.name, name, fits or {}).get(shape, {})
         models_low.shape_builder(fit.get("shape", shape))(self, 1.0)
-        m = (Matrix.Translation(Vector(at)) @ pin_frame(forward).to_4x4() @ Matrix.Scale(scale, 4)
+        m = (Matrix.Translation(Vector(at)) @ pin_frame(forward, up).to_4x4() @ Matrix.Scale(scale, 4)
              @ Matrix.Translation((0.0, -fit.get("sink", 0.0), 0.0)) @ Matrix.Scale(fit.get("scale", 1.0), 4))
         parts = self.objects[start:]
         for ob in parts:
             ob.matrix_world = m
-        return self.pin(name, at, forward, scale, parts, carries=carries, fits=fits)
+        return self.pin(name, at, forward, scale, parts, carries=carries, fits=fits, up=up)
 
 
 def _fits(model, pin, fits):
@@ -1495,6 +1558,10 @@ class _Joint:
                                         "parent": self.b._joint_stack[-1] if self.b._joint_stack else ""}
         if self.slide is not None:
             self.b.joint_meta[self.name]["slide"] = self.slide
+        if self.name in self.b.turret_reach:
+            self.b.joint_meta[self.name]["reach"] = self.b.turret_reach[self.name]
+        if self.name in self.b.joint_heading:
+            self.b.joint_meta[self.name]["heading"] = self.b.joint_heading[self.name]
         self.b._joint_stack.append(self.name)
         return self
 
@@ -1505,7 +1572,7 @@ class _Joint:
         b = self.b
         e = bpy.data.objects.new("joint_" + self.name, None)
         e.empty_display_size = 3.0
-        m = Matrix.Translation(Vector(self.at))
+        m = Matrix.Translation(Vector(self.at)) @ Matrix.Rotation(math.radians(b.joint_heading.get(self.name, 0.0)), 4, "Z")
         e.matrix_world = m
         bpy.context.scene.collection.objects.link(e)
         inv = m.inverted()
@@ -1517,12 +1584,13 @@ class _Joint:
         return False
 
 
-def pin_frame(forward):
+def pin_frame(forward, up=None):
     """The rotation that turns +y onto `forward`, keeping +z as up where it can (a pin
     pointing straight up or down takes -y or +y as its up, so a rack firing upward wears
-    its top toward the tail)."""
+    its top toward the tail); `up`, given, is the way +z leans instead, kept square to
+    `forward`."""
     f = Vector(forward).normalized()
-    hint = Vector((0.0, 0.0, 1.0))
+    hint = Vector(up).normalized() if up is not None else Vector((0.0, 0.0, 1.0))
     if abs(f.dot(hint)) > 0.999:
         hint = Vector((0.0, -1.0, 0.0)) if f.z > 0 else Vector((0.0, 1.0, 0.0))
     z = (hint - f * hint.dot(f)).normalized()

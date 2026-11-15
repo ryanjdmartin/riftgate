@@ -58,9 +58,11 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   read one. Every weapon and debuff wears its tags by its fantasy, a shield, a vent and a buff none, but five locked ones the stock
   pass's table did not reach (the Pinion Driver, the Lorentz Contractor, the Syrinx Drone,
   the Fovea Designator, the St. Elmo's Regenerator), and only `melee` is read today: a blow
-  lunges on screen when its weapon is melee and nothing about it crosses the field (a blade's
-  class, and no Ballistic, Missile or Beam); any other fires as a gun, a shotgun tagged melee and
-  ballistic among them.
+  lunges on screen when its weapon is melee and nothing about it crosses the field (no class
+  built to fire, and no Ballistic, Missile or Beam); any other fires as a gun, a shotgun tagged melee and
+  ballistic among them. A machine's gun shows its shot crossing the field, from its muzzle to
+  what it fires at: a tracer for a direct shot, a lobbed arc for an indirect one, a beam held
+  through the blow for a laser (the Beam tag). A foe's blow shows none.
   Melee means short range, a shotgun included, never only a blade.
 - **Modules** sit inside the machine and are never spent: stat lines up or down (hull,
   shield, heat maximum, armour, move, cooling, shield regen) and at most one rule, tier 1
@@ -790,7 +792,8 @@ On a foe:
   only reaches it (an area's, a Chain's arc, a spill, a Mine's blast) neither doubles nor spends it, and equipment leaves it standing; it never stacks.
 - **Exposed** (debuff): it stands in Direct reach of every machine as if its
   column's front were empty, and its armour counts for nothing, its own and any Armoured.
-  Through the next round; refreshed, never added.
+  Until the end of the next round, so through the player's next turn and the foes' turn after
+  it; refreshed, never added.
 - **Mine** (debuff, the Lammergeier's): its damage, the spends that fed it added, and their
   keywords, one Mine a foe; when the foe falls it blows on every foe round its slot (A Mine,
   under A blow). It lasts the skirmish, until its foe falls or the Syrinx Drone detonates it.
@@ -958,7 +961,11 @@ Burning, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or a
   flat armour (a boss only where its kit is armour, the Cinder Tortoise's stepping by the tier; the promoted forms 2) and perhaps an aim. Its damage
   never rolls.
 - **Its move**: from the moves whose conditions hold, weighted by each move's own weight (attacks mostly 2, specials 1, the Bomb's Self-Destruct 3), never
-  the same special twice running while anything else is open. A move without a condition
+  the same special twice running while anything else is open. The foes announce in the order
+  they strike, each reading the moves already out: a reroll drain is no move a foe may announce
+  once the drains already out take every reroll a round gives, so the field never announces more
+  than two (a drain held by a Suppress, still gathering, or its foe destroyed counts nothing; a
+  Disrupt reads the same, and finds such a foe nothing else to do). A move without a condition
   fires on its weight; the conditions read the foe's own side or what its move needs: below
   half, hurt, a foe behind it, another foe on the field, one
   of its own hurt, a machine carrying a buff, one of its own not readied, one of its own

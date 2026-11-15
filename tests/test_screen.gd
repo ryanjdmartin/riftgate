@@ -2583,15 +2583,9 @@ func test_the_polar_bears_form_reads_on_its_die_and_its_view() -> void:
 	s.free()
 
 
-func test_a_shot_crossing_the_field_is_tabled_off_and_follows_its_weapon() -> void:
-	# Tabled as maybe too busy (Ryan, 3 November): only a debug build's SHOT TRAILS (or
-	# RIFTGATE_SHOTS=1) draws it.
-	assert_eq(Settings.DISPLAY_DEFAULTS["shot_trails"], false, "off by default")
-	var was = Settings.display.get("shot_trails", false)
-	Settings.display["shot_trails"] = false
-	if OS.get_environment("RIFTGATE_SHOTS") != "1":
-		assert_false(ShotTrail.on(), "no trail unless switched on")
-	Settings.display["shot_trails"] = was
+func test_a_shot_crossing_the_field_follows_its_weapon() -> void:
+	# The game's own (Ryan, 14 November: "Let's keep it"), no switch over it.
+	assert_false(Settings.DISPLAY_DEFAULTS.has("shot_trails"), "no setting turns it off")
 	# Synthetic components: the trail reads the tags and the reach, never an id.
 	assert_eq(ShotTrail.kind_for({"tags": ["blade", "melee"], "face": {"reach": "direct"}}), -1, "melee lunges, no trail")
 	assert_eq(ShotTrail.kind_for({"tags": ["beam"], "face": {"reach": "indirect"}}), ShotTrail.BEAM, "a laser is a beam whatever its reach")
@@ -2612,7 +2606,7 @@ func test_a_shot_crossing_the_field_is_tabled_off_and_follows_its_weapon() -> vo
 func test_a_shotgun_tagged_melee_fires_a_tracer() -> void:
 	# Ryan, 3 November: "It's a shotgun, thematically". Synthetic components.
 	assert_eq(ShotTrail.kind_for({"tags": ["ballistic", "melee"], "shape": "barrel", "face": {"reach": "direct"}}), ShotTrail.TRACER, "a shotgun tagged melee fires a tracer")
-	assert_eq(ShotTrail.kind_for({"tags": ["blade", "melee"], "shape": "blade", "face": {"reach": "direct"}}), -1, "a claw lunges, no trail")
+	assert_eq(ShotTrail.kind_for({"tags": ["blade", "melee"], "shape": "none", "face": {"reach": "direct"}}), -1, "a claw lunges, no trail")
 
 
 ## UNDO (Ryan, 2 November: "undo to your last roll"): a spend taken back on the screen, the

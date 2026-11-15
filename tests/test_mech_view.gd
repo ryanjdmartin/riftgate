@@ -62,7 +62,7 @@ func test_a_hardpoint_wears_the_variant_and_scale_it_declares_for_a_class() -> v
 	assert_eq(MechView3D.fit_in(side, 2, "dish"), ["dish", 0.5, 0.0], "the class itself, smaller")
 	assert_eq(MechView3D.fit_in(side, 2, "barrel"), ["barrel", 1.0, 0.0], "an undeclared class wears itself")
 	assert_eq(MechView3D.fit_in(side, 1, "rack"), ["rack", 1.0, 0.0], "and so does every class on an undeclared mount")
-	assert_eq(MechView3D.fit_in({}, 1, "blade"), ["blade", 1.0, 0.0], "a sidecar with no fits changes nothing")
+	assert_eq(MechView3D.fit_in({}, 1, "dish"), ["dish", 1.0, 0.0], "a sidecar with no fits changes nothing")
 
 
 func test_every_declared_fit_names_a_built_variant_of_its_class() -> void:
@@ -416,8 +416,8 @@ func test_a_weapon_flares_on_its_class_in_its_tags_look_and_equipment_never() ->
 
 func test_the_tags_pick_a_flare_and_every_class_has_its_places() -> void:
 	assert_eq(MuzzleFlare.looks_for(["arc", "ballistic"], "barrel"), ["ballistic", "arc"], "the slug's flash, then its lightning")
-	assert_eq(MuzzleFlare.looks_for(["melee", "blade"], "blade"), ["blade"], "a melee piece throws a blade's sparks, once")
-	assert_eq(MuzzleFlare.looks_for(["arc", "melee"], "blade"), ["blade", "arc"], "a gauntlet's lightning rides its punch's sparks")
+	assert_eq(MuzzleFlare.looks_for(["melee", "blade"], "none"), ["blade"], "a melee piece throws a blade's sparks, once")
+	assert_eq(MuzzleFlare.looks_for(["arc", "melee"], "none"), ["blade", "arc"], "a fist's lightning rides its punch's sparks")
 	assert_eq(MuzzleFlare.looks_for(["ballistic", "melee"], "barrel"), ["ballistic"], "a shotgun tagged melee flashes as the gun it is, no sparks")
 	assert_eq(MuzzleFlare.looks_for(["flame", "melee"], "barrel"), ["flame"], "a flamethrower tagged melee throws its fire alone")
 	assert_eq(MuzzleFlare.looks_for([], "rack"), ["missile"], "a rack with no tag puffs as a launcher")
@@ -458,6 +458,39 @@ func test_each_weapon_turns_what_can_aim_it_and_a_quad_fires_where_it_points() -
 				assert_eq(joint, "", "the Polar Bear's %s fires where it points" % cid)
 		view.free()
 	assert_true(named >= 2, "the fixed weapons riding a head or a turret name it (%d)" % named)
+
+
+func test_a_gun_built_facing_off_ahead_aims_from_where_it_points() -> void:
+	# The turn to aim is the foe's bearing less where the gun points as built (MechView3D.aim_rest,
+	# SkirmishScreen._aim_plan): a gun built facing ahead turns by the bearing, one built facing off
+	# ahead swings from there. No machine's gun rests off ahead now (the Giant Petrel's quarters rest
+	# facing forward: Ryan, 13 November, "default the aft guns to facing forward, or the skirmish
+	# animations will be awkward"), so a pin built facing aft is a synthetic one.
+	assert_eq(MechView3D.bearing_left(Vector3(0.0, 0.0, -1.0)), 0.0, "a line ahead runs nought to the left")
+	assert_true(absf(MechView3D.bearing_left(Vector3(-1.0, 0.0, 0.0)) - 90.0) < 0.01, "one out to the left, ninety")
+	assert_true(absf(MechView3D.bearing_left(Vector3(1.0, 0.0, 0.0)) + 90.0) < 0.01, "one out to the right, minus ninety")
+	assert_true(absf(absf(MechView3D.bearing_left(Vector3(0.0, 0.0, 1.0))) - 180.0) < 0.01, "one astern, a half turn")
+	assert_eq(MechView3D.bearing_left(Vector3(0.0, 1.0, 0.0)), 0.0, "one straight up, none")
+	var badger := MechView3D.make("badger", "", "clean", "", MechView3D.YAW_FRONT, Vector2i(64, 64))
+	for n in badger.hardpoints.keys():
+		assert_true(absf(float(badger._aim_rest[n])) < 0.5, "the Badger's hp_%s points ahead as built" % n)
+	badger.free()
+	var root := Node3D.new()
+	var house := Node3D.new()
+	root.add_child(house)
+	var pin := Node3D.new()
+	house.add_child(pin)
+	house.rotation = Vector3(0.0, PI, 0.0)
+	assert_true(absf(absf(MechView3D.rest_bearing(root, pin)) - 180.0) < 0.5, "a pin built facing aft rests a half turn off ahead")
+	house.rotation = Vector3(0.0, PI / 2.0, 0.0)
+	assert_true(absf(MechView3D.rest_bearing(root, pin) - 90.0) < 0.5, "one built facing left, ninety")
+	root.free()
+	var petrel := MechView3D.make("giant_petrel", "", "clean", "", MechView3D.YAW_FRONT, Vector2i(64, 64))
+	assert_true(absf(petrel.aim_rest("overclocked_railgun")) < 0.5, "the Giant Petrel's bow gun points ahead")
+	for n in [2, 3]:
+		assert_true(absf(float(petrel._aim_rest[n])) < 0.5, "its quarter's gun rests facing forward (hp_%d)" % n)
+		assert_false(petrel.rig.aim_joint_over(petrel.hardpoints[n]).is_empty(), "the quarter's dome turns to aim (hp_%d)" % n)
+	petrel.free()
 
 
 
@@ -543,18 +576,18 @@ func _rig_for(model_id: String) -> Array:
 
 func test_a_melee_weapon_lunges_only_when_nothing_about_it_crosses_the_field() -> void:
 	# Ryan, 3 November, of the Bullion Fragmenter (melee and ballistic): "It's a shotgun,
-	# thematically". Melee is short range; a weapon lunges only as a blade with no tag that sends its
-	# blow across the field. Synthetic tags: never a named entry.
-	assert_true(MuzzleFlare.lunges(["blade", "melee"], "blade"), "a claw lunges")
-	assert_true(MuzzleFlare.lunges(["arc", "melee"], "blade"), "so does a gauntlet's lightning, carried by the punch")
-	assert_true(MuzzleFlare.lunges(["melee", "plasma"], "blade"), "and a plasma fist")
+	# thematically". Melee is short range; a weapon lunges only with no firing class and no tag that
+	# sends its blow across the field. Synthetic tags: never a named entry.
+	assert_true(MuzzleFlare.lunges(["blade", "melee"], "none"), "a claw lunges")
+	assert_true(MuzzleFlare.lunges(["arc", "melee"], "none"), "so does a fist's lightning, carried by the punch")
+	assert_true(MuzzleFlare.lunges(["melee", "plasma"], "none"), "and a plasma fist")
 	assert_true(MuzzleFlare.lunges(["melee"]), "melee with no class named lunges, as it always did")
 	assert_false(MuzzleFlare.lunges(["ballistic", "melee"], "barrel"), "a shotgun fires")
-	assert_false(MuzzleFlare.lunges(["ballistic", "melee"], "blade"), "a blade that fires a shell fires it")
-	assert_false(MuzzleFlare.lunges(["blade", "melee", "ballistic"], "blade"), "so does a claw the drum fires as its shot")
+	assert_false(MuzzleFlare.lunges(["ballistic", "melee"], "none"), "a melee piece that fires a shell fires it")
+	assert_false(MuzzleFlare.lunges(["blade", "melee", "ballistic"], "none"), "so does a claw the drum fires as its shot")
 	assert_false(MuzzleFlare.lunges(["missile", "melee"]) or MuzzleFlare.lunges(["beam", "melee"]), "a rocket and a beam cross the field")
 	assert_false(MuzzleFlare.lunges(["flame", "melee"], "barrel"), "a flamethrower tagged melee fires its stream")
-	assert_false(MuzzleFlare.lunges(["ballistic"], "barrel") or MuzzleFlare.lunges([], "blade"), "no melee, no lunge")
+	assert_false(MuzzleFlare.lunges(["ballistic"], "barrel") or MuzzleFlare.lunges([], "none"), "no melee, no lunge")
 
 
 func test_a_lost_flyer_comes_down_onto_its_lowest_point() -> void:

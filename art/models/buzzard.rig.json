@@ -1490,10 +1490,6 @@
     "shape": "twin_barrel",
     "scale": 0.8
    },
-   "blade": {
-    "shape": "blade",
-    "scale": 0.8
-   },
    "dish": {
     "shape": "dish",
     "scale": 0.8
@@ -1506,10 +1502,6 @@
    },
    "twin_barrel": {
     "shape": "twin_barrel",
-    "scale": 0.8
-   },
-   "blade": {
-    "shape": "blade",
     "scale": 0.8
    },
    "dish": {
@@ -1526,10 +1518,6 @@
     "shape": "twin_barrel",
     "scale": 0.8
    },
-   "blade": {
-    "shape": "blade",
-    "scale": 0.8
-   },
    "dish": {
     "shape": "dish",
     "scale": 0.8
@@ -1542,10 +1530,6 @@
    },
    "twin_barrel": {
     "shape": "twin_barrel",
-    "scale": 0.8
-   },
-   "blade": {
-    "shape": "blade",
     "scale": 0.8
    },
    "dish": {

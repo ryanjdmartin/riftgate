@@ -16,8 +16,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   sessions"). `docs/briefs/refit_pass.md`, section 22, has his rules, his rulings, the spec
   and every machine read against it. It is built and on main, off in the game behind
   `Skirmish.reboot` (REBOOT on a debug build's trials), and content still carries the regen
-  and the cooling it replaces. Read section 22 before any work on a machine, a component, a
-  module or a foe (`CLAUDE.md` has the rule).
+  and the cooling it replaces. **His play of 14 November says it stays ("I like this
+  direction. It works"), and folding it in is the next pass** (Next, in order, below). Read
+  section 22 before any work on a machine, a component, a module or a foe (`CLAUDE.md` has
+  the rule).
 - Sessions run in parallel on this repo: `git status` first, stage by path, diff a shared file
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. A branch
   takes main as it lands and main takes the branch as a fast-forward on Ryan's word; expect the
@@ -34,8 +36,27 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1187 tests, 371,424 checks, green on `ccr-722ca9f0-yj8na3` (14 November, the
-  dragged die's target and drop on REBOOT; the KEYWORD INK and TRACES switches cut with their
+- Tests: 1193 tests, 372,939 checks, green on `ccr-722ca9f0-yj8na3` (15 November, the vocabulary
+  pass's marks folded, documents alone, over main at `196d802` taken in a merge). Before it, the
+  same count green on `ccr-b7d5164e-1wtzzm` as it landed on main (15 November, the
+  blade class retired, the Kite's hood whole to its mouth and the Giant Petrel's fifteenth cut,
+  over main at `3d195e0` taken in a merge). Before it, 1193 tests, 373,127 checks, green on
+  `ccr-722ca9f0-yj8na3` (15 November, the FOE BREACH dial, over main at `0bd1799`). Before it,
+  1192 tests, 372,709 checks, green on the same branch (15 November, the foes' reroll drains read
+  as they announce, over main at `a9a8ffa`). Before it, 1190 tests, 372,677 checks, green on the
+  same branch (15 November, the rank and file's dial and Exposed's texts, over main at
+  `038b22b`). Before it, 1189 tests, 372,295 checks, green on `ccr-b7d5164e-1wtzzm` (15 November,
+  the blade class retired, the Giant Petrel's fourteenth and fifteenth cuts and the Kite's hood,
+  one content test's rule narrowed, a locked weapon wearing no class). Before it, 1189 tests,
+  372,483 checks, green on `ccr-b7d5164e-1wtzzm` (14 November, the Needletail's nineteenth cut,
+  the Giant Petrel's thirteenth and the Kite's round pair, over main at `bbcf375` taken in a
+  merge). Before it, on main,
+  1188 tests, 371,561 checks, green on `ccr-722ca9f0-yj8na3` (14 November, the
+  vocabulary pass's two rounds of records, no engine code moved; before that the
+  basics' what-ifs and their dials; before that REBOOT on the bottom row's middle with
+  REROLL centred again; before that REBOOT a drop's target
+  alone, and shot trails the game's own; before
+  that the dragged die's target and drop; the KEYWORD INK and TRACES switches cut with their
   two tests; before that the same day, 1189 with the reboot's control remade and driven by a
   finger's events, and a lone fight from the menu reading the trial dials). Before it, 1187 tests, 371,387 checks (13
   November, the reboot's what-if, its trial and the bot's first play of it, the block's rest
@@ -65,6 +86,11 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 ## Branches
 
 Everything is on main as of 13 November 2026; the formation and refit session's branch lands as it goes, below.
+`ccr-b7d5164e-1wtzzm`, this session's (12 November), cut from main at `6112939`: the to-do's
+roster pruned, then the Needletail's two modes and the Giant Petrel's hull on Ryan's design and
+mix, reworked on his notes (How things stand, below); it took main at `4a0c9b5` in a merge on 13
+November (the Kite's port forms, for the Needletail's cheeks; the bible, this file and the to-do
+the conflicts, both sides kept); not landed, main takes it on his word.
 `ccr-8af28d03-re9kz4`, the Ammit's rework of 12 November and what followed it that day (How
 things stand, below), cut from main at `87da46f`, landed three times as fast-forwards on Ryan's
 word: the rework, after taking main twice in merges ("Merge into main when you're done"); the
@@ -343,7 +369,9 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   `docs/briefs/kestrel_line.md`); the Puffin back in design (`kestrel_puffin.md`). The Magpie (a
   working name, a support engine) and the Snowy Owl (a stealth unit, leaning to Cryo: Ryan,
   5 November) are Ryan's next session, their briefs' first rounds unanswered. The
-  Needletail's two modes and the Giant Petrel's catamaran hull are his to pick (the to-do).
+  Needletail's two modes (his own design) and the Giant Petrel's catamaran hull (his mix of the
+  second round's two) are built since 12 November and reworked on his notes of that evening and
+  13 November, for him to judge running (the to-do); the Giant Petrel's kit is still his to start.
 - Wainwright & Sutler: ten decided, 3-5-2, nine built (the bible's roster row). The Swallowtail
   is back in design (`ws_swallowtail.md`, punted); the Whip Scorpion's rework is built (11
   November). The Swallowtail, the
@@ -405,8 +433,9 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
     declined (the bible's withdrawal row); Phased on a kill he kept for the shadow panther. The
     model's third mount is ahead of the canopy, a port under a low curved hood carried forward
     over the mount to four past it, every class there in its port form, its root inside the hull
-    (four new variants: the port gun, the port pair, the port rack and the port dish on its
-    telescoping mast; the blade standard), coming out of a round bore drilled two into the hood
+    (new variants: the port gun, the port rack and the port dish on its telescoping mast, and
+    since 14 November the round pair, two barrels out of a round receiver the port rack's diameter,
+    in place of the port pair, as in the Needletail's cheeks; the blade standard), coming out of a round bore drilled two into the hood
     along the line into a little round cut under the weapon that frees the launcher, the trough
     it first lay in filled and the line 0.6 higher (a unit's drop from there tried and taken
     back), shipped on his "Ship it" (13 November); the dish the launcher's diameter; the tail's top edges chamfered, the intake taking the face's new shape, the tail
@@ -435,7 +464,8 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
     its die turning to a lit entry of the other kind (the static `one_of_each`; one entry to turn
     to is no draw, the die showing it in its passive box; the bot weighs the second action; the
     once-a-round gate that made equipment Rapid is gone from the engine). Its stock is the
-    Designator and three guns, so it marks every round. The chassis that orbits Exposed is one of
+    Designator and four guns since 12 November (his design's fourth mount a second Laser
+    Carbine), so it marks every round. The chassis that orbits Exposed is one of
     the two unspecced mediums. Its brief is retired; his play is the to-do's.
 
 ## How things stand
@@ -445,6 +475,87 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (`sim/campaign.gd`); no screen shows them. The quick campaign is an experiment, not a feature
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
+
+- **The blade class retired** (`ccr-b7d5164e-1wtzzm`, 15 November, on Ryan's "The four you listed are
+  locked pieces. The others need to be renamed into short range (i.e "melee" as per our definition)
+  guns, or just sent back to design"): four silhouette classes (barrel, twin barrel, rack, dish) in
+  `ContentDB.SHAPES` and `models_low.SHAPES`; the blade's shape, fire, flare point, every mount's fit
+  and its 44 files in `art/models/shapes` gone (a model and three tiles a maker, the fire, their imports), the five sidecars that fitted it rebuilt (their geometry unchanged).
+  The Chainsaw Claw, the Breaching Plow, the Knuckle of Fury and the Soulcutter Talons wear `none`,
+  each built into its machine, the two that had no sound named naming the blade's, so nothing in
+  play changes (the lunge and the sparks read the tags). The Gravity Knuckles and the Tesla
+  Gauntlets are back in design, undealt (`"status": "planned"`, a barrel meanwhile); their names as
+  short-range guns are Ryan's (the to-do). The hangar's classes show four, and the three pictures
+  that wore a blade (two refits and the Dingo's mixed swap) were rendered again. The bible's
+  hardpoints row holds the retirement and its exit (a melee piece dealt to a mount); its section 12
+  question is gone.
+- **The Kite's hood whole to its mouth** (`ccr-b7d5164e-1wtzzm`, 15 November, on Ryan's "There's a
+  chunk of casing sticking out the top of the fairing", from the hangar's live view): the cut that
+  drills the port's bore and the round cut under it was one hull through three rings, the one ahead
+  raised to ramp the round cut's floor up, which sloped its top through the hood's crown over its
+  last 0.7; the notch bared the bore's dark lining above the hood's line. Two hulls now, the ramp's
+  cutting the nose alone. The hangar's live view can be driven headless in a cloud session: three.js
+  0.128.0 from npm in place of its CDN, the page served locally from `tools/hangar_data.py`'s map,
+  and Playwright aiming its camera (the scratchpad's `hview/shot.js`; not kept in the repository).
+- **The Needletail's two modes and the Giant Petrel's hull** (`ccr-b7d5164e-1wtzzm`, 12 November;
+  on main since 14 November, on Ryan's "Needletail looks great. Ship it.", the Giant Petrel's
+  thirteenth cut with it; the Giant Petrel's model shipped at its fifteenth cut on his "These look great", 15 November, its kit
+  still his to start): built that day on Ryan's design and his mix, then reworked on his notes of that
+  evening and 13 November (the bible's Kestrel row). The Needletail: a jet's chined fuselage
+  (its round second cut retired: "I didn't literally mean round like a rocket"), shorter than the
+  first cut and short and flat for its width, 15.8 at its widest since the twelfth cut (17.4
+  before), a long, low canopy amidships standing proud of it, the nose one long smooth taper to its
+  point and its needle, reaching the body's width only at the canopy's front
+  third, so the straight body behind it is short; it stands and fights
+  in hover mode, four shorter boosters upright on swivels (the front pair on short canards beside
+  the pop-up just behind the cheeks, the thicker rear pair each on a hub at the tip of a long tailplane whose outer panel
+  rides in with it, under long, steep X fins), two pods raised out of dark slots in the upper
+  chamfers behind the canopy, each mount leaning with its pod (a pin's `up`, new in lowforge), its cheek guns lying in bays
+  on the nose's sides toward the tip, each under one long teardrop clamshell, point forward, on the band between the chines
+  (the eighteenth cut, on Ryan's "an elongated clamshell that covers the whole cut area"; the trough and its sliding cover
+  gone), the muzzle clear of the skin (on the sides as in
+  the thirteenth cut, Ryan's candidate final at `49657a4` (its pictures retired from the hangar once the nineteenth shipped), after a day's trial on the
+  upper chamfers; nearer the tip since the sixteenth, with the canards and the pop-up, and a slice cut from the middle so the
+  ship is 103 from point to needle, the ports and canards 2 back again in the seventeenth, each bay dark to its rim and each
+  gun's root under the skin in hover), every other class rooted at the
+  bay's back in its port form (the port rack, the port dish on its mast, taken from main with the Kite's
+  port; the twin barrels on a round receiver the port rack's diameter, `twin_barrel_round`, new on the
+  nineteenth cut), the Fovea Designator a low wedge pop-up
+  after a sports car's, its lamp behind
+  a six-bladed iris that widens and narrows as it paints, the tail's whole face a cut-out exhaust
+  round a needle nineteen long, in a dark rim behind a cobalt band; on the map its gait changes it into flight mode as it gathers speed
+  (the cheek guns drawn back and in under the skin, each long clamshell's halves rolling shut over its empty bay about a
+  hinge laid along the nose's taper, a joint's resting heading, new in lowforge, the pods sunk flush, the iris shut and the pop-up folded, the boosters level and
+  run in along their fins, straight, the front pair's canards running into the body with them, the swept wings out near the canards and slid back 8 clear of the front boosters (5 until the nineteenth cut), small flat tips, their roots in the
+  fuselage, the exhaust burning white-hot; stowed in hover, each wing's leading edge shows as a
+  cobalt strip down the chine) and back as it slows, its transition act the same
+  change on the spot. A near-black tile (`void`) lines the
+  bays, Kestrel's "dark" tile being a mid grey its chrome lights, and since the eighteenth cut that near-black lining
+  takes no gloss in the game (`MechView3D.toon`), the chrome having lit an open bay's far wall as a bright band; a bore's
+  plain dark keeps its maker's finish since 15 November (matte, Kestrel's mid grey lit pale: the Kite's port mouth, and
+  the Needletail's four pod intakes, which had gone white in its shipped pictures, rendered again). The Giant Petrel: the
+  railgun hung under the centre bow as a chin turret since the eleventh cut and a Twin Autoguns on an omnidirectional dome on each of the
+  deckhouse roof's back quarters, either side of the mast, bigger and on short pedestals since
+  the seventh cut, resting facing forward in line with the ship since the eighth (the skirmish
+  turns a gun from where it points as built, `MechView3D.aim_rest`; no mount rests off ahead now,
+  so its test builds one), their arc round the outboard side to dead aft, their traverse swinging them there since the
+  tenth cut (a turret's own act reach, new in lowforge; the turret rule's 70 degrees otherwise), their line of fire
+  astern over the aerofoil, big and back down at the seventh cut's height, its fins raked back hard; three salvo racks in line down the
+  roof rippling ahead of a raked mast, eighteen tubes, each rack at its own pace; the racer's
+  boosters on plinths either side of a raised aft deckhouse under its aerofoil on fins at the hulls'
+  outer edges, the navy's two back at the hulls' sterns; the deckhouse's front a sharp prow raked
+  steeply back (since the eleventh a long spearhead laid back to about 26 degrees over the centre bow, a brow's peak over the glass,
+  a cowl since the fourteenth, the peak a third longer and carried down each shoulder's outer edge to the deck, one band mitred at
+  the roof's corners since the fifteenth, its lip dipping in toward the face all the way round), each twisted facet laid smooth and the bridge's glass a shell following it, a
+  raked pane each side of the prow, high under the brow and tall since the twelfth (his pick from the sheets), bigger and meeting on the
+  crease, mirrored, since the thirteenth, lower since the fourteenth and lower again since the fifteenth, a fifth of the front's height
+  to three quarters; the foot's shoulders square, so each corner facet is flat and faces ahead, the whole of it an intake, a raised
+  cobalt border round its mouth and louvres since the fourteenth, the louvres plain metal since the fifteenth (a plate's seams had
+  lined up across them, Ryan's "panel lines through the vents");
+  two long windows forward down each flank and aft of them a turbine on a web, its fan turning (`fan_l`, `fan_r`), its last stage turning
+  astern against the glow in its nozzle (`fan_l_aft`, `fan_r_aft`), its nozzle burning with the boosters, a fin on it canted up and out at
+  45 degrees (the twelfth, his "combine A and C", and the thirteenth); a cobalt spearhead down each bow; the cushion open fore and aft. A render round in the hangar's Models tab for each at every cut (the last cut
+  as Before); the tests green at each.
 
 - **The Ammit's rework** (`ccr-8af28d03-re9kz4`, Ryan's own design, 12 November; on main): "The 4
   claws are combined into one weapon that deals 1x4 instead, with Breach. They no longer gain
@@ -1061,13 +1172,16 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   on any run; read as a battle or a lone fight starts from the menu, the lone fight since 14
   November, on his "What settings exactly should I be using?": the to-do's line has every
   row's setting for his play, and the two rows that do nothing under it, SHIELD REGEN and
-  HOTTER's one more cooling): REBOOT beside REROLL is lit while any machine may reboot. A die
-  dragged onto it gives its machine's turn, his lean ("can we drag the die to Reboot? That's
-  probably the most intuitive"): a die in hand lights it as its target and it takes the drop
-  a thumb's width past its edge. A press asks which, the next tap on a machine or its die
-  the answer, and with a machine's readout open, or its die's, reboots it at once (the
-  control since 14 November, on his "So I can't actually trigger a reboot": it had lit for a
-  die's open readout alone, and nothing on the screen said so); heat past the maximum, a
+  HOTTER's one more cooling): REBOOT is a drop's target in the middle of the bottom row,
+  between END TURN and UNDO, REROLL centred under the dice as it was (his option of 14
+  November, after REROLL was tried at the row's left: "keep it centered and put reboot on the
+  bottom middle between end turn and undo"; a reroll is the undo's floor, so UNDO onto REROLL
+  is the dearest slip on the screen, and a target that takes no press parts the two buttons),
+  and a die dragged onto it is the one way in ("dragging is the gesture we already have, we
+  should stick with that"): dashed at rest, lit and pulsing with a die in hand, filled under
+  it, the drop taken a thumb's width past its edge, a touch passing through it. The first
+  cut lit for a die's open readout alone (his "So I can't actually trigger a reboot"), and
+  the presses built in its place that day were cut on his word; heat past the maximum, a
   broken shield and a reboot under way each wear a chip, and a broken shield's gauge a
   dashed frame (the screenshot pose `reboot`). The fight bot has a first play of it
   (`Policy._reboot_first`, `_reboot_idle`), so the runners finish a fight under the rule.
@@ -1628,7 +1742,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   with slices of their acts; a blow jolts the machine and a lost one slumps; the boosters by
   maker (Aphelion's plumes, Kestrel's halos); a hardpoint's variant and scale per silhouette
   class (`tools/fit_sheet.gd`); micro-models for the Swallowtail's flares and the Musk Ox's
-  rockets, shell and casing; shot trails tabled behind SHOT TRAILS. All first cuts for Ryan's
+  rockets, shell and casing; shot trails, kept as the game's own on 14 November ("adds a lot
+  to both immersion and to readibility. Let's keep it"), their switch cut. All first cuts for Ryan's
   judge lines; the render margin (a piece fired out cut at the view's edge) is his to judge running.
 - **The Honey Badger's hopper** (31 October): a load a foe its weapons damage, four at most,
   every two loads a stack of Armoured, granted as each round opens (10 November; the Ore Plate before it), the first buff a store grants; "never destroyed" is the
@@ -1683,6 +1798,35 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 
 The tasks are the to-do's; this is the index of what waits.
 
+- Burn as Ablate, one rule on both sides (Ryan, 15 November: "hits shield first, I think.
+  Pretty deadly otherwise. Bypasses armour when damaging hull"; the bible's Burning row): built
+  with the reboot's fold-in. Until then the engine runs a machine's Burning as heat.
+- The vanilla gun at 3 (the same day: "3 against 5 or 3 against 4 as the options"): content
+  still prints 2 and a debug build's BASIC GUNS dial plays the 3; it lands with the fold-in.
+- Exposed for the foes (the same day, his third to fifth rounds; the bible's row in section
+  5): a machine's armour of every kind for nothing until the end of the next round, and the
+  whole field's targeted intents on it as that round opens, up to its predicted death, the
+  rule that foes never overkill kept; tier two and up, one machine at a time, a Lure wins. No
+  foe carries it. Built with the vocabulary's calls (the to-do's Engine list).
+- Breach cut on both sides (his fifth round: "Sure, let's cut breach"; the bible's breach
+  row): the foes' keyword off thirty-four foes and the engine's path with it, ours a
+  property written on the piece ("Ignores armour can be an explicitly written out property")
+  and on pieces of a higher tier or behind a gate. It leaves with the fold-in, where its
+  premise lands (nothing mends); until then content and the engine run breach as built, and
+  a debug build's FOE BREACH dial plays the foes without it (`Refit`'s `breach=cut`).
+- His marks on the vocabulary's table (15 November, all eighty-two rows; the proposal's
+  section 18 has each with its read, and the to-do's Engine list the build in four parts):
+  Splash, Overshield, Retaliate, Silence and Rallied as a buff cut; Spillover, Swap, Web,
+  Drain, Steal, the drained reroll and Follow-up off the keyword list, each its one piece's
+  own text; Disabled as Jammed, Pinned Flak as Pinned, Pinned Burning as Seared, Regrow as
+  Recover and Heal, the Ammit's names; Armoured ending as its side's next turn starts; Rally
+  on the rallier too; the injury rule out as a general rule; countdowns an elite's or a
+  boss's mostly; a fall free to do more than strike. Until built, content and the engine run
+  every one of them as before.
+- A foe's move need not take a component's shape (the same day; the bible's row on the foes'
+  rule set, the proposal's section 19): the direction for the foes' pass, with Claude's
+  proposal of a move as a short list of steps. Nothing of it is built.
+
 - The Fracture's prize (section 12); the escorts' marks (`docs/bosses_proposal.md`) and the
   promoted forms' one move more for seven of them (`docs/heroes_proposal.md`).
 - The planned foe moves (the Lich's Dark Rite among them); a silence carrier and a purge
@@ -1713,7 +1857,87 @@ The tasks are the to-do's; this is the index of what waits.
 ## Next, in order
 
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
-to-do's Ryan list). Ahead of all of it: **the refit pass** (`docs/briefs/refit_pass.md`, the direction
+to-do's Ryan list).
+
+**First: the reboot folded in** (Ryan, 14 November, on his play of the trial: "I like this
+direction. It works. What's our next step? Fold the trial in, and then what?"; the to-do's
+Engine list has the pass, the refit brief's section 22 the spec). The rule leaves its switch
+and the rule it replaces is cut in the same pass: the chassis's own shield regen and cooling
+out of the engine and of content, and the overheat that settles. The foes' numbers do not
+move in it. **Then, Claude's order, put to him the same day and his to set:** the audit of
+every rider and keyword against the reboot, with the foes' Burn and the Barrier's place (it
+settles what the foes' effects are before anything is sized against them). **It has had four
+rounds, ahead of the fold-in, and his second made it the vocabulary pass** ("I want to
+examine enemy riders as well, and all existing buffs and debuffs on both sides ... This is a
+vocabulary domain pass. I'm, as always, particularly concerned with Armour"):
+`docs/vocabulary_pass_proposal.md` reads every rider, cost, buff and debuff on both sides
+against the reboot and his yardstick, measures each of our riders on the vanilla and each of
+the foes' on the standard blow (`docs/measurements.md`, four entries), lays out armour
+against the hit sizes and unwinds the Barrier basic. **His third round, 15 November, called
+the roots**: the vanilla is 3 against a standard foe of 4 or of 5, his play to pick, both on
+dials (BASIC GUNS, and RANK AND FILE, built that day); the foes' base armour at tier one
+stops at 2; Burn becomes Ablate, the shield first on a machine and the hull past armour,
+built with the fold-in (Decided, not built, above); and his lean is that the Barrier is no
+basic, so that no massive strike is justified by it. **It also opened three proposals of
+his**: Exposed for the foes, Breach as pressure on the shield, and Ward where the Barrier
+basic stood. **His fourth round, the same day, ruled on the first two** (the proposal's
+section 17; Decided, not built, above): an Ablate tick ignores a Barrier; Exposed for the
+foes sends the whole field, at tier two and up, on one machine at a time, a Lure wins and it
+negates armour of every kind; Breach leaves the player's side, "ignores armour" a written
+property. **Built from that round, his side
+note**: the foes announce down the strike order and no reroll drain is announced once the
+drains already out take every reroll a round gives ("mandragoras shouldn't try to scream
+away 3 rerolls"; `Skirmish.legal_actions`, `drain_announced`). **His fifth round, on that
+report, settled three more**: Exposed keeps the rule that foes never overkill ("the whole
+field targets up until predicted death, then the rest pick intent targets as normal");
+**Breach is cut on both sides** ("Sure, let's cut breach": its first job was to pass a
+shield that mended, Exposed and Ablate answer plate, and cut outright it is three tenths of
+what a tier-one formation costs in hull and next to none of an elite's or a boss's), on a
+dial until the fold-in (FOE BREACH, built that day); and a piece of ours that ignores armour
+sits at a higher tier or behind a gate ("Else they become obvious best faces for certain
+domains"), which the Ammit's Talons and the Wild Boar's charge already do and the
+Overclocked Railgun, a tier-one find, does not: it goes to the component pass, where it may
+move up a tier regardless. **His marks are done** ("My marks are done", the same day):
+forty-six rows kept, twenty-five changed, eight cut, no question, folded in the proposal's
+section 18 with seven choices his notes leave (the to-do's Ryan list has them, each with a
+lean). **And a direction for the foes** (section 19): their moves need not fit a component's
+format, "we're fighting mechs versus JRPG enemies, who cast elaborate spells and stuff".
+**So the pass's talking is nearly over and its build is what waits**: the fold-in on his go,
+carrying Ablate, the basic guns' 3 and Breach's cut; the marks that need no answer; then the
+ones that wait on his seven; then the foes' pass.
+The table of every rider, buff and debuff, eighty-two rows (`docs/vocabulary_table.md`),
+stands with its page (Pages, below) as the record of his marks until the pass retires.
+Nothing in content moved but Exposed's texts, which now say it lasts until the end of the
+next round.
+With the pass, on his proposal, the tier-one
+bench: placeholder pieces, each the vanilla with one thing traded and priced to read as the
+vanilla alone ("the plain vanilla gun is the benchmark for 'viable,' not 'good'"), the
+proposal's section 13, built after his marks. Then the foes' kits against the frame (who
+the reboot protects and what threatens it: the brief's section 21; the approach to the
+defence side he asked for, a shield in standard blows, a fight in cycles and a hull by its
+budget, is the proposal's section 14), a small model first, no shield or hull
+renumbered before it; tier one's numbers at the anchor
+to the hull budget, since today's foes were sized against a shield that refills and cost
+about twice the hull under it, and with them the stock basics' numbers, which are sized
+against the same foes (his logic of 14 November, open: the vanilla gun one under the
+standard fodder's hit points, riders paid in damage, the gun that deals one more paid in
+heat; the refit brief's section 23 has it read, with `tools/basics_model.py`; his scope is
+the basics and tier one, and a standard foe of 5 is set aside, the point being the same
+question at any size). **It is on trial behind three dials** (a debug build's TRIALS: BASIC
+GUNS, HEAT with two off, TOP BASIC; the what-if's `basics` and `top`), read by the bot the
+same day (`docs/measurements.md`): a vanilla of 3 with a point or two of heat off gives a
+formation back the 4.5 rounds it ran before the reboot, at 8% of a four's hull where today's
+basics take 6.0 rounds and 10.7%, and an elite and a boss stand within a round and a few
+points of hull of the anchor's (a boss 24 to 27% for 37%), so most of what the reboot added
+to tier one's fights was the basics themselves; his play of the dials is next; then his play of
+the anchor; then the scaling the paragraph below already orders, the first battle down and
+tiers two and three up. His play's notes for those numbers (the bible's section 12 has his
+words): a stack burns one hull, his pick to start; he overheated a lot, and today's basic
+guns were priced against a cooling of 2 the reboot removes; some foes took "a shot too
+many", which a vanilla of 2 does on a fifth of tier one's formation slots. Beside them, his: the
+machines the rule reaches, each a design session as his brainstorm yields them.
+
+Ahead of the rest: **the refit pass** (`docs/briefs/refit_pass.md`, the direction
 Ryan set on 9 November after his play of Phase 2: shields and vents leave the die, a component a
 weapon or equipment, the shield innate and regenerating, cooling passive, the hold the heat
 decision, component destruction off to test, two rerolls kept; the formation pass folded into it,
@@ -1782,6 +2006,20 @@ Every page lives in Ryan's account and is republished by its URL (read first), i
 with it. A page's link goes into this file in the same commit as its first publish; the
 commands are in `README.md`.
 
+- The vocabulary pass's table, with his marks: https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko,
+  built from `docs/vocabulary_table.md` by `tools/pages/vocabulary_marks_page.py` and published
+  with the `db` capability (Version 3, 15 November, from `ccr-722ca9f0-yj8na3`, with the
+  fifth round's rows, once his marks were done). Each of its eighty-two rows takes a mark
+  (KEEP, CHANGE, CUT, ASK) and a note, saved in the collection `marks`, a document a row
+  keyed by the row's name as a slug (`mark`, `note`, `name`, `at`). **His marks are complete**
+  (15 November, "My marks are done": forty-six kept, twenty-five changed, eight cut, three
+  with a note alone; twelve of the rows were seeded from his calls in chat and he left those
+  as they stood) and the proposal's section 18 is their fold, every note in his words. The
+  page stays as the record: a session reads `marks` again before it builds from them
+  (ArtifactData, `list`), in case he has moved one, and never republishes while he is on
+  the page; a row renamed in the table loses its mark's key, so move the document with it.
+  The page retires with the pass.
+
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, republished from
   `docs/design-bible.html` after every change, on Ryan's word. The live page is v0.564, dated 13
   November (the page's Version 512, published from main at `7b23422` on his "Sure" to the offer:
@@ -1811,7 +2049,33 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 254 (13 November, from `ccr-e3ddf00b-ilkwbi` at `0c03430`, ahead of main): the
+  page's Version 280 (15 November, from main at `4514a2c`, the branch `ccr-b7d5164e-1wtzzm` landed
+  there on Ryan's "These look great. Let's clean up and merge into main"): main's `vocabulary.json`
+  (the vocabulary pass's rounds), `text.json` from the merged tree, `renders.json` with the Giant
+  Petrel shipped, and the Needletail's eight candidate-final pictures removed; the live copy
+  Version 279's own, so the page and main match. Version 279 (15 November, from `ccr-b7d5164e-1wtzzm` at `a2f89ca`, ahead of main): the
+  Kite's model with its crown whole to the mouth, the Giant Petrel's fifteenth cut, its model and
+  its ten pictures with the fourteenth's as Before, the Kite's port close-up, and `renders.json`;
+  the page untouched since Version 278. Version 278 (15 November, from `ccr-b7d5164e-1wtzzm` at `6ad897c`, ahead of main): the
+  Giant Petrel's fourteenth cut, its model, rig and ten pictures with the thirteenth's as Before;
+  the blade's five class models, its fire and its class picture removed, `shapes.json` and the
+  muzzles without it, the four other rigs that fitted it, `components.json` with the six pieces,
+  `motion.js` without its class look, `text.json` with the two back in design; the Needletail's
+  eight pictures and the Kite's port close-up rendered again for the bores' dark, and the two
+  refits and the Dingo's mixed swap without the blade; the live copy found to be Version 277's
+  own (its version id) and each replaced file matched to that publish. `edits` and `text` empty,
+  `designs` the two folded ideas. Version 277 (14 November, from main at `d80a996`, the branch `ccr-b7d5164e-1wtzzm` landed
+  there on Ryan's "Ship it" for the Needletail): the Giant Petrel's thirteenth cut, its model and rig,
+  its ten pictures (a turbine from astern the tenth) and the twelfth's as Before; the Kite's rig with
+  its port's round pair, a close picture of it, and its entry from main (the live one was the 12
+  November note, main's of the 13th never published); the round pair's class picture in place of the
+  port pair's, which is gone with its models and burn; `shapes.json` and the muzzles without it;
+  `content/chassis.json`, `components.json` and `foes.json`, `designs.json` and `text.json` brought
+  up to main's (the live content was Version 260's); every replaced file read first and found older
+  than main's or this branch's last publish. `edits` and `text` empty, `designs` the two folded
+  ideas. `edits` and
+  `text` empty, `designs` the two folded ideas. Version 254 (13 November,
+  from `ccr-e3ddf00b-ilkwbi` at `0c03430`, ahead of main): the
   Kite's last round, its wings' back edge swept to match the front. The Kite's rounds went out
   from that branch as they were made (Versions 234 to 254, its model, rig and four renders, the
   port forms' variants and pictures, and `renders.json` with its Kite entry and port-forms block),

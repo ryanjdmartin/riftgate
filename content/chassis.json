@@ -1248,7 +1248,7 @@
    "shield_regen": 2,
    "movespeed": 6,
    "heat_max": 12,
-   "hardpoints": 3,
+   "hardpoints": 4,
    "module_slots": 2,
    "armour": 0,
    "cooling": 2,
@@ -1262,7 +1262,8 @@
    "loadout": [
     "transonic_rifle",
     "laser_carbine",
-    "twin_autoguns"
+    "twin_autoguns",
+    "laser_carbine"
    ],
    "passive": {
     "id": "quick_turn_avionics_relay",

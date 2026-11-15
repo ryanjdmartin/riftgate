@@ -55,7 +55,7 @@ var _music_next: HudButton
 var _music_loop := "?"    # the loop the plate shows; "?" so the first poll draws it
 var _page := "paused"
 var _busy := false
-var _list: ScrollContainer = null   # the keywords or colours page's scroller, sized to the glass in _fit
+var _list: ScrollContainer = null   # the keywords, colours or trials page's scroller, sized to the glass in _fit
 var _peeking := false     # the colours page's PEEK: the menu hidden until a tap
 var _peek_tag: HudPanel
 var _reset_armed := false # RESET ALL asks twice
@@ -119,6 +119,8 @@ func is_open() -> bool:
 
 
 func _show_page(page: String) -> void:
+	# A page shown again over itself (a dial pressed) keeps its scroller where the thumb left it.
+	var kept := _list.scroll_vertical if page == _page and _list != null and is_instance_valid(_list) else 0
 	_page = page
 	for c in _rows.get_children():
 		_rows.remove_child(c)
@@ -148,7 +150,6 @@ func _show_page(page: String) -> void:
 			if OS.is_debug_build():
 				_toggle("EVERY LINE", "voice_test")   # Jenny on every hook, every time: to hear them all on the phone
 				_toggle("WELD", "weld")   # the machines' parts welded (MechWeld); off draws them as authored, to compare the look and the heat on the phone
-				_toggle("SHOT TRAILS", "shot_trails")   # a shot crossing the field from its muzzle to its target (ShotTrail): tabled as maybe too busy, here to judge
 				_button("TRIALS", func() -> void: _show_page("trials"))   # the trial dials (the shield's regen, the field's depth and opening, the fodder's worth, the Rupture's size, the tide's density and the wall strike), a page of their own so the settings fit every glass
 				_button("COLOURS", func() -> void: _show_page("colours"))   # the colours that carry a meaning and the HUD presets, by wheel or hex (ColourTuner)
 			_button("BACK", func() -> void: _show_page("paused"), false, "ui_back")
@@ -159,10 +160,25 @@ func _show_page(page: String) -> void:
 			# meter's size, the tide's density and the wall strike (each read as the next battle
 			# starts).
 			_title("TRIALS")
+			# The dials stand in a scroller, as the keywords do, so a glass of any height holds
+			# them (14 November: at twelve rows the page had outgrown the 1280 glass, and the
+			# basics' two came): the rows below go to its column, then the page's own take BACK.
+			_list = _scroller()
+			_rows.add_child(_list)
+			var page_rows := _rows
+			_rows = _list.get_child(0)
 			_choice_row("SHIELD REGEN", "shield_regen", Settings.SHIELD_REGENS, Settings.SHIELD_REGEN_LABELS)   # a flat shield regen on every chassis in place of each one's own (game/harness.gd, refit_trial): the refit pass's model is content since 10 November, and this is the one what-if left on the phone
 			_credit("Shield back each round: as built by chassis, or flat on all. Next launch.")
 			_choice_row("HEAT", "heat_trial", Settings.HEATS, Settings.HEAT_LABELS)   # every weapon a point cooler or hotter than content prices it, the hotter with one more cooling (Settings.HEAT_SPECS; the prices themselves are content since 12 November)
-			_credit("Every weapon a point cooler or hotter than built. Next launch.")
+			_credit("Every weapon's heat against built: one or two less, or one more. Next launch.")
+			_choice_row("BASIC GUNS", "basic_guns", Settings.BASIC_GUNS, Settings.BASIC_GUN_LABELS)   # every basic gun a point of damage up (Refit's basics; Ryan, 14 November: the vanilla one under the standard fodder's health, 3 against a goblin's 4)
+			_credit("Every basic gun's damage: as built, or a point more. Next launch.")
+			_choice_row("TOP BASIC", "top_basic_heat", Settings.TOP_BASIC_HEATS, Settings.TOP_BASIC_HEAT_LABELS)   # more heat on the basic guns that deal more than the plainest (Refit's top): the price of the gun that deals one more
+			_credit("The basic gun that deals most: its heat as built, or more. Next launch.")
+			_choice_row("RANK AND FILE", "rank_hp", Settings.RANK_HPS, Settings.RANK_HP_LABELS)   # a hit point more on tier one's rank and file (Refit's foehp; Ryan, 15 November: a vanilla of 3 against a standard foe of 4 or of 5)
+			_credit("Tier one's rank and file: hit points as built, or one more. Next launch.")
+			_choice_row("FOE BREACH", "foe_breach", Settings.FOE_BREACHES, Settings.FOE_BREACH_LABELS)   # every foe's breach cut, its blow a plain one (Refit's breach=cut; Ryan, 15 November: "Sure, let's cut breach", played ahead of the fold-in)
+			_credit("The foes' breach as built, or cut: those blows meet the shield, then the armour. Their texts are unchanged. Next launch.")
 			_choice_row("OVERHEAT", "overheat_burn", Settings.OVERHEATS, Settings.OVERHEAT_LABELS)   # the hull a point of heat past the gauge burns as the turn ends, one the game's (Skirmish.overheat_scale)
 			_credit("Hull an overheat burns a point past the gauge. Next battle.")
 			_choice_row("BARRIER BASIC", "barrier_basic", Settings.BARRIER_BASICS, Settings.BARRIER_BASIC_LABELS)   # the Barrier basic on the stock dice as built, or off them with the Armoured basic in its slot (Refit's barrier=none; its place is open since 12 November)
@@ -182,6 +198,8 @@ func _show_page(page: String) -> void:
 			_credit("Packs at the opening and each wave; the Rupture asks no more. Next battle.")
 			_choice_row("STRIKE", "wall_strike", Settings.STRIKES)   # what a pip of threat rating strikes the wall for, ten the game's (Battlefield.strike_trial; the same day: "even if it means that each needs to do less to the wall")
 			_credit("What a pip of threat rating strikes the wall for. Next battle.")
+			_rows = page_rows
+			_list.set_deferred("scroll_vertical", kept)
 			_button("BACK", func() -> void: _show_page("settings"), false, "ui_back")
 		"colours":
 			_title("COLOURS")
@@ -212,7 +230,7 @@ func _show_page(page: String) -> void:
 func _fit() -> void:
 	# The keywords and colours pages stand tall from near the top, each scroller taking what the
 	# glass has.
-	var listed := _page == "keywords" or _page == "colours"
+	var listed := _page == "keywords" or _page == "colours" or _page == "trials"
 	_panel.position.y = TOP_LIST if listed else 240.0
 	if listed and _list != null:
 		var tall := size.y if size.y > 0.0 else 1280.0
@@ -396,6 +414,8 @@ func _choice_row(caption: String, key: String, options: Array, labels: Dictionar
 		b.filled = str(Settings.display.get(key, Settings.DISPLAY_DEFAULTS[key])) == id
 		b.custom_minimum_size = Vector2(0, 40)
 		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		if _list != null and _list.is_ancestor_of(_rows):
+			b.mouse_filter = Control.MOUSE_FILTER_PASS   # in a scroller a finger's drag that starts on a dial scrolls the page (the trials')
 		b.pressed.connect(func() -> void:
 			if str(Settings.display.get(key, Settings.DISPLAY_DEFAULTS[key])) == id:
 				return

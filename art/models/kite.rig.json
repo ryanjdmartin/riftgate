@@ -2049,17 +2049,13 @@
     "scale": 0.6
    },
    "twin_barrel": {
-    "shape": "twin_barrel_port",
-    "scale": 0.92
+    "shape": "twin_barrel_round",
+    "scale": 0.6
    },
    "dish": {
     "shape": "dish_port",
     "scale": 0.6,
     "sink": -2.0
-   },
-   "blade": {
-    "shape": "blade",
-    "scale": 0.7
    }
   }
  }

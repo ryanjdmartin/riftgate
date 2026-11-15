@@ -1,34 +1,69 @@
 {
  "_about": "the rig of art/models/giant_petrel.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers, and what each hardpoint's stock part is; MechRig reads it",
  "joints": {
-  "canard_l": {
-   "axis": "pitch",
+  "turret_fore": {
+   "axis": "yaw",
    "limits": {
-    "pitch": [
-     -8.0,
-     14.0
+    "yaw": [
+     -50.0,
+     50.0
     ]
    },
    "swing": false,
    "parent": ""
   },
-  "canard_r": {
-   "axis": "pitch",
-   "limits": {
-    "pitch": [
-     -8.0,
-     14.0
-    ]
-   },
+  "fan_l": {
+   "axis": "roll",
+   "limits": {},
    "swing": false,
    "parent": ""
   },
-  "salvo": {
+  "fan_l_aft": {
+   "axis": "roll",
+   "limits": {},
+   "swing": false,
+   "parent": ""
+  },
+  "fan_r": {
+   "axis": "roll",
+   "limits": {},
+   "swing": false,
+   "parent": ""
+  },
+  "fan_r_aft": {
+   "axis": "roll",
+   "limits": {},
+   "swing": false,
+   "parent": ""
+  },
+  "salvo_f": {
    "axis": "pitch",
    "limits": {
     "pitch": [
      -2.0,
-     28.0
+     34.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "salvo_m": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -2.0,
+     34.0
+    ]
+   },
+   "swing": false,
+   "parent": ""
+  },
+  "salvo_a": {
+   "axis": "pitch",
+   "limits": {
+    "pitch": [
+     -2.0,
+     34.0
     ]
    },
    "swing": false,
@@ -38,45 +73,47 @@
    "axis": "yaw",
    "limits": {
     "yaw": [
-     -120.0,
-     120.0
+     -150.0,
+     150.0
     ]
    },
    "swing": false,
    "parent": ""
   },
-  "turret_fore": {
+  "turret_l": {
    "axis": "yaw",
    "limits": {
     "yaw": [
-     -75.0,
-     75.0
+     0.0,
+     195.0
     ]
    },
    "swing": false,
-   "parent": ""
+   "parent": "",
+   "reach": 180.0
   },
-  "turret_aft": {
+  "turret_r": {
    "axis": "yaw",
    "limits": {
     "yaw": [
-     -75.0,
-     75.0
+     -195.0,
+     0.0
     ]
    },
    "swing": false,
-   "parent": ""
+   "parent": "",
+   "reach": 180.0
   }
  },
  "acts": [
   {
    "name": "salvo",
-   "duration": 6.2,
+   "duration": 7.2,
    "ease": "smooth",
    "tracks": {
-    "salvo": [
+    "salvo_f": [
      [
-      0.5,
+      0.4,
       0.0,
       0.0,
       0.0,
@@ -85,8 +122,8 @@
       0.0
      ],
      [
-      1.8,
-      24.0,
+      1.5,
+      30.0,
       0.0,
       0.0,
       0.0,
@@ -94,8 +131,8 @@
       0.0
      ],
      [
-      4.6,
-      24.0,
+      5.1,
+      30.0,
       0.0,
       0.0,
       0.0,
@@ -103,7 +140,83 @@
       0.0
      ],
      [
-      5.8,
+      6.2,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "salvo_m": [
+     [
+      0.65,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.9500000000000002,
+      30.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      5.35,
+      30.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      6.45,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "salvo_a": [
+     [
+      0.9,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      1.9,
+      30.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      5.6,
+      30.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      6.7,
       0.0,
       0.0,
       0.0,
@@ -115,7 +228,7 @@
    },
    "body": [
     [
-     1.8,
+     2.0,
      0.0,
      0.0,
      0.0,
@@ -124,43 +237,43 @@
      0.0
     ],
     [
-     2.2,
-     0.0,
-     -0.6,
-     0.0,
-     0.0,
-     0.8,
-     0.0
-    ],
-    [
-     2.7,
-     0.0,
-     -1.0,
-     0.0,
-     0.0,
-     1.0,
-     0.0
-    ],
-    [
-     3.2,
-     0.0,
-     -1.3,
-     0.0,
-     0.0,
-     1.0,
-     0.0
-    ],
-    [
-     4.0,
+     2.3,
      0.0,
      -0.5,
      0.0,
      0.0,
+     0.7,
+     0.0
+    ],
+    [
+     2.9,
+     0.0,
+     -0.9,
+     0.0,
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     3.5,
+     0.0,
+     -1.2,
+     0.0,
+     0.0,
+     1.0,
+     0.0
+    ],
+    [
+     4.2,
+     0.0,
+     -0.4,
+     0.0,
+     0.0,
      0.0,
      0.0
     ],
     [
-     6.2,
+     6.8,
      0.0,
      0.0,
      0.0,
@@ -172,32 +285,176 @@
    "glow": [
     {
      "parts": [
-      "salvo_a_floor",
-      "salvo_a_blast"
+      "salvo_f1_floor",
+      "salvo_f1_blast"
      ],
      "keys": [
       [
-       2.0,
+       2.05,
        0.0
       ],
       [
-       2.15,
+       2.17,
        16.0
       ],
       [
-       2.6,
+       2.5999999999999996,
        2.0
       ],
       [
-       3.4,
+       3.3499999999999996,
        0.0
       ]
      ]
     },
     {
      "parts": [
-      "salvo_b_floor",
-      "salvo_b_blast"
+      "salvo_f5_floor",
+      "salvo_f5_blast"
+     ],
+     "keys": [
+      [
+       2.31,
+       0.0
+      ],
+      [
+       2.43,
+       16.0
+      ],
+      [
+       2.8600000000000003,
+       2.0
+      ],
+      [
+       3.6100000000000003,
+       0.0
+      ]
+     ]
+    },
+    {
+     "parts": [
+      "salvo_f3_floor",
+      "salvo_f3_blast"
+     ],
+     "keys": [
+      [
+       2.49,
+       0.0
+      ],
+      [
+       2.6100000000000003,
+       16.0
+      ],
+      [
+       3.04,
+       2.0
+      ],
+      [
+       3.79,
+       0.0
+      ]
+     ]
+    },
+    {
+     "parts": [
+      "salvo_f6_floor",
+      "salvo_f6_blast"
+     ],
+     "keys": [
+      [
+       2.78,
+       0.0
+      ],
+      [
+       2.9,
+       16.0
+      ],
+      [
+       3.33,
+       2.0
+      ],
+      [
+       4.08,
+       0.0
+      ]
+     ]
+    },
+    {
+     "parts": [
+      "salvo_f2_floor",
+      "salvo_f2_blast"
+     ],
+     "keys": [
+      [
+       2.97,
+       0.0
+      ],
+      [
+       3.0900000000000003,
+       16.0
+      ],
+      [
+       3.5200000000000005,
+       2.0
+      ],
+      [
+       4.2700000000000005,
+       0.0
+      ]
+     ]
+    },
+    {
+     "parts": [
+      "salvo_f4_floor",
+      "salvo_f4_blast"
+     ],
+     "keys": [
+      [
+       3.17,
+       0.0
+      ],
+      [
+       3.29,
+       16.0
+      ],
+      [
+       3.7199999999999998,
+       2.0
+      ],
+      [
+       4.47,
+       0.0
+      ]
+     ]
+    },
+    {
+     "parts": [
+      "salvo_m6_floor",
+      "salvo_m6_blast"
+     ],
+     "keys": [
+      [
+       2.26,
+       0.0
+      ],
+      [
+       2.38,
+       16.0
+      ],
+      [
+       2.8099999999999996,
+       2.0
+      ],
+      [
+       3.5599999999999996,
+       0.0
+      ]
+     ]
+    },
+    {
+     "parts": [
+      "salvo_m2_floor",
+      "salvo_m2_blast"
      ],
      "keys": [
       [
@@ -205,39 +462,255 @@
        0.0
       ],
       [
-       2.65,
+       2.62,
        16.0
       ],
       [
-       3.1,
+       3.05,
        2.0
       ],
       [
-       3.9,
+       3.8,
        0.0
       ]
      ]
     },
     {
      "parts": [
-      "salvo_c_floor",
-      "salvo_c_blast"
+      "salvo_m4_floor",
+      "salvo_m4_blast"
      ],
      "keys": [
       [
-       3.0,
+       2.82,
        0.0
       ],
       [
-       3.15,
+       2.94,
        16.0
       ],
       [
-       3.6,
+       3.37,
        2.0
       ],
       [
-       4.4,
+       4.12,
+       0.0
+      ]
+     ]
+    },
+    {
+     "parts": [
+      "salvo_m1_floor",
+      "salvo_m1_blast"
+     ],
+     "keys": [
+      [
+       3.16,
+       0.0
+      ],
+      [
+       3.2800000000000002,
+       16.0
+      ],
+      [
+       3.71,
+       2.0
+      ],
+      [
+       4.46,
+       0.0
+      ]
+     ]
+    },
+    {
+     "parts": [
+      "salvo_m5_floor",
+      "salvo_m5_blast"
+     ],
+     "keys": [
+      [
+       3.38,
+       0.0
+      ],
+      [
+       3.5,
+       16.0
+      ],
+      [
+       3.9299999999999997,
+       2.0
+      ],
+      [
+       4.68,
+       0.0
+      ]
+     ]
+    },
+    {
+     "parts": [
+      "salvo_m3_floor",
+      "salvo_m3_blast"
+     ],
+     "keys": [
+      [
+       3.69,
+       0.0
+      ],
+      [
+       3.81,
+       16.0
+      ],
+      [
+       4.24,
+       2.0
+      ],
+      [
+       4.99,
+       0.0
+      ]
+     ]
+    },
+    {
+     "parts": [
+      "salvo_a3_floor",
+      "salvo_a3_blast"
+     ],
+     "keys": [
+      [
+       2.11,
+       0.0
+      ],
+      [
+       2.23,
+       16.0
+      ],
+      [
+       2.66,
+       2.0
+      ],
+      [
+       3.41,
+       0.0
+      ]
+     ]
+    },
+    {
+     "parts": [
+      "salvo_a4_floor",
+      "salvo_a4_blast"
+     ],
+     "keys": [
+      [
+       2.36,
+       0.0
+      ],
+      [
+       2.48,
+       16.0
+      ],
+      [
+       2.91,
+       2.0
+      ],
+      [
+       3.66,
+       0.0
+      ]
+     ]
+    },
+    {
+     "parts": [
+      "salvo_a1_floor",
+      "salvo_a1_blast"
+     ],
+     "keys": [
+      [
+       2.52,
+       0.0
+      ],
+      [
+       2.64,
+       16.0
+      ],
+      [
+       3.0700000000000003,
+       2.0
+      ],
+      [
+       3.8200000000000003,
+       0.0
+      ]
+     ]
+    },
+    {
+     "parts": [
+      "salvo_a6_floor",
+      "salvo_a6_blast"
+     ],
+     "keys": [
+      [
+       2.67,
+       0.0
+      ],
+      [
+       2.79,
+       16.0
+      ],
+      [
+       3.2199999999999998,
+       2.0
+      ],
+      [
+       3.9699999999999998,
+       0.0
+      ]
+     ]
+    },
+    {
+     "parts": [
+      "salvo_a2_floor",
+      "salvo_a2_blast"
+     ],
+     "keys": [
+      [
+       2.91,
+       0.0
+      ],
+      [
+       3.0300000000000002,
+       16.0
+      ],
+      [
+       3.46,
+       2.0
+      ],
+      [
+       4.21,
+       0.0
+      ]
+     ]
+    },
+    {
+     "parts": [
+      "salvo_a5_floor",
+      "salvo_a5_blast"
+     ],
+     "keys": [
+      [
+       3.08,
+       0.0
+      ],
+      [
+       3.2,
+       16.0
+      ],
+      [
+       3.63,
+       2.0
+      ],
+      [
+       4.38,
        0.0
       ]
      ]
@@ -248,84 +721,7 @@
    "name": "immelmann",
    "duration": 6.0,
    "ease": "smooth",
-   "tracks": {
-    "canard_l": [
-     [
-      0.6,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0
-     ],
-     [
-      1.6,
-      12.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0
-     ],
-     [
-      3.8,
-      12.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0
-     ],
-     [
-      4.8,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0
-     ]
-    ],
-    "canard_r": [
-     [
-      0.6,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0
-     ],
-     [
-      1.6,
-      12.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0
-     ],
-     [
-      3.8,
-      12.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0
-     ],
-     [
-      4.8,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0
-     ]
-    ]
-   },
+   "tracks": {},
    "body": [
     [
      0.8,
@@ -339,19 +735,19 @@
     [
      2.0,
      0.0,
-     2.0,
      4.0,
-     0.0,
      3.0,
+     0.0,
+     2.0,
      0.0
     ],
     [
      3.8,
      0.0,
-     3.0,
-     4.5,
+     6.0,
+     3.5,
      0.0,
-     2.0,
+     1.5,
      0.0
     ],
     [
@@ -422,7 +818,7 @@
      [
       1.9,
       0.0,
-      60.0,
+      70.0,
       0.0,
       0.0,
       0.0,
@@ -431,7 +827,7 @@
      [
       3.6,
       0.0,
-      60.0,
+      70.0,
       0.0,
       0.0,
       0.0,
@@ -485,7 +881,7 @@
   },
   {
    "name": "traverse",
-   "duration": 7.4,
+   "duration": 13.2,
    "ease": "smooth",
    "tracks": {
     "turret_fore": [
@@ -544,7 +940,45 @@
       0.0
      ]
     ],
-    "turret_aft": [
+    "turret_l": [
+     [
+      0.8,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      6.2,
+      0.0,
+      180.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      7.0,
+      0.0,
+      180.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      12.4,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "turret_r": [
      [
       1.0,
       0.0,
@@ -555,36 +989,9 @@
       0.0
      ],
      [
-      2.4,
+      6.4,
       0.0,
-      -40.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0
-     ],
-     [
-      3.2,
-      0.0,
-      -40.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0
-     ],
-     [
-      5.4,
-      0.0,
-      30.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0
-     ],
-     [
-      6.2,
-      0.0,
-      30.0,
+      -180.0,
       0.0,
       0.0,
       0.0,
@@ -592,6 +999,15 @@
      ],
      [
       7.2,
+      0.0,
+      -180.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      12.6,
       0.0,
       0.0,
       0.0,
@@ -643,18 +1059,66 @@
  "glow_parts": [
   "booster_ring",
   "exhaust",
-  "salvo_a_blast",
-  "salvo_a_floor",
-  "salvo_b_blast",
-  "salvo_b_floor",
-  "salvo_c_blast",
-  "salvo_c_floor",
+  "salvo_a1_blast",
+  "salvo_a1_floor",
+  "salvo_a2_blast",
+  "salvo_a2_floor",
+  "salvo_a3_blast",
+  "salvo_a3_floor",
+  "salvo_a4_blast",
+  "salvo_a4_floor",
+  "salvo_a5_blast",
+  "salvo_a5_floor",
+  "salvo_a6_blast",
+  "salvo_a6_floor",
+  "salvo_f1_blast",
+  "salvo_f1_floor",
+  "salvo_f2_blast",
+  "salvo_f2_floor",
+  "salvo_f3_blast",
+  "salvo_f3_floor",
+  "salvo_f4_blast",
+  "salvo_f4_floor",
+  "salvo_f5_blast",
+  "salvo_f5_floor",
+  "salvo_f6_blast",
+  "salvo_f6_floor",
+  "salvo_m1_blast",
+  "salvo_m1_floor",
+  "salvo_m2_blast",
+  "salvo_m2_floor",
+  "salvo_m3_blast",
+  "salvo_m3_floor",
+  "salvo_m4_blast",
+  "salvo_m4_floor",
+  "salvo_m5_blast",
+  "salvo_m5_floor",
+  "salvo_m6_blast",
+  "salvo_m6_floor",
   "uplink_core"
  ],
  "pins": {
   "hp_1": "overclocked_railgun",
   "hp_2": "twin_autoguns",
-  "hp_3": ""
+  "hp_3": "twin_autoguns"
+ },
+ "spin": {
+  "fan_l": [
+   240.0,
+   900.0
+  ],
+  "fan_r": [
+   -240.0,
+   -900.0
+  ],
+  "fan_l_aft": [
+   -320.0,
+   -1100.0
+  ],
+  "fan_r_aft": [
+   320.0,
+   1100.0
+  ]
  },
  "halo": [
   [
@@ -669,8 +1133,8 @@
  "fires": {
   "spindrift_salvo": {
    "act": "salvo",
-   "from": 1.8,
-   "to": 3.6
+   "from": 2.0,
+   "to": 4.0
   },
   "immelmann_booster": {
    "act": "immelmann",
@@ -685,6 +1149,29 @@
  },
  "stock_shapes": {
   "hp_1": "barrel",
-  "hp_2": "twin_barrel"
+  "hp_2": "twin_barrel",
+  "hp_3": "twin_barrel"
+ },
+ "fits": {
+  "hp_2": {
+   "rack": {
+    "shape": "rack_round",
+    "scale": 0.45
+   },
+   "dish": {
+    "shape": "dish",
+    "scale": 0.4
+   }
+  },
+  "hp_3": {
+   "rack": {
+    "shape": "rack_round",
+    "scale": 0.45
+   },
+   "dish": {
+    "shape": "dish",
+    "scale": 0.4
+   }
+  }
  }
 }
