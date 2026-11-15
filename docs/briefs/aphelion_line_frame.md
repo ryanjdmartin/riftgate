@@ -93,6 +93,21 @@ marked Ryan's, and the numbers are the proposal's placeholders.
   chest intakes, the kite shield on the forearm, saber hilts on the backpack; pearl and red are
   already half the RX-78's colours. The homage lives in the silhouette only, and it moves as
   every machine does (the bible: "MechWarrior or Star Wars, not Gundam or Evangelion").
+  A first look test of it, 15 November, on Ryan's ask of that day for the chassis with a
+  direction ("let's see what you come up with for all of these. Doesn't have to be too detailed
+  since none are finalized"): `docs/looks/aphelion_line_frame.png`, built by
+  `tools/lowforge/looks/line_frame_looks.py`, never content until the chassis lands. An upright
+  biped in pearl with red markings alone, about 62 across the pauldrons and 78 to the helm: a
+  small chamfered helm with a visor band under a large red V-crest, two louvred chest intakes
+  either side of a red hatch, square pauldrons, skirt plates and flared greaves, the kite shield
+  on the left arm, two hilts raked off the backpack's corners over two thrusters, a long rifle
+  at the right hip; a second row with a saber drawn. Claude's choices, his to change: a visor
+  band and a red crest, to stay clear of any one real suit; the shield held forward of the arm,
+  since at the side it showed edge-on; both poses baked, no joint and no act. Four placeholder
+  mounts (the right hand with the rifle, the left hand and the left pauldron bare, a small rack
+  on the right pauldron); the saber and the shield, locked, take none. His to judge: the
+  crest's size, the hilts reading as two prongs beside the head from head on, and a figure
+  stockier at the codex angle than head on.
 - **Engine**: components still carry the old internal filing tags and only `melee` is read,
   though a `tag_<tag>` condition already works (`docs/rules.md`, tags); the stock pass assigns
   the new tags, Beam among them.
@@ -243,6 +258,7 @@ to the model session; what stays open:
    20 October tier rule.
 4. The saber's keyword now that Chain is being reworked; its scaling with the count later.
 5. Its designation in Aphelion's shape ("Flight n" and a job; "Frame" is Aphelion's word).
+6. Its look: his read of the first look test (15 November), or another round.
 
 ## Holes already raised
 
