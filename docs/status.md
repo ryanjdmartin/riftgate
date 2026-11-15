@@ -1957,7 +1957,16 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 277 (14 November, from main at `d80a996`, the branch `ccr-b7d5164e-1wtzzm` landed
+  page's Version 278 (15 November, from `ccr-b7d5164e-1wtzzm` at `6ad897c`, ahead of main): the
+  Giant Petrel's fourteenth cut, its model, rig and ten pictures with the thirteenth's as Before;
+  the blade's five class models, its fire and its class picture removed, `shapes.json` and the
+  muzzles without it, the four other rigs that fitted it, `components.json` with the six pieces,
+  `motion.js` without its class look, `text.json` with the two back in design; the Needletail's
+  eight pictures and the Kite's port close-up rendered again for the bores' dark, and the two
+  refits and the Dingo's mixed swap without the blade; the live copy found to be Version 277's
+  own (its version id) and each replaced file matched to that publish. `edits` and `text` empty,
+  `designs` the two folded ideas. Until the branch lands, a publish from main keeps those files
+  as live (the page is ahead of main's content, renders and models). Version 277 (14 November, from main at `d80a996`, the branch `ccr-b7d5164e-1wtzzm` landed
   there on Ryan's "Ship it" for the Needletail): the Giant Petrel's thirteenth cut, its model and rig,
   its ten pictures (a turbine from astern the tenth) and the twelfth's as Before; the Kite's rig with
   its port's round pair, a close picture of it, and its entry from main (the live one was the 12
