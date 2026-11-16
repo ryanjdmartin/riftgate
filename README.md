@@ -106,7 +106,8 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   chassis and the team against every pack under each policy and writes `docs/balance.md`
   (`--trace` prints one fight blow by blow); `map_survey.gd` measures the map generator over
   many seeds and writes `docs/map_survey.md`; `campaign_run.gd` plays whole runs and writes
-  `docs/campaign_run.md`; `target_probe.gd` tallies whom the foes strike, every starter trio
+  `docs/campaign_run.md`; `battle_run.gd` plays one battle of a run whole by squads over many seeds
+  a domain, every fight in it written down by what it held, and writes `docs/battle_run.md`; `target_probe.gd` tallies whom the foes strike, every starter trio
   against each faction's formation, bosses and first pack; `special_probe.gd` tallies how often
   each foe special's condition holds and it is picked, and each fight's overheats, as built, with
   a condition opened or with the foes' heat stacks scaled (`special_probe_read.py` reads its
@@ -310,6 +311,12 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # tier's chassis for its compositions: the formation pass, 9 November), and --tiers 1,2, --sizes
 # patrol,formation, --domains meadow,waste and --ids goblin_horde,gel_wall narrow the read. Each
 # cell carries greedy's hull lost, its rounds and its stalled fights beside the band.
+# --packs rating runs the rating read (16 November, the anchor's probe of 12 November as a tool):
+# every patrol, formation and elite composition and every boss with its escort at the --tiers given
+# (tier one by default), each fought by squads of exactly as many machines as it is rated, every
+# run of that many in the --team pool's order (the six tier ones every reading of 4-4-2 holds by
+# default), --seeds a squad; each cell won, rounds and hull lost as a share of a four's hull beside
+# the budget for its rating; printed, and written to --out (about a minute a domain at 5 seeds, greedy).
 # --refit SPEC lays one of the refit pass's what-ifs over the run's content (sim/refit.gd; the brief
 # docs/briefs/refit_pass.md). The model itself is content since 10 November (no stock die holds a
 # shield or a vent, the basics make heat) and the reboot is the game's rule since 15 November (no
@@ -332,6 +339,7 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 perl -e 'alarm 36000; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
 perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --packs promise --seeds 30 --policies greedy --out /tmp/promise.md
 perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --packs curve --seeds 30 --out /tmp/curve.md
+perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --packs rating --seeds 5 --policies greedy --out /tmp/rating.md
 # the same matrix on several cores: --part i/n runs every n-th cell into its --json and writes no
 # report, and --merge writes the report from the parts (same options on every part and the merge;
 # the merged report reads as a whole run, the time the longest part's)
@@ -363,8 +371,21 @@ perl -e 'alarm 2400; exec @ARGV' godot --headless --path . -s tools/map_survey.g
 # killed, gate damage), the pressure ratio (the threat ratings at the wall or reaching it this
 # turn over the machines standing: a run's mean, its turns above one, its battles' highest) and
 # the fights by the pack's threat rating and the machines in them, with the stalemates (ten
-# rounds of nothing changed) apart from the fights stalled at the cap
+# rounds of nothing changed) apart from the fights stalled at the cap. --muster plays the map by
+# the player that gathers instead (BattleBot.Rule.MUSTER, 16 November): each pack, in the order it
+# reaches the wall, its threat rating's count of the nearest machines that can reach it, one short
+# when it strikes the wall this coming turn and gathered on otherwise, the unsealed boss first
 perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40
+
+# the battle runner (16 November, the anchor's "second battle whole" and its ledger as a tool): one
+# battle of a run (--convergence 1, the second, by default; --tier 1) played whole by squads
+# (--squad a,b,c,d, repeatable; the anchor's three of four tier ones by default), --seeds a domain
+# and squad (20), the map by the player that gathers (--rule muster, or defence for the floor),
+# --domains meadow,waste to narrow; each cell won, the gate fallen, wiped, the Rupture reached and
+# its turn, the hull then and at the end, the wrecks; the ledger every fight by what it held, the
+# machines in it, its rounds, its hull, the fights lost and its wrecks; into docs/battle_run.md
+# (about twelve minutes on one core; two processes split by --domains take half)
+perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/battle_run.gd -- --seeds 20
 
 # the quick campaign's runner (25 October): whole quick campaigns played headless (three draft chassis
 # at random, the fights by Policy, a plain player picking and fitting the loot by tier), written to

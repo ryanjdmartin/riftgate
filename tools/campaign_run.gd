@@ -8,9 +8,11 @@ extends SceneTree
 ## --shape KIND (every battle on that map shape, a key of BattleMap.KINDS; by default each
 ## battle's seed draws one), --out path (docs/campaign_run.md), --trace SEED (print one run
 ## battle by battle), --refit SPEC (the refit pass's what-ifs laid over the content, sim/refit.gd,
-## as tools/balance.gd takes it: "regen=half|N", "cooling=N", "hotter=N", "barrier=cooldownN|heatN|none"). The squad-as-one rule
+## as tools/balance.gd takes it: "regen=half|N", "cooling=N", "hotter=N", "barrier=cooldownN|heatN|none"), --muster (the map
+## played by the player that gathers, BattleBot.Rule.MUSTER, in place of the defence rule: each
+## pack its threat rating's count of machines, 16 November). The squad-as-one rule
 ## (--solo before it) and the turtle and detaching
-## personas went with the long wall brief: the map is the defence rule (BattleBot).
+## personas went with the long wall brief: the map is the defence rule (BattleBot) unless --muster.
 ##
 ## The player it stands in for is plain: it defends the front nearest to falling (the
 ## finale's capital once due) with every ready machine, rushes a wreck out of the shop with
@@ -33,6 +35,7 @@ var trace := 0
 var refit_spec := ""                  # --refit: the refit pass's what-if (sim/refit.gd), as tools/balance.gd takes it
 var refit_notes: Array[String] = []
 var guard_weight := 1.0               # --guard: a block's worth to the fight bot, as a share (Policy.guard_weight)
+var map_rule: int = BattleBot.Rule.DEFENCE   # --muster: the player that gathers on the map
 
 
 func _init() -> void:
@@ -58,6 +61,9 @@ func _init() -> void:
 				refit_spec = v
 			"--guard":
 				guard_weight = clampf(float(v), 0.0, 1.0)
+			"--muster":
+				map_rule = BattleBot.Rule.MUSTER
+				i -= 1   # a switch: it takes no value
 		i += 2
 	if not refit_spec.is_empty():
 		# The refit pass's what-if (sim/refit.gd) over the content every run of this process deals
@@ -128,7 +134,7 @@ func play_run(seed_value: int, verbose: bool = false) -> Dictionary:
 			out["passes"] += 1
 			continue
 		var gate_before: int = c.cities[city].gate
-		var bot := BattleBot.make(policy, seed_value * 1000 + c.turn)
+		var bot := BattleBot.make(policy, seed_value * 1000 + c.turn, map_rule)
 		bot.guard_weight = guard_weight
 		bot.play(b)
 		out["fights"] += bot.fights
@@ -224,7 +230,9 @@ func report() -> String:
 	if not asides.strip_edges().is_empty():
 		L.append(asides.strip_edges())
 	L.append("")
-	L.append("Every number the campaign uses is a placeholder (`sim/campaign.gd`); this measures them against a plain player, it does not tune them. Nothing brings anything in yet (offers, research and building are not built), so every run is its starting team (three of its tender at random) and what it loses. The player defends the front nearest to falling with every ready machine, rushes a wreck with Favour only when nobody is ready, and puts all its salvage into the capital's gate; on the map it plays the defence rule (the long wall brief, section 5): a hunter's catch first, then every machine onto the pack it can stand beside that reaches the wall soonest, ties by the larger threat rating and then the nearer, a machine with no pack in reach taking a cache its move reaches (the nearest, the higher kind on a tie) and the rest walking toward the pack that reaches the wall soonest, never the sealed boss, every fight fought out. Read the bands.")
+	L.append("Every number the campaign uses is a placeholder (`sim/campaign.gd`); this measures them against a plain player, it does not tune them. Nothing brings anything in yet (offers, research and building are not built), so every run is its starting team (three of its tender at random) and what it loses. The player defends the front nearest to falling with every ready machine, rushes a wreck with Favour only when nobody is ready, and puts all its salvage into the capital's gate; on the map it plays %s Read the bands." % [
+		"the player that gathers (`--muster`, BattleBot.Rule.MUSTER): a hunter's catch first, then each pack in the order it reaches the wall takes as many machines as it is rated, the nearest that can reach it this turn, a pack short of its rating fought one short when it strikes the wall this coming turn and gathered on otherwise, the boss first once its seal breaks (the race for it), a machine left over taking a cache its move reaches or walking toward the pack that reaches the wall soonest, never the sealed boss, every fight fought out." if map_rule == BattleBot.Rule.MUSTER else
+		"the defence rule (the long wall brief, section 5): a hunter's catch first, then every machine onto the pack it can stand beside that reaches the wall soonest, ties by the larger threat rating and then the nearer, a machine with no pack in reach taking a cache its move reaches (the nearest, the higher kind on a tie) and the rest walking toward the pack that reaches the wall soonest, never the sealed boss, every fight fought out."])
 	L.append("")
 	# The runs.
 	var won := 0
@@ -494,7 +502,7 @@ func report() -> String:
 			L.append("| %s | %d | %d%% | %d%% | %d%% | %.2f |" % [k, int(e["n"]), 100 * int(e["won"]) / m, 100 * int(e["fell"]) / m, 100 * int(e["wiped"]) / m, float(e["lost"]) / m])
 	L.append("")
 	# The fights by the pack's threat rating and the machines in them (the long wall brief,
-	# section 5): one pack a fight, so a fight holds the machines the defence rule sent at it.
+	# section 5): one pack a fight, so a fight holds the machines the map's rule sent at it.
 	var sizes: Array = []
 	var stalemates := 0
 	var stalled_fights := 0
@@ -513,7 +521,7 @@ func report() -> String:
 		cells[k][1] += 1 if f[3] else 0
 	L.append("## The fights")
 	L.append("")
-	L.append("%d fights. One pack is one fight, with the machines the defence rule sent at it; each row a pack's threat rating (the machines it is intended for, the largest of a catch's hunters') and the machines in the fight, with the fight's win rate. Stalemates, ten rounds running with no foe's HP, no machine's hull or shield changed, %d; fights stalled past the fight bot's cap of %d rounds, %d." % [
+	L.append("%d fights. One pack is one fight, with the machines the map's rule sent at it; each row a pack's threat rating (the machines it is intended for, the largest of a catch's hunters') and the machines in the fight, with the fight's win rate. Stalemates, ten rounds running with no foe's HP, no machine's hull or shield changed, %d; fights stalled past the fight bot's cap of %d rounds, %d." % [
 		sizes.size(), stalemates, Policy.MAX_ROUNDS, stalled_fights])
 	L.append("")
 	L.append("| A fight for | Machines in it | Fights | Won |")

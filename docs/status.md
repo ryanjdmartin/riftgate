@@ -35,7 +35,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1195 tests, 372,792 checks, green on `ccr-722ca9f0-yj8na3` (16 November, the
+- Tests: 1211 tests, 372,977 checks, green on `ccr-bd73687d-w8qox1` (16 November, Ryan's five beside the
+  formation pass: the wreck, the musters, the peak's sounds, the drum, the shell; over main at
+  `d1b6827`). Before it, 1195 tests, 372,792 checks, green on `ccr-722ca9f0-yj8na3` (16 November, the
   marks' renames, over main at `0eb2745`). Before it, 1192 tests, 372,768 checks, green on
   the same branch (15 November, the marks' cuts, over main at `c9e55a9`). Before it, 1196 tests, 372,909 checks, green on the
   same branch (15 November, the vanilla's 3 and breach's cut). Before it, 1197 tests, 372,937
@@ -93,6 +95,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 ## Branches
 
 Everything is on main as of 13 November 2026; the formation and refit session's branch lands as it goes, below.
+`ccr-bd73687d-w8qox1`, a side session's (16 November), cut from main at `d1b6827` while the
+formation and refit session works the vocabulary pass's build: Ryan's five of the day (How things
+stand, below), each a commit; not landed, main takes it on his word, and it meets the other's edits
+in the bible, this file, the to-do, the rules and `sim/battle.gd`'s neighbours when it does.
 `ccr-b7d5164e-1wtzzm`, this session's (12 November), cut from main at `6112939`: the to-do's
 roster pruned, then the Needletail's two modes and the Giant Petrel's hull on Ryan's design and
 mix, reworked on his notes (How things stand, below); it took main at `4a0c9b5` in a merge on 13
@@ -483,6 +489,25 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
+- **Five of Ryan's beside the formation pass** (`ccr-bd73687d-w8qox1`, 16 November, on his "A wreck
+  should behave like any other unit, meaning nobody can land on it. Otherwise, go ahead with all
+  5"), each a commit of its own. A wreck lies on the hex it fell on for the battle
+  (`Battlefield.wrecks`, the campaign's and the save's home for them where `Battle.wrecks` was):
+  every walk passes it and none ends on it, no tear opens on it, a cache under it waits unclaimed;
+  on the map its own model gone dark and slumped, smoking, a flat mark over the painting
+  (`RIFTGATE_WRECK_DEBUG=1`; the bible's wreck row). The runner's player that musters
+  (`BattleBot.Rule.MUSTER`, the campaign runner's `--muster`), the battle runner
+  (`tools/battle_run.gd`, the second battle whole and its ledger, into `docs/battle_run.md`) and
+  the rating read (`tools/balance.gd --packs rating`): it wins the elite at its rating and loses
+  the battle at the gate, the second battle a wall for either player on today's foes, and no
+  campaign run survives its first battle under either (`docs/measurements.md`, 16 November). The
+  seam's sweep, a tear opening and a hunter's roar by its family, first cuts in the forge
+  (`peak_sweep`, `tear_open`, `roar_<family>`). The Cottonmouth's guns fire as the drum's shot,
+  two chambers on (`drum_fire`, the sidecar's `hidden_fire`, MechRig.fire_hidden; the model
+  rebuilt byte for byte), no flare or fire at a hidden mount. The rift's shell, a span a
+  Fracture, cracked as each is earned and burst at the Rupture (`RIFTGATE_SHELL_DEBUG=1`; the
+  loot behind it a to-do line for chat first). The bible (v0.593) and the hangar (the
+  Cottonmouth's sidecar, the motion script) republish from main once it lands.
 - **The blade class retired** (`ccr-b7d5164e-1wtzzm`, 15 November, on Ryan's "The four you listed are
   locked pieces. The others need to be renamed into short range (i.e "melee" as per our definition)
   guns, or just sent back to design"): four silhouette classes (barrel, twin barrel, rack, dish) in
@@ -1214,8 +1239,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   Meadow's first battles where it won 40%; at three fifths for its elite and boss and three
   quarters for its rank and file a trio keeps its hull, and the trios with the Badger still
   lose the wall); the Waste's bosses and the Peak's clock; the Prairie Dog alone. The
-  muster rule and the fight-at-its-rating read are scratch probes; the runner still plays
-  the defence rule. The bible's triangle, scale, shield and Barrier rows and section 12 (v0.569);
+  muster rule and the fight-at-its-rating read were scratch probes then, tools since 16
+  November (`--muster`, `tools/battle_run.gd`, `--packs rating`). The bible's triangle, scale, shield and Barrier rows and section 12 (v0.569);
   the rules' chassis, basics, heat and scale lines.
 - **Four formations cut toward the budget, 4-4-2 to work with, and the anchor** (Ryan, 12
   November: "Yes go ahead with 2. Also, let's look at 4-4-2 right now so that you're working
@@ -1942,7 +1967,7 @@ flanks' second patrols (the brief's section 11), and his answers on the first ba
 ramp band wait on him), beside his play of what landed, with the field's
 dials (the to-do's Ryan list), and his answers to the brief's section 7, then the content still to come (the stock re-deal proper as a table in chat first,
 the component pass, the heat prices, the foes' numbers after his play, the bosses' stat
-blocks, what prices a round), the vocabulary, the rules and the rows. Then the long wall's other open item (the bible's section 12: the shell). Beside them, the rest of the skirmish code audit
+blocks, what prices a round), the vocabulary, the rules and the rows. The long wall's other open item, the shell, is built as a first cut (16 November), the loot behind it the to-do's. Beside them, the rest of the skirmish code audit
 (`docs/skirmish_audit.md`; its questions answered and its bugs built 8 November; the Ammit's Tap
 settled by its rework of 12 November): its structural steps in order (step 3 built on
 `ccr-8df9952c-4cccdf`, the mine's half gone with the slot mines on 9 November; then the bot's
