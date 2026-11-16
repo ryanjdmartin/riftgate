@@ -94,6 +94,10 @@ const COLLAPSE_HEFT := 0.3     # its servos' time constant as it goes: a drop wi
 const COLLAPSE_SINK := 0.28    # a walker sinks this share of its shortest planted limb's height, each foot where it stands
 const COLLAPSE_WAIST := 16.0   # a biped's waist slumps forward this many degrees (a walker with a hand on the floor keeps its back)
 const HANG_SCAN := 36         # steps a hanging joint's range is read in when it starts through the floor (_hang)
+const SINK_KEYS := 24         # samples of a sinking death's turn its planted limbs' reach is worked at (_sink_death)
+const PLANT_STEP := 0.025     # seconds between the samples a death's planted feet are held at (_plant_death)
+const PLANT_SOLE := 0.02      # a share of its size: a planted foot stands on its points this near its lowest
+const PLANT_PIVOT := 0.005    # a share of its size: of those, it turns on the ones this near the lowest now
 const COLLAPSE_PASSES := 2     # how often the slack joints settle, each hanging what it carries from where the last pass left it
 const COLLAPSE_TOUCH := 0.02   # a limb whose end comes within this share of the machine's size of the floor stands on it
 const SPIN_STOP := 1.4         # seconds its fans, rotors and idle spins take to run down
@@ -777,8 +781,13 @@ func _form_entry(f: Dictionary) -> Dictionary:
 	for jn in f.get("hang", []):
 		if joints.has(str(jn)):
 			hang.append(str(jn))
+	var plant: Array = []   # [joint, from, to]: a foot that stays where it stands over that stretch of a death
+	for p in f.get("plant", []):
+		var row: Array = p if p is Array else [p]
+		if not row.is_empty() and joints.has(str(row[0])):
+			plant.append([str(row[0]), float(row[1]) if row.size() > 1 else 0.0, float(row[2]) if row.size() > 2 else duration])
 	return {"duration": duration, "curves": curves, "glow": glow, "glow_keys": glow_keys, "acts": own, "hang": hang, "ease": ease,
-		"raw_body": (f.get("body", []) as Array).duplicate(true)}
+		"plant": plant, "sink": clampf(float(f.get("sink", 0.0)), 0.0, 1.0), "land": bool(f.get("land", true)), "shift": {}, "raw_body": (f.get("body", []) as Array).duplicate(true)}
 
 
 ## Hold a form or let it go: it turns in over its duration and back out the same way, from
@@ -950,8 +959,8 @@ func _forms_step(delta: float) -> bool:
 		if t != want:
 			_form_t[name] = move_toward(t, want, delta)
 			turning = true
-			if name == DEATH and dead and want > 0.0 and float(_form_t[name]) >= want:
-				_impact = 0.0   # it lands: the landing's beat
+			if name == DEATH and dead and want > 0.0 and float(_form_t[name]) >= want and bool(forms[name].get("land", true)):
+				_impact = 0.0   # it lands: the landing's beat (none for a death that stays on its feet)
 	if not turning:
 		return false
 	if _forms_apply():
@@ -1398,6 +1407,13 @@ func _sink_turns(limbs: Array, deg: Dictionary) -> Array:
 ## middle joint turns in, the knee folding the way it folds at rest, the end turning back what the
 ## root and middle turned. Empty when it cannot (out of reach, out of that plane, past a limit).
 func _sink_limb(trio: Array, d: float, deg: Dictionary) -> Dictionary:
+	return _reach_limb(trio, _in_model(joints[trio[2]]).origin + Vector3.UP * d, deg)
+
+
+## The degrees a limb's root, middle and end add so that its end comes to `target` (the model's frame),
+## the end keeping how it is turned: the two-link reach of _sink_limb toward any point in the limb's plane
+## (a death's planted foot held where it came down, _plant_death). Empty when it cannot.
+func _reach_limb(trio: Array, target: Vector3, deg: Dictionary) -> Dictionary:
 	var xr := _in_model(joints[trio[0]])
 	var xm := _in_model(joints[trio[1]])
 	var xe := _in_model(joints[trio[2]])
@@ -1414,7 +1430,7 @@ func _sink_limb(trio: Array, d: float, deg: Dictionary) -> Dictionary:
 	var h := xr.origin
 	var k2 := Vector2((xm.origin - h).dot(a), (xm.origin - h).dot(b))
 	var e2 := Vector2((xe.origin - h).dot(a), (xe.origin - h).dot(b))
-	var t2 := e2 + Vector2(d, 0.0)   # the end stays put as the machine sinks: d nearer the root
+	var t2 := Vector2((target - h).dot(a), (target - h).dot(b))   # where the end goes, in the limb's plane
 	var l1 := k2.length()
 	var l2 := (e2 - k2).length()
 	var reach := t2.length()
@@ -1654,16 +1670,111 @@ func revive() -> void:
 	_wait = GAP_MIN
 
 
+## A death worked out as it starts, from the pose it stands in: its planted limbs' reach as it sinks
+## (_sink_death), then its limp joints where it will lie (_hang_death), then the body's way along the
+## floor over its planted feet (_plant_death), each written into its turn; everything put back. The
+## floor itself is held every frame of the fall (_hold_death_floor), so nothing here lifts or lowers it.
+func _settle_death() -> void:
+	var f: Dictionary = forms[DEATH]
+	f["shift"] = {}
+	if float(f.get("sink", 0.0)) > 0.0:
+		_sink_death(f)
+	if not (f.get("hang", []) as Array).is_empty():
+		_hang_death(f)
+	if not (f.get("plant", []) as Array).is_empty():
+		_plant_death(f)
+
+
+## A death that sinks (its `sink`, a share): the walker comes down on the limbs it stands on and the death
+## leaves alone (no track on the limb or on a joint it hangs from), every such foot kept where it stands
+## and as it stands (the slump's reach, _sink_limb), by that share of the most they reach within their
+## limits with nothing else lower than their feet as the death ends; their turns written as the death's
+## tracks for those joints, sampled over its turn on its ease (Ryan, 16 November, the fifth notes: the
+## Whip Scorpion's legs "slide out from under it"). A limb the death keys is its own: a quad's one pair
+## splaying, a pair drawn up off the floor.
+func _sink_death(f: Dictionary) -> void:
+	var held := {}
+	var deg := {}
+	for jn in joints.keys():
+		held[jn] = (joints[jn] as Node3D).rotation
+		deg[jn] = _form_rot.get(jn, Vector3.ZERO)
+		_turn_to(jn, deg[jn])
+	var keyed: Dictionary = {}
+	for jn in (f["curves"] as Dictionary).keys():
+		if jn != BODY:
+			keyed[joints[jn]] = jn
+	var limbs: Array = []
+	for trio in _planted_limbs(COLLAPSE_TOUCH * maxf(1.0, _size)):
+		var free := true
+		var n: Node = joints[trio[2]]
+		while n != null and n != model:
+			free = free and not keyed.has(n)
+			n = n.get_parent()
+		if free:
+			limbs.append(trio)
+	if not limbs.is_empty():
+		var dur := float(f["duration"])
+		for jn in keyed.values():   # the rest of the pose as the death ends, to read what lies lowest
+			var v: Array = curve_at(f["curves"][jn], dur)
+			_turn_to(jn, (deg[jn] as Vector3) + Vector3(float(v[0]), float(v[1]), float(v[2])))
+		var floor_y := minf(0.0, _lowest_under(model))
+		var top := 0.0
+		for trio in limbs:
+			top = maxf(top, _in_model(joints[trio[0]]).origin.y - floor_y)
+		var lo := 0.0
+		var hi := top
+		for _step in range(16):
+			var d := (lo + hi) * 0.5
+			var turns := _sink_all(limbs, d, deg)
+			var ok := not turns.is_empty()
+			if ok:
+				for jn in turns.keys():
+					_turn_to(jn, (deg[jn] as Vector3) + (turns[jn] as Vector3))
+				ok = _lowest_under(model) - d >= floor_y - 0.05   # nothing lower than its feet
+				for jn in turns.keys():
+					_turn_to(jn, deg[jn])
+			if ok:
+				lo = d
+			else:
+				hi = d
+		var depth := lo * float(f["sink"])
+		var way := curve([[dur, 1.0]], dur, str(f.get("ease", "smooth")))
+		var keys := {}
+		var last := {}
+		for k in range(SINK_KEYS + 1):
+			var t := dur * float(k) / float(SINK_KEYS)
+			var turns := _sink_all(limbs, depth * float(curve_at(way, t)[0]), deg)
+			if turns.is_empty():
+				turns = last
+			last = turns
+			for jn in turns.keys():
+				if not keys.has(jn):
+					keys[jn] = []
+				var v: Vector3 = turns[jn]
+				keys[jn].append([t, v.x, v.y, v.z])
+		for jn in keys.keys():
+			f["curves"][jn] = curve(keys[jn], dur, "linear")
+	for jn in held.keys():
+		(joints[jn] as Node3D).rotation = held[jn]
+
+
+## Every limb's reach for one sink (_sink_limb), together: {joint: degrees added}, empty when any cannot.
+func _sink_all(limbs: Array, d: float, deg: Dictionary) -> Dictionary:
+	var out := {}
+	for trio in limbs:
+		var t := _sink_limb(trio, d, deg)
+		if t.is_empty():
+			return {}
+		out.merge(t)
+	return out
+
+
 ## A death's limp joints worked out where it will lie (its `hang`: an arm gone slack): the pose put on
 ## for a moment as it ends, each such joint turned so what it carries hangs under it, the outermost
 ## first, never below the floor the rest of the pose lies on, and that turn written as the joint's
-## track; everything put back. The floor itself is held every frame of the fall (_hold_death_floor),
-## so nothing here lifts or lowers the pose.
-func _settle_death() -> void:
-	var f: Dictionary = forms[DEATH]
+## track; everything put back.
+func _hang_death(f: Dictionary) -> void:
 	var hang: Array = f.get("hang", [])
-	if hang.is_empty():
-		return
 	var d := float(f["duration"])
 	var saved := {}
 	for jn in joints.keys():
@@ -1719,6 +1830,175 @@ func _settle_death() -> void:
 		(joints[jn] as Node3D).rotation = saved[jn]
 	body.position = saved_pos
 	body.rotation = saved_rot
+
+
+## A death's planted feet (its `plant`: a joint and the stretch of its turn it stands through): the body
+## moved along the floor over the turn by what keeps the points each such foot stands on where they came
+## down, the points it turns on (its lowest) never sliding, the feet down together sharing it; sampled
+## every PLANT_STEP as the death's shift, which _pose lays on (Ryan, 16 November, the fifth notes: "the
+## physics of a biped, it can't just kick it's legs out in front like that"). A foot is held where it
+## stands as its stretch begins: at the kill for one planted from the start, where it comes down for one
+## that steps first (the Cassowary's stride before it falls back).
+func _plant_death(f: Dictionary) -> void:
+	var dur := float(f["duration"])
+	var plants: Array = f["plant"]
+	var n := maxi(8, ceili(dur / PLANT_STEP))
+	var anchors := {}   # joint -> [[mesh, its point], ...] and where each stood: [points, PackedVector2Array]
+	var shift := Vector2.ZERO
+	var keys: Array = []
+	var reach := {}       # planted joint -> the limb it ends, reaching for it (_limb_of)
+	var limb_keys := {}   # a reaching limb's joint -> its death's track, sampled with the reach laid on
+	var limb_add := {}    # joint -> [[t, degrees added]] this sample
+	if plants.size() > 1:   # one foot down alone: the body's shift holds it whole
+		for p in plants:
+			var trio := _limb_of(str(p[0]))
+			if not trio.is_empty():
+				reach[str(p[0])] = trio
+				for kj in trio:
+					limb_keys[kj] = []
+	var saved_t := float(_form_t[DEATH])
+	for k in range(n + 1):
+		var t := dur * float(k) / float(n)
+		_form_t[DEATH] = t
+		_forms_apply()
+		_pose()   # no shift on yet: forms[DEATH]["shift"] is empty while this works
+		var sum := Vector2.ZERO
+		var feet := 0
+		var hand_sum := Vector2.ZERO
+		var hands := 0
+		for p in plants:
+			if t < float(p[1]) - 0.0001 or t > float(p[2]) + 0.0001:
+				continue
+			var jn := str(p[0])
+			if not anchors.has(jn):
+				anchors[jn] = _sole_of(joints[jn], shift)
+			var a: Array = anchors[jn]
+			var now := PackedVector3Array()
+			var lo := INF
+			for pv in (a[0] as Array):
+				var q: Vector3 = (body.transform * _in_model(pv[0])) * (pv[1] as Vector3)
+				now.append(q)
+				lo = minf(lo, q.y)
+			var off := Vector2.ZERO
+			var m := 0
+			for i in range(now.size()):
+				if now[i].y <= lo + PLANT_PIVOT * maxf(1.0, _size):
+					off += (a[1] as PackedVector2Array)[i] - Vector2(now[i].x, now[i].z)
+					m += 1
+			if m > 0:
+				if jn.begins_with("wrist") or jn.begins_with("hand"):
+					hand_sum += off / float(m)
+					hands += 1
+				else:
+					sum += off / float(m)
+					feet += 1
+		if feet > 0:
+			shift = sum / float(feet)   # the body goes over its feet; a planted hand only catches it, its arm reaching
+		elif hands > 0:
+			shift = hand_sum / float(hands)
+		keys.append([t, shift.x, shift.y])
+		# Each planted foot's own leg then reaches the rest of the way (feet down apart, a stride's two):
+		# the body moved by what they share, each limb turned so its foot's points come back to theirs.
+		body.position += Vector3(shift.x, 0.0, shift.y)
+		for p in plants:
+			var jn := str(p[0])
+			var trio: Array = reach.get(jn, [])
+			if trio.is_empty() or not anchors.has(jn) or t < float(p[1]) - 0.0001 or t > float(p[2]) + 0.0001:
+				continue
+			var a: Array = anchors[jn]
+			var lo := INF
+			var now := PackedVector3Array()
+			for pv in (a[0] as Array):
+				var q: Vector3 = (body.transform * _in_model(pv[0])) * (pv[1] as Vector3)
+				now.append(q)
+				lo = minf(lo, q.y)
+			var off := Vector2.ZERO
+			var m := 0
+			for i in range(now.size()):
+				if now[i].y <= lo + PLANT_PIVOT * maxf(1.0, _size):
+					off += (a[1] as PackedVector2Array)[i] - Vector2(now[i].x, now[i].z)
+					m += 1
+			if m == 0 or (off / float(m)).length() < 0.001:
+				continue
+			off /= float(m)
+			var deg_now := {}
+			for kj in trio:
+				deg_now[kj] = (_act_rot.get(kj, Vector3.ZERO) as Vector3) + (_gait_rot.get(kj, Vector3.ZERO) as Vector3) + (_form_rot.get(kj, Vector3.ZERO) as Vector3)
+			var end_at := body.transform * _in_model(joints[trio[2]]).origin + Vector3(off.x, 0.0, off.y)
+			var turns := _reach_limb(trio, body.transform.affine_inverse() * end_at, deg_now)
+			for kj in turns.keys():
+				limb_add[kj] = limb_add.get(kj, []) + [[t, turns[kj]]]
+		body.position -= Vector3(shift.x, 0.0, shift.y)
+		for kj in limb_keys.keys():
+			var own := Vector3.ZERO
+			if (f["curves"] as Dictionary).has(kj):
+				var v: Array = curve_at(f["curves"][kj], t)
+				own = Vector3(float(v[0]), float(v[1]), float(v[2]))
+			var add := Vector3.ZERO
+			var rows: Array = limb_add.get(kj, [])
+			if not rows.is_empty() and is_equal_approx(float(rows[rows.size() - 1][0]), t):
+				add = rows[rows.size() - 1][1]
+			limb_keys[kj].append([t, own.x + add.x, own.y + add.y, own.z + add.z])
+	f["shift"] = curve(keys, dur, "linear")
+	for kj in limb_keys.keys():
+		f["curves"][kj] = curve(limb_keys[kj], dur, "linear")
+	_form_t[DEATH] = saved_t
+	_forms_apply()
+	_pose()
+
+
+## The limb a planted joint ends: a leg's hip, knee and ankle for an ankle, an arm's shoulder, elbow and
+## wrist (or hand) for a wrist or a hand; empty for anything else, which the body's shift alone holds.
+func _limb_of(jn: String) -> Array:
+	var trio: Array = []
+	if jn.begins_with("ankle"):
+		var s := jn.substr(5)
+		trio = ["hip" + s, "knee" + s, jn]
+	elif jn.begins_with("wrist") or jn.begins_with("hand"):
+		var s := jn.substr(5) if jn.begins_with("wrist") else jn.substr(4)
+		trio = ["shoulder" + s, "elbow" + s, jn]
+	for k in trio:
+		if not joints.has(k):
+			return []
+	return trio
+
+
+## What a planted foot stands on as it is held: the corners of the surfaces its joint carries within
+## PLANT_SOLE of their lowest, each with where it stands along the floor (`shift` on, the body's way so far).
+func _sole_of(node: Node, shift: Vector2) -> Array:
+	var pts: Array = []
+	var lo := INF
+	var stack: Array = [node]
+	while not stack.is_empty():
+		var n: Node = stack.pop_back()
+		if n is Node3D and not (n as Node3D).visible:
+			continue
+		for c in n.get_children():
+			stack.append(c)
+		if n is MeshInstance3D and (n as MeshInstance3D).mesh != null and not n.has_meta("halo") and not n.has_meta("plume") and not n.has_meta("is_trace"):
+			var xf := body.transform * _in_model(n)
+			for v in _hull_of((n as MeshInstance3D).mesh):
+				var q := xf * v
+				pts.append([n, v, q])
+				lo = minf(lo, q.y)
+	var sole: Array = []
+	var at := PackedVector2Array()
+	for row in pts:
+		if (row[2] as Vector3).y <= lo + PLANT_SOLE * maxf(1.0, _size):
+			sole.append([row[0], row[1]])
+			at.append(Vector2((row[2] as Vector3).x, (row[2] as Vector3).z) + shift)
+	return [sole, at]
+
+
+## How far a dying machine's body has gone along the floor over its planted feet (_plant_death), now.
+func _death_shift() -> Vector3:
+	if not dead or not forms.has(DEATH):
+		return Vector3.ZERO
+	var c: Dictionary = forms[DEATH].get("shift", {})
+	if c.is_empty():
+		return Vector3.ZERO
+	var v := curve_at(c, float(_form_t[DEATH]))
+	return Vector3(float(v[0]), 0.0, float(v[1]))
 
 
 ## A dying machine's lowest point held on its floor every frame of its fall, its own death's (the
@@ -2188,7 +2468,7 @@ func _pose() -> void:
 				rock += (st["vec"] as Vector3) * _strike_envelope(st)   # a jolt's nose rocking up
 		var turn := Vector3(0.0, float(_aim["deg"]) * aim_envelope(), 0.0) if not _aim.is_empty() and _aim["joint"] == BODY else Vector3.ZERO
 		var landing := Vector3(impact_rock(_impact), 0.0, 0.0)   # a death's landing rocks it on what it landed on
-		body.position = _body_rest_pos + offset_of(_body_act_slide + _body_move_slide + _form_body_slide) + recoil + Vector3(0.0, _death_lift, 0.0)
+		body.position = _body_rest_pos + offset_of(_body_act_slide + _body_move_slide + _form_body_slide) + recoil + Vector3(0.0, _death_lift, 0.0) + _death_shift()
 		body.rotation = _body_rest_rot + euler_of(_body_act_rot + _body_move_rot + _form_body_rot + turn + rock + landing)
 
 

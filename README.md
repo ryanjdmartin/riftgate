@@ -688,15 +688,18 @@ RIFTGATE_SHELL_DEBUG=1 godot --path .          # the rift's shell, the wall on t
 # joint_<name> Empty, nested where it rides another; `b.act(name, seconds, {joint: [(t, degrees), ...]}, body=, glow=)` at the end of a
 # machine writes its idle acts to art/models/<id>.rig.json with the joints. Judge them running:
 RIFTGATE_ACTS_DEBUG=1 godot --path .            # every act back to back in the skirmish and on the map (=<act name> loops one)
-# a machine's own way down: `b.death(seconds, tracks, body=, glow=, ease="fall", hang=[joints])` at the end of its recipe, a
-# held pose in place of the baseline slump: it falls (slow, then hard), the rig holding its lowest point on the floor every
-# frame, `hang` limbs going limp, a `glow` given keys burning as it goes down (16 November; keep it on its hex); one frame of it:
+# a machine's own way down: `b.death(seconds, tracks, body=, glow=, ease="fall", hang=[joints], plant=[joints], sink=share,
+# land=True)` at the end of its recipe, a held pose in place of the baseline slump: it falls (slow, then hard), the rig holding
+# its lowest point on the floor every frame, `hang` limbs going limp, a `glow` given keys burning as it goes down, `plant` feet
+# staying where they stand (a joint, or (joint, from, to) for a stride's foot), `sink` lowering a walker on its planted legs,
+# `land=False` for one that stays on its feet (16 November; keep it on its hex); one frame of it:
 xvfb-run -a godot --path . --resolution 360x640 -s tools/act_shot.gd -- clydesdale wainwright_sutler lose 3.0 /tmp/dead.png skirmish 300x300
 # where each lost machine lies (MechRig.rest_of): its lowest point off the floor, the joints whose parts touch, and whether it
 # rests on them or tips (its middle outside what touches: propped on a limb); --joints its joints' places, --try a list of
-# pose variants laid over its death without a rebuild, limp joints, keys and where a joint ends up among them (the tool's
-# header says the form); tests/test_mech_rig.gd holds every death to it
-perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/death_floor.gd -- [badger,nemesis] [--joints] [--try variants.json]
+# pose variants laid over its death without a rebuild, limp joints, keys, plants, a sink and where a joint ends up among them
+# (the tool's header says the form); --slide how far each standing foot moves along the floor while it touches and how high the
+# hull ends, --clip the pairs of parts that cross where it lies and did not at rest; tests/test_mech_rig.gd holds every death to it
+perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/death_floor.gd -- [badger,nemesis] [--joints] [--slide] [--clip] [--try variants.json]
 RIFTGATE_MOVE_DEBUG=1 godot --path .            # every machine driven constantly: the walks, wheels, treads and held poses (`b.gait(...)` in models_low.py); the cornering (the Dingo's drift, the banks) needs a real move
 # a model may show a count and a status: `b.count(source, parts)` lights the first n of its parts for the number the game passes
 # (`shots`, the counted shots toward the sixth; `ammo`, the magazine), a falling number flaring them all dark (the Cassowary's

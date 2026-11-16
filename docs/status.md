@@ -43,8 +43,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1248 tests, 374,667 checks, green on `ccr-bd73687d-w8qox1` (16 November, his next notes on
-  the deaths: the fall, the floor every frame, limp limbs, the late vents, the flicker). Before it,
+- Tests: 1252 tests, 374,828 checks, green on `ccr-bd73687d-w8qox1` (16 November, his fifth notes on
+  the deaths: planted feet, the sink, the crossings measured). Before it, 1248 tests, 374,667 checks,
+  green on the same branch (his next notes on the deaths: the fall, the floor every frame, limp limbs,
+  the late vents, the flicker). Before it,
   1244 tests, 374,011 checks, green on the same branch (his notes on the deaths: resting on what
   touches, the paint dark, the Nemesis on one knee). Before it, 1241 tests,
   373,910 checks, green on the same branch (over main at `d7fe86f` taken in a merge: his ninth
@@ -560,7 +562,17 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   Funnel-web sunk to its leg roots, the Clydesdale buckling slowly and landing hard, the Cassowary
   staggering forward and over onto its back, the Whip Scorpion's feelers down, the Nemesis level on
   one knee with its arms limp. The hangar shows them (Pages, below), published from this branch
-  ahead of main; the bible (v0.603) republishes on his word. And on his "Can we make it so the
+  ahead of main. Reworked a fourth time on his fifth notes the same day: a planted foot never slides
+  (`b.death`'s `plant`, the rig carrying the body along the floor over the feet and each leg reaching
+  for its own, `MechRig._plant_death` and `_reach_limb`; `sink` lowering a many-legged walker on its
+  planted legs, `_sink_death`; `land=False` for a death on its feet), measured by `tools/death_floor.gd
+  --slide --clip` (each foot's slide, the hull's clearance, the parts crossing). The Ammit stays on its
+  feet with its upper limbs drawn in, crossing nothing (his call); the Whip Scorpion and the Funnel-web
+  sink on their planted legs, stopped short of the floor by their builds (the middle legs' limits, the
+  low hip hinges); the Baboon bows forward onto its fists (its sit cannot keep its feet); the Cassowary
+  powers down where it stands until he picks how it falls; the Nemesis and the Clydesdale as they were.
+  The bible's section 12 holds the three he must pick; the to-do the crossings left on six others.
+  The bible (v0.604) republishes on his word. And on his "Can we make it so the
   game doesn't enable auto rotate every time it loads?": `tools/android.sh` launches the game with
   `am start` as Godot's own one-click deploy does, no longer with `monkey`, whose every run ends by
   unlocking the screen's rotation and so turned the phone's auto-rotate on (the game itself is

@@ -218,6 +218,7 @@ function lowestOf(node, matrixOf) {
 }
 const DEAD_PAINT = 0.1;   // MechRig.DEAD_PAINT: a lit part's paint once its light is out, a dead booster dark
 const FALL_HIT = 2.6, IMPACT_S = 0.3, IMPACT_HOP = 0.012, IMPACT_ROCK = 1.5, HANG_SCAN = 36;   // MechRig: a death's fall lands at speed, then a hop and a rock
+const SINK_KEYS = 24, PLANT = {step: 0.025, sole: 0.02, pivot: 0.005};   // MechRig.SINK_KEYS, PLANT_STEP, PLANT_SOLE, PLANT_PIVOT: a sinking death's samples, a planted foot's
 function impactHop(t) {   // MechRig.impact_hop: a share of the machine's size
   if (t < 0 || t >= IMPACT_S) return 0;
   const u = t / IMPACT_S;
@@ -578,7 +579,9 @@ class Rig {
       else glow.push([m, restOf(m), g.k ?? -1]);
     }
     const hang = (f.hang || []).filter(jn => this.joints[jn]);
-    return {duration, ease, curves, glow, glowKeys, hang, acts: (f.acts || []).filter(a => a && a.name), rawBody: JSON.parse(JSON.stringify(f.body || []))};
+    const plant = [];   // [joint, from, to]: a foot that stays where it stands over that stretch of a death (MechRig._form_entry)
+    for (const p of f.plant || []) { const row = Array.isArray(p) ? p : [p]; if (row.length && this.joints[row[0]]) plant.push([String(row[0]), row.length > 1 ? +row[1] : 0, row.length > 2 ? +row[2] : duration]); }
+    return {duration, ease, curves, glow, glowKeys, hang, plant, sink: clamp(+(f.sink || 0), 0, 1), land: f.land !== false, shift: null, acts: (f.acts || []).filter(a => a && a.name), rawBody: JSON.parse(JSON.stringify(f.body || []))};
   }
   // Hold a form or let it go (MechRig.set_form): it turns in over its duration and back out the
   // same way, from wherever it is; while a form turns no act starts, and one playing stops.
@@ -671,7 +674,7 @@ class Rig {
       const want = this.formOn[name] ? f.duration : 0, t = this.formT[name];
       if (t !== want) {
         this.formT[name] = t < want ? Math.min(want, t + delta) : Math.max(want, t - delta); turning = true;
-        if (name === "@death" && this.dead && want > 0 && this.formT[name] >= want) this.impact = 0;   // it lands: the landing's beat (MechRig._forms_step)
+        if (name === "@death" && this.dead && want > 0 && this.formT[name] >= want && f.land !== false) this.impact = 0;   // it lands: the landing's beat, none for a death that stays on its feet (MechRig._forms_step)
       }
     }
     if (!turning) return false;
@@ -896,12 +899,163 @@ class Rig {
     if (death) { this.size = this.size || this.modelSize(); this.settleDeath(); this.formOn["@death"] = true; this.collapse = -1; this.collapseFloor = 0; }   // its own death (MechRig.kill)
     else this.collapse = 0;
   }
-  // MechRig._settle_death: a death's limp joints (its `hang`) worked out where it will lie, the pose
-  // put on for a moment as it ends, each turned where its weight takes it, the outermost first,
-  // never below the floor the rest of the pose lies on; the floor itself is held every frame.
+  // MechRig._settle_death: a death worked out as it starts, from the pose it stands in: its planted
+  // limbs' reach as it sinks, its limp joints where it will lie, the body's way along the floor over
+  // its planted feet; the floor itself is held every frame.
   settleDeath() {
-    const f = this.forms["@death"], d = f.duration, T = window.THREE, saved = {};
-    if (!(f.hang || []).length) return;
+    const f = this.forms["@death"];
+    f.shift = null;
+    if (f.sink > 0) this.sinkDeath(f);
+    if ((f.hang || []).length) this.hangDeath(f);
+    if ((f.plant || []).length) this.plantDeath(f);
+  }
+  // MechRig._sink_death: the walker comes down on the limbs it stands on and the death leaves alone, every
+  // such foot where it stands, by its `sink` share of the most they reach with nothing else lower than
+  // their feet as the death ends; written as those joints' tracks, sampled over its turn on its ease.
+  sinkDeath(f) {
+    this.model.updateMatrixWorld(true);
+    this.modelInv = this.model.matrixWorld.clone().invert();
+    const held = {}, deg = {};
+    for (const [jn, j] of Object.entries(this.joints)) { held[jn] = j.rotation.clone(); deg[jn] = {...(this.formRot[jn] || v3())}; this.turnTo(jn, deg[jn], false); }
+    const keyed = new Map();
+    for (const jn of Object.keys(f.curves)) if (jn !== "@body") keyed.set(this.joints[jn], jn);
+    this.model.updateMatrixWorld(true);
+    const limbs = this.plantedLimbs(COLLAPSE.touch * Math.max(1, this.size || 1)).filter(t => { for (let n = this.joints[t[2]]; n && n !== this.model; n = n.parent) if (keyed.has(n)) return false; return true; });
+    if (limbs.length) {
+      for (const jn of keyed.values()) { const v = curveAt(f.curves[jn], f.duration); this.turnTo(jn, add3(deg[jn], v3(v[0], v[1], v[2])), false); }   // the rest of the pose as the death ends
+      this.model.updateMatrixWorld(true);
+      const T = window.THREE, floorY = Math.min(0, this.lowestUnder(this.model));
+      let top = 0;
+      for (const t of limbs) top = Math.max(top, new T.Vector3().setFromMatrixPosition(this.inModel(this.joints[t[0]])).y - floorY);
+      let lo = 0, hi = top;
+      for (let step = 0; step < 16; step++) {
+        const d = (lo + hi) / 2, turns = this.sinkAll(limbs, d, deg);
+        let ok = !!turns;
+        if (ok) {
+          for (const [n, v] of Object.entries(turns)) this.turnTo(n, add3(deg[n], v));
+          ok = this.lowestUnder(this.model) - d >= floorY - 0.05;   // nothing lower than its feet
+          for (const n of Object.keys(turns)) this.turnTo(n, deg[n]);
+        }
+        if (ok) lo = d; else hi = d;
+      }
+      const depth = lo * f.sink, dur = f.duration, way = curve([[dur, 1]], dur, f.ease || "smooth"), keys = {};
+      let last = {};
+      for (let k = 0; k <= SINK_KEYS; k++) {
+        const t = dur * k / SINK_KEYS;
+        let turns = this.sinkAll(limbs, depth * curveAt(way, t)[0], deg);
+        if (!turns) turns = last;
+        last = turns;
+        for (const [jn, v] of Object.entries(turns)) (keys[jn] = keys[jn] || []).push([t, v.x, v.y, v.z]);
+      }
+      for (const [jn, k] of Object.entries(keys)) f.curves[jn] = curve(k, dur, "linear");
+    }
+    for (const [jn, j] of Object.entries(this.joints)) j.rotation.copy(held[jn]);
+    this.model.updateMatrixWorld(true);
+  }
+  sinkAll(limbs, d, deg) {   // MechRig._sink_all
+    const out = {};
+    for (const t of limbs) { const r = this.sinkLimb(t, d, deg); if (!r) return null; Object.assign(out, r); }
+    return out;
+  }
+  // MechRig._plant_death: the body moved along the floor over the turn by what keeps the points each
+  // planted foot stands on where they came down, the points it turns on never sliding, sampled as the
+  // death's shift; a foot held where it stands as its stretch begins.
+  plantDeath(f) {
+    const T = window.THREE, dur = f.duration, n = Math.max(8, Math.ceil(dur / PLANT.step)), anchors = {}, keys = [], savedT = this.formT["@death"];
+    const reach = {}, limbKeys = {};   // a planted joint's limb reaching for it, and that limb's joints' sampled tracks (MechRig._plant_death)
+    if (f.plant.length > 1) for (const [jn] of f.plant) { const trio = this.limbOf(jn); if (trio.length) { reach[jn] = trio; for (const k of trio) limbKeys[k] = []; } }
+    let shift = [0, 0];
+    for (let k = 0; k <= n; k++) {
+      const t = dur * k / n;
+      this.formT["@death"] = t; this.formsApply(); this.pose();   // no shift on yet: f.shift is empty while this works
+      this.body.updateMatrixWorld(true);
+      const parentInv = new T.Matrix4().copy(this.body.parent ? this.body.parent.matrixWorld : new T.Matrix4()).invert();
+      let sx = 0, sz = 0, feet = 0, hx = 0, hz = 0, hands = 0;
+      for (const [jn, from, to] of f.plant) {
+        if (t < from - 1e-4 || t > to + 1e-4) continue;
+        if (!anchors[jn]) anchors[jn] = this.soleOf(this.joints[jn], shift, parentInv);
+        const [sole, at] = anchors[jn], mats = new Map(), now = [];
+        let lo = Infinity;
+        for (const [o, x, y, z] of sole) {
+          if (!mats.has(o)) mats.set(o, new T.Matrix4().multiplyMatrices(parentInv, o.matrixWorld));
+          const q = new T.Vector3(x, y, z).applyMatrix4(mats.get(o));
+          now.push(q); if (q.y < lo) lo = q.y;
+        }
+        let ox = 0, oz = 0, m = 0;
+        for (let i = 0; i < now.length; i++) if (now[i].y <= lo + PLANT.pivot * Math.max(1, this.size || 1)) { ox += at[i][0] - now[i].x; oz += at[i][1] - now[i].z; m++; }
+        if (m) { if (jn.startsWith("wrist") || jn.startsWith("hand")) { hx += ox / m; hz += oz / m; hands++; } else { sx += ox / m; sz += oz / m; feet++; } }
+      }
+      if (feet) shift = [sx / feet, sz / feet];   // the body goes over its feet; a planted hand only catches it, its arm reaching
+      else if (hands) shift = [hx / hands, hz / hands];
+      keys.push([t, shift[0], shift[1]]);
+      // each planted foot's own leg reaches the rest of the way, the body moved by what they share
+      this.body.position.x += shift[0]; this.body.position.z += shift[1]; this.body.updateMatrixWorld(true);
+      this.body.updateMatrix();
+      this.modelInv = this.model.matrixWorld.clone().invert();
+      const add = {};
+      for (const [jn, from, to] of f.plant) {
+        const trio = reach[jn];
+        if (!trio || !anchors[jn] || t < from - 1e-4 || t > to + 1e-4) continue;
+        const pinv = new T.Matrix4().copy(this.body.parent ? this.body.parent.matrixWorld : new T.Matrix4()).invert();
+        const [sole, at] = anchors[jn], now = [];
+        let lo = Infinity;
+        for (const [o, x, y, z] of sole) { const q = new T.Vector3(x, y, z).applyMatrix4(new T.Matrix4().multiplyMatrices(pinv, o.matrixWorld)); now.push(q); if (q.y < lo) lo = q.y; }
+        let ox = 0, oz = 0, m = 0;
+        for (let i = 0; i < now.length; i++) if (now[i].y <= lo + PLANT.pivot * Math.max(1, this.size || 1)) { ox += at[i][0] - now[i].x; oz += at[i][1] - now[i].z; m++; }
+        if (!m || Math.hypot(ox / m, oz / m) < 0.001) continue;
+        ox /= m; oz /= m;
+        const degNow = {};
+        for (const k of trio) degNow[k] = add3(add3(this.actRot[k] || v3(), this.gaitRot[k] || v3()), this.formRot[k] || v3());
+        const endBp = new T.Vector3().setFromMatrixPosition(this.joints[trio[2]].matrixWorld).applyMatrix4(pinv).add(new T.Vector3(ox, 0, oz));
+        const target = endBp.applyMatrix4(new T.Matrix4().multiplyMatrices(this.modelInv, this.body.parent ? this.body.parent.matrixWorld : new T.Matrix4()));
+        const turns = this.reachLimb(trio, target, degNow);
+        if (turns) Object.assign(add, turns);
+      }
+      this.body.position.x -= shift[0]; this.body.position.z -= shift[1]; this.body.updateMatrixWorld(true);
+      for (const [k, rows] of Object.entries(limbKeys)) {
+        const own = f.curves[k] ? curveAt(f.curves[k], t) : [0, 0, 0], a = add[k] || v3();
+        rows.push([t, own[0] + a.x, own[1] + a.y, own[2] + a.z]);
+      }
+    }
+    f.shift = curve(keys, dur, "linear");
+    for (const [k, rows] of Object.entries(limbKeys)) f.curves[k] = curve(rows, dur, "linear");
+    this.formT["@death"] = savedT; this.formsApply(); this.pose(); this.body.updateMatrixWorld(true);
+  }
+  // MechRig._sole_of: what a planted foot stands on as it is held, the points of the surfaces its joint
+  // carries within PLANT.sole of their lowest, each with where it stands along the floor.
+  soleOf(node, shift, parentInv) {
+    const T = window.THREE, pts = [];
+    let lo = Infinity;
+    const walk = (o) => {
+      if (o.visible === false) return;
+      if (o.isMesh && o.geometry && o.geometry.attributes.position && !o.userData.halo) {
+        const mat = new T.Matrix4().multiplyMatrices(parentInv, o.matrixWorld), p = pointsOf(o.geometry);
+        for (let i = 0; i < p.length; i += 3) { const q = new T.Vector3(p[i], p[i + 1], p[i + 2]).applyMatrix4(mat); pts.push([o, p[i], p[i + 1], p[i + 2], q]); if (q.y < lo) lo = q.y; }
+      }
+      for (const c of o.children) walk(c);
+    };
+    walk(node);
+    const sole = [], at = [];
+    for (const [o, x, y, z, q] of pts) if (q.y <= lo + PLANT.sole * Math.max(1, this.size || 1)) { sole.push([o, x, y, z]); at.push([q.x + shift[0], q.z + shift[1]]); }
+    return [sole, at];
+  }
+  limbOf(jn) {   // MechRig._limb_of: the limb a planted joint ends
+    let trio = [];
+    if (jn.startsWith("ankle")) { const s = jn.slice(5); trio = ["hip" + s, "knee" + s, jn]; }
+    else if (jn.startsWith("wrist") || jn.startsWith("hand")) { const s = jn.slice(jn.startsWith("wrist") ? 5 : 4); trio = ["shoulder" + s, "elbow" + s, jn]; }
+    return trio.every(k => this.joints[k]) ? trio : [];
+  }
+  deathShift() {   // MechRig._death_shift: how far a dying machine's body has gone along the floor over its planted feet, now
+    const f = this.forms["@death"];
+    if (!this.dead || !f || !f.shift) return [0, 0];
+    const v = curveAt(f.shift, this.formT["@death"]);
+    return [v[0], v[1]];
+  }
+  // MechRig._hang_death: a death's limp joints (its `hang`) worked out where it will lie, the pose put on
+  // for a moment as it ends, each turned where its weight takes it, the outermost first, never below the
+  // floor the rest of the pose lies on.
+  hangDeath(f) {
+    const d = f.duration, T = window.THREE, saved = {};
     for (const [jn, j] of Object.entries(this.joints)) saved[jn] = j.rotation.clone();
     const savedPos = this.body.position.clone(), savedRot = this.body.rotation.clone();
     let slide = v3(), turn = v3();
@@ -1073,6 +1227,12 @@ class Rig {
   // MechRig._sink_limb: a two-link reach in the plane the middle joint turns in, the end kept where it
   // stands and as it stands while the machine sinks `d`.
   sinkLimb(trio, d, deg) {
+    const T = window.THREE;
+    return this.reachLimb(trio, new T.Vector3().setFromMatrixPosition(this.inModel(this.joints[trio[2]])).add(new T.Vector3(0, d, 0)), deg);
+  }
+  // MechRig._reach_limb: the two-link reach toward any point in the limb's plane (the model's frame), the
+  // end keeping how it is turned.
+  reachLimb(trio, target, deg) {
     const T = window.THREE, axle = (n) => new T.Vector3(1, 0, 0).applyMatrix4(new T.Matrix4().extractRotation(this.inModel(this.joints[n]))).normalize();
     const pos = (n) => new T.Vector3().setFromMatrixPosition(this.inModel(this.joints[n]));
     const u = axle(trio[1]), ur = axle(trio[0]), ue = axle(trio[2]);
@@ -1081,7 +1241,7 @@ class Rig {
     if (b.length() < 0.5) return null;
     b.normalize();
     const h = pos(trio[0]), km = pos(trio[1]).sub(h), em = pos(trio[2]).sub(h);
-    const k2 = [km.dot(a), km.dot(b)], e2 = [em.dot(a), em.dot(b)], t2 = [e2[0] + d, e2[1]];
+    const tm = target.clone().sub(h), k2 = [km.dot(a), km.dot(b)], e2 = [em.dot(a), em.dot(b)], t2 = [tm.dot(a), tm.dot(b)];
     const l1 = Math.hypot(k2[0], k2[1]), l2 = Math.hypot(e2[0] - k2[0], e2[1] - k2[1]), reach = Math.hypot(t2[0], t2[1]);
     if (l1 < 0.001 || l2 < 0.001 || reach >= l1 + l2 - 0.001 || reach <= Math.abs(l1 - l2) + 0.001) return null;
     const shin0 = [e2[0] - k2[0], e2[1] - k2[1]], bend = Math.sign(k2[0] * shin0[1] - k2[1] * shin0[0]);
@@ -1319,7 +1479,8 @@ class Rig {
     let rock = v3();
     for (const st of this.strikes) if (st.joint === "@body") { const k = Rig.envelope(st); bo = {x: bo.x + st.recoil.x * k, y: bo.y + st.recoil.y * k, z: bo.z + st.recoil.z * k}; rock = add3(rock, mul3(st.vec, k)); }
     const re = eulerOf(add3(rock, v3(impactRock(this.impact ?? -1), 0, 0)));   // a jolt's nose rocking up, and a death's landing rocking it (MechRig._pose)
-    this.body.position.set(this.bodyRestPos.x + bo.x, this.bodyRestPos.y + bo.y + (this.deathLift || 0), this.bodyRestPos.z + bo.z);
+    const sh = this.deathShift();   // a death's way along the floor over its planted feet (MechRig._pose)
+    this.body.position.set(this.bodyRestPos.x + bo.x + sh[0], this.bodyRestPos.y + bo.y + (this.deathLift || 0), this.bodyRestPos.z + bo.z + sh[1]);
     this.body.rotation.set(this.bodyRestRot.x + be.x + re.x, this.bodyRestRot.y + be.y + re.y, this.bodyRestRot.z + be.z + re.z, "YXZ");
   }
   // One frame of movement (MechRig.drive): speed in model units a second, aim the travel's

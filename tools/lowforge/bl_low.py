@@ -964,7 +964,7 @@ class Build:
         self.forms[name] = out
         return out
 
-    def death(self, duration, tracks=None, body=None, glow=None, ease="fall", hang=None):
+    def death(self, duration, tracks=None, body=None, glow=None, ease="fall", hang=None, plant=None, sink=0.0, land=True):
         """The pose the machine goes to when it is lost (MechRig.kill), in place of the baseline
         slump every model shares (Ryan, 16 November: "The slump was supposed to be a general
         guideline so that everything got an adequate baseline death animation and pose. There's
@@ -979,7 +979,17 @@ class Build:
         harder"), its lowest point held on the floor every frame of the way down; a joint in `hang`
         goes limp, the rig turning it where its weight takes it once the rest of the pose lies
         where it ends (an arm "slumped down by the elbows", never placed under its own power); a
-        glow given keys rides them as it goes down and gutters out once it lands."""
+        glow given keys rides them as it goes down and gutters out once it lands.
+        A planted foot never slides (Ryan, the fifth notes: "the physics of a biped, it can't just
+        kick it's legs out in front like that"; a quad may slide one pair): `plant` names the joints
+        whose feet stay where they stand, a joint alone for the whole fall or (joint, from, to) for a
+        stretch of it, a foot that steps first planted from where it comes down; the rig moves the
+        body along the floor over them, so a tip or a sit pivots on the feet. `sink` lowers a walker
+        on the limbs it stands on, every foot where it stands (the slump's reach, the rig working each
+        limb's turns in place of any track here names for them), by that share of the most its limits
+        allow with nothing lower than its feet: a many-legged machine's belly brought down without its
+        legs sliding out from under it. `land` False for a death that stays on its feet (the Ammit's
+        limbs drawn in where it stands): nothing lands, so no hop and no rock."""
         self.form("@death", duration, tracks or {}, glow=glow, body=body)
         self.death_pose = self.forms.pop("@death")
         self.death_pose["ease"] = str(ease)
@@ -988,6 +998,22 @@ class Build:
                 raise ValueError("the death of %s hangs a joint the model has not got: %s" % (self.name, jn))
         if hang:
             self.death_pose["hang"] = list(hang)
+        rows = []
+        for p in plant or []:
+            jn, t0, t1 = (p, 0.0, duration) if isinstance(p, str) else (p[0], float(p[1]), float(p[2]))
+            if jn not in self.joint_meta:
+                raise ValueError("the death of %s plants a joint the model has not got: %s" % (self.name, jn))
+            if not 0.0 <= t0 < t1 <= duration + 1e-6:
+                raise ValueError("the death of %s plants %s over %s to %s, outside its %s seconds" % (self.name, jn, t0, t1, duration))
+            rows.append([jn, round(t0, 3), round(t1, 3)])
+        if rows:
+            self.death_pose["plant"] = rows
+        if sink:
+            if not 0.0 < float(sink) <= 1.0:
+                raise ValueError("the death of %s sinks %s: a share, above 0 and at most 1" % (self.name, sink))
+            self.death_pose["sink"] = round(float(sink), 3)
+        if not land:
+            self.death_pose["land"] = False
         return self.death_pose
 
     def ajar(self, unless, joints):
