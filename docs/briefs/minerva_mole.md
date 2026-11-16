@@ -140,10 +140,69 @@ Kits 1 and 2 stand at tier one on basics alone, a hitter and a body; kit 3 is a 
 - Deeper each bite, a point more for every earlier hit on the same foe: kit 1 keeps its
   commitment as one flat point, and the growing form is its lever if a point is too little.
 
+## The glue (16 November)
+
+Ryan, 16 November, on the mock-ups and the kits: "I'm not sold on the drill tank but that's not a
+fault of your renders. It just needs a hook that isn't just "drill tank." Some of your ideas are
+good, but it needs a glue to hold it together that isn't already on the design docket. It's still
+slated ideally for tier 1, so that's part of the challenge".
+
+Claude's second round: three glues for him to move, each one line that a tier one carries on
+basics alone, with what hangs off it and its hole. None is another design's identity; where a
+neighbour stands close it is named.
+
+1. **The dive: its reboot is its move.** The round after it reboots, the mole acts twice: after
+   its first spend its die rolls again.
+   - What hangs off it: going under (the reboot, the machine digging itself in), coming up under
+     them (the two actions), the drill and the claws as how it digs. Setup and cash in one round,
+     the second action the action economy's list wants a home for, paid with the turn it gave
+     (an action moved in time).
+   - The decision: when to give the turn. Any machine reboots when it must; this one also dives
+     by choice, to come up with two actions where the fight wants them.
+   - Read as a system: a reboot costs a turn and a bare turn. This gives the turn back and keeps
+     the bare one, so what threatens a rebooting machine threatens it at every dive (a pick that
+     finds the broken shield), and a dive every other round is no shelter: half its enemy turns
+     land on bare hull.
+   - Its dials, his: the other cost in place of the turn (nothing picks it while it reboots,
+     Phased's rule, the picks moving to its allies: a body, and the tank backwards again); or
+     plate in place of either (dug in, armour while its shield is Broken, the reboot's turn
+     included: a read of Broken that no machine has, and the lure tank's hole, flat armour at a
+     tier's blows).
+   - Neighbours: the Whip Scorpion is paid for a passed turn, a release on every foe (a reboot
+     is no pass); the covers for a reboot in the briefs (the Barrier and Ward support, the
+     time-shifter, the Magpie) are an ally's.
+2. **Behind their line: it comes up at their backs.** Its Direct weapons reach the back rank,
+   and a front-rank foe only where no one stands behind it: Direct's rule, mirrored on one
+   machine.
+   - What hangs off it: the tunnel is why it is there, the drill bites the back rank, and every
+     Direct basic is a back-rank gun on it.
+   - The decision: the squad splits the pack, the front the others' and the back its own, and
+     its die says which it can reach.
+   - Its hole: Indirect reaches the back already, so what it sells is Direct's numbers there and
+     what it pays is the front: a reach perk, as "ignores armour" was an armour perk. Exposed
+     hands the same reach to the whole squad for one foe.
+3. **Undermining: what it hits shelters nothing.** A front-rank foe the mole has damaged this
+   round covers no one: the foe behind it stands in the squad's Direct reach until the round's
+   end.
+   - What hangs off it: the sap. It digs the ground out from under their front and the squad
+     fires through the gap, so the squad's order is the play: the mole first, then the guns it
+     opened for.
+   - Its hole: its product is Exposed's reach half by another road (the blocker struck, where
+     Exposed marks the foe behind), and three machines set Exposed. A hitter whose worth is its
+     allies' guns leans to support, which the tiers' sort keeps off tier one.
+
+Claude's lean is the dive: the one glue built on the reboot, the rule every tier one now has to
+teach, and the one that turns a machine's worst turn into its best. Any of the three looks
+carries any of them; the dive suits the digger, whose claws are how it goes under.
+
+Set aside with its rule, his to overrule: undermined ground, a point more for each empty slot
+round its target (the Lammergeier's row: "A chassis based around opening an empty spot isn't a
+good design").
+
 ## Open for the session
 
-1. Its hook: his read of the three rough kits, or none of them.
-2. Its look: his pick from the three mock-ups, or another round.
+1. Its hook: his read of the three glues (16 November), the rough kits its parts; or none.
+2. Its look: his pick from the three mock-ups, or another round once it has its glue.
 3. Its tier: it or the Wild Boar comes down to tier one.
 4. Its numbers, stock and locked piece.
 
