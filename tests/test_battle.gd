@@ -975,6 +975,109 @@ func test_a_plan_played_mid_turn_undoes_to_where_each_machine_stood() -> void:
 	assert_true(saved.planned.is_empty(), "and plans nothing")
 
 
+## A move that plays ends its machine's action unless an order stands (Ryan, 16 November: "if an
+## attack wasn't ordered, it cannot attack. What is allowed, is plotting a path, THEN selecting an
+## attack in range. Once execute is run, the action is forfeit (barring undo, of course)"): no
+## reach, no order, nothing left to do, until an UNDO takes the move back.
+func test_a_move_played_with_no_order_ends_the_action() -> void:
+	var b := _battle()
+	var m: Unit = b.mechs()[0]
+	var start := m.pos
+	var sq := _a_pack_in_reach(b, m)
+	assert_true(sq != null, "a pack the machine can move into range of")
+	var h := b.attack_hex(m, sq)
+	b.move_to(m, h)
+	assert_false(b.threat_for(m).is_empty(), "a planned move: its attack can still be ordered from the route's end")
+	assert_true(b.still_to_act().has(m), "so it still has something to do")
+	assert_eq(b.take_plan().size(), 1, "the move plays (EXECUTE)")
+	assert_eq(b.actions_left(m), 0, "and its action is over")
+	assert_true(b.threat_for(m).is_empty(), "no reach for a fight")
+	assert_false(b.order(m, sq), "no order, the pack beside it or not")
+	assert_eq(b.order_onto(m, sq), "refused", "nor a tap onto it")
+	assert_false(b.still_to_act().has(m), "nothing left for it to do")
+	var saved := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
+	assert_eq(saved.actions_left(saved.field.unit_by_id(m.id)), 0, "a save keeps it spent")
+	assert_eq(b.undo(), m, "UNDO takes the move back")
+	assert_eq(m.pos, start, "back where it stood")
+	assert_eq(b.actions_left(m), 1, "its action whole again")
+	assert_true(b.can_move(m), "its move to give")
+	saved.undo()
+	assert_eq(saved.actions_left(saved.field.unit_by_id(m.id)), 1, "the save's undo gives it back the same")
+
+
+## Plotting a path and then ordering an attack in range is the action (Ryan, 16 November): the
+## order stands once the move has played, as given, the machine fighting it at ENGAGE; it takes no
+## other order, and taking it back then ends the action.
+func test_a_path_then_an_order_stands_once_the_move_plays() -> void:
+	var b := _battle()
+	var m: Unit = b.mechs()[0]
+	var sq := _a_pack_in_reach(b, m)
+	assert_true(sq != null, "a pack the machine can move into range of")
+	b.move_to(m, b.attack_hex(m, sq))
+	assert_true(b.order(m, sq), "the attack ordered from the route's end")
+	b.take_plan()
+	assert_true(b.played.has(m.id), "the move played")
+	assert_eq(b.order_of(m), sq, "the order standing")
+	assert_eq(b.actions_left(m), 1, "its action still to spend")
+	assert_true(b.threat_for(m).is_empty(), "no reach for another order")
+	var other: Unit = null
+	for p in b.field.packs():
+		if p != sq and not p.is_boss:
+			other = p
+			break
+	_engage(b, other, m)
+	assert_false(b.order(m, other), "no other order, a pack beside it or not")
+	assert_eq(b.order_of(m), sq, "the first stands")
+	assert_false(b.still_to_act().has(m), "nothing more to give it")
+	var saved := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
+	assert_true(saved.played.has(m.id), "a save keeps it played")
+	assert_true((b.next_fight()["machines"] as Array).has(m), "it fights at ENGAGE")
+	b.cancel_order(m)
+	assert_eq(b.actions_left(m), 0, "taken back once its move has played, its action is over")
+	assert_false(b.played.has(m.id), "nothing standing")
+
+
+## EXECUTE plays every planned move at once: an UNDO of the last takes back that machine's move and
+## gives its action back, and leaves the others played and spent; an UNDO past each gives each back.
+func test_an_undo_after_execute_gives_back_only_the_moves_it_takes_back() -> void:
+	var b := _battle()
+	var a: Unit = b.mechs()[0]
+	var c: Unit = b.mechs()[1]
+	var a0 := a.pos
+	var ha: Vector2i = b.destinations_for(a).keys()[0]
+	b.move_to(a, ha)
+	var hc := Vector2i(-99, -99)
+	for h in b.destinations_for(c).keys():
+		if h != ha:
+			hc = h
+			break
+	b.move_to(c, hc)
+	b.take_plan()
+	assert_eq([b.actions_left(a), b.actions_left(c)], [0, 0], "both actions over")
+	assert_eq(b.undo(), c, "the last move taken back")
+	assert_eq(b.actions_left(c), 1, "its action back")
+	assert_eq(a.pos, ha, "the first still where it went")
+	assert_eq(b.actions_left(a), 0, "and still spent: its move played")
+	assert_true(b.threat_for(a).is_empty(), "no fight for it")
+	assert_eq(b.undo(), a, "then the first")
+	assert_eq([a.pos, b.actions_left(a)], [a0, 1], "back where it stood, its action whole")
+
+
+## A second action (a synthetic passive's, as the Dingo's Retrograde Flywheel grants one): a move
+## played with no order spends the first, and the second moves again.
+func test_a_move_played_spends_one_action_of_two() -> void:
+	var b := _battle()
+	var m: Unit = b.mechs()[0]
+	m.grant_passive({"id": "twin", "name": "Twin", "description": "", "effects": [{"trigger": "static", "effect": "extra_action", "value": 1}]}, "twin")
+	b.spent.clear()
+	var h: Vector2i = b.destinations_for(m).keys()[0]
+	b.move_to(m, h)
+	b.take_plan()
+	assert_eq(b.actions_left(m), 1, "one action left")
+	assert_false(b.moved.has(m.id), "its second action's move unspent")
+	assert_false(b.destinations_for(m).is_empty(), "it moves again")
+
+
 ## A piece planned into the room another piece made waits for it to play.
 func test_a_move_into_a_hex_another_left_plays_after_it() -> void:
 	var a := {"unit": 1, "from": Vector2i(2, 2), "facing": 0, "path": [Vector2i(3, 2)] as Array[Vector2i], "to_facing": 0, "riders": []}
@@ -1829,6 +1932,13 @@ func test_a_carrier_lifts_the_machines_beside_it_and_lands_them_as_a_block() -> 
 	assert_eq(rider.pos, line[2] + d, "to where it was set down")
 	assert_eq(b.undo(), carrier, "then the carry")
 	assert_eq([carrier.pos, rider.pos], [line[0], line[1]], "the block back where it stood")
+	# The carry played (Ryan, 16 November: "let the swallow carry, then it can drive and fight"):
+	# the carrier's action is over, the rider's whole, its move its own.
+	b.move_to(carrier, line[2])
+	b.take_plan()
+	assert_eq(b.actions_left(carrier), 0, "the carrier's move played: its action over")
+	assert_eq(b.actions_left(rider), 1, "the rider's action whole")
+	assert_true(b.can_move(rider), "and its move its own to give")
 
 
 ## The mechanics audit (25 October): an undo never stacks two machines on a hex. A machine that

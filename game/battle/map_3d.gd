@@ -50,6 +50,14 @@ const TERRAIN := {
 const STEP := 7.0
 const WATER_DROP := -5.0
 const CHASM_DROP := -42.0   # a chasm's floor (the gorge's, 16 November): six steps down, out of sight of most of it
+## A chasm has a bottom (Ryan, 16 November: "for the machine world there should be like a barely
+## visible bottom. Maybe some little rivers down there ... its not just a hole into nothing"): its
+## rock darkens down its walls to a gravel floor at CHASM_FLOOR_SHADE of its lit tone, and a stream a
+## few units wide winds along the floor from each chasm hex into the next, a little brighter so it
+## reads. The painting keeps its black pit.
+const CHASM_FLOOR_SHADE := 0.3
+const CHASM_STREAM_SHADE := 0.55
+const CHASM_STREAM_WIDTH := 3.5
 
 ## The tile each terrain's top wears (art/terrain/<name>.png); sides wear rock.
 const TILE := {
@@ -124,7 +132,6 @@ var _base: Dictionary = {}      # unit id -> resting position, which the idle sw
 var _phase: Dictionary = {}     # unit id -> idle phase, so the team does not sway in step
 var _columns: Dictionary = {}   # hex -> Node3D at the hex's ground: the marks hang off it
 var _lift: Dictionary = {}      # hex -> how far above its grid cell the top sits on screen, in px
-var _void_mat: StandardMaterial3D = null   # a chasm's dark floor, one material for every chasm so they bake together
 var _top: Dictionary = {}       # hex -> the tallest thing standing on it, in model units above the ground
 var _materials: Dictionary = {} # tile name -> ShaderMaterial
 var _time: float = 0.0
@@ -329,6 +336,63 @@ func _terrain_material(tile: String, ripple: float = 0.0, by_uv: bool = false, s
 	m.set_shader_parameter("by_uv", 1.0 if by_uv else 0.0)
 	_materials[tile] = m
 	return m
+
+
+## A tile's material darkening with depth down a chasm (terrain.gdshader's fade): its lit tone at
+## the ground, `floor_shade` of it at the chasm's floor.
+func _chasm_material(tile: String, ripple: float = 0.0, floor_shade: float = CHASM_FLOOR_SHADE) -> ShaderMaterial:
+	var key := "%s/chasm/%.2f" % [tile, floor_shade]
+	if not _materials.has(key):
+		var m: ShaderMaterial = _terrain_material(tile, ripple).duplicate()
+		m.set_shader_parameter("fade_below", CHASM_DROP)
+		m.set_shader_parameter("fade_floor", floor_shade)
+		_materials[key] = m
+	return _materials[key]
+
+
+## The stream on a chasm's floor, about the hex's middle: a ribbon CHASM_STREAM_WIDTH across from
+## the middle to the edge it shares with each neighbouring chasm (or a flooded stretch of one),
+## bending a little on the way and straight again at the edge so the next hex's half meets it, and
+## a pool at the middle where they join (the whole of it in a lone hex).
+func _stream_geo(h: Vector2i) -> Dictionary:
+	var map := field.map
+	var v := PackedVector3Array()
+	var y := CHASM_DROP + 0.4
+	var here := _hex_world(h)
+	var half := CHASM_STREAM_WIDTH * 0.5
+	var links := 0
+	for d in Hex.DIRECTIONS:
+		var nb: Vector2i = h + d
+		var wet: bool = map.terrain_of(nb) == BattleMap.Terrain.WATER
+		if not (wet or (map.terrain_of(nb) == BattleMap.Terrain.MOUNTAIN and str(map.wall_look.get(nb, "")) == "chasms")):
+			continue
+		links += 1
+		var to := _hex_world(nb) - here
+		var end := Vector2(to.x, to.z) * 0.5
+		var along := end.normalized()
+		var side := Vector2(-along.y, along.x)
+		var bend := (2.0 + float(absi(h.x * 31 + h.y * 17 + d.x * 7 + d.y * 3) % 3)) * (1.0 if (h.x + h.y + d.x) % 2 == 0 else -1.0)
+		var steps := 6
+		var prev_l := Vector2.ZERO
+		var prev_r := Vector2.ZERO
+		for i in range(steps + 1):
+			var t := float(i) / float(steps)
+			var at := end * t + side * sin(PI * t) * bend
+			var l := at + side * half
+			var r := at - side * half
+			if i > 0:
+				for p in [prev_l, prev_r, r, prev_l, r, l]:
+					v.append(Vector3(p.x, y, p.y))
+			prev_l = l
+			prev_r = r
+	var pool := half * (1.6 if links > 0 else 2.6)
+	for i in range(6):
+		var a := TAU * float(i) / 6.0
+		var b := TAU * float(i + 1) / 6.0
+		v.append(Vector3(0.0, y, 0.0))
+		v.append(Vector3(cos(a) * pool, y, sin(a) * pool))
+		v.append(Vector3(cos(b) * pool, y, sin(b) * pool))
+	return {"v": v, "n": _filled3(v.size(), Vector3.UP)}
 
 
 ## Which neighbours of a road hex are road too (the gate counts, so the road runs into
@@ -1283,11 +1347,11 @@ func _build_ground() -> void:
 		var pit: bool = t == BattleMap.Terrain.MOUNTAIN and str(map.wall_look.get(h, "")) == "chasms"
 		var column: Array
 		if pit:
-			# A chasm: the column sunk deep, its own walls rock from the ground down, its floor dark.
+			# A chasm: the column sunk deep, its own walls rock from the ground down darkening as
+			# they go, its floor gravel in the dark and a stream along it.
 			column = _column_geo(hgt, sides)
-			if _void_mat == null:
-				_void_mat = _flat(Color("07090c"))
-			_bake(column[0], at_xf, _void_mat, band, true)
+			_bake(column[0], at_xf, _chasm_material("gravel"), band, true)
+			_bake(_stream_geo(h), at_xf, _chasm_material("water", 1.0, CHASM_STREAM_SHADE), band, false)
 		elif ground_t == BattleMap.Terrain.ROAD:
 			# The road's links and its seed ride in the vertex colour (road.gdshader), so
 			# road hexes bake like any other and need nothing per instance.
@@ -1297,7 +1361,8 @@ func _build_ground() -> void:
 		else:
 			column = _column_geo(hgt, sides)
 			_bake(column[0], at_xf, _terrain_material(TILE[ground_t], 1.0 if ground_t == BattleMap.Terrain.WATER else 0.0, false, SCENERY_SHADE if shaded else 1.0), band, true)
-		_bake(column[1], at_xf, _terrain_material("rock", 0.0, false, SCENERY_SHADE) if shaded else rock, band, true)
+		var walls: Material = _chasm_material("rock") if pit else (_terrain_material("rock", 0.0, false, SCENERY_SHADE) if shaded else rock)
+		_bake(column[1], at_xf, walls, band, true)
 		if in_field and not pit and not (map.gate_hexes.has(h) or map.wall_hexes.has(h)):
 			# The grid is the display's own light, drawn on the ground in the scene so a
 			# raised hex hides the lines behind it; the wall and the machines hide it the

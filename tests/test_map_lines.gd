@@ -128,3 +128,35 @@ func test_the_machines_layer_is_lit_by_the_sun() -> void:
 		assert_true(((l as DirectionalLight3D).layers & units) != 0, "%s lights the machines' layer" % l.name)
 		assert_true(((l as DirectionalLight3D).layers & 1) != 0, "and the scene's")
 	m.free()
+
+
+## A chasm has a bottom in the machines' world (Ryan, 16 November: "for the machine world there
+## should be like a barely visible bottom. Maybe some little rivers down there ... its not just a
+## hole into nothing"): its rock darkens down its walls to a dim floor, and a stream runs on the
+## floor from each chasm hex to the edge it shares with the next.
+func test_a_chasm_has_a_dim_floor_and_a_stream() -> void:
+	var m := Map3D.new()
+	m.hex_px = 44.0
+	m._ppu = m.hex_px / Map3D.HEX_WORLD
+	m._sin = sin(deg_to_rad(Map3D.PITCH))
+	var map := BattleMap.flat(9, 12)
+	var a := Hex.offset_to_axial(4, 5)
+	var b: Vector2i = a + Hex.DIRECTIONS[0]
+	for h in [a, b]:
+		map.terrain[h] = BattleMap.Terrain.MOUNTAIN
+		map.wall_look[h] = "chasms"
+	m.field = Battlefield.new(map)
+	var rock := m._chasm_material("rock")
+	assert_eq(float(rock.get_shader_parameter("fade_below")), Map3D.CHASM_DROP, "the rock darkens down to the floor")
+	assert_true(float(rock.get_shader_parameter("fade_floor")) <= 0.5, "to a dim floor, barely seen")
+	assert_true(Map3D.CHASM_STREAM_SHADE > Map3D.CHASM_FLOOR_SHADE, "the stream a little brighter, so it reads")
+	var v: PackedVector3Array = m._stream_geo(a)["v"]
+	assert_false(v.is_empty(), "a stream on the floor")
+	var to := m._hex_world(b) - m._hex_world(a)
+	var way := Vector2(to.x, to.z)
+	var reach := 0.0
+	for p in v:
+		assert_true(absf(p.y - Map3D.CHASM_DROP) < 1.0, "on the floor")
+		reach = maxf(reach, Vector2(p.x, p.z).dot(way.normalized()))
+	assert_true(absf(reach - way.length() * 0.5) <= Map3D.CHASM_STREAM_WIDTH, "running to the edge it shares with the next chasm: %.1f of %.1f" % [reach, way.length() * 0.5])
+	m.free()

@@ -112,8 +112,8 @@ func test_the_horde_always_has_a_way_three_hexes_wide() -> void:
 		assert_true(m.narrowest_crossing() >= BattleMap.CROSSING_WIDTH, "the narrowest crossing is three wide for seed %d: %d, cut by %s" % [s, m.narrowest_crossing(), str(m.horde_cut(9))])
 
 
-## The rows a shape lays water and walls on: past the rift's mouth (rows 0 to 3), short of the
-## team's two rows above the gate's apron.
+## The last row a shape lays a wall on: short of the team's two rows above the gate's apron (their
+## ground holds no wall, though soft ground may lie there: Ryan, 16 November).
 func _hi(h: int) -> int:
 	return h - BattleMap.GATE_ROWS - 3
 
@@ -149,11 +149,12 @@ func test_the_shapes_lay_to_the_rifts_row() -> void:
 				if Hex.axial_to_offset(hx).y <= 1 and (t == BattleMap.Terrain.WATER or t == BattleMap.Terrain.MOUNTAIN):
 					back += 1
 					break
-			for r in m.rift_hexes:
+			for r in m.rift_hexes + m.gate_hexes:
 				for n in Hex.neighbors(r):
-					if m.has(n):
-						var t2: int = m.terrain[n]
-						assert_true(t2 != BattleMap.Terrain.WATER and t2 != BattleMap.Terrain.MOUNTAIN, "%s seed %d: no water and no wall beside the rift" % [kind, s])
+					if m.has(n) and not m.is_structure(n):
+						# Ryan, 16 November: "The apron in front of the wall, and by the rift (if that
+						# exists), needs to disallow crags, not other soft terrain tiles".
+						assert_true(m.terrain[n] != BattleMap.Terrain.MOUNTAIN, "%s seed %d: no wall in front of the rift or the gate" % [kind, s])
 	assert_true(back >= 40, "features reach the rift's two rows on most maps of the shapes that lay any: %d of 120" % back)
 
 
@@ -161,11 +162,12 @@ func test_each_shape_lays_what_its_name_says() -> void:
 	# Ryan, 28 and 29 October: six shapes, the name on the front card the whole intel; since 9
 	# November laid for the long wall at any size the ramp deals, and reworked on his play of 10
 	# November, and on his notes of 16 November. A fat river winding through with two narrows, a
-	# delta's channels fingering down between tongues of land, the steppe clear but never bare,
+	# delta's thin streams fanning from one end and braiding, the steppe clear but never bare,
 	# and the
 	# three wall shapes a spectrum by the mass of what blocks you (Ryan, 9 November): the gorge's
 	# channels through cliff mass, the city's streets between large blocks, the badlands' small
-	# obstacles on open ground in groups; none of it on the team's ground.
+	# obstacles on open ground in groups; no wall on the team's ground.
+	var delta_thick := {}   # a size -> [the delta's water hexes with four of water round them, its water hexes], over the seeds
 	for size in SIZES:
 		var w: int = size[0]
 		var h: int = size[1]
@@ -177,9 +179,9 @@ func test_each_shape_lays_what_its_name_says() -> void:
 				var water := _field(m, BattleMap.Terrain.WATER)
 				var walls := _field(m, BattleMap.Terrain.MOUNTAIN)
 				var tag := "%s %dx%d seed %d" % [kind, w, h, s]
-				for hx in water + walls:
+				for hx in walls:
 					var row := Hex.axial_to_offset(hx).y
-					assert_true(row >= lo and row <= hi, "%s: water or a wall on row %d" % [tag, row])
+					assert_true(row >= lo and row <= hi, "%s: a wall on row %d, the team's ground holds none" % [tag, row])
 				var west := false
 				var east := false
 				for hx in m.margin.keys():
@@ -236,25 +238,40 @@ func test_each_shape_lays_what_its_name_says() -> void:
 						assert_true(near_centre, "%s: the river crosses the field's centre" % tag)
 						assert_true(water.size() >= w, "%s: a river across the width" % tag)
 					"delta":
-						# Ryan, 16 November, of the fjord before it: "too much water, there aren't
-						# enough land paths from the gate to the rift ... more of a River Delta with
-						# lots of inlets": channels fingering down, the land between them dry ways.
-						assert_true(west and east, "%s: the delta fans on past both edges" % tag)
+						# Ryan, 16 November, of the fjord before it: "more of a River Delta with lots of
+						# inlets"; then "the water going all the way from the wall to the other edge";
+						# then "thinner water and more of them. Many small intertwining streams, not a
+						# few fat rivers. We don't need to guarantee land bridges ... put the "mouth"
+						# at either the gate or rift": a river fanned into streams a hex wide.
 						assert_true(walls.is_empty(), "%s: no wall" % tag)
-						# Then "it can actually be more water. the land bridges can be more narrow, and the
-						# water going all the way from the wall to the other edge": channels the whole
-						# depth of the open rows, a tongue of land down the middle from the rift.
-						var band := _band(m)
-						assert_true(water.size() * 10 >= band * 2 and water.size() * 10 <= band * 6, "%s: water two to six tenths of the band: %d of %d" % [tag, water.size(), band])
-						assert_true(m.dry_crossing(3) >= 3, "%s: three dry ways from the rift to the gate at least: %d" % [tag, m.dry_crossing(3)])
+						var field := 0
+						for hx in m.all_hexes():
+							field += 0 if m.is_structure(hx) else 1
+						assert_true(water.size() * 100 >= field * 15 and water.size() * 100 <= field * 70, "%s: water fifteen to seventy hundredths of the field: %d of %d" % [tag, water.size(), field])
+						var ends := [0, 0]
+						var runs := [0, 0]
+						for k in range(2):
+							var row: int = lo if k == 0 else m._apron_row()
+							var was := false
+							for col in range(w):
+								var wet: bool = m.terrain[Hex.offset_to_axial(col, row)] == BattleMap.Terrain.WATER
+								ends[k] += 1 if wet else 0
+								runs[k] += 1 if wet and not was else 0
+								was = wet
+						assert_true(ends[0] >= 1 and ends[1] >= 1, "%s: the water runs from the rift's row to the wall: %s" % [tag, str(ends)])
 						if w >= 12:
-							var top := 0
-							var bottom := 0
+							assert_true(maxi(runs[0], runs[1]) >= 3, "%s: many streams at the fan's far end: %s" % [tag, str(runs)])
+							# Thin: a stream is a hex wide, so few of its hexes have four of water
+							# round them (a fork, a join, two streams touching); read over the seeds.
+							var thick := 0
 							for hx in water:
-								var row := Hex.axial_to_offset(hx).y
-								top += 1 if row == lo else 0
-								bottom += 1 if row == hi else 0
-							assert_true(top >= 2 and bottom >= 2, "%s: the channels run from the rift's row to the team's ground: %d at the top, %d at the foot" % [tag, top, bottom])
+								var round := 0
+								for n in Hex.neighbors(hx):
+									round += 1 if m.has(n) and m.terrain[n] == BattleMap.Terrain.WATER else 0
+								thick += 1 if round >= 4 else 0
+							var key := "%dx%d" % [w, h]
+							var sum: Array = delta_thick.get(key, [0, 0])
+							delta_thick[key] = [int(sum[0]) + thick, int(sum[1]) + water.size()]
 					"badlands":
 						# An open field of small obstacles (Ryan, 9 November): many mesas of one to three
 						# hexes, never touching, so no straight path crosses; two or three ponds.
@@ -278,13 +295,21 @@ func test_each_shape_lays_what_its_name_says() -> void:
 						# Then "Open Steppe is the anything-goes terrain, it pulls from all the others in
 						# small doses. Multiple crag types, even": its walls of several looks, ruins.
 						assert_true(walls.size() >= (1 if w >= 12 else 0) and walls.size() <= 3 * maxi(1, w / 6), "%s: a wall of one to three for every six columns: %d" % [tag, walls.size()])
-						assert_true(water.size() >= (1 if w >= 12 else 0) and water.size() <= 4 * maxi(1, w / 8), "%s: a pond of two to four for every eight columns: %d" % [tag, water.size()])
+						# Then "Water features can be larger where they appear. Little lakes ... I guess use
+						# every crag EXCEPT gorge's, now".
+						assert_true(water.size() >= (1 if w >= 12 else 0) and water.size() <= 8 * maxi(1, w / 8), "%s: a little lake of five to eight for every eight columns: %d" % [tag, water.size()])
+						for hx in walls:
+							assert_true(m.wall_look[hx] != "chasms", "%s: no chasm, the gorge's own" % tag)
 						if w >= 12:
 							var kinds := {}
 							for hx in walls:
 								kinds[m.wall_look[hx]] = true
 							assert_true(kinds.size() >= 2, "%s: walls of more than one look: %s" % [tag, str(kinds.keys())])
 							assert_true(_field(m, BattleMap.Terrain.RUINS).size() >= 1, "%s: a patch of ruins" % tag)
+							var biggest := 0
+							for g in _groups(water):
+								biggest = maxi(biggest, (g as Array).size())
+							assert_true(biggest >= 4, "%s: a lake, not a puddle: %d hexes at most together" % [tag, biggest])
 						var band := _band(m)
 						var rough := _field(m, BattleMap.Terrain.ROUGH).size()
 						assert_true(rough * 20 >= band and rough * 10 <= band * 4, "%s: scrub in belts, never bare and never a field of it: %d of %d" % [tag, rough, band])
@@ -296,6 +321,9 @@ func test_each_shape_lays_what_its_name_says() -> void:
 						var band := _band(m)
 						assert_true(walls.size() * 10 >= band * 2 and walls.size() * 10 <= band * 8, "%s: towers between two and eight tenths of the band (the cross-streets and the suburb, 16 November): %d of %d" % [tag, walls.size(), band])
 						assert_true(water.is_empty(), "%s: no water (Ryan, 16 November: \"Lets take all water out\"): %d" % [tag, water.size()])
+						# "limit to two suburbs": the suburb and the plazas, its sections of ruins where
+						# towers stood, two at most, the suburb one of them on a field twelve wide or more.
+						assert_true(m.city_open.size() >= 1 and m.city_open.size() <= 2, "%s: one or two sections of ruins where towers stood: %d" % [tag, m.city_open.size()])
 						# A block two rows deep (the same day: "each chunk of city crags is thinner, 2
 						# instead of 3"): no tower with towers both two rows behind it and two in front
 						# in its own column.
@@ -332,6 +360,9 @@ func test_each_shape_lays_what_its_name_says() -> void:
 								massed += 1
 						if w >= 12:
 							assert_true(massed * 20 <= walls.size() * 3, "%s: the chasms a hex wide, where three chunks meet aside: %d of %d hexes with land on one side or none" % [tag, massed, walls.size()])
+	for key in delta_thick.keys():
+		var sum: Array = delta_thick[key]
+		assert_true(int(sum[0]) * 2 <= int(sum[1]), "delta %s: the streams a hex wide, half their hexes or fewer with four of water round them over the seeds: %d of %d" % [key, int(sum[0]), int(sum[1])])
 
 
 ## The field's hexes between the mouth and the team's rows, the structures aside: the band a
@@ -474,8 +505,8 @@ func test_the_relief_is_the_shapes() -> void:
 				assert_true(same or land < 3, "%s: %s stands alone" % [tag, str(hx)])
 			for r in m.rift_hexes + m.gate_hexes:
 				for n in Hex.neighbors(r):
-					if m.has(n):
-						assert_eq(int(m.elevation[n]), 0, "%s: the ground in front of the gate and the rift is level" % tag)
+					if m.has(n) and m.terrain_of(n) != BattleMap.Terrain.WATER:
+						assert_eq(int(m.elevation[n]), 0, "%s: the land in front of the gate and the rift is level" % tag)
 			match kind:
 				"badlands":
 					# A mesa's shoulder, or a pit among shoulders that no lone hex filled.

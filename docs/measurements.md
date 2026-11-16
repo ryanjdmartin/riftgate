@@ -10234,3 +10234,23 @@ least, the crossing 4.1 (3.8 before). The city: towers 41% (57% before), ruins g
 suburb, the streets and the plazas; 11% before), dry ways 4.2 (3.5 before). The steppe: walls 4%,
 every look of wall among its seeds, ruins 3%, water 4%. The badlands: scrub 34% of the field (53%
 before; 26% at a half), mesas 31%. Cited by the bible's shapes row.
+
+
+## 16 November: the shapes on Ryan's third notes
+
+**Every shape at the long wall's 20 by 12**, seeds 1 to 100 (`BattleMap.generate`), shares of the
+band (the rift's row to the last row short of the team's two) as the second notes' entry read them.
+The river delta, a true delta now (the river at one end by the seed, fanning into streams a hex
+wide): water 38% (36% as its channels were), dry ways 0.1 and none at the least, so most seeds
+keep none (Ryan: "We don't need to guarantee land bridges"); over the whole field, the team's rows
+in, 24% to 46% a seed. Its streams' thinness, as the share of its water hexes with four of water
+round them (a fork, a join, two streams touching), over 40 seeds a size: 38% at 20 by 12, 41% at
+30 by 10, 39% at 24 by 14, 42% at 20 by 14, 48% at 20 by 16, the blobbiest seed 56% to 70%; a form
+that spread each stream to its share steadily, with a step along the row on most rows, read 56% to
+63% (staircases two hexes wide to the eye) and was put back the same hour. The far end holds three
+streams at the least at 20 wide, five or six at 30. The old field's narrow sizes run wet (7 by 20:
+36% to 64% of the field), as a fan four columns a stream fills a field seven wide. The city: towers
+42%, ruins ground 22% (the suburb and its one plaza, the streets), dry ways 4.1. The steppe: water
+8% (its lakes, 4% as ponds), walls 4% of every look but the chasm, ruins 3%. The river, the gorge
+and the badlands as the second notes left them (45% water; chasms 27%, dry ways 4.0; scrub 36% of
+the band). Cited by the bible's shapes row.
