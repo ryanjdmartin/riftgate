@@ -244,7 +244,7 @@
    "name": "Polar Bear",
    "designation": "HW-22T Heavy Weapons Carrier",
    "maker": "minerva",
-   "tier": 1,
+   "tier": 2,
    "design": {
     "fantasy": "A squat, heavily armoured walker with short, thick legs, its back bristling with weaponry from shielded ports that can seal for additional protection. The cockpit is tucked under the front armour, providing reduced visibility but extra protection. It seals: the ports shutter and the shell goes dark.",
     "niche": "tank",
@@ -305,7 +305,7 @@
    "name": "Wild Boar",
    "designation": "AB-70R Assault Breacher",
    "maker": "minerva",
-   "tier": 2,
+   "tier": 1,
    "design": {
     "fantasy": "An unstoppable assault tank, complete with front rams and plows, designed for breaching reinforced emplacements - or plowing over and through fodder monsters.",
     "niche": "Vanguard tank"

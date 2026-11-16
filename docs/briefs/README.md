@@ -221,7 +221,7 @@ The roster, 24 built and 23 in briefs with 3 open (a brief's name in brackets; t
 
 | Maker | Tier one | Tier two | Tier three |
 |---|---|---|---|
-| Minerva (10) | Honey Badger; the lure tank (`minerva_lure_tank.md`); the Wild Boar or the mole | the Polar Bear (up); the echidna (`minerva_hedgehog.md`); the Cryo party defence (`minerva_cryo_defence.md`); the immune one (`minerva_immune.md`); the mole (`minerva_mole.md`) or the Wild Boar | the siege battery (`minerva_siege_battery.md`); the battlecruiser (`minerva_battlecruiser.md`) |
+| Minerva (10) | Honey Badger; Wild Boar (down, 16 November); the mole (`minerva_mole.md`); the lure tank (`minerva_lure_tank.md`) | Polar Bear (up, 16 November); the echidna (`minerva_hedgehog.md`); the Cryo party defence (`minerva_cryo_defence.md`); the immune one, the Pangolin his stand-in name (`minerva_immune.md`) | the siege battery (`minerva_siege_battery.md`); the battlecruiser (`minerva_battlecruiser.md`) |
 | Kestrel (10, the Magpie's slot open to another design) | Skua, Storm Petrel, Puffin | Buzzard, Kite, Needletail | Lammergeier, Giant Petrel |
 | Kestrel's two, tiers open | the Snowy Owl, leaning to Cryo (`kestrel_owl.md`) | the Magpie (`kestrel_magpie.md`) | |
 | Wainwright & Sutler (10) | Prairie Dog, Cassowary, Cottonmouth | Dingo, Clydesdale, funnel-web, the gunship (`ws_gunship.md`), Whip Scorpion | Swallowtail, Musk Ox |
@@ -240,6 +240,8 @@ What moved to fit (Claude's, unmarked unless Ryan's word stands above):
   figure; the aura-shifter is the Macross's shifts; the status detonator is the jellyfish's EMP
   (Ryan's word above).
 - **Cut as a unit**: the shield-basher, now the shield bash (Ryan's word above).
+- **Minerva's tiers under 4-4-2** (Ryan, 16 November): "Badger, Boar, Mole, and Lure tank, for
+  4-4-2" at tier one, so the Wild Boar came down and the Polar Bear went up the same day.
 - **The Snowy Owl takes Cryo** for its cold (Ryan's lean, 5 November); the blow is the Cryo
   party defence's since the frost figure's cut, the pair to check for room.
 

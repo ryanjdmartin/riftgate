@@ -4,7 +4,8 @@
 
 The session designs Ryan's immune machine of 4 November: immune to every buff and debuff, and able
 to pass that immunity to an ally and take it back. "The immune one" is a working label; the name is
-Ryan's.
+Ryan's, and the Pangolin is his stand-in for it (16 November: "Pangolin is currently my stand-in for
+the 'immune one' brief").
 
 **Status**: Ryan's idea of 4 November, Claude's first round below, unanswered. **Maker**: Minerva.
 **Proposed tier**: two. **Read first**: `docs/briefs/README.md` (ten a maker, the orbits); the

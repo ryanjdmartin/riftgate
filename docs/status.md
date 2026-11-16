@@ -464,9 +464,12 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
 - Minerva: the Honey Badger's rework built 31 October (the Ore Hopper and the Reinforced Skeleton
   module); the echidna left open (Ryan's new shape of 4 November in its brief), the siege battery
   parked on Ryan's charge brief, the battlecruiser never with the Carrier's session. Ryan's ideas
-  of 4 November wait on his marks, each in its brief: the lure tank (his tier-one tank, which the
-  Polar Bear's move to tier two lands with), the immune one, the mole (its hook later), and the
-  shield bash (the shield-basher cut as a unit, a tier-three piece). The Cryo party defence took
+  of 4 November wait on his marks, each in its brief: the lure tank (his tier-one tank), the
+  immune one (the Pangolin his stand-in name), the mole (its kit his own since 16 November: the
+  burrow and the Inertia Drill, tier one), and the shield bash (the shield-basher cut as a unit, a
+  tier-three piece). Under 4-4-2 (his word, 16 November) Minerva's tier ones are the Honey Badger,
+  the Wild Boar, the mole and the lure tank: the Polar Bear went up to tier two in content that
+  day and the Wild Boar came down, its numbers its tier two's until a session moves them. The Cryo party defence took
   his new direction of 5 November (no free Cryo, a locked piece that detonates it, the Arsenal's
   frost figure merged in), a first round on it owed. The Polar Bear is dealt again with its new
   seal trigger (11 November), its play his.
