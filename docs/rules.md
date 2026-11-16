@@ -1533,7 +1533,9 @@ a stat.
   the boss's seal breaks, and nothing else breaks it. A field cleared with the seal standing
   earns nothing by itself: it is the squad's breathing room, to reposition or fetch a cache,
   until the next peak comes on its beat. Rift Pressure keeps
-  running after. A Fracture brings no prize (not built).
+  running after. A Fracture brings no prize (not built). On the map a shell rings the rift's
+  mouth, a span for each Fracture the tier calls: each Fracture cracks its span, and the
+  Rupture bursts the shell whole; what may lie behind it is not built.
 - **The battle ends** when the gate reaches zero, every machine is wrecked, or the boss unit
   falls (every commander of the unit at the rift, its fight won); a wipe after the commander's
   fall is a wipe.

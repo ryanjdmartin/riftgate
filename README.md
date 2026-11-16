@@ -662,6 +662,7 @@ tools/spriter/.venv/bin/python tools/lowforge/forge.py build cache_derelict cach
 tools/spriter/.venv/bin/python tools/loot_tokens.py [sheet.png]
 RIFTGATE_CACHE_DEBUG=1 godot --path .          # a new battle lies one cache of every kind beside the team and one of every kind by the rift (the screenshot poses `caches` and `cachesflat`)
 RIFTGATE_WRECK_DEBUG=1 godot --path .          # a new battle lays a wreck of each of the team's chassis beside it and the map drops them again every few seconds (the screenshot pose `wrecks`)
+RIFTGATE_SHELL_DEBUG=1 godot --path .          # the rift's shell cracks a span every second and a half and bursts, over and over (the screenshot pose `shell`: two spans cracked)
 # joints are code too: `with b.joint("shoulder_l", pivot, axis="pitch", limits=(-12, 40)):` in models_low.py hangs a limb under a
 # joint_<name> Empty, nested where it rides another; `b.act(name, seconds, {joint: [(t, degrees), ...]}, body=, glow=)` at the end of a
 # machine writes its idle acts to art/models/<id>.rig.json with the joints. Judge them running:

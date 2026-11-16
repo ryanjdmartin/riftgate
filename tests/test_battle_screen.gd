@@ -1151,3 +1151,28 @@ func test_engage_counts_the_fights_waiting() -> void:
 	s._select(ms[2])
 	assert_false(s._queue_pulse, "until the player does something else")
 	s.free()
+
+
+func test_the_rift_shell_cracks_a_span_a_fracture_and_bursts_at_the_rupture() -> void:
+	# The rift's shell (the bible's pacing row; built 16 November): a span for each Fracture the tier
+	# calls, each cracked as it is earned, the whole shell burst at the Rupture. What the map finds
+	# already cracked or broken shows as it is; what changes while it watches plays.
+	var b := Battle.new(3)
+	var db := ContentDB.load_default()
+	b.setup([db.make_mech("badger"), db.make_mech("kite")], "meadow")
+	var screen: BattleScreen = load("res://game/battle/battle_screen.tscn").instantiate()
+	screen.setup(b)
+	var map: BattleMapView = screen._map
+	assert_eq(map._shell.x, b.thresholds.size(), "a span for each Fracture the tier calls")
+	assert_true(map._shell.x > 0 and map._shell.y == 0 and map._shell.z == 0, "whole and sealed as the battle opens")
+	assert_true(map._shell_crack_at.is_empty() and map._shell_burst_at < 0.0, "nothing played for what it found")
+	b.fractures = 1
+	screen._refresh()
+	assert_eq(map._shell.y, 1, "a Fracture cracks a span")
+	assert_true(map._shell_crack_at.has(0), "and its crack plays")
+	b.fractures = b.thresholds.size()
+	b.boss.sealed = false
+	screen._refresh()
+	assert_eq(map._shell.z, 1, "the Rupture breaks the shell")
+	assert_true(map._shell_burst_at >= 0.0, "and its burst plays")
+	screen.free()

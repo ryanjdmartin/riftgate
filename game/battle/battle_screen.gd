@@ -493,6 +493,9 @@ func _refresh() -> void:
 		_map.shown = battle.shown_positions() if planning else {}
 	_map.attack = _fight_preview() if planning and not playing else {}
 	_map.route_drawing = planning and not playing
+	# The rift's shell: a span a Fracture the tier calls, cracked as each is earned, burst at the
+	# Rupture (BattleMapView.set_shell).
+	_map.set_shell(battle.thresholds.size() if battle.boss != null else 0, battle.fractures, battle.boss == null or not battle.boss.sealed)
 	_map.queue_redraw()
 	_refresh_log()
 	# The one button: ENGAGE while a fight is ready (a catch, or a machine ordered onto a pack),
