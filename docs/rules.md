@@ -142,8 +142,9 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
    then heat over a machine's maximum burns hull one for one and stays on the gauge, burning
    again every turn it stands there; the first such turn since the machine's last reboot is
    its overheat, and its shield breaks; then each machine's Empowered halves, and a dark entry
-   whose rounds are done lights again (a cooldown, a jam). A rebooting machine neither burns nor overheats, nor
-   one out of reach (Phased, Swallowed), whose heat stays for the turn it is back: a Phased
+   whose rounds are done lights again (a cooldown, a jam). A rebooting machine burns all the
+   same, its heat clearing as its shield comes back. One out of reach (Phased, Swallowed)
+   neither burns nor overheats, its heat staying for the turn it is back: a Phased
    machine's stacks tick all the same and take nothing, and everything a Swallowed one carries
    waits. A machine the tick or the burn wrecks is lost on its own turn, before the enemy acts.
 5. The enemy's turn (below). It starts with every foe's Armoured, Barrier and Ward going, its

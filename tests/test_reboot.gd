@@ -197,7 +197,11 @@ func test_the_first_overheat_breaks_the_shield_once_between_reboots() -> void:
 	assert_eq("\n".join(sk.log).count("its shield breaks"), 2, "breaking the shield it got back")
 
 
-func test_a_rebooting_machine_neither_burns_nor_overheats() -> void:
+## A machine that reboots past its maximum burns what it carries as that turn ends, all the same
+## (Ryan, 16 November: "If a machine uses Reboot, and it already has overheated stacks, it should
+## take that damage. Heat is cleared when the shield comes back"): the reboot clears its heat with
+## the next round, never the burn already due.
+func test_a_rebooting_machine_still_burns_what_it_carries() -> void:
 	var m := _mech(1, "A", _gun(40), 40, 200, 30)
 	var sk := _fight([m], [Foe.make("dummy", 9000, 0)])
 	var ms: Skirmish.MechState = sk.mechs[0]
@@ -208,12 +212,13 @@ func test_a_rebooting_machine_neither_burns_nor_overheats() -> void:
 	sk.start_round()
 	assert_eq(int(sk.forecast(ms)["overheat"]), 10, "the forecast has it burning again")
 	sk.reboot_mech(0)
-	assert_eq(int(sk.forecast(ms)["overheat"]), 0, "and not once it reboots")
+	assert_eq(int(sk.forecast(ms)["overheat"]), 10, "and still once it reboots")
 	sk.end_round()
-	assert_eq(m.hull, 190, "the turn of its reboot burns nothing")
-	assert_true(sk.overheats.is_empty(), "and is no overheat")
+	assert_eq(m.hull, 180, "the turn of its reboot burns its ten all the same")
+	assert_eq(sk.overheats.size(), 1, "one burn")
+	assert_false(bool(sk.overheats[0]["first"]), "and no second overheat: round one's was its one since its last reboot")
 	sk.start_round()
-	assert_eq([ms.heat, ms.overheat_stacks(), m.shield], [0, 0, 40], "back cold and whole")
+	assert_eq([ms.heat, ms.overheat_stacks(), m.shield], [0, 0, 40], "back cold and whole: its heat clears as its shield comes back")
 
 
 ## A machine out of reach does not burn: a Swallowed one has no turn to give, so it cannot
@@ -373,8 +378,8 @@ func test_the_round_preview_plays_a_reboot_bare_and_a_burn_that_stands() -> void
 	sk.start_round()
 	sk.reboot_mech(0)
 	var shown: Dictionary = sk.preview_round()["mechs"][0]
-	assert_eq(int(shown["overheat"]), 0, "rebooting, it burns nothing")
-	assert_eq(int(shown["hull_after"]), m.hull - 25, "and the blow lands whole on it")
+	assert_eq(int(shown["overheat"]), 10, "rebooting, it still burns what it carries")
+	assert_eq(int(shown["hull_after"]), m.hull - 10 - 25, "the burn, and the blow whole on it")
 	assert_eq(m.shield, 0, "the fight itself as the reboot left it")
 
 
@@ -419,7 +424,9 @@ func test_the_bot_reboots_out_of_a_burn_it_did_not_choose() -> void:
 	p.play_round(sk)
 	assert_true(sk.mechs[0].rebooting, "past its maximum it burns every turn, so the bot reboots before it spends")
 	sk.end_round()
-	assert_eq(m.hull, 300, "and the reboot's turn burns nothing")
+	assert_eq(m.hull, 300 - 15 * Skirmish.overheat_scale, "the reboot's turn burns what it carries all the same")
+	sk.start_round()
+	assert_eq(sk.mechs[0].overheat_stacks(), 0, "and the next round opens cold")
 
 
 func test_the_bot_keeps_a_shield_a_blow_is_coming_for() -> void:

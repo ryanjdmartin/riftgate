@@ -1140,8 +1140,8 @@ func forecast(ms: MechState, extra_shield: int = 0) -> Dictionary:
 	shield = int(walk["shield"])
 	var heat_end := ms.heat + seal_heat(ms)
 	var over := maxi(0, heat_end - ms.heat_max)
-	if ms.rebooting or is_out(ms):
-		over = 0   # a machine giving its turn to a reboot neither burns nor overheats, nor one out of reach (_burn_stacks)
+	if is_out(ms):
+		over = 0   # one out of reach neither burns nor overheats; a rebooting one burns all the same (_burn_stacks)
 	hull -= over * overheat_scale
 	# The gauge does not settle: what stands past the maximum stays, and burns again.
 	var heat_after := heat_end + Effects.heat_per_blow(ms.unit) * blows
@@ -5278,15 +5278,18 @@ func _burn_overheated() -> void:
 ## player is essentially forced to reboot, or die"): the heat a machine carries past its maximum
 ## stays, and every point of it burns hull, every turn it stands there. The first such turn since
 ## its last reboot is its overheat: its shield breaks, and what an overheat sets off fires, once
-## between reboots. A machine giving this turn to a reboot is shut down: it neither burns nor
-## overheats. Nor does one out of reach: a Swallowed machine cannot reboot, so the burn would
-## ask it for a choice it has not got; and a Phased one is damaged by nothing, its own heat
+## between reboots. A machine giving this turn to a reboot burns all the same (Ryan, 16 November:
+## "If a machine uses Reboot, and it already has overheated stacks, it should take that damage.
+## Heat is cleared when the shield comes back. Otherwise the heat penalty is probably not hard
+## enough"), its heat clearing as its shield comes back with the next round. One out of reach
+## does not: a Swallowed machine cannot reboot, so the burn would ask it for a choice it has not
+## got; and a Phased one is damaged by nothing, its own heat
 ## included (Ryan, 16 November: "it shouldn't take damage from overheating since we don't need
 ## the exception. It does accumulate the stacks, though, which it will feel the round after").
 ## What either carries past its maximum stays and burns the turn it is back in reach, the first
 ## such turn its overheat.
 func _burn_stacks(ms: MechState, over: int) -> void:
-	if ms.rebooting or is_out(ms):
+	if is_out(ms):
 		return
 	var burn := over * overheat_scale
 	var culprit := ms.hot_entry

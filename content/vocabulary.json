@@ -1985,7 +1985,7 @@
    "id": "rebooting",
    "category": "status",
    "name": "Rebooting",
-   "codex": "Machine status. A machine that has spent nothing this turn may give the turn to a reboot: drag its die onto REBOOT. Its shield drops to nothing at once and it stands bare through the enemy's turn; as the next round opens its heat is nothing, its shield is whole, and Overheated and Broken are gone. It neither burns nor overheats while it reboots. Nothing forces one, and UNDO takes it back like a spend.",
+   "codex": "Machine status. A machine that has spent nothing this turn may give the turn to a reboot: drag its die onto REBOOT. Its shield drops to nothing at once and it stands bare through the enemy's turn; as the next round opens its heat is nothing, its shield is whole, and Overheated and Broken are gone. Heat past its maximum still burns as that turn ends. Nothing forces one, and UNDO takes it back like a spend.",
    "status": "implemented",
    "design": {
     "holes": "The reboot (Ryan, 13 November; folded in 15 November), a state of the machine and no status of the engine's table. A session's draft, his to write.",

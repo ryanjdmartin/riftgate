@@ -2866,7 +2866,11 @@ Present tense, in the round's order (`docs/rules.md`, The round).
 6. As the next round opens, before the roll and before the foes pick, its heat is nothing, its
    shield is whole, and Broken and Overheated are gone.
 7. Nothing forces a reboot, and it clears nothing else: the machine's statuses stand.
-8. A rebooting machine neither overheats nor burns at END TURN.
+8. A rebooting machine burns what it carries past its maximum at END TURN all the same, its
+   heat clearing as its shield comes back (Ryan, 16 November, of the first spec's line, which had
+   it neither overheat nor burn and was built so: "If a machine uses Reboot, and it already has
+   overheated stacks, it should take that damage. Heat is cleared when the shield comes back.
+   Otherwise the heat penalty is probably not hard enough. I thought that's how it was built").
 
 *Past the maximum.*
 
