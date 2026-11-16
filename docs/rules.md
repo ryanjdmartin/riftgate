@@ -151,8 +151,9 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
    ends with its ticks, its action done or lost. A passed turn's release follows (the Whip
    Scorpion's, Passives below).
 6. The round's end: round-timed effects end (Phased and the wait for it, Essence Flare, a
-   swallow's and a golden rage's rounds), and a machine whose own attack killed in the round
-   fires what its passive grants for it (the Ammit's flare). Nothing ticks or halves here.
+   swallow's and a golden rage's rounds), a web on a foe bursts (the Web Bomb, below), and a
+   machine whose own attack killed in the round fires what its passive grants for it (the
+   Ammit's flare). Nothing ticks or halves here.
 7. A part due to grow back does, in its corpse's slot (below). Next round.
 
 The fight ends the moment it is decided, mid-turn too: victory when no foe stands, defeat when
@@ -169,8 +170,8 @@ landed, lost to a stun or skipped.
   pays after them and loses one; Empowered halves, rounded down; Scorched and Sapped go; a
   cooldown and a jam whose rounds are done light again; a Suppress is spent with the turn it
   cost; Numbed loses a stack, or lands on a foe that lost this turn to a stun.
-- **The round ends**: Phased is granted or lost, Essence Flare goes, and a swallow's and a
-  golden rage's rounds run.
+- **The round ends**: Phased is granted or lost, Essence Flare goes, a swallow's and a
+  golden rage's rounds run, and a web bursts.
 - **It is spent**: the primers by a weapon fired, Spun Up and the Juggernaut Drive by the next
   weapon, Shocked and Cryo by the weapon's hit that cashes them, Undying by its fall, a Mine by
   its foe's fall, and a pin by the decay it stops.
@@ -430,9 +431,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - **The gauges forecast the round**: everything the rest of the round will do as it stands,
   played on a copy of the fight with every rule as it runs: the end of the player's turn (what
   Ablating takes, the burns and the overheats), the enemy's turn with each foe's move as announced (a heal, a brace, a
-  rally, a web's burst, the ticks as its turn ends and a death they bring, the last act it sets off,
+  rally, the ticks as its turn ends and a death they bring, the last act it sets off,
   a self-destruct) and
-  the round's end. The die in hand counts only over somewhere it may be spent, as it would be
+  the round's end, a web's burst with it. The die in hand counts only over somewhere it may be spent, as it would be
   spent there. A foe whose machine falls before it acts strikes the next machine in line: its
   arrow stays on its pick, and a second, dashed, goes to the machine its blow lands on.
   Nothing a roll decides
@@ -539,8 +540,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   star for them and its readout says the rule (a keyword is a word several pieces share). Three
   were keywords until they were each found on one piece alone.
 - **The Web Bomb's web** (the funnel-web's): the foe hit wears the Web Bomb's mark, one web
-  however often it is webbed; at the end of its action the web bursts, Suppressing it and the
-  next foe to act beside it (the Web Bomb, below). No Mine carries it.
+  however often it is webbed; as the round ends the web bursts, Suppressing it and the
+  foe beside it, each for its next turn (the Web Bomb, below). No Mine carries it.
 - **The swap** (the Dingo's Combat Translocator): the spend takes two targets, a foe and then
   another foe or an empty slot, and they trade places; no damage; a massive foe does not move.
   What the entry carries beside the swap lands on both foes named (the Translocator's Shock: both
@@ -902,14 +903,18 @@ On a foe:
   after Ablating on what it leaves, the whole share rounded down and never the last hit point,
   then a stack fades; it never finishes a foe. The funnel-web's Ambush lays it, a stack per
   weapon hit, as its text says; a web or a lure lays none.
-- **The Web Bomb** (debuff, the mark its piece leaves): at the end of its action, skipped or not, the web bursts: it is
-  Suppressed (its next action, since it has acted; a countdown it gathers is held a round),
-  and so is the next foe to act beside it in its rank, its right-hand neighbour, which loses
-  this round's action, or with none standing there its left-hand one, which has acted and
-  loses its next (a stun like any other, each for itself: a Numbed foe strips a stack instead; a foe already suppressed gains nothing,
-  as from any second suppress; each half feeds the Paradox as the Suppress keyword's does).
-  Killed first, or gone by the end of its action, it takes its web with it. Its chip points at
-  the neighbour the burst catches.
+- **The Web Bomb** (debuff, the mark its piece leaves): as the round ends the web bursts: it is
+  Suppressed, losing its next turn (a countdown it gathers is held a round),
+  and so is the foe beside it in its rank, its right-hand neighbour, or with none standing
+  there its left-hand one. Every foe acts in the round the web is laid, so it stops nothing
+  already announced: it is a double stun a round ahead. Each stun is like any other, each for
+  itself. Every foe's turn has ended by the burst, so it meets the Numbed the foe ends the
+  round with: a stack on it strips and nothing is stunned, and a foe the team stunned this
+  round has just gained its Numbed, so the web strips a stack of that. A foe already
+  Suppressed for its next turn gains nothing; a Ward turns the stun away; each half feeds the
+  Paradox as the Suppress keyword's does. A foe felled before the round ends takes its web
+  with it, and a foe's cleanse may lift it first. Its chip points at the neighbour the burst
+  catches.
 - **Cryo** (debuff): a weapon's hit on it spends every stack and cools the hitter 2 a stack;
   equipment spends none. It never fades on its own.
 - **Brittle** (debuff): every blow of a weapon it takes deals a point more a stack, before its
@@ -951,9 +956,9 @@ On a foe:
   absorbs does not; no Purge strips it, an Ability. Its chip counts
   the rounds left and the damage that breaks it. It goes gold only while calm (the `calm`
   condition: not gold), so one rage at a time.
-- **Appropriated** (buff, a take: Gilgamesh's): the number of the entry he took, which his
-  borrowed swing lands in place of his attack and spends. One piece at a time, what he takes
-  next replacing it; a Purge lowers it, and the swing with it.
+- **Appropriated** (an Ability, a take's: Gilgamesh's): the number of the entry he holds, which
+  his borrowed swing lands in place of his attack and spends. One piece at a time, what he
+  takes next replacing it; no Purge reaches it.
 - **Undying** (buff, Reraise, on itself or from an ally's): after it falls it gets
   back up once, whole, in its own slot, unless it self-destructed: once the spend that felled
   it is done, or at once to a tick; its round is over, as a split's half's is, and it comes back
@@ -1170,7 +1175,8 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   last machine, a second Expose. One blow a move, and that its first step.
 - **A take** (Gilgamesh's Collect): a blow that Jams the entry its machine shows, then a step
   of his own: he gains Appropriated, that entry's number, a weapon's printed blow and 1 for
-  anything else, a fake. It is a buff, so a Purge lowers it, and what he takes next replaces
+  anything else, a fake. Appropriated is his Ability, a chip he wears from the fight's start
+  whose number is the piece he holds: no Purge reaches it, and what he takes next replaces
   it. His Borrowed Blade is a blow whose number is his Appropriated in place of his attack; it
   comes only as Collect's follow-up, only while he holds something, and the swing spends it. A
   Ward turns the jam and the take away together.
@@ -1210,7 +1216,7 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   just before its move lands until the next acts. Each foe makes its move, every step of it,
   and then its own turn ends (When a status ends, above): its Ablating takes its points, which
   may fell it, then Vitriol what that leaves, and each loses a stack; its Regenerating pays;
-  its Empowered halves; its Sapped goes; a web on it bursts; its Numbed loses a stack. A
+  its Empowered halves; its Sapped goes; its Numbed loses a stack. A
   suppressed foe does nothing and its turn ends the same way, its Suppress spent and its stun
   resist landing as Numbed. A foe with no machine to strike (every one fallen or out of the fight) loses its blow
   alone: its countdown gathers, a special or a step on its own side acts, and the turn goes on to the foes

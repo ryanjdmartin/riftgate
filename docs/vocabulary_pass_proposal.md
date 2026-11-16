@@ -2128,3 +2128,43 @@ what it held. The mark's drawing is Appropriated's chip now.
 **No number moved.** Collect's blow, its weight, its follow-up and the swing's number are
 Disarm's. Every text it touched is a draft for his writing.
 
+## 27. His twelfth round, 16 November: the Web Bomb built, the rally's floor, Appropriated, the Antiquarian's names
+
+His words:
+
+> Go ahead with the Web Bomb at round end, no cooldown. Makes sense. The spider is a
+> planner, so removing the reactive tool and rewarding it for thinking ahead is good.
+>
+> The rally thing is fine. +1 damage to a machine isn't really worth bothering about, +2 is
+> much more scary. Especially since the wolf pack is a hunter, it should be dangerous.
+>
+> I think Appropriated is a balance read. Maybe make it his ability, a number that fluctuates
+> depending on what he's currently holding. If its too difficult, we make it a normal
+> purgeable buff.
+>
+> Marsh collector's move can change. In DD, it's called "collect call," his other moves being
+> Life Steal and Show Collection. I think we can use the same move names, so Collect Call for
+> the summon and Show Collection for the corrupt.
+>
+> Lets continue.
+
+**Built.**
+
+1. *The Web Bomb at the round's end.* Every foe acts in the round the web is laid. As the
+   round ends the web bursts, and the webbed foe and the foe beside it each lose their next
+   turn. No cooldown. The burst meets the Numbed each foe ends the round with, a Ward turns
+   it, a foe felled first takes its web along and a foe's cleanse may lift it. The bot reads
+   a web as two turns a round ahead, and knows which foes the burst will only strip.
+2. *The rally's floor of 2 stays*, on his reason: the size of the threat.
+3. *Appropriated is Gilgamesh's Ability.* He wears its chip from the fight's start. Its
+   number is the piece he holds, and nothing while he holds none. No Purge reaches it.
+4. *The Antiquarian's moves*: Collect Call raises its dead, and Show Collection is the blow
+   at every machine that corrupts. Gilgamesh's Collect stands alone under its name. The
+   summon's text lost its pool, which left the game on 6 November.
+
+**The read** (`docs/measurements.md`, 16 November): a squad with the Funnel-web at tier two
+loses no more hull under the new web. The formations' mean goes from 20.5% of a four's hull
+to 18.8%, and the elites' from 30.4% to 28.5%. One formation runs six rounds longer, the
+grave field. A direction, one squad and 20 fights a row, and the bot's reading of the web
+changed with the rule.
+

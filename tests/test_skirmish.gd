@@ -4448,10 +4448,10 @@ func test_the_round_preview_lands_a_last_act_and_reads_a_self_destruct() -> void
 	assert_eq(m.hull, 100 - 20 - 20 - 6, "as they landed")
 
 
-## The preview reads a stun exactly (2 November): a web's burst on a foe with no Numbed is a sure
-## stun, so the caught foe's blow comes off; on a Numbed foe it strips a stack for sure, so its
-## blow stays counted, and nothing is held back.
-func test_the_round_preview_reads_a_stun_exactly() -> void:
+## The preview reads a web exactly (2 November; the burst at the round's end since 16 November):
+## every blow lands this round, and the Suppressed on its way shows on each foe the burst will
+## stun; a foe whose Numbed the burst only strips shows none, and nothing is held back.
+func test_the_round_preview_reads_a_web_exactly() -> void:
 	var sk := Skirmish.new(4, 2)
 	var m := _mech("A", Die.single(Face.blank()), 0, 100)
 	sk.add_mech(m)
@@ -4462,10 +4462,12 @@ func test_the_round_preview_reads_a_stun_exactly() -> void:
 	sk.start_round()
 	Effects.stack(a, Effects.STATUS["webbed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
 	var pv := sk.preview_round()
-	assert_eq(int(pv["mechs"][0]["hull_after"]), 100 - 9, "the burst stops the next foe's blow, for sure")
+	assert_eq(int(pv["mechs"][0]["hull_after"]), 100 - 9 - 6, "the burst comes as the round ends: both blows land this round")
+	assert_true((pv["foes"][a]["coming"] as Dictionary).has("suppressed") and (pv["foes"][b]["coming"] as Dictionary).has("suppressed"), "and both wear the Suppressed on its way")
 	Effects.stack(b, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_NONE)
 	pv = sk.preview_round()
-	assert_eq(int(pv["mechs"][0]["hull_after"]), 100 - 9 - 6, "on a Numbed foe the burst strips a stack and the blow stays, for sure")
+	assert_true((pv["foes"][a]["coming"] as Dictionary).has("suppressed"), "the webbed foe is stunned still")
+	assert_false((pv["foes"].get(b, {}).get("coming", {}) as Dictionary).has("suppressed"), "on a Numbed foe the burst strips a stack and stuns nothing, for sure")
 	assert_eq(Effects.stacks_of(b, "numbed"), 2, "and the fight itself is untouched")
 
 
@@ -6161,10 +6163,11 @@ func test_a_blow_of_nothing_lays_no_vitriol_and_the_web_lands() -> void:
 	assert_true("\n".join(sk.log).contains("A webs revenant"), "the log says so")
 
 
-## The web (Ryan's go, 18 October): the webbed foe acts once; at the end of its action the web
-## bursts, Suppressing it (its next action, since it has acted) and the next foe to act beside
-## it (its right-hand neighbour, which loses this round's action).
-func test_a_web_bursts_after_the_foes_action_and_catches_the_next_to_act_beside_it() -> void:
+## The web (Ryan's go, 18 October; at the round's end since 16 November, his "double suppress
+## on a delay, not suppress one this turn and one the next"): every foe acts this round, and as
+## the round ends the web bursts, Suppressing the webbed foe and the foe beside it, each for
+## its next turn.
+func test_a_web_bursts_as_the_round_ends_and_both_foes_lose_their_next_turn() -> void:
 	var sk := Skirmish.new(1, 3)
 	var m := _mech("A", Die.single(_webber(Face.attack(0, L))), 0, 500)
 	sk.add_mech(m)
@@ -6173,27 +6176,30 @@ func test_a_web_bursts_after_the_foes_action_and_catches_the_next_to_act_beside_
 	var big := _ghoul(500, 40)
 	sk.add_foes([small, mid, big])
 	sk.begin()
-	assert_eq(sk.front[0], big, "the heaviest hitter stands left and acts first")
+	assert_eq(sk.front[0], big, "the heaviest hitter stands left")
 	sk.start_round()
-	assert_eq(sk.web_catch(big), mid, "a web on it would catch the one to its right, which acts after it")
+	assert_eq(sk.web_catch(big), mid, "a web on it would catch the one to its right")
 	assert_true(sk.assign(0, big), "web the big one")
+	assert_true("\n".join(sk.log).contains("it bursts as the round ends, on it and revenant"), "the log says when and on whom")
 	sk.end_round()
-	assert_eq(m.hull, 450, "the webbed foe's blow lands now and the small one's too; the burst catches the middle one's")
+	assert_eq(m.hull, 430, "every foe acts this round, the webbed one and the one beside it too")
 	assert_true("\n".join(sk.log).contains("revenant's web bursts, catching revenant"), "the log tells the burst")
 	assert_false(Effects.has(big, "webbed"), "the web is spent")
-	assert_true(big.is_suppressed(), "the webbed foe is held: it has acted, so it loses its next action")
-	assert_false(mid.is_suppressed(), "the caught one lost this round's action, and nothing carries")
-	assert_eq(Effects.stacks_of(big, "numbed"), 0, "the webbed foe recovers at the end of the round it skips, not now")
-	assert_eq(Effects.stacks_of(mid, "numbed"), mid.stun_resist(), "the caught one skipped this round and recovered with its stun resist")
+	assert_true(big.is_suppressed() and mid.is_suppressed(), "both are held for their next turn")
+	assert_false(small.is_suppressed(), "and the third is not")
+	assert_eq([Effects.stacks_of(big, "numbed"), Effects.stacks_of(mid, "numbed")], [0, 0], "neither has lost a turn yet: its stun resist lands as the turn it loses ends")
 	sk.start_round()
+	assert_true(big.intent_on(m) == false and mid.intent_on(m) == false, "held, they show no intent: two foes the round is planned round")
 	sk.end_round()
-	assert_eq(m.hull, 420, "the round after, the big one skips and the other two strike")
+	assert_eq(m.hull, 420, "the round after, the two skip and the small one strikes")
+	assert_eq([Effects.stacks_of(big, "numbed"), Effects.stacks_of(mid, "numbed")], [big.stun_resist(), mid.stun_resist()], "each recovers with its stun resist")
+	assert_false(big.is_suppressed() or mid.is_suppressed(), "and the Suppress is spent with the turn it cost")
 	sk.start_round()
 	sk.end_round()
 	assert_eq(m.hull, 350, "then every blow lands again")
 
 
-func test_a_web_on_the_rightmost_foe_catches_the_one_to_its_left_which_has_acted() -> void:
+func test_a_web_on_the_rightmost_foe_catches_the_one_to_its_left() -> void:
 	var sk := Skirmish.new(1, 3)
 	var m := _mech("A", Die.single(_webber(Face.attack(0, L))), 0, 500)
 	sk.add_mech(m)
@@ -6207,11 +6213,44 @@ func test_a_web_on_the_rightmost_foe_catches_the_one_to_its_left_which_has_acted
 	assert_eq(sk.web_catch(small), mid, "with nobody to its right, the web catches the one to its left")
 	assert_true(sk.assign(0, small), "web the small one")
 	sk.end_round()
-	assert_eq(m.hull, 430, "every blow lands this round: the caught neighbour had already acted")
-	assert_true(small.is_suppressed() and mid.is_suppressed(), "both lose their next action")
+	assert_eq(m.hull, 430, "every blow lands this round")
+	assert_true(small.is_suppressed() and mid.is_suppressed(), "both lose their next turn")
 	sk.start_round()
 	sk.end_round()
 	assert_eq(m.hull, 390, "the big one alone strikes the round after")
+
+
+## The web sits through the whole enemy turn, so the foes have their answers: one felled before
+## the round ends takes its web with it, and a foe's cleanse lifts it first.
+func test_a_webbed_foe_felled_in_the_enemys_turn_takes_its_web_and_a_cleanse_lifts_one() -> void:
+	var sk := Skirmish.new(1, 3)
+	var m := _mech("A", Die.single(_webber(Face.attack(0, L))), 0, 500)
+	sk.add_mech(m)
+	var mid := _ghoul(500, 20)
+	var burning := _ghoul(3, 40)
+	sk.add_foes([mid, burning])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, burning), "web the one about to burn down")
+	Effects.stack(burning, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 3)
+	sk.end_round()
+	assert_false(burning.alive(), "it struck, then its Ablating felled it as its turn ended")
+	assert_false("\n".join(sk.log).contains("'s web bursts"), "no burst: the web went with it")
+	assert_false(mid.is_suppressed(), "and the one beside it is free")
+	var s2 := Skirmish.new(1, 3)
+	var m2 := _mech("B", Die.single(_webber(Face.attack(0, L))), 0, 500)
+	s2.add_mech(m2)
+	var cleric := _ghoul(500, 40)
+	cleric.actions = [Foe.basic_action(), _special("defend", "cleanse")]
+	var other := _ghoul(500, 20)
+	s2.add_foes([cleric, other])
+	s2.begin()
+	s2.start_round()
+	assert_true(s2.assign(0, other), "web the other one")
+	cleric.action = cleric.actions[1]
+	s2.end_round()
+	assert_false(Effects.has(other, "webbed"), "the cleanse lifted the web in the enemy's turn")
+	assert_false(other.is_suppressed() or cleric.is_suppressed(), "so nothing bursts as the round ends")
 
 
 func test_a_webbed_foe_killed_first_takes_its_web_with_it() -> void:
@@ -6234,7 +6273,11 @@ func test_a_webbed_foe_killed_first_takes_its_web_with_it() -> void:
 	assert_eq(a.hull + b.hull, 980, "its blow landed")
 
 
-func test_a_web_on_a_foe_the_team_suppressed_wastes_its_half_and_still_catches_the_neighbour() -> void:
+## A web on a foe the team has stunned this round (16 November: the burst comes after every
+## foe's turn has ended): the foe has just gained its Numbed, so the burst strips a stack of it
+## and stuns nothing, where it did nothing at all while it burst in the foe's own turn; the foe
+## beside it is caught as ever.
+func test_a_web_on_a_foe_the_team_suppressed_strips_its_numbed_and_still_catches_the_neighbour() -> void:
 	var sk := Skirmish.new(1, 3)
 	var a := _mech("A", Die.single(Face.attack(10, L, K.SUPPRESS)), 0, 500)
 	var b := _mech("B", Die.single(_webber(Face.attack(0, L))), 0, 500)
@@ -6251,11 +6294,12 @@ func test_a_web_on_a_foe_the_team_suppressed_wastes_its_half_and_still_catches_t
 	assert_true(sk.assign(1, big), "and web it")
 	assert_true(Effects.has(big, "webbed"), "webbed on top of the stun")
 	sk.end_round()
-	assert_eq(a.hull + b.hull, 990, "the stunned foe skipped, the burst caught the middle one, the small one struck")
-	assert_eq(Effects.stacks_of(big, "numbed"), 1, "the burst's half on itself was wasted: two from the stun, one faded, none from the web")
-	assert_true("\n".join(sk.log).contains("already suppressed"), "the log says the half was wasted")
+	assert_eq(a.hull + b.hull, 970, "the stunned foe skipped, and the other two struck: the burst stops nothing this round")
+	assert_eq(Effects.stacks_of(big, "numbed"), big.stun_resist() - 1, "its stun resist landed as its lost turn ended, and the burst stripped a stack of it")
+	assert_true("\n".join(sk.log).contains("the stun strips a stack of Numbed"), "the log says so")
 	sk.start_round()
-	assert_false(big.is_suppressed(), "it lost the one action and nothing carried")
+	assert_false(big.is_suppressed(), "it lost the one turn and the web stunned nothing more")
+	assert_true(mid.is_suppressed(), "the one beside it is held for this turn")
 
 
 func test_a_second_web_changes_nothing_and_a_web_feeds_the_paradox_at_the_spend_and_at_the_burst() -> void:

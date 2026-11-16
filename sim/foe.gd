@@ -226,6 +226,15 @@ static func kinds_named(a: Dictionary) -> Array:
 	return [] if str(k).is_empty() else [str(k)]
 
 
+## Does any move of its own take a machine's piece (a step that appropriates: Gilgamesh's
+## Collect)? Its Ability chip stands from the fight's start, its number what it holds.
+func takes() -> bool:
+	for a in actions:
+		if does(a, "appropriate"):
+			return true
+	return false
+
+
 ## The status of its own a move's blow takes its number from, and spends as it swings (`power`:
 ## a borrowed swing's Appropriated); "" for a move that swings its foe's own attack.
 static func power_status(a: Dictionary) -> String:
@@ -395,7 +404,8 @@ func strikes() -> int:
 ##           move hits `value` harder for each (the King Gel's, 30 October: thin the Gels first)
 ##           appropriate: it gains Appropriated, the number of the entry its target's die shows,
 ##           a weapon's printed blow and 1 for anything else, the fake; what it held before is
-##           replaced. A Ward on the machine turns it away. Gilgamesh's own rule, a step of his
+##           replaced. A Ward on the machine turns it away. Appropriated is the foe's own
+##           Ability, a count no Purge reaches. Gilgamesh's own rule, a step of his
 ##           Collect after the blow that jams the entry (Ryan's mark of 15 November: "It grants
 ##           Jammed on the target, and Gilgamesh gains Appropriated with the value")
 ## A move may do more than one of these: its first step is the move as written, and `also`

@@ -1873,6 +1873,19 @@ func test_the_predator_sense_marks_the_foes_looking_away_while_the_die_is_read_o
 			assert_eq(r[1], "2", "Cryo's chip counts its stacks (21 October: it had none)")
 	assert_true(glyphs.has("web") and glyphs.has("vitriol"), "a webbed, acid-eaten foe wears both chips: %s" % str(glyphs))
 	assert_true(glyphs.has("brittle") and glyphs.has("cryo"), "and Brittle and Cryo wear theirs: %s" % str(glyphs))
+	# A foe that takes wears its Ability from the start, its number the piece it holds (Ryan, 16
+	# November: "make it his ability, a number that fluctuates depending on what he's currently
+	# holding"): no number while it holds none.
+	assert_false(glyphs.has("taken"), "a foe that takes nothing wears none")
+	foe.actions.append({"id": "take", "name": "Take", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": [], "text": "", "also": [{"effect": "appropriate"}]})
+	var held: Array = s._foe_rows(foe).filter(func(r) -> bool: return r[0] == "taken")
+	assert_eq(held.size(), 1, "one chip for the rule it plays by")
+	assert_eq([str(held[0][1]), str(held[0][4])], ["", "ability"], "an Ability, and no number while it holds nothing")
+	assert_true(str(held[0][2]).begins_with("Ability, Appropriated: it takes the piece a machine shows"), "its readout says the rule")
+	Effects.stack(foe, Effects.STATUS["appropriated"], Effects.SKIRMISH, "test", 6, Effects.DECAY_NONE)
+	held = s._foe_rows(foe).filter(func(r) -> bool: return r[0] == "taken")
+	assert_eq(str(held[0][1]), "6", "holding a piece, the chip is its number")
+	assert_true(str(held[0][2]).begins_with("Ability, Appropriated 6:"), "and the readout says it")
 	s.free()
 
 

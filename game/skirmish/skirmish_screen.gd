@@ -1628,6 +1628,16 @@ func _foe_abilities(foe: Foe) -> Array:
 		# The Vampire Lord's (Ryan, 15 November: "This should be moved to an ability on the unit
 		# since it's on every attack. Like the Nob"): the rule its every blow plays by.
 		rows.append([Terms.glyph("drain"), "", "Ability, Drain: every blow it lands heals it by what the blow took from the hull", Terms.colour("drain"), "ability"])
+	if foe.takes() or Effects.has(foe, "appropriated"):
+		# Gilgamesh's (Ryan, 16 November: "make it his ability, a number that fluctuates depending
+		# on what he's currently holding"): the rule he plays by from the fight's start, its
+		# number the piece he holds and nothing while he holds none. No Purge reaches it.
+		var taken := Effects.stacks_of(foe, "appropriated")
+		var word := str(Effects.STATUS["appropriated"]["name"])
+		rows.append([_foe_glyph("appropriated"), str(taken) if taken > 0 else "",
+			("Ability, %s %d: its borrowed swing lands the number of the piece it took, and spends it" % [word, taken]) if taken > 0
+			else "Ability, %s: it takes the piece a machine shows, and its borrowed swing lands that piece's number" % word,
+			_foe_chip_colour("appropriated"), "ability"])
 	if Effects.has(foe, "guarded"):
 		# A boss in parts (15 October): the lock while its parts stand, so the zero its die
 		# shows has a reason on the foe itself.
@@ -1690,7 +1700,7 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(status_row("cryoed", "cryo", str(cryo), "Cryo ×%d" % cryo, _foe_chip_colour("cryoed")))
 	if Effects.has(foe, "webbed"):
 		# The funnel-web's web (18 October): the chip points at the neighbour the burst catches
-		# (> the right-hand one, which acts after it; < the left-hand one, which has acted).
+		# as the round ends (> the right-hand one; < the left-hand one, with none to its right).
 		var caught := sk.web_catch(foe)
 		var mark := "" if caught == null else (">" if caught.column > foe.column else "<")
 		rows.append(status_row("webbed", "web", mark, "Web Bomb" + ("" if caught == null else ": bursts on %s too" % caught.display_name), _foe_chip_colour("webbed")))
@@ -1741,11 +1751,6 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(status_row("kindled", "overcharge", "+%d" % maxi(1, coming), "Empowered +%d on its way, from %s" % [maxi(1, coming), from], _foe_chip_colour("kindled"), "preview"))
 	if Effects.has(foe, "risen"):
 		rows.append(status_row("risen", "star", "", str(Effects.STATUS["risen"]["name"]), _foe_chip_colour("risen")))
-	var taken := Effects.stacks_of(foe, "appropriated")
-	if taken > 0:
-		# What it took off a machine (Gilgamesh's; Appropriated since 16 November): the chip is
-		# the number its borrowed swing will land, and a Purge lowers it.
-		rows.append(status_row("appropriated", _foe_glyph("appropriated"), str(taken), "%s %d: its borrowed swing lands that number, and spends it" % [str(Effects.STATUS["appropriated"]["name"]), taken], _foe_chip_colour("appropriated")))
 	# The four buffs a foe's specials grant (28 October), on the machines' chips: Primed's lit
 	# flame, the shield with its wall or its struck ring, the heart regrowing.
 	var primed := Effects.stacks_of(foe, "primed")

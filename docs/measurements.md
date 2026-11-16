@@ -10164,3 +10164,29 @@ fight in 30, the howl whole on the wolves that had bitten before it; the antlion
 What it does not say: what Ablate lost with the kill before the blow, since no squad here
 leans on it and the bot never played for that kill; tiers two and three, where the Warg's
 howl and the Captain's Warcry, the Regenerating foes and the Brittle layers stand.
+
+**The same day, the Web Bomb at the round's end.** His ruling ("Go ahead with the Web Bomb at
+round end, no cooldown"): the web bursts as the round ends, and the webbed foe and the foe
+beside it each lose their next turn, where the burst came at the end of the webbed foe's own
+action and the foe beside it lost that round's. Read before and after on one squad, the
+Funnel-web, the Honey Badger and the Skua, at tier two, 20 seeds a row, greedy
+(`anchor_probe.gd`, the scratch probe): the formations at their rating of three, and the
+elites with the same three against fights rated four.
+
+| Fights | Before | After |
+|---|---|---|
+| A formation, the mean of seven | 98% won, 11.8 rounds, 20.5% of a four's hull, 0.27 wrecks | 96%, 12.3, 18.8%, 0.26 |
+| An elite, the mean of twenty-one | 90% won, 7.8 rounds, 30.4%, 0.58 wrecks | 93%, 7.5, 28.5%, 0.46 |
+| The grave field | 100%, 20.0 rounds, 18.3% | 90%, 26.2, 18.1%, two fights stalled |
+| The Nob | 85%, 6.3, 47.3% | 95%, 5.8, 38.6% |
+| The bone wyvern's flight | 85%, 9.5, 47.6% | 100%, 8.5, 38.2% |
+| The Cinder Tortoise's brood | 90%, 13.5, 46.3% | 100%, 12.4, 37.4% |
+
+A direction, one squad and 20 fights a row. Under the new rule the squad loses no more hull
+and wins the elites a little more often; the bot still spends the web 2.6 times a formation
+fight, each burst landing. One formation runs longer, the grave field, six rounds more with
+two fights in twenty stalled: a line that gets back up, where two foes held a round ahead
+buys time and no kill. What it does not say: how much of the move is the bot's, whose
+reading of a web changed with the rule (a turn a round ahead at a share, and the Numbed a foe
+ends the round with read exactly), and no count of webs was kept before; nor what a player
+makes of two foes that show no intent next round, which the greedy bot does not plan round.

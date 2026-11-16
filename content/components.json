@@ -1490,8 +1490,8 @@
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "A canister of wire and resin lobbed at a foe's feet (Ryan's working name). It bursts after the foe has moved, and the foe beside it is caught in the same net.",
-    "niche": "The funnel-web's locked control, kept as hard control under the stun row (Ryan, 17 October: it fits the kit): a delayed Suppress on the webbed foe (its next action) and the next foe to act beside it (this one), no damage, no cooldown. Web the foe left of the threat for safety now; web the boss to open a window on it next round."
+    "fantasy": "A canister of wire and resin lobbed at a foe's feet (Ryan's working name). It bursts as the round ends, and the foe beside it is caught in the same net.",
+    "niche": "The funnel-web's locked control, kept as hard control under the stun row (Ryan, 17 October: it fits the kit): a double Suppress on a delay, the webbed foe and the foe beside it each losing its next turn as the round ends, no damage, no cooldown (Ryan, 16 November: \"moved to End of Round and be repositioned as a double suppress on a delay, not suppress one this turn and one the next\"; \"The spider is a planner, so removing the reactive tool and rewarding it for thinking ahead is good\"). It stops nothing already announced: it buys two silent foes for the next round, which the ambush bites. Until then it burst at the end of the webbed foe's own action, the foe beside it losing that round's action: \"almost-not-quite an unconditional suppress on one foe\", his."
    },
    "face": {
     "kind": "attack",

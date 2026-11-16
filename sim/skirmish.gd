@@ -2526,6 +2526,7 @@ func field_holds() -> Array:
 ## and its machines' allies and reads the outcome) and the round preview's copy (preview_round)
 ## both run it, so the preview's round ends as the round will.
 func _finish_round() -> void:
+	_burst_webs()
 	_tick_mechs()
 	_round_kills()
 	_regrow_parts()
@@ -2600,8 +2601,8 @@ func _enemy_turn() -> void:
 	# fade, its Empowered halves, its Sapped goes and its Numbed counts down or lands. A foe is
 	# never struck down and then left to strike (Ryan, 4 November: "What we absolutely do not
 	# want to do is have a zero-hp enemy attacking and then dying after, because burn ticked
-	# first"): it strikes whole and burns after. A web on the foe bursts at the end of its
-	# action, skipped or not (18 October). The death check runs as each foe's action is done
+	# first"): it strikes whole and burns after. A web on a foe bursts as the round ends, no
+	# foe's own turn's business since 16 November (_burst_webs). The death check runs as each foe's action is done
 	# and again on a foe its tick fells: its last act lands, its parts fall, its machine is let
 	# go and a return stands before the next foe moves; and the fight ends the moment it is
 	# decided, the foes after the blow that wrecks the last machine doing nothing.
@@ -2664,10 +2665,6 @@ func _enemy_turn() -> void:
 		# blow of a foe that had acted before it landed. Essence Flare holds it while it stands.
 		Effects.halve_buffs(f, field_holds())
 		Effects.foe_turn_end(f)   # what lasts until after its next turn goes (Sapped)
-		# A web on it bursts before its Numbed moves, so the burst's stun meets the Numbed the
-		# foe stood in, and a foe that lost this turn to a stun is still Suppressed for it: the
-		# web gives it nothing more, and strips none of the Numbed it is about to gain.
-		_web_burst(f)
 		# Numbed's clock (Ryan, 2 November; at its turn's end since 16 November, "Numbed (applied
 		# or reduced)"): a stack goes, then a foe that lost this action to a stun gains its stun
 		# resist in stacks, so its chip reads the turns until one stun lands.
@@ -2772,33 +2769,36 @@ func _foe_turn(f: Foe) -> void:
 	return
 
 
-## The web bursts at the end of the webbed foe's action (the funnel-web's Web Bomb, Ryan's go,
-## 18 October): a Suppress on it, costing its next action since it has acted (its countdown
-## held a round, if it gathers one), and one on the next foe to act beside it (web_catch), each
-## resisted by its own Numbed; a foe already suppressed for that action gains nothing, as from
-## any second suppress, so a web on a foe the team has stunned is spent on the neighbour alone.
-## The web is spent either way. A foe gone by the end of its action (a Bomb's burst) takes its
-## web with it, as one killed before it does.
-func _web_burst(f: Foe) -> void:
-	if not f.alive() or not Effects.has(f, "webbed"):
-		return
-	Effects.remove(f, "webbed")
-	var beside := web_catch(f)
-	log.append("%s's web bursts%s" % [f.display_name, "" if beside == null else ", catching %s" % beside.display_name])
-	if _suppress(f):
-		_foe_gained_status(f, "suppressed")
-	if beside != null and _suppress(beside):
-		_foe_gained_status(beside, "suppressed")
+## Every web on the field bursts as the round ends (the funnel-web's Web Bomb, Ryan's go of 18
+## October; at the round's end since 16 November, his: "moved to End of Round and be
+## repositioned as a double suppress on a delay, not suppress one this turn and one the next",
+## with no cooldown): a Suppress on the webbed foe and one on the foe beside it (web_catch),
+## each for its next turn, a countdown it gathers held a round. Every foe's own turn has ended
+## by then, so the stun meets the Numbed the foe ends the round with: one the team stunned this
+## round has just gained its Numbed, and the web strips a stack of it and stuns nothing. A foe
+## already Suppressed for its next turn gains nothing, and a Ward turns the stun away. The web
+## is spent either way. A foe felled before the round ends takes its web with it, and a foe's
+## cleanse may lift it first. In the order the foes stand.
+func _burst_webs() -> void:
+	for f in field_foes():
+		if not f.alive() or not Effects.has(f, "webbed"):
+			continue
+		Effects.remove(f, "webbed")
+		var beside := web_catch(f)
+		log.append("%s's web bursts%s" % [f.display_name, "" if beside == null else ", catching %s" % beside.display_name])
+		if _suppress(f, null, true):
+			_foe_gained_status(f, "suppressed")
+		if beside != null and _suppress(beside, null, true):
+			_foe_gained_status(beside, "suppressed")
 
 
-## The foe a web on `f` catches: the next to act beside it, its right-hand neighbour in its
-## rank (which acts after it, so the burst costs this round's action), or with none standing
-## there the one to its left (which has acted, and loses its next); a massive foe stands in
+## The foe a web on `f` catches, the one beside it in its rank: its right-hand neighbour, or
+## with none standing there the one to its left; a massive foe stands in
 ## both ranks, so it is beside either. Null with nobody standing beside it.
 func web_catch(f: Foe) -> Foe:
 	if f.column < 0 or f.rank < 0:
 		return null
-	# The rank in acting order, a twin slot's pair left then right: the next after it, or with
+	# The rank left to right, a twin slot's pair left then right: the next after it, or with
 	# none standing there the one before.
 	var order: Array[Foe] = []
 	for c in range(columns):
@@ -3350,8 +3350,8 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				if into_mine:
 					h.mine_flag(Face.Keyword.SUPPRESS)   # fired through its gate: each foe the blast meets judges its own Numbed
 			# The Web Bomb's web (18 October; its piece's own rule since 15 November): the foe wears
-			# its mark, one web however often it is webbed, and the skirmish bursts it at the end of
-			# the foe's action (_web_burst). No Mine carries it: a rule one piece prints is that
+			# its mark, one web however often it is webbed, and the skirmish bursts it as the round
+			# ends (_burst_webs). No Mine carries it: a rule one piece prints is that
 			# piece's.
 			if f.webs:
 				riders.append(func() -> void: _land_web(foe, gained, turned, webbed))
@@ -3628,7 +3628,7 @@ func _land_riders(ms: MechState, riders: Array[Callable], laid: Dictionary, webb
 		log.append("%s lays %s on %s" % [ms.unit.display_name, ", ".join(bits), foe.display_name])
 	for foe in webbed:
 		var caught := web_catch(foe)
-		log.append("%s webs %s: it bursts after its action%s" % [ms.unit.display_name, foe.display_name, "" if caught == null else ", on it and %s" % caught.display_name])
+		log.append("%s webs %s: it bursts as the round ends%s" % [ms.unit.display_name, foe.display_name, "" if caught == null else ", on it and %s" % caught.display_name])
 	riders.clear()
 	laid.clear()
 	webbed.clear()
@@ -4981,10 +4981,11 @@ func _stacks_from(ms: MechState, status_id: String, n: int) -> int:
 ## carries (Ryan, 17 October: "Suppressed is suppressed - they lose their next action. It does
 ## not stack, it does not carry"), so a Paradox tripping on a suppressed foe is wasted, its
 ## meter spent.
-func _suppress(foe: Foe, turned = null) -> bool:
+func _suppress(foe: Foe, turned = null, ahead: bool = false) -> bool:
 	# A foe that has already acted this turn loses its next action instead of one it has taken,
-	# and so does one that stepped up mid-round (a split's half), the round's turn being over.
-	var next := _acted.has(foe) or foe.fresh
+	# and so does one that stepped up mid-round (a split's half), the round's turn being over;
+	# `ahead` says the round itself is over (a web's burst), so every foe loses its next.
+	var next := ahead or _acted.has(foe) or foe.fresh
 	if _suppressed_through(foe, round + 1 if next else round):
 		log.append("%s is already suppressed" % foe.display_name)
 		return false

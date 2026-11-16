@@ -16,9 +16,9 @@ enum Reach { NONE, DIRECT, INDIRECT, EVERY_FOE }   # Every Foe (4 November), bel
 ## a keyword, and a rolled weapon dealing its average is simply a flat one.
 ## Three rules that were keywords are rules written on their one piece since 15 November
 ## (Ryan's marks: "unique text, not a keyworded rider"), each a field below and the die's star:
-## the Web Bomb's web (`webs`, 18 October: the foe hit wears the Web Bomb's mark, and after its
-## action the web bursts into a Suppress on it and the next foe to act beside it,
-## Skirmish._web_burst); the Combat Translocator's swap (`swaps`, Ryan's go of 19 October: the
+## the Web Bomb's web (`webs`, 18 October: the foe hit wears the Web Bomb's mark, and as the
+## round ends the web bursts into a Suppress on it and the foe beside it, each for its next
+## turn, Skirmish._burst_webs); the Combat Translocator's swap (`swaps`, Ryan's go of 19 October: the
 ## spend takes a second target, another foe or an empty slot, and the two trade places); and
 ## the Overrun Gearing's spill (`spills`, a module's, on the effective entry alone: damage past
 ## a kill in the front rank carries into the foe behind).
@@ -140,7 +140,7 @@ var consumes: String = ""     # an attack: the status it consumes on its target,
 var per_consumed: int = 1     # ...the damage a stack consumed adds
 var ignores_armour: bool = false   # an attack: its blows take nothing off for a foe's armour, a rule written on the piece (Ryan, 15 November: "Ignores armour can be an explicitly written out property", where the Breach keyword stood on our side)
 var swaps: bool = false   # an attack: the spend takes a second target, another foe or an empty slot, and the two trade places; a rule written on the piece, no keyword (the Combat Translocator's; Ryan, 15 November: "Can be unique text, not a keyworded rider")
-var webs: bool = false    # an attack: each foe hit wears the piece's web, which bursts after the foe's action into a Suppress on it and the next foe to act beside it (the Web Bomb's; Ryan, 15 November: "It's a unique effect, and the debuff can be renamed \"web bomb.\"")
+var webs: bool = false    # an attack: each foe hit wears the piece's web, which bursts as the round ends into a Suppress on it and the foe beside it, each for its next turn (the Web Bomb's; Ryan, 15 November: "It's a unique effect, and the debuff can be renamed \"web bomb.\"")
 var spills: bool = false  # the effective entry only, never printed: damage past a kill in the front rank carries into the foe behind (the Overrun Gearing's, a module's; Ryan, 15 November: "As a module only effect, this does not need to be a keyword"; Effects.grants_spill)
 var self_ablate: int = 0        # an attack: spending it sets its own machine Ablating, this many stacks (the Stoker's, the stock pass's landing, 22 October; a price in its own shield since Ablate, 15 November)
 var component: String = ""    # the component this entry is (content id); "" for an empty hardpoint
@@ -930,7 +930,7 @@ const DISRUPTS_TEXT := "disrupts the foes aiming at it"
 ## Combat Translocator's, the Web Bomb's, and the spill a passive lays on its machine's weapons
 ## (the Overrun Gearing's, whose own line the die's readout prints: Effects.written_rules).
 const SWAPS_TEXT := "its two targets trade places"
-const WEBS_TEXT := "its web bursts after the foe acts, suppressing it and the next beside it"
+const WEBS_TEXT := "its web bursts as the round ends, suppressing it and the foe beside it"
 const SPILLS_TEXT := "damage past a kill spills into the foe behind"
 
 

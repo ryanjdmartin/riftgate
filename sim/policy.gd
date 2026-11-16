@@ -1730,21 +1730,33 @@ static func last_act_cost(sk: Skirmish, f: Foe) -> float:
 	return cost
 
 
-## A web on a foe (the funnel-web's Web Bomb, 18 October): the blow the foe it catches beside
-## it will not land (this round's when the catch acts after it; its next, read as this round's,
-## when it has acted), and the webbed foe's own next action, read as the blow it shows now,
-## each at the odds Numbed lets the burst land; nothing on a foe already suppressed, which
-## gains nothing from a second, and nothing on a foe already webbed.
+## A web on a foe (the funnel-web's Web Bomb, 18 October; bursting as the round ends since 16
+## November): the next turn of the webbed foe and of the foe beside it, each read as the blow
+## it shows now and at a round ahead's share, since the fight may end and the foes pick
+## afresh; nothing for a foe the burst will not stun (web_stuns), and nothing on a foe already
+## webbed.
 func web_score(sk: Skirmish, target: Foe) -> float:
 	if Effects.has(target, "webbed") or Effects.turns_mark(target, "webbed"):
 		return 0.0
 	var score := 0.0
-	if not target.is_suppressed():
-		score += _threat_next(target, sk) * HULL_WEIGHT / float(Effects.stacks_of(target, "numbed") + 1)
-	var beside := sk.web_catch(target)
-	if beside != null and not beside.is_suppressed():
-		score += _threat_next(beside, sk) * HULL_WEIGHT / float(Effects.stacks_of(beside, "numbed") + 1)
+	for foe in [target, sk.web_catch(target)]:
+		if foe != null and web_stuns(foe):
+			score += _threat_next(foe, sk) * HULL_WEIGHT * AHEAD_SHARE
 	return score
+
+
+## Will a web's burst stun this foe as the round ends? It meets the Numbed the foe ends the
+## round with, which is exact: a stack goes as its turn ends, and a foe that loses this turn
+## to a stun gains its stun resist there, so the web strips a stack of that and stuns nothing.
+## A Ward up now is gone by then on a machine's side only: a foe's stands until its next turn
+## starts, and turns the web itself away as it lands (web_score).
+static func web_stuns(f: Foe) -> bool:
+	if f == null or not f.alive():
+		return false
+	var left := maxi(0, Effects.stacks_of(f, "numbed") - 1)
+	if f.is_suppressed():
+		left += f.stun_resist()
+	return left <= 0
 
 
 ## The blow a foe lands at its next action, read as the one it shows: its blow now, a

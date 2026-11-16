@@ -47,7 +47,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1229 tests, 373,302 checks, green on `ccr-722ca9f0-yj8na3` (16 November, a foe's
+- Tests: 1230 tests, 373,327 checks, green on `ccr-722ca9f0-yj8na3` (16 November, his
+  twelfth round: the Web Bomb at the round's end, Appropriated as an Ability, the
+  Antiquarian's names, over main at `23aebc7`). Before it, 1229 tests, 373,302 checks, green
+  on the same branch (16 November, a foe's
   move as a list of steps and Gilgamesh's Collect, over main at `e777a80`). Before it, 1222
   tests, 373,248 checks, green on the same branch (16 November, the clocks on his four
   places, over main at `d7fe86f`). Before it, 1217 tests, 373,189 checks, green on the same
@@ -1969,8 +1972,11 @@ any Empowered gained in a foe's own turn. The anchor read again says tier one st
 it stood (`docs/measurements.md`, its last entry: the wolf pack 12.3% to 13.1% of a four's
 hull, one fight lost in 30). A session's reads in it, his to overrule, are the to-do's Ryan
 line: the foes' turn start is the whole side's, where the agreed lean said its own action.
-His thought of the same round, the Web Bomb at the round's end as "a double suppress on a
-delay", is answered in chat and waits on his word (section 25).
+**The Web Bomb bursts as the round ends** (his twelfth round, the same day: "Go ahead with
+the Web Bomb at round end, no cooldown"; the proposal's section 27): every foe acts in the
+round it is laid, and the webbed foe and the foe beside it each lose their next turn. A
+squad with the Funnel-web at tier two loses no more hull under it (`docs/measurements.md`,
+its last entry, a direction). A rally keeps its floor of 2 on his word.
 **The foes' pass has begun** (16 November, on his "Yes, go ahead with the next work"):
 **Exposed on a machine is built** (the proposal's section 17; `tests/test_exposed.gd`), a
 foe's Expose as a move of its own and as a rider on its blow. The machine's armour of every
@@ -1989,9 +1995,12 @@ each a special's effect by that effect's own rules. The intent wears the steps' 
 round preview plays them, a Ward turns what lands on its machine, and the rules of
 announcing read every step. One blow a move, and that its first step, for now.
 **Gilgamesh's Disarm is Collect**, the first move written so (his mark of 15 November): a
-blow that Jams, then a step of his own that leaves him Appropriated at the entry's number, a
-buff his Borrowed Blade swings and spends. The steal rider and the foe's own field for what
-it held left the engine. No number moved.
+blow that Jams, then a step of his own that leaves him Appropriated at the entry's number,
+which his Borrowed Blade swings and spends. Appropriated is his Ability (his twelfth round:
+"a number that fluctuates depending on what he's currently holding"), a chip from the
+fight's start that no Purge reaches. The steal rider and the foe's own field for what
+it held left the engine. No number moved. The Marsh's Antiquarian's moves are Collect Call
+and Show Collection, so the name Collect is Gilgamesh's alone.
 **First now: the foes' pass, the rest**
 (the to-do's line): Exposed's carriers, the countdowns off
 the rank and file, a fall free to do more than strike, and the moves that want steps, each

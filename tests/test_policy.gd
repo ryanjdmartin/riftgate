@@ -726,7 +726,7 @@ func test_greedy_bites_the_foe_looking_away() -> void:
 	assert_eq(Effects.stacks_of(looking, "vitriol"), 0, "not on the one looking")
 
 
-func test_greedy_values_a_web_by_the_blows_its_burst_stops() -> void:
+func test_greedy_values_a_web_by_the_turns_its_burst_takes() -> void:
 	var sk := Skirmish.new(3, 3)
 	var a := _mech("A", Die.single(_webber(Face.attack(0, L))), 0, 500)
 	sk.add_mech(a)
@@ -737,11 +737,18 @@ func test_greedy_values_a_web_by_the_blows_its_burst_stops() -> void:
 	sk.begin()
 	sk.start_round()
 	var pol := Policy.make(Policy.GREEDY)
-	assert_eq(pol.web_score(sk, big), 60.0 * Policy.HULL_WEIGHT, "a web on the big one: its own next blow and the middle one's, caught beside it")
-	assert_eq(pol.web_score(sk, small), 30.0 * Policy.HULL_WEIGHT, "on the small one: its own and the middle one's to its left, which has acted")
+	assert_eq(pol.web_score(sk, big), 60.0 * Policy.HULL_WEIGHT * Policy.AHEAD_SHARE, "a web on the big one: its next turn and the middle one's, caught beside it, each a round ahead")
+	assert_eq(pol.web_score(sk, small), 30.0 * Policy.HULL_WEIGHT * Policy.AHEAD_SHARE, "on the small one: its own and the middle one's to its left")
 	Effects.grant_for_rounds(big, Effects.STATUS["suppressed"], "mech", sk.round)
-	assert_eq(pol.web_score(sk, big), 20.0 * Policy.HULL_WEIGHT, "a stunned foe gains nothing from the burst on itself: the catch alone")
+	assert_false(Policy.web_stuns(big), "a foe stunned this round ends it Numbed, and the burst only strips a stack")
+	assert_eq(pol.web_score(sk, big), 20.0 * Policy.HULL_WEIGHT * Policy.AHEAD_SHARE, "so a web on it is worth the catch alone")
 	Effects.remove(big, "suppressed")
+	Effects.stack(mid, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_NONE)
+	assert_eq(pol.web_score(sk, big), 40.0 * Policy.HULL_WEIGHT * Policy.AHEAD_SHARE, "a foe with two of Numbed ends the round with one: the burst strips it and stuns nothing")
+	Effects.remove(mid, "numbed")
+	Effects.stack(mid, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	assert_eq(pol.web_score(sk, big), 60.0 * Policy.HULL_WEIGHT * Policy.AHEAD_SHARE, "one stack is gone by the round's end, so the burst lands")
+	Effects.remove(mid, "numbed")
 	pol.play_round(sk)
 	assert_true(Effects.has(big, "webbed"), "greedy webs the big one")
 	assert_eq(pol.web_score(sk, big), 0.0, "and a web on a webbed foe is worth nothing more")
