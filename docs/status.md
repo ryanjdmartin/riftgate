@@ -101,9 +101,10 @@ first look tests of six chassis in briefs and three rough kits for the mole (How
 the Models line; each brief has its own), with `tools/lowforge/looks/sheet.py`, a round's sheet
 in one command, and a look builder that finds its modules itself; then a second round of four
 of them on his notes of the same day, and his word that a nickname follows its machine in the
-bible's nickname row (v0.589 on this branch, unpublished). It took main at `0f5c801` and at
-`c9e55a9`, the reboot's fold-in, in merges with no conflicts (1188 tests green after the
-second); not landed, main takes it on his word. Its briefs' new sections reach the hangar's
+bible's nickname row (the file v0.592 on this branch, main's v0.591 and that line,
+unpublished). It took main at `0f5c801`, at `c9e55a9`, the reboot's fold-in, and at `0eb2745`,
+the marks' cuts, in merges, the bible's version line the one conflict; not landed, main takes
+it on his word. Its briefs' new sections reach the hangar's
 Designs tab with the next publish that carries `designs.json`.
 `ccr-b7d5164e-1wtzzm`, this session's (12 November), cut from main at `6112939`: the to-do's
 roster pruned, then the Needletail's two modes and the Giant Petrel's hull on Ryan's design and
