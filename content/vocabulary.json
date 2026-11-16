@@ -449,16 +449,6 @@
    }
   },
   {
-   "id": "steal",
-   "category": "keyword",
-   "name": "Steal",
-   "codex": "Enemy keyword. The component the target's die is showing is Jammed through the target's next turn, as a Jam, and the foe takes it: its next swing lands that weapon's number, and anything that was no weapon is a fake, for 1. A Ward turns it away.",
-   "status": "implemented",
-   "design": {
-    "holes": "Gilgamesh's (30 October). One piece held at a time, the swing spending it; the swing is one strike at the piece's number, whatever strikes the piece had, and no keyword of the piece rides it."
-   }
-  },
-  {
    "id": "destroy",
    "category": "keyword",
    "name": "Destroy",
@@ -1785,7 +1775,7 @@
    "id": "foe_action",
    "category": "foe",
    "name": "Foe action",
-   "codex": "A foe has a base attack, the quick read of how hard it hits, and a list of actions: attacks that scale it, and defends, buffs and debuffs it does instead of a blow (bracing against damage, sheltering behind a Barrier, recovering or healing one of its own, regenerating over its next actions, cleansing the team's marks off its own, warding its side against them, readying to get back up, calling up a foe, rallying or priming the others, costing the team a reroll, setting a machine Ablating, purging one, jamming the entry a die shows, scorching or corrupting every machine). Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number.",
+   "codex": "A foe has a base attack, the quick read of how hard it hits, and a list of actions: attacks that scale it, and defends, buffs and debuffs it does instead of a blow (bracing against damage, sheltering behind a Barrier, recovering or healing one of its own, regenerating over its next actions, cleansing the team's marks off its own, warding its side against them, readying to get back up, calling up a foe, rallying or priming the others, costing the team a reroll, setting a machine Ablating, purging one, jamming the entry a die shows, scorching or corrupting every machine). A move may do more than one thing, its blow or its special first and then what it does also, and its own text says all of it. Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number.",
    "status": "implemented",
    "design": {
     "holes": "A foe's whole brain is its weighted draw and its aim; none plans ahead."
@@ -2068,6 +2058,22 @@
      "on": "foe",
      "stacks": "No",
      "lasts": "Until it falls; it returns once"
+    }
+   }
+  },
+  {
+   "id": "appropriated",
+   "category": "status",
+   "name": "Appropriated",
+   "codex": "Foe buff, Gilgamesh's: what he took off a machine. His Collect knocks loose the component a machine's die is showing, Jams it through that machine's next turn, and leaves him Appropriated at its number: a weapon's printed blow, and 1 for anything that is no weapon, a fake. His Borrowed Blade lands that number next round and spends it. One piece at a time. A Purge lowers it, and a Ward on the machine turns the taking away.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan's mark of 15 November on the steal rider: \"Doesn't need to be it's own rider. It grants Jammed on the target, and Gilgamesh gains Appropriated with the value. The ability should be renamed to Collect.\" Built 16 November as the first move written in steps: a blow that jams, then a step of its own (appropriate). The swing is one strike at the piece's number, whatever strikes the piece had, and no keyword of the piece rides it. The steal rider and the foe's own field for what it held left the engine with it. The text is a session's draft.",
+    "table": {
+     "kind": "buff",
+     "on": "foe",
+     "stacks": "No: its number is the piece's, and what it takes next replaces it",
+     "lasts": "Until its borrowed swing spends it"
     }
    }
   },

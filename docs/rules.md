@@ -951,6 +951,9 @@ On a foe:
   absorbs does not; no Purge strips it, an Ability. Its chip counts
   the rounds left and the damage that breaks it. It goes gold only while calm (the `calm`
   condition: not gold), so one rage at a time.
+- **Appropriated** (buff, a take: Gilgamesh's): the number of the entry he took, which his
+  borrowed swing lands in place of his attack and spends. One piece at a time, what he takes
+  next replacing it; a Purge lowers it, and the swing with it.
 - **Undying** (buff, Reraise, on itself or from an ally's): after it falls it gets
   back up once, whole, in its own slot, unless it self-destructed: once the spend that felled
   it is done, or at once to a tick; its round is over, as a split's half's is, and it comes back
@@ -1139,11 +1142,8 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   sides; strikes are separate blows. Riders (a Ward turns away all but the last
   three): scorch (stacks of Scorched), ablate (stacks of
   Ablating), jam (the entry the machine shows is Jammed), corrupt (Corrupted stacks on it), brittle
-  (Brittle stacks on the machine: a point more on every blow it takes a stack, halving as each
-  round ends), steal (the
-  entry the machine shows Jammed through its next turn, as a jam, and taken: its foe
-  holds it until its borrowed swing, whose number is what it took, a weapon's printed blow,
-  and anything that was no weapon a fake, for 1), destroy (any of the blow on the hull destroys
+  (Brittle stacks on the machine: a point more on every blow it takes a stack, halving as its
+  next turn starts), destroy (any of the blow on the hull destroys
   the entry the machine shows: Destroy, above; no foe carries it yet), expose (the machine is
   Exposed through the round after: Exposed, above; a tier-two foe's at the least, the validator
   refusing it on anything dealt at tier one; no foe carries it yet),
@@ -1159,7 +1159,22 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   from the hull, no more than the machine had, so a shield starves it; it lays nothing on the
   machine, so no Ward turns it away and a Barrier's blow drains nothing, and Ablating on the
   foe takes back what it heals.
-- **A special** replaces the blow: brace (Armoured, its value in stacks, an armour point each, until the
+- **A move is a short list of steps.** Its first is the move as written, a blow with its
+  riders or one special. It may do more after, each further step a special's effect by that
+  effect's own rules, in the order written, once the first is done. A step aimed at a machine
+  lands on the move's own pick: a Ward there turns it away, and one whose machine the blow
+  wrecked, or that is out of the fight, lands on nobody. A step on its own side acts whoever
+  stands. A foe its own blow spent does nothing more. The move is announced once, its intent
+  wears the marks of its steps beside its blow's riders, and its text says all of it. What may
+  never be announced is read off every step: a drain past the round's two, a swallow of the
+  last machine, a second Expose. One blow a move, and that its first step.
+- **A take** (Gilgamesh's Collect): a blow that Jams the entry its machine shows, then a step
+  of his own: he gains Appropriated, that entry's number, a weapon's printed blow and 1 for
+  anything else, a fake. It is a buff, so a Purge lowers it, and what he takes next replaces
+  it. His Borrowed Blade is a blow whose number is his Appropriated in place of his attack; it
+  comes only as Collect's follow-up, only while he holds something, and the swing spends it. A
+  Ward turns the jam and the take away together.
+- **A special** stands in the blow's place as a move's first step, or follows it as a later one: brace (Armoured, its value in stacks, an armour point each, until the
   foes' next turn opens), recover (regains its value, itself), heal (the most hurt of its own, itself included, regains its
   value), brace all (the same on every foe in the fight, on the same clock), revive once,
   revive an ally (Undying on one of its own, never itself, not readied already: a
@@ -1192,12 +1207,13 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   that falls may grow back after so many rounds while the core stands; a core that falls takes
   its parts with it.
 - **The enemy's turn**: front rank left to right, then the back; on screen each foe is lit from
-  just before its move lands until the next acts. At its action each foe's statuses tick
-  (Ablating first, which may kill it, and a dead foe never strikes; then decaying stacks drop;
-  Vitriol after Ablating, on what it leaves); a suppressed foe does nothing, and at the round's
-  end, after every Numbed loses a stack, it gains its stun resist in Numbed; a web
-  on it bursts at the end of its action, skipped or not. A foe with no machine to strike (every one fallen or out of the fight) loses its blow
-  alone: its countdown gathers, a special on its own side acts, and the turn goes on to the foes
+  just before its move lands until the next acts. Each foe makes its move, every step of it,
+  and then its own turn ends (When a status ends, above): its Ablating takes its points, which
+  may fell it, then Vitriol what that leaves, and each loses a stack; its Regenerating pays;
+  its Empowered halves; its Sapped goes; a web on it bursts; its Numbed loses a stack. A
+  suppressed foe does nothing and its turn ends the same way, its Suppress spent and its stun
+  resist landing as Numbed. A foe with no machine to strike (every one fallen or out of the fight) loses its blow
+  alone: its countdown gathers, a special or a step on its own side acts, and the turn goes on to the foes
   after it.
 - **A split** (the Gel): a dead Gel splits into two Half-Gels (one deep) once the spend that
   felled it is done, or at once to a tick, standing as a

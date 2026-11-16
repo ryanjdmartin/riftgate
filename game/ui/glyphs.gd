@@ -249,9 +249,9 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_line(c + Vector2(s * 0.85, -s * 0.38), c + Vector2(s * 0.42, -s * 0.8), color, width)
 			ci.draw_line(c + Vector2(s * 0.85, s * 0.38), c + Vector2(-s * 0.85, s * 0.38), color, width)
 			ci.draw_line(c + Vector2(-s * 0.85, s * 0.38), c + Vector2(-s * 0.42, s * 0.8), color, width)
-		"steal":
-			# Steal (a foe's, 30 October): the die entry's box with an arrow pulling out of it, the
-			# piece taken to be swung back.
+		"taken":
+			# What a foe took off a machine (Appropriated; the steal's, 30 October): the die entry's
+			# box with an arrow pulling out of it, the piece taken to be swung back.
 			ci.draw_rect(Rect2(c + Vector2(-s * 0.9, -s * 0.2), Vector2(s * 1.1, s * 1.1)), color, false, width)
 			ci.draw_line(c + Vector2(-s * 0.35, s * 0.35), c + Vector2(s * 0.85, -s * 0.85), color, width)
 			ci.draw_line(c + Vector2(s * 0.85, -s * 0.85), c + Vector2(s * 0.25, -s * 0.85), color, width)

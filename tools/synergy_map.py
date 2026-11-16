@@ -278,8 +278,9 @@ class Map:
                 for kw in a.get("keywords", []):
                     if kw in FOE_RIDERS:
                         self.add(FOE_RIDERS[kw], "sets", dict(p, who="%s's %s" % (f["name"], a["name"])))
-                if a.get("effect") in FOE_EFFECTS:
-                    self.add(FOE_EFFECTS[a["effect"]], "sets", dict(p, who="%s's %s" % (f["name"], a["name"])))
+                for e in [a.get("effect")] + [st.get("effect") for st in a.get("also") or []]:   # its own special and what it does also
+                    if e in FOE_EFFECTS:
+                        self.add(FOE_EFFECTS[e], "sets", dict(p, who="%s's %s" % (f["name"], a["name"])))
 
     def walk_effects(self, effects, p):
         for eff in effects:

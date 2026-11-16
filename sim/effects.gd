@@ -291,6 +291,14 @@ const STATUS := {
 		"tags": ["ability"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 2}, {"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]},
 	"risen": {"id": "risen", "name": "Undying", "description": "Returns from the pool once after dying.", "stacking": "renew",
 		"tags": ["buff", "revive"], "effects": []},
+	# Appropriated (Gilgamesh's; Ryan's mark of 15 November on the steal: "It grants Jammed on the
+	# target, and Gilgamesh gains Appropriated with the value"): what a foe took off a machine,
+	# the number its borrowed swing lands, a point a stack, and the swing spends it (a move whose
+	# `power` names it: Foe.power_status). A buff, so a Purge lowers it and the swing with it.
+	# One hold at a time: what it takes next replaces what it held. The steal's own field on the
+	# foe until 16 November.
+	"appropriated": {"id": "appropriated", "name": "Appropriated", "description": "Holds what it took off a machine: its borrowed swing lands this number, and spends it.", "decay": "none", "stacking": "renew",
+		"tags": ["buff"], "effects": []},
 	# The Honey Badger's hopper (Ryan, 11 October; its Ore Hopper since 31 October): loads every
 	# foe its weapons damage puts in, which the Bullion Fragmenter fires a few a shot. A store on
 	# the machine with no effect of its own (the weapon that fires it reads it, and what the loads

@@ -1974,12 +1974,20 @@ content, his to place at tier two or above, and the validator refuses it at tier
 **The Vampire Lord's drain is the unit's own Ability** (the same day, his mark of 15
 November: "Like the Nob"): every blow of its regrows what it took from the hull, a chip
 names it, and the rider is cut from the engine with its last carrier.
+**A foe's move is a short list of steps** (16 November, his "Yes, go with the steps if you
+think that's best"; the proposal's section 26; `tests/test_bosses.gd`): its first step is the
+move as written, a blow with its riders or one special, and `also` lists what it does after,
+each a special's effect by that effect's own rules. The intent wears the steps' marks, the
+round preview plays them, a Ward turns what lands on its machine, and the rules of
+announcing read every step. One blow a move, and that its first step, for now.
+**Gilgamesh's Disarm is Collect**, the first move written so (his mark of 15 November): a
+blow that Jams, then a step of his own that leaves him Appropriated at the entry's number, a
+buff his Borrowed Blade swings and spends. The steal rider and the foe's own field for what
+it held left the engine. No number moved.
 **First now: the foes' pass, the rest**
-(the to-do's line): Exposed's carriers, the moves his marks renamed or
-moved onto the unit (Collect and Appropriated), the countdowns off
-the rank and file, a fall free to do more than strike, and a move as a short list of steps
-which he took on 16 November ("Yes, go with the steps if you think that's best"), the one
-answer that shapes how those are built.
+(the to-do's line): Exposed's carriers, the countdowns off
+the rank and file, a fall free to do more than strike, and the moves that want steps, each
+proposed in chat with its foe.
 The table of every rider, buff and debuff (`docs/vocabulary_table.md`) stands with its page
 (Pages, below) as the record of his marks until the pass retires.
 With the pass, on his proposal, the tier-one

@@ -1556,9 +1556,9 @@ func legal_actions(f: Foe, announced = null) -> Array:
 	for a in f.actions:
 		if follow.has(str(a.get("id", ""))):
 			continue   # a follow-up comes only after the move that names it (30 October)
-		if str(a.get("effect", "")) == "drain_rerolls" and drain_announced(f, announced) >= REROLLS_PER_ROUND:
+		if Foe.does(a, "drain_rerolls") and drain_announced(f, announced) >= REROLLS_PER_ROUND:
 			continue   # the drains already out take every reroll a round gives (Ryan, 15 November: "mandragoras shouldn't try to scream away 3 rerolls, they should be smarter than that when declaring intents")
-		if str(a.get("effect", "")) == "swallow" and swallowable().size() < 2:
+		if Foe.does(a, "swallow") and swallowable().size() < 2:
 			continue   # never the last machine able to act
 		if Foe.exposes(a) and (expose_announced(f, announced) or _any_exposed()):
 			continue   # one at a time (Ryan, 15 November): none while another's Expose is out, nor while a machine stands Exposed, so the whole field's fire comes every other round at most
@@ -1632,11 +1632,13 @@ func drain_announced(f: Foe, announced = null) -> int:
 	var out := 0
 	var said: Array = announced if announced is Array else Array(field_foes())
 	for o in said:
-		if o == f or not o.alive() or not o.on_field() or str(o.action.get("effect", "")) != "drain_rerolls":
+		if o == f or not o.alive() or not o.on_field() or not Foe.does(o.action, "drain_rerolls"):
 			continue
 		if o.fresh or o.is_suppressed() or (not o.pending.is_empty() and o.charge > 0):
 			continue   # stepped up this round with no move out, held this round, or still gathering: it takes nothing yet
-		out += maxi(0, int(o.action.get("value", 0)))
+		for st in Foe.effects_of(o.action):
+			if str(st.get("effect", "")) == "drain_rerolls":
+				out += maxi(0, int(st.get("value", 0)))
 	return out
 
 
@@ -1651,7 +1653,7 @@ func _choose_foe_action(f: Foe, announced = null) -> void:
 	f.committed = false
 	if not next.is_empty():
 		for a in f.actions:
-			if str(a.get("id", "")) == next and (not Foe.swings_held(a) or not f.held.is_empty()):
+			if str(a.get("id", "")) == next and (Foe.power_status(a).is_empty() or Effects.has(f, Foe.power_status(a))):
 				f.action = a
 				f.committed = true   # announced a round ahead, so no Disrupt turns it (Ryan, 2 November): the first move was the window
 				f.last_special = "" if f.attacks() else str(f.action.get("id", ""))
@@ -2736,26 +2738,32 @@ func _foe_turn(f: Foe) -> void:
 			log.append("%s gathers: %s lands %s" % [f.display_name, str(f.pending.get("name", "")), when])
 			return
 		f.pending = {}   # it lands now
-	if f.hits_all():
+	# The move's first step: its blow, or its one special in a blow's place.
+	var swung := false
+	if not f.attacks():
+		_foe_acts(f, t)   # a defend, buff or debuff instead of a blow; on its own side it acts with no machine standing
+	elif f.hits_all():
 		# A blow at every machine (`all`, Ryan, 15 October): its strikes land on each live
 		# machine in turn, left to right, so no aim or lure moves it; a screened machine is
 		# out of it.
 		for m in targetable_mechs():
 			_strike(f, m)
+		swung = true
+	elif t == null:
+		log.append("%s has no machine to strike" % f.display_name)   # nobody to strike: a blow has nowhere to land
 	else:
-		if t == null:
-			# Nobody to strike: a special on its own side still acts, a blow has nowhere to land.
-			if not f.attacks():
-				_foe_acts(f, null)
-			else:
-				log.append("%s has no machine to strike" % f.display_name)
-			return
-		if not f.attacks():
-			_foe_acts(f, t)   # a defend, buff or debuff instead of a blow
-			return
 		_strike(f, t)
-	if Foe.swings_held(f.action):
-		f.held = {}   # the borrowed swing spends what it took (30 October)
+		swung = true
+	# What the move does also (16 November: a move is a short list of steps), each in order
+	# once the first is done, on the move's own pick where it has a target: a step on its own
+	# side acts whoever stands, and one aimed at a machine that fell to the blow, or is out of
+	# the fight, lands on nobody. A foe its own blow spent does nothing more.
+	for st in f.action.get("also", []):
+		if not f.alive():
+			break
+		_foe_acts(f, t, st)
+	if swung and not Foe.power_status(f.action).is_empty():
+		Effects.remove(f, Foe.power_status(f.action))   # the borrowed swing spends what it took (30 October; Appropriated since 16 November)
 	if f.has_keyword(f.action, "self_destruct") and f.alive():
 		# The blow spends the striker (the Bomb): it dies whole and never gets back up.
 		f.hp = 0
@@ -2864,12 +2872,10 @@ func _strike(f: Foe, t: MechState) -> void:
 		if f.has_keyword(f.action, "brittle") and t.alive():
 			# Brittle on the machine (15 November; the World Eater's pin, a crush until then): a
 			# point more on every blow it takes a stack, so the pack's blows after this one land
-			# harder; the stacks halve as the round ends, and an ally's Cleanse lifts them.
+			# harder; the stacks halve as its next turn starts, and an ally's Cleanse lifts them.
 			var nc := f.rider(f.action, "brittle")
 			_fire_on(t, "brittled_mech", nc, f)
 			log.append("%s lays Brittle ×%d on %s: every blow it takes lands harder" % [f.display_name, nc, t.unit.display_name])
-		if f.has_keyword(f.action, "steal") and t.alive() and t.face_index >= 0:
-			_steal(f, t)
 		if f.has_keyword(f.action, "expose") and t.alive():
 			_expose_mech(f, t)
 		if f.has_keyword(f.action, "destroy") and t.alive() and int(ev["through"]) > 0:
@@ -2883,9 +2889,9 @@ func _strike(f: Foe, t: MechState) -> void:
 
 
 ## Whether this foe's blows carry a rider a Ward turns away: a scorch, an ablate, a jam, a
-## corrupt, a Brittle, a steal, a destroy or an expose (a purge is a special).
+## corrupt, a Brittle, a destroy or an expose (a purge is a special).
 static func _rides(f: Foe) -> bool:
-	for kw in ["scorch", "ablate", "jam", "corrupt", "brittle", "steal", "destroy", "expose"]:
+	for kw in ["scorch", "ablate", "jam", "corrupt", "brittle", "destroy", "expose"]:
 		if f.has_keyword(f.action, kw):
 			return true
 	return Effects.has(f, "primed")   # a primed foe's blows carry Ablating as a rider (28 October)
@@ -3852,17 +3858,24 @@ func _with_twins(hit: Array[Foe]) -> void:
 ## A foe's defend, buff or debuff action, resolved in its turn in place of a blow (the ten
 ## planned actions of 14 September, built 30 September). Every field is the action's;
 ## nothing here keys on a foe's id. `Foe.ACTION_EFFECTS` says what each kind may do.
-func _foe_acts(f: Foe, t: MechState) -> void:
-	var a := f.action
+func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
+	# The move's own special, or a step it does also (Foe.steps_of): the same effects by the
+	# same rules, a step speaking under its move's name and announced with it.
+	var first := step.is_empty()
+	var a := f.action if first else step
+	if not first and not a.has("name") and f.action.has("name"):
+		a = a.duplicate()
+		a["name"] = f.action["name"]
 	var effect := str(a.get("effect", ""))
 	var value := int(a.get("value", 0))
-	if t == null and effect in ["ablate", "jam", "dispel", "swallow", "expose"]:
+	if effect in ["ablate", "jam", "dispel", "swallow", "expose", "appropriate"] and (t == null or (not first and (not t.alive() or is_out(t)))):
 		log.append("%s: %s, and no machine stands to take it" % [f.display_name, str(a.get("name", effect))])
 		return
-	turn_specials.append({"foe": f, "name": str(a.get("name", "")), "kind": Foe.kind_of(a), "seq": _seq})
-	_seq += 1
-	if bool(a.get("once", false)):
-		f.spent_once.append(str(a.get("id", "")))   # a move used once a fight is spent as it acts
+	if first:
+		turn_specials.append({"foe": f, "name": str(a.get("name", "")), "kind": Foe.kind_of(a), "seq": _seq})
+		_seq += 1
+		if bool(a.get("once", false)):
+			f.spent_once.append(str(a.get("id", "")))   # a move used once a fight is spent as it acts
 	match effect:
 		"brace":
 			# Armoured, the machines' status (Ryan, 16 October: an effect and the buff it creates
@@ -3986,6 +3999,22 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			elif t.face_index >= 0:
 				Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, round + 1)
 				log.append("%s: %s, %s's %s is jammed" % [f.display_name, str(a.get("name", "hushes")), t.unit.display_name, t.die.faces[t.face_index].describe()])
+		"appropriate":
+			# Gilgamesh's own rule (30 October, the slate's signature: "takes the weapon a machine
+			# shows and fights with it; now and then the piece it took is a fake"; a step of his
+			# Collect since 16 November, on Ryan's mark: "It grants Jammed on the target, and
+			# Gilgamesh gains Appropriated with the value"): the foe gains Appropriated, the number
+			# of the entry the machine's die shows, a weapon's printed blow and 1 for anything
+			# else, the fake. What it held is replaced: one piece at a time. It acts on the
+			# machine, so a Ward turns it away as it turns the jam it follows.
+			if Effects.has(t.unit, "ward"):
+				log.append("%s: %s, and %s's Ward turns it away" % [f.display_name, str(a.get("name", "takes")), t.unit.display_name])
+			elif t.face_index >= 0:
+				var taken: Face = t.die.faces[t.face_index]
+				Effects.remove(f, "appropriated")
+				Effects.stack(f, Effects.STATUS["appropriated"], Effects.SKIRMISH, "foe:" + f.content_id, stolen_number(taken), Effects.DECAY_NONE)
+				log.append("%s: %s, it takes %s's %s%s: %s ×%d" % [f.display_name, str(a.get("name", "takes")), t.unit.display_name, taken.describe(),
+					"" if taken.is_weapon() else ", a fake", Effects.STATUS["appropriated"]["name"], Effects.stacks_of(f, "appropriated")])
 		"cleanse":
 			# A foe's cleanse (28 October, the Marsh's lever: "debuffs are hard here"): every mark
 			# the team laid off the most-marked of its own, itself included; never Numbed, never
@@ -4280,7 +4309,7 @@ func _land_phases() -> void:
 		log.append("%s is Phased: out of reach until the next round's end" % ms.unit.display_name)
 
 
-# ---------------------------------------------------------------- a swallow and a steal (30 October)
+# ---------------------------------------------------------------- a swallow and what a foe takes (30 October)
 
 ## The machines a swallow may take: alive and in the fight. A swallow needs two of them, so it
 ## never takes the last machine able to act (Floraison's, 30 October).
@@ -4487,20 +4516,8 @@ func _release_swallowed(f: Foe, why: String = "falls") -> void:
 			log.append("%s %s, and lets %s go" % [f.display_name, why, ms.unit.display_name])
 
 
-## A steal (Gilgamesh's, 30 October, the slate's signature: "takes the weapon a machine shows and
-## fights with it; now and then the piece it took is a fake"): the entry the machine's die shows
-## is switched off through its next turn, as a jam, and the foe holds it: its borrowed swing
-## lands that weapon's number (a blow a strike), and anything else it
-## took, a shield, a vent, equipment or a blank, is a fake, for 1.
-func _steal(f: Foe, t: MechState) -> void:
-	var face: Face = t.die.faces[t.face_index]
-	Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, round + 1)
-	var weapon := face.is_weapon()
-	f.held = {"name": face.describe(), "power": stolen_number(face), "fake": not weapon}
-	log.append("%s takes %s's %s%s" % [f.display_name, t.unit.display_name, face.describe(), "" if weapon else ", a fake"])
-
-
-## The number a stolen entry swings for: a weapon's printed blow, anything else 1, the fake.
+## The number an entry a foe takes swings for (the `appropriate` step, Gilgamesh's): a weapon's
+## printed blow, anything else 1, the fake.
 static func stolen_number(face: Face) -> int:
 	if face == null or not face.is_weapon():
 		return 1

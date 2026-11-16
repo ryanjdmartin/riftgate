@@ -2073,3 +2073,58 @@ with it. Then read the pair held and the Vitriol it earns before pricing it furt
 cooldown of 1 is the lever if two silent foes every other round reads as too much, and it is
 the right price if the piece stays as it is today. Not built: it waits on his word.
 
+## 26. The steps, built: a move as a short list of steps, and Collect
+
+His word on section 19's proposal, 16 November: "Yes, go with the steps if you think that's
+best." Built the same day (`tests/test_bosses.gd`; the bible's row on the foes' rule set;
+`docs/rules.md`, Foes).
+
+**The shape.** A move's first step is the move as it was always written: a blow with its
+riders, or one special. It may do more after, in content under `also`, each further step a
+special's effect with the fields that effect reads. So the 284 moves stand untouched, and a
+new one may strike and curse, or mend one foe and call another.
+
+```json
+{"id": "collect", "name": "Collect", "kind": "attack", "factor": 0.5, "keywords": ["jam"],
+ "also": [{"effect": "appropriate"}], "then": "borrowed_blade"}
+```
+
+**What a step owes the player**, as section 19 set it:
+
+| The rule | How a step keeps it |
+|---|---|
+| Announced before the player acts | The move is announced once. Its intent wears the marks of its steps beside its blow's riders, and its text says all of it |
+| The forecast shows what lands | The round preview plays the move whole. A move with a step aimed at a machine shows its arrow, whatever its first step is |
+| Met by answers learned once | A step runs the same code as the same effect as a move of its own. A Ward turns what lands on its machine. A Suppress or a Disrupt stops every step with the move |
+| No surprise from a dead aim | A step aimed at a machine the blow wrecked, or that is out of the fight, lands on nobody. A step on its own side acts whoever stands |
+| The rules of announcing | Read off every step: a drain past the round's two, a swallow of the last machine, a second Expose |
+
+**The limit that stands.** One blow a move, and that its first step. It is a first build's
+and no rule. It goes when a spell wants two blows, or a blow after its curse.
+
+**What the bot reads.** A Ward's worth counts every step it would turn, and the planner's
+copy of the round plays them. A foe's threat is still weighed by its move's first step. That
+widens as moves use steps.
+
+**Its first carrier: Collect.** His mark on the steal rider, 15 November: "Doesn't need to be
+it's own rider. It grants Jammed on the target, and Gilgamesh gains Appropriated with the
+value. The ability should be renamed to Collect." So Gilgamesh's Disarm is Collect: a blow
+at half that carries Jam, then a step of his own, the take. He gains Appropriated at the
+number of the entry the machine shows, a weapon's printed blow and 1 for a fake. His
+Borrowed Blade swings that number next round and spends it.
+
+Left the engine with it: the steal rider, its mark as a keyword, and the foe's own field for
+what it held. The mark's drawing is Appropriated's chip now.
+
+**A session's reads, his to overrule.**
+
+1. *Appropriated is a buff.* His words are "gains Appropriated", so a Purge lowers it and
+   the swing with it. That is a new answer to Gilgamesh: purge what he took.
+2. *A Ward turns the take with the jam*, as it turned the steal whole.
+3. *One piece at a time.* What he takes next replaces what he held, as before.
+4. *Two moves named Collect.* The Marsh's Collector has a Collect that raises three
+   revenants. Both stand under the one name until he parts them.
+
+**No number moved.** Collect's blow, its weight, its follow-up and the swing's number are
+Disarm's. Every text it touched is a draft for his writing.
+

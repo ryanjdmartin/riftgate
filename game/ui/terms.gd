@@ -29,7 +29,7 @@ const TABLE := {
 	"suppress": ["suppress", "guard"],
 	"dispel": ["dispel", "guard"], "cleanse": ["cleanse", "guard"],
 	"expose": ["expose", "harm"],
-	"jam": ["blank", "enemy"], "corrupt": ["corrupt", "enemy"], "steal": ["steal", "enemy"],
+	"jam": ["blank", "enemy"], "corrupt": ["corrupt", "enemy"],
 	"destroy": ["crack", "enemy"],   # the rider that destroys the entry showing (15 November): the destroyed component's own mark
 	# Rules on a component.
 	"targets": ["", "plain"], "strikes": ["", "plain"],
@@ -56,6 +56,7 @@ const TABLE := {
 	"exposure": ["exposed", "harm"], "pinned": ["pin_brittle", "heat"], "sapped": ["sap", "guard"], "juggernaut": ["juggernaut", "heat"], "seared": ["pin_ablate", "heat"], "destroyed_component": ["crack", "harm"],
 	"corrupted": ["corrupt", "enemy"], "jammed": ["blank", "enemy"],
 	"risen": ["star", "enemy"], "regenerating": ["regenerating", "guard"], "swallowed": ["swallowed", "enemy"],
+	"appropriated": ["taken", "enemy"],   # what a foe took off a machine (Gilgamesh's, 16 November; the steal's mark until then)
 	"ability": ["", "plain"],   # a unit's own mechanic, no buff or debuff (8 November): its chips carry their own marks
 	"quick_turned": ["rapid", "plain"],
 	"overheated": ["heat", "heat"], "broken": ["shieldbreak", "guard"], "rebooting": ["shield_vent", "plain"],   # the reboot's three states (13 November), read off the gauges: no status of the engine's table

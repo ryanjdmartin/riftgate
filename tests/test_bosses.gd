@@ -1,7 +1,7 @@
 extends TestCase
 
 ## The slate's first bosses (30 October, on Ryan's word: "build what can be built"): the engine
-## pieces they need (a follow-up move, a steal with its borrowed swing, a swallow) and the
+## pieces they need (a follow-up move, a take with its borrowed swing, a swallow) and the
 ## content's shape. Synthetic foes for the rules; the content read by its structure, never by id.
 
 const L := Face.Reach.DIRECT
@@ -155,38 +155,41 @@ func test_a_suppress_or_a_disrupt_on_the_first_move_breaks_the_pair() -> void:
 	assert_eq(m2.next_move, "", "so nothing follows")
 
 
-## A collector's pair: a blow that steals, then the borrowed swing.
+## A collector's pair (Gilgamesh's shape; Ryan's mark of 15 November: "It grants Jammed on the
+## target, and Gilgamesh gains Appropriated with the value"): a blow that jams and then takes, a
+## step of its own after the blow, and the borrowed swing whose number is what it took.
 func _collector() -> Foe:
 	var f := Foe.make("gilgamesh", 900, 10)
-	f.actions = [_move("disarm", {"keywords": ["steal"], "then": "borrowed"}),
-		_move("borrowed", {"power": "held"})]
+	f.actions = [_move("collect", {"keywords": ["jam"], "also": [{"effect": "appropriate"}], "then": "borrowed"}),
+		_move("borrowed", {"power": "appropriated"})]
 	return f
 
 
-func test_a_steal_takes_the_showing_entry_and_the_borrowed_swing_lands_its_number() -> void:
+func test_a_take_holds_the_showing_entrys_number_and_the_borrowed_swing_lands_it() -> void:
 	var sk := Skirmish.new(1, 3)
 	sk.add_mech(_mech("A", Die.single(Face.attack(30, L))))
 	var g := _collector()
 	sk.add_foes([g])
 	sk.begin()
 	sk.start_round()
-	assert_eq(str(g.action.get("id", "")), "disarm", "the swing is never rolled: the steal comes first")
+	assert_eq(str(g.action.get("id", "")), "collect", "the swing is never rolled: the take comes first")
 	sk.end_round()
-	assert_eq(sk.mechs[0].unit.hull, 490, "the disarm lands its own blow")
-	assert_eq(int(g.held.get("power", 0)), 30, "and takes the weapon's number")
-	assert_false(bool(g.held.get("fake", true)), "a weapon is no fake")
+	assert_eq(sk.mechs[0].unit.hull, 490, "the move lands its own blow")
+	assert_eq(Effects.stacks_of(g, "appropriated"), 30, "and it is Appropriated at the weapon's number")
+	assert_eq(Effects.status_kind("appropriated"), "buff", "a buff on it")
+	assert_true("\n".join(sk.log).contains("it takes A's 30: Appropriated ×30"), "the log says what it took")
 	sk.start_round()
 	assert_eq(str(g.action.get("id", "")), "borrowed", "the borrowed swing is next round's intent")
-	assert_eq(g.damage(), 30, "at the stolen weapon's number")
-	assert_eq(sk.mechs[0].face().describe(), "disabled", "the entry it took is switched off through the next turn")
+	assert_eq(g.damage(), 30, "at the number it holds")
+	assert_eq(sk.mechs[0].face().describe(), "disabled", "the entry it took is Jammed through the next turn, the blow's own rider")
 	sk.end_round()
 	assert_eq(sk.mechs[0].unit.hull, 460, "the swing lands thirty")
-	assert_true(g.held.is_empty(), "and spends what it took")
+	assert_false(Effects.has(g, "appropriated"), "and spends what it took")
 	sk.start_round()
 	assert_eq(sk.mechs[0].face().describe(), "30", "the entry is back the turn after")
 
 
-func test_a_stolen_weapon_swings_at_its_number_and_anything_else_is_a_fake() -> void:
+func test_a_taken_weapon_swings_at_its_number_and_anything_else_is_a_fake() -> void:
 	assert_eq(Skirmish.stolen_number(Face.attack(5, L)), 5, "a flat five for five")
 	assert_eq(Skirmish.stolen_number(Face.shield(8)), 1, "a shield is a fake, for one")
 	assert_eq(Skirmish.stolen_number(Face.vent(6)), 1, "a vent too")
@@ -198,12 +201,13 @@ func test_a_stolen_weapon_swings_at_its_number_and_anything_else_is_a_fake() -> 
 	sk.begin()
 	sk.start_round()
 	sk.end_round()
-	assert_true(bool(g.held.get("fake", false)), "it took a shield: a fake")
+	assert_eq(Effects.stacks_of(g, "appropriated"), 1, "it took a shield: a fake, for one")
+	assert_true("\n".join(sk.log).contains(", a fake"), "and the log says so")
 	sk.start_round()
 	assert_eq(g.damage(), 1, "swung for one")
 
 
-func test_a_ward_turns_a_steal_away_and_with_nothing_taken_the_roll_decides() -> void:
+func test_a_ward_turns_a_take_away_and_with_nothing_taken_the_roll_decides() -> void:
 	var sk := Skirmish.new(1, 3)
 	var u := _mech("A", Die.single(Face.attack(30, L)))
 	sk.add_mech(u)
@@ -214,9 +218,184 @@ func test_a_ward_turns_a_steal_away_and_with_nothing_taken_the_roll_decides() ->
 	Effects.grant_buff(u, "ward", 1, "test", sk.round)
 	sk.end_round()
 	assert_eq(u.hull, 490, "the blow's damage lands through a Ward")
-	assert_true(g.held.is_empty(), "but the Ward turns the steal away")
+	assert_false(Effects.has(g, "appropriated"), "but the Ward turns the take away, the step as the rider")
+	assert_false(Effects.is_entry_disabled(u, 0), "and the jam with it")
 	sk.start_round()
-	assert_eq(str(g.action.get("id", "")), "disarm", "nothing taken, no swing: the roll decides")
+	assert_eq(str(g.action.get("id", "")), "collect", "nothing taken, no swing: the roll decides")
+
+
+## What it holds is a buff (the same mark): a Purge lowers it, and the swing lands what is left.
+func test_a_purge_lowers_what_a_foe_took_and_the_swing_with_it() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(30, L))))
+	var g := _collector()
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	sk.end_round()
+	sk.start_round()
+	assert_eq(g.damage(), 30, "the borrowed swing at what it holds")
+	Effects.purge(g, 12)
+	assert_eq([Effects.stacks_of(g, "appropriated"), g.damage()], [18, 18], "a Purge takes its stacks, and the intent follows")
+	sk.end_round()
+	assert_eq(sk.mechs[0].unit.hull, 490 - 18, "the swing lands what was left")
+	# One piece at a time: a second take replaces the first.
+	sk.start_round()
+	g.action = g.actions[0]
+	sk.mechs[0].die = Die.single(Face.attack(7, L))
+	sk.mechs[0].face_index = 0
+	Effects.stack(g, Effects.STATUS["appropriated"], Effects.SKIRMISH, "test", 40, Effects.DECAY_NONE)
+	g.target = sk.mechs[0]
+	sk.end_round()
+	assert_eq(Effects.stacks_of(g, "appropriated"), 7, "what it takes replaces what it held")
+
+
+# ---------------------------------------------------------------- a move as a list of steps (16 November)
+
+## A move is a short list of steps (Ryan, 16 November: "Yes, go with the steps if you think that's
+## best"): its first as a move was always written, a blow or one special, then what it does also,
+## each a special's effect by the rules that effect always had. Synthetic moves.
+func _spellblade() -> Foe:
+	var f := Foe.make("spellblade", 900, 6)
+	f.actions = [_move("hex_cut", {"also": [{"effect": "scorch_all", "value": 2}, {"effect": "brace", "value": 3}]})]
+	return f
+
+
+func test_a_move_strikes_and_then_does_what_it_does_also_in_order() -> void:
+	var sk := Skirmish.new(1, 3)
+	var a := _mech("A", Die.single(Face.blank()))
+	var b := _mech("B", Die.single(Face.blank()))
+	sk.add_mech(a)
+	sk.add_mech(b)
+	var f := _spellblade()
+	sk.add_foes([f])
+	sk.begin()
+	sk.start_round()
+	f.target = sk.mechs[0]
+	assert_eq(Foe.steps_of(f.action).size(), 3, "three steps: the blow and two more")
+	assert_eq(Foe.effects_of(f.action).map(func(st) -> String: return str(st["effect"])), ["scorch_all", "brace"], "the two that are effects")
+	assert_true(Foe.does(f.action, "brace") and not Foe.does(f.action, "rally"), "a move does what any step of it does")
+	assert_true(f.attacks() and not f.acts_on_nobody(), "it is a blow, aimed")
+	assert_eq(sk.incoming_for(sk.mechs[0]), 6, "and its intent is its blow's number")
+	sk.end_round()
+	assert_eq([a.hull, b.hull], [494, 500], "the blow on its pick alone")
+	assert_eq([Effects.stacks_of(a, "scorched"), Effects.stacks_of(b, "scorched")], [2, 2], "then every machine scorched, the step's own reach")
+	assert_eq(Effects.stacks_of(f, "braced"), 3, "then its own armour")
+	var said := "\n".join(sk.log)
+	assert_true(said.find("scorched ×2") < said.find("Armoured ×3") and said.find("scorched ×2") >= 0, "in the order written")
+	assert_eq(sk.turn_specials.size(), 0, "a blow's steps add no announcement of their own: the blow named the move")
+
+
+func test_a_special_may_do_more_and_is_announced_once() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(9, L))))
+	var f := Foe.make("hexer", 900, 6)
+	f.hp = 800
+	f.actions = [_move("jab"), {"id": "mend_and_mute", "name": "Mend and Mute", "kind": "defend", "effect": "recover", "value": 10, "weight": 1, "text": "",
+		"also": [{"effect": "jam"}]}]
+	sk.add_foes([f])
+	sk.begin()
+	sk.start_round()
+	f.action = f.actions[1]
+	f.target = sk.mechs[0]
+	assert_false(f.acts_on_nobody(), "one step lands on its pick, so the move is aimed and shows intent")
+	assert_true(f.intent_on(sk.mechs[0].unit), "on the machine it will jam")
+	sk.end_round()
+	assert_eq(f.hp, 810, "it mends")
+	assert_true(Effects.is_entry_disabled(sk.mechs[0].unit, 0), "and the entry its pick shows is Jammed")
+	assert_eq(sk.turn_specials.size(), 1, "one announcement for the move")
+	assert_true("\n".join(sk.log).contains("Mend and Mute, A's 9 is jammed"), "the step speaks under the move's name")
+
+
+func test_a_step_aimed_at_a_machine_the_blow_wrecked_lands_on_nobody_and_a_ward_turns_a_step() -> void:
+	var sk := Skirmish.new(1, 3)
+	var weak := _mech("A", Die.single(Face.attack(9, L)), 0, 3)
+	var b := _mech("B", Die.single(Face.attack(9, L)))
+	sk.add_mech(weak)
+	sk.add_mech(b)
+	var f := Foe.make("hexer", 900, 6)
+	f.actions = [_move("cut_and_stoke", {"also": [{"effect": "ablate", "value": 2}, {"effect": "regenerate", "value": 2}]})]
+	sk.add_foes([f])
+	sk.begin()
+	sk.start_round()
+	f.target = sk.mechs[0]
+	f.hp = 800
+	sk.end_round()
+	assert_false(sk.mechs[0].alive(), "the blow wrecks its pick")
+	assert_true("\n".join(sk.log).contains("no machine stands to take it"), "so the step aimed at it lands on nobody")
+	assert_eq(Effects.stacks_of(b, "ablating_mech"), 0, "and never on another machine")
+	assert_eq(f.hp, 802, "the step on its own side acts all the same, its Regenerating paying as its turn ends")
+	# A Ward turns a step away as it turns the same effect as a move of its own.
+	sk.start_round()
+	f.target = sk.mechs[1]
+	Effects.grant_buff(b, "ward", 1, "test", sk.round)
+	sk.end_round()
+	assert_eq(Effects.stacks_of(b, "ablating_mech"), 0, "warded: the step's Ablating is turned away")
+	assert_eq(b.hull, 494, "the blow's damage lands")
+
+
+func test_the_round_preview_walks_a_moves_steps_and_the_rules_of_announcing_read_them() -> void:
+	var sk := Skirmish.new(1, 3)
+	var a := _mech("A", Die.single(Face.blank()))
+	sk.add_mech(a)
+	var f := _spellblade()
+	var roarer := Foe.make("roarer", 900, 2)
+	roarer.actions = [_move("bite"), _move("snarl", {"also": [{"effect": "drain_rerolls", "value": 2}]})]
+	sk.add_foes([f, roarer])
+	sk.begin()
+	sk.start_round()
+	f.target = sk.mechs[0]
+	roarer.action = roarer.actions[0]
+	roarer.target = sk.mechs[0]
+	var pv := sk.preview_round()
+	assert_eq(int(pv["mechs"][0]["hull_after"]), 500 - 6 - 2, "the preview plays the round, steps and all")
+	assert_eq(Effects.stacks_of(a, "scorched"), 0, "on a copy: the fight is untouched")
+	# A step that drains rerolls counts as a drain announced, and is held to the round's two.
+	roarer.action = roarer.actions[1]
+	assert_eq(sk.drain_announced(f), 2, "the step's rerolls are counted with the drains out")
+	var third := Foe.make("third", 900, 2)
+	third.actions = [_move("nip"), _move("howl_down", {"also": [{"effect": "drain_rerolls", "value": 1}]})]
+	assert_false(sk.legal_actions(third, [f, roarer]).any(func(x) -> bool: return str(x.get("id", "")) == "howl_down"), "so no third move that drains is announced past them")
+	sk.end_round()
+	assert_eq(sk.reroll_debt, 2, "and the step takes them")
+
+
+## The intent wears the marks of what a move does also, beside its blow's own riders, once each.
+func test_an_intent_wears_the_marks_of_a_moves_steps() -> void:
+	var g := _collector()
+	g.action = g.actions[0]
+	var marks: Array = SkirmishScreen.intent_riders(g).map(func(row) -> String: return str(row[0]))
+	assert_eq(marks, [Terms.glyph("jam"), Terms.glyph("appropriated")], "the blow's jam, then the take")
+	var f := Foe.make("hexer", 9, 3)
+	f.action = _move("cut", {"keywords": ["ablate"], "ablate": 2, "also": [{"effect": "ablate", "value": 3}, {"effect": "scorch_all", "value": 2}, {"effect": "brace", "value": 1}]})
+	var rows: Array = SkirmishScreen.intent_riders(f)
+	assert_eq(rows.map(func(row) -> String: return str(row[0])), [Terms.glyph("ablate"), Terms.glyph("scorch")], "a mark the blow already wears is not worn twice, and a step with no term wears none")
+	assert_eq(str(rows[1][1]), "2", "a step that lays stacks says how many")
+	f.action = {"id": "mute", "name": "Mute", "kind": "defend", "effect": "recover", "value": 3, "weight": 1, "text": "", "also": [{"effect": "jam"}]}
+	assert_eq(SkirmishScreen.intent_riders(f).map(func(row) -> String: return str(row[0])), [Terms.glyph("jam")], "a special's steps too")
+
+
+func test_the_content_loads_a_moves_steps_and_the_validator_holds_them() -> void:
+	var db := ContentDB.new()   # a copy of its own: the shared content is never written to
+	db.load_dir(ContentDB.DIR)
+	db.foes["x_steps"] = {"id": "x_steps", "name": "X", "faction": "meadow", "hp": 9, "attack": 3, "rank": "front", "codex": "", "flavour": "", "design": {"fantasy": "a test's"},
+		"actions": [{"id": "a", "name": "A", "kind": "attack", "text": "", "status": "implemented",
+			"also": [{"effect": "brace", "value": 2}, {"effect": "golden", "value": 2, "rounds": 2}]}]}
+	assert_true(db.validate().filter(func(e) -> bool: return e.contains("x_steps")).is_empty(), "a blow with two steps is whole")
+	var made := db.make_foe("x_steps")
+	var also: Array = made.actions[0].get("also", [])
+	assert_eq(also.size(), 2, "the steps load with the move")
+	assert_eq([str(also[0]["effect"]), int(also[0]["value"]), str(also[0]["kind"]), str(also[0]["name"])], ["brace", 2, "defend", "A"], "each with its effect, its number, its kind and its move's name")
+	assert_eq(int(also[1]["rounds"]), 2, "and the fields its effect reads")
+	db.foes["x_steps"]["actions"][0]["also"] = [{"effect": "brace"}, {"effect": "nonsense"}, {"effect": "rally", "value": 1}, {"effect": "jam", "factor": 2}, "brace"]
+	var errs: Array = db.validate().filter(func(e) -> bool: return e.contains("x_steps"))
+	assert_true(errs.any(func(e) -> bool: return e.contains("also brace: a brace's value is the armour it grants")), "a step is held to its effect's own rules")
+	assert_true(errs.any(func(e) -> bool: return e.contains("also nonsense: a step's effect is a special's")), "an unknown effect is refused")
+	assert_true(errs.any(func(e) -> bool: return e.contains("also rally: rally lays a status that halves")), "a rally as a step says 2 at the least, as a rally does")
+	assert_true(errs.any(func(e) -> bool: return e.contains("also jam: a step knows")), "a step carries its effect's fields and no blow's")
+	assert_true(errs.any(func(e) -> bool: return e.contains("each step of also is an object that names its effect")), "and a step is an object")
+	db.foes["x_steps"]["actions"][0]["also"] = []
+	assert_true(db.validate().any(func(e) -> bool: return e.contains("x_steps") and e.contains("also lists what the move does after its first step")), "an empty list is refused")
 
 
 func test_a_swallow_takes_a_machine_out_of_the_fight_for_its_rounds() -> void:
@@ -315,7 +494,8 @@ func test_a_save_keeps_a_follow_up_a_held_piece_and_a_swallow() -> void:
 		if f.display_name == "gilgamesh":
 			cg = f
 	assert_eq(cg.next_move, "borrowed", "the follow-up survives a save")
-	assert_eq(int(cg.held.get("power", 0)), 30, "and what it took")
+	assert_eq(Effects.stacks_of(cg, "appropriated"), 30, "and what it took")
+	assert_eq((cg.actions[0].get("also", []) as Array).size(), 1, "and its move's steps")
 	assert_true(Skirmish.is_swallowed(copy.mechs[1]), "and a swallowed machine")
 
 
@@ -407,14 +587,14 @@ func test_the_validator_refuses_a_broken_follow_up_a_loose_swing_and_a_long_swal
 	db.load_dir(ContentDB.DIR)
 	db.foes["x_test"] = {"id": "x_test", "name": "X", "faction": "meadow", "hp": 9, "attack": 3, "codex": "", "flavour": "", "design": {},
 		"actions": [{"id": "a", "name": "A", "kind": "attack", "then": "nowhere", "text": "", "status": "implemented"},
-			{"id": "b", "name": "B", "kind": "attack", "power": "held", "text": "", "status": "implemented"},
+			{"id": "b", "name": "B", "kind": "attack", "power": "appropriated", "text": "", "status": "implemented"},
 			{"id": "c", "name": "C", "kind": "debuff", "effect": "swallow", "value": 4, "text": "", "status": "implemented"},
 			{"id": "d", "name": "D", "kind": "attack", "power": "borrowed", "text": "", "status": "implemented"}]}
 	var errs: Array = db.validate().filter(func(e) -> bool: return e.contains("x_test"))
 	assert_true(errs.any(func(e) -> bool: return e.contains("then names 'nowhere'")), "a follow-up must be a move of its own")
-	assert_true(errs.any(func(e) -> bool: return e.contains("a borrowed swing (power held) is the follow-up of a blow that steals")), "a borrowed swing must follow a steal")
+	assert_true(errs.any(func(e) -> bool: return e.contains("a borrowed swing (power appropriated) is the follow-up of a move that takes")), "a borrowed swing must follow a take")
 	assert_true(errs.any(func(e) -> bool: return e.contains("a swallow's value is the rounds its machine is out, 1 to 3")), "a swallow is held short")
-	assert_true(errs.any(func(e) -> bool: return e.contains("the one word it knows is held")), "power knows one word")
+	assert_true(errs.any(func(e) -> bool: return e.contains("names the status its number is")), "power names a status a move may swing")
 
 
 func test_the_harness_fields_the_boss_it_picks_whichever_of_its_domains() -> void:
@@ -450,7 +630,7 @@ func test_the_codex_says_a_follow_up_pair_and_a_borrowed_swing() -> void:
 	var g := _collector()
 	lines = EntryReadout.move_lines(g, g.actions[1], db)
 	assert_true(str(lines[1].get("parts", [{}])[0].get("text", "")) == "Attack: what it took", "a borrowed swing says its number is what it took")
-	g.held = {"name": "gun", "power": 6, "fake": false}
+	Effects.stack(g, Effects.STATUS["appropriated"], Effects.SKIRMISH, "test", 6, Effects.DECAY_NONE)
 	lines = EntryReadout.move_lines(g, g.actions[1], db, true)
 	assert_false(str(lines[1].get("parts", [{}])[0].get("text", "")) == "Attack: what it took", "held, the intent shows the number")
 

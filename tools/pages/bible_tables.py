@@ -39,12 +39,13 @@ PASSIVE_EFFECTS = {"seal_form": ("sealed", "machine"),
                    "paradox": ("paradox", "foe"), "muster": ("muster", "machine"),
                    "fill_hopper": ("hopper", "machine"), "hopper_plate": ("braced", "machine"),
                    "mine_on_spend": ("mine", "foe")}   # stack_status names its own, on the machine; the Reverberant Payload's Mine (9 November)
-FOE_KEYWORDS = {"scorch": "scorched", "ablate": "ablating", "jam": "jammed", "corrupt": "corrupted", "brittle": "brittled", "steal": "jammed", "expose": "exposure"}
+FOE_KEYWORDS = {"scorch": "scorched", "ablate": "ablating", "jam": "jammed", "corrupt": "corrupted", "brittle": "brittled", "expose": "exposure"}
 FOE_EFFECTS_ON_MACHINES = {"ablate": "ablating", "scorch_all": "scorched", "corrupt_all": "corrupted",
                            "jam": "jammed", "swallow": "swallowed", "expose": "exposure"}
 FOE_EFFECTS_ON_FOES = {"brace": "braced", "brace_all": "braced", "harden": "braced", "harden_all": "braced",
                        "rally": "kindled", "revive_once": "risen", "revive_once_ally": "risen",
-                       "prime": "primed", "barrier": "barrier", "ward_all": "ward", "regenerate": "regenerating", "golden": "golden"}   # the ladder's (28 October); golden the Thunder Ape's (4 November)
+                       "prime": "primed", "barrier": "barrier", "ward_all": "ward", "regenerate": "regenerating", "golden": "golden",
+                       "appropriate": "appropriated"}   # the ladder's (28 October); golden the Thunder Ape's (4 November)
 # A special that is a rider's own mechanic, played as a whole move, counts under the rider.
 MOVE_AS_KEYWORD = {"ablate": "ablate", "jam": "jam", "scorch_all": "scorch", "corrupt_all": "corrupt", "swallow": "swallow", "merge": "merge", "dispel": "dispel", "golden": "golden_rage"}
 VIA_STATUS = {"primed": [("ablating", "foe")], "paradox": [("suppressed", "foe"), ("numbed", "foe")]}
@@ -75,7 +76,7 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            # A printed cooldown: the rounds an entry sits out after its spend (12 November); Rapid's own
            # switch-off is never printed.
            ("cooldown", "Cooldown", lambda f: "cooldown" in f)]
-FOE_ONLY = ["scorch", "ablate", "jam", "corrupt", "brittle", "steal", "destroy", "drain", "dispel", "swallow", "merge", "golden_rage", "self_destruct", "all", "countdown", "grudge", "last_act", "parts"]
+FOE_ONLY = ["scorch", "ablate", "jam", "corrupt", "brittle", "destroy", "drain", "dispel", "swallow", "merge", "golden_rage", "self_destruct", "all", "countdown", "grudge", "last_act", "parts"]
 FOE_ONLY_TEXT = {"ablate": "Keyword with a number on a foe's attack: each blow that lands leaves that many stacks of Ablating on the machine it hits (Ablating, above).",
                  "brittle": "Keyword with a number on a foe's attack: each blow that lands leaves that many stacks of Brittle on the machine it hits (Brittle, above).",
                  "dispel": "A foe's move of its own, never a rider on a blow and never a last act's: Purge N, the rule ours runs, N stacks off every buff the machine it lands on carries, for good, whatever granted it; its Abilities and its stores stay; a Ward turns it away."}
@@ -214,14 +215,16 @@ def tally(words):
                 t.count(k, "foe", planned, name)
                 if k in FOE_KEYWORDS:
                     t.grant(FOE_KEYWORDS[k], "machine", move, "foe", planned, foe["id"], whom)
-            e = a.get("effect")
-            if e in FOE_EFFECTS_ON_MACHINES:
-                t.grant(FOE_EFFECTS_ON_MACHINES[e], "machine", move, "foe", planned, foe["id"], whom)
-            if e in FOE_EFFECTS_ON_FOES:
-                t.grant(FOE_EFFECTS_ON_FOES[e], "foe", move, "foe", planned, foe["id"], whom)
-            if e in MOVE_AS_KEYWORD:
-                row = t.count(MOVE_AS_KEYWORD[e], "foe", planned, name)
-                row["moves"][1 if planned else 0] += 1
+            # The move's own special and what it does also (16 November: a move is a short list
+            # of steps), each effect counted where it lands.
+            for e in [a.get("effect")] + [st.get("effect") for st in a.get("also") or []]:
+                if e in FOE_EFFECTS_ON_MACHINES:
+                    t.grant(FOE_EFFECTS_ON_MACHINES[e], "machine", move, "foe", planned, foe["id"], whom)
+                if e in FOE_EFFECTS_ON_FOES:
+                    t.grant(FOE_EFFECTS_ON_FOES[e], "foe", move, "foe", planned, foe["id"], whom)
+                if e in MOVE_AS_KEYWORD:
+                    row = t.count(MOVE_AS_KEYWORD[e], "foe", planned, name)
+                    row["moves"][1 if planned else 0] += 1
             if int(a.get("countdown", 0)) > 0:
                 t.count("countdown", "foe", planned, name)
             if int(a.get("per_kill", 0)) > 0:

@@ -1929,28 +1929,31 @@ func ward_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 	# "Should stop all riders, even from non-damaging attacks"): a Stoke's Ablating, a Stone's
 	# switch-off or a purge on its pick; an Eruption's Scorched and a Diamond Dust's
 	# Corrupted on every machine.
+	# Every step of a move that is an effect, its own special or what it does also (16
+	# November: a move is a short list of steps).
 	for a in sk.field_foes():
-		if not a.alive() or a.is_suppressed() or a.attacks() or a.gathering():
+		if not a.alive() or a.is_suppressed() or a.gathering():
 			continue
-		var value := maxi(1, int(a.action.get("value", 0)))
 		var on_it: bool = a.target == who
-		match str(a.action.get("effect", "")):
-			"ablate":
-				if on_it:
-					score += float(ablate * value * (value + 1)) / 2.0 * ABLATED_WEIGHT
-			"jam":
-				if on_it:
-					score += _raw_attack_mean(who) / float(n)
-			"dispel":
-				if on_it:
-					score += _purge_stakes(who)
-			"expose":
-				if on_it:
-					score += exposed_stakes(sk, who)
-			"scorch_all":
-				score += float(scorch * value) * BANK_WEIGHT
-			"corrupt_all":
-				score += float(Skirmish.corrupt_bite() * value) * HULL_WEIGHT * CLEANSE_ROUNDS / float(n)
+		for st in Foe.effects_of(a.action):
+			var value := maxi(1, int(st.get("value", 0)))
+			match str(st.get("effect", "")):
+				"ablate":
+					if on_it:
+						score += float(ablate * value * (value + 1)) / 2.0 * ABLATED_WEIGHT
+				"jam":
+					if on_it:
+						score += _raw_attack_mean(who) / float(n)
+				"dispel":
+					if on_it:
+						score += _purge_stakes(who)
+				"expose":
+					if on_it:
+						score += exposed_stakes(sk, who)
+				"scorch_all":
+					score += float(scorch * value) * BANK_WEIGHT
+				"corrupt_all":
+					score += float(Skirmish.corrupt_bite() * value) * HULL_WEIGHT * CLEANSE_ROUNDS / float(n)
 	return score
 
 

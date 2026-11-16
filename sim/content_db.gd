@@ -335,7 +335,7 @@ func make_foe(foe_id: String) -> Foe:
 			if a.has("countdown"):
 				act["countdown"] = int(a["countdown"])
 			if a.has("power"):
-				act["power"] = str(a["power"])   # a borrowed swing: the number of what a steal took (30 October)
+				act["power"] = str(a["power"])   # a borrowed swing: its number is a status of the foe's own, what it took (30 October; Appropriated since 16 November)
 			if a.has("per_kill"):
 				act["per_kill"] = int(a["per_kill"])   # a point a foe the team has killed this fight (the Pilgrim's Karma, 30 October)
 		else:
@@ -346,6 +346,25 @@ func make_foe(foe_id: String) -> Foe:
 				act["foe"] = Foe.kinds_named(a) if a["foe"] is Array else str(a["foe"])   # a merge names a list of kinds
 			if a.has("count"):
 				act["count"] = int(a["count"])
+			if a.has("rounds"):
+				act["rounds"] = int(a["rounds"])   # a golden rage's rounds
+		# What the move does also (16 November: a move is a short list of steps), each a special's
+		# effect with the fields it reads, speaking under the move's name.
+		if a.get("also", null) is Array:
+			var also: Array = []
+			for st in a["also"]:
+				if not (st is Dictionary):
+					continue
+				var step := {"name": act["name"], "effect": str(st.get("effect", "")), "kind": Foe.effect_kind(str(st.get("effect", ""))), "value": int(st.get("value", 0))}
+				if st.has("foe"):
+					step["foe"] = Foe.kinds_named(st) if st["foe"] is Array else str(st["foe"])
+				if st.has("count"):
+					step["count"] = int(st["count"])
+				if st.has("rounds"):
+					step["rounds"] = int(st["rounds"])
+				also.append(step)
+			if not also.is_empty():
+				act["also"] = also
 		# The move's own sense and condition (2 October), when it has them.
 		if a.has("aim"):
 			act["aim"] = str(a["aim"])
@@ -1689,7 +1708,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		var rg = fd["regenerates"]
 		if kind != "attack" or not (rg is Dictionary) or str(rg.get("status", "")) != "regenerating" \
 				or int(rg.get("stacks", 0)) <= 0 or rg.has("shield") or rg.has("rounds"):
-			errs.append("%s: regenerates is an attack's rider on its own machine: {status: regenerating, stacks, positive}: a point of shield a stack as each round opens, a stack fading then (its shield a round and its rounds went on 15 November)" % where)
+			errs.append("%s: regenerates is an attack's rider on its own machine: {status: regenerating, stacks, positive}: a point of shield a stack as each of its turns ends, a stack fading then (its shield a round and its rounds went on 15 November)" % where)
 	if fd.has("ally_action"):
 		var deal = fd["ally_action"]
 		if kind != "buff" or not (deal is Dictionary) or int(deal.get("rerolls", 0)) <= 0:
@@ -2360,18 +2379,37 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 				errs.append("%s: then names '%s', which names a follow-up of its own; follow-ups are one deep" % [aw, named])
 			elif str(found.get("status", "")) != str(a.get("status", "")):
 				errs.append("%s: then names '%s', whose status differs; a move and its follow-up land together" % [aw, named])
-		# A borrowed swing (30 October): an attack whose number is what a steal took, so it comes
-		# only as the follow-up of a blow that steals.
+		# A borrowed swing (30 October): an attack whose number is a status of the foe's own, what
+		# it took (Appropriated), so it comes only as the follow-up of a move that takes.
 		if a.has("power"):
-			if str(a["power"]) != "held" or str(a.get("kind", "attack")) != "attack":
-				errs.append("%s: power is an attack's, and the one word it knows is held" % aw)
+			var held := str(a["power"])
+			if not POWER_STATUSES.has(held) or str(a.get("kind", "attack")) != "attack":
+				errs.append("%s: power is an attack's, and names the status its number is: one of %s" % [aw, ", ".join(POWER_STATUSES.keys())])
 			else:
-				var stolen_by := false
+				var taken_by := false
 				for o in acts:
-					if o is Dictionary and str(o.get("then", "")) == str(a.get("id", "")) and Array(o.get("keywords", [])).has("steal"):
-						stolen_by = true
-				if not stolen_by:
-					errs.append("%s: a borrowed swing (power held) is the follow-up of a blow that steals; name it in that blow's then" % aw)
+					if o is Dictionary and str(o.get("then", "")) == str(a.get("id", "")) and Foe.does(o, str(POWER_STATUSES[held])):
+						taken_by = true
+				if not taken_by:
+					errs.append("%s: a borrowed swing (power %s) is the follow-up of a move that takes (%s among its steps); name it in that move's then" % [aw, held, str(POWER_STATUSES[held])])
+		# What a move does also (16 November: a move is a short list of steps): each a special's
+		# effect with the fields it reads, after the move's first step, whatever that is.
+		if a.has("also"):
+			if not (a["also"] is Array) or (a["also"] as Array).is_empty():
+				errs.append("%s: also lists what the move does after its first step, each an object with its effect" % aw)
+			else:
+				for st in a["also"]:
+					if not (st is Dictionary) or str(st.get("effect", "")).is_empty():
+						errs.append("%s: each step of also is an object that names its effect" % aw)
+						continue
+					var sw := "%s also %s" % [aw, str(st["effect"])]
+					for key in (st as Dictionary).keys():
+						if not ALSO_KEYS.has(str(key)):
+							errs.append("%s: a step knows %s, got '%s'" % [sw, ", ".join(ALSO_KEYS), str(key)])
+					if Foe.effect_kind(str(st["effect"])).is_empty():
+						errs.append("%s: a step's effect is a special's, one of %s" % [sw, ", ".join(_all_effects())])
+					elif str(a.get("status", "")) == "implemented":
+						_validate_effect(sw, st, str(st["effect"]), errs)
 		if str(a.get("status", "")) == "implemented":
 			if str(a.get("kind", "")) != "attack":
 				# A defend, buff or debuff names an effect the engine runs and the fields it reads.
@@ -2379,55 +2417,17 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 				var effect := str(a.get("effect", ""))
 				if not Foe.ACTION_EFFECTS.get(kind, []).has(effect):
 					errs.append("%s: a %s action's effect must be one of %s, got '%s'" % [aw, kind, ", ".join(Foe.ACTION_EFFECTS.get(kind, [])), effect])
-				# A priming and a regrowth say their number; a Barrier and a Ward say none (28 October).
-				if (effect == "prime" or effect == "regenerate" or effect == "golden") and int(a.get("value", 0)) < 1:
-					errs.append("%s: %s says its number: value, 1 or more" % [aw, effect])
-				# A golden rage (4 November) lasts the rounds it says, 1 to 5, three unsaid.
-				if effect == "golden" and a.has("rounds") and (int(a["rounds"]) < 1 or int(a["rounds"]) > 5):
-					errs.append("%s: golden's rounds are the rounds the rage lasts, 1 to 5" % aw)
-				if (effect == "barrier" or effect == "ward_all") and a.has("value"):
-					errs.append("%s: %s takes no value" % [aw, effect])
-				# A cleanse (28 October) takes every mark the team laid, so it says no number, and
-				# its condition, if any, is the one it needs.
+				_validate_effect(aw, a, effect, errs)
+				# A cleanse's condition, if any, is the one it needs (28 October).
 				if effect == "cleanse":
-					if a.has("value"):
-						errs.append("%s: a cleanse takes every mark the team laid: no value" % aw)
 					for w in Foe.whens_of(a):
 						if str(w) != "ally_marked":
 							errs.append("%s: a cleanse's condition, if any, is ally_marked, got '%s'" % [aw, str(w)])
-				if effect == "summon" and not foes.has(str(a.get("foe", ""))):
-					errs.append("%s: summon names unknown foe '%s'" % [aw, str(a.get("foe", ""))])
-				# A merge (30 October) names the kinds it takes in, one id or a list, and the lift a
-				# kind gives its next move.
-				if effect == "merge":
-					var kinds := Foe.kinds_named(a)
-					if kinds.is_empty():
-						errs.append("%s: a merge names the kinds it takes in: foe, an id or a list" % aw)
-					for k in kinds:
-						if not foes.has(str(k)):
-							errs.append("%s: merge names unknown foe '%s'" % [aw, str(k)])
-					if int(a.get("value", 0)) < 1:
-						errs.append("%s: a merge says how much harder its next move hits a foe taken in: value, 1 or more" % aw)
-				# A brace is armour in stacks of Armoured (16 October), a point a stack since 18
-				# October, so its value is its stacks: a positive number.
-				if effect == "brace" or effect == "brace_all":
-					var v := int(a.get("value", 0))
-					if v <= 0:
-						errs.append("%s: a brace's value is the armour it grants, in stacks of Armoured: a positive number, got %d" % [aw, v])
-				if int(a.get("value", 0)) < 0 or int(a.get("count", 1)) < 1 or int(a.get("weight", 1)) < 1:
+				if int(a.get("weight", 1)) < 1:
 					errs.append("%s: value cannot be negative; count and weight are at least 1" % aw)
-				# What an effect lays, it says: the stacks, or the rerolls a theft takes (24 October).
-				if ["ablate", "scorch_all", "corrupt_all", "drain_rerolls"].has(effect) and int(a.get("value", 0)) <= 0:
-					errs.append("%s: %s says what it lays: value, a positive number" % [aw, effect])
-				# A swallow (30 October) says the rounds its machine is out, 1 to 3: hard control on
-				# the team, held short.
-				if effect == "swallow" and (int(a.get("value", 0)) < 1 or int(a.get("value", 0)) > 3):
-					errs.append("%s: a swallow's value is the rounds its machine is out, 1 to 3" % aw)
 				for key in ["factor", "strikes", "keywords", "countdown"] + Foe.NUMBERED_RIDERS:
 					if a.has(key):
 						errs.append("%s: '%s' belongs to an attack action" % [aw, key])
-				if _halves(effect) and int(a.get("value", 0)) < HALVING_MINIMUM:
-					errs.append("%s: %s lays a status that halves, so its value is %d at the least: one stack is gone at its first halving" % [aw, effect, HALVING_MINIMUM])
 			else:
 				implemented_attacks += 1
 				# An attack scales the foe's base attack: factor, not a value of its own, so the
@@ -2458,6 +2458,67 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 						errs.append("%s: a %s rider lays a status that halves, so it says %d at the least: one stack is gone at its first halving" % [aw, k, HALVING_MINIMUM])
 	if implemented_attacks < 1:
 		errs.append("%s: needs at least one implemented attack action" % where)
+
+
+## The statuses a move's `power` may name, each with the step that grants it: a borrowed swing's
+## number is what its foe took (Appropriated, the `appropriate` step).
+const POWER_STATUSES := {"appropriated": "appropriate"}
+## What a step of `also` may carry beside its effect.
+const ALSO_KEYS := ["effect", "value", "foe", "count", "rounds"]
+
+
+## Every effect a special or a step may name, across the kinds.
+static func _all_effects() -> Array:
+	var out: Array = []
+	for k in Foe.ACTION_EFFECTS.keys():
+		out.append_array(Foe.ACTION_EFFECTS[k])
+	return out
+
+
+## One effect's own fields, as the engine reads them: a special's, or a step's of a move's
+## `also`, by the same rules. `a` carries the effect's fields (value, foe, count, rounds).
+func _validate_effect(aw: String, a: Dictionary, effect: String, errs: Array[String]) -> void:
+	# A priming and a regrowth say their number; a Barrier and a Ward say none (28 October).
+	if (effect == "prime" or effect == "regenerate" or effect == "golden") and int(a.get("value", 0)) < 1:
+		errs.append("%s: %s says its number: value, 1 or more" % [aw, effect])
+	# A golden rage (4 November) lasts the rounds it says, 1 to 5, three unsaid.
+	if effect == "golden" and a.has("rounds") and (int(a["rounds"]) < 1 or int(a["rounds"]) > 5):
+		errs.append("%s: golden's rounds are the rounds the rage lasts, 1 to 5" % aw)
+	if (effect == "barrier" or effect == "ward_all" or effect == "appropriate") and a.has("value"):
+		errs.append("%s: %s takes no value" % [aw, effect])
+	# A cleanse (28 October) takes every mark the team laid, so it says no number.
+	if effect == "cleanse" and a.has("value"):
+		errs.append("%s: a cleanse takes every mark the team laid: no value" % aw)
+	if effect == "summon" and not foes.has(str(a.get("foe", ""))):
+		errs.append("%s: summon names unknown foe '%s'" % [aw, str(a.get("foe", ""))])
+	# A merge (30 October) names the kinds it takes in, one id or a list, and the lift a
+	# kind gives its next move.
+	if effect == "merge":
+		var kinds := Foe.kinds_named(a)
+		if kinds.is_empty():
+			errs.append("%s: a merge names the kinds it takes in: foe, an id or a list" % aw)
+		for k in kinds:
+			if not foes.has(str(k)):
+				errs.append("%s: merge names unknown foe '%s'" % [aw, str(k)])
+		if int(a.get("value", 0)) < 1:
+			errs.append("%s: a merge says how much harder its next move hits a foe taken in: value, 1 or more" % aw)
+	# A brace is armour in stacks of Armoured (16 October), a point a stack since 18
+	# October, so its value is its stacks: a positive number.
+	if effect == "brace" or effect == "brace_all":
+		var v := int(a.get("value", 0))
+		if v <= 0:
+			errs.append("%s: a brace's value is the armour it grants, in stacks of Armoured: a positive number, got %d" % [aw, v])
+	if int(a.get("value", 0)) < 0 or int(a.get("count", 1)) < 1:
+		errs.append("%s: value cannot be negative; count and weight are at least 1" % aw)
+	# What an effect lays, it says: the stacks, or the rerolls a theft takes (24 October).
+	if ["ablate", "scorch_all", "corrupt_all", "drain_rerolls"].has(effect) and int(a.get("value", 0)) <= 0:
+		errs.append("%s: %s says what it lays: value, a positive number" % [aw, effect])
+	# A swallow (30 October) says the rounds its machine is out, 1 to 3: hard control on
+	# the team, held short.
+	if effect == "swallow" and (int(a.get("value", 0)) < 1 or int(a.get("value", 0)) > 3):
+		errs.append("%s: a swallow's value is the rounds its machine is out, 1 to 3" % aw)
+	if _halves(effect) and int(a.get("value", 0)) < HALVING_MINIMUM:
+		errs.append("%s: %s lays a status that halves, so its value is %d at the least: one stack is gone at its first halving" % [aw, effect, HALVING_MINIMUM])
 
 
 ## What a foe's move lays that halves, by the rider or the special that lays
