@@ -47,7 +47,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1230 tests, 373,327 checks, green on `ccr-722ca9f0-yj8na3` (16 November, his
+- Tests: 1231 tests, 373,341 checks, green on `ccr-722ca9f0-yj8na3` (16 November, the
+  REROLL button's drain note, over main at `1aa34b3`). Before it, 1230 tests, 373,327
+  checks, green on the same branch (16 November, his
   twelfth round: the Web Bomb at the round's end, Appropriated as an Ability, the
   Antiquarian's names, over main at `23aebc7`). Before it, 1229 tests, 373,302 checks, green
   on the same branch (16 November, a foe's
@@ -1848,13 +1850,9 @@ The tasks are the to-do's; this is the index of what waits.
   Lure wins. No foe carries it. It is the foes' pass's (the to-do's Engine list).
 - His marks on the vocabulary's table (15 November, all eighty-two rows; the proposal's
   section 18 has each with its read, and the to-do's Engine list the build in parts), what
-  is not built yet, all of it the foes' pass's: a foe's Phased,
-  Drain, Steal and the drained reroll as their units' own text, countdowns an elite's or a
+  is not built yet, all of it the foes' pass's: a foe's Phased, countdowns an elite's or a
   boss's mostly, a fall free to do more than strike. Until built, content and the engine
   run each of those as before.
-- A foe's move need not take a component's shape (the same day; the bible's row on the foes'
-  rule set, the proposal's section 19): the direction for the foes' pass, with Claude's
-  proposal of a move as a short list of steps. Nothing of it is built.
 
 - The Fracture's prize (section 12); the escorts' marks (`docs/bosses_proposal.md`) and the
   promoted forms' one move more for seven of them (`docs/heroes_proposal.md`).
@@ -2001,10 +1999,16 @@ which his Borrowed Blade swings and spends. Appropriated is his Ability (his twe
 fight's start that no Purge reaches. The steal rider and the foe's own field for what
 it held left the engine. No number moved. The Marsh's Antiquarian's moves are Collect Call
 and Show Collection, so the name Collect is Gilgamesh's alone.
+**The REROLL button wears a drain** (16 November, his mark of 15 November: "There should be
+an effect on the reroll button when this happens"; a first cut, his to judge running:
+`RIFTGATE_DRAIN_DEBUG=1`): what the next round stands to lose under its count while a drain
+is announced, rings closing on its edge; a flash as each lands in the enemy's turn; and what
+the drains took, through the round they shortened. The five moves say it in their own text
+and no keyword names it.
 **First now: the foes' pass, the rest**
-(the to-do's line): Exposed's carriers, the countdowns off
-the rank and file, a fall free to do more than strike, and the moves that want steps, each
-proposed in chat with its foe.
+(the to-do's line): the content, put to him on 16 November as the proposal's section 28 and
+waiting on his marks: the countdowns off the rank and file, a fall free to do more than
+strike, Exposed's carriers, a foe's Phased and the moves that want steps, each with its foe.
 The table of every rider, buff and debuff (`docs/vocabulary_table.md`) stands with its page
 (Pages, below) as the record of his marks until the pass retires.
 With the pass, on his proposal, the tier-one

@@ -283,6 +283,13 @@ var _acted: Array = []
 var previewing := false
 ## Rerolls a foe's roar has cost the team for the coming round.
 var reroll_debt: int = 0
+## The rerolls a drain took from this round, as it opened: what the REROLL button's note says
+## while the round lasts (Ryan, 15 November: "There should be an effect on the reroll button
+## when this happens"). The count itself is rerolls_left.
+var drained: int = 0
+## The drains that landed in the enemy's turn just played, for the screen to strike the REROLL
+## button as each lands: {foe, value, seq}.
+var turn_drains: Array = []
 ## The team's rerolls banked as the last player's turn ended (Maverick's Playbook, the Giant
 ## Petrel's; built 30 October), back at the next round's start while a banker fights.
 var banked: int = 0
@@ -1424,6 +1431,7 @@ func start_round() -> void:
 	var from_bank := mini(banked, bank_cap())
 	banked = 0
 	rerolls_left = maxi(0, REROLLS_PER_ROUND + from_bank - reroll_debt)   # a roar last round costs rerolls now
+	drained = REROLLS_PER_ROUND + from_bank - rerolls_left   # what the drains took of this round's, never more than it had
 	if from_bank > 0:
 		log.append("the bank carries %d reroll%s" % [from_bank, "" if from_bank == 1 else "s"])
 	if reroll_debt > 0:
@@ -2590,6 +2598,7 @@ func _end_player_turn() -> void:
 func _enemy_turn() -> void:
 	turn_events.clear()
 	turn_specials.clear()
+	turn_drains.clear()
 	_seq = 0
 	# Foes act in the order they stand: front rank left to right, then the back rank. A
 	# suppressed foe skips, and a foe with two strikes lands two separate blows, so a shield
@@ -3966,6 +3975,8 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 			log.append("%s: %s, %d hit %d harder, halving each turn" % [f.display_name, str(a.get("name", "rallies")), rallied, value])
 		"drain_rerolls":
 			reroll_debt += maxi(0, value)
+			turn_drains.append({"foe": f, "value": maxi(0, value), "seq": _seq})
+			_seq += 1
 			log.append("%s: %s, the team loses %d reroll%s next round" % [f.display_name, str(a.get("name", "roars")), value, "" if value == 1 else "s"])
 		"golden":
 			# The Thunder Ape's Golden Rage (4 November): a mode for the rounds the move says, its

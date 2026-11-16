@@ -512,6 +512,10 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # to judge it running.
 # RIFTGATE_PULSE_DEBUG=1 (any run) keeps END TURN pulsing, on the map and in a fight, to judge it
 # running (it pulses on its own once nothing else is left to do).
+# RIFTGATE_DRAIN_DEBUG=1 (any skirmish) keeps a drain announced on the REROLL button ("NEXT -1"
+# under its count, rings closing in on its edge) and flashes it every three seconds as a drain
+# landing does, to judge them running; RIFTGATE_FOES=mandragora:2 fields the real thing, the
+# round after a Scream wearing "DRAINED -1".
 # RIFTGATE_MAP_VIEW=left|bottom (any run) turns the battle map for the run without touching the saved
 # MAP VIEW setting (MapOrient): the wall at the left with the rift at the right (flat-top, the default),
 # or at the bottom with the rift at the top; the battle screen's `queue` pose (two orders onto two

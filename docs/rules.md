@@ -757,6 +757,13 @@ On a machine:
   alike, and unspent it goes as the round's own do. While the die in hand would grant one the
   REROLL button pulses, lit even when it cannot be pressed, and its badge shows the count and
   the gain ("×1+1").
+- **A drained reroll** is no status and no keyword: the move that takes one says so in its own
+  text, and the REROLL button wears it. While a drain is announced the button says what the
+  next round stands to lose under its count ("NEXT -1": the drains still coming, summed, never
+  more than a round gives) and rings close in on its edge, since the loss can still be stopped;
+  a drain that will not land (its foe destroyed or Suppressed, its move changed) leaves the
+  note. As each lands in the enemy's turn the button flashes, and the rings stop with the
+  last. The round a drain shortened wears what it took ("DRAINED -1") for as long as it lasts.
 - **Charged** (buff): while it lasts the machine's weapons fire with Shock, shown on the die
   and landing as the keyword does, after the blows; a weapon fired spends a stack (a Rapid's
   or an Instant's second fire is a second fire, a salvo one, a passed turn's release none; equipment carries it not and spends

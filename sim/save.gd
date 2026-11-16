@@ -534,6 +534,7 @@ static func clone_skirmish(sk: Skirmish) -> Skirmish:
 	c.targeting_override = sk.targeting_override
 	c.foe_factory = sk.foe_factory
 	c.reroll_debt = sk.reroll_debt
+	c.drained = sk.drained
 	return c
 
 
@@ -544,7 +545,7 @@ static func clone_skirmish(sk: Skirmish) -> Skirmish:
 ## are left out, since the runner never undoes.
 static func snapshot_skirmish(sk: Skirmish) -> Dictionary:
 	var d := _fight_dict(sk)
-	d["tallies"] = {"destroyed": sk.destroyed, "seq": sk._seq, "reroll_debt": sk.reroll_debt,
+	d["tallies"] = {"destroyed": sk.destroyed, "seq": sk._seq, "reroll_debt": sk.reroll_debt, "drained": sk.drained,
 		"sponsorship": sk.sponsorship}
 	return d.duplicate(true)
 
@@ -566,6 +567,7 @@ static func restore_skirmish(sk: Skirmish, d: Dictionary) -> void:
 	sk.destroyed = int(t.get("destroyed", sk.destroyed))
 	sk._seq = int(t.get("seq", sk._seq))
 	sk.reroll_debt = int(t.get("reroll_debt", sk.reroll_debt))
+	sk.drained = int(t.get("drained", 0))   # this round's loss to a drain, for the REROLL button's note
 	var sp = t.get("sponsorship", null)
 	if sp is Dictionary:
 		for k in sp.keys():

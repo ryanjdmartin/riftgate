@@ -234,6 +234,9 @@ func _process(delta: float) -> void:
 	if HIT_DEBUG and _fight_t - _hit_debug_at > 1.5 and not _mech_views.is_empty():
 		_hit_debug_at = _fight_t
 		_hit_debug()
+	if DRAIN_DEBUG and _reroll_btn != null and _fight_t - _drain_debug_at > 3.0:
+		_drain_debug_at = _fight_t
+		_reroll_btn.strike()   # the landing's flash, every three seconds beside the standing rings
 	if _undo_waiting and Time.get_ticks_msec() >= _undo_from:
 		_undo_waiting = false
 		_refresh_undo()   # the spend's blow has played: the undo opens
@@ -1322,6 +1325,8 @@ func _refresh(save: bool = true) -> void:
 	_reroll_btn.badge = "×%d" % sk.rerolls_left if gained <= 0 else "×%d+%d" % [sk.rerolls_left, gained]
 	_reroll_btn.set_granting(gained > 0)
 	_reroll_btn.set_enabled(assigning and sk.can_reroll() and not _reroll_indices().is_empty())
+	var note := drain_note(sk, _drain_landed, _drain_pending)
+	_reroll_btn.set_draining(str(note[0]), bool(note[1]))
 	if _reboot_btn != null:
 		var may := assigning and _pending.is_empty() and _any_may_reboot()
 		if _drag_from >= 0:
@@ -3656,12 +3661,16 @@ func _enemy_beat() -> float:
 func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 	var steps := _replay_steps(before)
 	var hits: Array = []
+	_drain_landed = 0
+	_drain_pending = 0
 	for st in steps:
 		if not (st["blow"] as Array).is_empty():
 			hits.append(st["blow"])
 	if not is_inside_tree() or (steps.is_empty() and sk.overheats.is_empty() and sk.ablations.is_empty()):
 		then.call()
 		return
+	for st in steps:
+		_drain_pending += int(st.get("drain", 0))   # the note stands, its rings closing, until each has landed
 	# The burn is the end of the player's own turn (11 October), and so is what a machine's
 	# Ablating takes (15 November): both land before the phase turns over to the enemy.
 	var own_end: bool = not sk.overheats.is_empty() or not sk.ablations.is_empty()
@@ -3725,6 +3734,9 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 		if not (st["blow"] as Array).is_empty():
 			tw.tween_callback(_land_blow.bind(st["blow"]))
 			tw.tween_interval(beat - lead if switching else beat)
+		if int(st.get("drain", 0)) > 0:
+			tw.tween_callback(_land_drain.bind(int(st["drain"])))
+			tw.tween_interval(beat * 0.5)
 		if switching:
 			# The next foe lights while this one's move settles, its lead out of the beat.
 			tw.tween_callback(_spotlight.bind(before["views"].get(steps[k + 1]["foe"])))
@@ -3736,6 +3748,8 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 	tw.tween_interval(0.25)
 	tw.tween_callback(func() -> void:
 		_replay_shade.visible = false
+		_drain_landed = 0   # the next round's own note takes over: what the drains took of it (Skirmish.drained)
+		_drain_pending = 0
 		then.call())
 
 
@@ -3761,10 +3775,15 @@ func _replay_steps(before: Dictionary) -> Array:
 	for sp in sk.turn_specials:
 		steps.append({"seq": int(sp.get("seq", 0)), "foe": sp["foe"], "name": str(sp.get("name", "")),
 			"named": true, "announce": "", "blow": []})
+	for dr in sk.turn_drains:
+		# A drain landing, its own beat after its move is named: the REROLL button is struck.
+		steps.append({"seq": int(dr.get("seq", 0)), "foe": dr["foe"], "name": "", "named": false, "announce": "", "blow": [], "drain": int(dr.get("value", 0))})
 	steps.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a["seq"]) < int(b["seq"]))
 	var last_foe = null
 	var last_name := ""
 	for st in steps:
+		if st.has("drain"):
+			continue   # a landing, no move of its own: the names either side of it read as one
 		if bool(st["named"]) and not (st["foe"] == last_foe and str(st["name"]) == last_name):
 			st["announce"] = str(st["name"])
 		last_foe = st["foe"]
@@ -3773,6 +3792,46 @@ func _replay_steps(before: Dictionary) -> Array:
 
 
 var _lit: UnitView = null   # the foe lit as it acts in the enemy's turn
+var _drain_landed := 0    # the rerolls the drains have taken so far in the enemy's turn being replayed
+var _drain_pending := 0   # and those still to land in it
+
+
+## RIFTGATE_DRAIN_DEBUG=1: the REROLL button wears a drain announced the whole fight, its rings
+## closing in, and flashes as if one landed every three seconds, to judge the effect running.
+static var DRAIN_DEBUG := OS.get_environment("RIFTGATE_DRAIN_DEBUG") == "1"
+var _drain_debug_at := 0.0
+
+
+## What the REROLL button says of a drain (Ryan, 15 November: "There should be an effect on the
+## reroll button when this happens"), as [the note, whether any of it is only announced]. While
+## a foe announces a drain, what next round stands to lose, never more than a round gives, and
+## the loss can still be stopped (a kill, a Suppress, a Disrupt): announced. In the enemy's
+## turn's replay the same words stand, announced until the last drain has landed (`landed` and
+## `pending`, as the replay reaches them), then settled. In a round a drain took from, with
+## none announced, what it took.
+static func drain_note(sk: Skirmish, landed: int = 0, pending: int = 0) -> Array:
+	if sk == null:
+		return ["", false]
+	if DRAIN_DEBUG:
+		return ["NEXT -1", true]
+	if landed + pending > 0:
+		return ["NEXT -%d" % mini(landed + pending, Skirmish.REROLLS_PER_ROUND), pending > 0]
+	var coming := mini(sk.drain_announced(null), Skirmish.REROLLS_PER_ROUND) if sk.state == Skirmish.State.ASSIGN else 0
+	if coming > 0:
+		return ["NEXT -%d" % coming, true]
+	if sk.drained > 0:
+		return ["DRAINED -%d" % sk.drained, false]
+	return ["", false]
+
+
+## A drain lands in the enemy's turn's replay: the button is struck, and its note settles once
+## the last has landed.
+func _land_drain(n: int) -> void:
+	_drain_landed += n
+	_drain_pending = maxi(0, _drain_pending - n)
+	_reroll_btn.strike()
+	var landed_note := drain_note(sk, _drain_landed, _drain_pending)
+	_reroll_btn.set_draining(str(landed_note[0]), bool(landed_note[1]))
 
 
 ## Light `v` as the foe acting now, and put out the one lit before; null puts it out.

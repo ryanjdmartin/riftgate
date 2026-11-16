@@ -427,6 +427,52 @@ func test_reroll_goes_dark_with_every_die_spent_or_locked() -> void:
 	s.free()
 
 
+## A drain shows on REROLL (Ryan, 15 November: "There should be an effect on the reroll button
+## when this happens"): a note under the badge says what next round stands to lose while a foe
+## announces it, its rings closing in while the loss can still be stopped; the note settles as
+## the drain lands, and the round it took from says what it took.
+func test_reroll_wears_a_drain_announced_landed_and_taken() -> void:
+	var s := _screen(5)
+	var sk: Skirmish = s.sk
+	s._refresh()
+	assert_eq([s._reroll_btn.note, s._reroll_btn.draining], ["", false], "no drain out: no note")
+	var roarer: Foe = sk.field_foes()[0]
+	roarer.actions.append({"id": "roar", "name": "Roar", "kind": "debuff", "effect": "drain_rerolls", "value": 1, "weight": 1, "text": ""})
+	roarer.action = roarer.actions[roarer.actions.size() - 1]
+	s._refresh()
+	assert_eq([s._reroll_btn.note, s._reroll_btn.draining], ["NEXT -1", true], "a drain announced: what next round stands to lose, the rings closing in")
+	assert_eq(s._reroll_btn.badge, "×%d" % sk.rerolls_left, "this round's count stands")
+	Effects.grant_for_rounds(roarer, Effects.STATUS["suppressed"], "mech", sk.round)
+	s._refresh()
+	assert_eq(s._reroll_btn.note, "", "its foe Suppressed, the drain is stopped and the note goes")
+	Effects.remove(roarer, "suppressed")
+	# Two foes draining two apiece: the note never says more than a round gives.
+	roarer.action["value"] = 2
+	assert_eq(SkirmishScreen.drain_note(sk)[0], "NEXT -2", "two announced")
+	roarer.action["value"] = 1
+	# The replay: the note stands, announced, until the drain lands, then settles.
+	assert_eq(SkirmishScreen.drain_note(sk, 0, 1), ["NEXT -1", true], "in the enemy's turn, before it lands")
+	assert_eq(SkirmishScreen.drain_note(sk, 1, 0), ["NEXT -1", false], "landed: the same words, settled")
+	for f in sk.field_foes():
+		f.target = sk.mechs[0]
+	sk.end_round()
+	assert_eq(sk.turn_drains.size(), 1, "the engine tells the screen the drain that landed")
+	assert_eq(int(sk.turn_drains[0]["value"]), 1, "and its size")
+	sk.start_round()
+	assert_eq([sk.rerolls_left, sk.drained], [Skirmish.REROLLS_PER_ROUND - 1, 1], "the round it took from opens a reroll short, and says so")
+	for f in sk.field_foes():
+		f.action = f.actions[0]
+	s._refresh()
+	assert_eq([s._reroll_btn.note, s._reroll_btn.draining], ["DRAINED -1", false], "the button says what was taken, with nothing more announced")
+	assert_eq(s._reroll_btn.badge, "×%d" % (Skirmish.REROLLS_PER_ROUND - 1), "beside the count it left")
+	var copy: Skirmish = SaveGame.clone_skirmish(sk)
+	assert_eq(copy.drained, 1, "a save keeps the round's note")
+	sk.end_round()
+	sk.start_round()
+	assert_eq(sk.drained, 0, "and the round after is whole")
+	s.free()
+
+
 ## REROLL lights while the die in hand would bring the team a reroll, and its badge shows the
 ## count it would leave (Ryan, 15 November: "We can communicate by highlighting the reroll button
 ## as part of the preview, if one will be granted"): no buff and no chip stand for the grant.
