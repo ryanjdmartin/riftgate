@@ -19,6 +19,12 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   stats are what a grant adds to, and the validator refuses both keys on a chassis. The foes'
   numbers are still the ones sized against a shield that refilled. Read both before any work
   on a machine, a component, a module or a foe (`CLAUDE.md` has the rule).
+- **The vocabulary moved on 15 and 16 November** (the vocabulary pass, built on Ryan's marks
+  on every rider, buff and debuff): Burn is Ablate, Flak and Crushed are Brittle, Breach,
+  Splash, Silence, Overshield, Retaliate and Rallied are cut, and Regenerating, Primed,
+  Phased and the rally run new rules. `docs/vocabulary.md` is the vocabulary as it runs; the
+  briefs and the older proposals predate it, and `docs/briefs/README.md` says how to read
+  their words. The baseline of that game is the last entry of `docs/measurements.md`.
 - Sessions run in parallel on this repo: `git status` first, stage by path, diff a shared file
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. A branch
   takes main as it lands and main takes the branch as a fast-forward on Ryan's word; expect the
@@ -1860,8 +1866,9 @@ The tasks are the to-do's; this is the index of what waits.
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
 to-do's Ryan list).
 
-**First: the vocabulary pass's build** (Ryan, 15 November, on his marks and his answers of
-the seventh round: "Go ahead on the fold and build"). `docs/vocabulary_pass_proposal.md` is
+**The vocabulary pass's build is done** (Ryan, 15 November, on his marks and his answers of
+the seventh round: "Go ahead on the fold and build"; built 15 and 16 November, each part a
+commit landed on main, the last `0030c35` and the baseline after it). `docs/vocabulary_pass_proposal.md` is
 its record: six rounds, his marks on all eighty-two rows (section 18), his answers and the
 go (section 20), and his direction for the foes' moves (section 19). **The reboot is folded
 in** (15 November: the rule out of its switch; the chassis's own regen and cooling and the
@@ -1907,7 +1914,11 @@ Phased through the next round's end, out of reach of both sides and acting all t
 its reboot there is the safe one. Its own acts' costs land, the burn among them, a
 session's read. One piece grants it, the Mooring Screens' charge, on a machine in design,
 and its gate is that session's; a foe's Phased is the foes' pass's.
-**What rides behind**: the anchor read again as the baseline. **Then the foes' pass**
+**The anchor is read again as the baseline** (16 November; `docs/measurements.md`, its last
+entry): at tier one a formation is 5.2 rounds and 7.2% of a four's hull, an elite 5.7 and
+11.2%, a boss 9.5 and 31.5% with a wreck in a quarter of its fights, and the four formations
+built on foes that breached cost under 3%, their blows plain against a whole shield.
+**First now: the foes' pass**
 (the to-do's line): Exposed's carriers and its engine, the moves his marks renamed or
 moved onto the unit, the countdowns off the rank and file, a fall free to do more than
 strike, and a move as a short list of steps if he takes section 19's proposal.
