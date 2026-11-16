@@ -119,7 +119,7 @@ EFFECTS = {
     "extra_action": [], "never_hunted": [], "no_destroy": [], "carry": [], "rewrite_weapon": [], "grant_keyword": [], "spillover": [("strikes", "sets")],
     "add_shield": [], "refill_shield": [], "vent_heat": [], "stack_status": [], "lay_status": [],
     "multiply_heat": [("heat", "sets")], "add_damage": [], "add_damage_taken": [], "hull_per_spend": [("hull_damage", "sets")],
-    "multiply_damage": [], "multiply_stacks": [], "add_heat": [("heat", "sets")], "one_of_each": [], "min_damage": [], "add_ablate": [],
+    "multiply_damage": [], "multiply_stacks": [], "add_heat": [("heat", "sets")], "one_of_each": [], "min_damage": [],
     "burn_shield": [("heat", "reads")], "bank_rerolls": [("reroll", "reads"), ("reroll", "sets")],
     "fill_hopper": [("hopper", "sets")], "hopper_plate": [("hopper", "reads"), ("braced", "sets")],
 }
@@ -150,7 +150,7 @@ ENGINE_READERS = {
     "swap": ["the two trade places: reach, the acting order, area"],
     "overcharged": ["every blow +1 a stack: most on strikes; halves each round"],
     "braced": ["armour +1 a stack until the round's end"],
-    "primed": ["every blow lays an Ablating stack a stack: most on strikes"],
+    "primed": ["the weapons it fires carry Ablate 1, a stack of Ablating a strike: most on strikes; a weapon fired spends a stack"],
     "barrier": ["the next blow deals nothing"],
     "ward": ["no rider lands this round"],
     "spun_up": ["the next weapon spend +2 a stack"],

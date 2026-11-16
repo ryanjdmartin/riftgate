@@ -31,7 +31,7 @@
       "actions": [
         { "id": "stab", "name": "Stab", "kind": "attack", "weight": 2, "text": "A knife from the crowd for {damage}.", "status": "implemented" },
         { "id": "shield_wall", "name": "Shield Wall", "kind": "defend", "effect": "brace", "value": 1, "weight": 1, "text": "Raises a scrap shield: armour +{value} until its next turn.", "status": "implemented" },
-        { "id": "warcry", "name": "Warcry", "kind": "buff", "effect": "rally", "value": 1, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder, fading by half each round.", "status": "implemented" }
+        { "id": "warcry", "name": "Warcry", "kind": "buff", "effect": "rally", "value": 1, "weight": 1, "when": "others_on_field", "text": "Every foe on the field hits {value} harder, itself too, fading by half each round.", "status": "implemented" }
       ],
       "flavour": "They have ranks. We do not know how they decide them. We suspect volume."
     },
@@ -42,7 +42,7 @@
       "hp": 7, "attack": 4, "rank": "front", "movespeed": 4, "role": "hunter",
       "actions": [
         { "id": "bite", "name": "Bite", "kind": "attack", "weight": 2, "text": "Teeth in the hull for {damage}.", "status": "implemented" },
-        { "id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 1, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder, fading by half each round.", "status": "implemented" }
+        { "id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 1, "weight": 1, "when": "others_on_field", "text": "Every foe on the field hits {value} harder, itself too, fading by half each round.", "status": "implemented" }
       ],
       "flavour": "You hear them before the sensors do."
     },
@@ -53,7 +53,7 @@
       "hp": 4, "attack": 4, "rank": "front", "movespeed": 4, "role": "hunter",
       "actions": [
         { "id": "bite", "name": "Bite", "kind": "attack", "weight": 2, "text": "Teeth in the hull for {damage}.", "status": "implemented" },
-        { "id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 1, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder, fading by half each round.", "status": "implemented" }
+        { "id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 1, "weight": 1, "when": "others_on_field", "text": "Every foe on the field hits {value} harder, itself too, fading by half each round.", "status": "implemented" }
       ],
       "flavour": "The wolves learned which of us limps."
     },
@@ -64,7 +64,7 @@
       "hp": 5, "attack": 5, "rank": "front", "movespeed": 4, "role": "hunter",
       "actions": [
         { "id": "bite", "name": "Bite", "kind": "attack", "weight": 2, "text": "Teeth in the hull for {damage}.", "status": "implemented" },
-        { "id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder, fading by half each round.", "status": "implemented" }
+        { "id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Every foe on the field hits {value} harder, itself too, fading by half each round.", "status": "implemented" }
       ],
       "flavour": "When the big one howls, kill it or shield everyone. There is no third option."
     },
@@ -392,11 +392,11 @@
     {
       "id": "wight", "name": "Wight", "faction": "marsh", "tier": 2,
       "design": { "fantasy": "The wight, the Marsh's hard-to-keep-down on the rank and file: Regenerating as a foe's buff. Tier two of the revenant line: the flat claw a step up (4, a placeholder) and the mend its twist." },
-      "codex": "A revenant that knits itself back together. Hurt, it regrows a little at each action for three rounds: burst it, or purge the mending.",
+      "codex": "A revenant that knits itself back together. Hurt, it regenerates, a little less at each action: burst it, or purge the mending.",
       "hp": 5, "attack": 4, "rank": "front", "movespeed": 2,
       "actions": [
         { "id": "claw", "name": "Claw", "kind": "attack", "weight": 2, "text": "Tears at anything in reach for {damage}.", "status": "implemented" },
-        { "id": "grave_mend", "name": "Grave Mend", "kind": "defend", "effect": "regenerate", "value": 2, "weight": 1, "when": "missing_hull", "text": "Knits itself: regrows {value} at each of its next three actions.", "status": "implemented" }
+        { "id": "grave_mend", "name": "Grave Mend", "kind": "defend", "effect": "regenerate", "value": 2, "weight": 1, "when": "missing_hull", "text": "Knits itself: Regenerating {value}, a point a stack at each of its actions, a stack fading each.", "status": "implemented" }
       ],
       "flavour": "You can hear it mending. Finish it before it finishes."
     },
@@ -407,7 +407,7 @@
       "hp": 7, "attack": 5, "rank": "front", "movespeed": 2,
       "actions": [
         { "id": "claw", "name": "Claw", "kind": "attack", "weight": 2, "text": "Tears at anything in reach for {damage}.", "status": "implemented" },
-        { "id": "grave_mend", "name": "Grave Mend", "kind": "defend", "effect": "regenerate", "value": 3, "weight": 1, "when": "missing_hull", "text": "Knits itself: regrows {value} at each of its next three actions.", "status": "implemented" }
+        { "id": "grave_mend", "name": "Grave Mend", "kind": "defend", "effect": "regenerate", "value": 3, "weight": 1, "when": "missing_hull", "text": "Knits itself: Regenerating {value}, a point a stack at each of its actions, a stack fading each.", "status": "implemented" }
       ],
       "flavour": "The old ones are heavier. Nobody has said why."
     },
@@ -476,7 +476,7 @@
       "hp": 20, "attack": 7, "armour": 1, "rank": "front", "size": 2, "movespeed": 1,
       "actions": [
         {"id": "grave_cleaver", "name": "Grave Cleaver", "kind": "attack", "weight": 2, "text": "A rusted cleaver the size of a door, for {damage}.", "status": "implemented"},
-        {"id": "knit", "name": "Knit", "kind": "defend", "effect": "regenerate", "value": 3, "weight": 1, "when": "missing_hull", "text": "Its bones knit: regrows {value} at each of its next three actions.", "status": "implemented"}
+        {"id": "knit", "name": "Knit", "kind": "defend", "effect": "regenerate", "value": 3, "weight": 1, "when": "missing_hull", "text": "Its bones knit: Regenerating {value}, a point a stack at each of its actions, a stack fading each.", "status": "implemented"}
       ],
       "flavour": "Gate order four: nothing that has died passes the wall. Including that."
     },
@@ -487,7 +487,7 @@
       "hp": 36, "attack": 8, "armour": 1, "rank": "front", "size": 2, "movespeed": 1,
       "actions": [
         {"id": "grave_cleaver", "name": "Grave Cleaver", "kind": "attack", "weight": 2, "text": "A rusted cleaver the size of a door, for {damage}.", "status": "implemented"},
-        {"id": "knit", "name": "Knit", "kind": "defend", "effect": "regenerate", "value": 3, "weight": 1, "when": "missing_hull", "text": "Its bones knit: regrows {value} at each of its next three actions.", "status": "implemented"},
+        {"id": "knit", "name": "Knit", "kind": "defend", "effect": "regenerate", "value": 3, "weight": 1, "when": "missing_hull", "text": "Its bones knit: Regenerating {value}, a point a stack at each of its actions, a stack fading each.", "status": "implemented"},
         {"id": "rise_again", "name": "Rise Again", "kind": "buff", "effect": "revive_once", "weight": 1, "when": "missing_hull", "text": "Readies itself once it is hurt: the next time it falls it gets back up, whole, once.", "status": "implemented"}
       ],
       "flavour": "We buried it twice. The second time we watched."
@@ -499,7 +499,7 @@
       "hp": 40, "attack": 9, "armour": 1, "rank": "front", "size": 2, "movespeed": 1,
       "actions": [
         {"id": "grave_cleaver", "name": "Grave Cleaver", "kind": "attack", "weight": 2, "text": "A rusted cleaver the size of a door, for {damage}.", "status": "implemented"},
-        {"id": "knit", "name": "Knit", "kind": "defend", "effect": "regenerate", "value": 4, "weight": 1, "when": "missing_hull", "text": "Its bones knit: regrows {value} at each of its next three actions.", "status": "implemented"},
+        {"id": "knit", "name": "Knit", "kind": "defend", "effect": "regenerate", "value": 4, "weight": 1, "when": "missing_hull", "text": "Its bones knit: Regenerating {value}, a point a stack at each of its actions, a stack fading each.", "status": "implemented"},
         {"id": "rise_again", "name": "Rise Again", "kind": "buff", "effect": "revive_once", "weight": 1, "when": "missing_hull", "text": "Readies itself once it is hurt: the next time it falls it gets back up, whole, once.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix M: the big ones get up too. Plan for twice."
@@ -635,7 +635,7 @@
       "hp": 9, "attack": 7, "rank": "front", "movespeed": 2,
       "actions": [
         { "id": "bite", "name": "Bite", "kind": "attack", "weight": 2, "keywords": ["scorch"], "scorch": 2, "text": "A burning bite for {damage}. It scorches.", "status": "implemented" },
-        { "id": "stoke_the_pack", "name": "Stoke the Pack", "kind": "buff", "effect": "prime", "value": 1, "weight": 1, "when": "others_on_field", "text": "Lights the others: every other foe's next blow leaves {value} Ablating.", "status": "implemented" }
+        { "id": "stoke_the_pack", "name": "Stoke the Pack", "kind": "buff", "effect": "prime", "value": 1, "weight": 1, "when": "others_on_field", "text": "Lights the others: every other foe is Primed {value}, its next blows leaving Ablating 1.", "status": "implemented" }
       ],
       "flavour": "One of them is the match. Find the match."
     },
@@ -726,7 +726,7 @@
       "actions": [
         {"id": "slag_fist", "name": "Slag Fist", "kind": "attack", "weight": 2, "text": "A fist of slag for {damage}.", "status": "implemented"},
         {"id": "eruption", "name": "Eruption", "kind": "debuff", "effect": "scorch_all", "value": 4, "weight": 1, "when": "below_half", "text": "The cracks vent: every machine scorched, ×{value}.", "status": "implemented"},
-        {"id": "stoke_the_forge", "name": "Stoke the Forge", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder, fading by half each round.", "status": "implemented"}
+        {"id": "stoke_the_forge", "name": "Stoke the Forge", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Every foe on the field hits {value} harder, itself too, fading by half each round.", "status": "implemented"}
       ],
       "flavour": "Recruitment poster: IT COOLED DOWN. IT DID NOT CALM DOWN."
     },
@@ -738,7 +738,7 @@
       "actions": [
         {"id": "slag_fist", "name": "Slag Fist", "kind": "attack", "weight": 2, "text": "A fist of slag for {damage}.", "status": "implemented"},
         {"id": "eruption", "name": "Eruption", "kind": "debuff", "effect": "scorch_all", "value": 5, "weight": 1, "when": "below_half", "text": "The cracks vent: every machine scorched, ×{value}.", "status": "implemented"},
-        {"id": "stoke_the_forge", "name": "Stoke the Forge", "kind": "buff", "effect": "rally", "value": 3, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder, fading by half each round.", "status": "implemented"}
+        {"id": "stoke_the_forge", "name": "Stoke the Forge", "kind": "buff", "effect": "rally", "value": 3, "weight": 1, "when": "others_on_field", "text": "Every foe on the field hits {value} harder, itself too, fading by half each round.", "status": "implemented"}
       ],
       "flavour": "The smell arrives a round before it does. Use the round."
     },
@@ -750,7 +750,7 @@
       "hp": 28, "attack": 10, "rank": "back", "movespeed": 3,
       "actions": [
         { "id": "chain_lightning", "name": "Chain Lightning", "kind": "attack", "factor": 0.5, "weight": 2, "keywords": ["all"], "text": "Chain Lightning leaps across the line: {damage} to every machine.", "status": "implemented" },
-        { "id": "bloodlust", "name": "Bloodlust", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Bloodlust: every other foe on the field hits {value} harder, fading by half each round.", "status": "implemented" },
+        { "id": "bloodlust", "name": "Bloodlust", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Bloodlust: every foe on the field hits {value} harder, itself too, fading by half each round.", "status": "implemented" },
         { "id": "lightning_shield", "name": "Lightning Shield", "kind": "defend", "effect": "brace_all", "value": 1, "weight": 1, "when": "others_on_field", "text": "Lightning Shield: armour +{value} on every foe in the fight until their next turn.", "status": "implemented" }
       ],
       "flavour": "The little ones listen to it. That is the whole problem."
@@ -951,7 +951,7 @@
       "actions": [
         {"id": "claw", "name": "Claw", "kind": "attack", "weight": 2, "text": "A claw, for {damage}.", "status": "implemented"},
         {"id": "mend", "name": "Mend", "kind": "defend", "effect": "heal", "value": 4, "weight": 1, "when": "ally_hurt", "text": "It licks the wound: heals the most hurt of its own for {value} HP.", "status": "implemented"},
-        {"id": "roar", "name": "Roar", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "A roar: every other foe on the field hits {value} harder, fading by half each round.", "status": "implemented"}
+        {"id": "roar", "name": "Roar", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "A roar: every foe on the field hits {value} harder, itself too, fading by half each round.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix L, amended: he brought a friend."
     },
@@ -1000,7 +1000,7 @@
       "parts": ["piercing_eye", "prising_eye"], "guard": "all", "regrow_parts": 3,
       "actions": [
         {"id": "haft", "name": "Haft", "kind": "attack", "weight": 2, "text": "The haft comes down for {damage}.", "status": "implemented"},
-        {"id": "drive", "name": "Drive", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Its eyes blaze: every other foe on the field hits {value} harder, fading by half each round.", "status": "implemented"},
+        {"id": "drive", "name": "Drive", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Its eyes blaze: every foe on the field hits {value} harder, itself too, fading by half each round.", "status": "implemented"},
         {"id": "the_fall", "name": "The Fall", "kind": "attack", "factor": 0.75, "countdown": 2, "weight": 2, "keywords": ["all"], "when": "below_half", "text": "It rises, and falls two rounds on: {damage} to every machine.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix K: the axe in the dune is not a landmark. Report it as hostile."
@@ -1280,7 +1280,7 @@
       "hp": 18, "attack": 12, "rank": "back", "movespeed": 1,
       "actions": [
         {"id": "lash", "name": "Lash", "kind": "attack", "weight": 2, "text": "A whip of light, for {damage}.", "status": "implemented"},
-        {"id": "goad", "name": "Goad", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder, fading by half each round.", "status": "implemented"}
+        {"id": "goad", "name": "Goad", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Every foe on the field hits {value} harder, itself too, fading by half each round.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix K: shoot the rider. The rest follows, eventually."
     },

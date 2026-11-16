@@ -49,7 +49,7 @@ const ROUNDS := 3
 
 ## What the content may ask for, by trigger. The validator refuses anything else.
 const SUPPORTED_EFFECTS := {
-	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_ablate", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
+	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
 	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "spillover", "hold_all", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "fold_die", "rewrite_weapon", "heat_per_blow", "pass_release", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status"],
 	"on_round_start": ["add_shield", "vent_heat", "stack_status"],
@@ -164,8 +164,13 @@ const STATUS := {
 	# keyword or an effect and the buff it creates share a name), its value its stacks.
 	"braced": {"id": "braced", "name": "Armoured", "description": "Armour +1 a stack, every stack at once, until its side's next turn begins.", "decay": "round",
 		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]},
-	"primed": {"id": "primed", "name": "Primed", "description": "Every blow it lands leaves a stack of Ablating, per stack.",
-		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_ablate", "value": 1}]},
+	# Primed, the third primer since 15 November (Ryan's mark: "give it the same format as cryo
+	# ... use a stack on firing"; "Primed - agreed, how many Ablate stacks does each Primed stack
+	# apply? Just one, like supercooled?"; one): the primers below have its rule, and a foe's is
+	# the same in its own words (primed_foe). Until then every blow left a stack of Ablating a
+	# stack of Primed, for the round on a machine and for one move on a foe.
+	"primed": {"id": "primed", "name": "Primed", "description": "Its weapons fire with Ablate 1 while it lasts, a stack a strike, one more on a gun that carries Ablate; a weapon fired spends a stack.", "decay": "none", "spent_by": "weapon",
+		"tags": ["buff"], "effects": []},
 	# A core whose parts stand takes nothing (the boss in parts, 15 October): the skirmish grants
 	# and lifts it as its parts fall and grow back, so every number reads it, the die's too.
 	"guarded": {"id": "guarded", "name": "Guarded", "description": "Takes no damage while its parts stand.", "stacking": "renew",
@@ -219,16 +224,18 @@ const STATUS := {
 	# laid by a foe and timed by its move, ended early by its swallower's fall.
 	"swallowed": {"id": "swallowed", "name": "Swallowed", "description": "Out of the fight: it cannot act, take damage or be targeted until its rounds run out, its swallower falls, or its swallower loses a quarter of its HP.", "stacking": "renew",
 		"tags": ["debuff"], "effects": []},
-	# The primers (Ryan, 2 November): a stack a weapon fired, the mark landing on the foe the first
-	# strike was aimed at after the blows (Skirmish._prime), never on the fire's own blows.
-	"charged": {"id": "charged", "name": "Charged", "description": "Its weapons fire with Shock while it lasts; a weapon fired spends a stack.", "decay": "none",
+	# The primers (Ryan, 2 November; Primed, above, the third since 15 November): a stack a weapon
+	# fired, each lending its rider to that fire as a keyword (effective_face), landing after the
+	# blows as the keyword does. A use spends them (`spent_by`), so a grant lasts until its
+	# stacks are fired, across rounds, and a buff grants one stacks and no rounds.
+	"charged": {"id": "charged", "name": "Charged", "description": "Its weapons fire with Shock while it lasts; a weapon fired spends a stack.", "decay": "none", "spent_by": "weapon",
 		"tags": ["buff"], "effects": []},
-	"supercooled": {"id": "supercooled", "name": "Supercooled", "description": "Its weapons fire with Cryo 1 while it lasts, a stack a strike, one more on a gun that carries Cryo; a weapon fired spends a stack.", "decay": "none",
+	"supercooled": {"id": "supercooled", "name": "Supercooled", "description": "Its weapons fire with Cryo 1 while it lasts, a stack a strike, one more on a gun that carries Cryo; a weapon fired spends a stack.", "decay": "none", "spent_by": "weapon",
 		"tags": ["buff"], "effects": []},
 	# What a foe's defend, buff and debuff actions leave (30 September), besides the Braced of
 	# its brace (above): Empowered rides its next move; Risen is a charge spent by a death.
 	# Empowered carries its rally's own value (13 October; kindled() below) and lands the moment
-	# the rally does, on every other foe on the field (Ryan, 26 October: "howl is more clear if
+	# the rally does, on every foe on the field, its rallier too since 15 November (Ryan, 26 October: "howl is more clear if
 	# it gives kindled for the next action, which could be the turn its granted"): a foe acting
 	# after the rallier spends it this turn, one that has acted carries it to its next move.
 	# The move spends it whatever it is (`spent_by`, the skirmish lifting every grant after the
@@ -356,14 +363,19 @@ const STATUS := {
 	# Ward turns the team's marks (TEAM_MARKS, turns_mark), Suppressed excepted.
 	"barrier": {"id": "barrier", "name": "Barrier", "description": "The next blow a foe lands on it deals no damage; its riders land. Until the round's end.", "stacking": "renew", "single": true,
 		"tags": ["buff"], "effects": []},
-	# A foe's regrowth over time (28 October; the Marsh's by lean): at each of its actions it
-	# regrows its value in HP, after its Ablating and Vitriol have ticked, so an Ablate is a race and
-	# never a wall; a stack an action left, three from the grant, each grant its own clock
-	# (regenerating() and regrowth() below). The machines' half (the Storm Petrel's shield, built
-	# 30 October) is regenerating_shield's: shield at each round's start, a timed grant of its own.
-	# A buff a Purge lowers, on either side.
-	"regenerating": {"id": "regenerating", "name": "Regenerating", "description": "Regrows {value} HP at each of its actions, after its Ablating and Vitriol; a stack an action left.",
-		"tags": ["buff"], "effects": [{"trigger": "status", "effect": "regrow", "value": 2}]},
+	# Regenerating (28 October; one clock on both sides since 15 November, Ryan's mark: "These
+	# are structured as 'Regen 1 per stack' and I'd give all sources either a fixed duration, say
+	# 2 or 3 turns, or have it decay one stack at a time"; "Regenerating - agreed"): a point a
+	# stack as its unit's turn comes round, then a stack fades, Ablating's clock turned round, so
+	# Regenerating 3 gives 3, 2 and 1 and grants add their stacks. A foe's is hit points at its
+	# action, after its Ablating and Vitriol have ticked, so an Ablate is a race and never a wall
+	# (regrowth() below; the Marsh's by lean). A machine's is shield as the round opens, a point
+	# of shield regen a stack (regenerating_shield: the Storm Petrel's, built 30 October), a
+	# stack fading once the regen has run (Skirmish.start_round). Until 15 November a foe's was
+	# its value at each of three actions and a machine's a number a round for the rounds it
+	# said, each grant its own clock. A buff a Purge lowers, on either side.
+	"regenerating": {"id": "regenerating", "name": "Regenerating", "description": "Regrows {value} HP a stack at its action, after its Ablating and Vitriol, then loses a stack.",
+		"tags": ["buff"], "effects": [{"trigger": "status", "effect": "regrow", "value": 1}]},
 	"ward": {"id": "ward", "name": "Ward", "description": "No rider a foe lays lands on it this round, from a blow or a move of its own (ablate, scorch, jam, corrupt, purge); a blow's damage lands. Until the round's end.", "stacking": "renew",
 		"tags": ["buff"], "effects": []},
 	# The Ammit's Essence (Ryan, 12 November, its rework: "Kills grant one Soul"; "Souls granted by
@@ -430,39 +442,33 @@ static func golden_value(f) -> int:
 	return 0
 
 
-## Regenerating at a move's own value (28 October): a grant of its own, three of its owner's
-## actions on its clock (a stack an action, lost at each tick), its value the regrowth each.
-static func regenerating(value: int, actions: int = 3) -> Modifier:
-	var d: Dictionary = STATUS["regenerating"].duplicate(true)
-	d["effects"][0]["value"] = value
-	d["description"] = filled(str(STATUS["regenerating"]["description"]), d["effects"])
-	var m := make(d, SKIRMISH, "regenerate")
-	m.stacks = maxi(1, actions)
-	m.decay = DECAY_TICK
-	return m
-
-
-## The HP a foe regrows at its action: every Regenerating grant's value, once each, whatever
-## its stacks (they count the actions left).
+## The HP a foe regrows at its action: a point for every stack of Regenerating it carries (the
+## status's own number a stack), read before the tick that fades one.
 static func regrowth(u) -> int:
 	var n := 0
 	for m in live(u):
 		if m.id == "regenerating":
 			for eff in m.effects:
 				if str(eff.get("effect", "")) == "regrow":
-					n += int(eff.get("value", 0))
+					n += int(eff.get("value", 0)) * maxi(0, m.stacks)
 	return n
 
 
-## Primed on a foe at a stoker's value (28 October): its next move's blows each leave that much
-## Ablating on the machine they hit, as an Ablate rider would, and the move spends it, whatever it
-## is (Empowered's clock); a grant of its own, so two stokings add.
-static func primed_foe(value: int, source: String) -> Modifier:
+## What Regenerating at so many stacks regrows before it runs out, a point a stack and a stack
+## fading a turn: the stacks and every count under them (3 gives 3, 2 and 1).
+static func regen_total(stacks: int) -> int:
+	var n := maxi(0, stacks)
+	return n * (n + 1) / 2
+
+
+## Primed on a foe, a stoker's (28 October; the primers' format since 15 November), the status
+## in the foe's own words: each blow of a move that strikes leaves Ablating 1 on the machine it
+## hits, as an Ablate rider would, and that move spends a stack; a move that strikes nobody
+## spends none. Stokings add their stacks (Skirmish stacks it, as any count).
+static func primed_foe() -> Dictionary:
 	var d: Dictionary = STATUS["primed"].duplicate(true)
-	d["description"] = "Its next move's blows each leave %d Ablating on the machine they hit; the move spends it." % maxi(1, value)
-	var m := make(d, SKIRMISH, source)
-	m.stacks = maxi(1, value)
-	return m
+	d["description"] = "Each blow of its next move that strikes leaves Ablating 1 on the machine it hits; that move spends a stack."
+	return d
 
 
 ## A Barrier and a Ward on a foe (28 October): the machines' statuses in the foe's own words,
@@ -1178,9 +1184,9 @@ static func split_of(u, face: Face) -> int:
 
 
 ## An attack after the roll and the keyword rules: adds, then multiplies, then floors, on
-## damage and on heat, with the ablate and the vent the effects add. `target` is the foe the
+## damage and on heat, with the vent the effects add. `target` is the foe the
 ## blow is aimed at, for conditions on it (null when only the heat is asked). Returns
-## {damage, heat, ablate, vent}.
+## {damage, heat, vent}.
 static func attack(u, face: Face, dmg: int, heat: int, target = null, ctx: Dictionary = {}) -> Dictionary:
 	var d_add := 0.0
 	var d_mult := 1.0
@@ -1188,7 +1194,6 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null, ctx: Dicti
 	var h_add := 0.0
 	var h_mult := 1.0
 	var p_mult := 1.0   # a multiply on the entry's own number alone, before the adds (the Kite's double: the printed number, buffs once)
-	var ablate := 0
 	var vent := 0
 	# The entry's own finish (the Kite's Pinion Driver, 11 November): its number multiplied against a
 	# foe at half its HP or less, on the printed number as a passive's double is, the buffs once
@@ -1218,20 +1223,17 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null, ctx: Dicti
 				h_add += v * n
 			"multiply_heat":
 				h_mult *= pow(v, n)
-			"add_ablate":
-				ablate += int(v) * n
 			"vent_heat":
 				vent += int(v) * n
 	var out_dmg := maxi(d_floor, int(roundf((float(dmg) * p_mult + d_add) * d_mult)))
 	var out_heat := maxi(0, int(roundf((heat + h_add) * h_mult)))
 	if face != null and face.is_debuff():
 		# A debuff deals nothing under any effect (Ryan's die grammar, 20 and 21 October): no
-		# flat add (Empowered, Spun Up), no multiply, no floor, no ablate of a Primed machine;
+		# flat add (Empowered, Spun Up), no multiply, no floor;
 		# its heat runs as a weapon's and its keywords are its whole effect. Read on the entry as
 		# spent, so a debuff the Cottonmouth's drum fires is its shot, a gun.
 		out_dmg = 0
-		ablate = 0
-	return {"damage": out_dmg, "heat": out_heat, "ablate": ablate, "vent": vent}
+	return {"damage": out_dmg, "heat": out_heat, "vent": vent}
 
 
 ## An incoming blow before shield and armour see it: adds, then multiplies, never below zero.
@@ -1380,17 +1382,19 @@ static func effective_face(u, face: Face, target = null) -> Face:
 	# The primers (Ryan, 2 November; as keywords since 3 November: "a multi-hit weapon with Shock
 	# would apply it after both hits ... Cryo should work the same way, resulting in 2
 	# applications"): while the machine carries Charged its weapons fire with Shock, while it
-	# carries Supercooled with Cryo, one more a strike on each foe hit; the skirmish spends a
-	# stack of each a weapon fired (Skirmish._spend_primers). Equipment carries neither.
+	# carries Supercooled with Cryo and while it carries Primed with Ablate (15 November), one
+	# more a strike on each foe hit; the skirmish spends a stack of each a weapon fired
+	# (Skirmish._spend_primers). Equipment carries none of them.
 	var primed_shock := base.is_weapon() and stacks_of(u, "charged") > 0 and not base.has(Face.Keyword.SHOCK)
 	var primed_cryo := base.is_weapon() and stacks_of(u, "supercooled") > 0
+	var primed_ablate := base.is_weapon() and stacks_of(u, "primed") > 0
 	# A weapon's blows ignoring armour by a state its machine carries (the Wild Boar's Juggernaut
 	# Drive, a written rule since 15 November, no keyword): a weapon alone.
 	var unarmours := base.is_weapon() and not base.ignores_armour and grants_ignore_armour(u, base, target)
 	# Damage past a kill spilling behind by a rule its machine wears (the Overrun Gearing's, a
 	# module's; a written rule since 15 November, no keyword): every entry aimed at a foe.
 	var spills := base.is_attack() and not base.spills and grants_spill(u, base, target)
-	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and split <= 1 and not primed_shock and not primed_cryo and not unarmours and not spills:
+	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and split <= 1 and not primed_shock and not primed_cryo and not primed_ablate and not unarmours and not spills:
 		return face
 	var c := base.duplicate_face() if base == face else base
 	c.reach = r
@@ -1406,6 +1410,10 @@ static func effective_face(u, face: Face, target = null) -> Face:
 		var frosted := c.has(Face.Keyword.CRYO)   # one more a strike on a Cryo gun; Cryo 1 on any other
 		c.add_keyword(Face.Keyword.CRYO)
 		c.cryo = c.cryo + 1 if frosted else maxi(1, c.cryo)
+	if primed_ablate:
+		var lit := c.has(Face.Keyword.ABLATE)   # one more a strike on an Ablate gun; Ablate 1 on any other
+		c.add_keyword(Face.Keyword.ABLATE)
+		c.ablate = c.ablate + 1 if lit else maxi(1, c.ablate)
 	if split > 1:
 		c.strikes = maxi(1, c.strikes) * split
 		c.split = split
@@ -1941,18 +1949,18 @@ static func bank_cap(u) -> int:
 
 
 ## A machine's Regenerating (the Storm Petrel's St. Elmo's Regenerator, built 30 October): the
-## status in the machine's own words, `value` shield at the start of each round (an
-## on_round_start add_shield, round_start below), granted on a timer the skirmish sets, a grant
-## of its own each time, so two grants regain twice as much until the first runs out.
-static func regenerating_shield(value: int) -> Dictionary:
+## status in the machine's own words, a point of shield a stack as the round opens (on_round_start
+## add_shield, round_start below: a shield gain like any other, a broken shield taking none), and
+## the skirmish fades a stack once it has fired. Stacked, never timed: grants add.
+static func regenerating_shield() -> Dictionary:
 	var d: Dictionary = STATUS["regenerating"].duplicate(true)
-	d["description"] = "Regains %d shield at the start of each round." % maxi(1, value)
-	d["effects"] = [{"trigger": "on_round_start", "effect": "add_shield", "value": maxi(1, value)}]
+	d["description"] = "Regains 1 shield a stack as the round opens, then loses a stack."
+	d["effects"] = [{"trigger": "on_round_start", "effect": "add_shield", "value": 1}]
 	return d
 
 
 ## What the start of a round does for this machine (on_round_start, after the roll), with
-## the heat it carries: the Buzzard's Thermal Recoupler.
+## the heat it carries: a machine's Regenerating.
 static func round_start(u, heat: int) -> Dictionary:
 	return fire(u, "on_round_start", heat)
 
@@ -2413,11 +2421,17 @@ static func lasts_the_fight(def: Dictionary) -> bool:
 static func grant_buff(u, status_id: String, stacks: int, source: String, until_round: int) -> Modifier:
 	if not STATUS.has(status_id):
 		return null
-	var def: Dictionary = STATUS[status_id]
+	return grant_def(u, STATUS[status_id], stacks, source, until_round)
+
+
+## The grant itself, by the status's own definition: its clock decides how it is held (the
+## three cases below), whichever status it is.
+static func grant_def(u, def: Dictionary, stacks: int, source: String, until_round: int) -> Modifier:
 	if decays_to_zero(def):
 		return stack(u, def, SKIRMISH, source, stacks, status_decay(def))
-	# One a use spends (Spun Up, spent by the next weapon) lasts until then, across turns; one
-	# that lasts the fight (Ricochet) until the fight ends or its own rule takes it.
+	# One a use spends (Spun Up, spent whole by the next weapon; a primer, a stack a weapon
+	# fired) lasts until then, across turns; one that lasts the fight (Ricochet) until the fight
+	# ends or its own rule takes it.
 	if def.has("spent_by") or lasts_the_fight(def):
 		return stack(u, def, SKIRMISH, source, stacks, DECAY_NONE)
 	return stack(u, def, ROUNDS, source, stacks, DECAY_NONE, until_round)
@@ -2479,7 +2493,6 @@ static func effect_text(eff: Dictionary) -> String:
 		"min_damage": body = "damage at least %s" % vs
 		"multiply_heat": body = "heat ×%s" % vs
 		"add_heat": body = "heat %s" % signed
-		"add_ablate": body = "+%s Ablating" % vs
 		"lay_status":
 			var n := int(eff.get("stacks", 1))
 			body = "lays %s on each foe %s, %s a hit" % [str(STATUS.get(str(v), {}).get("name", str(v))), "a weapon hits" if bool(eff.get("damaging", false)) else "hit", "a stack" if n <= 1 else "%d stacks" % n]

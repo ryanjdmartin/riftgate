@@ -436,7 +436,7 @@ const MOVE_TARGETS := {
 	"brace": "Self", "recover": "Self", "revive_once": "Self", "barrier": "Self", "regenerate": "Self", "golden": "Self",
 	"heal": "The most hurt of its own", "brace_all": "Every foe", "revive_once_ally": "One of its own",
 	"cleanse": "The most-marked of its own", "prime": "Every other foe", "ward_all": "Every foe",
-	"summon": "The waiting pool", "rally": "Every other foe", "merge": "Its kinds on the field",
+	"summon": "The waiting pool", "rally": "Every foe", "merge": "Its kinds on the field",
 	"drain_rerolls": "The team's rerolls", "scorch_all": "Every machine", "corrupt_all": "Every machine",
 }
 

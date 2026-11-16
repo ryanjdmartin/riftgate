@@ -1687,8 +1687,8 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	if fd.has("regenerates"):
 		var rg = fd["regenerates"]
 		if kind != "attack" or not (rg is Dictionary) or str(rg.get("status", "")) != "regenerating" \
-				or int(rg.get("shield", 0)) <= 0 or int(rg.get("rounds", 0)) <= 0:
-			errs.append("%s: regenerates is an attack's rider on its own machine: {status: regenerating, shield and rounds, positive}" % where)
+				or int(rg.get("stacks", 0)) <= 0 or rg.has("shield") or rg.has("rounds"):
+			errs.append("%s: regenerates is an attack's rider on its own machine: {status: regenerating, stacks, positive}: a point of shield a stack as each round opens, a stack fading then (its shield a round and its rounds went on 15 November)" % where)
 	if fd.has("ally_action"):
 		var deal = fd["ally_action"]
 		if kind != "buff" or not (deal is Dictionary) or int(deal.get("rerolls", 0)) <= 0:
@@ -1730,7 +1730,8 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		# (Ryan, 18 October: "Things either decrease to zero, or are timed, not both").
 		if Effects.decays_to_zero(Effects.STATUS.get(st, {})) and fd.has("rounds"):
 			errs.append("%s: %s halves at the round's end on its own, so a buff grants it stacks and no rounds" % [where, st])
-		# One a use spends (Spun Up, spent by the next weapon) lasts until then.
+		# One a use spends (Spun Up, spent by the next weapon; a primer, a stack a weapon fired)
+		# lasts until then.
 		if Effects.STATUS.get(st, {}).has("spent_by") and fd.has("rounds"):
 			errs.append("%s: %s lasts until a use spends it, so a buff grants it stacks and no rounds" % [where, st])
 		if Effects.lasts_the_fight(Effects.STATUS.get(st, {})) and fd.has("rounds"):

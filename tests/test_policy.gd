@@ -504,6 +504,10 @@ func test_greedy_counts_a_flat_buff_once_a_strike_of_the_allys_gun() -> void:
 	var on_skua := pol.buff_score(sk, sk.mechs[2], coil)
 	assert_true(on_plain > 0.0, "worth something on a gun showing")
 	assert_true(absf(on_skua - 2.0 * on_plain) < 0.001, "twice as much on a gun that strikes twice")
+	# A primer is worth what its rider leaves (15 November, a placeholder): Primed an Ablate 1 a
+	# stack on the fires to come, a stack's tick at the bot's weight for a point of Ablating.
+	var tick := float(Effects.STATUS["ablating"]["effects"][0]["value"])
+	assert_eq(pol.buff_score(sk, sk.mechs[1], Face.buff("primed", 2)), 2.0 * tick * Policy.ABLATE_WEIGHT, "Primed 2: two stacks of Ablating to come")
 
 
 func test_greedy_lures_when_it_saves_the_glass_machine() -> void:
@@ -825,9 +829,9 @@ func test_the_bot_reads_a_foes_barrier_ward_priming_and_regrowth() -> void:
 	assert_eq(worth["barrier"], 10.0, "a Barrier: the biggest weapon blow a machine still to act shows on it")
 	assert_eq(worth["ward_all"], 0.0, "a Ward: nothing")
 	assert_eq(worth["prime"], 8.0, "a priming: 2 a stack, two stacks on each of two others")
-	assert_eq(worth["regenerate"], 12.0, "a regrowth: its value for each of three actions")
+	assert_eq(worth["regenerate"], 10.0, "a regrowth: its four stacks, a point each and one fewer an action, 4, 3, 2 and 1")
 	var plain := Policy._threat_now(g1, sk)
-	Effects.grant(g1, Effects.primed_foe(3, "foe:caster"))
+	Effects.stack(g1, Effects.primed_foe(), Effects.SKIRMISH, "foe:caster", 3, Effects.DECAY_NONE)
 	assert_eq(Policy._threat_now(g1, sk), plain + 6.0, "a primed foe threatens its blow and 2 a stack")
 	var a: Skirmish.MechState = sk.mechs[0]
 	var b: Skirmish.MechState = sk.mechs[1]
@@ -847,7 +851,7 @@ func test_the_bot_reads_a_foes_barrier_ward_priming_and_regrowth() -> void:
 ## what the foe carries: Undying its maximum HP whatever the blow does, a Barrier the
 ## biggest weapon blow an ally still to act shows on it (nothing when its own weapon pops it),
 ## Armoured its stacks for each allied blow to come, Empowered its value, Primed 2 a stack,
-## Regenerating its value for each action left, a Ward nothing, a bare foe nothing; the attack
+## Regenerating what the stacks it takes would have regrown, a Ward nothing, a bare foe nothing; the attack
 ## score carries it.
 func test_the_bot_prices_a_purge_by_what_the_foe_carries() -> void:
 	var pol := Policy.make(Policy.GREEDY)
@@ -879,12 +883,12 @@ func test_the_bot_prices_a_purge_by_what_the_foe_carries() -> void:
 	Effects.stack(g, Effects.STATUS["kindled"], Effects.SKIRMISH, "foe:caster", 3, Effects.DECAY_HALF)
 	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 3.0, "Empowered: its value")
 	Effects.remove(g, "kindled")
-	Effects.grant(g, Effects.primed_foe(2, "foe:caster"))
+	Effects.stack(g, Effects.primed_foe(), Effects.SKIRMISH, "foe:caster", 2, Effects.DECAY_NONE)
 	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 4.0, "Primed: 2 a stack")
 	assert_eq(pol.purge_worth(sk, a, null_field, g, 0.5), 2.0, "at the odds the foe outlives the blow")
 	Effects.remove(g, "primed")
-	Effects.grant(g, Effects.regenerating(4))
-	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 12.0, "Regenerating: its value for each of three actions left")
+	Effects.stack(g, Effects.STATUS["regenerating"], Effects.SKIRMISH, "foe:caster", 4, Effects.DECAY_TICK)
+	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 10.0, "Regenerating: what the stacks the Purge takes would have regrown, 4, 3, 2 and 1")
 	Effects.remove(g, "regenerating")
 	Effects.stack(g, Effects.foe_ward(), Effects.SKIRMISH, "foe:caster", 1, Effects.DECAY_TURN_ALL)
 	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 0.0, "a Ward: nothing, since it turns the Purge away")
@@ -892,7 +896,7 @@ func test_the_bot_prices_a_purge_by_what_the_foe_carries() -> void:
 	Effects.stack(g, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_NONE)
 	assert_true(pol.purge_worth(sk, a, null1, g, 1.0) > 0.0, "Numbed: a stack stripped is a step toward a stun")
 	var bare := pol.attack_score(sk, a, null_field, g)
-	Effects.grant(g, Effects.primed_foe(5, "foe:caster"))
+	Effects.stack(g, Effects.primed_foe(), Effects.SKIRMISH, "foe:caster", 5, Effects.DECAY_NONE)
 	assert_eq(pol.attack_score(sk, a, null_field, g), bare + 10.0, "the attack score carries it")
 
 

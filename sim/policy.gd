@@ -70,9 +70,8 @@ const EXPOSE_WEIGHT := 0.5       # Exposed on a foe: its armour off each team bl
 const MINE_WEIGHT := 0.8         # a Mine left on a foe, as a share of its blast: delayed until its foe falls, the neighbours it meets then as they stand now
 const REROLL_SHARE := 0.4        # a team reroll more (equipment's own rule), as a share of the team's average blow
 const AMMO_SHARE := 0.5          # an ammo (the Musk Ox's magazine), as a share of the best damage a gun on its die buys with one
-const PRIMED_WORTH := 2.0        # a stack of Primed on a foe (28 October): the Ablating its next move leaves, a placeholder
+const PRIMED_WORTH := 2.0        # a stack of Primed on a foe (28 October): the Ablating the move that spends it leaves, a placeholder
 const REGEN_WEIGHT := 0.5        # a point of shield a regeneration brings in a round to come, as a share of the hull it keeps: those blows are guessed from this round's (the Storm Petrel's, 30 October)
-const REGEN_ACTIONS := 3         # the actions a foe's Regenerating runs from its grant (Effects.regenerating's clock)
 const AHEAD_SHARE := 0.6         # the shield persona: a blow next round, as a share of one this round (the fight may end, the foes pick afresh)
 const CYCLE_AHEAD := 0.6         # a stepping die's next round, as a share of this one: where the dial rests now is the chamber it opens on (the Cassowary's cycle, 3 November)
 const REBOOT_KEEP := 1           # the reboot's first play (a what-if): the shield this round's blows would take off a machine that it gives up without a thought when it reboots
@@ -552,8 +551,8 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	var mean := _mean(outcomes)
 	var p_kill := _kill_odds(outcomes, target.hp)
 	var score := _capped(outcomes, target.hp)
-	# Every other foe the blow reaches (a Spread's neighbours, a Penetrate's column, Splash's
-	# both, a Chain's Shocked conductors, a reach over every foe): its shape's number through the
+	# Every other foe the blow reaches (a Spread's neighbours, a Penetrate's column,
+	# a Chain's Shocked conductors, a reach over every foe): its shape's number through the
 	# firer's modifiers and its own reads, statuses (a Shock never, no strike being aimed at it:
 	# 29 October) and armour, capped at what it has left (area by shape, numbered, and Chain).
 	var shapes := sk.area_shapes(f, target)
@@ -712,7 +711,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		# The Spindrift Salvo's kill rider (30 October): the team's rerolls it brings mid-round, at
 		# the odds of the kill, worth what the bank carries of them (bank_delta).
 		score += p_kill * bank_delta(sk, f.kill_rerolls)
-	if f.regen_shield > 0 and f.regen_rounds > 0:
+	if f.regen_stacks > 0:
 		score += regen_worth(sk, ms, f)   # the St. Elmo's Regenerator's rider on its own spender
 	# The Riot Field Generator (the Storm Petrel's, 30 October): the shield the spend burns in place
 	# of heat, at what that shield would have kept this round and after (burn_cost), and the zap it
@@ -779,13 +778,15 @@ func burn_cost(sk: Skirmish, ms: Skirmish.MechState, burnt: int) -> float:
 
 
 ## What a regeneration on its own spender is worth (the Storm Petrel's St. Elmo's Regenerator, 30
-## October): its shield at each round it runs, as hull kept against the blows to come, this
-## round's incoming the guess, at REGEN_WEIGHT, and what nothing strikes as shield banked.
+## October): its shield at each round it runs, a point a stack and a stack fewer each round (15
+## November), as hull kept against the blows to come, this round's incoming the guess, at
+## REGEN_WEIGHT, and what nothing strikes as shield banked.
 func regen_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
 	var incoming := float(sk.incoming_for(ms))
-	var kept := minf(float(f.regen_shield), incoming) * HULL_WEIGHT * REGEN_WEIGHT
-	var stood := maxf(0.0, float(f.regen_shield) - incoming) * BANK_WEIGHT
-	return (kept + stood) * float(f.regen_rounds)
+	var worth := 0.0
+	for n in range(f.regen_stacks, 0, -1):
+		worth += minf(float(n), incoming) * HULL_WEIGHT * REGEN_WEIGHT + maxf(0.0, float(n) - incoming) * BANK_WEIGHT
+	return worth
 
 
 ## A team reroll's worth, the one yardstick for a reroll gained (equipment's, a kill's), paid (an
@@ -840,7 +841,7 @@ static func roll_gain(who: Skirmish.MechState) -> float:
 ## the rest at the odds the foe outlives the blow (`lives`): a Barrier the biggest weapon blow an
 ## ally still to act shows on it (nothing when the spend's own weapon pops it first), Armoured
 ## its stacks for each allied blow still to land on it this round, Empowered its value, Primed 2 a
-## stack, Regenerating its value for each action it has left, a Ward nothing.
+## stack, Regenerating what the stacks it takes would have regrown, a Ward nothing.
 func purge_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, foe: Foe, lives: float) -> float:
 	if foe == null or Effects.has(foe, "ward"):
 		return 0.0   # a Ward turns a Purge away and stands (2 November)
@@ -868,10 +869,15 @@ func purge_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, foe: Foe, lives:
 					rest += barrier_stakes(sk, foe, ms)
 			"braced":
 				rest += float(stacks * Effects.braced_armour() * allied_blows)
-			"kindled", "regenerating":
+			"kindled":
 				for eff in m.effects:
-					if str(eff.get("effect", "")) in ["add_attack", "regrow"]:
+					if str(eff.get("effect", "")) == "add_attack":
 						rest += float(int(eff.get("value", 0)) * stacks)
+			"regenerating":
+				# What the stacks the Purge reaches would have regrown before they ran out: the
+				# top of the count, the dearest part of it.
+				var held := Effects.stacks_of(foe, m.id)
+				rest += float(Effects.regen_total(held) - Effects.regen_total(held - stacks))
 			"enraged":
 				# The Nob's gathered rage (3 November): a point of attack a stack on every blow to
 				# come, so worth the stacks the Purge reaches over the blows the fight has left (RAGE_BLOWS).
@@ -1789,13 +1795,16 @@ func buff_score(sk: Skirmish, who: Skirmish.MechState, f: Face) -> float:
 	if f.buff_rounds > 1:
 		attack_later = _attack_mean(sk, who) * float(f.buff_rounds - 1)
 	var score := 0.0
-	# The primers (2 November): a stack a weapon fired. Charged is a Shock on the next fire's foe,
-	# about this machine's own blow again; Supercooled a Cryo 1 the next hit cashes, a vent of its
-	# cooling. Placeholders, as every weight.
+	# The primers (2 November; Primed the third, 15 November): a stack a weapon fired. Charged is
+	# a Shock on the next fire's foe, about this machine's own blow again; Supercooled a Cryo 1 the
+	# next hit cashes, a vent of its cooling; Primed an Ablate 1 on the next fire's foe, its tick
+	# at the bot's weight for a point of Ablating. Placeholders, as every weight.
 	if f.buff_status == "charged":
 		score += float(n) * _raw_attack_mean(who)
 	elif f.buff_status == "supercooled":
 		score += float(n) * vent_score(sk, who, Effects.status_value("cryoed", "cool_hitter"))
+	elif f.buff_status == "primed":
+		score += float(n) * float(Effects.STATUS["ablating"]["effects"][0]["value"]) * ABLATE_WEIGHT
 	for eff in status.get("effects", []):
 		var v := float(eff.get("value", 0))
 		match str(eff.get("effect", "")):
@@ -1815,9 +1824,6 @@ func buff_score(sk: Skirmish, who: Skirmish.MechState, f: Face) -> float:
 				# Braced and its like: the armour stands behind this round's incoming blows.
 				if str(eff.get("stat", "")) == "armour":
 					score += _armour_saved(sk, who, int(v) * n) * HULL_WEIGHT * float(f.buff_rounds)
-			"add_ablate":
-				var per := float(Effects.STATUS["ablating"]["effects"][0]["value"])
-				score += per * v * n * ABLATE_WEIGHT * (1.0 if attack_now > 0.0 else 0.0) * float(f.buff_rounds)
 	if f.team_rerolls > 0:
 		score += REROLL_SHARE * _team_raw_attack_mean(sk) * float(f.team_rerolls)   # a team reroll more this round, no status
 	match f.buff_status:
@@ -2346,7 +2352,7 @@ static func _threat_now(f: Foe, sk: Skirmish = null) -> float:
 
 ## What a foe's buff special grants, as the bot reads it (28 October; placeholders): a Barrier
 ## the biggest weapon blow a machine still to act shows on the foe it shelters, a Ward nothing,
-## Primed 2 a stack on every other foe it primes, Regenerating its value for each of its actions.
+## Primed 2 a stack on every other foe it primes, Regenerating what its stacks regrow before they run out.
 static func _foe_buff_worth(f: Foe, sk: Skirmish) -> float:
 	var value := maxi(1, int(f.action.get("value", 0)))
 	match str(f.action.get("effect", "")):
@@ -2359,7 +2365,7 @@ static func _foe_buff_worth(f: Foe, sk: Skirmish) -> float:
 					primed += 1
 			return PRIMED_WORTH * float(value * primed)
 		"regenerate":
-			return float(value * REGEN_ACTIONS)
+			return float(Effects.regen_total(value))
 	return 0.0   # a Ward: nothing (the brief's placeholder)
 
 

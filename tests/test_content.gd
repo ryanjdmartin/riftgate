@@ -860,7 +860,7 @@ func test_crits_are_refused_in_content() -> void:
 	gun["tier"] = 1
 	db.components["old_gun"] = gun
 	var c: Dictionary = db.chassis[db.chassis.keys()[0]].duplicate(true)
-	c["passive"] = {"id": "hot", "name": "Hot", "description": "Crits burn.", "effects": [{"trigger": "on_crit", "effect": "add_ablate", "value": 1}]}
+	c["passive"] = {"id": "hot", "name": "Hot", "description": "Crits burn.", "effects": [{"trigger": "on_crit", "effect": "add_damage", "value": 1}]}
 	db.chassis["hot_one"] = c
 	var gun_refused := false
 	var passive_refused := false
@@ -2429,8 +2429,31 @@ func test_a_buff_of_a_halving_status_takes_no_rounds() -> void:
 			refused = true
 	assert_true(refused, "a buff granting Empowered for rounds is refused")
 	assert_true(Effects.decays_to_zero(Effects.STATUS["overcharged"]), "Empowered runs down on its own")
-	assert_false(Effects.decays_to_zero(Effects.STATUS["primed"]), "Primed is timed by the component")
+	assert_false(Effects.decays_to_zero(Effects.STATUS["primed"]), "Primed runs down on no clock: a weapon fired spends it")
 	assert_false(Effects.decays_to_zero(Effects.STATUS["braced"]), "Armoured ends with the round")
+
+
+## A primer lasts until its stacks are fired (15 November, Primed the third beside Charged and
+## Supercooled: "give it the same format as cryo ... use a stack on firing"), so a buff grants one
+## stacks and no rounds, as it does a status the next weapon spends whole.
+func test_a_buff_of_a_primer_takes_no_rounds() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var coil: Dictionary = db.components["overcharge_coil"].duplicate(true)
+	coil["face"] = {"kind": "buff", "status": "primed", "stacks": 2}
+	coil["tier"] = 1
+	db.components["primer_coil"] = coil
+	var timed: Dictionary = coil.duplicate(true)
+	timed["face"]["rounds"] = 2
+	db.components["timed_primer"] = timed
+	var refused := false
+	for e in db.validate():
+		assert_false(e.begins_with("component primer_coil"), "a primer granted in stacks is content: %s" % e)
+		if e.begins_with("component timed_primer") and e.contains("until a use spends it"):
+			refused = true
+	assert_true(refused, "a buff granting Primed for rounds is refused")
+	for id in ["primed", "charged", "supercooled"]:
+		assert_eq(str(Effects.STATUS[id].get("spent_by", "")), "weapon", "%s is spent by the weapons fired" % id)
 
 
 ## lay_status (the funnel-web's Ambush, 18 October) names a status the engine has and lays at

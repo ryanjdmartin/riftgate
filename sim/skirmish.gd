@@ -1467,10 +1467,12 @@ func start_round() -> void:
 			regened.append("%s +%d" % [ms.unit.display_name, gained])
 	if not regened.is_empty():
 		log.append("shield regen: " + ", ".join(regened))
-	# Passives that fire at the round's start, after the roll: shield from heat, a flat
-	# shield, a vent (the Buzzard's Thermal Recoupler reads the heat as it stands now).
+	# What fires at the round's start, after the roll: a flat shield, a vent, a status. A
+	# machine's Regenerating is one, a point of shield a stack; its turn come, a stack fades
+	# (15 November), whether the shield took the points or not.
 	for ms in live_mechs():
 		_fired(ms, Effects.round_start(ms.unit, ms.heat), "round start")
+		Effects.spend_stacks(ms.unit, "regenerating", 1)
 	# The hopper grants its Armoured for the round, what the loads it holds are worth (the Honey
 	# Badger's, Ryan, 10 November: "returns at the start of his turn since its granted by the
 	# funnel bar"): last round's went at the round's end as every machine's Armoured does, and a
@@ -2324,12 +2326,13 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 				rerolls_left += f.kill_rerolls
 				log.append("%s: the kill brings the team %d reroll%s" % [ms.unit.display_name, f.kill_rerolls, "" if f.kill_rerolls == 1 else "s"])
 			# The rider on its own spender (the Storm Petrel's St. Elmo's Regenerator, Ryan's go of 21
-			# October; built 30 October): spent on a foe, its machine gains Regenerating, the entry's
-			# shield at the start of each of the rounds it says after this one, a grant of its own, so
-			# a second keeps its own end. Bought by a die entry, so a foe's purge takes it.
-			if f.regen_shield > 0 and f.regen_rounds > 0 and target is Foe and ms.alive():
-				Effects.grant_for_rounds(ms.unit, Effects.regenerating_shield(f.regen_shield), "buff:" + f.component, round + f.regen_rounds)
-				log.append("%s regenerates: %d shield at the start of each of the next %d rounds" % [ms.unit.display_name, f.regen_shield, f.regen_rounds])
+			# October; built 30 October): spent on a foe, its machine gains Regenerating, the stacks
+			# the entry says, a point of shield a stack as each round opens and a stack fading then
+			# (15 November); a second spend adds its stacks. Bought by a die entry, so a foe's purge
+			# takes it.
+			if f.regen_stacks > 0 and target is Foe and ms.alive():
+				Effects.stack(ms.unit, Effects.regenerating_shield(), Effects.SKIRMISH, "buff:" + f.component, f.regen_stacks, Effects.DECAY_NONE)
+				log.append("%s gains Regenerating ×%d: a point of shield a stack as each round opens, then a stack fades" % [ms.unit.display_name, Effects.stacks_of(ms.unit, "regenerating")])
 			if Effects.counts_shots(ms.unit) > 0:
 				Effects.stack(ms.unit, Effects.STATUS["shots"], Effects.SKIRMISH, "count", 1, Effects.DECAY_NONE)
 			if f.is_weapon() and Effects.remove(ms.unit, "spun_up"):
@@ -2589,8 +2592,8 @@ func _enemy_turn() -> void:
 			# Suppress or turned by a Disrupt names nothing, so either answer breaks the pair.
 			if f.alive() and not f.gathering() and f.action.has("then"):
 				f.next_move = str(f.action["then"])
-		if moves:
-			Effects.remove(f, "primed")   # a stoker's priming rides the move it makes (28 October); its Empowered halves at the round's end instead (4 November)
+		if moves and not tick["skip"] and f.attacks():
+			Effects.spend_stacks(f, "primed", 1)   # a stoker's priming rides a move that strikes, a stack a move (15 November: the primers' format); a special or a move lost to a stun spends none
 		if _lift_after.has(f):
 			# A merge's lift (30 October), its own Empowered, riding its next move.
 			Effects.stack(f, Effects.STATUS["kindled"], Effects.SKIRMISH, "foe:" + f.content_id, int(_lift_after[f]), Effects.DECAY_HALF)
@@ -2769,12 +2772,12 @@ func _strike(f: Foe, t: MechState) -> void:
 			var nb := f.rider(f.action, "ablate")
 			_fire_on(t, "ablating_mech", nb, f)
 			log.append("%s lays Ablating ×%d on %s" % [f.display_name, nb, t.unit.display_name])
-		# Primed (a stoker's, 28 October): each blow of the move leaves its stacks of Ablating, as
-		# an Ablate rider would, and the move spends it (_enemy_turn).
-		var primed := Effects.stacks_of(f, "primed")
-		if primed > 0 and t.alive():
-			_fire_on(t, "ablating_mech", primed, f)
-			log.append("%s, primed, lays Ablating ×%d on %s" % [f.display_name, primed, t.unit.display_name])
+		# Primed (a stoker's, 28 October; the primers' format since 15 November): each blow of a
+		# move that strikes leaves Ablating 1, as an Ablate rider would, and the move spends a
+		# stack (_enemy_turn).
+		if Effects.stacks_of(f, "primed") > 0 and t.alive():
+			_fire_on(t, "ablating_mech", 1, f)
+			log.append("%s, primed, lays Ablating ×1 on %s" % [f.display_name, t.unit.display_name])
 		if f.has_keyword(f.action, "jam") and t.alive() and t.face_index >= 0:
 			# Jam: the entry the die shows is Jammed, switched off through the mech's next turn.
 			Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, round + 1)
@@ -3267,12 +3270,6 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				h.mine["chain"] = int(h.mine["chain"]) + maxi(0, f.chain)   # every hit's arc number
 			if not touched.has(foe):
 				touched.append(foe)   # every foe the blows reached, felled or not: Shock, Expose, Lure and Disrupt land on it below
-		# A Primed machine's Ablating, a stack a strike on the strike's own foe (the mechanics
-		# audit's 8, 27 October).
-		if int(modded["ablate"]) > 0:
-			var primed_laid := _stacks_from(ms, "ablating", int(modded["ablate"])) * doubled
-			riders.append(func() -> void: _land_rider(target, "ablating", primed_laid, gained, turned))
-			h.mine_stack("ablating", primed_laid)
 		h.total += landed
 	# Riders land after the hits (Ryan, 3 November: "a multi-hit weapon with Shock would apply it
 	# after both hits ... Cryo should work the same way, resulting in 2 applications, not
@@ -3812,15 +3809,17 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 		"merge":
 			_merge(f, a)
 		"rally":
-			# Empowered lands at once on every other foe on the field, at the move's own value
-			# in stacks (Ryan, 26 October: "howl is more clear if it gives kindled for the next
-			# action, which could be the turn its granted"): one acting after the rallier this turn
-			# hits harder now, and every intent showed it from the round's start (incoming_rally).
-			# The stacks halve at the round's end like a machine's (Ryan, 4 November: one clock on
-			# both sides), so one that has acted carries half to the next round; two rallies add.
+			# Empowered lands at once on every foe on the field, the rallier too (Ryan, 15 November:
+			# "Buff itself too. Helps with low foe counts"; every other foe until then), at the
+			# move's own value in stacks (Ryan, 26 October: "howl is more clear if it gives kindled
+			# for the next action, which could be the turn its granted"): one acting after the
+			# rallier this turn hits harder now, and every intent showed it from the round's start
+			# (incoming_rally). The stacks halve at the round's end like a machine's (Ryan, 4
+			# November: one clock on both sides), so one that has acted, the rallier among them,
+			# carries half to the next round; two rallies add.
 			var rallied := 0
 			for other in field_foes():
-				if other != f and other.alive():
+				if other.alive():
 					Effects.stack(other, Effects.STATUS["kindled"], Effects.SKIRMISH, "foe:" + f.content_id, maxi(0, value), Effects.DECAY_HALF)
 					rallied += 1
 			log.append("%s: %s, %d hit %d harder, halving each round" % [f.display_name, str(a.get("name", "rallies")), rallied, value])
@@ -3879,21 +3878,20 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 					warded += 1
 			log.append("%s: %s, %d of its own warded against the team's marks" % [f.display_name, str(a.get("name", "hallows")), warded])
 		"prime":
-			# A stoker (28 October, the Peak's by lean): Primed at its value on every other foe on
-			# the field at once, as a rally's Empowered lands, each foe's next move spending it.
+			# A stoker (28 October, the Peak's by lean): Primed, its value in stacks, on every other
+			# foe on the field at once, as a rally's Empowered lands; each foe's next moves that
+			# strike spend a stack each, their blows leaving Ablating 1 (15 November).
 			var primed := 0
 			for other in field_foes():
 				if other != f and other.alive():
-					Effects.grant(other, Effects.primed_foe(value, "foe:" + f.content_id))
+					Effects.stack(other, Effects.primed_foe(), Effects.SKIRMISH, "foe:" + f.content_id, maxi(1, value), Effects.DECAY_NONE)
 					primed += 1
-			log.append("%s: %s, %d primed to ablate ×%d" % [f.display_name, str(a.get("name", "stokes")), primed, maxi(1, value)])
+			log.append("%s: %s, %d Primed ×%d" % [f.display_name, str(a.get("name", "stokes")), primed, maxi(1, value)])
 		"regenerate":
-			# Regenerating on itself (28 October, the Marsh's by lean): its value at each of its
-			# next three actions, after its ticks.
-			var m := Effects.regenerating(maxi(1, value))
-			m.source = "foe:" + f.content_id
-			Effects.grant(f, m)
-			log.append("%s: %s, regrowing %d at each of its next three actions" % [f.display_name, str(a.get("name", "knits")), maxi(1, value)])
+			# Regenerating on itself (28 October, the Marsh's by lean), its value in stacks: a point
+			# a stack at each of its actions, after its ticks, a stack fading each (15 November).
+			Effects.stack(f, Effects.STATUS["regenerating"], Effects.SKIRMISH, "foe:" + f.content_id, maxi(1, value), Effects.DECAY_TICK)
+			log.append("%s: %s, Regenerating ×%d" % [f.display_name, str(a.get("name", "knits")), Effects.stacks_of(f, "regenerating")])
 		"dispel":
 			# A hero's or a boss's Purge N (17 October; numbered 2 November): no blow, every buff N
 			# stacks down, the stores kept.
@@ -4743,12 +4741,13 @@ func _shock(foe: Foe, by: MechState, turned = null) -> void:
 	_foe_gained_status(foe, "shocked")
 
 
-## The primers (Ryan, 2 November; keywords since 3 November): Charged and Supercooled ride the
-## weapons a machine fires as Shock and as Cryo, one more a strike (Effects.effective_face), and
-## a weapon fired or laid spends a stack of each: a Rapid's second fire is a second fire, a salvo
-## one, a passed turn's release none, and equipment spends nothing.
+## The primers (Ryan, 2 November; keywords since 3 November; Primed the third since 15 November):
+## Charged, Supercooled and Primed ride the weapons a machine fires as Shock, as Cryo and as
+## Ablate, one more a strike (Effects.effective_face), and a weapon fired or laid spends a stack
+## of each: a Rapid's second fire is a second fire, a salvo one, a passed turn's release none,
+## and equipment spends nothing.
 func _spend_primers(ms: MechState) -> void:
-	for id in ["charged", "supercooled"]:
+	for id in ["charged", "supercooled", "primed"]:
 		if Effects.stacks_of(ms.unit, id) <= 0:
 			continue
 		Effects.spend_stacks(ms.unit, id, 1)

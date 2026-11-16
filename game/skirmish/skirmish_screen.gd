@@ -1721,11 +1721,9 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(status_row("ward", _foe_glyph("ward"), "", "Ward", _foe_chip_colour("ward")))
 	var regrow := Effects.regrowth(foe)
 	if regrow > 0:
-		var left := 0
-		for m in Effects.live(foe):
-			if m.id == "regenerating":
-				left = maxi(left, m.stacks)
-		rows.append(status_row("regenerating", _foe_glyph("regenerating"), "+%d" % regrow, "Regenerating +%d, %d action%s to go" % [regrow, left, "" if left == 1 else "s"], _foe_chip_colour("regenerating")))
+		# A point a stack at its action, then a stack fades (15 November): the chip is the count.
+		var mending := Effects.stacks_of(foe, "regenerating")
+		rows.append(status_row("regenerating", _foe_glyph("regenerating"), "×%d" % mending, "Regenerating ×%d: +%d at its action, then a stack fades" % [mending, regrow], _foe_chip_colour("regenerating")))
 	var paradox := Effects.stacks_of(foe, "paradox")
 	if paradox > 0:
 		var at := sk.paradox_count()

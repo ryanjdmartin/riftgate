@@ -1199,13 +1199,12 @@
    "design": {
     "stage": "draft",
     "fantasy": "A lattice of light laid over a machine's weapons. Everything it hits afterwards keeps burning.",
-    "niche": "Aphelion's buff: a stack of Primed for the round, on itself or an ally, so the Stingray's suite has a buff to deepen as well as its burns."
+    "niche": "Aphelion's buff: a stack of Primed, on itself or an ally, so the next weapon that machine fires carries Ablate 1 (one more a strike on an Ablate gun) and the Stingray's suite has a buff to deepen as well as its burns. A primer since 15 November, a stack a weapon fired; for the round, on every blow, until then. Its one stack is a placeholder."
    },
    "face": {
     "kind": "buff",
     "status": "primed",
-    "stacks": 1,
-    "rounds": 1
+    "stacks": 1
    },
    "passive": null,
    "tags": []
@@ -1934,8 +1933,8 @@
    "design": {
     "stage": "draft",
     "fantasy": "St. Elmo's fire on the mast (Ryan named it 21 October): a beacon that draws the foe's eye, and the glow that mends the shield.",
-    "niche": "The Storm Petrel's lock, the lure that regens itself (Ryan, 19 October): a debuff, Indirect, no heat; the foe it is spent on is Lured for the round, and its machine gains Regenerating, shield at the start of each round for three rounds, stacking. Self only, never Rapid, no cooldown: the die is its brake.",
-    "notes": "Built 30 October: the rider on its own spender (regenerates) grants its machine a timed Regenerating, the shield at each round's start after the spend, a grant of its own each time; a foe's purge takes it, a die entry having bought it."
+    "niche": "The Storm Petrel's lock, the lure that regens itself (Ryan, 19 October): a debuff, Indirect, no heat; the foe it is spent on is Lured for the round, and its machine gains Regenerating 3: a point of shield a stack as each round opens, a stack fading then, so 3, 2 and 1 (2 a round for three rounds until 15 November, the same six), a second spend adding its stacks. Self only, never Rapid, no cooldown: the die is its brake.",
+    "notes": "Built 30 October, in stacks since 15 November: the rider on its own spender (regenerates) grants its machine Regenerating's stacks, the shield as each round opens after the spend, a second spend adding to the count; a foe's purge takes it, a die entry having bought it."
    },
    "face": {
     "kind": "attack",
@@ -1947,8 +1946,7 @@
     "heat": 0,
     "regenerates": {
      "status": "regenerating",
-     "shield": 2,
-     "rounds": 3
+     "stacks": 3
     }
    },
    "passive": null,

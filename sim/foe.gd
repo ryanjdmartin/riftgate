@@ -325,7 +325,7 @@ func strikes() -> int:
 ##           the next time it falls (Reraise, the promoted Cleric's, 16 October): a party
 ##           member first, the heaviest hitter among them, then the rest of its own the same way
 ##           summon: `count` foes of `foe` join the pool at the round's end (Raise)
-##           rally: every other foe on the field hits `value` harder next round (Kindle)
+##           rally: every foe on the field, itself too, is Empowered `value`, at once (Kindle)
 ##           prime: Primed `value` on every other foe on the field, its next move's blows each
 ##           leaving that much Ablating on the machine they hit (28 October)
 ##           ward_all: a Ward on every foe on the field, itself included: no mark the team lays

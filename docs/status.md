@@ -35,7 +35,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1195 tests, 372,792 checks, green on `ccr-722ca9f0-yj8na3` (16 November, the
+- Tests: 1196 tests, 372,829 checks, green on `ccr-722ca9f0-yj8na3` (16 November, the
+  marks' first three rule changes, over main at `d1b6827`). Before it, 1195 tests, 372,792
+  checks, green on the same branch (16 November, the
   marks' renames, over main at `0eb2745`). Before it, 1192 tests, 372,768 checks, green on
   the same branch (15 November, the marks' cuts, over main at `c9e55a9`). Before it, 1196 tests, 372,909 checks, green on the
   same branch (15 November, the vanilla's 3 and breach's cut). Before it, 1197 tests, 372,937
@@ -1814,8 +1816,7 @@ The tasks are the to-do's; this is the index of what waits.
   Lure wins. No foe carries it. It is the foes' pass's (the to-do's Engine list).
 - His marks on the vocabulary's table (15 November, all eighty-two rows; the proposal's
   section 18 has each with its read, and the to-do's Engine list the build in parts), what
-  is not built yet: Rally on the rallier
-  too, Regenerating, Primed, Brittle and Phased as he ruled them; and for the foes' pass,
+  is not built yet: Brittle and Phased as he ruled them; and for the foes' pass,
   Drain, Steal and the drained reroll as their units' own text, countdowns an elite's or a
   boss's mostly, a fall free to do more than strike. Until built, content and the engine
   run each of those as before.
@@ -1886,10 +1887,15 @@ Spillover are rules written on their one piece, the die's star and the piece's o
 Follow-up is off the player's list; Jam lays Jammed; Pinned; Recover and Heal name a foe's
 flat healing; the Ammit's passive is the Quintessence Reactor, its count Essence, its piece
 the Quintessence Tap and the Tap's hold a buff on the Ammit, Essence Flare; Supercooled
-says Cryo 1; and a foe's Armoured ends as the foes' next turn opens. **What rides behind,
-in the to-do's order, each a commit of its own**: his marks' rule changes (Rally on the rallier, Regenerating fading a stack a
-turn, Primed a stack a weapon fired, Brittle in place of Flak and Crushed, Phased granted
-at the round's end); then the anchor read again as the baseline. **Then the foes' pass**
+says Cryo 1; and a foe's Armoured ends as the foes' next turn opens. **Three of his marks'
+five rule changes are built** (16 November; the bible's rally, Regenerating and primers
+rows): a rally reaches its rallier too; Regenerating is a point a stack as the carrier's
+turn comes and then a stack fades, grants adding; and Primed is the third primer, a stack a
+weapon fired lending Ablate 1, on a foe a stack a move that strikes. No number moved, so the
+foes that regenerate regrow less in all and a rally of 1 leaves its rallier nothing: the
+foes' pass sizes both. **What rides behind, in the to-do's order, each a commit of its
+own**: Brittle in place of Flak and Crushed, and Phased granted at the round's end; then
+the anchor read again as the baseline. **Then the foes' pass**
 (the to-do's line): Exposed's carriers and its engine, the moves his marks renamed or
 moved onto the unit, the countdowns off the rank and file, a fall free to do more than
 strike, and a move as a short list of steps if he takes section 19's proposal.
