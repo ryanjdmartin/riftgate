@@ -18,14 +18,28 @@ cab sits on the left deck so the barrel has the spine. Loaded, the drill's head 
 the bore's reinforced rim. Fired, the nose is shown two ways: (A) armoured iris petals close
 over the empty bore into a pointed prow; (B) the bore stays open, a heavy launch mouth with
 guide rails inside and the rocket guide's glow deep in it, so empty it reads as a launcher. The
-last row is the drill in flight, nose down out of the open bore, its plume behind it."""
+last row is the drill in flight, nose down out of the open bore, its plume behind it.
+
+Third round, the same day, on his notes ("I think the cockpit needs a little something else,
+something that implies it is able to go underground and not be just jammed full of dirt - maybe
+a brow or more of a slit or something. All weapons should be able to retract, for burrowing ...
+I think the head needs to be wider though ... two rings of drills? The actual tip, that fires,
+and then a ring around it that makes the thing wider ... Make vents into real vents, like the
+Polar bear"): round two's B with the nose a two-stage drill, the rocket tip in the bore and a
+wide ring cutter round it on the nose itself, which stays when the tip fires, so the fired nose
+is a drill and a launcher at once; the cab sealed, a raked armoured cupola under a peaked brow
+with a slit no wider than a hand and periscopes on its roof, shutters over the slit when it
+burrows; every mount in a well it drops into (a gun on a lift in the cab's roof, a rack and a
+bare mount on lifts in armoured boxes on the left deck), lids shut over them when it burrows;
+and its vents the Polar Bear's own, louvres on joints in housings cut into the breech and the
+engine deck, shut when it burrows."""
 
 import math
 
 from mathutils import Matrix, Vector
 
 from bl_low import boom, rect
-from models_low import _beam, _chamfered, _disc, _poly, _rings, _slab, _spike, _sq, _tube
+from models_low import _beam, _chamfered, _disc, _poly, _rings, _slab, _spike, _sq, _tube, _vent
 
 MN = "minerva"
 
@@ -465,8 +479,241 @@ def mnlook_mole2_flight(b):
 
 mnlook_mole2_flight.maker = MN
 
+
+# ---------------------------------------------------------------- round three: sealed for the dig
+
+R3_CZ = 23.0                          # the bore's axis, two higher than round two's, for the wider head
+R3_MOUTH = 30.6                       # where the tip's collar seats in the bore
+R3_ROOT, R3_LIP = 25.0, 36.0          # the ring cutter's root and lip along y
+R3_R0, R3_R1 = 21.0, 11.6             # its radius at the root and at the lip
+R3_THROAT = 10.9                      # its throat, round the bore's mouth
+R3_N = 16                             # its sides
+R3_TWIST = 2.0 * math.pi / R3_N       # its facets wind one side from root to lip
+R3_CAB_X = 24.0                       # the cab's centre across, on the right deck, the side the codex and skirmish cameras see
+
+
+def _r3_ring(y, r, phase=0.0, cz=R3_CZ, n=R3_N):
+    return [(r * math.cos(phase + math.pi / n + i * 2.0 * math.pi / n), y, cz + r * math.sin(phase + math.pi / n + i * 2.0 * math.pi / n)) for i in range(n)]
+
+
+def _r3_ring_cutter(b, cz=R3_CZ):
+    """The outer drill: a reamer crown round the bore's mouth on the nose itself, a frustum of
+    sixteen sides wound one side from root to lip, four raised spiral flutes worn bright, a crown
+    of teeth on its shoulder, and a throat that leaves the bore clear. It stays when the tip
+    fires, so the fired nose is a drill and a launcher at once."""
+    steps = 5
+    L = R3_LIP - R3_ROOT
+    rad = lambda f: R3_R0 + (R3_R1 - R3_R0) * f
+    outer = [_r3_ring(R3_ROOT + L * k / steps, rad(k / steps), R3_TWIST * k / steps, cz) for k in range(steps + 1)]
+    rings = outer + [_r3_ring(R3_LIP, R3_THROAT, R3_TWIST, cz), _r3_ring(R3_ROOT, R3_THROAT, 0.0, cz), outer[0]]
+    _rings(b, rings, "steel.dark", "ring_cutter", cap=False)
+    m = 16
+    for j in range(4):
+        ribbon = []
+        for k in range(m + 1):
+            f = 0.05 + 0.9 * k / float(m)
+            a = 0.85 * 2.0 * math.pi * f + j * math.pi / 2.0
+            out = Vector((math.cos(a), 0.0, math.sin(a)))
+
+            def at(dy, lift, f=f, out=out):
+                ff = min(1.0, max(0.0, f + dy / L))
+                return Vector((0.0, R3_ROOT + L * f + dy, cz)) + out * (rad(ff) + lift)
+
+            ribbon.append([at(-1.3, -0.6), at(1.3, -0.6), at(0.45, 2.3), at(-0.45, 2.3)])
+        _rings(b, ribbon, "steel.plate", "ring_flute")
+    # The gauge teeth on its shoulder, raked forward and out, each a bright point.
+    for k in range(12):
+        a = math.pi / 12.0 + k * 2.0 * math.pi / 12.0
+        out = Vector((math.cos(a), 0.0, math.sin(a)))
+        base = Vector((0.0, R3_ROOT + 1.6, cz)) + out * (R3_R0 - 1.6)
+        tip = Vector((0.0, R3_ROOT + 4.6, cz)) + out * (R3_R0 + 0.9)
+        _spike(b, tuple(base), tuple(tip), 1.2, "steel.plate", "ring_tooth")
+
+
+def _r3_well(b, x, y, z, w, open_, label):
+    """A mount's well in a deck at height `z`: a hazard rim round a dark recess, open (the lift
+    standing in it) or shut under a flush lid with a seam across it."""
+    b.box(x - w / 2.0 - 0.9, x + w / 2.0 + 0.9, y - w / 2.0 - 0.9, y + w / 2.0 + 0.9, z - 0.2, z + 0.45, "steel.stripe", label + "_rim")
+    b.box(x - w / 2.0, x + w / 2.0, y - w / 2.0, y + w / 2.0, z - 3.0, z + 0.5, "steel.dark", label + "_well")
+    if not open_:
+        b.box(x - w / 2.0 + 0.15, x + w / 2.0 - 0.15, y - w / 2.0 + 0.15, y + w / 2.0 - 0.15, z + 0.3, z + 0.75, "steel.plate", label + "_lid")
+        b.box(x - 0.25, x + 0.25, y - w / 2.0 + 0.4, y + w / 2.0 - 0.4, z + 0.74, z + 0.85, "steel.dark", label + "_seam")
+
+
+def _r3_lift(b, x, y, z0, z1, r, label):
+    """The lift a stowable mount rides up out of its well on: a dark column, a collar at its top."""
+    b.prism("z", x, y, (z0 + z1) / 2.0, r, z1 - z0, "steel.dark", 8, label + "_lift")
+    b.prism("z", x, y, z1 - 0.5, r + 1.0, 1.0, "steel.plate", 8, label + "_collar")
+
+
+def _r3_cab(b, shut):
+    """The cab on the right deck, sealed for the dig: an armoured cupola raked at its face, a heavy
+    peaked brow overhanging it like a plough's share, flanges either side of its face, a vision
+    slit no wider than a hand set to the outboard side (so the drill's ring never hides it head
+    on), two periscopes on the brow, a floodlight under it; `shut`, an armoured shutter covers the
+    slit and the lamp is dark."""
+    cx, z0 = R3_CAB_X, R2_TH + 2.0
+    cab = b.loft([(-30.0, rect(cx, 15.0, z0, 32.0)), (-15.0, rect(cx, 15.0, z0, 32.0)), (-10.0, rect(cx, 15.0, z0, 26.5))], "steel.panel", "cab")
+    b.loft([(-18.0, rect(cx, 16.2, 31.2, 33.4)), (-13.5, rect(cx, 17.6, 31.8, 35.6)), (-9.2, rect(cx, 17.6, 30.8, 32.8))], "steel.plate", "brow")
+    b.box(cx - 8.8, cx + 8.8, -10.2, -9.0, 30.4, 31.5, "steel.stripe", "brow_lip")
+    for fx in (cx - 8.1, cx + 7.5):   # flanges either side of the face, under the brow's ends
+        b.box(fx, fx + 0.6, -14.0, -9.2, R2_TH + 6.0, 31.2, "steel.plate", "cab_flange")
+    # The raked face: z = 32 - 1.1 (y + 15) from y -15 to -10; the slit just under the brow.
+    face_n = Vector((0.0, 1.1, 1.0)).normalized()
+    on = lambda x, z, lift: tuple(Vector((x, -15.0 + (32.0 - z) / 1.1, z)) + face_n * lift)
+    x0, x1 = cx - 2.5, cx + 6.5
+    _slab(b, [on(x0 - 1.0, 26.6, 0.12), on(x1 + 1.0, 26.6, 0.12), on(x1 + 1.0, 28.9, 0.12), on(x0 - 1.0, 28.9, 0.12)], tuple(face_n), 0.3, "steel.dark", "slit_frame")
+    _slab(b, [on(x0, 26.9, 0.3), on(x1, 26.9, 0.3), on(x1, 28.4, 0.3), on(x0, 28.4, 0.3)], tuple(face_n), 0.4, "glass.glass", "vision_slit")
+    if shut:
+        _slab(b, [on(x0 - 1.2, 26.55, 0.6), on(x1 + 1.2, 26.55, 0.6), on(x1 + 1.2, 29.0, 0.6), on(x0 - 1.2, 29.0, 0.6)], tuple(face_n), 0.6, "steel.plate", "shutter")
+        _slab(b, [on(x0 - 1.2, 28.4, 0.85), on(x1 + 1.2, 28.4, 0.85), on(x1 + 1.2, 29.0, 0.85), on(x0 - 1.2, 29.0, 0.85)], tuple(face_n), 0.3, "steel.stripe", "shutter_edge")
+    else:
+        b.box(cx - 6.2, cx - 3.4, -10.05, -9.4, 24.2, 25.8, "amber.light", "floodlight")
+    # Two periscopes standing on the brow's back, their glass forward over its peak.
+    for px in (cx - 5.0, cx + 4.6):
+        b.box(px - 1.4, px + 1.4, -17.6, -15.4, 32.6, 36.4, "steel.dark", "periscope")
+        b.box(px - 1.0, px + 1.0, -15.5, -15.2, 34.6, 35.9, "glass.glass", "periscope_glass")
+    return cab
+
+
+def _mole3_hull(b, state):
+    """Round three's hull: round two's B (the low hull, the launch barrel down the spine, the
+    breech), its nose a two-stage drill and its cab sealed, every mount on a lift in a well, its
+    vents the Polar Bear's own. `state` is "loaded", "fired", "burrowed" or "flight": "burrowed"
+    stows every mount under its lid, shuts the cab's slit and the louvres and seats the tip."""
+    TX, TW, TH, CZ = R2_TX, R2_TW, R2_TH, R3_CZ
+    out = state != "burrowed"
+    rest = 22.0 if out else 0.0
+    _treads(b, TX, TW, TH, -36.0, 24.0)
+    for s in (-1.0, 1.0):
+        x0, x1 = sorted((s * (TX + TW / 2.0 + 1.0), s * (TX + TW / 2.0 + 3.0)))
+        b.box(x0, x1, -26.0, 12.0, 5.0, TH - 2.0, "livery.livery2", "flank_plate")
+        b.box(s * TX - 2.4, s * TX + 2.4, 19.9, 20.7, TH - 0.6, TH + 1.6, "amber.light", "lamp")
+    # The lower hull between the treads, below the bore's floor.
+    b.loft([(-36.0, rect(0.0, 31.0, 6.0, 20.0)), (-14.0, rect(0.0, 31.0, 6.0, 20.0))], "steel.panel", "lower_hull")
+    b.loft([(-14.0, rect(0.0, 31.0, 5.0, CZ - R2_BORE - 1.0)), (21.0, rect(0.0, 31.0, 5.0, CZ - R2_BORE - 1.0)),
+            (24.0, rect(0.0, 28.0, 6.0, CZ - R2_BORE - 2.0))], "steel.panel", "belly")
+    # The launch barrel: solid behind, the bore in front, running on into the ring's throat.
+    b.loft([(-14.0, _ngon(0.0, CZ, R2_BARREL, R2_N)), (4.0, _ngon(0.0, CZ, R2_BARREL, R2_N))], "steel.panel", "barrel")
+    _tube(b, (0.0, 4.0, CZ), (0.0, R3_ROOT, CZ), R2_BARREL, R2_BORE, R2_N, "steel.panel", "bore", phase=math.pi / R2_N)
+    for k in range(4):
+        a = math.pi / 4.0 + k * math.pi / 2.0
+        p0 = (9.6 * math.cos(a), 5.0, CZ + 9.6 * math.sin(a))
+        p1 = (9.6 * math.cos(a), R3_MOUTH - 0.6, CZ + 9.6 * math.sin(a))
+        _beam(b, p0, p1, _sq(1.9, 1.9), _sq(1.9, 1.9), "steel.plate", "guide_rail")
+    for y in (11.0, 19.5):
+        _r2_band(b, y, y + 1.4, R2_BORE + 0.1, 9.0, "steel.dark", "bore_ring", CZ)
+    _disc(b, (0.0, 4.9, CZ), (0.0, 1.0, 0.0), 6.6, 10, "amber.glow", "bore_glow")
+    for y in (-11.5, -5.5):
+        _r2_band(b, y, y + 2.2, R2_BARREL + 1.0, R2_BARREL - 0.3, "steel.dark", "guide_ring", CZ)
+    _r2_band(b, -2.5, 1.0, R2_BARREL + 0.4, R2_BARREL - 0.3, "livery.livery", "barrel_band", CZ)
+    # The ring's bearing: a drum round the barrel's mouth that the cutter turns on, a hazard band.
+    _r2_band(b, 20.6, R3_ROOT, 18.2, R3_THROAT, "steel.plate", "ring_bearing", CZ, R3_N)
+    _r2_band(b, 19.6, 20.6, R2_BARREL + 1.6, R2_BARREL - 0.3, "steel.stripe", "bearing_band", CZ)
+    with b.joint("ring", (0.0, R3_ROOT, CZ), axis="roll"):
+        _r3_ring_cutter(b, CZ)
+    b.spin("ring", -18.0, -150.0)   # slow, against the tip
+    # The cheeks either side of the bore's front half, from the tread decks up to its shoulders.
+    for s in (-1.0, 1.0):
+        sec = [(s * 8.5, CZ + 11.2), (s * 26.0, TH + 3.0), (s * 26.0, TH + 1.0), (s * 13.5, TH + 1.0)]
+        sec = sec if s < 0 else list(reversed(sec))
+        b.loft([(1.0, sec), (19.2, sec)], "livery.livery2", "cheek")
+        b.loft([(19.2, sec), (20.4, [(x * 0.97, z - 0.4) for x, z in sec])], "steel.stripe", "cheek_edge")
+    # The breech: its vents the Polar Bear's, three louvres on each upper chamfer and a vent across
+    # its back where the blast deflector stood; a loading hatch on top.
+    breech = b.loft([(-27.0, _oct(0.0, CZ + 2.0, 32.0, 30.0, 7.0)), (-14.0, _oct(0.0, CZ + 2.0, 32.0, 30.0, 7.0))], "steel.plate", "breech")
+    b.loft([(-15.6, _oct(0.0, CZ + 2.0, 32.8, 30.8, 7.2)), (-14.0, _oct(0.0, CZ + 2.0, 32.8, 30.8, 7.2))], "steel.stripe", "breech_band")
+    b.box(-6.0, 6.0, -25.0, -17.0, CZ + 16.8, CZ + 18.2, "steel.panel", "loading_hatch")
+    b.prism("x", 0.0, -25.0, CZ + 17.6, 1.0, 13.0, "steel.dark", 6, "hatch_hinge")
+    for s, t in ((-1.0, "l"), (1.0, "r")):
+        _vent(b, [breech], (s * 12.5, -21.0, CZ + 2.0 + 11.5), 0.0, 10.0, 6.0, 3, "louvre_b" + t, rest, 80.0, flank=s, heat="breech_heat_" + t)
+    _vent(b, [breech], (0.0, -27.0, CZ + 10.5), 90.0, 12.0, 6.0, 3, "louvre_d", rest, 60.0, heat="breech_back_heat")
+    # The engine deck, flat on top: two vents across its tail and one between its stacks.
+    deck = b.loft([(-37.0, rect(0.0, 31.0, 6.0, 28.5)), (-27.0, rect(0.0, 31.0, 6.0, 28.5))], "steel.panel", "engine_deck")
+    for s, t in ((-1.0, "l"), (1.0, "r")):
+        _vent(b, [deck], (s * 7.5, -37.0, 17.5), 90.0, 11.0, 9.0, 4, "louvre_r" + t, rest * 0.5, 60.0, heat="rear_heat_" + t)
+    _vent(b, [deck], (0.0, -32.5, 28.5), 0.0, 9.0, 7.0, 3, "louvre_t", rest, 80.0, heat="deck_heat")
+    for s in (-1.0, 1.0):
+        b.prism("z", s * 10.0, -32.0, 34.0, 2.6, 12.0, "steel.dark", 6, "stack")
+    # The cab, and a locker on the right deck ahead of it.
+    _r3_cab(b, shut=not out)
+    b.box(16.6, 32.0, -8.0, 0.0, TH + 0.5, TH + 5.0, "steel.plate", "locker")
+    b.box(16.4, 32.2, -1.0, 0.0, TH + 5.0, TH + 5.6, "steel.stripe", "locker_edge")
+    # The left deck: an armoured box aft and one forward, each holding a mount's well.
+    b.box(-32.5, -15.6, -34.0, -14.0, TH, 24.0, "steel.panel", "sponson")
+    b.box(-31.5, -15.6, -12.0, 0.0, TH, 23.5, "steel.panel", "fore_box")
+    # Mounts, every one on a lift in a well: hp_1 a gun in the cab's roof, hp_2 a rack in the
+    # left sponson, hp_3 bare in the left fore box. Burrowed, each drops in and its lid shuts.
+    cx = R3_CAB_X
+    _r3_well(b, cx, -25.0, 32.0, 7.4, out, "gun")
+    _r3_well(b, -24.0, -24.0, 24.0, 9.6, out, "rack")
+    _r3_well(b, -23.5, -6.0, 23.5, 7.0, out, "pad")
+    if out:
+        _r3_lift(b, cx, -25.0, 31.0, 35.4, 2.4, "gun")
+        b.stock("hp_1", (cx, -25.0, 39.0), "barrel", scale=0.8, carries="rivet_gun")
+        _r3_lift(b, -24.0, -24.0, 23.0, 26.6, 2.8, "rack")
+        b.stock("hp_2", (-24.0, -24.0, 33.0), "rack", scale=0.8, carries="shotfire_rack")
+        _r3_lift(b, -23.5, -6.0, 22.5, 26.2, 2.2, "pad")
+        b.pad("hp_3", (-23.5, -6.0, 27.2), size=(7.0, 1.0))
+    else:
+        b.pin("hp_1", (cx, -25.0, 29.0), carries="rivet_gun", hidden=True)
+        b.pin("hp_2", (-24.0, -24.0, 21.0), carries="shotfire_rack", hidden=True)
+        b.pin("hp_3", (-23.5, -6.0, 20.5), carries="", hidden=True)
+    b.pivots = True   # tracks: it turns on the spot to aim, as a tank's neutral turn
+    b.move(slide=0.2, bank=0.0, accel=1.0, heft=0.3)
+
+
+def _r3_tip(b):
+    """The rocket tip seated: its body down the bore, its collar in the mouth, its spiral head
+    standing out of the ring's throat."""
+    b.loft([(6.0, _ngon(0.0, R3_CZ, 8.4, 12)), (R3_MOUTH - 2.4, _ngon(0.0, R3_CZ, 8.4, 12))], "steel.plate", "drill_body")
+    with b.joint("drill", (0.0, R3_MOUTH, R3_CZ), axis="roll"):
+        _r2_drill_head(b, R3_MOUTH + 0.4, cz=R3_CZ)
+    b.spin("drill", 40.0, 420.0)
+
+
+def mnlook_mole3_loaded(b):
+    """Loaded, its weapons out: the tip in the bore, the ring round it, one wide drill head."""
+    _mole3_hull(b, "loaded")
+    _r3_tip(b)
+
+
+mnlook_mole3_loaded.maker = MN
+
+
+def mnlook_mole3_fired(b):
+    """Fired: the tip gone, the ring staying round the open bore, its weapons out."""
+    _mole3_hull(b, "fired")
+
+
+mnlook_mole3_fired.maker = MN
+
+
+def mnlook_mole3_burrowed(b):
+    """Burrowed, everything stowed: the tip seated, every mount down its well under a shut lid,
+    the cab's slit shuttered, the louvres shut."""
+    _mole3_hull(b, "burrowed")
+    _r3_tip(b)
+
+
+mnlook_mole3_burrowed.maker = MN
+
+
+def mnlook_mole3_flight(b):
+    """The tip in flight out of the ring, nose down, its plume trailing back into the throat."""
+    _mole3_hull(b, "flight")
+    start = len(b.objects)
+    _r2_projectile(b, flame=True)
+    m = Matrix.Translation((0.0, 80.0, 20.0)) @ Matrix.Rotation(math.radians(-14.0), 4, "X")
+    for ob in b.objects[start:]:
+        ob.matrix_world = m @ ob.matrix_world
+
+
+mnlook_mole3_flight.maker = MN
+
 LOOKS = ["mnlook_mole_a", "mnlook_mole_b", "mnlook_mole_c",
-         "mnlook_mole2_loaded", "mnlook_mole2_shut", "mnlook_mole2_bore", "mnlook_mole2_flight"]
+         "mnlook_mole2_loaded", "mnlook_mole2_shut", "mnlook_mole2_bore", "mnlook_mole2_flight",
+         "mnlook_mole3_loaded", "mnlook_mole3_fired", "mnlook_mole3_burrowed", "mnlook_mole3_flight"]
 
 _VIEWS = ["codex", "above", "skirmish", ("from the side", 90.0, 8.0)]
 SHEET = {
@@ -490,5 +737,20 @@ SHEET2 = {
         {"model": "mnlook_mole2_shut", "label": "Fired, the bore shut (A)", "views": _VIEWS2 + ["front"]},
         {"model": "mnlook_mole2_bore", "label": "Fired, the bore a launcher (B)", "views": _VIEWS2 + ["front"]},
         {"model": "mnlook_mole2_flight", "label": "The drill in flight", "views": ["codex", ("from the side", 90.0, 8.0), "above"]},
+    ],
+}
+
+_VIEWS3 = ["codex", "above", "skirmish", ("from the side", 90.0, 8.0)]
+SHEET3 = {
+    "title": "The mole, third round: the rocket drill, 16 November (look tests, not content)",
+    "out": "docs/looks/minerva_mole3.png",
+    "cell": (320, 320),
+    "rows": [
+        {"model": "mnlook_mole3_loaded", "label": "Loaded, weapons out", "views": _VIEWS3 + ["front"]},
+        {"model": "mnlook_mole3_fired", "label": "Fired, the ring stays", "views": _VIEWS3 + ["front"]},
+        {"model": "mnlook_mole3_burrowed", "label": "Burrowed, everything stowed", "views": _VIEWS3},
+        {"model": "mnlook_mole3_flight", "label": "The drill in flight", "views": ["codex", ("from the side", 90.0, 8.0), "above"]},
+        {"model": "mnlook_mole3_loaded", "label": "The cab, open", "views": [("head on, close", 0.0, 14.0), ("front three-quarter, close", 28.0, 22.0)], "cell": (480, 400)},
+        {"model": "mnlook_mole3_burrowed", "label": "The cab, shut", "views": [("head on, close", 0.0, 14.0), ("front three-quarter, close", 28.0, 22.0)], "cell": (480, 400)},
     ],
 }

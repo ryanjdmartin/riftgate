@@ -452,6 +452,20 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
    flight ahead of B. Three placeholder mounts: a gun on the cab's roof (the cab on the left
    rear deck), a rack on the right rear deck, a bare pad on the left front deck. His to judge:
    the green cheeks' share, the iris prow's bluntness, the plume's brightness.
+   His read, the same day: "That look is actually really good out of the gate", with notes: a cab
+   that implies it can go underground, every weapon able to retract for burrowing, a wider head
+   ("two rings of drills? The actual tip, that fires, and then a ring around it"), and real vents
+   like the Polar Bear's. The third round (`docs/looks/minerva_mole3.png`, `SHEET3`): the cab an
+   armoured cupola on the right deck under a heavy peaked brow, a narrow slit outboard and two
+   periscopes, a shutter over the slit when it burrows; each mount on a lift in a hazard-rimmed
+   well that drops in under a flush lid (the gun on the cab's roof, the rack in a box on the left
+   deck aft, the bare mount in a box on the left deck forward); the drill's tip unchanged, 20
+   across, and round it a ring cutter on the nose, 42 across (44 with its gauge teeth) where
+   round two's rim was 33, four spiral flutes on a roll joint turning against the tip, so fired
+   the ring stays round the open, glowing bore; the Polar Bear's louvred vents cut into the hull
+   (the breech's chamfers and back, the engine deck's tail, between the stacks), shut when it
+   burrows. Rows loaded, fired, burrowed, in flight, and the cab open and shut close. His to
+   judge: the cab's new side, the ring's grey against the green, the hull 2 taller.
 4. Its name (the mole a working label) and its texts, his. On his ask of 16 November ("any ideas
    for a true burrower?"), Claude's candidates, each checked against the reserved names: the
    Aardvark (Claude's pick: the earth pig, among the fastest diggers alive, and a heavy strike
