@@ -16,8 +16,13 @@ extends RefCounted
 ## rift's row to nothing on the seam's, so the edge seen stood at half the seam's distance and a
 ## tear opened on ground that looked untouched).
 
-static var pack_radius_hex := 1.45   # a var, so the map tuner can move it live
-const BOSS_RADIUS_HEX := 2.6
+## A pack's own bleed and the boss's, in hexes (the circle's outer edge; the painting stands out to
+## about three quarters of it). Wide enough that a pack stands in its world with the hexes round it
+## (Ryan, 16 November: "the effect is more subtle than I thought. Can we increase the bleed radius
+## that surrounds enemy packs?"; at 1.45 the painting reached barely past the pack's own hex), the
+## boss's wider still.
+static var pack_radius_hex := 3.0   # a var, so the map tuner can move it live
+const BOSS_RADIUS_HEX := 4.0
 const RIFT_RADIUS_HEX := 2.6
 const SEAM_RUN_ROWS := 4.0      # the rows the gradient falls over, half of them either side of the seam's edge: the dithered band about two thirds of a row wide, as it was at a battle's start
 const FLAT_AT := 0.42           # columns are fully collapsed by this much bleed, just before the seam

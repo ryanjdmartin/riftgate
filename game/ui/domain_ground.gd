@@ -50,7 +50,7 @@ const TILESETS := {
 		"rim": LIQUIDS.plains.rim,
 		"ripples": ["ripple", "ripple", "glint"],
 		"plain": [["tuft", 3], ["tuft_small", 3], ["bloom", 2], ["bloom_y", 2]],
-		"rough": [["tree", 5], ["tree_small", 3]],
+		"rough": [["tree", 3], ["tree_small", 2]],
 		"ruins": [["cottage_long", 1], ["cottage", 1], ["haystack", 1], ["bush", 1], ["tuft", 2]],
 		"flat": ["tuft", "tuft_small", "bloom", "bloom_y"],
 		"fixed": [],

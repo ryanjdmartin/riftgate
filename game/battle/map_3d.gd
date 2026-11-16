@@ -216,9 +216,14 @@ func _to_units_layer(n: Node) -> void:
 
 
 ## One sun from the north-west, casting shadows, and a little ambient; the mechs and
-## structures carry their own toon light on top.
+## structures carry their own toon light on top. The sun stands on the machines' layer too: a
+## camera's cull mask hides the lights off its layers as well, and the machines' own camera (the
+## one that draws them over the painting) saw no sun, so a machine walking into the painting went
+## dark as if in shadow (Ryan, 16 November: "There's weird shadows on mechs that move into the
+## painted area").
 func _build_light() -> void:
 	var sun := DirectionalLight3D.new()
+	sun.layers = 1 | (1 << (UNITS_LAYER - 1))
 	sun.light_energy = 2.4
 	sun.rotation_degrees = Vector3(-52.0, 35.0, 0.0)
 	sun.shadow_enabled = true
@@ -1715,7 +1720,9 @@ func _build_camera() -> void:
 	_camera.near = 1.0
 	_camera.far = 4000.0
 	add_child(_camera)
-	_camera.add_child(MechView3D.sheen_light())   # one world: the units' camera shares it
+	var sheen := MechView3D.sheen_light()
+	sheen.layers |= 1 << (UNITS_LAYER - 1)   # seen by the machines' camera too, as the sun is (_build_light)
+	_camera.add_child(sheen)   # one world: the units' camera shares it
 	_aim()
 
 

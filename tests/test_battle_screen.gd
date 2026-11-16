@@ -109,8 +109,12 @@ func test_a_planned_move_reads_execute_and_plays_with_the_turn_going_on() -> voi
 	var ha: Vector2i = s._map.destinations.keys()[0]
 	s._on_hex_tapped(ha)
 	assert_eq(s._resolve_btn.text, "EXECUTE", "a move entered: the button executes it")
+	s._select(a)   # in hand with its reach lit, as a tap shows it
+	assert_false(s._map.destinations.is_empty(), "the machine in hand shows its reach")
 	s._on_main_button()
 	assert_true(s._map.plans.is_empty() and s._map.shown.is_empty(), "EXECUTE plays the plan")
+	assert_true(s._map.destinations.is_empty() and s._map.threat.is_empty(), "and turns the reach off (Ryan, 16 November: \"When Execute is clicked, the movement range overlay should turn off if visible\")")
+	assert_eq(s._map.selected, a, "the machine still in hand, to pick a target from where it now stands")
 	assert_eq(a.pos, ha, "the machine stands where it went")
 	assert_eq(b.field.phase, 0, "and the turn goes on")
 	assert_eq(b.state, Battle.State.PLAN, "the player's still")

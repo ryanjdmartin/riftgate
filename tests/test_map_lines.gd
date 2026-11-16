@@ -112,3 +112,19 @@ func test_the_overlay_holds_its_size_at_every_zoom() -> void:
 	assert_eq(r.position.x, 4.0, "a plaque near the view's edge keeps inside it, in screen pixels")
 	assert_eq(r.size, Vector2(60.0, 18.0), "and keeps its size")
 	view.free()
+
+
+func test_the_machines_layer_is_lit_by_the_sun() -> void:
+	# The machines are drawn over the painting from their own layer, by a camera that sees that
+	# layer alone, and a camera's cull mask hides the lights off its layers too: the sun and the
+	# sheen stand on it, or a machine walking into the painting goes dark (Ryan, 16 November:
+	# "There's weird shadows on mechs that move into the painted area").
+	var m := Map3D.new()
+	m._build_light()
+	var units := 1 << (Map3D.UNITS_LAYER - 1)
+	var suns := m.find_children("*", "DirectionalLight3D", true, false)
+	assert_true(suns.size() > 0, "the map has a sun")
+	for l in suns:
+		assert_true(((l as DirectionalLight3D).layers & units) != 0, "%s lights the machines' layer" % l.name)
+		assert_true(((l as DirectionalLight3D).layers & 1) != 0, "and the scene's")
+	m.free()
