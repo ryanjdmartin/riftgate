@@ -109,8 +109,14 @@ func test_a_planned_move_reads_execute_and_plays_with_the_turn_going_on() -> voi
 	var ha: Vector2i = s._map.destinations.keys()[0]
 	s._on_hex_tapped(ha)
 	assert_eq(s._resolve_btn.text, "EXECUTE", "a move entered: the button executes it")
+	s._select(a)   # in hand with its reach lit, as a tap shows it
+	assert_false(s._map.destinations.is_empty(), "the machine in hand shows its reach")
 	s._on_main_button()
 	assert_true(s._map.plans.is_empty() and s._map.shown.is_empty(), "EXECUTE plays the plan")
+	assert_true(s._map.destinations.is_empty(), "and turns the reach off (Ryan, 16 November: \"When Execute is clicked, the movement range overlay should turn off if visible\")")
+	# Its move played, its action is over (Ryan, 16 November: "Once execute is run, the action is
+	# forfeit"): let go.
+	assert_eq(s._map.selected, null, "the machine let go")
 	assert_eq(a.pos, ha, "the machine stands where it went")
 	assert_eq(b.field.phase, 0, "and the turn goes on")
 	assert_eq(b.state, Battle.State.PLAN, "the player's still")
@@ -1150,4 +1156,47 @@ func test_engage_counts_the_fights_waiting() -> void:
 	assert_true(s._queue_pulse, "and it pulses: the next fight is waiting")
 	s._select(ms[2])
 	assert_false(s._queue_pulse, "until the player does something else")
+	s.free()
+
+
+## EXECUTE ends the action of every machine it moves (Ryan, 16 November: "if an attack wasn't
+## ordered, it cannot attack ... Once execute is run, the action is forfeit (barring undo, of
+## course)"): the machine in hand is let go, a pack beside where it stopped cannot be ordered on,
+## and UNDO gives the action back with the move.
+func test_execute_lets_the_machine_go_and_its_action_is_over() -> void:
+	var s := _screen()
+	var b := s.battle
+	var a: Unit = b.mechs()[0]
+	var a0 := a.pos
+	var sq: Unit = b.field.packs()[0]
+	# A move that ends beside a pack.
+	var stop := Vector2i(-9999, -9999)
+	s._on_hex_tapped(a.pos)
+	for h in s._map.destinations.keys():
+		for n in Hex.neighbors(h):
+			if b.field.can_stand(sq, n) and b.field.unit_at(n) == null:
+				stop = h
+				sq.pos = n
+				break
+		if stop != Vector2i(-9999, -9999):
+			break
+	assert_true(stop != Vector2i(-9999, -9999), "a move that ends beside a pack")
+	sq.behaviour = "push"
+	s._select(a)
+	s._on_hex_tapped(stop)
+	assert_eq(s._map.selected, a, "planned, the machine stays in hand for an attack from the route's end")
+	assert_false(s._map.threat.is_empty(), "its reach for one drawn")
+	s._on_main_button()
+	assert_eq(a.pos, stop, "the move played")
+	assert_eq(s._map.selected, null, "the machine let go")
+	assert_true(s._map.destinations.is_empty() and s._map.threat.is_empty(), "nothing lit")
+	assert_eq(b.actions_left(a), 0, "its action over")
+	s._on_hex_tapped(a.pos)
+	s._on_hex_tapped(sq.pos)
+	assert_eq(b.order_of(a), null, "the pack beside it cannot be ordered on")
+	assert_eq(s._resolve_btn.text, "END TURN", "no fight waiting")
+	s._select(null)
+	s._on_undo()
+	assert_eq(a.pos, a0, "UNDO takes the move back")
+	assert_eq(b.actions_left(a), 1, "and gives the action back")
 	s.free()

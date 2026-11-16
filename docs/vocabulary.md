@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 190 implemented, 6 planned, 0 idea.
+Status: 191 implemented, 6 planned, 0 idea.
 
 ## Resource
 
@@ -202,6 +202,7 @@ Status: 190 implemented, 6 planned, 0 idea.
 | **Mesas** | Flat-topped rock. Impassable, except to flyers and winged packs. | implemented |
 | **Towers** | Dead skyscrapers. Impassable, except to flyers and winged packs. | implemented |
 | **Cliffs** | A wall of rock. Impassable, except to flyers and winged packs. | implemented |
+| **Chasms** | A sheer drop. Impassable, except to flyers and winged packs. | implemented |
 
 ## Trait
 
@@ -359,7 +360,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Tear** (implemented): Drawn as a first cut for the phone; its mark and its opening are to judge running (RIFTGATE_PEAK_DEBUG=1 peaks every enemy turn).
 - **Seam** (implemented): The creep a peak is a placeholder (the ramp's table, flat at two).
 - **Ruins** (implemented): No skirmish condition yet; what terrain does in a fight is section 12's question.
-- **Water** (implemented): No skirmish condition yet (section 12). Each map shape lays its own water (a river with narrows and tributaries, the flooded fjord, ponds, a pond, the gorge's flooded channels, the city's flooded streets, or none). Since 29 October the horde wades it as the ground machines do, so water slows a crossing and never walls it; the crossing guarantee binds the walls.
+- **Water** (implemented): No skirmish condition yet (section 12). Each map shape lays its own water (a fat river with its narrows, a delta's channels, ponds, a pond, the gorge's flooded channels, or none: the city has none). Since 29 October the horde wades it as the ground machines do, so water slows a crossing and never walls it; the crossing guarantee binds the walls.
 - **City defense** (planned): No die and no rule yet: how gate defences work is section 12's question.
 - **On shield gain** (implemented): No content uses it yet.
 - **On shielding an ally** (implemented): Fires on the spend, whatever the shield gained, so a shield die on a topped-up ally still does its other work.

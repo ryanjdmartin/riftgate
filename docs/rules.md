@@ -1404,38 +1404,47 @@ a stat.
   the field is bright cells and the scenery (the margin past the field's sides and past the
   rift, the city) one shaded ground with no cells.
 - **Ground**: open (plain or road), rough, ruins, water, and walls, a wall named by what it is
-  (crags, mesas, towers or cliffs) with one rule under every name. Six map shapes, one a
+  (crags, mesas, towers, cliffs or chasms) with one rule under every name. Six map shapes, one a
   battle, each with its own water, walls, decorative ground and relief, laid to fill the open
   rows at any size the ramp deals, none of them a band and none an orientation. Two water
-  shapes: River Crossing (a river winding through the whole field from past one edge to past
-  the other, through the field's centre, two hexes thick and three in places, with one or two
-  narrows a hex thick, the water fords where the wade is short, one or two tributaries a hex
-  thick off it, a crag on a bank at most, gravel bars along its banks; no land ford: everyone
-  wades) and Fjord (the open rows under water, the scenery beside them too, with land lanes
-  winding from the rift's row to the team's ground, two hexes wide and pinched to one in
-  places, one for every seven hexes of wall, a branch or two off each, and islands; shingle on
-  its shores; half to two thirds of the field water). Three wall shapes, a spectrum by the mass
-  and the structure of what blocks you: Gorge (cliff mass over the open rows cut by winding,
-  branching channels, a trunk for every five hexes of wall from the rift's row to the team's
-  ground, one or two hexes wide, three or four branches off each toward the next trunk, meeting
-  a channel at a junction or ending blind, a stretch or two flooded, scree at the cliffs' feet,
-  the gorge's own sides past both edges), Ruined City (large blocks of
-  towers in a grid of streets: avenues one wide from the wall toward the rift four to five
-  columns apart, the gate's always one and two wide, side streets along the wall mid the blocks
-  whose segments are there or not, an avenue segment fallen in now and then, a plaza or two with
-  a fountain in some, a street segment or two flooded, rubble everywhere else, towers thick in
-  the scenery) and Badlands (an open field of mesas in groups of two to five, many of them, a
-  hex of ground between any two groups so no straight path crosses, two or three ponds of two
-  to four hexes, scrub at the mesas' feet). And Open Steppe, the baseline, clear but never bare
-  (a crag of one or two hexes at most for every seven hexes of wall, a pond at most for every
-  ten, scrub in belts over about a sixth of the field, grass on the open ground). A battle that
-  names no shape draws one by its seed, never by its domain. Every map guarantees the
-  horde a crossing three hexes wide or more through its walls; the ground beside the rift (its
-  mouth, where the packs land) and the gate, and the two rows before the gate, hold no water and
-  no wall; every other row is the shape's, the rift's own included. Height is landscape and a look
-  alone; no rule reads it: the field is level but for the badlands' mesas on their shoulders and the
-  steppe's one rise, at most two steps and never a lone raised hex, and the scenery past the
-  edges rises to three.
+  shapes: River Crossing (one fat river winding in long bends through the whole field from
+  past one edge to past the other, through the field's centre, three hexes thick and four in
+  places, with one narrow a hex thick across the field's middle columns, the water ford where
+  the pushers cross and the wade is short, the flanks the long wade, a crag on a bank at most,
+  gravel bars along its banks; no land ford: everyone wades) and River Delta (a true delta of
+  streams a hex wide: the river comes in at one end, by the seed down past the rift's end beside
+  it or out from under the wall off the gate's front, runs whole and two wide for a row or two,
+  then splits and splits again, each arm taking its share of the fan, until a stream runs for
+  every three or four columns across the field and past its edges at the far end, where it meets
+  the wall or the lagoon past the rift that a delta from the gate empties into; the streams
+  wander, fork round islets and rejoin, and a short cut joins two now and then, so they braid;
+  no dry way from the rift to the gate is kept, every stream a single wade; shingle on some
+  shores; two to five tenths of the field water). Three wall shapes, a spectrum by the mass and the structure of what
+  blocks you: Gorge (chunks of land split by chasms a hex wide winding along their borders, the
+  field's and the scenery's alike, each chunk joined to a chunk beside it by a land bridge a hex
+  wide or by none where the chunks stay joined the long way round; a stretch of chasm flooded now
+  and then, spilling into the chasm beside it as a waterfall; scree at the chasms' edges), Ruined City (blocks of towers in a grid of streets:
+  avenues one wide from the wall toward the rift four to five columns apart, the gate's always
+  one and two wide, cross-streets along the wall every third row so a block is two rows deep, an
+  avenue segment fallen in now and then, on a field twelve wide or more a suburb of ruins between
+  one edge and its first avenue and a plaza, on a narrower one a plaza or two, two such sections
+  of ruins at most, no water, rubble everywhere else, towers thick in the scenery) and Badlands (an open field of mesas in groups of two to five, many of them, a
+  hex of ground between any two groups so no straight path crosses, two or three ponds of two to
+  four hexes, scrub at about two thirds of the mesas' feet). And Open Steppe, the baseline and
+  the anything-goes ground, clear but never bare (a wall of one to three hexes for every six
+  columns of the width, half of them cliffs and the rest each of another look, never the gorge's
+  chasm and never in front of the rift, a little lake of five to eight hexes for every eight and a patch of ruins of two to four for every ten, always laid,
+  scrub in belts over about a sixth of the field, grass on the open ground). A battle that names no shape draws one by its seed, never by
+  its domain. Every map guarantees the horde a crossing three hexes wide or more through its
+  walls; the ground beside the rift (its mouth, where the packs land) and the gate, and the two
+  rows before the gate, hold no wall, though water, rough and ruins may lie there as anywhere;
+  every other row is the shape's, the rift's own included. Height is landscape and a look alone; no rule reads it: the field is level but for the
+  badlands' mesas on their shoulders and the steppe's one rise, at most two steps and never a
+  lone raised hex, water sunk and a chasm deep, and the scenery past the edges rises to three.
+  The painted world stands at the same heights. A chasm is a black pit in the painting; in the
+  machines' world its rock darkens down to a dim gravel floor with a stream winding along it.
+  Water beside a chasm falls into it, a waterfall from the water's edge to the floor in the
+  machines' world and the water's bank drawn falling in the painting.
 - **Moving**: a machine's move is a count of hexes, each step one hex, and a chassis has one
   way of moving (tracked, walker, wheeled, hover or flyer), which is its look and its footfall
   and never a rule of its own. Open ground (plain, road), rough and ruins are ground to
@@ -1474,7 +1483,10 @@ a stat.
   included. Each machine has one action (the Dingo two, by its Retrograde Flywheel: it may
   move and act twice during each turn of the map phase, and inside a fight it spends its die once a round like any machine): one move,
   in one go, then it may fight; a fight ends the action however it ends, and the board under the
-  map says what each can still do. A selected machine lights the hexes its move reaches, one
+  map says what each can still do. The fight is ordered before the move plays: a move that plays
+  (EXECUTE, ENGAGE or END TURN) with no order standing ends the action there, and one that plays
+  with an order keeps that order as given, the machine taking no other and the order taken back
+  ending the action. A machine carried in another's move keeps its action and its move. A selected machine lights the hexes its move reaches, one
   border round the whole reach, its dashes crawling as its target's do, and brackets the packs it could be ordered onto. A move is
   planned: its route shows from where the machine stands, and the next move or order reads from
   the route's end. An order can be given again: a machine with a move planned or an order
@@ -1488,9 +1500,10 @@ a stat.
   the packs in the order their orders were given), else EXECUTE while planned moves wait, else
   END TURN; back from a fight with more waiting, the orders stand and the button pulses. EXECUTE plays every planned move and the turn goes on, so moves play in
   whatever sequence the player gives them; ENGAGE plays them first too (the boss's fight aside,
-  below), then the fight opens. UNDO takes back the last move or order, whoever made it, in the
+  below), then the fight opens. EXECUTE lets go of the machine in hand, its reach dark at once.
+  UNDO takes back the last move or order, whoever made it, in the
   order they were made, a move that has played included (the machine goes back where it
-  stood), back to the turn's start or the last fight. A caught machine's fights come first, one a
+  stood, its action whole again), back to the turn's start or the last fight. A caught machine's fights come first, one a
   hunter, and the map draws each as the machine's order onto the hunter that caught it. END TURN asks first
   while a machine can still move or fight; then the turn ends: packs walk and strike; Rift
   Pressure rises one. Nothing returns on the map: the shield is full as every fight opens. Once every

@@ -112,3 +112,79 @@ func test_the_overlay_holds_its_size_at_every_zoom() -> void:
 	assert_eq(r.position.x, 4.0, "a plaque near the view's edge keeps inside it, in screen pixels")
 	assert_eq(r.size, Vector2(60.0, 18.0), "and keeps its size")
 	view.free()
+
+
+func test_the_machines_layer_is_lit_by_the_sun() -> void:
+	# The machines are drawn over the painting from their own layer, by a camera that sees that
+	# layer alone, and a camera's cull mask hides the lights off its layers too: the sun and the
+	# sheen stand on it, or a machine walking into the painting goes dark (Ryan, 16 November:
+	# "There's weird shadows on mechs that move into the painted area").
+	var m := Map3D.new()
+	m._build_light()
+	var units := 1 << (Map3D.UNITS_LAYER - 1)
+	var suns := m.find_children("*", "DirectionalLight3D", true, false)
+	assert_true(suns.size() > 0, "the map has a sun")
+	for l in suns:
+		assert_true(((l as DirectionalLight3D).layers & units) != 0, "%s lights the machines' layer" % l.name)
+		assert_true(((l as DirectionalLight3D).layers & 1) != 0, "and the scene's")
+	m.free()
+
+
+## A chasm has a bottom in the machines' world (Ryan, 16 November: "for the machine world there
+## should be like a barely visible bottom. Maybe some little rivers down there ... its not just a
+## hole into nothing"): its rock darkens down its walls to a dim floor, and a stream runs on the
+## floor from each chasm hex to the edge it shares with the next.
+func test_a_chasm_has_a_dim_floor_and_a_stream() -> void:
+	var m := Map3D.new()
+	m.hex_px = 44.0
+	m._ppu = m.hex_px / Map3D.HEX_WORLD
+	m._sin = sin(deg_to_rad(Map3D.PITCH))
+	var map := BattleMap.flat(9, 12)
+	var a := Hex.offset_to_axial(4, 5)
+	var b: Vector2i = a + Hex.DIRECTIONS[0]
+	for h in [a, b]:
+		map.terrain[h] = BattleMap.Terrain.MOUNTAIN
+		map.wall_look[h] = "chasms"
+	m.field = Battlefield.new(map)
+	var rock := m._chasm_material("rock")
+	assert_eq(float(rock.get_shader_parameter("fade_below")), Map3D.CHASM_DROP, "the rock darkens down to the floor")
+	assert_true(float(rock.get_shader_parameter("fade_floor")) <= 0.5, "to a dim floor, barely seen")
+	assert_true(Map3D.CHASM_STREAM_SHADE > Map3D.CHASM_FLOOR_SHADE, "the stream a little brighter, so it reads")
+	var v: PackedVector3Array = m._stream_geo(a)["v"]
+	assert_false(v.is_empty(), "a stream on the floor")
+	var to := m._hex_world(b) - m._hex_world(a)
+	var way := Vector2(to.x, to.z)
+	var reach := 0.0
+	for p in v:
+		assert_true(absf(p.y - Map3D.CHASM_DROP) < 1.0, "on the floor")
+		reach = maxf(reach, Vector2(p.x, p.z).dot(way.normalized()))
+	assert_true(absf(reach - way.length() * 0.5) <= Map3D.CHASM_STREAM_WIDTH, "running to the edge it shares with the next chasm: %.1f of %.1f" % [reach, way.length() * 0.5])
+	m.free()
+
+
+## Where a flooded stretch of the gorge meets a chasm, the chasm's wall there is a waterfall in the
+## machines' world (Ryan, 16 November: "Is there any way to get a water tile on Gorge to waterfall if
+## it touches a chasm?"): a sheet from the water's level down to the chasm's floor, its UV along the
+## lip and down the fall, drawn by its own shader.
+func test_a_flooded_stretch_falls_into_the_chasm_beside_it() -> void:
+	var m := Map3D.new()
+	m.hex_px = 44.0
+	m._ppu = m.hex_px / Map3D.HEX_WORLD
+	m._sin = sin(deg_to_rad(Map3D.PITCH))
+	var geo := m._falls_geo([0], Map3D.CHASM_DROP)
+	var v: PackedVector3Array = geo["v"]
+	var uv: PackedVector2Array = geo["uv"]
+	assert_eq(v.size(), 6, "one sheet on the one edge")
+	var lo := INF
+	var hi := -INF
+	for p in v:
+		lo = minf(lo, p.y)
+		hi = maxf(hi, p.y)
+	assert_eq([hi, lo], [Map3D.WATER_DROP, Map3D.CHASM_DROP], "from the water's level to the chasm's floor")
+	var reach := Rect2(uv[0], Vector2.ZERO)
+	for c in uv:
+		reach = reach.expand(c)
+	assert_eq(reach, Rect2(0.0, 0.0, 1.0, 1.0), "along the lip and down the fall")
+	assert_eq(m._falls_material().shader.resource_path, "res://game/battle/waterfall.gdshader", "drawn as falling water")
+	m.free()
+

@@ -39,7 +39,6 @@ const LIQUIDS := {
 ##   plain, rough, ruins: what stands on each decorative ground, [sprite, how many, and the
 ##   chance of each if not certain], the largest first (a road's hex takes the plain's, clear
 ##   of the road);
-##   walls: the ranges a wall hex shows one of (draw_walls);
 ##   flat: sprites that lie on the ground, under the rest; fixed: sprites never mirrored.
 const TILESETS := {
 	"plains": {
@@ -51,9 +50,8 @@ const TILESETS := {
 		"rim": LIQUIDS.plains.rim,
 		"ripples": ["ripple", "ripple", "glint"],
 		"plain": [["tuft", 3], ["tuft_small", 3], ["bloom", 2], ["bloom_y", 2]],
-		"rough": [["tree", 5], ["tree_small", 3]],
+		"rough": [["tree", 3], ["tree_small", 2]],
 		"ruins": [["cottage_long", 1], ["cottage", 1], ["haystack", 1], ["bush", 1], ["tuft", 2]],
-		"walls": ["walls", "walls_b"],
 		"flat": ["tuft", "tuft_small", "bloom", "bloom_y"],
 		"fixed": [],
 	},
@@ -68,7 +66,6 @@ const TILESETS := {
 		"plain": [["dune", 2, 0.7], ["rock", 1, 0.5], ["pebble", 3]],
 		"rough": [["saguaro", 3], ["saguaro_small", 2], ["barrel", 2], ["shrub", 1]],
 		"ruins": [["arch", 1], ["column", 1], ["skull", 1], ["block", 1], ["rock", 1]],
-		"walls": ["walls", "walls_b"],
 		"flat": ["dune", "pebble"],
 		"fixed": ["saguaro", "saguaro_small"],
 	},
@@ -84,7 +81,6 @@ const TILESETS := {
 		"plain": [["pool", 1, 0.7], ["reeds", 2, 0.5], ["grass", 3, 0.6]],
 		"rough": [["deadtree", 2], ["deadtree_b", 2], ["reeds", 1], ["grass", 2]],
 		"ruins": [["crypt", 1, 0.6], ["tomb", 2, 0.7], ["cross", 1, 0.6], ["skull", 1, 0.4], ["grass", 2, 0.5]],
-		"walls": ["walls", "walls_b"],
 		"flat": ["pool", "grass"],
 		"fixed": [],
 	},
@@ -99,7 +95,6 @@ const TILESETS := {
 		"plain": [["boulder", 1, 0.4], ["shard", 1, 0.5], ["rock", 1, 0.6], ["pebble", 4]],
 		"rough": [["fissure", 1], ["fissure_b", 1, 0.4], ["vent", 1, 0.6], ["boulder", 1], ["shard", 2], ["rock", 2, 0.6]],
 		"ruins": [["temple", 1], ["pillar_broken", 1], ["block", 1], ["rock", 1]],
-		"walls": ["walls", "walls_b"],
 		"flat": ["pebble", "fissure", "fissure_b"],
 		"fixed": [],
 	},
@@ -111,11 +106,10 @@ const ATTACH := {
 	"plains": {"cottage_long": ["puff", 10, -4, 2]},
 	"sand": {},
 	"marsh": {"crypt": ["wisp", 12, -3, 1]},
-	"lava": {"temple": ["flame", 5, 4, 0], "vent": ["steam", 3, -5, 2], "walls": ["steam", 17, -5, 2]},
+	"lava": {"temple": ["flame", 5, 4, 0], "vent": ["steam", 3, -5, 2]},
 }
 
 const ROAD_HALF := 3.5   # the road's half width in design pixels, its edge one more
-const WALL_FOOT := 0.46   # a range's foot below its hex's middle, in hex sizes
 
 ## Each domain's inks: the colour each letter of its sprites is drawn in.
 const INKS := {
@@ -305,90 +299,6 @@ const SPRITES := {
 			".c.",
 		],
 		"glint": ["xB"],
-		"walls": [
-			"...................k....................",
-			"..................kSk...................",
-			"..................kSk...................",
-			"..................kSk...................",
-			".................kSSZk..................",
-			".................kSSZk..................",
-			".................kSSZk..................",
-			"................kSSSSZk.................",
-			"................kSSSSZk.................",
-			"................kSSSSZk.................",
-			"...............kSSSSSZZk................",
-			"...............kSSSmmMZk................",
-			"..............kmmmmmmMMMk...............",
-			"..............kmmmmmmmMMk...............",
-			"..............kmmmmmmmMMk...............",
-			".............kmmmmmmmmMMMk..............",
-			"..........k..kmmmmmmmmMMMk..............",
-			".........kSk.kmmmmmmmmMMMk..............",
-			".........kSkkmmmmmmmmmmMMMk...k.........",
-			"........kSSZkmmmmmmmmmmMMMk..kSk........",
-			"........kSSZkmmmmmmmmmmMMMk..kSk........",
-			"........kSSZkmmmmmmmmmmMMMMkkSSZk.......",
-			".......kmmSMZkmmmmmmmmmMMMMkkmSMk.......",
-			".......kmmmmMkmmmmmmmmmMMMMkkmmMk.......",
-			"......kmmmmmMMkmmmmmmmmmMMMkmmmMMk......",
-			"......kmmmmmMMkmmmmmmmmmMMMkmmmmMk......",
-			".....kmmmmmmMMMkmmmmmmmmMMkmmmmmMMk.....",
-			".....kmmmmmmMMMkmmmmmmmmMMkmmmmmMMk.....",
-			".....kmmmmmmMMMkmmmmmmmmMkmmmmmmMMMk....",
-			"....kmmmmmmmmMMMkmmmmmmmmkmmmmmmMMMk....",
-			"....kmmmmmmmmMMMkmmmmmmmmkmmmmmmMMMk....",
-			"...kmmmmmmmmmMMMMkmmmmmmkmmmmmmmmMMMk...",
-			"...kmmmmmmmmmMMMMkmmmmmmkmmmmmmmmMMMk...",
-			"..kmmmmmmmmmmMMMMMkmmmmkmmmmmmmmmMMMMk..",
-			"..kmmmmmmmmmmmMMMMkmmmmkmmmmmmmmmMMMMk..",
-			"..kmmmmmmmmmmmMMMMkmmmmkmmmmmmmmmMMMMk..",
-			".kmmmmmmmmmmmmMMMMMkmmkmmmmmmmmmmmMMMMk.",
-			".kmmmmmmmmmmmmMMMMMkmmkmmmmmmmmmmmMMMMk.",
-			"kmmmmmmmmmmmmmMMMMMMkkmmmmmmmmmmmmMMMMMk",
-			".kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk.",
-		],
-		"walls_b": [
-			"..........................k.............",
-			".........................kSk............",
-			".........................kSk............",
-			".........................kSk............",
-			"........................kSSZk...........",
-			"........................kSSZk...........",
-			"........................kSSZk...........",
-			"............k..........kSSSSZk..........",
-			"...........kSk.........kSSSSZk..........",
-			"...........kSk.........kSSSSZk..........",
-			"...........kSk........kSSmSSMZk.........",
-			"..........kSSZk.......kmmmSmMMk.........",
-			"..........kSSZk.......kmmmmmMMk.........",
-			"..........kSSZk......kmmmmmmmMMk........",
-			".........kSSSSZk.....kmmmmmmmMMk........",
-			".........kSSmmZk.....kmmmmmmmMMk........",
-			"........kSmmmmZZk...kmmmmmmmmMMMk.......",
-			"........kmmmmmMMk...kmmmmmmmmMMMk.......",
-			"........kmmmmmMMk...kmmmmmmmmmMMk.......",
-			".......kmmmmmmMMMk.kmmmmmmmmmmMMMk......",
-			".......kmmmmmmmMMk.kmmmmmmmmmmMMMk......",
-			".......kmmmmmmmMMk.kmmmmmmmmmmMMMk......",
-			"......kmmmmmmmmMMMkkmmmmmmmmmmMMMk......",
-			"......kmmmmmmmmMMMkmmmmmmmmmmmMMMMk.....",
-			".....kmmmmmmmmmMMMkmmmmmmmmmmmmMMMk.....",
-			".....kmmmmmmmmmmMMkmmmmmmmmmmmmMMMk.....",
-			".....kmmmmmmmmmmMkmmmmmmmmmmmmmMMMMk....",
-			"....kmmmmmmmmmmmMkmmmmmmmmmmmmmMMMMk....",
-			"....kmmmmmmmmmmmkmkmmmmmmmmmmmmMMMMk....",
-			"....kmmmmmmmmmmmkmkmmmmmmmmmmmmmMMMMk...",
-			"...kmmmmmmmmmmmkmmMkmmmmmmmmmmmmMMMMk...",
-			"...kmmmmmmmmmmkmmmMMkmmmmmmmmmmmMMMMk...",
-			"..kmmmmmmmmmmmkmmmMMkmmmmmmmmmmmMMMMMk..",
-			"..kmmmmmmmmmmkmmmmMMMkmmmmmmmmmmMMMMMk..",
-			"..kmmmmmmmmmmkmmmmmMMkmmmmmmmmmmMMMMMk..",
-			".kmmmmmmmmmmkmmmmmmMMMkmmmmmmmmmmMMMMMk.",
-			".kmmmmmmmmmkmmmmmmmMMMMkmmmmmmmmmMMMMMk.",
-			".kmmmmmmmmmkmmmmmmmMMMMkmmmmmmmmmMMMMMk.",
-			"kmmmmmmmmmkmmmmmmmmMMMMMkmmmmmmmmMMMMMMk",
-			".kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk.",
-		],
 	},
 	"sand": {
 		"saguaro": [
@@ -506,89 +416,6 @@ const SPRITES := {
 			".v.",
 		],
 		"glint": ["xW"],
-		"walls": [
-			"...............zzzzzzzzzzzz.............",
-			"..............zTTTTTTTtttttz............",
-			"..............zttttttttttttz............",
-			"..............zmmmmmmmMMMMMz............",
-			"..............zmmmmmmmMMMMMz............",
-			"..............zmmmmmmmMMMMMz............",
-			"..............zmmMmmmmMMMMMz............",
-			"..............zmmMmmmmMMMMMz............",
-			"..............zmmMmmmmMMMMMz............",
-			"..............zmmMmMmmMMMMMz............",
-			"..............zmmmmMmmMMMMMz............",
-			"..............zmmmmMmmMMMMMz............",
-			".............zmmmmmMmmmMMMMMz...........",
-			".............zmmmmmMmmmMMMMMz...........",
-			".............zmmmmmMmmmMMMMMz...........",
-			".............zmmmmmmmmmMMMMMz...........",
-			".............zmmmmmmmmmMMMMMz...........",
-			".............zmmmmmmmmmMMMMMz...........",
-			".............zmmmmmmmmmMMMMMz...........",
-			".............zmmmmmmmmmMMMMMz...........",
-			".............zmmmmmmmmmMMMMMz...........",
-			".....zzzzzzz.zmmmmmmmmmMMMMMz...........",
-			"....zTTTTtttzzmmmmmmmmmMMMMMz...........",
-			"....ztttttttzmmmmmmmmmmMMMMMMz..........",
-			"....zmmmmMMMzmmmmmmmmmmMMMMMMzzzzzz.....",
-			"....zmmmmMMMzmmmmmmmmmmMMMMMzTTTtttz....",
-			"....zmmmmMMMzmmmmmmmmmmMMMMMzttttttz....",
-			"....zmmMmMMMzmmmmmmmmmmMMMMMzmmmMMMz....",
-			"....zmmMmMMMzmmmmmmmmmmMMMMMzmmMMMMz....",
-			"....zmmMmMMMzmmmmmmmmmmMMMMMzmmMMMMz....",
-			"...zmmmMmMMMMzmmmmmmmmmMMMMMzmmMMMMz....",
-			"...zmmmmmMMMMzmmmmmmmmmMMMMMzmmMMMMz....",
-			"...zmmmmmMMMMzmmmmmmmmmMMMMMzmmMMMMz....",
-			"...zmmmmmMMMMzmmmmmmmmmMMMMzmmmMmMMMz...",
-			"...zmmmmmMMMMzmmmmmmmmmMMMMzmmmmmMMMz...",
-			"..zlllllllMMMMzlllllllllMMzllllllMMMMz..",
-			".zllllllllMMMMMzllllllllMzlllllllMMMMMz.",
-			"zlllllllllMMMMMMzlllllllzlllllllllMMMMMz",
-			".zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz.",
-		],
-		"walls_b": [
-			".......zzzzzzzzz......................",
-			"......zTTTTTttttz.....................",
-			"......ztttttttttz.....................",
-			"......zmmmmmMMMMz.....................",
-			"......zmmmmmMMMMz.....................",
-			"......zmmmmmMMMMz.....................",
-			"......zmmmmmMMMMz.....................",
-			"......zmmmmmMMMMz.....................",
-			"......zmmmmmMMMMz.....................",
-			"......zmmmmmMMMMz.....................",
-			"......zmmmmmMMMMz.....................",
-			"......zmmmmmMMMMz.....................",
-			".....zmmmmmmmMMMMz....................",
-			".....zmmmmmmmMMMMz....................",
-			".....zmmmmmmmMMMMz.zzzzzzzzzzzzz......",
-			".....zmmmMmmmMMMMzzTTTTTTTTtttttz.....",
-			".....zmmmMmmmMMMMzztttttttttttttz.....",
-			".....zmmmMmmmMMMMzzmmmmmmmmMMMMMz.....",
-			".....zmmmMmmmMMMMzzmmmmmmMmMMMMMz.....",
-			".....zmmmMmmmMMMMzzmmmmmmMmMMMMMz.....",
-			".....zmmmMmmmMMMMzzmmmmmmMmMMMMMz.....",
-			".....zmmmMmmmMMMMzzmmmmmmMmMMMMMz.....",
-			".....zmmmmmmmMMMMzzmmmmmmMmMMMMMz.....",
-			"....zmmmmmmmmMMMMMzmmmmmmMmMMMMMz.....",
-			"....zmmmmmmmmMMMMzmmmmmmmMmMMMMMMz....",
-			"....zmmmmmmmmMMMMzmmmmmmmmmMMMMMMz....",
-			"....zmmmmmmmmMMMMzmmmmmmmmmMMMMMMz....",
-			"....zmmmmmmmmMMMMzmmmmmmMmmMMMMMMz....",
-			"....zmmmmmmmmMMMMzmmmmmmMmmMMMMMMz....",
-			"....zmmmmmmmmMMMMzmmmmmmMmmMMMMMMz....",
-			"....zmmmmmmmmMMMMzmmmmmmMmmMMMMMMz....",
-			"....zmmmmmmmmMMMMzmmmmmmmmmMMMMMMz....",
-			"....zmmmmmmmmMMMMzmmmmmmmmmMMMMMMz....",
-			"....zmmmmmmmmMMMzmmmmmmmmmmmMMMMMMz...",
-			"...zmmmmmmmmmMMMzmmmmmmmmmmmMMMMMMz...",
-			"...zmmmmmmmmmMMMzmmmmmmmmmmmMMMMMMz...",
-			"..zlllllllllllMzllllllllllllMMMMMMMz..",
-			".zllllllllllllzlllllllllllllMMMMMMMMz.",
-			"zllllllllllllzlllllllllllllllMMMMMMMMz",
-			".zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz.",
-		],
 	},
 	"marsh": {
 		"deadtree": [
@@ -721,85 +548,6 @@ const SPRITES := {
 			"Ggg",
 			".g.",
 		],
-		"walls": [
-			"............o.................",
-			"...........odo................",
-			"...........oldo...............",
-			"...........olo................",
-			"...........olo................",
-			"...........olo.......o........",
-			"...........oldo.....omo.......",
-			"...........oldo.....omo.......",
-			"...........olddo....olo.......",
-			"..o........olddo....oldo......",
-			".omo.......olmdo.....oo.......",
-			".omo.......olmdo....oldo......",
-			".olo.......olmdo....oldo......",
-			".olo.......olmdo.....odo......",
-			".oldo......olmddo...olddo.....",
-			".oldo......olmddo...olmdo.....",
-			".olddo....omlmdddo..olmdo.....",
-			".olddo.....olmdddo..olmdo.....",
-			".olddo.....olmdddo..olmddo....",
-			".olmdo....omlmmdddo.olmddo....",
-			".olmddo....olmmoddo.olmdddo...",
-			".olmdo.....olmomodo.olmdddo...",
-			".olmddo...omlmoldoo.olmdddo...",
-			"omlmdddo..omlmoldodoolmmddo...",
-			".olmddo....olmmodoo.olmmdddo..",
-			"omlmdddo..omlmmododoolmmdddo..",
-			".olmdddo...olmolddooolmmdddo..",
-			".olmmdddo.ollmolmdoomlmmddddo.",
-			"omlmmdddo.ollmolmddomlmmddddo.",
-			".olmmdddo..olmolmddomlmmddddo.",
-			"ollmmddddo.olmolmddollmmdddddo",
-			".olmmdddo.ollomlmdddolmmmdddo.",
-			".olmmddddoollollmdddolmmmddddo",
-			"ollmmddddoollollmdddolmmmddddo",
-			"olmmmdddddolmolmmddddommmddddo",
-			".ooooooooo.oooooooooooooooooo.",
-		],
-		"walls_b": [
-			"........................o..",
-			".......................odo.",
-			".......................odo.",
-			".......................odo.",
-			".......................oo..",
-			"......................oldo.",
-			"......................oldo.",
-			"......................oldo.",
-			".........o...........omldo.",
-			"........odo..........oodo..",
-			".......omdo.........omlddo.",
-			".......omdo.........omlddo.",
-			".......omdo.........ollddo.",
-			"........oo..........olmddo.",
-			".......oldo.........olmdo..",
-			".......oldo........omlmddo.",
-			"......olldo.........olmddo.",
-			"......olmdo........olmmddo.",
-			".....omldddo.......olmdddo.",
-			"......olddo.......omlmddddo",
-			".....ollddo.......olmmdddo.",
-			".....olmddo.......olmmdddo.",
-			".....olmddooo....omlmmddddo",
-			"....ollmddomdo...ollmmdddo.",
-			"....olmmddooo...omlmmmddddo",
-			"....olmmddoldo...olmmmdddo.",
-			"....olmdddoldo..omlmmdddddo",
-			"...ollmddomlddo..ommmddddo.",
-			"...olmmddollddo.olmmmdddddo",
-			"...olmmddolmddo.olmmmdddddo",
-			"..ollmmddolmddoollmmmdddddo",
-			"..olmmmddolmddoolmmmmdddddo",
-			"..olmmmdomlmdddolmmmmdddddo",
-			"..olmmmddommddomlmmmmdddddo",
-			".ollmmddolmmdddolmmmddddddo",
-			".olmmmddolmmdddommmmdddddo.",
-			".olmmmdomlmmddddommmddddddo",
-			"omlmmmdollmmddddommmddddddo",
-			".ooooooooooooooooooooooooo.",
-		],
 	},
 	"lava": {
 		"boulder": [
@@ -918,88 +666,6 @@ const SPRITES := {
 		],
 		"ember": ["H"],
 		"pebble": ["mo"],
-		"walls": [
-			"................oooooooo................",
-			"...............occcWcccco...............",
-			"..............ommLHHHHLddo..............",
-			".............ommmmLcdLcdddo.............",
-			".............ommmLcLLcddddo.............",
-			"............ommmmLcmLcdddddo............",
-			"............ommmLcLcLcdddddo............",
-			"...........ommmmmLcmLcddddddo...........",
-			"...........ommmmmLcmLcddddddo...........",
-			"..........ommmmmLcmmmLcddddddo..........",
-			"..........ommmmmLcmmmLcddddddo..........",
-			"..........ommmmLcmLcmLcddddddo..........",
-			".........ommmmmLcLcmmLcdddddddo.........",
-			".........ommmmLcmLcmmLcdddddddo.........",
-			"........ommmmmmLcLcmmLcddddddddo........",
-			"........ommmmmLcmLcmmLcddddddddo........",
-			"........ommmmLcmmLcmmmLcdddddddo........",
-			".......ommmmmLcmLcmmmmLcddddddddo.......",
-			".......ommmmmLcmLcmmmmLcddddddddo.......",
-			"......ommmmmmLcmLcmmmLcddddddddddo......",
-			"......ommmmmLcmmLcmmmmLcdddddddddo......",
-			"......ommmmmLcmmmLcmmmdLcddddddddo......",
-			".....ommmmmmmLcmLcmmmmLcddddddddddo.....",
-			".....ommmmmmLcmmLcmmmmLcddddddddddo.....",
-			".....ommmmmmLcmmLcmmmmLcddddddddddo.....",
-			"....ommmmmmLcmmmLcmmmmLcdddddddddddo....",
-			"....ommmmmmLcmmLcmmmmmLcdddddddddddo....",
-			"....ommmmmmLcmmLcmmmmmLcdddddddddddo....",
-			"...ommmmmmLcmmmLcmmmmmLcddddddddddddo...",
-			"...ommmmmmLcmmmmLcmmmmLcddddddddddddo...",
-			"...ommmmmmLcmmmmmmmmmmLcddddddddddddo...",
-			"..ommmmmmLcmmmmmmmmmmmLcdddddddddddddo..",
-			"..ommmmmmLcmmmmmmmmmmmmLcddddddddddddo..",
-			"..ommmmmmLcmmmmmmmmmmmmLcddddddddddddo..",
-			".ommmmmmmLcmmmmmmmmmmmmmLcddddddddddddo.",
-			".ommmmmmLcmmmmmmmmmmmmmmLcddddddddddddo.",
-			".ommmmmmmLcmmmmmmmmmmmmLcdddddddddddddo.",
-			"ommmmmmmmmmmmmmmmmmmmmmmLcdddddddddddddo",
-			".oooooooooooooooooooooooooooooooooooooo.",
-		],
-		"walls_b": [
-			".....................o..................",
-			"....................omo.................",
-			"....................omo.................",
-			"....................omo.................",
-			"....................omo.................",
-			"...................ommdo................",
-			"...................ommdo................",
-			"...................ommmo................",
-			"..................ommmmdo...............",
-			"..................ommmmdo...............",
-			"..................ommmmdo...............",
-			"..........o......ommmmmddo..............",
-			".........omo.....ommmmmddo..............",
-			".........omo.....ommmmmmdo..............",
-			".........omo....ommmmmmmddo.............",
-			"........ommdo...ommmmmmmddo.............",
-			"........ommdo...ommmmmmmddo.............",
-			"........ommdo..ommmmmmmmdddo............",
-			".......ommmmdo.ommmmmmmmmddo...o........",
-			".......ommmmdo.ommmmmmmmmddo..omo.......",
-			"......ommmmmddoommmmmmmmmddo..omo.......",
-			"......ommmmmddommmmmmmmmmdddo.omo.......",
-			"......ommmmmLdommmmmmmmmmdddoommdo......",
-			".....ommmmmmLdommmmmmmmmmdddoommdo......",
-			".....ommmmmmmommmmmmmmmmmmddommmddo.....",
-			".....ommmmmmmommmmmmmmmmmmddommmmLo.....",
-			"....ommmmmmmmommmmmmmmmmmmddommmmLo.....",
-			"....ommmmmmmommmmmmmmmmmmmdommmmmLdo....",
-			"....ommmmmmmommmmmmmmmmmmmdommmmmdLo....",
-			"...ommmmmmmmommmmmmmmmmmmmommmmmmdLdo...",
-			"...ommmmmmmommmmmmmmmmmmmmommmmmmdLdo...",
-			"..ommmmmmmmommmmmmmmmmmmmmommmmmmmddo...",
-			"..ommmmmmmmommmmmmmmmmmmmommmmmmmmdddo..",
-			"..ommmmmmmommmmmmmmmmmmmmommmmmmmmdddo..",
-			".ommmmmmmmommmmmmmmmmmmmommmmmmmmmddddo.",
-			".ommmmmmmmommmmmmmmmmmmmommmmmmmmmddddo.",
-			".ommmmmmmmommmmmmmmmmmmmommmmmmmmmmdddo.",
-			"ommmmmmmmommmmmmmmmmmmmommmmmmmmmmmddddo",
-			".oooooooooooooooooooooooooooooooooooooo.",
-		],
 		"fissure": [
 			"....oo...............",
 			"..ooccoo..ooo........",
@@ -1071,10 +737,12 @@ static func road_links(map: BattleMap, h: Vector2i) -> int:
 
 ## One hex of the other world in a domain's tileset: its ground, and on it the domain's water
 ## or what stands on a decorative ground; a road runs to `links` (as road_links), across the
-## hex when it has none. A wall hex's range is draw_walls's, drawn after every hex's ground,
-## since it stands taller than its hex. The second frame moves what moves. With `cell` off the
+## hex when it has none. A wall hex's range is draw_columns's, on its hex's top. The second
+## frame moves what moves. With `cell` off the
 ## hex has no outline of its own: ground with no cells, the scenery past the field (PaintedMap).
-static func draw_hex(ci: CanvasItem, c: Vector2, hex_px: float, t: int, seed_value: int, frame: int, biome: String, links: int = 0, cell: bool = true) -> void:
+## `tint` multiplies every colour it draws (the scenery's shade where it is drawn hex by hex among
+## the field's, at the reconstruction's heights).
+static func draw_hex(ci: CanvasItem, c: Vector2, hex_px: float, t: int, seed_value: int, frame: int, biome: String, links: int = 0, cell: bool = true, tint: Color = Color.WHITE) -> void:
 	var key := key_of(biome)
 	var ts: Dictionary = TILESETS[key]
 	var rng := RandomNumberGenerator.new()
@@ -1082,124 +750,1087 @@ static func draw_hex(ci: CanvasItem, c: Vector2, hex_px: float, t: int, seed_val
 	var s := scale_of(hex_px)
 	var r := hex_px - 1.5
 	var pts := MapOrient.corners(c, r)
-	ci.draw_colored_polygon(pts, fill(key, t))
+	ci.draw_colored_polygon(pts, fill(key, t) * tint)
 	match t:
 		BattleMap.Terrain.WATER:
-			_water(ci, key, ts, c, r, s, rng, frame)
+			_water(ci, key, ts, c, r, s, rng, frame, tint)
 		BattleMap.Terrain.MOUNTAIN:
-			_specks(ci, ts, c, r, s, rng)
+			_specks(ci, ts, c, r, s, rng, tint)
 		BattleMap.Terrain.ROAD:
-			_specks(ci, ts, c, r, s, rng)
+			_specks(ci, ts, c, r, s, rng, tint)
 			var road := links if links != 0 else (1 << 1) | (1 << 4)
-			_road(ci, key, ts, c, hex_px, s, road)
-			_scatter(ci, key, ts, c, r, s, rng, frame, _halved(ts["plain"]), road, 0.0)
+			_road(ci, key, ts, c, hex_px, s, road, tint)
+			_scatter(ci, key, ts, c, r, s, rng, frame, _halved(ts["plain"]), road, 0.0, tint)
 		BattleMap.Terrain.ROUGH:
-			_specks(ci, ts, c, r, s, rng)
-			_scatter(ci, key, ts, c, r, s, rng, frame, ts["rough"], 0, 0.45)
+			_specks(ci, ts, c, r, s, rng, tint)
+			_scatter(ci, key, ts, c, r, s, rng, frame, ts["rough"], 0, 0.45, tint)
 		BattleMap.Terrain.RUINS:
-			_specks(ci, ts, c, r, s, rng)
-			_scatter(ci, key, ts, c, r, s, rng, frame, ts["ruins"], 0, 0.0)
+			_specks(ci, ts, c, r, s, rng, tint)
+			_scatter(ci, key, ts, c, r, s, rng, frame, ts["ruins"], 0, 0.0, tint)
 		_:
-			_specks(ci, ts, c, r, s, rng)
-			_scatter(ci, key, ts, c, r, s, rng, frame, ts["plain"], 0, 0.0)
+			_specks(ci, ts, c, r, s, rng, tint)
+			_scatter(ci, key, ts, c, r, s, rng, frame, ts["plain"], 0, 0.0, tint)
 	if cell:
-		Hud.stroke_poly(ci, pts, Color(Color(str(ts["grid"])), 0.35), 1.0)
+		Hud.stroke_poly(ci, pts, Color(Color(str(ts["grid"])), 0.35) * tint, 1.0)
 
 
-## A wall hex's range: one of the domain's, its foot low in the hex and its peaks standing up
-## out of it into the hexes above (Ryan, 30 October: "The wall objects on all can be larger,
-## or at least taller"), so the ranges go down after every hex's ground, the top rows' first.
-## A wall is drawn by what it is (`look`, BattleMap.WALL_LOOKS; Ryan, 10 November: "The
-## different spire types probably need to be represented in the painted world, for clarity"):
-## crags are the domain's range sprites; mesas a stepped flat-topped block, towers a few tall
-## blocks with lit windows, cliffs a low ridge the whole hex wide so neighbours join, each
-## built from the domain's wall inks (BLOCK_INKS). `tint` multiplies its colours (the scenery's
-## shade, PaintedMap).
-static func draw_walls(ci: CanvasItem, c: Vector2, hex_px: float, seed_value: int, frame: int, biome: String, tint: Color = Color.WHITE, look: String = "crags") -> void:
-	var key := key_of(biome)
-	var ts: Dictionary = TILESETS[key]
-	var rng := RandomNumberGenerator.new()
-	rng.seed = seed_value
-	var s := scale_of(hex_px)
-	var foot := c + Vector2(0.0, hex_px * WALL_FOOT)
-	if look != "crags" and BLOCK_INKS.has(key):
-		var tex := _block_tex(key, look, rng.randi_range(0, 2), s)
-		var pos := (foot - Vector2(tex.get_width() * 0.5, tex.get_height())).floor()
-		ci.draw_texture(tex, pos, tint)
-		return
-	var name: String = ts["walls"][rng.randi() % ts["walls"].size()]
-	var mirror := rng.randf() < 0.5
-	var tex := _tex(key, name, mirror, s)
-	var rect := Rect2((foot - Vector2(tex.get_width() * 0.5, tex.get_height())).floor(), tex.get_size())
-	ci.draw_texture(tex, rect.position, tint)
-	_attach(ci, key, name, rect, mirror, s, frame, tint)
+## The painted world stands at the reconstruction's heights (Ryan, 16 November, of the joined
+## ranges: "it solves a big problem I had with the Seam, where height shifts make things really
+## janky to look at when the packs are moving around. Can you mock up what it would look like if
+## the painted world used the same terrain 'heights?' Obviously done in its style"; then, of the
+## mock-up, "Lock the painted world height change, its subtle but things make more sense"). Every
+## hex of the painting stands at its column's own height in the reconstruction (lift_of: Map3D's
+## relief step, water sunk, to the nearest design pixel), a bank of the domain's rock (BANK_INKS)
+## down from its edge to each lower neighbour on the sides the view sees, the farthest hex first,
+## so where the painting meets the reconstruction (the seam, a pack's bleed) the ground changes its
+## look and never its height. Still the flattening: a 2D depiction of a hill, the camera fixed (his
+## ruling the same day, the bible's reconstruction row).
 
-
-## The ink letters a domain's block walls (mesas, towers, cliffs) are built from: its range
-## sprite's outline, body, shade and light.
-const BLOCK_INKS := {
-	"plains": {"out": "k", "body": "m", "shade": "M", "light": "S"},
-	"sand": {"out": "z", "body": "m", "shade": "M", "light": "l"},
-	"marsh": {"out": "o", "body": "m", "shade": "d", "light": "l"},
-	"lava": {"out": "o", "body": "m", "shade": "d", "light": "c"},
+## Each domain's banks, the faces under a raised hex: `lip` the light along the top's edge,
+## `lit` facing right, `face` the rest, `streak` the dark lines down them and `foot` the line where
+## a bank meets the ground below; all of them the domain's own inks, the rock of its ranges
+## (RANGE_INKS) where that reads against its ground.
+const BANK_INKS := {
+	"plains": {"lip": "cc9966", "lit": "996633", "face": "663300", "streak": "333300", "foot": "333300"},
+	"sand": {"lip": "cc9966", "lit": "993300", "face": "663300", "streak": "330000", "foot": "330000"},
+	"marsh": {"lip": "999999", "lit": "666666", "face": "333333", "streak": "000000", "foot": "000000"},
+	"lava": {"lip": "666666", "lit": "993300", "face": "990000", "streak": "330000", "foot": "000000"},
 }
 
+static var _banks: Dictionary = {}   # a hex's banks by everything they depend on (_column_faces)
 
-## A block wall as a texture in design pixels at `s` pixels each, cached by look and variant.
-## Sizes are in design pixels, a hex 24 wide from middle to corner: a mesa 34 wide and 22 tall
-## in two steps; towers 36 wide, three blocks 26 to 36 tall with windows; a cliff 42 wide
-## (the hex's whole width) and 18 tall with cracks.
-static func _block_tex(key: String, look: String, variant: int, s: int) -> ImageTexture:
-	var ck := "%s/block/%s/%d/%d" % [key, look, variant, s]
+
+## How far a hex's top stands above its grid cell in the painted world at the reconstruction's
+## heights, in screen pixels: the column's own height (Map3D: the relief's step, water sunk)
+## projected as the reconstruction's camera sees it, to the nearest design pixel, so the
+## painting's pixels stay on their grid (within a pixel of the reconstruction's).
+static func lift_of(map: BattleMap, h: Vector2i, hex_px: float) -> int:
+	return lift_of_step(map.elevation.get(h, 0), hex_px)
+
+
+## A relief step's lift in the painted world, in screen pixels (lift_of).
+static func lift_of_step(e: int, hex_px: float) -> int:
+	var units := Map3D.height_of_step(e)
+	var px := units * cos(deg_to_rad(Map3D.PITCH)) * hex_px / Map3D.HEX_WORLD
+	var s := scale_of(hex_px)
+	return roundi(px / float(s)) * s
+
+
+## One hex of the painting at the reconstruction's heights, for draw_columns: `c` its middle on its
+## grid cell, `cell` whether it is the field's (a cell with its dark edge) or the scenery's,
+## `tint` what multiplies its colours (the scenery's shade).
+static func column(map: BattleMap, h: Vector2i, c: Vector2, hex_px: float, cell: bool, tint: Color) -> Dictionary:
+	var t := map.terrain_of(h)
+	var lift := lift_of(map, h, hex_px)
+	var drops := PackedInt32Array()
+	for e in _hex_edges(1.0):
+		var n: Vector2i = h + Hex.DIRECTIONS[int(e["dir"])]
+		# Past the map's end a raised hex's bank runs down to the ground.
+		drops.append(lift_of(map, n, hex_px) if map.has(n) or map.margin.has(n) else mini(lift, 0))
+	var col := {"c": c, "lift": lift, "drops": drops, "t": t, "seed": h.x * 131 + h.y * 7919, "links": road_links(map, h) if t == BattleMap.Terrain.ROAD else 0, "cell": cell, "tint": tint}
+	if t == BattleMap.Terrain.WATER:
+		# A flooded stretch spills into a chasm beside it: its bank there is a waterfall.
+		var falls := 0
+		var k := 0
+		for e in _hex_edges(1.0):
+			var n: Vector2i = h + Hex.DIRECTIONS[int(e["dir"])]
+			if map.terrain_of(n) == BattleMap.Terrain.MOUNTAIN and str(map.wall_look.get(n, "")) == "chasms":
+				falls |= 1 << k
+			k += 1
+		if falls != 0:
+			col["falls"] = falls
+	if t == BattleMap.Terrain.MOUNTAIN:
+		var look := str(map.wall_look.get(h, BattleMap.WALL_LOOKS[0]))
+		if look == "chasms":
+			col["pit"] = true   # a chasm is its hex sunk deep, its walls its neighbours' banks
+		else:
+			col["wall"] = {"look": look, "links": wall_links(map, h, true)}
+	return col
+
+
+## The painting at the reconstruction's heights, in one go: every hex of `cols`
+## (column's) up on its own height over its banks, the farthest (highest on screen) first, so a
+## nearer raised hex laps over the foot of a farther one; a wall's range on its hex's top, what
+## lies on it with it, and what stands on it among the hexes by its own foot.
+static func draw_columns(ci: CanvasItem, cols: Array, hex_px: float, frame: int, biome: String) -> void:
+	var key := key_of(biome)
+	var s := scale_of(hex_px)
+	var items: Array = []   # [depth, 0 a hex or 1 what stands on a wall, foot, x, it]
+	for col in cols:
+		var c: Vector2 = col["c"]
+		items.append([c.y, 0, c.y, c.x, col])
+		if not col.has("wall"):
+			continue
+		var wall: Dictionary = col["wall"]
+		var look := str(wall.get("look", "crags"))
+		if not RANGE_LOOKS.has(look):
+			look = "crags"
+		var lift := float(col["lift"])
+		var at := (c - Vector2(0.0, lift)).floor()
+		var rng := RandomNumberGenerator.new()
+		rng.seed = int(col.get("seed", 0))
+		var lies: Array = []
+		for p in _range_props(key, look, int(wall.get("links", 0)), hex_px, s, rng):
+			p["origin"] = at
+			p["tint"] = col.get("tint", Color.WHITE)
+			if bool(p["lies"]):
+				lies.append(p)
+			else:
+				# By its foot on the ground, never before its own hex's top.
+				var foot: Vector2 = at + (p["foot"] as Vector2) * s + Vector2(0.0, lift)
+				items.append([maxf(foot.y, c.y), 1, foot.y, foot.x, p])
+		col["look"] = look
+		col["lies"] = lies
+	items.sort_custom(func(a: Array, b: Array) -> bool:
+		for i in range(4):
+			if not is_equal_approx(float(a[i]), float(b[i])):
+				return float(a[i]) < float(b[i])
+		return false)
+	for it in items:
+		if int(it[1]) == 1:
+			_draw_range_prop(ci, key, it[4], s, frame)
+		else:
+			_draw_column(ci, key, it[4], hex_px, s, frame)
+
+
+static func _draw_column(ci: CanvasItem, key: String, col: Dictionary, hex_px: float, s: int, frame: int) -> void:
+	var tint: Color = col.get("tint", Color.WHITE)
+	var lift := int(col["lift"])
+	var t := int(col["t"])
+	var c: Vector2 = (col["c"] as Vector2) - Vector2(0.0, lift)
+	var cell := bool(col.get("cell", true))
+	# The banks first, a design pixel into the top and into the ground below so no seam shows; the
+	# top over them.
+	var drops := PackedInt32Array()
+	for d in col["drops"]:
+		drops.append(int(d) / s)
+	var banks := _column_faces(key, lift / s, drops, hex_px, s, int(col.get("seed", 0)) % 3, int(col.get("falls", 0)), frame)
+	if not banks.is_empty():
+		ci.draw_texture(banks["tex"], c.floor() + banks["at"], tint)
+	if bool(col.get("pit", false)):
+		# A chasm's floor, far down and dark, a few darker flecks on it; its walls are the banks of
+		# the hexes behind it, drawn down to it.
+		ci.draw_colored_polygon(MapOrient.corners(c, hex_px + 1.0), Color.BLACK)
+		var rng := RandomNumberGenerator.new()
+		rng.seed = int(col.get("seed", 0))
+		var dust := Color(str(BANK_INKS.get(key, BANK_INKS["plains"])["foot"])) * tint
+		for i in range(5):
+			var p := c + Vector2(rng.randf_range(-0.6, 0.6) * hex_px * 0.866, rng.randf_range(-0.2, 0.5) * hex_px)
+			ci.draw_rect(Rect2(p.floor(), Vector2(s, s)), dust)
+		return
+	if cell:
+		ci.draw_colored_polygon(MapOrient.corners(c, hex_px), Palette.BG)
+	else:
+		ci.draw_colored_polygon(MapOrient.corners(c, hex_px + 1.0), fill(key, t) * tint)
+	draw_hex(ci, c, hex_px, t, int(col.get("seed", 0)), frame, key, int(col.get("links", 0)), cell, tint)
+	if col.has("wall"):
+		var base := _range_base(key, str(col["look"]), int((col["wall"] as Dictionary).get("links", 0)), hex_px, s)
+		ci.draw_texture(base["tex"], c.floor() + base["at"], tint)
+		for p in col.get("lies", []):
+			_draw_range_prop(ci, key, p, s, frame)
+
+
+## A hex's banks: from the edge of its top, `lift` design pixels up, down to each side's neighbour
+## in `drops` (design pixels, _hex_edges' order) where that is lower and the view sees the side
+## (its normal down the screen, never edge-on); a light lip under the top's edge, lit facing
+## right, streaked, a dark foot where it meets the ground below. Cached by everything it depends on; `variant` moves the streaks.
+## A side in `falls` (a bit a side, _hex_edges' order) is a waterfall instead (Ryan, 16 November:
+## "Is there any way to get a water tile on Gorge to waterfall if it touches a chasm?"): the domain's
+## liquid falling from a white lip, foam running down it a step further each of the painting's two
+## frames, sinking to its deep tone toward the dark below and spraying at the foot.
+## {"tex", "at": its top left from the hex's lifted middle in screen pixels}, or empty where
+## nothing drops.
+static func _column_faces(key: String, lift: int, drops: PackedInt32Array, hex_px: float, s: int, variant: int, falls: int = 0, frame: int = 0) -> Dictionary:
+	var parts: Array = []
+	for d in drops:
+		parts.append(str(d))
+	var ck := "%s/%d/%s/%d/%d/%d/%d/%d/%d" % [key, lift, ",".join(parts), roundi(hex_px * 4.0), s, int(MapOrient.wall_left), variant, falls, frame if falls != 0 else 0]
+	if _banks.has(ck):
+		return _banks[ck]
+	var r := hex_px / float(s)
+	var edges := _hex_edges(r)
+	var src: Dictionary = BANK_INKS.get(key, BANK_INKS["plains"])
+	var c_lip := Color(str(src["lip"])).to_abgr32()
+	var c_lit := Color(str(src["lit"])).to_abgr32()
+	var c_face := Color(str(src["face"])).to_abgr32()
+	var c_streak := Color(str(src["streak"])).to_abgr32()
+	var c_foot := Color(str(src["foot"])).to_abgr32()
+	var liquid: Dictionary = LIQUIDS.get(key, LIQUIDS["plains"])
+	var w_body := Color(str(liquid["body"])).to_abgr32()
+	var w_rim := Color(str(liquid["rim"])).to_abgr32()
+	var w_deep := Color(str(liquid["deep"])).to_abgr32()
+	var w_glint := Color(str((liquid["glints"] as Array)[0])).to_abgr32()
+	var seen: Array = []
+	var top := INF
+	var bottom := -INF
+	for k in range(6):
+		var e: Dictionary = edges[k]
+		var n: Vector2 = e["n"]
+		var a: Vector2 = e["a"]
+		var b: Vector2 = e["b"]
+		if n.y < 0.2 or drops[k] >= lift or absf(b.x - a.x) < 0.01:
+			continue
+		seen.append(k)
+		top = minf(top, minf(a.y, b.y))
+		bottom = maxf(bottom, maxf(a.y, b.y) + float(lift - drops[k]))
+	if seen.is_empty():
+		_banks[ck] = {}
+		return {}
+	var x0 := floori(-r) - 2
+	var w := ceili(r) + 3 - x0
+	var y0 := floori(top) - 2
+	var h := ceili(bottom) + 3 - y0
+	var data := PackedByteArray()
+	data.resize(w * h * 4)
+	_noise_at(0, 0, 0)
+	for k in seen:
+		var e: Dictionary = edges[k]
+		var a: Vector2 = e["a"]
+		var b: Vector2 = e["b"]
+		var n: Vector2 = e["n"]
+		var tone := c_lit if n.x > 0.3 else c_face
+		var fall := float(lift - drops[k])
+		var spills: bool = (falls & (1 << int(k))) != 0
+		for px in range(w):
+			var x := float(x0 + px) + 0.5
+			var t := (x - a.x) / (b.x - a.x)
+			if t < 0.0 or t > 1.0:
+				continue
+			var y_top := lerpf(a.y, b.y, t)   # the top's edge, the hex drawn lifted
+			var y_foot := y_top + fall
+			# A streak down from the lip, a run of its own length, on about a column in four.
+			var streak := _noise_at(x0 + px, k + 7 * variant, 21) < 64
+			var run := 1 + _noise_at(x0 + px, k + 7 * variant, 23) % maxi(1, int(fall) - 1)
+			for py in range(h):
+				var y := float(y0 + py) + 0.5
+				# A pixel into the top above and the ground below, which are drawn over it.
+				if y < y_top - 1.0 or y >= y_foot + 1.0:
+					continue
+				var u := y - y_top   # down from the lip
+				var col := tone
+				if spills:
+					# The fall: a white lip, the body sinking to its deep tone a third of the way
+					# from the foot, lanes of foam in dashes that drop three pixels a frame, spray
+					# at the foot.
+					var lane := _noise_at(x0 + px, k, 29)
+					var period := 6 + lane % 4
+					var dash := posmod(int(u) - 3 * frame + lane, period) < 2
+					if y >= y_foot - 2.0:
+						col = w_rim
+					elif u < 1.0:
+						col = w_rim
+					elif lane < 112 and dash:
+						col = w_glint
+					elif u > fall * 0.66:
+						col = w_deep
+					else:
+						col = w_body
+				elif y >= y_foot - 1.0:
+					col = c_foot
+				elif u < 1.0:
+					col = c_lip
+				elif streak and u >= 1.0 and u < 1.0 + float(run):
+					col = c_streak
+				data.encode_u32((py * w + px) * 4, col)
+	var img := Image.create_from_data(w, h, false, Image.FORMAT_RGBA8, data)
+	if s > 1:
+		img.resize(w * s, h * s, Image.INTERPOLATE_NEAREST)
+	var out := {"tex": ImageTexture.create_from_image(img), "at": Vector2(x0 * s, y0 * s)}
+	_banks[ck] = out
+	return out
+
+
+## A wall in the painted world is one piece of a range that joins the wall hexes of its look
+## beside it (Ryan, 16 November: "They could fill their hexes more and mesh together better. A
+## mountain range should look like a continuous range, not a bunch of isolated chunks.
+## Especially true for the gorge"). Each is a massif filling its hex, its top raised off the
+## ground by its look's lift and running on into a joined neighbour's top with no edge between; a
+## face drops to the ground only on a side where the range ends and the view sees it, and a dark
+## edge rings the range only where it ends. On the top stands or lies what the look carries
+## (RANGE_LOOKS): a crag's peaks, a city block's towers, a gorge's rocks and scrub; a crag's
+## peaks stand on the line to each joined neighbour too, so a ridge runs on across its hexes.
+## The walls are drawn by what they are (Ryan, 10 November: "The different spire types probably
+## need to be represented in the painted world, for clarity"), told apart by their structure in
+## every domain: crags peaks on a low base of rubble, mesas flat tops over banded faces, towers
+## lit blocks on a plinth, cliffs a high plateau over cracked faces. Lit from the right as the
+## domains' sprites are, in each domain's own inks (RANGE_INKS). Every hex of a map goes down in
+## one call (draw_columns), the farthest first, a wall's base on its hex's top and what stands on
+## it among the hexes by its own foot, so a nearer peak stands in front of a farther one whatever
+## hex each stands on.
+
+## How each look of wall (BattleMap.WALL_LOOKS) stands, in design pixels: `lift`, how high its top
+## stands off the ground; `lip`, whether the range's edge is broken rock or cut clean; `face`,
+## what runs down its faces (rubble, strata, a plinth's band or cracks); `stands`, what stands
+## on its top (peaks, the reconstruction's own pieces or nothing); `lies`, how many rocks and tufts
+## lie on a hex's top, at least and at most; `top`, `fleck` and `rim`, the inks (RANGE_INKS) of its
+## top, the flecks in it and the lip where it breaks off over a face (a crag's base the dark rock
+## of its base, so its peaks stand off it, unless that is the ground's own colour). The badlands'
+## mesas and the city's towers stand the reconstruction's own pieces (Map3D.wall_pieces) on a
+## footing flush with the ground, so the two worlds meet (Ryan, 16 November: "In Badlands, the
+## connected mesas of the painted and the rock features of the 3D don't really mesh").
+const RANGE_LOOKS := {
+	"crags": {"lift": 5, "lip": "broken", "face": "rubble", "stands": "peaks", "lies": [0, 1], "top": "base", "fleck": "face_lo", "rim": "rock"},
+	"mesas": {"lift": 0, "lip": "broken", "face": "strata", "stands": "pieces", "lies": [0, 2], "top": "top_lo", "fleck": "top", "rim": "top_hi"},
+	"towers": {"lift": 0, "lip": "cut", "face": "plinth", "stands": "pieces", "lies": [0, 0], "top": "top", "fleck": "top_lo", "rim": "top_hi"},
+	"cliffs": {"lift": 12, "lip": "broken", "face": "cracks", "stands": "", "lies": [1, 4], "top": "top", "fleck": "top_lo", "rim": "top_hi"},
+}
+
+## Each domain's rock for its walls, every colour one its own sprites are inked in (INKS, on the
+## posterize grid): `out` the dark edge where a range ends; `top` the top, its light lip
+## (`top_hi`) and its dark flecks (`top_lo`); a face lit, facing right (`face_hi`), and every other
+## face (`face`); the darkest rock short of the edge (`face_lo`), a crack's, a mesa's dark band and
+## a peak's shaded flank; `base` a crag's low base and a tower's face; `rock` a peak's and a
+## tower's lit side. Each of a range's top, base and faces was picked by the three colourblind
+## simulations against its domain's ground, the worst case kept (docs/measurements.md, 16
+## November). `cap` and `cap_lo` top a peak (snow, a butte's pale top, a spire's light tip, lava);
+## `lit` a lit window; `seam` what grows or glows in the rock's flecks and cracks (the Marsh's moss
+## on its pale stone, the Peak's lava in its dark basalt; the rock's own dark elsewhere), so the two
+## grey domains' walls differ by more than a crag's shape (Ryan, 30 October: "walls and water
+## certainly should change with tileset"); `peak` the shape its crags stand up (a snowy mountain,
+## a butte, a spire, a volcanic peak); `lies` its own sprites that lie on a top among the rocks.
+const RANGE_INKS := {
+	"plains": {"out": "333300", "top": "cccc99", "top_hi": "ffffcc", "top_lo": "cc9966", "face_hi": "663300", "face": "663300", "face_lo": "663300", "base": "663300", "rock": "cc9966", "cap": "ffffff", "cap_lo": "cccccc", "lit": "ffff99", "seam": "996633", "peak": "mountain", "lies": ["tuft_small", "tuft", "bloom_y"]},
+	"sand": {"out": "330000", "top": "993300", "top_hi": "cc9966", "top_lo": "663300", "face_hi": "663300", "face": "663300", "face_lo": "330000", "base": "663300", "rock": "993300", "cap": "ffcc99", "cap_lo": "cc9966", "lit": "ffff99", "seam": "663300", "peak": "butte", "lies": ["pebble", "rock", "shrub"]},
+	"marsh": {"out": "000000", "top": "999999", "top_hi": "cccccc", "top_lo": "666666", "face_hi": "666666", "face": "666666", "face_lo": "333333", "base": "666666", "rock": "999999", "cap": "cccccc", "cap_lo": "999999", "lit": "ffffcc", "seam": "669933", "peak": "spire", "lies": ["grass", "stone"]},
+	"lava": {"out": "000000", "top": "666666", "top_hi": "999999", "top_lo": "333333", "face_hi": "993300", "face": "990000", "face_lo": "330000", "base": "666666", "rock": "999999", "cap": "ff9900", "cap_lo": "ffcc00", "lit": "ffff99", "seam": "ff9900", "peak": "volcanic", "lies": ["pebble", "shard"]},
+}
+
+## A crag's peaks by size, small to big, [half its base's width, its height] in design pixels, by
+## the shape its domain stands up.
+const PEAK_SIZES := {
+	"mountain": [[6, 13], [10, 21], [13, 31]],
+	"butte": [[4, 13], [6, 20], [8, 28]],
+	"spire": [[3, 14], [4, 22], [6, 31]],
+	"volcanic": [[6, 13], [10, 21], [13, 31]],
+}
+
+static var _ranges: Dictionary = {}   # a wall's base by everything it depends on (_range_base)
+static var _noise := PackedByteArray()   # a 64 by 64 tile of _rhash, for the flecks and the cracks without a call a pixel
+
+
+## The noise tile at a design pixel, with a salt shifting it.
+static func _noise_at(x: int, y: int, salt: int) -> int:
+	if _noise.is_empty():
+		_noise.resize(64 * 64)
+		for i in range(64 * 64):
+			_noise[i] = _rhash(i % 64, i / 64, 101)
+	return _noise[((y + salt * 17) & 63) * 64 + ((x + salt * 31) & 63)]
+
+
+## The wall hexes beside `h` of its own look, as a bit for each of Hex.DIRECTIONS: the neighbours
+## its range joins, on the field or in the scenery past it.
+static func wall_links(map: BattleMap, h: Vector2i, by_height: bool = false) -> int:
+	var look := str(map.wall_look.get(h, ""))
+	var links := 0
+	for i in range(Hex.DIRECTIONS.size()):
+		var n: Vector2i = h + Hex.DIRECTIONS[i]
+		if (map.has(n) or map.margin.has(n)) and map.terrain_of(n) == BattleMap.Terrain.MOUNTAIN and str(map.wall_look.get(n, "")) == look:
+			# At the reconstruction's heights a range joins only a wall at its own height.
+			if by_height and int(map.elevation.get(n, 0)) != int(map.elevation.get(h, 0)):
+				continue
+			links |= 1 << i
+	return links
+
+
+static func _draw_range_prop(ci: CanvasItem, key: String, p: Dictionary, s: int, frame: int) -> void:
+	var origin: Vector2 = p["origin"]
+	var tint: Color = p["tint"]
+	ci.draw_texture(p["tex"], origin + (p["at"] as Vector2) * s, tint)
+	if p.has("steam"):
+		# A crater's steam rises a step a frame, as the vents' does (ATTACH).
+		var tex := _tex(key, "steam", false, s)
+		var top: Vector2 = p["steam"]
+		ci.draw_texture(tex, (origin + (top + Vector2(-2.0, -5.0 - 2.0 * frame)) * s).floor(), tint)
+
+
+## A hex's edges in design pixels about its middle, in the view's layout (MapOrient): each {"a",
+## "b": its corners, "n": its outward normal, "d": the middle's distance to it, "dir": the index
+## in Hex.DIRECTIONS of the neighbour across it, "toward": that neighbour's middle}.
+static func _hex_edges(r: float) -> Array:
+	var pts := MapOrient.corners(Vector2.ZERO, r)
+	var out: Array = []
+	for i in range(6):
+		var a := pts[i]
+		var b := pts[(i + 1) % 6]
+		var mid := (a + b) * 0.5
+		var best := 0
+		var best_dot := -INF
+		for k in range(6):
+			var v := MapOrient.to_pixel(Hex.DIRECTIONS[k], r)
+			if v.dot(mid) > best_dot:
+				best_dot = v.dot(mid)
+				best = k
+		out.append({"a": a, "b": b, "n": mid.normalized(), "d": mid.length(), "dir": best, "toward": MapOrient.to_pixel(Hex.DIRECTIONS[best], r)})
+	return out
+
+
+## A cheap hash of design-pixel coordinates and a salt, 0 to 255, so a pattern is the same every
+## time it is drawn.
+static func _rhash(x: int, y: int, salt: int = 0) -> int:
+	var hv := (x * 73856093) ^ (y * 19349663) ^ (salt * 83492791)
+	hv = (hv ^ (hv >> 13)) * 1274126177
+	return (hv ^ (hv >> 16)) & 255
+
+
+const RANGE_COLOURS := ["out", "top", "top_hi", "top_lo", "face_hi", "face", "face_lo", "base", "rock", "cap", "cap_lo", "lit", "seam"]
+
+
+## A domain's range inks, its colours as colours.
+static func _range_inks(key: String) -> Dictionary:
+	var src: Dictionary = RANGE_INKS.get(key, RANGE_INKS["plains"])
+	var out := src.duplicate()
+	for k in RANGE_COLOURS:
+		out[k] = Color(str(src[k]))
+	return out
+
+
+## One shade darker, down the range's ramp of inks: lit face, face, shaded face, the edge (a
+## step the domain's ramp shares skipped, so a crack always shows).
+static func _darker(ink: Dictionary, c: Color) -> Color:
+	for k in ["face_hi", "face", "face_lo"]:
+		if c == ink[k]:
+			var i := ["face_hi", "face", "face_lo", "out"].find(k) + 1
+			while i < 3 and ink[["face_hi", "face", "face_lo", "out"][i]] == c:
+				i += 1
+			return ink[["face_hi", "face", "face_lo", "out"][i]]
+	return ink["out"]
+
+
+## One wall's base: the massif in its hex, its top lifted by its look's lift, faced where the range
+## ends toward the view, edged where it ends at all, and joined to the walls beside it in `links`
+## (bits over Hex.DIRECTIONS); cached by everything it depends on, so a range's middle hexes
+## share one. {"tex": ImageTexture, "at": its top left from the hex's middle in screen pixels}.
+## Built in packed arrays, a row's span at a time where it can be: a battle paints every one
+## before its first turn.
+static func _range_base(key: String, look: String, links: int, hex_px: float, s: int) -> Dictionary:
+	var ck := "%s/%s/%d/%d/%d/%d" % [key, look, links, roundi(hex_px * 4.0), s, int(MapOrient.wall_left)]
+	if _ranges.has(ck):
+		return _ranges[ck]
+	var r := hex_px / float(s)
+	var style: Dictionary = RANGE_LOOKS[look]
+	var lift := int(style["lift"])
+	var broken := str(style["lip"]) == "broken"
+	var pattern := str(style["face"])
+	var ink := _range_inks(key)
+	var edges := _hex_edges(r)
+	var nx := PackedFloat32Array()
+	var ny := PackedFloat32Array()
+	var dd := PackedFloat32Array()    # the middle's distance to each edge
+	var lim := PackedFloat32Array()   # each edge's limit for the top, a pixel past it toward a joined neighbour
+	var ax := PackedFloat32Array()
+	var ay := PackedFloat32Array()
+	var bx := PackedFloat32Array()
+	var by := PackedFloat32Array()
+	var joined := PackedByteArray()
+	var on_x := PackedFloat32Array()  # the joined neighbours' middles
+	var on_y := PackedFloat32Array()
+	for e in edges:
+		var n: Vector2 = e["n"]
+		nx.append(n.x)
+		ny.append(n.y)
+		dd.append(float(e["d"]))
+		var j := (links & (1 << int(e["dir"]))) != 0
+		joined.append(1 if j else 0)
+		lim.append(float(e["d"]) + (1.0 if j else 0.0))
+		ax.append((e["a"] as Vector2).x)
+		ay.append((e["a"] as Vector2).y)
+		bx.append((e["b"] as Vector2).x)
+		by.append((e["b"] as Vector2).y)
+		if j:
+			on_x.append((e["toward"] as Vector2).x)
+			on_y.append((e["toward"] as Vector2).y)
+	var x0 := floori(-r) - 2
+	var y0 := floori(-r) - lift - 2
+	var w := ceili(r) + 3 - x0
+	var h := ceili(r) + 3 - y0
+	var fl := float(lift)
+	var cls := PackedByteArray()   # 0 nothing, 1 the top, 2 a face
+	cls.resize(w * h)
+	var fe := PackedByteArray()    # a face pixel's edge
+	fe.resize(w * h)
+	var fv := PackedByteArray()    # a face pixel's height above the ground
+	fv.resize(w * h)
+	# The top: the hex lifted, row by row, each row the span every edge allows.
+	for py in range(h):
+		var y := float(y0 + py) + 0.5 + fl
+		var lo := -INF
+		var hi := INF
+		for k in range(6):
+			var rest := lim[k] - ny[k] * y
+			if nx[k] > 0.001:
+				hi = minf(hi, rest / nx[k])
+			elif nx[k] < -0.001:
+				lo = maxf(lo, rest / nx[k])
+			elif rest < 0.0:
+				hi = -INF
+		var a := maxi(0, ceili(lo - float(x0) - 0.5))
+		var b := mini(w - 1, floori(hi - float(x0) - 0.5))
+		for px in range(a, b + 1):
+			cls[py * w + px] = 1
+	# The faces: down from the lifted edge to the ground, on each edge the range ends at and the
+	# view sees (its normal down the screen), never edge-on; each over its own columns and rows.
+	for k in range(6):
+		if joined[k] == 1 or ny[k] < 0.2 or absf(bx[k] - ax[k]) < 0.01:
+			continue
+		var c0 := maxi(0, floori(minf(ax[k], bx[k])) - x0 - 1)
+		var c1 := mini(w - 1, ceili(maxf(ax[k], bx[k])) - x0 + 1)
+		for px in range(c0, c1 + 1):
+			var x := float(x0 + px) + 0.5
+			var t := (x - ax[k]) / (bx[k] - ax[k])
+			if t < 0.0 or t > 1.0:
+				continue
+			var ye := lerpf(ay[k], by[k], t)
+			var r0 := maxi(0, floori(ye - fl) - y0 - 1)
+			var r1 := mini(h - 1, ceili(ye) - y0 + 1)
+			for py in range(r0, r1 + 1):
+				var y := float(y0 + py) + 0.5
+				if y > ye or y < ye - fl:
+					continue
+				var i := py * w + px
+				if cls[i] == 1:
+					continue
+				cls[i] = 2
+				fe[i] = k
+				fv[i] = clampi(int(ye - y), 0, 255)
+	# A broken lip: the range's edge bitten back a pixel or two in runs, a bite in a seen edge
+	# showing the face behind it, one in a far edge the ground; each edge over the band along it.
+	if broken:
+		for k in range(6):
+			if joined[k] == 1:
+				continue
+			var c0 := maxi(0, floori(minf(ax[k], bx[k])) - x0 - 3)
+			var c1 := mini(w - 1, ceili(maxf(ax[k], bx[k])) - x0 + 3)
+			var r0 := maxi(0, floori(minf(ay[k], by[k]) - fl) - y0 - 3)
+			var r1 := mini(h - 1, ceili(maxf(ay[k], by[k]) - fl) - y0 + 3)
+			var seen := ny[k] >= 0.2 and absf(nx[k]) < 0.99
+			for py in range(r0, r1 + 1):
+				var qy := float(y0 + py) + 0.5 + fl
+				for px in range(c0, c1 + 1):
+					var i := py * w + px
+					if cls[i] != 1:
+						continue
+					var qx := float(x0 + px) + 0.5
+					var inside := lim[k] - (qx * nx[k] + qy * ny[k])
+					if inside >= 2.0:
+						continue
+					var bite := _rhash(floori((qx * ny[k] - qy * nx[k]) * 0.5), k, links + 7) % 3
+					if inside < float(bite):
+						if seen and py + 1 < h:
+							cls[i] = 2
+							fe[i] = k
+							fv[i] = lift
+						else:
+							cls[i] = 0
+	# The colours, and the edge: where the range ends, a pixel of its dark ink round it, never
+	# where it goes on into a joined neighbour (on the ground there or lifted). Whether an empty
+	# pixel is the range going on is asked once, kept in `on` (0 not yet asked, 1 it goes on, 2 not).
+	_noise_at(0, 0, 0)
+	var on := PackedByteArray()
+	on.resize(w * h)
+	var data := PackedByteArray()
+	data.resize(w * h * 4)
+	# A top in the ground's own colour would vanish into it (the Peak's darker rock is its ground):
+	# it takes the rock's main colour there.
+	var top_ink: Color = ink[str(style["top"])]
+	if top_ink == Color(str(TILESETS[key]["ground"])):
+		top_ink = ink["top"]
+	var c_top := top_ink.to_abgr32()
+	var c_rim := (ink[str(style["rim"])] as Color).to_abgr32()
+	var c_fleck := (ink[str(style["fleck"])] as Color).to_abgr32()
+	var c_out := (ink["out"] as Color).to_abgr32()
+	var c_hi := (ink["face_hi"] as Color).to_abgr32()
+	var c_top_hi := (ink["top_hi"] as Color).to_abgr32()
+	var c_seam := (ink["seam"] as Color).to_abgr32()
+	var tones := PackedInt64Array()   # each edge's face: lit facing right, shaded facing left
+	var darks := PackedInt64Array()   # and one shade darker
+	var pales := PackedInt64Array()   # and a mesa's pale band
+	for k in range(6):
+		# A face lit facing right, the rest the face's own: the shaded rock is the cracks' and the
+		# peaks' (a face as dark as that read as the ground in the simulations, 16 November).
+		var tone: Color = ink["face_hi"] if nx[k] > 0.3 else ink["face"]
+		tones.append(tone.to_abgr32())
+		darks.append(_darker(ink, tone).to_abgr32())
+		pales.append((ink["top"] if tone != ink["top"] else ink["top_hi"]).to_abgr32())
+	var flecks := 12 if pattern == "cracks" or pattern == "rubble" else 5
+	var edge := PackedByteArray()
+	edge.resize(w * h)
+	for py in range(h):
+		for px in range(w):
+			var i := py * w + px
+			var cl := cls[i]
+			if cl == 0:
+				continue
+			# The edge first: any side of it empty and not the range going on.
+			var is_edge := false
+			var border := px == 0 or py == 0 or px == w - 1 or py == h - 1 or cls[i - 1] == 0 or cls[i + 1] == 0 or cls[i - w] == 0 or cls[i + w] == 0
+			if border:
+				for d in range(4):
+					var qx := px + (1 if d == 0 else (-1 if d == 1 else 0))
+					var qy := py + (1 if d == 2 else (-1 if d == 3 else 0))
+					var inside := qx >= 0 and qy >= 0 and qx < w and qy < h
+					if inside and cls[qy * w + qx] != 0:
+						continue
+					var known := on[qy * w + qx] if inside else 0
+					if known == 0:
+						known = 2
+						var gx := float(x0 + qx) + 0.5
+						var gy := float(y0 + qy) + 0.5
+						for m in range(on_x.size()):
+							var ux := gx - on_x[m]
+							var uy := gy - on_y[m]
+							var hit_ground := true
+							var hit_top := true
+							for k in range(6):
+								var dp := ux * nx[k] + uy * ny[k]
+								if dp > dd[k]:
+									hit_ground = false
+								if dp + fl * ny[k] > dd[k]:
+									hit_top = false
+							if hit_ground or hit_top:
+								known = 1
+								break
+						if inside:
+							on[qy * w + qx] = known
+					if known == 2:
+						is_edge = true
+						break
+			var col := c_out
+			if is_edge:
+				edge[i] = 1
+			elif cl == 1:
+				col = c_top
+				if py + 1 < h and cls[i + w] == 2:
+					col = c_rim   # the lip catches the light
+				elif not border:   # no fleck on a top's outer pixel, so none is cut where two tops meet
+					var f := _noise_at(x0 + px, y0 + py, 1)
+					if f < flecks:
+						col = c_seam if f < flecks / 3 else c_fleck
+			else:
+				var gx := x0 + px
+				var gy := y0 + py
+				var k := fe[i]
+				var v := int(fv[i])
+				col = tones[k]
+				var crease := py > 0 and cls[i - w] == 1
+				match pattern:
+					"cracks":
+						# Cracks down the cliff, each from the lip a run of its own length.
+						if crease:
+							col = c_out
+						elif _noise_at(gx, k, 5) < 70 and v >= lift - 3 - _noise_at(gx, k, 11) % (lift - 2):
+							col = c_seam if _noise_at(gx, k, 7) < 60 and v < lift - 1 else darks[k]
+						elif _noise_at(gx, gy, 9) < 18:
+							col = darks[k]
+					"strata":
+						# Bands in the rock, two pixels each, dark, the face's own and pale in turn.
+						var band := (v / 2) % 3
+						if crease:
+							col = c_out
+						elif band == 0:
+							col = darks[k]
+						elif band == 2:
+							col = pales[k]
+					"plinth":
+						if crease:
+							col = c_top_hi
+						elif v <= 1:
+							col = darks[k]
+					_:
+						# Rubble: the rock broken into lumps, dark and light flecks.
+						var f := _noise_at(gx, gy, 13)
+						if crease or f < 60:
+							col = darks[k]
+						elif f > 225:
+							col = c_hi
+			data.encode_u32(i * 4, col)
+	# A mesa's flat top catches the light all round, a pixel inside its edge.
+	if pattern == "strata":
+		for py in range(1, h - 1):
+			for px in range(1, w - 1):
+				var i := py * w + px
+				if cls[i] == 1 and edge[i] == 0 and (edge[i - 1] == 1 or edge[i + 1] == 1 or edge[i - w] == 1 or edge[i + w] == 1):
+					data.encode_u32(i * 4, c_top_hi)
+	var img := Image.create_from_data(w, h, false, Image.FORMAT_RGBA8, data)
+	if s > 1:
+		img.resize(w * s, h * s, Image.INTERPOLATE_NEAREST)
+	var out := {"tex": ImageTexture.create_from_image(img), "at": Vector2(x0 * s, y0 * s)}
+	_ranges[ck] = out
+	return out
+
+
+## What lies and stands on one wall's top, in design pixels about its hex's middle (`at` a
+## texture's top left, `foot` where it stands): a crag's peaks, the one in the middle the tallest
+## and one on the line to each joined neighbour, so the ridge runs on; a city block's towers on a
+## grid filling the top; the rocks and the domain's own scrub lying about. Seeded by the hex, so a
+## wall dresses the same every time.
+static func _range_props(key: String, look: String, links: int, hex_px: float, s: int, rng: RandomNumberGenerator) -> Array:
+	var r := hex_px / float(s)
+	var style: Dictionary = RANGE_LOOKS[look]
+	var lift := float(style["lift"])
+	var ink := _range_inks(key)
+	var edges := _hex_edges(r)
+	var out: Array = []
+	# Whether a spot on the ground of the hex keeps `keep` clear of the range's open edges (a
+	# pixel from a joined one), and the spot pulled toward the middle until it does.
+	var fits := func(q: Vector2, keep: float) -> bool:
+		for e in edges:
+			var room := keep if (links & (1 << int(e["dir"]))) == 0 else 1.0
+			if q.dot(e["n"]) > float(e["d"]) - room:
+				return false
+		return true
+	var held := func(p: Vector2, keep: float) -> Vector2:
+		var q := p
+		for step in range(12):
+			if fits.call(q, keep):
+				return q
+			q *= 0.85
+		return q
+	match str(style["stands"]):
+		"peaks":
+			var shape := str(ink["peak"])
+			var sizes: Array = PEAK_SIZES[shape]
+			var spots: Array = [[Vector2(rng.randf_range(-2.0, 2.0), rng.randf_range(-4.0, -1.0)), 2]]
+			var joined := 0
+			for e in edges:
+				if links & (1 << int(e["dir"])):
+					joined += 1
+					# The saddle on a joined edge carries one peak, the hex on its first three
+					# directions' side standing it, so the ridge runs tall, saddle, tall.
+					if int(e["dir"]) < 3:
+						spots.append([(e["toward"] as Vector2) * 0.46 + Vector2(rng.randf_range(-0.75, 0.75), rng.randf_range(-0.75, 0.75)), 1])
+			if joined < 2:
+				spots.append([Vector2(-r * 0.45, r * 0.2), 1 if joined == 0 else 0])
+				spots.append([Vector2(r * 0.45, r * 0.24), 0])
+			if joined < 5:
+				spots.append([Vector2(rng.randf_range(-3.0, 3.0), r * 0.5), 0])
+			var crater := shape == "volcanic" and rng.randf() < 0.3
+			for sp in spots:
+				var size: int = sp[1]
+				var hw := int(sizes[size][0])
+				var ht := int(round(float(sizes[size][1]) * rng.randf_range(0.9, 1.1)))
+				var g: Vector2 = held.call(sp[0], float(hw) * 0.6 + 1.0)
+				var foot := (g - Vector2(0.0, lift)).round()
+				var steam := crater and size == 2
+				var tex := _peak_tex(key, shape, hw, ht, rng.randi_range(0, 3), steam, s)
+				var p := {"lies": false, "foot": foot, "tex": tex, "at": foot - Vector2(float(hw + 1), float(ht)), "s": s}
+				if steam:
+					p["steam"] = foot - Vector2(0.0, float(ht))
+				out.append(p)
+		"pieces":
+			# The reconstruction's own pieces (Map3D.wall_pieces), drawn from the hex's own seed as the
+			# 3D draws them, each where the camera sees it: its foot on the ground about the hex's
+			# middle, its height up the screen.
+			var k := (hex_px / Map3D.HEX_WORLD) / float(s)
+			var sp := sin(deg_to_rad(Map3D.PITCH))
+			var cp := cos(deg_to_rad(Map3D.PITCH))
+			var i := 0
+			for piece in Map3D.wall_pieces(look, rng):
+				var foot := Vector2(float(piece["x"]) * k, float(piece["z"]) * sp * k)
+				var made := _piece_tex(key, piece, k, sp, cp, s)
+				out.append({"lies": false, "foot": foot + Vector2(0.0, 0.001 * float(i)), "tex": made["tex"], "at": (foot + (made["at"] as Vector2)).round(), "s": s})
+				i += 1
+	var span: Array = style["lies"]
+	var lying := rng.randi_range(int(span[0]), int(span[1]))
+	var names: Array = ink["lies"]
+	for n in range(lying):
+		var g: Vector2 = held.call(Vector2(rng.randf_range(-r * 0.8, r * 0.8), rng.randf_range(-r * 0.75, r * 0.75)), 4.0)
+		var foot := (g - Vector2(0.0, lift)).round()
+		var tex: ImageTexture
+		var pick := rng.randf()
+		if look == "cliffs" and pick < 0.35:
+			tex = _crack_tex(key, rng.randi_range(0, 3), s)
+		elif pick < 0.6:
+			tex = _boulder_tex(key, rng.randi_range(0, 2), s)
+		else:
+			var name := str(names[rng.randi_range(0, names.size() - 1)])
+			tex = _tex(key, name, rng.randf() < 0.5, s)
+		var size := tex.get_size() / float(s)
+		out.append({"lies": true, "foot": foot, "tex": tex, "at": (foot - Vector2(floorf(size.x * 0.5), size.y)).round(), "s": s})
+	return out
+
+
+## A crag's peak, standing on its foot at the bottom middle, in its domain's shape: a mountain
+## with snow on its top third, a butte with a pale top and banded sides, a needle of a spire, a
+## jagged volcanic peak with lava down it (`crater`, a cone breathing steam). Lit from the right.
+static func _peak_tex(key: String, shape: String, hw: int, ht: int, variant: int, crater: bool, s: int) -> ImageTexture:
+	var ck := "%s/peak/%s/%d/%d/%d/%d/%d" % [key, shape, hw, ht, variant, int(crater), s]
 	if _textures.has(ck):
 		return _textures[ck]
-	var ink: Dictionary = INKS[key]
-	var letters: Dictionary = BLOCK_INKS[key]
-	var out := Color(str(ink[letters["out"]]))
-	var body := Color(str(ink[letters["body"]]))
-	var shade := Color(str(ink[letters["shade"]]))
-	var light := Color(str(ink[letters["light"]]))
-	var w := 42
-	var h := 40
-	var img := Image.create_empty(w * s, h * s, false, Image.FORMAT_RGBA8)
-	var px := func(x: int, y: int, col: Color) -> void:
-		if x >= 0 and y >= 0 and x < w and y < h:
-			img.fill_rect(Rect2i(x * s, y * s, s, s), col)
-	# A block: outlined, its top strip light, its right third in shade.
-	var block := func(x0: int, y0: int, bw: int, bh: int, windows: bool) -> void:
-		for y in range(y0, y0 + bh):
-			for x in range(x0, x0 + bw):
-				var edge := x == x0 or x == x0 + bw - 1 or y == y0 or y == y0 + bh - 1
-				var col := body
-				if edge:
-					col = out
-				elif y <= y0 + 1:
-					col = light
-				elif x >= x0 + bw - maxi(2, bw / 3):
+	var ink := _range_inks(key)
+	var lit: Color = ink["rock"]
+	var mid: Color = ink["face_hi"]
+	var shade: Color = ink["face_lo"] if ink["face_lo"] != ink["out"] else ink["face"]
+	var w := 2 * hw + 3
+	var h := ht + 1
+	var cx := hw + 1
+	var img := Image.create_empty(w, h, false, Image.FORMAT_RGBA8)
+	var spans: Array = []   # each row's [left, right]
+	for y in range(h):
+		var f := float(y) / float(maxi(1, ht - 1))
+		var half := f * float(hw)
+		match shape:
+			"butte":
+				var top := maxf(2.0, float(hw) * 0.62)
+				half = top + (maxf(0.0, f - 0.72) / 0.28) * (float(hw) - top)
+			"spire":
+				half = f * float(hw) + (0.5 if (y + variant) % 3 == 0 else 0.0)
+			"volcanic":
+				half = f * float(hw) + (1.0 if _rhash(y, variant, 21) < 70 and y > 2 else 0.0)
+				if crater:
+					half = maxf(half, 2.0)
+			_:
+				half = f * float(hw) + (0.6 if _rhash(y, variant, 23) < 60 and y > 3 else 0.0)
+		spans.append([clampi(cx - int(round(half)), 0, w - 1), clampi(cx + int(round(half)), 0, w - 1)])
+	var cap_rows := 0
+	match shape:
+		"mountain":
+			cap_rows = int(round(float(ht) * 0.32)) if ht >= 15 else 0
+		"butte":
+			cap_rows = 2
+		"spire":
+			cap_rows = 2
+		"volcanic":
+			cap_rows = 1 if crater else 0
+	for y in range(h):
+		var l: int = spans[y][0]
+		var rr: int = spans[y][1]
+		# The ridge line parting the shaded left flank from the lit right, leaning left as it
+		# falls; a butte's flat sides part in thirds.
+		var f := float(y) / float(maxi(1, ht - 1))
+		var ridge := cx - int(round(f * float(hw) * 0.3))
+		if shape == "butte":
+			ridge = l + int(round(float(rr - l) * 0.35))
+		for x in range(l, rr + 1):
+			var col: Color = lit if x >= ridge else shade
+			if shape == "spire" and x > l and x < rr:
+				col = mid if x < rr - 1 else lit
+				if x <= l + 1:
 					col = shade
-				elif windows and (y - y0) % 4 == 0 and (x - x0) % 3 == 1 and y > y0 + 2 and y < y0 + bh - 2:
-					col = light if ((x * 7 + y * 13 + variant) % 5) != 0 else shade
-				px.call(x, y, col)
-	match look:
-		"mesas":
-			var top_w := 22 + variant * 2
-			block.call(4, 18, 34, 22, false)          # the base
-			block.call(10 - variant, 8, top_w, 12, false)   # the top step
-		"towers":
-			var heights: Array = [[34, 26, 30], [28, 36, 24], [30, 22, 34]][variant]
-			var x := 3
-			for i in range(3):
-				var bh: int = heights[i]
-				var bw := 10 + (i + variant) % 2
-				block.call(x, h - bh, bw, bh, true)
-				x += bw + 2
-		_:
-			block.call(0, 22, 42, 18, false)          # the ridge, edge to edge
-			for i in range(3):
-				var cx := 6 + i * 13 + (variant * 3) % 5
-				for y in range(25, 39):
-					if (y + i) % 3 != 0:
-						px.call(cx, y, shade)
+			var jag := _rhash(x, variant, 29) % 2
+			if y < cap_rows + jag and shape == "mountain":
+				col = ink["cap"] if x >= ridge else ink["cap_lo"]
+			elif y < cap_rows and shape == "butte":
+				col = ink["cap"] if y == 0 else ink["cap_lo"]
+			elif y < cap_rows and shape == "spire":
+				col = ink["cap"]
+			elif y < cap_rows and crater:
+				col = ink["cap_lo"]
+			elif shape == "butte" and y > cap_rows and (y - cap_rows) % 4 == 0 and _rhash(x, y, variant) < 150:
+				col = mid if col == lit else ink["out"]
+			elif shape != "butte" and shape != "spire" and x > ridge + 1 and _rhash(x - y, variant, 31) < 26:
+				col = mid   # a crease down the lit flank
+			img.set_pixel(x, y, col)
+		img.set_pixel(l, y, ink["out"])
+		img.set_pixel(rr, y, ink["out"])
+	img.set_pixel(cx, 0, ink["out"])
+	if shape == "butte":
+		for x in range(spans[0][0], spans[0][1] + 1):
+			img.set_pixel(x, 0, ink["out"])
+	# Lava down a volcanic peak's lit flank: a glowing thread from near its top.
+	if shape == "volcanic" and (crater or variant == 0) and ht >= 15:
+		var x := cx + 1
+		for y in range(2, ht - 1):
+			if _rhash(y, variant, 37) < 90:
+				x += 1 if _rhash(y, variant, 41) < 128 else -1
+			x = clampi(x, spans[y][0] + 1, spans[y][1] - 1)
+			img.set_pixel(x, y, ink["cap"] if y % 3 != 0 else ink["cap_lo"])
+	if s > 1:
+		img.resize(w * s, h * s, Image.INTERPOLATE_NEAREST)
+	var tex := ImageTexture.create_from_image(img)
+	_textures[ck] = tex
+	return tex
+
+
+## One of the reconstruction's pieces (Map3D.wall_pieces) as the painted world draws it, lit
+## from the right in its domain's rock, in design pixels (`k` of them a model unit; `sp` and `cp`
+## the camera's pitch, so it stands where the 3D's camera sees it): a pillar its top and the faces
+## the view sees, banded, lit on the right and dark on the left; a box its roof and its face, lit
+## down its right edge, its lit window bands across the face. Cached by its sizes to the pixel and
+## a pillar's turn to a quarter of its sixty degrees. {"tex", "at": its top left from the piece's
+## foot on the ground}.
+static var _pieces: Dictionary = {}
+
+static func _piece_tex(key: String, piece: Dictionary, k: float, sp: float, cp: float, s: int) -> Dictionary:
+	var sides := int(piece["sides"])
+	var r0 := float(roundi(float(piece["r0"]) * k))
+	var r1 := float(roundi(float(piece["r1"]) * k))
+	var lo := float(roundi(float(piece["from"]) * cp * k))   # its foot's rise up the screen
+	var hi := float(roundi(float(piece["to"]) * cp * k))     # its top's
+	var depth := float(roundi(float(piece.get("depth", 1.0)) * 10.0)) / 10.0
+	var turn_q := 0
+	if sides == 6:
+		turn_q = int(round(fposmod(float(piece["turn"]), PI / 3.0) / (PI / 3.0) * 4.0)) % 4
+	var windows: Array = piece.get("windows", [])
+	var ck := "%s/%d/%d/%d/%d/%d/%d/%d/%s/%d" % [key, sides, int(r0), int(r1), int(lo), int(hi), roundi(depth * 10.0), turn_q, str(windows), s]
+	if _pieces.has(ck):
+		return _pieces[ck]
+	var ink := _range_inks(key)
+	var c_top := (ink["top_hi"] as Color).to_abgr32()
+	var c_out := (ink["out"] as Color).to_abgr32()
+	var tones := [ink["rock"], ink["face"], _darker(ink, ink["face"])]   # lit, the face's own, shaded
+	# The corners of its footprint, model x and z as shares of its radius, round it in order.
+	var corners: Array = []
+	var normals: Array = []   # each side's outward normal, from corner i to i + 1
+	if sides == 4:
+		corners = [Vector2(-1.0, -depth), Vector2(1.0, -depth), Vector2(1.0, depth), Vector2(-1.0, depth)]
+		normals = [Vector2(0, -1), Vector2(1, 0), Vector2(0, 1), Vector2(-1, 0)]
+	else:
+		var t := float(turn_q) * (PI / 3.0) / 4.0
+		for i in range(sides):
+			var a := TAU * float(i) / float(sides) + t
+			var b := TAU * float(i + 1) / float(sides) + t
+			corners.append(Vector2(sin(a), cos(a)))
+			var am := (a + b) * 0.5
+			normals.append(Vector2(sin(am), cos(am)))
+	var foot := PackedVector2Array()
+	var top := PackedVector2Array()
+	for c in corners:
+		foot.append(Vector2(c.x * r0, c.y * r0 * sp - lo))
+		top.append(Vector2(c.x * r1, c.y * r1 * sp - hi))
+	var faces: Array = []   # [quad, tone]
+	for i in range(sides):
+		var n: Vector2 = normals[i]
+		if n.y <= 0.05:
+			continue   # away from the view, or edge-on
+		var j := (i + 1) % sides
+		var tone: Color = tones[0] if n.x > 0.35 else (tones[2] if n.x < -0.35 else tones[1])
+		faces.append([PackedVector2Array([foot[i], foot[j], top[j], top[i]]), tone])
+	var x0 := INF
+	var y0 := INF
+	var x1 := -INF
+	var y1 := -INF
+	for p in Array(foot) + Array(top):
+		x0 = minf(x0, p.x)
+		y0 = minf(y0, p.y)
+		x1 = maxf(x1, p.x)
+		y1 = maxf(y1, p.y)
+	var ox := floori(x0) - 1
+	var oy := floori(y0) - 1
+	var w := ceili(x1) + 2 - ox
+	var h := ceili(y1) + 2 - oy
+	var cls := PackedByteArray()   # 0 nothing, 1 the top, 2 + n a face
+	cls.resize(w * h)
+	for f in range(faces.size()):
+		_fill_convex(cls, w, h, ox, oy, faces[f][0], 2 + f)
+	_fill_convex(cls, w, h, ox, oy, top, 1)   # the top over the faces
+	var data := PackedByteArray()
+	data.resize(w * h * 4)
+	var c_lit := (ink["lit"] as Color).to_abgr32()
+	var c_side := (ink["rock"] as Color).to_abgr32()
+	var stripe := w - 1 - maxi(1, roundi(r0 * 0.3))
+	var shades := PackedInt64Array()   # each face's tone and its band's
+	var bands := PackedInt64Array()
+	for f in faces:
+		shades.append((f[1] as Color).to_abgr32())
+		bands.append(_darker(ink, f[1]).to_abgr32())
+	var window_rows := PackedInt32Array()
+	for fr in windows:
+		window_rows.append(roundi((hi - lo) * (1.0 - float(fr))))
+	for px in range(w):
+		var down := 0   # rows down from the top of the face this pixel is on
+		var last := 0
+		for py in range(h):
+			var i := py * w + px
+			var cl := cls[i]
+			down = down + 1 if cl == last else 0
+			last = cl
+			if cl == 0:
+				continue
+			var edge := px == 0 or py == 0 or px == w - 1 or py == h - 1 or cls[i - 1] == 0 or cls[i + 1] == 0 or cls[i - w] == 0 or cls[i + w] == 0
+			var col := c_out
+			if not edge:
+				if cl == 1:
+					col = c_top
+				else:
+					col = shades[cl - 2]
+					if sides == 6:
+						if down % 3 == 2:
+							col = bands[cl - 2]   # the slabs' bands
+					else:
+						# A tower's face: lit down its right edge, a lit window band where it has one.
+						if px >= stripe:
+							col = c_side
+						elif window_rows.has(down) and px % 2 == 1:
+							col = c_lit if _rhash(px, py, 7) < 150 else bands[cl - 2]
+			data.encode_u32(i * 4, col)
+	var img := Image.create_from_data(w, h, false, Image.FORMAT_RGBA8, data)
+	if s > 1:
+		img.resize(w * s, h * s, Image.INTERPOLATE_NEAREST)
+	var out := {"tex": ImageTexture.create_from_image(img), "at": Vector2(ox, oy)}
+	_pieces[ck] = out
+	return out
+
+
+## Fill a convex polygon (`pts`, design pixels) into a class buffer `w` by `h` whose top left is
+## (`ox`, `oy`), a row's span at a time: every pixel whose middle lies inside takes `value`.
+static func _fill_convex(cls: PackedByteArray, w: int, h: int, ox: int, oy: int, pts: PackedVector2Array, value: int) -> void:
+	var n := pts.size()
+	for py in range(h):
+		var y := float(oy + py) + 0.5
+		var xl := INF
+		var xr := -INF
+		for e in range(n):
+			var a := pts[e]
+			var b := pts[(e + 1) % n]
+			if (a.y <= y and b.y > y) or (b.y <= y and a.y > y):
+				var x := a.x + (y - a.y) / (b.y - a.y) * (b.x - a.x)
+				xl = minf(xl, x)
+				xr = maxf(xr, x)
+		if xl > xr:
+			continue
+		var c0 := maxi(0, ceili(xl - 0.5 - float(ox)))
+		var c1 := mini(w - 1, floori(xr - 0.5 - float(ox)))
+		for px in range(c0, c1 + 1):
+			cls[py * w + px] = value
+
+
+## A crack running across a plateau's top: a dark line wandering a pixel at a time, its far lip
+## catching the light.
+static func _crack_tex(key: String, variant: int, s: int) -> ImageTexture:
+	var ck := "%s/crack/%d/%d" % [key, variant, s]
+	if _textures.has(ck):
+		return _textures[ck]
+	var ink := _range_inks(key)
+	var w := 7 + variant * 2
+	var img := Image.create_empty(w, 5, false, Image.FORMAT_RGBA8)
+	var y := 2
+	for x in range(w):
+		if x > 0 and _rhash(x, variant, 47) < 100:
+			y = clampi(y + (1 if _rhash(x, variant, 53) < 128 else -1), 1, 3)
+		img.set_pixel(x, y, ink["top_lo"])
+		img.set_pixel(x, y + 1, ink["top_hi"])
+	if s > 1:
+		img.resize(w * s, 5 * s, Image.INTERPOLATE_NEAREST)
+	var tex := ImageTexture.create_from_image(img)
+	_textures[ck] = tex
+	return tex
+
+
+## A loose rock lying on a range's top, in the top's own flecks and light, lit from the right: 0 a
+## pebble, 1 a stone, 2 a boulder.
+static func _boulder_tex(key: String, size: int, s: int) -> ImageTexture:
+	var ck := "%s/boulder/%d/%d" % [key, size, s]
+	if _textures.has(ck):
+		return _textures[ck]
+	var ink := _range_inks(key)
+	var rows: Array = [
+		[".oo.", "oxlo", ".oo."],
+		[".ooo.", "oxllo", "oxxlo", ".ooo."],
+		["..ooo..", ".oxlllo", "oxxxllo", "oxxxxlo", ".ooooo."],
+	][clampi(size, 0, 2)]
+	var w := str(rows[0]).length()
+	var img := Image.create_empty(w, rows.size(), false, Image.FORMAT_RGBA8)
+	for y in range(rows.size()):
+		for x in range(w):
+			var ch := str(rows[y])[x]
+			if ch == "o":
+				img.set_pixel(x, y, ink["out"])
+			elif ch == "x":
+				img.set_pixel(x, y, ink["top_lo"])
+			elif ch == "l":
+				img.set_pixel(x, y, ink["top_hi"])
+	if s > 1:
+		img.resize(w * s, rows.size() * s, Image.INTERPOLATE_NEAREST)
 	var tex := ImageTexture.create_from_image(img)
 	_textures[ck] = tex
 	return tex
@@ -1251,12 +1882,12 @@ static func _halved(list: Array) -> Array:
 
 
 ## A ground's flecks: a few design pixels in the domain's speck colours.
-static func _specks(ci: CanvasItem, ts: Dictionary, c: Vector2, r: float, s: int, rng: RandomNumberGenerator) -> void:
+static func _specks(ci: CanvasItem, ts: Dictionary, c: Vector2, r: float, s: int, rng: RandomNumberGenerator, tint: Color = Color.WHITE) -> void:
 	var cols: Array = ts["specks"]
 	for i in range(10):
 		var p := c + Vector2(rng.randf_range(-0.85, 0.85) * r * 0.866, rng.randf_range(-0.8, 0.8) * r)
 		if _inside(p, c, r - 3.0):
-			ci.draw_rect(Rect2(p.floor(), Vector2(s, s)), Color(str(cols[i % cols.size()])))
+			ci.draw_rect(Rect2(p.floor(), Vector2(s, s)), Color(str(cols[i % cols.size()])) * tint)
 
 
 ## The midpoint of a hex's edge toward Hex.DIRECTIONS[i], on the hex's fill.
@@ -1291,7 +1922,7 @@ static func _road_dist(p: Vector2, ends: Array) -> float:
 ## the same roads beside it lays the same road. Three road hexes round a corner make a loop
 ## with the ground showing in its middle (Ryan, 30 October: "can these types of triples have a
 ## gap in the middle?"), a road two wide a ladder of them.
-static func _road(ci: CanvasItem, key: String, ts: Dictionary, c: Vector2, hex_px: float, s: int, links: int) -> void:
+static func _road(ci: CanvasItem, key: String, ts: Dictionary, c: Vector2, hex_px: float, s: int, links: int, tint: Color = Color.WHITE) -> void:
 	var ck := "%s/road/%d/%d/%d" % [key, links, roundi(hex_px), s]
 	if not _textures.has(ck):
 		var r := hex_px - 1.5
@@ -1314,14 +1945,14 @@ static func _road(ci: CanvasItem, key: String, ts: Dictionary, c: Vector2, hex_p
 					img.fill_rect(Rect2i(x * s, y * s, s, s), edge)
 		_textures[ck] = ImageTexture.create_from_image(img)
 	var tex: ImageTexture = _textures[ck]
-	ci.draw_texture(tex, (c - tex.get_size() * 0.5).floor())
+	ci.draw_texture(tex, (c - tex.get_size() * 0.5).floor(), tint)
 	if ts.has("road_stone"):
 		var stone := _tex(key, str(ts["road_stone"]), false, s)
 		var at: Array = [Vector2.ZERO]
 		for e in _road_ends(hex_px, links):
 			at.append(e * 0.55)
 		for p in at:
-			ci.draw_texture(stone, (c + p - stone.get_size() * 0.5).floor())
+			ci.draw_texture(stone, (c + p - stone.get_size() * 0.5).floor(), tint)
 
 
 ## Whether a sprite standing in `rect` would stand on the road (its `ends`, as _road_ends).
@@ -1336,7 +1967,7 @@ static func _on_road(rect: Rect2, c: Vector2, ends: Array, s: int) -> bool:
 ## What stands on a ground: each sprite of `list` set where it fits inside the hex, off the
 ## road, overlapping the ones set before by at most `overlap` of the smaller (rough's, a
 ## forest's crowns), then drawn back to front, the flat ones first.
-static func _scatter(ci: CanvasItem, key: String, ts: Dictionary, c: Vector2, r: float, s: int, rng: RandomNumberGenerator, frame: int, list: Array, links: int, overlap: float) -> void:
+static func _scatter(ci: CanvasItem, key: String, ts: Dictionary, c: Vector2, r: float, s: int, rng: RandomNumberGenerator, frame: int, list: Array, links: int, overlap: float, tint: Color = Color.WHITE) -> void:
 	var placed: Array = []
 	var ends := _road_ends(r + 1.5, links)
 	for entry in list:
@@ -1364,8 +1995,8 @@ static func _scatter(ci: CanvasItem, key: String, ts: Dictionary, c: Vector2, r:
 		return a["rect"].end.y < b["rect"].end.y)
 	for p in placed:
 		var rect: Rect2 = p["rect"]
-		ci.draw_texture(_tex(key, p["name"], p["mirror"], s), rect.position)
-		_attach(ci, key, p["name"], rect, p["mirror"], s, frame)
+		ci.draw_texture(_tex(key, p["name"], p["mirror"], s), rect.position, tint)
+		_attach(ci, key, p["name"], rect, p["mirror"], s, frame, tint)
 
 
 ## Whether a rect overlaps one set before by more than `overlap` of the smaller.
@@ -1396,11 +2027,11 @@ static func _attach(ci: CanvasItem, key: String, name: String, rect: Rect2, mirr
 
 
 ## The water: the domain's liquid, a rim inside its edge and ripples drifting a step a frame.
-static func _water(ci: CanvasItem, key: String, ts: Dictionary, c: Vector2, r: float, s: int, rng: RandomNumberGenerator, frame: int) -> void:
-	Hud.stroke_poly(ci, MapOrient.corners(c, r - 2.0 - s), Color(str(ts["rim"])), float(s) + 1.0)
+static func _water(ci: CanvasItem, key: String, ts: Dictionary, c: Vector2, r: float, s: int, rng: RandomNumberGenerator, frame: int, tint: Color = Color.WHITE) -> void:
+	Hud.stroke_poly(ci, MapOrient.corners(c, r - 2.0 - s), Color(str(ts["rim"])) * tint, float(s) + 1.0)
 	var ripples: Array = ts["ripples"]
 	for i in range(7):
 		var tex := _tex(key, str(ripples[i % ripples.size()]), false, s)
 		var p := c + Vector2(rng.randf_range(-0.55, 0.55) * r * 0.866, rng.randf_range(-0.5, 0.45) * r)
 		p += Vector2(2.0, -1.0) * s * frame
-		ci.draw_texture(tex, (p - tex.get_size() * 0.5).floor())
+		ci.draw_texture(tex, (p - tex.get_size() * 0.5).floor(), tint)
