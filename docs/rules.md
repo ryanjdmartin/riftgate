@@ -1355,7 +1355,10 @@ a stat.
   the packs in the order their orders were given), else EXECUTE while planned moves wait, else
   END TURN; back from a fight with more waiting, the orders stand and the button pulses. EXECUTE plays every planned move and the turn goes on, so moves play in
   whatever sequence the player gives them; ENGAGE plays them first too (the boss's fight aside,
-  below), then the fight opens. UNDO takes back the last move or order, whoever made it, in the
+  below), then the fight opens. As EXECUTE plays the moves, the reach of the machine in hand
+  goes dark; once they have played, that machine stays in hand only while a pack is in reach of
+  where it stopped, that pack bracketed (a move spends the move, never the action), and is let
+  go otherwise. UNDO takes back the last move or order, whoever made it, in the
   order they were made, a move that has played included (the machine goes back where it
   stood), back to the turn's start or the last fight. A caught machine's fights come first, one a
   hunter, and the map draws each as the machine's order onto the hunter that caught it. END TURN asks first
