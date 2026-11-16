@@ -22,11 +22,11 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			else:
 				ci.draw_line(ax + Vector2(0, s * 0.85), ax + Vector2(0, -s * 0.4), color, width)
 				ci.draw_polyline(PackedVector2Array([ax + Vector2(-s * 0.36, 0.0), ax + Vector2(0, -s * 0.43), ax + Vector2(s * 0.36, 0.0)]), color, width)
-		"pin_flak", "pin_burn":
+		"pin_flak", "pin_ablate":
 			# A pin (Ryan, 11 November: "Can we combine the lock and the flak/burn for these
 			# glyphs?"): the status it holds, drawn a little smaller up and to the left, with the
 			# lock at its lower right.
-			draw(ci, {"pin_flak": "flak", "pin_burn": "burn"}[id], c + Vector2(-s * 0.2, -s * 0.16), size * 0.8, color, width)
+			draw(ci, {"pin_flak": "flak", "pin_ablate": "ablate"}[id], c + Vector2(-s * 0.2, -s * 0.16), size * 0.8, color, width)
 			draw(ci, "lock", c + Vector2(s * 0.5, s * 0.48), size * 0.52, color, width)
 		"pin_empower":
 			# Empowered's pin (the Soul Siphon's hold, 12 November): the pins' lock at the lower
@@ -217,12 +217,6 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				var o := c + Vector2(0, -s * 0.12)
 				ci.draw_arc(o, s * 0.42, 0.0, TAU, 18, color, width * 0.85)
 				ci.draw_line(o + Vector2(-s * 0.3, s * 0.3), o + Vector2(s * 0.3, -s * 0.3), color, width * 0.85)
-		"silence":
-			# Silenced (21 October; keywords alone, 28 October): a voice's three arcs struck
-			# through, its keywords muted through its next round.
-			for k in range(3):
-				ci.draw_arc(c + Vector2(-s * 0.45, 0), s * (0.35 + 0.3 * k), -PI * 0.3, PI * 0.3, 10, color, width)
-			ci.draw_line(c + Vector2(-s * 0.9, s * 0.9), c + Vector2(s * 0.9, -s * 0.9), color, width * 1.2)
 		"spin":
 			# The drum spun up (Spun Up, the Cassowary's, 21 October): three-quarters of a ring
 			# with an arrowhead where it runs on, and the cylinder's hub at its centre.
@@ -289,35 +283,29 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			for i in range(3):
 				var x := -s * 0.7 + i * s * 0.7
 				ci.draw_line(c + Vector2(x, -s), c + Vector2(x, s), color, width)
-		"breach":
-			# One breach (22 October): the blow through the plate, so neither shield nor armour
-			# takes any of it. The plate is two bars with the gap an arrow drives down through,
-			# its structure apart from Penetrate's sideways arrow and the shield's crack.
+		"juggernaut":
+			# The Wild Boar's Juggernaut Drive waiting (its next weapon ignores armour): the blow
+			# through the plate. The plate is two bars with the gap an arrow drives down through,
+			# its structure apart from Penetrate's sideways arrow and the shield's crack. Breach's
+			# mark until the keyword was cut (15 November), and this state's alone since.
 			ci.draw_line(c + Vector2(-s, s * 0.05), c + Vector2(-s * 0.32, s * 0.05), color, width)
 			ci.draw_line(c + Vector2(s * 0.32, s * 0.05), c + Vector2(s, s * 0.05), color, width)
 			ci.draw_line(c + Vector2(0, -s), c + Vector2(0, s), color, width)
 			ci.draw_line(c + Vector2(-s * 0.45, s * 0.5), c + Vector2(0, s), color, width)
 			ci.draw_line(c + Vector2(s * 0.45, s * 0.5), c + Vector2(0, s), color, width)
-		"splash":
-			# Splash (28 October): the plus round the target, Spread's row and Penetrate's column at
-			# one number. A solid core with four arms standing off it, a burst, so it reads apart
-			# from Spread's three bars, Penetrate's arrow and the crosshair's ringed cross.
-			ci.draw_rect(Rect2(c - Vector2(s * 0.28, s * 0.28), Vector2(s * 0.56, s * 0.56)), color, true)
-			for d in [Vector2(1, 0), Vector2(-1, 0), Vector2(0, 1), Vector2(0, -1)]:
-				ci.draw_line(c + d * s * 0.5, c + d * s, color, width)
 		"penetrate":
 			ci.draw_line(c + Vector2(-s, 0), c + Vector2(s, 0), color, width)
 			ci.draw_line(c + Vector2(s * 0.3, -s * 0.6), c + Vector2(s, 0), color, width)
 			ci.draw_line(c + Vector2(s * 0.3, s * 0.6), c + Vector2(s, 0), color, width)
 			ci.draw_line(c + Vector2(-s * 0.2, -s), c + Vector2(-s * 0.2, s), color, width)
-		"burn":
+		"ablate":
 			ci.draw_polyline(PackedVector2Array([
 				c + Vector2(0, -s), c + Vector2(s * 0.7, s * 0.1), c + Vector2(s * 0.3, s),
 				c + Vector2(-s * 0.3, s), c + Vector2(-s * 0.7, s * 0.1), c + Vector2(0, -s),
 			]), color, width)
 		"primed":
-			# Primed (28 October, the same chip on both sides): Burn's hollow flame with its core
-			# lit, a blow primed to set fire, so on a foe it never reads as the team's Burning,
+			# Primed (28 October, the same chip on both sides): Ablate's hollow flame with its core
+			# lit, a blow primed to lay it, so on a foe it never reads as the team's Ablating,
 			# which keeps the bare hollow flame.
 			ci.draw_polyline(PackedVector2Array([
 				c + Vector2(0, -s), c + Vector2(s * 0.7, s * 0.1), c + Vector2(s * 0.3, s),
@@ -378,7 +366,7 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				ci.draw_polyline(ring, color, width * 0.9)
 		"vitriol":
 			# Acid: a drop, point up, over two pits it has eaten into the plate beneath (the
-			# funnel-web's Vitriol, 18 October). The hollow flame stays Burn's.
+			# funnel-web's Vitriol, 18 October). The hollow flame stays Ablate's.
 			ci.draw_polyline(PackedVector2Array([
 				c + Vector2(0, -s), c + Vector2(s * 0.55, -s * 0.05), c + Vector2(s * 0.45, s * 0.35),
 				c + Vector2(0, s * 0.55), c + Vector2(-s * 0.45, s * 0.35), c + Vector2(-s * 0.55, -s * 0.05), c + Vector2(0, -s),
@@ -409,18 +397,13 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				ci.draw_line(hit + dir * s * 0.16, hit + dir * s * 0.45, color, width)
 		"flak":
 			# An airburst: a small shell ring and the dashes of shrapnel thrown off it (Flak,
-			# 21 October). Burning's flame is a closed shape; this one is open, so the two part
+			# 21 October). Ablating's flame is a closed shape; this one is open, so the two part
 			# by structure as well as colour.
 			ci.draw_arc(c, s * 0.24, 0.0, TAU, 14, color, width)
 			for i in range(8):
 				var a := PI / 8.0 + i * PI / 4.0
 				var dir := Vector2(cos(a), sin(a))
 				ci.draw_line(c + dir * s * 0.5, c + dir * s, color, width)
-		"overshield":
-			# A shield's arch with a second arch standing above its crown: more than the maximum.
-			ci.draw_arc(c + Vector2(0, s * 0.3), s * 0.7, PI, TAU, 16, color, width)
-			ci.draw_line(c + Vector2(-s * 0.7, s * 0.3), c + Vector2(s * 0.7, s * 0.3), color, width)
-			ci.draw_arc(c + Vector2(0, -s * 0.15), s * 0.95, PI * 1.15, PI * 1.85, 12, color, width * 0.8)
 		"spillover":
 			# An arrow driven down through a bar: what carries past the kill into the rank behind.
 			ci.draw_line(c + Vector2(-s * 0.8, -s * 0.15), c + Vector2(s * 0.8, -s * 0.15), color, width)
@@ -484,21 +467,6 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 		"heat":
 			ci.draw_line(c + Vector2(0, -s), c + Vector2(0, s * 0.3), color, width)
 			ci.draw_circle(c + Vector2(0, s * 0.55), s * 0.45, color)
-		"burning":
-			# Burning on a machine (Ryan, 13 October: a glyph of its own): Burn's flame filled solid,
-			# the heat glyph's thermometer cut out of it, since on metal the fire is heat. The hollow
-			# flame stays Burn's and a foe's Burning's (Primed wears it with its core lit since 28
-			# October), the bare thermometer the overheat's.
-			var flame := PackedVector2Array([
-				c + Vector2(0, -s), c + Vector2(s * 0.7, s * 0.1), c + Vector2(s * 0.3, s),
-				c + Vector2(-s * 0.3, s), c + Vector2(-s * 0.7, s * 0.1),
-			])
-			ci.draw_colored_polygon(flame, color)
-			flame.append(flame[0])
-			ci.draw_polyline(flame, color, width)
-			var cut := Color(Palette.BG, color.a)
-			ci.draw_line(c + Vector2(0, -s * 0.4), c + Vector2(0, s * 0.3), cut, maxf(1.5, width))
-			ci.draw_circle(c + Vector2(0, s * 0.5), s * 0.24, cut)
 		"scorch":
 			# Heat rising off a barrel: Scorched, every weapon and debuff running hotter (13 October).
 			ci.draw_line(c + Vector2(-s, s * 0.75), c + Vector2(s, s * 0.75), color, width)
@@ -686,7 +654,7 @@ static func colour_for(id: String) -> Color:
 			return Terms.colour("exposure")
 		"overcharge", "heat", "scorch", "spin", "mine":
 			return Palette.HEAT
-		"shieldbreak", "silence":
+		"shieldbreak":
 			return Palette.ENEMY
 		"skull":
 			return Palette.LOSS

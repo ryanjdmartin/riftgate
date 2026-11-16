@@ -23,7 +23,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   - `face.gd`, `die.gd` die faces and dice
   - `foe.gd` an enemy inside a skirmish
   - `skirmish.gd` the dice skirmish: two-rank enemy formation fed from a pool, reach rules,
-    keywords, heat, shields, injuries, outcome
+    keywords, heat, shields, destroyed components, outcome
   - `loadouts.gd` sample dice and packs for prototypes and tests
   - `harness_setup.gd` what the harness launches (team, loadouts, a battle as a run deals it,
     a fight, seed, map shape), built into a battle or a skirmish, kept between launches
@@ -275,8 +275,8 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # --cool-above 50 (the cautious persona: each machine keeps its heat under half its maximum,
 # venting early and holding a hot spend above the line; the pricing driver passes it on too),
 # --overheat 2 (a what-if: an overheat burns two hull a point past the maximum; the driver's too),
-# --burnout and --overheat-corrupt 1 (what-ifs on the component that took the gauge past the maximum:
-# burnt out once the burn reaches the injury threshold, or Corrupted a stack every overheat; the driver's too),
+# --overheat-corrupt 1 (a what-if on the component that took the gauge past the maximum:
+# Corrupted a stack every overheat; the driver's too),
 # --shield-ahead (the shield persona: a shield left standing valued by the blows it turns next round,
 # where the rungs bank it at a fifth of a point; the driver's too, for the support ladders),
 # --targeting lowest (the rule before 2 October for the matrix), --json out.json for every cell;
@@ -315,13 +315,12 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # shield or a vent, the basics make heat) and the reboot is the game's rule since 15 November (no
 # chassis regains shield or cools, so the regen's and the cooling's parts are gone), so what is
 # left are the numbers a read may still ask about: "hotter=N" (every weapon N heat
-# more, a read for the heat prices; negative for cooler), "basics=N" (every basic gun deals N
-# more) and "top=N" (the basic guns that deal more than the plainest make N more heat), the two
-# of Ryan's logic for the stock basics (the refit brief's section 23), "foehp=N" (every foe a
+# more, a read for the heat prices; negative for cooler), "top=N" (the basic guns that deal more
+# than the plainest make N more heat, of Ryan's logic for the stock basics: the refit brief's
+# section 23), "foehp=N" (every foe a
 # tier-one formation fields that is no massive has N more hit points: the standard foe 5 where
-# it is 4, his two options of 15 November for a vanilla of 3), "breach=cut" (every foe's move
-# loses its breach and lands as a plain blow: his cut of 15 November, played ahead of the
-# fold-in, where the word leaves the engine and content),
+# it is 4, his two options of 15 November for a vanilla of 3; the vanilla's own point and
+# breach's cut, "basics=" and "breach=" until that day, are content now),
 # "barrier=cooldownN" (the Barrier basic sits out N rounds
 # once spent, 0 for none, where content gives it 1), "barrier=heatN" (it costs N heat) or
 # "barrier=none" (it leaves the stock dice, the Armoured basic in its slot); comma-separated;
@@ -330,7 +329,6 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # its worth to the bot, so it never rerolls for one and spends one only when its die is stuck
 # showing it): the hull the blocks keep and the rounds they cost are the gap between it and the
 # rung as it is; tools/campaign_run.gd takes it too.
-# --injury on|N reads a run with the injury rule on (off in the game since 9 November).
 perl -e 'alarm 36000; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
 perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --packs promise --seeds 30 --policies greedy --out /tmp/promise.md
 perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --packs curve --seeds 30 --out /tmp/curve.md
@@ -442,7 +440,7 @@ perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/special_prob
 python3 tools/special_probe_read.py build
 # formations back to back (25 October, docs/quick_campaign_proposal.md): every starter trio (or four: --squads fours,
 # or a JSON file of squads, as endgame_fours.py --json prints the endgame fours) against one domain's formation up
-# to nine times in a row, hull, injuries and wrecks carried, the shield full as each fight opens (the long wall
+# to nine times in a row, hull, destroyed components and wrecks carried, the shield full as each fight opens (the long wall
 # brief: no field recharge); --density F scales the formation; four parts in parallel, then the reader
 perl -e 'alarm 5400; exec @ARGV' godot --headless --path . -s tools/chain_probe.gd -- --squads trios --seeds 2 --out build/chain_0.json --part 0/4
 python3 tools/endgame_fours.py --json > build/endgame_fours.json   # then --squads build/endgame_fours.json
@@ -463,7 +461,7 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # RIFTGATE_TEAM=badger,nemesis,cassowary,swallowtail, then musk_ox, to judge the hopper's and the rage's segmented bars beside the Muster, the magazine and the shot count's pips), confirm, lock, touch (the first die lit as its tap waits out the double-tap window), swaphome (a waiting Swap sent home by a tap on nothing; RIFTGATE_SHOT_FRAME=6 catches it in flight), repick (a foe whose machine falls first, a
 # second arrow dashed to the machine it will strike; RIFTGATE_FOES=wolf:3), strike,
 # enemyturn (RIFTGATE_SHOT_FRAME=8 catches the acting foe lit), chips (every unit crowded with chips, the rows wrapping:
-# seven statuses on each machine, five on each foe), plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Burning and Scorched on the first machine with Primed beside them, its die running hotter), foeheat (Burning, Flak and Shocked on the first three front foes, heat's red-orange beside each violet intent), lure_all (a Lure over every foe dragged over a foe, the turned foes' arrows dashed; the content's first lure-all, the Shift Whistle, takes the first machine's first entry when no machine carries one), rounds, logfull, killed, acquire, menu, settings, quit, keywords (the keywords list, as the menu's KEYWORDS opens it), colours and colourpick (a debug build's COLOURS page, and with the red's picker open), and the feed's
+# seven statuses on each machine, five on each foe), plaque (a foe's named move on the other world's window; RIFTGATE_SHOT_FRAME=7), rage (the rage's roll again, its chip bursting; RIFTGATE_SHOT_FRAME=4), heat (a foe's Ablating and Scorched on the first machine with Primed beside them, its die running hotter), foeheat (Ablating, Flak and Shocked on the first three front foes, heat's red-orange beside each violet intent), lure_all (a Lure over every foe dragged over a foe, the turned foes' arrows dashed; the content's first lure-all, the Shift Whistle, takes the first machine's first entry when no machine carries one), rounds, logfull, killed, acquire, menu, settings, quit, keywords (the keywords list, as the menu's KEYWORDS opens it), colours and colourpick (a debug build's COLOURS page, and with the red's picker open), and the feed's
 # events feed_scanbox, feed_databox, feed_readout, feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal,
 # and groundtear (the corrupted side's tear as it fires), swallowed (the first machine swallowed: a ghost under a dashed edge),
 # undo (a spend taken: UNDO lit at the bottom row's right end), reboot (a machine past its
@@ -530,21 +528,19 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # every fifth beat loses one and lights it again, to judge the hit reactions running.
 # RIFTGATE_ABILITY_DEBUG=1 (any skirmish) gives every foe and machine that has no ability an
 # ability's chip (Enrage on a foe, Sealed on a machine), to judge the look beside the buffs and debuffs.
-# RIFTGATE_MINE_DEBUG=1 (any skirmish) opens the fight with a Mine of 3 (Burn 1, Shock) on every foe,
+# RIFTGATE_MINE_DEBUG=1 (any skirmish) opens the fight with a Mine of 3 (Ablate 1, Shock) on every foe,
 # so any kill shows its blast land round the slot, to judge the Mine's chip and blast running.
 # RIFTGATE_SOULS_DEBUG=12 (any skirmish) opens the fight with that many Souls on every machine that
 # banks them (the Ammit), so its flare, its Soul Siphon and their chips show in a battle's first fight.
 # RIFTGATE_REFIT=hotter=-1 (any run; any spec tools/balance.gd's --refit takes) lays a what-if over
 # the refit pass's model, which is content since 10 November: hotter or cooler weapons, the
-# basic guns' numbers, the rank and file's hit points, the foes' breach cut, a price on the
+# top basic's heat, the rank and file's hit points, a price on the
 # Barrier basic.
 # On the phone a debug build's SETTINGS → TRIALS (a page that scrolls) has HEAT (−2, −1, BUILT, +1: every weapon
-# one or two cooler than content prices it, or a point hotter; the what-if's hotter), BASIC GUNS (BUILT, +1: every basic gun
-# a point of damage up, the plain ones 3 where they are 2; the what-if's basics), TOP BASIC
+# one or two cooler than content prices it, or a point hotter; the what-if's hotter), TOP BASIC
 # (BUILT, +2, +4: more heat on the basic guns that deal more than the plainest; the what-if's
 # top), RANK AND FILE (BUILT, +1: a hit point more on tier one's rank and file, the massive foes
-# as built; the what-if's foehp), FOE BREACH (BUILT, CUT: every foe's breach cut, its blow
-# meeting the shield and the armour, the moves' texts unchanged; the what-if's breach=cut)
+# as built; the what-if's foehp)
 # and BARRIER BASIC (BUILT, NONE: the Barrier
 # basic on the stock dice, or the Armoured basic in its slot; the what-if's barrier=none): pick, close the app, open it, and start a new
 # battle or run, since a saved one keeps the numbers it was saved with. RIFTGATE_OVERHEAT=2 (any battle) sets the hull an overheat burns a point of heat past

@@ -15,8 +15,8 @@ extends RefCounted
 ## special never fires twice running (`last_special`). A blow may carry `swarm`: so much more
 ## per other foe of its type on the field (`kin`, kept by the skirmish), the ghoul's threat.
 ## Damage is base attack, plus its Empowered and its swarm, times the action's factor (damage_of);
-## strikes are separate blows; keywords are tags on the blow (breach: ignores the shield and the
-## armour, the whole blow to hull).
+## strikes are separate blows; keywords are tags on the blow (scorch: stacks of Scorched on the
+## machine it hits).
 
 var display_name: String = "foe"
 var content_id: String = ""      # id in content/foes.json, for the codex
@@ -38,7 +38,7 @@ var rank: int = -1               # 0 front, 1 back, -1 in reserve
 var column: int = -1
 var target: RefCounted = null    # Skirmish.MechState, set when intents are telegraphed
 var action: Dictionary = {}      # this round's chosen action
-var modifiers: Array = []        # statuses on this foe (burning, suppressed, numbed...): Effects.Modifier list
+var modifiers: Array = []        # statuses on this foe (ablating, suppressed, numbed...): Effects.Modifier list
 var recorder = null              # the round preview's copy alone (Skirmish.preview_round): an Array every grant and stack this foe gains is noted in (Effects._record); null in any fight that plays
 var recovering: bool = false     # lost its action to a stun this turn: its stun resist lands as Numbed at the round's end
 var die = null                   # foes have no die; the pipeline asks, so the field exists
@@ -89,8 +89,8 @@ const WHEN_TEXT := {
 }
 
 
-func burn_stacks() -> int:
-	return Effects.stacks_of(self, "burning")
+func ablate_stacks() -> int:
+	return Effects.stacks_of(self, "ablating")
 
 
 func is_suppressed() -> bool:
@@ -142,11 +142,11 @@ func armour_total() -> int:
 	return maxi(0, armour + Effects.foe_armour_bonus(self))
 
 
-## The armour a blow of this entry meets: none when it breaches (one breach, 22 October: a
-## breaching weapon ignores a foe's armour as a foe's breach ignores a machine's shield and
-## armour), else the armour standing. A spill is plain damage and meets it.
+## The armour a blow of this entry meets: none for a piece that ignores armour, a rule written
+## on it (Ryan, 15 November, where the Breach keyword stood), else the armour standing. A spill
+## is plain damage and meets it.
 func armour_for(f: Face) -> int:
-	return 0 if f != null and f.has(Face.Keyword.BREACH) else armour_total()
+	return 0 if f != null and f.ignores_armour else armour_total()
 
 
 func on_field() -> bool:
@@ -325,12 +325,12 @@ func strikes() -> int:
 ##           summon: `count` foes of `foe` join the pool at the round's end (Raise)
 ##           rally: every other foe on the field hits `value` harder next round (Kindle)
 ##           prime: Primed `value` on every other foe on the field, its next move's blows each
-##           leaving that much Burning on the machine they hit (28 October)
+##           leaving that much Ablating on the machine they hit (28 October)
 ##           ward_all: a Ward on every foe on the field, itself included: no mark the team lays
 ##           lands, Suppressed excepted, until the end of the player's next turn (28 October)
 ##   debuff  drain_rerolls: the team has `value` fewer rerolls next round (Roar)
-##           burn: its target gains `value` stacks of Burning, heat at the end of the player's
-##           turn (Stoke; direct heat retired 13 October)
+##           ablate: its target gains `value` stacks of Ablating, a point a stack off its shield
+##           and then its hull as the player's turn ends (Stoke; Burning as heat until 15 November)
 ##           disable: its target's showing entry is switched off through its next turn (Hush)
 ##           scorch_all: every machine gains `value` stacks of Scorched, its weapons and debuffs
 ##           running hotter (Eruption; nobody in particular)
@@ -345,7 +345,7 @@ func strikes() -> int:
 const ACTION_EFFECTS := {
 	"defend": ["brace", "regrow", "regrow_ally", "brace_all", "cleanse", "barrier", "regenerate"],
 	"buff": ["revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "merge", "golden"],
-	"debuff": ["drain_rerolls", "burn", "disable", "scorch_all", "corrupt_all", "silence", "dispel", "swallow"],
+	"debuff": ["drain_rerolls", "ablate", "disable", "scorch_all", "corrupt_all", "dispel", "swallow"],
 }
 
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn and no machine
@@ -375,9 +375,10 @@ func intent_on(u) -> bool:
 
 ## Tags an attack action may carry. Anything true or false about a blow is a tag here, never
 ## a field of its own.
-## breach: ignores the shield and the armour, the whole blow to hull. scorch: a stack of Scorched on the machine it hits, its
-## weapons and debuffs running hotter for the turn; burn: a stack of Burning, heat at the end of the
-## player's turn (Ryan, 13 October: Burn and Scorch, foes heat machines only through them).
+## scorch: a stack of Scorched on the machine it hits, its
+## weapons and debuffs running hotter for the turn (the foes' one tax on heat); ablate: a stack of
+## Ablating, a point a stack off the shield and then the hull, past armour and a Barrier, as the
+## player's turn ends (Ryan, 15 November: one rule on both sides, in Burning's place).
 ## disable: switches off the entry the target's die shows, through its next turn. corrupt:
 ## a stack of Corrupted on that entry, for the skirmish: it bites its owner every time it is
 ## spent. self_destruct: the blow spends the striker: it dies after it, whole, and never gets
@@ -388,15 +389,19 @@ func intent_on(u) -> bool:
 ## the foe takes it: its borrowed swing (a move with `power` "held") lands that weapon's number,
 ## and anything else it took is a fake, for 1 (Gilgamesh's, 30 October). drain: the striker
 ## regrows what the blow dealt, shield and hull (the Vampire Lord's, 30 October); it lays nothing
-## on the machine, so no Ward turns it away, and Burning on the striker is its race.
-## A silence and a purge are specials, never riders (28 October: a rider on a hitter's blow is a
-## tax with no decision), so neither is an attack keyword; the validator refuses them on a blow.
-const ATTACK_KEYWORDS := ["breach", "scorch", "burn", "disable", "corrupt", "crush", "self_destruct", "all", "steal", "drain"]
+## on the machine, so no Ward turns it away, and Ablating on the striker is its race. destroy:
+## any of the blow on the hull and the entry the machine's die shows is destroyed, blank until
+## the hangar mends it (Ryan, 15 November: "a boss-level rider, that destroys the visible face
+## if it damages hull at all. Only promoted form or superboss-level so we're not tuning the
+## economy around it"); a shield that takes the whole blow, a Barrier or a Ward keeps the entry.
+## A purge is a special, never a rider (28 October: a rider on a hitter's blow is a tax with no
+## decision), so it is no attack keyword; the validator refuses it on a blow.
+const ATTACK_KEYWORDS := ["scorch", "ablate", "disable", "corrupt", "crush", "self_destruct", "all", "steal", "drain", "destroy"]
 ## The specials that may never ride a blow (28 October).
-const SPECIALS_ONLY := ["silence", "dispel"]
+const SPECIALS_ONLY := ["dispel"]
 ## The riders that lay stacks, each a number on the move beside its keyword (24 October, as the
-## player's Burn N: Scorch 2 lays two stacks a blow).
-const NUMBERED_RIDERS := ["scorch", "burn", "corrupt", "crush"]
+## player's Ablate N: Scorch 2 lays two stacks a blow).
+const NUMBERED_RIDERS := ["scorch", "ablate", "corrupt", "crush"]
 
 
 func has_keyword(a: Dictionary, k: String) -> bool:
@@ -407,10 +412,6 @@ func has_keyword(a: Dictionary, k: String) -> bool:
 ## built in a test; content always says it).
 func rider(a: Dictionary, k: String) -> int:
 	return maxi(1, int(a.get(k, 1)))
-
-
-func breaches() -> bool:
-	return has_keyword(action, "breach")
 
 
 ## Is this round's move a blow at every machine (`all`)?
@@ -435,5 +436,5 @@ func text_of(a: Dictionary) -> String:
 func threat() -> int:
 	var best := 0
 	for a in actions:
-		best = maxi(best, damage_of(a) * maxi(1, int(a.get("strikes", 1))) + (1 if has_keyword(a, "breach") else 0))
+		best = maxi(best, damage_of(a) * maxi(1, int(a.get("strikes", 1))))
 	return best

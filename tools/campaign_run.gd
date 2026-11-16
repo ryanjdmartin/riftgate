@@ -8,8 +8,7 @@ extends SceneTree
 ## --shape KIND (every battle on that map shape, a key of BattleMap.KINDS; by default each
 ## battle's seed draws one), --out path (docs/campaign_run.md), --trace SEED (print one run
 ## battle by battle), --refit SPEC (the refit pass's what-ifs laid over the content, sim/refit.gd,
-## as tools/balance.gd takes it: "regen=half|N", "cooling=N", "hotter=N", "barrier=cooldownN|heatN|none"), --injury
-## on|N (the injury rule on for the runs, off in the game since 9 November). The squad-as-one rule
+## as tools/balance.gd takes it: "regen=half|N", "cooling=N", "hotter=N", "barrier=cooldownN|heatN|none"). The squad-as-one rule
 ## (--solo before it) and the turtle and detaching
 ## personas went with the long wall brief: the map is the defence rule (BattleBot).
 ##
@@ -59,10 +58,6 @@ func _init() -> void:
 				refit_spec = v
 			"--guard":
 				guard_weight = clampf(float(v), 0.0, 1.0)
-			"--injury":
-				Skirmish.injuries = v != "off"
-				if v.is_valid_int():
-					Skirmish.injury_pct = clampi(int(v), 1, 100)
 		i += 2
 	if not refit_spec.is_empty():
 		# The refit pass's what-if (sim/refit.gd) over the content every run of this process deals
@@ -224,9 +219,10 @@ func report() -> String:
 		("every battle on the %s map" % shape) if not shape.is_empty() else "each battle's map shape drawn by its seed",
 		Campaign.START_MACHINES, ", ".join(fields.keys())])
 	L.append("")
-	L.append("The injury rule: %s.%s" % ["on, at %d%% of maximum hull" % Skirmish.injury_pct if Skirmish.injuries else "off, as the game plays it",
-		"" if refit_notes.is_empty() else " The refit what-if (`--refit %s`): %s." % [refit_spec, "; ".join(refit_notes)]]
-		+ ("" if guard_weight == 1.0 else " The fight bot's habit (`--guard`): a block at %d%% of its worth, the aggressor, which never rerolls for one." % int(round(guard_weight * 100.0))))
+	var asides := ("" if refit_notes.is_empty() else "The refit what-if (`--refit %s`): %s." % [refit_spec, "; ".join(refit_notes)]) \
+		+ ("" if guard_weight == 1.0 else " The fight bot's habit (`--guard`): a block at %d%% of its worth, the aggressor, which never rerolls for one." % int(round(guard_weight * 100.0)))
+	if not asides.strip_edges().is_empty():
+		L.append(asides.strip_edges())
 	L.append("")
 	L.append("Every number the campaign uses is a placeholder (`sim/campaign.gd`); this measures them against a plain player, it does not tune them. Nothing brings anything in yet (offers, research and building are not built), so every run is its starting team (three of its tender at random) and what it loses. The player defends the front nearest to falling with every ready machine, rushes a wreck with Favour only when nobody is ready, and puts all its salvage into the capital's gate; on the map it plays the defence rule (the long wall brief, section 5): a hunter's catch first, then every machine onto the pack it can stand beside that reaches the wall soonest, ties by the larger threat rating and then the nearer, a machine with no pack in reach taking a cache its move reaches (the nearest, the higher kind on a tie) and the rest walking toward the pack that reaches the wall soonest, never the sealed boss, every fight fought out. Read the bands.")
 	L.append("")

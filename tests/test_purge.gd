@@ -65,7 +65,7 @@ func test_every_status_says_whether_a_purge_reaches_it() -> void:
 			assert_eq(kind, "ability", "%s: an ability, never a buff" % id)
 		if tags.has("store"):
 			assert_eq(kind, "store", "%s: a store, never a buff" % id)
-	for id in ["burning", "burning_mech", "scorched", "crushed", "silenced", "swallowed", "shocked", "exposure", "flakked", "cryoed", "suppressed", "webbed"]:
+	for id in ["ablating", "ablating_mech", "scorched", "crushed", "swallowed", "shocked", "exposure", "flakked", "cryoed", "suppressed", "webbed"]:
 		assert_eq(Effects.status_kind(id), "debuff", "%s is a debuff" % id)
 	assert_eq([Effects.status_kind("disabled_0"), Effects.status_kind("corrupted_2")], ["debuff", "debuff"], "an entry's Disabled and Corrupted are debuffs")
 	assert_eq(Effects.status_kind("quick_turned"), "", "a marker the engine keeps is none of them")

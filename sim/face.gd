@@ -17,12 +17,15 @@ enum Reach { NONE, DIRECT, INDIRECT, EVERY_FOE }   # Every Foe (4 November), bel
 ## Web (18 October, the funnel-web's Web Bomb): the foe hit is Webbed, and after its action the
 ## web bursts into a Suppress on it and the next foe to act beside it (Skirmish._web_burst).
 ## Flak (Ryan's go, 19 October; built 21 October): Wainwright & Sutler's on-hit, a numbered
-## keyword like Burn and Cryo; each foe hit gains that many stacks of Flak.
+## keyword like Ablate and Cryo; each foe hit gains that many stacks of Flak.
 ## Swap (the Dingo's Combat Translocator, Ryan's go of 19 October; built 21 October): the spend
 ## takes a second target, another foe or an empty slot, and the two trade places.
 ## Area by shape, numbered (Ryan, 28 October; the half retired): Spread N (id `cleave`) the
-## foes beside the target in its rank, Penetrate N the other rank of its column, Splash N the
-## two together (the plus round it), each foe past the target taking N as its blow's number.
+## foes beside the target in its rank, Penetrate N the other rank of its column, each foe past
+## the target taking N as its blow's number. A piece may carry both (the plus round its target);
+## Splash, the two at one number under one word, was cut on 15 November (Ryan: "It might be a
+## more interesting game with only the other area shapes, with a few select pieces carrying both
+## spread and penetrate together").
 ## Chain N (Ryan, 28 October; the kill and repeat and the ping retired; its random charge of
 ## 29 October retired 3 November for the Charged primer): Shock's other payoff, every other
 ## Shocked foe on the field taking N as its blow's number, wherever it stands and whatever the
@@ -35,7 +38,7 @@ enum Reach { NONE, DIRECT, INDIRECT, EVERY_FOE }   # Every Foe (4 November), bel
 ## team, its own machine among them, or every machine but its own, the Mooring Screens'; Ryan:
 ## "the difference is whether the center one is lit or not, its two modes"). `reaches_all` reads
 ## any of them.
-enum Keyword { NONE, CLEAVE, PENETRATE, BURN, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SPILLOVER, OVERSHIELD, SHOCK, WEB, CRYO, FLAK, SWAP, EXPOSE, BREACH, SPLASH, DISPEL, INSTANT, SAP }
+enum Keyword { NONE, CLEAVE, PENETRATE, ABLATE, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SPILLOVER, SHOCK, WEB, CRYO, FLAK, SWAP, EXPOSE, DISPEL, INSTANT, SAP }
 ## Whom a component may be spent on (Ryan, 26 September): an attack (a weapon or a debuff)
 ## targets foes; a shield, a vent or a buff targets self and allies by default, and content may
 ## narrow one to self only or allies only, so the design space stays open; Every Ally and Every
@@ -49,35 +52,35 @@ const REACH_NAMES := {
 	Reach.NONE: "none", Reach.DIRECT: "direct", Reach.INDIRECT: "indirect", Reach.EVERY_FOE: "every_foe",
 }
 const KEYWORD_NAMES := {
-	Keyword.NONE: "", Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate", Keyword.BURN: "burn",
+	Keyword.NONE: "", Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate", Keyword.ABLATE: "ablate",
 	Keyword.SUPPRESS: "suppress",
 	Keyword.CHAIN: "chain", Keyword.RAPID: "rapid", Keyword.CLEANSE: "cleanse",
 	Keyword.LURE: "lure", Keyword.DISRUPT: "disrupt",
-	Keyword.SPILLOVER: "spillover", Keyword.OVERSHIELD: "overshield", Keyword.SHOCK: "shock",
+	Keyword.SPILLOVER: "spillover", Keyword.SHOCK: "shock",
 	Keyword.WEB: "web", Keyword.CRYO: "cryo", Keyword.FLAK: "flak", Keyword.SWAP: "swap",
-	Keyword.EXPOSE: "expose", Keyword.BREACH: "breach", Keyword.SPLASH: "splash",
+	Keyword.EXPOSE: "expose",
 	Keyword.DISPEL: "dispel", Keyword.INSTANT: "instant", Keyword.SAP: "sap",
 }
 ## What the player reads where it differs from the content id (the vocabulary's name).
-## Purge (28 October) is one id on both sides, dispel, as breach is.
+## Purge (28 October) is one id on both sides, dispel.
 const KEYWORD_LABELS := { Keyword.CLEAVE: "spread", Keyword.DISPEL: "purge" }
 ## The status each foe hit gains from a keyword that lays one: the die's hold lists such a
 ## keyword as what the spend applies on hit, after its heat (Ryan, 25 October).
 const KEYWORD_STATUS := {
-	Keyword.BURN: "burning", Keyword.CRYO: "cryoed", Keyword.FLAK: "flakked", Keyword.SHOCK: "shocked",
+	Keyword.ABLATE: "ablating", Keyword.CRYO: "cryoed", Keyword.FLAK: "flakked", Keyword.SHOCK: "shocked",
 	Keyword.SUPPRESS: "suppressed", Keyword.WEB: "webbed", Keyword.EXPOSE: "exposure", Keyword.SAP: "sapped",
 }
 ## The keywords that carry a number, each in the field of its name on the entry: the stacks a
-## rider lays (Burn, Cryo, Flak), the blow an area keyword deals each foe past the target
-## (Spread, Penetrate, Splash; Ryan, 28 October) or the blow Chain deals each conductor (Chain,
+## rider lays (Ablate, Cryo, Flak), the blow an area keyword deals each foe past the target
+## (Spread, Penetrate; Ryan, 28 October) or the blow Chain deals each conductor (Chain,
 ## 28 October).
 const NUMBER_FIELDS := {
-	Keyword.BURN: "burn", Keyword.CRYO: "cryo", Keyword.FLAK: "flak",
-	Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate", Keyword.SPLASH: "splash",
+	Keyword.ABLATE: "ablate", Keyword.CRYO: "cryo", Keyword.FLAK: "flak",
+	Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate",
 	Keyword.CHAIN: "chain", Keyword.DISPEL: "dispel", Keyword.SAP: "sap",
 }
-## The area keywords (Ryan, 11 and 12 October: three shapes, three keywords; numbered 28 October).
-const AREA_KEYWORDS := [Keyword.CLEAVE, Keyword.PENETRATE, Keyword.SPLASH]
+## The area keywords (Ryan, 11 and 12 October; numbered 28 October; two since Splash's cut).
+const AREA_KEYWORDS := [Keyword.CLEAVE, Keyword.PENETRATE]
 const TARGET_NAMES := {
 	Target.SELF_ALLY: "self_ally", Target.SELF: "self", Target.ALLY: "ally", Target.FOE: "foe", Target.EVERY_ALLY: "every_ally", Target.EVERY_OTHER_ALLY: "every_other_ally",
 }
@@ -87,11 +90,7 @@ const TARGET_NAMES := {
 ## entry aimed at a foe, a weapon or equipment, whatever else it does.
 ## Shock (9 October) is an attack keyword too: every foe the blows reach and leave alive is
 ## Shocked.
-const SUPPORT_KEYWORDS := [Keyword.CLEANSE, Keyword.OVERSHIELD]
-## Of those, the ones only a shield may carry: overshield (5 October, the Puffin's Prow
-## Projector first, rare) lets a shield pass its target's maximum, and the excess fades at the
-## round's end. A vent has nothing to pass.
-const SHIELD_ONLY_KEYWORDS := [Keyword.OVERSHIELD]
+const SUPPORT_KEYWORDS := [Keyword.CLEANSE]
 ## Keywords about the spend itself, not its target, so any kind of component may carry
 ## them: rapid (on a vent or a shield too since 9 October, the Wake Diffuser first) gives the
 ## machine its turn back whatever the component did, and instant (Ryan, 12 November) gives it
@@ -119,24 +118,24 @@ var keywords: Array[int] = []
 var printed: Array[int] = []  # of those, the ones a passive grants written out (the Overrun Gearing's spill): drawn as the star, never a keyword chip (the stock pass, 22 October)
 var heat: int = 0
 var strikes: int = 1          # blows per use: a rapid-fire weapon lands many small hits (each rolls and procs on its own)
-var burn: int = 0             # an attack with Burn: the stacks of Burning each blow leaves (Ryan, 18 October: a numbered keyword, never read off the damage)
-var cryo: int = 0             # an attack with Cryo: the stacks of Cryo each foe it reaches gains (the Cryo Flinger, 20 October; a numbered keyword like Burn)
+var ablate: int = 0             # an attack with Ablate: the stacks of Ablating each blow leaves (Ryan, 18 October: a numbered keyword, never read off the damage)
+var cryo: int = 0             # an attack with Cryo: the stacks of Cryo each foe it reaches gains (the Cryo Flinger, 20 October; a numbered keyword like Ablate)
 var sap: int = 0              # an attack with Sap: the stacks of Sapped each foe hit gains (the Baboon's Redshift Emitter, 11 November; numbered like Flak)
 var disrupts_attackers: bool = false   # a buff: every foe aiming at the machine it lands on is Disrupted (the Baboon's Retrocausal Shroud, 11 November)
-var flak: int = 0             # an attack with Flak: the stacks of Flak each foe hit gains (the Flakshot Repeater, 21 October; numbered like Burn)
+var flak: int = 0             # an attack with Flak: the stacks of Flak each foe hit gains (the Flakshot Repeater, 21 October; numbered like Ablate)
 var cleave: int = 0           # an attack with Spread: the number each foe beside its target in its rank takes as its blow's (Ryan, 28 October: Spread N, the half retired)
 var penetrate: int = 0        # an attack with Penetrate: the number the other rank of its target's column takes (Penetrate N)
-var splash: int = 0           # an attack with Splash: the number each foe of the plus round its target takes, the row's and the column's (Splash N)
 var chain: int = 0            # an attack with Chain: the number every other Shocked foe on the field takes as its blow's (Chain N, 28 October)
 var dispel: int = 0           # an attack or equipment with Purge: the stacks every buff of each foe it reaches loses (Purge N, 2 November)
-var shield_cost: int = 0      # a cost (Ryan, 26 October): the shield a spend takes from its owner first, overshield included; short of it the entry cannot be played
+var shield_cost: int = 0      # a cost (Ryan, 26 October): the shield a spend takes from its owner first; short of it the entry cannot be played
 var short: bool = false       # shown only: its machine cannot pay the entry's price now, a shield cost or the count it spends (Skirmish.shown_face), struck through on the die like a dry gun
 var volatile: int = 0         # a cost (Ryan, 26 October, a keyword with a chip until then): the hull a spend bites its owner, past shield and armour, before the component acts; it may wreck it (a numbered keyword since the stock pass's engine, 22 October; a constant of 10 before)
 var gates: Dictionary = {}    # an attack: keyword name -> the condition it lands under, read against each foe at the spend before its own riders (the Suppression Battery's Suppress on a foe carrying Flak; the stock pass's engine, 22 October)
 var holds: String = ""        # an attack: the status its target keeps through this round's end, its halving skipped (the Hollow-point Harpoon's pin on Flak)
-var consumes: String = ""     # an attack: the status it consumes on its target, every stack, a point more a stack before the multiplies (the Backdraft Charge's Burning, 22 October)...
+var consumes: String = ""     # an attack: the status it consumes on its target, every stack, a point more a stack before the multiplies (the Backdraft Charge's Ablating, 22 October)...
 var per_consumed: int = 1     # ...the damage a stack consumed adds
-var self_burn: int = 0        # an attack: spending it sets its own machine Burning, this many stacks (the Stoker's slow fuel by decision, the stock pass's landing, 22 October)
+var ignores_armour: bool = false   # an attack: its blows take nothing off for a foe's armour, a rule written on the piece (Ryan, 15 November: "Ignores armour can be an explicitly written out property", where the Breach keyword stood on our side)
+var self_ablate: int = 0        # an attack: spending it sets its own machine Ablating, this many stacks (the Stoker's, the stock pass's landing, 22 October; a price in its own shield since Ablate, 15 November)
 var component: String = ""    # the component this entry is (content id); "" for an empty hardpoint
 var empty: bool = false       # an empty hardpoint: blank, and nothing was ever there to break
 var fixed: bool = false       # built into the chassis (no hardpoint); false means this entry is a hardpoint
@@ -162,10 +161,11 @@ var fires_hopper: int = 0     # an attack: the most loads one shot fires from th
 var power_per_load: int = 0   # ...each adding this to the blow (the Bullion Fragmenter, 11 October)
 var braces: int = 0           # any entry: spending it Braces its owner, this many stacks, until the round's end (the Breaching Plow, 12 October)
 var cooldown: int = -1        # any entry: the rounds it sits out once spent, after the round of the spend (Ryan, 14 October; counted so since 12 November: "change the count so 1 is how I intended"), printed on it; -1 or 0, none (Rapid's own switch-off is the keyword's, never printed)
+var team_rerolls: int = 0     # equipment: spending it gives the team this many rerolls this round, at once and past the round's two (the Reveille Horn, the Immelmann Booster; Ryan, 15 November, in the place of the Rallied buff: "This doesn't need to be a temporary buff or a keyword")
 var turns_die: bool = false   # a Rapid buff on itself that turns a folded die to its other battery, its free roll landing there (the Clydesdale's Changeover, Ryan, 11 November)
 ## Reaches every foe in the fight (an attack: the Shift Whistle's lure-all), or the whole team or every machine but its own (a shield or a buff: the
 ## Swallowtail's Mooring Screens the latter): its targeting mode, Every Foe, Every Ally or Every
-## Other Ally (4 November), so a Silence, which mutes keywords, leaves it whole. Setting it on
+## Other Ally (4 November). Setting it on
 ## gives the entry the mode that reaches all it may be spent on (any foe; itself and its allies the
 ## whole team, its allies every other ally); off, the one target it may be dropped on.
 var reaches_all: bool:
@@ -357,13 +357,12 @@ static func from_dict(d: Dictionary) -> Face:
 		f.per_missing = maxi(1, int(d.get("per_missing", 20)))
 		f.finisher = maxi(0, int(d.get("finisher", 0)))
 		f.fills_hopper = maxi(0, int(d.get("fills_hopper", 0)))
-		f.burn = maxi(0, int(d.get("burn", 0)))   # add_keyword gives a Burn entry one stack when it says none
+		f.ablate = maxi(0, int(d.get("ablate", 0)))   # add_keyword gives an Ablate entry one stack when it says none
 		f.cryo = maxi(0, int(d.get("cryo", 0)))
 		f.flak = maxi(0, int(d.get("flak", 0)))
 		f.sap = maxi(0, int(d.get("sap", 0)))
 		f.cleave = maxi(0, int(d.get("cleave", 0)))   # add_keyword gives an area keyword a number of one when it says none
 		f.penetrate = maxi(0, int(d.get("penetrate", 0)))
-		f.splash = maxi(0, int(d.get("splash", 0)))
 		f.chain = maxi(0, int(d.get("chain", 0)))   # add_keyword gives Chain a number of one when it says none
 		f.dispel = maxi(0, int(d.get("dispel", 0)))   # Purge N (2 November); one when it says none
 		var g = d.get("gates", {})
@@ -371,7 +370,8 @@ static func from_dict(d: Dictionary) -> Face:
 		f.consumes = str(d.get("consumes", ""))
 		f.holds = str(d.get("holds", ""))
 		f.per_consumed = maxi(1, int(d.get("per_consumed", 1)))
-		f.self_burn = maxi(0, int(d.get("self_burn", 0)))
+		f.self_ablate = maxi(0, int(d.get("self_ablate", 0)))
+		f.ignores_armour = d.get("ignores_armour", false) is bool and d.get("ignores_armour", false)
 		f.fires_hopper = maxi(0, int(d.get("fires_hopper", 0)))
 		f.power_per_load = maxi(0, int(d.get("power_per_load", 0))) if f.fires_hopper > 0 else 0
 	f.braces = maxi(0, int(d.get("braces", 0)))
@@ -379,6 +379,7 @@ static func from_dict(d: Dictionary) -> Face:
 	f.shield_cost = maxi(0, int(d.get("shield_cost", 0)))
 	f.cooldown = maxi(0, int(d["cooldown"])) if d.has("cooldown") else -1
 	f.turns_die = bool(d.get("turns_die", false)) and f.kind == Kind.BUFF
+	f.team_rerolls = maxi(0, int(d.get("team_rerolls", 0))) if f.kind == Kind.BUFF else 0
 	f.shields = maxi(0, int(d.get("shields", 0))) if f.kind == Kind.VENT else 0
 	f.gathers_mines = bool(d.get("gathers_mines", false)) and f.kind == Kind.ATTACK
 	f.detonates = bool(d.get("detonates", false)) and f.kind == Kind.ATTACK
@@ -441,8 +442,8 @@ func to_dict() -> Dictionary:
 		d["per_missing"] = per_missing
 	if finisher > 1:
 		d["finisher"] = finisher
-	if burn > 0 and has(Keyword.BURN):
-		d["burn"] = burn
+	if ablate > 0 and has(Keyword.ABLATE):
+		d["ablate"] = ablate
 	if cryo > 0 and has(Keyword.CRYO):
 		d["cryo"] = cryo
 	if flak > 0 and has(Keyword.FLAK):
@@ -470,8 +471,10 @@ func to_dict() -> Dictionary:
 	if not consumes.is_empty():
 		d["consumes"] = consumes
 		d["per_consumed"] = per_consumed
-	if self_burn > 0:
-		d["self_burn"] = self_burn
+	if self_ablate > 0:
+		d["self_ablate"] = self_ablate
+	if ignores_armour:
+		d["ignores_armour"] = true
 	if fills_hopper > 0:
 		d["fills_hopper"] = fills_hopper
 	if fires_hopper > 0:
@@ -483,6 +486,8 @@ func to_dict() -> Dictionary:
 		d["cooldown"] = cooldown
 	if turns_die:
 		d["turns_die"] = true
+	if team_rerolls > 0:
+		d["team_rerolls"] = team_rerolls
 	if shields > 0:
 		d["shields"] = shields
 	if gathers_mines:
@@ -523,8 +528,8 @@ func to_dict() -> Dictionary:
 func add_keyword(kw: int) -> void:
 	if kw > Keyword.NONE and not keywords.has(kw):
 		keywords.append(kw)
-	if kw == Keyword.BURN and burn <= 0:
-		burn = 1   # a Burn entry says its stacks; one when nothing says (a synthetic entry, an old save)
+	if kw == Keyword.ABLATE and ablate <= 0:
+		ablate = 1   # an Ablate entry says its stacks; one when nothing says (a synthetic entry, an old save)
 	if kw == Keyword.CRYO and cryo <= 0:
 		cryo = 1
 	if kw == Keyword.FLAK and flak <= 0:
@@ -541,7 +546,7 @@ func has(kw: int) -> bool:
 	return keywords.has(kw)
 
 
-## The number a numbered keyword carries here (Burn's stacks, Spread's blow), 0 for a keyword
+## The number a numbered keyword carries here (Ablate's stacks, Spread's blow), 0 for a keyword
 ## it does not carry or one with no number.
 func number_of(kw: int) -> int:
 	var field: String = NUMBER_FIELDS.get(kw, "")
@@ -556,29 +561,27 @@ func set_number(kw: int, n: int) -> void:
 
 
 ## Area by shape (Ryan, 11 and 12 October; numbered 28 October): the row, the foes beside the
-## target in its rank, is Spread's and Splash's; the column, the other rank of its column,
-## Penetrate's and Splash's.
+## target in its rank, is Spread's; the column, the other rank of its column, Penetrate's.
 func reaches_row() -> bool:
-	return has(Keyword.CLEAVE) or has(Keyword.SPLASH)
+	return has(Keyword.CLEAVE)
 
 
 func reaches_column() -> bool:
-	return has(Keyword.PENETRATE) or has(Keyword.SPLASH)
+	return has(Keyword.PENETRATE)
 
 
 func has_area() -> bool:
 	return reaches_row() or reaches_column()
 
 
-## The number a foe the row reaches takes as its blow's: Spread's or Splash's, the higher when
-## both are there (a grant beside a printed one).
+## The number a foe the row reaches takes as its blow's: Spread's.
 func row_number() -> int:
-	return maxi(number_of(Keyword.CLEAVE), number_of(Keyword.SPLASH))
+	return number_of(Keyword.CLEAVE)
 
 
-## The number the column's foe takes: Penetrate's or Splash's, the higher when both are there.
+## The number the column's foe takes: Penetrate's.
 func column_number() -> int:
-	return maxi(number_of(Keyword.PENETRATE), number_of(Keyword.SPLASH))
+	return number_of(Keyword.PENETRATE)
 
 
 ## The rounds this entry sits out once spent, after the round of the spend (the cooldown row:
@@ -602,8 +605,8 @@ func acts_again() -> bool:
 ## prints with its shells (Ryan, 2 November), and a shield's cooling the number under its steam
 ## (3 November), so none of them is.
 func has_unique_rule() -> bool:
-	return vents_all or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_burn > 0 or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not printed.is_empty() \
-		or turns_die or gathers_mines or detonates \
+	return vents_all or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_ablate > 0 or ignores_armour or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not printed.is_empty() \
+		or turns_die or team_rerolls > 0 or gathers_mines or detonates \
 		or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine \
 		or regen_shield > 0 or action_price > 0 or rolls_target or kill_rerolls > 0 \
@@ -685,7 +688,7 @@ func finishes(target, hp: int = -1) -> bool:
 
 
 ## What this blow adds against `target` for the stacks it consumes (the Backdraft Charge's
-## Burning, 22 October): a point a stack, per_consumed each, read as the die is spent and
+## Ablating, 22 October): a point a stack, per_consumed each, read as the die is spent and
 ## added before the multiplies; nothing without a target or a status to eat.
 func consume_bonus(target) -> int:
 	if consumes.is_empty() or target == null:
@@ -720,14 +723,13 @@ func duplicate_face() -> Face:
 	f.spends = spends
 	f.spends_up_to = spends_up_to
 	f.holds_all = holds_all
-	f.burn = burn
+	f.ablate = ablate
 	f.cryo = cryo
 	f.flak = flak
 	f.sap = sap
 	f.disrupts_attackers = disrupts_attackers
 	f.cleave = cleave
 	f.penetrate = penetrate
-	f.splash = splash
 	f.chain = chain
 	f.dispel = dispel
 	f.volatile = volatile
@@ -737,13 +739,15 @@ func duplicate_face() -> Face:
 	f.consumes = consumes
 	f.holds = holds
 	f.per_consumed = per_consumed
-	f.self_burn = self_burn
+	f.self_ablate = self_ablate
+	f.ignores_armour = ignores_armour
 	f.fills_hopper = fills_hopper
 	f.fires_hopper = fires_hopper
 	f.power_per_load = power_per_load
 	f.braces = braces
 	f.cooldown = cooldown
 	f.turns_die = turns_die
+	f.team_rerolls = team_rerolls
 	f.shields = shields
 	f.gathers_mines = gathers_mines
 	f.detonates = detonates
@@ -795,6 +799,7 @@ func charged_form() -> Face:
 	if str(charged.get("act_again", "")) == "ally":
 		c.kind = Kind.BUFF
 		c.buff_status = ""
+		c.team_rerolls = 0   # the charged form is the act-again alone
 		c.act_again = true
 		c.targets = Target.ALLY
 	if str(charged.get("shield", "")) == "full":
@@ -856,8 +861,10 @@ func rule_phrases() -> Array[String]:
 			out.append("consumes %s, +%d a stack" % [str(Effects.STATUS.get(consumes, {}).get("name", consumes)), per_consumed])
 		if not holds.is_empty():
 			out.append("its target's %s does not decay this round" % str(Effects.STATUS.get(holds, {}).get("name", holds)))
-		if self_burn > 0:
-			out.append("Burning %d on itself" % self_burn)
+		if ignores_armour:
+			out.append("ignores armour")
+		if self_ablate > 0:
+			out.append("Ablating %d on itself" % self_ablate)
 		if fills_hopper > 0:
 			out.append("fills the hopper" + ("" if fills_hopper == 1 else " ×%d" % fills_hopper))
 		if fires_hopper > 0:
@@ -880,6 +887,8 @@ func rule_phrases() -> Array[String]:
 		if regen_shield > 0 and regen_rounds > 0:
 			out.append(_regen_text())
 	else:
+		if team_rerolls > 0:
+			out.append(_team_rerolls_text())
 		if action_price > 0:
 			out.append(_action_text())
 		if rolls_target:
@@ -906,6 +915,10 @@ const DISRUPTS_TEXT := "disrupts the foes aiming at it"
 ## What an entry lays on the foe in front of the machine it lands on, as its text says it.
 func front_text() -> String:
 	return "the foe in front of it gains %s ×%d" % [str(Effects.STATUS.get(front_status, {}).get("name", front_status)), front_stacks]
+
+
+func _team_rerolls_text() -> String:
+	return "the team gains %s" % ("a reroll" if team_rerolls == 1 else "%d rerolls" % team_rerolls)
 
 
 func _kill_rerolls_text() -> String:
@@ -963,6 +976,8 @@ func describe() -> String:
 				s = "an ally whose die is spent acts again"
 			elif kind == Kind.BUFF and turns_die:
 				s = "turns its die to its other battery"   # the Changeover's: a buff that grants nothing, its turn its whole effect
+			elif kind == Kind.BUFF and team_rerolls > 0:
+				s = _team_rerolls_text()   # the Horn's and the Booster's: no status, the reroll its whole effect
 			elif kind == Kind.BUFF and not spends.is_empty():
 				s = _spends_text()   # the Soul Siphon's: what it grants is what it consumes, said once
 			elif kind == Kind.BUFF and buff_status.is_empty():
@@ -1016,8 +1031,8 @@ func describe() -> String:
 				if printed.has(k):
 					continue   # a grant written out says itself in its passive's line (the star), never as a keyword
 				s += " " + keyword_label(k)
-				if k == Keyword.BURN:
-					s += " %d" % burn   # a numbered keyword: the stacks each blow leaves
+				if k == Keyword.ABLATE:
+					s += " %d" % ablate   # a numbered keyword: the stacks each blow leaves
 				if k == Keyword.CRYO:
 					s += " %d" % cryo
 				if k == Keyword.FLAK:
@@ -1040,8 +1055,10 @@ func describe() -> String:
 				s += " consumes %s, +%d a stack" % [str(Effects.STATUS.get(consumes, {}).get("name", consumes)), per_consumed]
 			if not holds.is_empty():
 				s += " its target's %s does not decay this round" % str(Effects.STATUS.get(holds, {}).get("name", holds))
-			if self_burn > 0:
-				s += " Burning %d on itself" % self_burn   # the Stoker's: its own machine set burning as it fires
+			if ignores_armour:
+				s += " ignores armour"
+			if self_ablate > 0:
+				s += " Ablating %d on itself" % self_ablate   # the Stoker's: its own machine set ablating as it fires
 			if fills_hopper > 0:
 				s += " fills the hopper" + ("" if fills_hopper == 1 else " ×%d" % fills_hopper)
 			if fires_hopper > 0:

@@ -122,7 +122,7 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 2,
+    "power": 3,
     "keywords": [],
     "heat": 4
    },
@@ -175,7 +175,7 @@
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 2,
+    "power": 3,
     "keywords": [],
     "heat": 4
    },
@@ -224,10 +224,12 @@
     "reach": "indirect",
     "power": 4,
     "keywords": [
-     "splash"
+     "cleave",
+     "penetrate"
     ],
     "heat": 4,
-    "splash": 1
+    "cleave": 1,
+    "penetrate": 1
    },
    "passive": null,
    "tags": [
@@ -252,9 +254,9 @@
     "reach": "indirect",
     "power": 2,
     "keywords": [
-     "burn"
+     "ablate"
     ],
-    "burn": 2,
+    "ablate": 2,
     "heat": 4
    },
    "passive": null,
@@ -307,15 +309,14 @@
    "design": {
     "stage": "draft",
     "fantasy": "Kestrel removed the safety interlock and called it a feature.",
-    "niche": ""
+    "niche": "Ignores armour, a rule written on the piece since Breach was cut on our side (15 November). The one tier-one find that does, so its tier is the component pass's (Ryan: \"the player armour piercing pieces should be higher tier, obviously, or gated, I think. Else they become obvious best faces for certain domains\"; \"Railgun might need to move up a tier regardless just because there won't be room for an even higher damage, even hotter gun\")."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
     "power": 8,
-    "keywords": [
-     "breach"
-    ],
+    "keywords": [],
+    "ignores_armour": true,
     "heat": 11
    },
    "passive": null,
@@ -528,9 +529,9 @@
     "reach": "indirect",
     "power": 3,
     "keywords": [
-     "burn"
+     "ablate"
     ],
-    "burn": 2,
+    "ablate": 2,
     "heat": 6
    },
    "passive": null,
@@ -658,7 +659,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "The Wild Boar's front end: a ram and a plow blade that go through a wall or a rank of fodder at the same speed.",
-    "niche": "The Boar's locked self-defence since 11 November (Ryan: \"Breaching plow could easily earn its place by simply being a self-defense that does something else\"; \"Cleanse self and gain Barrier, cooldown 1\"): it clears the Boar's debuffs and puts a Barrier up, and the passive turns that Barrier into Breach on the next gun it fires. Until then a Direct 4 Spread 2 cleave that braced 2."
+    "niche": "The Boar's locked self-defence since 11 November (Ryan: \"Breaching plow could easily earn its place by simply being a self-defense that does something else\"; \"Cleanse self and gain Barrier, cooldown 1\"): it clears the Boar's debuffs and puts a Barrier up, and the passive turns that Barrier into Breach on the next gun it fires. Until then a Direct 4 Spread 2 cleave that braced 2. Since 15 November that gun ignores armour, a written rule where Breach stood."
    },
    "face": {
     "kind": "buff",
@@ -849,9 +850,9 @@
     "reach": "direct",
     "power": 5,
     "keywords": [
-     "burn"
+     "ablate"
     ],
-    "burn": 3,
+    "ablate": 3,
     "heat": 7
    },
    "passive": null,
@@ -871,16 +872,15 @@
    "design": {
     "stage": "draft",
     "fantasy": "Four blades on four arms, cutting as one. What they cut loose from the fallen the machine takes in; the Arsenal's manual calls it attunement.",
-    "niche": "The Ammit's locked melee, one entry since its rework (Ryan, 12 November: \"The 4 claws are combined into one weapon that deals 1x4 instead, with Breach. They no longer gain Empowered on kill\"): four strikes of 1 at one foe, past its armour, so every stack of Empowered counts four times on it. Four copies of a flat 3 that Empowered a kill until then."
+    "niche": "The Ammit's locked melee, one entry since its rework (Ryan, 12 November: \"The 4 claws are combined into one weapon that deals 1x4 instead, with Breach. They no longer gain Empowered on kill\"): four strikes of 1 at one foe, past its armour, so every stack of Empowered counts four times on it. Four copies of a flat 3 that Empowered a kill until then. Its Breach is the written rule, ignores armour, since the keyword was cut on our side (15 November)."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
     "power": 1,
     "strikes": 4,
-    "keywords": [
-     "breach"
-    ],
+    "keywords": [],
+    "ignores_armour": true,
     "heat": 4
    },
    "passive": null,
@@ -929,7 +929,7 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 2,
+    "power": 3,
     "keywords": [],
     "heat": 4
    },
@@ -954,7 +954,7 @@
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 3,
+    "power": 4,
     "keywords": [],
     "heat": 5
    },
@@ -1097,9 +1097,9 @@
     "reach": "direct",
     "power": 3,
     "keywords": [
-     "burn"
+     "ablate"
     ],
-    "burn": 2,
+    "ablate": 2,
     "heat": 6
    },
    "passive": null,
@@ -1126,9 +1126,9 @@
     "reach": "indirect",
     "power": 5,
     "keywords": [
-     "burn"
+     "ablate"
     ],
-    "burn": 3,
+    "ablate": 3,
     "heat": 9
    },
    "passive": null,
@@ -1220,15 +1220,13 @@
    "design": {
     "stage": "draft",
     "fantasy": "The whole front of the Puffin is one shield projector, and it only points outward.",
-    "niche": "The Puffin's locked shield: a big bubble it can only raise on an ally, and the game's first Overshield, so it may lift the ally past its maximum for the round (Ryan, 2 October: a shield specialist, not a shield-bot; 5 October: overshield a rare keyword, the projector first)."
+    "niche": "The Puffin's locked shield: a big bubble it can only raise on an ally, and the game's first Overshield, so it may lift the ally past its maximum for the round (Ryan, 2 October: a shield specialist, not a shield-bot; 5 October: overshield a rare keyword, the projector first). Overshield was cut as a keyword on 15 November (Ryan's mark), so it raises no shield past the maximum: its session finds it another rule."
    },
    "face": {
     "kind": "shield",
     "power": 3,
     "targets": "ally",
-    "keywords": [
-     "overshield"
-    ]
+    "keywords": []
    },
    "passive": null,
    "tags": []
@@ -1416,13 +1414,14 @@
    "name": "Retribution Thurible",
    "maker": "arsenal",
    "tier": 1,
+   "status": "planned",
    "shape": "dish",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
     "fantasy": "A censer swung over the hull. Whatever strikes the consecrated metal is marked for what comes next.",
-    "niche": "The Retaliate carrier: for two rounds, a foe that strikes the machine's bare hull is Shocked; on the Nemesis its own punches spend the shocks."
+    "niche": "Back in design (Ryan, 15 November: \"Send the retribution thurible back to design. It can have unique text but not until we sort out our fundamentals\"), a planned draft nothing deals. It was the Retaliate carrier: for two rounds, a foe that strikes the machine's bare hull is Shocked; on the Nemesis its own punches spent the shocks. Retaliate was cut as a buff word the same day, so its rule will be the piece's own text."
    },
    "face": {
     "kind": "buff",
@@ -1734,9 +1733,7 @@
    },
    "face": {
     "kind": "buff",
-    "status": "rallied",
-    "stacks": 1,
-    "rounds": 1,
+    "team_rerolls": 1,
     "targets": "self",
     "charged": {
      "muster": 1,
@@ -1756,17 +1753,19 @@
    "design": {
     "stage": "draft",
     "fantasy": "A cluster howitzer whose shells burst over a rank, and whose spent casings the forge pulls back as ammo. Ryan, 21 October: \"a cluster cannon that does low damage, spreads Flak 1 to all targets hit, and returns 1 ammo for each target hit\". The name is Claude's, Ryan's pick: shrapnel is the old-world cluster round, and a recuperator is the real artillery part that returns the barrel after recoil, here returning the shells.",
-    "niche": "The Musk Ox's status and ammo piece: a low number on up to four foes (Splash), Flak 1 on each for the team's blows that turn, and 1 ammo back for every foe it hits, so a crowd fills the magazine and a lone boss is a wash."
+    "niche": "The Musk Ox's status and ammo piece: a low number on up to four foes (Spread 1 and Penetrate 1, Splash until the word was cut on 15 November), Flak 1 on each for the team's blows that turn, and 1 ammo back for every foe it hits, so a crowd fills the magazine and a lone boss is a wash."
    },
    "face": {
     "kind": "attack",
     "reach": "indirect",
     "power": 1,
     "keywords": [
-     "splash",
+     "cleave",
+     "penetrate",
      "flak"
     ],
-    "splash": 1,
+    "cleave": 1,
+    "penetrate": 1,
     "flak": 1,
     "heat": 5,
     "ammo_per_foe_hit": 1
@@ -1813,7 +1812,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A crash reload: the forge run hot to cast a few shells at once, the heat dumped into the hull. Ryan, 21 October: \"something that reloads but actually gives the machine a good chunk of heat\".",
-    "niche": "The Musk Ox's tempo piece, in for testing: Rapid, 2 ammo, and heat its low maximum feels, so with the foes' Burning and Scorched it threatens an overheat."
+    "niche": "The Musk Ox's tempo piece, in for testing: Rapid, 2 ammo, and heat its low maximum feels, so with the foes' Scorched it threatens an overheat."
    },
    "face": {
     "kind": "vent",
@@ -1991,13 +1990,11 @@
     "stage": "draft",
     "fantasy": "The Immelmann turn reverses a fighter's course and climbs (Ryan named it 21 October), as a spent ally comes round to act again: the flagship's eight boosters, lit.",
     "niche": "The Giant Petrel's first lock, Rapid (Ryan, 21 October): spent on itself the team gains a reroll; spent on an ally whose die is spent, three of the team's rerolls are paid, banked or fresh, and the ally's die rolls again, never onto the entry it showed, and it acts again. The order is the play: spend the ally first.",
-    "notes": "Built 30 October: the self use is the Reveille Horn's Rallied; the ally use (ally_action, the Horn's charged act-again priced in rerolls) takes an ally whose die is spent while the team holds the price, and its Rapid gives the Petrel its turn back."
+    "notes": "Built 30 October: the self use is the Reveille Horn's reroll for the team (a rule of its own since 15 November, the Rallied buff cut); the ally use (ally_action, the Horn's charged act-again priced in rerolls) takes an ally whose die is spent while the team holds the price, and its Rapid gives the Petrel its turn back."
    },
    "face": {
     "kind": "buff",
-    "status": "rallied",
-    "stacks": 1,
-    "rounds": 1,
+    "team_rerolls": 1,
     "keywords": [
      "rapid"
     ],
@@ -2177,18 +2174,18 @@
    "design": {
     "stage": "draft",
     "fantasy": "A firebox gun that throws its own coals: the target catches, and so does the machine that fed it.",
-    "niche": "Slow fuel by decision: Burn on the foe and Burning on its own firer, a price on most machines and fuel for the Whip Scorpion's vents."
+    "niche": "Ablate on the foe and Ablating on its own firer. It was slow fuel by decision while a machine's Burning was heat (22 October); since Ablate (15 November) the price is a point of its own shield a stack and it fuels nothing, the component pass's to read again."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
     "power": 3,
     "keywords": [
-     "burn"
+     "ablate"
     ],
-    "burn": 2,
+    "ablate": 2,
     "heat": 4,
-    "self_burn": 1
+    "self_ablate": 1
    },
    "passive": null,
    "tags": [
@@ -2207,7 +2204,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A charge that pulls the fire out of whatever it strikes and turns it inward: the flames go out, and the foe goes down with them.",
-    "niche": "The fire-synergy stun: it consumes every stack of Burning on its target for a point a stack, and Suppresses it if it consumed two or more, so one Burn 2 piece opens it and no all-in burn team is needed."
+    "niche": "The fire-synergy stun: it consumes every stack of Ablating on its target for a point a stack, and Suppresses it if it consumed two or more, so one Ablate 2 piece opens it and no all-in ablate team is needed."
    },
    "face": {
     "kind": "attack",
@@ -2220,11 +2217,11 @@
     "gates": {
      "suppress": {
       "when": "target_status",
-      "status": "burning",
+      "status": "ablating",
       "stacks": 2
      }
     },
-    "consumes": "burning",
+    "consumes": "ablating",
     "per_consumed": 1
    },
    "passive": null,
@@ -2244,7 +2241,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A slab of mine-shaft door on a hydraulic arm, swung across in front of whoever needs it for the one blow that matters.",
-    "niche": "The Barrier carrier: the next blow a foe lands on the machine deals no damage, so it never injures, until the round's end; self or ally, never a team buff (the Barrier row)."
+    "niche": "The Barrier carrier: the next blow a foe lands on the machine deals no damage, until the round's end; self or ally, never a team buff (the Barrier row)."
    },
    "face": {
     "kind": "buff",

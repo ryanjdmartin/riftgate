@@ -289,9 +289,7 @@ func test_a_team_without_a_banker_keeps_nothing() -> void:
 
 
 func _booster() -> Face:
-	var f := Face.buff("rallied", 1)
-	f.add_keyword(K.RAPID)
-	f.action_price = 3
+	var f := Face.from_dict({"kind": "buff", "team_rerolls": 1, "keywords": ["rapid"], "ally_action": {"rerolls": 3}})
 	return f
 
 
@@ -455,7 +453,7 @@ func test_the_validator_holds_the_petrels_fields_to_their_kinds() -> void:
 		"bad_regen": [{"kind": "buff", "status": "overcharged", "regenerates": {"status": "regenerating", "shield": 2, "rounds": 3}}, "regenerates"],
 		"bad_regen_status": [{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "regenerates": {"status": "overcharged", "shield": 2, "rounds": 3}}, "regenerates"],
 		"bad_price": [{"kind": "attack", "reach": "direct", "power": 2, "ally_action": {"rerolls": 3}}, "ally_action"],
-		"bad_price_self": [{"kind": "buff", "status": "rallied", "targets": "self", "ally_action": {"rerolls": 3}}, "ally_action"],
+		"bad_price_self": [{"kind": "buff", "team_rerolls": 1, "targets": "self", "ally_action": {"rerolls": 3}}, "ally_action"],
 		"bad_roll": [{"kind": "attack", "reach": "direct", "power": 2, "rolls_target": true}, "rolls_target"],
 		"bad_kill": [{"kind": "attack", "reach": "direct", "power": 2, "kill_rerolls": 0}, "kill_rerolls"],
 	}

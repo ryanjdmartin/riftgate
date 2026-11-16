@@ -125,15 +125,15 @@ func test_shown_text_cuts_out_its_terms() -> void:
 
 
 func test_a_term_reads_bold_in_its_colour_with_its_icon() -> void:
-	var name := _name("burning")
+	var name := _name("ablating")
 	var r := EntryReadout.new()
 	r.set_lines([EntryReadout.prose_line("It leaves %s on the foe." % name)], 400.0)
 	var w := _word(r, name)
 	assert_false(w.is_empty(), "the term laid out as a word of its own")
 	assert_eq(w.get("font"), Hud.display_bold(), "bold")
-	assert_eq(w.get("ink"), Terms.colour("burning"), "in its colour")
-	assert_eq(str(w.get("glyph")), Terms.glyph("burning"), "its icon before it")
-	assert_eq(w.get("glyph_ink"), Terms.colour("burning"), "in the same colour")
+	assert_eq(w.get("ink"), Terms.colour("ablating"), "in its colour")
+	assert_eq(str(w.get("glyph")), Terms.glyph("ablating"), "its icon before it")
+	assert_eq(w.get("glyph_ink"), Terms.colour("ablating"), "in the same colour")
 	assert_true(float(w.get("icon", 0.0)) > 0.0, "the icon taking its room")
 	assert_eq(_word(r, "It").get("ink"), Palette.INK, "the words round it plain")
 	assert_eq(r.text(), "It leaves %s on the foe." % name, "the line's text unchanged")
@@ -145,9 +145,9 @@ func test_a_term_reads_bold_in_its_colour_with_its_icon() -> void:
 	assert_eq(float(term.get("x", -1.0)), float(open.get("x", 0.0)) + float(open.get("w", 0.0)), "the bracket against it")
 	assert_eq(float(after.get("x", -1.0)), float(term.get("x", 0.0)) + float(term.get("w", 0.0)), "and the comma after it")
 	# A chip's own name wears its colour without a second icon: its box is beside it.
-	r.set_lines([EntryReadout.chip_line(Terms.glyph("burning"), Terms.colour("burning"), "%s: it burns" % name)], 400.0)
+	r.set_lines([EntryReadout.chip_line(Terms.glyph("ablating"), Terms.colour("ablating"), "%s: it burns" % name)], 400.0)
 	var head := _word(r, name)
-	assert_eq(head.get("ink"), Terms.colour("burning"), "the chip's name in its colour")
+	assert_eq(head.get("ink"), Terms.colour("ablating"), "the chip's name in its colour")
 	assert_eq(float(head.get("icon", 0.0)), 0.0, "and no icon of its own")
 	r.free()
 
@@ -224,5 +224,5 @@ func test_the_keywords_list_files_the_statuses_by_buff_debuff_and_ability() -> v
 	for t in ["BUFFS", "DEBUFFS", "ABILITIES"]:
 		assert_true(seen.has(t), "a heading for the %s" % t.to_lower())
 	assert_true(str(Terms.entry("overcharged", db)["heading"]).begins_with("BUFF"), "a buff's tip says so")
-	assert_true(str(Terms.entry("burning", db)["heading"]).begins_with("DEBUFF"), "and a debuff's")
+	assert_true(str(Terms.entry("ablating", db)["heading"]).begins_with("DEBUFF"), "and a debuff's")
 	assert_true(str(Terms.entry("sealed", db)["heading"]).begins_with("ABILITY"), "and an ability's")

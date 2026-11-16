@@ -35,7 +35,12 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1188 tests, 372,897 checks, green on `ccr-722ca9f0-yj8na3` (15 November, the reboot
+- Tests: 1192 tests, 372,768 checks, green on `ccr-722ca9f0-yj8na3` (15 November, the
+  marks' cuts, over main at `c9e55a9`). Before it, 1196 tests, 372,909 checks, green on the
+  same branch (15 November, the vanilla's 3 and breach's cut). Before it, 1197 tests, 372,937
+  checks, green on the same branch (15 November, Ablate in
+  Burn's place, its rule's ten tests in a file of their own). Before
+  it, 1188 tests, 372,897 checks, green on the same branch (15 November, the reboot
   folded in: five tests of the switch's off side cut with it, over main at `0f5c801`). Before
   it, 1193 tests, 372,939 checks, green on the same branch (15 November, the vocabulary
   pass's marks folded, documents alone, over main at `196d802` taken in a merge). Before it, the
@@ -753,8 +758,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   duel and no small pusher, so the proposal's patrols rated one are to be rewritten and the
   Meadow and the Waste want a flanker line. The bible's Foe roles row carries it.
 - **The refit pass's first build and reads** (9 November, on his "Your leans are good"; the
-  brief's section 5; nothing in `content/` moved): the injury rule is off in the game
-  (`Skirmish.injuries`; `--injury on` reads it back; the tests that read an injury turn it on);
+  brief's section 5; nothing in `content/` moved): the injury rule went off in the game (its threshold left
+  the engine on 15 November, Destroy a foe's rider in its place: the bible's Destroy row);
   the model is a what-if the runners lay over the loaded content (`sim/refit.gd`, `--refit`: the
   die with no shield or vent, the regen, the cooling, the basics' heat, the Barrier basic's rule
   and deal) and a trial in the game (`RIFTGATE_REFIT`; a debug build's SETTINGS → REFIT TRIAL:
@@ -1819,32 +1824,20 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 
 The tasks are the to-do's; this is the index of what waits.
 
-- Burn as Ablate, one rule on both sides (Ryan, 15 November: "hits shield first, I think.
-  Pretty deadly otherwise. Bypasses armour when damaging hull"; the bible's Burning row): the
-  build's next part, now the reboot is folded in. Until then the engine runs a machine's
-  Burning as heat.
-- The vanilla gun at 3 (the same day: "3 against 5 or 3 against 4 as the options"): content
-  still prints 2 and a debug build's BASIC GUNS dial plays the 3; it lands with Breach's cut.
-- Exposed for the foes (the same day, his third to fifth rounds; the bible's row in section
-  5): a machine's armour of every kind for nothing until the end of the next round, and the
-  whole field's targeted intents on it as that round opens, up to its predicted death, the
-  rule that foes never overkill kept; tier two and up, one machine at a time, a Lure wins. No
-  foe carries it. Built with the vocabulary's calls (the to-do's Engine list).
-- Breach cut on both sides (his fifth round: "Sure, let's cut breach"; the bible's breach
-  row): the foes' keyword off thirty-four foes and the engine's path with it, ours a
-  property written on the piece ("Ignores armour can be an explicitly written out property")
-  and on pieces of a higher tier or behind a gate. Until it is built content and the engine
-  run breach as before, and a debug build's FOE BREACH dial plays the foes without it
-  (`Refit`'s `breach=cut`).
+- Exposed for the foes (Ryan, 15 November, his third to fifth rounds; the bible's row in
+  section 5): a machine's armour of every kind for nothing until the end of the next round,
+  and the whole field's targeted intents on it as that round opens, up to its predicted
+  death, the rule that foes never overkill kept; tier two and up, one machine at a time, a
+  Lure wins. No foe carries it. It is the foes' pass's (the to-do's Engine list).
 - His marks on the vocabulary's table (15 November, all eighty-two rows; the proposal's
-  section 18 has each with its read, and the to-do's Engine list the build in four parts):
-  Splash, Overshield, Retaliate, Silence and Rallied as a buff cut; Spillover, Swap, Web,
-  Drain, Steal, the drained reroll and Follow-up off the keyword list, each its one piece's
-  own text; Disabled as Jammed, Pinned Flak as Pinned, Pinned Burning as Seared, Regrow as
-  Recover and Heal, the Ammit's names; Armoured ending as its side's next turn starts; Rally
-  on the rallier too; the injury rule out as a general rule; countdowns an elite's or a
-  boss's mostly; a fall free to do more than strike. Until built, content and the engine run
-  every one of them as before.
+  section 18 has each with its read, and the to-do's Engine list the build in parts), what
+  is not built yet: Spillover, Swap, Web and Follow-up off the keyword list, each its one
+  piece's own text; Disabled as Jammed, Pinned Flak as Pinned, Regrow as Recover and Heal,
+  the Ammit's names; Armoured ending as its side's next turn starts; Rally on the rallier
+  too, Regenerating, Primed, Brittle and Phased as he ruled them; and for the foes' pass,
+  Drain, Steal and the drained reroll as their units' own text, countdowns an elite's or a
+  boss's mostly, a fall free to do more than strike. Until built, content and the engine
+  run each of those as before.
 - A foe's move need not take a component's shape (the same day; the bible's row on the foes'
   rule set, the proposal's section 19): the direction for the foes' pass, with Claude's
   proposal of a move as a short list of steps. Nothing of it is built.
@@ -1887,9 +1880,26 @@ its record: six rounds, his marks on all eighty-two rows (section 18), his answe
 go (section 20), and his direction for the foes' moves (section 19). **The reboot is folded
 in** (15 November: the rule out of its switch; the chassis's own regen and cooling and the
 overheat that settles cut from the engine and from content; the three states terms; the
-refit brief's section 22 says what landed). **What rides behind it, in the to-do's order,
-each a commit of its own**: Ablate in Burn's place on both sides; the vanilla gun at 3 in
-content and Breach cut on both sides; his marks' cuts, renames and the words that leave the
+refit brief's section 22 says what landed). **Ablate is built in Burn's place on both
+sides** (the same day; the bible's Ablate row, `tests/test_ablate.gd`): a machine's is a
+point a stack off its shield and then its hull as the player's turn ends, where its Burning
+was heat; the foes' numbers are unmoved, his to size. **The vanilla is 3 in content and
+Breach is cut on both sides** (the same day; the bible's breach row and its vanilla row):
+the plain basic guns deal 3 and the Carbine 4; every blow of a foe's meets the shield and
+then the armour, thirty-four foes' moves plain blows at the numbers they had; ours is a rule
+written on the piece, "ignores armour", on the Ammit's Talons, the Wild Boar's next weapon
+after a Barrier and the Overclocked Railgun, whose tier is the component pass's. The BASIC
+GUNS and FOE BREACH dials went with them. **His marks' cuts are built** (the same day; the
+bible's area, Purge, retaliation, Destroy and rerolls rows): Splash, Silence, Overshield and
+Retaliate are gone with their paths, terms, glyphs and tests, the Howitzer and the Shrapnel
+Recuperator printing Spread 1 and Penetrate 1, the Retribution Thurible a planned draft and
+the Nemesis's fourth hardpoint a placeholder gun; a granted reroll is no buff, landing at
+once past the round's two with the REROLL button lit while the die in hand would grant one;
+no blow destroys a component by its size, Destroy a rider on a foe's blow that no foe
+carries yet; and the Djinn's Unmake reads Purge 1. With them a break the fold-in had left
+on main is fixed: `tools/balance.gd` read the reboot's removed switch and would not parse,
+and `tests/test_leftovers.gd` now loads every tool script. **What rides behind, in the
+to-do's order, each a commit of its own**: his marks' renames and the words that leave the
 keyword list; his marks' rule changes (Rally on the rallier, Regenerating fading a stack a
 turn, Primed a stack a weapon fired, Brittle in place of Flak and Crushed, Phased granted
 at the round's end); then the anchor read again as the baseline. **Then the foes' pass**

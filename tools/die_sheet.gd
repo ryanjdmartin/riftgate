@@ -198,7 +198,7 @@ func _rest() -> Array:
 	var instant := Face.attack(4)
 	instant.add_keyword(Face.Keyword.INSTANT)
 	var chips := Face.attack(4)
-	chips.add_keyword(Face.Keyword.BURN)
+	chips.add_keyword(Face.Keyword.ABLATE)
 	chips.add_keyword(Face.Keyword.CLEAVE)
 	chips.label = "a rule of its own"
 	var chipped := _die(chips)

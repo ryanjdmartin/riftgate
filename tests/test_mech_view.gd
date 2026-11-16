@@ -358,7 +358,7 @@ func test_the_settings_page_offers_every_aa_mode() -> void:
 
 func test_a_burn_weapon_wears_its_fire_on_its_class_and_nothing_else_does() -> void:
 	var db := ContentDB.new()
-	db.components = {"fire_gun": {"shape": "barrel", "face": {"keywords": ["burn"]}},
+	db.components = {"fire_gun": {"shape": "barrel", "face": {"keywords": ["ablate"]}},
 		"cold_gun": {"shape": "barrel", "face": {"keywords": ["pierce"]}},
 		"bare_gun": {"shape": "barrel", "face": {}}}
 	assert_true(MechView3D.burning("fire_gun", db), "a component whose entry's keywords hold burn burns")

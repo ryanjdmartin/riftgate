@@ -130,10 +130,9 @@ func test_the_bot_prices_an_overheat_at_its_burn() -> void:
 	assert_true(absf(vent_doubled - vent_plain - 10.0 * Policy.HULL_WEIGHT) < 0.001, "the vent saves twice the hull")
 
 
-## The overheat's other what-ifs priced (30 October): the spend that takes the burn to the injury
-## threshold pays for the component it burns out, and the one that starts an overheat for the
-## corruption it lays; nothing while both are off.
-func test_the_bot_prices_a_burnout_and_an_overheats_corruption() -> void:
+## The overheat's other what-if priced (30 October): the spend that starts an overheat pays for
+## the corruption it lays; nothing while it is off.
+func test_the_bot_prices_an_overheats_corruption() -> void:
 	var sk := Skirmish.new(3)
 	sk.add_mech(_mech("Hot", Die.of([Face.vent(30), Face.attack(10, L, [], 10)]), 40, 100))
 	sk.add_foes([_ghoul(300, 1)])
@@ -141,19 +140,11 @@ func test_the_bot_prices_a_burnout_and_an_overheats_corruption() -> void:
 	sk.start_round()
 	var ms: Skirmish.MechState = sk.mechs[0]
 	var pol := Policy.make(Policy.GREEDY)
-	assert_eq(pol.overheat_marks_cost(ms, 0, 30), 0.0, "both off: nothing")
-	Skirmish.overheat_burnout = true
-	var burnt := pol.overheat_marks_cost(ms, 0, 30)
-	var short := pol.overheat_marks_cost(ms, 0, 20)
-	var already := pol.overheat_marks_cost(ms, 25, 30)
-	Skirmish.overheat_burnout = false
+	assert_eq(pol.overheat_marks_cost(ms, 0, 30), 0.0, "off: nothing")
 	Skirmish.overheat_corrupt = 1
 	var corrupt := pol.overheat_marks_cost(ms, 0, 5)
 	var again := pol.overheat_marks_cost(ms, 5, 10)
 	Skirmish.overheat_corrupt = 0
-	assert_true(absf(burnt - Policy.DEATH_WEIGHT / 2.0) < 0.001, "thirty past the cap on a 100-hull machine reaches the quarter: half the machine's worth on a die of two: %f" % burnt)
-	assert_eq(short, 0.0, "twenty burns short of the quarter")
-	assert_eq(already, 0.0, "a burnout the turn was making anyway costs this spend nothing")
 	assert_true(corrupt > 0.0, "the spend that starts the overheat pays for its corruption")
 	assert_eq(again, 0.0, "one overheat a turn: a spend that only deepens it lays no more")
 
@@ -419,10 +410,10 @@ func test_greedy_values_a_gated_stun_where_it_lands_and_prices_what_a_consumer_e
 	var shut_part := on_plain - pol.expected_damage(ms, gun, plain)
 	assert_true(open_part > shut_part + 1.0, "the stun counts only where the gate is open (%s against %s)" % [open_part, shut_part])
 	var charge := Face.attack(2, L)
-	charge.consumes = "burning"
+	charge.consumes = "ablating"
 	charge.per_consumed = 1
 	var plain_charge := Face.attack(2, L)
-	Effects.stack(plain, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 3)
+	Effects.stack(plain, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 3)
 	assert_eq(int(pol.damage_outcomes(ms, charge, plain)[0][0]), 5, "the bot reads the blow with the three stacks in")
 	var eat := pol.attack_score(sk, ms, charge, plain) - pol.expected_damage(ms, charge, plain)
 	var keep := pol.attack_score(sk, ms, plain_charge, plain) - pol.expected_damage(ms, plain_charge, plain)
@@ -707,7 +698,7 @@ func test_greedy_bites_the_foe_looking_away() -> void:
 		due += tick
 		hp -= tick
 	assert_eq(int(Policy.dot_payout("vitriol", 3, 138)), due, "a bite's three stacks on 138 HP: the share a stack, three ticks, each on what the last left")
-	assert_eq(int(Policy.dot_payout("burning", 3, 500)), 6, "Burning's flat ticks: three, two, one stacks of a point (18 October)")
+	assert_eq(int(Policy.dot_payout("ablating", 3, 500)), 6, "Ablating's flat ticks: three, two, one stacks of a point (18 October)")
 	pol.play_round(sk)
 	assert_eq(Effects.stacks_of(away, "vitriol"), 1, "and the die went there")
 	assert_eq(Effects.stacks_of(looking, "vitriol"), 0, "not on the one looking")
@@ -757,7 +748,7 @@ func test_greedy_values_flak_by_the_team_blows_still_to_come() -> void:
 
 
 ## A Barrier and a Ward (21 October) are worth what the forecast keeps with them up: the
-## Barrier the one big blow, the Ward a breach's needles and their riders; nothing a second time.
+## Barrier the one big blow, the Ward the needles' riders; nothing a second time.
 func test_greedy_values_a_barrier_by_the_blow_it_takes_and_a_ward_by_what_it_turns_away() -> void:
 	var pol := Policy.make(Policy.GREEDY)
 	var wall := Face.buff("barrier")
@@ -778,13 +769,13 @@ func test_greedy_values_a_barrier_by_the_blow_it_takes_and_a_ward_by_what_it_tur
 	s2.add_mech(n)
 	var needler := _ghoul(500, 10)
 	needler.actions[0]["strikes"] = 4
-	needler.actions[0]["keywords"] = ["breach", "scorch"]
+	needler.actions[0]["keywords"] = ["scorch"]
 	s2.add_foes([needler])
 	s2.begin()
 	s2.start_round()
 	var ns: Skirmish.MechState = s2.mechs[0]
-	assert_true(pol.machine_spend_score(s2, ns, ns, ward) > pol.machine_spend_score(s2, ns, ns, wall), "four breaching needles: the Ward, which lets the shield take them all and turns their scorch away")
-	assert_true(pol.machine_spend_score(s2, ns, ns, wall) > 0.0, "though the Barrier still takes one")
+	assert_true(pol.machine_spend_score(s2, ns, ns, ward) > 0.0, "four scorching needles: the Ward turns every scorch away")
+	assert_true(pol.machine_spend_score(s2, ns, ns, wall) > 0.0, "and the Barrier takes one of the four")
 
 
 ## The bot's read of a foe's four buffs (the ladder's brief, B; 28 October; placeholders): a
@@ -796,8 +787,8 @@ func test_the_bot_reads_a_foes_barrier_ward_priming_and_regrowth() -> void:
 	var pol := Policy.make(Policy.GREEDY)
 	var sk := Skirmish.new(1, 3)
 	var gun := Face.attack(10, L)
-	var torch := Face.attack(10, L, [K.BURN])
-	torch.burn = 3
+	var torch := Face.attack(10, L, [K.ABLATE])
+	torch.ablate = 3
 	sk.add_mech(_mech("A", Die.single(gun), 40, 200))
 	sk.add_mech(_mech("B", Die.single(torch), 40, 200))
 	var caster := Foe.make("caster", 500, 1)
@@ -830,7 +821,7 @@ func test_the_bot_reads_a_foes_barrier_ward_priming_and_regrowth() -> void:
 	var bare := pol.attack_score(sk, b, torch, g2)
 	var bare_gun := pol.attack_score(sk, a, gun, g2)
 	Effects.stack(g2, Effects.foe_ward(), Effects.SKIRMISH, "foe:caster", 1, Effects.DECAY_TURN_ALL)
-	assert_true(pol.attack_score(sk, b, torch, g2) < bare, "a Ward leaves the Burn worth nothing")
+	assert_true(pol.attack_score(sk, b, torch, g2) < bare, "a Ward leaves the Ablate worth nothing")
 	assert_eq(pol.attack_score(sk, a, gun, g2), bare_gun, "and a plain gun as it was")
 
 
@@ -1438,9 +1429,9 @@ func test_the_bot_reads_each_foe_past_the_target_at_its_shapes_number() -> void:
 	# A consumer through a Spread: every foe it strikes eats its own, so the ticks each gives up count.
 	var charge := Face.attack(2, L, K.CLEAVE)
 	charge.cleave = 1
-	charge.consumes = "burning"
+	charge.consumes = "ablating"
 	var dry := charge.duplicate_face()
 	dry.consumes = ""
-	Effects.stack(plain, Effects.STATUS["burning"], Effects.SKIRMISH, "mech", 3)
+	Effects.stack(plain, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 3)
 	var lost: float = pol.attack_score(sk, ms, dry, aim) + float(pol.damage_outcomes(ms, charge, plain, Skirmish.AREA_ROW)[0][0]) - float(pol.damage_outcomes(ms, dry, plain, Skirmish.AREA_ROW)[0][0]) - pol.attack_score(sk, ms, charge, aim)
-	assert_true(lost > 0.0, "the neighbour's Burning eaten costs the ticks it would have dealt: %f" % lost)
+	assert_true(lost > 0.0, "the neighbour's Ablating eaten costs the ticks it would have dealt: %f" % lost)

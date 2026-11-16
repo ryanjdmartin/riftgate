@@ -44,7 +44,7 @@ func _regrid(sk: Skirmish, cells: Array) -> void:
 
 
 func test_off_a_blow_past_the_shield_reaches_the_hull() -> void:
-	var r := Skirmish._blow(10, 100, 0, 50, false, Skirmish.breaks_whole(10, 10))
+	var r := Skirmish._blow(10, 0, 50, Skirmish.breaks_whole(10, 10))
 	assert_false(Skirmish.breaks_whole(10, 10), "off, no break stops a blow")
 	assert_eq(int(r["through"]), 40, "the forty past a ten-point shield reach the hull")
 	assert_true(bool(r["broke"]) and int(r["stopped"]) == 0, "the shield broke and stopped nothing more than its number")
@@ -122,17 +122,6 @@ func test_a_second_strike_lands_on_the_hull_the_first_bared() -> void:
 	assert_eq(int(sk.forecast(sk.mechs[0])["hull_after"]), 70, "the forecast walks both strikes")
 	sk.end_round()
 	assert_eq(m.hull, 70, "the first is stopped whole and the second lands whole")
-
-
-func test_a_breach_passes_a_shield_that_stands() -> void:
-	Skirmish.shield_break = true
-	var m := _mech("A", 10, 100)
-	var maw := Foe.make("maw", 900, 50)
-	maw.actions[0]["keywords"] = ["breach"]
-	var sk := _fight(m, [maw])
-	_round(sk)
-	assert_eq(m.shield, 10, "the shield stands")
-	assert_eq(m.hull, 50, "the whole fifty reached the hull")
 
 
 func test_a_barrier_takes_the_blow_and_the_shield_behind_it_never_breaks() -> void:

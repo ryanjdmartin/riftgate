@@ -20,28 +20,29 @@ const TABLE := {
 	# Reach.
 	"direct": ["aim_direct", "plain"], "indirect": ["aim_indirect", "plain"],
 	# Keywords.
-	"cleave": ["cleave", "plain"], "penetrate": ["penetrate", "plain"], "splash": ["splash", "plain"],
+	"cleave": ["cleave", "plain"], "penetrate": ["penetrate", "plain"],
 	"every_foe": ["aim_every_foe", "plain"], "every_ally": ["aim_every_ally", "plain"], "every_other_ally": ["aim_every_other_ally", "plain"],
 	"spillover": ["spillover", "plain"], "rapid": ["rapid", "plain"], "instant": ["instant", "plain"],
-	"burn": ["burn", "heat"], "shock": ["shock", "heat"], "chain": ["chain", "heat"],
-	"flak": ["flak", "heat"], "breach": ["breach", "heat"], "sap": ["sap", "guard"],
+	"ablate": ["ablate", "heat"], "shock": ["shock", "heat"], "chain": ["chain", "heat"],
+	"flak": ["flak", "heat"], "sap": ["sap", "guard"],
 	"cryo": ["cryo", "guard"], "lure": ["lure", "guard"], "disrupt": ["disrupt", "guard"],
 	"suppress": ["suppress", "guard"], "web": ["web", "guard"], "swap": ["swap", "guard"],
-	"dispel": ["dispel", "guard"], "cleanse": ["cleanse", "guard"], "overshield": ["overshield", "guard"],
+	"dispel": ["dispel", "guard"], "cleanse": ["cleanse", "guard"],
 	"expose": ["expose", "harm"],
 	"disable": ["blank", "enemy"], "corrupt": ["corrupt", "enemy"], "steal": ["steal", "enemy"],
+	"destroy": ["crack", "enemy"],   # the rider that destroys the entry showing (15 November): the destroyed component's own mark
 	# Rules on a component.
 	"targets": ["", "plain"], "strikes": ["", "plain"],
 	"gated": ["", "plain"], "consumes": ["", "plain"], "power_per_missing": ["", "plain"], "finisher": ["", "plain"],
 	"cooldown": ["cooldown", "plain"],
 	"hopper_property": ["hopper", "plain"],
 	"volatile": ["hull", "hull"], "shield_cost": ["shield", "guard"], "brace_property": ["shield", "guard"],
-	"self_burn": ["burn", "heat"], "vents_all": ["vent", "heat"],
+	"self_ablate": ["ablate", "heat"], "ignores_armour": ["", "plain"], "vents_all": ["vent", "heat"],
 	"gather": ["mine", "heat"], "detonate": ["mine", "heat"],
 	"regenerates": ["regenerating", "guard"], "ally_action": ["reroll", "plain"], "rolls_target": ["reroll", "plain"],
-	"kill_rerolls": ["reroll", "plain"],
+	"kill_rerolls": ["reroll", "plain"], "team_rerolls": ["reroll", "plain"],
 	# Statuses.
-	"burning": ["burn", "heat"], "scorched": ["scorch", "heat"], "primed": ["primed", "heat"],
+	"ablating": ["ablate", "heat"], "scorched": ["scorch", "heat"], "primed": ["primed", "heat"],
 	"overcharged": ["overcharge", "heat"], "kindled": ["overcharge", "heat"], "enraged": ["overcharge", "heat"], "golden": ["overcharge", "heat"], "shocked": ["shocked", "heat"],
 	"charged": ["shocked", "heat"], "supercooled": ["cryo", "guard"],
 	"flakked": ["flak", "heat"], "vitriol": ["vitriol", "heat"], "spun_up": ["spin", "heat"], "ricochet": ["ricochet", "heat"],
@@ -49,24 +50,24 @@ const TABLE := {
 	"souls": ["soul", "heat"], "pinned_empowered": ["pin_empower", "heat"],   # the Ammit's count and its Siphon's hold (12 November), with Empowered's group: what hits harder
 	"braced": ["shield", "guard"], "barrier": ["barrier", "guard"], "ward": ["ward", "guard"],
 	"phased": ["phased", "guard"], "guarded": ["lock", "guard"], "sealed": ["seal", "guard"], "changed_over": ["reroll", "plain"],
-	"retaliate": ["shocked", "guard"], "suppressed": ["suppress", "guard"], "webbed": ["web", "guard"],
+	"suppressed": ["suppress", "guard"], "webbed": ["web", "guard"],
 	"numbed": ["numbed", "guard"], "paradox": ["paradox", "guard"], "cryoed": ["cryo", "guard"],
-	"exposure": ["exposed", "harm"], "pinned": ["pin_flak", "heat"], "sapped": ["sap", "guard"], "juggernaut_breach": ["breach", "heat"], "pinned_burning": ["pin_burn", "heat"], "destroyed_component": ["crack", "harm"],
-	"corrupted": ["corrupt", "enemy"], "crushed": ["flak", "enemy"], "disabled": ["blank", "enemy"], "silenced": ["silence", "enemy"],
+	"exposure": ["exposed", "harm"], "pinned": ["pin_flak", "heat"], "sapped": ["sap", "guard"], "juggernaut": ["juggernaut", "heat"], "seared": ["pin_ablate", "heat"], "destroyed_component": ["crack", "harm"],
+	"corrupted": ["corrupt", "enemy"], "crushed": ["flak", "enemy"], "disabled": ["blank", "enemy"],
 	"risen": ["star", "enemy"], "regenerating": ["regenerating", "guard"], "swallowed": ["swallowed", "enemy"],
 	"ability": ["", "plain"],   # a unit's own mechanic, no buff or debuff (8 November): its chips carry their own marks
-	"rallied": ["reroll", "plain"], "quick_turned": ["rapid", "plain"],
+	"quick_turned": ["rapid", "plain"],
 	"overheated": ["heat", "heat"], "broken": ["shieldbreak", "guard"], "rebooting": ["shield_vent", "plain"],   # the reboot's three states (13 November), read off the gauges: no status of the engine's table
 	# A foe's moves: the keywords they carry, the list's last heading. A foe-side word without a row
 	# here (its aim, its menace, the seal) is the engine's and stays out of the list.
-	"scorch": ["scorch", "heat"], "crush": ["flak", "enemy"], "golden_rage": ["overcharge", "heat"], "silence": ["silence", "enemy"], "swallow": ["swallowed", "enemy"],
+	"scorch": ["scorch", "heat"], "crush": ["flak", "enemy"], "golden_rage": ["overcharge", "heat"], "swallow": ["swallowed", "enemy"],
 	"self_destruct": ["blast", "enemy"], "all": ["all", "enemy"], "countdown": ["warning", "enemy"],
 	"follow_up": ["next", "enemy"], "last_act": ["skull", "enemy"], "parts": ["parts", "enemy"],
 	"drain": ["heart", "enemy"],   # the Vampire Lord's (31 October): a blow that regrows what it took from the hull
 }
 
-## An engine status keyed apart from its term: a machine's Burning, the Badger's hopper.
-const ALIASES := {"burning_mech": "burning", "hopper": "hopper_property"}
+## An engine status keyed apart from its term: a machine's Ablating, the Badger's hopper.
+const ALIASES := {"ablating_mech": "ablating", "hopper": "hopper_property"}
 
 ## Terms never matched in prose: names a shown text uses as a plain word in their place
 ## ("Targets any front-rank foe", a move that "Strikes twice").
@@ -146,7 +147,7 @@ static func entry(id: String, db: ContentDB = null) -> Dictionary:
 
 
 ## The engine's status a status term names: its own id, or the engine's where an alias keys it apart
-## (the hopper's term, a machine's Burning reading as the foe's).
+## (the hopper's term, a machine's Ablating reading as the foe's).
 static func engine_status(term_id: String) -> String:
 	for k in ALIASES.keys():
 		if str(ALIASES[k]) == term_id and Effects.STATUS.has(str(k)) and not Effects.STATUS.has(term_id):

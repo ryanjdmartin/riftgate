@@ -997,14 +997,14 @@ function faceLine(f) {
   // The stock pass's printed rules (22 October): a gated keyword, a consumer, a weapon that burns its firer.
   for (const [k, g] of Object.entries(f.gates || {})) bits.push(g.status ? `${vocabName(k)} only on a foe carrying ${vocabName(g.status)}${g.stacks ? " ×" + g.stacks : ""}` : `${vocabName(k)} gated`);
   if (f.consumes) bits.push(`consumes ${vocabName(f.consumes)}, +${f.per_consumed || 1} a stack`);
-  if (f.self_burn) bits.push(`Burning ${f.self_burn} on itself`);
+  if (f.self_ablate) bits.push(`Ablating ${f.self_ablate} on itself`);
   if (f.heat) bits.push(`${f.heat} heat`);
   return bits.join(" · ");
 }
 function kwChip(k, cls = "kw", num = 0) { return el("span", {class: cls, title: vocabTitle(k)}, vocabName(k) + (num ? ` ${num}` : "")); }
-// A numbered keyword's number, as the face carries it beside the keyword (Burn 2, Volatile 3,
+// A numbered keyword's number, as the face carries it beside the keyword (Ablate 2, Volatile 3,
 // Spread 2: the area keywords numbered since 28 October).
-const KW_NUMBER = {burn: "burn", cryo: "cryo", flak: "flak", volatile: "volatile", cleave: "cleave", penetrate: "penetrate", splash: "splash"};
+const KW_NUMBER = {ablate: "ablate", cryo: "cryo", flak: "flak", volatile: "volatile", cleave: "cleave", penetrate: "penetrate"};
 function kwNumber(f, k) { return KW_NUMBER[k] ? Number(f[KW_NUMBER[k]] || 0) : 0; }
 // An entry's place on its die as the game prints it: a Roman numeral, from one.
 function roman(n) {
