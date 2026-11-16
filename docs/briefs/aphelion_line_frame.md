@@ -286,8 +286,21 @@ Backpack can use another pair of wings and reconfigure it so that it would boost
 - it's a dash, not a hover. I think scrap the chest ports, and maybe add a mount to the side of
 the head instead." So the mounts are the two shoulders and one on the side of the head, three
 in all, and the chest is clean; the pack dashes along the ground. The third round
-(`docs/looks/aphelion_line_frame3.png`, the module's `SHEET3`) takes each note; it is being
-built as this is written, and its details follow it here.
+(`docs/looks/aphelion_line_frame3.png`, the module's `SHEET3`) takes each note. The forearms
+15 long where they were 23, about 7.5 across where they were 11, the fist scaled with them; the
+rifle a compact shroud about 11 past the wrist with a lit lens (round two's ran 18); each blade's
+emitter on the outer face of its wrist, the beam 33 past it along the outside of the hand; the
+beam shield a kite of light 17 across and 30 tall, chamfered at the shoulders and closing to a
+point, upright with its point down, from an emitter nearer the elbow, the shape alone and no
+emblem; the pack's two pairs of flat wings swept back about 50 degrees over two boosters with
+their nozzles straight back, the calves' boosters back too, the wings hidden behind the
+shoulders from head on. The mounts: a slim barrel on the right shoulder and a twin barrel on the
+left, each on a small ring, and a small rack pod on the right side of the helm (the right, so
+the codex and skirmish angles show it); the chest plain armour. Five states as baked poses:
+fists at rest, rifles out, a blade and a shield, twin blades, a rifle and a shield. On the way
+the first wings, long and narrow, read as spikes, so they gained depth and a slight tilt. His to
+judge: the hands are small at rest, the forward blade shows as a stub from head on, and from
+behind the shield's top shows over the shoulder.
 
 ## Open for the session
 
