@@ -1787,9 +1787,9 @@ func test_a_brace_is_a_positive_number_of_stacks() -> void:
 	db.components["long_jack"] = jack
 	var long_refused := false
 	for e in db.validate():
-		if e.begins_with("component long_jack") and e.contains("lasts until the round's end"):
+		if e.begins_with("component long_jack") and e.contains("lasts until its side's next turn begins"):
 			long_refused = true
-	assert_true(long_refused, "a buff granting Braced for two rounds is refused")
+	assert_true(long_refused, "a buff granting Armoured for two rounds is refused")
 
 
 ## Rolling again on a status (the Nemesis's fists on rage, 12 October to 11 November) and the
@@ -2062,6 +2062,36 @@ func test_a_foes_stacking_rider_says_its_number() -> void:
 	f["actions"][0].erase("corrupt")
 	f["actions"].append({"id": "frost", "name": "Frost", "kind": "debuff", "effect": "corrupt_all", "weight": 1, "text": "", "status": "implemented"})
 	assert_true(_refused(db, "foe test_licker", "says what it lays"), "an effect that lays stacks says how many")
+
+
+## What a foe lays that halves says 2 at the least (Ryan, 16 November: "Buffs and debuffs that
+## decay at end of round should just have a minimum of 2"): one stack is gone at its first
+## halving, so a rally of 1 leaves its rallier nothing and a Brittle 1 is the pack's for one
+## turn alone. A rally's Empowered and a blow's Brittle; a rider that does not
+## halve (a Scorch, an Ablate) may still say 1.
+func test_a_foes_halving_status_is_laid_two_at_the_least() -> void:
+	var db := _fresh()
+	var f: Dictionary = db.foes["revenant"].duplicate(true)
+	f["actions"] = [
+		{"id": "bite", "name": "Bite", "kind": "attack", "weight": 1, "keywords": ["brittle"], "brittle": 1, "text": "", "status": "implemented"},
+		{"id": "cry", "name": "Cry", "kind": "buff", "effect": "rally", "value": 1, "weight": 1, "text": "", "status": "implemented"}]
+	db.foes["test_crier"] = f
+	assert_true(_refused(db, "foe test_crier", "a brittle rider lays a status that halves"), "a Brittle 1 on a foe's blow is refused")
+	assert_true(_refused(db, "foe test_crier", "rally lays a status that halves"), "and a rally of 1")
+	f["actions"][0]["brittle"] = 2
+	f["actions"][1]["value"] = 2
+	f["actions"].append({"id": "lick", "name": "Lick", "kind": "attack", "weight": 1, "keywords": ["scorch", "ablate"], "scorch": 1, "ablate": 1, "text": "", "status": "implemented"})
+	for e in db.validate():
+		assert_false(e.begins_with("foe test_crier"), "2 of each validates clean, and a Scorch 1 and an Ablate 1 beside them: %s" % e)
+	# Content holds it: every foe's rally and Brittle says 2 or more.
+	for id in db.foes.keys():
+		for a in db.foes[id].get("actions", []):
+			if str(a.get("status", "")) != "implemented":
+				continue
+			if str(a.get("effect", "")) == "rally":
+				assert_true(int(a.get("value", 0)) >= ContentDB.HALVING_MINIMUM, "%s's %s rallies at %d or more" % [id, a.get("id"), ContentDB.HALVING_MINIMUM])
+			if Array(a.get("keywords", [])).has("brittle"):
+				assert_true(int(a.get("brittle", 0)) >= ContentDB.HALVING_MINIMUM, "%s's %s lays Brittle %d or more" % [id, a.get("id"), ContentDB.HALVING_MINIMUM])
 
 
 func _fresh() -> ContentDB:
@@ -2430,7 +2460,7 @@ func test_a_buff_of_a_halving_status_takes_no_rounds() -> void:
 	assert_true(refused, "a buff granting Empowered for rounds is refused")
 	assert_true(Effects.decays_to_zero(Effects.STATUS["overcharged"]), "Empowered runs down on its own")
 	assert_false(Effects.decays_to_zero(Effects.STATUS["primed"]), "Primed runs down on no clock: a weapon fired spends it")
-	assert_false(Effects.decays_to_zero(Effects.STATUS["braced"]), "Armoured ends with the round")
+	assert_false(Effects.decays_to_zero(Effects.STATUS["braced"]), "Armoured ends as its side's next turn begins")
 
 
 ## A primer lasts until its stacks are fired (15 November, Primed the third beside Charged and

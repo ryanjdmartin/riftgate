@@ -10119,3 +10119,48 @@ Phased. Tiers two and three. Whether a reboot or a hold is right, the bot's play
 floor. The foes' numbers are still the ones sized against a shield that refilled and, for
 eleven slots, a blow that passed it: the defence side's pass sizes them, and this is what it
 starts from.
+
+**The same day, after his eighth round.** Three rulings landed on that game: what a foe lays
+that halves each round it lays 2 of at the least (the Wolf's and the Warg's Howl and the
+Goblin Captain's Warcry, 1 until then), a machine's Armoured ends as its side's next turn
+begins, and a Phased machine does not burn. Of tier one's fights only the wolves' move by
+content, so the flankers, the hunters and the elites were read again, the same squads and
+seeds:
+
+| Fight | Howl at 1 | Howl at 2 |
+|---|---|---|
+| The wolf pack, four wolves, two machines | 97% won, 5.4 rounds, 8.9%, 0.07 wrecks, 1.02 reboots | 100%, 5.4, 12.3%, no wreck, 1.13 |
+| A hunter's pack, the mean of the two | 98%, 4.5, 9.4% | 100%, 4.5, 11.1% |
+| The shaman's warband, two wolves in it | 4.6 rounds, 17.7% | 4.7, 16.0% |
+| An elite, the mean of eleven | 5.7 rounds, 11.2% | 5.7, 11.1% |
+
+The wolf pack costs a third more hull at a howl of 2 and loses no fight in 30: a direction,
+and inside the band of tier one's dearer fights. The warband's move is a cell's noise. The
+flankers and the antlion trio read the same to the decimal (4.5 rounds and 5.1%; 3.7 and
+9.9%), so the two rule changes moved no fight here: no blow lands between a round's end and
+the next one's opening, and no piece of the six grants Phased. Not read: the Warg's pack at
+tier two and the Captain's formations at tier three, where the same change lands.
+
+**The same day, on his four places.** The clocks moved to the four places a status ends (the
+bible's row, section 5): a foe's Ablating and Vitriol tick after its blow, its Empowered
+halves as its own turn ends, so a rally stands whole on the next blow of a foe that had acted,
+Brittle halves as its carrier's turn starts, and a machine's Regenerating pays at END TURN.
+The anchor again, the same squads and seeds (`anchor_probe.gd`, a scratch probe on the
+battle's own builders, greedy, each fight at its rating):
+
+| Fight | Before the four places | On them |
+|---|---|---|
+| The wolf pack, four wolves, two machines | 100% won, 5.4 rounds, 12.3%, no wreck | 97%, 5.3, 13.1%, 0.07 wrecks |
+| A hunter's pack, the mean of the two | 100%, 4.5, 11.1% | 98%, 4.5, 11.6% |
+| A flanker, the mean of four | 4.5 rounds, 5.1% | 4.5, 5.1% |
+| A formation, the mean of ten | 5.2 rounds, 7.2% | 5.2, 7.0% |
+| An elite, the mean of eleven | 5.7 rounds, 11.1% | 5.7, 11.1% |
+
+A direction at 30 fights a row. The wolf pack costs a little under a point more and loses one
+fight in 30, the howl whole on the wolves that had bitten before it; the antlion trio moves
+0.2 of a point, the flankers none, and no formation more than 0.6 (the goblin horde 6.4% to
+5.8%). The elites' mean holds, with the shaman's warband 16.0% to 17.4% and the Wild Hunt
+19.1% to 20.4%, each inside a cell's noise at 20 fights. So tier one stands where it stood.
+What it does not say: what Ablate lost with the kill before the blow, since no squad here
+leans on it and the bot never played for that kill; tiers two and three, where the Warg's
+howl and the Captain's Warcry, the Regenerating foes and the Brittle layers stand.

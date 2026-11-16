@@ -50,11 +50,12 @@ const BANK_WEIGHT := 0.2         # shield stood up or heat room made for a later
 const ABLATE_WEIGHT := 0.5       # Ablating's stacks on a foe pay out over the rounds to come
 const ABLATED_WEIGHT := 0.5      # a point Ablating will take off a machine on a later turn, the shield first: between a banked point of shield and a point of hull
 const OPTION_GUARD := 64         # spends in one round, at most: rapid rerolls the die and acts again
-const FLARE_ROUNDS := 1.0        # rounds of damage a stack its own kill grants is worth (the Ammit's flare): it lands after the swing, so it pays from the next round at half, about once itself
+const FLARE_ROUNDS := 1.0        # rounds of damage a stack its own kill grants is worth (the Ammit's flare): it lands as the round ends, whole through its next turn and halving after; a placeholder
 const HOLD_ROUNDS := 1.0         # rounds of damage a stack held whole into the next round is worth (the Quintessence Tap's hold): whole next round and halving after, less the round's wait
 const ESSENCE_WEIGHT := 0.3         # a count spent for a buff (1 Essence the Tap consumes), in foe hit points: a fifth of a flare for the rest of the battle, which the bot's one fight cannot see; a placeholder
 const SHOCK_WEIGHT := 0.6        # a Shock cashed later (a mine's, a hull's): the doubled blow, as a share of the team's average; a blow's own reads the hitter in hand (shock_cash)
 const CLEANSE_ROUNDS := 2.0      # rounds a cleansed status would otherwise have cost (Corrupted lasts the fight, Ablating fades)
+const EXPOSED_SHARE := 0.5       # what standing Exposed next round would cost, at a share: it is a round away and answered there too (a Lure, a Cleanse, a kill, a reboot the turn before); a placeholder
 const HOPPER_WEIGHT := 0.6       # a load in the hopper, as a share of what it adds when a later shot fires it
 const PLATE_ROUNDS := 2.0        # rounds a held load's Armoured is likely to stand (this round's blows and the next's), for the hull its armour keeps
 const RICOCHET_WORTH := 2.0      # a stack of Ricochet (the Skua's, 11 November), in foe hit points: about two shots' worth before the fight ends or a blow halves it; a placeholder, as every weight
@@ -701,10 +702,12 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	# The Mines (the Lammergeier's Reverberant Payload, 9 November): the spend's own, a mined foe's
 	# blast on its kill, the gather and the detonation (mine_worth).
 	score += mine_worth(sk, ms, f, target, p_kill)
-	# What the machine's passives grant it on its own kill (the Ammit's flare, 12 November: a
-	# stack of Empowered for every five Essence it holds): each stack on the blows its die deals
-	# from the next round, a strike a point (flare_gain), at the odds of the kill.
-	var flare := Effects.would_stack(ms.unit, "on_kill", "overcharged") if f.is_weapon() else 0
+	# What the machine's passives grant it for a kill of its own (the Ammit's flare, a stack of
+	# Empowered for every five Essence it holds; as the round ends since 16 November, once a round
+	# however many attacks kill, so a machine that has killed this round has its flare coming
+	# already): each stack on the blows its die deals in its next turn, a strike a point
+	# (flare_gain), at the odds of the kill.
+	var flare := Effects.would_stack(ms.unit, "on_round_kill", "overcharged") if f.is_weapon() and not ms.killed_round else 0
 	if flare > 0:
 		score += p_kill * flare_gain(ms, "overcharged", flare) * FLARE_ROUNDS
 	if f.kill_rerolls > 0:
@@ -1065,6 +1068,8 @@ func brittle_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, foe: Foe, left
 ## What a volatile entry costs its owner in the score: the hull it bites per use, and the
 ## death it brings when the round's end would already leave nothing to bite.
 static func volatile_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: float = 1.0) -> float:
+	if Skirmish.is_phased(ms):
+		return 0.0   # nothing damages a Phased machine, the hull its own spend costs included (Skirmish.pending_volatile)
 	var bite := Skirmish.spend_bite(ms.unit, f)
 	if bite <= 0:
 		return 0.0
@@ -1535,6 +1540,14 @@ func cleanse_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 		who.unit.modifiers = carried
 		var per := Effects.status_value("ablating_mech", "tick_hp")
 		score += _outlook_gain(sk.forecast(who), cleared) + float(per * ablating * (ablating - 1)) / 2.0 * ABLATED_WEIGHT
+	# Its Exposed (16 November): the armour back against the blows drawn on it this round, the
+	# intents staying where they turned.
+	if Effects.has(who.unit, "exposure_mech") and not Skirmish.is_out(who):
+		var marked: Array = who.unit.modifiers
+		who.unit.modifiers = marked.filter(func(m) -> bool: return m.id != "exposure_mech")
+		var plated := sk.forecast(who)
+		who.unit.modifiers = marked
+		score += _outlook_gain(sk.forecast(who), plated)
 	var scorch := Effects.stacks_of(who.unit, "scorched")
 	if scorch > 0:
 		for eff in Effects.STATUS["scorched"]["effects"]:
@@ -1910,30 +1923,60 @@ func ward_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 			score += _raw_attack_mean(who) / float(n)
 		if a.has_keyword(a.action, "corrupt"):
 			score += float(Skirmish.corrupt_bite() * a.rider(a.action, "corrupt")) * blows * HULL_WEIGHT * CLEANSE_ROUNDS / float(n)
+		if a.has_keyword(a.action, "expose"):
+			score += exposed_stakes(sk, who)
 	# A special's rider lands on it too, and the Ward turns that away as well (Ryan, 25 October:
 	# "Should stop all riders, even from non-damaging attacks"): a Stoke's Ablating, a Stone's
 	# switch-off or a purge on its pick; an Eruption's Scorched and a Diamond Dust's
 	# Corrupted on every machine.
+	# Every step of a move that is an effect, its own special or what it does also (16
+	# November: a move is a short list of steps).
 	for a in sk.field_foes():
-		if not a.alive() or a.is_suppressed() or a.attacks() or a.gathering():
+		if not a.alive() or a.is_suppressed() or a.gathering():
 			continue
-		var value := maxi(1, int(a.action.get("value", 0)))
 		var on_it: bool = a.target == who
-		match str(a.action.get("effect", "")):
-			"ablate":
-				if on_it:
-					score += float(ablate * value * (value + 1)) / 2.0 * ABLATED_WEIGHT
-			"jam":
-				if on_it:
-					score += _raw_attack_mean(who) / float(n)
-			"dispel":
-				if on_it:
-					score += _purge_stakes(who)
-			"scorch_all":
-				score += float(scorch * value) * BANK_WEIGHT
-			"corrupt_all":
-				score += float(Skirmish.corrupt_bite() * value) * HULL_WEIGHT * CLEANSE_ROUNDS / float(n)
+		for st in Foe.effects_of(a.action):
+			var value := maxi(1, int(st.get("value", 0)))
+			match str(st.get("effect", "")):
+				"ablate":
+					if on_it:
+						score += float(ablate * value * (value + 1)) / 2.0 * ABLATED_WEIGHT
+				"jam":
+					if on_it:
+						score += _raw_attack_mean(who) / float(n)
+				"dispel":
+					if on_it:
+						score += _purge_stakes(who)
+				"expose":
+					if on_it:
+						score += exposed_stakes(sk, who)
+				"scorch_all":
+					score += float(scorch * value) * BANK_WEIGHT
+				"corrupt_all":
+					score += float(Skirmish.corrupt_bite() * value) * HULL_WEIGHT * CLEANSE_ROUNDS / float(n)
 	return score
+
+
+## What standing Exposed through the next round would cost a machine a foe's Expose is aimed
+## at (16 November): its armour off every blow, and the fire of the whole field that would
+## have gone elsewhere, as far as it has shield and hull to lose, at a share since the round
+## is one away. The foes' moves a round on are unknown, so each counts at its blow.
+static func exposed_stakes(sk: Skirmish, who: Skirmish.MechState) -> float:
+	var fire := 0.0
+	var blows := 0.0
+	for a in sk.field_foes():
+		if not a.alive():
+			continue
+		if a.attacks():
+			fire += float(sk.foe_blow(a) * a.strikes())
+			blows += float(a.strikes())
+		else:
+			fire += float(a.attack)   # a special this round: its plain blow the next
+			blows += 1.0
+	var stand := maxi(1, sk.targetable_mechs().size())
+	var drawn := fire * (1.0 - 1.0 / float(stand))   # what it would not have taken as one pick among the machines
+	var bare := float(who.unit.armour) * blows   # and its armour off every blow
+	return minf(float(who.unit.shield + who.unit.hull), drawn + bare) * HULL_WEIGHT * EXPOSED_SHARE
 
 
 ## Two forecasts of one machine's round, read as a shield's score reads them: the hull kept,

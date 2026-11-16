@@ -356,8 +356,8 @@ static func move_lines(f: Foe, a: Dictionary, db: ContentDB, live: bool = false,
 	var aimed := "" if aim == Foe.AIM_ANYTHING else ", " + str(Foe.AIM_TEXT.get(aim, aim))
 	if Foe.is_attack_action(a):
 		var line := [word("Attack"), num(str(dmg), dmg, own) if live else word(str(dmg))]
-		if Foe.swings_held(a) and (not live or f.held.is_empty()):
-			line = [word("Attack: what it took")]   # a borrowed swing (30 October): its number is the stolen piece's
+		if not Foe.power_status(a).is_empty() and (not live or not Effects.has(f, Foe.power_status(a))):
+			line = [word("Attack: what it took")]   # a borrowed swing (30 October): its number is the piece it took
 		var n := maxi(1, int(a.get("strikes", 1)))
 		if n > 1:
 			line.append(word("×%d" % n))
@@ -436,7 +436,7 @@ const MOVE_TARGETS := {
 	"brace": "Self", "recover": "Self", "revive_once": "Self", "barrier": "Self", "regenerate": "Self", "golden": "Self",
 	"heal": "The most hurt of its own", "brace_all": "Every foe", "revive_once_ally": "One of its own",
 	"cleanse": "The most-marked of its own", "prime": "Every other foe", "ward_all": "Every foe",
-	"summon": "The waiting pool", "rally": "Every foe", "merge": "Its kinds on the field",
+	"summon": "The waiting pool", "rally": "Every foe", "merge": "Its kinds on the field", "appropriate": "Any machine",
 	"drain_rerolls": "The team's rerolls", "scorch_all": "Every machine", "corrupt_all": "Every machine",
 }
 

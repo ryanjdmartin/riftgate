@@ -569,7 +569,7 @@
    "design": {
     "fantasy": "A sinister digitigrade figure, with 4 clawed arms, the middle set which can be used as an additional pair of legs. A low-set snout like cockpit with burning \"eyes.\" Absorbs energy from units it defeats with its 4 signature locked claw weapons, granting permanent overcharge.",
     "niche": "Scaling damage",
-    "notes": "Reworked 12 November on Ryan's go, his own design (\"The 4 claws are combined into one weapon that deals 1x4 instead, with Breach. They no longer gain Empowered on kill\"; \"Passive: Kills grant one Soul. At the start of a skirmish, or on kill, the souls flare, granting 1 Empowered per 5 souls\"; \"new locked piece: Soul Siphon: Consume up to 5 souls, granting 1 Empowered per soul. Cooldown 3\"), with his calls on the holes: the Souls last the battle and carry no cap (\"as part of the fantasy\"), any kill in its fight banks one and only its own kill flares, once an attack that kills however many fall to it (\"Flaring twice for an AoE is probably wrong, let's make it 'one of more killed' by an attack\"), and the Siphon's round holds every Empowered on the field (\"No Empowered decays this round. And I mean none, not ally or enemy\"). The Tap's kept Empowered, its form until then, went with it: the pitch above is his of that form. Every number a placeholder. Renamed 15 November on his marks (\"Passive: Quintessence Reactor. Rename souls to Essence. Soul Siphon -> Quintessence Tap. Grants the no-decay state which is represented as a buff on the Ammit called Essence Flare\"): the passive is the Quintessence Reactor, its count Essence, the Siphon the Quintessence Tap, and the Tap's hold a buff on the Ammit, Essence Flare, where a chip on every unit holding Empowered had said it. The talons keep their name."
+    "notes": "Reworked 12 November on Ryan's go, his own design (\"The 4 claws are combined into one weapon that deals 1x4 instead, with Breach. They no longer gain Empowered on kill\"; \"Passive: Kills grant one Soul. At the start of a skirmish, or on kill, the souls flare, granting 1 Empowered per 5 souls\"; \"new locked piece: Soul Siphon: Consume up to 5 souls, granting 1 Empowered per soul. Cooldown 3\"), with his calls on the holes: the Souls last the battle and carry no cap (\"as part of the fantasy\"), any kill in its fight banks one and only its own kill flares, once an attack that kills however many fall to it (\"Flaring twice for an AoE is probably wrong, let's make it 'one of more killed' by an attack\"), and the Siphon's round holds every Empowered on the field (\"No Empowered decays this round. And I mean none, not ally or enemy\"). The Tap's kept Empowered, its form until then, went with it: the pitch above is his of that form. Every number a placeholder. Renamed 15 November on his marks (\"Passive: Quintessence Reactor. Rename souls to Essence. Soul Siphon -> Quintessence Tap. Grants the no-decay state which is represented as a buff on the Ammit called Essence Flare\"): the passive is the Quintessence Reactor, its count Essence, the Siphon the Quintessence Tap, and the Tap's hold a buff on the Ammit, Essence Flare, where a chip on every unit holding Empowered had said it. The talons keep their name. The flare's second trigger moved on 16 November, his words the passive's text: \"At the start of the skirmish, or at the end of a round where the Ammit killed at least one enemy, the Essences Flare, granting 1 Empowered per 5 Essences it holds.\" It came after each attack of its own that killed until then, and halved away the same round; Empowered halves as its side's turn ends since the same day, so the round's flare stands whole through its next turn."
    },
    "codex": "",
    "hull": 32,
@@ -596,7 +596,7 @@
    "passive": {
     "id": "quintessence_reactor",
     "name": "Quintessence Reactor",
-    "description": "Every foe that falls in its fight is 1 Essence, kept for the battle. As each fight opens, and after each attack of the Ammit's that kills, it gains 1 Empowered for every 5 Essence it holds.",
+    "description": "Every foe that falls in its fight is 1 Essence, kept for the battle. At the start of the skirmish, or at the end of a round where the Ammit killed at least one enemy, the Essences Flare, granting 1 Empowered per 5 Essences it holds.",
     "effects": [
      {
       "trigger": "on_foe_killed",
@@ -611,7 +611,7 @@
       "stack_step": 5
      },
      {
-      "trigger": "on_kill",
+      "trigger": "on_round_kill",
       "effect": "stack_status",
       "value": "overcharged",
       "per_stack": "essence",

@@ -141,23 +141,39 @@ func test_a_rebooting_machine_takes_its_tick_on_the_hull() -> void:
 	assert_eq(Effects.stacks_of(u, "ablating_mech"), 1, "and still Ablating: a reboot is no cleanse")
 
 
-## A machine out of the fight takes no damage, so its Ablating waits: no points and no fade,
-## and it ticks again the turn the machine is back.
-func test_a_machine_out_of_the_fight_takes_none_and_its_stacks_wait() -> void:
+## Out of reach, two ways (Ryan, 16 November). A Phased machine takes no point and its stacks
+## fade all the same ("Everything ticks during phased. It doesn't take damage but it's a way of
+## waiting out a debuff"); a Swallowed one's wait ("Swallowed it's out of play so everything
+## should pause"), and tick the turn it is back.
+func test_a_phased_machines_stacks_fade_and_take_nothing_and_a_swallowed_ones_wait() -> void:
 	var u := _mech(1, "A", 10, 100)
 	var other := _mech(2, "B", 10, 100)
 	var sk := _fight([u, other], [Foe.make("dummy", 900, 0)])
 	sk.start_round()
 	_ablating(u, 2)
 	Effects.grant_buff(u, "phased", 1, "test", sk.round)
-	assert_eq(int(sk.forecast(sk.mechs[0])["ablated"]), 0, "the forecast counts none while it is out")
+	assert_eq(int(sk.forecast(sk.mechs[0])["ablated"]), 0, "the forecast counts none while it is Phased")
 	sk.end_round()
-	assert_eq([u.shield, u.hull], [10, 100], "nothing reaches a Phased machine, its own tick included")
-	assert_eq(Effects.stacks_of(u, "ablating_mech"), 2, "and the stacks wait")
+	assert_eq([u.shield, u.hull], [10, 100], "nothing damages a Phased machine, its own tick included")
+	assert_eq(Effects.stacks_of(u, "ablating_mech"), 1, "and a stack fades all the same")
 	sk.start_round()
-	assert_false(Skirmish.is_out(sk.mechs[0]), "back in the fight")
+	assert_false(Skirmish.is_out(sk.mechs[0]), "back in reach")
 	sk.end_round()
-	assert_eq([u.shield, Effects.stacks_of(u, "ablating_mech")], [8, 1], "the turn it is back, it ticks")
+	assert_eq([u.shield, Effects.stacks_of(u, "ablating_mech")], [9, 0], "the turn it is back, the stack left takes its point and goes")
+	var v := _mech(1, "A", 10, 100)
+	var sk2 := _fight([v, _mech(2, "B", 10, 100)], [Foe.make("dummy", 900, 0)])
+	sk2.start_round()
+	_ablating(v, 2)
+	Effects.grant_for_rounds(v, Effects.STATUS["swallowed"], "test", sk2.round + 1)
+	assert_eq(int(sk2.forecast(sk2.mechs[0])["ablated"]), 0, "the forecast counts none while it is Swallowed")
+	sk2.end_round()
+	sk2.start_round()
+	sk2.end_round()
+	assert_eq([v.shield, v.hull, Effects.stacks_of(v, "ablating_mech")], [10, 100, 2], "two turns out: no point taken and no stack faded")
+	sk2.start_round()
+	assert_false(Skirmish.is_out(sk2.mechs[0]), "back in the fight")
+	sk2.end_round()
+	assert_eq([v.shield, Effects.stacks_of(v, "ablating_mech")], [8, 1], "the turn it is back, it ticks as it would have")
 
 
 ## The bot's forecast and the screen's preview both count the tick, before the foes' blows.

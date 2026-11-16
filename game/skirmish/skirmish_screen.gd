@@ -1577,13 +1577,40 @@ static func form_mark(ms: Skirmish.MechState, f: Face) -> String:
 ## (Scorch 2: two), so a scorch or a blow at every machine is read off the chip itself.
 static func intent_riders(foe: Foe) -> Array:
 	var out: Array = []
-	if foe == null or not Foe.is_attack_action(foe.action):
+	if foe == null:
+		return out
+	if not Foe.is_attack_action(foe.action):
+		# A move of its own that lays Exposed wears the mark all the same (16 November): the
+		# intent is the first of its two warnings, and a bare debuff mark would not say which.
+		if Foe.exposes(foe.action) and Terms.has("expose"):
+			out.append([Terms.glyph("expose"), "", Terms.colour("expose")])
+		out.append_array(_step_marks(foe.action, out))
 		return out
 	for k in foe.action.get("keywords", []):
 		var id := str(k)
 		if not Terms.has(id) or Terms.glyph(id).is_empty():
 			continue
 		out.append([Terms.glyph(id), str(foe.rider(foe.action, id)) if Foe.NUMBERED_RIDERS.has(id) else "", Terms.colour(id)])
+	out.append_array(_step_marks(foe.action, out))
+	return out
+
+
+## The marks of what a move does also (16 November: a move is a short list of steps), beside
+## its blow's own: each step's effect by the term it reads as, the word a rider of the same
+## effect wears or the status it grants, once each and never a mark the blow already shows.
+## A step with no term of its own shows none: the move's text says it.
+const STEP_TERMS := {"ablate": "ablate", "jam": "jam", "expose": "expose", "dispel": "dispel", "swallow": "swallow",
+	"scorch_all": "scorch", "corrupt_all": "corrupt", "appropriate": "appropriated"}
+static func _step_marks(a: Dictionary, shown: Array = []) -> Array:
+	var out: Array = []
+	var seen: Array = shown.map(func(row) -> String: return str(row[0]))
+	for st in a.get("also", []):
+		var term := str(STEP_TERMS.get(str(st.get("effect", "")), ""))
+		if term.is_empty() or not Terms.has(term) or Terms.glyph(term).is_empty() or seen.has(Terms.glyph(term)):
+			continue
+		seen.append(Terms.glyph(term))
+		var n := int(st.get("value", 0))
+		out.append([Terms.glyph(term), str(n) if n > 0 and ["ablate", "scorch_all", "corrupt_all", "dispel"].has(str(st.get("effect", ""))) else "", Terms.colour(term)])
 	return out
 
 
@@ -1597,6 +1624,10 @@ func _foe_abilities(foe: Foe) -> Array:
 	var rows: Array = []
 	if foe.rage > 0:
 		rows.append(["overcharge", "", "Ability, Enrage: every shield, vent or equipment you spend makes it Enraged +%d" % foe.rage, _foe_chip_colour("enraged"), "ability"])
+	if foe.drains:
+		# The Vampire Lord's (Ryan, 15 November: "This should be moved to an ability on the unit
+		# since it's on every attack. Like the Nob"): the rule its every blow plays by.
+		rows.append([Terms.glyph("drain"), "", "Ability, Drain: every blow it lands heals it by what the blow took from the hull", Terms.colour("drain"), "ability"])
 	if Effects.has(foe, "guarded"):
 		# A boss in parts (15 October): the lock while its parts stand, so the zero its die
 		# shows has a reason on the foe itself.
@@ -1645,7 +1676,7 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(status_row("ablating", "ablate", str(foe.ablate_stacks()), "Ablating ×%d" % foe.ablate_stacks(), _foe_chip_colour("ablating")))
 	var vitriol := Effects.stacks_of(foe, "vitriol")
 	if vitriol > 0:
-		# The funnel-web's acid (18 October): its stacks, and the share they eat at its action.
+		# The funnel-web's acid (18 October): its stacks, and the share they eat as its turn ends.
 		rows.append(status_row("vitriol", "vitriol", str(vitriol), "Vitriol ×%d" % vitriol, _foe_chip_colour("vitriol")))
 	var brittle := Effects.stacks_of(foe, "brittled")
 	if brittle > 0:
@@ -1710,6 +1741,11 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(status_row("kindled", "overcharge", "+%d" % maxi(1, coming), "Empowered +%d on its way, from %s" % [maxi(1, coming), from], _foe_chip_colour("kindled"), "preview"))
 	if Effects.has(foe, "risen"):
 		rows.append(status_row("risen", "star", "", str(Effects.STATUS["risen"]["name"]), _foe_chip_colour("risen")))
+	var taken := Effects.stacks_of(foe, "appropriated")
+	if taken > 0:
+		# What it took off a machine (Gilgamesh's; Appropriated since 16 November): the chip is
+		# the number its borrowed swing will land, and a Purge lowers it.
+		rows.append(status_row("appropriated", _foe_glyph("appropriated"), str(taken), "%s %d: its borrowed swing lands that number, and spends it" % [str(Effects.STATUS["appropriated"]["name"]), taken], _foe_chip_colour("appropriated")))
 	# The four buffs a foe's specials grant (28 October), on the machines' chips: Primed's lit
 	# flame, the shield with its wall or its struck ring, the heart regrowing.
 	var primed := Effects.stacks_of(foe, "primed")
@@ -1721,9 +1757,9 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(status_row("ward", _foe_glyph("ward"), "", "Ward", _foe_chip_colour("ward")))
 	var regrow := Effects.regrowth(foe)
 	if regrow > 0:
-		# A point a stack at its action, then a stack fades (15 November): the chip is the count.
+		# A point a stack as its turn ends, then a stack fades (15 and 16 November): the chip is the count.
 		var mending := Effects.stacks_of(foe, "regenerating")
-		rows.append(status_row("regenerating", _foe_glyph("regenerating"), "×%d" % mending, "Regenerating ×%d: +%d at its action, then a stack fades" % [mending, regrow], _foe_chip_colour("regenerating")))
+		rows.append(status_row("regenerating", _foe_glyph("regenerating"), "×%d" % mending, "Regenerating ×%d: +%d as its turn ends, then a stack fades" % [mending, regrow], _foe_chip_colour("regenerating")))
 	var paradox := Effects.stacks_of(foe, "paradox")
 	if paradox > 0:
 		var at := sk.paradox_count()
@@ -1818,6 +1854,8 @@ static func _foe_glyph(id: String) -> String:
 			return "star"
 		"exposure":
 			return "exposed"
+		"appropriated":
+			return "taken"
 		"vitriol", "paradox", "shocked", "numbed", "mine":
 			return id
 	return status_glyph(id)
@@ -1840,6 +1878,8 @@ static func status_glyph(id: String) -> String:
 			return "ablate"   # one mark on either body (15 November): the machine's thermometer flame went with Burning as heat
 		"brittled_mech":
 			return "brittle"   # and Brittle's the same (15 November): the airburst a foe wears
+		"exposure_mech":
+			return "exposed"   # and Exposed's (16 November): the mark an Exposed foe wears
 		"scorched":
 			return "scorch"
 		"overcharged":
@@ -2426,7 +2466,7 @@ func _intent_chip(foe: Foe) -> Array:
 ## alone.
 func _intent_read(foe: Foe) -> Array:
 	var blow := foe.attacks() or foe.gathering()
-	return [sk.intent_value(foe), ("×%d" % foe.strikes()) if blow and foe.strikes() > 1 else "", intent_riders(foe) if blow else []]
+	return [sk.intent_value(foe), ("×%d" % foe.strikes()) if blow and foe.strikes() > 1 else "", intent_riders(foe) if blow or Foe.exposes(foe.action) or foe.action.has("also") else []]
 
 
 ## A stat in a hold, as the codex has it: its label, its base in ink and the change in a
