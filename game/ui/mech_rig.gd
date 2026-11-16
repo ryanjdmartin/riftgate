@@ -91,6 +91,14 @@ const COLLAPSE_WAIST := 16.0   # a biped's waist slumps forward this many degree
 const COLLAPSE_PASSES := 2     # how often the slack joints settle, each hanging what it carries from where the last pass left it
 const COLLAPSE_TOUCH := 0.02   # a limb whose end comes within this share of the machine's size of the floor stands on it
 const SPIN_STOP := 1.4         # seconds its fans, rotors and idle spins take to run down
+## A model may go its own way instead (the sidecar's `death`, lowforge's b.death; Ryan, 16 November:
+## "The slump was supposed to be a general guideline so that everything got an adequate baseline
+## death animation and pose. There's nothing to say that they can't be improved on a case by case
+## basis, like the Clydesdale falling onto its face like the AT-AT that influenced it"): its death
+## pose, held as a form under this name, turned in as its lights go in place of the slump and set
+## down on its own lowest point (_death_settle), so a pose tipped forward or onto its side rests on
+## the floor, never floating and never through it.
+const DEATH := "@death"
 ## The joints the slack leaves alone (a leg's, which sinks planted or stays, a waist, which slumps,
 ## a spin, a mechanism, a turn about up), by how their names begin.
 const COLLAPSE_SKIP := ["hip", "knee", "ankle", "toe", "foot", "coxa", "wheel", "steer", "caster", "tread", "rotor",
@@ -642,6 +650,11 @@ func setup(root: Node3D, model_id: String, body_node: Node3D = null, phase: int 
 		for m in _lit_materials(str(part)):
 			_move_glow.append([m, _rest_of(m)])
 	_setup_forms(side.get("forms", {}) if side.get("forms", {}) is Dictionary else {})
+	var death_pose = side.get("death", {})
+	if death_pose is Dictionary and not (death_pose as Dictionary).is_empty():
+		forms[DEATH] = _form_entry(death_pose)   # held only once lost (kill), never by a status
+		_form_on[DEATH] = false
+		_form_t[DEATH] = 0.0
 	_setup_halos(side)
 	_setup_standing(side)
 	_setup_counts(side.get("counts", []))
@@ -709,29 +722,34 @@ func _setup_forms(fs: Dictionary) -> void:
 	_form_debug_t = 0.0
 	form_debug = OS.get_environment("RIFTGATE_SEAL_DEBUG") == "1"
 	for name in fs.keys():
-		var f: Dictionary = fs[name]
-		var duration := maxf(0.01, float(f.get("duration", 0.6)))
-		var curves := {}
-		var tracks: Dictionary = f.get("tracks", {})
-		for jn in tracks.keys():
-			if joints.has(jn):
-				curves[jn] = curve(tracks[jn], duration, "smooth")
-		if not (f.get("body", []) as Array).is_empty():
-			curves[BODY] = curve(f["body"], duration, "smooth")
-		var glow: Array = []
-		for g in f.get("glow", []):
-			for part in g.get("parts", []):
-				for m in _lit_materials(str(part)):
-					glow.append([m, _rest_of(m), float(g.get("k", -1.0))])
-		var own: Array = []
-		for a in f.get("acts", []):
-			if a is Dictionary and a.has("name"):
-				own.append(a)
-		forms[name] = {"duration": duration, "curves": curves, "glow": glow, "acts": own}
+		forms[name] = _form_entry(fs[name])
 		_form_on[name] = false
 		_form_t[name] = 0.0
 	_form_body_rot = Vector3.ZERO
 	_form_body_slide = Vector3.ZERO
+
+
+## One form as the rig holds it: its tracks and body as curves over its turn, its lit parts with the
+## light each has at rest, the acts it plays while held.
+func _form_entry(f: Dictionary) -> Dictionary:
+	var duration := maxf(0.01, float(f.get("duration", 0.6)))
+	var curves := {}
+	var tracks: Dictionary = f.get("tracks", {})
+	for jn in tracks.keys():
+		if joints.has(jn):
+			curves[jn] = curve(tracks[jn], duration, "smooth")
+	if not (f.get("body", []) as Array).is_empty():
+		curves[BODY] = curve(f["body"], duration, "smooth")
+	var glow: Array = []
+	for g in f.get("glow", []):
+		for part in g.get("parts", []):
+			for m in _lit_materials(str(part)):
+				glow.append([m, _rest_of(m), float(g.get("k", -1.0))])
+	var own: Array = []
+	for a in f.get("acts", []):
+		if a is Dictionary and a.has("name"):
+			own.append(a)
+	return {"duration": duration, "curves": curves, "glow": glow, "acts": own, "raw_body": (f.get("body", []) as Array).duplicate(true)}
 
 
 ## Hold a form or let it go: it turns in over its duration and back out the same way, from
@@ -741,6 +759,8 @@ func _setup_forms(fs: Dictionary) -> void:
 ## animations set shouldn't be the same"), or else its own, less any that moves a joint the
 ## form keeps.
 func set_form(name: String, on: bool) -> void:
+	if dead or name == DEATH:
+		return   # a lost machine's forms stay as they were, and its death pose is kill()'s alone
 	if not forms.has(name) or bool(_form_on[name]) == on:
 		return
 	_form_on[name] = on
@@ -903,6 +923,14 @@ func _forms_step(delta: float) -> bool:
 			turning = true
 	if not turning:
 		return false
+	if _forms_apply():
+		_wait = GAP_DEBUG if not debug.is_empty() else _rng.randf_range(GAP_MIN, GAP_MAX)   # in or out, a pause before the first act of the new set
+	return true
+
+
+## What every form adds where its turn stands, to each joint, the body and its lit parts' light; true
+## when every form is settled, in or out.
+func _forms_apply() -> bool:
 	_form_rot.clear()
 	_form_slide.clear()
 	_form_body_rot = Vector3.ZERO
@@ -926,9 +954,7 @@ func _forms_step(delta: float) -> bool:
 		var p := t / float(f["duration"])
 		for g in f["glow"]:
 			_light_to(g[0], float(g[1]), 1.0 + float(g[2]) * p)
-	if settled:
-		_wait = GAP_DEBUG if not debug.is_empty() else _rng.randf_range(GAP_MIN, GAP_MAX)   # in or out, a pause before the first act of the new set
-	return true
+	return settled
 
 
 func _collect(node: Node) -> void:
@@ -1484,7 +1510,16 @@ func kill() -> void:
 			_rest_of(m)   # its rest kept before it dims, for revive()
 			_gutter_mats.append([m, (m as StandardMaterial3D).emission_energy_multiplier])
 	_gutter = 0.0
-	_collapse = 0.0
+	if forms.has(DEATH):
+		# Its own death in place of the slump: the pose set down on its lowest point, and nothing for
+		# the view to land (collapse_floor 0: an airborne one comes down to the floor, the pose's
+		# own settle does the rest).
+		_settle_death()
+		_form_on[DEATH] = true
+		_collapse = -1.0
+		collapse_floor = 0.0
+	else:
+		_collapse = 0.0
 
 
 func revive() -> void:
@@ -1497,11 +1532,74 @@ func revive() -> void:
 	_gutter_mats.clear()
 	_collapse = -1.0
 	collapse_floor = 0.0
+	if forms.has(DEATH):
+		_form_on[DEATH] = false
+		_form_t[DEATH] = 0.0   # stood up at once: a revive is no slow rise
+		_forms_apply()
 	_spin_k = 1.0
 	_want_rot.clear()
 	_body_want_rot = Vector3.ZERO
 	_body_want_slide = Vector3.ZERO
 	_wait = GAP_MIN
+
+
+## The death pose set down on its own lowest point: the pose put on for a moment (each joint its
+## track's last key over what the held forms give it, the body its own last key), the lowest point
+## of what the body carries measured where the body stands, everything put back, and the difference
+## to the floor (the model's ground, where its rest puts it) eased into the pose's body slide, so it
+## turns in with the pose. In the body's parent's units, as the body's position is.
+func _settle_death() -> void:
+	var f: Dictionary = forms[DEATH]
+	var d := float(f["duration"])
+	var saved := {}
+	for jn in joints.keys():
+		saved[jn] = (joints[jn] as Node3D).rotation
+	var saved_pos := body.position
+	var saved_rot := body.rotation
+	var slide := Vector3.ZERO
+	var turn := Vector3.ZERO
+	for jn in (f["curves"] as Dictionary).keys():
+		var v: Array = curve_at(f["curves"][jn], d)
+		if jn == BODY:
+			slide = Vector3(float(v[0]), float(v[1]), float(v[2]))
+			if v.size() >= 6:
+				turn = Vector3(float(v[4]), float(v[3]), float(v[5]))   # authored (yaw, pitch, roll)
+			continue
+		(joints[jn] as Node3D).rotation = _rest[jn] + euler_of(Vector3(float(v[0]), float(v[1]), float(v[2])) + (_form_rot.get(jn, Vector3.ZERO) as Vector3))
+	body.position = _body_rest_pos + offset_of(slide + _form_body_slide)
+	body.rotation = _body_rest_rot + euler_of(turn + _form_body_rot)
+	var low := INF
+	var stack: Array = [model]
+	while not stack.is_empty():
+		var n: Node = stack.pop_back()
+		if n is Node3D and not (n as Node3D).visible:
+			continue
+		for c in n.get_children():
+			stack.append(c)
+		if n is MeshInstance3D and not n.has_meta("halo") and not n.has_meta("plume") and not n.has_meta("is_trace"):
+			var mi := n as MeshInstance3D
+			if mi.mesh == null:
+				continue
+			var xf := body.transform * _in_model(mi)
+			var bb := mi.get_aabb()
+			for k in range(8):
+				low = minf(low, (xf * bb.get_endpoint(k)).y)
+	for jn in saved.keys():
+		(joints[jn] as Node3D).rotation = saved[jn]
+	body.position = saved_pos
+	body.rotation = saved_rot
+	if low == INF:
+		return
+	var lift := _body_rest_pos.y - low   # up when it would sink, down when it would float
+	var raw: Array = (f.get("raw_body", []) as Array).duplicate(true)
+	if raw.is_empty():
+		raw = [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [d, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+	for key in raw:
+		var row: Array = key
+		while row.size() < 7:
+			row.append(0.0)
+		row[3] = float(row[3]) + lift * clampf(float(row[0]) / d, 0.0, 1.0)
+	f["curves"][BODY] = curve(raw, d, "smooth")
 
 
 ## How much of its light a lost machine's lit part keeps `t` seconds into guttering out: a stutter

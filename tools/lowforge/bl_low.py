@@ -477,6 +477,7 @@ class Build:
         self.halo = []         # the lit parts a glow names that wear a soft halo when they flare, the hot ones; (part, scale) for one larger, (part, scale, ahead) for one drawn its own way toward the eye (MechRig's halos)
         self.standing = {}     # lit part -> the glow it holds always, over its rest, an act's flare rising past it (MechRig's standing glow)
         self.fires = {}        # a fixed component (or the chassis's passive, for what it fires: the Whip Scorpion's release) -> (act, from, to[, blow]) or a list of them taking turns: the slices of acts that are its firing, played on the spend (MechRig.fire_act)
+        self.death_pose = None   # the pose it goes to when lost, in place of the baseline slump (see death())
         self.hidden_fire = None  # (act, from, to[, blow]): the slice every weapon on a hidden mount fires with (the Cottonmouth's drum turning two chambers, 16 November), the sidecar's hidden_fire (MechRig.fire_hidden)
         self.aims = {}         # a fixed component -> the joint that turns to aim it, when it is no waist (MechView3D.aim_joint_for)
         self.pivots = False    # whether the whole machine turns on the spot to aim (a tank's tracks, a castered chassis), as a hover does
@@ -958,6 +959,21 @@ class Build:
         self.forms[name] = out
         return out
 
+    def death(self, duration, tracks=None, body=None, glow=None):
+        """The pose the machine goes to when it is lost (MechRig.kill), in place of the baseline
+        slump every model shares (Ryan, 16 November: "The slump was supposed to be a general
+        guideline so that everything got an adequate baseline death animation and pose. There's
+        nothing to say that they can't be improved on a case by case basis, like the Clydesdale
+        falling onto its face like the AT-AT that influenced it"). `tracks`, `body` and `glow` as a
+        form's: from rest at 0 to the held pose at `duration`, eased; the rig turns it in as the
+        lights go and holds it, and sets the pose down on its own lowest point (MechRig's death
+        floor), so a pose tipped forward or onto its side rests on the ground, never floating and
+        never through it. Keep it on its hex: a fall that throws the machine across into the next
+        is the pose Ryan sent back (16 November)."""
+        self.form("@death", duration, tracks or {}, glow=glow, body=body)
+        self.death_pose = self.forms.pop("@death")
+        return self.death_pose
+
     def ajar(self, unless, joints):
         """A pose the machine stands in while the form `unless` is not held (the Polar Bear's vents
         ajar while its shell is open; Ryan, 2 November: "When unsealed, the vents should be open,
@@ -1261,6 +1277,8 @@ class Build:
             out["counts"] = self.counts
         if self.forms:
             out["forms"] = {n: dict(f, acts=self.form_acts.get(n, [])) if self.form_acts.get(n) else f for n, f in self.forms.items()}
+        if self.death_pose:
+            out["death"] = self.death_pose   # its death pose (death()), in place of the baseline slump
         if self.ajar_spec:
             out["ajar"] = self.ajar_spec
         # A halo is the glow's own bloom, so it names only parts a glow lights, or a lit part a launch

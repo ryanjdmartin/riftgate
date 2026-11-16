@@ -1727,8 +1727,11 @@ func test_a_lost_machine_slumps_and_its_spins_run_down() -> void:
 	# planted and just sink using its ankles and knees. Same with the bipeds, sink using knees and
 	# ankles and only slump forward at the waist. The bipeds also swing their arms behind them when
 	# they should just go slack at the elbows".
+	# The baseline every model goes through that has no death pose of its own (16 November: the
+	# machines here have one, so it is taken off to read the slump beneath it).
 	var pair := _rig_for("nemesis")
 	var rig: MechRig = pair[0]
+	rig.forms.erase(MechRig.DEATH)
 	var feet := {}
 	for side in ["l", "r"]:
 		feet[side] = rig._in_model(rig.joints["ankle_" + side])
@@ -1753,6 +1756,7 @@ func test_a_lost_machine_slumps_and_its_spins_run_down() -> void:
 	# A tracked machine sinks nowhere; what it carries hangs, kept above the floor.
 	pair = _rig_for("badger")
 	rig = pair[0]
+	rig.forms.erase(MechRig.DEATH)
 	var low := rig._lowest_under(rig.model)
 	rig.kill()
 	rig.tick(MechRig.COLLAPSE_AT + 3.0)
@@ -1762,6 +1766,7 @@ func test_a_lost_machine_slumps_and_its_spins_run_down() -> void:
 	# A flyer comes down onto what hangs lowest once it has slumped (MechView3D lands it there).
 	pair = _rig_for("buzzard")
 	rig = pair[0]
+	rig.forms.erase(MechRig.DEATH)
 	rig.airborne = true
 	rig.kill()
 	rig.tick(MechRig.COLLAPSE_AT + 3.0)
@@ -1780,3 +1785,71 @@ func test_a_lost_machine_slumps_and_its_spins_run_down() -> void:
 	assert_true(turned.call(0.05) < 0.001, "and stop once it is lost")
 	pair[1].free()
 
+
+
+
+## The lowest point of what a rig's body carries, where the body stands (in its parent's frame).
+func _lowest_standing(rig: MechRig) -> float:
+	var low := INF
+	for mi in rig.model.find_children("*", "MeshInstance3D", true, false):
+		var shown := true
+		var n: Node = mi
+		while n != null and n != rig.model:
+			shown = shown and (not (n is Node3D) or (n as Node3D).visible)   # a hidden subtree shows nothing (a launch, a hidden pin's part)
+			n = n.get_parent()
+		if not shown or (mi as MeshInstance3D).mesh == null or mi.has_meta("halo") or mi.has_meta("plume") or mi.has_meta("is_trace"):
+			continue
+		var xf := rig.body.transform * rig._in_model(mi)
+		var bb := (mi as MeshInstance3D).get_aabb()
+		for k in range(8):
+			low = minf(low, (xf * bb.get_endpoint(k)).y)
+	return low
+
+
+func test_a_death_pose_goes_in_place_of_the_slump_and_rests_on_the_floor() -> void:
+	# Ryan, 16 November: "The slump was supposed to be a general guideline so that everything got an
+	# adequate baseline death animation and pose. There's nothing to say that they can't be improved on
+	# a case by case basis, like the Clydesdale falling onto its face like the AT-AT that influenced
+	# it": a model's death pose (lowforge's b.death, the sidecar's death) turns in as it is lost, in
+	# place of the slump, held, set down on its own lowest point; a revive stands it up at once.
+	for id in ["clydesdale", "funnel_web", "kite", "polar_bear"]:
+		var pair := _rig_for(id)
+		var rig: MechRig = pair[0]
+		assert_true(rig.forms.has(MechRig.DEATH), "%s has a death of its own" % id)
+		rig.airborne = id == "kite"
+		rig.kill()
+		rig.tick(float(rig.forms[MechRig.DEATH]["duration"]) + 1.0)
+		assert_true(rig.form_held(MechRig.DEATH), "%s: its death pose held" % id)
+		assert_true(rig._want_rot.is_empty() and rig._collapse < 0.0, "%s: no slump beside it" % id)
+		assert_eq(rig.collapse_floor, 0.0, "%s: nothing for the view to land but onto the floor" % id)
+		var low := _lowest_standing(rig)
+		assert_true(absf(low - rig._body_rest_pos.y) < 0.6, "%s: it rests on the floor, neither through it nor floating (%.2f against %.2f)" % [id, low, rig._body_rest_pos.y])
+		rig.set_form(MechRig.DEATH, false)
+		assert_true(rig.form_held(MechRig.DEATH), "%s: no status lets it go" % id)
+		rig.revive()
+		rig.tick(0.05)
+		assert_false(rig.form_held(MechRig.DEATH), "%s: revived, it stands again" % id)
+		pair[1].free()
+	var pair := _rig_for("clydesdale")
+	var rig: MechRig = pair[0]
+	rig.kill()
+	rig.tick(float(rig.forms[MechRig.DEATH]["duration"]) + 1.0)
+	assert_true(rig.body.rotation.x < -0.15, "the Clydesdale goes down on its face (%.2f)" % rig.body.rotation.x)
+	pair[1].free()
+
+
+func test_every_death_pose_names_what_its_model_has() -> void:
+	var named := 0
+	for f in DirAccess.get_files_at("res://art/models"):
+		if not f.ends_with(".rig.json"):
+			continue
+		var id := f.trim_suffix(".rig.json")
+		var side := MechRig.load_sidecar(id)
+		var d = side.get("death", {})
+		if not (d is Dictionary) or (d as Dictionary).is_empty():
+			continue
+		named += 1
+		assert_true(float(d.get("duration", 0.0)) > 0.0, "%s: its death takes time" % id)
+		for jn in (d.get("tracks", {}) as Dictionary).keys():
+			assert_true((side.get("joints", {}) as Dictionary).has(jn), "%s: its death moves its own %s" % [id, jn])
+	assert_true(named >= 20, "the roster goes down its own ways (%d)" % named)

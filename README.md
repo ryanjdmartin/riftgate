@@ -688,6 +688,9 @@ RIFTGATE_SHELL_DEBUG=1 godot --path .          # the rift's shell, the wall on t
 # joint_<name> Empty, nested where it rides another; `b.act(name, seconds, {joint: [(t, degrees), ...]}, body=, glow=)` at the end of a
 # machine writes its idle acts to art/models/<id>.rig.json with the joints. Judge them running:
 RIFTGATE_ACTS_DEBUG=1 godot --path .            # every act back to back in the skirmish and on the map (=<act name> loops one)
+# a machine's own way down: `b.death(seconds, tracks, body=)` at the end of its recipe, a held pose in place of the
+# baseline slump, the rig setting it down on its lowest point (16 November; keep it on its hex); one frame of it:
+xvfb-run -a godot --path . --resolution 360x640 -s tools/act_shot.gd -- clydesdale wainwright_sutler lose 3.0 /tmp/dead.png skirmish 300x300
 RIFTGATE_MOVE_DEBUG=1 godot --path .            # every machine driven constantly: the walks, wheels, treads and held poses (`b.gait(...)` in models_low.py); the cornering (the Dingo's drift, the banks) needs a real move
 # a model may show a count and a status: `b.count(source, parts)` lights the first n of its parts for the number the game passes
 # (`shots`, the counted shots toward the sixth; `ammo`, the magazine), a falling number flaring them all dark (the Cassowary's

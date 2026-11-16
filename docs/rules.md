@@ -1385,8 +1385,8 @@ a stat.
   time, a catch first; the order changes nothing a fight opens on, its dice included: a fight's
   seed is the battle's seed, the turn, its packs and its machines. Afterwards each machine in it has used its action, a wrecked machine lies on the hex it fell on for the battle, held as
   any unit holds one: every walk passes it and none ends on it, no tear opens on it, and a cache
-  under it waits unclaimed; its model lies there at its size, slumped as a lost machine slumps
-  in a fight and dimmed, smoking, seen over both worlds as a machine is. A pack keeps only its survivors, by member, and Rift Pressure does not tick: it
+  under it waits unclaimed; its model lies there at its size, in its death pose as a lost
+  machine goes down in a fight, dimmed, smoking, seen over both worlds as a machine is. A pack keeps only its survivors, by member, and Rift Pressure does not tick: it
   ticks on the map alone.
 - **Packs**: a pack is a composition on one hex: its members, each a foe type times a
   strength, in content order, the lead first, whose sprite the pack wears; a hold lists them. It

@@ -604,9 +604,23 @@ func test_a_lost_flyer_comes_down_onto_its_lowest_point() -> void:
 		assert_true(view.rig.airborne, "a machine off the floor is airborne (%s)" % id)
 		assert_true(absf(view._stage.position.y - lands) < 0.001, "it comes down until its lowest point rests on the floor (%s: %.3f, %.3f)" % [id, view._stage.position.y, lands])
 		if id == "buzzard":
-			assert_true(lands > 0.0, "a flyer's wings below its origin hold it short of the floor under that origin")
+			# A death pose of its own (16 November): the stage comes down to the floor and the pose
+			# sets its own lowest point there (MechRig._settle_death).
+			assert_eq(lands, 0.0, "with a death of its own the stage lands on the floor")
+			var low := INF
+			for mi in view.rig.model.find_children("*", "MeshInstance3D", true, false):
+				var shown := true
+				var n: Node = mi
+				while n != null and n != view.rig.model:
+					shown = shown and (not (n is Node3D) or (n as Node3D).visible)
+					n = n.get_parent()
+				if shown and (mi as MeshInstance3D).mesh != null and not mi.has_meta("halo") and not mi.has_meta("plume") and not mi.has_meta("is_trace"):
+					var xf := view.rig.body.transform * view.rig._in_model(mi)
+					for k in range(8):
+						low = minf(low, (xf * (mi as MeshInstance3D).get_aabb().get_endpoint(k)).y)
+			assert_true(absf(low - view.rig._body_rest_pos.y) < 0.6, "and its pose rests its lowest point on it (%.2f)" % low)
 		else:
-			assert_true(lands < 0.0, "a hover settles past its origin onto its skirt")
+			assert_true(lands < 0.0, "a hover with none settles past its origin onto its skirt")
 		view.free()
 
 

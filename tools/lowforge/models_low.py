@@ -206,6 +206,15 @@ def badger(b):
     b.fires = {"chainsaw_claw": ("test_claw", 1.6, 2.9)}   # its fixed weapon fires with a slice of its act: the claw's snap (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.pivots = True   # its tracks turn it on the spot to aim the gun on its hull and the claw, as a tank's neutral turn (Ryan, 31 October: "a cheap way of aiming")
     b.move(accel=1.2, heft=0.2)
+    # Its death (b.death; Ryan, 16 November: the slump a baseline, each machine improved on it case
+    # by case): the booms drop to the ground and the claws hang open, the turrets slewed askew, the
+    # hull settling with a list on its tracks.
+    b.death(1.0, {
+        "shoulder_l": [(1.0, -12.0)], "elbow_l": [(0.5, -20.0), (1.0, -45.0)], "wrist_l": [(1.0, 40.0)],
+        "shoulder_r": [(1.0, -12.0)], "elbow_r": [(0.6, -25.0), (1.0, -48.0)], "wrist_r": [(1.0, 38.0)],
+        "jaw_upper": [(1.0, 32.0)], "jaw_lower": [(1.0, -30.0)],
+        "turret_l": [(1.0, 22.0)], "turret_r": [(1.0, -28.0)],
+    }, body=[(1.0, 0.0, 0.0, -1.0, 4.0, -2.0, 3.0)])
 
 badger.maker = "minerva"
 
@@ -560,6 +569,8 @@ def kite(b):
     b.gait(glow={"parts": ["booster_ring", "exhaust", "driver_ring", "driver_exhaust", "tail_vent_glow"], "k": KESTREL_BURN}, body_hold=(0.0, 0.0, 0.0, 0.0, -6.0, 0.0))
     b.fires = {"pinion_driver": ("flare_boosters", 0.4, 1.8)}   # its fixed weapon fires with a slice of its act: the drivers flaring (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.move(slide=0.6, bank=50.0, accel=0.7, heft=0.08, oversteer=0.35)   # strafes most of the aircraft, banks hardest (Ryan, 5 October: more); the lightest in its acts; the nose a little into its corners (the fifth notes: the jets oversteer too, a bit)
+    # Its death: down on its belly, nose low and over onto a wing (a modest bank: it stays on its hex).
+    b.death(0.9, {}, body=[(0.9, 0.0, 0.0, 0.0, 6.0, -6.0, 10.0)])
 
 kite.maker = "kestrel"
 
@@ -865,6 +876,21 @@ def clydesdale(b):
             form["lift_%d" % n] = [lift(0.0, 0.0), lift(O1, 0.0), lift(R1, BATTERY_SINK)]
             form["elev_%d" % n] = [(0.0, 0.0), (R1, 0.0), (E1, -BATTERY_PIVOT)]
     b.form("changed_over", E1, form)
+    # Its death: face first, as the AT-AT that made it falls (Ryan, 16 November: "like the Clydesdale
+    # falling onto its face like the AT-AT that influenced it"): the fore legs buckle at the knee, the
+    # nose goes down onto the ground while the hind legs stay locked, the head lolls aside and the
+    # battery's barrels droop.
+    batteries = [j for j in ("elev_%d" % n for n in range(1, 9))]
+    tracks = {
+        "hip_fl": [(0.5, 25.0), (1.5, 55.0)], "knee_fl": [(0.5, -60.0), (1.5, -108.0)], "ankle_fl": [(1.5, 52.0)],
+        "hip_fr": [(0.55, 22.0), (1.5, 52.0)], "knee_fr": [(0.55, -55.0), (1.5, -104.0)], "ankle_fr": [(1.5, 50.0)],
+        "hip_hl": [(1.5, -16.0)], "knee_hl": [(1.5, 6.0)], "ankle_hl": [(1.5, 10.0)],
+        "hip_hr": [(1.5, -16.0)], "knee_hr": [(1.5, 6.0)], "ankle_hr": [(1.5, 10.0)],
+        "head": [(1.5, -10.0, 16.0, 0.0)],
+    }
+    for k, jn in enumerate(batteries):
+        tracks[jn] = [(1.5, -16.0 if k % 2 == 0 else -10.0)]
+    b.death(1.5, tracks, body=[(0.5, 0.0, 1.0, -3.0, 0.0, -6.0, 0.0), (1.5, 0.0, 3.0, -6.0, 3.0, -18.0, 2.0)])
 
 # The Clydesdale's batteries (the form above): the first battery's ports in pin order, the second's
 # the same rows mirrored across the spine; how far a stowed gun sits under the deck, the guns'
@@ -1109,6 +1135,15 @@ def baboon(b):
     # 11 November).
     b.fires = {"retrocausal_shroud": ("charge_projectors", 1.8, 3.4), "redshift_emitter": ("charge_projectors", 1.8, 3.4)}
     b.move(accel=1.1, heft=0.2)
+    # Its death: it sits back on its haunches, slumped over at the waist, its long arms gone slack to
+    # the ground.
+    b.death(1.3, {
+        "hip_l": [(1.3, 60.0)], "knee_l": [(1.3, -60.0)], "ankle_l": [(1.3, 20.0)],
+        "hip_r": [(1.3, 57.0)], "knee_r": [(1.3, -58.0)], "ankle_r": [(1.3, 22.0)],
+        "waist": [(1.3, -15.0, 8.0, 6.0)],
+        "shoulder_l": [(1.3, 25.0, 0.0, 0.0)], "elbow_l": [(1.3, 5.0)], "wrist_l": [(1.3, 0.0)],
+        "shoulder_r": [(1.3, 22.0, 0.0, 0.0)], "elbow_r": [(1.3, 8.0)], "wrist_r": [(1.3, 0.0)],
+    }, body=[(1.3, 0.0, -2.0, -10.0, 0.0, -4.0, 2.0)])
 
 baboon.maker = "aphelion"
 
@@ -1539,6 +1574,14 @@ def polar_bear(b):
     b.act("rock", 4.6, tracks, body=body, form="sealed")
     b.act("lure", 5.2, {"run_rack": [along(0.6, 0.0), along(1.4, 4.0), along(3.8, 4.0), along(4.6, 0.0)]}, form="sealed",
           glow=[(["beacon"], blink(1.4, 3.8))])
+    # Its death: a belly flop, the four legs folding out from under it as its seal folds them, the
+    # hull down on the ground with a list.
+    b.death(1.2, {
+        "hip_fl": [(1.2, 48.0)], "knee_fl": [(1.2, -108.0)], "ankle_fl": [(1.2, 68.0)],
+        "hip_fr": [(1.2, 46.0)], "knee_fr": [(1.2, -105.0)], "ankle_fr": [(1.2, 66.0)],
+        "hip_hl": [(1.2, 34.0)], "knee_hl": [(1.2, -98.0)], "ankle_hl": [(1.2, 72.0)],
+        "hip_hr": [(1.2, 32.0)], "knee_hr": [(1.2, -96.0)], "ankle_hr": [(1.2, 70.0)],
+    }, body=[(1.2, 0.0, 0.0, -12.0, 0.0, -4.0, 3.0)])
 
 polar_bear.maker = "minerva"
 
@@ -1674,6 +1717,10 @@ def wild_boar(b):
     b.fires = {"breaching_plow": ("test_plow", 2.5, 4.4)}   # its fixed weapon fires with a slice of its act: the plow down, shaken and thrown up (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.pivots = True   # its tracks turn it on the spot to aim the pod and the plow, as a tank's neutral turn (Ryan, 31 October: "a cheap way of aiming")
     b.move(accel=1.1, heft=0.18)
+    # Its death: the plow drops and digs in, the turret slewed and its guns down, the hull nosing over
+    # onto the plow with a list.
+    b.death(1.0, {"plow": [(1.0, 18.0)], "turret": [(1.0, 24.0)], "elev": [(1.0, -6.0)], "elev_pod": [(1.0, 0.0)]},
+            body=[(1.0, 0.0, 0.0, -1.0, 0.0, -3.0, -3.0)])
 
 wild_boar.maker = "minerva"
 
@@ -1892,6 +1939,10 @@ def prairie_dog(b):
     b.gait(wheels={"wheel_fl": R, "wheel_fr": R, "wheel_rl": R, "wheel_rr": R}, steer={"steer_fl": 14.0, "steer_fr": 14.0}, rock=5.0)
     b.aims = {"flakshot_repeater": "turret"}   # the Flakshot Repeater rides the turret beside hp_1, so the turret turns to aim it
     b.move(accel=0.6, heft=0.1)
+    # Its death: a front wheel knocked askew and the suspension gone on one side, the hull listing over
+    # onto it, the turret slewed and the sensor mast swung round.
+    b.death(0.9, {"steer_fl": [(0.9, 26.0)], "steer_fr": [(0.9, -8.0)], "chassis": [(0.9, -5.0, 0.0, 6.0)],
+                  "turret": [(0.9, 34.0)], "sensor": [(0.9, -60.0)]})
 
 prairie_dog.maker = "wainwright_sutler"
 
@@ -2307,6 +2358,13 @@ def cassowary(b):
     # first; found unfired on 3 November): the capacitor drum spinning up three turns as the spark
     # gap crackles, to the snap at its top.
     b.fires = {"spin_up": ("test_charge", 0.9, 3.8)}
+    # Its death: the bird sits down onto its belly, its legs folded under it, its neck and its guns
+    # drooping, a list to one side.
+    b.death(1.2, {
+        "hip_l": [(1.2, 58.0)], "knee_l": [(1.2, -55.0)], "ankle_l": [(1.2, 62.0)], "toe_l": [(1.2, -40.0)],
+        "hip_r": [(1.2, 55.0)], "knee_r": [(1.2, -52.0)], "ankle_r": [(1.2, 60.0)], "toe_r": [(1.2, -36.0)],
+        "waist": [(1.2, -15.0, 6.0, 5.0)], "elev_chin": [(1.2, -12.0)], "elev_pod": [(1.2, -10.0)], "elev_mortar": [(1.2, -15.0)],
+    }, body=[(1.2, 0.0, 0.0, -12.0, 0.0, -4.0, 3.0)])
 
 cassowary.maker = "wainwright_sutler"
 
@@ -2514,6 +2572,10 @@ def dingo(b):
     b.fires = {"hollow_point_harpoon": ("harpoon", 2.0, 3.2), "combat_translocator": ("coil_check", 2.0, 3.2)}   # its fixed weapons fire with slices of its acts: the harpoon's shot and kick; the coil's second flare (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.pivots = True   # its casters turn it on the spot to aim its nose guns, the harpoon and the coil (Ryan, 31 October: "a cheap way of aiming")
     b.move(slide=0.4, bank=0.0, accel=0.5, heft=0.09, oversteer=2.0)   # drifts wildly on the map and does not bank (Ryan, 2 October); its rear kicked out further (the sixth notes), and further again (the seventh)
+    # Its death: the casters splayed every way, the hull down and listing on its suspension, the
+    # harpoon and the rack drooping, the rack slewed.
+    b.death(0.9, {"caster_fl": [(0.9, 32.0)], "caster_fr": [(0.9, -26.0)], "caster_rl": [(0.9, -20.0)], "caster_rr": [(0.9, 16.0)],
+                  "chassis": [(0.9, 5.0, 0.0, -7.0)], "harpoon": [(0.9, -3.0)], "turret_rack": [(0.9, 40.0)], "elev_rack": [(0.9, -8.0)]})
 
 dingo.maker = "wainwright_sutler"
 
@@ -2869,6 +2931,10 @@ def cottonmouth(b):
     b.spin("fan_r", -360.0, -1260.0)
     b.spin("drum", 36.0, step=60.0)   # a chamber a step: an act that turns it on parks it on one (the ranging, the spin-up)
     b.move(slide=0.35, bank=0.0, accel=0.7, heft=0.13, oversteer=1.3)
+    # Its death: the cushion gone, it settles onto the ground listing, the drum down and the rudders
+    # knocked askew, the sensor swung round.
+    b.death(1.0, {"elev_drum": [(1.0, 0.0)], "rudder_l1": [(1.0, 22.0)], "rudder_l2": [(1.0, 14.0)], "rudder_r1": [(1.0, -12.0)], "rudder_r2": [(1.0, -24.0)],
+                  "sensor": [(1.0, 50.0)]}, body=[(1.0, 0.0, 0.0, 0.0, 0.0, -3.0, -6.0)])
 
 cottonmouth.maker = "wainwright_sutler"
 
@@ -3113,6 +3179,14 @@ def funnel_web(b):
     b.fires = {"web_bomb": ("sight_in", 2.0, 3.8)}   # its fixed weapon fires with a slice of its act: the web tube lit (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.aims = {"web_bomb": "head"}   # the Web Bomb rides the head with the rest of its guns, so the head turns to aim it
     b.move(accel=0.9, heft=0.16)
+    # Its death: the spider's curl, every leg drawn up and folded under the body as it drops onto its
+    # belly, the head down and the guns slack.
+    tracks = {"head": [(1.2, -20.0, 10.0, 0.0)], "elev_top": [(1.2, -8.0)], "elev_l": [(1.2, -6.0)], "elev_r": [(1.2, -10.0)]}
+    for leg in ("fl", "fr", "hl", "hr"):
+        tracks["hip_" + leg] = [(1.2, -30.0)]
+        tracks["knee_" + leg] = [(1.2, -60.0)]
+        tracks["ankle_" + leg] = [(1.2, 40.0)]
+    b.death(1.2, tracks, body=[(1.2, 0.0, 0.0, -8.0, 0.0, -3.0, 2.0)])
 
 funnel_web.maker = "wainwright_sutler"
 
@@ -3574,6 +3648,14 @@ def whip_scorpion(b):
     # 'hot' things - so all glowing boosters and vents"; found bare on 3 November), the collar and the
     # bore's floor lit together as its blast flares them.
     b.halo = ["vent_heat_" + t for t in ("l1", "l2", "r1", "r2")] + ["vent_bore_%s_floor" % t for t in ("l1", "l2", "r1", "r2")]
+    # Its death: the six legs splay out and the belly drops onto the ground, the abdomen sagging, the
+    # turrets slewed every way.
+    tracks = {"abdomen": [(1.3, -16.0, 8.0, 0.0)], "turret_l": [(1.3, 30.0)], "turret_r": [(1.3, -24.0)], "turret_ray": [(1.3, 18.0)], "ray": [(1.3, -8.0)]}
+    for leg in ("fl", "fr", "ml", "mr", "hl", "hr"):
+        tracks["hip_" + leg] = [(1.3, 24.0)]
+        tracks["knee_" + leg] = [(1.3, 38.0)]
+        tracks["ankle_" + leg] = [(1.3, -30.0)]
+    b.death(1.3, tracks, body=[(1.3, 0.0, 0.0, -10.0, 0.0, -2.0, -3.0)])
 
 whip_scorpion.maker = "wainwright_sutler"
 
@@ -3782,6 +3864,8 @@ def buzzard(b):
         body=[(blow, 0.0, 0.0, 0.0), (blow + 0.06, 0.0, -1.5, 0.0), (2.4, 0.0, 0.0, 0.0)], idle=False)
     b.fires = {"afterburner_cannon": ("fire_cannon", 0.0, 2.4, blow)}
     b.move(slide=0.3, bank=36.0, accel=0.9, heft=0.12, oversteer=0.3)   # larger and slower than the Kite: slides less, banks well (Ryan, 5 October: more); the nose a little into its corners (the fifth notes)
+    # Its death: down on its belly over onto a wing, the nacelles knocked to odd angles.
+    b.death(0.9, {"nacelle_l": [(0.9, 36.0)], "nacelle_r": [(0.9, -14.0)]}, body=[(0.9, 0.0, 0.0, 0.0, -5.0, -4.0, -9.0)])
 
 buzzard.maker = "kestrel"
 
@@ -4565,6 +4649,15 @@ def nemesis(b):
     _flare_scale(b, "core_fire", CHEST_FLARE)
     _flare_scale(b, "condenser_slot", VENT_FLARE)
     b.move(accel=1.2, heft=0.24)
+    # Its death: the brawler drops to its knees, head and shoulders bowed, its fists hanging to the
+    # ground.
+    b.death(1.2, {
+        "hip_l": [(1.2, 8.0)], "knee_l": [(1.2, -98.0)], "ankle_l": [(1.2, 58.0)],
+        "hip_r": [(1.2, 12.0)], "knee_r": [(1.2, -100.0)], "ankle_r": [(1.2, 60.0)],
+        "waist": [(1.2, -18.0, -6.0, -6.0)], "elev_shoulder": [(1.2, -18.0)],
+        "shoulder_l": [(1.2, -45.0, 0.0, 0.0)], "elbow_l": [(1.2, -35.0)],
+        "shoulder_r": [(1.2, -40.0, 0.0, 0.0)], "elbow_r": [(1.2, -30.0)],
+    }, body=[(1.2, 0.0, 2.0, -14.0, 0.0, -4.0, 0.0)])
 
 nemesis.maker = "arsenal"
 
@@ -4972,6 +5065,10 @@ def musk_ox(b):
     b.aims = {"shrapnel_recuperator": "turret_cannon"}
     b.fires = {"shrapnel_recuperator": ("fire_howitzer", 0.0, 3.0, 0.75), "unrestricted_expenditure": ("ripple", 1.6, 4.8, 3.08),
                "quick_reload": ("eject_cell", 0.7, 4.0)}
+    # Its death: a front wheel knocked askew and the hull sagging forward on its suspension with a list,
+    # the guns down and slewed.
+    b.death(1.0, {"steer_fl": [(1.0, -22.0)], "steer_fr": [(1.0, 14.0)], "chassis": [(1.0, -5.0, 0.0, 5.0)],
+                  "turret_l": [(1.0, 24.0)], "turret_r": [(1.0, -30.0)], "elev_cannon": [(1.0, 0.0)], "elev_racks": [(1.0, 0.0)]})
 
 musk_ox.maker = "wainwright_sutler"
 
@@ -5376,6 +5473,21 @@ def ammit(b):
                "quintessence_tap": ("threat", 0.4, 1.5)}
     _flare_scale(b, "tail_slot", VENT_FLARE)   # its rear vent's flares kept gold on its sickly amber (Ryan, 3 November, the second notes)
     b.move(accel=1.0, heft=0.2)
+    # Its death: the beast pitches forward onto its low hands, the hind legs folding, its head and
+    # cannons down, the talons curled.
+    talons = {}
+    for arm in ("l", "r", "low_l", "low_r"):
+        for t in ("in", "mid", "out"):
+            talons["talon_%s_%s" % (arm, t)] = [(1.2, -40.0)]
+    b.death(1.2, dict(talons, **{
+        "hip_l": [(1.2, 30.0)], "knee_l": [(1.2, 55.0)], "ankle_l": [(1.2, -35.0)],
+        "hip_r": [(1.2, 28.0)], "knee_r": [(1.2, 52.0)], "ankle_r": [(1.2, -32.0)],
+        "waist": [(1.2, -12.0, 4.0, 4.0)], "elev_l": [(1.2, -12.0)], "elev_r": [(1.2, -12.0)],
+        "shoulder_low_l": [(1.2, 40.0)], "elbow_low_l": [(1.2, -70.0)],
+        "shoulder_low_r": [(1.2, 36.0)], "elbow_low_r": [(1.2, -66.0)],
+        "shoulder_l": [(1.2, -30.0, 0.0, 0.0)], "elbow_l": [(1.2, -30.0)],
+        "shoulder_r": [(1.2, -28.0, 0.0, 0.0)], "elbow_r": [(1.2, -28.0)],
+    }), body=[(1.2, 0.0, 2.0, -8.0, 0.0, -10.0, 2.0)])
 
 ammit.maker = "arsenal"
 
@@ -5692,6 +5804,8 @@ def stingray(b):
     # tenths of its nose-down at a full bank's turn rate (the tilt's third number).
     b.fires = {"photosphere_lance": ("lance_charge", 2.5, 3.9)}   # its fixed weapon fires with a slice of its act: the lance's last charge and its blaze (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.move(slide=0.3, bank=36.0, tilt=(26.0, 10.0, 0.7), accel=0.9, heft=0.12, oversteer=0.3)
+    # Its death: the cushion gone, it settles nose first into the ground with a list, the turret slewed.
+    b.death(1.0, {"turret": [(1.0, 28.0)]}, body=[(1.0, 0.0, 0.0, 0.0, 0.0, -6.0, 5.0)])
 
 stingray.maker = "aphelion"
 
@@ -6387,6 +6501,8 @@ def needletail(b):
     b.gait(tracks=held(FLIGHT), glow=glow, body_hold=(0.0, 0.0, 0.0, 0.0, -4.0, 0.0), start=("hover", 0.25, 0.85))
     b.fires = {"fovea_designator": ("designate", 1.4, 2.9)}   # its fixed weapon fires with a slice of its act: the iris snapping down and the fovea's flare (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.move(slide=0.35, bank=32.0, accel=0.7, heft=0.1, oversteer=0.4)
+    # Its death: down on its belly over onto a wing, the wings folding back slack.
+    b.death(0.9, {"wing_l": [(0.9, -20.0)], "wing_r": [(0.9, 14.0)]}, body=[(0.9, 0.0, 0.0, 0.0, 5.0, -5.0, 9.0)])
 
 needletail.maker = "kestrel"
 
@@ -6996,6 +7112,9 @@ def giant_petrel(b):
     # the uplink.
     b.fires = {"spindrift_salvo": ("salvo", 2.0, 4.0), "immelmann_booster": ("immelmann", 1.0, 3.8), "reheat_uplink": ("uplink", 1.2, 3.6)}
     b.move(slide=0.3, bank=0.0, accel=1.6, heft=0.25, oversteer=0.5)
+    # Its death: the hulls settle onto the ground listing, the turrets slewed and the uplink swung round.
+    b.death(1.0, {"turret_fore": [(1.0, 30.0)], "turret_l": [(1.0, 60.0)], "turret_r": [(1.0, -40.0)], "sensor_uplink": [(1.0, -80.0)]},
+            body=[(1.0, 0.0, 0.0, 0.0, 0.0, -2.0, 5.0)])
 
 giant_petrel.maker = "kestrel"
 
@@ -7193,6 +7312,8 @@ def skua(b):
     b.gait(tracks={"wing_l": [(0.0, SW), (1.0, SW)], "wing_r": [(0.0, -SW), (1.0, -SW)]}, glow=glow,
            body_hold=(0.0, 0.0, 0.0, 0.0, -6.0, 0.0), start=("spread", 0.25, 0.85))
     b.move(slide=0.5, bank=44.0, accel=0.7, heft=0.08, oversteer=0.3)
+    # Its death: down on its belly over onto a wing, the wings swept back slack.
+    b.death(0.9, {"wing_l": [(0.9, 28.0)], "wing_r": [(0.9, -20.0)]}, body=[(0.9, 0.0, 0.0, 0.0, -5.0, -5.0, -9.0)])
 
 skua.maker = "kestrel"
 
@@ -7572,6 +7693,8 @@ def storm_petrel(b):
     b.gait(body_hold=(0.0, 0.0, 0.0, 0.0, -3.0, 0.0), glow={"parts": boosters, "k": KESTREL_BURN}, rock=3.0)
     b.fires = {"st_elmos_regenerator": ("st_elmo", 1.1, 2.7)}   # its fixed weapon fires with a slice of its act: the sparks' chase, the ring and the corona (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.move(slide=0.3, bank=0.0, accel=0.6, heft=0.14, oversteer=1.1)
+    # Its death: the cushion gone, it settles nose low onto the ground with a list.
+    b.death(0.9, {}, body=[(0.9, 0.0, 0.0, 0.0, -4.0, -4.0, 7.0)])
 
 storm_petrel.maker = "kestrel"
 
@@ -7710,6 +7833,8 @@ def lammergeier(b):
     b.gait(body_hold=(0.0, 0.0, 0.0, 0.0, -2.0, 0.0), glow={"parts": boosters, "k": KESTREL_HEAVY})
     b.fires = {"lorentz_contractor": ("contract", 1.5, 3.0), "syrinx_drone": ("syrinx_launch", 0.6, 2.0)}   # its fixed weapons fire with slices of its acts: the contractor's flare; the drones' launch (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.move(slide=0.4, bank=22.0, accel=1.2, heft=0.2, oversteer=0.4)
+    # Its death: down on its belly over onto a wing, the contractor's sensor swung round.
+    b.death(0.9, {"sensor_contractor": [(0.9, 70.0)]}, body=[(0.9, 0.0, 0.0, 0.0, -6.0, -3.0, -8.0)])
 
 lammergeier.maker = "kestrel"
 

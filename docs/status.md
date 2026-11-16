@@ -41,10 +41,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1220 tests, 373,260 checks, green on `ccr-bd73687d-w8qox1` (16 November, his notes on
-  the shell and the wrecks: the seven hexes beside the rift closed to the machines while the seal
-  stands, the wrecks slumped and kept to their hexes; over main at `e26589f` taken in a merge).
-  Before it, 1213 tests, 373,034 checks,
+- Tests: 1222 tests, 373,594 checks, green on `ccr-bd73687d-w8qox1` (16 November, his third notes:
+  the shell a wall on the seven's outer edges with a cache behind it, the wrecks at living size,
+  and the roster's own deaths). Before it, 1220 tests, 373,260 checks, green on the same branch
+  (his notes on the shell and the wrecks; over main at `e26589f` taken in a merge). Before it, 1213 tests, 373,034 checks,
   green on the same branch (Ryan's five beside the formation pass: the wreck, the musters, the
   peak's sounds, the drum, the shell; over main at `3801a1b` taken in a merge). Before it, 1211 tests, 372,977 checks, green on the same branch
   over main at `d1b6827`. Before it, 1198 tests, 372,873 checks, green on `ccr-722ca9f0-yj8na3` (16 November, his
@@ -527,7 +527,11 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   notes the same day a wall along the outer edges of the seven hexes beside it, the boss behind
   it: the seven closed to the machines while the seal stands (`Battlefield.shell`), a crack a
   Fracture, the burst at the Rupture, and one cache behind it (content's `behind_shell`;
-  `RIFTGATE_SHELL_DEBUG=1`). The bible (v0.599) and the hangar (the
+  `RIFTGATE_SHELL_DEBUG=1`). And on his "Take a pass at the roster": a machine's own way down
+  (`b.death`, the sidecar's `death`, MechRig's death pose set down on its lowest point, the
+  hangar's script in step), every one of the twenty-two dealt machines given one, the slump
+  the baseline beneath (the bible's row; the models rebuilt byte for byte, only their sidecars
+  moving). The bible (v0.600) and the hangar (the
   Cottonmouth's sidecar, the motion script) republish from main once it lands.
 - **The blade class retired** (`ccr-b7d5164e-1wtzzm`, 15 November, on Ryan's "The four you listed are
   locked pieces. The others need to be renamed into short range (i.e "melee" as per our definition)
