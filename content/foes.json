@@ -8,7 +8,7 @@
       "hp": 4, "attack": 4, "rank": "front", "movespeed": 2,
       "actions": [
         { "id": "stab", "name": "Stab", "kind": "attack", "weight": 2, "text": "A knife from the crowd for {damage}.", "status": "implemented" },
-        { "id": "shield_wall", "name": "Shield Wall", "kind": "defend", "effect": "brace", "value": 1, "weight": 1, "text": "Raises a scrap shield: armour +{value} until its next action.", "status": "implemented" }
+        { "id": "shield_wall", "name": "Shield Wall", "kind": "defend", "effect": "brace", "value": 1, "weight": 1, "text": "Raises a scrap shield: armour +{value} until its next turn.", "status": "implemented" }
       ],
       "flavour": "They don't run. They don't have to. You'll get tired first."
     },
@@ -19,7 +19,7 @@
       "hp": 3, "attack": 5, "rank": "front", "movespeed": 2,
       "actions": [
         { "id": "stab", "name": "Stab", "kind": "attack", "weight": 2, "text": "A knife from the crowd for {damage}.", "status": "implemented" },
-        { "id": "shield_wall", "name": "Shield Wall", "kind": "defend", "effect": "brace", "value": 1, "weight": 1, "text": "Raises a scrap shield: armour +{value} until its next action.", "status": "implemented" }
+        { "id": "shield_wall", "name": "Shield Wall", "kind": "defend", "effect": "brace", "value": 1, "weight": 1, "text": "Raises a scrap shield: armour +{value} until its next turn.", "status": "implemented" }
       ],
       "flavour": "Gate order one still stands. Add: some of the green ones carry doors now."
     },
@@ -30,7 +30,7 @@
       "hp": 4, "attack": 6, "rank": "front", "movespeed": 2,
       "actions": [
         { "id": "stab", "name": "Stab", "kind": "attack", "weight": 2, "text": "A knife from the crowd for {damage}.", "status": "implemented" },
-        { "id": "shield_wall", "name": "Shield Wall", "kind": "defend", "effect": "brace", "value": 1, "weight": 1, "text": "Raises a scrap shield: armour +{value} until its next action.", "status": "implemented" },
+        { "id": "shield_wall", "name": "Shield Wall", "kind": "defend", "effect": "brace", "value": 1, "weight": 1, "text": "Raises a scrap shield: armour +{value} until its next turn.", "status": "implemented" },
         { "id": "warcry", "name": "Warcry", "kind": "buff", "effect": "rally", "value": 1, "weight": 1, "when": "others_on_field", "text": "Every other foe on the field hits {value} harder, fading by half each round.", "status": "implemented" }
       ],
       "flavour": "They have ranks. We do not know how they decide them. We suspect volume."
@@ -135,11 +135,11 @@
     {
       "id": "alraune", "name": "Alraune", "faction": "meadow", "tier": 3,
       "design": { "fantasy": "The alraune, the genre's flower woman, here a root that steals an entry. Tier three of the mandragora line." },
-      "codex": "The flowering root. Its shriek switches off the component a machine's die is showing.",
+      "codex": "The flowering root. Its shriek jams the component a machine's die is showing.",
       "hp": 5, "attack": 5, "rank": "back", "movespeed": 2,
       "actions": [
         { "id": "root_lash", "name": "Root Lash", "kind": "attack", "weight": 2, "text": "A whip of root for {damage}.", "status": "implemented" },
-        { "id": "shriek", "name": "Shriek", "kind": "debuff", "effect": "disable", "weight": 1, "text": "Turns what one machine's die is showing to wood, through its next turn.", "status": "implemented" }
+        { "id": "shriek", "name": "Shriek", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Turns what one machine's die is showing to wood, through its next turn.", "status": "implemented" }
       ],
       "flavour": "Pretty, from a distance. Keep the distance."
     },
@@ -150,7 +150,7 @@
       "hp": 12, "attack": 5, "rank": "front", "movespeed": 3, "role": "flanker",
       "actions": [
         { "id": "claw", "name": "Claw", "kind": "attack", "weight": 2, "text": "A raking claw for {damage}.", "status": "implemented" },
-        { "id": "whisker_lash", "name": "Whisker Lash", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["disable"], "text": "Its whiskers crack for {damage}, and the entry the machine shows is switched off through its next turn.", "status": "implemented" }
+        { "id": "whisker_lash", "name": "Whisker Lash", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["jam"], "text": "Its whiskers crack for {damage}, and the entry the machine shows is Jammed through its next turn.", "status": "implemented" }
       ],
       "flavour": "It is not purring. Check your instruments."
     },
@@ -161,7 +161,7 @@
       "hp": 13, "attack": 6, "rank": "front", "movespeed": 3, "role": "flanker",
       "actions": [
         { "id": "claw", "name": "Claw", "kind": "attack", "weight": 2, "text": "A raking claw for {damage}.", "status": "implemented" },
-        { "id": "whisker_lash", "name": "Whisker Lash", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["disable"], "text": "Its whiskers crack for {damage}, and the entry the machine shows is switched off through its next turn.", "status": "implemented" }
+        { "id": "whisker_lash", "name": "Whisker Lash", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["jam"], "text": "Its whiskers crack for {damage}, and the entry the machine shows is Jammed through its next turn.", "status": "implemented" }
       ],
       "flavour": "The first one was the kitten."
     },
@@ -172,7 +172,7 @@
       "hp": 16, "attack": 7, "rank": "front", "movespeed": 3, "role": "flanker",
       "actions": [
         { "id": "claw", "name": "Claw", "kind": "attack", "weight": 2, "text": "A raking claw for {damage}.", "status": "implemented" },
-        { "id": "whisker_lash", "name": "Whisker Lash", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["disable"], "text": "Its whiskers crack for {damage}, and the entry the machine shows is switched off through its next turn.", "status": "implemented" }
+        { "id": "whisker_lash", "name": "Whisker Lash", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["jam"], "text": "Its whiskers crack for {damage}, and the entry the machine shows is Jammed through its next turn.", "status": "implemented" }
       ],
       "flavour": "You feel the whiskers before you see the cat."
     },
@@ -183,7 +183,7 @@
       "hp": 16, "attack": 7, "armour": 1, "rank": "front", "size": 2, "movespeed": 1,
       "actions": [
         { "id": "limb", "name": "Limb", "kind": "attack", "weight": 2, "text": "A branch the size of a girder, for {damage}.", "status": "implemented" },
-        { "id": "regen", "name": "Regen", "kind": "defend", "effect": "regrow", "value": 3, "weight": 1, "when": "missing_hull", "text": "Regrows {value} HP.", "status": "implemented" }
+        { "id": "recover", "name": "Recover", "kind": "defend", "effect": "recover", "value": 3, "weight": 1, "when": "missing_hull", "text": "Recovers {value} HP.", "status": "implemented" }
       ],
       "flavour": "Gate order one still applies. Bring a bigger saw."
     },
@@ -194,7 +194,7 @@
       "hp": 40, "attack": 8, "armour": 1, "rank": "front", "size": 2, "movespeed": 1,
       "actions": [
         {"id": "limb", "name": "Limb", "kind": "attack", "weight": 2, "text": "A branch the size of a girder, for {damage}.", "status": "implemented"},
-        {"id": "regen", "name": "Regen", "kind": "defend", "effect": "regrow", "value": 4, "weight": 1, "when": "missing_hull", "text": "Regrows {value} HP.", "status": "implemented"},
+        {"id": "recover", "name": "Recover", "kind": "defend", "effect": "recover", "value": 4, "weight": 1, "when": "missing_hull", "text": "Recovers {value} HP.", "status": "implemented"},
         {"id": "root_storm", "name": "Root Storm", "kind": "attack", "factor": 0.34, "weight": 2, "keywords": ["all"], "when": "below_half", "text": "Roots come up everywhere: {damage} to every machine.", "status": "implemented"}
       ],
       "flavour": "The second grove came in at dusk. Nobody saw it come."
@@ -202,11 +202,11 @@
     {
       "id": "frost_treant", "name": "Frost Treant", "faction": "meadow", "tier": 3,
       "design": {"fantasy": "Tier three of the Treant's line, a massive rank and file (Ryan, 30 October: \"We also probably need more massive foes, yes?\"; 31 October, agreeing Claude's lean): Root Storm its twist.", "notes": "A recolour (tools/recolour.py, its hue by the three simulations); every number a placeholder."},
-      "codex": "A treant rimed white, older than the others and slower to die. It regrows more than they do, and below half its roots come up under every machine.",
+      "codex": "A treant rimed white, older than the others and slower to die. It recovers more than they do, and below half its roots come up under every machine.",
       "hp": 48, "attack": 9, "armour": 1, "rank": "front", "size": 2, "movespeed": 1,
       "actions": [
         {"id": "limb", "name": "Limb", "kind": "attack", "weight": 2, "text": "A branch the size of a girder, for {damage}.", "status": "implemented"},
-        {"id": "regen", "name": "Regen", "kind": "defend", "effect": "regrow", "value": 5, "weight": 1, "when": "missing_hull", "text": "Regrows {value} HP.", "status": "implemented"},
+        {"id": "recover", "name": "Recover", "kind": "defend", "effect": "recover", "value": 5, "weight": 1, "when": "missing_hull", "text": "Recovers {value} HP.", "status": "implemented"},
         {"id": "root_storm", "name": "Root Storm", "kind": "attack", "factor": 0.34, "weight": 2, "keywords": ["all"], "when": "below_half", "text": "Roots come up everywhere: {damage} to every machine.", "status": "implemented"}
       ],
       "flavour": "Gate order one, appended: if it is white and it is coming at you, it is still not a tree."
@@ -250,7 +250,7 @@
       "hp": 6, "attack": 6, "rank": "front", "movespeed": 2, "role": "hunter",
       "actions": [
         { "id": "mandibles", "name": "Mandibles", "kind": "attack", "weight": 2, "text": "Jaws close on the hull for {damage}.", "status": "implemented" },
-        { "id": "burrow", "name": "Burrow", "kind": "defend", "effect": "brace", "value": 2, "weight": 1, "when": "below_half", "text": "Digs in: armour +{value} until its next action.", "status": "implemented" }
+        { "id": "burrow", "name": "Burrow", "kind": "defend", "effect": "brace", "value": 2, "weight": 1, "when": "below_half", "text": "Digs in: armour +{value} until its next turn.", "status": "implemented" }
       ],
       "flavour": "The sand moved. Nobody else saw the sand move."
     },
@@ -273,7 +273,7 @@
       "actions": [
         { "id": "mandibles", "name": "Mandibles", "kind": "attack", "weight": 2, "text": "Jaws close on the hull for {damage}.", "status": "implemented" },
         { "id": "devour", "name": "Devour", "kind": "attack", "factor": 1.25, "countdown": 1, "weight": 1, "text": "Rears for a round, then devours: {damage}.", "status": "implemented" },
-        { "id": "burrow", "name": "Burrow", "kind": "defend", "effect": "brace", "value": 3, "weight": 1, "when": "below_half", "text": "Digs in: armour +{value} until its next action.", "status": "implemented" }
+        { "id": "burrow", "name": "Burrow", "kind": "defend", "effect": "brace", "value": 3, "weight": 1, "when": "below_half", "text": "Digs in: armour +{value} until its next turn.", "status": "implemented" }
       ],
       "flavour": "Everything in the badlands is something's lunch. This is the something."
     },
@@ -284,7 +284,7 @@
       "hp": 4, "attack": 3, "rank": "back", "movespeed": 2, "winged": true,
       "actions": [
         { "id": "peck", "name": "Peck", "kind": "attack", "weight": 2, "text": "A beak like a pick, for {damage}.", "status": "implemented" },
-        { "id": "stone", "name": "Stone", "kind": "debuff", "effect": "disable", "weight": 1, "text": "Turns what one machine's die is showing to stone, through its next turn.", "status": "implemented" }
+        { "id": "stone", "name": "Stone", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Turns what one machine's die is showing to stone, through its next turn.", "status": "implemented" }
       ],
       "flavour": "Don't look at it. No, the other way."
     },
@@ -295,7 +295,7 @@
       "hp": 5, "attack": 4, "rank": "back", "movespeed": 2, "winged": true, "aim": "armed",
       "actions": [
         { "id": "peck", "name": "Peck", "kind": "attack", "weight": 2, "text": "A beak like a pick, for {damage}.", "status": "implemented" },
-        { "id": "stone", "name": "Stone", "kind": "debuff", "effect": "disable", "weight": 1, "text": "Turns what one machine's die is showing to stone, through its next turn.", "status": "implemented" }
+        { "id": "stone", "name": "Stone", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Turns what one machine's die is showing to stone, through its next turn.", "status": "implemented" }
       ],
       "flavour": "It looks at what you are pointing at it. Then that stops working."
     },
@@ -306,7 +306,7 @@
       "hp": 6, "attack": 5, "rank": "back", "movespeed": 2, "winged": true, "aim": "armed",
       "actions": [
         { "id": "peck", "name": "Peck", "kind": "attack", "weight": 2, "keywords": ["corrupt"], "corrupt": 1, "text": "A beak like a pick, for {damage}; the component the machine is showing bites when spent.", "status": "implemented" },
-        { "id": "stone", "name": "Stone", "kind": "debuff", "effect": "disable", "weight": 1, "text": "Turns what one machine's die is showing to stone, through its next turn.", "status": "implemented" }
+        { "id": "stone", "name": "Stone", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Turns what one machine's die is showing to stone, through its next turn.", "status": "implemented" }
       ],
       "flavour": "The Waste takes what you have. This one takes it and leaves it in you."
     },
@@ -350,7 +350,7 @@
       "hp": 14, "attack": 3, "armour": 1, "rank": "front", "size": 2, "movespeed": 1,
       "actions": [
         { "id": "maw", "name": "Maw", "kind": "attack", "weight": 2, "text": "The ring closes for {damage}.", "status": "implemented" },
-        { "id": "burrow", "name": "Burrow", "kind": "defend", "effect": "brace", "value": 3, "weight": 1, "when": "missing_hull", "text": "Digs in: armour +{value} until its next action.", "status": "implemented" }
+        { "id": "burrow", "name": "Burrow", "kind": "defend", "effect": "brace", "value": 3, "weight": 1, "when": "missing_hull", "text": "Digs in: armour +{value} until its next turn.", "status": "implemented" }
       ],
       "flavour": "Appendix K, last page: if the sand is moving toward you, it is too late to read this."
     },
@@ -361,7 +361,7 @@
       "hp": 44, "attack": 9, "armour": 1, "rank": "front", "size": 2, "movespeed": 1,
       "actions": [
         {"id": "maw", "name": "Maw", "kind": "attack", "weight": 2, "text": "The ring closes for {damage}.", "status": "implemented"},
-        {"id": "burrow", "name": "Burrow", "kind": "defend", "effect": "brace", "value": 3, "weight": 1, "when": "missing_hull", "text": "Digs in: armour +{value} until its next action.", "status": "implemented"},
+        {"id": "burrow", "name": "Burrow", "kind": "defend", "effect": "brace", "value": 3, "weight": 1, "when": "missing_hull", "text": "Digs in: armour +{value} until its next turn.", "status": "implemented"},
         {"id": "quake", "name": "Quake", "kind": "attack", "factor": 0.25, "weight": 2, "keywords": ["all"], "when": "below_half", "text": "The ground heaves: {damage} to every machine.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix K: the dune moved at night. The dune is not a dune."
@@ -373,7 +373,7 @@
       "hp": 52, "attack": 10, "armour": 1, "rank": "front", "size": 2, "movespeed": 1,
       "actions": [
         {"id": "maw", "name": "Maw", "kind": "attack", "weight": 2, "text": "The ring closes for {damage}.", "status": "implemented"},
-        {"id": "burrow", "name": "Burrow", "kind": "defend", "effect": "brace", "value": 4, "weight": 1, "when": "missing_hull", "text": "Digs in: armour +{value} until its next action.", "status": "implemented"},
+        {"id": "burrow", "name": "Burrow", "kind": "defend", "effect": "brace", "value": 4, "weight": 1, "when": "missing_hull", "text": "Digs in: armour +{value} until its next turn.", "status": "implemented"},
         {"id": "quake", "name": "Quake", "kind": "attack", "factor": 0.25, "weight": 2, "keywords": ["all"], "when": "below_half", "text": "The ground heaves: {damage} to every machine.", "status": "implemented"}
       ],
       "flavour": "The salt flats have no dunes. Something keeps making them."
@@ -419,7 +419,7 @@
       "actions": [
         { "id": "soul_bolt", "name": "Soul Bolt", "kind": "attack", "weight": 2, "text": "A bolt of cold for {damage}.", "status": "implemented" },
         { "id": "reraise", "name": "Reraise", "kind": "buff", "effect": "revive_once_ally", "weight": 1, "when": "ally_unready", "text": "Readies one of its own, never itself: the next time it falls it gets back up, whole, once.", "status": "implemented" },
-        { "id": "dark_rite", "name": "Dark Rite", "kind": "defend", "effect": "regrow_all", "value": 3, "countdown": 2, "weight": 1, "text": "A rite that lands two rounds on: every foe on its side regrows {value}.", "status": "planned" }
+        { "id": "dark_rite", "name": "Dark Rite", "kind": "defend", "effect": "heal_all", "value": 3, "countdown": 2, "weight": 1, "text": "A rite that lands two rounds on: heals every foe on its side for {value}.", "status": "planned" }
       ],
       "flavour": "It does not fight. It makes sure the others do not stop."
     },
@@ -507,11 +507,11 @@
     {
       "id": "death_knight", "name": "Death Knight", "faction": "marsh", "tier": 2,
       "design": { "fantasy": "The death knight, the Marsh's guard ('this guy protects his allies'). Tier two of the zombie knight line." },
-      "codex": "A zombie knight that guards the rest: its grave guard armours every foe on the field through the next round, and it gets back up once.",
+      "codex": "A zombie knight that guards the rest: its grave guard armours every foe on the field until their next turn, and it gets back up once.",
       "hp": 12, "attack": 7, "armour": 1, "rank": "front", "movespeed": 2,
       "actions": [
         { "id": "cleaver", "name": "Cleaver", "kind": "attack", "weight": 2, "text": "A sword longer than it is tall, for {damage}.", "status": "implemented" },
-        { "id": "grave_guard", "name": "Grave Guard", "kind": "defend", "effect": "brace_all", "value": 1, "weight": 1, "when": "others_on_field", "text": "Every foe on its side is Armoured +{value} through the next round.", "status": "implemented" },
+        { "id": "grave_guard", "name": "Grave Guard", "kind": "defend", "effect": "brace_all", "value": 1, "weight": 1, "when": "others_on_field", "text": "Every foe on its side is Armoured +{value} until their next turn.", "status": "implemented" },
         { "id": "reraise", "name": "Reraise", "kind": "buff", "effect": "revive_once", "weight": 1, "when": "missing_hull", "text": "Readies itself once it is hurt: the next time it falls it gets back up, whole, once.", "status": "implemented" }
       ],
       "flavour": "The knight stands in front. Everything behind it is harder to hurt while it does."
@@ -568,7 +568,7 @@
       "hp": 48, "attack": 18, "armour": 1, "rank": "front", "size": 2, "movespeed": 1, "winged": true, "aim": "exposed", "elite": true,
       "actions": [
         { "id": "tail_sweep", "name": "Tail Sweep", "kind": "attack", "weight": 2, "text": "A rib the size of a girder, for {damage}.", "status": "implemented" },
-        { "id": "regen", "name": "Regen", "kind": "defend", "effect": "regrow", "value": 3, "weight": 1, "when": "missing_hull", "text": "Regrows {value} HP.", "status": "implemented" },
+        { "id": "recover", "name": "Recover", "kind": "defend", "effect": "recover", "value": 3, "weight": 1, "when": "missing_hull", "text": "Recovers {value} HP.", "status": "implemented" },
         { "id": "bone_storm", "name": "Bone Storm", "kind": "attack", "factor": 0.34, "weight": 2, "keywords": ["all"], "when": "below_half", "text": "Ribs fly: {damage} to every machine.", "status": "implemented" }
       ],
       "flavour": "Gate order four still applies. Bring more gun."
@@ -751,7 +751,7 @@
       "actions": [
         { "id": "chain_lightning", "name": "Chain Lightning", "kind": "attack", "factor": 0.5, "weight": 2, "keywords": ["all"], "text": "Chain Lightning leaps across the line: {damage} to every machine.", "status": "implemented" },
         { "id": "bloodlust", "name": "Bloodlust", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Bloodlust: every other foe on the field hits {value} harder, fading by half each round.", "status": "implemented" },
-        { "id": "lightning_shield", "name": "Lightning Shield", "kind": "defend", "effect": "brace_all", "value": 1, "weight": 1, "when": "others_on_field", "text": "Lightning Shield: armour +{value} on every foe in the fight through the next round.", "status": "implemented" }
+        { "id": "lightning_shield", "name": "Lightning Shield", "kind": "defend", "effect": "brace_all", "value": 1, "weight": 1, "when": "others_on_field", "text": "Lightning Shield: armour +{value} on every foe in the fight until their next turn.", "status": "implemented" }
       ],
       "flavour": "The little ones listen to it. That is the whole problem."
     },
@@ -762,7 +762,7 @@
       "hp": 50, "attack": 16, "armour": 1, "rank": "front", "size": 2, "movespeed": 1,
       "actions": [
         { "id": "limb", "name": "Limb", "kind": "attack", "weight": 2, "text": "A branch the size of a girder, for {damage}.", "status": "implemented" },
-        { "id": "regen", "name": "Regen", "kind": "defend", "effect": "regrow", "value": 5, "weight": 1, "when": "missing_hull", "text": "Regrows {value} HP.", "status": "implemented" },
+        { "id": "recover", "name": "Recover", "kind": "defend", "effect": "recover", "value": 5, "weight": 1, "when": "missing_hull", "text": "Recovers {value} HP.", "status": "implemented" },
         { "id": "root_storm", "name": "Root Storm", "kind": "attack", "factor": 0.5, "weight": 2, "keywords": ["all"], "when": "below_half", "text": "Roots come up everywhere: {damage} to every machine.", "status": "implemented" }
       ],
       "flavour": "Gate order one, amended: if it is green, old and angry, send for the engineers."
@@ -775,7 +775,7 @@
       "actions": [
         { "id": "switch", "name": "Switch", "kind": "attack", "weight": 2, "text": "A whip of green wood for {damage}.", "status": "implemented" },
         { "id": "call_of_the_wild", "name": "Call of the Wild", "kind": "buff", "effect": "summon", "foe": "wolf", "count": 2, "weight": 1, "text": "Two dire wolves come to the call, into empty places at once, or into the pool when the line is full.", "status": "implemented" },
-        { "id": "root_snare", "name": "Root Snare", "kind": "debuff", "effect": "disable", "weight": 1, "text": "Roots take the entry its target shows: switched off through its next turn.", "status": "implemented" }
+        { "id": "root_snare", "name": "Root Snare", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Roots take the entry its target shows: Jammed through its next turn.", "status": "implemented" }
       ],
       "flavour": "The wolves do not run from it. They run for it."
     },
@@ -786,7 +786,7 @@
       "hp": 44, "attack": 12, "armour": 1, "rank": "front", "size": 2, "movespeed": 1,
       "actions": [
         { "id": "maw", "name": "Maw", "kind": "attack", "weight": 2, "text": "The ring closes for {damage}.", "status": "implemented" },
-        { "id": "burrow", "name": "Burrow", "kind": "defend", "effect": "brace", "value": 4, "weight": 1, "when": "missing_hull", "text": "Digs in: armour +{value} until its next action.", "status": "implemented" },
+        { "id": "burrow", "name": "Burrow", "kind": "defend", "effect": "brace", "value": 4, "weight": 1, "when": "missing_hull", "text": "Digs in: armour +{value} until its next turn.", "status": "implemented" },
         { "id": "quake", "name": "Quake", "kind": "attack", "factor": 0.25, "weight": 2, "keywords": ["all"], "when": "below_half", "text": "The ground heaves: {damage} to every machine.", "status": "implemented" }
       ],
       "flavour": "Field manual, appendix K, last line: when the sand moves, you are already standing on it."
@@ -833,7 +833,7 @@
       "hp": 55, "attack": 18, "armour": 1, "rank": "front", "size": 2, "movespeed": 1,
       "actions": [
         {"id": "hammer", "name": "The Hammer", "kind": "attack", "factor": 1.25, "weight": 2, "keywords": ["scorch"], "scorch": 1, "text": "The hammer of slag: {damage}, and the machine scorched.", "status": "implemented"},
-        {"id": "submerge", "name": "Submerge", "kind": "defend", "effect": "brace", "value": 3, "weight": 1, "when": "missing_hull", "then": "sons_of_flame", "text": "It sinks into the fire: armour +{value} until its next action, and the Sons of Flame come next round.", "status": "implemented"},
+        {"id": "submerge", "name": "Submerge", "kind": "defend", "effect": "brace", "value": 3, "weight": 1, "when": "missing_hull", "then": "sons_of_flame", "text": "It sinks into the fire: armour +{value} until its next turn, and the Sons of Flame come next round.", "status": "implemented"},
         {"id": "sons_of_flame", "name": "Sons of Flame", "kind": "buff", "effect": "summon", "foe": "salamander", "count": 2, "weight": 1, "text": "Two sons of flame rise from the fire, into empty places at once, or into the pool when the line is full.", "status": "implemented"}
       ],
       "flavour": "Recruitment poster: THEY BROUGHT FIRE. Footnote: the fire brought a hammer."
@@ -841,10 +841,10 @@
     {
       "id": "thunder_ape", "name": "The Thunder Ape", "faction": "peak", "elite": true,
       "design": {"fantasy": "Monster Hunter's Rajang by archetype, the golden ape of the volcano whose fury is lightning (Capcom's coinage, so a name of ours; Ryan, 3 November: a ubiquitous entry and unique, since the roster has few lightning foes; placed). Careful: his favourite series.", "niche": "Hunts the strongest machine, fast, as it goes for the biggest threat. Lightning Beam switches off the entry its target shows, the engine's nearest thing to a shock; Rampage is the multi-punch, three strikes at half; Golden Rage is the mode (Ryan's read, 4 November): for three rounds its blows hit 2 harder under a point of plate, until a quarter of its HP is knocked out of it, when it staggers and loses its next action, or a Suppress breaks it; a Purge strips it. So the round it roars is the window: shield through the gold, or burst it. Enemy Shock, telegraphed, is the bible's open question, and this is the foe to carry it when it is settled.", "notes": "Landed 3 November as a placeholder kit on Ryan's marks; its kit by his read of 4 November: \"the iconic moves are the spin, the multi-punch rampage, the lightning beam (which you have), and the cannonball dive. The golden rage is a mode, not an attack - it gets angry, transforms gaining power and armour, and transforms back after a time or getting staggered. It's a cycle that forces the player into a cycle of attack and defense, broken by a bold player with great timing. Not all of that translates into our game, but that's the read.\" Claude's translation: the mode a special (the golden effect: value its add, rounds its length, when calm so one rage at a time, weight 2 so it comes about a round in three while calm), the stagger the bold play's pay; Rampage the multi-punch; the beam kept; the Grab and Throw retired (a pin is Deviljho's). Left out of the three-move budget, for Ryan to swap in: the spin (a blow at every machine) and the cannonball dive (a breach from above). Every number a placeholder. Its art a rough placeholder (tools/placeholder_art.py) until a render is picked.", "sprite": "a hulking ape with a mane of black fur and two curling horns, lightning crackling between its fists and jaws, braced on its knuckles mid-charge, drawn retro"},
-      "codex": "A horned ape that spits lightning. It picks the strongest machine on the field and goes for it: a beam that switches off the entry it shows, a rampage of three fists, and a roar that turns its fur gold. Gold, its blows hit harder and it wears a point of armour for three rounds, until a quarter of its HP is knocked out of it; then it staggers. Shield through the gold, or break it.",
+      "codex": "A horned ape that spits lightning. It picks the strongest machine on the field and goes for it: a beam that jams the entry it shows, a rampage of three fists, and a roar that turns its fur gold. Gold, its blows hit harder and it wears a point of armour for three rounds, until a quarter of its HP is knocked out of it; then it staggers. Shield through the gold, or break it.",
       "hp": 48, "attack": 16, "rank": "front", "movespeed": 3,
       "actions": [
-        {"id": "lightning_beam", "name": "Lightning Beam", "kind": "attack", "factor": 0.75, "weight": 2, "keywords": ["disable"], "text": "A beam of lightning: {damage}, and the entry it shows is switched off through its next turn.", "status": "implemented"},
+        {"id": "lightning_beam", "name": "Lightning Beam", "kind": "attack", "factor": 0.75, "weight": 2, "keywords": ["jam"], "text": "A beam of lightning: {damage}, and the entry it shows is Jammed through its next turn.", "status": "implemented"},
         {"id": "rampage", "name": "Rampage", "kind": "attack", "strikes": 3, "factor": 0.5, "weight": 2, "text": "A rampage of fists: {damage}, three times.", "status": "implemented"},
         {"id": "golden_rage", "name": "Golden Rage", "kind": "buff", "effect": "golden", "value": 2, "rounds": 3, "weight": 2, "when": "calm", "text": "It roars and its fur goes gold: its blows hit 2 harder and it wears a point of armour for three rounds, until a quarter of its HP is knocked out of it; then it staggers.", "status": "implemented"}
       ],
@@ -857,8 +857,8 @@
       "hp": 48, "attack": 16, "rank": "front", "movespeed": 2, "aim": "armed",
       "actions": [
         {"id": "rusting_bite", "name": "Rusting Bite", "kind": "attack", "weight": 2, "keywords": ["corrupt"], "corrupt": 1, "text": "A bite that rusts: {damage}, and the entry it shows is corrupted.", "status": "implemented"},
-        {"id": "antennae", "name": "Antennae", "kind": "debuff", "effect": "disable", "weight": 1, "text": "The antennae brush a machine: the entry it shows is switched off through its next turn.", "status": "implemented"},
-        {"id": "feed", "name": "Feed", "kind": "defend", "effect": "regrow", "value": 6, "weight": 1, "when": "missing_hull", "text": "It feeds on what it bit off: regrows {value} HP.", "status": "implemented"}
+        {"id": "antennae", "name": "Antennae", "kind": "debuff", "effect": "jam", "weight": 1, "text": "The antennae brush a machine: the entry it shows is Jammed through its next turn.", "status": "implemented"},
+        {"id": "feed", "name": "Feed", "kind": "defend", "effect": "recover", "value": 6, "weight": 1, "when": "missing_hull", "text": "It feeds on what it bit off: recovers {value} HP.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix K, amended: secure your weapons. Appendix N: from this too."
     },
@@ -913,11 +913,11 @@
     {
       "id": "wild_hunt_rider", "name": "Rider of the Wild Hunt", "faction": "marsh", "elite": true, "wanders": true,
       "design": {"fantasy": "The Wild Hunt, the riders of European folklore that cross the winter sky and take whoever they catch, the Witcher's take the homage (riders in spiked plate on gaunt horses, frost in their wake; the name is folklore's, so it stays). Ryan, 3 November: \"Wild Hunt is better, and this is a good place to make an elite pack of multiple clones instead of a unique unit\", a wanderer: the Hunt rides between worlds, so it rides out of any rift.", "niche": "Three riders, winged, hunting the slowest machine, the one that cannot outrun the Hunt. Each lance is a point harder for every other rider standing, the engine's swarm, so the pack is the threat and thinning it is the answer; Frost switches off the entry its target shows.", "notes": "Landed 3 November as a placeholder kit on Ryan's marks, the first elite composition led by a foe at a strength above one; every number a placeholder. Its art a rough placeholder (tools/placeholder_art.py) until a render is picked.", "sprite": "a gaunt rider in black spiked plate with a horned helm astride a skeletal horse wreathed in frost, a long lance couched, riding on the air, drawn retro"},
-      "codex": "They ride in threes across the sky and take the slowest. Each lance hits harder for every other rider still up, and their frost switches off whatever a machine is showing. Thin them, and the Hunt is only a rider.",
+      "codex": "They ride in threes across the sky and take the slowest. Each lance hits harder for every other rider still up, and their frost jams whatever a machine is showing. Thin them, and the Hunt is only a rider.",
       "hp": 20, "attack": 10, "rank": "front", "movespeed": 3, "winged": true,
       "actions": [
         {"id": "lance", "name": "Lance", "kind": "attack", "swarm": 1, "weight": 2, "text": "A lance from the Hunt for {damage}: more for every other rider standing.", "status": "implemented"},
-        {"id": "frost", "name": "Frost", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["disable"], "text": "Frost in its wake: {damage}, and the entry it shows is switched off through its next turn.", "status": "implemented"}
+        {"id": "frost", "name": "Frost", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["jam"], "text": "Frost in its wake: {damage}, and the entry it shows is Jammed through its next turn.", "status": "implemented"}
       ],
       "flavour": "Gate order four, footnote: they are not from the Marsh. They are not from anywhere."
     },
@@ -950,7 +950,7 @@
       "hp": 12, "attack": 4, "rank": "back", "movespeed": 1,
       "actions": [
         {"id": "claw", "name": "Claw", "kind": "attack", "weight": 2, "text": "A claw, for {damage}.", "status": "implemented"},
-        {"id": "mend", "name": "Mend", "kind": "defend", "effect": "regrow_ally", "value": 4, "weight": 1, "when": "ally_hurt", "text": "It licks the wound: the most hurt of its own regrows {value} HP.", "status": "implemented"},
+        {"id": "mend", "name": "Mend", "kind": "defend", "effect": "heal", "value": 4, "weight": 1, "when": "ally_hurt", "text": "It licks the wound: heals the most hurt of its own for {value} HP.", "status": "implemented"},
         {"id": "roar", "name": "Roar", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "A roar: every other foe on the field hits {value} harder, fading by half each round.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix L, amended: he brought a friend."
@@ -963,7 +963,7 @@
       "hp": 40, "attack": 7, "armour": 0, "rank": "front", "size": 2, "movespeed": 1,
       "actions": [
         {"id": "lash", "name": "Tendrils", "kind": "attack", "factor": 0.6, "strikes": 2, "weight": 2, "text": "Tendrils, twice: {damage} each.", "status": "implemented"},
-        {"id": "bad_breath", "name": "Bad Breath", "kind": "attack", "factor": 0.3, "weight": 1, "keywords": ["all", "ablate", "scorch", "disable", "corrupt"], "ablate": 1, "scorch": 1, "corrupt": 1, "text": "Bad Breath over every machine: {damage} each, and each one Ablating, scorched, the entry it shows switched off and corrupted.", "status": "implemented"},
+        {"id": "bad_breath", "name": "Bad Breath", "kind": "attack", "factor": 0.3, "weight": 1, "keywords": ["all", "ablate", "scorch", "jam", "corrupt"], "ablate": 1, "scorch": 1, "corrupt": 1, "text": "Bad Breath over every machine: {damage} each, and each one Ablating, scorched, the entry it shows Jammed and corrupted.", "status": "implemented"},
         {"id": "seedfall", "name": "Seedfall", "kind": "buff", "effect": "summon", "foe": "mandragora", "count": 2, "weight": 1, "when": "below_half", "text": "Below half, it seeds the ground: two mandragoras join the fight.", "status": "implemented"}
       ],
       "flavour": "Gate order one, amended again: if it is green and it smells like that, masks on."
@@ -987,7 +987,7 @@
       "hp": 60, "attack": 18, "armour": 1, "rank": "front", "movespeed": 1, "aim": "armed",
       "actions": [
         {"id": "blade", "name": "Blade", "kind": "attack", "weight": 2, "text": "His own sword, for {damage}.", "status": "implemented"},
-        {"id": "disarm", "name": "Disarm", "kind": "attack", "factor": 0.5, "weight": 2, "keywords": ["steal"], "then": "borrowed_blade", "text": "Knocks loose what a machine is showing, for {damage}, and takes it: that entry is switched off through its next turn, and he swings it next round.", "status": "implemented"},
+        {"id": "disarm", "name": "Disarm", "kind": "attack", "factor": 0.5, "weight": 2, "keywords": ["steal"], "then": "borrowed_blade", "text": "Knocks loose what a machine is showing, for {damage}, and takes it: that entry is Jammed through its next turn, and he swings it next round.", "status": "implemented"},
         {"id": "borrowed_blade", "name": "Borrowed Blade", "kind": "attack", "power": "held", "weight": 1, "text": "Swings what he took, at its own number; anything that was no weapon is a fake, for 1.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix K: secure your weapons. Appendix L: he means all of them."
@@ -995,7 +995,7 @@
     {
       "id": "fallen_weapon", "name": "The Fallen Weapon", "faction": "waste",
       "design": {"fantasy": "The Exor homage (Super Mario RPG's sword fallen into the keep; a series coinage, so a name of ours, the Fallen Weapon a working name). Ryan, 15 October: in, distinct from its game's look; 18 October, his pick: the double-bitted axe standing haft-down, an eye in each blade. The boss in parts: the eyes shield the core that drives them.", "niche": "Its core is Guarded while both eyes stand: one eye down opens it for three rounds before the eye grows back. One eye's stare goes through the shield, the other's switches off what a machine shows, the Waste's two halves. Below half it rises and falls on every machine two rounds on.", "notes": "Landed 30 October as a runnable placeholder kit for Ryan's marks (the slate, docs/bosses_proposal.md); every number a placeholder. The eyes are foes of their own with no art yet (the placeholder shape); the core is drawn as the whole axe, its blades and their eyes included, until the eyes are cut apart or rendered.", "sprite": "a colossal double-bitted battle axe alone with no one holding it, an animate weapon with no body, tilted in the cracked earth of the badlands, its rune-carved haft wrapped in rotting leather, a glaring eye set into each of its two crescent blades, dust swirling around it", "variants": ["a colossal war hammer standing haft-down in the badlands like a monument, its iron head aloft with a blunt face on one end and a curved pick on the other, a glaring eye set into each end, cracked earth heaved up around its buried haft", "a colossal war hammer alone with no one holding it, an animate weapon with no body, tilted in the cracked earth of the badlands, its rune-carved haft wrapped in rotting leather, a blunt face and a curved pick on its iron head, a glaring eye set into each end, dust swirling around it", "a colossal double-bitted battle axe standing haft-down in the badlands like a monument, its two crescent blades spread like wings, a glaring eye set into each blade, cracked earth heaved up around its buried haft", "a colossal double-bitted battle axe alone with no one holding it, an animate weapon with no body, tilted in the cracked earth of the badlands, its rune-carved haft wrapped in rotting leather, a glaring eye set into each of its two crescent blades, dust swirling around it"]},
-      "codex": "A weapon the size of a keep tower, fallen out of the rift and standing where it landed. It cannot be hurt while both its eyes are open: put one out and the weapon is open for three rounds before the eye grows back. One eye's stare strikes; the other's switches off what a machine shows. Hurt badly, it rises.",
+      "codex": "A weapon the size of a keep tower, fallen out of the rift and standing where it landed. It cannot be hurt while both its eyes are open: put one out and the weapon is open for three rounds before the eye grows back. One eye's stare strikes; the other's jams what a machine shows. Hurt badly, it rises.",
       "hp": 40, "attack": 16, "armour": 1, "rank": "front", "size": 2, "movespeed": 1,
       "parts": ["piercing_eye", "prising_eye"], "guard": "all", "regrow_parts": 3,
       "actions": [
@@ -1018,10 +1018,10 @@
     {
       "id": "prising_eye", "name": "Prising Eye", "faction": "waste",
       "design": {"fantasy": "One of the Fallen Weapon's two eyes, a part of the boss in parts (the slate's Exor homage; Claude's lean on the eyes' blows, the Waste's two halves).", "niche": "A part: while both eyes stand the core is Guarded; it grows back three rounds after it falls while the core stands, and falls with the core.", "notes": "Landed 30 October as a runnable placeholder kit for Ryan's marks (the slate, docs/bosses_proposal.md); every number a placeholder. No art yet: the placeholder shape until the eyes are cut from the axe or rendered apart.", "sprite": "a huge disembodied glaring green eye set in a crescent of cracked bronze axe blade, floating above the ground, its iris narrowed to a slit, cracks of light round it in the metal", "variants": ["a huge disembodied glaring green eye set in a crescent of cracked bronze axe blade, floating above the ground, its iris narrowed to a slit, cracks of light round it in the metal"]},
-      "codex": "An eye in the Fallen Weapon's blade. While it and its twin stand, the weapon cannot be hurt. Its stare switches off what a machine is showing.",
+      "codex": "An eye in the Fallen Weapon's blade. While it and its twin stand, the weapon cannot be hurt. Its stare jams what a machine is showing.",
       "hp": 8, "attack": 8, "rank": "front", "movespeed": 1,
       "actions": [
-        {"id": "gaze", "name": "Gaze", "kind": "attack", "weight": 1, "keywords": ["disable"], "text": "A stare that switches off what a machine is showing: {damage}, and that entry is off through its next turn.", "status": "implemented"}
+        {"id": "gaze", "name": "Gaze", "kind": "attack", "weight": 1, "keywords": ["jam"], "text": "A stare that jams what a machine is showing: {damage}, and that entry is Jammed through its next turn.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix K: do not meet its eye. It will meet yours."
     },
@@ -1032,7 +1032,7 @@
       "hp": 72, "attack": 12, "armour": 0, "rank": "front", "movespeed": 1,
       "actions": [
         {"id": "estocada", "name": "Estocada", "kind": "attack", "weight": 2, "text": "The sword, for {damage}.", "status": "implemented"},
-        {"id": "red_capote", "name": "Red Capote", "kind": "defend", "effect": "brace", "value": 3, "weight": 1, "then": "andalucia", "text": "The cape: armour +{value} until its next action, and Andalucia comes next round.", "status": "implemented"},
+        {"id": "red_capote", "name": "Red Capote", "kind": "defend", "effect": "brace", "value": 3, "weight": 1, "then": "andalucia", "text": "The cape: armour +{value} until its next turn, and Andalucia comes next round.", "status": "implemented"},
         {"id": "andalucia", "name": "Andalucia", "kind": "attack", "factor": 0.5, "strikes": 4, "weight": 1, "text": "Andalucia: a flurry of {damage}, four times, at one machine.", "status": "implemented"}
       ],
       "flavour": "Gate order four, footnote two: do not charge the cape."
@@ -1057,7 +1057,7 @@
       "hp": 50, "attack": 14, "armour": 1, "armour_step": 1, "rank": "front", "size": 2, "movespeed": 1,
       "actions": [
         {"id": "bite", "name": "Bite", "kind": "attack", "weight": 2, "text": "Jaws like a vice, for {damage}.", "status": "implemented"},
-        {"id": "withdraw", "name": "Withdraw", "kind": "defend", "effect": "brace", "value": 2, "weight": 1, "then": "earthquake", "text": "Into the shell: armour +{value} until its next action, and Earthquake comes next round.", "status": "implemented"},
+        {"id": "withdraw", "name": "Withdraw", "kind": "defend", "effect": "brace", "value": 2, "weight": 1, "then": "earthquake", "text": "Into the shell: armour +{value} until its next turn, and Earthquake comes next round.", "status": "implemented"},
         {"id": "earthquake", "name": "Earthquake", "kind": "attack", "factor": 0.6, "weight": 1, "keywords": ["all", "scorch"], "scorch": 1, "text": "Earthquake: {damage} to every machine, each one scorched.", "status": "implemented"}
       ],
       "flavour": "Recruitment poster, the reverse: it is not a hill. Stop parking on it."
@@ -1081,7 +1081,7 @@
       "hp": 72, "attack": 15, "armour": 0, "rank": "front", "size": 2, "movespeed": 1,
       "actions": [
         {"id": "mandibles", "name": "Mandibles", "kind": "attack", "weight": 2, "text": "The mandibles close, for {damage}.", "status": "implemented"},
-        {"id": "burrow", "name": "Burrow", "kind": "defend", "effect": "brace", "value": 2, "weight": 1, "when": "missing_hull", "then": "upheaval", "text": "It goes under: armour +{value} until its next action, and Upheaval comes next round.", "status": "implemented"},
+        {"id": "burrow", "name": "Burrow", "kind": "defend", "effect": "brace", "value": 2, "weight": 1, "when": "missing_hull", "then": "upheaval", "text": "It goes under: armour +{value} until its next turn, and Upheaval comes next round.", "status": "implemented"},
         {"id": "upheaval", "name": "Upheaval", "kind": "attack", "factor": 1.25, "weight": 1, "text": "It comes up under a machine: {damage}.", "status": "implemented"}
       ],
       "flavour": "Gate order one, footnote: the ground is not supposed to do that."
@@ -1105,7 +1105,7 @@
       "hp": 60, "attack": 14, "armour": 1, "rank": "front", "size": 2, "movespeed": 1,
       "actions": [
         {"id": "twin_shear", "name": "Twin Shear", "kind": "attack", "strikes": 2, "factor": 0.6, "weight": 2, "text": "The pincers: {damage}, twice.", "status": "implemented"},
-        {"id": "paralytail", "name": "Paralytail", "kind": "attack", "factor": 0.75, "weight": 2, "keywords": ["disable"], "text": "The tail: {damage}, and the entry it shows is switched off through its next turn.", "status": "implemented"},
+        {"id": "paralytail", "name": "Paralytail", "kind": "attack", "factor": 0.75, "weight": 2, "keywords": ["jam"], "text": "The tail: {damage}, and the entry it shows is Jammed through its next turn.", "status": "implemented"},
         {"id": "desert_gasp", "name": "Desert Gasp", "kind": "attack", "factor": 0.5, "weight": 2, "keywords": ["all", "corrupt"], "corrupt": 1, "when": "below_half", "text": "Desert gasp over every machine: {damage} each, and the entry each shows is corrupted.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix W: if the sand moves and there is no wind, it is not the wind."
@@ -1128,7 +1128,7 @@
       "codex": "The orb that guards the mage. While it floats the Astromancer cannot be hurt; break it, and it is three rounds before another forms. Its aura braces every foe on the field.",
       "hp": 12, "attack": 8, "rank": "front", "movespeed": 2,
       "actions": [
-        {"id": "guard_aura", "name": "Guard Aura", "kind": "defend", "effect": "brace_all", "value": 1, "weight": 1, "text": "Guard Aura: every foe on the field is Armoured 1 through the next round.", "status": "implemented"},
+        {"id": "guard_aura", "name": "Guard Aura", "kind": "defend", "effect": "brace_all", "value": 1, "weight": 1, "text": "Guard Aura: every foe on the field is Armoured 1 until their next turn.", "status": "implemented"},
         {"id": "glint", "name": "Glint", "kind": "attack", "factor": 0.5, "weight": 1, "text": "A glint of light: {damage}.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix K: the shiny one is not the problem. The shiny one is why the problem is still alive."
@@ -1139,7 +1139,7 @@
       "codex": "The orb that spits lightning. Spark Plasma switches off the entry a machine shows; Shine Plasma reaches everyone for less. It dies easily, so it is usually left for last.",
       "hp": 6, "attack": 5, "rank": "back", "movespeed": 2, "tier": 2,
       "actions": [
-        {"id": "spark_plasma", "name": "Spark Plasma", "kind": "attack", "factor": 0.75, "weight": 2, "keywords": ["disable"], "text": "Spark Plasma: {damage}, and the entry it shows is switched off through its next turn.", "status": "implemented"},
+        {"id": "spark_plasma", "name": "Spark Plasma", "kind": "attack", "factor": 0.75, "weight": 2, "keywords": ["jam"], "text": "Spark Plasma: {damage}, and the entry it shows is Jammed through its next turn.", "status": "implemented"},
         {"id": "shine_plasma", "name": "Shine Plasma", "kind": "attack", "factor": 0.4, "weight": 1, "keywords": ["all"], "text": "Shine Plasma: {damage} to every machine.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix K: it hums before it fires. That is the only warning you get."
@@ -1150,7 +1150,7 @@
       "codex": "The orb that heals. Each round one of its own, whoever is worst off, gets some back. Kill it first, or nothing you do sticks.",
       "hp": 6, "attack": 3, "rank": "back", "movespeed": 2, "tier": 2,
       "actions": [
-        {"id": "earnest_ply", "name": "Earnest Ply", "kind": "defend", "effect": "regrow_ally", "value": 6, "weight": 2, "when": "ally_hurt", "text": "Earnest Ply: the most hurt of its own regrows {value} HP.", "status": "implemented"},
+        {"id": "earnest_ply", "name": "Earnest Ply", "kind": "defend", "effect": "heal", "value": 6, "weight": 2, "when": "ally_hurt", "text": "Earnest Ply: heals the most hurt of its own for {value} HP.", "status": "implemented"},
         {"id": "glimmer", "name": "Glimmer", "kind": "attack", "factor": 0.5, "weight": 1, "text": "A glimmer: {damage}.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix K: whatever you just did, it is undoing it. Kill it first."
@@ -1305,7 +1305,7 @@
       "actions": [
         { "id": "flurry", "name": "Flurry", "kind": "attack", "strikes": 2, "weight": 2, "text": "Two blows of {damage}, one after the other.", "status": "implemented" },
         { "id": "counter", "name": "Counter", "kind": "defend", "effect": "retaliate", "weight": 1, "text": "Whatever strikes it up close is struck back.", "status": "planned" },
-        { "id": "chakra", "name": "Chakra", "kind": "defend", "effect": "regrow", "value": 4, "weight": 1, "when": "missing_hull", "text": "Breathes {value} HP back.", "status": "implemented" },
+        { "id": "chakra", "name": "Chakra", "kind": "defend", "effect": "recover", "value": 4, "weight": 1, "when": "missing_hull", "text": "Breathes {value} HP back.", "status": "implemented" },
         { "id": "hundred_fists", "name": "Hundred Fists", "kind": "attack", "factor": 0.5, "strikes": 3, "weight": 2, "aim": "anything", "when": "below_half", "text": "Three blows of {damage} at anything, too fast to count.", "status": "implemented" }
       ],
       "flavour": "It bowed first. That was the warning."
@@ -1341,7 +1341,7 @@
       "hp": 18, "attack": 4, "rank": "back", "aim": "focus",
       "actions": [
         { "id": "dia", "name": "Dia", "kind": "attack", "weight": 2, "text": "A lance of white light for {damage}.", "status": "implemented" },
-        { "id": "cure", "name": "Cure", "kind": "defend", "effect": "regrow_ally", "value": 4, "weight": 1, "when": "ally_hurt", "text": "Regrows {value} HP on the most hurt of its own.", "status": "implemented" },
+        { "id": "cure", "name": "Cure", "kind": "defend", "effect": "heal", "value": 4, "weight": 1, "when": "ally_hurt", "text": "Heals the most hurt of its own for {value} HP.", "status": "implemented" },
         { "id": "holy", "name": "Holy", "kind": "attack", "factor": 3.0, "weight": 2, "when": "below_half", "text": "Everything it has, as light: {damage}.", "status": "implemented" }
       ],
       "flavour": "It healed the thing that was eating the gate. Then it looked at us."

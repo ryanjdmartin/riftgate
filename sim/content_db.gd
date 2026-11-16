@@ -233,8 +233,9 @@ func fit_module(u: Unit, module_id: String) -> void:
 
 
 ## A module as the passive the engine runs: an add_stat per stat line, then the text's
-## effects (none while the text is planned). A grant its text writes out (the Overrun Gearing's
-## spill) carries the text's own line, so the star reads the rule and never the stat lines.
+## effects (none while the text is planned). A rule its text writes on its machine's entries
+## (the Overrun Gearing's spill) carries the text's own line, so the star reads the rule and
+## never the stat lines.
 func module_passive(module_id: String) -> Dictionary:
 	var m: Dictionary = modules.get(module_id, {})
 	var effects: Array = []
@@ -245,7 +246,7 @@ func module_passive(module_id: String) -> Dictionary:
 	if text is Dictionary and str(text.get("status", "implemented")) == "implemented":
 		for e in text.get("effects", []):
 			var eff: Dictionary = (e as Dictionary).duplicate(true)
-			if bool(eff.get("printed", false)):
+			if str(eff.get("effect", "")) == "spillover":
 				eff["line"] = str(text.get("description", ""))
 			effects.append(eff)
 	return {"id": "module:" + module_id, "name": str(m.get("name", module_id)), "description": module_description(module_id), "effects": effects}
@@ -509,10 +510,10 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		elif d[2] == "module":
 			effects.append({"name": head, "text": str(d[1]), "kind": "module", "note": "MODULE"})
 		elif Effects.is_status(str(d[5])):
-			# A status the battle keeps (the Ammit's Souls; its Empowered from 16 October until its
+			# A status the battle keeps (the Ammit's Essence; its Empowered from 16 October until its
 			# rework of 12 November): its count, kept for the battle, one row a status whatever
 			# granted each stack.
-			# A count says itself at one too (the Ammit's Souls), bare; a buff's stacks from two.
+			# A count says itself at one too (the Ammit's Essence), bare; a buff's stacks from two.
 			var counted := Effects.is_counted(str(d[5]))
 			if kept.has(str(d[5])):
 				var row: Dictionary = kept[str(d[5])]
@@ -1455,7 +1456,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: volatile is the hull a spend bites: a positive number" % where)
 	if fd.has("shield_cost") and int(fd.get("shield_cost", 0)) <= 0:
 		errs.append("%s: shield_cost is the shield a spend takes first: a positive number" % where)
-	# A buff that spends a count of its own machine's for its stacks (the Soul Siphon, 12 November):
+	# A buff that spends a count of its own machine's for its stacks (the Quintessence Tap, 12 November):
 	# the status it spends, one the engine knows, and the most it takes, which is the most it
 	# grants, so it says no stacks of its own.
 	if fd.has("spends") or fd.has("spends_up_to"):
@@ -1467,10 +1468,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 			errs.append("%s: a buff that spends a count grants a stack for each one spent, so it says spends_up_to and no stacks" % where)
 		if str(fd.get("targets", "")) != "self":
 			errs.append("%s: a buff that spends its own machine's count lands on itself (targets self)" % where)
-	# A hold on the whole field (the Soul Siphon's "No Empowered decays this round"): a status that
+	# A hold on the whole field (the Quintessence Tap's "No Empowered decays this round"): a status that
 	# halves on its own clock, held on every unit through the round's end.
-	if fd.has("holds_all") and not Effects.decays_to_zero(Effects.STATUS.get(str(fd["holds_all"]), {})):
-		errs.append("%s: holds_all names a status that halves at the round's end (Empowered, Flak): no unit's stacks of it run down this round" % where)
+	if fd.has("holds_all") and (not Effects.decays_to_zero(Effects.STATUS.get(str(fd["holds_all"]), {})) or not Effects.ROUND_HOLDERS.has(str(fd["holds_all"]))):
+		errs.append("%s: holds_all names a status that halves at the round's end and has a buff that holds it on every unit (Empowered: Essence Flare)" % where)
 	# Ablate is a numbered keyword (Ryan, 18 October): an entry says the stacks each hit leaves.
 	if Array(fd.get("keywords", [])).has("ablate") and int(fd.get("ablate", 0)) <= 0:
 		errs.append("%s: an entry with Ablate says its stacks: ablate, a positive number" % where)
@@ -1578,6 +1579,11 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	# false, never on equipment, which deals nothing.
 	if fd.has("ignores_armour") and (not (fd["ignores_armour"] is bool) or kind != "attack"):
 		errs.append("%s: ignores_armour is true or false, on an attack" % where)
+	# The two rules that were keywords until 15 November, each its one piece's own (the Combat
+	# Translocator's swap, the Web Bomb's web): true or false, on an attack.
+	for rule in ["swaps", "webs"]:
+		if fd.has(rule) and (not (fd[rule] is bool) or kind != "attack"):
+			errs.append("%s: %s is true or false, on an attack" % [where, rule])
 	for key in ["fills_hopper", "fires_hopper"]:
 		if fd.has(key) and (kind != "attack" or int(fd[key]) <= 0):
 			errs.append("%s: %s is a positive number on an attack" % [where, key])
@@ -1742,7 +1748,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: %d keywords, authored cap is %d" % [where, kws.size(), MAX_AUTHORED_KEYWORDS])
 	for k in kws:
 		# A planned component may carry a keyword the vocabulary names but the engine lacks
-		# (taunt, corrode once; Web now), and a built component may carry a planned one (the
+		# (taunt, corrode once), and a built component may carry a planned one (the
 		# Flakshot Repeater's Flak from 19 to 21 October): Face.from_dict builds the entry without that
 		# keyword until it is coded, so content is written ahead of the engine either way,
 		# the keyword never shown and never run. An idea-stage keyword rides only on a draft.
@@ -1820,7 +1826,7 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 		if effect == "stack_status" and eff.has("cap") and int(eff["cap"]) < 1:
 			errs.append("%s: stack_status's cap is the most stacks it banks, at least 1" % where)
 		# An effect scaled by a status the machine carries may count it in steps (the Ammit's flare,
-		# 12 November: an Empowered for every five Souls).
+		# 12 November: an Empowered for every five Essence).
 		if eff.has("stack_step") and (not eff.has("per_stack") or int(eff["stack_step"]) < 1):
 			errs.append("%s: stack_step is the stacks of per_stack's status a step takes: 1 or more, beside per_stack" % where)
 		# An effect that fires once a round (the Skua's stack of Ricochet for damaging a foe, Ryan,
@@ -1885,8 +1891,8 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: seal_form's value is the armour the seal grants, positive, and heat what it runs hotter a turn, not negative" % where)
 		if effect == "paradox" and int(eff.get("value", 0)) < 1:
 			errs.append("%s: paradox's value is the count that knocks a foe out, at least 1" % where)
-		if effect == "grant_keyword" and eff.has("printed") and not (eff["printed"] is bool):
-			errs.append("%s: grant_keyword's printed is true or false (a grant written out, drawn as the star)" % where)
+		if effect == "grant_keyword" and eff.has("printed"):
+			errs.append("%s: 'printed' is gone; a rule written out is its own effect (spillover), never a keyword granted" % where)
 		if effect == "grant_keyword":
 			var kw := str(eff.get("value", ""))
 			if Face.keyword_from_name(kw) <= 0:

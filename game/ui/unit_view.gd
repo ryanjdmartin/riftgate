@@ -799,7 +799,7 @@ static func draw_chip(ci: CanvasItem, rect: Rect2, ch: Array, mono: Font, txt = 
 	var text := str(ch[1]) if txt == null else str(txt)
 	var x := rect.position.x + CHIP_H - 2.0
 	if kind == "ability":
-		x += ABILITY_TEXT_GAP   # clear of the solid tile, in whose colour the text is drawn: a bare count's first stroke sat under it (the Ammit's Souls, 12 November)
+		x += ABILITY_TEXT_GAP   # clear of the solid tile, in whose colour the text is drawn: a bare count's first stroke sat under it (the Ammit's Essence, 12 November)
 	if not text.is_empty():
 		ci.draw_string(mono, Vector2(x, cy + CHIP_TEXT * 0.36), text, HORIZONTAL_ALIGNMENT_LEFT, -1, CHIP_TEXT, col)
 		x += mono.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, CHIP_TEXT).x + 8.0

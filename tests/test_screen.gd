@@ -813,10 +813,10 @@ func test_the_hold_reads_shields_debuffs_buffs_and_grants() -> void:
 	var coil := Face.buff("overcharged", 2)
 	assert_eq(str(EntryReadout.effects_of(coil)[0]["text"]), "Grants %s ×2" % str(Effects.STATUS["overcharged"]["name"]), "a buff grants its status")
 	var u := Unit.new()
-	u.grant_passive({"id": "t_spill", "name": "Spill", "description": "Damage past a kill spills behind.", "effects": [{"trigger": "static", "effect": "grant_keyword", "value": "spillover", "printed": true}]})
+	u.grant_passive({"id": "t_spill", "name": "Spill", "description": "Damage past a kill spills behind.", "effects": [{"trigger": "static", "effect": "spillover", "value": 1}]})
 	var gun := Face.attack(4)
-	assert_eq(Effects.printed_grants(u, gun), ["Damage past a kill spills behind."], "a written-out grant is its passive's line")
-	assert_eq(str(EntryReadout.lines_for(gun, 1, -1, gun, [], Effects.printed_grants(u, gun), db).back()["text"]), "Damage past a kill spills behind.", "among the rules, last")
+	assert_eq(Effects.written_rules(u, gun), ["Damage past a kill spills behind."], "a rule a passive writes on the entry is its passive's line")
+	assert_eq(str(EntryReadout.lines_for(gun, 1, -1, gun, [], Effects.written_rules(u, gun), db).back()["text"]), "Damage past a kill spills behind.", "among the rules, last")
 
 
 ## The keywords list (Ryan, 26 October): the pause menu's page, every term the dice and the chips
@@ -1261,7 +1261,7 @@ func _chips_for(s: SkirmishScreen, i: int, id: String) -> Array[String]:
 
 ## Every status is a chip whatever its scope (Ryan, 16 October: the Ammit is Empowered, "so
 ## anything that interacts with overcharged needs it displayed"). Stacks a battle keeps (the
-## Ammit's Empowered from 16 October until its rework of 12 November, its Souls since; here a
+## Ammit's Empowered from 16 October until its rework of 12 November, its Essence since; here a
 ## battle's own grant) are a chip with their count; a buff's for the round joins them in the one
 ## chip, and the hold and the codex each list the status once.
 func test_a_status_kept_for_the_battle_is_a_chip_with_its_count() -> void:
@@ -1650,7 +1650,7 @@ func test_a_foe_the_round_kills_wears_the_destroyed_chip_and_keeps_its_intent() 
 	m.die = Die.single(Face.attack(1, Face.Reach.DIRECT, [Face.Keyword.ABLATE]))
 	sk.add_mech(m)
 	var cleric := Foe.make("revenant", 500, 20)
-	var cure := {"id": "cure", "name": "Cure", "kind": "defend", "effect": "regrow_ally", "value": 3, "weight": 1, "text": ""}
+	var cure := {"id": "cure", "name": "Cure", "kind": "defend", "effect": "heal", "value": 3, "weight": 1, "text": ""}
 	cleric.actions = [Foe.basic_action(), cure]
 	var a := Foe.make("revenant", 3, 2)
 	sk.add_foes([cleric, a])
@@ -1933,7 +1933,7 @@ func test_the_barrier_and_the_ward_wear_chips_and_a_dark_entry_counts_its_rounds
 	assert_eq(str((dark_state[1] as Dictionary).get("glyph", "")), "cooldown", "by the clock the die shows along its foot")
 	Effects.disable_entry(ms.unit, ms.face_index, "foe:x", s.sk.round)
 	s._refresh()
-	assert_true(str(s._entry_states(ms, ms.face_index)[0][0]).begins_with("Disabled"), "a foe's switch-off says so, cleansable")
+	assert_true(str(s._entry_states(ms, ms.face_index)[0][0]).begins_with("Jammed"), "a foe's jam says so, cleansable")
 	s.free()
 
 
@@ -1983,7 +1983,7 @@ func test_a_stepping_die_shows_its_next_chamber_and_its_shot_count() -> void:
 func test_a_swap_waits_on_its_first_target_for_a_tap_on_the_second() -> void:
 	var s := _screen()
 	var ms: Skirmish.MechState = s.sk.mechs[0]
-	ms.die.faces[ms.face_index] = Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.SWAP])
+	ms.die.faces[ms.face_index] = Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "swaps": true})
 	var first: Foe = s.sk.targets_for(0)[0]
 	s._begin_second(0, first)
 	assert_eq(s._pending["primary"], first, "the die waits on its first target")
@@ -2010,7 +2010,7 @@ func test_a_swap_waits_on_its_first_target_for_a_tap_on_the_second() -> void:
 	s.free()
 	var t := _screen()
 	var tm: Skirmish.MechState = t.sk.mechs[0]
-	tm.die.faces[tm.face_index] = Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.SWAP])
+	tm.die.faces[tm.face_index] = Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "swaps": true})
 	t._begin_second(0, t.sk.targets_for(0)[0])
 	t._ghost.tapped.emit()
 	assert_eq(t._pop, {"die": 0}, "a tap on the waiting die reads it")
@@ -2268,8 +2268,7 @@ func test_every_mark_on_a_die_face_heads_a_line_of_its_readout() -> void:
 				heads.append(str(m.get("glyph", "")))
 		var wanted: Array[String] = [Glyphs.primary_for(f)]
 		for k in f.keywords:
-			if not f.printed.has(k):
-				wanted.append(str(Face.KEYWORD_NAMES[k]))
+			wanted.append(str(Face.KEYWORD_NAMES[k]))
 		if f.has_unique_rule():
 			wanted.append("star")
 		var granted := DieFaceView.status_chip(f)

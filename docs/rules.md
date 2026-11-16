@@ -252,7 +252,7 @@ every machine is wrecked. There is no round limit.
   column's back to Direct; what a kill brings back (a foe getting back up, a Gel's halves)
   stands once the spend is done (A spend's order, below), and otherwise the hole stays open:
   nothing steps into it after but a split's half, a summon, a part that grows back or a
-  Swap's foe.
+  swap's foe.
 
 ### A blow
 Every foe a strike reaches takes a blow of its own, read in one order:
@@ -272,18 +272,18 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - **Riders land after the hits**: each hit's Cryo and Flak gather on its own foe and land
   once its weapon's hits are done, an application a hit, so no hit of a single-target weapon
   cashes or feeds on what the weapon lays (a ×2 Cryo 1 leaves Cryo 2 and cools nothing; a ×3
-  Flak 1 lands 5, 5 and 5 and leaves Flak 3). Every rider lands so, Ablate, Suppress, Web, a
+  Flak 1 lands 5, 5 and 5 and leaves Flak 3). Every rider lands so, Ablate, Suppress, the Web Bomb's web, a
   passive's lays, Purge and a Primed machine's Ablating with them, in the order the hits earned
   them; Shock, Expose, Lure and Disrupt land after the blow.
 - **A spend's order**: a weapon (an area's and a reach over every foe included) lands its hits
   on its target, then every hit's riders, then the death check; then the spend ends, then what
   its kills bring back. Everything a hit does lands before the death check, on a foe it fells
-  too (its riders, a Mine, a Shock, an Expose, a Lure's turn, a Swap, a gather, a detonation,
+  too (its riders, a Mine, a Shock, an Expose, a Lure's turn, a swap, a gather, a detonation,
   the zap after the strikes), so the
   preview shows the chips beside the skull and no trigger goes unfired; a spend that asks
   whether it killed (a kill trigger, the Spindrift Salvo's rerolls) reads its own death check. The death check
   clears a kill's slot; a foe getting back up and a split's arrivals stand only once the spend
-  is done, in the slot their unit died in, wherever a Swap moved it, so nothing the spend does meets them, and the preview shows a foe that will get back
+  is done, in the slot their unit died in, wherever a swap moved it, so nothing the spend does meets them, and the preview shows a foe that will get back
   up or split with its return's chip in the skull's place. What a foe's tick fells comes back
   at once, once the Mines its falls set off have blown. The prediction runs in phases: a foe its Ablating will kill before it
   acts keeps its intent shown, information whether its blow lands or not, and its blow is left
@@ -307,9 +307,10 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   carries, one Mine a foe: every status's stacks the hits aimed at it fired (each hit's, as its
   machine deepened and doubled them, a Primed machine's Ablating and a passive's lays among them,
   a condition read as the die was spent), its Purge and Chain at every hit's number, the rest
-  once each (Shock, Suppress, Web, Expose, Disrupt), a gated keyword where its gate held.
-  The numbered ones add up across the spends that feed it. Spread, Penetrate and
-  Spillover, the Swap, Rapid, Instant and Lure stay with the spend, as does a rule written on the piece's own blows (ignores armour), and what a hit reads off its foe for
+  once each (Shock, Suppress, Expose, Disrupt), a gated keyword where its gate held.
+  The numbered ones add up across the spends that feed it. Spread and Penetrate, Rapid, Instant
+  and Lure stay with the spend, as does a rule written on one piece (ignores armour, a swap, a
+  web, a spill behind), and what a hit reads off its foe for
   damage (missing hull, a consumer's stacks) means nothing to a flat Mine; each foe its blast
   meets takes it with its own defences (a Ward, its Numbed). When the foe falls, one
   that gets back up or splits included, a tick's fall and a part's too, the Mine blows once the
@@ -322,7 +323,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   Expose after its blow, Disrupt only in the player's turn. Several Mines due at one death check
   blow in strike order, front left to right, then the back, and a blast that fells a mined foe
   blows that one's Mine in turn. A blast set off in a spend is part of it, so what its falls
-  bring back stands once the spend is done. A Mine moves with its foe (a Swap) and goes into a
+  bring back stands once the spend is done. A Mine moves with its foe (a swap) and goes into a
   merger with the foe a merge takes in; it is a mark the team laid, so a Ward turns it away, a
   foe's cleanse takes it and the Paradox counts it. Its chip shows its damage, its readout its
   keywords.
@@ -502,16 +503,19 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   HP is read once a hit, as the hit begins, so every strike of
   the hit is multiplied or none is: a strike that takes the foe to half does nothing for the
   strikes after it.
-- **Web** (the funnel-web's Web Bomb): the foe hit is Webbed, one web however often it is
-  webbed; at the end of its action the web bursts, Suppressing it and the next foe to act
-  beside it (Webbed, below).
-- **Swap** (the Dingo's Combat Translocator): the spend takes two targets, a foe and then
+- **Rules written on one piece** are that piece's own text and no keyword: the die wears the
+  star for them and its readout says the rule (a keyword is a word several pieces share). Three
+  were keywords until they were each found on one piece alone.
+- **The Web Bomb's web** (the funnel-web's): the foe hit wears the Web Bomb's mark, one web
+  however often it is webbed; at the end of its action the web bursts, Suppressing it and the
+  next foe to act beside it (the Web Bomb, below). No Mine carries it.
+- **The swap** (the Dingo's Combat Translocator): the spend takes two targets, a foe and then
   another foe or an empty slot, and they trade places; no damage; a massive foe does not move.
-  What the entry carries beside the Swap lands on both foes named (the Translocator's Shock: both
+  What the entry carries beside the swap lands on both foes named (the Translocator's Shock: both
   come out Shocked), and such an entry may name a massive foe as either target: two targets
-  always, nothing moves, and the rider lands on both all the same. A Swap that carries nothing
+  always, nothing moves, and the rider lands on both all the same. A swap that carries nothing
   else has no use for a massive foe.
-  A Swap lands in the rider phase, before the death check, like every rider: one whose spend
+  A swap lands in the rider phase, before the death check, like every rider: one whose spend
   fells its first target moves the corpse, which dies in the slot it was moved to and gets back
   up or splits there. A Mine moves with its foe.
   A foe keeps its pick and its move, from the rank it now stands in (a back foe pulled into the
@@ -528,8 +532,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   its own, and a Pinned foe's Flak, what the spend lays and what stood there, does not halve at
   this round's end; it halves again the round after. A Ward turns it away. Ablating has a pin of
   its own, Seared: the foe takes a point for every stack at its action and loses none that
-  round (no piece lays it yet). Each wears the lock on the status it holds. Empowered's pin is
-  the round's, on every unit at once (the Soul Siphon, below).
+  round (no piece lays it yet). Each wears the lock on the status it holds. Empowered has no
+  pin: what holds it is a buff on the Ammit, Essence Flare (the Quintessence Tap, below).
 - **Costs** are printed along the entry's foot with its heat, each a mark and a number with no
   word and no sign (the heat's thermometer, the shield's, the hull's machine body, a forging
   gun's shells, the cooldown's clock), never a keyword and never a chip: a
@@ -540,10 +544,10 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   shield cannot pay cannot be played: the die shows the cost struck through, it has nowhere
   to land, and END TURN pulses as if the die were spent. It is the first entry with a
   condition on its play, and the pattern for any to come; the second is a **count it spends**
-  (the Soul Siphon's Souls, by their mark, the number what it would take now), unplayable and
+  (the Quintessence Tap's Essence, by its mark, the number what it would take now), unplayable and
   struck the same way while its machine holds none.
 - **Cleanse** (on a shield or a vent, today): the machine it lands on loses Ablating, Scorched, Crushed,
-  a foe's Disabled and Corrupted (never a cooldown).
+  a foe's Jammed and Corrupted (never a cooldown).
 - No shield passes its maximum: a shield granted to a full machine is lost.
 
 Component properties, printed on the entry rather than learned as keywords (the die marks
@@ -571,14 +575,16 @@ Honey Badger's Chainsaw Claw, two); a weapon that fires it takes up to its most 
 each adding its bonus to the blow, and spends them (its Bullion Fragmenter fires two at +2),
 the armour they stood for going with them. **Braces**:
 spending it Armours its owner, the stacks it says, an armour point each, until the round's
-end (no dealt piece prints it today; the Wild Boar's Breaching Plow did until 11 November). **The Soul Siphon** (the Ammit's, equipment spent on
-itself, cooldown 3): it consumes the Ammit's Souls, as many as it holds up to 5, and grants a
-stack of Empowered for each, the die showing what it would take now; and in the round it is spent
-no Empowered decays, on any unit, machine or foe: what each holds and what it gains before the
-round ends skips that round's halving, and halves again the round after. The round carries the
-hold and no unit a status, so a Ward turns nothing away and nothing counts it as a mark; every
-unit holding Empowered wears the pin's chip, Pinned Empowered, until the round's end. With no
-Soul it cannot be played (Costs, above). **The gather** (the
+end (no dealt piece prints it today; the Wild Boar's Breaching Plow did until 11 November). **The Quintessence Tap** (the Ammit's, equipment spent on
+itself, cooldown 3): it consumes the Ammit's Essence, as much as it holds up to 5, and grants a
+stack of Empowered for each, the die showing what it would take now; and its machine gains
+Essence Flare, a buff, until the round's end. While a live machine carries Essence Flare as the
+round's statuses run down, no Empowered decays, on any unit, machine or foe: what each holds
+and what it gains before the round ends skips that round's halving, and halves again the
+round after. The buff is on the Ammit alone and no other unit wears anything for it, so a Ward
+turns nothing away and nothing counts it as a mark; it is a buff like any, so a Purge that
+takes it ends the hold, and a carrier wrecked before the round's end holds nothing. With no
+Essence it cannot be played (Costs, above). **The gather** (the
 Lammergeier's Lorentz Contractor, a debuff with Expose): every Mine the field's other foes carry
 joins its target's, their damage added and their keywords as one, in the rider phase after the
 spend's own Mine joined it; a Ward on the target turns the gather away, the Mines staying where
@@ -595,12 +601,12 @@ many fell, banked if unspent. **The Reheat Uplink** (the Giant Petrel's, allies 
 gains Empowered 2 and its die rolls again, never onto the entry showing; a spent die rolls
 nothing. **Regenerates** (the Storm Petrel's St. Elmo's Regenerator, a lure): spent on a
 foe, its own machine gains Regenerating, the shield it prints at the start of each of the
-rounds it prints after this one. **Spillover** (the Overrun Gearing's, a Minerva module, on
+rounds it prints after this one. **The spill** (the Overrun Gearing's, a Minerva module, on
 every weapon its machine fires): damage past the kill of a front-rank foe
 carries into the foe behind it as plain damage, the killing strike's excess and every later
 strike of the spend whole, aimed at nobody, so a Shock behind neither doubles it nor is
-spent; the engine runs it as a keyword the module grants written out, so each weapon wears the
-star, the die's readout reading the module's line, and no keyword chip.
+spent; it is the module's own rule and no keyword, so each weapon wears the
+star, the die's readout reading the module's line.
 **The Juggernaut Drive** (the Wild Boar's, since 11 November): once a spend's hits land, every
 front-rank foe a blow of it damaged, felled or not, drives a quarter of its maximum HP, rounded
 up, into the foe standing behind it, once a spend, a plain blow as the Storm Petrel's zap was (no
@@ -621,7 +627,7 @@ unit's own mechanic, the rule it plays by, and never a buff or a debuff, so no P
 or Cleanse touches it; its chip shows its mark cut out of a solid tile, ahead of the unit's
 other chips, and its hold line names it an Ability and says what goes on. A foe's: the Goblin
 Nob's Enrage, a core's guard (Guarded), a Gel's split, a last act, a golden rage while it
-lasts. A machine's: the Polar Bear's seal (its form) and the Ammit's Souls (a count with no
+lasts. A machine's: the Polar Bear's seal (its form) and the Ammit's Essence (a count with no
 cap, so no store: its chip says the number). What an
 ability, a passive or a store grants beyond itself is a buff like any (the Nob's gathered
 Enraged, a module's Empowered or Armoured, the Armoured the Honey Badger's hopper grants): a
@@ -637,23 +643,27 @@ ABILITIES.
 On a machine:
 - **Empowered** (buff): +1 damage a stack, so the count is the bonus. At the end of each
   round it halves, rounded down, whatever granted it, until it is gone; a buff component
-  grants it stacks and no rounds. In a round the Soul Siphon is spent it does not halve, on any
-  unit (the Soul Siphon, above).
-- **Souls** (Ability, the Ammit's Quintessence Tap): a Soul for every foe that falls in a fight
+  grants it stacks and no rounds. While a machine carries Essence Flare it does not halve, on any
+  unit (the Quintessence Tap, above).
+- **Essence Flare** (buff, the Quintessence Tap's, on the machine that spent it): no Empowered
+  halves at this round's end, any unit's. Until the round's end; one stack, renewed.
+- **Essence** (Ability, the Ammit's Quintessence Reactor): 1 for every foe that falls in a fight
   the Ammit stands in, whoever or whatever fells it (its own blow, an ally's, an Ablate tick, a
   Mine's blast: a kill as the death check counts it, so a foe getting back up, a split and a
   part bank none), with no cap, kept from fight to fight through the battle and gone as the
-  battle ends. The Souls flare as each fight opens, and once after each attack of the Ammit's
+  battle ends. The Essence flares as each fight opens, and once after each attack of the Ammit's
   own that kills, however many fall to it (its weapon's blow, an arc, a spill): it gains a stack
-  of Empowered for every 5 Souls it holds, nothing under 5, and no Soul is spent by it. A death
-  check banks its Souls first, so an attack that kills two flares once at the count with both
+  of Empowered for every 5 Essence it holds, nothing under 5, and none is spent by it. A death
+  check banks its Essence first, so an attack that kills two flares once at the count with both
   in. What a flare grants is Empowered like any: it halves at the round's end and a Purge takes
-  it. Its Soul Siphon consumes Souls.
-  An Ability, so no Purge or Cleanse touches them; its chip says the count, and the
+  it. Its Quintessence Tap consumes Essence.
+  An Ability, so no Purge or Cleanse touches it; its chip says the count, and the
   codex lists it among what the battle keeps.
 - **Armoured** (buff, on either side): armour +1 a stack, every stack at once, whatever
-  granted it, so the count is the armour: a machine's until the round's end, a foe's (from
-  its brace) until its next action.
+  granted it, so the count is the armour, until its side's next turn begins: a machine's
+  stands through the enemy's turn and goes at the round's end, and a foe's (from its brace or
+  another's) stands through the player's turn and goes as the foes' next turn opens, before the
+  first of them acts.
 - **Primed** (buff, on either side): each blow leaves an Ablating stack per Primed stack on its
   target, a blow that kills on the foe it felled, a hit at a
   corpse on the corpse. A foe's,
@@ -697,8 +707,8 @@ On a machine:
   and landing as the keyword does, after the blows; a weapon fired spends a stack (a Rapid's
   or an Instant's second fire is a second fire, a salvo one, a passed turn's release none; equipment carries it not and spends
   nothing); a Mine the fire leaves carries the Shock.
-- **Supercooled** (buff): the same with Cryo, one more stack a strike on each foe hit (Cryo 1
-  on a gun without it), laid after the hits.
+- **Supercooled** (buff): the same with Cryo 1, a stack a strike on each foe hit, one more
+  than its own on a gun that carries Cryo, laid after the hits.
 - **Spun Up** (buff): the next weapon the machine spends deals +2 a stack and takes every
   stack; equipment leaves them standing; carried between turns until a weapon takes it.
 - **Ricochet** (buff, the Skua's): after a weapon fires, it hits its target again for 1, once a
@@ -730,9 +740,9 @@ On a machine:
   the blow's riders landing and a Shock it carried spent; equipment pops nothing; until it pops
   or the end of the player's next turn.
 - **Ward** (buff): no rider a foe lays lands on this machine this round, from a blow or from a
-  move of its own (ablate, scorch, disable, corrupt, destroy, purge); a blow's damage lands. Until the round's end. The Decoherence
+  move of its own (ablate, scorch, jam, corrupt, destroy, purge); a blow's damage lands. Until the round's end. The Decoherence
   Veil grants it, self or ally. A foe's, from a special that wards every foe on the field: no mark
-  the team lays lands on it (Ablating, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox,
+  the team lays lands on it (Ablating, Flak, Cryo, Vitriol, Shocked, Exposed, the Web Bomb, the Paradox,
   a Mine), nor a stun, nor a Purge, so a turned mark feeds no Paradox; the damage
   lands; until the end of the player's next turn. On either side a Ward turns the whole thing
   and stands.
@@ -775,7 +785,7 @@ On a machine:
 - **Scorched** (debuff, from a foe's scorch): every weapon and equipment the machine aims at a
   foe runs 1 hotter a stack, until the end of the player's turn, when every stack goes, so it never piles up.
   Cleansable.
-- **Disabled** (debuff): the entry comes up blank through the machine's next turn.
+- **Jammed** (debuff, a foe's jam): the entry comes up blank through the machine's next turn.
 - **Corrupted** (debuff): each spend of the entry bites its owner 3 a stack, shield first,
   no armour off it; lasts the skirmish.
 - **Crushed** (debuff, a foe's crush: the World Eater's pin): every blow the machine takes
@@ -783,7 +793,7 @@ On a machine:
   the next round, when every stack goes; a Ward turns the crush away. Cleansable.
 - **A foe's purge** is Purge N, the rule ours runs: N stacks off every buff the machine carries,
   for good, whatever granted it (a stack is a stack); its Abilities and its stores stay (the
-  Ammit's Souls among them, never the Empowered they grant); a Ward turns it away.
+  Ammit's Essence among them, never the Empowered it grants); a Ward turns it away.
 
 On a foe:
 - **Ablating** (debuff): 1 damage a stack at the start of its action, past armour, then a
@@ -813,7 +823,7 @@ On a foe:
   after Ablating on what it leaves, the whole share rounded down and never the last hit point,
   then a stack fades; it never finishes a foe. The funnel-web's Ambush lays it, a stack per
   weapon hit, as its text says; a web or a lure lays none.
-- **Webbed** (debuff): at the end of its action, skipped or not, the web bursts: it is
+- **The Web Bomb** (debuff, the mark its piece leaves): at the end of its action, skipped or not, the web bursts: it is
   Suppressed (its next action, since it has acted; a countdown it gathers is held a round),
   and so is the next foe to act beside it in its rank, its right-hand neighbour, which loses
   this round's action, or with none standing there its left-hand one, which has acted and
@@ -835,7 +845,7 @@ On a foe:
 - **Empowered** (buff, Rally): lands on every other foe on the field the moment the rally does,
   the rally's value in stacks, and every blow the foe lands hits a point harder a stack, an add
   before the move's factor as every add is. It halves at the end of each round, rounded down,
-  the machine's clock, and skips the halving of a round the Soul Siphon is spent, as a machine's
+  the machine's clock, and skips the halving of a round a machine carries Essence Flare, as a machine's
   does: no move spends it, a special or a Suppress takes none of it, and a
   countdown still gathering carries what stands to the blow it lands. A foe acting after the
   rallier hits harder this turn; one that has acted carries half to the next round; each rally's
@@ -872,7 +882,7 @@ On a foe:
   nothing deepens, spreads or cleanses it, and a fresh foe is stunned by one.
 
 "A foe carrying a status" (the Susceptibility Tensor) means a debuff the team put on it:
-Ablating, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or a Mine.
+Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Flak, Exposed or a Mine.
 
 ### Shields, armour, hull
 - A shield absorbs a blow up to its number and loses what it absorbed; the excess reaches
@@ -1013,8 +1023,10 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or 
   move it names is its foe's next round's intent (the Matador's Red Capote, then Andalucia); a
   follow-up comes only that way, never by the roll, and a Suppress on the first move, or a
   Disrupt that turns it, means it never comes; once announced it cannot be Disrupted, only
-  Suppressed (its chip says so, and a Disrupt held over the foe shows its chip struck through),
-  so the first move is the window. A borrowed swing with nothing taken is no follow-up, and the
+  Suppressed (its chip says it is committed and that no Disrupt turns it, and a Disrupt held
+  over the foe shows its chip struck through), so the first move is the window. It is the
+  engine's pattern and no term of the player's list: a move's readout says what it names next,
+  and nothing calls it a follow-up. A borrowed swing with nothing taken is no follow-up, and the
   roll decides. A swallow is never drawn while fewer than two machines stand
   in the fight, nor a merge while nothing of its kinds stands on the field.
 - **Its target**, drawn as the round opens: at random, unless the foe or its move carries an
@@ -1040,29 +1052,30 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or 
   the move's factor: the adds, then the multiplies, the one damage formula on both
   sides; strikes are separate blows. Riders (a Ward turns away all but the last
   three): scorch (stacks of Scorched), ablate (stacks of
-  Ablating), disable (the entry the machine shows), corrupt (Corrupted stacks on it), crush
+  Ablating), jam (the entry the machine shows is Jammed), corrupt (Corrupted stacks on it), crush
   (Crushed stacks on the machine: a point more on every blow it takes a stack, through the
   next round), steal (the
-  entry the machine shows switched off through its next turn, as a disable, and taken: its foe
+  entry the machine shows Jammed through its next turn, as a jam, and taken: its foe
   holds it until its borrowed swing, whose number is what it took, a weapon's printed blow,
-  and anything that was no weapon a fake, for 1),
+  and anything that was no weapon a fake, for 1), destroy (any of the blow on the hull destroys
+  the entry the machine shows: Destroy, above; no foe carries it yet),
   drain (the striker regrows what the blow took from the hull, no more than the machine had,
   so a shield starves it; it lays nothing on the machine, so a Barrier's blow drains nothing),
   self-destruct (the striker dies after, for good), every machine
   (each strike lands on every live machine in turn, its number what each takes; no aim or
   Lure moves it). Scorch, ablate, corrupt and crush each say their stacks a blow, as the player's
   Ablate does (Scorch 2: two).
-- **A special** replaces the blow: brace (Armoured, its value in stacks, an armour point each, until its
-  next action), regrow (heals its value), cure (the most hurt of its own, itself included, heals its
-  value), brace all (the same on every foe in the fight, through the next round), revive once,
+- **A special** replaces the blow: brace (Armoured, its value in stacks, an armour point each, until the
+  foes' next turn opens), recover (regains its value, itself), heal (the most hurt of its own, itself included, regains its
+  value), brace all (the same on every foe in the fight, on the same clock), revive once,
   revive an ally (Undying on one of its own, never itself, not readied already: a
   party member first, the heaviest hitter among them, then the rest of its own the same way),
   summon,
   rally (Empowered at its value on every other foe on the field, at once), golden (the rage: Golden for the rounds it says, 1 to 5 and three unsaid, its value the add; only while calm), drain rerolls, ablate (stacks of Ablating on one machine), scorch all (stacks of
   Scorched on every machine), corrupt all (Corrupted stacks on the entry every machine shows),
-  disable, purge (Purge N: N stacks off every buff, for good, whatever
+  jam, purge (Purge N: N stacks off every buff, for good, whatever
   granted it; the Djinn's Unmake at 1; never a last act's), cleanse
-  (every mark the team laid, Ablating, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox
+  (every mark the team laid, Ablating, Flak, Cryo, Vitriol, Shocked, Exposed, the Web Bomb, the Paradox
   and a Mine, off the most-marked of its own, itself included, the first in strike order on
   a tie; never Numbed, never Suppressed; cast where one of its own carries a mark), barrier (a
   Barrier on itself), regenerate (Regenerating at its value on itself), ward all (a Ward on
@@ -1097,10 +1110,10 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or 
   opens (the Gel is a wall, not an attacker). An area blow
   that reaches the slot (Spread, Penetrate, a Mine's blast) reaches both halves, aimed at one
   of them or beside, each half taking the number of the shape it stands in (the aimed half's
-  twin the row's, or the column's when the entry reaches no row); a single-target blow, a Spillover included, the one it is spent on. The slot is
+  twin the row's, or the column's when the entry reaches no row); a single-target blow, a spill included, the one it is spent on. The slot is
   full while either stands, and a half's Mine blows on its twin as on the foes round the slot.
   The left half acts first; a web on it catches its twin; a
-  Swap moves the pair together and never swaps a half with its twin. When one falls the other
+  swap moves the pair together and never swaps a half with its twin. When one falls the other
   keeps the slot alone, still drawn on its own half of it, and with both gone it is a plain slot: the pair is only ever its
   split's, so no half joins another's slot. A Mine the Gel carried blows before the pair stands,
   so they take none of it. Their round is over: no intent, no Lure or Disrupt turns them, a stun takes
@@ -1111,7 +1124,7 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, Webbed, Cryo, Flak, Exposed or 
   left on a tie, its round over like a split's half's; a call for several stands as many as fit,
   and a summoner with room for none never picks the summon.
 - **A corpse**: a part that falls and will grow back leaves its corpse in its slot, drawn dimmed
-  with the rounds until it regrows, and grows back there; no Swap or arrival takes the slot
+  with the rounds until it regrows, and grows back there; no swap or arrival takes the slot
   meanwhile. A part with no corpse to grow into takes the nearest empty slot of its rank,
   or waits for one. The corpses go with their core.
 
@@ -1128,14 +1141,14 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   gains a debuff), on stack (this machine applies stacks), on a kill (once after an attack of
   this machine's that killed, however many fell to it, arcs and spills included:
   the Ammit's flare, the Kite's shield), on a foe killed (every kill the death check counts in
-  this machine's fight, whoever made it, once for each: the Ammit's Souls), on
+  this machine's fight, whoever made it, once for each: the Ammit's Essence), on
   damaging a foe (after a spend of its weapons that took HP off a foe, once however many it
   hurt; what it grants lands after the spend, so the Skua's stack bounces none of the shots
   that earned it). An effect an event fires may fire once a round only (the Skua's). No trigger
   feeds itself.
 - A passive may count a grant off a status its machine carries, in steps (a stack of Empowered
-  for every 5 Souls), and a status may name the battle as its scope, kept from fight to fight
-  (Souls).
+  for every 5 Essence), and a status may name the battle as its scope, kept from fight to fight
+  (Essence).
 - A passive may double a weapon's printed number before its buffs, on every blow, what the
   entry prints from its firer included (an area's number, heat fired, hopper loads), the buffs
   added once after it and the struck foe's own reads (its missing HP, the stacks consumed on
@@ -1147,8 +1160,8 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   (its number and what the entry prints) is halved, rounded down and never below one, every
   buff and passive and the foe's conditions counting on each hit after it, its armour too; the
   die shows a hit's blow with the hits beside it ("1 ×2"). A debuff deals nothing to halve and hits twice
-  all the same, its riders landing on each hit (a Web, a Lure, a Disrupt, a Shock, an Expose
-  and a Swap still land once a spend).
+  all the same, its riders landing on each hit (a web, a Lure, a Disrupt, a Shock, an Expose
+  and a swap still land once a spend).
 - Conditions: the reach is direct or
   indirect; the target carries a debuff; an ally is in the fight; the component carries a tag;
   the target shows no intent on this machine (the funnel-web's: a foe shows intent as its

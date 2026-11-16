@@ -41,7 +41,7 @@ CURRENCIES = OrderedDict([
     ("exposure", ("Exposed", "on a foe")),
     ("cryoed", ("Cryo", "on a foe")),
     ("suppressed", ("Suppressed", "on a foe")),
-    ("webbed", ("Webbed", "on a foe")),
+    ("webbed", ("The Web Bomb's mark", "on a foe")),
     ("vitriol", ("Vitriol", "on a foe")),
     ("paradox", ("Paradox", "on a foe")),
     ("lure", ("A foe's turn drawn (Lure)", "on a foe")),
@@ -59,7 +59,7 @@ CURRENCIES = OrderedDict([
     ("regenerating", ("Regenerating", "on a machine")),
     ("ablating_mech", ("Ablating", "on a machine")),
     ("scorched", ("Scorched", "on a machine")),
-    ("disabled", ("Disabled", "on a machine")),
+    ("disabled", ("Jammed", "on a machine")),
     ("corrupted", ("Corrupted", "on a machine")),
     ("heat", ("This machine's heat", "a resource")),
     ("ally_heat", ("An ally's heat", "a resource")),
@@ -75,7 +75,7 @@ CURRENCIES = OrderedDict([
     ("muster", ("The Muster", "a store")),
     ("rage", ("Rage", "a store")),
     ("hopper", ("The hopper", "a store")),
-    ("souls", ("Souls", "a count, kept for the battle")),
+    ("essence", ("Souls", "a count, kept for the battle")),
     ("foe_buff", ("A foe's buffs (Armoured, Empowered, Getting Back Up; Primed, Barrier, Ward and Regenerating once the ladder lands)", "on a foe")),
     ("tags", ("Tags", "a label")),
 ])
@@ -83,10 +83,10 @@ CURRENCIES = OrderedDict([
 # A component keyword and what it sets or reads: (currency, "sets" or "reads").
 KEYWORDS = {
     "ablate": [("ablating", "sets")], "shock": [("shocked", "sets")], "suppress": [("suppressed", "sets")],
-    "web": [("webbed", "sets"), ("suppressed", "sets")], "cryo": [("cryoed", "sets")], "flak": [("flakked", "sets")],
-    "expose": [("exposure", "sets")], "lure": [("lure", "sets")], "disrupt": [("disrupt", "sets")], "swap": [("swap", "sets"), ("rank", "sets")],
+    "cryo": [("cryoed", "sets")], "flak": [("flakked", "sets")],
+    "expose": [("exposure", "sets")], "lure": [("lure", "sets")], "disrupt": [("disrupt", "sets")],
     "chain": [("kill", "reads")], "cleave": [("strikes", "sets")], "penetrate": [("strikes", "sets")],
-    "spillover": [("strikes", "sets")], "dispel": [("foe_buff", "reads")],
+    "dispel": [("foe_buff", "reads")],
     "cleanse": [("ablating_mech", "reads"), ("scorched", "reads"), ("disabled", "reads"), ("corrupted", "reads")],
     "rapid": [], "instant": [], "every_foe": [], "every_ally": [],
 }
@@ -97,11 +97,14 @@ FACE_FIELDS = {
     "gathers_mines": [("mine", "reads")], "vents_all": [("heat", "reads")], "power_per_heat": [("heat", "reads")],
     "power_per_missing": [("missing_hp", "reads")], "finisher": [("missing_hp", "reads")],
     "kill_rerolls": [("kill", "reads"), ("reroll", "sets")], "ally_action": [("reroll", "reads")], "regenerates": [("regenerating", "sets")],
-    "spends": [("souls", "reads")], "spends_up_to": [], "holds_all": [("overcharged", "reads")],   # the Soul Siphon: it consumes Souls, and holds every Empowered a round
+    "spends": [("essence", "reads")], "spends_up_to": [], "holds_all": [("overcharged", "reads")],   # the Quintessence Tap: it consumes Essence, and holds every Empowered a round
     "spends_magazine": [("ammo", "reads")], "magazine_min": [("ammo", "reads")], "reloads_ammo": [("ammo", "sets")], "ammo_per_foe_hit": [("ammo", "sets")],
     "self_ablate": [("ablating_mech", "sets")], "volatile": [("hull_damage", "sets")], "strikes": [("strikes", "sets")],
     "shields": [], "vents": [], "cooldown": [], "charged": [("muster", "reads")],
     "rolls_target": [],
+    # The rules written on their one piece (15 November, keywords before): the Combat Translocator's
+    # swap and the Web Bomb's web.
+    "swaps": [("swap", "sets"), ("rank", "sets")], "webs": [("webbed", "sets"), ("suppressed", "sets")],
 }
 # A gate or a consume on a status reads it.
 # A buff face's status is set (kind buff), its stacks and rounds its own.
@@ -113,7 +116,7 @@ EFFECTS = {
     "add_stacks": [], "pass_release": [("heat", "reads")], "forge": [("ammo", "sets"), ("heat", "reads")], "mine_on_spend": [("mine", "sets")],
     "heat_per_blow": [("heat", "sets")],
     "step_die": [("reroll", "reads")], "split_strikes": [("strikes", "sets")], "multiply_printed": [], "free_reroll": [("reroll", "sets")],
-    "extra_action": [], "never_hunted": [], "no_destroy": [], "carry": [], "rewrite_weapon": [], "grant_keyword": [],
+    "extra_action": [], "never_hunted": [], "no_destroy": [], "carry": [], "rewrite_weapon": [], "grant_keyword": [], "spillover": [("strikes", "sets")],
     "add_shield": [], "refill_shield": [], "vent_heat": [], "stack_status": [], "lay_status": [],
     "multiply_heat": [("heat", "sets")], "add_damage": [], "add_damage_taken": [], "hull_per_spend": [("hull_damage", "sets")],
     "multiply_damage": [], "multiply_stacks": [], "add_heat": [("heat", "sets")], "one_of_each": [], "min_damage": [], "add_ablate": [],
@@ -126,8 +129,8 @@ TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_shield_
 CONDITIONS = {"target_status": None, "attacker_status": None, "target_rank": "rank", "nth_shot": None,
               "target_no_intent": None, "shield_up": None, "target_unhurt": "missing_hp", "target_half": "missing_hp"}
 # A foe move's riders and effects, on machines.
-FOE_RIDERS = {"ablate": "ablating_mech", "scorch": "scorched", "disable": "disabled", "corrupt": "corrupted"}
-FOE_EFFECTS = {"ablate": "ablating_mech", "scorch_all": "scorched", "disable": "disabled", "corrupt_all": "corrupted", "drain_rerolls": "reroll",
+FOE_RIDERS = {"ablate": "ablating_mech", "scorch": "scorched", "jam": "disabled", "corrupt": "corrupted"}
+FOE_EFFECTS = {"ablate": "ablating_mech", "scorch_all": "scorched", "jam": "disabled", "corrupt_all": "corrupted", "drain_rerolls": "reroll",
                "brace": "foe_buff", "brace_all": "foe_buff", "rally": "foe_buff", "revive_once": "foe_buff", "revive_once_ally": "foe_buff",
                "prime_all": "foe_buff", "barrier": "foe_buff", "ward_all": "foe_buff", "regenerate": "foe_buff"}
 

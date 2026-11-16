@@ -30,6 +30,24 @@ func _ghoul(hp: int = 30, atk: int = 10) -> Foe:
 func _archer(hp: int = 30, atk: int = 10) -> Foe:
 	return Foe.make("archer", hp, atk, true)
 
+## The three rules written on their one piece since 15 November (keywords before), set on a test's
+## own entry: damage past a kill spilling behind (the Overrun Gearing's), the Web Bomb's web and
+## the Combat Translocator's swap.
+func _spiller(f: Face) -> Face:
+	f.spills = true
+	return f
+
+
+func _webber(f: Face) -> Face:
+	f.webs = true
+	return f
+
+
+func _swapper(f: Face) -> Face:
+	f.swaps = true
+	return f
+
+
 
 ## A status's number in the engine's table, whatever its trigger: a field the stock pass's loops
 ## move (22 October), so a test reads it rather than copying it.
@@ -352,7 +370,7 @@ func test_a_moves_condition_gates_it_and_a_special_never_fires_twice_running() -
 	var sk := Skirmish.new(1, 1)
 	sk.add_mech(_mech("A", Die.single(Face.attack(10, L)), 40, 100))
 	var g := _ghoul(100, 10)
-	g.actions = [Foe.basic_action(), _special("defend", "regrow", {"value": 20, "when": "below_half"})]
+	g.actions = [Foe.basic_action(), _special("defend", "recover", {"value": 20, "when": "below_half"})]
 	g.actions[1]["weight"] = 1000
 	g.action = g.actions[0]
 	sk.add_foes([g])
@@ -364,7 +382,7 @@ func test_a_moves_condition_gates_it_and_a_special_never_fires_twice_running() -
 	g.hp = 40
 	sk.start_round()
 	assert_false(g.attacks(), "below half it opens, and the weight carries it")
-	assert_eq(g.last_special, "regrow", "and it is on record")
+	assert_eq(g.last_special, "recover", "and it is on record")
 	sk.end_round()
 	assert_eq(g.hp, 60, "it regrew")
 	sk.start_round()
@@ -1903,7 +1921,7 @@ func test_a_shock_is_read_only_by_a_weapon_strike_aimed_at_its_foe() -> void:
 
 func test_a_spill_neither_doubles_nor_spends_a_shock() -> void:
 	var sk := Skirmish.new(1, 1)
-	sk.add_mech(_mech("A", Die.single(Face.attack(10, L, [K.SPILLOVER]))))
+	sk.add_mech(_mech("A", Die.single(_spiller(Face.attack(10, L)))))
 	var front := _ghoul(4, 5)
 	var behind := _archer(30, 5)
 	sk.add_foes([front, behind])
@@ -2232,7 +2250,7 @@ func test_a_foe_disable_switches_off_the_showing_entry_through_the_next_turn() -
 	var m := _mech("A", Die.single(Face.attack(30, L)), 0, 200)
 	sk.add_mech(m)
 	var jammer := Foe.make("cockatrice", 90, 10)
-	jammer.actions[0]["keywords"] = ["disable"]
+	jammer.actions[0]["keywords"] = ["jam"]
 	sk.add_foes([jammer])
 	sk.begin()
 	sk.start_round()
@@ -3374,7 +3392,7 @@ func test_a_disrupt_makes_the_foe_do_its_other_move_and_the_new_move_aims_for_it
 	var s2 := Skirmish.new(1, 1)
 	s2.add_mech(_mech("A", Die.single(Face.attack(10, L, K.DISRUPT)), 40, 200))
 	var lone := _ghoul(500, 20)
-	lone.actions = [Foe.basic_action(), _special("defend", "regrow", {"value": 20, "when": "below_half"})]
+	lone.actions = [Foe.basic_action(), _special("defend", "recover", {"value": 20, "when": "below_half"})]
 	lone.action = lone.actions[0]
 	s2.add_foes([lone])
 	s2.begin()
@@ -3386,7 +3404,7 @@ func test_a_disrupt_makes_the_foe_do_its_other_move_and_the_new_move_aims_for_it
 	var s3 := Skirmish.new(1, 1)
 	s3.add_mech(_mech("A", Die.single(Face.attack(10, L, K.DISRUPT)), 40, 200))
 	var boss := _ghoul(500, 20)
-	boss.actions = [Foe.basic_action(), _special("defend", "regrow", {"value": 20}), _special("buff", "rally", {"value": 10})]
+	boss.actions = [Foe.basic_action(), _special("defend", "recover", {"value": 20}), _special("buff", "rally", {"value": 10})]
 	boss.action = boss.actions[2]
 	boss.last_special = "rally"
 	s3.add_foes([boss])
@@ -3399,13 +3417,13 @@ func test_a_disrupt_makes_the_foe_do_its_other_move_and_the_new_move_aims_for_it
 
 func test_spillover_carries_the_damage_past_a_kill_into_the_foe_behind() -> void:
 	var sk := Skirmish.new(1, 2)
-	var ram := Face.attack(50, L, K.SPILLOVER)
+	var ram := _spiller(Face.attack(50, L))
 	var m := _mech("A", Die.single(ram), 40, 100)
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(20, 10), _ghoul(500, 10), _archer(500, 10), _archer(10, 10)])
 	sk.begin()
 	sk.start_round()
-	assert_eq(ram.describe(), "50 spillover", "the keyword reads on the entry")
+	assert_eq(ram.describe(), "50 " + Face.SPILLS_TEXT, "the rule reads on the entry, in words: no keyword names it")
 	# Find the column with the weak ghoul in front and see who stands behind it.
 	var col := 0 if sk.front[0].hp == 20 else 1
 	var behind: Foe = sk.back[col]
@@ -3434,7 +3452,7 @@ func test_spillover_carries_every_later_strike_into_the_foe_behind() -> void:
 	# Three strikes of 10, 15 each with the machine's own +5, on a 9-hp ghoul in armour 3 with
 	# an archer in armour 2 behind it.
 	var sk := Skirmish.new(1, 1)
-	var burst := Face.attack(10, L, K.SPILLOVER)
+	var burst := _spiller(Face.attack(10, L))
 	burst.strikes = 3
 	var m := _mech("A", Die.single(burst), 40, 100)
 	m.grant_passive({"id": "edge", "name": "Edge", "description": "", "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 5}]})
@@ -3460,7 +3478,7 @@ func test_spillover_carries_every_later_strike_into_the_foe_behind() -> void:
 	# The foe behind reads its own statuses but a Shock: a spill is aimed at nobody, so its charge
 	# neither doubles a strike nor is spent (29 October). An exact kill has nothing past it.
 	var s2 := Skirmish.new(1, 1)
-	var b2 := Face.attack(10, L, K.SPILLOVER)
+	var b2 := _spiller(Face.attack(10, L))
 	b2.strikes = 3
 	s2.add_mech(_mech("A", Die.single(b2), 40, 100))
 	var exact := _ghoul(10, 10)
@@ -3475,7 +3493,7 @@ func test_spillover_carries_every_later_strike_into_the_foe_behind() -> void:
 	# Per foe: a spread neighbour an earlier strike killed spills its later strikes behind it,
 	# while the target that stands spills nothing.
 	var s3 := Skirmish.new(1, 2)
-	var sweep := Face.attack(10, L, [K.CLEAVE, K.SPILLOVER])
+	var sweep := _spiller(Face.attack(10, L, [K.CLEAVE]))
 	sweep.strikes = 3
 	sweep.cleave = 5
 	s3.add_mech(_mech("A", Die.single(sweep), 40, 100))
@@ -3498,7 +3516,7 @@ func test_spillover_carries_every_later_strike_into_the_foe_behind() -> void:
 ## audit's eighth bug, 8 November): a Wild Boar's ×2 Flak 1 that kills with its first strike
 ## leaves Flak 2 on the fallen foe, its second strike's number gone on behind it.
 func test_a_spilling_strikes_riders_land_on_the_corpse() -> void:
-	var plow := Face.attack(10, L, [K.SPILLOVER, K.FLAK])
+	var plow := _spiller(Face.attack(10, L, [K.FLAK]))
 	plow.flak = 1
 	plow.strikes = 2
 	var sk := Skirmish.new(2, 1)
@@ -3515,7 +3533,7 @@ func test_a_spilling_strikes_riders_land_on_the_corpse() -> void:
 
 func test_spillover_strikes_are_lost_once_the_foe_behind_falls() -> void:
 	var sk := Skirmish.new(1, 2)
-	var burst := Face.attack(10, L, K.SPILLOVER)
+	var burst := _spiller(Face.attack(10, L))
 	burst.strikes = 4
 	sk.add_mech(_mech("A", Die.single(burst), 40, 100))
 	sk.add_foes([_ghoul(5, 20), _ghoul(100, 10), _archer(12, 20), _archer(100, 10)])
@@ -3535,7 +3553,7 @@ func test_spillover_strikes_are_lost_once_the_foe_behind_falls() -> void:
 		assert_eq(f.hp, 100, "untouched: %s" % f.display_name)
 	# The foe a spill kills is the spend's kill, as the foe its blow kills is.
 	var s2 := Skirmish.new(1, 2)
-	var talons := Face.attack(10, L, K.SPILLOVER)
+	var talons := _spiller(Face.attack(10, L))
 	talons.strikes = 4
 	var m := _mech("A", Die.single(talons), 40, 100)
 	m.grant_passive(KILLER)
@@ -3557,7 +3575,7 @@ func test_spillover_strikes_are_lost_once_the_foe_behind_falls() -> void:
 ## top, and a burst without Spillover loses its later strikes on the fallen foe.
 func test_spillover_holds_for_one_strike_and_never_doubles_a_penetrating_blow() -> void:
 	var sk := Skirmish.new(1, 1)
-	sk.add_mech(_mech("A", Die.single(Face.attack(30, L, K.SPILLOVER)), 40, 100))
+	sk.add_mech(_mech("A", Die.single(_spiller(Face.attack(30, L))), 40, 100))
 	var g := _ghoul(10, 10)
 	g.armour = 2
 	var a := _archer(100, 10)
@@ -3570,7 +3588,7 @@ func test_spillover_holds_for_one_strike_and_never_doubles_a_penetrating_blow() 
 	assert_eq("\n".join(sk.log).count("A spills over: "), 1, "one spill")
 	# A penetrating burst already reaches the archer: it takes each strike there, once.
 	var s2 := Skirmish.new(1, 1)
-	var lance := Face.attack(10, L, [K.PENETRATE, K.SPILLOVER])
+	var lance := _spiller(Face.attack(10, L, [K.PENETRATE]))
 	lance.strikes = 3
 	lance.penetrate = 5
 	s2.add_mech(_mech("A", Die.single(lance), 40, 100))
@@ -3602,21 +3620,21 @@ func test_spillover_holds_for_one_strike_and_never_doubles_a_penetrating_blow() 
 
 func test_a_passive_may_grant_a_keyword_and_the_entry_wears_it() -> void:
 	var drive := {"id": "drive", "name": "Juggernaut Drive", "description": "", "effects": [
-		{"trigger": "static", "effect": "grant_keyword", "value": "spillover"}]}
+		{"trigger": "static", "effect": "grant_keyword", "value": "shock"}]}
 	var sk := Skirmish.new(1, 1)
 	var gun := Face.attack(50, L)
 	var m := _mech("A", Die.single(gun), 40, 100)
 	m.grant_passive(drive)
 	sk.add_mech(m)
-	sk.add_foes([_ghoul(20, 10), _archer(500, 10)])
+	sk.add_foes([_ghoul(500, 10), _archer(500, 10)])
 	sk.begin()
 	sk.start_round()
-	assert_false(gun.has(K.SPILLOVER), "the die's own entry is untouched")
-	assert_true(Effects.effective_face(m, gun).has(K.SPILLOVER), "but the machine spends it with the keyword")
-	assert_true(sk.shown_face(sk.mechs[0], gun).has(K.SPILLOVER), "and sees it on the die")
-	assert_eq(Effects.explain(m, gun), ["gains spillover (Juggernaut Drive)"], "the die row says where it came from")
+	assert_false(gun.has(K.SHOCK), "the die's own entry is untouched")
+	assert_true(Effects.effective_face(m, gun).has(K.SHOCK), "but the machine spends it with the keyword")
+	assert_true(sk.shown_face(sk.mechs[0], gun).has(K.SHOCK), "and sees it on the die")
+	assert_eq(Effects.explain(m, gun), ["gains shock (Juggernaut Drive)"], "the die row says where it came from")
 	sk.assign(0, sk.front[0])
-	assert_eq(sk.back[0].hp, 470, "the plain gun spilled past the kill")
+	assert_true(Effects.has(sk.front[0], "shocked"), "the plain gun left its foe Shocked")
 	# A support keyword is never granted to an attack, nor an attack keyword to a shield.
 	var plate := Face.shield(10)
 	var odd := {"id": "odd", "name": "Odd", "description": "", "effects": [
@@ -3624,15 +3642,17 @@ func test_a_passive_may_grant_a_keyword_and_the_entry_wears_it() -> void:
 	m.grant_passive(odd, "odd")
 	assert_false(Effects.effective_face(m, gun).has(K.CLEANSE), "cleanse stays off the gun")
 	assert_true(Effects.effective_face(m, plate).has(K.CLEANSE), "and lands on the shield")
-	assert_false(Effects.effective_face(m, plate).has(K.SPILLOVER), "spillover stays off the shield")
+	assert_false(Effects.effective_face(m, plate).has(K.SHOCK), "shock stays off the shield")
 
 
-## A grant written out (the Overrun Gearing's spill, the Boar's first; the stock pass, 22 October): the entry carries the
-## keyword for the engine, the die draws it as the star rather than a chip on every entry, and
-## the hold reads the passive's own line; a plain grant keeps its chip and its effect text.
-func test_a_printed_grant_is_the_star_and_the_hold_reads_the_passive() -> void:
+## A rule a passive writes on its machine's weapons (the Overrun Gearing's spill, the Boar's first;
+## a keyword granted written out from 22 October, its own effect since 15 November, on Ryan's
+## mark: "As a module only effect, this does not need to be a keyword. It can be unique text"):
+## the effective entry spills and carries no keyword for it, the die draws the star, and the hold
+## reads the passive's own line; a keyword a passive grants keeps its chip and its effect text.
+func test_a_rule_a_passive_writes_is_the_star_and_the_hold_reads_the_passive() -> void:
 	var drive := {"id": "drive", "name": "Juggernaut Drive", "description": "Damage past a kill spills into the rank behind, from any weapon.", "effects": [
-		{"trigger": "static", "effect": "grant_keyword", "value": "spillover", "printed": true}]}
+		{"trigger": "static", "effect": "spillover", "value": 1}]}
 	var sk := Skirmish.new(1, 1)
 	var gun := Face.attack(50, L)
 	var m := _mech("A", Die.single(gun), 40, 100)
@@ -3642,12 +3662,15 @@ func test_a_printed_grant_is_the_star_and_the_hold_reads_the_passive() -> void:
 	sk.begin()
 	sk.start_round()
 	var shown := sk.shown_face(sk.mechs[0], gun)
-	assert_true(shown.has(K.SPILLOVER), "the engine still spends it with the keyword")
-	assert_eq(shown.printed, [K.SPILLOVER] as Array[int], "written out: the die draws no chip for it")
+	assert_true(shown.spills, "the engine spends it as an entry that spills")
+	assert_true(shown.keywords.is_empty(), "with no keyword for it: the die draws no chip")
 	assert_true(shown.has_unique_rule(), "but the star")
 	assert_false(shown.describe().contains("spillover"), "and its line names no keyword: %s" % shown.describe())
-	assert_false(gun.has_unique_rule(), "which the bare entry does not wear")
+	assert_false(gun.spills or gun.has_unique_rule(), "which the bare entry does not wear")
 	assert_eq(Effects.explain(m, gun), ["Damage past a kill spills into the rank behind, from any weapon. (Juggernaut Drive)"], "the hold reads the passive's line")
+	assert_eq(Effects.written_rules(m, gun), ["Damage past a kill spills into the rank behind, from any weapon."] as Array[String], "which is the star's text")
+	assert_false(Effects.effective_face(m, Face.shield(10)).spills, "and a shield is no entry it is written on")
+	assert_true(Effects.written_rules(m, Face.shield(10)).is_empty(), "nor does the hold read it there")
 	sk.assign(0, sk.front[0])
 	assert_eq(sk.back[0].hp, 470, "and the spill lands as before")
 	var plain := {"id": "plain", "name": "Plain", "description": "", "effects": [
@@ -3655,7 +3678,7 @@ func test_a_printed_grant_is_the_star_and_the_hold_reads_the_passive() -> void:
 	var u := _mech("B", Die.single(Face.attack(10, L)), 40, 100)
 	u.grant_passive(plain)
 	var f := Effects.effective_face(u, u.die.faces[0])
-	assert_true(f.has(K.PENETRATE) and f.printed.is_empty(), "a plain grant is a keyword chip")
+	assert_true(f.has(K.PENETRATE) and not f.spills, "a keyword a passive grants is a keyword chip")
 
 
 func test_a_vent_on_fire_attack_fires_the_heat_into_the_blow_and_empties_the_gauge() -> void:
@@ -3914,9 +3937,10 @@ func _special(kind: String, effect: String, extra: Dictionary = {}) -> Dictionar
 
 
 ## A foe's brace is Braced, the machines' status (Ryan, 16 October: an effect and the buff it
-## creates share a name): its value in stacks of armour +5, standing through the player's turn
-## and going at the foe's next action, every stack at once.
-func test_a_bracing_foe_is_braced_until_its_next_action_and_a_knitting_one_regrows() -> void:
+## creates share a name): its value in stacks of armour +1, standing through the player's turn
+## and going as the foes' next turn opens, every stack at once (15 November; at the foe's own
+## next action until then).
+func test_a_bracing_foe_is_braced_until_the_foes_next_turn_and_a_knitting_one_regrows() -> void:
 	var sk := Skirmish.new(1, 1)
 	var m := _mech("A", Die.single(Face.attack(20, L)), 40, 100)
 	sk.add_mech(m)
@@ -3934,28 +3958,28 @@ func test_a_bracing_foe_is_braced_until_its_next_action_and_a_knitting_one_regro
 	assert_eq(m.shield, 40, "nothing struck")
 	assert_eq(Effects.stacks_of(g, "braced"), 10, "Armoured past the round's end, a stack an armour point of the brace's 10")
 	assert_eq(g.armour_total(), 10, "armour +10, read through the pipeline")
-	assert_true("\n".join(sk.log).contains("Brace, Armoured ×10 (armour +10 until its next action)"), "the log names the status")
+	assert_true("\n".join(sk.log).contains("Brace, Armoured ×10 (armour +10 until its next turn)"), "the log names the status")
 	var desc := ""
 	for d in Effects.describe(g):
 		if str(d[5]) == "braced":
 			desc = str(d[1])
-	assert_eq(desc, "Armour +1 a stack, every stack at once: on a machine until the round's end, on a foe until its next action.", "the machines' description, for both sides")
+	assert_eq(desc, "Armour +1 a stack, every stack at once, until its side's next turn begins.", "one description and one clock, for both sides")
 	sk.start_round()
 	sk.assign(0, g)
 	assert_eq(g.hp, 90, "the next round's 20 lands as 10: the brace's armour comes off, flat")
-	sk.end_round()   # its next action: both stacks go at its tick, and its only move braces again
-	assert_eq(Effects.stacks_of(g, "braced"), 10, "ten fresh stacks: the old ones went whole at its tick, a stack a turn would have left more")
+	sk.end_round()   # the foes' next turn: the stacks go as it opens, and its only move braces again
+	assert_eq(Effects.stacks_of(g, "braced"), 10, "ten fresh stacks: the old ones went whole as the turn opened, a stack a turn would have left more")
 	g.actions = [Foe.basic_action()]
 	g.action = g.actions[0]
 	sk.start_round()
 	sk.end_round()   # its next action is a blow
-	assert_false(Effects.has(g, "braced"), "gone at its next action, every stack at once")
+	assert_false(Effects.has(g, "braced"), "gone as the foes' next turn opened, every stack at once")
 	assert_eq(g.armour_total(), 0, "and its armour with them")
 	var s2 := Skirmish.new(2, 1)
 	s2.add_mech(_mech("B", Die.single(Face.attack(20, L)), 40, 100))
 	var k := _ghoul(100, 10)
 	k.hp = 50
-	k.actions = [_special("defend", "regrow", {"value": 20})]
+	k.actions = [_special("defend", "recover", {"value": 20})]
 	k.action = k.actions[0]
 	s2.add_foes([k])
 	s2.begin()
@@ -4288,7 +4312,7 @@ func test_a_special_spends_no_empowered_and_it_halves_at_the_rounds_end() -> voi
 	var m := _mech("A", Die.single(Face.blank()), 0, 300)
 	sk.add_mech(m)
 	var g := _ghoul(500, 10)
-	g.actions = [_special("defend", "regrow", {"value": 5})]
+	g.actions = [_special("defend", "recover", {"value": 5})]
 	g.action = g.actions[0]
 	sk.add_foes([g])
 	sk.begin()
@@ -4332,7 +4356,7 @@ func test_the_round_preview_reads_a_cure_that_saves_a_burning_foe() -> void:
 	var m := _mech("A", Die.single(Face.blank()), 0, 100)
 	sk.add_mech(m)
 	var cleric := _ghoul(500, 20)
-	var cure := _special("defend", "regrow_ally", {"value": 5})
+	var cure := _special("defend", "heal", {"value": 5})
 	cleric.actions = [Foe.basic_action(), cure]
 	var x := _ghoul(10, 7)
 	sk.add_foes([cleric, x])
@@ -4881,12 +4905,12 @@ func test_a_foes_rider_lays_its_number_of_stacks() -> void:
 
 
 func test_the_hush_the_eruption_and_the_unravel_run() -> void:
-	# Hush: the showing weapon is switched off through the machine's next turn, no blow.
+	# Hush: the showing weapon is Jammed through the machine's next turn, no blow.
 	var sk := Skirmish.new(1, 1)
 	var m := _mech("A", Die.single(Face.attack(10, L)), 40, 100)
 	sk.add_mech(m)
 	var w := _ghoul(500, 10)
-	w.actions = [_special("debuff", "disable", {"aim": "armed"})]
+	w.actions = [_special("debuff", "jam", {"aim": "armed"})]
 	w.action = w.actions[0]
 	sk.add_foes([w])
 	sk.begin()
@@ -4896,7 +4920,7 @@ func test_the_hush_the_eruption_and_the_unravel_run() -> void:
 	assert_eq(m.shield, 40, "no blow")
 	sk.start_round()
 	assert_eq(sk.mechs[0].face().kind, Face.Kind.BLANK, "the entry shows blank the next turn")
-	assert_true("\n".join(sk.log).contains("is switched off"), "the log says so")
+	assert_true("\n".join(sk.log).contains("is jammed"), "the log says so")
 	# Eruption: every machine Scorched, whoever it was aimed at.
 	var s2 := Skirmish.new(1, 1)
 	var a := _mech("A", Die.single(Face.shield(10)), 40, 100)
@@ -5322,7 +5346,7 @@ func test_a_healer_cures_the_most_hurt_of_its_own() -> void:
 	var sk := Skirmish.new(1, 3)
 	sk.add_mech(_mech("A", Die.single(Face.attack(10, L)), 40, 100))
 	var healer := Foe.make("mage", 60, 10, true)
-	healer.actions = [{"id": "cure", "name": "Cure", "kind": "defend", "effect": "regrow_ally", "value": 20, "weight": 1, "when": ["ally_hurt"], "text": ""}]
+	healer.actions = [{"id": "cure", "name": "Cure", "kind": "defend", "effect": "heal", "value": 20, "weight": 1, "when": ["ally_hurt"], "text": ""}]
 	healer.action = healer.actions[0]
 	var hurt := _ghoul(100, 10)
 	var scratched := _ghoul(100, 10)
@@ -5338,15 +5362,63 @@ func test_a_healer_cures_the_most_hurt_of_its_own() -> void:
 	var whole := Skirmish.new(1, 3)
 	whole.add_mech(_mech("B", Die.single(Face.attack(10, L)), 40, 100))
 	var idle := Foe.make("mage", 60, 10, true)
-	idle.actions = [{"id": "cure", "name": "Cure", "kind": "defend", "effect": "regrow_ally", "value": 20, "weight": 1, "when": ["ally_hurt"], "text": ""}, Foe.basic_action()]
+	idle.actions = [{"id": "cure", "name": "Cure", "kind": "defend", "effect": "heal", "value": 20, "weight": 1, "when": ["ally_hurt"], "text": ""}, Foe.basic_action()]
 	whole.add_foes([_ghoul(100, 10), idle])
 	whole.begin()
 	assert_false(whole.legal_actions(idle).has(idle.actions[0]), "with none of its own hurt it has no cure to cast")
 
 
+## Armoured runs one clock on both sides (Ryan, 15 November: "The common "end" state between both
+## sides is "start of their next turn""): a foe's plate goes as the foes' next turn opens, before
+## the first of them acts, where it went at its own action and a late foe wore it through the
+## blasts of the foes before it; and a Protect cast in a turn stands on the foes acting after its
+## caster, to go with the rest as the next turn opens.
+func test_a_foes_armour_ends_as_the_foes_next_turn_opens() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.shield(10)), 400, 400))
+	var fuse := _ghoul(50, 0)
+	var late := _ghoul(100, 0)
+	late.actions = [_special("defend", "brace", {"value": 3})]
+	late.action = late.actions[0]
+	sk.add_foes([fuse, late])
+	sk.begin()
+	sk.start_round()
+	sk.end_round()
+	assert_eq(late.armour_total(), 3, "braced, through the player's turn")
+	sk.start_round()
+	late.actions = [Foe.basic_action()]
+	late.action = late.actions[0]
+	fuse.hp = 2
+	Effects.stack(fuse, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 3)
+	sk._add_mine(fuse, 5, {"stacks": {}, "keywords": []})
+	sk.end_round()
+	assert_false(fuse.alive(), "the foe before it fell to its tick, and its Mine blew")
+	assert_eq(late.hp, 95, "on a foe whose plate had gone as the turn opened: the blast lands whole, where its own action had not yet come")
+	assert_false(Effects.has(late, "braced"), "and it wears none after")
+	# A Protect: the foes acting after the caster keep it through the turn it is cast in.
+	var s2 := Skirmish.new(1, 3)
+	s2.add_mech(_mech("A", Die.single(Face.shield(10)), 400, 400))
+	var caster := _ghoul(100, 0)
+	caster.actions = [_special("defend", "brace_all", {"value": 2})]
+	caster.action = caster.actions[0]
+	var after := _ghoul(100, 0)
+	s2.add_foes([caster, after])
+	s2.begin()
+	s2.start_round()
+	s2.end_round()
+	assert_eq([caster.armour_total(), after.armour_total()], [2, 2], "the caster and the foe that acted after it, both plated past the turn")
+	assert_true("\n".join(s2.log).contains("until their next turn"), "the log says the clock")
+	caster.actions = [Foe.basic_action()]
+	caster.action = caster.actions[0]
+	s2.start_round()
+	caster.action = caster.actions[0]
+	s2.end_round()
+	assert_eq([caster.armour_total(), after.armour_total()], [0, 0], "and gone from both as the next turn opened")
+
+
 func test_protect_braces_every_foe_through_the_next_round() -> void:
-	# The Cleric's Protect (15 October): a brace on every foe, gone when the enemy acts
-	# again; Braced since 16 October, the move's value in stacks of armour +5.
+	# The Cleric's Protect (15 October): a brace on every foe, gone as the foes' next turn
+	# opens; Braced since 16 October, the move's value in stacks of armour +1.
 	var sk := Skirmish.new(1, 3)
 	sk.add_mech(_mech("A", Die.single(Face.attack(30, L)), 400, 400))
 	var priest := Foe.make("priest", 60, 10, true)
@@ -5860,7 +5932,7 @@ func test_an_ambush_lays_its_status_on_a_foe_showing_no_intent_on_it_a_stack_per
 	assert_eq(Effects.stacks_of(stunned, "vitriol"), 3, "a suppressed foe looks away: three stacks")
 	# The read's edges, on the foe itself.
 	at_a.target = me
-	at_a.action = {"id": "knit", "name": "Knit", "kind": "defend", "effect": "regrow", "value": 10, "weight": 1, "text": ""}
+	at_a.action = {"id": "knit", "name": "Knit", "kind": "defend", "effect": "recover", "value": 10, "weight": 1, "text": ""}
 	assert_true(at_a.acts_on_nobody(), "a regrow acts on nobody in particular")
 	assert_false(at_a.intent_on(a), "so it shows intent on no machine, whatever its pick")
 	at_a.action = {"id": "storm", "name": "Storm", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": ["all"], "text": ""}
@@ -6021,7 +6093,7 @@ func test_a_spread_judges_each_foe_reached_alone() -> void:
 
 func test_a_blow_of_nothing_lays_no_vitriol_and_the_web_lands() -> void:
 	var sk := Skirmish.new(1, 2)
-	var a := _mech("A", Die.single(Face.attack(0, L, K.WEB)), 0, 500)
+	var a := _mech("A", Die.single(_webber(Face.attack(0, L))), 0, 500)
 	a.grant_passive(AMBUSH)
 	var b := _mech("B", Die.single(Face.shield(10)), 40, 500)
 	sk.add_mech(a)
@@ -6044,7 +6116,7 @@ func test_a_blow_of_nothing_lays_no_vitriol_and_the_web_lands() -> void:
 ## it (its right-hand neighbour, which loses this round's action).
 func test_a_web_bursts_after_the_foes_action_and_catches_the_next_to_act_beside_it() -> void:
 	var sk := Skirmish.new(1, 3)
-	var m := _mech("A", Die.single(Face.attack(0, L, K.WEB)), 0, 500)
+	var m := _mech("A", Die.single(_webber(Face.attack(0, L))), 0, 500)
 	sk.add_mech(m)
 	var small := _ghoul(500, 10)
 	var mid := _ghoul(500, 20)
@@ -6073,7 +6145,7 @@ func test_a_web_bursts_after_the_foes_action_and_catches_the_next_to_act_beside_
 
 func test_a_web_on_the_rightmost_foe_catches_the_one_to_its_left_which_has_acted() -> void:
 	var sk := Skirmish.new(1, 3)
-	var m := _mech("A", Die.single(Face.attack(0, L, K.WEB)), 0, 500)
+	var m := _mech("A", Die.single(_webber(Face.attack(0, L))), 0, 500)
 	sk.add_mech(m)
 	var small := _ghoul(500, 10)
 	var mid := _ghoul(500, 20)
@@ -6094,7 +6166,7 @@ func test_a_web_on_the_rightmost_foe_catches_the_one_to_its_left_which_has_acted
 
 func test_a_webbed_foe_killed_first_takes_its_web_with_it() -> void:
 	var sk := Skirmish.new(1, 2)
-	var a := _mech("A", Die.single(Face.attack(0, L, K.WEB)), 0, 500)
+	var a := _mech("A", Die.single(_webber(Face.attack(0, L))), 0, 500)
 	var b := _mech("B", Die.single(Face.attack(500, L)), 0, 500)
 	sk.add_mech(a)
 	sk.add_mech(b)
@@ -6107,7 +6179,7 @@ func test_a_webbed_foe_killed_first_takes_its_web_with_it() -> void:
 	assert_true(sk.assign(1, big), "then kill it")
 	assert_false(big.alive(), "killed before it acted")
 	sk.end_round()
-	assert_false("\n".join(sk.log).contains("web bursts"), "no burst: the web went with it")
+	assert_false("\n".join(sk.log).contains("'s web bursts"), "no burst: the web went with it")
 	assert_false(mid.is_suppressed(), "and the one beside it acted")
 	assert_eq(a.hull + b.hull, 980, "its blow landed")
 
@@ -6115,7 +6187,7 @@ func test_a_webbed_foe_killed_first_takes_its_web_with_it() -> void:
 func test_a_web_on_a_foe_the_team_suppressed_wastes_its_half_and_still_catches_the_neighbour() -> void:
 	var sk := Skirmish.new(1, 3)
 	var a := _mech("A", Die.single(Face.attack(10, L, K.SUPPRESS)), 0, 500)
-	var b := _mech("B", Die.single(Face.attack(0, L, K.WEB)), 0, 500)
+	var b := _mech("B", Die.single(_webber(Face.attack(0, L))), 0, 500)
 	sk.add_mech(a)
 	sk.add_mech(b)
 	var small := _ghoul(500, 10)
@@ -6140,9 +6212,9 @@ func test_a_second_web_changes_nothing_and_a_web_feeds_the_paradox_at_the_spend_
 	var meter := {"id": "loop", "name": "Pocket Paradox", "description": "", "effects": [
 		{"trigger": "on_foe_status", "effect": "paradox", "value": 5}]}
 	var sk := Skirmish.new(1, 2)
-	var a := _mech("A", Die.single(Face.attack(0, L, K.WEB)), 0, 500)
+	var a := _mech("A", Die.single(_webber(Face.attack(0, L))), 0, 500)
 	a.grant_passive(meter)
-	var b := _mech("B", Die.single(Face.attack(0, L, K.WEB)), 0, 500)
+	var b := _mech("B", Die.single(_webber(Face.attack(0, L))), 0, 500)
 	sk.add_mech(a)
 	sk.add_mech(b)
 	var g := _ghoul(500, 10)
@@ -6165,7 +6237,7 @@ func test_a_second_web_changes_nothing_and_a_web_feeds_the_paradox_at_the_spend_
 
 func test_a_web_holds_a_gathering_countdown_a_round() -> void:
 	var sk := Skirmish.new(1, 1)
-	var a := _mech("A", Die.single(Face.attack(0, L, K.WEB)), 0, 100)
+	var a := _mech("A", Die.single(_webber(Face.attack(0, L))), 0, 100)
 	sk.add_mech(a)
 	var walker := _gatherer(20, 2)
 	sk.add_foes([walker])
@@ -6644,7 +6716,7 @@ func test_a_ward_turns_away_every_rider_for_the_round() -> void:
 ## takes the all-machine ones; and a Phased machine is out of a special on every machine as it
 ## is out of a blow at every machine (the mechanics audit, 25 October).
 func test_a_ward_turns_away_a_specials_riders_and_phased_is_out_of_them() -> void:
-	for effect in ["ablate", "disable", "scorch_all", "corrupt_all"]:
+	for effect in ["ablate", "jam", "scorch_all", "corrupt_all"]:
 		var sk := Skirmish.new(1, 1)
 		var warded := _mech("W", Die.single(Face.buff("ward")), 30, 100)
 		var bare := _mech("B", Die.single(Face.attack(1, L)), 30, 100)
@@ -7706,7 +7778,7 @@ func test_a_purge_in_a_mine_purges_every_foe_its_blast_meets() -> void:
 ## foe pulled into the front stands exposed to Direct fire; a massive foe never moves.
 func test_a_swap_trades_two_foes_or_pulls_one_into_an_empty_slot() -> void:
 	var sk := Skirmish.new(1, 3)
-	var swap := Face.attack(0, I, [K.SWAP])
+	var swap := _swapper(Face.attack(0, I))
 	var u := _mech("A", Die.of([swap, Face.attack(10, L)]), 40, 100)
 	sk.add_mech(u)
 	var front := _ghoul(100, 1)
@@ -8169,7 +8241,7 @@ func test_what_a_kill_brings_back_waits_for_the_spend_to_end() -> void:
 ## moves the foe it kills, which gets back up where it was moved to; a detonation lands on a
 ## target its own chip felled, before the death check, and its fall blows nothing more.
 func test_a_swap_lands_in_the_rider_phase_and_a_revive_stands_in_the_new_spot() -> void:
-	var swapper := Face.attack(10, L, [K.SWAP])
+	var swapper := _swapper(Face.attack(10, L))
 	var sk := Skirmish.new(3, 3)
 	sk.add_mech(_mech("A", Die.single(swapper), 40, 100))
 	var up := _ghoul(4, 10)
@@ -9827,7 +9899,7 @@ func test_a_reroll_or_a_rapid_spend_is_the_undos_floor_and_a_step_is_not() -> vo
 ## whole attack plays out on it, death the last check.
 func test_every_rider_lands_on_the_foe_its_strike_killed_and_the_preview_shows_them() -> void:
 	var sk := Skirmish.new(1, 2)
-	var gun := Face.attack(5, L, [K.ABLATE, K.CRYO, K.FLAK, K.SUPPRESS, K.WEB])
+	var gun := _webber(Face.attack(5, L, [K.ABLATE, K.CRYO, K.FLAK, K.SUPPRESS]))
 	gun.ablate = 1
 	gun.cryo = 1
 	gun.flak = 1
@@ -10126,7 +10198,7 @@ func test_a_pin_holds_its_targets_flak_through_the_rounds_end() -> void:
 ## among them staying where it stands while both are Shocked; a Swap carrying nothing else still
 ## has no use for a foe it cannot move. Synthetic pieces.
 func test_a_swap_that_shocks_marks_both_and_a_massive_foe_named_stays_put() -> void:
-	var shocker := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["swap", "shock"]})
+	var shocker := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "swaps": true, "keywords": ["shock"]})
 	var sk := Skirmish.new(1)
 	sk.add_mech(_mech("A", Die.single(shocker), 40, 1000))
 	var a := _ghoul(500, 0)
@@ -10157,7 +10229,7 @@ func test_a_swap_that_shocks_marks_both_and_a_massive_foe_named_stays_put() -> v
 	assert_true(Effects.has(big, "shocked") and Effects.has(small, "shocked"), "and both are Shocked")
 	assert_true("\n".join(boss.log).contains("holds its ground"), "the log says why")
 	var plain := Skirmish.new(1)
-	plain.add_mech(_mech("A", Die.single(Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["swap"]})), 40, 1000))
+	plain.add_mech(_mech("A", Die.single(Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "swaps": true})), 40, 1000))
 	var huge := _ghoul(500, 0)
 	huge.size = 2
 	plain.add_foes([huge])

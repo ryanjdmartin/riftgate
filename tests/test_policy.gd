@@ -8,6 +8,24 @@ const I := Face.Reach.INDIRECT
 const K := Face.Keyword
 
 
+## The three rules written on their one piece since 15 November (keywords before), set on a test's
+## own entry: damage past a kill spilling behind (the Overrun Gearing's), the Web Bomb's web and
+## the Combat Translocator's swap.
+func _spiller(f: Face) -> Face:
+	f.spills = true
+	return f
+
+
+func _webber(f: Face) -> Face:
+	f.webs = true
+	return f
+
+
+func _swapper(f: Face) -> Face:
+	f.swaps = true
+	return f
+
+
 func _mech(name: String, d: Die, shield: int = 40, hull: int = 100) -> Unit:
 	var u := Unit.mech(0, name, Vector2i.ZERO)
 	u.shield = shield
@@ -562,7 +580,7 @@ func test_the_bot_weighs_a_blow_at_every_machine_on_each_and_no_lure_turns_it() 
 func test_greedy_values_the_spill_behind_a_dying_foe() -> void:
 	var sk := Skirmish.new(1, 1)
 	var plain := Face.attack(50, L)
-	var ram := Face.attack(50, L, K.SPILLOVER)
+	var ram := _spiller(Face.attack(50, L))
 	sk.add_mech(_mech("A", Die.of([plain, ram]), 40, 100))
 	sk.add_foes([_ghoul(20, 10), _archer(40, 10)])
 	sk.begin()
@@ -706,7 +724,7 @@ func test_greedy_bites_the_foe_looking_away() -> void:
 
 func test_greedy_values_a_web_by_the_blows_its_burst_stops() -> void:
 	var sk := Skirmish.new(3, 3)
-	var a := _mech("A", Die.single(Face.attack(0, L, K.WEB)), 0, 500)
+	var a := _mech("A", Die.single(_webber(Face.attack(0, L))), 0, 500)
 	sk.add_mech(a)
 	var small := _ghoul(500, 10)
 	var mid := _ghoul(500, 20)
@@ -1059,7 +1077,7 @@ func test_greedy_values_the_seal_by_the_blows_its_armour_turns() -> void:
 func test_greedy_swaps_a_back_foe_forward() -> void:
 	var pol := Policy.make(Policy.GREEDY)
 	var sk := Skirmish.new(1, 3)
-	sk.add_mech(_mech("A", Die.single(Face.attack(0, Face.Reach.INDIRECT, [K.SWAP])), 40, 100))
+	sk.add_mech(_mech("A", Die.single(_swapper(Face.attack(0, Face.Reach.INDIRECT))), 40, 100))
 	var front := _ghoul(100, 10)
 	var caster := _archer(100, 30)
 	sk.add_foes([front, caster])
@@ -1079,7 +1097,7 @@ func test_greedy_swaps_a_back_foe_forward() -> void:
 func test_greedy_swaps_to_bunch_foes_under_an_allys_spread() -> void:
 	var pol := Policy.make(Policy.GREEDY)
 	var sk := Skirmish.new(1, 4)
-	sk.add_mech(_mech("Dingo", Die.single(Face.attack(0, I, [K.SWAP])), 40, 100))
+	sk.add_mech(_mech("Dingo", Die.single(_swapper(Face.attack(0, I))), 40, 100))
 	sk.add_mech(_mech("Sprayer", Die.single(Face.attack(10, L, [K.CLEAVE])), 40, 100))
 	var a := _ghoul(100, 10)
 	var b := _ghoul(100, 10)

@@ -117,9 +117,8 @@
     "effects": [
      {
       "trigger": "static",
-      "effect": "grant_keyword",
-      "value": "spillover",
-      "printed": true
+      "effect": "spillover",
+      "value": 1
      }
     ]
    },

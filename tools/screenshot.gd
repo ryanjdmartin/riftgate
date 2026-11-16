@@ -151,7 +151,7 @@ func _apply_pose() -> void:
 			# A Swap waiting on its first target, then a tap on nothing sending it home (30 October):
 			# RIFTGATE_SHOT_FRAME=6 or so catches the die in flight.
 			var ms: Skirmish.MechState = s.sk.mechs[0]
-			ms.die.faces[ms.face_index] = Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.SWAP])
+			ms.die.faces[ms.face_index] = Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "swaps": true})
 			s._refresh()
 			_later(1, func() -> void:
 				s._begin_second(0, s.sk.targets_for(0)[0])
@@ -280,19 +280,19 @@ func _apply_pose() -> void:
 				for id in ["ablating", "flakked", "shocked", "cryoed", "vitriol"]:
 					Effects.stack(foe, Effects.STATUS[id], Effects.SKIRMISH, "mech", 2, Effects.status_decay(Effects.STATUS[id]))
 			s._refresh()
-		"souls":
-			# The Ammit's count and its Siphon's hold (12 November; RIFTGATE_TEAM=ammit,...): every
-			# machine that banks a count as foes fall holds seven of it and two stacks of Empowered,
-			# the round holds Empowered, and the first foe carries three: the count's chip, and the
-			# pin beside each Empowered, a machine's and a foe's.
+		"essence":
+			# The Ammit's count and its Tap's buff (12 and 15 November; RIFTGATE_TEAM=ammit,...): every
+			# machine that banks a count as foes fall holds seven of it, two stacks of Empowered and
+			# Essence Flare, and the first foe carries three stacks of Empowered: the count's chip and
+			# the flare's on the machine, and nothing on the foe's Empowered for the hold.
 			for ms in s.sk.mechs:
 				for count_id in Effects.kill_counts(ms.unit):
 					Effects.stack(ms.unit, Effects.STATUS[str(count_id)], Effects.status_scope(Effects.STATUS[str(count_id)]), "mech", 7, Effects.DECAY_NONE)
 					Effects.stack(ms.unit, Effects.STATUS["overcharged"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_HALF)
+					Effects.grant_for_rounds(ms.unit, Effects.STATUS["essence_flare"], "shot", s.sk.round)
 			var foes := s.sk.field_foes()
 			if not foes.is_empty():
 				Effects.stack(foes[0], Effects.STATUS["kindled"], Effects.SKIRMISH, "foe", 3, Effects.DECAY_HALF)
-			s.sk.round_holds = Effects.named_like("overcharged")
 			s._refresh()
 		"stores":
 			# Every machine's own resource row part filled, to judge the rows beside the heat bar

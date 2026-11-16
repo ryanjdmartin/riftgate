@@ -114,10 +114,10 @@ static var ABILITY_DEBUG := OS.get_environment("RIFTGATE_ABILITY_DEBUG") == "1"
 ## Lammergeier's, 9 November), so any kill shows its blast land round the slot and the chips, to
 ## judge them running.
 static var MINE_DEBUG := OS.get_environment("RIFTGATE_MINE_DEBUG") == "1"
-## RIFTGATE_SOULS_DEBUG=<n>: every machine that banks a count as foes fall (the Ammit's Souls, 12
-## November) opens the fight holding n of it, so its flare, its Siphon and their chips are judged
+## RIFTGATE_ESSENCE_DEBUG=<n>: every machine that banks a count as foes fall (the Ammit's Essence, 12
+## November) opens the fight holding n of it, so its flare, its Tap and their chips are judged
 ## in the first fight of a battle, where it would hold none.
-static var SOULS_DEBUG := int(OS.get_environment("RIFTGATE_SOULS_DEBUG"))
+static var ESSENCE_DEBUG := int(OS.get_environment("RIFTGATE_ESSENCE_DEBUG"))
 ## RIFTGATE_HIT_DEBUG=1: every second and a half a machine takes a blow, in turn a hull hit from the
 ## left, a blow its shield takes, a blow its armour turns and a hull hit from the right, and every
 ## fifth beat one is lost and comes back, to judge the hit reactions running (3 November).
@@ -341,10 +341,10 @@ func setup(skirmish: Skirmish) -> void:
 	locked.clear()
 	for m in sk.mechs:
 		locked.append(false)
-	if SOULS_DEBUG > 0 and sk.state == Skirmish.State.SETUP:
+	if ESSENCE_DEBUG > 0 and sk.state == Skirmish.State.SETUP:
 		for ms in sk.mechs:
 			for count_id in Effects.kill_counts(ms.unit):
-				var short_by := SOULS_DEBUG - Effects.stacks_of(ms.unit, str(count_id))
+				var short_by := ESSENCE_DEBUG - Effects.stacks_of(ms.unit, str(count_id))
 				if short_by > 0:
 					Effects.stack(ms.unit, Effects.STATUS[str(count_id)], Effects.status_scope(Effects.STATUS[str(count_id)]), "debug", short_by, Effects.DECAY_NONE)
 	if sk.state == Skirmish.State.SETUP:
@@ -1662,7 +1662,7 @@ func _foe_rows(foe: Foe) -> Array:
 		# (> the right-hand one, which acts after it; < the left-hand one, which has acted).
 		var caught := sk.web_catch(foe)
 		var mark := "" if caught == null else (">" if caught.column > foe.column else "<")
-		rows.append(status_row("webbed", "web", mark, "Webbed" + ("" if caught == null else ": bursts on %s too" % caught.display_name), _foe_chip_colour("webbed")))
+		rows.append(status_row("webbed", "web", mark, "Web Bomb" + ("" if caught == null else ": bursts on %s too" % caught.display_name), _foe_chip_colour("webbed")))
 	if foe.is_suppressed():
 		rows.append(status_row("suppressed", "suppress", "", "Suppressed", _foe_chip_colour("suppressed")))
 	var holding := sk.swallowed_by(foe) if foe.swallow_mark >= 0 else null
@@ -1676,8 +1676,11 @@ func _foe_rows(foe: Foe) -> Array:
 		var when := "next round" if foe.charge == 1 else "in %d rounds" % foe.charge
 		rows.append(["warning", str(foe.charge), "Countdown: %s lands %s" % [str(foe.pending.get("name", "")), when], Palette.ENEMY])
 	if foe.committed:
-		# An announced follow-up (2 November): committed, so no Disrupt turns it; a Suppress still takes it.
-		rows.append(["lock", "", "Committed Follow-up: %s" % str(foe.action.get("name", "")), Palette.ENEMY])
+		# An announced follow-up (2 November): committed, so no Disrupt turns it; a Suppress still takes
+		# it. The chip says what the player may do about it and names no term: the pattern is the
+		# engine's, off the list since 15 November (Ryan: "I don't think we need to explicitly spell
+		# this out for the player. A backend pattern is ok").
+		rows.append(["lock", "", "Committed to %s: no Disrupt turns it" % str(foe.action.get("name", "")), Palette.ENEMY])
 	if Effects.has(foe, "braced"):
 		# Armoured, the machines' status (16 October; Braced until 18 October): their chip's
 		# glyph, with the armour every grant adds (its own brace, a Protect).
@@ -1686,7 +1689,6 @@ func _foe_rows(foe: Foe) -> Array:
 	if Effects.has(foe, "kindled"):
 		var kindled := Effects.foe_attack_bonus(foe)
 		rows.append(status_row("kindled", "overcharge", "+%d" % kindled, "Empowered +%d" % kindled, _foe_chip_colour("kindled")))
-		_pin_row(rows, "kindled")   # held by the round (the Soul Siphon's): it carries whole into the next
 	var raged := Effects.stacks_of(foe, "enraged")
 	if raged > 0:
 		# What the Nob's rage has gathered (3 November), a buff a Purge lowers; the rage itself is
@@ -1866,8 +1868,10 @@ static func status_glyph(id: String) -> String:
 			return "spin"
 		"ricochet":
 			return "ricochet"
-		"souls":
-			return "soul"
+		"essence":
+			return "essence"
+		"essence_flare":
+			return "essence_flare"   # the Tap's hold, a buff on its machine (15 November)
 		"cryoed":
 			return "cryo"
 	return "star"
@@ -1883,17 +1887,6 @@ static func _chip_colour(id: String) -> Color:
 	if id == "rage":
 		return Palette.HEAT
 	return Terms.status_colour(id)
-
-
-## The round's own pin beside the status it holds (the Soul Siphon's "No Empowered decays this
-## round", Ryan, 12 November): while the round holds `status_id` (Skirmish.round_holds), the
-## unit carrying it wears that pin's chip after it, the status's glyph with the lock, as a foe's
-## Pinned Flak does, until the round's end. The round's rule, so no unit carries the pin itself.
-func _pin_row(rows: Array, status_id: String) -> void:
-	if not sk.round_holds.has(status_id) or not Effects.ROUND_HOLDERS.has(status_id):
-		return
-	var pin := str(Effects.ROUND_HOLDERS[status_id])
-	rows.append(status_row(pin, Terms.glyph(pin), "", str(Effects.STATUS[pin]["name"]), Terms.status_colour(pin)))
 
 
 func _mech_rows(i: int) -> Array:
@@ -1950,7 +1943,7 @@ func _mech_rows(i: int) -> Array:
 		var glyph := status_glyph(id)
 		var colour := _chip_colour(id)
 		var stacks := int(total[id])
-		# A count says itself at one too (the Ammit's Souls, 12 November), bare as a count is; a
+		# A count says itself at one too (the Ammit's Essence, 12 November), bare as a count is; a
 		# buff or an ability of one stack is its glyph alone.
 		var counted := Effects.is_counted(id)
 		var count := str(stacks) if counted else (("×%d" % stacks) if stacks > 1 else "")
@@ -1959,7 +1952,6 @@ func _mech_rows(i: int) -> Array:
 			abilities.append([glyph, count, "Ability, " + named, colour, "ability"])
 		else:
 			rows.append(status_row(id, glyph, count, named, colour))
-			_pin_row(rows, id)
 	if ABILITY_DEBUG and abilities.is_empty():
 		abilities.append([status_glyph("sealed"), "", "Ability, Sealed (RIFTGATE_ABILITY_DEBUG)", _chip_colour("sealed"), "ability"])
 	for k in range(abilities.size()):
@@ -2157,7 +2149,7 @@ func _entry_states(ms: Skirmish.MechState, i: int) -> Array:
 	if Effects.is_entry_disabled(ms.unit, i):
 		# By the clock the die shows along its foot with the turns left (Ryan, 2 November).
 		var dark := Effects.dark_rounds(ms.unit, i, sk.round)
-		out.append([("Disabled" if Effects.cleansable_disable(ms.unit, i) else "On Cooldown") \
+		out.append([("Jammed" if Effects.cleansable_disable(ms.unit, i) else "On Cooldown") \
 			+ (" (%d turn%s left)" % [dark, "" if dark == 1 else "s"] if dark > 0 else ""), EntryReadout.mark("cooldown", Palette.INK, false)])
 	return out
 
@@ -2228,7 +2220,7 @@ func _show_die(i: int) -> bool:
 			extra.append(EntryReadout.marked(EntryReadout.text_line("effect", said, "rule"), [EntryReadout.mark(shift, Glyphs.colour_for(shift))]))
 		var states: Array = _entry_states(ms, at)
 		states.append_array(_entry_marks(ms, at, i))
-		entry = EntryReadout.lines_for(sf, at + 1, shown, f, states, Effects.printed_grants(ms.unit, f), ContentDB.load_default(), EntryReadout.face_types(sf, ms.unit), extra, sf.cooldown_rounds() if sf != null else 0)
+		entry = EntryReadout.lines_for(sf, at + 1, shown, f, states, Effects.written_rules(ms.unit, f), ContentDB.load_default(), EntryReadout.face_types(sf, ms.unit), extra, sf.cooldown_rounds() if sf != null else 0)
 	if entry.is_empty() and ring.is_empty():
 		return false
 	_show_details("", _dice[i], ring, entry)
