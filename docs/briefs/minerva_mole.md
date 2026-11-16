@@ -1,13 +1,14 @@
-# Brief: the mole, Minerva's drill tank (new chassis, a shape)
+# Brief: the mole, Minerva's burrowing drill (new chassis, a direction)
 
-<!-- hangar: {"kind": "chassis", "maker": "minerva", "tier": null, "status": "shape", "slot": true, "name": "the mole"} -->
+<!-- hangar: {"kind": "chassis", "maker": "minerva", "tier": 1, "status": "direction", "slot": true, "name": "the mole"} -->
 
 The session finds a verb for Ryan's drill-tank mole of 4 November, a silhouette with no mechanic
 yet, and with it its tier: the mole or the Wild Boar comes down to tier one as the Polar Bear goes
 up. "The mole" is a working label; the name is Ryan's.
 
-**Status**: a shape (Ryan, 4 November), its hook later on his word. **Maker**: Minerva. **Proposed
-tier**: one or two. **Read first**: `docs/briefs/README.md` (ten a maker, the orbits); the bible's
+**Status**: a direction: his burrow and Inertia Drill, its kit set on 16 November (The kit as he
+set it, below); its tier, numbers, look and name to come. **Maker**: Minerva. **Proposed tier**:
+one ("still slated ideally for tier 1", Ryan, 16 November), as it or the Wild Boar comes down. **Read first**: `docs/briefs/README.md` (ten a maker, the orbits); the bible's
 rows on a chassis's identity and on map rules (section 7).
 
 ## What Ryan said
@@ -386,15 +387,56 @@ second. 3 is the bigger step: it makes a dig a reboot's turn with the Drill on t
 reboot outright (no bare turn, armour 1, its guns' damage kept), so it is the one to hold until
 his play says the first two are still slow.
 
+## The kit as he set it (16 November)
+
+His word on the round above: "I like the burrow change, go with 1 and 2. And yes, only on a
+nothing spend, and make the damage a blow since I want it to scale with Brittle. In fact:
+
+> Base: Flat 2 damage blow a turn. Lines up with our vanilla -1.
+> Ablate branch: Change damage to Ablate 2 (but it decays), and then second upgrade adds Seared.
+> Squad branch: ADDS brittle 1 and pinned to the blow. Second upgrade adds exposed."
+
+So the mole's kit, whole (his names; every number a placeholder):
+
+- **The burrow**, in its reboot's place: only on a turn it has spent nothing, and its whole
+  turn. As it burrows it gains a stack of Conserved Momentum, and what is left of its Applied
+  Momentum comes back to it as Conserved; the cap is 3. Its burrow's turn burns what it carries
+  past its maximum, as a reboot's does.
+- **Burrowed**, a buff no Purge takes: armour 1; its die's every entry the Inertia Drill; as each
+  of its turns opens, Broken and Overheated cleared as a reboot clears them, half of what was
+  missing as it burrowed comes back to its shield and goes from its heat (so two turns under is
+  whole and cold, and a blow taken under is not mended), and a stack of Conserved Momentum. Its
+  shield is never emptied, and it stays under until it spends the Drill.
+- **The Inertia Drill**, equipment, Indirect, its one entry while burrowed and none on its die
+  above ground: it consumes all its Conserved Momentum and lays as many stacks of Applied
+  Momentum on the foe, and the mole comes up. At the start of each of that foe's turns, Applied
+  Momentum strikes it with a blow of 2, then a stack decays. A burrow takes the drill back,
+  and what is left of the Applied with it.
+- **Its upgrades**, on the locked pieces' branch shape: the Ablate branch, Ablate 2 in the
+  blow's place (the Ablating decaying as Ablating does), then Seared with it; the squad branch,
+  Brittle 1 and Pinned added to the blow, then Exposed with them.
+
+What follows, built so and no question: the blow is a plain blow, as the Juggernaut Drive's
+is, so the foe's Brittle adds to it and its armour and its Barrier take it, and it reads no
+Shock, since no weapon's strike carries it; so on the squad branch each turn's blow carries the
+Brittle the turns before laid. A Ward turns the Applied away and a foe's cleanse takes it, as
+with the Mine; a drilled foe that falls takes what is left with it.
+
+The rhythm: a burrow, then the Drill the next turn with 2 stacks at half recovery, or a turn
+more under for 3, whole and cold; burrowed in the first round, it drills with 2 in the second.
+What a drill of k stacks delivers on a foe that lives through it (k = 1, 2, 3): the base 2, 4,
+6; Ablate 2, decaying, 3, 8, 15 past armour over twice as many turns; with Seared 5, 16, 33;
+the squad branch's own blows 2, 5, 9, and a point more a stack on every squad blow on that
+foe, the pin holding its Brittle while the drill is in. So each of the Ablate branch's steps
+more than doubles the one before at the cap: Seared is the step to watch if it reads too much.
+
 ## Open for the session
 
-1. Its hook: the burrow and the Inertia Drill (his of 16 November, his answers the same day);
-   its speed (the levers above); its gate and the damage shape's damage; the shapes as base and
-   upgrades.
-2. Its look: the rocket drill (a drill it fires into a foe that returns as it burrows), then a
-   round of looks.
-3. Its tier: it or the Wild Boar comes down to tier one.
-4. Its numbers, stock and locked piece.
+1. Its tier: it or the Wild Boar comes down to tier one ("still slated ideally for tier 1").
+2. Its numbers (hull, shield, armour, heat, move), its stock, and the Drill's heat.
+3. Its look: the rocket drill, a drill it fires into a foe that returns as it burrows; a round
+   of looks.
+4. Its name (the mole a working label) and its texts, his.
 
 ## What the session hands back
 
