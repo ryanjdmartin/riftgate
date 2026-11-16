@@ -1228,7 +1228,7 @@
    "codex": "Tracks, walkers and wheels wade it, a hex costing two of their move; hovercraft and flyers cross it at full pace. Packs wade it as the ground machines do; a winged pack crosses it.",
    "status": "implemented",
    "design": {
-    "holes": "No skirmish condition yet (section 12). Each map shape lays its own water (a river with narrows and tributaries, the flooded fjord, ponds, a pond, the gorge's flooded channels, the city's flooded streets, or none). Since 29 October the horde wades it as the ground machines do, so water slows a crossing and never walls it; the crossing guarantee binds the walls."
+    "holes": "No skirmish condition yet (section 12). Each map shape lays its own water (a fat river with its narrows, a delta's channels, ponds, a pond, the gorge's flooded channels, or none: the city has none). Since 29 October the horde wades it as the ground machines do, so water slows a crossing and never walls it; the crossing guarantee binds the walls."
    }
   },
   {

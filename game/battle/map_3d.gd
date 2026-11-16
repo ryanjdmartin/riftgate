@@ -1444,38 +1444,78 @@ func _stone_material() -> StandardMaterial3D:
 ## and cliffs a wall of rock. Every one overflows its tile and stands WALL_MIN at least, well
 ## over the decoration, so it reads as a thing a flyer goes over. Returns how tall it stands
 ## above the ground, so a flyer clears it and no more.
-func _wall_model(col: Node3D, look: String, hgt: float, rng: RandomNumberGenerator) -> float:
+## What stands on a badland's wall hex (mesas) or a ruined city's (towers), as the reconstruction
+## builds it and the painted world draws it (DomainGround), so the two meet where the painting
+## takes the ground (Ryan, 16 November: "In Badlands, the connected mesas of the painted and the
+## rock features of the 3D don't really mesh"). Each piece a prism in model units about its hex's
+## middle on its ground: {"x", "z": its middle, "from", "to": its foot and top above the ground,
+## "r0", "r1": its radius at the foot and at the top, "sides": 6, a pillar turned `turn` radians,
+## or 4, a box square to the view with `depth` its depth as a share of its width, "windows": the
+## heights, as shares of the piece, of the lit bands across a box's face}. Drawn from `rng` as it
+## stands seeded by the hex, so both worlds draw the same pieces.
+static func wall_pieces(look: String, rng: RandomNumberGenerator) -> Array:
+	var out: Array = []
 	match look:
-		"towers":
-			# Dead skyscrapers: tall thin shells stepping down as they rise, a few dim
-			# windows still lit on the tallest, far above anything else on the field.
-			var rubble := _terrain_material("rubble")
-			for k in range(4):
-				var w := rng.randf_range(8.0, 12.0)
-				var tall := rng.randf_range(70.0, 96.0) if k == 0 else rng.randf_range(WALL_MIN, 62.0)
-				var ox := 0.0 if k == 0 else rng.randf_range(-17.0, 17.0)
-				var oz := 0.0 if k == 0 else rng.randf_range(-13.0, 13.0)
-				for step in range(3):
-					var frac := 1.0 - 0.22 * step
-					var size := Vector3(w * frac, tall / 3.0, w * frac * rng.randf_range(0.7, 1.0))
-					_box(col, size, rubble, Vector3(ox + rng.randf_range(-1.0, 1.0), hgt + tall / 6.0 + step * tall / 3.0, oz + rng.randf_range(-1.0, 1.0)))
-				if k == 0:
-					var wm := _window_material("dim", Color(0.9, 0.7, 0.35), 1.2)
-					for wz in [tall * 0.35, tall * 0.55]:
-						_box(col, Vector3(w * 0.7, 2.0, 0.6), wm, Vector3(ox, hgt + wz, oz - w * 0.5 * rng.randf_range(0.8, 1.0)), Vector3.ZERO, false)
-			return 96.0
 		"mesas":
-			# Mesas: flat-topped blocks stacked and offset, a badland.
-			var rock := _terrain_material("rock")
+			# Mesas: flat-topped pillars of rock, a great one and two lower, each stacked from two
+			# slabs and narrowing, a badland's spires (Ryan, 10 November: "can use more spires").
 			for k in range(3):
 				var tall := rng.randf_range(44.0, 54.0) if k == 0 else rng.randf_range(28.0, 38.0)
 				var ox := 0.0 if k == 0 else rng.randf_range(-16.0, 16.0)
 				var oz := 0.0 if k == 0 else rng.randf_range(-12.0, 12.0)
 				for step in range(2):
 					var top := rng.randf_range(10.0, 15.0) * (0.8 if step == 1 else 1.0)
-					var slab_h := tall * (0.6 if step == 0 else 0.4)
-					_cyl(col, top, top * 1.15, slab_h, 6, rock, Vector3(ox, hgt + slab_h * 0.5 + (tall * 0.6 if step == 1 else 0.0), oz), Vector3(0.0, rng.randf_range(0, TAU), 0.0))
-			return 54.0
+					var from := 0.0 if step == 0 else tall * 0.6
+					var slab := tall * (0.6 if step == 0 else 0.4)
+					out.append({"x": ox, "z": oz, "from": from, "to": from + slab, "r0": top * 1.15, "r1": top, "sides": 6, "turn": rng.randf_range(0.0, TAU), "depth": 1.0})
+		"towers":
+			# Fewer, larger towers (Ryan, 16 November: "pull the scale back a bit and make the city
+			# relatively larger than the machines. So less buildings in each hex, but they're
+			# larger"; four slim shells stood on a hex): one great tower filling most of its hex,
+			# stepping in twice as it rises, or two side by side, the second lower. Each a box
+			# square to the view, the great tower's face keeping a few lit window bands.
+			var pair := rng.randf() < 0.45
+			var side := 1.0 if rng.randf() < 0.5 else -1.0
+			for k in range(2 if pair else 1):
+				var w := rng.randf_range(22.0, 26.0) if not pair else (rng.randf_range(14.0, 17.0) if k == 0 else rng.randf_range(11.0, 13.0))
+				var depth := rng.randf_range(0.8, 1.0)
+				var tall := rng.randf_range(80.0, 110.0) if k == 0 else rng.randf_range(46.0, 66.0)
+				var x := 0.0
+				if pair:
+					x = side * rng.randf_range(12.0, 14.0) if k == 0 else -side * rng.randf_range(15.0, 17.0)
+				var z := rng.randf_range(-3.0, 3.0)
+				var tiers := 3 if k == 0 else 2
+				for step in range(tiers):
+					var frac := 1.0 - 0.16 * step
+					var windows: Array = [0.35, 0.7] if k == 0 and step < tiers - 1 else []
+					out.append({"x": x, "z": z, "from": tall * float(step) / tiers, "to": tall * float(step + 1) / tiers, "r0": w * frac, "r1": w * frac, "sides": 4, "turn": 0.0, "depth": depth, "windows": windows})
+	return out
+
+
+func _wall_model(col: Node3D, look: String, hgt: float, rng: RandomNumberGenerator) -> float:
+	match look:
+		"towers", "mesas":
+			# Dead skyscrapers or a badland's stacked mesas, the pieces the painted world draws too
+			# (wall_pieces); the great tower keeps a few dim windows lit.
+			var skin := _terrain_material("rubble" if look == "towers" else "rock")
+			var wm := _window_material("dim", Color(0.9, 0.7, 0.35), 1.2)
+			var top := 0.0
+			for p in wall_pieces(look, rng):
+				var x: float = p["x"]
+				var z: float = p["z"]
+				var from: float = p["from"]
+				var to: float = p["to"]
+				top = maxf(top, to)
+				if int(p["sides"]) == 4:
+					var w: float = p["r0"]
+					var d := w * float(p["depth"])
+					_box(col, Vector3(w * 2.0, to - from, d * 2.0), skin, Vector3(x, hgt + (from + to) * 0.5, z))
+					for frac in p.get("windows", []):
+						var wy := from + (to - from) * float(frac)
+						_box(col, Vector3(w * 1.4, 2.0, 0.6), wm, Vector3(x, hgt + wy, z + d + 0.2), Vector3.ZERO, false)
+				else:
+					_cyl(col, p["r1"], p["r0"], to - from, int(p["sides"]), skin, Vector3(x, hgt + (from + to) * 0.5, z), Vector3(0.0, float(p["turn"]), 0.0))
+			return top
 		"cliffs":
 			return _cliff(col, hgt, rng)
 	# Crags: rock spikes, leaning, filling the tile.

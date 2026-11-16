@@ -1004,14 +1004,17 @@ static func _column_faces(key: String, lift: int, drops: PackedInt32Array, hex_p
 ## How each look of wall (BattleMap.WALL_LOOKS) stands, in design pixels: `lift`, how high its top
 ## stands off the ground; `lip`, whether the range's edge is broken rock or cut clean; `face`,
 ## what runs down its faces (rubble, strata, a plinth's band or cracks); `stands`, what stands
-## on its top (peaks, towers or nothing); `lies`, how many rocks and tufts lie on a hex's top, at
-## least and at most; `top`, `fleck` and `rim`, the inks (RANGE_INKS) of its top, the flecks in
-## it and the lip where it breaks off over a face (a crag's base the dark rock of its base, so its
-## peaks stand off it, unless that is the ground's own colour).
+## on its top (peaks, the reconstruction's own pieces or nothing); `lies`, how many rocks and tufts
+## lie on a hex's top, at least and at most; `top`, `fleck` and `rim`, the inks (RANGE_INKS) of its
+## top, the flecks in it and the lip where it breaks off over a face (a crag's base the dark rock
+## of its base, so its peaks stand off it, unless that is the ground's own colour). The badlands'
+## mesas and the city's towers stand the reconstruction's own pieces (Map3D.wall_pieces) on a
+## footing flush with the ground, so the two worlds meet (Ryan, 16 November: "In Badlands, the
+## connected mesas of the painted and the rock features of the 3D don't really mesh").
 const RANGE_LOOKS := {
 	"crags": {"lift": 5, "lip": "broken", "face": "rubble", "stands": "peaks", "lies": [0, 1], "top": "base", "fleck": "face_lo", "rim": "rock"},
-	"mesas": {"lift": 10, "lip": "cut", "face": "strata", "stands": "", "lies": [1, 3], "top": "top", "fleck": "top_lo", "rim": "top_hi"},
-	"towers": {"lift": 3, "lip": "cut", "face": "plinth", "stands": "towers", "lies": [0, 0], "top": "top", "fleck": "top_lo", "rim": "top_hi"},
+	"mesas": {"lift": 0, "lip": "broken", "face": "strata", "stands": "pieces", "lies": [0, 2], "top": "top_lo", "fleck": "top", "rim": "top_hi"},
+	"towers": {"lift": 0, "lip": "cut", "face": "plinth", "stands": "pieces", "lies": [0, 0], "top": "top", "fleck": "top_lo", "rim": "top_hi"},
 	"cliffs": {"lift": 12, "lip": "broken", "face": "cracks", "stands": "", "lies": [1, 4], "top": "top", "fleck": "top_lo", "rim": "top_hi"},
 }
 
@@ -1496,36 +1499,19 @@ static func _range_props(key: String, look: String, links: int, hex_px: float, s
 				if steam:
 					p["steam"] = foot - Vector2(0.0, float(ht))
 				out.append(p)
-		"towers":
-			var tall := 0
-			for e in edges:
-				if links & (1 << int(e["dir"])):
-					tall += 1
-			for gy in [-0.62, 0.0, 0.62]:
-				for gx in [-1.5, -0.5, 0.5, 1.5]:
-					var g := Vector2(gx * r * 0.48 + rng.randf_range(-1.5, 1.5), gy * r * 0.62 + rng.randf_range(-1.5, 1.5))
-					if not fits.call(g, 4.0) or rng.randf() < 0.2:
-						continue
-					var tw: int = [5, 7, 9][rng.randi_range(0, 2)]
-					var lo := 10 + tall * 2
-					var ht := rng.randi_range(lo, lo + 14)
-					# A tower at the back of a block stands short, so the street behind it still
-					# shows: no taller than the block's top runs back from it, and a few pixels more.
-					for e in edges:
-						var n: Vector2 = e["n"]
-						if n.y > -0.2 or (links & (1 << int(e["dir"]))) != 0:
-							continue
-						var back := (g.dot(n) - float(e["d"])) / n.y   # straight up to the open edge
-						var hit := g - Vector2(0.0, back)
-						var ea: Vector2 = e["a"]
-						var eb: Vector2 = e["b"]
-						if hit.x >= minf(ea.x, eb.x) - 2.0 and hit.x <= maxf(ea.x, eb.x) + 2.0:
-							ht = mini(ht, maxi(6, int(back) + 6))
-					var broken := rng.randf() < 0.25
-					var foot := (g - Vector2(0.0, lift)).round()
-					ht = maxi(6, (ht / 3) * 3)
-					var tex := _tower_tex(key, tw, ht, broken, rng.randi_range(0, 1), s)
-					out.append({"lies": false, "foot": foot, "tex": tex, "at": foot - Vector2(float(tw / 2 + 1), float(ht + 3)), "s": s})
+		"pieces":
+			# The reconstruction's own pieces (Map3D.wall_pieces), drawn from the hex's own seed as the
+			# 3D draws them, each where the camera sees it: its foot on the ground about the hex's
+			# middle, its height up the screen.
+			var k := (hex_px / Map3D.HEX_WORLD) / float(s)
+			var sp := sin(deg_to_rad(Map3D.PITCH))
+			var cp := cos(deg_to_rad(Map3D.PITCH))
+			var i := 0
+			for piece in Map3D.wall_pieces(look, rng):
+				var foot := Vector2(float(piece["x"]) * k, float(piece["z"]) * sp * k)
+				var made := _piece_tex(key, piece, k, sp, cp, s)
+				out.append({"lies": false, "foot": foot + Vector2(0.0, 0.001 * float(i)), "tex": made["tex"], "at": (foot + (made["at"] as Vector2)).round(), "s": s})
+				i += 1
 	var span: Array = style["lies"]
 	var lying := rng.randi_range(int(span[0]), int(span[1]))
 	var names: Array = ink["lies"]
@@ -1638,49 +1624,147 @@ static func _peak_tex(key: String, shape: String, hw: int, ht: int, variant: int
 	return tex
 
 
-## A tower of a city block, standing on its foot at the bottom middle: its roof (a ruin's broken
-## off in steps), its face of windows, some lit, its right side catching the light.
-static func _tower_tex(key: String, tw: int, ht: int, broken: bool, variant: int, s: int) -> ImageTexture:
-	var ck := "%s/tower/%d/%d/%d/%d/%d" % [key, tw, ht, int(broken), variant, s]
-	if _textures.has(ck):
-		return _textures[ck]
+## One of the reconstruction's pieces (Map3D.wall_pieces) as the painted world draws it, lit
+## from the right in its domain's rock, in design pixels (`k` of them a model unit; `sp` and `cp`
+## the camera's pitch, so it stands where the 3D's camera sees it): a pillar its top and the faces
+## the view sees, banded, lit on the right and dark on the left; a box its roof and its face, lit
+## down its right edge, its lit window bands across the face. Cached by its sizes to the pixel and
+## a pillar's turn to a quarter of its sixty degrees. {"tex", "at": its top left from the piece's
+## foot on the ground}.
+static var _pieces: Dictionary = {}
+
+static func _piece_tex(key: String, piece: Dictionary, k: float, sp: float, cp: float, s: int) -> Dictionary:
+	var sides := int(piece["sides"])
+	var r0 := float(roundi(float(piece["r0"]) * k))
+	var r1 := float(roundi(float(piece["r1"]) * k))
+	var lo := float(roundi(float(piece["from"]) * cp * k))   # its foot's rise up the screen
+	var hi := float(roundi(float(piece["to"]) * cp * k))     # its top's
+	var depth := float(roundi(float(piece.get("depth", 1.0)) * 10.0)) / 10.0
+	var turn_q := 0
+	if sides == 6:
+		turn_q = int(round(fposmod(float(piece["turn"]), PI / 3.0) / (PI / 3.0) * 4.0)) % 4
+	var windows: Array = piece.get("windows", [])
+	var ck := "%s/%d/%d/%d/%d/%d/%d/%d/%s/%d" % [key, sides, int(r0), int(r1), int(lo), int(hi), roundi(depth * 10.0), turn_q, str(windows), s]
+	if _pieces.has(ck):
+		return _pieces[ck]
 	var ink := _range_inks(key)
-	var front: Color = ink["base"]
-	var side: Color = ink["rock"]
-	var dark: Color = ink["face_lo"] if ink["face_lo"] != front else ink["out"]
-	var d := 3   # the roof, seen from above
-	var w := tw + 2
-	var h := ht + d + 1
-	var img := Image.create_empty(w, h, false, Image.FORMAT_RGBA8)
-	var tops: Array = []   # each column's top row
-	for x in range(w):
-		var t := 0
-		if broken and x > 0 and x < w - 1:
-			t = _rhash(x / 2, variant, 43) % 4
-		tops.append(t)
-	for x in range(w):
-		for y in range(int(tops[x]), h):
-			var col: Color = front
-			if x == 0 or x == w - 1 or y == int(tops[x]):
-				col = ink["out"]
-			elif y < d and not broken:
-				col = ink["top_hi"]   # the roof
-			elif y == d and not broken:
-				col = ink["out"]
-			elif x >= w - 1 - maxi(1, tw / 3):
-				col = side   # the lit side
-				if (y - d) % 3 == 2 and x % 2 == 0 and y < h - 2:
-					col = front
-			elif (y - d) % 3 == 2 and x % 2 == 1 and y < h - 2 and y > d:
-				col = ink["lit"] if _rhash(x, y, variant) < 90 else dark
-			img.set_pixel(x, y, col)
-	for x in range(w):
-		img.set_pixel(x, h - 1, ink["out"])
+	var c_top := (ink["top_hi"] as Color).to_abgr32()
+	var c_out := (ink["out"] as Color).to_abgr32()
+	var tones := [ink["rock"], ink["face"], _darker(ink, ink["face"])]   # lit, the face's own, shaded
+	# The corners of its footprint, model x and z as shares of its radius, round it in order.
+	var corners: Array = []
+	var normals: Array = []   # each side's outward normal, from corner i to i + 1
+	if sides == 4:
+		corners = [Vector2(-1.0, -depth), Vector2(1.0, -depth), Vector2(1.0, depth), Vector2(-1.0, depth)]
+		normals = [Vector2(0, -1), Vector2(1, 0), Vector2(0, 1), Vector2(-1, 0)]
+	else:
+		var t := float(turn_q) * (PI / 3.0) / 4.0
+		for i in range(sides):
+			var a := TAU * float(i) / float(sides) + t
+			var b := TAU * float(i + 1) / float(sides) + t
+			corners.append(Vector2(sin(a), cos(a)))
+			var am := (a + b) * 0.5
+			normals.append(Vector2(sin(am), cos(am)))
+	var foot := PackedVector2Array()
+	var top := PackedVector2Array()
+	for c in corners:
+		foot.append(Vector2(c.x * r0, c.y * r0 * sp - lo))
+		top.append(Vector2(c.x * r1, c.y * r1 * sp - hi))
+	var faces: Array = []   # [quad, tone]
+	for i in range(sides):
+		var n: Vector2 = normals[i]
+		if n.y <= 0.05:
+			continue   # away from the view, or edge-on
+		var j := (i + 1) % sides
+		var tone: Color = tones[0] if n.x > 0.35 else (tones[2] if n.x < -0.35 else tones[1])
+		faces.append([PackedVector2Array([foot[i], foot[j], top[j], top[i]]), tone])
+	var x0 := INF
+	var y0 := INF
+	var x1 := -INF
+	var y1 := -INF
+	for p in Array(foot) + Array(top):
+		x0 = minf(x0, p.x)
+		y0 = minf(y0, p.y)
+		x1 = maxf(x1, p.x)
+		y1 = maxf(y1, p.y)
+	var ox := floori(x0) - 1
+	var oy := floori(y0) - 1
+	var w := ceili(x1) + 2 - ox
+	var h := ceili(y1) + 2 - oy
+	var cls := PackedByteArray()   # 0 nothing, 1 the top, 2 + n a face
+	cls.resize(w * h)
+	for f in range(faces.size()):
+		_fill_convex(cls, w, h, ox, oy, faces[f][0], 2 + f)
+	_fill_convex(cls, w, h, ox, oy, top, 1)   # the top over the faces
+	var data := PackedByteArray()
+	data.resize(w * h * 4)
+	var c_lit := (ink["lit"] as Color).to_abgr32()
+	var c_side := (ink["rock"] as Color).to_abgr32()
+	var stripe := w - 1 - maxi(1, roundi(r0 * 0.3))
+	var shades := PackedInt64Array()   # each face's tone and its band's
+	var bands := PackedInt64Array()
+	for f in faces:
+		shades.append((f[1] as Color).to_abgr32())
+		bands.append(_darker(ink, f[1]).to_abgr32())
+	var window_rows := PackedInt32Array()
+	for fr in windows:
+		window_rows.append(roundi((hi - lo) * (1.0 - float(fr))))
+	for px in range(w):
+		var down := 0   # rows down from the top of the face this pixel is on
+		var last := 0
+		for py in range(h):
+			var i := py * w + px
+			var cl := cls[i]
+			down = down + 1 if cl == last else 0
+			last = cl
+			if cl == 0:
+				continue
+			var edge := px == 0 or py == 0 or px == w - 1 or py == h - 1 or cls[i - 1] == 0 or cls[i + 1] == 0 or cls[i - w] == 0 or cls[i + w] == 0
+			var col := c_out
+			if not edge:
+				if cl == 1:
+					col = c_top
+				else:
+					col = shades[cl - 2]
+					if sides == 6:
+						if down % 3 == 2:
+							col = bands[cl - 2]   # the slabs' bands
+					else:
+						# A tower's face: lit down its right edge, a lit window band where it has one.
+						if px >= stripe:
+							col = c_side
+						elif window_rows.has(down) and px % 2 == 1:
+							col = c_lit if _rhash(px, py, 7) < 150 else bands[cl - 2]
+			data.encode_u32(i * 4, col)
+	var img := Image.create_from_data(w, h, false, Image.FORMAT_RGBA8, data)
 	if s > 1:
 		img.resize(w * s, h * s, Image.INTERPOLATE_NEAREST)
-	var tex := ImageTexture.create_from_image(img)
-	_textures[ck] = tex
-	return tex
+	var out := {"tex": ImageTexture.create_from_image(img), "at": Vector2(ox, oy)}
+	_pieces[ck] = out
+	return out
+
+
+## Fill a convex polygon (`pts`, design pixels) into a class buffer `w` by `h` whose top left is
+## (`ox`, `oy`), a row's span at a time: every pixel whose middle lies inside takes `value`.
+static func _fill_convex(cls: PackedByteArray, w: int, h: int, ox: int, oy: int, pts: PackedVector2Array, value: int) -> void:
+	var n := pts.size()
+	for py in range(h):
+		var y := float(oy + py) + 0.5
+		var xl := INF
+		var xr := -INF
+		for e in range(n):
+			var a := pts[e]
+			var b := pts[(e + 1) % n]
+			if (a.y <= y and b.y > y) or (b.y <= y and a.y > y):
+				var x := a.x + (y - a.y) / (b.y - a.y) * (b.x - a.x)
+				xl = minf(xl, x)
+				xr = maxf(xr, x)
+		if xl > xr:
+			continue
+		var c0 := maxi(0, ceili(xl - 0.5 - float(ox)))
+		var c1 := mini(w - 1, floori(xr - 0.5 - float(ox)))
+		for px in range(c0, c1 + 1):
+			cls[py * w + px] = value
 
 
 ## A crack running across a plateau's top: a dark line wandering a pixel at a time, its far lip

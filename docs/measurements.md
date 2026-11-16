@@ -10205,3 +10205,19 @@ A range's base is built once for its look and its joined sides and kept, so a ra
 share one (33 bases for the gorge, 51 for the city): about 1.3 ms each after the build moved to
 packed arrays (2.3 ms before). Whether a battle's start hitches on the phone is the to-do's.
 
+
+## 16 November: the shapes relaid on Ryan's notes
+
+**The river, the delta, the steppe and the city at the long wall's 20 by 12**, seeds 1 to 100
+(`BattleMap.generate`), the band the open rows a shape lays in. The river: water 40% of the band
+(it was about 22% two hexes thick), two narrows in every seed, no dry way across (everyone wades).
+The river delta in the fjord's place: water 23% of the band (the fjord laid half to two thirds),
+five dry ways from the rift to the gate in every seed (`dry_crossing`, the disjoint land routes;
+five is the open steppe's too, the gate's front the limit). The steppe: water 4%, crags 4%, five
+dry ways. The city: no water, towers 57% of the band, three dry ways at least. Cited by the
+bible's shapes row (three dry ways at least on the delta).
+
+**The painted mesas and towers as the 3D's own pieces**: the first paint on the cloud container at
+20 by 12 in the Waste, `RIFTGATE_BLEED_DEBUG` whole, 296 ms the badlands and 328 ms the city with
+the pieces filled a row's span at a time (574 and 787 ms filled pixel by pixel; the steppe, with
+none, 174 ms).

@@ -195,37 +195,52 @@ func test_a_crags_peaks_run_on_across_its_joined_hexes() -> void:
 			assert_true(near <= 4.0, "a peak stands at the saddle toward direction %d, %s (%.1f away)" % [d, view, near]))
 
 
-func test_a_tower_at_a_blocks_back_leaves_the_street_behind_it() -> void:
-	# A city block's towers fill its top, but one at its back stands short, so the street behind
-	# it shows: no tower rises more than a few pixels past the block's open back edge, the roof
-	# its three more.
+func test_the_painted_mesas_and_towers_are_the_reconstructions_own_pieces() -> void:
+	# The badlands' mesas and the city's towers stand in the painting where the 3D stands them, the
+	# same pieces drawn from the same seed (Ryan, 16 November: "In Badlands, the connected mesas of
+	# the painted and the rock features of the 3D don't really mesh"), each piece's foot where the
+	# camera sees it, in either view.
 	_in_both_views(func(view: String) -> void:
-		var r := 24.0
-		var lift := float(DomainGround.RANGE_LOOKS["towers"]["lift"])
-		var edges: Array = DomainGround._hex_edges(r)
-		for seed_value in range(6):
-			var rng := RandomNumberGenerator.new()
-			rng.seed = seed_value
-			var towers := 0
-			for p in DomainGround._range_props("plains", "towers", 0, r, 1, rng):
-				if bool(p["lies"]):
-					continue
-				towers += 1
-				var foot: Vector2 = p["foot"]
-				var g := foot + Vector2(0.0, lift)
-				for e in edges:
-					var n: Vector2 = e["n"]
-					if n.y > -0.2:
-						continue
-					var back := (g.dot(n) - float(e["d"])) / n.y
-					var hit := g - Vector2(0.0, back)
-					var ea: Vector2 = e["a"]
-					var eb: Vector2 = e["b"]
-					if hit.x < minf(ea.x, eb.x) or hit.x > maxf(ea.x, eb.x):
-						continue
-					var edge_y := hit.y - lift
-					assert_true((p["at"] as Vector2).y >= edge_y - 10.0, "seed %d, %s: a tower at %s stands no more than a few pixels past the open back edge" % [seed_value, view, foot])
-			assert_true(towers >= 4, "seed %d, %s: a block's top holds towers (%d)" % [seed_value, view, towers]))
+		var hex_px := 48.0
+		var s := DomainGround.scale_of(hex_px)
+		var k := (hex_px / Map3D.HEX_WORLD) / float(s)
+		var sp := sin(deg_to_rad(Map3D.PITCH))
+		for look in ["mesas", "towers"]:
+			for seed_value in range(6):
+				var rng := RandomNumberGenerator.new()
+				rng.seed = seed_value
+				var pieces := Map3D.wall_pieces(look, rng)
+				rng.seed = seed_value
+				var stands: Array = []
+				for p in DomainGround._range_props("plains", look, 0, hex_px, s, rng):
+					if not bool(p["lies"]):
+						stands.append(p)
+				assert_eq(stands.size(), pieces.size(), "%s seed %d, %s: a piece in the painting for every piece in 3D" % [look, seed_value, view])
+				for i in range(mini(stands.size(), pieces.size())):
+					var want := Vector2(float(pieces[i]["x"]) * k, float(pieces[i]["z"]) * sp * k)
+					assert_true((stands[i]["foot"] as Vector2).distance_to(want) < 0.1, "%s seed %d, %s: piece %d stands where the 3D stands it" % [look, seed_value, view, i]))
+
+
+func test_a_city_hex_holds_one_or_two_great_towers() -> void:
+	# Fewer, larger buildings (Ryan, 16 November: "pull the scale back a bit and make the city
+	# relatively larger than the machines. So less buildings in each hex, but they're larger"): a
+	# hex's towers are one or two, the great one half the hex across at least, and every tower
+	# stands taller than a machine's hex is wide.
+	var hex_across := Map3D.HEX_WORLD * sqrt(3.0)
+	for seed_value in range(40):
+		var rng := RandomNumberGenerator.new()
+		rng.seed = seed_value
+		var towers := {}   # a tower's middle -> [its half width at the foot, its top]
+		for p in Map3D.wall_pieces("towers", rng):
+			var at := Vector2(float(p["x"]), float(p["z"]))
+			var was: Array = towers.get(at, [0.0, 0.0])
+			towers[at] = [maxf(float(was[0]), float(p["r0"])), maxf(float(was[1]), float(p["to"]))]
+		assert_true(towers.size() >= 1 and towers.size() <= 2, "seed %d: one or two towers a hex: %d" % [seed_value, towers.size()])
+		var great := 0.0
+		for t in towers.values():
+			great = maxf(great, float(t[0]))
+			assert_true(float(t[1]) > hex_across * 0.7, "seed %d: a tower taller than a machine's hex is wide (%.0f)" % [seed_value, float(t[1])])
+		assert_true(great * 2.0 >= hex_across * 0.45, "seed %d: the great tower half the hex across or so (%.0f of %.0f)" % [seed_value, great * 2.0, hex_across])
 
 
 func test_every_sprite_is_inked_and_every_name_drawn() -> void:
@@ -363,7 +378,7 @@ func test_the_painting_at_heights_stands_each_hex_at_its_columns_height() -> voi
 	# look like if the painted world used the same terrain 'heights?'"): a hex's top stands where the
 	# reconstruction's column puts it on screen (Map3D: its relief step, water sunk), within half a
 	# design pixel, on the design pixels' grid.
-	var map := BattleMap.generate(20, 12, 7, "fjord")   # water sunk and the scenery rising
+	var map := BattleMap.generate(20, 12, 7, "delta")   # water sunk and the scenery rising
 	var hex_px := 48.0
 	var s := DomainGround.scale_of(hex_px)
 	var seen := {}
