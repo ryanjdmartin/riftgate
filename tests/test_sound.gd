@@ -37,6 +37,9 @@ func test_metal_family_and_footfall_names_are_files() -> void:
 	assert_eq(Sound.struck("kill", "not_a_maker"), "kill_minerva", "an unknown maker is Minerva's steel")
 	assert_eq(Sound.family("heavy", "demonic"), "foe_demonic_heavy", "the Horde's heavy blow")
 	assert_eq(Sound.family("spawn", "eldritch"), "spawn_eldritch", "the Chorus arriving")
+	assert_eq(Sound.family("roar", "peak"), "roar_demonic", "the Peak's hunter roars the Horde's roar")
+	for f in db.factions:
+		assert_true(Sound.all_names().has(Sound.family("roar", f)), "domain %s's hunter's roar is a file" % f)
 	assert_eq(Sound.step_for(["wheeled", "stealth"]), "step_wheeled", "a way among other traits")
 	assert_eq(Sound.step_for([]), "step_legged", "no way is legs")
 

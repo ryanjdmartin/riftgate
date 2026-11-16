@@ -1156,10 +1156,7 @@ func _on_cutscene(playing: bool) -> void:
 ## A beat of the peak's cutscene, heard: the seam's creep starting, a tear opening. Borrowed
 ## sounds until each has its own (the audio to-do).
 func _on_peak_beat(what: String) -> void:
-	if what == "tear":
-		Sound.play("reveal")
-	else:
-		Sound.play("contact", -4.0)
+	Sound.play("tear_open" if what == "tear" else "peak_sweep")   # each its own since 16 November (the reveal and the alarm before)
 	_top.flash("rift")
 
 
@@ -1190,9 +1187,15 @@ func _after_locks() -> void:
 ## zoom on it and declare the target on screen"; 10 November: "We should pan and zoom to hunters
 ## when they acquire as well"): the map has glided in on the hunter (play_locks) and the band
 ## says who turns on whom, the catch's band in its shape; every lock of the turn in its turn,
-## each in the log too. A roar from the enemy belongs here (noted, not made: the audio to-do).
+## each in the log too. The hunter roars as the band comes up, its family's roar (Ryan, 8
+## November: "a good place for a sound effect from the enemy, a roar or whatever"; built 16
+## November), over the band's alarm a little down.
+const ROAR_AFTER := 0.18   # seconds into the band's alarm the roar comes in
+
 func _show_lock(hunter: Unit, prey: Unit) -> void:
-	_warn_band("HUNTED", "%s TURNS ON %s" % [hunter.display_name.to_upper(), prey.display_name.to_upper()], false)
+	_warn_band("HUNTED", "%s TURNS ON %s" % [hunter.display_name.to_upper(), prey.display_name.to_upper()], false, "")
+	Sound.play("contact", -5.0)
+	Sound.play_after(ROAR_AFTER, Sound.family("roar", hunter.faction if not hunter.faction.is_empty() else battle.faction))
 
 
 ## A hunter has caught a machine (bible section 5): the warning, big and in the enemy's violet over
@@ -1248,7 +1251,8 @@ func _warn_band(title: String, sub_text: String, catch: bool, sound: String = "c
 	warn.add_child(sub)
 	warn.modulate = Color(1, 1, 1, 0)
 	add_child(warn)
-	Sound.play(sound)
+	if not sound.is_empty():
+		Sound.play(sound)
 	if catch:
 		Sound.play_after(1.02, "contact", -2.0)   # the second beat, with the blink
 		Sound.say("contact")

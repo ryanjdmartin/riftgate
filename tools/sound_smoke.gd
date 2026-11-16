@@ -106,6 +106,14 @@ func _battle() -> void:
 	print("voice: playing %s, line %s, music under her %.1f dB" % [node._voice.playing,
 		node._voice.stream.resource_path.get_file() if node._voice.stream != null else "none", node._voice_db])
 	var b := screen.battle
+	# The peak's two sounds and a hunter's roar (16 November), each hook run once.
+	screen._on_peak_beat("seam")
+	await _wait(0.4)
+	screen._on_peak_beat("tear")
+	await _wait(0.4)
+	if not b.field.packs().is_empty() and not b.mechs().is_empty():
+		screen._show_lock(b.field.packs()[0], b.mechs()[0])
+		await _wait(1.6)
 	for phase in range(PHASES):
 		if b.state != Battle.State.PLAN:
 			break
