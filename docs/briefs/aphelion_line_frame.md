@@ -279,6 +279,16 @@ the crest is a thin upright bar from head on; the shoulder mounts are boxy from 
 blade arm foreshortens at the codex angle. Nothing animates: the cycling he asks for is a
 model's acts and its firing, judged running once it is one.
 
+His notes on it, the same day: "Line frame is a much better take. Forearms are way too big and
+long. The beam rifles can be smaller to let the arms shrink, since they can be custom geometry.
+Blades to the outer faces of the wrist. Shield closer to the classic Gundam shield shape.
+Backpack can use another pair of wings and reconfigure it so that it would boost forward, not up
+- it's a dash, not a hover. I think scrap the chest ports, and maybe add a mount to the side of
+the head instead." So the mounts are the two shoulders and one on the side of the head, three
+in all, and the chest is clean; the pack dashes along the ground. The third round
+(`docs/looks/aphelion_line_frame3.png`, the module's `SHEET3`) takes each note; it is being
+built as this is written, and its details follow it here.
+
 ## Open for the session
 
 Ryan settled what one hit is on 20 October (every blow counts) and sent the shield's Beam tag
@@ -292,7 +302,7 @@ to the model session; what stays open:
    20 October tier rule.
 4. The saber's keyword now that Chain is being reworked; its scaling with the count later.
 5. Its designation in Aphelion's shape ("Flight n" and a job; "Frame" is Aphelion's word).
-6. Its look: his read of the second look test (16 November), or another round.
+6. Its look: his read of the third look test (16 November), or another round.
 7. Its locked pieces on the die (his direction of 16 November): how the rifle, the blade and
    the shield sit there, what each does, and what the cycling reads.
 
