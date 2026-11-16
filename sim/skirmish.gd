@@ -101,6 +101,7 @@ class MechState:
 	var rebooting: bool = false     # it gave this turn to a reboot: its shield is down through the enemy's turn, and both gauges are back as the next round opens
 	var shield_broken: bool = false # its shield has stood at nothing since its last reboot: it gains none by any method until the reboot's recovery
 	var overheated: bool = false    # it has overheated since its last reboot: one overheat, and one shield broken by it, between reboots
+	var killed_round: bool = false  # an attack of its own killed this round: what its passive reads as the round ends (on_round_kill: the Ammit's flare)
 
 	## The heat it carries past its maximum, a stack a point (the reboot's Overheated).
 	func overheat_stacks() -> int:
@@ -475,12 +476,27 @@ static func is_swallowed(ms: MechState) -> bool:
 
 
 ## Is the machine out of reach: Phased or Swallowed? Nothing reaches it, neither side may target
-## it (it may spend on itself), and nothing damages it: no blow, no tick and no burn, the heat
-## past its maximum staying for the turn it is back. A Swallowed machine is out of the fight
-## too, its die spent; a Phased one acts and may reboot, and the price a piece of its own
-## prints is still paid (a Volatile bite).
+## it (it may spend on itself), and nothing damages it: no blow, no tick's point, no burn and no
+## bite of a piece of its own (a Volatile's, a corrupted entry's), the heat past its maximum
+## staying for the turn it is back. The two part on time (Ryan, 16 November). A Phased machine
+## acts, and everything it carries ticks: "It doesn't take damage but it's a way of waiting out
+## a debuff". A Swallowed one is out of play, its die spent, and everything it carries pauses
+## (paused): "Swallowed it's out of play so everything should pause".
 static func is_out(ms: MechState) -> bool:
 	return is_phased(ms) or is_swallowed(ms)
+
+
+## Is everything this machine carries paused (Swallowed)? No stack fades, halves or pays, no
+## timed status runs out but the swallow itself (each moves a round later for every round's end
+## it sits out: Effects.pause_round), nothing of its own cools, regenerates or fires, a buff of
+## its own holds nothing on the field, and it burns nothing: the rounds it sat out never came
+## for it. Let go as its swallow's rounds run out, it is back before that round's end is read,
+## the end it was owed from the round it was taken in; let go sooner (its swallower felled or
+## hurt), it goes on from where it stood. Two things are no clock and reach it all the same: an
+## event of its fight (a foe felled banks its count), and a reboot it had begun, which recovers
+## as the next round opens, the second half of a turn it gave before it was taken.
+static func paused(ms: MechState) -> bool:
+	return is_swallowed(ms)
 
 
 ## The pack's own foes left standing, on the field or waiting: what it keeps on the map. A pack
@@ -1063,8 +1079,8 @@ func rally_worth(r: Foe) -> int:
 ## for a blank (a blank is not spent) or a die already spent.
 func pending_bite(ms: MechState) -> int:
 	var f := ms.face()
-	if f == null or ms.assigned or f.kind == Face.Kind.BLANK:
-		return 0
+	if f == null or ms.assigned or f.kind == Face.Kind.BLANK or is_phased(ms):
+		return 0   # a Phased machine is damaged by nothing, a bite of its own entry included
 	return Effects.corrupt_stacks(ms.unit, ms.face_index) * corrupt_bite()
 
 
@@ -1085,8 +1101,8 @@ static func cryo_cool() -> int:
 ## component does. Nothing for a die already spent or an entry that is not volatile.
 func pending_volatile(ms: MechState) -> int:
 	var f := ms.face()
-	if f == null or ms.assigned:
-		return 0
+	if f == null or ms.assigned or is_phased(ms):
+		return 0   # a Phased machine pays no hull for its spend (Ryan, 16 November: "I think we block the damage as a feature, and see how bad it is once we have real hull cost pieces that matter")
 	return spend_bite(ms.unit, Effects.effective_face(ms.unit, f))
 
 
@@ -1433,7 +1449,8 @@ func start_round() -> void:
 	# next turn.""), as a foe's goes when the foes' turn opens. Before the hopper plates again
 	# and before the foes announce, so their blows are drawn against the armour that will stand.
 	for ms in mechs:
-		Effects.turn_opens(ms.unit)
+		if not paused(ms):
+			Effects.turn_opens(ms.unit)
 	# The turn begins with what cooling a machine is granted (a module's, a passive's, a
 	# status's: a chassis has none of its own since the reboot), one log line for all.
 	var cooled: Array[String] = []
@@ -1449,7 +1466,7 @@ func start_round() -> void:
 			_recover(ms)
 		# A sealed machine's cooling stops (the Polar Bear's Lockdown, 20 October): opening or
 		# a reboot is its way down.
-		var drop := 0 if Effects.is_sealed(ms.unit) else mini(ms.heat, cooling_of(ms))
+		var drop := 0 if Effects.is_sealed(ms.unit) or paused(ms) else mini(ms.heat, cooling_of(ms))
 		if drop > 0:
 			ms.heat -= drop
 			cooled.append("%s -%d" % [ms.unit.display_name, drop])
@@ -1461,7 +1478,7 @@ func start_round() -> void:
 		ms.free_rerolls = Effects.free_rerolls(ms.unit)
 		# The forge's trickle (the Musk Ox's), from the second round: the first holds its start, 3
 		# in all (Ryan, 22 October: "make it a total of 3").
-		if ms.ammo_max > 0 and round > 1:
+		if ms.ammo_max > 0 and round > 1 and not paused(ms):
 			_reload(ms, int(Effects.forge_rule(ms.unit).get("per_round", 0)), "")
 	if not cooled.is_empty():
 		log.append("cooling: " + ", ".join(cooled))
@@ -1473,7 +1490,7 @@ func start_round() -> void:
 	# Buzzard's Thermal Recoupler) is read here with it, the heat as the cooling left it.
 	var regened: Array[String] = []
 	for ms in live_mechs():
-		var gained := _gain_shield(ms, shield_regen_of(ms))   # a broken shield takes none
+		var gained := 0 if paused(ms) else _gain_shield(ms, shield_regen_of(ms))   # a broken shield takes none
 		if gained > 0:
 			regened.append("%s +%d" % [ms.unit.display_name, gained])
 	if not regened.is_empty():
@@ -1482,6 +1499,8 @@ func start_round() -> void:
 	# machine's Regenerating is one, a point of shield a stack; its turn come, a stack fades
 	# (15 November), whether the shield took the points or not.
 	for ms in live_mechs():
+		if paused(ms):
+			continue   # Swallowed: nothing of its own fires, and its Regenerating waits with the rest
 		_fired(ms, Effects.round_start(ms.unit, ms.heat), "round start")
 		Effects.spend_stacks(ms.unit, "regenerating", 1)
 	# The hopper grants its Armoured for the round, what the loads it holds are worth (the Honey
@@ -1489,7 +1508,7 @@ func start_round() -> void:
 	# funnel bar"): last round's went at the round's end as every machine's Armoured does, and a
 	# Purge may have taken it sooner. Before the foes announce, so their blows are drawn against it.
 	for ms in live_mechs():
-		var plated := Effects.plate_round(ms.unit)
+		var plated := 0 if paused(ms) else Effects.plate_round(ms.unit)
 		if plated > 0:
 			log.append("%s's hopper plates it: %s ×%d" % [ms.unit.display_name, Effects.STATUS["braced"]["name"], Effects.plated(ms.unit)])
 	# Every foe announces its move for the round: which action, at whom. Chosen now, before
@@ -2500,6 +2519,8 @@ func _release_passes() -> void:
 func field_holds() -> Array:
 	var out: Array = []
 	for ms in live_mechs():
+		if paused(ms):
+			continue   # out of play: its buff waits with it, and holds the round it is back in
 		for id in Effects.holds_all(ms.unit):
 			if not out.has(id):
 				out.append(id)
@@ -2513,11 +2534,30 @@ func field_holds() -> Array:
 ## both run it, so the preview's round ends as the round will.
 func _finish_round() -> void:
 	_tick_mechs()
+	_round_kills()
 	for f in field_foes():
 		Effects.halve(f, (_held.get(f, []) as Array) + round_holds)
 	_held.clear()
 	round_holds = []   # the round's hold (Essence Flare's) is over: everything halves again from the next
 	_regrow_parts()
+
+
+## What a machine's passive grants as the round ends, when an attack of its own killed in it
+## (on_round_kill; the Ammit's Quintessence Reactor, Ryan, 16 November: "At the start of the
+## skirmish, or at the end of a round where the Ammit killed at least one enemy, the Essences
+## Flare, granting 1 Empowered per 5 Essences it holds"): once a round however many fell and
+## however many attacks felled them, after the enemy's turn, so the stacks stand whole through
+## its next turn and halve as that turn ends. A machine wrecked in the enemy's turn flares
+## nothing; a Swallowed one waits with the rest of what it carries.
+func _round_kills() -> void:
+	for ms in live_mechs():
+		if not ms.killed_round or paused(ms):
+			continue
+		ms.killed_round = false
+		var got := Effects.fire(ms.unit, "on_round_kill")
+		var parts := _apply(ms, got)
+		if not parts.is_empty():
+			log.append("%s: as the round ends, after its kill, %s" % [ms.unit.display_name, ", ".join(_with_counts(ms, parts, got))])
 
 
 ## The end of the player's turn (Ryan, 11 October): heat over the maximum burns hull now,
@@ -2544,6 +2584,14 @@ func _end_player_turn() -> void:
 	_ablate_mechs()
 	_seal_heat()
 	_burn_overheated()
+	# The player's side's turn ends: a machine's Empowered halves (Ryan, 16 November: "Empowered
+	# should decay at the end of turn, clearly, not end of round"; a foe's halves as the foes'
+	# turn ends, the round's end). What it gains in the enemy's turn it now carries whole into
+	# its next turn. A hold on the field (Essence Flare) is read here for the machines' own.
+	var holds := field_holds()
+	for ms in live_mechs():
+		if not paused(ms):
+			Effects.halve_buffs(ms.unit, holds)
 	_refresh_allies()
 	_check_outcome()
 
@@ -2636,10 +2684,18 @@ func _enemy_turn() -> void:
 			if r > 0:
 				Effects.stack(f, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", r, Effects.DECAY_NONE)
 				log.append("%s recovers: Numbed ×%d" % [f.display_name, Effects.stacks_of(f, "numbed")])
+	# A Swallowed machine first (Ryan, 16 November: "Swallowed it's out of play so everything
+	# should pause"): one whose swallow has run its rounds is let go here, as the round ends, so
+	# this round's end reads it like any machine, the end of the round it was taken in, owed
+	# since; one still held has everything timed on it moved a round later.
+	for ms in mechs:
+		if paused(ms):
+			Effects.pause_round(ms.unit, round, "swallowed")
 	round_holds = field_holds()   # read before the round's statuses run out: Essence Flare holds this round's halving
 	_land_phases()   # before the round's timed effects run out: the wait for Phased is one of them
 	for ms in mechs:
-		Effects.end_round(ms.unit, round)   # timed effects run out
+		if not paused(ms):
+			Effects.end_round(ms.unit, round)   # timed effects run out; a Swallowed machine's wait
 	_held.clear()
 	for f in field_foes():
 		var kept := Effects.held_statuses(f)   # read before its round's statuses run out: a pin holds this round's halving
@@ -2911,7 +2967,8 @@ func _purge(t: MechState, f: Foe, n: int = 1) -> void:
 ## Scorched are not among them: they tick at the end of the player's turn (_ablate_mechs).
 func _tick_mechs() -> void:
 	for ms in live_mechs():
-		Effects.tick(ms.unit, true, round_holds)
+		if not paused(ms):
+			Effects.tick(ms.unit, true, round_holds)
 
 
 ## A machine's shield regen as the round opens: what it is granted (a module's, a passive's, a
@@ -2938,7 +2995,7 @@ func seal_heat(ms: MechState) -> int:
 ## overheat, so the clock bites on the turn the player ended.
 func _seal_heat() -> void:
 	for ms in live_mechs():
-		var h := seal_heat(ms)
+		var h := 0 if paused(ms) else seal_heat(ms)
 		if h > 0:
 			log.append("%s runs sealed: +%d heat" % [ms.unit.display_name, h])
 			_add_heat(ms, h)
@@ -2978,11 +3035,13 @@ static func form_change(ms: MechState, f: Face, on_self: bool = true) -> String:
 
 ## The end of the player's turn, before the overheat (Ryan, 15 November: Ablate, one rule on
 ## both sides): each machine's Ablating takes a point a stack and loses a stack, and Scorched
-## goes. A machine out of the fight (Swallowed, Phased) takes no damage, so its stacks wait and
+## goes. A Phased machine takes no point and its stacks fade all the same; a Swallowed one's wait and
 ## tick again the turn it is back, as its overheat does.
 func _ablate_mechs() -> void:
 	for ms in live_mechs():
-		var points := int(Effects.turn_tick(ms.unit, is_out(ms))["hp"])
+		if paused(ms):
+			continue   # Swallowed: out of play, so its Ablating, its Scorched and its Sapped wait for the turn it is back
+		var points := int(Effects.turn_tick(ms.unit, is_phased(ms))["hp"])   # Phased: the stacks fade and take nothing
 		if points > 0:
 			_ablate(ms, points)
 
@@ -3553,6 +3612,7 @@ func _after_kills(ms: MechState, killed: int) -> void:
 	if killed <= 0:
 		return
 	_muster(ms, killed * int(Effects.muster_rule(ms.unit).get("kill", 0)))
+	ms.killed_round = true   # what its passive reads as the round ends (_round_kills)
 	if ms.alive():
 		var got := Effects.fire(ms.unit, "on_kill")
 		var parts := _apply(ms, got)
@@ -4155,8 +4215,8 @@ func rage_on_field() -> int:
 ## pick moves under the player.
 func _land_phases() -> void:
 	for ms in live_mechs():
-		if not Effects.remove(ms.unit, "phasing"):
-			continue
+		if paused(ms) or not Effects.remove(ms.unit, "phasing"):
+			continue   # a Swallowed machine's wait pauses with the rest, and lands at the end of the round it is back in
 		Effects.grant_for_rounds(ms.unit, Effects.STATUS["phased"], "buff", round + 1)
 		log.append("%s is Phased: out of reach until the next round's end" % ms.unit.display_name)
 

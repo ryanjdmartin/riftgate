@@ -6677,10 +6677,15 @@ func test_brittle_halves_at_the_rounds_end_rounded_down_until_gone() -> void:
 	sk.start_round()
 	sk.end_round()
 	assert_false(Effects.has(g, "brittled"), "and one halves to none")
+	# A machine's tick is the round's end: its Brittle halves there. Its Empowered is a buff, and
+	# halves as its own turn ends (16 November; tests/test_clocks.gd).
 	var ov := _mech("B", Die.single(Face.shield(10)), 0, 100)
+	Effects.stack(ov, Effects.STATUS["brittled_mech"], Effects.SKIRMISH, "foe", 4, Effects.DECAY_HALF)
 	Effects.stack(ov, Effects.STATUS["overcharged"], Effects.SKIRMISH, "buff", 4, Effects.DECAY_HALF)
 	Effects.tick(ov)
-	assert_eq(Effects.stacks_of(ov, "overcharged"), 2, "a machine's tick is the round's end, and halves as before")
+	assert_eq([Effects.stacks_of(ov, "brittled_mech"), Effects.stacks_of(ov, "overcharged")], [2, 4], "a machine's Brittle halves with the round, its Empowered not there")
+	Effects.halve_buffs(ov)
+	assert_eq([Effects.stacks_of(ov, "brittled_mech"), Effects.stacks_of(ov, "overcharged")], [2, 2], "its Empowered halves as its side's turn ends, its Brittle left alone")
 
 
 ## Brittle runs on the clock its status names (the stock pass's loop reads a stack a round against
@@ -7460,7 +7465,7 @@ func test_a_purge_takes_every_buffs_stacks_and_leaves_the_abilities() -> void:
 	assert_false(Effects.has(u, "overcharged") or Effects.has(u, "braced"), "and nothing comes back")
 	# The seal is the Polar Bear's form, an ability: the purge leaves it, its armour standing.
 	var s2 := Skirmish.new(1, 2)
-	var buff := Face.buff("overcharged", 1)
+	var buff := Face.buff("overcharged", 2)   # two, so one is left past END TURN's halving for the purge to take
 	var m := _mech("D", Die.of([buff, Face.attack(10, L)]), 40, 200)
 	m.grant_passive({"id": "radiator", "name": "Radiator", "description": "", "effects": [{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 5}]}, "radiator")   # cooling is granted: a chassis has none of its own
 	m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [

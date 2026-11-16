@@ -136,15 +136,19 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
    die has anywhere to be spent, rerolls aside. A machine that has spent nothing this turn may
    give the turn to a reboot, its die dragged onto REBOOT between the two (The reboot, below).
 4. END TURN: a machine's Ablating takes a point a stack, its shield first and then its hull
-   past armour, and loses a stack, and its Scorched goes;
+   past armour, and loses a stack, and its Scorched and its Sapped go;
    then heat over a machine's maximum burns hull one for one and stays on the gauge, burning
    again every turn it stands there; the first such turn since the machine's last reboot is
-   its overheat, and its shield breaks. A rebooting machine neither burns nor overheats, nor
-   one out of reach (Phased, Swallowed), whose heat stays for the turn it is back. A
-   machine the tick or the burn wrecks is lost on its own turn, before the enemy acts.
+   its overheat, and its shield breaks; then each machine's Empowered halves, its side's turn
+   over. A rebooting machine neither burns nor overheats, nor
+   one out of reach (Phased, Swallowed), whose heat stays for the turn it is back: a Phased
+   machine's stacks tick all the same and take nothing, and everything a Swallowed one carries
+   waits. A machine the tick or the burn wrecks is lost on its own turn, before the enemy acts.
 5. The enemy's turn (below), then a passed turn's release (the Whip Scorpion's, Passives
    below). Round-timed effects end.
-6. Machines' statuses tick, and what halves does, on either side (Empowered, Brittle).
+6. The round's end: Brittle halves on either side and a foe's Empowered with it, the foes'
+   turn over; and a machine whose own attack killed in the round fires what its passive grants
+   for it (the Ammit's flare).
 7. A part due to grow back does, in its corpse's slot (below). Next round.
 
 The fight ends the moment it is decided, mid-turn too: victory when no foe stands, defeat when
@@ -542,8 +546,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   word and no sign (the heat's thermometer, the shield's, the hull's machine body, a forging
   gun's shells, the cooldown's clock), never a keyword and never a chip: a
   **hull cost** (Volatile 3: spending it costs its owner 3 hull, past shield and armour,
-  before it acts, and a machine it leaves at nothing is wrecked; the Umbra Inducer, the
-  Oblation Mantle and the Entropy Condenser cost 3) and a **shield cost** (3 shield, taken
+  before it acts, and a machine it leaves at nothing is wrecked; a Phased machine pays none;
+  the Umbra Inducer, the Oblation Mantle and the Entropy Condenser cost 3) and a **shield cost** (3 shield, taken
   first from the shield as it stands). An entry whose shield cost the
   shield cannot pay cannot be played: the die shows the cost struck through, it has nowhere
   to land, and END TURN pulses as if the die were spent. It is the first entry with a
@@ -578,16 +582,17 @@ each foe its blows damage, after the blow, in place of what the machine's passiv
 Honey Badger's Chainsaw Claw, two); a weapon that fires it takes up to its most loads a shot,
 each adding its bonus to the blow, and spends them (its Bullion Fragmenter fires two at +2),
 the armour they stood for going with them. **Braces**:
-spending it Armours its owner, the stacks it says, an armour point each, until the round's
-end (no dealt piece prints it today; the Wild Boar's Breaching Plow did until 11 November). **The Quintessence Tap** (the Ammit's, equipment spent on
+spending it Armours its owner, the stacks it says, an armour point each, until its side's
+next turn begins (no dealt piece prints it today; the Wild Boar's Breaching Plow did until 11 November). **The Quintessence Tap** (the Ammit's, equipment spent on
 itself, cooldown 3): it consumes the Ammit's Essence, as much as it holds up to 5, and grants a
 stack of Empowered for each, the die showing what it would take now; and its machine gains
-Essence Flare, a buff, until the round's end. While a live machine carries Essence Flare as the
-round's statuses run down, no Empowered decays, on any unit, machine or foe: what each holds
-and what it gains before the round ends skips that round's halving, and halves again the
+Essence Flare, a buff, until the round's end. While a live machine carries Essence Flare no
+Empowered halves that round, on any unit: a machine's as the player's turn ends, a foe's as
+the round does, what each holds and what it gains before then, and it halves again the
 round after. The buff is on the Ammit alone and no other unit wears anything for it, so a Ward
 turns nothing away and nothing counts it as a mark; it is a buff like any, so a Purge that
-takes it ends the hold, and a carrier wrecked before the round's end holds nothing. With no
+takes it ends the hold, a carrier wrecked before the round's end holds nothing, and a
+Swallowed carrier's buff waits with it and holds the round it is back for. With no
 Essence it cannot be played (Costs, above). **The gather** (the
 Lammergeier's Lorentz Contractor, a debuff with Expose): every Mine the field's other foes carry
 joins its target's, their damage added and their keywords as one, in the rider phase after the
@@ -645,21 +650,25 @@ status by what it is, and the keywords list files the statuses under BUFFS, DEBU
 ABILITIES.
 
 On a machine:
-- **Empowered** (buff): +1 damage a stack, so the count is the bonus. At the end of each
-  round it halves, rounded down, whatever granted it, until it is gone; a buff component
+- **Empowered** (buff): +1 damage a stack, so the count is the bonus. As its side's turn ends
+  (END TURN) it halves, rounded down, whatever granted it, until it is gone, so what a machine
+  gains in the enemy's turn it carries whole into its next; a buff component
   grants it stacks and no rounds. While a machine carries Essence Flare it does not halve, on any
   unit (the Quintessence Tap, above).
 - **Essence Flare** (buff, the Quintessence Tap's, on the machine that spent it): no Empowered
-  halves at this round's end, any unit's. Until the round's end; one stack, renewed.
+  halves this round, any unit's, a machine's at END TURN or a foe's at the round's end. Until
+  the round's end; one stack, renewed.
 - **Essence** (Ability, the Ammit's Quintessence Reactor): 1 for every foe that falls in a fight
   the Ammit stands in, whoever or whatever fells it (its own blow, an ally's, an Ablate tick, a
   Mine's blast: a kill as the death check counts it, so a foe getting back up, a split and a
   part bank none), with no cap, kept from fight to fight through the battle and gone as the
-  battle ends. The Essence flares as each fight opens, and once after each attack of the Ammit's
-  own that kills, however many fall to it (its weapon's blow, an arc, a spill): it gains a stack
-  of Empowered for every 5 Essence it holds, nothing under 5, and none is spent by it. A death
-  check banks its Essence first, so an attack that kills two flares once at the count with both
-  in. What a flare grants is Empowered like any: it halves at the round's end and a Purge takes
+  battle ends. The Essence flares as each fight opens, and at the end of a round in which an
+  attack of the Ammit's own killed (its weapon's blow, an arc, a spill), once a round however
+  many fell and however many of its attacks felled them: it gains a stack
+  of Empowered for every 5 Essence it holds, nothing under 5, and none is spent by it. The
+  round's kills are banked by then, so the flare reads the count with all of them in; an Ammit
+  wrecked before the round ends flares nothing. What a flare grants is Empowered like any: it
+  stands whole through the Ammit's next turn, halves as that turn ends, and a Purge takes
   it. Its Quintessence Tap consumes Essence.
   An Ability, so no Purge or Cleanse touches it; its chip says the count, and the
   codex lists it among what the battle keeps.
@@ -674,20 +683,34 @@ On a machine:
   a dashed edge), on a machine that has acted or not, and as the enemy's turn ends every machine
   that waits and still stands is Phased through the next round's end; one wrecked first never
   phases, and a foe's Purge takes the wait as any buff. While it stands no foe picks the
-  machine, a blow or a special at every machine passes it by, no ally may spend on it, and its
-  Ablating waits, taking nothing and losing no stack until it is back in reach. It spends
+  machine, a blow or a special at every machine passes it by, and no ally may spend on it.
+  Everything it carries ticks as ever, and nothing damages it: its Ablating takes no point and
+  loses its stack, its Scorched and Sapped go, its Empowered and its Brittle halve, its
+  Regenerating pays, so a round Phased waits a debuff out. It spends
   its die on a foe or on itself, and it may reboot, bare where nothing reaches it. Its own
   heat does not burn it either: what it carries past its maximum stays, more if it fires
-  again, and burns the turn it is back in reach, the first such turn its overheat. The price
-  a piece of its own prints is still paid (a Volatile bite). Its Lure turns no pick. A second grant while it stands carries it through the round after.
+  again, and burns the turn it is back in reach, the first such turn its overheat. A bite of
+  its own entry is damage and is blocked with the rest: a hull cost (Volatile), a passive's
+  hull price on a spend and a corrupted entry's bite take nothing. Its Lure turns no pick. A second grant while it stands carries it through the round after.
 - **Swallowed** (debuff, from a foe's swallow): out of the fight (it
   cannot act, take damage or be targeted, a foe's intent on it re-picks, and a blow or a special
-  at every machine passes it by; its cooling is its own, and it neither burns nor overheats while it is out, since it cannot reboot, its Ablating waiting as a Phased machine's does) for the swallow's
+  at every machine passes it by) for the swallow's
   rounds, its die standing down as each round opens, until its swallower falls, or until its
   swallower has lost a quarter of its maximum HP since the swallow (its chip counting the damage
   still to deal, never more than the swallower has left; a second machine taken while it holds
   one joins that count, and the quarter lets both go); either lets it go at once, and in the
   player's turn it acts that round. The swallower loses nothing else. Nothing cleanses it.
+  Out of play, so everything it carries waits where a Phased machine's ticks: no stack fades,
+  halves or pays (its Ablating, Scorched, Sapped, Empowered, Brittle and Regenerating stand as
+  they were), nothing of its own cools, regenerates or fires, a buff of its own holds nothing
+  on the field (Essence Flare), it neither burns nor overheats,
+  and no timed status on it runs out: each, a dark entry's rounds among them, moves a round
+  later for every round's end it sits out, so the rounds it sat out never came for it. Only the
+  swallow's own rounds run. Let go as they run out, it is back before that round's end is
+  read, the end it was owed from the round it was taken in: what was that round's ends, its
+  Brittle halves, a kill of its own is read. Let go sooner, it goes on from where it stood.
+  Two things are no clock and reach it all the same: an event of its fight (a foe felled banks
+  an Ammit's Essence), and a reboot it had begun, which recovers as the next round opens.
 - **Muster** (store, the Swallowtail's): its charges. Every die that rolls fills
   it a sliver, thirty rolls a charge, a kill by its own guns five rolls' worth, up to three
   charges; it starts each fight empty and never decays. It shows as a smooth bar under the
@@ -861,8 +884,8 @@ On a foe:
   next weapon attack ignores armour and lifts it, equipment leaving it standing. A purge takes it.
 - **Empowered** (buff, Rally): lands on every foe on the field the moment the rally does, its
   rallier too, the rally's value in stacks, and every blow the foe lands hits a point harder a stack, an add
-  before the move's factor as every add is. It halves at the end of each round, rounded down,
-  the machine's clock, and skips the halving of a round a machine carries Essence Flare, as a machine's
+  before the move's factor as every add is. It halves as the foes' turn ends, the round's end, rounded down,
+  as a machine's does at the player's, and skips the halving of a round a machine carries Essence Flare, as a machine's
   does: no move spends it, a special or a Suppress takes none of it, and a
   countdown still gathering carries what stands to the blow it lands. A foe acting after the
   rallier hits harder this turn; one that has acted, and the rallier itself, carries half to the
@@ -1085,7 +1108,8 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   Lure moves it). Scorch, ablate, corrupt and brittle each say their stacks a blow, as the player's
   Ablate does (Scorch 2: two). What a foe lays that halves as each round ends says 2 at the
   least, a blow's Brittle and a rally's Empowered: one stack is gone before its side's next
-  turn. The validator holds a foe's moves to it.
+  turn. The validator holds a foe's moves to it. No such floor binds the player's pieces:
+  the player orders the turn's spends, so a single stack is used before it halves.
 - **A special** replaces the blow: brace (Armoured, its value in stacks, an armour point each, until the
   foes' next turn opens), recover (regains its value, itself), heal (the most hurt of its own, itself included, regains its
   value), brace all (the same on every foe in the fight, on the same clock), revive once,
@@ -1161,7 +1185,9 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   granted (an ally this machine shields), on heat gain, on foe status (a foe
   gains a debuff), on stack (this machine applies stacks), on a kill (once after an attack of
   this machine's that killed, however many fell to it, arcs and spills included:
-  the Ammit's flare, the Kite's shield), on a foe killed (every kill the death check counts in
+  the Kite's shield), at the end of a round it killed in (once as the round ends, after the
+  enemy's turn, for a machine whose own attack killed in it, however many fell and however
+  many attacks felled them; a machine wrecked first fires nothing: the Ammit's flare), on a foe killed (every kill the death check counts in
   this machine's fight, whoever made it, once for each: the Ammit's Essence), on
   damaging a foe (after a spend of its weapons that took HP off a foe, once however many it
   hurt; what it grants lands after the spend, so the Skua's stack bounces none of the shots
@@ -1230,8 +1256,8 @@ met, and for an ability its component not destroyed), adds, multiplies, floors a
 overrides (shortest-lived source, then latest granted). Every buff, debuff, passive, module
 and reward is a modifier with a source and a scope: rounds, skirmish, battle or loadout. The
 same status in the same scope stacks: an add counts per stack, a multiply applies per stack,
-and a ticking status loses a stack at its owner's turn, a halving one half of them at the
-round's end, rounded down; a timed one stacks only with a grant that ends the same round, so each grant's stacks go
+and a ticking status loses a stack at its owner's turn, a halving one half of them, rounded
+down, a buff as its side's turn ends and a debuff at the round's end; a timed one stacks only with a grant that ends the same round, so each grant's stacks go
 when its own rounds run out. A status runs down to zero on its own clock or is timed, never
 both. A status's
 definition may say otherwise: one that renews keeps one grant, its end the later and its

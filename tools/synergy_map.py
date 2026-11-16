@@ -124,7 +124,7 @@ EFFECTS = {
     "burn_shield": [("heat", "reads")], "bank_rerolls": [("reroll", "reads"), ("reroll", "sets")],
     "fill_hopper": [("hopper", "sets")], "hopper_plate": [("hopper", "reads"), ("braced", "sets")],
 }
-TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_shield_granted": "shield_granted", "on_kill": "kill", "on_foe_killed": "kill",
+TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_shield_granted": "shield_granted", "on_kill": "kill", "on_round_kill": "kill", "on_foe_killed": "kill",
             "on_foe_status": "paradox_feed", "on_stack": None, "on_attack": None, "static": None, "on_round_start": None,
             "on_injury": None, "on_skirmish_start": None, "on_shield_gain": None, "on_damage": None}
 CONDITIONS = {"target_status": None, "attacker_status": None, "target_rank": "rank", "nth_shot": None,

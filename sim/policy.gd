@@ -50,7 +50,7 @@ const BANK_WEIGHT := 0.2         # shield stood up or heat room made for a later
 const ABLATE_WEIGHT := 0.5       # Ablating's stacks on a foe pay out over the rounds to come
 const ABLATED_WEIGHT := 0.5      # a point Ablating will take off a machine on a later turn, the shield first: between a banked point of shield and a point of hull
 const OPTION_GUARD := 64         # spends in one round, at most: rapid rerolls the die and acts again
-const FLARE_ROUNDS := 1.0        # rounds of damage a stack its own kill grants is worth (the Ammit's flare): it lands after the swing, so it pays from the next round at half, about once itself
+const FLARE_ROUNDS := 1.0        # rounds of damage a stack its own kill grants is worth (the Ammit's flare): it lands as the round ends, whole through its next turn and halving after; a placeholder
 const HOLD_ROUNDS := 1.0         # rounds of damage a stack held whole into the next round is worth (the Quintessence Tap's hold): whole next round and halving after, less the round's wait
 const ESSENCE_WEIGHT := 0.3         # a count spent for a buff (1 Essence the Tap consumes), in foe hit points: a fifth of a flare for the rest of the battle, which the bot's one fight cannot see; a placeholder
 const SHOCK_WEIGHT := 0.6        # a Shock cashed later (a mine's, a hull's): the doubled blow, as a share of the team's average; a blow's own reads the hitter in hand (shock_cash)
@@ -701,10 +701,12 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	# The Mines (the Lammergeier's Reverberant Payload, 9 November): the spend's own, a mined foe's
 	# blast on its kill, the gather and the detonation (mine_worth).
 	score += mine_worth(sk, ms, f, target, p_kill)
-	# What the machine's passives grant it on its own kill (the Ammit's flare, 12 November: a
-	# stack of Empowered for every five Essence it holds): each stack on the blows its die deals
-	# from the next round, a strike a point (flare_gain), at the odds of the kill.
-	var flare := Effects.would_stack(ms.unit, "on_kill", "overcharged") if f.is_weapon() else 0
+	# What the machine's passives grant it for a kill of its own (the Ammit's flare, a stack of
+	# Empowered for every five Essence it holds; as the round ends since 16 November, once a round
+	# however many attacks kill, so a machine that has killed this round has its flare coming
+	# already): each stack on the blows its die deals in its next turn, a strike a point
+	# (flare_gain), at the odds of the kill.
+	var flare := Effects.would_stack(ms.unit, "on_round_kill", "overcharged") if f.is_weapon() and not ms.killed_round else 0
 	if flare > 0:
 		score += p_kill * flare_gain(ms, "overcharged", flare) * FLARE_ROUNDS
 	if f.kill_rerolls > 0:
@@ -1065,6 +1067,8 @@ func brittle_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, foe: Foe, left
 ## What a volatile entry costs its owner in the score: the hull it bites per use, and the
 ## death it brings when the round's end would already leave nothing to bite.
 static func volatile_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: float = 1.0) -> float:
+	if Skirmish.is_phased(ms):
+		return 0.0   # nothing damages a Phased machine, the hull its own spend costs included (Skirmish.pending_volatile)
 	var bite := Skirmish.spend_bite(ms.unit, f)
 	if bite <= 0:
 		return 0.0

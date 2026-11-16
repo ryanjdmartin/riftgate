@@ -454,7 +454,8 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 	for ms in sk.mechs:
 		mechs.append({"unit": ms.unit.id, "heat": ms.heat, "heat_max": ms.heat_max, "face_index": ms.face_index,
 			"locked": ms.locked, "assigned": ms.assigned, "free_rerolls": ms.free_rerolls, "ammo": ms.ammo, "ammo_max": ms.ammo_max,
-			"hot_entry": ms.hot_entry, "spends": ms.spends, "rebooting": ms.rebooting, "shield_broken": ms.shield_broken, "overheated": ms.overheated})
+			"hot_entry": ms.hot_entry, "spends": ms.spends, "rebooting": ms.rebooting, "shield_broken": ms.shield_broken, "overheated": ms.overheated,
+			"killed_round": ms.killed_round})
 	var packs: Array = []
 	for sq in sk.packs:
 		packs.append(sq.id)
@@ -622,6 +623,7 @@ static func _skirmish_into(sk: Skirmish, d: Dictionary, lookup: Callable) -> voi
 		ms.rebooting = bool(md.get("rebooting", false))
 		ms.shield_broken = bool(md.get("shield_broken", false))
 		ms.overheated = bool(md.get("overheated", false))
+		ms.killed_round = bool(md.get("killed_round", false))   # an attack of its own killed this round: its passive's flare as the round ends (16 November)
 	sk.packs.clear()
 	for pid in d.get("packs", []):
 		var sq: Unit = lookup.call(int(pid))

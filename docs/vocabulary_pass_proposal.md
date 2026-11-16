@@ -1667,11 +1667,217 @@ His words, 16 November, on those reads:
 | A Mine carries no web | "we don't need to worry about it" | Nothing to build: the Mine takes what its own machine's spend lays, and no care is added for another machine's marks |
 | A machine's Armoured still ended at the round's end | "until "start of its next turn"" | It goes as the next round opens, before the foes announce, from a buff, a brace or the hopper alike. No blow lands between the two moments, so no number moved |
 
-**Two questions the answers leave**, both in the bible's section 12. Whether the minimum of
-2 reaches our own six sources of a status that halves: three pieces that lay Brittle 1, two
-of them by his own numbers, and three grants of Empowered that are a stack an event. And
-whether a Phased machine still pays a Volatile bite, a price a piece prints and no blow.
+**Two questions the answers left**, which his ninth round settled (section 22). Whether the
+minimum of 2 reaches our own six sources of a status that halves: three pieces that lay
+Brittle 1, two of them by his own numbers, and three grants of Empowered that are a stack an
+event. And whether a Phased machine still pays a Volatile bite, a price a piece prints and no
+blow.
 
 **The wolves.** The howl at 2 reads a third dearer in hull on the tier-one pack, with no
 fight lost (`docs/measurements.md`). His tweak for a move several foes may roll at once,
 the first laying 2 and the rest 1, is not built.
+
+## 22. His ninth round, 16 November: the clocks
+
+His words, on the eighth round's build and its two questions:
+
+> Understood on phased, all good.
+>
+> Everything ticks during phased. It doesn't take damage but it's a way of waiting out a
+> debuff. That's why my clause of the self-cleanse and self-purge is our way out if it's
+> broken. Swallowed it's out of play so everything should pause.
+>
+> Regen, I think we either keep each stack with its own duration, or have them decay as a
+> combined stack. The latter is a little more dangerous but easier to understand.
+>
+> Ammit - understood.
+>
+> The minimum 2 is different for the player since they can sequence. So I wouldn't make it a
+> blanket rule. One thing I would change based on your observations, though, is when some of
+> these decay. Empowered should decay at the end of turn, clearly, not end of round. Can you
+> make an "end" table for buffs and debuffs so we can look for inconsistencies? It would be
+> nice to standardize as much as we can.
+>
+> Ammit specifically, passive change: At the start of the skirmish, or at the end of a round
+> where the Ammit killed at least one enemy, the Essences Flare, granting 1 Empowered per 5
+> Essences it holds.
+>
+> Good point about phased and volatile. I think we block the damage as a feature, and see how
+> bad it is once we have real hull cost pieces that matter.
+
+**What each settles.** Built the same day.
+
+| The read | His answer | What was built |
+|---|---|---|
+| A Phased machine's Ablating waited, no point and no fade | "Everything ticks during phased" | Every clock runs on a Phased machine and nothing damages it: its Ablating fades a stack and takes no point, its Scorched and Sapped go, its Empowered and Brittle halve, its Regenerating pays |
+| A Swallowed machine's clocks ran as a Phased one's | "it's out of play so everything should pause" | Nothing it carries fades, halves, pays or runs out, and it neither cools, regenerates nor burns. Every timed status on it, a dark entry's rounds among them, moves a round later for each round's end it sits out, so the rounds it sat out never came for it. Only the swallow's own rounds run |
+| Regenerating's grants add into one stack | "either ... or ...; the latter is a little more dangerous but easier to understand" | The combined stack stands, as built on 15 November. Each grant on a clock of its own is his other form, and a small change if play asks for it |
+| Whether the minimum of 2 reaches our six sources | "I wouldn't make it a blanket rule" | No floor on our pieces. None moved |
+| A machine's Empowered halved at the round's end | "Empowered should decay at the end of turn, clearly, not end of round" | A machine's halves at END TURN. A foe's halves as the foes' turn ends, which is the round's end, so it did not move. Essence Flare holds both |
+| The Ammit's flare came after each attack that killed | His passive, above | A trigger of its own, the end of a round it killed in: once a round, as the round ends, after the enemy's turn. The passive's second sentence is his, word for word |
+| A Phased machine paid a Volatile bite | "I think we block the damage as a feature" | No hull cost, no passive's hull price on a spend and no corrupted entry's bite while Phased |
+
+**What follows from his words**, built and named, none of it a question.
+
+- A stack of Empowered a machine gains in the enemy's turn is whole for its next turn. Two of
+  ours gain there: the Grievance Reliquary's, on a hull hit, and the Ammit's flare, as the
+  round ends.
+- The Ammit with a kill every round settles near twice its flare on its swing, where the
+  flare at the kill settled it near one: the old flare landed after the swing and halved
+  before the next. A round with no kill halves it, as before.
+- What reads a machine's Empowered after END TURN meets it halved: a foe's Purge, and a
+  passed turn's release.
+- Essence Flare is read twice in its round: at END TURN for the machines and as the round
+  ends for the foes.
+- A Phased round is a free one for a hull-cost piece. His exit is the pieces themselves:
+  "see how bad it is once we have real hull cost pieces that matter".
+- A machine let go as its swallow's rounds run out is back before that round's end is read,
+  so it gets the round's end it was owed: what was the round's ends, its Brittle halves, a
+  kill of the round it was taken in flares, a wait for Phased lands. Let go sooner, by its
+  swallower's fall, it goes on from where it stood.
+- A Swallowed Ammit's Essence Flare holds nothing while it is out, and holds the round it
+  is back for.
+
+**Where his words give no answer on the swallow**, a session's reads, each cheap to turn.
+An event of its fight still reaches a Swallowed machine: a foe felled banks an Ammit's
+Essence, since the Ammit is in the fight and a kill is no clock. And a reboot it had begun
+before it was taken recovers as the next round opens, the second half of a turn already
+given.
+- The kill trigger of 12 November stays in the engine for the Kite's shield.
+
+## 23. When everything ends: the table he asked for
+
+Every buff and debuff by the clock it ends on, read off the engine. A round has four moments
+a status can end at: the round opens, END TURN, a foe's own action, and the round's end. "Its
+side's turn" is the player's turn for a machine and the enemy's turn for a foe, so a
+machine's turn begins as the round opens and ends at END TURN, and a foe's begins after END
+TURN and ends as the round does.
+
+**A. Until its side's next turn begins**
+
+| Status | On | Kind | Laid | Ends |
+|---|---|---|---|---|
+| Armoured | Both | Buff | Its own turn: a brace or a buff, the hopper's as the round opens | As its side's next turn begins: a machine's as the round opens, a foe's after END TURN |
+
+**B. The round's end**
+
+| Status | On | Kind | Laid | Ends |
+|---|---|---|---|---|
+| Barrier | Machine | Buff | The player's turn | The first blow a foe lands on it, or the round's end |
+| Ward | Machine | Buff | The player's turn | The round's end |
+| Essence Flare | Machine | Buff | The player's turn | The round's end |
+| Phasing, the wait | Machine | Buff | The player's turn | The round's end, when a machine that stands is Phased |
+| Phased | Machine | Buff | The round's end | The next round's end |
+| Pinned, Seared | Foe | Debuff | The player's turn | The round's end |
+| Exposed | Foe | Debuff | The player's turn | The next round's end |
+| Numbed | Foe | Buff | The round's end, on recovering from a stun | A stack as each round ends |
+
+**C. The end of the player's turn**
+
+| Status | On | Kind | Laid | Ends |
+|---|---|---|---|---|
+| Barrier | Foe | Buff | The enemy's turn | The first weapon blow on it, or END TURN of the player's next turn |
+| Ward | Foe | Buff | The enemy's turn | END TURN of the player's next turn |
+| Scorched | Machine | Debuff | The enemy's turn | END TURN, every stack |
+| Sapped | Machine | Debuff | The enemy's turn | END TURN, every stack |
+| Jammed | Machine | Debuff | The enemy's turn | The next round's end in the engine; in play END TURN, since the die is not read after it |
+
+**D. A foe's own next action**
+
+| Status | On | Kind | Laid | Ends |
+|---|---|---|---|---|
+| Sapped | Foe | Debuff | The player's turn | After its next action |
+| Suppressed | Foe | Debuff | The player's turn | One action: this round's, or the next round's if it has acted |
+| Web Bomb | Foe | Debuff | The player's turn | The end of its action, when it bursts |
+
+**E. Halving, rounded down, until gone**
+
+| Status | On | Kind | Laid | Halves |
+|---|---|---|---|---|
+| Empowered | Machine | Buff | Any time | At END TURN, its side's turn over |
+| Empowered | Foe | Buff | The enemy's turn, a rally | At the round's end, its side's turn over |
+| Brittle | Machine | Debuff | The enemy's turn | At the round's end |
+| Brittle | Foe | Debuff | The player's turn | At the round's end; a pin holds it a round |
+
+**F. A stack each time its turn comes**
+
+| Status | On | Kind | Laid | Ticks |
+|---|---|---|---|---|
+| Ablating | Foe | Debuff | The player's turn | At its action: a point a stack, then a stack fades; a sear holds it a round |
+| Vitriol | Foe | Debuff | The player's turn | At its action, after Ablating |
+| Regenerating | Foe | Buff | The enemy's turn | At its action, after both: a point a stack, then a stack fades |
+| Ablating | Machine | Debuff | The enemy's turn | At END TURN: a point a stack, then a stack fades |
+| Regenerating | Machine | Buff | The player's turn | As the round opens: a point a stack, then a stack fades |
+
+**G. Until spent**
+
+| Status | On | Kind | Spent by |
+|---|---|---|---|
+| Primed, Charged, Supercooled | Machine | Buff | A stack a weapon fired |
+| Primed | Foe | Buff | A stack a move that strikes |
+| Spun Up | Machine | Buff | Whole, by the next weapon |
+| Juggernaut Drive | Machine | Buff | Its next weapon attack |
+| Shocked | Foe | Debuff | The next weapon's strike aimed at it |
+| Cryo | Foe | Debuff | The next weapon's hit |
+| Undying | Foe | Buff | Its first fall |
+| Mine | Foe | Debuff | The foe's fall, or its detonation |
+| Paradox | Foe | Debuff | Its count, when it is Suppressed |
+
+**H. The fight, or a timer of its own**
+
+| Status | On | Kind | Ends |
+|---|---|---|---|
+| Corrupted | Machine | Debuff | The fight |
+| Ricochet | Machine | Buff | The fight; hull damage halves it |
+| Enraged | Foe | Buff | The fight |
+| Swallowed | Machine | Debuff | Its rounds, its swallower's fall, or a quarter of the swallower's HP |
+| Golden | Foe | Ability | Its rounds, a quarter of its HP, or a Suppress |
+| A cooldown | Machine | A dark entry | Its rounds |
+| Overheated, Broken, Rebooting | Machine | The reboot's states | The heat back under the maximum; the reboot; the next round's opening |
+
+On a Phased machine every clock above runs and nothing damages it. On a Swallowed machine
+none runs but the swallow's own.
+
+### What the table shows
+
+**1. A, B and C hold one moment under three names.** A machine's Armoured ends as the round
+opens and its Barrier and Ward as the round before it ends. Nothing happens between the two.
+A foe's Armoured ends after END TURN and its Barrier and Ward at END TURN: again one moment.
+The standard is his phrase for Armoured, on both sides: **until its next turn begins**, for
+Armoured, Barrier and Ward. Nothing changes in play, and the three become one clock in the
+engine.
+
+**2. Halving wants one sentence: it halves as the turn it works in ends.** Empowered works
+in its carrier's own turn and now halves there. Brittle works in the other side's turn: a
+machine's is read by the foes, and halves as their turn ends, which fits. A foe's is read by
+the player and still waits for the round's end. Moving it to END TURN changes one case: Brittle
+laid on a foe in the enemy's turn, by a Mine's blast as a mined foe falls to its Ablating,
+would stand whole for the player's next turn, where today it is half before any machine can
+use it. That is the fault he fixed for Empowered.
+
+**3. A machine's stacks tick at two moments.** Its Ablating bites at END TURN and its
+Regenerating pays as the round opens; a foe's both tick at its action, Ablating first. One
+moment a side would put Regenerating at END TURN, after Ablating. It is not free: the shield
+would arrive before the blows of the round it was bought in, a round sooner than today, and
+the one piece that grants it draws fire as it does (the Storm Petrel's St. Elmo's
+Regenerator, a Lure). Today a shield the lured blows break takes none of its regen at all.
+Left as it is, the rule to say is that harm ticks as the turn ends, with a turn to answer
+it, and help as the turn opens.
+
+**4. A tax on its next turn says three things.** On a machine, Scorched lasts "until the end
+of the player's turn", Sapped "until after its next turn" and Jammed "through its next turn".
+On a foe, Sapped lasts "after its next action" and Suppressed "one action". All five are
+**until its next turn ends**, a foe's turn being its own action. Nothing changes in play;
+Jammed's engine end would move to END TURN to match.
+
+**5. Two smaller ones.** Numbed loses a stack as the round ends where every other stack on a
+foe ticks at its action; either reads the same in the player's turn. Exposed and Phased both
+say "the next round's end" and cover different lengths: Exposed the rest of the player's turn
+and the whole of the next, Phased one round. Each is right for its own rule.
+
+**The standard, if he takes all four.** Five clocks would cover every timed status: until
+its next turn begins (defence), until its next turn ends (a tax on its own turn), halves as
+the turn it works in ends, a stack each time its turn comes, and until spent. What is left
+is the round's own rules (Phased and its wait, the pins, Essence Flare, Exposed), the fight,
+and timers that count rounds. Claude's lean: take 1, 2 and 4, which cost nothing in play but
+the one Mine case, and rule on 3 with the Storm Petrel's piece in hand.
