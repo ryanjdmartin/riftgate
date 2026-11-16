@@ -121,8 +121,9 @@ func test_a_shot_fires_its_loads_and_their_plate_goes_with_them() -> void:
 ## The plate is Armoured, granted by the hopper (Ryan, 10 November: "The buff he gets from it is
 ## Armoured, not an ability. Its purgeable, but returns at the start of his turn since its granted
 ## by the funnel bar"): a Purge strips it and leaves the loads (a store's: his row on stores, 21
-## October); a load gained after it brings back its own point and no more; it goes at the round's
-## end as every machine's Armoured does, and the hopper grants it whole as the next round opens.
+## October); a load gained after it brings back its own point and no more; it goes as the next
+## round opens, as every machine's Armoured does (16 November: its end the start of its side's
+## next turn), and the hopper grants it whole then.
 func test_a_purge_strips_the_plate_and_the_next_round_brings_it_back() -> void:
 	var u := _mech("Badger", Die.single(Face.attack(3, L)))
 	u.grant_passive(HOPPER)
@@ -135,9 +136,9 @@ func test_a_purge_strips_the_plate_and_the_next_round_brings_it_back() -> void:
 	assert_true(sk.assign(0, sk.front[0]), "a gun spent: a fourth load")
 	assert_eq([Effects.stacks_of(u, "hopper"), Effects.stacks_of(u, "braced")], [4, 1], "the new load's own point, never the purged three")
 	sk.end_round()
-	assert_eq([Effects.stacks_of(u, "hopper"), Effects.stacks_of(u, "braced")], [4, 0], "the round's end takes the Armoured, as any machine's, and leaves the loads")
+	assert_eq([Effects.stacks_of(u, "hopper"), Effects.stacks_of(u, "braced")], [4, 1], "the round's end leaves the Armoured standing, as any machine's, and the loads")
 	sk.start_round()
-	assert_eq([Effects.stacks_of(u, "braced"), u.armour], [4, 5], "the hopper grants it whole as the round opens")
+	assert_eq([Effects.stacks_of(u, "braced"), u.armour], [4, 5], "the round's opening takes it, and the hopper grants it whole")
 	assert_true("\n".join(sk.log).contains("hopper plates it: Armoured ×4"), "the log says so")
 	sk.end_round()
 	sk.start_round()
@@ -170,7 +171,7 @@ func test_a_saved_ore_plate_loads_as_the_hoppers_armoured() -> void:
 	var loaded: Array = SaveGame._modifiers_from([SaveGame._modifier_dict(old)])
 	assert_eq(loaded.size(), 1, "one modifier")
 	var m: Effects.Modifier = loaded[0]
-	assert_eq([m.id, m.stacks, m.source, m.decay], ["braced", 2, Effects.HOPPER_PLATE, Effects.DECAY_ROUND], "Armoured, the hopper's grant, two stacks, gone at the round's end")
+	assert_eq([m.id, m.stacks, m.source, m.decay], ["braced", 2, Effects.HOPPER_PLATE, Effects.DECAY_ROUND], "Armoured, the hopper's grant, two stacks, gone as its side's next turn begins")
 	assert_true(Effects.purgeable(m), "and a Purge reaches it")
 
 

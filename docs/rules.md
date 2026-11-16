@@ -77,7 +77,7 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   and its tier-two chassis stock them. The basic kit is six pieces, each a maker's: four
   guns, three dealing 3 for 4 heat (the Twin Autoguns and the Rivet Gun, Direct; the Ankle Mortar, Indirect) and the Laser
   Carbine, Direct and warm, 4 for 5, and two defensive pieces, each spent on itself or an ally (the
-  Halo Projector, a Barrier, cooldown 1; the Shoring Jack, Armoured 2 for the round).
+  Halo Projector, a Barrier, cooldown 1; the Shoring Jack, Armoured 2 until its side's next turn).
 - **No recovery on the die**: a component is a weapon or equipment. No stock die holds a
   shield or a vent and no slottable one is dealt: no chassis regains shield or cools by
   itself, both gauges come back by a reboot (The reboot, below), and the decision heat leaves
@@ -113,7 +113,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   names none stands empty.
 
 ### The round
-1. Rerolls reset to two (less any a foe drained). A machine that gave its last turn to a
+1. Rerolls reset to two (less any a foe drained). The player's side's turn begins: a
+   machine's Armoured goes, every stack. A machine that gave its last turn to a
    reboot recovers: its heat nothing, its shield whole. Every machine sheds what cooling it is
    granted, then regains what shield regen it is granted, up to its maximum (a module's, a
    passive's or a status's: a chassis has neither of its own; a shield gain like any; a passive that adds
@@ -138,7 +139,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
    past armour, and loses a stack, and its Scorched goes;
    then heat over a machine's maximum burns hull one for one and stays on the gauge, burning
    again every turn it stands there; the first such turn since the machine's last reboot is
-   its overheat, and its shield breaks. A rebooting machine neither burns nor overheats. A
+   its overheat, and its shield breaks. A rebooting machine neither burns nor overheats, nor
+   one out of reach (Phased, Swallowed), whose heat stays for the turn it is back. A
    machine the tick or the burn wrecks is lost on its own turn, before the enemy acts.
 5. The enemy's turn (below), then a passed turn's release (the Whip Scorpion's, Passives
    below). Round-timed effects end.
@@ -663,19 +665,21 @@ On a machine:
   codex lists it among what the battle keeps.
 - **Armoured** (buff, on either side): armour +1 a stack, every stack at once, whatever
   granted it, so the count is the armour, until its side's next turn begins: a machine's
-  stands through the enemy's turn and goes at the round's end, and a foe's (from its brace or
-  another's) stands through the player's turn and goes as the foes' next turn opens, before the
-  first of them acts.
+  (from a buff, a brace or the hopper) stands through the enemy's turn and goes as the next
+  round opens, before the foes announce, and a foe's (from its brace or another's) stands
+  through the player's turn and goes as the foes' next turn opens, before the first of them
+  acts. It takes no rounds: no grant holds it longer.
 - **Phased** (buff): cannot be damaged or targeted by anything until the end of the round, and
   it acts. Granted as the round ends: a source lays the wait for it (Phasing, a buff, a chip on
   a dashed edge), on a machine that has acted or not, and as the enemy's turn ends every machine
   that waits and still stands is Phased through the next round's end; one wrecked first never
   phases, and a foe's Purge takes the wait as any buff. While it stands no foe picks the
   machine, a blow or a special at every machine passes it by, no ally may spend on it, and its
-  Ablating waits, taking nothing and losing no stack until it is back in reach. Its own acts
-  are its own: it spends its die on a foe or on itself, a Volatile bite and the burn past its
-  maximum land as on any machine, and it may reboot, bare where nothing reaches it. Its Lure
-  turns no pick. A second grant while it stands carries it through the round after.
+  Ablating waits, taking nothing and losing no stack until it is back in reach. It spends
+  its die on a foe or on itself, and it may reboot, bare where nothing reaches it. Its own
+  heat does not burn it either: what it carries past its maximum stays, more if it fires
+  again, and burns the turn it is back in reach, the first such turn its overheat. The price
+  a piece of its own prints is still paid (a Volatile bite). Its Lure turns no pick. A second grant while it stands carries it through the round after.
 - **Swallowed** (debuff, from a foe's swallow): out of the fight (it
   cannot act, take damage or be targeted, a foe's intent on it re-picks, and a blow or a special
   at every machine passes it by; its cooling is its own, and it neither burns nor overheats while it is out, since it cannot reboot, its Ablating waiting as a Phased machine's does) for the swallow's
@@ -773,8 +777,9 @@ On a machine:
   grants the machine Armoured up to that worth, and between rounds the grant follows the loads
   by the change in their worth alone (a load that makes a pair adds a stack, loads fired take
   their stacks back, off the hopper's own grant and no other). It is a buff like any Armoured:
-  it goes at the round's end, and a Purge strips it and leaves the loads, so what a Purge took
-  comes back at the machine's next turn and no sooner.
+  it goes as the next round opens, the hopper granting it again whole, and a Purge strips it
+  and leaves the loads, so what a Purge took comes back at the machine's next turn and no
+  sooner.
 - **Sealed** (Ability, the Polar Bear's form): equipment it spends on itself (a buff dropped on
   itself) seals it: armour +3, its own cooling stopped, 3 heat more at the end of each turn
   before the overheat, and its Cryo Flinger gains Spread (one foe open, its rank's three sealed);
@@ -861,7 +866,7 @@ On a foe:
   does: no move spends it, a special or a Suppress takes none of it, and a
   countdown still gathering carries what stands to the blow it lands. A foe acting after the
   rallier hits harder this turn; one that has acted, and the rallier itself, carries half to the
-  next round, so a rally of 1 leaves its rallier nothing; each rally's grant adds. An intent counts the rallies on their way to a blow this round, those of the ralliers acting
+  next round, so a rally says 2 at the least (below); each rally's grant adds. An intent counts the rallies on their way to a blow this round, those of the ralliers acting
   before it, each from a rallier alive, not Suppressed and not about to die to its Ablating, so it
   drops the moment the rallier is killed, Suppressed or Disrupted; a countdown still gathering
   shows what it would deal now, at the fight as it stands, never a rally of a round before it
@@ -904,8 +909,8 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   off. A foe's armour comes off every blow on it the same way, never off Ablating, Vitriol or a
   weapon that ignores armour. Base armour is set by role (a tank 2, a heavy worker 1, the rest 0; the
   Polar Bear, a tank in its sealed form, 1 open and 4 sealed), and
-  Armoured adds to it (a brace: a buff) until the
-  round's end, the Polar Bear's seal until a weapon opens it.
+  Armoured adds to it (a brace: a buff) until its
+  side's next turn begins, the Polar Bear's seal until a weapon opens it.
   Damage-taken effects apply before armour.
 - The shield is the fight's, as the heat is: full as every fight opens, and nothing returns on
   the map. In a fight nothing mends it by itself: a reboot brings it back whole (The reboot,
@@ -1078,7 +1083,9 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   self-destruct (the striker dies after, for good), every machine
   (each strike lands on every live machine in turn, its number what each takes; no aim or
   Lure moves it). Scorch, ablate, corrupt and brittle each say their stacks a blow, as the player's
-  Ablate does (Scorch 2: two).
+  Ablate does (Scorch 2: two). What a foe lays that halves as each round ends says 2 at the
+  least, a blow's Brittle and a rally's Empowered: one stack is gone before its side's next
+  turn. The validator holds a foe's moves to it.
 - **A special** replaces the blow: brace (Armoured, its value in stacks, an armour point each, until the
   foes' next turn opens), recover (regains its value, itself), heal (the most hurt of its own, itself included, regains its
   value), brace all (the same on every foe in the fight, on the same clock), revive once,

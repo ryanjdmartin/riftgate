@@ -475,9 +475,10 @@ static func is_swallowed(ms: MechState) -> bool:
 
 
 ## Is the machine out of reach: Phased or Swallowed? Nothing reaches it, neither side may target
-## it (it may spend on itself), and it takes no blow and no tick. A Swallowed machine is out of
-## the fight too, its die spent; a Phased one acts, and its own acts' costs are its own (a
-## Volatile bite, the burn past its maximum, a reboot's bare turn).
+## it (it may spend on itself), and nothing damages it: no blow, no tick and no burn, the heat
+## past its maximum staying for the turn it is back. A Swallowed machine is out of the fight
+## too, its die spent; a Phased one acts and may reboot, and the price a piece of its own
+## prints is still paid (a Volatile bite).
 static func is_out(ms: MechState) -> bool:
 	return is_phased(ms) or is_swallowed(ms)
 
@@ -1136,8 +1137,8 @@ func forecast(ms: MechState, extra_shield: int = 0) -> Dictionary:
 	shield = int(walk["shield"])
 	var heat_end := ms.heat + seal_heat(ms)
 	var over := maxi(0, heat_end - ms.heat_max)
-	if ms.rebooting:
-		over = 0   # a machine giving its turn to a reboot neither burns nor overheats
+	if ms.rebooting or is_out(ms):
+		over = 0   # a machine giving its turn to a reboot neither burns nor overheats, nor one out of reach (_burn_stacks)
 	hull -= over * overheat_scale
 	# The gauge does not settle: what stands past the maximum stays, and burns again.
 	var heat_after := heat_end + Effects.heat_per_blow(ms.unit) * blows
@@ -1426,6 +1427,13 @@ func start_round() -> void:
 		log.append("the roar costs the team %d reroll%s" % [reroll_debt, "" if reroll_debt == 1 else "s"])
 	reroll_debt = 0
 	last_roll.clear()
+	# The player's side's turn opens: what lasts until then goes, every stack at once (a
+	# machine's Armoured, from a buff, a brace or the hopper; Ryan, 16 November: "Armoured we
+	# should change so its end is symmetrical on both sides. Probably means until "start of its
+	# next turn.""), as a foe's goes when the foes' turn opens. Before the hopper plates again
+	# and before the foes announce, so their blows are drawn against the armour that will stand.
+	for ms in mechs:
+		Effects.turn_opens(ms.unit)
 	# The turn begins with what cooling a machine is granted (a module's, a passive's, a
 	# status's: a chassis has none of its own since the reboot), one log line for all.
 	var cooled: Array[String] = []
@@ -2360,8 +2368,8 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 		Effects.grant_for_rounds(ms.unit, flare, "self", round)
 		log.append("%s gains %s: no %s decays this round" % [ms.unit.display_name, str(flare["name"]), str(Effects.STATUS.get(f.holds_all, {}).get("name", f.holds_all))])
 	# The brace (Ryan, 12 October; the Breaching Plow's in place of the Glacis): spending the
-	# entry Braces its owner until the round's end, so the plate stands behind the charge
-	# through the enemy's turn and is gone when the next round opens.
+	# entry Armours its owner until its side's next turn begins, so the plate stands behind the
+	# charge through the enemy's turn and goes as the next round opens.
 	if f.braces > 0 and ms.alive():
 		var bm := Effects.grant_buff(ms.unit, "braced", f.braces, "brace:" + f.component, round)
 		if bm != null:
@@ -5124,12 +5132,14 @@ func _burn_overheated() -> void:
 ## stays, and every point of it burns hull, every turn it stands there. The first such turn since
 ## its last reboot is its overheat: its shield breaks, and what an overheat sets off fires, once
 ## between reboots. A machine giving this turn to a reboot is shut down: it neither burns nor
-## overheats. Nor does a Swallowed one: it cannot reboot, so the burn would ask it for a choice
-## it has not got, and it burns again the turn it is back. A Phased machine has the choice (it
-## acts, and its reboot is the safe one), so its heat burns as any machine's: the burn is its
-## own act's cost, and no blow.
+## overheats. Nor does one out of reach: a Swallowed machine cannot reboot, so the burn would
+## ask it for a choice it has not got; and a Phased one is damaged by nothing, its own heat
+## included (Ryan, 16 November: "it shouldn't take damage from overheating since we don't need
+## the exception. It does accumulate the stacks, though, which it will feel the round after").
+## What either carries past its maximum stays and burns the turn it is back in reach, the first
+## such turn its overheat.
 func _burn_stacks(ms: MechState, over: int) -> void:
-	if ms.rebooting or is_swallowed(ms):
+	if ms.rebooting or is_out(ms):
 		return
 	var burn := over * overheat_scale
 	var culprit := ms.hot_entry

@@ -31,7 +31,7 @@
       "actions": [
         { "id": "stab", "name": "Stab", "kind": "attack", "weight": 2, "text": "A knife from the crowd for {damage}.", "status": "implemented" },
         { "id": "shield_wall", "name": "Shield Wall", "kind": "defend", "effect": "brace", "value": 1, "weight": 1, "text": "Raises a scrap shield: armour +{value} until its next turn.", "status": "implemented" },
-        { "id": "warcry", "name": "Warcry", "kind": "buff", "effect": "rally", "value": 1, "weight": 1, "when": "others_on_field", "text": "Every foe on the field hits {value} harder, itself too, fading by half each round.", "status": "implemented" }
+        { "id": "warcry", "name": "Warcry", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Every foe on the field hits {value} harder, itself too, fading by half each round.", "status": "implemented" }
       ],
       "flavour": "They have ranks. We do not know how they decide them. We suspect volume."
     },
@@ -42,7 +42,7 @@
       "hp": 7, "attack": 4, "rank": "front", "movespeed": 4, "role": "hunter",
       "actions": [
         { "id": "bite", "name": "Bite", "kind": "attack", "weight": 2, "text": "Teeth in the hull for {damage}.", "status": "implemented" },
-        { "id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 1, "weight": 1, "when": "others_on_field", "text": "Every foe on the field hits {value} harder, itself too, fading by half each round.", "status": "implemented" }
+        { "id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Every foe on the field hits {value} harder, itself too, fading by half each round.", "status": "implemented" }
       ],
       "flavour": "You hear them before the sensors do."
     },
@@ -53,7 +53,7 @@
       "hp": 4, "attack": 4, "rank": "front", "movespeed": 4, "role": "hunter",
       "actions": [
         { "id": "bite", "name": "Bite", "kind": "attack", "weight": 2, "text": "Teeth in the hull for {damage}.", "status": "implemented" },
-        { "id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 1, "weight": 1, "when": "others_on_field", "text": "Every foe on the field hits {value} harder, itself too, fading by half each round.", "status": "implemented" }
+        { "id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Every foe on the field hits {value} harder, itself too, fading by half each round.", "status": "implemented" }
       ],
       "flavour": "The wolves learned which of us limps."
     },

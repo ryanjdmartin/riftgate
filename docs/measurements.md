@@ -10120,6 +10120,27 @@ floor. The foes' numbers are still the ones sized against a shield that refilled
 eleven slots, a blow that passed it: the defence side's pass sizes them, and this is what it
 starts from.
 
+**The same day, after his eighth round.** Three rulings landed on that game: what a foe lays
+that halves each round it lays 2 of at the least (the Wolf's and the Warg's Howl and the
+Goblin Captain's Warcry, 1 until then), a machine's Armoured ends as its side's next turn
+begins, and a Phased machine does not burn. Of tier one's fights only the wolves' move by
+content, so the flankers, the hunters and the elites were read again, the same squads and
+seeds:
+
+| Fight | Howl at 1 | Howl at 2 |
+|---|---|---|
+| The wolf pack, four wolves, two machines | 97% won, 5.4 rounds, 8.9%, 0.07 wrecks, 1.02 reboots | 100%, 5.4, 12.3%, no wreck, 1.13 |
+| A hunter's pack, the mean of the two | 98%, 4.5, 9.4% | 100%, 4.5, 11.1% |
+| The shaman's warband, two wolves in it | 4.6 rounds, 17.7% | 4.7, 16.0% |
+| An elite, the mean of eleven | 5.7 rounds, 11.2% | 5.7, 11.1% |
+
+The wolf pack costs a third more hull at a howl of 2 and loses no fight in 30: a direction,
+and inside the band of tier one's dearer fights. The warband's move is a cell's noise. The
+flankers and the antlion trio read the same to the decimal (4.5 rounds and 5.1%; 3.7 and
+9.9%), so the two rule changes moved no fight here: no blow lands between a round's end and
+the next one's opening, and no piece of the six grants Phased. Not read: the Warg's pack at
+tier two and the Captain's formations at tier three, where the same change lands.
+
 ## 16 November, the runner's player that musters: the second battle whole under both rules, and the campaign
 
 Built on Ryan's word ("go ahead with all 5", of the to-do's engine line): `BattleBot.Rule.MUSTER`
