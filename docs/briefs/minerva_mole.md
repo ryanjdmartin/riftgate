@@ -332,10 +332,65 @@ Drill. Claude's mapping, on the locked pieces' branch shape (two directions, two
   sponge: the recovery sized as it burrows, a third of what is missing a round for three
   rounds, so blows taken while under are not healed.
 
+**His answers, the same day** (where the read above had him wrong, his word stands):
+
+> -Yes, burrowed clears broken and overheated at the start of each turn while burrowed, just like
+> reboot would. Its mechanically exactly like using Reboot every turn, it just doesn't explode
+> its own shield when it does, and it doesn't automatically return to combat like reboot does.
+> -If a machine uses Reboot, and it already has overheated stacks, it should take that damage.
+> Heat is cleared when the shield comes back. Otherwise the heat penalty is probably not hard
+> enough. I thought that's how it was built.
+> -We can cap it at 3, sure.
+> -Drill should be indirect always, that was a mistake on my part. Makes sense cause it tunnels.
+>
+> Theoretically, momentum is always lost. You drill a target, one of the stacks gets consumed on
+> that turn. If you return to burrowed next turn, you'd get one back the start of turn after. It
+> doesn't keep climbing. My thought behind this, is that feathering burrow-unburrow is probably
+> way more engaging against swarms, and the first round is the most dangerous, so opening with a
+> two-round Burrow gets you two to keep applying across the pack.
+>
+> My main concern with this design, is that it's SLOW. 3 turns is a LONG time. Otherwise I think
+> it is very cool.
+
+What they settle: a turn burrowed is a reboot's recovery of the two states, Broken and
+Overheated cleared as each turn opens, with the shield never emptied and the way back the Drill;
+Conserved Momentum caps at 3; the Drill is Indirect, so it reaches any foe and the Exposed shape
+opens a back-rank target to the squad's Direct guns; what is left of Applied returns as Conserved
+on a burrow, since a stack goes at every decay and the count holds rather than climbs (the read
+above had it climbing; with the cap and the decay it cannot). The reboot's turn burns what a
+machine carries past its maximum, every machine's rule: the first build spared it, and it is
+built to his word on this branch (16 November), so a burrow's turn burns the same. Still open of
+the four: its gate (the lean, the reboot's) and the damage shape's damage (the lean, a tick).
+
+**It is slow, in numbers.** As he has it (a third of the recovery a turn, a stack a turn under,
+the Drill its turn's action): a quick dig is two turns for one stack; a dig to the cap is four
+turns (the burrow, two turns under, the Drill on the third) for three stacks, and the recovery is
+whole on the same turn; feathering spends every turn on a burrow or the Drill and none on its
+guns. A dig to the cap with the damage shape pays 6 over the four turns, where four shots of the
+vanilla gun are 12.
+
+Three levers, each a turn faster, Claude's for him to move:
+
+1. *The dig is the first push*: a stack of Conserved as it burrows, so one turn under brings 2
+   and two turns the cap.
+2. *Recovery in two turns*: half of what is missing a turn, so two turns under is whole and cold
+   on the turn the cap is reached; with 1, the two clocks line up.
+3. *The Drill brings it up firing*: spent, it surfaces and its own die rolls at once and it acts
+   again (Rapid's path), so the Drill's turn is no lost turn and a quick dig costs one turn, the
+   reboot's price.
+
+Claude's lean: 1 and 2, which keep his shape (the Drill its turn's action) and take a turn off
+every dig: a quick dig is two turns for 2 stacks at half recovery, a full dig three turns for 3
+stacks whole and cold, and his opening, a burrow in the first round, drills with 2 in the
+second. 3 is the bigger step: it makes a dig a reboot's turn with the Drill on top, a better
+reboot outright (no bare turn, armour 1, its guns' damage kept), so it is the one to hold until
+his play says the first two are still slow.
+
 ## Open for the session
 
-1. Its hook: the burrow and the Inertia Drill (his of 16 November); his rulings on the four
-   points above and his two questions; the shapes as base and upgrades.
+1. Its hook: the burrow and the Inertia Drill (his of 16 November, his answers the same day);
+   its speed (the levers above); its gate and the damage shape's damage; the shapes as base and
+   upgrades.
 2. Its look: the rocket drill (a drill it fires into a foe that returns as it burrows), then a
    round of looks.
 3. Its tier: it or the Wild Boar comes down to tier one.

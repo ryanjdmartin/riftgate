@@ -128,8 +128,11 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 Everything is on main as of 13 November 2026; the formation and refit session's branch lands as it goes, below.
 `ccr-c1cf6f73-ql6n4q`, the look tests' session of 15 November, cut from main at `011576a`:
-look tests of six chassis in briefs and the mole's rough kits and glues (How things stand, the
-Models line; each brief has its own), with `tools/lowforge/looks/sheet.py`, a round's sheet
+look tests of six chassis in briefs and the mole's rough kits, glues and Ryan's burrow (How things
+stand, the Models line; each brief has its own); his ruling of 16 November that a reboot's turn
+burns what a machine carries past its maximum, which the first build spared, built here (the
+engine and its forecast, the tests, the rules' END TURN, the Rebooting term, the bible's reboot
+row and the refit brief's line 8); with `tools/lowforge/looks/sheet.py`, a round's sheet
 in one command, and a look builder that finds its modules itself; then a second round of five
 of them on his notes of 15 and 16 November, and his word that a nickname follows its machine in the
 bible's nickname row (the file v0.602 on this branch, main's v0.601 and that line,
