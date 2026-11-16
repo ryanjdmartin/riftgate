@@ -2871,6 +2871,9 @@ Present tense, in the round's order (`docs/rules.md`, The round).
    it neither overheat nor burn and was built so: "If a machine uses Reboot, and it already has
    overheated stacks, it should take that damage. Heat is cleared when the shield comes back.
    Otherwise the heat penalty is probably not hard enough. I thought that's how it was built").
+   A balancing mechanic, his word the same day: a machine that reboots past its maximum pays
+   for its heat twice, the burn and the turn ("I think its correct based on my play but that
+   can change").
 
 *Past the maximum.*
 
