@@ -499,6 +499,23 @@ func test_a_fall_that_drains_shows_on_its_foe_and_on_reroll() -> void:
 	s.free()
 
 
+## RIFTGATE_DRAIN_DEBUG=1: the button wears a drain announced the whole fight and flashes on
+## its three seconds, so the note, the rings and the flash are judged running.
+func test_the_drain_debug_switch_holds_the_note_and_flashes_the_button() -> void:
+	var s := _screen()
+	var was := SkirmishScreen.DRAIN_DEBUG
+	SkirmishScreen.DRAIN_DEBUG = true
+	s._refresh()
+	assert_eq([s._reroll_btn.note, s._reroll_btn.draining], ["NEXT -1", true], "the note stands, announced")
+	s._reroll_btn._strike_t = -1.0
+	s._process(3.1)
+	assert_true(s._reroll_btn._strike_t >= 0.0, "and the button flashes on its three seconds")
+	SkirmishScreen.DRAIN_DEBUG = was
+	s._refresh()
+	assert_eq(s._reroll_btn.note, "", "off, nothing is worn")
+	s.free()
+
+
 ## REROLL lights while the die in hand would bring the team a reroll, and its badge shows the
 ## count it would leave (Ryan, 15 November: "We can communicate by highlighting the reroll button
 ## as part of the preview, if one will be granted"): no buff and no chip stand for the grant.

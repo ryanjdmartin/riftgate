@@ -47,8 +47,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1238 tests, 373,419 checks, green on `ccr-722ca9f0-yj8na3` (16 November, a fall
-  as a list of steps, over main at `45b4d3e`). Before it, 1231 tests, 373,341 checks, green
+- Tests: 1239 tests, 373,422 checks, green on `ccr-722ca9f0-yj8na3` (16 November, a fall
+  as a list of steps and the drain switch's test, over main at `45b4d3e`). Before it, 1231 tests, 373,341 checks, green
   on the same branch (16 November, the
   REROLL button's drain note, over main at `1aa34b3`). Before it, 1230 tests, 373,327
   checks, green on the same branch (16 November, his
