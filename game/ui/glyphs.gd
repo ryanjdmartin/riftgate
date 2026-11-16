@@ -28,8 +28,9 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			# lock at its lower right.
 			draw(ci, {"pin_flak": "flak", "pin_ablate": "ablate"}[id], c + Vector2(-s * 0.2, -s * 0.16), size * 0.8, color, width)
 			draw(ci, "lock", c + Vector2(s * 0.5, s * 0.48), size * 0.52, color, width)
-		"pin_empower":
-			# Empowered's pin (the Soul Siphon's hold, 12 November): the pins' lock at the lower
+		"essence_flare":
+			# Essence Flare (the Quintessence Tap's hold on Empowered; Pinned Empowered's mark until
+			# 15 November, when the hold became a buff on the Ammit): the pins' lock at the lower
 			# right, and Empowered's two parts set around it rather than shrunk over it, where the
 			# lock sat on the arrow and left a caret: a smaller blade up and to the left, and the
 			# arrow up standing tall on the lock, so the arrow reads at a chip's size on the desk too.
@@ -38,8 +39,8 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_line(px + Vector2(0, s * 0.2), px + Vector2(0, -s * 0.9), color, width)
 			ci.draw_polyline(PackedVector2Array([px + Vector2(-s * 0.3, -s * 0.52), px + Vector2(0, -s * 0.93), px + Vector2(s * 0.3, -s * 0.52)]), color, width)
 			draw(ci, "lock", c + Vector2(s * 0.5, s * 0.5), size * 0.52, color, width)
-		"soul":
-			# A small ghost (the Ammit's Souls, 12 November; a first cut for Ryan's eye, a wisp with
+		"essence":
+			# A small ghost (the Ammit's Essence, 12 November; a first cut for Ryan's eye, a wisp with
 			# a tail having read as a letter at a chip's size): a domed head, straight sides, a hem
 			# in three points and two eyes, what it takes from a foe that falls.
 			var crown := c + Vector2(0.0, -s * 0.22)
@@ -404,11 +405,6 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				var a := PI / 8.0 + i * PI / 4.0
 				var dir := Vector2(cos(a), sin(a))
 				ci.draw_line(c + dir * s * 0.5, c + dir * s, color, width)
-		"spillover":
-			# An arrow driven down through a bar: what carries past the kill into the rank behind.
-			ci.draw_line(c + Vector2(-s * 0.8, -s * 0.15), c + Vector2(s * 0.8, -s * 0.15), color, width)
-			ci.draw_line(c + Vector2(0, -s), c + Vector2(0, s * 0.9), color, width)
-			ci.draw_polyline(PackedVector2Array([c + Vector2(-s * 0.5, s * 0.35), c + Vector2(0, s * 0.9), c + Vector2(s * 0.5, s * 0.35)]), color, width)
 		"lure":
 			# A siren: a bell on a base with two rays, what a monster comes for.
 			ci.draw_arc(c + Vector2(0, s * 0.25), s * 0.6, PI, TAU, 16, color, width)

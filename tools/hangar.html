@@ -988,7 +988,8 @@ function faceLine(f) {
     bits.push((pmax && pmax !== p ? `${p}–${pmax}` : String(p)) + (Number(f.strikes || 1) > 1 ? ` ×${f.strikes}` : ""));
     const r = REACH[f.reach] || f.reach; if (r) bits.push(r);
   } else if (kind === "buff") {
-    bits.push(`${vocabName(f.status || "")} ×${Number(f.stacks || 1)}`);
+    if (f.status) bits.push(`${vocabName(f.status)} ×${Number(f.stacks || 1)}`);
+    if (f.team_rerolls) bits.push(Number(f.team_rerolls) > 1 ? `the team gains ${f.team_rerolls} rerolls` : "the team gains a reroll");
     if (Number(f.rounds || 1) > 1) bits.push(`${Number(f.rounds)} rounds`);
   } else if (p !== undefined && p !== null) bits.push(String(p));
   if (f.power_per_heat) bits.push(`+${f.power_per_heat} per ${f.per_heat || 10} heat`);
@@ -998,6 +999,10 @@ function faceLine(f) {
   for (const [k, g] of Object.entries(f.gates || {})) bits.push(g.status ? `${vocabName(k)} only on a foe carrying ${vocabName(g.status)}${g.stacks ? " ×" + g.stacks : ""}` : `${vocabName(k)} gated`);
   if (f.consumes) bits.push(`consumes ${vocabName(f.consumes)}, +${f.per_consumed || 1} a stack`);
   if (f.self_ablate) bits.push(`Ablating ${f.self_ablate} on itself`);
+  // The rules written on one piece (15 November): no keyword, the piece's own text.
+  if (f.ignores_armour) bits.push("ignores armour");
+  if (f.swaps) bits.push("its two targets trade places");
+  if (f.webs) bits.push("its web bursts after the foe acts, suppressing it and the next beside it");
   if (f.heat) bits.push(`${f.heat} heat`);
   return bits.join(" · ");
 }
@@ -1366,7 +1371,7 @@ const NAME_TABS = [
   {id: "parts", label: "Components", name: "Components", voice: "One piece of equipment, one entry on the die. Any word here is open to any maker.",
    builds: "Weapons, shields, vents, plating. Names proposed here check against the same lists as the machines. A passive is named the same way: a device or a part of the chassis that does the thing (Thermal Recoupler, Slipstream Projector), never an ability.",
    names: "The makers' vocabularies are guidelines, not claims (Ryan, 6 October; bible section 7). General words such as cannon, missile and laser belong to no maker, and a word may cross makers by its meanings (an Aphelion ion cannon; a Kestrel part ionizing something by speed). Minerva hits hard and low-tech: hurl, slam, smash, ram, launcher, flinger, hammer. Kestrel is propulsion and aerodynamics: booster, impeller, diffuser, mach, slipstream, wake, thrust. W&S is a plain military term beside something a little stupid or from the wrong period: carbine, gatling, howitzer, phalanx, repeater, flak. Aphelion is the physics and maths nonsense: entropy, subspace, solenoid, inducer, phase, neutrino, array, wormhole. The Arsenal is medieval and slightly occult, twisting the others' words: halberd, cleaver, talon, hellfire, hoarfrost, dimensional, arbalest. The pseudo-tech may contradict itself on purpose: a Polarity Projector, a Backwash Ionizer.",
-   avoid: "The reserved lists are machines, not weapons, so a clash here is a softer signal. Mind the over-words: Overcharged, Overheating, Overshield, Overcharge Coil and Overclocked Railgun are plenty (Overwhelm became Spillover for it)."},
+   avoid: "The reserved lists are machines, not weapons, so a clash here is a softer signal. Mind the over-words: Overcharged, Overheating, Overcharge Coil and Overclocked Railgun are plenty (Overwhelm became Spillover for it)."},
   {id: "other", label: "Other", name: "Other", voice: "", builds: "Foes, factions, places, anything without a home yet.", names: "", avoid: ""},
   {id: "rules", label: "Rules", name: "Rules"},
 ];

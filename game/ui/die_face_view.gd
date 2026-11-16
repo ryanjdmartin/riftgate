@@ -79,7 +79,7 @@ const COST_SIZE := 16      # and its number
 var face: Face = null
 var shown_number: String = ""   # what the blow will deal now, or against the foe it is held over (10 October)
 var corrupted: int = 0       # Corrupted stacks on the entry showing: a chip in the enemy's colour, with the count
-var dark: int = 0            # a dark entry (a cooldown, a foe's disable): the rounds it has left, this one included, its clock along the foot
+var dark: int = 0            # a dark entry (a cooldown, a foe's jam): the rounds it has left, this one included, its clock along the foot
 var cooldown: int = -1       # the rounds a spend darkens it, its machine's passives in (Skirmish.cooldown_of); -1 reads the entry's own
 var next_face: Face = null   # a stepping die's next chamber (the Cassowary's), in the passive box at the rail's foot; null for a die that rolls
 var next_number: String = "" # the blow that next entry will deal now, as the screen reads it (Skirmish.shown_number_text); "" reads its own
@@ -502,10 +502,12 @@ static func number_mark(f: Face) -> String:
 
 
 ## What equipment holds inside its gear (Ryan, 3 November: the number inside the main mark, and
-## equipment has none): the status a buff grants (its term's id); a debuff's first keyword that
-## does something to a foe, in content's order (a reach, an area or Rapid stays on the rail); the
-## star when what it does is a rule of its own (the Lorentz Contractor's mines, the Reveille Horn's
-## charged turn); "" for any other entry. The rail never shows it twice.
+## equipment has none): the status a buff grants (its term's id); a debuff's own rule where the
+## rule has a mark (the Combat Translocator's swap, the Web Bomb's web as the mark it leaves on a
+## foe: rules written on their one piece since 15 November, their marks kept), else its first
+## keyword that does something to a foe, in content's order (a reach, an area or Rapid stays on
+## the rail); the star when what it does is a rule of its own (the Lorentz Contractor's mines, the
+## Reveille Horn's charged turn); "" for any other entry. The rail never shows it twice.
 static func inside_effect(f: Face) -> String:
 	if f == null or not f.is_equipment():
 		return ""
@@ -514,9 +516,11 @@ static func inside_effect(f: Face) -> String:
 		if not granted.is_empty():
 			return granted
 	else:
+		if f.swaps:
+			return "swap"
+		if f.webs:
+			return "webbed"
 		for k in f.keywords:
-			if f.printed.has(k):
-				continue
 			var name: String = Face.KEYWORD_NAMES[k]
 			if Terms.has(name) and Terms.group(name) != "plain" and not Terms.glyph(name).is_empty():
 				return name
@@ -536,7 +540,7 @@ static func status_chip(f: Face) -> String:
 ## The annotation chips hugging the right edge, top down: one per keyword, the star for a unique
 ## effect, the shell's seal or opening, a corruption last. Each is a term's id or a glyph's
 ## (chip_glyph). What equipment grants or lays sits inside its gear (inside_effect), never here
-## too; a keyword a passive or a module grants written out (the Overrun Gearing's spill) is the star, never its own chip;
+## too; a rule a passive or a module writes on the entry (the Overrun Gearing's spill) is the star;
 ## whom it reaches is no chip (the targeting mark under the main mark, Glyphs.aim_for).
 func rail_tags() -> Array[String]:
 	var tags: Array[String] = []
@@ -544,7 +548,7 @@ func rail_tags() -> Array[String]:
 		return tags
 	var inside := inside_effect(face)
 	for k in face.keywords:
-		if not face.printed.has(k) and Face.KEYWORD_NAMES[k] != inside:
+		if Face.KEYWORD_NAMES[k] != inside:
 			tags.append(Face.KEYWORD_NAMES[k])
 	if face.has_unique_rule() and inside != "star":
 		tags.append("star")      # a rule printed on the entry: the hold reads it out
@@ -587,7 +591,7 @@ func cost_marks() -> Array:
 	if face.shield_cost > 0:
 		costs.append(["shield", face.shield_cost, Palette.LOSS if face.short else Palette.SHIELD, face.short])
 	if not face.spends.is_empty():
-		# A count its machine spends for its stacks (the Soul Siphon's Souls, 12 November): the
+		# A count its machine spends for its stacks (the Quintessence Tap's Essence, 12 November): the
 		# count's own mark and what the spend would take now, struck when it holds none.
 		var spent := Terms.of_status(face.spends)
 		costs.append([Terms.glyph(spent) if not spent.is_empty() else "star", face.buff_stacks, Palette.LOSS if face.short else Terms.status_colour(face.spends), face.short])

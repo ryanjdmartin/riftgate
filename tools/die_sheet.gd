@@ -182,8 +182,8 @@ func _rest() -> Array:
 	var dry := Face.attack(6)
 	dry.ammo = 2
 	dry.dry = true
-	# A count it spends for its stacks (the Ammit's Soul Siphon, 12 November): three Souls held.
-	var spender := Face.from_dict({"kind": "buff", "status": "overcharged", "targets": "self", "spends": "souls", "spends_up_to": 5, "holds_all": "overcharged", "cooldown": 3})
+	# A count it spends for its stacks (the Ammit's Quintessence Tap, 12 November): three Essence held.
+	var spender := Face.from_dict({"kind": "buff", "status": "overcharged", "targets": "self", "spends": "essence", "spends_up_to": 5, "holds_all": "overcharged", "cooldown": 3})
 	spender.buff_stacks = 3
 	var burn := Face.attack(4)
 	burn.burns = 2

@@ -35,8 +35,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1192 tests, 372,768 checks, green on `ccr-722ca9f0-yj8na3` (15 November, the
-  marks' cuts, over main at `c9e55a9`). Before it, 1196 tests, 372,909 checks, green on the
+- Tests: 1195 tests, 372,792 checks, green on `ccr-722ca9f0-yj8na3` (16 November, the
+  marks' renames, over main at `0eb2745`). Before it, 1192 tests, 372,768 checks, green on
+  the same branch (15 November, the marks' cuts, over main at `c9e55a9`). Before it, 1196 tests, 372,909 checks, green on the
   same branch (15 November, the vanilla's 3 and breach's cut). Before it, 1197 tests, 372,937
   checks, green on the same branch (15 November, Ablate in
   Burn's place, its rule's ten tests in a file of their own). Before
@@ -585,7 +586,11 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   Souls chip's ghost, the pin beside each Empowered, the Siphon's firing act (the threat's coil,
   set by hand in the rig sidecar and `models_low.py`; no model was rebuilt). The first read is
   `docs/measurements.md`'s, a direction at 30 seeds made on the flare's first form. His lines are
-  the to-do's: play it, judge its marks, write or pass its text.
+  the to-do's: play it, judge its marks, write or pass its text. Its names and its hold moved on
+  his marks of 15 November (built 16 November; the bible's Ammit row): the passive is the
+  Quintessence Reactor, the Souls are Essence, the Siphon is the Quintessence Tap, and the hold
+  is Essence Flare, a buff on the Ammit that a Purge takes, where a pin stood beside every
+  unit's Empowered.
 - **Empowered's mark** (12 November; on main): a blade with an arrow up, Sapped's pair ("Yes use
   the up sword for empowered", from a mock, after his "Does shock and empowered have the same
   glyph?": one bolt, Shock's in a ring and Empowered's bare). The bolt is Shock's alone; Enraged,
@@ -1809,9 +1814,7 @@ The tasks are the to-do's; this is the index of what waits.
   Lure wins. No foe carries it. It is the foes' pass's (the to-do's Engine list).
 - His marks on the vocabulary's table (15 November, all eighty-two rows; the proposal's
   section 18 has each with its read, and the to-do's Engine list the build in parts), what
-  is not built yet: Spillover, Swap, Web and Follow-up off the keyword list, each its one
-  piece's own text; Disabled as Jammed, Pinned Flak as Pinned, Regrow as Recover and Heal,
-  the Ammit's names; Armoured ending as its side's next turn starts; Rally on the rallier
+  is not built yet: Rally on the rallier
   too, Regenerating, Primed, Brittle and Phased as he ruled them; and for the foes' pass,
   Drain, Steal and the drained reroll as their units' own text, countdowns an elite's or a
   boss's mostly, a fall free to do more than strike. Until built, content and the engine
@@ -1876,9 +1879,15 @@ once past the round's two with the REROLL button lit while the die in hand would
 no blow destroys a component by its size, Destroy a rider on a foe's blow that no foe
 carries yet; and the Djinn's Unmake reads Purge 1. With them a break the fold-in had left
 on main is fixed: `tools/balance.gd` read the reboot's removed switch and would not parse,
-and `tests/test_leftovers.gd` now loads every tool script. **What rides behind, in the
-to-do's order, each a commit of its own**: his marks' renames and the words that leave the
-keyword list; his marks' rule changes (Rally on the rallier, Regenerating fading a stack a
+and `tests/test_leftovers.gd` now loads every tool script. **His marks' renames are built,
+with the words that left the keyword list** (16 November; the bible's Armoured, Ammit,
+Dingo, funnel-web and Wild Boar rows and its row on the foes' rule set): Swap, Web and
+Spillover are rules written on their one piece, the die's star and the piece's own text;
+Follow-up is off the player's list; Jam lays Jammed; Pinned; Recover and Heal name a foe's
+flat healing; the Ammit's passive is the Quintessence Reactor, its count Essence, its piece
+the Quintessence Tap and the Tap's hold a buff on the Ammit, Essence Flare; Supercooled
+says Cryo 1; and a foe's Armoured ends as the foes' next turn opens. **What rides behind,
+in the to-do's order, each a commit of its own**: his marks' rule changes (Rally on the rallier, Regenerating fading a stack a
 turn, Primed a stack a weapon fired, Brittle in place of Flak and Crushed, Phased granted
 at the round's end); then the anchor read again as the baseline. **Then the foes' pass**
 (the to-do's line): Exposed's carriers and its engine, the moves his marks renamed or

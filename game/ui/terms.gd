@@ -22,14 +22,14 @@ const TABLE := {
 	# Keywords.
 	"cleave": ["cleave", "plain"], "penetrate": ["penetrate", "plain"],
 	"every_foe": ["aim_every_foe", "plain"], "every_ally": ["aim_every_ally", "plain"], "every_other_ally": ["aim_every_other_ally", "plain"],
-	"spillover": ["spillover", "plain"], "rapid": ["rapid", "plain"], "instant": ["instant", "plain"],
+	"rapid": ["rapid", "plain"], "instant": ["instant", "plain"],
 	"ablate": ["ablate", "heat"], "shock": ["shock", "heat"], "chain": ["chain", "heat"],
 	"flak": ["flak", "heat"], "sap": ["sap", "guard"],
 	"cryo": ["cryo", "guard"], "lure": ["lure", "guard"], "disrupt": ["disrupt", "guard"],
-	"suppress": ["suppress", "guard"], "web": ["web", "guard"], "swap": ["swap", "guard"],
+	"suppress": ["suppress", "guard"],
 	"dispel": ["dispel", "guard"], "cleanse": ["cleanse", "guard"],
 	"expose": ["expose", "harm"],
-	"disable": ["blank", "enemy"], "corrupt": ["corrupt", "enemy"], "steal": ["steal", "enemy"],
+	"jam": ["blank", "enemy"], "corrupt": ["corrupt", "enemy"], "steal": ["steal", "enemy"],
 	"destroy": ["crack", "enemy"],   # the rider that destroys the entry showing (15 November): the destroyed component's own mark
 	# Rules on a component.
 	"targets": ["", "plain"], "strikes": ["", "plain"],
@@ -39,6 +39,7 @@ const TABLE := {
 	"volatile": ["hull", "hull"], "shield_cost": ["shield", "guard"], "brace_property": ["shield", "guard"],
 	"self_ablate": ["ablate", "heat"], "ignores_armour": ["", "plain"], "vents_all": ["vent", "heat"],
 	"gather": ["mine", "heat"], "detonate": ["mine", "heat"],
+	"swap": ["swap", "guard"],   # the Combat Translocator's rule, its own text since 15 November, its mark kept
 	"regenerates": ["regenerating", "guard"], "ally_action": ["reroll", "plain"], "rolls_target": ["reroll", "plain"],
 	"kill_rerolls": ["reroll", "plain"], "team_rerolls": ["reroll", "plain"],
 	# Statuses.
@@ -47,13 +48,13 @@ const TABLE := {
 	"charged": ["shocked", "heat"], "supercooled": ["cryo", "guard"],
 	"flakked": ["flak", "heat"], "vitriol": ["vitriol", "heat"], "spun_up": ["spin", "heat"], "ricochet": ["ricochet", "heat"],
 	"mine": ["mine", "heat"],
-	"souls": ["soul", "heat"], "pinned_empowered": ["pin_empower", "heat"],   # the Ammit's count and its Siphon's hold (12 November), with Empowered's group: what hits harder
+	"essence": ["essence", "heat"], "essence_flare": ["essence_flare", "heat"],   # the Ammit's count and its Tap's buff (12 and 15 November), with Empowered's group: what hits harder
 	"braced": ["shield", "guard"], "barrier": ["barrier", "guard"], "ward": ["ward", "guard"],
 	"phased": ["phased", "guard"], "guarded": ["lock", "guard"], "sealed": ["seal", "guard"], "changed_over": ["reroll", "plain"],
 	"suppressed": ["suppress", "guard"], "webbed": ["web", "guard"],
 	"numbed": ["numbed", "guard"], "paradox": ["paradox", "guard"], "cryoed": ["cryo", "guard"],
 	"exposure": ["exposed", "harm"], "pinned": ["pin_flak", "heat"], "sapped": ["sap", "guard"], "juggernaut": ["juggernaut", "heat"], "seared": ["pin_ablate", "heat"], "destroyed_component": ["crack", "harm"],
-	"corrupted": ["corrupt", "enemy"], "crushed": ["flak", "enemy"], "disabled": ["blank", "enemy"],
+	"corrupted": ["corrupt", "enemy"], "crushed": ["flak", "enemy"], "jammed": ["blank", "enemy"],
 	"risen": ["star", "enemy"], "regenerating": ["regenerating", "guard"], "swallowed": ["swallowed", "enemy"],
 	"ability": ["", "plain"],   # a unit's own mechanic, no buff or debuff (8 November): its chips carry their own marks
 	"quick_turned": ["rapid", "plain"],
@@ -62,10 +63,12 @@ const TABLE := {
 	# here (its aim, its menace, the seal) is the engine's and stays out of the list.
 	"scorch": ["scorch", "heat"], "crush": ["flak", "enemy"], "golden_rage": ["overcharge", "heat"], "swallow": ["swallowed", "enemy"],
 	"self_destruct": ["blast", "enemy"], "all": ["all", "enemy"], "countdown": ["warning", "enemy"],
-	"follow_up": ["next", "enemy"], "last_act": ["skull", "enemy"], "parts": ["parts", "enemy"],
+	"last_act": ["skull", "enemy"], "parts": ["parts", "enemy"],
 	"drain": ["heart", "enemy"],   # the Vampire Lord's (31 October): a blow that regrows what it took from the hull
 }
 
+## A die entry's own mark, by the engine's prefix on its status id, and the term it reads as.
+const ENTRY_MARKS := {"corrupted": "corrupted", "disabled": "jammed"}
 ## An engine status keyed apart from its term: a machine's Ablating, the Badger's hopper.
 const ALIASES := {"ablating_mech": "ablating", "hopper": "hopper_property"}
 
@@ -111,13 +114,14 @@ static func colour(id: String) -> Color:
 
 
 ## The term an engine status stands for: its own id, an alias's, or a component's mark by its
-## prefix ("corrupted_2"); "" when the list defines none (the Nemesis's rage, a store).
+## prefix ("corrupted_2"; an entry a foe switched off, the engine's "disabled_2", reads Jammed);
+## "" when the list defines none (the Nemesis's rage, a store).
 static func of_status(status_id: String) -> String:
 	if ALIASES.has(status_id):
 		return str(ALIASES[status_id])
-	for prefix in ["corrupted", "disabled"]:
+	for prefix in ENTRY_MARKS.keys():
 		if status_id.begins_with(prefix):
-			return prefix
+			return str(ENTRY_MARKS[prefix])
 	return status_id if TABLE.has(status_id) else ""
 
 
@@ -152,6 +156,9 @@ static func engine_status(term_id: String) -> String:
 	for k in ALIASES.keys():
 		if str(ALIASES[k]) == term_id and Effects.STATUS.has(str(k)) and not Effects.STATUS.has(term_id):
 			return str(k)
+	for prefix in ENTRY_MARKS.keys():
+		if str(ENTRY_MARKS[prefix]) == term_id:
+			return str(prefix)   # a die entry's mark, by the engine's own prefix (Jammed is its "disabled")
 	return term_id
 
 

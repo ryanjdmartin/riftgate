@@ -304,12 +304,14 @@ func strikes() -> int:
 ## What a defend, buff or debuff action does (built 30 September; the ten planned actions in
 ## content/foes.json). Each carries `effect` and, where it needs one, `value`, `foe`, `count`.
 ##   defend  brace: Armoured, the move's `value` in stacks of armour +1 (Effects.brace_stacks),
-##           every stack going at its next action (Burrow; one word and one icon for both
+##           every stack going as the foes' next turn opens (Burrow; one word and one icon for both
 ##           sides, Ryan, 16 October: an effect and the buff it creates share a name)
-##           regrow: regains `value` hit points (Knit)
-##           regrow_ally: the most hurt of its own, itself included, regains `value` (Cure)
-##           brace_all: Armoured, `value` stacks, on every foe in the fight through the next
-##           round (Protect, 15 October: until its next action, as the player sees it)
+##           recover: regains `value` hit points, itself (the treants' Recover; "regrow" until
+##           15 November, Ryan: "it can just be named Heal, or Recover if it's self-only")
+##           heal: the most hurt of its own, itself included, regains `value` (Cure;
+##           "regrow_ally" until then)
+##           brace_all: Armoured, `value` stacks, on every foe in the fight, on the same clock
+##           (Protect, 15 October): until the foes' next turn opens
 ##           cleanse: every mark the team laid (Effects.TEAM_MARKS) off the most-marked of its
 ##           own, itself included (Hallow, 28 October: the Marsh's lever); never Numbed, never
 ##           Suppressed, never a buff
@@ -331,7 +333,8 @@ func strikes() -> int:
 ##   debuff  drain_rerolls: the team has `value` fewer rerolls next round (Roar)
 ##           ablate: its target gains `value` stacks of Ablating, a point a stack off its shield
 ##           and then its hull as the player's turn ends (Stoke; Burning as heat until 15 November)
-##           disable: its target's showing entry is switched off through its next turn (Hush)
+##           jam: its target's showing entry is Jammed, switched off through its next turn
+##           (Hush; "disable" until 15 November, Ryan: "Rename to Jammed")
 ##           scorch_all: every machine gains `value` stacks of Scorched, its weapons and debuffs
 ##           running hotter (Eruption; nobody in particular)
 ##           corrupt_all: every machine's showing entry is corrupted (Unravel; nobody in particular)
@@ -343,14 +346,14 @@ func strikes() -> int:
 ##           is taken into it, gone without a fall: it regrows the HP they had left and its next
 ##           move hits `value` harder for each (the King Gel's, 30 October: thin the Gels first)
 const ACTION_EFFECTS := {
-	"defend": ["brace", "regrow", "regrow_ally", "brace_all", "cleanse", "barrier", "regenerate"],
+	"defend": ["brace", "recover", "heal", "brace_all", "cleanse", "barrier", "regenerate"],
 	"buff": ["revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "merge", "golden"],
-	"debuff": ["drain_rerolls", "ablate", "disable", "scorch_all", "corrupt_all", "dispel", "swallow"],
+	"debuff": ["drain_rerolls", "ablate", "jam", "scorch_all", "corrupt_all", "dispel", "swallow"],
 }
 
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn and no machine
 ## is shown intent (the ambush read below).
-const UNTARGETED_EFFECTS := ["brace", "regrow", "regrow_ally", "brace_all", "cleanse", "barrier", "regenerate", "revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "drain_rerolls", "scorch_all", "corrupt_all", "merge", "golden"]
+const UNTARGETED_EFFECTS := ["brace", "recover", "heal", "brace_all", "cleanse", "barrier", "regenerate", "revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "drain_rerolls", "scorch_all", "corrupt_all", "merge", "golden"]
 
 
 ## Does this round's move act on nobody in particular (one of UNTARGETED_EFFECTS)? Its pick
@@ -379,13 +382,13 @@ func intent_on(u) -> bool:
 ## weapons and debuffs running hotter for the turn (the foes' one tax on heat); ablate: a stack of
 ## Ablating, a point a stack off the shield and then the hull, past armour and a Barrier, as the
 ## player's turn ends (Ryan, 15 November: one rule on both sides, in Burning's place).
-## disable: switches off the entry the target's die shows, through its next turn. corrupt:
+## jam: the entry the target's die shows is Jammed, switched off through its next turn. corrupt:
 ## a stack of Corrupted on that entry, for the skirmish: it bites its owner every time it is
 ## spent. self_destruct: the blow spends the striker: it dies after it, whole, and never gets
 ## back up (the Bomb). all: the blow lands on every machine in the fight, each strike on each
 ## machine, so no aim or lure moves it (Ryan, 15 October: no foe struck more than one
 ## machine, the storms' three blows included; the content follows in a foe kit refresh).
-## steal: as disable, the entry the machine's die shows switched off through its next turn, and
+## steal: as jam, the entry the machine's die shows switched off through its next turn, and
 ## the foe takes it: its borrowed swing (a move with `power` "held") lands that weapon's number,
 ## and anything else it took is a fake, for 1 (Gilgamesh's, 30 October). drain: the striker
 ## regrows what the blow dealt, shield and hull (the Vampire Lord's, 30 October); it lays nothing
@@ -396,7 +399,7 @@ func intent_on(u) -> bool:
 ## economy around it"); a shield that takes the whole blow, a Barrier or a Ward keeps the entry.
 ## A purge is a special, never a rider (28 October: a rider on a hitter's blow is a tax with no
 ## decision), so it is no attack keyword; the validator refuses it on a blow.
-const ATTACK_KEYWORDS := ["scorch", "ablate", "disable", "corrupt", "crush", "self_destruct", "all", "steal", "drain", "destroy"]
+const ATTACK_KEYWORDS := ["scorch", "ablate", "jam", "corrupt", "crush", "self_destruct", "all", "steal", "drain", "destroy"]
 ## The specials that may never ride a blow (28 October).
 const SPECIALS_ONLY := ["dispel"]
 ## The riders that lay stacks, each a number on the move beside its keyword (24 October, as the

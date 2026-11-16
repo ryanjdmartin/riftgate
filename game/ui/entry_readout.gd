@@ -147,7 +147,7 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 			else:
 				var st: Dictionary = Effects.STATUS.get(f.buff_status, {})
 				# What a buff grants against the component's own; one that spends a count for its
-				# stacks (the Soul Siphon) grants what it would take now, its own rule and no change
+				# stacks (the Quintessence Tap) grants what it would take now, its own rule and no change
 				# a live source made, so its number reads plain.
 				var own_stacks := f.buff_stacks if not f.spends.is_empty() else base.buff_stacks
 				var line := [word("Grants %s" % str(st.get("name", f.buff_status))), num("×%d" % f.buff_stacks, f.buff_stacks, own_stacks)]
@@ -209,7 +209,7 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 			shield_cost.append(word("(the shield cannot pay it)"))
 		out.append(marked(parts_line("effect", shield_cost, "attr"), [mark("shield", Palette.LOSS if f.short else Palette.SHIELD, false)]))
 	if not f.spends.is_empty():
-		# A count its machine spends for its stacks (the Soul Siphon's Souls): what it would take
+		# A count its machine spends for its stacks (the Quintessence Tap's Essence): what it would take
 		# now, by the count's own mark, as the die prints it along its foot.
 		var spent_term := Terms.of_status(f.spends)
 		var spent := [word("Consumes"), word(str(f.buff_stacks)), word(str(Effects.STATUS.get(f.spends, {}).get("name", f.spends)))]
@@ -238,8 +238,6 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 	var lays: Array = []   # what it leaves on each foe hit
 	var after: Array = []  # Rapid's or Instant's turn
 	for k in f.keywords:
-		if f.printed.has(k):
-			continue   # a grant written out is its passive's line, with the rules
 		# Its name as the list writes it (Every Foe), so the word is the term's and taps open it.
 		var label := Face.keyword_label(k).capitalize()
 		var gate := Effects.gate_text(f.gates[Face.KEYWORD_NAMES[k]]) if f.gates.has(Face.KEYWORD_NAMES[k]) else ""
@@ -256,7 +254,7 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 			lays.append(marked(parts_line("effect", parts, "kw"), chip))
 		elif Face.ACT_AGAIN_KEYWORDS.has(k):
 			after.append(marked(parts_line("effect", [_bare(word(label))], "kw"), chip))
-		elif k in [Face.Keyword.LURE, Face.Keyword.DISRUPT, Face.Keyword.SWAP, Face.Keyword.DISPEL]:
+		elif k in [Face.Keyword.LURE, Face.Keyword.DISRUPT, Face.Keyword.DISPEL]:
 			lays.append(marked(parts_line("effect", [_bare(word(label))], "kw"), chip))
 		elif (Face.AREA_KEYWORDS.has(k) or k == Face.Keyword.CHAIN) and not f.is_debuff():
 			# Area by shape, numbered (Ryan, 28 October): what each foe past the target takes, its
@@ -435,8 +433,8 @@ static func codex_move_lines(f: Foe, a: Dictionary, db: ContentDB) -> Array:
 ## Whom a foe's move that is no blow acts on, by its effect (Foe.ACTION_EFFECTS); a debuff aimed at
 ## a machine is "Any machine", as a blow is.
 const MOVE_TARGETS := {
-	"brace": "Self", "regrow": "Self", "revive_once": "Self", "barrier": "Self", "regenerate": "Self", "golden": "Self",
-	"regrow_ally": "The most hurt of its own", "brace_all": "Every foe", "revive_once_ally": "One of its own",
+	"brace": "Self", "recover": "Self", "revive_once": "Self", "barrier": "Self", "regenerate": "Self", "golden": "Self",
+	"heal": "The most hurt of its own", "brace_all": "Every foe", "revive_once_ally": "One of its own",
 	"cleanse": "The most-marked of its own", "prime": "Every other foe", "ward_all": "Every foe",
 	"summon": "The waiting pool", "rally": "Every other foe", "merge": "Its kinds on the field",
 	"drain_rerolls": "The team's rerolls", "scorch_all": "Every machine", "corrupt_all": "Every machine",

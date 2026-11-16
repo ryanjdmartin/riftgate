@@ -51,8 +51,8 @@ const ABLATE_WEIGHT := 0.5       # Ablating's stacks on a foe pay out over the r
 const ABLATED_WEIGHT := 0.5      # a point Ablating will take off a machine on a later turn, the shield first: between a banked point of shield and a point of hull
 const OPTION_GUARD := 64         # spends in one round, at most: rapid rerolls the die and acts again
 const FLARE_ROUNDS := 1.0        # rounds of damage a stack its own kill grants is worth (the Ammit's flare): it lands after the swing, so it pays from the next round at half, about once itself
-const HOLD_ROUNDS := 1.0         # rounds of damage a stack held whole into the next round is worth (the Soul Siphon's hold): whole next round and halving after, less the round's wait
-const SOUL_WEIGHT := 0.3         # a count spent for a buff (a Soul the Siphon consumes), in foe hit points: a fifth of a flare for the rest of the battle, which the bot's one fight cannot see; a placeholder
+const HOLD_ROUNDS := 1.0         # rounds of damage a stack held whole into the next round is worth (the Quintessence Tap's hold): whole next round and halving after, less the round's wait
+const ESSENCE_WEIGHT := 0.3         # a count spent for a buff (1 Essence the Tap consumes), in foe hit points: a fifth of a flare for the rest of the battle, which the bot's one fight cannot see; a placeholder
 const SHOCK_WEIGHT := 0.6        # a Shock cashed later (a mine's, a hull's): the doubled blow, as a share of the team's average; a blow's own reads the hitter in hand (shock_cash)
 const CLEANSE_ROUNDS := 2.0      # rounds a cleansed status would otherwise have cost (Corrupted lasts the fight, Ablating fades)
 const HOPPER_WEIGHT := 0.6       # a load in the hopper, as a share of what it adds when a later shot fires it
@@ -585,7 +585,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 					continue   # its Ward turns the Shock away (28 October)
 				var left := maxf(0.0, float(foe.hp) - mean)
 				score += ((1.0 - p_kill) if foe == target else 1.0) * minf(left, shock_cash(sk, ms, foe))
-	if f.has(Face.Keyword.SPILLOVER) and target.rank == 0 and not target.is_massive():
+	if f.spills and target.rank == 0 and not target.is_massive():
 		# What the roll has past the kill lands on the foe behind, and may kill it too.
 		var behind := sk.foe_at(1, target.column)
 		if behind != null and behind.alive() and behind != target:
@@ -612,7 +612,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 			if eaten > 0 and foe.alive():
 				var lives := (1.0 - p_kill) if foe == target else 1.0
 				score -= lives * dot_payout(f.consumes, eaten, int(maxf(0.0, float(foe.hp) - (mean if foe == target else 0.0)))) * ABLATE_WEIGHT
-	if f.has(Face.Keyword.WEB):
+	if f.webs:
 		# A delayed stun (the funnel-web's web, 18 October): the blows its burst will stop.
 		score += (1.0 - p_kill) * web_score(sk, target)
 	if f.has(Face.Keyword.DISPEL):
@@ -658,7 +658,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 				laid_apps += 1
 	# The statuses this blow applies feed any machine's Paradox meter (the Baboon's Pocket
 	# Paradox, a meter since 10 October): the share of a knock-out they move on this foe.
-	var apps := int(f.has(Face.Keyword.ABLATE)) + int(f.has(Face.Keyword.SHOCK)) + int(suppress_open) + int(f.has(Face.Keyword.WEB)) + int(f.has(Face.Keyword.FLAK)) + laid_apps
+	var apps := int(f.has(Face.Keyword.ABLATE)) + int(f.has(Face.Keyword.SHOCK)) + int(suppress_open) + int(f.webs) + int(f.has(Face.Keyword.FLAK)) + laid_apps
 	if apps > 0:
 		score += _paradox_share(sk, target, apps) * (1.0 - p_kill) * _threat_now(target, sk) * HULL_WEIGHT
 	if f.has(Face.Keyword.ABLATE) and not Effects.turns_mark(target, "ablating"):
@@ -703,7 +703,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	# blast on its kill, the gather and the detonation (mine_worth).
 	score += mine_worth(sk, ms, f, target, p_kill)
 	# What the machine's passives grant it on its own kill (the Ammit's flare, 12 November: a
-	# stack of Empowered for every five Souls it holds): each stack on the blows its die deals
+	# stack of Empowered for every five Essence it holds): each stack on the blows its die deals
 	# from the next round, a strike a point (flare_gain), at the odds of the kill.
 	var flare := Effects.would_stack(ms.unit, "on_kill", "overcharged") if f.is_weapon() else 0
 	if flare > 0:
@@ -1202,7 +1202,7 @@ static func flare_gain(ms: Skirmish.MechState, status_id: String, stacks: int) -
 
 
 ## A buff on itself that spends a count for its stacks and holds the round's run-down on every
-## unit (the Ammit's Soul Siphon, 12 November): the machine gives this round's action for it, so
+## unit (the Ammit's Quintessence Tap, 12 November): the machine gives this round's action for it, so
 ## nothing lands now. Next round it swings at what it consumed and at what it held, whole, where
 ## what it held would have halved; an ally's stacks are held the same way, and so is every foe's
 ## (a rally carries whole into its next blows), which is its price beside the count it spends.
@@ -1232,7 +1232,7 @@ func hold_score(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
 			var n := Effects.stacks_of(foe, str(id))
 			score -= float(n - int(n / 2.0)) * HULL_WEIGHT
 	if not f.spends.is_empty():
-		score -= float(grants) * SOUL_WEIGHT
+		score -= float(grants) * ESSENCE_WEIGHT
 	return score
 
 
@@ -1400,7 +1400,7 @@ func machine_spend_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.Mec
 				# carried of them (bank_delta), since the looks were taken as the round opened.
 				score = action_value(who) - bank_delta(sk, -f.action_price)
 			elif not f.spends.is_empty() or not f.holds_all.is_empty():
-				score = hold_score(sk, ms, f)   # a buff that spends a count and holds the round (the Soul Siphon)
+				score = hold_score(sk, ms, f)   # a buff that spends a count and holds the round (the Quintessence Tap)
 			else:
 				score = buff_score(sk, who, f)
 				if guard_weight != 1.0 and is_block(f):
@@ -1893,7 +1893,7 @@ func ward_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 		if a.has_keyword(a.action, "ablate"):
 			var laid := a.rider(a.action, "ablate") * a.strikes()
 			score += float(ablate * laid * (laid + 1)) / 2.0 * ABLATED_WEIGHT   # N stacks take N, N-1 ... 1 over the turns to come
-		if a.has_keyword(a.action, "disable"):
+		if a.has_keyword(a.action, "jam"):
 			score += _raw_attack_mean(who) / float(n)
 		if a.has_keyword(a.action, "corrupt"):
 			score += float(Skirmish.corrupt_bite() * a.rider(a.action, "corrupt")) * blows * HULL_WEIGHT * CLEANSE_ROUNDS / float(n)
@@ -1910,7 +1910,7 @@ func ward_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 			"ablate":
 				if on_it:
 					score += float(ablate * value * (value + 1)) / 2.0 * ABLATED_WEIGHT
-			"disable":
+			"jam":
 				if on_it:
 					score += _raw_attack_mean(who) / float(n)
 			"dispel":

@@ -51,7 +51,7 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "add_ablate", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "fold_die", "rewrite_weapon", "heat_per_blow", "pass_release", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "spillover", "hold_all", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "fold_die", "rewrite_weapon", "heat_per_blow", "pass_release", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status"],
 	"on_round_start": ["add_shield", "vent_heat", "stack_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_shield_hit": ["stack_status", "add_shield", "vent_heat"],
@@ -66,11 +66,11 @@ const SUPPORTED_EFFECTS := {
 	"on_stack": ["add_stacks"],
 	"on_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_kill": ["stack_status", "add_shield", "vent_heat", "refill_shield"],
-	"on_foe_killed": ["stack_status"],   # every kill in this machine's fight, whoever made it, once for each foe (the Ammit's Souls, 12 November)
+	"on_foe_killed": ["stack_status"],   # every kill in this machine's fight, whoever made it, once for each foe (the Ammit's Essence, 12 November)
 }
 const DECAY_NONE := 0    # lives until its scope ends
 const DECAY_TICK := 1    # loses a stack each tick, gone at zero
-const DECAY_ROUND := 2   # gone at its owner's next tick, every stack at once (Braced: one turn from any source, 12 October)
+const DECAY_ROUND := 2   # gone as its side's next turn begins, every stack at once (Armoured: Ryan, 15 November, "The common \"end\" state between both sides is \"start of their next turn.\""): a machine's at the round's end (tick), a foe's as the enemy's turn opens (turn_opens; at its own action until then)
 const DECAY_TURN := 3    # ticks at the end of its owner's turn and loses a stack there, not at the round's end (a machine's Ablating, 13 October)
 const DECAY_TURN_ALL := 4    # lasts until the end of its owner's turn, every stack going there at once (a machine's Scorched, 13 October: it never piles up)
 const DECAY_HALF := 5    # halves at its owner's tick, rounded down, gone at zero (Empowered, 18 October: a halving rule has no duration)
@@ -136,10 +136,12 @@ const STATUS := {
 	# per hit on a foe showing no intent on it (lay_status on on_attack, when target_no_intent).
 	"vitriol": {"id": "vitriol", "name": "Vitriol", "description": "Loses {value}% of its current HP per stack at its action, past armour, after Ablating, rounded down, then loses a stack. It never finishes a foe.",
 		"tags": ["dot"], "effects": [{"trigger": "status", "effect": "tick_hp_share", "value": 10}]},
-	# The funnel-web's web (18 October): the mark its Web Bomb leaves. The skirmish bursts it at
-	# the end of the foe's action (Skirmish._web_burst): a Suppress on it and on the next foe
-	# to act beside it, each for itself. One web on a foe, however often it is webbed.
-	"webbed": {"id": "webbed", "name": "Webbed", "description": "At the end of its action the web bursts: it and the next foe to act beside it are Suppressed.", "stacking": "renew", "decay": "none",
+	# The funnel-web's web (18 October): the mark its Web Bomb leaves, named for the piece since
+	# 15 November (Ryan: "the debuff can be renamed \"web bomb.\""; the id is the engine's). The
+	# skirmish bursts it at the end of the foe's action (Skirmish._web_burst): a Suppress on it
+	# and on the next foe to act beside it, each for itself. One web on a foe, however often it
+	# is webbed.
+	"webbed": {"id": "webbed", "name": "Web Bomb", "description": "At the end of its action the web bursts: it and the next foe to act beside it are Suppressed.", "stacking": "renew", "decay": "none",
 		"tags": ["web"], "effects": []},
 	# The machines' buffs (29 September): what buff equipment grants. Names are placeholders
 	# for Ryan. Flat since 2 October (the damage scale: a tenth of a blow of 10 to 20 is nothing
@@ -148,7 +150,7 @@ const STATUS := {
 	# source feeding so many stacks a round settles near twice that, where a stack fading a
 	# round climbed without limit ("stacking to the moon and fueling massive ramp strategies").
 	# No machine keeps it: the Ammit's Tap held every stack for the battle until its rework (12
-	# November), and that keep left the engine with it. Its battle-long part is its Souls, below,
+	# November), and that keep left the engine with it. Its battle-long part is its Essence, below,
 	# and what they grant is this, halving like any.
 	"overcharged": {"id": "overcharged", "name": "Empowered", "description": "Attacks deal +1 damage a stack. Halves at the end of each round, rounded down.", "decay": "half",
 		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 1}]},
@@ -160,7 +162,7 @@ const STATUS := {
 	# there is), every stack going at once at its owner's turn: a machine's at the round's
 	# end, a foe's at its next action. A foe's brace grants it too (Ryan, 16 October: a
 	# keyword or an effect and the buff it creates share a name), its value its stacks.
-	"braced": {"id": "braced", "name": "Armoured", "description": "Armour +1 a stack, every stack at once: on a machine until the round's end, on a foe until its next action.", "decay": "round",
+	"braced": {"id": "braced", "name": "Armoured", "description": "Armour +1 a stack, every stack at once, until its side's next turn begins.", "decay": "round",
 		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]},
 	"primed": {"id": "primed", "name": "Primed", "description": "Every blow it lands leaves a stack of Ablating, per stack.",
 		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_ablate", "value": 1}]},
@@ -180,7 +182,7 @@ const STATUS := {
 	# Pinned (the Hollow-point Harpoon's, Ryan, 11 November): a status of its own for the round,
 	# holding the foe's Flak from halving at the round's end. HOLDERS names the holder of each
 	# status a piece may hold, so a like one for Ablating is a row there and a status here.
-	"pinned": {"id": "pinned", "name": "Pinned Flak", "description": "Its Flak does not decay this round.", "stacking": "renew",
+	"pinned": {"id": "pinned", "name": "Pinned", "description": "Its Flak does not decay this round.", "stacking": "renew",
 		"tags": ["pin"], "effects": [{"trigger": "static", "effect": "hold_status", "value": "flakked"}]},
 	# Ablating's pin, Seared (Ryan, 11 November: "Might as well code it in since the Mastema will
 	# want it as a fitted piece, if nothing else"; its name his, 15 November: "Rename 'Seared.'"):
@@ -221,7 +223,7 @@ const STATUS := {
 	# strike was aimed at after the blows (Skirmish._prime), never on the fire's own blows.
 	"charged": {"id": "charged", "name": "Charged", "description": "Its weapons fire with Shock while it lasts; a weapon fired spends a stack.", "decay": "none",
 		"tags": ["buff"], "effects": []},
-	"supercooled": {"id": "supercooled", "name": "Supercooled", "description": "Its weapons fire with Cryo while it lasts, one more a strike; a weapon fired spends a stack.", "decay": "none",
+	"supercooled": {"id": "supercooled", "name": "Supercooled", "description": "Its weapons fire with Cryo 1 while it lasts, a stack a strike, one more on a gun that carries Cryo; a weapon fired spends a stack.", "decay": "none",
 		"tags": ["buff"], "effects": []},
 	# What a foe's defend, buff and debuff actions leave (30 September), besides the Braced of
 	# its brace (above): Empowered rides its next move; Risen is a charge spent by a death.
@@ -362,25 +364,30 @@ const STATUS := {
 	# A buff a Purge lowers, on either side.
 	"regenerating": {"id": "regenerating", "name": "Regenerating", "description": "Regrows {value} HP at each of its actions, after its Ablating and Vitriol; a stack an action left.",
 		"tags": ["buff"], "effects": [{"trigger": "status", "effect": "regrow", "value": 2}]},
-	"ward": {"id": "ward", "name": "Ward", "description": "No rider a foe lays lands on it this round, from a blow or a move of its own (ablate, scorch, disable, corrupt, purge); a blow's damage lands. Until the round's end.", "stacking": "renew",
+	"ward": {"id": "ward", "name": "Ward", "description": "No rider a foe lays lands on it this round, from a blow or a move of its own (ablate, scorch, jam, corrupt, purge); a blow's damage lands. Until the round's end.", "stacking": "renew",
 		"tags": ["buff"], "effects": []},
-	# The Ammit's Souls (Ryan, 12 November, its rework: "Kills grant one Soul"; "Souls granted by
+	# The Ammit's Essence (Ryan, 12 November, its rework: "Kills grant one Soul"; "Souls granted by
 	# any kill"; "The souls last the battle"; "I wasn't going to cap it, as part of the fantasy"):
 	# a count its passive banks, one for every foe that falls in its fight, kept from fight to
 	# fight through the battle (its `scope`) with no cap. Uncapped, it is no store (a store is a
 	# capped resource with a bar): it is the machine's Ability, a chip with its count (`counted`:
 	# the chip says it at one too), so no Purge or Cleanse touches it.
-	# Its flares read it (stack_status's `per_stack` and `stack_step`) and its Soul Siphon spends it
+	# Its flares read it (stack_status's `per_stack` and `stack_step`) and its Quintessence Tap spends it
 	# (Face.spends).
-	"souls": {"id": "souls", "name": "Souls", "description": "A Soul for every foe that has fallen in its fights this battle. Its flares grant Empowered by the Souls it holds, and its Soul Siphon consumes them.", "decay": "none", "scope": "battle", "counted": true,
+	# Essence is its name since 15 November (Ryan: "Rename souls to Essence"; Souls until then).
+	"essence": {"id": "essence", "name": "Essence", "description": "1 for every foe that has fallen in its fights this battle. Its flares grant Empowered by the Essence it holds, and its Quintessence Tap consumes it.", "decay": "none", "scope": "battle", "counted": true,
 		"tags": ["ability"], "effects": []},
-	# Empowered's pin (the Soul Siphon's, Ryan, 12 November: "No Empowered decays this round. And I
-	# mean none, not ally or enemy"): the third pin, and the first over the whole field. No unit
-	# carries it as a status: the round does (Skirmish.round_holds), so a Ward turns nothing away,
-	# no Paradox counts it and an Empowered gained later in the round is held with the rest. This
-	# is the chip every unit holding Empowered wears until the round's end, and its word in the list.
-	"pinned_empowered": {"id": "pinned_empowered", "name": "Pinned Empowered", "description": "Its Empowered does not decay this round.", "stacking": "renew",
-		"tags": ["pin", "marker"], "effects": []},
+	# The Quintessence Tap's hold (Ryan, 12 November: "No Empowered decays this round. And I mean
+	# none, not ally or enemy"), a buff on the machine that spent it since 15 November ("This is
+	# not pinned empowered, this is an Ammit specific buff. I would give it to the Ammit only, even
+	# though it affects the whole battlefield"; "the no-decay state which is represented as a buff
+	# on the Ammit called Essence Flare"): while a live machine carries it as the round's statuses
+	# run down, no unit's Empowered halves, either side's, what stood and what came later in the
+	# round alike (Skirmish.field_holds). A buff like any: a Purge takes it, and the hold with it.
+	# Pinned Empowered, a chip on every unit holding Empowered and a rule of the round's, was its
+	# form from 12 to 15 November.
+	"essence_flare": {"id": "essence_flare", "name": "Essence Flare", "description": "No Empowered decays this round, its own or any other unit's, on either side.", "stacking": "renew", "single": true,
+		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "hold_all", "value": "overcharged"}]},
 }
 ## The statuses a buff component may grant: the machines' own (Braced is a foe's too, from its
 ## brace), never one only a foe carries.
@@ -469,7 +476,7 @@ static func foe_barrier() -> Dictionary:
 
 static func foe_ward() -> Dictionary:
 	var d: Dictionary = STATUS["ward"].duplicate(true)
-	d["description"] = "No mark the team lays lands on it but Suppressed: no Ablating, Flak, Cryo, Vitriol, Shock, Expose, Web, Paradox or drone. Damage lands. Until the player's turn ends."
+	d["description"] = "No mark the team lays lands on it but Suppressed: no Ablating, Flak, Cryo, Vitriol, Shock, Expose, Web Bomb, Paradox or drone. Damage lands. Until the player's turn ends."
 	return d
 
 
@@ -506,10 +513,10 @@ static func brace_stacks(value: int) -> int:
 const FOE_STATUSES := ["ablating", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed", "flakked", "exposure", "mine", "pinned", "seared", "sapped"]
 ## The status that holds each status a piece may hold on its target (Face.holds).
 const HOLDERS := {"flakked": "pinned", "ablating": "seared"}
-## The pin a unit wears on its chips while the round itself holds a status of its (Face.holds_all,
-## Skirmish.round_holds: the Soul Siphon's hold on Empowered, either side's): the chip's word and
-## icon alone, since the round carries the hold and no unit the status.
-const ROUND_HOLDERS := {"overcharged": "pinned_empowered", "kindled": "pinned_empowered"}
+## The buff a machine gains when it spends an entry that holds a status on every unit this round
+## (Face.holds_all: the Quintessence Tap's hold on Empowered is Essence Flare), by the status the
+## entry names. The buff's own effect is the hold (hold_all), so the rule lives on the buff.
+const ROUND_HOLDERS := {"overcharged": "essence_flare"}
 ## target_status: the foe struck carries any of FOE_STATUSES (Numbed and its own buffs never count).
 ## ally_present: another live machine is in the fight (the unit's `allies`, kept by the skirmish).
 ## A `tag_<tag>` condition reads the component's tags (10 October: a tag never carries a rule of
@@ -850,15 +857,15 @@ static func turn_tick(u, waits: bool = false) -> Dictionary:
 ## round's end, so its halving statuses halve here too; a foe's comes at its action, so it
 ## passes `halving` false and its halving statuses wait for the round's end (halve: Flak on
 ## Empowered's clock, 21 October). `held_round`: the statuses the round itself holds from
-## decaying on every unit (the Soul Siphon's "No Empowered decays this round"), beside a pin's.
+## decaying on every unit (Essence Flare's "No Empowered decays this round"), beside a pin's.
 static func tick(u, halving: bool = true, held_round: Array = []) -> Dictionary:
 	var out := tick_preview(u)
 	var held := held_statuses(u)   # a pin's: the status ticks and loses no stack (Seared)
-	held.append_array(held_round)  # and the round's own (Skirmish.round_holds: the Soul Siphon's hold on Empowered)
+	held.append_array(held_round)  # and the field's (Skirmish.round_holds: Essence Flare's hold on Empowered)
 	var keep: Array = []
 	for m in u.modifiers:
-		if m.decay == DECAY_ROUND:
-			continue
+		if m.decay == DECAY_ROUND and halving:
+			continue   # a machine's, at the round's end; a foe's goes as the enemy's turn opens (turn_opens)
 		if m.decay == DECAY_TICK and held.has(m.id):
 			pass
 		elif m.decay == DECAY_TICK:
@@ -876,6 +883,14 @@ static func tick(u, halving: bool = true, held_round: Array = []) -> Dictionary:
 		keep.append(m)
 	u.modifiers = keep
 	return out
+
+
+## A foe's side's turn opens: every status that lasts until then goes, every stack at once (its
+## Armoured, its own brace's and a Protect's alike; Ryan, 15 November: "The common "end" state
+## between both sides is "start of their next turn""). It went at the foe's own action until
+## then, so a foe acting late in the turn wore its plate through the blasts of the foes before it.
+static func turn_opens(u) -> void:
+	u.modifiers = u.modifiers.filter(func(m) -> bool: return m.decay != DECAY_ROUND)
 
 
 ## The round's end for a foe (Flak, 21 October: it halves at the end of each round, rounded
@@ -903,9 +918,23 @@ static func held_statuses(u) -> Array:
 	return out
 
 
+## The statuses `u` holds from decaying on every unit in its fight right now, either side's (a
+## live hold_all: Essence Flare's hold on Empowered), each with every status that reads as it does
+## (named_like: a machine's Empowered and a foe's).
+static func holds_all(u) -> Array:
+	var out: Array = []
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) != "hold_all":
+			continue
+		for id in named_like(str(pair[0].get("value", ""))):
+			if not out.has(id):
+				out.append(id)
+	return out
+
+
 ## Every status that reads as `status_id` does on its chip, itself first: Empowered is a
 ## machine's `overcharged` and a foe's `kindled`, one word on both sides (3 November), so a rule
-## that says "Empowered" names both (the Soul Siphon's hold: Ryan, 12 November, "none, not ally or
+## that says "Empowered" names both (the Quintessence Tap's hold: Ryan, 12 November, "none, not ally or
 ## enemy").
 static func named_like(status_id: String) -> Array:
 	var out: Array = [status_id]
@@ -919,12 +948,12 @@ static func named_like(status_id: String) -> Array:
 
 
 ## The scope a status's own definition names: "battle", kept from fight to fight until the battle
-## ends (the Ammit's Souls); the skirmish when it names none.
+## ends (the Ammit's Essence); the skirmish when it names none.
 static func status_scope(def: Dictionary) -> int:
 	return BATTLE if str(def.get("scope", "")) == "battle" else SKIRMISH
 
 
-## Whether a status is a count its chip always says, at one too (the Ammit's Souls), where a
+## Whether a status is a count its chip always says, at one too (the Ammit's Essence), where a
 ## buff's chip says its stacks from two.
 static func is_counted(status_id: String) -> bool:
 	return bool(STATUS.get(status_id, {}).get("counted", false))
@@ -1255,19 +1284,15 @@ static func effective_reach(u, face: Face) -> int:
 
 
 ## Keywords a live passive grants this component beyond its own (grant_keyword, static, its
-## `when` honoured; the Overrun Gearing, a module, puts Spillover on every attack). An
+## `when` honoured). An
 ## attack keyword lands on attacks only, a support keyword on a shield, vent or buff only, a spend
 ## keyword on anything; a keyword the component already carries is not granted twice.
-## `printed_only`: just the grants written out (`printed`, the Gearing's spill), which the die
-## draws as the star with the hold reading the passive's line, never a keyword chip.
-static func granted_keywords(u, face: Face, target = null, printed_only: bool = false) -> Array[int]:
+static func granted_keywords(u, face: Face, target = null) -> Array[int]:
 	var out: Array[int] = []
 	if face == null or face.kind == Face.Kind.BLANK:
 		return out
 	for pair in _taking_part(u, "static", face, target):
 		if str(pair[0].get("effect", "")) != "grant_keyword":
-			continue
-		if printed_only and not bool(pair[0].get("printed", false)):
 			continue
 		var kw := Face.keyword_from_name(str(pair[0].get("value", "")))
 		if kw <= 0 or face.has(kw) or out.has(kw):
@@ -1345,7 +1370,6 @@ static func effective_face(u, face: Face, target = null) -> Face:
 	var base := rewritten(u, face)
 	var r := effective_reach(u, face)
 	var granted := granted_keywords(u, base, target)
-	var printed := granted_keywords(u, base, target, true)
 	var numbers := granted_numbers(u, base, target)
 	# A numbered grant on a keyword the entry already carries sets its number (the drum's shape).
 	var raised := {}
@@ -1363,7 +1387,10 @@ static func effective_face(u, face: Face, target = null) -> Face:
 	# A weapon's blows ignoring armour by a state its machine carries (the Wild Boar's Juggernaut
 	# Drive, a written rule since 15 November, no keyword): a weapon alone.
 	var unarmours := base.is_weapon() and not base.ignores_armour and grants_ignore_armour(u, base, target)
-	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and split <= 1 and not primed_shock and not primed_cryo and not unarmours:
+	# Damage past a kill spilling behind by a rule its machine wears (the Overrun Gearing's, a
+	# module's; a written rule since 15 November, no keyword): every entry aimed at a foe.
+	var spills := base.is_attack() and not base.spills and grants_spill(u, base, target)
+	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and split <= 1 and not primed_shock and not primed_cryo and not unarmours and not spills:
 		return face
 	var c := base.duplicate_face() if base == face else base
 	c.reach = r
@@ -1371,8 +1398,6 @@ static func effective_face(u, face: Face, target = null) -> Face:
 		c.add_keyword(kw)
 		if numbers.has(kw):
 			c.set_number(kw, int(numbers[kw]))   # the grant's own number (the drum's Spread 2)
-		if printed.has(kw) and not c.printed.has(kw):
-			c.printed.append(kw)
 	for kw in raised.keys():
 		c.set_number(kw, int(raised[kw]))
 	if primed_shock:
@@ -1386,6 +1411,8 @@ static func effective_face(u, face: Face, target = null) -> Face:
 		c.split = split
 	if unarmours:
 		c.ignores_armour = true
+	if spills:
+		c.spills = true
 	return c
 
 
@@ -1395,6 +1422,15 @@ static func effective_face(u, face: Face, target = null) -> Face:
 static func grants_ignore_armour(u, face: Face, target = null) -> bool:
 	for pair in _taking_part(u, "static", face, target):
 		if str(pair[0].get("effect", "")) == "ignore_armour":
+			return true
+	return false
+
+
+## Does a live effect make this entry's damage past a kill spill into the foe behind (spillover,
+## static, its `when` honoured: the Overrun Gearing's)?
+static func grants_spill(u, face: Face, target = null) -> bool:
+	for pair in _taking_part(u, "static", face, target):
+		if str(pair[0].get("effect", "")) == "spillover":
 			return true
 	return false
 
@@ -1623,7 +1659,7 @@ static func blow_blocked(u) -> Dictionary:
 ## decaying as the status says, never past its `cap` when it names one, a store's), on `onto`
 ## when it is given (the ally an on_shield_granted passive shields) and on the machine itself
 ## otherwise. A stack_status may count its grant off another status the machine carries
-## (`per_stack`, in steps of `stack_step`: the Ammit's flare, an Empowered for every five Souls,
+## (`per_stack`, in steps of `stack_step`: the Ammit's flare, an Empowered for every five Essence,
 ## nothing under five). How often a trigger fires is the trigger's own and never an effect's
 ## option: a kill's once an attack that killed, however many fell; a foe killed's once for each
 ## foe that falls, its caller firing it a foe at a time (a flag that chose between the two stood
@@ -1671,13 +1707,13 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 
 ## The steps an effect scaled by a status is worth right now (`per_stack`, with `stack_step` the
 ## stacks a step takes, one when it says none): how many whole steps of the status the machine
-## carries. The Ammit's flare is a stack of Empowered a step of five Souls.
+## carries. The Ammit's flare is a stack of Empowered a step of five Essence.
 static func stack_steps(u, eff: Dictionary) -> int:
 	return int(stacks_of(u, str(eff.get("per_stack", ""))) / maxi(1, int(eff.get("stack_step", 1))))
 
 
 ## What this machine's passives would grant it of `status_id` on `trigger` as it stands, a count
-## read and nothing granted: the stacks a flare is worth now (the Ammit's, off its Souls), for the
+## read and nothing granted: the stacks a flare is worth now (the Ammit's, off its Essence), for the
 ## die, the bot and the codex: one firing of the trigger.
 static func would_stack(u, trigger: String, status_id: String) -> int:
 	var total := 0
@@ -1693,7 +1729,7 @@ static func would_stack(u, trigger: String, status_id: String) -> int:
 
 
 ## The counts this machine's passives bank as foes fall in its fight (on_foe_killed's
-## stack_status: the Ammit's Souls), by status id: what a debug switch fills and a pose shows.
+## stack_status: the Ammit's Essence), by status id: what a debug switch fills and a pose shows.
 static func kill_counts(u) -> Array:
 	var out: Array = []
 	for pair in _taking_part(u, "on_foe_killed", null):
@@ -2221,15 +2257,16 @@ static func ordinal(n: int) -> String:
 
 
 ## Switch one die entry off until the end of `until_round`: the entry shows dark, the
-## component itself is untouched. Applied to the target's showing entry by a foe's disable
-## (through the mech's next turn) and by a spent entry's own cooldown (`source` "cooldown": the
+## component itself is untouched. Applied to the target's showing entry by a foe's jam
+## (through the mech's next turn; the status it leaves reads Jammed, Disabled until 15 November)
+## and by a spent entry's own cooldown (`source` "cooldown": the
 ## rest of the round of the spend and the rounds it prints after it; Rapid's own switch-off, the
-## rest of the round alone). A foe's disable can be cleansed; a cooldown cannot (it is the
+## rest of the round alone). A foe's jam can be cleansed; a cooldown cannot (it is the
 ## piece's price, and a cleanse that lifted a Rapid piece's would start an infinite turn).
 static func disable_entry(u, index: int, source: String, until_round: int) -> Modifier:
 	var cooldown := source == "cooldown"
-	var status := {"id": "disabled_%d" % index, "name": "Cooldown" if cooldown else "Disabled",
-		"description": "This component is dark, cooling down." if cooldown else "This component is switched off.",
+	var status := {"id": "disabled_%d" % index, "name": "Cooldown" if cooldown else "Jammed",
+		"description": "This component is dark, cooling down." if cooldown else "This component is jammed: it comes up blank.",
 		"tags": [] if cooldown else [CLEANSABLE],
 		"effects": [{"trigger": "status", "effect": "disable_entry", "value": index}]}
 	return grant_for_rounds(u, status, source, until_round)
@@ -2454,6 +2491,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"add_damage_taken": body = "damage taken %s" % signed
 		"multiply_damage_taken": body = "damage taken ×%s" % vs
 		"suppress": body = "turns off %s" % vs
+		"spillover": body = Face.SPILLS_TEXT
 		"grant_keyword":
 			var kw := Face.keyword_from_name(str(v))
 			body = "gains %s" % (Face.keyword_label(kw) if kw > 0 else str(v))
@@ -2476,6 +2514,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"pass_release": body = "a turn it ends with an entry it could have spent and %d heat or more releases its heat once the enemy has acted: %s on every foe, 1 more for each heat over %d" % [int(eff.get("gate", 1)), vs, int(eff.get("gate", 1))]
 		"shove_behind": body = "damaging a foe in the front rank deals %s%% of its maximum HP, rounded up, to the foe behind it" % vs
 		"hold_status": body = "its %s does not decay" % str(STATUS.get(str(v), {}).get("name", v))
+		"hold_all": body = "no %s decays this round, any unit's" % str(STATUS.get(str(v), {}).get("name", v))
 		"ignore_armour": body = "its weapons ignore armour"
 		"heat_per_blow": body = "every blow a foe lands on it adds %s heat" % vs
 		"multiply_stacks": body = "the stacks it lays ×%s" % vs
@@ -2573,9 +2612,12 @@ static func explain(u, face: Face) -> Array[String]:
 			elif trig == "static" and name == "grant_keyword":
 				var kw := Face.keyword_from_name(str(eff.get("value", "")))
 				if kw > 0 and not face.has(kw) and granted_keywords(u, face).has(kw):
-					# A grant written out (the Gearing's spill) reads the passive's own line, the
-					# star's text, since the player learns no keyword for it.
-					out.append("%s (%s)" % [written_out(m, eff) if bool(eff.get("printed", false)) else effect_text(eff), m.name])
+					out.append("%s (%s)" % [effect_text(eff), m.name])
+			elif trig == "static" and name == "spillover":
+				# A rule written out (the Gearing's spill) reads the passive's own line, the
+				# star's text: the player learns no keyword for it.
+				if face.is_attack() and grants_spill(u, face):
+					out.append("%s (%s)" % [written_out(m, eff), m.name])
 			elif trig == "on_attack":
 				# A condition on the target is shown as a rule (its lead says when), since
 				# the row has no target in hand.
@@ -2588,25 +2630,23 @@ static func explain(u, face: Face) -> Array[String]:
 	return out
 
 
-## The written-out grants on this entry (the Gearing's spill): the granting passive's own line
+## The rules a live passive writes on this entry (the Gearing's spill): the passive's own line
 ## each, the text of the star the die draws for it, as the hold prints it.
-static func printed_grants(u, face: Face) -> Array[String]:
+static func written_rules(u, face: Face) -> Array[String]:
 	var out: Array[String] = []
-	if face == null or not face.is_attack():
+	if face == null or not face.is_attack() or not grants_spill(u, face):
 		return out
-	var printed := granted_keywords(u, face, null, true)
 	for m in live(u):
 		for eff in m.effects:
-			if str(eff.get("trigger", "")) != "static" or str(eff.get("effect", "")) != "grant_keyword" or not bool(eff.get("printed", false)):
+			if str(eff.get("trigger", "")) != "static" or str(eff.get("effect", "")) != "spillover":
 				continue
-			if printed.has(Face.keyword_from_name(str(eff.get("value", "")))):
-				var line := written_out(m, eff)
-				if not out.has(line):
-					out.append(line)
+			var line := written_out(m, eff)
+			if not out.has(line):
+				out.append(line)
 	return out
 
 
-## The line a grant written out reads, the star's text: a module's rule (its `line`, the text's
+## The line a rule written out reads, the star's text: a module's rule (its `line`, the text's
 ## own, never the stat lines the module's description leads with), else the granting passive's
 ## description, else the effect's own words.
 static func written_out(m, eff: Dictionary) -> String:

@@ -753,9 +753,9 @@
     "reach": "indirect",
     "power": 0,
     "keywords": [
-     "swap",
      "shock"
     ],
+    "swaps": true,
     "heat": 1
    },
    "passive": null,
@@ -890,22 +890,22 @@
    ]
   },
   {
-   "id": "soul_siphon",
-   "name": "Soul Siphon",
+   "id": "quintessence_tap",
+   "name": "Quintessence Tap",
    "maker": "arsenal",
    "shape": "none",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "The tap opened the other way: what the Ammit has taken in, burned for a round. Ryan's piece and his name, 12 November.",
-    "niche": "The Ammit's second lock, equipment spent on itself (Ryan, 12 November: \"Consume up to 5 souls, granting 1 Empowered per soul. Cooldown 3\"; \"No Empowered decays this round. And I mean none, not ally or enemy\"): the round it is spent the Ammit does nothing else, and the next it swings at everything it held and what it consumed, whole. Unplayable with no Soul. Its cooldown keeps the hold from chaining. The foes' Empowered is held too, its price against a rally."
+    "fantasy": "The reactor's tap opened the other way: what the Ammit has taken in, burned for a round. Ryan's piece, 12 November, and his name for it of 15 November (the Soul Siphon until then).",
+    "niche": "The Ammit's second lock, equipment spent on itself (Ryan, 12 November: \"Consume up to 5 souls, granting 1 Empowered per soul. Cooldown 3\"; \"No Empowered decays this round. And I mean none, not ally or enemy\"): the round it is spent the Ammit does nothing else, and the next it swings at everything it held and what it consumed, whole. Unplayable with no Essence. Its cooldown keeps the hold from chaining. The foes' Empowered is held too, its price against a rally. Its hold is a buff on the Ammit since 15 November, Essence Flare (Ryan: \"an Ammit specific buff. I would give it to the Ammit only, even though it affects the whole battlefield\"), so a Purge that takes the buff ends the hold."
    },
    "face": {
     "kind": "buff",
     "status": "overcharged",
     "targets": "self",
-    "spends": "souls",
+    "spends": "essence",
     "spends_up_to": 5,
     "holds_all": "overcharged",
     "cooldown": 3
@@ -1498,9 +1498,8 @@
     "kind": "attack",
     "reach": "direct",
     "power": 0,
-    "keywords": [
-     "web"
-    ],
+    "keywords": [],
+    "webs": true,
     "heat": 1
    },
    "passive": null,

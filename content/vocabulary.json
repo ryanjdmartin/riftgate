@@ -230,16 +230,6 @@
    }
   },
   {
-   "id": "spillover",
-   "category": "keyword",
-   "name": "Spillover",
-   "codex": "The Overrun Gearing's rule, a module's, granted to every weapon its machine fires and run by the engine as a keyword: when a blow kills a front-rank foe, what it had past the kill carries into the foe behind it in the same column. Nothing stands behind a massive foe. No component carries it; it becomes a keyword the player learns on its own if a second source ever grants it.",
-   "status": "implemented",
-   "design": {
-    "holes": "The spill is plain damage: it spends a Shock and its kills are its spend's (a kill trigger, the Ammit's flare), and it carries no other keyword of the blow."
-   }
-  },
-  {
    "id": "cryo",
    "category": "keyword",
    "name": "Cryo",
@@ -310,23 +300,13 @@
    }
   },
   {
-   "id": "web",
-   "category": "keyword",
-   "name": "Web",
-   "codex": "The funnel-web's Web Bomb, locked: the foe hit is Webbed, no damage. After its action the web bursts, Suppressing it and the next foe to act beside it.",
-   "status": "implemented",
-   "design": {
-    "holes": "A keyword, so its chip and checks come free; the burst runs at the end of the foe's action (Skirmish._web_burst)."
-   }
-  },
-  {
    "id": "swap",
-   "category": "keyword",
+   "category": "component_property",
    "name": "Swap",
-   "codex": "Player keyword, the Dingo's Combat Translocator's: the spend takes two targets, a foe and then another foe or an empty slot, and the two trade places; no damage. A massive foe does not move. Drag the die to the first, drop it, then tap the second; drag it again to move it, or tap the ground to set it back.",
+   "codex": "A rule printed on a component (the Dingo's Combat Translocator, a debuff): the spend takes two targets, a foe and then another foe or an empty slot, and the two trade places; no damage. A massive foe does not move. Drag the die to the first, drop it, then tap the second; drag it again to move it, or tap the ground to set it back.",
    "status": "implemented",
    "design": {
-    "holes": ""
+    "holes": "A keyword until 15 November (Ryan: \"Can be unique text, not a keyworded rider\"): the piece's own rule, `swaps` on its entry, its mark kept on the die."
    }
   },
   {
@@ -401,7 +381,7 @@
    "id": "volatile",
    "category": "component_property",
    "name": "Volatile",
-   "codex": "A cost printed on any kind of component, along its foot beside its heat, the hull's mark (a machine's body) and a number. Volatile 3 means spending it costs its owner 3 hull, past shield and armour, before the component acts, and a machine it leaves at nothing is wrecked. A blank is never spent, so a disabled entry costs nothing.",
+   "codex": "A cost printed on any kind of component, along its foot beside its heat, the hull's mark (a machine's body) and a number. Volatile 3 means spending it costs its owner 3 hull, past shield and armour, before the component acts, and a machine it leaves at nothing is wrecked. A blank is never spent, so a jammed entry costs nothing.",
    "status": "implemented",
    "design": {
     "holes": "Hull outright, where the Corrupted bite takes shield first. The number is a placeholder. A keyword with a chip until 26 October; a cost like heat since, so the die says the price and no chip does."
@@ -459,20 +439,20 @@
    }
   },
   {
-   "id": "disable",
+   "id": "jam",
    "category": "keyword",
-   "name": "Disable",
-   "codex": "Enemy keyword. The component the target's die is showing is switched off through the target's next turn: if the die lands on it, it comes up blank.",
+   "name": "Jam",
+   "codex": "Enemy keyword. The component the target's die is showing is Jammed through the target's next turn: if the die lands on it, it comes up blank.",
    "status": "implemented",
    "design": {
-    "holes": ""
+    "holes": "Disable until 15 November (Ryan: \"Rename to Jammed\"); the rider follows the pattern, Jam lays Jammed."
    }
   },
   {
    "id": "steal",
    "category": "keyword",
    "name": "Steal",
-   "codex": "Enemy keyword. The component the target's die is showing is switched off through the target's next turn, as a Disable, and the foe takes it: its next swing lands that weapon's number, and anything that was no weapon is a fake, for 1. A Ward turns it away.",
+   "codex": "Enemy keyword. The component the target's die is showing is Jammed through the target's next turn, as a Jam, and the foe takes it: its next swing lands that weapon's number, and anything that was no weapon is a fake, for 1. A Ward turns it away.",
    "status": "implemented",
    "design": {
     "holes": "Gilgamesh's (30 October). One piece held at a time, the swing spending it; the swing is one strike at the piece's number, whatever strikes the piece had, and no keyword of the piece rides it."
@@ -552,7 +532,7 @@
    "id": "cleanse",
    "category": "keyword",
    "name": "Cleanse",
-   "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Ablating, Scorched, Crushed, Disabled and Corrupted status. A rapid component's own switch-off is not a status a cleanse touches. On a foe's move of its own, the same word: every mark the team laid (Ablating, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox, the Drone) comes off the most-marked of its own, never Numbed or Suppressed.",
+   "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Ablating, Scorched, Crushed, Jammed and Corrupted status. A rapid component's own switch-off is not a status a cleanse touches. On a foe's move of its own, the same word: every mark the team laid (Ablating, Flak, Cryo, Vitriol, Shocked, Exposed, the Web Bomb, the Paradox, the Drone) comes off the most-marked of its own, never Numbed or Suppressed.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -593,11 +573,11 @@
   {
    "id": "pinned",
    "category": "status",
-   "name": "Pinned Flak",
+   "name": "Pinned",
    "codex": "Foe status, from the Hollow-point Harpoon. Its Flak does not halve at this round's end. Until the round's end; refreshed, never added.",
    "status": "implemented",
    "design": {
-    "holes": "Ryan, 11 November: \"The Flak pin should be its own status that gets applied for one turn. I assume we're going to want a similar one for burning as well.\" The name is a session's draft.",
+    "holes": "Ryan, 11 November: \"The Flak pin should be its own status that gets applied for one turn. I assume we're going to want a similar one for burning as well.\" Pinned Flak until 15 November; the name is his (\"Just \\\"Pinned.\\\"\").",
     "table": {
      "kind": "debuff",
      "on": "foe",
@@ -722,7 +702,7 @@
    "id": "braced",
    "category": "status",
    "name": "Armoured",
-   "codex": "Status, on either side. Armour +1 a stack: that much off every blow that reaches it, flat, every stack at once, whatever granted it, so the count is the armour. On a machine (a buff, an armouring component, a passive) it lasts until the round's end and comes off blows on bare hull; on a foe, from its brace, it lasts until its next action.",
+   "codex": "Status, on either side. Armour +1 a stack: that much off every blow that reaches it, flat, every stack at once, whatever granted it, so the count is the armour. It lasts until its side's next turn begins: a machine's (a buff, an armouring component, a passive) through the enemy's turn, coming off blows on bare hull, and a foe's, from its brace or another's, through the player's.",
    "status": "implemented",
    "design": {
     "holes": "The engine id stays braced.",
@@ -730,7 +710,7 @@
      "kind": "buff",
      "on": "both",
      "stacks": "Yes: an armour point a stack, every stack going at once",
-     "lasts": "A machine's until the round's end; a foe's until its next action"
+     "lasts": "Until its side's next turn begins"
     }
    }
   },
@@ -751,13 +731,13 @@
    }
   },
   {
-   "id": "disabled",
+   "id": "jammed",
    "category": "status",
-   "name": "Disabled",
-   "codex": "Component status. This die entry comes up blank while it lasts; the component itself is untouched. A foe's disable lasts through the machine's next turn and can be cleansed; a rapid component's own switch-off ends with the round.",
+   "name": "Jammed",
+   "codex": "Component status. This die entry comes up blank while it lasts; the component itself is untouched. A foe's jam lasts through the machine's next turn and can be cleansed; a rapid component's own switch-off ends with the round, and is no jam.",
    "status": "implemented",
    "design": {
-    "holes": "",
+    "holes": "Disabled until 15 November (Ryan: \"Rename to Jammed\"). The engine's own name for an entry switched off, by a jam or by a cooldown, stays disabled.",
     "table": {
      "kind": "debuff",
      "on": "machine",
@@ -770,7 +750,7 @@
    "id": "corrupted",
    "category": "status",
    "name": "Corrupted",
-   "codex": "Component status. Every time this die entry is spent it bites its owner for 3 per stack, shield first, before the component acts. A blank is never spent, so a disabled entry does not bite. Stacks. Clears at end of skirmish. Can be cleansed.",
+   "codex": "Component status. Every time this die entry is spent it bites its owner for 3 per stack, shield first, before the component acts. A blank is never spent, so a jammed entry does not bite. Stacks. Clears at end of skirmish. Can be cleansed.",
    "status": "implemented",
    "design": {
     "holes": "The bite is the status's own number in the engine's table, a placeholder.",
@@ -865,11 +845,11 @@
   {
    "id": "webbed",
    "category": "status",
-   "name": "Webbed",
-   "codex": "Foe status, the funnel-web's web. At the end of its action the web bursts: it and the next foe to act beside it are Suppressed, each a stun like any other (a Numbed foe strips a stack instead, a Warded one turns it). Killed first, it takes its web with it; one the team has already suppressed gains nothing from the burst on itself.",
+   "name": "Web Bomb",
+   "codex": "Foe status, the mark the Funnel-web's Web Bomb leaves on the foe it hits, the piece's own rule. At the end of its action the web bursts: it and the next foe to act beside it are Suppressed, each a stun like any other (a Numbed foe strips a stack instead, a Warded one turns it). Killed first, it takes its web with it; one the team has already suppressed gains nothing from the burst on itself.",
    "status": "implemented",
    "design": {
-    "holes": "The burst catches the next foe to act beside it in its rank, the one to its left when none stands to its right; on a foe already suppressed it is wasted, and each half feeds the Paradox as the Suppress keyword's does.",
+    "holes": "The burst catches the next foe to act beside it in its rank, the one to its left when none stands to its right; on a foe already suppressed it is wasted, and each half feeds the Paradox as the Suppress keyword's does. Named for its piece and its rider no keyword since 15 November (Ryan: \"I don't think the rider needs to be listed as a keyword. It's a unique effect, and the debuff can be renamed \\\"web bomb.\\\"\"); the id is the engine's.",
     "table": {
      "kind": "debuff",
      "on": "foe",
@@ -911,13 +891,13 @@
    }
   },
   {
-   "id": "souls",
+   "id": "essence",
    "category": "status",
-   "name": "Souls",
-   "codex": "Ability, the Ammit's. A Soul for every foe that falls in a fight it is in, whoever fells it, kept from fight to fight through the battle, with no limit. As each fight opens, and after each attack of the Ammit's that kills, it gains 1 Empowered for every 5 Souls it holds; its Soul Siphon consumes them. No Purge or Cleanse touches it.",
+   "name": "Essence",
+   "codex": "Ability, the Ammit's. 1 Essence for every foe that falls in a fight it is in, whoever fells it, kept from fight to fight through the battle, with no limit. As each fight opens, and after each attack of the Ammit's that kills, it gains 1 Empowered for every 5 Essence it holds; its Quintessence Tap consumes it. No Purge or Cleanse touches it.",
    "status": "implemented",
    "design": {
-    "holes": "Ryan's rework of 12 November, the name his. No cap by his call (\"as part of the fantasy\"), so it is no store, which is capped and wears a bar: an Ability, a chip with its count. The kill's flare is once an attack that kills, however many fall to it (Ryan, 12 November: \"Flaring twice for an AoE is probably wrong, let's make it 'one of more killed' by an attack\"); the first build flared once for each foe. The text is a session's draft.",
+    "holes": "Ryan's rework of 12 November, Souls then; Essence his name of 15 November (\"Rename souls to Essence\"). No cap by his call (\"as part of the fantasy\"), so it is no store, which is capped and wears a bar: an Ability, a chip with its count. The kill's flare is once an attack that kills, however many fall to it (Ryan, 12 November: \"Flaring twice for an AoE is probably wrong, let's make it 'one of more killed' by an attack\"); the first build flared once for each foe. The text is a session's draft.",
     "table": {
      "kind": "ability",
      "on": "machine",
@@ -927,17 +907,17 @@
    }
   },
   {
-   "id": "pinned_empowered",
+   "id": "essence_flare",
    "category": "status",
-   "name": "Pinned Empowered",
-   "codex": "From the Ammit's Soul Siphon, on every unit in the fight, machine and foe: its Empowered does not halve at this round's end, what it holds and what it gains before then. Until the round's end. It is the round's rule and no mark on anyone, so a Ward turns nothing away.",
+   "name": "Essence Flare",
+   "codex": "Machine status, from the Ammit's Quintessence Tap, on the machine that spent it. While it lasts no Empowered halves at this round's end, its own or any other unit's, machine and foe alike, what they hold and what they gain before then. Until the round's end. A buff like any: a Purge takes it and the hold with it, and a wreck holds nothing.",
    "status": "implemented",
    "design": {
-    "holes": "Ryan, 12 November: \"No Empowered decays this round. And I mean none, not ally or enemy.\" The third pin and the first over the whole field; held by the round (Skirmish.round_holds), never a status a unit carries. The name follows the two pins' and is a session's draft.",
+    "holes": "Ryan, 12 November: \"No Empowered decays this round. And I mean none, not ally or enemy.\" Pinned Empowered until 15 November, a chip on every unit holding Empowered and the round's own rule; then his: \"This is not pinned empowered, this is an Ammit specific buff. I would give it to the Ammit only, even though it affects the whole battlefield\"; \"Grants the no-decay state which is represented as a buff on the Ammit called Essence Flare.\" That a Purge ends the hold follows from its being a buff.",
     "table": {
      "kind": "buff",
-     "on": "both",
-     "stacks": "Never: the round holds it or does not",
+     "on": "machine",
+     "stacks": "Never: one, renewed",
      "lasts": "Until the round's end"
     }
    }
@@ -981,7 +961,7 @@
    "codex": "Foe status, Wainwright & Sutler's on-hit. Every blow of a weapon it takes deals a point more a stack. At the end of each round the stacks halve, rounded down.",
    "status": "implemented",
    "design": {
-    "holes": "Adds before multiplies and before armour, to a weapon's blow of 0 too (Ryan, 25 October: \"Flak and overcharge exist in part to get past armour\"), so a Shocked foe carrying Flak takes blow plus Flak, doubled. The id follows the participle habit (Ablating, Webbed). Numbers are placeholders; Flak beside Empowered at a point a stack each may read too strong, the two read together on the Prairie Dog's rows.",
+    "holes": "Adds before multiplies and before armour, to a weapon's blow of 0 too (Ryan, 25 October: \"Flak and overcharge exist in part to get past armour\"), so a Shocked foe carrying Flak takes blow plus Flak, doubled. The id follows the participle habit (Ablating, Shocked). Numbers are placeholders; Flak beside Empowered at a point a stack each may read too strong, the two read together on the Prairie Dog's rows.",
     "table": {
      "kind": "debuff",
      "on": "foe",
@@ -1501,7 +1481,7 @@
    "id": "on_foe_killed",
    "category": "trigger",
    "name": "On a foe killed",
-   "codex": "Passive trigger. Fires as a death check counts a kill in this machine's fight, whoever or whatever made it, an ally's blow, an Ablate tick and a Mine's blast among them: a status, once for each foe that fell (the Ammit's Souls).",
+   "codex": "Passive trigger. Fires as a death check counts a kill in this machine's fight, whoever or whatever made it, an ally's blow, an Ablate tick and a Mine's blast among them: a status, once for each foe that fell (the Ammit's Essence).",
    "status": "implemented",
    "design": {
     "holes": "Built 12 November for the Ammit's Souls. It fires once for each foe that falls, which is what the trigger is: no effect opts into the count. A foe getting back up, a part and a Bomb's burst are no kill and fire nothing."
@@ -1804,7 +1784,7 @@
    "codex": "A move that names the move its foe announces next round. The first lands, and the second is the next round's intent, so the warning comes a round ahead: Red Capote, then Andalucia. A Suppress on the first, or a Disrupt that turns it, and the second never comes; once announced, the second cannot be Disrupted, only Suppressed.",
    "status": "implemented",
    "design": {
-    "holes": "Content: then, on the first move, naming the second (30 October). One deep: a follow-up names none of its own and comes only after the move that names it, never by the roll. A borrowed swing with nothing taken is no follow-up, and the roll decides."
+    "holes": "Content: then, on the first move, naming the second (30 October). One deep: a follow-up names none of its own and comes only after the move that names it, never by the roll. A borrowed swing with nothing taken is no follow-up, and the roll decides. Off the player's list since 15 November (Ryan: \"I don't think we need to explicitly spell this out for the player. A backend pattern is ok, and it will become obvious through play and mastery by the player\"): the engine's pattern, with no term and no row in the list; a move's own readout still says what it names next."
    }
   },
   {
@@ -1821,7 +1801,7 @@
    "id": "foe_action",
    "category": "foe",
    "name": "Foe action",
-   "codex": "A foe has a base attack, the quick read of how hard it hits, and a list of actions: attacks that scale it, and defends, buffs and debuffs it does instead of a blow (bracing against damage, sheltering behind a Barrier, regrowing or curing one of its own, regenerating over its next actions, cleansing the team's marks off its own, warding its side against them, readying to get back up, calling up a foe, rallying or priming the others, costing the team a reroll, setting a machine Ablating, purging one, switching off the entry a die shows, scorching or corrupting every machine). Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number.",
+   "codex": "A foe has a base attack, the quick read of how hard it hits, and a list of actions: attacks that scale it, and defends, buffs and debuffs it does instead of a blow (bracing against damage, sheltering behind a Barrier, recovering or healing one of its own, regenerating over its next actions, cleansing the team's marks off its own, warding its side against them, readying to get back up, calling up a foe, rallying or priming the others, costing the team a reroll, setting a machine Ablating, purging one, jamming the entry a die shows, scorching or corrupting every machine). Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number.",
    "status": "implemented",
    "design": {
     "holes": "A foe's whole brain is its weighted draw and its aim; none plans ahead."
@@ -1871,10 +1851,10 @@
    "id": "consumes",
    "category": "component_property",
    "name": "Consumes",
-   "codex": "A rule printed on a component. A weapon's blow consumes every stack of the status it names on its target and deals a point more for each stack consumed, before the multiplies; the die held over the foe shows the number with the stacks in. Equipment consumes a count its own machine holds, up to the number it prints, and grants a stack for each one consumed (the Ammit's Soul Siphon and its Souls): the die shows what it would take now, and with nothing to consume it cannot be played.",
+   "codex": "A rule printed on a component. A weapon's blow consumes every stack of the status it names on its target and deals a point more for each stack consumed, before the multiplies; the die held over the foe shows the number with the stacks in. Equipment consumes a count its own machine holds, up to the number it prints, and grants a stack for each one consumed (the Ammit's Quintessence Tap and its Essence): the die shows what it would take now, and with nothing to consume it cannot be played.",
    "status": "implemented",
    "design": {
-    "holes": "A mine laid from it eats its arrival's stacks. The equipment's form is the Soul Siphon's (12 November), the engine's spends and spends_up_to; its text is a session's draft."
+    "holes": "A mine laid from it eats its arrival's stacks. The equipment's form is the Quintessence Tap's (12 November, the Soul Siphon then), the engine's spends and spends_up_to; its text is a session's draft."
    }
   },
   {
@@ -1931,7 +1911,7 @@
    "id": "static",
    "category": "trigger",
    "name": "Static",
-   "codex": "Passive trigger. Always on. Its effects change a machine's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat, armour, move or recharge; add_damage_taken and multiply_damage_taken on every incoming blow; set_reach on a component (direct or indirect while a condition holds); suppress, which turns off another effect by id or tag.",
+   "codex": "Passive trigger. Always on. Its effects change a machine's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat, armour, move or recharge; add_damage_taken and multiply_damage_taken on every incoming blow; set_reach on a component (direct or indirect while a condition holds); suppress, which turns off another effect by id or tag; and the rules a passive writes on its machine's entries, the star on the die: ignore_armour, and spillover (the Overrun Gearing's: damage past a kill in the front rank carries into the foe behind it in the same column, nothing standing behind a massive foe).",
    "status": "implemented",
    "design": {
     "holes": "Every read asks the pipeline; nothing is written to a stat or a component, so an effect that is gone stops answering. A static reach rule cannot be conditioned on reach."
@@ -2143,7 +2123,7 @@
    "id": "ability",
    "category": "status",
    "name": "Ability",
-   "codex": "A unit's own mechanic, the rule it plays by: never a buff or a debuff, so no Purge or Cleanse touches it. Its chip shows its mark cut out of a solid tile: the Goblin Nob's Enrage, a core's guard, a Gel's split, a last act, the Thunder Ape's golden rage; the Polar Bear's seal, the Ammit's Souls.",
+   "codex": "A unit's own mechanic, the rule it plays by: never a buff or a debuff, so no Purge or Cleanse touches it. Its chip shows its mark cut out of a solid tile: the Goblin Nob's Enrage, a core's guard, a Gel's split, a last act, the Thunder Ape's golden rage; the Polar Bear's seal, the Ammit's Essence.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 8 November, of the Nob's rage: \"Nob, and any other enemies with a passive ability, should have an unpurgable passive chip that points out what's going on. Plus, that's how slay the Spire works, where he comes from. It's not a Buff, it's not a Debuff, it's labelled as an Ability, so it doesn't get purged. Can use this for player units as well, like the armadillo's form. Golden rage should be an ability chip too.\" The tile is a placeholder look, to judge on the phone (RIFTGATE_ABILITY_DEBUG=1)."
@@ -2169,7 +2149,7 @@
    "id": "ward",
    "category": "status",
    "name": "Ward",
-   "codex": "Status, on either side; a blow's damage lands. On a machine, no rider a foe lays lands on it this round, from a blow or from a move of its own (ablate, scorch, disable, corrupt, purge), until the round's end. On a foe, from a move that wards every foe on the field, no mark the team lays lands on it (Ablating, Flak, Cryo, Vitriol, Shocked, Exposed, Webbed, the Paradox and the drone), nor a stun, nor a Purge, and a turned mark feeds no Paradox, until the end of the player's next turn.",
+   "codex": "Status, on either side; a blow's damage lands. On a machine, no rider a foe lays lands on it this round, from a blow or from a move of its own (ablate, scorch, jam, corrupt, purge), until the round's end. On a foe, from a move that wards every foe on the field, no mark the team lays lands on it (Ablating, Flak, Cryo, Vitriol, Shocked, Exposed, the Web Bomb, the Paradox and the drone), nor a stun, nor a Purge, and a turned mark feeds no Paradox, until the end of the player's next turn.",
    "status": "implemented",
    "design": {
     "holes": "A foe's move that lays a debuff without a blow is a rider too (Ryan, 25 October: \"Should stop all riders, even from non-damaging attacks\"), so a Stoke, a Stone, an Eruption on every machine and a Diamond Dust all pass a warded machine by. A foe's Ward (28 October) turns the team's marks (Effects.TEAM_MARKS), and since 2 November a stun and a Purge too, on either side, and stands (Ryan: nothing but damage lands on a Warded foe; the exception that let a stun through went with Numbed's roll).",
@@ -2267,7 +2247,7 @@
    "id": "supercooled",
    "category": "status",
    "name": "Supercooled",
-   "codex": "Machine buff. While it lasts the machine's weapons fire with Cryo, one more stack a strike on each foe hit (Cryo 1 on a gun without it), shown on the die and laid after the hits, so a fire never cashes its own frost. A weapon fired spends a stack: a Rapid's second fire is a second fire, a salvo one, a passive's own fire none, and equipment carries it not and spends nothing. A laid shot spends the stack as it is laid and carries the frost. A Purge lowers it.",
+   "codex": "Machine buff. While it lasts the machine's weapons fire with Cryo 1: a stack a strike on each foe hit, one more than its own on a gun that carries Cryo, shown on the die and laid after the hits, so a fire never cashes its own frost. A weapon fired spends a stack: a Rapid's second fire is a second fire, a salvo one, a passive's own fire none, and equipment carries it not and spends nothing. A laid shot spends the stack as it is laid and carries the frost. A Purge lowers it.",
    "status": "implemented",
    "design": {
     "holes": "The Cryo primer (Ryan, 2 November: \"laying 1 cryo at a time makes sense, keeps it a little unique, and avoids massive cooling spikes\"; the name his pick), so any gun is a Cryo setter for a turn and the Cryo synergies open past the Cryo Flinger; a stack a strike after the hits (3 November: \"resulting in 2 applications, not apply-cash-apply-cash, and not hit-hit-apply once\"). No piece grants it yet.",

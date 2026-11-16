@@ -14,12 +14,16 @@ enum Kind { ATTACK, SHIELD, VENT, BLANK, BUFF }
 enum Reach { NONE, DIRECT, INDIRECT, EVERY_FOE }   # Every Foe (4 November), below; Sweep, a rank picked and walked, went on 12 November
 ## Execute and Steady are retired (10 October): a threshold doubling is a hard sum hidden in
 ## a keyword, and a rolled weapon dealing its average is simply a flat one.
-## Web (18 October, the funnel-web's Web Bomb): the foe hit is Webbed, and after its action the
-## web bursts into a Suppress on it and the next foe to act beside it (Skirmish._web_burst).
+## Three rules that were keywords are rules written on their one piece since 15 November
+## (Ryan's marks: "unique text, not a keyworded rider"), each a field below and the die's star:
+## the Web Bomb's web (`webs`, 18 October: the foe hit wears the Web Bomb's mark, and after its
+## action the web bursts into a Suppress on it and the next foe to act beside it,
+## Skirmish._web_burst); the Combat Translocator's swap (`swaps`, Ryan's go of 19 October: the
+## spend takes a second target, another foe or an empty slot, and the two trade places); and
+## the Overrun Gearing's spill (`spills`, a module's, on the effective entry alone: damage past
+## a kill in the front rank carries into the foe behind).
 ## Flak (Ryan's go, 19 October; built 21 October): Wainwright & Sutler's on-hit, a numbered
 ## keyword like Ablate and Cryo; each foe hit gains that many stacks of Flak.
-## Swap (the Dingo's Combat Translocator, Ryan's go of 19 October; built 21 October): the spend
-## takes a second target, another foe or an empty slot, and the two trade places.
 ## Area by shape, numbered (Ryan, 28 October; the half retired): Spread N (id `cleave`) the
 ## foes beside the target in its rank, Penetrate N the other rank of its column, each foe past
 ## the target taking N as its blow's number. A piece may carry both (the plus round its target);
@@ -38,7 +42,7 @@ enum Reach { NONE, DIRECT, INDIRECT, EVERY_FOE }   # Every Foe (4 November), bel
 ## team, its own machine among them, or every machine but its own, the Mooring Screens'; Ryan:
 ## "the difference is whether the center one is lit or not, its two modes"). `reaches_all` reads
 ## any of them.
-enum Keyword { NONE, CLEAVE, PENETRATE, ABLATE, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SPILLOVER, SHOCK, WEB, CRYO, FLAK, SWAP, EXPOSE, DISPEL, INSTANT, SAP }
+enum Keyword { NONE, CLEAVE, PENETRATE, ABLATE, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SHOCK, CRYO, FLAK, EXPOSE, DISPEL, INSTANT, SAP }
 ## Whom a component may be spent on (Ryan, 26 September): an attack (a weapon or a debuff)
 ## targets foes; a shield, a vent or a buff targets self and allies by default, and content may
 ## narrow one to self only or allies only, so the design space stays open; Every Ally and Every
@@ -56,8 +60,8 @@ const KEYWORD_NAMES := {
 	Keyword.SUPPRESS: "suppress",
 	Keyword.CHAIN: "chain", Keyword.RAPID: "rapid", Keyword.CLEANSE: "cleanse",
 	Keyword.LURE: "lure", Keyword.DISRUPT: "disrupt",
-	Keyword.SPILLOVER: "spillover", Keyword.SHOCK: "shock",
-	Keyword.WEB: "web", Keyword.CRYO: "cryo", Keyword.FLAK: "flak", Keyword.SWAP: "swap",
+	Keyword.SHOCK: "shock",
+	Keyword.CRYO: "cryo", Keyword.FLAK: "flak",
 	Keyword.EXPOSE: "expose",
 	Keyword.DISPEL: "dispel", Keyword.INSTANT: "instant", Keyword.SAP: "sap",
 }
@@ -68,7 +72,7 @@ const KEYWORD_LABELS := { Keyword.CLEAVE: "spread", Keyword.DISPEL: "purge" }
 ## keyword as what the spend applies on hit, after its heat (Ryan, 25 October).
 const KEYWORD_STATUS := {
 	Keyword.ABLATE: "ablating", Keyword.CRYO: "cryoed", Keyword.FLAK: "flakked", Keyword.SHOCK: "shocked",
-	Keyword.SUPPRESS: "suppressed", Keyword.WEB: "webbed", Keyword.EXPOSE: "exposure", Keyword.SAP: "sapped",
+	Keyword.SUPPRESS: "suppressed", Keyword.EXPOSE: "exposure", Keyword.SAP: "sapped",
 }
 ## The keywords that carry a number, each in the field of its name on the entry: the stacks a
 ## rider lays (Ablate, Cryo, Flak), the blow an area keyword deals each foe past the target
@@ -115,7 +119,6 @@ var kind: int = Kind.ATTACK
 var reach: int = Reach.DIRECT
 var power: int = 20
 var keywords: Array[int] = []
-var printed: Array[int] = []  # of those, the ones a passive grants written out (the Overrun Gearing's spill): drawn as the star, never a keyword chip (the stock pass, 22 October)
 var heat: int = 0
 var strikes: int = 1          # blows per use: a rapid-fire weapon lands many small hits (each rolls and procs on its own)
 var ablate: int = 0             # an attack with Ablate: the stacks of Ablating each blow leaves (Ryan, 18 October: a numbered keyword, never read off the damage)
@@ -135,6 +138,9 @@ var holds: String = ""        # an attack: the status its target keeps through t
 var consumes: String = ""     # an attack: the status it consumes on its target, every stack, a point more a stack before the multiplies (the Backdraft Charge's Ablating, 22 October)...
 var per_consumed: int = 1     # ...the damage a stack consumed adds
 var ignores_armour: bool = false   # an attack: its blows take nothing off for a foe's armour, a rule written on the piece (Ryan, 15 November: "Ignores armour can be an explicitly written out property", where the Breach keyword stood on our side)
+var swaps: bool = false   # an attack: the spend takes a second target, another foe or an empty slot, and the two trade places; a rule written on the piece, no keyword (the Combat Translocator's; Ryan, 15 November: "Can be unique text, not a keyworded rider")
+var webs: bool = false    # an attack: each foe hit wears the piece's web, which bursts after the foe's action into a Suppress on it and the next foe to act beside it (the Web Bomb's; Ryan, 15 November: "It's a unique effect, and the debuff can be renamed \"web bomb.\"")
+var spills: bool = false  # the effective entry only, never printed: damage past a kill in the front rank carries into the foe behind (the Overrun Gearing's, a module's; Ryan, 15 November: "As a module only effect, this does not need to be a keyword"; Effects.grants_spill)
 var self_ablate: int = 0        # an attack: spending it sets its own machine Ablating, this many stacks (the Stoker's, the stock pass's landing, 22 October; a price in its own shield since Ablate, 15 November)
 var component: String = ""    # the component this entry is (content id); "" for an empty hardpoint
 var empty: bool = false       # an empty hardpoint: blank, and nothing was ever there to break
@@ -152,8 +158,8 @@ var per_heat: int = 10        # ...the heat a step of power_per_heat stands for 
 var power_per_missing: int = 0   # an attack: added for every per_missing HP its target is missing (10 October; flat, shown on the hover)...
 var per_missing: int = 20     # ...the HP a step of power_per_missing stands for (the stock pass, 22 October: a field, 20 until the content landing)
 var finisher: int = 0         # an attack: its number times this against a foe at half its HP or less, read as the hit judges the foe (the Kite's Pinion Driver, 11 November: the Coriolis's slope as one step); 0 for none
-# The Soul Siphon's (the Ammit's, Ryan, 12 November: "Consume up to 5 souls, granting 1 Empowered per soul"; "No Empowered decays this round. And I mean none, not ally or enemy"):
-var spends: String = ""       # a buff: the status of its own machine it spends for its stacks, a stack granted a stack spent (its Souls); with none to spend the entry cannot be played
+# The Quintessence Tap's (the Ammit's, Ryan, 12 November: "Consume up to 5 souls, granting 1 Empowered per soul"; "No Empowered decays this round. And I mean none, not ally or enemy"):
+var spends: String = ""       # a buff: the status of its own machine it spends for its stacks, a stack granted a stack spent (its Essence); with none to spend the entry cannot be played
 var spends_up_to: int = 0     # ...the most it spends, and so the most it grants (five); buff_stacks holds it as built, and what it would take now on the die as shown (Skirmish.shown_face)
 var holds_all: String = ""    # any entry: once it is spent, no unit's stacks of this status run down at this round's end, either side's (Skirmish.round_holds)
 var fills_hopper: int = 0     # an attack: loads it puts in its machine's hopper for each foe its blows reach (the Chainsaw Claw, 11 October)
@@ -342,7 +348,7 @@ static func from_dict(d: Dictionary) -> Face:
 		if front is Dictionary and not front.is_empty():
 			f.front_status = str(front.get("status", ""))
 			f.front_stacks = maxi(1, int(front.get("stacks", 1)))
-		# A buff that spends a count of its machine's for its stacks (the Soul Siphon): the most it
+		# A buff that spends a count of its machine's for its stacks (the Quintessence Tap): the most it
 		# spends is the most it grants, and a save's `stacks` beside it says no more than that.
 		f.spends = str(d.get("spends", ""))
 		if not f.spends.is_empty():
@@ -372,6 +378,8 @@ static func from_dict(d: Dictionary) -> Face:
 		f.per_consumed = maxi(1, int(d.get("per_consumed", 1)))
 		f.self_ablate = maxi(0, int(d.get("self_ablate", 0)))
 		f.ignores_armour = d.get("ignores_armour", false) is bool and d.get("ignores_armour", false)
+		f.swaps = d.get("swaps", false) is bool and d.get("swaps", false)
+		f.webs = d.get("webs", false) is bool and d.get("webs", false)
 		f.fires_hopper = maxi(0, int(d.get("fires_hopper", 0)))
 		f.power_per_load = maxi(0, int(d.get("power_per_load", 0))) if f.fires_hopper > 0 else 0
 	f.braces = maxi(0, int(d.get("braces", 0)))
@@ -475,6 +483,10 @@ func to_dict() -> Dictionary:
 		d["self_ablate"] = self_ablate
 	if ignores_armour:
 		d["ignores_armour"] = true
+	if swaps:
+		d["swaps"] = true
+	if webs:
+		d["webs"] = true
 	if fills_hopper > 0:
 		d["fills_hopper"] = fills_hopper
 	if fires_hopper > 0:
@@ -600,12 +612,12 @@ func acts_again() -> bool:
 
 ## A rule printed on the entry rather than a keyword (bible section 6: the die's star chip):
 ## Vents all, the missing-hull bonus, the hopper, the brace, a count it spends for its stacks or
-## a status it holds on every unit (the Soul Siphon's). A roll that may land on itself is Instant's, a
+## a status it holds on every unit (the Quintessence Tap's). A roll that may land on itself is Instant's, a
 ## keyword since 12 November, never the star. A cooldown is a cost the die prints with its clock, a reload the ammo the die
 ## prints with its shells (Ryan, 2 November), and a shield's cooling the number under its steam
 ## (3 November), so none of them is.
 func has_unique_rule() -> bool:
-	return vents_all or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_ablate > 0 or ignores_armour or fills_hopper > 0 or fires_hopper > 0 or braces > 0 or not printed.is_empty() \
+	return vents_all or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_ablate > 0 or ignores_armour or swaps or webs or spills or fills_hopper > 0 or fires_hopper > 0 or braces > 0 \
 		or turns_die or team_rerolls > 0 or gathers_mines or detonates \
 		or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine \
@@ -703,7 +715,6 @@ func duplicate_face() -> Face:
 	f.power = power
 	f.heat = heat
 	f.strikes = strikes
-	f.printed = printed.duplicate()
 	f.component = component
 	f.empty = empty
 	f.fixed = fixed
@@ -741,6 +752,9 @@ func duplicate_face() -> Face:
 	f.per_consumed = per_consumed
 	f.self_ablate = self_ablate
 	f.ignores_armour = ignores_armour
+	f.swaps = swaps
+	f.webs = webs
+	f.spills = spills
 	f.fills_hopper = fills_hopper
 	f.fires_hopper = fires_hopper
 	f.power_per_load = power_per_load
@@ -863,6 +877,10 @@ func rule_phrases() -> Array[String]:
 			out.append("its target's %s does not decay this round" % str(Effects.STATUS.get(holds, {}).get("name", holds)))
 		if ignores_armour:
 			out.append("ignores armour")
+		if swaps:
+			out.append(SWAPS_TEXT)
+		if webs:
+			out.append(WEBS_TEXT)
 		if self_ablate > 0:
 			out.append("Ablating %d on itself" % self_ablate)
 		if fills_hopper > 0:
@@ -910,6 +928,12 @@ func rule_phrases() -> Array[String]:
 ## the Regenerator's rider on its own spender, the Booster's price for an ally's action.
 ## The Retrocausal Shroud's rule as its text says it.
 const DISRUPTS_TEXT := "disrupts the foes aiming at it"
+## The three rules written on their one piece (15 November), as an entry's text says them: the
+## Combat Translocator's, the Web Bomb's, and the spill a passive lays on its machine's weapons
+## (the Overrun Gearing's, whose own line the die's readout prints: Effects.written_rules).
+const SWAPS_TEXT := "its two targets trade places"
+const WEBS_TEXT := "its web bursts after the foe acts, suppressing it and the next beside it"
+const SPILLS_TEXT := "damage past a kill spills into the foe behind"
 
 
 ## What an entry lays on the foe in front of the machine it lands on, as its text says it.
@@ -933,7 +957,7 @@ func _action_text() -> String:
 	return "on an ally whose die is spent, %d reroll%s: its die rolls again and it acts again" % [action_price, "" if action_price == 1 else "s"]
 
 
-## The Soul Siphon's two rules as the entry's text says them (Ryan, 12 November): the count it
+## The Quintessence Tap's two rules as the entry's text says them (Ryan, 12 November): the count it
 ## spends for its stacks, the most it takes and a stack a one; and the status no unit's clock runs
 ## down this round, either side's.
 func _spends_text() -> String:
@@ -941,7 +965,9 @@ func _spends_text() -> String:
 
 
 func _holds_all_text() -> String:
-	return "no %s decays this round" % str(Effects.STATUS.get(holds_all, {}).get("name", holds_all))
+	var held := str(Effects.STATUS.get(holds_all, {}).get("name", holds_all))
+	var flare := str(Effects.STATUS.get(str(Effects.ROUND_HOLDERS.get(holds_all, "")), {}).get("name", ""))
+	return "no %s decays this round" % held if flare.is_empty() else "grants %s: no %s decays this round" % [flare, held]
 
 
 ## A printed cooldown as the entry's text says it, " cooldown 2"; nothing for an entry with none.
@@ -979,7 +1005,7 @@ func describe() -> String:
 			elif kind == Kind.BUFF and team_rerolls > 0:
 				s = _team_rerolls_text()   # the Horn's and the Booster's: no status, the reroll its whole effect
 			elif kind == Kind.BUFF and not spends.is_empty():
-				s = _spends_text()   # the Soul Siphon's: what it grants is what it consumes, said once
+				s = _spends_text()   # the Quintessence Tap's: what it grants is what it consumes, said once
 			elif kind == Kind.BUFF and buff_status.is_empty():
 				s = ""   # a buff that grants nothing (the Retrocausal Shroud): its keywords and its rule say what it does
 			elif kind == Kind.BUFF:
@@ -1002,8 +1028,7 @@ func describe() -> String:
 			if targets == Target.EVERY_ALLY or targets == Target.EVERY_OTHER_ALLY:
 				s += (" every ally" if targets == Target.EVERY_ALLY else " every other ally") + (" yet to act" if not_acted else "")   # its targeting mode, where its keyword stood
 			for k in keywords:
-				if not printed.has(k):
-					s += " " + keyword_label(k)
+				s += " " + keyword_label(k)
 			if action_price > 0:
 				s += " " + _action_text()   # the Immelmann Booster's ally use, after what it does on itself
 			if rolls_target:
@@ -1027,9 +1052,13 @@ func describe() -> String:
 			s = " ".join(PackedStringArray([reach_label(reach) if reach != Reach.DIRECT else "", number_text()])).strip_edges()
 			if strikes > 1:
 				s += " ×%d" % strikes
+			if swaps:
+				s += " " + SWAPS_TEXT
+			if webs:
+				s += " " + WEBS_TEXT
+			if spills:
+				s += " " + SPILLS_TEXT
 			for k in keywords:
-				if printed.has(k):
-					continue   # a grant written out says itself in its passive's line (the star), never as a keyword
 				s += " " + keyword_label(k)
 				if k == Keyword.ABLATE:
 					s += " %d" % ablate   # a numbered keyword: the stacks each blow leaves

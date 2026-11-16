@@ -973,6 +973,65 @@ func test_breach_is_gone_and_ignoring_armour_is_a_rule_written_on_a_weapon() -> 
 	assert_true(db.build_face(gun["face"]).ignores_armour, "and the weapon builds with it")
 
 
+## Swap, Web and Spillover are no keywords of the game's (Ryan's marks of 15 November: "Can be
+## unique text, not a keyworded rider"; "It's a unique effect, and the debuff can be renamed
+## \"web bomb.\""; "As a module only effect, this does not need to be a keyword"). Each is a rule
+## written on its one piece: an attack's own field, the die's star, its text on the entry, and
+## the mark the web leaves is named for the piece.
+func test_swap_web_and_spillover_are_rules_written_on_their_pieces() -> void:
+	var db := _fresh()
+	for gone in ["spillover", "web"]:
+		assert_false(db.vocabulary.has(gone), "%s is no vocabulary word" % gone)
+	assert_eq(str(db.vocabulary["swap"]["category"]), "component_property", "the swap is a rule printed on its piece")
+	assert_eq(str(Effects.STATUS["webbed"]["name"]), "Web Bomb", "the web's mark is named for its piece")
+	assert_eq(str(db.vocabulary["webbed"]["name"]), "Web Bomb", "in the list too")
+	var base: Dictionary = db.components["enfilade_beam"].duplicate(true)
+	base["tier"] = 1
+	base["face"].erase("penetrate")
+	base["face"]["keywords"] = []
+	var cases := {
+		"swapper": [{"swaps": true}, ""], "webber": [{"webs": true}, ""],
+		"old_swap": [{"keywords": ["swap"]}, "swap"], "old_web": [{"keywords": ["web"]}, "web"],
+		"old_spill": [{"keywords": ["spillover"]}, "spillover"],
+		"wordy_swap": [{"swaps": "yes"}, "swaps is true or false"], "wordy_web": [{"webs": 1}, "webs is true or false"],
+	}
+	for id in cases.keys():
+		var c: Dictionary = base.duplicate(true)
+		for k in (cases[id][0] as Dictionary).keys():
+			c["face"][k] = cases[id][0][k]
+		db.components[id] = c
+	var plate: Dictionary = _piece(db, "canopy")
+	plate["tier"] = 1
+	plate["face"]["swaps"] = true
+	db.components["swap_plate"] = plate
+	var errs := db.validate()
+	for id in cases.keys():
+		var want := str(cases[id][1])
+		var mine := errs.filter(func(e: String) -> bool: return e.begins_with("component %s:" % id) or e.begins_with("component %s " % id))
+		if want.is_empty():
+			assert_true(mine.is_empty(), "%s validates clean: %s" % [id, str(mine)])
+		else:
+			assert_true(mine.any(func(e: String) -> bool: return e.contains(want)), "%s is refused for %s: %s" % [id, want, str(mine)])
+	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component swap_plate") and e.contains("on an attack")), "the rule on a shield is refused: an attack's alone")
+	var swapper := db.build_face(db.components["swapper"]["face"])
+	var webber := db.build_face(db.components["webber"]["face"])
+	assert_true(swapper.swaps and swapper.keywords.is_empty() and swapper.has_unique_rule(), "the swap builds as a rule, no keyword, the die's star")
+	assert_true(webber.webs and webber.keywords.is_empty() and webber.has_unique_rule(), "and the web")
+	assert_true(swapper.rule_phrases().has(Face.SWAPS_TEXT) and swapper.describe().contains(Face.SWAPS_TEXT), "the swap says itself in words: %s" % swapper.describe())
+	assert_true(webber.rule_phrases().has(Face.WEBS_TEXT) and webber.describe().contains(Face.WEBS_TEXT), "and the web: %s" % webber.describe())
+	assert_true(bool(swapper.to_dict().get("swaps", false)) and Face.from_dict(swapper.to_dict()).swaps, "a save keeps the swap")
+	assert_true(bool(webber.to_dict().get("webs", false)) and Face.from_dict(webber.to_dict()).webs, "and the web")
+	assert_true(swapper.duplicate_face().swaps and webber.duplicate_face().webs, "and a copy both")
+	assert_false(Face.from_dict({"kind": "attack", "power": 3, "spills": true}).spills, "a spill is never printed on a piece: a passive writes it on the entry as it is spent")
+	# Their marks stay on the die, on the equipment they are: the swap's own inside its gear, the
+	# web's as the mark it leaves.
+	var gear_swap := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "swaps": true, "keywords": ["shock"]})
+	var gear_web := Face.from_dict({"kind": "attack", "power": 0, "webs": true})
+	assert_eq(DieFaceView.inside_effect(gear_swap), "swap", "the swap's mark inside the gear, ahead of a keyword it carries")
+	assert_eq(DieFaceView.inside_effect(gear_web), "webbed", "the web's, the mark it leaves on a foe")
+	assert_true(Terms.has("swap") and not Terms.has("web") and not Terms.has("spillover"), "the list holds the swap as a rule, the web as its mark alone")
+
+
 func _refused(db: ContentDB, prefix: String, word: String) -> bool:
 	for e in db.validate():
 		if e.begins_with(prefix) and e.contains(word):
@@ -1658,7 +1717,7 @@ func test_grant_keyword_names_a_keyword_the_engine_runs() -> void:
 	c["id"] = "ram"
 	c["name"] = "Ram Test"
 	c["passive"] = {"id": "drive", "name": "Drive", "description": "", "effects": [
-		{"trigger": "static", "effect": "grant_keyword", "value": "spillover"}]}
+		{"trigger": "static", "effect": "grant_keyword", "value": "shock"}]}
 	db.chassis["ram"] = c
 	var bad: Dictionary = c.duplicate(true)
 	bad["id"] = "ram_bad"
@@ -1672,6 +1731,17 @@ func test_grant_keyword_names_a_keyword_the_engine_runs() -> void:
 		if e.begins_with("chassis ram_bad") and e.contains("grant_keyword"):
 			hit = true
 	assert_true(hit, "a keyword the engine lacks is refused")
+	# A rule one piece carries is no keyword to grant (15 November): the three that were are
+	# refused as any unknown word, and the old way of writing a grant out says where it went.
+	for gone in ["spillover", "swap", "web"]:
+		assert_true(Face.keyword_from_name(gone) <= 0, "%s is no keyword of the engine's" % gone)
+	var old: Dictionary = c.duplicate(true)
+	old["id"] = "ram_old"
+	old["name"] = "Ram Old"
+	old["passive"] = {"id": "drive3", "name": "Drive", "description": "", "effects": [
+		{"trigger": "static", "effect": "grant_keyword", "value": "shock", "printed": true}]}
+	db.chassis["ram_old"] = old
+	assert_true(db.validate().any(func(e: String) -> bool: return e.begins_with("chassis ram_old") and e.contains("'printed' is gone")), "a grant written out the old way is refused")
 
 
 func test_the_vent_on_fire_fields_belong_to_an_attack() -> void:
@@ -1786,12 +1856,15 @@ func test_the_foe_actions_run_and_the_validator_knows_their_shape() -> void:
 	assert_eq(hits, 3, "a bad effect, an unknown summon and an attack field on a debuff are each named")
 	var entry := db.codex_for_foe(db.make_foe("bone_wyvern"))
 	var said := _moves_text(db, entry)
-	assert_true(said.contains("REGEN\nDefend · Target: Self"), "the codex lists the defend, aimed at itself: %s" % said)
-	var regrow := 0
+	# Its defend that recovers, whatever content names it: listed by its name, aimed at itself,
+	# its text with its number filled in.
+	var mend: Dictionary = {}
 	for a in db.foes["bone_wyvern"]["actions"]:
-		if str(a["id"]) == "regen":
-			regrow = int(a["value"])
-	assert_true(said.contains("Regrows %d HP" % regrow), "with its number filled in")
+		if str(a.get("effect", "")) == "recover":
+			mend = a
+	assert_false(mend.is_empty(), "the foe read here carries a defend that recovers")
+	assert_true(said.contains("%s\nDefend · Target: Self" % str(mend.get("name", "")).to_upper()), "the codex lists the defend, aimed at itself: %s" % said)
+	assert_true(said.contains(str(mend.get("text", "")).replace("{value}", str(int(mend.get("value", 0))))), "with its number filled in")
 
 
 ## A synthetic foe move, so no test leans on a real entry's kit: an attack, or a special of the
@@ -2155,23 +2228,23 @@ func test_a_module_is_its_stat_lines_and_its_text_on_the_machine() -> void:
 	assert_eq(read["move"], "%d (-1▼)" % int(plain.base["move"]), "and a drawback down")
 
 
-## A grant a module's text writes out (the Overrun Gearing's spill, 12 November): its weapons
-## carry the keyword for the engine, and the star and the hold read the module's rule, never the
-## stat lines its own description leads with.
-func test_a_modules_written_out_grant_reads_its_rule_and_never_its_stat_lines() -> void:
+## A rule a module's text writes on its machine's weapons (the Overrun Gearing's spill, 12
+## November; its own effect and no keyword since 15 November): its weapons spill, and the star
+## and the hold read the module's rule, never the stat lines its own description leads with.
+func test_a_modules_written_rule_reads_its_rule_and_never_its_stat_lines() -> void:
 	var db := _fresh()
 	var maker := str(db.chassis["badger"]["maker"])
 	db.modules["test_module"] = _module(maker, 1, {"hull": 8},
-		{"description": "Damage past a kill spills behind.", "effects": [{"trigger": "static", "effect": "grant_keyword", "value": "spillover", "printed": true}]})
+		{"description": "Damage past a kill spills behind.", "effects": [{"trigger": "static", "effect": "spillover", "value": 1}]})
 	var u := db.make_mech("badger", 0, Vector2i.ZERO, null, ["test_module"])
 	var gun: Face = null
 	for f in u.die.faces:
-		if f.is_weapon() and not f.has(Face.Keyword.SPILLOVER):
+		if f.is_weapon():
 			gun = f
 			break
 	assert_true(gun != null, "the machine has a weapon to wear it")
-	assert_true(Effects.effective_face(u, gun).has(Face.Keyword.SPILLOVER), "its weapons carry the keyword for the engine")
-	assert_eq(Effects.printed_grants(u, gun), ["Damage past a kill spills behind."] as Array[String], "the star reads the rule alone")
+	assert_true(Effects.effective_face(u, gun).spills and not gun.spills, "its weapons spill as the machine fires them, the piece itself unchanged")
+	assert_eq(Effects.written_rules(u, gun), ["Damage past a kill spills behind."] as Array[String], "the star reads the rule alone")
 	assert_true(Effects.explain(u, gun).has("Damage past a kill spills behind. (Test Module)"), "and so does the hold: %s" % str(Effects.explain(u, gun)))
 	assert_eq(db.module_description("test_module"), "Hull +8. Damage past a kill spills behind.", "where the module reads its stat line first")
 
