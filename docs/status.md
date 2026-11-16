@@ -47,7 +47,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1231 tests, 373,341 checks, green on `ccr-722ca9f0-yj8na3` (16 November, the
+- Tests: 1238 tests, 373,419 checks, green on `ccr-722ca9f0-yj8na3` (16 November, a fall
+  as a list of steps, over main at `45b4d3e`). Before it, 1231 tests, 373,341 checks, green
+  on the same branch (16 November, the
   REROLL button's drain note, over main at `1aa34b3`). Before it, 1230 tests, 373,327
   checks, green on the same branch (16 November, his
   twelfth round: the Web Bomb at the round's end, Appropriated as an Ability, the
@@ -1850,9 +1852,8 @@ The tasks are the to-do's; this is the index of what waits.
   Lure wins. No foe carries it. It is the foes' pass's (the to-do's Engine list).
 - His marks on the vocabulary's table (15 November, all eighty-two rows; the proposal's
   section 18 has each with its read, and the to-do's Engine list the build in parts), what
-  is not built yet, all of it the foes' pass's: a foe's Phased, countdowns an elite's or a
-  boss's mostly, a fall free to do more than strike. Until built, content and the engine
-  run each of those as before.
+  is not built yet, all of it the foes' pass's: a foe's Phased, and countdowns an elite's
+  or a boss's mostly. Until built, content and the engine run each of those as before.
 
 - The Fracture's prize (section 12); the escorts' marks (`docs/bosses_proposal.md`) and the
   promoted forms' one move more for seven of them (`docs/heroes_proposal.md`).
@@ -2005,10 +2006,16 @@ an effect on the reroll button when this happens"; a first cut, his to judge run
 is announced, rings closing on its edge; a flash as each lands in the enemy's turn; and what
 the drains took, through the round they shortened. The five moves say it in their own text
 and no keyword names it.
+**A fall is a short list of steps** (16 November, his mark of 15 November: "foes who, say
+buff others on death, or debuff on death"; the engine alone, the rules' A last act): a death
+blow or one special in its place, then what it does also, on the foe's own pick where it
+aims at one machine. No foe carries more than a blow: the carriers are the bench's.
 **First now: the foes' pass, the rest**
 (the to-do's line): the content, put to him on 16 November as the proposal's section 28 and
-waiting on his marks: the countdowns off the rank and file, a fall free to do more than
-strike, Exposed's carriers, a foe's Phased and the moves that want steps, each with its foe.
+waiting on his marks: the moves that take the rank and file's countdowns' place, a fall for
+a domain each, Exposed's carriers, a foe's Phased with its form, two moves as steps and
+three immunities, with two points his words leave open. On his marks: the engine for a
+foe's Phased and for an immunity, then the content, then a read of what changed.
 The table of every rider, buff and debuff (`docs/vocabulary_table.md`) stands with its page
 (Pages, below) as the record of his marks until the pass retires.
 With the pass, on his proposal, the tier-one

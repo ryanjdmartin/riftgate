@@ -1649,10 +1649,16 @@ func _foe_abilities(foe: Foe) -> Array:
 		rows.append(["lock", "", "Ability, Guarded: no damage while its parts stand", _foe_chip_colour("guarded"), "ability"])
 	if foe.on_death.has("summon"):
 		rows.append(["splits", "", "Ability: it splits in two when it falls", Palette.ENEMY, "ability"])
-	if not foe.last_act().is_empty():
-		# A last act (15 October): the skull and what it lands the moment the foe falls.
-		var la := foe.last_act()
-		rows.append(["skull", str(foe.damage_of(la)), "Ability, Last Act: %s, %d%s" % [str(la.get("name", "")), foe.damage_of(la), " at Every Machine" if Array(la.get("keywords", [])).has("all") else ""], Palette.ENEMY, "ability"])
+	if not foe.fall().is_empty():
+		# A last act (15 October): the skull and what the foe does the moment it falls, its
+		# blow's number where it strikes; a fall that only curses or blesses says its name (16
+		# November: a fall is a short list of steps), and the foe's own page says the rest.
+		var la := foe.fall()
+		var strikes := Foe.is_attack_action(la)
+		var said := "Ability, Last Act: %s" % str(la.get("name", ""))
+		if strikes:
+			said += ", %d%s" % [foe.damage_of(la), " at Every Machine" if Array(la.get("keywords", [])).has("all") else ""]
+		rows.append(["skull", str(foe.damage_of(la)) if strikes else "", said, Palette.ENEMY, "ability"])
 	if Effects.has(foe, "golden"):
 		# A golden rage (4 November): the add it carries, the rounds left and the damage that
 		# breaks it, so burst-or-shield reads off the chip.
@@ -3360,6 +3366,8 @@ func _land_last_act(act: Dictionary) -> void:
 		if int(mi) >= 0 and int(mi) < _mech_views.size():
 			_shown_gauges.erase(int(mi))
 			_animate_hit(_mech_views[int(mi)], 0.1)
+	if int(act.get("drained", 0)) > 0:
+		_reroll_btn.strike()   # a fall that takes a reroll strikes the button as a drain landing does
 	_refresh(false)
 
 
@@ -3645,7 +3653,7 @@ func _before_enemy_turn() -> Dictionary:
 	var gauges: Array = []
 	for ms in sk.mechs:
 		gauges.append([ms.unit.shield, ms.unit.hull])
-	return {"views": views, "gauges": gauges}
+	return {"views": views, "gauges": gauges, "debt": sk.reroll_debt}   # and the rerolls a fall took in the player's own turn
 
 
 ## Seconds between the enemy's blows: the ENEMY PACE setting divides the beat, so its top
@@ -3661,7 +3669,7 @@ func _enemy_beat() -> float:
 func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 	var steps := _replay_steps(before)
 	var hits: Array = []
-	_drain_landed = 0
+	_drain_landed = int(before.get("debt", 0))   # what a fall took before the turn ended has landed already
 	_drain_pending = 0
 	for st in steps:
 		if not (st["blow"] as Array).is_empty():
@@ -3816,9 +3824,12 @@ static func drain_note(sk: Skirmish, landed: int = 0, pending: int = 0) -> Array
 		return ["NEXT -1", true]
 	if landed + pending > 0:
 		return ["NEXT -%d" % mini(landed + pending, Skirmish.REROLLS_PER_ROUND), pending > 0]
-	var coming := mini(sk.drain_announced(null), Skirmish.REROLLS_PER_ROUND) if sk.state == Skirmish.State.ASSIGN else 0
-	if coming > 0:
-		return ["NEXT -%d" % coming, true]
+	# What a fall has taken already this turn (a drain as a foe falls lands in the player's own
+	# turn), and what the foes still standing announce.
+	var owed := sk.reroll_debt if sk.state == Skirmish.State.ASSIGN else 0
+	var coming := sk.drain_announced(null) if sk.state == Skirmish.State.ASSIGN else 0
+	if owed + coming > 0:
+		return ["NEXT -%d" % mini(owed + coming, Skirmish.REROLLS_PER_ROUND), coming > 0]
 	if sk.drained > 0:
 		return ["DRAINED -%d" % sk.drained, false]
 	return ["", false]

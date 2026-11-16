@@ -1707,7 +1707,7 @@ static func core_opening(sk: Skirmish, part: Foe) -> float:
 static func last_act_cost(sk: Skirmish, f: Foe) -> float:
 	var blow := f.last_act()
 	if blow.is_empty():
-		return 0.0
+		return fall_steps_cost(sk, f)
 	var amount := f.damage_of(blow)
 	var whom: Array = []
 	if f.has_keyword(blow, "all"):
@@ -1727,6 +1727,60 @@ static func last_act_cost(sk: Skirmish, f: Foe) -> float:
 			hull -= int(r["through"])
 		if hull <= 0:
 			cost += DEATH_WEIGHT
+	return cost + fall_steps_cost(sk, f)
+
+
+## What the steps of a foe's fall cost the team beside its blow (16 November: a fall is a short
+## list of steps): each at the price the bot already puts on the same effect from a move, a
+## Ward's score for what lands on a machine and a rally's point on every blow. An effect with
+## no price here counts nothing until a piece carries it.
+static func fall_steps_cost(sk: Skirmish, f: Foe) -> float:
+	var fall := f.fall()
+	if fall.is_empty():
+		return 0.0
+	var pick: Skirmish.MechState = f.target as Skirmish.MechState
+	if pick == null or not pick.alive() or Skirmish.is_out(pick):
+		pick = sk.live_mechs()[0] if not sk.live_mechs().is_empty() else null
+	var scorch := 0
+	for eff in Effects.STATUS["scorched"]["effects"]:
+		if str(eff.get("effect", "")) == "add_heat":
+			scorch += int(eff.get("value", 0))
+	var ablate := Effects.status_value("ablating_mech", "tick_hp")
+	var cost := 0.0
+	for st in Foe.effects_of(fall):
+		var value := maxi(1, int(st.get("value", 0)))
+		match str(st.get("effect", "")):
+			"ablate":
+				if pick != null and not Effects.has(pick.unit, "ward"):
+					cost += float(ablate * value * (value + 1)) / 2.0 * ABLATED_WEIGHT
+			"jam":
+				if pick != null and not Effects.has(pick.unit, "ward"):
+					cost += _raw_attack_mean(pick) / float(maxi(1, pick.die.faces.size()))
+			"scorch_all":
+				for m in sk.live_mechs():
+					if not Effects.has(m.unit, "ward"):
+						cost += float(scorch * value) * BANK_WEIGHT
+			"corrupt_all":
+				for m in sk.live_mechs():
+					if not Effects.has(m.unit, "ward"):
+						cost += float(Skirmish.corrupt_bite() * value) * HULL_WEIGHT * CLEANSE_ROUNDS / float(maxi(1, m.die.faces.size()))
+			"drain_rerolls":
+				cost += REROLL_SHARE * _team_raw_attack_mean(sk) * float(value)
+			"rally":
+				# Every foe still standing hits that much harder at its next blow, before it halves.
+				for o in sk.field_foes():
+					if o != f and o.alive():
+						cost += float(value * o.strikes()) * HULL_WEIGHT
+			"heal":
+				var most := 0
+				for o in sk.field_foes():
+					if o != f and o.alive():
+						most = maxi(most, o.hp_max - o.hp)
+				cost += float(mini(value, most))
+			"prime":
+				for o in sk.field_foes():
+					if o != f and o.alive():
+						cost += PRIMED_WORTH * float(value)
 	return cost
 
 

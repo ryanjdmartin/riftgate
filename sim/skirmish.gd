@@ -3975,8 +3975,11 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 			log.append("%s: %s, %d hit %d harder, halving each turn" % [f.display_name, str(a.get("name", "rallies")), rallied, value])
 		"drain_rerolls":
 			reroll_debt += maxi(0, value)
-			turn_drains.append({"foe": f, "value": maxi(0, value), "seq": _seq})
-			_seq += 1
+			if _enemy_acting:
+				# The screen strikes the REROLL button as each lands in the enemy's turn; a
+				# fall's, in the player's own turn, is told with its last act.
+				turn_drains.append({"foe": f, "value": maxi(0, value), "seq": _seq})
+				_seq += 1
 			log.append("%s: %s, the team loses %d reroll%s next round" % [f.display_name, str(a.get("name", "roars")), value, "" if value == 1 else "s"])
 		"golden":
 			# The Thunder Ape's Golden Rage (4 November): a mode for the rounds the move says, its
@@ -5784,33 +5787,44 @@ func _regrows(f: Foe) -> bool:
 	return false
 
 
-## A foe's last act (15 October, the Gargantuan King's Meteor): its death blow lands the moment it
-## falls, before anything else, so the player shields first and kills after, and even the last
-## foe's lands, since damage sticks for the battle.
+## A foe's fall (a last act, 15 October, the Gargantuan King's Meteor): what it does the moment
+## it falls, before anything else, so the player readies first and kills after, and even the
+## last foe's lands, since damage sticks for the battle. A short list of steps as a move is (16
+## November, on Ryan's mark of 15 November: "foes who, say buff others on death, or debuff on
+## death, which makes kill sequencing more interesting in normal formations"): its blow, if it
+## strikes, then each effect by that effect's own rules. What is aimed at one machine lands on
+## the foe's own pick, as its blow always has, or on its next pick when that machine is gone or
+## out of the fight; a Ward there turns it. What it lays on its own side reaches the foes
+## still standing, never itself.
 func _last_act(f: Foe) -> void:
-	var blow := f.last_act()
-	if blow.is_empty():
+	var fall := f.fall()
+	if fall.is_empty():
 		return
-	f.action = blow
+	f.action = fall
 	f.pending = {}
 	f.charge = 0
-	log.append("%s falls, and its last act lands: %s" % [f.display_name, str(blow.get("name", ""))])
+	log.append("%s falls, and its last act lands: %s" % [f.display_name, str(fall.get("name", ""))])
 	var struck: Array[int] = []
 	var gauges: Array = []   # each struck machine's [shield, hull] as the act met it
-	if f.hits_all():
-		for m in targetable_mechs():
-			struck.append(mechs.find(m))
-			gauges.append([m.unit.shield, m.unit.hull])
-			_strike(f, m)
-	else:
-		var t := f.target as MechState
-		if t == null or not t.alive():
-			t = _repick(f)
-		if t != null:
+	var t := f.target as MechState
+	if t == null or not t.alive() or is_out(t):
+		t = _repick(f)
+	if Foe.is_attack_action(fall):
+		if f.hits_all():
+			for m in targetable_mechs():
+				struck.append(mechs.find(m))
+				gauges.append([m.unit.shield, m.unit.hull])
+				_strike(f, m)
+		elif t != null:
 			struck.append(mechs.find(t))
 			gauges.append([t.unit.shield, t.unit.hull])
 			_strike(f, t)
-	last_acts.append({"foe": f, "name": str(blow.get("name", "")), "mechs": struck, "gauges": gauges})
+	var owed := reroll_debt
+	var did: Array = []
+	for st in Foe.effects_of(fall):
+		_foe_acts(f, t, st)
+		did.append(str(st.get("effect", "")))
+	last_acts.append({"foe": f, "name": str(fall.get("name", "")), "mechs": struck, "gauges": gauges, "effects": did, "drained": reroll_debt - owed})
 
 
 ## A core that falls for good takes its parts with it, on the field and waiting alike.

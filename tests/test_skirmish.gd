@@ -5699,6 +5699,174 @@ func test_the_last_foes_last_act_lands_even_as_the_fight_is_won() -> void:
 	assert_eq(int(trip.last_act().get("strikes", 0)), 1, "a whole number of strikes")
 
 
+## A foe whose fall is one special in a blow's place (16 November), built as content would.
+func _falls_with(effect: String, value: int = 0, also: Array = []) -> Foe:
+	var f := Foe.make("revenant", 10, 5)
+	var act := {"name": "Last Word", "effect": effect}
+	if value > 0:
+		act["value"] = value
+	if not also.is_empty():
+		act["also"] = also
+	f.on_death = {"act": Foe.fall_act_from(act)}
+	return f
+
+
+## A fall is a short list of steps, as a move is (16 November, on Ryan's mark of 15 November:
+## "foes who, say buff others on death, or debuff on death, which makes kill sequencing more
+## interesting in normal formations"). One that blesses lifts every foe still standing, never
+## the one that fell, and their blows this very turn show it.
+func test_a_fall_that_blesses_lifts_the_foes_still_standing() -> void:
+	var sk := Skirmish.new(1, 3)
+	var a := _mech("A", Die.single(Face.attack(40, I)), 0, 100)
+	sk.add_mech(a)
+	var howler := _falls_with("rally", 2)
+	var left := _ghoul(500, 10)
+	var right := _ghoul(500, 10)
+	sk.add_foes([left, howler, right])
+	sk.begin()
+	sk.start_round()
+	assert_eq(sk.foe_blow(left), 10, "before the fall, its plain blow")
+	assert_true(sk.assign(0, howler), "the howler falls")
+	assert_eq([Effects.stacks_of(left, "kindled"), Effects.stacks_of(right, "kindled")], [2, 2], "every foe still standing is Empowered by the fall's number")
+	assert_eq(Effects.stacks_of(howler, "kindled"), 0, "never the one that fell")
+	assert_eq(sk.foe_blow(left), 12, "and the blow it shows is that much harder at once")
+	assert_eq(sk.last_acts.size(), 1, "the screen is told")
+	assert_eq(sk.last_acts[0]["effects"], ["rally"], "what the fall did")
+	assert_eq(sk.last_acts[0]["mechs"], [], "it struck nobody")
+	assert_true("\n".join(sk.log).contains("its last act lands: Last Word"), "the log names the fall")
+	var hull := a.hull
+	sk.end_round()
+	assert_eq(hull - a.hull, 24, "both land their blow, two harder each")
+
+
+## What a fall aims at one machine lands on the foe's own pick, as its blow always has; a Ward
+## there turns it away; and with its pick gone it takes the next machine in line.
+func test_a_fall_that_curses_lands_on_its_own_pick_and_a_ward_turns_it() -> void:
+	var sk := Skirmish.new(1, 2)
+	var a := _mech("A", Die.single(Face.attack(40, I)), 0, 100)
+	var b := _mech("B", Die.single(Face.attack(3, I)), 0, 100)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	var gazer := _falls_with("jam")
+	sk.add_foes([gazer, _ghoul(500, 1)])
+	sk.begin()
+	sk.start_round()
+	gazer.target = sk.mechs[1]
+	assert_true(sk.assign(0, gazer), "A makes the kill")
+	assert_true(Effects.is_entry_disabled(b, sk.mechs[1].face_index), "the entry its pick shows is Jammed, whoever made the kill")
+	assert_false(Effects.is_entry_disabled(a, sk.mechs[0].face_index), "and the killer's is not")
+	# A Ward on the pick turns the fall's curse away.
+	var s2 := Skirmish.new(1, 2)
+	var c := _mech("C", Die.single(Face.attack(40, I)), 0, 100)
+	var d := _mech("D", Die.single(Face.attack(3, I)), 0, 100)
+	s2.add_mech(c)
+	s2.add_mech(d)
+	var g2 := _falls_with("jam")
+	s2.add_foes([g2, _ghoul(500, 1)])
+	s2.begin()
+	s2.start_round()
+	g2.target = s2.mechs[1]
+	Effects.stack(d, Effects.STATUS["ward"], Effects.SKIRMISH, "test", 1)
+	assert_true(s2.assign(0, g2), "the gazer falls")
+	assert_false(Effects.is_entry_disabled(d, s2.mechs[1].face_index), "the Ward turns it away")
+	assert_true("\n".join(s2.log).contains("Ward turns it away"), "and the log says so")
+	# Its pick out of the fight: the next machine in line takes it.
+	var s3 := Skirmish.new(1, 2)
+	var e := _mech("E", Die.single(Face.attack(40, I)), 0, 100)
+	var f := _mech("F", Die.single(Face.attack(3, I)), 0, 100)
+	s3.add_mech(e)
+	s3.add_mech(f)
+	var g3 := _falls_with("jam")
+	s3.add_foes([g3, _ghoul(500, 1)])
+	s3.begin()
+	s3.start_round()
+	g3.target = s3.mechs[1]
+	Effects.grant_for_rounds(f, Effects.STATUS["phased"], "test", s3.round)
+	assert_true(s3.assign(0, g3), "the gazer falls with its pick Phased")
+	assert_false(Effects.is_entry_disabled(f, s3.mechs[1].face_index), "nothing reaches a Phased machine")
+	assert_true(Effects.is_entry_disabled(e, s3.mechs[0].face_index), "so the next machine in line takes it")
+
+
+## A fall strikes first and then does the rest, in the order written: its blow, then each
+## effect by that effect's own rules, a machine out of the fight passed by.
+func test_a_fall_strikes_and_then_does_the_rest() -> void:
+	var sk := Skirmish.new(1, 2)
+	var a := _mech("A", Die.single(Face.attack(40, I)), 0, 100)
+	var b := _mech("B", Die.single(Face.blank()), 0, 100)
+	var c := _mech("C", Die.single(Face.blank()), 0, 100)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	sk.add_mech(c)
+	var beast := Foe.make("gargantuan_king", 30, 20)
+	beast.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 0.5, "keywords": ["all"],
+		"also": [{"effect": "scorch_all", "value": 2}, {"effect": "drain_rerolls", "value": 1}]})}
+	assert_eq(Foe.steps_of(beast.fall()).size(), 3, "its blow and two steps after")
+	sk.add_foes([beast, _ghoul(500, 0)])
+	sk.begin()
+	sk.start_round()
+	Effects.grant_for_rounds(c, Effects.STATUS["phased"], "test", sk.round)
+	assert_true(sk.assign(0, beast), "the beast falls")
+	assert_eq([a.hull, b.hull, c.hull], [90, 90, 100], "its blow lands on every machine in the fight")
+	assert_eq([Effects.stacks_of(a, "scorched"), Effects.stacks_of(b, "scorched"), Effects.stacks_of(c, "scorched")], [2, 2, 0], "then its scorch, the Phased machine passed by")
+	assert_eq(sk.reroll_debt, 1, "then its drain")
+	assert_eq(sk.last_acts[0]["effects"], ["scorch_all", "drain_rerolls"], "in the order written")
+	assert_eq(sk.last_acts[0]["mechs"], [0, 1], "the machines its blow struck")
+	assert_eq(int(sk.last_acts[0]["drained"]), 1, "and the rerolls it took, for the REROLL button")
+	var trip := SaveGame._foe_from(JSON.parse_string(JSON.stringify(SaveGame._foe_dict(beast, sk))), sk)
+	assert_eq(Foe.effects_of(trip.fall()).map(func(st) -> String: return str(st["effect"])), ["scorch_all", "drain_rerolls"], "a save keeps a fall's steps")
+	assert_eq(int(Foe.effects_of(trip.fall())[0]["value"]), 2, "their numbers whole")
+
+
+## The round preview plays a fall with everything it sets off, the same engine on a copy: a
+## foe its tick will fell blesses the rest and scorches the team in the preview as in the turn.
+func test_the_round_preview_plays_a_falls_steps() -> void:
+	var sk := Skirmish.new(4, 3)
+	var m := _mech("A", Die.single(Face.blank()), 0, 100)
+	sk.add_mech(m)
+	var howler := _falls_with("rally", 2, [{"effect": "scorch_all", "value": 1}])
+	howler.hp = 2
+	Effects.stack(howler, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 5)
+	var other := _ghoul(500, 10)
+	sk.add_foes([howler, other])
+	sk.begin()
+	sk.start_round()
+	var pv := sk.preview_round()
+	assert_false(bool(pv["foes"][howler]["alive"]), "it burns down as its turn ends")
+	assert_true((pv["foes"][other]["coming"] as Dictionary).has("kindled"), "the foe still standing wears the Empowered its fall brings")
+	assert_true((pv["mechs"][0]["coming"] as Dictionary).has("scorched"), "and the machine the Scorched")
+	assert_eq(Effects.stacks_of(other, "kindled"), 0, "the fight itself untouched")
+	var said := int(pv["mechs"][0]["hull_after"])
+	sk.end_round()
+	assert_eq(m.hull, said, "and the turn lands as the preview said")
+
+
+## A fall that drains lands in the player's own turn: the debt stands at once, the next round
+## opens short, and nothing is written into the enemy's turn's replay. One that falls in the
+## enemy's turn (a tick fells it) is replayed there.
+func test_a_fall_that_drains_takes_a_reroll_from_the_next_round() -> void:
+	var sk := Skirmish.new(1, 3)
+	var a := _mech("A", Die.single(Face.attack(40, I)), 0, 100)
+	sk.add_mech(a)
+	var root := _falls_with("drain_rerolls", 1)
+	var burning := _falls_with("drain_rerolls", 1)
+	burning.hp = 2
+	sk.add_foes([root, burning, _ghoul(500, 0)])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.assign(0, root), "the root is pulled")
+	assert_eq(sk.reroll_debt, 1, "the team owes a reroll at once")
+	assert_true(sk.turn_drains.is_empty(), "and the enemy's turn's replay holds none of it")
+	var trip := SaveGame._foe_from(JSON.parse_string(JSON.stringify(SaveGame._foe_dict(_falls_with("drain_rerolls", 1), sk))), sk)
+	assert_eq(str(trip.fall().get("effect", "")), "drain_rerolls", "a save keeps a fall that is a special")
+	assert_eq(str(trip.fall().get("name", "")), "Last Word", "under its name")
+	Effects.stack(burning, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 5)
+	sk.end_round()
+	assert_false(burning.alive(), "the second burns down as its turn ends")
+	assert_eq(sk.turn_drains.size(), 1, "its fall, in the enemy's turn, is replayed there")
+	sk.start_round()
+	assert_eq([sk.rerolls_left, sk.drained], [0, 2], "two falls, two rerolls: the next round opens with none, and says why")
+
+
 func test_a_splitting_foe_steps_its_halves_up_in_its_place_at_once() -> void:
 	# The Gel (Ryan, 25 October: "spawn the half-gel immediately in place, not wait for the
 	# reinforcement phase"): destroyed, its halves step up at once, the first into its slot and

@@ -764,6 +764,9 @@ On a machine:
   a drain that will not land (its foe destroyed or Suppressed, its move changed) leaves the
   note. As each lands in the enemy's turn the button flashes, and the rings stop with the
   last. The round a drain shortened wears what it took ("DRAINED -1") for as long as it lasts.
+  A reroll taken as a foe falls (A last act, below) lands in the player's own turn: the
+  button flashes as the fall is named, and the note counts it at once, with no rings, since
+  nothing can stop it now.
 - **Charged** (buff): while it lasts the machine's weapons fire with Shock, shown on the die
   and landing as the keyword does, after the blows; a weapon fired spends a stack (a Rapid's
   or an Instant's second fire is a second fire, a salvo one, a passed turn's release none; equipment carries it not and spends
@@ -1211,9 +1214,20 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   every one of them that lands on its machine, a scorch all's and a corrupt all's share
   included, and a scorch all or a corrupt all passes a machine out of the fight by. No foe in
   content carries a ward all yet; the Djinn's Unmake is the one purge.
-- **A last act**: a foe may land a blow the moment it falls (a death blow, with its own
-  riders, every machine included), before anything else and even when it was the last foe,
-  since damage sticks for the battle.
+- **A last act**: a foe may act the moment it falls, before anything else and even when it
+  was the last foe, since damage sticks for the battle. A fall is a short list of steps, as a
+  move is: a death blow with its own riders, every machine included, or one special in a
+  blow's place, and then what it does also, each effect by its own rules in the order
+  written. What it aims at one machine lands on the foe's own pick, whoever made the kill,
+  or on the next machine in line when its pick is gone or out of the fight, and a Ward there
+  turns it away. What it lays on its own side reaches the foes still standing, never itself.
+  A fall may heal, armour, cleanse, ward, prime, ready or rally its own, take rerolls from
+  the next round, ablate or jam its pick, and scorch or corrupt every machine. It does
+  nothing its own body would carry, summons nothing (a split is the fall's own summon),
+  swallows nothing, never purges, and lays no Expose, which is announced. A reroll a fall
+  takes in the player's own turn is owed at once, and the REROLL button counts it (A drained
+  reroll, above). The foe wears its fall as an Ability from the fight's start, its blow's
+  number on the chip where it strikes. No foe in content carries more than a blow yet.
 - **A foe in parts**: a core and the parts of its pack that stand with it. A guard keeps the
   core from taking any damage while all its parts stand, or while any does (Guarded, an Ability), its
   Ablating and Vitriol included, whose stacks fade all the same; a part

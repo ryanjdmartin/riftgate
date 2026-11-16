@@ -772,7 +772,9 @@ static func _foe_from(d: Dictionary, sk: Skirmish) -> Foe:
 		if bool(od.get("pair", false)):
 			f.on_death["pair"] = true   # the halves stand as a pair in its slot (26 October)
 	if od is Dictionary and od.get("blow", null) is Dictionary:
-		f.on_death["blow"] = Foe.death_blow_from(od["blow"])   # a last act (15 October)
+		f.on_death["blow"] = Foe.death_blow_from(od["blow"])   # a last act (15 October), with what it does also
+	elif od is Dictionary and od.get("act", null) is Dictionary:
+		f.on_death["act"] = Foe.fall_act_from(od["act"])   # a fall that is one special (16 November)
 	f.stays_down = bool(d.get("stays_down", false))
 	f.joined = bool(d.get("joined", false))
 	f.fresh = bool(d.get("fresh", false))

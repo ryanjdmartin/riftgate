@@ -323,13 +323,79 @@ static func countdown_of(a: Dictionary) -> int:
 
 
 ## A last act as an attack action (content `on_death.blow`, 15 October: the Gargantuan King's Meteor),
-## shaped like any move so the blow reads through the same rules.
+## shaped like any move so the blow reads through the same rules, with what it does also.
 static func death_blow_from(b: Dictionary) -> Dictionary:
-	return {"id": "last_act", "name": str(b.get("name", "Last Act")), "kind": "attack", "factor": float(b.get("factor", 1.0)),
+	var out := {"id": "last_act", "name": str(b.get("name", "Last Act")), "kind": "attack", "factor": float(b.get("factor", 1.0)),
 		"strikes": maxi(1, int(b.get("strikes", 1))), "weight": 1, "keywords": Array(b.get("keywords", [])), "text": str(b.get("text", ""))}
+	for k in NUMBERED_RIDERS:
+		if b.has(k):
+			out[k] = int(b[k])   # the stacks the rider lays a blow
+	_also_onto(out, b)
+	return out
 
 
-## Its last act, if it has one: the blow it lands the moment it falls.
+## A fall that is one special in a blow's place (content `on_death.act`, 16 November), shaped
+## like any special, with what it does also.
+static func fall_act_from(a: Dictionary) -> Dictionary:
+	var effect := str(a.get("effect", ""))
+	var out := {"id": "last_act", "name": str(a.get("name", "Last Act")), "kind": effect_kind(effect), "effect": effect,
+		"value": int(a.get("value", 0)), "weight": 1, "text": str(a.get("text", ""))}
+	for k in ["count", "rounds"]:
+		if a.has(k):
+			out[k] = int(a[k])
+	_also_onto(out, a)
+	return out
+
+
+## A move's further steps as the engine reads them (content's `also`, or a save's): each names
+## its effect and carries the fields that effect reads, speaking under the move's name.
+static func also_from(raw, move_name: String) -> Array:
+	var out: Array = []
+	if not (raw is Array):
+		return out
+	for st in raw:
+		if not (st is Dictionary):
+			continue
+		var effect := str(st.get("effect", ""))
+		var step := {"name": move_name, "effect": effect, "kind": effect_kind(effect), "value": int(st.get("value", 0))}
+		if st.has("foe"):
+			step["foe"] = kinds_named(st) if st["foe"] is Array else str(st["foe"])
+		for k in ["count", "rounds"]:
+			if st.has(k):
+				step[k] = int(st[k])
+		out.append(step)
+	return out
+
+
+static func _also_onto(move: Dictionary, raw: Dictionary) -> void:
+	var also := also_from(raw.get("also", null), str(move.get("name", "")))
+	if not also.is_empty():
+		move["also"] = also
+
+
+## What a fall may do beside its blow (16 November): what lands on the foes still standing and
+## on the team. Never what its own body would carry (it is gone), never a summon (a split is
+## the fall's own, standing once its slot is clear), never a swallow, never a purge (decided 28
+## October: a fall lands in the player's turn and would hold through the whole enemy turn
+## after) and never an Expose, which is announced, one machine at a time.
+const FALL_EFFECTS := ["heal", "brace_all", "cleanse", "revive_once_ally", "rally", "prime", "ward_all",
+	"drain_rerolls", "ablate", "jam", "scorch_all", "corrupt_all"]
+
+
+## Its fall, if it has one: what it does the moment it falls. A last act was one blow (15
+## October); it is a short list of steps as a move is (16 November, on Ryan's mark of 15
+## November: "foes who, say buff others on death, or debuff on death, which makes kill
+## sequencing more interesting in normal formations"): a blow with its riders (`blow`) or one
+## special (`act`), then what it does also. Empty for a foe with none.
+func fall() -> Dictionary:
+	for key in ["blow", "act"]:
+		var m = on_death.get(key, null)
+		if m is Dictionary:
+			return m
+	return {}
+
+
+## Its last act's blow, if its fall strikes: the blow it lands the moment it falls.
 func last_act() -> Dictionary:
 	var b = on_death.get("blow", null)
 	return b if b is Dictionary else {}

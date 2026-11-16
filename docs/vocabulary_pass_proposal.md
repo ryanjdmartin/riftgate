@@ -2346,3 +2346,16 @@ One line each, with the rule or the row, so either can be overruled.
 Engine first, each with synthetic tests: a fall as steps; a foe's Phased; an immunity as
 an Ability. Then content by his marks, the validator's rule on who may gather, the aim's
 name, and a read of the formations that changed.
+
+**Built ahead, 16 November: a fall as steps.** His mark settles that a fall may do more
+than strike, and the steps of section 26 are the way a move already says it, so the engine
+is built on the form above and carries no content. `on_death.blow` may carry `also`, and
+`on_death.act` is one special in a blow's place. A fall may heal, armour, cleanse, ward,
+prime, ready or rally its own, take rerolls, ablate or jam its pick, and scorch or corrupt
+every machine. The validator refuses the rest: what its own body would carry, a summon
+beside its split, a swallow, a purge and an Expose. The chip names the fall, the round
+preview plays every step, the save keeps them, and the bot prices a kill by them. A reroll
+a fall takes lands in the player's turn, so the REROLL button flashes with the fall and its
+note counts it at once. The four falls of the table need one effect more, the Lich's, built
+when it is marked. The pick rule of the first open point is built as leaned and is one line
+to turn (`tests/test_skirmish.gd`).

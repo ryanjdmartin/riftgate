@@ -1202,6 +1202,21 @@ func test_greedy_reads_a_countdown_a_core_and_a_last_act() -> void:
 	s3.start_round()
 	assert_true(is_equal_approx(Policy.last_act_cost(s3, beast), 20.0 * Policy.HULL_WEIGHT), "its Meteor's twenty on the bare machine")
 	assert_eq(Policy.last_act_cost(s3, calm), 0.0, "a foe without one costs nothing")
+	# A fall's steps (16 November), each at the price the same effect has from a move.
+	var howler := Foe.make("gargantuan_king", 30, 20)
+	howler.on_death = {"act": Foe.fall_act_from({"name": "Last Howl", "effect": "rally", "value": 2})}
+	var root := Foe.make("gargantuan_king", 30, 20)
+	root.on_death = {"act": Foe.fall_act_from({"name": "Last Scream", "effect": "drain_rerolls", "value": 1})}
+	var s4 := Skirmish.new(1, 3)
+	s4.add_mech(_mech("A", Die.single(Face.attack(40, I)), 0, 100))
+	s4.add_foes([howler, root, Foe.make("gargantuan_king", 30, 20)])
+	s4.begin()
+	s4.start_round()
+	assert_true(is_equal_approx(Policy.last_act_cost(s4, howler), 2.0 * 2.0 * Policy.HULL_WEIGHT), "a fall that rallies costs its number on each foe still standing")
+	assert_true(is_equal_approx(Policy.last_act_cost(s4, root), Policy.REROLL_SHARE * 40.0), "one that drains, a reroll's worth")
+	beast.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all"], "also": [{"effect": "drain_rerolls", "value": 1}]})}
+	assert_true(is_equal_approx(Policy.last_act_cost(s3, beast), 20.0 * Policy.HULL_WEIGHT + Policy.REROLL_SHARE * 40.0), "and a blow's steps add to its blow")
+	beast.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all"]})}
 	beast.target = s3.mechs[0]
 	calm.target = s3.mechs[0]
 	var f40 := Face.attack(40, I)
