@@ -41,9 +41,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1219 tests, 373,236 checks, green on `ccr-bd73687d-w8qox1` (16 November, his notes on
+- Tests: 1220 tests, 373,260 checks, green on `ccr-bd73687d-w8qox1` (16 November, his notes on
   the shell and the wrecks: the seven hexes beside the rift closed to the machines while the seal
-  stands, the wrecks slumped and kept to their hexes). Before it, 1213 tests, 373,034 checks,
+  stands, the wrecks slumped and kept to their hexes; over main at `e26589f` taken in a merge).
+  Before it, 1213 tests, 373,034 checks,
   green on the same branch (Ryan's five beside the formation pass: the wreck, the musters, the
   peak's sounds, the drum, the shell; over main at `3801a1b` taken in a merge). Before it, 1211 tests, 372,977 checks, green on the same branch
   over main at `d1b6827`. Before it, 1198 tests, 372,873 checks, green on `ccr-722ca9f0-yj8na3` (16 November, his
