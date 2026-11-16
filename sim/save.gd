@@ -187,6 +187,7 @@ static func from_dict(d: Dictionary) -> Battle:
 	b.boss_fight = bool(d.get("boss_fight", false))
 	var boss_id := int(d.get("boss", -1))
 	b.boss = b.field.unit_by_id(boss_id) if boss_id >= 0 else null
+	b.field.set_shell(b.is_sealed())   # the rift's shell stands while the seal does
 	b.skirmishes_fought = int(d.get("skirmishes_fought", 0))
 	b.columns = int(d.get("columns", Skirmish.DEFAULT_COLUMNS))
 	var sd = d.get("skirmish", null)

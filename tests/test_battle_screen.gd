@@ -1153,9 +1153,9 @@ func test_engage_counts_the_fights_waiting() -> void:
 	s.free()
 
 
-func test_the_rift_shell_cracks_a_span_a_fracture_and_bursts_at_the_rupture() -> void:
-	# The rift's shell (the bible's pacing row; built 16 November): a span for each Fracture the tier
-	# calls, each cracked as it is earned, the whole shell burst at the Rupture. What the map finds
+func test_the_rift_shell_cracks_a_plate_a_fracture_and_bursts_at_the_rupture() -> void:
+	# The rift's shell over the seven hexes beside it (the bible's pacing row; built 16 November): a
+	# plate cracked for each Fracture earned, the shell burst at the Rupture. What the map finds
 	# already cracked or broken shows as it is; what changes while it watches plays.
 	var b := Battle.new(3)
 	var db := ContentDB.load_default()
@@ -1163,16 +1163,16 @@ func test_the_rift_shell_cracks_a_span_a_fracture_and_bursts_at_the_rupture() ->
 	var screen: BattleScreen = load("res://game/battle/battle_screen.tscn").instantiate()
 	screen.setup(b)
 	var map: BattleMapView = screen._map
-	assert_eq(map._shell.x, b.thresholds.size(), "a span for each Fracture the tier calls")
-	assert_true(map._shell.x > 0 and map._shell.y == 0 and map._shell.z == 0, "whole and sealed as the battle opens")
+	assert_true(map._shell_up and map._shell_cracked == 0, "whole and standing as the battle opens")
 	assert_true(map._shell_crack_at.is_empty() and map._shell_burst_at < 0.0, "nothing played for what it found")
 	b.fractures = 1
 	screen._refresh()
-	assert_eq(map._shell.y, 1, "a Fracture cracks a span")
+	assert_eq(map._shell_cracked, 1, "a Fracture cracks a plate")
 	assert_true(map._shell_crack_at.has(0), "and its crack plays")
 	b.fractures = b.thresholds.size()
-	b.boss.sealed = false
+	b.rupture()
 	screen._refresh()
-	assert_eq(map._shell.z, 1, "the Rupture breaks the shell")
+	assert_false(map._shell_up, "the Rupture breaks the shell")
 	assert_true(map._shell_burst_at >= 0.0, "and its burst plays")
+	assert_true(b.field.shell.is_empty(), "and the seven are open to the machines")
 	screen.free()

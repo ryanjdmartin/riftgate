@@ -908,11 +908,11 @@ func _draw_caches() -> void:
 		_chest(at + Vector2(0.0, -HEX_SIZE * 0.86), t, a, CHEST)
 
 
-## The wrecks (Battlefield.wrecks; the model is Map3D's): smoke rising off each where it lies,
-## a burst of it as it comes down, and over the painting, or with no 3D map, its flat mark, a
-## dark plate with a heavy cross on it, so the hex reads as held by structure, never by a hue.
-## A first cut, judged running (RIFTGATE_WRECK_DEBUG=1). The smoke carries nothing the cross
-## and the model do not, so its grey is no colour of the tuner's.
+## The wrecks (Battlefield.wrecks; the model is Map3D's, seen in both worlds as a machine is):
+## smoke rising off each where it lies and a burst of it as it comes down; with no 3D map, its flat
+## mark, a dark plate with a heavy cross on it, so the hex reads as held by structure, never by a
+## hue. A first cut, judged running (RIFTGATE_WRECK_DEBUG=1). The smoke carries nothing the model
+## does not, so its grey is no colour of the tuner's.
 const WRECK_SMOKE := Color(0.72, 0.72, 0.74)
 const WRECK_PUFFS := 5
 const WRECK_RISE_S := 2.8      # seconds a puff takes to rise and go
@@ -923,16 +923,14 @@ func _draw_wrecks() -> void:
 	_map_space()
 	for u in field.wrecks:
 		var at := center(u.pos)
-		var flat := 1.0 - _solid_at(u.pos)
-		if _map3d == null or flat > 0.02:
-			var a := 1.0 if _map3d == null else flat
+		if _map3d == null:
 			var pts := MapOrient.corners(at, HEX_SIZE * 0.62)
-			draw_colored_polygon(pts, Color(Palette.BG, 0.9 * a))
-			Hud.stroke_poly(self, pts, Color(Palette.MUTED, a), _px(2.0))
+			draw_colored_polygon(pts, Color(Palette.BG, 0.9))
+			Hud.stroke_poly(self, pts, Palette.MUTED, _px(2.0))
 			var r := HEX_SIZE * 0.34
 			for d in [Vector2(1, 1), Vector2(1, -1)]:
-				draw_line(at - d * r, at + d * r, Color(Palette.BG, a), _px(7.0))
-				draw_line(at - d * r, at + d * r, Color(Palette.INK, a), _px(4.0))
+				draw_line(at - d * r, at + d * r, Palette.BG, _px(7.0))
+				draw_line(at - d * r, at + d * r, Palette.INK, _px(4.0))
 		var age: float = _map3d.wreck_age(u.id) if _map3d != null else 1.0e6
 		var seed_t := float(u.id) * 0.61
 		if age < 1.4:
@@ -1423,136 +1421,196 @@ func _draw_rift(map: BattleMap) -> void:
 		draw_texture_rect_region(tex, dst, src, Color(1, 1, 1, 1) if not torn else Color(0.55, 0.55, 0.68, 1.0))   # dimmed hard: at 0.82 only the shear showed (Ryan, 23 September)
 
 
-## The rift's shell (the bible's pacing row; Ryan, 6 November, of Claude's lean: "The shells work,
-## if we can visually represent it"): a ring of spans round the rift's mouth, flat and in the
-## other world's register as the vortex is, one span for each Fracture the battle's tier calls
-## (set_shell), each cracked as its Fracture is earned, the elite it brings coming out of the rift
-## beside it, and the whole shell bursting at the Rupture as the boss's seal breaks, gone after. A
-## cracked span reads from a whole one by structure (a jagged crack across it, a notch out of its
-## rim, the rift's light through it), never by a hue. A first cut, judged running
-## (RIFTGATE_SHELL_DEBUG=1 cracks a span every SHELL_DEBUG_EVERY seconds and bursts the shell, over
-## and over). The loot behind it (the row's bait for the final sortie) is not built.
-const SHELL_THICK := 0.5        # the band's depth, in hexes: hot, for the phone
-const SHELL_PAD := 0.9          # how far past the farthest of the rift's hex centres the band's middle runs, in hexes
-const SHELL_GAP := 0.07         # radians between two spans
-const SHELL_CRACK_S := 0.6      # seconds a crack takes to run across its span
+## The rift's shell (the bible's pacing row; Ryan, 6 November: "The shells work, if we can visually
+## represent it"; 16 November: "The shell only needs to cover the 7 hexes in front of the rift. Make
+## it follow the hex border on those hexes, with a faux 'height' as per the pixel aesthetic, a
+## little animation"): a plateau of seven plates over the hexes beside the rift (BattleMap's
+## shell_hexes, which no machine enters while it stands: Battlefield.shell), each plate its hex's
+## border raised by a faux height, its walls drawn where the plateau's edge faces the eye, a lit
+## dash crawling round its rim and its plates breathing in turn. Each Fracture cracks a plate, the
+## ends first and the boss's plate last (SHELL_CRACK_ORDER: seven cracks to give, the tiers calling
+## three to five), the crack run across the plate's top and down its wall; the Rupture bursts the
+## plates up and out from the mouth, and the hexes open with it. A cracked plate reads from a whole
+## one by structure (the crack, a notch out of its rim), never by a hue. A first cut, judged
+## running (RIFTGATE_SHELL_DEBUG=1 cracks a plate every SHELL_DEBUG_EVERY seconds through all seven
+## and bursts the shell, over and over). The loot behind it is not built (the to-do).
+const SHELL_HEIGHT := 0.36      # the plates' faux height, in hexes: hot, for the phone
+const SHELL_INSET := 2.5        # map pixels each plate stands in from its hex's border, so the seams read
+const SHELL_CRACK_ORDER := [0, 6, 1, 5, 2, 4, 3]   # which plate each Fracture cracks, by its place round the rift (BattleMap.shell_hexes): the ends first, the boss's last
+const SHELL_CRACK_S := 0.6      # seconds a crack takes to run across its plate
 const SHELL_BURST_S := 1.4      # seconds the burst takes
-const SHELL_DEBUG_EVERY := 1.5  # seconds between cracks under RIFTGATE_SHELL_DEBUG
-const SHELL_PLATE := Color("1d102c")
+const SHELL_CRAWL := 46.0       # map pixels a second the rim's lit dash crawls
+const SHELL_DEBUG_EVERY := 1.2  # seconds between cracks under RIFTGATE_SHELL_DEBUG
+const SHELL_TOP := Color("2c1745")
+const SHELL_WALL := Color("150a22")
 static var SHELL_DEBUG := OS.get_environment("RIFTGATE_SHELL_DEBUG") == "1"
-var _shell := Vector3i.ZERO     # spans, cracked, broken (0 or 1), as the battle stands (set_shell)
-var _shell_crack_at: Dictionary = {}   # span index -> when its crack began (_ring_t)
+var _shell_cracked := 0         # the Fractures earned while the shell stands (set_shell)
+var _shell_up := false          # the seal stands
+var _shell_crack_at: Dictionary = {}   # crack number -> when it began (_ring_t)
 var _shell_burst_at := -1.0
 var _shell_seen := false        # whether the shell has been set once: what was cracked or broken before shows as it is, unplayed
 
 
-## The shell as the battle stands: `spans` the Fractures its tier calls, `cracked` those earned,
-## `broken` the Rupture (the seal gone). A crack or the burst the map had not shown yet plays.
-func set_shell(spans: int, cracked: int, broken: bool) -> void:
-	var was := _shell
-	_shell = Vector3i(spans, clampi(cracked, 0, spans), 1 if broken else 0)
+## The shell as the battle stands: `cracked` the Fractures earned, `up` the seal standing. A crack
+## or the burst the map had not shown yet plays.
+func set_shell(cracked: int, up: bool) -> void:
+	var was_cracked := _shell_cracked
+	var was_up := _shell_up
+	_shell_cracked = clampi(cracked, 0, SHELL_CRACK_ORDER.size())
+	_shell_up = up
 	if not _shell_seen:
 		_shell_seen = true
 		return
-	for k in range(was.y, _shell.y):
+	for k in range(was_cracked, _shell_cracked):
 		_shell_crack_at[k] = _ring_t
-	if _shell.z == 1 and was.z == 0:
+	if was_up and not up:
 		_shell_burst_at = _ring_t
 
 
 func _draw_shell(map: BattleMap) -> void:
-	var spans := _shell.x
-	var cracked := _shell.y
-	var broken := _shell.z == 1
+	var cracked := _shell_cracked
+	var up := _shell_up
 	var crack_at := _shell_crack_at
 	var burst_at := _shell_burst_at
 	if SHELL_DEBUG:
-		spans = maxi(spans, 4)
-		var step := int(floorf(_ring_t / SHELL_DEBUG_EVERY)) % (spans + 2)
+		var n := SHELL_CRACK_ORDER.size()
+		var step := int(floorf(_ring_t / SHELL_DEBUG_EVERY)) % (n + 3)
 		var since := fmod(_ring_t, SHELL_DEBUG_EVERY)
-		cracked = mini(step, spans - 1)
-		broken = step >= spans
+		cracked = mini(step, n)
+		up = step <= n
 		crack_at = {}
 		for k in range(cracked):
 			crack_at[k] = _ring_t - since - float(cracked - 1 - k) * SHELL_DEBUG_EVERY
-		burst_at = _ring_t - since - float(step - spans) * SHELL_DEBUG_EVERY if broken else -1.0
-	if spans <= 0 or map.rift_hexes.is_empty():
-		return
+		burst_at = _ring_t - since - float(step - n - 1) * SHELL_DEBUG_EVERY if not up else -1.0
 	var burst := -1.0
-	if broken:
+	if not up:
 		if burst_at < 0.0 or _ring_t - burst_at >= SHELL_BURST_S:
 			return   # gone with the seal
 		burst = (_ring_t - burst_at) / SHELL_BURST_S
-	var mid := Vector2.ZERO
-	for h in map.rift_hexes:
-		mid += center(h)
-	mid /= float(map.rift_hexes.size())
-	var reach := 0.0
-	for h in map.rift_hexes:
-		reach = maxf(reach, center(h).distance_to(mid))
-	var r := reach + HEX_SIZE * SHELL_PAD
-	var half := HEX_SIZE * SHELL_THICK * 0.5
-	var width := TAU / float(spans)
-	for k in range(spans):
-		var a0 := -PI * 0.5 + width * k + SHELL_GAP * 0.5
-		var a1 := -PI * 0.5 + width * (k + 1) - SHELL_GAP * 0.5
-		var am := (a0 + a1) * 0.5
+	var hexes := map.shell_hexes()
+	if hexes.is_empty():
+		return
+	var is_shell := {}
+	for h in hexes:
+		is_shell[h] = true
+	var mouth := Vector2.ZERO
+	for r in map.rift_hexes:
+		mouth += center(r)
+	mouth /= float(maxi(1, map.rift_hexes.size()))
+	var rise := Vector2(0.0, -HEX_SIZE * SHELL_HEIGHT)
+	var plate_of := {}   # crack number -> plate index
+	for k in range(cracked):
+		plate_of[int(SHELL_CRACK_ORDER[k])] = k
+	# Each plate: its border at the ground and raised; the walls of the edges that face the eye and
+	# lie on the plateau's rim; its place in the burst.
+	var plates: Array = []
+	for i in range(hexes.size()):
+		var c := center(hexes[i])
+		var ground := MapOrient.corners(c, HEX_SIZE - SHELL_INSET)
+		var breathe := 1.0 + 0.05 * sin(_ring_t * 1.7 - float(i) * 0.9)   # the plates breathing in turn, round the rift
+		var lift := rise * breathe
 		var shift := Vector2.ZERO
-		var turn := 0.0
 		var alpha := 1.0
 		if burst >= 0.0:
-			# Thrown out from the mouth, each span turning its own way, and gone.
 			var e := 1.0 - pow(1.0 - burst, 2.0)
-			shift = Vector2(cos(am), sin(am)) * HEX_SIZE * 2.2 * e
-			turn = (0.6 if k % 2 == 0 else -0.6) * e
+			var out := (c - mouth).normalized() if c.distance_to(mouth) > 0.1 else Vector2(0.0, 1.0)
+			shift = out * HEX_SIZE * 1.6 * e + Vector2(0.0, -HEX_SIZE * 1.2 * sin(e * PI * 0.8))
 			alpha = 1.0 - burst
-		var c := mid + shift
-		var outer := PackedVector2Array()
-		var inner := PackedVector2Array()
-		for i in range(13):
-			var a := lerpf(a0, a1, float(i) / 12.0) + turn
-			outer.append(c + Vector2(cos(a), sin(a)) * (r + half))
-			inner.append(c + Vector2(cos(a), sin(a)) * (r - half))
-		var band := outer.duplicate()
-		for i in range(inner.size() - 1, -1, -1):
-			band.append(inner[i])
-		var is_cracked := k < cracked
-		var lit := Color(Palette.ENEMY, alpha)
-		draw_colored_polygon(band, Color(SHELL_PLATE, 0.94 * alpha))
-		# Its plates: two seams across the band, so the span reads as built, whole.
-		for f in [0.33, 0.67]:
-			var a := lerpf(a0, a1, f) + turn
-			draw_line(c + Vector2(cos(a), sin(a)) * (r - half), c + Vector2(cos(a), sin(a)) * (r + half), Color(Palette.ENEMY, 0.45 * alpha), _px(1.5))
-		var rim := band.duplicate()
-		rim.append(band[0])
-		draw_polyline(rim, lit, _px(4.0))
-		if is_cracked or burst >= 0.0:
-			var age: float = _ring_t - float(crack_at.get(k, -1.0e6))
-			var run := clampf(age / SHELL_CRACK_S, 0.0, 1.0) if burst < 0.0 else 1.0
-			# A jagged crack across the band at its middle, the rift's light through it, a notch out
-			# of its outer rim; drawn as it runs, a flash as it lands.
-			var pts := PackedVector2Array()
-			var steps := 6
-			for i in range(steps + 1):
-				var f := float(i) / float(steps)
-				var wob := (0.16 if i % 2 == 0 else -0.16) * width * 0.25 if i > 0 and i < steps else 0.0
-				var a := am + turn + wob
-				pts.append(c + Vector2(cos(a), sin(a)) * lerpf(r + half * 1.25, r - half * 1.25, f))
-			var shown := maxi(2, int(ceil(run * float(pts.size()))))
-			var part := pts.slice(0, shown)
-			draw_polyline(part, Color(Palette.BG, alpha), _px(7.0))
-			draw_polyline(part, Color(Palette.ENEMY.lightened(0.35), alpha), _px(3.5))
-			var na := am + turn
-			var notch := PackedVector2Array([c + Vector2(cos(na - 0.06), sin(na - 0.06)) * (r + half + _px(1.0)),
-				c + Vector2(cos(na), sin(na)) * (r + half * 0.25), c + Vector2(cos(na + 0.06), sin(na + 0.06)) * (r + half + _px(1.0))])
-			draw_colored_polygon(notch, Color(Palette.BG, alpha))
-			if age < SHELL_CRACK_S * 1.6 and burst < 0.0:
-				var flash := 1.0 - clampf(age / (SHELL_CRACK_S * 1.6), 0.0, 1.0)
-				draw_circle(c + Vector2(cos(am), sin(am)) * r, HEX_SIZE * (0.3 + 0.5 * (1.0 - flash)), Color(Palette.ENEMY.lightened(0.4), 0.55 * flash))
-	if burst >= 0.0 and burst < 0.5:
-		# The burst's ring, thrown out with the spans.
-		var k2 := burst / 0.5
-		draw_arc(mid, r + HEX_SIZE * 1.8 * k2, 0.0, TAU, 48, Color(Palette.ENEMY.lightened(0.3), 0.8 * (1.0 - k2)), _px(6.0 * (1.0 - k2) + 1.0))
+		var top := PackedVector2Array()
+		var base := PackedVector2Array()
+		for p in ground:
+			base.append(p + shift)
+			top.append(p + lift + shift)
+		var rim: Array = []   # edge indices on the plateau's rim
+		for e_i in range(6):
+			var mid := (ground[e_i] + ground[(e_i + 1) % 6]) * 0.5
+			var across := c + (mid - c) * 2.0   # the neighbour's centre across this edge
+			var inner := false
+			for o in hexes:
+				if o != hexes[i] and center(o).distance_to(across) < HEX_SIZE * 0.5:
+					inner = true
+			if not inner or burst >= 0.0:
+				rim.append(e_i)
+		plates.append({"top": top, "base": base, "rim": rim, "alpha": alpha, "c": c + lift + shift})
+	# The walls first, every plate's, then the tops over them: one plateau of seven.
+	for pl in plates:
+		var top: PackedVector2Array = pl["top"]
+		var base: PackedVector2Array = pl["base"]
+		var a: float = pl["alpha"]
+		for e_i in pl["rim"]:
+			var j := (int(e_i) + 1) % 6
+			var mid := (base[e_i] + base[j]) * 0.5
+			var facing := (mid - (pl["c"] as Vector2)).y > 0.0   # the edge's outside faces down the glass: its wall is seen
+			if not facing:
+				continue
+			var wall := PackedVector2Array([base[e_i], base[j], top[j], top[e_i]])
+			draw_colored_polygon(wall, Color(SHELL_WALL, 0.96 * a))
+			draw_polyline(PackedVector2Array([base[e_i], base[j]]), Color(Palette.ENEMY.darkened(0.35), a), _px(2.0))
+			draw_line(base[e_i], top[e_i], Color(Palette.ENEMY.darkened(0.45), a), _px(1.5))
+	for i in range(plates.size()):
+		var pl: Dictionary = plates[i]
+		var top: PackedVector2Array = pl["top"]
+		var a: float = pl["alpha"]
+		var pulse := 0.85 + 0.15 * sin(_ring_t * 1.7 - float(i) * 0.9)
+		draw_colored_polygon(top, Color(SHELL_TOP.lightened(0.08 * pulse), 0.95 * a))
+		var closed := top.duplicate()
+		closed.append(top[0])
+		draw_polyline(closed, Color(Palette.ENEMY.darkened(0.5), 0.9 * a), _px(1.5))   # the seam between two plates
+		# The light from above on the edges that face up the glass, as a pixel plate is lit.
+		for e_i in range(6):
+			var j := (e_i + 1) % 6
+			var mid := (top[e_i] + top[j]) * 0.5
+			if (mid - (pl["c"] as Vector2)).y < -HEX_SIZE * 0.3:
+				draw_line(top[e_i], top[j], Color(Palette.ENEMY.lightened(0.25), 0.8 * a * pulse), _px(2.0))
+		for e_i in pl["rim"]:
+			var j := (int(e_i) + 1) % 6
+			draw_line(top[e_i], top[j], Color(Palette.ENEMY, a), _px(3.5))   # the plateau's rim, heavy
+		if plate_of.has(i) or burst >= 0.0:
+			var k: int = int(plate_of.get(i, 0))
+			var age: float = _ring_t - float(crack_at.get(k, -1.0e6)) if plate_of.has(i) else 1.0e6
+			_shell_crack(top, rise, i, clampf(age / SHELL_CRACK_S, 0.0, 1.0) if burst < 0.0 else 1.0, age, a)
+	# The rim's lit dash crawling round the plateau.
+	if burst < 0.0:
+		for pl in plates:
+			var top: PackedVector2Array = pl["top"]
+			for e_i in pl["rim"]:
+				var j := (int(e_i) + 1) % 6
+				var length := top[e_i].distance_to(top[j])
+				var at_d := fmod(_ring_t * SHELL_CRAWL + float(e_i) * 17.0 + top[e_i].x * 0.31, length * 3.0)
+				if at_d < length:
+					var d0 := maxf(0.0, at_d - HEX_SIZE * 0.25)
+					var dir := (top[j] - top[e_i]) / maxf(0.001, length)
+					draw_line(top[e_i] + dir * d0, top[e_i] + dir * at_d, Palette.ENEMY.lightened(0.55), _px(3.5))
+
+
+## A crack across a plate's top and down its wall: a jagged line from one side of the plate to the
+## other through its middle, run in as `run` goes 0 to 1, a notch out of its rim where it starts and
+## a flash as it lands; the rift's light in it.
+func _shell_crack(top: PackedVector2Array, rise: Vector2, plate: int, run: float, age: float, a: float) -> void:
+	var c := Vector2.ZERO
+	for p in top:
+		c += p
+	c /= float(top.size())
+	var from := top[(plate * 2) % 6]
+	var to := top[(plate * 2 + 3) % 6]
+	var pts := PackedVector2Array()
+	var steps := 6
+	for s in range(steps + 1):
+		var f := float(s) / float(steps)
+		var p := from.lerp(to, f).lerp(c, 0.25 * sin(f * PI))
+		var side := (to - from).orthogonal().normalized() * HEX_SIZE * 0.09 * (1.0 if s % 2 == 0 else -1.0)
+		pts.append(p + (side if s > 0 and s < steps else Vector2.ZERO))
+	var shown := maxi(2, int(ceil(run * float(pts.size()))))
+	var part := pts.slice(0, shown)
+	draw_polyline(part, Color(Palette.BG, a), _px(6.0))
+	draw_polyline(part, Color(Palette.ENEMY.lightened(0.45), a), _px(3.0))
+	if run >= 1.0:
+		draw_line(to, to - rise * 0.9, Color(Palette.ENEMY.lightened(0.35), a), _px(2.5))   # down the wall below it
+	var notch := PackedVector2Array([from.lerp(c, 0.0) + (top[(plate * 2 + 1) % 6] - from) * 0.12, from + (c - from) * 0.22, from + (top[(plate * 2 + 5) % 6] - from) * 0.12])
+	draw_colored_polygon(notch, Color(Palette.BG, a))
+	if age < SHELL_CRACK_S * 1.6:
+		var flash := 1.0 - clampf(age / (SHELL_CRACK_S * 1.6), 0.0, 1.0)
+		draw_circle(c, HEX_SIZE * (0.25 + 0.45 * (1.0 - flash)), Color(Palette.ENEMY.lightened(0.4), 0.5 * flash * a))
 
 
 ## Off-screen packs get a portrait at the edge nearest them: the source of the intent line.

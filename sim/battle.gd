@@ -303,6 +303,7 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 			thresholds.append(maxi(1, roundi(float(size) * float(steps[k]) / total)))
 	if boss != null and not thresholds.is_empty():
 		boss.sealed = true
+	field.set_shell(is_sealed())   # the seven beside the rift closed to the machines while the seal stands
 	state = State.PLAN
 	_new_turn()
 
@@ -386,6 +387,7 @@ func rupture() -> void:
 		return
 	boss.sealed = false
 	rupture_turn = field.phase
+	field.set_shell(false)   # the shell bursts with the seal: the seven open to the machines
 	field.log.append("THE RUPTURE: the seal breaks")
 	# The tide quickens (the long wall brief 3.8; Ryan, 6 November, of a re-seal: "Isn't that just
 	# a feel-bad, or a non-choice?"): nothing re-seals, and the beat halves once, so each turn of
@@ -580,7 +582,7 @@ func _lands_on(r: Unit, h: Vector2i, u: Unit, riders: Array[Unit]) -> bool:
 			return false
 		if not BattleMap.passable(field.map.terrain[at], r.traits):
 			return false
-		if field.wreck_at(at) != null:
+		if field.wreck_at(at) != null or (r.is_player() and field.shell.has(at)):
 			return false
 		var occ := field.unit_at(at)
 		if occ != null and occ != r and occ != u and not riders.has(occ):

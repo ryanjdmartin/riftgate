@@ -1786,7 +1786,7 @@ func sync() -> void:
 			if not _rest_yaw.has(u.id) or not _rigs.has(u.id):
 				(_pivots[u.id] as Node3D).rotation.y = facing_yaw(_facing_of(u))
 			_rest_yaw[u.id] = facing_yaw(_facing_of(u))
-	_sync_wrecks(occupied, grad, src)
+	_sync_wrecks(occupied)
 	_sync_caches(occupied, grad, src)
 	_hide_props_under(occupied)
 	for uid in _units.keys():
@@ -1815,27 +1815,28 @@ func sync() -> void:
 
 ## The wrecks (Battlefield.wrecks; Ryan, 4 November: a wreck stays on its hex and blocks it for
 ## the battle; 16 November: "A wreck should behave like any other unit, meaning nobody can land
-## on it"): a machine wrecked in a fight lies on the hex it fell on, its own model gone dark and
-## dead, slumped over, a flyer down on the ground. Dressed matt as a cache's dead steel, its lit
-## parts out, on the world's layer with no sheen and no outline (it is no longer the player's),
-## and it sinks into the painting as the ground does (Bleed.solid), the map view's flat mark
-## over the painting from there (BattleMapView._draw_wrecks, with its smoke). A wreck the map
-## sees come down falls: it lurches over onto its side and settles, WRECK_FALL seconds; one
-## already down as the map is built lies still. A first cut, judged running
-## (RIFTGATE_WRECK_DEBUG=1 lays one of each of the team's chassis beside it and drops them
-## again every few seconds).
-const WRECK_TILT := 0.5         # radians it lies over about its own long axis: hot, for the phone
-const WRECK_PITCH := 0.22       # and nose down
-const WRECK_SINK := 0.14        # of its height, sunk into its hex
-const WRECK_DARK := 0.3         # what is left of its light
-const WRECK_FALL := 0.75        # seconds its fall takes
-const WRECK_DEBUG_EVERY := 3.5  # seconds between falls under RIFTGATE_WRECK_DEBUG
+## on it"): a machine wrecked in a fight lies on the hex it fell on, built as the living machine
+## is (_machine_model: its model, its fit, its seat, the units' layer over both worlds, so it is
+## seen as a machine is, never sunk into the ground or painted over), a size smaller so it keeps
+## to its hex (Ryan, 16 November: "Make sure the kill wrecks don't take up too much of the adjacent
+## hexes ... Make sure that perspective of the wrecks make sense. Don't embed them in the
+## terrain"). It goes as a lost machine goes in a fight (MechRig.kill: its lights gutter out and it
+## slumps, nothing tipping the body, a walker sinking on its own legs and a flyer or a hover coming
+## down onto its lowest point; his rules of 3 November for the slump, no weird lean and nothing
+## through the floor), its colours dimmed, no outline. A wreck the map sees come down goes there;
+## one already down as the map is built lies as it lies. RIFTGATE_WRECK_DEBUG=1 lays one of each of
+## the team's chassis beside it and lets them go again every few seconds.
+const WRECK_FIT := 0.75         # of a living machine's fit: a heavy wreck keeps inside its hex
+const WRECK_DARK := 0.28        # what is left of its colours: the sun lights a white livery at 0.45 near white again
+const WRECK_SETTLE := 3.0       # seconds its slump and its landing take, done
+const WRECK_LAND := 0.6         # seconds a flyer or a hover takes to come down, after the slump starts (MechView3D.LAND's role)
+const WRECK_DEBUG_EVERY := 4.0  # seconds between falls under RIFTGATE_WRECK_DEBUG
 static var WRECK_DEBUG := OS.get_environment("RIFTGATE_WRECK_DEBUG") == "1"
-var _wrecks: Dictionary = {}       # unit id -> {"seat", "pivot", "lie": the yaw it lies at, "depth": its sink in model units, "age"}
+var _wrecks: Dictionary = {}       # unit id -> {"seat", "pivot", "node", "rig", "k", "airborne", "aloft": the height it comes down from, "base": the model's resting place, "age"}
 var _wrecks_seen := false          # whether a sync has run: the wrecks there before it lie still
 
 
-func _sync_wrecks(occupied: Dictionary, grad: Vector2, src: PackedVector3Array) -> void:
+func _sync_wrecks(occupied: Dictionary) -> void:
 	var live := {}
 	for u in field.wrecks:
 		live[u.id] = true
@@ -1844,17 +1845,15 @@ func _sync_wrecks(occupied: Dictionary, grad: Vector2, src: PackedVector3Array) 
 			if made.is_empty():
 				continue
 			add_child(made["seat"])
-			made["age"] = WRECK_FALL if not _wrecks_seen else 0.0
 			_wrecks[u.id] = made
+			if _wrecks_seen:
+				made["age"] = 0.0
+			else:
+				_settle_wreck(made)   # down already: lie as it lies
 		for h in u.hexes():
 			occupied[h] = true   # its hex's dressing would stand through it: hidden, as under a machine
 		var w: Dictionary = _wrecks[u.id]
-		var seat: Node3D = w["seat"]
-		var solid := Bleed.solid(_origin + MapOrient.to_pixel(u.pos, hex_px), grad, src)
-		seat.visible = solid > 0.02
-		seat.position = _hex_world(u.pos, _height_of(u.pos))
-		seat.scale = Vector3(1.0, maxf(solid, 0.02), 1.0)
-		_lay_wreck(w)
+		(w["seat"] as Node3D).position = _hex_world(u.pos, _height_of(u.pos)) + Vector3(0.0, 0.0, float(w["south"]))
 	_wrecks_seen = true
 	for uid in _wrecks.keys():
 		if not live.has(uid):
@@ -1862,84 +1861,75 @@ func _sync_wrecks(occupied: Dictionary, grad: Vector2, src: PackedVector3Array) 
 			_wrecks.erase(uid)
 
 
-## A wreck's model: the machine's own, worn as it fell, fitted to its hex as a machine's is
-## (_make_unit) and set down on the ground, then dead: every surface darkened and matt, its lamps
-## and its weapons' fire out. {} for a chassis with no model.
+## A wreck's model: the machine's own as a living machine is built (_machine_model), WRECK_FIT of
+## its size and down on the ground, every surface's colour dimmed and matt, then lost
+## (MechRig.kill) facing as it fell. {} for a chassis with no model.
 func _make_wreck(u: Unit) -> Dictionary:
-	var db := ContentDB.load_default()
-	var model_id := MechView3D.model_for(u.chassis_id)
-	if model_id.is_empty() or not ResourceLoader.exists("res://art/models/%s.glb" % model_id):
+	var m := _machine_model(u, WRECK_FIT, false)
+	if m.is_empty():
 		return {}
-	var scene: PackedScene = load("res://art/models/%s.glb" % model_id)
-	var node: Node3D = scene.instantiate()
-	MechView3D.toon(node, db.maker_of(u.chassis_id), "clean", u.paint, false)
-	MechView3D.wear(MechView3D.pins_of(node), MechView3D.plan_for(u, db) if model_id == u.chassis_id else [], "clean", u.paint, false, true, model_id)
-	MechView3D.launches_of(node, MechRig.load_sidecar(model_id))   # what it fires out of itself stays hidden, as on a machine
-	MechWeld.weld(node, MechWeld.kept_parts(model_id))
+	var node: Node3D = m["node"]
 	for child in node.find_children("*", "MeshInstance3D", true, false):
 		var mi: MeshInstance3D = child
-		mi.layers = 1   # the world's layer alone: no sheen light, drawn under the painting as a prop
-		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
 		for i in range(mi.mesh.get_surface_count()):
-			var m := mi.get_active_material(i)
-			if m is StandardMaterial3D:
-				var dead: StandardMaterial3D = (m as StandardMaterial3D).duplicate()
-				dead.albedo_color = Color(WRECK_DARK, WRECK_DARK * 0.96, WRECK_DARK * 0.92) * dead.albedo_color
-				dead.roughness = 0.95
-				dead.metallic = 0.0
-				dead.metallic_specular = 0.15
-				dead.emission_enabled = false
-				mi.set_surface_override_material(i, dead)
-			elif m is ShaderMaterial:
-				mi.set_surface_override_material(i, null)
-				mi.material_override = _lit(Color(0.16, 0.15, 0.14))
-	for child in node.find_children("*", "MeshInstance3D", true, false):
-		_trace(child, "prop")   # traced as the world's dead things are, no longer as the player's
-	var aabb := _bounds(node)
-	var widest := maxf(aabb.size.x, aabb.size.z)
-	var fit := fit_for(str(db.chassis.get(u.chassis_id, {}).get("size", "")))
-	var k := (HEX_WORLD * 2.0 * fit / widest) if widest > 0.0 else 1.0
-	node.scale = Vector3.ONE * k
-	# As a machine stands (_make_unit): the model's Z = 0 on the ground, centred across by its
-	# bounds and halfway along them, and set south by as much as its middle projects north under
-	# the pitched camera. A flyer comes down to the ground.
-	node.position = Vector3(-aabb.get_center().x, 0.0, -aabb.get_center().z * 0.5) * k
-	var pivot := Node3D.new()
-	pivot.add_child(node)
-	var south := Node3D.new()
-	south.position = Vector3(0.0, 0.0, (aabb.end.y * k) * 0.5 * _cos / _sin)
-	south.add_child(pivot)
-	var seat := Node3D.new()
-	seat.add_child(south)
-	var lie := facing_yaw(u.facing)
-	pivot.rotation.y = lie
-	return {"seat": seat, "pivot": pivot, "lie": lie, "depth": aabb.size.y * k * WRECK_SINK,
-		"flyer": u.traits.has("flyer"), "node": node}
+			var mat := mi.get_active_material(i)
+			if mat is StandardMaterial3D:
+				var sm := mat as StandardMaterial3D   # the model's own copy (MechView3D.toon duplicates each)
+				sm.albedo_color = sm.albedo_color * Color(WRECK_DARK, WRECK_DARK * 0.97, WRECK_DARK * 0.94)
+				sm.roughness = 0.95
+				sm.metallic = 0.0
+				sm.metallic_specular = 0.15
+	var seat: Node3D = m["seat"]
+	var pivot: Node3D = m["pivot"]
+	pivot.rotation.y = facing_yaw(u.facing)
+	var rig: MechRig = m["rig"]
+	var airborne := u.traits.has("flyer") or u.traits.has("hover")
+	rig.airborne = airborne   # a flyer or a hover comes down onto its lowest point (MechView3D.lose)
+	rig.kill()
+	_to_units_layer(seat)
+	for vi in seat.find_children("*", "VisualInstance3D", true, false):
+		(vi as VisualInstance3D).layers &= ~(1 << (MechView3D.SHEEN_LAYER - 1))   # dead metal takes no gloss: a chrome maker's sheen light lit a wreck as bright as a living machine
+	var south := seat.position.z
+	return {"seat": seat, "pivot": pivot, "node": node, "rig": rig, "k": float(m["k"]), "airborne": airborne,
+		"aloft": HOVER if u.traits.has("flyer") else 0.0, "south": south, "age": WRECK_SETTLE}
 
 
-## A wreck's pose by its age: upright as it comes down, over onto its side and settled by
-## WRECK_FALL, with a little rock back past the lie as it lands. A flyer comes down harder.
-func _lay_wreck(w: Dictionary) -> void:
-	var t := clampf(float(w["age"]) / WRECK_FALL, 0.0, 1.0)
-	var fall := 1.0 - pow(1.0 - t, 3.0)
-	var rock := sin(t * PI * 2.0) * (1.0 - t) * 0.18   # it lands, rocks back and lies
-	var hard := 1.35 if bool(w["flyer"]) else 1.0
-	var pivot: Node3D = w["pivot"]
-	pivot.rotation = Vector3(WRECK_PITCH * hard * fall, float(w["lie"]), (WRECK_TILT * hard) * (fall - rock))
-	pivot.position = Vector3(0.0, -float(w["depth"]) * fall, 0.0)
+## A wreck's slump and landing at its age: the rig's servos carry the slump (MechRig.kill, the body
+## its own), and a flyer or a hover comes down from where it rode onto its lowest point as it starts
+## (collapse_floor), the pivot carrying it as the fight's stage does (MechView3D.lose), so nothing of
+## it reaches below the ground.
+func _lay_wreck(w: Dictionary, delta: float) -> void:
+	var rig: MechRig = w["rig"]
+	rig.tick(delta)
+	var g := clampf((float(w["age"]) - MechRig.COLLAPSE_AT) / WRECK_LAND, 0.0, 1.0)
+	var e := g * g * (3.0 - 2.0 * g)
+	var down := -rig.collapse_floor * float(w["k"]) if bool(w["airborne"]) else 0.0
+	(w["pivot"] as Node3D).position.y = lerpf(float(w["aloft"]), down, e)
 
 
-## Each wreck's fall played on; under RIFTGATE_WRECK_DEBUG every wreck falls again every
-## WRECK_DEBUG_EVERY seconds.
+## A wreck down already: its slump played out at once.
+func _settle_wreck(w: Dictionary) -> void:
+	w["age"] = 0.0
+	while float(w["age"]) < WRECK_SETTLE:
+		w["age"] = float(w["age"]) + 0.1
+		_lay_wreck(w, 0.1)
+
+
+## Each wreck's slump played on while it settles; under RIFTGATE_WRECK_DEBUG every wreck stands
+## again every WRECK_DEBUG_EVERY seconds and goes down again.
 func _fell_wrecks(delta: float) -> void:
 	for uid in _wrecks.keys():
 		var w: Dictionary = _wrecks[uid]
 		var age := float(w["age"]) + delta
 		if WRECK_DEBUG and age > WRECK_DEBUG_EVERY:
+			var rig: MechRig = w["rig"]
+			rig.revive()
+			rig.airborne = bool(w["airborne"])
+			rig.kill()
 			age = 0.0
 		w["age"] = age
-		if age <= WRECK_FALL + delta:
-			_lay_wreck(w)
+		if age <= WRECK_SETTLE + delta:
+			_lay_wreck(w, delta)
 
 
 ## How long ago a wreck came down on the map, in seconds (the map view's smoke reads it); a
@@ -2095,77 +2085,91 @@ func _process(delta: float) -> void:
 
 
 func _make_unit(u: Unit) -> Node3D:
-	if u.is_player() and not u.is_static():
-		var maker := ContentDB.load_default().maker_of(u.chassis_id)
-		var model_id := MechView3D.model_for(u.chassis_id)
-		var node := _model(model_id, maker, u.paint, MechView3D.plan_for(u, ContentDB.load_default()) if model_id == u.chassis_id else [], model_id == u.chassis_id)
-		MechView3D.launches_of(node, MechRig.load_sidecar(model_id))   # what a weapon fires out of the machine stays hidden on the map (the Lammergeier's drones)
-		MechWeld.weld(node, MechWeld.kept_parts(model_id))   # a mesh a material in each moving group (the battery plan), before the traces and the fit read it
-		_marker(node)
-		# Mechs are the reconstruction's markers, drawn at marker size: whatever the model's
-		# true size, its footprint is fitted to about one hex. The model hangs off a pivot
-		# at the hex, centred by its bounds (a model's origin is wherever its author put
-		# it) and standing on its lowest point; a flyer hovers, with a shadow on its tile.
-		var aabb := _bounds(node)
-		var widest := maxf(aabb.size.x, aabb.size.z)
-		var flyer := u.traits.has("flyer")
-		var fit := fit_for(str(ContentDB.load_default().chassis.get(u.chassis_id, {}).get("size", "")))
-		var k := (HEX_WORLD * 2.0 * fit / widest) if widest > 0.0 else 1.0
-		var pivot := Node3D.new()
-		node.scale = Vector3.ONE * k
-		var hover := HOVER if flyer else 0.0
-		# The ground is the model's Z = 0 by convention, never its lowest point: a claw or a
-		# wing tip may hang below it, and lifting the whole machine to clear that is what
-		# shoved the Badger off its hex. Under the pitched camera a body's middle projects
-		# north of its feet, so the model is set south by as much as that; and it is
-		# centred halfway by its bounds, so a long reach ahead (the booms) leans over the
-		# hex's front edge rather than dragging the body back.
-		var south := (hover + (aabb.end.y * k) * 0.5) * _cos / _sin
-		node.position = Vector3(-aabb.get_center().x, 0.0, -aabb.get_center().z * 0.5) * k + Vector3(0.0, hover, 0.0)
-		pivot.add_child(node)
-		_outlined[u.id] = [node, aabb]   # where the compositor looks for its outline (outline_boxes)
-		# The rig after the materials and the seat: a body track moves the model under its
-		# pivot, so the facing and the idle never fight; seeded by the unit, so no two act in step.
-		var rig := MechRig.new()
-		rig.place = "map"
-		var side := MechRig.load_sidecar(model_id)
-		if MechView3D.PLUMES:
-			for pl in side.get("plumes", []):
-				rig.halo_skip.append(str(pl.get("part", "")))   # a booster's plume burns where its halo's ring was
-		rig.setup(node, model_id, node, u.id)
-		rig.top_speed = MechRig.map_speed(widest, u.movespeed, fit)   # the debug drive's pace (RIFTGATE_MOVE_DEBUG)
-		_rigs[u.id] = rig
-		if MechView3D.PLUMES:
-			_plumes[u.id] = MechView3D.setup_plumes(node, side, rig, 0.9)   # trailing behind it as it runs, the map's top-down camera seeing them whole; no outline pass to ink it
-		_scale[u.id] = k
-		var seat := Node3D.new()   # the pivot turns to the facing; the seat's southward set does not
-		seat.position = Vector3(0.0, 0.0, south)
-		seat.add_child(pivot)
-		_pivots[u.id] = pivot
-		pivot = seat
-		if flyer:
-			var disc := CylinderMesh.new()
-			disc.top_radius = HEX_WORLD * 2.0 * SHADOW_RADIUS
-			disc.bottom_radius = disc.top_radius
-			disc.height = 0.2
-			disc.radial_segments = 12
-			var sh := MeshInstance3D.new()
-			sh.mesh = disc
-			var sm := StandardMaterial3D.new()
-			sm.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-			sm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-			sm.albedo_color = Color(0.0, 0.0, 0.0, 0.45)
-			# Depth-tested (Ryan, 29 September: drawn over everything it lay over the aircraft
-			# itself); a prop on the tile may cut into it, which a shadow can bear.
-			sm.render_priority = 2
-			sh.material_override = sm
-			sh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-			add_child(sh)
-			_shadows[u.id] = sh
-			_to_units_layer(sh)
-		_to_units_layer(pivot)
-		return pivot
-	return null   # foes and static units are drawn flat by the map view
+	if not u.is_player() or u.is_static():
+		return null   # foes and static units are drawn flat by the map view
+	var m := _machine_model(u)
+	if m.is_empty():
+		return null
+	var node: Node3D = m["node"]
+	var rig: MechRig = m["rig"]
+	_outlined[u.id] = [node, m["aabb"]]   # where the compositor looks for its outline (outline_boxes)
+	rig.top_speed = MechRig.map_speed(float(m["widest"]), u.movespeed, float(m["fit"]))   # the debug drive's pace (RIFTGATE_MOVE_DEBUG)
+	_rigs[u.id] = rig
+	if MechView3D.PLUMES:
+		_plumes[u.id] = MechView3D.setup_plumes(node, m["side"], rig, 0.9)   # trailing behind it as it runs, the map's top-down camera seeing them whole; no outline pass to ink it
+	_scale[u.id] = float(m["k"])
+	_pivots[u.id] = m["pivot"]
+	var seat: Node3D = m["seat"]
+	if u.traits.has("flyer"):
+		var disc := CylinderMesh.new()
+		disc.top_radius = HEX_WORLD * 2.0 * SHADOW_RADIUS
+		disc.bottom_radius = disc.top_radius
+		disc.height = 0.2
+		disc.radial_segments = 12
+		var sh := MeshInstance3D.new()
+		sh.mesh = disc
+		var sm := StandardMaterial3D.new()
+		sm.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		sm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		sm.albedo_color = Color(0.0, 0.0, 0.0, 0.45)
+		# Depth-tested (Ryan, 29 September: drawn over everything it lay over the aircraft
+		# itself); a prop on the tile may cut into it, which a shadow can bear.
+		sm.render_priority = 2
+		sh.material_override = sm
+		sh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		add_child(sh)
+		_shadows[u.id] = sh
+		_to_units_layer(sh)
+	_to_units_layer(seat)
+	return seat
+
+
+## A machine's model as the map shows it, its rig set up, registered nowhere (_make_unit for a
+## living machine, _make_wreck for a wreck): {"seat", "pivot", "node", "rig", "side", "aabb", "k",
+## "widest", "fit"}. Mechs are the reconstruction's markers, drawn at marker size: whatever the
+## model's true size, its footprint is fitted to about one hex (`fit_k` of that: a wreck sits
+## smaller in its hex). The model hangs off a pivot at the hex, centred by its bounds (a model's
+## origin is wherever its author put it) and standing on its own ground; a flyer hovers unless
+## `aloft` is false. {} for no model.
+func _machine_model(u: Unit, fit_k := 1.0, aloft := true) -> Dictionary:
+	var db := ContentDB.load_default()
+	var maker := db.maker_of(u.chassis_id)
+	var model_id := MechView3D.model_for(u.chassis_id)
+	if model_id.is_empty() or not ResourceLoader.exists("res://art/models/%s.glb" % model_id):
+		return {}
+	var node := _model(model_id, maker, u.paint, MechView3D.plan_for(u, db) if model_id == u.chassis_id else [], model_id == u.chassis_id)
+	MechView3D.launches_of(node, MechRig.load_sidecar(model_id))   # what a weapon fires out of the machine stays hidden on the map (the Lammergeier's drones)
+	MechWeld.weld(node, MechWeld.kept_parts(model_id))   # a mesh a material in each moving group (the battery plan), before the traces and the fit read it
+	_marker(node)
+	var aabb := _bounds(node)
+	var widest := maxf(aabb.size.x, aabb.size.z)
+	var fit := fit_for(str(db.chassis.get(u.chassis_id, {}).get("size", ""))) * fit_k
+	var k := (HEX_WORLD * 2.0 * fit / widest) if widest > 0.0 else 1.0
+	var pivot := Node3D.new()
+	node.scale = Vector3.ONE * k
+	var hover := HOVER if aloft and u.traits.has("flyer") else 0.0
+	# The ground is the model's Z = 0 by convention, never its lowest point: a claw or a
+	# wing tip may hang below it, and lifting the whole machine to clear that is what
+	# shoved the Badger off its hex. Under the pitched camera a body's middle projects
+	# north of its feet, so the model is set south by as much as that; and it is
+	# centred halfway by its bounds, so a long reach ahead (the booms) leans over the
+	# hex's front edge rather than dragging the body back.
+	var south := (hover + (aabb.end.y * k) * 0.5) * _cos / _sin
+	node.position = Vector3(-aabb.get_center().x, 0.0, -aabb.get_center().z * 0.5) * k + Vector3(0.0, hover, 0.0)
+	pivot.add_child(node)
+	# The rig after the materials and the seat: a body track moves the model under its
+	# pivot, so the facing and the idle never fight; seeded by the unit, so no two act in step.
+	var rig := MechRig.new()
+	rig.place = "map"
+	var side := MechRig.load_sidecar(model_id)
+	if MechView3D.PLUMES:
+		for pl in side.get("plumes", []):
+			rig.halo_skip.append(str(pl.get("part", "")))   # a booster's plume burns where its halo's ring was
+	rig.setup(node, model_id, node, u.id)
+	var seat := Node3D.new()   # the pivot turns to the facing; the seat's southward set does not
+	seat.position = Vector3(0.0, 0.0, south)
+	seat.add_child(pivot)
+	return {"seat": seat, "pivot": pivot, "node": node, "rig": rig, "side": side, "aabb": aabb, "k": k, "widest": widest, "fit": fit}
 
 
 ## On the map a mech is the same textured model as the skirmish, traced in light so it

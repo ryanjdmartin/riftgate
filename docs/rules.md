@@ -1297,8 +1297,9 @@ a stat.
   and never a rule of its own. Open ground (plain, road), rough and ruins are ground to
   everyone. Water: a ground machine wades it, a water hex costing two of its move, and it can
   always enter one with whatever move it has left; a hovercraft and a flyer cross it at one.
-  Walls stop all but a flyer. Nobody stops on another unit's hex or a wreck's, and nothing else
-  blocks a move: every unit passes every other, a machine through a machine or a pack and a pack through
+  Walls stop all but a flyer, and the rift's shell every machine while the seal stands (the
+  Rupture, below). Nobody stops on another unit's hex or a wreck's, and nothing else blocks a
+  move: every unit passes every other, a machine through a machine or a pack and a pack through
   a machine, as under a flyer (they slide under each other, from two different dimensional
   counts), and the two sides meet only in a fight. Each move still lands at once, so the next is
   planned from where it ended.
@@ -1377,8 +1378,8 @@ a stat.
   time, a catch first; the order changes nothing a fight opens on, its dice included: a fight's
   seed is the battle's seed, the turn, its packs and its machines. Afterwards each machine in it has used its action, a wrecked machine lies on the hex it fell on for the battle, held as
   any unit holds one: every walk passes it and none ends on it, no tear opens on it, and a cache
-  under it waits unclaimed; its model lies there dark and slumped, smoking, a flat mark over the
-  painting. A pack keeps only its survivors, by member, and Rift Pressure does not tick: it
+  under it waits unclaimed; its model lies there at three quarters of its size, slumped as a
+  lost machine slumps in a fight and dimmed, smoking, seen over both worlds as a machine is. A pack keeps only its survivors, by member, and Rift Pressure does not tick: it
   ticks on the map alone.
 - **Packs**: a pack is a composition on one hex: its members, each a foe type times a
   strength, in content order, the lead first, whose sprite the pack wears; a hold lists them. It
@@ -1547,9 +1548,11 @@ a stat.
   the boss's seal breaks, and nothing else breaks it. A field cleared with the seal standing
   earns nothing by itself: it is the squad's breathing room, to reposition or fetch a cache,
   until the next peak comes on its beat. Rift Pressure keeps
-  running after. A Fracture brings no prize (not built). On the map a shell rings the rift's
-  mouth, a span for each Fracture the tier calls: each Fracture cracks its span, and the
-  Rupture bursts the shell whole; what may lie behind it is not built.
+  running after. A Fracture brings no prize (not built). The rift's shell covers the seven
+  hexes beside its five, the boss's among them, a plate each: while the seal stands no machine
+  enters or stands on one, a flyer as much as any, while the packs pass and land there as ever;
+  each Fracture cracks a plate, the ends first and the boss's last, and the Rupture bursts the
+  shell and opens the seven. No cache is laid inside it; what may lie behind it is not built.
 - **The battle ends** when the gate reaches zero, every machine is wrecked, or the boss unit
   falls (every commander of the unit at the rift, its fight won); a wipe after the commander's
   fall is a wipe.

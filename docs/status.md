@@ -41,9 +41,11 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1213 tests, 373,034 checks, green on `ccr-bd73687d-w8qox1` (16 November, Ryan's five beside the
-  formation pass: the wreck, the musters, the peak's sounds, the drum, the shell; over main at
-  `3801a1b` taken in a merge). Before it, 1211 tests, 372,977 checks, green on the same branch
+- Tests: 1219 tests, 373,236 checks, green on `ccr-bd73687d-w8qox1` (16 November, his notes on
+  the shell and the wrecks: the seven hexes beside the rift closed to the machines while the seal
+  stands, the wrecks slumped and kept to their hexes). Before it, 1213 tests, 373,034 checks,
+  green on the same branch (Ryan's five beside the formation pass: the wreck, the musters, the
+  peak's sounds, the drum, the shell; over main at `3801a1b` taken in a merge). Before it, 1211 tests, 372,977 checks, green on the same branch
   over main at `d1b6827`. Before it, 1197 tests, 372,849 checks, green on `ccr-722ca9f0-yj8na3` (16 November,
   Phased, over main at `1d2b544`). Before it, 1196 tests, 372,811 checks, green on the same
   branch (16 November,
@@ -507,8 +509,9 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   5"), each a commit of its own. A wreck lies on the hex it fell on for the battle
   (`Battlefield.wrecks`, the campaign's and the save's home for them where `Battle.wrecks` was):
   every walk passes it and none ends on it, no tear opens on it, a cache under it waits unclaimed;
-  on the map its own model gone dark and slumped, smoking, a flat mark over the painting
-  (`RIFTGATE_WRECK_DEBUG=1`; the bible's wreck row). The runner's player that musters
+  on the map the machine's own model built as a living one is, three quarters its size, slumped as
+  the fight's lost machine slumps and dimmed, smoking, never sunk or painted over (reworked on his
+  notes the same day; `RIFTGATE_WRECK_DEBUG=1`; the bible's wreck row). The runner's player that musters
   (`BattleBot.Rule.MUSTER`, the campaign runner's `--muster`), the battle runner
   (`tools/battle_run.gd`, the second battle whole and its ledger, into `docs/battle_run.md`) and
   the rating read (`tools/balance.gd --packs rating`): it wins the elite at its rating and loses
@@ -517,9 +520,10 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   seam's sweep, a tear opening and a hunter's roar by its family, first cuts in the forge
   (`peak_sweep`, `tear_open`, `roar_<family>`). The Cottonmouth's guns fire as the drum's shot,
   two chambers on (`drum_fire`, the sidecar's `hidden_fire`, MechRig.fire_hidden; the model
-  rebuilt byte for byte), no flare or fire at a hidden mount. The rift's shell, a span a
-  Fracture, cracked as each is earned and burst at the Rupture (`RIFTGATE_SHELL_DEBUG=1`; the
-  loot behind it a to-do line for chat first). The bible (v0.593) and the hangar (the
+  rebuilt byte for byte), no flare or fire at a hidden mount. The rift's shell over the
+  seven hexes beside it, on his word the same day: closed to the machines while the seal stands
+  (`Battlefield.shell`, no cache laid there), a raised plate each, cracked a Fracture and burst at
+  the Rupture (`RIFTGATE_SHELL_DEBUG=1`; the loot behind it a to-do line for chat first). The bible (v0.597) and the hangar (the
   Cottonmouth's sidecar, the motion script) republish from main once it lands.
 - **The blade class retired** (`ccr-b7d5164e-1wtzzm`, 15 November, on Ryan's "The four you listed are
   locked pieces. The others need to be renamed into short range (i.e "melee" as per our definition)

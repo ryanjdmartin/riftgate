@@ -107,6 +107,12 @@ var lifted: Array[Unit] = []
 ## `units`, so no pack hunts it, no fight takes it and nothing counts it as a machine. The
 ## campaign reads its die from here (Campaign._fielded).
 var wrecks: Array[Unit] = []
+## The rift's shell while the seal stands (BattleMap.shell_hexes; Ryan, 16 November: "the 7 hexes
+## next to the rift are inaccessible to player units"): hex -> true. No machine enters or stands on
+## one, a flyer as much as any (_ground_fits); the packs pass and land there as ever, the rift's
+## own coming out through them. The battle lays it as it opens with the seal and lifts it at the
+## Rupture (Battle.rupture); empty with no seal.
+var shell: Dictionary = {}
 
 
 func _init(battle_map: BattleMap) -> void:
@@ -273,7 +279,8 @@ func can_pass(u: Unit, at: Vector2i) -> bool:
 	return true
 
 
-## Every footprint hex on the field, no structure, ground `u` can enter.
+## Every footprint hex on the field, no structure, ground `u` can enter, and for a machine none
+## of the rift's shell while it stands.
 func _ground_fits(u: Unit, at: Vector2i) -> bool:
 	for o in u.footprint:
 		var h: Vector2i = at + o
@@ -281,7 +288,17 @@ func _ground_fits(u: Unit, at: Vector2i) -> bool:
 			return false
 		if not BattleMap.passable(map.terrain[h], u.traits):
 			return false
+		if u.is_player() and shell.has(h):
+			return false
 	return true
+
+
+## Lay the rift's shell (`up`) or lift it.
+func set_shell(up: bool) -> void:
+	shell = {}
+	if up:
+		for h in map.shell_hexes():
+			shell[h] = true
 
 
 ## Nearest hex where a unit with `traits` could stand, by breadth-first ring search.
@@ -999,6 +1016,8 @@ func seed_caches(content: ContentDB, seed_arg: int) -> void:
 func _cache_fits(h: Vector2i) -> bool:
 	if not map.has(h) or map.is_structure(h) or unit_at(h) != null:
 		return false
+	if map.shell_hexes().has(h):
+		return false   # nothing lies behind the rift's shell until its loot is decided (the to-do)
 	if BattleMap.step_cost(int(map.terrain.get(h, BattleMap.Terrain.PLAIN)), []) != BattleMap.STEP:
 		return false
 	for c in caches:
