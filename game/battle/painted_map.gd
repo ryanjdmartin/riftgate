@@ -91,13 +91,8 @@ func _draw() -> void:
 	hexes.append_array(map.margin.keys())
 	for h in hexes:
 		if map.terrain_of(h) == BattleMap.Terrain.MOUNTAIN:
-			walls.append(h)
-	# The walls' ranges stand taller than their hexes, so they go down last, the ones highest
-	# on screen first, each in front of the ground and the ranges above it (in either view:
-	# MapOrient); the scenery's in its shade.
-	walls.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
-		var pa := MapOrient.to_pixel(a, hex_px)
-		var pb := MapOrient.to_pixel(b, hex_px)
-		return pa.y < pb.y or (is_equal_approx(pa.y, pb.y) and pa.x < pb.x))
-	for h in walls:
-		DomainGround.draw_walls(self, origin + MapOrient.to_pixel(h, hex_px), hex_px, h.x * 131 + h.y * 7919, frame, biome, SCENERY_SHADE if is_scenery(h) else Color.WHITE, str(map.wall_look.get(h, BattleMap.WALL_LOOKS[0])))
+			walls.append({"c": origin + MapOrient.to_pixel(h, hex_px), "seed": h.x * 131 + h.y * 7919, "look": str(map.wall_look.get(h, BattleMap.WALL_LOOKS[0])), "links": DomainGround.wall_links(map, h), "tint": SCENERY_SHADE if is_scenery(h) else Color.WHITE})
+	# The walls go down last, each a piece of a range joined to its look's walls beside it, the
+	# bases farthest first and what stands on them by its foot (DomainGround.draw_ranges), in
+	# either view (MapOrient); the scenery's in its shade.
+	DomainGround.draw_ranges(self, walls, hex_px, frame, biome)

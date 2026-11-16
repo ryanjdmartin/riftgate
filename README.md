@@ -132,7 +132,8 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   the die's own drawing (every main mark and what it holds, whom a piece reaches, the rest of a face's marks);
   `hero_shot.gd` renders one unit large; `fit_sheet.gd` renders every
   machine wearing each silhouette class on all its mounts, one sheet; `tileset_shot.gd` draws every
-  domain's tileset side by side, posterized as the map shows it; `perf_probe.gd` measures
+  domain's tileset side by side, a joined range of each look of wall among them, posterized as the
+  map shows it, in the view RIFTGATE_MAP_VIEW names; `perf_probe.gd` measures
   the battle map's or the skirmish's frame cost and draw calls; `lowforge/` builds the
   ally units by code from a brief (`models_low.py`, one function per modelled chassis, named by its id; a chassis without one
   draws the Badger's) in the
@@ -519,7 +520,8 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # RIFTGATE_BLEED_DEBUG=1 (any run) gives the whole field to the painted world, to judge a domain's
 # tileset in place (RIFTGATE_FACTION=meadow|waste|marsh|peak picks the domain on the standalone
 # screen); `xvfb-run -a godot --rendering-method gl_compatibility --path . -s tools/tileset_shot.gd
-# -- tilesets.png [frame]` draws all four side by side.
+# -- tilesets.png [frame]` draws all four side by side, with a joined range of each look of wall
+# (crags, mesas, towers, cliffs), in the view RIFTGATE_MAP_VIEW=left|bottom names.
 # RIFTGATE_PREVIEW_DEBUG=1 (any skirmish) puts the pulsing preview chip of a rally on its way on
 # every foe showing a blow (+1 where none is coming, its number unchanged), to judge the pulse
 # running; RIFTGATE_FOES=wolf:4 fields the real thing, howls lifting the bites after them.

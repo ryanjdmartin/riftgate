@@ -41,7 +41,8 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1198 tests, 372,873 checks, green on `ccr-722ca9f0-yj8na3` (16 November, his
+- Tests: 1203 tests, 373,302 checks, green on `ccr-1e6e6571-7x7ayr` (16 November, the painted
+  walls as joined ranges, over main at `e26589f`). Before it, 1198 tests, 372,873 checks, green on `ccr-722ca9f0-yj8na3` (16 November, his
   eighth round's rulings, over main at `3801a1b`). Before it, 1197 tests, 372,849 checks,
   green on the same branch (16 November,
   Phased, over main at `1d2b544`). Before it, 1196 tests, 372,811 checks, green on the same
@@ -107,6 +108,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 ## Branches
 
 Everything is on main as of 13 November 2026; the formation and refit session's branch lands as it goes, below.
+`ccr-1e6e6571-7x7ayr`, the map session's, restarted from main at `e26589f` on 16 November (its
+earlier work all on main): the painted walls as joined ranges (How things stand, below); not
+landed, main takes it on Ryan's word.
 `ccr-b7d5164e-1wtzzm`, this session's (12 November), cut from main at `6112939`: the to-do's
 roster pruned, then the Needletail's two modes and the Giant Petrel's hull on Ryan's design and
 mix, reworked on his notes (How things stand, below); it took main at `4a0c9b5` in a merge on 13
@@ -496,6 +500,22 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (`sim/campaign.gd`); no screen shows them. The quick campaign is an experiment, not a feature
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
+
+- **The painted walls as joined ranges** (`ccr-1e6e6571-7x7ayr`, 16 November, on Ryan's "They could
+  fill their hexes more and mesh together better. A mountain range should look like a continuous
+  range, not a bunch of isolated chunks. Especially true for the gorge"; the bible's domain tileset
+  row). A wall in the painted world is one piece of a range joining its look's walls beside it
+  (`DomainGround.draw_ranges`, `wall_links`): a massif filling its hex, its top raised and running
+  on into a joined neighbour's, a face and a dark edge only where the range ends; crags stand peaks
+  on a low base (one at the saddle of each joined edge, so a ridge runs on), towers stand on a
+  plinth (short at a block's back, so the street behind shows), mesas and the gorge's cliffs are
+  flat and cracked plateaus with rocks; drawn bases first, then what lies on them, then what stands
+  by its foot. Each domain's rock (`RANGE_INKS`) is from its own inks, its top, base and faces
+  picked by the colourblind simulations against its ground; the Marsh is pale stone with moss, the
+  Peak dark basalt with lava seams. The hand-drawn range sprites and the 10 November blocks are
+  gone. `tools/tileset_shot.gd` now lays its patch in the view's layout and shows a joined range of
+  each look per domain. The paint at a battle's start costs about 50 to 100 ms more on the cloud
+  container (`docs/measurements.md`); the phone's hitch is the to-do's.
 
 - **The blade class retired** (`ccr-b7d5164e-1wtzzm`, 15 November, on Ryan's "The four you listed are
   locked pieces. The others need to be renamed into short range (i.e "melee" as per our definition)

@@ -10140,3 +10140,68 @@ flankers and the antlion trio read the same to the decimal (4.5 rounds and 5.1%;
 9.9%), so the two rule changes moved no fight here: no blow lands between a round's end and
 the next one's opening, and no piece of the six grants Phased. Not read: the Warg's pack at
 tier two and the Captain's formations at tier three, where the same change lands.
+
+## 16 November: the painted walls as joined ranges
+
+Ryan, of the painted domains' crags: "They could fill their hexes more and mesh together better. A
+mountain range should look like a continuous range, not a bunch of isolated chunks. Especially
+true for the gorge." Each wall became a piece of a range that joins its look's walls beside it
+(`DomainGround.draw_ranges`; the bible's domain tileset row). Two reads went with it.
+
+### The walls' inks over their grounds
+
+The three Machado simulations (severity 1.0) and normal vision, each ink of a range against the
+ground it stands on, as CIE76 distance; the worst case decides. Every ink is one the domain's sprites
+already wore (a test holds it). Weak picks were changed on these numbers before the build landed:
+the Meadow's crag base went from #996633 to #663300 (5.4 to 25.3 for a deutan) and its plateau top
+from #cc9966 to #cccc99 (14.7 to 30.4); a range's faces took two tones, lit and the rest, after
+the Meadow's lit face (#996633) and the Marsh's shaded face (#333333) read as their grounds (5.4 deutan,
+5.6 tritan); the Peak's faces left its ground's own grey (#333333, 0) for its rust and red inks.
+Two weak pairs stay, each the pairing the old sprites already drew on the same ground: the Meadow's
+peaks' lit tan (14.7 deutan), framed by their dark edge and snow, and the Peak's shaded flank of a
+peak (18.0). Every range keeps its dark edge where it ends, so no wall is told from its ground by a
+colour alone.
+
+| Domain | Ink | Over its ground | Luminance contrast | Worst simulated distance (dE) | Normal / protan / deutan / tritan |
+|---|---|---|---|---|---|
+| Meadow | top #cccc99 | #339933 | 2.20 | 30.4 | 52 / 35 / 30 / 47 |
+| Meadow | crag base #663300 | #339933 | 2.82 | 25.3 | 75 / 39 / 25 / 76 |
+| Meadow | face, lit #996633 | #339933 | 1.34 | 5.4 | 66 / 22 / 5 / 68 |
+| Meadow | face #663300 | #339933 | 2.82 | 25.3 | 75 / 39 / 25 / 76 |
+| Meadow | peak, lit #cc9966 | #339933 | 1.45 | 14.7 | 64 / 22 / 15 / 67 |
+| Meadow | edge #333300 | #339933 | 3.56 | 35.9 | 58 / 45 / 36 / 52 |
+| Waste | top #993300 | #cc9966 | 2.94 | 31.2 | 44 / 35 / 31 / 44 |
+| Waste | crag base #663300 | #cc9966 | 4.08 | 39.5 | 40 / 40 / 40 / 40 |
+| Waste | face #663300 | #cc9966 | 4.08 | 39.5 | 40 / 40 / 40 / 40 |
+| Waste | face, shade #330000 | #cc9966 | 7.29 | 58.7 | 66 / 67 / 64 / 59 |
+| Waste | peak, lit #993300 | #cc9966 | 2.94 | 31.2 | 44 / 35 / 31 / 44 |
+| Waste | edge #330000 | #cc9966 | 7.29 | 58.7 | 66 / 67 / 64 / 59 |
+| Marsh | top #999999 | #333300 | 4.57 | 43.5 | 52 / 52 / 51 / 43 |
+| Marsh | crag base #666666 | #333300 | 2.27 | 23.7 | 37 / 37 / 36 / 24 |
+| Marsh | face #666666 | #333300 | 2.27 | 23.7 | 37 / 37 / 36 / 24 |
+| Marsh | face, shade #333333 | #333300 | 1.03 | 5.6 | 29 / 28 / 28 / 6 |
+| Marsh | peak, lit #999999 | #333300 | 4.57 | 43.5 | 52 / 52 / 51 / 43 |
+| Marsh | edge #000000 | #333300 | 1.61 | 20.8 | 36 / 35 / 34 / 21 |
+| Peak | top #666666 | #333333 | 2.20 | 21.9 | 22 / 22 / 22 / 22 |
+| Peak | crag base #666666 | #333333 | 2.20 | 21.9 | 22 / 22 / 22 / 22 |
+| Peak | face, lit #993300 | #333333 | 1.70 | 39.9 | 65 / 40 / 51 / 66 |
+| Peak | face #990000 | #333333 | 1.42 | 31.3 | 72 / 31 / 46 / 77 |
+| Peak | face, shade #330000 | #333333 | 1.46 | 18.0 | 31 / 19 / 18 / 33 |
+| Peak | peak, lit #999999 | #333333 | 4.43 | 42.0 | 42 / 42 / 42 / 42 |
+| Peak | edge #000000 | #333333 | 1.66 | 21.2 | 21 / 21 / 21 / 21 |
+
+### The paint at a battle's start
+
+The painted map is drawn once a battle, two frames, before the first turn. Its first paint on a
+cloud container (llvmpipe, `--rendering-method gl_compatibility`; times are this machine's, a
+direction only), main at `e26589f` against this branch, two runs each:
+
+| Map | Main | Joined ranges |
+|---|---|---|
+| Gorge, seed 7, the Meadow | 170 and 162 ms | 254 and 207 ms |
+| Ruined City, seed 7, the Marsh | 172 and 154 ms | 241 and 261 ms |
+
+A range's base is built once for its look and its joined sides and kept, so a range's middle hexes
+share one (33 bases for the gorge, 51 for the city): about 1.3 ms each after the build moved to
+packed arrays (2.3 ms before). Whether a battle's start hitches on the phone is the to-do's.
+
