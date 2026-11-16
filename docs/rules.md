@@ -1547,7 +1547,7 @@ a stat.
   by the share still standing: its rating's strike times the heads it holds over the heads it took the
   field with, rounded down, at least 1; grown past that count, its rating and no more. The gate is the look
   and the bar's name; the whole wall is the target, so no line plugs it.
-- **Hunters** (the packs whose composition hunts) lock one machine when they appear, by its caveat (nearest, weakest, strongest, slowest or fastest; never
+- **Hunters** (the packs whose composition hunts) lock one machine when they appear, by its caveat (nearest, weakest, strongest or slowest; never
   the Prairie Dog, never a machine another hunter already hunts), keep it while it stands, and
   walk to stand beside it; a hunter that finds every machine hunted pushes for the wall
   as a pusher does until one is free, and turns on it then (the log says so). One hunter a
@@ -1816,7 +1816,7 @@ and nothing scales a pack.
   on the map (absent: a patrol 1, a formation 3, an elite and an escort 4); `lead`, a foe id in
   the grid whose sprite the pack wears, an elite composition's its elite (absent: the first in
   reading order, front left to right, then back); `hunts`, the caveat its pack hunts by
-  (nearest, weakest, strongest, slowest or fastest; absent: it pushes), never on an escort, which
+  (nearest, weakest, strongest or slowest; absent: it pushes), never on an escort, which
   walks with its boss; a foe carries no hunt and no ring; `ramp`, `[lo, hi]`, the
   Convergences it is dealt at, both held (absent: every one): a battle, the quick campaign and the
   Fractures' elites deal only the compositions whose gate holds their ramp, and where a domain's

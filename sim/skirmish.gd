@@ -301,10 +301,6 @@ var banked: int = 0
 ## Makes a foe from a content id, for a summoning action; set by the battle (the content
 ## database), left empty by tests, in which case a summon calls nothing up.
 var foe_factory: Callable = Callable()
-## The targeting rule: empty for the aims (decided 2 October), "lowest" for the rule before
-## it (every foe on the machine with the lowest shield, then the lowest hull), kept for the
-## balance runner's comparison and nothing else.
-var targeting_override: String = ""
 ## The shared pick of a rank that fires as one this round, by rank; cleared as the round opens.
 var _focus: Dictionary = {}
 ## The undo (Ryan, 2 November, the randomness pass: "undo to your last roll"): every spend and
@@ -5536,10 +5532,10 @@ func _injure_entry(ms: MechState, idx: int) -> String:
 ## buffed, the most stacks of buffs (each of those two the exposed when no machine qualifies);
 ## fires as one (focus), the rank's shared pick. No pick lands on a machine in `avoid`, which
 ## the blows already drawn this round would wreck, while another stands. The pick is a
-## commitment: a foe whose target shields up still swings at it. With the override set, or
-## asked with no foe, the rule before: the lowest shield, then the lowest hull. A pick made
-## again mid-round is _repick's, and draws nothing.
-func _pick_mech_target(f: Foe = null, avoid: Array = []) -> MechState:
+## commitment: a foe whose target shields up still swings at it. A pick made again mid-round is
+## _repick's, and draws nothing. The rule before 2 October, every foe on the lowest shield, left
+## the engine on 16 November with the runner's comparison that kept it.
+func _pick_mech_target(f: Foe, avoid: Array = []) -> MechState:
 	var live := targetable_mechs()
 	if live.is_empty():
 		return null
@@ -5558,10 +5554,8 @@ func _pick_mech_target(f: Foe = null, avoid: Array = []) -> MechState:
 	# So the whole field targets up until predicted death, then the rest pick intent targets as
 	# normal"). No draw is made for it.
 	var marked := exposed_mech()
-	if f != null and marked != null and open.has(marked):
+	if marked != null and open.has(marked):
 		return marked
-	if f == null or targeting_override == "lowest":
-		return _lowest_shield(live)
 	match f.aim_of():
 		"anything":
 			return live[r.randi_range(0, live.size() - 1)]
@@ -5611,24 +5605,10 @@ func _pick_mech_target(f: Foe = null, avoid: Array = []) -> MechState:
 ## foe's aim (Ryan, 26 October: Slice and Dice's rule, "it just targets the next ally in line",
 ## which the player can tell without the preview, and an aim breaking it would be "more
 ## unpredictable info"; it retires a draw from a stream of the fight's own, randomness the player
-## could see only through the preview). With the override set, the rule before.
+## could see only through the preview).
 func _repick(_f: Foe) -> MechState:
 	var live := targetable_mechs()   # in field order, left to right
-	if live.is_empty():
-		return null
-	if targeting_override == "lowest":
-		return _lowest_shield(live)
-	return live[0]
-
-
-static func _lowest_shield(live: Array[MechState]) -> MechState:
-	var best: MechState = null
-	for ms in live:
-		if best == null \
-				or ms.unit.shield < best.unit.shield \
-				or (ms.unit.shield == best.unit.shield and ms.unit.hull < best.unit.hull):
-			best = ms
-	return best
+	return null if live.is_empty() else live[0]
 
 
 ## The exposed: each machine weighs one, plus the hull this foe's blows would reach through

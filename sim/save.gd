@@ -531,7 +531,6 @@ static func clone_skirmish(sk: Skirmish) -> Skirmish:
 	for ud in d["units"]:
 		units.append(_unit_from(ud))
 	var c := _skirmish_build(d, func(at: int) -> Unit: return units[at] if at >= 0 and at < units.size() else null)
-	c.targeting_override = sk.targeting_override
 	c.foe_factory = sk.foe_factory
 	c.reroll_debt = sk.reroll_debt
 	c.drained = sk.drained

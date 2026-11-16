@@ -193,33 +193,18 @@ func test_a_foe_aims_at_random_unless_it_carries_an_aim_such_as_the_exposed() ->
 	assert_eq(s0.hull_reached(g0, s0.mechs[1]), 10, "a thin shield takes its ten, and the other ten pass")
 	assert_eq(s0.shield_broken(g0, s0.mechs[1]), 10, "but the thin shield breaks")
 	assert_eq(s0.shield_broken(g0, s0.mechs[2]), 0, "and the thick one holds")
-	# The rule before 2 October, kept for the runner's comparison: every blow on the lowest shield.
-	var sk := Skirmish.new(1)
-	sk.targeting_override = "lowest"
-	var tough := _mech("Tough", Die.single(Face.shield(10)), 40, 100)
-	var weak := _mech("Weak", Die.single(Face.shield(10)), 10, 100)
-	sk.add_mech(tough)
-	sk.add_mech(weak)
-	sk.add_foes([_ghoul(30, 20)])
-	sk.begin()
-	sk.start_round()
-	sk.end_round()
-	assert_eq(tough.shield, 40, "tough untouched")
-	assert_eq(weak.shield, 0, "weak lost its shield")
-	assert_eq(weak.hull, 90, "and the ten its shield could not take")
 	# The pick is a commitment: a shield raised on the target does not move the blow.
 	var s2 := Skirmish.new(3)
-	s2.targeting_override = "lowest"
-	var a := _mech("A", Die.single(Face.shield(30)), 0, 100)
-	var b := _mech("B", Die.single(Face.shield(10)), 40, 100)
-	s2.add_mech(a)
-	s2.add_mech(b)
+	s2.add_mech(_mech("A", Die.single(Face.shield(30)), 0, 100))
+	s2.add_mech(_mech("B", Die.single(Face.shield(30)), 0, 100))
 	s2.add_foes([_ghoul(30, 20)])
 	s2.begin()
 	s2.start_round()
-	assert_eq(s2.front[0].target, s2.mechs[0], "the bare machine")
-	assert_true(s2.assign(0, null), "it shields up")
-	assert_eq(s2.front[0].target, s2.mechs[0], "and the foe still swings at it")
+	var picked: Skirmish.MechState = s2.front[0].target
+	var at := s2.mechs.find(picked)
+	assert_true(at >= 0, "it picked a machine")
+	assert_true(s2.assign(at, null), "the machine it picked shields up")
+	assert_eq(s2.front[0].target, picked, "and the foe still swings at it")
 
 
 func test_the_foes_never_over_commit_to_a_machine_already_doomed() -> void:

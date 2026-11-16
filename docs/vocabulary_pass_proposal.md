@@ -2420,5 +2420,14 @@ proposal of five needles at once. And the Roc's question was not where it may st
 stoop stays in either form. The question is the round before it: the Roc on the field
 gathering, a countdown as today, or the Roc climbed out of reach, a foe's Phased.
 
-**Phased's name.** His question. Section 30 has the lean.
+**Phased's name.** His question: "Should we rename phased?" Lean: yes, to **Untouchable**.
+The rule is that nothing touches the unit, friend or foe: no blow, no pick, no tick's
+damage, no ally's spend. The word says that whole rule, on a machine behind its screens, a
+bird in the sky and a ghost alike. Phased says one maker's fiction, and since the unit now
+acts it also promises an absence that is no longer true. Second choice: Out of Reach, the
+rules' own phrase for the state. Third: keep Phased, the shortest, and the card games' word
+for exactly this. The engine's id can stay whichever is picked. Nothing is renamed until he
+says.
+
+**The targeting audit** he asked for is its own proposal, `docs/targeting_proposal.md`.
 

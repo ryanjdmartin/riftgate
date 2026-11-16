@@ -10,8 +10,9 @@ const DIR := "res://content/"
 # Design knobs. Loosen or tighten here; the validator and the bible should agree.
 const MAX_AUTHORED_KEYWORDS := 3    # per authored face; upgrades may exceed this at runtime
 const MAX_MOVE := 6                 # a move in hexes, chassis or foe, is 1 to this (a placeholder bound, 28 October)
-## The caveats a hunting composition may name (`hunts`): whom its pack locks.
-const HUNT_CAVEATS := ["nearest", "weakest", "strongest", "slowest", "fastest"]
+## The caveats a hunting composition may name (`hunts`): whom its pack locks. The fastest left on
+## 16 November with nothing hunting by it (the rule of 12 November).
+const HUNT_CAVEATS := ["nearest", "weakest", "strongest", "slowest"]
 const MIN_DIE := 4                  # a d3 was the first Kite's one-off (21 October to 11 November); no machine rolls one today
 const MAX_DIE := 10                 # the Clydesdale carries nine (Ryan, 28 September); ten leaves it room
 ## A chassis's class by mass, lightest first (Ryan, 5 October: the machines' scale on the map

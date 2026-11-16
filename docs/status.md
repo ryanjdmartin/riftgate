@@ -47,7 +47,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1240 tests, 373,435 checks, green on `ccr-722ca9f0-yj8na3` (16 November, his
+- Tests: 1241 tests, 373,433 checks, green on `ccr-722ca9f0-yj8na3` (16 November, the
+  targeting audit's cuts, over main at `c503783`). Before it, 1240 tests, 373,435 checks,
+  green on the same branch (16 November, his
   thirteenth round: a fall's curse on the killer, an elite at any tier, over main at
   `8e31b26`). Before it, 1239 tests, 373,422 checks, green on the same branch (16 November, a fall
   as a list of steps and the drain switch's test, over main at `45b4d3e`). Before it, 1231 tests, 373,341 checks, green
@@ -2016,12 +2018,23 @@ to the killer, and the dodge is ablating it"), nobody when a tick did. No foe ca
 than a blow: the carriers are the bench's.
 **An elite holds any mechanic at any tier, as a boss can** (the same round): the tier a rule
 names, Exposed's tier two, holds the rank and file alone. **Phased foes act.**
+**The foes' targeting is audited** (the same round: "We need to look at foe targeting rules
+now, I think. Clean that up"; `docs/targeting_proposal.md`): the rules as they run are set
+down in one place, and two leftovers are cut, the rule before 2 October with the runner's
+comparison that kept it and the map's fastest hunt, a test now holding the aims and the hunts
+to content. What is a design call waits on him, five points with leans (the bible's section
+12): the aim that content calls exposed renamed, exact where it draws by weight, the armed's
+and the buffed's fallback, a fall's single blow with the pick a move at nobody still draws,
+and the aims' words on the screen. `docs/balance.md` still prints the comparison section of
+its last run; the next run drops it.
 **First now: the foes' pass, the rest**
 (the to-do's line): the content, put to him on 16 November as the proposal's section 28 and
 waiting on his marks: the moves that take the rank and file's countdowns' place, a fall for
-a domain each, Exposed's carriers, a foe's Phased with its form, two moves as steps and
-three immunities, with two points his words leave open. On his marks: the engine for a
-foe's Phased and for an immunity, then the content, then a read of what changed.
+a domain each, Exposed's carriers, a foe's Phased with its two carriers, two moves as steps
+and three immunities; his thirteenth round answered part and is its section 29. Still his:
+the marks on the rows, the Roc's round before its stoop, Phased's name, and the targeting
+audit's five calls. On his word: the engine for a foe's Phased and for an immunity, the
+targeting build, then the content, then a read of what changed.
 The table of every rider, buff and debuff (`docs/vocabulary_table.md`) stands with its page
 (Pages, below) as the record of his marks until the pass retires.
 With the pass, on his proposal, the tier-one
