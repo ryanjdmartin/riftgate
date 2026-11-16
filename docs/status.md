@@ -541,8 +541,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   (`b.death`, the sidecar's `death`, MechRig's death pose set down on its lowest point, the
   hangar's script in step), every one of the twenty-two dealt machines given one, the slump
   the baseline beneath (the bible's row; the models rebuilt byte for byte, only their sidecars
-  moving). The bible (v0.600) and the hangar (the
-  Cottonmouth's sidecar, the motion script) republish from main once it lands.
+  moving). The hangar shows the deaths since Version 281 (Pages, below), published from this
+  branch ahead of main; the bible (v0.601 since main's ninth round merged in) republishes on his word.
 - **The blade class retired** (`ccr-b7d5164e-1wtzzm`, 15 November, on Ryan's "The four you listed are
   locked pieces. The others need to be renamed into short range (i.e "melee" as per our definition)
   guns, or just sent back to design"): four silhouette classes (barrel, twin barrel, rack, dish) in
@@ -2146,7 +2146,15 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 280 (15 November, from main at `4514a2c`, the branch `ccr-b7d5164e-1wtzzm` landed
+  page's Version 281 (16 November, from `ccr-bd73687d-w8qox1` at `a3cc3fb`, ahead of main, on
+  Ryan's "Can you get these into the hangar?"): the twenty-two sidecars with their deaths (the
+  Cottonmouth's with its drum), `motion.js` with the death form, the page with the death kept off
+  the Statuses list and a lost machine's acts line saying so, and main's moves since 280 (the six
+  content files, `text.json`, `designs.json`, the page's own); every replaced live copy read first
+  and found Version 280's (the two generated files differing in their stamp alone), and the
+  Models tab driven headless on every machine first. `edits` and `text` empty, `designs` the two
+  folded ideas. A republish from main before this branch lands would drop the deaths: land the
+  branch first, or publish from it. Version 280 (15 November, from main at `4514a2c`, the branch `ccr-b7d5164e-1wtzzm` landed
   there on Ryan's "These look great. Let's clean up and merge into main"): main's `vocabulary.json`
   (the vocabulary pass's rounds), `text.json` from the merged tree, `renders.json` with the Giant
   Petrel shipped, and the Needletail's eight candidate-final pictures removed; the live copy
