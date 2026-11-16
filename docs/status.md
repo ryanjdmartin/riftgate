@@ -43,7 +43,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1216 tests, 373,182 checks, green on `ccr-722ca9f0-yj8na3` (16 November, Exposed
+- Tests: 1217 tests, 373,189 checks, green on `ccr-722ca9f0-yj8na3` (16 November, the
+  Vampire Lord's drain as its own Ability, over main at `3ad445b`). Before it, 1216 tests,
+  373,182 checks, green on the same branch (16 November, Exposed
   on a machine, over main at `d97245e`). Before it, 1206 tests, 372,963 checks, green on the
   same branch (16 November, his
   ninth round's rulings, over main at `e26589f`). Before it, 1198 tests, 372,873 checks,
@@ -1955,9 +1957,12 @@ intent turns on it until the blows already drawn would wreck it; a Lure and a Wa
 the move, a Cleanse gives the armour back, a round Phased is passed by, and no foe announces
 one while another's is out or a machine stands Exposed. No foe carries it: its carriers are
 content, his to place at tier two or above, and the validator refuses it at tier one.
+**The Vampire Lord's drain is the unit's own Ability** (the same day, his mark of 15
+November: "Like the Nob"): every blow of its regrows what it took from the hull, a chip
+names it, and the rider is cut from the engine with its last carrier.
 **First now: the foes' pass, the rest**
 (the to-do's line): Exposed's carriers, the moves his marks renamed or
-moved onto the unit (Collect and Appropriated, the Vampire Lord's rule), the countdowns off
+moved onto the unit (Collect and Appropriated), the countdowns off
 the rank and file, a fall free to do more than strike, and a move as a short list of steps
 if he takes section 19's proposal, the one answer that shapes how those are built. Beside
 it, the clocks on his four places once he answers section 24's three points.

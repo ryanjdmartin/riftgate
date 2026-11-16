@@ -2831,11 +2831,12 @@ func _strike(f: Foe, t: MechState) -> void:
 		if turn_events.size() == events_before:
 			break   # a machine out of the fight took nothing, and nothing rides it
 		var ev: Dictionary = turn_events[turn_events.size() - 1]
-		# A drain (the Vampire Lord's, 30 October): the striker regrows what the blow took from the
+		# A drain (the Vampire Lord's, 30 October; its own Ability since 16 November, every blow
+		# of its, Foe.drains): the striker regrows what the blow took from the
 		# hull, no more than the machine had, so a shield starves it (one of shield and hull walled
 		# the slow trios, the shield no answer to the heal). It lays nothing on the machine, so no
 		# Ward turns it away; a Barrier's blow deals nothing, and Ablating on the striker races it.
-		if f.has_keyword(f.action, "drain") and f.alive() and turn_events.size() > events_before:
+		if f.drains and f.alive() and turn_events.size() > events_before:
 			var dealt := clampi(int(ev["through"]), 0, maxi(0, hull_before))
 			var had := f.hp
 			f.hp = mini(f.hp_max, f.hp + dealt)

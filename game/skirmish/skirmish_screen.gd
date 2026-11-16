@@ -1603,6 +1603,10 @@ func _foe_abilities(foe: Foe) -> Array:
 	var rows: Array = []
 	if foe.rage > 0:
 		rows.append(["overcharge", "", "Ability, Enrage: every shield, vent or equipment you spend makes it Enraged +%d" % foe.rage, _foe_chip_colour("enraged"), "ability"])
+	if foe.drains:
+		# The Vampire Lord's (Ryan, 15 November: "This should be moved to an ability on the unit
+		# since it's on every attack. Like the Nob"): the rule its every blow plays by.
+		rows.append([Terms.glyph("drain"), "", "Ability, Drain: every blow it lands heals it by what the blow took from the hull", Terms.colour("drain"), "ability"])
 	if Effects.has(foe, "guarded"):
 		# A boss in parts (15 October): the lock while its parts stand, so the zero its die
 		# shows has a reason on the foe itself.

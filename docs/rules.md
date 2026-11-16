@@ -1117,8 +1117,6 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   the entry the machine shows: Destroy, above; no foe carries it yet), expose (the machine is
   Exposed through the round after: Exposed, above; a tier-two foe's at the least, the validator
   refusing it on anything dealt at tier one; no foe carries it yet),
-  drain (the striker regrows what the blow took from the hull, no more than the machine had,
-  so a shield starves it; it lays nothing on the machine, so a Barrier's blow drains nothing),
   self-destruct (the striker dies after, for good), every machine
   (each strike lands on every live machine in turn, its number what each takes; no aim or
   Lure moves it). Scorch, ablate, corrupt and brittle each say their stacks a blow, as the player's
@@ -1126,6 +1124,11 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   least, a blow's Brittle and a rally's Empowered: one stack is gone before its side's next
   turn. The validator holds a foe's moves to it. No such floor binds the player's pieces:
   the player orders the turn's spends, so a single stack is used before it halves.
+- **A drain** is no rider: it is a foe's own Ability, a chip on it that no Purge reaches (the
+  Vampire Lord's). Every blow it lands, whatever the move, regrows it by what the blow took
+  from the hull, no more than the machine had, so a shield starves it; it lays nothing on the
+  machine, so no Ward turns it away and a Barrier's blow drains nothing, and Ablating on the
+  foe takes back what it heals.
 - **A special** replaces the blow: brace (Armoured, its value in stacks, an armour point each, until the
   foes' next turn opens), recover (regains its value, itself), heal (the most hurt of its own, itself included, regains its
   value), brace all (the same on every foe in the fight, on the same clock), revive once,

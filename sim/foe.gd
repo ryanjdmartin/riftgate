@@ -67,6 +67,7 @@ var swallow_mark: int = -1       # its HP as it swallowed a machine, -1 holding 
 var wanders: bool = false        # an elite any domain's Fracture may send, drawn by chance (Gilgamesh, 31 October and 2 November)
 var rage: int = 0                # what every shield, vent or equipment entry the team spends adds to its blows while it stands, its own from the fight's start (content's `rage`: the Goblin Nob, 3 November; innate since 8 November)
 var golden_mark: int = -1        # its HP as it went gold (golden, 4 November: the Thunder Ape), -1 while calm: a quarter of its HP lost since breaks the rage
+var drains: bool = false         # every blow of its own regrows it by what the blow took from the hull (content's `drains`: the Vampire Lord's, an Ability on the unit since 16 November, Ryan: "This should be moved to an ability on the unit since it's on every attack. Like the Nob"; a rider on its blows until then)
 
 ## The aims a foe type or a move may name, and how the codex says each.
 const AIM_EXPOSED := "exposed"
@@ -395,16 +396,15 @@ func intent_on(u) -> bool:
 ## machine, the storms' three blows included; the content follows in a foe kit refresh).
 ## steal: as jam, the entry the machine's die shows switched off through its next turn, and
 ## the foe takes it: its borrowed swing (a move with `power` "held") lands that weapon's number,
-## and anything else it took is a fake, for 1 (Gilgamesh's, 30 October). drain: the striker
-## regrows what the blow dealt, shield and hull (the Vampire Lord's, 30 October); it lays nothing
-## on the machine, so no Ward turns it away, and Ablating on the striker is its race. destroy:
+## and anything else it took is a fake, for 1 (Gilgamesh's, 30 October). A drain is no rider
+## since 16 November: it is the Vampire Lord's own Ability, on every blow (`drains`). destroy:
 ## any of the blow on the hull and the entry the machine's die shows is destroyed, blank until
 ## the hangar mends it (Ryan, 15 November: "a boss-level rider, that destroys the visible face
 ## if it damages hull at all. Only promoted form or superboss-level so we're not tuning the
 ## economy around it"); a shield that takes the whole blow, a Barrier or a Ward keeps the entry.
 ## A purge is a special, never a rider (28 October: a rider on a hitter's blow is a tax with no
 ## decision), so it is no attack keyword; the validator refuses it on a blow.
-const ATTACK_KEYWORDS := ["scorch", "ablate", "jam", "corrupt", "brittle", "self_destruct", "all", "steal", "drain", "destroy", "expose"]
+const ATTACK_KEYWORDS := ["scorch", "ablate", "jam", "corrupt", "brittle", "self_destruct", "all", "steal", "destroy", "expose"]
 ## The specials that may never ride a blow (28 October).
 const SPECIALS_ONLY := ["dispel"]
 ## The riders that lay stacks, each a number on the move beside its keyword (24 October, as the

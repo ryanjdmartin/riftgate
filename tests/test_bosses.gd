@@ -523,7 +523,8 @@ func test_a_drain_regrows_what_the_blow_took_from_the_hull_and_no_more() -> void
 	sk.add_mech(b)
 	var v := Foe.make("lord", 40, 10)
 	v.hp = 10
-	v.actions = [_move("drain", {"keywords": ["drain"]})]
+	v.drains = true   # its own Ability, every blow's (16 November); a rider on the blow until then
+	v.actions = [_move("drain")]
 	v.action = v.actions[0]
 	sk.add_foes([v])
 	sk.begin()
@@ -549,7 +550,8 @@ func test_a_barrier_drains_nothing_and_a_ward_turns_no_drain_away() -> void:
 	sk.add_mech(u)
 	var v := Foe.make("lord", 40, 10)
 	v.hp = 10
-	v.actions = [{"id": "drain", "name": "Drain", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": ["drain"], "text": ""}]
+	v.drains = true
+	v.actions = [{"id": "drain", "name": "Drain", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": [], "text": ""}]
 	v.action = v.actions[0]
 	sk.add_foes([v])
 	sk.begin()
@@ -566,6 +568,45 @@ func test_a_barrier_drains_nothing_and_a_ward_turns_no_drain_away() -> void:
 	v.target = sk.mechs[0]
 	sk.end_round()
 	assert_eq(v.hp, 20, "and a Ward turns no drain away")
+
+
+## The drain is its foe's own Ability since 16 November (Ryan, 15 November: "This should be moved
+## to an ability on the unit since it's on every attack. Like the Nob"): every blow of its own,
+## whatever the move, and no rider on any; a save keeps it, and a blow no longer knows the word.
+func test_the_drain_is_its_foes_own_ability_on_every_blow() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.blank())))
+	sk.add_mech(_mech("B", Die.single(Face.blank())))
+	var v := Foe.make("lord", 40, 10)
+	v.hp = 10
+	v.drains = true
+	v.actions = [_move("bite"), _move("feast", {"keywords": ["all"], "factor": 0.5})]
+	v.action = v.actions[0]
+	sk.add_foes([v])
+	sk.begin()
+	sk.start_round()
+	v.action = v.actions[1]
+	v.target = sk.mechs[0]
+	sk.end_round()
+	assert_eq(v.hp, 20, "a blow at every machine drains each: five and five")
+	assert_true(SaveGame.clone_skirmish(sk).field_foes()[0].drains, "a copy of the fight keeps the Ability")
+	assert_false(Foe.ATTACK_KEYWORDS.has("drain"), "and no blow carries the word: the rider left with its last carrier")
+	# The validator: the old rider is unknown, and the key is true or left out.
+	var db := ContentDB.new()   # a copy of its own: the shared content is never written to
+	db.load_dir(ContentDB.DIR)
+	db.foes["x_test"] = {"id": "x_test", "name": "X", "faction": "meadow", "hp": 9, "attack": 3, "codex": "", "flavour": "", "design": {}, "drains": 2,
+		"actions": [{"id": "a", "name": "A", "kind": "attack", "keywords": ["drain"], "text": "", "status": "implemented"}]}
+	var errs: Array = db.validate().filter(func(e) -> bool: return e.contains("x_test"))
+	assert_true(errs.any(func(e) -> bool: return e.contains("unknown attack keyword 'drain'")), "a drain on a blow is refused")
+	assert_true(errs.any(func(e) -> bool: return e.contains("drains is true or left out")), "and the key is a yes or nothing")
+	# Content as shipped, read by its structure: whoever drains does so by the key.
+	var shipped := ContentDB.load_default()
+	var drainers := 0
+	for fid in shipped.foes.keys():
+		if bool(shipped.foes[fid].get("drains", false)):
+			drainers += 1
+			assert_true(shipped.make_foe(str(fid)).drains, "%s: the Ability reaches the foe as it is made" % fid)
+	assert_true(drainers >= 1, "a foe in content carries it, or the Ability leaves the engine with its last carrier")
 
 
 func test_a_grudge_grows_with_the_teams_kills_and_a_burst_is_none() -> void:

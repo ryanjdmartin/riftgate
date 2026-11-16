@@ -1512,7 +1512,10 @@ Each with Claude's lean. The first five stand between the marks and their build.
    Crushed as one word; Phased.
 4. *The foes' pass*: Exposed's carriers; Collect and Appropriated; the Vampire Lord's rule;
    the countdowns off the rank and file; Last Act widened; immunities; the reroll button's
-   effect with the five moves' texts; and section 19.
+   effect with the five moves' texts; and section 19. Built 16 November, its first two
+   pieces: Exposed on a machine (section 17), on no foe yet, and the Vampire Lord's drain as
+   the unit's own Ability, the rider cut from the engine with its last carrier. Collect
+   waits on section 19's answer, since a move as a list of steps is how it would be said.
 5. *Their own sessions*: the Thurible and the Railgun in the component pass; the Puffin's
    Ionizer and the Swallowtail's two pieces with their machines; the aims' audit.
 

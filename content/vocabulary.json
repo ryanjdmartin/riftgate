@@ -470,12 +470,12 @@
   },
   {
    "id": "drain",
-   "category": "keyword",
+   "category": "foe",
    "name": "Drain",
-   "codex": "Enemy keyword. The foe regrows what the blow took from the hull, no more than the machine had, so a shield starves it. It lays nothing on the machine, so no Ward turns it away; a Barrier's blow deals nothing to drain, and Ablating on the foe takes back what it heals.",
+   "codex": "Ability, the Vampire Lord's own: every blow it lands heals it by what the blow took from the hull, no more than the machine had, so a shield starves it. It lays nothing on the machine, so no Ward turns it away; a Barrier's blow deals nothing to drain, and Ablating on the foe takes back what it heals. No Purge reaches it.",
    "status": "implemented",
    "design": {
-    "holes": "The Vampire Lord's (30 October), its bite and, below half, a drain at every machine. The genre's word (Drain), and the soft counter section 2 asks for: Ablating never stops healing. The hull alone, so the shield answers it: a drain of shield and hull walled the slowest trio at every HP tried, the shield, its answer to every blow, doing nothing against the heal."
+    "holes": "The Vampire Lord's (30 October), its bite and, below half, a drain at every machine. The genre's word (Drain), and the soft counter section 2 asks for: Ablating never stops healing. The hull alone, so the shield answers it: a drain of shield and hull walled the slowest trio at every HP tried, the shield, its answer to every blow, doing nothing against the heal. A rider on its blows until 16 November, and the unit's own Ability since, on Ryan's mark of 15 November (\"This should be moved to an ability on the unit since it's on every attack. Like the Nob\"): a chip on the foe, every blow of its, and no word on the blow. The text is a session's draft, his to write."
    }
   },
   {

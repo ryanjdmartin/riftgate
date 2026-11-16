@@ -228,6 +228,8 @@ def tally(words):
                 t.count("grudge", "foe", planned, name)
         if int(foe.get("rage", 0) or 0) > 0:
             t.grant("enraged", "foe", "%s's rage" % whom, "foe", False, foe["id"], whom)   # its own from the start (8 November)
+        if foe.get("drains"):
+            t.count("drain", "foe", False, name)   # its own Ability, on every blow (16 November); a rider until then
         if foe.get("parts"):
             t.grant("guarded", "foe", "%s's parts" % whom, "foe", False, foe["id"], whom)
             t.count("parts", "foe", False, name)
