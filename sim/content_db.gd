@@ -339,6 +339,8 @@ func make_foe(foe_id: String) -> Foe:
 					act[k] = int(a[k])   # the stacks the rider lays a blow
 			if a.has("countdown"):
 				act["countdown"] = int(a["countdown"])
+			if bool(a.get("aloft", false)):
+				act["aloft"] = true   # its foe is Aloft while the move gathers: no die may be dropped on it (the Roc's Stoop, 16 November)
 			if a.has("power"):
 				act["power"] = str(a["power"])   # a borrowed swing: its number is a status of the foe's own, what it took (30 October; Appropriated since 16 November)
 			if a.has("per_kill"):
@@ -2418,7 +2420,7 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 							errs.append("%s: a cleanse's condition, if any, is ally_marked, got '%s'" % [aw, str(w)])
 				if int(a.get("weight", 1)) < 1:
 					errs.append("%s: value cannot be negative; count and weight are at least 1" % aw)
-				for key in ["factor", "strikes", "keywords", "countdown"] + Foe.NUMBERED_RIDERS:
+				for key in ["factor", "strikes", "keywords", "countdown", "aloft"] + Foe.NUMBERED_RIDERS:
 					if a.has(key):
 						errs.append("%s: '%s' belongs to an attack action" % [aw, key])
 			else:
@@ -2435,6 +2437,11 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 					errs.append("%s: weight must be at least 1" % aw)
 				if a.has("countdown") and (int(a["countdown"]) < 1 or int(a["countdown"]) > 5):
 					errs.append("%s: countdown is the rounds a move gathers before it lands, 1 to 5" % aw)
+				# A move that climbs takes its foe out of the dice's reach while it gathers (16
+				# November, the Roc's Stoop): it gathers a round, so the round it is announced stays
+				# the window, and no longer, so no foe is out of reach two turns running.
+				if a.has("aloft") and (not (a["aloft"] is bool) or int(a.get("countdown", 0)) != 1):
+					errs.append("%s: aloft is true on a blow that gathers one round (countdown 1): its foe cannot be targeted while it climbs" % aw)
 				for k in a.get("keywords", []):
 					if Foe.SPECIALS_ONLY.has(str(k)):
 						errs.append("%s: '%s' is a special, never a rider on a blow (28 October)" % [aw, k])

@@ -570,6 +570,13 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			for i in range(3):
 				var x := -s * 0.25 + i * s * 0.25
 				ci.draw_line(c + Vector2(x, s * 0.55), c + Vector2(x, s * 0.9), color, width * 0.8)
+		"aloft":
+			# Out of the dice's reach above (the Roc's climb, 16 November): spread wings high over
+			# the ground it left, the ground a broken line, since nothing aimed reaches it from there.
+			ci.draw_polyline(PackedVector2Array([c + Vector2(-s * 0.9, -s * 0.2), c + Vector2(-s * 0.42, -s * 0.72), c + Vector2(0, -s * 0.28),
+				c + Vector2(s * 0.42, -s * 0.72), c + Vector2(s * 0.9, -s * 0.2)]), color, width)
+			ci.draw_line(c + Vector2(-s * 0.85, s * 0.8), c + Vector2(-s * 0.3, s * 0.8), color, width)
+			ci.draw_line(c + Vector2(s * 0.3, s * 0.8), c + Vector2(s * 0.85, s * 0.8), color, width)
 		"rises":
 			# A kill a foe gets back up from (Ryan, 7 November: the preview's chip in the death
 			# chip's place): an arrow rising off the ground it fell to, its head open.

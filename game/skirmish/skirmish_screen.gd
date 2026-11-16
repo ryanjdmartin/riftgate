@@ -78,6 +78,10 @@ const MECH_FILL := 0.96     # a machine's size in hexes at its class's full shar
 const FLYER_LIFT := 0.4     # hexes a flyer stands off the floor, and a hovercraft
 const HOVER_LIFT := 0.06
 const WINGED_LIFT := 16.0   # design pixels a winged foe floats over its feet line
+const ALOFT_LIFT := 34.0    # and how much higher a foe that has climbed out of reach rides (Aloft, 16 November)
+## RIFTGATE_ALOFT_DEBUG=1: every foe is drawn as one that has climbed out of reach, to judge the look
+## running; the engine is untouched, so the dice still land.
+static var ALOFT_DEBUG := OS.get_environment("RIFTGATE_ALOFT_DEBUG") == "1"
 const FIELD_TURN := 15.0    # degrees a machine turns toward the middle, those left of it to the right and those right of it to the left
 var _cam := {}              # _field_camera
 const BOTTOM_BTN := Vector2(210, 60)
@@ -1489,6 +1493,12 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	var entry: Dictionary = ContentDB.load_default().foes.get(foe.content_id, {})
 	v.flip_h = bool(entry.get("flip", false))
 	v.hover = WINGED_LIFT if bool(entry.get("winged", false)) else 0.0   # what flies floats over its shadow
+	# Aloft (the Roc while its Stoop gathers, 16 November): no die may be dropped on it, so it is
+	# drawn as what is out of the fight is, a faint ghost under a dashed edge, and higher over its
+	# shadow. A first cut, to judge running (RIFTGATE_ALOFT_DEBUG=1 holds every foe so).
+	v.away = Skirmish.untargetable(foe) or ALOFT_DEBUG
+	if v.away:
+		v.hover = maxf(v.hover, WINGED_LIFT) + ALOFT_LIFT
 	v.breathe = true
 	# Breathing spread by slot at the golden angle, so no two neighbours are near in phase
 	# (Ryan, 23 September: the instance-id phases read as in step).
@@ -1727,6 +1737,10 @@ func _foe_rows(foe: Foe) -> Array:
 		# A countdown (15 October): the warning glyph and the rounds before it lands.
 		var when := "next round" if foe.charge == 1 else "in %d rounds" % foe.charge
 		rows.append(["warning", str(foe.charge), "Countdown: %s lands %s" % [str(foe.pending.get("name", "")), when], Palette.ENEMY])
+	if Effects.has(foe, "aloft"):
+		# Aloft (the Roc while its Stoop gathers, 16 November): no die may be dropped on it. The
+		# chip beside its countdown says why the foe is no target; a Purge that reaches it takes it.
+		rows.append(status_row("aloft", _foe_glyph("aloft"), "", str(Effects.STATUS["aloft"]["name"]), _foe_chip_colour("aloft")))
 	if foe.committed:
 		# An announced follow-up (2 November): committed, so no Disrupt turns it; a Suppress still takes
 		# it. The chip says what the player may do about it and names no term: the pattern is the
@@ -1872,7 +1886,7 @@ static func _foe_glyph(id: String) -> String:
 			return "exposed"
 		"appropriated":
 			return "taken"
-		"vitriol", "paradox", "shocked", "numbed", "mine":
+		"vitriol", "paradox", "shocked", "numbed", "mine", "aloft":
 			return id
 	return status_glyph(id)
 

@@ -1290,6 +1290,15 @@ func spend_face(ms: MechState) -> Face:
 	return f
 
 
+## Can no die be dropped on this foe right now? A foe Aloft (the Roc while its Stoop gathers,
+## Ryan, 16 November: "the stoop can make it untargetable ... it should still take damage from
+## its riders, unlike phased"): it is no target of a spend, a Swap's second included, and
+## nothing else changes. What it carries ticks and damages it, and what lands with no aim
+## reaches it: a neighbour's Spread, a blow at every foe, a Mine's blast, a Chain's arc.
+static func untargetable(foe: Foe) -> bool:
+	return foe != null and Effects.has(foe, "aloft")
+
+
 ## Foes this mech's current face may be spent on.
 func targets_for(mech_index: int) -> Array[Foe]:
 	var ms := mechs[mech_index]
@@ -1308,7 +1317,7 @@ func swap_targets(first: Foe, carries: bool = false) -> Array:
 		return out
 	var pair := twin_of(first)
 	for foe in field_foes():
-		if foe != first and foe != pair and foe.alive() and (carries or not foe.is_massive()):
+		if foe != first and foe != pair and foe.alive() and (carries or not foe.is_massive()) and not untargetable(foe):
 			out.append(foe)
 	for col in range(columns):
 		if front[col] == null and not corpses.has(Vector2i(0, col)):
@@ -1346,10 +1355,10 @@ func targets_for_face(ms: MechState, f: Face) -> Array[Foe]:
 	var anyone := reach_of(ms, f) != Face.Reach.DIRECT
 	for col in range(columns):
 		for foe in slot_foes(0, col):
-			if foe.alive() and not out.has(foe):
+			if foe.alive() and not out.has(foe) and not untargetable(foe):
 				out.append(foe)
 		for foe in slot_foes(1, col):
-			if not foe.alive() or out.has(foe):
+			if not foe.alive() or out.has(foe) or untargetable(foe):
 				continue
 			if anyone or in_direct_reach(foe):
 				out.append(foe)
@@ -2744,11 +2753,17 @@ func _foe_turn(f: Foe) -> void:
 			if f.charge == Foe.countdown_of(f.pending):
 				turn_specials.append({"foe": f, "name": str(f.pending.get("name", "")), "kind": "charge", "seq": _seq})
 				_seq += 1
+				if Foe.climbs(f.pending):
+					# It leaves the dice's reach as it begins to gather, and comes down as the move
+					# lands: the round it was announced was the window.
+					Effects.stack(f, Effects.STATUS["aloft"], Effects.SKIRMISH, "foe:" + f.content_id, 1, Effects.DECAY_NONE)
+					log.append("%s climbs out of reach" % f.display_name)
 			f.charge -= 1
 			var when := "next round" if f.charge == 0 else "in %d rounds" % (f.charge + 1)
 			log.append("%s gathers: %s lands %s" % [f.display_name, str(f.pending.get("name", "")), when])
 			return
 		f.pending = {}   # it lands now
+		Effects.remove(f, "aloft")   # and a foe that climbed for it is back in reach
 	# The move's first step: its blow, or its one special in a blow's place.
 	var swung := false
 	if not f.attacks():
@@ -5167,6 +5182,7 @@ func _disrupt(foes: Array) -> void:
 		var aimed: bool = not foe.acts_on_nobody() and not foe.reaches_every_machine()   # its pick was its intent, shown
 		foe.pending = {}   # a gathered move is broken off
 		foe.charge = 0
+		Effects.remove(foe, "aloft")   # and a foe that climbed for it comes down with it
 		foe.action = next
 		foe.last_special = "" if foe.attacks() else str(foe.action.get("id", ""))
 		_begin_countdown(foe)

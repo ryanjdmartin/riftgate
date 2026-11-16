@@ -10190,3 +10190,26 @@ buys time and no kill. What it does not say: how much of the move is the bot's, 
 reading of a web changed with the rule (a turn a round ahead at a share, and the Numbed a foe
 ends the round with read exactly), and no count of webs was kept before; nor what a player
 makes of two foes that show no intent next round, which the greedy bot does not plan round.
+
+**16 November, the Roc's climb.** The Roc's Stoop makes it Aloft while it gathers (Ryan: "the
+stoop can make it untargetable, yes ... it should still take damage from its riders, unlike
+phased"; the bible's row on the foes' rule set): no die may be dropped on it through the
+player's turn between the climb and the stoop. The lone Roc at each tier before and after,
+the content of the commit before against the working tree's, on the one engine
+(`anchor_probe.gd`, the scratch probe on the battle's own builders, greedy, one machine a
+fight, the anchor's six tier-one machines, 10 seeds each, 60 fights a row):
+
+| Fight | Before | With the climb |
+|---|---|---|
+| Lone Roc, tier one | 100% won, 4.4 rounds, 2.6% of a four's hull, no wreck | 100%, 5.4, 3.5%, no wreck |
+| Lone Night Roc, tier two | 100%, 4.6, 4.6%, no wreck | 100%, 5.8, 5.8%, no wreck |
+| Lone Great Roc, tier three | 95%, 6.6, 11.0%, 0.05 wrecks a fight | 82%, 7.3, 12.5%, 0.18 |
+
+A direction at 60 fights a row. The climb costs about a round and a point of a four's hull:
+nobody shoots the Roc the round it is up, so it lives a round longer and stoops once more.
+The machine reboots a little oftener (0.83 a fight to 0.92 at tier one), the round with no
+target being a free one. The tier-three row is tier-one machines against a tier-three bird,
+unread as every tier above the first is, and says only that the Great Roc is no worse a
+mismatch than it was by much. The other three flankers' rows did not move, as they should
+not: nothing else climbs.
+

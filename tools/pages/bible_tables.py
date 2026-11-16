@@ -227,6 +227,8 @@ def tally(words):
                     row["moves"][1 if planned else 0] += 1
             if int(a.get("countdown", 0)) > 0:
                 t.count("countdown", "foe", planned, name)
+            if a.get("aloft"):
+                t.grant("aloft", "foe", move, "foe", planned, foe["id"], whom)   # worn while the move gathers (the Roc's Stoop, 16 November)
             if int(a.get("per_kill", 0)) > 0:
                 t.count("grudge", "foe", planned, name)
         if int(foe.get("rage", 0) or 0) > 0:

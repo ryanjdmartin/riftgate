@@ -512,6 +512,9 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # to judge it running.
 # RIFTGATE_PULSE_DEBUG=1 (any run) keeps END TURN pulsing, on the map and in a fight, to judge it
 # running (it pulses on its own once nothing else is left to do).
+# RIFTGATE_ALOFT_DEBUG=1 (any skirmish) draws every foe as one that has climbed out of the dice's
+# reach (the Roc while its Stoop gathers: a faint ghost under a dashed edge, higher over its
+# shadow), to judge the look running; the engine is untouched. RIFTGATE_FOES=roc:1 fields the real thing.
 # RIFTGATE_DRAIN_DEBUG=1 (any skirmish) keeps a drain announced on the REROLL button ("NEXT -1"
 # under its count, rings closing in on its edge) and flashes it every three seconds as a drain
 # landing does, to judge them running; RIFTGATE_FOES=mandragora:2 fields the real thing, the

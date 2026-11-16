@@ -2431,3 +2431,153 @@ says.
 
 **The targeting audit** he asked for is its own proposal, `docs/targeting_proposal.md`.
 
+## 30. His fourteenth round, 16 November: the Roc is Aloft, the goblin line splits, Phased keeps its name
+
+His words, on section 29 and the targeting audit:
+
+> Do we have a spare goblin sprite hanging around? One without a shield? I think the
+> disconnect is a back rank goblin captain that gives orders and Exposes, and a frontliner at
+> tier 3. Id rename the frontliner to Goblin Veteran or something, and keep the kit you have.
+> Isn't 4 HP low for tier 3?
+>
+> Why did my countdown mark clear the needles gather step?
+>
+> I think the stoop can make it untargetable, yes. I don't think I'd call it phased though, it
+> should still take damage from its riders, unlike phased. So it's different, should be a
+> different buff, could be unique to the Roc for now if nothing else has that shape.
+>
+> Phased keeps its name for now.
+>
+> I will have a codex cleanup and terminology pass in another session after our work is done
+> here.
+>
+> I think I need to see these targeting rules in context to understand the issue you're
+> presenting.
+>
+> Pull in main and push our work to main if you haven't already.
+
+**Main.** It had not moved: the branch and main stood at one commit, every piece of this
+work already on it.
+
+### The Roc is Aloft
+
+Built (`tests/test_skirmish.gd`). The Roc keeps its Stoop as it was written, a blow that
+gathers one round, and while it gathers the Roc wears a buff of its own, Aloft, a working
+name.
+
+| When | What holds |
+|---|---|
+| The round the Stoop is announced | The Roc is on the ground and a target like any. This is the window: a kill, a Suppress, a Disrupt, or a burn laid to run while it is up |
+| As it begins to gather, in that round's enemy turn | It climbs. Aloft from here |
+| The player's next turn | No die may be dropped on it, as a spend's target or a Swap's second |
+| That round's enemy turn | The Stoop lands, and it is back in reach |
+
+What parts it from Phased is everything else. What it carries ticks and damages it, as he
+ruled. And one read where his words give none: what lands with no aim still reaches it, a
+neighbour's Spread, a blow at every foe, a Mine's blast, a Chain's arc. That is the plain
+meaning of untargetable, and it leaves an area piece a job against a pair of Rocs. One line
+turns it if he means nothing new may touch it.
+
+Two consequences. It is a buff, so a Purge that reaches it takes it and the Roc is a target
+again with its stoop still coming. And a Suppress that reaches it holds the stoop a round,
+as it holds any countdown, so the Roc stays up a round longer.
+
+It is drawn as what no die reaches is, faint under a dashed edge and higher over its
+shadow, with a chip of its own beside its countdown. A first cut to judge running:
+`RIFTGATE_ALOFT_DEBUG=1` holds every foe so.
+
+**The read** (`docs/measurements.md`, 16 November). One machine against a lone Roc, 60
+fights a row, the anchor's six tier-one machines at every tier:
+
+| Fight | Before | With the climb |
+|---|---|---|
+| Lone Roc, tier one | 100% won, 4.4 rounds, 2.6% of a four's hull | 100%, 5.4, 3.5% |
+| Lone Night Roc, tier two | 100%, 4.6, 4.6% | 100%, 5.8, 5.8% |
+| Lone Great Roc, tier three | 95%, 6.6, 11.0% | 82%, 7.3, 12.5% |
+
+About a round more and a point of hull. The round it is up nobody shoots it, so it lives a
+round longer and stoops once more. A direction, and the tier-three row is tier-one machines
+against a tier-three bird.
+
+### Which gathers stay
+
+His question: "Why did my countdown mark clear the needles gather step?" It cleared nothing
+in the game: the Great Needler still gathers two rounds. The clearing was section 28's
+bench. His mark reads "Should be primarily an elite or boss mechanic", and Claude took it
+off every move of the rank and file but the one he had named, the bomb's. That was a
+session's read, stricter than his word "primarily".
+
+Read at his strength it is move by move. The Roc's stoop stays: "that's its identity". The
+Great Needler's count is the same case, the cactus's signature from its homage, and the
+lean is that it stays. That leaves two on the bench, neither a signature: the Antlion
+Queen's Devour, proposed as a bite that feeds her, and the Red Dragon's Crush, proposed to
+make way for the Peak's Expose.
+
+### The goblin line splits
+
+His idea. The tier-three recolour stays what the line is, a front-liner, under a new name.
+The Captain becomes a unit of its own in the back rank, as the Lich became one on 10
+November.
+
+**A sprite is there.** The three goblins in the game are one drawing in three palettes, all
+behind a shield. But the art tool's picks hold three more renders he marked in an earlier
+round, none with a shield: a chieftain in a crown of bent nails and a hide cape, arms flung
+wide in a war cry; a shaman with a crooked staff and a feathered cloak; and a goblin in a
+wolf-pelt hood with a cleaver. The chieftain is the Captain as he describes it. The cutter
+turns a render into the game's frames with no image model, so it can be cut here once the
+Captain is an entry. The shaman would serve the Goblin Shaman, an elite that wears a
+placeholder today.
+
+**The two units, proposed.**
+
+| | The front-liner, "Goblin Veteran or something" | The Goblin Captain |
+|---|---|---|
+| Rank and tier | Front, tier three | Back, tier three |
+| Moves | Stab, Shield Wall, Warcry: today's kit, kept as he said | A blow from the back, and the order that Exposes |
+| Sprite | The teal recolour it wears today | The chieftain render |
+| Stands | Where the Captain stands today | The back rank of the warband, his to place |
+
+**Three points his words leave open.**
+
+1. *Who shouts.* He said keep the kit, so the Veteran keeps the Warcry and the Captain has
+   two moves. The other way gives the shout to the unit drawn shouting, and leaves the
+   Veteran the Guard's two moves at bigger numbers, as the Guard is the Goblin's. Lean: his,
+   as said. A front-liner that rallies and a back-liner that marks are two jobs, and a
+   warband with both is a formation to take apart in the right order.
+2. *The name.* "Goblin Veteran or something."
+3. *The numbers.* Below.
+
+**Is 4 HP low for tier three?** Yes. Among tier three's rank and file only the needler and
+the armoured gel have less:
+
+| Tier-three foe | HP |
+|---|---|
+| Great Needler, Metal Gel behind armour 3 | 3 |
+| Goblin Captain | 4 |
+| Alraune, Alpha Warg | 5 |
+| Gorgon, Lich, Red Dragon, Balloon | 6 |
+| Draugr | 7 |
+| Wraith | 8 |
+| Antlion Queen, Magma Lizard | 9 |
+| Enkidu, the Dread Knight, the flankers | 12 to 18 |
+| The massive ones | 40 to 56 |
+
+And the line runs backwards: the Goblin has 4, the Guard 3, the Captain 4. Tier one was
+resized on 12 to 14 November, against the vanilla gun and the hull budget. Tiers two and
+three were not, and are still unread. So the Guard is weaker than the foe it is a recolour
+of. A placeholder ladder until the tiers' pass reads them: 4, 5 and 6 down the line, with
+the Captain at 5 in the back. His call, since the numbers are that pass's.
+
+### Closed
+
+- **Phased keeps its name for now.** The lean of section 29 is withdrawn.
+- **The codex and the terms** are his own pass, in a session after this work. What this
+  work found for it is on the to-do's line: the foe pages that still tell the player to
+  shield, the aims' words, Aloft's name, and the Last Act's word.
+
+### Targeting, in context
+
+The audit's five calls are held. They were put to him in the abstract, and he asked to see
+them in a fight. They are shown to him as scenes: the game's own screens, and the engine's
+own draws counted.
+

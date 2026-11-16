@@ -300,6 +300,14 @@ const STATUS := {
 	# depending on what he's currently holding"), so no Purge reaches it.
 	# One hold at a time: what it takes next replaces what it held. The steal's own field on the
 	# foe until 16 November.
+	# Aloft (the Roc's climb; Ryan, 16 November: "the stoop can make it untargetable, yes. I don't
+	# think I'd call it phased though, it should still take damage from its riders, unlike phased.
+	# So it's different, should be a different buff, could be unique to the Roc for now if nothing
+	# else has that shape"): worn while a move that climbs gathers (Foe.climbs). No die may be
+	# dropped on it; everything else reaches it, what it carries and what lands with no aim alike.
+	# The name is a working one, his to change.
+	"aloft": {"id": "aloft", "name": "Aloft", "description": "No die can be dropped on it while it climbs. What it carries still wears at it, and so does anything that lands without an aim. It comes down as it strikes.", "decay": "none", "stacking": "renew",
+		"tags": ["buff"], "effects": []},
 	"appropriated": {"id": "appropriated", "name": "Appropriated", "description": "The number of the piece it took off a machine: its borrowed swing lands it, and spends it.", "decay": "none", "stacking": "renew", "counted": true,
 		"tags": ["ability"], "effects": []},
 	# The Honey Badger's hopper (Ryan, 11 October; its Ore Hopper since 31 October): loads every

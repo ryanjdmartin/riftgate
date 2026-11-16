@@ -2341,6 +2341,44 @@ func test_a_split_is_validated_one_deep_and_read_into_the_foe() -> void:
 	db.foes.erase("split_test")
 
 
+## A move that climbs (16 November, the Roc's Stoop: its foe is Aloft, no target of a die, while
+## the move gathers) is a blow that gathers one round, and content reads it into the foe.
+func test_a_move_that_climbs_is_a_blow_that_gathers_one_round() -> void:
+	var db := _db()
+	var any_id: String = db.foes.keys()[0]
+	var said := func(move: Dictionary) -> String:
+		var f: Dictionary = db.foes[any_id].duplicate(true)
+		(f["actions"] as Array).append(move)
+		db.foes["climb_test"] = f
+		var errs := db.validate().filter(func(e) -> bool: return e.begins_with("foe climb_test"))
+		db.foes.erase("climb_test")
+		return "\n".join(errs)
+	var stoop := {"id": "x_stoop", "name": "Stoop", "kind": "attack", "factor": 1.5, "countdown": 1, "aloft": true, "weight": 1, "text": "x", "status": "implemented"}
+	assert_eq(said.call(stoop), "", "a blow that gathers a round may climb")
+	var long: Dictionary = stoop.duplicate()
+	long["countdown"] = 2
+	assert_true(str(said.call(long)).contains("gathers one round"), "never two: no foe is out of the dice's reach two turns running")
+	var plain: Dictionary = stoop.duplicate()
+	plain.erase("countdown")
+	assert_true(str(said.call(plain)).contains("gathers one round"), "and never with no gather: the round it is announced is the window")
+	var spell := {"id": "x_fade", "name": "Fade", "kind": "defend", "effect": "brace", "value": 1, "aloft": true, "weight": 1, "text": "x", "status": "implemented"}
+	assert_true(str(said.call(spell)).contains("belongs to an attack action"), "it is a blow's")
+	var f2: Dictionary = db.foes[any_id].duplicate(true)
+	f2["actions"] = [stoop]
+	db.foes["climb_test"] = f2
+	var made := db.make_foe("climb_test")
+	assert_true(Foe.climbs(made.actions[0]), "read into the foe")
+	db.foes.erase("climb_test")
+	# The pieces that carry it today: every one a blow that gathers a round.
+	var carriers := 0
+	for id in db.foes.keys():
+		for a in db.foes[id].get("actions", []):
+			if a is Dictionary and bool(a.get("aloft", false)):
+				carriers += 1
+				assert_eq(int(a.get("countdown", 0)), 1, "%s's %s gathers one round" % [str(id), str(a.get("id", ""))])
+	assert_true(carriers >= 1, "a foe in content climbs (%d)" % carriers)
+
+
 ## A fall is a short list of steps, as a move is (16 November): a blow with what it does also,
 ## or one special in a blow's place. The validator holds it to what a fall may do, and content
 ## reads it into the foe. Synthetic foes: no piece of content carries one yet.

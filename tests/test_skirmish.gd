@@ -5322,6 +5322,120 @@ func test_a_countdown_move_gathers_a_round_then_lands() -> void:
 	assert_true(lancer.pending.is_empty(), "spent")
 
 
+## A foe whose blow climbs for a round and then stoops (the Roc's Stoop, built as a test's own),
+## alone on its list or beside a plain blow.
+func _climber(hp: int = 60, atk: int = 10, plain: bool = false) -> Foe:
+	var f := Foe.make("revenant", hp, atk)
+	f.actions = [{"id": "stoop", "name": "Stoop", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": [], "countdown": 1, "aloft": true, "text": ""}]
+	if plain:
+		f.actions.append({"id": "talons", "name": "Talons", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": [], "text": ""})
+	f.action = f.actions[0]
+	return f
+
+
+## The Roc's climb (Ryan, 16 November: "I think the stoop can make it untargetable, yes"): the
+## round its stoop is announced it is a target like any, which is the window. As it begins to
+## gather it is Aloft, and through the player's next turn no die may be dropped on it. It comes
+## down as the stoop lands.
+func test_a_foe_that_climbs_is_no_target_while_its_blow_gathers() -> void:
+	var sk := Skirmish.new(1, 2)
+	var a := _mech("A", Die.single(Face.attack(5, I)), 0, 100)
+	sk.add_mech(a)
+	var roc := _climber()
+	var other := _ghoul(500, 0)
+	sk.add_foes([roc, other])
+	sk.begin()
+	sk.start_round()
+	assert_true(roc.gathering(), "announced, it gathers")
+	assert_false(Skirmish.untargetable(roc), "the round the climb is announced it is still on the ground")
+	assert_true(sk.targets_for(0).has(roc), "and a target like any: the window")
+	sk.end_round()
+	assert_true(Effects.has(roc, "aloft"), "as it begins to gather it climbs")
+	assert_true("\n".join(sk.log).contains("climbs out of reach"), "the log says so")
+	sk.start_round()
+	assert_true(Skirmish.untargetable(roc), "through the player's next turn it is out of the dice's reach")
+	assert_false(sk.targets_for(0).has(roc), "no die may be dropped on it")
+	assert_true(sk.targets_for(0).has(other), "the foe beside it is a target as ever")
+	assert_false(sk.assign(0, roc), "and a spend at it is refused")
+	assert_eq(roc.hp, 60, "so nothing aimed touched it")
+	var hull := a.hull
+	sk.end_round()
+	assert_eq(hull - a.hull, 10, "its stoop lands")
+	assert_false(Effects.has(roc, "aloft"), "and it is back in reach")
+	sk.start_round()
+	assert_true(sk.targets_for(0).has(roc), "the round after, announcing again, it is a target once more")
+	var trip := SaveGame._foe_from(JSON.parse_string(JSON.stringify(SaveGame._foe_dict(_climber(), sk))), sk)
+	assert_true(Foe.climbs(trip.actions[0]), "a save keeps the move that climbs")
+
+
+## Aloft is not Phased (Ryan, 16 November: "it should still take damage from its riders, unlike
+## phased. So it's different, should be a different buff"): what the foe carries still wears at
+## it, and what lands with no aim still reaches it, a neighbour's Spread and a blow at every foe.
+## Only a die dropped on it is refused.
+func test_a_foe_aloft_still_takes_what_it_carries_and_what_lands_with_no_aim() -> void:
+	var sk := Skirmish.new(1, 2)
+	var sweep := Face.attack(20, I, K.CLEAVE)
+	sweep.cleave = 10
+	sk.add_mech(_mech("A", Die.single(sweep), 0, 100))
+	sk.add_mech(_mech("B", Die.single(Face.attack(6, E)), 0, 100))
+	var roc := _climber()
+	var other := _ghoul(500, 0)
+	sk.add_foes([roc, other])
+	sk.begin()
+	sk.start_round()
+	Effects.stack(roc, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 3)
+	sk.end_round()
+	assert_true(Skirmish.untargetable(roc), "it has climbed")
+	var after_first := roc.hp
+	assert_true(after_first < 60, "its Ablating took its points as its turn ended, climb or no (%d)" % after_first)
+	sk.start_round()
+	assert_true(sk.assign(0, other), "a Spread dropped on the foe beside it")
+	assert_eq(after_first - roc.hp, 10, "reaches it: nothing aimed at it, so nothing refused")
+	var after_spread := roc.hp
+	assert_true(sk.targets_for(1).has(other) and not sk.targets_for(1).has(roc), "a blow at every foe is dropped on a foe that can be targeted")
+	assert_true(sk.assign(1, other), "and dropped there")
+	assert_eq(after_spread - roc.hp, 6, "it lands on the climber with the rest")
+	var before_tick := roc.hp
+	sk.end_round()
+	assert_true(roc.hp < before_tick, "and what it carries wears at it again as its turn ends")
+	# A Purge that reaches it takes the buff, as it takes any, and it is a target again.
+	var s2 := Skirmish.new(1, 2)
+	s2.add_mech(_mech("A", Die.single(Face.attack(5, I)), 0, 100))
+	var r2 := _climber()
+	s2.add_foes([r2, _ghoul(500, 0)])
+	s2.begin()
+	s2.start_round()
+	s2.end_round()
+	s2.start_round()
+	assert_false(s2.targets_for(0).has(r2), "aloft")
+	Effects.purge(r2, 1)
+	assert_true(s2.targets_for(0).has(r2), "a Purge takes the buff, and a die may be dropped on it again")
+	assert_true(r2.gathering() or not r2.pending.is_empty(), "its stoop still coming")
+
+
+## A climb broken off comes down: a Disrupt that reaches the foe with no aim turns its move, and
+## it is a target again that turn.
+func test_a_disrupt_that_reaches_a_climber_brings_it_down() -> void:
+	var sk := Skirmish.new(1, 2)
+	sk.add_mech(_mech("A", Die.single(Face.attack(1, E, K.DISRUPT)), 0, 100))
+	sk.add_mech(_mech("B", Die.single(Face.attack(5, I)), 0, 100))
+	var roc := _climber(60, 10, true)
+	var other := _ghoul(500, 0)
+	sk.add_foes([roc, other])
+	sk.begin()
+	sk.start_round()
+	roc.action = roc.actions[0]
+	roc.pending = roc.action
+	roc.charge = 1
+	sk.end_round()
+	sk.start_round()
+	assert_true(Skirmish.untargetable(roc), "it has climbed, its stoop coming")
+	assert_true(sk.assign(0, other), "a Disrupt over every foe, dropped on the foe beside it")
+	assert_false(Effects.has(roc, "aloft"), "its stoop broken off, it comes down")
+	assert_eq(str(roc.action.get("id", "")), "talons", "its other move in the stoop's place")
+	assert_true(sk.targets_for(1).has(roc), "and a die may be dropped on it this very turn")
+
+
 func test_a_longer_countdown_holds_its_pick_and_a_suppress_holds_its_blow() -> void:
 	var sk := Skirmish.new(1, 1)
 	var a := _mech("A", Die.single(Face.attack(10, L, K.SUPPRESS)), 0, 100)

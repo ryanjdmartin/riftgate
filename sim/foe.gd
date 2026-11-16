@@ -322,6 +322,12 @@ static func countdown_of(a: Dictionary) -> int:
 	return maxi(0, int(a.get("countdown", 0)))
 
 
+## Does the move take its foe out of the dice's reach while it gathers (content `aloft`, on a
+## blow with a countdown: the Roc's Stoop, 16 November)?
+static func climbs(a: Dictionary) -> bool:
+	return bool(a.get("aloft", false)) and countdown_of(a) > 0
+
+
 ## A last act as an attack action (content `on_death.blow`, 15 October: the Gargantuan King's Meteor),
 ## shaped like any move so the blow reads through the same rules, with what it does also.
 static func death_blow_from(b: Dictionary) -> Dictionary:

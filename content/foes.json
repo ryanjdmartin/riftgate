@@ -312,12 +312,12 @@
     },
     {
       "id": "roc", "name": "Roc", "faction": "waste",
-      "design": { "fantasy": "The bird that carries off elephants, out of the desert's oldest stories (Ryan's bench of 3 November). Walls and water are nothing to it.", "niche": "It climbs for a round and stoops through the shield, so the question is a Barrier for the stoop, or a kill before it lands. Winged. A flanker: made for a duel with one machine on the flank, never for a formation (Ryan, 9 November: a flanker is a duel, not a small pusher; 10 November: 'Duelists are as you see fit'). Hit points for three or four rounds of one light machine; no armour, which walls the lights whatever else a unit does. Every number a placeholder." },
-      "codex": "A bird big enough to shade a machine, alone on the flank. Its talons are plain. When it climbs it comes down a round later, harder: stop that one blow, or finish it first.",
+      "design": { "fantasy": "The bird that carries off elephants, out of the desert's oldest stories (Ryan's bench of 3 November). Walls and water are nothing to it.", "niche": "It climbs for a round, Aloft where no die can be dropped on it (Ryan, 16 November: 'the stoop can make it untargetable, yes'; a buff of its own, never Phased, since what it carries still wears at it), and stoops, so the question is a kill, a Suppress or a Disrupt the round the climb is announced, a burn laid before it leaves, or a Barrier for the stoop. Winged. A flanker: made for a duel with one machine on the flank, never for a formation (Ryan, 9 November: a flanker is a duel, not a small pusher; 10 November: 'Duelists are as you see fit'). Hit points for three or four rounds of one light machine; no armour, which walls the lights whatever else a unit does. Every number a placeholder." },
+      "codex": "A bird big enough to shade a machine, alone on the flank. Its talons are plain. When it climbs no die can reach it, and it comes down a round later, harder: finish it before it leaves the ground, or stop that one blow.",
       "hp": 14, "attack": 4, "rank": "front", "movespeed": 3, "role": "flanker", "winged": true,
       "actions": [
         { "id": "talons", "name": "Talons", "kind": "attack", "weight": 2, "text": "Talons for {damage}.", "status": "implemented" },
-        { "id": "stoop", "name": "Stoop", "kind": "attack", "factor": 1.5, "countdown": 1, "weight": 1, "text": "Climbs for a round, then stoops: {damage}.", "status": "implemented" }
+        { "id": "stoop", "name": "Stoop", "kind": "attack", "factor": 1.5, "countdown": 1, "aloft": true, "weight": 1, "text": "Climbs out of reach for a round, where no die can be dropped on it, then stoops: {damage}.", "status": "implemented" }
       ],
       "flavour": "That is not a cloud."
     },
@@ -328,7 +328,7 @@
       "hp": 14, "attack": 5, "rank": "front", "movespeed": 3, "role": "flanker", "winged": true,
       "actions": [
         { "id": "talons", "name": "Talons", "kind": "attack", "weight": 2, "text": "Talons for {damage}.", "status": "implemented" },
-        { "id": "stoop", "name": "Stoop", "kind": "attack", "factor": 1.5, "countdown": 1, "weight": 1, "text": "Climbs for a round, then stoops: {damage}.", "status": "implemented" }
+        { "id": "stoop", "name": "Stoop", "kind": "attack", "factor": 1.5, "countdown": 1, "aloft": true, "weight": 1, "text": "Climbs out of reach for a round, where no die can be dropped on it, then stoops: {damage}.", "status": "implemented" }
       ],
       "flavour": "The shadow comes first. It always comes first."
     },
@@ -339,7 +339,7 @@
       "hp": 18, "attack": 6, "rank": "front", "movespeed": 3, "role": "flanker", "winged": true,
       "actions": [
         { "id": "talons", "name": "Talons", "kind": "attack", "weight": 2, "text": "Talons for {damage}.", "status": "implemented" },
-        { "id": "stoop", "name": "Stoop", "kind": "attack", "factor": 1.5, "countdown": 1, "weight": 1, "text": "Climbs for a round, then stoops: {damage}.", "status": "implemented" }
+        { "id": "stoop", "name": "Stoop", "kind": "attack", "factor": 1.5, "countdown": 1, "aloft": true, "weight": 1, "text": "Climbs out of reach for a round, where no die can be dropped on it, then stoops: {damage}.", "status": "implemented" }
       ],
       "flavour": "We logged it as weather."
     },

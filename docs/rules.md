@@ -973,6 +973,16 @@ On a foe:
   back up once, whole, in its own slot, unless it self-destructed: once the spend that felled
   it is done, or at once to a tick; its round is over, as a split's half's is, and it comes back
   with no Mine. A Purge on the hit that fells it strips it first.
+- **Aloft** (buff, the Roc's while its Stoop gathers; a working name): no die may be dropped
+  on the foe, as a spend's target or a Swap's second. Nothing else changes, which is what
+  parts it from Phased: what it carries ticks and damages it, and what lands with no aim
+  reaches it, a neighbour's Spread, a blow at every foe, a Mine's blast, a Chain's arc. It
+  begins as the move begins to gather, in the enemy's turn of the round it was announced, so
+  that round is the window: a kill, a Suppress, a Disrupt, or a burn laid to run while it is
+  up. It ends as the move lands, or is broken off. A Suppress that reaches it holds the move
+  a round and the climb with it. A buff, so a Purge that reaches it takes it and a die may be
+  dropped on the foe again. The foe is drawn as what no die reaches is, faint under a dashed
+  edge, higher over its shadow.
 - **Numbed** (buff): the rounds until one stun lands. A stun on a Numbed foe strips a stack and
   lands nothing, so a foe with Numbed N takes N+1 stuns in a round. As a stunned foe recovers it
   gains its stun resist in stacks (content's `resist`; by its kind when content says none: 1, a
@@ -1119,7 +1129,9 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   one shape a flee may take; none is built, and no move flees). A move may
   carry a countdown: it gathers, landing that many rounds after it is announced, and nothing
   hits meanwhile; its pick holds while the machine stands; Suppress holds it a round, Disrupt
-  breaks it off, and the foe stays on the field. A move may name a follow-up: once it lands, the
+  breaks it off, and the foe stays on the field. A blow that gathers one round may climb (the
+  Rocs' Stoop): its foe is Aloft while it gathers (Aloft, above), on the field and out of the
+  dice's reach. A move may name a follow-up: once it lands, the
   move it names is its foe's next round's intent (the Matador's Red Capote, then Andalucia); a
   follow-up comes only that way, never by the roll, and a Suppress on the first move, or a
   Disrupt that turns it, means it never comes; once announced it cannot be Disrupted, only

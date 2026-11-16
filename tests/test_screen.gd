@@ -516,6 +516,59 @@ func test_the_drain_debug_switch_holds_the_note_and_flashes_the_button() -> void
 	s.free()
 
 
+## A foe Aloft (the Roc while its Stoop gathers, 16 November) reads as out of the dice's reach:
+## drawn as a faint ghost under a dashed edge, higher over its shadow, wearing its chip, and no
+## target of the die in hand.
+func test_a_foe_aloft_is_drawn_out_of_reach_and_is_no_drop_target() -> void:
+	var s := _screen(5)
+	var sk: Skirmish = s.sk
+	var foe: Foe = sk.field_foes()[0]
+	s._refresh()
+	var view: UnitView = null
+	for v in s._view_foe.keys():
+		if s._view_foe[v] == foe:
+			view = v
+	assert_true(view != null, "its view is found")
+	if view == null:
+		s.free()
+		return
+	assert_false(view.away, "on the ground it is drawn whole")
+	var grounded := view.hover
+	Effects.stack(foe, Effects.STATUS["aloft"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	s._refresh()
+	assert_true(view.away, "aloft, it is drawn as what no die reaches")
+	assert_true(view.hover > grounded, "and higher over its shadow")
+	var rows: Array = s._foe_rows(foe).filter(func(row) -> bool: return str(row[2]).contains("Aloft"))
+	assert_eq(rows.size(), 1, "it wears the buff's chip")
+	if rows.size() == 1:
+		assert_eq(str(rows[0][0]), "aloft", "with its own mark")
+	for i in range(sk.mechs.size()):
+		assert_false(sk.targets_for(i).has(foe), "no machine's die may be dropped on it")
+	Effects.remove(foe, "aloft")
+	s._refresh()
+	assert_false(view.away, "back on the ground, it is drawn whole again")
+	s.free()
+
+
+## A stat too long for its column takes a row of its own (16 November: on a phone a foe's aim,
+## "AIMS AT THE EXPOSED", ran into the size drawn beside it), so no value is drawn over the next.
+func test_a_long_stat_takes_a_row_of_its_own() -> void:
+	var sb := StatBlock.new()
+	sb.custom_minimum_size = Vector2(330, 0)
+	sb.set_items([["hp", "48"], ["attack", "18"], ["armour", "1"], ["rank", "FRONT"], ["sense", "AIMS AT THE EXPOSED"], ["size", "MASSIVE"]])
+	var lay: Array = sb._layout(330.0)
+	assert_eq(lay[0][3], [1, 1], "short values sit two to a row")
+	assert_eq(lay[0][4], [2, 0], "the long one starts a row")
+	assert_eq(lay[0][5], [3, 0], "and what follows starts the next, never beside it")
+	assert_eq(int(lay[1]), 4, "four rows, where three had the two overlapping")
+	assert_eq(sb.custom_minimum_size.y, StatBlock.ROW_H * 4.0, "and its height follows")
+	sb.set_items([["hp", "48"], ["attack", "18"], ["sense", "AIMS AT THE EXPOSED"]])
+	assert_eq(sb._layout(330.0)[0][2], [1, 0], "a long one last is alone on its row too")
+	sb.set_items([["hp", "48"], ["attack", "18"]])
+	assert_eq(int(sb._layout(330.0)[1]), 1, "and two short values are one row")
+	sb.free()
+
+
 ## REROLL lights while the die in hand would bring the team a reroll, and its badge shows the
 ## count it would leave (Ryan, 15 November: "We can communicate by highlighting the reroll button
 ## as part of the preview, if one will be granted"): no buff and no chip stand for the grant.

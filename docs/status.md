@@ -47,7 +47,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1241 tests, 373,433 checks, green on `ccr-722ca9f0-yj8na3` (16 November, the
+- Tests: 1247 tests, 373,503 checks, green on `ccr-722ca9f0-yj8na3` (16 November, his
+  fourteenth round: the Roc aloft, over main at `93384f9`). Before it, 1241 tests, 373,433
+  checks, green on the same branch (16 November, the
   targeting audit's cuts, over main at `c503783`). Before it, 1240 tests, 373,435 checks,
   green on the same branch (16 November, his
   thirteenth round: a fall's curse on the killer, an elite at any tier, over main at
@@ -2018,7 +2020,15 @@ to the killer, and the dodge is ablating it"), nobody when a tick did. No foe ca
 than a blow: the carriers are the bench's.
 **An elite holds any mechanic at any tier, as a boss can** (the same round): the tier a rule
 names, Exposed's tier two, holds the rank and file alone. **Phased foes act.**
-**The foes' targeting is audited** (the same round: "We need to look at foe targeting rules
+**The Roc is Aloft while its Stoop gathers** (his fourteenth round, 16 November: "the stoop
+can make it untargetable, yes. I don't think I'd call it phased though, it should still take
+damage from its riders"; the rules' Aloft): a buff of its own, a working name. No die may be
+dropped on it through the player's turn between the climb and the stoop; what it carries
+still wears at it, and by a session's read what lands with no aim still reaches it. The
+round the climb is announced is the window. A lone Roc costs about a round and a point of
+hull more (`docs/measurements.md`, a direction). **Phased keeps its name for now.** A foe's
+aim no longer runs into the stat beside it on its page.
+**The foes' targeting is audited** (the thirteenth round: "We need to look at foe targeting rules
 now, I think. Clean that up"; `docs/targeting_proposal.md`): the rules as they run are set
 down in one place, and two leftovers are cut, the rule before 2 October with the runner's
 comparison that kept it and the map's fastest hunt, a test now holding the aims and the hunts
@@ -2031,10 +2041,16 @@ its last run; the next run drops it.
 (the to-do's line): the content, put to him on 16 November as the proposal's section 28 and
 waiting on his marks: the moves that take the rank and file's countdowns' place, a fall for
 a domain each, Exposed's carriers, a foe's Phased with its two carriers, two moves as steps
-and three immunities; his thirteenth round answered part and is its section 29. Still his:
-the marks on the rows, the Roc's round before its stoop, Phased's name, and the targeting
-audit's five calls. On his word: the engine for a foe's Phased and for an immunity, the
-targeting build, then the content, then a read of what changed.
+and three immunities; his thirteenth and fourteenth rounds answered part and are its
+sections 29 and 30. Still his (the bible's section 12): the marks on the rows; which gathers
+stay beside the Roc's and the bombs', the Great Needler's by lean; the goblin line's split,
+his own idea, a front-liner renamed and a back-rank Captain that Exposes, with its three open
+points and a spare chieftain render for its sprite; Aloft's name; and the targeting audit's
+five calls, which he asked to see in a fight and was shown as scenes. His codex cleanup and
+terminology pass is a session of his own after this work (the to-do's line keeps what was
+found for it). On his word: the goblin split in content, the engine for a foe's Phased and
+for an immunity, the targeting build, then the rest of the content and a read of what
+changed.
 The table of every rider, buff and debuff (`docs/vocabulary_table.md`) stands with its page
 (Pages, below) as the record of his marks until the pass retires.
 With the pass, on his proposal, the tier-one
