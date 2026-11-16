@@ -560,7 +560,11 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   Funnel-web sunk to its leg roots, the Clydesdale buckling slowly and landing hard, the Cassowary
   staggering forward and over onto its back, the Whip Scorpion's feelers down, the Nemesis level on
   one knee with its arms limp. The hangar shows them (Pages, below), published from this branch
-  ahead of main; the bible (v0.603) republishes on his word.
+  ahead of main; the bible (v0.603) republishes on his word. And on his "Can we make it so the
+  game doesn't enable auto rotate every time it loads?": `tools/android.sh` launches the game with
+  `am start` as Godot's own one-click deploy does, no longer with `monkey`, whose every run ends by
+  unlocking the screen's rotation and so turned the phone's auto-rotate on (the game itself is
+  held to portrait, `display/window/handheld/orientation`).
 - **The blade class retired** (`ccr-b7d5164e-1wtzzm`, 15 November, on Ryan's "The four you listed are
   locked pieces. The others need to be renamed into short range (i.e "melee" as per our definition)
   guns, or just sent back to design"): four silhouette classes (barrel, twin barrel, rack, dish) in

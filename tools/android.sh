@@ -23,6 +23,7 @@ for d in "${ANDROID_HOME:-}" "$HOME/Library/Android/sdk" "$HOME/Android/Sdk" "$W
 done
 [ -n "$SDK" ] || [ -n "$ADB" ] || { echo "no Android SDK found: set ANDROID_HOME" >&2; exit 1; }
 ADB=${ADB:-$SDK/platform-tools/adb}
+PKG=com.publabs.riftgate
 case "$1" in
 	log)
 		exec "$ADB" logcat -s godot:V GodotApp:V
@@ -47,8 +48,26 @@ esac
 "$ADB" devices | tr -d '\r' | grep -q 'device$' || { echo "no phone: plug it in with USB debugging on" >&2; "$ADB" devices; exit 1; }
 "$ADB" install -r build/riftgate.apk || {
 	echo "install failed. INSTALL_FAILED_UPDATE_INCOMPATIBLE means the copy on the phone was signed with another" >&2
-	echo "machine's debug key: uninstall it once (\"$ADB\" uninstall com.publabs.riftgate; its saves go with it), then rerun." >&2
+	echo "machine's debug key: uninstall it once (\"$ADB\" uninstall $PKG; its saves go with it), then rerun." >&2
 	exit 1
 }
-"$ADB" shell monkey -p com.publabs.riftgate -c android.intent.category.LAUNCHER 1 > /dev/null
+# Launched as Godot's own one-click deploy launches it: by the launcher category and the
+# package, then by its launcher alias if that finds nothing. Never with `monkey`: a monkey run
+# always ends by unlocking the screen's rotation (Monkey.java's finally, a rotation event that
+# freezes and thaws it), which turned the phone's auto-rotate on at every launch (Ryan, 16
+# November: "Can we make it so the game doesn't enable auto rotate every time it loads?").
+# am start can print its error and still return 0, so its output is read.
+out=$("$ADB" shell am start -a android.intent.action.MAIN -c android.intent.category.LAUNCHER "$PKG" 2>&1 | tr -d '\r')
+case "$out" in
+	*Error*)
+		out=$("$ADB" shell am start -a android.intent.action.MAIN -c android.intent.category.LAUNCHER -n "$PKG/com.godot.game.GodotAppLauncher" 2>&1 | tr -d '\r')
+		case "$out" in
+			*Error*)
+				echo "$out" >&2
+				echo "installed, but the launch failed: open Riftgate on the phone" >&2
+				exit 1
+				;;
+		esac
+		;;
+esac
 echo "launched; tools/android.sh log for its output"
