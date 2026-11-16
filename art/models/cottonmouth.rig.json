@@ -3382,7 +3382,8 @@
     0.0,
     3.0
    ]
-  ]
+  ],
+  "ease": "fall"
  },
  "hidden_fire": {
   "act": "drum_fire",

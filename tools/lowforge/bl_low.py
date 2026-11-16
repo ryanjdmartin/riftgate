@@ -955,11 +955,16 @@ class Build:
             out["tracks"][jn] = rows
         for parts, k in glow or []:
             parts = [parts] if isinstance(parts, str) else list(parts)
-            out["glow"].append({"parts": parts, "k": float(k)})
+            if isinstance(k, (list, tuple)):
+                # Keys over the turn, (t, k) as an act's glow keys: the light rides them as the form
+                # turns (a death's: then it gutters out once it lands; the Polar Bear's vents).
+                out["glow"].append({"parts": parts, "keys": [[float(t), float(v)] for t, v in k]})
+            else:
+                out["glow"].append({"parts": parts, "k": float(k)})
         self.forms[name] = out
         return out
 
-    def death(self, duration, tracks=None, body=None, glow=None):
+    def death(self, duration, tracks=None, body=None, glow=None, ease="fall", hang=None):
         """The pose the machine goes to when it is lost (MechRig.kill), in place of the baseline
         slump every model shares (Ryan, 16 November: "The slump was supposed to be a general
         guideline so that everything got an adequate baseline death animation and pose. There's
@@ -969,9 +974,20 @@ class Build:
         lights go and holds it, and sets the pose down on its own lowest point (MechRig's death
         floor), so a pose tipped forward or onto its side rests on the ground, never floating and
         never through it. Keep it on its hex: a fall that throws the machine across into the next
-        is the pose Ryan sent back (16 November)."""
+        is the pose Ryan sent back (16 November). It falls (`ease` "fall": it starts slow and lands
+        at speed, a hop and a rock as it hits; Ryan, the fourth notes: "start slower and hit
+        harder"), its lowest point held on the floor every frame of the way down; a joint in `hang`
+        goes limp, the rig turning it where its weight takes it once the rest of the pose lies
+        where it ends (an arm "slumped down by the elbows", never placed under its own power); a
+        glow given keys rides them as it goes down and gutters out once it lands."""
         self.form("@death", duration, tracks or {}, glow=glow, body=body)
         self.death_pose = self.forms.pop("@death")
+        self.death_pose["ease"] = str(ease)
+        for jn in hang or []:
+            if jn not in self.joint_meta:
+                raise ValueError("the death of %s hangs a joint the model has not got: %s" % (self.name, jn))
+        if hang:
+            self.death_pose["hang"] = list(hang)
         return self.death_pose
 
     def ajar(self, unless, joints):

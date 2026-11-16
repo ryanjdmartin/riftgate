@@ -1676,7 +1676,8 @@
     0.0,
     2.0
    ]
-  ]
+  ],
+  "ease": "fall"
  },
  "fires": {
   "chainsaw_claw": {

@@ -884,7 +884,8 @@
     ]
    ]
   },
-  "glow": []
+  "glow": [],
+  "ease": "fall"
  },
  "aims": {
   "flakshot_repeater": "turret"

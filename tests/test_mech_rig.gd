@@ -1890,6 +1890,79 @@ func test_a_death_pose_goes_in_place_of_the_slump_and_rests_on_the_floor() -> vo
 	pair[1].free()
 
 
+func test_a_fall_starts_slow_and_lands_at_speed() -> void:
+	# Ryan, 16 November, the fourth notes: the Clydesdale "topples too smoothly. It should start slower
+	# and hit harder": a death falls, its last stretch arriving at speed, never past its key.
+	var fall := MechRig.curve([[1.0, 10.0]], 1.0, "fall")
+	var smooth := MechRig.curve([[1.0, 10.0]], 1.0, "smooth")
+	assert_true(float(MechRig.curve_at(fall, 0.25)[0]) < float(MechRig.curve_at(smooth, 0.25)[0]), "it starts slower")
+	var end_fall := (float(MechRig.curve_at(fall, 1.0)[0]) - float(MechRig.curve_at(fall, 0.97)[0])) / 0.03
+	var end_smooth := (float(MechRig.curve_at(smooth, 1.0)[0]) - float(MechRig.curve_at(smooth, 0.97)[0])) / 0.03
+	assert_true(end_fall > 2.0 * 10.0 and end_smooth < 2.0, "and lands at speed where a form eases in (%.1f against %.1f)" % [end_fall, end_smooth])
+	var was := -INF
+	for k in range(21):
+		var v := float(MechRig.curve_at(fall, k / 20.0)[0])
+		assert_true(v >= was - 0.0001 and v <= 10.0001, "never back and never past its key (%.2f at %.2f)" % [v, k / 20.0])
+		was = v
+	assert_eq(MechRig.impact_hop(-0.1), 0.0, "no landing before it lands")
+	assert_true(MechRig.impact_hop(MechRig.IMPACT_S * 0.3) > 0.0, "a hop as it lands")
+	assert_eq(MechRig.impact_hop(MechRig.IMPACT_S), 0.0, "and none once the beat is done")
+
+
+func test_a_death_keeps_to_its_floor_all_the_way_down() -> void:
+	# The fourth notes: "The animation as a whole is a little janky": a death's lowest point is held on
+	# its floor every frame of its fall (MechRig._hold_death_floor), never through it and never
+	# floating but for its landing's hop.
+	for id in ["clydesdale", "cassowary", "nemesis", "baboon", "funnel_web"]:
+		var pair := _rig_for(id)
+		var rig: MechRig = pair[0]
+		rig.kill()
+		var d := float(rig.forms[MechRig.DEATH]["duration"])
+		var t := 0.0
+		var hopped := false
+		while t < d + MechRig.IMPACT_S + 0.2:
+			rig.tick(1.0 / 30.0)
+			t += 1.0 / 30.0
+			var r := rig.rest_of()
+			assert_true(float(r["low"]) > -0.003, "%s never goes through the floor (%+.2f%% at %.2f s)" % [id, 100.0 * float(r["low"]), t])
+			assert_true(float(r["low"]) < MechRig.IMPACT_HOP + 0.003, "%s never floats off it (%+.2f%% at %.2f s)" % [id, 100.0 * float(r["low"]), t])
+			hopped = hopped or float(r["low"]) > 0.002
+		assert_true(hopped, "%s lands with a hop" % id)
+		assert_true(absf(float(rig.rest_of()["low"])) < 0.002, "%s lies on the floor once it has landed" % id)
+		pair[1].free()
+
+
+func test_a_limp_joint_hangs_where_its_weight_takes_it() -> void:
+	# The fourth notes: the Baboon's "Arms that clearly had to have moved back under their own power";
+	# the Nemesis's "arms slumped down by the elbows": a death's `hang` joints are turned where their
+	# weight takes them once the rest of the pose lies where it ends, above the floor, resting on it
+	# where they reach it.
+	var read := 0
+	for id in MACHINES:
+		var side := MechRig.load_sidecar(id)
+		var hang: Array = (side.get("death", {}) as Dictionary).get("hang", [])
+		if hang.is_empty():
+			continue
+		var pair := _rig_for(id)
+		var rig: MechRig = pair[0]
+		rig.kill()
+		rig.tick(float(rig.forms[MechRig.DEATH]["duration"]) + 1.0)
+		var frame := rig.body.transform
+		var size := float(rig.rest_of()["size"])
+		for jn in hang:
+			var j: Node3D = rig.joints[jn]
+			var low := rig._lowest_under(j, frame) - rig._body_rest_pos.y
+			assert_true(low > -0.01 * size, "%s's %s keeps above the floor (%.2f)" % [id, jn, low])
+			var c = rig._subtree_centre(j)
+			if c == null:
+				continue
+			var hangs_below: bool = (frame * (c as Vector3)).y < (frame * rig._in_model(j)).origin.y + 0.02 * size
+			assert_true(hangs_below or low < 0.03 * size, "%s's %s hangs below its joint or rests on the floor" % [id, jn])
+		read += 1
+		pair[1].free()
+	assert_true(read >= 2, "deaths with limp joints read (%d)" % read)
+
+
 func test_every_death_pose_names_what_its_model_has() -> void:
 	var named := 0
 	for f in DirAccess.get_files_at("res://art/models"):

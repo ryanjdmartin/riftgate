@@ -43,8 +43,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1244 tests, 374,011 checks, green on `ccr-bd73687d-w8qox1` (16 November, his notes on the
-  deaths: resting on what touches, the paint dark, the Nemesis on one knee). Before it, 1241 tests,
+- Tests: 1248 tests, 374,667 checks, green on `ccr-bd73687d-w8qox1` (16 November, his next notes on
+  the deaths: the fall, the floor every frame, limp limbs, the late vents, the flicker). Before it,
+  1244 tests, 374,011 checks, green on the same branch (his notes on the deaths: resting on what
+  touches, the paint dark, the Nemesis on one knee). Before it, 1241 tests,
   373,910 checks, green on the same branch (over main at `d7fe86f` taken in a merge: his ninth
   round's rulings, Exposed on a machine, the Vampire Lord's drain). Before it, 1222 tests, 373,594 checks, green on the same branch (16 November, his third notes:
   the shell a wall on the seven's outer edges with a cache behind it, the wrecks at living size,
@@ -549,8 +551,16 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   `tools/death_floor.gd`, the tests), fifteen poses reworked to rest (the Badger on its tracks with
   its claw and gun down, the Nemesis on one knee, the Baboon and the Ammit sunk as low as their
   limits go, the flyers and hovers flat), and a lost machine's lit parts' paint going dark with
-  their light (`MechRig.DEAD_PAINT`). The hangar shows them (Pages, below), published from this
-  branch ahead of main; the bible (v0.602) republishes on his word.
+  their light (`MechRig.DEAD_PAINT`). Reworked again on his next notes the same day: a death falls
+  (`b.death`'s ease "fall", slow then hard, a hop and a rock where it lands), its lowest point held
+  on the floor every frame (`MechRig._hold_death_floor`), limbs it names going limp (`hang`, the
+  slump's hang on a tipped body), a light it keys burning as it goes down and guttering once it
+  lands (the Polar Bear's vents), the dying paint stuttering out with the light; the Baboon sat
+  with its feet flat and its arms fallen forward, the Ammit flat with its legs forward, the
+  Funnel-web sunk to its leg roots, the Clydesdale buckling slowly and landing hard, the Cassowary
+  staggering forward and over onto its back, the Whip Scorpion's feelers down, the Nemesis level on
+  one knee with its arms limp. The hangar shows them (Pages, below), published from this branch
+  ahead of main; the bible (v0.603) republishes on his word.
 - **The blade class retired** (`ccr-b7d5164e-1wtzzm`, 15 November, on Ryan's "The four you listed are
   locked pieces. The others need to be renamed into short range (i.e "melee" as per our definition)
   guns, or just sent back to design"): four silhouette classes (barrel, twin barrel, rack, dish) in

@@ -217,6 +217,17 @@ function lowestOf(node, matrixOf) {
   return low;
 }
 const DEAD_PAINT = 0.1;   // MechRig.DEAD_PAINT: a lit part's paint once its light is out, a dead booster dark
+const FALL_HIT = 2.6, IMPACT_S = 0.3, IMPACT_HOP = 0.012, IMPACT_ROCK = 1.5, HANG_SCAN = 36;   // MechRig: a death's fall lands at speed, then a hop and a rock
+function impactHop(t) {   // MechRig.impact_hop: a share of the machine's size
+  if (t < 0 || t >= IMPACT_S) return 0;
+  const u = t / IMPACT_S;
+  return u < 0.6 ? IMPACT_HOP * Math.sin(Math.PI * u / 0.6) : IMPACT_HOP * 0.3 * Math.sin(Math.PI * (u - 0.6) / 0.4);
+}
+function impactRock(t) {   // MechRig.impact_rock: degrees about its pitch
+  if (t < 0 || t >= IMPACT_S) return 0;
+  const u = t / IMPACT_S;
+  return IMPACT_ROCK * Math.sin(2 * Math.PI * 1.5 * u) * (1 - u);
+}
 function gutterK(t) { if (t >= GUTTER) return 0; const f = t / GUTTER; return (1 - f) * (1 - f) * ((t % 0.13) < 0.05 ? 0.35 : 1); }
 // A lit material's light at rest, kept the first time it is asked (MechRig._rest_of), so a standing
 // glow that raises it is never taken for its rest.
@@ -334,6 +345,10 @@ function through(pts, ease) {
       }
     }
     m.push(row);
+  }
+  if (ease === "fall" && n >= 2 && t[n - 1] > t[n - 2]) {   // MechRig: a fall arrives at speed
+    const h = t[n - 1] - t[n - 2];
+    m[n - 1] = v[n - 1].map((x, j) => FALL_HIT * (x - v[n - 2][j]) / h);
   }
   return {t, v, m, linear, width};
 }
@@ -555,11 +570,15 @@ class Rig {
     }
   }
   formEntry(f) {   // MechRig._form_entry
-    const duration = Math.max(0.01, f.duration ?? 0.6), curves = {}, glow = [];
-    for (const [jn, keys] of Object.entries(f.tracks || {})) if (this.joints[jn]) curves[jn] = curve(keys, duration, "smooth");
-    if ((f.body || []).length) curves["@body"] = curve(f.body, duration, "smooth");
-    for (const g of f.glow || []) for (const part of g.parts || []) for (const m of this.litMaterials(part)) glow.push([m, restOf(m), g.k ?? -1]);
-    return {duration, curves, glow, acts: (f.acts || []).filter(a => a && a.name), rawBody: JSON.parse(JSON.stringify(f.body || []))};
+    const duration = Math.max(0.01, f.duration ?? 0.6), ease = f.ease || "smooth", curves = {}, glow = [], glowKeys = [];
+    for (const [jn, keys] of Object.entries(f.tracks || {})) if (this.joints[jn]) curves[jn] = curve(keys, duration, ease);
+    if ((f.body || []).length) curves["@body"] = curve(f.body, duration, ease);
+    for (const g of f.glow || []) for (const part of g.parts || []) for (const m of this.litMaterials(part)) {
+      if ((g.keys || []).length) glowKeys.push([m, restOf(m), curve(g.keys, duration, "smooth")]);   // keyed over the turn (the dying Polar Bear's vents)
+      else glow.push([m, restOf(m), g.k ?? -1]);
+    }
+    const hang = (f.hang || []).filter(jn => this.joints[jn]);
+    return {duration, ease, curves, glow, glowKeys, hang, acts: (f.acts || []).filter(a => a && a.name), rawBody: JSON.parse(JSON.stringify(f.body || []))};
   }
   // Hold a form or let it go (MechRig.set_form): it turns in over its duration and back out the
   // same way, from wherever it is; while a form turns no act starts, and one playing stops.
@@ -650,7 +669,10 @@ class Rig {
     let turning = false;
     for (const [name, f] of Object.entries(this.forms)) {
       const want = this.formOn[name] ? f.duration : 0, t = this.formT[name];
-      if (t !== want) { this.formT[name] = t < want ? Math.min(want, t + delta) : Math.max(want, t - delta); turning = true; }
+      if (t !== want) {
+        this.formT[name] = t < want ? Math.min(want, t + delta) : Math.max(want, t - delta); turning = true;
+        if (name === "@death" && this.dead && want > 0 && this.formT[name] >= want) this.impact = 0;   // it lands: the landing's beat (MechRig._forms_step)
+      }
     }
     if (!turning) return false;
     if (this.formsApply()) this.wait = this.debug ? GAP_DEBUG : lerp(GAP_MIN, GAP_MAX, this.random());   // a pause before the new set's first act
@@ -673,7 +695,8 @@ class Rig {
         if (v.length >= 6) this.formSlide[jn] = add3(this.formSlide[jn] || v3(), v3(v[3], v[4], v[5]));
       }
       const k = t / f.duration;
-      for (const [m, base, gk] of f.glow) this.lightTo(m, base, 1 + gk * k);
+      if (!this.dead) for (const [m, base, gk] of f.glow) this.lightTo(m, base, 1 + gk * k);   // a lost machine's lights are its gutter's (MechRig._forms_apply)
+      if (t < f.duration) for (const [m, base, c] of f.glowKeys || []) this.lightTo(m, base, 1 + curveAt(c, t)[0]);   // its keys while it turns; a death's gutter takes it once it lands
     }
     return settled;
   }
@@ -865,41 +888,70 @@ class Rig {
     this.flashes = [];
     const mats = [];
     this.model.traverse(n => { if (n.isMesh && !n.userData.halo) for (const m of [].concat(n.material)) if (m.userData.lit && !mats.includes(m)) mats.push(m); });
-    this.gutter = {t: 0, mats: mats.map(m => [m, m.emissiveIntensity, m.color.clone()])};
-    if (this.forms["@death"]) { this.settleDeath(); this.formOn["@death"] = true; this.collapse = -1; this.collapseFloor = 0; }   // its own death (MechRig.kill)
+    const death = this.forms["@death"], late = new Map();   // a lit part its death keys: lit as it goes down, guttering once it lands (MechRig.kill)
+    if (death) for (const [m] of death.glowKeys || []) late.set(m, death.duration);
+    this.gutter = {t: 0, end: GUTTER, mats: mats.map(m => [m, m.emissiveIntensity, m.color.clone(), late.get(m) || 0, false])};
+    for (const g of this.gutter.mats) this.gutter.end = Math.max(this.gutter.end, g[3] + GUTTER);
+    this.deathLift = 0; this.impact = -1;
+    if (death) { this.size = this.size || this.modelSize(); this.settleDeath(); this.formOn["@death"] = true; this.collapse = -1; this.collapseFloor = 0; }   // its own death (MechRig.kill)
     else this.collapse = 0;
   }
-  // MechRig._settle_death: the death pose put on for a moment, its lowest point measured where the
-  // body stands, everything put back, and the difference to the floor eased into its body slide.
+  // MechRig._settle_death: a death's limp joints (its `hang`) worked out where it will lie, the pose
+  // put on for a moment as it ends, each turned where its weight takes it, the outermost first,
+  // never below the floor the rest of the pose lies on; the floor itself is held every frame.
   settleDeath() {
     const f = this.forms["@death"], d = f.duration, T = window.THREE, saved = {};
+    if (!(f.hang || []).length) return;
     for (const [jn, j] of Object.entries(this.joints)) saved[jn] = j.rotation.clone();
     const savedPos = this.body.position.clone(), savedRot = this.body.rotation.clone();
     let slide = v3(), turn = v3();
+    const deg = {};
+    for (const jn of Object.keys(this.joints)) deg[jn] = {...(this.formRot[jn] || v3())};
     for (const [jn, c] of Object.entries(f.curves)) {
       const v = curveAt(c, d);
       if (jn === "@body") { slide = v3(v[0], v[1], v[2]); if (v.length >= 6) turn = v3(v[4], v[3], v[5]); continue; }
-      this.turnTo(jn, add3(v3(v[0], v[1], v[2]), this.formRot[jn] || v3()), false);
+      deg[jn] = add3(deg[jn], v3(v[0], v[1], v[2]));
     }
+    for (const jn of Object.keys(this.joints)) this.turnTo(jn, deg[jn], false);
     const bo = offsetOf(add3(slide, this.formBodySlide)), be = eulerOf(add3(turn, this.formBodyRot));
     this.body.position.set(this.bodyRestPos.x + bo.x, this.bodyRestPos.y + bo.y, this.bodyRestPos.z + bo.z);
     this.body.rotation.set(this.bodyRestRot.x + be.x, this.bodyRestRot.y + be.y, this.bodyRestRot.z + be.z, "YXZ");
     this.body.updateMatrixWorld(true);
-    const parentInv = new T.Matrix4().copy(this.body.parent ? this.body.parent.matrixWorld : new T.Matrix4()).invert();
-    const low = lowestOf(this.model, o => new T.Matrix4().multiplyMatrices(parentInv, o.matrixWorld));
+    this.body.updateMatrix();
+    this.modelInv = this.model.matrixWorld.clone().invert();   // the model's own frame, as the pose leaves it
+    const frame = this.body.matrix.clone();
+    const tops = f.hang.filter(jn => { for (let p = this.joints[jn].parent; p && p !== this.model; p = p.parent) if (f.hang.some(o => this.joints[o] === p)) return false; return true; });
+    for (const jn of tops) this.joints[jn].visible = false;
+    let floorY = lowestOf(this.model, o => frame.clone().multiply(this.inModel(o)));
+    for (const jn of tops) this.joints[jn].visible = true;
+    if (floorY === Infinity) floorY = lowestOf(this.model, o => frame.clone().multiply(this.inModel(o)));
+    const order = [...f.hang].sort((a, b) => this.jointDepth(this.joints[b]) - this.jointDepth(this.joints[a]));
+    for (let pass = 0; pass < COLLAPSE.passes; pass++) for (const jn of order) this.hang(jn, deg, floorY, frame);
+    for (const jn of f.hang) {
+      const own = add3(deg[jn], mul3(this.formRot[jn] || v3(), -1));   // the death's share, over what other forms hold
+      f.curves[jn] = curve([[d, own.x, own.y, own.z]], d, f.ease || "smooth");
+    }
     for (const [jn, j] of Object.entries(this.joints)) j.rotation.copy(saved[jn]);
     this.body.position.copy(savedPos); this.body.rotation.copy(savedRot); this.body.updateMatrixWorld(true);
+  }
+  // MechRig._hold_death_floor: a dying machine's lowest point held on its floor every frame of its
+  // fall, and its landing's hop laid on top.
+  holdDeathFloor() {
+    if (!this.dead || !this.forms["@death"]) return;
+    const T = window.THREE;
+    this.body.updateMatrixWorld(true);
+    const parentInv = new T.Matrix4().copy(this.body.parent ? this.body.parent.matrixWorld : new T.Matrix4()).invert();
+    const low = lowestOf(this.model, o => new T.Matrix4().multiplyMatrices(parentInv, o.matrixWorld));
     if (low === Infinity) return;
-    const lift = this.bodyRestPos.y - low;
-    const raw = f.rawBody.length ? JSON.parse(JSON.stringify(f.rawBody)) : [[0, 0, 0, 0, 0, 0, 0], [d, 0, 0, 0, 0, 0, 0]];
-    for (const row of raw) { while (row.length < 7) row.push(0); row[3] += lift * clamp(row[0] / d, 0, 1); }
-    f.curves["@body"] = curve(raw, d, "smooth");
+    const fix = this.bodyRestPos.y - low;
+    this.deathLift += fix; this.body.position.y += fix;
+    if (this.impact >= 0) this.body.position.y += impactHop(this.impact) * Math.max(1, this.size || 1);
   }
   revive() {
     if (!this.dead) return;
     this.dead = false;
     for (const [m, , c] of (this.gutter || {mats: []}).mats) { this.lightTo(m, restOf(m), 1); m.color.copy(c); }   // its light and its paint as they were
-    this.gutter = null;
+    this.gutter = null; this.deathLift = 0; this.impact = -1;
     this.collapse = -1; this.collapseFloor = 0; this.spinK = 1; this.wantRot = {}; this.bodyWantRot = v3(); this.bodyWantSlide = v3();
     if (this.forms["@death"]) { this.formOn["@death"] = false; this.formT["@death"] = 0; this.formsApply(); }   // stood up at once (MechRig.revive)
   }
@@ -1054,12 +1106,14 @@ class Rig {
   }
   // MechRig._hang: the turn about a slack joint's own axle that brings the middle of what it carries
   // under it, within its limits, eased back so what it carries keeps above `floorY`.
-  hang(name, deg, floorY) {
+  hang(name, deg, floorY, frame = null) {   // MechRig._hang; `frame` a death's tipped body (its own transform), down its down
     const T = window.THREE, j = this.joints[name], m = this.meta[name] || {}, axis = m.axis || axisFor(name), i = AXES.indexOf(axis);
     if (i < 0) return;
     const centre = this.subtreeCentre(j);
     if (!centre) return;
-    const xj = this.inModel(j), o = new T.Vector3().setFromMatrixPosition(xj);
+    const inFrame = (mx) => frame ? frame.clone().multiply(mx) : mx;
+    if (frame) centre.applyMatrix4(frame);
+    const xj = inFrame(this.inModel(j)), o = new T.Vector3().setFromMatrixPosition(xj);
     const u = new T.Vector3(...[[1, 0, 0], [0, 1, 0], [0, 0, -1]][i]).applyMatrix4(new T.Matrix4().extractRotation(xj)).normalize();
     const r = centre.clone().sub(o), g = new T.Vector3(0, -1, 0);
     const rp = r.clone().sub(u.clone().multiplyScalar(r.dot(u))), gp = g.clone().sub(u.clone().multiplyScalar(g.dot(u)));
@@ -1070,21 +1124,40 @@ class Rig {
     let to = {...now}; to[k] = now[k] + turn;
     to = clampDegrees(to, m.limits);
     const mix = (f) => v3(now.x + (to.x - now.x) * f, now.y + (to.y - now.y) * f, now.z + (to.z - now.z) * f);
+    const lowest = () => frame ? lowestOf(j, ob => frame.clone().multiply(this.inModel(ob))) : this.lowestUnder(j);
     this.turnTo(name, to);
-    if (this.lowestUnder(j) < floorY - 0.01) {
-      let lo = 0, hi = 1;
-      for (let s = 0; s < 10; s++) { const f = (lo + hi) / 2; this.turnTo(name, mix(f)); if (this.lowestUnder(j) < floorY - 0.01) hi = f; else lo = f; }
-      to = mix(lo); this.turnTo(name, to);
+    if (lowest() < floorY - 0.01) {
+      this.turnTo(name, now);
+      if (lowest() >= floorY - 0.01) {
+        let lo = 0, hi = 1;
+        for (let s = 0; s < 10; s++) { const f = (lo + hi) / 2; this.turnTo(name, mix(f)); if (lowest() < floorY - 0.01) hi = f; else lo = f; }
+        to = mix(lo);
+      } else {   // it starts through the floor: the turn within its limits nearest hanging that keeps it above, or the one that lifts it most (MechRig._hang)
+        const [a0, a1] = Array.isArray(edges) && edges.length === 2 ? edges : [-180, 180];
+        let best = null, far = Infinity, fallback = to, top = -Infinity;
+        for (let s = 0; s <= HANG_SCAN; s++) {
+          const tryv = {...to}; tryv[k] = a0 + (a1 - a0) * s / HANG_SCAN;
+          this.turnTo(name, tryv);
+          const low = lowest();
+          if (low >= floorY - 0.01 && Math.abs(tryv[k] - to[k]) < far) { far = Math.abs(tryv[k] - to[k]); best = tryv; }
+          if (low > top) { top = low; fallback = tryv; }
+        }
+        to = best || fallback;
+      }
+      this.turnTo(name, to);
     }
     deg[name] = to;
   }
   stepGutter(dt) {
-    if (!this.gutter || this.gutter.t >= GUTTER) return false;
+    if (!this.gutter || this.gutter.t >= this.gutter.end) return false;
     this.gutter.t += dt;
-    const k = gutterK(this.gutter.t), f = clamp(this.gutter.t / GUTTER, 0, 1), paint = 1 + (DEAD_PAINT - 1) * (1 - (1 - f) * (1 - f));
-    for (const [m, e, c] of this.gutter.mats) {
-      m.emissiveIntensity = e * k;
-      m.color.copy(c).multiplyScalar(paint);   // the paint darkens with the light, steadily (MechRig)
+    for (const g of this.gutter.mats) {
+      const [m, , c, start] = g, local = this.gutter.t - start;   // a part its death keys gutters once it has landed
+      if (local < 0) continue;
+      if (!g[4]) { g[1] = m.emissiveIntensity; g[4] = true; }   // its light as its gutter starts
+      const k = gutterK(local), paint = DEAD_PAINT + (1 - DEAD_PAINT) * k;   // the paint stutters out with the light (MechRig)
+      m.emissiveIntensity = g[1] * k;
+      m.color.copy(c).multiplyScalar(paint);
       for (const h of this.halos.get(m) || []) { h.uniforms.light.value = Math.pow(m.emissiveIntensity, 1 / 2.2); h.uniforms.presence.value = 0; }
     }
     return true;
@@ -1092,6 +1165,7 @@ class Rig {
   tick(delta, acting = true) {
     let moved = this.stepFlashes(delta), left = delta;
     if (this.stepGutter(delta)) moved = true;
+    if (this.impact >= 0) { this.impact += delta; if (this.impact >= IMPACT_S) this.impact = -1; moved = true; }   // a death's landing beat (MechRig._step)
     if (this.stepCollapse(delta)) moved = true;
     this.stepPlumes();
     acting = acting && !this.dead;
@@ -1122,7 +1196,7 @@ class Rig {
       }
       moved = true;
     }
-    if (moved) this.pose();
+    if (moved) { this.pose(); this.holdDeathFloor(); }
   }
   step(dt, acting) {
     let moved = false;
@@ -1244,8 +1318,8 @@ class Rig {
     const be = eulerOf(add3(add3(add3(this.bodyActRot, this.bodyMoveRot), this.formBodyRot), turn));
     let rock = v3();
     for (const st of this.strikes) if (st.joint === "@body") { const k = Rig.envelope(st); bo = {x: bo.x + st.recoil.x * k, y: bo.y + st.recoil.y * k, z: bo.z + st.recoil.z * k}; rock = add3(rock, mul3(st.vec, k)); }
-    const re = eulerOf(rock);   // a jolt's nose rocking up (MechRig._pose)
-    this.body.position.set(this.bodyRestPos.x + bo.x, this.bodyRestPos.y + bo.y, this.bodyRestPos.z + bo.z);
+    const re = eulerOf(add3(rock, v3(impactRock(this.impact ?? -1), 0, 0)));   // a jolt's nose rocking up, and a death's landing rocking it (MechRig._pose)
+    this.body.position.set(this.bodyRestPos.x + bo.x, this.bodyRestPos.y + bo.y + (this.deathLift || 0), this.bodyRestPos.z + bo.z);
     this.body.rotation.set(this.bodyRestRot.x + be.x + re.x, this.bodyRestRot.y + be.y + re.y, this.bodyRestRot.z + be.z + re.z, "YXZ");
   }
   // One frame of movement (MechRig.drive): speed in model units a second, aim the travel's

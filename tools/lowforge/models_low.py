@@ -883,16 +883,18 @@ def clydesdale(b):
     # nose goes down onto the ground while the hind legs stay locked, the head lolls aside and the
     # battery's barrels droop.
     batteries = [j for j in ("elev_%d" % n for n in range(1, 9))]
+    # The fore knees give slowly first, then it goes over and lands hard (the fourth notes: it
+    # "topples too smoothly. It should start slower and hit harder"; b.death's fall).
     tracks = {
-        "hip_fl": [(0.5, 25.0), (1.5, 55.0)], "knee_fl": [(0.5, -60.0), (1.5, -108.0)], "ankle_fl": [(1.5, 52.0)],
-        "hip_fr": [(0.55, 22.0), (1.5, 52.0)], "knee_fr": [(0.55, -55.0), (1.5, -104.0)], "ankle_fr": [(1.5, 50.0)],
-        "hip_hl": [(1.5, -16.0)], "knee_hl": [(1.5, 6.0)], "ankle_hl": [(1.5, 10.0)],
-        "hip_hr": [(1.5, -16.0)], "knee_hr": [(1.5, 6.0)], "ankle_hr": [(1.5, 10.0)],
-        "head": [(1.5, -10.0, 16.0, 0.0)],
+        "hip_fl": [(0.7, 18.0), (1.8, 55.0)], "knee_fl": [(0.7, -45.0), (1.8, -108.0)], "ankle_fl": [(1.8, 52.0)],
+        "hip_fr": [(0.75, 16.0), (1.8, 52.0)], "knee_fr": [(0.75, -40.0), (1.8, -104.0)], "ankle_fr": [(1.8, 50.0)],
+        "hip_hl": [(1.8, -16.0)], "knee_hl": [(1.8, 6.0)], "ankle_hl": [(1.8, 10.0)],
+        "hip_hr": [(1.8, -16.0)], "knee_hr": [(1.8, 6.0)], "ankle_hr": [(1.8, 10.0)],
+        "head": [(1.8, -10.0, 16.0, 0.0)],
     }
     for k, jn in enumerate(batteries):
-        tracks[jn] = [(1.5, -16.0 if k % 2 == 0 else -10.0)]
-    b.death(1.5, tracks, body=[(0.5, 0.0, 1.0, -3.0, 0.0, -6.0, 0.0), (1.5, 0.0, 3.0, -6.0, 3.0, -22.0, 2.0)])
+        tracks[jn] = [(1.8, -16.0 if k % 2 == 0 else -10.0)]
+    b.death(1.8, tracks, body=[(0.7, 0.0, 1.0, -3.0, 0.0, -4.0, 0.0), (1.8, 0.0, 3.0, -6.0, 3.0, -22.0, 2.0)])
 
 # The Clydesdale's batteries (the form above): the first battery's ports in pin order, the second's
 # the same rows mirrored across the spine; how far a stowed gun sits under the deck, the guns'
@@ -1137,15 +1139,16 @@ def baboon(b):
     # 11 November).
     b.fires = {"retrocausal_shroud": ("charge_projectors", 1.8, 3.4), "redshift_emitter": ("charge_projectors", 1.8, 3.4)}
     b.move(accel=1.1, heft=0.2)
-    # Its death: it sits down hard on its rump, its legs out before it, slumped over at the waist,
-    # its long arms gone slack out to its sides, a fist on the ground.
+    # Its death: it sits down hard on its rump, its pelvis rolled back, its knees up and its feet flat
+    # on the floor out before it, slumped forward over its knees, its long arms fallen forward and limp
+    # from the elbow to the floor (Ryan, 16 November, the fourth notes: "sitting down with torso slumped
+    # forward is good, but the execution needs work": its toes had come up to its chest and its arms
+    # had swung back as if under their own power).
     b.death(1.3, {
-        "hip_l": [(1.3, 60.0)], "knee_l": [(1.3, 27.0)], "ankle_l": [(1.3, 61.5)],
-        "hip_r": [(1.3, 60.0)], "knee_r": [(1.3, 27.0)], "ankle_r": [(1.3, 61.5)],
-        "waist": [(1.3, -12.0, 0.0, 0.0)],
-        "shoulder_l": [(1.3, -44.5, 0.0, 0.0)], "elbow_l": [(1.3, -62.0)], "wrist_l": [(1.3, 10.5)],
-        "shoulder_r": [(1.3, -44.5, 0.0, 0.0)], "elbow_r": [(1.3, -62.0)], "wrist_r": [(1.3, 10.5)],
-    }, body=[(1.3, 0.0, -2.0, -10.0, 0.0, 8.5, 0.0)])
+        "hip_l": [(1.3, 59.5)], "knee_l": [(1.3, 50.0)], "ankle_l": [(1.3, -33.5)],
+        "hip_r": [(1.3, 59.5)], "knee_r": [(1.3, 50.0)], "ankle_r": [(1.3, -33.5)],
+        "waist": [(1.3, -18.0, 0.0, 0.0)], "shoulder_l": [(1.3, 35.0, 0.0, 0.0)], "shoulder_r": [(1.3, 35.0, 0.0, 0.0)],
+    }, body=[(1.3, 0.0, -2.0, -10.0, 0.0, 12.0, 0.0)], hang=["elbow_l", "wrist_l", "elbow_r", "wrist_r"])
 
 baboon.maker = "aphelion"
 
@@ -1577,13 +1580,28 @@ def polar_bear(b):
     b.act("lure", 5.2, {"run_rack": [along(0.6, 0.0), along(1.4, 4.0), along(3.8, 4.0), along(4.6, 0.0)]}, form="sealed",
           glow=[(["beacon"], blink(1.4, 3.8))])
     # Its death: the four legs folding out from under it as its seal folds them, down on them level
-    # (its folded legs hold its belly off the floor; the list it had tipped it onto one side).
-    b.death(1.2, {
-        "hip_fl": [(1.2, 48.0)], "knee_fl": [(1.2, -108.0)], "ankle_fl": [(1.2, 68.0)],
-        "hip_fr": [(1.2, 46.0)], "knee_fr": [(1.2, -105.0)], "ankle_fr": [(1.2, 66.0)],
-        "hip_hl": [(1.2, 34.0)], "knee_hl": [(1.2, -98.0)], "ankle_hl": [(1.2, 72.0)],
-        "hip_hr": [(1.2, 32.0)], "knee_hr": [(1.2, -96.0)], "ankle_hr": [(1.2, 70.0)],
-    }, body=[(1.2, 0.0, 0.0, -12.0, 0.0, -2.0, 0.0)])
+    # (its folded legs hold its belly off the floor; the list it had tipped it onto one side), its
+    # vents thrown open a pair at a time as it settles, their heat flaring as they open, and guttering
+    # out once it is down (Ryan, 16 November, the fourth notes: "Open the vents as it settles, then
+    # have them flicker out").
+    DIE = 1.6
+    dying = {
+        "hip_fl": [(DIE, 48.0)], "knee_fl": [(DIE, -108.0)], "ankle_fl": [(DIE, 68.0)],
+        "hip_fr": [(DIE, 46.0)], "knee_fr": [(DIE, -105.0)], "ankle_fr": [(DIE, 66.0)],
+        "hip_hl": [(DIE, 34.0)], "knee_hl": [(DIE, -98.0)], "ankle_hl": [(DIE, 72.0)],
+        "hip_hr": [(DIE, 32.0)], "knee_hr": [(DIE, -96.0)], "ankle_hr": [(DIE, 70.0)],
+    }
+    heats = []
+    for k, (heat, vent) in enumerate(vents):
+        t0 = 0.25 + 0.15 * (k // 2)   # a pair at a time
+        for i, (jn, shut, swing) in enumerate(vent):
+            dying[jn] = [(round(t0 + 0.05 * i, 3), 0.0), (round(t0 + 0.05 * i + 0.4, 3), round(swing, 2)), (DIE, round(swing, 2))]
+        heats.append(heat)
+    for heat, jn, line, out in pops:
+        dying[jn] = [along(t, out * f, line) for t, f in ((0.4, 0.0), (0.85, 1.0), (DIE, 1.0))]
+        heats.append(heat)
+    b.death(DIE, dying, body=[(DIE, 0.0, 0.0, -12.0, 0.0, -2.0, 0.0)],
+            glow=[(heats, [(0.25, 0.0), (0.85, HEAT * 0.8), (DIE, HEAT * 0.8)])])
 
 polar_bear.maker = "minerva"
 
@@ -2360,13 +2378,15 @@ def cassowary(b):
     # first; found unfired on 3 November): the capacitor drum spinning up three turns as the spark
     # gap crackles, to the snap at its top.
     b.fires = {"spin_up": ("test_charge", 0.9, 3.8)}
-    # Its death: the bird sits down on its folded legs, its shanks and toes on the floor, bowed and
-    # twisted at the waist, its neck and its guns drooping.
-    b.death(1.2, {
-        "hip_l": [(1.2, -21.0)], "knee_l": [(1.2, -43.0)], "ankle_l": [(1.2, -32.0)], "toe_l": [(1.2, -36.5)],
-        "hip_r": [(1.2, -21.0)], "knee_r": [(1.2, -43.0)], "ankle_r": [(1.2, -32.0)], "toe_r": [(1.2, -36.5)],
-        "waist": [(1.2, -15.0, 6.0, 5.0)], "elev_chin": [(1.2, -12.0)], "elev_pod": [(1.2, -10.0)], "elev_mortar": [(1.2, -15.0)],
-    }, body=[(1.2, 0.0, 0.0, -12.0, 0.0, -6.5, 0.0)])
+    # Its death: a stagger, its right foot thrown a step forward, and then over onto its back, its legs
+    # flopping out before it, the step keeping it on its hex as it falls back (Ryan, 16 November, the
+    # fourth notes: "take a step forward, then fall on its back, so that it stays in the hex"; its legs
+    # sliding out from under it read as nothing), its neck and its guns drooping.
+    b.death(1.5, {
+        "hip_r": [(0.45, 28.0), (1.5, 20.0)], "knee_r": [(0.25, -25.0), (0.45, -5.0), (1.5, 0.0)], "ankle_r": [(0.45, -10.0), (1.5, 20.0)], "toe_r": [(1.5, -40.0)],
+        "hip_l": [(0.45, -10.0), (1.5, 20.0)], "knee_l": [(0.45, -10.0), (1.5, 0.0)], "ankle_l": [(1.5, 20.0)], "toe_l": [(1.5, -40.0)],
+        "waist": [(0.45, -6.0, 0.0, 0.0), (1.5, 10.0, 6.0, 4.0)], "elev_chin": [(1.5, -12.0)], "elev_pod": [(1.5, -10.0)], "elev_mortar": [(1.5, -15.0)],
+    }, body=[(0.45, 0.0, 8.0, -2.0, 0.0, -4.0, 0.0), (1.5, 0.0, 55.0, 0.0, 0.0, 65.0, 0.0)])
 
 cassowary.maker = "wainwright_sutler"
 
@@ -3181,14 +3201,17 @@ def funnel_web(b):
     b.fires = {"web_bomb": ("sight_in", 2.0, 3.8)}   # its fixed weapon fires with a slice of its act: the web tube lit (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.aims = {"web_bomb": "head"}   # the Web Bomb rides the head with the rest of its guns, so the head turns to aim it
     b.move(accel=0.9, heft=0.16)
-    # Its death: the spider's curl, every leg drawn up and folded under the body as it drops onto its
-    # belly, the head down and the guns slack.
+    # Its death: its legs buckle and splay as it drops, its body sunk to its leg roots, every foot
+    # left on the floor (Ryan, 16 November, the fourth notes: drawn up, its "back legs are in the air
+    # awkwardly"), the head down and the guns slack.
     tracks = {"head": [(1.2, -20.0, 10.0, 0.0)], "elev_top": [(1.2, -8.0)], "elev_l": [(1.2, -6.0)], "elev_r": [(1.2, -10.0)]}
-    for leg in ("fl", "fr", "hl", "hr"):
-        tracks["hip_" + leg] = [(1.2, -30.0)]
-        tracks["knee_" + leg] = [(1.2, -60.0)]
-        tracks["ankle_" + leg] = [(1.2, 40.0)]
-    b.death(1.2, tracks, body=[(1.2, 0.0, 0.0, -8.0, 0.0, -3.0, 2.0)])
+    for side in ("l", "r"):
+        for leg, (coxa, hip, knee, ankle) in (("f", (-7.5, 22.5, 26.5, -35.5)), ("h", (-7.5, -12.5, -2.5, 27.5))):
+            tracks["coxa_" + leg + side] = [(1.2, coxa)]
+            tracks["hip_" + leg + side] = [(1.2, hip)]
+            tracks["knee_" + leg + side] = [(1.2, knee)]
+            tracks["ankle_" + leg + side] = [(1.2, ankle)]
+    b.death(1.2, tracks, body=[(1.2, 0.0, 0.0, -8.0, 0.0, -4.5, 0.0)])
 
 funnel_web.maker = "wainwright_sutler"
 
@@ -3650,12 +3673,12 @@ def whip_scorpion(b):
     # 'hot' things - so all glowing boosters and vents"; found bare on 3 November), the collar and the
     # bore's floor lit together as its blast flares them.
     b.halo = ["vent_heat_" + t for t in ("l1", "l2", "r1", "r2")] + ["vent_bore_%s_floor" % t for t in ("l1", "l2", "r1", "r2")]
-    # Its death: the belly drops onto the ground, the walking legs splayed flat about it, the long
-    # feelers up stiff as a dead insect's, the turrets slewed every way. (Its feelers curled down
-    # reach below its belly and prop it: tools/death_floor.gd.)
+    # Its death: the belly drops onto the ground, the walking legs splayed flat about it and its long
+    # feelers folded down onto the floor (Ryan, 16 November, the fourth notes: up, they hung "in the
+    # air"), the turrets slewed every way.
     tracks = {"abdomen": [(1.3, -4.0, 0.0, 0.0)], "turret_l": [(1.3, 30.0)], "turret_r": [(1.3, -24.0)], "turret_ray": [(1.3, 18.0)], "ray": [(1.3, -8.0)]}
     for side in ("l", "r"):
-        for leg, (hip, knee, ankle) in (("f", (13.5, 40.0, 50.0)), ("m", (-28.0, -32.0, 42.5)), ("h", (-21.5, -21.0, -24.5))):
+        for leg, (hip, knee, ankle) in (("f", (-2.0, -60.0, -48.0)), ("m", (-28.0, -32.0, 42.5)), ("h", (-21.5, -21.0, -24.5))):
             tracks["hip_" + leg + side] = [(1.3, hip)]
             tracks["knee_" + leg + side] = [(1.3, knee)]
             tracks["ankle_" + leg + side] = [(1.3, ankle)]
@@ -4653,16 +4676,15 @@ def nemesis(b):
     _flare_scale(b, "core_fire", CHEST_FLARE)
     _flare_scale(b, "condenser_slot", VENT_FLARE)
     b.move(accel=1.2, heft=0.24)
-    # Its death: the brawler falls to one knee (Ryan, 16 November: "Nemesis should fall to one
-    # knee"), the left knee and its toes down, the right foot planted, leaning toward the knee it is
-    # on, head and shoulders bowed over the raised one, its fists hanging.
+    # Its death: the brawler takes a knee (Ryan, 16 November: "Nemesis should fall to one knee";
+    # the fourth notes: "don't list it to the side, just take a knee, arms slumped down by the
+    # elbows"), level, the left knee and its toes down, the right foot planted under the raised knee,
+    # its head and shoulders bowed, its arms gone limp from the shoulder (b.death's hang).
     b.death(1.2, {
-        "hip_l": [(1.2, -33.0)], "knee_l": [(1.2, -49.0)], "ankle_l": [(1.2, 0.0)],
-        "hip_r": [(1.2, 56.0)], "knee_r": [(1.2, -85.0)], "ankle_r": [(1.2, 24.0)],
-        "waist": [(1.2, -15.0, 0.0, 0.0)], "elev_shoulder": [(1.2, -15.0)],
-        "shoulder_l": [(1.2, -5.0, 0.0, 0.0)], "elbow_l": [(1.2, -18.0)],
-        "shoulder_r": [(1.2, -7.0, 0.0, 0.0)], "elbow_r": [(1.2, -3.0)],
-    }, body=[(1.2, 0.0, 2.0, -14.0, 0.0, -3.0, 10.0)])
+        "hip_l": [(1.2, -40.0)], "knee_l": [(1.2, -47.5)], "ankle_l": [(1.2, 20.5)],
+        "hip_r": [(1.2, 50.0)], "knee_r": [(1.2, -50.0)], "ankle_r": [(1.2, 2.5)],
+        "waist": [(1.2, -6.0, 0.0, 0.0)], "elev_shoulder": [(1.2, -13.0)],
+    }, body=[(1.2, 0.0, 2.0, -14.0, 0.0, 3.0, 0.0)], hang=["shoulder_l", "elbow_l", "shoulder_r", "elbow_r"])
 
 nemesis.maker = "arsenal"
 
@@ -5478,22 +5500,22 @@ def ammit(b):
                "quintessence_tap": ("threat", 0.4, 1.5)}
     _flare_scale(b, "tail_slot", VENT_FLARE)   # its rear vent's flares kept gold on its sickly amber (Ryan, 3 November, the second notes)
     b.move(accel=1.0, heft=0.2)
-    # Its death: the beast sinks as low as its joints go, flat onto its folded haunches and its
-    # forelimbs, its mantis arms limp to the ground at the elbows, its head and cannons down, the
-    # talons curled (its limits hold its belly off the floor).
+    # Its death: the beast goes down flat on its belly, its legs never folded (Ryan, 16 November, the
+    # fourth notes: folded, its toes went through its torso; "just let them stick out in front with
+    # the toes poking out by the nose"), its hind legs reaching forward under it and its forelimbs out
+    # before it with their talons ahead of its nose, its mantis arms limp to the ground (b.death's
+    # hang), its cannons down, the talons curled.
     talons = {}
     for arm in ("l", "r", "low_l", "low_r"):
         for t in ("in", "mid", "out"):
             talons["talon_%s_%s" % (arm, t)] = [(1.2, -40.0)]
     b.death(1.2, dict(talons, **{
-        "hip_l": [(1.2, 60.0)], "knee_l": [(1.2, -16.5)], "ankle_l": [(1.2, 44.0)],
-        "hip_r": [(1.2, 60.0)], "knee_r": [(1.2, -16.5)], "ankle_r": [(1.2, 44.0)],
-        "waist": [(1.2, -8.5, 0.0, 0.0)], "elev_l": [(1.2, -12.0)], "elev_r": [(1.2, -12.0)],
-        "shoulder_low_l": [(1.2, 34.5)], "elbow_low_l": [(1.2, 13.5)], "hand_low_l": [(1.2, 15.5)],
-        "shoulder_low_r": [(1.2, 34.5)], "elbow_low_r": [(1.2, 13.5)], "hand_low_r": [(1.2, 15.5)],
-        "shoulder_l": [(1.2, -7.0, 0.0, 0.0)], "elbow_l": [(1.2, -52.0)], "hand_l": [(1.2, -7.5)],
-        "shoulder_r": [(1.2, -7.0, 0.0, 0.0)], "elbow_r": [(1.2, -52.0)], "hand_r": [(1.2, -7.5)],
-    }), body=[(1.2, 0.0, 2.0, -8.0, 0.0, -8.5, 0.0)])
+        "hip_l": [(1.2, 50.5)], "knee_l": [(1.2, 54.5)], "ankle_l": [(1.2, 65.0)],
+        "hip_r": [(1.2, 50.5)], "knee_r": [(1.2, 54.5)], "ankle_r": [(1.2, 65.0)],
+        "waist": [(1.2, -1.5, 0.0, 0.0)], "elev_l": [(1.2, -12.0)], "elev_r": [(1.2, -12.0)],
+        "shoulder_low_l": [(1.2, 14.0)], "elbow_low_l": [(1.2, 35.0)], "hand_low_l": [(1.2, 75.0)],
+        "shoulder_low_r": [(1.2, 14.0)], "elbow_low_r": [(1.2, 35.0)], "hand_low_r": [(1.2, 75.0)],
+    }), body=[(1.2, 0.0, 2.0, -8.0, 0.0, 8.5, 0.0)], hang=["shoulder_l", "elbow_l", "hand_l", "shoulder_r", "elbow_r", "hand_r"])
 
 ammit.maker = "arsenal"
 

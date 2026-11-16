@@ -531,6 +531,55 @@ func test_a_lost_machines_lit_parts_go_dark_and_a_revive_gives_them_back() -> vo
 	view.free()
 
 
+func test_a_lost_machines_lights_flicker_out_and_a_keyed_one_goes_last() -> void:
+	# Ryan, 16 November, the fourth notes: "All of these had a cool flickering animation previously ...
+	# all the lit elements on say, the badger would flicker before": a dying part's paint stutters out
+	# with its light. And "Open the vents as it settles, then have them flicker out": the Polar Bear's
+	# vents, keyed by its death, burn as it goes down and gutter once it has landed.
+	var badger := MechView3D.make("badger", "minerva", "clean", "", MechView3D.YAW_FRONT, Vector2i(64, 64), false, {}, [])
+	var lit: Array = []
+	badger.rig._lit_under(badger._model, lit)
+	var m: StandardMaterial3D = lit[0]
+	badger.lose()
+	var rises := 0
+	var was := m.albedo_color.r
+	for _k in range(int(MechRig.GUTTER / 0.01) + 2):
+		badger._process(0.01)
+		if m.albedo_color.r > was + 0.001:
+			rises += 1
+		was = m.albedo_color.r
+	assert_true(rises >= 2, "its paint flickers as it goes out (%d catches)" % rises)
+	badger.free()
+	var bear := MechView3D.make("polar_bear", "minerva", "clean", "", MechView3D.YAW_FRONT, Vector2i(64, 64), false, {}, [])
+	var vents: Array = []
+	for gk in bear.rig.forms[MechRig.DEATH].get("glow_keys", []):
+		vents.append(gk[0])
+	assert_true(vents.size() >= 2, "its death keys its vents")
+	var others: Array = []
+	bear.rig._lit_under(bear._model, others)
+	others = others.filter(func(x): return not vents.has(x))
+	bear.lose()
+	var d := float(bear.rig.forms[MechRig.DEATH]["duration"])
+	var t := 0.0
+	while t < MechRig.GUTTER + 0.05:
+		bear._process(0.05)
+		t += 0.05
+	assert_true(t < d, "the test reads before it lands")
+	for x in others:
+		assert_true((x as StandardMaterial3D).emission_energy_multiplier < 0.001, "its other lights are out")
+	var burning := 0
+	for x in vents:
+		if (x as StandardMaterial3D).emission_energy_multiplier > MechRig._rest_of(x) * 1.5:
+			burning += 1
+	assert_true(burning > 0, "while its vents burn on")
+	while t < d + MechRig.GUTTER + 0.1:
+		bear._process(0.05)
+		t += 0.05
+	for x in vents:
+		assert_true((x as StandardMaterial3D).emission_energy_multiplier < 0.001, "and they gutter out once it is down")
+	bear.free()
+
+
 func test_a_struck_machine_wears_heats_flash_and_a_lost_one_dims() -> void:
 	var db := ContentDB.load_default()
 	var view := MechView3D.make("polar_bear", "minerva", "clean", "", MechView3D.YAW_FRONT, Vector2i(96, 96), false, {}, [])

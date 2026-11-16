@@ -78,6 +78,10 @@ const JOLT_PITCH := 6.0       # rocking its nose up this many degrees,
 const JOLT_UP := 0.05         # in this many seconds,
 const JOLT_DOWN := 0.34       # and settling back over this long
 const GUTTER := 0.9           # a machine lost: its lit parts gutter out over this many seconds (kill)
+const FALL_HIT := 2.6          # a death's fall ends at this many times its last stretch's mean speed, so it starts slow and hits (Ryan, 16 November, the fourth notes: the Clydesdale "topples too smoothly. It should start slower and hit harder"); a monotone curve allows up to three
+const IMPACT_S := 0.3          # a death's landing beat: a hop off what it landed on and a rock on it
+const IMPACT_HOP := 0.012      # the landing's hop, a share of the machine's size
+const IMPACT_ROCK := 1.5       # the landing's rock about its pitch, in degrees
 const DEAD_PAINT := 0.1        # what a lit part's paint keeps once its light has guttered out: a dead booster, lamp or glow goes dark, never its hot colour (Ryan, 16 November: "Boosters should go dark, if possible")
 # And then it slumps (Ryan, 3 November: "they should slump or collapse after, limbs dropping, flyers
 # and hovers landing, fans stopping, idle spins stopping"), one rule every model shares, worked on
@@ -89,6 +93,7 @@ const COLLAPSE_AT := 0.3       # seconds into the gutter that a lost machine sta
 const COLLAPSE_HEFT := 0.3     # its servos' time constant as it goes: a drop with weight, not a pose
 const COLLAPSE_SINK := 0.28    # a walker sinks this share of its shortest planted limb's height, each foot where it stands
 const COLLAPSE_WAIST := 16.0   # a biped's waist slumps forward this many degrees (a walker with a hand on the floor keeps its back)
+const HANG_SCAN := 36         # steps a hanging joint's range is read in when it starts through the floor (_hang)
 const COLLAPSE_PASSES := 2     # how often the slack joints settle, each hanging what it carries from where the last pass left it
 const COLLAPSE_TOUCH := 0.02   # a limb whose end comes within this share of the machine's size of the floor stands on it
 const SPIN_STOP := 1.4         # seconds its fans, rotors and idle spins take to run down
@@ -216,7 +221,10 @@ var _flashes: Array = []           # [{mats, base, t}] a weapon's fire flaring (
 var dead := false                  # the machine is lost: no acts, its lit parts dark (kill)
 var halo_skip: Array = []          # lit parts that wear no halo, set before setup: a booster burning as a plume (MechView3D)
 var _gutter := -1.0                # seconds into its lit parts guttering out (kill); negative when not
-var _gutter_mats: Array = []       # [material, its light at rest, its paint at rest] for every lit part, as the kill found them
+var _gutter_mats: Array = []       # [material, its light as its gutter starts, its paint at rest, when its gutter starts, whether it has] for every lit part, as the kill found them
+var _gutter_end := 0.0             # when the last lit part has guttered out, seconds after the kill
+var _death_lift := 0.0             # what holds a dying machine's lowest point on its floor every frame of its fall (y up, the body's parent's frame)
+var _impact := -1.0                # seconds since its death landed, for the landing's beat; negative before and after
 var _size := -1.0                  # the model's longest side, measured once (_model_size), for the jolt
 var _collapse := -1.0              # seconds since a lost machine was killed, for its slump (kill); negative while standing
 var _centroids: Dictionary = {}     # mesh -> [its vertex centroid, its vertex count] (_centroid_of)
@@ -436,6 +444,14 @@ static func _through(pts: Array, ease: String) -> Dictionary:
 				var w1 := h1 + 2.0 * h0
 				m[j] = (w0 + w1) / (w0 / d0 + w1 / d1)
 		slopes.append(m)
+	if ease == "fall" and n >= 2 and times[n - 1] > times[n - 2]:
+		# A fall arrives at speed: its last key's slope a multiple of its last stretch's.
+		var h := times[n - 1] - times[n - 2]
+		var end := PackedFloat64Array()
+		end.resize(width)
+		for j in range(width):
+			end[j] = FALL_HIT * (float(vals[n - 1][j]) - float(vals[n - 2][j])) / h
+		slopes[n - 1] = end
 	return {"t": times, "v": vals, "m": slopes, "linear": linear, "width": width}
 
 
@@ -735,23 +751,34 @@ func _setup_forms(fs: Dictionary) -> void:
 ## light each has at rest, the acts it plays while held.
 func _form_entry(f: Dictionary) -> Dictionary:
 	var duration := maxf(0.01, float(f.get("duration", 0.6)))
+	var ease := str(f.get("ease", "smooth"))
 	var curves := {}
 	var tracks: Dictionary = f.get("tracks", {})
 	for jn in tracks.keys():
 		if joints.has(jn):
-			curves[jn] = curve(tracks[jn], duration, "smooth")
+			curves[jn] = curve(tracks[jn], duration, ease)
 	if not (f.get("body", []) as Array).is_empty():
-		curves[BODY] = curve(f["body"], duration, "smooth")
+		curves[BODY] = curve(f["body"], duration, ease)
 	var glow: Array = []
+	var glow_keys: Array = []   # [material, its light at rest, its keys' curve]: a light keyed over the turn (the dying Polar Bear's vents)
 	for g in f.get("glow", []):
+		var keyed := not (g.get("keys", []) as Array).is_empty()
 		for part in g.get("parts", []):
 			for m in _lit_materials(str(part)):
-				glow.append([m, _rest_of(m), float(g.get("k", -1.0))])
+				if keyed:
+					glow_keys.append([m, _rest_of(m), curve(g["keys"], duration, "smooth")])
+				else:
+					glow.append([m, _rest_of(m), float(g.get("k", -1.0))])
 	var own: Array = []
 	for a in f.get("acts", []):
 		if a is Dictionary and a.has("name"):
 			own.append(a)
-	return {"duration": duration, "curves": curves, "glow": glow, "acts": own, "raw_body": (f.get("body", []) as Array).duplicate(true)}
+	var hang: Array = []
+	for jn in f.get("hang", []):
+		if joints.has(str(jn)):
+			hang.append(str(jn))
+	return {"duration": duration, "curves": curves, "glow": glow, "glow_keys": glow_keys, "acts": own, "hang": hang, "ease": ease,
+		"raw_body": (f.get("body", []) as Array).duplicate(true)}
 
 
 ## Hold a form or let it go: it turns in over its duration and back out the same way, from
@@ -923,6 +950,8 @@ func _forms_step(delta: float) -> bool:
 		if t != want:
 			_form_t[name] = move_toward(t, want, delta)
 			turning = true
+			if name == DEATH and dead and want > 0.0 and float(_form_t[name]) >= want:
+				_impact = 0.0   # it lands: the landing's beat
 	if not turning:
 		return false
 	if _forms_apply():
@@ -954,8 +983,12 @@ func _forms_apply() -> bool:
 			if v.size() >= 6:
 				_form_slide[jn] = (_form_slide.get(jn, Vector3.ZERO) as Vector3) + Vector3(float(v[3]), float(v[4]), float(v[5]))
 		var p := t / float(f["duration"])
-		for g in f["glow"]:
-			_light_to(g[0], float(g[1]), 1.0 + float(g[2]) * p)
+		if not dead:   # a lost machine's lights are its gutter's (a sealed form's lamp held at rest kept burning)
+			for g in f["glow"]:
+				_light_to(g[0], float(g[1]), 1.0 + float(g[2]) * p)
+		if t < float(f["duration"]):
+			for gk in f.get("glow_keys", []):
+				_light_to(gk[0], float(gk[1]), 1.0 + float(curve_at(gk[2], t)[0]))   # its keys while it turns; a death's gutter takes it once it lands
 	return settled
 
 
@@ -1056,6 +1089,7 @@ func tick(delta: float) -> void:
 		drive(top_speed, 0.0, 0.0, delta)
 	elif moved:
 		_pose()
+		_hold_death_floor()
 
 
 func _step(dt: float) -> bool:
@@ -1114,11 +1148,16 @@ func _step(dt: float) -> bool:
 		moved = true
 	if _gutter >= 0.0:
 		_gutter += dt
-		var k := gutter_k(_gutter)
-		var f := clampf(_gutter / GUTTER, 0.0, 1.0)
-		var paint := lerpf(1.0, DEAD_PAINT, 1.0 - (1.0 - f) * (1.0 - f))   # the paint darkens with the light, steadily
 		for pair in _gutter_mats:
+			var local := _gutter - float(pair[3])   # a part the death keys gutters once it has landed
+			if local < 0.0:
+				continue
 			var m: StandardMaterial3D = pair[0]
+			if not bool(pair[4]):
+				pair[1] = m.emission_energy_multiplier   # its light as its gutter starts
+				pair[4] = true
+			var k := gutter_k(local)
+			var paint := DEAD_PAINT + (1.0 - DEAD_PAINT) * k   # the paint stutters out with the light (Ryan, 16 November, the fourth notes: a steady darkening hid the flicker)
 			var e := float(pair[1]) * k
 			m.emission_energy_multiplier = e
 			var c: Color = pair[2]
@@ -1126,8 +1165,13 @@ func _step(dt: float) -> bool:
 			for h in _halos.get(m, []):
 				(h as ShaderMaterial).set_shader_parameter("light", e)
 				(h as ShaderMaterial).set_shader_parameter("presence", 0.0)
-		if _gutter >= GUTTER:
+		if _gutter >= _gutter_end:
 			_gutter = -1.0
+		moved = true
+	if _impact >= 0.0:
+		_impact += dt
+		if _impact >= IMPACT_S:
+			_impact = -1.0
 		moved = true
 	if dead:
 		if _spin_k > 0.0:
@@ -1407,8 +1451,9 @@ func _sink_limb(trio: Array, d: float, deg: Dictionary) -> Dictionary:
 
 ## Hangs what a slack joint carries where its weight takes it (_collapse_wants): the turn about its
 ## own axle that brings the middle of what it carries under it, within its limits, eased back so what
-## it carries keeps above `floor_y`; `deg` takes the result and the joint is left turned to it.
-func _hang(name, deg: Dictionary, floor_y: float) -> void:
+## it carries keeps above `floor_y`; `deg` takes the result and the joint is left turned to it. Read in
+## `frame` times the model's frame (a death's tipped body: the body's own transform), down its down.
+func _hang(name, deg: Dictionary, floor_y: float, frame := Transform3D.IDENTITY) -> void:
 	var j: Node3D = joints[name]
 	var m: Dictionary = meta.get(name, {})
 	var axis := str(m.get("axis", axis_for(str(name))))
@@ -1418,9 +1463,9 @@ func _hang(name, deg: Dictionary, floor_y: float) -> void:
 	var centre = _subtree_centre(j)
 	if centre == null:
 		return
-	var xj := _in_model(j)
+	var xj := frame * _in_model(j)
 	var u := (xj.basis * axis_vector(axis)).normalized()
-	var r: Vector3 = (centre as Vector3) - xj.origin
+	var r: Vector3 = (frame * (centre as Vector3)) - xj.origin
 	var g := Vector3.DOWN
 	var rp := r - u * r.dot(u)
 	var gp := g - u * g.dot(u)
@@ -1437,17 +1482,43 @@ func _hang(name, deg: Dictionary, floor_y: float) -> void:
 	to[i] = now[i] + turn
 	to = clamp_degrees(to, lim)
 	_turn_to(name, to)
-	if _lowest_under(j) < floor_y - 0.01:
-		var lo := 0.0   # the share of the turn that keeps above the floor
-		var hi := 1.0
-		for _s in range(10):
-			var f := (lo + hi) * 0.5
-			_turn_to(name, now.lerp(to, f))
-			if _lowest_under(j) < floor_y - 0.01:
-				hi = f
-			else:
-				lo = f
-		to = now.lerp(to, lo)
+	if _lowest_under(j, frame) < floor_y - 0.01:
+		_turn_to(name, now)
+		if _lowest_under(j, frame) >= floor_y - 0.01:
+			var lo := 0.0   # the share of the turn that keeps above the floor
+			var hi := 1.0
+			for _s in range(10):
+				var f := (lo + hi) * 0.5
+				_turn_to(name, now.lerp(to, f))
+				if _lowest_under(j, frame) < floor_y - 0.01:
+					hi = f
+				else:
+					lo = f
+			to = now.lerp(to, lo)
+		else:
+			# It starts through the floor (a death's pose dropped the body past where it hung): the
+			# turn within its limits nearest hanging that keeps it above, or the one that lifts it most.
+			var a0 := -180.0
+			var a1 := 180.0
+			if edges is Array and (edges as Array).size() == 2:
+				a0 = float(edges[0])
+				a1 = float(edges[1])
+			var best := to
+			var best_far := INF
+			var best_low := -INF
+			var fallback := to
+			for k in range(HANG_SCAN + 1):
+				var tryv := to
+				tryv[i] = lerpf(a0, a1, float(k) / HANG_SCAN)
+				_turn_to(name, tryv)
+				var low := _lowest_under(j, frame)
+				if low >= floor_y - 0.01 and absf(tryv[i] - to[i]) < best_far:
+					best_far = absf(tryv[i] - to[i])
+					best = tryv
+				if low > best_low:
+					best_low = low
+					fallback = tryv
+			to = best if best_far < INF else fallback
 		_turn_to(name, to)
 	deg[name] = to
 
@@ -1529,17 +1600,28 @@ func kill() -> void:
 		_end_act()
 	_flashes.clear()
 	_gutter_mats.clear()
+	_gutter_end = GUTTER
+	var late := {}   # a lit part its death keys (the Polar Bear's vents): lit as it goes down, guttering once it lands
+	if forms.has(DEATH):
+		for gk in forms[DEATH].get("glow_keys", []):
+			late[gk[0]] = float(forms[DEATH]["duration"])
 	if model != null:
 		var mats: Array = []
 		_lit_under(model, mats)
 		for m in mats:
 			_rest_of(m)   # its rest kept before it dims, for revive()
-			_gutter_mats.append([m, (m as StandardMaterial3D).emission_energy_multiplier, (m as StandardMaterial3D).albedo_color])
+			var start := float(late.get(m, 0.0))
+			_gutter_mats.append([m, (m as StandardMaterial3D).emission_energy_multiplier, (m as StandardMaterial3D).albedo_color, start, false])
+			_gutter_end = maxf(_gutter_end, start + GUTTER)
 	_gutter = 0.0
+	_death_lift = 0.0
+	_impact = -1.0
 	if forms.has(DEATH):
-		# Its own death in place of the slump: the pose set down on its lowest point, and nothing for
-		# the view to land (collapse_floor 0: an airborne one comes down to the floor, the pose's
-		# own settle does the rest).
+		# Its own death in place of the slump: its limp joints worked out where it will lie, its
+		# lowest point held on the floor every frame of the fall (_hold_death_floor), and nothing
+		# for the view to land (collapse_floor 0: an airborne one comes down to the floor).
+		if _size < 0.0:
+			_size = _model_size()
 		_settle_death()
 		_form_on[DEATH] = true
 		_collapse = -1.0
@@ -1557,6 +1639,8 @@ func revive() -> void:
 		_light_to(pair[0], _rest_of(pair[0]), 1.0)
 		(pair[0] as StandardMaterial3D).albedo_color = pair[2]   # its paint as it was
 	_gutter_mats.clear()
+	_death_lift = 0.0
+	_impact = -1.0
 	_collapse = -1.0
 	collapse_floor = 0.0
 	if forms.has(DEATH):
@@ -1570,21 +1654,27 @@ func revive() -> void:
 	_wait = GAP_MIN
 
 
-## The death pose set down on its own lowest point: the pose put on for a moment (each joint its
-## track's last key over what the held forms give it, the body its own last key), the lowest point
-## of what the body carries measured where the body stands, everything put back, and the difference
-## to the floor (the model's ground, where its rest puts it) eased into the pose's body slide, so it
-## turns in with the pose. In the body's parent's units, as the body's position is.
+## A death's limp joints worked out where it will lie (its `hang`: an arm gone slack): the pose put on
+## for a moment as it ends, each such joint turned so what it carries hangs under it, the outermost
+## first, never below the floor the rest of the pose lies on, and that turn written as the joint's
+## track; everything put back. The floor itself is held every frame of the fall (_hold_death_floor),
+## so nothing here lifts or lowers the pose.
 func _settle_death() -> void:
 	var f: Dictionary = forms[DEATH]
+	var hang: Array = f.get("hang", [])
+	if hang.is_empty():
+		return
 	var d := float(f["duration"])
 	var saved := {}
 	for jn in joints.keys():
 		saved[jn] = (joints[jn] as Node3D).rotation
 	var saved_pos := body.position
 	var saved_rot := body.rotation
-	var slide := Vector3.ZERO
+	var deg := {}
 	var turn := Vector3.ZERO
+	var slide := Vector3.ZERO
+	for jn in joints.keys():
+		deg[jn] = _form_rot.get(jn, Vector3.ZERO)
 	for jn in (f["curves"] as Dictionary).keys():
 		var v: Array = curve_at(f["curves"][jn], d)
 		if jn == BODY:
@@ -1592,26 +1682,79 @@ func _settle_death() -> void:
 			if v.size() >= 6:
 				turn = Vector3(float(v[4]), float(v[3]), float(v[5]))   # authored (yaw, pitch, roll)
 			continue
-		(joints[jn] as Node3D).rotation = _rest[jn] + euler_of(Vector3(float(v[0]), float(v[1]), float(v[2])) + (_form_rot.get(jn, Vector3.ZERO) as Vector3))
+		deg[jn] = (deg[jn] as Vector3) + Vector3(float(v[0]), float(v[1]), float(v[2]))
+	for jn in joints.keys():
+		_turn_to(jn, deg[jn])
 	body.position = _body_rest_pos + offset_of(slide + _form_body_slide)
 	body.rotation = _body_rest_rot + euler_of(turn + _form_body_rot)
-	var low := _lowest_under(model, body.transform)
+	var frame := body.transform
+	# The floor is where the rest of the pose lies: every hanging joint's load set aside.
+	var tops: Array = []
+	for jn in hang:
+		var under_another := false
+		var n: Node = (joints[jn] as Node).get_parent()
+		while n != null and n != model:
+			for other in hang:
+				if joints[other] == n:
+					under_another = true
+			n = n.get_parent()
+		if not under_another:
+			tops.append(jn)
+	for jn in tops:
+		(joints[jn] as Node3D).visible = false
+	var floor_y := _lowest_under(model, frame)
+	for jn in tops:
+		(joints[jn] as Node3D).visible = true
+	if floor_y == INF:
+		floor_y = _lowest_under(model, frame)
+	var order := hang.duplicate()
+	order.sort_custom(func(a, b): return _joint_depth(joints[a]) > _joint_depth(joints[b]))
+	for _pass in range(COLLAPSE_PASSES):
+		for jn in order:
+			_hang(jn, deg, floor_y, frame)
+	for jn in hang:
+		var own: Vector3 = (deg[jn] as Vector3) - (_form_rot.get(jn, Vector3.ZERO) as Vector3)   # the death's share, over what other forms hold
+		f["curves"][jn] = curve([[d, own.x, own.y, own.z]], d, str(f.get("ease", "smooth")))
 	for jn in saved.keys():
 		(joints[jn] as Node3D).rotation = saved[jn]
 	body.position = saved_pos
 	body.rotation = saved_rot
+
+
+## A dying machine's lowest point held on its floor every frame of its fall, its own death's (the
+## slump keeps to its own floor): the body lifted or lowered by what keeps it there, so it neither
+## sinks through the floor nor floats as its pose turns in (Ryan, 16 November, the fourth notes:
+## "The animation as a whole is a little janky"), and its landing's hop laid on top.
+func _hold_death_floor() -> void:
+	if not dead or not forms.has(DEATH) or body == null or model == null:
+		return
+	var low := _lowest_under(model, body.transform)
 	if low == INF:
 		return
-	var lift := _body_rest_pos.y - low   # up when it would sink, down when it would float
-	var raw: Array = (f.get("raw_body", []) as Array).duplicate(true)
-	if raw.is_empty():
-		raw = [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [d, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
-	for key in raw:
-		var row: Array = key
-		while row.size() < 7:
-			row.append(0.0)
-		row[3] = float(row[3]) + lift * clampf(float(row[0]) / d, 0.0, 1.0)
-	f["curves"][BODY] = curve(raw, d, "smooth")
+	var fix := _body_rest_pos.y - low
+	_death_lift += fix
+	body.position.y += fix
+	if _impact >= 0.0:
+		body.position.y += impact_hop(_impact) * maxf(1.0, _size)
+
+
+## A death's landing `t` seconds after it lands: a hop off what it landed on and back, as a share of
+## its size (a second smaller one after), and a rock about its pitch in degrees, dying away over
+## IMPACT_S; nothing before it lands or after.
+static func impact_hop(t: float) -> float:
+	if t < 0.0 or t >= IMPACT_S:
+		return 0.0
+	var u := t / IMPACT_S
+	if u < 0.6:
+		return IMPACT_HOP * sin(PI * u / 0.6)
+	return IMPACT_HOP * 0.3 * sin(PI * (u - 0.6) / 0.4)
+
+
+static func impact_rock(t: float) -> float:
+	if t < 0.0 or t >= IMPACT_S:
+		return 0.0
+	var u := t / IMPACT_S
+	return IMPACT_ROCK * sin(TAU * 1.5 * u) * (1.0 - u)
 
 
 ## Where the machine lies now over its floor (its body's rest height, or what a slumped flyer's view
@@ -2044,8 +2187,9 @@ func _pose() -> void:
 				recoil += (st["slide"] as Vector3) * _strike_envelope(st)
 				rock += (st["vec"] as Vector3) * _strike_envelope(st)   # a jolt's nose rocking up
 		var turn := Vector3(0.0, float(_aim["deg"]) * aim_envelope(), 0.0) if not _aim.is_empty() and _aim["joint"] == BODY else Vector3.ZERO
-		body.position = _body_rest_pos + offset_of(_body_act_slide + _body_move_slide + _form_body_slide) + recoil
-		body.rotation = _body_rest_rot + euler_of(_body_act_rot + _body_move_rot + _form_body_rot + turn + rock)
+		var landing := Vector3(impact_rock(_impact), 0.0, 0.0)   # a death's landing rocks it on what it landed on
+		body.position = _body_rest_pos + offset_of(_body_act_slide + _body_move_slide + _form_body_slide) + recoil + Vector3(0.0, _death_lift, 0.0)
+		body.rotation = _body_rest_rot + euler_of(_body_act_rot + _body_move_rot + _form_body_rot + turn + rock + landing)
 
 
 # ---------------------------------------------------------------- movement

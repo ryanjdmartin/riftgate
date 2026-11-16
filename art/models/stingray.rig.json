@@ -483,7 +483,8 @@
     0.0,
     -2.0
    ]
-  ]
+  ],
+  "ease": "fall"
  },
  "halo": [
   "nozzle_glow",

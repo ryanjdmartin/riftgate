@@ -3032,7 +3032,8 @@
     ]
    ]
   },
-  "glow": []
+  "glow": [],
+  "ease": "fall"
  },
  "halo": [
   "coil"

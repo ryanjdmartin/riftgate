@@ -2057,7 +2057,8 @@
     ]
    ]
   },
-  "glow": []
+  "glow": [],
+  "ease": "fall"
  },
  "fires": {
   "shrapnel_recuperator": {
