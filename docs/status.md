@@ -94,9 +94,12 @@ Everything is on main as of 13 November 2026; the formation and refit session's 
 `ccr-c1cf6f73-ql6n4q`, the look tests' session of 15 November, cut from main at `011576a`:
 first look tests of six chassis in briefs and three rough kits for the mole (How things stand,
 the Models line; each brief has its own), with `tools/lowforge/looks/sheet.py`, a round's sheet
-in one command, and a look builder that finds its modules itself; it took main at `0f5c801` in
-a merge the same day, no conflicts; not landed, main takes it on his word. Its briefs' new
-sections reach the hangar's Designs tab with the next publish that carries `designs.json`.
+in one command, and a look builder that finds its modules itself; then a second round of four
+of them on his notes of the same day, and his word that a nickname follows its machine in the
+bible's nickname row (v0.589 on this branch, unpublished). It took main at `0f5c801` and at
+`c9e55a9`, the reboot's fold-in, in merges with no conflicts (1188 tests green after the
+second); not landed, main takes it on his word. Its briefs' new sections reach the hangar's
+Designs tab with the next publish that carries `designs.json`.
 `ccr-b7d5164e-1wtzzm`, this session's (12 November), cut from main at `6112939`: the to-do's
 roster pruned, then the Needletail's two modes and the Giant Petrel's hull on Ryan's design and
 mix, reworked on his notes (How things stand, below); it took main at `4a0c9b5` in a merge on 13
@@ -1802,8 +1805,11 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   since none are finalized"): the siege battery, Mastema, the echidna two ways (his half-track
   and his armoured car with protected wheels), Minos, the line frame and the mole three ways,
   each a sheet of stills with its choices in its brief, his to judge (the to-do); the mole's
-  brief carries three rough kits and a bench with them. A pick's next round is a model with
-  its rig and acts.
+  brief carries three rough kits and a bench with them. Four went a second round on his notes
+  of the same day: the siege battery's hull down between its treads with its mounts fixed in
+  three places, Mastema as a flying wing with arms under it, the echidna as his pick, the
+  armoured car, skid-steered, with its bristle three ways, and Minos with no tail and bigger
+  wings. A pick's next round is a model with its rig and acts.
 - **Balance, read by stage** (the bible's section 2 kill-time row; `docs/measurements.md`): the
   200-seed matrix on file (`docs/balance.md`, 27 October) predates the ladder, the numbered
   area, the blow's order, the compositions and the randomness pass, so the next 200-seed run
