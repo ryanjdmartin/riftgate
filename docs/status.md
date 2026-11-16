@@ -2154,7 +2154,13 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 281 (16 November, from `ccr-bd73687d-w8qox1` at `a3cc3fb`, ahead of main, on
+  page's Version 282 (16 November, from `ccr-bd73687d-w8qox1` at `9f1c22f`, ahead of main, on his
+  notes from the hangar: "some of these look like they aren't touching the ground", "Boosters
+  should go dark", "Nemesis should fall to one knee"): fifteen sidecars with their deaths reworked
+  to rest on what touches the floor, and `motion.js` with the settle read on the parts' own
+  vertices and a lost machine's lit paint going dark; the sixteen live copies Version 281's own,
+  every machine's lowest point checked on the floor in the hangar headless first. `edits` and
+  `text` empty, `designs` the two folded ideas. Version 281 (16 November, from `ccr-bd73687d-w8qox1` at `a3cc3fb`, ahead of main, on
   Ryan's "Can you get these into the hangar?"): the twenty-two sidecars with their deaths (the
   Cottonmouth's with its drum), `motion.js` with the death form, the page with the death kept off
   the Statuses list and a lost machine's acts line saying so, and main's moves since 280 (the six
