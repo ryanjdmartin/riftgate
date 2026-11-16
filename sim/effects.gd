@@ -214,11 +214,21 @@ const STATUS := {
 	# The Swallowtail's (Ryan's go, 21 October; built that day). The Muster: a store of points,
 	# every die's roll a point and a kill by its own guns more, a charge every so many (the
 	# passive's muster rule), spent by its locked pieces' charged forms; never decays, and a
-	# store is a resource, so no Purge touches it (Ryan, 21 October). Phased: cannot act, take damage or be
-	# targeted until the round's end, granted only to a machine that has not acted.
+	# store is a resource, so no Purge touches it (Ryan, 21 October).
+	# Phased (Ryan's mark, 15 November: "New effect: "Cannot be damaged or targeted by anything
+	# until the end of this round." We remove the awkward act clause, but still ensure that it
+	# cannot be buffed or interacted with by allies until it unphases"; "all sources of Phased
+	# should say "at the end of this round, grant Phased.""): out of reach of both sides for a
+	# round, the machine acting all the same. What a source lays is the wait for it (phasing),
+	# on a machine that must stand through the foes' turn first ("you have to survive the
+	# current round"); the skirmish lands it as that turn ends (_land_phases). Until then it
+	# could not act, take damage or be targeted until the round's end, and was granted at once,
+	# only to a machine that had not acted.
 	"muster": {"id": "muster", "name": "Muster", "description": "A charge its locked pieces spend for their charged forms. Every die that rolls fills it a sliver.", "decay": "none",
 		"tags": ["store"], "effects": []},
-	"phased": {"id": "phased", "name": "Phased", "description": "Cannot act, take damage or be targeted until the round's end.", "stacking": "renew",
+	"phased": {"id": "phased", "name": "Phased", "description": "Cannot be damaged or targeted by anything until the end of this round.", "stacking": "renew",
+		"tags": ["buff"], "effects": []},
+	"phasing": {"id": "phasing", "name": "Phasing", "description": "At the end of this round, gains Phased, if it still stands.", "stacking": "renew", "single": true,
 		"tags": ["buff"], "effects": []},
 	# Swallowed (a foe's swallow, Floraison's, 30 October): out of the fight as a Phased machine is,
 	# laid by a foe and timed by its move, ended early by its swallower's fall.

@@ -1239,7 +1239,9 @@ func test_greedy_weighs_a_mine_its_blast_on_a_kill_the_detonation_and_the_gather
 
 ## The Swallowtail for the bot (21 October; the charge never primed since 22 October), synthetic:
 ## the bot weighs the die as it will go out, so with a charge up and an ally yet to act the
-## Screens' options are Phased's, and it Phases the ally its blows would kill.
+## Screens' options are Phased's, and it queues Phased on the ally the foes are on: granted as
+## the round ends since 15 November, so worth the next round's blows on a machine that stands
+## through this one, and nothing on one this round would wreck.
 func test_greedy_weighs_the_charged_form_the_die_will_spend() -> void:
 	var deck := {"id": "deck", "name": "Deck", "description": "", "effects": [{"trigger": "static", "effect": "muster", "value": 3, "cap": 2, "kill": 2}]}
 	var screens := Face.shield(10)
@@ -1250,7 +1252,7 @@ func test_greedy_weighs_the_charged_form_the_die_will_spend() -> void:
 	var c := _mech("Carrier", Die.single(screens), 40, 100)
 	c.grant_passive(deck)
 	sk.add_mech(c)
-	var a := _mech("A", Die.single(Face.attack(10, L)), 0, 10)
+	var a := _mech("A", Die.single(Face.attack(10, L)), 0, 100)
 	sk.add_mech(a)
 	sk.add_foes([_ghoul(300, 40), _ghoul(300, 40)])
 	sk.begin()
@@ -1262,8 +1264,12 @@ func test_greedy_weighs_the_charged_form_the_die_will_spend() -> void:
 	var opts := pol.options_for(sk, 0)
 	assert_false(opts.is_empty(), "the Screens have options")
 	assert_eq(sk.spend_face(sk.mechs[0]).buff_status, "phased", "and they are the charged form's")
+	assert_true(pol.phased_score(sk, sk.mechs[1]) > 0.0, "Phased is worth the blows it would keep off a machine that stands")
+	a.hull = 10
+	assert_eq(pol.phased_score(sk, sk.mechs[1]), 0.0, "and nothing on one this round's blows would wreck: it never phases")
+	a.hull = 100
 	pol.play_round(sk)
-	assert_true(Effects.has(a, "phased"), "the bot Phases the ally its blows would kill")
+	assert_true(Effects.has(a, "phasing") and not Effects.has(a, "phased"), "the bot queues Phased on the ally the foes are on")
 	assert_eq(Effects.muster_charges(c), 0, "the charge went with it")
 
 

@@ -1643,7 +1643,8 @@
    "design": {
     "stage": "draft",
     "fantasy": "The hangar deck's mooring field thrown over the squad; charged, the shutters close and the squad is gone from the fight for a round.",
-    "niche": "The Swallowtail's dock, locked: a shield to every ally (the team shield, the first in the game, honest by its number); spending a muster instead Phases every ally that has not acted this round, no cooldown."
+    "niche": "The Swallowtail's dock, locked: a shield to every ally (the team shield, the first in the game, honest by its number); spending a muster instead Phases every ally that has not acted this round, no cooldown.",
+    "notes": "15 November: Phased is granted as the round ends and stands through the next (Ryan's mark; the bible's Phased row), so the charged form queues it and the allies keep their dice. Every granter of ours is to be gated (\"it should be earned\"): this piece's gate and its reach are its machine's session's."
    },
    "face": {
     "kind": "shield",

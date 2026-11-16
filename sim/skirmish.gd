@@ -462,7 +462,8 @@ func targetable_mechs() -> Array[MechState]:
 	return out
 
 
-## Is the machine Phased (cannot act, take damage or be targeted until the round's end)?
+## Is the machine Phased (cannot be damaged or targeted by anything until the round's end; it
+## acts, and what its own acts cost it is its own)?
 static func is_phased(ms: MechState) -> bool:
 	return ms != null and Effects.has(ms.unit, "phased")
 
@@ -473,8 +474,10 @@ static func is_swallowed(ms: MechState) -> bool:
 	return ms != null and Effects.has(ms.unit, "swallowed")
 
 
-## Is the machine out of the fight: Phased or Swallowed? Nothing reaches it, nobody may target
-## it, and it takes no damage; its own cooling, ticks and overheats are its own.
+## Is the machine out of reach: Phased or Swallowed? Nothing reaches it, neither side may target
+## it (it may spend on itself), and it takes no blow and no tick. A Swallowed machine is out of
+## the fight too, its die spent; a Phased one acts, and its own acts' costs are its own (a
+## Volatile bite, the burn past its maximum, a reboot's bare turn).
 static func is_out(ms: MechState) -> bool:
 	return is_phased(ms) or is_swallowed(ms)
 
@@ -1497,8 +1500,8 @@ func start_round() -> void:
 		var carried := not f.pending.is_empty()
 		_choose_foe_action(f, announced)
 		announced.append(f)
-		if not (carried and f.target != null and (f.target as MechState).alive()):
-			f.target = _pick_mech_target(f, _doomed(ahead))
+		if not (carried and f.target != null and (f.target as MechState).alive() and not is_out(f.target as MechState)):
+			f.target = _pick_mech_target(f, _doomed(ahead))   # a pick that fell, or went out of reach as the round ended (Phased), is drawn again
 		_draw_blows(f, ahead)
 	state = State.ASSIGN
 	_mark_roll()   # the round's roll: the undo reaches back to here, and the trail shows the bar
@@ -2272,8 +2275,14 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 					var spent_name := str(Effects.STATUS.get(f.spends, {}).get("name", f.spends))
 					log.append("%s consumes %d %s: %d left" % [ms.unit.display_name, grants, spent_name, Effects.stacks_of(ms.unit, f.spends)])
 				for w in whom:
-					if f.buff_status == "phased" and w.assigned:
-						continue   # Phased only before it acts (Ryan, 20 October)
+					if f.buff_status == "phased":
+						# Phased is granted as the round ends (Ryan, 15 November: "all sources of
+						# Phased should say "at the end of this round, grant Phased""): what lands
+						# now is the wait for it, on a machine that has acted or not.
+						if Effects.grant_buff(w.unit, "phasing", 1, src, round) != null:
+							log.append("%s buffs %s: Phased as the round ends, if it stands" % [ms.unit.display_name, w.unit.display_name])
+						_lay_in_front(ms, w, f)
+						continue
 					var stacks := _stacks_from(ms, f.buff_status, grants)
 					var m := Effects.grant_buff(w.unit, f.buff_status, stacks, src, until)
 					if m == null:
@@ -2282,8 +2291,6 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 					_lay_in_front(ms, w, f)
 					if f.buff_status == "barrier" and w.alive():
 						_fired(w, Effects.fire(w.unit, "on_barrier"), "as it gains a Barrier")   # the Wild Boar's Juggernaut Drive
-					if f.buff_status == "phased":
-						_phase(w)
 					# The Reheat Uplink's roll (the Giant Petrel's, Ryan's go of 21 October; built 30
 					# October): the die of the machine it lands on rolls again, never onto the entry
 					# showing; a spent die rolls nothing.
@@ -2622,6 +2629,7 @@ func _enemy_turn() -> void:
 				Effects.stack(f, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", r, Effects.DECAY_NONE)
 				log.append("%s recovers: Numbed ×%d" % [f.display_name, Effects.stacks_of(f, "numbed")])
 	round_holds = field_holds()   # read before the round's statuses run out: Essence Flare holds this round's halving
+	_land_phases()   # before the round's timed effects run out: the wait for Phased is one of them
 	for ms in mechs:
 		Effects.end_round(ms.unit, round)   # timed effects run out
 	_held.clear()
@@ -4131,14 +4139,18 @@ func rage_on_field() -> int:
 
 # ---------------------------------------------------------------- the Swallowtail's
 
-## Phased (Ryan, 20 October): granted only to a machine yet to act, its action the price, so its
-## die stands down for the round; a foe whose pick it was picks again, so the intent lines move.
-func _phase(w: MechState) -> void:
-	w.assigned = true
-	for foe in field_foes():
-		if foe.alive() and foe.target == w:
-			foe.target = _repick(foe)
-	log.append("%s is Phased: out of the fight until the round's end" % w.unit.display_name)
+## Phased lands (Ryan, 15 November: granted "at the end of this round", "with the caveat that
+## you have to survive the current round"): as the enemy's turn ends, every machine that waits
+## for it and still stands is Phased through the next round's end, out of reach of both sides
+## and acting all the same. A machine wrecked this turn never phases; a Purge that took the wait
+## took the Phased with it. The foes announce the next round with it out of reach already, so no
+## pick moves under the player.
+func _land_phases() -> void:
+	for ms in live_mechs():
+		if not Effects.remove(ms.unit, "phasing"):
+			continue
+		Effects.grant_for_rounds(ms.unit, Effects.STATUS["phased"], "buff", round + 1)
+		log.append("%s is Phased: out of reach until the next round's end" % ms.unit.display_name)
 
 
 # ---------------------------------------------------------------- a swallow and a steal (30 October)
@@ -4940,6 +4952,9 @@ func _foe_gained_status(foe: Foe, status_id: String, n: int = 1) -> void:
 ## is the record. A lured foe whose move has no target (a blow at every machine included)
 ## keeps doing it, and the log says so.
 func _lure(ms: MechState, foes: Array) -> void:
+	if is_out(ms):
+		log.append("%s lures nothing: nothing may target it" % ms.unit.display_name)
+		return   # a Phased spender cannot be targeted, so no pick turns on it
 	var turned: Array[String] = []
 	var idle: Array[String] = []
 	for foe in foes:
@@ -5109,10 +5124,12 @@ func _burn_overheated() -> void:
 ## stays, and every point of it burns hull, every turn it stands there. The first such turn since
 ## its last reboot is its overheat: its shield breaks, and what an overheat sets off fires, once
 ## between reboots. A machine giving this turn to a reboot is shut down: it neither burns nor
-## overheats. Nor does one out of the fight (Swallowed, Phased): it cannot reboot, so the burn
-## would ask it for a choice it has not got, and it burns again the turn it is back.
+## overheats. Nor does a Swallowed one: it cannot reboot, so the burn would ask it for a choice
+## it has not got, and it burns again the turn it is back. A Phased machine has the choice (it
+## acts, and its reboot is the safe one), so its heat burns as any machine's: the burn is its
+## own act's cost, and no blow.
 func _burn_stacks(ms: MechState, over: int) -> void:
-	if ms.rebooting or is_out(ms):
+	if ms.rebooting or is_swallowed(ms):
 		return
 	var burn := over * overheat_scale
 	var culprit := ms.hot_entry
@@ -5152,7 +5169,7 @@ func can_reboot(mech_index: int) -> bool:
 	if state != State.ASSIGN or mech_index < 0 or mech_index >= mechs.size():
 		return false
 	var ms := mechs[mech_index]
-	return ms.alive() and not is_out(ms) and not ms.assigned and not ms.rebooting and ms.spends == 0
+	return ms.alive() and not is_swallowed(ms) and not ms.assigned and not ms.rebooting and ms.spends == 0   # a Phased machine may: the safe reboot (Ryan, 15 November)
 
 
 ## The reboot: the machine gives its whole turn. Its shield goes to nothing at once

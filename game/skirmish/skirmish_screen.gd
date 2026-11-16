@@ -1856,8 +1856,8 @@ static func status_glyph(id: String) -> String:
 			return "hopper"
 		"sealed":
 			return "seal"   # the shell's mark, as the die's chip that seals it (2 November)
-		"phased":
-			return "phased"
+		"phased", "phasing":
+			return "phased"   # the wait for it wears its mark, on a preview's dashed edge (_mech_rows)
 		"swallowed":
 			return "swallowed"
 		"barrier":
@@ -1950,6 +1950,10 @@ func _mech_rows(i: int) -> Array:
 		var named := str(d[0]) + ((" %d" % stacks) if counted else ((" ×%d" % stacks) if stacks > 1 else ""))
 		if Effects.is_ability(id):
 			abilities.append([glyph, count, "Ability, " + named, colour, "ability"])
+		elif id == "phasing":
+			# Phased on its way (15 November: granted as the round ends): a status to come, so a
+			# preview chip, as a rally's Empowered is on a foe.
+			rows.append(status_row(id, glyph, "", "Phased as this round ends, if it stands", colour, "preview"))
 		else:
 			rows.append(status_row(id, glyph, count, named, colour))
 	if ABILITY_DEBUG and abilities.is_empty():

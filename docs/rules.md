@@ -666,16 +666,19 @@ On a machine:
   stands through the enemy's turn and goes at the round's end, and a foe's (from its brace or
   another's) stands through the player's turn and goes as the foes' next turn opens, before the
   first of them acts.
-- **Phased** (buff): cannot act, take damage or be targeted until the
-  round's end, so allies cannot vent or shield it, a foe's intent on it re-picks, and a blow or
-  a special at every machine passes it by; it still cools by what cooling it is granted, its
-  Scorched goes as its turn ends, and it neither burns nor overheats while it is out, since it
-  cannot reboot: what it carries past its maximum burns again the turn it is back. Its
-  Ablating waits the same way, taking nothing and losing no stack until the machine is back. Granted only to a unit that has not acted
-  this round, whose die stands down as it is granted.
-- **Swallowed** (debuff, from a foe's swallow): out of the fight as a Phased machine is (it
+- **Phased** (buff): cannot be damaged or targeted by anything until the end of the round, and
+  it acts. Granted as the round ends: a source lays the wait for it (Phasing, a buff, a chip on
+  a dashed edge), on a machine that has acted or not, and as the enemy's turn ends every machine
+  that waits and still stands is Phased through the next round's end; one wrecked first never
+  phases, and a foe's Purge takes the wait as any buff. While it stands no foe picks the
+  machine, a blow or a special at every machine passes it by, no ally may spend on it, and its
+  Ablating waits, taking nothing and losing no stack until it is back in reach. Its own acts
+  are its own: it spends its die on a foe or on itself, a Volatile bite and the burn past its
+  maximum land as on any machine, and it may reboot, bare where nothing reaches it. Its Lure
+  turns no pick. A second grant while it stands carries it through the round after.
+- **Swallowed** (debuff, from a foe's swallow): out of the fight (it
   cannot act, take damage or be targeted, a foe's intent on it re-picks, and a blow or a special
-  at every machine passes it by; its cooling is its own, and it neither burns nor overheats while it is out, its Ablating waiting as a Phased machine's does) for the swallow's
+  at every machine passes it by; its cooling is its own, and it neither burns nor overheats while it is out, since it cannot reboot, its Ablating waiting as a Phased machine's does) for the swallow's
   rounds, its die standing down as each round opens, until its swallower falls, or until its
   swallower has lost a quarter of its maximum HP since the swallow (its chip counting the damage
   still to deal, never more than the swallower has left; a second machine taken while it holds
@@ -689,7 +692,7 @@ On a machine:
   piece goes out charged, unasked, and its die shows the charged form under a double frame;
   when the charged form has nowhere to land (Phased once any ally has acted, the act again
   with no ally spent), the plain form goes out and the charge waits. The
-  Mooring Screens shield every ally but the carrier (Every Other Ally), or Phase every ally, only
+  Mooring Screens shield every ally but the carrier (Every Other Ally), or queue Phased on every ally, only
   while none has acted this round, so it is never a selective protection;
   the Spotting Flare Exposes a foe, or Exposes and Suppresses it; the Sutler's Hoist cools an ally
   2 and then shields it, or fills its shield, cools it to nothing and cleanses it; the Reveille
@@ -952,7 +955,8 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   recovery, so a shield breaks once between reboots. No cleanse lifts it. A Barrier is a buff
   in front of shield and hull: it touches neither bar and lands on any machine, Broken or
   rebooting.
-- A machine out of the fight, Swallowed or Phased, cannot reboot.
+- A Swallowed machine cannot reboot: it has no turn to give. A Phased one may, and its reboot
+  is the safe one, bare where nothing reaches it.
 - The fight bot reboots a machine past its maximum, unless a vent it shows takes it back
   under; one whose shield is broken when a blow is coming or its heat is half spent; one whose
   entry would pass its maximum, where it has heat to shed and this round's blows would take a
@@ -1047,8 +1051,9 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   would wreck through its shield and armour is passed over while another stands (a blow at
   every machine counts on each; a special, a suppressed foe and a countdown still gathering
   count nothing). The pick is a commitment, smart as it is made and never after (Slice and Dice's model): during the player's turn it moves only by a Lure, by the
-  machine leaving the fight (Phased or Swallowed), or by a Disrupt whose foe finds its machine
-  gone or out of the fight; a foe whose machine has fallen or is out of the fight when it acts
+  machine leaving the fight (Swallowed), or by a Disrupt whose foe finds its machine
+  gone or out of the fight; a machine Phased as the round ended is out of the picks the next
+  round opens with, a countdown's carried pick drawn again; a foe whose machine has fallen or is out of the fight when it acts
   strikes the next machine in line, left to right, that stands in the fight, whatever its aim,
   so the player can tell the pick it
   will make, and the round preview shows it. The preview never moves a pick: a foe aimed at a machine the round will wreck stays

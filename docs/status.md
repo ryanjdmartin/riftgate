@@ -35,7 +35,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1196 tests, 372,811 checks, green on `ccr-722ca9f0-yj8na3` (16 November,
+- Tests: 1197 tests, 372,849 checks, green on `ccr-722ca9f0-yj8na3` (16 November,
+  Phased, over main at `1d2b544`). Before it, 1196 tests, 372,811 checks, green on the same
+  branch (16 November,
   Brittle, over main at `7ac3902`). Before it, 1196 tests, 372,829 checks, green on the same
   branch (16 November, the
   marks' first three rule changes, over main at `d1b6827`). Before it, 1195 tests, 372,792
@@ -1818,7 +1820,7 @@ The tasks are the to-do's; this is the index of what waits.
   Lure wins. No foe carries it. It is the foes' pass's (the to-do's Engine list).
 - His marks on the vocabulary's table (15 November, all eighty-two rows; the proposal's
   section 18 has each with its read, and the to-do's Engine list the build in parts), what
-  is not built yet: Phased as he ruled it; and for the foes' pass,
+  is not built yet, all of it the foes' pass's: a foe's Phased,
   Drain, Steal and the drained reroll as their units' own text, countdowns an elite's or a
   boss's mostly, a fall free to do more than strike. Until built, content and the engine
   run each of those as before.
@@ -1899,8 +1901,13 @@ foes' pass sizes both. **Brittle is built** (16 November; the bible's Brittle ro
 and Crushed are one word and one state on either side, a point more on every blow a stack,
 halving as each round ends, so a foe's Brittle on a machine is whole for the foes still to
 strike that turn and half for the next. One foe carries it, the World Eater's Pin at 2.
-**What rides behind, in the to-do's order**: Phased granted at the round's end; then
-the anchor read again as the baseline. **Then the foes' pass**
+**Phased is built, the last of the five** (16 November; the bible's Phased row): a source
+lays the wait for it, and as the enemy's turn ends a machine that waits and still stands is
+Phased through the next round's end, out of reach of both sides and acting all the same, so
+its reboot there is the safe one. Its own acts' costs land, the burn among them, a
+session's read. One piece grants it, the Mooring Screens' charge, on a machine in design,
+and its gate is that session's; a foe's Phased is the foes' pass's.
+**What rides behind**: the anchor read again as the baseline. **Then the foes' pass**
 (the to-do's line): Exposed's carriers and its engine, the moves his marks renamed or
 moved onto the unit, the countdowns off the rank and file, a fall free to do more than
 strike, and a move as a short list of steps if he takes section 19's proposal.

@@ -70,7 +70,7 @@ const TABLE := {
 ## A die entry's own mark, by the engine's prefix on its status id, and the term it reads as.
 const ENTRY_MARKS := {"corrupted": "corrupted", "disabled": "jammed"}
 ## An engine status keyed apart from its term: a machine's Ablating, the Badger's hopper.
-const ALIASES := {"ablating_mech": "ablating", "brittled_mech": "brittled", "hopper": "hopper_property"}
+const ALIASES := {"ablating_mech": "ablating", "brittled_mech": "brittled", "phasing": "phased", "hopper": "hopper_property"}
 
 ## Terms never matched in prose: names a shown text uses as a plain word in their place
 ## ("Targets any front-rank foe", a move that "Strikes twice").

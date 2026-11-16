@@ -1845,16 +1845,22 @@ func buff_score(sk: Skirmish, who: Skirmish.MechState, f: Face) -> float:
 	return score
 
 
-## What Phased is worth on a machine yet to act (the Swallowtail's charged Screens): the round's
-## end without a blow reaching it, the hull kept and the death prevented, less the action it
-## stands down, its die's entry at its worth now.
+## What Phased is worth on a machine (the Swallowtail's charged Screens), granted as the round
+## ends since 15 November and standing through the next: the next round's end with no blow
+## reaching it, read as this round's would be (the foes' picks for the next are not out yet,
+## so this round's are the bot's guess at them), the hull kept and the death prevented. It
+## keeps its action. Nothing on a machine this round's end would wreck, which never phases,
+## nor on one that waits for it already.
 func phased_score(sk: Skirmish, who: Skirmish.MechState) -> float:
-	if who.assigned:
+	if Effects.has(who.unit, "phasing"):
+		return 0.0
+	var now := sk.forecast(who)
+	if bool(now["destroyed"]):
 		return 0.0
 	var after := _forecast_with(sk, who, "phased")
 	if after.is_empty():
 		return 0.0
-	return _outlook_gain(sk.forecast(who), after) - face_value(sk, who, who.face())
+	return _outlook_gain(now, after)
 
 
 ## The round's end with and without a status on `who`, read in a what-if: the forecast with

@@ -766,15 +766,15 @@
    "id": "phased",
    "category": "status",
    "name": "Phased",
-   "codex": "Machine status. It cannot act, take damage or be targeted until the round's end: a blow or a move at every machine passes it by. Granted only to a machine that has not acted this round.",
+   "codex": "Machine status. It cannot be damaged or targeted by anything until the end of the round, by either side, and it acts: no foe picks it, a blow or a move at every machine passes it by, no ally may spend on it, and what its own acts cost it is its own. It is granted at the end of the round, to a machine that still stands, so it is queued a round ahead and lasts the whole of the next.",
    "status": "implemented",
    "design": {
-    "holes": "Not targetable means allies cannot vent or shield it either, and a foe's intent on it picks again; it still cools by its own cooling, and ticks and overheats still land. Aphelion's pieces may grant it beside the Swallowtail's screens.",
+    "holes": "Ryan's mark, 15 November: \"New effect: \"Cannot be damaged or targeted by anything until the end of this round.\" We remove the awkward act clause, but still ensure that it cannot be buffed or interacted with by allies until it unphases\"; \"all sources of Phased should say \"at the end of this round, grant Phased.\"\"; and his answer: \"it's a safe reboot if you can pull it off. All phased granters need to be gated, it should be earned, with the caveat that you have to survive the current round\". Engine ids phased and phasing, the wait a source lays, a buff a Purge takes. A session's reads of his words: its own acts' costs land (a Volatile bite, the burn past its maximum), the reboot being its answer to the burn; it may spend on itself; its Lure turns no pick; its Ablating waits. His spare clause is held until play asks for it (\"If that's too strong, I would add \"Remove all buffs and debuffs. Cannot gain any buffs or debuffs while Phased.\"\"). A foe's Phased is allowed and not built, the foes' pass's (\"Phased on foes can be less strict since it's balanced around their kit and theme\"). Until 15 November: cannot act, take damage or be targeted until the round's end, granted at once to a machine yet to act. A session's draft, his to write.",
     "table": {
      "kind": "buff",
      "on": "machine",
      "stacks": "No",
-     "lasts": "Until the round's end"
+     "lasts": "Granted as the round ends, to a machine that stands; until the next round's end"
     }
    }
   },

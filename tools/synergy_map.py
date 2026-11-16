@@ -156,7 +156,7 @@ ENGINE_READERS = {
     "ward": ["no rider lands this round"],
     "spun_up": ["the next weapon spend +2 a stack"],
     "ricochet": ["a strike of 1 more a stack at the target once a weapon has fired: most on riders a strike and on flat buffs; hull damage halves it"],
-    "phased": ["untouchable until the round's end"],
+    "phased": ["granted as the round ends: out of reach of both sides through the next, and it acts"],
     "sealed": ["armour +3, cooling stopped, 3 heat a turn"],
     "regenerating": ["a point of shield a stack as the round opens, then a stack fades"],
     "ablating_mech": ["its tick: 1 shield a stack at the turn's end, then hull, past armour and a Barrier"],

@@ -9282,11 +9282,13 @@ func test_the_muster_fills_on_every_roll_and_a_kill_and_buys_a_charged_form() ->
 
 
 ## The Swallowtail's locked pieces (21 October), synthetic: the team shield reaches every ally,
-## never its spender; charged, Phased lands on every ally, only while none has acted this round
-## (Ryan, 22 October: never a selective protection), their dice standing down and the foes whose
-## pick they were picking again, and nothing reaches them in the enemy's turn. Once any ally has
+## never its spender; charged, the wait for Phased lands on every ally, only while none has acted
+## this round (the piece's own filter; Ryan, 22 October: never a selective protection). Phased is
+## granted as the round ends (15 November): they keep their dice and stand through the enemy's
+## turn as any machine, and as it ends they are Phased through the next round, where no foe
+## picks them, no blow reaches them, no ally may spend on them, and they act. Once any ally has
 ## acted the charged form has nowhere to land: the plain shield goes out and the charge waits.
-func test_the_team_shield_reaches_every_ally_and_phased_takes_the_team_out_of_the_fight() -> void:
+func test_the_team_shield_reaches_every_ally_and_its_charge_phases_them_as_the_round_ends() -> void:
 	var screens := Face.shield(10)
 	screens.targets = Face.Target.ALLY
 	screens.reaches_all = true
@@ -9314,17 +9316,31 @@ func test_the_team_shield_reaches_every_ally_and_phased_takes_the_team_out_of_th
 	for f in sk.field_foes():
 		f.target = sk.mechs[1]   # every foe's pick on A
 	assert_true(sk.charge_lands(sk.mechs[0]), "a charge up and no ally has acted: it goes out charged")
-	assert_true(sk.assign(0, sk.mechs[1]), "charged: Phased on every ally")
-	assert_true(Effects.has(a, "phased") and Effects.has(b, "phased"), "A and B both Phased")
-	assert_true(sk.mechs[1].assigned and sk.mechs[2].assigned, "their dice stand down: the actions are the price")
+	assert_true(sk.assign(0, sk.mechs[1]), "charged: Phased queued on every ally")
+	assert_true(Effects.has(a, "phasing") and Effects.has(b, "phasing"), "A and B both wait for it")
+	assert_false(Effects.has(a, "phased") or Skirmish.is_out(sk.mechs[1]), "neither is Phased yet")
+	assert_false(sk.mechs[1].assigned or sk.mechs[2].assigned, "they keep their dice: no action is its price")
 	for f in sk.field_foes():
-		assert_ne(f.target, sk.mechs[1], "a foe whose pick it was picks again")
-	assert_false(sk.machine_targets_for(sk.mechs[0], screens).has(sk.mechs[1]), "an ally cannot shield it")
+		assert_eq(f.target, sk.mechs[1], "the foes' picks stand: it is in the fight this round")
 	var hull := a.hull + a.shield
 	sk.end_round()
-	assert_eq(a.hull + a.shield, hull, "nothing reaches it in the enemy's turn")
+	assert_eq(a.hull + a.shield, hull - 40, "the round it is queued in, the blows land")
+	assert_true(Effects.has(a, "phased") and Effects.has(b, "phased") and not Effects.has(a, "phasing"), "as the round ends, both are Phased")
+	assert_true("\n".join(sk.log).contains("A is Phased: out of reach until the next round's end"), "the log says so")
 	sk.start_round()
-	assert_false(Effects.has(a, "phased"), "gone at the round's end")
+	assert_true(Skirmish.is_out(sk.mechs[1]) and Skirmish.is_out(sk.mechs[2]), "through the next round")
+	for f in sk.field_foes():
+		assert_eq(f.target, sk.mechs[0], "no foe picks a Phased machine: the Carrier alone may be picked")
+	assert_false(sk.machine_targets_for(sk.mechs[0], screens).has(sk.mechs[1]), "no ally may spend on it")
+	assert_true(sk.can_spend(1), "and it acts")
+	var foe_hp: int = sk.front[0].hp
+	assert_true(sk.assign(1, sk.front[0]), "its gun fires")
+	assert_eq(sk.front[0].hp, foe_hp - 10, "and lands")
+	var held := a.hull + a.shield
+	sk.end_round()
+	assert_eq(a.hull + a.shield, held, "nothing reaches it in the enemy's turn")
+	sk.start_round()
+	assert_false(Effects.has(a, "phased") or Effects.has(b, "phased"), "gone at that round's end")
 	# One ally acted first: never a selective protection, so the plain shield, the charge kept.
 	Effects.remove(c, "muster")
 	Effects.stack(c, Effects.STATUS["muster"], Effects.SKIRMISH, "test", 3, Effects.DECAY_NONE)
@@ -9332,9 +9348,74 @@ func test_the_team_shield_reaches_every_ally_and_phased_takes_the_team_out_of_th
 	assert_false(sk.charge_lands(sk.mechs[0]), "an ally has acted: no charged form")
 	var shields := [a.shield, b.shield]
 	assert_true(sk.assign(0, sk.mechs[1]), "the Screens")
-	assert_eq([a.shield, b.shield], [mini(40, int(shields[0]) + 10), mini(40, int(shields[1]) + 10)], "the plain team shield on both")
-	assert_false(Effects.has(a, "phased"), "and A, yet to act, is not Phased")
+	assert_true(sk.mechs[1].shield_broken, "A's shield broke under the blows it stood through while it waited")
+	assert_eq([a.shield, b.shield], [0, mini(40, int(shields[1]) + 10)], "the plain team shield on B, and none on a broken one")
+	assert_false(Effects.has(a, "phasing"), "and A, yet to act, waits for no Phased")
 	assert_eq(Effects.muster_charges(c), 1, "the charge waits")
+
+
+## Phased (Ryan's mark and answer, 15 November: "Cannot be damaged or targeted by anything until
+## the end of this round"; "all sources of Phased should say "at the end of this round, grant
+## Phased""; "you have to survive the current round"): a source lays the wait for it, on a
+## machine that has acted or not; a machine wrecked before the round ends never phases, and a
+## foe's Purge takes the wait as it takes any buff. A Phased machine may spend on itself, a
+## second grant carrying it through the round after, and its Lure turns no pick, since nothing
+## may target it.
+func test_phased_waits_for_the_rounds_end_and_a_wrecked_or_purged_machine_never_phases() -> void:
+	var veil := Face.buff("phased")
+	var sk := Skirmish.new(1, 2)
+	var a := _mech("A", Die.single(veil), 0, 100)
+	var doomed := _mech("D", Die.single(veil.duplicate_face()), 0, 5)
+	sk.add_mech(a)
+	sk.add_mech(doomed)
+	var g := _ghoul(300, 10)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	g.target = sk.mechs[1]
+	assert_true(sk.assign(0, null) and sk.assign(1, null), "each queues Phased on itself")
+	assert_true(Effects.has(a, "phasing") and Effects.has(doomed, "phasing"), "both wait for it")
+	assert_false(Skirmish.is_out(sk.mechs[0]), "and neither is out of reach yet")
+	sk.end_round()
+	assert_false(sk.mechs[1].alive(), "the blow wrecks D first")
+	assert_false(Effects.has(doomed, "phased"), "a machine wrecked before the round ends never phases")
+	assert_true(Effects.has(a, "phased") and not Effects.has(a, "phasing"), "A, standing, does")
+	sk.start_round()
+	assert_true(sk.targetable_mechs().is_empty() and g.target == null, "nothing may target it, and no foe picks it")
+	assert_true(sk.machine_targets_for(sk.mechs[0], sk.mechs[0].face()).has(sk.mechs[0]), "it may spend on itself")
+	assert_true(sk.assign(0, null), "and does: Phased queued again")
+	sk.end_round()
+	assert_eq(a.hull, 100, "the blow of a foe with nothing to strike is lost")
+	sk.start_round()
+	assert_true(Skirmish.is_phased(sk.mechs[0]), "the second grant carries it through the round after")
+	sk.end_round()
+	sk.start_round()
+	assert_false(Skirmish.is_phased(sk.mechs[0]), "and without a third it is back in reach")
+	# A foe's Purge takes the wait: it is a buff a die entry bought.
+	var s2 := Skirmish.new(2, 2)
+	var u := _mech("U", Die.single(Face.attack(1, L)), 0, 100)
+	s2.add_mech(u)
+	s2.add_foes([_purger()])
+	s2.begin()
+	Effects.stack(u, Effects.STATUS["phasing"], Effects.SKIRMISH, "buff", 1, Effects.DECAY_NONE)
+	s2.start_round()
+	s2.end_round()
+	assert_false(Effects.has(u, "phasing") or Effects.has(u, "phased"), "purged before the round ends, it never phases")
+	# A Phased machine's Lure turns no pick.
+	var s3 := Skirmish.new(3, 2)
+	var lurer := _mech("L", Die.single(Face.attack(0, I, [K.LURE])), 0, 100)
+	var bait := _mech("B", Die.single(Face.blank()), 0, 100)
+	s3.add_mech(lurer)
+	s3.add_mech(bait)
+	var hunter := _ghoul(300, 10)
+	s3.add_foes([hunter])
+	s3.begin()
+	s3.start_round()
+	Effects.grant_for_rounds(lurer, Effects.STATUS["phased"], "test", s3.round)
+	hunter.target = s3.mechs[1]
+	assert_true(s3.assign(0, hunter), "the lure spent")
+	assert_eq(hunter.target, s3.mechs[1], "the foe keeps its pick: nothing may target a Phased machine")
+	assert_true("\n".join(s3.log).contains("L lures nothing"), "and the log says so")
 
 
 ## The Sutler's Hoist and the Reveille Horn (21 October), synthetic: the Hoist cools an ally and

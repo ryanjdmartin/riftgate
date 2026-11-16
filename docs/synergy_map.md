@@ -31,7 +31,7 @@ or briefs; the pricing run of 27 and 28 October read the first set (the bible's 
 | Ward | on a machine | Decoherence Veil (tier 1) | no rider lands this round |
 | Spun Up | on a machine | Spin-Up (locked, Cassowary) | the next weapon spend +2 a stack |
 | Ricochet | on a machine | Hypersonic Swoop (locked, Skua); Skua's Carom Field | a strike of 1 more a stack at the target once a weapon has fired: most on riders a strike and on flat buffs; hull damage halves it |
-| Phased | on a machine | Mooring Screens (locked, Swallowtail): charged | untouchable until the round's end |
+| Phased | on a machine | Mooring Screens (locked, Swallowtail): charged | granted as the round ends: out of reach of both sides through the next, and it acts |
 | Sealed | on a machine | Polar Bear's Lockdown | armour +3, cooling stopped, 3 heat a turn |
 | Regenerating | on a machine | St. Elmo's Regenerator (locked, Storm Petrel) | a point of shield a stack as the round opens, then a stack fades |
 | Ablating | on a machine | Stoker (tier 2); Drake's Stoke (foe); Wyvern's Stoke (foe); The Bane's Flame Whip (foe); Rotbloom's Bad Breath (foe); The Fiend of Fire's Flame Lash (foe) | its tick: 1 shield a stack at the turn's end, then hull, past armour and a Barrier; Retrocausal Shroud (locked, Baboon); Corona Shield (tier 2) [planned]; Breaching Plow (locked, Wild Boar); Phased Sublimator (tier 1) [planned] |
