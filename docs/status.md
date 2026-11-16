@@ -2100,10 +2100,16 @@ now, I think. Clean that up"; `docs/targeting_proposal.md`): the rules as they r
 down in one place, and two leftovers are cut, the rule before 2 October with the runner's
 comparison that kept it and the map's fastest hunt, a test now holding the aims and the hunts
 to content. What is a design call waits on him, five points with leans (the bible's section
-12): the aim that content calls exposed renamed, exact where it draws by weight, the armed's
-and the buffed's fallback, a fall's single blow with the pick a move at nobody still draws,
-and the aims' words on the screen. `docs/balance.md` still prints the comparison section of
-its last run; the next run drops it.
+12): what the aim that content calls exposed does and its new name, the armed's and the
+buffed's fallback, a fall's single blow with the pick a move at nobody still draws, and the
+aims' words on the screen. He asked to see them in a fight, and they are a page of scenes
+(Pages, below), the game's own screens with the engine's draws counted
+(`docs/measurements.md`): heat names its machine, 2582 picks of 2593 on a hottest one; the
+aim at the exposed picks like chance, a broken shield 29% of the time where an even draw
+gives 30%; the armed follows the dice; and one blow, the Dread Knight's Death Throes, lands
+on a pick the screen never shows. Two leans moved on them: that aim would go for a broken
+shield, an even draw among them and anyone when every shield stands, and be named for it.
+`docs/balance.md` still prints the comparison section of its last run; the next run drops it.
 **First now: the foes' pass, the rest**
 (the to-do's line): the content, put to him on 16 November as the proposal's section 28 and
 waiting on his marks: the moves that take the rank and file's countdowns' place, a fall for
@@ -2113,7 +2119,7 @@ sections 29 and 30. Still his (the bible's section 12): the marks on the rows; w
 stay beside the Roc's and the bombs', the Great Needler's by lean; the goblin line's split,
 his own idea, a front-liner renamed and a back-rank Captain that Exposes, with its three open
 points and a spare chieftain render for its sprite; Aloft's name; and the targeting audit's
-five calls, which he asked to see in a fight and was shown as scenes. His codex cleanup and
+five calls, on the page of scenes he asked for. His codex cleanup and
 terminology pass is a session of his own after this work (the to-do's line keeps what was
 found for it). On his word: the goblin split in content, the engine for a foe's Phased and
 for an immunity, the targeting build, then the rest of the content and a read of what
@@ -2217,6 +2223,12 @@ Every page lives in Ryan's account and is republished by its URL (read first), i
 with it. A page's link goes into this file in the same commit as its first publish; the
 commands are in `README.md`.
 
+- The targeting scenes: https://claude.ai/artifact/9UTL3VqdoHVVGfodtBv124 (16 November, on his
+  "I think I need to see these targeting rules in context"): each of the foes' targeting rules
+  on the game's own screen with the engine's counts beside it, and the audit's five calls with
+  their options (`docs/targeting_proposal.md`, section 4). Read only; he answers in chat. Built
+  in a session's scratch from the screenshot tool's captures of real compositions at their
+  tiers, so a change starts from the page itself, read back with the Artifact tool.
 - The vocabulary pass's table, with his marks: https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko,
   built from `docs/vocabulary_table.md` by `tools/pages/vocabulary_marks_page.py` and published
   with the `db` capability (Version 3, 15 November, from `ccr-722ca9f0-yj8na3`, with the

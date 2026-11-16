@@ -2578,6 +2578,19 @@ the Captain at 5 in the back. His call, since the numbers are that pass's.
 ### Targeting, in context
 
 The audit's five calls are held. They were put to him in the abstract, and he asked to see
-them in a fight. They are shown to him as scenes: the game's own screens, and the engine's
-own draws counted.
+them in a fight. They are shown to him as scenes, the game's own screens with the engine's
+own draws counted: a page, https://claude.ai/artifact/9UTL3VqdoHVVGfodtBv124, with
+`docs/targeting_proposal.md`'s section 4 rewritten on what it counted and the counts in
+`docs/measurements.md`.
+
+What the scenes showed. Heat names its machine: 2582 of 2593 picks drawn went to a hottest
+one. The aim at the exposed picks like chance: with a broken shield standing beside a whole
+one it picked a broken one 29% of the time, where an even draw gives 30%. The armed follows
+the dice and falls back to the weights one pick in two hundred. One blow lands on a pick the
+screen never shows, the Dread Knight's Death Throes, in 24 of 256 falls.
+
+Two leans moved on them. The aim at the exposed: a machine whose shield is broken, an even
+draw among them, anyone when every shield stands, in place of the most hull reached. And its
+name with it: the broken. A figure given him in chat is withdrawn: "eleven times in twelve"
+was a built case, one bare machine against one whose shield holds the whole blow.
 

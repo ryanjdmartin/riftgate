@@ -10331,3 +10331,68 @@ hexes at 20 by 12 (two walls of three), on every one of 100 seeds; laid after th
 kept off the rift's mouth, since a wall laid there first was bared away with the mouth on some
 seeds (8 and 16 at 20 by 12) and left the cliffs alone. A gorge's flooded stretch touches a chasm,
 so falls into it, on 21 of the first 80 seeds at 20 by 12. Cited by the bible's shapes row.
+
+## 16 November: the foes' aims in context
+
+Ryan asked to see the targeting audit's calls in a fight ("I think I need to see these
+targeting rules in context to understand the issue you're presenting";
+`docs/targeting_proposal.md`, section 4, and its page). Nothing of the rules changed for
+these: two scratch probes read the picks the engine draws as a round opens, on a squad of
+four, the Honey Badger (36 hull, 6 shield, 1 armour), the Skua (20 and 9), the Cassowary (24
+and 6) and the Buzzard (28 and 12).
+
+**Prepared openings.** One position, the foe alone, 2000 seeds, counted on the openings it
+showed a blow aimed at one machine (n); an elite at tier two. The share of its picks:
+
+| Foe and blow | The position | n | Honey Badger | Skua | Cassowary | Buzzard |
+|---|---|---|---|---|---|---|
+| A Draugr, Claw, no aim | everyone whole | 2000 | 24.7% | 24.9% | 24.9% | 25.6% |
+| | the Skua's shield broken | 2000 | 24.7% | 24.9% | 24.9% | 25.6% |
+| Bone Wyvern, Tail Sweep 19, the exposed | everyone whole | 2000 | 25.6% | 27.4% | 26.7% | 20.3% |
+| | the Skua broken | 2000 | 24.4% | 32.5% | 24.2% | 18.9% |
+| | the Honey Badger broken | 2000 | 29.4% | 26.4% | 24.9% | 19.3% |
+| | the Buzzard broken | 2000 | 23.6% | 24.3% | 25.1% | 26.9% |
+| The Lancer, Thrust 10, the exposed | everyone whole | 1259 | 32.0% | 29.9% | 34.2% | 3.9% |
+| | the Skua broken | 1259 | 26.1% | 42.8% | 28.1% | 3.0% |
+| | the Honey Badger broken | 1259 | 40.4% | 26.4% | 30.0% | 3.1% |
+| | the Buzzard broken | 1259 | 21.8% | 20.7% | 25.9% | 31.7% |
+| The Warrior, Slash 10, the exposed | everyone whole | 2000 | 31.9% | 30.4% | 34.0% | 3.8% |
+| | the Skua broken | 2000 | 26.2% | 42.5% | 28.1% | 3.1% |
+| The Martial Artist, Flurry of two 8s, the exposed | everyone whole | 2000 | 24.6% | 27.4% | 27.9% | 20.1% |
+| | the Skua broken | 2000 | 22.5% | 34.4% | 24.6% | 18.6% |
+| Red Dragon, Breath and Crush, heat | the Skua at 4 heat, the rest at 1 | 1489 | 0 | 100% | 0 | 0 |
+| | the Skua and the Honey Badger at 4 | 1489 | 50.8% | 49.2% | 0 | 0 |
+| | every machine cold | 1489 | 25.8% | 22.2% | 25.0% | 27.0% |
+
+The weights behind the exposed, the Skua broken: 16, 20, 17 and 14 against the Wyvern's 19;
+7, 11, 8 and 1 against the Lancer's 10, the Buzzard's 12 holding the whole blow. The
+default's counts are the same seed for seed with a shield broken: it reads nothing.
+
+**Whole fights.** A composition from content at its tier, its grid as dealt, 300 fights
+each, the greedy bot; each watched foe's pick read as the round opens.
+
+| Composition | The foe | Aimed picks | What it chose between |
+|---|---|---|---|
+| The Bone Wyvern's Flight, tier two | Bone Wyvern | 1510 | 665 with a broken shield beside a whole one: a broken one picked 203 times, an even draw's share 200. 845 with every shield up: the softest picked 256 times, an even draw's share 237 |
+| The same, tier three | Bone Wyvern | 1684 | 738: 208, against 227. 935: 286, against 266 |
+| The Rust Monster's Scavenge, tier one | Rust Monster | 944 | The aim ruled a machine out in 612, all 612 on a weapon showing; every machine showed one in 329; none did in 3, the fallback |
+| The same, tier two | Rust Monster | 1040 | 673, all on a weapon; 364; 3 |
+| Barbed Swarm, tier two | Basilisk | 1095 | 767, all on a weapon; 325; 3 |
+| | Djinn, Unmake, the buffed | 159 | A buffed machine stood in all 159: the move is only open while one does |
+| Great Swarm, tier three | Gorgon | 1415 | 1014, all on a weapon; 390; 11 |
+| | Basilisk | 1395 | 988, all on a weapon; 399; 8 |
+| Dragon's Roost, tier three | Red Dragon | 1648 | 1353 drawn that round, 1345 on a hottest machine: one alone hottest in 821, every machine cold in 450, a tie above nothing in 82. 293 carried from the round before by Crush's countdown, 91 of them still on a hottest |
+| Magma Pit, tier three | Red Dragon | 1508 | 1240 drawn, 1237 on a hottest: 691, 453, 96. 268 carried, 78 still on a hottest |
+| The Lich's Court, tier three | Dread Knight | | 256 fell, 24 of them on a round they opened showing a move at nobody |
+
+Staged beside the last row, on the first three machines: 600 kills of a Dread Knight showing
+Reraise, its Death Throes on the Skua 201 times, the Cassowary 197 and the Honey Badger 202.
+
+Read as directions. The aim at the exposed picked a broken shield 411 times in 1403 where
+one stood beside a whole one, 29%, and an even draw gives 30%: the weight counts only the
+hull left to reach, and the broken machine is usually the hurt one. Heat's drawn picks went
+to a hottest machine 2582 times in 2593, the other 11 passing over a machine the round's
+blows had already wrecked. The armed fell back to the weights 28 times in 5889. The bot's
+play decides how often a state comes up, the squad is three tier-one machines and one of
+tier two, under strength at tier three (it won the Lich's Court 31% of the time), and none
+of this reads a win rate.
