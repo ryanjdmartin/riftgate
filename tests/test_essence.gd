@@ -3,10 +3,12 @@ extends TestCase
 ## The Ammit's rework (Ryan, 12 November), held on synthetic passives and entries, never on the
 ## chassis's own: Essence, a count kept for the battle that every kill in its fight banks ("Souls
 ## granted by any kill"; "The souls last the battle"; no cap, "as part of the fantasy"); the
-## flare, a stack of Empowered for every five Essence as a fight opens and once after each attack
-## of its own that kills, however many fall to it ("the flare should be the Ammit kill only";
-## "Flaring twice for an AoE is probably wrong, let's make it 'one of more killed' by an
-## attack"); the Quintessence Tap, which consumes up to five Essence
+## flare, a stack of Empowered for every five Essence as a fight opens and as a round ends in
+## which an attack of its own killed, once however many fell and however many attacks felled
+## them ("the flare should be the Ammit kill only"; 16 November: "At the start of the skirmish,
+## or at the end of a round where the Ammit killed at least one enemy, the Essences Flare,
+## granting 1 Empowered per 5 Essences it holds"; once after each attack that killed from 12
+## November until then); the Quintessence Tap, which consumes up to five Essence
 ## for a stack each ("Consume up to 5 souls, granting 1 Empowered per soul. Cooldown 3") and holds
 ## every Empowered on the field through the round's end ("No Empowered decays this round. And I
 ## mean none, not ally or enemy").
@@ -16,7 +18,7 @@ const L := Face.Reach.DIRECT
 const EATER := {"id": "eater", "name": "Eater", "description": "", "effects": [
 	{"trigger": "on_foe_killed", "effect": "stack_status", "value": "essence"},
 	{"trigger": "on_skirmish_start", "effect": "stack_status", "value": "overcharged", "per_stack": "essence", "stack_step": 5},
-	{"trigger": "on_kill", "effect": "stack_status", "value": "overcharged", "per_stack": "essence", "stack_step": 5}]}
+	{"trigger": "on_round_kill", "effect": "stack_status", "value": "overcharged", "per_stack": "essence", "stack_step": 5}]}
 const TAP := {"kind": "buff", "status": "overcharged", "targets": "self", "spends": "essence", "spends_up_to": 5, "holds_all": "overcharged", "cooldown": 3}
 
 
@@ -62,6 +64,7 @@ func test_every_kill_in_its_fight_banks_a_essence_whoever_made_it() -> void:
 	assert_eq(Effects.stacks_of(eater, "essence"), 1, "banks 1 Essence")
 	assert_eq(Effects.stacks_of(ally, "essence"), 0, "on the machine whose passive banks them, and no other")
 	assert_eq(Effects.stacks_of(eater, "overcharged"), 0, "and flares nothing: the flare is its own kill's")
+	assert_false(sk.mechs[0].killed_round, "nor marks the round as one it killed in")
 	# A burn's tick is nobody's blow, and a kill all the same.
 	Effects.stack(b, Effects.STATUS["ablating"], Effects.SKIRMISH, "test", 30, Effects.status_decay(Effects.STATUS["ablating"]))
 	# A foe getting back up is no kill, so it banks nothing.
@@ -75,7 +78,7 @@ func test_every_kill_in_its_fight_banks_a_essence_whoever_made_it() -> void:
 	assert_eq(Effects.stacks_of(eater, "essence"), 2, "no kill, no Essence")
 
 
-func test_the_essence_flare_as_a_fight_opens_and_once_an_attack_of_its_own_that_kills() -> void:
+func test_the_essence_flare_as_a_fight_opens_and_as_a_round_ends_that_it_killed_in() -> void:
 	var sk := Skirmish.new(1, 4)
 	var wide := Face.from_dict({"kind": "attack", "reach": "direct", "power": 30, "keywords": ["cleave"], "cleave": 30})
 	var eater := _mech("Eater", Die.single(wide))
@@ -95,9 +98,57 @@ func test_the_essence_flare_as_a_fight_opens_and_once_an_attack_of_its_own_that_
 	assert_false(a.alive() or b.alive(), "both down")
 	assert_eq(Effects.stacks_of(eater, "essence"), 14, "the death check banks both first, one for each foe that fell: the trigger's own count, which no effect opts into")
 	assert_true(sk.log.any(func(l: String) -> bool: return l.contains("Eater: 2 foes fall, Essence ×14")), "said once in the log, at the count with both in")
-	assert_eq(Effects.stacks_of(eater, "overcharged"), 2 + 2, "then one flare for the attack, two foes killed or one, at the count as it stands (fourteen: two stacks)")
+	assert_eq(Effects.stacks_of(eater, "overcharged"), 2, "and nothing flares yet: the kill's flare is the round's end's")
+	assert_true(sk.mechs[0].killed_round, "the round is marked as one it killed in")
+	assert_true(SaveGame.clone_skirmish(sk).mechs[0].killed_round, "and a copy of the fight keeps the mark")
 	sk.end_round()
-	assert_eq(Effects.stacks_of(eater, "overcharged"), 2, "and what it grants is Empowered like any: it halves at the round's end")
+	assert_eq(Effects.stacks_of(eater, "overcharged"), 1 + 2, "the opening flare halves as its turn ends (two to one); then as the round ends the Essence flare once, two foes killed or one, at the count as it stands (fourteen: two stacks)")
+	assert_true(sk.log.any(func(l: String) -> bool: return l.contains("Eater: as the round ends, after its kill")), "said in the log")
+	assert_false(sk.mechs[0].killed_round, "and the mark is spent")
+	sk.start_round()
+	assert_eq(Effects.stacks_of(eater, "overcharged"), 3, "whole through its next turn: the round's end halves no machine's Empowered")
+	sk.end_round()
+	assert_eq(Effects.stacks_of(eater, "overcharged"), 1, "a round with no kill of its own: what it holds halves as its turn ends, and nothing flares")
+
+
+## Once a round, however many of its attacks kill (a Rapid entry and the one after it), and
+## nothing for a machine wrecked before the round ends.
+func test_the_kills_flare_is_once_a_round_and_a_wreck_flares_nothing() -> void:
+	var sk := Skirmish.new(1, 4)
+	var eater := _mech("Eater", Die.of([Face.attack(30, L, [Face.Keyword.RAPID]), Face.attack(30, L)]))
+	eater.grant_passive(EATER)
+	_essence(eater, 10)
+	sk.add_mech(eater)
+	var a := _foe("revenant", 20)
+	var b := _foe("revenant", 20)
+	sk.add_foes([a, b, _foe("revenant", 500)])
+	sk.begin()
+	Effects.remove(eater, "overcharged")   # the opening flare aside
+	sk.start_round()
+	sk.mechs[0].face_index = 0
+	assert_true(sk.assign(0, a), "its first attack kills")
+	sk.mechs[0].face_index = 1
+	assert_true(sk.assign(0, b), "and its second")
+	assert_false(a.alive() or b.alive(), "both down, an attack each")
+	sk.end_round()
+	assert_eq(Effects.stacks_of(eater, "essence"), 12, "two Essence banked")
+	assert_eq(Effects.stacks_of(eater, "overcharged"), 2, "and one flare for the round, at twelve: two stacks, never four")
+	# A machine wrecked in the enemy's turn flares nothing.
+	var sk2 := Skirmish.new(2, 4)
+	var doomed := _mech("Eater", Die.single(Face.attack(30, L)))
+	doomed.grant_passive(EATER)
+	_essence(doomed, 10)
+	sk2.add_mech(doomed)
+	sk2.add_mech(_mech("Ally", Die.single(Face.attack(1, L))))
+	var c := _foe("revenant", 20)
+	sk2.add_foes([c, _foe("revenant", 500)])
+	sk2.begin()
+	Effects.remove(doomed, "overcharged")
+	sk2.start_round()
+	assert_true(sk2.assign(0, c), "its kill")
+	doomed.hull = 0   # as a foe's blow would leave it
+	sk2.end_round()
+	assert_eq(Effects.stacks_of(doomed, "overcharged"), 0, "wrecked before the round ended: no flare")
 
 
 func test_a_flare_under_five_essence_grants_nothing() -> void:
@@ -112,7 +163,8 @@ func test_a_flare_under_five_essence_grants_nothing() -> void:
 	assert_eq(Effects.stacks_of(eater, "overcharged"), 0, "three Essence: no flare as the fight opens")
 	sk.start_round()
 	assert_true(sk.assign(0, a), "its kill")
-	assert_eq([Effects.stacks_of(eater, "essence"), Effects.stacks_of(eater, "overcharged")], [4, 0], "four now, and still under five")
+	sk.end_round()
+	assert_eq([Effects.stacks_of(eater, "essence"), Effects.stacks_of(eater, "overcharged")], [4, 0], "four now, and still under five as the round ends")
 	var b := _foe("revenant", 20)
 	var sk2 := Skirmish.new(2, 2)
 	sk2.add_mech(eater)
@@ -120,7 +172,9 @@ func test_a_flare_under_five_essence_grants_nothing() -> void:
 	sk2.begin()
 	sk2.start_round()
 	assert_true(sk2.assign(0, b), "the fifth Essence's own kill")
-	assert_eq([Effects.stacks_of(eater, "essence"), Effects.stacks_of(eater, "overcharged")], [5, 1], "the Essence first, then the flare: five is a stack")
+	assert_eq([Effects.stacks_of(eater, "essence"), Effects.stacks_of(eater, "overcharged")], [5, 0], "the Essence at once, the flare not yet")
+	sk2.end_round()
+	assert_eq([Effects.stacks_of(eater, "essence"), Effects.stacks_of(eater, "overcharged")], [5, 1], "as the round ends, the flare: five is a stack")
 
 
 func test_essence_last_the_battle_carry_no_cap_and_nothing_strips_them() -> void:
@@ -293,7 +347,7 @@ func test_the_entry_says_its_two_rules_and_round_trips() -> void:
 	assert_eq(Effects.named_like("overcharged"), ["overcharged", "kindled"], "Empowered is one word on both sides")
 	assert_eq(Effects.effect_text(EATER["effects"][1]), "as the fight begins: gains a stack of Empowered for every 5 Essence it holds", "the flare reads as a sentence")
 	assert_eq(Effects.effect_text(EATER["effects"][0]), "for each foe that falls in its fight: gains a stack of Essence", "and the banking")
-	assert_eq(Effects.effect_text(EATER["effects"][2]), "after an attack that killed: gains a stack of Empowered for every 5 Essence it holds", "and the kill's flare, once an attack")
+	assert_eq(Effects.effect_text(EATER["effects"][2]), "at the end of a round in which it killed: gains a stack of Empowered for every 5 Essence it holds", "and the kill's flare, once a round")
 
 
 func test_the_validator_holds_the_new_keys() -> void:
@@ -444,6 +498,9 @@ func test_the_bot_reads_the_flare_and_the_hold() -> void:
 	var b := pol.attack_score(sk, sk.mechs[1], eater.die.faces[0], g)
 	assert_true(b > a, "a kill that sets off a flare is worth more than the same kill without one")
 	assert_eq(snappedf(b - a, 0.01), snappedf(Policy.flare_gain(sk.mechs[1], "overcharged", 2) * Policy.FLARE_ROUNDS, 0.01), "by the flare's stacks on its die's strikes, about a round of them")
+	sk.mechs[1].killed_round = true
+	assert_eq(snappedf(pol.attack_score(sk, sk.mechs[1], eater.die.faces[0], g), 0.01), snappedf(a, 0.01), "and nothing more once it has killed this round: the flare is coming already, once a round")
+	sk.mechs[1].killed_round = false
 	# The Tap: nothing with no Essence to consume; with some, what it carries whole into the next
 	# round, less the Essence it spends; and a foe's Empowered held with it is its price.
 	var tap: Face = eater.die.faces[1]

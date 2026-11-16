@@ -22,7 +22,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 - **The vocabulary moved on 15 and 16 November** (the vocabulary pass, built on Ryan's marks
   on every rider, buff and debuff): Burn is Ablate, Flak and Crushed are Brittle, Breach,
   Splash, Silence, Overshield, Retaliate and Rallied are cut, and Regenerating, Primed,
-  Phased and the rally run new rules. `docs/vocabulary.md` is the vocabulary as it runs; the
+  Phased and the rally run new rules; and the clocks with them on 16 November: a machine's
+  Empowered halves at END TURN, everything a Phased machine carries ticks and nothing damages
+  it, and everything a Swallowed machine carries waits. `docs/vocabulary.md` is the vocabulary as it runs; the
   briefs and the older proposals predate it, and `docs/briefs/README.md` says how to read
   their words. The baseline of that game is the last entry of `docs/measurements.md`.
 - Sessions run in parallel on this repo: `git status` first, stage by path, diff a shared file
@@ -41,13 +43,21 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1222 tests, 373,594 checks, green on `ccr-bd73687d-w8qox1` (16 November, his third notes:
+- Tests: 1241 tests, 373,910 checks, green on `ccr-bd73687d-w8qox1` (16 November, over main at
+  `d7fe86f` taken in a merge: his ninth round's rulings, Exposed on a machine, the Vampire Lord's
+  drain). Before it, 1222 tests, 373,594 checks, green on the same branch (16 November, his third notes:
   the shell a wall on the seven's outer edges with a cache behind it, the wrecks at living size,
   and the roster's own deaths). Before it, 1220 tests, 373,260 checks, green on the same branch
   (his notes on the shell and the wrecks; over main at `e26589f` taken in a merge). Before it, 1213 tests, 373,034 checks,
   green on the same branch (Ryan's five beside the formation pass: the wreck, the musters, the
   peak's sounds, the drum, the shell; over main at `3801a1b` taken in a merge). Before it, 1211 tests, 372,977 checks, green on the same branch
-  over main at `d1b6827`. Before it, 1198 tests, 372,873 checks, green on `ccr-722ca9f0-yj8na3` (16 November, his
+  over main at `d1b6827`. Before it, 1217 tests, 373,189 checks, green on `ccr-722ca9f0-yj8na3` (16 November, the
+  Vampire Lord's drain as its own Ability, over main at `3ad445b`). Before it, 1216 tests,
+  373,182 checks, green on the same branch (16 November, Exposed
+  on a machine, over main at `d97245e`). Before it, 1206 tests, 372,963 checks, green on the
+  same branch (16 November, his
+  ninth round's rulings, over main at `e26589f`). Before it, 1198 tests, 372,873 checks,
+  green on the same branch (16 November, his
   eighth round's rulings, over main at `3801a1b`). Before it, 1197 tests, 372,849 checks,
   green on the same branch (16 November,
   Phased, over main at `1d2b544`). Before it, 1196 tests, 372,811 checks, green on the same
@@ -623,7 +633,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   its own kill flares; the Siphon's round holds every Empowered on the field ("And I mean none,
   not ally or enemy"), and the hold stays off the kill flare. And later that day, the flare comes
   once an attack that kills, however many fall to it ("Flaring twice for an AoE is probably
-  wrong, let's make it 'one of more killed' by an attack"), a double kill's Souls both in first.
+  wrong, let's make it 'one of more killed' by an attack"), a double kill's Souls both in first
+  (once a round, as the round ends, since 16 November: his ninth round, Next below).
   As built: a die of six (the talons one entry of 1 ×4 with Breach, the Siphon, four hardpoints);
   Souls its Ability, a chip with its count, since a count with no cap is no store; the hold the
   round's rule and no status, so a Ward turns nothing away. Named, since they follow from his
@@ -1774,8 +1785,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   the Ward, the primers Charged and Supercooled (no piece grants them yet), Sweep as the third
   reach, riders landing after the hits, death after every effect (the spend's order since 7
   November), Overcharged and
-  Kindled renamed Empowered and given one clock (a foe's halves at the round's end too, 4
-  November). Left for Ryan: the Scorpion's rework (its blast is the one draw
+  Kindled renamed Empowered and given one clock (4 November; each halves as its side's turn
+  ends since 16 November, a machine's at END TURN and a foe's at the round's end). Left for Ryan: the Scorpion's rework (its blast is the one draw
   besides the die), rules for the two planned modules, the Emitter's Purge 2, whether a foe's
   ticks come before or after its action (section 12).
 - **The elites session** (3 and 4 November; the bible's register and tiers rows, section 9;
@@ -1949,8 +1960,8 @@ strike that turn and half for the next. One foe carries it, the World Eater's Pi
 **Phased is built, the last of the five** (16 November; the bible's Phased row): a source
 lays the wait for it, and as the enemy's turn ends a machine that waits and still stands is
 Phased through the next round's end, out of reach of both sides and acting all the same, so
-its reboot there is the safe one. Its own acts' costs land, the burn among them, a
-session's read. One piece grants it, the Mooring Screens' charge, on a machine in design,
+its reboot there is the safe one. Nothing damages it, its own heat and a bite of its own
+entry included (his rulings of the eighth and ninth rounds, below). One piece grants it, the Mooring Screens' charge, on a machine in design,
 and its gate is that session's; a foe's Phased is the foes' pass's.
 **The anchor is read again as the baseline** (16 November; `docs/measurements.md`, its last
 entry): at tier one a formation is 5.2 rounds and 7.2% of a four's hull, an elite 5.7 and
@@ -1960,13 +1971,39 @@ built on foes that breached cost under 3%, their blows plain against a whole shi
 proposal's section 21): a Phased machine does not burn, its heat staying for the turn it is
 back in reach; a machine's Armoured ends as its side's next turn begins, as a foe's does;
 and what a foe lays that halves each round it lays 2 of at the least, so three rallies went
-from 1 to 2 and the tier-one wolf pack reads a third dearer in hull, no fight lost. Two
-questions stand in the bible's section 12: whether that minimum reaches our own six sources,
-and whether a Phased machine pays a Volatile bite.
-**First now: the foes' pass**
-(the to-do's line): Exposed's carriers and its engine, the moves his marks renamed or
-moved onto the unit, the countdowns off the rank and file, a fall free to do more than
-strike, and a move as a short list of steps if he takes section 19's proposal.
+from 1 to 2 and the tier-one wolf pack reads a third dearer in hull, no fight lost.
+**His ninth round's rulings are built** (16 November; the proposal's section 22;
+`tests/test_clocks.gd`): a machine's Empowered halves at END TURN, where a stack gained in
+the enemy's turn used to halve before it was spent, and a foe's still as the round ends;
+every clock runs on a Phased machine and nothing damages it, a hull cost, a passive's hull
+price and a corrupted entry's bite blocked with the burn; a Swallowed machine's clocks all
+stop but the swallow's own, each timed status and dark entry a round later for every round's
+end it sits out, so it comes back as it left; the Ammit flares once a round, as a round ends
+that an attack of its own killed in, his passive word for word; Regenerating stays one
+combined stack; and our own pieces carry no floor of 2 ("they can sequence"). No run was
+made on it: one machine's flare and the edge cases of two statuses moved, no foe's number.
+**The end table he asked for is the proposal's section 23**, every buff and debuff by the
+clock it ends on, and **his four places are its section 24** (16 November: turn start, turn
+end, round end, when spent). They cover every status that ticks. The clocks are not built on
+them yet: three points wait on him (what a foe's turn is, Ablate and Vitriol after a foe's
+blow, Brittle's place), and they decide the wording of every status line, so it is one pass.
+**The foes' pass has begun** (16 November, on his "Yes, go ahead with the next work"):
+**Exposed on a machine is built** (the proposal's section 17; `tests/test_exposed.gd`), a
+foe's Expose as a move of its own and as a rider on its blow. The machine's armour of every
+kind counts for nothing through the round after, and as that round opens every targeted
+intent turns on it until the blows already drawn would wreck it; a Lure and a Ward answer
+the move, a Cleanse gives the armour back, a round Phased is passed by, and no foe announces
+one while another's is out or a machine stands Exposed. No foe carries it: its carriers are
+content, his to place at tier two or above, and the validator refuses it at tier one.
+**The Vampire Lord's drain is the unit's own Ability** (the same day, his mark of 15
+November: "Like the Nob"): every blow of its regrows what it took from the hull, a chip
+names it, and the rider is cut from the engine with its last carrier.
+**First now: the foes' pass, the rest**
+(the to-do's line): Exposed's carriers, the moves his marks renamed or
+moved onto the unit (Collect and Appropriated), the countdowns off
+the rank and file, a fall free to do more than strike, and a move as a short list of steps
+if he takes section 19's proposal, the one answer that shapes how those are built. Beside
+it, the clocks on his four places once he answers section 24's three points.
 The table of every rider, buff and debuff (`docs/vocabulary_table.md`) stands with its page
 (Pages, below) as the record of his marks until the pass retires.
 With the pass, on his proposal, the tier-one

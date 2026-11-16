@@ -39,16 +39,16 @@ PASSIVE_EFFECTS = {"seal_form": ("sealed", "machine"),
                    "paradox": ("paradox", "foe"), "muster": ("muster", "machine"),
                    "fill_hopper": ("hopper", "machine"), "hopper_plate": ("braced", "machine"),
                    "mine_on_spend": ("mine", "foe")}   # stack_status names its own, on the machine; the Reverberant Payload's Mine (9 November)
-FOE_KEYWORDS = {"scorch": "scorched", "ablate": "ablating", "jam": "jammed", "corrupt": "corrupted", "brittle": "brittled", "steal": "jammed"}
+FOE_KEYWORDS = {"scorch": "scorched", "ablate": "ablating", "jam": "jammed", "corrupt": "corrupted", "brittle": "brittled", "steal": "jammed", "expose": "exposure"}
 FOE_EFFECTS_ON_MACHINES = {"ablate": "ablating", "scorch_all": "scorched", "corrupt_all": "corrupted",
-                           "jam": "jammed", "swallow": "swallowed"}
+                           "jam": "jammed", "swallow": "swallowed", "expose": "exposure"}
 FOE_EFFECTS_ON_FOES = {"brace": "braced", "brace_all": "braced", "harden": "braced", "harden_all": "braced",
                        "rally": "kindled", "revive_once": "risen", "revive_once_ally": "risen",
                        "prime": "primed", "barrier": "barrier", "ward_all": "ward", "regenerate": "regenerating", "golden": "golden"}   # the ladder's (28 October); golden the Thunder Ape's (4 November)
 # A special that is a rider's own mechanic, played as a whole move, counts under the rider.
 MOVE_AS_KEYWORD = {"ablate": "ablate", "jam": "jam", "scorch_all": "scorch", "corrupt_all": "corrupt", "swallow": "swallow", "merge": "merge", "dispel": "dispel", "golden": "golden_rage"}
 VIA_STATUS = {"primed": [("ablating", "foe")], "paradox": [("suppressed", "foe"), ("numbed", "foe")]}
-ENGINE_ALIASES = {"ablating_mech": "ablating", "brittled_mech": "brittled",   # the same word on the other body
+ENGINE_ALIASES = {"ablating_mech": "ablating", "brittled_mech": "brittled", "exposure_mech": "exposure",   # the same word on the other body
                   "phasing": "phased"}   # the wait for Phased, which is granted as the round ends (15 November)
 
 # Printed rules, read off a component's face.
@@ -228,6 +228,8 @@ def tally(words):
                 t.count("grudge", "foe", planned, name)
         if int(foe.get("rage", 0) or 0) > 0:
             t.grant("enraged", "foe", "%s's rage" % whom, "foe", False, foe["id"], whom)   # its own from the start (8 November)
+        if foe.get("drains"):
+            t.count("drain", "foe", False, name)   # its own Ability, on every blow (16 November); a rider until then
         if foe.get("parts"):
             t.grant("guarded", "foe", "%s's parts" % whom, "foe", False, foe["id"], whom)
             t.count("parts", "foe", False, name)

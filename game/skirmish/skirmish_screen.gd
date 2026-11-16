@@ -1577,7 +1577,13 @@ static func form_mark(ms: Skirmish.MechState, f: Face) -> String:
 ## (Scorch 2: two), so a scorch or a blow at every machine is read off the chip itself.
 static func intent_riders(foe: Foe) -> Array:
 	var out: Array = []
-	if foe == null or not Foe.is_attack_action(foe.action):
+	if foe == null:
+		return out
+	if not Foe.is_attack_action(foe.action):
+		# A move of its own that lays Exposed wears the mark all the same (16 November): the
+		# intent is the first of its two warnings, and a bare debuff mark would not say which.
+		if Foe.exposes(foe.action) and Terms.has("expose"):
+			out.append([Terms.glyph("expose"), "", Terms.colour("expose")])
 		return out
 	for k in foe.action.get("keywords", []):
 		var id := str(k)
@@ -1597,6 +1603,10 @@ func _foe_abilities(foe: Foe) -> Array:
 	var rows: Array = []
 	if foe.rage > 0:
 		rows.append(["overcharge", "", "Ability, Enrage: every shield, vent or equipment you spend makes it Enraged +%d" % foe.rage, _foe_chip_colour("enraged"), "ability"])
+	if foe.drains:
+		# The Vampire Lord's (Ryan, 15 November: "This should be moved to an ability on the unit
+		# since it's on every attack. Like the Nob"): the rule its every blow plays by.
+		rows.append([Terms.glyph("drain"), "", "Ability, Drain: every blow it lands heals it by what the blow took from the hull", Terms.colour("drain"), "ability"])
 	if Effects.has(foe, "guarded"):
 		# A boss in parts (15 October): the lock while its parts stand, so the zero its die
 		# shows has a reason on the foe itself.
@@ -1840,6 +1850,8 @@ static func status_glyph(id: String) -> String:
 			return "ablate"   # one mark on either body (15 November): the machine's thermometer flame went with Burning as heat
 		"brittled_mech":
 			return "brittle"   # and Brittle's the same (15 November): the airburst a foe wears
+		"exposure_mech":
+			return "exposed"   # and Exposed's (16 November): the mark an Exposed foe wears
 		"scorched":
 			return "scorch"
 		"overcharged":
@@ -2426,7 +2438,7 @@ func _intent_chip(foe: Foe) -> Array:
 ## alone.
 func _intent_read(foe: Foe) -> Array:
 	var blow := foe.attacks() or foe.gathering()
-	return [sk.intent_value(foe), ("×%d" % foe.strikes()) if blow and foe.strikes() > 1 else "", intent_riders(foe) if blow else []]
+	return [sk.intent_value(foe), ("×%d" % foe.strikes()) if blow and foe.strikes() > 1 else "", intent_riders(foe) if blow or Foe.exposes(foe.action) else []]
 
 
 ## A stat in a hold, as the codex has it: its label, its base in ink and the change in a

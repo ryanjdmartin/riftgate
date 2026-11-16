@@ -296,6 +296,7 @@ func make_foe(foe_id: String) -> Foe:
 	f.resist = int(d.get("resist", -1))   # its stun resist (2 November): content's, else by its size
 	f.armour_step = maxi(0, int(d.get("armour_step", 0)))
 	f.rage = maxi(0, int(d.get("rage", 0)))   # its own from the fight's start (the Goblin Nob's, Ryan, 8 November: "It's not innate? ... unbelievably incorrect")
+	f.drains = bool(d.get("drains", false))   # its own too: every blow of its regrows what it took from the hull (the Vampire Lord's, 16 November)
 	f.wanders = bool(d.get("wanders", false))
 	f.aim = str(d.get("aim", Foe.AIM_ANYTHING))
 	f.hero = bool(d.get("hero", false)) or d.has("promotes")   # one of the party: a hero, or its promoted form
@@ -2559,6 +2560,10 @@ func _validate_foes(errs: Array[String]) -> void:
 		# equipment entry the team spends stacking that much Enraged on it while it stands.
 		if f.has("rage") and (not (f["rage"] is float or f["rage"] is int) or int(f["rage"]) < 1 or float(f["rage"]) != floorf(float(f["rage"]))):
 			errs.append("%s: rage is the Enraged a team's shield, vent or equipment spend stacks on it: a whole number, 1 or more" % where)
+		# A drain (the Vampire Lord's): an Ability on the unit, every blow of its own regrowing
+		# what it took from the hull; a rider on a blow until 16 November.
+		if f.has("drains") and not (f["drains"] is bool and f["drains"]):
+			errs.append("%s: drains is true or left out: every blow of the foe's regrows what it takes from a hull" % where)
 		if f.has("aim") and not Foe.AIMS.has(str(f["aim"])):
 			errs.append("%s: aim must be one of %s, got '%s'" % [where, ", ".join(Foe.AIMS), str(f["aim"])])
 		_validate_actions(where, f, errs)
@@ -2716,6 +2721,16 @@ func _validate_factions(errs: Array[String]) -> void:
 			if c.has("members") or c.has("layout"):
 				errs.append("%s: members and layout are gone (8 November); the grid, front and back, is the whole declaration" % cw)
 			_validate_grid(cw, c, size, errs)
+			# Exposed on a machine is a tier-two foe's at the least (Ryan, 15 November: "only in
+			# formations that feel thematic and fair, so that the player has tools to answer by that
+			# point"): nothing dealt at tier one holds a foe whose move lays it.
+			if tiers is Array and composition_tiers(c).has(1) and c.get("front", null) is Array and c.get("back", null) is Array:
+				var told := {}
+				for cell in layout_cells(c):
+					for a in foes.get(str(cell), {}).get("actions", []):
+						if a is Dictionary and str(a.get("status", "implemented")) != "planned" and Foe.exposes(a) and not told.has(str(cell)):
+							told[str(cell)] = true
+							errs.append("%s: %s lays Exposed, and nothing dealt at tier one may (the player has no answer to it yet)" % [cw, str(cell)])
 			# The formation pass's fields (10 November): what the player must answer, written down on
 			# every patrol and formation (internal, under design, never shown), and the roles.
 			if c.has("design") and not (c["design"] is Dictionary):
