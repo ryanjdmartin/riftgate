@@ -25,7 +25,8 @@ def badger(b):
     right, a sawed-off cannon with a crusher hopper built in (6 October: the Slug Cannon converted to melee and
     locked to the Badger, the second claw gone, so the right boom's mount is no hardpoint and
     the pins run hp_1 the deck's ring, hp_2 left gimbal, hp_3 right gimbal); floodlights,
-    vents, a ladder, a hatch. Since the stock pass (22 October) its stock is the Rivet Gun
+    two louvred rear vents (the Minervan vent, the Polar Bear's, since 16 November), a ladder, a
+    hatch. Since the stock pass (22 October) its stock is the Rivet Gun
     alone, on the deck's ring as its class shape, the gimbals bare; the missile box and the
     gimbal's autoguns went with the old stock (Ryan's go, 28 October)."""
     # Treads: wide enough for the booms to rest over them, chamfered both ends, a skirt
@@ -37,7 +38,7 @@ def badger(b):
         b.box(cx - 13.0, cx + 13.0, -31.0, 31.0, 18.0, 21.0, "steel.plate", "skirt")
         b.box(cx - 13.0, cx + 13.0, 22.0, 31.0, 21.0, 23.0, "steel.stripe", "skirt_tip")
     # Frame: low across the treads, the cheeks either side of the cockpit bay at the front.
-    b.loft([(-30.0, rect(0.0, 44.0, 20.0, 34.0)), (12.0, rect(0.0, 44.0, 20.0, 34.0))], "steel.panel", "hull")
+    hull = b.loft([(-30.0, rect(0.0, 44.0, 20.0, 34.0)), (12.0, rect(0.0, 44.0, 20.0, 34.0))], "steel.panel", "hull")
     for s in (-1.0, 1.0):
         b.loft([(12.0, rect(s * 15.0, 14.0, 20.0, 36.0)), (30.0, rect(s * 15.0, 14.0, 21.0, 34.0))], "steel.panel", "cheek")
     # The brow: a heavy plate over the cockpit bay, floodlights under its lip.
@@ -49,8 +50,13 @@ def badger(b):
     b.loft([(10.0, rect(0.0, 16.0, 22.0, 33.0)), (26.0, rect(0.0, 15.0, 23.0, 32.0))], "steel.plate", "cockpit")
     b.loft([(26.0, rect(0.0, 13.0, 24.0, 31.0)), (27.5, rect(0.0, 11.0, 25.0, 30.0))], "glass.glass", "canopy")
     # Engine deck at the rear, raised, with vents, an exhaust and the hatch.
-    b.loft([(-30.0, rect(0.0, 36.0, 34.0, 46.0)), (-4.0, rect(0.0, 36.0, 34.0, 46.0)), (2.0, rect(0.0, 34.0, 34.0, 40.0))], "steel.panel", "deck")
-    b.box(-16.0, 16.0, -33.0, -30.0, 22.0, 44.0, "steel.vent", "rear_vents")
+    deck = b.loft([(-30.0, rect(0.0, 36.0, 34.0, 46.0)), (-4.0, rect(0.0, 36.0, 34.0, 46.0)), (2.0, rect(0.0, 34.0, 34.0, 40.0))], "steel.panel", "deck")
+    # Its two rear vents, the Minervan vent (Ryan, 16 November: "Make vents into real vents, like
+    # the Polar bear ... make that vent a Minervan signature"), where a grille-tiled block stood:
+    # side by side across the tail where the hull meets the engine deck, each fourteen square,
+    # four heavy louvres a little out at rest over heat banked in its floor, thrown open by its
+    # vent act. The skirmish's camera sees it from behind, so they face the player.
+    rear_vents = _minerva_vents(b, [hull, deck], (-8.5, 8.5), -30.0, 33.0, width=14.0, height=14.0)
     b.box(-8.0, 0.0, -14.0, -6.0, 46.0, 48.0, "steel.plate", "hatch")
     b.box(-14.0, -10.0, -26.0, -18.0, 46.0, 54.0, "steel.dark", "exhaust")
     b.box(-22.5, -19.5, -20.0, 0.0, 22.0, 44.0, "steel.ladder", "ladder")
@@ -205,6 +211,9 @@ def badger(b):
     b.gait(treads={"parts": ["tread"], "scroll": 1.0}, hold={"shoulder_l": 7.0, "elbow_l": 6.0, "wrist_l": 24.0, "shoulder_r": 3.0}, rock=7.0)
     b.fires = {"chainsaw_claw": ("test_claw", 1.6, 2.9)}   # its fixed weapon fires with a slice of its act: the claw's snap (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.pivots = True   # its tracks turn it on the spot to aim the gun on its hull and the claw, as a tank's neutral turn (Ryan, 31 October: "a cheap way of aiming")
+    # Venting, the Minervan vent's act (16 November): the rear vents' louvres thrown open a pair
+    # a beat apart over flaring heat, held, shut, the hull settling a little on its treads.
+    _minerva_vent_act(b, rear_vents)
     b.move(accel=1.2, heft=0.2)
 
 badger.maker = "minerva"
@@ -1551,8 +1560,9 @@ def wild_boar(b):
     Breaching Plow, fixed, no pin); a low wide turret with a double-barrelled cannon. Pins:
     Mounts (Ryan, 30 September; five hardpoints): hp_1 and hp_2 two parallel guns set
     apart on a larger turret (Slug Cannons), hp_3 the stock missile pod on the left rear
-    quarter's deck, hp_4 bare on the turret's top, hp_5 bare on the right rear quarter; the
-    tread plating and the stack are detail (armour and vents take no mount)."""
+    quarter's deck, hp_4 bare on the turret's top, hp_5 the stock Twin Autoguns on the right rear
+    quarter; the tread plating, the stack and its two louvred rear vents (the Minervan vent, the
+    Polar Bear's, since 16 November) are detail (armour and vents take no mount)."""
     TX, TW, TH = 26.0, 24.0, 24.0   # tread centre, width, height
     for s in (-1.0, 1.0):
         cx = s * TX
@@ -1561,7 +1571,7 @@ def wild_boar(b):
         b.box(min(cx - s * 5.0, cx + s * 8.0), max(cx - s * 5.0, cx + s * 8.0), -32.0, 16.0, TH + 5.0, TH + 9.0, "steel.panel", "tread_deck")   # trimmed inboard, clear of the turret's drum; back to the tail, under the pod
         b.box(cx - 6.0, cx + 6.0, 30.0, 34.0, TH - 6.0, TH + 4.0, "steel.stripe", "skirt_tip")
     # The hull slung low between the treads, its glacis sloping to the cowcatcher.
-    b.loft([(-38.0, rect(0.0, 28.0, 6.0, 26.0)), (10.0, rect(0.0, 28.0, 6.0, 26.0)), (30.0, rect(0.0, 26.0, 8.0, 16.0))], "steel.panel", "hull")
+    hull = b.loft([(-38.0, rect(0.0, 28.0, 6.0, 26.0)), (10.0, rect(0.0, 28.0, 6.0, 26.0)), (30.0, rect(0.0, 26.0, 8.0, 16.0))], "steel.panel", "hull")
     b.box(-10.0, 10.0, 24.0, 25.0, 12.0, 15.0, "glass.glass", "slit")
     for s in (-1.0, 1.0):
         b.box(s * 11.0 - 1.5, s * 11.0 + 1.5, 24.0, 26.0, 13.0, 16.0, "amber.light", "lamp")
@@ -1618,19 +1628,30 @@ def wild_boar(b):
     # The pod's mount on the left rear quarter's deck (hp_3), the stock's Shotfire Rack on it
     # as its class, its face forward.
     # Set back and out so the turret's drum and its guns sweep clear of it (Ryan, 1
-    # October: the turret must look able to turn).
-    with b.joint("elev_pod", (-TX - 1.0, -23.0, TH + 9.0), limits=(0.0, 16.0)):   # the pod tilts up on its deck
-        b.stock("hp_3", (-TX - 1.0, -16.0, TH + 16.0), "rack", carries="shotfire_rack")
+    # October: the turret must look able to turn); back nine more on 16 November (Ryan: "Boar
+    # clips its side mounts when sweeping its barrels"), where the left gun's receiver crossed
+    # its front corner at the sweep's left end and the drum's corners grazed it.
+    with b.joint("elev_pod", (-TX - 1.0, -32.0, TH + 9.0), limits=(0.0, 16.0)):   # the pod tilts up on its deck
+        b.stock("hp_3", (-TX - 1.0, -25.0, TH + 16.0), "rack", carries="shotfire_rack")
     # Ablative plating on the outer faces of the treads and the blowout stack at the hull's
     # tail with vents beside it: detail, no mounts.
     for s in (-1.0, 1.0):
         for y0, y1 in ((-26.0, -8.0), (-4.0, 14.0)):
             b.box(min(s * (TX + TW / 2 + 1.0), s * (TX + TW / 2 + 4.0)), max(s * (TX + TW / 2 + 1.0), s * (TX + TW / 2 + 4.0)), y0, y1, 8.0, 22.0, "livery.livery2", "ablative")
-    b.box(-12.0, 12.0, -41.0, -40.0, 8.0, 22.0, "steel.vent", "rear_vents")
+    # Its two rear vents, the Minervan vent (Ryan, 16 November: "Make vents into real vents, like
+    # the Polar bear ... make that vent a Minervan signature"), where a grille-tiled plate stood:
+    # side by side low in the hull's rear face between the treads, four heavy louvres a little
+    # out at rest over heat banked in its floor, thrown open by its vent act.
+    rear_vents = _minerva_vents(b, [hull], (-6.5, 6.5), -38.0, 15.5, width=11.5, height=12.0)
     b.prism("z", 0.0, -34.0, 30.0, 4.0, 12.0, "steel.dark", 6, "stack")
     b.prism("z", 0.0, -34.0, 37.0, 5.0, 2.0, "steel.plate", 6, "stack_cap")
-    # A bare mount on the right rear quarter's deck (hp_5).
-    b.pad("hp_5", (TX, -14.0, TH + 12.0))
+    # The right rear quarter's mount (hp_5), its stock's Twin Autoguns worn as their class (the
+    # refit pass's re-deal put them where a vent had shown nothing; the game hung the class on a
+    # bare pad), on a low block: back twelve on 16 November with the sweep's right end brought in,
+    # since anything fitted there stood in the right gun's path as the turret swung over it (Ryan:
+    # "Boar clips its side mounts when sweeping its barrels").
+    b.box(TX - 5.0, TX + 5.0, -30.0, -22.0, TH + 9.0, TH + 12.0, "steel.panel", "pad")
+    b.stock("hp_5", (TX, -26.0, TH + 12.0), "twin_barrel", carries="twin_autoguns")
 
     # Idle acts, third pass (Ryan, 4 October: turrets too fast and wild; heavy, with
     # inertia): curves a part runs on through, the servos' heft (b.move), held poses that
@@ -1638,8 +1659,10 @@ def wild_boar(b):
     # rule). Degrees and seconds; a key is (t, value) on the joint's own axis or (t, pitch,
     # yaw, roll); a body key is (t, dx, dy, dz) or (t, dx, dy, dz, yaw, pitch, roll); a glow
     # key is (t, k), k the light added over rest.
+    # Its right end in from 45 to 30 (16 November): past that, the right gun crossed whatever the
+    # right rear quarter's mount wore, and the left end stays at 55 now the pod sits further back.
     b.act("sweep_turret", 8.0, {   # a slow sweep out one way, a pause, across to the other, a pause, home; the guns climbing and dropping, the sight hot
-        "turret": [(0.5, 0.0), (2.1, 55.0), (2.8, 55.0), (5.7, -45.0), (6.4, -45.0), (7.8, 0.0)],
+        "turret": [(0.5, 0.0), (2.1, 55.0), (2.8, 55.0), (5.7, -30.0), (6.4, -30.0), (7.8, 0.0)],
         "elev": [(1.4, 16.0), (2.8, 18.0), (4.3, -2.0), (5.8, 14.0), (7.6, 0.0)],
     }, glow=[(["sight"], [(0.4, 0.0), (0.9, 7.0), (7.2, 7.0), (8.0, 0.0)])])
     # One heavy lift (Ryan, 5 October: once, to show how heavy it is; the guns up first, out of
@@ -1655,7 +1678,7 @@ def wild_boar(b):
         (2.7, 0.0, 6.0, 0.0, 0.0, 3.0, 0.0), (3.4, 0.0, 5.0, 0.0, 0.0, -2.0, 0.0), (4.6, 0.0, 0.0, 0.0)])
     b.act("tilt_pod", 5.4, {   # the pod tilts up on its deck while the turret turns aside to clear it
         "elev_pod": [(1.2, 16.0), (3.8, 15.5), (4.8, 0.0)],
-        "turret": [(0.6, 0.0), (2.0, -45.0), (3.6, -45.0), (5.0, 0.0)],
+        "turret": [(0.6, 0.0), (2.0, -30.0), (3.6, -30.0), (5.0, 0.0)],   # aside as far as the right rear mount allows (16 November)
         "elev": [(1.4, 14.0), (3.6, 13.0), (4.8, 0.0)],
     })
     # Movement: the treads scroll; a rock on pulling away and stopping; the turret turns
@@ -1673,6 +1696,9 @@ def wild_boar(b):
            tracks={"plow": [(round(p, 3), round(max(-2.0, -1.2 * sway(p - 0.08)), 2)) for p in phases]})
     b.fires = {"breaching_plow": ("test_plow", 2.5, 4.4)}   # its fixed weapon fires with a slice of its act: the plow down, shaken and thrown up (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.pivots = True   # its tracks turn it on the spot to aim the pod and the plow, as a tank's neutral turn (Ryan, 31 October: "a cheap way of aiming")
+    # Venting, the Minervan vent's act (16 November): the rear vents' louvres thrown open a pair
+    # a beat apart over flaring heat, held, shut, the hull settling a little on its treads.
+    _minerva_vent_act(b, rear_vents)
     b.move(accel=1.1, heft=0.18)
 
 wild_boar.maker = "minerva"
@@ -7942,6 +7968,45 @@ def _popvent(b, cutting, centre, side, name, length=14.0, width=8.0, out=6.0, sl
             _rings(b, [quad(l0, l0 + 0.8, a0, a0 + 0.8, foot), quad(l0, l0 + 0.8, a0, a0 + 0.8, 0.3)], "steel.dark", "vent_post", tiles)
         _rings(b, [rect(sl - 0.12, sa - 0.12, foot), rect(sl - 0.12, sa - 0.12, 0.3)], "amber.heat", heat, tiles)
     return name, tuple(nrm), out
+
+
+def _minerva_vents(b, cutting, xs, y_panel, z, width=15.0, height=12.0, slats=4, rest=10.0, opens=60.0, out=2.5):
+    """The Minervan vent (Ryan, 16 November: "Make vents into real vents, like the Polar bear ...
+    make that vent a Minervan signature"): the Polar Bear's squarish rear vent, a dark steel box
+    standing out of a rear face, its mouth `out` behind the panel at `y_panel` and its back a
+    little inside it, a stripe rim round its mouth, `slats` heavy louvres across it on joints over
+    heat banked in its floor (amber.heat), the louvres `rest` degrees out at rest, a grille over the
+    dark heat, thrown `opens` degrees open by the vent act (_minerva_vent_act). One at each x of
+    `xs`, the mouth's middle at height `z`, cut into `cutting`. Returns [(its heat part, its louvres
+    [(joint, shut, swing), ...])], in the order of `xs`, the heat parts named rear_vent_heat_<tag>
+    as the Polar Bear's are."""
+    tags = ["l", "r"] if len(xs) == 2 else [str(k + 1) for k in range(len(xs))]
+    return [("rear_vent_heat_" + t, _vent(b, cutting, (x, y_panel - out, z), 90.0, width, height, slats, "louvre_" + t, rest, opens,
+                                          heat="rear_vent_heat_" + t)) for x, t in zip(xs, tags)]
+
+
+def _minerva_vent_act(b, vents, name="vent_heat", t_open=0.9, beat=0.4, hold=1.6, settle=-0.6):
+    """The Minervan vent's act, the Polar Bear's venting in little (its vent_heat): the vents
+    open a beat apart, each one's louvres the lowest first and the rest a beat after, its heat
+    flaring as it opens, held a moment and a half while the heat pours out, shut a beat apart in
+    the same order as the glow dies, the hull settling a little on its running gear while it
+    vents and rising as they shut. The heat parts wear the hot halo, as the Polar Bear's do."""
+    THROW, SHUT = ((0.0, 0.0), (0.35, 1.06), (0.55, 1.0)), 0.45   # a louvre's opening from its own moment; its shutting (the Polar Bear's)
+    HEAT = 196.0   # the Polar Bear's heat at its height: under the phone's eased light it lands #ff7800
+    flare = lambda t0, t1: [(t0, 0.0), (round(t0 + 0.6, 3), HEAT), (t1, HEAT), (round(t1 + 0.65, 3), 0.0)]
+    tracks, glow = {}, []
+    last = len(vents) - 1
+    for k, (heat, vent) in enumerate(vents):
+        t0 = t_open + beat * k
+        t1 = t_open + beat * last + hold + 0.12 * k
+        for j, (jn, shut, swing) in enumerate(vent):
+            tracks[jn] = [(round(t0 + 0.05 * j + t, 3), round(swing * f, 2)) for t, f in THROW] + [(round(t1, 3), round(swing, 2)), (round(t1 + SHUT, 3), 0.0)]
+        glow.append(([heat], flare(t0, t1)))
+    shut_at = t_open + beat * last + hold
+    end = round(shut_at + 0.12 * last + SHUT + 1.0, 3)
+    body = [(0.4, 0.0, 0.0, 0.0), (round(t_open + 0.5, 3), 0.0, 0.0, settle), (round(shut_at, 3), 0.0, 0.0, settle), (round(end - 0.3, 3), 0.0, 0.0, 0.0)]
+    b.act(name, end, tracks, body=body, heft=0.1, glow=glow)
+    b.halo = list(b.halo) + [heat for heat, _ in vents]
 
 
 def _gear(cx, cz, r_out, r_in, teeth, phase=0.0):

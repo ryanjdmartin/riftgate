@@ -1934,7 +1934,10 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   in three places, Mastema as a flying wing with arms under it, the echidna as his pick, the
   armoured car, skid-steered, with its bristle three ways, Minos with no tail and bigger
   wings, and the line frame on his new direction, a lean frame whose forearms carry its locked
-  weaponry (fists that give way to beam rifles, beam blades, a buckler of light). The mole's
+  weaponry (fists that give way to beam rifles, beam blades, a buckler of light). The Honey
+  Badger and the Wild Boar wear the Polar Bear's vent since 16 November, Minerva's signature on
+  his word, each with a vent act, and the Boar's sweep no longer clips its side mounts; the
+  hangar's renders of the two are stale until its next publish. The mole's
   look waits on its glue: his read of the kits (16 November) asked for one, and its brief has
   three for his next (the dive, behind their line, undermining). A pick's next round is a
   model with its rig and acts.
