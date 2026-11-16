@@ -265,6 +265,7 @@ func test_every_colour_sits_on_the_posterize_grid() -> void:
 		colours.append_array(ts["grounds"].values() + ts["specks"] + ts["road"] + DomainGround.INKS[key].values())
 		for role in DomainGround.RANGE_COLOURS:
 			colours.append(DomainGround.RANGE_INKS[key][role])
+		colours.append_array(DomainGround.BANK_INKS[key].values())
 		for h in colours:
 			var c := Color(str(h))
 			for ch in [c.r8, c.g8, c.b8]:
@@ -355,3 +356,55 @@ func test_no_domain_wears_the_enemys_violet() -> void:
 			var c := Color(str(hex))
 			var violet := c.h * 360.0 >= 245.0 and c.h * 360.0 <= 300.0 and c.s > 0.15 and c.v > 0.1
 			assert_false(violet, "%s paints no violet (%s)" % [key, hex])
+
+
+func test_the_painting_at_heights_stands_each_hex_at_its_columns_height() -> void:
+	# The mock-up of the painting at the reconstruction's heights (Ryan, 16 November: "what it would
+	# look like if the painted world used the same terrain 'heights?'"): a hex's top stands where the
+	# reconstruction's column puts it on screen (Map3D: its relief step, water sunk), within half a
+	# design pixel, on the design pixels' grid.
+	var map := BattleMap.generate(20, 12, 7, "fjord")   # water sunk and the scenery rising
+	var hex_px := 48.0
+	var s := DomainGround.scale_of(hex_px)
+	var seen := {}
+	for h in map.all_hexes() + map.margin.keys():
+		var e: int = map.elevation.get(h, 0)
+		var units: float = Map3D.WATER_DROP if e < 0 else float(e) * Map3D.STEP
+		var want := units * cos(deg_to_rad(Map3D.PITCH)) * hex_px / Map3D.HEX_WORLD
+		var lift := DomainGround.lift_of(map, h, hex_px)
+		assert_true(absf(float(lift) - want) <= float(s) * 0.5 + 0.001, "the hex at %s stands within half a design pixel of its column (%d, %.1f)" % [h, lift, want])
+		assert_eq(lift % s, 0, "on the design pixels' grid")
+		seen[e] = true
+	assert_true(seen.has(-1) and seen.has(0) and seen.size() > 2, "the map has water and a rise to read")
+
+
+func test_a_raised_hex_has_a_bank_where_it_drops_toward_the_view() -> void:
+	# A bank under a raised hex on each side the view sees where its neighbour is lower, none where
+	# nothing drops or the side faces away, in either view; and its inks are the domain's own.
+	_in_both_views(func(view: String) -> void:
+		var edges := DomainGround._hex_edges(24.0)
+		for key in DomainGround.TILESETS.keys():
+			var flat := PackedInt32Array([4, 4, 4, 4, 4, 4])
+			assert_true(DomainGround._column_faces(str(key), 4, flat, 48.0, 2, 0).is_empty(), "%s: no bank where nothing drops, %s" % [key, view])
+			for k in range(6):
+				var drops := PackedInt32Array([4, 4, 4, 4, 4, 4])
+				drops[k] = 0
+				var banks := DomainGround._column_faces(str(key), 4, drops, 48.0, 2, 0)
+				var n: Vector2 = edges[k]["n"]
+				var seen := n.y >= 0.2 and absf((edges[k]["b"] as Vector2).x - (edges[k]["a"] as Vector2).x) > 0.01
+				assert_eq(not banks.is_empty(), seen, "%s: a bank on side %d only where the view sees it, %s" % [key, k, view])
+			var down := PackedInt32Array([0, 0, 0, 0, 0, 0])
+			var img := (DomainGround._column_faces(str(key), 4, down, 48.0, 2, 1)["tex"] as Texture2D).get_image()
+			var inks := {}
+			for v in DomainGround.INKS[key].values():
+				inks[Color(str(v)).to_html(false)] = true
+			for y in range(img.get_height()):
+				for x in range(img.get_width()):
+					var p := img.get_pixel(x, y)
+					if p.a > 0.5:
+						assert_true(inks.has(p.to_html(false)), "%s's banks are inked in its own colours (#%s)" % [key, p.to_html(false)]))
+
+
+func test_the_painting_at_heights_is_a_debug_switch() -> void:
+	# The mock-up is off unless RIFTGATE_PAINTED_HEIGHTS=1 asks for it: the painting stays flat.
+	assert_eq(DomainGround.heights, OS.get_environment("RIFTGATE_PAINTED_HEIGHTS") == "1", "the switch reads the environment")

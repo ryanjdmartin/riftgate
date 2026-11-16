@@ -331,13 +331,15 @@ var _bleed_grad := Vector2.ZERO
 var _bleed_src := PackedVector3Array()
 
 ## A hex's lift on screen: its column's height where the reconstruction stands, nothing
-## where the painting has taken it, with the compositor's own threshold between.
+## where the painting has taken it, with the compositor's own threshold between; the column's
+## height everywhere where the painting stands at the reconstruction's heights (the mock-up,
+## DomainGround.heights).
 func _lift_at(h: Vector2i) -> float:
 	if _map3d == null:
 		return 0.0
 	var lift := _map3d.lift(h)
-	if lift == 0.0:
-		return 0.0
+	if lift == 0.0 or DomainGround.heights:
+		return lift
 	if _bleed_src.is_empty():
 		_bleed_grad = Bleed.gradient(field, _origin, HEX_SIZE, seam_shown)
 		_bleed_src = Bleed.sources(field, _origin, HEX_SIZE, _anim_px)
@@ -2337,8 +2339,26 @@ func _unit_center(u: Unit) -> Vector2:
 	if _anim_px.has(u.id):
 		var px: Vector2 = _anim_px[u.id]
 		var under := MapOrient.from_pixel(px, HEX_SIZE)
+		if DomainGround.heights:
+			return _origin + px + Vector2(0, -_lift_along(px, under))
 		return _origin + px + Vector2(0, -_lift_at(under))
 	return center(shown_hex(u))
+
+
+## A moving token's lift where the painting stands at the reconstruction's heights (the mock-up):
+## its hex's, eased toward the nearest neighbour's across the middle of their shared edge, so it
+## climbs onto a rise or down a bank rather than stepping (`px` from hex (0, 0), `under` its hex).
+func _lift_along(px: Vector2, under: Vector2i) -> float:
+	var here := MapOrient.to_pixel(under, HEX_SIZE)
+	var near := under
+	var best := INF
+	for n in Hex.neighbors(under):
+		var d := px.distance_to(MapOrient.to_pixel(n, HEX_SIZE))
+		if d < best:
+			best = d
+			near = n
+	var across := (best - px.distance_to(here)) / (HEX_SIZE * sqrt(3.0))   # 1 at the hex's middle, 0 at the edge
+	return lerpf(_lift_at(near), _lift_at(under), smoothstep(-0.3, 0.3, across))
 
 
 func _draw_unit(u: Unit) -> void:

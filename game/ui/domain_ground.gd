@@ -740,7 +740,9 @@ static func road_links(map: BattleMap, h: Vector2i) -> int:
 ## hex when it has none. A wall hex's range is draw_ranges's, drawn after every hex's ground,
 ## since it stands taller than its hex. The second frame moves what moves. With `cell` off the
 ## hex has no outline of its own: ground with no cells, the scenery past the field (PaintedMap).
-static func draw_hex(ci: CanvasItem, c: Vector2, hex_px: float, t: int, seed_value: int, frame: int, biome: String, links: int = 0, cell: bool = true) -> void:
+## `tint` multiplies every colour it draws (the scenery's shade where it is drawn hex by hex among
+## the field's, at the reconstruction's heights).
+static func draw_hex(ci: CanvasItem, c: Vector2, hex_px: float, t: int, seed_value: int, frame: int, biome: String, links: int = 0, cell: bool = true, tint: Color = Color.WHITE) -> void:
 	var key := key_of(biome)
 	var ts: Dictionary = TILESETS[key]
 	var rng := RandomNumberGenerator.new()
@@ -748,28 +750,237 @@ static func draw_hex(ci: CanvasItem, c: Vector2, hex_px: float, t: int, seed_val
 	var s := scale_of(hex_px)
 	var r := hex_px - 1.5
 	var pts := MapOrient.corners(c, r)
-	ci.draw_colored_polygon(pts, fill(key, t))
+	ci.draw_colored_polygon(pts, fill(key, t) * tint)
 	match t:
 		BattleMap.Terrain.WATER:
-			_water(ci, key, ts, c, r, s, rng, frame)
+			_water(ci, key, ts, c, r, s, rng, frame, tint)
 		BattleMap.Terrain.MOUNTAIN:
-			_specks(ci, ts, c, r, s, rng)
+			_specks(ci, ts, c, r, s, rng, tint)
 		BattleMap.Terrain.ROAD:
-			_specks(ci, ts, c, r, s, rng)
+			_specks(ci, ts, c, r, s, rng, tint)
 			var road := links if links != 0 else (1 << 1) | (1 << 4)
-			_road(ci, key, ts, c, hex_px, s, road)
-			_scatter(ci, key, ts, c, r, s, rng, frame, _halved(ts["plain"]), road, 0.0)
+			_road(ci, key, ts, c, hex_px, s, road, tint)
+			_scatter(ci, key, ts, c, r, s, rng, frame, _halved(ts["plain"]), road, 0.0, tint)
 		BattleMap.Terrain.ROUGH:
-			_specks(ci, ts, c, r, s, rng)
-			_scatter(ci, key, ts, c, r, s, rng, frame, ts["rough"], 0, 0.45)
+			_specks(ci, ts, c, r, s, rng, tint)
+			_scatter(ci, key, ts, c, r, s, rng, frame, ts["rough"], 0, 0.45, tint)
 		BattleMap.Terrain.RUINS:
-			_specks(ci, ts, c, r, s, rng)
-			_scatter(ci, key, ts, c, r, s, rng, frame, ts["ruins"], 0, 0.0)
+			_specks(ci, ts, c, r, s, rng, tint)
+			_scatter(ci, key, ts, c, r, s, rng, frame, ts["ruins"], 0, 0.0, tint)
 		_:
-			_specks(ci, ts, c, r, s, rng)
-			_scatter(ci, key, ts, c, r, s, rng, frame, ts["plain"], 0, 0.0)
+			_specks(ci, ts, c, r, s, rng, tint)
+			_scatter(ci, key, ts, c, r, s, rng, frame, ts["plain"], 0, 0.0, tint)
 	if cell:
-		Hud.stroke_poly(ci, pts, Color(Color(str(ts["grid"])), 0.35), 1.0)
+		Hud.stroke_poly(ci, pts, Color(Color(str(ts["grid"])), 0.35) * tint, 1.0)
+
+
+## The painted world at the reconstruction's heights: a mock-up (Ryan, 16 November, of the joined
+## ranges: "it solves a big problem I had with the Seam, where height shifts make things really
+## janky to look at when the packs are moving around. Can you mock up what it would look like if
+## the painted world used the same terrain 'heights?' Obviously done in its style"). Every hex of
+## the painting stands at its column's own height in the reconstruction (lift_of: Map3D's relief
+## step, water sunk, to the nearest design pixel), a bank of the domain's rock (BANK_INKS) down
+## from its edge to each lower neighbour on the sides the view sees, the farthest hex first, so
+## where the painting meets the reconstruction (the seam, a pack's bleed) the ground changes its
+## look and never its height. RIFTGATE_PAINTED_HEIGHTS=1 (any run) or a debug build's TRIALS →
+## PAINTED HEIGHTS (Settings.field_trial) turns it on; off, the painting is flat as it has been.
+static var heights := OS.get_environment("RIFTGATE_PAINTED_HEIGHTS") == "1"
+
+## Each domain's banks, the faces under a raised hex: `lip` the light along the top's edge,
+## `lit` facing right, `face` the rest, `streak` the dark lines down them and `foot` the line where
+## a bank meets the ground below; all of them the domain's own inks, the rock of its ranges
+## (RANGE_INKS) where that reads against its ground.
+const BANK_INKS := {
+	"plains": {"lip": "cc9966", "lit": "996633", "face": "663300", "streak": "333300", "foot": "333300"},
+	"sand": {"lip": "cc9966", "lit": "993300", "face": "663300", "streak": "330000", "foot": "330000"},
+	"marsh": {"lip": "999999", "lit": "666666", "face": "333333", "streak": "000000", "foot": "000000"},
+	"lava": {"lip": "666666", "lit": "993300", "face": "990000", "streak": "330000", "foot": "000000"},
+}
+
+static var _banks: Dictionary = {}   # a hex's banks by everything they depend on (_column_faces)
+
+
+## How far a hex's top stands above its grid cell in the painted world at the reconstruction's
+## heights, in screen pixels: the column's own height (Map3D: the relief's step, water sunk)
+## projected as the reconstruction's camera sees it, to the nearest design pixel, so the
+## painting's pixels stay on their grid (within a pixel of the reconstruction's).
+static func lift_of(map: BattleMap, h: Vector2i, hex_px: float) -> int:
+	var e: int = map.elevation.get(h, 0)
+	var units: float = Map3D.WATER_DROP if e < 0 else float(e) * Map3D.STEP
+	var px := units * cos(deg_to_rad(Map3D.PITCH)) * hex_px / Map3D.HEX_WORLD
+	var s := scale_of(hex_px)
+	return roundi(px / float(s)) * s
+
+
+## One hex of the painting at the reconstruction's heights, for draw_columns: `c` its middle on its
+## grid cell, `cell` whether it is the field's (a cell with its dark edge) or the scenery's,
+## `tint` what multiplies its colours (the scenery's shade).
+static func column(map: BattleMap, h: Vector2i, c: Vector2, hex_px: float, cell: bool, tint: Color) -> Dictionary:
+	var t := map.terrain_of(h)
+	var lift := lift_of(map, h, hex_px)
+	var drops := PackedInt32Array()
+	for e in _hex_edges(1.0):
+		var n: Vector2i = h + Hex.DIRECTIONS[int(e["dir"])]
+		# Past the map's end a raised hex's bank runs down to the ground.
+		drops.append(lift_of(map, n, hex_px) if map.has(n) or map.margin.has(n) else mini(lift, 0))
+	var col := {"c": c, "lift": lift, "drops": drops, "t": t, "seed": h.x * 131 + h.y * 7919, "links": road_links(map, h) if t == BattleMap.Terrain.ROAD else 0, "cell": cell, "tint": tint}
+	if t == BattleMap.Terrain.MOUNTAIN:
+		col["wall"] = {"look": str(map.wall_look.get(h, BattleMap.WALL_LOOKS[0])), "links": wall_links(map, h, true)}
+	return col
+
+
+## The painting at the reconstruction's heights (`heights`), in one go: every hex of `cols`
+## (column's) up on its own height over its banks, the farthest (highest on screen) first, so a
+## nearer raised hex laps over the foot of a farther one; a wall's range on its hex's top, what
+## lies on it with it, and what stands on it among the hexes by its own foot.
+static func draw_columns(ci: CanvasItem, cols: Array, hex_px: float, frame: int, biome: String) -> void:
+	var key := key_of(biome)
+	var s := scale_of(hex_px)
+	var items: Array = []   # [depth, 0 a hex or 1 what stands on a wall, foot, x, it]
+	for col in cols:
+		var c: Vector2 = col["c"]
+		items.append([c.y, 0, c.y, c.x, col])
+		if not col.has("wall"):
+			continue
+		var wall: Dictionary = col["wall"]
+		var look := str(wall.get("look", "crags"))
+		if not RANGE_LOOKS.has(look):
+			look = "crags"
+		var lift := float(col["lift"])
+		var at := (c - Vector2(0.0, lift)).floor()
+		var rng := RandomNumberGenerator.new()
+		rng.seed = int(col.get("seed", 0))
+		var lies: Array = []
+		for p in _range_props(key, look, int(wall.get("links", 0)), hex_px, s, rng):
+			p["origin"] = at
+			p["tint"] = col.get("tint", Color.WHITE)
+			if bool(p["lies"]):
+				lies.append(p)
+			else:
+				# By its foot on the ground, never before its own hex's top.
+				var foot: Vector2 = at + (p["foot"] as Vector2) * s + Vector2(0.0, lift)
+				items.append([maxf(foot.y, c.y), 1, foot.y, foot.x, p])
+		col["look"] = look
+		col["lies"] = lies
+	items.sort_custom(func(a: Array, b: Array) -> bool:
+		for i in range(4):
+			if not is_equal_approx(float(a[i]), float(b[i])):
+				return float(a[i]) < float(b[i])
+		return false)
+	for it in items:
+		if int(it[1]) == 1:
+			_draw_range_prop(ci, key, it[4], s, frame)
+		else:
+			_draw_column(ci, key, it[4], hex_px, s, frame)
+
+
+static func _draw_column(ci: CanvasItem, key: String, col: Dictionary, hex_px: float, s: int, frame: int) -> void:
+	var tint: Color = col.get("tint", Color.WHITE)
+	var lift := int(col["lift"])
+	var t := int(col["t"])
+	var c: Vector2 = (col["c"] as Vector2) - Vector2(0.0, lift)
+	var cell := bool(col.get("cell", true))
+	# The banks first, a design pixel into the top and into the ground below so no seam shows; the
+	# top over them.
+	var drops := PackedInt32Array()
+	for d in col["drops"]:
+		drops.append(int(d) / s)
+	var banks := _column_faces(key, lift / s, drops, hex_px, s, int(col.get("seed", 0)) % 3)
+	if not banks.is_empty():
+		ci.draw_texture(banks["tex"], c.floor() + banks["at"], tint)
+	if cell:
+		ci.draw_colored_polygon(MapOrient.corners(c, hex_px), Palette.BG)
+	else:
+		ci.draw_colored_polygon(MapOrient.corners(c, hex_px + 1.0), fill(key, t) * tint)
+	draw_hex(ci, c, hex_px, t, int(col.get("seed", 0)), frame, key, int(col.get("links", 0)), cell, tint)
+	if col.has("wall"):
+		var base := _range_base(key, str(col["look"]), int((col["wall"] as Dictionary).get("links", 0)), hex_px, s)
+		ci.draw_texture(base["tex"], c.floor() + base["at"], tint)
+		for p in col.get("lies", []):
+			_draw_range_prop(ci, key, p, s, frame)
+
+
+## A hex's banks: from the edge of its top, `lift` design pixels up, down to each side's neighbour
+## in `drops` (design pixels, _hex_edges' order) where that is lower and the view sees the side
+## (its normal down the screen, never edge-on); a light lip under the top's edge, lit facing
+## right, streaked, a dark foot where it meets the ground below. Cached by everything it depends on; `variant` moves the streaks.
+## {"tex", "at": its top left from the hex's lifted middle in screen pixels}, or empty where
+## nothing drops.
+static func _column_faces(key: String, lift: int, drops: PackedInt32Array, hex_px: float, s: int, variant: int) -> Dictionary:
+	var parts: Array = []
+	for d in drops:
+		parts.append(str(d))
+	var ck := "%s/%d/%s/%d/%d/%d/%d" % [key, lift, ",".join(parts), roundi(hex_px * 4.0), s, int(MapOrient.wall_left), variant]
+	if _banks.has(ck):
+		return _banks[ck]
+	var r := hex_px / float(s)
+	var edges := _hex_edges(r)
+	var src: Dictionary = BANK_INKS.get(key, BANK_INKS["plains"])
+	var c_lip := Color(str(src["lip"])).to_abgr32()
+	var c_lit := Color(str(src["lit"])).to_abgr32()
+	var c_face := Color(str(src["face"])).to_abgr32()
+	var c_streak := Color(str(src["streak"])).to_abgr32()
+	var c_foot := Color(str(src["foot"])).to_abgr32()
+	var seen: Array = []
+	var top := INF
+	var bottom := -INF
+	for k in range(6):
+		var e: Dictionary = edges[k]
+		var n: Vector2 = e["n"]
+		var a: Vector2 = e["a"]
+		var b: Vector2 = e["b"]
+		if n.y < 0.2 or drops[k] >= lift or absf(b.x - a.x) < 0.01:
+			continue
+		seen.append(k)
+		top = minf(top, minf(a.y, b.y))
+		bottom = maxf(bottom, maxf(a.y, b.y) + float(lift - drops[k]))
+	if seen.is_empty():
+		_banks[ck] = {}
+		return {}
+	var x0 := floori(-r) - 2
+	var w := ceili(r) + 3 - x0
+	var y0 := floori(top) - 2
+	var h := ceili(bottom) + 3 - y0
+	var data := PackedByteArray()
+	data.resize(w * h * 4)
+	_noise_at(0, 0, 0)
+	for k in seen:
+		var e: Dictionary = edges[k]
+		var a: Vector2 = e["a"]
+		var b: Vector2 = e["b"]
+		var n: Vector2 = e["n"]
+		var tone := c_lit if n.x > 0.3 else c_face
+		var fall := float(lift - drops[k])
+		for px in range(w):
+			var x := float(x0 + px) + 0.5
+			var t := (x - a.x) / (b.x - a.x)
+			if t < 0.0 or t > 1.0:
+				continue
+			var y_top := lerpf(a.y, b.y, t)   # the top's edge, the hex drawn lifted
+			var y_foot := y_top + fall
+			# A streak down from the lip, a run of its own length, on about a column in four.
+			var streak := _noise_at(x0 + px, k + 7 * variant, 21) < 64
+			var run := 1 + _noise_at(x0 + px, k + 7 * variant, 23) % maxi(1, int(fall) - 1)
+			for py in range(h):
+				var y := float(y0 + py) + 0.5
+				# A pixel into the top above and the ground below, which are drawn over it.
+				if y < y_top - 1.0 or y >= y_foot + 1.0:
+					continue
+				var u := y - y_top   # down from the lip
+				var col := tone
+				if y >= y_foot - 1.0:
+					col = c_foot
+				elif u < 1.0:
+					col = c_lip
+				elif streak and u >= 1.0 and u < 1.0 + float(run):
+					col = c_streak
+				data.encode_u32((py * w + px) * 4, col)
+	var img := Image.create_from_data(w, h, false, Image.FORMAT_RGBA8, data)
+	if s > 1:
+		img.resize(w * s, h * s, Image.INTERPOLATE_NEAREST)
+	var out := {"tex": ImageTexture.create_from_image(img), "at": Vector2(x0 * s, y0 * s)}
+	_banks[ck] = out
+	return out
 
 
 ## A wall in the painted world is one piece of a range that joins the wall hexes of its look
@@ -848,12 +1059,15 @@ static func _noise_at(x: int, y: int, salt: int) -> int:
 
 ## The wall hexes beside `h` of its own look, as a bit for each of Hex.DIRECTIONS: the neighbours
 ## its range joins, on the field or in the scenery past it.
-static func wall_links(map: BattleMap, h: Vector2i) -> int:
+static func wall_links(map: BattleMap, h: Vector2i, by_height: bool = false) -> int:
 	var look := str(map.wall_look.get(h, ""))
 	var links := 0
 	for i in range(Hex.DIRECTIONS.size()):
 		var n: Vector2i = h + Hex.DIRECTIONS[i]
 		if (map.has(n) or map.margin.has(n)) and map.terrain_of(n) == BattleMap.Terrain.MOUNTAIN and str(map.wall_look.get(n, "")) == look:
+			# At the reconstruction's heights (`heights`) a range joins only a wall at its own height.
+			if by_height and int(map.elevation.get(n, 0)) != int(map.elevation.get(h, 0)):
+				continue
 			links |= 1 << i
 	return links
 
@@ -1567,12 +1781,12 @@ static func _halved(list: Array) -> Array:
 
 
 ## A ground's flecks: a few design pixels in the domain's speck colours.
-static func _specks(ci: CanvasItem, ts: Dictionary, c: Vector2, r: float, s: int, rng: RandomNumberGenerator) -> void:
+static func _specks(ci: CanvasItem, ts: Dictionary, c: Vector2, r: float, s: int, rng: RandomNumberGenerator, tint: Color = Color.WHITE) -> void:
 	var cols: Array = ts["specks"]
 	for i in range(10):
 		var p := c + Vector2(rng.randf_range(-0.85, 0.85) * r * 0.866, rng.randf_range(-0.8, 0.8) * r)
 		if _inside(p, c, r - 3.0):
-			ci.draw_rect(Rect2(p.floor(), Vector2(s, s)), Color(str(cols[i % cols.size()])))
+			ci.draw_rect(Rect2(p.floor(), Vector2(s, s)), Color(str(cols[i % cols.size()])) * tint)
 
 
 ## The midpoint of a hex's edge toward Hex.DIRECTIONS[i], on the hex's fill.
@@ -1607,7 +1821,7 @@ static func _road_dist(p: Vector2, ends: Array) -> float:
 ## the same roads beside it lays the same road. Three road hexes round a corner make a loop
 ## with the ground showing in its middle (Ryan, 30 October: "can these types of triples have a
 ## gap in the middle?"), a road two wide a ladder of them.
-static func _road(ci: CanvasItem, key: String, ts: Dictionary, c: Vector2, hex_px: float, s: int, links: int) -> void:
+static func _road(ci: CanvasItem, key: String, ts: Dictionary, c: Vector2, hex_px: float, s: int, links: int, tint: Color = Color.WHITE) -> void:
 	var ck := "%s/road/%d/%d/%d" % [key, links, roundi(hex_px), s]
 	if not _textures.has(ck):
 		var r := hex_px - 1.5
@@ -1630,14 +1844,14 @@ static func _road(ci: CanvasItem, key: String, ts: Dictionary, c: Vector2, hex_p
 					img.fill_rect(Rect2i(x * s, y * s, s, s), edge)
 		_textures[ck] = ImageTexture.create_from_image(img)
 	var tex: ImageTexture = _textures[ck]
-	ci.draw_texture(tex, (c - tex.get_size() * 0.5).floor())
+	ci.draw_texture(tex, (c - tex.get_size() * 0.5).floor(), tint)
 	if ts.has("road_stone"):
 		var stone := _tex(key, str(ts["road_stone"]), false, s)
 		var at: Array = [Vector2.ZERO]
 		for e in _road_ends(hex_px, links):
 			at.append(e * 0.55)
 		for p in at:
-			ci.draw_texture(stone, (c + p - stone.get_size() * 0.5).floor())
+			ci.draw_texture(stone, (c + p - stone.get_size() * 0.5).floor(), tint)
 
 
 ## Whether a sprite standing in `rect` would stand on the road (its `ends`, as _road_ends).
@@ -1652,7 +1866,7 @@ static func _on_road(rect: Rect2, c: Vector2, ends: Array, s: int) -> bool:
 ## What stands on a ground: each sprite of `list` set where it fits inside the hex, off the
 ## road, overlapping the ones set before by at most `overlap` of the smaller (rough's, a
 ## forest's crowns), then drawn back to front, the flat ones first.
-static func _scatter(ci: CanvasItem, key: String, ts: Dictionary, c: Vector2, r: float, s: int, rng: RandomNumberGenerator, frame: int, list: Array, links: int, overlap: float) -> void:
+static func _scatter(ci: CanvasItem, key: String, ts: Dictionary, c: Vector2, r: float, s: int, rng: RandomNumberGenerator, frame: int, list: Array, links: int, overlap: float, tint: Color = Color.WHITE) -> void:
 	var placed: Array = []
 	var ends := _road_ends(r + 1.5, links)
 	for entry in list:
@@ -1680,8 +1894,8 @@ static func _scatter(ci: CanvasItem, key: String, ts: Dictionary, c: Vector2, r:
 		return a["rect"].end.y < b["rect"].end.y)
 	for p in placed:
 		var rect: Rect2 = p["rect"]
-		ci.draw_texture(_tex(key, p["name"], p["mirror"], s), rect.position)
-		_attach(ci, key, p["name"], rect, p["mirror"], s, frame)
+		ci.draw_texture(_tex(key, p["name"], p["mirror"], s), rect.position, tint)
+		_attach(ci, key, p["name"], rect, p["mirror"], s, frame, tint)
 
 
 ## Whether a rect overlaps one set before by more than `overlap` of the smaller.
@@ -1712,11 +1926,11 @@ static func _attach(ci: CanvasItem, key: String, name: String, rect: Rect2, mirr
 
 
 ## The water: the domain's liquid, a rim inside its edge and ripples drifting a step a frame.
-static func _water(ci: CanvasItem, key: String, ts: Dictionary, c: Vector2, r: float, s: int, rng: RandomNumberGenerator, frame: int) -> void:
-	Hud.stroke_poly(ci, MapOrient.corners(c, r - 2.0 - s), Color(str(ts["rim"])), float(s) + 1.0)
+static func _water(ci: CanvasItem, key: String, ts: Dictionary, c: Vector2, r: float, s: int, rng: RandomNumberGenerator, frame: int, tint: Color = Color.WHITE) -> void:
+	Hud.stroke_poly(ci, MapOrient.corners(c, r - 2.0 - s), Color(str(ts["rim"])) * tint, float(s) + 1.0)
 	var ripples: Array = ts["ripples"]
 	for i in range(7):
 		var tex := _tex(key, str(ripples[i % ripples.size()]), false, s)
 		var p := c + Vector2(rng.randf_range(-0.55, 0.55) * r * 0.866, rng.randf_range(-0.5, 0.45) * r)
 		p += Vector2(2.0, -1.0) * s * frame
-		ci.draw_texture(tex, (p - tex.get_size() * 0.5).floor())
+		ci.draw_texture(tex, (p - tex.get_size() * 0.5).floor(), tint)

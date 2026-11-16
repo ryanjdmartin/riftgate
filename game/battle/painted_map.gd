@@ -51,6 +51,9 @@ func setup(f: Battlefield, o: Vector2, hex_size: float, which_frame: int = 0) ->
 		add_child(sc)
 		_scenery = sc
 	_scenery.size = size
+	# At the reconstruction's heights the scenery's hexes go down among the field's, the farthest
+	# first, each in its shade (DomainGround.draw_columns), so its layer has nothing to draw.
+	_scenery.visible = not DomainGround.heights
 	_scenery.queue_redraw()
 	queue_redraw()
 
@@ -84,6 +87,17 @@ func _draw() -> void:
 	if field == null:
 		return
 	var map := field.map
+	if DomainGround.heights:
+		# The mock-up of the painting at the reconstruction's heights (DomainGround.heights): every
+		# hex, the field's and the scenery's, on its own height over its banks, in one pass.
+		var cols: Array = []
+		var every: Array = []
+		every.append_array(map.all_hexes())
+		every.append_array(map.margin.keys())
+		for h in every:
+			cols.append(DomainGround.column(map, h, origin + MapOrient.to_pixel(h, hex_px), hex_px, not is_scenery(h), SCENERY_SHADE if is_scenery(h) else Color.WHITE))
+		DomainGround.draw_columns(self, cols, hex_px, frame, biome)
+		return
 	draw_ground(self, false)
 	var walls: Array = []
 	var hexes: Array = []

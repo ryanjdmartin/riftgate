@@ -41,8 +41,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1203 tests, 373,302 checks, green on `ccr-1e6e6571-7x7ayr` (16 November, the painted
-  walls as joined ranges, over main at `e26589f`). Before it, 1198 tests, 372,873 checks, green on `ccr-722ca9f0-yj8na3` (16 November, his
+- Tests: 1206 tests, 383,019 checks, green on `ccr-1e6e6571-7x7ayr` (16 November, the mock-up
+  of the painted world at the 3D map's heights, over main at `e26589f`). Before it, 1203 tests,
+  373,302 checks, green on the same branch (16 November, the painted walls as joined ranges). Before it, 1198 tests, 372,873 checks, green on `ccr-722ca9f0-yj8na3` (16 November, his
   eighth round's rulings, over main at `3801a1b`). Before it, 1197 tests, 372,849 checks,
   green on the same branch (16 November,
   Phased, over main at `1d2b544`). Before it, 1196 tests, 372,811 checks, green on the same
@@ -109,8 +110,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 Everything is on main as of 13 November 2026; the formation and refit session's branch lands as it goes, below.
 `ccr-1e6e6571-7x7ayr`, the map session's, restarted from main at `e26589f` on 16 November (its
-earlier work all on main): the painted walls as joined ranges (How things stand, below); not
-landed, main takes it on Ryan's word.
+earlier work all on main): the painted walls as joined ranges and the mock-up of the painted world
+at the 3D map's heights behind its switch (How things stand, below); not landed, main takes it on
+Ryan's word.
 `ccr-b7d5164e-1wtzzm`, this session's (12 November), cut from main at `6112939`: the to-do's
 roster pruned, then the Needletail's two modes and the Giant Petrel's hull on Ryan's design and
 mix, reworked on his notes (How things stand, below); it took main at `4a0c9b5` in a merge on 13
@@ -500,6 +502,22 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (`sim/campaign.gd`); no screen shows them. The quick campaign is an experiment, not a feature
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
+
+- **The painted world at the 3D map's heights, a mock-up** (`ccr-1e6e6571-7x7ayr`, 16 November, on
+  Ryan's "it solves a big problem I had with the Seam, where height shifts make things really janky
+  to look at when the packs are moving around. Can you mock up what it would look like if the
+  painted world used the same terrain 'heights?' Obviously done in its style"). Behind a switch,
+  off by default: `RIFTGATE_PAINTED_HEIGHTS=1`, or a debug build's TRIALS → PAINTED HEIGHTS. Every
+  painted hex, the field's and the scenery's, stands at its 3D column's height
+  (`DomainGround.lift_of`: the relief's step, water sunk, to the nearest design pixel, within a
+  pixel of the reconstruction's), over banks of its domain's rock (`BANK_INKS`: a light lip, lit
+  facing right, a dark foot) on the sides the view sees, drawn the farthest first with the scenery
+  in its shade hex by hex (`draw_columns`); a range joins only a wall at its own height; the
+  tokens, marks and flyers keep the full lift under the painting, and a moving token climbs a bank
+  rather than stepping (`BattleMapView._lift_along`). The field is level but for the water, the
+  badlands' shoulders and the steppe's rise, so those are where it shows. Not a decision: the
+  to-do's judge line asks whether it stays, which retires the flat other world of 22 September.
+  The walls are not matched: a 3D wall's model still stands far taller than its painted range.
 
 - **The painted walls as joined ranges** (`ccr-1e6e6571-7x7ayr`, 16 November, on Ryan's "They could
   fill their hexes more and mesh together better. A mountain range should look like a continuous

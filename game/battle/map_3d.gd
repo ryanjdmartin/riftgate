@@ -1759,7 +1759,7 @@ func sync() -> void:
 			# Whether the ground here is still the reconstruction's: the same threshold the
 			# compositor paints at, so the flyer clears the geometry wherever it can be seen
 			# and flies level only where the painting has taken it.
-			var solid := Bleed.solid(under_px, grad, src)
+			var solid := 1.0 if DomainGround.heights else Bleed.solid(under_px, grad, src)   # the painting at the reconstruction's heights (the mock-up): no flat ground to fly level with
 			var clear := maxf(0.0, float(_top.get(under, 0.0)) - _height_of(under) + 6.0 - HOVER)
 			var want := (_height_of(under) + clear) * solid
 			var prev: float = _fly_y.get(u.id, want)

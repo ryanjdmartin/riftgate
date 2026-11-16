@@ -522,6 +522,10 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # screen); `xvfb-run -a godot --rendering-method gl_compatibility --path . -s tools/tileset_shot.gd
 # -- tilesets.png [frame]` draws all four side by side, with a joined range of each look of wall
 # (crags, mesas, towers, cliffs), in the view RIFTGATE_MAP_VIEW=left|bottom names.
+# RIFTGATE_PAINTED_HEIGHTS=1 (any run; a debug build's TRIALS → PAINTED HEIGHTS on the phone) is a
+# mock-up of the painted world at the 3D map's heights (DomainGround.heights): every painted hex at
+# its column's height over banks of its domain's rock, the tokens and marks riding the same lift,
+# so the seam and a pack's bleed change the ground's look and never its height.
 # RIFTGATE_PREVIEW_DEBUG=1 (any skirmish) puts the pulsing preview chip of a rally on its way on
 # every foe showing a blow (+1 where none is coming, its number unchanged), to judge the pulse
 # running; RIFTGATE_FOES=wolf:4 fields the real thing, howls lifting the bites after them.

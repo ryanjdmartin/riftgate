@@ -411,8 +411,11 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 	var strike_was = Settings.display.get("wall_strike", "10")
 	var burn_was = Settings.display.get("overheat_burn", "1")
 	var break_was = Settings.display.get("shield_break", "off")
+	var heights_was = Settings.display.get("painted_heights", "off")
+	var heights_env := OS.get_environment("RIFTGATE_PAINTED_HEIGHTS") == "1"
 	Settings.display["overheat_burn"] = "2"
 	Settings.display["shield_break"] = "on"
+	Settings.display["painted_heights"] = "on"
 	Settings.display["tide_density"] = "150"
 	Settings.display["wall_strike"] = "5"
 	Settings.display["field_depth"] = "16"
@@ -424,12 +427,14 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 	assert_eq([Ramp.tide_trial, Battlefield.strike_trial], [100, 0], "nor the tide's density or the wall strike")
 	assert_eq(Skirmish.overheat_scale, 1, "nor the overheat's burn")
 	assert_false(Skirmish.shield_break, "nor the block")
+	assert_eq(DomainGround.heights, heights_env, "nor the painting's heights")
 	Settings.field_trial(true)
 	assert_eq([Ramp.depth_trial, Battle.opening_trial, Battle.fodder_trial, Ramp.beats_trial], [16, 2, 50, 3] if OS.is_debug_build() else [0, 0, 100, 0], "where the game starts a battle, a debug build's settings are the trial")
 	assert_eq([Ramp.tide_trial, Battlefield.strike_trial], [150, 5] if OS.is_debug_build() else [100, 0], "the tide's density and the wall strike with them")
 	assert_eq(Battlefield.strike_per_pip(), 5 if OS.is_debug_build() else Battlefield.STRIKE_PER_PIP, "and the field answers with the strike")
 	assert_eq(Skirmish.overheat_scale, 2 if OS.is_debug_build() else 1, "the overheat's burn with them")
 	assert_eq(Skirmish.shield_break, OS.is_debug_build(), "and the block, a break stopping the blow whole")
+	assert_eq(DomainGround.heights, OS.is_debug_build() or heights_env, "and the painting at the 3D map's heights, the mock-up")
 	assert_eq(Ramp.beats_at(0), 3 if OS.is_debug_build() else Ramp.BEATS, "and the ramp answers with the beats")
 	assert_eq(Ramp.depth_at(0), 16 if OS.is_debug_build() else 12, "and the ramp answers with it")
 	Settings.display["field_depth"] = "a mile"
@@ -440,11 +445,13 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 	Settings.display["wall_strike"] = "a tap"
 	Settings.display["overheat_burn"] = "a furnace"
 	Settings.display["shield_break"] = "a wall"
+	Settings.display["painted_heights"] = "a hill"
 	Settings.field_trial(true)
 	assert_eq([Ramp.depth_trial, Battle.opening_trial, Battle.fodder_trial, Ramp.beats_trial], [0, 0, 100, 0], "a value that is no option asks for nothing")
 	assert_eq([Ramp.tide_trial, Battlefield.strike_trial], [100, 0], "of the tide or the strike either")
 	assert_eq(Skirmish.overheat_scale, 1, "or of the overheat")
 	assert_false(Skirmish.shield_break, "or of the shield")
+	assert_eq(DomainGround.heights, heights_env, "or of the painting")
 	Settings.display["shield_break"] = "off"
 	Settings.field_trial(true)
 	assert_false(Skirmish.shield_break, "and the game's own shield is no trial")
@@ -459,7 +466,11 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 	Settings.display["wall_strike"] = strike_was
 	Settings.display["overheat_burn"] = burn_was
 	Settings.display["shield_break"] = break_was
+	Settings.display["painted_heights"] = heights_was
+	DomainGround.heights = heights_env
 	assert_eq(str(Settings.DISPLAY_DEFAULTS["shield_break"]), "off", "the shield ships honest, its number and the rest on the hull")
+	assert_eq(str(Settings.DISPLAY_DEFAULTS["painted_heights"]), "off", "the painting ships flat, the heights a mock-up")
+	assert_true(Settings.PAINTED_HEIGHTS.has("off"), "which is among its options")
 	assert_true(Settings.SHIELD_BREAKS.has("off"), "which is among its options")
 	assert_false(Settings.DISPLAY_DEFAULTS.has("reboot") or Settings.DISPLAY_DEFAULTS.has("shield_regen"), "the reboot is the rule and no dial (folded in 15 November), and the regen's dial went with the regen")
 	assert_eq(str(Settings.DISPLAY_DEFAULTS["overheat_burn"]), "1", "the overheat ships at one hull a point")
@@ -495,6 +506,8 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 			assert_true(labels.has(str(Settings.TIDE_LABELS[t])), "the tide's density %s" % Settings.TIDE_LABELS[t])
 		for k in Settings.STRIKES:
 			assert_true(labels.has(str(k)), "and the wall strike %s" % k)
+		for v in Settings.PAINTED_HEIGHTS:
+			assert_true(labels.has(str(Settings.PAINTED_HEIGHTS_LABELS[v])), "and the painting's heights %s" % Settings.PAINTED_HEIGHTS_LABELS[v])
 		assert_true(labels.has("BACK"), "with its way back")
 		menu.free()
 
